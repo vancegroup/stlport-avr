@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/17 08:22:10 ptr>
+// -*- C++ -*- Time-stamp: <03/01/19 20:39:36 ptr>
 
 /*
  *
@@ -164,17 +164,29 @@ class fork_in_parent :
 // if parameter SCOPE (process scope) true, PTHREAD_PROCESS_SHARED will
 // be used; otherwise PTHREAD_PROCESS_PRIVATE.
 // Of cause, system must support process scope...
-template <bool SCOPE>
+// Linux at 2003-01-19 NOT SUPPORT PTHREAD_PROCESS_SHARED mutex!
+// And Windows too!
+// 
+template <bool RECURSIVE_SAFE, bool SCOPE>
 class __mutex_base
 {
   public:
     __mutex_base()
       {
 #ifdef _PTHREADS
-        if ( SCOPE ) {
+        if ( SCOPE || RECURSIVE_SAFE ) {
           pthread_mutexattr_t att;
           pthread_mutexattr_init( &att );
-          pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+          if ( SCOPE ) {
+            int _err = pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+            _STLP_ASSERT( _err == 0 );
+          }
+#  ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
+          if ( RECURSIVE_SAFE ) {
+            int _err = pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE );
+            _STLP_ASSERT( _err == 0 );
+          }
+#  endif
           pthread_mutex_init( &_M_lock, &att );
           pthread_mutexattr_destroy( &att );
         } else {
@@ -224,11 +236,17 @@ class __mutex_base
 #endif
 };
 
-// if parameter R (recursive), than __Mutex will be recursive-safe
-// and may be not recursive-safe for R = false.
-template <bool R, bool SCOPE>
+// Portable Mutex implementation. If the parameter RECURSIVE_SAFE
+// is true, Mutex will be recursive safe (detect deadlock).
+// If RECURSIVE_SAFE is false, implementation may not to be
+// recursive-safe.
+// The SCOPE parameter designate Mutex scope---shared between
+// processes (true), or only inside threads of one process (false).
+// Note, that not all OS support interprocess mutex scope
+// (for example, Windows and Linux).
+template <bool RECURSIVE_SAFE, bool SCOPE>
 class __Mutex :
-    public __mutex_base<SCOPE>
+    public __mutex_base<RECURSIVE_SAFE,SCOPE>
 {
   public:
     __Mutex()
@@ -281,17 +299,6 @@ class __Mutex :
 #endif
       }
 
-  protected:
-#ifdef _PTHREADS
-    pthread_mutex_t _M_lock;
-#endif
-#ifdef __FIT_UITHREADS
-    mutex_t _M_lock;
-#endif
-#ifdef __FIT_WIN32THREADS
-    CRITICAL_SECTION _M_lock;
-#endif
-
 #ifndef __FIT_WIN32THREADS
   private:
     friend class Condition;
@@ -306,21 +313,27 @@ class __Mutex :
 // (or XSI---X/Open System Interfaces Extention) has recursive mutex option.
 // Another specialization?
 
-#ifdef __unix
+#if defined(__unix) && !defined(__FIT_XSI_THR)
+
+// This specialization need for old POSIX and DCE threads,
+// before XSI (X/Open System Interfaces Extention) or Unix 98.
+// because Windows CriticalSection is recursive safe, and
+// XSI implementation has appropriate mutex parameter (see
+// __mutex_base above).
 
 template <bool SCOPE>
 class __Mutex<true,SCOPE> : // Recursive Safe
-    public __mutex_base<SCOPE>
+    public __mutex_base<true,SCOPE>
 {
   public:
     __Mutex() :
         _count( 0 ),
-#ifdef __FIT_UITHREADS
+#  ifdef __FIT_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
-#endif
-#ifdef _PTHREADS
+#  endif
+#  ifdef _PTHREADS
         _id( __STATIC_CAST(pthread_t,-1) )
-#endif
+#  endif
       { }
 
     ~__Mutex()
@@ -328,25 +341,25 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 
     void lock()
       {
-#ifndef _NOTHREADS
-#  ifdef _PTHREADS
+#  ifndef _NOTHREADS
+#    ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#  endif
-#  ifdef __FIT_UITHREADS
+#    endif
+#    ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#  endif
+#    endif
         if ( _c_id != _id ) {
-#  ifdef _PTHREADS
+#    ifdef _PTHREADS
           pthread_mutex_lock( &_M_lock );
-#  endif
-#  ifdef __FIT_UITHREADS
+#    endif
+#    ifdef __FIT_UITHREADS
           mutex_lock( &_M_lock );
-#  endif
+#    endif
           _id = _c_id;
           _count = 0;
         }
         ++_count;
-#endif // !_NOTHREADS
+#  endif // !_NOTHREADS
       }
 
     // Equivalent to lock(), except that if the mutex object referenced
@@ -358,23 +371,23 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 
     int trylock()
       {
-#ifdef _NOTHREADS
+#  ifdef _NOTHREADS
         return 0;
-#else // _NOTHREADS
-#  ifdef _PTHREADS
+#  else // _NOTHREADS
+#    ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#  endif
-#  ifdef __FIT_UITHREADS
+#    endif
+#    ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#  endif
+#    endif
         if ( _c_id != _id ) {
           int res;
-#  ifdef _PTHREADS
+#    ifdef _PTHREADS
           res = pthread_mutex_trylock( &_M_lock );
-#  endif
-#  ifdef __FIT_UITHREADS
+#    endif
+#    ifdef __FIT_UITHREADS
           res = mutex_trylock( &_M_lock );
-#  endif
+#    endif
           if ( res != 0 ) {
             return res;
           }
@@ -384,39 +397,38 @@ class __Mutex<true,SCOPE> : // Recursive Safe
         }
         ++_count;
 
-#endif // !_NOTHREADS
+#  endif // !_NOTHREADS
       }
 
     void unlock()
       {
-#ifndef _NOTHREADS
+#  ifndef _NOTHREADS
         if ( --_count == 0 ) {
-#  ifdef __FIT_UITHREADS
+#    ifdef __FIT_UITHREADS
           _id = __STATIC_CAST(thread_t,-1);
           mutex_unlock( &_M_lock );
-#  endif
-#  ifdef _PTHREADS
+#    endif
+#    ifdef _PTHREADS
           _id =  __STATIC_CAST(pthread_t,-1);
           pthread_mutex_unlock( &_M_lock );
-#  endif
-#endif // !_NOTHREADS
+#    endif
+#  endif // !_NOTHREADS
         }
       }
 
   protected:
-#ifndef _NOTHREADS
+#  ifndef _NOTHREADS
     unsigned _count;
-#endif // !_NOTHREADS
+#  endif // !_NOTHREADS
 
-#ifdef _PTHREADS
+#  ifdef _PTHREADS
     pthread_t _id;
-#endif
-#ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
     thread_t  _id;
-#endif
+#  endif
 };
-
-#endif // __unix
+#endif // __unix && !__FIT_XSI_THR
 
 template <bool R, bool PS>
 class __Locker
@@ -433,10 +445,12 @@ class __Locker
 };
 
 typedef __Mutex<false,false>  Mutex;
-typedef __Mutex<true,false>   MutexSDS;
+typedef __Mutex<true,false>   MutexRS;
+typedef __Mutex<true,false>   MutexSDS; // obsolete, use instead MutexRS
 
 typedef __Locker<false,false> Locker;
-typedef __Locker<true,false>  LockerSDS;
+typedef __Locker<true,false>  LockerRS;
+typedef __Locker<true,false>  LockerSDS; // obsolete, use instead LockerRS
 
 class Condition
 {
