@@ -80,13 +80,13 @@ protected:
   }
 
 public:                         // Basic accessors
-  iterator begin() { return iterator(&_M_iter_list, this->_M_start); }
-  iterator end() { return iterator(&_M_iter_list, this->_M_finish); }
+  iterator begin() { return iterator(&_M_iter_list, _Base::begin()); }
+  iterator end() { return iterator(&_M_iter_list, _Base::end()); }
   const_iterator begin() const { 
-    return const_iterator(&_M_iter_list, this->_M_start); 
+    return const_iterator(&_M_iter_list, _Base::begin()); 
   }
   const_iterator end() const { 
-    return const_iterator(&_M_iter_list,  this->_M_finish); 
+    return const_iterator(&_M_iter_list,  _Base::end()); 
   }
 
   reverse_iterator rbegin() { return reverse_iterator(end()); }

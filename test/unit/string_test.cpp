@@ -164,49 +164,32 @@ void StringTest::short_string_test()
 }
 void StringTest::string1_test()
 {
-//#ifdef MAIN 
-//  cout<<"Results of string1_test:"<<endl;
-//#endif
   int res = 0;
   char* array = "Hello, World!";
   std::string v(array);
   size_t i;
-//#ifdef MAIN 
-//  cout << v << endl;
-//#else
+  
   CPPUNIT_ASSERT( v == array );
-  // res += v == array ? 0 : 1;
-//#endif
+  
   v.erase(v.begin() + 1, v.end() - 1); // Erase all but first and last.
-//#ifdef MAIN 
-//  for(i = 0; i < v.size(); i++)
-//    cout << "v[" << i << "] = " << v[i] << endl;
-//#else
+  
   for( i = 0; i < v.size(); i++ ) {
     switch ( i ) {
       case 0:
         CPPUNIT_ASSERT( v[i] == 'H' );
-        // res += v[i] == 'H' ? 0 : 1;
         break;
       case 1:
         CPPUNIT_ASSERT( v[i] == '!' );
-        // res += v[i] == '!' ? 0 : 1;
         break;
       default:
         CPPUNIT_ASSERT( false );
-        // res += 1;
         break;
     }
   } 
-//#endif
+  
   v.insert(1, (char*)array);
   v.erase(v.begin()); // Erase first element.
   v.erase(v.end() - 1); // Erase last element.
-//#ifdef MAIN 
-//  cout << v << endl;
-//#else
-//  res += v == array ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( v == array );
   v.clear(); // Erase all.
 
@@ -218,70 +201,30 @@ void StringTest::string1_test()
 
   //test self insertion:
   str.insert(10, str.c_str() + 5, 15);
-  //Should be: This is teis test string st string for string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "This is teis test string st string for string calls");
-//#else
-//  res += str == "This is teis test string st string for string calls" ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( str == "This is teis test string st string for string calls" );
 
-  //An other one using an other implementation
   str = strorg;
   str.insert(15, str.c_str() + 5, 25);
-  //Should be: This is test stis test string for stringring for string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "This is test stis test string for stringring for string calls");
-//#else
-//  res += str == "This is test stis test string for stringring for string calls" ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( str == "This is test stis test string for stringring for string calls" );
-
 
   str = strorg;
   str.insert(0, str.c_str() + str.size() - 4, 4);
-  //Should be: allsThis is test string for string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "allsThis is test string for string calls");
-//#else
-//  res += str == "allsThis is test string for string calls" ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( str == "allsThis is test string for string calls" );
 
   str = strorg;
   str.insert(0, str.c_str() + str.size() / 2 - 1, str.size() / 2 + 1);
-  //Should be: ng for string callsThis is test string for string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "ng for string callsThis is test string for string calls");
-//#else
-//  res += str == "ng for string callsThis is test string for string calls" ? 0 : 1;
-//#endif
+  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
+  
+  str = strorg;
+  str.insert(str.begin(), str.begin() + str.size() / 2 - 1, str.end());
   CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
 
   str = strorg;
   str.replace(5, 15, str.c_str(), 10);
-  //Should be: This This is tefor string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "This This is tefor string calls");
-//#else
-//  res += str == "This This is tefor string calls" ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( str == "This This is tefor string calls" );
 
   str = strorg;
   str.replace(5, 5, str.c_str(), 10);
-  //Should be: This This is test string for string calls
-//#ifdef MAIN 
-//  cout << str;
-//  stlp_test(str == "This This is test string for string calls");
-//#else
-//  res += str == "This This is test string for string calls" ? 0 : 1;
-//#endif
   CPPUNIT_ASSERT( str == "This This is test string for string calls" );
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -289,13 +232,6 @@ void StringTest::string1_test()
   //Just a compile time test:
   str.insert(str.end(), int_vect.begin(), int_vect.end());
 #endif
-
-  
-//#ifdef MAIN 
-//  cout << endl;
-//#endif
-
-//  return res;
 }
 
 void StringTest::string_data_test()
@@ -308,7 +244,7 @@ void StringTest::string_data_test()
    * '... and can have zero added to it', again: 'CAN', but not 'MUST'.
    * That's why I am comment this test. But I don't remove it due to I had
    * unevident problem with misinterpretation of data() return (i.e. data()
-   * and c_str() provide different functionality!) and expect thast this is
+   * and c_str() provide different functionality!) and expect that this is
    * more-or-less common pitfall.
    *    - ptr
    */
@@ -331,7 +267,6 @@ void StringTest::string_data_test()
   }
   // End of block B
 #endif
-
 }
 
 void StringTest::string_c_str_test()
@@ -342,79 +277,68 @@ void StringTest::string_c_str_test()
 
   CPPUNIT_ASSERT( *(yy.c_str()) == '\0' ); // ISO-IEC-14882:1998(E), 21.3.6, paragraph 1
 
-//  if ( *(yy.c_str()) != '\0' ) { // ISO-IEC-14882:1998(E), 21.3.6, paragraph 1
-//    return -1;
-//  }
-
   // Blocks A and B should follow each other.
   // Block A:
   xx = "123456";
   xx += low;
-
   CPPUNIT_ASSERT( strcmp( xx.c_str(), "1234562004-01-01" ) == 0 );
-
-//  if ( strcmp( xx.c_str(), "1234562004-01-01" ) != 0 ) {
-//    return -1;
-//  }
   // End of block A
 
   // Block B:
   xx = "1234";
   xx += ";";
-
   CPPUNIT_ASSERT( strcmp( xx.c_str(), "1234;" ) == 0 );
-
-//  if ( strcmp( xx.c_str(), "1234;" ) != 0 ) {
-//    return -1;
-//  }
   // End of block B
-
 }
 
 void StringTest::string_replace_test()
 {
-  string v( "78" );
+  /*
+   * This test case is for the non template basic_string::replace method, 
+   * this is why we play with the const iterators and reference to guaranty 
+   * that the right method is called.
+   */
+  const string v( "78" );
   string s( "123456" );
+  string const& cs = s;
 
   string::iterator i = s.begin() + 1;
-  s.replace( i, i + 3, v.begin(), v.end() );
-
+  s.replace(i, i + 3, v.begin(), v.end());
   CPPUNIT_ASSERT( s == "17856" );
-
-//  if ( s != "17856" ) {
-//    return -1;
-//  }
+  
+  s = "123456";
+  i = s.begin() + 1;
+  s.replace(i, i + 1, v.begin(), v.end());
+  CPPUNIT_ASSERT( s == "1783456" );
 
   s = "123456";
   i = s.begin() + 1;
-  s.replace( i, i + 3, i + 3, s.end() );
-  
+  string::const_iterator ci = s.begin() + 1;
+  s.replace(i, i + 3, ci + 3, cs.end());
   CPPUNIT_ASSERT( s == "15656" );
 
-//  if ( s != "15656" ) {
-//    return -1;
-//  }
-
   s = "123456";
   i = s.begin() + 1;
-  s.replace( i, i + 3, i, i + 2 );
-
+  ci = s.begin() + 1;
+  s.replace(i, i + 3, ci, ci + 2);
   CPPUNIT_ASSERT( s == "12356" );
 
-//  if ( s != "12356" ) {
-//    return -1;
-//  }
- 
   s = "123456";
   i = s.begin() + 1;
-  s.replace( i, i + 3, i + 1, s.end() );
-
+  ci = s.begin() + 1;
+  s.replace(i, i + 3, ci + 1, cs.end());
   CPPUNIT_ASSERT( s == "1345656" );
-
-//  if ( s != "1345656" ) {
-//    return -1;
-//  }
-
+  
+  s = "123456";
+  s.replace(s.begin() + 4, s.end(), cs.begin(), cs.end());
+  CPPUNIT_ASSERT( s == "1234123456" );
+  
+  /*
+   * This is the tests for the template replace method.
+   */
+  s = "123456";
+  s.replace(s.begin() + 4, s.end(), s.begin(), s.end());
+  CPPUNIT_ASSERT( s == "1234123456" );
 }
 
 void StringTest::string_resize1()
