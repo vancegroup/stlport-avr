@@ -25,6 +25,8 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* _threads.h : added using directive for Solaris x86 compile (thanks Mukesh Kapoor)
 
 	* _threads.h : fixed InterlockedXXX definitions for VC++ 6.0 SP5 (thanks AndreasM)
+
+	* common.mak : default install directory for Unix set to /usr/local
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
