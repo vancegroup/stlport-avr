@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/01/29 19:36:18 ptr>
+// -*- C++ -*- Time-stamp: <99/02/02 18:29:54 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -6,17 +6,31 @@
 #include <cstring>
 #include <ostream>
 
+#ifdef WIN32
+#include <iostream>
+#endif
+
 extern "C" {
+#ifdef WIN32
+  typedef unsigned long (__stdcall *entrance_type_C)( void * );
+#else
   typedef void *(*entrance_type_C)( void * );
+#endif
 }
 
 namespace __impl {
 
+// #ifndef WIN32
 using std::cerr;
 using std::endl;
+// #endif
 
 Thread::Thread() :
+#ifdef WIN32
+    _id( (HANDLE)-1 ),
+#else
     _id( -1 ),
+#endif
     _entrance( 0 ),
     _param( 0 ),
     _param_sz( 0 )
@@ -30,7 +44,11 @@ Thread::Thread( Thread::entrance_type entrance, void *p, size_t psz ) :
 
 void Thread::launch( entrance_type entrance, void *p, size_t psz )
 {
+#ifdef WIN32
+  if ( _id == (HANDLE)-1 ) {
+#else
   if ( _id == -1 ) {
+#endif
     _entrance = entrance;
     _create( p, psz );
   }
@@ -38,8 +56,13 @@ void Thread::launch( entrance_type entrance, void *p, size_t psz )
 
 int Thread::join()
 {
+#ifdef WIN32
+  unsigned long ret_code = 0;
+  if ( _id != (HANDLE)-1 ) {
+#else
   int ret_code = 0;
   if ( _id != -1 ) {
+#endif
 #ifdef _PTHREADS
     pthread_join( _id, (void **)(&ret_code) );
 #endif
@@ -49,8 +72,11 @@ int Thread::join()
 #ifdef WIN32
     WaitForSingleObject( _id, -1 );
     GetExitCodeThread( _id, &ret_code );
+    _id = (HANDLE)-1;
 #endif
+#ifndef WIN32
     _id = -1;
+#endif
   }
 
   return ret_code;
@@ -76,7 +102,11 @@ void Thread::_create( void *p, size_t psz ) throw(runtime_error)
 //	}
   if ( psz > sizeof(void *) ) {
     _param = new char [psz];
+#ifdef WIN32
+    memcpy( _param, p, psz );
+#else
     std::memcpy( _param, p, psz );
+#endif
 //	  MT_LOCK( _params_lock );
   } else {
     _param = p;	  
@@ -109,8 +139,13 @@ void *Thread::_call( void *p )
 //	}
   int ret;
 
+#ifdef WIN32
+  set_unexpected( unexpected );
+  set_terminate( terminate );
+#else
   std::set_unexpected( unexpected );
   std::set_terminate( terminate );
+#endif
 	
   try {
     ret = me->_entrance( me->_param );

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/01/29 19:35:33 ptr>
+// -*- C++ -*- Time-stamp: <99/02/02 18:26:40 ptr>
 #ifndef __xxx_plock_h
 #define __xxx_plock_h
 
@@ -14,6 +14,7 @@
 // #define pthread_mutex_destroy( a ) DeleteCriticalSection( a )
 // #define pthread_mutex_lock( a )    EnterCriticalSection( a )
 // #define pthread_mutex_unlock( a )  LeaveCriticalSection( a )
+#include <memory>
 #  define _REENTRANT
 #else
 #  if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
@@ -29,7 +30,9 @@
 
 namespace __impl {
 
+#ifndef WIN32
 using std::size_t;
+#endif
 using std::runtime_error;
 
 class Mutex
@@ -156,7 +159,7 @@ class Thread
 #endif
 #ifdef WIN32
     HANDLE    _id;
-    int       _thr_id;
+    unsigned long _thr_id;
 #endif
     entrance_type _entrance;
     void *_param;
