@@ -1,12 +1,12 @@
-// -*- C++ -*- Time-stamp: <01/05/30 17:51:48 ptr>
+// -*- C++ -*- Time-stamp: <02/04/14 18:01:24 ptr>
 
 /*
  *
- * Copyright (c) 1997-1999
- * Petr Ovchenkov
+ * Copyright (c) 1997-1999, 2002
+ * Petr Ovtchenkov
  *
  * Copyright (c) 1999-2001
- * ParallelGraphics Ltd.
+ * Parallel Graphics Ltd.
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -119,7 +119,7 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 
 namespace __impl {
 
-extern __PG_DECLSPEC void signal_throw( int sig ) throw( int );
+extern __FIT_DECLSPEC void signal_throw( int sig ) throw( int );
 #ifdef __unix
 extern "C"  void *_xcall( void * ); // forward declaration
 #endif
@@ -461,7 +461,7 @@ class Condition
 #endif
       }
 
-    __PG_DECLSPEC int wait_time( const timespec *abstime );
+    __FIT_DECLSPEC int wait_time( const timespec *abstime );
 
     int signal()
       {
@@ -545,38 +545,38 @@ class Thread
         static int& _count;
     };
 
-    __PG_DECLSPEC Thread( unsigned flags = 0 );
+    __FIT_DECLSPEC Thread( unsigned flags = 0 );
 
-    explicit __PG_DECLSPEC Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
+    explicit __FIT_DECLSPEC Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
 
-    __PG_DECLSPEC ~Thread();
+    __FIT_DECLSPEC ~Thread();
 
-    __PG_DECLSPEC
+    __FIT_DECLSPEC
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
-    __PG_DECLSPEC int join();
-    __PG_DECLSPEC int suspend();
-    __PG_DECLSPEC int resume();
-    __PG_DECLSPEC int kill( int sig );
-    static __PG_DECLSPEC void exit( int code = 0 );
+    __FIT_DECLSPEC int join();
+    __FIT_DECLSPEC int suspend();
+    __FIT_DECLSPEC int resume();
+    __FIT_DECLSPEC int kill( int sig );
+    static __FIT_DECLSPEC void exit( int code = 0 );
 #ifdef __FIT_UITHREADS
-    static __PG_DECLSPEC int join_all();
+    static __FIT_DECLSPEC int join_all();
 #endif
-    static __PG_DECLSPEC void block_signal( int sig );
-    static __PG_DECLSPEC void unblock_signal( int sig );
-    static __PG_DECLSPEC void signal_handler( int sig, SIG_PF );
+    static __FIT_DECLSPEC void block_signal( int sig );
+    static __FIT_DECLSPEC void unblock_signal( int sig );
+    static __FIT_DECLSPEC void signal_handler( int sig, SIG_PF );
 
-    static __PG_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
-    static __PG_DECLSPEC void gettime( timespec *t );
-    static __PG_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
-    static __PG_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
+    static __FIT_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
+    static __FIT_DECLSPEC void gettime( timespec *t );
+    static __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+    static __FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
 
     bool good() const
       { return _id != bad_thread_key; }
 
     static int xalloc()
       { return _idx++; }
-    __PG_DECLSPEC long&  iword( int __idx );
-    __PG_DECLSPEC void*& pword( int __idx );
+    __FIT_DECLSPEC long&  iword( int __idx );
+    __FIT_DECLSPEC void*& pword( int __idx );
 
 #ifndef __FIT_WIN32THREADS
     static thread_key_type mtkey()
