@@ -173,9 +173,8 @@ __copy(_RandomAccessIter __first, _RandomAccessIter __last,
 
 inline void*
 __copy_trivial(const void* __first, const void* __last, void* __result) {
-  return (__last == __first) ? __result : 
-    ((char*)memmove(__result, __first, ((const char*)__last - (const char*)__first))) + 
-    ((const char*)__last - (const char*)__first);
+  size_t __n = (const char*)__last - (const char*)__first;
+  return __n ? (void *)((char*)memmove(__result, __first, __n) + __n) : __result;
 }
 
 //--------------------------------------------------
