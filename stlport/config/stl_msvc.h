@@ -144,7 +144,6 @@
 #  define _STLP_DONT_RETURN_VOID 1
 #  define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
-#  define _STLP_NEW_DONT_THROW 1
 #  ifdef _DEBUG
 #   define _STLP_USE_ABBREVS
 #  endif
@@ -261,17 +260,9 @@
 #   elif (_MSC_VER >= 1300) 
 #    define _STLP_LIB_BASENAME "stlport_vc70"
 #   elif (_MSC_VER >= 1200)
-//#   ifdef _UNICODE
-//#    define _STLP_LIB_BASENAME "stlport_vc6_unicode"
-//#   else
 #    define _STLP_LIB_BASENAME "stlport_vc6"
-//#   endif
 #   elif (_MSC_VER >= 1100)
-//#   ifdef _UNICODE
-//#    define _STLP_LIB_BASENAME "stlport_vc5_unicode"
-//#   else
 #    define _STLP_LIB_BASENAME "stlport_vc5"
-//#   endif
 #   endif /* (_MSC_VER >= 1200) */
 #  endif /* __ICL */
 
