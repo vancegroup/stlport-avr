@@ -1,6 +1,6 @@
-// -*- C++ -*- Time-stamp: <99/05/06 17:36:22 ptr>
+// -*- C++ -*- Time-stamp: <99/05/21 13:23:00 ptr>
 
-#ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
+#ident "$SunId$ %Q%"
 
 #include <xmt.h>
 
@@ -388,8 +388,13 @@ void *Thread::_call( void *p )
     cerr << e.what() << endl;
     ret = -1;
   }
+  catch ( int sig ) {
+    // const char *_sig_ = strsignal( sig );
+    cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
+    ret = sig;
+  }
   catch ( ... ) {
-    cerr << "Oh, oh, say baby Sally. Dick and Jane launch." << endl;
+    cerr << "\n--- Thread: unknown exception occur ---" << endl;
     ret = -1;
   }
 
@@ -401,7 +406,6 @@ void *Thread::_call( void *p )
     }
   }
   catch ( ... ) {
-    cerr << "(+)" << endl;
     ret = -1;
   }
 
