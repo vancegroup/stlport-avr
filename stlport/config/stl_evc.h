@@ -127,7 +127,7 @@
 # ifdef _STLP_WCE_NET
 
 // Struct for Windows CE FILE implementation.
-// This is ugly and could be danegerous in future Windows CE .NET SDKs.
+// This is ugly and could be dangerous in future Windows CE .NET SDKs.
 #  ifndef _FILECE_DEFINED
 typedef struct  {
         char *_ptr;
@@ -229,6 +229,9 @@ inline void __cdecl operator delete(void *, void *) { return; }
 #  endif
 
 # endif /* __cplusplus */
+
+// evc3 doesn't have native wide functions, e.g. fgetwc, wmemmove
+# define _STLP_NO_NATIVE_WIDE_FUNCTIONS
 
 # endif /* _STLP_WCE_EVC3 */
 
