@@ -1,3 +1,9 @@
+2004-04-20  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/pointers/_list.h: 'clear' method was forgot.
+
+	* test/unit/list_test.cpp: check presence of 'clear'
+
 2004-04-15  Petr Ovtchenkov  <ptr@Island...>
 
 	* test/unit/partial_test.cpp: wrong comparison during test
