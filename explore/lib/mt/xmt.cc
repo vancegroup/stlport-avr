@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/12/05 16:42:57 ptr>
+// -*- C++ -*- Time-stamp: <03/12/29 12:31:56 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -670,10 +670,6 @@ Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsig
 __FIT_DECLSPEC
 Thread::~Thread()
 {
-  if ( is_self() ) {
-    _dealloc_uw();
-  }
-
   ((Init *)Init_buf)->~Init();
 
   // _STLP_ASSERT( _id == bad_thread_id );
@@ -914,6 +910,7 @@ void Thread::signal_exit( int sig )
   if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
     me->_id = bad_thread_id;
   }
+  me->_dealloc_uw(); // clear user words
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
   try {
@@ -926,6 +923,8 @@ void Thread::signal_exit( int sig )
   catch ( ... ) {
   }
 #endif
+  // well, this is suspicious, due to pthread_exit isn't async signal
+  // safe; what I should use here?
   Thread::_exit( 0 );
 }
 
@@ -1209,12 +1208,14 @@ void *Thread::_call( void *p )
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
       me->_id = bad_thread_id;
     }
+    me->_dealloc_uw(); // free user words
   }
   catch ( std::exception& e ) {
     me->_state = badbit;
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
       me->_id = bad_thread_id;
     }
+    me->_dealloc_uw(); // free user words
 #ifndef _WIN32
     cerr << e.what() << endl;
 #endif
@@ -1225,6 +1226,7 @@ void *Thread::_call( void *p )
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
       me->_id = bad_thread_id;
     }
+    me->_dealloc_uw(); // free user words
     // const char *_sig_ = strsignal( sig );
 #ifndef _WIN32
     cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
@@ -1236,6 +1238,7 @@ void *Thread::_call( void *p )
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
       me->_id = bad_thread_id;
     }
+    me->_dealloc_uw(); // free user words
 #ifndef _WIN32
     cerr << "\n--- Thread: unknown exception occur ---" << endl;
 #endif
