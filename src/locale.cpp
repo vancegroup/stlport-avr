@@ -18,7 +18,9 @@
 # include "stlport_prefix.h"
 
 #include <locale>
-#include <stdexcept>
+#ifndef _STLP_NO_EXCEPTIONS
+# include <stdexcept>
+#endif
 #include <stl/_algobase.h>
 
 #include "locale_nonclassic.h"

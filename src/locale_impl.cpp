@@ -20,7 +20,11 @@
 #include "locale_impl.h"
 #include <locale>
 #include <typeinfo>
-#include <stdexcept>
+
+#ifndef _STLP_NO_EXCEPTIONS
+# include <stdexcept>
+#endif
+
 #include "c_locale.h"
 #include "aligned_buffer.h"
 
