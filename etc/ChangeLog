@@ -1,3 +1,8 @@
+2003-11-17 Francois Dumont <dums@s...>
+
+  * _alloc.h: Move of the definition of _Alloc_Traits before inclusion of _pthread_alloc.h
+              thanks Diego Klabjan
+
 2003-11-16  Petr Ovchenkov  <ptr@Island...>
 
 	* _algobase.h, _algo.c: iter_swap and __insertion_sort don't

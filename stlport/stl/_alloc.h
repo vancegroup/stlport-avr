@@ -270,11 +270,33 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 # endif
 
+// Another allocator adaptor: _Alloc_traits.  This serves two
+// purposes.  First, make it possible to write containers that can use
+// either SGI-style allocators or standard-conforming allocator.
+
+// The fully general version.
+template <class _Tp, class _Allocator>
+struct _Alloc_traits
+{
+  typedef _Allocator _Orig;
+# if defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) 
+  typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
+  typedef typename _Rebind_type::other  allocator_type;
+  static allocator_type create_allocator(const _Orig& __a) { return allocator_type(__a); }
+# else
+  // this is not actually true, used only to pass this type through
+  // to dynamic overload selection in _STLP_alloc_proxy methods
+  typedef _Allocator allocator_type;
+# endif /* _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM */
+};
+
 # if defined (_STLP_USE_PERTHREAD_ALLOC)
 
 _STLP_END_NAMESPACE
+
 // include additional header here
 # include <stl/_pthread_alloc.h>
+
 _STLP_BEGIN_NAMESPACE
 
 #  if defined ( _STLP_DEBUG_ALLOC )
@@ -286,7 +308,7 @@ typedef __pthread_alloc __sgi_alloc;
 typedef __pthread_alloc __single_client_alloc;
 typedef __pthread_alloc __multithreaded_alloc;
 
-# else
+# else /* _STLP_USE_PERTHREAD_ALLOC */
 
 # if defined ( _STLP_USE_NEWALLOC )
 
@@ -322,7 +344,7 @@ typedef __node_alloc<false, 0> __single_client_alloc;
 typedef __node_alloc<true, 0>  __multithreaded_alloc;
 
 #  endif /* _STLP_USE_NEWALLOC */
-# endif /* PTHREAD_ALLOC */
+# endif /* _STLP_USE_PERTHREAD_ALLOC */
 
 // This implements allocators as specified in the C++ standard.  
 //
@@ -410,26 +432,6 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<char>;
 _STLP_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
-
-// Another allocator adaptor: _Alloc_traits.  This serves two
-// purposes.  First, make it possible to write containers that can use
-// either SGI-style allocators or standard-conforming allocator.
-
-// The fully general version.
-template <class _Tp, class _Allocator>
-struct _Alloc_traits
-{
-  typedef _Allocator _Orig;
-# if defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) 
-  typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
-  typedef typename _Rebind_type::other  allocator_type;
-  static allocator_type create_allocator(const _Orig& __a) { return allocator_type(__a); }
-# else
-  // this is not actually true, used only to pass this type through
-  // to dynamic overload selection in _STLP_alloc_proxy methods
-  typedef _Allocator allocator_type;
-# endif /* _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM */
-};
 
 #ifndef _STLP_FORCE_ALLOCATORS
 #define _STLP_FORCE_ALLOCATORS(a,y) 
