@@ -276,6 +276,12 @@ private: // Data members.
 #endif
 };
 
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS basic_streambuf<char, char_traits<char> >;
+#  if !defined (_STLP_NO_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS basic_streambuf<wchar_t, char_traits<wchar_t> >;
+#  endif // _STLP_NO_WCHAR_T
+# endif // _STLP_USE_TEMPLATE_EXPORT
 
 _STLP_END_NAMESPACE
 
@@ -284,6 +290,7 @@ _STLP_END_NAMESPACE
 # endif
 
 #endif
+
 // Local Variables:
 // mode:C++
 // End:
