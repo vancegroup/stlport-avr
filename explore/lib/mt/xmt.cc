@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/04/14 18:01:24 ptr>
+// -*- C++ -*- Time-stamp: <02/06/15 21:31:58 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -216,7 +216,15 @@ const std::string msg2( "Can't fork" );
 
 __FIT_DECLSPEC
 void signal_throw( int sig ) throw( int )
-{ throw sig; }
+{
+  throw sig;
+}
+
+__FIT_DECLSPEC
+void signal_thead_exit( int sig )
+{
+  Thread::exit( 0 );
+}
 
 Thread::Init::Init()
 {
@@ -690,11 +698,13 @@ void *Thread::_call( void *p )
 	
   try {
     ret = me->_entrance( me->_param );
-    // I should be make me->_id = bad_thread_key; here...
-    // Next line is in conflict what I say in this function begin.
+    // I should make me->_id = bad_thread_key; here...
+    // This is in conflict what I say in the begin of this function.
     // So don't delete Thread before it termination!
 
-    me->_id = bad_thread_key;
+    if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+      me->_id = bad_thread_key;
+    }
   }
   catch ( std::exception& e ) {
 #ifndef _WIN32
@@ -739,9 +749,9 @@ void *Thread::_call( void *p )
 void Thread::unexpected()
 {
 #ifndef _WIN32
-  cerr << "\nUnexpected exception" << endl;
+  // cerr << "\nUnexpected exception" << endl;
 #endif
-  Thread::exit( -1 );
+  Thread::exit( 0 );
 }
 
 void Thread::terminate()
@@ -749,7 +759,7 @@ void Thread::terminate()
 #ifndef _WIN32
   cerr << "\nTerminate exception" << endl;
 #endif
-  Thread::exit( -2 );
+  Thread::exit( 0 );
 }
 
 __FIT_DECLSPEC
