@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/04/21 12:17:54 ptr>
+// -*- C++ -*- Time-stamp: <04/05/06 18:27:37 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003, 2004
@@ -1337,11 +1337,11 @@ timespec operator -( const timespec& a, const timespec& b )
   timespec c;
 
   c.tv_sec = a.tv_sec > b.tv_sec ? a.tv_sec - b.tv_sec : 0; // out_of_range?
-  if ( a.tv_nsec > b.tv_nsec ) {
+  if ( a.tv_nsec >= b.tv_nsec ) {
     c.tv_nsec = a.tv_nsec - b.tv_nsec;
   } else if ( c.tv_sec > 0 ) {
     --c.tv_sec;
-    c.tv_nsec = 1000000000 - a.tv_nsec + b.tv_nsec;
+    c.tv_nsec = 1000000000 - b.tv_nsec + a.tv_nsec;
   } else {
     c.tv_nsec = 0; // out_of_range?
   }
@@ -1386,11 +1386,11 @@ timespec& operator +=( timespec& a, const timespec& b )
 timespec& operator -=( timespec& a, const timespec& b )
 {
   a.tv_sec = a.tv_sec > b.tv_sec ? a.tv_sec - b.tv_sec : 0; // out_of_range?
-  if ( a.tv_nsec > b.tv_nsec ) {
+  if ( a.tv_nsec >= b.tv_nsec ) {
     a.tv_nsec -= b.tv_nsec;
   } else if ( a.tv_sec > 0 ) {
     --a.tv_sec;
-    a.tv_nsec = 1000000000 - a.tv_nsec + b.tv_nsec;
+    a.tv_nsec += 1000000000 - b.tv_nsec;
   } else {
     a.tv_nsec = 0; // out_of_range?
   }
