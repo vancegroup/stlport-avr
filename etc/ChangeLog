@@ -1,12 +1,26 @@
-2003-11-15 Francois Dumont <dums@s...>
+2003-11-16  Petr Ovchenkov  <ptr@Island...>
 
-  * _string.h: implementation of the expression template for string addition with other 
-               string or C string or char.
+	* _algobase.h, _algo.c: iter_swap and __insertion_sort don't
+	properly deduce value type of iterator, instead uses dereference's
+	return type; this occur	when dereference return some proxy object,
+	convertible into value type.
+	Thanks Przemek Kuczmierczyk <przemekk834@tlen.pl> for report, test
+	and solution.
 
-  * _ostream.h: adoption of the classic (even if not clear in the standard) ouput
-                for short and int negative values in hexa or octo bases that is display 
-                according its size for the compiler.
-                thanks Tanaka.
+	* iterswp0.cpp, iterswp1.cpp, iterswp.cpp, stl_test.cpp,
+	stl_test.h, Makefile.inc (test/regression): move iterswp0_test,
+	iterswp1_test into iterswp.cpp, add new tests for properly deduce
+	value type of iterator, when dereference return some proxy object.
+
+2003-11-15 Francois Dumont  <dums@s...>
+
+	* _string.h: implementation of the expression template for string
+	addition with other string or C string or char.
+
+	* _ostream.h: adoption of the classic (even if not clear in
+	the standard) ouput for short and int negative values in hexa
+	or octo bases that is display according its size for the compiler.
+	thanks Tanaka.
 
 2003-11-14  Petr Ovchenkov  <ptr@Island...>
 
@@ -110,7 +124,7 @@
 	after opened with ios_base::ate; this behaviour useful only when buffer
 	initialized by string; thanks Tanaka for the report.
 	
-2003-10-07  Francois Dumont  <dums@s...>
+2003-10-06  Francois Dumont  <dums@s...>
 
 	* _istreambuf_iterator.h, _ostreambuf_iterator.h: correction
 	of the missing iterator base class (Thanks Tanaka)
@@ -124,22 +138,18 @@
 	to _M_move as basic_string do not correctly handled self referecing;
 	thanks Tanaka
              
-  ----
+2003-09-25  Francois Dumont  <dums@s...>
   
-  * como 4.3.0 on linux support (thanks Synge Todo and Karel Gardas)
+	* como 4.3.0 on linux support (thanks Synge Todo and Karel Gardas)
   
-  ----
+	* Quazy-leak patch: make memory detection tools happier,
+	option _STLP_LEAKS_PEDANTIC in _site_config.h. (thanks Petr Ovchenkov)
   
-  * Quazy-leak patch: make memory detection tools happier, option _STLP_LEAKS_PEDANTIC in _site_config.h.
-                  (thanks Petr Ovchenkov)
+2003-09-19  Francois Dumont  <dums@s...>
   
-  ----
-  
-  * Support of the Linux Intel C++ support (thanks Blaine Kubesh)
-  
-  ----
+	* Support of the Linux Intel C++ support (thanks Blaine Kubesh)
 
-  * FreeBSD support update (thanks Guy Middleton).
+	* FreeBSD support update (thanks Guy Middleton).
   
   ----
 
@@ -151,8 +161,9 @@
                  (thanks Stephen Clamage)
 
   ----
+2003-08-10  Francois Dumont  <dums@s...>
 
-  * stdexcept: Correction of the mysterious 50 messages from VC7.Net (thanks Krish S)
+	* stdexcept: Correction of the mysterious 50 messages from VC7.Net (thanks Krish S)
 
   ----
 
