@@ -575,8 +575,9 @@ void _STLP_CALL _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,
 }
 _STLP_END_NAMESPACE
 
-// _string_fwd has to see clean basic_string
-# undef basic_string
+# ifdef _STLP_DEBUG
+#  undef basic_string // _string_fwd has to see clean basic_string
+# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_string_fwd.c> 
@@ -651,10 +652,14 @@ const size_t basic_string<_CharT, _Traits, _Alloc>::npos;
 
 _STLP_END_NAMESPACE
 
-# undef basic_string
+# ifdef _STLP_DEBUG
+#  undef basic_string
+# endif
 # undef __size_type__
-# undef size_type
-# undef iterator
+# if defined (_STLP_NESTED_TYPE_PARAM_BUG)
+#  undef size_type
+#  undef iterator
+# endif
 # endif /* NATIVE */
 
 #endif /*  _STLP_STRING_C */

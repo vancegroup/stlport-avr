@@ -1309,9 +1309,8 @@ _STLP_END_NAMESPACE
 
 #include <stl/_string_operators.h>
 
-# undef basic_string
-
 # ifdef _STLP_DEBUG
+#  undef basic_string
 #  include <stl/debug/_string.h> 
 # endif
 
