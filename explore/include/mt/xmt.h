@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/03/15 14:41:18 ptr>
+// -*- C++ -*- Time-stamp: <99/03/29 18:27:45 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -314,9 +314,26 @@ class Thread
   public:
     typedef int (*entrance_type)( void * );
 
-    __DLLEXPORT Thread();
+    enum {
+#ifdef __STL_SOLARIS_THREADS
+      bound     = THR_BOUND,
+      detached  = THR_DETACHED,
+      new_lwp   = THR_NEW_LWP,
+      suspended = THR_SUSPENDED,
+      daemon    = THR_DAEMON
+#endif
+#ifdef WIN32
+      bound     = 0,
+      detached  = 0,
+      new_lwp   = 0,
+      suspended = CREATE_SUSPENDED,
+      daemon    = 0
+#endif
+    };
 
-    explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0 );
+    __DLLEXPORT Thread( unsigned flags = 0 );
+
+    explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
 
     __DLLEXPORT ~Thread();
 
@@ -362,6 +379,7 @@ class Thread
     entrance_type _entrance;
     void *_param;
     size_t _param_sz;
+    unsigned _flags;
     //  Mutex _params_lock; --- no needs
 };
 
