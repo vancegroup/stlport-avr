@@ -16,6 +16,8 @@
 #ifndef _STLP_CMATH_H_HEADER
 # define _STLP_CMATH_H_HEADER
 
+#if ! defined (_STLP_USE_NEW_C_HEADERS) 
+
 _STLP_BEGIN_NAMESPACE
 
 #  ifndef _STLP_HAS_NATIVE_FLOAT_ABS
@@ -95,4 +97,5 @@ inline long double tanh (long double __x)                 { return _STLP_DO_TANH
 
 _STLP_END_NAMESPACE
 
+# endif /* NEW_C_HEADERS */
 #endif /* CMATH_H */

@@ -33,6 +33,10 @@
 
 #include <stl/_set.h>
 
+#if defined (_STLP_WHOLE_VENDOR_STD)
+# include _STLP_NATIVE_HEADER(set)
+#endif
+
 # if (_STLP_OUTERMOST_HEADER_ID == 0x55)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID

@@ -1011,7 +1011,8 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
       this->_M_unmap(base, len);
       base = 0;
     }
-  }
+  } else
+    base = 0;
 #else
   (void)len;		//*TY 02/26/2000 - unused variables
   (void)offset;		//*TY 02/26/2000 - 

@@ -26,6 +26,13 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* vc7.mak makefile added for MS VC++ 7.0 (.NET)
 
 	* fixed _STLP_ITERATOR_CATEGORY, etc. for Mwerks CodeWarrior 5.0
+
+	* stl/_num_put.c : fixed operator<<(void*) to use _STLP_LONG_LONG where available.
+
+	* _STLP_WHOLE_VENDOR_STD option is back supported (Thanks anton ephanov for the input)
+
+	* _cmath.h : added guard to mask additional overloads (thanks Tim Smith)
+
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

@@ -131,9 +131,9 @@ template <class _CharT>
 inline _CharT _S_eos(_CharT*) { return _CharT(); }
 
 // fbp : some compilers fail to zero-initialize builtins ;(
-inline char _S_eos(const char*) { return 0; }
+inline const char _S_eos(const char*) { return 0; }
 # ifdef _STLP_HAS_WCHAR_T
-inline wchar_t _S_eos(const wchar_t*) { return 0; }
+inline const wchar_t _S_eos(const wchar_t*) { return 0; }
 # endif
 
 // Test for basic character types.

@@ -7,7 +7,7 @@
 #include <bitset>
 #include <algorithm>
 
-#ifdef _STLP_MSVC
+#if defined (_STLP_MSVC) && && (_MSC_VER < 1300)
 # define _STLP_NON_TYPE_TMPL_PARAM_BUG
 # define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 #endif
@@ -29,7 +29,8 @@ using namespace std;
 int bitset1_test(int, char**)
 {
   cout<<"Results of bitset1_test:"<<endl;
-# if ! defined (_STLP_MSVC) && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
+
+# if ! (defined (_STLP_MSVC) && (_MSC_VER < 1300)) && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
   bitset<13U> b1(0xFFFF);
   bitset<13U> b2(0x1111);
   // Boris : MSVC just cannot take it right

@@ -258,7 +258,7 @@ typedef unsigned int wint_t;
 #   define _STLP_NATIVE_INCLUDE_PATH ../lang/cxx
 # elif (__GNUC__ >= 3) || (__GNUC_MINOR__ >= 97)
 #   define _STLP_NATIVE_INCLUDE_PATH ../include/g++-v3
-# elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) ) )
+# elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) || defined(__sgi) ) )
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 # elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3)
 // this really sucks, as GNUpro does not really identifies itself, so we have to guess 
