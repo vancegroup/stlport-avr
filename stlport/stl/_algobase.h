@@ -149,7 +149,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-			  _OutputIter __result, const forward_iterator_tag &, _Distance* ) {
+                          _OutputIter __result, const forward_iterator_tag &, _Distance* ) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -158,7 +158,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-			  _OutputIter __result, const bidirectional_iterator_tag &, _Distance* ) {
+                          _OutputIter __result, const bidirectional_iterator_tag &, _Distance* ) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -245,7 +245,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, 
                               const __false_type& /*BothPtrType*/) {
   return __copy(__first, __last, __result, 
-		            _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
+                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
                 _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 

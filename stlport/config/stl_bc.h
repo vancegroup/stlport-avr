@@ -11,7 +11,9 @@
 #   define  _STLP_CALL __cdecl
 # endif
 
-# define _USE_STLP
+# define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
+# define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
+# define _USE_STLP 1
 # define _STLP_USE_OWN_MBSTATE_T
 // # define _STLP_USE_OWN_NAMESPACE
 # define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
@@ -24,8 +26,8 @@
 # define _STLP_STATIC_CONST_INIT_BUG
 
 // <bitset> problems
-# define _STLP_MEMBER_SPECIALIZATION_BUG
-# define  _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
+# define _STLP_MEMBER_SPECIALIZATION_BUG 1
+# define _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
 
 #if ( __BORLANDC__ < 0x540 )
 // Borland C++ Builder 3 (?)
@@ -69,10 +71,10 @@
 
 #  define _STLP_NO_BAD_ALLOC 1
 #  define _STLP_NO_ARROW_OPERATOR 1
+#  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 
 typedef char    mbstate_t;
 
-#  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 #  define _STLP_NO_TYPEINFO
 #  define _STLP_NO_METHOD_SPECIALIZATION
 

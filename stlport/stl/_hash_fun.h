@@ -91,10 +91,10 @@ _STLP_TEMPLATE_NULL struct hash<unsigned long> {
 
 # if defined (_STLP_LONG_LONG)
 _STLP_TEMPLATE_NULL struct hash<_STLP_LONG_LONG> {
-  size_t operator()(long x) const { return x; }
+  size_t operator()(_STLP_LONG_LONG x) const { return (size_t)x; }
 };
 _STLP_TEMPLATE_NULL struct hash<unsigned _STLP_LONG_LONG> {
-  size_t operator()(unsigned long x) const { return x; }
+  size_t operator()(unsigned _STLP_LONG_LONG x) const { return (size_t)x; }
 };
 # endif
 

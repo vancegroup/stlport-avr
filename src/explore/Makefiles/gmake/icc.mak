@@ -1,7 +1,7 @@
 # Time-stamp: <03/11/30 11:46:14 ptr>
 # $Id$
 
-INCLUDES :=
+#INCLUDES :=
 
 CXX := icc
 CC := icc
@@ -15,6 +15,12 @@ DEFS ?=
 OPT ?=
 
 DEFS += -D_REENTRANT
+
+# options for build with boost support
+ifdef STLP_BUILD_BOOST_PATH
+INCLUDES += -I$(STLP_BUILD_BOOST_PATH)
+DEFS += -DBOOST_STDLIB_CONFIG="<boost/config/stdlib/stlport.hpp>"
+endif
 
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}

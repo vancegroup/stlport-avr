@@ -2,7 +2,7 @@
 # $Id$
 
 #INCLUDES = -I$(SRCROOT)/include
-INCLUDES :=
+#INCLUDES :=
 
 CXX := cl.exe
 CC := cl.exe
@@ -11,6 +11,12 @@ RC := rc.exe
 
 DEFS ?=
 OPT ?=
+
+# options for build with boost support
+ifdef STLP_BUILD_BOOST_PATH
+INCLUDES += /I$(STLP_BUILD_BOOST_PATH)
+DEFS += /DBOOST_STDLIB_CONFIG="<boost/config/stdlib/stlport.hpp>"
+endif
 
 # OUTPUT_OPTION = /Fo$@
 release-shared:	OUTPUT_OPTION = /Fo$@

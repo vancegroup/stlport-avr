@@ -60,10 +60,8 @@ void CheckFullMoveSupport (_Container const&) {
 }
 
 
-int move_construct_test(int, char**)
+int move_construct_test()
 {
-  cout << "Results of move_construct: "<<endl;
-
   cout << "vector<vector<int>>";
   vector<int> const ref_vec(10, 0);
   vector<vector<int> > v_v_ints(1, ref_vec);

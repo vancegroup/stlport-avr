@@ -9,12 +9,6 @@
 
 #include "stlp_test.h"
 
-//#ifdef MAIN
-//#include <iostream>
-//
-//#define ptr_specialization_test main
-//#endif
-
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
 #endif
@@ -52,10 +46,6 @@ struct binary_pred {
 
 int ptr_specialization_test()
 {
-//#ifdef MAIN
-//  cout << "Results of ptr_specialization_test :" << endl;
-//#endif
-
   vector<int*> pint_vect;
   vector<int const*> pcint_vect;
   list<int*> pint_list;
@@ -111,11 +101,6 @@ int ptr_specialization_test()
   deque<int*> pint_deque_from_vect(pint_deque.begin(), pint_deque.end());
   pint_deque.assign(pint_vect.begin(), pint_vect.end());
   pcint_deque.assign(pint_vect.begin(), pint_vect.end());
-  //pint_deque.assign(pcint_vect.begin(), pcint_vect.end());
-
-//#ifdef MAIN
-//  cout << "succeed" << endl;
-//#endif
 
   return 0;
 }

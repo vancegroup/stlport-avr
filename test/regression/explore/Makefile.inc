@@ -58,7 +58,7 @@ SRC_CPP = ../stl_test.cpp ../accum1.cpp ../accum2.cpp \
         ../mkheap0.cpp ../mkheap1.cpp \
         ../mmap1.cpp ../mmap2.cpp \
         ../modulus.cpp \
-        ../mset1.cpp ../mset3.cpp ../mset4.cpp ../mset5.cpp \
+        ../multiset.cpp \
         ../negate.cpp ../nequal.cpp \
         ../nextprm0.cpp ../nextprm1.cpp ../nextprm2.cpp \
         ../nthelem0.cpp ../nthelem1.cpp ../nthelem2.cpp \
@@ -88,7 +88,7 @@ SRC_CPP = ../stl_test.cpp ../accum1.cpp ../accum2.cpp \
         ../rndshuf0.cpp ../rndshuf1.cpp ../rndshuf2.cpp \
         ../rotate0.cpp ../rotate1.cpp ../rotcopy0.cpp ../rotcopy1.cpp \
         ../search0.cpp ../search1.cpp ../search2.cpp \
-        ../set1.cpp ../set2.cpp \
+        ../set.cpp \
         ../setdiff0.cpp ../setdiff1.cpp ../setdiff2.cpp \
         ../setintr0.cpp ../setintr1.cpp ../setintr2.cpp \
         ../setsymd0.cpp ../setsymd1.cpp ../setsymd2.cpp \
@@ -108,6 +108,7 @@ SRC_CPP = ../stl_test.cpp ../accum1.cpp ../accum2.cpp \
         ../uprbnd1.cpp ../uprbnd2.cpp \
         ../hmmap1.cpp ../hset2.cpp ../hmset1.cpp ../slist1.cpp ../hmap1.cpp ../string1.cpp ../bitset1.cpp \
         ../string_mt.cpp ../move_constructor.cpp ../ioiter.cpp \
-	../short_string.cpp ../ptr_specialization.cpp ../float_output.cpp \
+	../short_string.cpp ../ptr_specialization.cpp \
+	../float_output.cpp float_input.cpp \
 	../vec.cpp
 

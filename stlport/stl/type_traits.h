@@ -63,7 +63,13 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 # include <stl/type_manips.h>
 #endif
 
+#ifdef _STLP_USE_BOOST_TYPE_TRAITS
+# include <stl/boost_type_traits.h>
+#endif /* _STLP_USE_BOOST_TYPE_TRAITS */
+
 _STLP_BEGIN_NAMESPACE
+
+#ifndef _STLP_USE_BOOST_TYPE_TRAITS
 
 // The following could be written in terms of numeric_limits.  
 // We're doing it separately to reduce the number of dependencies.
@@ -72,7 +78,7 @@ template <class _Tp> struct _Is_integer {
   typedef __false_type _Integral;
 };
 
-#ifndef _STLP_NO_BOOL
+# ifndef _STLP_NO_BOOL
 
 _STLP_TEMPLATE_NULL struct _Is_integer<bool> {
   typedef __true_type _Integral;
@@ -414,25 +420,10 @@ _STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<1> {};
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
   typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
-  typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
-  typedef typename _AreSameTypes<_Tp1, _Tp2>::_Ret _Tr3;
-  typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
+  typedef typename _AreSameTypes<_Tp1, _Tp2>::_Ret _Tr2;
+  typedef typename _Land2<_Tr1, _Tr2>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
-
-template <class _Tp1, class _Tp2>
-inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
-  return _OKToMemCpy<_Tp1, _Tp2>();
-}
-
-template <class _Tp> 
-struct _IsPOD {
-  typedef typename __type_traits<_Tp>::is_POD_type _Type;
-  static _Type _Answer() { return _Type(); }
-};
-
-template <class _Tp> 
-inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
 
 template <class _Tp>
 struct _DefaultZeroValue {
@@ -451,6 +442,22 @@ struct _DefaultZeroValue {
   typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
+
+# endif /* _STLP_USE_BOOST_TYPE_TRAITS */
+
+template <class _Tp1, class _Tp2>
+inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
+  return _OKToMemCpy<_Tp1, _Tp2>();
+}
+
+template <class _Tp>
+struct _IsPOD {
+  typedef typename __type_traits<_Tp>::is_POD_type _Type;
+  static _Type _Answer() { return _Type(); }
+};
+
+template <class _Tp>
+inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 
 template <class _Tp>
 inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
@@ -568,6 +575,8 @@ template<class _Tp1, class _Tp2>
 _SwapOnMove<_Tp1, _Tp2> _DoSwapOnMove (_Tp1*, _Tp2*)
 {return _SwapOnMove<_Tp1, _Tp2>();}
 
+_STLP_END_NAMESPACE
+
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 #   if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || ( defined (__sgi) && defined (_COMPILER_VERSION)) || defined (__DMC__)
 #   define _IS_POD_ITER(_It, _Tp) __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
@@ -577,8 +586,6 @@ _SwapOnMove<_Tp1, _Tp2> _DoSwapOnMove (_Tp1*, _Tp2*)
 #  else
 #   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Answer()
 #  endif
-
-_STLP_END_NAMESPACE
 
 #endif /* __TYPE_TRAITS_H */
 

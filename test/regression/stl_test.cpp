@@ -275,14 +275,10 @@ int main(int argc, char** argv) {
         cout.flush();
         modulus_test(argc, argv);
         cout.flush();
-        mset1_test(argc, argv);
-        cout.flush();
-        mset3_test(argc, argv);
-        cout.flush();
-        mset4_test(argc, argv);
-        cout.flush();
-        mset5_test(argc, argv);
-        cout.flush();
+        TEST2(mset1_test);
+        TEST2(mset3_test);
+        TEST2(mset4_test);
+        TEST2(mset5_test);
         negate_test(argc, argv);
         cout.flush();
         nequal_test(argc, argv);
@@ -413,10 +409,8 @@ int main(int argc, char** argv) {
         cout.flush();
         search2_test(argc, argv);
         cout.flush();
-        set1_test(argc, argv);
-        cout.flush();
-        set2_test(argc, argv);
-        cout.flush();
+        TEST2(set1_test);
+        TEST2(set2_test);
         setdiff0_test(argc, argv);
         cout.flush();
         setdiff1_test(argc, argv);
@@ -488,22 +482,6 @@ int main(int argc, char** argv) {
         cout.flush();
         uprbnd2_test(argc, argv);
         cout.flush();
-        //vec1_test(argc, argv);
-        //cout.flush();
-        //vec2_test(argc, argv);
-        //cout.flush();
-        //vec3_test(argc, argv);
-        //cout.flush();
-        //vec4_test(argc, argv);
-        //cout.flush();
-        //vec5_test(argc, argv);
-        //cout.flush();
-        //vec6_test(argc, argv);
-        //cout.flush();
-        //vec7_test(argc, argv);
-        //cout.flush();
-        //vec8_test(argc, argv);
-        //cout.flush();
         TEST2(vec_test_1);
         TEST2(vec_test_2);
         TEST2(vec_test_3);
@@ -524,18 +502,18 @@ int main(int argc, char** argv) {
         slist1_test (argc, argv);
         cout.flush();
 
-        TEST2(string1_test);
+        TEST2( string1_test);
         TEST2( string_data_test );
         TEST2( string_c_str_test );
 
         bitset1_test (argc, argv); 
         cout.flush();
-        move_construct_test (argc, argv);
-        cout.flush();
+        TEST2(move_construct_test);
         TEST2(ioiter_test);
         TEST2(string_mt_test);
         TEST2(ptr_specialization_test);
-        TEST(float_output_test);
+        TEST2(float_output_test);
+        TEST2(float_input_test);
     }
     return 0;
 }

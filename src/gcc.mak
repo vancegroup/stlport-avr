@@ -38,6 +38,10 @@ WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -ftempl
 
 CXXFLAGS_COMMON = -pthread -fexceptions -I${STLPORT_DIR} ${WARNING_FLAGS}
 
+ifdef STLP_BUILD_BOOST_PATH
+CXXFLAGS_COMMON += -I$(STLP_BUILD_BOOST_PATH) -DBOOST_STDLIB_CONFIG="<boost/config/stdlib/stlport.hpp>"
+endif
+
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O4
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O4 -fPIC
 #CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -g -O3

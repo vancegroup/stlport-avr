@@ -238,14 +238,24 @@
 
 /*
  * To reduce the famous code bloat trouble due to the use of templates STLport grant
- * a specialization of the vector container for pointer types. So all instanciations
- * of vector with a pointer type will use the same implementation based on a vector
- * of void*. If you prefer systematical instanciation turn on this macro.
+ * a specialization of the some containers for pointer types. So all instanciations
+ * of those containers with a pointer type will use the same implementation based on
+ * a container of void*. If you prefer systematical instanciation turn on this macro.
  * Remark: This feature is only implemented for compilers supporting partial template
  * specialization.
  */
-
 // #define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
+
+/*
+ * To achieve many different optimizations within the template implementations STLport
+ * uses some type traits technique. With this macro you can ask STLport to use the famous
+ * boost type traits rather than the internal one. The advantages are more compiler
+ * integration and a better support. If you only define this macro once the STLport has been
+ * built you just have to add the boost install path within your include path. If you want
+ * to use this feature at STLport built time you will have to define the
+ * STLP_BUILD_BOOST_PATH enrironment variable with the value of the boost library path.
+ */
+#define _STLP_USE_BOOST_TYPE_TRAITS 1
 
 
 //==========================================================
