@@ -452,24 +452,44 @@ public:                         // Insert
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__p))
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
     size_type __old_capacity = this->capacity();
-    _Base::insert(__p._M_iterator, __first, __last);
+    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    _M_insert_dispatch(__p,__first,__last,_Integral());
     _Compare_Capacity(__old_capacity);
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  void insert(iterator __p, const _CharT* __first, const _CharT* __last) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__p))
-    _STLP_DEBUG_CHECK(__check_range(__first,__last))
-    size_type __old_capacity = this->capacity();
-    _Base::insert(__p._M_iterator, __first, __last);
-    _Compare_Capacity(__old_capacity);
-  }
+#endif /* _STLP_MEMBER_TEMPLATES */
+
   void insert(iterator __p, const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__p))
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
     size_type __old_capacity = this->capacity();
     _Base::insert(__p._M_iterator, __first._M_iterator, __last._M_iterator); 
     _Compare_Capacity(__old_capacity);
+  }
+
+#ifdef _STLP_MEMBER_TEMPLATES
+private:
+  template <class _Integer>
+  void _M_insert_dispatch(iterator __p, _Integer __n, _Integer __x,
+                          const __true_type& /*Integral*/) {
+    _Base::insert(__p, (size_type) __n, (_CharT) __x);
+  }
+
+  template <class _InputIter>
+  void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
+                          const __false_type& /*Integral*/) {
+    typedef typename _AreSameTypes<_InputIter, iterator>::_Ret _AreSame;
+    _M_insert_aux(__p, __first, __last, _AreSame());
+  }
+
+  void _M_insert_aux (iterator __p, const_iterator __first, const_iterator __last,
+                      const __true_type&) {
+    _Base::insert(__p._M_iterator, __first._M_iterator, __last._M_iterator);
+  }
+
+  template<class _InputIter>
+  void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
+                      const __false_type&) {
+    _Base::insert(__p._M_iterator, __first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -588,35 +608,54 @@ public:                         // Replace.  (Conceptually equivalent
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   _Self& replace(iterator __first, iterator __last,
-                        _InputIter __f, _InputIter __l) {
+                 _InputIter __f, _InputIter __l) {
     _STLP_DEBUG_CHECK(__check_range(__first, __last, this->begin(), this->end()))
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
     size_type __old_capacity = this->capacity();
-    _Base::replace(__first._M_iterator, __last._M_iterator, __f, __l);
+    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
     _Compare_Capacity(__old_capacity);
-    return *this;    
+    return *this;
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  _Self& replace(iterator __first, iterator __last,
-		 		  const _CharT* __f, const _CharT* __l) {
-    _STLP_DEBUG_CHECK(__check_range(__first, __last, this->begin(), this->end()))
-    _STLP_DEBUG_CHECK(__check_range(__f, __l))
-    size_type __old_capacity = this->capacity();
-    _Base::replace(__first._M_iterator, __last._M_iterator, __f, __l);
-    _Compare_Capacity(__old_capacity);
-    return *this;    
-  }
+#endif /* _STLP_MEMBER_TEMPLATES */
  
   _Self& replace(iterator __first, iterator __last,
-		 		  const_iterator __f, const_iterator __l) {
+                 const_iterator __f, const_iterator __l) {
     _STLP_DEBUG_CHECK(__check_range(__first, __last, this->begin(), this->end()))
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
     size_type __old_capacity = this->capacity();
     _Base::replace(__first._M_iterator, __last._M_iterator, 
 		 		    __f._M_iterator, __l._M_iterator);
     _Compare_Capacity(__old_capacity);
-    return *this; 
-  } 
+    return *this;
+  }
+
+#ifdef _STLP_MEMBER_TEMPLATES
+private:
+  template <class _Integer>
+  void _M_replace_dispatch(iterator __first, iterator __last,
+                           _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
+    _Base::replace(__first, __last, (size_type) __n, (_CharT) __x);
+  }
+
+  template <class _InputIter> 
+  void _M_replace_dispatch(iterator __first, iterator __last,
+                           _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
+    typedef typename _AreSameTypes<_InputIter, iterator>::_Ret _AreSame;
+    _M_replace_aux(__first, __last, __f, __l, _AreSame());
+  }
+  
+  void _M_replace_aux(iterator __first, iterator __last,
+                      const_iterator __f, const_iterator __l, __true_type const&) {
+    _Base::replace(__first._M_iterator, __last._M_iterator, 
+                   __f._M_iterator, __l._M_iterator);
+  }
+  
+  template <class _InputIter>
+  void _M_replace_aux(iterator __first, iterator __last,
+                      _InputIter __f, _InputIter __l, __false_type const&) {
+    _Base::replace( __first._M_iterator, __last._M_iterator, __f, __l );
+  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // Other modifier member functions.
