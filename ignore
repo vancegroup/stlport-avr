@@ -1,11 +1,15 @@
 ignore
-dev/*
-fix/*
+./dev
+./fix
+./lib
 *.o
 *.obj
 *~
 *.exe
+*.dll
 *.core
 *.bak
 *.out
+*.pdb
+*.pch
 CVS
