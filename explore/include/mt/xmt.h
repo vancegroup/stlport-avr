@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/07/10 19:20:07 ptr>
+// -*- C++ -*- Time-stamp: <02/08/01 09:21:33 ptr>
 
 /*
  *
@@ -139,7 +139,7 @@ using std::runtime_error;
 #endif
 
 class fork_in_parent :
-        public exception
+        public std::exception
 {
   public:
     fork_in_parent() throw()
