@@ -607,7 +607,6 @@ protected:
 # undef _STLP_TEMPLATE_HEADER
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
-#warning VECTOR HERE
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;

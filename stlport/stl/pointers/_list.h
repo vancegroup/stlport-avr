@@ -358,6 +358,9 @@ public:
 # endif
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _List_node<void*>;
+typedef _List_node<void*> _VoidPtr_Node;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_VoidPtr_Node*, _VoidPtr_Node, allocator<_VoidPtr_Node> >;
 _STLP_EXPORT_TEMPLATE_CLASS _List_base<void*,allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS list<void*,allocator<void*> >;
 # endif

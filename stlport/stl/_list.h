@@ -74,7 +74,8 @@ _STLP_EXPORT_TEMPLATE_CLASS _List_global<bool>;
 typedef _List_global<bool> _List_global_inst;
 
 template <class _Tp>
-struct _List_node : public _List_node_base {
+class _List_node : public _List_node_base {
+public:
   _Tp _M_data;
   __TRIVIAL_STUFF(_List_node)
 

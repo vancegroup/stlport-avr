@@ -54,8 +54,9 @@
 _STLP_BEGIN_NAMESPACE 
 
 template <class _Tp>
-struct _Slist_node : public _Slist_node_base
+class _Slist_node : public _Slist_node_base
 {
+public:
   _Tp _M_data;
   __TRIVIAL_STUFF(_Slist_node)
 };
@@ -88,8 +89,9 @@ inline forward_iterator_tag _STLP_CALL iterator_category(const _Slist_iterator_b
 #endif
 
 template <class _Tp, class _Traits>
-struct _Slist_iterator : public _Slist_iterator_base
+class _Slist_iterator : public _Slist_iterator_base
 {
+public:
   typedef typename _Traits::value_type value_type;
   typedef typename _Traits::pointer    pointer;
   typedef typename _Traits::reference  reference;
@@ -130,7 +132,8 @@ inline _Tp* _STLP_CALL value_type(const _Slist_iterator<_Tp, _Traits>&) { return
 // Base class that encapsulates details of allocators and simplifies EH
 
 template <class _Tp, class _Alloc> 
-struct _Slist_base {
+class _Slist_base {
+public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type allocator_type;
   typedef _Slist_node<_Tp> _Node;
