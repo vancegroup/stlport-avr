@@ -213,6 +213,10 @@ struct _Constant_binary_fun {
   }
 };
 
+// identity_element (not part of the C++ standard).
+template <class _Tp> inline _Tp __identity_element(plus<_Tp>) {  return _Tp(0); }
+template <class _Tp> inline _Tp __identity_element(multiplies<_Tp>) { return _Tp(1); }
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_FUNCTION_BASE_H */

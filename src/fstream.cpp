@@ -1069,7 +1069,11 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
 		     (char*) __this->_M_mmap_base + __remainder,
 		     (char*) __this->_M_mmap_base + __this->_M_mmap_len);
 	return traits_type::to_int_type(*__this->gptr());
-      }
+      } 
+    } else /* size > 0 ... */ {
+      // There is nothing to map. We unmapped the file above, now zap pointers.
+      __this->_M_mmap_base = 0;
+      __this->_M_mmap_len = 0;
     }
   }
     

@@ -70,7 +70,7 @@ _Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)
 {
   _STLP_MPWFIX_TRY
   if (__n == 0)
-    return identity_element(__opr);
+    return __identity_element(__opr);
   else {
     while ((__n & 1) == 0) {
       __n >>= 1;
@@ -88,7 +88,7 @@ _Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)
     return __result;
 	_STLP_MPWFIX_CATCH
   }
-  _STLP_MPWFIX_CATCH_ACTION(__x = _Tp())		//*TY 06/01/2000 - explicitly reset __x; power() called from rope(size_t , _CharT , const allocator_type& ):
+  _STLP_MPWFIX_CATCH_ACTION(__x = _Tp())
 }
 
 _STLP_END_NAMESPACE

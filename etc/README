@@ -13,8 +13,13 @@ This directory contains miscellanous files for STLport-4.5 release.
 
                  CVS HOUSEKEEPING, SCRIPTS
 
- * cvsignore            - 
- * scvs
+ * cvsignore            - ignore patterns to use with GNU 'tar' command
+ * scvs                 - script to use CVS through SSH tunneling (the default 
+                          method at cvs.stlport.com)
+
+                  INSTALLATION SUPPORT
+
+ * std_headers.txt      - a list of headers to be duplicated as .SUNWCCh or .stdh
 
                          GOODIES
 

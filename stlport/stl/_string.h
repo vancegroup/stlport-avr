@@ -322,7 +322,7 @@ public:                         // Constructor, destructor, assignment.
       _M_range_initialize(__s, __s + __x.size()); 
     }
   
-  operator __std_string() const { return __std_string(this->data()); }
+  operator __std_string() const { return __std_string(this->data(), this->size()); }
 # endif
 
   ~basic_string() { _Destroy(this->_M_start, this->_M_finish + 1); }

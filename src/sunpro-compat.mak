@@ -23,6 +23,7 @@ PATH_SEP=/
 MKDIR=mkdir -p
 COMP=SUN-compat
 INSTALL_STEP = install_unix 
+PREPARE_STEP = prepare_sunpro
 
 # LINK_OUT=-xar -o  
 # DYNLINK_OUT=-o 

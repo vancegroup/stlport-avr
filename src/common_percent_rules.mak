@@ -1,3 +1,4 @@
+
 .SUFFIXES: .cpp .c .o .so .a
 
 $(RELEASE_OBJDIR_static)/%.o: %.cpp
@@ -41,3 +42,14 @@ $(STLDEBUG_OBJDIR_dynamic)/%.o : %.c
 	$(CC) $(CXXFLAGS_STLDEBUG_dynamic) $< -c -o $@
 $(STLDEBUG_OBJDIR_dynamic)/%.i : %.cpp
 	$(CXX) $(CXXFLAGS_STLDEBUG_dynamic) $< -E  $@
+
+#
+# this section is for SUNpro
+#
+
+prepare_sunpro :
+	for file in `cat ../etc/std_headers.txt`; \
+	do \
+	  rm -f ../stlport/$$file.SUNWCCh ; \
+	  ln -s ../stlport/$$file ../stlport/$$file.SUNWCCh ; \
+        done

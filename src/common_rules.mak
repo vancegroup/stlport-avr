@@ -25,10 +25,15 @@ $(STLDEBUG_OBJDIR_staticx) :
 	$(MKDIR) $(STLDEBUG_OBJDIR_staticx)
 
 #create a compiler platform directory
-platform:
+platform: $(PREPARE_STEP)
 	-@$(MKDIR) $(OUTDIR)
 	-@$(MKDIR) $(OBJDIR_COMMON)
 	-@$(MKDIR) $(OBJDIR)
+
+prepare: $(PREPARE_STEP)
+	@echo "STLport installation is prepared for use in-place. No iostreams are built yet !"
+	@echo "To build and use STLport iostreams, please do : make -f <this makefile> all."
+	@echo "To install STLport in a designated directory, please do : make -f <this makefile> install."
 
 clean_all_obj:
 	-$(RM) $(OUTDIR)$(PATH_SEP)obj

@@ -29,26 +29,10 @@ This is major change since pre-4.0 releases, please read the instructions carefu
 
    NOTE : Do NOT attempt to run "configure" ! It is deprecated, moved to safe standalone folder
           and should be used as a helper to create initial config for a new compiler only. 
-          Your compiler should be auto-recognized.
+          Your compiler should be recognized by STLport source code with no configuring.
 	  Please edit appropriate configuration header for your compiler
           directly if you have to make compiler-specific configuration changes.
 
-   IMPORTANT :
-   If you DO NOT plan to use STLport iostreams implementation, please : 
-   3a) uncomment _STLP_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
-       of SGI iostreams and to use wrappers around your existing iostreams. 
-       After disabling STLport iostreams, you will use wrappers around  your compiler's iostreams 
-       libabry, as in previous STLport releases.
-       No binary library for STLport needs to be built in this case.
-       Note though :
-        - new-style ANSI iostreams may not be available on your system;
-        - compiler's iostreams are most likely slower than STLport version.
-  If you decide to disable STLport iostreams, you may stop reading here.
-
-
-==== Building STLport (SGI iostreams) library ==========
-
-Below are step-by-step instructions to build STLport library:
 
 4)  Go to "src" subdirectory. It contains various makefiles for different 
     compilers.  If you are not able to find makefile for your particular 
@@ -59,6 +43,32 @@ Below are step-by-step instructions to build STLport library:
     special, like add environment variables (for Microsoft) or install 
     additional compiler components (for Metrowerks), before they can use their 
     command line compilers.
+
+   IMPORTANT :
+
+   If you DO NOT plan to use STLport iostreams implementation, you do not have to build the library.
+   Please do this instead  : 
+
+   4-1) Using appropriate makefile, do "make -f <your compiler name>.mak prepare".
+   	Please do not skip this! On some platforms, it creates necessary symbolic links.
+        If you do build STLport iostream, this step is performed automatically when you do "make all".
+
+   4-2) uncomment _STLP_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
+       of SGI iostreams and to use wrappers around your existing iostreams. 
+       After disabling STLport iostreams, you will use wrappers around  your compiler's iostreams 
+       libabry, as in previous STLport releases.
+       No binary library for STLport needs to be built in this case.
+       Note though :
+        - new-style ANSI iostreams may not be available on your system;
+        - compiler's iostreams are most likely slower than STLport version.
+
+ 
+  If you have decided to disable STLport iostreams, you may stop reading here.
+
+
+==== Building STLport (SGI iostreams) library ==========
+
+Below are step-by-step instructions to build STLport library:
 
 5)  Using appropriate makefile, do "make clean all" to build the STLport libraries
     (makefiles are set up to build several different flavors - debug/nondebug,

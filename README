@@ -15,7 +15,7 @@ src         - source and makefiles for iostreams implementation
 lib         - installation directory for STLport library (if you use STLport iostreams only)
 test/regression   - regression test, using wrapper iostreams
 test/eh     - exception handling test using STLport iostreams
-misc        - miscellanous files (ChangeLog, TODO, scripts, etc.) 
+etc         - miscellanous files (ChangeLog, TODO, scripts, etc.) 
 
 GETTING STLPORT
 

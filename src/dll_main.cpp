@@ -171,6 +171,8 @@ _STLP_END_NAMESPACE
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+extern "C" {
+
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
                        LPVOID lpReserved
@@ -187,6 +189,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     }
     return TRUE;
 }
+
+} /* extern "C" */
 
 
 void force_link()

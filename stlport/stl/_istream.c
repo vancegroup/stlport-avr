@@ -217,7 +217,6 @@ _M_init_noskip(basic_istream<_CharT, _Traits>& __is){
   }
   else
     __is.setstate(ios_base::failbit);
-  
   return __is.good();
 }
 
@@ -437,11 +436,10 @@ int basic_istream<_CharT, _Traits>::sync() {
 template <class _CharT, class _Traits>
 __BIS_pos_type__
 basic_istream<_CharT, _Traits>::tellg() {
-  sentry __sentry(*this, _No_Skip_WS());
-
+  //   sentry __sentry(*this, _No_Skip_WS());
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   return (__buf && !this->fail()) ? __buf->pubseekoff(0, ios_base::cur, ios_base::in)
-                          : pos_type(-1);
+    : pos_type(-1);
 }
 
 template <class _CharT, class _Traits>
@@ -477,7 +475,7 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c)
   sentry __sentry(*this); // Skip whitespace.
 
   if (__sentry) {
-    typename _Traits::int_type __tmp;
+    typename _Traits::int_type __tmp = _Traits::eof();
     
     _STLP_TRY {
       __tmp = this->rdbuf()->sbumpc();
@@ -586,7 +584,6 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
   ios_base::iostate __status = 0;
   bool __done    = false;
 
-
   _STLP_TRY {
     while (__buf->_M_egptr() != __buf->_M_gptr() && !__done) {
       const _CharT* __first = __buf->_M_gptr();
@@ -611,6 +608,7 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
 
       // We terminated by reading all the characters we were asked for.
       else if(__n == _Num) {
+
         // Find out if we have reached eof.  This matters for getline.
         if (__is_getline) {
           if (__chunk == __last - __first) {
@@ -626,7 +624,7 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
       // The buffer contained fewer than _Num - __n characters.  Either we're
       // at eof, or we should refill the buffer and try again.
       else {
-        if (__that->_S_eof(__buf->sgetc())) {
+	if (__that->_S_eof(__buf->sgetc())) {
           __status |= ios_base::eofbit;
           __done = true;
         }
@@ -808,15 +806,15 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s)
     streamsize __nmax = this->width() > 0
       ? this->width() - 1
       : (numeric_limits<streamsize>::max)() / sizeof(_CharT) - 1;
-    // boris : here, extract_delim set to true to pass Dietmar's test
+
     streamsize __n = __buf->gptr() != __buf->egptr()
       ? _M_read_buffered(this,  __buf, __nmax, __s,
                          _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
                          _Scan_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-                         /* false*/ true, true, false)
+			 false, true, false)
       : _M_read_unbuffered(this,  __buf, __nmax, __s,
                            _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-                           /* false */ true, true, false);
+			   false, true, false);
     if (__n == 0)
       this->setstate(ios_base::failbit);
   }

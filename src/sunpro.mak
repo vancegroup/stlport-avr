@@ -25,6 +25,7 @@ PATH_SEP=/
 MKDIR=mkdir -p
 COMP=SUN
 INSTALL_STEP = install_unix 
+PREPARE_STEP = prepare_sunpro
 
 all: all_dynamic symbolic_links  all_static
 

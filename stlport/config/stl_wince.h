@@ -13,6 +13,9 @@
 // tell other parts no iostreams are desired
 #   define _STLP_NO_IOSTREAMS 1
 
+// tell other parts no threads are there
+#   define _STLP_NO_THREADS 1
+
 // not all new-style headers are available...
 # define _STLP_HAS_NO_NEW_C_HEADERS
 
@@ -70,6 +73,9 @@ typedef int ptrdiff_t;
 # define assert(expr) _STLP_ASSERT(expr)
 # define _ASSERT_DEFINED
 #endif
+
+// they say it's needed 
+# include <windows.h>
 
 #endif /* _STLP_WCE_H */
 

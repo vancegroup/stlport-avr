@@ -1,20 +1,38 @@
 The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
 	* sparc_atomic.s : file missing from the distribution restored
+
+	* etc/ subdirectory created; miscellanous files moved there
+
+	* "prepare" target added to all makefiles in src/; should be run before using STLport;
+	  on most platforms it's empty, on some of them it creates necessary symbolic links, etc.
 	
 	* stl/_deque.h : deque<>::erase bug (introduced in 4.1b4) fixed (thanks to BruceFlorman) 
 	               : default parameter in constructor bug fixed (Thanks to Alex Vanic) 
 
-	* stl/_limits.h : numeric_limits<bool>::digits changed from 0 to 1 (Thanks Mukesh Kapoor)
-	
 	* stl_msvc.h : explicit template function agruments enabled for VC++; 
+
+	* stl_wince.h : added <windows.h> inclusion
+
+	* stl/_limits.h : numeric_limits<bool>::digits changed from 0 to 1 (Thanks Mukesh Kapoor)
+
+	* stl/_function_base.h : added __identity_element() (extension name), _numeric.h : this one used instead of identity_element() (Thanks Hafeez)
+ 
+	* stl_msvc.h : explicit template function agruments enabled for VC++; 
+
 	  use_facet<> now fully conforms to the standard with VC++. (Thanks Jeff Kohn for the input)
 
 	* fstream.cpp : LARGE_INTEGER used to work around Intel shift instruction bug (thanks Thomas Meischner)
 	* fstream.cpp : ULL macro fixed for Win32
 	* fstream.cpp : Added test for for INVALID_HANDLE_VALUE and NULL base and _M_view_id,
  	  for _M_close on Win32 (Thanks Stephen Baker)
+	* fstream.cpp : Fixed corner case with mmap() on EOF (Thanks Jens Maurer)
 
+	* stl/_fstream.h : Added "const" modifier to is_open() for ifstream and ofstream (Thanks Raphael Bossek)
+        * _istream.c : fixed _M_read_buffered sssso that it does not skip delimiters (Thanks Gerd Hoeren)
+	
+	* stl/_string.h : operator __std_string() uses constructor with a size to correctly initialize string containing null chars (Thanks Armin)
+	
 	* iomanip : added operator for setfill object and istream (was ostream only) (Thanks Mukesh Kapoor)
 	
 	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
@@ -27,6 +45,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	
 	* SUN CC compiler template cache is being properly cleaned up (Thanks Whitney Kew)
 
+	* dll_main.cpp : added extern "C" around DllMain() (Thanks Danny Smith)
+	
 	* type_traits.h : added bool parameter to shut up warnings on some compilers (Thanks glassman)
 	
 	* stl/_rope.h/.c, src/mrcpp.mak, src/mrc.mak, stl/_tree.h : MPW & MRC fixes by Tsutomu Yoshida
@@ -62,6 +82,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
 	* debug/_deque.h : a check in erase() fixed (thanks Andreas Malzahn)
 
+	* debug/_list.h : added remove() to do iterator invalidation; range erase() fixed to do invalidation
+	
 	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
