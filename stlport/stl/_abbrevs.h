@@ -43,13 +43,17 @@
 #  define __node_alloc     D__A
 #  define __new_alloc      N__A
 #  define __debug_alloc    G__A
+#  define _STLP_alloc_proxy P__A
 
 #  define __deque_iterator         _dQ__It
 #  define _Buf_traits              _dQ__BTr
 #  define _Deque_iterator          _Dq__It
 
-#  define _Select1st _S1st
-#  define _Select2nd _S2nd
+#  define _Select1st                  _S1st
+#  define _Select2nd                  _S2nd
+#  define __move_source               __m_s
+#  define _Vector_nonconst_traits     _V_nct
+#  define __stldebug_vector           _sdv
 
 #  define _Hashtable_iterator         _hT__It
 #  define _Hashtable_const_iterator   _hT__cIt
@@ -57,7 +61,7 @@
 #  define _Hashtable_base             _hT__B
 #  define _Ht_iterator _Ht_It
 
-#  define __list_iterator         _L__It
+#  define __list_iterator          _L__It
 #  define __slist_iterator         _SL__It
 
 #  define _Rb_tree_node_base       _rbT__NB
@@ -65,6 +69,7 @@
 #  define _Rb_base_iterator        _rbTB__It
 #  define _Rb_tree_base_iterator   _rbT__It
 #  define _Rb_tree_base            _rbT__B
+#  define __stldebug_Rb_tree       _sd_rbT
 
 #endif
 
