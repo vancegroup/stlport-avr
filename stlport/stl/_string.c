@@ -404,17 +404,17 @@ basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __la
     erase(__first + __n, __last);
   }
   else {
-    const _CharT* __m = __f + __len;
+    const_iterator __m = __f + __len;
     if (!__self_ref) {
       //no overlap:
       _M_copy(__f, __m, __first);
-      insert(__last, __m, __l);
+      _M_insert(__last, __m, __l, false ); 
     }
     else {
       //we have to take care of reallocation:
       const difference_type __off_dest = __first - this->begin();
       const difference_type __off_src = __f - this->begin();
-      insert(__last, __m, __l);
+      _M_insert(__last, __m, __l, true ); // hmm, _M_inside for _Char *, not for const_iterator - ptr
       _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
     }
   }
