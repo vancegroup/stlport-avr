@@ -253,7 +253,8 @@ SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES;_DEBUG
 
  # ---------------------------------------------------------------------------
 # CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWCR -D$(SYSDEFINES);$(USERDEFINES)  -L..\..\lib
-CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -tWCR -D$(SYSDEFINES);$(USERDEFINES)
+
+CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -tWCR -w-par -w-inl -w-stl -D$(SYSDEFINES);$(USERDEFINES)
 
 .autodepend
 # ---------------------------------------------------------------------------

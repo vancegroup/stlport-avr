@@ -152,8 +152,7 @@
 #  undef _STLP_USE_NEW_IOSTREAMS
 # endif
 
-# if ( defined (_STLP_OWN_IOSTREAMS) || \
-     ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)) \
+# if ( defined (_STLP_OWN_IOSTREAMS) || ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)) \
    && ! defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_USE_NEW_IOSTREAMS)
 #  define _STLP_USE_NEW_IOSTREAMS
 # endif

@@ -20,7 +20,7 @@ DYNEXT=dll
 STEXT=lib
 RM=@erase /F /Q
 PATH_SEP=\\
-MKDIR=mkdir -p
+MKDIR=mkdir
 STATIC_SUFFIX=_static
 INSTALL_STEP=install_bc
 

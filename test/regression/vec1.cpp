@@ -1,6 +1,6 @@
 // STLport regression testsuite component.
 // To compile as a separate example, please #define MAIN.
-
+#include <cstdlib>
 #include <iostream>
 #include <algorithm>
 #include <vector>

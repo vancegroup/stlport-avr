@@ -135,8 +135,8 @@ LINK32=link.exe
 # CPP_PROJ=/nologo /W3 /MDd /GX /Zd /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I.
 
 # Use this flags to test non-SGI iostreams
-CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I. /D_STLP_NO_NEW_IOSTREAMS
-CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I.
+CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I. /D_STLP_NO_SGI_IOSTREAMS
+# CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I.
 # linker finds proper STLport lib automatically, only path to the
 # library is needed
 CPP_LIBS = /link /libpath:"..\..\lib"

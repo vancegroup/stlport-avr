@@ -89,7 +89,7 @@ public:                         // Constructor, destructor, assignment.
 		    const allocator_type& __a = allocator_type()):
     _STLP_DBG_STRING_BASE(__n, __c, __a), _M_iter_list(_Get_base()) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||defined(__SC__))
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l):

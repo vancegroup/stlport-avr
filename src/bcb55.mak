@@ -1,5 +1,9 @@
 # ---------------------------------------------------------------------------
 
+!if !$d(BCB)
+BCB = $(MAKEDIR)\..
+!endif
+
 CPP=cpp32
 CC=bcc32 -P
 CXX=bcc32
@@ -36,7 +40,7 @@ STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE
 
 LINKSTARTUP= c0d32.obj
 
-FLAGS_COMMON= -I.;..\stlport;$(BCB)\include -jb -j1 -w -c -w-par -w-inl -tWM -w-stl
+FLAGS_COMMON= -I.;..\stlport;$(BCB)\include; -jb -j1 -w -c -w-par -w-inl -tWM -w-stl
 FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS)
 FLAGS_COMMON_dynamic = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(DYNAMIC_DEFS) -tWDR
 

@@ -840,7 +840,7 @@ _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
 operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<double>& __z);
 
-#  ifndef _STLP_NO_LONG_DOUBLE
+#  if ! defined (_STLP_NO_LONG_DOUBLE) && ! (defined (_STLP_MSVC)/* && _STLP_MSVC < 1300 */)
 
 _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 

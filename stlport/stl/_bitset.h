@@ -689,6 +689,7 @@ public:
 //
 
 # if ! defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
+
 template <size_t _Nb>
 inline bitset<_Nb>  _STLP_CALL
 operator&(const bitset<_Nb>& __x,
@@ -718,6 +719,7 @@ operator^(const bitset<_Nb>& __x,
 }
 
 #if defined ( _STLP_USE_NEW_IOSTREAMS )
+
 template <class _CharT, class _Traits, size_t _Nb>
 basic_istream<_CharT, _Traits>&  _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x);
@@ -725,8 +727,7 @@ operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x);
 
 template <class _CharT, class _Traits, size_t _Nb>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
-operator<<(basic_ostream<_CharT, _Traits>& __os,
-           const bitset<_Nb>& __x);
+operator<<(basic_ostream<_CharT, _Traits>& __os, const bitset<_Nb>& __x);
 
 #elif ! defined ( _STLP_USE_NO_IOSTREAMS )
 

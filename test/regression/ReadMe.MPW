@@ -4,7 +4,7 @@
 #	#*TY 05/23/1999 - updated for STLport-3.2
 #	#*TY 08/03/1999 - updated for STLport-3.2.1
 # 	#*TY 05/21/2000 - updated for STLport-4.0
-#	#*TY 03/20/2001 - updated for STLport-4.1
+#	#*TY 05/13/2001 - updated for STLport-4.1
 #	
 #	this document describes the detailed instructions for building and running the STL testsuite (regression and eh) 
 #	as the mpw tools, as well as building STLportLib which provides the standard conforming iostream.
@@ -85,6 +85,8 @@ end ·· "{worksheet}"
 #(# INSTALL (3) OPTIONAL
 begin
 	set -e exit 0
+	if !"{Font}";set -e Font "Monaco";end
+	if !"{FontSize}";set -e FontSize 9;end
 	set self_ "{active}"
 	for f_ in	`exists -f ¶
 				"{stl}"[Â.]+ "{stl}"Å.[hc]Å ¶
@@ -101,24 +103,27 @@ begin
 				"{stl}:test:regression:"Å.[hc]Å ¶
 				"{stl}:test:eh:"Å.[hc]Å ¶
 				`
-		SetFile -c 'MPS ' -label 3 "{f_}"
+		SetFile -a l "{f_}"
 		Open -h -r "{f_}"
-		Format -l 'C/C++/Objective-C' -f "{Font}" -s "{FontSize}" "{f_}"
+		Format -l 'C/C++/Objective-C'  -f "{Font}" -s "{FontSize}" "{f_}" 
 		Close "{f_}"
+		SetFile -c 'MPS ' -label 3 -a L "{f_}"
 	end
 	for f_ in	`exists -f ¶
 				"{stl}:src:"Å.mak ¶
 				"{stl}:test:regression:"Å.mak ¶
 				"{stl}:test:eh:"Å.mak ¶
 				`
-		SetFile -c 'MPS ' -label 4 "{f_}" # blue color
+		SetFile -a l "{f_}"
 		Open -h -r "{f_}"
 		Format -l 'MPW Shell Script' -f "{Font}" -s "{FontSize}" "{f_}"
 		Close "{f_}"
+		SetFile -c 'MPS ' -label 4 -a L "{f_}" # blue color
 	end
 	open "{self_}"
-		SetFile -c 'MPS ' -label 6 "{self_}" # sky color
+	SetFile -a l "{self_}"
 	Format -l 'MPW Shell Script' -f "{Font}" -s "{FontSize}" "{self_}"
+	SetFile -c 'MPS ' -label 6 -a L "{self_}" # sky color
 	set -e exit 1
 end ·· "{worksheet}"
 #)#

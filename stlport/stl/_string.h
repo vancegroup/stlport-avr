@@ -282,7 +282,7 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||defined(__SC__))		//*ty 04/30/2001 - mpw compilers choke on this ctor
   static allocator_type __allocator_type() { return allocator_type(); }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
