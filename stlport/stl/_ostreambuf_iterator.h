@@ -51,7 +51,8 @@ public:
 
 public:
   ostreambuf_iterator(streambuf_type* __buf) _STLP_NOTHROW : _M_buf(__buf), _M_ok(__buf!=0) {}
-  ostreambuf_iterator(ostream_type& __o) _STLP_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
+  //  ostreambuf_iterator(ostream_type& __o) _STLP_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
+  inline ostreambuf_iterator(ostream_type& __o) _STLP_NOTHROW;
 
   ostreambuf_iterator<_CharT, _Traits>& operator=(char_type __c) {
     _M_ok = _M_ok && !traits_type::eq_int_type(_M_buf->sputc(__c),
@@ -69,6 +70,9 @@ private:
   streambuf_type* _M_buf;
   bool _M_ok;
 };
+
+template <class _CharT, class _Traits>
+inline ostreambuf_iterator<_CharT, _Traits>::ostreambuf_iterator(basic_ostream<_CharT, _Traits>& __o) _STLP_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS ostreambuf_iterator<char, char_traits<char> >;

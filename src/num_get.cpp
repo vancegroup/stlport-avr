@@ -161,6 +161,8 @@ template class _STLP_CLASS_DECLSPEC istreambuf_iterator<char, char_traits<char> 
 // template class num_get<char, const char*>;
 template class num_get<char, istreambuf_iterator<char, char_traits<char> > >;
 #endif
+ 
+// basic_streambuf<char, char_traits<char> >* _STLP_CALL _M_get_istreambuf(basic_istream<char, char_traits<char> >& ) ;
 
 _STLP_END_NAMESPACE
 

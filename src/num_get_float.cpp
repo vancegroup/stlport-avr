@@ -19,7 +19,7 @@
 # include "stlport_prefix.h"
 #include <stl/_limits.h>
 #include <stl/_num_get.h>
-// #include <stl/_istream.h>
+#include <stl/_istream.h>
 
 _STLP_BEGIN_NAMESPACE
 

@@ -59,7 +59,8 @@ public:
 
 public:
   istreambuf_iterator(streambuf_type* __p = 0) { this->_M_init(__p); }
-  istreambuf_iterator(basic_istream<_CharT, _Traits>& __is) { this->_M_init(_M_get_istreambuf(__is)); }
+  //  istreambuf_iterator(basic_istream<_CharT, _Traits>& __is) { this->_M_init(_M_get_istreambuf(__is)); }
+  inline istreambuf_iterator(basic_istream<_CharT, _Traits>& __is);
 
   char_type operator*() const { this->_M_getc(); return _M_c; }
   istreambuf_iterator<_CharT, _Traits>& operator++() { this->_M_bumpc(); return *this; }
@@ -109,6 +110,10 @@ private:
   mutable unsigned char _M_eof;
   mutable unsigned char _M_have_c;
 };
+
+template<class _CharT, class _Traits>
+inline istreambuf_iterator<_CharT, _Traits>::istreambuf_iterator(basic_istream<_CharT, _Traits>& __is) 
+{ this->_M_init(_M_get_istreambuf(__is)); }
 
 template<class _CharT, class _Traits>
 inline bool _STLP_CALL operator==(const istreambuf_iterator<_CharT, _Traits>& __x,

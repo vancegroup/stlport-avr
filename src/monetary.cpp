@@ -18,6 +18,7 @@
 # include "stlport_prefix.h"
 
 #include <stl/_monetary.h>
+#include <stl/_istream.h>
 
 _STLP_BEGIN_NAMESPACE
 
