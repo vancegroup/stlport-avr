@@ -29,9 +29,9 @@
 #  include <stl/_alloc.h>
 # endif /* _STLP_INTERNAL_ALLOC_H */
 
-# ifndef _STLP_STRING_H
+# ifndef _STLP_INTERNAL_STRING_H
 #  include <stl/_string.h>
-# endif /* _STLP_STRING_H */
+# endif /* _STLP_INTERNAL_STRING_H */
 
 _STLP_BEGIN_NAMESPACE
 

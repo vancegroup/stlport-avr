@@ -19,7 +19,6 @@
 # elif (_STLP_OUTERMOST_HEADER_ID == 0x103) && ! defined (_STLP_DONT_POP_HEADER_ID)
 #   define _STLP_DONT_POP_HEADER_ID
 # endif
-# endif
 
 # if defined (_STLP_USE_NEW_C_HEADERS) || defined (__IN_STLPORT_CASSERT)
 #  include _STLP_NATIVE_CPP_C_HEADER(cassert)

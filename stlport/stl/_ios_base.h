@@ -21,13 +21,16 @@
 #ifndef _STLP_STDEXCEPT
 #include <stdexcept>
 #endif
+
 #ifndef _STLP_UTILITY
 #include <utility>
 #endif
+
 #ifndef _STLP_INTERNAL_LOCALE_H
 #include <stl/_locale.h>
 #endif
-#ifndef _STLP_STRING_H
+
+#ifndef _STLP_INTERNAL_STRING_H
 # include <stl/_string.h>
 #endif
 

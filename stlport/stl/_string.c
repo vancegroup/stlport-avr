@@ -29,7 +29,7 @@
 #ifndef _STLP_STRING_C
 #define _STLP_STRING_C
 
-#ifndef _STLP_STRING_H
+#ifndef _STLP_INTERNAL_STRING_H
 # include <stl/_string.h>
 #endif
 

@@ -30,7 +30,7 @@
 # include <stl/_locale.h>
 #endif
 
-#ifndef _STLP_STRING_H
+#ifndef _STLP_INTERNAL_STRING_H
 # include <stl/_string.h>
 #endif
 

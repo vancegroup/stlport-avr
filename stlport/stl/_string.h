@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef _STLP_STRING_H
-#define _STLP_STRING_H
+#ifndef _STLP_INTERNAL_STRING_H
+#define _STLP_INTERNAL_STRING_H
 
 #ifndef _STLP_MEMORY
 # include <memory> 
@@ -1322,4 +1322,4 @@ _STLP_END_NAMESPACE
 # include <stl/_string_io.h>  
 # include <stl/_string_hash.h>
 
-#endif /* _STLP_STRING_H */
+#endif /* _STLP_INTERNAL_STRING_H */
