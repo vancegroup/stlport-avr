@@ -335,6 +335,13 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Alloc>
+struct __move_traits<vector<_Tp, _Alloc> > :
+  __move_traits_aux<_STLP_DBG_VECTOR_BASE >
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
  _STLP_EXPORT_TEMPLATE_CLASS __range_checker <void*>;

@@ -21,7 +21,9 @@
 #ifndef _STLP_SPECIALIZED_VECTOR_H
 #define _STLP_SPECIALIZED_VECTOR_H
 
-#include <stl/pointers/_void_ptr_traits.h>
+#ifndef _STLP_VOID_PTR_TRAITS_H
+# include <stl/pointers/_void_ptr_traits.h>
+#endif
 
 /*
  * void* specialization to break the potential loop instanciation with pointer specialization
@@ -41,7 +43,7 @@ public:
 
 public:
   typedef value_type& reference;
-  typedef value_type const_reference;
+  typedef const value_type& const_reference;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   typedef random_access_iterator_tag _Iterator_category;
@@ -57,7 +59,7 @@ protected:
   typedef __true_type _TrivialAss;
   typedef __true_type _IsPODType;
 
-  void _M_insert_overflow(pointer __position, void* __x,
+  void _M_insert_overflow(pointer __position, value_type __x,
                           size_type __fill_len, bool __atend = false) {
     const size_type __old_size = size();
     const size_type __len = __old_size + (max)(__old_size, __fill_len);
@@ -114,9 +116,9 @@ public:
     _Vector_base<void*, _Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit vector(size_type __n, void *__val = 0,
+  explicit vector(size_type __n, value_type __val = 0,
 #else
-  vector(size_type __n, void *__val,
+  vector(size_type __n, value_type __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
          const allocator_type& __a = allocator_type())
     : _Vector_base<void*, _Alloc>(__n, __a) {
@@ -132,7 +134,7 @@ public:
 
   vector(const _Self& __x)
     : _Vector_base<void*, _Alloc>(__x.size(), __x.get_allocator()) {
-    this->_M_finish = reinterpret_cast<void**>(__ucopy_trivial(__x._M_start, __x._M_finish, this->_M_start));
+    this->_M_finish = __REINTERPRET_CAST(pointer, __ucopy_trivial(__x._M_start, __x._M_finish, this->_M_start));
   }
 
   vector(__move_source<_Self> src)
@@ -172,7 +174,7 @@ public:
   }
 
 #else
-  vector(void *__first, void *__last,
+  vector(const_pointer __first, const_pointer __last,
          const allocator_type& __a = allocator_type())
     : _Vector_base<void*, _Alloc>(__last - __first, __a) {
       this->_M_finish = __ucopy_trivial(__first, __last, this->_M_start);
@@ -190,8 +192,8 @@ public:
   // The range version is a member template, so we dispatch on whether
   // or not the type is an integer.
 
-  void assign(size_type __n, void *__val) { _M_fill_assign(__n, __val); }
-  void _M_fill_assign(size_type __n, void *__val);
+  void assign(size_type __n, value_type __val) { _M_fill_assign(__n, __val); }
+  void _M_fill_assign(size_type __n, value_type __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIter>
@@ -225,7 +227,7 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   void _M_assign_aux(_InputIter __first, _InputIter __last,
-		                 const input_iterator_tag &) {
+                     const input_iterator_tag &) {
     iterator __cur = begin();
     for ( ; __first != __last && __cur != end(); ++__cur, ++__first)
       *__cur = *__first;
@@ -237,7 +239,7 @@ public:
 
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type& /*_IsIntegral*/)
-    { assign((size_type) __n, (void*) __val); }
+    { assign((size_type) __n, (value_type) __val); }
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last, const __false_type& /*_IsIntegral*/)
@@ -251,9 +253,9 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_back(void *__x = 0) {
+  void push_back(value_type __x = 0) {
 #else
-  void push_back(void *__x) {
+  void push_back(value_type __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     if (this->_M_finish != this->_M_end_of_storage._M_data) {
       *this->_M_finish = __x;
@@ -264,9 +266,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position, void *__x = 0) {
+  iterator insert(iterator __position, value_type __x = 0) {
 #else
-  iterator insert(iterator __position, void *__x) {
+  iterator insert(iterator __position, value_type __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     size_type __n = __position - begin();
     if (this->_M_finish != this->_M_end_of_storage._M_data) {
@@ -286,8 +288,8 @@ public:
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_back() { push_back(__STATIC_CAST(void*, 0)); }
-  iterator insert(iterator __position) { return insert(__position, __STATIC_CAST(void*, 0)); }
+  void push_back() { push_back(__STATIC_CAST(value_type, 0)); }
+  iterator insert(iterator __position) { return insert(__position, __STATIC_CAST(value_type, 0)); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void swap(_Self& __x) {
@@ -296,14 +298,14 @@ public:
     _STLP_STD::swap(this->_M_end_of_storage, __x._M_end_of_storage);
   }
 
-  void _M_fill_insert (iterator __pos, size_type __n, void *__x);
+  void _M_fill_insert (iterator __pos, size_type __n, value_type __x);
 
 #if defined ( _STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
                           const __true_type& /*_IsIntegral*/) {
-    _M_fill_insert(__pos, (size_type) __n, (void*) __val);
+    _M_fill_insert(__pos, (size_type) __n, (value_type) __val);
   }
 
   template <class _InputIterator>
@@ -369,9 +371,9 @@ public:
         pointer __new_start = this->_M_end_of_storage.allocate(__len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
-          __new_finish = reinterpret_cast<pointer>(__ucopy_trivial(this->_M_start, __position, __new_start));
+          __new_finish = __REINTERPRET_CAST(pointer, __ucopy_trivial(this->_M_start, __position, __new_start));
           __new_finish = __uninitialized_copy(__first, __last, __new_finish, _IsPODType());
-          __new_finish = reinterpret_cast<pointer>(__ucopy_trivial(__position, this->_M_finish, __new_finish));
+          __new_finish = __REINTERPRET_CAST(pointer, __ucopy_trivial(__position, this->_M_finish, __new_finish));
         }
         _STLP_UNWIND(this->_M_end_of_storage.deallocate(__new_start,__len))
         _M_clear();
@@ -379,7 +381,7 @@ public:
       }
     }
   }
-  void insert (iterator __pos, size_type __n, void *__x)
+  void insert (iterator __pos, size_type __n, value_type __x)
   { _M_fill_insert(__pos, __n, __x); }
 
   void pop_back() {
@@ -397,9 +399,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, void *__x = 0) {
+  void resize(size_type __new_size, value_type __x = 0) {
 #else
-  void resize(size_type __new_size, void *__x) {
+  void resize(size_type __new_size, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     if (__new_size < size())
       erase(begin() + __new_size, end());
@@ -408,7 +410,7 @@ public:
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size) { resize(__new_size, static_cast<void*>(0)); }
+  void resize(size_type __new_size) { resize(__new_size, __STATIC_CAST(value_type, 0)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void clear() {
@@ -492,28 +494,25 @@ public:
   typedef const value_type* const_pointer;
   typedef value_type* iterator;
   typedef const value_type* const_iterator;
-
-public:
   typedef value_type& reference;
-  typedef value_type const_reference;
+  typedef const value_type& const_reference;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   typedef random_access_iterator_tag _Iterator_category;
 
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
   _STLP_FORCE_ALLOCATORS(value_type, _Alloc)
-  typedef typename _Vector_base<value_type, _Alloc>::allocator_type allocator_type;
+  typedef typename _Alloc_traits<value_type, _Alloc>::allocator_type allocator_type;
 
-  /*
   allocator_type get_allocator() const {
-    return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, value_type);
+    return allocator_type();
   }
-  */
+
 public:
-  iterator begin()             { return cast_traits::ite_cast(_M_container.begin()); }
-  const_iterator begin() const { return cast_traits::const_ite_cast(_M_container.begin()); }
-  iterator end()               { return cast_traits::ite_cast(_M_container.end()); }
-  const_iterator end() const   { return cast_traits::const_ite_cast(_M_container.end()); }
+  iterator begin()             { return cast_traits::ptr_cast(_M_container.begin()); }
+  const_iterator begin() const { return cast_traits::const_ptr_cast(_M_container.begin()); }
+  iterator end()               { return cast_traits::ptr_cast(_M_container.end()); }
+  const_iterator end() const   { return cast_traits::const_ptr_cast(_M_container.end()); }
 
   reverse_iterator rbegin()              { return reverse_iterator(end()); }
   const_reverse_iterator rbegin() const  { return const_reverse_iterator(end()); }
@@ -527,15 +526,15 @@ public:
   bool empty() const            { return _M_container.empty(); }
 
   reference operator[](size_type __n) { return cast_traits::ref_cast(_M_container[__n]); }
-  const_reference operator[](size_type __n) const { return cast_traits::cast(_M_container[__n]); }
+  const_reference operator[](size_type __n) const { return cast_traits::const_ref_cast(_M_container[__n]); }
 
   reference front()             { return cast_traits::ref_cast(_M_container.front()); }
-  const_reference front() const { return cast_traits::cast(_M_container.front()); }
+  const_reference front() const { return cast_traits::const_ref_cast(_M_container.front()); }
   reference back()              { return cast_traits::ref_cast(_M_container.back()); }
-  const_reference back() const  { return cast_traits::cast(_M_container.back()); }
+  const_reference back() const  { return cast_traits::const_ref_cast(_M_container.back()); }
 
   reference at(size_type __n) { return cast_traits::ref_cast(_M_container.at(__n)); }
-  const_reference at(size_type __n) const { return cast_traits::cast(_M_container.at(__n)); }
+  const_reference at(size_type __n) const { return cast_traits::const_ref_cast(_M_container.at(__n)); }
 
   explicit vector(const allocator_type& __a = allocator_type()) :
   _M_container(__a) {}
@@ -574,9 +573,9 @@ public:
  # endif
 
 #else
-  vector(const value_type* __first, const value_type* __last,
+  vector(const_iterator __first, const_iterator __last,
          const allocator_type& __a = allocator_type())
-    : _M_container(__first, __last, __a) {}
+    : _M_container(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last), __a) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator=(const _Self& __x) {
@@ -593,7 +592,9 @@ public:
     _M_container.assign(__iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last));
   }
 #else
-  void assign(const_iterator __first, const_iterator __last) {_M_container.assign(__first, __last);}
+  void assign(const_iterator __first, const_iterator __last) {
+    _M_container.assign(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last));
+  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -609,12 +610,12 @@ public:
 #else
   iterator insert(iterator __pos, value_type __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-    return cast_traits::ite_cast(_M_container.insert(cast_traits::ite_cast(__pos), cast_traits::cast(__x)));
+    return cast_traits::ptr_cast(_M_container.insert(cast_traits::ptr_cast(__pos), cast_traits::cast(__x)));
  }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_back() { push_back(static_cast<value_type>(0)); }
-  iterator insert(iterator __position) { return insert(__position, static_cast<value_type>(0)); }
+  void push_back() { push_back(__STATIC_CAST(value_type, 0)); }
+  iterator insert(iterator __position) { return insert(__position, __STATIC_CAST(value_type, 0)); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void swap(_Self& __x) {_M_container.swap(__x._M_container);}
@@ -622,24 +623,25 @@ public:
 #if defined ( _STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    _M_container.insert(cast_traits::ite_cast(__pos),
-                        __iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last));
+    _M_container.insert(cast_traits::ptr_cast(__pos), __iterator_wrapper<_Tp, _InputIterator>(__first),
+                                                      __iterator_wrapper<_Tp, _InputIterator>(__last));
   }
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
-    _M_container.insert(cast_traits::ite_cast(__pos), __first, __last);
+    _M_container.insert(cast_traits::ptr_cast(__pos), cast_traits::const_ptr_cast(__first),
+                                                      cast_traits::const_ptr_cast(__last));
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   void insert (iterator __pos, size_type __n, value_type __x) {
-    _M_container.insert(cast_traits::ite_cast(__pos), __n, cast_traits::cast(__x));
+    _M_container.insert(cast_traits::ptr_cast(__pos), __n, cast_traits::cast(__x));
   }
   
   void pop_back() {_M_container.pop_back();}
-  iterator erase(iterator __pos) {return cast_traits::ite_cast(_M_container.erase(cast_traits::ite_cast(__pos)));}
+  iterator erase(iterator __pos) {return cast_traits::ptr_cast(_M_container.erase(cast_traits::ptr_cast(__pos)));}
   iterator erase(iterator __first, iterator __last) {
-    return cast_traits::ite_cast(_M_container.erase(cast_traits::ite_cast(__first), 
-                                                    cast_traits::ite_cast(__last)));
+    return cast_traits::ptr_cast(_M_container.erase(cast_traits::ptr_cast(__first), 
+                                                    cast_traits::ptr_cast(__last)));
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)

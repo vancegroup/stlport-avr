@@ -213,7 +213,6 @@ public:
   static bool _STLP_CALL _M_equal (const _Self& __x, const _Self& __y) {
     return _Ht::_M_equal(__x._M_ht,__y._M_ht);
   }
-
 };
 
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),

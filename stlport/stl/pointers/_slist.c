@@ -44,7 +44,7 @@ slist<void*,_Alloc>& slist<void*,_Alloc>::operator=(const slist<void*,_Alloc>& _
 }
 
 template <class _Alloc>
-void slist<void*, _Alloc>::_M_fill_assign(size_type __n, const_reference __val) {
+void slist<void*, _Alloc>::_M_fill_assign(size_type __n, value_type __val) {
   _Node_base* __prev = &this->_M_head._M_data;
   _Node* __node = static_cast<_Node*>(this->_M_head._M_data._M_next);
   for ( ; __node != 0 && __n > 0 ; --__n) {
@@ -60,7 +60,7 @@ void slist<void*, _Alloc>::_M_fill_assign(size_type __n, const_reference __val) 
 
 
 template <class _Alloc>
-void slist<void*, _Alloc>::resize(size_type __len, const_reference __x) {
+void slist<void*, _Alloc>::resize(size_type __len, value_type __x) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
     --__len;
@@ -73,7 +73,7 @@ void slist<void*, _Alloc>::resize(size_type __len, const_reference __x) {
 }
 
 template <class _Alloc>
-void slist<void*, _Alloc>::remove(const_reference __val) {
+void slist<void*, _Alloc>::remove(value_type __val) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
     if (static_cast<_Node*>(__cur->_M_next)->_M_data == __val)

@@ -85,8 +85,7 @@ inline void swap(_Tp& __a, _Tp& __b) {
 }
 
 template <class _ForwardIter1, class _ForwardIter2, class _Value>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value * )
-{
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value * ) {
   _Value tmp = *__i1;
   *__i1 = *__i2;
   *__i2 = tmp;
@@ -247,7 +246,7 @@ inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter
 template <class _InputIter, class _OutputIter>
 inline _OutputIter copy(_InputIter __first, _InputIter __last, _OutputIter __result) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    return __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret());
+  return __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret());
 }
 
 template <class _InputIter, class _OutputIter>
@@ -409,8 +408,8 @@ inline _OutputIter __move_ptrs_aux(_InputIter __first, _InputIter __last, _Outpu
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __move_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type& /*_IsPOD*/) {
-	return __move_ptrs_aux(__first, __last, __result, _DoSwapOnMove(_STLP_VALUE_TYPE(__first, _InputIter), 
-												                                          _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+  return __move_ptrs_aux(__first, __last, __result, _DoSwapOnMove(_STLP_VALUE_TYPE(__first, _InputIter), 
+                                                                  _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __move_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type& /*_IsPOD*/) {

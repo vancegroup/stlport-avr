@@ -100,7 +100,7 @@ template <class _ForwardIter>
 _STLP_INLINE_LOOP _ForwardIter 
 adjacent_find(_ForwardIter __first, _ForwardIter __last) {
   return adjacent_find(__first, __last,
-		       __equal_to(_STLP_VALUE_TYPE(__first, _ForwardIter)));
+                       __equal_to(_STLP_VALUE_TYPE(__first, _ForwardIter)));
 }
 
 # ifndef _STLP_NO_ANACHRONISMS
@@ -304,7 +304,7 @@ inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last) {
 
 template <class _ForwardIter, class _BinaryPredicate>
 inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last,
-                    _BinaryPredicate __binary_pred) {
+                           _BinaryPredicate __binary_pred) {
   __first = adjacent_find(__first, __last, __binary_pred);
   return unique_copy(__first, __last, __first, __binary_pred);
 }
@@ -335,8 +335,8 @@ reverse(_BidirectionalIter __first, _BidirectionalIter __last) {
 template <class _BidirectionalIter, class _OutputIter>
 _STLP_INLINE_LOOP
 _OutputIter reverse_copy(_BidirectionalIter __first,
-                            _BidirectionalIter __last,
-                            _OutputIter __result) {
+                         _BidirectionalIter __last,
+                         _OutputIter __result) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   while (__first != __last) {
     --__last;
@@ -434,11 +434,11 @@ void sort(_RandomAccessIter __first, _RandomAccessIter __last, _Compare __comp);
 // stable_sort() and its auxiliary functions.
 template <class _RandomAccessIter>
 void stable_sort(_RandomAccessIter __first,
-		 _RandomAccessIter __last);
+                 _RandomAccessIter __last);
 
 template <class _RandomAccessIter, class _Compare>
 void stable_sort(_RandomAccessIter __first,
-		 _RandomAccessIter __last, _Compare __comp);
+                 _RandomAccessIter __last, _Compare __comp);
 
 // partial_sort, partial_sort_copy, and auxiliary functions.
 
@@ -586,13 +586,13 @@ _OutputIter merge(_InputIter1 __first1, _InputIter1 __last1,
 
 template <class _BidirectionalIter>
 void inplace_merge(_BidirectionalIter __first,
-		   _BidirectionalIter __middle,
-		   _BidirectionalIter __last) ;
+                   _BidirectionalIter __middle,
+                   _BidirectionalIter __last) ;
 
 template <class _BidirectionalIter, class _Compare>
 void inplace_merge(_BidirectionalIter __first,
-		   _BidirectionalIter __middle,
-		   _BidirectionalIter __last, _Compare __comp);
+                   _BidirectionalIter __middle,
+                   _BidirectionalIter __last, _Compare __comp);
 
 // Set algorithms: includes, set_union, set_intersection, set_difference,
 // set_symmetric_difference.  All of these algorithms have the precondition
@@ -704,7 +704,7 @@ bool is_heap(_RandomAccessIter __first, _RandomAccessIter __last);
 
 template <class _RandomAccessIter, class _StrictWeakOrdering>
 bool is_heap(_RandomAccessIter __first, _RandomAccessIter __last,
-	     _StrictWeakOrdering __comp);
+             _StrictWeakOrdering __comp);
 
 
 // is_sorted, a predicated testing whether a range is sorted in

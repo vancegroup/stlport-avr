@@ -163,7 +163,7 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
 
   _Rb_tree_iterator() {}
   _Rb_tree_iterator(_Base_ptr __x) : _Rb_tree_base_iterator(__x) {}
-  _Rb_tree_iterator(const iterator& __it) { _M_node = __it._M_node; }
+  _Rb_tree_iterator(const iterator& __it) : _Rb_tree_base_iterator(__it._M_node) {}
 
   reference operator*() const {
     return __STATIC_CAST(_Link_type, _M_node)->_M_value_field;
@@ -223,7 +223,7 @@ protected:
   }
   _Rb_tree_base(__move_source<_Self> src) :
     _M_header(_AsMoveSource<_AllocProxy>(src.get()._M_header)) {
-    _M_rebind();
+    _M_rebind(&src.get()._M_header._M_data);
     src.get()._M_empty_initialize();
   }
   void _M_empty_initialize() {
@@ -234,15 +234,17 @@ protected:
     _M_header._M_data._M_right = &_M_header._M_data;
   }
 
-  static void _M_rebind_node (_Node_base *__node, _Node_base *__root) {
-    if (__node->_M_parent != 0) {
-      __node->_M_parent = __root;
-    }
-  }
   
-  void _M_rebind() {
-    _M_rebind_node(_M_header._M_data._M_right, &_M_header._M_data);
-    _M_rebind_node(_M_header._M_data._M_left, &_M_header._M_data);
+  void _M_rebind(_Node_base *__static_node) {
+    if (_M_header._M_data._M_parent != 0) {
+      _M_header._M_data._M_parent->_M_parent = &_M_header._M_data;
+    }
+    if (_M_header._M_data._M_right == __static_node) {
+      _M_header._M_data._M_right = &_M_header._M_data;
+    }
+    if (_M_header._M_data._M_left == __static_node) {
+      _M_header._M_data._M_left = &_M_header._M_data;
+    }
   }
 
   _AllocProxy _M_header;
@@ -331,6 +333,10 @@ public:
   typedef _Rb_tree_iterator<value_type, _Nonconst_traits<value_type> > iterator;
   typedef _Rb_tree_iterator<value_type, _Const_traits<value_type> > const_iterator;
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
+  
+  static iterator _M_unconst(const_iterator __ite) {
+    return __ite._M_node;
+  }
 
 private:
   iterator _M_insert(_Base_ptr __parent, const value_type& __val, _Base_ptr __on_left = 0, _Base_ptr __on_right = 0);
@@ -395,17 +401,19 @@ public:
 
   void swap(_Self& __t) {
     if (__t.empty()) {
+      if (this->empty()) return;
       __t._M_header = this->_M_header;
-      __t._M_rebind();
+      __t._M_rebind(&this->_M_header._M_data);
       this->_M_empty_initialize();
     }
     else if (this->empty()) {
       __t.swap(*this);
+      return;
     }
     else {
       _STLP_STD::swap(this->_M_header, __t._M_header);
-      this->_M_rebind();
-      __t._M_rebind();
+      this->_M_rebind(&__t._M_header._M_data);
+      __t._M_rebind(&this->_M_header._M_data);
     }
     _STLP_STD::swap(_M_node_count, __t._M_node_count);
     _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
@@ -488,13 +496,13 @@ public:
 public:
                                 // set operations:
 # if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS ) && !defined(__MRC__) && !(defined(__SC__) && !defined(__DMC__))
-  template <class _KT> iterator find(const _KT& __x) { return iterator(_M_find(__x)); }
-  template <class _KT> const_iterator find(const _KT& __x) const { return const_iterator(_M_find(__x)); }
+  template <class _KT> iterator find(const _KT& __k) { return iterator(_M_find(__k)); }
+  template <class _KT> const_iterator find(const _KT& __k) const { return const_iterator(_M_find(__k)); }
 private:
   template <class _KT> _Base_ptr _M_find(const _KT& __k) const
 # else
-  iterator find(const key_type& __x) { return iterator(_M_find(__x)); }
-  const_iterator find(const key_type& __x) const { return const_iterator(_M_find(__x)); }
+  iterator find(const key_type& __k) { return iterator(_M_find(__k)); }
+  const_iterator find(const key_type& __k) const { return const_iterator(_M_find(__k)); }
 private:
   _Base_ptr _M_find(const key_type& __k) const
 # endif

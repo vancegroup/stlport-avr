@@ -22,7 +22,7 @@
 
 
 template <class _Alloc>
-void list<void*, _Alloc>::resize(size_type __new_size, const_reference __x)
+void list<void*, _Alloc>::resize(size_type __new_size, value_type __x)
 {
   iterator __i = begin();
   size_type __len = 0;
@@ -53,7 +53,7 @@ list<void*, _Alloc>& list<void*, _Alloc>::operator=(const list<void*, _Alloc>& _
 }
 
 template <class _Alloc>
-void list<void*, _Alloc>::_M_fill_assign(size_type __n, const_reference __val) {
+void list<void*, _Alloc>::_M_fill_assign(size_type __n, value_type __val) {
   iterator __i = begin();
   for ( ; __i != end() && __n > 0; ++__i, --__n)
     *__i = __val;

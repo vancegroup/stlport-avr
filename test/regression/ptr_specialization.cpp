@@ -1,11 +1,12 @@
 // STLport regression testsuite component.
 // To compile as a separate example, please #define MAIN.
 
+//#define _STLP_DONT_USE_PTR_SPECIALIZATIONS
+
 #include <vector>
 #include <list>
 #include <slist>
 #include <deque>
-#include <set>
 
 #include "stlp_test.h"
 
@@ -28,7 +29,6 @@ TEST_INSTANCIATE_CONTAINER(vector);
 TEST_INSTANCIATE_CONTAINER(list);
 TEST_INSTANCIATE_CONTAINER(slist);
 TEST_INSTANCIATE_CONTAINER(deque);
-TEST_INSTANCIATE_CONTAINER(set);
 #endif
 
 template <class _Tp>

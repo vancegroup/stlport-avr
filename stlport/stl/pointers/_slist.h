@@ -21,7 +21,9 @@
 #ifndef _STLP_SPECIALIZED_SLIST_H
 #define _STLP_SPECIALIZED_SLIST_H
 
-#include <stl/pointers/_void_ptr_traits.h>
+#ifndef _STLP_VOID_PTR_TRAITS_H
+# include <stl/pointers/_void_ptr_traits.h>
+#endif
 
 template <class _Alloc>
 class slist<void*, _Alloc> : protected _Slist_base<void*, _Alloc> _STLP_STLPORT_CLASS_N
@@ -35,7 +37,7 @@ public:
   typedef value_type*       pointer;
   typedef const value_type* const_pointer;
   typedef value_type&       reference;
-  typedef value_type        const_reference;
+  typedef const value_type& const_reference;
   typedef size_t            size_type;
   typedef ptrdiff_t         difference_type;
   typedef forward_iterator_tag _Iterator_category;
@@ -51,9 +53,9 @@ private:
   typedef _Slist_node_base      _Node_base;
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node* _M_create_node(const_reference __x = static_cast<void*>(0)) {
+  _Node* _M_create_node(value_type __x = static_cast<void*>(0)) {
 #else
-  _Node* _M_create_node(const_reference __x) {
+  _Node* _M_create_node(value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     _Node* __node = this->_M_head.allocate(1);
     __node->_M_data = __x;
@@ -77,9 +79,9 @@ public:
   explicit slist(const allocator_type& __a = allocator_type()) : _Slist_base<void*,_Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const_reference __x = 0,
+  explicit slist(size_type __n, value_type __x = 0,
 #else
-  slist(size_type __n, const_reference __x,
+  slist(size_type __n, value_type __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a =  allocator_type()) : _Slist_base<void*,_Alloc>(__a)
     { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
@@ -133,10 +135,10 @@ public:
   // The range version is a member template, so we dispatch on whether
   // or not the type is an integer.
 
-  void assign(size_type __n, const_reference __val)
+  void assign(size_type __n, value_type __val)
     { _M_fill_assign(__n, __val); }
 
-  void _M_fill_assign(size_type __n, const_reference __val);
+  void _M_fill_assign(size_type __n, value_type __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -203,9 +205,9 @@ public:
   reference front()             { return *begin(); }
   const_reference front() const { return *begin(); }
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_front(const_reference __x = 0)   {
+  void push_front(value_type __x = 0)   {
 #else
-  void push_front(const_reference __x)   {
+  void push_front(value_type __x)   {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     __slist_make_link(&this->_M_head._M_data, _M_create_node(__x));
   }
@@ -229,9 +231,9 @@ public:
 
 private:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node* _M_insert_after(_Node_base* __pos, const_reference __x = 0) {
+  _Node* _M_insert_after(_Node_base* __pos, value_type __x = 0) {
 #else
-  _Node* _M_insert_after(_Node_base* __pos, const_reference __x) {
+  _Node* _M_insert_after(_Node_base* __pos, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     return static_cast<_Node*>(__slist_make_link(__pos, _M_create_node(__x)));
   }
@@ -243,7 +245,7 @@ private:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void _M_insert_after_fill(_Node_base* __pos,
-                            size_type __n, const_reference __x) {
+                            size_type __n, value_type __x) {
     for (size_type __i = 0; __i < __n; ++__i)
       __pos = __slist_make_link(__pos, _M_create_node(__x));
   }
@@ -297,9 +299,9 @@ private:
 public:
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert_after(iterator __pos, const_reference __x = 0) {
+  iterator insert_after(iterator __pos, value_type __x = 0) {
 #else
-  iterator insert_after(iterator __pos, const_reference __x) {
+  iterator insert_after(iterator __pos, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     return iterator(_M_insert_after(__pos._M_node, __x));
   }
@@ -310,7 +312,7 @@ public:
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void insert_after(iterator __pos, size_type __n, const_reference __x) {
+  void insert_after(iterator __pos, size_type __n, value_type __x) {
     _M_insert_after_fill(__pos._M_node, __n, __x);
   }
 
@@ -337,9 +339,9 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert(iterator __pos, const_reference __x = 0) {
+  iterator insert(iterator __pos, value_type __x = 0) {
 #else
-  iterator insert(iterator __pos, const_reference __x) {
+  iterator insert(iterator __pos, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     return iterator(_M_insert_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
                     __x));
@@ -352,7 +354,7 @@ public:
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void insert(iterator __pos, size_type __n, const_reference __x) {
+  void insert(iterator __pos, size_type __n, value_type __x) {
     _M_insert_after_fill(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), __n, __x);
   } 
     
@@ -398,9 +400,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type new_size, const_reference __x = 0);
+  void resize(size_type new_size, value_type __x = 0);
 #else
-  void resize(size_type new_size, const_reference __x);
+  void resize(size_type new_size, value_type __x);
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -470,7 +472,7 @@ public:
       this->_M_head._M_data._M_next = _Sl_global_inst::__reverse(this->_M_head._M_data._M_next);
   }
 
-  void remove(const_reference __val); 
+  void remove(value_type __val); 
   void unique(); 
   void merge(_Self& __x);
   void sort();     
@@ -576,7 +578,7 @@ public:
   typedef value_type*       pointer;
   typedef const value_type* const_pointer;
   typedef value_type&       reference;
-  typedef value_type        const_reference;
+  typedef const value_type& const_reference;
   typedef size_t            size_type;
   typedef ptrdiff_t         difference_type;
   typedef forward_iterator_tag _Iterator_category;
@@ -593,9 +595,9 @@ public:
   explicit slist(const allocator_type& __a = allocator_type()) : _M_container(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const_reference __x = 0,
+  explicit slist(size_type __n, value_type __x = 0,
 #else
-  slist(size_type __n, const_reference __x,
+  slist(size_type __n, value_type __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a =  allocator_type()) : _M_container(__n, cast_traits::cast(__x), __a) {}
 
@@ -641,7 +643,7 @@ public:
   // The range version is a member template, so we dispatch on whether
   // or not the type is an integer.
 
-  void assign(size_type __n, const_reference __val) { _M_container.assign(__n, cast_traits::cast(__val)); }
+  void assign(size_type __n, value_type __val) { _M_container.assign(__n, cast_traits::cast(__val)); }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIte>
@@ -670,9 +672,9 @@ public:
   reference front()             { return *begin(); }
   const_reference front() const { return *begin(); }
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_front(const_reference __x = 0)   {
+  void push_front(value_type __x = 0)   {
 #else
-  void push_front(const_reference __x)   {
+  void push_front(value_type __x)   {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     _M_container.push_front(cast_traits::cast(__x));
   }
@@ -688,9 +690,9 @@ public:
     { return const_iterator(const_cast<_Slist_node_base*>(_M_container.previous(const_void_iterator(__pos._M_node))._M_node)); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert_after(iterator __pos, const_reference __x = 0) {
+  iterator insert_after(iterator __pos, value_type __x = 0) {
 #else
-  iterator insert_after(iterator __pos, const_reference __x) {
+  iterator insert_after(iterator __pos, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     return iterator(_M_container.insert_after(void_iterator(__pos._M_node), cast_traits::cast(__x))._M_node);
   }
@@ -699,7 +701,7 @@ public:
   iterator insert_after(iterator __pos) { return iterator(_M_container.insert_after(void_iterator(__pos._M_node))._M_node);}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void insert_after(iterator __pos, size_type __n, const_reference __x) {
+  void insert_after(iterator __pos, size_type __n, value_type __x) {
     _M_container.insert_after(void_iterator(__pos._M_node), __n, cast_traits::cast(__x));
   }
 
@@ -728,9 +730,9 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  iterator insert(iterator __pos, const_reference __x = 0) {
+  iterator insert(iterator __pos, value_type __x = 0) {
 #else
-  iterator insert(iterator __pos, const_reference __x) {
+  iterator insert(iterator __pos, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     return iterator(_M_container.insert(void_iterator(__pos._M_node), cast_traits::cast(__x))._M_node);
   }
@@ -741,7 +743,7 @@ public:
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void insert(iterator __pos, size_type __n, const_reference __x) {
+  void insert(iterator __pos, size_type __n, value_type __x) {
     _M_container.insert(void_iterator(__pos._M_node), __n, cast_traits::cast(__x));
   }
 
@@ -786,9 +788,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const_reference __x = 0)
+  void resize(size_type __new_size, value_type __x = 0)
 #else
-  void resize(size_type __new_size, const_reference __x)
+  void resize(size_type __new_size, value_type __x)
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
   { _M_container.resize(__new_size, cast_traits::cast(__x));}
 
@@ -823,7 +825,7 @@ public:
 public:
   void reverse() { _M_container.reverse(); }
 
-  void remove(const_reference __val) { _M_container.remove(cast_traits::cast(__val)); }
+  void remove(value_type __val) { _M_container.remove(cast_traits::cast(__val)); }
   void unique() { _M_container.unique(); }
   void merge(_Self& __x) { _M_container.merge(__x._M_container); }
   void sort() {_M_container.sort(); }

@@ -40,15 +40,23 @@ struct __void_ptr_traits_cv {
     return __ptr;
   }
 
-  inline static void ** ite_cast(void **__ptr) {
+  inline static void ** ptr_cast(void **__ptr) {
     return __ptr;
   }
 
-  inline static void *const* const_ite_cast(void *const*__ptr) {
+  inline static void *const* const_ptr_cast(void *const*__ptr) {
+    return __ptr;
+  }
+
+  inline static void *** ptr_ptr_cast(void ***__ptr) {
     return __ptr;
   }
 
   inline static void *& ref_cast(void *&__ref) {
+    return __ref;
+  }
+
+  inline static void *const& const_ref_cast(void *const&__ref) {
     return __ref;
   }
 };
@@ -61,16 +69,24 @@ struct __void_ptr_traits_cv_base {
     return const_cast<void*>(__ptr);
   }
 
-  inline static void ** ite_cast(void_cv_type *__ptr) {
+  inline static void ** ptr_cast(void_cv_type *__ptr) {
     return const_cast<void **>(__ptr);
   }
 
-  inline static void *const* const_ite_cast(void_cv_type const*__ptr) {
+  inline static void *const* const_ptr_cast(void_cv_type const*__ptr) {
     return const_cast<void *const*>(__ptr);
+  }
+
+  inline static void *** ptr_ptr_cast( void_cv_type **__ptr) {
+    return const_cast<void***>(__ptr);
   }
 
   inline static void *& ref_cast(void_cv_type &__ref) {
     return const_cast<void *&>(__ref);
+  }
+
+  inline static void *const& const_ref_cast(void_cv_type const&__ref) {
+    return const_cast<void *const&>(__ref);
   }
 
   /*
@@ -80,16 +96,24 @@ struct __void_ptr_traits_cv_base {
     return const_cast<void_cv_type>(__ptr);
   }
 
-  inline static void_cv_type * ite_cast(void **__ptr) {
+  inline static void_cv_type * ptr_cast(void **__ptr) {
     return const_cast<void_cv_type *>(__ptr);
   }
 
-  inline static void_cv_type const* const_ite_cast(void *const*__ptr) {
+  inline static void_cv_type const* const_ptr_cast(void *const*__ptr) {
     return const_cast<void_cv_type const*>(__ptr);
+  }
+
+  inline static void_cv_type ** ptr_ptr_cast( void ***__ptr) {
+    return const_cast<void_cv_type**>(__ptr);
   }
 
   inline static void_cv_type & ref_cast(void *&__ref) {
     return const_cast<void_cv_type &>(__ref);
+  }
+
+  inline static void_cv_type const& const_ref_cast(void *const&__ref) {
+    return const_cast<void_cv_type const&>(__ref);
   }
 };
 
@@ -114,16 +138,24 @@ struct __void_ptr_traits {
     return reinterpret_cast<_Tp *>(__cv::cast(__ptr));
   }
 
-  inline static _Tp ** ite_cast(void **__ptr) {
-    return reinterpret_cast<_Tp **>(__cv::ite_cast(__ptr));
+  inline static _Tp ** ptr_cast(void **__ptr) {
+    return reinterpret_cast<_Tp **>(__cv::ptr_cast(__ptr));
   }
 
-  inline static _Tp *const* const_ite_cast(void *const*__ptr) {
-    return reinterpret_cast<_Tp *const*>(__cv::const_ite_cast(__ptr));
+  inline static _Tp *const* const_ptr_cast(void *const*__ptr) {
+    return reinterpret_cast<_Tp *const*>(__cv::const_ptr_cast(__ptr));
+  }
+
+  inline static _Tp *** ptr_ptr_cast(void ***__ptr) {
+    return reinterpret_cast<_Tp ***>(__cv::ptr_ptr_cast(__ptr));
   }
 
   inline static _Tp *& ref_cast(void *&__ref) {
     return reinterpret_cast<_Tp *&>(__cv::ref_cast(__ref));
+  }
+
+  inline static _Tp *const& const_ref_cast(void *const&__ref) {
+    return reinterpret_cast<_Tp *const&>(__cv::const_ref_cast(__ref));
   }
 
   /*
@@ -133,16 +165,24 @@ struct __void_ptr_traits {
     return __cv::cast(reinterpret_cast<void_cv_type>(__ptr));
   }
 
-  inline static void ** ite_cast(_Tp **__ptr) {
-    return __cv::ite_cast(reinterpret_cast<void_cv_type *>(__ptr));
+  inline static void ** ptr_cast(_Tp **__ptr) {
+    return __cv::ptr_cast(reinterpret_cast<void_cv_type *>(__ptr));
   }
 
-  inline static void *const* const_ite_cast(_Tp *const*__ptr) {
-    return __cv::const_ite_cast(reinterpret_cast<void_cv_type const*>(__ptr));
+  inline static void *const* const_ptr_cast(_Tp *const*__ptr) {
+    return __cv::const_ptr_cast(reinterpret_cast<void_cv_type const*>(__ptr));
+  }
+
+  inline static void *** ptr_ptr_cast(_Tp ***__ptr) {
+    return __cv::ptr_ptr_cast(reinterpret_cast<void_cv_type **>(__ptr));
   }
 
   inline static void *& ref_cast(_Tp *&__ref) {
     return __cv::ref_cast(reinterpret_cast<void_cv_type &>(__ref));
+  }
+
+  inline static void *const& ref_cast(_Tp *const&__ref) {
+    return __cv::const_ref_cast(reinterpret_cast<void_cv_type const&>(__ref));
   }
 };
 
@@ -162,6 +202,11 @@ struct __iterator_wrapper {
   __iterator_wrapper(_Iterator & __ite) : _M_ite(__ite) {}
 
   reference operator*() const { return cast_traits::cast(*_M_ite); }
+
+  _Self& operator= (_Self const& __rhs) {
+    _M_ite = __rhs._M_ite;
+    return *this;
+  }
 
   _Self& operator++() {
     ++_M_ite;
@@ -197,14 +242,19 @@ private:
   _Iterator &_M_ite;
 };
 
-   
+
+//TODO
+template <class _Alloc>
+struct __alloc_wrapper {
+};
+
 template <class _Tp, class _UnaryPredicate>
 struct __unary_pred_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
   
   __unary_pred_wrapper (_UnaryPredicate const& __pred) : _M_pred(__pred) {}
   
-  inline bool operator () (void *__ptr) const {
+  bool operator () (void *__ptr) const {
     return _M_pred(cast_traits::cast(__ptr));
   }
 
@@ -217,11 +267,26 @@ template <class _Tp, class _BinaryPredicate>
 struct __binary_pred_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
 
+  __binary_pred_wrapper () {}
   __binary_pred_wrapper (_BinaryPredicate const& __pred) : _M_pred(__pred) {}
 
-  inline bool operator () (void *__first, void *__second) const {
+  _BinaryPredicate get_pred() const { return _M_pred; }
+
+  bool operator () (void *__first, void *__second) const {
     return _M_pred(cast_traits::cast(__first), cast_traits::cast(__second));
   }
+
+  /*
+   * operators usefull for the _Rb_tree::_M_find template method
+   
+  template <class _K>
+  bool operator () (void *__first, _K const&__second) {
+    return _M_pred(cast_traits::cast(__first), __second);
+  }
+  template <class _K>
+  bool operator () (_K const&__first, void *__second) {
+    return _M_pred(__first, cast_traits::cast(__second));
+  }*/
 
 private:
   _BinaryPredicate _M_pred;

@@ -66,12 +66,16 @@ protected:
 
 public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
-    typedef typename _Base::key_type key_type;
+  typedef typename _Base::key_type key_type;
   
   typedef _DBG_iter<_Base, _Nonconst_traits<value_type> > iterator;
   typedef _DBG_iter<_Base, _Const_traits<value_type> > const_iterator;
 
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
+  
+  static iterator _M_unconst (const_iterator __ite) {
+    return iterator(__ite._M_iter_list, __ite._M_iterator);
+  }
 
 protected:
 
@@ -160,11 +164,11 @@ public:
 
   pair<iterator,iterator> equal_range(const key_type& __x) {
     return pair<iterator, iterator>(iterator(&_M_iter_list, _Base::lower_bound(__x)),
-		 		 		 		     iterator(&_M_iter_list, _Base::upper_bound(__x)));
+                                    iterator(&_M_iter_list, _Base::upper_bound(__x)));
   }
   pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
     return pair<const_iterator,const_iterator>(const_iterator(&_M_iter_list, _Base::lower_bound(__x)),
-		 		 		 		 		        const_iterator(&_M_iter_list, _Base::upper_bound(__x)));
+                                               const_iterator(&_M_iter_list, _Base::upper_bound(__x)));
   }
 
   pair<iterator,bool> insert_unique(const value_type& __x) {

@@ -21,8 +21,9 @@
 #ifndef _STLP_SPECIALIZED_LIST_H
 #define _STLP_SPECIALIZED_LIST_H
 
-#include <stl/pointers/_void_ptr_traits.h>
-
+#ifndef _STLP_VOID_PTR_TRAITS_H
+# include <stl/pointers/_void_ptr_traits.h>
+#endif
 
 template <class _Alloc>
 class list<void*, _Alloc> : public _List_base<void*, _Alloc> _STLP_STLPORT_CLASS_N
@@ -34,7 +35,7 @@ public:
   typedef value_type* pointer;
   typedef const value_type* const_pointer;
   typedef value_type& reference;
-  typedef value_type const_reference;
+  typedef const value_type& const_reference;
   typedef _List_node<void*> _Node;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
@@ -49,9 +50,9 @@ public:
 
 protected:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node* _M_create_node(const_reference __x = 0)
+  _Node* _M_create_node(value_type __x = 0)
 #else
-  _Node* _M_create_node(const_reference __x)
+  _Node* _M_create_node(value_type __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   {
     _Node* __p = this->_M_node.allocate(1);
@@ -103,9 +104,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const_reference __x = 0)
+  iterator insert(iterator __pos, value_type __x = 0)
 #else
-  iterator insert(iterator __pos, const_reference __x)
+  iterator insert(iterator __pos, value_type __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   {
     _Node* __tmp = _M_create_node(__x);
@@ -144,14 +145,14 @@ public:
     for ( ; __first != __last; ++__first)
       insert(__pos, *__first);
   }
-  void insert(iterator __pos, size_type __n, const_reference __x) { _M_fill_insert(__pos, __n, __x); }
+  void insert(iterator __pos, size_type __n, value_type __x) { _M_fill_insert(__pos, __n, __x); }
 
-  void _M_fill_insert(iterator __pos, size_type __n, const_reference __x) {
+  void _M_fill_insert(iterator __pos, size_type __n, value_type __x) {
     for ( ; __n > 0; --__n)
       insert(__pos, __x);
   }
-  void push_front(const_reference __x) { insert(begin(), __x); }
-  void push_back(const_reference __x)  { insert(end(), __x); }
+  void push_front(value_type __x) { insert(begin(), __x); }
+  void push_back(value_type __x)  { insert(end(), __x); }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos) { return insert(__pos, __STATIC_CAST(void*, 0)); }
@@ -176,9 +177,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const_reference __x = 0);
+  void resize(size_type __new_size, value_type __x = 0);
 #else
-  void resize(size_type __new_size, const_reference __x);
+  void resize(size_type __new_size, value_type __x);
   void resize(size_type __new_size) { this->resize(__new_size, __STATIC_CAST(void*, 0)); }
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
 
@@ -188,9 +189,9 @@ public:
     erase(--__tmp);
   }
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit list(size_type __n, const_reference __val = 0,
+  explicit list(size_type __n, value_type __val = 0,
 #else
-  list(size_type __n, const_reference __val,
+  list(size_type __n, value_type __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
        const allocator_type& __a = allocator_type())
     : _List_base<void*, _Alloc>(__a)
@@ -246,9 +247,9 @@ public:
   // The range version is a member template, so we dispatch on whether
   // or not the type is an integer.
 
-  void assign(size_type __n, const_reference __val) { _M_fill_assign(__n, __val); }
+  void assign(size_type __n, value_type __val) { _M_fill_assign(__n, __val); }
 
-  void _M_fill_assign(size_type __n, const_reference __val);
+  void _M_fill_assign(size_type __n, value_type __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -293,7 +294,7 @@ public:
       _List_global_inst::_Transfer(__pos._M_node, __first._M_node, __last._M_node);
   }
 
-  void remove(const_reference __val) {
+  void remove(value_type __val) {
     iterator __first = begin();
     iterator __last = end();
     while (__first != __last) {
@@ -378,7 +379,7 @@ public:
   typedef value_type* pointer;
   typedef const value_type* const_pointer;
   typedef value_type& reference;
-  typedef value_type const_reference;
+  typedef const value_type& const_reference;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   _STLP_FORCE_ALLOCATORS(_Tp*, _Alloc)
@@ -395,9 +396,9 @@ public:
   list(const allocator_type& __a = allocator_type()) : _M_container(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit list(size_type __n, const_reference __val = 0,
+  explicit list(size_type __n, value_type __val = 0,
 #else
-  list(size_type __n, const_reference __val,
+  list(size_type __n, value_type __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
        const allocator_type& __a = allocator_type())
     : _M_container(__n, cast_traits::cast(__val), __a) {}
@@ -463,9 +464,9 @@ public:
 
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const_reference __x = 0)
+  iterator insert(iterator __pos, value_type __x = 0)
 #else
-  iterator insert(iterator __pos, const_reference __x)
+  iterator insert(iterator __pos, value_type __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
   { return iterator(_M_container.insert(__pos._M_node, cast_traits::cast(__x))._M_node); }
 
@@ -482,11 +483,11 @@ public:
   { _M_container.insert(__pos._M_node, __first._M_node, __last._M_node); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  void insert(iterator __pos, size_type __n, const_reference __x)
+  void insert(iterator __pos, size_type __n, value_type __x)
   { _M_container.insert(__pos._M_node, __n, cast_traits::cast(__x)); }
 
-  void push_front(const_reference __x) { insert(begin(), __x); }
-  void push_back(const_reference __x) { insert(end(), __x); }
+  void push_front(value_type __x) { insert(begin(), __x); }
+  void push_back(value_type __x) { insert(end(), __x); }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos) { return insert(__pos, __STATIC_CAST(_Tp*, 0)); }
@@ -498,10 +499,10 @@ public:
   iterator erase(iterator __first, iterator __last) { return iterator(_M_container.erase(__first._M_node, __last._M_node)._M_node); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const_reference __x = 0)
+  void resize(size_type __new_size, value_type __x = 0)
 #else
   void resize(size_type __new_size) { this->resize(__new_size, __STATIC_CAST(void*, 0)); }
-  void resize(size_type __new_size, const_reference __x)
+  void resize(size_type __new_size, value_type __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   {_M_container.resize(__new_size, cast_traits::cast(__x));}
 
@@ -509,7 +510,7 @@ public:
   void pop_back() { _M_container.pop_back(); }
 
   _Self& operator=(const _Self& __x) {_M_container = __x._M_container; return *this;}
-  void assign(size_type __n, const_reference __val) { _M_container.assign(__n, cast_traits::cast(__val)); }
+  void assign(size_type __n, value_type __val) { _M_container.assign(__n, cast_traits::cast(__val)); }
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -526,7 +527,7 @@ public:
     _M_container.splice(__pos._M_node, __x._M_container, __first._M_node, __last._M_node);
   }
 
-  void remove(const_reference __val) { _M_container.remove(cast_traits::cast(__val)); }
+  void remove(value_type __val) { _M_container.remove(cast_traits::cast(__val)); }
   void unique() { _M_container.unique(); }
   void merge(_Self& __x) { _M_container.merge(__x._M_container); }
   void reverse() { _M_container.reverse(); }

@@ -331,7 +331,8 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc> ::operator=(const _Rb_tree<_Ke
 // __on_right != 0 to bypass comparison as false or __on_left != 0 to bypass
 // comparison as true)
 template <class _Key, class _Value, class _KeyOfValue, 
-          class _Compare, class _Alloc> __iterator__ 
+          class _Compare, class _Alloc>
+__iterator__ 
 _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc> ::_M_insert(_Rb_tree_node_base * __parent,
                                                               const _Value& __val,
                                                               _Rb_tree_node_base * __on_left,
@@ -343,7 +344,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc> ::_M_insert(_Rb_tree_node_base
     _M_root() = __new_node;
     _M_rightmost() = __new_node;
   }
-  else if ( __on_right == 0 && // If __on_right != 0, the remainder fails to false
+  else if ( __on_right == 0 &&     // If __on_right != 0, the remainder fails to false
            ( __on_left != 0 ||     // If __on_left != 0, the remainder succeeds to true
              _M_key_compare( _KeyOfValue()(__val), _S_key(__parent) ) ) ) {
     _S_left(__parent) = __new_node;
@@ -408,7 +409,7 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> ::insert_unique(iterator _
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
     // if the container is empty, fall back on insert_unique.
-    if (size() <= 0)
+    if (empty())
       return insert_unique(__val).first;
 
     if ( _M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node)))

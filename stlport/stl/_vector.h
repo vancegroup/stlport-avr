@@ -222,7 +222,7 @@ public:
     _Vector_base<_Tp, _Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit vector(size_type __n, const _Tp& __val = _Tp(),
+  explicit vector(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
 #else
   vector(size_type __n, const _Tp& __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
@@ -365,7 +365,7 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_back(const _Tp& __x = _Tp()) {
+  void push_back(const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   void push_back(const _Tp& __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
@@ -378,7 +378,7 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position, const _Tp& __x = _Tp()) {
+  iterator insert(iterator __position, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   iterator insert(iterator __position, const _Tp& __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
@@ -401,7 +401,7 @@ public:
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  void push_back() { push_back(_Tp()); }
+  void push_back() { push_back(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
   iterator insert(iterator __position) { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
@@ -520,7 +520,7 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const _Tp& __x = _Tp()) {
+  void resize(size_type __new_size, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   void resize(size_type __new_size, const _Tp& __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/

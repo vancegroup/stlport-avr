@@ -135,14 +135,13 @@ public:
   void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
-  pair<iterator,bool> insert(const value_type& __x) { 
+  pair<iterator,bool> insert(const value_type& __x) {
     typedef typename _Rep_type::iterator _Rep_iterator;
-    pair<_Rep_iterator, bool> __p = _M_t.insert_unique(__x); 
-    return pair<iterator, bool>(__REINTERPRET_CAST(const iterator&,__p.first), __p.second);
+    pair<_Rep_iterator, bool> __tmp = _M_t.insert_unique(__x);
+    return pair<iterator, bool>(__tmp.first, __tmp.second);
   }
   iterator insert(iterator __position, const value_type& __x) {
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    return _M_t.insert_unique((_Rep_iterator&)__position, __x);
+    return _M_t.insert_unique(_Rep_type::_M_unconst(__position), __x);
   }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -158,15 +157,13 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __position) { 
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    _M_t.erase((_Rep_iterator&)__position); 
+    _M_t.erase(_Rep_type::_M_unconst(__position)); 
   }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
   void erase(iterator __first, iterator __last) { 
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    _M_t.erase((_Rep_iterator&)__first, (_Rep_iterator&)__last); 
+    _M_t.erase(_Rep_type::_M_unconst(__first), _Rep_type::_M_unconst(__last)); 
   }
   void clear() { _M_t.clear(); }
 
@@ -298,8 +295,7 @@ public:
     return _M_t.insert_equal(__x);
   }
   iterator insert(iterator __position, const value_type& __x) {
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    return _M_t.insert_equal((_Rep_iterator&)__position, __x);
+    return _M_t.insert_equal(_Rep_type::_M_unconst(__position), __x);
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
@@ -316,15 +312,13 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __position) { 
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    _M_t.erase((_Rep_iterator&)__position); 
+    _M_t.erase(_Rep_type::_M_unconst(__position)); 
   }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
   void erase(iterator __first, iterator __last) { 
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    _M_t.erase((_Rep_iterator&)__first, (_Rep_iterator&)__last); 
+    _M_t.erase(_Rep_type::_M_unconst(__first), _Rep_type::_M_unconst(__last)); 
   }
   void clear() { _M_t.clear(); }
 

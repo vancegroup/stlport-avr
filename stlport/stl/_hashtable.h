@@ -77,8 +77,7 @@ template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 struct _Hashtable_iterator
 {
-  typedef hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
-          _Hashtable;
+  typedef hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> _Hashtable;
   typedef _Hashtable_node<_Val> _Node;
 
   _Node* _M_cur;
@@ -96,7 +95,6 @@ template <class _Val, class _Traits, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 struct _Ht_iterator : public _Hashtable_iterator< _Val, _Key,_HF, _ExK,_EqK,_All>
 {
-  
   typedef _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All> _Base;
 
   //  typedef _Ht_iterator<_Val, _Nonconst_traits<_Val>,_Key,_HF,_ExK,_EqK,_All> iterator;
@@ -120,17 +118,17 @@ struct _Ht_iterator : public _Hashtable_iterator< _Val, _Key,_HF, _ExK,_EqK,_All
     _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All>(__it) {}
 
   reference operator*() const { 
-      return this->_M_cur->_M_val; 
+    return this->_M_cur->_M_val; 
   }
   _STLP_DEFINE_ARROW_OPERATOR
 
   _Self& operator++() {
     _Node* __n = this->_M_cur->_M_next;
-    this->_M_cur =  (__n !=0 ? __n : this->_M_skip_to_next());
+    this->_M_cur =  (__n != 0 ? __n : this->_M_skip_to_next());
     return *this;
   }
-  inline  _Self operator++(int) {
-     _Self __tmp = *this;
+  inline _Self operator++(int) {
+    _Self __tmp = *this;
     ++*this;
     return __tmp;
   }
@@ -195,14 +193,15 @@ _STLP_EXPORT_TEMPLATE_CLASS _Stl_prime<bool>;
 
 typedef _Stl_prime<bool> _Stl_prime_type;
 
-
-// Hashtables handle allocators a bit differently than other containers
-//  do.  If we're using standard-conforming allocators, then a hashtable
-//  unconditionally has a member variable to hold its allocator, even if
-//  it so happens that all instances of the allocator type are identical.
-// This is because, for hashtables, this extra storage is negligible.  
-//  Additionally, a base class wouldn't serve any other purposes; it 
-//  wouldn't, for example, simplify the exception-handling code.
+/*
+ * Hashtables handle allocators a bit differently than other containers
+ * do. If we're using standard-conforming allocators, then a hashtable
+ * unconditionally has a member variable to hold its allocator, even if
+ * it so happens that all instances of the allocator type are identical.
+ * This is because, for hashtables, this extra storage is negligible.  
+ * Additionally, a base class wouldn't serve any other purposes; it 
+ * wouldn't, for example, simplify the exception-handling code.
+ */
 template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 class hashtable _STLP_STLPORT_CLASS_1
@@ -357,22 +356,19 @@ public:
   size_type max_bucket_count() const
     { return _Stl_prime_type::_M_list[(int)__stl_num_primes - 1]; } 
 
-  size_type elems_in_bucket(size_type __bucket) const
-  {
+  size_type elems_in_bucket(size_type __bucket) const {
     size_type __result = 0;
     for (_Node* __cur = (_Node*)_M_buckets[__bucket]; __cur; __cur = __cur->_M_next)
       __result += 1;
     return __result;
   }
 
-  pair<iterator, bool> insert_unique(const value_type& __obj)
-  {
+  pair<iterator, bool> insert_unique(const value_type& __obj) {
     resize(_M_num_elements._M_data + 1);
     return insert_unique_noresize(__obj);
   }
 
-  iterator insert_equal(const value_type& __obj)
-  {
+  iterator insert_equal(const value_type& __obj) {
     resize(_M_num_elements._M_data + 1);
     return insert_equal_noresize(__obj);
   }
@@ -382,37 +378,32 @@ public:
  
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  void insert_unique(_InputIterator __f, _InputIterator __l)
-  {
+  void insert_unique(_InputIterator __f, _InputIterator __l) {
     insert_unique(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator));
   }
 
   template <class _InputIterator>
-  void insert_equal(_InputIterator __f, _InputIterator __l)
-  {
+  void insert_equal(_InputIterator __f, _InputIterator __l) {
     insert_equal(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator));
   }
 
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l,
-                     const input_iterator_tag &)
-  {
+                     const input_iterator_tag &) {
     for ( ; __f != __l; ++__f)
       insert_unique(*__f);
   }
 
   template <class _InputIterator>
   void insert_equal(_InputIterator __f, _InputIterator __l,
-                    const input_iterator_tag &)
-  {
+                    const input_iterator_tag &) {
     for ( ; __f != __l; ++__f)
       insert_equal(*__f);
   }
 
   template <class _ForwardIterator>
   void insert_unique(_ForwardIterator __f, _ForwardIterator __l,
-                     const forward_iterator_tag &)
-  {
+                     const forward_iterator_tag &) {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
@@ -421,8 +412,7 @@ public:
 
   template <class _ForwardIterator>
   void insert_equal(_ForwardIterator __f, _ForwardIterator __l,
-                    const forward_iterator_tag &)
-  {
+                    const forward_iterator_tag &) {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
@@ -430,32 +420,28 @@ public:
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
-  void insert_unique(const value_type* __f, const value_type* __l)
-  {
+  void insert_unique(const value_type* __f, const value_type* __l) {
     size_type __n = __l - __f;
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
 
-  void insert_equal(const value_type* __f, const value_type* __l)
-  {
+  void insert_equal(const value_type* __f, const value_type* __l) {
     size_type __n = __l - __f;
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
   }
 
-  void insert_unique(const_iterator __f, const_iterator __l)
-  {
+  void insert_unique(const_iterator __f, const_iterator __l) {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
 
-  void insert_equal(const_iterator __f, const_iterator __l)
-  {
+  void insert_equal(const_iterator __f, const_iterator __l) {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);
     for ( ; __n > 0; --__n, ++__f)
@@ -503,8 +489,7 @@ public:
     return const_iterator(_M_find(__key), this);
   } 
 
-  size_type count(const key_type& __key) const
-  {
+  size_type count(const key_type& __key) const {
     const size_type __n = _M_bkt_num_key(__key);
     size_type __result = 0;
 
@@ -539,36 +524,30 @@ private:
 
   size_type _M_next_size(size_type __n) const;
 
-  void _M_initialize_buckets(size_type __n)
-  {
+  void _M_initialize_buckets(size_type __n) {
     const size_type __n_buckets = _M_next_size(__n);
     _M_buckets.reserve(__n_buckets);
-    _M_buckets.insert(_M_buckets.end(), __n_buckets, (void*) 0);
+    _M_buckets.insert(_M_buckets.end(), __n_buckets, __STATIC_CAST(void*, 0));
     _M_num_elements._M_data = 0;
   }
 
-  size_type _M_bkt_num_key(const key_type& __key) const
-  {
+  size_type _M_bkt_num_key(const key_type& __key) const {
     return _M_bkt_num_key(__key, _M_buckets.size());
   }
 
-  size_type _M_bkt_num(const value_type& __obj) const
-  {
+  size_type _M_bkt_num(const value_type& __obj) const {
     return _M_bkt_num_key(_M_get_key(__obj));
   }
 
-  size_type _M_bkt_num_key(const key_type& __key, size_t __n) const
-  {
+  size_type _M_bkt_num_key(const key_type& __key, size_t __n) const {
     return _M_hash(__key) % __n;
   }
 
-  size_type _M_bkt_num(const value_type& __obj, size_t __n) const
-  {
+  size_type _M_bkt_num(const value_type& __obj, size_t __n) const {
     return _M_bkt_num_key(_M_get_key(__obj), __n);
   }
 
-  _Node* _M_new_node(const value_type& __obj)
-  {
+  _Node* _M_new_node(const value_type& __obj) {
     _Node* __n = _M_num_elements.allocate(1);
     __n->_M_next = 0;
     _STLP_TRY {
@@ -579,8 +558,7 @@ private:
     return __n;
   }
   
-  void _M_delete_node(_Node* __n)
-  {
+  void _M_delete_node(_Node* __n) {
     _STLP_STD::_Destroy(&__n->_M_val);
     _M_num_elements.deallocate(__n, 1);
   }
@@ -614,5 +592,3 @@ _STLP_END_NAMESPACE
 // Local Variables:
 // mode:C++
 // End:
-
-

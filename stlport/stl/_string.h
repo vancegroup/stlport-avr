@@ -1008,7 +1008,7 @@ public:                         // Replace.  (Conceptually equivalent
                  const_iterator __f, const_iterator __l) {
     return _M_replace(__first, __last, __f, __l, _M_inside(__f));
   }
-  // Check to see if _InputIterator is an integer type.  If so, then
+  // Check to see if _InputIter is an integer type.  If so, then
   // it can't be an iterator.
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
