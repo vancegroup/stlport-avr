@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/07 11:10:25 ptr>
+// -*- C++ -*- Time-stamp: <99/04/16 11:27:31 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -6,6 +6,8 @@
 
 #include <cstring>
 #include <ostream>
+#include <memory>
+#include <functional>
 
 #ifdef WIN32
 #include <iostream>
@@ -32,6 +34,39 @@ using std::endl;
 __declspec( dllexport ) int __thr_key = TlsAlloc();
 #endif
 
+char *Init_buf[32];
+int Thread::Init::_count = 0;
+
+Thread::Init::Init()
+{
+  if ( _count++ == 0 ) {
+#ifdef __STL_SOLARIS_THREADS
+    thr_keycreate( &_mt_key, 0 );
+#endif
+#ifdef _PTHREADS
+    pthread_key_create( &_mt_key, 0 );
+#endif
+#ifdef WIN32
+    _mt_key = TlsAlloc();
+#endif
+  }
+}
+
+Thread::Init::~Init()
+{
+  if ( --_count == 0 ) {
+#ifdef WIN32
+    TlsFree( _mt_key );
+#endif
+#ifdef _PTHREADS
+    pthread_key_delete( _mt_key );
+#endif
+  }
+}
+
+int Thread::_idx = 0;
+Thread::thread_key_type Thread::_mt_key = -1;
+
 __DLLEXPORT
 Thread::Thread( unsigned __f ) :
 #ifdef WIN32
@@ -42,20 +77,44 @@ Thread::Thread( unsigned __f ) :
     _entrance( 0 ),
     _param( 0 ),
     _param_sz( 0 ),
-    _flags( __f )
-{ }
+    _flags( __f ),
+    uw_alloc_size( 0 )
+{
+  new( Init_buf ) Init();
+}
 
 __DLLEXPORT
 Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f ) :
     _entrance( entrance ),
     _param( 0 ),
     _param_sz( 0 ),
-    _flags( __f )
-{ _create( p, psz ); }
+    _flags( __f ),
+    uw_alloc_size( 0 )
+{
+  new( Init_buf ) Init();
+  _create( p, psz );
+}
 
 __DLLEXPORT
 Thread::~Thread()
 {
+  void *user_words;
+
+#ifdef __STL_SOLARIS_THREADS
+  thr_getspecific( _mt_key, &user_words );
+#endif
+#ifdef _PTHREADS
+  user_words = pthread_getspecific( _mt_key );
+#endif
+#ifdef WIN32
+  user_words = TlsGetValue( _mt_key );
+#endif
+  if ( user_words != 0 ) {
+    alloc().deallocate( user_words, uw_alloc_size );
+  }
+
+  ((Init *)Init_buf)->~Init();
+
 #ifdef WIN32
   __stl_assert( _id == INVALID_HANDLE_VALUE );
 #else
@@ -189,6 +248,66 @@ void Thread::exit( int code )
 #endif
 }
 
+__DLLEXPORT
+int Thread::join_all()
+{
+#ifdef __STL_SOLARIS_THREADS
+  while ( thr_join( 0, 0, 0 ) == 0 ) ;
+#endif
+
+  return 0;
+}
+
+__DLLEXPORT
+void Thread::block_signal( int sig )
+{
+#ifdef __unix
+  sigset_t sigset;
+
+  sigemptyset( &sigset );
+  sigaddset( &sigset, sig );
+#  ifdef __STL_SOLARIS_THREADS
+  thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
+#  endif
+#  ifdef _PTHREADS
+  pthread_sigsetmask( SIG_BLOCK, &sigset, 0 );
+#  endif
+#endif // __unix
+}
+
+__DLLEXPORT
+void Thread::unblock_signal( int sig )
+{
+#ifdef __unix
+  sigset_t sigset;
+
+  sigemptyset( &sigset );
+  sigaddset( &sigset, sig );
+#  ifdef __STL_SOLARIS_THREADS
+  thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
+#  endif
+#  ifdef _PTHREADS
+  pthread_sigsetmask( SIG_BLOCK, &sigset, 0 );
+#  endif
+#endif // __unix
+}
+
+__DLLEXPORT
+void Thread::signal_handler( int sig, SIG_PF handler )
+{
+#ifdef __unix  // catch SIGPIPE here
+  struct sigaction act;
+
+  sigemptyset( &act.sa_mask );
+  sigaddset( &act.sa_mask, sig );
+ 
+  act.sa_flags = 0;
+  act.sa_handler = handler;
+  sigaction( sig, &act, 0 );
+#endif // __unix
+}
+
+
 void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer
@@ -201,7 +320,7 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
     std::memcpy( _param, p, psz );
 #endif
   } else {
-    _param = const_cast<void *>(p);	  
+    _param = const_cast<void *>(p);
   }
   _param_sz = psz;
 
@@ -220,7 +339,7 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
     if ( psz > sizeof( void *) ) { // clear allocated here
       delete [] _param;
     }
-    throw runtime_error( "Thread creation error" );
+    throw runtime_error( "Can't create thread" );
   }
 }
 
@@ -296,8 +415,116 @@ void Thread::unexpected()
 
 void Thread::terminate()
 {
-  cerr << "\nTerminated" << endl;
+  cerr << "\nTerminate exception" << endl;
   Thread::exit( -2 );
+}
+
+__DLLEXPORT
+long&  Thread::iword( int __idx )
+{
+  void *user_words;
+
+#ifdef __STL_SOLARIS_THREADS
+  thr_getspecific( _mt_key, &user_words );
+#endif
+#ifdef _PTHREADS
+  user_words = pthread_getspecific( _mt_key );
+#endif
+#ifdef WIN32
+  user_words = TlsGetValue( _mt_key );
+#endif
+  if ( user_words == 0 ) {
+    uw_alloc_size = sizeof( long ) * (__idx + 1);
+    user_words = alloc::allocate( uw_alloc_size );
+    __STD::fill( (long *)user_words, (long *)(user_words) + uw_alloc_size, 0 );
+#ifdef __STL_SOLARIS_THREADS
+    thr_setspecific( _mt_key, user_words );
+#endif
+#ifdef _PTHREADS
+    pthread_setspecific( _mt_key, user_words );
+#endif
+#ifdef WIN32
+    TlsSetValue( _mt_key, user_words );
+#endif
+  } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
+    size_t tmp = sizeof( long ) * (__idx + 1);
+#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+    void *_mtmp = alloc().allocate( tmp );
+    __STD::copy( (long *)user_words, (long *)(user_words) + uw_alloc_size, _mtmp );
+    alloc().deallocate( user_words, uw_alloc_size );
+    user_words = _mtmp;
+#else
+    user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
+#endif
+    __STD::fill( (long *)(user_words) + uw_alloc_size, (long *)(user_words) + tmp, 0 );
+    uw_alloc_size = tmp;
+#ifdef __STL_SOLARIS_THREADS
+    thr_setspecific( _mt_key, user_words );
+#endif
+#ifdef _PTHREADS
+    pthread_setspecific( _mt_key, user_words );
+#endif
+#ifdef WIN32
+    TlsSetValue( _mt_key, user_words );
+#endif
+  }
+
+  return *(static_cast<long *>(user_words) + __idx);
+}
+
+__DLLEXPORT
+void*& Thread::pword( int __idx )
+{
+  long *user_words;
+
+#ifdef __STL_SOLARIS_THREADS
+  thr_getspecific( _mt_key, (void **)&user_words );
+#endif
+#ifdef _PTHREADS
+  user_words = pthread_getspecific( _mt_key );
+#endif
+#ifdef WIN32
+  user_words = TlsGetValue( _mt_key );
+#endif
+  if ( user_words == 0 ) {
+    uw_alloc_size = sizeof( long ) * (__idx + 1);
+    user_words = (long *)alloc().allocate( uw_alloc_size );
+    __STD::fill( user_words, user_words + uw_alloc_size, 0 );
+#ifdef __STL_SOLARIS_THREADS
+    thr_setspecific( _mt_key, (void *)user_words );
+#endif
+#ifdef _PTHREADS
+    pthread_setspecific( _mt_key, (void *)user_words );
+#endif
+#ifdef WIN32
+    TlsSetValue( _mt_key, user_words );
+#endif
+  } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
+    size_t tmp = sizeof( long ) * (__idx + 1);
+#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+    long *_mtmp = (long *)alloc().allocate( tmp );
+    __STD::copy( user_words, user_words + uw_alloc_size, _mtmp );
+    alloc().deallocate( (void *)user_words, uw_alloc_size );
+    user_words = _mtmp;
+#else
+    user_words = (long *)alloc::reallocate( (void *)user_words, uw_alloc_size, tmp );
+#endif
+    __STD::fill( user_words + uw_alloc_size, user_words + tmp, 0 );
+    uw_alloc_size = tmp;
+#ifdef __STL_SOLARIS_THREADS
+    thr_setspecific( _mt_key, (void *)user_words );
+#endif
+#ifdef _PTHREADS
+    pthread_setspecific( _mt_key, (void *)user_words );
+#endif
+#ifdef WIN32
+    TlsSetValue( _mt_key, (void *)user_words );
+#endif
+  }
+
+  // void *_xtmp = *(user_words + __idx);
+  void **_ytmp = (void **)(user_words + __idx);
+  return *_ytmp;
 }
 
 } // namespace __impl

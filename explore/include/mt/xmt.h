@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/07 11:23:04 ptr>
+// -*- C++ -*- Time-stamp: <99/04/16 11:28:24 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -53,6 +53,24 @@
 #  define MT_UNLOCK(point)       ((void)0)
 
 #endif
+
+#include <signal.h>
+
+extern "C" {
+
+#ifndef SIG_PF // sys/signal.h
+
+typedef void SIG_FUNC_TYP(int);
+typedef SIG_FUNC_TYP *SIG_TYP;
+#define SIG_PF SIG_TYP
+
+#define SIG_DFL (SIG_PF)0
+#define SIG_ERR (SIG_PF)-1
+#define SIG_IGN (SIG_PF)1
+#define SIG_HOLD (SIG_PF)2
+
+#endif
+}
 
 namespace __impl {
 
@@ -313,6 +331,25 @@ class Thread
 {
   public:
     typedef int (*entrance_type)( void * );
+#ifdef WIN32
+    typedef int thread_key_type;
+#endif
+#ifdef _PTHREADS
+    typedef pthread_key_t thread_key_type;
+#endif
+#ifdef __STL_SOLARIS_THREADS
+    typedef thread_key_t thread_key_type;
+#endif
+
+#ifdef _MSC_VER
+    typedef std::allocator<void *> alloc;
+#else
+#  ifdef __STL_USE_STD_ALLOCATORS
+    typedef std::allocator<void *> alloc;
+#  else 
+    typedef __STD::alloc alloc;
+#  endif
+#endif
 
     enum {
 #ifdef __STL_SOLARIS_THREADS
@@ -331,6 +368,15 @@ class Thread
 #endif
     };
 
+    class Init
+    {
+      public:
+        Init();
+        ~Init();
+      private:
+        static int _count;
+    };
+
     __DLLEXPORT Thread( unsigned flags = 0 );
 
     explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
@@ -344,6 +390,10 @@ class Thread
     __DLLEXPORT int resume();
     __DLLEXPORT int kill( int sig );
     static __DLLEXPORT void exit( int code = 0 );
+    static __DLLEXPORT int join_all();
+    static __DLLEXPORT void block_signal( int sig );
+    static __DLLEXPORT void unblock_signal( int sig );
+    static __DLLEXPORT void signal_handler( int sig, SIG_PF );
 
     bool good() const
 #ifdef WIN32
@@ -351,6 +401,14 @@ class Thread
 #else
       { return _id != -1; }
 #endif
+
+    static int xalloc()
+      { return _idx++; }
+    __DLLEXPORT long&  iword( int __idx );
+    __DLLEXPORT void*& pword( int __idx );
+
+    static thread_key_type mtkey()
+      { return _mt_key; }
 
   private:
     Thread( const Thread& )
@@ -362,10 +420,12 @@ class Thread
     static void unexpected();
     static void terminate();
 
+    static int _idx; // user words index
+    static thread_key_type _mt_key;
+    size_t uw_alloc_size;
 
 #ifdef _PTHREADS
     pthread_t _id;
-
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via cond_wait
     Condition _suspend;
@@ -382,6 +442,7 @@ class Thread
     size_t _param_sz;
     unsigned _flags;
     //  Mutex _params_lock; --- no needs
+    friend class Init;
 };
 
 } // namespace __impl
