@@ -324,15 +324,28 @@ public:
     _M_t.insert_equal(__first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
-  void erase(iterator __position) { 
-    _M_t.erase( /* _Rep_type::_M_unconst( */ __position /* ) */ ); 
+# ifndef _STLP_DEBUG
+  void erase(iterator __position) {
+    _M_t.erase( __position._M_node );
   }
+# else // _STLP_DEBUG
+  void erase(iterator __position) {
+    _M_t.erase( typename _Rep_type::iterator( __position._Owner(), __position._M_iterator ) );
+  }
+# endif // _STLP_DEBUG
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
-  void erase(iterator __first, iterator __last) { 
-    _M_t.erase( /* _Rep_type::_M_unconst( */ __first /*)*/, /* _Rep_type::_M_unconst( */ __last /*)*/ ); 
+# ifndef _STLP_DEBUG
+  void erase(iterator __first, iterator __last) {
+    _M_t.erase( __first, __last );
   }
+# else // _STLP_DEBUG
+  void erase(iterator __first, iterator __last) {
+    _M_t.erase( typename _Rep_type::iterator( __first._Owner(), __first._M_iterator ),
+                typename _Rep_type::iterator( __last._Owner(),  __last._M_iterator ) );
+  }
+# endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }
 
   // multiset operations:
