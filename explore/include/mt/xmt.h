@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/06/21 12:02:34 ptr>
+// -*- C++ -*- Time-stamp: <99/06/23 19:44:27 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -438,14 +438,10 @@ class Thread
     typedef thread_key_t thread_key_type;
 #endif
 
-#ifdef _MSC_VER
+#ifdef __STL_USE_STD_ALLOCATORS
     typedef std::allocator<void *> alloc;
-#else
-#  ifdef __STL_USE_STD_ALLOCATORS
-    typedef std::allocator<void *> alloc;
-#  else 
+#else 
     typedef __STD::alloc alloc;
-#  endif
 #endif
 
     enum {

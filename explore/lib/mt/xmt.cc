@@ -1,18 +1,20 @@
-// -*- C++ -*- Time-stamp: <99/05/25 21:20:54 ptr>
+// -*- C++ -*- Time-stamp: <99/06/24 18:49:06 ptr>
 
 #ident "$SunId$ %Q%"
 
 #include <xmt.h>
 
 #include <cstring>
-#include <ostream>
+#ifndef _WIN32
+#  include <ostream>
+#endif
 #include <memory>
 #include <functional>
 
 #ifdef WIN32
-#include <iostream>
-#include <iomanip>
-#include <win_config.h>
+// #include <iostream>
+// #include <iomanip>
+// #include <win_config.h>
 
 using namespace std;
 #endif
@@ -35,8 +37,10 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 
 namespace __impl {
 
+#ifndef _WIN32
 using std::cerr;
 using std::endl;
+#endif
 
 char *Init_buf[32];
 int Thread::Init::_count = 0;
@@ -126,7 +130,8 @@ Thread::~Thread()
 #ifdef WIN32
   __stl_assert( _id == INVALID_HANDLE_VALUE );
 #else
-  __stl_assert( _id == -1 );
+  // __stl_assert( _id == -1 );
+  kill( SIG_TERM );
 #endif
 }
 
@@ -351,6 +356,10 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
   }
 }
 
+#ifdef _WIN32
+#pragma warning( disable : 4101 )
+#endif
+
 void *Thread::_call( void *p )
 {
   Thread *me = static_cast<Thread *>(p);
@@ -389,16 +398,22 @@ void *Thread::_call( void *p )
     // 
   }
   catch ( std::exception& e ) {
+#ifndef _WIN32
     cerr << e.what() << endl;
+#endif
     ret = -1;
   }
   catch ( int sig ) {
     // const char *_sig_ = strsignal( sig );
+#ifndef _WIN32
     cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
+#endif
     ret = sig;
   }
   catch ( ... ) {
+#ifndef _WIN32
     cerr << "\n--- Thread: unknown exception occur ---" << endl;
+#endif
     ret = -1;
   }
 
@@ -418,16 +433,23 @@ void *Thread::_call( void *p )
 #endif
   return (void *)ret;
 }
+#ifdef _WIN32
+#pragma warning( default : 4101 )
+#endif
 
 void Thread::unexpected()
 {
+#ifndef _WIN32
   cerr << "\nUnexpected exception" << endl;
+#endif
   Thread::exit( -1 );
 }
 
 void Thread::terminate()
 {
+#ifndef _WIN32
   cerr << "\nTerminate exception" << endl;
+#endif
   Thread::exit( -2 );
 }
 
@@ -447,13 +469,12 @@ long&  Thread::iword( int __idx )
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
-#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
-#ifdef _MSC_VER
-    user_words = alloc().allocate( uw_alloc_size, (const void *)0 );
-#endif
 #ifdef __STL_USE_STD_ALLOCATORS
+#  ifdef _MSC_VER
+    user_words = alloc().allocate( uw_alloc_size, (const void *)0 );
+#  else
     user_words = alloc().allocate( uw_alloc_size );
-#endif
+#  endif
 #else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     user_words = alloc::allocate( uw_alloc_size );
 #endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
@@ -469,7 +490,7 @@ long&  Thread::iword( int __idx )
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+#ifdef __STL_USE_STD_ALLOCATORS
 #ifdef _MSC_VER
     void *_mtmp = alloc().allocate( tmp, (const void *)0 );
 #else // __STL_USE_STD_ALLOCATORS
@@ -513,11 +534,11 @@ void*& Thread::pword( int __idx )
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
-#ifdef _MSC_VER
-    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
-#else
+// #ifdef _MSC_VER
+//    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
+// #else
     user_words = (long *)alloc().allocate( uw_alloc_size );
-#endif
+// #endif
     std::fill( user_words, user_words + uw_alloc_size, 0 );
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, (void *)user_words );
@@ -531,11 +552,11 @@ void*& Thread::pword( int __idx )
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
 #if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
-#ifdef _MSC_VER
-    long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
-#else
+// #ifdef _MSC_VER
+//     long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
+// #else
     long *_mtmp = (long *)alloc().allocate( tmp );
-#endif
+// #endif
     std::copy( user_words, user_words + uw_alloc_size, _mtmp );
     alloc().deallocate( (void *)user_words, uw_alloc_size );
     user_words = _mtmp;
