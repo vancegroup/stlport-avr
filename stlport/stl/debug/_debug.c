@@ -41,6 +41,16 @@ _STLP_BEGIN_NAMESPACE
 //  global non-inline functions
 //==========================================================
 
+template <class _Iterator>
+bool _STLP_CALL __check_infinite_loop(const _Iterator& __it, const _Iterator& __end, __true_type const&) {
+  /*
+   * thanks to the third parameter we know that __it is a stlport debug iterator.
+   */
+  _STLP_VERBOSE_RETURN(!__check_same_owner(__it, __end) || __it._M_iterator != __end._M_iterator,
+                       _StlMsg_INFINIT_LOOP)
+  return true;
+}
+
 // [ i1, i2)
 template <class _Iterator>
 inline bool  _STLP_CALL
@@ -57,9 +67,9 @@ inline bool _STLP_CALL  __in_range_aux(_Iterator1 __it, const _Iterator& __first
 inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
 # endif
                                        const _Iterator& __last, const forward_iterator_tag &) {
-    _Iterator1 __i(__first);
-    for (;  __i != __last && __i != __it; ++__i);
-    return (__i!=__last);
+  _Iterator1 __i(__first);
+  for (;  __i != __last && __i != __it; ++__i);
+  return (__i!=__last);
 }
 
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
@@ -67,32 +77,32 @@ template <class _Iterator1, class _Iterator>
 inline bool  _STLP_CALL
 __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
                const _Iterator& __last, const bidirectional_iterator_tag &) {
-    _Iterator1 __i(__first);
-    for (;  __i != __last && __i != __it; ++__i);
-    return (__i !=__last);
+  _Iterator1 __i(__first);
+  for (;  __i != __last && __i != __it; ++__i);
+  return (__i !=__last);
 }
 # endif
 
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last) {
-    _STLP_VERBOSE_RETURN(__valid_range(__first,__last), _StlMsg_INVALID_RANGE )
-    return true;
+  _STLP_VERBOSE_RETURN(__valid_range(__first,__last), _StlMsg_INVALID_RANGE )
+  return true;
 }
 
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __it, 
                                const _Iterator& __start, const _Iterator& __finish) {
-    _STLP_VERBOSE_RETURN(__in_range(__it,__start, __finish), 
-                         _StlMsg_NOT_IN_RANGE_1)
-    return true;
+  _STLP_VERBOSE_RETURN(__in_range(__it,__start, __finish), 
+                       _StlMsg_NOT_IN_RANGE_1)
+  return true;
 }
 
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last, 
                                const _Iterator& __start, const _Iterator& __finish) {
-    _STLP_VERBOSE_RETURN(__in_range(__first, __last, __start, __finish), 
-                         _StlMsg_NOT_IN_RANGE_2)
-    return true;
+  _STLP_VERBOSE_RETURN(__in_range(__first, __last, __start, __finish), 
+                       _StlMsg_NOT_IN_RANGE_2)
+  return true;
 }
 
 //===============================================================
@@ -100,51 +110,48 @@ bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last
 template <class _Iterator>
 void  _STLP_CALL __invalidate_range(const __owned_list* __base, 
                                     const _Iterator& __first,
-                                    const _Iterator& __last)
-{
-    typedef _Iterator* _Safe_iterator_ptr;
-    typedef __owned_link _L_type;
-    _STLP_ACQUIRE_LOCK(__base->_M_lock)
-    _L_type* __prev = (_L_type*)&__base->_M_node;
-    _L_type* __pos = (_L_type*)__prev->_M_next;
+                                    const _Iterator& __last) {
+  typedef _Iterator* _Safe_iterator_ptr;
+  typedef __owned_link _L_type;
+  _STLP_ACQUIRE_LOCK(__base->_M_lock)
+  _L_type* __prev = (_L_type*)&__base->_M_node;
+  _L_type* __pos = (_L_type*)__prev->_M_next;
 
-    while ( __pos != 0 ) {		     
-        if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos))
-            &&  __in_range_aux( ((_Iterator*)__pos)->_M_iterator,
-		 		 		        __first._M_iterator,
-		 		 		        __last._M_iterator,
-		 		 		        _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
-		   __pos->_M_owner = 0;
-		   __pos = (_L_type*) (__prev->_M_next = __pos->_M_next);
-		 }
-		 else {
-		   __prev = __pos;
-		   __pos=(_L_type*)__pos->_M_next;
-		 }
+  while ( __pos != 0 ) {         
+    if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos)) &&
+        __in_range_aux(((_Iterator*)__pos)->_M_iterator,
+                       __first._M_iterator, __last._M_iterator,
+                       _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
+      __pos->_M_owner = 0;
+      __pos = (_L_type*) (__prev->_M_next = __pos->_M_next);
     }
-    _STLP_RELEASE_LOCK(__base->_M_lock)    
+    else {
+      __prev = __pos;
+      __pos=(_L_type*)__pos->_M_next;
+    }
+  }
+  _STLP_RELEASE_LOCK(__base->_M_lock)    
 }
 
 template <class _Iterator>
 void  _STLP_CALL __invalidate_iterator(const __owned_list* __base, 
-                                       const _Iterator& __it)
-{
-    typedef __owned_link   _L_type;
-    _STLP_ACQUIRE_LOCK(__base->_M_lock)
-    _L_type* __prev = (_L_type*)&__base->_M_node;
-    _L_type* __position = (_L_type*)__prev->_M_next;
-    while ( __position != 0 ) {
-      // this requires safe iterators to be derived from __owned_link
-       if ((__position != (_L_type*)&__it) && ((_Iterator*)__position)->_M_iterator == __it._M_iterator ) {
-		     __position->_M_owner = 0;
-		     __position = (_L_type*) (__prev->_M_next = __position->_M_next);
-        }
-       else {
-		  __prev = __position;
-		  __position=(_L_type*)__position->_M_next;
-       }
+                                       const _Iterator& __it) {
+  typedef __owned_link   _L_type;
+  _STLP_ACQUIRE_LOCK(__base->_M_lock)
+  _L_type* __prev = (_L_type*)&__base->_M_node;
+  _L_type* __position = (_L_type*)__prev->_M_next;
+  while ( __position != 0 ) {
+    // this requires safe iterators to be derived from __owned_link
+    if ((__position != (_L_type*)&__it) && ((_Iterator*)__position)->_M_iterator == __it._M_iterator ) {
+      __position->_M_owner = 0;
+      __position = (_L_type*) (__prev->_M_next = __position->_M_next);
     }
-    _STLP_RELEASE_LOCK(__base->_M_lock)
+    else {
+      __prev = __position;
+      __position=(_L_type*)__position->_M_next;
+    }
+  }
+  _STLP_RELEASE_LOCK(__base->_M_lock)
 }
 
 _STLP_END_NAMESPACE
@@ -203,6 +210,7 @@ _STLP_STRING_LITERAL("Iterator is not in range [first,last)"),  \
 _STLP_STRING_LITERAL("Range [first,last) is not in range [start,finish)"),  \
 _STLP_STRING_LITERAL("The advance would produce invalid iterator"),  \
 _STLP_STRING_LITERAL("Iterator is singular (advanced beyond the bounds ?)"),  \
+_STLP_STRING_LITERAL("The inserted range is invalid. End range will never be reached because of the inserted elements."), \
 _STLP_STRING_LITERAL("Memory block deallocated twice"),  \
 _STLP_STRING_LITERAL("Deallocating a block that was never allocated"),  \
 _STLP_STRING_LITERAL("Deallocating a memory block allocated for another type"),  \
@@ -219,7 +227,7 @@ const char* __stl_debug_engine<_Dummy>::_Message_table[_StlMsg_MAX]  _STLP_MESSA
 
 # else
 __DECLARE_INSTANCE(const char*, __stl_debug_engine<bool>::_Message_table[_StlMsg_MAX],
-		 		    _STLP_MESSAGE_TABLE_BODY);
+             _STLP_MESSAGE_TABLE_BODY);
 
 # endif
 
@@ -239,20 +247,19 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Dummy>
 void _STLP_CALL  
-__stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
-{
-		 STLPORT_CSTD::va_list __args;
-		 va_start( __args, __format_str );
+__stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
+     STLPORT_CSTD::va_list __args;
+     va_start( __args, __format_str );
 
 # if defined (_STLP_WINCE)
-		 TCHAR __buffer[512];
-		 int _convert = strlen(__format_str) + 1;
-		 LPWSTR _lpw = (LPWSTR)alloca(_convert*sizeof(wchar_t));
-		 _lpw[0] = '\0';
-		 MultiByteToWideChar(GetACP(), 0, __format_str, -1, _lpw, _convert);
-		 wvsprintf(__buffer, _lpw, __args);
-		 //		 wvsprintf(__buffer, __format_str, __args);
-		 _STLP_WINCE_TRACE(__buffer);
+     TCHAR __buffer[512];
+     int _convert = strlen(__format_str) + 1;
+     LPWSTR _lpw = (LPWSTR)alloca(_convert*sizeof(wchar_t));
+     _lpw[0] = '\0';
+     MultiByteToWideChar(GetACP(), 0, __format_str, -1, _lpw, _convert);
+     wvsprintf(__buffer, _lpw, __args);
+     //     wvsprintf(__buffer, __format_str, __args);
+     _STLP_WINCE_TRACE(__buffer);
 # elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__))
     char __buffer [4096];
     vsnprintf(__buffer, sizeof(__buffer) / sizeof(char), __format_str, __args);
@@ -264,7 +271,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 # endif /* WINCE */
 
 # ifdef _STLP_DEBUG_MESSAGE_POST
-		 _STLP_DEBUG_MESSAGE_POST
+     _STLP_DEBUG_MESSAGE_POST
 # endif
 
     va_end(__args);
@@ -280,25 +287,22 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Dummy>
 void _STLP_CALL  
-__stl_debug_engine<_Dummy>::_IndexedError(int __error_ind, const char* __f, int __l)
-{
+__stl_debug_engine<_Dummy>::_IndexedError(int __error_ind, const char* __f, int __l) {
   __stl_debug_message(_Message_table[_StlFormat_ERROR_RETURN], 
-		 		       __f, __l, _Message_table[__error_ind]);
+                      __f, __l, _Message_table[__error_ind]);
 }
 
 template <class _Dummy>
 void _STLP_CALL  
-__stl_debug_engine<_Dummy>::_VerboseAssert(const char* __expr, int __error_ind, const char* __f, int __l)
-{
+__stl_debug_engine<_Dummy>::_VerboseAssert(const char* __expr, int __error_ind, const char* __f, int __l) {
   __stl_debug_message(_Message_table[_StlFormat_VERBOSE_ASSERTION_FAILURE],
-		 		       __f, __l, _Message_table[__error_ind], __f, __l, __expr);
+                      __f, __l, _Message_table[__error_ind], __f, __l, __expr);
   __stl_debug_terminate();
 }
 
 template <class _Dummy>
 void _STLP_CALL 
-__stl_debug_engine<_Dummy>::_Assert(const char* __expr, const char* __f, int __l)
-{
+__stl_debug_engine<_Dummy>::_Assert(const char* __expr, const char* __f, int __l) {
   __stl_debug_message(_Message_table[_StlFormat_ASSERTION_FAILURE],__f, __l, __expr);
   __stl_debug_terminate();
 }
@@ -307,8 +311,7 @@ __stl_debug_engine<_Dummy>::_Assert(const char* __expr, const char* __f, int __l
 // if not, calls abort() to terminate
 template <class _Dummy>
 void _STLP_CALL 
-__stl_debug_engine<_Dummy>::_Terminate()
-{
+__stl_debug_engine<_Dummy>::_Terminate() {
 //# ifdef _STLP_USE_NAMESPACES
 //  using namespace _STLP_STD;
 //# endif
@@ -347,7 +350,7 @@ __stl_debug_engine<_Dummy>::_Stamp_all(__owned_list* __l, __owned_list* __o) {
   // crucial
   if (__l->_M_node._M_owner) {
     for (__owned_link*  __position = (__owned_link*)__l->_M_node._M_next; 
-		  __position != 0; __position= (__owned_link*)__position->_M_next) {
+      __position != 0; __position= (__owned_link*)__position->_M_next) {
       _STLP_ASSERT(__position->_Owner()== __l)
       __position->_M_owner=__o;
     }
@@ -371,15 +374,18 @@ __stl_debug_engine<_Dummy>::_Verify(const __owned_list* __l) {
 template <class _Dummy>
 void _STLP_CALL  
 __stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y) {
-
-  //  according to the standard : --no swap() function invalidates any references, 
-  //  pointers,  or  iterators referring to the elements of the containers being swapped.
+  /*
+   *  according to the standard : --no swap() function invalidates any references, 
+   *  pointers,  or  iterators referring to the elements of the containers being swapped.
+   */
 
   __owned_link* __tmp;
 
-  // boris : there is a deadlock potential situation here if we lock two containers sequentially.
-  // As user is supposed to provide its own synchronization around swap() ( it is unsafe to do any container/iterator access
-  // in parallel with swap()), we just do not use any locking at all -- that behaviour is closer to non-debug version
+  /*
+   * boris : there is a deadlock potential situation here if we lock two containers sequentially.
+   * As user is supposed to provide its own synchronization around swap() ( it is unsafe to do any container/iterator access
+   * in parallel with swap()), we just do not use any locking at all -- that behaviour is closer to non-debug version
+   */
 
   __tmp = __x._M_node._M_next;
 
@@ -387,8 +393,7 @@ __stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y) {
   _Stamp_all(&__y, &__x);
 
   __x._M_node._M_next = __y._M_node._M_next;
-  __y._M_node._M_next = __tmp;  
-
+  __y._M_node._M_next = __tmp;
 }
 
 template <class _Dummy>
@@ -430,7 +435,6 @@ __stl_debug_engine<_Dummy>::_M_attach(__owned_list* __l, __owned_link* __c_node)
   }
 }
 
-
 template <class _Dummy>
 void* _STLP_CALL
 __stl_debug_engine<_Dummy>::_Get_container_ptr(const __owned_link* __l) {
@@ -444,8 +448,7 @@ __stl_debug_engine<_Dummy>::_Get_container_ptr(const __owned_link* __l) {
 template <class _Dummy>
 bool _STLP_CALL
 __stl_debug_engine<_Dummy>::_Check_same_owner( const __owned_link& __i1, 
-                                               const __owned_link& __i2)
-{
+                                               const __owned_link& __i2) {
   _STLP_VERBOSE_RETURN(__i1._Valid(), _StlMsg_INVALID_LEFTHAND_ITERATOR)
   _STLP_VERBOSE_RETURN(__i2._Valid(), _StlMsg_INVALID_RIGHTHAND_ITERATOR)
   _STLP_VERBOSE_RETURN((__i1._Owner()==__i2._Owner()), _StlMsg_DIFFERENT_OWNERS)
@@ -455,16 +458,14 @@ __stl_debug_engine<_Dummy>::_Check_same_owner( const __owned_link& __i1,
 template <class _Dummy>
 bool  _STLP_CALL
 __stl_debug_engine<_Dummy>::_Check_same_owner_or_null( const __owned_link& __i1, 
-		 		 		 		 		 		        const __owned_link& __i2)
-{
+                                     const __owned_link& __i2) {
   _STLP_VERBOSE_RETURN(__i1._Owner()==__i2._Owner(), _StlMsg_DIFFERENT_OWNERS)
   return true;
 }
 
 template <class _Dummy>
 bool _STLP_CALL
-__stl_debug_engine<_Dummy>::_Check_if_owner( const __owned_list * __l, const __owned_link& __it)
-{
+__stl_debug_engine<_Dummy>::_Check_if_owner( const __owned_list * __l, const __owned_link& __it) {
   const __owned_list* __owner_ptr = __it._Owner();
   _STLP_VERBOSE_RETURN(__owner_ptr!=0, _StlMsg_INVALID_ITERATOR)
   _STLP_VERBOSE_RETURN(__l==__owner_ptr, _StlMsg_NOT_OWNER)

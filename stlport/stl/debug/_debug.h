@@ -55,6 +55,7 @@ enum {
   _StlMsg_NOT_IN_RANGE_2       ,
   _StlMsg_INVALID_ADVANCE      ,
   _StlMsg_SINGULAR_ITERATOR    ,
+  _StlMsg_INFINIT_LOOP         ,
   // debug alloc messages
   _StlMsg_DBA_DELETED_TWICE    ,
   _StlMsg_DBA_NEVER_ALLOCATED  ,
@@ -69,7 +70,7 @@ enum {
 };
 
 /* have to hardcode that ;() */
-# define _StlMsg_MAX 27
+# define _StlMsg_MAX 28
 
 _STLP_BEGIN_NAMESPACE
 
@@ -165,6 +166,14 @@ _STLP_END_NAMESPACE
 
 #  define _STLP_DEBUG_CHECK(expr) _STLP_ASSERT(expr)
 #  define _STLP_DEBUG_DO(expr)    expr;
+
+#  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+#   define _STLP_STD_DEBUG_CHECK(expr) _STLP_DEBUG_CHECK(expr)
+#   define _STLP_STD_DEBUG_DO(expr) _STLP_DEBUG_DO(expr)
+#  else
+#   define _STLP_STD_DEBUG_CHECK(expr)
+#   define _STLP_STD_DEBUG_DO(expr)
+#  endif
 
 # ifndef _STLP_VERBOSE_RETURN
 #  define _STLP_VERBOSE_RETURN(__expr,__diag_num) if (!(__expr)) { \
@@ -351,6 +360,14 @@ private:
 
 // forward declaratioins
 
+template <class _Iterator, class _EndIterator>
+bool _STLP_CALL __check_infinite_loop(const _Iterator&, const _EndIterator&, const __false_type&) {
+  return true;
+}
+
+template <class _Iterator>
+bool _STLP_CALL __check_infinite_loop(const _Iterator&, const _Iterator&, const __true_type&);
+
 template <class _Iterator>
 bool  _STLP_CALL __check_range(const _Iterator&, const _Iterator&);
 template <class _Iterator>
@@ -368,8 +385,11 @@ void _STLP_CALL  __invalidate_range(const __owned_list* __base,
 template <class _Iterator>
 void  _STLP_CALL __invalidate_iterator(const __owned_list* __base, 
                                        const _Iterator& __it);
+                                       
 
-template <class _Tp>
+#ifndef _STLP_MEMBER_TEMPLATES
+template <class _Tp, class _InputIterator>
+#endif
 class __range_checker {
 protected:
   __range_checker() {}
@@ -382,19 +402,31 @@ protected:
   }
 
   template <class _Integer>
-  void _M_check_dispatch(_Integer , _Integer, const __true_type& /*IsIntegral*/) {
-  }
+  void _M_check_dispatch(_Integer , _Integer, const __true_type& /*IsIntegral*/) {}
 
   template <class _InputIter>
   void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const __false_type& /*IsIntegral*/) {
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
   }
 #else //_STLP_MEMBER_TEMPLATES
-  __range_checker(const _Tp *__f, const _Tp *__l) {
+  /*
+   * The __true_type and __false_type parameters are here to distinguish
+   * between the 2 constructors if _InputIterator is equal to const _Tp*.
+   */
+  __range_checker(const _Tp *__f, const _Tp *__l, const __true_type&) {
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
+  }
+  __range_checker(_InputIterator __f, _InputIterator __l, const __false_type&) {
+    _STLP_DEBUG_CHECK(__check_range(__f, __l))
   }
 #endif //_STLP_MEMBER_TEMPLATES
 };
+
+#ifndef _STLP_MEMBER_TEMPLATES
+# define _STLP_RANGE_CHECKER(a, b) __range_checker<a, b >
+#else
+# define _STLP_RANGE_CHECKER(a, b) __range_checker
+#endif
 
 //============================================================
 

@@ -89,12 +89,13 @@ struct _Vector_const_traits<bool, _Bit_iterator> {
 };
 
 template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
-class _DBG_vector : private __range_checker<_Tp>, public _STLP_DBG_VECTOR_BASE
+class _DBG_vector : private _STLP_RANGE_CHECKER(_Tp, typename _STLP_DBG_VECTOR_BASE::const_iterator),
+                    public _STLP_DBG_VECTOR_BASE
 {
 private:
   typedef _STLP_DBG_VECTOR_BASE _Base;
-  typedef __range_checker<_Tp> _CheckRange;
   typedef _DBG_vector<_Tp, _Alloc> _Self;
+  typedef _STLP_RANGE_CHECKER(_Tp, typename _STLP_DBG_VECTOR_BASE::const_iterator) _CheckRange;
   mutable __owned_list _M_iter_list;
 
 public:
@@ -199,14 +200,14 @@ public:
 #else
   _DBG_vector(const _Tp* __first, const _Tp* __last,
               const allocator_type& __a = allocator_type())
-    : _CheckRange(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
+    : _CheckRange(__first, __last, __true_type()), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
 
   // mysterious VC++ bug ?
   _DBG_vector(const_iterator __first, const_iterator __last , 
               const allocator_type& __a = allocator_type())
-    : _CheckRange(__first._M_iterator, __last._M_iterator), 
+    : _CheckRange(__first._M_iterator, __last._M_iterator, __false_type()), 
       _STLP_DBG_VECTOR_BASE(__first._M_iterator, __last._M_iterator, __a), 
       _M_iter_list(_Get_base()) {
       }
@@ -268,13 +269,8 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
-  void insert(iterator __position, _InputIterator __first, _InputIterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
-    _STLP_DEBUG_CHECK(__check_range(__first,__last))
-    size_type __old_capacity = this->capacity();
-    _Base::insert(__position._M_iterator, __first, __last);    
-    _Compare_Capacity(__old_capacity);
-  }
+  void insert(iterator __position, 
+              _InputIterator __first, _InputIterator __last) {
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,
               const_iterator __first, const_iterator __last) {
@@ -286,14 +282,15 @@ public:
     _Compare_Capacity(__old_capacity);
   }
 
-  void insert (iterator __position, const_pointer __first, const_pointer __last) {
+  void insert (iterator __position, 
+               const value_type *__first, const value_type *__last) {
+#endif /* _STLP_MEMBER_TEMPLATES */
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
     size_type __old_capacity = this->capacity();
     _Base::insert(__position._M_iterator, __first, __last);  
     _Compare_Capacity(__old_capacity);
 }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   void insert (iterator __position, size_type __n, const _Tp& __x){
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
@@ -344,7 +341,9 @@ struct __move_traits<vector<_Tp, _Alloc> > :
 
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
- _STLP_EXPORT_TEMPLATE_CLASS __range_checker <void*>;
+#  ifndef _STLP_MEMBER_TEMPLATES
+ _STLP_EXPORT_TEMPLATE_CLASS __range_checker<void*, _DBG_vector <void*,allocator<void*> >::const_iterator >;
+#  endif
  _STLP_EXPORT_TEMPLATE_CLASS _DBG_vector <void*,allocator<void*> >;
 #  endif /* _STLP_USE_TEMPLATE_EXPORT */
 

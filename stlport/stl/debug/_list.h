@@ -60,16 +60,17 @@ iterator_category(const _DBG_iter_base< _STLP_DBG_LIST_BASE >&) {
 # endif
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class _DBG_list : private __range_checker<_Tp>, public _STLP_DBG_LIST_BASE
-{
+class _DBG_list : private _STLP_RANGE_CHECKER(_Tp, typename _STLP_DBG_LIST_BASE::const_iterator),
+                  public _STLP_DBG_LIST_BASE {
   typedef _STLP_DBG_LIST_BASE _Base;
   typedef _DBG_list<_Tp, _Alloc> _Self;
+  typedef _STLP_RANGE_CHECKER(_Tp, typename _STLP_DBG_LIST_BASE::const_iterator) _CheckRange;
 
 public:      
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
 
 public:
-  typedef _DBG_iter<_Base, _Nonconst_traits<value_type> >     iterator;
+  typedef _DBG_iter<_Base, _Nonconst_traits<value_type> > iterator;
   typedef _DBG_iter<_Base, _Const_traits<value_type> >    const_iterator;
 
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
@@ -89,8 +90,8 @@ protected:
   typedef typename _Base::iterator _Base_iterator;
 
 public:
-  const _Base* _Get_base() const { return (const _Base*)this; }
-  _Base* _Get_base() { return (_Base*)this; }
+  const _Base* _Get_base() const { return this; }
+  _Base* _Get_base() { return this; }
   explicit _DBG_list(const allocator_type& __a = allocator_type()) :
     _STLP_DBG_LIST_BASE(__a), _M_iter_list(_Get_base()) {}
 
@@ -118,33 +119,34 @@ public:
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last,
             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
-    : __range_checker<_Tp>(__first, __last), 
+    : _CheckRange(__first, __last), 
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
 #  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last)
-    : __range_checker<_Tp>(__first, __last), 
+    : _CheckRange(__first, __last), 
       _STLP_DBG_LIST_BASE(__first, __last), _M_iter_list(_Get_base()) {
     }
 #  endif
 #else /* _STLP_MEMBER_TEMPLATES */
 
-  _DBG_list(const _Tp* __first, const _Tp* __last,
+  _DBG_list(const value_type* __first, const value_type* __last,
             const allocator_type& __a = allocator_type())
-    : __range_checker<_Tp>(__first, __last), 
+    : _CheckRange(__first, __last, __true_type()), 
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
   _DBG_list(const_iterator __first, const_iterator __last,
-						const allocator_type& __a = allocator_type())
-		: __range_checker<_Tp>(__first._M_iterator, __last._M_iterator), 
+            const allocator_type& __a = allocator_type())
+    : _CheckRange(__first._M_iterator, __last._M_iterator, __false_type()), 
       _STLP_DBG_LIST_BASE(__first._M_iterator, __last._M_iterator, __a), _M_iter_list(_Get_base()) {
     }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   _DBG_list(const _Self& __x) : 
-    __range_checker<_Tp>(__x), _STLP_DBG_LIST_BASE(__x) , _M_iter_list(_Get_base()) {}
+    _CheckRange(__x),
+    _STLP_DBG_LIST_BASE(__x) , _M_iter_list(_Get_base()) {}
 
   _Self& operator= (const _Self& __x) {
     if (this != &__x) {
@@ -188,7 +190,7 @@ public:
 
   void swap(_Self& __x) {
     _M_iter_list._Swap_owners(__x._M_iter_list);
-    _Base::swap(__x); 
+    _Base::swap(__x);
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -210,6 +212,12 @@ public:
   void insert(iterator __position, _InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
+    
+    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InputIterator, iterator>::_Ret _IsListIterator))
+    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InputIterator, const_iterator>::_Ret _IsListConstIterator))
+    _STLP_STD_DEBUG_DO((typedef typename _Lor2<_IsListIterator, _IsListConstIterator>::_Ret _DoCheck))
+    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), _DoCheck()))
+    
     _Base::insert(__position._M_iterator, __first, __last);
   }
 
@@ -222,9 +230,10 @@ public:
   }
 
   void insert(iterator __position,
-		       const_iterator __first, const_iterator __last) {
+              const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
+    _STLP_STD_DEBUG_CHECK(__check_infinit_loop(__last, end(), __true_type()))
     _Base::insert(__position._M_iterator, __first._M_iterator, __last._M_iterator);
   }
   
@@ -323,8 +332,8 @@ public:
   }
 
   void merge(_Self& __x) {
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(this->begin(), this->end()))
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(__x.begin(), __x.end()))
+    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(this->begin()._M_iterator, this->end()._M_iterator))
+    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(__x.begin()._M_iterator, __x.end()._M_iterator))
     _Base::merge(__x);
   }
   void reverse() {

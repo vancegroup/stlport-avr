@@ -39,12 +39,12 @@ iterator_category(const  _DBG_iter_base< _STLP_DBG_STRING_BASE >&) {
 # endif
 
 template <class _CharT, class _Traits, class _Alloc> 
-class basic_string : private __range_checker<_CharT>, public _STLP_DBG_STRING_BASE
-{
+class basic_string : private _STLP_RANGE_CHECKER(_CharT, typename _STLP_DBG_STRING_BASE::const_iterator),
+                     public _STLP_DBG_STRING_BASE {
 private:
   typedef _STLP_DBG_STRING_BASE _Base;
-  typedef __range_checker<_CharT> _CheckRange;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
+  typedef _STLP_RANGE_CHECKER(_CharT, typename _STLP_DBG_STRING_BASE::const_iterator) _CheckRange;
 
 public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
@@ -131,12 +131,12 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a = allocator_type())
-    : _CheckRange(__f, __l),
+    : _CheckRange(__f, __l, __true_type()),
       _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {
   }
   basic_string(const_iterator __f, const_iterator __l, 
                const allocator_type & __a = allocator_type())
-    : _CheckRange(__f._M_iterator, __l._M_iterator),
+    : _CheckRange(__f._M_iterator, __l._M_iterator, __false_type()),
       _STLP_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator, __a), _M_iter_list(_Get_base()) {
   }
 
@@ -669,10 +669,14 @@ public:                         // Other modifier member functions.
 
 // This is a hook to instantiate STLport exports in a designated DLL
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS __range_checker <char>;
+#  ifndef _STLP_MEMBER_TEMPLATES
+_STLP_EXPORT_TEMPLATE_CLASS __range_checker <char, basic_string<char, char_traits<char>, allocator<char> >::const_iterator>;
+#  endif
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<char, char_traits<char>, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS __range_checker <wchar_t>;
+#  ifndef _STLP_MEMBER_TEMPLATES
+_STLP_EXPORT_TEMPLATE_CLASS __range_checker <wchar_t, basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >::const_iterator>;
+#  endif
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */

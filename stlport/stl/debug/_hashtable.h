@@ -126,8 +126,7 @@ public:
     return *this;
   }
   
-  void swap(_Self& __ht)
-  {
+  void swap(_Self& __ht) {
    _M_iter_list._Swap_owners(__ht._M_iter_list);
    _Base::swap(__ht);
   }
@@ -138,8 +137,7 @@ public:
   const_iterator begin() const { return const_iterator(&_M_iter_list, _Base::begin()); }
   const_iterator end() const { return const_iterator(&_M_iter_list, _Base::end()); }
 
-  pair<iterator, bool> insert_unique(const value_type& __obj)
-  {
+  pair<iterator, bool> insert_unique(const value_type& __obj) {
     pair < _Base_iterator, bool> __res =
       _Base::insert_unique(__obj);
     return pair<iterator, bool> ( iterator(&_M_iter_list, __res.first), __res.second);
@@ -208,7 +206,7 @@ public:
     pair < _Base_iterator, _Base_iterator > __res =
       _Base::equal_range(__key);
     return pair<iterator,iterator> (iterator(&_M_iter_list,__res.first),
-		 		 		 		     iterator(&_M_iter_list,__res.second));
+                                    iterator(&_M_iter_list,__res.second));
   }
 
   pair<const_iterator, const_iterator> 
@@ -216,7 +214,7 @@ public:
     pair <  _Base_const_iterator, _Base_const_iterator > __res =
       _Base::equal_range(__key);
     return pair<const_iterator,const_iterator> (const_iterator(&_M_iter_list,__res.first),
-		 		 		 		     const_iterator(&_M_iter_list,__res.second));
+                                                const_iterator(&_M_iter_list,__res.second));
   }
 
   size_type erase(const key_type& __key) {
