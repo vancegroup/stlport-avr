@@ -31,6 +31,10 @@
 # include <stl/_ostream.h>              // Needed as a base class of basic_iostream.
 #endif
 
+#ifndef _STLP_INTERNAL_ISTREAMBUF_ITERATOR_H
+# include <stl/_istreambuf_iterator.h>
+#endif
+
 #include <stl/_ctraits_fns.h>    // Helper functions that allow char traits
                                 // to be used as function objects.
 _STLP_BEGIN_NAMESPACE

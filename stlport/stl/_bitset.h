@@ -70,7 +70,8 @@ _STLP_BEGIN_NAMESPACE
 
 // structure to aid in counting bits
 template<class _Dummy> 
-struct _Bs_G {
+class _Bs_G {
+public:
   static unsigned char _S_bit_count[256];
   // Mapping from 8 bit unsigned integers to the index of the first one
   // bit:

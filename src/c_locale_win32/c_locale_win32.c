@@ -227,7 +227,7 @@ static void my_ltoa(long __x, char* buf) ;
 
 void my_ltoa(long __x, char* buf) 
 { 
-  char rbuf;
+  char rbuf[64];
   char* ptr = rbuf; 
 
   if (__x == 0)
@@ -419,7 +419,7 @@ extern "C" {
 	ltime->dayofweek[dayindex]=(char*)malloc(size);
 	if(!ltime->dayofweek[dayindex] ) { _Locale_time_destroy(ltime); return NULL; }
 	GetLocaleInfoA(ltime->lcid, dayofweek, ltime->dayofweek[dayindex], size);
-	__ConvertFromACP(ltime->dayofweek, size, ltime->cp);
+	__ConvertFromACP(ltime->dayofweek[dayindex], size, ltime->cp);
       }
 
     for(dayofweek=LOCALE_SABBREVDAYNAME1; dayofweek<=LOCALE_SABBREVDAYNAME7; dayofweek++)

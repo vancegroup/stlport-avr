@@ -138,15 +138,15 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 #  define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xc000, 0xffff}
 #  define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
 # else
-#  define __STL_FLOAT_INF_REP { 0, 0x7f80 }
-#  define __STL_FLOAT_QNAN_REP { 0, 0x7fa0 }
-#  define __STL_FLOAT_SNAN_REP { 0, 0x7fc0 }
-#  define __STL_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
-#  define __STL_DOUBLE_QNAN_REP { 0, 0, 0, 0x7ff4 }
-#  define __STL_DOUBLE_SNAN_REP { 0, 0, 0, 0x7ff8 }
-#  define __STL_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
-#  define __STL_LDOUBLE_QNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
-#  define __STL_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff }
+#  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
+#  define _STLP_FLOAT_QNAN_REP { 0, 0x7fa0 }
+#  define _STLP_FLOAT_SNAN_REP { 0, 0x7fc0 }
+#  define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
+#  define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0x7ff4 }
+#  define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0x7ff8 }
+#  define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
+#  define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
+#  define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff }
 # endif
 #else 
 

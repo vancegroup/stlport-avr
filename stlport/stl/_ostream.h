@@ -24,8 +24,8 @@
 # include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.
 #endif
 
-#ifndef _STLP_INTERNAL_STREAMBUF
-# include <stl/_streambuf.h>
+#ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
+# include <stl/_ostreambuf_iterator.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -179,16 +179,9 @@ public:                         // Buffer positioning and manipulation.
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 #  undef sentry
 # else
-  // close basic_istream class definition here    
+  // close basic_ostream class definition here    
 };
 # endif
-
-template <class _CharT, class _Traits>
-basic_streambuf<_CharT, _Traits>* _STLP_CALL 
-_M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __Str) 
-{
-  return __Str.rdbuf();
-}
   
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_ostream<char, char_traits<char> >;
@@ -198,6 +191,13 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_ostream<wchar_t, char_traits<wchar_t> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Osentry<wchar_t, char_traits<wchar_t> >;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
+
+template <class _CharT, class _Traits>
+inline basic_streambuf<_CharT, _Traits>* _STLP_CALL 
+_M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __St) 
+{
+  return __St.rdbuf();
+}
 
 // Non-member functions.
 

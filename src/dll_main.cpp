@@ -22,11 +22,9 @@
  * modified is included with the above copyright notice.
  *
  */
-# define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 
-# ifndef __PUT_STATIC_DATA_MEMBERS_HERE
-#  define __PUT_STATIC_DATA_MEMBERS_HERE
-# endif
+# define __PUT_STATIC_DATA_MEMBERS_HERE
+# define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 
 # if !defined(_STLP_DEBUG) && ! defined (_STLP_ASSERTIONS)
 # define _STLP_ASSERTIONS 1
