@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/01/31 10:50:13 ptr>
+// -*- C++ -*- Time-stamp: <01/03/19 16:22:08 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -19,9 +19,9 @@
 
 #ifdef __unix
 #  ifdef __HP_aCC
-#pragma VERSIONID "$SunId$"
+#pragma VERSIONID "@(#)$Id$"
 #  else
-#pragma ident "$SunId$"
+#pragma ident "@(#)$Id$"
 #  endif
 #endif
 
@@ -76,8 +76,8 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 namespace __impl {
 
 #ifndef _WIN32
-using __STD::cerr;
-using __STD::endl;
+using std::cerr;
+using std::endl;
 #endif
 
 __PG_DECLSPEC
@@ -110,7 +110,7 @@ int Condition::wait_time( const timespec *abstime )
   }
   return ret;
 #endif // _PTHREADS
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   MT_REENTRANT( _lock, _x1 );
   _val = false;
   int ret;
@@ -135,7 +135,7 @@ int Condition::wait_time( const timespec *abstime )
 char *Init_buf[32];
 int Thread::Init::_count = 0;
 
-const __STD::string msg1( "Can't create thread" );
+const std::string msg1( "Can't create thread" );
 
 __PG_DECLSPEC
 void signal_throw( int sig ) throw( int )
@@ -144,13 +144,13 @@ void signal_throw( int sig ) throw( int )
 Thread::Init::Init()
 {
   if ( _count++ == 0 ) {
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     thr_keycreate( &_mt_key, 0 );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_key_create( &_mt_key, 0 );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     _mt_key = TlsAlloc();
 #endif
   }
@@ -159,10 +159,10 @@ Thread::Init::Init()
 Thread::Init::~Init()
 {
   if ( --_count == 0 ) {
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     TlsFree( _mt_key );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_key_delete( _mt_key );
 #endif
   }
@@ -208,13 +208,13 @@ Thread::~Thread()
 {
   long **user_words;
 
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef __FIT_PTHREADS
   user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
 #endif
   if ( user_words != 0 ) {
@@ -243,7 +243,7 @@ void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 __PG_DECLSPEC
 int Thread::join()
 {
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   unsigned long ret_code = 0;
   if ( _id != bad_thread_key ) {
     WaitForSingleObject( _id, -1 );
@@ -253,10 +253,10 @@ int Thread::join()
 #else // !WIN32
   int ret_code = 0;
   if ( _id != bad_thread_key && (_flags & (daemon | detached) ) == 0 ) {
-#  ifdef __STL_PTHREADS
+#  ifdef _PTHREADS
     pthread_join( _id, (void **)(&ret_code) );
 #  endif
-#  ifdef __STL_UITHREADS
+#  ifdef __FIT_UITHREADS
     thr_join( _id, 0, (void **)(&ret_code) );
 #  endif
     _id = bad_thread_key;
@@ -270,10 +270,10 @@ __PG_DECLSPEC
 int Thread::suspend()
 {
   if ( _id != bad_thread_key ) {
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     return SuspendThread( _id );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     // sorry, POSIX threads don't have pthread_{suspend,continue} calls, so it should
     // be simulated via condwait
 #  ifdef __hpux
@@ -282,13 +282,13 @@ int Thread::suspend()
     return pthread_suspend( _id );
 #  else
     if ( _id != pthread_self() ) {
-      throw __STD::domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
+      throw std::domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
       // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
     }
     return _suspend.wait(); // thr_suspend and pthread_cond_wait return 0 in success
 #  endif
 #endif // __STL_PTHREADS
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     return thr_suspend( _id );
 #endif
   }
@@ -300,10 +300,10 @@ __PG_DECLSPEC
 int Thread::resume()
 {
   if ( _id != bad_thread_key ) {
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     return ResumeThread( _id );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     // sorry, POSIX threads don't have pthread_{suspend,continue} calls, so it should
     // be simulated via condwait
 #  ifdef __hpux
@@ -315,7 +315,7 @@ int Thread::resume()
 #  endif
     
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     return thr_continue( _id );
 #endif
   }
@@ -327,13 +327,13 @@ __PG_DECLSPEC
 int Thread::kill( int sig )
 {
   if ( _id != bad_thread_key ) {
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     return thr_kill( _id, sig );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     return pthread_kill( _id, sig );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   // The behavior of TerminateThread significant differ from SOLARIS and POSIX
   // threads, and I don't find analogs to workaround...
     return TerminateThread( _id, 0 ) ? 0 : -1;
@@ -345,18 +345,18 @@ int Thread::kill( int sig )
 __PG_DECLSPEC
 void Thread::exit( int code )
 {
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
   pthread_exit( (void *)code );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   thr_exit( (void *)code );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   ExitThread( code );
 #endif
 }
 
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 __PG_DECLSPEC
 int Thread::join_all()
 {
@@ -374,10 +374,10 @@ void Thread::block_signal( int sig )
 
   sigemptyset( &sigset );
   sigaddset( &sigset, sig );
-#  ifdef __STL_SOLARIS_THREADS
+#  ifdef __FIT_UITHREADS
   thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
 #  endif
-#  if defined(_PTHREADS)
+#  ifdef _PTHREADS
   pthread_sigmask( SIG_BLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
@@ -391,10 +391,10 @@ void Thread::unblock_signal( int sig )
 
   sigemptyset( &sigset );
   sigaddset( &sigset, sig );
-#  ifdef __STL_UITHREADS
+#  ifdef __FIT_UITHREADS
   thr_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
-#  if defined(_PTHREADS)
+#  ifdef _PTHREADS
   pthread_sigmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
@@ -490,10 +490,10 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
     pthread_attr_destroy( &attr );
   }
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   err = thr_create( 0, 0, _xcall, this, _flags, &_id );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   _id = CreateThread( 0, 0, _xcall, this, _flags, &_thr_id );
   err = GetLastError();
 #endif
@@ -501,7 +501,7 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
-    throw __STD::runtime_error( msg1 );
+    throw std::runtime_error( msg1 );
   }
 }
 
@@ -620,59 +620,51 @@ long& Thread::iword( int __idx )
 {
   long **user_words;
 
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef _PTHREADS
   user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
-#ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
-#  ifdef _MSC_VER
+#ifdef _MSC_VER
     user_words = alloc.allocate( uw_alloc_size, (const void *)0 );
-#  else
+#else
     user_words = alloc.allocate( uw_alloc_size );
-#  endif
-#else // __STL_USE_SGI_ALLOCATORS
-    user_words = alloc.allocate( uw_alloc_size );
-#endif // __STL_USE_SGI_ALLOCATORS
-    __STD::fill( *user_words, *user_words + uw_alloc_size, 0 );
-#ifdef __STL_UITHREADS
+#endif
+    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
+#ifdef __FIT_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
 #ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     TlsSetValue( _mt_key, user_words );
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-#ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
 #ifdef _MSC_VER
     long **_mtmp = alloc.allocate( tmp, (const void *)0 );
 #else // __STL_USE_SGI_ALLOCATORS
     long **_mtmp = alloc.allocate( tmp );
 #endif // __STL_USE_SGI_ALLOCATORS
-    __STD::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
+    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc.deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
-#else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
-    user_words = alloc.reallocate( user_words, uw_alloc_size, tmp );
-#endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
-    __STD::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
+    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
 #ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     TlsSetValue( _mt_key, user_words );
 #endif
   }
@@ -686,13 +678,13 @@ void*& Thread::pword( int __idx )
 {
   long **user_words;
 
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef _PTHREADS
   user_words =  reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
   user_words = reinterpret_cast<long **>( TlsGetValue( _mt_key ) );
 #endif
   if ( user_words == 0 ) {
@@ -702,35 +694,31 @@ void*& Thread::pword( int __idx )
 // #else
     user_words = alloc.allocate( uw_alloc_size );
 // #endif
-    __STD::fill( *user_words, *user_words + uw_alloc_size, 0 );
-#ifdef __STL_UITHREADS
+    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
+#ifdef __FIT_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
 #ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     TlsSetValue( _mt_key, user_words );
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-#ifndef  __STL_USE_SGI_ALLOCATORS
     long **_mtmp = alloc.allocate( tmp );
-    __STD::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
+    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc.deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
-#else // __STL_USE_SGI_ALLOCATORS
-    user_words = alloc.reallocate( user_words, uw_alloc_size, tmp );
-#endif // __STL_USE_SGI_ALLOCATORS
-    __STD::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
+    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     thr_setspecific( _mt_key, *user_words );
 #endif
 #ifdef _PTHREADS
     pthread_setspecific( _mt_key, *user_words );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     TlsSetValue( _mt_key, *user_words );
 #endif
   }
