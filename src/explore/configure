@@ -1,15 +1,20 @@
 #!/bin/sh
 
-# Time-stamp: <03/07/31 14:20:30 ptr>
+# Time-stamp: <03/11/16 00:20:44 ptr>
 # $Id$
 
 
 configmak=./Makefiles/config.mak
 
-rm -f ${configmak}
+# rm -f ${configmak}
 
-echo "# STLPORT_DIR := /export/home/windows/guest/STLlab/STLport" >> ${configmak}
-echo "# MSVC_DIR := c:/Program Files/Microsoft Visual Studio/VC98" >> ${configmak}
+# echo "# STLPORT_DIR := /export/home/windows/guest/STLlab/STLport" >> ${configmak}
+# echo "# MSVC_DIR := c:/Program Files/Microsoft Visual Studio/VC98" >> ${configmak}
+
+write_option() {
+  target=`echo $1 | sed -e 's/^[^=]*=//'`
+  echo $2 := $target >> ${configmak}
+}
 
 while :
 do
@@ -21,9 +26,40 @@ do
   option=$1
   shift
   case $option in
+    --help)
+      cat <<EOF
+Configuration utility.
+
+Usage:
+
+  configure [options]
+
+Available options:
+
+  --target=<target>     target platform (cross-compiling)
+  --help                print this help message
+  --with-stlport=<dir>  use STLport in catalog <dir>
+  --with-msvc=<dir>     use MS VC from this catalog
+  --with-mssdk=<dir>    use MS SDK from this catalog
+  --clean               remove custom settings (file ${configmak})
+                        and use default values
+
+EOF
+      ;;
+    --clean)
+      rm -f ${configmak}
+      ;; 
     --target=*)
-      target=`echo $option | sed -e 's/^[^=]*=//'`
-      echo TARGET_OS := $target >> ${configmak}
+      write_option "$option" TARGET_OS
+      ;;
+    --with-stlport=*)
+      write_option "$option" STLPORT_DIR
+      ;;
+    --with-msvc=*)
+      write_option "$option" MSVC_DIR
+      ;;
+    --with-mssdk=*)
+      write_option "$option" MSSDK_DIR
       ;;
   esac
 done
