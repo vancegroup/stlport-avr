@@ -100,8 +100,10 @@ public:
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
 class time_get : public locale::facet, public time_base 
 {
-  friend class _Locale;
-
+    friend class _Locale;
+#ifdef _STLP_LEAKS_PEDANTIC
+    friend class _Locale_impl;
+#endif
 public:
   typedef _Ch   char_type;
   typedef _InIt iter_type;
@@ -212,7 +214,10 @@ _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
 template<class _Ch, __DFL_TMPL_PARAM( _OutputIter , ostreambuf_iterator<_Ch> ) >
 class time_put : public locale::facet, public time_base
 {
-  friend class _Locale;
+    friend class _Locale;
+#ifdef _STLP_LEAKS_PEDANTIC
+    friend class _Locale_impl;
+#endif
 public:
   typedef _Ch      char_type;
   typedef _OutputIter iter_type;
