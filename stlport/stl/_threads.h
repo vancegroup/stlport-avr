@@ -50,10 +50,11 @@
 # if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
   typedef long __stl_atomic_t;
 # else 
-# if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-// using _STLP_VENDOR_CSTD::size_t;
-using namespace _STLP_VENDOR_CSTD;
-# endif
+/* Don't import whole namespace!!!! - ptr */
+// # if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+// // using _STLP_VENDOR_CSTD::size_t;
+// using namespace _STLP_VENDOR_CSTD;
+// # endif
   typedef size_t __stl_atomic_t;
 #endif  
 
