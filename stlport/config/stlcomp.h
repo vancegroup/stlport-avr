@@ -44,14 +44,18 @@
 #  define _STLP_MSVC _MSC_VER
 # endif
 
-# if defined(__sgi) && !defined(__GNUC__)
+# if defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
+/* AIX xlC, Visual Age C++ , OS-390 C++ */
+#  include <config/stl_ibm.h>
+# elif defined (__GNUC__ )
+#  include <config/stl_gcc.h>
+# elif defined (__KCC)
+#  include <config/stl_kai.h>
+# elif defined(__sgi)
 #  include <config/stl_sgi.h>
 # elif (defined(__OS400__))
 /* AS/400 C++ */
 #  include <config/stl_as400.h>
-# elif defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
-/* AIX xlC, Visual Age C++ , OS-390 C++ */
-#  include <config/stl_ibm.h>
 # elif defined(_STLP_MSVC)
 /* Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0 */
 #  include <config/stl_msvc.h>
@@ -61,9 +65,6 @@
 # elif defined(__SUNPRO_CC) || defined (__SUNPRO_C)
 /* SUN CC 4.0.1-5.0  */
 #  include <config/stl_sunpro.h>
-# elif defined (__GNUC__ )
-/* g++ 2.7.x and above */
-#  include <config/stl_gcc.h>
 # elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)
 /* Watcom C++ */
 #  include <config/stl_watcom.h>
@@ -79,7 +80,7 @@
 # elif defined (__MWERKS__)
 /* Metrowerks CodeWarrior */
 #  include <config/stl_mwerks.h>
-# elif defined(__hpux) && ! defined (__GNUC__)
+# elif defined(__hpux)
 /* HP compilers */
 #  include <config/stl_hpacc.h>
 # elif defined(__ICL)
@@ -91,8 +92,6 @@
 /* Apogee 4.x */
 # elif defined (__APOGEE__)
 #  include <config/stl_apcc.h>
-# elif defined (__KCC)
-#  include <config/stl_kai.h>
 # elif defined (__DECCXX) || defined (__DECC)
 #  ifdef __vms
 #    include <config/stl_dec_vms.h>

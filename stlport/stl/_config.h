@@ -253,7 +253,7 @@
 #  endif
 
 #  if defined (_REENTRANT)
-#   if defined (__sgi)
+#   if defined (__sgi) && ! defined (__KCC) && ! defined (__GNUC__)  
 #    define _STLP_SGI_THREADS
 #   elif defined(__DECC) || defined(__DECCXX)
 #    define _STLP_DEC_THREADS
