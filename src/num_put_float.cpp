@@ -96,6 +96,9 @@ typedef long double max_double_type;
 # include "num_put.h"
 # include <algorithm>
 
+#if defined (__DMC__)
+# define snprintf _snprintf
+#endif
 
 #if defined(__hpux) && (!defined(_INCLUDE_HPUX_SOURCE) || defined(__GNUC__))
      extern "C" double erf(double);
@@ -633,8 +636,7 @@ void __format_float(__iostring &buf, const char * bp,
 
 # else
 // Creates a format string for sprintf()
-static int fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modifier)
-{
+static int fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modifier) {
   fmtbuf[0] = '%';
   int i = 1;
 
@@ -675,13 +677,12 @@ static int fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modifie
 
 void  _STLP_CALL
 __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
-              double x)
-{
+              double x) {
 # ifdef USE_SPRINTF_INSTEAD
   char static_buf[128];
   char fmtbuf[32];
   fill_fmtbuf(fmtbuf, flags, 0);
-  snprintf(static_buf, 128, fmtbuf, precision, x);    
+  snprintf(static_buf, 128, fmtbuf, precision, x);
   buf = static_buf;
 # else
   char cvtbuf[NDIG+2];
@@ -707,13 +708,12 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
 # ifndef _STLP_NO_LONG_DOUBLE
 void _STLP_CALL
 __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
-              long double x)
-{
+              long double x) {
 # ifdef USE_SPRINTF_INSTEAD
   char static_buf[128];
   char fmtbuf[64];
   int i = fill_fmtbuf(fmtbuf, flags, 'L');
-  sprintf(static_buf, fmtbuf, precision, x);    
+  snprintf(static_buf, 128, fmtbuf, precision, x);    
   // we should be able to return buf + sprintf(), but we do not trust'em...
   buf = static_buf;
 # else
