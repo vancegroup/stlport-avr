@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/07/09 23:19:04 ptr>
+// -*- C++ -*- Time-stamp: <03/08/18 14:41:40 ptr>
 
 /*
  *
@@ -277,6 +277,32 @@ class __mutex_base
 #endif
 };
 
+// The IEEE Std. 1003.1j-2000 introduces functions to implement spinlocks.
+
+template <bool SCOPE>
+class __spinlock_base
+{
+  public:
+    __spinlock_base()
+      {
+#ifdef _PTHREADS
+        pthread_spin_init( &_M_lock, SCOPE ? 1 : 0 );
+#endif // _PTHREADS
+      }
+
+    ~__spinlock_base()
+      {
+#ifdef _PTHREADS
+        pthread_spin_destroy( &_M_lock );
+#endif
+      }
+  protected:
+#ifdef _PTHREADS
+    pthread_spinlock_t _M_lock;
+#endif
+};
+
+
 // Portable Mutex implementation. If the parameter RECURSIVE_SAFE
 // is true, Mutex will be recursive safe (detect deadlock).
 // If RECURSIVE_SAFE is false, implementation may not to be
@@ -354,6 +380,44 @@ class __Mutex :
     friend class Condition;
 #endif
 };
+
+// Spinlock-based locks (IEEE Std. 1003.1j-2000)
+template <bool SCOPE>
+class __Spinlock :
+    public __spinlock_base<SCOPE>
+{
+  public:
+    __Spinlock()
+      { }
+
+    ~__Spinlock()
+      { }
+
+    void lock()
+      {
+#ifdef _PTHREADS
+        pthread_spin_lock( &_M_lock );
+#endif
+      }
+
+    int trylock()
+      {
+#ifdef _PTHREADS
+        return pthread_spin_trylock( &_M_lock );
+#endif
+#ifdef _NOTHREADS
+        return 0;
+#endif
+      }
+
+    void unlock()
+      {
+#ifdef _PTHREADS
+        pthread_spin_unlock( &_M_lock );
+#endif
+      }
+};
+
 
 // Recursive Safe mutex.
 
