@@ -134,13 +134,12 @@
 #  endif
 # endif /* (_MSC_VER <= 1310) */
 
-# if (_MSC_VER <= 1200)  // including MSVC 6.0
+# if (_MSC_VER <= 1200) || defined(UNDER_CE) // including MSVC 6.0
 //  these work, as long they are inline
 #  define _STLP_INLINE_MEMBER_TEMPLATES 1
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 #  define _STLP_GLOBAL_NEW_HANDLER
 #  define _STLP_DONT_RETURN_VOID 1
-
 #  define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 # endif /* (_MSC_VER <= 1200) */
