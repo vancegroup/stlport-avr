@@ -1,17 +1,17 @@
 2004-03-01 Francois Dumont <dums@s...>
 
-  * _hash_fun.h: Correction of the hash struct specialization for the _STLP_LONG_LONG
-    type. Thanks Vianney Lecroard
+	* _hash_fun.h: Correction of the hash struct specialization for the _STLP_LONG_LONG
+	type. Thanks Vianney Lecroard
 
-  * type_traits.h: Integration of the boost (www.boost.org) type traits within STLport.
+	* type_traits.h: Integration of the boost (www.boost.org) type traits within STLport.
 
 2004-02-21 Francois Dumont <dums@s...>
 
-  * _tree.h: Modification of the base class implementtion to avoid the systematical
-    dynamic allocation of a node as the root note of the RB tree.
+	* _tree.h: Modification of the base class implementtion to avoid the systematical
+	dynamic allocation of a node as the root note of the RB tree.
 
-  * Addition of many missing macro guards in the stlport public headers to avoid to break
-    the stlport prolog/epilog include framework.
+	* Addition of many missing macro guards in the stlport public headers to avoid to break
+	the stlport prolog/epilog include framework.
 
 2004-02-19  Petr Ovchenkov  <ptr@Island...>
 
