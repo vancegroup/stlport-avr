@@ -53,7 +53,7 @@
 #   define __SGI_STL                                      0x330
 
 /* STLport version */
-#   define _STLPORT_VERSION                               0x418
+#   define _STLPORT_VERSION                               0x450
 
 /* Placeholder for user to override settings.
  * It could be also used to mask settings from 
