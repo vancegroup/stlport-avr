@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/08/09 18:15:19 ptr>
+// -*- C++ -*- Time-stamp: <00/08/28 13:15:23 ptr>
 
 /*
  * Copyright (c) 1999-2000
@@ -496,7 +496,6 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
-    cerr << "Error during thread creation: " << err << endl;
     throw __STD::runtime_error( msg1 );
   }
 }
