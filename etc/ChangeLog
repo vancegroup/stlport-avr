@@ -1,7 +1,26 @@
+2004-02-19  Petr Ovchenkov  <ptr@Island...>
+
+	* _slist.h, debug/_slist.h,, dll_main.cpp: remove excess slist redefinitions
+
+	* debug/_slist.h: comment explicit usage of namespace with functions---under
+	some conditions this hangs gcc compilers.
+
+	* _config.h, _cwchar.h, _epilog.h, _iterator_base.h, debug/_debug.c: multiple import
+	of _STL namespace into std, as multiple import VENDOR_CSTD namespace into _STL
+	namespace lead to crash of gcc compilers. Import of _STL namespace into std
+	namespace done once in the _config.h, not in _epilog.h.
+
+	* _prolog.h: undef std not required in all cases; instead this is useful only
+	for redefinition of std namespace, and should be done in the _config.h.
+
+	* _epilog.h: include of _config.h has no sense here.
+
+	* _threads.h: wrong import of _STL namespace into global namespace
+
 2004-02-18  Francois Dumont <dums@s...>
 
-  * _list.h: Modification of the base list class based on the slist implementation.
-    The list do not allocate a node systematically anymore even for the empty list.
+	* _list.h: Modification of the base list class based on the slist implementation.
+	The list do not allocate a node systematically anymore even for the empty list.
 
 2004-02-14  Petr Ovchenkov  <ptr@Island...>
 
