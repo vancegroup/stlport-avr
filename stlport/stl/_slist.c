@@ -38,10 +38,10 @@ template <class _Tp, class _Alloc>
 _Slist_node_base*
 _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
                                         _Slist_node_base* __last_node) {
-  _Slist_node<_Tp>* __cur = (_Slist_node<_Tp>*) (__before_first->_M_next);
+  _Slist_node_base* __cur = __before_first->_M_next;
   while (__cur != __last_node) {
-    _Slist_node<_Tp>* __tmp = __cur;
-    __cur = (_Slist_node<_Tp>*) __cur->_M_next;
+    _Node* __tmp = __STATIC_CAST(_Node*, __cur);
+    __cur = __cur->_M_next;
     _STLP_STD::_Destroy(&__tmp->_M_data);
     _M_head.deallocate(__tmp,1);
   }
@@ -53,18 +53,18 @@ template <class _Tp, class _Alloc>
 _SLIST_IMPL<_Tp,_Alloc>& _SLIST_IMPL<_Tp,_Alloc>::operator=(const _SLIST_IMPL<_Tp,_Alloc>& __x) {
   if (&__x != this) {
     _Node_base* __p1 = &this->_M_head._M_data;
-    _Node* __n1 = (_Node*) this->_M_head._M_data._M_next;
-    const _Node* __n2 = (const _Node*) __x._M_head._M_data._M_next;
+    _Node_base* __n1 = this->_M_head._M_data._M_next;
+    const _Node_base* __n2 = __x._M_head._M_data._M_next;
     while (__n1 && __n2) {
-      __n1->_M_data = __n2->_M_data;
+      __STATIC_CAST(_Node*, __n1)->_M_data = __STATIC_CAST(const _Node*, __n2)->_M_data;
       __p1 = __n1;
-      __n1 = (_Node*) __n1->_M_next;
-      __n2 = (const _Node*) __n2->_M_next;
+      __n1 = __n1->_M_next;
+      __n2 = __n2->_M_next;
     }
     if (__n2 == 0)
       this->_M_erase_after(__p1, 0);
     else
-      _M_insert_after_range(__p1, const_iterator((_Node*)__n2), 
+      _M_insert_after_range(__p1, const_iterator(__CONST_CAST(_Node_base*, __n2)), 
                                   const_iterator(0));
   }
   return *this;
@@ -73,11 +73,11 @@ _SLIST_IMPL<_Tp,_Alloc>& _SLIST_IMPL<_Tp,_Alloc>::operator=(const _SLIST_IMPL<_T
 template <class _Tp, class _Alloc>
 void _SLIST_IMPL<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) { 
   _Node_base* __prev = &this->_M_head._M_data;
-  _Node* __node = (_Node*) this->_M_head._M_data._M_next;
+  _Node_base* __node = this->_M_head._M_data._M_next;
   for ( ; __node != 0 && __n > 0 ; --__n) {
-    __node->_M_data = __val;
+    __STATIC_CAST(_Node*, __node)->_M_data = __val;
     __prev = __node;
-    __node = (_Node*) __node->_M_next;
+    __node = __node->_M_next;
   }
   if (__n > 0)
     _M_insert_after_fill(__prev, __n, __val);
@@ -103,7 +103,7 @@ template <class _Tp, class _Alloc>
 void _SLIST_IMPL<_Tp,_Alloc>::remove(const _Tp& __val) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
-    if (((_Node*) __cur->_M_next)->_M_data == __val)
+    if (__STATIC_CAST(_Node*, __cur->_M_next)->_M_data == __val)
       this->_M_erase_after(__cur);
     else
       __cur = __cur->_M_next;
@@ -115,8 +115,8 @@ void _SLIST_IMPL<_Tp,_Alloc>::unique() {
   _Node_base* __cur = this->_M_head._M_data._M_next;
   if (__cur) {
     while (__cur->_M_next) {
-      if (((_Node*)__cur)->_M_data == 
-          ((_Node*)(__cur->_M_next))->_M_data)
+      if (__STATIC_CAST(_Node*, __cur)->_M_data == 
+          __STATIC_CAST(_Node*, __cur->_M_next)->_M_data)
         this->_M_erase_after(__cur);
       else
         __cur = __cur->_M_next;
@@ -128,8 +128,8 @@ template <class _Tp, class _Alloc>
 void _SLIST_IMPL<_Tp,_Alloc>::merge(_SLIST_IMPL<_Tp,_Alloc>& __x) {
   _Node_base* __n1 = &this->_M_head._M_data;
   while (__n1->_M_next && __x._M_head._M_data._M_next) {
-    if (((_Node*) __x._M_head._M_data._M_next)->_M_data < 
-        ((_Node*)       __n1->_M_next)->_M_data) 
+    if (__STATIC_CAST(_Node*, __x._M_head._M_data._M_next)->_M_data < 
+        __STATIC_CAST(_Node*, __n1->_M_next)->_M_data)
       _Sl_global_inst::__splice_after(__n1, &__x._M_head._M_data, __x._M_head._M_data._M_next);
     __n1 = __n1->_M_next;
   }

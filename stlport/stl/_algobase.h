@@ -186,8 +186,7 @@ inline _BidirectionalIter2 __copy_backward(_BidirectionalIter1 __first,
                                            _BidirectionalIter1 __last, 
                                            _BidirectionalIter2 __result,
                                            const bidirectional_iterator_tag &,
-                                           _Distance*) 
-{
+                                           _Distance*) {
   while (__first != __last)
     *--__result = *--__last;
   return __result;
@@ -198,8 +197,7 @@ inline _BidirectionalIter __copy_backward(_RandomAccessIter __first,
                                           _RandomAccessIter __last, 
                                           _BidirectionalIter __result,
                                           const random_access_iterator_tag &,
-                                          _Distance*)
-{
+                                          _Distance*) {
   for (_Distance __n = __last - __first; __n > 0; --__n)
     *--__result = *--__last;
   return __result;

@@ -87,7 +87,7 @@ public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
 #else
-  void assign(const_pointer __first, const_pointer __last) { _M_impl.assign(__first, __last); }
+  void assign(const value_type *__first, const value_type *__last) { _M_impl.assign(__first, __last); }
   void assign(const_iterator __first, const_iterator __last) {
 #endif
     _M_impl.assign(__first, __last);
@@ -187,11 +187,15 @@ public:
     _M_impl.insert(__pos, __first, __last);
   }
 
-  iterator erase_after(iterator __pos) { return _M_impl.erase_after(__pos); }
-  iterator erase_after(iterator __before_first, iterator __last) { return _M_impl.erase_after(__before_first, __last); }
+  iterator erase_after(iterator __pos) 
+  { return _M_impl.erase_after(__pos); }
+  iterator erase_after(iterator __before_first, iterator __last) 
+  { return _M_impl.erase_after(__before_first, __last); }
 
-  iterator erase(iterator __pos) { return _M_impl.erase(__pos); }
-  iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
+  iterator erase(iterator __pos) 
+  { return _M_impl.erase(__pos); }
+  iterator erase(iterator __first, iterator __last) 
+  { return _M_impl.erase(__first, __last); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const value_type& __x = value_type())
@@ -433,7 +437,6 @@ public:
   { _M_impl.insert(__pos._M_node, cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last)); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-public:
   iterator erase_after(iterator __pos)
   { return _M_impl.erase_after(__pos._M_node)._M_node; }
   iterator erase_after(iterator __before_first, iterator __last) 
