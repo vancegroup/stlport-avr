@@ -2072,6 +2072,16 @@ public:
 
   //         static const size_type npos;
 
+  size_type find(const _Self& __s, size_type __pos = 0) const
+    {
+      size_type __result_pos;
+      const_iterator __result = search(const_begin() + (ptrdiff_t)__pos, const_end(), __s.begin(), __s.end() );
+      __result_pos = __result.index();
+# ifndef _STLP_OLD_ROPE_SEMANTICS
+      if (__result_pos == size()) __result_pos = npos;
+# endif
+      return __result_pos;
+    }
   size_type find(_CharT __c, size_type __pos = 0) const;
   size_type find(const _CharT* __s, size_type __pos = 0) const {
     size_type __result_pos;
