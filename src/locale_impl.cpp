@@ -304,7 +304,21 @@ locale::_M_throw_runtime_error(const char* name)
   _STLP_THROW(runtime_error(buf));
 }
 
+#if !( defined (__BORLANDC__) && defined(_RTLDLL))
+
 long ios_base::_Loc_init::_S_count = 0;
+
+ios_base::_Loc_init::_Loc_init() {
+  if (_S_count++ == 0)
+      locale::_S_initialize();
+}
+
+ios_base::_Loc_init::~_Loc_init() {
+    if (--_S_count == 0)
+      locale::_S_uninitialize();
+}
+
+#endif /* _RTLDLL */
 
 // Initialization of the locale system.  This must be called before
 // any locales are constructed.  (Meaning that it must be called when
@@ -454,3 +468,4 @@ _STLP_END_NAMESPACE
 # include "time_facets.cpp"
 # include "messages.cpp"
 # endif
+

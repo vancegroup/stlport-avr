@@ -158,7 +158,7 @@ extern ptrdiff_t _STLP_CALL __insert_grouping(wchar_t*, wchar_t*, const string&,
 # endif
 
 # if defined (__BORLANDC__) && defined (_RTLDLL)
-void _STLP_CALL _Stl_loc_init_num_put() {
+inline void _Stl_loc_init_num_put() {
   
   num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index = 14;
   num_put<char, char*>::id._M_index = 15;

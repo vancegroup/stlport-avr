@@ -172,9 +172,20 @@ _STLP_END_NAMESPACE
 #  include <stl/_ios.c>
 # endif
 
+// The following is needed to ensure that the inlined _Stl_loc_init functions
+// that ios_base::_Loc_init::_Loc_init() calls are found eventually.
+// Otherwise, undefined externs may be caused.
+
+#if defined(__BORLANDC__) && defined(_RTLDLL)
+#include <stl/_num_put.h>
+#include <stl/_num_get.h>
+#include <stl/_monetary.h>
+#include <stl/_time_facets.h>
+#endif
 
 #endif /* _STLP_IOS */
 
 // Local Variables:
 // mode:C++
 // End:
+

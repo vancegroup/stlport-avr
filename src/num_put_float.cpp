@@ -65,7 +65,7 @@ typedef long double max_double_type;
 
 # endif
 
-# include <stdlib.h>
+# include <cstdlib>
 
 #if defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP)
 # include <float.h>

@@ -234,7 +234,7 @@ void  _STLP_CALL __string_to_float(const string&, long double&);
 # endif
 
 # if defined (__BORLANDC__) && defined (_RTLDLL)
-void _STLP_CALL _Stl_loc_init_num_get() {  
+inline void _Stl_loc_init_num_get() {  
   num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index = 12;
   num_get<char, const char*>::id._M_index = 13;
   
