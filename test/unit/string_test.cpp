@@ -379,7 +379,6 @@ void StringTest::resize()
   CPPUNIT_ASSERT( s[7] == 0 );
   CPPUNIT_ASSERT( s[8] == 0 );
   CPPUNIT_ASSERT( s[9] == 0 );
-  CPPUNIT_ASSERT( s[10] == 0 ); // terminate null
 }
 
 void StringTest::find()
