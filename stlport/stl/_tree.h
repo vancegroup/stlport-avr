@@ -157,6 +157,7 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
   typedef typename _Traits::reference  reference;
   typedef typename _Traits::pointer    pointer;
   typedef _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> > iterator;
+  typedef _Rb_tree_iterator<_Value, _Const_traits<_Value> >    const_iterator;
   typedef _Rb_tree_iterator<_Value, _Traits> _Self;
   typedef _Rb_tree_node_base*    _Base_ptr;
   typedef _Rb_tree_node<_Value>* _Link_type;
@@ -333,10 +334,6 @@ public:
   typedef _Rb_tree_iterator<value_type, _Nonconst_traits<value_type> > iterator;
   typedef _Rb_tree_iterator<value_type, _Const_traits<value_type> > const_iterator;
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
-  
-  // static iterator _M_unconst(const_iterator __ite) {
-  //  return __ite._M_node;
-  // }
 
 private:
   iterator _M_insert(_Base_ptr __parent, const value_type& __val, _Base_ptr __on_left = 0, _Base_ptr __on_right = 0);
