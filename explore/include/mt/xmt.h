@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/07/01 20:46:48 ptr>
+// -*- C++ -*- Time-stamp: <03/07/02 13:21:42 ptr>
 
 /*
  *
@@ -46,8 +46,6 @@
 # include <limits>
 # define ETIME   62      /* timer expired                        */
 # pragma warning( disable : 4290)
-#endif
-
 #endif // WIN32
 
 #ifdef __unix
@@ -110,7 +108,7 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 #  define MT_LOCK(point)         point.lock()
 #  define MT_UNLOCK(point)       point.unlock()
 
-#else
+#else // !_REENTRANT
 
 #  define MT_REENTRANT(point,nm) ((void)0)
 #  define MT_REENTRANT_RS(point,nm) ((void)0)
@@ -118,7 +116,7 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 #  define MT_LOCK(point)         ((void)0)
 #  define MT_UNLOCK(point)       ((void)0)
 
-#endif
+#endif // _REENTRANT
 
 #include <signal.h>
 
@@ -190,7 +188,7 @@ class fork_in_parent :
   private:
     pid_t _pid;
 };
-#endif // _WIN32
+#endif // !_WIN32
 
 // if parameter SCOPE (process scope) true, PTHREAD_PROCESS_SHARED will
 // be used; otherwise PTHREAD_PROCESS_PRIVATE.
@@ -223,7 +221,7 @@ class __mutex_base
         } else {
           pthread_mutex_init( &_M_lock, 0 );
         }
-#endif
+#endif // _PTHREADS
 #ifdef __FIT_UITHREADS
         if ( SCOPE ) {
           // or USYNC_PROCESS_ROBUST to detect already initialized mutex
