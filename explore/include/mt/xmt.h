@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/12/06 15:51:22 ptr>
+// -*- C++ -*- Time-stamp: <00/12/07 19:09:52 ptr>
 
 /*
  *
@@ -28,7 +28,6 @@
 #pragma ident "$SunId$"
 #  endif
 #endif
-
 
 #ifndef __config_feature_h
 #include <config/feature.h>
