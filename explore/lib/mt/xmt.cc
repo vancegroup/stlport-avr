@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/04/04 19:05:25 ptr>
+// -*- C++ -*- Time-stamp: <00/05/10 16:25:37 ptr>
 
 /*
  *
@@ -97,7 +97,11 @@ int Condition::wait_time( const timespec *abstime )
   MT_REENTRANT( _lock, _1 ); // ??
   _val = false;
   timespec _abstime = *abstime;
+#  ifdef __Linux
+  int ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
+# elif
   int ret = pthread_cond_wait( &_cond, &_lock._M_lock, &_abstime );
+# endif
   if ( ret == ETIMEDOUT ) {
     _val = true;
   }
@@ -205,7 +209,7 @@ Thread::~Thread()
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef __STL_PTHREADS
-  user_words = pthread_getspecific( _mt_key );
+  user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __STL_WIN32THREADS
   user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
@@ -270,7 +274,7 @@ int Thread::suspend()
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via condwait
     if ( _id != pthread_self() ) {
-      throw domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
+      throw __STD::domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
       // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
     }
     _suspend.wait();
@@ -357,7 +361,7 @@ void Thread::block_signal( int sig )
 #  ifdef __STL_SOLARIS_THREADS
   thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
 #  endif
-#  ifdef __STL_PTHREADS
+#  if defined(__STL_PTHREADS) && !defined(__Linux)
   pthread_sigsetmask( SIG_BLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
@@ -374,7 +378,7 @@ void Thread::unblock_signal( int sig )
 #  ifdef __STL_UITHREADS
   thr_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
-#  ifdef __STL_PTHREADS
+#  if defined(__STL_PTHREADS) && !defined(__Linux)
   pthread_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
@@ -412,7 +416,11 @@ void Thread::sleep( timespec *t, timespec *r )
 #endif
 }
 
-void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
+#ifdef __GNUC__
+void Thread::_create( const void *p, size_t psz )
+#else
+void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
+#endif
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer
     // Hey, deallocation SHOULD be either in this method, or in _call ONLY,
@@ -443,7 +451,7 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
-    throw runtime_error( msg1 );
+    throw __STD::runtime_error( msg1 );
   }
 }
 
@@ -564,7 +572,7 @@ long& Thread::iword( int __idx )
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef __STL_PTHREADS
-  user_words = pthread_getspecific( _mt_key );
+  user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __STL_WIN32THREADS
   user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
@@ -630,7 +638,7 @@ void*& Thread::pword( int __idx )
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef __STL_PTHREADS
-  user_words = pthread_getspecific( _mt_key );
+  user_words =  reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __STL_WIN32THREADS
   user_words = reinterpret_cast<long **>( TlsGetValue( _mt_key ) );
