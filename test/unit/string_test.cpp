@@ -22,23 +22,27 @@ using namespace std;
 class StringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(StringTest);
-  CPPUNIT_TEST(string1_test);
-  CPPUNIT_TEST(string_data_test);
-  CPPUNIT_TEST(string_c_str_test);
-  CPPUNIT_TEST(string_replace_test);
-  CPPUNIT_TEST(string_resize1);
-  CPPUNIT_TEST(short_string_test);
-  CPPUNIT_TEST(string_mt_test);
+  CPPUNIT_TEST(erase);
+  CPPUNIT_TEST(data);
+  CPPUNIT_TEST(c_str);
+  CPPUNIT_TEST(insert);
+  CPPUNIT_TEST(replace);
+  CPPUNIT_TEST(resize);
+  CPPUNIT_TEST(short_string);
+  CPPUNIT_TEST(find);
+  CPPUNIT_TEST(mt);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-  void string1_test();
-  void string_data_test();
-  void string_c_str_test();
-  void string_replace_test();
-  void string_resize1();
-  void short_string_test();
-  void string_mt_test();
+  void erase();
+  void data();
+  void c_str();
+  void insert();
+  void replace();
+  void resize();
+  void short_string();
+  void find();
+  void mt();
 
   static string func( const string& par )
   {
@@ -69,7 +73,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 //
 // tests implementation
 //
-void StringTest::string_mt_test()
+void StringTest::mt()
 {
   const int nth = 2;
 #if defined(_STLP_PTHREADS)
@@ -102,7 +106,7 @@ void StringTest::string_mt_test()
   CPPUNIT_ASSERT(false);
 #endif
 }
-void StringTest::short_string_test()
+void StringTest::short_string()
 {
   string const ref_short_str1("str1"), ref_short_str2("str2");
   string short_str1(ref_short_str1), short_str2(ref_short_str2);
@@ -162,18 +166,17 @@ void StringTest::short_string_test()
                                                   (str_vect[3] == ref_long_str2));
   }
 }
-void StringTest::string1_test()
+
+void StringTest::erase()
 {
-  int res = 0;
-  char* array = "Hello, World!";
+  char const* array = "Hello, World!";
   std::string v(array);
-  size_t i;
   
   CPPUNIT_ASSERT( v == array );
   
   v.erase(v.begin() + 1, v.end() - 1); // Erase all but first and last.
   
-  for( i = 0; i < v.size(); i++ ) {
+  for( size_t i = 0; i < v.size(); i++ ) {
     switch ( i ) {
       case 0:
         CPPUNIT_ASSERT( v[i] == 'H' );
@@ -192,49 +195,10 @@ void StringTest::string1_test()
   v.erase(v.end() - 1); // Erase last element.
   CPPUNIT_ASSERT( v == array );
   v.clear(); // Erase all.
-
-  const char* strorg = "This is test string for string calls";
-  string str;
-  //size it correctly to avoid reallocation
-  str.reserve(100);
-  str = strorg;
-
-  //test self insertion:
-  str.insert(10, str.c_str() + 5, 15);
-  CPPUNIT_ASSERT( str == "This is teis test string st string for string calls" );
-
-  str = strorg;
-  str.insert(15, str.c_str() + 5, 25);
-  CPPUNIT_ASSERT( str == "This is test stis test string for stringring for string calls" );
-
-  str = strorg;
-  str.insert(0, str.c_str() + str.size() - 4, 4);
-  CPPUNIT_ASSERT( str == "allsThis is test string for string calls" );
-
-  str = strorg;
-  str.insert(0, str.c_str() + str.size() / 2 - 1, str.size() / 2 + 1);
-  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
-  
-  str = strorg;
-  str.insert(str.begin(), str.begin() + str.size() / 2 - 1, str.end());
-  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
-
-  str = strorg;
-  str.replace(5, 15, str.c_str(), 10);
-  CPPUNIT_ASSERT( str == "This This is tefor string calls" );
-
-  str = strorg;
-  str.replace(5, 5, str.c_str(), 10);
-  CPPUNIT_ASSERT( str == "This This is test string for string calls" );
-
-#ifdef _STLP_MEMBER_TEMPLATES
-  vector<int> int_vect;
-  //Just a compile time test:
-  str.insert(str.end(), int_vect.begin(), int_vect.end());
-#endif
+  CPPUNIT_ASSERT( v.empty() );
 }
 
-void StringTest::string_data_test()
+void StringTest::data()
 {
   string xx;
 
@@ -269,7 +233,7 @@ void StringTest::string_data_test()
 #endif
 }
 
-void StringTest::string_c_str_test()
+void StringTest::c_str()
 {
   string low( "2004-01-01" );
   string xx;
@@ -291,7 +255,46 @@ void StringTest::string_c_str_test()
   // End of block B
 }
 
-void StringTest::string_replace_test()
+void StringTest::insert()
+{
+  string strorg = "This is test string for string calls";
+  string str;
+  /*
+   * In case of reallocation there is no auto reference problem
+   * so we reserve a big enough string to be sure to test this
+   * particular point.
+   */
+  str.reserve(100);
+  str = strorg;
+
+  //test self insertion:
+  str.insert(10, str.c_str() + 5, 15);
+  CPPUNIT_ASSERT( str == "This is teis test string st string for string calls" );
+
+  str = strorg;
+  str.insert(15, str.c_str() + 5, 25);
+  CPPUNIT_ASSERT( str == "This is test stis test string for stringring for string calls" );
+
+  str = strorg;
+  str.insert(0, str.c_str() + str.size() - 4, 4);
+  CPPUNIT_ASSERT( str == "allsThis is test string for string calls" );
+
+  str = strorg;
+  str.insert(0, str.c_str() + str.size() / 2 - 1, str.size() / 2 + 1);
+  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
+  
+  str = strorg;
+  str.insert(str.begin(), str.begin() + str.size() / 2 - 1, str.end());
+  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
+
+#ifdef _STLP_MEMBER_TEMPLATES
+  vector<int> int_vect;
+  //Just a compile time test:
+  str.insert(str.end(), int_vect.begin(), int_vect.end());
+#endif
+}
+
+void StringTest::replace()
 {
   /*
    * This test case is for the non template basic_string::replace method, 
@@ -334,14 +337,23 @@ void StringTest::string_replace_test()
   CPPUNIT_ASSERT( s == "1234123456" );
   
   /*
-   * This is the tests for the template replace method.
+   * This is the test for the template replace method.
    */
   s = "123456";
   s.replace(s.begin() + 4, s.end(), s.begin(), s.end());
   CPPUNIT_ASSERT( s == "1234123456" );
+  
+  string strorg("This is test string for string calls");
+  string str = strorg;
+  str.replace(5, 15, str.c_str(), 10);
+  CPPUNIT_ASSERT( str == "This This is tefor string calls" );
+
+  str = strorg;
+  str.replace(5, 5, str.c_str(), 10);
+  CPPUNIT_ASSERT( str == "This This is test string for string calls" );
 }
 
-void StringTest::string_resize1()
+void StringTest::resize()
 {
   string s;
 
@@ -363,9 +375,30 @@ void StringTest::string_resize1()
   s = "1234567";
   s.resize(10);
   CPPUNIT_ASSERT( s.size() == 10 );
-  CPPUNIT_ASSERT( *(s.c_str() + 6) == '7' );
-  CPPUNIT_ASSERT( *(s.c_str() + 7) == 0 );
-  CPPUNIT_ASSERT( *(s.c_str() + 8) == 0 );
-  CPPUNIT_ASSERT( *(s.c_str() + 9) == 0 );
-  CPPUNIT_ASSERT( *(s.c_str() + 10) == 0 ); // terminate null
+  CPPUNIT_ASSERT( s[6] == '7' );
+  CPPUNIT_ASSERT( s[7] == 0 );
+  CPPUNIT_ASSERT( s[8] == 0 );
+  CPPUNIT_ASSERT( s[9] == 0 );
+  CPPUNIT_ASSERT( s[10] == 0 ); // terminate null
+}
+
+void StringTest::find()
+{
+  string s("one two three one two three");
+  CPPUNIT_ASSERT( s.find("one") == 0 );
+  CPPUNIT_ASSERT( s.find('t') == 4 );
+  CPPUNIT_ASSERT( s.find('t', 5) == 8 );
+  CPPUNIT_ASSERT( s.find("four") == string::npos );
+  CPPUNIT_ASSERT( s.find("one", string::npos) == string::npos );
+
+  CPPUNIT_ASSERT( s.rfind("two") == 18 );
+  CPPUNIT_ASSERT( s.rfind("two", 0) == string::npos );
+  CPPUNIT_ASSERT( s.rfind("two", 11) == 4 );
+  CPPUNIT_ASSERT( s.rfind('w') == 19 );
+
+  CPPUNIT_ASSERT( s.find_first_of("abcde") == 2 );
+  CPPUNIT_ASSERT( s.find_last_of("abcde") == 26 );
+  
+  CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
+  CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
 }

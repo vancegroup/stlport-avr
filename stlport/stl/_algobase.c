@@ -209,10 +209,10 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
                      _BinaryPred  __predicate) 
 {
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
-    _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
-    // Test for empty ranges
-    if (__first1 == __last1 || __first2 == __last2)
-      return __first1;
+  _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
+  // Test for empty ranges
+  if (__first1 == __last1 || __first2 == __last2)
+    return __first1;
 
   // Test for a pattern of length 1.
   _ForwardIter2 __tmp(__first2);

@@ -432,7 +432,8 @@ basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __la
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__ 
 basic_string<_CharT,_Traits,_Alloc> ::find(const _CharT* __s, size_type __pos, size_type __n) const {
-  if (__pos + __n > size())
+  const size_t __len = size();
+  if (__pos >= __len || __pos + __n > __len)
     return npos;
   else {
     const_pointer __result =
@@ -457,7 +458,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos, size_type __n) const {
   const size_t __len = size();
-  if (__pos + __n > __len)
+  if (__n > __len || __pos < __n)
     return npos;
   else if (__n == 0)
     return (min) (__len, __pos);
@@ -474,8 +475,7 @@ basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos, 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::rfind(_CharT __c, size_type __pos) const {
   const size_type __len = size();
-
-  if (__pos >= __len) /*__pos + 1 > __len*/
+  if (1 > __len || __pos < 1)
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -502,8 +502,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_of(const _CharT* __s, size_type
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_last_of(const _CharT* __s, size_type __pos, size_type __n) const {
   const size_type __len = size();
-
-  if (__pos >= __len) /*__pos + 1 > __len*/
+  if (1 > __len || __pos < 1)
     return npos;
   else {
     const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -531,7 +530,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(const _CharT* __s, size_
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(_CharT __c, size_type __pos) const {
-  if (__pos >= size()) /*__pos + 1 > size()*/
+  if (1 > size())
     return npos;
   else {
     const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
@@ -544,7 +543,7 @@ template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const {
   typedef typename _Traits::char_type _CharType;
   const size_type __len = size();
-  if (__pos >= __len) /*__pos + 1 > __len*/
+  if (1 > __len || __pos < 1)
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -560,7 +559,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_t
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT, _Traits, _Alloc> ::find_last_not_of(_CharT __c, size_type __pos) const {
   const size_type __len = size();
-  if (__pos >= __len) /*__pos + 1 > __len*/
+  if (1 > __len || __pos < 1)
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
