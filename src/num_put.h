@@ -77,9 +77,9 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
 }
 
 //Dynamic output buffer version.
-template <class Char>
+template <class Char, class Str>
 void 
-__insert_grouping_aux(__basic_iostring<Char> &iostr, size_t __dec_pos,
+__insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __dec_pos,
                       const string& grouping,
                       Char separator, Char Plus, Char Minus,
                       int basechars)

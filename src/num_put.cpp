@@ -55,7 +55,6 @@ __insert_grouping(__iostring &str, size_t dec_pos, const string& grouping,
 }
 
 # ifndef _STLP_NO_WCHAR_T
-
 ptrdiff_t _STLP_CALL
 __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
                   wchar_t separator, wchar_t Plus, wchar_t Minus,

@@ -1,3 +1,9 @@
+2004-02-02  Petr Ovchenkov  <ptr@Island...>
+
+	* _iostream_string.h: avoid usage of iostring in the _STLP_DEBUG mode,
+	due to iostring::iterator not convertable into string::iterator in this
+	mode.
+
 2004-01-29  Petr Ovchenkov  <ptr@Island...>
 
 	* _string.c: avoid 'insert( iterator, const_iterator, const_iterator )'

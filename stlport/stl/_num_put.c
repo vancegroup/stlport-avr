@@ -102,9 +102,9 @@ __put_float(string &__str, _OutputIter __out,
 # endif /* WCHAR_T */
 
 // Helper routine for char
-template <class _OutputIter>
+template <class _OutputIter, class Str>
 _OutputIter  _STLP_CALL
-__put_float(__iostring &__str, _OutputIter __out,
+__put_float( /* __iostring */ Str& __str, _OutputIter __out,
             ios_base& __f, char __fill,
             char __decimal_point,
             char __sep, const string& __grouping)

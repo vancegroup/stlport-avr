@@ -65,7 +65,7 @@ public:
   }
 };
 
-
+#if 0
 template <class _CharT>
 struct __basic_iostring : public basic_string<_CharT, char_traits<_CharT>, __iostring_allocator<_CharT> >
 {
@@ -91,6 +91,24 @@ typedef __basic_iostring<char> __iostring;
 
 # ifndef _STLP_NO_WCHAR_T
 typedef __basic_iostring<wchar_t> __iowstring;
+# endif
+#else // 0
+
+#ifndef _STLP_DEBUG
+# define __basic_iostring(_CharT) basic_string<_CharT, char_traits<_CharT>, __iostring_allocator<_CharT> >
+
+typedef basic_string<char, char_traits<char>, __iostring_allocator<char> > __iostring;
+# ifndef _STLP_NO_WCHAR_T
+typedef basic_string<wchar_t, char_traits<wchar_t>, __iostring_allocator<wchar_t> > __iowstring;
+# endif
+#else // _STLP_DEBUG
+# define __basic_iostring(_CharT) basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> >
+typedef string __iostring;
+# ifndef _STLP_NO_WCHAR_T
+typedef wstring __iowstring;
+# endif
+#endif // _STLP_DEBUG
+
 #endif
 
 _STLP_END_NAMESPACE

@@ -411,15 +411,20 @@ money_put<_CharT, _OutputIter>
   // by frac_digits.  If there is only one group, we need first
   // to duplicate it.
 
-  __basic_iostring<_CharT> __new_digits;
+  // __basic_iostring<_CharT> __new_digits;
+#ifndef _STLP_DEBUG
+  __basic_iostring(_CharT) __new_digits;
+#else
+  string_type __new_digits;
+#endif
   if (!__grouping.empty()) {
     __new_digits.assign(__digits_first, __digits_last);
     __insert_grouping(__new_digits,
                       (__frac_digits == 0)?__new_digits.size():__frac_digits,
                       __grouping,
                       __sep, __plus, __minus, 0);
-    __digits_first = __new_digits.begin();
-    __digits_last  = __new_digits.end();
+    __digits_first = __new_digits.begin(); // <<--
+    __digits_last  = __new_digits.end();   // <<--
   }
 
   // Determine the amount of padding required, if any.  
