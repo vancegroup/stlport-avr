@@ -32,7 +32,7 @@ DEBUG_FLAGS = -g +w2 -D_STLP_DEBUG
 #
 # Try those flags to see if they help to get maximum efficiency :
 # -Qoption iropt -R,-Ml30,-Ms30,-Mi1000000,-Mm1000000,-Mr1000000,-Ma1000000,-Mc1000000,-Mt1000000
-RELEASE_FLAGS = -O2 +w2 -Qoption iropt -R,-Ml30,-Ms30,-Mi1000000,-Mm1000000,-Mr1000000,-Ma1000000,-Mc1000000,-Mt1000000
+RELEASE_FLAGS = -O2 +w2 -qoption ccfe -expand=1000
 
 
 # install: $(TARGETS)

@@ -16,6 +16,7 @@
  *
  */ 
 
+# include "stlport_prefix.h"
 # include "num_put.h"
 
 _STLP_BEGIN_NAMESPACE

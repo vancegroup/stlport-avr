@@ -19,10 +19,12 @@
 # ifndef _STLP_NUM_PUT_H
 #  define _STLP_NUM_PUT_H
 
-#include "stlport_prefix.h"
-
+#ifndef _STLP_INTERNAL_NUM_PUT_H
 #include <stl/_num_put.h>
+#endif
+#ifndef _STLP_INTERNAL_OSTREAM_H
 #include <stl/_ostream.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 

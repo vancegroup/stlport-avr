@@ -1169,5 +1169,3 @@ messages_byname<wchar_t>::~messages_byname()
 
 _STLP_END_NAMESPACE
 
-
-

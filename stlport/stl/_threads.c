@@ -66,6 +66,14 @@ __DECLARE_INSTANCE(unsigned, _STLP_mutex_spin<0>::__last, =0);
 
 # endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
+#ifdef _STLP_SPARC_SOLARIS_THREADS
+// underground function in libc.so; we do not want dependance on librt
+extern "C" int __nanosleep(const struct timespec*, struct timespec*);
+# define _STLP_NANOSLEEP __nanosleep
+#else
+# define _STLP_NANOSLEEP nanosleep
+#endif
+
 template <int __inst>
 void _STLP_CALL
 _STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
@@ -80,7 +88,7 @@ _STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
           /* Max sleep is 2**27nsec ~ 60msec      */
           __ts.tv_sec = 0;
           __ts.tv_nsec = 1 << __log_nsec;
-          nanosleep(&__ts, 0);
+          _STLP_NANOSLEEP(&__ts, 0);
 #     endif
   }
 

@@ -59,8 +59,8 @@ LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}
 LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic}
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic}
 
-LDLIBS_RELEASE_dynamic =  -lposix4
-LDLIBS_STLDEBUG_dynamic = -lposix4
+# LDLIBS_RELEASE_dynamic =  -lposix4
+# LDLIBS_STLDEBUG_dynamic = -lposix4
 
 include common_percent_rules.mak
 include common_rules.mak

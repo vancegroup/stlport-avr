@@ -53,10 +53,11 @@ template <class _Tp> class allocator;
 
 #if defined (__sgi) && defined (_STLP_HAS_NO_NEW_C_HEADERS) /* IRIX */
 typedef off64_t   streamoff;
-#elif defined (__unix) && defined (_STLP_HAS_NO_NEW_C_HEADERS) /* Other version of UNIX */
-typedef off_t     streamoff;
+// #elif defined (__unix) && defined (_STLP_HAS_NO_NEW_C_HEADERS) /* Other version of UNIX */
+// typedef off_t     streamoff;
 #else /* __unix */
-typedef ptrdiff_t streamoff;
+// boris : here, it's not ptrdiff_t as some Solaris systems have confusing definitions of these.
+typedef long streamoff;
 #endif /* _STLP_HAS_NO_NEW_C_HEADERS */
 
 typedef ptrdiff_t streamsize;
