@@ -10,6 +10,21 @@
 #  define _STLP_NO_BOOL 1
 # endif
 
+#ifndef _MBSTATET_H
+#   define _MBSTATET_H
+typedef struct __mbstate_t {
+#if defined(_LP64)
+  long    __filler[4];
+#else
+  int     __filler[6];
+#endif
+} __mbstate_t;
+
+namespace std {
+  typedef __mbstate_t     mbstate_t;
+}
+#endif  /* __MBSTATET_H */
+
 #  if (__SUNPRO_CC >= 0x500 ) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 )) \
     && defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)
 #    error "The wrapper (_STLP_NO_OWN_IOSTREAMS) mode does not work well without _STLP_HAS_NO_NEW_IOSTREAMS. Please set this flag. You will also have to use -liostream option on link phase."
@@ -43,11 +58,11 @@
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 # endif
 
-# if (__SUNPRO_CC < 0x520) || (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
+// # if (__SUNPRO_CC < 0x520) || (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
 // this is not really true ; but use of new-style native headers bring in namespace problems,
 // so it works better with our wrapper only.
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
-# endif
+// # endif
 
 // those do not depend on compatibility
 # if (__SUNPRO_CC < 0x510)

@@ -355,18 +355,18 @@ inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 // Those adaptors are here to fix common compiler bug regarding builtins:
 // expressions like int k = int() should initialize k to 0
 template <class _Tp>
-_Tp __default_constructed_aux(_Tp*, const __false_type&) {
-    return _Tp();
+inline _Tp __default_constructed_aux(_Tp*, const __false_type&) {
+  return _Tp();
 }
 template <class _Tp>
-_Tp __default_constructed_aux(_Tp*, const __true_type&) {
-    return _Tp(0);
+inline _Tp __default_constructed_aux(_Tp*, const __true_type&) {
+  return _Tp(0);
 }
 
 template <class _Tp>
-_Tp __default_constructed(_Tp* __p) {
-    typedef typename _Is_integer<_Tp>::_Integral _Is_Integral;
-    return __default_constructed_aux(__p, _Is_Integral());
+inline _Tp __default_constructed(_Tp* __p) {
+  typedef typename _Is_integer<_Tp>::_Integral _Is_Integral;
+  return __default_constructed_aux(__p, _Is_Integral());
 }
 
 #  define _STLP_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)

@@ -430,6 +430,12 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> ::insert_unique(iterator _
     // first argument just needs to be non-null 
     else
       {
+	bool __comp_pos_v = _M_key_compare( _S_key(__position._M_node), _KeyOfValue()(__v) );
+	
+	if (__comp_pos_v == false)  // compare > and compare < both false so compare equal
+	  return __position;
+	//Below __comp_pos_v == true
+
 	// Standard-conformance - does the insertion point fall immediately AFTER
 	// the hint?
 	iterator __after = __position;
@@ -448,11 +454,6 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> ::insert_unique(iterator _
 	
 	// Optimization to catch insert-equivalent -- save comparison results,
 	// and we get this for free.
-	bool __comp_pos_v = _M_key_compare( _S_key(__position._M_node), _KeyOfValue()(__v) );
-	
-	if (__comp_pos_v == false)  // compare > and compare < both false so compare equal
-	  return __position;
-	//Below __comp_pos_v == true
 	if(_M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) )) {
 	  if (_S_right(__position._M_node) == 0)
 	    return _M_insert(0, __position._M_node, __v, __position._M_node);

@@ -220,6 +220,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #ifdef _STLP_MSVC
 #pragma optimize("g",off)
 #endif 
+
 void force_link()
 {
 float f;

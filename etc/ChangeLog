@@ -33,6 +33,9 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 
 	* _cmath.h : added guard to mask additional overloads (thanks Tim Smith)
 
+	* stl_solaris.h : mbstate_t stuff defined here, old-style C headers used (Thanks Mukesh Kapoor)
+
+	* type_traits.h : __default_constructed() inlined (Thanks Matt Davies)
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

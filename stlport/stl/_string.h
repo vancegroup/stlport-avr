@@ -126,11 +126,7 @@ public:
   size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
 
   _String_base(const allocator_type& __a)
-    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0) {
-    _M_start  = _M_end_of_storage.allocate(8);  
-    _M_finish = _M_start;  
-    _M_end_of_storage._M_data = _M_start + 8;  
-  }
+    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0) {}
   
   _String_base(const allocator_type& __a, size_t __n)
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0)
