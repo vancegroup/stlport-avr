@@ -1,3 +1,10 @@
+2004-04-02  Petr Ovtchenkov  <ptr@Island...>
+
+	* src/time_facets.cpp: add #include <cstdio> for sprintf; remove
+	c_copy_string function.
+
+	* stlport/stl/_time_facets.h: fix for _STLP_LEAKS_PEDANTIC.
+
 2004-04-01  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_string.h: reorder of in-class template and
