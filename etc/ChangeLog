@@ -1,9 +1,14 @@
+2004-01-29  Petr Ovchenkov  <ptr@Island...>
+
+	* _string.c: avoid 'insert( iterator, const_iterator, const_iterator )'
+	instantiation in the 'replace'---VC6 has problem here.
+
 2004-01-29  Francois Dumont <dums@s...>
 	* facets_byname.cpp: correction of the typeid use thanks to Ulrich Eckhardt.
 
 	* _iostream_string.h: creation and integration of a special string used within
-    the iostream implementation to display floating point numbers. It mixes a static
-    buffer with a dynamic one to improve performance.
+	the iostream implementation to display floating point numbers. It mixes a static
+	buffer with a dynamic one to improve performance.
 
 2004-01-22  Francois Dumont <dums@s...>
 
