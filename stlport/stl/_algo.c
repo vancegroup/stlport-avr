@@ -218,17 +218,17 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 template <class _InputIterator, class _OutputIterator, class _BinaryPredicate,
 					    class _Tp>
 _STLP_INLINE_LOOP _OutputIterator 
-__unique_copy(_InputIterator first, _InputIterator last,
-              _OutputIterator result,
-              _BinaryPredicate binary_pred, _Tp*) {
-  _Tp value = *first;
-  *result = value;
-  while (++first != last)
-    if (!binary_pred(value, *first)) {
-      value = *first;
-      *++result = value;
+__unique_copy(_InputIterator __first, _InputIterator __last,
+              _OutputIterator __result,
+              _BinaryPredicate __binary_pred, _Tp*) {
+  _Tp __value = *__first;
+  *__result = __value;
+  while (++__first != __last)
+    if (!__binary_pred(__value, *__first)) {
+      __value = *__first;
+      *++__result = __value;
     }
-  return ++result;
+  return ++__result;
 }
 
 template <class _InputIter, class _OutputIter, class _BinaryPredicate>
@@ -249,20 +249,20 @@ __unique_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
 }
 
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
-template <class InputIterator, class BidirectionalIterator, class BinaryPredicate>
-inline BidirectionalIterator 
-__unique_copy(InputIterator first, InputIterator last,
-              BidirectionalIterator result, BinaryPredicate binary_pred,
+template <class _InputIterator, class _BidirectionalIterator, class _BinaryPredicate>
+inline _BidirectionalIterator 
+__unique_copy(_InputIterator __first, _InputIterator __last,
+              _BidirectionalIterator __result, _BinaryPredicate __binary_pred,
               bidirectional_iterator_tag) {
-  return __unique_copy(first, last, result, binary_pred, forward_iterator_tag());
+  return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
 
 template <class InputIterator, class RandomAccessIterator, class BinaryPredicate>
 inline RandomAccessIterator 
-__unique_copy(InputIterator first, InputIterator last,
-              RandomAccessIterator result, BinaryPredicate binary_pred,
+__unique_copy(_InputIterator __first, _InputIterator __last,
+              _RandomAccessIterator __result, _BinaryPredicate __binary_pred,
               random_access_iterator_tag) {
-  return __unique_copy(first, last, result, binary_pred, forward_iterator_tag());
+  return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
 # endif /* _STLP_NONTEMPL_BASE_MATCH_BUG */
 

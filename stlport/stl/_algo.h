@@ -214,7 +214,7 @@ replace_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
   return __result;
 }
 
-template <class Iterator, class _OutputIter, class _Predicate, class _Tp>
+template <class _Iterator, class _OutputIter, class _Predicate, class _Tp>
 _STLP_INLINE_LOOP _OutputIter 
 replace_copy_if(_Iterator __first, _Iterator __last,
                 _OutputIter __result,
