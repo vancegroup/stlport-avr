@@ -1,3 +1,13 @@
+2004-04-14  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_algobase.h: calculate difference once
+
+	* stlport/stl/pointers/_vector.h: missed return
+
+	* stlport/stl/_vector.c, stlport/stl/_vector.h: big enough functions moved to non-inline section
+
+	* stlport/stl/_iterator.h: use reference instead of pointer for stored container
+
 2004-04-06  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_prolog.h: when we in _STLP_REDEFINE_STD mode, we really
