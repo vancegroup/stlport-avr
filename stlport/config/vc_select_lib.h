@@ -12,7 +12,7 @@
 
 #    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
      || defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB) ) \
-       && ! defined (_STLP_USE_STATIC_LIB)
+       && !(defined(_STLP_USE_STATIC_LIB) || defined(_STLP_USE_STATICX_LIB))
 #      undef  _STLP_USE_DECLSPEC
 #      define _STLP_USE_DECLSPEC 1
 #    endif
@@ -26,7 +26,7 @@
 #  endif
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD
 
-# if defined (_RTLDLL) && defined (_STLP_USE_STATIC_LIB)
+# if (defined(_RTLDLL) && defined(_STLP_USE_STATIC_LIB)) || defined(_STLP_USE_STATICX_LIB)
 #    define _STLP_LIB_STATIC_SUFFIX "_staticx"
 # else
 #    define _STLP_LIB_STATIC_SUFFIX "_static"
@@ -35,5 +35,3 @@
 #    include <config/stl_select_lib.h>
 
 #  endif /* _STLP_OWN_IOSTREAMS */
-
-
