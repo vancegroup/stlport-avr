@@ -14,7 +14,7 @@ using namespace std;
 #endif
 static bool char_str_less(const char* a_, const char* b_)
 {
-  return ::strcmp(a_, b_) < 0 ? 1 : 0;
+  return strcmp(a_, b_) < 0 ? 1 : 0;
 }
 
 int lwrbnd2_test(int, char**)

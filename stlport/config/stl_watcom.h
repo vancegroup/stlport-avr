@@ -1,6 +1,13 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+# ifndef _STLP_NO_SGI_IOSTREAMS
+#  define _STLP_NOSGI_IOSTREAMS
+# endif
+
+# define _STLP_NO_RELOPS_NAMESPACE
+# define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
+
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
 #  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES

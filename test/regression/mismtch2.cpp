@@ -8,14 +8,16 @@
 #ifdef MAIN 
 #define mismtch2_test main
 #endif
-bool str_equal(const char* a_, const char* b_)
-{
-  return ::strcmp(a_, b_) == 0 ? 1 : 0;
-}
 
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
 #endif
+
+bool str_equal(const char* a_, const char* b_)
+{
+  return strcmp(a_, b_) == 0 ? 1 : 0;
+}
+
 int mismtch2_test(int, char**)
 {
   cout<<"Results of mismtch2_test:"<<endl;

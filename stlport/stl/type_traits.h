@@ -234,8 +234,15 @@ struct _IsPOD {
 _STLP_BEGIN_NAMESPACE						//*TY 03/01/2001 - they confuse as if the instantiated specializaion is already defined.
 #endif
 
+
 template <class _Tp> 
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
+
+#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#   define _IS_POD_ITER(_It, _Tp) *(typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type*)0
+#  else
+#   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
+#  endif
 
 #if defined(__MRC__)||defined(__SC__)
 _STLP_END_NAMESPACE

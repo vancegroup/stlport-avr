@@ -35,11 +35,9 @@
 # if defined (_STLP_NESTED_TYPE_PARAM_BUG)
 #  define __size_type__ size_t
 #  define size_type size_t
-#  define __iterator__  _CharT*
-#  define iterator      __iterator__
+#  define iterator   _CharT*
 # else
 #  define __size_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_string<_CharT,_Traits,_Alloc>::size_type
-#  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE basic_string<_CharT,_Traits,_Alloc>::iterator
 # endif
 
 _STLP_BEGIN_NAMESPACE
@@ -53,7 +51,7 @@ _STLP_BEGIN_NAMESPACE
 //  if __res_arg < capacity(), this member function may actually decrease
 //  the string's capacity.
 template <class _CharT, class _Traits, class _Alloc> 
-void basic_string<_CharT,_Traits,_Alloc>::reserve(__size_type__ __res_arg) {
+void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
   if (__res_arg > max_size())
     this->_M_throw_length_error();
 
@@ -77,7 +75,7 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(__size_type__ __res_arg) {
 
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT,_Traits,_Alloc>& 
-basic_string<_CharT,_Traits,_Alloc>::append(__size_type__ __n, _CharT __c) {
+basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
   if (__n > max_size() || size() > max_size() - __n)
     this->_M_throw_length_error();
   if (size() + __n > capacity())
@@ -142,7 +140,7 @@ basic_string<_CharT, _Traits, _Alloc>::append(const _CharT* __first,
 
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT,_Traits,_Alloc>& 
-basic_string<_CharT,_Traits,_Alloc>::assign(__size_type__ __n, _CharT __c) {
+basic_string<_CharT,_Traits,_Alloc>::assign(size_type __n, _CharT __c) {
   if (__n <= size()) {
     _Traits::assign(this->_M_start, __n, __c);
     erase(begin() + __n, end());
@@ -217,7 +215,7 @@ basic_string<_CharT,_Traits,_Alloc>
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-void basic_string<_CharT,_Traits,_Alloc>::insert(__iterator__ __position,
+void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position,
            size_t __n, _CharT __c)
 {
   if (__n != 0) {
@@ -271,7 +269,7 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(__iterator__ __position,
 
 template <class _CharT, class _Traits, class _Alloc>
 void 
-basic_string<_CharT,_Traits,_Alloc>::insert(__iterator__ __position,
+basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position,
                                             const _CharT* __first, 
                                             const _CharT* __last)
 {
@@ -331,7 +329,7 @@ basic_string<_CharT,_Traits,_Alloc>::insert(__iterator__ __position,
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT,_Traits,_Alloc>&
 basic_string<_CharT,_Traits,_Alloc>
-  ::replace(iterator __first, iterator __last, __size_type__ __n, _CharT __c)
+  ::replace(iterator __first, iterator __last, size_type __n, _CharT __c)
 {
   size_type __len = (size_type)(__last - __first);
   
@@ -590,7 +588,6 @@ _STLP_END_NAMESPACE
 # undef basic_string
 # undef __size_type__
 # undef size_type
-# undef __iterator__
 # undef iterator
 # endif /* NATIVE */
 

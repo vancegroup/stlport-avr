@@ -433,8 +433,7 @@ public:
   
   size_type erase(const key_type& __x) {
     pair<iterator,iterator> __p = equal_range(__x);
-    size_type __n = 0;
-    distance(__p.first, __p.second, __n);
+    size_type __n = distance(__p.first, __p.second);
     erase(__p.first, __p.second);
     return __n;
   }

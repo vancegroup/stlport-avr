@@ -413,8 +413,7 @@ public:
 
   {
     if (__first != __last) {
-      size_type __n = 0;
-      distance(__first, __last, __n);
+      size_type __n = distance(__first, __last);
 
       if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
         const size_type __elems_after = this->_M_finish - __position;
@@ -539,8 +538,7 @@ protected:
   template <class _ForwardIterator>
   void _M_range_initialize(_ForwardIterator __first,
                            _ForwardIterator __last, forward_iterator_tag) {
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     this->_M_start = this->_M_end_of_storage.allocate(__n);
     this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _IsPODType());

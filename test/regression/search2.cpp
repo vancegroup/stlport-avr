@@ -7,17 +7,18 @@
 #include <iterator>
 #include <functional>
 
+#if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
+using namespace std;
+#endif
+
 #ifdef MAIN 
 #define search2_test main
 #endif
 static bool str_equal(const char* a_, const char* b_)
 {
-  return ::strcmp(a_, b_) == 0 ? 1 : 0;
+  return strcmp(a_, b_) == 0 ? 1 : 0;
 }
 
-#if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
-using namespace std;
-#endif
 int search2_test(int, char**)
 {
   cout<<"Results of search2_test:"<<endl;

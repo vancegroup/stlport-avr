@@ -462,8 +462,7 @@ _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
                             _OutputIter __out, const _Distance __n)
 {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
-  _Distance __remaining = 0;
-  distance(__first, __last, __remaining);
+  _Distance __remaining = distance(__first, __last);
   _Distance __m = (min) (__n, __remaining);
 
   while (__m > 0) {
@@ -487,8 +486,7 @@ _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
                             _RandomNumberGenerator& __rand)
 {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
-  _Distance __remaining = 0;
-  distance(__first, __last, __remaining);
+  _Distance __remaining = distance(__first, __last);
   _Distance __m = (min) (__n, __remaining);
 
   while (__m > 0) {
@@ -969,13 +967,13 @@ void __merge_adaptive(_BidirectionalIter __first,
       __len11 = __len1 / 2;
       advance(__first_cut, __len11);
       __second_cut = lower_bound(__middle, __last, *__first_cut, __comp);
-      distance(__middle, __second_cut, __len22);   
+      __len22 += distance(__middle, __second_cut);   
     }
     else {
       __len22 = __len2 / 2;
       advance(__second_cut, __len22);
       __first_cut = upper_bound(__first, __middle, *__second_cut, __comp);
-      distance(__first, __first_cut, __len11);
+      __len11 += distance(__first, __first_cut);
     }
     _BidirectionalIter __new_middle =
       __rotate_adaptive(__first_cut, __middle, __second_cut, __len1 - __len11,
@@ -1172,8 +1170,7 @@ template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
 _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
                            const _Tp& __val, _Compare __comp, _Distance*)
 {
-  _Distance __len = 0;
-  distance(__first, __last, __len);
+  _Distance __len = distance(__first, __last);
   _Distance __half;
   _ForwardIter __middle;
 
@@ -1197,8 +1194,7 @@ pair<_ForwardIter, _ForwardIter>
 __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
               _Compare __comp, _Distance*)
 {
-  _Distance __len = 0;
-  distance(__first, __last, __len);
+  _Distance __len = distance(__first, __last);
   _Distance __half;
   _ForwardIter __middle, __left, __right;
 
@@ -1285,13 +1281,13 @@ void __merge_without_buffer(_BidirectionalIter __first,
     __len11 = __len1 / 2;
     advance(__first_cut, __len11);
     __second_cut = lower_bound(__middle, __last, *__first_cut, __comp);
-    distance(__middle, __second_cut, __len22);
+    __len22 += distance(__middle, __second_cut);
   }
   else {
     __len22 = __len2 / 2;
     advance(__second_cut, __len22);
     __first_cut = upper_bound(__first, __middle, *__second_cut, __comp);
-    distance(__first, __first_cut, __len11);
+    __len11 +=distance(__first, __first_cut);
   }
   _BidirectionalIter __new_middle
     = rotate(__first_cut, __middle, __second_cut);
@@ -1337,10 +1333,8 @@ inline void __inplace_merge_aux(_BidirectionalIter __first,
                                 _BidirectionalIter __middle,
                                 _BidirectionalIter __last, _Tp*, _Distance*,
                                 _Compare __comp) {
-  _Distance __len1 = 0;
-  distance(__first, __middle, __len1);
-  _Distance __len2 = 0;
-  distance(__middle, __last, __len2);
+  _Distance __len1 = distance(__first, __middle);
+  _Distance __len2 = distance(__middle, __last);
 
   _Temporary_buffer<_BidirectionalIter, _Tp> __buf(__first, __last);
   if (__buf.begin() == 0)

@@ -28,7 +28,6 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
  	  for _M_close on Win32 (Thanks Stephen Baker)
 	* fstream.cpp : Fixed corner case with mmap() on EOF (Thanks Jens Maurer)
 
-	* stl/_fstream.h : Added "const" modifier to is_open() for ifstream and ofstream (Thanks Raphael Bossek)
         * _istream.c : fixed _M_read_buffered sssso that it does not skip delimiters (Thanks Gerd Hoeren)
 	
 	* stl/_string.h : operator __std_string() uses constructor with a size to correctly initialize string containing null chars (Thanks Armin)
@@ -83,6 +82,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* debug/_deque.h : a check in erase() fixed (thanks Andreas Malzahn)
 
 	* debug/_list.h : added remove() to do iterator invalidation; range erase() fixed to do invalidation
+
+	* stl_watcom.h : added switches; disabled own iosterams by default (thanks Steven Green)
 	
 	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :

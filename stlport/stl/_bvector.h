@@ -258,7 +258,7 @@ protected:
 //  compiler support.  Otherwise, we define a class bit_vector which uses
 //  the default allocator. 
 
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined(_STLP_NO_BOOL)
+#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined(_STLP_NO_BOOL) && ! defined (__SUNPRO_CC)
 # define _STLP_VECBOOL_TEMPLATE
 # define __BVEC_TMPL_HEADER template <class _Alloc>
 #else
@@ -375,8 +375,7 @@ protected:
   template <class _ForwardIterator>
   void _M_initialize_range(_ForwardIterator __first, _ForwardIterator __last,
                            forward_iterator_tag) {
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     _M_initialize(__n);
     //    copy(__first, __last, _M_start);
     copy(__first, __last, this->_M_start); // dwa 12/22/99 -- resolving ambiguous reference.
@@ -397,8 +396,7 @@ protected:
                        _ForwardIterator __first, _ForwardIterator __last,
                        forward_iterator_tag) {
     if (__first != __last) {
-      size_type __n = 0;
-      distance(__first, __last, __n);
+      size_type __n = distance(__first, __last);
       if (capacity() - size() >= __n) {
         __copy_backward(__position, end(), this->_M_finish + difference_type(__n), random_access_iterator_tag(), (difference_type*)0 );
         copy(__first, __last, __position);
@@ -515,8 +513,7 @@ public:
             const allocator_type& __a = allocator_type())
     : _Bvector_base<_Alloc >(__a)
   {
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     _M_initialize(__n);
     copy(__first, __last, this->_M_start);
   }
@@ -524,8 +521,7 @@ public:
             const allocator_type& __a = allocator_type())
     : _Bvector_base<_Alloc >(__a)
   {
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     _M_initialize(__n);
     copy(__first, __last, this->_M_start);
   }
@@ -592,8 +588,7 @@ public:
   template <class _ForwardIterator>
   void _M_assign_aux(_ForwardIterator __first, _ForwardIterator __last,
                      forward_iterator_tag) {
-    size_type __len = 0;
-    distance(__first, __last, __len);
+    size_type __len = distance(__first, __last);
     if (__len < size())
       erase(copy(__first, __last, begin()), end());
     else {
@@ -671,8 +666,7 @@ public:
   void insert(iterator __position,
               const_iterator __first, const_iterator __last) {
     if (__first == __last) return;
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     if (capacity() - size() >= __n) {
       __copy_backward(__position, end(), this->_M_finish + __n,
                       random_access_iterator_tag(), (difference_type*)0 );
@@ -693,8 +687,7 @@ public:
 
   void insert(iterator __position, const bool* __first, const bool* __last) {
     if (__first == __last) return;
-    size_type __n = 0;
-    distance(__first, __last, __n);
+    size_type __n = distance(__first, __last);
     if (capacity() - size() >= __n) {
       __copy_backward(__position, end(), this->_M_finish + __n, 
                       random_access_iterator_tag(), (difference_type*)0 );

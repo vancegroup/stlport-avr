@@ -535,7 +535,7 @@ public:                         // File and buffer operations.
   basic_filebuf<_CharT, _Traits>* rdbuf() const
     { return __CONST_CAST(_Buf*,&_M_buf); }
 
-  bool is_open() const {
+  bool is_open() {
     return this->rdbuf()->is_open();
   }
 
@@ -602,7 +602,7 @@ public:                         // File and buffer operations.
   basic_filebuf<_CharT, _Traits>* rdbuf() const
     { return __CONST_CAST(_Buf*,&_M_buf); } 
 
-  bool is_open() const {
+  bool is_open() {
     return this->rdbuf()->is_open();
   }
 

@@ -699,14 +699,14 @@ namespace stlport = _STLP_STD;
 # endif
 
 #if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
-# ifdef __sgi
+# if (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC)
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<const_iterator> const_reverse_iterator; \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<iterator> reverse_iterator
 # else
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
-   typedef _STLP_STD::reverse_iterator<const_iterator> const_reverse_iterator; \
-   typedef _STLP_STD::reverse_iterator<iterator> reverse_iterator
+   typedef _STLP_STD :: reverse_iterator<const_iterator> const_reverse_iterator; \
+   typedef _STLP_STD :: reverse_iterator<iterator> reverse_iterator
 # endif
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 # if defined (_STLP_MSVC50_COMPATIBILITY)

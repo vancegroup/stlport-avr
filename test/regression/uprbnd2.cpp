@@ -8,14 +8,16 @@
 #ifdef MAIN 
 #define uprbnd2_test main
 #endif
-static bool char_str_less(const char* a_, const char* b_)
-{
-  return ::strcmp(a_, b_) < 0 ? 1 : 0;
-}
 
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
 #endif
+
+static bool char_str_less(const char* a_, const char* b_)
+{
+  return strcmp(a_, b_) < 0 ? 1 : 0;
+}
+
 int uprbnd2_test(int, char**)
 {
   cout<<"Results of uprbnd2_test:"<<endl;

@@ -27,17 +27,9 @@
 #define _STLP_VECTOR_C
 
 # if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
-#  define __pointer__             _Tp*
-#  define __const_pointer__       const _Tp*
-#  define __size_type__           size_t
-# else
-#  define __pointer__         pointer
-#  define __const_pointer__   const_pointer
-#  define __size_type__       size_type
+#  define iterator       _Tp*
+#  define size_type           size_t
 # endif
-
-#  define __iterator__       __pointer__
-#  define __const_iterator__ __const_pointer__  
 
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
@@ -46,7 +38,7 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc>
 void 
-__vector__<_Tp, _Alloc>::reserve(__size_type__ __n) {
+__vector__<_Tp, _Alloc>::reserve(size_type __n) {
   if (capacity() < __n) {
     const size_type __old_size = size();
     pointer __tmp;
@@ -63,8 +55,8 @@ __vector__<_Tp, _Alloc>::reserve(__size_type__ __n) {
 template <class _Tp, class _Alloc>
 void 
 __vector__<_Tp, _Alloc>::_M_fill_insert(
-				    __iterator__ __position, 
-				    __size_type__ __n, const _Tp& __x) {
+				    iterator __position, 
+				    size_type __n, const _Tp& __x) {
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _Tp __x_copy = __x;
@@ -130,11 +122,8 @@ void __vector__<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
 
 _STLP_END_NAMESPACE
 
-# undef __pointer__
-# undef __const_pointer__
-# undef __size_type__
-# undef __iterator__
-# undef __const_iterator__
+# undef size_type
+# undef iterator
 # undef vector
 
 #endif /*  _STLP_VECTOR_C */

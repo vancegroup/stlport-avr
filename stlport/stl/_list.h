@@ -275,8 +275,7 @@ public:
 
   bool empty() const { return this->_M_node._M_data->_M_next == this->_M_node._M_data; }
   size_type size() const {
-    size_type __result = 0;
-    distance(begin(), end(), __result);
+    size_type __result = distance(begin(), end());
     return __result;
   }
   size_type max_size() const { return size_type(-1); }

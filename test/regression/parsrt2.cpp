@@ -10,14 +10,16 @@
 #ifdef MAIN 
 #define parsrt2_test main
 #endif
-static bool str_compare(const char* a_, const char* b_)
-{
-  return ::strcmp(a_, b_) < 0 ? 1 : 0;
-}
 
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
 #endif
+
+static bool str_compare(const char* a_, const char* b_)
+{
+  return strcmp(a_, b_) < 0 ? 1 : 0;
+}
+
 int parsrt2_test(int, char**)
 {
   cout<<"Results of parsrt2_test:"<<endl;

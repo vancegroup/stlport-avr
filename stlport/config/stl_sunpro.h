@@ -10,6 +10,12 @@
 #  define _STLP_NO_BOOL 1
 # endif
 
+#  if (__SUNPRO_CC >= 0x500 ) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 )) \
+    && defined (_STLP_NO_SGI_IOSTREAMS) && ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)
+#    error "The wrapper (_STLP_NO_OWN_IOSTREAMS) mode does not work well without _STLP_HAS_NO_NEW_IOSTREAMS. Please set this flag. You will also have to use -liostream option on link phase."
+// #   define _STLP_HAS_NO_NEW_IOSTREAMS
+#  endif
+
 // compatibility mode stuff
 # if (__SUNPRO_CC >= 0x510) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 ))
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC/Cstd
@@ -29,23 +35,21 @@
 #   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../CCios
 #  endif
 
-# if (__SUNPRO_CC < 0x600)
+# if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...
 
 #  define _STLP_STATIC_ARRAY_BUG 1
 #  define _STLP_STATIC_CONST_INIT_BUG 1
+#  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
+#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
+#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
+# endif
 
+# if (__SUNPRO_CC < 0x520)
 // this is not really true ; but use of new-style native headers bring in namespace problems,
 // so it works better with our wrapper only.
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
-
-#  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-
-#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
-
 # endif
-
 
 // those do not depend on compatibility
 # if (__SUNPRO_CC < 0x510)
@@ -72,8 +76,9 @@
 // Features that depend on compatibility switch
 # if ( __SUNPRO_CC < 0x500 ) || (defined (__SUNPRO_CC_COMPAT) && (__SUNPRO_CC_COMPAT < 5))
 
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
-
+#  ifndef _STLP_HAS_NO_NEW_IOSTREAMS
+#   define _STLP_HAS_NO_NEW_IOSTREAMS 1
+#  endif
 #  define _STLP_NO_NEW_NEW_HEADER 1
 // #  define _STLP_NO_RELOPS_NAMESPACE
 #  define _STLP_HAS_NO_NAMESPACES 1
@@ -82,8 +87,9 @@
 #  define _STLP_NO_EXCEPTION_HEADER 1
 #  define _STLP_NATIVE_C_INCLUDE_PATH ../include
 # elif (__SUNPRO_CC < 0x510)
-#  define _STLP_NATIVE_C_HEADER(header) <../CC/##header##.SUNWCCh>
+// #  define _STLP_NATIVE_C_HEADER(header) <../CC/##header##.SUNWCCh>
 #  define _STLP_NATIVE_CPP_C_HEADER(header) <../CC/##header##.SUNWCCh>
+#  define _STLP_NATIVE_C_INCLUDE_PATH /usr/include
 # else
 #  define _STLP_NATIVE_C_INCLUDE_PATH /usr/include
 #  define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../CC/std

@@ -23,6 +23,11 @@
 #  define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 # endif
 
+# include <ctime>
+# if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+using _STLP_VENDOR_CSTD::time_t;
+# endif
+
 # ifdef __cplusplus
 // This section is only for compilers that support precompiled headers !
 // Currently there are : Visual C++

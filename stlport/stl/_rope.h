@@ -118,7 +118,7 @@ struct _Rope_Concat_fn
 template <class _CharT, class _Alloc>
 inline
 rope<_CharT,_Alloc>
-identity_element(_Rope_Concat_fn<_CharT, _Alloc>)
+__identity_element(_Rope_Concat_fn<_CharT, _Alloc>)
 {
   return rope<_CharT,_Alloc>();
 }

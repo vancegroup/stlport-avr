@@ -25,10 +25,6 @@
 #ifndef _STLP_ALGOBASE_C
 #define _STLP_ALGOBASE_C
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) && ! defined (_STLP_INTERNAL_ITERATOR_H)
-# include <stl/_iterator.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _InputIter1, class _InputIter2>
@@ -306,7 +302,13 @@ _ForwardIter1 __find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 // find_end for bidirectional iterators.  Requires partial specialization.
 #if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
- 
+
+#if ! defined (_STLP_INTERNAL_ITERATOR_H)
+_STLP_END_NAMESPACE
+# include <stl/_iterator.h>
+_STLP_BEGIN_NAMESPACE 
+#endif
+
 template <class _BidirectionalIter1, class _BidirectionalIter2,
           class _BinaryPredicate>
 _BidirectionalIter1
@@ -358,8 +360,7 @@ template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
                               const _Tp& __val, _Compare __comp, _Distance*)
 {
-  _Distance __len = 0;
-  distance(__first, __last, __len);
+  _Distance __len = distance(__first, __last);
   _Distance __half;
   _ForwardIter __middle;
 

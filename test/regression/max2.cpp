@@ -14,7 +14,7 @@ using namespace std;
 #endif
 static bool str_compare(const char* a_, const char* b_)
 {
-  return ::strcmp(a_, b_) < 0 ? 1 : 0;
+  return strcmp(a_, b_) < 0 ? 1 : 0;
 }
 
 int max2_test(int, char**)

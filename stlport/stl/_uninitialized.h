@@ -137,7 +137,7 @@ inline pair<_RandomAccessIter, _ForwardIter>
 __uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __result, random_access_iterator_tag) {
   _RandomAccessIter __last = __first + __count;
   return pair<_RandomAccessIter, _ForwardIter>( __last, __uninitialized_copy(__first, __last, __result, 
-                                                                             _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret()));
+                                                                             _IS_POD_ITER(__result, _ForwardIter)));
 }
 
 // this is used internally in <rope> , which is extension itself.
@@ -173,7 +173,7 @@ __uninitialized_fill(_ForwardIter __first, _ForwardIter __last,
 
 template <class _ForwardIter, class _Tp>
 inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const _Tp& __x) {
-  __uninitialized_fill(__first, __last, __x, _Is_POD(_STLP_VALUE_TYPE(__first, _ForwardIter))._Ret());
+  __uninitialized_fill(__first, __last, __x, _IS_POD_ITER(__first, _ForwardIter));
 }
 
 // Valid if copy construction is equivalent to assignment, and if the
@@ -205,7 +205,7 @@ __uninitialized_fill_n(_ForwardIter __first, _Size __n,
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter 
 uninitialized_fill_n(_ForwardIter __first, _Size __n, const _Tp& __x) {
-  return __uninitialized_fill_n(__first, __n, __x, _Is_POD(_STLP_VALUE_TYPE(__first, _ForwardIter))._Ret());
+  return __uninitialized_fill_n(__first, __n, __x, _IS_POD_ITER(__first, _ForwardIter));
 }
 
 // Extensions: __uninitialized_copy_copy, __uninitialized_copy_fill, 
@@ -232,9 +232,9 @@ __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
                           _ForwardIter __result, __false_type)
 {
-  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
+  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _IS_POD_ITER(__result, _ForwardIter));
   _STLP_TRY {
-    return __uninitialized_copy(__first2, __last2, __mid , _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
+    return __uninitialized_copy(__first2, __last2, __mid , _IS_POD_ITER(__result, _ForwardIter));
   }
   _STLP_UNWIND(_Destroy(__result, __mid));
 # ifdef _STLP_THROW_RETURN_BUG
@@ -250,10 +250,10 @@ inline _ForwardIter
 __uninitialized_fill_copy(_ForwardIter __result, _ForwardIter __mid, const _Tp& __x,
                           _InputIter __first, _InputIter __last)
 {
-  typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
-  __uninitialized_fill(__result, __mid, __x, _Is_POD());
+  typedef typename __type_traits<_Tp>::is_POD_type _I_POD;
+  __uninitialized_fill(__result, __mid, __x, _I_POD());
   _STLP_TRY {
-    return __uninitialized_copy(__first, __last, __mid, _Is_POD());
+    return __uninitialized_copy(__first, __last, __mid, _I_POD());
   }
   _STLP_UNWIND(_Destroy(__result, __mid));
 # ifdef _STLP_THROW_RETURN_BUG
@@ -270,10 +270,10 @@ __uninitialized_copy_fill(_InputIter __first1, _InputIter __last1,
                           _ForwardIter __first2, _ForwardIter __last2,
                           const _Tp& __x)
 {
-  typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
-  _ForwardIter __mid2 = __uninitialized_copy(__first1, __last1, __first2, _Is_POD());
+  typedef typename __type_traits<_Tp>::is_POD_type _I_POD;
+  _ForwardIter __mid2 = __uninitialized_copy(__first1, __last1, __first2, _I_POD());
   _STLP_TRY {
-    __uninitialized_fill(__mid2, __last2, __x, _Is_POD());
+    __uninitialized_fill(__mid2, __last2, __x, _I_POD());
   }
   _STLP_UNWIND(_Destroy(__first2, __mid2));
 }

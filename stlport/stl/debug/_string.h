@@ -102,7 +102,7 @@ public:                         // Constructor, destructor, assignment.
 #else /* _STLP_MEMBER_TEMPLATES */
   basic_string(const_iterator __f, const_iterator __l, 
 		    const allocator_type & __a = allocator_type()):
-    _STLP_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator), 
+    _STLP_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator, __a), 
      _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __f, const _CharT* __l,

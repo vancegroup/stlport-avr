@@ -187,7 +187,8 @@ __copy_trivial_backward(const void* __first, const void* __last, void* __result)
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __false_type) {
   return __copy(__first, __last, __result, 
-                _STLP_ITERATOR_CATEGORY(__first, _InputIter), _STLP_DISTANCE_TYPE(__first, _InputIter));
+                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
+		_STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
@@ -479,8 +480,6 @@ inline bool lexicographical_compare(const char* __first1, const char* __last1,
 }
 #endif /* CHAR_MAX == SCHAR_MAX */
 
-# ifndef _STLP_NO_EXTENSIONS
-
 template <class _InputIter1, class _InputIter2>
 int __lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
                                    _InputIter2 __first2, _InputIter2 __last2);
@@ -510,6 +509,8 @@ __lexicographical_compare_3way(const char* __first1, const char* __last1,
                                         (const unsigned char*) __last2);
 }
 # endif
+
+# ifndef _STLP_NO_EXTENSIONS
 
 template <class _InputIter1, class _InputIter2>
 int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,

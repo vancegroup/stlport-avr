@@ -560,8 +560,7 @@ private:                        // helper functions for assign()
   template <class _ForwardIterator>
   void _M_assign_aux(_ForwardIterator __first, _ForwardIterator __last,
                      forward_iterator_tag) {
-    size_type __len = 0;
-    distance(__first, __last, __len);
+    size_type __len = distance(__first, __last);
     if (__len > size()) {
       _ForwardIterator __mid = __first;
       advance(__mid, size());
@@ -738,8 +737,7 @@ protected:                        // Internal construction/destruction
  void  _M_range_initialize(_ForwardIterator __first,
                            _ForwardIterator __last,
                            forward_iterator_tag)  {
-   size_type __n = 0;
-   distance(__first, __last, __n);
+   size_type __n = distance(__first, __last);
    this->_M_initialize_map(__n);
    _Map_pointer __cur_node;
    _STLP_TRY {
@@ -788,8 +786,7 @@ void  insert(iterator __pos,
 	     _ForwardIterator __last,
 	     forward_iterator_tag)
  {
-  size_type __n = 0;
-  distance(__first, __last, __n);
+  size_type __n = distance(__first, __last);
   if (__pos._M_cur == this->_M_start._M_cur) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
     _STLP_TRY {

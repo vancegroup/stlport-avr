@@ -16,7 +16,13 @@
  *
  */ 
 
+
 # include "stlport_prefix.h"
+
+# if defined  (__SUNPPRO_CC)  && !defined (_STLP_NO_NEW_C_HEADERS)
+#  include <time.h>
+// For sunpro, it chokes if time.h is included through stat.h
+# endif
 
 #include <fstream>
 
@@ -25,6 +31,7 @@
 #endif
 
 #if defined (_STLP_USE_UNIX_IO)
+extern "C" {
 // open/close/read/write
 #  include <sys/stat.h>           // For stat
 #  include <sys/mman.h>           // For mmap
@@ -36,12 +43,14 @@
 
 #  include <unistd.h>
 #  include <fcntl.h>
+}
 # ifdef __APPLE__
 #  include <sys/sysctl.h>
 # endif
 #elif defined (_STLP_USE_WIN32_IO)
 # define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
+
 # ifdef __BORLANDC__
 #  if (__BORLANDC__ > 0x530)
 #  include <cfcntl.h>            // For _O_RDONLY, etc
@@ -54,6 +63,7 @@
 #  include <fcntl.h>            // For _O_RDONLY, etc
 #  include <sys/stat.h>         // For _fstat
 # endif
+
 # define _TEXTBUF_SIZE 0x1000
 #elif defined (_STLP_USE_UNIX_EMULATION_IO)
 #  if defined( __MSL__ )
@@ -63,10 +73,14 @@
 #  endif
 #  include <fcntl.h>
 #  include <sys/stat.h>
+
 #elif defined (_STLP_USE_STDIO_IO)
 #  include <cstdio>
+
 #  if !(defined(__MRC__) || defined(__SC__) || defined(__ISCPP__) )
+extern "C" {
 #   include <sys/stat.h>
+}
 #  endif
 #  if defined( __MSL__ )
 #   include <unix.h>
@@ -74,6 +88,7 @@
 #  if defined(__ISCPP__)
 #   include <c_locale_is/filestat.h>
 #  endif
+
 #else
 #error "Configure i/o !"
 #endif

@@ -398,8 +398,7 @@ private:
   template <class _ForwardIter>
   void _M_range_initialize(_ForwardIter __f, _ForwardIter __l, 
                            forward_iterator_tag) {
-    difference_type __n = 0;
-    distance(__f, __l, __n);
+    difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
     this->_M_finish = uninitialized_copy(__f, __l, this->_M_start);
     _M_terminate_string();
@@ -567,8 +566,7 @@ private:                        // Helper functions for append.
                        forward_iterator_tag)  {
     if (__first != __last) {
 	    const size_type __old_size = size();
-	    difference_type __n = 0;
-	    distance(__first, __last, __n);
+	    difference_type __n = distance(__first, __last);
 	    if (__STATIC_CAST(size_type,__n) > max_size() || __old_size > max_size() - __STATIC_CAST(size_type,__n))
 	      this->_M_throw_length_error();
 	    if (__old_size + __n > capacity()) {
@@ -778,8 +776,7 @@ private:                        // Helper functions for insert.
   void insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
 	      forward_iterator_tag)  {
     if (__first != __last) {
-      difference_type __n = 0;
-      distance(__first, __last, __n);
+      difference_type __n = distance(__first, __last);
       if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
 	const difference_type __elems_after = this->_M_finish - __position;
 	pointer __old_finish = this->_M_finish;
@@ -1012,8 +1009,7 @@ private:                        // Helper functions for replace.
   _Self& replace(iterator __first, iterator __last,
                         _ForwardIter __f, _ForwardIter __l, 
                         forward_iterator_tag)  {
-	  difference_type __n = 0;
-	  distance(__f, __l, __n);
+	  difference_type __n = distance(__f, __l);
 	  const difference_type __len = __last - __first;
 	  if (__len >= __n) {
 	    _M_copy(__f, __l, __first);

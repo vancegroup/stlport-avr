@@ -35,11 +35,10 @@
 // needed for definitions to be portable. Should not be used in method bodies.
 # if defined  ( _STLP_NESTED_TYPE_PARAM_BUG )
 #  define __iterator__        _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> >
-#  define __const_iterator__  _Rb_tree_iterator<_Value, _Const_traits<_Value> >
 #  define __size_type__       size_t
+#  define iterator __iterator__
 # else
 #  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
-#  define __const_iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::const_iterator
 #  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::size_type
 # endif
 
@@ -438,7 +437,7 @@ template <class _Key, class _Value, class _KeyOfValue,
           class _Compare, class _Alloc>
 __iterator__ 
 _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
-  ::insert_unique(__iterator__ __position, const _Value& __v)
+  ::insert_unique(iterator __position, const _Value& __v)
 {
   if (__position._M_node == this->_M_header._M_data->_M_left) { // begin()
 
@@ -546,7 +545,7 @@ template <class _Key, class _Value, class _KeyOfValue,
           class _Compare, class _Alloc>
 __iterator__ 
 _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
-  ::insert_equal(__iterator__ __position, const _Value& __v)
+  ::insert_equal(iterator __position, const _Value& __v)
 {
   if (__position._M_node == this->_M_header._M_data->_M_left) { // begin()
 
@@ -674,8 +673,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
   ::count(const _Key& __k) const
 {
   pair<const_iterator, const_iterator> __p = equal_range(__k);
-  size_type __n = 0;
-  distance(__p.first, __p.second, __n);
+  size_type __n = distance(__p.first, __p.second);
   return __n;
 }
 
@@ -732,7 +730,7 @@ bool _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>::__rb_verify() const
 _STLP_END_NAMESPACE
 
 # undef __iterator__        
-# undef __const_iterator__  
+# undef iterator
 # undef __size_type__  
 
 #endif /*  _STLP_TREE_C */

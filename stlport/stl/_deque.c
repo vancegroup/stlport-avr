@@ -357,7 +357,7 @@ __deque__<_Tp,_Alloc>::_M_pop_front_aux()
 
 template <class _Tp, class _Alloc >
 __iterator__
-__deque__<_Tp,_Alloc>::_M_insert_aux_prepare(__iterator__ __pos) {
+__deque__<_Tp,_Alloc>::_M_insert_aux_prepare(iterator __pos) {
   difference_type __index = __pos - this->_M_start;
   if (__index < difference_type(size() / 2)) {
     push_front(front());
@@ -384,8 +384,8 @@ __deque__<_Tp,_Alloc>::_M_insert_aux_prepare(__iterator__ __pos) {
 
 template <class _Tp, class _Alloc >
 __iterator__
-__deque__<_Tp,_Alloc>::_M_insert_aux(__iterator__ __pos,
-                                           const value_type& __x) {
+__deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
+				     const value_type& __x) {
   value_type __x_copy = __x;
   _STLP_MPWFIX_TRY		//*TY 06/01/2000 - mpw forget to call dtor on __x_copy without this try block
   __pos = _M_insert_aux_prepare(__pos);
@@ -396,7 +396,7 @@ __deque__<_Tp,_Alloc>::_M_insert_aux(__iterator__ __pos,
 
 template <class _Tp, class _Alloc >
 __iterator__
-__deque__<_Tp,_Alloc>::_M_insert_aux(__iterator__ __pos)
+__deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos)
 {
   __pos = _M_insert_aux_prepare(__pos);
   *__pos = value_type();

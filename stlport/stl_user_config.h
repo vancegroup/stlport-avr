@@ -131,7 +131,7 @@
 
 /*
  *  Define this macro to disable anachronistic constructs (like the ones used in HP STL and
- *  not included in final standard 
+ *  not included in final standard, etc. 
  */
 // define _STLP_NO_ANACHRONISMS 1
 

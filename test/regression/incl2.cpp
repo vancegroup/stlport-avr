@@ -15,7 +15,7 @@ using namespace std;
 #endif
 static bool compare_strings(const char* s1_, const char* s2_)
 {
-  return ::strcmp(s1_, s2_) < 0 ? 1 : 0;
+  return strcmp(s1_, s2_) < 0 ? 1 : 0;
 }
 int incl2_test(int, char**)
 {

@@ -1,19 +1,14 @@
-#
-# Basename for libraries
-#
-LIB_BASENAME = libstlport_forte6
+
+CUR_DIR= ${PWD}/
 
 STL_INCL= -I. -I${PWD}/../stlport
-
-CC = CC
-CXX = CC
 
 #
 # guts for common stuff
 #
 #
-LINK=$(CC) -mt -xar -o
-DYN_LINK=$(CC) -mt -G -o
+LINK=$(CC) -xar -o
+DYN_LINK=$(CC) -G -o
 
 OBJEXT=o
 DYNEXT=so
@@ -21,14 +16,10 @@ STEXT=a
 RM=rm -rf
 PATH_SEP=/
 MKDIR=mkdir -p
-COMP=forte
 INSTALL_STEP = install_unix 
 PREPARE_STEP = prepare_sunpro
 
-# LINK_OUT=-xar -o  
-# DYNLINK_OUT=-o 
-
-all: all_dynamic symbolic_links all_static
+all: all_dynamic symbolic_links  all_static
 
 include common_macros.mak
 
@@ -63,6 +54,7 @@ CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${DEBUG_dynamic_rep
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g ${STLDEBUG_static_rep} -D_STLP_DEBUG
 CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${STLDEBUG_dynamic_rep} -D_STLP_DEBUG
 
+
 LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static} sparc_atomic.s
 LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -h${RELEASE_DYNLIB_SONAME} sparc_atomic.s
 
@@ -77,4 +69,3 @@ LDLIBS_STLDEBUG_dynamic = -lposix4
 
 include common_percent_rules.mak
 include common_rules.mak
-

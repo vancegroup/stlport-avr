@@ -16,7 +16,7 @@
  *
  */
 
-# if !defined (_STLP_LIMITS_C) || !defined (_STLP_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LIMITS_C) /***  || !defined (_STLP_LINK_TIME_INSTANTIATION) */
 #  undef  _STLP_LIMITS_C
 #  define _STLP_LIMITS_C
 

@@ -47,9 +47,12 @@ $(STLDEBUG_OBJDIR_dynamic)/%.i : %.cpp
 # this section is for SUNpro
 #
 
-prepare_sunpro :
+../stlport/cctype.SUNWCCh :
 	for file in `cat ../etc/std_headers.txt`; \
 	do \
 	  rm -f ../stlport/$$file.SUNWCCh ; \
-	  ln -s ../stlport/$$file ../stlport/$$file.SUNWCCh ; \
+	  (cd ../stlport ; ln -s $$file $$file.SUNWCCh) ; \
         done
+
+prepare_sunpro : ../stlport/cctype.SUNWCCh
+
