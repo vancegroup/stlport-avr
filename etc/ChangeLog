@@ -118,6 +118,7 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 
 	* stl_ibm.h, etc. : fixes for IBM VisualAge 5.02 to compile
 
+	* type_traits.h : bool2type<> changed to be parameterized on int, to work around SUN CC bugs (probably others, too)
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 
