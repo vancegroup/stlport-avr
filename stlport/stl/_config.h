@@ -256,7 +256,8 @@
 #    define _STLP_SGI_THREADS
 #   elif defined(__DECC) || defined(__DECCXX)
 #    define _STLP_DEC_THREADS
-#   elif ((defined (__sun) && !defined (__linux__)) || defined(_UITHREADS) ) && !defined(_PTHREADS)
+#   elif ((defined (__sun) && ! defined (__sparc) && !defined (__linux__)) \
+     || defined(_UITHREADS) ) && !defined(_PTHREADS)
 #     define _STLP_UITHREADS
 #   elif defined (_WIN32) || defined (WIN32) || defined (__WIN32__)
 #     define _STLP_WIN32THREADS

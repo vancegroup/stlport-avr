@@ -48,7 +48,9 @@ namespace std {
 #  ifdef _STLP_IMPORT_VENDOR_CSTD
 _STLP_BEGIN_NAMESPACE
 # if ! defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
+# ifdef _STLP_HAS_NATIVE_FLOAT_ABS
 using _STLP_VENDOR_CSTD::abs;
+# endif
 using _STLP_VENDOR_CSTD::acos;
 using _STLP_VENDOR_CSTD::asin;
 using _STLP_VENDOR_CSTD::atan2;
