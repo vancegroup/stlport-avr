@@ -3,17 +3,20 @@
 
 
 // versions ?
-# define  _STLP_CALL __cdecl
+# if defined(_STLP_DESIGNATED_DLL)
+#   define _STLP_CALL __cdecl __export
+# elif defined(_RTLDLL)
+#   define  _STLP_CALL __cdecl __import
+# else
+#   define  _STLP_CALL __cdecl
+# endif
+
+# define __STL_USE_OWN_NAMESPACE
 # define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
 # define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
 
 // most of <exception> contents is still in global namespace
 // # define _STLP_VENDOR_UNEXPECTED_STD
-
-// cannot work with dynamic lib as for now - locale initialization problems 
-#ifndef _STLP_USE_STATIC_LIB
-# define _STLP_USE_STATIC_LIB
-#endif
 
 // <limits> problem
 # define _STLP_STATIC_CONST_INIT_BUG
@@ -112,13 +115,6 @@ typedef char    mbstate_t;
 #   define _STLP_DEBUG
 #  endif
 
-// Stop complaints about functions not inlined
-#  pragma option -w-inl
-// Stop complaints about significant digits
-#  pragma option -w-sig
-// Stop complaint about constant being long
-#  pragma option -w-cln
-
 #  define _STLP_LIB_BASENAME "stlport_bcb"
 
 # if (__BORLANDC__ < 0x540)
@@ -142,5 +138,28 @@ typedef char    mbstate_t;
 #   endif
 
 # else
-#  include <config/vc_select_lib.h>
+
+# define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+# define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
+
+# define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+# define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+
+#  if !defined (_STLP_NO_OWN_IOSTREAMS)
+
+#    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
+     || defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB) )
+#      undef  _STLP_USE_DECLSPEC
+#      define _STLP_USE_DECLSPEC 1
+#    endif
+
+#  ifndef _STLP_IMPORT_TEMPLATE_KEYWORD
+#   define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
+#  endif
+#  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
+
+#  define _STLP_LIB_STATIC_SUFFIX "_static"
+#  include <config/stl_select_lib.h>
+
+#  endif /* _STLP_OWN_IOSTREAMS */
 # endif
