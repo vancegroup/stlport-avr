@@ -404,18 +404,27 @@ basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __la
     erase(__first + __n, __last);
   }
   else {
-    const_iterator __m = __f + __len;
-    if (!__self_ref) {
+    if (!__self_ref || (__f >= __last) || (__l <= __first)) {
       //no overlap:
+      const_iterator __m = __f + __len;
       _M_copy(__f, __m, __first);
       _M_insert(__last, __m, __l, false ); 
     }
     else {
-      //we have to take care of reallocation:
-      const difference_type __off_dest = __first - this->begin();
-      const difference_type __off_src = __f - this->begin();
-      _M_insert(__last, __m, __l, true ); // hmm, _M_inside for _Char *, not for const_iterator - ptr
-      _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
+      //we have to take care of overlaping
+      if (__f < __first) {
+        const_iterator __m = __f + __len;
+        //We have to deal with possible reallocation because we do insert first.
+        const difference_type __off_dest = __first - this->begin();
+        const difference_type __off_src = __f - this->begin();
+        _M_insert(__last, __m, __l, true);
+        _Traits::move(begin() + __off_dest, begin() + __off_src, __len);
+      }
+      else {
+        const_iterator __m = __f + __len;
+        _Traits::move(__first, __f, __len);
+        _M_insert(__last, __m, __l, true);
+      }
     }
   }
   return *this;
@@ -435,7 +444,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find(const _CharT* __s, size_type __pos, s
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
-  if (__pos >= size())
+  if (__pos >= size()) /*__pos + 1 > size()*/
     return npos;
   else {
     const_pointer __result =
@@ -448,15 +457,16 @@ basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos, size_type __n) const {
   const size_t __len = size();
-
-  if (__n > __len)
+  if (__pos + __n > __len)
     return npos;
   else if (__n == 0)
     return (min) (__len, __pos);
   else {
     const_pointer __last = this->_M_Start() + (min) (__len - __n, __pos) + __n;
-    const_pointer __result = _STLP_STD::find_end(this->_M_Start(), __last, 
-                                                 __s, __s + __n, _Eq_traits<_Traits>());
+    const_pointer __result = _STLP_STD::__find_end(this->_M_Start(), __last, 
+                                                   __s, __s + __n,
+                                                   bidirectional_iterator_tag(), bidirectional_iterator_tag(),
+                                                   _Eq_traits<_Traits>());
     return __result != __last ? __result - this->_M_Start() : npos;
   }
 }
@@ -465,7 +475,7 @@ template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::rfind(_CharT __c, size_type __pos) const {
   const size_type __len = size();
 
-  if (__len < 1)
+  if (__pos >= __len) /*__pos + 1 > __len*/
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -478,7 +488,7 @@ basic_string<_CharT,_Traits,_Alloc> ::rfind(_CharT __c, size_type __pos) const {
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_first_of(const _CharT* __s, size_type __pos, size_type __n) const {
-  if (__pos >= size())
+  if (__pos >= size()) /*__pos + 1 > size()*/
     return npos;
   else {
     const_iterator __result = __find_first_of(begin() + __pos, end(),
@@ -493,7 +503,7 @@ template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_last_of(const _CharT* __s, size_type __pos, size_type __n) const {
   const size_type __len = size();
 
-  if (__len < 1)
+  if (__pos >= __len) /*__pos + 1 > __len*/
     return npos;
   else {
     const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -509,7 +519,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_of(const _CharT* __s, size_type 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(const _CharT* __s, size_type __pos, size_type __n) const {
   typedef typename _Traits::char_type _CharType;
-  if (__pos >= size())
+  if (__pos >= size()) /*__pos + 1 >= size()*/
     return npos;
   else {
     const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
@@ -521,7 +531,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(const _CharT* __s, size_
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(_CharT __c, size_type __pos) const {
-  if (__pos >= size())
+  if (__pos >= size()) /*__pos + 1 > size()*/
     return npos;
   else {
     const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
@@ -534,8 +544,7 @@ template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const {
   typedef typename _Traits::char_type _CharType;
   const size_type __len = size();
-
-  if (__len < 1)
+  if (__pos >= __len) /*__pos + 1 > __len*/
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
@@ -551,8 +560,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_t
 template <class _CharT, class _Traits, class _Alloc> __size_type__
 basic_string<_CharT, _Traits, _Alloc> ::find_last_not_of(_CharT __c, size_type __pos) const {
   const size_type __len = size();
-
-  if (__len < 1)
+  if (__pos >= __len) /*__pos + 1 > __len*/
     return npos;
   else {
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;

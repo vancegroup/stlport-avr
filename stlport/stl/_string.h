@@ -863,9 +863,22 @@ private:  // Helper functions for insert.
                           const __true_type& /*Integral*/) {
     insert(__p, (size_type) __n, (_CharT) __x);
   }
+  
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
                           const __false_type& /*Integral*/) {
+    typedef typename _AreSameTypes<_InputIter, iterator>::_Ret _AreSame;
+    _M_insert_aux(__p, __first, __last, _AreSame());
+  }
+  
+  void _M_insert_aux (iterator __p, const_iterator __first, const_iterator __last,
+                      const __true_type&) {
+    insert(__p, __first, __last);
+  }
+  
+  template<class _InputIter>
+  void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
+                      const __false_type&) {
     _M_insertT(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
@@ -1034,9 +1047,21 @@ private:                        // Helper functions for replace.
   template <class _InputIter> 
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
+    typedef typename _AreSameTypes<_InputIter, iterator>::_Ret _AreSame;
+    return _M_replace_aux(__first, __last, __f, __l, _AreSame());
+  }
+  
+  _Self& _M_replace_aux(iterator __first, iterator __last,
+                        const_iterator __f, const_iterator __l, __true_type const&) {
+    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
+  }
+  
+  template <class _InputIter>
+  _Self& _M_replace_aux(iterator __first, iterator __last,
+                     _InputIter __f, _InputIter __l, __false_type const&) {
     return _M_replaceT(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
-
+  
   template <class _InputIter>
   _Self& _M_replaceT(iterator __first, iterator __last,
                      _InputIter __f, _InputIter __l, const input_iterator_tag&__ite_tag) {

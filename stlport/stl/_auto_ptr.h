@@ -28,7 +28,8 @@ public:
   void  __set(void* p) { _M_p = p; }
 };
 
-template <class _Tp> class auto_ptr_ref {
+template <class _Tp>
+class auto_ptr_ref {
 public:
   __ptr_base& _M_r;
   _Tp* const _M_p;
@@ -39,7 +40,8 @@ public:
 
 };
 
-template<class _Tp> class auto_ptr :  public __ptr_base {
+template<class _Tp>
+class auto_ptr :  public __ptr_base {
 public:	
   typedef _Tp element_type;
   typedef auto_ptr<_Tp>           _Self;
@@ -96,11 +98,11 @@ public:
   }
 
   ~auto_ptr() { /* boris : reset(0) might be better */ delete this->get(); }
-	
+
   auto_ptr(auto_ptr_ref<_Tp> __r) {
     this->__set(__r.release());
   }
-	
+
   _Self& operator=(auto_ptr_ref<_Tp> __r) {
     reset(__r.release());
     return *this;
@@ -117,7 +119,7 @@ public:
   operator auto_ptr_ref<_Tp>()
   { return auto_ptr_ref<_Tp>(*this, this->get()); }
 # endif
-	
+
 };
 _STLP_END_NAMESPACE
 

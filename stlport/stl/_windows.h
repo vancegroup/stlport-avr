@@ -69,7 +69,7 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
 #if defined(_STLP_WCE_NET)
 void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
 #else
-_STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
+_STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutputString);
 #endif
 
 #ifdef _STLP_DEBUG
