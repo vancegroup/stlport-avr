@@ -14,10 +14,8 @@ TODO        - list of prospective changes
 stlport     - main STLport include directory
 src         - source and makefiles for SGI iostreams implementation (optional)
 lib         - installation directory for STLport library (if you use SGI iostreams only)
-test/test   - regression test NOT using SGI iostream AND using old-style headers
+test/regression   - regression test NOT using SGI iostream AND using old-style headers
 test/eh     - exception handling test using SGI iostreams and new-style headers
-test/nico   - examples from Nicolai Josuttis's last book "C++ Standard Library"
-test/standalone - integrity test for each standard header
 
 
 IMPORTANT:

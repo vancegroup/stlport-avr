@@ -257,8 +257,8 @@ __unique_copy(_InputIterator __first, _InputIterator __last,
   return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
 
-template <class InputIterator, class RandomAccessIterator, class BinaryPredicate>
-inline RandomAccessIterator 
+template <class _InputIterator, class _RandomAccessIterator, class _BinaryPredicate>
+inline _RandomAccessIterator 
 __unique_copy(_InputIterator __first, _InputIterator __last,
               _RandomAccessIterator __result, _BinaryPredicate __binary_pred,
               random_access_iterator_tag) {

@@ -127,8 +127,8 @@
 
 # ifdef _STLP_LONG_LONG
 # define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-# elif defined (_MSC_VER) || defined (__BORLANDC__)
-# define ULL(x) ((__int64)x)
+// # elif defined (_MSC_VER) || defined (__BORLANDC__)
+// # define ULL(x) ((__int64)x)
 # elif defined(__MRC__) || defined(__SC__)		//*TY 02/25/2000 - added support for MPW compilers
 # include <Math64.h>
 # define ULL(x) (U64SetU(x))
@@ -721,8 +721,13 @@ bool _Filebuf_base::_M_close() {
 
 #   elif defined (_STLP_USE_WIN32_IO)
 
-    ok = (CloseHandle(_M_file_id) != 0);
-
+    if ( _M_file_id != INVALID_HANDLE_VALUE ) {
+      ok = (CloseHandle(_M_file_id) != 0);
+    }
+    else {
+      ok = false;
+    }
+    
 #   else
 
     ok = false;
@@ -1002,10 +1007,13 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 #if defined (_STLP_UNIX)  && !defined(__DJGPP)
   munmap((char*)base, len);
 #elif defined (_STLP_USE_WIN32_IO)
-  UnmapViewOfFile(base);
+  if ( base != NULL )
+    UnmapViewOfFile(base);
   // destroy view handle as well
-  CloseHandle(_M_view_id);
+  if ( _M_view_id != NULL )
+    CloseHandle(_M_view_id);
   _M_view_id = 0;
+  base = 0;
 #else
   (void)len;		//*TY 02/26/2000 - unused variables
   (void)base;		//*TY 02/26/2000 - 

@@ -9,6 +9,9 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	  use_facet<> now fully conforms to the standard with VC++. (Thanks Jeff Kohn for the input)
 
 	* fstream.cpp : LARGE_INTEGER used to work around Intel shift instruction bug (thanks Thomas Meischner)
+	* fstream.cpp : ULL macro fixed for Win32
+	* fstream.cpp : Added test for for INVALID_HANDLE_VALUE and NULL base and _M_view_id,
+ 	  for _M_close on Win32 (Thanks Stephen Baker)
 	
 	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
 	
@@ -39,6 +42,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
 	* _hash_set.h : fixed typo in MSVC++ bug workaround ( Thanks to Jon_Hanson for the report)
 
+	* stlport/strstream.h : fixed inclusion for MSVC 6 (Thanks  Joachim Achtzehnter)
+	
 	* _config.h : _STLP_RETHROW changed to avoid warnings with NO_EXCEPTIONS (thanks Richmond)	
 
 	* _hashtable.c : prime list definition made consistent (thanks Rainer Schnitker)
