@@ -32,7 +32,7 @@ CXX = $(CC)
 
 # CXXFLAGS = ${STL_INCL} -library=no%Cstd -qoption ccfe -instlib=../../lib/libstlport_sunpro.so -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
-CXXFLAGS = ${STL_INCL} -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC -D_STLP_DEBUG
+CXXFLAGS = ${STL_INCL} -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D_STLP_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
@@ -41,7 +41,7 @@ CXXFLAGS = ${STL_INCL} -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW 
 LIBS = -lm 
 LIBSTDCXX = 
 
-LIBSTLPORT = -library=no%Cstd -L../../lib -lstlport_sunpro_stldebug
+LIBSTLPORT = -library=no%Cstd -L../../lib -lstlport_sunpro
 
 
 check: $(TEST)
