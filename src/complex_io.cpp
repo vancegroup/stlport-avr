@@ -29,23 +29,20 @@ _STLP_BEGIN_NAMESPACE
 // widening.
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<float>& __z)
-{
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<float>& __z) {
   return __os << '(' << (double)__z.real() << ',' << (double)__z.imag() << ')';
 }
 
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>& __z)
-{
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>& __z) {
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
 }
 
 #ifndef _STLP_NO_LONG_DOUBLE
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z)
-{
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z) {
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
 }
 #endif
@@ -53,8 +50,7 @@ operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long do
 // Specialization for narrow characters; lets us avoid widen.
 _STLP_OPERATOR_SPEC
 basic_istream<char, char_traits<char> >& _STLP_CALL
-operator>>(basic_istream<char, char_traits<char> >& __is, complex<float>& __z)
-{
+operator>>(basic_istream<char, char_traits<char> >& __is, complex<float>& __z) {
   float  __re = 0;
   float  __im = 0;
 
@@ -80,8 +76,7 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<float>& __z)
 
 _STLP_OPERATOR_SPEC
 basic_istream<char, char_traits<char> >& _STLP_CALL
-operator>>(basic_istream<char, char_traits<char> >& __is, complex<double>& __z)
-{
+operator>>(basic_istream<char, char_traits<char> >& __is, complex<double>& __z) {
   double  __re = 0;
   double  __im = 0;
 

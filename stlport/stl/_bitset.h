@@ -259,7 +259,6 @@ struct _Base_bitset<1UL> {
 
   // find the next "on" bit that follows "prev"
   inline size_t _M_do_find_next(size_t __prev, size_t __not_found) const; 
-
 };
 
 
@@ -270,8 +269,7 @@ struct _Base_bitset<1UL> {
 //
 
 inline size_t 
-_Base_bitset<1UL>::_M_do_find_first(size_t __not_found) const
-{
+_Base_bitset<1UL>::_M_do_find_first(size_t __not_found) const {
   //  typedef unsigned long _WordT;
   _WordT __thisword = _M_w;
 
@@ -292,8 +290,7 @@ _Base_bitset<1UL>::_M_do_find_first(size_t __not_found) const
 
 inline size_t 
 _Base_bitset<1UL>::_M_do_find_next(size_t __prev, 
-                                   size_t __not_found ) const
-{
+                                   size_t __not_found ) const {
   // make bound inclusive
   ++__prev;
 
@@ -344,8 +341,7 @@ _STLP_TEMPLATE_NULL struct _Sanitize<0UL> {
 
 
 template<size_t _Nb>
-class bitset : public _Base_bitset<__BITSET_WORDS(_Nb) > 
-{
+class bitset : public _Base_bitset<__BITSET_WORDS(_Nb) > {
 public:
   enum { _Words = __BITSET_WORDS(_Nb) } ;
 
@@ -421,8 +417,7 @@ public:
   template<class _CharT, class _Traits, class _Alloc>
   explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
                   size_t __pos = 0)
-    : _Base_bitset<_Words >() 
-  {
+    : _Base_bitset<_Words >() {
     if (__pos > __s.size()) 
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos,
@@ -432,8 +427,7 @@ public:
   bitset(const basic_string<_CharT, _Traits, _Alloc>& __s,
           size_t __pos,
           size_t __n)
-  : _Base_bitset<_Words >() 
-  {
+  : _Base_bitset<_Words >() {
     if (__pos > __s.size()) 
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
@@ -632,12 +626,10 @@ public:
 # if defined (_STLP_MEMBER_TEMPLATES)
   template<class _CharT, class _Traits, class _Alloc>
     void _M_copy_from_string(const basic_string<_CharT,_Traits,_Alloc>& __s,
-			     size_t __pos,
-			     size_t __n) {
+                             size_t __pos, size_t __n) {
 #else
     void _M_copy_from_string(const string& __s,
-			     size_t __pos,
-			     size_t __n) {
+                             size_t __pos, size_t __n) {
       typedef typename string::traits_type _Traits;
 #endif
       reset();
@@ -663,8 +655,8 @@ public:
       __s.assign(_Nb, '0');
       
       for (size_t __i = 0; __i < _Nb; ++__i) {
-	      if (_Unchecked_test(__i))
-	        __s[_Nb - 1 - __i] = '1';
+        if (_Unchecked_test(__i))
+          __s[_Nb - 1 - __i] = '1';
       }
     }
 
@@ -832,8 +824,7 @@ operator>>(wistream& __is, bitset<_Nb>& __x) {
 
 template <size_t _Nb>
 wostream& _STLP_CALL
-operator<<(wostream& __os, const bitset<_Nb>& __x)
-{
+operator<<(wostream& __os, const bitset<_Nb>& __x) {
   wstring __tmp;
   __x._M_copy_to_string(__tmp);
   return __os << __tmp;

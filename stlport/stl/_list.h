@@ -594,22 +594,23 @@ public:
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-  template <class _Predicate> void remove_if(_Predicate __pred)  {
+  template <class _Predicate> 
+  void remove_if(_Predicate __pred)  {
     _S_remove_if(*this, __pred);
   }
   template <class _BinaryPredicate>
-    void unique(_BinaryPredicate __binary_pred) {
+  void unique(_BinaryPredicate __binary_pred) {
     _S_unique(*this, __binary_pred);
   }
 
   template <class _StrictWeakOrdering>
-    void merge(_Self& __x,
-    _StrictWeakOrdering __comp) {
+  void merge(_Self& __x,
+             _StrictWeakOrdering __comp) {
     _S_merge(*this, __x, __comp);
   }
 
   template <class _StrictWeakOrdering>
-    void sort(_StrictWeakOrdering __comp) {
+  void sort(_StrictWeakOrdering __comp) {
     _S_sort(*this, __comp);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */

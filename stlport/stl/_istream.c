@@ -200,7 +200,7 @@ _M_init_skip(basic_istream<_CharT, _Traits>& __is) {
 
 template <class _CharT, class _Traits>
 bool
-_M_init_noskip(basic_istream<_CharT, _Traits>& __is){
+_M_init_noskip(basic_istream<_CharT, _Traits>& __is) {
   if (__is.good()) {
     if (__is.tie())
       __is.tie()->flush();
@@ -219,8 +219,7 @@ _M_init_noskip(basic_istream<_CharT, _Traits>& __is){
 // Helper function for formatted input of numbers.
 template <class _CharT, class _Traits, class _Number> 
 ios_base::iostate _STLP_CALL 
-_M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val)
-{
+_M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val) {
   typedef typename basic_istream<_CharT, _Traits>::sentry _Sentry;
   ios_base::iostate __err = 0;
   _Sentry __sentry( __that );     // Skip whitespace.
@@ -243,8 +242,7 @@ _M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val)
 
 template <class _CharT, class _Traits>
 __BIS_int_type__
-basic_istream<_CharT, _Traits>::peek()
-{
+basic_istream<_CharT, _Traits>::peek() {
   typename _Traits::int_type __tmp = _Traits::eof();
 
   this->_M_gcount = 0;
@@ -267,8 +265,7 @@ basic_istream<_CharT, _Traits>::peek()
 
 template <class _CharT, class _Traits>
 __BIS_int_type__
-basic_istream<_CharT, _Traits>::get()
-{
+basic_istream<_CharT, _Traits>::get() {
   typename _Traits::int_type __tmp = _Traits::eof();
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
@@ -293,8 +290,7 @@ basic_istream<_CharT, _Traits>::get()
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& 
-basic_istream<_CharT, _Traits>::get(_CharT& __c)
-{
+basic_istream<_CharT, _Traits>::get(_CharT& __c) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -320,14 +316,12 @@ basic_istream<_CharT, _Traits>::get(_CharT& __c)
 }
 
 
-
 // Read characters and discard them.  The standard specifies a single
 // function with two arguments, each with a default.  We instead use
 // three overloded functions, because it's possible to implement the
 // first two more efficiently than the fully general third version.
 template <class _CharT, class _Traits>
-basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::ignore()
-{
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::ignore() {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -452,8 +446,7 @@ basic_istream<_CharT, _Traits>::seekg(pos_type __pos) {
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>&
-basic_istream<_CharT, _Traits>::seekg(off_type __off, ios_base::seekdir __dir)
-{
+basic_istream<_CharT, _Traits>::seekg(off_type __off, ios_base::seekdir __dir) {
   sentry __sentry(*this, _No_Skip_WS());
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
@@ -465,8 +458,7 @@ basic_istream<_CharT, _Traits>::seekg(off_type __off, ios_base::seekdir __dir)
 // Formatted input of characters and character arrays.
 
 template <class _CharT, class _Traits>
-void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c)
-{
+void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c) {
 //  typename _Traits::int_type __tmp = _Traits::eof();
 
   sentry __sentry(*this); // Skip whitespace.
