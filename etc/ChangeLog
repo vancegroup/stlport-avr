@@ -1,3 +1,10 @@
+2004-04-26  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_istream.h: don't change value while input error happens. Thanks Nix.
+
+	* test/unit/sstream_test.cpp, test/unit/fstream_test.cpp: added test for error flags and unchanged
+	value when input error occur.
+
 2004-04-23  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_rope.h: allow search of rope, like done in string
