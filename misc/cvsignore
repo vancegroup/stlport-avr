@@ -19,3 +19,4 @@ SunWS_cache
 Templates.DB
 *.gz
 doc
+make_snap.sh
