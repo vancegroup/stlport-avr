@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/06/06 19:18:16 ptr>
+// -*- C++ -*- Time-stamp: <03/06/09 14:31:09 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -559,7 +559,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
     TlsSetValue( _mt_key, user_words );
 #endif
 #ifdef __FIT_NOVELL_THREADS
-    *static_cast<_uw_alloc_type **>(GetThreadDataAreaPtr()) = user_words;
+    SaveThreadDataAreaPtr( user_words );
 #endif
   } else {
 #ifdef __FIT_UITHREADS
@@ -1069,21 +1069,17 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
   err = GetLastError();
   _start_lock.unlock();
 #endif
-#ifdef __FIT__NOVELL_THREADS
-  _start_lock.lock();
 #ifdef __FIT_NOVELL_THREADS
-  if ( (flags & detached) == 0 ) {
+  _start_lock.lock();
+  if ( (_flags & detached) == 0 ) {
     _thr_join.set( false );
   }
-#endif
   _id = BeginThread( _xcall, 0, 65536, this );
   if ( _id == bad_thread_id ) {
-    err = ::errno;
-#ifdef __FIT_NOVELL_THREADS
-    if ( (flags & detached) == 0 ) {
+    err = errno; // not ::errno, due to #define errno  *__get_errno_ptr()
+    if ( (_flags & detached) == 0 ) {
       _thr_join.signal();
     }
-#endif
   }
   _start_lock.unlock();
 #endif
