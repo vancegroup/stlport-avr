@@ -334,9 +334,9 @@ public:
   typedef _Rb_tree_iterator<value_type, _Const_traits<value_type> > const_iterator;
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
   
-  static iterator _M_unconst(const_iterator __ite) {
-    return __ite._M_node;
-  }
+  // static iterator _M_unconst(const_iterator __ite) {
+  //  return __ite._M_node;
+  // }
 
 private:
   iterator _M_insert(_Base_ptr __parent, const value_type& __val, _Base_ptr __on_left = 0, _Base_ptr __on_right = 0);

@@ -73,9 +73,9 @@ public:
 
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
   
-  static iterator _M_unconst (const_iterator __ite) {
-    return iterator(__ite._M_iter_list, __ite._M_iterator);
-  }
+  // static iterator _M_unconst (const_iterator __ite) {
+  //  return iterator(__ite._M_iter_list, __ite._M_iterator);
+  // }
 
 protected:
 

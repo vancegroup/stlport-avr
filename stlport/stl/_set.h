@@ -141,7 +141,7 @@ public:
     return pair<iterator, bool>(__tmp.first, __tmp.second);
   }
   iterator insert(iterator __position, const value_type& __x) {
-    return _M_t.insert_unique(_Rep_type::_M_unconst(__position), __x);
+    return _M_t.insert_unique(/* _Rep_type::_M_unconst( */ __position /* ) */, __x);
   }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -157,13 +157,13 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __position) { 
-    _M_t.erase(_Rep_type::_M_unconst(__position)); 
+    _M_t.erase( /* _Rep_type::_M_unconst( */ __position /* ) */ ); 
   }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
   void erase(iterator __first, iterator __last) { 
-    _M_t.erase(_Rep_type::_M_unconst(__first), _Rep_type::_M_unconst(__last)); 
+    _M_t.erase( /* _Rep_type::_M_unconst( */ __first /* ) */, /* _Rep_type::_M_unconst( */ __last /* ) */ ); 
   }
   void clear() { _M_t.clear(); }
 
@@ -295,7 +295,7 @@ public:
     return _M_t.insert_equal(__x);
   }
   iterator insert(iterator __position, const value_type& __x) {
-    return _M_t.insert_equal(_Rep_type::_M_unconst(__position), __x);
+    return _M_t.insert_equal(/* _Rep_type::_M_unconst( */ __position /* ) */, __x);
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
@@ -312,13 +312,13 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __position) { 
-    _M_t.erase(_Rep_type::_M_unconst(__position)); 
+    _M_t.erase( /* _Rep_type::_M_unconst( */ __position /* ) */ ); 
   }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
   void erase(iterator __first, iterator __last) { 
-    _M_t.erase(_Rep_type::_M_unconst(__first), _Rep_type::_M_unconst(__last)); 
+    _M_t.erase( /* _Rep_type::_M_unconst( */ __first /*)*/, /* _Rep_type::_M_unconst( */ __last /*)*/ ); 
   }
   void clear() { _M_t.clear(); }
 
