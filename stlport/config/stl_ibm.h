@@ -16,9 +16,9 @@
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
 # endif
 
-#  if ( defined (__MULTI__) && defined (__WINDOWS__))
-#   define  _STLP_WIN32THREADS 1          // Only Visual Age 3.5 for Windows
-#  endif
+// #  if ( defined (__MULTI__) && defined (__WINDOWS__))
+// #   define  _STLP_WIN32THREADS 1          // Only Visual Age 3.5 for Windows
+// #  endif
 
 #  if ( defined (__MULTI__) && defined (__OS2__))
 #   define _STLP_OS2THREADS 1

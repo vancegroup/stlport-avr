@@ -50,7 +50,7 @@ SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES
  # ---------------------------------------------------------------------------
 CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWC -D$(SYSDEFINES);$(USERDEFINES)
 
-LDFLAGS = -L..\..\lib
+LDFLAGS = -L..\..\lib;$(BCB)\..\lib cw32i.lib stlp.4.5.lib
 
 .autodepend
 # ---------------------------------------------------------------------------
@@ -66,12 +66,12 @@ clean:
 
 # ---------------------------------------------------------------------------
 .cpp.obj:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) -n$(@D) -c $<
+    $(BCC32) $(CFLAG1) -n$(@D) -c $<
 
 .cpp.exe:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(LDFLAGS) -n$(@D) $<
+    $(BCC32) $(CFLAG1) $(LDFLAGS) -n$(@D) $<
 
 .cpp.i:
-    $(BCB)\BIN\$(CPP32) $(CFLAG1) -n. -Sr -Ss -Sd {$< }
+    $(CPP32) $(CFLAG1) -n. -Sr -Ss -Sd {$< }
 # ---------------------------------------------------------------------------
 

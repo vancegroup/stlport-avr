@@ -85,10 +85,8 @@
 #  endif
 
 # elif defined(_STLP_WIN32)
-
 #  if !defined (_STLP_WINDOWS_H_INCLUDED) && ! defined (_WINDOWS_) && ! defined (__WINDOWS__) && ! defined (_WINDOWS_H)
 #   if ! (defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || defined (__MINGW32__)) 
-// #    define NOMINMAX
 #    ifdef _STLP_USE_MFC
 #     include <afx.h>
 #    else
@@ -206,10 +204,8 @@ struct _STLP_mutex_spin {
   // Low if we suspect uniprocessor, high for multiprocessor.
   static unsigned __max;
   static unsigned __last;
-  // #if defined(_STLP_SGI_THREADS) || defined(_STLP_WIN32THREADS)
   static void _STLP_CALL _M_do_lock(volatile __stl_atomic_t* __lock);
   static void _STLP_CALL _S_nsec_sleep(int __log_nsec);
-  // # endif
 };
 
 
@@ -229,14 +225,14 @@ struct _STLP_mutex_spin {
 
 struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
 {
-#if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS) || defined(_STLP_WIN32THREADS)
+#if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS) // || defined(_STLP_WIN32THREADS)
   // It should be relatively easy to get this to work on any modern Unix.
   volatile __stl_atomic_t _M_lock;
 #endif
 
 #ifdef _STLP_THREADS
-#if defined (_STLP_ATOMIC_EXCHANGE)
 
+#if defined (_STLP_ATOMIC_EXCHANGE)
   inline void _M_initialize() { _M_lock=0; }
   inline void _M_destroy() {}
 
@@ -265,7 +261,6 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
         // writes to protected variables and the lock may be reordered.
 #   endif
   }
-
 #elif defined(_STLP_PTHREADS)
   pthread_mutex_t _M_lock;
   inline void _M_initialize() {
@@ -275,6 +270,7 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
     pthread_mutex_destroy(&_M_lock);
   }
   inline void _M_acquire_lock() { 
+
 #if defined ( __hpux ) && ! defined (PTHREAD_MUTEX_INITIALIZER)
     if (!_M_lock.field1)  _M_initialize();
 #endif

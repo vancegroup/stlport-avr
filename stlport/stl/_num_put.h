@@ -157,6 +157,21 @@ extern ptrdiff_t _STLP_CALL __insert_grouping(wchar_t*, wchar_t*, const string&,
 
 # endif
 
+# ifdef __BORLANDC__
+inline void _Stl_loc_init_num_put() {
+  
+  num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index = 14;
+  num_put<char, char*>::id._M_index = 15;
+  
+# ifndef _STLP_NO_WCHAR_T
+  num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id._M_index = 33;
+  num_put<wchar_t, wchar_t*>::id._M_index = 34;
+# endif
+  
+}
+ 
+# endif
+
 _STLP_END_NAMESPACE
 
 #  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && ! defined (_STLP_LINK_TIME_INSTANTIATION)

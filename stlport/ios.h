@@ -23,7 +23,11 @@
 
 # if defined (_STLP_OWN_IOSTREAMS)
 
+#ifdef __BORLANDC__
+#  include <ios.>
+#else
 #  include <ios>
+#endif
 
 # if defined (_STLP_USE_NAMESPACES)
 # include <using/ios>

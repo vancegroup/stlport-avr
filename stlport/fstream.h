@@ -22,7 +22,11 @@
 # endif
 
 # if defined (_STLP_OWN_IOSTREAMS)
+#ifdef __BORLANDC__
+#  include <fstream.>
+#else
 #  include <fstream>
+#endif
 // get desired pollution
 #  include <iostream.h>
 

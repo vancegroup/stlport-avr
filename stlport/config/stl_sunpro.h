@@ -10,17 +10,20 @@
 
 #ifndef _MBSTATET_H
 #   define _MBSTATET_H
-typedef struct __mbstate_t {
-#if defined(_LP64)
-  long    __filler[4];
-#else
-  int     __filler[6];
-#endif
-} __mbstate_t;
+#   undef _MBSTATE_T
+#   define _MBSTATE_T
+    typedef struct __mbstate_t {
+      #if defined(_LP64)
+        long    __filler[4];
+      #else
+        int     __filler[6];
+      #endif
+    } __mbstate_t;
 
-namespace std {
-  typedef __mbstate_t     mbstate_t;
-}
+    namespace std {
+        typedef __mbstate_t     mbstate_t;
+    }
+    using std::mbstate_t;
 #endif  /* __MBSTATET_H */
 
 #  if (__SUNPRO_CC >= 0x500 ) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 )) \

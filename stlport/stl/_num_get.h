@@ -233,6 +233,18 @@ void  _STLP_CALL __string_to_float(const string&, long double&);
 # endif
 # endif
 
+# ifdef __BORLANDC__
+inline void _Stl_loc_init_num_get() {  
+  num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index = 12;
+  num_get<char, const char*>::id._M_index = 13;
+  
+# ifndef _STLP_NO_WCHAR_T
+  num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 31;
+  num_get<wchar_t, const wchar_t*>::id._M_index = 32;
+# endif
+} 
+# endif
+
 _STLP_END_NAMESPACE
 
 #  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && ! defined (_STLP_LINK_TIME_INSTANTIATION)

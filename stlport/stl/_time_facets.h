@@ -280,6 +280,26 @@ _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_
 
 # endif
 
+# ifdef __BORLANDC__
+inline void _Stl_loc_init_time_facets() {
+  
+  time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 16;
+  time_get<char, const char*>::id._M_index         = 17;
+  time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 18;
+  time_put<char, char*>::id._M_index               = 19;
+  
+# ifndef _STLP_NO_WCHAR_T
+  
+  time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                   = 35;
+  time_get<wchar_t, const wchar_t*>::id._M_index   = 36;
+  time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                   = 37;
+  time_put<wchar_t, wchar_t*>::id._M_index         = 38;
+  
+# endif
+  
+}
+# endif
+
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)

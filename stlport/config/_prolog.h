@@ -6,8 +6,8 @@
 # endif
 
 # if defined (__BORLANDC__)
-// #  pragma option push -Vx- -Ve- -a8 -b -pc -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092  /* P_O_1 */
-#  pragma option push -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092  /* P_O_1 */
+#  pragma option push -Vx- -Ve- -a8 -b -pc -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092 -w-8066  /* P_O_1 */
+//#  pragma option push -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092  /* P_O_1 */
 # else
 # include <config/_msvc_warnings_off.h>
 # endif

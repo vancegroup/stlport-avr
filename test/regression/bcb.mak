@@ -248,13 +248,17 @@ PATHPAS = .;
 PATHASM = .;
 PATHRC = .;
 
-USERDEFINES = _STLP_NO_OWN_IOSTREAMS
-SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES;_DEBUG
+USERDEFINES = _DEBUG
+SYSDEFINES = NO_STRICT;USEPACKAGES
 
  # ---------------------------------------------------------------------------
 # CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWCR -D$(SYSDEFINES);$(USERDEFINES)  -L..\..\lib
 
-CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -tWCR -w-par -w-inl -w-stl -D$(SYSDEFINES);$(USERDEFINES)
+# CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -tWCR -w-par -w-inl -w-stl -D$(SYSDEFINES);$(USERDEFINES)
+
+CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWC -D$(SYSDEFINES);$(USERDEFINES) -L..\..\lib
+
+LDFLAGS =  -L..\..\lib;$(BCB)\..\lib stlpst.lib
 
 .autodepend
 # ---------------------------------------------------------------------------
@@ -269,11 +273,11 @@ clean:
 
 # ---------------------------------------------------------------------------
 .cpp.obj:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) -n$(@D) -c $<
+    $(BCC32) $(CFLAG1) -n$(@D) -c $<
 
 .cpp.exe:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) -DMAIN  -n$(@D) $<
+    $(BCC32) $(CFLAG1) -DMAIN  -n$(@D) $<
 
 .cpp.i:
-    $(BCB)\BIN\$(CPP32) $(CFLAG1) -n. -Sr -Ss -Sd {$< }
+    $(CPP32) $(CFLAG1) -n. -Sr -Ss -Sd {$< }
 # ---------------------------------------------------------------------------

@@ -433,6 +433,21 @@ _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, ostreambuf_iterator<wchar_t, char
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 
+# ifdef __BORLANDC__
+inline void _Stl_loc_init_monetary() {
+  money_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index                     = 8;
+  money_get<char, const char*>::id._M_index        = 9;
+  money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index                     = 10;
+  money_put<char, char*>::id._M_index              = 11;
+# ifndef _STLP_NO_WCHAR_T
+  money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                  = 27;
+  money_get<wchar_t, const wchar_t*>::id._M_index  = 28;
+  money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                  = 29;
+  money_put<wchar_t, wchar_t*>::id._M_index        = 30;
+# endif  
+}
+#endif
+
 _STLP_END_NAMESPACE
 
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)

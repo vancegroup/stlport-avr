@@ -11,37 +11,41 @@ CXX=bcc32
 RC=brc32
 COMP=BCB
 
-LIB_BASENAME=stlport_bcb
+LIB_BASENAME=stlp
 
 # ---------------------------------------------------------------------------
 
 LINK_OUT=
 DYNLINK_OUT=
 LINK = tlib /P256
-DYN_LINK = ilink32
+# Use objs in RTL build tree
+DYN_LINK = ilink32 -L$(BCB)\..\lib
 OBJEXT=obj
 DYNEXT=dll
 STEXT=lib
-RM=-rd /S /Q
+# We use 4NT, which does not know about /Q
+#RM=-rd /S /Q
+RM=-rd /S
 PATH_SEP=\\
-MKDIR=-mkdir -p
-STATIC_SUFFIX=_static
+MKDIR=-md /S
+STATIC_SUFFIX=st
 INSTALL_STEP=install_bc
 
 all : platform all_dynamic all_static
 
 !include common_macros_windows.mak
 
-RM=-rd /S /Q
-MKDIR=-mkdir -p
+#RM=-rd /S /Q
+RM=-rd /S
+MKDIR=-md /S
 
-DYNAMIC_DEFS=_RTLDLL;_DLL
-STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE
+DYNAMIC_DEFS=_RTLDLL;_WIN32;_DLL;_STLP_DESIGNATED_DLL
+STATIC_DEFS=_LIB;_WIN32;_STLP_NO_FORCE_INSTANTIATE
 
 LINKSTARTUP= c0d32.obj
 
-FLAGS_COMMON= -I.;..\stlport;$(BCB)\include; -jb -j1 -w -c -w-par -w-inl -w-stl
-FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS) -tWM
+FLAGS_COMMON= -I.;..\stlport;$(BCB)\include;$(BCB)\include\windows -jb -j1 -w -c -w-par -w-inl -w-stl
+FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS)
 FLAGS_COMMON_dynamic = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(DYNAMIC_DEFS) -tWDR
 
 # -L$(MAKEDIR)\..\lib  removed  ...it should get ilink32.cfg values instead
@@ -58,9 +62,9 @@ LDFLAGS_RELEASE_dynamic=   $(LDFLAGS_COMMON_dynamic) $(LINKSTARTUP)
 LDFLAGS_DEBUG_dynamic=     $(LDFLAGS_COMMON_dynamic) $(LINKSTARTUP)
 LDFLAGS_STLDEBUG_dynamic=  $(LDFLAGS_COMMON_dynamic) $(LINKSTARTUP)
 
-LDLIBS_RELEASE_dynamic=   import32.lib cw32mti.lib
-LDLIBS_DEBUG_dynamic=     import32.lib cw32mti.lib
-LDLIBS_STLDEBUG_dynamic=  import32.lib cw32mti.lib
+LDLIBS_RELEASE_dynamic=   import32.lib cw32i.lib
+LDLIBS_DEBUG_dynamic=     import32.lib cw32i.lib
+LDLIBS_STLDEBUG_dynamic=  import32.lib cw32i.lib
 
 
 CXXFLAGS_RELEASE_static= $(FLAGS_COMMON_static) -O2 -n$(RELEASE_OBJDIR_static)
@@ -182,8 +186,6 @@ STLDEBUG_LINK_COMMANDS_static= \
 #
 #
 
-$(OUTDIR) :
-	$(MKDIR) $(OUTDIR)
 $(RELEASE_OBJDIR_dynamic) :
 	$(MKDIR) $(RELEASE_OBJDIR_dynamic)
 $(DEBUG_OBJDIR_dynamic) :
@@ -216,26 +218,25 @@ clobber : clean
 
 #create a compiler platform directory
 platform:
-	-$(MKDIR) $(OUTDIR)
 	-$(MKDIR) $(OBJDIR_COMMON)
 	-$(MKDIR) $(OBJDIR)
 
-$(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) : $(OUTDIR) $(RELEASE_OBJDIR_dynamic) $(DEF_FILE) $(RELEASE_OBJECTS_dynamic)
+$(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) : $(RELEASE_OBJDIR_dynamic) $(DEF_FILE) $(RELEASE_OBJECTS_dynamic)
 	$(DYN_LINK) $(LDFLAGS_RELEASE_dynamic) $(RELEASE_OBJECTS_dynamic) , $(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB),,$(LDLIBS_RELEASE_dynamic)
 
-$(OUTDIR)$(PATH_SEP)$(DEBUG_DYNLIB) : $(OUTDIR) $(DEBUG_OBJDIR_dynamic) $(DEF_FILE) $(DEBUG_OBJECTS_dynamic)
+$(OUTDIR)$(PATH_SEP)$(DEBUG_DYNLIB) : $(DEBUG_OBJDIR_dynamic) $(DEF_FILE) $(DEBUG_OBJECTS_dynamic)
 	$(DYN_LINK) $(LDFLAGS_DEBUG_dynamic) $(DEBUG_OBJECTS_dynamic), $(DYNLINK_OUT)$(OUTDIR)$(PATH_SEP)$(DEBUG_DYNLIB) ,, $(LDLIBS_DEBUG_dynamic) 
 
-$(OUTDIR)$(PATH_SEP)$(STLDEBUG_DYNLIB) : $(OUTDIR) $(STLDEBUG_OBJDIR_dynamic) $(DEF_FILE) $(STLDEBUG_OBJECTS_dynamic)
+$(OUTDIR)$(PATH_SEP)$(STLDEBUG_DYNLIB) : $(STLDEBUG_OBJDIR_dynamic) $(DEF_FILE) $(STLDEBUG_OBJECTS_dynamic)
 	$(DYN_LINK)  $(LDFLAGS_STLDEBUG_dynamic) $(STLDEBUG_OBJECTS_dynamic) , $(DYNLINK_OUT)$(OUTDIR)$(PATH_SEP)$(STLDEBUG_DYNLIB) ,, $(LDLIBS_STLDEBUG_dynamic)
 
-$(OUTDIR)$(PATH_SEP)$(RELEASE_LIB) : $(OUTDIR) $(RELEASE_OBJDIR_static) $(DEF_FILE) $(RELEASE_OBJECTS_static)
+$(OUTDIR)$(PATH_SEP)$(RELEASE_LIB) : $(RELEASE_OBJDIR_static) $(DEF_FILE) $(RELEASE_OBJECTS_static)
 	$(LINK) $(OUTDIR)$(PATH_SEP)$(RELEASE_LIB) $(RELEASE_LINK_COMMANDS_static)
 
-$(OUTDIR)$(PATH_SEP)$(DEBUG_LIB) : $(OUTDIR) $(DEBUG_OBJDIR_static) $(DEF_FILE) $(DEBUG_OBJECTS_static)
+$(OUTDIR)$(PATH_SEP)$(DEBUG_LIB) : $(DEBUG_OBJDIR_static) $(DEF_FILE) $(DEBUG_OBJECTS_static)
 	$(LINK) $(OUTDIR)$(PATH_SEP)$(DEBUG_LIB) $(DEBUG_LINK_COMMANDS_static)  
 
-$(OUTDIR)$(PATH_SEP)$(STLDEBUG_LIB) : $(OUTDIR) $(STLDEBUG_OBJDIR_static) $(DEF_FILE) $(STLDEBUG_OBJECTS_static)
+$(OUTDIR)$(PATH_SEP)$(STLDEBUG_LIB) : $(STLDEBUG_OBJDIR_static) $(DEF_FILE) $(STLDEBUG_OBJECTS_static)
 	$(LINK) $(OUTDIR)$(PATH_SEP)$(STLDEBUG_LIB) $(STLDEBUG_LINK_COMMANDS_static)
 
 #########################################

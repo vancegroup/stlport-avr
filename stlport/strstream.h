@@ -24,7 +24,12 @@
 # if defined ( _STLP_USE_NEW_IOSTREAMS )
 
 // fbp - if we are going to use that consistently, let's do it
-# include  <strstream>
+#ifdef __BORLANDC__
+#  include <strstream.>
+#else
+#  include <strstream>
+#endif
+
 # include  <iostream.h>
 
 

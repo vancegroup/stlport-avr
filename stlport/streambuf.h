@@ -25,7 +25,12 @@
 
 # if defined ( _STLP_OWN_IOSTREAMS )
 
-# include <streambuf>
+#ifdef __BORLANDC__
+#  include <streambuf.>
+#else
+#  include <streambuf>
+#endif
+
 # include <ios.h>
 
 # ifndef _STLP_HAS_NO_NAMESPACES

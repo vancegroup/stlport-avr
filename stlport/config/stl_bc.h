@@ -115,7 +115,7 @@ typedef char    mbstate_t;
 #   define _STLP_DEBUG
 #  endif
 
-#  define _STLP_LIB_BASENAME "stlport_bcb"
+#  define _STLP_LIB_BASENAME "stlp"
 
 # if (__BORLANDC__ < 0x540)
 
@@ -158,8 +158,9 @@ typedef char    mbstate_t;
 #  endif
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
-#  define _STLP_LIB_STATIC_SUFFIX "_static"
-#  include <config/stl_select_lib.h>
+// boris : no more automatic lib linking, as per Borland process
+// #  define _STLP_LIB_STATIC_SUFFIX "_static"
+// #  include <config/stl_select_lib.h>
 
 #  endif /* _STLP_OWN_IOSTREAMS */
 # endif

@@ -9,7 +9,7 @@ CC=bcc32 -P
 CXX=bcc32
 
 RC=brc32
-COMP=BCB60
+COMP=BCB
 
 LIB_BASENAME=stlp
 

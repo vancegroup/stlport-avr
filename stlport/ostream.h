@@ -23,7 +23,11 @@
 
 # if defined (_STLP_OWN_IOSTREAMS)
 
+#ifdef __BORLANDC__
+#  include <ostream.>
+#else
 #  include <ostream>
+#endif
 
 #  ifdef _STLP_USE_NAMESPACES
 #   include <using/ostream>
