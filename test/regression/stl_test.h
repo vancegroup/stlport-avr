@@ -1,5 +1,6 @@
 #ifndef _STL_TEST_H_
 #define _STL_TEST_H_
+
 //  An adapted ObjectSpace example for use with SGI STL
 extern int accum1_test  ( int, char**);
 extern int accum2_test  ( int, char**);
@@ -226,28 +227,42 @@ extern int unique1_test  ( int, char**);
 extern int unique2_test  ( int, char**);
 extern int uprbnd1_test  ( int, char**);
 extern int uprbnd2_test  ( int, char**);
-extern int vec1_test  ( int, char**);
-extern int vec2_test  ( int, char**);
-extern int vec3_test  ( int, char**);
-extern int vec4_test  ( int, char**);
-extern int vec5_test  ( int, char**);
-extern int vec6_test  ( int, char**);
-extern int vec7_test  ( int, char**);
-extern int vec8_test  ( int, char**);
+//extern int vec1_test  ( int, char**);
+//extern int vec2_test  ( int, char**);
+//extern int vec3_test  ( int, char**);
+//extern int vec4_test  ( int, char**);
+//extern int vec5_test  ( int, char**);
+//extern int vec6_test  ( int, char**);
+//extern int vec7_test  ( int, char**);
+//extern int vec8_test  ( int, char**);
+extern int vec_test_1();
+extern int vec_test_2();
+extern int vec_test_3();
+extern int vec_test_4();
+extern int vec_test_5();
+extern int vec_test_6();
+extern int vec_test_7();
+extern int vec_test_8();
+
 extern int hmap1_test  ( int, char**);
 extern int hmmap1_test  ( int, char**);
 extern int hset2_test  ( int, char**);
 extern int hmset1_test  ( int, char**);
 extern int slist1_test (int, char**);
-extern int string1_test (int, char**);
-extern int string_data_test( int, char ** );
-extern int string_c_str_test( int, char ** );
+extern int string1_test();
+extern int string_data_test();
+extern int string_c_str_test();
 extern int bitset1_test (int, char**);
 extern int move_construct_test (int, char**);
-extern int ioiter_test (int, char**);
-extern int string_mt_test (int, char**);
-extern int ptr_specialization_test(int, char**);
+extern int ioiter_test();
+extern int string_mt_test();
+extern int ptr_specialization_test();
 extern int float_output_test(int, char**);
 
 void stlp_test(bool res);
 #endif
+
+// Local Variables:
+// mode:C++
+// End:
+

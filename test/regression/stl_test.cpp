@@ -14,9 +14,10 @@ void stlp_test(bool res) {
 }
 
 //dums:  To be move in a common makefile in the new explore make system.
-#define _STLP_EXPLORE_MAKE
+//ptr:   No sense. This is not depends upon make.
+// #define _STLP_EXPLORE_MAKE
 
-#ifdef _STLP_EXPLORE_MAKE
+// #ifdef _STLP_EXPLORE_MAKE
 void _stlp_test_name( const char *name)
 {
   cout << name;
@@ -24,9 +25,10 @@ void _stlp_test_name( const char *name)
 }
 
 #  define TEST(t) _stlp_test_name( #t ) , stlp_test( t(argc,argv) == 0 ? true : false ), cout << endl
-#else
-#  define TEST(t)
-#endif
+#  define TEST2(t) cout << #t << " "; cout.flush(); cout << (t() == 0 ? " ... pass" : " ... fail" ) << endl
+// #else
+// #  define TEST(t)
+// #endif
 
 int main(int argc, char** argv) {
     int iter_count = ( argc>1 ? 10000 : 1);
@@ -486,22 +488,31 @@ int main(int argc, char** argv) {
         cout.flush();
         uprbnd2_test(argc, argv);
         cout.flush();
-        vec1_test(argc, argv);
-        cout.flush();
-        vec2_test(argc, argv);
-        cout.flush();
-        vec3_test(argc, argv);
-        cout.flush();
-        vec4_test(argc, argv);
-        cout.flush();
-        vec5_test(argc, argv);
-        cout.flush();
-        vec6_test(argc, argv);
-        cout.flush();
-        vec7_test(argc, argv);
-        cout.flush();
-        vec8_test(argc, argv);
-        cout.flush();
+        //vec1_test(argc, argv);
+        //cout.flush();
+        //vec2_test(argc, argv);
+        //cout.flush();
+        //vec3_test(argc, argv);
+        //cout.flush();
+        //vec4_test(argc, argv);
+        //cout.flush();
+        //vec5_test(argc, argv);
+        //cout.flush();
+        //vec6_test(argc, argv);
+        //cout.flush();
+        //vec7_test(argc, argv);
+        //cout.flush();
+        //vec8_test(argc, argv);
+        //cout.flush();
+        TEST2(vec_test_1);
+        TEST2(vec_test_2);
+        TEST2(vec_test_3);
+        TEST2(vec_test_4);
+        TEST2(vec_test_5);
+        TEST2(vec_test_6);
+        TEST2(vec_test_7);
+        TEST2(vec_test_8);
+
         hmap1_test  ( argc, argv);
         cout.flush();
         hmmap1_test  ( argc, argv);
@@ -512,16 +523,18 @@ int main(int argc, char** argv) {
         cout.flush();
         slist1_test (argc, argv);
         cout.flush();
-        TEST(string1_test);
-        TEST( string_data_test );
-        TEST( string_c_str_test );
+
+        TEST2(string1_test);
+        TEST2( string_data_test );
+        TEST2( string_c_str_test );
+
         bitset1_test (argc, argv); 
         cout.flush();
         move_construct_test (argc, argv);
         cout.flush();
-        TEST(ioiter_test);
-        TEST(string_mt_test);
-        TEST(ptr_specialization_test);
+        TEST2(ioiter_test);
+        TEST2(string_mt_test);
+        TEST2(ptr_specialization_test);
         TEST(float_output_test);
     }
     return 0;

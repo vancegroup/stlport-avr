@@ -1,5 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/01/16 21:32:26 ptr>
-
+// -*- C++ -*- Time-stamp: <04/02/12 22:39:59 ptr>
 
 #include <string>
 
@@ -13,9 +12,9 @@
 # include <windows.h>
 #endif
 
-#ifdef MAIN
-#define string_mt_test main
-#endif
+//#ifdef MAIN
+//#define string_mt_test main
+//#endif
 
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
@@ -43,7 +42,7 @@ DWORD __stdcall f (void *)
   return 0;
 }
 
-int string_mt_test( int, char ** )
+int string_mt_test()
 {
   const int nth = 2;
 #if defined(_STLP_PTHREADS)
@@ -75,7 +74,7 @@ int string_mt_test( int, char ** )
 }
 #else // !_STLP_PTHREADS && !_STLP_WIN32THREADS
 
-int string_mt_test( int, char ** )
+int string_mt_test()
 {
   return -1;
 }
