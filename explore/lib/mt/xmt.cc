@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/12/29 12:31:56 ptr>
+// -*- C++ -*- Time-stamp: <03/12/31 13:18:56 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -710,6 +710,7 @@ int Thread::join()
   if ( _id != bad_thread_id ) {
     WaitForSingleObject( _id, -1 );
     GetExitCodeThread( _id, &ret_code );
+    CloseHandle( _id );
     _id = bad_thread_id;
   }
 #endif // __FIT_WIN32THREADS
@@ -1206,6 +1207,9 @@ void *Thread::_call( void *p )
     // So don't delete Thread before it termination!
 
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+#ifdef __FIT_WIN32THREADS
+      CloseHandle( me->_id );
+#endif
       me->_id = bad_thread_id;
     }
     me->_dealloc_uw(); // free user words
@@ -1213,6 +1217,9 @@ void *Thread::_call( void *p )
   catch ( std::exception& e ) {
     me->_state = badbit;
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+#ifdef __FIT_WIN32THREADS
+      CloseHandle( me->_id );
+#endif
       me->_id = bad_thread_id;
     }
     me->_dealloc_uw(); // free user words
@@ -1224,6 +1231,9 @@ void *Thread::_call( void *p )
   catch ( int sig ) {
     me->_state = badbit;
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+#ifdef __FIT_WIN32THREADS
+      CloseHandle( me->_id );
+#endif
       me->_id = bad_thread_id;
     }
     me->_dealloc_uw(); // free user words
@@ -1236,6 +1246,9 @@ void *Thread::_call( void *p )
   catch ( ... ) {
     me->_state = badbit;
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+#ifdef __FIT_WIN32THREADS
+      CloseHandle( me->_id );
+#endif
       me->_id = bad_thread_id;
     }
     me->_dealloc_uw(); // free user words
