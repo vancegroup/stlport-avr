@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/08/18 14:41:40 ptr>
+// -*- C++ -*- Time-stamp: <03/09/15 17:51:42 ptr>
 
 /*
  *
@@ -381,6 +381,7 @@ class __Mutex :
 #endif
 };
 
+#ifdef __FIT_PTHREAD_SPINLOCK
 // Spinlock-based locks (IEEE Std. 1003.1j-2000)
 template <bool SCOPE>
 class __Spinlock :
@@ -418,6 +419,101 @@ class __Spinlock :
       }
 };
 
+// The same, recursive safe
+template <bool SCOPE>
+class __SpinlockRS :
+    public __spinlock_base<SCOPE>
+{
+  public:
+    __SpinlockRS()
+      { }
+
+    ~__SpinlockRS()
+      { }
+
+    void lock()
+      {
+#  ifndef _NOTHREADS
+#    ifdef _PTHREADS
+        pthread_t _c_id = pthread_self();
+#    endif
+#    ifdef __FIT_UITHREADS
+        thread_t _c_id = thr_self();
+#    endif
+#    ifdef __FIT_NOVELL_THREADS
+        int _c_id = GetThreadID();
+#    endif
+        if ( _c_id == _id ) {
+          ++_count;
+          return;
+        }
+#    ifdef _PTHREADS
+        pthread_spin_lock( &_M_lock );
+#    endif
+        _id = _c_id;
+        _count = 0;
+#  endif // !_NOTHREADS
+      }
+
+    int trylock()
+      {
+#  ifdef _NOTHREADS
+        return 0;
+#  else // _NOTHREADS
+#    ifdef _PTHREADS
+        pthread_t _c_id = pthread_self();
+#    endif
+#    ifdef __FIT_UITHREADS
+        thread_t _c_id = thr_self();
+#    endif
+#    ifdef __FIT_NOVELL_THREADS
+        int _c_id = GetThreadID();
+#    endif
+        if ( _c_id == _id ) {
+          ++_count;
+          return 0;
+        }
+#    ifdef _PTHREADS
+        int res = pthread_spin_trylock( &_M_lock );
+#    endif
+        if ( res != 0 ) {
+          return res;
+        }
+
+        _id = _c_id;
+        _count = 0;
+
+        return 0;
+#  endif // !_NOTHREADS
+      }
+
+    void unlock()
+      {
+#  ifndef _NOTHREADS
+        if ( --_count == 0 ) {
+#   ifdef _PTHREADS
+          _id =  __STATIC_CAST(pthread_t,-1);
+          pthread_spin_unlock( &_M_lock );
+#   endif
+#  endif // !_NOTHREADS
+        }
+      }
+  protected:
+#  ifndef _NOTHREADS
+    unsigned _count;
+#  endif // !_NOTHREADS
+
+#  ifdef _PTHREADS
+    pthread_t _id;
+#  endif
+#  ifdef __FIT_UITHREADS
+    thread_t  _id;
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
+    int _id;
+#  endif
+};
+#endif // __FIT_PTHREAD_SPINLOCK
 
 // Recursive Safe mutex.
 
@@ -468,20 +564,21 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 #    ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
 #    endif
-        if ( _c_id != _id ) {
+        if ( _c_id == _id ) {
+          ++_count;
+          return;
+        }
 #    ifdef _PTHREADS
-          pthread_mutex_lock( &_M_lock );
+        pthread_mutex_lock( &_M_lock );
 #    endif
 #    ifdef __FIT_UITHREADS
-          mutex_lock( &_M_lock );
+        mutex_lock( &_M_lock );
 #    endif
 #    ifdef __FIT_NOVELL_THREADS
-          WaitOnLocalSemaphore( this->_M_lock );
+        WaitOnLocalSemaphore( this->_M_lock );
 #    endif
-          _id = _c_id;
-          _count = 0;
-        }
-        ++_count;
+        _id = _c_id;
+        _count = 0;
 #  endif // !_NOTHREADS
       }
 
@@ -506,25 +603,25 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 #    ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
 #    endif
-        if ( _c_id != _id ) {
-          int res;
+        if ( _c_id == _id ) {
+          ++_count;
+          return 0;
+        }
 #    ifdef _PTHREADS
-          res = pthread_mutex_trylock( &_M_lock );
+        int res = pthread_mutex_trylock( &_M_lock );
 #    endif
 #    ifdef __FIT_UITHREADS
-          res = mutex_trylock( &_M_lock );
+        int res = mutex_trylock( &_M_lock );
 #    endif
 #    ifdef __FIT_NOVELL_THREADS
-          res = ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
+        int res = ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
 #    endif
-          if ( res != 0 ) {
-            return res;
-          }
-
-          _id = _c_id;
-          _count = 0;
+        if ( res != 0 ) {
+          return res;
         }
-        ++_count;
+
+        _id = _c_id;
+        _count = 0;
 
         return 0;
 #  endif // !_NOTHREADS

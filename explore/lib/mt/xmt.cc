@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/07/02 13:12:17 ptr>
+// -*- C++ -*- Time-stamp: <03/09/15 17:20:08 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -398,10 +398,10 @@ int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signa
 
   unsigned ms = _conv >= ct ? _conv - ct : 1;
 
-  if ( WaitForSingleObject( _sem, ms ) == WAIT_FAILED ) {
-    return -1;
+  if ( WaitForSingleObject( _sem, ms ) == WAIT_OBJECT_0 ) {
+    return 0;
   }
-  return 0;
+  return -1;
 #endif
 #ifdef __FIT_UITHREADS
 #warning "Fix me!"
@@ -424,10 +424,10 @@ int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay 
 #ifdef __FIT_WIN32THREADS
   unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
 
-  if ( WaitForSingleObject( _sem, ms ) == WAIT_FAILED ) {
-    return -1;
+  if ( WaitForSingleObject( _sem, ms ) == WAIT_OBJECT_0 ) {
+    return 0;
   }
-  return 0;
+  return -1;
 #endif
 #ifdef __FIT_UITHREADS
 #warning "Fix me!"
