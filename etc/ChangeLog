@@ -1,15 +1,28 @@
-2003-11-13  Petr Ovchenkov <ptr@island...>
+2003-11-14  Petr Ovchenkov  <ptr@Island...>
+
+	* src/c_locale.c, src/c_locale_glibc/c_locale_glibc2.c:	step to
+	real locales support with glibc >= 2.2.x
+
+	* src/c_locale_glibc/c_locale_glibc.c: bit fixes for locales
+	support with glibc < 1.90, and, possible, 1.90 <= glibc < 2.1;
+	we can't support this old code, so file
+	src/c_locale_glibc/c_locale_glibc.c is obsolete, and will be
+	removed.
+
+	* src/explore, test/regression/explore: exprimental make system.
+
+2003-11-13  Petr Ovchenkov  <ptr@island...>
 
 	* STLport (repository): current development moved to CVS HEAD stream.
 
 	* STLport (repository): current development stream marked as STLport 5.0.
 
-2003-11-02  Francois Dumont <dums@s...>
+2003-11-02  Francois Dumont  <dums@s...>
 
 	* _limits.c: Correction of the quiet and signaling NaN that was inverted
 	for several platform; thanks Alexey Sarytchev.
                
-2003-11-01  Francois Dumont <dums@s...>
+2003-11-01  Francois Dumont  <dums@s...>
 
 	* _string.c: judicious correction for string::find_first_not_of to
 	improve performance; thanks Stephen Cleary.
@@ -20,18 +33,18 @@
 	* _ostream.h, _istream.h: fix of a non-standard behavior of the seekp
         and seekg calls and conformance to the latest 2003 standard; thanks Tanaka.
 	
-2003-10-26  Francois Dumont <dums@s...>
+2003-10-26  Francois Dumont  <dums@s...>
 
         * _monetary.c: fix an other memory overrun on monetary display;
         thanks Tanaka.
 
-2003-10-26  Petr Ovchenkov <ptr@island...>
+2003-10-26  Petr Ovchenkov  <ptr@island...>
 
 	* ioiter.cpp, gcc.mak, stl_test.h, stl_test.cpp, stl_test.exp
 	(test/regression): tests for postfix increment operator and
 	indirection of istreambuf_iterator.
 
-2003-10-25  Petr Ovchenkov <ptr@island...>
+2003-10-25  Petr Ovchenkov  <ptr@island...>
 
 	* _istreambuf_iterator.h: fix postfix increment operator
 	of istreambuf_iterator to provide conformance with
@@ -39,7 +52,7 @@
 	*r++ equivalent to { T tmp = *r; ++r; return tmp; }.
 	Thanks Tanaka for the report.
 
-2003-10-23  Francois Dumont <dums@s...>
+2003-10-23  Francois Dumont  <dums@s...>
 	
 	* debug/: modification of the invalidation of iterators to avoid
 	invalidation of the end iterator for the associative containers,
@@ -49,7 +62,7 @@
 	* _rope.h: Correction of the rope::iterator and rope::const_iterator
 	copy constructor and assignment operator (thanks Bradley Grainger)
 
-2003-10-16  Francois Dumont <dums@s...>
+2003-10-16  Francois Dumont  <dums@s...>
 
 	* _alloc.h: Add of the throw() specification on allocator comparision.
 	
@@ -71,7 +84,7 @@
 	
 	(all thanks Richard Peng)
     
-2003-10-16  Francois Dumont <dums@s...>
+2003-10-16  Francois Dumont  <dums@s...>
 
 	* debug/: add of the iterator range check on all container constructors.
 
@@ -81,18 +94,18 @@
 	* _valarray.h: correction of the missing slice_array copy constructor
 	and assignment operator in the private section (thanks Tanaka)
 
-2003-10-11  Petr Ovchenkov <ptr@island...>
+2003-10-11  Petr Ovchenkov  <ptr@island...>
 
 	* _sstream.c: [io]?stringstream must do equivalent of seek at end,
 	after opened with ios_base::ate; this behaviour useful only when buffer
 	initialized by string; thanks Tanaka for the report.
 	
-2003-10-07  Francois Dumont <dums@s...>
+2003-10-07  Francois Dumont  <dums@s...>
 
 	* _istreambuf_iterator.h, _ostreambuf_iterator.h: correction
 	of the missing iterator base class (Thanks Tanaka)
   
-2003-10-05  Francois Dumont <dums@s...>
+2003-10-05  Francois Dumont  <dums@s...>
 
 	* _string.h: correction of the replace implementation badling form
 	for self referencing
