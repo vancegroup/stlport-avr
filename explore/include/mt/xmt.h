@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/09/07 11:59:43 ptr>
+// -*- C++ -*- Time-stamp: <99/09/10 15:34:03 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -436,7 +436,7 @@ class Thread
   public:
     typedef int (*entrance_type)( void * );
 #ifdef __STL_WIN32THREADS
-    typedef int thread_key_type;
+    typedef HANDLE thread_key_type;
 #endif
 #ifdef __STL_PTHREADS
     typedef pthread_key_t thread_key_type;
@@ -503,8 +503,14 @@ class Thread
     __XMT_DLL long&  iword( int __idx );
     __XMT_DLL void*& pword( int __idx );
 
+#ifndef WIN32
     static thread_key_type mtkey()
       { return _mt_key; }
+#endif
+#ifdef WIN32
+    static unsigned long mtkey()
+      { return _mt_key; }
+#endif
     static const thread_key_type bad_thread_key;
 
   private:
@@ -518,7 +524,12 @@ class Thread
     static void terminate();
 
     static int _idx; // user words index
+#ifndef WIN32
     static thread_key_type _mt_key;
+#endif
+#ifdef WIN32
+    static unsigned long _mt_key;
+#endif
     size_t uw_alloc_size;
 
 #ifdef _PTHREADS
