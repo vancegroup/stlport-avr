@@ -126,8 +126,8 @@ _M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT
 template <class _InputIter, class _Integer>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
-	      int __base, _Integer& __val, 
-	      int __got, bool __is_negative, char __separator, const string& __grouping, const __true_type&) 
+              int __base, _Integer& __val, 
+              int __got, bool __is_negative, char __separator, const string& __grouping, const __true_type&) 
 {
   bool __ovflow = false;
   _Integer __result = 0;
@@ -161,7 +161,7 @@ __get_integer(_InputIter& __first, _InputIter& __last,
      else {
        _Integer __next = __STATIC_CAST(_Integer, __base * __result - __n);
        if (__result != 0)
-	 __ovflow = __ovflow || __next >= __result;
+         __ovflow = __ovflow || __next >= __result;
        __result = __next;
      }
    }
@@ -173,20 +173,20 @@ __get_integer(_InputIter& __first, _InputIter& __last,
    // fbp : added to not modify value if nothing was read
    if (__got > 0) {
        __val = __ovflow
-	 ? __is_negative ? (numeric_limits<_Integer>::min)()
-	 : (numeric_limits<_Integer>::max)()
-	 : (__is_negative ? __result : __STATIC_CAST(_Integer, -__result));
+         ? __is_negative ? (numeric_limits<_Integer>::min)()
+         : (numeric_limits<_Integer>::max)()
+         : (__is_negative ? __result : __STATIC_CAST(_Integer, -__result));
    }
   // overflow is being treated as failure
   return ((__got > 0) && !__ovflow) && (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
-									    __grouping.data(), __grouping.data()+ __grouping.size())) ;
+                                                                            __grouping.data(), __grouping.data()+ __grouping.size())) ;
 }
 
 template <class _InputIter, class _Integer>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
-	      int __base, _Integer& __val, 
-	      int __got, bool __is_negative, char __separator, const string& __grouping, const __false_type&) 
+              int __base, _Integer& __val, 
+              int __got, bool __is_negative, char __separator, const string& __grouping, const __false_type&) 
 {
   bool __ovflow = false;
   _Integer __result = 0;
@@ -219,9 +219,9 @@ __get_integer(_InputIter& __first, _InputIter& __last,
       __ovflow = true;  //don't need to keep accumulating
     else {
       _Integer __next = __STATIC_CAST(_Integer, __base * __result + __n);
-	if (__result != 0)
-	  __ovflow = __ovflow || __next <= __result;
-	__result = __next;
+      if (__result != 0)
+        __ovflow = __ovflow || __next <= __result;
+        __result = __next;
       }      
   }
 
@@ -232,13 +232,13 @@ __get_integer(_InputIter& __first, _InputIter& __last,
   // fbp : added to not modify value if nothing was read
   if (__got > 0) {
       __val = __ovflow
-	? (numeric_limits<_Integer>::max)()
-	: (__is_negative ? __STATIC_CAST(_Integer, -__result) : __result);      
+        ? (numeric_limits<_Integer>::max)()
+        : (__is_negative ? __STATIC_CAST(_Integer, -__result) : __result);      
   }
   // overflow is being treated as failure
   return ((__got > 0) && !__ovflow) && 
     (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
-					 __grouping.data(), __grouping.data()+ __grouping.size())) ;
+                                         __grouping.data(), __grouping.data()+ __grouping.size())) ;
 }
 
 
@@ -340,9 +340,9 @@ __copy_digits(_InputIter& __first, _InputIter& __last,
 template <class _InputIter, class _CharT>
 bool _STLP_CALL
 __copy_grouped_digits(_InputIter& __first, _InputIter& __last,
-		      string& __v, const _CharT * __digits,
-		      _CharT __sep, const string& __grouping,
-		      bool& __grouping_ok)
+                      string& __v, const _CharT * __digits,
+                      _CharT __sep, const string& __grouping,
+                      bool& __grouping_ok)
 {
   bool __ok = false;
   char __group_sizes[64];
@@ -409,7 +409,7 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
   // Get an optional string of digits.
   if (__grouping.size() != 0)
     __digits_before_dot = __copy_grouped_digits(__in, __end, __buf, __digits,
-						__sep, __grouping, __grouping_ok);
+                                                __sep, __grouping, __grouping_ok);
   else
     __digits_before_dot = __copy_digits(__in, __end, __buf, __digits);
 
@@ -491,7 +491,7 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end,
       if ((!__true_ok && !__false_ok) ||
           (__true_ok  && __n >= __truename.size()) ||
           (__false_ok && __n >= __falsename.size())) {
-	++__in;
+        ++__in;
         break;
       }
     }
@@ -609,7 +609,7 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base&
 template <class _CharT, class _InputIter>  
 _InputIter 
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
-				    ios_base::iostate& __err,
+                                    ios_base::iostate& __err,
                                     long double& __val) const {
   string __buf ;
   bool __ok = _M_read_float(__buf, __in, __end, __str, (_CharT*)0 );

@@ -223,19 +223,26 @@ protected:
   }
   _Rb_tree_base(__move_source<_Self> src) :
     _M_header(_AsMoveSource<_AllocProxy>(src.get()._M_header)) {
-    if (src.get().empty()) {
-      _M_empty_initialize();
-    }
-    else {
-      src.get()._M_empty_initialize();
-    }
+    _M_rebind();
+    src.get()._M_empty_initialize();
   }
   void _M_empty_initialize() {
     _M_header._M_data._M_color = _S_rb_tree_red; // used to distinguish header from
                                                  // __root, in iterator.operator++
     _M_header._M_data._M_parent = 0;
-    _M_header._M_data._M_left = &this->_M_header._M_data;
-    _M_header._M_data._M_right = &this->_M_header._M_data;
+    _M_header._M_data._M_left = &_M_header._M_data;
+    _M_header._M_data._M_right = &_M_header._M_data;
+  }
+
+  static void _M_rebind_node (_Node_base *__node, _Node_base *__root) {
+    if (__node->_M_parent != 0) {
+      __node->_M_parent = __root;
+    }
+  }
+  
+  void _M_rebind() {
+    _M_rebind_node(_M_header._M_data._M_right, &_M_header._M_data);
+    _M_rebind_node(_M_header._M_data._M_left, &_M_header._M_data);
   }
 
   _AllocProxy _M_header;
@@ -319,15 +326,6 @@ protected:
 
   static _Base_ptr _STLP_CALL _S_maximum(_Base_ptr __x)
     { return _Rb_tree_node_base::_S_maximum(__x); }
-
-  void _M_rebind() {
-    if (_S_parent(_M_rightmost()) != 0) {
-      _S_parent(_M_rightmost()) = &this->_M_header._M_data;
-    }
-    if (_S_parent(_M_leftmost()) != 0) {
-      _S_parent(_M_leftmost()) = &this->_M_header._M_data;
-    }
-  }
 
 public:
   typedef _Rb_tree_iterator<value_type, _Nonconst_traits<value_type> > iterator;
