@@ -9,6 +9,10 @@
 
 # include <config/stl_msvc.h>
 
+# ifdef _STLP_DONT_RETURN_VOID
+#   undef _STLP_DONT_RETURN_VOID
+# endif /*_STLP_DONT_RETURN_VOID*/
+
 # undef  _STLP_LONG_LONG
 # define _STLP_LONG_LONG long long
 
