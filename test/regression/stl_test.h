@@ -244,6 +244,7 @@ extern int slist1_test (int, char**);
 extern int string1_test();
 extern int string_data_test();
 extern int string_c_str_test();
+extern int string_resize1();
 extern int bitset1_test (int, char**);
 extern int move_construct_test ();
 extern int ioiter_test();

@@ -276,3 +276,35 @@ int string_replace_test()
   return 0;
 }
 
+
+int string_resize1()
+{
+  string s;
+
+  s.resize(0);
+
+  STLP_CHECK( *s.c_str() == 0 );
+
+  s = "1234567";
+
+  s.resize(0);
+  STLP_CHECK( *s.c_str() == 0 );
+
+  s = "1234567";
+  s.resize(1);
+  STLP_CHECK( s.size() == 1 );
+  STLP_CHECK( *s.c_str() == '1' );
+  STLP_CHECK( *(s.c_str() + 1) == 0 );
+
+  s = "1234567";
+  s.resize(10);
+  STLP_CHECK( s.size() == 10 );
+  STLP_CHECK( *(s.c_str() + 6) == '7' );
+  STLP_CHECK( *(s.c_str() + 7) == 0 );
+  STLP_CHECK( *(s.c_str() + 8) == 0 );
+  STLP_CHECK( *(s.c_str() + 9) == 0 );
+  STLP_CHECK( *(s.c_str() + 10) == 0 ); // terminate null
+
+  return 0;
+}
+

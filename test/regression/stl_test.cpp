@@ -505,6 +505,7 @@ int main(int argc, char** argv) {
         TEST2( string1_test);
         TEST2( string_data_test );
         TEST2( string_c_str_test );
+        TEST2( string_resize1 );
 
         bitset1_test (argc, argv); 
         cout.flush();
