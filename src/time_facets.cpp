@@ -16,25 +16,16 @@
  *
  */ 
 
-
 #include "stlport_prefix.h"
 #include <stl/_time_facets.h>
 #include <stl/_istream.h>
 #include "c_locale.h"
+#include <cstdio>
 
 _STLP_BEGIN_NAMESPACE
 
 char* _STLP_CALL
 __write_integer(char* buf, ios_base::fmtflags flags, long x);
-
-// The function copy_cstring is used to initialize a string
-// with a C-style string.  Used to initialize the month and weekday
-// tables in time_get and time_put.  Called only by _Init_timeinfo
-// so its name does not require leading underscores.
-
-static inline void copy_cstring(const char * s, string& v) {
-  copy(s, s + strlen(s), back_insert_iterator<string >(v));
-}
 
 // default "C" values for month and day names
 
@@ -56,33 +47,33 @@ static inline void copy_cstring(const char * s, string& v) {
 void _STLP_CALL _Init_timeinfo(_Time_Info& table) {
   int i;
   for (i = 0; i < 14; ++i)
-    copy_cstring(default_dayname[i], table._M_dayname[i]);
+    table._M_dayname[i] = default_dayname[i];
   for (i = 0; i < 24; ++i)
-    copy_cstring(default_monthname[i], table._M_monthname[i]);
-  copy_cstring("AM", table._M_am_pm[0]);
-  copy_cstring("PM", table._M_am_pm[1]);
-  copy_cstring("%H:%M:%S", table._M_time_format);
-  copy_cstring("%m/%d/%y",  table._M_date_format);
-  copy_cstring("%a %b %e %H:%M:%S %Y", table._M_date_time_format);
+    table._M_monthname[i] = default_monthname[i];
+  table._M_am_pm[0] = "AM";
+  table._M_am_pm[1] = "PM";
+  table._M_time_format = "%H:%M:%S";
+  table._M_date_format = "%m/%d/%y";
+  table._M_date_time_format = "%m/%d/%y";
 }
 
 void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   int i;
   for (i = 0; i < 7; ++i)
-    copy_cstring(_Locale_abbrev_dayofweek(time, i), table._M_dayname[i]);
+    table._M_dayname[i] = _Locale_abbrev_dayofweek(time, i);
   for (i = 0; i < 7; ++i)
-    copy_cstring(_Locale_full_dayofweek(time, i), table._M_dayname[i+7]); 
+    table._M_dayname[i+7] = _Locale_full_dayofweek(time, i);
   for (i = 0; i < 12; ++i)
-    copy_cstring(_Locale_abbrev_monthname(time, i), table._M_monthname[i]);
+    table._M_monthname[i] = _Locale_abbrev_monthname(time, i);
   for (i = 0; i < 12; ++i)
-    copy_cstring(_Locale_full_monthname(time, i), table._M_monthname[i+12]);
-  copy_cstring(_Locale_am_str(time), table._M_am_pm[0]);
-  copy_cstring(_Locale_pm_str(time), table._M_am_pm[1]);
-  copy_cstring(_Locale_t_fmt(time), table._M_time_format);
-  copy_cstring(_Locale_d_fmt(time), table._M_date_format);
-  copy_cstring(_Locale_d_t_fmt(time), table._M_date_time_format);
-  copy_cstring(_Locale_long_d_fmt(time), table._M_long_date_format);
-  copy_cstring(_Locale_long_d_t_fmt(time), table._M_long_date_time_format);
+    table._M_monthname[i+12] = _Locale_full_monthname(time, i);
+  table._M_am_pm[0] = _Locale_am_str(time);
+  table._M_am_pm[1] = _Locale_pm_str(time);
+  table._M_time_format = _Locale_t_fmt(time);
+  table._M_date_format = _Locale_d_fmt(time);
+  table._M_date_time_format = _Locale_d_t_fmt(time);
+  table._M_long_date_format = _Locale_long_d_fmt(time);
+  table._M_long_date_time_format = _Locale_long_d_t_fmt(time);
 }
 
 inline char* __subformat(const string& format, char*& buf, 
@@ -151,10 +142,12 @@ char * __write_formatted_time(char* buf, char format, char modifier,
                   buf);
 
     case 'c': {
-      const char * cp = (modifier != '#') ? table._M_date_time_format.data():
-                                            table._M_long_date_time_format.data();
-      const char* cp_end = (modifier != '#') ? cp + table._M_date_time_format.size():
-                                               cp + table._M_long_date_time_format.size();
+      const char *cp = (modifier != '#') ?
+        table._M_date_time_format.data() :
+        table._M_long_date_time_format.data();
+      const char* cp_end = cp +
+        ((modifier != '#') ? table._M_date_time_format.size() :
+         table._M_long_date_time_format.size() );
       char mod = 0;
       while (cp != cp_end) {
         if (*cp == '%') {
@@ -415,17 +408,13 @@ __get_date_order(_Locale_time* time)
 
 #if !defined(_STLP_NO_FORCE_INSTANTIATE)
 template class time_get<char, istreambuf_iterator<char, char_traits<char> > >;
-// template class time_get<char, const char*>;
 template class time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-// template class time_put<char, char*>;
 
-#ifndef _STLP_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 template class time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-// template class time_get<wchar_t, const wchar_t*>;
 template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-// template class time_put<wchar_t, wchar_t*>;
-#endif /* INSTANTIATE_WIDE_STREAMS */
+# endif /* INSTANTIATE_WIDE_STREAMS */
 
-#endif
+#endif /* !_STLP_NO_FORCE_INSTANTIATE */
 
 _STLP_END_NAMESPACE
