@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/09/25 12:06:31 ptr>
+// -*- C++ -*- Time-stamp: <03/01/07 17:19:22 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -671,14 +671,37 @@ void Thread::signal_exit( int sig )
 }
 
 __FIT_DECLSPEC
-void Thread::sleep( timespec *t, timespec *r )
+void Thread::sleep( timespec *t, timespec *r ) // sleep at least up to time t
 {
 #ifdef __unix
   nanosleep( t, r );
 #endif
 #ifdef WIN32
   time_t ct = time( 0 );
-  unsigned ms = t->tv_sec >= ct ? t->tv_sec - ct + t->tv_nsec / 1000000 : 1;
+  time_t _conv = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+
+  unsigned ms = _conv >= ct ? _conv - ct : 1;
+  Sleep( ms );
+  if ( r != 0 ) {
+    r->tv_sec = ms / 1000;
+    r->tv_nsec = (ms % 1000) * 1000000;
+  }
+#endif
+}
+
+__FIT_DECLSPEC
+void Thread::delay( timespec *t, timespec *r ) // delay execution at least on time interval t
+{
+#ifdef __unix
+  timespec ct;
+  gettime( &ct );
+  timespec st = ct;
+  st += *t;
+  nanosleep( &st, r );
+  *r -= ct;
+#endif
+#ifdef WIN32
+  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
   Sleep( ms );
   if ( r != 0 ) {
     r->tv_sec = ms / 1000;
