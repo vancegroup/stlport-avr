@@ -148,7 +148,9 @@ public:
       return iterator(&_M_iter_list,_Base::insert(__position._M_iterator, __x) );
   }
 
+# ifndef _STLP_NO_ANACHRONISMS
   iterator insert(iterator __position) { return insert(__position, _Tp()); }
+# endif
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -199,9 +201,35 @@ public:
     return iterator(&_M_iter_list,_Base::erase(__position._M_iterator));
   }
   iterator erase(iterator __first, iterator __last) {
-    // fbp : do range invalidation here !
-    return iterator(&_M_iter_list,_Base::erase(__first._M_iterator, __last._M_iterator));
+    while (__first != __last)
+      erase(__first++);
+    return __last;
   }
+
+  void resize(size_type __new_size, const _Tp& __x) {
+    _Base::iterator __i = _Base::begin();
+    size_type __len = 0;
+    for ( ; __i != _Base::end() && __len < __new_size; ++__i, ++__len);
+    
+    if (__len == __new_size)
+      erase(iterator(&_M_iter_list,__i), end());
+    else                          // __i == end()
+      _Base::insert(_Base::end(), __new_size - __len, __x);
+  }
+
+  void resize(size_type __new_size) { this->resize(__new_size, _Tp()); }
+
+  void remove(const _Tp& __value) {
+    _Base::iterator __first = _Base::begin();
+    _Base::iterator __last = _Base::end();
+    while (__first != __last) {
+      _Base::iterator __next = __first;
+      ++__next;
+      if (__value == *__first) erase(iterator(&_M_iter_list,__first));
+      __first = __next;
+    }
+  }
+
   void clear() {   
     _Invalidate_all();
     _Base::clear(); 

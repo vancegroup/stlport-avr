@@ -449,7 +449,6 @@ public:
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-protected:
 public:
   void splice(iterator __position, _Self& __x) {
     if (!__x.empty()) 

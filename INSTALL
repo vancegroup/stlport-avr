@@ -1,13 +1,12 @@
 **********************************************************************
-* 	INSTALL file for STLport 4.0                                 *
+* 	INSTALL file for STLport 4.5                                 *
 *                                                                    *
 **********************************************************************
 
-STLport-4.0 now comes with SGI iostream implementation, providing
-full ANSI C++ Standard library !
+STLport-4.5 is a full ANSI C++ Standard library.
 
-This distribution contains STLport sources only.
-To use SGI iostreams, you have to build STLport library from sources in "src" 
+This distribution contains STLport sources only, no binaries.
+To use STLport iostreams, you have to build STLport library from sources in "src" 
 directory and link your programs with it.
 
 This is major change since pre-4.0 releases, please read the instructions carefully.
@@ -22,8 +21,8 @@ This is major change since pre-4.0 releases, please read the instructions carefu
 2) Make sure "stlport" directory of this distribution comes before compiler's one 
    in your search path when you compile the project;
 
-   Note: for SUnPro CC 5.0 and higher, there is a special directory "stlport/SC5"
-         to be set in search path due to specific SUNpro search rules)/
+   Note: for SunPro CC 5.0 and higher, there used to be special directory "stlport/SC5"
+	 this is now obsolete, please make sure you do not use it anymore.
 
 3) Make sure you do not rename this "stlport" subdirectory -
    that may result in compilation errors.
@@ -35,16 +34,16 @@ This is major change since pre-4.0 releases, please read the instructions carefu
           directly if you have to make compiler-specific configuration changes.
 
    IMPORTANT :
-   If you DO NOT plan to use SGI iostreams implementation, please : 
-   3a) uncomment __STL_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
+   If you DO NOT plan to use STLport iostreams implementation, please : 
+   3a) uncomment _STLP_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
        of SGI iostreams and to use wrappers around your existing iostreams. 
-       After disabling SGI iostreams, you will use wrappers around  your compiler's iostreams 
+       After disabling STLport iostreams, you will use wrappers around  your compiler's iostreams 
        libabry, as in previous STLport releases.
        No binary library for STLport needs to be built in this case.
        Note though :
         - new-style ANSI iostreams may not be available on your system;
-        - compiler's iostreams are most likely slower than SGI version.
-  If you decide to disable SGI iostreams, you may stop reading here.
+        - compiler's iostreams are most likely slower than STLport version.
+  If you decide to disable STLport iostreams, you may stop reading here.
 
 
 ==== Building STLport (SGI iostreams) library ==========
@@ -95,10 +94,10 @@ Below are step-by-step instructions to build STLport library:
 6)  If build fails, you may choose to :
      - try fixing the build ;
      - wait until somebody else will submit corresponding changes to be incorporated in next STLport 
-       release/snapshot. To use STLport w/o SGI iostreams, please do step 3a).
+       release/snapshot. To use STLport w/o its own iostreams, please do step 3a).
 
-    In case you do fix STLport, please submit your patches to fbp@stlport.org or (better)
-    to STLport Forum (http://www.stlport.org/forum)
+    In case you do fix STLport, please submit your patches to support@stlport.com or (better)
+    to STLport Forum (http://www.stlport.com/cgi-bin/forum/dcboard.cgi)
 
 7) Do "make install" to install resulting libraries into "./lib" subdirectory.
  
@@ -109,7 +108,7 @@ Below are step-by-step instructions to build STLport library:
    Examples (imagine you have mytest.cpp in the same directory as this file is):
 	With gcc     : gcc -I./stlport mytest.cpp -L./lib/ -lstlport_gcc
 	With DEC CC  : cxx -I./stlport mytest.cpp -L./lib/ -lstlport_deccxx
-	With SUN CC  : CC -I./stlport/SC5 mytest.cpp -L./lib/ -lstlport_sunpro
+	With SUN CC  : CC -I./stlport mytest.cpp -L./lib/ -lstlport_sunpro
 	.....
    [ Visual C++ specific ] For VC++, you do not have to specify "stlport-msvc-XXX.lib" explicitly,
    as it is being choosen and forced to link automatically by "#pragma"'s in stlport/config/stl_select_lib.h.
@@ -125,7 +124,7 @@ Below are step-by-step instructions to build STLport library:
 
 10) Have fun !
 
-07/07/00, Boris Fomitchev.
+05/10/01, Boris Fomitchev.
 
 
 

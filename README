@@ -1,32 +1,26 @@
 **********************************************************************
-* 	README file for STLport 4.0 beta                             *
+* 	README file for STLport 4.5                                  *
 *                                                                    *
 **********************************************************************
 
-This directory contains STLport-4.0 release.
+This directory contains STLport-4.5 release.
 
 What's inside :
 
-README      -  this file
+README      - this file
 INSTALL     - installation instructions
-TODO        - list of prospective changes
 
 stlport     - main STLport include directory
-src         - source and makefiles for SGI iostreams implementation (optional)
-lib         - installation directory for STLport library (if you use SGI iostreams only)
-test/regression   - regression test NOT using SGI iostream AND using old-style headers
-test/eh     - exception handling test using SGI iostreams and new-style headers
-
-
-IMPORTANT:
-
-Since STLport 4.0, SGI iostreams setting is on by default. 
-Please refer to INSTALL file for details.
+src         - source and makefiles for iostreams implementation
+lib         - installation directory for STLport library (if you use STLport iostreams only)
+test/regression   - regression test, using wrapper iostreams
+test/eh     - exception handling test using STLport iostreams
+misc        - miscellanous files (ChangeLog, TODO, scripts, etc.) 
 
 GETTING STLPORT
 
 To download the latest version of STLport, please be sure to visit
-http://www.stlport.org
+http://www.stlport.com/download.html
 
 LEGALESE
 
@@ -43,7 +37,7 @@ This software is being distributed under the following terms :
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999, 2000
+ * Copyright (c) 1999, 2000, 2001
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
