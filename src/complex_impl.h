@@ -24,7 +24,7 @@
 #include <math.h>
 #include <stl/_cmath.h>
 
-# if (defined (__sgi) && !defined(__GNUC__)) || defined (__DECCXX)
+# if (defined (__sgi) && !defined(__GNUC__)) /* || defined (__DECCXX) */
 
 # define _STLP_ABSF   _STLP_VENDOR_CSTD::fabsf
 # define _STLP_ATAN2F _STLP_VENDOR_CSTD::atan2f

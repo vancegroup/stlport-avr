@@ -135,7 +135,7 @@ CXX = $(CC)
 
 # DEBUG_FLAGS= -D_STLP_DEBUG
 
-CXXFLAGS = -Wl,+vshlibunsats -Aa ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+CXXFLAGS = -Wl,+vshlibunsats -AA ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
 LIBS = -L../../lib -lstlport_aCC -lm ${PTHREAD_LIB}
 LIBSTDCXX = 

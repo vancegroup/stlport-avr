@@ -159,6 +159,7 @@ template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
 template class _STLP_CLASS_DECLSPEC __Pthread_alloc<_MAX_BYTES>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__pthread_alloc>;
 #endif
+template class _STLP_CLASS_DECLSPEC __malloc_alloc<0>;
 
 # if defined (_STLP_THREADS) && ! defined ( _STLP_ATOMIC_EXCHANGE ) && (defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS)  || defined (_STLP_OS2THREADS))
 template class _STLP_CLASS_DECLSPEC _Swap_lock_struct<0>;
@@ -192,7 +193,7 @@ template class basic_string<char, char_traits<char>, allocator<char> >;
 
 _STLP_END_NAMESPACE
 
-# if defined (_WIN32) && defined (_STLP_USE_DECLSPEC)
+# if defined (_WIN32) && defined (_STLP_USE_DECLSPEC) && ! defined (_STLP_USE_STATIC_LIB) && ! defined (_STLP_USE_STATICX_LIB)
 // stlportmt.cpp : Defines the entry point for the DLL application.
 //
 #define WIN32_LEAN_AND_MEAN

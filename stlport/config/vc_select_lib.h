@@ -22,7 +22,12 @@
 #  endif
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD
 
+# if defined (_RTLDLL) && defined (_STLP_USE_STATIC_LIB)
+#    define _STLP_LIB_STATIC_SUFFIX "_staticx"
+# else
 #    define _STLP_LIB_STATIC_SUFFIX "_static"
+# endif
+
 #    include <config/stl_select_lib.h>
 
 #  endif /* _STLP_OWN_IOSTREAMS */

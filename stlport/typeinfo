@@ -32,6 +32,9 @@
 // if <typeinfo.h> already included, do not import anything
 # if defined  (_STLP_USE_NAMESPACES) && ! defined (_STLP_OLDSTD_typeinfo) \
 && ( defined (_STLP_VENDOR_GLOBAL_EXCEPT_STD) || defined (_STLP_USE_OWN_NAMESPACE) || defined (_STLP_DEBUG))
+# if defined(_STLP_MSVC) && (_STLP_MSVC < 1300)
+class bad_cast : public exception {};
+# endif
 _STLP_BEGIN_NAMESPACE
 
 // VC++ 6 has only this guy in ::
@@ -47,7 +50,11 @@ using _STLP_VENDOR_EXCEPT_STD::bad_typeid;
 //# include <exception>
 //struct bad_cast : exception {};
 //#endif
+# if defined(_STLP_MSVC) && (_STLP_MSVC < 1300)
+using ::bad_cast;
+# else
 using _STLP_VENDOR_EXCEPT_STD::bad_cast;
+# endif
 
 _STLP_END_NAMESPACE
 #endif /* _STLP_OWN_NAMESPACE */

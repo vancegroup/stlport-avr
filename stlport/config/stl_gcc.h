@@ -53,13 +53,17 @@
 
 #  if defined (_STLP_USE_DYNAMIC_LIB)
 #   define _STLP_USE_DECLSPEC 1
-#   define _STLP_USE_TEMPLATE_EXPORT 1
+// #   define _STLP_USE_TEMPLATE_EXPORT 1
+/* Using dynamic library in MinGW requires _STLP_NO_CUSTOM_IO */
+# define _STLP_NO_CUSTOM_IO
 #  endif
 
 # endif
 
 #if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun)) 
+#ifndef __MINGW32__
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
+#endif
 #   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #   define _STLP_NO_NATIVE_WIDE_STREAMS   1
 # elif defined(__linux__)

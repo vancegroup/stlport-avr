@@ -152,7 +152,7 @@ public:
   _DBG_vector(const _Self& __x) 
     : _STLP_DBG_VECTOR_BASE(__x), _M_iter_list((const _Base*)this) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES) && ! defined (_STLP_MSVC)
+#if defined (_STLP_MEMBER_TEMPLATES)
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last):

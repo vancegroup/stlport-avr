@@ -29,7 +29,7 @@
 #if ( __BORLANDC__ < 0x540 )
 // Borland C++ Builder 3 (?)
 // those are assumptions, if some of them actually work, please let me know
-#  define _STLP_STATIC_CONST_INIT_BUG 1
+// #  define _STLP_STATIC_CONST_INIT_BUG 1
 // #  define _STLP_THROW_RETURN_BUG 1
 #  define _STLP_NO_TEMPLATE_CONVERSIONS 1
 #  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1

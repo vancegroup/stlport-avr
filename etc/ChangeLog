@@ -53,6 +53,22 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
 
 	* _auto_ptr.h : template constructor conversion bug fixed (thanks mbergal)
+
+	* MIngw32 patches integrated (thanks Wu Yongwei)
+
+	* src/complex_impl.h : case for DEC CXX changed to general, instead of extension functions for float and long double, to get it compliled with CC 6.1 (thanks Tony McConnell) 
+
+	* dll_main.cpp : added __malloc_alloc instantiation (thanks Michael Ehrig)
+
+	* _debug.c : fixed race condition in _M_detach (thanks Achim Stremplat)
+
+	* test/*/hpacc.mak : fixed flags and libs (thanks  Michael Ehrig)
+
+	* typeinfo : added fix for MS VC ::bad_cast confusion (thanks Alberto Barbati)
+	
+	* debug/_vector.h : removed extra guard for MSCV around member template constructor (thanks Alberto Barbati)
+	
+	
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	

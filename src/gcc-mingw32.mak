@@ -52,10 +52,10 @@ LDFLAGS_RELEASE_static =
 # LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}  -Wl,--no-undefined, -Wl,--export-all-symbols -Wl,-d -Wl,--out-implib,${OUTDIR}/${RELEASE_NAME}.a
 LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}  -Wl,--export-all-symbols -Wl,-d -Wl,--out-implib,${OUTDIR}/${RELEASE_NAME}.a
 
-LDFLAGS_DEBUG_static = ${CXXFLAGS_DEBUG_static}
+LDFLAGS_DEBUG_static =
 LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic}  -Wl,--export-all-symbols -Wl,-d -Wl,--out-implib,${OUTDIR}/${DEBUG_NAME}.a
 
-LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static}
+LDFLAGS_STLDEBUG_static =
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -Wl,--export-all-symbols -Wl,--out-implib,${OUTDIR}/${STLDEBUG_NAME}.a
 
 

@@ -406,17 +406,18 @@ __stl_debug_engine<_Dummy>::_M_detach(__owned_list* __l, __owned_link* __c_node)
     _STLP_VERBOSE_ASSERT(__l->_Owner()!=0, _StlMsg_INVALID_CONTAINER)
 
     _STLP_ACQUIRE_LOCK(__l->_M_lock)
-
-    __owned_link* __prev, *__next;
-   
-    for (__prev = &__l->_M_node; (__next = __prev->_M_next) != __c_node; 
-	 __prev = __next) {
- 	 	_STLP_ASSERT(__next && __next->_Owner() == __l)
-    }
-      
-    __prev->_M_next = __c_node->_M_next;
-    __c_node->_M_owner=0;
-
+      // boris : re-test the condition in case someone else already deleted us
+      if(__c_node->_M_owner != 0) {
+        __owned_link* __prev, *__next;
+        
+        for (__prev = &__l->_M_node; (__next = __prev->_M_next) != __c_node; 
+             __prev = __next) {
+          _STLP_ASSERT(__next && __next->_Owner() == __l)
+            }
+        
+        __prev->_M_next = __c_node->_M_next;
+        __c_node->_M_owner=0;
+      }
     _STLP_RELEASE_LOCK(__l->_M_lock)
   }
 }

@@ -2,7 +2,9 @@
 #if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
 
 # if defined (__BORLANDC__)
+#  if (__BORLANDC__ >= 0x510)
 #  pragma option push -Vx- -Ve- -a8 -b -pc -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092 -w-8066  /* P_O_1 */
+#  endif
 # else
 # if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
 #  pragma warning(push)

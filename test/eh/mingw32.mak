@@ -46,8 +46,9 @@ NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_OWN_
 check: $(TEST)
 
 LIBS = -lm 
-D_LIBSTLPORT = -L../../lib -lstlport_mingw32_debug
-LIBSTLPORT = -L../../lib -lstlport_mingw32
+
+D_LIBSTLPORT = -L../../lib -lstlport_mingw32_debug_static
+LIBSTLPORT = -L../../lib -lstlport_mingw32_static
 
 all: $(TEST_EXE) $(D_TEST_EXE) $(NOSGI_TEST_EXE)
 

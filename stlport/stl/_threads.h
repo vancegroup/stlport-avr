@@ -112,11 +112,13 @@ extern "C" {
 #    endif
 #   endif
 
-#if (_MSC_VER >= 1300) || (defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 12008804 ))
+#if (_MSC_VER >= 1300)
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
 #else
+  // boris : for the latest SDK, you may actually need the other version of the declaration (above)
+  // even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
