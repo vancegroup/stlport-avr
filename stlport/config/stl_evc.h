@@ -96,9 +96,9 @@
 # endif
 
 // threads
-//# undef _REENTRANT
-//#  define _REENTRANT
-//# undef _NOTHREADS
+# undef _REENTRANT
+# define _REENTRANT
+# undef _NOTHREADS
 
 // Use old fashioned headers (ctime vs. time.h).
 # undef _STLP_NO_NEW_C_HEADERS

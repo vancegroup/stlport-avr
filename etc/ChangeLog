@@ -1,3 +1,9 @@
+2004-05-09  Francois Dumont <dums@...>
+
+  * stlport/stl/char_traits.h
+    Addition of the specific wchar_t static methods similar to the one
+    of the char specialization calling the wide functions.
+
 2004-05-08  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_set.h: fix definition of const/non-const for find and *_bound
