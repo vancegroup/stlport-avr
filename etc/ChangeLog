@@ -1,19 +1,176 @@
-The following changes were made in 4.6 since 4.5.3 release:
-  ---
-  * A few ANSI conformance fixes (thanks Richard Peng)
+2003-11-13  Petr Ovchenkov <ptr@island...>
+
+	* STLport (repository): current development moved to CVS HEAD stream.
+
+	* STLport (repository): current development stream marked as STLport 5.0.
+
+2003-11-02  Francois Dumont <dums@s...>
+
+	* _limits.c: Correction of the quiet and signaling NaN that was inverted
+	for several platform; thanks Alexey Sarytchev.
+               
+2003-11-01  Francois Dumont <dums@s...>
+
+	* _string.c: judicious correction for string::find_first_not_of to
+	improve performance; thanks Stephen Cleary.
+               
+	* _bitset.h: integration of a workaround for up to MSVC6 compilers
+	for the bitset input and output operators; thanks Jesse Booher.
+               
+	* _ostream.h, _istream.h: fix of a non-standard behavior of the seekp
+        and seekg calls and conformance to the latest 2003 standard; thanks Tanaka.
+	
+2003-10-26  Francois Dumont <dums@s...>
+
+        * _monetary.c: fix an other memory overrun on monetary display;
+        thanks Tanaka.
+
+2003-10-26  Petr Ovchenkov <ptr@island...>
+
+	* ioiter.cpp, gcc.mak, stl_test.h, stl_test.cpp, stl_test.exp
+	(test/regression): tests for postfix increment operator and
+	indirection of istreambuf_iterator.
+
+2003-10-25  Petr Ovchenkov <ptr@island...>
+
+	* _istreambuf_iterator.h: fix postfix increment operator
+	of istreambuf_iterator to provide conformance with
+	ISO/IEC 14882:1998(E), 24.1.1, p.511, i.e.
+	*r++ equivalent to { T tmp = *r; ++r; return tmp; }.
+	Thanks Tanaka for the report.
+
+2003-10-23  Francois Dumont <dums@s...>
+	
+	* debug/: modification of the invalidation of iterators to avoid
+	invalidation of the end iterator for the associative containers,
+	hashed containers and list on calls to clear/assign/assignment
+	operator. (thanks  Alexey  Sarytchev)
+            
+	* _rope.h: Correction of the rope::iterator and rope::const_iterator
+	copy constructor and assignment operator (thanks Bradley Grainger)
+
+2003-10-16  Francois Dumont <dums@s...>
+
+	* _alloc.h: Add of the throw() specification on allocator comparision.
+	
+	* _iterator.h: Correction of the operator++(int) signature to conform
+	to the standard.
+	
+	* _ctype.h: tolower and toupper for wchar_t types.
+	
+	* _valarray.h: gslice_array::operator = (const value_type&) not
+	const anymore
+	
+	* _valarray.h: slice_array idem
+	
+	* _valarray.h: valarray<T> operator [](const gslice&) former version
+	was taking a copy of gslice
+	
+	* _codecvt.h: correction of the default codecvt class definition and
+	correction of the out method 
+	
+	(all thanks Richard Peng)
+    
+2003-10-16  Francois Dumont <dums@s...>
+
+	* debug/: add of the iterator range check on all container constructors.
+
+	* _string.h: correction of a bug on string auto referencing throught
+	some method like insert and replace. (thanks Tanaka)
+
+	* _valarray.h: correction of the missing slice_array copy constructor
+	and assignment operator in the private section (thanks Tanaka)
+
+2003-10-11  Petr Ovchenkov <ptr@island...>
+
+	* _sstream.c: [io]?stringstream must do equivalent of seek at end,
+	after opened with ios_base::ate; this behaviour useful only when buffer
+	initialized by string; thanks Tanaka for the report.
+	
+2003-10-07  Francois Dumont <dums@s...>
+
+	* _istreambuf_iterator.h, _ostreambuf_iterator.h: correction
+	of the missing iterator base class (Thanks Tanaka)
   
-  * Performance optimization for string::reserve (thanks Marc)
-	
-  ---
-	
-  * icc patches applied (Thanks Blaine Kubesh)
-	
-  * _thread.c, _thread.h: merged thread redesign from CVS (thanks Petr Ovchenkov)
-	
+2003-10-05  Francois Dumont <dums@s...>
+
+	* _string.h: correction of the replace implementation badling form
+	for self referencing
+
+	* _string.h, _string.c: Modifiction of the _M_copy method
+	to _M_move as basic_string do not correctly handled self referecing;
+	thanks Tanaka
+             
   ----
-	
+  
+  * como 4.3.0 on linux support (thanks Synge Todo and Karel Gardas)
+  
+  ----
+  
+  * Quazy-leak patch: make memory detection tools happier, option _STLP_LEAKS_PEDANTIC in _site_config.h.
+                  (thanks Petr Ovchenkov)
+  
+  ----
+  
+  * Support of the Linux Intel C++ support (thanks Blaine Kubesh)
+  
+  ----
+
+  * FreeBSD support update (thanks Guy Middleton).
+  
+  ----
+
+  * codecvt.cpp: charcode correction in the do_in method (thanks J Hamilton report)
+
+  ----
+
+  * _valarray.h: Correction of the missing explicit keyword in front of one of the valarray constructors
+                 (thanks Stephen Clamage)
+
+  ----
+
+  * stdexcept: Correction of the mysterious 50 messages from VC7.Net (thanks Krish S)
+
+  ----
+
+  * _vector.h: implementation of the max_size method based on the allocator::max_size method 
+               (thanks Gennaro Prota from the boost forum).
+
+  ----
+
+  * _vector.c: add of the standard length_error exception to the reserve method (thanks Steven Youngs).
+
+  ----
+
+  * _alloc.h: add of a check of the number of element require to allocator::allocate to avoid a possible
+              size_type overflow (thanks Steven Youngs).
+
+  ----
+
+  * _istream.h: move of the ws implementation within the header to avoid undefined symbol
+                under NO_CUSTOM_IO mode (thanks Ulrich Eckhardt)
+
+  ----
+
+  * ctype.cpp : charcode correction (thanks Markus Stier reports and Alberto Barbati correction)
+
+  ----
+
+  * _function.h : all function can now be used in a non-const world (thanks Alexey Kirjushkin)
+
+  ----
+
+  * move constructor framework integration (thanks Francois Dumont)
+
+  ----
+
+  * containers interface correction for standard compliance when using explicit
+    intanciation of not default constructible type. (thanks Alexei Agafonov report)
+
+  ----
+
   * iostream.cpp, locale_impl.cpp : static initialization made robust for case of 
-    dynamic loader circular depandancies (Thanks Alexey Sarytchev for the report)
+    dynamic loader circular dependancies (Thanks Alexey Sarytchev for the report)
 	
   ----
 	
@@ -30,15 +187,22 @@ The following changes were made in 4.6 since 4.5.3 release:
   ---
 	
   * fstream.cpp : text file stream position bug correction (thanks Christopher Kohlert)
+
   ---
+
   * _num_put.c : Correction of the display of the min 64 bits signed integer values
                  like numeric_limits<__int64>::min() on WIN32 for instance (thanks Anders Dalvander)
+
   ---
   * _num_put.c : Add of the '+' sign when requested for the unsigned integer display 
                  (thanks Francois Dumont)
+
   ---
+
   * debug : many missing iterator invalidation corrected (thanks Detlev V.Davidson and Francois Dumont)
+
   ---
+
   * _new.h : introduction of a new config compiler switch for those which do define
              bad_alloc but that do not throw it! (thanks ?)
   ---
