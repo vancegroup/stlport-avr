@@ -168,7 +168,7 @@ template class _Vector_base<void*,allocator<void*> >;
 # if defined (_STLP_DEBUG) && ! defined (__SUNPRO_CC)
 template class __WORKAROUND_DBG_RENAME(vector) <void*,allocator<void*> >;
 # endif
-template class __vector__<void*,allocator<void*> >;
+template class vector<void*,allocator<void*> >;
 
 template class _Rb_global<bool>;
 template class _List_global<bool>;
