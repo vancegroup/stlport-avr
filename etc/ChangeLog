@@ -1,3 +1,10 @@
+2004-01-29  Francois Dumont <dums@s...>
+	* facets_byname.cpp: correction of the typeid use thanks to Ulrich Eckhardt.
+
+	* _iostream_string.h: creation and integration of a special string used within
+    the iostream implementation to display floating point numbers. It mixes a static
+    buffer with a dynamic one to improve performance.
+
 2004-01-22  Francois Dumont <dums@s...>
 
 	* _new.h: check of the _STLP_USE_EXCEPTIONS before correction of the new

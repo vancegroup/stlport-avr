@@ -983,18 +983,19 @@ _STLP_BEGIN_NAMESPACE
 
 void _Catalog_locale_map::insert(int key, const locale& L)
 {
-# ifdef _STLP_NO_WCHAR_T
-  typedef char _Char;
-# else
-  typedef wchar_t _Char;
-# endif
-#if !defined(_STLP_NO_TYPEINFO)
-  // Don't bother to do anything unless we're using a non-default ctype facet
   _STLP_TRY {
+#if !defined(_STLP_NO_TYPEINFO)
+    // Don't bother to do anything unless we're using a non-default ctype facet
+# ifdef _STLP_NO_WCHAR_T
+    typedef char _Char;
+# else
+    typedef wchar_t _Char;
+# endif
+
     typedef ctype<_Char> wctype;
     wctype const& wct = use_facet<wctype>(L);
-    wctype* zz = 0;
-    if (typeid(&wct) != typeid(zz)) {
+    if (typeid(wct) != typeid(wctype)) {
+# endif /* _STLP_NO_TYPEINFO */
       if (!M)
         M = new hash_map<int, locale, hash<int>, equal_to<int> >;
 
@@ -1002,10 +1003,11 @@ void _Catalog_locale_map::insert(int key, const locale& L)
       if (!M) delete M;
 #endif
       M->insert(pair<const int, locale>(key, L));
+#if !defined(_STLP_NO_TYPEINFO)
     }
+# endif /* _STLP_NO_TYPEINFO */
   }
   _STLP_CATCH_ALL {}
-# endif /* _STLP_NO_TYPEINFO */
 }
 
 void _Catalog_locale_map::erase(int key)
@@ -1088,7 +1090,7 @@ _Messages_impl::do_get(catalog thecat,
     return dfault;
   else if (str[0] == '\0') {
     const char* str2 = _Locale_catgets(_M_message_obj, thecat, set, p_id, "*");
-    if (!str2 || strcmp(str2, "*") == 0)
+    if (!str2 || ((str2[0] == '*') && (str2[1] == '\0')))
       return dfault;
   }
 

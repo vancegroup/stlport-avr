@@ -83,7 +83,7 @@ __put_float(string &__str, _OutputIter __out,
 {
   const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
 
-  wstring __wbuf;
+  __iowstring __wbuf;
   __convert_float_buffer(__str, __wbuf, __ct, __decimal_point);
 
   if (!__grouping.empty()) {
@@ -104,7 +104,7 @@ __put_float(string &__str, _OutputIter __out,
 // Helper routine for char
 template <class _OutputIter>
 _OutputIter  _STLP_CALL
-__put_float(string &__str, _OutputIter __out,
+__put_float(__iostring &__str, _OutputIter __out,
             ios_base& __f, char __fill,
             char __decimal_point,
             char __sep, const string& __grouping)
@@ -126,14 +126,14 @@ _OutputIter _STLP_CALL
 _M_do_put_float(_OutputIter __s, ios_base& __f,
                 _CharT __fill, _Float __x)
 {
-  string __buf;
+  __iostring __buf;
   __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
   const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
   
   return __put_float(__buf, __s, __f, __fill,
                      __np.decimal_point(),
-		                 __np.thousands_sep(), __f._M_grouping());
+                     __np.thousands_sep(), __f._M_grouping());
 }
 
 // _M_do_put_integer and its helper functions.
@@ -206,15 +206,15 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
     int __basechars;
     if (__flags & ios_base::showbase)
       switch (__flags & ios_base::basefield) {
-	case ios_base::hex: __basechars = 2; break;
-	case ios_base::oct: __basechars = 1; break;
-	default: __basechars = 0;
+        case ios_base::hex: __basechars = 2; break;
+        case ios_base::oct: __basechars = 1; break;
+        default: __basechars = 0;
       }
     else
       __basechars = 0;
 
     __len = __insert_grouping(__wbuf, __eend, __grouping, __np.thousands_sep(),
-			      __xplus, __xminus, __basechars);
+                              __xplus, __xminus, __basechars);
   }
 
   return __copy_integer_and_fill((wchar_t*)__wbuf, __len, __s,

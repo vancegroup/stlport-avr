@@ -372,7 +372,7 @@ money_put<_CharT, _OutputIter>
 
   string __grouping = __intl ? __punct_intl.grouping()
                              : __punct.grouping();
-				
+
   int __frac_digits      = __intl ? __punct_intl.frac_digits() 
                                   : __punct.frac_digits();
 
@@ -411,9 +411,9 @@ money_put<_CharT, _OutputIter>
   // by frac_digits.  If there is only one group, we need first
   // to duplicate it.
 
-  string_type __new_digits(__digits_first, __digits_last);
-
+  __basic_iostring<_CharT> __new_digits;
   if (!__grouping.empty()) {
+    __new_digits.assign(__digits_first, __digits_last);
     __insert_grouping(__new_digits,
                       (__frac_digits == 0)?__new_digits.size():__frac_digits,
                       __grouping,

@@ -2,7 +2,7 @@
 # $Id$
 
 SRCROOT := ../../../src/explore
-COMPILER_NAME := gcc
+COMPILER_NAME := g++
 
 # STLPORT_DIR := /export/home/ptr/STLport.lab/cvs.stlport.com/STLport-R451_dev
 ALL_TAGS := release-shared stldbg-shared

@@ -263,16 +263,16 @@ void _STLP_CALL ios_base::_S_uninitialize()
 
   // Note that destroying output streambufs flushes the buffers.
 
-  istream* ptr_cin  = __REINTERPRET_CAST(istream*,&cin);
-  ostream* ptr_cout = __REINTERPRET_CAST(ostream*,&cout);
-  ostream* ptr_cerr = __REINTERPRET_CAST(ostream*,&cerr);
-  ostream* ptr_clog = __REINTERPRET_CAST(ostream*,&clog);
+  istream* ptr_cin  = &cin;
+  ostream* ptr_cout = &cout;
+  ostream* ptr_cerr = &cerr;
+  ostream* ptr_clog = &clog;
 
 # ifndef _STLP_NO_WCHAR_T
-  wistream* ptr_wcin  = __REINTERPRET_CAST(wistream*,&wcin);
-  wostream* ptr_wcout = __REINTERPRET_CAST(wostream*,&wcout);
-  wostream* ptr_wcerr = __REINTERPRET_CAST(wostream*,&wcerr);
-  wostream* ptr_wclog = __REINTERPRET_CAST(wostream*,&wclog);
+  wistream* ptr_wcin  = &wcin;
+  wostream* ptr_wcout = &wcout;
+  wostream* ptr_wcerr = &wcerr;
+  wostream* ptr_wclog = &wclog;
 # endif
 
   // we don't want any exceptions being thrown here
@@ -333,10 +333,10 @@ bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
     return was_synced;
   }
 
-  istream* ptr_cin  = __REINTERPRET_CAST(istream*,&cin);
-  ostream* ptr_cout = __REINTERPRET_CAST(ostream*,&cout);
-  ostream* ptr_cerr = __REINTERPRET_CAST(ostream*,&cerr);
-  ostream* ptr_clog = __REINTERPRET_CAST(ostream*,&clog);
+  istream* ptr_cin  = &cin;
+  ostream* ptr_cout = &cout;
+  ostream* ptr_cerr = &cerr;
+  ostream* ptr_clog = &clog;
 
   streambuf* old_cin  = ptr_cin->rdbuf();
   streambuf* old_cout = ptr_cout->rdbuf();

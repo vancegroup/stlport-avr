@@ -6,7 +6,7 @@
 # compiler
 #
 CC = gcc 
-CXX = c++ -pthread -fexceptions
+CXX = g++ 
 
 #
 # Basename for libraries
@@ -19,7 +19,7 @@ LIB_BASENAME = libstlport_gcc
 #
 LINK=ar cr
 # 2.95 flag
-DYN_LINK=c++ -pthread -fexceptions -shared -o
+DYN_LINK=g++ -shared -o
 
 OBJEXT=o
 DYNEXT=so
@@ -36,7 +36,7 @@ include common_macros.mak
 
 WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -ftemplate-depth-32
 
-CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
+CXXFLAGS_COMMON = -pthread -fexceptions -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O4
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O4 -fPIC

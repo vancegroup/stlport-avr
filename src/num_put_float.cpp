@@ -433,9 +433,9 @@ inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
 // __copy_float_and_fill. 
 
 void __format_float_scientific(char * buf, const char * bp, 
-			       int decpt, int sign, bool is_zero,
-			       ios_base::fmtflags flags,
-			       int precision, bool /* islong */)
+                               int decpt, int sign, bool is_zero,
+                               ios_base::fmtflags flags,
+                               int precision, bool /* islong */)
 {
   char * suffix;
   char expbuf[MAXESIZ + 2];
@@ -481,21 +481,13 @@ void __format_float_scientific(char * buf, const char * bp,
   strcpy(buf, suffix);
 }
 
-static inline 
-void __flush_static_buf(string &buf, 
-                        char *sbeginbuf, char *sendbuf, char *&scurpos) {
-  if (scurpos == sendbuf) {
-    buf.append(sbeginbuf, sendbuf);
-    scurpos = sbeginbuf;
-  }
-}
-  
-void __format_float_fixed(string &buf, const char * bp,
-			  int decpt, int sign, bool /* x */,
-			  ios_base::fmtflags flags,
-			  int precision, bool islong )
+void __format_float_fixed(__iostring &buf, const char * bp,
+                          int decpt, int sign, bool /* x */,
+                          ios_base::fmtflags flags,
+                          int precision, bool islong )
 {
   char static_buf[128];
+  int const BUF_SIZE = sizeof(static_buf) - 1;
   char *sbuf = static_buf;
   char *sendbuf = static_buf + sizeof(static_buf);
 
@@ -510,38 +502,51 @@ void __format_float_fixed(string &buf, const char * bp,
   int maxfsig = islong ? 2*MAXFSIG : MAXFSIG;
 
   do {
-    *sbuf++ = (char) ((nn <= 0 || *bp == 0 || k >= maxfsig) ?
-      '0' : (k++, *bp++));
-    __flush_static_buf(buf, static_buf, sendbuf, sbuf);
-  } while (--nn > 0);
+    int nnn = (min) (nn, BUF_SIZE);
+    nn -= nnn;
+    do {
+      *sbuf++ = ((nnn <= 0 || *bp == 0 || k >= maxfsig) ?
+               '0' : (++k, *bp++));
+    } while (--nnn > 0);
+    buf.append(static_buf, sbuf);
+    sbuf = static_buf;
+  } while (nn != 0);
 
   // decimal point if needed
   if (flags & ios_base::showpoint || precision > 0) {
     *sbuf++ = '.';
-    __flush_static_buf(buf, static_buf, sendbuf, sbuf);
   }
 
   // digits after decimal point if any
   nn = (min) (precision, MAXFCVT);
   if (precision > nn)
     rzero = precision - nn;
-  while (--nn >= 0) {
-    *sbuf++ = (++decpt <= 0 || *bp == '\0' || k >= maxfsig)
-      		? '0' : (k++, *bp++);
-    __flush_static_buf(buf, static_buf, sendbuf, sbuf);
+  while (nn != 0) {
+    int nnn = (min) (nn, BUF_SIZE);
+    nn -= nnn;
+    while (--nnn >= 0) {
+     *sbuf++ = (++decpt <= 0 || *bp == 0 || k >= maxfsig) ?
+               '0' : (++k, *bp++);
+    }
+    buf.append(static_buf, sbuf);
+    sbuf = static_buf;
   }
 
   // trailing zeros if needed
-  while (rzero-- > 0) {
-    *sbuf++ = '0';
-    __flush_static_buf(buf, static_buf, sendbuf, sbuf);
+  while (rzero != 0) {
+    int nnn = (min) (rzero, BUF_SIZE);
+    rzero -= nnn;
+    while (nnn-- > 0) {
+      *sbuf++ = '0';
+    }
+    buf.append(static_buf, sbuf);
+    sbuf = static_buf;
   }
-  buf.append(static_buf, sbuf);
 }
 
 
 void __format_nan_or_inf(char * buf, double x,
-			 ios_base::fmtflags flags)
+                         ios_base::fmtflags flags)
 {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
@@ -565,7 +570,7 @@ void __format_nan_or_inf(char * buf, double x,
 
 template <class max_double_type>
 static inline 
-void __format_float(string &buf, const char * bp,
+void __format_float(__iostring &buf, const char * bp,
                     int decpt, int sign, max_double_type x,
                     ios_base::fmtflags flags,
                     int precision, bool islong)
@@ -669,7 +674,7 @@ static int fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modifie
 
 
 void  _STLP_CALL
-__write_float(string &buf, ios_base::fmtflags flags, int precision,
+__write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
               double x)
 {
 # ifdef USE_SPRINTF_INSTEAD
@@ -701,7 +706,7 @@ __write_float(string &buf, ios_base::fmtflags flags, int precision,
 
 # ifndef _STLP_NO_LONG_DOUBLE
 void _STLP_CALL
-__write_float(string &buf, ios_base::fmtflags flags, int precision,
+__write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
               long double x)
 {
 # ifdef USE_SPRINTF_INSTEAD
@@ -774,7 +779,7 @@ __convert_float_buffer(string const& str, wstring &out,
 # endif
 
 void _STLP_CALL
-__adjust_float_buffer(string &str, char dot)
+__adjust_float_buffer(__iostring &str, char dot)
 {
   if ('.' != dot) {
     size_t __dot_pos = str.find('.');

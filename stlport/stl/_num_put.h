@@ -32,6 +32,9 @@
 #ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
 # include <stl/_ostreambuf_iterator.h>
 #endif
+#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+#include <stl/_iostream_string.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -136,25 +139,25 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x);
 
 void  _STLP_CALL __string_to_float(const string&, float&);
 void  _STLP_CALL __string_to_float(const string&, double&);
-extern void _STLP_CALL __write_float(string&, ios_base::fmtflags, int, double);
+extern void _STLP_CALL __write_float(__iostring&, ios_base::fmtflags, int, double);
 # ifndef _STLP_NO_LONG_DOUBLE
 void  _STLP_CALL __string_to_float(const string&, long double&);
-extern void _STLP_CALL __write_float(string&, ios_base::fmtflags, int, long double);
+extern void _STLP_CALL __write_float(__iostring&, ios_base::fmtflags, int, long double);
 # endif
 
 #ifndef _STLP_NO_WCHAR_T
-extern void _STLP_CALL __convert_float_buffer(string const&, wstring&, const ctype<wchar_t>&, wchar_t);
+extern void _STLP_CALL __convert_float_buffer(string const&, __iowstring&, const ctype<wchar_t>&, wchar_t);
 #endif
-extern void _STLP_CALL __adjust_float_buffer(string&, char);
+extern void _STLP_CALL __adjust_float_buffer(__iostring&, char);
 
 extern char* _STLP_CALL
 __write_integer(char* buf, ios_base::fmtflags flags, long x);
 
 extern ptrdiff_t _STLP_CALL __insert_grouping(char* first, char* last, const string&, char, char, char, int);
-extern void _STLP_CALL __insert_grouping(string&, size_t, const string&, char, char, char, int);
+extern void _STLP_CALL __insert_grouping(__iostring&, size_t, const string&, char, char, char, int);
 #  ifndef _STLP_NO_WCHAR_T
 extern ptrdiff_t _STLP_CALL __insert_grouping(wchar_t*, wchar_t*, const string&, wchar_t, wchar_t, wchar_t, int);
-extern void _STLP_CALL __insert_grouping(wstring&, size_t, const string&, wchar_t, wchar_t, wchar_t, int);
+extern void _STLP_CALL __insert_grouping(__iowstring&, size_t, const string&, wchar_t, wchar_t, wchar_t, int);
 #  endif
 
 # endif

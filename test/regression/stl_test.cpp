@@ -1,5 +1,4 @@
 // STLport regression testsuite component.
-// To compile as a separate example, please #define MAIN.
 #define  __DECLARE_GLOBALS_HERE
 #define  __PUT_STATIC_DATA_MEMBERS_HERE
 #include "stl.h"
@@ -14,15 +13,20 @@ void stlp_test(bool res) {
   cout << " ... " << (res?"pass":"fail") << endl;
 }
 
-typedef int (*test_func)( int, char ** );
+//dums:  To be move in a common makefile in the new explore make system.
+#define _STLP_EXPLORE_MAKE
 
-void _stlp_test_name( const char *name )
+#ifdef _STLP_EXPLORE_MAKE
+void _stlp_test_name( const char *name)
 {
   cout << name;
   cout.flush();
 }
 
-#define TEST(t) _stlp_test_name( #t ); stlp_test( t(argc,argv) == 0 ? true : false )
+#  define TEST(t) _stlp_test_name( #t ) , stlp_test( t(argc,argv) == 0 ? true : false ), cout << endl
+#else
+#  define TEST(t)
+#endif
 
 int main(int argc, char** argv) {
     int iter_count = ( argc>1 ? 10000 : 1);
@@ -518,6 +522,7 @@ int main(int argc, char** argv) {
         TEST(ioiter_test);
         TEST(string_mt_test);
         TEST(ptr_specialization_test);
+        TEST(float_output_test);
     }
     return 0;
 }

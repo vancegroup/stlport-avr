@@ -17,13 +17,17 @@
  */ 
 
 # ifndef _STLP_NUM_PUT_H
-#  define _STLP_NUM_PUT_H
+# define _STLP_NUM_PUT_H
 
 #ifndef _STLP_INTERNAL_NUM_PUT_H
 #include <stl/_num_put.h>
 #endif
 #ifndef _STLP_INTERNAL_OSTREAM_H
 #include <stl/_ostream.h>
+#endif
+
+#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+#include <stl/_iostream_string.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -35,7 +39,7 @@ template <class Char>
 ptrdiff_t 
 __insert_grouping_aux(Char* first, Char* last, const string& grouping,
                       Char separator, Char Plus, Char Minus,
-		                  int basechars)
+                      int basechars)
 {
   typedef string::size_type str_size;
 
@@ -75,10 +79,10 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
 //Dynamic output buffer version.
 template <class Char>
 void 
-__insert_grouping_aux(basic_string<Char> &iostr, size_t __dec_pos,
+__insert_grouping_aux(__basic_iostring<Char> &iostr, size_t __dec_pos,
                       const string& grouping,
                       Char separator, Char Plus, Char Minus,
-		                  int basechars)
+                      int basechars)
 {
   typedef string::size_type str_size;
 

@@ -64,7 +64,7 @@ public:
 
   virtual catalog     do_open(const string& __fn, const locale& __loc) const;
   virtual string do_get(catalog __c, int __set, int __msgid,
-			const string& __dfault) const;
+                        const string& __dfault) const;
 # ifndef _STLP_NO_WCHAR_T
   virtual wstring do_get(catalog __c, int __set, int __msgid,
                              const wstring& __dfault) const;
@@ -83,10 +83,10 @@ public:
 
   catalog     do_open(const string& __fn, const locale& __loc) const;
   string do_get(catalog __c, int __set, int __msgid,
-			const string& __dfault) const;
+                const string& __dfault) const;
 # ifndef _STLP_NO_WCHAR_T
   wstring do_get(catalog __c, int __set, int __msgid,
-		 const wstring& __dfault) const;
+                 const wstring& __dfault) const;
 # endif
   void        do_close(catalog __c) const;
   

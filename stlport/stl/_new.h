@@ -72,12 +72,12 @@ _STLP_END_NAMESPACE
 # endif /* _STLP_NO_BAD_ALLOC */
 
 # if defined (_STLP_USE_EXCEPTIONS) && \
-    (defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW)) && \
-    ! defined (_STLP_CHECK_NULL_ALLOC)
+    (defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW))
 #  define _STLP_CHECK_NULL_ALLOC(__x) void* __y = __x;if (__y == 0){_STLP_THROW(bad_alloc());}return __y
 # else
 #  define _STLP_CHECK_NULL_ALLOC(__x) return __x
 # endif
+
 
 _STLP_BEGIN_NAMESPACE
 

@@ -136,59 +136,59 @@ static _Stl_aligned_buffer<time_put<wchar_t, ostreambuf_iterator<wchar_t, char_t
 static _Messages _Null_messages;
 
 static locale::facet* _S_classic_facets[] = {
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_collate_char),
-  __REINTERPRET_CAST(locale::facet*,&_S_ctype_char), 
+  0,
+  &_S_collate_char,
+  &_S_ctype_char,
 # ifndef _STLP_NO_MBSTATE_T
-    __REINTERPRET_CAST(locale::facet*,&_S_codecvt_char),
+  &_S_codecvt_char,
 # else
-    __REINTERPRET_CAST(locale::facet*,0), 
+  0, 
 # endif
-  __REINTERPRET_CAST(locale::facet*,&_S_moneypunct_true_char),
-  __REINTERPRET_CAST(locale::facet*,&_S_moneypunct_false_char),
-  __REINTERPRET_CAST(locale::facet*,&_S_numpunct_char),
-  __REINTERPRET_CAST(locale::facet*,&_S_messages_char),
+  &_S_moneypunct_true_char,
+  &_S_moneypunct_false_char,
+  &_S_numpunct_char,
+  &_S_messages_char,
 
-  __REINTERPRET_CAST(locale::facet*,&_S_money_get_char),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_money_put_char),
-  __REINTERPRET_CAST(locale::facet*,0),
+  &_S_money_get_char,
+  0,
+  &_S_money_put_char,
+  0,
 
-  __REINTERPRET_CAST(locale::facet*,&_S_num_get_char),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_num_put_char),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_time_get_char),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_time_put_char),
-  __REINTERPRET_CAST(locale::facet*,0),
+  &_S_num_get_char,
+  0,
+  &_S_num_put_char,
+  0,
+  &_S_time_get_char,
+  0,
+  &_S_time_put_char,
+  0,
 # ifndef _STLP_NO_WCHAR_T
-  __REINTERPRET_CAST(locale::facet*,&_S_collate_wchar),
-  __REINTERPRET_CAST(locale::facet*,&_S_ctype_wchar), 
+  &_S_collate_wchar,
+  &_S_ctype_wchar,
 
 # ifndef _STLP_NO_MBSTATE_T
-  __REINTERPRET_CAST(locale::facet*,&_S_codecvt_wchar),
+  &_S_codecvt_wchar,
 # else
-  __REINTERPRET_CAST(locale::facet*,0)
+  0
 # endif
-  __REINTERPRET_CAST(locale::facet*,&_S_moneypunct_true_wchar),
-  __REINTERPRET_CAST(locale::facet*,&_S_moneypunct_false_wchar),
-  __REINTERPRET_CAST(locale::facet*,&_S_numpunct_wchar),
-  __REINTERPRET_CAST(locale::facet*,&_S_messages_wchar),
+  &_S_moneypunct_true_wchar,
+  &_S_moneypunct_false_wchar,
+  &_S_numpunct_wchar,
+  &_S_messages_wchar,
 
-  __REINTERPRET_CAST(locale::facet*,&_S_money_get_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_money_put_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
+  &_S_money_get_wchar,
+  0,
+  &_S_money_put_wchar,
+  0,
 
-  __REINTERPRET_CAST(locale::facet*,&_S_num_get_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_num_put_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_time_get_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
-  __REINTERPRET_CAST(locale::facet*,&_S_time_put_wchar),
-  __REINTERPRET_CAST(locale::facet*,0),
+  &_S_num_get_wchar,
+  0,
+  &_S_num_put_wchar,
+  0,
+  &_S_time_get_wchar,
+  0,
+  &_S_time_put_wchar,
+  0,
 # endif
   0
 };
@@ -196,7 +196,7 @@ static locale::facet* _S_classic_facets[] = {
 _Locale_impl* 
 _Locale_impl::make_classic_locale() {
   // The classic locale contains every facet that belongs to a category.
-  _Locale_impl* classic = __REINTERPRET_CAST(_Locale_impl*, &_S_classic_locale);
+  _Locale_impl* classic = &_S_classic_locale;
   
   new (classic) _Locale_impl("C");
 
@@ -247,19 +247,15 @@ _Locale_impl::make_classic_locale() {
 
 #ifdef _STLP_LEAKS_PEDANTIC
 void _Locale_impl::free_classic_locale() {
-  _Locale_impl* classic = __REINTERPRET_CAST(_Locale_impl*, &_S_classic_locale);
+  _Locale_impl* classic = &_S_classic_locale;
   
 # ifndef _STLP_NO_WCHAR_T
-  typedef time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > _tmputw;
-  __REINTERPRET_CAST(_tmputw *, &_S_time_put_wchar)->~time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
-  typedef time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > _tmgetw;
-  __REINTERPRET_CAST(_tmgetw *, &_S_time_get_wchar)->~time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
+  (&_S_time_put_wchar)->~time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
+  (&_S_time_get_wchar)->~time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
 # endif
 
-  typedef time_put<char, ostreambuf_iterator<char, char_traits<char> > > _tmput;
-  __REINTERPRET_CAST(_tmput *, &_S_time_put_char)->~time_put<char, ostreambuf_iterator<char, char_traits<char> > >();
-  typedef time_get<char, istreambuf_iterator<char, char_traits<char> > > _tmget;
-  __REINTERPRET_CAST(_tmget *, &_S_time_get_char)->~time_get<char, istreambuf_iterator<char, char_traits<char> > >();
+  (&_S_time_put_char)->~time_put<char, ostreambuf_iterator<char, char_traits<char> > >();
+  (&_S_time_get_char)->~time_get<char, istreambuf_iterator<char, char_traits<char> > >();
   classic->~_Locale_impl();
 }
 #endif // _STLP_LEAKS_PEDANTIC
@@ -318,7 +314,7 @@ bool locale::operator()(const wstring& __x,
 
 
 _Locale_impl*   _Stl_loc_global_impl    = 0;
-locale          _Stl_loc_classic_locale(__REINTERPRET_CAST(_Locale_impl*, &_S_classic_locale));
+locale          _Stl_loc_classic_locale(&_S_classic_locale);
 _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
   
 //----------------------------------------------------------------------
@@ -421,16 +417,13 @@ const locale& locale::operator=(const locale& L) _STLP_NOTHROW
 
 locale::facet* locale::_M_get_facet(const locale::id& n) const
 {
-  return n._M_index < _M_impl->size()
-    ? __REINTERPRET_CAST(locale::facet*,_M_impl->facets[n._M_index])
-    : __REINTERPRET_CAST(locale::facet*, 0);
+  return n._M_index < _M_impl->size() ? _M_impl->facets[n._M_index] : 0;
 }
 
 locale::facet* locale::_M_use_facet(const locale::id& n) const
 {
   locale::facet* f = (n._M_index < _M_impl->size()
-		      ? __REINTERPRET_CAST(locale::facet*,_M_impl->facets[n._M_index])
-		      : __REINTERPRET_CAST(locale::facet*, 0));
+                      ? _M_impl->facets[n._M_index] : 0);
   if (!f)
     _M_impl->_M_throw_bad_cast();
   return f;
