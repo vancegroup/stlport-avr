@@ -1,4 +1,4 @@
-# Time-stamp: <04/03/09 17:02:03 ptr>
+# Time-stamp: <04/03/17 15:37:53 ptr>
 # $Id$
 
 ifndef BUILD_DATE
@@ -16,9 +16,9 @@ OSREL  := $(shell uname -r | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr '
 M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 P_ARCH := $(shell uname -p | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 else
-OSNAME := $(shell echo ${TARGET_OS} | sed 's/.*-.*-\([a-z]*\).*/\1/' )
-OSREL  := $(shell echo ${TARGET_OS} | sed 's/.*-.*-[a-z]*\(.*\)/\1/' )
-M_ARCH := $(shell echo ${TARGET_OS} | sed 's/\(.*\)-.*-[a-z]*.*/\1/' )
+OSNAME := $(shell echo ${TARGET_OS} | sed 's/^[a-z0-9]\+-[a-z0-9]\+-\([a-z]\+\).*/\1/' )
+OSREL  := $(shell echo ${TARGET_OS} | sed 's/^[[:alnum:]]\+-[a-z0-9]\+-[a-z]\+\([a-zA-Z.0-9]*\).*/\1/' )
+M_ARCH := $(shell echo ${TARGET_OS} | sed 's/^\([a-z0-9]\+\)-.*/\1/' )
 P_ARCH := unknown
 endif
 
