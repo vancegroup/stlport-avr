@@ -34,9 +34,10 @@
 # include <cstring>
 # endif
 
-# ifndef _STLP_INTERNAL_NEW_HEADER
-#  include <stl/_new.h>
-# endif
+//# ifndef _STLP_INTERNAL_NEW_HEADER
+//#  include <stl/_new.h>
+//# endif
+#include <new>
 
 
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H

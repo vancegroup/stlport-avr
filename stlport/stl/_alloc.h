@@ -56,9 +56,10 @@
 #  endif /* !defined(_STLP_USE_EXCEPTIONS) */
 # endif   /* __THROW_BAD_ALLOC */
 
-# ifndef _STLP_INTERNAL_NEW_HEADER
-#  include <stl/_new.h>
-# endif
+//# ifndef _STLP_INTERNAL_NEW_HEADER
+//#  include <stl/_new.h>
+//# endif
+#include <new>
 
 #if /* defined (_STLP_THREADS) && */ ! defined (_STLP_INTERNAL_THREADS_H)
 # include <stl/_threads.h>
