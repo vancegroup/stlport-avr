@@ -69,6 +69,8 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* fstream.cpp : added write-sharing for fstream file handle (Thanks to Leland Best)
 
+	* stl_gcc.h : disabled wide function imports for linux (some xx_POSIX macro should be really used; disabled for all linuxes for now). Thanks everybody for the reports.
+
 	* KAI C++ 4.0 is now supported on SUN
 
 	* MAC OS X compilation fixed (thanks Patrick Luby for the patch)
