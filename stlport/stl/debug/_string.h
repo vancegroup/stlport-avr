@@ -852,7 +852,7 @@ inline void swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _CharT, class _Traits, class _Alloc>
 struct __partial_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type supported;
+  typedef __true_type implemented;
 };
 
 template <class _CharT, class _Traits, class _Alloc>
