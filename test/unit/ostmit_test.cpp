@@ -1,0 +1,49 @@
+#include <iterator>
+#include <string>
+#include <sstream>
+#include <algorithm>
+
+#include "cppunit/cppunit_proxy.h"
+
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+using namespace std;
+#endif
+
+//
+// TestCase class
+//
+class OstreamIteratorTest : public CPPUNIT_NS::TestCase
+{
+  CPPUNIT_TEST_SUITE(OstreamIteratorTest);
+  CPPUNIT_TEST(ostmit0);
+  CPPUNIT_TEST_SUITE_END();
+
+protected:
+  void ostmit0();
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(OstreamIteratorTest);
+
+//
+// tests implementation
+//
+void OstreamIteratorTest::ostmit0()
+{
+  // not necessary, tested in copy_test
+  int array [] = { 1, 5, 2, 4 };
+
+  char* text = "hello";
+
+  ostringstream os;
+  
+  ostream_iterator<char> iter(os);
+  copy(text, text + 5, iter);
+  os << ' ';
+
+  ostream_iterator<int> iter2(os);
+  copy(array, array + 4, iter2);
+  
+  stringbuf* buff=os.rdbuf();
+  string result=buff->str();
+  CPPUNIT_ASSERT(!strcmp(result.c_str(),"hello 1524"));
+}

@@ -1,0 +1,70 @@
+#include <vector>
+#include "unary.h"
+#include <algorithm>
+
+#include "cppunit/cppunit_proxy.h"
+
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+using namespace std;
+#endif
+
+//
+// TestCase class
+//
+class UnaryTest : public CPPUNIT_NS::TestCase
+{
+  CPPUNIT_TEST_SUITE(UnaryTest);
+  CPPUNIT_TEST(ucompos1);
+  CPPUNIT_TEST(ucompos2);
+  CPPUNIT_TEST(unegate1);
+  CPPUNIT_TEST(unegate2);
+  CPPUNIT_TEST_SUITE_END();
+
+protected:
+  void ucompos1();
+  void ucompos2();
+  void unegate1();
+  void unegate2();
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(UnaryTest);
+
+//
+// tests implementation
+//
+void UnaryTest::unegate1()
+{
+  int array [3] = { 1, 2, 3 };
+  int* p = find_if((int*)array, (int*)array + 3, unary_negate<odd>(odd()));
+  CPPUNIT_ASSERT((p != array + 3));
+  CPPUNIT_ASSERT(*p==2);
+}
+void UnaryTest::unegate2()
+{
+  int array [3] = { 1, 2, 3 };
+  int* p = find_if((int*)array, (int*)array + 3, not1(odd()));
+  CPPUNIT_ASSERT(p != array + 3);
+  CPPUNIT_ASSERT(*p==2);
+}
+void UnaryTest::ucompos1()
+{
+  int input [3] = { -1, -4, -16 };
+
+  double output[3];
+  transform((int*)input, (int*)input + 3, output, unary_compose<square_root, negate<int> >(square_root(), negate<int>()));
+
+  CPPUNIT_ASSERT(output[0]==1);
+  CPPUNIT_ASSERT(output[1]==2);
+  CPPUNIT_ASSERT(output[2]==4);
+}
+void UnaryTest::ucompos2()
+{
+  int input [3] = { -1, -4, -16 };
+
+  double output [3];
+  transform((int*)input, (int*)input + 3, output, compose1(square_root(), negate<int>()));
+
+  CPPUNIT_ASSERT(output[0]==1);
+  CPPUNIT_ASSERT(output[1]==2);
+  CPPUNIT_ASSERT(output[2]==4);
+}
