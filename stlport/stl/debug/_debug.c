@@ -108,16 +108,14 @@ void  _STLP_CALL __invalidate_range(const __owned_list* __base,
     typedef _Iterator* _Safe_iterator_ptr;
     typedef __owned_link _L_type;
     _STLP_ACQUIRE_LOCK(__base->_M_lock)
-    _L_type* __pos;
-    _L_type* __prev;
+    _L_type* __prev = (_L_type*)&__base->_M_node;
+    _L_type* __pos = (_L_type*)__prev->_M_next;
 
-    for (__prev = (_L_type*)&__base->_M_node, __pos= (_L_type*)__prev->_M_next; 
-         __pos!=0;) {		     
+    while ( __pos != 0 ) {		     
         if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos))
-            &&  __in_range_aux(
-		 		 		        *(_Iterator*)__pos,
-		 		 		        __first,
-		 		 		        __last,
+            &&  __in_range_aux( ((_Iterator*)__pos)->_M_iterator,
+		 		 		        __first._M_iterator,
+		 		 		        __last._M_iterator,
 		 		 		        _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
 		   __pos->_M_owner = 0;
 		   __pos = (_L_type*) (__prev->_M_next = __pos->_M_next);
@@ -135,12 +133,12 @@ void  _STLP_CALL __invalidate_iterator(const __owned_list* __base,
                                        const _Iterator& __it)
 {
     typedef __owned_link   _L_type;
-    _L_type*  __position, *__prev;
     _STLP_ACQUIRE_LOCK(__base->_M_lock)
-    for (__prev = (_L_type*)&__base->_M_node, __position = (_L_type*)__prev->_M_next; 
-         __position!= 0;) {
+    _L_type* __prev = (_L_type*)&__base->_M_node;
+    _L_type* __position = (_L_type*)__prev->_M_next;
+    while ( __position != 0 ) {
       // this requires safe iterators to be derived from __owned_link
-       if ((__position != (_L_type*)&__it) && *((_Iterator*)__position)==__it) {
+       if ((__position != (_L_type*)&__it) && ((_Iterator*)__position)->_M_iterator == __it._M_iterator ) {
 		     __position->_M_owner = 0;
 		     __position = (_L_type*) (__prev->_M_next = __position->_M_next);
         }
