@@ -80,7 +80,10 @@ public:
 	_STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
   }
 
-  ~_Vector_base() { _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); }
+  ~_Vector_base() { 
+    if (_M_start !=0) 
+    _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+  }
 
 protected:
   _Tp* _M_start;

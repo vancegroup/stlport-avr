@@ -65,7 +65,7 @@ struct __true_type {};
 struct __false_type {};
 
 
-template <int _Is> struct __bool2type { typedef __false_type _Ret; };
+template <int _Is> struct __bool2type { };
 
 _STLP_TEMPLATE_NULL
 struct __bool2type<1> { typedef __true_type _Ret; };

@@ -1,10 +1,13 @@
 #if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
 
 # if defined (__BORLANDC__)
-#  pragma option pop /* P_O_1 */
+#  pragma option pop
 #  pragma option -w-8062
-# elif !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
-#  pragma warning (pop)
+# else
+#  if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
+#   pragma warning (pop)
+#  endif
+#  pragma pack (pop)
 # endif
 
 

@@ -34,7 +34,7 @@ TEST  = ./eh_test.out
 D_TEST = ./eh_test_d.out
 NOSGI_TEST = ./eh_test_nosgi.out
 
-CC = g++ -pthreads
+CC = g++ -pthread
 CXX = $(CC)
 
 # dwa 12/22/99 -- had to turn off -ansi flag so we could use SGI IOSTREAMS

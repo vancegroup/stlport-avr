@@ -6,7 +6,7 @@
 # compiler
 #
 CC = gcc 
-CXX = c++ -pthreads -fexceptions
+CXX = c++ -pthread -fexceptions
 
 #
 # Basename for libraries

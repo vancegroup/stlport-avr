@@ -53,8 +53,8 @@ This is major change since pre-4.0 releases, please read the instructions carefu
    	Please do not skip this! On some platforms, it creates necessary symbolic links.
         If you do build STLport iostream, this step is performed automatically when you do "make all".
 
-   4-2) uncomment _STLP_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
-       of SGI iostreams and to use wrappers around your existing iostreams. 
+   4-2) uncomment _STLP_NO_OWN_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
+       of STLport iostreams and to use wrappers around your existing iostreams. 
        After disabling STLport iostreams, you will use wrappers around  your compiler's iostreams 
        libabry, as in previous STLport releases.
        No binary library for STLport needs to be built in this case.
@@ -66,9 +66,9 @@ This is major change since pre-4.0 releases, please read the instructions carefu
   If you have decided to disable STLport iostreams, you may stop reading here.
 
 
-==== Building STLport (SGI iostreams) library ==========
+==== Building STLport iostreams library ==========
 
-Below are step-by-step instructions to build STLport library:
+Below are step-by-step instructions to build STLport streams library:
 
 5)  Using appropriate makefile, do "make clean all" to build the STLport libraries
     (makefiles are set up to build several different flavors - debug/nondebug,
@@ -106,7 +106,7 @@ Below are step-by-step instructions to build STLport library:
      - wait until somebody else will submit corresponding changes to be incorporated in next STLport 
        release/snapshot. To use STLport w/o its own iostreams, please do step 3a).
 
-    In case you do fix STLport, please submit your patches to support@stlport.com or (better)
+    In case you do patch STLport, please submit your patches to support@stlport.com or (better)
     to STLport Forum (http://www.stlport.com/cgi-bin/forum/dcboard.cgi)
 
 7) Do "make install" to install resulting libraries into "./lib" subdirectory.

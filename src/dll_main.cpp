@@ -221,6 +221,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #pragma optimize("g",off)
 #endif 
 
+
 void force_link()
 {
 float f;
