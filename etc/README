@@ -17,9 +17,12 @@ This directory contains miscellanous files for STLport-4.5 release.
  * scvs                 - script to use CVS through SSH tunneling (the default 
                           method at cvs.stlport.com)
 
-                  INSTALLATION SUPPORT
+                 INDEPENDENT PACKAGING SUPPORT
+ * STLport-4.5.1.spec : spec file to build RPM for STLport-4.5.1
 
- * std_headers.txt      - a list of headers to be duplicated as .SUNWCCh or .stdh
+                INTERNAL INSTALLATION SUPPORT
+
+ * std_headers_xxx.txt      - a list of headers to be placed in various dirs
 
                          LOGOS
 

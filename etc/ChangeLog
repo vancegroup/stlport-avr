@@ -43,6 +43,8 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* _config.h : _STLP_WIN32THREADS is set (bugfix) ( thanks to Andreas Malzahn )
 
 	* _num_put.c, common_rules.mak : patches by Levente Farkas 
+
+	* etc/STLport-4.5.1.spec : spec file to build STLport-4.5.1 RPM added (thanks Levente Farkas)
 	
 The following changes were The following changes were made in 4.5 release since 4.5 beta 8 :
 made in 4.5 release since 4.5 beta 8 :
