@@ -27,16 +27,8 @@
 #  include <cstddef>
 # endif
 
-# if !defined (_STLP_CWCHAR)
-#  include <cwchar>
-# endif			
-
 #if ! defined (_STLP_CSTRING)
 #  include <cstring>
-#endif
-
-#ifndef __TYPE_TRAITS_H
-# include <stl/type_traits.h>
 #endif
 
 #if defined (_STLP_UNIX) && defined (_STLP_HAS_NO_NEW_C_HEADERS)
@@ -47,8 +39,20 @@
 # include <mem.h>
 # include <string.h>
 # include <_stddef.h>
-class mbstate_t;
+// class mbstate_t;
 #endif
+
+/*#ifndef __TYPE_TRAITS_H
+# include <stl/type_traits.h>
+#endif*/
+
+#ifndef _STLP_INTERNAL_CONSTRUCT_H
+# include <stl/_construct.h>
+#endif
+
+# if !defined (_STLP_CWCHAR)
+#  include <stl/_cwchar.h>
+# endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -148,9 +152,8 @@ public:
 
   static size_t _STLP_CALL length(const _CharT* __s) {
     const _CharT _NullChar = _STLP_DEFAULT_CONSTRUCTED(_CharT);
-    size_t __i;
-    for (__i = 0; !eq(__s[__i], _NullChar); ++__i)
-      {}
+    size_t __i(0);
+    for (; !eq(__s[__i], _NullChar); ++__i) {}
     return __i;
   }
 
@@ -168,7 +171,7 @@ public:
   
   static _CharT* _STLP_CALL copy(_CharT* __s1, const _CharT* __s2, size_t __n) {
     return (__n == 0 ? __s1 :
-	    (_CharT*)memcpy(__s1, __s2, __n * sizeof(_CharT)));
+      (_CharT*)memcpy(__s1, __s2, __n * sizeof(_CharT)));
     } 
 
   static _CharT* _STLP_CALL assign(_CharT* __s, size_t __n, _CharT __c) {
@@ -204,15 +207,15 @@ public:
 //  as is for any particular user-defined type.  In particular, it 
 //  *will not work* for a non-POD type.
 
-template <class _CharT> class char_traits
-  : public __char_traits_base<_CharT, _CharT>
-{};
+template <class _CharT> 
+class char_traits
+  : public __char_traits_base<_CharT, _CharT> {};
 
 // Specialization for char.
 
-_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC char_traits<char> 
-  : public __char_traits_base<char, int>
-{
+_STLP_TEMPLATE_NULL 
+class _STLP_CLASS_DECLSPEC char_traits<char> 
+  : public __char_traits_base<char, int> {
 public:
   typedef char char_type;
   typedef int int_type;
@@ -232,22 +235,63 @@ public:
     return (unsigned char)__c;
   }
 
-  static int _STLP_CALL compare(const char* __s1, const char* __s2, size_t __n) 
-    { return memcmp(__s1, __s2, __n); }
+  static int _STLP_CALL compare(const char* __s1, const char* __s2, size_t __n) {
+    return memcmp(__s1, __s2, __n); 
+  }
   
-  static size_t _STLP_CALL length(const char* __s) { return strlen(__s); }
+  static size_t _STLP_CALL length(const char* __s) {
+    return strlen(__s);
+  }
 
-  static void _STLP_CALL assign(char& __c1, const char& __c2) { __c1 = __c2; }
-
-  static char* _STLP_CALL assign(char* __s, size_t __n, char __c)
-    { memset(__s, __c, __n); return __s; }
+  static void _STLP_CALL assign(char& __c1, const char& __c2) {
+    __c1 = __c2; 
+  }
+ 
+  static char* _STLP_CALL assign(char* __s, size_t __n, char __c) {
+    memset(__s, __c, __n);
+    return __s;
+  }
 };
 
 # if defined (_STLP_HAS_WCHAR_T)
 // Specialization for wchar_t.
-_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC char_traits<wchar_t>
-  : public __char_traits_base<wchar_t, wint_t>
-{};
+_STLP_TEMPLATE_NULL 
+class _STLP_CLASS_DECLSPEC char_traits<wchar_t>
+  : public __char_traits_base<wchar_t, wint_t> {  
+# if !defined(_STLP_NO_NATIVE_WIDE_FUNCTIONS) && \
+     !defined(_STLP_WCHAR_HPACC_EXCLUDE) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE)
+public:
+  static wchar_t* _STLP_CALL move(wchar_t* __dest, const wchar_t* __src, size_t __n) {    
+    return wmemmove(__dest, __src, __n);
+  }
+  
+  static wchar_t* _STLP_CALL copy(wchar_t* __dest, const wchar_t* __src, size_t __n) {
+    return wmemcpy(__dest, __src, __n);
+  } 
+
+#  ifndef __DMC__
+  static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n) {
+    return wmemcmp(__s1, __s2, __n); 
+  }
+#  else
+  static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n) {
+    return __char_traits_base<wchar_t, wint_t>::compare(__s1, __s2, __n);
+  }
+#  endif
+  
+  static size_t _STLP_CALL length(const wchar_t* __s) {
+    return wcslen(__s);
+  }
+  
+  static void _STLP_CALL assign(wchar_t& __c1, const wchar_t& __c2) {
+    __c1 = __c2; 
+  }
+ 
+  static wchar_t* _STLP_CALL assign(wchar_t* __s, size_t __n, wchar_t __c) {
+    return wmemset(__s, __c, __n);
+  }
+# endif
+};
 # endif
 
 _STLP_END_NAMESPACE
