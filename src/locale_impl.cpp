@@ -21,9 +21,7 @@
 #include <locale>
 #include <typeinfo>
 
-#ifndef _STLP_NO_EXCEPTIONS
-# include <stdexcept>
-#endif
+#include <stdexcept>
 
 #include "c_locale.h"
 #include "aligned_buffer.h"
@@ -45,8 +43,7 @@ _STLP_BEGIN_NAMESPACE
 static _Stl_aligned_buffer<_Locale_impl::Init> __Loc_init_buf;
 long _Locale_impl::Init::_S_count = 0;
 
-_Locale_impl::Init::Init()
-{
+_Locale_impl::Init::Init() {
   if ( _S_count++ == 0 ) {
 //# if defined (__BORLANDC__) && defined (_RTLDLL)
 //    _Stl_loc_init_num_put();
@@ -63,14 +60,12 @@ _Locale_impl::Init::~Init() {
     _Locale_impl::_S_uninitialize();
 }
 
-_Locale_impl::_Locale_impl(const char* s) : 
-    name(s)
-{
+_Locale_impl::_Locale_impl(const char* s)
+  : name(s) {
   new (&__Loc_init_buf) Init();
 }
 
-_Locale_impl::~_Locale_impl()
-{
+_Locale_impl::~_Locale_impl() {
   (&__Loc_init_buf)->~Init();
 }
 
@@ -79,8 +74,7 @@ void _Locale_impl::decr() {}
 
 // _Locale_impl non-inline member functions.
 void _STLP_CALL
-_Locale_impl::_M_throw_bad_cast()
-{
+_Locale_impl::_M_throw_bad_cast() {
   _STLP_THROW(bad_cast());  
 }
 
@@ -354,8 +348,7 @@ _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
 // class locale
 
 void _STLP_CALL
-locale::_M_throw_runtime_error(const char* name)
-{
+locale::_M_throw_runtime_error(const char* name) {
   char buf[256];
 
   if (name) {
@@ -374,15 +367,13 @@ locale::_M_throw_runtime_error(const char* name)
 // any locales are constructed.  (Meaning that it must be called when
 // the I/O library itself is initialized.)
 void _STLP_CALL
-_Locale_impl::_S_initialize()
-{
+_Locale_impl::_S_initialize() {
   _Stl_loc_assign_ids();
   make_classic_locale();
 }
 
 void _STLP_CALL
-_Locale_impl::_S_uninitialize()
-{
+_Locale_impl::_S_uninitialize() {
   _Stl_classic_locale_impl->decr();
 #ifdef _STLP_LEAKS_PEDANTIC
   free_classic_locale();
@@ -400,21 +391,18 @@ locale::locale(_Locale_impl* impl) : _M_impl(impl)
 
 // Copy constructor
 locale::locale(const locale& L) _STLP_NOTHROW
-  : _M_impl(0)
-{
+  : _M_impl(0) {
   _M_impl = _S_copy_impl(L._M_impl);
 }
 
 // Destructor.
-locale::~locale() _STLP_NOTHROW
-{
+locale::~locale() _STLP_NOTHROW {
   _M_impl->decr();
 }
 
 // Assignment operator.  Much like the copy constructor: just a bit of
 // pointer twiddling.
-const locale& locale::operator=(const locale& L) _STLP_NOTHROW
-{
+const locale& locale::operator=(const locale& L) _STLP_NOTHROW {
   if (this->_M_impl != L._M_impl) {
     this->_M_impl->decr();
     this->_M_impl = _S_copy_impl(L._M_impl);
@@ -422,13 +410,11 @@ const locale& locale::operator=(const locale& L) _STLP_NOTHROW
   return *this;
 }
 
-locale::facet* locale::_M_get_facet(const locale::id& n) const
-{
+locale::facet* locale::_M_get_facet(const locale::id& n) const {
   return n._M_index < _M_impl->size() ? _M_impl->facets[n._M_index] : 0;
 }
 
-locale::facet* locale::_M_use_facet(const locale::id& n) const
-{
+locale::facet* locale::_M_use_facet(const locale::id& n) const {
   locale::facet* f = (n._M_index < _M_impl->size()
                       ? _M_impl->facets[n._M_index] : 0);
   if (!f)
@@ -444,7 +430,6 @@ static string _Nameless("*");
 
 // Compare two locales for equality.
 bool locale::operator==(const locale& L) const {
-
   return this->_M_impl == L._M_impl ||
          (this->name() == L.name() && this->name() != _Nameless);
 }
@@ -460,8 +445,7 @@ locale::classic() {
 }
 
 locale  _STLP_CALL
-locale::global(const locale& L) 
-{
+locale::global(const locale& L) {
   locale old;                   // A copy of the old global locale.
 
   L._M_impl->incr();

@@ -18,9 +18,7 @@
 # include "stlport_prefix.h"
 
 #include <locale>
-#ifndef _STLP_NO_EXCEPTIONS
-# include <stdexcept>
-#endif
+#include <stdexcept>
 #include <stl/_algobase.h>
 
 #include "locale_nonclassic.h"
@@ -28,8 +26,7 @@
 _STLP_BEGIN_NAMESPACE
 
 _Locale::_Locale(const _Locale_impl& L)
-  : _Locale_impl(L), _Refcount_Base(1), facets_vec((void**)L.facets, (void**)L.facets+L.size())
-{
+  : _Locale_impl(L), _Refcount_Base(1), facets_vec((void**)L.facets, (void**)L.facets+L.size()) {
   for (size_t i = 1; i < L.size(); ++i) {
     locale::facet* f = L.facets[i];
     if (f && f->_M_delete)
@@ -90,8 +87,7 @@ static _STLP_STATIC_MUTEX _Index_lock _STLP_MUTEX_INITIALIZER;
 // Takes a reference to a locale::id, and returns its numeric index.
 // If no numeric index has yet been assigned, assigns one.  The return
 // value is always positive.
-static size_t _Stl_loc_get_index(locale::id& id)
-{
+static size_t _Stl_loc_get_index(locale::id& id) {
   if (id._M_index == 0) {
     _STLP_auto_lock sentry(_Index_lock);
     size_t new_index = locale::id::_S_max++;
@@ -100,8 +96,7 @@ static size_t _Stl_loc_get_index(locale::id& id)
   return id._M_index;
 }
 
-void locale::_M_insert(facet* f, locale::id& n)
-{
+void locale::_M_insert(facet* f, locale::id& n) {
   if (f)
     ((_Locale*)_M_impl)->insert(f, _Stl_loc_get_index(n), false);
 }
@@ -110,8 +105,7 @@ void locale::_M_insert(facet* f, locale::id& n)
 // Make a locale directly from a _Locale_impl object.  If the second argument
 // is true, we clone the _Locale_impl.  If false, we just twiddle pointers.
 locale::locale(_Locale_impl* impl, bool do_copy)
-  : _M_impl(0)
-{
+  : _M_impl(0) {
   if (do_copy) {
     _M_impl = new _Locale(*impl);
     _M_impl->name = "*";
@@ -120,3 +114,4 @@ locale::locale(_Locale_impl* impl, bool do_copy)
 }
 
 _STLP_END_NAMESPACE
+
