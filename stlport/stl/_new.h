@@ -93,7 +93,8 @@ _STLP_END_NAMESPACE
 #endif /* _STLP_NEW_H_HEADER */
 
 
-/* Local Variables:
+/*
+ * Local Variables:
  * mode:C++
  * End:
  */
