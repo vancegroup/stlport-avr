@@ -48,7 +48,7 @@ CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -shared -D_STLP_USE_DYNAMIC_LIB
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
 CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -shared -D_STLP_USE_DYNAMIC_LIB
 
-LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static}
+LDFLAGS_RELEASE_static =
 # LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}  -Wl,--no-undefined, -Wl,--export-all-symbols -Wl,-d -Wl,--out-implib,${OUTDIR}/${RELEASE_NAME}.a
 LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}  -Wl,--export-all-symbols -Wl,-d -Wl,--out-implib,${OUTDIR}/${RELEASE_NAME}.a
 
