@@ -167,7 +167,13 @@
 # ifdef __ICL
 #  define _STLP_LIB_BASENAME "stlport_icl"
 # else
-#  if (_MSC_VER >= 1200)
+# if (_MSC_VER <= 1300) 
+#  ifdef _UNICODE
+#   define _STLP_LIB_BASENAME "stlport_vc7_unicode"
+#  else
+#   define _STLP_LIB_BASENAME "stlport_vc7"
+#  endif
+# elif (_MSC_VER >= 1200)
 #   ifdef _UNICODE
 #    define _STLP_LIB_BASENAME "stlport_vc6_unicode"
 #   else

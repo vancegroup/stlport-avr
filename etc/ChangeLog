@@ -13,6 +13,8 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* fstream.cpp , vc6.unicode.mak : fixed bug in wide streams handling for VC6 (thanks Jim Dolter)
 
 	* etc/*.txt : files list broken up into several categories for future reorganization
+
+	* stl_msvc.h : fixed library selection for .NET (Thanks Franz Zetting)
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
