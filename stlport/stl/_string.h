@@ -939,8 +939,7 @@ public:                         // Erase.
 
 public:                         // Replace.  (Conceptually equivalent
                                 // to erase followed by insert.)
-  _Self& replace(size_type __pos, size_type __n, 
-                 const _Self& __s) {
+  _Self& replace(size_type __pos, size_type __n, const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
     const size_type __len = (min) (__n, size() - __pos);
@@ -950,8 +949,7 @@ public:                         // Replace.  (Conceptually equivalent
                       __s._M_Start(), __s._M_Finish(), &__s == this);
   }
 
-  _Self& replace(size_type __pos1, size_type __n1,
-                 const _Self& __s,
+  _Self& replace(size_type __pos1, size_type __n1, const _Self& __s,
                  size_type __pos2, size_type __n2) {
     if (__pos1 > size() || __pos2 > __s.size())
       this->_M_throw_out_of_range();
@@ -975,8 +973,7 @@ public:                         // Replace.  (Conceptually equivalent
                       __s, __s + __n2, _M_inside(__s));
   }
 
-  _Self& replace(size_type __pos, size_type __n1,
-                 const _CharT* __s) {
+  _Self& replace(size_type __pos, size_type __n1, const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -1017,10 +1014,13 @@ public:                         // Replace.  (Conceptually equivalent
   _Self& replace(iterator __first, iterator __last, 
                  size_type __n, _CharT __c);
 
+#if !defined(_MSC_VER) || !defined(_STLP_MEMBER_TEMPLATES)
   _Self& replace(iterator __first, iterator __last,
                  const_iterator __f, const_iterator __l) {
     return _M_replace(__first, __last, __f, __l, _M_inside(__f));
   }
+#endif
+
   // Check to see if _InputIter is an integer type.  If so, then
   // it can't be an iterator.
 #ifdef _STLP_MEMBER_TEMPLATES
