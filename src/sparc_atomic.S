@@ -12,11 +12,12 @@
         .align  8
 
 _STLP_atomic_exchange:
-        ldx      [%o0], %o2              ! Set the current value
+1:	
+	ldx      [%o0], %o2              ! Set the current value
         movx     %o1, %o3                ! Set the new value
         casx     [%o0], %o2, %o3         ! Do the compare and swap
         cmp     %o2, %o3                ! Check whether successful
-        bne             _STLP_atomic_exchange                  ! Retry upon failure
+        bne     0x1b                  ! Retry upon failure
         membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
                                         ! returning
         retl                            ! return
@@ -71,11 +72,12 @@ _STLP_atomic_decrement:
         .align  8
 
 _STLP_atomic_exchange:
+0:		
         ld      [%o0], %o2              ! Set the current value
         mov     %o1, %o3                                ! Set the new value
         swap     [%o0], %o3         ! Do the compare and swap
         cmp     %o2, %o3                ! Check whether successful
-        bne             _STLP_atomic_exchange                  ! Retry upon failure
+        bne     0b                  ! Retry upon failure
 !        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
                                        ! returning
         mov     %o2, %o0                                ! Set the new value
@@ -90,11 +92,12 @@ _STLP_atomic_exchange:
         .global _STLP_atomic_increment
         .align  8
 _STLP_atomic_increment:
-        ld      [%o0], %o2              ! set the current
-                add             %o2, 0x1, %o3                   ! Increment and store current
+1:	
+	ld      [%o0], %o2              ! set the current
+        add             %o2, 0x1, %o3                   ! Increment and store current
         swap     [%o0], %o3         ! Do the compare and swap
         cmp     %o3, %o2                ! Check whether successful
-        bne     _STLP_atomic_increment                                         ! Retry if we failed.
+        bne     1b                                         ! Retry if we failed.
 !        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
                                         ! returning
         nop
@@ -110,12 +113,13 @@ _STLP_atomic_increment:
         .align  8
 
 _STLP_atomic_decrement:
-        ld      [%o0], %o2              ! set the current
+2:	
+	ld      [%o0], %o2              ! set the current
         sub     %o2, 0x1, %o3                   ! decrement and store current
         swap    [%o0], %o3         ! Do the compare and swap
 
         cmp     %o3, %o2                ! Check whether successful
-        bne     _STLP_atomic_decrement                                         ! Retry if we failed.
+        bne     2b                                         ! Retry if we failed.
 !        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
 	nop
                                         ! returning
