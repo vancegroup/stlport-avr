@@ -67,17 +67,15 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
   pointer __new_finish = __new_start;
 
   _STLP_TRY {
-    __new_finish = uninitialized_copy(this->_M_start, this->_M_finish, __new_start);
+    __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
     _M_construct_null(__new_finish);
   }
   _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start, __new_finish), 
                 this->_M_end_of_storage.deallocate(__new_start, __n)));
 
-  _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+  this->_M_destroy_range();
   this->_M_deallocate_block();
-  this->_M_start = __new_start;
-  this->_M_finish = __new_finish;
-  this->_M_end_of_storage._M_data = __new_start + __n;
+  this->_M_reset(__new_start, __new_finish, __new_start + __n);
 }
 
 template <class _CharT, class _Traits, class _Alloc> 
@@ -92,7 +90,7 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
     _STLP_TRY {
       _M_construct_null(this->_M_finish + __n);
     }
-    _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_finish + 1, this->_M_finish + __n));
+    _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n));
     _Traits::assign(*end(), __c);
     this->_M_finish += __n;
   }
@@ -115,17 +113,15 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_i
       pointer __new_start = this->_M_end_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       _STLP_TRY {
-        __new_finish = uninitialized_copy(this->_M_start, this->_M_finish, __new_start);
+        __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
         __new_finish = uninitialized_copy(__first, __last, __new_finish);
         _M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                     this->_M_end_of_storage.deallocate(__new_start,__len)));
-      _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+      this->_M_destroy_range();
       this->_M_deallocate_block();
-      this->_M_start = __new_start;
-      this->_M_finish = __new_finish;
-      this->_M_end_of_storage._M_data = __new_start + __len; 
+      this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
     else {
       const _CharT* __f1 = __first;
@@ -134,7 +130,7 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_i
       _STLP_TRY {
         _M_construct_null(this->_M_finish + __n);
       }
-      _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_finish + 1, this->_M_finish + __n));
+      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n));
       _Traits::assign(*end(), *__first);
       this->_M_finish += __n;
     }
@@ -148,12 +144,12 @@ template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT,_Traits,_Alloc>& 
 basic_string<_CharT,_Traits,_Alloc>::assign(size_type __n, _CharT __c) {
   if (__n <= size()) {
-    _Traits::assign(this->_M_start, __n, __c);
+    _Traits::assign(this->_M_Start(), __n, __c);
     erase(begin() + __n, end());
   }
   else {
     if (__n < capacity()) {
-      _Traits::assign(this->_M_start, size(), __c);
+      _Traits::assign(this->_M_Start(), size(), __c);
       append(__n - size(), __c);
     }
     else {
@@ -181,7 +177,7 @@ _CharT* basic_string<_CharT,_Traits,_Alloc> ::_M_insert_aux(_CharT* __p,
     pointer __new_start = this->_M_end_of_storage.allocate(__len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
-      __new_pos = uninitialized_copy(this->_M_start, __p, __new_start);
+      __new_pos = uninitialized_copy(this->_M_Start(), __p, __new_start);
       _Copy_Construct(__new_pos, __c);
       __new_finish = __new_pos + 1;
       __new_finish = uninitialized_copy(__p, this->_M_finish, __new_finish);
@@ -189,11 +185,9 @@ _CharT* basic_string<_CharT,_Traits,_Alloc> ::_M_insert_aux(_CharT* __p,
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
                   this->_M_end_of_storage.deallocate(__new_start,__len)));
-    _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+    this->_M_destroy_range();
     this->_M_deallocate_block();
-    this->_M_start = __new_start;
-    this->_M_finish = __new_finish;
-    this->_M_end_of_storage._M_data = __new_start + __len;
+    this->_M_reset(__new_start, __new_finish, __new_start + __len);
   }
   return __new_pos;
 }
@@ -231,7 +225,7 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
       pointer __new_start = this->_M_end_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       _STLP_TRY {
-        __new_finish = uninitialized_copy(this->_M_start, __position, __new_start);
+        __new_finish = uninitialized_copy(this->_M_Start(), __position, __new_start);
         __new_finish = uninitialized_fill_n(__new_finish, __n, __c);
         __new_finish = uninitialized_copy(__position, this->_M_finish,
                                           __new_finish);
@@ -239,11 +233,9 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                     this->_M_end_of_storage.deallocate(__new_start,__len)));
-      _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+      this->_M_destroy_range();
       this->_M_deallocate_block();
-      this->_M_start = __new_start;
-      this->_M_finish = __new_finish;
-      this->_M_end_of_storage._M_data = __new_start + __len;    
+      this->_M_reset(__new_start, __new_finish, __new_start + __len);    
     }
   }
 }
@@ -317,18 +309,16 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
       pointer __new_start = this->_M_end_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       _STLP_TRY {
-        __new_finish = uninitialized_copy(this->_M_start, __position, __new_start);
+        __new_finish = uninitialized_copy(this->_M_Start(), __position, __new_start);
         __new_finish = uninitialized_copy(__first, __last, __new_finish);
         __new_finish = uninitialized_copy(__position, this->_M_finish, __new_finish);
         _M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                     this->_M_end_of_storage.deallocate(__new_start,__len)));
-      _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+      this->_M_destroy_range();
       this->_M_deallocate_block();
-      this->_M_start = __new_start;
-      this->_M_finish = __new_finish;
-      this->_M_end_of_storage._M_data = __new_start + __len; 
+      this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
   }
 }
@@ -398,9 +388,9 @@ basic_string<_CharT,_Traits,_Alloc> ::find(const _CharT* __s, size_type __pos, s
     return npos;
   else {
     const const_pointer __result =
-      _STLP_STD::search((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish, 
+      _STLP_STD::search((const _CharT*)this->_M_Start() + __pos, (const _CharT*)this->_M_finish, 
 		 		 		 __s, __s + __n, _Eq_traits<_Traits>());
-    return __result != this->_M_finish ? __result - this->_M_start : npos;
+    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }
 
@@ -410,9 +400,9 @@ basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
     return npos;
   else {
     const const_pointer __result =
-      _STLP_STD::find_if((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish,
+      _STLP_STD::find_if((const _CharT*)this->_M_Start() + __pos, (const _CharT*)this->_M_finish,
 		 		 		  _Eq_char_bound<_Traits>(__c));
-    return __result != this->_M_finish ? __result - this->_M_start : npos;
+    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }    
 
@@ -425,11 +415,10 @@ basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos, 
   else if (__n == 0)
     return (min) (__len, __pos);
   else {
-    const_pointer __last = this->_M_start + (min) (__len - __n, __pos) + __n;
-    const_pointer __result = _STLP_STD::find_end(__CONST_CAST(const_pointer, this->_M_start), __last,
-		 		 		 		 		 		  __s, __s + __n,
-		 		 		 		 		 		  _Eq_traits<_Traits>());
-    return __result != __last ? __result - this->_M_start : npos;
+    const_pointer __last = this->_M_Start() + (min) (__len - __n, __pos) + __n;
+    const_pointer __result = _STLP_STD::find_end(this->_M_Start(), __last, 
+                                                 __s, __s + __n, _Eq_traits<_Traits>());
+    return __result != __last ? __result - this->_M_Start() : npos;
   }
 }
 
@@ -484,11 +473,10 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(const _CharT* __s, size_
   if (__pos >= size())
     return npos;
   else {
-    const_pointer __result = _STLP_STD::find_if(__CONST_CAST(const_pointer, this->_M_start) + __pos, 
-                                                __CONST_CAST(const_pointer, this->_M_finish),
+    const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
                                                 _Not_within_traits<_Traits>(__CONST_CAST(const _CharType*, __s), 
                                                                             __CONST_CAST(const _CharType*, __s) + __n));
-    return __result != this->_M_finish ? __result - this->_M_start : npos;
+    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }
 
@@ -497,10 +485,9 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(_CharT __c, size_type __
   if (__pos >= size())
     return npos;
   else {
-    const_pointer __result = _STLP_STD::find_if(__CONST_CAST(const_pointer, this->_M_start) + __pos,
-                                                __CONST_CAST(const_pointer, this->_M_finish),
-		 		 		 		 		 		 _Neq_char_bound<_Traits>(__c));
-    return __result != this->_M_finish ? __result - this->_M_start : npos;
+    const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
+		 		 		 		 		 		                        _Neq_char_bound<_Traits>(__c));
+    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }    
 
@@ -575,22 +562,30 @@ void _String_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
 }
 
 template <class _Tp, class _Alloc> 
-void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {  
-  if ((__n <= (max_size()+1)) && (__n>0)){ 
+void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+  if (__n <= _DEFAULT_SIZE) {
+    this->_M_finish = this->_M_buffers._M_static_buf; 
+    this->_M_end_of_storage._M_data = this->_M_buffers._M_static_buf + _DEFAULT_SIZE; 
+  } else
+#endif /*_STLP_USE_SHORT_STRING_OPTIM  */
+  if ((__n <= (max_size()+1)) && (__n > 0)){
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    this->_M_buffers._M_dynamic_buf = _M_end_of_storage.allocate(__n);
+    this->_M_finish = this->_M_buffers._M_dynamic_buf; 
+#else
     this->_M_start  = _M_end_of_storage.allocate(__n); 
     this->_M_finish = this->_M_start; 
-    this->_M_end_of_storage._M_data = this->_M_start + __n; 
-  } 
-    else 
-      this->_M_throw_length_error(); 
+#endif /*_STLP_USE_SHORT_STRING_OPTIM  */
+    this->_M_end_of_storage._M_data = this->_M_finish + __n; 
+  }
+  else 
+    this->_M_throw_length_error(); 
 } 
  
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT, _Traits, _Alloc>::basic_string()
-  : _String_base<_CharT,_Alloc>(allocator_type()) {  
-  this->_M_start = this->_M_end_of_storage.allocate(8); 
-  this->_M_finish = this->_M_start; 
-  this->_M_end_of_storage._M_data = this->_M_start + 8; 
+  : _String_base<_CharT,_Alloc>(allocator_type(), _DEFAULT_SIZE) {  
   _M_terminate_string();  
 } 
 
@@ -607,7 +602,7 @@ basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s,
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _Traits, _Alloc> & __s)  
   : _String_base<_CharT,_Alloc>(__s.get_allocator(), __s.size() + 1) {  
-  _M_range_initialize(__s._M_start, __s._M_finish);  
+  _M_range_initialize(__s._M_Start(), __s._M_Finish());  
 } 
   
 # if defined ( __SUNPRO_CC) && ! defined(_STLP_STATIC_CONST_INIT_BUG)

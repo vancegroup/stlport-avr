@@ -120,29 +120,118 @@ struct _Not_within_traits : public unary_function<typename _Traits::char_type, b
 
 template <class _Tp, class _Alloc> 
 class _String_base {
-public:
+protected:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  enum {_DEFAULT_SIZE = 8};
+private:
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+  union {
+    _Tp*  _M_dynamic_buf;
+    _Tp   _M_static_buf[_DEFAULT_SIZE];
+  } _M_buffers;
+#else
   _Tp*    _M_start;
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+protected:
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+  bool _M_static_buf() const {
+    return (_M_end_of_storage._M_data == _M_buffers._M_static_buf + _DEFAULT_SIZE);
+  }
+  _Tp const* _M_Start() const {
+    return _M_static_buf()?_M_buffers._M_static_buf:_M_buffers._M_dynamic_buf;
+  }
+  _Tp* _M_Start() {
+    return _M_static_buf()?_M_buffers._M_static_buf:_M_buffers._M_dynamic_buf;
+  }
+#else
+  _Tp const* _M_Start() const {return _M_start;}
+  _Tp* _M_Start() {return _M_start;}
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+
   _Tp*    _M_finish;
   _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
-                                // Precondition: 0 < __n <= max_size().
-  void _M_allocate_block(size_t);
+
+  _Tp const* _M_Finish() const {return _M_finish;}
+  _Tp* _M_Finish() {return _M_finish;}
+
+  // Precondition: 0 < __n <= max_size().
+  void _M_allocate_block(size_t __n = _DEFAULT_SIZE);
   void _M_deallocate_block() {
-		   if (_M_start != 0)
-		 		 _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (!_M_static_buf() && (_M_buffers._M_dynamic_buf != 0))
+      _M_end_of_storage.deallocate(_M_buffers._M_dynamic_buf, _M_end_of_storage._M_data - _M_buffers._M_dynamic_buf); 
+#else
+    if (_M_start != 0)
+      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }
   
   size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
 
   _String_base(const allocator_type& __a)
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE) {}
+#else
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0) {}
+#endif
   
   _String_base(const allocator_type& __a, size_t __n)
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE)
+    {if (__n > _DEFAULT_SIZE) _M_allocate_block(__n);}
+#else
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0)
-    { _M_allocate_block(__n); }
+    {_M_allocate_block(__n); }
+#endif
 
   ~_String_base() { _M_deallocate_block(); }
+
+  void _M_reset(_Tp *__start, _Tp *__finish, _Tp *__end_of_storage) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    _M_buffers._M_dynamic_buf = __start;
+#else
+    _M_start = __start;
+#endif
+    _M_finish = __finish;
+    _M_end_of_storage._M_data = __end_of_storage;
+  }
+
+  void _M_destroy_back () {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (!_M_static_buf())
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+      _STLP_STD::_Destroy(_M_finish);
+  }
+
+  void _M_destroy_range(size_t __from_off = 0, size_t __to_off = 1) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (!_M_static_buf())
+		  _STLP_STD::_Destroy_Range(_M_buffers._M_dynamic_buf + __from_off, _M_finish + __to_off);
+#else
+		_STLP_STD::_Destroy_Range(_M_start + __from_off, _M_finish + __to_off);
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+  }
+
+  void _M_destroy_ptr_range(_Tp *__f, _Tp *__l) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (!_M_static_buf())
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+		  _STLP_STD::_Destroy_Range(__f, __l);
+  }
+
+  void _M_Swap(_String_base<_Tp, _Alloc> &__s) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (_M_static_buf())
+      _STLP_STD::swap(_M_buffers, __s._M_buffers);
+    else
+      _STLP_STD::swap(_M_buffers._M_dynamic_buf, __s._M_buffers._M_dynamic_buf);
+#else
+    _STLP_STD::swap(_M_start, __s._M_start);
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+    _STLP_STD::swap(_M_finish, __s._M_finish);
+    _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+  }
 
   void _M_throw_length_error() const;
   void _M_throw_out_of_range() const;
@@ -250,8 +339,8 @@ public:                         // Constructor, destructor, assignment.
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
     else
-      _M_range_initialize(__s._M_start + __pos,
-                          __s._M_start + __pos + (min) (__n, __s.size() - __pos));
+      _M_range_initialize(__s._M_Start() + __pos,
+                          __s._M_Start() + __pos + (min) (__n, __s.size() - __pos));
   }
 
   basic_string(const _CharT* __s, size_type __n,
@@ -269,7 +358,7 @@ public:                         // Constructor, destructor, assignment.
                const allocator_type& __a = allocator_type())
     : _String_base<_CharT,_Alloc>(__a, __n + 1)
   {
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __c);
+    this->_M_finish = uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
 
@@ -279,8 +368,6 @@ public:                         // Constructor, destructor, assignment.
   
   explicit basic_string(__partial_move_source<_Self> src)
     : _String_base<_CharT,_Alloc>(_AsPartialMoveSource<_String_base<_CharT,_Alloc> >(src.get())) {
-		   //Set the source destroyable:
-		   src.get()._M_start = 0;
   }
   
   // Check to see if _InputIterator is an integer type.  If so, then
@@ -327,11 +414,13 @@ public:                         // Constructor, destructor, assignment.
   operator __std_string() const { return __std_string(this->data(), this->size()); }
 # endif
 
-  ~basic_string() { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1); }
+  ~basic_string() {
+    this->_M_destroy_range();
+  }
     
   _Self& operator=(const _Self& __s) {
     if (&__s != this) 
-      _M_assign(__s._M_start, __s._M_finish, r_a_i_t());
+      _M_assign(__s._M_Start(), __s._M_Finish(), r_a_i_t());
     return *this;
   }
 
@@ -370,13 +459,13 @@ private:
 
   void _M_terminate_string_aux(const __false_type& /*IsIntegral*/) {
     _STLP_TRY {
-      _M_construct_null(this->_M_finish);
+      _M_construct_null(this->_M_Finish());
     }
-    _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish));
+    _STLP_UNWIND(this->_M_destroy_range(0,0));
   }
 
   void _M_terminate_string_aux(const __true_type& /*IsIntegral*/) {
-    *(this->_M_finish)=0;
+    *(this->_M_Finish())=0;
   }
 
   void _M_terminate_string() {
@@ -385,13 +474,13 @@ private:
 
 #ifndef _STLP_MEMBER_TEMPLATES
   bool _M_inside(const _CharT* __s ) const {
-    return (__s >= this->_M_start) && (__s < this->_M_finish);
+    return (__s >= this->_M_Start()) && (__s < this->_M_Finish());
   }
 #else
   template <class _InputIter>
   bool _M_inside(_InputIter __i) const {
     const _CharT* __s = __STATIC_CAST(const _CharT*, &(*__i));
-    return (__s >= this->_M_start) && (__s < this->_M_finish);
+    return (__s >= this->_M_Start()) && (__s < this->_M_Finish());
   }
 #endif /*_STLP_MEMBER_TEMPLATES*/
 
@@ -400,12 +489,12 @@ private:
   template <class _InputIter> 
   void _M_range_initialize(_InputIter __f, _InputIter __l,
                            const input_iterator_tag &__tag) {
-    this->_M_allocate_block(8);
-    _M_construct_null(this->_M_finish);
+    this->_M_allocate_block();
+    _M_construct_null(this->_M_Finish());
     _STLP_TRY {
       _M_append(__f, __l, __tag);
     }
-    _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1));
+    _STLP_UNWIND(this->_M_destroy_range());
   }
 
   template <class _ForwardIter> 
@@ -413,7 +502,7 @@ private:
                            const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
-    this->_M_finish = uninitialized_copy(__f, __l, this->_M_start);
+    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
 
@@ -425,7 +514,7 @@ private:
   template <class _Integer> 
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
     this->_M_allocate_block(__n + 1);
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __x);
+    this->_M_finish = uninitialized_fill_n(this->_M_Start(), __n, __x);
     _M_terminate_string();
   }
 
@@ -439,29 +528,29 @@ private:
   void _M_range_initialize(const _CharT* __f, const _CharT* __l) {
     ptrdiff_t __n = __l - __f;
     this->_M_allocate_block(__n + 1);
-    this->_M_finish = uninitialized_copy(__f, __l, this->_M_start);
+    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // Iterators.
-  iterator begin()             { return this->_M_start; }
-  iterator end()               { return this->_M_finish; }
-  const_iterator begin() const { return this->_M_start; }
-  const_iterator end()   const { return this->_M_finish; }  
+  iterator begin()             { return this->_M_Start(); }
+  iterator end()               { return this->_M_Finish(); }
+  const_iterator begin() const { return this->_M_Start(); }
+  const_iterator end()   const { return this->_M_Finish(); }  
 
   reverse_iterator rbegin()             
-    { return reverse_iterator(this->_M_finish); }
+    { return reverse_iterator(this->_M_Finish()); }
   reverse_iterator rend()               
-    { return reverse_iterator(this->_M_start); }
+    { return reverse_iterator(this->_M_Start()); }
   const_reverse_iterator rbegin() const 
-    { return const_reverse_iterator(this->_M_finish); }
+    { return const_reverse_iterator(this->_M_Finish()); }
   const_reverse_iterator rend()   const 
-    { return const_reverse_iterator(this->_M_start); }
+    { return const_reverse_iterator(this->_M_Start()); }
 
 public:                         // Size, capacity, etc.
-  size_type size() const { return this->_M_finish - this->_M_start; }
+  size_type size() const { return this->_M_Finish() - this->_M_Start(); }
   size_type length() const { return size(); }
 
   size_t max_size() const { return _Base::max_size(); }
@@ -477,35 +566,35 @@ public:                         // Size, capacity, etc.
 
   void reserve(size_type = 0);
 
-  size_type capacity() const { return (this->_M_end_of_storage._M_data - this->_M_start) - 1; }
+  size_type capacity() const { return (this->_M_end_of_storage._M_data - this->_M_Start()) - 1; }
 
   void clear() {
     if (!empty()) {
-      _Traits::assign(*(this->_M_start), _M_null());
-      _STLP_STD::_Destroy_Range(this->_M_start+1, this->_M_finish+1);
-      this->_M_finish = this->_M_start;
+      _Traits::assign(*(this->_M_Start()), _M_null());
+      this->_M_destroy_range(1);
+      this->_M_finish = this->_M_Start();
     }
   } 
 
-  bool empty() const { return this->_M_start == this->_M_finish; }    
+  bool empty() const { return this->_M_Start() == this->_M_Finish(); }    
 
 public:                         // Element access.
 
   const_reference operator[](size_type __n) const
-    { return *(this->_M_start + __n); }
+    { return *(this->_M_Start() + __n); }
   reference operator[](size_type __n)
-    { return *(this->_M_start + __n); }
+    { return *(this->_M_Start() + __n); }
 
   const_reference at(size_type __n) const {
     if (__n >= size())
       this->_M_throw_out_of_range();
-    return *(this->_M_start + __n);
+    return *(this->_M_Start() + __n);
   }
 
   reference at(size_type __n) {
     if (__n >= size())
       this->_M_throw_out_of_range();
-    return *(this->_M_start + __n);
+    return *(this->_M_Start() + __n);
   }
 
 public:                         // Append, operator+=, push_back.
@@ -515,15 +604,15 @@ public:                         // Append, operator+=, push_back.
   _Self& operator+=(_CharT __c) { push_back(__c); return *this; }
 
   _Self& append(const _Self& __s) 
-    { return _M_append(__s._M_start, __s._M_finish, r_a_i_t()); }
+    { return _M_append(__s._M_Start(), __s._M_Finish(), r_a_i_t()); }
 
   _Self& append(const _Self& __s,
-                       size_type __pos, size_type __n)
+                size_type __pos, size_type __n)
   {
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
-    return _M_append(__s._M_start + __pos,
-                     __s._M_start + __pos + (min) (__n, __s.size() - __pos),
+    return _M_append(__s._M_Start() + __pos,
+                     __s._M_Start() + __pos + (min) (__n, __s.size() - __pos),
                      r_a_i_t());
   }
 
@@ -552,16 +641,16 @@ public:                         // Append, operator+=, push_back.
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   void push_back(_CharT __c) {
-    if (this->_M_finish + 1 == this->_M_end_of_storage._M_data)
+    if (this->_M_Finish() + 1 == this->_M_end_of_storage._M_data)
       reserve(size() + (max)(size(), __STATIC_CAST(size_type,1)));
-    _M_construct_null(this->_M_finish + 1);
-    _Traits::assign(*(this->_M_finish), __c);
+    _M_construct_null(this->_M_Finish() + 1);
+    _Traits::assign(*(this->_M_Finish()), __c);
     ++this->_M_finish;
   }
 
   void pop_back() {
-    _Traits::assign(*(this->_M_finish - 1), _M_null());
-    _STLP_STD::_Destroy(this->_M_finish);
+    _Traits::assign(*(this->_M_Finish() - 1), _M_null());
+    this->_M_destroy_back();
     --this->_M_finish;
   }
 
@@ -594,26 +683,24 @@ private:                        // Helper functions for append.
 		       pointer __new_start = this->_M_end_of_storage.allocate(__len);
 		       pointer __new_finish = __new_start;
 		       _STLP_TRY {
-		         __new_finish = uninitialized_copy(this->_M_start, this->_M_finish, __new_start);
+		         __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
 		         __new_finish = uninitialized_copy(__first, __last, __new_finish);
 		         _M_construct_null(__new_finish);
 		       }
 		       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
 		                     this->_M_end_of_storage.deallocate(__new_start,__len)));
-		       _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+		       this->_M_destroy_range();
 		       this->_M_deallocate_block();
-		       this->_M_start = __new_start;
-		       this->_M_finish = __new_finish;
-		       this->_M_end_of_storage._M_data = __new_start + __len; 
+           this->_M_reset(__new_start, __new_finish, __new_start + __len);
 		     }
 		     else {
 		       _ForwardIter __f1 = __first;
 		       ++__f1;
-		       uninitialized_copy(__f1, __last, this->_M_finish + 1);
+		       uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
 		       _STLP_TRY {
-		         _M_construct_null(this->_M_finish + __n);
+		         _M_construct_null(this->_M_Finish() + __n);
 		       }
-		       _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_finish + 1, this->_M_finish + __n));
+		       _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __n));
 		       _Traits::assign(*end(), *__first);
 		       this->_M_finish += __n;
 		     }
@@ -636,14 +723,14 @@ private:                        // Helper functions for append.
 public:                         // Assign
   
   _Self& assign(const _Self& __s) 
-    { return _M_assign(__s._M_start, __s._M_finish, r_a_i_t()); }
+    { return _M_assign(__s._M_Start(), __s._M_Finish(), r_a_i_t()); }
 
   _Self& assign(const _Self& __s, 
                 size_type __pos, size_type __n) {
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
-    return _M_assign(__s._M_start + __pos, 
-                     __s._M_start + __pos + (min) (__n, __s.size() - __pos), r_a_i_t());
+    return _M_assign(__s._M_Start() + __pos, 
+                     __s._M_Start() + __pos + (min) (__n, __s.size() - __pos), r_a_i_t());
   }
 
   _Self& assign(const _CharT* __s, size_type __n)
@@ -665,8 +752,8 @@ private:                        // Helper functions for assign.
 
   template <class _InputIter> 
   _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/)  {
-    pointer __cur = this->_M_start;
-    while (__f != __l && __cur != this->_M_finish) {
+    pointer __cur = this->_M_Start();
+    while (__f != __l && __cur != this->_M_Finish()) {
       _Traits::assign(*__cur, *__f);
       ++__f;
       ++__cur;
@@ -698,11 +785,11 @@ private:
                    const random_access_iterator_tag &__tag) {
     ptrdiff_t __n = __l - __f;
     if (__STATIC_CAST(size_type,__n) <= size()) {
-      _Traits::copy(this->_M_start, __f, __n);
+      _Traits::copy(this->_M_Start(), __f, __n);
       erase(begin() + __n, end());
     }
     else {
-      _Traits::copy(this->_M_start, __f, size());
+      _Traits::copy(this->_M_Start(), __f, size());
       _M_append(__f + size(), __l, __tag);
     }
     return *this;
@@ -715,7 +802,7 @@ public:                         // Insert
       this->_M_throw_out_of_range();
     if (size() > max_size() - __s.size())
       this->_M_throw_length_error();
-    _M_insert(begin() + __pos, __s._M_start, __s._M_finish, r_a_i_t());
+    _M_insert(begin() + __pos, __s._M_Start(), __s._M_Finish(), r_a_i_t());
     return *this;
   }
 
@@ -727,7 +814,7 @@ public:                         // Insert
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
     _M_insert(begin() + __pos, 
-              __s._M_start + __beg, __s._M_start + __beg + __len, r_a_i_t());
+              __s._M_Start() + __beg, __s._M_Start() + __beg + __len, r_a_i_t());
     return *this;
   }
   _Self& insert(size_type __pos, const _CharT* __s, size_type __n) {
@@ -747,7 +834,7 @@ public:                         // Insert
     size_type __len = _Traits::length(__s);
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
-    _M_insert(this->_M_start + __pos, __s, __s + __len, r_a_i_t());
+    _M_insert(this->_M_Start() + __pos, __s, __s + __len, r_a_i_t());
     return *this;
   }
     
@@ -764,7 +851,7 @@ public:                         // Insert
     _STLP_FIX_LITERAL_BUG(__p)
     if (__p == end()) {
       push_back(__c);
-      return this->_M_finish - 1;
+      return this->_M_Finish() - 1;
     }
     else
       return _M_insert_aux(__p, __c);
@@ -805,18 +892,16 @@ private:  // Helper functions for insert.
     pointer __new_start = this->_M_end_of_storage.allocate(__len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
-      __new_finish = uninitialized_copy(this->_M_start, __position, __new_start);
+      __new_finish = uninitialized_copy(this->_M_Start(), __position, __new_start);
       __new_finish = uninitialized_copy(__first, __last, __new_finish);
-      __new_finish = uninitialized_copy(__position, this->_M_finish, __new_finish);
+      __new_finish = uninitialized_copy(__position, this->_M_Finish(), __new_finish);
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                   this->_M_end_of_storage.deallocate(__new_start,__len)));
-    _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+    this->_M_destroy_range();
     this->_M_deallocate_block();
-    this->_M_start = __new_start;
-    this->_M_finish = __new_finish;
-    this->_M_end_of_storage._M_data = __new_start + __len; 
+    this->_M_reset(__new_start, __new_finish, __new_start + __len);
   }
 
   template <class _InputIter> 
@@ -834,10 +919,10 @@ private:  // Helper functions for insert.
     //This version has to take care about self referencing
     if (__first != __last) {
       difference_type __n = __last - __first;
-      if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
-        const difference_type __elems_after = this->_M_finish - __position;
+      if (this->_M_end_of_storage._M_data - this->_M_Finish() >= __n + 1) {
+        const difference_type __elems_after = this->_M_Finish() - __position;
         if (__elems_after >= __n) {
-          uninitialized_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
+          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
           this->_M_finish += __n;
           iterator __move_dest = __position + __n;
           iterator __move_dest_end = __position + __elems_after + 1;
@@ -876,17 +961,17 @@ private:  // Helper functions for insert.
           }
         }
         else {
-          pointer __old_finish = this->_M_finish;
+          pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
           advance(__mid, __elems_after + 1);
-          uninitialized_copy(__mid, __last, this->_M_finish + 1);
+          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
-            uninitialized_copy(__position, __old_finish + 1, this->_M_finish);
+            uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
-          _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish), 
-                                                  this->_M_finish = __old_finish));
+          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
+                        this->_M_finish = __old_finish));
           _M_move(__first, __mid, __position);
         }
       }
@@ -903,25 +988,25 @@ private:  // Helper functions for insert.
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
       if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
-      		 const difference_type __elems_after = this->_M_finish - __position;
+      	const difference_type __elems_after = this->_M_finish - __position;
         if (__elems_after >= __n) {
-          uninitialized_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
+          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
           this->_M_finish += __n;
           _Traits::move(__position + __n, __position, (__elems_after - __n) + 1);
           _M_copy(__first, __last, __position);
         }
         else {
-          pointer __old_finish = this->_M_finish;
+          pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
           advance(__mid, __elems_after + 1);
-          uninitialized_copy(__mid, __last, this->_M_finish + 1);
+          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
-            uninitialized_copy(__position, __old_finish + 1, this->_M_finish);
+            uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
-          _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish), 
-                                                  this->_M_finish = __old_finish));
+          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
+                        this->_M_finish = __old_finish));
           _M_copy(__first, __mid, __position);
         }
       }
@@ -977,19 +1062,19 @@ public:                         // Erase.
   }  
 
   iterator erase(iterator __position) {
-                                // The move includes the terminating _CharT().
-    _Traits::move(__position, __position + 1, this->_M_finish - __position);
-    _STLP_STD::_Destroy(this->_M_finish);
+    // The move includes the terminating _CharT().
+    _Traits::move(__position, __position + 1, this->_M_Finish() - __position);
+    this->_M_destroy_back();
     --this->_M_finish;
     return __position;
   }
 
   iterator erase(iterator __first, iterator __last) {
     if (__first != __last) {
-                                // The move includes the terminating _CharT().
-      traits_type::move(__first, __last, (this->_M_finish - __last) + 1);
-      pointer __new_finish = this->_M_finish - (__last - __first);
-      _STLP_STD::_Destroy_Range(__new_finish + 1, this->_M_finish + 1);
+      // The move includes the terminating _CharT().
+      traits_type::move(__first, __last, (this->_M_Finish() - __last) + 1);
+      pointer __new_finish = this->_M_Finish() - (__last - __first);
+      this->_M_destroy_ptr_range(__new_finish + 1, this->_M_Finish() + 1);
       this->_M_finish = __new_finish;
     }
     return __first;
@@ -1005,7 +1090,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (size() - __len >= max_size() - __s.size())
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len, 
-                      __s._M_start, __s._M_finish, r_a_i_t());
+                      __s._M_Start(), __s._M_Finish(), r_a_i_t());
   }
 
   _Self& replace(size_type __pos1, size_type __n1,
@@ -1018,7 +1103,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (size() - __len1 >= max_size() - __len2)
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos1, begin() + __pos1 + __len1,
-                      __s._M_start + __pos2, __s._M_start + __pos2 + __len2, r_a_i_t());
+                      __s._M_Start() + __pos2, __s._M_Start() + __pos2 + __len2, r_a_i_t());
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -1057,7 +1142,7 @@ public:                         // Replace.  (Conceptually equivalent
   }
 
   _Self& replace(iterator __first, iterator __last, const _Self& __s) {
-    return _M_replace(__first, __last, __s._M_start, __s._M_finish, r_a_i_t());
+    return _M_replace(__first, __last, __s._M_Start(), __s._M_Finish(), r_a_i_t());
   }
 
   _Self& replace(iterator __first, iterator __last,
@@ -1183,25 +1268,23 @@ public:                         // Other modifier member functions.
     if (__pos > size())
       this->_M_throw_out_of_range();
     const size_type __len = (min) (__n, size() - __pos);
-    _Traits::copy(__s, this->_M_start + __pos, __len);
+    _Traits::copy(__s, this->_M_Start() + __pos, __len);
     return __len;
   }
 
   void swap(_Self& __s) {
-    _STLP_STD::swap(this->_M_start, __s._M_start);
-    _STLP_STD::swap(this->_M_finish, __s._M_finish);
-    _STLP_STD::swap(this->_M_end_of_storage, __s._M_end_of_storage);
+    this->_M_Swap(__s);
   }
 
 public:                         // Conversion to C string.
 
-  const _CharT* c_str() const { return this->_M_start; }
-  const _CharT* data()  const { return this->_M_start; }
+  const _CharT* c_str() const { return this->_M_Start(); }
+  const _CharT* data()  const { return this->_M_Start(); }
 
 public:                         // find.
 
   size_type find(const _Self& __s, size_type __pos = 0) const 
-    { return find(__s._M_start, __pos, __s.size()); }
+    { return find(__s._M_Start(), __pos, __s.size()); }
 
   size_type find(const _CharT* __s, size_type __pos = 0) const 
     { _STLP_FIX_LITERAL_BUG(__s) return find(__s, __pos, _Traits::length(__s)); }
@@ -1216,7 +1299,7 @@ public:                         // find.
 public:                         // rfind.
 
   size_type rfind(const _Self& __s, size_type __pos = npos) const 
-    { return rfind(__s._M_start, __pos, __s.size()); }
+    { return rfind(__s._M_Start(), __pos, __s.size()); }
 
   size_type rfind(const _CharT* __s, size_type __pos = npos) const 
     { _STLP_FIX_LITERAL_BUG(__s) return rfind(__s, __pos, _Traits::length(__s)); }
@@ -1227,7 +1310,7 @@ public:                         // rfind.
 public:                         // find_first_of
   
   size_type find_first_of(const _Self& __s, size_type __pos = 0) const 
-    { return find_first_of(__s._M_start, __pos, __s.size()); }
+    { return find_first_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_first_of(const _CharT* __s, size_type __pos = 0) const 
     { _STLP_FIX_LITERAL_BUG(__s) return find_first_of(__s, __pos, _Traits::length(__s)); }
@@ -1242,7 +1325,7 @@ public:                         // find_last_of
 
   size_type find_last_of(const _Self& __s,
                          size_type __pos = npos) const
-    { return find_last_of(__s._M_start, __pos, __s.size()); }
+    { return find_last_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_last_of(const _CharT* __s, size_type __pos = npos) const 
     { _STLP_FIX_LITERAL_BUG(__s) return find_last_of(__s, __pos, _Traits::length(__s)); }
@@ -1258,7 +1341,7 @@ public:                         // find_first_not_of
 
   size_type find_first_not_of(const _Self& __s, 
                               size_type __pos = 0) const 
-    { return find_first_not_of(__s._M_start, __pos, __s.size()); }
+    { return find_first_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const 
     { _STLP_FIX_LITERAL_BUG(__s) return find_first_not_of(__s, __pos, _Traits::length(__s)); }
@@ -1272,7 +1355,7 @@ public:                         // find_last_not_of
 
   size_type find_last_not_of(const _Self& __s, 
                              size_type __pos = npos) const
-    { return find_last_not_of(__s._M_start, __pos, __s.size()); }
+    { return find_last_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_last_not_of(const _CharT* __s, size_type __pos = npos) const
     { _STLP_FIX_LITERAL_BUG(__s) return find_last_not_of(__s, __pos, _Traits::length(__s)); }
@@ -1287,22 +1370,22 @@ public:                         // Substring.
   _Self substr(size_type __pos = 0, size_type __n = npos) const {
     if (__pos > size())
       this->_M_throw_out_of_range();
-    return _Self(this->_M_start + __pos, 
-                        this->_M_start + __pos + (min) (__n, size() - __pos));
+    return _Self(this->_M_Start() + __pos, 
+                 this->_M_Start() + __pos + (min) (__n, size() - __pos));
   }
 
 public:                         // Compare
 
   int compare(const _Self& __s) const 
-    { return _M_compare(this->_M_start, this->_M_finish, __s._M_start, __s._M_finish); }
+    { return _M_compare(this->_M_Start(), this->_M_Finish(), __s._M_Start(), __s._M_Finish()); }
 
   int compare(size_type __pos1, size_type __n1,
               const _Self& __s) const {
     if (__pos1 > size())
       this->_M_throw_out_of_range();
-    return _M_compare(this->_M_start + __pos1, 
-                      this->_M_start + __pos1 + (min) (__n1, size() - __pos1),
-                      __s._M_start, __s._M_finish);
+    return _M_compare(this->_M_Start() + __pos1, 
+                      this->_M_Start() + __pos1 + (min) (__n1, size() - __pos1),
+                      __s._M_Start(), __s._M_Finish());
   }
     
   int compare(size_type __pos1, size_type __n1,
@@ -1310,23 +1393,23 @@ public:                         // Compare
               size_type __pos2, size_type __n2) const {
     if (__pos1 > size() || __pos2 > __s.size())
       this->_M_throw_out_of_range();
-    return _M_compare(this->_M_start + __pos1, 
-                      this->_M_start + __pos1 + (min) (__n1, size() - __pos1),
-                      __s._M_start + __pos2, 
-                      __s._M_start + __pos2 + (min) (__n2, __s.size() - __pos2));
+    return _M_compare(this->_M_Start() + __pos1, 
+                      this->_M_Start() + __pos1 + (min) (__n1, size() - __pos1),
+                      __s._M_Start() + __pos2, 
+                      __s._M_Start() + __pos2 + (min) (__n2, __s.size() - __pos2));
   }
 
   int compare(const _CharT* __s) const {
     _STLP_FIX_LITERAL_BUG(__s) 
-    return _M_compare(this->_M_start, this->_M_finish, __s, __s + _Traits::length(__s));
+    return _M_compare(this->_M_Start(), this->_M_Finish(), __s, __s + _Traits::length(__s));
   }
 
   int compare(size_type __pos1, size_type __n1, const _CharT* __s) const {
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos1 > size())
       this->_M_throw_out_of_range();
-    return _M_compare(this->_M_start + __pos1, 
-                      this->_M_start + __pos1 + (min) (__n1, size() - __pos1),
+    return _M_compare(this->_M_Start() + __pos1, 
+                      this->_M_Start() + __pos1 + (min) (__n1, size() - __pos1),
                       __s, __s + _Traits::length(__s));
   }
 
@@ -1335,8 +1418,8 @@ public:                         // Compare
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos1 > size())
       this->_M_throw_out_of_range();
-    return _M_compare(this->_M_start + __pos1, 
-                      this->_M_start + __pos1 + (min) (__n1, size() - __pos1),
+    return _M_compare(this->_M_Start() + __pos1, 
+                      this->_M_Start() + __pos1 + (min) (__n1, size() - __pos1),
                       __s, __s + __n2);
   }
 
@@ -1352,14 +1435,14 @@ public:                        // Helper functions for compare.
 
 #ifdef _STLP_USE_TEMPLATE_EXPRESSION
 public:
-  template <class _Left, class _Right>
-  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s) 
+  template <class _Left, class _Right, class _StorageDir>
+  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) 
     : _String_base<_CharT,_Alloc>(allocator_type(), __s.size()){
     _M_append_sum(__s);
   }
 
-  template <class _Left, class _Right>
-  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s,
+  template <class _Left, class _Right, class _StorageDir>
+  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
                size_type __pos, size_type __n = npos, 
                const allocator_type& __a = allocator_type())
     : _String_base<_CharT,_Alloc>(__a, (__pos <= __s.size())?((min) (__n, __s.size() - __pos)):0) {
@@ -1370,36 +1453,36 @@ public:
       _M_append_sum(__s, __pos, (min) (__n, __size - __pos));
   }
 
-  template <class _Left, class _Right>
-  _Self& operator=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s) {
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& operator=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     return _M_assign_sum(__s);
   }
 
-  template <class _Left, class _Right>
-  _Self& operator+=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s) {
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& operator+=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     return _M_append_sum(__s);
   }
 
-  template <class _Left, class _Right>
-  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s) {
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     return _M_append_sum(__s); 
   }
 
-  template <class _Left, class _Right>
-  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s,
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
                 size_type __pos, size_type __n) {
    if (__pos > __s.size())
      this->_M_throw_out_of_range();
    return _M_append_sum(__s, __pos, __n);
   }
 
-  template <class _Left, class _Right>
-  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s) {
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     return _M_assign_sum(__s); 
   }
 
-  template <class _Left, class _Right>
-  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s, 
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, 
                 size_type __pos, size_type __n) {
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
@@ -1423,9 +1506,13 @@ private:
                              size_type __pos, size_type __n) {
     return uninitialized_copy(__s.begin() + __pos, __s.begin() + (min)(__pos + __n, __s.size()), __buf);
   }
+  value_type* _M_append_fast(__sum_storage_elem<value_type, traits_type, _Alloc> const& __s, value_type *__buf, 
+                             size_type __pos, size_type __n) {
+    return __buf;
+  }
 
-  template <class _Left, class _Right>
-  value_type* _M_append_fast(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s, value_type *__buf,
+  template <class _Left, class _Right, class _StorageDir>
+  value_type* _M_append_fast(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, value_type *__buf,
                              size_type __pos, size_type __n) {
     if (__n == 0) {
       return __buf;
@@ -1442,8 +1529,8 @@ private:
     }
   }
 
-  template <class _Left, class _Right>
-  _Self& _M_assign_overflow (size_type __new_size, __bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s,
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& _M_assign_overflow (size_type __new_size, __bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
                              size_type __pos, size_type __n) {
 		pointer __new_start = this->_M_end_of_storage.allocate(__new_size);
 		pointer __new_finish = __new_start;
@@ -1453,16 +1540,14 @@ private:
 		}
 		_STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
 		              this->_M_end_of_storage.deallocate(__new_start,__new_size)));
-		_STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+		this->_M_destroy_range();
 		this->_M_deallocate_block();
-		this->_M_start = __new_start;
-		this->_M_finish = __new_finish;
-		this->_M_end_of_storage._M_data = __new_start + __new_size;
+    this->_M_reset(__new_start, __new_finish, __new_start + __new_size);
     return *this;
   }
 
-  template <class _Left, class _Right>
-  _Self& _M_assign_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s,
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& _M_assign_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
                         size_type __pos = 0, size_type __n = npos) {
     //TODO: We systematically use a new allocation to avoid the self referencing trouble, try to avoid it.
     size_type __len = size();
@@ -1475,8 +1560,8 @@ private:
     return _M_assign_overflow(__len, __s, __pos, __n);
   }
 
-  template <class _Left, class _Right>
-  _Self& _M_append_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right> const& __s, 
+  template <class _Left, class _Right, class _StorageDir>
+  _Self& _M_append_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, 
                         size_type __pos = 0, size_type __n = npos) {
 		const size_type __old_size = size();
 		size_type __s_size = (min)(__s.size() - __pos, __n);
@@ -1489,10 +1574,10 @@ private:
 		}
 		else {
 		  _STLP_TRY {
-        _M_append_fast(__s, this->_M_finish + 1, __pos + 1, __n);
-		    _M_construct_null(this->_M_finish + __s_size);
+        _M_append_fast(__s, this->_M_Finish() + 1, __pos + 1, __n);
+		    _M_construct_null(this->_M_Finish() + __s_size);
 		  }
-		  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_finish + 1, this->_M_finish + __s_size));
+		  _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size));
 		  _Traits::assign(*end(), __s[__pos]);
 		  this->_M_finish += __s_size;
 		}

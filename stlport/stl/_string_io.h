@@ -44,10 +44,10 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
 
 #ifdef _STLP_USE_TEMPLATE_EXPRESSION
 
-template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right>
+template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, 
-           const __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right>& __sum) {
+           const __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __sum) {
   basic_string<_CharT, _Traits, _Alloc> __tmp(__sum);
   return __os << __tmp;
 }

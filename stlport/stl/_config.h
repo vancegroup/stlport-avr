@@ -117,7 +117,11 @@
 
 #if !defined (_STLP_DONT_USE_TEMPLATE_EXPRESSION) && !defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES) \
     && !defined (_STLP_DEBUG) && !defined (_STLP_USE_TEMPLATE_EXPRESSION)
-#define _STLP_USE_TEMPLATE_EXPRESSION 1
+#  define _STLP_USE_TEMPLATE_EXPRESSION 1
+#endif
+
+#if !defined (_STLP_DONT_USE_SHORT_STRING_OPTIM) && !defined (_STLP_USE_SHORT_STRING_OPTIM)
+//#  define _STLP_USE_SHORT_STRING_OPTIM 1
 #endif
 
 
@@ -184,6 +188,24 @@
 # elif defined (__WIN16) || defined (WIN16) || defined (_WIN16)
 #  define _STLP_WIN16
 # endif /* __unix */
+
+# if defined (_STLP_WIN16)
+#  define _STLP_LDOUBLE_80
+# elif defined(_STLP_WIN32)
+#  if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__) || defined (__CYGWIN__)
+#    define _STLP_LDOUBLE_64
+#  else
+#    define _STLP_LDOUBLE_96
+#  endif
+# elif defined (_STLP_UNIX)
+#   if defined (__CYGWIN__)
+#     define _STLP_LDOUBLE_96
+#   endif
+# endif
+
+# if !defined (_STLP_LDOUBLE_64) && !defined (_STLP_LDOUBLE_80) && !defined (_STLP_LDOUBLE_96) && !defined (_STLP_LDOUBLE_128)
+#   define _STLP_LDOUBLE_128
+# endif /*_STLP_LDOUBLE_??*/
 
 # if !defined(_STLP_MAKE_HEADER)
 #  define _STLP_MAKE_HEADER(path, header) <path/header>
