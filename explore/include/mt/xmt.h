@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/25 17:46:22 ptr>
+// -*- C++ -*- Time-stamp: <99/03/15 14:41:18 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -13,14 +13,29 @@
 #  define _REENTRANT
 #  define __DLLEXPORT __declspec( dllexport )
 #else
-#  if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
-#    include <ctime>
-#  endif
-#  ifdef _PTHREADS
-#    include <pthread.h>
-#  endif
-#  ifdef _SOLARIS_THREADS
-#    include <thread.h>
+#  if defined( _REENTRANT ) && !defined(_NOTHREADS)
+#    if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
+#      include <ctime>
+#    endif
+#    if !defined(_PTHREADS) && !defined(_SOLARIS_THREADS)
+#      ifdef __STL_THREADS
+#        ifdef __STL_SOLARIS_THREADS
+#          define _SOLARIS_THREADS
+#        elif __STL_PTHREADS
+#          define _PTHREADS
+#        endif
+#      else
+#        define _SOLARIS_THREADS // my default choice
+#      endif
+#    endif
+#    ifdef _PTHREADS
+#      include <pthread.h>
+#    endif
+#    ifdef _SOLARIS_THREADS
+#      include <thread.h>
+#    endif
+#  elif !defined(_NOTHREADS) // !_REENTRANT
+#    define _NOTHREADS
 #  endif
 #  define __DLLEXPORT
 #endif
@@ -99,6 +114,9 @@ class Mutex
 #endif
 #ifdef WIN32
 	return TryEnterCriticalSection( &mutex ) != 0 ? 0 : -1;
+#endif
+#ifdef _NOTHREADS
+        return 0;
 #endif
       }
 #endif // !WIN32 || _WIN32_WINNT >= 0x0400
@@ -252,6 +270,9 @@ class Condition
 
         return ret;
 #endif
+#ifdef _NOTHREADS
+        return 0;
+#endif
       }
 
     int signal()
@@ -267,6 +288,9 @@ class Condition
 #endif
 #ifdef _SOLARIS_THREADS
         return cond_signal( &_cond );
+#endif
+#ifdef _NOTHREADS
+        return 0;
 #endif
       }
 
