@@ -156,10 +156,17 @@ public:
   size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
   void construct(pointer __p, const _Tp& __val) const { _STLP_STD::construct(__p, __val); }
   void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
+
+  #if defined(__MRC__)||defined(__SC__)		//*ty 03/24/2001 - move these operators into class scope to prevent confusion under MPW
+  template <class _T2> bool operator==(const EH_allocator<_T2>&)  { return true; }
+  template <class _T2> bool operator!=(const EH_allocator<_T2>&)  { return false; }
+  #endif
 };
 
+#if !(defined(__MRC__)||defined(__SC__))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
 template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const EH_allocator<_T1>&, const EH_allocator<_T2>&)  { return true; }
 template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const EH_allocator<_T1>&, const EH_allocator<_T2>&) { return false; }
+#endif
 
 // If custom allocators are being used without member template classes support :
 // user (on purpose) is forced to define rebind/get operations !!!
