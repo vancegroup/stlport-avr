@@ -1,9 +1,9 @@
 **********************************************************************
-* 	INSTALL file for STLport 4.6.0                               *
+* 	INSTALL file for STLport 5.0                                 *
 *                                                                    *
 **********************************************************************
 
-STLport-4.6 is a full ANSI C++ Standard library.
+STLport-5.0 is a full ANSI C++ Standard library.
 
 This distribution contains STLport sources only, no binaries.
 To use STLport iostreams, you have to build STLport library from sources in "src" 
