@@ -41,6 +41,7 @@ using /*_STLP_VENDOR_EXCEPT_STD */ :: type_info;
 # if !(defined(__MRC__) || (defined(__SC__) && !defined(__DMC__)))
 using /* _STLP_VENDOR_EXCEPT_STD */ :: bad_typeid;
 # endif
+#pragma message ("HERE")
 using /* _STLP_VENDOR_EXCEPT_STD */ :: bad_cast;
 
 _STLP_END_NAMESPACE

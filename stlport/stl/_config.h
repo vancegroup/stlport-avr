@@ -53,7 +53,7 @@
 #   define __SGI_STL                                      0x330
 
 /* STLport version */
-#   define _STLPORT_VERSION                               0x460
+#   define _STLPORT_VERSION                               0x500
 
 /* Placeholder for user to override settings.
  * It could be also used to mask settings from 
@@ -1035,7 +1035,7 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 
 # if defined (_STLP_FULL_ADL_IMPLEMENTED) && defined (_STLP_NO_OWN_IOSTREAMS)
 #  error "Invalid configuration, STLport wrapper iostream mode can't be used with compiler"\
-         "implementing full Argument Dependent Lookup. Please remove _STLP_NO_OWN_IOSTREAMS switch"\
+         "implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch"\
          "and build STLport library."
 # endif /* _STLP_FULL_ADL_IMPLEMENTED && _STLP_NO_OWN_IOSTREAMS */
 

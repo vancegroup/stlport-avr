@@ -111,6 +111,16 @@ public:
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+  set(const _Self& __x) : _M_t(__x._M_t) {}
+
+  /*explicit set(__full_move_source<_Self> src)
+    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
+  }*/
+
+  explicit set(__partial_move_source<_Self> src)
+    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
+  }
+
   _Self& operator=(const _Self& __x) { 
     _M_t = __x._M_t; 
     return *this;
@@ -190,7 +200,9 @@ public:
 
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
-class multiset {
+class multiset _STLP_STLPORT_CLASS_1
+{
+  typedef multiset<_Key, _Compare, _Alloc> _Self;
 public:
   // typedefs:
 

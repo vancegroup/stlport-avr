@@ -38,14 +38,26 @@
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
 
+#include <stl/_range_errors.h>
+
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp, class _Alloc> 
+void _Vector_base<_Tp,_Alloc>::_M_throw_length_error() const {
+    __stl_throw_length_error("vector");
+}
+
+template <class _Tp, class _Alloc> 
+void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
+    __stl_throw_out_of_range("vector");
+}
 
 template <class _Tp, class _Alloc>
 void 
 __vector__<_Tp, _Alloc>::reserve(size_type __n) {
   if (capacity() < __n) {
     if (max_size() < __n) {
-      _M_throw_length_error();
+      this->_M_throw_length_error();
     }
 
     const size_type __old_size = size();
@@ -102,12 +114,12 @@ __vector__<_Tp,_Alloc>::operator=(const __vector__<_Tp, _Alloc>& __x)
       this->_M_end_of_storage._M_data = this->_M_start + __xlen;
     }
     else if (size() >= __xlen) {
-      pointer __i = __copy_ptrs((const_pointer)__x._M_start+0, (const_pointer)__x._M_finish+0, (pointer)this->_M_start, _TrivialAss());
-      _STLP_STD::_Destroy(__i, this->_M_finish);
+      pointer __i = __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start)+0, __CONST_CAST(const_pointer, __x._M_finish)+0, this->_M_start, _TrivialAss());
+      _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     }
     else {
-      __copy_ptrs((const_pointer)__x._M_start, (const_pointer)__x._M_start + size(), (pointer)this->_M_start, _TrivialAss());
-      __uninitialized_copy((const_pointer)__x._M_start + size(), (const_pointer)__x._M_finish+0, this->_M_finish, _IsPODType());
+      __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start), __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialAss());
+      __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start) + size(), __CONST_CAST(const_pointer, __x._M_finish)+0, this->_M_finish, _IsPODType());
     }
     this->_M_finish = this->_M_start + __xlen;
   }

@@ -55,6 +55,11 @@
 #  include <cstdio>
 # endif
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID ALGO_H
+_STLP_INSTRUMENT_FILE();
+# endif /* _STLP_DEBUG */
+
 _STLP_BEGIN_NAMESPACE
 
 // for_each.  Apply a function to every element of a range.
@@ -727,6 +732,10 @@ inline bool is_sorted(_ForwardIter __first, _ForwardIter __last,
 # endif
 
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_algo.c>

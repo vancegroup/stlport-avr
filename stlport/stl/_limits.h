@@ -488,9 +488,9 @@ public:
   static float (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return FLT_MAX; }
   static float _STLP_CALL epsilon() _STLP_NOTHROW { return FLT_EPSILON; }
   static float _STLP_CALL round_error() _STLP_NOTHROW { return 0.5f; } // Units: ulps.
-  static  float _STLP_CALL infinity() { return _LimG<bool>::_F_inf.val; }
-  static  float _STLP_CALL quiet_NaN() { return _LimG<bool>::_F_qNaN.val; }
-  static  float _STLP_CALL signaling_NaN() { return _LimG<bool>::_F_sNaN.val; }
+  static  float _STLP_CALL infinity() _STLP_NOTHROW { return _LimG<bool>::_F_inf.val; }
+  static  float _STLP_CALL quiet_NaN() _STLP_NOTHROW { return _LimG<bool>::_F_qNaN.val; }
+  static  float _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _LimG<bool>::_F_sNaN.val; }
 };
 
 _STLP_TEMPLATE_NULL class   numeric_limits<double>
@@ -510,9 +510,9 @@ public:
   static double (_STLP_CALL max)() _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return DBL_MAX; }
   static double _STLP_CALL epsilon() _STLP_NOTHROW { return DBL_EPSILON; }
   static double _STLP_CALL round_error() _STLP_NOTHROW { return 0.5; } // Units: ulps.
-  static  double _STLP_CALL infinity() { return _LimG<bool>::_D_inf.val; }
-  static  double _STLP_CALL quiet_NaN(){ return _LimG<bool>::_D_qNaN.val; }
-  static  double _STLP_CALL signaling_NaN() { return _LimG<bool>::_D_sNaN.val; }
+  static  double _STLP_CALL infinity() _STLP_NOTHROW { return _LimG<bool>::_D_inf.val; }
+  static  double _STLP_CALL quiet_NaN() _STLP_NOTHROW { return _LimG<bool>::_D_qNaN.val; }
+  static  double _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _LimG<bool>::_D_sNaN.val; }
 };
 
 # ifndef _STLP_NO_LONG_DOUBLE
@@ -535,9 +535,9 @@ public:
   static long double (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MAX; }
   static long double _STLP_CALL epsilon() _STLP_NOTHROW { return LDBL_EPSILON; }
   static long double _STLP_CALL round_error() _STLP_NOTHROW { return 4; } // Units: ulps.
-  static long double _STLP_CALL infinity() { return _LimG<bool>::_L_inf.val; } 
-  static long double _STLP_CALL quiet_NaN() { return _LimG<bool>::_L_qNaN.val; }
-  static long double _STLP_CALL signaling_NaN() { return _LimG<bool>::_L_sNaN.val; }
+  static long double _STLP_CALL infinity() _STLP_NOTHROW { return _LimG<bool>::_L_inf.val; } 
+  static long double _STLP_CALL quiet_NaN() _STLP_NOTHROW { return _LimG<bool>::_L_qNaN.val; }
+  static long double _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _LimG<bool>::_L_sNaN.val; }
 };
 
 # endif

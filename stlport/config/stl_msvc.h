@@ -67,10 +67,11 @@
 
 # if (_STLP_MSVC <= 1310)
 # define _STLP_STATIC_CONST_INIT_BUG   1
+# define _STLP_FULL_ADL_IMPLEMENTED 1
 # endif	//	(_STLP_MSVC <= 1310)
 
 # if (_STLP_MSVC <= 1300) 
-#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+#  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
 #  define _STLP_NO_TYPENAME_IN_TEMPLATE_HEADER
 // fails to properly resolve call to sin() from within sin()
@@ -92,6 +93,14 @@
 #  define _STLP_DONT_USE_BOOL_TYPEDEF 1
 # endif /* _STLP_MSVC <= 1300 */
 
+# if (_STLP_MSVC <= 1200)
+// dums: VC6 can't handle correctly member templates of class that are explicitely
+// instanciated to be exported
+#  ifdef _DLL
+#    define _STLP_NO_MEMBER_TEMPLATES 1
+#  endif
+# endif
+
 # endif /* _STLP_MSVC */
 
 # if (_MSC_VER <= 1310) 
@@ -112,6 +121,7 @@
 #  define _STLP_GLOBAL_NEW_HANDLER
 #  define _STLP_DONT_RETURN_VOID 1
 #  define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
+#  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 # endif /* (_MSC_VER <= 1200) */
 
 # if ( _MSC_VER<=1010 )
@@ -126,12 +136,13 @@
 #  define _STLP_HAS_NO_NEW_IOSTREAMS 1
 # endif /* 1010 */
 
-# if defined (_STLP_MSVC) && ( _STLP_MSVC < 1200 ) /* VC++ 6.0 */
+# if defined (_STLP_MSVC) && ( _STLP_MSVC < 1200 ) /* before VC++ 6.0 */
 // #  define _STLP_NO_MEMBER_TEMPLATES 1
 // #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1 
 #  define _STLP_THROW_RETURN_BUG 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
+#  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 # endif
 
 # if defined (_STLP_MSVC) && ( _STLP_MSVC < 1100 )
@@ -179,8 +190,10 @@
 # ifdef __ICL
 #  define _STLP_LIB_BASENAME "stlport_icl"
 # else
-# if (_MSC_VER >= 1300) 
-#   define _STLP_LIB_BASENAME "stlport_vc7"
+# if (_MSC_VER >= 1310) 
+#   define _STLP_LIB_BASENAME "stlport_vc71"
+# elif (_MSC_VER >= 1300) 
+#   define _STLP_LIB_BASENAME "stlport_vc70"
 # elif (_MSC_VER >= 1200)
 //#   ifdef _UNICODE
 //#    define _STLP_LIB_BASENAME "stlport_vc6_unicode"

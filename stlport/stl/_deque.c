@@ -215,14 +215,14 @@ __deque__<_Tp,_Alloc>::erase(iterator __first, iterator __last)
     if (__elems_before < difference_type(this->size() - __n) / 2) {
       copy_backward(this->_M_start, __first, __last);
       iterator __new_start = this->_M_start + __n;
-      _STLP_STD::_Destroy(this->_M_start, __new_start);
+      _STLP_STD::_Destroy_Range(this->_M_start, __new_start);
       this->_M_destroy_nodes(this->_M_start._M_node, __new_start._M_node);
       this->_M_start = __new_start;
     }
     else {
       copy(__last, this->_M_finish, __first);
       iterator __new_finish = this->_M_finish - __n;
-      _STLP_STD::_Destroy(__new_finish, this->_M_finish);
+      _STLP_STD::_Destroy_Range(__new_finish, this->_M_finish);
       this->_M_destroy_nodes(__new_finish._M_node + 1, this->_M_finish._M_node + 1);
       this->_M_finish = __new_finish;
     }
@@ -236,17 +236,17 @@ void __deque__<_Tp,_Alloc>::clear()
   for (_Map_pointer __node = this->_M_start._M_node + 1;
        __node < this->_M_finish._M_node;
        ++__node) {
-    _STLP_STD::_Destroy(*__node, *__node + this->buffer_size());
+    _STLP_STD::_Destroy_Range(*__node, *__node + this->buffer_size());
     this->_M_map_size.deallocate(*__node, this->buffer_size());
   }
 
   if (this->_M_start._M_node != this->_M_finish._M_node) {
-    _STLP_STD::_Destroy(this->_M_start._M_cur, this->_M_start._M_last);
-    _STLP_STD::_Destroy(this->_M_finish._M_first, this->_M_finish._M_cur);
+    _STLP_STD::_Destroy_Range(this->_M_start._M_cur, this->_M_start._M_last);
+    _STLP_STD::_Destroy_Range(this->_M_finish._M_first, this->_M_finish._M_cur);
     this->_M_map_size.deallocate(this->_M_finish._M_first, this->buffer_size());
   }
   else
-    _STLP_STD::_Destroy(this->_M_start._M_cur, this->_M_finish._M_cur);
+    _STLP_STD::_Destroy_Range(this->_M_start._M_cur, this->_M_finish._M_cur);
 
   this->_M_finish = this->_M_start;
 }
@@ -262,7 +262,7 @@ __deque__<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
       uninitialized_fill(*__cur, *__cur + this->buffer_size(), __val);
     uninitialized_fill(this->_M_finish._M_first, this->_M_finish._M_cur, __val);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_start, iterator(*__cur, __cur)));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur, __cur)));
 }
 
 
@@ -275,7 +275,7 @@ __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t)
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
-    _Construct(this->_M_finish._M_cur, __t_copy);
+    _Copy_Construct(this->_M_finish._M_cur, __t_copy);
     this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
@@ -283,7 +283,7 @@ __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t)
 				      this->buffer_size()));
 }
 
-# ifndef _STLP_NO_ANACHRONISMS
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_last - 1.
 template <class _Tp, class _Alloc >
 void
@@ -299,7 +299,7 @@ __deque__<_Tp,_Alloc>::_M_push_back_aux()
   _STLP_UNWIND(this->_M_map_size.deallocate(*(this->_M_finish._M_node + 1), 
 				      this->buffer_size()));
 }
-# endif
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
@@ -319,7 +319,7 @@ __deque__<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t)
 } 
 
 
-# ifndef _STLP_NO_ANACHRONISMS
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
 void 
@@ -335,7 +335,7 @@ __deque__<_Tp,_Alloc>::_M_push_front_aux()
   _STLP_UNWIND((++this->_M_start, this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), 
 						   this->buffer_size() )));
 } 
-# endif
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_first.
 template <class _Tp, class _Alloc >

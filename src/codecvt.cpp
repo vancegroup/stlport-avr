@@ -116,7 +116,8 @@ codecvt<wchar_t, char, mbstate_t>::do_in (state_type&       /* state */,
                                           intern_type*&       to_next) const
 {
   ptrdiff_t len = (min) (from_end - from, to_limit - to);
-  copy(from, from + len, to);
+  copy(__REINTERPRET_CAST(const unsigned char*, from), 
+       __REINTERPRET_CAST(const unsigned char*, from) + len, to);
   from_next = from + len;
   to_next   = to   + len;
   return ok;

@@ -401,7 +401,7 @@ class _STLP_CLASS_DECLSPEC _STLP_mutex_RS : public _STLP_mutex
 #  elif defined(__FIT_NOVELL_THREADS)
         ,_id( -1 )
 #  elif defined(_STLP_WIN32THREADS)
-        ,_id( -1 )
+        ,_id( NULL )
 #  else
 #   error "New _STLP_mutex_RS class not yet ported to this platform"
 #  endif
@@ -426,7 +426,7 @@ class _STLP_CLASS_DECLSPEC _STLP_mutex_RS : public _STLP_mutex
       }
       _STLP_mutex::_M_acquire_lock();
       _id = _c_id;
-      _count = 0;
+      ++_count;
     }
 
     void _M_release_lock() {
@@ -442,7 +442,7 @@ class _STLP_CLASS_DECLSPEC _STLP_mutex_RS : public _STLP_mutex
 #  elif defined(__FIT_NOVELL_THREADS)
         _id = -1;
 #  elif defined(_STLP_WIN32THREADS)
-        _id = -1;
+        _id = NULL;
 #  endif
         _STLP_mutex::_M_release_lock();
       }
@@ -460,6 +460,10 @@ class _STLP_CLASS_DECLSPEC _STLP_mutex_RS : public _STLP_mutex
 #  elif defined(_STLP_WIN32THREADS)
     DWORD _id;
 #  endif
+
+  private:
+    _STLP_mutex_RS(const _STLP_mutex_RS&) {}
+    void operator=(const _STLP_mutex_RS&) {}
 };
 
 # endif /* _STLP_THREADS */
@@ -562,8 +566,6 @@ private:
   void operator=(const _STLP_auto_lock&);
   _STLP_auto_lock(const _STLP_auto_lock&);
 };
-
-typedef _STLP_auto_lock _STLP_mutex_lock;
 
 #ifdef _STLP_BETHREADS
 

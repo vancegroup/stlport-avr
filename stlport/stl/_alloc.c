@@ -62,6 +62,11 @@ inline void* __stlp_chunk_malloc(size_t __bytes) { return _STLP_STD::__stl_new(_
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes-size_t(1))>>(int)_ALIGN_SHIFT)
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID ALLOC_C
+_STLP_INSTRUMENT_FILE();
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <int __inst>
@@ -132,7 +137,7 @@ public:
 #  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
 #  else /* !_STLP_SGI_THREADS */
-      if (__threads) 
+    if (__threads) 
 #  endif
     	_S_lock._M_acquire_lock(); 
   }
@@ -141,7 +146,7 @@ public:
 #  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
 #  else /* !_STLP_SGI_THREADS */
-      if (__threads)
+    if (__threads)
 #  endif
         _S_lock._M_release_lock(); 
   }
@@ -149,18 +154,49 @@ public:
   static _STLP_STATIC_MUTEX _S_lock;
 };
 
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <int __inst>
+class _Node_Alloc_Lock<true,__inst> {
+public:
+  _Node_Alloc_Lock() { 
+    
+#  ifdef _STLP_SGI_THREADS
+    if (__us_rsthread_malloc)
+#  endif /* !_STLP_SGI_THREADS */
+      _S_lock._M_acquire_lock(); 
+  }
+  
+  ~_Node_Alloc_Lock() {
+#  ifdef _STLP_SGI_THREADS
+    if (__threads && __us_rsthread_malloc)
+#  endif /* !_STLP_SGI_THREADS */
+        _S_lock._M_release_lock(); 
+  }
+  
+  static _STLP_STATIC_MUTEX _S_lock;
+};
+
+template <int __inst>
+class _Node_Alloc_Lock<false,__inst> {
+public:
+  _Node_Alloc_Lock() { }  
+  ~_Node_Alloc_Lock() { }
+};
+
+#endif // _STLP_CLASS_PARTIAL_SPECIALIZATION
+
 // # endif  /* _STLP_THREADS */
 
 
 template <bool __threads, int __inst>
 void* _STLP_CALL
 __node_alloc<__threads, __inst>::_M_allocate(size_t __n) {
-  void*  __r;
-  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   // #       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
   // #       endif
+  void*  __r;
+  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   // Acquire the lock here with a constructor call.
   // This ensures that it is released in exit or during stack
   // unwinding.
@@ -176,7 +212,6 @@ __node_alloc<__threads, __inst>::_M_allocate(size_t __n) {
 template <bool __threads, int __inst>
 void _STLP_CALL
 __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
-  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   // #       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
@@ -303,6 +338,11 @@ __oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
     template <bool __threads, int __inst>
     _STLP_STATIC_MUTEX
     _Node_Alloc_Lock<__threads, __inst>::_S_lock _STLP_MUTEX_INITIALIZER;
+#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+    template <int __inst>
+    _STLP_STATIC_MUTEX
+    _Node_Alloc_Lock<true, __inst>::_S_lock _STLP_MUTEX_INITIALIZER;
+#  endif
 // #endif
 
 template <bool __threads, int __inst>
@@ -359,6 +399,10 @@ __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
 #  endif /* _STLP_STATIC_TEMPLATE_DATA */
 
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 # undef _S_FREELIST_INDEX
 

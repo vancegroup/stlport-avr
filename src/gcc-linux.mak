@@ -30,6 +30,7 @@ all: msg all_dynamic all_static symbolic_links
 msg:
 	@echo "*** ATTENTION! ***"
 	@echo "This makefile tries to use system locale which might not work well with all glibc flavours."
+	@echo "More: this should not compile with glibc 1.90 and newer!"
 	@echo "If build fails, please resort to gcc.mak which will build C-locale only version for STLport"
 	@echo "******************"
 include common_macros.mak

@@ -3,8 +3,8 @@ SHELL=/bin/sh
 #
 # Versioning
 #
-VERSION_MAJOR=4
-VERSION_MINOR=6
+VERSION_MAJOR=5
+VERSION_MINOR=0
 
 # This one is not always present; it should be empty for release versions.
 # We do not assume any binary compatibility for betas.

@@ -47,7 +47,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
-class hash_map
+class hash_map _STLP_STLPORT_CLASS_1
 {
 private:
   typedef _STLP_HASHTABLE _Ht;
@@ -88,6 +88,10 @@ public:
   hash_map(size_type __n, const hasher& __hf, const key_equal& __eql,
            const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
+
+  explicit hash_map(__partial_move_source<_Self> src)
+    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -184,7 +188,7 @@ public:
   _Tp& operator[](const key_type& __key) {
     iterator __it = _M_ht.find(__key);
     return (__it == _M_ht.end() ? 
-	    _M_ht._M_insert(_value_type(__key, _Tp())).second : 
+	    _M_ht._M_insert(_value_type(__key, _STLP_DEFAULT_CONSTRUCTED(_Tp))).second : 
 	    (*__it).second );
   }
 
@@ -214,7 +218,7 @@ public:
 template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
-class hash_multimap
+class hash_multimap _STLP_STLPORT_CLASS_1
 {
 private:
   typedef _STLP_HASHTABLE _Ht;
@@ -255,6 +259,10 @@ public:
   hash_multimap(size_type __n, const hasher& __hf, const key_equal& __eql,
                 const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
+
+  explicit hash_multimap(__partial_move_source<_Self> src)
+    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>

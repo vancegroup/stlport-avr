@@ -133,7 +133,7 @@ public:
     return do_get(__in, __end, __str, __err, __val);
   }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   ~num_get() {}

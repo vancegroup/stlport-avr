@@ -199,7 +199,7 @@ private:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     _Node* __node = this->_M_head.allocate(1);
     _STLP_TRY {
-      _Construct(&__node->_M_data, __x);
+      _Copy_Construct(&__node->_M_data, __x);
       __node->_M_next = 0;
     }
     _STLP_UNWIND(this->_M_head.deallocate(__node, 1));
@@ -362,7 +362,7 @@ public:
     __slist_make_link(&this->_M_head._M_data, _M_create_node(__x));
   }
 
-# ifndef _STLP_NO_ANACHRONISMS
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_front() { __slist_make_link(&this->_M_head._M_data, _M_create_node());}
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
@@ -733,7 +733,7 @@ _STLP_END_NAMESPACE
 #  undef  slist
 #  define __slist__ __FULL_NAME(slist)
 
-#if defined (_STLP_DEBUG) && !defined (_STLP_INTERNAL_DBG_SLIST_H)
+#if defined (_STLP_DEBUG)
 # include <stl/debug/_slist.h>
 #endif
 
@@ -776,8 +776,6 @@ public:
 };
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
-_STLP_END_NAMESPACE
 
 _STLP_END_NAMESPACE
 

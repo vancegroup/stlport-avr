@@ -132,7 +132,8 @@ template <class _Tp>
 # else
 template <class _Tp, class _Sequence, class _Compare>
 # endif
-class  priority_queue {
+class  priority_queue _STLP_STLPORT_CLASS_1
+{
 # ifdef _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS
   typedef vector<_Tp> _Sequence;
   typedef less< typename vector<_Tp>::value_type> _Compare;
@@ -148,50 +149,54 @@ public:
   typedef typename _Sequence::reference       reference;
   typedef typename _Sequence::const_reference const_reference;
 protected:
-  _Sequence c;
+  _Sequence _M_s;
   _Compare comp;
 public:
-  priority_queue() : c() {}
-  explicit priority_queue(const _Compare& __x) :  c(), comp(__x) {}
+  priority_queue() : _M_s() {}
+  explicit priority_queue(const _Compare& __x) :  _M_s(), comp(__x) {}
   priority_queue(const _Compare& __x, const _Sequence& __s) 
-    : c(__s), comp(__x)
-    { make_heap(c.begin(), c.end(), comp); }
+    : _M_s(__s), comp(__x)
+    { make_heap(_M_s.begin(), _M_s.end(), comp); }
+
+  explicit priority_queue(__partial_move_source<_Self> src)
+    : _M_s(_AsPartialMoveSource(src.get()._M_s)), comp(_AsPartialMoveSource(src.get().comp)) {
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last) 
-    : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
+    : _M_s(__first, __last) { make_heap(_M_s.begin(), _M_s.end(), comp); }
 
   template <class _InputIterator>
   priority_queue(_InputIterator __first, 
                  _InputIterator __last, const _Compare& __x)
-    : c(__first, __last), comp(__x)
-    { make_heap(c.begin(), c.end(), comp); }
+    : _M_s(__first, __last), comp(__x)
+    { make_heap(_M_s.begin(), _M_s.end(), comp); }
 
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last,
                  const _Compare& __x, const _Sequence& __s)
-  : c(__s), comp(__x)
+  : _M_s(__s), comp(__x)
   { 
-    c.insert(c.end(), __first, __last);
-    make_heap(c.begin(), c.end(), comp);
+    _M_s.insert(_M_s.end(), __first, __last);
+    make_heap(_M_s.begin(), _M_s.end(), comp);
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
   priority_queue(const value_type* __first, const value_type* __last) 
-    : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
+    : _M_s(__first, __last) { make_heap(_M_s.begin(), _M_s.end(), comp); }
 
   priority_queue(const value_type* __first, const value_type* __last, 
                  const _Compare& __x) 
-    : c(__first, __last), comp(__x)
-    { make_heap(c.begin(), c.end(), comp); }
+    : _M_s(__first, __last), comp(__x)
+    { make_heap(_M_s.begin(), _M_s.end(), comp); }
 
   priority_queue(const value_type* __first, const value_type* __last, 
                  const _Compare& __x, const _Sequence& __c)
-    : c(__c), comp(__x)
+    : _M_s(__c), comp(__x)
   { 
-    c.insert(c.end(), __first, __last);
-    make_heap(c.begin(), c.end(), comp);
+    _M_s.insert(_M_s.end(), __first, __last);
+    make_heap(_M_s.begin(), _M_s.end(), comp);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -200,17 +205,17 @@ public:
   const_reference top() const { return _M_s.front(); }
   void push(const value_type& __x) {
     _STLP_TRY {
-      c.push_back(__x); 
-      push_heap(c.begin(), c.end(), comp);
+      _M_s.push_back(__x); 
+      push_heap(_M_s.begin(), _M_s.end(), comp);
     }
-    _STLP_UNWIND(c.clear());
+    _STLP_UNWIND(_M_s.clear());
   }
   void pop() {
     _STLP_TRY {
-      pop_heap(c.begin(), c.end(), comp);
-      c.pop_back();
+      pop_heap(_M_s.begin(), _M_s.end(), comp);
+      _M_s.pop_back();
     }
-    _STLP_UNWIND(c.clear());
+    _STLP_UNWIND(_M_s.clear());
   }
 };
 

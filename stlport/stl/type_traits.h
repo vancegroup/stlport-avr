@@ -59,33 +59,104 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 # include <stl/_cwchar.h>
 #endif
 
+#ifndef _STLP_TYPE_MANIPS_H
+# include <stl/type_manips.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
+
+// The following could be written in terms of numeric_limits.  
+// We're doing it separately to reduce the number of dependencies.
+
+template <class _Tp> struct _Is_integer {
+  typedef __false_type _Integral;
+};
+
+#ifndef _STLP_NO_BOOL
+
+_STLP_TEMPLATE_NULL struct _Is_integer<bool> {
+  typedef __true_type _Integral;
+};
+
+#endif /* _STLP_NO_BOOL */
+
+_STLP_TEMPLATE_NULL struct _Is_integer<char> {
+  typedef __true_type _Integral;
+};
+
+#ifndef _STLP_NO_SIGNED_BUILTINS
+
+_STLP_TEMPLATE_NULL struct _Is_integer<signed char> {
+  typedef __true_type _Integral;
+};
+#endif
+
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned char> {
+  typedef __true_type _Integral;
+};
+
+#if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
+
+_STLP_TEMPLATE_NULL struct _Is_integer<wchar_t> {
+  typedef __true_type _Integral;
+};
+
+#endif /* _STLP_HAS_WCHAR_T */
+
+_STLP_TEMPLATE_NULL struct _Is_integer<short> {
+  typedef __true_type _Integral;
+};
+
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned short> {
+  typedef __true_type _Integral;
+};
+
+_STLP_TEMPLATE_NULL struct _Is_integer<int> {
+  typedef __true_type _Integral;
+};
+
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned int> {
+  typedef __true_type _Integral;
+};
+
+_STLP_TEMPLATE_NULL struct _Is_integer<long> {
+  typedef __true_type _Integral;
+};
+
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned long> {
+  typedef __true_type _Integral;
+};
+
+#ifdef _STLP_LONG_LONG
+
+_STLP_TEMPLATE_NULL struct _Is_integer<_STLP_LONG_LONG> {
+  typedef __true_type _Integral;
+};
 
 _STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
   typedef __true_type _Integral;
 };
 
+#endif /* _STLP_LONG_LONG */
 
-template <int _Is> struct __bool2type {
-  typedef __false_type _Ret; 
+template <class _Tp> struct _Is_rational {
+  typedef __false_type _Rational;
 };
 
-_STLP_TEMPLATE_NULL
-struct __bool2type<1> { typedef __true_type _Ret; };
-
-_STLP_TEMPLATE_NULL
-struct __bool2type<0> { typedef __false_type _Ret; };
+_STLP_TEMPLATE_NULL struct _Is_rational<float> {
+  typedef __true_type _Rational;
+};
 
 _STLP_TEMPLATE_NULL struct _Is_rational<double> {
   typedef __true_type _Rational;
 };
-
-_STLP_TEMPLATE_NULL
-struct _Land3<__true_type, __true_type, __true_type> {
-  typedef __true_type _Ret;
-};
 # endif
 
+# if !defined ( _STLP_NO_LONG_DOUBLE )
+_STLP_TEMPLATE_NULL struct _Is_rational<long double> {
+  typedef __true_type _Rational;
+};
+# endif
 
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
@@ -116,7 +187,6 @@ struct __type_traits_aux<1> {
 };
 
 # ifdef _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
-
 // Boris : simulation technique is used here according to Adobe Open Source License Version 1.0.
 // Copyright 2000 Adobe Systems Incorporated and others. All rights reserved.
 // Authors: Mat Marcus and Jesse Jones
@@ -132,8 +202,7 @@ struct _PointerShim {
 };
 
 // These are the discriminating functions
-
-char _STLP_CALL _IsP(bool, _PointerShim); // no implementation is required
+char _STLP_CALL _IsP(bool, _PointerShim);  // no implementation is required
 char* _STLP_CALL _IsP(bool, ...);          // no implementation is required
 
 template <class _Tp>
@@ -157,7 +226,57 @@ struct _IsPtr {
   // other criteria.
   static _Tp& __null_rep();
   enum { _Ret = (sizeof(_IsP(false,__null_rep())) == sizeof(char)) };
+};
 
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+//This class avoid instanciation of the more complex class _IsPtr when _BoolType is __false_type
+template <class _CondT>
+struct _IsPtrCondAux { /*__false_type*/
+  template <class _Tp>
+  struct _In {
+    enum { _Ret = 0 };
+  };
+};
+
+_STLP_TEMPLATE_NULL
+struct _IsPtrCondAux <__true_type> {
+  template <class _Tp>
+  struct _In {
+    enum { _Ret = _IsPtr<_Tp>::_Ret };
+  };
+};
+
+template <class _CondT, class _Tp>
+struct _IsPtrCond {
+  enum { _Ret = _IsPtrCondAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret };
+};
+
+//Idem _IsPtrAux but won't instanciate _IsPtr if _BoolType is __true_type
+template <typename _CondT>
+struct _IsPtrCondNotAux { /*__true_type*/
+  template <class _Tp>
+  struct _In {
+    enum { _Ret = 1 };
+  };
+};
+
+_STLP_TEMPLATE_NULL
+struct _IsPtrCondNotAux <__false_type> {
+  template <class _Tp>
+  struct _In {
+    enum { _Ret = _IsPtr<_Tp>::_Ret };
+  };
+};
+
+template <class _CondT, class _Tp>
+struct _IsPtrCondNot {
+  enum { _Ret = _IsPtrCondNotAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret };
+};
+
+#else /* _STLP_MEMBER_TEMPLATE_CLASSES */
+template <class _CondT, class _Tp>
+struct _IsPtrCond {
+  enum { _Ret = _IsPtr<_Tp>::_Ret };
 };
 
 template <class _CondT, class _Tp>
@@ -255,21 +374,6 @@ struct __type_traits {
    typedef __false_type    is_POD_type;
 };
 
-
-template <class _Tp>  struct _IsPtr { enum { _Ret = 0 }; };
-template <class _Tp>  struct _IsPtrType { 
-  static __false_type _Ret() { return __false_type();} 
-};
-template <class _Tp1, class _Tp2>  struct _BothPtrType { 
-  static __false_type _Ret() { return __false_type();} 
-};
-
-template <class _Tp1, class _Tp2>
-struct _IsSame { enum { _Ret = 0 }; };
-
-// template <class _Tp1, class _Tp2>
-// struct _IsSameType {   static __false_type _Ret() { return __false_type(); }  };
-
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp>  struct _IsPtr<_Tp*> { enum { _Ret = 1 }; };
 template <class _Tp>  struct _IsPtrType<_Tp*> { 
@@ -278,9 +382,9 @@ template <class _Tp>  struct _IsPtrType<_Tp*> {
 template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> { 
   static __true_type _Ret() { return __true_type();} 
 };
-template <class _Tp>
-struct _IsSame<_Tp, _Tp> { enum { _Ret = 1 }; };
-#  endif
+
+template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<1> {};
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
@@ -318,85 +422,6 @@ _STLP_TEMPLATE_NULL struct __type_traits<double> : __type_traits_aux<1> {};
 _STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<1> {};
 # endif
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<1> {};
-#endif
-
-// The following could be written in terms of numeric_limits.  
-// We're doing it separately to reduce the number of dependencies.
-
-template <class _Tp> struct _Is_integer {
-  typedef __false_type _Integral;
-};
-
-#ifndef _STLP_NO_BOOL
-
-_STLP_TEMPLATE_NULL struct _Is_integer<bool> {
-  typedef __true_type _Integral;
-};
-#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-
-#endif /* _STLP_NO_BOOL */
-
-_STLP_TEMPLATE_NULL struct _Is_integer<char> {
-  typedef __true_type _Integral;
-};
-#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
-
-#ifndef _STLP_NO_SIGNED_BUILTINS
-
-_STLP_TEMPLATE_NULL struct _Is_integer<signed char> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned char> {
-  typedef __true_type _Integral;
-};
-
-#if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
-
-_STLP_TEMPLATE_NULL struct _Is_integer<wchar_t> {
-  typedef __true_type _Integral;
-};
-
-#endif /* _STLP_HAS_WCHAR_T */
-
-_STLP_TEMPLATE_NULL struct _Is_integer<short> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned short> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<int> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned int> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<long> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned long> {
-  typedef __true_type _Integral;
-};
-
-#ifdef _STLP_LONG_LONG
-
-_STLP_TEMPLATE_NULL struct _Is_integer<_STLP_LONG_LONG> {
-  typedef __true_type _Integral;
-};
-
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
-  typedef __true_type _Integral;
-};
-
-#endif /* _STLP_LONG_LONG */
-
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
   enum { _Same = _IsSame<_Tp1,_Tp2>::_Ret } ;
@@ -404,7 +429,7 @@ struct _OKToMemCpy {
   typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
   typedef typename __bool2type< _Same >::_Ret _Tr3;
   typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
+  static _Type _Answer() { return _Type(); }
 };
 
 template <class _Tp1, class _Tp2>
@@ -415,11 +440,145 @@ inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
 template <class _Tp> 
 struct _IsPOD {
   typedef typename __type_traits<_Tp>::is_POD_type _Type;
-  static _Type _Ret() { return _Type(); }
+  static _Type _Answer() { return _Type(); }
 };
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
 template <class _Tp> 
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
+
+template <class _Tp>
+struct _DefaultZeroValue {
+  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
+  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
+
+  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
+
+#if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+  typedef typename __bool2type< _IsPtrCondNot<_Tr3, _Tp>::_Ret>::_Ret _Tr4;
+#else
+  typedef typename __bool2type< _IsPtr<_Tp>::_Ret>::_Ret _Tr4;
+#endif /* !_STLP_CLASS_PARTIAL_SPECIALIZATION && _STLP_MEMBER_TEMPLATE_CLASSES*/
+
+  typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
+  static _Type _Answer() { return _Type(); }
+};
+
+template <class _Tp>
+inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
+  return _DefaultZeroValue<_Tp>();
+}
+
+/*
+ * Base class used for internal purpose to simulate partial template specialization
+ * and partial function ordering
+ */
+#ifdef _STLP_USE_PARTIAL_SPEC_WORKAROUND
+class __stlport_class {};
+#define _STLP_STLPORT_CLASS_1 : public __stlport_class
+#define _STLP_STLPORT_CLASS_N , public __stlport_class
+
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+template <class _CondT>
+struct _IsConvertibleCondNotAux { /*__true_type*/
+  template <class _Derived, class _Base>
+  struct _In {
+    typedef __false_type _Ret;
+  };
+};
+
+_STLP_TEMPLATE_NULL
+struct _IsConvertibleCondNotAux<__false_type> {
+  template <class _Derived, class _Base>
+  struct _In {
+    typedef typename _IsConvertibleType<_Derived, _Base>::_Type _Ret;
+  };
+};
+
+template <class _CondT, class _Derived, class _Base>
+struct _IsConvertibleCondNot {
+  typedef typename _IsConvertibleCondNotAux<_CondT>::_STLP_TEMPLATE _In<_Derived, _Base>::_Ret _Ret;
+};
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+
+template <class _Tp>
+struct _IsStlportClass {
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
+  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
+  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
+
+  typedef typename _IsConvertibleCondNot<_Tr3, _Tp, __stlport_class>::_Ret _Ret;
+#else
+  typedef typename _IsConvertible<_Tp, __stlport_class>::_Type _Ret;
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+};
+
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+template <class _CondT>
+struct _IsStlportClassCondNotAux { /*__true_type*/
+  template <class _Tp>
+  struct _In {
+    typedef __true_type _Ret;
+  };
+};
+
+_STLP_TEMPLATE_NULL
+struct _IsStlportClassCondNotAux<__false_type> {
+  template <class _Tp>
+  struct _In {
+    typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
+  };
+};
+
+template <class _CondT, class _Tp>
+struct _IsStlportClassCondNot {
+  typedef typename _IsStlportClassCondNotAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret _Ret;
+};
+#else
+template <class _DummyCondT, class _Tp>
+struct _IsStlportClassCondNot {
+  typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
+};
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+
+#else
+#define _STLP_STLPORT_CLASS_1
+#define _STLP_STLPORT_CLASS_N
+#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
+
+#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+template <class _Tp>
+struct _SwapImplemented {
+  typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
+};
+#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
+
+template <class _Tp>
+struct __action_on_move {
+	typedef __false_type swap;
+};
+
+template <class _Tp1, class _Tp2> 
+struct _SwapOnMove {
+	typedef typename __action_on_move<_Tp1>::swap _Enabled1;
+#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  typedef typename _IsStlportClassCondNot<_Enabled1, _Tp1>::_Ret _Enabled2;
+#else
+  typedef __false_type _Enabled2;
+#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
+	typedef typename _Lor2<_Enabled1, _Enabled2>::_Ret _Enabled;
+
+  enum { _Same = _IsSame<_Tp1,_Tp2>::_Ret };
+  typedef typename __bool2type< _Same >::_Ret _SameTypes;
+
+  typedef typename _Land3<_Enabled, _SameTypes, __true_type>::_Ret _Type;
+	static _Type _Answer() {return _Type();}
+};
+
+template<class _Tp1, class _Tp2>
+_SwapOnMove<_Tp1, _Tp2> _DoSwapOnMove (_Tp1*, _Tp2*)
+{return _SwapOnMove<_Tp1, _Tp2>();}
 
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 #   if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || ( defined (__sgi) && defined (_COMPILER_VERSION)) || defined (__DMC__)
@@ -428,31 +587,8 @@ inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 #   define _IS_POD_ITER(_It, _Tp) typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
 #   endif
 #  else
-#   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
+#   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Answer()
 #  endif
-
-# ifdef _STLP_DEFAULT_CONSTRUCTOR_BUG
-// Those adaptors are here to fix common compiler bug regarding builtins:
-// expressions like int k = int() should initialize k to 0
-template <class _Tp>
-inline _Tp __default_constructed_aux(_Tp*, const __false_type&) {
-  return _Tp();
-}
-template <class _Tp>
-inline _Tp __default_constructed_aux(_Tp*, const __true_type&) {
-  return _Tp(0);
-}
-
-template <class _Tp>
-inline _Tp __default_constructed(_Tp* __p) {
-  typedef typename _Is_integer<_Tp>::_Integral _Is_Integral;
-  return __default_constructed_aux(__p, _Is_Integral());
-}
-
-#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)
-# else
-#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) _TTp()
-# endif
 
 _STLP_END_NAMESPACE
 

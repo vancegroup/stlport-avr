@@ -36,6 +36,11 @@
 # include <stl/_iterator_base.h>
 #endif
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID NUMERIC_H
+_STLP_INSTRUMENT_FILE();
+# endif /* _STLP_DEBUG */
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _InputIterator, class _Tp>
@@ -174,6 +179,10 @@ iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __val)
 # endif
 
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_numeric.c>

@@ -124,38 +124,23 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 #  define _STLP_LDOUBLE_INF_REP { 0x7ff0, 0, 0, 0, 0, 0, 0, 0 }
 #  define _STLP_LDOUBLE_QNAN_REP { 0xfff8, 0, 0, 0, 0, 0, 0, 0 }
 #  define _STLP_LDOUBLE_SNAN_REP { 0xfff0, 0, 0, 0, 0, 0, 0, 0 }
-# else
+# else /* __OS400__ */
 #  define _STLP_FLOAT_INF_REP   { 0x7f80, 0 }
-#  define _STLP_FLOAT_SNAN_REP  { 0x7f81, 0 }
 #  define _STLP_FLOAT_QNAN_REP  { 0x7fc1, 0 }
+#  define _STLP_FLOAT_SNAN_REP  { 0x7f81, 0 }
 #  define _STLP_DOUBLE_INF_REP  { 0x7ff0, 0, 0, 0 }
-#  define _STLP_DOUBLE_QNAN_REP { 0x7ff1, 0, 0, 0 }
-#  define _STLP_DOUBLE_SNAN_REP { 0x7ff9, 0, 0, 0 }
+#  define _STLP_DOUBLE_QNAN_REP { 0x7ff9, 0, 0, 0 }
+#  define _STLP_DOUBLE_SNAN_REP { 0x7ff1, 0, 0, 0 }
 #  define _STLP_LDOUBLE_INF_REP { 0x7ff0, 0, 0, 0, 0, 0, 0, 0 }
-#  define _STLP_LDOUBLE_SNAN_REP { 0x7ff1, 0, 0, 0, 0, 0, 0, 0 }
-#  define _STLP_LDOUBLE_QNAN_REP { 0x7ff9, 0, 0, 0, 0, 0, 0, 0 }
-# endif
-#else
-/* This is an architecture we don't know how to handle. Return some
-obviously wrong values. */
-# define _STLP_FLOAT_INF_REP { 0, 0 }
-# define _STLP_FLOAT_QNAN_REP { 0, 0 }
-# define _STLP_FLOAT_SNAN_REP { 0, 0 }
-# define _STLP_DOUBLE_INF_REP { 0, 0 }
-# define _STLP_DOUBLE_QNAN_REP { 0, 0 }
-# define _STLP_DOUBLE_SNAN_REP { 0, 0 }
-# define _STLP_LDOUBLE_INF_REP { 0 }
-# define _STLP_LDOUBLE_QNAN_REP { 0 }
-# define _STLP_LDOUBLE_SNAN_REP { 0 }
-
-#endif
-
+#  define _STLP_LDOUBLE_QNAN_REP { 0x7ff1, 0, 0, 0, 0, 0, 0, 0 }
+#  define _STLP_LDOUBLE_SNAN_REP { 0x7ff9, 0, 0, 0, 0, 0, 0, 0 }
+# endif /* __OS400__ */
 
 # elif defined (_STLP_LITTLE_ENDIAN)
 
 # if 0 /* defined(_STLP_MSVC) || defined(__linux__) */
 // some IA-32 platform ?? 
-#  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
+/*#  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
 #  define _STLP_FLOAT_QNAN_REP { 0, 0xffc0 }
 #  define _STLP_FLOAT_SNAN_REP { 0, 0xff80 }
 
@@ -165,7 +150,7 @@ obviously wrong values. */
 #  define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x7FF0, 0 } // ????
 #  define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xFFF8, 0 } // ????
 #  define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xFFF0, 0 } // ????
-
+*/
 # elif defined(__DECCXX)
 
 #  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
@@ -181,20 +166,20 @@ obviously wrong values. */
 #  define _STLP_LDOUBLE_SNAN_REP { 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x7fff}
 # else
 #  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
-#  define _STLP_FLOAT_QNAN_REP { 0, 0x7fa0 }
-#  define _STLP_FLOAT_SNAN_REP { 0, 0x7fc0 }
+#  define _STLP_FLOAT_QNAN_REP { 0, 0x7fc0 }
+#  define _STLP_FLOAT_SNAN_REP { 0, 0x7fa0 }
 #  define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
-#  define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0x7ff4 }
-#  define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0x7ff8 }
+#  define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0x7ff8 }
+#  define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0x7ff4 }
 #  if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
 #   define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x7FF0, 0 } // ????
 #   define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xFFF8, 0 } // ????
 #   define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xFFF8, 0 }
 #  else
-#   define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
-#   define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
-#   define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff }
-#  endif
+#   define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff, 0 }
+#   define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xa000, 0x7fff, 0 }
+#   define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff, 0 }
+#  endif /* _STLP_MSVC || __ICL || __BORLANDC__*/
 # endif
 #else
 /* This is an architecture we don't know how to handle. Return some
@@ -235,6 +220,18 @@ obviously wrong values. */
 
 #if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 
+template <class __dummy>
+const _F_rep _LimG<__dummy>::_F_inf  = {_STLP_FLOAT_INF_REP}; 
+template <class __dummy>
+const _F_rep _LimG<__dummy>::_F_qNaN  = {_STLP_FLOAT_QNAN_REP}; 
+template <class __dummy>
+const _F_rep _LimG<__dummy>::_F_sNaN  = {_STLP_FLOAT_SNAN_REP}; 
+template <class __dummy>
+const _D_rep _LimG<__dummy>::_D_inf  = {_STLP_DOUBLE_INF_REP}; 
+template <class __dummy>
+const _D_rep _LimG<__dummy>::_D_qNaN  = {_STLP_DOUBLE_QNAN_REP}; 
+template <class __dummy>
+const _D_rep _LimG<__dummy>::_D_sNaN  = {_STLP_DOUBLE_SNAN_REP}; 
 # ifndef _STLP_NO_LONG_DOUBLE
 template <class __dummy>
 const _L_rep _LimG<__dummy>::_L_inf  = {_STLP_LDOUBLE_INF_REP}; 
@@ -243,18 +240,6 @@ const _L_rep _LimG<__dummy>::_L_qNaN  = {_STLP_LDOUBLE_QNAN_REP};
 template <class __dummy>
 const _L_rep _LimG<__dummy>::_L_sNaN  = {_STLP_LDOUBLE_SNAN_REP}; 
 # endif
-template <class __dummy>
-const _D_rep _LimG<__dummy>::_D_inf  = {_STLP_DOUBLE_INF_REP}; 
-template <class __dummy>
-const _D_rep _LimG<__dummy>::_D_qNaN  = {_STLP_DOUBLE_QNAN_REP}; 
-template <class __dummy>
-const _D_rep _LimG<__dummy>::_D_sNaN  = {_STLP_DOUBLE_SNAN_REP}; 
-template <class __dummy>
-const _F_rep _LimG<__dummy>::_F_inf  = {_STLP_FLOAT_INF_REP}; 
-template <class __dummy>
-const _F_rep _LimG<__dummy>::_F_qNaN  = {_STLP_FLOAT_QNAN_REP}; 
-template <class __dummy>
-const _F_rep _LimG<__dummy>::_F_sNaN  = {_STLP_FLOAT_SNAN_REP}; 
 
 #else
 

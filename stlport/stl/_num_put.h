@@ -97,7 +97,7 @@ public:
     return do_put(__s, __f, __fill, __val);
   }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   ~num_put() {}   
@@ -143,16 +143,18 @@ extern void _STLP_CALL __write_float(string&, ios_base::fmtflags, int, long doub
 # endif
 
 #ifndef _STLP_NO_WCHAR_T
-extern wchar_t* _STLP_CALL __convert_float_buffer(const char*, const char*, wchar_t*, const ctype<wchar_t>&, wchar_t);
+extern void _STLP_CALL __convert_float_buffer(string const&, wstring&, const ctype<wchar_t>&, wchar_t);
 #endif
-extern void _STLP_CALL __adjust_float_buffer(char*, char*, char);
+extern void _STLP_CALL __adjust_float_buffer(string&, char);
 
 extern char* _STLP_CALL
 __write_integer(char* buf, ios_base::fmtflags flags, long x);
 
 extern ptrdiff_t _STLP_CALL __insert_grouping(char* first, char* last, const string&, char, char, char, int);
+extern void _STLP_CALL __insert_grouping(string&, size_t, const string&, char, char, char, int);
 #  ifndef _STLP_NO_WCHAR_T
 extern ptrdiff_t _STLP_CALL __insert_grouping(wchar_t*, wchar_t*, const string&, wchar_t, wchar_t, wchar_t, int);
+extern void _STLP_CALL __insert_grouping(wstring&, size_t, const string&, wchar_t, wchar_t, wchar_t, int);
 #  endif
 
 # endif

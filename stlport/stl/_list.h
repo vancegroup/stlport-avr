@@ -216,7 +216,8 @@ template <class _Tp, class _Alloc, class _StrictWeakOrdering>
 void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
 
 template <class _Tp, class _Alloc>
-class list : public _List_base<_Tp, _Alloc> {
+class list : public _List_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
+{
   typedef _List_base<_Tp, _Alloc> _Base;
   typedef list<_Tp, _Alloc> _Self;
 public:      
@@ -246,7 +247,7 @@ protected:
   {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
-      _Construct(&__p->_M_data, __x);
+      _Copy_Construct(&__p->_M_data, __x);
     }
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
     return __p;
@@ -355,8 +356,8 @@ public:
   void push_front(const _Tp& __x) { insert(begin(), __x); }
   void push_back(const _Tp& __x) { insert(end(), __x); }
 
-# ifndef _STLP_NO_ANACHRONISMS
-  iterator insert(iterator __position) { return insert(__position, _Tp()); }
+#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __position) { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
   void push_front() {insert(begin());}
   void push_back() {insert(end());}
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
@@ -378,21 +379,32 @@ public:
     return __last;
   }
 
-  void resize(size_type __new_size, _Tp __x);
-  void resize(size_type __new_size) { this->resize(__new_size, _Tp()); }
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  void resize(size_type __new_size, const _Tp& __x = _Tp());
+#else
+  void resize(size_type __new_size, const _Tp& __x);
+  void resize(size_type __new_size) { this->resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
 
   void pop_front() { erase(begin()); }
   void pop_back() { 
     iterator __tmp = end();
     erase(--__tmp);
   }
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  explicit list(size_type __n, const _Tp& __val = _Tp(),
+#else
   list(size_type __n, const _Tp& __val,
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
        const allocator_type& __a = allocator_type())
     : _List_base<_Tp, _Alloc>(__a)
     { this->insert(begin(), __n, __val); }
+
+#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(size_type __n)
     : _List_base<_Tp, _Alloc>(allocator_type())
-    { this->insert(begin(), __n, _Tp()); }
+    { this->insert(begin(), __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 #ifdef _STLP_MEMBER_TEMPLATES
   // We don't need any dispatching tricks here, because insert does all of

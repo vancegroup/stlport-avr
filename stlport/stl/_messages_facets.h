@@ -68,7 +68,7 @@ public:
   inline void close(catalog __c) const
     { do_close(__c); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
   messages(_Messages*);
 
@@ -108,7 +108,7 @@ public:
   inline void close(catalog __c) const
     { do_close(__c); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
   messages(_Messages*);
 

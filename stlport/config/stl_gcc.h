@@ -9,8 +9,14 @@
 
 #   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 
-# if defined(__FreeBSD__) || defined (__hpux) || defined(__amigaos__) || ( defined(__OS2__) && defined(__EMX__) )
+# if defined (__hpux) || defined(__amigaos__) || ( defined(__OS2__) && defined(__EMX__) )
 #  define _STLP_NO_WCHAR_T
+# elif defined(__FreeBSD__)
+# if (__FreeBSD_cc_version < 500005)
+# define _STLP_NO_WCHAR_T
+# else
+# define _STLP_FREEBSD_HAS_WFUNCS
+# endif /* __FreeBSD_cc_version < 500005 */
 # endif
 
 #ifdef __USLC__
@@ -47,7 +53,7 @@
 
 /* Tru64 Unix, AIX, HP : gcc there by default uses uses native ld and hence cannot auto-instantiate 
    static template data. If you are using GNU ld, please say so in stl_user_config.h header */    
-# if (__GNUC__ < 3) && ! (_STLP_GCC_USES_GNU_LD) && \
+# if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
    ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux) || defined(__amigaos__) )
 #   define _STLP_NO_STATIC_TEMPLATE_DATA
 # endif
@@ -81,7 +87,7 @@
 
 # endif
 
-#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun)) 
+#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (_STLP_FREEBSD_HAS_WFUNCS) || defined (__sun)) 
 #ifndef __MINGW32__
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
 #endif
@@ -175,8 +181,9 @@ typedef unsigned int wint_t;
 
 #   if (__GNUC_MINOR__ < 95)  && (__GNUC__ < 3)
 /* egcs fails to initialize builtin types in expr. like this : new(p) char();  */
-#     define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 #     define _STLP_INCOMPLETE_EXCEPTION_HEADER
+#     define _STLP_DEF_CONST_PLCT_NEW_BUG 1
+#     define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 #   endif
 
 #   if (__GNUC_MINOR__ < 9)  && (__GNUC__ < 3) /* gcc 2.8 */
@@ -263,18 +270,38 @@ typedef unsigned int wint_t;
 
 # if (__GNUC__ >= 3)
 
+#  if (__GNUC__ == 3) && (__GNUC_MINOR__ <= 1)
+/* 
+due to bug in some gcc compilers (mangling scheme bug)
+the construction (stlport/stl/_epilog.h)
+
+namespace _STLP_STD {}
+namespace std {
+  using namespace _STLP_STD;
+}
+
+lead to infinite recursion in compiler, so the only way to incorporate
+_STLP_STD namespace into std, is redefine one.
+
+I don't know precise versions of gcc, when this bug happen.
+At least problem present in gcc 3.1.1 and not exist in 2.95.3, 3.2.3, 3.3
+
+  - ptr
+*/
+
+#   define _STLP_REDEFINE_STD 1
+#  endif
+
 #  if ((__GNUC_MINOR__ == 0) || (__APPLE__))
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-v3
-#   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../g++-v3/backward
 #  else
 #   if defined(__GNUC_PATCHLEVEL__) && (__GNUC_PATCHLEVEL__ > 0)
 #     define _STLP_NATIVE_INCLUDE_PATH ../__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__
-#     define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/backward
 #   else
 #     define _STLP_NATIVE_INCLUDE_PATH ../__GNUC__.__GNUC_MINOR__
-#     define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../__GNUC__.__GNUC_MINOR__/backward
 #   endif
 #  endif
+#  define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH/backward
 
 # elif (__GNUC_MINOR__ < 8)
 
@@ -371,31 +398,10 @@ typedef unsigned int wint_t;
 #   define _STLP_STATIC_TEMPLATE_DATA 1
 # endif
 
-
-
-#ifdef _SCO_ELF
-# define _STLP_SCO_OPENSERVER
-#     if defined(_REENTRANT)
-#           define _UITHREADS     /* if      UnixWare < 7.0.1 */
-#           define _STLP_UITHREADS
-#     endif /* _REENTRANT */
-#endif
-
-// Tune settings for the case where static template data members are not 
-// instaniated by default
-# if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
-#   define _STLP_STATIC_TEMPLATE_DATA 0
-#   if !defined ( _STLP_WEAK_ATTRIBUTE )
-#    define _STLP_WEAK_ATTRIBUTE 0
-#   endif
-#  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
-#   define __DECLARE_INSTANCE(type,item,init) type item init
-#  else
-#   define __DECLARE_INSTANCE(type,item,init)
-#  endif
-# else
-#   define _STLP_STATIC_TEMPLATE_DATA 1
+# if defined (__hpux) && defined(__GNUC__)
+#   define _STLP_NO_LONG_DOUBLE
 # endif
+
 
 #ifdef _STLP_FREEBSD_HAS_WFUNCS
 #  undef _STLP_FREEBSD_HAS_WFUNCS

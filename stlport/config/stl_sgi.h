@@ -59,7 +59,8 @@
 #   endif
 
 #   if (_COMPILER_VERSION < 720) || (defined(_MIPS_SIM) && _MIPS_SIM == _ABIO32)
-#     define _STLP_DEFAULT_CONSTRUCTOR_BUG
+#     define _STLP_DEF_CONST_PLCT_NEW_BUG
+#     define _STLP_DEF_CONST_DEF_PARAM_BUG
 #   endif
 #   if !((_COMPILER_VERSION >= 730) && defined(_MIPS_SIM) && _MIPS_SIM != _ABIO32)
 #     define _STLP_NO_MEMBER_TEMPLATE_KEYWORD

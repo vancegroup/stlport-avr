@@ -180,17 +180,6 @@ __pushback(basic_streambuf<_CharT, _Traits>* __buf, _CharT __c)
   return ret;
 }
 
-template <class _CharT, class _Traits>
-basic_istream<_CharT, _Traits>& _STLP_CALL
-ws(basic_istream<_CharT, _Traits>& __is)
-{
-  typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
-  _Sentry __sentry(__is, _No_Skip_WS()); // Don't skip whitespace.
-  if (__sentry)
-    __is._M_skip_whitespace(false);
-  return __is;
-}
-
 // Helper functions for istream<>::sentry constructor.
 template <class _CharT, class _Traits>
 bool
@@ -440,7 +429,8 @@ int basic_istream<_CharT, _Traits>::sync() {
 template <class _CharT, class _Traits>
 __BIS_pos_type__
 basic_istream<_CharT, _Traits>::tellg() {
-  //   sentry __sentry(*this, _No_Skip_WS());
+  sentry __sentry(*this, _No_Skip_WS());
+
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   return (__buf && !this->fail()) ? __buf->pubseekoff(0, ios_base::cur, ios_base::in)
     : pos_type(-1);
@@ -452,8 +442,11 @@ basic_istream<_CharT, _Traits>::seekg(pos_type __pos) {
   sentry __sentry(*this, _No_Skip_WS());
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
-  if (!this->fail() && __buf)
-    __buf->pubseekpos(__pos);
+  if (!this->fail() && __buf) {
+    if (__buf->pubseekpos(__pos) == pos_type(-1)) {
+      this->setstate(ios_base::failbit);
+    }
+  }
   return *this;
 }
 

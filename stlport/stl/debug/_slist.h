@@ -29,6 +29,9 @@
 
 #include <stl/debug/_iterator.h>
 
+#define _STLP_FILE_UNIQUE_ID SLIST_H
+_STLP_INSTRUMENT_FILE();
+
 # ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 #  undef  _DBG_slist
 #  define _DBG_slist slist
@@ -53,7 +56,7 @@ iterator_category(const _DBG_iter_base< _STLP_DBG_SLIST_BASE >&) {
 # endif
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class _DBG_slist : public _STLP_DBG_SLIST_BASE
+class _DBG_slist : private __range_checker<_Tp>, public _STLP_DBG_SLIST_BASE
 {
 private:
   typedef _STLP_DBG_SLIST_BASE _Base;
@@ -87,45 +90,65 @@ public:
 
 public:
 
-  explicit _DBG_slist(const allocator_type& __a = allocator_type()) :
-    _STLP_DBG_SLIST_BASE(__a) , _M_iter_list(_Get_base()) {}
+  explicit _DBG_slist(const allocator_type& __a = allocator_type()) 
+    : _STLP_DBG_SLIST_BASE(__a) , _M_iter_list(_Get_base()) {}
   
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _DBG_slist(size_type __n, const value_type& __x = _Tp(),
 #else
   _DBG_slist(size_type __n, const value_type& __x,
-	     const allocator_type& __a =  allocator_type()) :
-    _STLP_DBG_SLIST_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+		      const allocator_type& __a =  allocator_type())
+    : _STLP_DBG_SLIST_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
   
+#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _DBG_slist(size_type __n) : _STLP_DBG_SLIST_BASE(__n) , _M_iter_list(_Get_base()) {}
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+
+  explicit _DBG_slist(__partial_move_source<_Self> src)
+		: _STLP_DBG_SLIST_BASE(_AsPartialMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , 
+      _M_iter_list(_Get_base()) {}
   
+  /*explicit _DBG_slist(__full_move_source<_Self> src)
+		   : _STLP_DBG_SLIST_BASE(_FullMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , _M_iter_list(_Get_base()) {
+    src.get()._Invalidate_all();
+  }*/
+
 #ifdef _STLP_MEMBER_TEMPLATES
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-  template <class _InputIterator>
-  _DBG_slist(_InputIterator __first, _InputIterator __last) :
-    _STLP_DBG_SLIST_BASE(__first, __last, allocator_type()), _M_iter_list(_Get_base()) {} 
-# endif
   template <class _InputIterator>
   _DBG_slist(_InputIterator __first, _InputIterator __last,
-	     const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
-    _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {} 
+		      const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+    : __range_checker<_Tp>(__first, __last), 
+      _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
+    } 
 
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+  template <class _InputIterator>
+  _DBG_slist(_InputIterator __first, _InputIterator __last)
+    : __range_checker<_Tp>(__first, __last), 
+      _STLP_DBG_SLIST_BASE(__first, __last), _M_iter_list(_Get_base()) {
+    } 
+# endif
 #else /* _STLP_MEMBER_TEMPLATES */
 
-  _DBG_slist(const_iterator __first, const_iterator __last,
-	     const allocator_type& __a = allocator_type() ) :
-    _STLP_DBG_SLIST_BASE(__first._M_iterator, __last._M_iterator, __a),
-    _M_iter_list(_Get_base()) {}
-  
   _DBG_slist(const value_type* __first, const value_type* __last,
-        const allocator_type& __a =  allocator_type()) : 
-    _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base())  {}
+        const allocator_type& __a =  allocator_type())
+    : __range_checker<_Tp>(__first, __last), 
+      _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base())  {
+    }
 
+  _DBG_slist(const_iterator __first, const_iterator __last,
+		      const allocator_type& __a = allocator_type() )
+    : __range_checker<_Tp>(__first._M_iterator, __last._M_iterator), 
+      _STLP_DBG_SLIST_BASE(__first._M_iterator, __last._M_iterator, __a), _M_iter_list(_Get_base()) {
+    }
+  
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  _DBG_slist(const _Self& __x) : _STLP_DBG_SLIST_BASE(__x), _M_iter_list(_Get_base()) {}
+  _DBG_slist(const _Self& __x) : 
+    __range_checker<_Tp>(__x), _STLP_DBG_SLIST_BASE(__x), _M_iter_list(_Get_base()) {}
   
   _Self& operator= (const _Self& __x) {
     if (this != &__x) {
@@ -162,12 +185,11 @@ public:
   }
 
 public:
-  // fbp : checks here !
-  reference front() { 
+  reference front() {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
     return _Base::front(); 
   }
-  const_reference front() const { 
+  const_reference front() const {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
     return _Base::front(); 
   }
@@ -255,11 +277,13 @@ public:
 
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _Base::insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
   void insert(iterator __pos, const value_type* __first, 
                               const value_type* __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _Base::insert(__pos._M_iterator, __first, __last);
   }
 
@@ -269,14 +293,14 @@ public:
   iterator insert(iterator __pos, const value_type& __x = _Tp()) {
 #else
   iterator insert(iterator __pos, const value_type& __x) {
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
     return iterator(&_M_iter_list, _Base::insert(__pos._M_iterator, __x));
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   iterator insert(iterator __pos) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
-    return iterator(&_M_iter_list, _Base::insert(__pos._M_iterator));
+    return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp));
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
@@ -287,25 +311,29 @@ public:
     
 public:
   iterator erase_after(iterator __pos) {
+    _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    iterator __tmp = __pos;
+    _Invalidate_iterator(++__tmp);
     return iterator(&_M_iter_list, _Base::erase_after(__pos._M_iterator));
   }
   iterator erase_after(iterator __before_first, iterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__before_first))
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__last))
-    return iterator(&_M_iter_list, 
-		    _Base::erase_after(__before_first._M_iterator, __last._M_iterator));
+    _STLP_DEBUG_CHECK(_Dereferenceable(__before_first))
+    _STLP_DEBUG_CHECK(__check_range(__before_first, __last, this->begin(), this->end()))
+    _Invalidate_iterators(__before_first, __last);
+    return iterator(&_M_iter_list, _Base::erase_after(__before_first._M_iterator, __last._M_iterator));
   } 
 
   iterator erase(iterator __pos) {
+    _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    _Invalidate_iterator(__pos);
     return iterator(&_M_iter_list, _Base::erase(__pos._M_iterator));
   }
   iterator erase(iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__first))
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__last))
-    return iterator(&_M_iter_list, 
-		    _Base::erase(__first._M_iterator, __last._M_iterator));
+    _STLP_DEBUG_CHECK(__check_range(__first, __last, this->begin(), this->end()))
+    _Invalidate_iterators(__first, __last);
+    return iterator(&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -363,8 +391,8 @@ public:
 
   // Linear in distance(begin(), __pos), and linear in __x.size().
   void splice(iterator __pos, _Self& __x) {
-    _STLP_VERBOSE_ASSERT(!(&__x==this), _StlMsg_INVALID_ARGUMENT)
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    _STLP_VERBOSE_ASSERT(!(&__x==this), _StlMsg_INVALID_ARGUMENT)
     _Base::splice(__pos._M_iterator, (_Base&)__x);
     //dums: Invalidation according the Standard C++98 rules but against the SGI specs:
     __x._Invalidate_all();
@@ -372,9 +400,9 @@ public:
 
   // Linear in distance(begin(), __pos), and in distance(__x.begin(), __i).
   void splice(iterator __pos, _Self& __x, iterator __i) {
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
+    _STLP_DEBUG_CHECK(__check_if_owner(&__x._M_iter_list ,__i))
     _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos) && 
-                      __check_if_owner(&__x._M_iter_list ,__i))
     _Base::splice(__pos._M_iterator, (_Base&)__x, __i._M_iterator);
     //dums: Invalidation according the Standard C++98 rules but against the SGI specs:
     __x._Invalidate_iterator(__i);
@@ -382,11 +410,11 @@ public:
 
   // Linear in distance(begin(), __pos), in distance(__x.begin(), __first),
   // and in distance(__first, __last).
-  void splice(iterator __pos, _Self& __x, iterator __first, iterator __last)
-  {
-    _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
+  void splice(iterator __pos, _Self& __x, iterator __first, iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
-    if (__first != __last)
+    _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
+    _STLP_DEBUG_CHECK(__check_range(__first, __last, __x.begin(), __x.end()))
+    if (__first != __last) {
       _Base::splice(__pos._M_iterator, (_Base&)__x, __first._M_iterator, __last._M_iterator);      
       //dums: Invalidation according the Standard C++98 rules but against the SGI specs:
       __invalidate_range(&__x._M_iter_list, __first, __last);
@@ -428,12 +456,10 @@ public:
     _Base::merge((_Base&)__x);
   }
   void sort() {
-    _Invalidate_all();
     _Base::sort();
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-
   template <class _Predicate> 
   void remove_if(_Predicate __pred) {
     _Base_iterator __first = _Base::begin(), __last = _Base::end();
@@ -474,8 +500,7 @@ public:
 
   template <class _StrictWeakOrdering>
   void sort(_StrictWeakOrdering __comp) {
-      _Invalidate_all();
-      _Base::sort(__comp);
+    _Base::sort(__comp);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -491,5 +516,10 @@ public:
 
 _STLP_END_NAMESPACE
 
+#undef _STLP_FILE_UNIQUE_ID
+
 #endif /* _STLP_INTERNAL_DBG_SLIST_H */
 
+// Local Variables:
+// mode:C++
+// End:

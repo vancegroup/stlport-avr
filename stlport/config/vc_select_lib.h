@@ -18,7 +18,11 @@
 #    endif
 
 #  ifndef _STLP_IMPORT_TEMPLATE_KEYWORD
-#   define _STLP_IMPORT_TEMPLATE_KEYWORD  extern
+#   if defined(_STLP_MSVC) && _STLP_MSVC > 1300
+#    define _STLP_IMPORT_TEMPLATE_KEYWORD
+#   else
+#    define _STLP_IMPORT_TEMPLATE_KEYWORD  extern
+#   endif
 #  endif
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD
 

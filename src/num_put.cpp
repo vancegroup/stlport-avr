@@ -48,6 +48,12 @@ __insert_grouping(char * first, char * last, const string& grouping,
 			       separator, Plus, Minus, basechars);
 }
 
+void _STLP_CALL
+__insert_grouping(string &str, size_t dec_pos, const string& grouping,
+		  char separator, char Plus, char Minus, int basechars) {
+  __insert_grouping_aux(str, dec_pos, grouping, separator, Plus, Minus, basechars);
+}
+
 # ifndef _STLP_NO_WCHAR_T
 
 ptrdiff_t _STLP_CALL

@@ -45,8 +45,8 @@
 # include <stl/_alloc.h>
 #endif
 
-#ifndef _STLP_STRING_FWD_H
-# include <stl/_string_fwd.h>
+#ifndef _STLP_STRING_H
+#include <stl/_string.h>
 #endif
 
 # define _STLP_OWN_STDEXCEPT 1

@@ -33,7 +33,8 @@
 // #  define _STLP_STATIC_CONST_INIT_BUG 1
 // #  define _STLP_THROW_RETURN_BUG 1
 #  define _STLP_NO_TEMPLATE_CONVERSIONS 1
-#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+#  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
+#  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 #  define _STLP_NO_TYPENAME_ON_RETURN_TYPE
 #else
 #  define _STLP_LONG_LONG  __int64
@@ -132,8 +133,7 @@ typedef char    mbstate_t;
 #   if !defined (_STLP_NO_OWN_IOSTREAMS)
 
 #    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
-     || defined (_STLP_USE_DYNAMIC_LIB) ) \
-       && ! defined (_STLP_USE_STATIC_LIB)
+     || defined (_STLP_USE_DYNAMIC_LIB) ) && ! defined (_STLP_USE_STATIC_LIB)
 #      undef  _STLP_USE_DECLSPEC
 #      define _STLP_USE_DECLSPEC
 #     endif

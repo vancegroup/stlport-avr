@@ -27,7 +27,7 @@
 # elif (__INTEL_COMPILER >= 800)
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 # else
-#  if defined (__GNUC__) && (__GNUC__ >=3)
+#  if defined (__GNUC__) && (__GNUC__ >= 3)
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 #  else
 #   include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)

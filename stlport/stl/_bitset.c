@@ -270,8 +270,7 @@ operator>>(_ISTREAM_DLL& __is, bitset<_Nb>& __x) {
 
 # endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
-
-# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+// # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 // ------------------------------------------------------------
 // Lookup tables for find and count operations.
@@ -397,7 +396,7 @@ unsigned char _Bs_G<bool>::_S_first_one[256] _STLP_WEAK = {
   0, /* 255 */
 }; // end _Bitset_global
 
-# endif /* defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) */
+// # endif /* defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) */
 
 _STLP_END_NAMESPACE
 

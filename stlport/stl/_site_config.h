@@ -35,24 +35,24 @@
 # if !defined(_STLP_USE_DYNAMIC_LIB) && !defined(_STLP_USE_STATIC_LIB)
 /*
  * Turn _STLP_USE_DYNAMIC_LIB to enforce use of .dll version of STLport library.
- * NOTE : please do that only if you know what you are doing !
+ * NOTE: please do that only if you know what you are doing!
  * Changing default will require you to change makefile in "src" accordingly
  * and to rebuild STLPort library!
  * On UNIX, this has no effect. 
  *
  */
-// # define _STLP_USE_DYNAMIC_LIB
+// #  define _STLP_USE_DYNAMIC_LIB
 
 /*
  * Turn _STLP_USE_STATIC_LIB to enforce use of static version of STLport library.
- * NOTE : please do that only if you know what you are doing !
+ * NOTE: please do that only if you know what you are doing!
  * Changing default will require you to change makefile in "src" accordingly
  * and to rebuild STLPort library!
  * On UNIX, this has no effect. 
  *
  */
 // # define _STLP_USE_STATIC_LIB
-
+# endif // !_STLP_USE_DYNAMIC_LIB && !_STLP_USE_STATIC_LIB
 
 /* 
  * Edit relative path below (or put full path) to get native 
@@ -85,6 +85,16 @@
 
 
 /* 
+ * Uncomment _STLP_LEAKS_PEDANTIC to force deallocation of ALL allocated
+ * memory chunks. Normally not required. But if you worry about quazi-leaks
+ * (may be reported by some leaks detection tools), use
+ * _STLP_LEAKS_PEDANTIC. It should be used with _STLP_USE_NEWALLOC or
+ * _STLP_USE_MALLOC (see below).
+ */
+
+//#define _STLP_LEAKS_PEDANTIC 1
+
+/* 
  * Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
  * instead of STLport optimized node allocator engine.
  */
@@ -102,7 +112,14 @@
  */
 // #define   _STLP_DEBUG_ALLOC 1
 
-
+/*
+ * For compiler not supporting partial template specialization or ordering of
+ * template functions STLport implement a workaround based on inheritance
+ * detection. This inheritance can introduce trouble in client code when
+ * a user class derived a STL container (which is not advised as STL containers
+ * do not have virtual destructors). To disable this workaround turn this macro on:
+ */
+// #define   _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
 /*
  * For compiler not supporting partial template specialization or ordering of
  * template functions STLport implement a workaround based on inheritance

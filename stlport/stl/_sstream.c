@@ -75,12 +75,16 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_set_ptrs() {
   _CharT* __data_ptr = __CONST_CAST(_CharT*,_M_str.data());
   _CharT* __data_end = __data_ptr + _M_str.size();
   // The initial read position is the beginning of the string.
-  if (_M_mode & ios_base::in)
-    this->setg(__data_ptr, __data_ptr, __data_end);
+  if (_M_mode & ios_base::in) {
+    if (_M_mode & ios_base::ate)
+      this->setg(__data_ptr, __data_end, __data_end);
+    else
+      this->setg(__data_ptr, __data_ptr, __data_end);
+  }
   
   // The initial write position is the beginning of the string.
   if (_M_mode & ios_base::out) {
-    if (_M_mode & ios_base::app)
+    if (_M_mode & (ios_base::app | ios_base::ate))
       this->setp(__data_end, __data_end);
     else
       this->setp(__data_ptr, __data_end);

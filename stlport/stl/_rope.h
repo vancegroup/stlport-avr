@@ -75,6 +75,12 @@
 #    include <mutex.h>
 # endif
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID ROPE_H
+_STLP_INSTRUMENT_FILE();
+# endif
+
+
 #ifdef _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM 
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a)) 
 #elif defined(__MRC__)||defined(__SC__) 
@@ -439,7 +445,7 @@ public:
                              allocator_type __a) {
 
     if (!_S_is_basic_char_type((_CharT*)0)) {
-      _STLP_STD::_Destroy(__s, __s + __len);
+      _STLP_STD::_Destroy_Range(__s, __s + __len);
     }
     //  This has to be a static member, so this gets a bit messy
 #   ifdef _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM
@@ -1321,11 +1327,8 @@ protected:
     _STLP_TRY {
       return _S_new_RopeLeaf(__buf, _p_size, __a);
     }
-    _STLP_UNWIND(_RopeRep::_S_free_string(__buf, _p_size, __a))
-            
-# if defined (_STLP_THROW_RETURN_BUG)
-      return 0;
-# endif
+    _STLP_UNWIND(_RopeRep::_S_free_string(__buf, _p_size, __a));
+    _STLP_RET_AFTER_THROW(0);
   }
             
 
@@ -1469,7 +1472,7 @@ public:
   {
     _CharT* __buf = _M_tree_ptr.allocate(_S_rounded_up_size(1));
 
-    _Construct(__buf, __c);
+    _Copy_Construct(__buf, __c);
     _STLP_TRY {
       _M_tree_ptr._M_data = _S_new_RopeLeaf(__buf, 1, __a);
     }
@@ -1628,7 +1631,7 @@ public:
   }
 
   void copy(_CharT* __buffer) const {
-    _STLP_STD::_Destroy(__buffer, __buffer + size());
+    _STLP_STD::_Destroy_Range(__buffer, __buffer + size());
     _S_flatten(_M_tree_ptr._M_data, __buffer);
   }
 
@@ -1642,7 +1645,7 @@ public:
     size_t _p_size = size();
     size_t __len = (__pos + __n > _p_size? _p_size - __pos : __n);
 
-    _STLP_STD::_Destroy(__buffer, __buffer + __len);
+    _STLP_STD::_Destroy_Range(__buffer, __buffer + __len);
     _S_flatten(_M_tree_ptr._M_data, __pos, __len, __buffer);
     return __len;
   }
@@ -2521,6 +2524,10 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const
   }
 }
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_rope.c>

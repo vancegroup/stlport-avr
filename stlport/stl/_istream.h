@@ -301,7 +301,14 @@ operator>>(basic_istream<char, _Traits>& __in, signed char* __s) {
 // istream manipulator.
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& _STLP_CALL
-ws(basic_istream<_CharT, _Traits>& __is);
+ws(basic_istream<_CharT, _Traits>& __is) {
+  typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
+  _Sentry __sentry(__is, _No_Skip_WS()); // Don't skip whitespace.
+  if (__sentry)
+    __is._M_skip_whitespace(false);
+  return __is;
+}
+
 
 
 //----------------------------------------------------------------------

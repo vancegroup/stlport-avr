@@ -63,7 +63,8 @@ iterator_category(const  _DBG_iter_base< _STLP_DBG_TREE_SUPER >&) {
 
 template <class _Key, class _Value, class _KeyOfValue, class _Compare,
           _STLP_DBG_ALLOCATOR_SELECT(_Value) >
-class _DBG_Rb_tree : public _STLP_DBG_TREE_SUPER {
+class _DBG_Rb_tree : public _STLP_DBG_TREE_SUPER 
+{
   typedef _STLP_DBG_TREE_SUPER _Base;
   typedef _DBG_Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> _Self;
 protected:
@@ -84,18 +85,17 @@ protected:
   //typedef typename _Base::key_param_type key_param_type;
   //typedef typename _Base::val_param_type val_param_type;
 
-  void _Invalidate_all() {_M_iter_list._Invalidate_all();}
-
   void _Invalidate_iterator(const iterator& __it) { 
     __invalidate_iterator(&_M_iter_list,__it); 
   }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last) {
-    iterator __cur = __first;
-    while (__cur != __last) __invalidate_iterator(&_M_iter_list, __cur++); 
+    __invalidate_range(&_M_iter_list, __first, __last);
   }
 
   const _Base* _Get_base() const { return (const _Base*)this; }
   _Base* _Get_base() { return (_Base*)this; }
+
+  typedef typename _Base::iterator _Base_iterator;
 
 public:
   _DBG_Rb_tree() : _STLP_DBG_TREE_SUPER(), 
@@ -106,7 +106,18 @@ public:
     _STLP_DBG_TREE_SUPER(__comp, __a), _M_iter_list(_Get_base()) {}
   _DBG_Rb_tree(const _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& __x):
     _STLP_DBG_TREE_SUPER(__x), _M_iter_list(_Get_base()) {}
-  ~_DBG_Rb_tree() { _Invalidate_all(); }
+
+  explicit _DBG_Rb_tree(__partial_move_source<_Self> src):
+    _STLP_DBG_TREE_SUPER(_AsPartialMoveSource<_STLP_DBG_TREE_SUPER >(src.get())), 
+    _M_iter_list(_Get_base()) {}
+
+  /*explicit _DBG_Rb_tree(__full_move_source<_Self> src):
+    _STLP_DBG_TREE_SUPER(_FullMoveSource<_STLP_DBG_TREE_SUPER >(src.get())), 
+    _M_iter_list(_Get_base()) {
+    src.get()._M_iter_list._Invalidate_all();
+  }*/
+
+  ~_DBG_Rb_tree() {}
 
   _Self& operator=(const _Self& __x) {
     if (this != &__x) {
@@ -186,8 +197,9 @@ public:
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
-  template<class _II>
-  void insert_equal(_II __first, _II __last) {
+  template<class _InputIterator>
+  void insert_equal(_InputIterator __first, _InputIterator __last) {
+    _STLP_DEBUG_CHECK(__check_range(__first,__last))
     _Base::insert_equal(__first, __last);
   }
   template<class _InputIterator>
@@ -221,16 +233,15 @@ public:
     _Base::erase(__position._M_iterator);
   }
   size_type erase(const key_type& __x) {
-    pair<iterator,iterator> __p = equal_range(__x);
+    pair<_Base_iterator,_Base_iterator> __p = _Base::equal_range(__x);
     size_type __n = distance(__p.first, __p.second);
-    _Invalidate_iterators(__p.first, __p.second);
-    _Base::erase(__p.first._M_iterator, __p.second._M_iterator);
-	return __n;
+    _Invalidate_iterators(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
+    _Base::erase(__p.first, __p.second);
+    return __n;
   }
 
   void erase(iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __first)&&
-		      __check_if_owner(&_M_iter_list, __last))
+    _STLP_DEBUG_CHECK(__check_range(__first,__last, this->begin(), this->end()))
     _Invalidate_iterators(__first, __last);
     _Base::erase(__first._M_iterator, __last._M_iterator);    
   }
@@ -255,9 +266,11 @@ public:
          
 _STLP_END_NAMESPACE
 
-# undef  _STLP_DBG_TREE_SUPER
+#undef _STLP_FILE_UNIQUE_ID
+#undef  _STLP_DBG_TREE_SUPER
 
 #endif /* _STLP_INTERNAL_DBG_TREE_H */
 
-#endif /* _STLP_INTERNAL_DBG_TREE_H */
-
+// Local Variables:
+// mode:C++
+// End:

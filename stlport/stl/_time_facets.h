@@ -126,7 +126,7 @@ public:
                      ios_base::iostate&  __err, tm* __t) const
     { return do_get_year(__s,  __end,  __str,  __err, __t); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   _Time_Info _M_timeinfo;
@@ -230,7 +230,7 @@ public:
     return do_put(__s, __f,  __fill, __tmb, __format, __modifier); 
   }
   
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
   
 protected:
   _Time_Info _M_timeinfo;

@@ -71,7 +71,7 @@ struct __allocator : public _Alloc {
   size_type max_size() const _STLP_NOTHROW 
     { return size_t(-1) / sizeof(_Tp); }
 
-  void construct(pointer __p, const _Tp& __val) { _STLP_STD::_Construct(__p, __val); }
+  void construct(pointer __p, const _Tp& __val) { _STLP_STD::_Copy_Construct(__p, __val); }
   void destroy(pointer __p) { _STLP_STD::_Destroy(__p); }
 
   const __underlying_alloc& __get_underlying_alloc() const { return *this; }

@@ -76,16 +76,16 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
 // Helper routine for wchar_t
 template <class _OutputIter>
 _OutputIter  _STLP_CALL
-__put_float(char* __ibuf, char* __iend, _OutputIter __out,
+__put_float(string &__str, _OutputIter __out,
             ios_base& __f, wchar_t __fill,
             wchar_t __decimal_point,
             wchar_t __sep, const string& __grouping)
 {
   const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
 
-  wchar_t __wbuf[128];
-  wchar_t* __eend = __convert_float_buffer(__ibuf, __iend, __wbuf,
-                                           __ct, __decimal_point);
+  wstring __wbuf;
+  __convert_float_buffer(__str, __wbuf, __ct, __decimal_point);
+
   if (!__grouping.empty()) {
     // In order to do separator-insertion only to the left of the
     // decimal point, we pass this position to the __insert_grouping function.
@@ -104,21 +104,16 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
 // Helper routine for char
 template <class _OutputIter>
 _OutputIter  _STLP_CALL
-__put_float(char* __ibuf, char* __iend, _OutputIter __out,
+__put_float(string &__str, _OutputIter __out,
             ios_base& __f, char __fill,
             char __decimal_point,
             char __sep, const string& __grouping)
 {
-  __adjust_float_buffer(__ibuf, __iend, __decimal_point);
+  __adjust_float_buffer(__str, __decimal_point);
   if (!__grouping.empty()) {
-    string __new_grouping = __grouping;
-    const char * __decimal_pos = find(__ibuf, __iend, __decimal_point);
-    if (__grouping.size() == 1)
-      __new_grouping.push_back(__grouping[0]);
-    __new_grouping[0] += __STATIC_CAST(char, (__iend - __decimal_pos));
-    ptrdiff_t __len = __insert_grouping(__ibuf, __iend, __new_grouping,
-					__sep, '+', '-', 0);
-    __iend = __ibuf + __len;
+    size_t __dec_pos = __str.find(__decimal_point);
+    __insert_grouping(__str, (__dec_pos == string::npos)?__str.size():__dec_pos,
+                      __grouping, __sep, '+', '-', 0);
   }
 
   return __copy_float_and_fill(__CONST_CAST(char*, __str.data()), 
@@ -132,14 +127,11 @@ _M_do_put_float(_OutputIter __s, ios_base& __f,
                 _CharT __fill, _Float __x)
 {
   string __buf;
-  __buf.reserve(128);
   __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
   const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
   
-  return __put_float(__CONST_CAST(char*, __buf.c_str()), 
-                     __CONST_CAST(char*, __buf.c_str()) + __buf.size(),
-                     __s, __f, __fill,
+  return __put_float(__buf, __s, __f, __fill,
                      __np.decimal_point(),
 		                 __np.thousands_sep(), __f._M_grouping());
 }
@@ -259,7 +251,6 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
  
      // make sure there is room at the end of the buffer
      // we pass to __insert_grouping
-
     copy(__buf, __iend, (char *) __grpbuf);
     __buf = __grpbuf;
     __iend = __grpbuf + __len; 

@@ -38,9 +38,7 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _ForwardIterator, class _Tp>
 class raw_storage_iterator 
-# ifdef _STLP_HAS_VOID_SPECIALIZATION
       : public iterator<output_iterator_tag,void,void,void,void>
-# endif
 {
 protected:
   _ForwardIterator _M_iter;

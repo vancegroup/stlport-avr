@@ -9,7 +9,8 @@
 # define _STLP_INLINE_STRING_LITERAL_BUG 1
 # define _STLP_HAS_NATIVE_FLOAT_ABS
 
-#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+# define _STLP_DEF_CONST_PLCT_NEW_BUG 1
+# define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 
 
 # ifdef __IBMCPP__
@@ -123,8 +124,8 @@
 
 /* detect xlC5 by: */
 #if defined(__IBMCPP__) && (500 <= __IBMCPP__) && (__IBMCPP__ < 700)
-// #define _STLP_USE_EXCEPTIONS 1
-# define _STLP_STATIC_CONST_INIT_BUG 1 
+#define _STLP_USE_EXCEPTIONS 1
+#define _STLP_STATIC_CONST_INIT_BUG 1 
 //#pragma report(disable,CPPC1500029)
 // unsigned 32-bit integer type
 #  define _STLP_UINT32_T unsigned int

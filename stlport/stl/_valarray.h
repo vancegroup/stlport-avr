@@ -35,6 +35,11 @@
 #include <limits>
 #endif
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID VALARRAY_H
+_STLP_INSTRUMENT_FILE();
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 class slice;
@@ -118,14 +123,14 @@ public:
   valarray(const indirect_array<_Tp>&);
 
   // Destructor
-  ~valarray() { _STLP_STD::_Destroy(this->_M_first, this->_M_first + this->_M_size); }
+  ~valarray() { _STLP_STD::_Destroy_Range(this->_M_first, this->_M_first + this->_M_size); }
 
   // Extension: constructor that doesn't initialize valarray elements to a
   // specific value.  This is faster for types such as int and double.
 private:
   void _M_initialize(const __true_type&) {}
   void _M_initialize(const __false_type&)
-    { uninitialized_fill_n(this->_M_first, this->_M_size, value_type()); }
+    { uninitialized_fill_n(this->_M_first, this->_M_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 
 public:
   struct _NoInit {};
@@ -163,7 +168,7 @@ public:                         // Element access
 public:                         // Subsetting operations with auxiliary type
   valarray<_Tp>            operator[](slice) const;
   slice_array<_Tp>    operator[](slice);
-  valarray<_Tp>            operator[](gslice) const;
+  valarray<_Tp>            operator[](const gslice&) const;
   gslice_array<_Tp>   operator[](const gslice&);  
   valarray<_Tp>            operator[](const _Valarray_bool&) const;
   mask_array<_Tp>     operator[](const _Valarray_bool&);
@@ -345,7 +350,7 @@ public:                         // Other member functions.
   }
   
   void resize(size_t __n, value_type __x = value_type()) {
-    _STLP_STD::_Destroy(this->_M_first, this->_M_first + this->_M_size);
+    _STLP_STD::_Destroy_Range(this->_M_first, this->_M_first + this->_M_size);
     this->_Valarray_base<_Tp>::_M_deallocate();
     this->_Valarray_base<_Tp>::_M_allocate(__n);
     uninitialized_fill_n(this->_M_first, this->_M_size, __x);
@@ -1176,7 +1181,7 @@ public:
       _M_array[__index] >>= __x[__i];
   }
 
-  void operator=(const value_type& __c) {
+  void operator=(const value_type& __c) /*const could be const but standard says NO (26.3.5.4-1)*/ {
     size_t __index = _M_slice.start();
     for (size_t __i = 0;
          __i < _M_slice.size();
@@ -1371,7 +1376,7 @@ public:
     }
   }
 
-  void operator= (const value_type& __c) {
+  void operator= (const value_type& __c) /*const could be const but standard says NO (26.3.7.4-1)*/ {
     if (!_M_gslice._M_empty()) {
       _Gslice_Iter __i(_M_gslice);
       do _M_array[__i._M_1d_idx] = __c; while(__i._M_incr());
@@ -1646,6 +1651,10 @@ valarray<_Tp>::operator[](const _Valarray_size_t& __addr)
 }
 
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_valarray.c>

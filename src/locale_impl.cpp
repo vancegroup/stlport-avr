@@ -380,6 +380,9 @@ locale::_S_uninitialize()
   if (ios_base::_Loc_init::_S_count == 0 )
     return;
   _Stl_loc_global_impl->decr();
+#ifdef _STLP_LEAKS_PEDANTIC
+  _Locale_impl::free_classic_locale();
+#endif // _STLP_LEAKS_PEDANTIC
   --ios_base::_Loc_init::_S_count;
 }
 

@@ -115,11 +115,16 @@
 # define stl_destroy EH_STD::destroy
 # include <memory>
 
-template <class _Tp>
-class _STLP_CLASS_DECLSPEC EH_allocator;
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID PREFIX_H
+_STLP_INSTRUMENT_FILE();
+# endif
 
 template <class _Tp>
-class _STLP_CLASS_DECLSPEC EH_allocator {
+class /*_STLP_CLASS_DECLSPEC*/ EH_allocator;
+
+template <class _Tp>
+class /*_STLP_CLASS_DECLSPEC*/ EH_allocator {
 public:
 
   typedef _Tp        value_type;

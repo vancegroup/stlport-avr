@@ -58,7 +58,8 @@
 #  if __MWERKS__ < 0x2300		// CW Pro5 features
 #   define _STLP_INLINE_MEMBER_TEMPLATES 1
 #   define _STLP_RELOPS_IN_STD_BUG	 1
-#   define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+#   define _STLP_DEF_CONST_PLCT_NEW_BUG 1
+#   define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 #   define _STLP_NO_TYPENAME_ON_RETURN_TYPE
 #  endif
 

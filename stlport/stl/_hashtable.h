@@ -576,7 +576,7 @@ private:
     _Node* __n = _M_num_elements.allocate(1);
     __n->_M_next = 0;
     _STLP_TRY {
-      _Construct(&__n->_M_val, __obj);
+      _Copy_Construct(&__n->_M_val, __obj);
       //      return __n;
     }
     _STLP_UNWIND(_M_num_elements.deallocate(__n, 1));

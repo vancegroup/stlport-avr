@@ -25,6 +25,15 @@
 #include <stl/_locale.h>
 #include "c_locale.h"
 
+#ifdef _STLP_DEBUG
+#include <stl/debug/_debug.h>
+#endif
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID LOCALE_IMPL_H_NAME
+_STLP_INSTRUMENT_FILE();
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
@@ -70,6 +79,12 @@ extern _Locale_impl*   _Stl_loc_global_impl;
 extern _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock;
 
 _STLP_END_NAMESPACE
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
+
+
 
 #endif
 

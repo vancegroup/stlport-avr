@@ -112,7 +112,7 @@ public:
     return do_narrow(__low, __high, __dfault, __to); 
   }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 # if defined(_STLP_STATIC_CONST_INIT_BUG)
   enum __TableSize { table_size = 256 };
 # else
@@ -212,7 +212,7 @@ public:
                         char __dfault, char* __to) const
     { return do_narrow(__low, __high, __dfault, __to); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   ~ctype();

@@ -357,7 +357,8 @@ protected:
 
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class deque : protected _Deque_base<_Tp, _Alloc> {
+class deque : protected _Deque_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
+{
   typedef _Deque_base<_Tp, _Alloc> _Base;
   typedef deque<_Tp, _Alloc> _Self;
 public:                         // Basic types
@@ -437,7 +438,11 @@ public:                         // Constructor, destructor.
       __uninitialized_copy(__x.begin(), __x.end(), this->_M_start, _IsPODType()); 
   }
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  explicit deque(size_type __n, const value_type& __val = _Tp(),
+#else
   deque(size_type __n, const value_type& __val,
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a = allocator_type()) : 
     _Deque_base<_Tp, _Alloc>(__a, __n)
     { _M_fill_initialize(__val); }
@@ -494,8 +499,17 @@ public:                         // Constructor, destructor.
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+  /*explicit deque(__full_move_source<_Self> src)
+	  : _Deque_base<_Tp, _Alloc>(_FullMoveSource<_Deque_base<_Tp, _Alloc> >(src.get())) {
+  }*/
+
+  explicit deque(__partial_move_source<_Self> src)
+	  : _Deque_base<_Tp, _Alloc>(src.get()) {
+	  src.get()._M_map._M_data = 0;
+  }
+
   ~deque() { 
-    _STLP_STD::_Destroy(this->_M_start, this->_M_finish); 
+    _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); 
   }
 
   _Self& operator= (const _Self& __x);
@@ -602,7 +616,7 @@ public:                         // push_* and pop_*
       _M_push_front_aux_v(__t);
   }
 
-# ifndef _STLP_NO_ANACHRONISMS
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() {
     if (this->_M_finish._M_cur != this->_M_finish._M_last - 1) {
       _Construct(this->_M_finish._M_cur);
@@ -703,7 +717,11 @@ public:                         // Insert
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  void resize(size_type __new_size, value_type __x) {
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  void resize(size_type __new_size, const value_type& __x = _Tp()) {
+#else
+  void resize(size_type __new_size, const value_type& __x) {
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
     const size_type __len = size();
     if (__new_size < __len) 
       erase(this->_M_start + __new_size, this->_M_finish);
@@ -769,7 +787,7 @@ protected:                        // Internal construction/destruction
     }
     uninitialized_copy(__first, __last, this->_M_finish._M_first);
    }
-  _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_start, iterator(*__cur_node, __cur_node)));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)));
  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -777,7 +795,7 @@ protected:                        // Internal push_* and pop_*
 
   void _M_push_back_aux_v(const value_type&);
   void _M_push_front_aux_v(const value_type&);
-# ifndef _STLP_NO_ANACHRONISMS
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void _M_push_back_aux();
   void _M_push_front_aux();
 # endif /*_STLP_DONT_SUP_DFLT_PARAM !_STLP_NO_ANACHRONISMS*/

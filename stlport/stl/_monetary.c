@@ -425,7 +425,7 @@ money_put<_CharT, _OutputIter>
   // Determine the amount of padding required, if any.  
   size_t __width = __str.width();
 
-#if defined(_STLP_DEBUG) && (defined(__HP_aCC) || (__HP_aCC <= 1))
+#if defined(_STLP_DEBUG) && (defined(__HP_aCC) && (__HP_aCC <= 1))
   size_t __value_length = operator -(__digits_last, __digits_first);
 #else
   size_t __value_length = __digits_last - __digits_first;

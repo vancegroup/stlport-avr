@@ -28,6 +28,9 @@
 # include <stl/_pair.h>
 # include <stl/_alloc.h>
 
+#define _STLP_FILE_UNIQUE_ID ITERATOR_H
+_STLP_INSTRUMENT_FILE();
+
 # define _STLP_DBG_ALLOCATOR_SELECT( _Tp ) _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp )
 
 _STLP_BEGIN_NAMESPACE
@@ -100,7 +103,7 @@ bool _CompareIt(const _Iterator& __x, const _Iterator& __y, const random_access_
 
 
 template <class _Iterator>
-bool _Dereferenceable(_Iterator __it) {
+bool _Dereferenceable(const _Iterator& __it) {
   return (__it._Get_container_ptr() !=0) && !(__it._M_iterator == (__it._Get_container_ptr())->end());
 }
 
@@ -342,7 +345,7 @@ operator<=(const _DBG_iter_base<_Container>& __x,
 template <class _Container>
 inline bool 
 operator!=(const _DBG_iter_base<_Container>& __x, 
-	   const _DBG_iter_base<_Container>& __y) {
+		    const _DBG_iter_base<_Container>& __y) {
   _STLP_DEBUG_CHECK(__check_same_owner_or_null(__x, __y))
   return __x._M_iterator != __y._M_iterator;
 }
@@ -390,5 +393,7 @@ iterator_category(const  _DBG_iter_base<_Container>&) {
 # define _Debug_iter(__x, __y) __y
 
 _STLP_END_NAMESPACE
+
+#undef _STLP_FILE_UNIQUE_ID
 
 #endif /* INTERNAL_H */

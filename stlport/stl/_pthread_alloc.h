@@ -200,7 +200,7 @@ public:
 
     // boris : here, we have to lock per thread state, as we may be getting memory from
     // different thread pool.
-    _STLP_mutex_lock __lock(__a->_M_lock);
+    _STLP_auto_lock __lock(__a->_M_lock);
 
     __my_free_list = __a -> __free_list + _S_freelist_index(__n);
     __result = *__my_free_list;
@@ -225,7 +225,7 @@ public:
 
     // boris : here, we have to lock per thread state, as we may be returning memory from
     // different thread.
-    _STLP_mutex_lock __lock(__a->_M_lock);
+    _STLP_auto_lock __lock(__a->_M_lock);
 
     __my_free_list = __a->__free_list + _S_freelist_index(__n);
     __q -> __free_list_link = *__my_free_list;

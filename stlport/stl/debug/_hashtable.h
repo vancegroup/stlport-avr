@@ -68,7 +68,8 @@ iterator_category(const  _DBG_iter_base< _STLP_DBG_HT_SUPER >&) {
 
 template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
-class _DBG_hashtable : public _STLP_DBG_HT_SUPER {
+class _DBG_hashtable : public _STLP_DBG_HT_SUPER
+{
   typedef _DBG_hashtable<_Val, _Key, _HF, _ExK, _EqK, _All> _Self;
   typedef _STLP_DBG_HT_SUPER _Base;
 
@@ -86,14 +87,11 @@ public:
   typedef typename _Base::const_iterator _Base_const_iterator;
 
 protected:
-  void _Invalidate_all() {_M_iter_list._Invalidate_all();}
-
   void _Invalidate_iterator(const const_iterator& __it) { 
     __invalidate_iterator(&_M_iter_list,__it); 
   }
   void _Invalidate_iterators(const const_iterator& __first, const const_iterator& __last) {
-    const_iterator __cur = __first;
-    while (__cur != __last) __invalidate_iterator(&_M_iter_list, __cur++); 
+    __invalidate_range(&_M_iter_list, __first, __last);
   }
 
   const _Base* _Get_base() const { return (const _Base*)this; }
@@ -101,10 +99,10 @@ protected:
 
 public:
   _DBG_hashtable(size_type __n,
-		 const _HF&  __hf,
-		 const _EqK& __eql,
-		 const _ExK& __ext,
-		 const allocator_type& __a = allocator_type()):
+		 		  const _HF&  __hf,
+		 		  const _EqK& __eql,
+		 		  const _ExK& __ext,
+		 		  const allocator_type& __a = allocator_type()):
     _STLP_DBG_HT_SUPER(__n, __hf, __eql, __ext, __a),
     _M_iter_list(_Get_base()) {}
   
@@ -120,9 +118,22 @@ public:
     _STLP_DBG_HT_SUPER(__ht),
     _M_iter_list(_Get_base()) {}
   
+  explicit _DBG_hashtable(__partial_move_source<_Self> src) :
+    _STLP_DBG_HT_SUPER(_AsPartialMoveSource<_STLP_DBG_HT_SUPER >(src.get())),
+    _M_iter_list(_Get_base()) {}
+  
+  /*explicit _DBG_hashtable(__full_move_source<_Self> src) :
+    _STLP_DBG_HT_SUPER(_FullMoveSource<_STLP_DBG_HT_SUPER >(src.get())),
+    _M_iter_list(_Get_base()) {
+    src.get()._M_iter_list._Invalidate_all();
+  }*/
+  
   _Self& operator= (const _Self& __ht) {
-    _Invalidate_all();
-    _Base::operator=(__ht);
+    if (this !=  &__ht) {
+      //Should not invalidate end iterator
+      _Invalidate_iterators(this->begin(), this->end());
+      _Base::operator=((const _Base&)__ht);
+    }
     return *this;
   }
   
@@ -220,22 +231,22 @@ public:
   }
 
   size_type erase(const key_type& __key) {
-    pair<const_iterator, const_iterator> __p = equal_range(__key);
-    size_type __n = distance(__p.first, __p.second);
-    _Invalidate_iterators(__p.first, __p.second);
-    _Base::erase(__p.first._M_iterator, __p.second._M_iterator);
+    pair<_Base_iterator, _Base_iterator> __p = _Base::equal_range(__key);
+    size_type __n = _STLP_STD::distance(__p.first, __p.second);
+    _Invalidate_iterators(const_iterator(&_M_iter_list, __p.first), const_iterator(&_M_iter_list, __p.second));
+    _Base::erase(__p.first, __p.second);
     return __n;
   }
 
   void erase(const const_iterator& __it) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __it))
     _STLP_DEBUG_CHECK(_Dereferenceable(__it))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __it))
     _Invalidate_iterator(__it);
     _Base::erase(__it._M_iterator);
   }
   void erase(const_iterator __first, const_iterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __first)&&
-                      __check_if_owner(&_M_iter_list, __last))
+    _STLP_DEBUG_CHECK(__check_range(__first, __last, 
+                                    const_iterator(this->begin()), const_iterator(this->end())))
     _Invalidate_iterators(__first, __last);
     _Base::erase(__first._M_iterator, __last._M_iterator);
   }
@@ -244,7 +255,7 @@ public:
   }
   
   void clear() {
-    _Invalidate_all();
+    _Invalidate_iterators(this->begin(), this->end());
     _Base::clear();
   }
 
@@ -262,15 +273,12 @@ private:
 #undef _STLP_TEMPLATE_HEADER
 
 _STLP_END_NAMESPACE
-#  undef  hashtable
+
+#undef _STLP_FILE_UNIQUE_ID
+#undef  hashtable
 
 #endif /* _STLP_INTERNAL_HASHTABLE_H */
 
 // Local Variables:
 // mode:C++
 // End:
-
-#undef _STLP_FILE_UNIQUE_ID
-#undef  hashtable
-
-#endif /* _STLP_INTERNAL_HASHTABLE_H */

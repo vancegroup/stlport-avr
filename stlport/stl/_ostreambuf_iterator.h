@@ -73,7 +73,8 @@ private:
 };
 
 template <class _CharT, class _Traits>
-inline ostreambuf_iterator<_CharT, _Traits>::ostreambuf_iterator(basic_ostream<_CharT, _Traits>& __o) _STLP_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
+inline ostreambuf_iterator<_CharT, _Traits>::ostreambuf_iterator(basic_ostream<_CharT, _Traits>& __o) _STLP_NOTHROW
+  : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS ostreambuf_iterator<char, char_traits<char> >;

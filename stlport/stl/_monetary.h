@@ -71,7 +71,7 @@ public:
                 string_type& __digits) const
     { return do_get(__s,  __end, __intl,  __str,  __err, __digits); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   ~money_get() {}
@@ -107,7 +107,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 # if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum _IntlVal { intl = 1 } ;
 # else
@@ -155,7 +155,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 # if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum _IntlVal { intl = 0 } ;
 # else
@@ -204,7 +204,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 # if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum _IntlVal { intl = 1 } ;
 # else
@@ -249,7 +249,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 # if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum _IntlVal { intl = 0 } ;
 # else
@@ -402,7 +402,7 @@ public:
                 const string_type& __digits) const
     { return do_put(__s, __intl, __str, __fill, __digits); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
   ~money_put() {}

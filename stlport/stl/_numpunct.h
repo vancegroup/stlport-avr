@@ -63,16 +63,16 @@ public:
   string truename() const { return do_truename(); }
   string falsename() const { return do_falsename(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 # ifndef _STLP_NO_FRIEND_TEMPLATES
 protected:
 # endif
   ~numpunct();
 
-  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_truename;
-  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_falsename;
-  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_grouping;
+  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_truename;
+  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_falsename;
+  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_grouping;
 
   virtual char do_decimal_point() const;
   virtual char do_thousands_sep() const;
@@ -99,12 +99,12 @@ public:
   wstring truename() const { return do_truename(); }
   wstring falsename() const { return do_falsename(); }
 
-  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
-  _STLP_STATIC_MEMBER_DECLSPEC static wstring _M_truename;
-  _STLP_STATIC_MEMBER_DECLSPEC static wstring _M_falsename;
-  _STLP_STATIC_MEMBER_DECLSPEC static string _M_grouping;
+  static _STLP_STATIC_MEMBER_DECLSPEC wstring _M_truename;
+  static _STLP_STATIC_MEMBER_DECLSPEC wstring _M_falsename;
+  static _STLP_STATIC_MEMBER_DECLSPEC string _M_grouping;
 
   ~numpunct();
 

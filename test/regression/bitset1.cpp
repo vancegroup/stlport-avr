@@ -7,10 +7,10 @@
 #include <bitset>
 #include <algorithm>
 
-#if defined (_STLP_MSVC) && (_MSC_VER < 1300)
+/*#if defined (_STLP_MSVC) && (_MSC_VER < 1300)
 # define _STLP_NON_TYPE_TMPL_PARAM_BUG
 # define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
-#endif
+#endif*/
 
 # ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 # define CHART
@@ -41,29 +41,16 @@ int bitset1_test(int, char**)
 {
   cout<<"Results of bitset1_test:"<<endl;
 
-# if ! (defined (_STLP_MSVC) && (_MSC_VER < 1300)) && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
   bitset<13U> b1(0xFFFF);
   bitset<13U> b2(0x1111);
-  // Boris : MSVC just cannot take it right
   cout << "b1 size = " << b1.size() << endl;
-# if !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
-  cout << "b1 = "<<b1<<endl;
-# else
-  cout << "b1 = "<<b1.to_string CHART ()<<endl;
-# endif
+  disp_bitset("b1 = ", b1);
   cout << "b2 size = " << b2.size() << endl;
-# if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
-  cout << "b2 = "<<b2.to_string CHART ()<<endl;
-# else
-  cout << "b2 = "<<b2<<endl;
-# endif
+  disp_bitset("b2 = ", b2);
   b1 = b1^(b2<<2);
-# ifdef _STLP_NON_TYPE_TMPL_PARAM_BUG
-  cout << "b1 = "<<b1.to_string CHART ()<<endl;
-# else
-  cout << "b1 = "<<b1<<endl;
-# endif
-# endif /* MSVC */
+  disp_bitset("b1 = ", b1);
+  cout << "b1 nb bits set = " << b1.count() << endl;
+  cout << "b2 nb bits set = " << b2.count() << endl;
   return 0;
 }
 

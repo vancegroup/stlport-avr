@@ -42,7 +42,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
-class hash_set
+class hash_set _STLP_STLPORT_CLASS_1
 {
 private:
   typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>, 
@@ -85,6 +85,10 @@ public:
   hash_set(size_type __n, const hasher& __hf, const key_equal& __eql,
            const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
+
+  explicit hash_set(__partial_move_source<_Self> src)
+    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -214,7 +218,7 @@ public:
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
-class hash_multiset
+class hash_multiset _STLP_STLPORT_CLASS_1
 {
 private:
   typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>, 
@@ -259,6 +263,10 @@ public:
   hash_multiset(size_type __n, const hasher& __hf, const key_equal& __eql,
                 const allocator_type& __a)
     : _M_ht(__n, __hf, __eql, __a) {}
+
+  explicit hash_multiset(__partial_move_source<_Self> src)
+    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
