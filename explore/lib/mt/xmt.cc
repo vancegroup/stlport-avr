@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/16 11:27:31 ptr>
+// -*- C++ -*- Time-stamp: <99/04/16 17:41:03 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -36,6 +36,10 @@ __declspec( dllexport ) int __thr_key = TlsAlloc();
 
 char *Init_buf[32];
 int Thread::Init::_count = 0;
+
+__DLLEXPORT
+void signal_throw( int sig ) throw( int )
+{ throw sig; }
 
 Thread::Init::Init()
 {
@@ -284,10 +288,10 @@ void Thread::unblock_signal( int sig )
   sigemptyset( &sigset );
   sigaddset( &sigset, sig );
 #  ifdef __STL_SOLARIS_THREADS
-  thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
+  thr_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
 #  ifdef _PTHREADS
-  pthread_sigsetmask( SIG_BLOCK, &sigset, 0 );
+  pthread_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
 }
