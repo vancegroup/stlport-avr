@@ -102,13 +102,13 @@
 
 /* 
  * Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
- * instead of SGI optimized node allocator engine.
+ * instead of STLport optimized node allocator engine.
  */
 // #define   _STLP_USE_NEWALLOC   1
 
 /* 
  * Uncomment _STLP_USE_MALLOC to force allocator<T> to use plain "malloc" 
- * instead of SGI optimized node allocator engine.
+ * instead of STLport optimized node allocator engine.
  */
 // #define   _STLP_USE_MALLOC 1
 
@@ -173,7 +173,7 @@
 // # define _STLP_USE_ABBREVS
 
 /* 
- * This definition precludes SGI reverse_iterator to be compatible with
+ * This definition precludes STLport reverse_iterator to be compatible with
  * other parts of MSVC library. (With partial specialization, it just
  * has no effect).
  * Use it _ONLY_ if you use SGI-style reverse_iterator<> template explicitly
