@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/03/29 18:33:18 ptr>
+// -*- C++ -*- Time-stamp: <99/04/07 11:10:25 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -114,6 +114,10 @@ int Thread::suspend()
 #  ifdef _PTHREADS
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via condwait
+    if ( _id != pthread_self() ) {
+      throw domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
+      // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
+    }
     _suspend.wait();
 #  endif
 #  ifdef _SOLARIS_THREADS
@@ -145,6 +149,29 @@ int Thread::resume()
   }
 #endif
 
+  return -1;
+}
+
+__DLLEXPORT
+int Thread::kill( int sig )
+{
+#ifdef __unix
+  if ( _id != -1 ) {
+#ifdef _SOLARIS_THREADS
+    return thr_kill( _id, sig );
+#endif
+#ifdef _PTHREADS
+    return pthread_kill( _id, sig );
+#endif
+  }
+#endif
+#ifdef WIN32
+  // The behavior of TerminateThread significant differ from SOLARIS and POSIX
+  // threads, and I don't find analogs to workaround...
+  if ( _id != INVALID_HANDLE_VALUE ) {
+    return TerminateThread( _id, 0 ) ? 0 : -1;
+  }
+#endif
   return -1;
 }
 
@@ -207,6 +234,12 @@ void *Thread::_call( void *p )
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
   int ret;
+
+#ifdef _PTHREADS
+  if ( me->_flags & (daemon | detached) ) {
+    pthread_detach( me->_id );
+  }
+#endif
 
 #ifdef WIN32
   set_unexpected( unexpected );

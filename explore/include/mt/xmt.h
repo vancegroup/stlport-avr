@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/03/29 18:27:45 ptr>
+// -*- C++ -*- Time-stamp: <99/04/07 11:23:04 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -342,6 +342,7 @@ class Thread
     __DLLEXPORT int join();
     __DLLEXPORT int suspend();
     __DLLEXPORT int resume();
+    __DLLEXPORT int kill( int sig );
     static __DLLEXPORT void exit( int code = 0 );
 
     bool good() const
