@@ -89,9 +89,18 @@ inline void swap(_Tp& __a, _Tp& __b) {
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 }
 
+template <class _ForwardIter1, class _ForwardIter2, class _Value>
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value * )
+{
+  _Value tmp = *__i1;
+  *__i1 = *__i2;
+  *__i2 = tmp;
+}
+
 template <class _ForwardIter1, class _ForwardIter2>
 inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
-  swap(*__i1, *__i2);
+  // swap(*__i1, *__i2);
+  __iter_swap_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
 }
 
 //--------------------------------------------------

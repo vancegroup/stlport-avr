@@ -772,12 +772,13 @@ inline void __linear_insert(_RandomAccessIter __first,
     __unguarded_linear_insert(__last, __val, __comp);
 }
 
-template <class _RandomAccessIter, class _Compare>
+template <class _RandomAccessIter, class _Tp, class _Compare>
 void __insertion_sort(_RandomAccessIter __first,
-                      _RandomAccessIter __last, _Compare __comp) {
+                      _RandomAccessIter __last,
+                      _Tp *, _Compare __comp) {
   if (__first == __last) return;
   for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
-    __linear_insert(__first, __i, *__i, __comp);	//*TY 12/26/1998 - supply *__i as __val
+    __linear_insert(__first, __i, _Tp(*__i), __comp);	//*TY 12/26/1998 - supply *__i as __val
 }
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
@@ -799,11 +800,11 @@ template <class _RandomAccessIter, class _Compare>
 void __final_insertion_sort(_RandomAccessIter __first, 
                             _RandomAccessIter __last, _Compare __comp) {
   if (__last - __first > __stl_threshold) {
-    __insertion_sort(__first, __first + __stl_threshold, __comp);
+    __insertion_sort(__first, __first + __stl_threshold, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
     __unguarded_insertion_sort(__first + __stl_threshold, __last, __comp);
   }
   else
-    __insertion_sort(__first, __last, __comp);
+    __insertion_sort(__first, __last, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
 }
 
 template <class _RandomAccessIter, class _Tp, class _Size, class _Compare>
@@ -857,7 +858,7 @@ template <class _RandomAccessIter, class _Compare>
 void __inplace_stable_sort(_RandomAccessIter __first,
                            _RandomAccessIter __last, _Compare __comp) {
   if (__last - __first < 15) {
-    __insertion_sort(__first, __last, __comp);
+    __insertion_sort(__first, __last, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
     return;
   }
   _RandomAccessIter __middle = __first + (__last - __first) / 2;
@@ -900,10 +901,10 @@ void __chunk_insertion_sort(_RandomAccessIter __first,
                             _Distance __chunk_size, _Compare __comp)
 {
   while (__last - __first >= __chunk_size) {
-    __insertion_sort(__first, __first + __chunk_size, __comp);
+    __insertion_sort(__first, __first + __chunk_size, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
     __first += __chunk_size;
   }
-  __insertion_sort(__first, __last, __comp);
+  __insertion_sort(__first, __last, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
 }
 
 template <class _RandomAccessIter, class _Pointer, class _Distance,
@@ -1149,7 +1150,7 @@ void __nth_element(_RandomAccessIter __first, _RandomAccessIter __nth,
     else 
       __last = __cut;
   }
-  __insertion_sort(__first, __last, __comp);
+  __insertion_sort(__first, __last, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
 }
 
 
