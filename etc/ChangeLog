@@ -18,6 +18,8 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* dll_main.cpp : added instantiation for _Swap_lock_struct<> (thanks simonb)
 
 	* _ostream.c : fixed formatting bug for width()==1
+
+	* config/_epilog.h : added option pop section for Borland. 
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

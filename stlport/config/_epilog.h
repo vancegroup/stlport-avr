@@ -4,6 +4,10 @@
 #  pragma warning (pop)
 # endif
 
+# if defined (__BORLANDC__)
+#  pragma option (pop)
+# endif
+
 #elif defined(__sgi) && !defined(__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
 
 # pragma reset woff 1174
