@@ -508,8 +508,9 @@ int main(int argc, char** argv) {
         cout.flush();
         slist1_test (argc, argv);
         cout.flush();
-        string1_test (argc, argv);
-        cout.flush();
+        TEST(string1_test);
+        TEST( string_data_test );
+        TEST( string_c_str_test );
         bitset1_test (argc, argv); 
         cout.flush();
         move_construct_test (argc, argv);

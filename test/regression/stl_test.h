@@ -240,6 +240,8 @@ extern int hset2_test  ( int, char**);
 extern int hmset1_test  ( int, char**);
 extern int slist1_test (int, char**);
 extern int string1_test (int, char**);
+extern int string_data_test( int, char ** );
+extern int string_c_str_test( int, char ** );
 extern int bitset1_test (int, char**);
 extern int move_construct_test (int, char**);
 extern int ioiter_test (int, char**);
