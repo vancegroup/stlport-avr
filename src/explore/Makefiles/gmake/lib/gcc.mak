@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/07/10 13:08:28 ptr>
+# -*- makefile -*- Time-stamp: <03/11/30 11:41:22 ptr>
 # $Id$
 
 
@@ -13,15 +13,9 @@ ifeq ($(OSNAME),hp-ux)
 dbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_DBGxx) ${LDSEARCH}
 stldbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_STLDBGxx) ${LDSEARCH}
 release-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic -Wl,+h$(SO_NAMExx) ${LDSEARCH}
-else
-ifeq ($(OSNAME),openbsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${LDSEARCH}
-stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${LDSEARCH}
-release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${LDSEARCH}
-dbg-static:	LDFLAGS += ${LDSEARCH}
-stldbg-static:	LDFLAGS += ${LDSEARCH}
-release-static:	LDFLAGS += ${LDSEARCH}
-else
+endif
+
+ifeq ($(OSNAME),sunos)
 dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH}
 stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH}
 release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH}
@@ -29,5 +23,30 @@ dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
 endif
+
+ifeq ($(OSNAME),linux)
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH}
+dbg-static:	LDFLAGS += ${LDSEARCH}
+stldbg-static:	LDFLAGS += ${LDSEARCH}
+release-static:	LDFLAGS += ${LDSEARCH}
 endif
 
+ifeq ($(OSNAME),freebsd)
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH}
+dbg-static:	LDFLAGS += ${LDSEARCH}
+stldbg-static:	LDFLAGS += ${LDSEARCH}
+release-static:	LDFLAGS += ${LDSEARCH}
+endif
+
+ifeq ($(OSNAME),openbsd)
+dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${LDSEARCH}
+dbg-static:	LDFLAGS += ${LDSEARCH}
+stldbg-static:	LDFLAGS += ${LDSEARCH}
+release-static:	LDFLAGS += ${LDSEARCH}
+endif
