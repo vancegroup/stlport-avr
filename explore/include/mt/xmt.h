@@ -430,18 +430,18 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 };
 #endif // __unix && !__FIT_XSI_THR
 
-template <bool R, bool PS>
+template <bool R, bool SCOPE>
 class __Locker
 {
   public:
-    __Locker( const __Mutex<R,PS>& point ) :
+    __Locker( const __Mutex<R,SCOPE>& point ) :
       m( point )
-      { const_cast<__Mutex<R,PS>&>(m).lock(); }
+      { const_cast<__Mutex<R,SCOPE>&>(m).lock(); }
     ~__Locker()
-      { const_cast<__Mutex<R,PS>&>(m).unlock(); }
+      { const_cast<__Mutex<R,SCOPE>&>(m).unlock(); }
 
   private:
-    const __Mutex<R,PS>& m;
+    const __Mutex<R,SCOPE>& m;
 };
 
 typedef __Mutex<false,false>  Mutex;
