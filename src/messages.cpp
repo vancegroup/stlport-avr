@@ -19,7 +19,7 @@
 
 # include "message_facets.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // messages<char>
@@ -69,7 +69,7 @@ void _Messages::do_close(catalog) const
 {}
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 messages<wchar_t>::messages(_Messages* imp)  : 
   _BaseFacet(1), _M_impl(imp) { imp->_M_delete = false;  }
@@ -103,7 +103,7 @@ _Messages::do_get(catalog,
 
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

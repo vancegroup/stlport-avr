@@ -13,10 +13,10 @@
  *
  */
 
-#ifndef __STL_NULL_STREAM_H
-# define __STL_NULL_STREAM_H
+#ifndef _STLP_NULL_STREAM_H
+# define _STLP_NULL_STREAM_H
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 struct __null_stream 
 {
@@ -37,6 +37,6 @@ __null_stream& operator >>(const _Tp&, __null_stream& __x )
 
 extern __null_stream cin, cout, cerr, endl, ws, hex, dec;
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # endif

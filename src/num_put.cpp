@@ -18,7 +18,7 @@
 
 # include "num_put.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // num_put
@@ -29,7 +29,7 @@ extern const char __hex_char_table_hi[];
 const char __hex_char_table_lo[18] = "0123456789abcdefx"; 
 const char __hex_char_table_hi[18] = "0123456789ABCDEFX";
 
-char* __STL_CALL
+char* _STLP_CALL
 __write_integer(char* buf, ios_base::fmtflags flags, long x)
 {
   char tmp[64];
@@ -40,7 +40,7 @@ __write_integer(char* buf, ios_base::fmtflags flags, long x)
 
 ///-------------------------------------
 
-ptrdiff_t __STL_CALL
+ptrdiff_t _STLP_CALL
 __insert_grouping(char * first, char * last, const string& grouping,
 		  char separator, char Plus, char Minus, int basechars)
 {
@@ -48,9 +48,9 @@ __insert_grouping(char * first, char * last, const string& grouping,
 			       separator, Plus, Minus, basechars);
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
-ptrdiff_t __STL_CALL
+ptrdiff_t _STLP_CALL
 __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
                   wchar_t separator, wchar_t Plus, wchar_t Minus,
 		  int basechars)
@@ -64,18 +64,18 @@ __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
 
 //----------------------------------------------------------------------
 // Force instantiation of num_put<>
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
-template class __STL_CLASS_DECLSPEC ostreambuf_iterator<char, char_traits<char> >;
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+template class _STLP_CLASS_DECLSPEC ostreambuf_iterator<char, char_traits<char> >;
 // template class num_put<char, char*>;
 template class num_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 template class ostreambuf_iterator<wchar_t, char_traits<wchar_t> >;
 template class num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class num_put<wchar_t, wchar_t*>;
 # endif /* INSTANTIATE_WIDE_STREAMS */
 #endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

@@ -13,17 +13,17 @@
  *
  */
 
-# ifndef __STLPORT_CSTDDEF
+# ifndef _STLP_CSTDDEF
 #  include <cstddef> /* wchar_t */
 # endif
 
-# ifndef __STLPORT_CSTRING
+# ifndef _STLP_CSTRING
 #  include <cstring>
 # endif
 
-# if defined (__STL_USE_NEW_IOSTREAMS)
+# if defined (_STLP_USE_NEW_IOSTREAMS)
 
-#   include __STL_NATIVE_HEADER(iosfwd)
+#   include _STLP_NATIVE_HEADER(iosfwd)
 
 #  if defined ( __MWERKS__ ) || defined (__KCC)
 // MSL leaves a few important things out of <iosfwd>.
@@ -43,7 +43,7 @@ template <class charT, class traits = char_traits<charT> >
   class ostreambuf_iterator;
 #    endif /* __MWERKS__ */
 
-#  if defined (__STL_NO_NATIVE_WIDE_STREAMS)
+#  if defined (_STLP_NO_NATIVE_WIDE_STREAMS)
 class streampos;
 #  endif
 
@@ -56,30 +56,30 @@ class streampos;
 
 # else 
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 template <class _Tp> class allocator;
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // use old-style iostreams
 #  include <iostream.h>
 #  include <fstream.h>
 
-#ifndef __SGI_STL_CHAR_TRAITS_H
+#ifndef _STLP_CHAR_TRAITS_H
 // that defines char_traits or imports std::char_traits
 # include <stl/char_traits.h>
 #endif
 
-# endif /* __STL_USE_NEW_IOSTREAMS */
+# endif /* _STLP_USE_NEW_IOSTREAMS */
 
-# ifdef __STL_USE_ABBREVS
+# ifdef _STLP_USE_ABBREVS
 #  define istream_iterator               _iS__It
 #  define ostream_iterator               _oS__It
 # endif
 
-# if  defined (__STL_USE_OWN_NAMESPACE)
-__STL_BEGIN_NAMESPACE
+# if  defined (_STLP_USE_OWN_NAMESPACE)
+_STLP_BEGIN_NAMESPACE
 #  include <using/iosfwd>
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 # endif 
 
 // Local Variables:

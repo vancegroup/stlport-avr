@@ -17,21 +17,21 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_HASH_SET_H
-#define __SGI_STL_INTERNAL_WRAP_HASH_SET_H
+#ifndef _STLP_INTERNAL_WRAP_HASH_SET_H
+#define _STLP_INTERNAL_WRAP_HASH_SET_H
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
-#  if defined (__STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
+#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __HS_TEMPLATE_HEADER  template <class _Value>
 #   define __HS_ARGUMENTS        _Value
-#   define __HS_BASE_ARGUMENTS   _Value, hash<_Value>, equal_to<_Value>, __STL_DEFAULT_ALLOCATOR(_Value)
+#   define __HS_BASE_ARGUMENTS   _Value, hash<_Value>, equal_to<_Value>, _STLP_DEFAULT_ALLOCATOR(_Value)
 #  else
 #   define __HS_TEMPLATE_HEADER  template <class _Value, class _HashFcn, class _EqualKey >
 #   define __HS_ARGUMENTS        _Value, _HashFcn, _EqualKey
-#   define __HS_BASE_ARGUMENTS   _Value, _HashFcn, _EqualKey, __STL_DEFAULT_ALLOCATOR(_Value)
+#   define __HS_BASE_ARGUMENTS   _Value, _HashFcn, _EqualKey, _STLP_DEFAULT_ALLOCATOR(_Value)
 #  endif
 
 
@@ -68,12 +68,12 @@ public:
            const hasher& hf) : __HS_SUPER(f, l, n, hf) { }
   hash_set(const_iterator f, const_iterator l, size_type n,
            const hasher& hf, const key_equal& eql) : __HS_SUPER(f, l, n, hf, eql) { }
-# if defined (__STL_BASE_MATCH_BUG)
-    friend inline bool operator== __STL_NULL_TMPL_ARGS (const _Self& hs1, const _Self& hs2);
+# if defined (_STLP_BASE_MATCH_BUG)
+    friend inline bool operator== _STLP_NULL_TMPL_ARGS (const _Self& hs1, const _Self& hs2);
 # endif
 };
 
-# if defined (__STL_BASE_MATCH_BUG)
+# if defined (_STLP_BASE_MATCH_BUG)
 __HS_TEMPLATE_HEADER
 inline bool operator==(const hash_set< __HS_ARGUMENTS >& hs1, 
                        const hash_set< __HS_ARGUMENTS >& hs2)
@@ -113,18 +113,18 @@ public:
            const hasher& __hf) : __HMS_SUPER(__f, __l, __n, __hf) { }
   hash_multiset(const_iterator __f, const_iterator __l, size_type __n,
            const hasher& __hf, const key_equal& __eql) : __HMS_SUPER(__f, __l, __n, __hf, __eql) { }
-# if defined (__STL_BASE_MATCH_BUG)
-  friend inline bool operator== __STL_NULL_TMPL_ARGS (const _Self& __hs1, const _Self& __hs2);
+# if defined (_STLP_BASE_MATCH_BUG)
+  friend inline bool operator== _STLP_NULL_TMPL_ARGS (const _Self& __hs1, const _Self& __hs2);
 # endif
 };
 
-# if defined (__STL_BASE_MATCH_BUG)
+# if defined (_STLP_BASE_MATCH_BUG)
 __HS_TEMPLATE_HEADER
 inline bool operator==(const hash_multiset< __HS_ARGUMENTS >& __hs1, 
                        const hash_multiset< __HS_ARGUMENTS >& __hs2)
 {
     typedef __HMS_SUPER  __s;
-    return __STLPORT_STD::operator==((const __s&)__hs1,(const __s&)__hs2);
+    return _STLP_STD::operator==((const __s&)__hs1,(const __s&)__hs2);
 }
 # endif
 
@@ -135,11 +135,11 @@ inline bool operator==(const hash_multiset< __HS_ARGUMENTS >& __hs1,
 # undef __HS_BASE_ARGUMENTS
 # undef __HS_TEMPLATE_HEADER
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 } /* namespace STLPORT */
 # endif
 
-#endif /* __SGI_STL_INTERNAL_HASH_SET_H */
+#endif /* _STLP_INTERNAL_HASH_SET_H */
 
 // Local Variables:
 // mode:C++

@@ -31,7 +31,7 @@ int rawiter_test(int, char**)
     *r++ = X(i);
   for(i = 0; i < 5; i++)
     cout << *p++ << endl;
-# ifdef __SGI_STL_PORT
+# ifdef __STLPORT_VERSION
   a.deallocate(save_p,5);
 # else
   a.deallocate(save_p);

@@ -1,12 +1,12 @@
 
-#if defined (__STL_MSVC) || defined (__ICL) || defined (__BORLANDC__)
+#if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
 
-# if !(defined (__STL_MSVC) && (__STL_MSVC < 1200))
+# if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
 #  pragma warning(push)
 # endif
 
 # if defined (__BORLANDC__)
-#  pragma option push -Vx- -Ve- -a8 -b -pc -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008
+#  pragma option push -Vx- -Ve- -a8 -b -pc -w-inl -w-aus -w-sig -w-8062 -w-8041 -w-8008 -w-8012 -w-8027 -w-8057 -w-8091 -w-8092
 # else
 # include <config/_msvc_warnings_off.h>
 # endif

@@ -34,7 +34,7 @@ no
 # include <iostream.h>
 #endif
 
-#if defined(macintosh) || defined (_MAC) && defined(__MWERKS__)
+#if defined(macintosh)&&(!defined(__MRC__) && !defined(__SC__)) || defined (_MAC) && defined(__MWERKS__)
 
 # include <console.h>
 # include <Types.h>
@@ -143,7 +143,7 @@ static void usage(const char* name)
 #  include <set.h>
 # endif
 
-int __STL_CALL main(int argc, char** argv)
+int _STLP_CALL main(int argc, char** argv)
 {
 #if defined( __MWERKS__ ) && defined( macintosh )	// Get command line.
 	argc = ccommand(&argv);

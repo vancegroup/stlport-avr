@@ -14,16 +14,16 @@
  */
 
 #  if defined (_MSC_VER) && (_MSC_VER <= 1200)
-#   include __STL_NATIVE_OLD_STREAMS_HEADER(strstrea.h)
+#   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstrea.h)
 #  else
-#   include __STL_NATIVE_OLD_STREAMS_HEADER(strstream.h)
+#   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstream.h)
 #  endif
 
-# ifdef __STL_USE_OWN_NAMESPACE
-__STL_BEGIN_NAMESPACE
+# ifdef _STLP_USE_OWN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 #  include <using/h/strstream.h>
-__STL_END_NAMESPACE
-#endif /* __STL_OWN_NAMESPACE */
+_STLP_END_NAMESPACE
+#endif /* _STLP_OWN_NAMESPACE */
 
 
 // Local Variables:

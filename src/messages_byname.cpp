@@ -22,35 +22,34 @@
 //Must include to use typeid below
 #include <typeinfo>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 void _Catalog_locale_map::insert(int key, const locale& L)
 {
-# ifdef __STL_NO_WCHAR_T
+# ifdef _STLP_NO_WCHAR_T
   typedef char _Char;
 # else
   typedef wchar_t _Char;
 # endif
-#if !defined(__STL_NO_TYPEINFO)
+#if !defined(_STLP_NO_TYPEINFO)
   // Don't bother to do anything unless we're using a non-default ctype facet
-  __STL_TRY {
+  _STLP_TRY {
     typedef ctype<_Char> wctype;
-    const wctype& wct = use_facet<wctype>(L);
-    const wctype* zz = (const wctype*)0;
+    wctype& wct = (wctype &)use_facet<wctype>(L);
+    wctype* zz = (wctype*)0;
     if (typeid(&wct) != typeid(zz)) {
       if (!M)
         M = new hash_map<int, locale, hash<int>, equal_to<int> >;
 
-#if defined(__SC__)			//*TY 06/01/2000 - added workaround for SCpp
-      if (!M) delete M;		//*TY 06/01/2000 - it forgets to generate dtor for hash_map<> class. This fake code forces to generate one.
-#endif						//*TY 06/01/2000 - 
-
+#if defined(__SC__)
+      if (!M) delete M;
+#endif
       if (M->find(key) == M->end())
         M->insert(pair<const int, locale>(key, L));
     }
   }
-  __STL_CATCH_ALL {}
-# endif /* __STL_NO_TYPEINFO */
+  _STLP_CATCH_ALL {}
+# endif /* _STLP_NO_TYPEINFO */
 }
 
 void _Catalog_locale_map::erase(int key)
@@ -117,7 +116,7 @@ string _Messages_impl::do_get(catalog cat,
     : dfault;
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 wstring
 _Messages_impl::do_get(catalog thecat,
@@ -170,13 +169,6 @@ messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : _BaseFacet(re
 
 
 //----------------------------------------------------------------------
-// messages<wchar_t>
-
-messages<wchar_t>::messages(size_t refs)  : 
-  _BaseFacet(refs), _M_impl(new _Messages_impl(true))
-{}
-
-//----------------------------------------------------------------------
 // messages_byname<char>
 
 messages_byname<char>::messages_byname(const char* name, size_t refs)
@@ -186,8 +178,14 @@ messages_byname<char>::messages_byname(const char* name, size_t refs)
 messages_byname<char>::~messages_byname()
 {}
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
+//----------------------------------------------------------------------
+// messages<wchar_t>
+
+messages<wchar_t>::messages(size_t refs)  : 
+  _BaseFacet(refs), _M_impl(new _Messages_impl(true))
+{}
 
 messages<wchar_t>::messages(size_t refs, _Locale_messages* msg_obj)
   : _BaseFacet(refs),
@@ -207,7 +205,7 @@ messages_byname<wchar_t>::~messages_byname()
 
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

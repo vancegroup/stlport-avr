@@ -4,6 +4,7 @@
 
 srcdir = .
 VPATH = .
+SHELL=/bin/sh
 
 # point this to proper location
 STL_INCL=-I../../stlport
@@ -66,10 +67,11 @@ $(NOSGI_TEST_EXE) : $(NOSGI_OBJECTS)
 
 
 $(TEST) : $(TEST_EXE)
-	$(TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(TEST_EXE) -s 100
 
 $(D_TEST) : $(D_TEST_EXE)
-	$(D_TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(D_TEST_EXE) -s 100
+
 
 $(NOSGI_TEST) : $(NOSGI_TEST_EXE)
 	$(NOSGI_TEST_EXE)

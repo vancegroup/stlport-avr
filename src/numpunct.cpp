@@ -16,11 +16,9 @@
  *
  */ 
 # include "stlport_prefix.h"
-
-// #include "locale_impl.h"
 # include <stl/_numpunct.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // numpunct<char>
@@ -29,6 +27,15 @@ char   numpunct<char>::do_thousands_sep() const { return ','; }
 string numpunct<char>::do_grouping()  const { return string();}
 string numpunct<char>::do_truename()  const { return _M_truename;}
 string numpunct<char>::do_falsename() const { return _M_falsename; }
+numpunct<char>::~numpunct() {}
+
+_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_truename("true");
+_STLP_STATIC_MEMBER_DECLSPEC  string  numpunct<char>::_M_falsename("false");
+_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_grouping("");
+
+# ifndef _STLP_NO_WCHAR_T
+
+numpunct<wchar_t>::~numpunct() {}
 
 wchar_t numpunct<wchar_t>::do_decimal_point() const { return L'.'; }
 
@@ -53,17 +60,12 @@ wstring numpunct<wchar_t>::do_falsename() const
   return _M_falsename;
 } 
 
-__STL_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_truename("true");
-__STL_STATIC_MEMBER_DECLSPEC  string  numpunct<char>::_M_falsename("false");
-__STL_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_grouping("");
-
-# ifndef __STL_NO_WCHAR_T
-__STL_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_truename(L"true");
-__STL_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_falsename(L"false");
-__STL_STATIC_MEMBER_DECLSPEC  string numpunct<wchar_t>::_M_grouping("");
+_STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_truename(L"true");
+_STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_falsename(L"false");
+_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<wchar_t>::_M_grouping("");
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

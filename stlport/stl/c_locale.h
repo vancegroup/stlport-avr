@@ -17,8 +17,8 @@
  */ 
 
 
-#ifndef __STL_C_LOCALE_H
-# define __STL_C_LOCALE_H
+#ifndef _STLP_C_LOCALE_H
+# define _STLP_C_LOCALE_H
 
 /*
  * Implementation dependent definitions
@@ -83,13 +83,13 @@ typedef __int32_t wchar_t;
 #  else /* __sgi */
 
 # ifdef __cplusplus
-# ifndef __STLPORT_CSTDDEF
+# ifndef _STLP_CSTDDEF
 #  include <cstddef>
 # endif
-# ifndef __STLPORT_CWCHAR
+# ifndef _STLP_CWCHAR
 #  include <cwchar>
 # endif
-# ifndef __STLPORT_CCTYPE
+# ifndef _STLP_CCTYPE
 #  include <cctype>
 # endif
 # else
@@ -179,8 +179,19 @@ struct _Locale_messages;
 # define _Locale_PRINT _CTYPE_R
 # define _Locale_ALPHA _CTYPE_A
 
+# elif defined (__NetBSD__)
+ 
+# define _Locale_CNTRL _C
+# define _Locale_UPPER _U
+# define _Locale_LOWER _L
+# define _Locale_DIGIT _N
+# define _Locale_XDIGIT (_N|_X)
+# define _Locale_PUNCT _P
+# define _Locale_SPACE _S
+# define _Locale_PRINT (_P|_U|_L|_N|_B)
+# define _Locale_ALPHA (_U|_L)
 
-# elif defined(__STL_USE_GLIBC) /* linux, using the gnu compiler */
+# elif defined(_STLP_USE_GLIBC) /* linux, using the gnu compiler */
 
 /* This section uses macros defined in the gnu libc ctype.h header */
 
@@ -277,6 +288,19 @@ struct _Locale_messages;
 #  define _Locale_SPACE   64
 #  define _Locale_PRINT  128
 #  define _Locale_ALPHA  256
+
+# elif defined (__GNUC__) && defined (__APPLE__)
+ 
+# define _Locale_CNTRL _C
+# define _Locale_UPPER _U
+# define _Locale_LOWER _L
+# define _Locale_DIGIT _D
+# define _Locale_XDIGIT _X
+# define _Locale_PUNCT _P
+# define _Locale_SPACE _S
+# define _Locale_PRINT _R
+# define _Locale_ALPHA _A
+
 # elif defined (__hpux) || defined (__osf__)
  
 #   if defined(__HP_aCC) && !defined(_INCLUDE_HPUX_SOURCE)
@@ -312,7 +336,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE __ISSPACE
 #  define _Locale_PRINT __ISPRINT
 #  define _Locale_ALPHA __ISALPHA
-# elif defined (__QNXNTO__)
+# elif defined (__QNXNTO__)  || defined (__WATCOMC__)
 # define _Locale_CNTRL _CNTRL
 # define _Locale_UPPER _UPPER
 # define _Locale_LOWER _LOWER
@@ -322,6 +346,16 @@ struct _Locale_messages;
 # define _Locale_SPACE _SPACE
 # define _Locale_PRINT _PRINT
 # define _Locale_ALPHA (_UPPER | _LOWER)
+#elif defined (__DJGPP)
+#  define _Locale_CNTRL  __dj_ISCNTRL
+#  define _Locale_UPPER  __dj_ISUPPER
+#  define _Locale_LOWER  __dj_ISLOWER
+#  define _Locale_DIGIT  __dj_ISDIGIT
+#  define _Locale_XDIGIT __dj_ISXDIGIT
+#  define _Locale_PUNCT  __dj_ISPUNCT
+#  define _Locale_SPACE  __dj_ISSPACE
+#  define _Locale_PRINT  __dj_ISPRINT
+#  define _Locale_ALPHA  __dj_ISALPHA
 #endif
 
-# endif /* __STL_C_LOCALE_H */
+# endif /* _STLP_C_LOCALE_H */

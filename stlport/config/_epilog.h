@@ -1,6 +1,6 @@
-#if defined (__STL_MSVC) || defined (__ICL) || defined (__BORLANDC__)
+#if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
 
-# if !(defined (__STL_MSVC) && (__STL_MSVC < 1200))
+# if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
 #  pragma warning (pop)
 # endif
 

@@ -18,8 +18,8 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_ABBREVS_H
-# define __SGI_STL_INTERNAL_ABBREVS_H
+#ifndef _STLP_INTERNAL_ABBREVS_H
+# define _STLP_INTERNAL_ABBREVS_H
 
 // ugliness is intentional - to reduce conflicts
 #  define input_iterator_tag             _In__ItT

@@ -27,17 +27,17 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_LIST_H
-#define __SGI_STL_INTERNAL_WRAP_LIST_H
+#ifndef _STLP_INTERNAL_WRAP_LIST_H
+#define _STLP_INTERNAL_WRAP_LIST_H
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
-# if defined (__STL_DEBUG)
-#  define __LIST_SUPER _DBG_list<_Tp, __STL_DEFAULT_ALLOCATOR(_Tp) >
+# if defined (_STLP_DEBUG)
+#  define __LIST_SUPER _DBG_list<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # else
-#  define __LIST_SUPER __list__<_Tp, __STL_DEFAULT_ALLOCATOR(_Tp) >
+#  define __LIST_SUPER __list__<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # endif
 
 
@@ -57,7 +57,7 @@ public:
 # undef __LIST_SUPER
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 template <class _Tp>
 inline bool operator==(const list<_Tp>& __x, const list<_Tp>& __y) {
     typedef typename list<_Tp>::_Super _Super;
@@ -71,11 +71,11 @@ inline bool operator<(const list<_Tp>& __x, const list<_Tp>& __y) {
 }
 #  endif
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 } /* namespace STLPORT */
 # endif
 
-#endif /* __SGI_STL_INTERNAL_LIST_H */
+#endif /* _STLP_INTERNAL_LIST_H */
 
 // Local Variables:
 // mode:C++

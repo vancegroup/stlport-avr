@@ -27,26 +27,30 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_LIST_H
-#define __SGI_STL_INTERNAL_LIST_H
+#ifndef _STLP_INTERNAL_LIST_H
+#define _STLP_INTERNAL_LIST_H
 
-# ifndef __SGI_STL_INTERNAL_ALGOBASE_H
+# ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ALLOC_H
+# ifndef _STLP_INTERNAL_ALLOC_H
 #  include <stl/_alloc.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ITERATOR_H
+# ifndef _STLP_INTERNAL_ITERATOR_H
 #  include <stl/_iterator.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_CONSTRUCT_H
+# ifndef _STLP_INTERNAL_CONSTRUCT_H
 #  include <stl/_construct.h>
 # endif
 
-__STL_BEGIN_NAMESPACE
+# ifndef _STLP_INTERNAL_FUNCTION_BASE_H
+#  include <stl/_function_base.h>
+# endif
+
+_STLP_BEGIN_NAMESPACE
 
 # undef list
 # define  list  __WORKAROUND_DBG_RENAME(list)
@@ -60,12 +64,12 @@ template <class _Dummy>
 class _List_global {
 public:
   typedef _List_node_base _Node;
-  static void  __STL_CALL _Transfer(_List_node_base* __position, 
+  static void  _STLP_CALL _Transfer(_List_node_base* __position, 
                                     _List_node_base* __first, _List_node_base* __last);
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT) 
-__STL_EXPORT_TEMPLATE_CLASS _List_global<bool>;
+# if defined (_STLP_USE_TEMPLATE_EXPORT) 
+_STLP_EXPORT_TEMPLATE_CLASS _List_global<bool>;
 # endif
 typedef _List_global<bool> _List_global_inst;
 
@@ -119,7 +123,7 @@ struct _List_iterator : public _List_iterator_base {
 
   reference operator*() const { return ((_Node*)_M_node)->_M_data; }
 
-  __STL_DEFINE_ARROW_OPERATOR
+  _STLP_DEFINE_ARROW_OPERATOR
 
   _Self& operator++() { 
     this->_M_incr();
@@ -142,7 +146,7 @@ struct _List_iterator : public _List_iterator_base {
 };
 
 
-#ifdef __STL_USE_OLD_HP_ITERATOR_QUERIES
+#ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
 template <class _Tp, class _Traits>
 inline _Tp* value_type(const _List_iterator<_Tp, _Traits>&) { return 0; }
 inline bidirectional_iterator_tag iterator_category(const _List_iterator_base&) { return bidirectional_iterator_tag();}
@@ -165,10 +169,10 @@ public:
           allocator_type;
 
   allocator_type get_allocator() const { 
-    return __STL_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp);
+    return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp);
   }
 
-  _List_base(const allocator_type& __a) : _M_node(__STL_CONVERT_ALLOCATOR(__a, _Node), (_Node*)0) {
+  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), (_Node*)0) {
     _Node* __n = _M_node.allocate(1);
     __n->_M_next = __n;
     __n->_M_prev = __n;
@@ -185,8 +189,25 @@ public:
   _STL_alloc_proxy<_Node*, _Node, _Node_allocator_type>  _M_node;
 };
 
-template <class _Tp, __STL_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class list : protected _List_base<_Tp, _Alloc> {
+template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
+class list;
+
+// helper functions to reduce code duplication
+template <class _Tp, class _Alloc, class _Predicate> 
+void _S_remove_if(list<_Tp, _Alloc>& __that, _Predicate __pred);
+
+template <class _Tp, class _Alloc, class _BinaryPredicate>
+void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred);
+
+template <class _Tp, class _Alloc, class _StrictWeakOrdering>
+void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
+	      _StrictWeakOrdering __comp);
+
+template <class _Tp, class _Alloc, class _StrictWeakOrdering>
+void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
+
+template <class _Tp, class _Alloc>
+class list : public _List_base<_Tp, _Alloc> {
   typedef _List_base<_Tp, _Alloc> _Base;
   typedef list<_Tp, _Alloc> _Self;
 public:      
@@ -204,26 +225,26 @@ public:
 public:
   typedef _List_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
   typedef _List_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
-  __STL_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
+  _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 protected:
   _Node* _M_create_node(const _Tp& __x)
   {
     _Node* __p = this->_M_node.allocate(1);
-    __STL_TRY {
+    _STLP_TRY {
       _Construct(&__p->_M_data, __x);
     }
-    __STL_UNWIND(this->_M_node.deallocate(__p, 1));
+    _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
     return __p;
   }
 
   _Node* _M_create_node()
   {
     _Node* __p = this->_M_node.allocate(1);
-    __STL_TRY {
+    _STLP_TRY {
       _Construct(&__p->_M_data);
     }
-    __STL_UNWIND(this->_M_node.deallocate(__p, 1));
+    _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
     return __p;
   }
 
@@ -264,7 +285,7 @@ public:
   const_reference back() const { return *(--end()); }
 
   void swap(list<_Tp, _Alloc>& __x) {
-    __STLPORT_STD::swap(this->_M_node, __x._M_node); 
+    _STLP_STD::swap(this->_M_node, __x._M_node); 
   }
 
   iterator insert(iterator __position, const _Tp& __x) {
@@ -279,7 +300,7 @@ public:
     return __tmp;
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
@@ -296,13 +317,13 @@ public:
   _M_insert_dispatch(iterator __position,
 		     _InputIter __first, _InputIter __last,
 		     __false_type) 
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position, const _Tp* __first, const _Tp* __last) {
     for ( ; __first != __last; ++__first)
       insert(__position, *__first);
   }
   void insert(iterator __position, const_iterator __first, const_iterator __last)
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
   {
     for ( ; __first != __last; ++__first)
       insert(__position, *__first);
@@ -316,7 +337,7 @@ public:
   void push_front(const _Tp& __x) { insert(begin(), __x); }
   void push_back(const _Tp& __x) { insert(end(), __x); }
 
-# ifndef __STL_NO_ANACHRONISMS
+# ifndef _STLP_NO_ANACHRONISMS
   iterator insert(iterator __position) { return insert(__position, _Tp()); }
   void push_front() {insert(begin());}
   void push_back() {insert(end());}
@@ -339,8 +360,6 @@ public:
     return __last;
   }
 
-  void clear() { _Base::clear(); }
-
   void resize(size_type __new_size, const _Tp& __x);
   void resize(size_type __new_size) { this->resize(__new_size, _Tp()); }
 
@@ -357,7 +376,7 @@ public:
     : _List_base<_Tp, _Alloc>(allocator_type())
     { this->insert(begin(), __n, _Tp()); }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
 
   // We don't need any dispatching tricks here, because insert does all of
   // that anyway.  
@@ -367,7 +386,7 @@ public:
     : _List_base<_Tp, _Alloc>(__a)
   { insert(begin(), __first, __last); }
   
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
 
   list(const _Tp* __first, const _Tp* __last,
        const allocator_type& __a = allocator_type())
@@ -378,7 +397,7 @@ public:
     : _List_base<_Tp, _Alloc>(__a)
     { insert(begin(), __first, __last); }
 
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
   list(const list<_Tp, _Alloc>& __x) : _List_base<_Tp, _Alloc>(__x.get_allocator())
     { insert(begin(), __x.begin(), __x.end()); }
 
@@ -396,7 +415,7 @@ public:
 
   void _M_fill_assign(size_type __n, const _Tp& __val);
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
@@ -421,7 +440,7 @@ public:
       insert(__last1, __first2, __last2);
   }
 
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
 protected:
 public:
@@ -446,128 +465,57 @@ public:
     while (__first != __last) {
       iterator __next = __first;
       ++__next;
-      if (*__first == __value) 
-        erase(__first);
+      if (__value == *__first) erase(__first);
       __first = __next;
     }
   }
   
   void unique() {
-    iterator __first = begin();
-    iterator __last = end();
-    if (__first == __last) return;
-    iterator __next = __first;
-    while (++__next != __last) {
-      if (*__first == *__next)
-        erase(__next);
-      else
-        __first = __next;
-      __next = __first;
-    }
+    _S_unique(*this, equal_to<_Tp>());
   }
   
-
   void merge(_Self& __x) {
-    iterator __first1 = begin();
-    iterator __last1 = end();
-    iterator __first2 = __x.begin();
-    iterator __last2 = __x.end();
-    while (__first1 != __last1 && __first2 != __last2)
-      if (*__first2 < *__first1) {
-        iterator __next = __first2;
-        _List_global_inst::_Transfer(__first1._M_node, __first2._M_node, (++__next)._M_node);
-        __first2 = __next;
-      }
-      else
-        ++__first1;
-    if (__first2 != __last2) _List_global_inst::_Transfer(__last1._M_node, __first2._M_node, __last2._M_node);
+    _S_merge(*this, __x, less<_Tp>());
   }
 
   void reverse() {
     _List_node_base* __p = this->_M_node._M_data;
     _List_node_base* __tmp = __p;
     do {
-      __STLPORT_STD::swap(__tmp->_M_next, __tmp->_M_prev);
+      _STLP_STD::swap(__tmp->_M_next, __tmp->_M_prev);
       __tmp = __tmp->_M_prev;     // Old next node is now prev.
     } while (__tmp != __p);
   }    
   
-  void sort();
+  void sort() {
+    _S_sort(*this, less<_Tp>());
+  }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _Predicate> void remove_if(_Predicate __pred)  {
-    iterator __first = begin();
-    iterator __last = end();
-    while (__first != __last) {
-      iterator __next = __first;
-      ++__next;
-      if (__pred(*__first)) erase(__first);
-      __first = __next;
-    }
+    _S_remove_if(*this, __pred);
   }
   template <class _BinaryPredicate>
     void unique(_BinaryPredicate __binary_pred) {
-    iterator __first = begin();
-    iterator __last = end();
-    if (__first == __last) return;
-    iterator __next = __first;
-    while (++__next != __last) {
-      if (__binary_pred(*__first, *__next))
-	erase(__next);
-      else
-	__first = __next;
-      __next = __first;
-    }
+    _S_unique(*this, __pred);
   }
 
   template <class _StrictWeakOrdering>
     void merge(list<_Tp, _Alloc>& __x,
 	  _StrictWeakOrdering __comp) {
-    iterator __first1 = begin();
-    iterator __last1 = end();
-    iterator __first2 = __x.begin();
-    iterator __last2 = __x.end();
-    while (__first1 != __last1 && __first2 != __last2)
-      if (__comp(*__first2, *__first1)) {
-	iterator __next = __first2;
-	_List_global_inst::_Transfer(__first1._M_node, __first2._M_node, (++__next)._M_node);
-	__first2 = __next;
-      }
-      else
-	++__first1;
-    if (__first2 != __last2) _List_global_inst::_Transfer(__last1._M_node, __first2._M_node, __last2._M_node);
+    _S_merge(*this, __x, __comp);
   }
 
   template <class _StrictWeakOrdering>
     void sort(_StrictWeakOrdering __comp) {
-    // Do nothing if the list has length 0 or 1.
-    if (this->_M_node._M_data->_M_next != this->_M_node._M_data &&
-	(this->_M_node._M_data->_M_next)->_M_next != this->_M_node._M_data) {
-      list<_Tp, _Alloc> __carry;
-      list<_Tp, _Alloc> __counter[64];
-      int __fill = 0;
-      while (!empty()) {
-	__carry.splice(__carry.begin(), *this, begin());
-	int __i = 0;
-	while(__i < __fill && !__counter[__i].empty()) {
-	  __counter[__i].merge(__carry, __comp);
-	  __carry.swap(__counter[__i++]);
-	}
-	__carry.swap(__counter[__i]);         
-	if (__i == __fill) ++__fill;
-      } 
-
-      for (int __i = 1; __i < __fill; ++__i) 
-	__counter[__i].merge(__counter[__i-1], __comp);
-      swap(__counter[__fill-1]);
-    }
+    _S_sort(*this, __comp);
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
 };
 
 template <class _Tp, class _Alloc>
-__STL_INLINE_LOOP bool  __STL_CALL
+_STLP_INLINE_LOOP bool  _STLP_CALL
 operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y)
 {
   typedef typename list<_Tp,_Alloc>::const_iterator const_iterator;
@@ -584,33 +532,33 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y)
 }
 
 template <class _Tp, class _Alloc>
-inline bool  __STL_CALL operator<(const list<_Tp,_Alloc>& __x,
+inline bool  _STLP_CALL operator<(const list<_Tp,_Alloc>& __x,
                                   const list<_Tp,_Alloc>& __y)
 {
   return lexicographical_compare(__x.begin(), __x.end(),
                                  __y.begin(), __y.end());
 }
 
-# define __STL_TEMPLATE_CONTAINER list<_Tp, _Alloc>
-# define __STL_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
-__STL_RELOPS_OPERATORS(__STL_TEMPLATE_HEADER, __STL_TEMPLATE_CONTAINER)
-# undef __STL_TEMPLATE_CONTAINER
-# undef __STL_TEMPLATE_HEADER
+# define _STLP_TEMPLATE_CONTAINER list<_Tp, _Alloc>
+# define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
+_STLP_RELOPS_OPERATORS(_STLP_TEMPLATE_HEADER, _STLP_TEMPLATE_CONTAINER)
+# undef _STLP_TEMPLATE_CONTAINER
+# undef _STLP_TEMPLATE_HEADER
 
-#ifdef __STL_USE_SEPARATE_RELOPS_NAMESPACE
+#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _Tp, class _Alloc>
-inline void __STL_CALL 
+inline void _STLP_CALL 
 swap(list<_Tp, _Alloc>& __x, list<_Tp, _Alloc>& __y)
 {
   __x.swap(__y);
 }
 
-#endif /* __STL_USE_SEPARATE_RELOPS_NAMESPACE */
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
-__STL_END_NAMESPACE 
+_STLP_END_NAMESPACE 
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_list.c>
 # endif
 
@@ -618,15 +566,15 @@ __STL_END_NAMESPACE
 # undef list
 # define __list__ __FULL_NAME(list)
 
-#if defined (__STL_DEBUG)
+#if defined (_STLP_DEBUG)
 # include <stl/debug/_list.h>
 #endif
 
-#if defined (__STL_USE_WRAPPER_FOR_ALLOC_PARAM)
+#if defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
 # include <stl/wrappers/_list.h>
 #endif
 
-#endif /* __SGI_STL_INTERNAL_LIST_H */
+#endif /* _STLP_INTERNAL_LIST_H */
 
 // Local Variables:
 // mode:C++

@@ -28,11 +28,10 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_PAIR_H
-#define __SGI_STL_INTERNAL_PAIR_H
+#ifndef _STLP_INTERNAL_PAIR_H
+#define _STLP_INTERNAL_PAIR_H
 
-
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _T1, class _T2>
 struct pair {
@@ -41,14 +40,14 @@ struct pair {
 
   _T1 first;
   _T2 second;
-# if defined (__STL_CONST_CONSTRUCTOR_BUG)
+# if defined (_STLP_CONST_CONSTRUCTOR_BUG)
   pair() {}
 # else
   pair() : first(_T1()), second(_T2()) {}
 # endif
   pair(const _T1& __a, const _T2& __b) : first(__a), second(__b) {}
 
-#if defined (__STL_MEMBER_TEMPLATES) && !(defined (__STL_MSVC) && (__STL_MSVC < 1200))
+#if defined (_STLP_MEMBER_TEMPLATES) && !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
   template <class _U1, class _U2>
   pair(const pair<_U1, _U2>& __p) : first(__p.first), second(__p.second) {}
 
@@ -58,44 +57,44 @@ struct pair {
 };
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator==(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+inline bool _STLP_CALL operator==(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
 { 
   return __x.first == __y.first && __x.second == __y.second; 
 }
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator<(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
+inline bool _STLP_CALL operator<(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
 { 
   return __x.first < __y.first || 
          (!(__y.first < __x.first) && __x.second < __y.second); 
 }
 
-#ifdef __STL_USE_SEPARATE_RELOPS_NAMESPACE
+#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator!=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
+inline bool _STLP_CALL operator!=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
   return !(__x == __y);
 }
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator>(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
+inline bool _STLP_CALL operator>(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
   return __y < __x;
 }
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator<=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
+inline bool _STLP_CALL operator<=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
   return !(__y < __x);
 }
 
 template <class _T1, class _T2>
-inline bool __STL_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
+inline bool _STLP_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y) {
   return !(__x < __y);
 }
 
-#endif /* __STL_USE_SEPARATE_RELOPS_NAMESPACE */
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 
-#if defined(__STL_FUNCTION_TMPL_PARTIAL_ORDER) && ! defined (__STL_NO_EXTENSIONS)
+#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && ! defined (_STLP_NO_EXTENSIONS)
 template <class _T1, class _T2, int _Sz>
 inline pair<_T1, _T2 const*> make_pair(_T1 const& __x,
                                        _T2 const (&__y)[_Sz])
@@ -120,15 +119,42 @@ inline pair<_T1 const*, _T2 const*> make_pair(_T1 const (&__x)[_Sz1],
 #endif
 
 template <class _T1, class _T2>
-inline pair<_T1, _T2> __STL_CALL make_pair(const _T1& __x, const _T2& __y)
+inline pair<_T1, _T2> _STLP_CALL make_pair(const _T1& __x, const _T2& __y)
 {
   return pair<_T1, _T2>(__x, __y);
 }
 
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_PAIR_H */
+# if defined (_STLP_USE_NAMESPACES) || ! defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE) 
+_STLP_BEGIN_RELOPS_NAMESPACE
+
+template <class _Tp>
+inline bool _STLP_CALL operator!=(const _Tp& __x, const _Tp& __y) {
+  return !(__x == __y);
+}
+
+template <class _Tp>
+inline bool _STLP_CALL operator>(const _Tp& __x, const _Tp& __y) {
+  return __y < __x;
+}
+
+template <class _Tp>
+inline bool _STLP_CALL operator<=(const _Tp& __x, const _Tp& __y) {
+  return !(__y < __x);
+}
+
+template <class _Tp>
+inline bool _STLP_CALL  operator>=(const _Tp& __x, const _Tp& __y) {
+  return !(__x < __y);
+}
+
+_STLP_END_RELOPS_NAMESPACE
+
+# endif
+
+#endif /* _STLP_INTERNAL_PAIR_H */
 
 // Local Variables:
 // mode:C++

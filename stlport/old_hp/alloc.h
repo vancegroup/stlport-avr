@@ -16,44 +16,44 @@
  *
  */
 
-#ifndef __SGI_STL_ALLOC_H
-#define __SGI_STL_ALLOC_H
+#ifndef _STLP_ALLOC_H
+#define _STLP_ALLOC_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa003
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa003
 #  include <stl/_prolog.h>
 # endif
 
-#if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS) && !defined (__STLPORT_DEBUG_H)
+#if defined  (_STLP_DEBUG) || defined (_STLP_ASSERTIONS) && !defined (_STLP_DEBUG_H)
 # include <stl/debug/_debug.h>
 #endif
 
-# ifndef __STLPORT_CSTDDEF
+# ifndef _STLP_CSTDDEF
 #  include <cstddef>
 # endif
-# ifndef __STLPORT_CLIMITS
+# ifndef _STLP_CLIMITS
 #  include <climits>
 # endif
-# ifndef __STLPORT_CSTDLIB
+# ifndef _STLP_CSTDLIB
 #  include <cstdlib>
 # endif
-# ifndef __STLPORT_CSTRING
+# ifndef _STLP_CSTRING
 #  include <cstring>
 # endif
-# ifndef __STLPORT_CASSERT
+# ifndef _STLP_CASSERT
 #  include <cassert>
 # endif
 
-#ifndef __SGI_STL_INTERNAL_ALLOC_H
+#ifndef _STLP_INTERNAL_ALLOC_H
 #include <stl/_alloc.h>
 #endif
 
 // Old SGI names
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 typedef __sgi_alloc alloc;
 typedef __malloc_alloc<0> malloc_alloc;
-#ifdef __STL_USE_NEWALLOC
+#ifdef _STLP_USE_NEWALLOC
 typedef __new_alloc new_alloc;
 #endif
 
@@ -61,41 +61,41 @@ typedef __new_alloc new_alloc;
 typedef __single_client_alloc  single_client_alloc; 
 typedef __multithreaded_alloc  multithreaded_alloc; 
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 
 using namespace STLPORT;
 
 # else
 
-# ifdef __STL_USE_RAW_SGI_ALLOCATORS
-using __STLPORT_STD::simple_alloc;
-using __STLPORT_STD::alloc;
+# ifdef _STLP_USE_RAW_SGI_ALLOCATORS
+using _STLP_STD::simple_alloc;
+using _STLP_STD::alloc;
 # endif
 
-using __STLPORT_STD::malloc_alloc; 
-# ifdef __STL_DEBUG_ALLOC
-using __STLPORT_STD::__debug_alloc;
+using _STLP_STD::malloc_alloc; 
+# ifdef _STLP_DEBUG_ALLOC
+using _STLP_STD::__debug_alloc;
 # endif 
-#ifdef __STL_USE_NEWALLOC
-using __STLPORT_STD::new_alloc;
+#ifdef _STLP_USE_NEWALLOC
+using _STLP_STD::new_alloc;
 #endif
 
-using __STLPORT_STD::single_client_alloc; 
-using __STLPORT_STD::multithreaded_alloc; 
-using __STLPORT_STD::allocator;
+using _STLP_STD::single_client_alloc; 
+using _STLP_STD::multithreaded_alloc; 
+using _STLP_STD::allocator;
 
-# endif /* __STL_BROKEN_USING_DIRECTIVE */
-#endif /* __STL_USE_NAMESPACES */
+# endif /* _STLP_BROKEN_USING_DIRECTIVE */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa003)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa003)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_ALLOC_H */
+#endif /* _STLP_ALLOC_H */
 
 // Local Variables:
 // mode:C++

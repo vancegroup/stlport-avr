@@ -23,20 +23,20 @@
  * modified is included with the above copyright notice.
  *
  */
-#if !defined ( __STL_STRING_FWD_C) && ! defined (__SGI_STL_OWN_IOSTREAMS)
-#define __STL_STRING_FWD_C
+#if !defined ( _STLP_STRING_FWD_C) && ! defined (_STLP_OWN_IOSTREAMS)
+#define _STLP_STRING_FWD_C
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
-const char* __STL_CALL
+const char* _STLP_CALL
 __get_c_string(const basic_string<_CharT,_Traits,_Alloc>& __str) { 
   return __str.c_str(); 
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_STRING_FWD_C */
+#endif /*  _STLP_STRING_FWD_C */
 
 // Local Variables:
 // mode:C++

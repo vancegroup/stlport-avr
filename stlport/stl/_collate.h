@@ -19,29 +19,29 @@
 // standard library headers.  You should not attempt to use this header
 // file directly.
 
-#ifndef __SGI_STL_INTERNAL_COLLATE_H
-#define __SGI_STL_INTERNAL_COLLATE_H
+#ifndef _STLP_INTERNAL_COLLATE_H
+#define _STLP_INTERNAL_COLLATE_H
 
-#ifndef __STL_C_LOCALE_H
+#ifndef _STLP_C_LOCALE_H
 # include <stl/c_locale.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_LOCALE_H
+#ifndef _STLP_INTERNAL_LOCALE_H
 # include <stl/_locale.h>
 #endif
 
-#ifndef __SGI_STL_STRING_H
+#ifndef _STLP_STRING_H
 # include <stl/_string.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 
 template <class _CharT> class collate {};
 template <class _CharT> class collate_byname {};
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC collate<char> : public locale::facet 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC collate<char> : public locale::facet 
 {
   friend class _Locale;
 public:
@@ -62,10 +62,10 @@ public:
   long hash(const char* __low, const char* __high) const
     { return do_hash(__low, __high); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
 protected:
-  ~collate() {}
+  ~collate();
 
   virtual int do_compare(const char*, const char*,
                          const char*, const char*) const;
@@ -76,10 +76,10 @@ private:
   collate<char>& operator =(const collate<char>&);  
 };
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC collate<wchar_t> : public locale::facet 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC collate<wchar_t> : public locale::facet 
 {
   friend class _Locale;
 public:
@@ -100,10 +100,10 @@ public:
   long hash(const wchar_t* __low, const wchar_t* __high) const
     { return do_hash(__low, __high); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
 protected:
-  ~collate() {}
+  ~collate();
 
   virtual int do_compare(const wchar_t*, const wchar_t*,
                          const wchar_t*, const wchar_t*) const;
@@ -116,8 +116,8 @@ private:
 
 # endif /* NO_WCHAR_T */
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC collate_byname<char>: public collate<char> 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC collate_byname<char>: public collate<char> 
 {
 public:
   explicit collate_byname(const char* __name, size_t __refs = 0);
@@ -135,10 +135,10 @@ private:
   collate_byname<char>& operator =(const collate_byname<char>&);  
 };
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC collate_byname<wchar_t>: public collate<wchar_t> 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>: public collate<wchar_t> 
 {
 public:
   explicit collate_byname(const char * __name, size_t __refs = 0);
@@ -173,9 +173,9 @@ __locale_do_operator_call (const locale* __that,
   
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_COLLATE_H */
+#endif /* _STLP_INTERNAL_COLLATE_H */
 
 // Local Variables:
 // mode:C++

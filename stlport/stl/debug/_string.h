@@ -16,32 +16,32 @@
  *
  */
 
-#ifndef __SGI_STL_DBG_STRING_H
-#define __SGI_STL_DBG_STRING_H
+#ifndef _STLP_DBG_STRING_H
+#define _STLP_DBG_STRING_H
 
 #include <stl/debug/_iterator.h>
 
-# define __STL_DBG_STRING_BASE _Nondebug_string <_CharT, _Traits, _Alloc>
+# define _STLP_DBG_STRING_BASE _Nondebug_string <_CharT, _Traits, _Alloc>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# ifdef __STL_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
+# ifdef _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
 template <class _CharT,class _Traits, class _Alloc>
 inline _CharT*
-value_type(const  _DBG_iter_base< __STL_DBG_STRING_BASE >&) {
+value_type(const  _DBG_iter_base< _STLP_DBG_STRING_BASE >&) {
 return (_CharT*)0;
 }
 template <class _CharT, class _Traits, class _Alloc>
 inline random_access_iterator_tag
-iterator_category(const  _DBG_iter_base< __STL_DBG_STRING_BASE >&) {
+iterator_category(const  _DBG_iter_base< _STLP_DBG_STRING_BASE >&) {
   return random_access_iterator_tag();
 }
 # endif
 
 template <class _CharT, class _Traits, class _Alloc> 
-class basic_string : public __STL_DBG_STRING_BASE {
+class basic_string : public _STLP_DBG_STRING_BASE {
 private:
-  typedef __STL_DBG_STRING_BASE _Base;
+  typedef _STLP_DBG_STRING_BASE _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
 protected:
   mutable __owned_list _M_iter_list;
@@ -49,11 +49,11 @@ public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
   typedef _DBG_iter<_Base, _Nonconst_traits<value_type> > iterator;
   typedef _DBG_iter<_Base, _Const_traits<value_type> > const_iterator;
-  __STL_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
-# ifdef __STL_USE_NATIVE_STRING
+  _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
+# ifdef _STLP_USE_NATIVE_STRING
   // this typedef is being used for conversions
-  typedef __STL_VENDOR_STD::basic_string<_CharT,_Traits, 
-    __STL_VENDOR_STD::allocator<_CharT> >  __std_string;
+  typedef _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
+    _STLP_VENDOR_STD::allocator<_CharT> >  __std_string;
 # endif
 public:                         // Constructor, destructor, assignment.
   typedef typename _Base::_Reserve_t _Reserve_t;
@@ -61,66 +61,66 @@ public:                         // Constructor, destructor, assignment.
   const _Base* _Get_base() const { return (const _Base*)this; }
   _Base* _Get_base() { return (_Base*)this; }
 
-  basic_string() :__STL_DBG_STRING_BASE(), _M_iter_list(_Get_base()) {}
+  basic_string() :_STLP_DBG_STRING_BASE(), _M_iter_list(_Get_base()) {}
   
   explicit basic_string(const allocator_type& __a): 
-    __STL_DBG_STRING_BASE(__a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__a), _M_iter_list(_Get_base()) {}
 
   basic_string(_Reserve_t __r, size_t __n,
                const allocator_type& __a = allocator_type())
-    : __STL_DBG_STRING_BASE(__r, __n, __a), _M_iter_list(_Get_base()) {}
+    : _STLP_DBG_STRING_BASE(__r, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _Self& __s): 
-    __STL_DBG_STRING_BASE(__s), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__s), _M_iter_list(_Get_base()) {}
 
   basic_string(const _Self& __s, size_type __pos, size_type __n = _Base::npos,
                const allocator_type& __a = allocator_type()):
-    __STL_DBG_STRING_BASE(__s, __pos, __n, __a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__s, __pos, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __s, size_type __n,
 		    const allocator_type& __a = allocator_type()):
-    __STL_DBG_STRING_BASE(__s, __n, __a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__s, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __s,
 		    const allocator_type& __a = allocator_type()):
-    __STL_DBG_STRING_BASE(__s, __a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__s, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(size_type __n, _CharT __c,
 		    const allocator_type& __a = allocator_type()):
-    __STL_DBG_STRING_BASE(__n, __c, __a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__n, __c, __a), _M_iter_list(_Get_base()) {}
 
-#if defined (__STL_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l):
-    __STL_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {}
 
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
 		    const allocator_type & __a):
-    __STL_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {}
+    _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {}
 
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   basic_string(const_iterator __f, const_iterator __l, 
 		    const allocator_type & __a = allocator_type()):
-    __STL_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator), 
+    _STLP_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator), 
      _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a = allocator_type()):
-   __STL_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {}
+   _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {}
 #endif
 
-# ifdef __STL_USE_NATIVE_STRING
+# ifdef _STLP_USE_NATIVE_STRING
   // these conversion operations still needed for
   // strstream, etc.
   basic_string (const __std_string& __x)
-    : __STL_DBG_STRING_BASE(__x.begin(), __x.end()), _M_iter_list(_Get_base()) {}
+    : _STLP_DBG_STRING_BASE(__x.begin(), __x.end()), _M_iter_list(_Get_base()) {}
   operator __std_string() const { return __std_string(this->data()); }
 # endif
 
   // constructor from non-debug version
   basic_string (const _Base& __x)
-    : __STL_DBG_STRING_BASE(__x), _M_iter_list(_Get_base()) {}
+    : _STLP_DBG_STRING_BASE(__x), _M_iter_list(_Get_base()) {}
 
   _Self& operator=(const _Self& __s) {
     _Base::operator=(__s);
@@ -128,7 +128,7 @@ public:                         // Constructor, destructor, assignment.
   }
 
   _Self& operator=(const _CharT* __s) { 
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     _Base::operator=(__s);
     return *this;
   }
@@ -196,7 +196,7 @@ public:                         // Element access.
 public:                         // Append, operator+=, push_back.
 
   _Self& operator+=(const _Self& __s) { return append(__s); }
-  _Self& operator+=(const _CharT* __s) { __STL_FIX_LITERAL_BUG(__s) return append(__s); }
+  _Self& operator+=(const _CharT* __s) { _STLP_FIX_LITERAL_BUG(__s) return append(__s); }
   _Self& operator+=(_CharT __c) { push_back(__c); return *this; }
 
   _Self& append(const _Self& __s) { return append(__s._M_start, __s._M_finish); }
@@ -209,17 +209,17 @@ public:                         // Append, operator+=, push_back.
   }
 
   _Self& append(const _CharT* __s, size_type __n) 
-    { __STL_FIX_LITERAL_BUG(__s) return append(__s, __s+__n); }
+    { _STLP_FIX_LITERAL_BUG(__s) return append(__s, __s+__n); }
 
   _Self& append(const _CharT* __s) 
-    { __STL_FIX_LITERAL_BUG(__s) return append(__s, __s + _Traits::length(__s)); }
+    { _STLP_FIX_LITERAL_BUG(__s) return append(__s, __s + _Traits::length(__s)); }
 
   _Self& append(size_type __n, _CharT __c){
 	  _Base::append(__n, __c);
 	  return *this;
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
@@ -229,7 +229,7 @@ public:                         // Append, operator+=, push_back.
     return *this;
   }
 
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
 
   _Self& append(const _CharT* __first, const _CharT* __last) {
     _Base::append(__first, __last);
@@ -240,7 +240,7 @@ public:                         // Append, operator+=, push_back.
     _Base::append(__first._M_iterator, __last._M_iterator);
     return *this;
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   void push_back(_CharT __c) {
     _Base::push_back(__c);
@@ -266,27 +266,27 @@ public:                         // Assign
   }
 
   _Self& assign(const _CharT* __s, size_type __n)
-    { __STL_FIX_LITERAL_BUG(__s) return assign(__s, __s + __n); }
+    { _STLP_FIX_LITERAL_BUG(__s) return assign(__s, __s + __n); }
 
   _Self& assign(const _CharT* __s)
-    { __STL_FIX_LITERAL_BUG(__s) return assign(__s, __s + _Traits::length(__s)); }
+    { _STLP_FIX_LITERAL_BUG(__s) return assign(__s, __s + _Traits::length(__s)); }
 
   _Self& assign(size_type __n, _CharT __c) {
     _Base::assign(__n, __c);
     return *this;    
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   inline _Self& assign(_InputIter __first, _InputIter __last) {
-      __STL_FIX_LITERAL_BUG(__first) __STL_FIX_LITERAL_BUG(__last)
+      _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
       __check_range(__first, __last);
       _Base::assign(__first, __last);
       return *this;    
   }
 #else
   _Self& assign(const _CharT* __f, const _CharT* __l) {
-    __STL_FIX_LITERAL_BUG(__f) __STL_FIX_LITERAL_BUG(__l)
+    _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
       __check_range(__f, __l);
       _Base::assign(__f, __l);
     return *this;
@@ -296,7 +296,7 @@ public:                         // Assign
       _Base::assign(__f._M_iterator, __l._M_iterator);
     return *this;
   }
-#endif  /* __STL_MEMBER_TEMPLATES */
+#endif  /* _STLP_MEMBER_TEMPLATES */
     
 public:                         // Insert
 
@@ -312,13 +312,13 @@ public:                         // Insert
   }
 
   _Self& insert(size_type __pos, const _CharT* __s, size_type __n) {
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     _Base::insert(__pos, __s, __n);
     return *this;
   }
 
   _Self& insert(size_type __pos, const _CharT* __s) {
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     _Base::insert(__pos, __s);      
     return *this;
   }
@@ -329,7 +329,7 @@ public:                         // Insert
   }
 
   iterator insert(iterator __p, _CharT __c) {
-    __STL_FIX_LITERAL_BUG(__p)
+    _STLP_FIX_LITERAL_BUG(__p)
     __check_if_owner(&_M_iter_list,__p);
     return iterator(&_M_iter_list,_Base::insert(__p._M_iterator, __c));
   }
@@ -339,16 +339,16 @@ public:                         // Insert
     _Base::insert(__p._M_iterator, __n, __c);
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   void insert(iterator __p, _InputIter __first, _InputIter __last) {
     __check_if_owner(&_M_iter_list,__p);
     __check_range(__first,__last);
     _Base::insert(__p._M_iterator, __first, __last);
   }
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __p, const _CharT* __first, const _CharT* __last) {
-    __STL_FIX_LITERAL_BUG(__first) __STL_FIX_LITERAL_BUG(__last)
+    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     __check_if_owner(&_M_iter_list,__p);
     __check_range(__first,__last);
     _Base::insert(__p._M_iterator, __first, __last);
@@ -357,7 +357,7 @@ public:                         // Insert
     __check_range(__first,__last);
     _Base::insert(__p._M_iterator, __first._M_iterator, __last._M_iterator); 
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // Erase.
   _Self& erase(size_type __pos = 0, size_type __n = _Base::npos) {
@@ -402,14 +402,14 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(size_type __pos, size_type __n1,
                         const _CharT* __s, size_type __n2) {    
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     _Base::replace(__pos, __n1, __s, __n2);
     return *this;
   }
 
   _Self& replace(size_type __pos, size_type __n1,
                         const _CharT* __s) {
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     _Base::replace(__pos, __n1, __s);
     return *this;
   }
@@ -430,7 +430,7 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(iterator __first, iterator __last,
                         const _CharT* __s, size_type __n) { 
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     __check_if_owner(&_M_iter_list,__first);
     __check_range(__first, __last);
     _Base::replace(__first._M_iterator, __last._M_iterator,__s, __n);
@@ -439,7 +439,7 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(iterator __first, iterator __last,
                         const _CharT* __s) {
-    __STL_FIX_LITERAL_BUG(__s)
+    _STLP_FIX_LITERAL_BUG(__s)
     __check_if_owner(&_M_iter_list,__first);
     __check_range(__first, __last);
     _Base::replace(__first._M_iterator, __last._M_iterator,__s);
@@ -454,7 +454,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   _Self& replace(iterator __first, iterator __last,
                         _InputIter __f, _InputIter __l) {
@@ -464,7 +464,7 @@ public:                         // Replace.  (Conceptually equivalent
     _Base::replace(__first._M_iterator, __last._M_iterator, __f, __l);
     return *this;    
   }
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   _Self& replace(iterator __first, iterator __last,
 		 const _CharT* __f, const _CharT* __l) {
     __check_if_owner(&_M_iter_list, __first);
@@ -483,7 +483,7 @@ public:                         // Replace.  (Conceptually equivalent
 		   __f._M_iterator, __l._M_iterator);
     return *this; 
   } 
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // Other modifier member functions.
 
@@ -495,19 +495,19 @@ public:                         // Other modifier member functions.
 
 
 // This is a hook to instantiate STLport exports in a designated DLL
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT template class __STL_CLASS_DECLSPEC basic_string<char, char_traits<char>, allocator<char> >;
-#  if defined (__STL_HAS_WCHAR_T)
-__STL_EXPORT template class __STL_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT template class _STLP_CLASS_DECLSPEC basic_string<char, char_traits<char>, allocator<char> >;
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_EXPORT template class _STLP_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-#ifdef __STL_EXTRA_OPERATORS_FOR_DEBUG
+
 // ------------------------------------------------------------
 // Non-member functions.
 
 template <class _CharT, class _Traits, class _Alloc>
-inline basic_string<_CharT,_Traits,_Alloc> __STL_CALL
+inline basic_string<_CharT,_Traits,_Alloc> _STLP_CALL
 operator+(const basic_string<_CharT,_Traits,_Alloc>& __s,
           const basic_string<_CharT,_Traits,_Alloc>& __y)
 {
@@ -515,230 +515,232 @@ operator+(const basic_string<_CharT,_Traits,_Alloc>& __s,
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline basic_string<_CharT,_Traits,_Alloc> __STL_CALL
+inline basic_string<_CharT,_Traits,_Alloc> _STLP_CALL
 operator+(const _CharT* __s,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return basic_string<_CharT,_Traits,_Alloc>(__s + *__y._Get_base());
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline basic_string<_CharT,_Traits,_Alloc> __STL_CALL
+inline basic_string<_CharT,_Traits,_Alloc> _STLP_CALL
 operator+(_CharT __c,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return basic_string<_CharT,_Traits,_Alloc>(__c + *__y._Get_base());
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline basic_string<_CharT,_Traits,_Alloc> __STL_CALL
+inline basic_string<_CharT,_Traits,_Alloc> _STLP_CALL
 operator+(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return basic_string<_CharT,_Traits,_Alloc>(*__x._Get_base()+ __s);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline basic_string<_CharT,_Traits,_Alloc> __STL_CALL
+inline basic_string<_CharT,_Traits,_Alloc> _STLP_CALL
 operator+(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const _CharT __c) {
   return basic_string<_CharT,_Traits,_Alloc>(*__x._Get_base() + __c);
 }
 
+#ifdef _STLP_EXTRA_OPERATORS_FOR_DEBUG
+
 // Operator== and operator!=
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator==(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return (*__x._Get_base() == *__y._Get_base());
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator==(const _CharT* __s,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return (__s == *__y._Get_base());
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator==(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return (*__x._Get_base() == __s);
 }
 
 // Operator< (and also >, <=, and >=).
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return (*__x._Get_base() < *__y._Get_base());
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<(const _CharT* __s,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return (__s < *__y._Get_base());    
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return (*__x._Get_base() < __s);
 }
 
-#ifdef __STL_USE_SEPARATE_RELOPS_NAMESPACE
+#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator!=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return !(__x == __y);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return __y < __x;
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return !(__y < __x);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
   return !(__x < __y);
 }
 
-#endif /* __STL_USE_SEPARATE_RELOPS_NAMESPACE */
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator!=(const _CharT* __s,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__s == __y);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator!=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__x == __s);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>(const _CharT* __s,
           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return __y < __s;
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>(const basic_string<_CharT,_Traits,_Alloc>& __x,
           const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return __s < __x;
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<=(const _CharT* __s,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__y < __s);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator<=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__s < __x);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>=(const _CharT* __s,
            const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__s < __y);
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-inline bool __STL_CALL
+inline bool _STLP_CALL
 operator>=(const basic_string<_CharT,_Traits,_Alloc>& __x,
            const _CharT* __s) {
-  __STL_FIX_LITERAL_BUG(__s)
+  _STLP_FIX_LITERAL_BUG(__s)
   return !(__x < __s);
 }
 #endif /*  if 0 */
 
 // Swap.
-#ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
+#ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
 template <class _CharT, class _Traits, class _Alloc>
 inline void swap(basic_string<_CharT,_Traits,_Alloc>& __x,
                  basic_string<_CharT,_Traits,_Alloc>& __y) {
   __x.swap(__y);
 }
-#endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
+#endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
 
 // I/O.  
 
-#ifdef __STL_EXTRA_OPERATORS_FOR_DEBUG
-#if defined (__STL_USE_NEW_IOSTREAMS) && ! defined (__SGI_STL_OWN_IOSTREAMS)
+#ifdef _STLP_EXTRA_OPERATORS_FOR_DEBUG
+#if defined (_STLP_USE_NEW_IOSTREAMS) && ! defined (_STLP_OWN_IOSTREAMS)
 
 template <class _CharT, class _Traits, class _Alloc>
-basic_ostream<_CharT, _Traits>& __STL_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, 
            const basic_string<_CharT,_Traits,_Alloc>& __s) {
   return __os << *__s._Get_base();
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-basic_istream<_CharT, _Traits>&  __STL_CALL
+basic_istream<_CharT, _Traits>&  _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is,
            basic_string<_CharT,_Traits,_Alloc>& __s) {
     return __is >> *__s._Get_base();
 }
 
-#elif ! defined ( __STL_USE_NO_IOSTREAMS )
+#elif ! defined ( _STLP_USE_NO_IOSTREAMS )
 
 template <class _CharT, class _Traits, class _Alloc>
-ostream& __STL_CALL operator<<(ostream& __os, 
+ostream& _STLP_CALL operator<<(ostream& __os, 
                     const basic_string<_CharT,_Traits,_Alloc>& __s) {
   return __os << *__s._Get_base();
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-istream& __STL_CALL operator>>(istream& __is, basic_string<_CharT,_Traits,_Alloc>& __s) {
+istream& _STLP_CALL operator>>(istream& __is, basic_string<_CharT,_Traits,_Alloc>& __s) {
     return __is >> *__s._Get_base();
 }
 
-#endif /* __STL_USE_NEW_IOSTREAMS */
-#endif /* if 0 */
+#endif /* _STLP_USE_NEW_IOSTREAMS */
+#endif /* if _STLP_EXTRA_OPERATORS_FOR_DEBUG */
 
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_DBG_STRING */
+#endif /* _STLP_DBG_STRING */
 
 
 // Local Variables:

@@ -16,43 +16,43 @@
  *
  */
 
-#ifndef __SGI_STL_STRING_IO_H
-#define __SGI_STL_STRING_IO_H
+#ifndef _STLP_STRING_IO_H
+#define _STLP_STRING_IO_H
 
 // this is for link-time instantiation
-#if !defined  ( __STLPORT_STRING )
+#if !defined  ( _STLP_STRING )
 # include <string>
 # endif
 
-# ifdef __STL_DEBUG
+# ifdef _STLP_DEBUG
 #  define basic_string _Nondebug_string
 # endif
 
 // I/O.  
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-#if defined (__STL_USE_NEW_IOSTREAMS)
+#if defined (_STLP_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits, class _Alloc>
-basic_ostream<_CharT, _Traits>& __STL_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, 
            const basic_string<_CharT,_Traits,_Alloc>& __s);
 
 template <class _CharT, class _Traits, class _Alloc>
-basic_istream<_CharT, _Traits>&  __STL_CALL
+basic_istream<_CharT, _Traits>&  _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is,
            basic_string<_CharT,_Traits,_Alloc>& __s);
 
 template <class _CharT, class _Traits, class _Alloc>    
-basic_istream<_CharT, _Traits>& __STL_CALL 
+basic_istream<_CharT, _Traits>& _STLP_CALL 
 getline(basic_istream<_CharT, _Traits>& __is,
         basic_string<_CharT,_Traits,_Alloc>& __s,
         _CharT __delim);
 
-# if !(defined (__BORLANDC__) && ! defined (__STL_USE_OWN_NAMESPACE))
+# if !(defined (__BORLANDC__) && ! defined (_STLP_USE_OWN_NAMESPACE))
 
 template <class _CharT, class _Traits, class _Alloc>    
-inline basic_istream<_CharT, _Traits>& __STL_CALL 
+inline basic_istream<_CharT, _Traits>& _STLP_CALL 
 getline(basic_istream<_CharT, _Traits>& __is,
         basic_string<_CharT,_Traits,_Alloc>& __s)
 {
@@ -60,21 +60,12 @@ getline(basic_istream<_CharT, _Traits>& __is,
 }
 # endif
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/27/2000 - mpw compilers can not handle complex template arguments
 template <class _CharT, class _Traits>
-bool __STL_CALL
-__sgi_string_fill(basic_ostream<_CharT, _Traits>& __os,
+bool _STLP_CALL
+__stlp_string_fill(basic_ostream<_CharT, _Traits>& __os,
                   basic_streambuf<_CharT, _Traits>* __buf,
                   size_t __n);
-#else											//*TY 02/27/2000 - added workaround for MPW compilers
-template <class _CharT, class _Traits, class _Buf>		//*TY 02/27/2000 - added _Buf
-bool __STL_CALL
-__sgi_string_fill(basic_ostream<_CharT, _Traits>& __os,
-                  _Buf* __buf,		//*TY 02/27/2000 - simplified parameter type
-                  size_t __n);
-#endif											//*TY 02/27/2000 - 
-
-#elif ! defined ( __STL_USE_NO_IOSTREAMS )
+#elif ! defined ( _STLP_USE_NO_IOSTREAMS )
 
 // (reg) For Watcom IO, this tells if ostream class is in .exe or in .dll
 # ifdef _WPRTLINK
@@ -86,27 +77,27 @@ typedef           istream _ISTREAM_DLL;
 #endif
 
 template <class _CharT, class _Traits, class _Alloc>
-_OSTREAM_DLL& __STL_CALL operator<<(_OSTREAM_DLL& __os, 
+_OSTREAM_DLL& _STLP_CALL operator<<(_OSTREAM_DLL& __os, 
                     const basic_string<_CharT,_Traits,_Alloc>& __s);
 
 template <class _CharT, class _Traits, class _Alloc>
-_ISTREAM_DLL& __STL_CALL operator>>(_ISTREAM_DLL& __is, basic_string<_CharT,_Traits,_Alloc>& __s);
+_ISTREAM_DLL& _STLP_CALL operator>>(_ISTREAM_DLL& __is, basic_string<_CharT,_Traits,_Alloc>& __s);
 
 template <class _CharT, class _Traits, class _Alloc>    
-_ISTREAM_DLL& __STL_CALL getline(_ISTREAM_DLL& __is,
+_ISTREAM_DLL& _STLP_CALL getline(_ISTREAM_DLL& __is,
                  basic_string<_CharT,_Traits,_Alloc>& __s,
                  _CharT __delim);
 
 
 template <class _CharT, class _Traits, class _Alloc>    
-inline _ISTREAM_DLL& __STL_CALL 
+inline _ISTREAM_DLL& _STLP_CALL 
 getline(_ISTREAM_DLL& __is, basic_string<_CharT,_Traits,_Alloc>& __s)
 {
   return getline(__is, __s, '\n');
 }
 
-inline void  __STL_CALL
-__sgi_string_fill(_OSTREAM_DLL& __os, streambuf* __buf, size_t __n)
+inline void  _STLP_CALL
+__stlp_string_fill(_OSTREAM_DLL& __os, streambuf* __buf, size_t __n)
 {
   char __f = __os.fill();
   size_t __i;
@@ -114,14 +105,14 @@ __sgi_string_fill(_OSTREAM_DLL& __os, streambuf* __buf, size_t __n)
   for (__i = 0; __i < __n; ++__i) __buf->sputc(__f);
 }
 
-#endif /* __STL_USE_NEW_IOSTREAMS */
+#endif /* _STLP_USE_NEW_IOSTREAMS */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef basic_string
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_string_io.c>
 # endif
 
-#endif /* __SGI_STL_STRING_IO_H */
+#endif /* _STLP_STRING_IO_H */

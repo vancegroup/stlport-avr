@@ -20,22 +20,14 @@
 // file directly.
 
 
-#ifndef __SGI_STL_INTERNAL_TIME_FACETS_H
-#define __SGI_STL_INTERNAL_TIME_FACETS_H
+#ifndef _STLP_INTERNAL_TIME_FACETS_H
+#define _STLP_INTERNAL_TIME_FACETS_H
 
-#ifndef __STLPORT_CTIME
+#ifndef _STLP_CTIME
 # include <ctime>                // Needed (for struct tm) by time facets
 #endif
 
-#ifndef __SGI_STL_INTERNAL_NUM_PUT_H
-# include <stl/_num_put.h>
-#endif
-
-#ifndef __SGI_STL_INTERNAL_NUM_GET_H
-# include <stl/_num_get.h>
-#endif
-
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // Template functions used by time_get
 
@@ -81,7 +73,7 @@ __STL_BEGIN_NAMESPACE
 // constructor invoked from the _byname subclass constructor to
 // construct the base class.
 
-class __STL_CLASS_DECLSPEC _Time_Info {
+class _STLP_CLASS_DECLSPEC _Time_Info {
 public:
   string _M_dayname[14];
   string _M_monthname[24];
@@ -93,10 +85,10 @@ public:
   string _M_long_date_time_format;
 };
 
-void __STL_CALL _Init_timeinfo(_Time_Info&);
-void __STL_CALL _Init_timeinfo(_Time_Info&, _Locale_time*);
+void _STLP_CALL _Init_timeinfo(_Time_Info&);
+void _STLP_CALL _Init_timeinfo(_Time_Info&, _Locale_time*);
 
-class __STL_CLASS_DECLSPEC time_base {
+class _STLP_CLASS_DECLSPEC time_base {
 public:
   enum dateorder {no_order, dmy, mdy, ymd, ydm};
 };
@@ -131,7 +123,7 @@ public:
                      ios_base::iostate&  __err, tm* __t) const
     { return do_get_year(__s,  __end,  __str,  __err, __t); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
 protected:
   _Time_Info _M_timeinfo;
@@ -164,10 +156,10 @@ protected:
                                 tm* __t) const;
 };
 
-time_base::dateorder __STL_CALL
+time_base::dateorder _STLP_CALL
 __get_date_order(_Locale_time*);
-_Locale_time* __STL_CALL __acquire_time(const char* __name);
-void          __STL_CALL __release_time(_Locale_time* __time);
+_Locale_time* _STLP_CALL __acquire_time(const char* __name);
+void          _STLP_CALL __release_time(_Locale_time* __time);
 
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
 class time_get_byname : public time_get<_Ch, _InIt> 
@@ -198,19 +190,19 @@ private:
 // format.  As indicated by the foregoing remark, this will never be
 // 'x', 'X', or 'c'.
 
-char * __STL_CALL
+char * _STLP_CALL
 __write_formatted_time(char * __buf, char __format, char __modifier,
                        const _Time_Info& __table, const tm* __t);
 
 template <class _OuIt>
-inline _OuIt __STL_CALL __put_time(char * __first, char * __last, _OuIt __out,
+inline _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
                                    const ios_base& /* __loc */, char) {
     return copy(__first, __last, __out);
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 template <class _OuIt>
-_OuIt __STL_CALL __put_time(char * __first, char * __last, _OuIt __out,
+_OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
                             const ios_base& __s, wchar_t);
 # endif
 
@@ -235,7 +227,7 @@ public:
     return do_put(__s, __f,  __fill, __tmb, __format, __modifier); 
   }
   
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
   
 protected:
   _Time_Info _M_timeinfo;
@@ -271,27 +263,27 @@ private:
   _Locale_time* _M_time;
 };
 
-# ifdef __STL_USE_TEMPLATE_EXPORT
-__STL_EXPORT_TEMPLATE_CLASS time_get<char, istreambuf_iterator<char, char_traits<char> > >;
-__STL_EXPORT_TEMPLATE_CLASS time_get<char, const char*>;
-__STL_EXPORT_TEMPLATE_CLASS time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-__STL_EXPORT_TEMPLATE_CLASS time_put<char, char*>;
-#  ifndef __STL_NO_WCHAR_T
-__STL_EXPORT_TEMPLATE_CLASS time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-__STL_EXPORT_TEMPLATE_CLASS time_get<wchar_t, const wchar_t*>;
-__STL_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-__STL_EXPORT_TEMPLATE_CLASS time_put<wchar_t, wchar_t*>;
+# ifdef _STLP_USE_TEMPLATE_EXPORT
+_STLP_EXPORT_TEMPLATE_CLASS time_get<char, istreambuf_iterator<char, char_traits<char> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_get<char, const char*>;
+_STLP_EXPORT_TEMPLATE_CLASS time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_put<char, char*>;
+#  ifndef _STLP_NO_WCHAR_T
+_STLP_EXPORT_TEMPLATE_CLASS time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_get<wchar_t, const wchar_t*>;
+_STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, wchar_t*>;
 #  endif /* INSTANTIATE_WIDE_STREAMS */
 
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) && !defined (__STL_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_time_facets.c>
 # endif
 
-#endif /* __SGI_STL_INTERNAL_TIME_FACETS_H */
+#endif /* _STLP_INTERNAL_TIME_FACETS_H */
 
 // Local Variables:
 // mode:C++

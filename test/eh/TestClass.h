@@ -49,10 +49,14 @@ public:
 	
     inline TestClass operator!() const;
 
-    inline bool operator==( const TestClass& rhs ) const
-  {
-    return value() == rhs.value();
-  }
+    bool operator==( const TestClass& rhs ) const
+    {
+      return value() == rhs.value();
+    }
+
+    bool operator<( const TestClass& rhs ) const {
+      return value() < rhs.value();
+    }
 
 protected:
     static inline unsigned int get_random(unsigned range = UINT_MAX);
@@ -138,10 +142,6 @@ inline TestClass TestClass::operator!() const
     return TestClass( value()+1 );
 }
 
-inline bool operator<( const TestClass& lhs, const TestClass& rhs ) {
-    return lhs.value() < rhs.value();
-}
-
 inline bool operator>( const TestClass& lhs, const TestClass& rhs ) {
     return rhs < lhs;
 }
@@ -153,13 +153,6 @@ inline bool operator>=( const TestClass& lhs, const TestClass& rhs ) {
 inline bool operator<=( const TestClass& lhs, const TestClass& rhs ) {
     return !(rhs < lhs);
 }
-
-# if 0
-inline bool operator==( const TestClass& lhs, const TestClass& rhs )
-{
-    return lhs.value() == rhs.value();
-}
-# endif
 
 inline bool operator != ( const TestClass& lhs, const TestClass& rhs ) {
     return lhs.value() != rhs.value();

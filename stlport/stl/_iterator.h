@@ -27,16 +27,16 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_ITERATOR_H
-#define __SGI_STL_INTERNAL_ITERATOR_H
+#ifndef _STLP_INTERNAL_ITERATOR_H
+#define _STLP_INTERNAL_ITERATOR_H
 
-#ifndef __SGI_STL_INTERNAL_ITERATOR_BASE_H
+#ifndef _STLP_INTERNAL_ITERATOR_BASE_H
 # include <stl/_iterator_base.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-#if defined ( __STL_CLASS_PARTIAL_SPECIALIZATION ) && ! defined (__STL_PARTIAL_SPECIALIZATION_BUG)
+#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) && ! defined (_STLP_PARTIAL_SPECIALIZATION_BUG)
 // This is the new version of reverse_iterator, as defined in the
 //  draft C++ standard.  It relies on the iterator_traits template,
 //  which in turn relies on partial specialization.  The class
@@ -66,19 +66,19 @@ public:
   explicit reverse_iterator(iterator_type __x) : current(__x) {}
   reverse_iterator(const _Self& __x) : current(__x.current) {}
   _Self& operator = (const _Self& __x) { current = __x.base(); return *this; } 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _Iter>
   reverse_iterator(const reverse_iterator<_Iter>& __x) : current(__x.base()) {}
   template <class _Iter>
   _Self& operator = (const reverse_iterator<_Iter>& __x) { current = __x.base(); return *this; } 
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
     
   iterator_type base() const { return current; }
   reference operator*() const {
     _Iterator __tmp = current;
     return *--__tmp;
   }
-  __STL_DEFINE_ARROW_OPERATOR
+  _STLP_DEFINE_ARROW_OPERATOR
   _Self& operator++() {
     --current;
     return *this;
@@ -116,55 +116,55 @@ public:
 }; 
  
 template <class _Iterator>
-inline bool  __STL_CALL operator==(const reverse_iterator<_Iterator>& __x, 
+inline bool  _STLP_CALL operator==(const reverse_iterator<_Iterator>& __x, 
                        const reverse_iterator<_Iterator>& __y) {
   return __x.base() == __y.base();
 }
 
 template <class _Iterator>
-inline bool __STL_CALL operator<(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator<(const reverse_iterator<_Iterator>& __x, 
                       const reverse_iterator<_Iterator>& __y) {
   return __y.base() < __x.base();
 }
 
-#ifdef __STL_USE_SEPARATE_RELOPS_NAMESPACE
+#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _Iterator>
-inline bool __STL_CALL operator!=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator!=(const reverse_iterator<_Iterator>& __x, 
                        const reverse_iterator<_Iterator>& __y) {
   return !(__x == __y);
 }
 
 template <class _Iterator>
-inline bool __STL_CALL operator>(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator>(const reverse_iterator<_Iterator>& __x, 
                       const reverse_iterator<_Iterator>& __y) {
   return __y < __x;
 }
 
 template <class _Iterator>
-inline bool __STL_CALL operator<=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator<=(const reverse_iterator<_Iterator>& __x, 
                        const reverse_iterator<_Iterator>& __y) {
   return !(__y < __x);
 }
 
 template <class _Iterator>
-inline bool __STL_CALL operator>=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator>=(const reverse_iterator<_Iterator>& __x, 
                       const reverse_iterator<_Iterator>& __y) {
   return !(__x < __y);
 }
 
-#endif /* __STL_USE_SEPARATE_RELOPS_NAMESPACE */
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _Iterator>
-inline typename reverse_iterator<_Iterator>::difference_type __STL_CALL
+inline typename reverse_iterator<_Iterator>::difference_type _STLP_CALL
 operator-(const reverse_iterator<_Iterator>& __x, 
           const reverse_iterator<_Iterator>& __y) {
   return __y.base() - __x.base();
 }
 
-# if OBSOLETE
+# ifdef OBSOLETE
 template <class _Iterator>
-inline reverse_iterator<_Iterator>  __STL_CALL
+inline reverse_iterator<_Iterator>  _STLP_CALL
 operator+(typename reverse_iterator<_Iterator>::difference_type __n,
           const reverse_iterator<_Iterator>& __x) {
   return reverse_iterator<_Iterator>(__x.base() - __n);
@@ -172,7 +172,7 @@ operator+(typename reverse_iterator<_Iterator>::difference_type __n,
 # endif
 
 template <class _Iterator, class _DifferenceType>
-inline reverse_iterator<_Iterator>  __STL_CALL
+inline reverse_iterator<_Iterator>  _STLP_CALL
 operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x) {
   return x.operator+(n);
 }
@@ -201,7 +201,7 @@ public:
 };
 
 template <class _Container>
-inline back_insert_iterator<_Container>  __STL_CALL back_inserter(_Container& __x) {
+inline back_insert_iterator<_Container>  _STLP_CALL back_inserter(_Container& __x) {
   return back_insert_iterator<_Container>(__x);
 }
 
@@ -226,7 +226,7 @@ public:
 };
 
 template <class _Container>
-inline front_insert_iterator<_Container>  __STL_CALL front_inserter(_Container& __x) {
+inline front_insert_iterator<_Container>  _STLP_CALL front_inserter(_Container& __x) {
   return front_insert_iterator<_Container>(__x);
 }
 
@@ -254,20 +254,20 @@ public:
 };
 
 template <class _Container, class _Iterator>
-inline insert_iterator<_Container>  __STL_CALL
+inline insert_iterator<_Container>  _STLP_CALL
 inserter(_Container& __x, _Iterator __i)
 {
   typedef typename _Container::iterator __iter;
   return insert_iterator<_Container>(__x, __iter(__i));
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#if ! defined ( __STL_CLASS_PARTIAL_SPECIALIZATION ) || defined (__STL_PARTIAL_SPECIALIZATION_BUG) || defined (__STL_USE_OLD_HP_ITERATOR_QUERIES)
+#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_PARTIAL_SPECIALIZATION_BUG) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 # include <stl/_iterator_old.h>
 #endif /* __NO_PARTIAL_SPEC || ANACHRONISMS */
 
-#endif /* __SGI_STL_INTERNAL_ITERATOR_H */
+#endif /* _STLP_INTERNAL_ITERATOR_H */
 
 // Local Variables:
 // mode:C++

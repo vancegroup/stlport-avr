@@ -27,16 +27,16 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_VECTOR_H
-#define __SGI_STL_INTERNAL_WRAP_VECTOR_H
+#ifndef _STLP_INTERNAL_WRAP_VECTOR_H
+#define _STLP_INTERNAL_WRAP_VECTOR_H
 
-# if defined (__STL_DEBUG)
-#  define _VEC_SUPER _DBG_vector<_Tp, __STL_DEFAULT_ALLOCATOR(_Tp) >
+# if defined (_STLP_DEBUG)
+#  define _VEC_SUPER _DBG_vector<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # else
-#  define _VEC_SUPER __vector__<_Tp, __STL_DEFAULT_ALLOCATOR(_Tp) >
+#  define _VEC_SUPER __vector__<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # endif
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
@@ -51,14 +51,14 @@ public:
     explicit vector(size_type __n, const _Tp& __value) : _VEC_SUPER(__n, __value) { }
     explicit vector(size_type __n) : _VEC_SUPER(__n) { }
     vector(const_iterator __first, const_iterator __last) : _VEC_SUPER(__first,__last) { }
-# ifdef __STL_DEBUG
+# ifdef _STLP_DEBUG
   // certainly, no member templates here !
     vector(const _Tp* __first, const _Tp* __last) : _VEC_SUPER(__first,__last) { }    
 # endif
     ~vector() {}
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 template <class _Tp>
 inline bool operator==(const vector<_Tp>& __x, const vector<_Tp>& __y) {
   return __x.size() == __y.size() &&
@@ -70,15 +70,15 @@ inline bool operator<(const vector<_Tp>& __x, const vector<_Tp>& __y) {
   return lexicographical_compare(__x.begin(), __x.end(), 
 				 __y.begin(), __y.end());
 }
-#  endif /* __STL_BASE_MATCH_BUG */
+#  endif /* _STLP_BASE_MATCH_BUG */
 #  undef _VEC_SUPER
 
 // close std namespace
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 }
 # endif
 
-#endif /* __SGI_STL_WRAP_VECTOR_H */
+#endif /* _STLP_WRAP_VECTOR_H */
 
 // Local Variables:
 // mode:C++

@@ -6,11 +6,11 @@
 
 /* If the platform provides any specific epilog actions,
    like #pragmas, do include platform-specific prolog file */
-# if defined (__STL_HAS_SPECIFIC_PROLOG_EPILOG)
+# if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
 #  include <config/_epilog.h>
 # endif
  
-# if defined (__STL_REDEFINE_STD) || ! defined (__STL_USE_NAMESPACES)
+# if defined (_STLP_REDEFINE_STD) || ! defined (_STLP_USE_NAMESPACES)
 /* We redefine "std" to "stlport", so that user code may use std:: transparently */
 #  undef  std
 #  define std STLPORT

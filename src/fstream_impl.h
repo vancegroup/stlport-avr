@@ -21,32 +21,32 @@
 
 #include <stl/_stdio_file.h>
 
-# ifdef __STL_HAS_NO_NAMESPACES
+# ifdef _STLP_HAS_NO_NAMESPACES
 #  define __SGI_BEGIN_NAMESPACE
 #  define __SGI_END_NAMESPACE
-#  define SGI
+#  define _SgI
 # else
-#  define __SGI_BEGIN_NAMESPACE namespace SGI {
+#  define __SGI_BEGIN_NAMESPACE namespace _SgI {
 #  define __SGI_END_NAMESPACE }
 # endif
 
 __SGI_BEGIN_NAMESPACE
 
-# ifndef __STL_HAS_NO_NAMESPACES
-using __STLPORT_STD::streamoff;
-using __STLPORT_STD::ios_base;
-using __STLPORT_STD::streamsize;
-using __STLPORT_STD::streamoff;
-using __STLPORT_STD::char_traits;
+# ifndef _STLP_HAS_NO_NAMESPACES
+using _STLP_STD::streamoff;
+using _STLP_STD::ios_base;
+using _STLP_STD::streamsize;
+using _STLP_STD::streamoff;
+using _STLP_STD::char_traits;
 # if !(_MSCVER<=1100)
- using __STLPORT_STD::char_traits;
+ using _STLP_STD::char_traits;
 # endif
-# ifndef __STL_USE_UNIX_IO
-using __STL_VENDOR_CSTD::FILE;
-using __STL_VENDOR_CSTD::ftell;
+# ifndef _STLP_USE_UNIX_IO
+using _STLP_VENDOR_CSTD::FILE;
+using _STLP_VENDOR_CSTD::ftell;
 # endif
 
-using __STLPORT_STD::_FILE_fd;
+using _STLP_STD::_FILE_fd;
 # endif
 
 extern bool __is_regular_file(_STL_fd fd);

@@ -7,7 +7,7 @@
 #
 CC = gcc
 CXX = c++ -pthreads
-# CXX = c++ -pthreads -nostdinc++ -fexceptions -frtti -fno-implement-inlines -Winline -Wextern-inline
+
 # -fkeep-inline-functions
 # -finline-functions
 # -fno-default-inline
@@ -24,7 +24,7 @@ LIB_BASENAME = libstlport_gcc
 LINK=ar cr
 # 2.95 flag
 # DYN_LINK=c++ -pthreads -fPIC -shared -o
-# DYN_LINK=c++ -pthreads -nostdinc++ -fexceptions -frtti -fPIC -O -fno-implement-inlines -Winline -Wextern-inline -shared -D__STL_DEBUG -o
+# DYN_LINK=c++ -pthreads -nostdinc++ -fexceptions -frtti -fPIC -O -fno-implement-inlines -Winline -Wextern-inline -shared -D_STLP_DEBUG -o
 # DYN_LINK=ld -shared -export-dynamic -Bdynamic -Bsymbolic -Ur -o
 DYN_LINK=ld -z -b -o
 
@@ -37,7 +37,7 @@ MKDIR=mkdir -p
 COMP=GCC-HP
 INSTALL_STEP = install_unix 
 
-all: all_dynamic all_static
+all: symbolic_links  all_dynamic all_static
 
 include common_macros.mak
 
@@ -51,8 +51,8 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O -fPIC
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fPIC
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG
 
 include common_percent_rules.mak
 include common_rules.mak

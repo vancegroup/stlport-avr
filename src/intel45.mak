@@ -15,7 +15,7 @@ COMP=ICL
 
 EXTRA_COMMON_FLAGS= -D_MBCS
 EXTRA_DEBUG_FLAGS=
-EXTRA_NDEBUG_FLAGS= -Qipo -Qsox-
+EXTRA_NDEBUG_FLAGS= -Qsox-
 
 all: platform all_static all_dynamic 
 

@@ -33,15 +33,15 @@
  *
  */
 
-#ifndef __STLCOMP_H
-# define __STLCOMP_H
+#ifndef _STLP_COMP_H
+# define _STLP_COMP_H
 
 #  define __GIVE_UP_WITH_STL(message) void give_up() \
    { upgrade_the_compiler_to_use_STL;}
 
 /* distinguish real MSC from Metrowerks and Intel */
 # if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__ICL) && !defined (__COMO__)
-#  define __STL_MSVC _MSC_VER
+#  define _STLP_MSVC _MSC_VER
 # endif
 
 # if defined(__sgi) && !defined(__GNUC__)
@@ -52,7 +52,7 @@
 # elif defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
 /* AIX xlC, Visual Age C++ , OS-390 C++ */
 #  include <config/stl_ibm.h>
-# elif defined(__STL_MSVC)
+# elif defined(_STLP_MSVC)
 /* Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0 */
 #  include <config/stl_msvc.h>
 # elif defined ( __BORLANDC__ )

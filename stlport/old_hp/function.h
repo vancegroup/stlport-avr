@@ -23,103 +23,103 @@
  *
  */
 
-#ifndef __SGI_STL_FUNCTION_H
-#define __SGI_STL_FUNCTION_H
+#ifndef _STLP_FUNCTION_H
+#define _STLP_FUNCTION_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa008
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa008
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __STLPORT_CSTDDEF
+#ifndef _STLP_CSTDDEF
 # include <cstddef>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#include <stl/_relops.h>
+#ifndef _STLP_INTERNAL_ALGOBASE_H
+#include <stl/_algobase.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_FUNCTION_H
+#ifndef _STLP_INTERNAL_FUNCTION_H
 #include <stl/_function.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
-#ifdef __STL_USE_NAMESPACE_FOR_RELOPS
+#ifndef _STLP_NO_RELOPS_NAMESPACE
 using namespace STLPORT_RELOPS;
-#endif /* __STL_USE_NAMESPACE_FOR_RELOPS */
+#endif /* _STLP_USE_NAMESPACE_FOR_RELOPS */
 
-# else /* __STL_BROKEN_USING_DIRECTIVE */
+# else /* _STLP_BROKEN_USING_DIRECTIVE */
 
 // Names from stl_function.h
-using __STLPORT_STD::unary_function; 
-using __STLPORT_STD::binary_function; 
-using __STLPORT_STD::plus; 
-using __STLPORT_STD::minus; 
-using __STLPORT_STD::multiplies; 
-using __STLPORT_STD::divides; 
-using __STLPORT_STD::identity_element; 
-using __STLPORT_STD::modulus; 
-using __STLPORT_STD::negate; 
-using __STLPORT_STD::equal_to; 
-using __STLPORT_STD::not_equal_to; 
-using __STLPORT_STD::greater; 
-using __STLPORT_STD::less; 
-using __STLPORT_STD::greater_equal; 
-using __STLPORT_STD::less_equal; 
-using __STLPORT_STD::logical_and; 
-using __STLPORT_STD::logical_or; 
-using __STLPORT_STD::logical_not; 
-using __STLPORT_STD::unary_negate; 
-using __STLPORT_STD::binary_negate; 
-using __STLPORT_STD::not1; 
-using __STLPORT_STD::not2; 
-using __STLPORT_STD::binder1st; 
-using __STLPORT_STD::binder2nd; 
-using __STLPORT_STD::bind1st; 
-using __STLPORT_STD::bind2nd; 
-using __STLPORT_STD::unary_compose; 
-using __STLPORT_STD::binary_compose; 
-using __STLPORT_STD::compose1; 
-using __STLPORT_STD::compose2; 
-using __STLPORT_STD::pointer_to_unary_function; 
-using __STLPORT_STD::pointer_to_binary_function; 
-using __STLPORT_STD::ptr_fun; 
-using __STLPORT_STD::identity; 
-using __STLPORT_STD::select1st; 
-using __STLPORT_STD::select2nd; 
-using __STLPORT_STD::project1st; 
-using __STLPORT_STD::project2nd; 
-using __STLPORT_STD::constant_void_fun; 
-using __STLPORT_STD::constant_unary_fun; 
-using __STLPORT_STD::constant_binary_fun; 
-using __STLPORT_STD::constant0; 
-using __STLPORT_STD::constant1; 
-using __STLPORT_STD::constant2; 
-using __STLPORT_STD::subtractive_rng; 
-using __STLPORT_STD::mem_fun_t; 
-using __STLPORT_STD::const_mem_fun_t; 
-using __STLPORT_STD::mem_fun_ref_t; 
-using __STLPORT_STD::const_mem_fun_ref_t; 
-using __STLPORT_STD::mem_fun1_t; 
-using __STLPORT_STD::const_mem_fun1_t; 
-using __STLPORT_STD::mem_fun1_ref_t; 
-using __STLPORT_STD::const_mem_fun1_ref_t; 
-using __STLPORT_STD::mem_fun; 
-using __STLPORT_STD::mem_fun_ref; 
-using __STLPORT_STD::mem_fun1; 
-using __STLPORT_STD::mem_fun1_ref; 
+using _STLP_STD::unary_function; 
+using _STLP_STD::binary_function; 
+using _STLP_STD::plus; 
+using _STLP_STD::minus; 
+using _STLP_STD::multiplies; 
+using _STLP_STD::divides; 
+using _STLP_STD::identity_element; 
+using _STLP_STD::modulus; 
+using _STLP_STD::negate; 
+using _STLP_STD::equal_to; 
+using _STLP_STD::not_equal_to; 
+using _STLP_STD::greater; 
+using _STLP_STD::less; 
+using _STLP_STD::greater_equal; 
+using _STLP_STD::less_equal; 
+using _STLP_STD::logical_and; 
+using _STLP_STD::logical_or; 
+using _STLP_STD::logical_not; 
+using _STLP_STD::unary_negate; 
+using _STLP_STD::binary_negate; 
+using _STLP_STD::not1; 
+using _STLP_STD::not2; 
+using _STLP_STD::binder1st; 
+using _STLP_STD::binder2nd; 
+using _STLP_STD::bind1st; 
+using _STLP_STD::bind2nd; 
+using _STLP_STD::unary_compose; 
+using _STLP_STD::binary_compose; 
+using _STLP_STD::compose1; 
+using _STLP_STD::compose2; 
+using _STLP_STD::pointer_to_unary_function; 
+using _STLP_STD::pointer_to_binary_function; 
+using _STLP_STD::ptr_fun; 
+using _STLP_STD::identity; 
+using _STLP_STD::select1st; 
+using _STLP_STD::select2nd; 
+using _STLP_STD::project1st; 
+using _STLP_STD::project2nd; 
+using _STLP_STD::constant_void_fun; 
+using _STLP_STD::constant_unary_fun; 
+using _STLP_STD::constant_binary_fun; 
+using _STLP_STD::constant0; 
+using _STLP_STD::constant1; 
+using _STLP_STD::constant2; 
+using _STLP_STD::subtractive_rng; 
+using _STLP_STD::mem_fun_t; 
+using _STLP_STD::const_mem_fun_t; 
+using _STLP_STD::mem_fun_ref_t; 
+using _STLP_STD::const_mem_fun_ref_t; 
+using _STLP_STD::mem_fun1_t; 
+using _STLP_STD::const_mem_fun1_t; 
+using _STLP_STD::mem_fun1_ref_t; 
+using _STLP_STD::const_mem_fun1_ref_t; 
+using _STLP_STD::mem_fun; 
+using _STLP_STD::mem_fun_ref; 
+using _STLP_STD::mem_fun1; 
+using _STLP_STD::mem_fun1_ref; 
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa008)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa008)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_FUNCTION_H */
+#endif /* _STLP_FUNCTION_H */
 
 // Local Variables:
 // mode:C++

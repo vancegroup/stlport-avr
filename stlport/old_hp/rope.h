@@ -16,18 +16,18 @@
  *
  */
 
-#ifndef __SGI_STL_ROPE_H
-#define __SGI_STL_ROPE_H
+#ifndef _STLP_ROPE_H
+#define _STLP_ROPE_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa022
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa022
 #  include <stl/_prolog.h>
 # endif
 
 #include <stl/_rope.h>
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 using STLPORT::char_producer; 
@@ -36,14 +36,14 @@ using STLPORT::rope;
 using STLPORT::crope; 
 using STLPORT::wrope; 
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa022)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa022)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_ROPE_H */
+#endif /* _STLP_ROPE_H */
 
 // Local Variables:
 // mode:C++

@@ -19,7 +19,7 @@
 #include "c_locale.h"
 #include <limits.h>
 
-# ifdef __STL_REAL_LOCALE_IMPLEMENTED
+# ifdef _STLP_REAL_LOCALE_IMPLEMENTED
 
 // here, we'll put C locale implementation for those compilers where
 // it has to be done in C++
@@ -43,7 +43,7 @@ struct _Locale_monetary  /* { } */;
 struct _Locale_messages  /* { } */;
 
 # ifdef __cplusplus
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 extern "C" {
 # define __DUMMY_PAR
 # define __DUMMY_PAR1
@@ -121,7 +121,7 @@ extern "C" {
  int _Locale_toupper(struct _Locale_ctype*__DUMMY_PAR1, int __DUMMY_PAR) { return 0; }
  int _Locale_tolower(struct _Locale_ctype*__DUMMY_PAR1, int __DUMMY_PAR) { return 0; }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
  _Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR)
   { return 0; }
  wint_t _Locale_wchar_tolower(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR)
@@ -130,7 +130,7 @@ extern "C" {
   { return 0; }
 # endif
 
-# ifndef __STL_NO_MBSTATE_T
+# ifndef _STLP_NO_MBSTATE_T
 
  int _Locale_mb_cur_max (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
  int _Locale_mb_cur_min (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
@@ -155,7 +155,7 @@ extern "C" {
   return (size_t) -1;
 }
 
-# endif /*  __STL_NO_MBSTATE_T */
+# endif /*  _STLP_NO_MBSTATE_T */
 
 
 /* Collate */
@@ -165,7 +165,7 @@ extern "C" {
   return 0;
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
  int _Locale_strwcmp(struct _Locale_collate* __DUMMY_PAR1,
                      const wchar_t* __DUMMY_PAR2, size_t __DUMMY_PAR3,
@@ -181,7 +181,7 @@ extern "C" {
   return 0;
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
   size_t _Locale_strwxfrm(struct _Locale_collate* __DUMMY_PAR1,
                           wchar_t* __DUMMY_PAR2, size_t __DUMMY_PAR3,
@@ -268,7 +268,7 @@ extern "C" {
 
 #ifdef __cplusplus    
 } /* extern C */
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 #endif
 
 #endif /* real locale */

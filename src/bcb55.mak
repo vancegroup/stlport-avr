@@ -28,8 +28,11 @@ all : platform all_dynamic all_static
 	
 !include common_macros.mak
 
+RM=-rd /S /Q
+MKDIR=-mkdir -p
+
 DYNAMIC_DEFS=_RTLDLL;_DLL
-STATIC_DEFS=_LIB;__STL_NO_FORCE_INSTANTIATE
+STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE
 
 LINKSTARTUP= c0d32.obj
 
@@ -58,11 +61,11 @@ LDLIBS_STLDEBUG_dynamic=  import32.lib cw32mti.lib
 
 CXXFLAGS_RELEASE_static= $(FLAGS_COMMON_static) -O2 -n$(RELEASE_OBJDIR_static)
 CXXFLAGS_DEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(DEBUG_OBJDIR_static)
-CXXFLAGS_STLDEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(STLDEBUG_OBJDIR_static) -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(STLDEBUG_OBJDIR_static) -D_STLP_DEBUG
 
 CXXFLAGS_RELEASE_dynamic= $(FLAGS_COMMON_dynamic) -O2 -n$(RELEASE_OBJDIR_dynamic)
 CXXFLAGS_DEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(DEBUG_OBJDIR_dynamic)
-CXXFLAGS_STLDEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(STLDEBUG_OBJDIR_dynamic) -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(STLDEBUG_OBJDIR_dynamic) -D_STLP_DEBUG
 
 RELEASE_LINK_COMMANDS_static=\
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)complex.$(OBJEXT) \
@@ -98,7 +101,6 @@ DEBUG_LINK_COMMANDS_static= \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)strstream.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)sstream.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
-+$(DEBUG_OBJDIR_static)$(PATH_SEP)codecvt.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)complex.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)complex_exp.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)complex_io.$(OBJEXT) \
@@ -121,8 +123,6 @@ STLDEBUG_LINK_COMMANDS_static= \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)strstream.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)sstream.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
-+$(STLDEBUG_OBJDIR_static)$(PATH_SEP)codecvt.$(OBJEXT) \
-+$(STLDEBUG_OBJDIR_static)$(PATH_SEP)collate.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)complex.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)complex_exp.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)complex_io.$(OBJEXT) \

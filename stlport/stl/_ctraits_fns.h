@@ -15,17 +15,17 @@
 // standard library headers.  You should not attempt to use this header
 // file directly.
 
-#ifndef __SGI_STL_INTERNAL_CTRAITS_FUNCTIONS_H
-#define __SGI_STL_INTERNAL_CTRAITS_FUNCTIONS_H
+#ifndef _STLP_INTERNAL_CTRAITS_FUNCTIONS_H
+#define _STLP_INTERNAL_CTRAITS_FUNCTIONS_H
 
-# ifndef __SGI_STL_INTERNAL_FUNCTION_H 
+# ifndef _STLP_INTERNAL_FUNCTION_H 
 #  include <stl/_function_base.h>
 # endif
 
 // This file contains a few small adapters that allow a character
 // traits class to be used as a function object.
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Traits>
 struct _Eq_traits
@@ -82,9 +82,9 @@ struct _Lt_traits
 };
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_CTRAITS_FUNCTIONS_H */
+#endif /* _STLP_INTERNAL_CTRAITS_FUNCTIONS_H */
 
 // Local Variables:
 // mode:C++

@@ -20,27 +20,27 @@
  *
  */
 
-#ifndef __SGI_STL_TEMPBUF_H
-#define __SGI_STL_TEMPBUF_H
+#ifndef _STLP_TEMPBUF_H
+#define _STLP_TEMPBUF_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa028
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa028
 #  include <stl/_prolog.h>
 # endif
 
-# ifndef __STLPORT_CLIMITS
+# ifndef _STLP_CLIMITS
 #  include <climits>
 # endif
 
-#ifndef __STLPORT_CSTDDEF
+#ifndef _STLP_CSTDDEF
 # include <cstddef>
 #endif
 
-#ifndef __STLPORT_CSTDLIB
+#ifndef _STLP_CSTDLIB
 # include <cstdlib>
 #endif
 
-#if !defined (__STLPORT_NEW)
+#if !defined (_STLP_NEW)
 # include <new>
 #endif
 
@@ -48,31 +48,31 @@
 #include <stl/type_traits.h>
 #endif
 
-#ifndef __SGI_STL_PAIR_H
+#ifndef _STLP_PAIR_H
 #include <pair.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_TEMPBUF_H
+#ifndef _STLP_INTERNAL_TEMPBUF_H
 #include <stl/_tempbuf.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::get_temporary_buffer;
-using __STLPORT_STD::return_temporary_buffer;
-using __STLPORT_STD::temporary_buffer;
+using _STLP_STD::get_temporary_buffer;
+using _STLP_STD::return_temporary_buffer;
+using _STLP_STD::temporary_buffer;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa028)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa028)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_TEMPBUF_H */
+#endif /* _STLP_TEMPBUF_H */
 
 // Local Variables:
 // mode:C++

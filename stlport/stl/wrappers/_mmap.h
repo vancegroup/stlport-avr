@@ -17,29 +17,29 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_MULTIMAP_H
-#define __SGI_STL_INTERNAL_WRAP_MULTIMAP_H
+#ifndef _STLP_INTERNAL_WRAP_MULTIMAP_H
+#define _STLP_INTERNAL_WRAP_MULTIMAP_H
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
-#  if defined (__STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
+#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define _Compare less<_Key>
 #  else
 #  endif
 
-# if defined (__STL_DEBUG) && ! defined (__STL_USE_NAMESPACES)
+# if defined (_STLP_DEBUG) && ! defined (_STLP_USE_NAMESPACES)
 # else
 
 # endif
 
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 } /* namespace STLPORT */
 # endif
 
-#endif /* __SGI_STL_INTERNAL_WRAP_MULTIMAP_H */
+#endif /* _STLP_INTERNAL_WRAP_MULTIMAP_H */
 
 // Local Variables:
 // mode:C++

@@ -4,39 +4,39 @@
  * Origin : Giuseppe Govi - g.govi@iol.it
  */
 
-#ifndef __STL_WINCE_H
-#define __STL_WINCE_H
+#ifndef _STLP_WINCE_H
+#define _STLP_WINCE_H
 
 // this flag is being used by STLport
-#   define __STL_WINCE
+#   define _STLP_WINCE
 
 // tell other parts no iostreams are desired
-#   define __STL_NO_IOSTREAMS 1
+#   define _STLP_NO_IOSTREAMS 1
 
 // not all new-style headers are available...
-# define __STL_HAS_NO_NEW_C_HEADERS
+# define _STLP_HAS_NO_NEW_C_HEADERS
 
-#     undef __STL_HAS_NO_EXCEPTIONS
-#     define __STL_HAS_NO_EXCEPTIONS
-#     undef __STL_NO_EXCEPTION_HEADER
-#     define __STL_NO_EXCEPTION_HEADER
+#     undef _STLP_HAS_NO_EXCEPTIONS
+#     define _STLP_HAS_NO_EXCEPTIONS
+#     undef _STLP_NO_EXCEPTION_HEADER
+#     define _STLP_NO_EXCEPTION_HEADER
 
 // we have to use malloc instead of new
-# undef  __STL_USE_NEWALLOC
-# define __STL_USE_MALLOC
+# undef  _STLP_USE_NEWALLOC
+# define _STLP_USE_MALLOC
 
-//# ifdef __STL_MSVC
+//# ifdef _STLP_MSVC
 //#     pragma warning (disable: 4786)
 //# endif
 
-#ifdef __STL_WINCE_USE_OUTPUTDEBUGSTRING
-#define __STL_WINCE_TRACE(msg)   OutputDebugString(msg)
+#ifdef _STLP_WINCE_USE_OUTPUTDEBUGSTRING
+#define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
 #else
-#define __STL_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,MB_OK)
+#define _STLP_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,MB_OK)
 #endif
 
 #ifndef __THROW_BAD_ALLOC
-#define __THROW_BAD_ALLOC __STL_WINCE_TRACE(L"out of memory"); ExitThread(1)
+#define __THROW_BAD_ALLOC _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1)
 #endif
 
 #ifndef _SIZE_T_DEFINED
@@ -67,10 +67,10 @@ typedef int ptrdiff_t;
 
 
 #ifndef _ASSERT_DEFINED
-# define assert(expr) __STL_ASSERT(expr)
+# define assert(expr) _STLP_ASSERT(expr)
 # define _ASSERT_DEFINED
 #endif
 
-#endif /* __STL_WCE_H */
+#endif /* _STLP_WCE_H */
 
 

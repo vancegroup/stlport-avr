@@ -26,44 +26,44 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_HASHTABLE_H
-#define __SGI_STL_HASHTABLE_H
+#ifndef _STLP_HASHTABLE_H
+#define _STLP_HASHTABLE_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa011
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa011
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_ALGO_H
+#ifndef _STLP_ALGO_H
 #include <algo.h>
 #endif
-#ifndef __SGI_STL_ALLOC_H
+#ifndef _STLP_ALLOC_H
 #include <alloc.h>
 #endif
-#ifndef __SGI_STL_VECTOR_H
+#ifndef _STLP_VECTOR_H
 #include <vector.h>
 #endif
-#ifndef __SGI_STL_HASH_FUN_H
+#ifndef _STLP_HASH_FUN_H
 #include <stl/_hash_fun.h>
 #endif
-#ifndef __SGI_STL_INTERNAL_HASHTABLE_H
+#ifndef _STLP_INTERNAL_HASHTABLE_H
 #include <stl/_hashtable.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::hash;
+using _STLP_STD::hash;
 using STLPORT::hashtable;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa011)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa011)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
-#endif /* __SGI_STL_HASHTABLE_H */
+#endif /* _STLP_HASHTABLE_H */
 
 // Local Variables:
 // mode:C++

@@ -28,8 +28,8 @@
  * for existing functionality.
  */
 
-#ifndef __STL_C_LOCALE_IMPL_H
-# define __STL_C_LOCALE_IMPL_H
+#ifndef _STLP_C_LOCALE_IMPL_H
+# define _STLP_C_LOCALE_IMPL_H
 
 # include <stl/c_locale.h>
 # include <cwchar>
@@ -47,7 +47,7 @@
  */
 
 #ifdef __cplusplus
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
@@ -161,7 +161,7 @@ int _Locale_tolower(struct _Locale_ctype *, int);
  * c is either EOF, or an unsigned char value.
  */
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 /*
  * Wide character functions:
  */
@@ -170,7 +170,7 @@ wint_t _Locale_wchar_tolower(struct _Locale_ctype *, wint_t);
 wint_t _Locale_wchar_toupper(struct _Locale_ctype *, wint_t);
 # endif
 
-# if !defined ( __STL_NO_MBSTATE_T )
+# if !defined ( _STLP_NO_MBSTATE_T )
 
 /*
  * Multibyte functions:
@@ -249,7 +249,7 @@ size_t _Locale_unshift(struct _Locale_ctype *,
  * success, sets *next to buf + m.
  */
 
-# endif /*  __STL_NO_MBSTATE_T */
+# endif /*  _STLP_NO_MBSTATE_T */
 
 /*
  * FUNCTIONS THAT USE COLLATE
@@ -258,7 +258,7 @@ size_t _Locale_unshift(struct _Locale_ctype *,
 int _Locale_strcmp(struct _Locale_collate *,
                    const char *, size_t,
                    const char *, size_t);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 int _Locale_strwcmp(struct _Locale_collate *,
                     const wchar_t *, size_t,
                     const wchar_t *, size_t);
@@ -275,7 +275,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *,
                        char *, size_t,
                        const char *, size_t);
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 size_t _Locale_strwxfrm(struct _Locale_collate *,
                         wchar_t *, size_t,
                         const wchar_t *, size_t);
@@ -394,7 +394,7 @@ const char * _Locale_catgets(struct _Locale_messages *, int,
 
 # ifdef __cplusplus
 }
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 # endif
 
-# endif /* __STL_C_LOCALE_IMPL_H */
+# endif /* _STLP_C_LOCALE_IMPL_H */

@@ -21,28 +21,28 @@
 #include "complex_impl.h"
 #include <istream>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if ! (defined (__STL_MSVC) && __STL_MSVC < 1200)
+# if ! (defined (_STLP_MSVC) && _STLP_MSVC < 1200)
 
 // Specializations for narrow characters; lets us avoid the nuisance of
 // widening.
-__STL_OPERATOR_SPEC
-basic_ostream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_ostream<char, char_traits<char> >& _STLP_CALL
 operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<float>& __z)
 {
   return __os << '(' << (double)__z.real() << ',' << (double)__z.imag() << ')';
 }
 
-__STL_OPERATOR_SPEC
-basic_ostream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_ostream<char, char_traits<char> >& _STLP_CALL
 operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>& __z)
 {
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
 }
 
-__STL_OPERATOR_SPEC
-basic_ostream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_ostream<char, char_traits<char> >& _STLP_CALL
 operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z)
 {
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
@@ -50,8 +50,8 @@ operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long do
 
 
 // Specialization for narrow characters; lets us avoid widen.
-__STL_OPERATOR_SPEC
-basic_istream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_istream<char, char_traits<char> >& _STLP_CALL
 operator>>(basic_istream<char, char_traits<char> >& __is, complex<float>& __z)
 {
   float  __re = 0;
@@ -77,8 +77,8 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<float>& __z)
   return __is;
 }
 
-__STL_OPERATOR_SPEC
-basic_istream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_istream<char, char_traits<char> >& _STLP_CALL
 operator>>(basic_istream<char, char_traits<char> >& __is, complex<double>& __z)
 {
   double  __re = 0;
@@ -104,8 +104,8 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<double>& __z)
   return __is;
 }
 
-__STL_OPERATOR_SPEC
-basic_istream<char, char_traits<char> >& __STL_CALL
+_STLP_OPERATOR_SPEC
+basic_istream<char, char_traits<char> >& _STLP_CALL
 operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& __z) {
   long double  __re = 0;
   long double  __im = 0;
@@ -132,9 +132,10 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& 
 
 # endif /* MSVC */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 
 // Local Variables:
 // mode:C++
 // End:
+

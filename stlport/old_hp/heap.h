@@ -23,19 +23,19 @@
  *
  */
 
-#ifndef __SGI_STL_HEAP_H
-#define __SGI_STL_HEAP_H
+#ifndef _STLP_HEAP_H
+#define _STLP_HEAP_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0x12
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x12
 #  include <stl/_prolog.h>
 # endif
 
 #include <stl/_heap.h>
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace std;
 # else
 using STLPORT::push_heap;
@@ -44,14 +44,14 @@ using STLPORT::make_heap;
 using STLPORT::sort_heap;
 # endif
 
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0x12)
+# if (_STLP_OUTERMOST_HEADER_ID == 0x12)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_HEAP_H */
+#endif /* _STLP_HEAP_H */
 
 // Local Variables:
 // mode:C++

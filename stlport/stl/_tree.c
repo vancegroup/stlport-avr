@@ -28,28 +28,28 @@
  * after hint (amortized constant time).
  *
  */
-#ifndef __STL_TREE_C
-#define __STL_TREE_C
+#ifndef _STLP_TREE_C
+#define _STLP_TREE_C
 
 // fbp: these defines are for outline methods definitions.
 // needed for definitions to be portable. Should not be used in method bodies.
-# if defined  ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined  ( _STLP_NESTED_TYPE_PARAM_BUG )
 #  define __iterator__        _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> >
 #  define __const_iterator__  _Rb_tree_iterator<_Value, _Const_traits<_Value> >
 #  define __size_type__       size_t
 # else
-#  define __iterator__  __STL_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
-#  define __const_iterator__  __STL_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::const_iterator
-#  define __size_type__  __STL_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::size_type
+#  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
+#  define __const_iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::const_iterator
+#  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::size_type
 # endif
 
-#if defined ( __STL_DEBUG)
+#if defined ( _STLP_DEBUG)
 #  define _Rb_tree __WORKAROUND_DBG_RENAME(Rb_tree)
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if defined (__STL_EXPOSE_GLOBALS_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 inline void
 _Rb_tree_rotate_left(_Rb_tree_node_base* __x, _Rb_tree_node_base*& __root)
@@ -90,7 +90,7 @@ _Rb_tree_rotate_right(_Rb_tree_node_base* __x, _Rb_tree_node_base*& __root)
 }
 
 template <class _Dummy>
-void __STL_CALL
+void _STLP_CALL
 _Rb_global<_Dummy>::_Rebalance(_Rb_tree_node_base* __x, 
 			       _Rb_tree_node_base*& __root)
 {
@@ -137,7 +137,7 @@ _Rb_global<_Dummy>::_Rebalance(_Rb_tree_node_base* __x,
 }
 
 template <class _Dummy>
-_Rb_tree_node_base* __STL_CALL
+_Rb_tree_node_base* _STLP_CALL
 _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
 					 _Rb_tree_node_base*& __root,
 					 _Rb_tree_node_base*& __leftmost,
@@ -176,7 +176,7 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
     else 
       __z->_M_parent->_M_right = __y;
     __y->_M_parent = __z->_M_parent;
-    __STLPORT_STD::swap(__y->_M_color, __z->_M_color);
+    _STLP_STD::swap(__y->_M_color, __z->_M_color);
     __y = __z;
     // __y now points to node to be actually deleted
   }
@@ -270,7 +270,7 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
 }
 
 template <class _Dummy>
-void __STL_CALL
+void _STLP_CALL
 _Rb_global<_Dummy>::_M_decrement(_Rb_tree_base_iterator* __it)
 {
   _Base_ptr _M_node = __it->_M_node;
@@ -295,7 +295,7 @@ _Rb_global<_Dummy>::_M_decrement(_Rb_tree_base_iterator* __it)
 }
 
 template <class _Dummy>
-void __STL_CALL
+void _STLP_CALL
 _Rb_global<_Dummy>::_M_increment(_Rb_tree_base_iterator* __it)
 {
   _Base_ptr _M_node = __it->_M_node;
@@ -316,7 +316,7 @@ _Rb_global<_Dummy>::_M_increment(_Rb_tree_base_iterator* __it)
   __it->_M_node = _M_node;
 }
 
-#endif /* defined (__BUILDING_STLPORT) || ! defined (__SGI_STL_OWN_IOSTREAMS) */
+#endif /* defined (__BUILDING_STLPORT) || ! defined (_STLP_OWN_IOSTREAMS) */
 
 
 template <class _Key, class _Value, class _KeyOfValue, 
@@ -443,8 +443,12 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
   ::insert_unique(__iterator__ __position, const _Value& __v)
 {
   if (__position._M_node == this->_M_header._M_data->_M_left) { // begin()
-    if (size() > 0 && 
-        _M_key_compare(_KeyOfValue()(__v), _S_key(__position._M_node)))
+
+    // if the container is empty, fall back on insert_unique.
+    if (size() <= 0)
+      return insert_unique(__v).first;
+
+    if ( _M_key_compare(_KeyOfValue()(__v), _S_key(__position._M_node)))
       return _M_insert(__position._M_node, __position._M_node, __v);
     // first argument just needs to be non-null 
     else
@@ -456,13 +460,7 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 	  // performed and we know the result; skip repeating it in _M_insert
 	  // by specifying a non-zero fourth argument.
 	  return _M_insert(0, __position._M_node, __v, __position._M_node);
-	
-	// Check for zero members -- I don't think it's a good idea to be moving
-	// past the hint, in that case.  Not sure the appropriate thing to do for
-	// this one case, so I'll fall back on insert_unique.
-	else if (size() <= 0)
-	  return insert_unique(__v).first;
-	
+		
 	
 	// All other cases:
 	// Standard-conformance - does the insertion point fall immediately AFTER
@@ -551,19 +549,19 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
   ::insert_equal(__iterator__ __position, const _Value& __v)
 {
   if (__position._M_node == this->_M_header._M_data->_M_left) { // begin()
-    if (size() > 0 && 
-        !_M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__v)))
+
+    // Check for zero members
+    if (size() <= 0)
+        return insert_equal(__v);
+
+    if (!_M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__v)))
       return _M_insert(__position._M_node, __position._M_node, __v);
     else    {
       // Check for only one member
       if (__position._M_node->_M_left == __position._M_node)
         // Unlike insert_unique, can't avoid doing a comparison here.
         return _M_insert(0, __position._M_node, __v);
-      
-      // Check for zero members
-      else if (size() <= 0)
-        return insert_equal(__v);
-          
+                
       // All other cases:
       // Standard-conformance - does the insertion point fall immediately AFTER
       // the hint?
@@ -629,7 +627,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
   _Link_type __top = _M_clone_node(__x);
   __top->_M_parent = __p;
   
-  __STL_TRY {
+  _STLP_TRY {
     if (__x->_M_right)
       __top->_M_right = _M_copy(_S_right(__x), __top);
     __p = __top;
@@ -645,7 +643,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
       __x = _S_left(__x);
     }
   }
-  __STL_UNWIND(_M_erase(__top));
+  _STLP_UNWIND(_M_erase(__top));
 
   return __top;
 }
@@ -731,13 +729,13 @@ bool _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>::__rb_verify() const
 
   return true;
 }
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef __iterator__        
 # undef __const_iterator__  
 # undef __size_type__  
 
-#endif /*  __STL_TREE_C */
+#endif /*  _STLP_TREE_C */
 
 // Local Variables:
 // mode:C++

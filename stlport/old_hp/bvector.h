@@ -23,11 +23,11 @@
  *
  */
 
-#ifndef __SGI_STL_BVECTOR_H
-#define __SGI_STL_BVECTOR_H
+#ifndef _STLP_BVECTOR_H
+#define _STLP_BVECTOR_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa004
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa004
 #  include <stl/_prolog.h>
 # endif
 
@@ -35,7 +35,7 @@
 
 #include <stl/_range_errors.h>
 
-#ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 #include <vector.h>
 #else
 #include <alloc.h>
@@ -44,22 +44,22 @@
 #include <stl/_vector.h>
 #include <stl/_bvector.h>
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::bit_vector;
+using _STLP_STD::bit_vector;
 # endif
 
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa004)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa004)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_BVECTOR_H */
+#endif /* _STLP_BVECTOR_H */
 
 // Local Variables:
 // mode:C++

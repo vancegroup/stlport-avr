@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <functional>
 #include <iterator>
 
 #ifdef MAIN 

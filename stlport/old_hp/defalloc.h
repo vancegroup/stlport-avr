@@ -29,19 +29,19 @@
 // However, explicit use of allocator<T>  is not recommended 
 // unless you have to do so ( for example, compiling third-party code).
 
-#ifndef __SGI_STL_DEFALLOC_H
-#define __SGI_STL_DEFALLOC_H
+#ifndef _STLP_DEFALLOC_H
+#define _STLP_DEFALLOC_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa005
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa005
 #  include <stl/_prolog.h>
 # endif
 
-# if defined (__STL_DEBUG) && ! defined ( __SGI_STL_DEBUG_H )
+# if defined (_STLP_DEBUG) && ! defined ( _STLP_DEBUG_H )
 #  include <stl/debug/_debug.h>
 # endif
 
-#if defined (__STL_USE_NEW_STYLE_HEADERS)
+#if defined (_STLP_USE_NEW_STYLE_HEADERS)
 # include <cstddef>
 # include <cstdlib>
 # include <cstring>
@@ -55,12 +55,12 @@
 
 # include <new>
 
-#ifdef __STL_THREADS
+#ifdef _STLP_THREADS
 # include <stl/_threads.h>
 #endif
 
-# if !defined (__THROW_BAD_ALLOC) && !defined(__STL_USE_EXCEPTIONS)
-#   if defined (__STL_USE_NEW_STYLE_HEADERS)
+# if !defined (__THROW_BAD_ALLOC) && !defined(_STLP_USE_EXCEPTIONS)
+#   if defined (_STLP_USE_NEW_STYLE_HEADERS)
 #    include <cstdio>
 #   else
 #    include <stdio.h>
@@ -70,18 +70,18 @@
 
 // fbp: just for backwards compatibility,
 // hope this doesn't break anything.
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 using STLPORT::allocator;
-# endif /* __STL_BROKEN_USING_DIRECTIVE */
-#endif /*  __STL_USE_NAMESPACES */
+# endif /* _STLP_BROKEN_USING_DIRECTIVE */
+#endif /*  _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa005)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa005)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_DEFALLOC_H */
+#endif /* _STLP_DEFALLOC_H */
 

@@ -117,3 +117,4 @@ report_dirs_vc :
 {$(SRCDIR)}.rc{$(STLDEBUG_OBJDIR_dynamic)}.res:
 	$(RC) /d COMP=$(COMP) /d BUILD=_STLDEBUG /fo $(STLDEBUG_OBJDIR_dynamic)\stlport.res $<
 
+

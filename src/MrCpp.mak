@@ -5,7 +5,7 @@ Sym-PPC         	= -sym on
 !ifdef DEBUG
 config_				= .PPC.DBG
 MrCpp_DebugOptions 	= -inline none,global -opt none {Sym-PPC}
-STL_DebugOptions 	= -d __STL_DEBUG -d __STL_DEBUG_ALLOC -d __STL_DEBUG_UNINITIALIZED
+STL_DebugOptions 	= -d _STLP_DEBUG -d _STLP_DEBUG_ALLOC -d _STLP_DEBUG_UNINITIALIZED
 !else
 config_				= .PPC
 MrCpp_DebugOptions 	= 
@@ -18,8 +18,8 @@ Includes     	= -i : -i "{STL}" -i "{CIncludes}"
 
 MrCpp_Options 	= -ansi on -ansifor -bool on -exceptions on -rtti on -align power -j0 -traceback -opt size -inline 3,global -includes unix_mac
 				
-STL_Options  	= 	#-d __STL_USE_NEWALLOC ¶
-					-d __STL_NO_SGI_IOSTREAMS ¶
+STL_Options  	= 	#-d _STLP_USE_NEWALLOC ¶
+					#-d _STLP_NO_SGI_IOSTREAMS ¶
 					# end
 
 Link_options = ¶
@@ -79,14 +79,11 @@ Dependencies  Ä  $OutOfDate #*TY 02/26/2000 - MakeDepend does not work unless al
 ### Source Files ###
 
 STLportLibSrcFiles        =  ¶
-				c_locale_stub.cpp ¶
+				c_locale_stub.cpp	¶
 				codecvt.cpp	¶
 				codecvt_byname.cpp	¶
-				codecvt_w.cpp	¶
 				collate.cpp	¶
 				collate_byname.cpp	¶
-				collate_byname_w.cpp	¶
-				collate_w.cpp	¶
 				complex.cpp	¶
 				complex_exp.cpp	¶
 				complex_io.cpp	¶
@@ -94,120 +91,77 @@ STLportLibSrcFiles        =  ¶
 				complex_trig.cpp	¶
 				ctype.cpp	¶
 				ctype_byname.cpp	¶
-				ctype_byname_w.cpp	¶
-				ctype_w.cpp	¶
-#				dll_main.cpp	¶
+				dll_main.cpp	¶
 				fstream.cpp	¶
-				fstream_w.cpp	¶
 				ios.cpp	¶
-				ios_base.cpp	¶
-				ios_w.cpp	¶
 				iostream.cpp	¶
+				istream.cpp	¶
 				locale.cpp	¶
 				locale_catalog.cpp	¶
 				locale_impl.cpp	¶
-				message_facets.cpp	¶
-				message_facets_w.cpp	¶
+				messages.cpp	¶
+				messages_byname.cpp	¶
 				monetary.cpp	¶
-				money_get.cpp	¶
-				money_get_w.cpp	¶
-				money_put.cpp	¶
-				money_put_w.cpp	¶
-				moneypunct.cpp	¶
-				moneypunct_byname.cpp	¶
-				moneypunct_byname_w.cpp	¶
-				moneypunct_w.cpp	¶
+				monetary_byname.cpp	¶
 				num_get.cpp	¶
 				num_get_float.cpp	¶
-				num_get_inst.cpp	¶
-				num_get_inst_w.cpp	¶
 				num_put.cpp	¶
 				num_put_float.cpp	¶
-				num_put_inst.cpp	¶
-				num_put_inst_w.cpp	¶
 				numpunct.cpp	¶
 				numpunct_byname.cpp	¶
-				numpunct_w.cpp	¶
-				range_errors.cpp	¶
+				ostream.cpp	¶
 				sstream.cpp	¶
 				stdio_streambuf.cpp	¶
 				streambuf.cpp	¶
-				string.cpp	¶
 				string_w.cpp	¶
 				strstream.cpp	¶
-#				test.cpp	¶
+			#	test.cpp	¶
 				time_facets.cpp	¶
-				time_get.cpp	¶
-				time_get_w.cpp	¶
-				time_put.cpp	¶
-				time_put_w.cpp	¶
-				# end
+				# end		#*TY 11/25/2000 - updated for STLport.4.1
 
 
 ### Object Files ###
 
 STLportLibObjFiles-PPC    =  ¶
-				"{ObjDir}"c_locale_stub.cpp.x ¶
-				"{ObjDir}"codecvt.cpp.x	¶
-				"{ObjDir}"codecvt_byname.cpp.x	¶
-				"{ObjDir}"codecvt_w.cpp.x	¶
-				"{ObjDir}"collate.cpp.x	¶
-				"{ObjDir}"collate_byname.cpp.x	¶
-				"{ObjDir}"collate_byname_w.cpp.x	¶
-				"{ObjDir}"collate_w.cpp.x	¶
-				"{ObjDir}"complex.cpp.x	¶
-				"{ObjDir}"complex_exp.cpp.x	¶
-				"{ObjDir}"complex_io.cpp.x	¶
-				"{ObjDir}"complex_io_w.cpp.x	¶
-				"{ObjDir}"complex_trig.cpp.x	¶
-				"{ObjDir}"ctype.cpp.x	¶
-				"{ObjDir}"ctype_byname.cpp.x	¶
-				"{ObjDir}"ctype_byname_w.cpp.x	¶
-				"{ObjDir}"ctype_w.cpp.x	¶
-				"{ObjDir}"fstream.cpp.x	¶
-				"{ObjDir}"fstream_w.cpp.x	¶
-				"{ObjDir}"ios.cpp.x	¶
-				"{ObjDir}"ios_base.cpp.x	¶
-				"{ObjDir}"ios_w.cpp.x	¶
-				"{ObjDir}"iostream.cpp.x	¶
-				"{ObjDir}"locale.cpp.x	¶
-				"{ObjDir}"locale_catalog.cpp.x	¶
-				"{ObjDir}"locale_impl.cpp.x	¶
-				"{ObjDir}"message_facets.cpp.x	¶
-				"{ObjDir}"message_facets_w.cpp.x	¶
-				"{ObjDir}"monetary.cpp.x	¶
-				"{ObjDir}"money_get.cpp.x	¶
-				"{ObjDir}"money_get_w.cpp.x	¶
-				"{ObjDir}"money_put.cpp.x	¶
-				"{ObjDir}"money_put_w.cpp.x	¶
-				"{ObjDir}"moneypunct.cpp.x	¶
-				"{ObjDir}"moneypunct_byname.cpp.x	¶
-				"{ObjDir}"moneypunct_byname_w.cpp.x	¶
-				"{ObjDir}"moneypunct_w.cpp.x	¶
-				"{ObjDir}"num_get.cpp.x	¶
-				"{ObjDir}"num_get_float.cpp.x	¶
-				"{ObjDir}"num_get_inst.cpp.x	¶
-				"{ObjDir}"num_get_inst_w.cpp.x	¶
-				"{ObjDir}"num_put.cpp.x	¶
-				"{ObjDir}"num_put_float.cpp.x	¶
-				"{ObjDir}"num_put_inst.cpp.x	¶
-				"{ObjDir}"num_put_inst_w.cpp.x	¶
-				"{ObjDir}"numpunct.cpp.x	¶
-				"{ObjDir}"numpunct_byname.cpp.x	¶
-				"{ObjDir}"numpunct_w.cpp.x	¶
-				"{ObjDir}"range_errors.cpp.x	¶
-				"{ObjDir}"sstream.cpp.x	¶
-				"{ObjDir}"stdio_streambuf.cpp.x	¶
-				"{ObjDir}"streambuf.cpp.x	¶
-				"{ObjDir}"string.cpp.x	¶
-				"{ObjDir}"string_w.cpp.x	¶
-				"{ObjDir}"strstream.cpp.x	¶
-				"{ObjDir}"time_facets.cpp.x	¶
-				"{ObjDir}"time_get.cpp.x	¶
-				"{ObjDir}"time_get_w.cpp.x	¶
-				"{ObjDir}"time_put.cpp.x	¶
-				"{ObjDir}"time_put_w.cpp.x	¶
-				# end
+				{ObjDir}c_locale_stub.cpp.x	¶
+				{ObjDir}codecvt.cpp.x	¶
+				{ObjDir}codecvt_byname.cpp.x	¶
+				{ObjDir}collate.cpp.x	¶
+				{ObjDir}collate_byname.cpp.x	¶
+				{ObjDir}complex.cpp.x	¶
+				{ObjDir}complex_exp.cpp.x	¶
+				{ObjDir}complex_io.cpp.x	¶
+				{ObjDir}complex_io_w.cpp.x	¶
+				{ObjDir}complex_trig.cpp.x	¶
+				{ObjDir}ctype.cpp.x	¶
+				{ObjDir}ctype_byname.cpp.x	¶
+				{ObjDir}dll_main.cpp.x	¶
+				{ObjDir}fstream.cpp.x	¶
+				{ObjDir}ios.cpp.x	¶
+				{ObjDir}iostream.cpp.x	¶
+				{ObjDir}istream.cpp.x	¶
+				{ObjDir}locale.cpp.x	¶
+				{ObjDir}locale_catalog.cpp.x	¶
+				{ObjDir}locale_impl.cpp.x	¶
+				{ObjDir}messages.cpp.x	¶
+				{ObjDir}messages_byname.cpp.x	¶
+				{ObjDir}monetary.cpp.x	¶
+				{ObjDir}monetary_byname.cpp.x	¶
+				{ObjDir}num_get.cpp.x	¶
+				{ObjDir}num_get_float.cpp.x	¶
+				{ObjDir}num_put.cpp.x	¶
+				{ObjDir}num_put_float.cpp.x	¶
+				{ObjDir}numpunct.cpp.x	¶
+				{ObjDir}numpunct_byname.cpp.x	¶
+				{ObjDir}ostream.cpp.x	¶
+				{ObjDir}sstream.cpp.x	¶
+				{ObjDir}stdio_streambuf.cpp.x	¶
+				{ObjDir}streambuf.cpp.x	¶
+				{ObjDir}string_w.cpp.x	¶
+				{ObjDir}strstream.cpp.x	¶
+			#	{ObjDir}test.cpp.x	¶
+				{ObjDir}time_facets.cpp.x	¶
+				# end		#*TY 11/25/2000 - updated for STLport.4.1
 
 
 ### Build Rules ###

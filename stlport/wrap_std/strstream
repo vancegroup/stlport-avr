@@ -13,13 +13,13 @@
  *
  */
 
-# include __STL_NATIVE_HEADER(strstream)
+# include _STLP_NATIVE_HEADER(strstream)
 
-# ifdef __STL_USE_OWN_NAMESPACE
-__STL_BEGIN_NAMESPACE
+# ifdef _STLP_USE_OWN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 #  include <using/strstream>
-__STL_END_NAMESPACE
-#endif /* __STL_OWN_NAMESPACE */
+_STLP_END_NAMESPACE
+#endif /* _STLP_OWN_NAMESPACE */
 
 
 // Local Variables:

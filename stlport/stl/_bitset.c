@@ -16,17 +16,17 @@
  *
  */
 
-#ifndef __STL_BITSET_C
-# define  __STL_BITSET_C
+#ifndef _STLP_BITSET_C
+# define  _STLP_BITSET_C
 
 # define __BITS_PER_WORD (CHAR_BIT*sizeof(unsigned long))
 # define __BITSET_WORDS(__n) ((__n) < 1 ? 1 : ((__n) + __BITS_PER_WORD - 1)/__BITS_PER_WORD)
 
-# if ! defined (__STL_DEFAULT_TYPE_PARAM)
+# if ! defined (_STLP_DEFAULT_TYPE_PARAM)
 #  define bitset __bitset
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //
 // Definitions of non-inline functions from _Base_bitset.
@@ -171,12 +171,12 @@ _Base_bitset<_Nw>::_M_do_find_next(size_t __prev,
 
 
 
-# if ! defined (__STL_NON_TYPE_TMPL_PARAM_BUG)
+# if ! defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
 
-#if defined ( __STL_USE_NEW_IOSTREAMS)
+#if defined ( _STLP_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits, size_t _Nb>
-basic_istream<_CharT, _Traits>& __STL_CALL
+basic_istream<_CharT, _Traits>& _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x)
 {
   basic_string<_CharT, _Traits> __tmp;
@@ -217,7 +217,7 @@ operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x)
 }
 
 template <class _CharT, class _Traits, size_t _Nb>
-basic_ostream<_CharT, _Traits>& __STL_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os,
            const bitset<_Nb>& __x)
 {
@@ -226,11 +226,11 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
   return __os << __tmp;
 }
 
-#elif ! defined ( __STL_USE_NO_IOSTREAMS )
+#elif ! defined ( _STLP_USE_NO_IOSTREAMS )
 
 // (reg) For Watcom IO, this tells if ostream class is in .exe or in .dll
 template <size_t _Nb>
-_ISTREAM_DLL& __STL_CALL
+_ISTREAM_DLL& _STLP_CALL
 operator>>(_ISTREAM_DLL& __is, bitset<_Nb>& __x) {
   string __tmp;
   __tmp.reserve(_Nb);
@@ -267,19 +267,19 @@ operator>>(_ISTREAM_DLL& __is, bitset<_Nb>& __x) {
   return __is;
 }
 
-# endif /* __STL_USE_NEW_IOSTREAMS */
+# endif /* _STLP_USE_NEW_IOSTREAMS */
 
-# endif /* __STL_NON_TYPE_TMPL_PARAM_BUG */
+# endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
 
 // ------------------------------------------------------------
 // Lookup tables for find and count operations.
 
-# if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+# if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 template<bool __dummy>
 unsigned char _Bit_count<__dummy>::_S_bit_count[256] = {
 # else
-unsigned char _Bit_count<true>::_S_bit_count[256] __STL_WEAK = {
+unsigned char _Bit_count<true>::_S_bit_count[256] _STLP_WEAK = {
 # endif
   0, /*   0 */ 1, /*   1 */ 1, /*   2 */ 2, /*   3 */ 1, /*   4 */
   2, /*   5 */ 2, /*   6 */ 3, /*   7 */ 1, /*   8 */ 2, /*   9 */
@@ -335,11 +335,11 @@ unsigned char _Bit_count<true>::_S_bit_count[256] __STL_WEAK = {
   8  /* 255 */
 }; // end _Bit_count
 
-# if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+# if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 template<bool __dummy>
 unsigned char _First_one<__dummy>::_S_first_one[256] = {
 # else
-unsigned char _First_one<true>::_S_first_one[256] __STL_WEAK = {
+unsigned char _First_one<true>::_S_first_one[256] _STLP_WEAK = {
 # endif
 
   0, /*   0 */ 0, /*   1 */ 1, /*   2 */ 0, /*   3 */ 2, /*   4 */
@@ -396,10 +396,10 @@ unsigned char _First_one<true>::_S_first_one[256] __STL_WEAK = {
   0, /* 255 */
 }; // end _First_one
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 #  undef __BITS_PER_WORD
 #  undef __BITSET_WORDS
 #  undef bitset
 
-#endif /*  __STL_BITSET_C */
+#endif /*  _STLP_BITSET_C */

@@ -23,10 +23,10 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_VALARRAY_C
-#define __STL_VALARRAY_C
+#ifndef _STLP_VALARRAY_C
+#define _STLP_VALARRAY_C
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // Behavior is undefined if __x and *this have different sizes
 template <class _Tp>
@@ -176,9 +176,9 @@ valarray<_Tp> valarray<_Tp>::cshift(int __m) const
   return __tmp;
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_VALARRAY_C */
+#endif /*  _STLP_VALARRAY_C */
 
 // Local Variables:
 // mode:C++

@@ -27,50 +27,48 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_TEMPBUF_H
-#define __SGI_STL_INTERNAL_TEMPBUF_H
+#ifndef _STLP_INTERNAL_TEMPBUF_H
+#define _STLP_INTERNAL_TEMPBUF_H
 
-# ifndef __STLPORT_CLIMITS
+# ifndef _STLP_CLIMITS
 #  include <climits>
 # endif
-# ifndef __STLPORT_CSTDLIB
+# ifndef _STLP_CSTDLIB
 #  include <cstdlib>
 # endif
-# ifndef __SGI_STL_INTERNAL_UNINITIALIZED_H
+# ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #  include <stl/_uninitialized.h>
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
-pair<_Tp*, ptrdiff_t>  __STL_CALL
+pair<_Tp*, ptrdiff_t>  _STLP_CALL
 __get_temporary_buffer(ptrdiff_t __len, _Tp*);
 
-#ifdef __STL_EXPLICIT_FUNCTION_TMPL_ARGS
+#ifndef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 
 template <class _Tp>
-inline pair<_Tp*, ptrdiff_t>  __STL_CALL get_temporary_buffer(ptrdiff_t __len) {
+inline pair<_Tp*, ptrdiff_t>  _STLP_CALL get_temporary_buffer(ptrdiff_t __len) {
   return __get_temporary_buffer(__len, (_Tp*) 0);
 }
 
-#endif /* __STL_EXPLICIT_FUNCTION_TMPL_ARGS */
-
-
-# if ! (defined(__STL_NO_EXTENSIONS) && defined (__STL_EXPLICIT_FUNCTION_TMPL_ARGS))
+# if ! defined(_STLP_NO_EXTENSIONS)
 // This overload is not required by the standard; it is an extension.
 // It is supported for backward compatibility with the HP STL, and
 // because not all compilers support the language feature (explicit
 // function template arguments) that is required for the standard
 // version of get_temporary_buffer.
 template <class _Tp>
-inline pair<_Tp*, ptrdiff_t>  __STL_CALL
+inline pair<_Tp*, ptrdiff_t>  _STLP_CALL
 get_temporary_buffer(ptrdiff_t __len, _Tp*) {
   return __get_temporary_buffer(__len, (_Tp*) 0);
 }
 # endif
+#endif
 
 template <class _Tp>
-inline void  __STL_CALL return_temporary_buffer(_Tp* __p) {
+inline void  _STLP_CALL return_temporary_buffer(_Tp* __p) {
 // SunPro brain damage
   free((char*)__p);
 }
@@ -115,14 +113,14 @@ public:
 #   else
      typedef typename __type_traits<_Tp>::has_trivial_default_constructor  _Trivial;
 #   endif
-    __STL_TRY {
+    _STLP_TRY {
       _M_len = 0;
       distance(__first, __last, _M_len);
       _M_allocate_buffer();
       if (_M_len > 0)
         _M_initialize_buffer(*__first, _Trivial());
     }
-    __STL_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0);
+    _STLP_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0);
   }
  
   ~_Temporary_buffer() {  
@@ -136,15 +134,15 @@ private:
   void operator=(const _Temporary_buffer<_ForwardIterator, _Tp>&) {}
 };
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 
 // Class temporary_buffer is not part of the standard.  It is an extension.
 
 template <class _ForwardIterator, 
           class _Tp 
-#ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
                     = typename iterator_traits<_ForwardIterator>::value_type
-#endif /* __STL_CLASS_PARTIAL_SPECIALIZATION */
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
          >
 struct temporary_buffer : public _Temporary_buffer<_ForwardIterator, _Tp>
 {
@@ -153,15 +151,15 @@ struct temporary_buffer : public _Temporary_buffer<_ForwardIterator, _Tp>
   ~temporary_buffer() {}
 };
 
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
     
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# ifndef __STL_LINK_TIME_INSTANTIATION
+# ifndef _STLP_LINK_TIME_INSTANTIATION
 #  include <stl/_tempbuf.c>
 # endif
 
-#endif /* __SGI_STL_INTERNAL_TEMPBUF_H */
+#endif /* _STLP_INTERNAL_TEMPBUF_H */
 
 // Local Variables:
 // mode:C++

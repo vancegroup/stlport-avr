@@ -13,31 +13,31 @@
  *
  */
 
-#ifndef __STLPORT_OLDSTD_exception
-# define __STLPORT_OLDSTD_exception
+#ifndef _STLP_OLDSTD_exception
+# define _STLP_OLDSTD_exception
 
-# if !defined (__STL_OUTERMOST_HEADER_ID)
-#  define __STL_OUTERMOST_HEADER_ID 0x824
+# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#  define _STLP_OUTERMOST_HEADER_ID 0x824
 #  include <stl/_prolog.h>
-# elif (__STL_OUTERMOST_HEADER_ID == 0x824) && ! defined (__STL_DONT_POP_0x824)
-#  define __STL_DONT_POP_0x824
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x824) && ! defined (_STLP_DONT_POP_0x824)
+#  define _STLP_DONT_POP_0x824
 # endif
 
 # if defined (__BORLANDC__)
 #  include <exception.>
 # else
-#  include __STL_NATIVE_CPP_RUNTIME_HEADER(exception.h)
+#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
 # endif
 
-# if (__STL_OUTERMOST_HEADER_ID == 0x824)
-#  if ! defined (__STL_DONT_POP_0x824)
+# if (_STLP_OUTERMOST_HEADER_ID == 0x824)
+#  if ! defined (_STLP_DONT_POP_0x824)
 #   include <stl/_epilog.h>
-#   undef  __STL_OUTERMOST_HEADER_ID
+#   undef  _STLP_OUTERMOST_HEADER_ID
 #   endif
-#   undef  __STL_DONT_POP_0x824
+#   undef  _STLP_DONT_POP_0x824
 # endif
 
-#endif /* __STLPORT_OLDSTD_exception */
+#endif /* _STLP_OLDSTD_exception */
 
 // Local Variables:
 // mode:C++

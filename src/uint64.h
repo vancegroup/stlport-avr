@@ -125,12 +125,13 @@ template <class _Tp> inline _compound_int<_Tp> operator>>(const _compound_int<_T
 
 #if defined(__MRC__)||defined(__SC__)
 
-__STL_END_NAMESPACE // ugly!
+_STLP_END_NAMESPACE // ugly!
 # include <Math64.h>
 # include <utility>
 # undef modff		//*TY 04/06/2000 - defined in <math.h> which conflicts with <fp.h> definition
 # include <fp.h>
-__STL_BEGIN_NAMESPACE
+
+_STLP_BEGIN_NAMESPACE
 
 # if TYPE_LONGLONG 
 typedef UInt64 uint64;
@@ -150,33 +151,33 @@ typedef _compound_int<UnsignedWide> uint64;
 # define ULL2(hi,lo) {hi,lo}
 
 // Constructors, destructor, assignment operator.
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int() { hi = 0; lo = 0; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int(unsigned long val) { hi = 0; lo = val; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int(unsigned long h, unsigned long l) { hi = h; lo = l; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int() { hi = 0; lo = 0; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int(unsigned long val) { hi = 0; lo = val; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>::_compound_int(unsigned long h, unsigned long l) { hi = h; lo = l; }
 
 // Arithmetic op= operations involving two _compound_int.
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator+= (const _compound_int<UnsignedWide>& rhs) { *this = U64Add( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator-= (const _compound_int<UnsignedWide>& rhs) { *this = U64Subtract( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator*= (const _compound_int<UnsignedWide>& rhs) { *this = U64Multiply( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator/= (const _compound_int<UnsignedWide>& rhs) { *this = U64Divide( *this, rhs, NULL ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator%= (const _compound_int<UnsignedWide>& rhs) { U64Divide( *this, rhs, this ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator&= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseAnd( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator|= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseOr( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator^= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseEor( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator+= (const _compound_int<UnsignedWide>& rhs) { *this = U64Add( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator-= (const _compound_int<UnsignedWide>& rhs) { *this = U64Subtract( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator*= (const _compound_int<UnsignedWide>& rhs) { *this = U64Multiply( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator/= (const _compound_int<UnsignedWide>& rhs) { *this = U64Divide( *this, rhs, NULL ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator%= (const _compound_int<UnsignedWide>& rhs) { U64Divide( *this, rhs, this ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator&= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseAnd( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator|= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseOr( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator^= (const _compound_int<UnsignedWide>& rhs) { *this = U64BitwiseEor( *this, rhs ); return *this; }
 
 // Arithmetic op= operations involving built-in integer.
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator<<= (unsigned int rhs) { *this = U64ShiftLeft( *this, rhs ); return *this; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator>>= (unsigned int rhs) { *this = U64ShiftRight( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator<<= (unsigned int rhs) { *this = U64ShiftLeft( *this, rhs ); return *this; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide>& _compound_int<UnsignedWide>::operator>>= (unsigned int rhs) { *this = U64ShiftRight( *this, rhs ); return *this; }
 
 // Comparison operators.
-__STL_TEMPLATE_NULL inline bool operator==(const _compound_int<UnsignedWide>& lhs, const _compound_int<UnsignedWide>& rhs) { return (lhs.hi == rhs.hi) && (lhs.lo == rhs.lo); }
-__STL_TEMPLATE_NULL inline bool operator< (const _compound_int<UnsignedWide>& lhs, const _compound_int<UnsignedWide>& rhs) { return U64Compare( lhs, rhs ) < 0; }
-__STL_TEMPLATE_NULL inline bool operator==(const _compound_int<UnsignedWide>& lhs, unsigned long rhs) { return (lhs.hi == 0) && (lhs.lo == rhs); }
+_STLP_TEMPLATE_NULL inline bool operator==(const _compound_int<UnsignedWide>& lhs, const _compound_int<UnsignedWide>& rhs) { return (lhs.hi == rhs.hi) && (lhs.lo == rhs.lo); }
+_STLP_TEMPLATE_NULL inline bool operator< (const _compound_int<UnsignedWide>& lhs, const _compound_int<UnsignedWide>& rhs) { return U64Compare( lhs, rhs ) < 0; }
+_STLP_TEMPLATE_NULL inline bool operator==(const _compound_int<UnsignedWide>& lhs, unsigned long rhs) { return (lhs.hi == 0) && (lhs.lo == rhs); }
 
 // Unary non-member arithmetic operators.
-__STL_TEMPLATE_NULL inline unsigned long to_ulong(const _compound_int<UnsignedWide>& val) { return val.lo; }
-__STL_TEMPLATE_NULL inline _compound_int<UnsignedWide> operator~(const _compound_int<UnsignedWide>& val) { return U64BitwiseNot( val ); }
-__STL_TEMPLATE_NULL inline bool operator!(const _compound_int<UnsignedWide>& val) { return !((val.hi == 0) && (val.lo == 0)); }
+_STLP_TEMPLATE_NULL inline unsigned long to_ulong(const _compound_int<UnsignedWide>& val) { return val.lo; }
+_STLP_TEMPLATE_NULL inline _compound_int<UnsignedWide> operator~(const _compound_int<UnsignedWide>& val) { return U64BitwiseNot( val ); }
+_STLP_TEMPLATE_NULL inline bool operator!(const _compound_int<UnsignedWide>& val) { return !((val.hi == 0) && (val.lo == 0)); }
 
 # endif // TYPE_LONGLONG
 #endif // __MRC__

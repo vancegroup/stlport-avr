@@ -23,7 +23,7 @@
 
 #include "locale_nonclassic.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 _Locale::_Locale(const _Locale_impl& L)
   : _Locale_impl(L), _Refcount_Base(1), facets_vec((void**)L.facets, (void**)L.facets+L.size())
@@ -81,7 +81,7 @@ void _Locale::insert(_Locale_impl* from, const locale::id& n) {
 }
 
 
-static _STL_STATIC_MUTEX _Index_lock __STL_MUTEX_INITIALIZER;
+static _STL_STATIC_MUTEX _Index_lock _STLP_MUTEX_INITIALIZER;
 
 // Takes a reference to a locale::id, and returns its numeric index.
 // If no numeric index has yet been assigned, assigns one.  The return
@@ -115,4 +115,4 @@ locale::locale(_Locale_impl* impl, bool do_copy)
     _M_impl = _S_copy_impl(impl);
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE

@@ -1,9 +1,14 @@
 #
 # Basename for libraries
 #
+.POSIX:
+
+SHELL=/bin/sh
+
 LIB_BASENAME = libstlport_mipspro
 
 STL_INCL= -I. -I${PWD}/../stlport/
+CUR_DIR=./
 
 CC = CC
 CXX = CC
@@ -24,13 +29,18 @@ MKDIR=mkdir -p
 COMP=MIPS
 INSTALL_STEP = install_unix 
 
-all: all_dynamic all_static
+all: msg symbolic_links all_dynamic all_static
+
+msg:
+	@echo "*** ATTENTION! ***"
+	@echo "This makefile requires GNU make!"
+	@echo "******************"
 
 include common_macros.mak
 
 CXXFLAGS_COMMON = -J 4 -ansi -LANG:std -I. -D_PTHREADS ${STL_INCL} 
 
-DEBUG_FLAGS = -g +w2 -D__STL_DEBUG
+DEBUG_FLAGS = -g +w2 -D_STLP_DEBUG
 RELEASE_FLAGS = -O2
 
 
@@ -43,8 +53,8 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) ${RELEASE_FLAGS} $(SHCXXFLAGS)
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g -D_STLP_DEBUG
 
 LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static}
 LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}

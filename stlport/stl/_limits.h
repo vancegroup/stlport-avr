@@ -21,24 +21,24 @@
  * for the MIPS, SPARC, Alpha and ia32 architectures.
  */
 
-#ifndef __STLPORT_LIMITS_H
-# define __STLPORT_LIMITS_H
+#ifndef _STLP_LIMITS_H
+# define _STLP_LIMITS_H
 
-#ifndef __STLPORT_CLIMITS
+#ifndef _STLP_CLIMITS
 # include <climits>
 #endif
 
-#ifndef __STLPORT_CFLOAT
+#ifndef _STLP_CFLOAT
 # include <cfloat>
 #endif
 
-#if !defined (__STL_NO_WCHAR_T)
+#if !defined (_STLP_NO_WCHAR_T)
 # include <cwchar>
 #endif
 
 #define __SGI_CPP_LIMITS
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 enum float_round_style {
   round_indeterminate       = -1,
@@ -59,90 +59,116 @@ enum float_denorm_style {
 template <class __number>
 class _Numeric_limits_base {
 public:
-  static const bool is_specialized __STL_INLINE_STATIC_INIT ( false );
 
-  static __number (__STL_CALL min)() __STL_NOTHROW { return __number(); }
-  static __number (__STL_CALL max)() __STL_NOTHROW { return __number(); }
+  static __number (_STLP_CALL min)() _STLP_NOTHROW { return __number(); }
+  static __number (_STLP_CALL max)() _STLP_NOTHROW { return __number(); }
 
-  static const int digits   __STL_INLINE_STATIC_INIT( 0 );
-  static const int digits10 __STL_INLINE_STATIC_INIT ( 0 );
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  enum {
+# else
+  static const int 
+# endif
+  
+  digits = 0,
+  digits10 = 0,
+  radix = 0,
+  min_exponent = 0,
+  min_exponent10 = 0,
+  max_exponent = 0,
+  max_exponent10 = 0
 
-  static const bool is_signed  __STL_INLINE_STATIC_INIT ( false );
-  static const bool is_integer __STL_INLINE_STATIC_INIT ( false );
-  static const bool is_exact   __STL_INLINE_STATIC_INIT ( false );
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  ,  
+  has_denorm = denorm_absent,
+  round_style = round_toward_zero,
+# else
+  ;
+  static const float_denorm_style has_denorm =  denorm_absent;
+  static const float_round_style round_style = round_toward_zero;
+  static const bool 
+# endif
 
-  static const int  radix __STL_INLINE_STATIC_INIT ( 0 );
+    is_specialized = false,
+    is_signed  = false,
+    is_integer = false,
+    is_exact = false,
+    has_infinity = false,
+    has_quiet_NaN = false,
+    has_signaling_NaN = false,
+    has_denorm_loss = false,
+    is_iec559 = false,
+    is_bounded = false,
+    is_modulo = false,
+    traps = false,
+    tinyness_before = false
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  }
+# endif
+  ;
+    
+  static __number _STLP_CALL epsilon() _STLP_NOTHROW     { return __number(); }
+  static __number _STLP_CALL round_error() _STLP_NOTHROW { return __number(); }
 
-  static __number __STL_CALL epsilon() __STL_NOTHROW     { return __number(); }
-  static __number __STL_CALL round_error() __STL_NOTHROW { return __number(); }
+  static __number _STLP_CALL infinity() _STLP_NOTHROW      { return __number(); }
+  static __number _STLP_CALL quiet_NaN() _STLP_NOTHROW     { return __number(); }
+  static __number _STLP_CALL signaling_NaN() _STLP_NOTHROW { return __number(); }
+  static __number _STLP_CALL denorm_min() _STLP_NOTHROW    { return __number(); }
 
-  static const int min_exponent  __STL_INLINE_STATIC_INIT ( 0 );
-  static const int min_exponent10 __STL_INLINE_STATIC_INIT ( 0 );
-  static const int max_exponent   __STL_INLINE_STATIC_INIT ( 0 );
-  static const int max_exponent10 __STL_INLINE_STATIC_INIT ( 0 );
 
-  static const bool has_infinity      __STL_INLINE_STATIC_INIT ( false );
-  static const bool has_quiet_NaN     __STL_INLINE_STATIC_INIT ( false );
-  static const bool has_signaling_NaN __STL_INLINE_STATIC_INIT ( false );
-  static const float_denorm_style has_denorm __STL_INLINE_STATIC_INIT ( denorm_absent );
-  static const bool has_denorm_loss   __STL_INLINE_STATIC_INIT ( false );
-
-  static __number __STL_CALL infinity() __STL_NOTHROW      { return __number(); }
-  static __number __STL_CALL quiet_NaN() __STL_NOTHROW     { return __number(); }
-  static __number __STL_CALL signaling_NaN() __STL_NOTHROW { return __number(); }
-  static __number __STL_CALL denorm_min() __STL_NOTHROW    { return __number(); }
-
-  static const bool is_iec559  __STL_INLINE_STATIC_INIT( false );
-  static const bool is_bounded __STL_INLINE_STATIC_INIT( false );
-  static const bool is_modulo  __STL_INLINE_STATIC_INIT( false );
-
-  static const bool traps           __STL_INLINE_STATIC_INIT( false);
-  static const bool tinyness_before __STL_INLINE_STATIC_INIT( false);
-  static const float_round_style round_style __STL_INLINE_STATIC_INIT( round_toward_zero );
 };
 
 // Base class for integers.
 
-# ifdef __STL_LIMITED_DEFAULT_TEMPLATES
-#  ifdef __STL_LONG_LONG
-#   define __STL_LIMITS_MIN_TYPE __STL_LONG_LONG
-#   define __STL_LIMITS_MAX_TYPE unsigned __STL_LONG_LONG
+# ifdef _STLP_LIMITED_DEFAULT_TEMPLATES
+#  ifdef _STLP_LONG_LONG
+#   define _STLP_LIMITS_MIN_TYPE _STLP_LONG_LONG
+#   define _STLP_LIMITS_MAX_TYPE unsigned _STLP_LONG_LONG
 #  else
-#   define __STL_LIMITS_MIN_TYPE long
-#   define __STL_LIMITS_MAX_TYPE unsigned long
+#   define _STLP_LIMITS_MIN_TYPE long
+#   define _STLP_LIMITS_MAX_TYPE unsigned long
 #  endif
 # else
-#   define __STL_LIMITS_MIN_TYPE _Int
-#   define __STL_LIMITS_MAX_TYPE _Int
-# endif /* __STL_LIMITED_DEFAULT_TEMPLATES */
+#   define _STLP_LIMITS_MIN_TYPE _Int
+#   define _STLP_LIMITS_MAX_TYPE _Int
+# endif /* _STLP_LIMITED_DEFAULT_TEMPLATES */
 
 template <class _Int,
-          __STL_LIMITS_MIN_TYPE __imin,
-          __STL_LIMITS_MAX_TYPE __imax,
+          _STLP_LIMITS_MIN_TYPE __imin,
+          _STLP_LIMITS_MAX_TYPE __imax,
           int __idigits, bool __ismod>
 class _Integer_limits : public _Numeric_limits_base<_Int> 
 {
 public:
-  static const bool is_specialized __STL_INLINE_STATIC_INIT( true );
 
-  static _Int (__STL_CALL min) () __STL_NOTHROW { return (_Int)__imin; }
-  static _Int (__STL_CALL max) () __STL_NOTHROW { return (_Int)__imax; }
+  static _Int (_STLP_CALL min) () _STLP_NOTHROW { return (_Int)__imin; }
+  static _Int (_STLP_CALL max) () _STLP_NOTHROW { return (_Int)__imax; }
 
-  static const int digits __STL_INLINE_STATIC_INIT((__idigits < 0) ? \
-			    ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) \
-                            : (__idigits));
-
-  static const int digits10  __STL_INLINE_STATIC_INIT( (digits * 301UL) / 1000 ); 
-                                // log 2 = 0.301029995664...
-
-  static const bool is_signed __STL_INLINE_STATIC_INIT(  __imin != 0 );
-  static const bool is_integer __STL_INLINE_STATIC_INIT(  true );
-  static const bool is_exact __STL_INLINE_STATIC_INIT(  true );
-  static const int radix __STL_INLINE_STATIC_INIT(  2 );
-
-
-  static const bool is_bounded __STL_INLINE_STATIC_INIT(  true );
-  static const bool is_modulo __STL_INLINE_STATIC_INIT(  __ismod );
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  enum {
+# else
+  static const int 
+# endif  
+  digits = (__idigits < 0) ?
+  ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1))
+  : (__idigits),
+  digits10 = (digits * 301UL) / 1000,
+  radix = 2
+# if ! defined ( _STLP_STATIC_CONST_INIT_BUG)
+  ;
+  static const bool
+# else
+  ,
+# endif
+  is_specialized = true,
+  is_signed = (__imin != 0),
+  is_integer = true,
+  is_exact = true,
+  is_bounded = true,
+  is_modulo = __ismod
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  }
+# endif
+  ;
 };
 
 // Base class for floating-point numbers.
@@ -155,32 +181,49 @@ template <class __number,
 class _Floating_limits : public _Numeric_limits_base<__number>
 {
 public:
-  static const bool is_specialized __STL_INLINE_STATIC_INIT( true );
 
-  static const int digits   __STL_INLINE_STATIC_INIT(  __Digits );
-  static const int digits10 __STL_INLINE_STATIC_INIT(  __Digits10 );
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  enum {
+# else
+  static const int 
+# endif  
 
-  static const bool is_signed __STL_INLINE_STATIC_INIT(  true );
+  digits = __Digits,
+  digits10 = __Digits10,
 
-  static const int radix __STL_INLINE_STATIC_INIT(  FLT_RADIX /* 2 */ );
+  radix = (  FLT_RADIX /* 2 */ ),
+  min_exponent = __MinExp, 
+  max_exponent = __MaxExp,
+  min_exponent10 = __MinExp10,
+  max_exponent10 = __MaxExp10
 
-  static const int min_exponent   __STL_INLINE_STATIC_INIT(  __MinExp );
-  static const int max_exponent   __STL_INLINE_STATIC_INIT(  __MaxExp );
-  static const int min_exponent10 __STL_INLINE_STATIC_INIT(  __MinExp10 );
-  static const int max_exponent10 __STL_INLINE_STATIC_INIT(  __MaxExp10 );
+# if defined (_STLP_STATIC_CONST_INIT_BUG)
+  ,  
+  has_denorm = denorm_indeterminate,
+  round_style = __RoundStyle,
+# else
+  ;
+  static const float_denorm_style has_denorm = denorm_indeterminate;
+  static const float_round_style round_style = __RoundStyle;
+  static const bool 
+# endif
 
-  static const bool has_infinity      __STL_INLINE_STATIC_INIT(  true );
-  static const bool has_quiet_NaN     __STL_INLINE_STATIC_INIT(  true );
-  static const bool has_signaling_NaN __STL_INLINE_STATIC_INIT(  true );
-  static const float_denorm_style has_denorm __STL_INLINE_STATIC_INIT(  denorm_indeterminate );
-  static const bool has_denorm_loss   __STL_INLINE_STATIC_INIT(  false );
+  is_specialized = true,
+  is_signed = true, 
+  has_infinity     =  true,
+  has_quiet_NaN    =  true,
+  has_signaling_NaN=  true,
+  has_denorm_loss  =  false,
+  is_iec559      =  __IsIEC559,
+  is_bounded     =  true,
+  traps          =  true,
+  tinyness_before=  false
 
-  static const bool is_iec559       __STL_INLINE_STATIC_INIT(  __IsIEC559 );
-  static const bool is_bounded      __STL_INLINE_STATIC_INIT(  true );
-  static const bool traps           __STL_INLINE_STATIC_INIT(  true );
-  static const bool tinyness_before __STL_INLINE_STATIC_INIT(  false );
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  }
+# endif
+  ;
 
-  static const float_round_style round_style __STL_INLINE_STATIC_INIT(  __RoundStyle );
 };
 
 // Class numeric_limits
@@ -192,74 +235,74 @@ class numeric_limits : public _Numeric_limits_base<_Tp> {};
 
 // Specializations for all built-in integral types.
 
-#ifndef __STL_NO_BOOL
+#ifndef _STLP_NO_BOOL
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<bool>
   : public _Integer_limits<bool, false, true, 0, false>
 {};
 
-#endif /* __STL_NO_BOOL */
+#endif /* _STLP_NO_BOOL */
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<char>
   : public _Integer_limits<char, CHAR_MIN, CHAR_MAX, -1, true>
 {};
 
-# ifndef __STL_NO_SIGNED_BUILTINS
-__STL_TEMPLATE_NULL
+# ifndef _STLP_NO_SIGNED_BUILTINS
+_STLP_TEMPLATE_NULL
 class   numeric_limits<signed char>
   : public _Integer_limits<signed char, SCHAR_MIN, SCHAR_MAX, -1, true>
 {};
 # endif
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<unsigned char>
   : public _Integer_limits<unsigned char, 0, UCHAR_MAX, -1, true>
 {};
 
-#if !(defined ( __STL_NO_WCHAR_T ) || defined (__STL_WCHAR_T_IS_USHORT))
+#if !(defined ( _STLP_NO_WCHAR_T ) || defined (_STLP_WCHAR_T_IS_USHORT))
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<wchar_t>
   : public _Integer_limits<wchar_t, WCHAR_MIN, WCHAR_MAX, -1, true>
 {};
 
 #endif
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<short>
   : public _Integer_limits<short, SHRT_MIN, SHRT_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<unsigned short>
   : public _Integer_limits<unsigned short, 0, USHRT_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<int>
   : public _Integer_limits<int, INT_MIN, INT_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<unsigned int>
   : public _Integer_limits<unsigned int, 0, UINT_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<long>
   : public _Integer_limits<long, LONG_MIN, LONG_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 class   numeric_limits<unsigned long>
   : public _Integer_limits<unsigned long, 0, ULONG_MAX, -1, true>
 {};
 
-#ifdef __STL_LONG_LONG
+#ifdef _STLP_LONG_LONG
 
-# if defined (__STL_MSVC) || defined (__BORLANDC__)
+# if defined (_STLP_MSVC) || defined (__BORLANDC__)
 
 #    define LONGLONG_MAX     0x7fffffffffffffffi64
 #    define LONGLONG_MIN     (-LONGLONG_MAX-1i64)
@@ -279,17 +322,17 @@ class   numeric_limits<unsigned long>
 
 # endif
 
-__STL_TEMPLATE_NULL
-class   numeric_limits<__STL_LONG_LONG>
-  : public _Integer_limits<__STL_LONG_LONG, LONGLONG_MIN, LONGLONG_MAX, -1, true>
+_STLP_TEMPLATE_NULL
+class   numeric_limits<_STLP_LONG_LONG>
+  : public _Integer_limits<_STLP_LONG_LONG, LONGLONG_MIN, LONGLONG_MAX, -1, true>
 {};
 
-__STL_TEMPLATE_NULL
-class   numeric_limits<unsigned __STL_LONG_LONG>
-  : public _Integer_limits<unsigned __STL_LONG_LONG, 0, ULONGLONG_MAX, -1, true>
+_STLP_TEMPLATE_NULL
+class   numeric_limits<unsigned _STLP_LONG_LONG>
+  : public _Integer_limits<unsigned _STLP_LONG_LONG, 0, ULONGLONG_MAX, -1, true>
 {};
 
-#endif /* __STL_LONG_LONG */
+#endif /* _STLP_LONG_LONG */
 
 // Specializations for all built-in floating-point types.
 
@@ -320,18 +363,18 @@ public:
   static const _D_rep _D_qNaN;
   static const _D_rep _D_sNaN;
   
-# ifndef __STL_NO_LONG_DOUBLE
+# ifndef _STLP_NO_LONG_DOUBLE
   static const _L_rep _L_inf;
   static const _L_rep _L_qNaN;
   static const _L_rep _L_sNaN;
 # endif
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT) 
-__STL_EXPORT_TEMPLATE_CLASS _LimG<bool>;
+# if defined (_STLP_USE_TEMPLATE_EXPORT) 
+_STLP_EXPORT_TEMPLATE_CLASS _LimG<bool>;
 # endif
 
-__STL_TEMPLATE_NULL class   numeric_limits<float>
+_STLP_TEMPLATE_NULL class   numeric_limits<float>
   : public _Floating_limits<float, 
                             FLT_MANT_DIG,   // Binary digits of precision
                             FLT_DIG,        // Decimal digits of precision
@@ -343,17 +386,17 @@ __STL_TEMPLATE_NULL class   numeric_limits<float>
                             round_to_nearest>
 {
 public:
-  static float (__STL_CALL min) () __STL_NOTHROW { return FLT_MIN; }
-  static float __STL_CALL denorm_min() __STL_NOTHROW { return FLT_MIN; }
-  static float (__STL_CALL max) () __STL_NOTHROW { __STL_USING_VENDOR_CSTD return FLT_MAX; }
-  static float __STL_CALL epsilon() __STL_NOTHROW { return FLT_EPSILON; }
-  static float __STL_CALL round_error() __STL_NOTHROW { return 0.5f; } // Units: ulps.
-  static  float __STL_CALL infinity() { return _LimG<bool>::_F_inf.val; }
-  static  float __STL_CALL quiet_NaN() { return _LimG<bool>::_F_qNaN.val; }
-  static  float __STL_CALL signaling_NaN() { return _LimG<bool>::_F_sNaN.val; }
+  static float (_STLP_CALL min) () _STLP_NOTHROW { return FLT_MIN; }
+  static float _STLP_CALL denorm_min() _STLP_NOTHROW { return FLT_MIN; }
+  static float (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return FLT_MAX; }
+  static float _STLP_CALL epsilon() _STLP_NOTHROW { return FLT_EPSILON; }
+  static float _STLP_CALL round_error() _STLP_NOTHROW { return 0.5f; } // Units: ulps.
+  static  float _STLP_CALL infinity() { return _LimG<bool>::_F_inf.val; }
+  static  float _STLP_CALL quiet_NaN() { return _LimG<bool>::_F_qNaN.val; }
+  static  float _STLP_CALL signaling_NaN() { return _LimG<bool>::_F_sNaN.val; }
 };
 
-__STL_TEMPLATE_NULL class   numeric_limits<double>
+_STLP_TEMPLATE_NULL class   numeric_limits<double>
   : public _Floating_limits<double, 
                             DBL_MANT_DIG,   // Binary digits of precision
                             DBL_DIG,        // Decimal digits of precision
@@ -365,19 +408,19 @@ __STL_TEMPLATE_NULL class   numeric_limits<double>
                             round_to_nearest>
 {
 public:
-  static double (__STL_CALL min)() __STL_NOTHROW { return DBL_MIN; }
-  static double __STL_CALL denorm_min() __STL_NOTHROW { return DBL_MIN; }
-  static double (__STL_CALL max)() __STL_NOTHROW { __STL_USING_VENDOR_CSTD return DBL_MAX; }
-  static double __STL_CALL epsilon() __STL_NOTHROW { return DBL_EPSILON; }
-  static double __STL_CALL round_error() __STL_NOTHROW { return 0.5; } // Units: ulps.
-  static  double __STL_CALL infinity() { return _LimG<bool>::_D_inf.val; }
-  static  double __STL_CALL quiet_NaN(){ return _LimG<bool>::_D_qNaN.val; }
-  static  double __STL_CALL signaling_NaN() { return _LimG<bool>::_D_sNaN.val; }
+  static double (_STLP_CALL min)() _STLP_NOTHROW { return DBL_MIN; }
+  static double _STLP_CALL denorm_min() _STLP_NOTHROW { return DBL_MIN; }
+  static double (_STLP_CALL max)() _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return DBL_MAX; }
+  static double _STLP_CALL epsilon() _STLP_NOTHROW { return DBL_EPSILON; }
+  static double _STLP_CALL round_error() _STLP_NOTHROW { return 0.5; } // Units: ulps.
+  static  double _STLP_CALL infinity() { return _LimG<bool>::_D_inf.val; }
+  static  double _STLP_CALL quiet_NaN(){ return _LimG<bool>::_D_qNaN.val; }
+  static  double _STLP_CALL signaling_NaN() { return _LimG<bool>::_D_sNaN.val; }
 };
 
-# ifndef __STL_NO_LONG_DOUBLE
+# ifndef _STLP_NO_LONG_DOUBLE
 
-__STL_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL 
 class   numeric_limits<long double>
   : public _Floating_limits<long double, 
                             LDBL_MANT_DIG,  // Binary digits of precision
@@ -390,23 +433,23 @@ class   numeric_limits<long double>
                             round_to_nearest>
 {
 public:
-  static long double (__STL_CALL min) () __STL_NOTHROW { __STL_USING_VENDOR_CSTD return LDBL_MIN; }
-  static long double __STL_CALL denorm_min() __STL_NOTHROW { __STL_USING_VENDOR_CSTD return LDBL_MIN; }
-  static long double (__STL_CALL max) () __STL_NOTHROW { __STL_USING_VENDOR_CSTD return LDBL_MAX; }
-  static long double __STL_CALL epsilon() __STL_NOTHROW { return LDBL_EPSILON; }
-  static long double __STL_CALL round_error() __STL_NOTHROW { return 4; } // Units: ulps.
-  static long double __STL_CALL infinity() { return _LimG<bool>::_L_inf.val; } 
-  static long double __STL_CALL quiet_NaN() { return _LimG<bool>::_L_qNaN.val; }
-  static long double __STL_CALL signaling_NaN() { return _LimG<bool>::_L_sNaN.val; }
+  static long double (_STLP_CALL min) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MIN; }
+  static long double _STLP_CALL denorm_min() _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MIN; }
+  static long double (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MAX; }
+  static long double _STLP_CALL epsilon() _STLP_NOTHROW { return LDBL_EPSILON; }
+  static long double _STLP_CALL round_error() _STLP_NOTHROW { return 4; } // Units: ulps.
+  static long double _STLP_CALL infinity() { return _LimG<bool>::_L_inf.val; } 
+  static long double _STLP_CALL quiet_NaN() { return _LimG<bool>::_L_qNaN.val; }
+  static long double _STLP_CALL signaling_NaN() { return _LimG<bool>::_L_sNaN.val; }
 };
 
 # endif
 
 // We write special values (Inf and NaN) as bit patterns and 
 // cast the the appropriate floating-point types. 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_limits.c>
 # endif
 

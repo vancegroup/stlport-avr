@@ -15,12 +15,20 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_TIME_FACETS_C
-#define __STL_TIME_FACETS_C
+#ifndef _STLP_TIME_FACETS_C
+#define _STLP_TIME_FACETS_C
 
-#if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-__STL_BEGIN_NAMESPACE
+#ifndef _STLP_INTERNAL_NUM_PUT_H
+# include <stl/_num_put.h>
+#endif
+
+#ifndef _STLP_INTERNAL_NUM_GET_H
+# include <stl/_num_get.h>
+#endif
+
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Declarations of static template members.
@@ -32,7 +40,7 @@ template <class _CharT, class _OutputIterator>
 locale::id time_put<_CharT, _OutputIterator>::id;
 
 template <class _InIt, class _RAIt, class _DiffType>
-_RAIt __STL_CALL
+_RAIt _STLP_CALL
 __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end, _DiffType*) {
   typedef _DiffType difference_type;
   difference_type __n = __name_end - __name;
@@ -44,7 +52,7 @@ __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end, _DiffType
   _RAIt __matching_name[_MAX_NAME_LENGTH];
 
   for (__i = 0; __i < __n; ++__i)
-    __max_pos = __STL_MAX(__max_pos,  __name[__i].size());
+    __max_pos = (max)(__max_pos,  __name[__i].size());
 
   for (__i = 0; __i < _MAXNAMES; ++__i)
     __do_check[__i] = true;
@@ -82,9 +90,9 @@ __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end, _DiffType
 }
 
 template <class _InIt, class _RAIt>
-_RAIt __STL_CALL
+_RAIt _STLP_CALL
 __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end) {
-  return __match((_InIt&)__first, (_InIt&)__last, __name, __name_end, __DISTANCE_TYPE(__name, _InIt));
+  return __match((_InIt&)__first, (_InIt&)__last, __name, __name_end, _STLP_DISTANCE_TYPE(__name, _InIt));
 }
 
 // __get_formatted_time reads input that is assumed to be formatted
@@ -110,8 +118,8 @@ __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end) {
 // the correct overloading for the calls to __get_integer_nogroup.
 
 template <class _InIt1, class _InIt2 /* , class _Ch */ >
-_InIt2 __STL_CALL
-__get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
+_InIt2 _STLP_CALL
+__get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
                      _InIt2 __format, _InIt2 __format_end,
 				 /* _Ch, */ const _Time_Info& __table,
 		     ios_base::iostate& __err,
@@ -163,7 +171,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'd': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_mday, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_mday);
           if (!__pr || __t->tm_mday < 1 || __t->tm_mday > 31) {
 	    __err |= ios_base::failbit;
             return __format;
@@ -173,7 +181,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
         
         case 'H': case 'I': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_hour, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_hour);
             if (!__pr)
               return __format;
             break;
@@ -181,7 +189,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'j': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_yday, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_yday);
           if (!__pr)
             return __format;
           break;
@@ -189,7 +197,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'm': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_mon, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_mon);
 	    --__t->tm_mon;
           if (!__pr || __t->tm_mon < 0 || __t->tm_mon > 11) {
 	    __err |= ios_base::failbit;
@@ -200,7 +208,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'M': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_min, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_min);
           if (!__pr)
             return __format;
           break;
@@ -218,7 +226,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'S': {
           bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_sec, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_sec);
           if (!__pr)
             return __format;
           break;
@@ -226,7 +234,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
 	case 'y': {
 	  bool __pr =
-	    __get_integer_nogroup(__first, __last, 10, __t->tm_year, 0, false);
+	    __get_decimal_integer(__first, __last, __t->tm_year);
 	  if (!__pr)
 	    return __format;
 	  break;
@@ -234,7 +242,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'Y': {
 	  bool __pr =
-            __get_integer_nogroup(__first, __last, 10, __t->tm_year, 0, false);
+            __get_decimal_integer(__first, __last, __t->tm_year);
           __t->tm_year -= 1900;
           if (!__pr)
             return __format;
@@ -257,7 +265,7 @@ __get_formatted_time __STL_WEAK (_InIt1 __first,  _InIt1 __last,
 }
 
 template <class _InIt>
-bool __STL_CALL
+bool _STLP_CALL
 __get_short_or_long_dayname(_InIt& __first, _InIt& __last,
                             const _Time_Info& __table, tm* __t) {
   const string* __pr =
@@ -267,7 +275,7 @@ __get_short_or_long_dayname(_InIt& __first, _InIt& __last,
 }
 
 template <class _InIt>
-bool __STL_CALL
+bool _STLP_CALL
 __get_short_or_long_monthname(_InIt& __first, _InIt& __last,
                               const _Time_Info& __table, tm* __t) {
   const string* __pr =
@@ -276,9 +284,9 @@ __get_short_or_long_monthname(_InIt& __first, _InIt& __last,
   return __pr != __table._M_monthname + 24;
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 template <class _OuIt>
-_OuIt __STL_CALL
+_OuIt _STLP_CALL
 __put_time(char * __first, char * __last, _OuIt __out,
            const ios_base& __s, wchar_t) {
     const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__s._M_ctype_facet();
@@ -351,7 +359,7 @@ time_get<_Ch, _InIt>::do_get_year(_InIt __s, _InIt  __end,
     return __s;
   }
   
-  bool __pr =  __get_integer_nogroup(__s, __end, 10, __t->tm_year, 0, false);
+  bool __pr =  __get_decimal_integer(__s, __end, __t->tm_year);
   __t->tm_year -= 1900;
   __err = __pr ? ios_base::goodbit : ios_base::failbit;
   if (__s == __end)
@@ -438,10 +446,10 @@ time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch     /* __f
   return __put_time(__buf, __iend, __s, __f, _Ch());
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# endif /* defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) */
-#endif /* __STL_TIME_FACETS_C */
+# endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
+#endif /* _STLP_TIME_FACETS_C */
 
 // Local Variables:
 // mode:C++

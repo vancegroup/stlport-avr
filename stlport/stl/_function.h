@@ -27,22 +27,22 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_FUNCTION_H
-#define __SGI_STL_INTERNAL_FUNCTION_H
+#ifndef _STLP_INTERNAL_FUNCTION_H
+#define _STLP_INTERNAL_FUNCTION_H
 
-#ifndef __SGI_STL_INTERNAL_FUNCTION_BASE_H
+#ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #include <stl/_function_base.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 // identity_element (not part of the C++ standard).
 template <class _Tp> inline _Tp identity_element(plus<_Tp>) {  return _Tp(0); }
 template <class _Tp> inline _Tp identity_element(multiplies<_Tp>) { return _Tp(1); }
 # endif
 
-#  if defined (__STL_BASE_TYPEDEF_BUG)
+#  if defined (_STLP_BASE_TYPEDEF_BUG)
 // this workaround is needed for SunPro 4.0.1
 // suggested by "Martin Abernethy" <gma@paston.co.uk>:
 
@@ -173,7 +173,7 @@ bind2nd(const _Operation& __fn, const _Tp& __x)
   return binder2nd<_Operation>(__fn, _Arg2_type(__x));
 }
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 // unary_compose and binary_compose (extensions, not part of the standard).
 
 template <class _Operation1, class _Operation2>
@@ -226,7 +226,7 @@ compose2(const _Operation1& __fn1, const _Operation2& __fn2,
     (__fn1, __fn2, __fn3);
 }
 
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
 
 template <class _Arg, class _Result>
 class pointer_to_unary_function : public unary_function<_Arg, _Result> {
@@ -264,7 +264,7 @@ ptr_fun(_Result (*__x)(_Arg1, _Arg2)) {
   return pointer_to_binary_function<_Arg1,_Arg2,_Result>(__x);
 }
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 
 // identity is an extension: it is not part of the standard.
 template <class _Tp> struct identity : public _Identity<_Tp> {};
@@ -282,6 +282,16 @@ struct project2nd : public _Project2nd<_Arg1, _Arg2> {};
 // constant_void_fun, constant_unary_fun, and constant_binary_fun are
 // extensions: they are not part of the standard.  (The same, of course,
 // is true of the helper functions constant0, constant1, and constant2.)
+
+template <class _Result>
+struct _Constant_void_fun {
+  typedef _Result result_type;
+  result_type _M_val;
+
+  _Constant_void_fun(const result_type& __v) : _M_val(__v) {}
+  const result_type& operator()() const { return _M_val; }
+};  
+
 
 template <class _Result>
 struct constant_void_fun : public _Constant_void_fun<_Result> {
@@ -324,26 +334,26 @@ constant2(const _Result& __val)
 
 // subtractive_rng is an extension: it is not part of the standard.
 // Note: this code assumes that int is 32 bits.
-class subtractive_rng : public unary_function<__STL_UINT32_T, __STL_UINT32_T> {
+class subtractive_rng : public unary_function<_STLP_UINT32_T, _STLP_UINT32_T> {
 private:
-  __STL_UINT32_T _M_table[55];
-  __STL_UINT32_T _M_index1;
-  __STL_UINT32_T _M_index2;
+  _STLP_UINT32_T _M_table[55];
+  _STLP_UINT32_T _M_index1;
+  _STLP_UINT32_T _M_index2;
 public:
-  __STL_UINT32_T operator()(__STL_UINT32_T __limit) {
+  _STLP_UINT32_T operator()(_STLP_UINT32_T __limit) {
     _M_index1 = (_M_index1 + 1) % 55;
     _M_index2 = (_M_index2 + 1) % 55;
     _M_table[_M_index1] = _M_table[_M_index1] - _M_table[_M_index2];
     return _M_table[_M_index1] % __limit;
   }
 
-  void _M_initialize(__STL_UINT32_T __seed)
+  void _M_initialize(_STLP_UINT32_T __seed)
   {
-    __STL_UINT32_T __k = 1;
+    _STLP_UINT32_T __k = 1;
     _M_table[54] = __seed;
-    __STL_UINT32_T __i;
+    _STLP_UINT32_T __i;
     for (__i = 0; __i < 54; __i++) {
-        __STL_UINT32_T __ii = (21 * (__i + 1) % 55) - 1;
+        _STLP_UINT32_T __ii = (21 * (__i + 1) % 55) - 1;
         _M_table[__ii] = __k;
         __k = __seed - __k;
         __seed = _M_table[__ii];
@@ -360,7 +370,7 @@ public:
   subtractive_rng() { _M_initialize(161803398ul); }
 };
 
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
 
 
 // Adaptor function objects: pointers to member functions.
@@ -466,13 +476,13 @@ private:
 };
 
 
-# ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
+# ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 
 template <class _Tp>
 class mem_fun_t<void, _Tp> : public unary_function<_Tp*,void> {
   typedef void (_Tp::*_fun_type)(void);
 public:
-  explicit mem_fun_t __STL_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
+  explicit mem_fun_t _STLP_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(_Tp* __p) const { (__p->*_M_f)(); }
 private:
   _fun_type _M_f;
@@ -482,7 +492,7 @@ template <class _Tp>
 class const_mem_fun_t<void, _Tp> : public unary_function<const _Tp*,void> {
   typedef void (_Tp::*_fun_type)(void) const;
 public:
-  explicit const_mem_fun_t __STL_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
+  explicit const_mem_fun_t _STLP_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(const _Tp* __p) const { (__p->*_M_f)(); }
 private:
   _fun_type _M_f;
@@ -492,7 +502,7 @@ template <class _Tp>
 class mem_fun_ref_t<void, _Tp> : public unary_function<_Tp,void> {
   typedef void (_Tp::*_fun_type)(void);
 public:
-  explicit mem_fun_ref_t __STL_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
+  explicit mem_fun_ref_t _STLP_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(_Tp& __r) const { (__r.*_M_f)(); }
 private:
   _fun_type _M_f;
@@ -502,7 +512,7 @@ template <class _Tp>
 class const_mem_fun_ref_t<void, _Tp> : public unary_function<_Tp,void> {
   typedef void (_Tp::*_fun_type)(void) const;
 public:
-  explicit const_mem_fun_ref_t __STL_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
+  explicit const_mem_fun_ref_t _STLP_PSPEC2(void,_Tp) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(const _Tp& __r) const { (__r.*_M_f)(); }
 private:
   _fun_type _M_f;
@@ -512,7 +522,7 @@ template <class _Tp, class _Arg>
 class mem_fun1_t<void, _Tp, _Arg> : public binary_function<_Tp*,_Arg,void> {
   typedef void (_Tp::*_fun_type)(_Arg);
 public:
-  explicit mem_fun1_t __STL_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
+  explicit mem_fun1_t _STLP_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(_Tp* __p, _Arg __x) const { (__p->*_M_f)(__x); }
 private:
   _fun_type _M_f;
@@ -523,7 +533,7 @@ class const_mem_fun1_t<void, _Tp, _Arg>
   : public binary_function<const _Tp*,_Arg,void> {
   typedef void (_Tp::*_fun_type)(_Arg) const;
 public:
-  explicit const_mem_fun1_t __STL_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
+  explicit const_mem_fun1_t _STLP_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(const _Tp* __p, _Arg __x) const { (__p->*_M_f)(__x); }
 private:
   _fun_type _M_f;
@@ -534,7 +544,7 @@ class mem_fun1_ref_t<void, _Tp, _Arg>
   : public binary_function<_Tp,_Arg,void> {
   typedef void (_Tp::*_fun_type)(_Arg);
 public:
-  explicit mem_fun1_ref_t __STL_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
+  explicit mem_fun1_ref_t _STLP_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(_Tp& __r, _Arg __x) const { (__r.*_M_f)(__x); }
 private:
   _fun_type _M_f;
@@ -545,15 +555,15 @@ class const_mem_fun1_ref_t<void, _Tp, _Arg>
   : public binary_function<_Tp,_Arg,void> {
   typedef void (_Tp::*_fun_type)(_Arg) const;
 public:
-  explicit const_mem_fun1_ref_t __STL_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
+  explicit const_mem_fun1_ref_t _STLP_PSPEC3(void,_Tp,_Arg) (_fun_type __pf) : _M_f(__pf) {}
   void operator()(const _Tp& __r, _Arg __x) const { (__r.*_M_f)(__x); }
 private:
   _fun_type _M_f;
 };
 
-#endif /* __STL_CLASS_PARTIAL_SPECIALIZATION */
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-# if !defined (__STL_MEMBER_POINTER_PARAM_BUG)
+# if !defined (_STLP_MEMBER_POINTER_PARAM_BUG)
 
 // Mem_fun adaptor helper functions.  There are only two:
 //  mem_fun and mem_fun_ref.  (mem_fun1 and mem_fun1_ref 
@@ -589,7 +599,7 @@ template <class _Ret, class _Tp, class _Arg>
 inline const_mem_fun1_ref_t<_Ret,_Tp,_Arg>
 mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) { return const_mem_fun1_ref_t<_Ret,_Tp,_Arg>(__f); }
 
-# if !(defined (__STL_NO_EXTENSIONS) || defined (__STL_NO_ANACHRONISMS))
+# if !(defined (_STLP_NO_EXTENSIONS) || defined (_STLP_NO_ANACHRONISMS))
 //  mem_fun1 and mem_fun1_ref are no longer part of the C++ standard,
 //  but they are provided for backward compatibility.
 template <class _Ret, class _Tp, class _Arg>
@@ -608,13 +618,13 @@ template <class _Ret, class _Tp, class _Arg>
 inline const_mem_fun1_ref_t<_Ret,_Tp,_Arg>
 mem_fun1_ref(_Ret (_Tp::*__f)(_Arg) const) { return const_mem_fun1_ref_t<_Ret,_Tp,_Arg>(__f); }
 
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
 
-# endif /* __STL_MEMBER_POINTER_PARAM_BUG */
+# endif /* _STLP_MEMBER_POINTER_PARAM_BUG */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_FUNCTION_H */
+#endif /* _STLP_INTERNAL_FUNCTION_H */
 
 // Local Variables:
 // mode:C++

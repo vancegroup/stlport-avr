@@ -17,37 +17,39 @@
  */ 
 # include "stlport_prefix.h"
 
-# ifndef __STL_NO_MBSTATE_T
+# ifndef _STLP_NO_MBSTATE_T
 
 #include <stl/_codecvt.h>
 #include <stl/_algobase.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // codecvt<char, char, mbstate_t>
+
+codecvt<char, char, mbstate_t>::~codecvt() {}
 
 int codecvt<char, char, mbstate_t>::do_length(const mbstate_t&,
                                               const  char* from, 
                                               const  char* end,
                                               size_t mx) const
 {
-  return (int)__STL_MIN ( __STATIC_CAST(size_t, (end - from)), mx);
+  return (int)(min) ( __STATIC_CAST(size_t, (end - from)), mx);
 }
 
-int codecvt<char, char, mbstate_t>::do_max_length() const __STL_NOTHROW
+int codecvt<char, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
 {
  return 1; 
 }
 
 bool
-codecvt<char, char, mbstate_t>::do_always_noconv() const __STL_NOTHROW
+codecvt<char, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW
 {
   return true;
 }
 
 int 
-codecvt<char, char, mbstate_t>::do_encoding() const __STL_NOTHROW
+codecvt<char, char, mbstate_t>::do_encoding() const _STLP_NOTHROW
 {
   return 1; 
 }
@@ -81,9 +83,12 @@ codecvt<char, char, mbstate_t>::do_out(mbstate_t&   /* __state */,
 { __from_next = __from; __to_next   = __to; return noconv; }
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 //----------------------------------------------------------------------
 // codecvt<wchar_t, char, mbstate_t>
+
+codecvt<wchar_t, char, mbstate_t>::~codecvt() {}
+
 
 codecvt<wchar_t, char, mbstate_t>::result
 codecvt<wchar_t, char, mbstate_t>::do_out(state_type&         /* state */, 
@@ -94,7 +99,7 @@ codecvt<wchar_t, char, mbstate_t>::do_out(state_type&         /* state */,
                                           extern_type*        to_limit,
                                           extern_type*&       to_next) const
 {
-  ptrdiff_t len = __STL_MIN (from_end - from, to_limit - to);
+  ptrdiff_t len = (min) (from_end - from, to_limit - to);
   copy(from, from + len, to);
   from_next = from + len;
   to_next   = to   + len;
@@ -110,7 +115,7 @@ codecvt<wchar_t, char, mbstate_t>::do_in (state_type&       /* state */,
                                           intern_type*        to_limit,
                                           intern_type*&       to_next) const
 {
-  ptrdiff_t len = __STL_MIN (from_end - from, to_limit - to);
+  ptrdiff_t len = (min) (from_end - from, to_limit - to);
   copy(from, from + len, to);
   from_next = from + len;
   to_next   = to   + len;
@@ -127,12 +132,12 @@ codecvt<wchar_t, char, mbstate_t>::do_unshift(state_type&   /* state */,
   return noconv;
 }
 
-int codecvt<wchar_t, char, mbstate_t>::do_encoding() const __STL_NOTHROW {
+int codecvt<wchar_t, char, mbstate_t>::do_encoding() const _STLP_NOTHROW {
   return 1;
 }
 
 
-bool codecvt<wchar_t, char, mbstate_t>::do_always_noconv() const __STL_NOTHROW
+bool codecvt<wchar_t, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW
 {
   return true;
 }
@@ -142,17 +147,17 @@ int codecvt<wchar_t, char, mbstate_t>::do_length(const  state_type&,
                                                  const  extern_type* end,
                                                  size_t mx) const 
 {
-  return (int)__STL_MIN ((size_t) (end - from), mx);
+  return (int)(min) ((size_t) (end - from), mx);
 }
 
-int codecvt<wchar_t, char, mbstate_t>::do_max_length() const __STL_NOTHROW {
+int codecvt<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW {
   return 1;
 }
 # endif /* wchar_t */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# endif /* __STL_NO_MBSTATE_T */
+# endif /* _STLP_NO_MBSTATE_T */
 
 // Local Variables:
 // mode:C++

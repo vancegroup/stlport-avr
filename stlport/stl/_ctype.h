@@ -19,22 +19,22 @@
 // standard library headers.  You should not attempt to use this header
 // file directly.
 
-#ifndef __SGI_STL_INTERNAL_CTYPE_H
-#define __SGI_STL_INTERNAL_CTYPE_H
+#ifndef _STLP_INTERNAL_CTYPE_H
+#define _STLP_INTERNAL_CTYPE_H
 
-# ifndef __STL_C_LOCALE_H
+# ifndef _STLP_C_LOCALE_H
 #  include <stl/c_locale.h>
 # endif
-# ifndef __SGI_STL_INTERNAL_LOCALE_H
+# ifndef _STLP_INTERNAL_LOCALE_H
 #  include <stl/_locale.h>
 # endif
-# ifndef __STL_INTERNAL_ALGOBASE_H
+# ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-class __STL_CLASS_DECLSPEC ctype_base {
+class _STLP_CLASS_DECLSPEC ctype_base {
 public:
   enum mask {
     space   = _Locale_SPACE,
@@ -58,12 +58,12 @@ template <class charT> class ctype_byname {};
 
 //ctype specializations
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC ctype<char> :   public locale::facet, public ctype_base 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC ctype<char> :   public locale::facet, public ctype_base 
 {
 
-# ifndef __STL_NO_WCHAR_T
-#  ifdef __STL_MSVC
+# ifndef _STLP_NO_WCHAR_T
+#  ifdef _STLP_MSVC
     typedef ctype<wchar_t> _Wctype;
     friend _Wctype;
 #  else
@@ -112,16 +112,16 @@ public:
     return do_narrow(__low, __high, __dfault, __to); 
   }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
-# if defined(__STL_STATIC_CONST_INIT_BUG)
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
+# if defined(_STLP_STATIC_CONST_INIT_BUG)
   enum __TableSize { table_size = 256 };
 # else
   static const size_t table_size = 256;
 # endif
 
 protected:
-  const mask* table() const __STL_NOTHROW {return _M_ctype_table;}
-  static const mask* __STL_CALL classic_table() __STL_NOTHROW { return & _S_classic_table [1]; }
+  const mask* table() const _STLP_NOTHROW {return _M_ctype_table;}
+  static const mask* _STLP_CALL classic_table() _STLP_NOTHROW { return & _S_classic_table [1]; }
 
   ~ctype();
 
@@ -150,8 +150,8 @@ private:
   static const unsigned char _S_lower[256 /* table_size */];
 };
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
 public:
   explicit ctype_byname(const char*, size_t = 0);
   ~ctype_byname();
@@ -168,9 +168,9 @@ private:
 };
 
 
-# ifndef __STL_NO_WCHAR_T
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC ctype<wchar_t> : public locale::facet, public ctype_base 
+# ifndef _STLP_NO_WCHAR_T
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC ctype<wchar_t> : public locale::facet, public ctype_base 
 {
   friend class _Locale;
 public:
@@ -212,10 +212,10 @@ public:
                         char __dfault, char* __to) const
     { return do_narrow(__low, __high, __dfault, __to); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
 protected:
-  ~ctype() {}
+  ~ctype();
 
   virtual bool           do_is(mask __m, wchar_t __c) const;
   virtual const wchar_t* do_is(const wchar_t*, const wchar_t*, mask*) const;
@@ -234,8 +234,8 @@ protected:
                                    char, char*) const;
 };
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC ctype_byname<wchar_t>: public ctype<wchar_t> {
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>: public ctype<wchar_t> {
 public:
   explicit ctype_byname(const char* __name, size_t __refs = 0);
 
@@ -259,9 +259,9 @@ private:
 
 # endif /* WCHAR_T */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_CTYPE_H */
+#endif /* _STLP_INTERNAL_CTYPE_H */
 
 // Local Variables:
 // mode:C++

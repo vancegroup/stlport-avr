@@ -19,7 +19,7 @@
 
 #include <stl/_monetary.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 static void _Init_monetary_formats(money_base::pattern& pos_format,
 				   money_base::pattern& neg_format) {
@@ -36,7 +36,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
 
 // This is being used throughout the library
 string _S_empty_string("");
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 wstring _S_empty_wstring(L"");
 # endif
 
@@ -76,7 +76,7 @@ money_base::pattern moneypunct<char, false>::do_neg_format() const {return _M_ne
 int moneypunct<char, false>::do_frac_digits() const {return 0;}
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 moneypunct<wchar_t, true>::moneypunct(size_t __refs) : _BaseFacet(__refs) { 
     _Init_monetary_formats(_M_pos_format, _M_neg_format); 
@@ -126,19 +126,15 @@ money_base::pattern moneypunct<wchar_t, false>::do_neg_format() const
 // Instantiations
 //
 
-# if !defined(__STL_NO_FORCE_INSTANTIATE)
+# if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
-#  if !( defined (__CYGWIN__) && __GNUC_MINOR__ <= 95 )
-// fbp : HACK : linker chokes on this instantiation + one in locale.cpp
 template class money_get<char, istreambuf_iterator<char, char_traits<char> > >;
-#  endif
-// template class money_get<char, const char*>;
 
 template class money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 // template class money_put<char, char*>;
 
 
-#ifndef __STL_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 #  if !( defined (__CYGWIN__) && __GNUC_MINOR__ <= 95 )
 // fbp : HACK : linker chokes on this instantiation + one in locale.cpp
 template class money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
@@ -151,7 +147,7 @@ template class money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar
 
 # endif
 
-__STL_END_NAMESPACE  
+_STLP_END_NAMESPACE  
 
 // Local Variables:
 // mode:C++

@@ -12,8 +12,8 @@
  *
  */
 
-#ifndef __SGI_STL_NUMERIC_H
-# define __SGI_STL_NUMERIC_H
+#ifndef _STLP_NUMERIC_H
+# define _STLP_NUMERIC_H
 
 #ifndef __MWERKS__
 # error This file should be removed from installations not using the Metrowerks Standard Library
@@ -22,4 +22,4 @@
 //# include <algo.h>
 #endif
 
-# endif // __SGI_STL_NUMERIC_H
+# endif // _STLP_NUMERIC_H

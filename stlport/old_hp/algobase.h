@@ -23,43 +23,43 @@
  *
  */
 
-#ifndef __SGI_STL_ALGOBASE_H
-#define __SGI_STL_ALGOBASE_H
+#ifndef _STLP_ALGOBASE_H
+#define _STLP_ALGOBASE_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa002
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa002
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_PAIR_H
+#ifndef _STLP_PAIR_H
 #include <pair.h>
 #endif
 
 // memmove
-#ifndef __STLPORT_CSTRING
+#ifndef _STLP_CSTRING
 # include <cstring>
 #endif
 
 // CHAR_MAX
-#ifndef __STLPORT_CLIMITS
+#ifndef _STLP_CLIMITS
 # include <climits>
 #endif
 
-#ifndef __SGI_STL_ITERATOR_H
+#ifndef _STLP_ITERATOR_H
 #include <iterator.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_ALGOBASE_H
+#ifndef _STLP_INTERNAL_ALGOBASE_H
 #include <stl/_algobase.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_UNINITIALIZED_H
+#ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #include <stl/_uninitialized.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 // Names from stl_algobase.h
@@ -82,15 +82,15 @@ using STLPORT::uninitialized_copy;
 using STLPORT::uninitialized_copy_n;
 using STLPORT::uninitialized_fill;
 using STLPORT::uninitialized_fill_n;
-# endif /* __STL_BROKEN_USING_DIRECTIVE */
-#endif /* __STL_USE_NAMESPACES */
+# endif /* _STLP_BROKEN_USING_DIRECTIVE */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa002)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa002)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_ALGOBASE_H */
+#endif /* _STLP_ALGOBASE_H */
 
 // Local Variables:
 // mode:C++

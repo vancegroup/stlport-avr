@@ -24,47 +24,47 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_ALLOC_H
-#define __SGI_STL_INTERNAL_ALLOC_H
+#ifndef _STLP_INTERNAL_ALLOC_H
+#define _STLP_INTERNAL_ALLOC_H
 
-# ifndef __STLPORT_CSTDDEF
+# ifndef _STLP_CSTDDEF
 #  include <cstddef>
 # endif
 
-#if !defined (__STLPORT_DEBUG_H) && (defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS))
+#if !defined (_STLP_DEBUG_H) && (defined  (_STLP_DEBUG) || defined (_STLP_ASSERTIONS))
 # include <stl/debug/_debug.h>
 #endif
 
-# ifndef __STLPORT_CSTDLIB
+# ifndef _STLP_CSTDLIB
 #  include <cstdlib>
 # endif
-# ifndef __STLPORT_CSTRING
+# ifndef _STLP_CSTRING
 #  include <cstring>
 # endif
 
 # ifndef __THROW_BAD_ALLOC
-#  if !defined(__STL_USE_EXCEPTIONS)
-#   if !defined (__STLPORT_CSTDIO)
+#  if !defined(_STLP_USE_EXCEPTIONS)
+#   if !defined (_STLP_CSTDIO)
 #    include <cstdio>
 #   endif
-#   if !defined (__STLPORT_CSTDLIB)
+#   if !defined (_STLP_CSTDLIB)
 #    include <cstdlib>
 #   endif
 #   define __THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
-#  else /* !defined(__STL_USE_EXCEPTIONS) */
-#   define __THROW_BAD_ALLOC throw __STLPORT_STD::bad_alloc()
-#  endif /* !defined(__STL_USE_EXCEPTIONS) */
+#  else /* !defined(_STLP_USE_EXCEPTIONS) */
+#   define __THROW_BAD_ALLOC throw _STLP_STD::bad_alloc()
+#  endif /* !defined(_STLP_USE_EXCEPTIONS) */
 # endif   /* __THROW_BAD_ALLOC */
 
-# ifndef __STLPORT_NEW
+# ifndef _STLP_NEW_HEADER
 #  include <new>
 # endif
 
-#if defined (__STL_THREADS) && ! defined (__SGI_STL_INTERNAL_THREADS_H)
+#if defined (_STLP_THREADS) && ! defined (_STLP_INTERNAL_THREADS_H)
 # include <stl/_threads.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_CONSTRUCT_H
+#ifndef _STLP_INTERNAL_CONSTRUCT_H
 # include <stl/_construct.h>
 #endif
 
@@ -76,15 +76,15 @@
 #  define __RESTRICT
 # endif
 
-#if defined (__STL_THREADS) || (defined(__SGI_STL_OWN_IOSTREAMS) && ! defined (__STL_NO_THREADS) && ! defined (_NOTHREADS) )
-# define __NODE_ALLOCATOR_THREADS true
+#if defined (_STLP_THREADS) || (defined(_STLP_OWN_IOSTREAMS) && ! defined (_STLP_NO_THREADS) && ! defined (_NOTHREADS) )
+# define _STLP_NODE_ALLOCATOR_THREADS true
 #else
-# define __NODE_ALLOCATOR_THREADS false
+# define _STLP_NODE_ALLOCATOR_THREADS false
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if defined (__STL_USE_RAW_SGI_ALLOCATORS)
+# if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
 template <class _Tp, class _Alloc> struct __allocator;
 # endif
 
@@ -96,23 +96,23 @@ typedef void (* __oom_handler_type)();
 template <int __inst>
 class __malloc_alloc {
 private:
-  static void* __STL_CALL _S_oom_malloc(size_t);
+  static void* _STLP_CALL _S_oom_malloc(size_t);
   static __oom_handler_type __oom_handler;
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) && defined (__STL_USE_RAW_SGI_ALLOCATORS)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
     typedef __allocator<_Tp1, __malloc_alloc<__inst> > other;
   };
 # endif
-  static void* __STL_CALL allocate(size_t __n)    {
+  static void* _STLP_CALL allocate(size_t __n)    {
     void* __result = malloc(__n);
     if (0 == __result) __result = _S_oom_malloc(__n);
     return __result;
   }
-  static void __STL_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
-  static __oom_handler_type __STL_CALL set_malloc_handler(__oom_handler_type __f) {
+  static void _STLP_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
+  static __oom_handler_type _STLP_CALL set_malloc_handler(__oom_handler_type __f) {
     __oom_handler_type __old = __oom_handler;
     __oom_handler = __f;
     return(__old);
@@ -122,17 +122,17 @@ public:
 
 // New-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
-class __STL_CLASS_DECLSPEC __new_alloc {
+class _STLP_CLASS_DECLSPEC __new_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) &&  defined(__STL_USE_RAW_SGI_ALLOCATORS)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) &&  defined(_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
     typedef __allocator<_Tp1, __new_alloc > other;
   };
 # endif
-  static void* __STL_CALL  allocate(size_t __n) {  return __stl_new(__n); }
-  static void __STL_CALL deallocate(void* __p, size_t) { __stl_delete(__p); }
+  static void* _STLP_CALL  allocate(size_t __n) {  return __stl_new(__n); }
+  static void _STLP_CALL deallocate(void* __p, size_t) { __stl_delete(__p); }
 };
 
 
@@ -152,35 +152,35 @@ private:
   struct __alloc_header {
     size_t __magic: 16;
     size_t __type_size:16;
-    __STL_UINT32_T _M_size;
+    _STLP_UINT32_T _M_size;
   }; // that is 8 bytes for sure
   // Sunpro CC has bug on enums, so extra_before/after set explicitly
   enum { __pad=8, __magic=0xdeba, __deleted_magic = 0xdebd,
-	 __shred_byte= __STL_SHRED_BYTE
+	 __shred_byte= _STLP_SHRED_BYTE
   };
 
   enum { __extra_before = 16, __extra_after = 8 };
   // Size of space used to store size.  Note
   // that this must be large enough to preserve
   // alignment.
-  static size_t __STL_CALL __extra_before_chunk() {
+  static size_t _STLP_CALL __extra_before_chunk() {
     return (long)__extra_before/sizeof(value_type)+
       (size_t)((long)__extra_before%sizeof(value_type)>0);
   }
-  static size_t __STL_CALL __extra_after_chunk() {
+  static size_t _STLP_CALL __extra_after_chunk() {
     return (long)__extra_after/sizeof(value_type)+
       (size_t)((long)__extra_after%sizeof(value_type)>0);
   }
 public:
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) && defined (__STL_USE_RAW_SGI_ALLOCATORS)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
     typedef __allocator< _Tp1, __debug_alloc<_Alloc> > other;
   };
 # endif
   __debug_alloc() {}
   ~__debug_alloc() {}
-  static void * __STL_CALL allocate(size_t);
-  static void __STL_CALL deallocate(void *, size_t);
+  static void * _STLP_CALL allocate(size_t);
+  static void _STLP_CALL deallocate(void *, size_t);
 };
 
 
@@ -209,83 +209,81 @@ public:
 
 # if defined(__OS400__)
 enum {_ALIGN = 16, _ALIGN_SHIFT=4, _MAX_BYTES = 256};
-#  define  _NFREELISTS 16
+#  define  _STLP_NFREELISTS 16
 # else
 enum {_ALIGN = 8, _ALIGN_SHIFT=3, _MAX_BYTES = 128};
-// SunPro CC 4.0.1 has bug on enums
-//  enum {_NFREELISTS = _MAX_BYTES/_ALIGN};
-#  define  _NFREELISTS 16
+#  define  _STLP_NFREELISTS 16
 # endif /* __OS400__ */
 
-class __STL_CLASS_DECLSPEC _Node_alloc_obj {
+class _STLP_CLASS_DECLSPEC _Node_alloc_obj {
 public:
     _Node_alloc_obj * _M_free_list_link;
 };
 
 template <bool __threads, int __inst>
 class __node_alloc {
-  __PRIVATE:
-  static inline size_t __STL_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
+  _STLP_PRIVATE:
+  static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
   typedef _Node_alloc_obj _Obj;
 private:
   // Returns an object of size __n, and optionally adds to size __n free list.
-  static void*  __STL_CALL _S_refill(size_t __n);
+  static void*  _STLP_CALL _S_refill(size_t __n);
   // Allocates a chunk for nobjs of size size.  nobjs may be reduced
   // if it is inconvenient to allocate the requested number.
-  static char*  __STL_CALL _S_chunk_alloc(size_t __p_size, int& __nobjs);
+  static char*  _STLP_CALL _S_chunk_alloc(size_t __p_size, int& __nobjs);
   // Chunk allocation state.
-  static _Node_alloc_obj * __STL_VOLATILE _S_free_list[_NFREELISTS]; 
+  static _Node_alloc_obj * _STLP_VOLATILE _S_free_list[_STLP_NFREELISTS]; 
   static char* _S_start_free;
   static char* _S_end_free;
   static size_t _S_heap_size;
-  static void * __STL_CALL _M_allocate(size_t __n);
+  static void * _STLP_CALL _M_allocate(size_t __n);
   /* __p may not be 0 */
-  static void __STL_CALL _M_deallocate(void *__p, size_t __n);
+  static void _STLP_CALL _M_deallocate(void *__p, size_t __n);
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) && defined (__STL_USE_RAW_SGI_ALLOCATORS)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
     typedef __allocator<_Tp1, __node_alloc<__threads, __inst> > other;
   };
 # endif
   /* __n must be > 0      */
-  static void * __STL_CALL allocate(size_t __n) { return (__n > (size_t)_MAX_BYTES) ?  __stl_new(__n) : _M_allocate(__n); }
+  static void * _STLP_CALL allocate(size_t __n) { return (__n > (size_t)_MAX_BYTES) ?  __stl_new(__n) : _M_allocate(__n); }
   /* __p may not be 0 */
-  static void __STL_CALL deallocate(void *__p, size_t __n) { if (__n > (size_t)_MAX_BYTES) __stl_delete(__p); else _M_deallocate(__p, __n); }
+  static void _STLP_CALL deallocate(void *__p, size_t __n) { if (__n > (size_t)_MAX_BYTES) __stl_delete(__p); else _M_deallocate(__p, __n); }
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS __malloc_alloc<0>;
-__STL_EXPORT_TEMPLATE_CLASS __node_alloc<__NODE_ALLOCATOR_THREADS, 0>;
-# endif /* __STL_USE_TEMPLATE_EXPORT */
-typedef __node_alloc<__NODE_ALLOCATOR_THREADS, 0> _Node_alloc;
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS __debug_alloc<_Node_alloc>;
-__STL_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
-__STL_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS __malloc_alloc<0>;
+_STLP_EXPORT_TEMPLATE_CLASS __node_alloc<_STLP_NODE_ALLOCATOR_THREADS, 0>;
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
+typedef __node_alloc<_STLP_NODE_ALLOCATOR_THREADS, 0> _Node_alloc;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<_Node_alloc>;
+_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
+_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 # endif
 
-# if defined ( __STL_USE_NEWALLOC )
-#  if defined ( __STL_DEBUG_ALLOC )
+# if defined ( _STLP_USE_NEWALLOC )
+#  if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<__new_alloc> __sgi_alloc;
 #  else
 typedef __new_alloc __sgi_alloc;
-#  endif /* __STL_DEBUG_ALLOC */
+#  endif /* _STLP_DEBUG_ALLOC */
 
 typedef __new_alloc __single_client_alloc;
 typedef __new_alloc __multithreaded_alloc;
 
-#  elif defined (__STL_USE_MALLOC)
-#   if defined ( __STL_DEBUG_ALLOC )
+#  elif defined (_STLP_USE_MALLOC)
+#   if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<__malloc_alloc<0> > __sgi_alloc;
 #   else
 typedef __malloc_alloc<0> __sgi_alloc;
-#   endif /* __STL_DEBUG_ALLOC */
+#   endif /* _STLP_DEBUG_ALLOC */
 typedef __malloc_alloc<0> __single_client_alloc;
 typedef __malloc_alloc<0> __multithreaded_alloc;
 # else
-#   if defined ( __STL_DEBUG_ALLOC )
+#   if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<_Node_alloc> __sgi_alloc;
 #   else
 typedef _Node_alloc __sgi_alloc;
@@ -294,7 +292,7 @@ typedef _Node_alloc __sgi_alloc;
 typedef __node_alloc<false, 0> __single_client_alloc;
 typedef __node_alloc<true, 0>  __multithreaded_alloc;
 
-#  endif /* __STL_USE_NEWALLOC */
+#  endif /* _STLP_USE_NEWALLOC */
 
 // This implements allocators as specified in the C++ standard.  
 //
@@ -305,7 +303,7 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // to refer to a template member of a dependent type.
 
 template <class _Tp>
-class __STL_CLASS_DECLSPEC allocator {
+class _STLP_CLASS_DECLSPEC allocator {
 public:
 
   typedef _Tp        value_type;
@@ -315,17 +313,17 @@ public:
   typedef const _Tp& const_reference;
   typedef size_t     size_type;
   typedef ptrdiff_t  difference_type;
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef allocator<_Tp1> other;
   };
 # endif
-  allocator() __STL_NOTHROW {}
- # if defined (__STL_MEMBER_TEMPLATES)
-  template <class _Tp1> allocator(const allocator<_Tp1>&) __STL_NOTHROW {}
+  allocator() _STLP_NOTHROW {}
+ # if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
  # endif    
-  allocator(const allocator<_Tp>&) __STL_NOTHROW {}
-  ~allocator() __STL_NOTHROW {}
+  allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
+  ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) { return &__x; }
   const_pointer address(const_reference __x) const { return &__x; }
   // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
@@ -334,42 +332,42 @@ public:
   }
   // __p is permitted to be a null pointer, only if n==0.
   void deallocate(pointer __p, size_type __n) const {
-    __STL_ASSERT( (__p == 0) == (__n == 0) )
+    _STLP_ASSERT( (__p == 0) == (__n == 0) )
       if (__p != 0) __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
   }
   // backwards compatibility
   void deallocate(pointer __p) const {  if (__p != 0) __sgi_alloc::deallocate((void*)__p, sizeof(value_type)); }
-  size_type max_size() const __STL_NOTHROW  { return size_t(-1) / sizeof(value_type); }
-  void construct(pointer __p, const _Tp& __val) const { __STLPORT_STD::construct(__p, __val); }
-  void destroy(pointer __p) const { __STLPORT_STD::destroy(__p); }
+  size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
+  void construct(pointer __p, const _Tp& __val) const { _STLP_STD::construct(__p, __val); }
+  void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
 };
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC allocator<void> {
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC allocator<void> {
 public:
   typedef size_t      size_type;
   typedef ptrdiff_t   difference_type;
   typedef void*       pointer;
   typedef const void* const_pointer;
-# if defined (__STL_CLASS_PARTIAL_SPECIALIZATION)
+# if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   typedef void        value_type;
 # endif
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES)
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef allocator<_Tp1> other;
   };
 # endif
 };
 
-template <class _T1, class _T2> inline bool  __STL_CALL operator==(const allocator<_T1>&, const allocator<_T2>&)  { return true; }
-template <class _T1, class _T2> inline bool  __STL_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) { return false; }
+template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const allocator<_T1>&, const allocator<_T2>&)  { return true; }
+template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) { return false; }
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS allocator<char>;
-#  if defined (__STL_HAS_WCHAR_T)
-__STL_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS allocator<char>;
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 // Another allocator adaptor: _Alloc_traits.  This serves two
 // purposes.  First, make it possible to write containers that can use
@@ -379,8 +377,9 @@ __STL_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
 template <class _Tp, class _Allocator>
 struct _Alloc_traits
 {
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) 
-  typedef typename _Allocator::__STL_TEMPLATE rebind<_Tp> _Rebind_type;
+  typedef _Allocator _Orig;
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) 
+  typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
   typedef typename _Rebind_type::other  allocator_type;
 # else
   // this is not actually true, used only to pass this type through
@@ -389,18 +388,22 @@ struct _Alloc_traits
 # endif
 };
 
-#if defined (__STL_CLASS_PARTIAL_SPECIALIZATION) /* && ! defined (__STL_MEMBER_TEMPLATE_CLASSES) */
+#ifndef _STLP_FORCE_ALLOCATORS
+#define _STLP_FORCE_ALLOCATORS(a,y) 
+#endif
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 // The version for the default allocator, for rare occasion when we have partial spec w/o member template classes
 template <class _Tp, class _Tp1>
 struct _Alloc_traits<_Tp, allocator<_Tp1> > {
   typedef allocator<_Tp> allocator_type;
 };
-#endif /* __STL_CLASS_PARTIAL_SPECIALIZATION */
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-# if defined (__STL_MEMBER_TEMPLATE_CLASSES) 
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) 
 // __a may be not rebound, return different type
 template <class _Tp, class _Alloc>
-inline __STL_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  __STL_CALL
+inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
 __stl_alloc_create(const _Alloc& __a, const _Tp*) {
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type _Rebound_type;
   return _Rebound_type(__a);
@@ -409,21 +412,21 @@ __stl_alloc_create(const _Alloc& __a, const _Tp*) {
 // If custom allocators are being used without member template classes support :
 // user (on purpose) is forced to define rebind/get operations !!!
 template <class _Tp1, class _Tp2>
-inline allocator<_Tp2>& __STL_CALL
+inline allocator<_Tp2>& _STLP_CALL
 __stl_alloc_rebind(allocator<_Tp1>& __a, const _Tp2*) {  return (allocator<_Tp2>&)(__a); }
 template <class _Tp1, class _Tp2>
-inline allocator<_Tp2> __STL_CALL
+inline allocator<_Tp2> _STLP_CALL
 __stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>(); }
-#endif /* __STL_MEMBER_TEMPLATE_CLASSES */
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
-# ifdef __STL_USE_RAW_SGI_ALLOCATORS
+# ifdef _STLP_USE_RAW_SGI_ALLOCATORS
 // move obsolete stuff out of the way
 # include <stl/_alloc_old.h>
 # endif
 
 // inheritance is being used for EBO optimization
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
-class __STL_CLASS_DECLSPEC _STL_alloc_proxy : public _MaybeReboundAlloc {
+class _STLP_CLASS_DECLSPEC _STL_alloc_proxy : public _MaybeReboundAlloc {
 private:
   typedef _MaybeReboundAlloc _Base;
   typedef _STL_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
@@ -436,7 +439,7 @@ public:
   inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; } 
   // Unified interface to perform allocate()/deallocate() with limited
   // language support
-#if defined (__STL_MEMBER_TEMPLATE_CLASSES)
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   //  inline _Tp* allocate(size_t __n) { return _Base::allocate(__n); }
 #else
   // else it is rebound already, and allocate() member is accessible
@@ -449,20 +452,22 @@ public:
 #endif
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<char *,char,allocator<char> >;
-#  if defined (__STL_HAS_WCHAR_T)
-__STL_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<char *,char,allocator<char> >;
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-__STL_END_NAMESPACE
+# undef _STLP_NODE_ALLOCATOR_THREADS
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+_STLP_END_NAMESPACE
+
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_alloc.c>
 # endif
 
-#endif /* __SGI_STL_INTERNAL_ALLOC_H */
+#endif /* _STLP_INTERNAL_ALLOC_H */
 
 // Local Variables:
 // mode:C++

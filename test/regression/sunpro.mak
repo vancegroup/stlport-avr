@@ -9,7 +9,7 @@ VPATH = .
 
 
 # PWD is here because SC5 wants absolute path ;(
-STL_INCL=-I${PWD}/../../stlport/SC5
+STL_INCL=-I${PWD}/../../stlport
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \

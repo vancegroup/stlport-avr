@@ -20,13 +20,13 @@
 
 # include <stdlib.h>
 
-# ifdef __STL_REAL_LOCALE_IMPLEMENTED
+# ifdef _STLP_REAL_LOCALE_IMPLEMENTED
 
 #  include <limits.h>
 #  include "c_locale.h"
 #  if defined (WIN32) || defined (_WIN32)
 #   include "c_locale_win32/c_locale_win32.c"
-#  elif defined (__STL_USE_GLIBC) && ! defined (__CYGWIN__)
+#  elif defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
 #   include "c_locale_glibc/c_locale_glibc.c"
 #  elif defined __ISCPP__
 #   include "c_locale_is/c_locale_is.cpp"

@@ -23,13 +23,13 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_TEMPBUF_C
-#define __STL_TEMPBUF_C
+#ifndef _STLP_TEMPBUF_C
+#define _STLP_TEMPBUF_C
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
-pair<_Tp*, ptrdiff_t> __STL_CALL 
+pair<_Tp*, ptrdiff_t> _STLP_CALL 
 __get_temporary_buffer(ptrdiff_t __len, _Tp*)
 {
   if (__len > ptrdiff_t(INT_MAX / sizeof(_Tp)))
@@ -44,9 +44,9 @@ __get_temporary_buffer(ptrdiff_t __len, _Tp*)
 
   return pair<_Tp*, ptrdiff_t>((_Tp*)0, 0);
 }
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_TEMPBUF_C */
+#endif /*  _STLP_TEMPBUF_C */
 
 // Local Variables:
 // mode:C++

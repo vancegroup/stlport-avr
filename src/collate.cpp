@@ -19,9 +19,11 @@
 
 #include "stl/_collate.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // collate<char>
+
+collate<char>::~collate() {}
 
 int collate<char>::do_compare(const char* low1, const char* high1,
                               const char* low2, const char* high2) const
@@ -42,8 +44,10 @@ long collate<char>::do_hash(const char* low, const char* high) const {
   return result;
 }
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 // collate<wchar_t>
+
+collate<wchar_t>::~collate() {}
 
 int
 collate<wchar_t>::do_compare(const wchar_t* low1, const wchar_t* high1,
@@ -68,8 +72,7 @@ long collate<wchar_t>::do_hash(const wchar_t* low, const wchar_t* high) const
 }
 # endif
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

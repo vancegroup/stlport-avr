@@ -15,20 +15,20 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __SGI_STL_INTERNAL_STREAMBUF
-#define __SGI_STL_INTERNAL_STREAMBUF
+#ifndef _STLP_INTERNAL_STREAMBUF
+#define _STLP_INTERNAL_STREAMBUF
 
-#ifndef __SGI_STL_IOS_BASE_H
+#ifndef _STLP_IOS_BASE_H
 #include <stl/_ios_base.h>      // Needed for ios_base bitfield members.
                                 // <ios_base> includes <iosfwd>.
 #endif
 
-#ifndef __SGI_STL_STDIO_FILE_H
+#ifndef _STLP_STDIO_FILE_H
 #include <stl/_stdio_file.h>     // Declaration of struct FILE, and of
                                 // functions to manipulate it.
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Class basic_streambuf<>, the base class of the streambuf hierarchy.
@@ -265,7 +265,7 @@ public:                         // Locale-related functions.
   locale pubimbue(const locale&);
   locale getloc() const { return _M_locale; }
 
-# ifndef __STL_NO_ANACHRONISMS
+# ifndef _STLP_NO_ANACHRONISMS
   void stossc() { this->sbumpc(); }
 # endif
 #if defined(__MVS__) || defined(__OS400__)
@@ -310,8 +310,8 @@ private: // Data members.
 // between whe FILE's internal representation and the three-pointer 
 // representation that basic_streambuf<> needs.
 
-__STL_TEMPLATE_NULL 
-class __STL_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >
+_STLP_TEMPLATE_NULL 
+class _STLP_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >
 {
   friend class basic_istream<char, char_traits<char> >;
   friend class basic_ostream<char, char_traits<char> >;
@@ -341,12 +341,12 @@ public:                         // Extension: locking, for thread safety.
   _STL_mutex _M_lock;
 
 public:                         // Destructor.
-  virtual ~basic_streambuf __STL_PSPEC2(char, char_traits<char>) ();
+  virtual ~basic_streambuf _STLP_PSPEC2(char, char_traits<char>) ();
 
 protected:                      // Constructors.
 
   // The default constructor.
-  basic_streambuf __STL_PSPEC2(char, char_traits<char>) ()
+  basic_streambuf _STLP_PSPEC2(char, char_traits<char>) ()
 # if defined(__MVS__) || defined(__OS400__)
  : _M_get(_M_default_get),
                _M_put(_M_default_put), _M_locale()
@@ -361,7 +361,7 @@ protected:                      // Constructors.
 # endif
 
   // Extension: a constructor for streambufs synchronized with C stdio files.
-  basic_streambuf __STL_PSPEC2(char, char_traits<char>) (FILE* __get, FILE* __put);
+  basic_streambuf _STLP_PSPEC2(char, char_traits<char>) (FILE* __get, FILE* __put);
 
 protected:                      // Protected interface to the get area.
   char_type* eback() const { return _FILE_I_begin(_M_get); }
@@ -501,7 +501,7 @@ public:                         // Locale-related functions.
   locale pubimbue(const locale&);
   locale getloc() const { return _M_locale; }
 
-# ifndef __STL_NO_ANACHRONISMS
+# ifndef _STLP_NO_ANACHRONISMS
 public:
   void stossc() { this->sbumpc(); }
 # endif
@@ -519,9 +519,9 @@ private: // Data members.
 #endif
 
 };
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) && !defined (__STL_LINK_TIME_INSTANTIATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_streambuf.c>
 # endif
 

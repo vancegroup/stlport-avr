@@ -23,45 +23,45 @@
  *
  */
 
-#ifndef __SGI_STL_DEQUE_H
-#define __SGI_STL_DEQUE_H
+#ifndef _STLP_DEQUE_H
+#define _STLP_DEQUE_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa006
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa006
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_ALGOBASE_H
+#ifndef _STLP_ALGOBASE_H
 # include <algobase.h>
 #endif
 
-#ifndef __STL_RANGE_ERRORS_H
+#ifndef _STLP_RANGE_ERRORS_H
 # include <stl/_range_errors.h>
 #endif
 
-#ifndef __SGI_STL_ALLOC_H
+#ifndef _STLP_ALLOC_H
 # include <alloc.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_DEQUE_H
+#ifndef _STLP_INTERNAL_DEQUE_H
 # include <stl/_deque.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 using STLPORT::deque;
 using STLPORT::__deque__;
-# endif /*  __STL_BROKEN_USING_DIRECTIVE */
-#endif /* __STL_USE_NAMESPACES */
+# endif /*  _STLP_BROKEN_USING_DIRECTIVE */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa006)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa006)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_DEQUE_H */
+#endif /* _STLP_DEQUE_H */
 
 // Local Variables:
 // mode:C++

@@ -3,9 +3,9 @@
 #
 LIB_BASENAME = libstlport_sunpro
 
-CUR_DIR= ${PWD}
+CUR_DIR= ${PWD}/
 
-STL_INCL= -I. -I${PWD}/../stlport/SC5
+STL_INCL= -I. -I${PWD}/../stlport
 
 CC = CC
 CXX = CC
@@ -29,15 +29,15 @@ INSTALL_STEP = install_unix
 # LINK_OUT=-xar -o  
 # DYNLINK_OUT=-o 
 
-all: all_dynamic all_static
+all: all_dynamic symbolic_links  all_static
 
 include common_macros.mak
 
-CXXFLAGS_COMMON = -mt -pta +w2 -features=rtti -xildoff ${STL_INCL} -D__SGI_STL_OWN_IOSTREAMS
+CXXFLAGS_COMMON = -mt -pta +w2 -features=rtti -xildoff ${STL_INCL}
 
 SHCXXFLAGS = -PIC
 
-DEBUG_FLAGS = -g +w2 -D__STL_DEBUG
+DEBUG_FLAGS = -g +w2 -D_STLP_DEBUG
 
 #
 # Try those flags to see if they help to get maximum efficiency :
@@ -61,17 +61,19 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) ${RELEASE_FLAGS} $(SHCXXFLAGS) ${R
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g ${DEBUG_static_rep}
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${DEBUG_dynamic_rep}
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g ${STLDEBUG_static_rep} -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${STLDEBUG_dynamic_rep} -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g ${STLDEBUG_static_rep} -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${STLDEBUG_dynamic_rep} -D_STLP_DEBUG
+
 
 LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static}
-LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}
+LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -h${RELEASE_DYNLIB_SONAME}
 
 LDFLAGS_DEBUG_static = ${CXXFLAGS_DEBUG_static}
-LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic}
+LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} -h${DEBUG_DYNLIB_SONAME}
 
 LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static}
-LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic}
+LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -h${STLDEBUG_DYNLIB_SONAME}
+
 
 include common_percent_rules.mak
 include common_rules.mak

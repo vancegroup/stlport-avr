@@ -20,10 +20,10 @@
 #include "locale_impl.h"
 # include <stl/_numpunct.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-_Locale_numeric*  __STL_CALL __acquire_numeric(const char* name);
-void  __STL_CALL __release_numeric(_Locale_numeric* cat);
+_Locale_numeric*  _STLP_CALL __acquire_numeric(const char* name);
+void  _STLP_CALL __release_numeric(_Locale_numeric* cat);
 
 // numpunct_byname<char>
 
@@ -61,7 +61,7 @@ string numpunct_byname<char>::do_grouping() const {
 //----------------------------------------------------------------------
 // numpunct<wchar_t>
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 // numpunct_byname<wchar_t> 
 
@@ -102,7 +102,7 @@ string numpunct_byname<wchar_t>::do_grouping() const {
 
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

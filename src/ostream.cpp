@@ -18,40 +18,39 @@
 # include "stlport_prefix.h"
 #include <stl/_ostream.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
 // instantiations
-template  class __STL_CLASS_DECLSPEC basic_ostream<char, char_traits<char> >;
+template  class _STLP_CLASS_DECLSPEC basic_ostream<char, char_traits<char> >;
 
-template __STL_DECLSPEC basic_ostream<char, char_traits<char> >&  __STL_CALL 
+template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&  _STLP_CALL 
 _M_put_num(basic_ostream<char, char_traits<char> >&, long);
-template __STL_DECLSPEC basic_ostream<char, char_traits<char> >&   __STL_CALL 
+template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&   _STLP_CALL 
 _M_put_num(basic_ostream<char, char_traits<char> >&, unsigned long);
-#  if defined (__STL_LONG_LONG)
-template __STL_DECLSPEC basic_ostream<char, char_traits<char> >&  __STL_CALL
-_M_put_num(basic_ostream<char, char_traits<char> >&, unsigned __STL_LONG_LONG);
-template __STL_DECLSPEC basic_ostream<char, char_traits<char> >& __STL_CALL
-_M_put_num(basic_ostream<char, char_traits<char> >&, __STL_LONG_LONG);
+#  if defined (_STLP_LONG_LONG)
+template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&  _STLP_CALL
+_M_put_num(basic_ostream<char, char_traits<char> >&, unsigned _STLP_LONG_LONG);
+template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL
+_M_put_num(basic_ostream<char, char_traits<char> >&, _STLP_LONG_LONG);
 #  endif
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-template  class __STL_CLASS_DECLSPEC _Osentry<char, char_traits<char> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+template  class _STLP_CLASS_DECLSPEC _Osentry<char, char_traits<char> >;
 # endif
 
-#ifndef __STL_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-template class __STL_CLASS_DECLSPEC _Osentry<wchar_t, char_traits<wchar_t> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+template class _STLP_CLASS_DECLSPEC _Osentry<wchar_t, char_traits<wchar_t> >;
 # endif
-template class __STL_CLASS_DECLSPEC basic_ostream<wchar_t, char_traits<wchar_t> >;
+template class _STLP_CLASS_DECLSPEC basic_ostream<wchar_t, char_traits<wchar_t> >;
 #endif
 
 #endif
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

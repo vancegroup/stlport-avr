@@ -18,7 +18,7 @@
 # include "stlport_prefix.h"
 #include <stdio_streambuf>
 
-#ifdef __STL_UNIX
+#ifdef _STLP_UNIX
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif /* __unix */
@@ -26,7 +26,7 @@
 #include <stl/_fstream.h>
 #include "fstream_impl.h"
 
-# if defined (__STL_USE_WIN32_IO)
+# if defined (_STLP_USE_WIN32_IO)
 # if defined (__BORLANDC__)
 // #  include <cio.h>
 #  include <cfcntl.h>
@@ -38,25 +38,23 @@
 #  include <sys/stat.h>
 # endif
 
-
-
 __SGI_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // Class stdio_streambuf_base
 
 stdio_streambuf_base::stdio_streambuf_base(FILE* file)
-  : __STLPORT_STD::basic_streambuf<char, __STLPORT_STD::char_traits<char> >(file, 0),
+  : _STLP_STD::basic_streambuf<char, _STLP_STD::char_traits<char> >(file, 0),
     _M_file(file)
 {}
 
 stdio_streambuf_base::~stdio_streambuf_base()
 {
-  __STL_VENDOR_CSTD::fflush(_M_file);
+  _STLP_VENDOR_CSTD::fflush(_M_file);
 }
 
-__STLPORT_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n)
+_STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n)
 {
-  __STL_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
+  _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
   return this;
 }
 
@@ -79,9 +77,9 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
     return pos_type(-1);
   }
       
-  if (__STL_VENDOR_CSTD::fseek(_M_file, off, whence) == 0) {
+  if (_STLP_VENDOR_CSTD::fseek(_M_file, off, whence) == 0) {
     fpos_t pos;
-    __STL_VENDOR_CSTD::fgetpos(_M_file, &pos);
+    _STLP_VENDOR_CSTD::fgetpos(_M_file, &pos);
     // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
     // of a primitive type
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
@@ -114,7 +112,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // 
   fpos_t p(pos);
 #endif
 
-  if (__STL_VENDOR_CSTD::fsetpos(_M_file, &p) == 0)
+  if (_STLP_VENDOR_CSTD::fsetpos(_M_file, &p) == 0)
     return pos;
   else
     return pos_type(-1);
@@ -122,11 +120,13 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // 
 
 int stdio_streambuf_base::sync()
 {
-  return __STL_VENDOR_CSTD::fflush(_M_file) == 0 ? 0 : -1;
+  return _STLP_VENDOR_CSTD::fflush(_M_file) == 0 ? 0 : -1;
 }
 
 //----------------------------------------------------------------------
 // Class stdio_istreambuf
+
+stdio_istreambuf::~stdio_istreambuf() {}
 
 streamsize stdio_istreambuf::showmanyc()
 {
@@ -134,7 +134,7 @@ streamsize stdio_istreambuf::showmanyc()
     return -1;
   else {
     int fd = _FILE_fd(*_M_file);
-# ifdef __STL_USE_WIN32_IO
+# ifdef _STLP_USE_WIN32_IO
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
     struct stat buf;
@@ -147,10 +147,10 @@ streamsize stdio_istreambuf::showmanyc()
     else
       size = 0;
 # else
-    streamoff size = SGI::__file_size(fd);
+    streamoff size = _SgI::__file_size(fd);
 # endif
     // fbp : we can use ftell as this flavour always use stdio.
-    long pos = __STL_VENDOR_CSTD::ftell(_M_file);
+    long pos = _STLP_VENDOR_CSTD::ftell(_M_file);
     return pos >= 0 && size > pos ? size - pos : 0;
   }
 }
@@ -159,7 +159,7 @@ stdio_istreambuf::int_type stdio_istreambuf::underflow()
 {
   int c = getc(_M_file);
   if (c != EOF) {
-    __STL_VENDOR_CSTD::ungetc(c, _M_file);
+    _STLP_VENDOR_CSTD::ungetc(c, _M_file);
     return c;
   }
   else
@@ -175,7 +175,7 @@ stdio_istreambuf::int_type stdio_istreambuf::uflow()
 stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c)
 {
   if (c != traits_type::eof()) {
-    int result = __STL_VENDOR_CSTD::ungetc(c, _M_file);
+    int result = _STLP_VENDOR_CSTD::ungetc(c, _M_file);
     return result != EOF ? result : traits_type::eof();
   }
   else{
@@ -191,6 +191,8 @@ stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c)
 //----------------------------------------------------------------------
 // Class stdio_ostreambuf
 
+stdio_ostreambuf::~stdio_ostreambuf() {}
+
 streamsize stdio_ostreambuf::showmanyc()
 {
   return -1;
@@ -203,7 +205,7 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c)
     // Do we have a buffer to write?
     ptrdiff_t unwritten = this->pptr() - this->pbase();
     if (unwritten != 0) {
-      __STL_VENDOR_CSTD::fflush(_M_file);
+      _STLP_VENDOR_CSTD::fflush(_M_file);
       // Test if the write succeeded.
       if (this->pptr() - this->pbase() < unwritten)
         return traits_type::not_eof(c);

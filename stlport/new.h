@@ -14,27 +14,27 @@
  */
 
 
-# if !defined (__STL_OUTERMOST_HEADER_ID)
-#  define __STL_OUTERMOST_HEADER_ID 0x848
+# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#  define _STLP_OUTERMOST_HEADER_ID 0x848
 #  include <stl/_prolog.h>
-# elif (__STL_OUTERMOST_HEADER_ID == 0x848) && ! defined (__STL_DONT_POP_0x848)
-#  define __STL_DONT_POP_0x848
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x848) && ! defined (_STLP_DONT_POP_0x848)
+#  define _STLP_DONT_POP_0x848
 # endif
 
-# ifndef __STL_WINCE
+# ifndef _STLP_WINCE
 # if defined (__BORLANDC__)
 #  include <new.>
 # else
-#  include __STL_NATIVE_CPP_RUNTIME_HEADER(new.h)
+#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
 # endif
 # endif /* STL_WINCE */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0x848)
-#  if ! defined (__STL_DONT_POP_0x848)
+# if (_STLP_OUTERMOST_HEADER_ID == 0x848)
+#  if ! defined (_STLP_DONT_POP_0x848)
 #   include <stl/_epilog.h>
-#   undef  __STL_OUTERMOST_HEADER_ID
+#   undef  _STLP_OUTERMOST_HEADER_ID
 #   endif
-#   undef  __STL_DONT_POP_0x848
+#   undef  _STLP_DONT_POP_0x848
 # endif
 
 // Local Variables:

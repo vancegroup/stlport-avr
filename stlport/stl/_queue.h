@@ -27,38 +27,38 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_QUEUE_H
-#define __SGI_STL_INTERNAL_QUEUE_H
+#ifndef _STLP_INTERNAL_QUEUE_H
+#define _STLP_INTERNAL_QUEUE_H
 
-#ifndef __SGI_STL_INTERNAL_DEQUE_H
+#ifndef _STLP_INTERNAL_DEQUE_H
 # include <stl/_deque.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_VECTOR_H
+#ifndef _STLP_INTERNAL_VECTOR_H
 # include <stl/_vector.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_HEAP_H
+#ifndef _STLP_INTERNAL_HEAP_H
 # include <stl/_heap.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_FUNCTIONAL_H
+#ifndef _STLP_INTERNAL_FUNCTIONAL_H
 # include <stl/_function.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if ! defined ( __STL_LIMITED_DEFAULT_TEMPLATES )
+# if ! defined ( _STLP_LIMITED_DEFAULT_TEMPLATES )
 template <class _Tp, class _Sequence = STLPORT::deque<_Tp> >
-# elif defined ( __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
-#  define __STL_QUEUE_ARGS _Tp
+# elif defined ( _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
+#  define _STLP_QUEUE_ARGS _Tp
 template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
 
 class queue {
-# if defined ( __STL_QUEUE_ARGS )
+# if defined ( _STLP_QUEUE_ARGS )
   typedef deque<_Tp> _Sequence;
 # endif
 public:
@@ -86,39 +86,39 @@ public:
   const _Sequence& _Get_c() const { return c; }
 };
 
-# ifndef __STL_QUEUE_ARGS
-#  define __STL_QUEUE_ARGS _Tp, _Sequence
-#  define __STL_QUEUE_HEADER_ARGS class _Tp, class _Sequence
+# ifndef _STLP_QUEUE_ARGS
+#  define _STLP_QUEUE_ARGS _Tp, _Sequence
+#  define _STLP_QUEUE_HEADER_ARGS class _Tp, class _Sequence
 # else
-#  define __STL_QUEUE_HEADER_ARGS class _Tp
+#  define _STLP_QUEUE_HEADER_ARGS class _Tp
 # endif
 
-template < __STL_QUEUE_HEADER_ARGS >
-inline bool __STL_CALL 
-operator==(const queue<__STL_QUEUE_ARGS >& __x, const queue<__STL_QUEUE_ARGS >& __y)
+template < _STLP_QUEUE_HEADER_ARGS >
+inline bool _STLP_CALL 
+operator==(const queue<_STLP_QUEUE_ARGS >& __x, const queue<_STLP_QUEUE_ARGS >& __y)
 {
   return __x._Get_c() == __y._Get_c();
 }
 
-template < __STL_QUEUE_HEADER_ARGS >
-inline bool __STL_CALL
-operator<(const queue<__STL_QUEUE_ARGS >& __x, const queue<__STL_QUEUE_ARGS >& __y)
+template < _STLP_QUEUE_HEADER_ARGS >
+inline bool _STLP_CALL
+operator<(const queue<_STLP_QUEUE_ARGS >& __x, const queue<_STLP_QUEUE_ARGS >& __y)
 {
   return __x._Get_c() < __y._Get_c();
 }
 
-__STL_RELOPS_OPERATORS( template < __STL_QUEUE_HEADER_ARGS >, queue<__STL_QUEUE_ARGS > )
+_STLP_RELOPS_OPERATORS( template < _STLP_QUEUE_HEADER_ARGS >, queue<_STLP_QUEUE_ARGS > )
 
-# if !(defined ( __STL_LIMITED_DEFAULT_TEMPLATES ) || defined ( __STL_TEMPLATE_PARAM_SUBTYPE_BUG ))
+# if !(defined ( _STLP_LIMITED_DEFAULT_TEMPLATES ) || defined ( _STLP_TEMPLATE_PARAM_SUBTYPE_BUG ))
 template <class _Tp, class _Sequence = vector<_Tp>, 
-          class _Compare = less<__STL_HEADER_TYPENAME _Sequence::value_type> >
-# elif defined ( __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
+          class _Compare = less<_STLP_HEADER_TYPENAME _Sequence::value_type> >
+# elif defined ( _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
 template <class _Tp>
 # else
 template <class _Tp, class _Sequence, class _Compare>
 # endif
 class  priority_queue {
-# ifdef __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS
+# ifdef _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS
   typedef vector<_Tp> _Sequence;
   typedef less< typename vector<_Tp>::value_type> _Compare; 
 # endif
@@ -139,7 +139,7 @@ public:
     : c(__s), _comp(__x) 		//*TY 01/10/1999 - ugrified comp
     { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last) 
     : c(__first, __last) { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
@@ -159,7 +159,7 @@ public:
     make_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
   }
 
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   priority_queue(const value_type* __first, const value_type* __last) 
     : c(__first, __last) { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
 
@@ -175,33 +175,33 @@ public:
     c.insert(c.end(), __first, __last);
     make_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   bool empty() const { return c.empty(); }
   size_type size() const { return c.size(); }
   const_reference top() const { return c.front(); }
   void push(const value_type& __x) {
-    __STL_TRY {
+    _STLP_TRY {
       c.push_back(__x); 
       push_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
     }
-    __STL_UNWIND(c.clear());
+    _STLP_UNWIND(c.clear());
   }
   void pop() {
-    __STL_TRY {
+    _STLP_TRY {
       pop_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
       c.pop_back();
     }
-    __STL_UNWIND(c.clear());
+    _STLP_UNWIND(c.clear());
   }
 };
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#  undef __STL_QUEUE_ARGS
-#  undef __STL_QUEUE_HEADER_ARGS
+#  undef _STLP_QUEUE_ARGS
+#  undef _STLP_QUEUE_HEADER_ARGS
 
-#endif /* __SGI_STL_INTERNAL_QUEUE_H */
+#endif /* _STLP_INTERNAL_QUEUE_H */
 
 // Local Variables:
 // mode:C++

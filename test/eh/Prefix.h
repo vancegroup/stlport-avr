@@ -23,14 +23,19 @@
 // considerably if your malloc is slow.
 #define TESTCLASS_DEEP_DATA 1
 
+# ifndef NO_FAST_ALLOCATOR
+// #  define NO_FAST_ALLOCATOR
+# endif
+
 // Define this to use the SGI STL. Undefine it to test a different installation
 #ifndef EH_NO_SGI_STL
 # define EH_USE_SGI_STL 1
 #endif
 
+
 #if EH_USE_SGI_STL
 
-#define EH_ASSERT __STL_ASSERT
+#define EH_ASSERT _STLP_ASSERT
 
 //=========================================================================
 // SGI STL-specific #defines
@@ -38,44 +43,44 @@
 //	STL. They have no effect when testing other STL implementations.
 //=========================================================================
 
-# define __STL_USE_RAW_SGI_ALLOCATORS
-# ifndef __STL_USE_NEWALLOC
-#  define __STL_USE_NEWALLOC
+# define _STLP_USE_RAW_SGI_ALLOCATORS
+# ifndef _STLP_USE_NEWALLOC
+#  define _STLP_USE_NEWALLOC
 # endif
-# if !defined  (__STL_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
-#  define __STL_NO_CUSTOM_IO
+# if !defined  (_STLP_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
+#  define _STLP_NO_CUSTOM_IO
 # endif
 
 // Just include something to get whatever configuration header we're using.
 # include <stl/_config.h>
 
-# ifndef __STL_CALL
-#  define __STL_CALL
+# ifndef _STLP_CALL
+#  define _STLP_CALL
 # endif
 
-# if defined(__STL_USE_NAMESPACES)
-#  define EH_USE_NAMESPACES __STL_USE_NAMESPACES
+# if defined(_STLP_USE_NAMESPACES)
+#  define EH_USE_NAMESPACES _STLP_USE_NAMESPACES
 # endif
 
-# define EH_BEGIN_NAMESPACE __STL_BEGIN_NAMESPACE
-# define EH_END_NAMESPACE __STL_END_NAMESPACE
+# define EH_BEGIN_NAMESPACE _STLP_BEGIN_NAMESPACE
+# define EH_END_NAMESPACE _STLP_END_NAMESPACE
 
 #  define EH_NEW_HEADERS 1
 
-# if defined (__STL_USE_NEW_IOSTREAMS)
+# if defined (_STLP_USE_NEW_IOSTREAMS)
 #  define EH_NEW_IOSTREAMS 1
 # endif
 
-# if !defined (__STL_USE_EXCEPTIONS)
+# if !defined (_STLP_USE_EXCEPTIONS)
 #  define EH_NO_EXCEPTIONS
 # endif
 
-# if defined (__STL_TEMPLATE_PARAM_SUBTYPE_BUG)
-#  define EH_TEMPLATE_PARAM_SUBTYPE_BUG __STL_TEMPLATE_PARAM_SUBTYPE_BUG
+# if defined (_STLP_TEMPLATE_PARAM_SUBTYPE_BUG)
+#  define EH_TEMPLATE_PARAM_SUBTYPE_BUG _STLP_TEMPLATE_PARAM_SUBTYPE_BUG
 # endif
 
-# if defined(__STL_MULTI_CONST_TEMPLATE_ARG_BUG)
-#  define EH_MULTI_CONST_TEMPLATE_ARG_BUG __STL_MULTI_CONST_TEMPLATE_ARG_BUG
+# if defined(_STLP_MULTI_CONST_TEMPLATE_ARG_BUG)
+#  define EH_MULTI_CONST_TEMPLATE_ARG_BUG _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
 # endif
 
 # if defined (STLPORT)
@@ -110,14 +115,14 @@
 # define stl_destroy EH_STD::destroy
 # include <memory>
 
-# define eh_allocator(T) EH_STD::__allocator<T, EH_STD::__debug_alloc<EH_STD::__new_alloc> >
+# define eh_allocator(T) EH_STD::__allocator<T, /* EH_STD::__debug_alloc< */ EH_STD::__new_alloc /* > */ >
 
 # define EH_BIT_VECTOR_IMPLEMENTED
 
-# if defined(__STL_CLASS_PARTIAL_SPECIALIZATION) && !defined(__STL_NO_BOOL)
+# if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined(_STLP_NO_BOOL)
 #  define EH_BIT_VECTOR EH_STD::vector<bool, eh_allocator(bool) >
 # else
-#  ifdef __STL_NO_BOOL
+#  ifdef _STLP_NO_BOOL
 #  undef   EH_BIT_VECTOR_IMPLEMENTED
 #  else
 #   define EH_BIT_VECTOR EH_STD::__vector__<bool, eh_allocator(bool) >
@@ -243,7 +248,7 @@ struct eh_select1st_hint : public unary_function<Pair, U> {
 # define EH_USE_STD
 #endif
 
-#if defined (EH_USE_NAMESPACES) && !defined(__STL_VENDOR_GLOBAL_CSTD)
+#if defined (EH_USE_NAMESPACES) && !defined(_STLP_VENDOR_GLOBAL_CSTD)
 # define USING_CSTD_NAME(name) using EH_STD :: name;
 #else
 # define USING_CSTD_NAME(name)

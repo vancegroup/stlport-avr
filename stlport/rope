@@ -11,22 +11,22 @@
  * purpose.  It is provided "as is" without express or implied warranty.
  */
 
-#ifndef __SGI_STL_ROPE
-#define __SGI_STL_ROPE
+#ifndef _STLP_ROPE
+#define _STLP_ROPE
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0x54
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0x54
 #  include <stl/_prolog.h>
 # endif
 
 # include <stl/_rope.h>
 
-# if (__STL_OUTERMOST_HEADER_ID == 0x54)
+# if (_STLP_OUTERMOST_HEADER_ID == 0x54)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_ROPE */
+#endif /* _STLP_ROPE */
 
 // Local Variables:
 // mode:C++

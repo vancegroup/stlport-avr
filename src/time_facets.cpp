@@ -22,7 +22,7 @@
 #include <stl/_istream.h>
 #include "c_locale.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // The function copy_cstring is used to initialize a string
 // with a C-style string.  Used to initialize the month and weekday
@@ -50,7 +50,7 @@ static inline void copy_cstring(const char * s, string& v) {
 // "C" values (note these are not defined in the C standard, so this
 // is somewhat arbitrary).
 
-void __STL_CALL _Init_timeinfo(_Time_Info& table) {
+void _STLP_CALL _Init_timeinfo(_Time_Info& table) {
   int i;
   for (i = 0; i < 14; ++i)
     copy_cstring(default_dayname[i], table._M_dayname[i]);
@@ -63,7 +63,7 @@ void __STL_CALL _Init_timeinfo(_Time_Info& table) {
   copy_cstring("%a %b %e %H:%M:%S %Y", table._M_date_time_format);
 }
 
-void __STL_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
+void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   int i;
   for (i = 0; i < 7; ++i)
     copy_cstring(_Locale_abbrev_dayofweek(time)[i],
@@ -265,7 +265,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
 #ifdef __GNUC__
 
       // fbp : at least on SUN 
-# if defined ( __STL_UNIX ) && ! defined (__linux__)
+# if defined ( _STLP_UNIX ) && ! defined (__linux__)
 #  define __USE_BSD 1
 # endif
  
@@ -349,7 +349,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
       }
     }
 
-# if defined ( __STL_USE_GLIBC  ) && ! defined (__CYGWIN__)
+# if defined ( _STLP_USE_GLIBC  ) && ! defined (__CYGWIN__)
     case 'z':		/* GNU extension.  */
       if (t->tm_isdst < 0)
 	break;
@@ -380,7 +380,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
   return buf;
 }
 
-time_base::dateorder __STL_CALL
+time_base::dateorder _STLP_CALL
 __get_date_order(_Locale_time* time)
 {
   const char * fmt = _Locale_d_fmt(time);
@@ -420,13 +420,13 @@ __get_date_order(_Locale_time* time)
   }
 }
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 template class time_get<char, istreambuf_iterator<char, char_traits<char> > >;
 // template class time_get<char, const char*>;
 template class time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 // template class time_put<char, char*>;
 
-#ifndef __STL_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 template class time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class time_get<wchar_t, const wchar_t*>;
 template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
@@ -435,4 +435,4 @@ template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_
 
 #endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE

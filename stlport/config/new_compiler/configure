@@ -781,7 +781,7 @@ ac_ext=$use_ac_ext
 
 if test "$ac_cv_sizeof_int" = "4"; then
   cat >> confdefs.h <<EOF
-#define __STL_UINT32_T unsigned int
+#define _STLP_UINT32_T unsigned int
 EOF
 
 else
@@ -830,7 +830,7 @@ EOF
   ac_ext=$use_ac_ext
   if test "$ac_cv_sizeof_long" = "4"; then
     cat >> confdefs.h <<EOF
-#define __STL_UINT32_T unsigned long
+#define _STLP_UINT32_T unsigned long
 EOF
 
   else
@@ -878,7 +878,7 @@ EOF
 
     if test "$ac_cv_sizeof_short" = "4"; then
       cat >> confdefs.h <<EOF
-#define __STL_UINT32_T unsigned short
+#define _STLP_UINT32_T unsigned short
 EOF
 
     else
@@ -955,7 +955,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
     cat >> confdefs.h <<\EOF
-#define __STL_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
+#define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
 EOF
  ac_cv_spec_syntax="no" _FULL_SPEC=""
 fi
@@ -980,7 +980,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_BOOL 1
+#define _STLP_NO_BOOL 1
 EOF
  ac_cv_bool="no"
 fi
@@ -1002,7 +1002,7 @@ EOF
 if { (eval echo configure:1003: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_YVALS_H 1
+#define _STLP_YVALS_H 1
 EOF
  echo "$ac_t""yes" 1>&6 
 else
@@ -1029,7 +1029,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_DONT_USE_BOOL_TYPEDEF 1
+#define _STLP_DONT_USE_BOOL_TYPEDEF 1
 EOF
  ac_cv_bool_reserved="yes"
 fi
@@ -1059,7 +1059,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_WCHAR_T 1
+#define _STLP_NO_WCHAR_T 1
 EOF
  ac_cv_wchar="no"
 fi
@@ -1092,7 +1092,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_WCHAR_T_IS_USHORT 1
+#define _STLP_WCHAR_T_IS_USHORT 1
 EOF
  ac_cv_wchar_short="yes"
 fi
@@ -1112,7 +1112,7 @@ EOF
 if { (eval echo configure:1113: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_LONG_LONG 1
+#define _STLP_LONG_LONG 1
 EOF
  ac_cv_long_long="yes"
 else
@@ -1142,7 +1142,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_LONG_DOUBLE 1
+#define _STLP_NO_LONG_DOUBLE 1
 EOF
  ac_cv_long_double="no"
 fi
@@ -1196,7 +1196,7 @@ else
   rm -rf conftest*
   __TYPENAME="" 
      cat >> confdefs.h <<\EOF
-#define __STL_NEED_TYPENAME 1
+#define _STLP_NEED_TYPENAME 1
 EOF
 
      ac_cv_typename="no"
@@ -1224,7 +1224,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_EXPLICIT 1
+#define _STLP_NO_EXPLICIT 1
 EOF
  ac_cv_explicit="no"
 fi
@@ -1251,7 +1251,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NEED_MUTABLE 1
+#define _STLP_NEED_MUTABLE 1
 EOF
  ac_cv_mutable="no"
 fi
@@ -1282,7 +1282,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_STYLE_CASTS 1
+#define _STLP_NO_NEW_STYLE_CASTS 1
 EOF
  ac_cv_new_cast="no"
 fi
@@ -1302,7 +1302,7 @@ cat > conftest.$ac_ext <<EOF
      #include <cstring>
      #include <cassert>
      #include <climits>
-     #ifndef __STL_NO_WCHAR_T
+     #ifndef _STLP_NO_WCHAR_T
      #include <cwchar>
      #endif
        
@@ -1318,7 +1318,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_HAS_NO_NEW_C_HEADERS 1
+#define _STLP_HAS_NO_NEW_C_HEADERS 1
 EOF
  ac_cv_newheaders="no"
 fi
@@ -1345,7 +1345,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_NEW_HEADER 1
+#define _STLP_NO_NEW_NEW_HEADER 1
 EOF
  ac_cv_new_new="no"
 fi
@@ -1380,7 +1380,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_MEMBER_TEMPLATES 1
+#define _STLP_NO_MEMBER_TEMPLATES 1
 EOF
  ac_cv_member_templates="no"
 
@@ -1416,7 +1416,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_FRIEND_TEMPLATES 1
+#define _STLP_NO_FRIEND_TEMPLATES 1
 EOF
  ac_cv_friend_templates="no"
 
@@ -1456,7 +1456,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_QUALIFIED_FRIENDS 1
+#define _STLP_NO_QUALIFIED_FRIENDS 1
 EOF
  ac_cv_qual_friend_templates="no"
 
@@ -1498,7 +1498,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_MEMBER_TEMPLATE_KEYWORD 1
+#define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 EOF
  ac_cv_member_template_keyword="no"
 
@@ -1541,7 +1541,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_MEMBER_TEMPLATE_CLASSES 1
+#define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 EOF
  ac_cv_member_template_classes="no"
 
@@ -1588,7 +1588,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_CLASS_PARTIAL_SPECIALIZATION 1
+#define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 EOF
  ac_cv_partial_spec="no"
 
@@ -1634,7 +1634,7 @@ EOF
 if { (eval echo configure:1635: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS 1
+#define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS 1
 EOF
  ac_cv_partial_spec_needs_args="yes"
 else
@@ -1681,7 +1681,7 @@ EOF
 if { (eval echo configure:1682: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS 1
+#define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS 1
 EOF
  ac_cv_partial_spec_needs_args="yes"
 else
@@ -1729,7 +1729,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
+#define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 EOF
  ac_cv_partial_ord="no"
 
@@ -1771,7 +1771,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_METHOD_SPECIALIZATION 1
+#define _STLP_NO_METHOD_SPECIALIZATION 1
 EOF
  ac_cv_method_spec="no"
 
@@ -1792,7 +1792,7 @@ EOF
 if { (eval echo configure:1793: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_RAND48 1
+#define _STLP_RAND48 1
 EOF
  ac_cv_func_lrand48="yes"
 else
@@ -1827,7 +1827,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_LIMITED_DEFAULT_TEMPLATES 1
+#define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 EOF
  ac_cv_default_template_param="no"
 fi
@@ -1867,7 +1867,7 @@ EOF
 if { (eval echo configure:1868: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_DEFAULT_TYPE_PARAM 1
+#define _STLP_DEFAULT_TYPE_PARAM 1
 EOF
  ac_cv_default_type_param="yes"
 else
@@ -1912,7 +1912,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_DEFAULT_NON_TYPE_PARAM 1
+#define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1
 EOF
  ac_cv_default_nontype_param="no"
 	
@@ -1954,7 +1954,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NON_TYPE_TMPL_PARAM_BUG 1
+#define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 EOF
  ac_cv_nontype_param_bug="yes"
 	
@@ -1981,7 +1981,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_STATIC_TEMPLATE_DATA 1
+#define _STLP_NO_STATIC_TEMPLATE_DATA 1
 EOF
  ac_cv_static_templates="no"
 fi
@@ -2002,7 +2002,7 @@ EOF
 if { (eval echo configure:2003: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_WEAK_ATTRIBUTE 1
+#define _STLP_WEAK_ATTRIBUTE 1
 EOF
  ac_cv_weak_attribute="yes"
 else
@@ -2035,7 +2035,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_STATIC_ARRAY_BUG 1
+#define _STLP_STATIC_ARRAY_BUG 1
 EOF
  ac_cv_static_array_bug="yes"
 fi
@@ -2062,7 +2062,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_STATIC_CONST_INIT_BUG 1
+#define _STLP_STATIC_CONST_INIT_BUG 1
 EOF
  ac_cv_static_init_bug="yes"
 fi
@@ -2098,7 +2098,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_HAS_NO_NAMESPACES 1
+#define _STLP_HAS_NO_NAMESPACES 1
 EOF
  _TEST_STD="" _TEST_STD_BEGIN="" _TEST_STD_END="" ac_cv_namespaces="no"
 fi
@@ -2139,13 +2139,13 @@ if test "$ac_cv_broken_using" = no; then
     ac_cv_broken_using=no
   else
    cat >> confdefs.h <<\EOF
-#define __STL_BROKEN_USING_DIRECTIVE 1
+#define _STLP_BROKEN_USING_DIRECTIVE 1
 EOF
 
   fi
 else
    cat >> confdefs.h <<\EOF
-#define __STL_BROKEN_USING_DIRECTIVE 1
+#define _STLP_BROKEN_USING_DIRECTIVE 1
 EOF
 
 fi
@@ -2159,7 +2159,7 @@ if test "${enable_namespaces+set}" = set; then
   
 case "$enableval" in
 	no) cat >> confdefs.h <<\EOF
-#define __STL_NO_NAMESPACES 1
+#define _STLP_NO_NAMESPACES 1
 EOF
  
             _TEST_STD="" 
@@ -2203,7 +2203,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_HAS_NO_EXCEPTIONS 1
+#define _STLP_HAS_NO_EXCEPTIONS 1
 EOF
  ac_cv_exceptions="no"
 fi
@@ -2230,7 +2230,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_EXCEPTION_SPEC 1
+#define _STLP_NO_EXCEPTION_SPEC 1
 EOF
  ac_cv_exception_spec="no"
 fi
@@ -2261,7 +2261,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_THROW_RETURN_BUG 1
+#define _STLP_THROW_RETURN_BUG 1
 EOF
  ac_cv_throw_return_bug="yes"
 fi
@@ -2273,7 +2273,7 @@ rm -f conftest*
        ac_cv_throw_return_bug="no"
      else
        cat >> confdefs.h <<\EOF
-#define __STL_THROW_RETURN_BUG 1
+#define _STLP_THROW_RETURN_BUG 1
 EOF
 
        ac_cv_throw_return_bug="yes"
@@ -2290,7 +2290,7 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 
      #include <string>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      basic_string<char, char_traits<char>, allocator<char> > bs;
@@ -2308,7 +2308,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
    cat >> confdefs.h <<\EOF
-#define __STL_NO_STRING_HEADER 1
+#define _STLP_NO_STRING_HEADER 1
 EOF
  ac_cv_string_header="no"
 
@@ -2324,7 +2324,7 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 
      #include <stdexcept>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      string s;
@@ -2350,7 +2350,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_STDEXCEPT_HEADER 1
+#define _STLP_NO_STDEXCEPT_HEADER 1
 EOF
  ac_cv_stdexcept_header="no"
 
@@ -2366,7 +2366,7 @@ cat > conftest.$ac_ext <<EOF
 
      #include <iosfwd>
      #include <iostream>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
 
@@ -2389,7 +2389,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_HAS_NO_NEW_IOSTREAMS 1
+#define _STLP_HAS_NO_NEW_IOSTREAMS 1
 EOF
  ac_cv_newstreams="no"
 fi
@@ -2406,7 +2406,7 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 
      #include <exception>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      class my_exception: public $_TEST_STD::exception {};
@@ -2424,7 +2424,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_EXCEPTION_HEADER 1
+#define _STLP_NO_EXCEPTION_HEADER 1
 EOF
  ac_cv_exception_header="no"
 
@@ -2436,7 +2436,7 @@ echo $ac_n "checking builtin constructor bug""... $ac_c" 1>&6
 echo "configure:2437: checking builtin constructor bug" >&5
 if test "$cross_compiling" = yes; then
    cat >> confdefs.h <<\EOF
-#define __STL_DEFAULT_CONSTRUCTOR_BUG 1
+#define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 EOF
  ac_cv_builtin_c_bug="yes"
 
@@ -2448,7 +2448,7 @@ else
 extern "C" void exit(int);
 #endif
 
-# ifdef __STL_USE_NEW_STYLE_HEADERS
+# ifdef _STLP_USE_NEW_STYLE_HEADERS
 #  include <cassert>
 #  include <cstdio>
 #  include <cstring>
@@ -2500,7 +2500,7 @@ else
   cat conftest.$ac_ext >&5
   rm -fr conftest*
    cat >> confdefs.h <<\EOF
-#define __STL_DEFAULT_CONSTRUCTOR_BUG 1
+#define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 EOF
  ac_cv_builtin_c_bug="yes"
 fi
@@ -2529,7 +2529,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_TRIVIAL_CONSTRUCTOR_BUG 1
+#define _STLP_TRIVIAL_CONSTRUCTOR_BUG 1
 EOF
  ac_cv_tc_bug="yes"
 fi
@@ -2557,7 +2557,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_TRIVIAL_DESTRUCTOR_BUG 1
+#define _STLP_TRIVIAL_DESTRUCTOR_BUG 1
 EOF
  ac_cv_td_bug="yes"
 fi
@@ -2592,7 +2592,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
    cat >> confdefs.h <<\EOF
-#define __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
+#define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 EOF
  ac_cv_expl_fun_args="no" _NULLARGS=""
 fi
@@ -2646,7 +2646,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_BASE_MATCH_BUG 1
+#define _STLP_BASE_MATCH_BUG 1
 EOF
  ac_cv_base_match="no"
 fi
@@ -2696,7 +2696,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NONTEMPL_BASE_MATCH_BUG 1
+#define _STLP_NONTEMPL_BASE_MATCH_BUG 1
 EOF
  ac_cv_nont_base_match="no"
 fi
@@ -2722,7 +2722,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NESTED_TYPE_PARAM_BUG 1
+#define _STLP_NESTED_TYPE_PARAM_BUG 1
 EOF
  ac_cv_nested_type_param_bug="yes"
 fi
@@ -2780,11 +2780,11 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_BASE_TYPEDEF_BUG 1
+#define _STLP_BASE_TYPEDEF_BUG 1
 EOF
  
      cat >> confdefs.h <<\EOF
-#define __STL_BASE_TYPEDEF_OUTSIDE_BUG 1
+#define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 EOF
  ac_cv_typebug="yes"
 fi
@@ -2828,7 +2828,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_BASE_TYPEDEF_OUTSIDE_BUG 1
+#define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 EOF
  ac_cv_outside_typedef="no"
 fi
@@ -2859,7 +2859,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_UNINITIALIZABLE_PRIVATE 1
+#define _STLP_UNINITIALIZABLE_PRIVATE 1
 EOF
  ac_cv_private="no"
 fi
@@ -2894,7 +2894,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_CONST_CONSTRUCTOR_BUG 1
+#define _STLP_CONST_CONSTRUCTOR_BUG 1
 EOF
  ac_cv_const_constructor_bug="yes"
 fi
@@ -2920,7 +2920,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_LOOP_INLINE_PROBLEMS 1
+#define _STLP_LOOP_INLINE_PROBLEMS 1
 EOF
  ac_cv_inline_problems="yes"
 fi
@@ -2931,7 +2931,7 @@ if test "$ac_cv_inline_problems" = no; then
      ac_cv_inline_problems="no"
   else
    cat >> confdefs.h <<\EOF
-#define __STL_LOOP_INLINE_PROBLEMS 1
+#define _STLP_LOOP_INLINE_PROBLEMS 1
 EOF
 
    ac_cv_inline_problems="yes"
@@ -3019,7 +3019,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_MEMBER_POINTER_PARAM_BUG 1
+#define _STLP_MEMBER_POINTER_PARAM_BUG 1
 EOF
  ac_cv_pmf_bug="yes"
 fi
@@ -3032,13 +3032,13 @@ cat > conftest.$ac_ext <<EOF
 #line 3033 "configure"
 #include "confdefs.h"
 
-     #if !defined (__STL_NO_NEW_STYLE_HEADERS)
+     #if !defined (_STLP_NO_NEW_STYLE_HEADERS)
      #include <new>
      #else
      #include <new.h>
      #endif
 
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
 
@@ -3055,7 +3055,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_NO_BAD_ALLOC 1
+#define _STLP_NO_BAD_ALLOC 1
 EOF
  ac_cv_bad_alloc="no"
 fi
@@ -3078,7 +3078,7 @@ EOF
 if { (eval echo configure:3079: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __STL_AUTOMATIC_TYPE_TRAITS 1
+#define _STLP_AUTOMATIC_TYPE_TRAITS 1
 EOF
  ac_cv_type_traits="yes"
 else
@@ -3103,7 +3103,7 @@ if test "${enable_exceptions+set}" = set; then
   
 case "$enableval" in
            no) cat >> confdefs.h <<\EOF
-#define __STL_NO_EXCEPTIONS 1
+#define _STLP_NO_EXCEPTIONS 1
 EOF
 
                echo "$ac_t""Config arg --disable-exceptions : disabling exceptions by user request" 1>&6;;
@@ -3126,7 +3126,7 @@ if test "${enable_relops+set}" = set; then
   
 case "$enableval" in
 	no) cat >> confdefs.h <<\EOF
-#define __STL_NO_RELOPS_NAMESPACE 1
+#define _STLP_NO_RELOPS_NAMESPACE 1
 EOF
  
             echo "$ac_t""Config arg --disable-relops : no std::rel_ops namespace by user request" 1>&6;;
@@ -3140,7 +3140,7 @@ fi
 
 else
  cat >> confdefs.h <<\EOF
-#define __STL_NO_RELOPS_NAMESPACE 1
+#define _STLP_NO_RELOPS_NAMESPACE 1
 EOF
  
 fi
@@ -3152,7 +3152,7 @@ if test "${enable_new_style_headers+set}" = set; then
   
 case "$enableval" in
 	no) cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_STYLE_HEADERS 1
+#define _STLP_NO_NEW_STYLE_HEADERS 1
 EOF
  
             echo "$ac_t""Config arg --disable-new-style-headers : not using new-style headers" 1>&6;;
@@ -3166,7 +3166,7 @@ fi
 
 else
  cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_STYLE_HEADERS 1
+#define _STLP_NO_NEW_STYLE_HEADERS 1
 EOF
 
 fi
@@ -3178,7 +3178,7 @@ if test "${enable_new_iostreams+set}" = set; then
   
 case "$enableval" in
 	no) cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_IOSTREAMS 1
+#define _STLP_NO_NEW_IOSTREAMS 1
 EOF
  
             echo "$ac_t""Config arg --disable-new-iostreams : not using new iostreams" 1>&6;;
@@ -3192,7 +3192,7 @@ fi
 
 else
   cat >> confdefs.h <<\EOF
-#define __STL_NO_NEW_IOSTREAMS 1
+#define _STLP_NO_NEW_IOSTREAMS 1
 EOF
 
 fi
@@ -3204,7 +3204,7 @@ if test "${enable_sgi_allocators+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg  --enable-sgi-allocators : SGI-style alloc as default allocator" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_USE_SGI_ALLOCATORS 1
+#define _STLP_USE_SGI_ALLOCATORS 1
 EOF
 ;;
 	    * ) echo "$ac_t""Config default: using allocator<T> as default allocator if possible " 1>&6
@@ -3225,7 +3225,7 @@ if test "${enable_malloc+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg  --enable-malloc : setting malloc_alloc as default alloc" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_USE_MALLOC 1
+#define _STLP_USE_MALLOC 1
 EOF
 ;;
 	    * ) echo "$ac_t""Config default: not using malloc_alloc as default alloc" 1>&6
@@ -3246,7 +3246,7 @@ if test "${enable_newalloc+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg  --enable-newalloc : setting new_alloc as default alloc" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_USE_NEWALLOC 1
+#define _STLP_USE_NEWALLOC 1
 EOF
 ;;
 	    * )
@@ -3270,7 +3270,7 @@ case "$enableval" in
 
 	  * ) echo "$ac_t""Config default : including HP-style defalloc.h into alloc.h" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_USE_DEFALLOC 1
+#define _STLP_USE_DEFALLOC 1
 EOF
 
 esac
@@ -3291,7 +3291,7 @@ if test "${enable_debugalloc+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg --enable-debugalloc : use debug versions of allocators " 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_DEBUG_ALLOC 1
+#define _STLP_DEBUG_ALLOC 1
 EOF
 ;;
 	  * )
@@ -3314,7 +3314,7 @@ if test "${enable_abbrevs+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg --enable-abbrevs : using abbreviated class names internally" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define __STL_USE_ABBREVS 1
+#define _STLP_USE_ABBREVS 1
 EOF
 ;;
 	  * )

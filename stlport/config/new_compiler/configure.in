@@ -59,17 +59,17 @@ AC_CHECK_SIZEOF(int,4)
 ac_ext=$use_ac_ext
 
 if test "$ac_cv_sizeof_int" = "4"; then
-  AC_DEFINE_UNQUOTED(__STL_UINT32_T,unsigned int)
+  AC_DEFINE_UNQUOTED(_STLP_UINT32_T,unsigned int)
 else
   AC_CHECK_SIZEOF(long,4)
   ac_ext=$use_ac_ext
   if test "$ac_cv_sizeof_long" = "4"; then
-    AC_DEFINE_UNQUOTED(__STL_UINT32_T,unsigned long)
+    AC_DEFINE_UNQUOTED(_STLP_UINT32_T,unsigned long)
   else
   dnl ELBRUS ??? ;)
     AC_CHECK_SIZEOF(short,4)
     if test "$ac_cv_sizeof_short" = "4"; then
-      AC_DEFINE_UNQUOTED(__STL_UINT32_T,unsigned short)
+      AC_DEFINE_UNQUOTED(_STLP_UINT32_T,unsigned short)
     else
       AC_MSG_ERROR(Cannot find any 32-bit integer type for your compiler)
     fi
@@ -118,7 +118,7 @@ AC_TRY_LINK(
      template <> class fs_foo<int> {};],
     [ fs_foo<int> i;],
     [  _FULL_SPEC="template <>" ac_cv_spec_syntax="yes"],
-    [  AC_DEFINE(__STL_NO_PARTIAL_SPECIALIZATION_SYNTAX) ac_cv_spec_syntax="no" _FULL_SPEC=""])
+    [  AC_DEFINE(_STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX) ac_cv_spec_syntax="no" _FULL_SPEC=""])
 AC_MSG_RESULT($ac_cv_spec_syntax)
 
 AC_MSG_CHECKING(for bool keyword)
@@ -126,14 +126,14 @@ AC_TRY_COMPILE(
     [bool b_foo() { return true; }],
     [(void)b_foo();],
     [ac_cv_bool="yes"],
-    [AC_DEFINE(__STL_NO_BOOL) ac_cv_bool="no"])
+    [AC_DEFINE(_STLP_NO_BOOL) ac_cv_bool="no"])
 AC_MSG_RESULT($ac_cv_bool)
 if test "$ac_cv_bool" = "no"; then
   AC_MSG_CHECKING(for yvals.h header)
   AC_TRY_COMPILE([#include <yvals.h> 
     extern bool aaa=true;
    ], [], 
-  [AC_DEFINE(__STL_YVALS_H) AC_MSG_RESULT(yes) ], 
+  [AC_DEFINE(_STLP_YVALS_H) AC_MSG_RESULT(yes) ], 
   [
   AC_MSG_RESULT(no)
   AC_MSG_CHECKING(whether bool is reserved word)
@@ -141,7 +141,7 @@ if test "$ac_cv_bool" = "no"; then
     [typedef int bool;],
     [],
     [ac_cv_bool_reserved="no"],
-    [AC_DEFINE(__STL_DONT_USE_BOOL_TYPEDEF) ac_cv_bool_reserved="yes"])
+    [AC_DEFINE(_STLP_DONT_USE_BOOL_TYPEDEF) ac_cv_bool_reserved="yes"])
   AC_MSG_RESULT($ac_cv_bool_reserved)
   ])
 fi
@@ -152,7 +152,7 @@ AC_TRY_COMPILE(
       wchar_t wc_foo() { return 'a'; }],
     [(void)wc_foo();],
     [ac_cv_wchar="yes"],
-    [AC_DEFINE(__STL_NO_WCHAR_T) ac_cv_wchar="no"])
+    [AC_DEFINE(_STLP_NO_WCHAR_T) ac_cv_wchar="no"])
 AC_MSG_RESULT($ac_cv_wchar)
 
 AC_MSG_CHECKING(if wchar_t is unsigned short)
@@ -168,14 +168,14 @@ AC_TRY_COMPILE(
 	],
     [],
     [ac_cv_wchar_short="no"],
-    [AC_DEFINE(__STL_WCHAR_T_IS_USHORT) ac_cv_wchar_short="yes"])
+    [AC_DEFINE(_STLP_WCHAR_T_IS_USHORT) ac_cv_wchar_short="yes"])
 AC_MSG_RESULT($ac_cv_wchar_short)
 
 AC_MSG_CHECKING(for long long type)
 AC_TRY_COMPILE(
     [long long ll_foo() { return 0; }],
     [(void)ll_foo();],
-    [AC_DEFINE(__STL_LONG_LONG) ac_cv_long_long="yes"],
+    [AC_DEFINE(_STLP_LONG_LONG) ac_cv_long_long="yes"],
     [ac_cv_long_long="no"])
 AC_MSG_RESULT($ac_cv_long_long)
 
@@ -184,7 +184,7 @@ AC_TRY_COMPILE(
     [long double ld_foo() { return 0; }],
     [(void)ld_foo();],
     [ac_cv_long_double="yes"],
-    [AC_DEFINE(__STL_NO_LONG_DOUBLE) ac_cv_long_double="no"])
+    [AC_DEFINE(_STLP_NO_LONG_DOUBLE) ac_cv_long_double="no"])
 AC_MSG_RESULT($ac_cv_long_double)
 
 AC_MSG_CHECKING(for typename keyword)
@@ -221,7 +221,7 @@ struct select2nd : public unary_function<Pair, typename Pair::second_type> {
     [__TYPENAME="typename" 
      ac_cv_typename="yes"],
     [__TYPENAME="" 
-     AC_DEFINE(__STL_NEED_TYPENAME)
+     AC_DEFINE(_STLP_NEED_TYPENAME)
      ac_cv_typename="no"])
 AC_MSG_RESULT($ac_cv_typename)
 
@@ -232,7 +232,7 @@ AC_TRY_COMPILE(
     ],
     [],
     [ac_cv_explicit="yes"],
-    [AC_DEFINE(__STL_NO_EXPLICIT) ac_cv_explicit="no"])
+    [AC_DEFINE(_STLP_NO_EXPLICIT) ac_cv_explicit="no"])
 AC_MSG_RESULT($ac_cv_explicit)
 
 AC_MSG_CHECKING(for mutable keyword)
@@ -242,7 +242,7 @@ AC_TRY_COMPILE(
     ],
     [c.update()],
     [ac_cv_mutable="yes"],
-    [AC_DEFINE(__STL_NEED_MUTABLE) ac_cv_mutable="no"])
+    [AC_DEFINE(_STLP_NEED_MUTABLE) ac_cv_mutable="no"])
 AC_MSG_RESULT($ac_cv_mutable)
 
 AC_MSG_CHECKING(for new style casts)
@@ -256,7 +256,7 @@ AC_TRY_COMPILE(
   c.update(const_cast<int*>(&a))
     ],
     [ac_cv_new_cast="yes"],
-    [AC_DEFINE(__STL_NO_NEW_STYLE_CASTS) ac_cv_new_cast="no"])
+    [AC_DEFINE(_STLP_NO_NEW_STYLE_CASTS) ac_cv_new_cast="no"])
 AC_MSG_RESULT($ac_cv_new_cast)
 
 AC_MSG_CHECKING(for new-style C library headers)
@@ -269,13 +269,13 @@ AC_TRY_COMPILE(
      #include <cstring>
      #include <cassert>
      #include <climits>
-     #ifndef __STL_NO_WCHAR_T
+     #ifndef _STLP_NO_WCHAR_T
      #include <cwchar>
      #endif
        ],
     [],
     [ac_cv_newheaders="yes"],
-    [AC_DEFINE(__STL_HAS_NO_NEW_C_HEADERS) ac_cv_newheaders="no"])
+    [AC_DEFINE(_STLP_HAS_NO_NEW_C_HEADERS) ac_cv_newheaders="no"])
 AC_MSG_RESULT($ac_cv_newheaders)
 
 AC_MSG_CHECKING(for new-style <new> header)
@@ -285,7 +285,7 @@ AC_TRY_COMPILE(
        ],
     [],
     [ac_cv_new_new="yes"],
-    [AC_DEFINE(__STL_NO_NEW_NEW_HEADER) ac_cv_new_new="no"])
+    [AC_DEFINE(_STLP_NO_NEW_NEW_HEADER) ac_cv_new_new="no"])
 AC_MSG_RESULT($ac_cv_new_new)
 
 
@@ -302,7 +302,7 @@ mt_foo<int> p;
 (void)p.operate((char*)"aaa");
 ], 
 [ac_cv_member_templates="yes"],
-[AC_DEFINE(__STL_NO_MEMBER_TEMPLATES) ac_cv_member_templates="no"]
+[AC_DEFINE(_STLP_NO_MEMBER_TEMPLATES) ac_cv_member_templates="no"]
 )
 AC_MSG_RESULT($ac_cv_member_templates)
 
@@ -320,7 +320,7 @@ ft_foo<int> p;
 ],
 [], 
 [ac_cv_friend_templates="yes"],
-[AC_DEFINE(__STL_NO_FRIEND_TEMPLATES) ac_cv_friend_templates="no"]
+[AC_DEFINE(_STLP_NO_FRIEND_TEMPLATES) ac_cv_friend_templates="no"]
 )
 AC_MSG_RESULT($ac_cv_friend_templates)
 
@@ -342,7 +342,7 @@ ${_TEST_STD_END}
 ],
 [], 
 [ac_cv_qual_friend_templates="yes"],
-[AC_DEFINE(__STL_NO_QUALIFIED_FRIENDS) ac_cv_qual_friend_templates="no"]
+[AC_DEFINE(_STLP_NO_QUALIFIED_FRIENDS) ac_cv_qual_friend_templates="no"]
 )
 AC_MSG_RESULT($ac_cv_qual_friend_templates)
 
@@ -366,7 +366,7 @@ _Traits< int, nt_foo<short> > pp;
 ],
 [], 
 [ac_cv_member_template_keyword="yes"],
-[AC_DEFINE(__STL_NO_MEMBER_TEMPLATE_KEYWORD) ac_cv_member_template_keyword="no"]
+[AC_DEFINE(_STLP_NO_MEMBER_TEMPLATE_KEYWORD) ac_cv_member_template_keyword="no"]
 )
 AC_MSG_RESULT($ac_cv_member_template_keyword)
 
@@ -391,7 +391,7 @@ _Traits< int, nt_foo<short> > pp;
 ],
 [], 
 [ac_cv_member_template_classes="yes"],
-[AC_DEFINE(__STL_NO_MEMBER_TEMPLATE_CLASSES) ac_cv_member_template_classes="no"]
+[AC_DEFINE(_STLP_NO_MEMBER_TEMPLATE_CLASSES) ac_cv_member_template_classes="no"]
 )
 AC_MSG_RESULT($ac_cv_member_template_classes)
 fi
@@ -420,7 +420,7 @@ ps_foo<int*, int> p1;
 [p.bar();
  p1.foo();], 
 [ac_cv_partial_spec="yes"],
-[AC_DEFINE(__STL_NO_CLASS_PARTIAL_SPECIALIZATION) ac_cv_partial_spec="no"]
+[AC_DEFINE(_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) ac_cv_partial_spec="no"]
 )
 AC_MSG_RESULT($ac_cv_partial_spec)
 
@@ -452,7 +452,7 @@ ps_foo<int*, int> p1;
 ],
 [p.bar();
  p1.foo();], 
-[AC_DEFINE(__STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS) ac_cv_partial_spec_needs_args="yes"],
+[AC_DEFINE(_STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS) ac_cv_partial_spec_needs_args="yes"],
 [ac_cv_partial_spec_needs_args="no"]
 )
 AC_MSG_RESULT($ac_cv_partial_spec_needs_args)
@@ -481,7 +481,7 @@ ps_foo<int*, int> p1;
 ],
 [p.bar();
  p1.foo();], 
-[AC_DEFINE(__STL_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS) ac_cv_partial_spec_needs_args="yes"],
+[AC_DEFINE(_STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS) ac_cv_partial_spec_needs_args="yes"],
 [ac_cv_partial_spec_needs_args="no"]
 )
 AC_MSG_RESULT($ac_cv_partial_spec_needs_args)
@@ -507,7 +507,7 @@ T po_foo (const A<T>& a, const A<T>& b){ return a.a; }
   A<int> po_a(0); A<int> po_b(1); (void)po_foo(po_b, po_a)
 ],
 [ac_cv_partial_ord="yes"],
-[AC_DEFINE(__STL_NO_FUNCTION_TMPL_PARTIAL_ORDER) ac_cv_partial_ord="no"]
+[AC_DEFINE(_STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER) ac_cv_partial_ord="no"]
 )
 AC_MSG_RESULT($ac_cv_partial_ord)
 
@@ -531,7 +531,7 @@ ms_foo<int*, int> p1;
 [p.bar();
  p1.bar();], 
 [ac_cv_method_spec="yes"],
-[AC_DEFINE(__STL_NO_METHOD_SPECIALIZATION) ac_cv_method_spec="no"]
+[AC_DEFINE(_STLP_NO_METHOD_SPECIALIZATION) ac_cv_method_spec="no"]
 )
 AC_MSG_RESULT($ac_cv_method_spec)
 
@@ -539,7 +539,7 @@ AC_MSG_CHECKING(for lrand48 function)
 AC_TRY_LINK(
     [#include <stdlib.h>],
     [long i = lrand48();],
-    [AC_DEFINE(__STL_RAND48) ac_cv_func_lrand48="yes"],
+    [AC_DEFINE(_STLP_RAND48) ac_cv_func_lrand48="yes"],
     [ac_cv_func_lrand48="no"])
 AC_MSG_RESULT($ac_cv_func_lrand48)
 
@@ -553,7 +553,7 @@ AC_TRY_LINK(
     ],
     [],
     [ac_cv_default_template_param="yes"],
-    [AC_DEFINE(__STL_LIMITED_DEFAULT_TEMPLATES) ac_cv_default_template_param="no"])
+    [AC_DEFINE(_STLP_LIMITED_DEFAULT_TEMPLATES) ac_cv_default_template_param="no"])
 AC_MSG_RESULT($ac_cv_default_template_param)
 if test "$ac_cv_default_template_param" = "no"; then
   AC_MSG_CHECKING(for default type parameters)
@@ -580,7 +580,7 @@ Class<int> cl;
 Class<int,less<short> > cl2;
     ],
     [],
-    [AC_DEFINE(__STL_DEFAULT_TYPE_PARAM) ac_cv_default_type_param="yes"],
+    [AC_DEFINE(_STLP_DEFAULT_TYPE_PARAM) ac_cv_default_type_param="yes"],
     [ac_cv_default_type_param="no"])
   AC_MSG_RESULT($ac_cv_default_type_param)
 
@@ -605,7 +605,7 @@ Class<int, 2> cl2;
     ],
     [],
     [ac_cv_default_nontype_param="yes"],
-    [AC_DEFINE(__STL_NO_DEFAULT_NON_TYPE_PARAM) ac_cv_default_nontype_param="no"]
+    [AC_DEFINE(_STLP_NO_DEFAULT_NON_TYPE_PARAM) ac_cv_default_nontype_param="no"]
 	)
 AC_MSG_RESULT($ac_cv_default_nontype_param)
 
@@ -630,7 +630,7 @@ int i(cl==cl2);
     ],
     [],
     [ac_cv_nontype_param_bug="no"],
-    [AC_DEFINE(__STL_NON_TYPE_TMPL_PARAM_BUG) ac_cv_nontype_param_bug="yes"]
+    [AC_DEFINE(_STLP_NON_TYPE_TMPL_PARAM_BUG) ac_cv_nontype_param_bug="yes"]
 	)
 AC_MSG_RESULT($ac_cv_nontype_param_bug)
 
@@ -640,7 +640,7 @@ AC_TRY_LINK(
      template <class T> int Class<T>::a;],
     [],
     [ac_cv_static_templates="yes"],
-    [AC_DEFINE(__STL_NO_STATIC_TEMPLATE_DATA) ac_cv_static_templates="no"])
+    [AC_DEFINE(_STLP_NO_STATIC_TEMPLATE_DATA) ac_cv_static_templates="no"])
 AC_MSG_RESULT($ac_cv_static_templates)
 
 if test "$ac_cv_static_templates" = no; then
@@ -648,7 +648,7 @@ if test "$ac_cv_static_templates" = no; then
  AC_TRY_COMPILE(
     [int a_w __attribute__((weak));],
     [],
-    [AC_DEFINE(__STL_WEAK_ATTRIBUTE) ac_cv_weak_attribute="yes"],
+    [AC_DEFINE(_STLP_WEAK_ATTRIBUTE) ac_cv_weak_attribute="yes"],
     [ac_cv_weak_attribute="no"])
  AC_MSG_RESULT($ac_cv_weak_attribute)
 fi
@@ -660,7 +660,7 @@ AC_TRY_LINK(
      template <class T> int Class<T>::a[Class<T>::sz];],
     [],
     [ac_cv_static_array_bug="no"],
-    [AC_DEFINE(__STL_STATIC_ARRAY_BUG) ac_cv_static_array_bug="yes"])
+    [AC_DEFINE(_STLP_STATIC_ARRAY_BUG) ac_cv_static_array_bug="yes"])
 AC_MSG_RESULT($ac_cv_static_array_bug)
 fi
 
@@ -670,7 +670,7 @@ AC_TRY_LINK(
      template <class T> const int Class<T>::a;],
     [],
     [ac_cv_static_init_bug="no"],
-    [AC_DEFINE(__STL_STATIC_CONST_INIT_BUG) ac_cv_static_init_bug="yes"])
+    [AC_DEFINE(_STLP_STATIC_CONST_INIT_BUG) ac_cv_static_init_bug="yes"])
 AC_MSG_RESULT($ac_cv_static_init_bug)
 
 AC_MSG_CHECKING(for namespaces support)
@@ -689,7 +689,7 @@ AC_TRY_COMPILE(
      ],
     [(void)ns_foo(1);],
     [_TEST_STD="std"  _TEST_STD_BEGIN="namespace $_TEST_STD" _TEST_STD_END="namespace $_TEST_STD" ac_cv_namespaces="yes"],
-    [AC_DEFINE(__STL_HAS_NO_NAMESPACES) _TEST_STD="" _TEST_STD_BEGIN="" _TEST_STD_END="" ac_cv_namespaces="no"])
+    [AC_DEFINE(_STLP_HAS_NO_NAMESPACES) _TEST_STD="" _TEST_STD_BEGIN="" _TEST_STD_END="" ac_cv_namespaces="no"])
 AC_MSG_RESULT($ac_cv_namespaces)
 
 AC_MSG_CHECKING(for broken "using" directive)
@@ -711,10 +711,10 @@ if test "$ac_cv_broken_using" = no; then
   if `check_warning` ; then
     ac_cv_broken_using=no
   else
-   AC_DEFINE(__STL_BROKEN_USING_DIRECTIVE)
+   AC_DEFINE(_STLP_BROKEN_USING_DIRECTIVE)
   fi
 else
-   AC_DEFINE(__STL_BROKEN_USING_DIRECTIVE)
+   AC_DEFINE(_STLP_BROKEN_USING_DIRECTIVE)
 fi
 AC_MSG_RESULT($ac_cv_broken_using)
 
@@ -724,7 +724,7 @@ AC_ARG_ENABLE(namespaces,[--enable-namespaces Use namespaces (default if posssib
 --disable-namespaces Don't use namespaces support],
 [
 case "$enableval" in
-	no) AC_DEFINE(__STL_NO_NAMESPACES) 
+	no) AC_DEFINE(_STLP_NO_NAMESPACES) 
             _TEST_STD="" 
             _TEST_STD_BEGIN=""
             _TEST_STD_END=""
@@ -750,7 +750,7 @@ AC_TRY_COMPILE(
     }],
     [(void)ex_foo();],
     [ac_cv_exceptions="yes"],
-    [AC_DEFINE(__STL_HAS_NO_EXCEPTIONS) ac_cv_exceptions="no"])
+    [AC_DEFINE(_STLP_HAS_NO_EXCEPTIONS) ac_cv_exceptions="no"])
 AC_MSG_RESULT($ac_cv_exceptions)
 
 if test "$ac_cv_exceptions" = yes; then
@@ -760,11 +760,11 @@ AC_TRY_COMPILE(
     [template <class T> inline int ex_spec_foo(const T&) throw () { return 0;} ], 
     [(void)ex_spec_foo(5);],
     [ac_cv_exception_spec="yes"],
-    [AC_DEFINE(__STL_NO_EXCEPTION_SPEC) ac_cv_exception_spec="no"])
+    [AC_DEFINE(_STLP_NO_EXCEPTION_SPEC) ac_cv_exception_spec="no"])
 dnl    if test "$ac_cv_exception_spec" = yes; then
 dnl    # check if no warnings have been issued
 dnl     if `check_warning` ; then
-dnl       AC_DEFINE(__STL_EXCEPTION_SPEC)
+dnl       AC_DEFINE(_STLP_EXCEPTION_SPEC)
 dnl     else
 dnl      ac_cv_exception_spec=no
 dnl      fi
@@ -782,14 +782,14 @@ AC_TRY_COMPILE(
     }],
     [(void)ex_foo();],
     [ac_cv_throw_return_bug="no"],
-    [AC_DEFINE(__STL_THROW_RETURN_BUG) ac_cv_throw_return_bug="yes"])
+    [AC_DEFINE(_STLP_THROW_RETURN_BUG) ac_cv_throw_return_bug="yes"])
 
     if test "$ac_cv_throw_return_bug" = no; then
     # check if no warnings have been issued
      if `check_warning` ; then
        ac_cv_throw_return_bug="no"
      else
-       AC_DEFINE(__STL_THROW_RETURN_BUG)
+       AC_DEFINE(_STLP_THROW_RETURN_BUG)
        ac_cv_throw_return_bug="yes"
      fi
     fi
@@ -801,7 +801,7 @@ AC_MSG_CHECKING(for native <string> header with basic_string defined )
 AC_TRY_COMPILE(
     [
      #include <string>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      basic_string<char, char_traits<char>, allocator<char> > bs;
@@ -809,7 +809,7 @@ AC_TRY_COMPILE(
     ],
     [],
     [ ac_cv_string_header="yes"],
-    [ AC_DEFINE(__STL_NO_STRING_HEADER) ac_cv_string_header="no"]
+    [ AC_DEFINE(_STLP_NO_STRING_HEADER) ac_cv_string_header="no"]
 )
 AC_MSG_RESULT($ac_cv_string_header)
 
@@ -819,7 +819,7 @@ AC_MSG_CHECKING(for native <stdexcept> header)
 AC_TRY_COMPILE(
     [
      #include <stdexcept>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      string s;
@@ -835,7 +835,7 @@ AC_TRY_COMPILE(
     ],
     [],
     [ac_cv_stdexcept_header="yes"],
-    [AC_DEFINE(__STL_NO_STDEXCEPT_HEADER) ac_cv_stdexcept_header="no"]
+    [AC_DEFINE(_STLP_NO_STDEXCEPT_HEADER) ac_cv_stdexcept_header="no"]
 )
 AC_MSG_RESULT($ac_cv_stdexcept_header)
 
@@ -844,7 +844,7 @@ AC_TRY_COMPILE(
     [
      #include <iosfwd>
      #include <iostream>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
 
@@ -857,7 +857,7 @@ AC_TRY_COMPILE(
 	outp(cout, "Hello World\n")
     ],
     [ac_cv_newstreams="yes"],
-    [AC_DEFINE(__STL_HAS_NO_NEW_IOSTREAMS) ac_cv_newstreams="no"])
+    [AC_DEFINE(_STLP_HAS_NO_NEW_IOSTREAMS) ac_cv_newstreams="no"])
 AC_MSG_RESULT($ac_cv_newstreams)
 
 dnl end namespace-related tests
@@ -868,7 +868,7 @@ AC_MSG_CHECKING(for <exception> header with class "exception" defined)
 AC_TRY_COMPILE(
     [
      #include <exception>
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
      class my_exception: public $_TEST_STD::exception {};
@@ -876,13 +876,13 @@ AC_TRY_COMPILE(
     ],
     [],
     [ac_cv_exception_header="yes"],
-    [AC_DEFINE(__STL_NO_EXCEPTION_HEADER) ac_cv_exception_header="no"]
+    [AC_DEFINE(_STLP_NO_EXCEPTION_HEADER) ac_cv_exception_header="no"]
 )
 AC_MSG_RESULT($ac_cv_exception_header)
 
 AC_MSG_CHECKING(builtin constructor bug)
 AC_TRY_RUN( [
-# ifdef __STL_USE_NEW_STYLE_HEADERS
+# ifdef _STLP_USE_NEW_STYLE_HEADERS
 #  include <cassert>
 #  include <cstdio>
 #  include <cstring>
@@ -926,8 +926,8 @@ int main(int, char**) {
 }
 ], 
 [ ac_cv_builtin_c_bug="no"],
-[ AC_DEFINE(__STL_DEFAULT_CONSTRUCTOR_BUG) ac_cv_builtin_c_bug="yes"],
-[ AC_DEFINE(__STL_DEFAULT_CONSTRUCTOR_BUG) ac_cv_builtin_c_bug="yes"]
+[ AC_DEFINE(_STLP_DEFAULT_CONSTRUCTOR_BUG) ac_cv_builtin_c_bug="yes"],
+[ AC_DEFINE(_STLP_DEFAULT_CONSTRUCTOR_BUG) ac_cv_builtin_c_bug="yes"]
 )
 AC_MSG_RESULT($ac_cv_builtin_c_bug)
 
@@ -938,7 +938,7 @@ AC_TRY_LINK(
      inline void tc_test_foo()  { tc_bug_foo(output_iterator_tag()); }],
     [tc_test_foo();],
     [ac_cv_tc_bug="no"],
-    [AC_DEFINE(__STL_TRIVIAL_CONSTRUCTOR_BUG) ac_cv_tc_bug="yes"])
+    [AC_DEFINE(_STLP_TRIVIAL_CONSTRUCTOR_BUG) ac_cv_tc_bug="yes"])
 AC_MSG_RESULT($ac_cv_tc_bug)
 
 AC_MSG_CHECKING(for trivial destructor bug)
@@ -949,7 +949,7 @@ AC_TRY_LINK(
     [ td_bug_bar->~output_iterator_tag();
      ],
     [ac_cv_td_bug="no"],
-    [AC_DEFINE(__STL_TRIVIAL_DESTRUCTOR_BUG) ac_cv_td_bug="yes"])
+    [AC_DEFINE(_STLP_TRIVIAL_DESTRUCTOR_BUG) ac_cv_td_bug="yes"])
 AC_MSG_RESULT($ac_cv_td_bug)
 
 AC_MSG_CHECKING(for explicit function template arguments)
@@ -967,7 +967,7 @@ AC_TRY_LINK(
     [ foo<int> f1, f2;
       int ret= (f1==f2) ],
     [ _NULLARGS="<>" ac_cv_expl_fun_args="yes"],
-    [ AC_DEFINE(__STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS) ac_cv_expl_fun_args="no" _NULLARGS=""])
+    [ AC_DEFINE(_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) ac_cv_expl_fun_args="no" _NULLARGS=""])
 AC_MSG_RESULT($ac_cv_expl_fun_args)
 
 AC_MSG_CHECKING(for template parameter baseclass matching)
@@ -1004,7 +1004,7 @@ AC_TRY_LINK(
     ],
     [ (void)tbase_foo((int)1); ],
     [ac_cv_base_match="yes"],
-    [AC_DEFINE(__STL_BASE_MATCH_BUG) ac_cv_base_match="no"])
+    [AC_DEFINE(_STLP_BASE_MATCH_BUG) ac_cv_base_match="no"])
 AC_MSG_RESULT($ac_cv_base_match)
 
 AC_MSG_CHECKING(for non-template parameter baseclass matching )
@@ -1037,7 +1037,7 @@ AC_TRY_LINK(
     ],
     [ nont_base_foo((int)1); ],
     [ac_cv_nont_base_match="yes"],
-    [AC_DEFINE(__STL_NONTEMPL_BASE_MATCH_BUG) ac_cv_nont_base_match="no"])
+    [AC_DEFINE(_STLP_NONTEMPL_BASE_MATCH_BUG) ac_cv_nont_base_match="no"])
 AC_MSG_RESULT($ac_cv_nont_base_match)
 
 AC_MSG_CHECKING(for nested type parameters bug)
@@ -1046,7 +1046,7 @@ AC_TRY_LINK(
      template <class T> inline nt_o<T>::ii nt_o<T>::foo(ii) { return 0; }],
     [],
     [ac_cv_nested_type_param_bug="no"],
-    [AC_DEFINE(__STL_NESTED_TYPE_PARAM_BUG) ac_cv_nested_type_param_bug="yes"])
+    [AC_DEFINE(_STLP_NESTED_TYPE_PARAM_BUG) ac_cv_nested_type_param_bug="yes"])
 AC_MSG_RESULT($ac_cv_nested_type_param_bug)
 
 
@@ -1087,8 +1087,8 @@ public:
       (void)n(1,2);
     ],
     [ac_cv_typebug="no"],
-    [AC_DEFINE(__STL_BASE_TYPEDEF_BUG) 
-     AC_DEFINE(__STL_BASE_TYPEDEF_OUTSIDE_BUG) ac_cv_typebug="yes"])
+    [AC_DEFINE(_STLP_BASE_TYPEDEF_BUG) 
+     AC_DEFINE(_STLP_BASE_TYPEDEF_OUTSIDE_BUG) ac_cv_typebug="yes"])
 AC_MSG_RESULT($ac_cv_typebug)
 
 AC_MSG_CHECKING(if inherited typedefs visible from outside)
@@ -1115,7 +1115,7 @@ plus<int>::first_argument_type a;
 ],
     [],
     [ac_cv_outside_typedef="yes"],
-    [AC_DEFINE(__STL_BASE_TYPEDEF_OUTSIDE_BUG) ac_cv_outside_typedef="no"])
+    [AC_DEFINE(_STLP_BASE_TYPEDEF_OUTSIDE_BUG) ac_cv_outside_typedef="no"])
 AC_MSG_RESULT($ac_cv_outside_typedef)
 
 # fi
@@ -1129,7 +1129,7 @@ AC_TRY_COMPILE(
      ],
     [],
     [ac_cv_private="yes"],
-    [AC_DEFINE(__STL_UNINITIALIZABLE_PRIVATE) ac_cv_private="no"])
+    [AC_DEFINE(_STLP_UNINITIALIZABLE_PRIVATE) ac_cv_private="no"])
 AC_MSG_RESULT($ac_cv_private)
 
 
@@ -1146,7 +1146,7 @@ pair< const int, const int > p;
      ],
     [],
     [ac_cv_const_constructor_bug="no"],
-    [AC_DEFINE(__STL_CONST_CONSTRUCTOR_BUG) ac_cv_const_constructor_bug="yes"])
+    [AC_DEFINE(_STLP_CONST_CONSTRUCTOR_BUG) ac_cv_const_constructor_bug="yes"])
 AC_MSG_RESULT($ac_cv_const_constructor_bug)
 
 AC_MSG_CHECKING(for loop inline problems)
@@ -1155,13 +1155,13 @@ AC_TRY_COMPILE(
       int i; for (i=0; i<a; i++) a+=a;  while (i>0) a-=3; return a; }],
     [(void)il_foo(2);],
     [ac_cv_inline_problems="no"],
-    [AC_DEFINE(__STL_LOOP_INLINE_PROBLEMS) ac_cv_inline_problems="yes"])
+    [AC_DEFINE(_STLP_LOOP_INLINE_PROBLEMS) ac_cv_inline_problems="yes"])
 if test "$ac_cv_inline_problems" = no; then
 # check if no warnings have been issued
   if `check_warning` ; then
      ac_cv_inline_problems="no"
   else
-   AC_DEFINE(__STL_LOOP_INLINE_PROBLEMS)
+   AC_DEFINE(_STLP_LOOP_INLINE_PROBLEMS)
    ac_cv_inline_problems="yes"
   fi
 fi
@@ -1217,26 +1217,26 @@ mem_fun(Result (Class::*ptr)(void)) {
 ],
     [pmf_foo pmf; (void)mem_fun(&pmf_foo::bar)(&pmf)],
     [ac_cv_pmf_bug="no"],
-    [AC_DEFINE( __STL_MEMBER_POINTER_PARAM_BUG) ac_cv_pmf_bug="yes"])
+    [AC_DEFINE( _STLP_MEMBER_POINTER_PARAM_BUG) ac_cv_pmf_bug="yes"])
 AC_MSG_RESULT($ac_cv_pmf_bug)
 
 AC_MSG_CHECKING(if bad_alloc defined in <new>)
 AC_TRY_COMPILE(
     [
-     #if !defined (__STL_NO_NEW_STYLE_HEADERS)
+     #if !defined (_STLP_NO_NEW_STYLE_HEADERS)
      #include <new>
      #else
      #include <new.h>
      #endif
 
-     # if !defined (__STL_HAS_NO_NAMESPACES)
+     # if !defined (_STLP_HAS_NO_NAMESPACES)
        using namespace $_TEST_STD;
      # endif
 
      bad_alloc badalloc_foo() { bad_alloc err; return err;}],
     [(void)badalloc_foo()],
     [ac_cv_bad_alloc="yes"],
-    [AC_DEFINE(__STL_NO_BAD_ALLOC) ac_cv_bad_alloc="no"])
+    [AC_DEFINE(_STLP_NO_BAD_ALLOC) ac_cv_bad_alloc="no"])
 AC_MSG_RESULT($ac_cv_bad_alloc)
 
 AC_MSG_CHECKING(for __type_traits automatic specialization)
@@ -1246,7 +1246,7 @@ AC_TRY_LINK(
 	return 0;
      }],
     [(void)tt_foo(5)],
-    [AC_DEFINE(__STL_AUTOMATIC_TYPE_TRAITS) ac_cv_type_traits="yes"],
+    [AC_DEFINE(_STLP_AUTOMATIC_TYPE_TRAITS) ac_cv_type_traits="yes"],
     [ac_cv_type_traits="no"])
 AC_MSG_RESULT($ac_cv_type_traits)
 
@@ -1261,7 +1261,7 @@ AC_ARG_ENABLE(exceptions,[--enable-exceptions Use exceptions support (default if
  --disable-exceptions Don't use exceptions support],
 [
 case "$enableval" in
-           no) AC_DEFINE(__STL_NO_EXCEPTIONS)
+           no) AC_DEFINE(_STLP_NO_EXCEPTIONS)
                AC_MSG_RESULT(Config arg --disable-exceptions : disabling exceptions by user request);;
            *)  AC_MSG_RESULT(Config default: exceptions enabled)
 esac
@@ -1277,7 +1277,7 @@ AC_ARG_ENABLE(relops,[--enable-relops Separate rel_ops namespace for relational 
 --disable-relops No separate rel_ops namespace for relational operators],
 [
 case "$enableval" in
-	no) AC_DEFINE(__STL_NO_RELOPS_NAMESPACE) 
+	no) AC_DEFINE(_STLP_NO_RELOPS_NAMESPACE) 
             AC_MSG_RESULT(Config arg --disable-relops : no std::rel_ops namespace by user request);;
 	 *) AC_MSG_RESULT(Config default: Separate std::rel_ops namespace for relational operators)
 esac
@@ -1285,7 +1285,7 @@ esac
 [AC_MSG_RESULT(Config default: Separate std::rel_ops namespace for relational operators)]
 )
 else
- AC_DEFINE(__STL_NO_RELOPS_NAMESPACE) 
+ AC_DEFINE(_STLP_NO_RELOPS_NAMESPACE) 
 fi
 
 if test "$ac_cv_newheaders" = yes; then
@@ -1293,7 +1293,7 @@ AC_ARG_ENABLE(new-style-headers,[--enable-new-style-headers Use new-style header
 --disable-new-style-headers Don't use new-style headers],
 [
 case "$enableval" in
-	no) AC_DEFINE(__STL_NO_NEW_STYLE_HEADERS) 
+	no) AC_DEFINE(_STLP_NO_NEW_STYLE_HEADERS) 
             AC_MSG_RESULT(Config arg --disable-new-style-headers : not using new-style headers);;
 	 *) AC_MSG_RESULT(Config default: using new-style headers)
 esac
@@ -1301,7 +1301,7 @@ esac
 [AC_MSG_RESULT(Config default: using new-style headers)]
 )
 else
- AC_DEFINE(__STL_NO_NEW_STYLE_HEADERS)
+ AC_DEFINE(_STLP_NO_NEW_STYLE_HEADERS)
 fi
 
 if test "$ac_cv_newstreams" = yes; then
@@ -1309,7 +1309,7 @@ AC_ARG_ENABLE(new-iostreams,[--enable-new-iostreams Use new iostreams (default)
 --disable-new-iostreams Don't use new iostreams],
 [
 case "$enableval" in
-	no) AC_DEFINE(__STL_NO_NEW_IOSTREAMS) 
+	no) AC_DEFINE(_STLP_NO_NEW_IOSTREAMS) 
             AC_MSG_RESULT(Config arg --disable-new-iostreams : not using new iostreams);;
 	 *) AC_MSG_RESULT(Config default: using new iostreams)
 esac
@@ -1317,7 +1317,7 @@ esac
 [AC_MSG_RESULT(Config default: using new iostreams)]
 )
 else
-  AC_DEFINE(__STL_NO_NEW_IOSTREAMS)
+  AC_DEFINE(_STLP_NO_NEW_IOSTREAMS)
 fi
 
 AC_ARG_ENABLE(sgi-allocators,[--enable-sgi-allocators : set default parameter to SGI-style default alloc, not allocator<T>
@@ -1325,7 +1325,7 @@ AC_ARG_ENABLE(sgi-allocators,[--enable-sgi-allocators : set default parameter to
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg  --enable-sgi-allocators : SGI-style alloc as default allocator) 
-                AC_DEFINE(__STL_USE_SGI_ALLOCATORS);;
+                AC_DEFINE(_STLP_USE_SGI_ALLOCATORS);;
 	    * ) AC_MSG_RESULT(Config default: using allocator<T> as default allocator if possible )
 esac
 ],
@@ -1339,7 +1339,7 @@ AC_ARG_ENABLE(malloc,[--enable-malloc : set default alloc to malloc-based alloca
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg  --enable-malloc : setting malloc_alloc as default alloc) 
-                AC_DEFINE(__STL_USE_MALLOC);;
+                AC_DEFINE(_STLP_USE_MALLOC);;
 	    * ) AC_MSG_RESULT(Config default: not using malloc_alloc as default alloc)
 esac
 ],
@@ -1353,7 +1353,7 @@ AC_ARG_ENABLE(newalloc,[--enable-newalloc : set default alloc to new-based alloc
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg  --enable-newalloc : setting new_alloc as default alloc) 
-                AC_DEFINE(__STL_USE_NEWALLOC);;
+                AC_DEFINE(_STLP_USE_NEWALLOC);;
 	    * )
                 AC_MSG_RESULT(Config default: not using new_alloc as default alloc)
 esac
@@ -1370,7 +1370,7 @@ case "$enableval" in
 	  no ) AC_MSG_RESULT(Config arg --disable-defalloc : not including HP-style defalloc.h into alloc.h);;
 
 	  * ) AC_MSG_RESULT(Config default : including HP-style defalloc.h into alloc.h) 
-                AC_DEFINE(__STL_USE_DEFALLOC)
+                AC_DEFINE(_STLP_USE_DEFALLOC)
 esac
 ],
 [
@@ -1384,7 +1384,7 @@ AC_ARG_ENABLE(debugalloc,[--enable-debugalloc : use debug versions of allocators
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg --enable-debugalloc : use debug versions of allocators ) 
-                AC_DEFINE(__STL_DEBUG_ALLOC);;
+                AC_DEFINE(_STLP_DEBUG_ALLOC);;
 	  * )
           AC_MSG_RESULT(Config default : not using debug allocators)
 esac
@@ -1400,7 +1400,7 @@ AC_ARG_ENABLE(abbrevs,[--enable-abbrevs : use abbreviated class names internally
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg --enable-abbrevs : using abbreviated class names internally) 
-                AC_DEFINE(__STL_USE_ABBREVS);;
+                AC_DEFINE(_STLP_USE_ABBREVS);;
 	  * )
           AC_MSG_RESULT(Config default : not using abbreviated class names internally)
 esac

@@ -23,7 +23,7 @@
 #include "c_locale.h"
 
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 static void _Init_monetary_formats(money_base::pattern& pos_format,
                                     money_base::pattern& neg_format,
@@ -306,7 +306,7 @@ int moneypunct_byname<char, false>::do_frac_digits() const
 //
 // moneypunct_byname<wchar_t>
 //
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 moneypunct_byname<wchar_t, true>::moneypunct_byname(const char * name,
 						 size_t refs):
@@ -335,7 +335,7 @@ string moneypunct_byname<wchar_t, true>::do_grouping() const
 wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
 {
   string str = _Locale_int_curr_symbol(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -347,7 +347,7 @@ wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
 wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
 {
   string str = _Locale_positive_sign(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -360,7 +360,7 @@ wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
 wstring moneypunct_byname<wchar_t, true>::do_negative_sign() const
 {
   string str = _Locale_negative_sign(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC) 
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) 
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -399,7 +399,7 @@ string moneypunct_byname<wchar_t, false>::do_grouping() const
 wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
 {
   string str =  _Locale_currency_symbol(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -411,7 +411,7 @@ wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
 wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
 {
   string str = _Locale_positive_sign(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -423,7 +423,7 @@ wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
 wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const
 {
   string str = _Locale_negative_sign(_M_monetary);
-# if defined (__STL_NO_MEMBER_TEMPLATES) || defined (__STL_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -437,7 +437,7 @@ int moneypunct_byname<wchar_t, false>::do_frac_digits() const
 
 # endif
 
-__STL_END_NAMESPACE  
+_STLP_END_NAMESPACE  
 
 // Local Variables:
 // mode:C++

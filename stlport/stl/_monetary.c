@@ -15,16 +15,24 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_MONETARY_C
-#define __STL_MONETARY_C
+#ifndef _STLP_MONETARY_C
+#define _STLP_MONETARY_C
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-#ifndef __SGI_STL_IOS_H
+#ifndef _STLP_IOS_H
 # include <stl/_ios.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+#ifndef _STLP_INTERNAL_NUM_PUT_H
+# include <stl/_num_put.h>
+#endif
+
+#ifndef _STLP_INTERNAL_NUM_GET_H
+# include <stl/_num_get.h>
+#endif
+
+_STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _InputIterator>
 locale::id money_get<_CharT, _InputIterator>::id;
@@ -42,7 +50,6 @@ pair<_InIt1, bool> __get_string(_InIt1 __first,     _InIt1 __last,
   return make_pair(__pr.first, __pr.second == __str_last);
 }
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/26/2000 - mpw compilers have difficulty matching complex template arguments
 template <class _InIt, class _OuIt, class _CharT>
 pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
                                        _OuIt    __out,
@@ -50,15 +57,6 @@ pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
                                        _CharT   __point,
                                        size_t      __frac_digits,
 				       bool&    __syntax_ok)
-#else											//*TY 02/26/2000 - added workaround for MPW compilers
-template <class _InIt, class _OuIt, class _CharT, class _CType>		//*TY 02/26/2000 - added _CType
-pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
-                                       _OuIt    __out,
-                                       const _CType& __c_type,		//*TY 02/26/2000 - simplified parameter type
-                                       _CharT   __point,
-                                       size_t      __frac_digits,
-				       bool&    __syntax_ok)
-#endif											//*TY 02/26/2000 - 
 {
   if (__first == __last || !__c_type.is(ctype_base::digit, *__first))
     return make_pair(__first, false);
@@ -86,7 +84,6 @@ pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
   return pair<_InIt, bool>(__first, true);
 }
 
-#if !(defined(__MRC__)||defined(__SC__))
 //*TY 02/26/2000 - mpw compilers have difficulty matching complex template arguments
 template <class _InIt, class _OuIt, class _CharT>
 pair<_InIt, bool>
@@ -97,17 +94,6 @@ __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
                      _CharT __sep,
                      const string& __grouping,
 		     bool&         __syntax_ok)
-#else											//*TY 02/26/2000 - added workaround for MPW compilers
-template <class _InIt, class _OuIt, class _CharT, class _CType>		//*TY 02/26/2000 - added _CType
-pair<_InIt, bool>
-__get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
-                     const _CType& _c_type,		//*TY 02/26/2000 - simplified parameter type
-                     _CharT   __point,
-                     int      __frac_digits,
-                     _CharT __sep,
-                     const string& __grouping,
-		     bool&         __syntax_ok)
-#endif
 {
   if (__first == __last || !_c_type.is(ctype_base::digit, *__first))
     return pair<_InIt, bool>(__first, false);
@@ -133,7 +119,8 @@ __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
   if (__group_sizes.size() != 0)
     __group_sizes.push_back(__current_group_size);
 
-  __syntax_ok = __valid_grouping(__group_sizes, __grouping);  
+  __syntax_ok = __valid_grouping(__group_sizes.data(), __group_sizes.data()+__group_sizes.size(), 
+				 __grouping.data(), __grouping.data()+ __grouping.size());  
 
   if (__first == __last || *__first != __point) {
     for (int __digits = 0; __digits != __frac_digits; ++__digits)
@@ -169,7 +156,7 @@ money_get<_CharT, _InputIter>::do_get(_InputIter __s, _InputIter  __end, bool  _
     typename string_type::iterator __b = __buf.begin(), __e = __buf.end();
     // Can't use atold, since it might be wchar_t. Don't get confused by name below :
     // it's perfectly capable of reading long double.
-    __get_integer_nogroup(__b, __e, 10, __units, 0, false);
+    __get_decimal_integer(__b, __e, __units);
   }
   if (__s == __end)
     __err |= ios_base::eofbit;
@@ -448,7 +435,7 @@ money_put<_CharT, _OutputIter>
     
   size_t __width        = __str.width();
 
-#if !defined(__STL_DEBUG) || !defined(__HP_aCC) || (__HP_aCC > 1)
+#if !defined(_STLP_DEBUG) || !defined(__HP_aCC) || (__HP_aCC > 1)
   size_t __value_length = __digits_last - __digits_first;
 #else // --ptr: workaround for aCC A.03.13, with , __HP_aCC == 1
   size_t __value_length = operator -(__digits_last, __digits_first);
@@ -532,10 +519,8 @@ money_put<_CharT, _OutputIter>
   return __s;
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # endif /* EXPOSE */
 
-
-
-#endif /* __STL_MONETARY_C */
+#endif /* _STLP_MONETARY_C */

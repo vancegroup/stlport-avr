@@ -37,7 +37,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = -w ${STL_INCL} -D__STL_NO_CUSTOM_IO -D__SGI_STL_OWN_IOSTREAMS
+CXXFLAGS = -w ${STL_INCL} -D__STL_NO_CUSTOM_IO
 
 LIBS = -lm 
 

@@ -21,50 +21,26 @@
 #include <stl/_num_get.h>
 // #include <stl/_istream.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // num_get
 
 // Helper functions for _M_do_get_float.
 
-void  __STL_CALL
-_Initialize_get_float(const locale& loc,
-                       char& Plus, char& Minus, char& dot_char,
-                       char& pow_e, char& pow_E,
-                       char& sep, string& grouping,
-                       char* /* digits */)
-{
-  const numpunct<char>& fac = (const numpunct<char>&)use_facet<numpunct<char> >(loc);
-  Plus = '+';
-  Minus = '-';
-  dot_char = fac.decimal_point();
-  pow_e = 'e';
-  pow_E = 'E';
-  sep = fac.thousands_sep();
-  grouping = fac.grouping();
-}
+# ifndef _STLP_NO_WCHAR_T
 
-
-# ifndef __STL_NO_WCHAR_T
-
-void  __STL_CALL
-_Initialize_get_float(const locale& loc,
-                       wchar_t& Plus, wchar_t& Minus, wchar_t& dot_char,
+void  _STLP_CALL
+_Initialize_get_float( const ctype<wchar_t>& ct,
+                       wchar_t& Plus, wchar_t& Minus,
                        wchar_t& pow_e, wchar_t& pow_E,
-                       wchar_t& sep, string&  grouping,
                        wchar_t* digits)
 {
   char ndigits[11] = "0123456789";
-  const ctype<wchar_t>& ct = use_facet<ctype<wchar_t> >(loc);
-  const numpunct<wchar_t>& np = use_facet<numpunct<wchar_t> >(loc);
   Plus  = ct.widen('+');
   Minus = ct.widen('-');
-  dot_char   = np.decimal_point();
   pow_e = ct.widen('e');
   pow_E = ct.widen('E');
-  sep = np.thousands_sep();
-  grouping = np.grouping();
   ct.widen(ndigits + 0, ndigits + 10, digits);
 }
 
@@ -78,11 +54,11 @@ _Initialize_get_float(const locale& loc,
  */
 
 typedef unsigned int uint32;
-# if defined (__STL_MSVC) || defined (__BORLANDC__) || defined (__ICL)
+# if defined (_STLP_MSVC) || defined (__BORLANDC__) || defined (__ICL)
 # define ULL(x) x##Ui64
-typedef unsigned __STL_LONG_LONG uint64;
-# elif defined (__STL_LONG_LONG)
-typedef unsigned __STL_LONG_LONG uint64;
+typedef unsigned _STLP_LONG_LONG uint64;
+# elif defined (_STLP_LONG_LONG)
+typedef unsigned _STLP_LONG_LONG uint64;
 # define ULL(x) x##ULL
 # elif defined(__MRC__) || defined(__SC__)		//*TY 02/25/2000 - added support for MPW compilers
 # include "uint64.h"		//*TY 03/25/2000 - added 64bit math type definition
@@ -339,7 +315,7 @@ void _Stl_tenscale(uint64& p, int exp, int& bexp)
     return;
   }
   while(exp_hi) {               /* scale */
-    hi = __STL_MIN (exp_hi,num_hi);    /* only a few large powers of 10 */
+    hi = (min) (exp_hi,num_hi);    /* only a few large powers of 10 */
     exp_hi -= hi;               /* could iterate in extreme case */
     hi += thi-1;
     _Stl_mult64(p, _Stl_tenpow[hi], prodhi, prodlo);
@@ -363,9 +339,9 @@ void _Stl_tenscale(uint64& p, int exp, int& bexp)
 #if defined(__SC__) || defined(__MRC__)
 
 //*TY 04/06/2000 - powermac's 68K emulator utilizes apple's SANE floating point, which is not compatible with IEEE format.
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 # include <fp.h>
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 inline double _Stl_atod(char *buffer, int ndigit, int dexp)
 {
 	decimal d;	// ref. inside macintosh powerpc numerics p.9-13
@@ -790,22 +766,22 @@ _Stl_string_to_long_double(const char * s) {
   return x;
 }
 
-void  __STL_CALL
+void  _STLP_CALL
 __string_to_float(const string& v, float& val) {
     val = _Stl_string_to_double(v.data());
 }
 
-void  __STL_CALL
+void  _STLP_CALL
 __string_to_float(const string& v, double& val) {
     val = _Stl_string_to_double(v.data());
 }
 
-void  __STL_CALL
+void  _STLP_CALL
 __string_to_float(const string& v, long double& val) {
     val = _Stl_string_to_long_double(v.data());
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

@@ -15,21 +15,21 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_SSTREAM_C
-#define __STL_SSTREAM_C
+#ifndef _STLP_SSTREAM_C
+#define _STLP_SSTREAM_C
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-# if defined ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // no wint_t is supported for this mode
 # define __BSB_int_type__ int
 # define __BSB_pos_type__ streampos
 # else
-# define __BSB_int_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::int_type
-# define __BSB_pos_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::pos_type
+# define __BSB_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::int_type
+# define __BSB_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::pos_type
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Non-inline stringbuf member functions.
@@ -528,12 +528,11 @@ template <class _CharT, class _Traits, class _Alloc>
 basic_stringstream<_CharT, _Traits, _Alloc>::~basic_stringstream()
 {}
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 # undef __BSB_int_type__
 # undef __BSB_pos_type__
 
 # endif /* EXPOSE */
 
-#endif /* __STL_SSTREAM_C */
+#endif /* _STLP_SSTREAM_C */

@@ -16,16 +16,16 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_SLIST_C
-#define __STL_SLIST_C
+#ifndef _STLP_SLIST_C
+#define _STLP_SLIST_C
 
 # undef slist
 # define  slist  __WORKAROUND_DBG_RENAME(slist)
-# if defined (__STL_NESTED_TYPE_PARAM_BUG) 
+# if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
 #  define size_type          size_t
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc> 
 _Slist_node_base*
@@ -166,9 +166,9 @@ void slist<_Tp,_Alloc>::sort()
 # undef slist
 # undef size_type
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_SLIST_C */
+#endif /*  _STLP_SLIST_C */
 
 // Local Variables:
 // mode:C++

@@ -14,7 +14,7 @@ using namespace std;
 int vec3_test(int, char**)
 {
   cout<<"Results of vec3_test:"<<endl;
-# ifdef __SGI_STL_PORT
+# ifdef __STLPORT_VERSION
   typedef  __vector__<char, allocator<char> > vec_type;
 # else
   typedef  vector<char> vec_type;

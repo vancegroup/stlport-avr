@@ -19,12 +19,12 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_ALLOC_C
-#define __STL_ALLOC_C
+#ifndef _STLP_ALLOC_C
+#define _STLP_ALLOC_C
 
-# if defined (__STL_EXPOSE_GLOBALS_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
-# ifdef __STL_SGI_THREADS
+# ifdef _STLP_SGI_THREADS
   // We test whether threads are in use before locking.
   // Perhaps this should be moved into stl_threads.h, but that
   // probably makes it harder to avoid the procedure call when
@@ -36,24 +36,24 @@
 
 // Specialised debug form of malloc which does not provide "false"
 // memory leaks when run with debug CRT libraries.
-#if defined(__STL_MSVC) && (__STL_MSVC>=1020 && defined(_DEBUG)) && ! defined (__STL_WINCE)
+#if defined(_STLP_MSVC) && (_STLP_MSVC>=1020 && defined(_DEBUG)) && ! defined (_STLP_WINCE)
 #  include <crtdbg.h>
-#  define   __STL_CHUNK_MALLOC(s)         _malloc_dbg(s, _CRT_BLOCK, __FILE__, __LINE__)
+#  define   _STLP_CHUNK_MALLOC(s)         _malloc_dbg(s, _CRT_BLOCK, __FILE__, __LINE__)
 #else	// !_DEBUG
-# ifdef __STL_NODE_ALLOC_USE_MALLOC
+# ifdef _STLP_NODE_ALLOC_USE_MALLOC
 #  include <cstdlib>
-#  define   __STL_CHUNK_MALLOC(s)         __STL_VENDOR_CSTD::malloc(s)
+#  define   _STLP_CHUNK_MALLOC(s)         _STLP_VENDOR_CSTD::malloc(s)
 # else
-#  define   __STL_CHUNK_MALLOC(s)         __stl_new(s)
+#  define   _STLP_CHUNK_MALLOC(s)         __stl_new(s)
 # endif
 #endif	// !_DEBUG
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes-size_t(1))>>(int)_ALIGN_SHIFT)
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <int __inst>
-void *  __STL_CALL __malloc_alloc<__inst>::_S_oom_malloc(size_t __n)
+void *  _STLP_CALL __malloc_alloc<__inst>::_S_oom_malloc(size_t __n)
 {
   __oom_handler_type __my_malloc_handler;
   void * __result;
@@ -65,14 +65,14 @@ void *  __STL_CALL __malloc_alloc<__inst>::_S_oom_malloc(size_t __n)
     __result = malloc(__n);
     if (__result) return(__result);
   }
-#if defined(__STL_NEED_UNREACHABLE_RETURN)
+#if defined(_STLP_NEED_UNREACHABLE_RETURN)
   return 0;
 #endif
 
 }
 
 template <class _Alloc>
-void *  __STL_CALL __debug_alloc<_Alloc>::allocate(size_t __n) {
+void *  _STLP_CALL __debug_alloc<_Alloc>::allocate(size_t __n) {
   size_t __real_n = __n + __extra_before_chunk() + __extra_after_chunk();
   __alloc_header *__result = (__alloc_header *)__allocator_type::allocate(__real_n);
   memset((char*)__result, __shred_byte, __real_n*sizeof(value_type));
@@ -83,25 +83,25 @@ void *  __STL_CALL __debug_alloc<_Alloc>::allocate(size_t __n) {
 }
 
 template <class _Alloc>
-void  __STL_CALL
+void  _STLP_CALL
 __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   __alloc_header * __real_p = (__alloc_header*)((char *)__p -(long)__extra_before);
   // check integrity
-  __STL_VERBOSE_ASSERT(__real_p->__magic != __deleted_magic, _StlMsg_DBA_DELETED_TWICE)
-  __STL_VERBOSE_ASSERT(__real_p->__magic == __magic, _StlMsg_DBA_NEVER_ALLOCATED)
-  __STL_VERBOSE_ASSERT(__real_p->__type_size == 1,_StlMsg_DBA_TYPE_MISMATCH)
-  __STL_VERBOSE_ASSERT(__real_p->_M_size == __n, _StlMsg_DBA_SIZE_MISMATCH)
+  _STLP_VERBOSE_ASSERT(__real_p->__magic != __deleted_magic, _StlMsg_DBA_DELETED_TWICE)
+  _STLP_VERBOSE_ASSERT(__real_p->__magic == __magic, _StlMsg_DBA_NEVER_ALLOCATED)
+  _STLP_VERBOSE_ASSERT(__real_p->__type_size == 1,_StlMsg_DBA_TYPE_MISMATCH)
+  _STLP_VERBOSE_ASSERT(__real_p->_M_size == __n, _StlMsg_DBA_SIZE_MISMATCH)
   // check pads on both sides
   unsigned char* __tmp;
   for (__tmp= (unsigned char*)(__real_p+1); __tmp < (unsigned char*)__p; __tmp++) {  
-    __STL_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_UNDERRUN)
+    _STLP_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_UNDERRUN)
       }
   
   size_t __real_n= __n + __extra_before_chunk() + __extra_after_chunk();
   
   for (__tmp= ((unsigned char*)__p)+__n*sizeof(value_type); 
        __tmp < ((unsigned char*)__real_p)+__real_n ; __tmp++) {
-    __STL_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_OVERRUN)
+    _STLP_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_OVERRUN)
       }
   
   // that may be unfortunate, just in case
@@ -112,25 +112,25 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
 
 
 
-# ifdef __STL_THREADS
+# ifdef _STLP_THREADS
 
 template <bool __threads, int __inst>
-class __STL_CLASS_DECLSPEC _Node_Alloc_Lock {
+class _STLP_CLASS_DECLSPEC _Node_Alloc_Lock {
 public:
   _Node_Alloc_Lock() { 
     
-#  ifdef __STL_SGI_THREADS
+#  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
-#  else /* !__STL_SGI_THREADS */
+#  else /* !_STLP_SGI_THREADS */
       if (__threads) 
 #  endif
     	_S_lock._M_acquire_lock(); 
   }
   
   ~_Node_Alloc_Lock() {
-#  ifdef __STL_SGI_THREADS
+#  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
-#  else /* !__STL_SGI_THREADS */
+#  else /* !_STLP_SGI_THREADS */
       if (__threads)
 #  endif
         _S_lock._M_release_lock(); 
@@ -139,15 +139,15 @@ public:
   static _STL_STATIC_MUTEX _S_lock;
 };
 
-# endif  /* __STL_THREADS */
+# endif  /* _STLP_THREADS */
 
 
 template <bool __threads, int __inst>
-void* __STL_CALL
+void* _STLP_CALL
 __node_alloc<__threads, __inst>::_M_allocate(size_t __n) {
   void*  __r;
-  _Obj * __STL_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifdef __STL_THREADS
+  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
+#       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
 #       endif
@@ -164,13 +164,13 @@ __node_alloc<__threads, __inst>::_M_allocate(size_t __n) {
 }
 
 template <bool __threads, int __inst>
-void __STL_CALL
+void _STLP_CALL
 __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
-  _Obj * __STL_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifdef __STL_THREADS
+  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
+#       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
-#       endif /* __STL_THREADS */
+#       endif /* _STLP_THREADS */
   // acquire lock
   ((_Obj *)__p) -> _M_free_list_link = *__my_free_list;
   *__my_free_list = (_Obj *)__p;
@@ -182,7 +182,7 @@ __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
 /* We assume that size is properly aligned.                             */
 /* We hold the allocation lock.                                         */
 template <bool __threads, int __inst>
-char* __STL_CALL
+char* _STLP_CALL
 __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size, 
 						int& __nobjs)
 {
@@ -205,16 +205,16 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
       2 * __total_bytes + _S_round_up(_S_heap_size >> 4);
     // Try to make use of the left-over piece.
     if (__bytes_left > 0) {
-      _Obj* __STL_VOLATILE* __my_free_list =
+      _Obj* _STLP_VOLATILE* __my_free_list =
 	_S_free_list + _S_FREELIST_INDEX(__bytes_left);
 
       ((_Obj*)_S_start_free) -> _M_free_list_link = *__my_free_list;
       *__my_free_list = (_Obj*)_S_start_free;
     }
-    _S_start_free = (char*)__STL_CHUNK_MALLOC(__bytes_to_get);
+    _S_start_free = (char*)_STLP_CHUNK_MALLOC(__bytes_to_get);
     if (0 == _S_start_free) {
       size_t __i;
-      _Obj* __STL_VOLATILE* __my_free_list;
+      _Obj* _STLP_VOLATILE* __my_free_list;
       _Obj* __p;
       // Try to make do with what we have.  That can't
       // hurt.  We do not try smaller requests, since that tends
@@ -232,7 +232,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
 	}
       }
       _S_end_free = 0;	// In case of exception.
-      _S_start_free = (char*)__STL_CHUNK_MALLOC(__bytes_to_get);
+      _S_start_free = (char*)_STLP_CHUNK_MALLOC(__bytes_to_get);
     /*
       (char*)malloc_alloc::allocate(__bytes_to_get);
       */
@@ -252,13 +252,13 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
 /* We assume that __n is properly aligned.                                */
 /* We hold the allocation lock.                                         */
 template <bool __threads, int __inst>
-void* __STL_CALL
+void* _STLP_CALL
 __node_alloc<__threads, __inst>::_S_refill(size_t __n)
 {
   int __nobjs = 20;
   __n = _S_round_up(__n);
   char* __chunk = _S_chunk_alloc(__n, __nobjs);
-  _Obj* __STL_VOLATILE* __my_free_list;
+  _Obj* _STLP_VOLATILE* __my_free_list;
   _Obj* __result;
   _Obj* __current_obj;
   _Obj* __next_obj;
@@ -283,20 +283,20 @@ __node_alloc<__threads, __inst>::_S_refill(size_t __n)
   return(__result);
 }
 
-# if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+# if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 // malloc_alloc out-of-memory handling
 template <int __inst>
 __oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
 
-#ifdef __STL_THREADS
+#ifdef _STLP_THREADS
     template <bool __threads, int __inst>
     _STL_STATIC_MUTEX
-    _Node_Alloc_Lock<__threads, __inst>::_S_lock __STL_MUTEX_INITIALIZER;
+    _Node_Alloc_Lock<__threads, __inst>::_S_lock _STLP_MUTEX_INITIALIZER;
 #endif
 
 template <bool __threads, int __inst>
-_Node_alloc_obj * __STL_VOLATILE
-__node_alloc<__threads, __inst>::_S_free_list[_NFREELISTS]
+_Node_alloc_obj * _STLP_VOLATILE
+__node_alloc<__threads, __inst>::_S_free_list[_STLP_NFREELISTS]
 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 // The 16 zeros are necessary to make version 4.1 of the SunPro
 // compiler happy.  Otherwise it appears to allocate too little
@@ -312,48 +312,48 @@ template <bool __threads, int __inst>
 size_t __node_alloc<__threads, __inst>::_S_heap_size = 0;
 
 
-# else /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
+# else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 __DECLARE_INSTANCE(__oom_handler_type, __malloc_alloc<0>::__oom_handler, =0);
 
-# define __STL_ALLOC_NOTHREADS __node_alloc<false, 0>
-# define __STL_ALLOC_THREADS   __node_alloc<true, 0>
-# define __STL_ALLOC_NOTHREADS_LOCK _Node_Alloc_Lock<false, 0>
-# define __STL_ALLOC_THREADS_LOCK   _Node_Alloc_Lock<true, 0>
+# define _STLP_ALLOC_NOTHREADS __node_alloc<false, 0>
+# define _STLP_ALLOC_THREADS   __node_alloc<true, 0>
+# define _STLP_ALLOC_NOTHREADS_LOCK _Node_Alloc_Lock<false, 0>
+# define _STLP_ALLOC_THREADS_LOCK   _Node_Alloc_Lock<true, 0>
 
-__DECLARE_INSTANCE(char *, __STL_ALLOC_NOTHREADS::_S_start_free,=0);
-__DECLARE_INSTANCE(char *, __STL_ALLOC_NOTHREADS::_S_end_free,=0);
-__DECLARE_INSTANCE(size_t, __STL_ALLOC_NOTHREADS::_S_heap_size,=0);
-__DECLARE_INSTANCE(_Node_alloc_obj * __STL_VOLATILE,
-                   __STL_ALLOC_NOTHREADS::_S_free_list[_NFREELISTS],
+__DECLARE_INSTANCE(char *, _STLP_ALLOC_NOTHREADS::_S_start_free,=0);
+__DECLARE_INSTANCE(char *, _STLP_ALLOC_NOTHREADS::_S_end_free,=0);
+__DECLARE_INSTANCE(size_t, _STLP_ALLOC_NOTHREADS::_S_heap_size,=0);
+__DECLARE_INSTANCE(_Node_alloc_obj * _STLP_VOLATILE,
+                   _STLP_ALLOC_NOTHREADS::_S_free_list[_STLP_NFREELISTS],
                    ={0});
-__DECLARE_INSTANCE(char *, __STL_ALLOC_THREADS::_S_start_free,=0);
-__DECLARE_INSTANCE(char *, __STL_ALLOC_THREADS::_S_end_free,=0);
-__DECLARE_INSTANCE(size_t, __STL_ALLOC_THREADS::_S_heap_size,=0);
-__DECLARE_INSTANCE(_Node_alloc_obj * __STL_VOLATILE,
-                   __STL_ALLOC_THREADS::_S_free_list[_NFREELISTS],
+__DECLARE_INSTANCE(char *, _STLP_ALLOC_THREADS::_S_start_free,=0);
+__DECLARE_INSTANCE(char *, _STLP_ALLOC_THREADS::_S_end_free,=0);
+__DECLARE_INSTANCE(size_t, _STLP_ALLOC_THREADS::_S_heap_size,=0);
+__DECLARE_INSTANCE(_Node_alloc_obj * _STLP_VOLATILE,
+                   _STLP_ALLOC_THREADS::_S_free_list[_STLP_NFREELISTS],
                    ={0});
-#   ifdef __STL_THREADS
+#   ifdef _STLP_THREADS
 __DECLARE_INSTANCE(_STL_STATIC_MUTEX,
-                   __STL_ALLOC_NOTHREADS_LOCK::_S_lock,
-                   __STL_MUTEX_INITIALIZER);
+                   _STLP_ALLOC_NOTHREADS_LOCK::_S_lock,
+                   _STLP_MUTEX_INITIALIZER);
 __DECLARE_INSTANCE(_STL_STATIC_MUTEX,
-                   __STL_ALLOC_THREADS_LOCK::_S_lock,
-                   __STL_MUTEX_INITIALIZER);
+                   _STLP_ALLOC_THREADS_LOCK::_S_lock,
+                   _STLP_MUTEX_INITIALIZER);
 #   endif
 
-# undef __STL_ALLOC_THREADS
-# undef __STL_ALLOC_NOTHREADS
+# undef _STLP_ALLOC_THREADS
+# undef _STLP_ALLOC_NOTHREADS
 
-#  endif /* __STL_STATIC_TEMPLATE_DATA */
+#  endif /* _STLP_STATIC_TEMPLATE_DATA */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef _S_FREELIST_INDEX
 
 # endif /* OWN_IOSTREAMS */
 
-#endif /*  __STL_ALLOC_C */
+#endif /*  _STLP_ALLOC_C */
 
 // Local Variables:
 // mode:C++

@@ -15,20 +15,23 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __SGI_STL_IOS_BASE_H
-#define __SGI_STL_IOS_BASE_H
+#ifndef _STLP_IOS_BASE_H
+#define _STLP_IOS_BASE_H
 
 #ifndef __SGI_STDEXCEPT
 #include <stdexcept>
 #endif
-#ifndef __SGI_STL_UTILITY
+#ifndef _STLP_UTILITY
 #include <utility>
 #endif
-#ifndef __SGI_STL_INTERNAL_LOCALE_H
+#ifndef _STLP_INTERNAL_LOCALE_H
 #include <stl/_locale.h>
 #endif
+#ifndef _STLP_STRING_H
+# include <stl/_string.h>
+#endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // ----------------------------------------------------------------------
 
@@ -39,93 +42,71 @@ __STL_BEGIN_NAMESPACE
 // manipulation to the streambuf classes, and they delegate most
 // formatting tasks to a locale.
 
-class __STL_CLASS_DECLSPEC ios_base {
+class _STLP_CLASS_DECLSPEC ios_base {
 public:
   
-  class __STL_CLASS_DECLSPEC failure : public __Named_exception {
+  class _STLP_CLASS_DECLSPEC failure : public __Named_exception {
   public:
     explicit failure(const string&);
-    virtual ~failure() __STL_NOTHROW_INHERENTLY;
+    virtual ~failure() _STLP_NOTHROW_INHERENTLY;
   };
 
-  typedef unsigned int fmtflags;
+  typedef int fmtflags;
+  typedef int iostate;
+  typedef int openmode;
+  typedef int seekdir;
+
+# ifndef _STLP_NO_ANACHRONISMS
+  typedef fmtflags fmt_flags;
+# endif
+
   // Formatting flags.
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  enum fmt_flags {
+# ifdef _STLP_STATIC_CONST_INIT_BUG
+  enum  {
 # else
-    // somebody relies on that
-  typedef unsigned int fmt_flags;
-  static const fmtflags 
+  // boris : type for all those constants is int   
+  static const int
 # endif
-   left       = 0x0001,
-   right      = 0x0002,
-   internal   = 0x0004,
-   dec        = 0x0008,
-   hex        = 0x0010,
-   oct        = 0x0020,
-   fixed      = 0x0040,
-   scientific = 0x0080,
-   boolalpha  = 0x0100,
-   showbase   = 0x0200,
-   showpoint  = 0x0400,
-   showpos    = 0x0800,
-   skipws     = 0x1000,
-   unitbuf    = 0x2000,
-   uppercase  = 0x4000,
-   adjustfield = left | right | internal,
-   basefield   = dec | hex | oct,
-   floatfield  = scientific | fixed
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  }
-# endif
-  ;
-
-  typedef unsigned char iostate;
-  // State flags.
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  enum io_state_ {
-# else
-  static const iostate 
-# endif
-  goodbit = 0x00,
-  badbit  = 0x01,
-  eofbit  = 0x02,
-  failbit = 0x04
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  }
-# endif
-  ;
-
-  // Openmode flags.
-  typedef unsigned short openmode;
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  enum __open_mode {
-# else
-  static const openmode 
-# endif
-  __default_mode = 0x0, /* implementation detail */
-  app    = 0x01,
-  ate    = 0x02,
-  binary = 0x04,
-  in     = 0x08,
-  out    = 0x10,
-  trunc  = 0x20
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC)|| defined(__MRC__) || defined(__SC__)
-  }
-# endif
-  ;
-
-  typedef unsigned char seekdir;
-  // Seekdir flags
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
-  enum __seek_dir {
-# else
-  static const seekdir 
-# endif
-  beg = 0x01,
-  cur = 0x02,
-  end = 0x04
-# if defined ( __STL_STATIC_CONST_INIT_BUG) || defined (__STL_USE_DECLSPEC) || defined(__MRC__) || defined(__SC__)
+    left       = 0x0001,
+    right      = 0x0002,
+    internal   = 0x0004,
+    dec        = 0x0008,
+    hex        = 0x0010,
+    oct        = 0x0020,
+    fixed      = 0x0040,
+    scientific = 0x0080,
+    boolalpha  = 0x0100,
+    showbase   = 0x0200,
+    showpoint  = 0x0400,
+    showpos    = 0x0800,
+    skipws     = 0x1000,
+    unitbuf    = 0x2000,
+    uppercase  = 0x4000,
+    adjustfield = left | right | internal,
+    basefield   = dec | hex | oct,
+    floatfield  = scientific | fixed,
+    
+    // State flags.
+    goodbit = 0x00,
+    badbit  = 0x01,
+    eofbit  = 0x02,
+    failbit = 0x04,
+    
+    // Openmode flags.
+    __default_mode = 0x0, /* implementation detail */
+    app    = 0x01,
+    ate    = 0x02,
+    binary = 0x04,
+    in     = 0x08,
+    out    = 0x10,
+    trunc  = 0x20,
+    
+    // Seekdir flags
+    
+    beg = 0x01,
+    cur = 0x02,
+    end = 0x04
+# ifdef _STLP_STATIC_CONST_INIT_BUG
   }
 # endif
   ;
@@ -164,19 +145,13 @@ public:                         // Flag-manipulation functions.
     _M_width = __newwidth;
     return __tmp;
   }
-#if defined(__MRC__) || defined(__SC__)
-  //*TY 02/24/2000 - added workaround for MPW compilers; ref.[ file iomanip; line 139 ]
-  streamsize _PRECISION(streamsize __newprecision) {return precision(__newprecision);}		
-  //*TY 03/05/2000 - mpw compilers have difficulty resolving overloaded function when assigning a pointer to function
-  streamsize _WIDTH(streamsize __newwidth) {return width(__newwidth);}
-#endif
 
 public:                         // Locales
   locale imbue(const locale&);
   locale getloc() const { return _M_locale; }
 
 public:                         // Auxiliary storage.
-  static int __STL_CALL xalloc();
+  static int _STLP_CALL xalloc();
   long&  iword(int __index);
   void*& pword(int __index);
 
@@ -191,7 +166,7 @@ public:                         // Callbacks.
 public:                         // This member function affects only
                                 // the eight predefined ios objects:
                                 // cin, cout, etc.
-  static bool __STL_CALL sync_with_stdio(bool __sync = true);
+  static bool _STLP_CALL sync_with_stdio(bool __sync = true);
 
 public:                         // The C++ standard requires only that these
                                 // member functions be defined in basic_ios.
@@ -228,8 +203,8 @@ protected:                      // The functional protected interface.
   ios_base();                   // Default constructor.
 
 protected:                        // Initialization of the I/O system
-  static void __STL_CALL _S_initialize();
-  static void __STL_CALL _S_uninitialize();
+  static void _STLP_CALL _S_initialize();
+  static void _STLP_CALL _S_uninitialize();
   static bool _S_was_synced;
   
 private:                        // Invalidate the copy constructor and
@@ -267,11 +242,12 @@ protected:
   // Cached copies of the curent locale's facets.  Set by init() and imbue().
   locale::facet* _M_cached_ctype;
   locale::facet* _M_cached_numpunct;
+  string         _M_cached_grouping;
 public:
   // Equivalent to &use_facet< Facet >(getloc()), but faster.
   const locale::facet* _M_ctype_facet() const { return _M_cached_ctype; }
   const locale::facet* _M_numpunct_facet() const { return _M_cached_numpunct; }
-
+  const string&  _M_grouping() const { return _M_cached_grouping; }
 public:
 
   // ----------------------------------------------------------------------
@@ -280,7 +256,7 @@ public:
   // implementations where such a thing is required) is declared in
   // <iostream>
   
-  class __STL_CLASS_DECLSPEC Init {
+  class _STLP_CLASS_DECLSPEC Init {
   public:
     Init();
     ~Init();
@@ -290,7 +266,7 @@ public:
   };
 
   // this class is needed to ensure locale initialization w/o <iostream> inclusion
-  class __STL_CLASS_DECLSPEC _Loc_init {
+  class _STLP_CLASS_DECLSPEC _Loc_init {
   public:
     _Loc_init();
     ~_Loc_init();
@@ -302,13 +278,13 @@ public:
   friend class Init;
 
 public:
-# ifndef __STL_NO_ANACHRONISMS
+# ifndef _STLP_NO_ANACHRONISMS
   //  31.6  Old iostreams members                         [depr.ios.members]
   typedef iostate  io_state;
   typedef openmode open_mode;
   typedef seekdir  seek_dir;
-  typedef __STLPORT_STD::streamoff  streamoff;
-  typedef __STLPORT_STD::streampos  streampos;
+  typedef _STLP_STD::streamoff  streamoff;
+  typedef _STLP_STD::streampos  streampos;
 # endif  
 };
 
@@ -323,80 +299,80 @@ locale::facet* _M_get_facet(ios_base& __i, Facet*)
 // All of them are trivial one-line wrapper functions.
 
 // fmtflag manipulators, section 27.4.5.1
-inline ios_base& __STL_CALL boolalpha(ios_base& __s)
+inline ios_base& _STLP_CALL boolalpha(ios_base& __s)
   { __s.setf(ios_base::boolalpha); return __s;}
 
-inline ios_base& __STL_CALL noboolalpha(ios_base& __s)
+inline ios_base& _STLP_CALL noboolalpha(ios_base& __s)
   { __s.unsetf(ios_base::boolalpha); return __s;}
 
-inline ios_base& __STL_CALL showbase(ios_base& __s)
+inline ios_base& _STLP_CALL showbase(ios_base& __s)
   { __s.setf(ios_base::showbase); return __s;}
 
-inline ios_base& __STL_CALL noshowbase(ios_base& __s)
+inline ios_base& _STLP_CALL noshowbase(ios_base& __s)
   { __s.unsetf(ios_base::showbase); return __s;}
 
-inline ios_base& __STL_CALL showpoint(ios_base& __s)
+inline ios_base& _STLP_CALL showpoint(ios_base& __s)
   { __s.setf(ios_base::showpoint); return __s;}
 
-inline ios_base& __STL_CALL noshowpoint(ios_base& __s)
+inline ios_base& _STLP_CALL noshowpoint(ios_base& __s)
   { __s.unsetf(ios_base::showpoint); return __s;}
 
-inline ios_base& __STL_CALL showpos(ios_base& __s)
+inline ios_base& _STLP_CALL showpos(ios_base& __s)
   { __s.setf(ios_base::showpos); return __s;}
 
-inline ios_base& __STL_CALL noshowpos(ios_base& __s) 
+inline ios_base& _STLP_CALL noshowpos(ios_base& __s) 
   { __s.unsetf(ios_base::showpos); return __s;}
 
-inline ios_base& __STL_CALL skipws(ios_base& __s)
+inline ios_base& _STLP_CALL skipws(ios_base& __s)
   { __s.setf(ios_base::skipws); return __s;}
 
-inline ios_base& __STL_CALL noskipws(ios_base& __s)
+inline ios_base& _STLP_CALL noskipws(ios_base& __s)
   { __s.unsetf(ios_base::skipws); return __s;}
 
-inline ios_base& __STL_CALL uppercase(ios_base& __s)
+inline ios_base& _STLP_CALL uppercase(ios_base& __s)
   { __s.setf(ios_base::uppercase); return __s;}
 
-inline ios_base& __STL_CALL nouppercase(ios_base& __s)
+inline ios_base& _STLP_CALL nouppercase(ios_base& __s)
   { __s.unsetf(ios_base::uppercase); return __s;}
 
-inline ios_base& __STL_CALL unitbuf(ios_base& __s)
+inline ios_base& _STLP_CALL unitbuf(ios_base& __s)
   { __s.setf(ios_base::unitbuf); return __s;}
 
-inline ios_base& __STL_CALL nounitbuf(ios_base& __s)
+inline ios_base& _STLP_CALL nounitbuf(ios_base& __s)
   { __s.unsetf(ios_base::unitbuf); return __s;}
 
 
 // adjustfield manipulators, section 27.4.5.2
-inline ios_base& __STL_CALL internal(ios_base& __s)
+inline ios_base& _STLP_CALL internal(ios_base& __s)
   { __s.setf(ios_base::internal, ios_base::adjustfield); return __s; }
 
-inline ios_base& __STL_CALL left(ios_base& __s)
+inline ios_base& _STLP_CALL left(ios_base& __s)
   { __s.setf(ios_base::left, ios_base::adjustfield); return __s; }
 
-inline ios_base& __STL_CALL right(ios_base& __s)
+inline ios_base& _STLP_CALL right(ios_base& __s)
   { __s.setf(ios_base::right, ios_base::adjustfield); return __s; }
 
 // basefield manipulators, section 27.4.5.3
-inline ios_base& __STL_CALL dec(ios_base& __s)
+inline ios_base& _STLP_CALL dec(ios_base& __s)
   { __s.setf(ios_base::dec, ios_base::basefield); return __s; }
 
-inline ios_base& __STL_CALL hex(ios_base& __s) 
+inline ios_base& _STLP_CALL hex(ios_base& __s) 
   { __s.setf(ios_base::hex, ios_base::basefield); return __s; }
 
-inline ios_base& __STL_CALL oct(ios_base& __s)
+inline ios_base& _STLP_CALL oct(ios_base& __s)
   { __s.setf(ios_base::oct, ios_base::basefield); return __s; }
 
 
 // floatfield manipulators, section 27.4.5.3
-inline ios_base& __STL_CALL fixed(ios_base& __s)
+inline ios_base& _STLP_CALL fixed(ios_base& __s)
   { __s.setf(ios_base::fixed, ios_base::floatfield); return __s; }
 
-inline ios_base& __STL_CALL scientific(ios_base& __s)
+inline ios_base& _STLP_CALL scientific(ios_base& __s)
   { __s.setf(ios_base::scientific, ios_base::floatfield); return __s; }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_IOS_BASE */
+#endif /* _STLP_IOS_BASE */
 
 // Local Variables:
 // mode:C++

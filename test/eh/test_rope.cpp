@@ -13,6 +13,12 @@
  * purpose.  It is provided "as is" without express or implied warranty.
 
 ***********************************************************************************/
+
+# ifndef __PUT_STATIC_DATA_MEMBERS_HERE
+# define __PUT_STATIC_DATA_MEMBERS_HERE
+# endif
+
+
 #include "Prefix.h"
 #include "Tests.h"
 #include "TestClass.h"
@@ -33,7 +39,7 @@
 #endif
 
 // typedef rope<TestClass, alloc> TestRope;
-typedef __STLPORT_STD::rope<char, eh_allocator(char) > TestRope;
+typedef STLPORT::rope<char, eh_allocator(char) > TestRope;
 
 inline sequence_container_tag
 container_category(const TestRope&)

@@ -27,26 +27,22 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_UNINITIALIZED_H
-#define __SGI_STL_INTERNAL_UNINITIALIZED_H
+#ifndef _STLP_INTERNAL_UNINITIALIZED_H
+#define _STLP_INTERNAL_UNINITIALIZED_H
 
-# ifndef __STLPORT_CSTRING
+# ifndef _STLP_CSTRING
 #  include <cstring>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_PAIR_H
-#  include <stl/_pair.h>
-# endif
-
-# ifndef __SGI_STL_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
-# endif
-
-# ifndef __SGI_STL_INTERNAL_ALGOBASE_H
+# ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 # endif
 
-__STL_BEGIN_NAMESPACE
+# ifndef _STLP_INTERNAL_CONSTRUCT_H
+#  include <stl/_construct.h>
+# endif
+
+_STLP_BEGIN_NAMESPACE
 
 // uninitialized_copy
 
@@ -60,19 +56,19 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
 }
 
 template <class _InputIter, class _ForwardIter>
-__STL_INLINE_LOOP
+_STLP_INLINE_LOOP
 _ForwardIter 
 __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
                      __false_type)
 {
   _ForwardIter __cur = __result;
-  __STL_TRY {
+  _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur)
       _Construct(&*__cur, *__first);
     return __cur;
   }
-  __STL_UNWIND(_Destroy(__result, __cur));
-# ifdef __STL_THROW_RETURN_BUG
+  _STLP_UNWIND(_Destroy(__result, __cur));
+# ifdef _STLP_THROW_RETURN_BUG
   return __cur;
 # endif
 }
@@ -80,7 +76,7 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter
 uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result) {
-  return __uninitialized_copy(__first, __last, __result,  _Is_POD(__VALUE_TYPE(__result, _ForwardIter))._Ret());
+  return __uninitialized_copy(__first, __last, __result,  _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
 }
 
 inline char* 
@@ -88,36 +84,36 @@ uninitialized_copy(const char* __first, const char* __last, char* __result) {
   return  (char*)__copy_trivial (__first, __last, __result);
 }
 
-#  ifdef __STL_HAS_WCHAR_T // dwa 8/15/97
+#  ifdef _STLP_HAS_WCHAR_T // dwa 8/15/97
 inline wchar_t* 
 uninitialized_copy(const wchar_t* __first, const wchar_t* __last, wchar_t* __result) {
   return  (wchar_t*)__copy_trivial (__first, __last, __result);
 }
-#  endif /* __STL_HAS_WCHAR_T */
+#  endif /* _STLP_HAS_WCHAR_T */
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 // uninitialized_copy_n (not part of the C++ standard)
 
 template <class _InputIter, class _Size, class _ForwardIter>
-__STL_INLINE_LOOP 
+_STLP_INLINE_LOOP 
 pair<_InputIter, _ForwardIter>
 __uninitialized_copy_n(_InputIter __first, _Size __count,
                        _ForwardIter __result,
                        input_iterator_tag)
 {
   _ForwardIter __cur = __result;
-  __STL_TRY {
+  _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur) 
       _Construct(&*__cur, *__first);
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
-  __STL_UNWIND(_Destroy(__result, __cur));
-# ifdef __STL_THROW_RETURN_BUG
+  _STLP_UNWIND(_Destroy(__result, __cur));
+# ifdef _STLP_THROW_RETURN_BUG
   return pair<_InputIter, _ForwardIter>(__first, __cur);
 # endif
 }
 
-# if defined(__STL_NONTEMPL_BASE_MATCH_BUG) 
+# if defined(_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _InputIterator, class _Size, class _ForwardIterator>
 inline pair<_InputIterator, _ForwardIterator>
 __uninitialized_copy_n(_InputIterator __first, _Size __count,
@@ -141,7 +137,7 @@ inline pair<_RandomAccessIter, _ForwardIter>
 __uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __result, random_access_iterator_tag) {
   _RandomAccessIter __last = __first + __count;
   return pair<_RandomAccessIter, _ForwardIter>( __last, __uninitialized_copy(__first, __last, __result, 
-                                                                             _Is_POD(__VALUE_TYPE(__result, _ForwardIter))._Ret()));
+                                                                             _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret()));
 }
 
 // this is used internally in <rope> , which is extension itself.
@@ -149,9 +145,9 @@ template <class _InputIter, class _Size, class _ForwardIter>
 inline pair<_InputIter, _ForwardIter>
 uninitialized_copy_n(_InputIter __first, _Size __count,
                      _ForwardIter __result) {
-  return __uninitialized_copy_n(__first, __count, __result, __ITERATOR_CATEGORY(__first, _InputIter));
+  return __uninitialized_copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
 
 // Valid if copy construction is equivalent to assignment, and if the
 // destructor is trivial.
@@ -159,25 +155,25 @@ template <class _ForwardIter, class _Tp>
 inline void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
                      const _Tp& __x, __true_type) {
-  __STLPORT_STD::fill(__first, __last, __x);
+  _STLP_STD::fill(__first, __last, __x);
 }
 
 template <class _ForwardIter, class _Tp>
-__STL_INLINE_LOOP void
+_STLP_INLINE_LOOP void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
                      const _Tp& __x, __false_type)
 {
   _ForwardIter __cur = __first;
-  __STL_TRY {
+  _STLP_TRY {
     for ( ; __cur != __last; ++__cur)
       _Construct(&*__cur, __x);
   }
-  __STL_UNWIND(_Destroy(__first, __cur));
+  _STLP_UNWIND(_Destroy(__first, __cur));
 }
 
 template <class _ForwardIter, class _Tp>
 inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const _Tp& __x) {
-  __uninitialized_fill(__first, __last, __x, _Is_POD(__VALUE_TYPE(__first, _ForwardIter))._Ret());
+  __uninitialized_fill(__first, __last, __x, _Is_POD(_STLP_VALUE_TYPE(__first, _ForwardIter))._Ret());
 }
 
 // Valid if copy construction is equivalent to assignment, and if the
@@ -186,22 +182,22 @@ template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
                        const _Tp& __x, __true_type) {
-  return __STLPORT_STD::fill_n(__first, __n, __x);
+  return _STLP_STD::fill_n(__first, __n, __x);
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
-__STL_INLINE_LOOP _ForwardIter
+_STLP_INLINE_LOOP _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
                        const _Tp& __x, __false_type)
 {
   _ForwardIter __cur = __first;
-  __STL_TRY {
+  _STLP_TRY {
     for ( ; __n > 0; --__n, ++__cur)
       _Construct(&*__cur, __x);
     return __cur;
   }
-  __STL_UNWIND(_Destroy(__first, __cur));
-# ifdef __STL_THROW_RETURN_BUG
+  _STLP_UNWIND(_Destroy(__first, __cur));
+# ifdef _STLP_THROW_RETURN_BUG
   return __cur;
 # endif
 }
@@ -209,7 +205,7 @@ __uninitialized_fill_n(_ForwardIter __first, _Size __n,
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter 
 uninitialized_fill_n(_ForwardIter __first, _Size __n, const _Tp& __x) {
-  return __uninitialized_fill_n(__first, __n, __x, _Is_POD(__VALUE_TYPE(__first, _ForwardIter))._Ret());
+  return __uninitialized_fill_n(__first, __n, __x, _Is_POD(_STLP_VALUE_TYPE(__first, _ForwardIter))._Ret());
 }
 
 // Extensions: __uninitialized_copy_copy, __uninitialized_copy_fill, 
@@ -236,12 +232,12 @@ __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
                           _ForwardIter __result, __false_type)
 {
-  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _Is_POD(__VALUE_TYPE(__result, _ForwardIter))._Ret());
-  __STL_TRY {
-    return __uninitialized_copy(__first2, __last2, __mid , _Is_POD(__VALUE_TYPE(__result, _ForwardIter))._Ret());
+  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
+  _STLP_TRY {
+    return __uninitialized_copy(__first2, __last2, __mid , _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
   }
-  __STL_UNWIND(_Destroy(__result, __mid));
-# ifdef __STL_THROW_RETURN_BUG
+  _STLP_UNWIND(_Destroy(__result, __mid));
+# ifdef _STLP_THROW_RETURN_BUG
   return __mid;
 # endif
 }
@@ -256,11 +252,11 @@ __uninitialized_fill_copy(_ForwardIter __result, _ForwardIter __mid, const _Tp& 
 {
   typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
   __uninitialized_fill(__result, __mid, __x, _Is_POD());
-  __STL_TRY {
+  _STLP_TRY {
     return __uninitialized_copy(__first, __last, __mid, _Is_POD());
   }
-  __STL_UNWIND(_Destroy(__result, __mid));
-# ifdef __STL_THROW_RETURN_BUG
+  _STLP_UNWIND(_Destroy(__result, __mid));
+# ifdef _STLP_THROW_RETURN_BUG
   return __result;
 # endif
 }
@@ -276,15 +272,15 @@ __uninitialized_copy_fill(_InputIter __first1, _InputIter __last1,
 {
   typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
   _ForwardIter __mid2 = __uninitialized_copy(__first1, __last1, __first2, _Is_POD());
-  __STL_TRY {
+  _STLP_TRY {
     __uninitialized_fill(__mid2, __last2, __x, _Is_POD());
   }
-  __STL_UNWIND(_Destroy(__first2, __mid2));
+  _STLP_UNWIND(_Destroy(__first2, __mid2));
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_UNINITIALIZED_H */
+#endif /* _STLP_INTERNAL_UNINITIALIZED_H */
 
 // Local Variables:
 // mode:C++

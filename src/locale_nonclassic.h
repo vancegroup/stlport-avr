@@ -21,9 +21,9 @@
 
 # include "locale_impl.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-class __STL_CLASS_DECLSPEC _Locale : public _Locale_impl, public _Refcount_Base
+class _STLP_CLASS_DECLSPEC _Locale : public _Locale_impl, public _Refcount_Base
 {
 public:
   _Locale(size_t n, const char* s) : _Locale_impl(s), _Refcount_Base(1), 
@@ -49,12 +49,12 @@ public:
   
   vector<void*> facets_vec;
 
-  static void __STL_CALL _M_throw_bad_cast();
+  static void _STLP_CALL _M_throw_bad_cast();
 
 private:
   void operator=(const _Locale_impl&);
 };
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 #endif

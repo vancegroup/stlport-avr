@@ -23,36 +23,36 @@
  *
  */
 
-#ifndef __SGI_STL_HASH_SET_H
-#define __SGI_STL_HASH_SET_H
+#ifndef _STLP_HASH_SET_H
+#define _STLP_HASH_SET_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa010
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa010
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_HASHTABLE_H
+#ifndef _STLP_HASHTABLE_H
 #include <hashtable.h>
 #endif 
 
 #include <stl/_hash_set.h>
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::hash;
+using _STLP_STD::hash;
 using STLPORT::hashtable;
 using STLPORT::hash_set;
 using STLPORT::hash_multiset;
 using STLPORT::__hash_set__;
 using STLPORT::__hash_multiset__;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa010)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa010)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_HASH_SET_H */
+#endif /* _STLP_HASH_SET_H */

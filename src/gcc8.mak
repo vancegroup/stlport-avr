@@ -40,8 +40,8 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -fpic
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fpic
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D__STL_DEBUG -fpic
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fpic
 
 include common_percent_rules.mak
 include common_rules.mak

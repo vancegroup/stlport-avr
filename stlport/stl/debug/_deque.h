@@ -27,48 +27,48 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_DBG_DEQUE_H
-#define __SGI_STL_INTERNAL_DBG_DEQUE_H
+#ifndef _STLP_INTERNAL_DBG_DEQUE_H
+#define _STLP_INTERNAL_DBG_DEQUE_H
 
 #include <stl/debug/_iterator.h>
 
-# if !defined (__STL_USE_WRAPPER_FOR_ALLOC_PARAM) && !defined (__STL_NO_DEFAULT_NON_TYPE_PARAM)
+# if !defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM) && !defined (_STLP_NO_DEFAULT_NON_TYPE_PARAM)
 #  undef  _DBG_deque
 #  define _DBG_deque deque
 # endif
 
 # define _DEQUE_WRAPPER _DBG_deque<_Tp,_Alloc>
 
-# define __STL_DEQUE_SUPER   __WORKAROUND_DBG_RENAME(deque) <_Tp,_Alloc>
+# define _STLP_DEQUE_SUPER   __WORKAROUND_DBG_RENAME(deque) <_Tp,_Alloc>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# ifdef __STL_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
+# ifdef _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
 template <class _Tp, class _Alloc>
-inline _Tp* value_type(const  _DBG_iter_base< __STL_DEQUE_SUPER >&) {
+inline _Tp* value_type(const  _DBG_iter_base< _STLP_DEQUE_SUPER >&) {
   return (_Tp*)0;
 }
 template <class _Tp, class _Alloc>
-inline random_access_iterator_tag iterator_category(const  _DBG_iter_base< __STL_DEQUE_SUPER >&) {
+inline random_access_iterator_tag iterator_category(const  _DBG_iter_base< _STLP_DEQUE_SUPER >&) {
   return random_access_iterator_tag();
 }
 # endif
 
-template <class _Tp, __STL_DBG_ALLOCATOR_SELECT(_Tp) >
-class _DBG_deque : public __STL_DEQUE_SUPER {
+template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
+class _DBG_deque : public _STLP_DEQUE_SUPER {
 
   typedef _DBG_deque<_Tp,_Alloc> _Self;
-  typedef __STL_DEQUE_SUPER _Base;
+  typedef _STLP_DEQUE_SUPER _Base;
 
 public:                         // Basic types
 
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
 
 public:                         // Iterators
-  typedef _DBG_iter< __STL_DEQUE_SUPER, _Nonconst_traits<value_type> >    iterator;
-  typedef _DBG_iter< __STL_DEQUE_SUPER, _Const_traits<value_type> >   const_iterator;
+  typedef _DBG_iter< _STLP_DEQUE_SUPER, _Nonconst_traits<value_type> >    iterator;
+  typedef _DBG_iter< _STLP_DEQUE_SUPER, _Const_traits<value_type> >   const_iterator;
 
-  __STL_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
+  _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
 protected:
   __owned_list _M_iter_list;
@@ -119,31 +119,31 @@ public:                         // Constructor, destructor.
   const _Base* _Get_base() const { return (const _Base*)this; }
 
   explicit _DBG_deque(const allocator_type& __a = allocator_type()) :
-    __STL_DEQUE_SUPER(__a), _M_iter_list(_Get_base()) {}
-  _DBG_deque(const _Self& __x) : __STL_DEQUE_SUPER(__x), _M_iter_list(_Get_base()) {}
+    _STLP_DEQUE_SUPER(__a), _M_iter_list(_Get_base()) {}
+  _DBG_deque(const _Self& __x) : _STLP_DEQUE_SUPER(__x), _M_iter_list(_Get_base()) {}
   _DBG_deque(size_type __n, const value_type& __value,
         const allocator_type& __a = allocator_type()) : 
-    __STL_DEQUE_SUPER(__n, __value, __a), _M_iter_list(_Get_base()) {}
-  explicit _DBG_deque(size_type __n) : __STL_DEQUE_SUPER(__n), _M_iter_list(_Get_base()) {}
+    _STLP_DEQUE_SUPER(__n, __value, __a), _M_iter_list(_Get_base()) {}
+  explicit _DBG_deque(size_type __n) : _STLP_DEQUE_SUPER(__n), _M_iter_list(_Get_base()) {}
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   _DBG_deque(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a) : 
-    __STL_DEQUE_SUPER(__first, __last, __a) , _M_iter_list(_Get_base()) {}
+    _STLP_DEQUE_SUPER(__first, __last, __a) , _M_iter_list(_Get_base()) {}
   template <class _InputIterator>
   _DBG_deque(_InputIterator __first, _InputIterator __last):
-    __STL_DEQUE_SUPER(__first, __last, allocator_type()) , _M_iter_list(_Get_base()) {}
-#else /* __STL_MEMBER_TEMPLATES */
+    _STLP_DEQUE_SUPER(__first, __last, allocator_type()) , _M_iter_list(_Get_base()) {}
+#else /* _STLP_MEMBER_TEMPLATES */
   _DBG_deque(const value_type* __first, const value_type* __last,
         const allocator_type& __a = allocator_type()) 
-    : __STL_DEQUE_SUPER(__first, __last, __a), _M_iter_list(_Get_base()) {}
+    : _STLP_DEQUE_SUPER(__first, __last, __a), _M_iter_list(_Get_base()) {}
 
   _DBG_deque(const_iterator __first, const_iterator __last,
         const allocator_type& __a = allocator_type()) 
-    : __STL_DEQUE_SUPER(__first._M_iterator, __last._M_iterator, __a), 
+    : _STLP_DEQUE_SUPER(__first._M_iterator, __last._M_iterator, __a), 
       _M_iter_list(_Get_base()) {}
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator= (const _Self& __x) {
     _Invalidate_all();
@@ -161,13 +161,13 @@ public:
     _Base::assign(__n, __val);
   }
 
-#ifdef __STL_MEMBER_TEMPLATES
+#ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
     _Base::assign(__first, __last);
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // push_* and pop_*
   
@@ -205,42 +205,42 @@ public:                         // push_* and pop_*
 public:                         // Insert
 
   iterator insert(iterator __position, const value_type& __x) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     return iterator(&_M_iter_list, _Base::insert(__position._M_iterator, __x));
   }
 
   iterator insert(iterator __position) { 
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     return iterator(&_M_iter_list, _Base::insert(__position._M_iterator));
   }
 
   void insert(iterator __position, size_type __n, const value_type& __x) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     _Base::insert(__position._M_iterator, __n, __x);
   }
 
-#ifdef __STL_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES  
   template <class _InputIterator>
   void insert(iterator __position, _InputIterator __first, _InputIterator __last) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     _Base::insert(__position._M_iterator, __first, __last);
   }
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,
               const value_type* __first, const value_type* __last) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     _Base::insert(__position._M_iterator, __first, __last);
   }
   void insert(iterator __position,
               const_iterator __first, const_iterator __last) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     _Base::insert(__position._M_iterator, __first._M_iterator, __last._M_iterator);
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   //  void resize(size_type __new_size, const value_type& __x) {
   //    _Base::resize(__new_size, __x);
@@ -250,12 +250,12 @@ public:                         // Insert
 
 public:                         // Erase
   iterator erase(iterator __pos) {
-    __STL_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos) && (__pos != end()))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos) && (__pos != end()))
     return iterator (&_M_iter_list, _Base::erase(__pos._M_iterator));
   }
 
   iterator erase(iterator __first, iterator __last) {
-    __STL_DEBUG_CHECK(__first >= begin() && __last >= end())
+    _STLP_DEBUG_CHECK(__first >= begin() && __last >= end())
     return iterator (&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
   
@@ -265,22 +265,22 @@ public:                         // Erase
   }
 };
 
-# ifdef __STL_EXTRA_OPERATORS_FOR_DEBUG
+# ifdef _STLP_EXTRA_OPERATORS_FOR_DEBUG
 // Nonmember functions.
 
 template<class _Tp, class _Alloc>
 inline bool operator==(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
 {
-    return (const __STL_DEQUE_SUPER&)__x == (const __STL_DEQUE_SUPER&)__y;
+    return (const _STLP_DEQUE_SUPER&)__x == (const _STLP_DEQUE_SUPER&)__y;
 }
 
 template<class _Tp, class _Alloc>
 inline bool operator<(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
 {
-  return (const __STL_DEQUE_SUPER&)__x < (const __STL_DEQUE_SUPER&)__y;
+  return (const _STLP_DEQUE_SUPER&)__x < (const _STLP_DEQUE_SUPER&)__y;
 }
 
-#if defined(__STL_USE_SEPARATE_RELOPS_NAMESPACE)
+#if defined(_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 
 template<class _Tp, class _Alloc>
 inline bool operator>(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
@@ -300,11 +300,11 @@ inline bool operator<=(const _DBG_deque<_Tp,_Alloc >& __x,
 {
  return !(__y < __x); 
 }
-# endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
-#endif /* __STL_EXTRA_OPERATORS_FOR_DEBUG */
+# endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
+#endif /* _STLP_EXTRA_OPERATORS_FOR_DEBUG */
 
 
-#if defined(__STL_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template<class _Tp, class _Alloc>
 inline void 
 swap(_DBG_deque<_Tp,_Alloc>& __x, _DBG_deque<_Tp,_Alloc>& __y)
@@ -313,12 +313,12 @@ swap(_DBG_deque<_Tp,_Alloc>& __x, _DBG_deque<_Tp,_Alloc>& __y)
 }
 #endif
 
-__STL_END_NAMESPACE 
+_STLP_END_NAMESPACE 
 
 # undef _DBG_deque
-# undef __STL_DEQUE_SUPER
+# undef _STLP_DEQUE_SUPER
   
-#endif /* __SGI_STL_INTERNAL_DEQUE_H */
+#endif /* _STLP_INTERNAL_DEQUE_H */
 
 // Local Variables:
 // mode:C++

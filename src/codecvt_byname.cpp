@@ -17,13 +17,13 @@
  */ 
 # include "stlport_prefix.h"
 
-# ifndef __STL_NO_MBSTATE_T
+# ifndef _STLP_NO_MBSTATE_T
 
 #include <stl/_codecvt.h>
 #include <stl/_algobase.h>
 #include "c_locale.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 
 //----------------------------------------------------------------------
@@ -37,7 +37,7 @@ codecvt_byname<char, char, mbstate_t>
 codecvt_byname<char, char, mbstate_t>::~codecvt_byname() {}
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 //----------------------------------------------------------------------
 // codecvt_byname<wchar_t>
@@ -152,7 +152,7 @@ codecvt_byname<wchar_t, char, mbstate_t>
 }
 
 int
-codecvt_byname<wchar_t, char, mbstate_t>::do_encoding() const __STL_NOTHROW
+codecvt_byname<wchar_t, char, mbstate_t>::do_encoding() const _STLP_NOTHROW
 {
   if (_Locale_is_stateless(_M_ctype)) {
     int max_width = _Locale_mb_cur_max(_M_ctype);
@@ -165,7 +165,7 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_encoding() const __STL_NOTHROW
 
 
 bool codecvt_byname<wchar_t, char, mbstate_t>
-  ::do_always_noconv() const __STL_NOTHROW
+  ::do_always_noconv() const _STLP_NOTHROW
 {
   return false;
 }
@@ -176,19 +176,19 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_length(
                                                     const  extern_type* from, const  extern_type* end,
                                                     size_t mx) const 
 {
-  return (int)__STL_MIN ((size_t) (end - from), mx);
+  return (int)(min) ((size_t) (end - from), mx);
 }
 
 int
-codecvt_byname<wchar_t, char, mbstate_t>::do_max_length() const __STL_NOTHROW
+codecvt_byname<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
 {
   return _Locale_mb_cur_max(_M_ctype);
 }
 # endif /* WCHAR_T */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# endif /* __STL_NO_MBSTATE_T */
+# endif /* _STLP_NO_MBSTATE_T */
 
 // Local Variables:
 // mode:C++

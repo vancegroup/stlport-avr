@@ -17,34 +17,32 @@
  */ 
 # include "stlport_prefix.h"
 
-// #include <string>
 #include <istream>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 // instantiations
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-template  class __STL_CLASS_DECLSPEC _Isentry<char, char_traits<char> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+template  class _STLP_CLASS_DECLSPEC _Isentry<char, char_traits<char> >;
 # endif
-template  class __STL_CLASS_DECLSPEC basic_iostream<char, char_traits<char> >;
-#if !defined(__STL_MSVC) || (__STL_MSVC > 1100)
-template  class __STL_CLASS_DECLSPEC basic_istream<char, char_traits<char> >;
+template  class _STLP_CLASS_DECLSPEC basic_iostream<char, char_traits<char> >;
+#if !defined(_STLP_MSVC) || (_STLP_MSVC > 1100)
+template  class _STLP_CLASS_DECLSPEC basic_istream<char, char_traits<char> >;
 #endif
 
-#ifndef __STL_NO_WCHAR_T
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-template class __STL_CLASS_DECLSPEC _Isentry<wchar_t, char_traits<wchar_t> >;
+#ifndef _STLP_NO_WCHAR_T
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+template class _STLP_CLASS_DECLSPEC _Isentry<wchar_t, char_traits<wchar_t> >;
 # endif
-#if !defined(__STL_MSVC) || (__STL_MSVC > 1100)
-template class __STL_CLASS_DECLSPEC basic_istream<wchar_t, char_traits<wchar_t> >;
+#if !defined(_STLP_MSVC) || (_STLP_MSVC > 1100)
+template class _STLP_CLASS_DECLSPEC basic_istream<wchar_t, char_traits<wchar_t> >;
 #endif
-template class __STL_CLASS_DECLSPEC basic_iostream<wchar_t, char_traits<wchar_t> >;
+template class _STLP_CLASS_DECLSPEC basic_iostream<wchar_t, char_traits<wchar_t> >;
 #endif /* INSTANTIATE_WIDE_STREAMS */
 #endif
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

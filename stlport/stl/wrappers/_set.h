@@ -17,14 +17,14 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_SET_H
-#define __SGI_STL_INTERNAL_WRAP_SET_H
+#ifndef _STLP_INTERNAL_WRAP_SET_H
+#define _STLP_INTERNAL_WRAP_SET_H
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
-#  if defined (__STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
+#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __SET_TEMPLATE_HEADER  template <class _Key>
 #   define __SET_ARGUMENTS        _Key
 #   define __MSET_TEMPLATE_HEADER  template <class _Key>
@@ -37,8 +37,8 @@ namespace STLPORT {
 #   define __MSET_ARGUMENTS        _Key, _Compare
 #  endif
 
-#   define __SET_SUPER  __set< _Key, _Compare, __STL_DEFAULT_ALLOCATOR(_Key) >
-#   define __MSET_SUPER __multiset< _Key, _Compare, __STL_DEFAULT_ALLOCATOR(_Key) >
+#   define __SET_SUPER  __set< _Key, _Compare, _STLP_DEFAULT_ALLOCATOR(_Key) >
+#   define __MSET_SUPER __multiset< _Key, _Compare, _STLP_DEFAULT_ALLOCATOR(_Key) >
 
 // provide a "default" set adaptor
 __SET_TEMPLATE_HEADER
@@ -63,7 +63,7 @@ public:
         const _Compare& __comp) : __SET_SUPER(__first, __last, __comp) { }
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 __SET_TEMPLATE_HEADER 
 inline bool operator==(const set< __SET_ARGUMENTS >& __x, 
                        const set< __SET_ARGUMENTS >& __y) {
@@ -101,7 +101,7 @@ public:
         const _Compare& __comp) : __MSET_SUPER(__first, __last, __comp) { }
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)   
+#  if defined (_STLP_BASE_MATCH_BUG)   
 __MSET_TEMPLATE_HEADER 
 inline bool operator==(const multiset< __MSET_ARGUMENTS >& __x, 
                        const multiset< __MSET_ARGUMENTS >& __y) {
@@ -126,11 +126,11 @@ inline bool operator<(const multiset< __MSET_ARGUMENTS >& __x,
 # undef __SET_SUPER 
 # undef _Compare
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 } /* namespace STLPORT */
 # endif
 
-#endif /* __SGI_STL_INTERNAL_WRAP_SET_H */
+#endif /* _STLP_INTERNAL_WRAP_SET_H */
 
 // Local Variables:
 // mode:C++

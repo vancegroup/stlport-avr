@@ -32,8 +32,10 @@
 #include <stl/_time_facets.h>
 #include <stl/_messages_facets.h>
 #include <stl/_istream.h>
+#include <stl/_num_get.h>
+#include <stl/_num_put.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // those wrappers are needed to avoid extern "C"
 
@@ -119,7 +121,7 @@ static hash_map<const char*, pair<void*, size_t>, hash<const char*>, __eqstr>* m
 // We have a single lock for all of the hash tables.  We may wish to 
 // replace it with six different locks.
 /* REFERENCED */
-_STL_STATIC_MUTEX __category_hash_lock __STL_MUTEX_INITIALIZER;
+_STL_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
 
 static void*
 __acquire_category(const char* name, loc_create_func_t create_obj,
@@ -189,41 +191,41 @@ __release_category(void* cat,
   }
 }
 
-_Locale_ctype* __STL_CALL __acquire_ctype(const char* name)
+_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name)
 { return __REINTERPRET_CAST(_Locale_ctype*,
                             __acquire_category(name, _Loc_ctype_create, _Loc_ctype_default, &ctype_hash)); }
-_Locale_numeric* __STL_CALL __acquire_numeric(const char* name)
+_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name)
 { return __REINTERPRET_CAST(_Locale_numeric*,
                             __acquire_category(name, _Loc_numeric_create, _Loc_numeric_default, &numeric_hash)); }
-_Locale_time* __STL_CALL __acquire_time(const char* name)
+_Locale_time* _STLP_CALL __acquire_time(const char* name)
 { return __REINTERPRET_CAST(_Locale_time*,
                             __acquire_category(name, _Loc_time_create, _Loc_time_default, &time_hash)); }
-_Locale_collate* __STL_CALL __acquire_collate(const char* name)
+_Locale_collate* _STLP_CALL __acquire_collate(const char* name)
 { return __REINTERPRET_CAST(_Locale_collate*,
                             __acquire_category(name, _Loc_collate_create, _Loc_collate_default, &collate_hash)); }
-_Locale_monetary* __STL_CALL __acquire_monetary(const char* name)
+_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name)
 { return __REINTERPRET_CAST(_Locale_monetary*,
                             __acquire_category(name, _Loc_monetary_create, _Loc_monetary_default, &monetary_hash)); }
-_Locale_messages* __STL_CALL __acquire_messages(const char* name)
+_Locale_messages* _STLP_CALL __acquire_messages(const char* name)
 { return __REINTERPRET_CAST(_Locale_messages*,
                             __acquire_category(name, _Loc_messages_create, _Loc_messages_default, &messages_hash)); }
 
-void  __STL_CALL __release_ctype(_Locale_ctype* cat) {
+void  _STLP_CALL __release_ctype(_Locale_ctype* cat) {
   __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, ctype_hash);
 }
-void __STL_CALL __release_numeric(_Locale_numeric* cat) {
+void _STLP_CALL __release_numeric(_Locale_numeric* cat) {
   __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, numeric_hash);
 }
-void __STL_CALL __release_time(_Locale_time* cat) {
+void _STLP_CALL __release_time(_Locale_time* cat) {
   __release_category(cat, _Loc_time_destroy, _Loc_time_name, time_hash);
 }
-void __STL_CALL __release_collate(_Locale_collate* cat) {
+void _STLP_CALL __release_collate(_Locale_collate* cat) {
   __release_category(cat, _Loc_collate_destroy, _Loc_collate_name, collate_hash);
 }
-void __STL_CALL __release_monetary(_Locale_monetary* cat) {
+void _STLP_CALL __release_monetary(_Locale_monetary* cat) {
   __release_category(cat, _Loc_monetary_destroy, _Loc_monetary_name, monetary_hash);
 }
-void __STL_CALL __release_messages(_Locale_messages* cat) {
+void _STLP_CALL __release_messages(_Locale_messages* cat) {
   __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, messages_hash);
 }
 
@@ -289,7 +291,7 @@ locale::locale(const char* name)
 
   _Locale* impl = 0;
 
-  __STL_TRY {
+  _STLP_TRY {
     impl = new _Locale(locale::id::_S_max, name);
 
     // Insert categories one at a time.
@@ -302,7 +304,7 @@ locale::locale(const char* name)
     // reassign impl
     _M_impl = impl;
   }
-  __STL_UNWIND(delete impl);
+  _STLP_UNWIND(delete impl);
 }
 
 // Create a locale that's a copy of L, except that all of the facets
@@ -315,7 +317,7 @@ locale::locale(const locale& L, const char* name, locale::category c)
 
   _Locale* impl = 0;
 
-  __STL_TRY {
+  _STLP_TRY {
     impl = new _Locale(*L._M_impl);
     _Stl_loc_combine_names(impl, L._M_impl->name.c_str(), name, c);
 
@@ -333,7 +335,7 @@ locale::locale(const locale& L, const char* name, locale::category c)
       impl->insert_messages_facets(name);
     _M_impl = impl;
   }
-  __STL_UNWIND(delete impl)
+  _STLP_UNWIND(delete impl)
 
 }
 
@@ -356,53 +358,53 @@ locale::locale(const locale& L1, const locale& L2, category c)
   }
 
   if (c & collate) {
-    impl->insert( i2, __STLPORT_STD::collate<char>::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::collate<wchar_t>::id);
+    impl->insert( i2, _STLP_STD::collate<char>::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::collate<wchar_t>::id);
 # endif
   }
   if (c & ctype) {
-    impl->insert( i2, __STLPORT_STD::ctype<char>::id);
-    impl->insert( i2, __STLPORT_STD::codecvt<char, char, mbstate_t>::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::ctype<wchar_t>::id);
-    impl->insert( i2, __STLPORT_STD::codecvt<wchar_t, char, mbstate_t>::id);
+    impl->insert( i2, _STLP_STD::ctype<char>::id);
+    impl->insert( i2, _STLP_STD::codecvt<char, char, mbstate_t>::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::ctype<wchar_t>::id);
+    impl->insert( i2, _STLP_STD::codecvt<wchar_t, char, mbstate_t>::id);
 # endif
   }
   if (c & monetary) {
-    impl->insert( i2, __STLPORT_STD::moneypunct<char, true>::id);
-    impl->insert( i2, __STLPORT_STD::moneypunct<char, false>::id);
-    impl->insert( i2, __STLPORT_STD::money_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
-    impl->insert( i2, __STLPORT_STD::money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::moneypunct<wchar_t, true>::id);
-    impl->insert( i2, __STLPORT_STD::moneypunct<wchar_t, false>::id);
-    impl->insert( i2, __STLPORT_STD::money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
-    impl->insert( i2, __STLPORT_STD::money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::moneypunct<char, true>::id);
+    impl->insert( i2, _STLP_STD::moneypunct<char, false>::id);
+    impl->insert( i2, _STLP_STD::money_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
+    impl->insert( i2, _STLP_STD::money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::moneypunct<wchar_t, true>::id);
+    impl->insert( i2, _STLP_STD::moneypunct<wchar_t, false>::id);
+    impl->insert( i2, _STLP_STD::money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 # endif
   }
   if (c & numeric) {
-    impl->insert( i2, __STLPORT_STD::numpunct<char>::id);
-    impl->insert( i2, __STLPORT_STD::num_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
-    impl->insert( i2, __STLPORT_STD::num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::numpunct<wchar_t>::id);
+    impl->insert( i2, _STLP_STD::numpunct<char>::id);
+    impl->insert( i2, _STLP_STD::num_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
+    impl->insert( i2, _STLP_STD::num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::numpunct<wchar_t>::id);
     impl->insert( i2, num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
     impl->insert( i2, num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 # endif
   }
   if (c & time) {
-    impl->insert( i2, __STLPORT_STD::time_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
-    impl->insert( i2, __STLPORT_STD::time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
-    impl->insert( i2, __STLPORT_STD::time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::time_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
+    impl->insert( i2, _STLP_STD::time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 # endif
   }
   if (c & messages) {
-    impl->insert( i2, __STLPORT_STD::messages<char>::id);
-# ifndef __STL_NO_WCHAR_T
-    impl->insert( i2, __STLPORT_STD::messages<wchar_t>::id);
+    impl->insert( i2, _STLP_STD::messages<char>::id);
+# ifndef _STLP_NO_WCHAR_T
+    impl->insert( i2, _STLP_STD::messages<wchar_t>::id);
 # endif
   }
   _M_impl = impl;
@@ -424,49 +426,49 @@ void _Locale::insert_ctype_facets(const char* pname)
   if (pname == 0 || pname[0] == 0 || strcmp(pname, "C") == 0) {
     this->insert(i2, ctype<char>::id);
     this->insert(i2, codecvt<char, char, mbstate_t>::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2, ctype<wchar_t>::id);
     this->insert(i2, codecvt<wchar_t, char, mbstate_t>::id);
 # endif
   }
   else {
     ctype<char>*    ct                      = 0;
-# ifndef __STL_NO_MBSTATE_T
+# ifndef _STLP_NO_MBSTATE_T
     codecvt<char, char, mbstate_t>*    cvt  = 0;
 # endif
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     ctype<wchar_t>* wct                     = 0;
     codecvt<wchar_t, char, mbstate_t>* wcvt = 0;
 # endif
-    __STL_TRY {
+    _STLP_TRY {
       ct   = new ctype_byname<char>(pname);
-# ifndef __STL_NO_MBSTATE_T
+# ifndef _STLP_NO_MBSTATE_T
       cvt  = new codecvt_byname<char, char, mbstate_t>(pname);
 # endif
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wct  = new ctype_byname<wchar_t>(pname); 
       wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(pname);
 # endif
     }
     
-# ifndef __STL_NO_WCHAR_T
-#  ifdef __STL_NO_MBSTATE_T
-    __STL_UNWIND(delete ct; delete wct; delete cvt);
+# ifndef _STLP_NO_WCHAR_T
+#  ifdef _STLP_NO_MBSTATE_T
+    _STLP_UNWIND(delete ct; delete wct; delete wcvt);
 #  else
-    __STL_UNWIND(delete ct; delete wct; delete cvt; delete wcvt);
+    _STLP_UNWIND(delete ct; delete wct; delete cvt; delete wcvt);
 #  endif
 # else
-#  ifdef __STL_NO_MBSTATE_T
-    __STL_UNWIND(delete ct);
+#  ifdef _STLP_NO_MBSTATE_T
+    _STLP_UNWIND(delete ct);
 #  else
-    __STL_UNWIND(delete ct; delete cvt);
+    _STLP_UNWIND(delete ct; delete cvt);
 #  endif
 # endif    
     _Locale_insert(this, ct);
-#  ifndef __STL_NO_MBSTATE_T
+#  ifndef _STLP_NO_MBSTATE_T
     _Locale_insert(this, cvt);
 #  endif
-#  ifndef __STL_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this, wct);
     _Locale_insert(this, wcvt);
 #  endif
@@ -480,7 +482,7 @@ void _Locale::insert_numeric_facets(const char* pname)
   numpunct<char>*    punct  = 0;
   num_get<char, istreambuf_iterator<char, char_traits<char> > >*     get    = 0;
   num_put<char, ostreambuf_iterator<char, char_traits<char> > >*     put    = 0;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   numpunct<wchar_t>* wpunct = 0;
   num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*  wget   = 0;
   num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*  wput   = 0;
@@ -496,7 +498,7 @@ void _Locale::insert_numeric_facets(const char* pname)
 		 num_put<char, ostreambuf_iterator<char, char_traits<char> >  >::id);
     this->insert(i2, 
 		 num_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2, numpunct<wchar_t>::id);
     this->insert(i2, 
 		 num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> >  >::id);
@@ -505,28 +507,28 @@ void _Locale::insert_numeric_facets(const char* pname)
 # endif
   }
   else {
-    __STL_TRY {
+    _STLP_TRY {
       punct  = new numpunct_byname<char>(pname);
       get    = new num_get<char, istreambuf_iterator<char, char_traits<char> > >;
       put    = new num_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wpunct = new numpunct_byname<wchar_t>(pname);
       wget   = new num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
       wput   = new num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 # endif
     }
-# ifndef __STL_NO_WCHAR_T
-    __STL_UNWIND(delete punct; delete wpunct; delete get; delete wget;
+# ifndef _STLP_NO_WCHAR_T
+    _STLP_UNWIND(delete punct; delete wpunct; delete get; delete wget;
     delete put; delete wput);
 # else
-    __STL_UNWIND(delete punct; delete get;delete put);
+    _STLP_UNWIND(delete punct; delete get;delete put);
 # endif
     
   _Locale_insert(this,punct);
   _Locale_insert(this,get);
   _Locale_insert(this,put);
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   _Locale_insert(this,wpunct);
   _Locale_insert(this,wget);
   _Locale_insert(this,wput);
@@ -539,7 +541,7 @@ void _Locale::insert_time_facets(const char* pname)
   _Locale_impl* i2 = locale::classic()._M_impl;
   time_get<char, istreambuf_iterator<char, char_traits<char> > >*    get  = 0;
   time_put<char, ostreambuf_iterator<char, char_traits<char> > >*    put  = 0;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >* wget = 0;
   time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >* wput = 0;
 # endif
@@ -554,7 +556,7 @@ void _Locale::insert_time_facets(const char* pname)
 		 time_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
     this->insert(i2, 
 		 time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2,
 		 time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
     this->insert(i2,
@@ -562,22 +564,22 @@ void _Locale::insert_time_facets(const char* pname)
 # endif
   }
   else {
-    __STL_TRY {
+    _STLP_TRY {
       get  = new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(pname);
       put  = new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(pname);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wget = new time_get_byname<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(pname);
       wput = new time_put_byname<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(pname);
 # endif
     }
-# ifndef __STL_NO_WCHAR_T
-    __STL_UNWIND(delete get; delete wget; delete put; delete wput);
+# ifndef _STLP_NO_WCHAR_T
+    _STLP_UNWIND(delete get; delete wget; delete put; delete wput);
 # else
-    __STL_UNWIND(delete get; delete put);
+    _STLP_UNWIND(delete get; delete put);
 # endif
     _Locale_insert(this,get);
     _Locale_insert(this,put);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this,wget);
     _Locale_insert(this,wput);
 # endif
@@ -589,7 +591,7 @@ void _Locale::insert_collate_facets(const char* nam)
   _Locale_impl* i2 = locale::classic()._M_impl;
 
   collate<char>*    col  = 0;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   collate<wchar_t>* wcol = 0;
 # endif
 
@@ -599,24 +601,24 @@ void _Locale::insert_collate_facets(const char* nam)
 
   if (nam == 0 || nam[0] == 0 || strcmp(nam, "C") == 0) {
     this->insert(i2, collate<char>::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2, collate<wchar_t>::id);
 # endif
   }
   else {
-    __STL_TRY {
+    _STLP_TRY {
       col   = new collate_byname<char>(nam);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wcol  = new collate_byname<wchar_t>(nam); 
 # endif
     }
-# ifndef __STL_NO_WCHAR_T
-    __STL_UNWIND(delete col; delete wcol);
+# ifndef _STLP_NO_WCHAR_T
+    _STLP_UNWIND(delete col; delete wcol);
 # else
-    __STL_UNWIND(delete col);
+    _STLP_UNWIND(delete col);
 # endif
     _Locale_insert(this,col);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this,wcol);
 # endif
   }
@@ -631,7 +633,7 @@ void _Locale::insert_monetary_facets(const char* pname)
   money_get<char, istreambuf_iterator<char, char_traits<char> > >*            get     = 0;
   money_put<char, ostreambuf_iterator<char, char_traits<char> > >*            put     = 0;
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   moneypunct<wchar_t, false>* wpunct  = 0;
   moneypunct<wchar_t, true>*  wipunct = 0;
   money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*         wget    = 0;
@@ -647,7 +649,7 @@ void _Locale::insert_monetary_facets(const char* pname)
     this->insert(i2, moneypunct<char, true>::id);
     this->insert(i2, money_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
     this->insert(i2, money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2, moneypunct<wchar_t, false>::id);
     this->insert(i2, moneypunct<wchar_t, true>::id);
     this->insert(i2, money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
@@ -655,29 +657,29 @@ void _Locale::insert_monetary_facets(const char* pname)
 # endif
   }
   else {    
-    __STL_TRY {
+    _STLP_TRY {
       punct   = new moneypunct_byname<char, false>(pname);
       ipunct  = new moneypunct_byname<char, true>(pname);
       get     = new money_get<char, istreambuf_iterator<char, char_traits<char> > >;
       put     = new money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wpunct  = new moneypunct_byname<wchar_t, false>(pname);
       wipunct = new moneypunct_byname<wchar_t, true>(pname);
       wget    = new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
       wput    = new money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 # endif
     }
-# ifndef __STL_NO_WCHAR_T
-    __STL_UNWIND(delete punct; delete ipunct; delete wpunct; delete wipunct;
+# ifndef _STLP_NO_WCHAR_T
+    _STLP_UNWIND(delete punct; delete ipunct; delete wpunct; delete wipunct;
     delete get; delete wget; delete put; delete wput);
 # else
-    __STL_UNWIND(delete punct; delete ipunct; delete get; delete put);
+    _STLP_UNWIND(delete punct; delete ipunct; delete get; delete put);
 # endif
     _Locale_insert(this,punct);
     _Locale_insert(this,ipunct);
     _Locale_insert(this,get);
     _Locale_insert(this,put);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this,wget);
     _Locale_insert(this,wpunct);
     _Locale_insert(this,wipunct);
@@ -690,7 +692,7 @@ void _Locale::insert_messages_facets(const char* pname)
 {
   _Locale_impl* i2 = locale::classic()._M_impl;
   messages<char>*    msg  = 0;
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   messages<wchar_t>* wmsg = 0;
 # endif
 
@@ -700,29 +702,29 @@ void _Locale::insert_messages_facets(const char* pname)
 
   if (pname == 0 || pname[0] == 0 || strcmp(pname, "C") == 0) {
     this->insert(i2, messages<char>::id);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     this->insert(i2, messages<wchar_t>::id);
 # endif
   }
   else {
-    __STL_TRY {
+    _STLP_TRY {
       msg  = new messages_byname<char>(pname);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
       wmsg = new messages_byname<wchar_t>(pname);
 # endif
     }
-# ifndef __STL_NO_WCHAR_T
-    __STL_UNWIND(delete msg; delete wmsg);
+# ifndef _STLP_NO_WCHAR_T
+    _STLP_UNWIND(delete msg; delete wmsg);
 # else
-    __STL_UNWIND(delete msg);
+    _STLP_UNWIND(delete msg);
 # endif
     _Locale_insert(this,msg);
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this,wmsg);
 # endif
   }
 }
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # include "ctype_byname.cpp"
 # include "collate_byname.cpp"

@@ -34,8 +34,8 @@
 // corner case.)
 
 
-#ifndef __SGI_STL_STDIO_STREAMBUF
-#define __SGI_STL_STDIO_STREAMBUF
+#ifndef _STLP_STDIO_STREAMBUF
+#define _STLP_STDIO_STREAMBUF
 
 #if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
 #error This header file requires the -LANG:std option
@@ -44,17 +44,17 @@
 #include <streambuf>            // For basic_streambuf<>
 #include <cstdio>              // For FILE.
 
-# ifndef __STL_HAS_NO_NAMESPACES
+# ifndef _STLP_HAS_NO_NAMESPACES
 // This is an extension.  It is in namespace SGI, not namespace std
-namespace SGI {
+namespace _SgI {
 
-# ifdef __STL_USE_NAMESPACES
-using namespace __STLPORT_STD;
+# ifdef _STLP_USE_NAMESPACES
+using namespace _STLP_STD;
 # endif
 # endif
 
 // Base class for features common to stdio_istreambuf and stdio_ostreambuf
-class stdio_streambuf_base : public __STLPORT_STD::basic_streambuf<char, char_traits<char> >
+class stdio_streambuf_base : public _STLP_STD::basic_streambuf<char, char_traits<char> >
 {
 public:                         // Constructor, destructor.
   // The argument may not be null.  It must be an open file pointer.
@@ -83,6 +83,8 @@ class stdio_istreambuf : public stdio_streambuf_base
 public:                         // Constructor, destructor.
   stdio_istreambuf(FILE* __f) : stdio_streambuf_base(__f) {}
 
+  ~stdio_istreambuf();
+
 protected:                      // Virtual functions from basic_streambuf.
   streamsize showmanyc();
   int_type underflow();
@@ -94,17 +96,18 @@ class stdio_ostreambuf : public stdio_streambuf_base
 {
 public:                         // Constructor, destructor.
   stdio_ostreambuf(FILE* __f) : stdio_streambuf_base(__f) {}
+  ~stdio_ostreambuf();
 
 protected:                      // Virtual functions from basic_streambuf.
   streamsize showmanyc();
   int_type overflow(int_type c = traits_type::eof());
 };
 
-# ifndef __STL_HAS_NO_NAMESPACES
-} // Close namespace SGI.
+# ifndef _STLP_HAS_NO_NAMESPACES
+} // Close namespace _SgI.
 # endif
 
-#endif /* __SGI_STL_STDIO_STREAMBUF */
+#endif /* _STLP_STDIO_STREAMBUF */
 
 
 // Local Variables:

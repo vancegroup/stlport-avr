@@ -15,16 +15,16 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_COMPLEX_C
-#define __STL_COMPLEX_C
+#ifndef _STLP_COMPLEX_C
+#define _STLP_COMPLEX_C
 
 #include <istream>
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#ifdef _STLP_USE_NEW_IOSTREAMS
 # include <sstream>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // Non-inline member functions.
 
@@ -72,12 +72,12 @@ void complex<_Tp>::_div(const _Tp& __z1_r,
 
 // I/O.
 
-#ifdef __STL_USE_NEW_IOSTREAMS
+#ifdef _STLP_USE_NEW_IOSTREAMS
 
 // Complex output, in the form (re,im).  We use a two-step process 
 // involving stringstream so that we get the padding right.  
 template <class _Tp, class _CharT, class _Traits>
-basic_ostream<_CharT, _Traits>& __STL_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, const complex<_Tp>& __z)
 {
   basic_ostringstream<_CharT, _Traits, allocator<_CharT> > __tmp;
@@ -93,7 +93,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os, const complex<_Tp>& __z)
 // locale and the separator between real and imaginary parts does not.
 
 template <class _Tp, class _CharT, class _Traits>
-basic_istream<_CharT, _Traits>& __STL_CALL
+basic_istream<_CharT, _Traits>& _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is, complex<_Tp>& __z)
 {
   _Tp  __re = 0;
@@ -129,16 +129,16 @@ operator>>(basic_istream<_CharT, _Traits>& __is, complex<_Tp>& __z)
 }
 
 
-#else /* __STL_USE_NEW_IOSTREAMS */
+#else /* _STLP_USE_NEW_IOSTREAMS */
 
 template <class _Tp>
-ostream& __STL_CALL operator<<(ostream& s, const complex<_Tp>& __z)
+ostream& _STLP_CALL operator<<(ostream& s, const complex<_Tp>& __z)
 {
   return s << "( " << __z._M_re <<", " << __z._M_im <<")";
 }
 
 template <class _Tp>
-istream& __STL_CALL operator>>(istream& s, complex<_Tp>& a)
+istream& _STLP_CALL operator>>(istream& s, complex<_Tp>& a)
 {
   _Tp re = 0, im = 0;
   char 	c = 0;
@@ -158,8 +158,8 @@ istream& __STL_CALL operator>>(istream& s, complex<_Tp>& a)
   return s;
 }
 
-#endif /* __STL_USE_NEW_IOSTREAMS */
+#endif /* _STLP_USE_NEW_IOSTREAMS */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __STL_COMPLEX_C */
+#endif /* _STLP_COMPLEX_C */

@@ -9,7 +9,7 @@
 SHELL=/bin/sh
 
 # point this to proper location
-STL_INCL= -I../../stlport/SC5
+STL_INCL= -I../../stlport
 
 # STL_INCL= -DEH_NO_SGI_STL
 

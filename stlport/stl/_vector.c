@@ -23,10 +23,10 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_VECTOR_C
-#define __STL_VECTOR_C
+#ifndef _STLP_VECTOR_C
+#define _STLP_VECTOR_C
 
-# if defined ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 #  define __pointer__             _Tp*
 #  define __const_pointer__       const _Tp*
 #  define __size_type__           size_t
@@ -42,7 +42,7 @@
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc>
 void 
@@ -74,14 +74,14 @@ __vector__<_Tp, _Alloc>::_M_fill_insert(
         __uninitialized_copy(this->_M_finish - __n, this->_M_finish, this->_M_finish, _IsPODType());
         this->_M_finish += __n;
         __copy_backward_ptrs(__position, __old_finish - __n, __old_finish, _TrivialAss());
-        __STLPORT_STD::fill(__position, __position + __n, __x_copy);
+        _STLP_STD::fill(__position, __position + __n, __x_copy);
       }
       else {
         uninitialized_fill_n(this->_M_finish, __n - __elems_after, __x_copy);
         this->_M_finish += __n - __elems_after;
         __uninitialized_copy(__position, __old_finish, this->_M_finish, _IsPODType());
         this->_M_finish += __elems_after;
-        __STLPORT_STD::fill(__position, __old_finish, __x_copy);
+        _STLP_STD::fill(__position, __old_finish, __x_copy);
       }
     }
     else 
@@ -122,13 +122,13 @@ void __vector__<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
   }
   else if (__n > size()) {
     fill(begin(), end(), __val);
-    this->_M_finish = __STLPORT_STD::uninitialized_fill_n(this->_M_finish, __n - size(), __val);
+    this->_M_finish = _STLP_STD::uninitialized_fill_n(this->_M_finish, __n - size(), __val);
   }
   else
-    erase(__STLPORT_STD::fill_n(begin(), __n, __val), end());
+    erase(_STLP_STD::fill_n(begin(), __n, __val), end());
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef __pointer__
 # undef __const_pointer__
@@ -137,7 +137,7 @@ __STL_END_NAMESPACE
 # undef __const_iterator__
 # undef vector
 
-#endif /*  __STL_VECTOR_C */
+#endif /*  _STLP_VECTOR_C */
 
       // Local Variables:
 	// mode:C++

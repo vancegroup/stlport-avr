@@ -48,9 +48,9 @@ RM=-rd /S /Q
 # Flags
 #
 
-FLAGS_COMMON =/nologo /c /W3 /GR /GX /D "WIN32" /D "_WINDOWS" /I "$(STLPORT_DIR)" /D "__SGI_STL_OWN_IOSTREAMS" $(EXTRA_COMMON_FLAGS)
+FLAGS_COMMON =/nologo /c /W3 /GR /GX /D "WIN32" /D "_WINDOWS" /I "$(STLPORT_DIR)" $(EXTRA_COMMON_FLAGS)
 
-FLAGS_COMMON_static = $(FLAGS_COMMON) /FD  /D "__STL_NO_FORCE_INSTANTIATE"
+FLAGS_COMMON_static = $(FLAGS_COMMON) /FD  /D "_STLP_NO_FORCE_INSTANTIATE"
 FLAGS_COMMON_dynamic = $(FLAGS_COMMON)
 
 FLAGS_DEBUG=/Zi /Gm /Od /D_DEBUG $(EXTRA_DEBUG_FLAGS)
@@ -63,9 +63,9 @@ CXXFLAGS_DEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJ
 
 CXXFLAGS_DEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_dynamic)\\" /Fd"$(DEBUG_OBJDIR_dynamic)\\" /YXstlport_prefix.h /Fp$(DEBUG_OBJDIR_dynamic)\stlport.pch
 
-CXXFLAGS_STLDEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /D "__STL_DEBUG" /Fo"$(STLDEBUG_OBJDIR_static)\\" /Fd"$(STLDEBUG_OBJDIR_static)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_static)\stlport.pch 
+CXXFLAGS_STLDEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_static)\\" /Fd"$(STLDEBUG_OBJDIR_static)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_static)\stlport.pch 
 
-CXXFLAGS_STLDEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /D "__STL_DEBUG" /Fo"$(STLDEBUG_OBJDIR_dynamic)\\" /Fd"$(STLDEBUG_OBJDIR_dynamic)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_dynamic)\stlport.pch 
+CXXFLAGS_STLDEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_dynamic)\\" /Fd"$(STLDEBUG_OBJDIR_dynamic)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_dynamic)\stlport.pch 
 
 LDFLAGS_DEBUG_static=$(LDFLAGS_COMMON_static)  /DEBUGTYPE:CV
 LDFLAGS_DEBUG_dynamic=$(LDFLAGS_COMMON_dynamic) /DEBUG /DEBUGTYPE:CV /implib:"$(OUTDIR)\$(DEBUG_NAME).$(STEXT)" 

@@ -23,7 +23,7 @@
 #include <stl/_function.h>
 #include "c_locale.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 _Locale_ctype* __acquire_ctype(const char* name); 
 void __release_ctype(_Locale_ctype* cat);
@@ -94,7 +94,7 @@ ctype_byname<char>::do_tolower(char* first, const char* last) const
 
 // Some helper functions used in ctype<>::scan_is and scan_is_not.
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 // ctype_byname<wchar_t>
 
@@ -180,7 +180,7 @@ ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const
 
 # endif /* WCHAR_T */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

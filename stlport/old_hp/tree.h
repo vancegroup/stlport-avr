@@ -20,40 +20,40 @@
  *
  */
 
-#ifndef __SGI_STL_TREE_H
-#define __SGI_STL_TREE_H
+#ifndef _STLP_TREE_H
+#define _STLP_TREE_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa030
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa030
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_ALGOBASE_H
+#ifndef _STLP_ALGOBASE_H
 #include <algobase.h>
 #endif
 
-#ifndef __SGI_STL_ALLOC_H
+#ifndef _STLP_ALLOC_H
 #include <alloc.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_TREE_H
+#ifndef _STLP_INTERNAL_TREE_H
 #include <stl/_tree.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::rb_tree;
+using _STLP_STD::rb_tree;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa030)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa030)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_TREE_H */
+#endif /* _STLP_TREE_H */
 
 // Local Variables:
 // mode:C++

@@ -23,19 +23,15 @@
  *
  */
 
-/* NOTE: This is an internal header file, included by other STL headers.
- *   You should not attempt to use it directly.
- */
-
-# if defined (__STL_DEBUG)
+# if defined (_STLP_DEBUG)
 #  define _DEQUE_SUPER_NAME _DBG_deque
 # else
 #  define _DEQUE_SUPER_NAME __deque__
 # endif
 
-# define _DEQUE_SUPER   _DEQUE_SUPER_NAME<_Tp, __STL_DEFAULT_ALLOCATOR(_Tp) >
+# define _DEQUE_SUPER   _DEQUE_SUPER_NAME<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // provide a "default" deque adaptor
 template <class _Tp>
@@ -53,7 +49,7 @@ public:
   ~deque() { }
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 template <class _Tp>
 inline bool 
 operator==(const deque<_Tp>& __x, const deque<_Tp>& __y) {
@@ -69,7 +65,7 @@ operator<(const deque<_Tp>& __x, const deque<_Tp>& __y) {
 
 # undef _DEQUE_SUPER
 
-__STL_END_NAMESPACE  
+_STLP_END_NAMESPACE  
 
 // Local Variables:
 // mode:C++

@@ -23,14 +23,14 @@
 #include <stl/_function.h>
 #include "c_locale.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // ctype<char>
 
 // The classic table: static data members.
 
-# if !defined(__STL_STATIC_CONST_INIT_BUG) && !(defined(__MRC__) || defined(__SC__))
+# if !defined(_STLP_STATIC_CONST_INIT_BUG) && !(defined(__MRC__) || defined(__SC__))
 //*TY 02/25/2000 - added workaround for MPW compilers; they confuse on in-class static const
 const size_t ctype<char>::table_size;
 # endif
@@ -310,12 +310,12 @@ ctype<char>::~ctype() {
 
 const char*
 ctype<char>::scan_is(ctype_base::mask  __m, const char* __low, const char* __high) const  {
-  return __STLPORT_STD::find_if(__low, __high, _Ctype_is_mask(__m, _M_ctype_table));
+  return _STLP_STD::find_if(__low, __high, _Ctype_is_mask(__m, _M_ctype_table));
 }
 
 const char* 
 ctype<char>::scan_not(ctype_base::mask  __m, const char* __low, const char* __high) const {
-  return __STLPORT_STD::find_if(__low, __high, _Ctype_not_mask(__m, _M_ctype_table));
+  return _STLP_STD::find_if(__low, __high, _Ctype_not_mask(__m, _M_ctype_table));
 }
 
 char        
@@ -357,7 +357,7 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
 }
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
   struct _Ctype_w_is_mask {
     typedef wchar_t argument_type;
@@ -375,6 +375,9 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
 
 //----------------------------------------------------------------------
 // ctype<wchar_t>
+
+ctype<wchar_t>::~ctype() {}
+
 
 bool ctype<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const
 {
@@ -479,7 +482,7 @@ const wchar_t* ctype<wchar_t>::do_narrow(const wchar_t* low,
 }
 
 # endif
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

@@ -11,8 +11,8 @@
  * purpose.  It is provided "as is" without express or implied warranty.
  *
  */
-#if defined( __STL_USE_MSIPL ) && !defined( __SGI_STL_MSL_STRING_H_ )
-#define __SGI_STL_MSL_STRING_H_
+#if defined( _STLP_USE_MSIPL ) && !defined( _STLP_MSL_STRING_H_ )
+#define _STLP_MSL_STRING_H_
 
 //# define char_traits __msl_char_traits
 # define basic_string __msl_basic_string
@@ -29,7 +29,7 @@ namespace std
 	template<class charT, class traits> class basic_ostream;
 }
 
-# include __STL_NATIVE_HEADER(string)
+# include _STLP_NATIVE_HEADER(string)
 // # undef char_traits
 # undef basic_string
 # undef b_str_ref

@@ -24,6 +24,7 @@
 #include "c_locale.h"
 #include "aligned_buffer.h"
 
+
 #include "locale_impl.h"
 #include <stl/_codecvt.h>
 #include <stl/_collate.h>
@@ -31,13 +32,13 @@
 #include <stl/_monetary.h>
 #include "message_facets.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // _Locale_impl non-inline member functions.
-void __STL_CALL
+void _STLP_CALL
 _Locale_impl::_M_throw_bad_cast()
 {
-  __STL_THROW(bad_cast());  
+  _STLP_THROW(bad_cast());  
 }
 
 static void 
@@ -61,7 +62,7 @@ _Stl_loc_assign_ids() {
   time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 18;
   time_put<char, char*>::id._M_index               = 19;
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
   money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                  = 27;
   money_get<wchar_t, const wchar_t*>::id._M_index  = 28;
@@ -99,7 +100,7 @@ static _Stl_aligned_buffer<num_put<char, ostreambuf_iterator<char, char_traits<c
 static _Stl_aligned_buffer<time_get<char, istreambuf_iterator<char, char_traits<char> > > > _S_time_get_char;
 static _Stl_aligned_buffer<time_put<char, ostreambuf_iterator<char, char_traits<char> > > > _S_time_put_char;
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 static _Stl_aligned_buffer<collate<wchar_t> > _S_collate_wchar;
 static _Stl_aligned_buffer<ctype<wchar_t> > _S_ctype_wchar;
 static _Stl_aligned_buffer<codecvt<wchar_t, char, mbstate_t> > _S_codecvt_wchar;
@@ -142,7 +143,7 @@ static locale::facet* _S_classic_facets[] = {
   (locale::facet*)0,
   (locale::facet*)&_S_time_put_char,
   (locale::facet*)0,
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   (locale::facet*)&_S_collate_wchar,
   (locale::facet*)&_S_ctype_wchar, 
   (locale::facet*)&_S_codecvt_wchar,
@@ -194,7 +195,7 @@ _Locale_impl::make_classic_locale() {
   // messages category
   //  new (&_S_messages_char)messages<char>(&_Null_messages);
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
   // ctype category
   new(&_S_ctype_wchar) ctype<wchar_t>(1);
   // collate category
@@ -225,30 +226,30 @@ _Locale_impl::make_classic_locale() {
 // Declarations of (non-template) facets' static data members
 size_t locale::id::_S_max = 39;
 
-__STL_STATIC_MEMBER_DECLSPEC locale::id collate<char>::id = { 1 };
-__STL_STATIC_MEMBER_DECLSPEC locale::id ctype<char>::id = { 2 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id collate<char>::id = { 1 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<char>::id = { 2 };
 
-# ifndef __STL_NO_MBSTATE_T
-__STL_STATIC_MEMBER_DECLSPEC locale::id codecvt<char, char, mbstate_t>::id = { 3 };
-#  ifndef __STL_NO_WCHAR_T
-__STL_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
+# ifndef _STLP_NO_MBSTATE_T
+_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<char, char, mbstate_t>::id = { 3 };
+#  ifndef _STLP_NO_WCHAR_T
+_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
 #  endif
 # endif
 
-__STL_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, true>::id = { 4 };
-__STL_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, false>::id = { 5 };
-__STL_STATIC_MEMBER_DECLSPEC locale::id numpunct<char>::id = { 6 } ;
-__STL_STATIC_MEMBER_DECLSPEC locale::id messages<char>::id = { 7 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, true>::id = { 4 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, false>::id = { 5 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<char>::id = { 6 } ;
+_STLP_STATIC_MEMBER_DECLSPEC locale::id messages<char>::id = { 7 };
 
-# ifndef __STL_NO_WCHAR_T
-__STL_STATIC_MEMBER_DECLSPEC locale::id collate<wchar_t>::id = { 20 };
-__STL_STATIC_MEMBER_DECLSPEC locale::id ctype<wchar_t>::id = { 21 };
+# ifndef _STLP_NO_WCHAR_T
+_STLP_STATIC_MEMBER_DECLSPEC locale::id collate<wchar_t>::id = { 20 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<wchar_t>::id = { 21 };
 
-__STL_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, true>::id = { 23 } ;
-__STL_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, false>::id = { 24 } ;
+_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, true>::id = { 23 } ;
+_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, false>::id = { 24 } ;
 
-__STL_STATIC_MEMBER_DECLSPEC locale::id numpunct<wchar_t>::id = { 25 };
-__STL_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<wchar_t>::id = { 25 };
+_STLP_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
 # endif
 
 //
@@ -257,14 +258,14 @@ __STL_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
 
 locale::facet::~facet() {}
 
-# if ! defined ( __STL_MEMBER_TEMPLATES ) || defined (__STL_INLINE_MEMBER_TEMPLATES)
+# if ! defined ( _STLP_MEMBER_TEMPLATES ) || defined (_STLP_INLINE_MEMBER_TEMPLATES)
 // members that fail to be templates 
 bool locale::operator()(const string& __x,
                         const string& __y) const {
   return __locale_do_operator_call(this, __x, __y);
 }
 
-#  ifndef __STL_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 bool locale::operator()(const wstring& __x,
                   const wstring& __y) const {
   return __locale_do_operator_call(this, __x, __y);
@@ -275,13 +276,13 @@ bool locale::operator()(const wstring& __x,
 
 _Locale_impl*   _Stl_loc_global_impl    = 0;
 locale          _Stl_loc_classic_locale((_Locale_impl*) &_S_classic_locale);
-_STL_STATIC_MUTEX _Stl_loc_global_locale_lock __STL_MUTEX_INITIALIZER;
+_STL_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
 
   
 //----------------------------------------------------------------------
 // class locale
 
-void __STL_CALL
+void _STLP_CALL
 locale::_M_throw_runtime_error(const char* name)
 {
   char buf[256];
@@ -295,7 +296,7 @@ locale::_M_throw_runtime_error(const char* name)
   else {
     strcpy(buf, "locale error");
   }
-  __STL_THROW(runtime_error(buf));
+  _STLP_THROW(runtime_error(buf));
 }
 
 long ios_base::_Loc_init::_S_count = 0;
@@ -313,7 +314,7 @@ ios_base::_Loc_init::~_Loc_init() {
 // Initialization of the locale system.  This must be called before
 // any locales are constructed.  (Meaning that it must be called when
 // the I/O library itself is initialized.)
-void __STL_CALL
+void _STLP_CALL
 locale::_S_initialize()
 {
   _Stl_loc_assign_ids();
@@ -322,7 +323,7 @@ locale::_S_initialize()
 
 
 
-void __STL_CALL
+void _STLP_CALL
 locale::_S_uninitialize()
 {
   _Stl_loc_global_impl->decr();
@@ -346,14 +347,14 @@ locale::locale(_Locale_impl* impl) : _M_impl(impl)
 {}
 
 // Copy constructor
-locale::locale(const locale& L) __STL_NOTHROW
+locale::locale(const locale& L) _STLP_NOTHROW
   : _M_impl(0)
 {
   _M_impl = _S_copy_impl(L._M_impl);
 }
 
 // Destructor.
-locale::~locale() __STL_NOTHROW
+locale::~locale() _STLP_NOTHROW
 {
   //  if (_M_impl->_M_decr() == 0)
   //    delete _M_impl;
@@ -362,7 +363,7 @@ locale::~locale() __STL_NOTHROW
 
 // Assignment operator.  Much like the copy constructor: just a bit of
 // pointer twiddling.
-const locale& locale::operator=(const locale& L) __STL_NOTHROW
+const locale& locale::operator=(const locale& L) _STLP_NOTHROW
 {
   if (this->_M_impl != L._M_impl) {
     this->_M_impl->decr();
@@ -406,12 +407,12 @@ bool locale::operator!=(const locale& L) const {
 }
 
 // Static member functions.
-const locale&  __STL_CALL
+const locale&  _STLP_CALL
 locale::classic() {
   return _Stl_loc_classic_locale;
 }
 
-locale  __STL_CALL
+locale  _STLP_CALL
 locale::global(const locale& L) 
 {
   locale old;                   // A copy of the old global locale.
@@ -433,7 +434,7 @@ locale::global(const locale& L)
 
 // static data members.
 
-# if !defined (__STL_STATIC_CONST_INIT_BUG) && ! defined (__STL_USE_DECLSPEC)
+# if !defined (_STLP_STATIC_CONST_INIT_BUG) && ! defined (_STLP_USE_DECLSPEC)
 
 const locale::category locale::none;
 const locale::category locale::collate;
@@ -446,11 +447,12 @@ const locale::category locale::all;
 
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 //
 // Facets included in classic locale :
 //
+
 
 # include "ctype.cpp"
 # include "collate.cpp"
@@ -458,9 +460,10 @@ __STL_END_NAMESPACE
 # include "numpunct.cpp"
 # include "num_put_float.cpp"
 # include "num_put.cpp"
+
 # include "num_get_float.cpp"
 # include "num_get.cpp"
+
 # include "monetary.cpp"
 # include "time_facets.cpp"
 # include "messages.cpp"
-

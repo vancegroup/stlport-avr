@@ -20,9 +20,9 @@
 # include <algorithm>
 # include <stl/_ios.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-char* __STL_CALL
+char* _STLP_CALL
 __write_integer(char* buf, ios_base::fmtflags flags, long x);
 
 //----------------------------------------------------------------------
@@ -35,9 +35,9 @@ ios_base::failure::failure(const string& s)
   : __Named_exception(s)
 {}
 
-ios_base::failure::~failure() __STL_NOTHROW_INHERENTLY {}
+ios_base::failure::~failure() _STLP_NOTHROW_INHERENTLY {}
 
-# if !defined (__STL_STATIC_CONST_INIT_BUG) && ! defined (__STL_USE_DECLSPEC)  && !(defined(__MRC__) || defined(__SC__))
+#if !defined (_STLP_STATIC_CONST_INIT_BUG)
 
 // Definitions of ios_base's formatting flags.
 const ios_base::fmtflags ios_base::left;
@@ -78,7 +78,7 @@ const ios_base::seekdir ios_base::beg;
 const ios_base::seekdir ios_base::cur;
 const ios_base::seekdir ios_base::end;
 
-# endif /*  __STL_STATIC_CONST_INIT_BUG */
+# endif /*  _STLP_STATIC_CONST_INIT_BUG */
 
 // Internal functions used for managing exponentially-growing arrays of
 // POD types.
@@ -92,7 +92,7 @@ pair<PODType*, size_t>
 _Stl_expand_array(PODType* array, size_t N, int index)
 {
   if ((int)N < index + 1) {
-    size_t new_N = __STL_MAX(2 * N, size_t(index + 1));
+    size_t new_N = (max)(2 * N, size_t(index + 1));
     PODType* new_array
       = __STATIC_CAST(PODType*,realloc(array, new_N * sizeof(PODType)));
     if (new_array) {
@@ -127,9 +127,9 @@ locale ios_base::imbue(const locale& loc) {
 
 int ios_base::_S_index = 0;
 
-int __STL_CALL ios_base::xalloc()
+int _STLP_CALL ios_base::xalloc()
 {
-  static _STL_STATIC_MUTEX L __STL_MUTEX_INITIALIZER;
+  static _STL_STATIC_MUTEX L _STLP_MUTEX_INITIALIZER;
   _STL_auto_lock sentry(L);
   return _S_index++;
 }
@@ -208,7 +208,7 @@ void ios_base::_M_throw_failure() {
   arg = "ios failure";
 # endif
 
-# ifndef __STL_USE_EXCEPTIONS
+# ifndef _STLP_USE_EXCEPTIONS
   fputs(arg, stderr);
 # else
   throw failure(arg);
@@ -299,16 +299,14 @@ ios_base::~ios_base() {
 //----------------------------------------------------------------------
 // Force instantiation of basic_ios
 // For DLL exports, they are already instantiated.
-#  if !defined(__STL_NO_FORCE_INSTANTIATE)
-template class __STL_CLASS_DECLSPEC basic_ios<char, char_traits<char> >;
-#   ifndef __STL_NO_WCHAR_T
-template class __STL_CLASS_DECLSPEC basic_ios<wchar_t, char_traits<wchar_t> >;
-#   endif /* __STL_NO_WCHAR_T */
+#  if !defined(_STLP_NO_FORCE_INSTANTIATE)
+template class _STLP_CLASS_DECLSPEC basic_ios<char, char_traits<char> >;
+#   ifndef _STLP_NO_WCHAR_T
+template class _STLP_CLASS_DECLSPEC basic_ios<wchar_t, char_traits<wchar_t> >;
+#   endif /* _STLP_NO_WCHAR_T */
 #  endif
 
-
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

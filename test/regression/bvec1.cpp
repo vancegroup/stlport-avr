@@ -20,25 +20,16 @@ int bvec1_test(int, char**)
   int i;
   for(i = 0; i < b.size(); i++)
     cout << 
-#if defined(__MRC__) || defined(__SC__)	//*TY 01/05/1999 - 
-	(bool)				//*TY 01/05/1999 - added bool() since MrCpp forgets to apply user defined conversion operator
-#endif					//*TY 01/05/1999 - 
 	b[i];
   cout << endl;
   b[0] = b[2] = 1;
   for(i = 0; i < b.size(); i++)
     cout << 
-#if defined(__MRC__) || defined(__SC__)	//*TY 01/05/1999 - 
-	(bool)				//*TY 01/05/1999 - added bool() since MrCpp forgets to apply user defined conversion operator
-#endif					//*TY 01/05/1999 - 
 	b[i];
   cout << endl;
   b.insert(b.begin(),(bool*)ii, ii+2);
   for(i = 0; i < b.size(); i++)
     cout << 
-#if defined(__MRC__) || defined(__SC__)	//*TY 01/05/1999 - 
-	(bool)				//*TY 01/05/1999 - added bool() since MrCpp forgets to apply user defined conversion operator
-#endif					//*TY 01/05/1999 - 
 	b[i];
   cout << endl;
   bit_vector bb = b;

@@ -23,41 +23,41 @@
  *
  */
 
-#ifndef __SGI_STL_ALGO_H
-#define __SGI_STL_ALGO_H
+#ifndef _STLP_ALGO_H
+#define _STLP_ALGO_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa001
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa001
 #  include <stl/_prolog.h>
 # endif
 
-# ifndef __SGI_STL_ALGOBASE_H
+# ifndef _STLP_ALGOBASE_H
 #  include <algobase.h>
 # endif
 
-# ifndef __SGI_STL_TEMPBUF_H
+# ifndef _STLP_TEMPBUF_H
 #  include <tempbuf.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_HEAP_H
+# ifndef _STLP_INTERNAL_HEAP_H
 #  include <stl/_heap.h>
 # endif
 
-# ifndef __SGI_STL_ITERATOR_H
+# ifndef _STLP_ITERATOR_H
 #  include <iterator.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ALGO_H
+# ifndef _STLP_INTERNAL_ALGO_H
 #  include <stl/_algo.h>
 # endif
 
-# ifndef __SGI_STL_NUMERIC_H
+# ifndef _STLP_NUMERIC_H
 #  include <stl/_numeric.h>
 # endif
 
-#ifdef __STL_USE_NAMESPACES
+#ifdef _STLP_USE_NAMESPACES
 
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 // Names from <stl/_algo.h>
@@ -131,15 +131,15 @@ using STLPORT::adjacent_difference;
 using STLPORT::power; 
 using STLPORT::iota; 
 
-# endif /* __STL_BROKEN_USING_DIRECTIVE */
-#endif /* __STL_USE_NAMESPACES */
+# endif /* _STLP_BROKEN_USING_DIRECTIVE */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa001)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa001)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_ALGO_H */
+#endif /* _STLP_ALGO_H */
 
 // Local Variables:
 // mode:C++

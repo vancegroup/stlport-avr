@@ -18,8 +18,8 @@ STL_INCL= -I. -I../stlport -I/usr/include
 CC = cxx
 CXX = cxx
 
-LINK=$(CXX)
-DYN_LINK=$(CXX)
+LINK=$(CXX) -o
+DYN_LINK=$(CXX) -o
 
 OBJEXT=o
 DYNEXT=so
@@ -32,7 +32,15 @@ COMP=DEC
 # LINK_OUT=-xar -o  
 # DYNLINK_OUT=-o 
 
-all: all_dynamic all_static
+# all: all_dynamic all_static
+# Boris : do not see a reasonable way to link static library witout instantiating in .o 
+# Anyone ?
+all: msg symbolic_links all_dynamic
+
+msg:
+	@echo "*** ATTENTION! ***"
+	@echo "This makefile requires GNU make!"
+	@echo "******************"
 
 include common_macros.mak
 
@@ -40,19 +48,19 @@ include common_macros.mak
 
 MTFLAGS = -pthread
 
-CXXFLAGS_COMMON = -std ansi -protect_headers none -tall_repository -rtti $(MTFLAGS) ${STL_INCL} -D_PTHREADS
+CXXFLAGS_COMMON = -std ansi -nousing_std -pt -rtti $(MTFLAGS) ${STL_INCL} -D_PTHREADS
 
 SHCXXFLAGS = -shared
-# DEBUG_FLAGS = -g
+RELEASE_FLAGS = -O
 
-LIBS = 
+LIBS =  
 
-# RELEASE_static_rep = -ptr${RELEASE_OBJDIR_static}
-# RELEASE_dynamic_rep = -ptr${RELEASE_OBJDIR_dynamic}
-# DEBUG_static_rep = -ptr${DEBUG_OBJDIR_static}
-# DEBUG_dynamic_rep = -ptr${DEBUG_OBJDIR_dynamic}
-# STLDEBUG_static_rep = -ptr${STLDEBUG_OBJDIR_static}
-# STLDEBUG_dynamic_rep = -ptr${STLDEBUG_OBJDIR_dynamic}
+RELEASE_static_rep = -ptr ${RELEASE_OBJDIR_static}
+RELEASE_dynamic_rep = -ptr ${RELEASE_OBJDIR_dynamic}
+DEBUG_static_rep = -ptr ${DEBUG_OBJDIR_static}
+DEBUG_dynamic_rep = -ptr ${DEBUG_OBJDIR_dynamic}
+STLDEBUG_static_rep = -ptr ${STLDEBUG_OBJDIR_static}
+STLDEBUG_dynamic_rep = -ptr ${STLDEBUG_OBJDIR_dynamic}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) ${RELEASE_FLAGS} ${RELEASE_static_rep}
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) ${RELEASE_FLAGS} $(SHCXXFLAGS) ${RELEASE_dynamic_rep}
@@ -60,17 +68,23 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) ${RELEASE_FLAGS} $(SHCXXFLAGS) ${R
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g ${DEBUG_static_rep}
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${DEBUG_dynamic_rep}
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g ${STLDEBUG_static_rep} -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${STLDEBUG_dynamic_rep} -D__STL_DEBUG
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_COMMON) -g ${STLDEBUG_static_rep} -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${STLDEBUG_dynamic_rep} -D_STLP_DEBUG
 
 LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static}
 LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic}
+LDLIBS_RELEASE_dynamic = -lm
+LDLIBS_RELEASE_static = -lm
 
 LDFLAGS_DEBUG_static = ${CXXFLAGS_DEBUG_static}
 LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic}
+LDLIBS_DEBUG_dynamic = -lm
+LDLIBS_DEBUG_static = -lm
 
 LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static}
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic}
+LDLIBS_STLDEBUG_dynamic = -lm
+LDLIBS_STLDEBUG_static = -lm
 
 INSTALL_STEP = install_unix 
 

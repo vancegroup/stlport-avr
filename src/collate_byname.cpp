@@ -19,8 +19,9 @@
 
 #include "stl/_collate.h"
 #include "c_locale.h"
+#include <vector>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // collate_byname<char>
 _Locale_collate* __acquire_collate(const char* name);
@@ -65,7 +66,7 @@ collate_byname<char>::do_transform(const char* low, const char* high) const {
 }
 
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 // collate_byname<wchar_t>
 
@@ -109,10 +110,9 @@ collate_byname<wchar_t>
   return string_type( &__c1, &__c2 );
 }
 
-# endif /*  __STL_NO_WCHAR_T */
+# endif /*  _STLP_NO_WCHAR_T */
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

@@ -16,15 +16,15 @@
  *
  */ 
 
-# ifndef __STL_NUM_PUT_H
-#  define __STL_NUM_PUT_H
+# ifndef _STLP_NUM_PUT_H
+#  define _STLP_NUM_PUT_H
 
 #include "stlport_prefix.h"
 
 #include <stl/_num_put.h>
 #include <stl/_ostream.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // Note that grouping[0] is the number of digits in the *rightmost* group.
 // We assume, without checking, that *last is null and that there is enough
@@ -70,6 +70,6 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
   return (last - first) + sign + basechars;
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # endif

@@ -9,9 +9,8 @@ VPATH = .
 
 STL_INCL=-I../../stlport
 
-HP_VERSION=`uname -r`
-
-ifeq ($HP_VERSION,B.10.20)
+HP_VERSION=$(shell uname -r)
+ifeq (${HP_VERSION},B.10.20)
 PTHREAD_LIB=-lcma
 else
 PTHREAD_LIB=-lpthread

@@ -6,7 +6,7 @@
 SHELL=/bin/sh
 
 # point this to proper location
-STL_INCL= -I${PWD}/../../stlport/SC5
+STL_INCL= -I${PWD}/../../stlport
 
 # STL_INCL= -DEH_NO_SGI_STL
 

@@ -22,8 +22,8 @@
 // file directly.
 
 
-#ifndef __SGI_STL_STDIO_FILE_H
-#define __SGI_STL_STDIO_FILE_H
+#ifndef _STLP_STDIO_FILE_H
+#define _STLP_STDIO_FILE_H
 
 // This file provides a low-level interface between the internal 
 // representation of struct FILE, from the C stdio library, and 
@@ -65,10 +65,10 @@
 // implementations the two functions are identical, but in others they are
 // not.
 
-#ifndef __STLPORT_CSTDIO
+#ifndef _STLP_CSTDIO
 # include <cstdio>
 #endif
-#ifndef __STLPORT_CSTDDEF
+#ifndef _STLP_CSTDDEF
 # include <cstddef>
 #endif
 
@@ -76,19 +76,18 @@
 # include <unix.h>	// get the definition of fileno
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Implementation for the IRIX C library.
 // Solaris interface looks to be identical.
-#if !defined(__STL_USE_GLIBC) && \
+#if !defined(_STLP_USE_GLIBC) && \
     ( defined(__sgi) || \
       ( defined(__sun) && ! defined (_LP64) )  || \
       defined (__osf__) || defined(__DECCXX) || \
-      defined (__STL_MSVC) || defined (__ICL) || defined (__MINGW32__) \
-      || defined (_AIX))
+      defined (_STLP_MSVC) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP) || defined (_AIX))
 
-#if defined ( _MSC_VER ) || defined (__ICL) || defined (__MINGW32__)
+#if defined ( _MSC_VER ) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP)
 typedef  char* _File_ptr_type;
 #else
 typedef  unsigned char* _File_ptr_type;
@@ -119,7 +118,7 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
   __f._cnt  = __end - __next;
 }
 
-# define __STL_FILE_I_O_IDENTICAL 1
+# define _STLP_FILE_I_O_IDENTICAL 1
 
 # elif defined(__sun) && defined( _LP64)
 
@@ -153,28 +152,30 @@ __f.__pad[0] = (_File_ptr_type) __next;
 __f.__pad[3] = __end - __next;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
-#elif defined (__CYGWIN__) || defined(__FreeBSD__)
 
+#elif defined (__CYGWIN__) || defined(__FreeBSD__)  || defined(__NetBSD__)
+
+# if 0
 inline int   _FILE_fd(const FILE& __f) { return __f._file; }
 inline char* _FILE_I_begin(const FILE& __f) { return (char*) __f._bf._base; }
 inline char* _FILE_I_next(const FILE& __f) { return (char*) __f._p; }  
 inline char* _FILE_I_end(const FILE& __f)
-  { return (char*) __f._p + __f._bf._size; }
+{ return (char*) __f._p + __f._bf._size; }
 
 inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f._bf._size; }
 
 inline char& _FILE_I_preincr(FILE& __f)
-  { --__f._bf._size; return *(char*) (++__f._p); }
+{ --__f._bf._size; return *(char*) (++__f._p); }
 inline char& _FILE_I_postincr(FILE& __f)
-  { --__f._bf._size; return *(char*) (__f._p++); }
+{ --__f._bf._size; return *(char*) (__f._p++); }
 inline char& _FILE_I_predecr(FILE& __f)
-  { ++__f._bf._size; return *(char*) (--__f._p); }
+{ ++__f._bf._size; return *(char*) (--__f._p); }
 inline char& _FILE_I_postdecr(FILE& __f)
-  { ++__f._bf._size; return *(char*) (__f._p--); }
+{ ++__f._bf._size; return *(char*) (__f._p--); }
 inline void  _FILE_I_bump(FILE& __f, int __n)
-  { __f._p += __n; __f._bf._size -= __n; }
+{ __f._p += __n; __f._bf._size -= __n; }
 
 inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
   __f._bf._base = (unsigned char*) __begin;
@@ -182,9 +183,66 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
   __f._bf._size  = __end - __next;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
-#elif defined(__STL_USE_GLIBC)
+# else
+
+inline int _FILE_fd(const FILE& __f) { return __f._file; }
+inline char* _FILE_I_begin(const FILE& __f) { return (char*)
+						__f._bf._base; }
+inline char* _FILE_I_next(const FILE& __f) { return (char*) __f._p; } 
+inline char* _FILE_I_end(const FILE& __f)
+{ return (char*) __f._p + __f._r; }
+
+inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f._r; }
+
+inline char& _FILE_I_preincr(FILE& __f)
+{ --__f._r; --__f._bf._size; return *(char*) (++__f._p); }
+inline char& _FILE_I_postincr(FILE& __f)
+{ --__f._r; --__f._bf._size; return *(char*) (__f._p++); }
+inline char& _FILE_I_predecr(FILE& __f)
+{ ++__f._r; ++ __f._bf._size; return *(char*) (--__f._p); }
+inline char& _FILE_I_postdecr(FILE& __f)
+{ ++__f._r; ++__f._bf._size; return *(char*) (__f._p--); }
+inline void _FILE_I_bump(FILE& __f, int __n)
+{ __f._p += __n; __f._bf._size+=__n; __f._r -= __n; }
+
+inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char*
+			__end) {
+  __f._bf._base = (unsigned char*) __begin;
+  __f._p = (unsigned char*) __next;
+  __f._r = __f._bf._size = __end - __next;
+}
+inline char* _FILE_O_begin(const FILE& __f) { return (char*)
+						__f._bf._base; }
+inline char* _FILE_O_next(const FILE& __f) { return (char*) __f._p; } 
+inline char* _FILE_O_end(const FILE& __f)
+{ return (char*) __f._p + __f._w; }
+
+inline ptrdiff_t _FILE_O_avail(const FILE& __f) { return __f._w; }
+
+inline char& _FILE_O_preincr(FILE& __f)
+{ --__f._w; --__f._bf._size; return *(char*) (++__f._p); }
+inline char& _FILE_O_postincr(FILE& __f)
+{ --__f._w; --__f._bf._size; return *(char*) (__f._p++); }
+inline char& _FILE_O_predecr(FILE& __f)
+{ ++__f._w; ++__f._bf._size; return *(char*) (--__f._p); }
+inline char& _FILE_O_postdecr(FILE& __f)
+{ ++__f._w; ++__f._bf._size; return *(char*) (__f._p--); }
+inline void _FILE_O_bump(FILE& __f, int __n)
+{ __f._p += __n; __f._bf._size+=__n; __f._w -= __n; }
+
+inline void _FILE_O_set(FILE& __f, char* __begin, char* __next, char*
+			__end) {
+  __f._bf._base = (unsigned char*) __begin;
+  __f._p = (unsigned char*) __next;
+  __f._w = __f._bf._size = __end - __next;
+}
+
+# undef _STLP_FILE_I_O_IDENTICAL
+# endif
+
+#elif defined(_STLP_USE_GLIBC)
 
 inline int   _FILE_fd(const FILE& __f) { return __f._fileno; }
 inline char* _FILE_I_begin(const FILE& __f) { return __f._IO_read_base; }
@@ -238,7 +296,7 @@ extern "C" unsigned char *__bufendtab[];
 #  define _bufsiz(__p)  (_bufend(__p) - (__p)->__base)
 #endif /* _INCLUDE_HPUX_SOURCE */
 
-#if defined(__STL_HPACC_BROKEN_BUFEND)
+#if defined(_STLP_HPACC_BROKEN_BUFEND)
 #  undef  _bufend
 #  define _bufend(__p) \
      (*(((__p)->__flag & _IOEXT)  ? &((__REINTERPRET_CAST(_FILEX*,(__p)))->__bufendp)  \
@@ -271,38 +329,41 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
 
 // For HPUX stdio, input and output FILE manipulation is identical.
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
 #elif defined (__BORLANDC__)
 
-typedef  unsigned char* _File_ptr_type;
+typedef unsigned char* _File_ptr_type;
 
-inline int   _FILE_fd(const FILE& __f) { return __f.fd; }
-inline char* _FILE_I_begin(const FILE& __f) { return (char*) __f.buffer; }
-inline char* _FILE_I_next(const FILE& __f) { return (char*) __f.curp; }  
+inline int _FILE_fd(const FILE& __f) { return __f.fd; }
+inline char* _FILE_I_begin(const FILE& __f) { return (char*) __f.buffer;
+}
+inline char* _FILE_I_next(const FILE& __f) 
+{ return (char*)__f.curp; } 
 inline char* _FILE_I_end(const FILE& __f)
-  { return (char*) __f.curp + __f.bsize; }
+{ return (char*) __f.curp + __f.level; }
 
-inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f.bsize; }
+inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f.level; }
 
 inline char& _FILE_I_preincr(FILE& __f)
-  { --__f.bsize; return *(char*) (++__f.curp); }
+{ --__f.level; return *(char*) (++__f.curp); }
 inline char& _FILE_I_postincr(FILE& __f)
-  { --__f.bsize; return *(char*) (__f.curp++); }
+{ --__f.level; return *(char*) (__f.curp++); }
 inline char& _FILE_I_predecr(FILE& __f)
-  { ++__f.bsize; return *(char*) (--__f.curp); }
+{ ++__f.level; return *(char*) (--__f.curp); }
 inline char& _FILE_I_postdecr(FILE& __f)
-  { ++__f.bsize; return *(char*) (__f.curp--); }
-inline void  _FILE_I_bump(FILE& __f, int __n)
-  { __f.curp += __n; __f.bsize -= __n; }
+{ ++__f.level; return *(char*) (__f.curp--); }
+inline void _FILE_I_bump(FILE& __f, int __n)
+{ __f.curp += __n; __f.level -= __n; }
 
-inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
+inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char*
+			__end) {
   __f.buffer = (_File_ptr_type) __begin;
-  __f.curp   = (_File_ptr_type) __next;
-  __f.bsize  = __end - __next;
+  __f.curp = (_File_ptr_type) __next;
+  __f.level = __end - __next;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
 #elif defined( __MWERKS__ )
 
@@ -347,7 +408,7 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
   __f.buffer_size = __end - __begin;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
 #elif defined(__MRC__) || defined(__SC__)		//*TY 02/24/2000 - added support for MPW
 
@@ -398,7 +459,7 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end)
 	__f._size = __end - __begin;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
 
 #elif defined (__MVS__)
 
@@ -494,7 +555,56 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char*
   __f._cnt = __end - __next;
 }
 
-# define __STL_FILE_I_O_IDENTICAL
+# define _STLP_FILE_I_O_IDENTICAL
+ 
+#elif defined(__WATCOMC__)                   // Nikolaev
+ 
+inline int       _FILE_fd      (const FILE& __f) { return __f._handle;}
+inline char*     _FILE_I_begin (const FILE& __f) { return __REINTERPRET_CAST(char*, __f._link); }
+inline char*     _FILE_I_next  (const FILE& __f) { return __REINTERPRET_CAST(char*, __f._ptr); }
+inline char*     _FILE_I_end   (const FILE& __f) { return __REINTERPRET_CAST(char*, __f._ptr + __f._cnt); }
+inline ptrdiff_t _FILE_I_avail (const FILE& __f) { return __f._cnt; }
+ 
+inline char& _FILE_I_preincr(FILE& __f)
+{
+  --__f._cnt;
+  return *__REINTERPRET_CAST(char*, ++__f._ptr);
+}
+ 
+inline char& _FILE_I_postincr(FILE& __f)
+{
+  --__f._cnt;
+  return *__REINTERPRET_CAST(char*, __f._ptr++);
+}
+
+inline char& _FILE_I_predecr(FILE& __f)
+{
+  ++__f._cnt;
+  return *__REINTERPRET_CAST(char*, --__f._ptr);
+}
+ 
+inline char& _FILE_I_postdecr(FILE& __f)
+{
+  ++__f._cnt;
+  return *__REINTERPRET_CAST(char*, __f._ptr--);
+}
+ 
+inline void _FILE_I_bump(FILE& __f, int __n)
+{
+  __f._ptr += __n;
+  __f._cnt -= __n;
+}
+ 
+inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end)
+{
+  __f._link = __REINTERPRET_CAST(__stream_link*, __begin);
+  __f._ptr  = __REINTERPRET_CAST(unsigned char*, __next);
+  __f._cnt  = __end - __next;
+}
+ 
+# define _STLP_FILE_I_O_IDENTICAL
+ 
+
 #else  /* A C library that we don't have an implementation for. */
 
 # error The C++ I/O library is not configured for this compiler
@@ -503,7 +613,7 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char*
 
 
 // For most stdio's , input and output FILE manipulation is identical.
-# ifdef __STL_FILE_I_O_IDENTICAL
+# ifdef _STLP_FILE_I_O_IDENTICAL
 inline char* _FILE_O_begin(const FILE& __f) { return _FILE_I_begin(__f); }
 inline char* _FILE_O_next(const FILE& __f)  { return _FILE_I_next(__f); }
 inline char* _FILE_O_end(const FILE& __f)   { return _FILE_I_end(__f); }
@@ -520,9 +630,9 @@ inline void _FILE_O_set(FILE& __f, char* __begin, char* __next, char* __end)
   { _FILE_I_set(__f, __begin, __next, __end); }
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_STDIO_FILE_H */
+#endif /* _STLP_STDIO_FILE_H */
 
 // Local Variables:
 // mode:C++

@@ -30,7 +30,7 @@
 #  define FILE_CAST(x) x
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 #if !(defined(__MVS__) || defined(__OS400__))
 // The default constructor.
@@ -106,7 +106,7 @@ streamsize basic_streambuf<char, char_traits<char> >
 
   while (result < n) {
     if (_FILE_I_avail(_M_get) > 0) {
-      size_t chunk = __STL_MIN (__STATIC_CAST(size_t,_FILE_I_avail(_M_get)),
+      size_t chunk = (min) (__STATIC_CAST(size_t,_FILE_I_avail(_M_get)),
                          __STATIC_CAST(size_t,n - result));
       traits_type::copy(s, _FILE_I_next(_M_get), chunk);
       result += chunk;
@@ -116,9 +116,9 @@ streamsize basic_streambuf<char, char_traits<char> >
     else {
       int_type c = sbumpc();
       if (c != eof) {
-        s[result] = c;
+        *s = c;
         ++result;
-        ++s;
+	++s;
       }
       else
         break; 
@@ -158,7 +158,7 @@ streamsize basic_streambuf<char, char_traits<char> >
 
   while (result < n) {
     if (_FILE_O_avail(_M_put) > 0) {
-      size_t chunk = __STL_MIN (__STATIC_CAST(size_t,_FILE_O_avail(_M_put)),
+      size_t chunk = (min) (__STATIC_CAST(size_t,_FILE_O_avail(_M_put)),
                          __STATIC_CAST(size_t,n - result));
       traits_type::copy(_FILE_O_next(_M_put), s, chunk);
       result += chunk;
@@ -184,7 +184,7 @@ streamsize basic_streambuf<char, char_traits<char> >
 
   while (result < n) {
     if (_FILE_O_avail(_M_put) > 0) {
-      size_t chunk = __STL_MIN (__STATIC_CAST(size_t,_FILE_O_avail(_M_put)),
+      size_t chunk = (min) (__STATIC_CAST(size_t,_FILE_O_avail(_M_put)),
                          __STATIC_CAST(size_t,n - result));
       traits_type::assign(_FILE_O_next(_M_put), chunk, c);
       result += chunk;
@@ -232,13 +232,13 @@ locale basic_streambuf<char, char_traits<char> >::pubimbue(const locale& loc)
 
 // not basic_streambuf<char>, because it's specialized.
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
-#if !defined (__STL_NO_WCHAR_T)
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+#if !defined (_STLP_NO_WCHAR_T)
 template class basic_streambuf<wchar_t, char_traits<wchar_t> >;
 #endif /* INSTANTIATE_WIDE_STREAMS */
 #endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

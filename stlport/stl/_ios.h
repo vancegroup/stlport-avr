@@ -15,22 +15,22 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __SGI_STL_IOS_H
-#define __SGI_STL_IOS_H
+#ifndef _STLP_IOS_H
+#define _STLP_IOS_H
 
 
-#ifndef __SGI_STL_IOS_BASE_H
+#ifndef _STLP_IOS_BASE_H
 # include <stl/_ios_base.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_CTYPE_H
+#ifndef _STLP_INTERNAL_CTYPE_H
 # include <stl/_ctype.h>
 #endif
-#ifndef __SGI_STL_INTERNAL_NUMPUNCT_H
+#ifndef _STLP_INTERNAL_NUMPUNCT_H
 # include <stl/_numpunct.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // ----------------------------------------------------------------------
 
@@ -106,14 +106,12 @@ public:                         // Locale-related member functions.
   inline _CharT widen(char) const; 
 
   // Helper function that makes testing for EOF more convenient.
-  static bool __STL_CALL _S_eof(int_type __c) {
+  static bool _STLP_CALL _S_eof(int_type __c) {
     const int_type __eof = _Traits::eof();
     return _Traits::eq_int_type(__c, __eof);
   }
 
-# if !(defined(__MRC__) || defined(__SC__))		
 protected:
-# endif
   basic_ios();
 
   void init(basic_streambuf<_CharT, _Traits>* __streambuf);
@@ -144,38 +142,38 @@ basic_ios<_CharT, _Traits>::widen(char __c) const
 { 
   return ((const ctype<_CharT>*)this->_M_ctype_facet())->widen(__c); }
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS basic_ios<char, char_traits<char> >;
-#  if ! defined (__STL_NO_WCHAR_T)
-__STL_EXPORT_TEMPLATE_CLASS basic_ios<wchar_t, char_traits<wchar_t> >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS basic_ios<char, char_traits<char> >;
+#  if ! defined (_STLP_NO_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS basic_ios<wchar_t, char_traits<wchar_t> >;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-# if !defined (__STL_NO_METHOD_SPECIALIZATION)
-__STL_TEMPLATE_NULL
+# if !defined (_STLP_NO_METHOD_SPECIALIZATION)
+_STLP_TEMPLATE_NULL
 inline char
 basic_ios<char, char_traits<char> >::narrow(char __c, char) const
 {
   return __c;
 }
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 inline char
 basic_ios<char, char_traits<char> >::widen(char __c) const
 {
   return __c;
 }
-# endif /* __STL_NO_METHOD_SPECIALIZATION */
+# endif /* _STLP_NO_METHOD_SPECIALIZATION */
 
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) && !defined (__STL_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_ios.c>
 # endif
 
 
-#endif /* __SGI_STL_IOS */
+#endif /* _STLP_IOS */
 
 // Local Variables:
 // mode:C++

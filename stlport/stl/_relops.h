@@ -28,37 +28,6 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-
-# if defined (__STL_USE_NAMESPACES) || ! defined (__STL_USE_SEPARATE_RELOPS_NAMESPACE) 
-__STL_BEGIN_RELOPS_NAMESPACE
-
-template <class _Tp>
-inline bool __STL_CALL operator!=(const _Tp& __x, const _Tp& __y) {
-  return !(__x == __y);
-}
-
-template <class _Tp>
-inline bool __STL_CALL operator>(const _Tp& __x, const _Tp& __y) {
-  return __y < __x;
-}
-
-template <class _Tp>
-inline bool __STL_CALL operator<=(const _Tp& __x, const _Tp& __y) {
-  return !(__y < __x);
-}
-
-template <class _Tp>
-inline bool __STL_CALL  operator>=(const _Tp& __x, const _Tp& __y) {
-  return !(__x < __y);
-}
-
-__STL_END_RELOPS_NAMESPACE
-
-# endif
-#endif /* __SGI_STL_INTERNAL_RELOPS */
-
 // Local Variables:
 // mode:C++
 // End:

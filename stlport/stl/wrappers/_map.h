@@ -17,14 +17,14 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_WRAP_MAP_H
-#define __SGI_STL_INTERNAL_WRAP_MAP_H
+#ifndef _STLP_INTERNAL_WRAP_MAP_H
+#define _STLP_INTERNAL_WRAP_MAP_H
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif
 
-#  if defined (__STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
+#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __MAP_TEMPLATE_HEADER  template <class _Key, class _Tp>
 #   define __MAP_ARGUMENTS        _Key, _Tp
 #   define __MMAP_TEMPLATE_HEADER  template <class _Key, class _Tp>
@@ -38,8 +38,8 @@ namespace STLPORT {
 #  endif
 
 
-#  define __MAP_SUPER  __map< _Key, _Tp, _Compare, __STL_DEFAULT_PAIR_ALLOCATOR(const _Key, _Tp) >
-#  define __MMAP_SUPER  __multimap< _Key, _Tp, _Compare, __STL_DEFAULT_PAIR_ALLOCATOR(const _Key, _Tp) >
+#  define __MAP_SUPER  __map< _Key, _Tp, _Compare, _STLP_DEFAULT_PAIR_ALLOCATOR(const _Key, _Tp) >
+#  define __MMAP_SUPER  __multimap< _Key, _Tp, _Compare, _STLP_DEFAULT_PAIR_ALLOCATOR(const _Key, _Tp) >
 
 // provide a "default" map adaptor
 __MAP_TEMPLATE_HEADER
@@ -66,7 +66,7 @@ public:
         const _Compare& __comp) : __MAP_SUPER(__first, __last, __comp) { }
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 __MAP_TEMPLATE_HEADER
 inline bool operator==(const map< __MAP_ARGUMENTS >& __x, 
                        const map< __MAP_ARGUMENTS >& __y) {
@@ -80,7 +80,7 @@ inline bool operator<(const map< __MAP_ARGUMENTS >& __x,
   typedef __MAP_SUPER _Super;
   return operator < ((const _Super&)__x,(const _Super&)__y);
 }
-#  endif /* __STL_BASE_MATCH_BUG */
+#  endif /* _STLP_BASE_MATCH_BUG */
 
 
 // provide a "default" multimap adaptor
@@ -109,7 +109,7 @@ public:
 	     const _Compare& __comp) : __MMAP_SUPER(__first, __last, __comp) { }
 };
 
-#  if defined (__STL_BASE_MATCH_BUG)
+#  if defined (_STLP_BASE_MATCH_BUG)
 __MMAP_TEMPLATE_HEADER
 inline bool operator==(const multimap< __MMAP_ARGUMENTS >& __x, 
                        const multimap< __MMAP_ARGUMENTS >& __y) {
@@ -135,11 +135,11 @@ inline bool operator<(const multimap< __MMAP_ARGUMENTS >& __x,
 
 # undef _Compare
 
-# ifdef __STL_USE_NAMESPACES
+# ifdef _STLP_USE_NAMESPACES
 } /* namespace STLPORT */
 # endif
 
-#endif /* __SGI_STL_INTERNAL_WRAP_MAP_H */
+#endif /* _STLP_INTERNAL_WRAP_MAP_H */
 
 // Local Variables:
 // mode:C++

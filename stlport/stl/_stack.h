@@ -27,26 +27,26 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_STACK_H
-#define __SGI_STL_INTERNAL_STACK_H
+#ifndef _STLP_INTERNAL_STACK_H
+#define _STLP_INTERNAL_STACK_H
 
-#ifndef __SGI_STL_INTERNAL_DEQUE_H
+#ifndef _STLP_INTERNAL_DEQUE_H
 # include <stl/_deque.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if !defined ( __STL_LIMITED_DEFAULT_TEMPLATES )
+# if !defined ( _STLP_LIMITED_DEFAULT_TEMPLATES )
 template <class _Tp, class _Sequence = deque<_Tp> >
-# elif defined ( __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
-# define __STL_STACK_ARGS _Tp
+# elif defined ( _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
+# define _STLP_STACK_ARGS _Tp
 template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
 class stack {
 
-# ifdef __STL_STACK_ARGS 
+# ifdef _STLP_STACK_ARGS 
   typedef deque<_Tp> _Sequence;
 # endif
 
@@ -72,33 +72,33 @@ public:
   const _Sequence& _Get_c() const { return c; }
 };
 
-# ifndef __STL_STACK_ARGS
-#  define __STL_STACK_ARGS _Tp, _Sequence
-#  define __STL_STACK_HEADER_ARGS class _Tp, class _Sequence
+# ifndef _STLP_STACK_ARGS
+#  define _STLP_STACK_ARGS _Tp, _Sequence
+#  define _STLP_STACK_HEADER_ARGS class _Tp, class _Sequence
 # else
-#  define __STL_STACK_HEADER_ARGS class _Tp
+#  define _STLP_STACK_HEADER_ARGS class _Tp
 # endif
 
-template < __STL_STACK_HEADER_ARGS >
-inline bool __STL_CALL  operator==(const stack< __STL_STACK_ARGS >& __x, const stack< __STL_STACK_ARGS >& __y)
+template < _STLP_STACK_HEADER_ARGS >
+inline bool _STLP_CALL  operator==(const stack< _STLP_STACK_ARGS >& __x, const stack< _STLP_STACK_ARGS >& __y)
 {
   return __x._Get_c() == __y._Get_c();
 }
 
-template < __STL_STACK_HEADER_ARGS >
-inline bool __STL_CALL  operator<(const stack< __STL_STACK_ARGS >& __x, const stack< __STL_STACK_ARGS >& __y)
+template < _STLP_STACK_HEADER_ARGS >
+inline bool _STLP_CALL  operator<(const stack< _STLP_STACK_ARGS >& __x, const stack< _STLP_STACK_ARGS >& __y)
 {
   return __x._Get_c() < __y._Get_c();
 }
 
-__STL_RELOPS_OPERATORS(template < __STL_STACK_HEADER_ARGS >, stack< __STL_STACK_ARGS >)
+_STLP_RELOPS_OPERATORS(template < _STLP_STACK_HEADER_ARGS >, stack< _STLP_STACK_ARGS >)
     
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#  undef __STL_STACK_ARGS
-#  undef __STL_STACK_HEADER_ARGS
+#  undef _STLP_STACK_ARGS
+#  undef _STLP_STACK_HEADER_ARGS
 
-#endif /* __SGI_STL_INTERNAL_STACK_H */
+#endif /* _STLP_INTERNAL_STACK_H */
 
 // Local Variables:
 // mode:C++

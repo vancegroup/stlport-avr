@@ -1,24 +1,21 @@
-#if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#error This header file requires the -LANG:std option
-#endif
 
-#ifndef __SGI_STL_INTERNAL_STREAMBUF
+#ifndef _STLP_INTERNAL_STREAMBUF
 #include <stl/_streambuf.h>
 #endif
-#ifndef __SGI_STL_ISTREAM_H
+#ifndef _STLP_ISTREAM_H
 #include <istream>              // Includes <ostream>, <ios>, <iosfwd>
 #endif
-#ifndef __SGI_STL_STRING_H
+#ifndef _STLP_STRING_H
 #include <stl/_string.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Class strstreambuf, a streambuf class that manages an array of char.
 // Note that this class is not a template.
 
-class __STL_CLASS_DECLSPEC strstreambuf : public basic_streambuf<char, char_traits<char> >
+class _STLP_CLASS_DECLSPEC strstreambuf : public basic_streambuf<char, char_traits<char> >
 {
 public:                         // Types.
   typedef char_traits<char>              _Traits;
@@ -75,7 +72,7 @@ private:                        // Data members.
 //----------------------------------------------------------------------
 // Class istrstream, an istream that manages a strstreambuf.
 
-class __STL_CLASS_DECLSPEC istrstream : public basic_istream<char, char_traits<char> >
+class _STLP_CLASS_DECLSPEC istrstream : public basic_istream<char, char_traits<char> >
 {
 public:
   explicit istrstream(char*);
@@ -94,7 +91,7 @@ private:
 //----------------------------------------------------------------------
 // Class ostrstream
 
-class __STL_CLASS_DECLSPEC ostrstream : public basic_ostream<char, char_traits<char> >
+class _STLP_CLASS_DECLSPEC ostrstream : public basic_ostream<char, char_traits<char> >
 {
 public:
   ostrstream();
@@ -113,7 +110,7 @@ private:
 //----------------------------------------------------------------------
 // Class strstream
 
-class __STL_CLASS_DECLSPEC strstream : public basic_iostream<char, char_traits<char> >
+class _STLP_CLASS_DECLSPEC strstream : public basic_iostream<char, char_traits<char> >
 {
 public:
   typedef char                        char_type;
@@ -134,4 +131,4 @@ private:
   strstreambuf _M_buf;
 };
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE

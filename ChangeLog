@@ -1,3 +1,91 @@
+
+The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
+
+	* All internal macros changed to have prefix _STLP_ instead of __STL or __STLPORT or __SGI_STL.
+          That is to allow seamless wrapping on platforms that use SGI STL as native STL/iostreams.
+	  For backward compatibility, most of user-settable __STL_xxx macros are accepted.
+	
+	* _vector.h:284 : __copy call fixed to be __copy_aux (thanks to Alex Vanic)
+
+	* fstream.cpp: __pioinfo definition for mingw32 fixed (Thanks to Danny Smith)
+
+	* *.SUNWCCh files changed to regular files; moved to "stlport" directory
+
+	* pthread_alloc : split into <pthread_alloc>/<stl/_pthread_alloc.h>
+
+	* Mac OS X support introduced (thanks to Patrick Luby) 
+
+	* SGI iostreams ported to DJGPP (thanks to Tanes Sriviroolchai)
+
+	* SGI iostreams ported to NetBSD (thanks to Michael Rauch)
+	
+	* _config.h : fixed static build bug due to  __STL_EXPOSE_GLOBALS_IMPLEMENTATION typo (thanks to Serge Pashkov)
+
+	* debug/_list.h : added checking versions of pop_back/pop_front (thanks to Per Liboriussen)
+
+	* src/c_locale_win32.c : fix for VC5sp3 (thanks to Petr Ovchenkov), fix for day of week order (thanks to Danny Smith),
+	  fix for null-termination in my_ltoa (thanks to Serge Pashkov)
+	
+	* Some warnings in debug mode fixed (thanks to Marco)
+
+	* type_traits.h : IsP functions return types changed to be more portable (thanks to Serge Pashkov for the suggestion),
+	  __cdecl added for Win (thanks to Todd Wilson)
+
+	* debug/_tree.h : added owner check for erase() (thanks to Alberto Barbati)
+
+	* stl/_ostream.h : << operator specializations added for compilers w/o partial ordering 
+	  (thanks to Alberto Barbati for pointing this out).
+
+	* Bunch of iostream fixes for Cygwin and Borland by Serge Pashkov
+	
+	* _construct.h : extra cast for __STL_SHRED_BYTE removed (thanks to khesin)
+
+	* FreeBSD build fixed, now builds for wchar_t too
+
+	* DEC CXX build fixed; restricted to dynamic lib only
+
+	* SGI MIPSpro build fixed; GNU make has to be used
+	
+ 	* _relops.h header obsoleted; some extra includes removed
+
+	* __STL_STATIC_CONST_INIT_BUG use normalized; now it's used for all compilers not able
+	  to treat const members as coplile-time constants; enum used for them (e.g VC++).
+	  Thanks to  Dean Sturtevant and Gavin Collins for the ideas.
+
+	* Set of HP fixes by Michael Tsirkin
+
+	* stl/_tree.h : fixed bug in new code for corner case in insert_equal/insert_unique with a hint 
+	  (thanks to Micheal Tsirkin for the report)
+
+	* stlport/cmath : fixed SUN CC 5.0 compatibility mode bug (thanks to ade for the report)
+
+	* debug/_hashtable.h : fixed equal_range() bug (thanks to decraft for the report)
+
+	* istreambuf_iterator<> : nonconforming behaviour fixed (thanks to Tom Widmer)
+
+	* Bunch of Apple MRC/MPW fixes by Tsutomu Yoshida integrated
+
+	* Versioning of shared libraries made UNIX-compliant
+	
+        * num_get<> : extra get() and do_get() members for "int" and "short" removed; istream operators changed accordingly
+
+	* streambuf.cpp/_streambuf.h : fixes xsgetn() bug (thanks to Vadim Egorov)
+	
+        * _itreambuf_iterator.h/_ostreambuf_iterator.h introduced to decouple those from num_get/num_put
+
+	* gcc makefiles in src : "-fno-implement-inlines" removed
+
+	* ios_base:: type for constants  made "int" for all compilers, as it more efficient and perfectly compliant.
+	
+	* Some temporary lifetime problems in SGI iostreams which may introduce memory corruption, fixed.
+ 	
+	* debug/_hashtable.h : fixed typo in swap() ( thanks to Gerd Hoeren for the report)
+
+	* debug/_string.h : +() operators defined unconditionally ( thanks to Gerd Hoeren for the report)
+
+	* _istream.c : removed dependancy on _function.h (thanks to Kenny Simpson for the report)
+	
+	
 The following changes were made in 4.1 beta 4 since 4.1 beta 3 :
 	
 	* Simulation of class partial specialization (thanks to  Mat Marcus and Jesse Jones of Adobe)

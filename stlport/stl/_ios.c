@@ -15,20 +15,20 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_IOS_C
-#define __STL_IOS_C
+#ifndef _STLP_IOS_C
+#define _STLP_IOS_C
 
-#if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-#ifndef __SGI_STL_INTERNAL_STREAMBUF
+#ifndef _STLP_INTERNAL_STREAMBUF
 # include <stl/_streambuf.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_NUMPUNCT_H
+#ifndef _STLP_INTERNAL_NUMPUNCT_H
 # include <stl/_numpunct.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // basic_ios<>'s non-inline member functions
 
@@ -37,7 +37,7 @@ template <class _CharT, class _Traits>
 basic_ios<_CharT, _Traits>
   ::basic_ios(basic_streambuf<_CharT, _Traits>* __streambuf)
     : ios_base(),
-      _M_fill(__STL_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
+      _M_fill(_STLP_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
 {
   init(__streambuf);
 }
@@ -76,7 +76,7 @@ locale basic_ios<_CharT, _Traits>::imbue(const locale& __loc)
   // no throwing here
   this->_M_cached_ctype = __loc._M_get_facet(ctype<char_type>::id) ;
   this->_M_cached_numpunct = __loc._M_get_facet(numpunct<char_type>::id) ;
-
+  this->_M_cached_grouping = ((numpunct<char_type>*)_M_cached_numpunct)->grouping() ;
   return __tmp;
 }
 
@@ -87,7 +87,7 @@ locale basic_ios<_CharT, _Traits>::imbue(const locale& __loc)
 template <class _CharT, class _Traits>
 basic_ios<_CharT, _Traits>::basic_ios()
   : ios_base(),
-    _M_fill(__STL_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
+    _M_fill(_STLP_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
 {}
 
 template <class _CharT, class _Traits>
@@ -113,11 +113,11 @@ void basic_ios<_CharT, _Traits>::_M_handle_exception(ios_base::iostate __flag)
 {
   this->_M_setstate_nothrow(__flag);
   if (this->_M_get_exception_mask() & __flag)
-    __STL_RETHROW;
+    _STLP_RETHROW;
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) */
+#endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
 
-#endif /* __STL_IOS_C */
+#endif /* _STLP_IOS_C */

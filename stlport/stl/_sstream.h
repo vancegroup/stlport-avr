@@ -22,13 +22,22 @@
 // represent streamsbufs and streams whose sources or destinations are
 // C++ strings.
 
-#ifndef __SGI_STL_SSTREAM_H
-#define __SGI_STL_SSTREAM_H
+#ifndef _STLP_SSTREAM_H
+#define _STLP_SSTREAM_H
 
-#include <stl/_istream.h>              // Includes <ostream>, <ios>, <iosfwd>
-#include <stl/_string.h>
+#ifndef _STLP_INTERNAL_STREAMBUF
+# include <stl/_streambuf.h>
+#endif
 
-__STL_BEGIN_NAMESPACE
+#ifndef _STLP_ISTREAM_H
+# include <stl/_istream.h> // Includes <ostream>, <ios>, <iosfwd>
+#endif
+
+#ifndef _STLP_STRING_H
+# include <stl/_string.h>
+#endif
+
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // This version of basic_stringbuf relies on the internal details of
@@ -97,12 +106,12 @@ private:
   _CharT _M_Buf[ 8 /* _S_BufSiz */];
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS basic_stringbuf<char, char_traits<char>, allocator<char> >;
-#  if !defined (__STL_NO_WCHAR_T)
-__STL_EXPORT_TEMPLATE_CLASS basic_stringbuf<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS basic_stringbuf<char, char_traits<char>, allocator<char> >;
+#  if !defined (_STLP_NO_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS basic_stringbuf<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 //----------------------------------------------------------------------
 // Class basic_istringstream, an input stream that uses a stringbuf.
@@ -218,24 +227,24 @@ private:
 };
 
 
-# if defined (__STL_USE_TEMPLATE_EXPORT)
-__STL_EXPORT_TEMPLATE_CLASS basic_istringstream<char, char_traits<char>, allocator<char> >;
-__STL_EXPORT_TEMPLATE_CLASS basic_ostringstream<char, char_traits<char>, allocator<char> >;
-__STL_EXPORT_TEMPLATE_CLASS basic_stringstream<char, char_traits<char>, allocator<char> >;
-#  if !defined (__STL_NO_WCHAR_T)
-__STL_EXPORT_TEMPLATE_CLASS basic_istringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
-__STL_EXPORT_TEMPLATE_CLASS basic_ostringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
-__STL_EXPORT_TEMPLATE_CLASS basic_stringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS basic_istringstream<char, char_traits<char>, allocator<char> >;
+_STLP_EXPORT_TEMPLATE_CLASS basic_ostringstream<char, char_traits<char>, allocator<char> >;
+_STLP_EXPORT_TEMPLATE_CLASS basic_stringstream<char, char_traits<char>, allocator<char> >;
+#  if !defined (_STLP_NO_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS basic_istringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
+_STLP_EXPORT_TEMPLATE_CLASS basic_ostringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
+_STLP_EXPORT_TEMPLATE_CLASS basic_stringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t>  >;
 #  endif
-# endif /* __STL_USE_TEMPLATE_EXPORT */
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# if  defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) && !defined (__STL_LINK_TIME_INSTANTIATION)
+# if  defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_sstream.c>
 # endif
 
-#endif /* __SGI_STL_SSTREAM_H */
+#endif /* _STLP_SSTREAM_H */
 
 // Local Variables:
 // mode:C++

@@ -9,18 +9,18 @@
 #   define NOSERVICE
 #  endif
 #  if ! defined (__CYGWIN__)
-#   define __STL_REAL_LOCALE_IMPLEMENTED
+#   define _STLP_REAL_LOCALE_IMPLEMENTED
 #  endif
 # endif
 
-#   undef __STL_NO_FORCE_INSTANTIATE
+#   undef _STLP_NO_FORCE_INSTANTIATE
 
 /* Please add extra compilation switches for particular compilers here */
 
 # include <stl/_config.h>
 
-# if defined (__STL_USE_TEMPLATE_EXPORT) && defined (__STL_USE_DECLSPEC)
-#  define __STL_EXPOSE_GLOBALS_IMPLEMENTATION
+# if defined (_STLP_USE_TEMPLATE_EXPORT) && defined (_STLP_USE_DECLSPEC)
+#  define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 # endif
 
 # ifdef __cplusplus
@@ -30,8 +30,8 @@
 // the platform makefile when addinf compilers to this list, otherwise 
 // this will result in worse build performance.
 
-# if defined (__STL_MSVC)
-# ifndef __STL_USE_DECLSPEC
+# if defined (_STLP_MSVC)
+# ifndef _STLP_USE_DECLSPEC
 # include <climits>
 # include <cmath>
 # include <cstdlib>
@@ -51,7 +51,7 @@
 # include <string>
 // # include <locale>
 
-# ifdef __STL_MSVC
+# ifdef _STLP_MSVC
 #  pragma hdrstop
 # endif
 
@@ -59,10 +59,10 @@
 
 # endif /* precompiler headers */
 
-# if defined (__STL_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__)
-#  define __STL_OPERATOR_SPEC __STL_DECLSPEC 
+# if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__)
+#  define _STLP_OPERATOR_SPEC _STLP_DECLSPEC 
 # else
-#  define __STL_OPERATOR_SPEC __STL_TEMPLATE_NULL __STL_DECLSPEC
+#  define _STLP_OPERATOR_SPEC _STLP_TEMPLATE_NULL _STLP_DECLSPEC
 # endif
 
 # endif /* __cplusplus */

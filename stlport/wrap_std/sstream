@@ -13,12 +13,12 @@
  *
  */
 
-# include __STL_NATIVE_HEADER(sstream)
-# ifdef __STL_USE_OWN_NAMESPACE
-__STL_BEGIN_NAMESPACE
+# include _STLP_NATIVE_HEADER(sstream)
+# ifdef _STLP_USE_OWN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 #  include <using/sstream>
-__STL_END_NAMESPACE
-#endif /* __STL_OWN_NAMESPACE */
+_STLP_END_NAMESPACE
+#endif /* _STLP_OWN_NAMESPACE */
 
 // Local Variables:
 // mode:C++

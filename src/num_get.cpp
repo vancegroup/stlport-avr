@@ -20,19 +20,18 @@
 #include <stl/_istream.h>
 #include <stl/_algo.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // num_get
 
-// Helper functions for _M_do_get_integer.
 
 static char narrow_digits[11]  = "0123456789";
 static char narrow_xdigits[13] = "aAbBcCdDeEfF";
 
-# ifndef __STL_NO_WCHAR_T 
+# ifndef _STLP_NO_WCHAR_T 
 
-void  __STL_CALL
+void  _STLP_CALL
 _Initialize_get_digit(wchar_t* digits, wchar_t* xdigits,
                        const ctype<wchar_t>& ct)
 {
@@ -43,7 +42,7 @@ _Initialize_get_digit(wchar_t* digits, wchar_t* xdigits,
 // Return either the digit corresponding to c, or a negative number if
 // if c isn't a digit.  We return -1 if c is the separator character, and
 // -2 if it's some other non-digit.
-int __STL_CALL __get_digit(wchar_t c,
+int _STLP_CALL __get_digit(wchar_t c,
                            const wchar_t* digits, const wchar_t* xdigits,
                            wchar_t separator)
 {
@@ -66,7 +65,7 @@ int __STL_CALL __get_digit(wchar_t c,
     return -2;                  // It's not a digit and not the separator.
 }
 
-# endif /* __STL_NO_WCHAR_T */
+# endif /* _STLP_NO_WCHAR_T */
 
 // __valid_grouping compares two strings, one representing the
 // group sizes encountered when reading an integer, and the other
@@ -77,29 +76,23 @@ int __STL_CALL __get_digit(wchar_t c,
 // the first string must be equal to the corresponding term in the
 // second, except for the last, which must be less than or equal.
 
-// boris : this takes reversed group_sizes string !
-bool  __STL_CALL
-__valid_grouping(const string& group_sizes,
-                 const string& prescribed_grouping)
+// boris : this takes reversed first string !
+bool  _STLP_CALL
+__valid_grouping(const char * first1, const char * last1, 
+                 const char * first2, const char * last2)
 {
-  const char * first1 = group_sizes.data();
-  const char * last1  = first1 + group_sizes.size();
-  const char * first2 = prescribed_grouping.data();
-  const char * last2  = first2 + prescribed_grouping.size();
-
   if (first1 == last1 || first2 == last2) return true;
-
-  reverse(group_sizes.begin(), group_sizes.end());
 
   --last1; --last2;
 
   while (first1 != last1) {
-    if (*first1 != *first2)
+    if (*last1 != *first2)
       return false;
-    ++first1;
+    --last1;
     if (first2 != last2) ++first2;
   }
-  return *first1 <= *first2;
+
+  return *last1 <= *first2;
 }
 
 // this needed for some compilers to make sure sumbols are extern
@@ -123,11 +116,11 @@ const char __narrow_atoms[5] = {'+', '-', '0', 'x', 'X'};
 
 // index is actually a char
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 
 // Similar, except return the character itself instead of the numeric
 // value.  Used for floating-point input.
-bool  __STL_CALL __get_fdigit(wchar_t& c, const wchar_t* digits)
+bool  _STLP_CALL __get_fdigit(wchar_t& c, const wchar_t* digits)
 {
   const wchar_t* p = find(digits, digits + 10, c);
   if (p != digits + 10) {
@@ -138,7 +131,7 @@ bool  __STL_CALL __get_fdigit(wchar_t& c, const wchar_t* digits)
     return false;
 }
 
-bool  __STL_CALL __get_fdigit_or_sep(wchar_t& c, wchar_t sep,
+bool  _STLP_CALL __get_fdigit_or_sep(wchar_t& c, wchar_t sep,
                                      const wchar_t * digits)
 {
   if (c == sep) {
@@ -152,24 +145,24 @@ bool  __STL_CALL __get_fdigit_or_sep(wchar_t& c, wchar_t sep,
 //----------------------------------------------------------------------
 // Force instantiation of of num_get<>
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
-template class __STL_CLASS_DECLSPEC  istreambuf_iterator<wchar_t, char_traits<wchar_t> >;
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+template class _STLP_CLASS_DECLSPEC  istreambuf_iterator<wchar_t, char_traits<wchar_t> >;
 template class num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class num_get<wchar_t, const wchar_t*>;
 #endif
 
-# endif /* __STL_NO_WCHAR_T */
+# endif /* _STLP_NO_WCHAR_T */
 
 //----------------------------------------------------------------------
 // Force instantiation of of num_get<>
 
-#if !defined(__STL_NO_FORCE_INSTANTIATE)
-template class __STL_CLASS_DECLSPEC istreambuf_iterator<char, char_traits<char> >;
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+template class _STLP_CLASS_DECLSPEC istreambuf_iterator<char, char_traits<char> >;
 // template class num_get<char, const char*>;
 template class num_get<char, istreambuf_iterator<char, char_traits<char> > >;
 #endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

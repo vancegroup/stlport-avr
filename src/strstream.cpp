@@ -26,7 +26,7 @@
 #include <stl/_strstream.h>
 #include <stl/_algobase.h>
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // strstreambuf constructor, destructor.
 
@@ -34,7 +34,7 @@ strstreambuf::strstreambuf(streamsize initial_capacity)
    :  _M_alloc_fun(0), _M_free_fun(0),
      _M_dynamic(true), _M_frozen(false), _M_constant(false)  
 {
-  streamsize n = __STL_MAX(initial_capacity, streamsize(16));
+  streamsize n = (max)(initial_capacity, streamsize(16));
 
   char* buf = _M_alloc(n);
   if (buf) {
@@ -131,7 +131,7 @@ strstreambuf::int_type strstreambuf::overflow(int_type c) {
   // Try to expand the buffer.
   if (pptr() == epptr() && _M_dynamic && !_M_frozen && !_M_constant) {
     ptrdiff_t old_size = epptr() - pbase();
-    ptrdiff_t new_size = __STL_MAX(2 * old_size, ptrdiff_t(1));
+    ptrdiff_t new_size = (max)(2 * old_size, ptrdiff_t(1));
 
     char* buf = _M_alloc(new_size);
     if (buf) {
@@ -149,7 +149,7 @@ strstreambuf::int_type strstreambuf::overflow(int_type c) {
       pbump((int)old_size);
 
       if (reposition_get) 
-        setg(buf, buf + old_get_offset, buf + __STL_MAX(old_get_offset, old_size));
+        setg(buf, buf + old_get_offset, buf + (max)(old_get_offset, old_size));
 
       _M_free(old_buffer);
     }
@@ -418,8 +418,7 @@ char* strstream::str()
   return _M_buf.str();
 }
 
-__STL_END_NAMESPACE
-
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

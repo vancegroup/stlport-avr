@@ -23,18 +23,14 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_HASHTABLE_C
-#define __STL_HASHTABLE_C
+#ifndef _STLP_HASHTABLE_C
+#define _STLP_HASHTABLE_C
 
-//# ifndef __SGI_STL_INTERNAL_ALGO_H
-//#  include <stl/_algo.h>
-//# endif
-
-#ifdef __STL_DEBUG
+#ifdef _STLP_DEBUG
 #  define hashtable __WORKAROUND_DBG_RENAME(hashtable)
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 # define __PRIME_LIST_BODY { \
   53ul,         97ul,         193ul,       389ul,       769ul,      \
@@ -45,20 +41,20 @@ __STL_BEGIN_NAMESPACE
   1610612741ul, 3221225473ul, 4294967291ul  \
 }
 
-#if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 template <class _Tp>
 const unsigned long _Stl_prime<_Tp>::_M_list[__stl_num_primes] = __PRIME_LIST_BODY;
 #else
 __DECLARE_INSTANCE(const unsigned long, 
 		   _Stl_prime_type::_M_list[], =__PRIME_LIST_BODY);
-#endif /* __STL_STATIC_TEMPLATE_DATA */
+#endif /* _STLP_STATIC_TEMPLATE_DATA */
 
 # undef __PRIME_LIST_BODY
 
 // fbp: these defines are for outline methods definitions.
 // needed to definitions to be portable. Should not be used in method bodies.
 
-# if defined ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 #  define __difference_type__ ptrdiff_t
 #  define __size_type__       size_t
 #  define __value_type__      _Val
@@ -69,13 +65,13 @@ __DECLARE_INSTANCE(const unsigned long,
 #  define __const_iterator__  _Ht_iterator<_Val, _Const_traits<_Val>, _Key, _HF, _ExK, _EqK, _All>
 # else
 #  define __difference_type__  typename hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::difference_type
-#  define __size_type__        __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::size_type
-#  define __value_type__       __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::value_type
-#  define __key_type__         __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::key_type
-#  define __node__             __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::_Node
-#  define __reference__        __STL_TYPENAME_ON_RETURN_TYPE  hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::reference
-#  define __iterator__         __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::iterator
-#  define __const_iterator__   __STL_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::const_iterator
+#  define __size_type__        _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::size_type
+#  define __value_type__       _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::value_type
+#  define __key_type__         _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::key_type
+#  define __node__             _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::_Node
+#  define __reference__        _STLP_TYPENAME_ON_RETURN_TYPE  hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::reference
+#  define __iterator__         _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::iterator
+#  define __const_iterator__   _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>::const_iterator
 # endif
 
 template <class _Val, class _Key, class _HF, class _ExK, class _EqK, 
@@ -337,7 +333,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
     if (__n > __old_n) {
       _BucketVector __tmp(__n, (void*)(0),
 			  _M_buckets.get_allocator());
-      __STL_TRY {
+      _STLP_TRY {
         for (size_type __bucket = 0; __bucket < __old_n; ++__bucket) {
           _Node* __first = (_Node*)_M_buckets[__bucket];
           while (__first) {
@@ -350,7 +346,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
         }
         _M_buckets.swap(__tmp);
       }
-#         ifdef __STL_USE_EXCEPTIONS
+#         ifdef _STLP_USE_EXCEPTIONS
       catch(...) {
         for (size_type __bucket = 0; __bucket < __tmp.size(); ++__bucket) {
           while (__tmp[__bucket]) {
@@ -361,7 +357,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
         }
         throw;
       }
-#         endif /* __STL_USE_EXCEPTIONS */
+#         endif /* _STLP_USE_EXCEPTIONS */
     }
   }
 }
@@ -425,7 +421,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
   _M_buckets.clear();
   _M_buckets.reserve(__ht._M_buckets.size());
   _M_buckets.insert(_M_buckets.end(), __ht._M_buckets.size(), (void*) 0);
-  __STL_TRY {
+  _STLP_TRY {
     for (size_type __i = 0; __i < __ht._M_buckets.size(); ++__i) {
       const _Node* __cur = (_Node*)__ht._M_buckets[__i];
       if (__cur) {
@@ -442,7 +438,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
     }
     _M_num_elements._M_data = __ht._M_num_elements._M_data;
   }
-  __STL_UNWIND(clear());
+  _STLP_UNWIND(clear());
 }
 
 # undef __iterator__ 
@@ -455,9 +451,9 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
 # undef __stl_num_primes
 # undef hashtable
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_HASHTABLE_C */
+#endif /*  _STLP_HASHTABLE_C */
 
 // Local Variables:
 // mode:C++

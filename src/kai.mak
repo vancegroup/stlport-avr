@@ -25,7 +25,7 @@ MKDIR=mkdir -p
 COMP=KAI${ARCH}
 INSTALL_STEP = install_unix 
 
-all: all_dynamic all_static
+all: all_dynamic symbolic_links all_static
 
 include common_macros.mak
 
@@ -39,8 +39,8 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2  -KPIC
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g  -KPIC
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D__STL_DEBUG -fpic
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fpic
 
 include common_percent_rules.mak
 include common_rules.mak

@@ -15,23 +15,23 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_NUM_PUT_C
-#define __STL_NUM_PUT_C
+#ifndef _STLP_NUM_PUT_C
+#define _STLP_NUM_PUT_C
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-#ifndef __STLPORT_LIMITS_H
+#ifndef _STLP_LIMITS_H
 # include <stl/_limits.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // _M_do_put_float and its helper functions.  Strategy: write the output
 // to a buffer of char, transform the buffer to _CharT, and then copy
 // it to the output.
 
 template <class _CharT, class _OutputIter,class _Float>
-_OutputIter __STL_DECLSPEC __STL_CALL
+_OutputIter _STLP_DECLSPEC _STLP_CALL
 _M_do_put_float(_OutputIter __s, ios_base& __f, _CharT __fill,_Float    __x);
 
 
@@ -39,7 +39,7 @@ _M_do_put_float(_OutputIter __s, ios_base& __f, _CharT __fill,_Float    __x);
 // num_put facet
 
 template <class _CharT, class _OutputIter>
-_OutputIter  __STL_CALL
+_OutputIter  _STLP_CALL
 __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
                       _OutputIter __out,
                       ios_base::fmtflags __flags,
@@ -68,10 +68,10 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
   }
 }
 
-#ifndef __STL_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 // Helper routine for wchar_t
 template <class _OutputIter>
-_OutputIter  __STL_CALL
+_OutputIter  _STLP_CALL
 __put_float(char* __ibuf, char* __iend, _OutputIter __out,
             ios_base& __f, wchar_t __fill,
             wchar_t __decimal_point,
@@ -111,7 +111,7 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
 
 // Helper routine for char
 template <class _OutputIter>
-_OutputIter  __STL_CALL
+_OutputIter  _STLP_CALL
 __put_float(char* __ibuf, char* __iend, _OutputIter __out,
             ios_base& __f, char __fill,
             char __decimal_point,
@@ -134,25 +134,25 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
 }
 
 template <class _CharT, class _OutputIter, class _Float>
-_OutputIter __STL_DECLSPEC __STL_CALL
+_OutputIter _STLP_DECLSPEC _STLP_CALL
 _M_do_put_float(_OutputIter __s, ios_base& __f,
                 _CharT __fill, _Float __x)
 {
   char   __buf[128];
   char* __iend = __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
-  locale __loc = __f.getloc();
-  //  const numpunct<_CharT>& __np = use_facet<numpunct<_CharT> >(__loc) ;
+  //  locale __loc = __f.getloc();
   const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+  
   return __put_float(__buf, __iend, __s, __f, __fill,
                      __np.decimal_point(),
-		     __np.thousands_sep(), __np.grouping());
+		     __np.thousands_sep(), __f._M_grouping());
 }
 
 // _M_do_put_integer and its helper functions.
 
 template <class _CharT, class _OutputIter>
-_OutputIter __STL_CALL
+_OutputIter _STLP_CALL
 __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
                         _OutputIter __out,
                         ios_base::fmtflags __flg, streamsize __wid, _CharT __fill,
@@ -189,16 +189,18 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
   }
 }
 
-#ifndef __STL_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 // Helper function for wchar_t
 template <class _OutputIter>
-_OutputIter __STL_CALL
+_OutputIter _STLP_CALL
 __put_integer(char* __buf, char* __iend, _OutputIter __s,
               ios_base& __f,
               ios_base::fmtflags __flags, wchar_t __fill)
 {
   locale __loc = __f.getloc();
-  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
+  //  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
+  const ctype<wchar_t>& __ct = *(const ctype<wchar_t>*)__f._M_ctype_facet();
+
   wchar_t __plus  = __ct.widen('+');
   wchar_t __minus = __ct.widen('-');
 
@@ -207,8 +209,11 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   ptrdiff_t __len = __iend - __buf;
   wchar_t* __eend = __wbuf + __len;
 
-  const numpunct<wchar_t>& __np = use_facet<numpunct<wchar_t> >(__loc);
-  const string& __grouping = __np.grouping();
+  //  const numpunct<wchar_t>& __np = use_facet<numpunct<wchar_t> >(__loc);
+  //  const string& __grouping = __np.grouping();
+
+  const numpunct<wchar_t>& __np = *(const numpunct<wchar_t>*)__f._M_numpunct_facet();
+  const string& __grouping = __f._M_grouping();
 
   if (!__grouping.empty()) {
     int __basechars;
@@ -232,14 +237,17 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
 
 // Helper function for char
 template <class _OutputIter>
-_OutputIter __STL_CALL
+_OutputIter _STLP_CALL
 __put_integer(char* __buf, char* __iend, _OutputIter __s,
               ios_base& __f, ios_base::fmtflags __flags, char __fill)
 {
   ptrdiff_t __len = __iend - __buf;
 
-  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
-  const string& __grouping = __np.grouping();
+  //  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
+  //  const string& __grouping = __np.grouping();
+
+  const numpunct<char>& __np = *(const numpunct<char>*)__f._M_numpunct_facet();
+  const string& __grouping = __f._M_grouping();
 
   if (!__grouping.empty()) {
     int __basechars;
@@ -258,9 +266,9 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   return __copy_integer_and_fill(__buf, __len, __s, __flags, __f.width(0), __fill, '+', '-');
 }
 
-#ifdef __STL_LONG_LONG
-typedef __STL_LONG_LONG __max_int_t;
-typedef unsigned __STL_LONG_LONG __umax_int_t;
+#ifdef _STLP_LONG_LONG
+typedef _STLP_LONG_LONG __max_int_t;
+typedef unsigned _STLP_LONG_LONG __umax_int_t;
 #else
 typedef long __max_int_t;
 typedef unsigned long __umax_int_t;
@@ -270,7 +278,35 @@ extern const char __hex_char_table_lo[];
 extern const char __hex_char_table_hi[];
 
 template <class _Integer>
-char* __STL_CALL
+inline char* _STLP_CALL
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, __true_type /* is_signed */)
+{
+  __umax_int_t __temp;
+
+  const bool __negative = __x < 0 ;
+  __temp = (__negative ? -__x : __x);
+
+  for (; __temp != 0; __temp /= 10)
+    *--__ptr = (int)(__temp % 10) + '0';	  
+  // put sign if requested
+  if (__negative)
+    *--__ptr = '-';
+  else if (__flags & ios_base::showpos)
+    *--__ptr = '+';
+  return __ptr;
+}
+
+template <class _Integer>
+inline char* _STLP_CALL
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags, __false_type /* is_signed */)
+{
+  for (; __x != 0; __x /= 10)
+    *--__ptr = (int)(__x % 10) + '0';
+  return __ptr;
+}
+
+template <class _Integer>
+char* _STLP_CALL
 __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
 {
   char* __ptr = __buf;
@@ -317,19 +353,8 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
       break;
     default: 
       {
-        const bool __is_signed = numeric_limits<_Integer>::is_signed;
-        const bool __negative = __is_signed && __x < 0 ;
-        __temp = (__negative ? -__x : __x);
-        for (; __temp != 0; __temp /= 10)
-          *--__ptr = (int)(__temp % 10) + '0';
-        
-        // put sign if requested
-        if (__is_signed) {
-          if (__negative)
-            *--__ptr = '-';
-          else if (__flags & ios_base::showpos)
-            *--__ptr = '+';
-        }
+	typedef typename __bool2type<numeric_limits<_Integer>::is_signed>::_Ret _IsSigned;
+	__ptr = __write_decimal_backward(__ptr, __x, __flags, _IsSigned());
       }
       break;
     }  
@@ -348,7 +373,7 @@ locale::id num_put<_CharT, _OutputIterator>::id;
 
 // issue 118
 
-# ifndef __STL_NO_BOOL
+# ifndef _STLP_NO_BOOL
 
 template <class _CharT, class _OutputIter>  
 _OutputIter 
@@ -358,8 +383,11 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
     return this->do_put(__s, __f, __fill, __STATIC_CAST(long,__val));
 
   locale __loc = __f.getloc();
-  typedef numpunct<_CharT> _Punct;
-  const _Punct& __np = use_facet<_Punct>(__loc);
+  //  typedef numpunct<_CharT> _Punct;
+  //  const _Punct& __np = use_facet<_Punct>(__loc);
+
+  const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+
   basic_string<_CharT> __str = __val ? __np.truename() : __np.falsename();
 
   // Reuse __copy_integer_and_fill.  Since internal padding makes no
@@ -408,7 +436,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
   return _M_do_put_float(__s, __f, __fill, __val);
 }
 
-#ifndef __STL_NO_LONG_DOUBLE
+#ifndef _STLP_NO_LONG_DOUBLE
 template <class _CharT, class _OutputIter>  
 _OutputIter 
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
@@ -417,11 +445,11 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 }
 #endif
 
-#ifdef __STL_LONG_LONG
+#ifdef _STLP_LONG_LONG
 template <class _CharT, class _OutputIter>  
 _OutputIter 
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
-                                     __STL_LONG_LONG __val) const {
+                                     _STLP_LONG_LONG __val) const {
   char __buf[64];               // Large enough for a base 8 64-bit integer,
                                 // plus any necessary grouping.
   
@@ -433,7 +461,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 template <class _CharT, class _OutputIter>  
 _OutputIter 
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
-                                     unsigned __STL_LONG_LONG __val) const {
+                                     unsigned _STLP_LONG_LONG __val) const {
   char __buf[64];               // Large enough for a base 8 64-bit integer,
                                 // plus any necessary grouping.
   
@@ -442,7 +470,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
   return __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
 }
 
-#endif /* __STL_LONG_LONG */
+#endif /* _STLP_LONG_LONG */
 
 template <class _CharT, class _OutputIter>  
 _OutputIter 
@@ -450,11 +478,11 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
                                      const void* __val) const {
   return this->do_put(__s, __f, __fill, __REINTERPRET_CAST(unsigned long,__val));
 }
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# endif /* __STL_EXPOSE_STREAM_IMPLEMENTATION */
+# endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
-#endif /* __STL_NUM_PUT_C */
+#endif /* _STLP_NUM_PUT_C */
 
 // Local Variables:
 // mode:C++

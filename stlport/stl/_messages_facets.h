@@ -21,22 +21,22 @@
 // file directly.
 
 
-#ifndef __SGI_STL_INTERNAL_MESSAGES_H
-#define __SGI_STL_INTERNAL_MESSAGES_H
+#ifndef _STLP_INTERNAL_MESSAGES_H
+#define _STLP_INTERNAL_MESSAGES_H
 
-#ifndef __SGI_STL_IOS_BASE_H
+#ifndef _STLP_IOS_BASE_H
 # include <stl/_ios_base.h>
 #endif
 
-//# ifndef __STL_C_LOCALE_H
-//#  include <stl/c_locale.h>
-//# endif
+# ifndef _STLP_C_LOCALE_H
+#  include <stl/c_locale.h>
+# endif
 
-#ifndef __SGI_STL_STRING_H
+#ifndef _STLP_STRING_H
 # include <stl/_string.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // messages facets
 
@@ -49,8 +49,8 @@ template <class _CharT> class messages {};
 
 class _Messages;
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base 
 {
   friend class _Locale;
 public:
@@ -68,7 +68,7 @@ public:
   inline void close(catalog __c) const
     { do_close(__c); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
   messages(_Messages*);
 
@@ -87,10 +87,10 @@ private:
   _Messages* _M_impl;
 };
 
-# if !defined (__STL_NO_WCHAR_T)
+# if !defined (_STLP_NO_WCHAR_T)
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base 
 {
   friend class _Locale;
 public:
@@ -108,7 +108,7 @@ public:
   inline void close(catalog __c) const
     { do_close(__c); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
   messages(_Messages*);
 
@@ -132,8 +132,8 @@ private:
 
 template <class _CharT> class messages_byname {};
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC messages_byname<char> : public messages<char> {
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC messages_byname<char> : public messages<char> {
 public:
   typedef messages_base::catalog catalog;
   typedef string     string_type;
@@ -144,9 +144,9 @@ protected:
   ~messages_byname();
 };
 
-# ifndef __STL_NO_WCHAR_T
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC messages_byname<wchar_t> : public messages<wchar_t> {
+# ifndef _STLP_NO_WCHAR_T
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC messages_byname<wchar_t> : public messages<wchar_t> {
 public:
   typedef messages_base::catalog catalog;
   typedef wstring                string_type;
@@ -158,9 +158,9 @@ protected:
 };
 # endif /* WCHAR_T */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_MESSAGES_H */
+#endif /* _STLP_INTERNAL_MESSAGES_H */
 
 // Local Variables:
 // mode:C++

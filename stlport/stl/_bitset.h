@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef __SGI_STL_BITSET_H
-#define __SGI_STL_BITSET_H
+#ifndef _STLP_BITSET_H
+#define _STLP_BITSET_H
 
 // A bitset of size N has N % (sizeof(unsigned long) * CHAR_BIT) unused 
 // bits.  (They are the high- order bits in the highest word.)  It is
@@ -35,31 +35,31 @@
 // returns a reference to a bit, again without doing any range checking.
 
 
-# ifndef __SGI_STL_INTERNAL_ALGOBASE_H
+# ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ALLOC_H
+# ifndef _STLP_INTERNAL_ALLOC_H
 #  include <stl/_alloc.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ITERATOR_H
+# ifndef _STLP_INTERNAL_ITERATOR_H
 #  include <stl/_iterator.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_UNINITIALIZED_H
+# ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #  include <stl/_uninitialized.h>
 # endif
 
-# ifndef __STL_RANGE_ERRORS_H
+# ifndef _STLP_RANGE_ERRORS_H
 #  include <stl/_range_errors.h>
 # endif
 
-# ifndef __STLPORT_STRING
+# ifndef _STLP_STRING
 #  include <string>
 # endif
 
-# ifndef __STLPORT_ISTREAM
+# ifndef _STLP_ISTREAM
 #  include <istream>
 # endif
 
@@ -67,7 +67,7 @@
 #define __BITS_PER_WORD (CHAR_BIT*sizeof(unsigned long))
 #define __BITSET_WORDS(__n) ((__n) < 1 ? 1 : ((__n) + __BITS_PER_WORD - 1)/__BITS_PER_WORD)
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // structure to aid in counting bits
 template<bool __dummy> 
@@ -99,16 +99,16 @@ struct _Base_bitset {
     _M_w[0] = __val;
   }
   
-  static size_t __STL_CALL _S_whichword( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichword( size_t __pos ) {
     return __pos / __BITS_PER_WORD;
   }
-  static size_t __STL_CALL _S_whichbyte( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichbyte( size_t __pos ) {
     return (__pos % __BITS_PER_WORD) / CHAR_BIT;
   }
-  static size_t __STL_CALL _S_whichbit( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichbit( size_t __pos ) {
     return __pos % __BITS_PER_WORD;
   }
-  static _WordT __STL_CALL _S_maskbit( size_t __pos ) {
+  static _WordT _STLP_CALL _S_maskbit( size_t __pos ) {
     return __STATIC_CAST(_WordT,1) << _S_whichbit(__pos);
   }
 
@@ -197,7 +197,7 @@ struct _Base_bitset {
 // Base class: specialization for a single word.
 //
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 struct _Base_bitset<1UL> {
   typedef unsigned long _WordT;
   typedef _Base_bitset<1UL> _Self;
@@ -207,16 +207,16 @@ struct _Base_bitset<1UL> {
   _Base_bitset( void ) : _M_w(0) {}
   _Base_bitset(unsigned long __val) : _M_w(__val) {}
   
-  static size_t __STL_CALL _S_whichword( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichword( size_t __pos ) {
     return __pos / __BITS_PER_WORD ;
   }
-  static size_t __STL_CALL _S_whichbyte( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichbyte( size_t __pos ) {
     return (__pos % __BITS_PER_WORD) / CHAR_BIT;
   }
-  static size_t __STL_CALL _S_whichbit( size_t __pos ) {
+  static size_t _STLP_CALL _S_whichbit( size_t __pos ) {
     return __pos % __BITS_PER_WORD;
   }
-  static _WordT __STL_CALL _S_maskbit( size_t __pos ) {
+  static _WordT _STLP_CALL _S_maskbit( size_t __pos ) {
     return (__STATIC_CAST(_WordT,1)) << _S_whichbit(__pos);
   }
 
@@ -331,12 +331,12 @@ _Base_bitset<1UL>::_M_do_find_next(size_t __prev,
 // Helper class to zero out the unused high-order bits in the highest word.
 
 template <size_t _Extrabits> struct _Sanitize {
-  static void __STL_CALL _M_do_sanitize(unsigned long& __val)
+  static void _STLP_CALL _M_do_sanitize(unsigned long& __val)
     { __val &= ~((~__STATIC_CAST(unsigned long,0)) << _Extrabits); }
 };
 
-__STL_TEMPLATE_NULL struct _Sanitize<0UL> {
-  static void __STL_CALL _M_do_sanitize(unsigned long) {}
+_STLP_TEMPLATE_NULL struct _Sanitize<0UL> {
+  static void _STLP_CALL _M_do_sanitize(unsigned long) {}
 };
 
 // ------------------------------------------------------------
@@ -415,7 +415,7 @@ public:
   bitset(unsigned long __val) : 
     _Base_bitset<__BITSET_WORDS(_Nb) >(__val) { _M_do_sanitize(); }
 
-# ifdef __STL_MEMBER_TEMPLATES
+# ifdef _STLP_MEMBER_TEMPLATES
   template<class _CharT, class _Traits, class _Alloc>
   explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
                   size_t __pos = 0)
@@ -436,7 +436,7 @@ public:
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
   }
-#else /* __STL_MEMBER_TEMPLATES */
+#else /* _STLP_MEMBER_TEMPLATES */
   explicit bitset(const string& __s,
                   size_t __pos = 0,
                   size_t __n = (size_t)-1) 
@@ -446,7 +446,7 @@ public:
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
   }
-#endif /* __STL_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   // 23.3.5.2 bitset operations:
   bitset<_Nb>& operator&=(const bitset<_Nb>& __rhs) {
@@ -565,8 +565,7 @@ public:
 
   unsigned long to_ulong() const { return this->_M_do_to_ulong(); }
 
-#if defined (__STL_MEMBER_TEMPLATES) && \
-    defined (__STL_EXPLICIT_FUNCTION_TMPL_ARGS)
+#if defined (_STLP_MEMBER_TEMPLATES) && !  defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
   template <class _CharT, class _Traits, class _Alloc>
   basic_string<_CharT, _Traits, _Alloc> to_string() const {
     basic_string<_CharT, _Traits, _Alloc> __result;
@@ -579,7 +578,7 @@ public:
     _M_copy_to_string(__result);
     return __result;
   }
-#endif /* __STL_EXPLICIT_FUNCTION_TMPL_ARGS */
+#endif /* _STLP_EXPLICIT_FUNCTION_TMPL_ARGS */
 
   size_t count() const { return this->_M_do_count(); }
 
@@ -628,7 +627,7 @@ public:
 //
 // Definitions of should-be non-inline member functions.
 //
-# if defined (__STL_MEMBER_TEMPLATES)
+# if defined (_STLP_MEMBER_TEMPLATES)
   template<class _CharT, class _Traits, class _Alloc>
     void _M_copy_from_string(const basic_string<_CharT,_Traits,_Alloc>& __s,
 			     size_t __pos,
@@ -641,7 +640,7 @@ public:
 #endif
       reset();
       size_t __tmp = _Nb;
-      const size_t __Nbits = __STL_MIN (__tmp, __STL_MIN (__n, __s.size() - __pos));
+      const size_t __Nbits = (min) (__tmp, (min) (__n, __s.size() - __pos));
       for ( size_t __i= 0; __i < __Nbits; ++__i) {
         typename _Traits::int_type __k = _Traits::to_int_type(__s[__pos + __Nbits - __i - 1]);
         // boris : widen() ?
@@ -652,7 +651,7 @@ public:
       }
     }
   
-# if defined (__STL_MEMBER_TEMPLATES)
+# if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharT, class _Traits, class _Alloc>
     void _M_copy_to_string(basic_string<_CharT, _Traits, _Alloc>& __s) const
 # else
@@ -666,7 +665,7 @@ public:
 	  __s[_Nb - 1 - __i] = '1';
     }
 
-# if defined (__STL_NON_TYPE_TMPL_PARAM_BUG)
+# if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
   bitset<_Nb> operator&(const bitset<_Nb>& __y) const {
     bitset<_Nb> __result(*this);
     __result &= __y;
@@ -691,9 +690,9 @@ public:
 // 23.3.5.3 bitset operations:
 //
 
-# if ! defined (__STL_NON_TYPE_TMPL_PARAM_BUG)
+# if ! defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
 template <size_t _Nb>
-inline bitset<_Nb>  __STL_CALL
+inline bitset<_Nb>  _STLP_CALL
 operator&(const bitset<_Nb>& __x,
           const bitset<_Nb>& __y) {
   bitset<_Nb> __result(__x);
@@ -703,7 +702,7 @@ operator&(const bitset<_Nb>& __x,
 
 
 template <size_t _Nb>
-inline bitset<_Nb>  __STL_CALL
+inline bitset<_Nb>  _STLP_CALL
 operator|(const bitset<_Nb>& __x,
           const bitset<_Nb>& __y) {
   bitset<_Nb> __result(__x);
@@ -712,7 +711,7 @@ operator|(const bitset<_Nb>& __x,
 }
 
 template <size_t _Nb>
-inline bitset<_Nb>  __STL_CALL
+inline bitset<_Nb>  _STLP_CALL
 operator^(const bitset<_Nb>& __x,
           const bitset<_Nb>& __y) {
   bitset<_Nb> __result(__x);
@@ -720,26 +719,26 @@ operator^(const bitset<_Nb>& __x,
   return __result;
 }
 
-#if defined ( __STL_USE_NEW_IOSTREAMS )
+#if defined ( _STLP_USE_NEW_IOSTREAMS )
 template <class _CharT, class _Traits, size_t _Nb>
-basic_istream<_CharT, _Traits>&  __STL_CALL
+basic_istream<_CharT, _Traits>&  _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is, bitset<_Nb>& __x);
 
 
 template <class _CharT, class _Traits, size_t _Nb>
-basic_ostream<_CharT, _Traits>& __STL_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os,
            const bitset<_Nb>& __x);
 
-#elif ! defined ( __STL_USE_NO_IOSTREAMS )
+#elif ! defined ( _STLP_USE_NO_IOSTREAMS )
 
 // (reg) For Watcom IO, this tells if ostream class is in .exe or in .dll
 template <size_t _Nb>
-_ISTREAM_DLL& __STL_CALL
+_ISTREAM_DLL& _STLP_CALL
 operator>>(_ISTREAM_DLL& __is, bitset<_Nb>& __x);
 
 template <size_t _Nb>
-inline _OSTREAM_DLL&  __STL_CALL operator<<(_OSTREAM_DLL& __os, const bitset<_Nb>& __x) {
+inline _OSTREAM_DLL&  _STLP_CALL operator<<(_OSTREAM_DLL& __os, const bitset<_Nb>& __x) {
   string __tmp;
   __x._M_copy_to_string(__tmp);
   return __os << __tmp;
@@ -747,20 +746,20 @@ inline _OSTREAM_DLL&  __STL_CALL operator<<(_OSTREAM_DLL& __os, const bitset<_Nb
 
 #endif
 
-# endif /* __STL_NON_TYPE_TMPL_PARAM_BUG */
+# endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
 #  undef  bitset
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 #  undef __BITS_PER_WORD
 #  undef __BITSET_WORDS
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_bitset.c>
 # endif
 
-#endif /* __SGI_STL_BITSET_H */
+#endif /* _STLP_BITSET_H */
 
 
 // Local Variables:

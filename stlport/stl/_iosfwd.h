@@ -1,5 +1,5 @@
-# ifndef __STL_INTERNAL_IOSFWD
-#  define __STL_INTERNAL_IOSFWD
+# ifndef _STLP_INTERNAL_IOSFWD
+#  define _STLP_INTERNAL_IOSFWD
 
 #if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
 #error This header file requires the -LANG:std option
@@ -18,56 +18,56 @@
 // In this implementation, the declarations in <iosfwd> contain default
 // template arguments.  All of the other I/O headers include <iosfwd>.
 
-#ifndef __SGI_STL_CHAR_TRAITS_H
+#ifndef _STLP_CHAR_TRAITS_H
 # include <stl/char_traits.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-class __STL_CLASS_DECLSPEC ios_base;
-
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_ios;
+class _STLP_CLASS_DECLSPEC ios_base;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_streambuf;
+class _STLP_CLASS_DECLSPEC basic_ios;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_istream;
+class _STLP_CLASS_DECLSPEC basic_streambuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_ostream;
+class _STLP_CLASS_DECLSPEC basic_istream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_iostream;
+class _STLP_CLASS_DECLSPEC basic_ostream;
+
+template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+class _STLP_CLASS_DECLSPEC basic_iostream;
 
 template <class _CharT, __DFL_TMPL_PARAM( _Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_stringbuf;
+class _STLP_CLASS_DECLSPEC basic_stringbuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_istringstream;
+class _STLP_CLASS_DECLSPEC basic_istringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_ostringstream;
+class _STLP_CLASS_DECLSPEC basic_ostringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_stringstream;
+class _STLP_CLASS_DECLSPEC basic_stringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_filebuf;
+class _STLP_CLASS_DECLSPEC basic_filebuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_ifstream;
+class _STLP_CLASS_DECLSPEC basic_ifstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_ofstream;
+class _STLP_CLASS_DECLSPEC basic_ofstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class __STL_CLASS_DECLSPEC basic_fstream;
+class _STLP_CLASS_DECLSPEC basic_fstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class istreambuf_iterator;
@@ -77,15 +77,15 @@ class ostreambuf_iterator;
 
 typedef basic_ios<char, char_traits<char> >    ios;
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 typedef basic_ios<wchar_t, char_traits<wchar_t> > wios;
 # endif
 
 // Forward declaration of class locale, and of the most important facets.
 class locale;
-# ifdef __STL_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+# ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
-struct __STL_CLASS_DECLSPEC _Use_facet {
+struct _STLP_CLASS_DECLSPEC _Use_facet {
   const locale& __loc;
   _Use_facet(const locale& __p_loc) : __loc(__p_loc) {}
   inline const _Facet& operator *() const;
@@ -100,21 +100,21 @@ template <class _CharT> class ctype_byname;
 template <class _CharT> class collate;
 template <class _CharT> class collate_byname;
 
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC ctype<char>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC ctype_byname<char>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC collate<char>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC collate_byname<char>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype<char>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype_byname<char>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate<char>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate_byname<char>;
 
-#  ifndef __STL_NO_WCHAR_T
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC ctype<wchar_t>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC ctype_byname<wchar_t>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC collate<wchar_t>;
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC collate_byname<wchar_t>;
+#  ifndef _STLP_NO_WCHAR_T
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype<wchar_t>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate<wchar_t>;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>;
 #  endif
 
 # if !(defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500 )
 // Typedefs for ordinary (narrow-character) streams.
-__STL_TEMPLATE_NULL class __STL_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >;
+_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >;
 # endif
 
 typedef basic_istream<char, char_traits<char> >   istream;
@@ -132,7 +132,7 @@ typedef basic_ifstream<char, char_traits<char> > ifstream;
 typedef basic_ofstream<char, char_traits<char> > ofstream;
 typedef basic_fstream<char, char_traits<char> >  fstream;
 
-# ifndef __STL_NO_WCHAR_T
+# ifndef _STLP_NO_WCHAR_T
 // Typedefs for wide-character streams.
 typedef basic_streambuf<wchar_t, char_traits<wchar_t> > wstreambuf;
 typedef basic_istream<wchar_t, char_traits<wchar_t> >   wistream;
@@ -150,7 +150,7 @@ typedef basic_ofstream<wchar_t, char_traits<wchar_t> > wofstream;
 typedef basic_fstream<wchar_t, char_traits<wchar_t> >  wfstream;
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 #endif
 

@@ -61,13 +61,8 @@ struct __false_type {};
 
 template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 struct __bool2type<true> { typedef __true_type _Ret; };
-
-# if 0
-__STL_TEMPLATE_NULL
-struct __bool2type<false> { typedef __false_type _Ret; };
-# endif
 
 // logical end of 3 predicated
 template <class _P1, class _P2, class _P3>
@@ -75,7 +70,7 @@ struct _Land3 {
   typedef __false_type _Ret;
 };
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 struct _Land3<__true_type, __true_type, __true_type> {
   typedef __true_type _Ret;
 };
@@ -83,9 +78,6 @@ struct _Land3<__true_type, __true_type, __true_type> {
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
 template <bool _IsPOD> struct __type_traits_aux {
-
-//__STL_TEMPLATE_NULL
-//struct __type_traits_aux<false> { 
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
    typedef __false_type    has_trivial_assignment_operator;
@@ -93,7 +85,7 @@ template <bool _IsPOD> struct __type_traits_aux {
    typedef __false_type    is_POD_type;
 };
 
-__STL_TEMPLATE_NULL
+_STLP_TEMPLATE_NULL
 struct __type_traits_aux<true> { 
    typedef __true_type    has_trivial_default_constructor;
    typedef __true_type    has_trivial_copy_constructor;
@@ -102,7 +94,7 @@ struct __type_traits_aux<true> {
    typedef __true_type    is_POD_type;
 };
 
-# ifdef __STL_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
+# ifdef _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
 
 // Boris : simulation technique is used here according to Adobe Open Source License Version 1.0.
 // Copyright 2000 Adobe Systems Incorporated and others. All rights reserved.
@@ -119,8 +111,9 @@ struct _PointerShim {
 };
 
 // These are the discriminating functions
-char _IsP(_PointerShim); // no implementation is required
-int _IsP(...);          // no implementation is required
+
+char _STLP_CALL _IsP(_PointerShim); // no implementation is required
+char* _STLP_CALL _IsP(...);          // no implementation is required
 
 template <class _Tp>
 struct _IsPtr {
@@ -128,7 +121,8 @@ struct _IsPtr {
   // and returns true exactly when T is a pointer.
   // One can imagine meta-functions discriminating on
   // other criteria.
-  enum { _Ret = (sizeof(_IsP(*(_Tp*)0)) == 1) };
+  static _Tp& __null_rep();
+  enum { _Ret = (sizeof(_IsP(__null_rep())) == sizeof(char)) };
 };
 
 template <class _Tp>
@@ -190,7 +184,7 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType {
   static __false_type _Ret() { return __false_type();} 
 };
 
-#  ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
+#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp>  struct _IsPtr<_Tp*> { enum { _Ret = 1 }; };
 template <class _Tp>  struct _IsPtrType<_Tp*> { 
   static __true_type _Ret() { return __true_type();} 
@@ -200,7 +194,7 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> {
 };
 #  endif
 
-# endif /* __STL_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
+# endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
@@ -231,38 +225,38 @@ inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 // Provide some specializations.  This is harmless for compilers that
 //  have built-in __types_traits support, and essential for compilers
 //  that don't.
-#ifndef __STL_NO_BOOL
-__STL_TEMPLATE_NULL struct __type_traits<bool> : __type_traits_aux<true> {};
-#endif /* __STL_NO_BOOL */
-__STL_TEMPLATE_NULL struct __type_traits<char> : __type_traits_aux<true> {};
-#ifndef __STL_NO_SIGNED_BUILTINS
-__STL_TEMPLATE_NULL struct __type_traits<signed char> : __type_traits_aux<true> {};
+#ifndef _STLP_NO_BOOL
+_STLP_TEMPLATE_NULL struct __type_traits<bool> : __type_traits_aux<true> {};
+#endif /* _STLP_NO_BOOL */
+_STLP_TEMPLATE_NULL struct __type_traits<char> : __type_traits_aux<true> {};
+#ifndef _STLP_NO_SIGNED_BUILTINS
+_STLP_TEMPLATE_NULL struct __type_traits<signed char> : __type_traits_aux<true> {};
 # endif
-__STL_TEMPLATE_NULL struct __type_traits<unsigned char> : __type_traits_aux<true> {};
-#if defined ( __STL_HAS_WCHAR_T ) && ! defined (__STL_WCHAR_T_IS_USHORT)
-__STL_TEMPLATE_NULL struct __type_traits<wchar_t> : __type_traits_aux<true> {};
-#endif /* __STL_HAS_WCHAR_T */
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned char> : __type_traits_aux<true> {};
+#if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
+_STLP_TEMPLATE_NULL struct __type_traits<wchar_t> : __type_traits_aux<true> {};
+#endif /* _STLP_HAS_WCHAR_T */
 
-__STL_TEMPLATE_NULL struct __type_traits<short> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<unsigned short> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<int> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<unsigned int> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<long> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<unsigned long> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<short> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned short> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<int> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned int> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<long> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned long> : __type_traits_aux<true> {};
 
-#ifdef __STL_LONG_LONG
-__STL_TEMPLATE_NULL struct __type_traits<__STL_LONG_LONG> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<unsigned __STL_LONG_LONG> : __type_traits_aux<true> {};
-#endif /* __STL_LONG_LONG */
+#ifdef _STLP_LONG_LONG
+_STLP_TEMPLATE_NULL struct __type_traits<_STLP_LONG_LONG> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned _STLP_LONG_LONG> : __type_traits_aux<true> {};
+#endif /* _STLP_LONG_LONG */
 
-__STL_TEMPLATE_NULL struct __type_traits<float> : __type_traits_aux<true> {};
-__STL_TEMPLATE_NULL struct __type_traits<double> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<float> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<double> : __type_traits_aux<true> {};
 
-# if !defined ( __STL_NO_LONG_DOUBLE )
-__STL_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<true> {};
+# if !defined ( _STLP_NO_LONG_DOUBLE )
+_STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<true> {};
 # endif
 
-#ifdef __STL_CLASS_PARTIAL_SPECIALIZATION
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<true> {};
 #endif
 
@@ -273,74 +267,74 @@ template <class _Tp> struct _Is_integer {
   typedef __false_type _Integral;
 };
 
-#ifndef __STL_NO_BOOL
+#ifndef _STLP_NO_BOOL
 
-__STL_TEMPLATE_NULL struct _Is_integer<bool> {
+_STLP_TEMPLATE_NULL struct _Is_integer<bool> {
   typedef __true_type _Integral;
 };
 
-#endif /* __STL_NO_BOOL */
+#endif /* _STLP_NO_BOOL */
 
-__STL_TEMPLATE_NULL struct _Is_integer<char> {
+_STLP_TEMPLATE_NULL struct _Is_integer<char> {
   typedef __true_type _Integral;
 };
 
-#ifndef __STL_NO_SIGNED_BUILTINS
+#ifndef _STLP_NO_SIGNED_BUILTINS
 
-__STL_TEMPLATE_NULL struct _Is_integer<signed char> {
+_STLP_TEMPLATE_NULL struct _Is_integer<signed char> {
   typedef __true_type _Integral;
 };
 #endif
 
-__STL_TEMPLATE_NULL struct _Is_integer<unsigned char> {
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned char> {
   typedef __true_type _Integral;
 };
 
-#if defined ( __STL_HAS_WCHAR_T ) && ! defined (__STL_WCHAR_T_IS_USHORT)
+#if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
 
-__STL_TEMPLATE_NULL struct _Is_integer<wchar_t> {
+_STLP_TEMPLATE_NULL struct _Is_integer<wchar_t> {
   typedef __true_type _Integral;
 };
 
-#endif /* __STL_HAS_WCHAR_T */
+#endif /* _STLP_HAS_WCHAR_T */
 
-__STL_TEMPLATE_NULL struct _Is_integer<short> {
+_STLP_TEMPLATE_NULL struct _Is_integer<short> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<unsigned short> {
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned short> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<int> {
+_STLP_TEMPLATE_NULL struct _Is_integer<int> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<unsigned int> {
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned int> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<long> {
+_STLP_TEMPLATE_NULL struct _Is_integer<long> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<unsigned long> {
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned long> {
   typedef __true_type _Integral;
 };
 
-#ifdef __STL_LONG_LONG
+#ifdef _STLP_LONG_LONG
 
-__STL_TEMPLATE_NULL struct _Is_integer<__STL_LONG_LONG> {
+_STLP_TEMPLATE_NULL struct _Is_integer<_STLP_LONG_LONG> {
   typedef __true_type _Integral;
 };
 
-__STL_TEMPLATE_NULL struct _Is_integer<unsigned __STL_LONG_LONG> {
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
   typedef __true_type _Integral;
 };
 
-#endif /* __STL_LONG_LONG */
+#endif /* _STLP_LONG_LONG */
 
-# ifdef __STL_DEFAULT_CONSTRUCTOR_BUG
+# ifdef _STLP_DEFAULT_CONSTRUCTOR_BUG
 // Those adaptors are here to fix common compiler bug regarding builtins:
 // expressions like int k = int() should initialize k to 0
 template <class _Tp>
@@ -358,9 +352,9 @@ _Tp __default_constructed(_Tp* __p) {
     return __default_constructed_aux(__p, _Is_Integral());
 }
 
-#  define __STL_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)
+#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)
 # else
-#  define __STL_DEFAULT_CONSTRUCTED(_TTp) _TTp()
+#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) _TTp()
 # endif
 
 #endif /* __TYPE_TRAITS_H */

@@ -36,7 +36,7 @@ This is major change since pre-4.0 releases, please read the instructions carefu
 
    IMPORTANT :
    If you DO NOT plan to use SGI iostreams implementation, please : 
-   3a) uncomment __STL_NO_SGI_IOSTREAMS setting in "stlport/stl/_site_config.h" to disable use
+   3a) uncomment __STL_NO_SGI_IOSTREAMS setting in "stlport/stl_user_config.h" to disable use
        of SGI iostreams and to use wrappers around your existing iostreams. 
        After disabling SGI iostreams, you will use wrappers around  your compiler's iostreams 
        libabry, as in previous STLport releases.
@@ -51,9 +51,15 @@ This is major change since pre-4.0 releases, please read the instructions carefu
 
 Below are step-by-step instructions to build STLport library:
 
-4)  Go to "src" subdirectory. It contains various makefiles for different compilers.
-    If you are not able to find makefile for your particular compiler, please use
-    one that looks most similar to your make engine to create your own.
+4)  Go to "src" subdirectory. It contains various makefiles for different 
+    compilers.  If you are not able to find makefile for your particular 
+    compiler, please use one that looks most similar to your make engine to 
+    create your own.
+
+    Verify you can do command line compiles. IDE users may have to do something 
+    special, like add environment variables (for Microsoft) or install 
+    additional compiler components (for Metrowerks), before they can use their 
+    command line compilers.
 
 5)  Using appropriate makefile, do "make clean all" to build the STLport libraries
     (makefiles are set up to build several different flavors - debug/nondebug,

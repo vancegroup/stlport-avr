@@ -27,14 +27,14 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_FUNCTION_BASE_H
-#define __SGI_STL_INTERNAL_FUNCTION_BASE_H
+#ifndef _STLP_INTERNAL_FUNCTION_BASE_H
+#define _STLP_INTERNAL_FUNCTION_BASE_H
 
-#ifndef __STL_CONFIG_H
+#ifndef _STLP_CONFIG_H
 #include <stl/_config.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 template <class _Arg, class _Result>
 struct unary_function {
@@ -173,31 +173,22 @@ struct _Project2nd : public binary_function<_Arg1, _Arg2, _Arg2> {
   _Arg2 operator()(const _Arg1&, const _Arg2& __y) const { return __y; }
 };
 
-#ifdef __STL_MULTI_CONST_TEMPLATE_ARG_BUG
+#ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
 // fbp : sort of select1st just for maps
 template <class _Pair, class _Whatever>		
 // JDJ (CW Pro1 doesn't like const when first_type is also const)
 struct __Select1st_hint : public unary_function<_Pair, _Whatever> {
     const _Whatever& operator () (const _Pair& __x) const { return __x.first; }
 };
-# define  __STL_SELECT1ST(__x,__y) __Select1st_hint< __x, __y >
+# define  _STLP_SELECT1ST(__x,__y) __Select1st_hint< __x, __y >
 # else
-# define  __STL_SELECT1ST(__x, __y) _Select1st< __x >
+# define  _STLP_SELECT1ST(__x, __y) _Select1st< __x >
 # endif
 
 template <class _Tp>
 struct _Identity : public unary_function<_Tp,_Tp> {
   const _Tp& operator()(const _Tp& __x) const { return __x; }
 };
-
-template <class _Result>
-struct _Constant_void_fun {
-  typedef _Result result_type;
-  result_type _M_val;
-
-  _Constant_void_fun(const result_type& __v) : _M_val(__v) {}
-  const result_type& operator()() const { return _M_val; }
-};  
 
 template <class _Result, class _Argument>
 struct _Constant_unary_fun {
@@ -222,9 +213,9 @@ struct _Constant_binary_fun {
   }
 };
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_INTERNAL_FUNCTION_BASE_H */
+#endif /* _STLP_INTERNAL_FUNCTION_BASE_H */
 
 // Local Variables:
 // mode:C++

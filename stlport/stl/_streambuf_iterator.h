@@ -27,15 +27,13 @@
  *   You should not attempt to use it directly.
  */
 
-#if !defined (__SGI_STL_INTERNAL_STREAMBUF_ITERATOR_H)
-#define __SGI_STL_INTERNAL_STREAMBUF_ITERATOR_H
+#if !defined (_STLP_INTERNAL_STREAMBUF_ITERATOR_H)
+#define _STLP_INTERNAL_STREAMBUF_ITERATOR_H
 
-
-__STL_BEGIN_NAMESPACE
-
+_STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _Traits>
-basic_streambuf<_CharT, _Traits>* __STL_CALL _M_get_ostreambuf(basic_ostream<_CharT, _Traits>& ) ;
+basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_ostreambuf(basic_ostream<_CharT, _Traits>& ) ;
 
 // The default template argument is declared in iosfwd
 template<class _CharT, class _Traits>
@@ -55,8 +53,8 @@ public:
   typedef void                             reference;
 
 public:
-  ostreambuf_iterator(streambuf_type* __buf) __STL_NOTHROW : _M_buf(__buf), _M_ok(__buf!=0) {}
-  ostreambuf_iterator(ostream_type& __o) __STL_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
+  ostreambuf_iterator(streambuf_type* __buf) _STLP_NOTHROW : _M_buf(__buf), _M_ok(__buf!=0) {}
+  ostreambuf_iterator(ostream_type& __o) _STLP_NOTHROW : _M_buf(_M_get_ostreambuf(__o)), _M_ok(_M_buf != 0) {}
 
   ostreambuf_iterator<_CharT, _Traits>& operator=(char_type __c) {
     _M_ok = _M_ok && !traits_type::eq_int_type(_M_buf->sputc(__c),
@@ -75,10 +73,9 @@ private:
   bool _M_ok;
 };
 
+_STLP_END_NAMESPACE
 
-__STL_END_NAMESPACE
-
-#endif /* __SGI_STL_INTERNAL_STREAMBUF_ITERATOR_H */
+#endif /* _STLP_INTERNAL_STREAMBUF_ITERATOR_H */
 
 // Local Variables:
 // mode:C++

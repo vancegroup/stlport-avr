@@ -20,22 +20,22 @@
 // file directly.
 
 
-#ifndef __SGI_STL_INTERNAL_NUMPUNCT_H
-#define __SGI_STL_INTERNAL_NUMPUNCT_H
+#ifndef _STLP_INTERNAL_NUMPUNCT_H
+#define _STLP_INTERNAL_NUMPUNCT_H
 
-#ifndef __SGI_STL_IOS_BASE_H
+#ifndef _STLP_IOS_BASE_H
 # include <stl/_ios_base.h>
 #endif
 
-# ifndef __STL_C_LOCALE_H
+# ifndef _STLP_C_LOCALE_H
 #  include <stl/c_locale.h>
 # endif
 
-#ifndef __SGI_STL_STRING_H
+#ifndef _STLP_STRING_H
 # include <stl/_string.h>
 #endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // numpunct facets
@@ -44,11 +44,11 @@ template <class _CharT> class numpunct {};
 template <class _CharT> class numpunct_byname {};
 template <class _Ch, class _InIt> class num_get;
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC numpunct<char> : public locale::facet
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC numpunct<char> : public locale::facet
 {
   friend class _Locale;
-# ifndef __STL_NO_FRIEND_TEMPLATES
+# ifndef _STLP_NO_FRIEND_TEMPLATES
   template <class _Ch, class _InIt> friend class num_get;
 # endif
 public:
@@ -63,16 +63,16 @@ public:
   string truename() const { return do_truename(); }
   string falsename() const { return do_falsename(); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
-# ifndef __STL_NO_FRIEND_TEMPLATES
+# ifndef _STLP_NO_FRIEND_TEMPLATES
 protected:
 # endif
-  ~numpunct() {}
+  ~numpunct();
 
-  __STL_STATIC_MEMBER_DECLSPEC static string  _M_truename;
-  __STL_STATIC_MEMBER_DECLSPEC static string  _M_falsename;
-  __STL_STATIC_MEMBER_DECLSPEC static string  _M_grouping;
+  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_truename;
+  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_falsename;
+  _STLP_STATIC_MEMBER_DECLSPEC static string  _M_grouping;
 
   virtual char do_decimal_point() const;
   virtual char do_thousands_sep() const;
@@ -81,10 +81,10 @@ protected:
   virtual string do_falsename()  const;
 };
 
-# if ! defined (__STL_NO_WCHAR_T)
+# if ! defined (_STLP_NO_WCHAR_T)
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC numpunct<wchar_t> : public locale::facet
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC numpunct<wchar_t> : public locale::facet
 {
   friend class _Locale;
 public:
@@ -99,14 +99,14 @@ public:
   wstring truename() const { return do_truename(); }
   wstring falsename() const { return do_falsename(); }
 
-  __STL_STATIC_MEMBER_DECLSPEC static locale::id id;
+  _STLP_STATIC_MEMBER_DECLSPEC static locale::id id;
 
 protected:
-  __STL_STATIC_MEMBER_DECLSPEC static wstring _M_truename;
-  __STL_STATIC_MEMBER_DECLSPEC static wstring _M_falsename;
-  __STL_STATIC_MEMBER_DECLSPEC static string _M_grouping;
+  _STLP_STATIC_MEMBER_DECLSPEC static wstring _M_truename;
+  _STLP_STATIC_MEMBER_DECLSPEC static wstring _M_falsename;
+  _STLP_STATIC_MEMBER_DECLSPEC static string _M_grouping;
 
-  ~numpunct() {}
+  ~numpunct();
 
   virtual wchar_t do_decimal_point() const;
   virtual wchar_t do_thousands_sep() const;
@@ -117,8 +117,8 @@ protected:
 
 # endif /* WCHAR_T */
 
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC numpunct_byname<char> : public numpunct<char> {
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC numpunct_byname<char> : public numpunct<char> {
 public:
   typedef char                char_type;
   typedef string              string_type;
@@ -137,9 +137,9 @@ private:
   _Locale_numeric* _M_numeric;
 };
 
-# ifndef __STL_NO_WCHAR_T
-__STL_TEMPLATE_NULL
-class __STL_CLASS_DECLSPEC numpunct_byname<wchar_t>: public numpunct<wchar_t> {
+# ifndef _STLP_NO_WCHAR_T
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC numpunct_byname<wchar_t>: public numpunct<wchar_t> {
 public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
@@ -160,9 +160,9 @@ private:
 
 # endif /* WCHAR_T */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /* __SGI_STL_NUMPUNCT_H */
+#endif /* _STLP_NUMPUNCT_H */
 
 // Local Variables:
 // mode:C++

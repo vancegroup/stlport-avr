@@ -13,17 +13,17 @@
  *
  */
 
-# ifndef __STLPORT_CSTDLIB
+# ifndef _STLP_CSTDLIB
 #  include <cstdlib>
 # endif
 
-# include __STL_NATIVE_HEADER(locale)
+# include _STLP_NATIVE_HEADER(locale)
 
-# ifdef __STL_USE_OWN_NAMESPACE
-__STL_BEGIN_NAMESPACE
+# ifdef _STLP_USE_OWN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 #  include <using/locale>
-__STL_END_NAMESPACE
-#endif /* __STL_OWN_NAMESPACE */
+_STLP_END_NAMESPACE
+#endif /* _STLP_OWN_NAMESPACE */
 
 // Local Variables:
 // mode:C++

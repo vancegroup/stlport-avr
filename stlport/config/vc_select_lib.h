@@ -1,31 +1,31 @@
-# if !( defined(__STL_WINCE) )
-#  define __STL_EXPORT_DECLSPEC __declspec(dllexport)
-#  define __STL_IMPORT_DECLSPEC __declspec(dllimport)
+# if !( defined(_STLP_WINCE) )
+#  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+#  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 # endif
 
-#  if !( defined(__STL_MSVC) && __STL_MSVC < 1100)
-#   define __STL_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-#   define __STL_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+#  if !( defined(_STLP_MSVC) && _STLP_MSVC < 1100)
+#   define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+#   define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 #  endif
 
 
-#  if !defined (__STL_NO_SGI_IOSTREAMS)
+#  if !defined (_STLP_NO_SGI_IOSTREAMS)
 
 #    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
-     || defined(_AFXDLL) || defined (__STL_USE_DYNAMIC_LIB) ) \
-       && ! defined (__STL_USE_STATIC_LIB)
-#      undef  __STL_USE_DECLSPEC
-#      define __STL_USE_DECLSPEC 1
+     || defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB) ) \
+       && ! defined (_STLP_USE_STATIC_LIB)
+#      undef  _STLP_USE_DECLSPEC
+#      define _STLP_USE_DECLSPEC 1
 #    endif
 
-#  ifndef __STL_IMPORT_TEMPLATE_KEYWORD
-#   define __STL_IMPORT_TEMPLATE_KEYWORD  extern
+#  ifndef _STLP_IMPORT_TEMPLATE_KEYWORD
+#   define _STLP_IMPORT_TEMPLATE_KEYWORD  extern
 #  endif
-#  define __STL_EXPORT_TEMPLATE_KEYWORD
+#  define _STLP_EXPORT_TEMPLATE_KEYWORD
 
-#    define __STL_LIB_STATIC_SUFFIX "_static"
+#    define _STLP_LIB_STATIC_SUFFIX "_static"
 #    include <config/stl_select_lib.h>
 
-#  endif /* __SGI_STL_OWN_IOSTREAMS */
+#  endif /* _STLP_OWN_IOSTREAMS */
 
 

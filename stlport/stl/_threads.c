@@ -23,25 +23,25 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_THREADS_C
-#define __STL_THREADS_C
+#ifndef _STLP_THREADS_C
+#define _STLP_THREADS_C
 
-# if defined (__STL_EXPOSE_GLOBALS_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
-# if defined(__STL_SGI_THREADS)
+# if defined(_STLP_SGI_THREADS)
 #  include <time.h>
-# elif defined (__STL_UNIX)
+# elif defined (_STLP_UNIX)
 #  include <ctime>
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if ( __STL_STATIC_TEMPLATE_DATA > 0 )
+# if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
  
-#  if !defined ( __STL_ATOMIC_EXCHANGE ) && (defined (__STL_PTHREADS) || defined (__STL_UITHREADS) || defined (__STL_OS2THREADS))
+#  if !defined ( _STLP_ATOMIC_EXCHANGE ) && (defined (_STLP_PTHREADS) || defined (_STLP_UITHREADS) || defined (_STLP_OS2THREADS))
 template<int __dummy>
 _STL_STATIC_MUTEX
-_Swap_lock_struct<__dummy>::_S_swap_lock __STL_MUTEX_INITIALIZER;
+_Swap_lock_struct<__dummy>::_S_swap_lock _STLP_MUTEX_INITIALIZER;
 #  endif
 
 template <int __inst>
@@ -50,28 +50,28 @@ unsigned _STL_mutex_spin<__inst>::__max = _STL_mutex_spin<__inst>::__low_max;
 template <int __inst>
 unsigned _STL_mutex_spin<__inst>::__last = 0;
 
-# else /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
+# else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
-#  if defined (__STL_PTHREADS) || defined (__STL_UITHREADS)  || defined (__STL_OS2THREADS)
+#  if defined (_STLP_PTHREADS) || defined (_STLP_UITHREADS)  || defined (_STLP_OS2THREADS)
 __DECLARE_INSTANCE(_STL_STATIC_MUTEX, _Swap_lock_struct<0>::_S_swap_lock, 
-                   __STL_MUTEX_INITIALIZER  );
-#  endif /* __STL_PTHREADS */
+                   _STLP_MUTEX_INITIALIZER  );
+#  endif /* _STLP_PTHREADS */
 
 __DECLARE_INSTANCE(unsigned, _STL_mutex_spin<0>::__max,  =30);
 __DECLARE_INSTANCE(unsigned, _STL_mutex_spin<0>::__last, =0);
 
-# endif /* ( __STL_STATIC_TEMPLATE_DATA > 0 ) */
+# endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 template <int __inst>
-void __STL_CALL
+void _STLP_CALL
 _STL_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
-#     if defined(__STL_WIN32THREADS)
+#     if defined(_STLP_WIN32THREADS)
 	  if (__log_nsec <= 20) {
 	      Sleep(0);
 	  } else {
 	      Sleep(1 << (__log_nsec - 20));
 	  }
-#     elif defined (__STL_UNIX)
+#     elif defined (_STLP_UNIX)
           struct ::timespec __ts;
           /* Max sleep is 2**27nsec ~ 60msec      */
           __ts.tv_sec = 0;
@@ -82,10 +82,10 @@ _STL_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
 
 
 template <int __inst>
-void  __STL_CALL
+void  _STLP_CALL
 _STL_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock)
 {
-#if defined(__STL_ATOMIC_EXCHANGE)
+#if defined(_STLP_ATOMIC_EXCHANGE)
   if (_Atomic_swap(__lock, 1)) {
     unsigned __my_spin_max = _STL_mutex_spin<0>::__max;
     unsigned __my_last_spins = _STL_mutex_spin<0>::__last;
@@ -126,10 +126,10 @@ _STL_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock)
 # endif
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # endif /* BUILDING_STLPORT */
-#endif /*  __STL_THREADS_C */
+#endif /*  _STLP_THREADS_C */
 
 // Local Variables:
 // mode:C++

@@ -23,15 +23,15 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_SLIST_BASE_C
-#define __STL_SLIST_BASE_C
+#ifndef _STLP_SLIST_BASE_C
+#define _STLP_SLIST_BASE_C
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if defined (__STL_EXPOSE_GLOBALS_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 template <class _Dummy>
-_Slist_node_base*  __STL_CALL
+_Slist_node_base*  _STLP_CALL
 _Sl_global<_Dummy>::__previous(_Slist_node_base* __head,
 			       const _Slist_node_base* __node)
 {
@@ -41,7 +41,7 @@ _Sl_global<_Dummy>::__previous(_Slist_node_base* __head,
 }
 
 template <class _Dummy>
-void __STL_CALL
+void _STLP_CALL
 _Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos, _Slist_node_base* __head)
 {
   _Slist_node_base* __before_last = __previous(__head, 0);
@@ -54,7 +54,7 @@ _Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos, _Slist_node_base* __
 }
 
 template <class _Dummy>
-void __STL_CALL
+void _STLP_CALL
 _Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos,
 				   _Slist_node_base* __before_first,
 				   _Slist_node_base* __before_last)
@@ -69,7 +69,7 @@ _Sl_global<_Dummy>::__splice_after(_Slist_node_base* __pos,
 }
 
 template <class _Dummy>
-_Slist_node_base* __STL_CALL
+_Slist_node_base* _STLP_CALL
 _Sl_global<_Dummy>::__reverse(_Slist_node_base* __node)
 {
   _Slist_node_base* __result = __node;
@@ -85,7 +85,7 @@ _Sl_global<_Dummy>::__reverse(_Slist_node_base* __node)
 }
 
 template <class _Dummy> 
-size_t __STL_CALL
+size_t _STLP_CALL
 _Sl_global<_Dummy>::size(_Slist_node_base* __node)
 {
   size_t __result = 0;
@@ -94,11 +94,11 @@ _Sl_global<_Dummy>::size(_Slist_node_base* __node)
   return __result;
 }
 
-#endif /* defined (__BUILDING_STLPORT) || ! defined (__SGI_STL_OWN_IOSTREAMS) */
+#endif /* defined (__BUILDING_STLPORT) || ! defined (_STLP_OWN_IOSTREAMS) */
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-#endif /*  __STL_SLIST_BASE_C */
+#endif /*  _STLP_SLIST_BASE_C */
 
 // Local Variables:
 // mode:C++

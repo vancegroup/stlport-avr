@@ -15,29 +15,177 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef __STL_ISTREAM_C
-#define __STL_ISTREAM_C
+#ifndef _STLP_ISTREAM_C
+#define _STLP_ISTREAM_C
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-#ifndef __STLPORT_LIMITS_H
+#ifndef _STLP_LIMITS_H
 # include <stl/_limits.h>
 #endif
 
-// #include <cstddef> // for size_t
+#ifndef _STLP_INTERNAL_NUM_GET_H
+# include <stl/_num_get.h>
+#endif
 
-# if defined ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // no wchar_t is supported for this mode
 # define __BIS_int_type__ int
 # define __BIS_pos_type__ streampos
 # define __BIS_off_type__ streamoff
 # else
-# define __BIS_int_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::int_type
-# define __BIS_pos_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::pos_type
-# define __BIS_off_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::off_type
+# define __BIS_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::int_type
+# define __BIS_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::pos_type
+# define __BIS_off_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::off_type
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
+
+//----------------------------------------------------------------------
+// Function object structs used by some member functions.
+
+template <class _Traits>
+struct _Is_not_wspace {
+  typedef typename _Traits::char_type argument_type;
+  typedef bool                        result_type;
+
+  const ctype<argument_type>* _M_ctype;
+
+  _Is_not_wspace(const ctype<argument_type>* __c_type) : _M_ctype(__c_type) {}
+  bool operator()(argument_type __c) const
+    { return !_M_ctype->is(ctype_base::space, __c); }
+};
+
+template <class _Traits>
+struct _Is_wspace_null {
+  typedef typename _Traits::char_type argument_type;
+  typedef bool                        result_type;
+
+  const ctype<argument_type>* _M_ctype;
+
+  _Is_wspace_null(const ctype<argument_type>* __c_type) : _M_ctype(__c_type) {}
+  bool operator()(argument_type __c) const {
+    return _Traits::eq(__c, argument_type()) || 
+           _M_ctype->is(ctype_base::space, __c);
+  }
+};
+
+template <class _Traits>
+struct _Scan_for_wspace {
+  typedef typename _Traits::char_type  char_type;
+  typedef char_type*                   first_argument_type;
+  typedef char_type*                   second_argument_type;
+  typedef char_type*                   result_type;
+
+  const ctype<char_type>* _M_ctype;
+
+  _Scan_for_wspace(const ctype<char_type>* __ctype) : _M_ctype(__ctype) {}
+  const char_type*
+  operator()(const char_type* __first, const char_type* __last) const {
+    return _M_ctype->scan_is(ctype_base::space, __first, __last);
+  }
+};
+
+template <class _Traits>
+struct _Scan_wspace_null {
+  typedef typename _Traits::char_type  char_type;
+  typedef char_type*                   first_argument_type;
+  typedef char_type*                   second_argument_type;
+  typedef char_type*                   result_type;
+
+  const ctype<char_type>* _M_ctype;
+
+  _Scan_wspace_null(const ctype<char_type>* __c_type) : _M_ctype(__c_type) {}
+  const char_type*
+  operator()(const char_type* __first, const char_type* __last) const {
+    __last = find_if(__first, __last,
+                     _Eq_char_bound<_Traits>(char_type()));
+    return _M_ctype->scan_is(ctype_base::space, __first, __last);
+  }
+};
+
+template <class _Traits>
+struct _Scan_for_not_wspace {
+  typedef typename _Traits::char_type  char_type;
+  typedef char_type*                   first_argument_type;
+  typedef char_type*                   second_argument_type;
+  typedef char_type*                   result_type;
+
+  const ctype<char_type>* _M_ctype;
+
+  _Scan_for_not_wspace(const ctype<char_type>* __c_type) : _M_ctype(__c_type) {}
+  const char_type*
+  operator()(const char_type* __first, const char_type* __last) const {
+    return _M_ctype->scan_not(ctype_base::space, __first, __last);
+  }
+};
+
+template <class _Traits>
+struct _Scan_for_char_val
+{
+  typedef typename _Traits::char_type char_type;
+  typedef char_type*                  first_argument_type;
+  typedef char_type*                  second_argument_type;
+  typedef char_type*                  result_type;
+
+  char_type _M_val;
+
+  _Scan_for_char_val(char_type __value) : _M_val(__value) {}
+
+  const char_type*
+  operator()(const char_type* __first, const char_type* __last) const {
+    return find_if(__first, __last, bind2nd(_Eq_traits<_Traits>(), _M_val)); 
+  }
+};
+
+template <class _Traits>
+struct _Scan_for_int_val
+{
+  typedef typename _Traits::char_type char_type;
+  typedef typename _Traits::int_type  int_type;
+  typedef char_type*                  first_argument_type;
+  typedef char_type*                  second_argument_type;
+  typedef char_type*                  result_type;
+
+  int_type _M_val;
+
+  _Scan_for_int_val(int_type __value) : _M_val(__value) {}
+
+  const char_type*
+  operator()(const char_type* __first, const char_type* __last) const {
+    return find_if(__first, __last,
+                   _Eq_int_bound<_Traits>(_M_val));
+  }
+};
+
+// Helper function: try to push back a character to a streambuf, 
+// return true if the pushback succeeded.  Does not throw.
+
+template <class _CharT, class _Traits> 
+bool _STLP_CALL
+__pushback(basic_streambuf<_CharT, _Traits>* __buf, _CharT __c)
+{
+  bool ret;
+  _STLP_TRY {
+    const typename _Traits::int_type __eof = _Traits::eof();
+    ret = !_Traits::eq_int_type(__buf->sputbackc(__c), __eof);
+  }
+  _STLP_CATCH_ALL {
+    ret = false;
+  }
+  return ret;
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& _STLP_CALL
+ws(basic_istream<_CharT, _Traits>& __is)
+{
+  typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
+  _Sentry __sentry(__is, _No_Skip_WS()); // Don't skip whitespace.
+  if (__sentry)
+    __is._M_skip_whitespace(false);
+  return __is;
+}
 
 // Helper functions for istream<>::sentry constructor.
 template <class _CharT, class _Traits>
@@ -78,24 +226,24 @@ _M_init_noskip(basic_istream<_CharT, _Traits>& __is){
 
 // Helper function for formatted input of numbers.
 template <class _CharT, class _Traits, class _Number> 
-basic_istream<_CharT, _Traits>& __STL_CALL 
+ios_base::iostate _STLP_CALL 
 _M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val)
 {
   typedef typename basic_istream<_CharT, _Traits>::sentry _Sentry;
+  ios_base::iostate __err = 0;
   _Sentry __sentry( __that );     // Skip whitespace.
   if (__sentry) {
     typedef num_get<_CharT, istreambuf_iterator<_CharT, _Traits> > _Num_get;
-    ios_base::iostate __err = 0;
-    __STL_TRY {
+    _STLP_TRY {
       ((const _Num_get&)use_facet<_Num_get>(__that.getloc())).get(istreambuf_iterator<_CharT, _Traits>(__that.rdbuf()),
 					0, __that, __err, __val);
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       __that._M_handle_exception(ios_base::badbit);
     }
-    __that.setstate(__err);
+    if (__err) __that.setstate(__err);
   }
-  return __that;
+  return __err;
 }
 
 
@@ -111,10 +259,10 @@ basic_istream<_CharT, _Traits>::peek()
   sentry __sentry(*this, _No_Skip_WS());
 
   if (__sentry) {
-    __STL_TRY {
+    _STLP_TRY {
       __tmp = this->rdbuf()->sgetc();
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       this->_M_handle_exception(ios_base::badbit);
     }
     if (this->_S_eof(__tmp))
@@ -134,10 +282,10 @@ basic_istream<_CharT, _Traits>::get()
   this->_M_gcount = 0;
 
   if (__sentry) {
-    __STL_TRY {
+    _STLP_TRY {
       __tmp = this->rdbuf()->sbumpc();
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       this->_M_handle_exception(ios_base::badbit);
     }
 
@@ -160,10 +308,10 @@ basic_istream<_CharT, _Traits>::get(_CharT& __c)
 
   if (__sentry) {
     typename _Traits::int_type __tmp = _Traits::eof();
-    __STL_TRY {
+    _STLP_TRY {
       __tmp = this->rdbuf()->sbumpc();
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       this->_M_handle_exception(ios_base::badbit);
     }
 
@@ -193,10 +341,10 @@ basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::ignore()
 
   if (__sentry) {
     int_type __c;
-    __STL_TRY {
+    _STLP_TRY {
       __c = this->rdbuf()->sbumpc();
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       this->_M_handle_exception(ios_base::badbit);
       return *this;
     }
@@ -223,10 +371,10 @@ basic_istream<_CharT, _Traits>::putback(_CharT __c) {
     basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
 //    if (!__buf || this->_S_eof(__buf->sputbackc(__c)))
     if (__buf) {
-      __STL_TRY {
+      _STLP_TRY {
         __tmp = __buf->sputbackc(__c);
       }
-      __STL_CATCH_ALL {
+      _STLP_CATCH_ALL {
         this->_M_handle_exception(ios_base::badbit);
       }
     }
@@ -249,13 +397,13 @@ basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::unget() {
     basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
     //     if (!__buf || _Traits::eq_int_type(__buf->sungetc(), _Traits::eof()))
     if (__buf) {
-      __STL_TRY {
+      _STLP_TRY {
         _CharT __tmp;
         __tmp = __buf->sungetc();
         if (this->_S_eof(__tmp))
           this->setstate(ios_base::badbit);
       }
-      __STL_CATCH_ALL {
+      _STLP_CATCH_ALL {
         this->_M_handle_exception(ios_base::badbit);
       }
     } else
@@ -331,10 +479,10 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c)
   if (__sentry) {
     typename _Traits::int_type __tmp;
     
-    __STL_TRY {
+    _STLP_TRY {
       __tmp = this->rdbuf()->sbumpc();
     }
-    __STL_CATCH_ALL {
+    _STLP_CATCH_ALL {
       this->_M_handle_exception(ios_base::badbit);
       return;
     }
@@ -368,31 +516,20 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c)
 // delimiter if it is extracted.  Note that the number of characaters
 // extracted isn't necessarily the same as the number stored.
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
 template < class _CharT, class _Traits, class _Is_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __buf,
                        streamsize _Num, _CharT* __s,
                        _Is_Delim __is_delim,
                        bool __extract_delim, bool __append_null,
                        bool __is_getline)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Is_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-streamsize __STL_CALL 
-_M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, 
-					   _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-                       streamsize _Num, _CharT* __s,
-                       _Is_Delim __is_delim,
-                       bool __extract_delim, bool __append_null,
-                       bool __is_getline)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   // The operations that can potentially throw are sbumpc, snextc, and sgetc.
-  __STL_TRY {
+  _STLP_TRY {
     int_type __c = __buf->sgetc();
     while (true) {
       if (__that->_S_eof(__c)) {
@@ -420,14 +557,14 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that,
       __c = __buf->snextc();
     }
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
-    *__s = __STL_DEFAULT_CONSTRUCTED(_CharT);
+    *__s = _STLP_DEFAULT_CONSTRUCTED(_CharT);
     return __n;
   }
 
   if (__append_null)
-    *__s =  __STL_DEFAULT_CONSTRUCTED(_CharT);
+    *__s =  _STLP_DEFAULT_CONSTRUCTED(_CharT);
   if (__status)
     __that->setstate(__status);    // This might throw.
   return __n;
@@ -436,38 +573,28 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that,
 // Much like _M_read_unbuffered, but with one additional function object:
 // __scan_delim(first, last) returns the first pointer p in [first, last)
 // such that __is_delim(p) is true.  
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
+
 template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __buf,
                      streamsize _Num, _CharT* __s,
                      _Is_Delim __is_delim, _Scan_Delim __scan_delim,
                      bool __extract_delim, bool __append_null,
                      bool __is_getline)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-streamsize __STL_CALL 
-_M_read_buffered(basic_istream<_CharT, _Traits>* __that, 
-					 _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-                     streamsize _Num, _CharT* __s,
-                     _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-                     bool __extract_delim, bool __append_null,
-                     bool __is_getline)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   bool __done    = false;
 
 
-  __STL_TRY {
+  _STLP_TRY {
     while (__buf->_M_egptr() != __buf->_M_gptr() && !__done) {
       const _CharT* __first = __buf->_M_gptr();
       const _CharT* __last  = __buf->_M_egptr();
       ptrdiff_t __request = _Num - __n;
 
       const _CharT* __p  = __scan_delim(__first, __last);
-      ptrdiff_t __chunk = __STL_MIN (ptrdiff_t(__p - __first), __request);
+      ptrdiff_t __chunk = (min) (ptrdiff_t(__p - __first), __request);
       _Traits::copy(__s, __first, __chunk);
       __s += __chunk;
       __n += __chunk;
@@ -506,14 +633,14 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that,
       }
     } // Close the while loop.
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
     __done = true;
   }
 
   if (__done) {
     if (__append_null)
-        *__s =  __STL_DEFAULT_CONSTRUCTED(_CharT);
+        *__s =  _STLP_DEFAULT_CONSTRUCTED(_CharT);
     if (__status != 0)
       __that->setstate(__status);   // This might throw.
     return __n;
@@ -646,13 +773,13 @@ basic_istream<_CharT, _Traits>::readsome(char_type* __s, streamsize __nmax)
 
       if (__buf->gptr() != __buf->egptr()) 
         _M_gcount
-          = _M_read_buffered(this,  __buf, __STL_MIN (__avail, __nmax), __s,
+          = _M_read_buffered(this,  __buf, (min) (__avail, __nmax), __s,
                              _Constant_unary_fun<bool, int_type>(false),
                              _Project2nd<const _CharT*, const _CharT*>(),
                              false, false, false);
       else
         _M_gcount
-          = _M_read_unbuffered(this,  __buf, __STL_MIN (__avail, __nmax), __s,
+          = _M_read_unbuffered(this,  __buf, (min) (__avail, __nmax), __s,
                                _Constant_unary_fun<bool, int_type>(false),
                                false, false, false);
     }
@@ -700,27 +827,19 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s)
 // when we reach EOF, or when the function object __is_delim returns
 // true.  In the last case, it extracts the character for which
 // __is_delim is true, if and only if __extract_delim is true.
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
+
 template < class _CharT, class _Traits, class _Is_Delim>
-void __STL_CALL 
+void _STLP_CALL 
 _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that, 
 		     basic_streambuf<_CharT, _Traits>* __buf,
 		     _Is_Delim __is_delim,
 		     bool __extract_delim, bool __set_failbit)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Is_Delim, class _Buf>  		//*TY 02/25/2000 - added _Buf
-void __STL_CALL 
-_M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that, 
-		     _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-		     _Is_Delim __is_delim,
-		     bool __extract_delim, bool __set_failbit)
-#endif		//*TY 02/25/2000 - 
 {
   bool __done = false;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
 
-  __STL_TRY {
+  _STLP_TRY {
     while (!__done) {
       int_type __c = __buf->sbumpc();
 
@@ -738,7 +857,7 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
       }
     }
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
   }
 
@@ -749,26 +868,18 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
 // _M_ignore_unbuffered, but with one additional function object:
 // __scan_delim(first, last) returns the first pointer p in [first,
 // last) such that __is_delim(p) is true.
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
+
 template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim>
-void __STL_CALL 
+void _STLP_CALL 
 _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that, 
 		   basic_streambuf<_CharT, _Traits>* __buf,
 		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
 		   bool __extract_delim, bool __set_failbit)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-void __STL_CALL 
-_M_ignore_buffered(basic_istream<_CharT, _Traits>* __that, 
-		   _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-		   bool __extract_delim, bool __set_failbit)
-#endif		//*TY 02/25/2000 - 
 {
   bool __at_eof      = false;
   bool __found_delim = false;
 
-  __STL_TRY {
+  _STLP_TRY {
     while (__buf->_M_egptr() != __buf->_M_gptr() && !__at_eof && !__found_delim) {
       const _CharT* __p = __scan_delim(__buf->_M_gptr(), __buf->_M_egptr());
       __buf->_M_gbump((int)(__p - __buf->_M_gptr()));
@@ -783,7 +894,7 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
         __at_eof = __that->_S_eof(__buf->sgetc());
     }                              // Close the while loop.
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
     return;
   }
@@ -813,29 +924,20 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
 // We parameterize _M_ignore_buffered so that we can use it for both
 // bounded and unbounded input; for the former the function object should
 // be minus<>, and for the latter it should return a constant maximum value.
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
+
 template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
 		     basic_streambuf<_CharT, _Traits>* __buf,
 		     streamsize _Num, _Max_Chars __max_chars,
 		     _Is_Delim __is_delim,
 		     bool __extract_delim, bool __set_failbit)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-streamsize __STL_CALL 
-_M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
-		     _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-		     streamsize _Num, _Max_Chars __max_chars,
-		     _Is_Delim __is_delim,
-		     bool __extract_delim, bool __set_failbit)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   
-  __STL_TRY {
+  _STLP_TRY {
     while (__max_chars(_Num, __n) > 0) {
       int_type __c = __buf->sbumpc();
       
@@ -857,7 +959,7 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
       ++__n;
     }
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
   }
 
@@ -866,31 +968,20 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
   return __n;
 }
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
 template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim, class _Scan_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
 		   basic_streambuf<_CharT, _Traits>* __buf,
 		   streamsize _Num,
 		   _Max_Chars __max_chars,
 		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
 		   bool __extract_delim, bool __set_failbit)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim, class _Scan_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-streamsize __STL_CALL 
-_M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
-		   _Buf* __buf,		//*TY 02/25/2000 - simplified parameter type
-		   streamsize _Num,
-		   _Max_Chars __max_chars,
-		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-		   bool __extract_delim, bool __set_failbit)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __n = 0;
   bool __at_eof = false;
   bool __done   = false;
 
-  __STL_TRY {
+  _STLP_TRY {
     while (__buf->_M_egptr() != __buf->_M_gptr() && !__done) {
       ptrdiff_t __avail = __buf->_M_egptr() - __buf->_M_gptr();
       streamsize __m = __max_chars(_Num, __n);
@@ -933,7 +1024,7 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
       }
     } // Close the while loop.
   }
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
     return __n;
   }
@@ -1054,12 +1145,12 @@ void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit)
     this->setstate(ios_base::badbit);
   else if (__buf->gptr() != __buf->egptr())
     _M_ignore_buffered(this,  __buf,
-                       not1(_Is_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet())),
+                       _Is_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
                        _Scan_for_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
                        false, __set_failbit);
   else
     _M_ignore_unbuffered(this,  __buf,
-                         not1(_Is_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet())),
+                         _Is_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
                          false, __set_failbit);
 }
 
@@ -1071,28 +1162,19 @@ void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit)
 // We stop when we get an exception, when we fail to insert into the 
 // output streambuf, or when __is_delim is true.
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
 template < class _CharT, class _Traits, class _Is_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __src,
 		    basic_streambuf<_CharT, _Traits>* __dest,
 		    _Is_Delim __is_delim,
 		    bool __extract_delim, bool __rethrow)
-#else		//*TY 02/25/2000 - added workaround for MPW compilers
-template < class _CharT, class _Traits, class _Is_Delim, class _Buf> 		//*TY 02/25/2000 - added _Buf
-streamsize __STL_CALL 
-_M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that, 
-			_Buf* __src, _Buf* __dest,		//*TY 02/25/2000 - simplified parameter type
-		    _Is_Delim __is_delim,
-		    bool __extract_delim, bool __rethrow)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __extracted = 0;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   int_type __c;
 
-  __STL_TRY {
+  _STLP_TRY {
   
     while (true) {
   
@@ -1115,13 +1197,13 @@ _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that,
       
         // Try to put the character in the output streambuf.
         bool __failed = false;
-        __STL_TRY {
+        _STLP_TRY {
           if (!__that->_S_eof(__dest->sputc(__c)))
             ++__extracted;
           else
             __failed = true;
         }
-        __STL_CATCH_ALL {
+        _STLP_CATCH_ALL {
           __failed = true;
         }
         
@@ -1140,7 +1222,7 @@ _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that,
   }
   // fbp : this try/catch moved here in reasonable assumption
   // __is_delim never throw (__pushback is guaranteed not to)
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     // See 27.6.1.2.3, paragraph 13.
     if (__rethrow && __extracted == 0)
       __that->_M_handle_exception(ios_base::failbit);
@@ -1154,21 +1236,12 @@ _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that,
 // of the error conditions we checked in _M_copy_unbuffered, plus one more:
 // the streambuf might decide to switch from a buffered to an unbuffered mode.
 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 02/25/2000 - mpw compilers have difficulty matching complex template arguments
 template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim>
-streamsize __STL_CALL 
+streamsize _STLP_CALL 
 _M_copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __src,
                      basic_streambuf<_CharT, _Traits>* __dest,
                      _Scan_Delim __scan_delim, _Is_Delim __is_delim,
                      bool __extract_delim, bool __rethrow)
-#else
-template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim, class _Buf>
-streamsize __STL_CALL 
-_M_copy_buffered(basic_istream<_CharT, _Traits>* __that, 
-					 _Buf* __src, _Buf* __dest,
-                     _Scan_Delim __scan_delim, _Is_Delim __is_delim,
-                     bool __extract_delim, bool __rethrow)
-#endif		//*TY 02/25/2000 - 
 {
   streamsize __extracted = 0;
   ios_base::iostate __status = 0;
@@ -1179,7 +1252,7 @@ _M_copy_buffered(basic_istream<_CharT, _Traits>* __that,
   // fbp : introduced to move catch/try blocks out of the loop
   bool __do_handle_exceptions;
 
-  __STL_TRY {
+  _STLP_TRY {
     while (true) {
       __do_handle_exceptions = false ;
       const _CharT* __last = __scan_delim(__first, __src->_M_egptr());
@@ -1216,7 +1289,7 @@ _M_copy_buffered(basic_istream<_CharT, _Traits>* __that,
     } /* while */
   }
   
-  __STL_CATCH_ALL {
+  _STLP_CATCH_ALL {
     // See 27.6.1.2.3, paragraph 13.
     if (__rethrow && __do_handle_exceptions &&  __extracted == 0)
       __that->_M_handle_exception(ios_base::failbit);
@@ -1303,12 +1376,12 @@ template <class _CharT, class _Traits>
 basic_iostream<_CharT, _Traits>::~basic_iostream()
 {}
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef __BIS_int_type__
 # undef __BIS_pos_type__
 # undef __BIS_off_type__
 
-# endif /* defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) */
+# endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
 
-#endif /* __STL_ISTREAM_C */
+#endif /* _STLP_ISTREAM_C */

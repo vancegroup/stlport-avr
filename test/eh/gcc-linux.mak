@@ -1,6 +1,7 @@
 # ;;; -*- Mode:makefile;-*- 
 # Generated automatically from Makefile.in by configure.
 # This requires GNU make.
+SHELL=/bin/sh
 
 srcdir = .
 VPATH = .
@@ -66,10 +67,10 @@ $(NOSGI_TEST_EXE) : $(NOSGI_OBJECTS)
 
 
 $(TEST) : $(TEST_EXE)
-	$(TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(TEST_EXE) -s 100
 
 $(D_TEST) : $(D_TEST_EXE)
-	$(D_TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(D_TEST_EXE) -s 100
 
 $(NOSGI_TEST) : $(NOSGI_TEST_EXE)
 	$(NOSGI_TEST_EXE)

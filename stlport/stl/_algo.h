@@ -27,26 +27,26 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_ALGO_H
-#define __SGI_STL_INTERNAL_ALGO_H
+#ifndef _STLP_INTERNAL_ALGO_H
+#define _STLP_INTERNAL_ALGO_H
 
-# ifndef __SGI_STL_INTERNAL_ALGOBASE_H
+# ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_TEMPBUF_H
+# ifndef _STLP_INTERNAL_TEMPBUF_H
 #  include <stl/_tempbuf.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_HEAP_H
+# ifndef _STLP_INTERNAL_HEAP_H
 #  include <stl/_heap.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_ITERATOR_H
+# ifndef _STLP_INTERNAL_ITERATOR_H
 #  include <stl/_iterator.h>
 # endif
 
-# ifndef __SGI_STL_INTERNAL_FUNCTION_BASE_H
+# ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 # endif
 
@@ -55,11 +55,11 @@
 #  include <cstdio>
 # endif
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // for_each.  Apply a function to every element of a range.
 template <class _InputIter, class _Function>
-__STL_INLINE_LOOP _Function 
+_STLP_INLINE_LOOP _Function 
 for_each(_InputIter __first, _InputIter __last, _Function __f) {
   for ( ; __first != __last; ++__first)
     __f(*__first);
@@ -68,10 +68,10 @@ for_each(_InputIter __first, _InputIter __last, _Function __f) {
 
 // count_if
 template <class _InputIter, class _Predicate>
-__STL_INLINE_LOOP __STL_DIFFERENCE_TYPE(_InputIter)
+_STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_InputIter)
 count_if(_InputIter __first, _InputIter __last, _Predicate __pred) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-__STL_DIFFERENCE_TYPE(_InputIter) __n = 0;
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+_STLP_DIFFERENCE_TYPE(_InputIter) __n = 0;
   for ( ; __first != __last; ++__first)
     if (__pred(*__first))
       ++__n;
@@ -80,9 +80,9 @@ __STL_DIFFERENCE_TYPE(_InputIter) __n = 0;
 
 // adjacent_find.
 template <class _ForwardIter>
-__STL_INLINE_LOOP _ForwardIter 
+_STLP_INLINE_LOOP _ForwardIter 
 adjacent_find(_ForwardIter __first, _ForwardIter __last) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
     if (__first == __last)
       return __last;
   _ForwardIter __next = __first;
@@ -95,10 +95,10 @@ adjacent_find(_ForwardIter __first, _ForwardIter __last) {
 }
 
 template <class _ForwardIter, class _BinaryPredicate>
-__STL_INLINE_LOOP _ForwardIter 
+_STLP_INLINE_LOOP _ForwardIter 
 adjacent_find(_ForwardIter __first, _ForwardIter __last,
               _BinaryPredicate __binary_pred) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__first == __last)
     return __last;
   _ForwardIter __next = __first;
@@ -110,20 +110,20 @@ adjacent_find(_ForwardIter __first, _ForwardIter __last,
   return __last;
 }
 
-# ifndef __STL_NO_ANACHRONISMS
+# ifndef _STLP_NO_ANACHRONISMS
 template <class _InputIter, class _Tp, class _Size>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 count(_InputIter __first, _InputIter __last, const _Tp& __value, _Size& __n) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
     for ( ; __first != __last; ++__first)
       if (*__first == __value)
         ++__n;
 }
 
 template <class _InputIter, class _Predicate, class _Size>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 count_if(_InputIter __first, _InputIter __last, _Predicate __pred, _Size& __n) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (__pred(*__first))
       ++__n;
@@ -145,17 +145,17 @@ _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
 template <class _InputIter, class _ForwardIter>
 inline _InputIter find_first_of(_InputIter __first1, _InputIter __last1,
                                 _ForwardIter __first2, _ForwardIter __last2) {
-  __STL_DEBUG_CHECK(__check_range(__first1, __last1))
-  __STL_DEBUG_CHECK(__check_range(__first2, __last2))
-  return __find_first_of(__first1, __last1, __first2, __last2,__equal_to(__VALUE_TYPE(__first1, _InputIter)));
+  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
+  return __find_first_of(__first1, __last1, __first2, __last2,__equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
 }
 
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
 inline _InputIter 
 find_first_of(_InputIter __first1, _InputIter __last1,
               _ForwardIter __first2, _ForwardIter __last2,_BinaryPredicate __comp) {
-  __STL_DEBUG_CHECK(__check_range(__first1, __last1))
-  __STL_DEBUG_CHECK(__check_range(__first2, __last2))
+  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   return __find_first_of(__first1, __last1, __first2, __last2,__comp);
 }
 
@@ -166,28 +166,28 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 // swap_ranges
 template <class _ForwardIter1, class _ForwardIter2>
-__STL_INLINE_LOOP _ForwardIter2 
+_STLP_INLINE_LOOP _ForwardIter2 
 swap_ranges(_ForwardIter1 __first1, _ForwardIter1 __last1, _ForwardIter2 __first2) {
-  __STL_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2)
-    __iter_swap(__first1, __first2, __VALUE_TYPE(__first1, _ForwardIter1));
+    iter_swap(__first1, __first2);
   return __first2;
 }
 
 // transform
 template <class _InputIter, class _OutputIter, class _UnaryOperation>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 transform(_InputIter __first, _InputIter __last, _OutputIter __result, _UnaryOperation __opr) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first, ++__result)
     *__result = __opr(*__first);
   return __result;
 }
 template <class _InputIter1, class _InputIter2, class _OutputIter, class _BinaryOperation>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 transform(_InputIter1 __first1, _InputIter1 __last1, 
           _InputIter2 __first2, _OutputIter __result,_BinaryOperation __binary_op) {
-  __STL_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2, ++__result)
     *__result = __binary_op(*__first1, *__first2);
   return __result;
@@ -196,30 +196,30 @@ transform(_InputIter1 __first1, _InputIter1 __last1,
 // replace_if, replace_copy, replace_copy_if
 
 template <class _ForwardIter, class _Predicate, class _Tp>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 replace_if(_ForwardIter __first, _ForwardIter __last, _Predicate __pred, const _Tp& __new_value) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (__pred(*__first))
       *__first = __new_value;
 }
 
 template <class _InputIter, class _OutputIter, class _Tp>
-__STL_INLINE_LOOP  _OutputIter 
+_STLP_INLINE_LOOP  _OutputIter 
 replace_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
              const _Tp& __old_value, const _Tp& __new_value) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first, ++__result)
     *__result = *__first == __old_value ? __new_value : *__first;
   return __result;
 }
 
 template <class Iterator, class _OutputIter, class _Predicate, class _Tp>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 replace_copy_if(Iterator __first, Iterator __last,
                 _OutputIter __result,
                 _Predicate __pred, const _Tp& __new_value) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first, ++__result)
     *__result = __pred(*__first) ? __new_value : *__first;
   return __result;
@@ -228,15 +228,15 @@ replace_copy_if(Iterator __first, Iterator __last,
 // generate and generate_n
 
 template <class _ForwardIter, class _Generator>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 generate(_ForwardIter __first, _ForwardIter __last, _Generator __gen) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     *__first = __gen();
 }
 
 template <class _OutputIter, class _Size, class _Generator>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 generate_n(_OutputIter __first, _Size __n, _Generator __gen) {
   for ( ; __n > 0; --__n, ++__first)
     *__first = __gen();
@@ -246,9 +246,9 @@ generate_n(_OutputIter __first, _Size __n, _Generator __gen) {
 // remove, remove_if, remove_copy, remove_copy_if
 
 template <class _InputIter, class _OutputIter, class _Tp>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 remove_copy(_InputIter __first, _InputIter __last,_OutputIter __result, const _Tp& __value) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (!(*__first == __value)) {
       *__result = *__first;
@@ -258,9 +258,9 @@ remove_copy(_InputIter __first, _InputIter __last,_OutputIter __result, const _T
 }
 
 template <class _InputIter, class _OutputIter, class _Predicate>
-__STL_INLINE_LOOP _OutputIter 
+_STLP_INLINE_LOOP _OutputIter 
 remove_copy_if(_InputIter __first, _InputIter __last, _OutputIter __result, _Predicate __pred) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (!__pred(*__first)) {
       *__result = *__first;
@@ -270,9 +270,9 @@ remove_copy_if(_InputIter __first, _InputIter __last, _OutputIter __result, _Pre
 }
 
 template <class _ForwardIter, class _Tp>
-__STL_INLINE_LOOP _ForwardIter 
+_STLP_INLINE_LOOP _ForwardIter 
 remove(_ForwardIter __first, _ForwardIter __last, const _Tp& __value) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   __first = find(__first, __last, __value);
   if (__first == __last)
     return __first;
@@ -283,9 +283,9 @@ remove(_ForwardIter __first, _ForwardIter __last, const _Tp& __value) {
 }
 
 template <class _ForwardIter, class _Predicate>
-__STL_INLINE_LOOP _ForwardIter 
+_STLP_INLINE_LOOP _ForwardIter 
 remove_if(_ForwardIter __first, _ForwardIter __last, _Predicate __pred) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   __first = find_if(__first, __last, __pred);
   if ( __first == __last )
     return __first;
@@ -319,7 +319,7 @@ inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last,
 // reverse and reverse_copy, and their auxiliary functions
 
 template <class _BidirectionalIter>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 __reverse(_BidirectionalIter __first, _BidirectionalIter __last, bidirectional_iterator_tag) {
   while (true)
     if (__first == __last || __first == --__last)
@@ -330,7 +330,7 @@ __reverse(_BidirectionalIter __first, _BidirectionalIter __last, bidirectional_i
 
 
 template <class _RandomAccessIter>
-__STL_INLINE_LOOP void 
+_STLP_INLINE_LOOP void 
 __reverse(_RandomAccessIter __first, _RandomAccessIter __last, random_access_iterator_tag) {
   for (; __first < __last; ++__first) iter_swap(__first, --__last);
 }
@@ -338,16 +338,16 @@ __reverse(_RandomAccessIter __first, _RandomAccessIter __last, random_access_ite
 template <class _BidirectionalIter>
 inline void 
 reverse(_BidirectionalIter __first, _BidirectionalIter __last) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-  __reverse(__first, __last, __ITERATOR_CATEGORY(__first, _BidirectionalIter));
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  __reverse(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _BidirectionalIter));
 }
 
 template <class _BidirectionalIter, class _OutputIter>
-__STL_INLINE_LOOP
+_STLP_INLINE_LOOP
 _OutputIter reverse_copy(_BidirectionalIter __first,
                             _BidirectionalIter __last,
                             _OutputIter __result) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   while (__first != __last) {
     --__last;
     *__result = *__last;
@@ -359,7 +359,7 @@ _OutputIter reverse_copy(_BidirectionalIter __first,
 // rotate and rotate_copy, and their auxiliary functions
 
 template <class _EuclideanRingElement>
-__STL_INLINE_LOOP
+_STLP_INLINE_LOOP
 _EuclideanRingElement __gcd(_EuclideanRingElement __m,
                             _EuclideanRingElement __n)
 {
@@ -390,7 +390,7 @@ template <class _RandomAccessIter, class _RandomNumberGenerator>
 void random_shuffle(_RandomAccessIter __first, _RandomAccessIter __last,
                     _RandomNumberGenerator& __rand);
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 // random_sample and random_sample_n (extensions, not part of the standard).
 
 template <class _ForwardIter, class _OutputIter, class _Distance>
@@ -415,7 +415,7 @@ random_sample(_InputIter __first, _InputIter __last,
               _RandomAccessIter __out_first, _RandomAccessIter __out_last,
               _RandomNumberGenerator& __rand);
 
-# endif /* __STL_NO_EXTENSIONS */
+# endif /* _STLP_NO_EXTENSIONS */
 
 // partition, stable_partition, and their auxiliary functions
 
@@ -487,15 +487,15 @@ void nth_element(_RandomAccessIter __first, _RandomAccessIter __nth,
 template <class _ForwardIter, class _Tp>
 inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
                                    const _Tp& __val) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-  return __lower_bound(__first, __last, __val, less<_Tp>(), __DISTANCE_TYPE(__first, _ForwardIter));
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  return __lower_bound(__first, __last, __val, less<_Tp>(), _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
 inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val, _Compare __comp) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-  return __lower_bound(__first, __last, __val, __comp, __DISTANCE_TYPE(__first, _ForwardIter));
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  return __lower_bound(__first, __last, __val, __comp, _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
@@ -505,17 +505,17 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
 template <class _ForwardIter, class _Tp>
 inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __upper_bound(__first, __last, __val, less<_Tp>(), 
-                       __DISTANCE_TYPE(__first, _ForwardIter));
+                       _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
 inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val, _Compare __comp) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __upper_bound(__first, __last, __val, __comp,
-                       __DISTANCE_TYPE(__first, _ForwardIter));
+                       _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
@@ -526,25 +526,25 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
 template <class _ForwardIter, class _Tp>
 inline pair<_ForwardIter, _ForwardIter>
 equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __equal_range(__first, __last, __val,  less<_Tp>(),
-                       __DISTANCE_TYPE(__first, _ForwardIter));
+                       _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
 inline pair<_ForwardIter, _ForwardIter>
 equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
             _Compare __comp) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __equal_range(__first, __last, __val, __comp,
-                       __DISTANCE_TYPE(__first, _ForwardIter));
+                       _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 } 
 
 template <class _ForwardIter, class _Tp>
 inline bool binary_search(_ForwardIter __first, _ForwardIter __last,
                    const _Tp& __val) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-  _ForwardIter __i = __lower_bound(__first, __last, __val, less<_Tp>(), __DISTANCE_TYPE(__first, _ForwardIter));
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  _ForwardIter __i = __lower_bound(__first, __last, __val, less<_Tp>(), _STLP_DISTANCE_TYPE(__first, _ForwardIter));
   return __i != __last && !(__val < *__i);
 }
 
@@ -552,8 +552,8 @@ template <class _ForwardIter, class _Tp, class _Compare>
 inline bool binary_search(_ForwardIter __first, _ForwardIter __last,
                    const _Tp& __val,
                    _Compare __comp) {
-  __STL_DEBUG_CHECK(__check_range(__first, __last))
-  _ForwardIter __i = __lower_bound(__first, __last, __val, __comp, __DISTANCE_TYPE(__first, _ForwardIter));
+  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  _ForwardIter __i = __lower_bound(__first, __last, __val, __comp, _STLP_DISTANCE_TYPE(__first, _ForwardIter));
   return __i != __last && !__comp(__val, *__i);
 }
 
@@ -683,7 +683,7 @@ template <class _BidirectionalIter, class _Compare>
 bool prev_permutation(_BidirectionalIter __first, _BidirectionalIter __last,
                       _Compare __comp);
 
-# ifndef __STL_NO_EXTENSIONS
+# ifndef _STLP_NO_EXTENSIONS
 
 // is_heap, a predicate testing whether or not a range is
 // a heap.  This function is an extension, not part of the C++
@@ -706,7 +706,7 @@ bool __is_sorted(_ForwardIter __first, _ForwardIter __last,
 
 template <class _ForwardIter>
 inline bool is_sorted(_ForwardIter __first, _ForwardIter __last) {
-  return __is_sorted(__first, __last, __less(__VALUE_TYPE(__first, _ForwardIter)));
+  return __is_sorted(__first, __last, __less(_STLP_VALUE_TYPE(__first, _ForwardIter)));
 }
 
 template <class _ForwardIter, class _StrictWeakOrdering>
@@ -716,13 +716,13 @@ inline bool is_sorted(_ForwardIter __first, _ForwardIter __last,
 }
 # endif
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_algo.c>
 # endif
 
-#endif /* __SGI_STL_INTERNAL_ALGO_H */
+#endif /* _STLP_INTERNAL_ALGO_H */
 
 // Local Variables:
 // mode:C++

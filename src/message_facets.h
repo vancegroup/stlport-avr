@@ -26,7 +26,7 @@
 #include <hash_map>
 #include "c_locale.h"
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 // Forward declaration of an opaque type.
 struct _Catalog_locale_map;
@@ -65,8 +65,10 @@ public:
   virtual catalog     do_open(const string& __fn, const locale& __loc) const;
   virtual string do_get(catalog __c, int __set, int __msgid,
 			const string& __dfault) const;
+# ifndef _STLP_NO_WCHAR_T
   virtual wstring do_get(catalog __c, int __set, int __msgid,
                              const wstring& __dfault) const;
+# endif
   virtual void        do_close(catalog __c) const;
   virtual ~_Messages();
   bool _M_delete;
@@ -82,8 +84,10 @@ public:
   catalog     do_open(const string& __fn, const locale& __loc) const;
   string do_get(catalog __c, int __set, int __msgid,
 			const string& __dfault) const;
+# ifndef _STLP_NO_WCHAR_T
   wstring do_get(catalog __c, int __set, int __msgid,
-                             const wstring& __dfault) const;
+		 const wstring& __dfault) const;
+# endif
   void        do_close(catalog __c) const;
   
   ~_Messages_impl();
@@ -93,7 +97,6 @@ private:
   _Catalog_locale_map* _M_map;
 };
 
-
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 #endif

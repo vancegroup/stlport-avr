@@ -15,22 +15,22 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef __STL_FSTREAM_C
-#define __STL_FSTREAM_C
+#ifndef _STLP_FSTREAM_C
+#define _STLP_FSTREAM_C
 
-# if defined (__STL_EXPOSE_STREAM_IMPLEMENTATION)
+# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-__STL_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
-# if defined ( __STL_NESTED_TYPE_PARAM_BUG )
+# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // no wchar_t is supported for this mode
 # define __BF_int_type__ int
 # define __BF_pos_type__ streampos
 # define __BF_off_type__ streamoff
 # else
-# define __BF_int_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::int_type
-# define __BF_pos_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::pos_type
-# define __BF_off_type__ __STL_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::off_type
+# define __BF_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::int_type
+# define __BF_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::pos_type
+# define __BF_off_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::off_type
 # endif
 
 
@@ -65,7 +65,7 @@ basic_filebuf<_CharT, _Traits>::~basic_filebuf() {
 
 
 template <class _CharT, class _Traits>
-__STL_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::int_type 
+_STLP_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::int_type 
 basic_filebuf<_CharT, _Traits>::underflow() 
 {
   return _Underflow<_CharT, _Traits>::_M_doit(this);
@@ -648,7 +648,7 @@ basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __
     _M_int_buf_dynamic = false;
   }
   
-  size_t __ebufsiz = __STL_MAX(__n * __STL_MAX(_M_codecvt->encoding(), 1),
+  size_t __ebufsiz = (max)(__n * (max)(_M_codecvt->encoding(), 1),
                       streamsize(_M_codecvt->max_length()));
 
   _M_ext_buf = __STATIC_CAST(char*,malloc(__ebufsiz));
@@ -725,19 +725,19 @@ void basic_filebuf<_CharT, _Traits>::_M_setup_codecvt(const locale& __loc)
   _M_codecvt = &use_facet<_Codecvt>(__loc) ;
   int __encoding    = _M_codecvt->encoding();
 
-  _M_width          = __STL_MAX(__encoding, 1);
+  _M_width          = (max)(__encoding, 1);
   _M_max_width      = _M_codecvt->max_length();
   _M_constant_width = __encoding > 0;
   _M_always_noconv  = _M_codecvt->always_noconv();
 }
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
 # undef __BF_int_type__
 # undef __BF_pos_type__
 # undef __BF_off_type__
 
-# endif /* defined (__STL_EXPOSE_STREAM_IMPLEMENTATION) */
+# endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
 
-#endif /* __STL_FSTREAM_C */
+#endif /* _STLP_FSTREAM_C */
 

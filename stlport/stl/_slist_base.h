@@ -24,14 +24,14 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef __SGI_STL_INTERNAL_SLIST_BASE_H
-#define __SGI_STL_INTERNAL_SLIST_BASE_H
+#ifndef _STLP_INTERNAL_SLIST_BASE_H
+#define _STLP_INTERNAL_SLIST_BASE_H
 
-#ifndef __STLPORT_CSTDDEF
+#ifndef _STLP_CSTDDEF
 #include <cstddef>
 #endif
 
-__STL_BEGIN_NAMESPACE 
+_STLP_BEGIN_NAMESPACE 
 
 struct _Slist_node_base
 {
@@ -53,34 +53,34 @@ class _Sl_global {
 public:
   // those used to be global functions 
   // moved here to reduce code bloat without templatizing _Slist_iterator_base
-  static size_t __STL_CALL size(_Slist_node_base* __node);
-  static _Slist_node_base* __STL_CALL __reverse(_Slist_node_base* __node);
-  static void __STL_CALL __splice_after(_Slist_node_base* __pos,
+  static size_t _STLP_CALL size(_Slist_node_base* __node);
+  static _Slist_node_base* _STLP_CALL __reverse(_Slist_node_base* __node);
+  static void _STLP_CALL __splice_after(_Slist_node_base* __pos,
                                         _Slist_node_base* __before_first,
                                         _Slist_node_base* __before_last);
   
-  static void __STL_CALL __splice_after(_Slist_node_base* __pos, _Slist_node_base* __head);
+  static void _STLP_CALL __splice_after(_Slist_node_base* __pos, _Slist_node_base* __head);
 
-  static _Slist_node_base* __STL_CALL __previous(_Slist_node_base* __head,
+  static _Slist_node_base* _STLP_CALL __previous(_Slist_node_base* __head,
                                                  const _Slist_node_base* __node);
-  static const _Slist_node_base* __STL_CALL __previous(const _Slist_node_base* __head,
+  static const _Slist_node_base* _STLP_CALL __previous(const _Slist_node_base* __head,
 					    const _Slist_node_base* __node) {
     return _Sl_global<_Dummy>::__previous((_Slist_node_base*)__head, __node);
   }
 };
 
-# if defined (__STL_USE_TEMPLATE_EXPORT) 
-__STL_EXPORT_TEMPLATE_CLASS _Sl_global<bool>;
+# if defined (_STLP_USE_TEMPLATE_EXPORT) 
+_STLP_EXPORT_TEMPLATE_CLASS _Sl_global<bool>;
 # endif
 typedef _Sl_global<bool> _Sl_global_inst;
 
-__STL_END_NAMESPACE
+_STLP_END_NAMESPACE
 
-# if !defined (__STL_LINK_TIME_INSTANTIATION)
+# if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_slist_base.c>
 # endif
 
-#endif /* __SGI_STL_INTERNAL_SLIST_BASE_H */
+#endif /* _STLP_INTERNAL_SLIST_BASE_H */
 
 // Local Variables:
 // mode:C++

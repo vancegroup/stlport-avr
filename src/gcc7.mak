@@ -25,11 +25,11 @@ MKDIR=mkdir -p
 COMP=GCC7${ARCH}
 INSTALL_STEP = install_unix 
 
-all: all_dynamic all_static
+all: symbolic_links all_dynamic all_static
 
 include common_macros.mak
 
-WARNING_FLAGS= -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -D__STL_NO_TYPEINFO -D__STL_NO_EXCEPTIONS -frtti
+WARNING_FLAGS= -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -D_STLP_NO_TYPEINFO -D_STLP_NO_EXCEPTIONS -frtti
 
 CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 
@@ -39,8 +39,8 @@ CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fpic
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
 CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fpic
 
-CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D__STL_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D__STL_DEBUG -fpic
+CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fpic
 
 include common_percent_rules.mak
 include common_rules.mak

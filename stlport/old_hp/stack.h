@@ -23,50 +23,50 @@
  *
  */
 
-#ifndef __SGI_STL_STACK_H
-#define __SGI_STL_STACK_H
+#ifndef _STLP_STACK_H
+#define _STLP_STACK_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa027
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa027
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_VECTOR_H
+#ifndef _STLP_VECTOR_H
 #include <vector.h>
 #endif
 
-#ifndef __SGI_STL_DEQUE_H
+#ifndef _STLP_DEQUE_H
 #include <deque.h>
 #endif
 
-#ifndef __SGI_STL_HEAP_H
+#ifndef _STLP_HEAP_H
 #include <heap.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_STACK_H
+#ifndef _STLP_INTERNAL_STACK_H
 #include <stl/_stack.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_QUEUE_H
+#ifndef _STLP_INTERNAL_QUEUE_H
 #include <stl/_queue.h>
 #endif
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::stack;
-using __STLPORT_STD::queue;
-using __STLPORT_STD::priority_queue;
+using _STLP_STD::stack;
+using _STLP_STD::queue;
+using _STLP_STD::priority_queue;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa027)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa027)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_STACK_H */
+#endif /* _STLP_STACK_H */
 
 // Local Variables:
 // mode:C++

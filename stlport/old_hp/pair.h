@@ -23,47 +23,35 @@
  *
  */
 
-#ifndef __SGI_STL_PAIR_H
-#define __SGI_STL_PAIR_H
+#ifndef _STLP_PAIR_H
+#define _STLP_PAIR_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa020
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa020
 #  include <stl/_prolog.h>
 # endif
 
-#if defined  (__STL_DEBUG) || defined (__STL_ASSERTIONS) && !defined (__STLPORT_DEBUG_H)
-# include <stl/debug/_debug.h>
+#ifndef _STLP_INTERNAL_ALGOBASE_H
+#  include <stl/_algobase.h>
 #endif
 
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#include <stl/_relops.h>
-#endif
+#ifdef _STLP_USE_NAMESPACES
 
-#ifndef __TYPE_TRAITS_H
-# include <stl/type_traits.h>
-#endif
-
-#ifndef __SGI_STL_INTERNAL_PAIR_H
-#  include <stl/_pair.h>
-#endif
-
-#ifdef __STL_USE_NAMESPACES
-
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
-using __STLPORT_STD::pair;
-using __STLPORT_STD::make_pair;
+using _STLP_STD::pair;
+using _STLP_STD::make_pair;
 # endif
 
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa020)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa020)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_PAIR_H */
+#endif /* _STLP_PAIR_H */
 
 // Local Variables:
 // mode:C++

@@ -23,35 +23,35 @@
  *
  */
 
-#ifndef __SGI_STL_MULTISET_H
-#define __SGI_STL_MULTISET_H
+#ifndef _STLP_MULTISET_H
+#define _STLP_MULTISET_H
 
-# ifndef __STL_OUTERMOST_HEADER_ID
-#  define __STL_OUTERMOST_HEADER_ID 0xa017
+# ifndef _STLP_OUTERMOST_HEADER_ID
+#  define _STLP_OUTERMOST_HEADER_ID 0xa017
 #  include <stl/_prolog.h>
 # endif
 
-#ifndef __SGI_STL_TREE_H
+#ifndef _STLP_TREE_H
 # include <tree.h>
 #endif
 
 #include <stl/_set.h>
 
-#ifdef __STL_USE_NAMESPACES
-# ifdef __STL_BROKEN_USING_DIRECTIVE
+#ifdef _STLP_USE_NAMESPACES
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace STLPORT;
 # else
 using STLPORT::multiset;
 using STLPORT::__multiset__;
 # endif
-#endif /* __STL_USE_NAMESPACES */
+#endif /* _STLP_USE_NAMESPACES */
 
-# if (__STL_OUTERMOST_HEADER_ID == 0xa017)
+# if (_STLP_OUTERMOST_HEADER_ID == 0xa017)
 #  include <stl/_epilog.h>
-#  undef __STL_OUTERMOST_HEADER_ID
+#  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __SGI_STL_MULTISET_H */
+#endif /* _STLP_MULTISET_H */
 
 // Local Variables:
 // mode:C++
