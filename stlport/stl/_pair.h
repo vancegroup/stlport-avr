@@ -94,33 +94,29 @@ inline bool _STLP_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 
-#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && ! defined (_STLP_NO_EXTENSIONS) && ! defined (__BORLANDC__)
+#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && ! defined (_STLP_NO_EXTENSIONS) && ! defined (__BORLANDC__) && ! defined (__DMC__)
 template <class _T1, class _T2, int _Sz>
 inline pair<_T1, _T2 const*> make_pair(_T1 const& __x,
-                                       _T2 const (&__y)[_Sz])
-{
+                                       _T2 const (&__y)[_Sz]) {
   return pair<_T1, _T2 const*>(__x, static_cast<_T2 const*>(__y));
 }
 
 template <class _T1, class _T2, int _Sz>
 inline pair<_T1 const*, _T2> make_pair(_T1 const (&__x)[_Sz],
-                                       _T2 const& __y)
-{
+                                       _T2 const& __y) {
   return pair<_T1 const*, _T2>(static_cast<_T1 const*>(__x), __y);
 }
 
 template <class _T1, class _T2, int _Sz1, int _Sz2>
 inline pair<_T1 const*, _T2 const*> make_pair(_T1 const (&__x)[_Sz1],
-                                              _T2 const (&__y)[_Sz2])
-{
+                                              _T2 const (&__y)[_Sz2]) {
   return pair<_T1 const*, _T2 const*>(static_cast<_T1 const*>(__x),
                                       static_cast<_T2 const*>(__y));
 }
 #endif
 
 template <class _T1, class _T2>
-inline pair<_T1, _T2> _STLP_CALL make_pair(const _T1& __x, const _T2& __y)
-{
+inline pair<_T1, _T2> _STLP_CALL make_pair(_T1 __x, _T2 __y) {
   return pair<_T1, _T2>(__x, __y);
 }
 
