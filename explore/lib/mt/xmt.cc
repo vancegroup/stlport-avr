@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/25 18:19:17 ptr>
+// -*- C++ -*- Time-stamp: <99/03/12 13:41:28 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -248,7 +248,7 @@ void *Thread::_call( void *p )
   }
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
-//  Thread::exit( ret );
+  Thread::exit( ret );
 #endif
   return (void *)ret;
 }
