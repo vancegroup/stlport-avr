@@ -65,13 +65,13 @@ struct __true_type {};
 struct __false_type {};
 
 
-template <bool _Is> struct __bool2type {};
+template <int _Is> struct __bool2type {};
 
 _STLP_TEMPLATE_NULL
-struct __bool2type<true> { typedef __true_type _Ret; };
+struct __bool2type<1> { typedef __true_type _Ret; };
 
 _STLP_TEMPLATE_NULL
-struct __bool2type<false> { typedef __false_type _Ret; };
+struct __bool2type<0> { typedef __false_type _Ret; };
 
 // logical end of 3 predicated
 template <class _P1, class _P2, class _P3>
@@ -87,7 +87,11 @@ struct _Land3<__true_type, __true_type, __true_type> {
 
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
-template <bool _IsPOD> struct __type_traits_aux {
+template <int _IsPOD> struct __type_traits_aux {
+};
+
+_STLP_TEMPLATE_NULL
+struct __type_traits_aux<0> {
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
    typedef __false_type    has_trivial_assignment_operator;
@@ -96,7 +100,7 @@ template <bool _IsPOD> struct __type_traits_aux {
 };
 
 _STLP_TEMPLATE_NULL
-struct __type_traits_aux<true> { 
+struct __type_traits_aux<1> { 
    typedef __true_type    has_trivial_default_constructor;
    typedef __true_type    has_trivial_copy_constructor;
    typedef __true_type    has_trivial_assignment_operator;
@@ -212,38 +216,38 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> {
 //  have built-in __types_traits support, and essential for compilers
 //  that don't.
 #ifndef _STLP_NO_BOOL
-_STLP_TEMPLATE_NULL struct __type_traits<bool> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<bool> : __type_traits_aux<1> {};
 #endif /* _STLP_NO_BOOL */
-_STLP_TEMPLATE_NULL struct __type_traits<char> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<char> : __type_traits_aux<1> {};
 #ifndef _STLP_NO_SIGNED_BUILTINS
-_STLP_TEMPLATE_NULL struct __type_traits<signed char> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<signed char> : __type_traits_aux<1> {};
 # endif
-_STLP_TEMPLATE_NULL struct __type_traits<unsigned char> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned char> : __type_traits_aux<1> {};
 #if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
-_STLP_TEMPLATE_NULL struct __type_traits<wchar_t> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<wchar_t> : __type_traits_aux<1> {};
 #endif /* _STLP_HAS_WCHAR_T */
 
-_STLP_TEMPLATE_NULL struct __type_traits<short> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<unsigned short> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<int> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<unsigned int> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<long> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<unsigned long> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<short> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned short> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<int> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned int> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<long> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned long> : __type_traits_aux<1> {};
 
 #ifdef _STLP_LONG_LONG
-_STLP_TEMPLATE_NULL struct __type_traits<_STLP_LONG_LONG> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<unsigned _STLP_LONG_LONG> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<_STLP_LONG_LONG> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<unsigned _STLP_LONG_LONG> : __type_traits_aux<1> {};
 #endif /* _STLP_LONG_LONG */
 
-_STLP_TEMPLATE_NULL struct __type_traits<float> : __type_traits_aux<true> {};
-_STLP_TEMPLATE_NULL struct __type_traits<double> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<float> : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits<double> : __type_traits_aux<1> {};
 
 # if !defined ( _STLP_NO_LONG_DOUBLE )
-_STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<true> {};
+_STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<1> {};
 # endif
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<true> {};
+template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<1> {};
 #endif
 
 // The following could be written in terms of numeric_limits.  

@@ -49,7 +49,7 @@
 #  define _STLP_EXPORT_DECLSPEC __attribute__((dllexport))
 #  define _STLP_CLASS_IMPORT_DECLSPEC __attribute__((dllimport))
 #  define _STLP_CLASS_EXPORT_DECLSPEC __attribute__((dllexport))
-#  define _STLP_CALL __cdecl 
+#  define _STLP_CALL
 
 #  if defined (_STLP_USE_DYNAMIC_LIB)
 #   define _STLP_USE_DECLSPEC 1
