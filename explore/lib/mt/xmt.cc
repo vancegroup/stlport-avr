@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/05/21 13:23:00 ptr>
+// -*- C++ -*- Time-stamp: <99/05/25 21:20:54 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -25,14 +25,18 @@ extern "C" {
 #endif
 }
 
+#ifdef WIN32
+extern "C" int APIENTRY
+DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
+{
+  return TRUE;   // ok
+}
+#endif
+
 namespace __impl {
 
 using std::cerr;
 using std::endl;
-
-#ifdef WIN32
-__declspec( dllexport ) int __thr_key = TlsAlloc();
-#endif
 
 char *Init_buf[32];
 int Thread::Init::_count = 0;
