@@ -1,8 +1,31 @@
-// -*- C++ -*- Time-stamp: <99/09/10 15:34:03 ptr>
+// -*- C++ -*- Time-stamp: <99/09/22 09:59:47 ptr>
+
+/*
+ *
+ * Copyright (c) 1997-1999
+ * Petr Ovchenkov
+ *
+ * Copyright (c) 1999
+ * ParallelGraphics Software Systems
+ 
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use, copy, modify, distribute and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appear in all copies and
+ * that both that copyright notice and this permission notice appear
+ * in supporting documentation.
+ */
+
 #ifndef __XMT_H
 #define __XMT_H
 
 #ident "$SunId$ %Q%"
+
+#ifndef __config_feature_h
+#include <config/feature.h>
+#endif
 
 #include <stl_config.h>
 #include <cstddef>
