@@ -228,8 +228,8 @@ public:
 
   vector(const _Self& __x) 
     : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
-    this->_M_finish = __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start),
-											                     __CONST_CAST(const_pointer, __x._M_finish), 
+    this->_M_finish = __uninitialized_copy(__CONST_CAST(const_iterator, __x._M_start), 
+                                           __CONST_CAST(const_iterator, __x._M_finish), 
                                            this->_M_start, _IsPODType());
   }
 
@@ -248,7 +248,7 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
-  void _M_initialize_aux(_Integer __n, _Integer __val, const __true_type&) {
+  void _M_initialize_aux(_Integer __n, _Integer __val, const __true_type& /*_IsIntegral*/) {
     this->_M_start = this->_M_end_of_storage.allocate(__n);
     this->_M_end_of_storage._M_data = this->_M_start + __n; 
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val);
@@ -256,7 +256,7 @@ public:
 
   template <class _InputIterator>
   void _M_initialize_aux(_InputIterator __first, _InputIterator __last,
-                         const __false_type&) {
+                         const __false_type& /*_IsIntegral*/) {
     _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 
@@ -591,6 +591,10 @@ protected:
   
 #endif /* _STLP_MEMBER_TEMPLATES */
 };
+
+# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#  include <stl/pointers/_vector.h>
+# endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 # define _STLP_TEMPLATE_CONTAINER vector<_Tp, _Alloc>
 # define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
