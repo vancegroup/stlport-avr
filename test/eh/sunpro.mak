@@ -60,9 +60,9 @@ SUFFIXES: .cpp.o.out.res
 
 %.out: %.cpp
 	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -o $*
-	./$* -q
-	-rm -f $*
+	$(CXX) $(CXXFLAGS) $*.o $(LIBS) ${LIBSTLPORT} -o $*
+	LD_LIBRARY_PATH="../../lib;${LD_LIBRARY_PATH}" ./$* 
+
 
 %.s: %.cpp
 	$(CXX) $(CXXFLAGS) -O4 -S -pto $<  -o $@

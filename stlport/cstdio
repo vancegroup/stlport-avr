@@ -107,7 +107,7 @@ using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
 #   if (defined (__MWERKS__) || defined (_STLP_MSVC) || defined (__ICL) || \
-( defined (__BORLANDC__) && __BORLANDC__ > 0x530)
+( defined (__BORLANDC__) && __BORLANDC__ > 0x530))
 using _STLP_VENDOR_CSTD::vsnprintf;
 #   endif
 #  endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */
