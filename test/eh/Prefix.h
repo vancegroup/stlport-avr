@@ -158,8 +158,8 @@ public:
   void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
 
   #if defined(__MRC__)||defined(__SC__)		//*ty 03/24/2001 - move these operators into class scope to prevent confusion under MPW
-  template <class _T2> bool operator==(const EH_allocator<_T2>&)  { return true; }
-  template <class _T2> bool operator!=(const EH_allocator<_T2>&)  { return false; }
+  template <class _T2> bool operator==(const EH_allocator<_T2>&) const { return true; }
+  template <class _T2> bool operator!=(const EH_allocator<_T2>&) const { return false; }
   #endif
 };
 
