@@ -20,7 +20,8 @@
 #  define _STLP_DONT_POP_0x244
 # endif
 
-# if ! defined (exception) && (! defined (__KCC) || (__KCC_VERSION < 4000))
+# if ! defined (exception) && (! defined (__KCC) || (__KCC_VERSION < 4000)) && \
+   ! (defined(IBMCPP) && (500 <= __IBMCPP__))
 #  define __EXCEPTION_WAS_REDEFINED 1
 #  define exception __math_exception
 # endif

@@ -1,7 +1,7 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-#if !defined(__IBMCPP__) || (__IBMCPP__ != 500)
+#if !defined(__IBMCPP__) || (__IBMCPP__ < 500)
 # define _STLP_HAS_NO_NEW_C_HEADERS 1
 #endif
 
@@ -122,7 +122,7 @@
 #endif /* xlC 5 */
 
 /* detect xlC5 by: */
-# if  ( defined (__IBMCPP__) && (__IBMCPP__ == 500) )  
+#if defined(IBMCPP) && (500 <= __IBMCPP__) && (__IBMCPP__ < 600)
 #define _STLP_USE_EXCEPTIONS 1
 #define _STLP_STATIC_CONST_INIT_BUG 1 
 //#pragma report(disable,CPPC1500029)

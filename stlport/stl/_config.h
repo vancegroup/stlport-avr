@@ -700,7 +700,11 @@ namespace stlport = _STLP_STD;
 # endif
 
 #if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
-# if (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC) || defined (__xlC__)
+# if (defined(__IBMCPP__) && (500 <= __IBMCPP__) && (__IBMCPP__ < 600) )
+# define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
+   typedef typename _STLP_STD :: reverse_iterator<const_iterator> const_reverse_iterator; \
+   typedef typename _STLP_STD :: reverse_iterator<iterator> reverse_iterator
+# elif (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC) || defined (__xlC__)
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<const_iterator> const_reverse_iterator; \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<iterator> reverse_iterator

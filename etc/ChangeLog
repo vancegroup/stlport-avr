@@ -62,6 +62,9 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	* _alloc.c : added CHECK_NULL_ALLOC for _STLP_CHUNK_ALLOC with malloc, to throw exception if malloc returns 0 (thanks ghunt)
 
 	* stl_bc.h, <exception> : fixed Borland C++ import of unexpected handler stuff
+
+	* stl_ibm.h, etc. : fixes for IBM VisualAge 5.02 to compile
+
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 

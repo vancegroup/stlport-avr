@@ -81,7 +81,7 @@ using _STLP_VENDOR_CSTD::fsetpos;
 using _STLP_VENDOR_CSTD::ftell;
 using _STLP_VENDOR_CSTD::fwrite;
 
-#   if  ( !( defined (__IBMCPP__) && (__IBMCPP__ == 500) )  )
+#   if  ( !( defined (__IBMCPP__) && (__IBMCPP__ >= 500) )  )
  using _STLP_VENDOR_CSTD::getc;
  using _STLP_VENDOR_CSTD::getchar;
  using _STLP_VENDOR_CSTD::putc;

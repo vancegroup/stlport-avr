@@ -194,14 +194,14 @@ _STLP_BEGIN_NAMESPACE
 
 # if defined (_AIX)
 // Some OS'es only provide non-reentrant primitives, so we have to use additional synchronization here
-#  ifdef _REENTRANT 
-static  _STL_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
-#   define LOCK_CVT _STL_lock lock(__put_float_mutex);
-#   define RETURN_CVT (ecvt, x, n, pt, sign, buf) strcpy(buf, ecvt(x, n, pt, sign)); return buf;   
-#  else
-#   define LOCK_CVT
-#   define RETURN_CVT (ecvt, x, n, pt, sign, buf) return ecvt(x, n, pt, sign);
-#  endif
+# ifdef _REENTRANT
+static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
+# define LOCK_CVT _STLP_auto_lock lock(__put_float_mutex);
+# define RETURN_CVT(ecvt, x, n, pt, sign, buf) strcpy(buf, ecvt(x, n, pt, sign)); return buf;
+# else
+# define LOCK_CVT
+# define RETURN_CVT(ecvt, x, n, pt, sign, buf) return ecvt(x, n, pt, sign);
+# endif
 # endif
 
 // Tests for infinity and NaN differ on different OSs.  We encapsulate
