@@ -224,7 +224,7 @@ Thread::~Thread()
   ((Init *)Init_buf)->~Init();
 
 #ifdef WIN32
-  __STL_ASSERT( _id == bad_thread_key );
+  _STLP_ASSERT( _id == bad_thread_key );
 #else
   // __stl_assert( _id == -1 );
   kill( SIGTERM );
@@ -453,7 +453,7 @@ void Thread::gettime( timespec *t )
 #ifdef __GNUC__
 void Thread::_create( const void *p, size_t psz )
 #else
-void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
+void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
 #endif
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer

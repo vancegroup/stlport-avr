@@ -133,7 +133,7 @@ extern "C" unsigned long __stdcall _xcall( void *p ); // forward declaration
 #ifdef __GNUC__
   // using std::runtime_error;
 #else
-using __STD::runtime_error;
+using std::runtime_error;
 #endif
 
 class Mutex
@@ -574,7 +574,7 @@ class Thread
 #ifdef __GNUC__
     void _create( const void *p, size_t psz );
 #else
-    void _create( const void *p, size_t psz ) throw( __STD::runtime_error);
+    void _create( const void *p, size_t psz ) throw( std::runtime_error);
 #endif
     static void *_call( void *p );
 
