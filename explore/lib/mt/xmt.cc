@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/03/26 16:58:33 ptr>
+// -*- C++ -*- Time-stamp: <01/05/30 18:59:25 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -24,6 +24,10 @@
 #pragma ident "@(#)$Id$"
 #  endif
 #endif
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <xmt.h>
 
@@ -72,6 +76,77 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 }
 #  endif
 #endif
+
+int Init_count = 0;
+
+#ifdef WIN32
+unsigned long _mt_key = __STATIC_CAST(unsigned long,-1);
+#else
+__impl::Thread::thread_key_type _mt_key = __STATIC_CAST(__impl::Thread::thread_key_type,-1);
+#endif
+
+/* Sorry, here should be static mutex initialization */
+
+#ifdef _PTHREADS
+pthread_mutex_t _F_lock = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
+#ifdef __FIT_UITHREADS
+mutex_t _F_lock = DEFAULTMUTEX;
+#endif
+
+#ifdef __FIT_WIN32THREADS
+CRITICAL_SECTION _F_lock = ???;
+#endif
+
+extern "C" void __at_fork_prepare()
+{
+#ifdef _PTHREADS
+  pthread_mutex_lock( &_F_lock );
+#endif
+
+#ifdef __FIT_UITHREADS
+#  error "Unimplemented"
+#endif
+
+#ifdef __FIT_WIN32THREADS
+#endif
+}
+
+extern "C" void __at_fork_parent()
+{
+#ifdef _PTHREADS
+  pthread_mutex_unlock( &_F_lock );
+#endif
+
+#ifdef __FIT_UITHREADS
+#  error "Unimplemented"
+#endif
+
+#ifdef __FIT_WIN32THREADS
+#endif
+}
+
+extern "C" void __at_fork_child()
+{
+#ifdef _PTHREADS
+  if ( Init_count > 0 ) {
+     // otherwise we do it in Thread::Init::Init() below
+    pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
+    pthread_key_create( &::_mt_key, 0 );
+    // Only calling thread inherited when we use POSIX:
+    Init_count = 1;
+  }
+  pthread_mutex_unlock( &_F_lock );
+#endif
+
+#ifdef __FIT_UITHREADS
+#  error "Unimplemented"
+#endif
+
+#ifdef __FIT_WIN32THREADS
+#endif
+}
 
 namespace __impl {
 
@@ -133,9 +208,11 @@ int Condition::wait_time( const timespec *abstime )
 }
 
 char *Init_buf[32];
-int Thread::Init::_count = 0;
+// int Thread::Init::_count = 0;
+int& Thread::Init::_count( ::Init_count );
 
 const std::string msg1( "Can't create thread" );
+const std::string msg2( "Can't fork" );
 
 __PG_DECLSPEC
 void signal_throw( int sig ) throw( int )
@@ -143,21 +220,39 @@ void signal_throw( int sig ) throw( int )
 
 Thread::Init::Init()
 {
+  // This is performance problem, let's consider replace to atomic lock...
+#ifdef _PTHREADS
+  pthread_mutex_lock( &_F_lock );
+#endif
+
   if ( _count++ == 0 ) {
 #ifdef __FIT_UITHREADS
     thr_keycreate( &_mt_key, 0 );
 #endif
 #ifdef _PTHREADS
+    if ( pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child ) ) {
+      pthread_mutex_unlock( &_F_lock );
+      throw std::runtime_error( "Problems with pthread_atfork" );
+    }
     pthread_key_create( &_mt_key, 0 );
 #endif
 #ifdef __FIT_WIN32THREADS
     _mt_key = TlsAlloc();
 #endif
   }
+
+#ifdef _PTHREADS
+  pthread_mutex_unlock( &_F_lock );
+#endif
 }
 
 Thread::Init::~Init()
 {
+  // This is performance problem, let's consider replace to atomic lock...
+#ifdef _PTHREADS
+  pthread_mutex_lock( &_F_lock );
+#endif
+
   if ( --_count == 0 ) {
 #ifdef __FIT_WIN32THREADS
     TlsFree( _mt_key );
@@ -166,6 +261,10 @@ Thread::Init::~Init()
     pthread_key_delete( _mt_key );
 #endif
   }
+
+#ifdef _PTHREADS
+  pthread_mutex_unlock( &_F_lock );
+#endif
 }
 
 Thread::alloc_type Thread::alloc;
@@ -173,10 +272,12 @@ int Thread::_idx = 0;
 
 #ifdef WIN32
 const Thread::thread_key_type Thread::bad_thread_key = INVALID_HANDLE_VALUE;
-unsigned long Thread::_mt_key = __STATIC_CAST(unsigned long,-1);
+// unsigned long Thread::_mt_key = __STATIC_CAST(unsigned long,-1);
+unsigned long& Thread::_mt_key( ::_mt_key );
 #else
 const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thread_key_type,-1);
-Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
+// Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
+Thread::thread_key_type& Thread::_mt_key( ::_mt_key );
 #endif
 
 __PG_DECLSPEC
@@ -450,11 +551,47 @@ void Thread::gettime( timespec *t )
 #endif
 }
 
-#ifdef __GNUC__
-void Thread::_create( const void *p, size_t psz )
-#else
+__PG_DECLSPEC
+void Thread::fork() throw( fork_in_parent, std::runtime_error )
+{
+  fork_in_parent f( ::fork() );
+  if ( f.pid() > 0 ) {
+    throw f;
+  }
+  if ( f.pid() == -1 ) {
+    throw std::runtime_error( msg2 );
+  }
+}
+
+__PG_DECLSPEC
+void Thread::become_daemon() throw( fork_in_parent, std::runtime_error )
+{
+  try {
+    Thread::fork();
+
+    // chdir( "/var/tmp" );
+    ::setsid();   // become session leader
+    ::close( 0 ); // close stdin
+    ::close( 1 ); // close stdout
+    ::close( 2 ); // close stderr
+    // This is broken in some versions of glibc (Linux):
+    ::open( "/dev/null", O_RDONLY, 0 ); // redirect stdin from /dev/null
+    ::open( "/dev/null", O_WRONLY, 0 ); // redirect stdout to /dev/null
+    ::open( "/dev/null", O_WRONLY, 0 ); // redirect stderr to /dev/null
+  }
+  catch ( fork_in_parent& ) {
+    throw;
+  }
+  catch ( std::runtime_error& ) {
+    throw;
+  }
+}
+
+// #ifdef __GNUC__
+// void Thread::_create( const void *p, size_t psz )
+// #else
 void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
-#endif
+// #endif
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer
     // Hey, deallocation SHOULD be either in this method, or in _call ONLY,
