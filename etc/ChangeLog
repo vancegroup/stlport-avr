@@ -1,6 +1,12 @@
+2004-05-08  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_set.h: fix definition of const/non-const for find and *_bound
+	methods. Thanks KL for report.
+
 2004-05-07  Petr Ovtchenkov  <ptr@Island...>
 
-	* stlport/stl/_set.h: fix definition of const/non-const iterators. Thanks Ilya Chvetsov for report.
+	* stlport/stl/_set.h: fix definition of const/non-const iterators.
+	Thanks Ilya Chvetsov for report.
 
 	* test/unit/set_test.cpp: test that detect bug above.
 
@@ -17,10 +23,11 @@
 
 2004-04-26  Petr Ovtchenkov  <ptr@Island...>
 
-	* stlport/stl/_istream.h: don't change value while input error happens. Thanks Nix.
+	* stlport/stl/_istream.h: don't change value while input error happens.
+	Thanks Nix.
 
-	* test/unit/sstream_test.cpp, test/unit/fstream_test.cpp: added test for error flags and unchanged
-	value when input error occur.
+	* test/unit/sstream_test.cpp, test/unit/fstream_test.cpp: added test for error
+	flags and unchanged value when input error occur.
 
 2004-04-23  Petr Ovtchenkov  <ptr@Island...>
 
