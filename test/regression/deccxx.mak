@@ -45,7 +45,7 @@ OBJ_LIST  = stl_test.o accum1.o accum2.o \
 	iota1.o \
 	istmit1.o \
 	iter1.o iter2.o iter3.o iter4.o \
-	iterswp0.o iterswp1.o \
+	iterswp.o \
 	less.o \
 	lesseq.o \
 	lexcmp1.o lexcmp2.o \
@@ -56,6 +56,7 @@ OBJ_LIST  = stl_test.o accum1.o accum2.o \
 	map1.o \
 	max1.o max2.o \
 	maxelem1.o maxelem2.o \
+	memfunptr.o \
 	merge0.o merge1.o merge2.o \
 	min1.o min2.o \
 	minelem1.o minelem2.o \
@@ -113,7 +114,8 @@ OBJ_LIST  = stl_test.o accum1.o accum2.o \
 	unique1.o unique2.o \
 	uprbnd1.o uprbnd2.o \
 	vec1.o vec2.o vec3.o vec4.o vec5.o vec6.o vec7.o vec8.o \
-        hmap1.o hmmap1.o hset2.o hmset1.o string1.o bitset1.o slist1.o
+  hmap1.o hmmap1.o hset2.o hmset1.o string1.o bitset1.o slist1.o \
+  move_constructor.o
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -151,7 +153,7 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	iota1.cpp \
 	istmit1.cpp \
 	iter1.cpp iter2.cpp iter3.cpp iter4.cpp \
-	iterswp0.cpp iterswp1.cpp \
+	iterswp.cpp \
 	less.cpp \
 	lesseq.cpp \
 	lexcmp1.cpp lexcmp2.cpp \
@@ -219,7 +221,8 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	unique1.cpp unique2.cpp \
 	uprbnd1.cpp uprbnd2.cpp \
 	vec1.cpp vec2.cpp vec3.cpp vec4.cpp vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
-        hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp string1.cpp bitset1.cpp
+  hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp string1.cpp bitset1.cpp \
+  move_constructor.cpp
 
 OBJECTS = $(OBJ_LIST)
 EXECS = $(LIST:%.cpp=%.exe)

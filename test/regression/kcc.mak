@@ -45,7 +45,7 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	iota1.cpp \
 	istmit1.cpp \
 	iter1.cpp iter2.cpp iter3.cpp iter4.cpp \
-	iterswp0.cpp iterswp1.cpp \
+	iterswp.cpp \
 	less.cpp \
 	lesseq.cpp \
 	lexcmp1.cpp lexcmp2.cpp \
@@ -56,6 +56,7 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	map1.cpp \
 	max1.cpp max2.cpp \
 	maxelem1.cpp maxelem2.cpp \
+	memfunptr.cpp \
 	merge0.cpp merge1.cpp merge2.cpp \
 	min1.cpp min2.cpp \
 	minelem1.cpp minelem2.cpp \
@@ -113,7 +114,8 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	unique1.cpp unique2.cpp \
 	uprbnd1.cpp uprbnd2.cpp \
 	vec1.cpp vec2.cpp vec3.cpp vec4.cpp vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
-        hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp slist1.cpp string1.cpp bitset1.cpp
+  hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp slist1.cpp string1.cpp bitset1.cpp \
+  move_constructor.cpp
 
 # STAT_MODULE=stat.o
 OBJECTS = $(LIST:%.cpp=%.o) $(STAT_MODULE)

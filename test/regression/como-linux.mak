@@ -47,7 +47,7 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	iota1.cpp \
 	istmit1.cpp \
 	iter1.cpp iter2.cpp iter3.cpp iter4.cpp \
-	iterswp0.cpp iterswp1.cpp \
+	iterswp.cpp \
 	less.cpp \
 	lesseq.cpp \
 	lexcmp1.cpp lexcmp2.cpp \

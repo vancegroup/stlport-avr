@@ -165,8 +165,9 @@ Dep_osdexe = \
    minus.obj\
    minelem2.obj\
    ostmit.obj\
-   iterswp1.obj\
+   iterswp.obj\
    min1.obj\
+   memfunptr.obj \
    merge2.obj\
    merge1.obj\
    merge0.obj\
@@ -206,7 +207,6 @@ Dep_osdexe = \
    incl2.obj\
    incl1.obj\
    incl0.obj\
-   iterswp0.obj\
    eqlrnge2.obj\
    genern2.obj\
    genern1.obj\
@@ -271,6 +271,7 @@ Dep_osdexe = \
    accum2.obj\
    binsert2.obj\
    hmap1.obj hmmap1.obj hset2.obj hmset1.obj \
+   move_constructor.obj \
    os.def
 
 stl_test.exe : $(Dep_osdexe)
@@ -401,7 +402,6 @@ mismtch0.obj+
 minus.obj+
 minelem2.obj+
 ostmit.obj+
-iterswp1.obj+
 min1.obj+
 merge2.obj+
 merge1.obj+
@@ -411,6 +411,7 @@ maxelem1.obj+
 max2.obj+
 max1.obj+
 map1.obj+
+memfunptr.obj+
 lwrbnd2.obj+
 lwrbnd1.obj+
 logicor.obj+
@@ -442,7 +443,7 @@ inplmrg1.obj+
 incl2.obj+
 incl1.obj+
 incl0.obj+
-iterswp0.obj+
+iterswp.obj+
 eqlrnge2.obj+
 genern2.obj+
 genern1.obj+
@@ -509,7 +510,8 @@ hmap1.obj+
 hmmap1.obj+
 hset2.obj+
 hmset1.obj+
-binsert2.obj
+binsert2.obj +
+move_constructor.obj
 $<,$*
 ${BCROOT}\LIB\import32.lib+
 ${BCROOT}\LIB\cw32i.lib
@@ -1162,9 +1164,9 @@ ostmit.obj :  ostmit.cpp
  $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ ostmit.cpp
 |
 
-iterswp1.obj :  iterswp1.cpp
+iterswp.obj :  iterswp.cpp
   $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ iterswp1.cpp
+ $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ iterswp.cpp
 |
 
 min1.obj :  min1.cpp
@@ -1365,11 +1367,6 @@ incl1.obj :  incl1.cpp
 incl0.obj :  incl0.cpp
   $(BCC32) -c @&&|
  $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ incl0.cpp
-|
-
-iterswp0.obj :  iterswp0.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ iterswp0.cpp
 |
 
 eqlrnge2.obj :  eqlrnge2.cpp
@@ -1690,6 +1687,16 @@ binsert2.obj :  binsert2.cpp
 string1.obj :  string1.cpp
   $(BCC32) -c @&&|
  $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ string1.cpp
+|
+
+memfunptr.obj :  memfunptr.cpp
+  $(BCC32) -c @&&|
+ $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ memfunptr.cpp
+|
+
+move_constructor.obj :  move_constructor.cpp
+  $(BCC32) -c @&&|
+ $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ move_constructor.cpp
 |
 
 bitset1.obj :  bitset1.cpp

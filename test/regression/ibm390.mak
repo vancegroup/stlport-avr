@@ -41,7 +41,7 @@ OBJECTS  = stl_test.o accum1.o accum2.o \
 	iota1.o \
 	istmit1.o \
 	iter1.o iter2.o iter3.o iter4.o \
-	iterswp0.o iterswp1.o \
+	iterswp.o \
 	less.o \
 	lesseq.o \
 	lexcmp1.o lexcmp2.o \
@@ -110,7 +110,8 @@ OBJECTS  = stl_test.o accum1.o accum2.o \
 	unique1.o unique2.o \
 	uprbnd1.o uprbnd2.o \
 	vec1.o vec2.o vec3.o vec4.o vec5.o vec6.o vec7.o vec8.o \
-        hmap1.o hmmap1.o hset2.o hmset1.o slist1.o string1.o bitset1.o
+  hmap1.o hmmap1.o hset2.o hmset1.o slist1.o string1.o bitset1.o \
+  move_constructor.o
 
 TEST_EXE  = stl_test.exe
 TEST  = stl_test.out

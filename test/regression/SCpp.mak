@@ -106,8 +106,7 @@ Regression_Objects_68K  = ¶
 	"{ObjDir}iter2.cpp.o" ¶
 	"{ObjDir}iter3.cpp.o" ¶
 	"{ObjDir}iter4.cpp.o" ¶
-	"{ObjDir}iterswp0.cpp.o" ¶
-	"{ObjDir}iterswp1.cpp.o" ¶
+	"{ObjDir}iterswp.cpp.o" ¶
 	"{ObjDir}less.cpp.o" ¶
 	"{ObjDir}lesseq.cpp.o" ¶
 	"{ObjDir}lexcmp1.cpp.o" ¶
@@ -440,8 +439,7 @@ Regression_Objects_68K  = ¶
 	"{ObjDir}iter2.cpp.o" ¶
 	"{ObjDir}iter3.cpp.o" ¶
 	"{ObjDir}iter4.cpp.o" ¶
-	"{ObjDir}iterswp0.cpp.o" ¶
-	"{ObjDir}iterswp1.cpp.o" ¶
+	"{ObjDir}iterswp.cpp.o" ¶
 	"{ObjDir}less.cpp.o" ¶
 	"{ObjDir}lesseq.cpp.o" ¶
 	"{ObjDir}lexcmp1.cpp.o" ¶

@@ -40,7 +40,7 @@ OBJECTS  = stl_test.obj accum1.obj accum2.obj \
 	iota1.obj \
 	istmit1.obj \
 	iter1.obj iter2.obj iter3.obj iter4.obj \
-	iterswp0.obj iterswp1.obj \
+	iterswp.obj \
 	less.obj \
 	lesseq.obj \
 	lexcmp1.obj lexcmp2.obj \
@@ -51,6 +51,7 @@ OBJECTS  = stl_test.obj accum1.obj accum2.obj \
 	map1.obj \
 	max1.obj max2.obj \
 	maxelem1.obj maxelem2.obj \
+	memfunptr.obj \
 	merge0.obj merge1.obj merge2.obj \
 	min1.obj min2.obj \
 	minelem1.obj minelem2.obj \
@@ -108,7 +109,8 @@ OBJECTS  = stl_test.obj accum1.obj accum2.obj \
 	unique1.obj unique2.obj \
 	uprbnd1.obj uprbnd2.obj \
 	vec1.obj vec2.obj vec3.obj vec4.obj vec5.obj vec6.obj vec7.obj vec8.obj \
-  hmap1.obj hmmap1.obj hset2.obj hmset1.obj slist1.obj string1.obj bitset1.obj
+  hmap1.obj hmmap1.obj hset2.obj hmset1.obj slist1.obj string1.obj bitset1.obj \
+  move_constructor.obj
 
 #STAT_MODULE=stat.o
 TEST_EXE  = stl_test.exe

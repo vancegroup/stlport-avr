@@ -45,7 +45,7 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	iota1.cpp \
 	istmit1.cpp \
 	iter1.cpp iter2.cpp iter3.cpp iter4.cpp \
-	iterswp0.cpp iterswp1.cpp \
+	iterswp.cpp \
 	less.cpp \
 	lesseq.cpp \
 	lexcmp1.cpp lexcmp2.cpp \
@@ -153,7 +153,7 @@ OBJECTS  = stl_test.o accum1.o accum2.o \
 	iota1.o \
 	istmit1.o \
 	iter1.o iter2.o iter3.o iter4.o \
-	iterswp0.o iterswp1.o \
+	iterswp.o \
 	less.o \
 	lesseq.o \
 	lexcmp1.o lexcmp2.o \

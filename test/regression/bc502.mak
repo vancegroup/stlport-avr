@@ -134,8 +134,9 @@ OBJFILES = \
    minus.obj\
    minelem2.obj\
    ostmit.obj\
-   iterswp1.obj\
+   iterswp.obj\
    min1.obj\
+   memfunptr.obj \
    merge2.obj\
    merge1.obj\
    merge0.obj\
@@ -175,7 +176,6 @@ OBJFILES = \
    incl2.obj\
    incl1.obj\
    incl0.obj\
-   iterswp0.obj\
    eqlrnge2.obj\
    genern2.obj\
    genern1.obj\
@@ -240,7 +240,8 @@ OBJFILES = \
    accum2.obj\
    binsert2.obj\
    hmap1.obj hmmap1.obj hset2.obj hmset1.obj \
-   slist1.cpp string1.cpp bitset1.cpp
+   slist1.cpp string1.cpp bitset1.cpp \
+   move_constructor.cpp
 
 # ---------------------------------------------------------------------------
 PATHCPP = .;

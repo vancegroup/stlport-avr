@@ -106,8 +106,7 @@ Regression_Objects_PPC  = ¶
 	"{ObjDir}iter2.cpp.x" ¶
 	"{ObjDir}iter3.cpp.x" ¶
 	"{ObjDir}iter4.cpp.x" ¶
-	"{ObjDir}iterswp0.cpp.x" ¶
-	"{ObjDir}iterswp1.cpp.x" ¶
+	"{ObjDir}iterswp.cpp.x" ¶
 	"{ObjDir}less.cpp.x" ¶
 	"{ObjDir}lesseq.cpp.x" ¶
 	"{ObjDir}lexcmp1.cpp.x" ¶
@@ -126,6 +125,7 @@ Regression_Objects_PPC  = ¶
 	"{ObjDir}max2.cpp.x" ¶
 	"{ObjDir}maxelem1.cpp.x" ¶
 	"{ObjDir}maxelem2.cpp.x" ¶
+	"{ObjDir}memfunptr.cpp.x" ¶
 	"{ObjDir}merge0.cpp.x" ¶
 	"{ObjDir}merge1.cpp.x" ¶
 	"{ObjDir}merge2.cpp.x" ¶
@@ -259,6 +259,7 @@ Regression_Objects_PPC  = ¶
 	"{ObjDir}vec6.cpp.x" ¶
 	"{ObjDir}vec7.cpp.x" ¶
 	"{ObjDir}vec8.cpp.x" ¶
+	"{ObjDir}move_constructor.cpp.x" ¶
 	# end
 
 Regression_test ÄÄ setup
