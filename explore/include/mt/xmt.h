@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/08/17 12:17:21 ptr>
+// -*- C++ -*- Time-stamp: <99/09/03 15:02:17 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -8,14 +8,19 @@
 #include <cstddef>
 #include <stdexcept>
 
+#ifndef __XMT_DLL
+#  if defined( WIN32 ) && defined( _MSC_VER )
+#    define __XMT_DLL __declspec( dllimport )
+#  else
+#    define __XMT_DLL
+#  endif
+#endif
+
 #ifdef WIN32
 #  include <windows.h>
 #  include <memory>
 #  ifndef _REENTRANT
 #    define _REENTRANT
-#  endif
-#  ifndef __DLLEXPORT
-// #    define __DLLEXPORT __declspec( dllexport )
 #  endif
 #else
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
@@ -93,7 +98,7 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 
 namespace __impl {
 
-extern __DLLEXPORT void signal_throw( int sig ) throw( int );
+extern __XMT_DLL void signal_throw( int sig ) throw( int );
 
 #ifndef WIN32
 using std::size_t;
@@ -472,23 +477,23 @@ class Thread
         static int _count;
     };
 
-    __DLLEXPORT Thread( unsigned flags = 0 );
+    __XMT_DLL Thread( unsigned flags = 0 );
 
-    explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
+    explicit __XMT_DLL Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
 
-    __DLLEXPORT ~Thread();
+    __XMT_DLL ~Thread();
 
-    __DLLEXPORT
+    __XMT_DLL
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
-    __DLLEXPORT int join();
-    __DLLEXPORT int suspend();
-    __DLLEXPORT int resume();
-    __DLLEXPORT int kill( int sig );
-    static __DLLEXPORT void exit( int code = 0 );
-    static __DLLEXPORT int join_all();
-    static __DLLEXPORT void block_signal( int sig );
-    static __DLLEXPORT void unblock_signal( int sig );
-    static __DLLEXPORT void signal_handler( int sig, SIG_PF );
+    __XMT_DLL int join();
+    __XMT_DLL int suspend();
+    __XMT_DLL int resume();
+    __XMT_DLL int kill( int sig );
+    static __XMT_DLL void exit( int code = 0 );
+    static __XMT_DLL int join_all();
+    static __XMT_DLL void block_signal( int sig );
+    static __XMT_DLL void unblock_signal( int sig );
+    static __XMT_DLL void signal_handler( int sig, SIG_PF );
 
     bool good() const
 #ifdef WIN32
@@ -499,8 +504,8 @@ class Thread
 
     static int xalloc()
       { return _idx++; }
-    __DLLEXPORT long&  iword( int __idx );
-    __DLLEXPORT void*& pword( int __idx );
+    __XMT_DLL long&  iword( int __idx );
+    __XMT_DLL void*& pword( int __idx );
 
     static thread_key_type mtkey()
       { return _mt_key; }
