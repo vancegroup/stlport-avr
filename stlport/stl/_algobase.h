@@ -552,8 +552,7 @@ inline bool
 lexicographical_compare(const unsigned char* __first1,
                         const unsigned char* __last1,
                         const unsigned char* __first2,
-                        const unsigned char* __last2)
-{
+                        const unsigned char* __last2) {
   const size_t __len1 = __last1 - __first1;
   const size_t __len2 = __last2 - __first2;
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
@@ -566,8 +565,7 @@ lexicographical_compare(const unsigned char* __first1,
 
 # if !(CHAR_MAX == SCHAR_MAX)
 inline bool lexicographical_compare(const char* __first1, const char* __last1,
-                                    const char* __first2, const char* __last2)
-{
+                                    const char* __first2, const char* __last2) {
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1)) 
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
 
@@ -586,8 +584,7 @@ inline int
 __lexicographical_compare_3way(const unsigned char* __first1,
                                const unsigned char* __last1,
                                const unsigned char* __first2,
-                               const unsigned char* __last2)
-{
+                               const unsigned char* __last2) {
   const ptrdiff_t __len1 = __last1 - __first1;
   const ptrdiff_t __len2 = __last2 - __first2;
   const int __result = memcmp(__first1, __first2, (min) (__len1, __len2));
@@ -599,8 +596,7 @@ __lexicographical_compare_3way(const unsigned char* __first1,
 # if !(CHAR_MAX == SCHAR_MAX)
 inline int 
 __lexicographical_compare_3way(const char* __first1, const char* __last1,
-                               const char* __first2, const char* __last2)
-{
+                               const char* __first2, const char* __last2) {
   return __lexicographical_compare_3way((const unsigned char*) __first1,
                                         (const unsigned char*) __last1,
                                         (const unsigned char*) __first2,
@@ -665,7 +661,7 @@ replace(_ForwardIter __first, _ForwardIter __last,
 
 template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
-                              const _Tp& __val, _Compare __comp, _Distance*);
+                           const _Tp& __val, _Compare __comp, _Distance*);
 
 _STLP_END_NAMESPACE
 

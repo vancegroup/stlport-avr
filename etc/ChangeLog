@@ -1,3 +1,11 @@
+2004-04-27  Francois Dumont <dums@s...>
+
+  * stlport/stl/_complex.h
+    removal of a macro guard on the template != operator.
+    
+  * test/unit/complex_test.cpp
+    creation of a test case for the complex class.
+
 2004-04-26  Francois Dumont <dums@s...>
 
   * stlport/stl/_fstream.h
