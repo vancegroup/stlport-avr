@@ -236,7 +236,7 @@ int collate_byname<char>::do_compare(const char* __low1,
 collate_byname<char>::string_type
 collate_byname<char>::do_transform(const char* low, const char* high) const {
   size_t n = _Locale_strxfrm(_M_collate,
-                             0, 0,
+                             NULL, 0,
                              low, high - low);
 
   __vector__<char, allocator<char> > buf(n);
@@ -282,7 +282,7 @@ collate_byname<wchar_t>
   ::do_transform(const wchar_t* low, const wchar_t* high) const
 {
   size_t n = _Locale_strwxfrm(_M_collate,
-                              0, 0,
+                              NULL, 0,
                               low, high - low);
 
   __vector__<wchar_t, allocator<wchar_t> > buf(high - low);
@@ -876,7 +876,7 @@ string moneypunct_byname<wchar_t, true>::do_grouping() const
 wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
 {
   string str = _Locale_int_curr_symbol(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -888,7 +888,7 @@ wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
 wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
 {
   string str = _Locale_positive_sign(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -901,7 +901,7 @@ wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
 wstring moneypunct_byname<wchar_t, true>::do_negative_sign() const
 {
   string str = _Locale_negative_sign(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) 
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)  || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -940,7 +940,7 @@ string moneypunct_byname<wchar_t, false>::do_grouping() const
 wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
 {
   string str =  _Locale_currency_symbol(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -952,7 +952,7 @@ wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
 wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
 {
   string str = _Locale_positive_sign(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else
@@ -964,7 +964,7 @@ wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
 wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const
 {
   string str = _Locale_negative_sign(_M_monetary);
-# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+# if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__)		//*ty 05/26/2001 - added workaround for mpw
   wstring result(wstring::_Reserve_t(), str.size());
   copy(str.begin(), str.end(), result.begin());
 # else

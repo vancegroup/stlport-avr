@@ -854,7 +854,7 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
       char * nextblock = buf, * ptrtextbuf = textbuf;
       char * endtextbuf = textbuf + _TEXTBUF_SIZE;
       char * endblock = buf + n;
-      ptrdiff_t nextblocksize = (min) (n, _TEXTBUF_SIZE);
+      ptrdiff_t nextblocksize = (min) (n, (ptrdiff_t)_TEXTBUF_SIZE);
       char * nextlf;
       
       while ( (nextblocksize > 0) && 
@@ -1065,6 +1065,8 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
     // If we've mmapped part of the file already, then unmap it.
     if (__this->_M_mmap_base)
       __this->_M_base._M_unmap(__this->_M_mmap_base, __this->_M_mmap_len);
+    __this->_M_mmap_base = 0;
+    __this->_M_mmap_len = 0;
       
     // Determine the position where we start mapping.  It has to be
     // a multiple of the page size.

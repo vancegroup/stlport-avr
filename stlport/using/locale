@@ -1,3 +1,5 @@
+#if !defined(_STLP_NO_IMPORT_LOCALE)
+
 // from <cwchar>
 #if !defined (_STLP_NO_MBSTATE_T)
 using _STLP_VENDOR_MB_NAMESPACE::mbstate_t;
@@ -60,3 +62,4 @@ using _STLP_NEW_IO_NAMESPACE::messages_base;
 using _STLP_NEW_IO_NAMESPACE::messages;
 using _STLP_NEW_IO_NAMESPACE::messages_byname;
 #endif // _MSL_NO_MESSAGE_FACET
+#endif /* !defined(_STLP_NO_IMPORT_LOCALE) */

@@ -197,7 +197,7 @@ protected:                      // The functional protected interface.
   void _M_check_exception_mask() 
     { if (_M_iostate & _M_exception_mask) _M_throw_failure(); }
 
-  void _M_invoke_callbacks(event __event);
+  void _M_invoke_callbacks(event);
   void _M_throw_failure();
 
   ios_base();                   // Default constructor.

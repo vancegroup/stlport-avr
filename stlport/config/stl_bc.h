@@ -8,7 +8,7 @@
 # define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
 
 // most of <exception> contents is still in global namespace
-# define _STLP_VENDOR_UNEXPECTED_STD
+// # define _STLP_VENDOR_UNEXPECTED_STD
 
 // cannot work with dynamic lib as for now - locale initialization problems 
 #ifndef _STLP_USE_STATIC_LIB

@@ -34,7 +34,7 @@
 #   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../iostream
 #   define _STLP_LONG_LONG long long
 
-#if (__HP_aCC <= 30000 && __HP_aCC >= 12300)
+#if (__HP_aCC <= 30000 && __HP_aCC >= 12100)
 
 //Special kludge to workaround bug in aCC A.01.23, CR JAGac40634
 #ifdef _STLP_DEBUG

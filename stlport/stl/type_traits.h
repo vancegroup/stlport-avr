@@ -64,6 +64,24 @@ _STLP_BEGIN_NAMESPACE
 struct __true_type {};
 struct __false_type {};
 
+
+template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
+
+_STLP_TEMPLATE_NULL
+struct __bool2type<true> { typedef __true_type _Ret; };
+
+// logical end of 3 predicated
+template <class _P1, class _P2, class _P3>
+struct _Land3 {
+  typedef __false_type _Ret;
+};
+
+_STLP_TEMPLATE_NULL
+struct _Land3<__true_type, __true_type, __true_type> {
+  typedef __true_type _Ret;
+};
+
+
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
 template <bool _IsPOD> struct __type_traits_aux {
@@ -187,56 +205,6 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> {
 
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
-template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
-
-_STLP_TEMPLATE_NULL
-struct __bool2type<true> { typedef __true_type _Ret; };
-
-// logical end of 3 predicated
-template <class _P1, class _P2, class _P3>
-struct _Land3 {
-  typedef __false_type _Ret;
-};
-
-_STLP_TEMPLATE_NULL
-struct _Land3<__true_type, __true_type, __true_type> {
-  typedef __true_type _Ret;
-};
-
-template <class _Tp1, class _Tp2>
-struct _OKToMemCpy {
-  enum { _SameSize = (sizeof(_Tp1) == sizeof(_Tp2)) } ;
-  typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
-  typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
-  typedef typename __bool2type< _SameSize >::_Ret _Tr3;
-  typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
-};
-
-template <class _Tp1, class _Tp2>
-inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
-  return _OKToMemCpy<_Tp1, _Tp2>();
-}
-
-template <class _Tp> 
-struct _IsPOD {
-  typedef typename __type_traits<_Tp>::is_POD_type _Type;
-  static _Type _Ret() { return _Type(); }
-};
-
-template <class _Tp> 
-inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
-
-#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-#   if defined (__BORLANDC__) || defined (__SUNPRO_CC)
-#   define _IS_POD_ITER(_It, _Tp) __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
-#   else
-#   define _IS_POD_ITER(_It, _Tp) typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
-#   endif
-#  else
-#   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
-#  endif
-
 // Provide some specializations.  This is harmless for compilers that
 //  have built-in __types_traits support, and essential for compilers
 //  that don't.
@@ -348,6 +316,40 @@ _STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
 };
 
 #endif /* _STLP_LONG_LONG */
+
+template <class _Tp1, class _Tp2>
+struct _OKToMemCpy {
+  enum { _SameSize = (sizeof(_Tp1) == sizeof(_Tp2)) } ;
+  typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
+  typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
+  typedef typename __bool2type< _SameSize >::_Ret _Tr3;
+  typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
+  static _Type _Ret() { return _Type(); }
+};
+
+template <class _Tp1, class _Tp2>
+inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
+  return _OKToMemCpy<_Tp1, _Tp2>();
+}
+
+template <class _Tp> 
+struct _IsPOD {
+  typedef typename __type_traits<_Tp>::is_POD_type _Type;
+  static _Type _Ret() { return _Type(); }
+};
+
+template <class _Tp> 
+inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
+
+#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#   if defined (__BORLANDC__) || defined (__SUNPRO_CC)
+#   define _IS_POD_ITER(_It, _Tp) __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
+#   else
+#   define _IS_POD_ITER(_It, _Tp) typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
+#   endif
+#  else
+#   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
+#  endif
 
 # ifdef _STLP_DEFAULT_CONSTRUCTOR_BUG
 // Those adaptors are here to fix common compiler bug regarding builtins:

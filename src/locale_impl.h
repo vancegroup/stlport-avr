@@ -57,6 +57,7 @@ private:
 };
 
 inline _Locale_impl*  _STLP_CALL _S_copy_impl(_Locale_impl* I) {
+    _STLP_ASSERT( I != 0 );
     I->incr();
     return I;
 }

@@ -1,43 +1,51 @@
 # ---------------------------------------------------------------------------
 
+!if !$d(BCB)
+BCB = $(MAKEDIR)\..
+!endif
+
 CPP=cpp32
 CC=bcc32 -P
 CXX=bcc32
 
 RC=brc32
-COMP=BCC
+COMP=BCB55
 
-LIB_BASENAME=stlport_bcc
+LIB_BASENAME=stlport_bcb55
 
 # ---------------------------------------------------------------------------
 
 LINK_OUT=
 DYNLINK_OUT=
-LINK = tlib /P128
+LINK = tlib /P256
 DYN_LINK = ilink32
 OBJEXT=obj
 DYNEXT=dll
 STEXT=lib
-RM=@erase /F /Q
+RM=-rd /S /Q
 PATH_SEP=\\
-MKDIR=-mkdir
+MKDIR=-mkdir -p
 STATIC_SUFFIX=_static
 INSTALL_STEP=install_bc
 
-all : all_dynamic all_static
+all : platform all_dynamic all_static
 
 !include common_macros_windows.mak
+
+RM=-rd /S /Q
+MKDIR=-mkdir -p
 
 DYNAMIC_DEFS=_RTLDLL;_DLL
 STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE
 
 LINKSTARTUP= c0d32.obj
 
-FLAGS_COMMON= -I.;..\stlport;$(BCB)\include -jb -j1 -w -c -w-par -w-inl -tWM
+FLAGS_COMMON= -I.;..\stlport;$(BCB)\include; -jb -j1 -w -c -w-par -w-inl -tWM -w-stl
 FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS)
 FLAGS_COMMON_dynamic = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(DYNAMIC_DEFS) -tWDR
 
-LDFLAGS_COMMON=-Gn -Gi -Tpd -aa -L$(MAKEDIR)\..\lib -x 
+# -L$(MAKEDIR)\..\lib  removed  ...it should get ilink32.cfg values instead
+LDFLAGS_COMMON=-Gn -Gi -Tpd -aa -x 
 LDFLAGS_COMMON_static=  $(LDFLAGS_COMMON)
 LDFLAGS_COMMON_dynamic= $(LDFLAGS_COMMON)
 
@@ -55,13 +63,13 @@ LDLIBS_DEBUG_dynamic=     import32.lib cw32mti.lib
 LDLIBS_STLDEBUG_dynamic=  import32.lib cw32mti.lib
 
 
-CXXFLAGS_RELEASE_static= $(FLAGS_COMMON_static) -O2 -n$(RELEASE_OBJDIR_static) -H -H=$(RELEASE_OBJDIR_static)$(PATH_SEP)stlport.csm
-CXXFLAGS_DEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(DEBUG_OBJDIR_static) -H -H=$(DEBUG_OBJDIR_static)$(PATH_SEP)stlport.csm
-CXXFLAGS_STLDEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(STLDEBUG_OBJDIR_static) -D_STLP_DEBUG -H -H=$(STLDEBUG_OBJDIR_static)$(PATH_SEP)stlport.csm
+CXXFLAGS_RELEASE_static= $(FLAGS_COMMON_static) -O2 -n$(RELEASE_OBJDIR_static)
+CXXFLAGS_DEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(DEBUG_OBJDIR_static)
+CXXFLAGS_STLDEBUG_static= $(FLAGS_COMMON_static) -v -N -x -xp -n$(STLDEBUG_OBJDIR_static) -D_STLP_DEBUG
 
-CXXFLAGS_RELEASE_dynamic= $(FLAGS_COMMON_dynamic) -O2 -n$(RELEASE_OBJDIR_dynamic) -H -H=$(RELEASE_OBJDIR_dynamic)$(PATH_SEP)stlport.csm
-CXXFLAGS_DEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(DEBUG_OBJDIR_dynamic) -H -H=$(DEBUG_OBJDIR_dynamic)$(PATH_SEP)stlport.csm
-CXXFLAGS_STLDEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(STLDEBUG_OBJDIR_dynamic) -D_STLP_DEBUG -H -H=$(STLDEBUG_OBJDIR_static)$(PATH_SEP)stlport.csm 
+CXXFLAGS_RELEASE_dynamic= $(FLAGS_COMMON_dynamic) -O2 -n$(RELEASE_OBJDIR_dynamic)
+CXXFLAGS_DEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(DEBUG_OBJDIR_dynamic)
+CXXFLAGS_STLDEBUG_dynamic= $(FLAGS_COMMON_dynamic)  -v -N -x -xp -n$(STLDEBUG_OBJDIR_dynamic) -D_STLP_DEBUG
 
 RELEASE_LINK_COMMANDS_static=\
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)complex.$(OBJEXT) \
@@ -93,6 +101,8 @@ RELEASE_LINK_COMMANDS_static=\
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(RELEASE_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(RELEASE_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 
@@ -127,6 +137,8 @@ DEBUG_LINK_COMMANDS_static= \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(DEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(DEBUG_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 
@@ -160,6 +172,8 @@ STLDEBUG_LINK_COMMANDS_static= \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(STLDEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(STLDEBUG_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 
@@ -200,6 +214,11 @@ clobber : clean
 	-$(RM) $(OUTDIR)$(PATH_SEP)$(DEBUG_NAME).* \
                $(OUTDIR)$(PATH_SEP)$(RELEASE_NAME).* $(OUTDIR)$(PATH_SEP)$(STLDEBUG_NAME).*
 
+#create a compiler platform directory
+platform:
+	-$(MKDIR) $(OUTDIR)
+	-$(MKDIR) $(OBJDIR_COMMON)
+	-$(MKDIR) $(OBJDIR)
 
 $(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) : $(OUTDIR) $(RELEASE_OBJDIR_dynamic) $(DEF_FILE) $(RELEASE_OBJECTS_dynamic)
 	$(DYN_LINK) $(LDFLAGS_RELEASE_dynamic) $(RELEASE_OBJECTS_dynamic) , $(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB),,$(LDLIBS_RELEASE_dynamic)
@@ -226,7 +245,7 @@ $(OUTDIR)$(PATH_SEP)$(STLDEBUG_LIB) : $(OUTDIR) $(STLDEBUG_OBJDIR_static) $(DEF_
 !include nmake_common.mak
 
 .cpp.i:
-    $(CPP) $(CXXFLAGS_RELEASE_dynamic) -n. -Sr -Ss -Sd {$< }
+    $(CPP) $(CXXFLAGS_DEBUG_dynamic) -n. -Sr -Ss -Sd {$< }
 
 # ---------------------------------------------------------------------------
 

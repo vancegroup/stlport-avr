@@ -123,7 +123,7 @@ begin
 	open "{self_}"
 	SetFile -a l "{self_}"
 	Format -l 'MPW Shell Script' -f "{Font}" -s "{FontSize}" "{self_}"
-	SetFile -c 'MPS ' -label 6 -a L "{self_}" # sky color
+	SetFile -c 'MPS ' -label 6  "{self_}" # sky color
 	set -e exit 1
 end ·· "{worksheet}"
 #)#

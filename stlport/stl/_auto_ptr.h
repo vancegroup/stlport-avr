@@ -69,7 +69,7 @@ template<class _Tp> struct auto_ptr :  public __ptr_base {
   explicit auto_ptr(_Tp* __px) { this->__set(__px); }
   
 #if defined (_STLP_MEMBER_TEMPLATES)
-# ifdef _STLP_MSVC
+# if OBSOLETE // def _STLP_MSVC
   template<class _Tp1> auto_ptr(const auto_ptr<_Tp1>& __r) {
     this->__set((_Tp1*)const_cast<auto_ptr<_Tp1> >(__r).release());
   }
@@ -90,7 +90,7 @@ template<class _Tp> struct auto_ptr :  public __ptr_base {
 # endif
 #endif /* _STLP_MEMBER_TEMPLATES */
   
-#ifdef _STLP_MSVC
+#ifdef OBSOLETE // def _STLP_MSVC
   auto_ptr(const _Self& __r) { this->__set(const_cast<_Self&>(__r).release()); }
   
   _Self& operator=(const _Self& __r)  {

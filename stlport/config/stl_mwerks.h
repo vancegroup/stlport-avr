@@ -25,6 +25,13 @@
 #  define _STLP_BIG_ENDIAN
 # endif
 
+#if defined(_MSL_NO_LOCALE)
+#define _STLP_NO_IMPORT_LOCALE
+#endif
+#if !__option( wchar_type )
+# define _STLP_WCHAR_T_IS_USHORT
+#endif
+
 // *** CodeWarrior Compiler Common Bugs ***
 #  define __MSL_FIX_ITERATORS__(myType)		// Some MSL headers rely on this
 #  define _STLP_NO_FRIEND_TEMPLATES 1	// Bug mysteriously reintroduced in this version.

@@ -148,7 +148,7 @@ inline float tanh (float __x)                 { return _STLP_DO_TANH(float)(__x)
 #  if ! (defined  (_STLP_NO_LONG_DOUBLE) || defined(_STLP_VENDOR_LONG_DOUBLE_MATH))
 
 #if !defined (__MVS__)
-inline long double abs (long double __x)                  { return _STLP_DO_ABS(long double)(__x); }
+inline long double abs (long double __x)                  { return _STLP_DO_ABS(long double)((double)__x); }
 #endif
 inline long double acos (long double __x)                 { return _STLP_DO_ACOS(long double)(__x); }
 inline long double asin (long double __x)                 { return _STLP_DO_ASIN(long double)(__x); }

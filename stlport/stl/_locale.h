@@ -115,7 +115,7 @@ public:
 
 public:
 
-# if defined ( _STLP_MEMBER_TEMPLATES ) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+# if defined ( _STLP_MEMBER_TEMPLATES ) /* && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) */
   template <class _Facet> 
   locale(const locale& __loc, _Facet* __f) : _M_impl(0)
     {

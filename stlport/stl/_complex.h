@@ -840,16 +840,14 @@ _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
 operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<double>& __z);
 
-#  if ! defined (_STLP_NO_LONG_DOUBLE) && ! (defined (_STLP_MSVC)/* && _STLP_MSVC < 1300 */) \
-   && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC == 0x500)) 
+#  if ! defined (_STLP_NO_LONG_DOUBLE)
+_STLP_OPERATOR_TEMPLATE
+_STLP_DECLSPEC basic_istream<char, char_traits<char> >& _STLP_CALL 
+operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& __z);
 
 _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
-operator>>(basic_istream<char, char_traits<char> >& __is, const complex<long double>& __z);
-
-_STLP_OPERATOR_TEMPLATE
-_STLP_DECLSPEC basic_istream<char, char_traits<char> >& _STLP_CALL 
-operator<<(basic_ostream<char, char_traits<char> >& __is, complex<long double>& __z);
+operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<long double>& __z);
 
 # endif
 

@@ -16,7 +16,7 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	  template data members (Tru64, AIX, HP-UX). 
 	  It is being put in this file as there is no automatic way to check if we are using GNU ld or not.
 	
-	* _range_erors.h : depandancy ob <stdexcept> and <string> removed for own iostreams mode
+	* _range_erors.h : depandancy on <stdexcept> and <string> removed for own iostreams mode
 	(thanks Doug Gilbert)
 
 	* debug/_list.h : "typename" added in new methods (thanks Doug Gilbert)
@@ -32,6 +32,19 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 
 	* test/eh/gcc.mak : directories stuff fixed (Thanks Brodie)
 
+	* stl/_complex.h : fixed declarations for long double specializations (Thanks Tsutomu Yoshida)
+
+	* locale_byname.cpp, etc. : fixes for Apple compilers by Tsutomu Yoshida.
+
+	* _ios_base.h : __evenk id changed not to clash with MS VC++ 7 (thanks Paul Ghezzi)
+
+	* _fstream.c : added basic_filebuf constructor workaround for compiler which do not initialize builtins
+	  to zero when default constructed (thanks Alberto Barbati)
+
+	* _locale.h : relaxed guerd around templated locale constructor (thanks Alberto Barbati)
+
+	* stl_mwerks.h : changes to accomodate CodeWarrior 6.2 (thanks cprosser)
+
 	* stl/_cmath.h : extracted from <cmath> for better decoupling
 
 	* stl/_std_prolog.h, stl/_std_epilog.h : hooks for future alternative namespace inclusion style.
@@ -41,6 +54,14 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	* src/gcc-beos.h : only static library is being built (dynamic stil don't work) (thanks John Maddock)
 
 	* using/iostream : included using/istream and using/ostream
+
+	* dll_main.cpp : force_link() fix to prevent numeric_limits static members and 
+	  _M_increment/decrement from _tree.c from being optimized out by VC++
+	  (thanks Sofus Mortensen, Alberto Barbati )
+
+	* _alloc.c : added CHECK_NULL_ALLOC for _STLP_CHUNK_ALLOC with malloc, to throw exception if malloc returns 0 (thanks ghunt)
+
+	* stl_bc.h, <exception> : fixed Borland C++ import of unexpected handler stuff
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 

@@ -7,7 +7,7 @@ Needed_SysLibs = ¶
 #		"{PPCLibraries}MrCIOStreams.o" ¶
 		"{STL}:lib:STLportLib{config_}.o" ¶
 		"{SharedLibraries}InterfaceLib" ¶
-		"{SharedLibraries}StdCLib_3.5" ¶
+		"{SharedLibraries}StdCLib_3.7" ¶
 		"{SharedLibraries}MathLib" ¶
 		"{PPCLibraries}StdCRuntime.o" ¶
 		"{PPCLibraries}PPCCRuntime.o" ¶

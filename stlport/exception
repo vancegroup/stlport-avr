@@ -57,7 +57,7 @@
 # if defined (_STLP_NO_NEW_NEW_HEADER)
 #  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
 # else
-#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
+#   include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
 # endif
 
 # endif
@@ -91,13 +91,13 @@ using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #  endif
 
 // weird errors
-# ifndef __BORLANDC__
-using _STLP_VENDOR_UNEXPECTED_STD ::unexpected;
-using _STLP_VENDOR_UNEXPECTED_STD ::unexpected_handler;
-using _STLP_VENDOR_UNEXPECTED_STD ::set_unexpected;
-using _STLP_VENDOR_UNEXPECTED_STD ::terminate;
-using _STLP_VENDOR_UNEXPECTED_STD ::terminate_handler;
-using _STLP_VENDOR_UNEXPECTED_STD ::set_terminate;
+# if (! defined (__BORLANDC__)) || (defined (__STD_EXCEPTION) && defined (__RWSTD_EXCEPTION_SEEN) && defined ( _STLP_DONT_POP_0x423))
+using _STLP_VENDOR_UNEXPECTED_STD::unexpected;
+using _STLP_VENDOR_UNEXPECTED_STD::unexpected_handler;
+using _STLP_VENDOR_UNEXPECTED_STD::set_unexpected;
+using _STLP_VENDOR_UNEXPECTED_STD::terminate;
+using _STLP_VENDOR_UNEXPECTED_STD::terminate_handler;
+using _STLP_VENDOR_UNEXPECTED_STD::set_terminate;
 # endif
 
 # if !defined (_STLP_INCOMPLETE_EXCEPTION_HEADER) 

@@ -44,11 +44,11 @@
 // memory leaks when run with debug CRT libraries.
 #if defined(_STLP_MSVC) && (_STLP_MSVC>=1020 && defined(_STLP_DEBUG_ALLOC)) && ! defined (_STLP_WINCE)
 #  include <crtdbg.h>
-#  define   _STLP_CHUNK_MALLOC(s)         _malloc_dbg(s, _CRT_BLOCK, __FILE__, __LINE__)
+#  define   _STLP_CHUNK_MALLOC(s)         _STLP_CHECK_NULL_ALLOC(_malloc_dbg(s, _CRT_BLOCK, __FILE__, __LINE__))
 #else	// !_DEBUG
 # ifdef _STLP_NODE_ALLOC_USE_MALLOC
 #  include <cstdlib>
-#  define   _STLP_CHUNK_MALLOC(s)         _STLP_VENDOR_CSTD::malloc(s)
+#  define   _STLP_CHUNK_MALLOC(s)         _STLP_CHECK_NULL_ALLOC(_STLP_VENDOR_CSTD::malloc(s))
 # else
 #  define   _STLP_CHUNK_MALLOC(s)         __stl_new(s)
 # endif
