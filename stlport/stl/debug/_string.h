@@ -187,23 +187,23 @@ public:
 
 public:                         // Iterators.
 
-  iterator begin() { return iterator(&_M_iter_list, this->_M_start); }
-  const_iterator begin() const { return const_iterator(&_M_iter_list,this->_M_start); }
-  iterator end() { return iterator(&_M_iter_list,this->_M_finish); }
-  const_iterator end() const { return const_iterator(&_M_iter_list,this->_M_finish); }
+  iterator begin() { return iterator(&_M_iter_list, this->_M_Start()); }
+  const_iterator begin() const { return const_iterator(&_M_iter_list,this->_M_Start()); }
+  iterator end() { return iterator(&_M_iter_list,this->_M_Finish()); }
+  const_iterator end() const { return const_iterator(&_M_iter_list,this->_M_Finish()); }
   void _M_deallocate_block() {
     _Invalidate_all();
     _Base::_M_deallocate_block();
   }
 
   reverse_iterator rbegin()             
-    { return reverse_iterator(iterator(&_M_iter_list,this->_M_finish)); }
+    { return reverse_iterator(iterator(&_M_iter_list,this->_M_Finish())); }
   reverse_iterator rend()               
-    { return reverse_iterator(iterator(&_M_iter_list,this->_M_start)); }
+    { return reverse_iterator(iterator(&_M_iter_list,this->_M_Start())); }
   const_reverse_iterator rbegin() const 
-    { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_finish)); }
+    { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_Finish())); }
   const_reverse_iterator rend()   const 
-    { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_start)); }
+    { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_Start())); }
 
 public:                         // Size, capacity, etc.
 
@@ -255,7 +255,7 @@ public:                         // Append, operator+=, push_back.
   _Self& operator+=(const _CharT* __s) { _STLP_FIX_LITERAL_BUG(__s) return append(__s); }
   _Self& operator+=(_CharT __c) { push_back(__c); return *this; }
 
-  _Self& append(const _Self& __s) { return append(__s._M_start, __s._M_finish); }
+  _Self& append(const _Self& __s) { return append(__s._M_Start(), __s._M_Finish()); }
 
   _Self& append(const _Self& __s,
                        size_type __pos, size_type __n) {
