@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/14 12:53:53 ptr>
+// -*- C++ -*- Time-stamp: <03/02/14 15:59:23 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -780,10 +780,38 @@ void Thread::signal_exit( int sig )
 }
 
 __FIT_DECLSPEC
-void Thread::sleep( timespec *abstime, timespec *real_time ) // sleep at least up to time t
+void Thread::delay( timespec *interval, timespec *remain )
 {
 #ifdef __unix
-  nanosleep( abstime, real_time );
+  nanosleep( interval, remain );
+#endif
+#ifdef WIN32
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
+  Sleep( ms );
+  if ( remain != 0 ) { // M$ not return remain time interval
+    remain->tv_sec = 0;
+    remain->tv_nsec = 0;
+  }
+#endif
+}
+
+__FIT_DECLSPEC
+void Thread::sleep( timespec *abstime, timespec *real_time )
+{
+#ifdef __unix
+  timespec ct;
+  gettime( &ct );
+  timespec st = *abstime;
+
+  if ( st > ct ) {
+    st -= ct;
+    nanosleep( &st, real_time );
+    if ( real_time != 0 ) {
+      *real_time += ct;
+    }
+  } else if ( real_time != 0 ) {
+    *real_time = ct;
+  }
 #endif
 #ifdef WIN32
   time_t ct = time( 0 );
@@ -791,32 +819,9 @@ void Thread::sleep( timespec *abstime, timespec *real_time ) // sleep at least u
 
   unsigned ms = _conv >= ct ? _conv - ct : 1;
   Sleep( ms );
-  if ( real_time != 0 ) { // M$ not return real elapsed time
-    real_time->tv_sec = ms / 1000;
-    real_time->tv_nsec = (ms % 1000) * 1000000;
-  }
-#endif
-}
-
-__FIT_DECLSPEC
-void Thread::delay( timespec *interval, timespec *real_interval ) // delay execution at least on time interval t
-{
-#ifdef __unix
-  timespec ct;
-  gettime( &ct );
-  timespec st = ct;
-  st += *interval;
-  nanosleep( &st, real_interval );
-  if ( real_interval != 0 ) {
-    *real_interval -= ct;
-  }
-#endif
-#ifdef WIN32
-  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
-  Sleep( ms );
-  if ( real_interval != 0 ) { // M$ not return elapsed time interval
-    real_interval->tv_sec = ms / 1000;
-    real_interval->tv_nsec = (ms % 1000) * 1000000;
+  if ( real_time != 0 ) { // M$ not return elapsed time interval
+    real_time->tv_sec = abstime->tv_sec;
+    real_time->tv_nsec = abstime->tv_nsec;
   }
 #endif
 }
@@ -1162,4 +1167,53 @@ timespec& operator /=( timespec& a, unsigned long b )
   a.tv_sec = int(d);
 
   return a;
+}
+
+bool operator ==( const timespec& a, const timespec& b )
+{
+  return (a.tv_sec == b.tv_sec) && (a.tv_nsec == b.tv_nsec);
+}
+
+bool operator >( const timespec& a, const timespec& b )
+{
+  if ( a.tv_sec > b.tv_sec ) {
+    return true;
+  } else if ( b.tv_sec > a.tv_sec ) {
+    return false;
+  }
+  
+  return a.tv_nsec > b.tv_nsec;
+}
+
+bool operator >=( const timespec& a, const timespec& b )
+{
+  if ( a.tv_sec > b.tv_sec ) {
+    return true;
+  } else if ( b.tv_sec > a.tv_sec ) {
+    return false;
+  }
+  
+  return a.tv_nsec >= b.tv_nsec;
+}
+
+bool operator <( const timespec& a, const timespec& b )
+{
+  if ( a.tv_sec < b.tv_sec ) {
+    return true;
+  } else if ( b.tv_sec < a.tv_sec ) {
+    return false;
+  }
+  
+  return a.tv_nsec < b.tv_nsec;
+}
+
+bool operator <=( const timespec& a, const timespec& b )
+{
+  if ( a.tv_sec < b.tv_sec ) {
+    return true;
+  } else if ( b.tv_sec < a.tv_sec ) {
+    return false;
+  }
+  
+  return a.tv_nsec <= b.tv_nsec;
 }

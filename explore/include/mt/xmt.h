@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/12 15:09:35 ptr>
+// -*- C++ -*- Time-stamp: <03/02/14 16:00:11 ptr>
 
 /*
  *
@@ -892,5 +892,11 @@ timespec& operator +=( timespec& a, const timespec& b );
 timespec& operator -=( timespec& a, const timespec& b );
 timespec& operator /=( timespec& a, unsigned b );
 timespec& operator /=( timespec& a, unsigned long b );
+
+bool operator >( const timespec& a, const timespec& b );
+bool operator >=( const timespec& a, const timespec& b );
+bool operator <( const timespec& a, const timespec& b );
+bool operator <=( const timespec& a, const timespec& b );
+bool operator ==( const timespec& a, const timespec& b );
 
 #endif // __XMT_H
