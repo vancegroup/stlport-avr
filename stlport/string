@@ -28,8 +28,6 @@
 #if defined (_STLP_USE_NATIVE_STRING)
 
 // as part of compiled runtime library depends on it.
-// DO NOT use SGI <string> with native <iostream> unless you recompile 
-// standard C++ runtime library with STLport installed. 
 
 # if defined (_STLP_MSVC)
 #  include <streambuf>

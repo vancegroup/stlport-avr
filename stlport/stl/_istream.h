@@ -98,7 +98,7 @@ public:                         // Formatted input of numbers.
   _Self& operator>> (short& __val) {
     long __lval;
     _M_get_num(*this, __lval);
-    __val = __lval;
+    __val = __STATIC_CAST(short, __lval);
     // check if we lose digits
     if ((__val != __lval) && ((unsigned short)__val != __lval))
       this->setstate(ios_base::failbit); 

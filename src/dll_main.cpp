@@ -24,6 +24,7 @@
  */
 
 # define __PUT_STATIC_DATA_MEMBERS_HERE
+
 # define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 
 # if !defined(_STLP_DEBUG) && ! defined (_STLP_ASSERTIONS)

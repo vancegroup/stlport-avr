@@ -52,18 +52,6 @@ namespace std
   extern "C" size_t wcsftime(wchar_t * str, size_t max_size, const wchar_t * format_str, const struct tm * timeptr);
 }
 #  define _STLP_NO_MBSTATE_T 1
-#elif defined(__sun) && defined (__SVR4) && !defined (_MBSTATE_T) && !defined (_STD_MBSTATE_T) \
- 	&& (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) || ! defined (_WCHAR_ISO_SUNWCC_H))
-# ifndef _STLP_NO_NATIVE_MBSTATE_T
-#  define _STLP_NO_NATIVE_MBSTATE_T 1
-# endif
-# define _STLP_WCHAR_SUNPRO_EXCLUDE 1
-# if defined ( _STLP_OWN_IOSTREAMS )
-#  define _MBSTATE_T
-#  define _STD_MBSTATE_T
-# else
-#  define _STLP_NO_MBSTATE_T 1
-# endif
 #elif defined (__BORLANDC__)
 #  ifdef _STLP_OWN_IOSTREAMS
 #   define _STLP_NO_NATIVE_MBSTATE_T

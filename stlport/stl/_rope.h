@@ -434,7 +434,7 @@ public:
       _Destroy(__s, __s + __len);
     }
     //  This has to be a static member, so this gets a bit messy
-    _STLP_REBIND_ALLOCATOR (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
+    __stl_alloc_rebind (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
   }
   
   // Deallocate data section of a leaf.

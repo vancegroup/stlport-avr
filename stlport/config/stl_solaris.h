@@ -13,9 +13,23 @@
 # define _STLP_RAND48 1
 #endif
 
+#if !defined (_MBSTATE_T) && !defined (_STD_MBSTATE_T) \
+ 	&& (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) || ! defined (_WCHAR_ISO_SUNWCC_H))
+# ifndef _STLP_NO_NATIVE_MBSTATE_T
+#  define _STLP_NO_NATIVE_MBSTATE_T 1
+# endif
+# define _STLP_WCHAR_SUNPRO_EXCLUDE 1
+# if ! defined ( _STLP_NO_SGI_IOSTREAMS )
+#  define _MBSTATE_T
+#  define _STD_MBSTATE_T
+# else
+#  define _STLP_NO_MBSTATE_T 1
+# endif
+#endif
+
 // For SPARC we use lightweight synchronization
 # if defined (__sparc) &&  (defined (_REENTRANT) || defined (_PTHREADS)) \
-     && (defined (__GNUC__) || ! defined (__STLP_NO_SGI_IOSTREAMS) ) \
+     && (defined (__GNUC__) || ! defined (_STLP_NO_SGI_IOSTREAMS) ) \
      && !defined(_NOTHREADS) && ! defined (_STLP_NO_SPARC_SOLARIS_THREADS)
 #  define _STLP_SPARC_SOLARIS_THREADS
 #  define _STLP_THREADS

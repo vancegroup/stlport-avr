@@ -66,14 +66,8 @@ basic_istream<_CharT, _Traits>& _STLP_CALL
 operator>>(basic_istream<_CharT, _Traits>& __is,
            basic_string<_CharT,_Traits, _Alloc>& __s)
 {
-# ifndef _STLP_HAS_NO_NAMESPACES
-#  ifdef _STLP_OWN_IOSTREAMS    
-  using _STLP_VENDOR_CSTD::size_t;
-#  else
-  using namespace _STLP_VENDOR_STD;
-#  endif  
-# endif
-  
+  _STLP_USING_VENDOR_STD
+
   typedef basic_istream<_CharT, _Traits> __istream;
   typename __istream::sentry __sentry(__is);
 

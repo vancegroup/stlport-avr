@@ -86,8 +86,8 @@ struct _Deque_iterator_base {
 
   enum _Constants { 
     _blocksize = _MAX_BYTES, 
-    __buffer_size = _blocksize / sizeof(_Tp) //(sizeof(_Tp) < (size_t)_blocksize ?
-    //		    ( (size_t)_blocksize / sizeof(_Tp)) : size_t(1))
+    __buffer_size = (sizeof(_Tp) < (size_t)_blocksize ?
+   		    ( (size_t)_blocksize / sizeof(_Tp)) : size_t(1))
   };
 
   typedef random_access_iterator_tag iterator_category;

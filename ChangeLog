@@ -55,6 +55,8 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* typeinfo.h : added check for _STLP_NO_NEW_HEADER for using declaration.
           Otherwise three classes will not be included in the namespace std when #include <typeinfo>.
 
+	* _istream.c : use of bind2nd (which required _function.h inclusion) changed to use alternate functor (thanks to Sergei Nikolaev)
+ 	
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 

@@ -20,7 +20,6 @@
 # define  _STLP_BITSET_C
 
 # define __BITS_PER_WORD (CHAR_BIT*sizeof(unsigned long))
-# define __BITSET_WORDS(__n) ((__n) < 1 ? 1 : ((__n) + __BITS_PER_WORD - 1)/__BITS_PER_WORD)
 
 _STLP_BEGIN_NAMESPACE
 
@@ -399,7 +398,6 @@ unsigned char _Bs_G<bool>::_S_first_one[256] _STLP_WEAK = {
 _STLP_END_NAMESPACE
 
 #  undef __BITS_PER_WORD
-#  undef __BITSET_WORDS
 #  undef bitset
 
 #endif /*  _STLP_BITSET_C */

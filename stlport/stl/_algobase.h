@@ -115,7 +115,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-			  _OutputIter __result, forward_iterator_tag, _Distance* __dis) {
+			  _OutputIter __result, forward_iterator_tag, _Distance* ) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;

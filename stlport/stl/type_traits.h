@@ -55,6 +55,9 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 }
 */
 
+#ifdef __WATCOMC__
+# include <cwchar>
+#endif
 
 struct __true_type {};
 struct __false_type {};
@@ -377,3 +380,4 @@ _Tp __default_constructed(_Tp* __p) {
 // Local Variables:
 // mode:C++
 // End:
+

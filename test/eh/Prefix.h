@@ -161,6 +161,15 @@ public:
 template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const EH_allocator<_T1>&, const EH_allocator<_T2>&)  { return true; }
 template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const EH_allocator<_T1>&, const EH_allocator<_T2>&) { return false; }
 
+// If custom allocators are being used without member template classes support :
+// user (on purpose) is forced to define rebind/get operations !!!
+template <class _Tp1, class _Tp2>
+inline EH_allocator<_Tp2>& _STLP_CALL
+__stl_alloc_rebind(EH_allocator<_Tp1>& __a, const _Tp2*) {  return (EH_allocator<_Tp2>&)(__a); }
+template <class _Tp1, class _Tp2>
+inline EH_allocator<_Tp2> _STLP_CALL
+__stl_alloc_create(const EH_allocator<_Tp1>&, const _Tp2*) { return EH_allocator<_Tp2>(); }
+
 # define eh_allocator(T) EH_allocator<T>
 
 # define EH_BIT_VECTOR_IMPLEMENTED

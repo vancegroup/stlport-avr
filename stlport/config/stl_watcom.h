@@ -2,10 +2,8 @@
 // It is internal STLport header - DO NOT include it directly
 
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
-#  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS // (reg)
-
-
-
+#  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
+#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 
 // On QNX, headers are supposed to be found in /usr/include,
 // so default "../include" should work.
@@ -115,6 +113,8 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 #  define _STLP_NO_BAD_ALLOC 1
 #  define _STLP_NO_ARROW_OPERATOR 1
 #  define _STLP_NESTED_TYPE_PARAM_BUG 1
+
+#  define _STLP_NO_CSTD_FUNCTION_IMPORTS 1
 
 #  if (__WATCOM_CPLUSPLUS__ < 1100 )
 #   define _STLP_NO_BOOL 1

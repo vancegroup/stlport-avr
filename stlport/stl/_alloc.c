@@ -22,6 +22,12 @@
 #ifndef _STLP_ALLOC_C
 #define _STLP_ALLOC_C
 
+#ifdef __WATCOMC__
+#pragma warning 13 9
+#pragma warning 367 9
+#pragma warning 368 9
+#endif
+
 # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 # ifdef _STLP_SGI_THREADS
@@ -109,12 +115,6 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   memset((char*)__p, __shred_byte, __n*sizeof(value_type));
   __allocator_type::deallocate(__real_p, __real_n);
 }
-
-#ifdef __WATCOMC__
-#pragma warning 367 9
-#pragma warning 368 9
-#pragma warning 13 9
-#endif
 
 # ifdef _STLP_THREADS
 

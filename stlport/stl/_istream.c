@@ -134,7 +134,7 @@ struct _Scan_for_char_val
 
   const char_type*
   operator()(const char_type* __first, const char_type* __last) const {
-    return find_if(__first, __last, bind2nd(_Eq_traits<_Traits>(), _M_val)); 
+    return find_if(__first, __last, _Eq_char_bound<_Traits>(_M_val)); 
   }
 };
 

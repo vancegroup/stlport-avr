@@ -392,16 +392,15 @@ struct _Alloc_traits
 #define _STLP_FORCE_ALLOCATORS(a,y) 
 #endif
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) // && ! defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 // The version for the default allocator, for rare occasion when we have partial spec w/o member template classes
 template <class _Tp, class _Tp1>
 struct _Alloc_traits<_Tp, allocator<_Tp1> > {
-  typedef _Allocator _Orig;
+  typedef allocator<_Tp1> _Orig;
   typedef allocator<_Tp> allocator_type;
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-# if OBSOLETE
 /* macro to convert the allocator for initialization
  * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
 #if defined (_STLP_MEMBER_TEMPLATES) || ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -418,33 +417,13 @@ struct _Alloc_traits<_Tp, allocator<_Tp1> > {
 #  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
 #endif
 
-# endif
-
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && ! defined (_STLP_NO_TEMPLATE_CONVERSIONS)
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
-#else
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
-
-// this is to allow cast for the right type for challenged compilers.
-// IN that case, container::alocator type may be wrong, but let us at least call the right function.
-// that may not work very well if the allocator is not instanceless 
-//#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
-//#  define _STLP_REBIND_ALLOCATOR(__a, _Tp) __a
-//#else
-//#  define _STLP_REBIND_ALLOCATOR(__a, _Tp) __stl_alloc_rebind(__a,(_Tp*)0)
-//#endif
-
-
 # if defined (_STLP_MEMBER_TEMPLATE_CLASSES) 
-
 template <class _Tp, class _Alloc>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
 __stl_alloc_create(const _Alloc& __a, const _Tp*) {
   typedef typename _Alloc::_STLP_TEMPLATE rebind<_Tp>::other _Rebound_type;
   return _Rebound_type(__a);
 }
-
 #else
 // If custom allocators are being used without member template classes support :
 // user (on purpose) is forced to define rebind/get operations !!!
