@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/02/07 19:55:24 ptr>
+// -*- C++ -*- Time-stamp: <00/02/21 15:23:57 ptr>
 
 /*
  *
@@ -144,7 +144,7 @@ using std::size_t;
 #ifdef __GNUC__
   // using std::runtime_error;
 #else
-using std::runtime_error;
+using __STD::runtime_error;
 #endif
 
 class Mutex
@@ -496,7 +496,7 @@ class Thread
 #ifdef __STL_USE_SGI_ALLOCATORS
     typedef __STD::alloc alloc;
 #else 
-    typedef std::allocator<long *> alloc;
+    typedef __STD::allocator<long *> alloc;
 #endif
 
     enum {
