@@ -219,7 +219,8 @@ inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) 
 inline bool _Stl_is_inf(double x)        { return isinf(x); }
 // inline bool _Stl_is_neg_inf(double x)    { return isinf(x) < 0; }  
 inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && x < 0; }
-#elif defined(__unix) && !defined(__FreeBSD__)  && !defined(__NetBSD__) && !defined(__APPLE__)  && !defined(__DJGPP)
+#elif defined(__unix) && !defined(__FreeBSD__)  && !defined(__NetBSD__) \
+      && !defined(__APPLE__)  && !defined(__DJGPP) && !defined(__osf__)
 inline bool _Stl_is_nan_or_inf(double x) { return IsNANorINF(x); }
 inline bool _Stl_is_inf(double x)        { return IsNANorINF(x) && IsINF(x); }
 inline bool _Stl_is_neg_inf(double x)    { return (IsINF(x)) && (x < 0.0); }

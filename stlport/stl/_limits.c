@@ -204,7 +204,7 @@ __DECLARE_INSTANCE( const _D_rep,
 # ifndef _STLP_NO_LONG_DOUBLE
 __DECLARE_INSTANCE( const _L_rep,
                    _LimG<bool>::_L_inf,  = _STLP_LDOUBLE_INF_REP);
-__DECLARE_INSTANCE( const _D_rep,
+__DECLARE_INSTANCE( const _L_rep,
                    _LimG<bool>::_L_qNaN,  = _STLP_LDOUBLE_QNAN_REP);
 __DECLARE_INSTANCE( const _L_rep,
                    _LimG<bool>::_L_sNaN,  = _STLP_LDOUBLE_SNAN_REP);

@@ -3,8 +3,14 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	* _iterator_base.h & many other places : iterator tags are being accepted by const reference 
 	   instead of value, to fix segmentation faults experienced on certain platforms with beta7.
 	  That also should improve efficiency on same platforms (apparently, empty unreferenced 
-	  objects with no constructors/destructors were copied on the stach when passed by value)
-	  Thanks everybody who reported this
+	  objects with no constructors/destructors were copied on the stach when passed by value).
+	  Accompanied change eliminates hardcoded deference hack used in previous beta.
+	  Thanks everybody who reported this.
+
+	* stl_user_config.h : added _STLP_GCC_USES_GNU_LD switch. This is for those platforms 
+	  where native linker does not let gcc to implement automatic instantiation of static 
+	  template data members (Tru64, AIX, HP-UX). 
+	  It is being put in this file as there is no automatic way to check if we are using GNU ld or not.
 	
 	* _range_erors.h : depandancy ob <stdexcept> and <string> removed for own iostreams mode
 	(thanks Doug Gilbert)
@@ -15,6 +21,7 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 		
 	* src/ftream.cpp, c_locale_win32.c : fixes for UNICODE compilation (thanks Valo)
 
+	* stl_gcc.h, etc : changes for GCC support on Tru64 (thanks Tobias Ernst)
 	
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :

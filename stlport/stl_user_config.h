@@ -125,6 +125,17 @@
  */
 // #define _STLP_SHRED_BYTE 0xA3
 
+/*
+ *  This option is for gcc users only and only affects systems where native linker
+ *  does not let gcc to implement automatic instantiation of static template data members/
+ *  It is being put in this file as there is no way to check if we are using GNU ld automatically,
+ *  so it becomes user's responsibility.
+ * 
+ */
+
+// #define _STLP_GCC_USES_GNU_LD
+
+
 //==========================================================
 // Compatibility section
 //==========================================================

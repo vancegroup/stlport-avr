@@ -100,7 +100,7 @@ install_unix :
 	  ./mkinstalldirs $(INSTALLDIR_INC)/$$dir; \
 	  for file in `ls ../stlport/$$dir/*.*`; \
 	  do \
-		$(INSTALL_H) $$file $(INSTALLDIR_INC)/$$file ; \
+		$(INSTALL_H) $$file $(INSTALLDIR_INC)/$$dir ; \
           done \
 	done
 	./mkinstalldirs $(INSTALLDIR_LIB)

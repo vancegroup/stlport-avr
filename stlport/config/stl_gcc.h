@@ -26,6 +26,13 @@
 #  include <config/stl_solaris.h>
 # endif
 
+/* Tru64 Unix, AIX, HP : gcc there by default uses uses native ld and hence cannot auto-instantiate 
+   static template data. If you are using GNU ld, please say so in stl_user_config.h header */    
+# if (__GNUC__ < 3) && ! (_STLP_GCC_USES_GNU_LD) && \
+   ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux))
+#   define _STLP_NO_STATIC_TEMPLATE_DATA
+# endif
+
 # if defined(__DJGPP)
 #   define _STLP_RAND48		1
 #   define _NOTHREADS		1
