@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/04/09 15:17:19 ptr>
+// -*- C++ -*- Time-stamp: <04/04/21 12:17:54 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003, 2004
@@ -591,7 +591,11 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 
   if ( uw_alloc_size == 0 ) {
     uw_alloc_size = sizeof( _uw_alloc_type ) * (__idx + 1);
+#if !defined(_STLP_VERSION) && defined(_MSC_VER)
+    user_words = alloc.allocate( uw_alloc_size, (void *)0 );
+#else
     user_words = alloc.allocate( uw_alloc_size );
+#endif
     std::fill( user_words, user_words + uw_alloc_size, 0 );
 #ifdef __FIT_UITHREADS
     thr_setspecific( _mt_key, user_words );
@@ -620,7 +624,11 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 #endif
     if ( (__idx + 1) * sizeof( _uw_alloc_type ) > uw_alloc_size ) {
       size_t tmp = sizeof( _uw_alloc_type ) * (__idx + 1);
-       _uw_alloc_type *_mtmp = alloc.allocate( tmp );
+#if !defined(_STLP_VERSION) && defined(_MSC_VER)
+      _uw_alloc_type *_mtmp = alloc.allocate( tmp, (void *)0 );
+#else
+      _uw_alloc_type *_mtmp = alloc.allocate( tmp );
+#endif
       std::copy( user_words, user_words + uw_alloc_size, _mtmp );
       std::fill( _mtmp + uw_alloc_size, _mtmp + tmp, 0 );
       alloc.deallocate( user_words, uw_alloc_size );
