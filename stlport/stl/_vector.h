@@ -244,10 +244,6 @@ public:
 	  //This one is usefull for the hashtable Move_Constructor:
 	  src.get()._M_finish = 0;
   }
-
-  /*explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_FullMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
-  }*/
   
 #if defined (_STLP_MEMBER_TEMPLATES)
 

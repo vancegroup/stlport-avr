@@ -937,26 +937,12 @@ private:  // Helper functions for insert.
       _Traits::assign(*__result, *__first);
   }
 
-  template <class _InputIterator>
-  void _M_move(_InputIterator __first, _InputIterator __last, pointer __result) {
-    //call _M_copy as being here means that __result is not within [__first, __last)
-    for ( ; __first != __last; ++__first, ++__result)
-      _Traits::assign(*__result, *__first);
-  }
-
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   pointer _M_insert_aux(pointer, _CharT);
 
   void _M_copy(const _CharT* __first, const _CharT* __last, _CharT* __result) {
     _Traits::copy(__result, __first, __last - __first);
-  }
-  void _M_move(const _CharT* __first, const _CharT* __last, _CharT* __result) {
-    _Traits::move(__result, __first, __last - __first);
-  }
-
-  void _M_move(const _CharT* __first, const _CharT* __last, _CharT* __result) {
-    _Traits::move(__result, __first, __last - __first);
   }
 
   void _M_move(const _CharT* __first, const _CharT* __last, _CharT* __result) {

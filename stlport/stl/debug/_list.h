@@ -135,13 +135,6 @@ public:
     }
 #  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
-  _DBG_list(_InputIterator __first, _InputIterator __last,
-						const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
-    : __range_checker<_Tp>(__first, __last), 
-      _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
-    }
-#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-  template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last)
     : __range_checker<_Tp>(__first, __last), 
       _STLP_DBG_LIST_BASE(__first, __last), _M_iter_list(_Get_base()) {
@@ -428,6 +421,3 @@ _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_LIST_H */
 
-// Local Variables:
-// mode:C++
-// End:
