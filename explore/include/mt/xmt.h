@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/05/06 17:09:14 ptr>
+// -*- C++ -*- Time-stamp: <99/05/13 21:59:38 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -43,12 +43,14 @@
 #ifdef _REENTRANT
 
 #  define MT_REENTRANT(point,nm) __impl::Locker nm(point)
+#  define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point)
 #  define MT_LOCK(point)         point.lock()
 #  define MT_UNLOCK(point)       point.unlock()
 
 #else
 
 #  define MT_REENTRANT(point,nm) ((void)0)
+#  define MT_REENTRANT_SDS(point,nm) ((void)0)
 #  define MT_LOCK(point)         ((void)0)
 #  define MT_UNLOCK(point)       ((void)0)
 
@@ -183,6 +185,55 @@ class Mutex
 #endif
 };
 
+class MutexSDS : // Self Deadlock Safe
+        public Mutex
+{
+  public:
+    MutexSDS() :
+        _count( 0 ),
+        _id( -1 )
+      { }
+
+    void lock()
+      {
+#ifdef _PTHREADS
+        pthread_t _c_id = pthread_self();
+#endif
+#ifdef _SOLARIS_THREADS
+        thread_t _c_id = thr_self();
+#endif
+#ifdef WIN32
+        HANDLE _c_id = GetCurrentThread();
+#endif
+        if ( _c_id != _id ) {
+          Mutex::lock();
+          _id = _c_id;
+          _count = 0;
+        }
+        ++_count;
+      }
+
+    void unlock()
+      {
+        if ( --_count == 0 ) {
+          _id = -1;
+          Mutex::unlock();
+        }
+      }
+
+  protected:
+    unsigned _count;
+#ifdef _PTHREADS
+    pthread_t _id;
+#endif
+#ifdef _SOLARIS_THREADS
+    thread_t  _id;
+#endif
+#ifdef WIN32
+    HANDLE    _id;
+#endif
+};
+
 class Locker
 {
   public:
@@ -194,6 +245,19 @@ class Locker
 
   private:
     const Mutex& m;
+};
+
+class LockerSDS // self deadlock safe
+{
+  public:
+    LockerSDS( const MutexSDS& point ) :
+      m( point )
+      { const_cast<MutexSDS&>(m).lock(); }
+    ~LockerSDS()
+      { const_cast<MutexSDS&>(m).unlock(); }
+
+  private:
+    const MutexSDS& m;
 };
 
 class Condition
@@ -268,7 +332,7 @@ class Condition
           return pthread_cond_wait( &_cond );
 #endif
 #ifdef _SOLARIS_THREADS
-          MT_REENTRANT( _cond_lock, _1 );
+          MT_REENTRANT( _lock, _1 );
           int ret;
           while ( !_val ) {
             ret = cond_wait( &_cond, &_lock.mutex );
@@ -283,18 +347,23 @@ class Condition
 
     int wait()
       {
-        set( false );
 #ifdef WIN32
+        MT_LOCK( _lock );
+        _val = false;
+        MT_UNLOCK( _lock );
         if ( WaitForSingleObject( _cond, -1 ) == WAIT_FAILED ) {
           return -1;
         }
         return 0;
 #endif
 #ifdef _PTHREADS
-          return pthread_cond_wait( &_cond );
+        MT_REENTRANT( _lock, _1 ); // ??
+        _val = false;
+        return pthread_cond_wait( &_cond );
 #endif
 #ifdef _SOLARIS_THREADS
-        MT_REENTRANT( _cond_lock, _1 );
+        MT_REENTRANT( _lock, _1 );
+        _val = false;
         int ret;
         while ( !_val ) {
           ret = cond_wait( &_cond, &_lock.mutex );
@@ -335,7 +404,6 @@ class Condition
 #endif
 #ifdef _SOLARIS_THREADS
     cond_t _cond;
-    Mutex _cond_lock;
 #endif
     Mutex _lock;
     bool _val;
