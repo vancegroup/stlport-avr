@@ -75,7 +75,7 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
         * _vector.c : added _vector.h inclusion for _STLP_LINK_TIME_INSTANTIATION case (thanks Alex Vanic)
 
 
-	* _num_patch.c : fixed overflow case with grouping (thanks Will Evers)
+	* _num_put.c : fixed overflow case with grouping (thanks Will Evers)
 	
 	* _istreambuf_iterator.h : fixed distance_type return type (thanks Anthony Williams)
 

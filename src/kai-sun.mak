@@ -60,8 +60,8 @@ LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} --soname ${DEBUG_DYNLIB_SONAME
 LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static} sparc_atomic.o
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} --soname ${STLDEBUG_DYNLIB_SONAME} sparc_atomic.o
 
-LDLIBS_RELEASE_dynamic =  -lposix4
-LDLIBS_STLDEBUG_dynamic = -lposix4
+# LDLIBS_RELEASE_dynamic =  -lposix4
+# LDLIBS_STLDEBUG_dynamic = -lposix4
 
 
 
