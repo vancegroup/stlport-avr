@@ -706,8 +706,8 @@ namespace stlport = _STLP_STD;
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<iterator> reverse_iterator
 # else
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
-   typedef _STLP_STD :: reverse_iterator<const_iterator> const_reverse_iterator; \
-   typedef _STLP_STD :: reverse_iterator<iterator> reverse_iterator
+   typedef _STLP_STD::reverse_iterator<const_iterator> const_reverse_iterator; \
+   typedef _STLP_STD::reverse_iterator<iterator> reverse_iterator
 # endif
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 # if defined (_STLP_MSVC50_COMPATIBILITY)
@@ -932,7 +932,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 
 #  define _STLP_EXPORT_TEMPLATE_CLASS _STLP_EXPORT template class _STLP_CLASS_DECLSPEC
 
-#  if defined (_STLP_MSVC) || (defined (__ICL) && (__ICL < 450))
+#  if defined (_STLP_MSVC) || defined (__ICL)
 #   define _STLP_STATIC_MEMBER_DECLSPEC
 #  else
 #   define _STLP_STATIC_MEMBER_DECLSPEC _STLP_DECLSPEC

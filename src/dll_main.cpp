@@ -56,6 +56,26 @@
 #  define _STLP_HAS_PERTHREAD_ALLOC
 # endif
 
+// boris : this piece of code duplicated from _range_errors.h
+#undef _STLP_THROW_MSG
+#if defined(_STLP_THROW_RANGE_ERRORS)
+# ifndef _STLP_STDEXCEPT
+#  include <stdexcept>
+# endif
+# ifndef _STLP_STRING
+#  include <string>
+# endif
+# define _STLP_THROW_MSG(ex,msg)  throw ex(string(msg))
+#else
+# if defined (_STLP_WINCE)
+#  define _STLP_THROW_MSG(ex,msg)  TerminateProcess(GetCurrentProcess(), 0)
+# else
+#  include <cstdlib>
+#  include <cstdio>
+#  define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
+# endif
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 

@@ -1536,7 +1536,7 @@ static LCID LocaleFromHex(const char* locale)
   return (LCID)result;
 }
 
-static BOOL CALLBACK EnumLocalesProc(LPTSTR locale)
+static BOOL CALLBACK EnumLocalesProcA(LPSTR locale)
 {
   LCID lcid=LocaleFromHex(locale);
   int LangFlag=0, CtryFlag=!__FndCtry;
@@ -1576,7 +1576,7 @@ int __GetLCID(const char* lang, const char* ctry, LCID* lcid)
   __FindFlag=0;
   __FndLang=lang;
   __FndCtry=ctry;
-  EnumSystemLocalesA(EnumLocalesProc, LCID_INSTALLED);
+  EnumSystemLocalesA(EnumLocalesProcA, LCID_INSTALLED);
 
   if(__FindFlag==0) return -1;
 

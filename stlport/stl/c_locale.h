@@ -153,7 +153,7 @@ struct _Locale_messages;
 
 #endif /* IRIX */
 
-#if defined(__GNUC__) || defined (__BORLANDC__)
+#if defined(__GNUC__) || defined (__BORLANDC__) || defined (__COMO__)
 
 # if defined (__CYGWIN__)
 

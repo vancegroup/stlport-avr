@@ -1,4 +1,10 @@
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
+
+	* _iterator_base.h & many other places : iterator tags are being accepted by const reference 
+	   instead of value, to fix segmentation faults experienced on certain platforms with beta7.
+	  That also should improve efficiency on same platforms (apparently, empty unreferenced 
+	  objects with no constructors/destructors were copied on the stach when passed by value)
+	  Thanks everybody who reported this
 	
 	* _range_erors.h : depandancy ob <stdexcept> and <string> removed for own iostreams mode
 	(thanks Doug Gilbert)
@@ -7,6 +13,9 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 
 	* _config.h, src/common_macros.mak : beta version number bumped 
 		
+	* src/ftream.cpp, c_locale_win32.c : fixes for UNICODE compilation (thanks Valo)
+
+	
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 

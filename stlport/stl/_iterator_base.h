@@ -75,7 +75,7 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 #   define _STLP_VALUE_TYPE(_It, _Tp)        (typename iterator_traits< _Tp >::value_type*)0
 #   define _STLP_DISTANCE_TYPE(_It, _Tp)     (typename iterator_traits< _Tp >::difference_type*)0
-#   define _STLP_ITERATOR_CATEGORY(_It, _Tp) (*(typename iterator_traits< _Tp >::iterator_category*)0x2000)
+#   define _STLP_ITERATOR_CATEGORY(_It, _Tp) typename iterator_traits< _Tp >::iterator_category()
 #  else
 #   define _STLP_ITERATOR_CATEGORY(_It, _Tp) __iterator_category(_It, _IsPtrType<_Tp>::_Ret())
 #   define _STLP_DISTANCE_TYPE(_It, _Tp)     (ptrdiff_t*)0
@@ -100,6 +100,7 @@ struct iterator_traits {
 # endif
 
 # ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+
 // fbp : this order keeps gcc happy
 template <class _Tp>
 struct iterator_traits<const _Tp*> {
@@ -270,23 +271,26 @@ inline _Distance* _STLP_CALL distance_type(const random_access_iterator<_Tp, _Di
 #endif /* _STLP_NO_ANACHRONISMS */
 
 template <class _InputIterator, class _Distance>
-inline void _STLP_CALL __distance(_InputIterator __first, _InputIterator __last,
+inline void _STLP_CALL __distance(const _InputIterator& __first, const _InputIterator& __last,
 				  _Distance& __n, const input_iterator_tag &) {
-  while (__first != __last) { ++__first; ++__n; }
+  _InputIterator __it(__first);
+  while (__it != __last) { ++__it; ++__n; }
 }
 
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _ForwardIterator, class _Distance>
-inline void _STLP_CALL __distance(_ForwardIterator __first, _ForwardIterator __last,
+inline void _STLP_CALL __distance(const _ForwardIterator& __first, const _ForwardIterator& __last,
 				  _Distance& __n, const forward_iterator_tag &) {
-  while (__first != __last) { ++__first; ++__n; }
+  _ForwardIterator __it(__first);
+  while (__it != __last) { ++__first; ++__n; }
 }
 
 template <class _BidirectionalIterator, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL __distance(_BidirectionalIterator __first, 
-					     _BidirectionalIterator __last,
+_STLP_INLINE_LOOP void _STLP_CALL __distance(const _BidirectionalIterator& __first, 
+					     const _BidirectionalIterator& __last,
 					     _Distance& __n, const bidirectional_iterator_tag &) {
-    while (__first != __last) { ++__first; ++__n; }
+  _BidirectionalIterator __it(__first);
+  while (__it != __last) { ++__it; ++__n; }
 }
 # endif
 
@@ -307,10 +311,11 @@ inline void _STLP_CALL distance(const _InputIterator& __first,
 
 template <class _InputIterator>
 inline _STLP_DIFFERENCE_TYPE(_InputIterator) _STLP_CALL
-__distance(_InputIterator __first, _InputIterator __last, const input_iterator_tag &) {
+__distance(const _InputIterator& __first, const _InputIterator& __last, const input_iterator_tag &) {
   _STLP_DIFFERENCE_TYPE(_InputIterator) __n = 0;
-  while (__first != __last) {
-    ++__first; ++__n;
+  _InputIterator __it(__first);  
+  while (__it != __last) {
+    ++__it; ++__n;
   }
   return __n;
 }
@@ -318,24 +323,26 @@ __distance(_InputIterator __first, _InputIterator __last, const input_iterator_t
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _ForwardIterator>
 inline _STLP_DIFFERENCE_TYPE(_ForwardIterator) _STLP_CALL 
-__distance(_ForwardIterator __first, _ForwardIterator __last,
+__distance(const _ForwardIterator& __first, const _ForwardIterator& __last,
            const forward_iterator_tag &)
 {
   _STLP_DIFFERENCE_TYPE(_ForwardIterator) __n = 0;
-  while (__first != __last) {
-    ++__first; ++__n;
+  _ForwardIterator __it(__first);
+  while (__it != __last) {
+    ++__it; ++__n;
   }
   return __n;
 }
 
 template <class _BidirectionalIterator>
 _STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) _STLP_CALL 
-__distance(_BidirectionalIterator __first, 
-           _BidirectionalIterator __last,
+__distance(const _BidirectionalIterator& __first, 
+           const _BidirectionalIterator& __last,
            const bidirectional_iterator_tag &) {
   _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) __n = 0;
-  while (__first != __last) {
-    ++__first; ++__n;
+  _BidirectionalIterator __it(__first);
+  while (__it != __last) {
+    ++__it; ++__n;
   }
   return __n;
 }

@@ -41,8 +41,6 @@ void  _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg);
 void  _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg);
 _STLP_END_NAMESPACE
 #else
-// For wrapper mode and throwing range errors, include the
-// stdexcept header and throw the appropriate exceptions directly.
 
 #if defined(_STLP_THROW_RANGE_ERRORS)
 # ifndef _STLP_STDEXCEPT
@@ -61,6 +59,9 @@ _STLP_END_NAMESPACE
 #  define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
 # endif
 #endif
+
+// For wrapper mode and throwing range errors, include the
+// stdexcept header and throw the appropriate exceptions directly.
 
 _STLP_BEGIN_NAMESPACE
 inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 

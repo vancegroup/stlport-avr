@@ -236,7 +236,7 @@ int collate_byname<char>::do_compare(const char* __low1,
 collate_byname<char>::string_type
 collate_byname<char>::do_transform(const char* low, const char* high) const {
   size_t n = _Locale_strxfrm(_M_collate,
-                             NULL, 0,
+                             0, 0,
                              low, high - low);
 
   __vector__<char, allocator<char> > buf(n);
@@ -282,7 +282,7 @@ collate_byname<wchar_t>
   ::do_transform(const wchar_t* low, const wchar_t* high) const
 {
   size_t n = _Locale_strwxfrm(_M_collate,
-                              NULL, 0,
+                              0, 0,
                               low, high - low);
 
   __vector__<wchar_t, allocator<wchar_t> > buf(high - low);

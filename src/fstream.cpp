@@ -583,13 +583,8 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     return false;               // flags allowed by the C++ standard.
   }
 
-# ifdef _UNICODE
-  file_no = CreateFileA(
-# else
-  file_no = CreateFile(
-# endif
-			name, dwDesiredAccess, dwShareMode, 0,
-                         dwCreationDisposition, permission, 0);
+  file_no = CreateFileA(name, dwDesiredAccess, dwShareMode, 0,
+			dwCreationDisposition, permission, 0);
   
   if ( file_no == INVALID_HANDLE_VALUE )
   return false;
