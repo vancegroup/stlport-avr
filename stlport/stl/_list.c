@@ -178,7 +178,7 @@ void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
 #if !defined (__WATCOMC__)
     list<_Tp, _Alloc> __counter[64];
 #else
-    __vector__<list<_Tp, _Alloc>, _Alloc> __counter(64);		
+    vector<list<_Tp, _Alloc>, _Alloc> __counter(64);
 #endif		//*TY 05/25/2000 - 
     int __fill = 0;
     while (!__that.empty()) {

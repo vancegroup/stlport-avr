@@ -188,7 +188,7 @@ _STLP_END_NAMESPACE
 #  ifdef _STLP_NO_BOOL
 #  undef   EH_BIT_VECTOR_IMPLEMENTED
 #  else
-#   define EH_BIT_VECTOR EH_STD::__vector__<bool, eh_allocator(bool) >
+#   define EH_BIT_VECTOR EH_STD::vector<bool, eh_allocator(bool) >
 #  endif
 # endif
 
