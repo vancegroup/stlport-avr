@@ -230,7 +230,6 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
 {
   char __grpbuf[64];
   ptrdiff_t __len = __iend - __buf;
-  char __grpbuf[64];
 
   //  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
   //  const string& __grouping = __np.grouping();

@@ -30,3 +30,16 @@ swap(_STLP_TEMPLATE_CONTAINER& __hm1, _STLP_TEMPLATE_CONTAINER& __hm2)
 
 #endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
 
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+
+_STLP_TEMPLATE_HEADER
+struct __partial_move_traits<_STLP_TEMPLATE_CONTAINER > {
+  typedef __true_type supported;
+};
+
+_STLP_TEMPLATE_HEADER
+struct __action_on_move<_STLP_TEMPLATE_CONTAINER > {
+  typedef __true_type swap;
+};
+
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
