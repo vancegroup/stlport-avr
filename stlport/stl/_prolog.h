@@ -15,4 +15,3 @@
 # if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
 #  include <config/_prolog.h>
 # endif
-

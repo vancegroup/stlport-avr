@@ -20,6 +20,8 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* _ostream.c : fixed formatting bug for width()==1
 
 	* config/_epilog.h : added option pop section for Borland. 
+
+	* stl/_threads.h : fixed InterlockedXXX declarations for MS .NET (thanks Piers Haken)
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

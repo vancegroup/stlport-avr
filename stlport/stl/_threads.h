@@ -111,9 +111,15 @@ extern "C" {
 #    endif
 #   endif
 
+#if (_MSC_VER >= 1300)
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
+#else
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
+#endif
 
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );

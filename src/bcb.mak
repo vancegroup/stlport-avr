@@ -40,8 +40,8 @@ STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE
 
 LINKSTARTUP= c0d32.obj
 
-FLAGS_COMMON= -I.;..\stlport;$(BCB)\include; -jb -j1 -w -c -w-par -w-inl -tWM -w-stl
-FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS)
+FLAGS_COMMON= -I.;..\stlport;$(BCB)\include; -jb -j1 -w -c -w-par -w-inl -w-stl
+FLAGS_COMMON_static = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(STATIC_DEFS) -tWM
 FLAGS_COMMON_dynamic = $(FLAGS_COMMON) -D$(SYSDEFINES);$(USERDEFINES);$(DYNAMIC_DEFS) -tWDR
 
 # -L$(MAKEDIR)\..\lib  removed  ...it should get ilink32.cfg values instead
