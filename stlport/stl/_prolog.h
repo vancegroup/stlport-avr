@@ -4,7 +4,7 @@
  * allow reentrancy of this header.
  */
 /* We undef "std" on entry , as STLport headers may include native ones. */
-# undef std
+/* # undef std */
 
 # ifndef _STLP_CONFIG_H
 #  include <stl/_config.h>
