@@ -77,7 +77,8 @@
 #  endif
 
 //HPUX variants have (on some platforms optional) non-standard "DCE" pthreads impl
-#  if defined(_DECTHREADS_) && defined (_PTHREAD_USE_D4) && ! defined (_CMA_SUPPRESS_EXTERNALS_)
+#  if defined(_DECTHREADS_) && ( defined (_PTHREAD_USE_D4) || defined (__hpux)) \
+   && ! defined (_CMA_SUPPRESS_EXTERNALS_)
 #   define _STLP_PTHREAD_ATTR_DEFAULT pthread_mutexattr_default
 #  else
 #   define _STLP_PTHREAD_ATTR_DEFAULT 0

@@ -425,7 +425,7 @@ extern "C" {
     for(dayofweek=LOCALE_SABBREVDAYNAME1; dayofweek<=LOCALE_SABBREVDAYNAME7; dayofweek++)
       {
 	int dayindex= ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ?
-	  dayofweek-LOCALE_SDAYNAME1+1 : 0;
+	  dayofweek-LOCALE_SABBREVDAYNAME1+1 : 0;
 	size=GetLocaleInfoA(ltime->lcid, dayofweek, NULL, 0);
 	ltime->abbrev_dayofweek[dayindex]=(char*)malloc(size);
 	if(!ltime->abbrev_dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }

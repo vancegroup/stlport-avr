@@ -127,8 +127,8 @@ public:
                                                              _Rb_tree_node_base*& __rightmost);
   // those are from _Rb_tree_base_iterator - moved here to reduce code bloat
   // moved here to reduce code bloat without templatizing _Rb_tree_base_iterator
-  static void  _STLP_CALL _M_increment(_Rb_tree_base_iterator*);
-  static void  _STLP_CALL _M_decrement(_Rb_tree_base_iterator*);
+  static _Rb_tree_node_base*  _STLP_CALL _M_increment(_Rb_tree_node_base*);
+  static _Rb_tree_node_base*  _STLP_CALL _M_decrement(_Rb_tree_node_base*);
 };
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT) 
@@ -139,9 +139,9 @@ typedef _Rb_global<bool> _Rb_global_inst;
 
 struct _Rb_tree_base_iterator
 {
-  typedef _Rb_tree_node_base::_Base_ptr _Base_ptr;
+  typedef _Rb_tree_node_base*        _Base_ptr;
   typedef bidirectional_iterator_tag iterator_category;
-  typedef ptrdiff_t difference_type;
+  typedef ptrdiff_t                  difference_type;
   _Base_ptr _M_node;
   bool operator==(const _Rb_tree_base_iterator& __y) const {
     return _M_node == __y._M_node;
@@ -172,17 +172,17 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator
   
   _STLP_DEFINE_ARROW_OPERATOR
 
-  _Self& operator++() { _Rb_global_inst::_M_increment(this); return *this; }
+  _Self& operator++() { _M_node = _Rb_global_inst::_M_increment(_M_node); return *this; }
   _Self operator++(int) {
     _Self __tmp = *this;
-    _Rb_global_inst::_M_increment(this);
+    _M_node = _Rb_global_inst::_M_increment(_M_node);
     return __tmp;
   }
     
-  _Self& operator--() { _Rb_global_inst::_M_decrement(this); return *this; }
+  _Self& operator--() { _M_node = _Rb_global_inst::_M_decrement(_M_node); return *this; }
   _Self operator--(int) {
     _Self __tmp = *this;
-    _Rb_global_inst::_M_decrement(this);
+    _M_node = _Rb_global_inst::_M_decrement(_M_node);
     return __tmp;
   }
 };

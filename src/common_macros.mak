@@ -12,7 +12,7 @@ PATCH_SUFFIX=
 
 # This one is not always present; it should be empty for release versions.
 # We do not assume any binary compatibility for betas.
-BETA_SUFFIX=.b5
+BETA_SUFFIX=.b7
 
 VERSION_SUFFIX= .$(VERSION_MAJOR).$(VERSION_MINOR)$(BETA_SUFFIX)
 

@@ -270,10 +270,9 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
 }
 
 template <class _Dummy>
-void _STLP_CALL
-_Rb_global<_Dummy>::_M_decrement(_Rb_tree_base_iterator* __it)
+_Rb_tree_node_base* _STLP_CALL
+_Rb_global<_Dummy>::_M_decrement(_Rb_tree_node_base* _M_node)
 {
-  _Base_ptr _M_node = __it->_M_node;
   if (_M_node->_M_color == _S_rb_tree_red &&
       _M_node->_M_parent->_M_parent == _M_node)
     _M_node = _M_node->_M_right;
@@ -291,14 +290,13 @@ _Rb_global<_Dummy>::_M_decrement(_Rb_tree_base_iterator* __it)
     }
     _M_node = __y;
   }
-  __it->_M_node = _M_node;
+  return _M_node;
 }
 
 template <class _Dummy>
-void _STLP_CALL
-_Rb_global<_Dummy>::_M_increment(_Rb_tree_base_iterator* __it)
+_Rb_tree_node_base* _STLP_CALL
+_Rb_global<_Dummy>::_M_increment(_Rb_tree_node_base* _M_node)
 {
-  _Base_ptr _M_node = __it->_M_node;
   if (_M_node->_M_right != 0) {
     _M_node = _M_node->_M_right;
     while (_M_node->_M_left != 0)
@@ -313,7 +311,7 @@ _Rb_global<_Dummy>::_M_increment(_Rb_tree_base_iterator* __it)
     if (_M_node->_M_right != __y)
       _M_node = __y;
   }
-  __it->_M_node = _M_node;
+  return _M_node;
 }
 
 #endif /* defined (__BUILDING_STLPORT) || ! defined (_STLP_OWN_IOSTREAMS) */
@@ -365,9 +363,9 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
        ( __w == 0 &&     // If w != 0, the remainder fails to false
          ( __x != 0 ||     // If x != 0, the remainder succeeds to true
            _M_key_compare( _KeyOfValue()(__v), _S_key(__y) ) )
-       )
-     ) {
-
+	 )
+       ) {
+    
     __z = _M_create_node(__v);
     _S_left(__y) = __z;               // also makes _M_leftmost() = __z 
                                       //    when __y == _M_header
