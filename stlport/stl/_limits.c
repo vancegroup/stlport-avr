@@ -164,7 +164,7 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 
 #endif
 
-#if _STLP_STATIC_TEMPLATE_DATA > 0
+#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 
 # ifndef _STLP_NO_LONG_DOUBLE
 template <class __dummy>

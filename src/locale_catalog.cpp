@@ -35,6 +35,7 @@
 #include <stl/_num_get.h>
 #include <stl/_num_put.h>
 
+
 _STLP_BEGIN_NAMESPACE
 
 // those wrappers are needed to avoid extern "C"
@@ -410,7 +411,6 @@ locale::locale(const locale& L1, const locale& L2, category c)
   _M_impl = impl;
 }
 
-
 // Six functions, one for each category.  Each of them takes a 
 // _Locale* and a name, constructs that appropriate category
 // facets by name, and inserts them into the locale.  
@@ -688,6 +688,7 @@ void _Locale::insert_monetary_facets(const char* pname)
   }
 }
 
+
 void _Locale::insert_messages_facets(const char* pname)
 {
   _Locale_impl* i2 = locale::classic()._M_impl;
@@ -724,7 +725,9 @@ void _Locale::insert_messages_facets(const char* pname)
 # endif
   }
 }
+
 _STLP_END_NAMESPACE
+
 
 # include "ctype_byname.cpp"
 # include "collate_byname.cpp"
@@ -732,3 +735,5 @@ _STLP_END_NAMESPACE
 # include "numpunct_byname.cpp"
 # include "monetary_byname.cpp"
 # include "messages_byname.cpp"
+
+

@@ -113,7 +113,6 @@ pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
   return pair<_InIt, bool>(__first, true);
 }
 
-//*TY 02/26/2000 - mpw compilers have difficulty matching complex template arguments
 template <class _InIt, class _OuIt, class _CharT>
 pair<_InIt, bool>
 __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
