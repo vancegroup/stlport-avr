@@ -35,10 +35,10 @@
 #define _STLP_FILE_UNIQUE_ID VECTOR_H
 _STLP_INSTRUMENT_FILE();
 
-# ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
+// # ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 #  undef  _DBG_vector
 #  define _DBG_vector vector
-# endif
+// # endif
 
 #  define _STLP_DBG_VECTOR_BASE __WORKAROUND_DBG_RENAME(vector) <_Tp, _Alloc>
 
@@ -96,7 +96,7 @@ struct _Vector_const_traits<bool, _Bit_iterator>
 };
 
 template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
-class _DBG_vector : private __range_checker<_Tp>, public _STLP_DBG_VECTOR_BASE
+class _DBG_vector : public _STLP_DBG_VECTOR_BASE, private __range_checker<_Tp>
 {
 private:
   typedef _STLP_DBG_VECTOR_BASE _Base;
@@ -136,10 +136,10 @@ protected:
 public:
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
-  iterator begin() { return iterator(&_M_iter_list, this->_M_start); }
-  const_iterator begin() const { return const_iterator(&_M_iter_list, this->_M_start); }
-  iterator end() { return iterator(&_M_iter_list, this->_M_finish); }
-  const_iterator end() const { return const_iterator(&_M_iter_list, this->_M_finish); }
+  iterator begin() { return iterator(&_M_iter_list, _Base::begin()); }
+  const_iterator begin() const { return const_iterator(&_M_iter_list, _Base::begin()); }
+  iterator end() { return iterator(&_M_iter_list, _Base::end()); }
+  const_iterator end() const { return const_iterator(&_M_iter_list, _Base::end()); }
 
   reverse_iterator rbegin()
     { return reverse_iterator(end()); }
