@@ -31,5 +31,4 @@
 #  elif defined __ISCPP__
 #   include "c_locale_is/c_locale_is.cpp"
 #  endif
-
 # endif

@@ -17,7 +17,7 @@ LIB_BASENAME=stlport_bcb55
 
 LINK_OUT=
 DYNLINK_OUT=
-LINK = tlib /P128
+LINK = tlib /P256
 DYN_LINK = ilink32
 OBJEXT=obj
 DYNEXT=dll
@@ -101,6 +101,8 @@ RELEASE_LINK_COMMANDS_static=\
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(RELEASE_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(RELEASE_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 
@@ -135,6 +137,8 @@ DEBUG_LINK_COMMANDS_static= \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(DEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(DEBUG_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 
@@ -168,6 +172,8 @@ STLDEBUG_LINK_COMMANDS_static= \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)locale_catalog.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)facets_byname.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)locale_impl.$(OBJEXT) \
++$(STLDEBUG_OBJDIR_static)$(PATH_SEP)c_locale.$(OBJEXT) \
++$(STLDEBUG_OBJDIR_static)$(PATH_SEP)c_locale_stub.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)complex_io_w.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)string_w.$(OBJEXT)
 

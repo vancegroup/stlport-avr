@@ -557,10 +557,11 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux()
       return _Noconv_input<_Traits>::_M_doit(this);
 
     else if (__status == _Codecvt::error ||
-        (__inext != _M_int_buf && __enext == _M_ext_buf) ||
-        (_M_constant_width &&
-         __inext - _M_int_buf != _M_width * (__enext - _M_ext_buf)) ||
-        (__inext == _M_int_buf && __enext - _M_ext_buf >= _M_max_width))
+             (__inext != _M_int_buf && __enext == _M_ext_buf) ||
+             (_M_constant_width &&
+              //         __inext - _M_int_buf != _M_width * (__enext - _M_ext_buf)) ||
+              (__inext - _M_int_buf) *  _M_width != (__enext - _M_ext_buf)) ||
+             (__inext == _M_int_buf && __enext - _M_ext_buf >= _M_max_width))
       return _M_input_error();
     
     else if (__inext != _M_int_buf) {

@@ -29,6 +29,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+// _STLP_BEGIN_NAMESPACE
+extern "C" {
+#endif
+
 /* Framework functions */
 /*
   locale :: "lang[_country[.code_page]]"
@@ -1723,3 +1728,8 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
   *ret_buf_size = buffer_size;
   return buffer;
 }
+
+#ifdef __cplusplus
+}
+// _STLP_END_NAMESPACE
+#endif

@@ -58,7 +58,7 @@ extern "C" {
 #  include <fcntl.h>            // For _O_RDONLY, etc
 #  endif
 #  include <sys/stat.h>         // For _fstat
-# else
+# elif !defined(__STL_WINCE)
 #  include <io.h>               // For _get_osfhandle
 #  include <fcntl.h>            // For _O_RDONLY, etc
 #  include <sys/stat.h>         // For _fstat

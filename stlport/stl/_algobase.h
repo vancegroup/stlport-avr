@@ -188,7 +188,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
   return __copy(__first, __last, __result, 
                 _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
-		_STLP_DISTANCE_TYPE(__first, _InputIter));
+                _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {

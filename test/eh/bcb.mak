@@ -68,6 +68,9 @@ clean:
 .cpp.obj:
     $(BCB)\BIN\$(BCC32) $(CFLAG1) -n$(@D) -c $<
 
+.cpp.exe:
+    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(LDFLAGS) -n$(@D) $<
+
 .cpp.i:
     $(BCB)\BIN\$(CPP32) $(CFLAG1) -n. -Sr -Ss -Sd {$< }
 # ---------------------------------------------------------------------------

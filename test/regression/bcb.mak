@@ -248,7 +248,7 @@ PATHPAS = .;
 PATHASM = .;
 PATHRC = .;
 
-USERDEFINES = _STLP_NO_OWN_IOSTREAMS
+# USERDEFINES = _STLP_NO_OWN_IOSTREAMS
 SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES;_DEBUG
 
  # ---------------------------------------------------------------------------
