@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/05/06 18:27:37 ptr>
+// -*- C++ -*- Time-stamp: <04/06/16 16:39:01 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003, 2004
@@ -39,7 +39,7 @@
 
 #include <cstring>
 #ifndef _WIN32
-#  include <ostream>
+# include <ostream>
 #endif
 
 #include <iostream>
@@ -59,6 +59,8 @@
 #  endif
 #  include <sys/time.h>
 #endif
+
+#include <stdio.h>
 
 #include <cmath> // for time operations
 
@@ -911,8 +913,13 @@ void Thread::signal_exit( int sig )
 {
 #ifdef _PTHREADS
   _uw_alloc_type *user_words =
-    static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ))
-    + Thread::_self_idx;
+    static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ));
+  if ( user_words == 0 ) {
+    // async signal unsafe? or wrong thread called?
+    // this a bad point, do nothing
+    return;
+  }
+  user_words += Thread::_self_idx;
   Thread *me = reinterpret_cast<Thread *>(*reinterpret_cast<void **>(user_words));
   // _STLP_ASSERT( me->is_self() );
 
@@ -1206,7 +1213,9 @@ void *Thread::_call( void *p )
 #endif
 
   me->pword( _self_idx ) = me; // to have chance make Thread sanity by signal
-  signal_handler( SIGTERM, signal_exit ); // set handler for sanity
+  // In most cases for Linux there are problems with signals processing,
+  // so I don't set it default more
+  // signal_handler( SIGTERM, signal_exit ); // set handler for sanity
   me->_state = goodbit;
   _start_lock.unlock();
   try {
@@ -1296,7 +1305,7 @@ void *Thread::_call( void *p )
 void Thread::unexpected()
 {
 #ifndef _WIN32
-  cerr << "\nUnexpected exception" << endl;
+  cerr << "\nUnexpected exception, catched here: " << __FILE__ << ':' << __LINE__ << endl;
 #endif
   signal_exit( SIGTERM );  // Thread::_exit( 0 );
 }
@@ -1304,7 +1313,7 @@ void Thread::unexpected()
 void Thread::terminate()
 {
 #ifndef _WIN32
-  cerr << "\nTerminate exception" << endl;
+  cerr << "\nTerminate exception, catched here: " << __FILE__ << ':' << __LINE__<< endl;
 #endif
   signal_exit( SIGTERM );  // Thread::_exit( 0 );
 }
