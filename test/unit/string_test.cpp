@@ -284,6 +284,13 @@ void StringTest::insert()
   CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
   
   str = strorg;
+  string::iterator b = str.begin();
+  string::const_iterator s = str.begin() + str.size() / 2 - 1;
+  string::const_iterator e = str.end();
+  str.insert( b, s, e );
+  CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
+
+  str = strorg;
   str.insert(str.begin(), str.begin() + str.size() / 2 - 1, str.end());
   CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
 
@@ -339,6 +346,14 @@ void StringTest::replace()
   /*
    * This is the test for the template replace method.
    */
+  s = "123456";
+  string::iterator b = s.begin() + 4;
+  string::iterator e = s.end();
+  string::const_iterator rb = s.begin();
+  string::const_iterator re = s.end();
+  s.replace(b, e, rb, re);
+  CPPUNIT_ASSERT( s == "1234123456" );
+
   s = "123456";
   s.replace(s.begin() + 4, s.end(), s.begin(), s.end());
   CPPUNIT_ASSERT( s == "1234123456" );
