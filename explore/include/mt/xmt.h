@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/10/18 10:53:18 ptr>
+// -*- C++ -*- Time-stamp: <00/02/07 19:55:24 ptr>
 
 /*
  *
@@ -27,7 +27,7 @@
 #include <config/feature.h>
 #endif
 
-#include <stl_config.h>
+// #include <stl_config.h>
 #include <cstddef>
 #include <stdexcept>
 
@@ -141,7 +141,11 @@ extern __XMT_DLL void signal_throw( int sig ) throw( int );
 #ifndef WIN32
 using std::size_t;
 #endif
+#ifdef __GNUC__
+  // using std::runtime_error;
+#else
 using std::runtime_error;
+#endif
 
 class Mutex
 {
@@ -489,14 +493,14 @@ class Thread
     typedef thread_key_t thread_key_type;
 #endif
 
-#ifdef __STL_USE_STD_ALLOCATORS
-    typedef std::allocator<long *> alloc;
-#else 
+#ifdef __STL_USE_SGI_ALLOCATORS
     typedef __STD::alloc alloc;
+#else 
+    typedef std::allocator<long *> alloc;
 #endif
 
     enum {
-#ifdef __STL_SOLARIS_THREADS
+#ifdef __STL_UITHREADS // __STL_SOLARIS_THREADS
       bound     = THR_BOUND,
       detached  = THR_DETACHED,
       new_lwp   = THR_NEW_LWP,
@@ -567,7 +571,11 @@ class Thread
     Thread( const Thread& )
       { }
 
+#ifdef __GNUC__
+    void _create( const void *p, size_t psz );
+#else
     void _create( const void *p, size_t psz ) throw(runtime_error);
+#endif
     static void *_call( void *p );
 
     static void unexpected();

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/10/18 10:54:12 ptr>
+// -*- C++ -*- Time-stamp: <00/02/02 21:34:17 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -17,6 +17,9 @@
 #include <cstring>
 #ifndef _WIN32
 #  include <ostream>
+#endif
+#ifdef __SGI_STL_OWN_IOSTREAMS
+#include <iostream>
 #endif
 #include <memory>
 #include <functional>
@@ -537,15 +540,15 @@ long& Thread::iword( int __idx )
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
-#ifdef __STL_USE_STD_ALLOCATORS
+#ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
 #  ifdef _MSC_VER
     user_words = alloc().allocate( uw_alloc_size, (const void *)0 );
 #  else
     user_words = alloc().allocate( uw_alloc_size );
 #  endif
-#else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
+#else // __STL_USE_SGI_ALLOCATORS
     user_words = alloc::allocate( uw_alloc_size );
-#endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
+#endif // __STL_USE_SGI_ALLOCATORS
     std::fill( *user_words, *user_words + uw_alloc_size, 0 );
 #ifdef __STL_UITHREADS
     thr_setspecific( _mt_key, user_words );
@@ -558,12 +561,12 @@ long& Thread::iword( int __idx )
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-#ifdef __STL_USE_STD_ALLOCATORS
+#ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
 #ifdef _MSC_VER
     long **_mtmp = alloc().allocate( tmp, (const void *)0 );
-#else // __STL_USE_STD_ALLOCATORS
+#else // __STL_USE_SGI_ALLOCATORS
     long **_mtmp = alloc().allocate( tmp );
-#endif // __STL_USE_STD_ALLOCATORS
+#endif // __STL_USE_SGI_ALLOCATORS
     std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
@@ -620,7 +623,8 @@ void*& Thread::pword( int __idx )
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+// #if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+#ifndef  __STL_USE_SGI_ALLOCATORS
 // #ifdef _MSC_VER
 //     long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
 // #else
@@ -629,9 +633,9 @@ void*& Thread::pword( int __idx )
     std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
-#else
+#else // __STL_USE_SGI_ALLOCATORS
     user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
-#endif
+#endif // __STL_USE_SGI_ALLOCATORS
     std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
 #ifdef __STL_UITHREADS
