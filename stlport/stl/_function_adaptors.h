@@ -601,7 +601,7 @@ private:
 };
 
 template <class _Arg>
-class pointer_to_unary_function : public unary_function<_Arg, void> {
+class pointer_to_unary_function<_Arg, void> : public unary_function<_Arg, void> {
   typedef void (*__fun_type)(_Arg);
   __fun_type _M_ptr;
 public:
@@ -611,7 +611,7 @@ public:
 };
 
 template <class _Arg1, class _Arg2>
-class pointer_to_binary_function : public binary_function<_Arg1,_Arg2,void> {
+class pointer_to_binary_function<_Arg1, _Arg2, void> : public binary_function<_Arg1,_Arg2,void> {
   typedef void (*__fun_type)(_Arg1, _Arg2);
   __fun_type _M_ptr;
 public:
