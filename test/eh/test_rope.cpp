@@ -14,6 +14,10 @@
 
 ***********************************************************************************/
 
+# ifdef __SUNPRO_CC
+// #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
+# endif
+
 #include "Prefix.h"
 #include "Tests.h"
 #include "TestClass.h"

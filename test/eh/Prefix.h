@@ -43,7 +43,7 @@
 //	STL. They have no effect when testing other STL implementations.
 //=========================================================================
 
-# define _STLP_USE_RAW_SGI_ALLOCATORS
+// # define _STLP_USE_RAW_SGI_ALLOCATORS
 # ifndef _STLP_USE_NEWALLOC
 #  define _STLP_USE_NEWALLOC
 # endif
@@ -115,7 +115,53 @@
 # define stl_destroy EH_STD::destroy
 # include <memory>
 
-# define eh_allocator(T) EH_STD::__allocator<T, /* EH_STD::__debug_alloc< */ EH_STD::__new_alloc /* > */ >
+template <class _Tp>
+class _STLP_CLASS_DECLSPEC EH_allocator;
+
+template <class _Tp>
+class _STLP_CLASS_DECLSPEC EH_allocator {
+public:
+
+  typedef _Tp        value_type;
+  typedef value_type *       pointer;
+  typedef const _Tp* const_pointer;
+  typedef _Tp&       reference;
+  typedef const _Tp& const_reference;
+  typedef size_t     size_type;
+  typedef ptrdiff_t  difference_type;
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  template <class _Tp1> struct rebind {
+    typedef EH_allocator<_Tp1> other;
+  };
+# endif
+  EH_allocator() _STLP_NOTHROW {}
+ # if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _Tp1> EH_allocator(const EH_allocator<_Tp1>&) _STLP_NOTHROW {}
+ # endif    
+  EH_allocator(const EH_allocator<_Tp>&) _STLP_NOTHROW {}
+  ~EH_allocator() _STLP_NOTHROW {}
+  pointer address(reference __x) { return &__x; }
+  const_pointer address(const_reference __x) const { return &__x; }
+  // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
+  _Tp* allocate(size_type __n, const void* = 0) const { 
+    return __n != 0 ? __REINTERPRET_CAST(value_type*,EH_STD::__new_alloc::allocate(__n * sizeof(value_type))) : 0;
+  }
+  // __p is permitted to be a null pointer, only if n==0.
+  void deallocate(pointer __p, size_type __n) const {
+    _STLP_ASSERT( (__p == 0) == (__n == 0) )
+      if (__p != 0) EH_STD::__new_alloc::deallocate((void*)__p, __n * sizeof(value_type));
+  }
+  // backwards compatibility
+  void deallocate(pointer __p) const {  if (__p != 0) EH_STD::__new_alloc::deallocate((void*)__p, sizeof(value_type)); }
+  size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
+  void construct(pointer __p, const _Tp& __val) const { _STLP_STD::construct(__p, __val); }
+  void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
+};
+
+template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const EH_allocator<_T1>&, const EH_allocator<_T2>&)  { return true; }
+template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const EH_allocator<_T1>&, const EH_allocator<_T2>&) { return false; }
+
+# define eh_allocator(T) EH_allocator<T>
 
 # define EH_BIT_VECTOR_IMPLEMENTED
 

@@ -434,11 +434,7 @@ public:
       _Destroy(__s, __s + __len);
     }
     //  This has to be a static member, so this gets a bit messy
-#   ifdef _STLP_MEMBER_TEMPLATE_CLASSES
-    __a.deallocate(__s, _S_rounded_up_size(__len));
-#   else
-    __stl_alloc_rebind (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
-#   endif
+    _STLP_REBIND_ALLOCATOR (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
   }
   
   // Deallocate data section of a leaf.
@@ -1246,8 +1242,7 @@ protected:
   static _RopeLeaf* _S_new_RopeLeaf(__GC_CONST _CharT *__s,
                                     size_t _p_size, allocator_type __a)
   {
-    _RopeLeaf* __space = __stl_alloc_create(__a, 
-                                            (_RopeLeaf*)0).allocate(1,(const void*)0);
+    _RopeLeaf* __space = __stl_alloc_create(__a, (_RopeLeaf*)0).allocate(1,(const void*)0);
     _STLP_TRY {
       _STLP_PLACEMENT_NEW(__space) _RopeLeaf(__s, _p_size, __a);
     }
@@ -1290,11 +1285,9 @@ protected:
                                                size_t _p_size, allocator_type __a)
   {
     if (0 == _p_size) return 0;
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
-    _CharT* __buf = __a.allocate(_S_rounded_up_size(_p_size));
-#else
-    _CharT* __buf = __stl_alloc_rebind(__a, (_CharT*)0).allocate(_S_rounded_up_size(_p_size));
-#endif
+
+    _CharT* __buf = __stl_alloc_create(__a, (_CharT*)0).allocate(_S_rounded_up_size(_p_size));
+
     uninitialized_copy_n(__s, _p_size, __buf);
     _S_cond_store_eos(__buf[_p_size]);
 

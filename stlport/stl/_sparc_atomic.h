@@ -17,14 +17,14 @@
 
 #  else /* __arch64__ */
 
-#   define _STLP_EXCH_ASM  asm volatile ("cas [%3], %4, %0 ;  membar  #LoadLoad | #LoadStore " : \
+#   define _STLP_EXCH_ASM  asm volatile ("cas [%3], %4, %0" : \
                    "=r" (_L_value2), "=m" (*_L_pvalue1) : \
                    "m" (*_L_pvalue1), "r" (_L_pvalue1), "r" (_L_value1), "0" (_L_value2) )
 #  endif
 
 # else /* __sparc_v9__ */
 
-#  define _STLP_EXCH_ASM asm volatile ("swap [%3], %0 ; stbar " : \
+#  define _STLP_EXCH_ASM asm volatile ("swap [%3], %0 " : \
                                        "=r" (_L_value2), "=m" (*_L_pvalue1) : \
                                        "m" (*_L_pvalue1), "r" (_L_pvalue1),  "0" (_L_value2) )
 # endif

@@ -429,30 +429,6 @@
 #  endif
 #  define __FULL_NAME(X) __WORKAROUND_RENAME(X)
 
-/* macro to convert the allocator for initialization
- * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
-
-#if defined (_STLP_MEMBER_TEMPLATES) || ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
-/* if _STLP_NO_TEMPLATE_CONVERSIONS is set, the member template constructor is
- * not used implicitly to convert allocator parameter, so let us do it explicitly */
-# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_NO_TEMPLATE_CONVERSIONS)
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-# else
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
-# endif
-/* else convert, but only if partial specialization works, since else
- * Container::allocator_type won't be different */
-#else 
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
-
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
-#  define _STLP_REBIND_ALLOCATOR(__a, _Tp) __a
-#else
-#  define _STLP_REBIND_ALLOCATOR(__a, _Tp) __stl_alloc_rebind(__a,(_Tp*)0)
-#endif
-
 /* provide a mechanism to redefine std:: namespace in a way that is transparent to the 
  * user. _STLP_REDEFINE_STD is being used for wrapper files that include native headers
  * to temporary undef the std macro. */

@@ -119,7 +119,7 @@ struct iterator_traits<_Tp*> {
   typedef _Tp&                        reference;
 };
 
-#  ifdef __BORLANDC__
+#  if defined (__BORLANDC__) || defined (__SUNPRO_CC)
 template <class _Tp>
 struct iterator_traits<_Tp* const> {
   typedef random_access_iterator_tag iterator_category;

@@ -36,7 +36,7 @@
 
 typedef TestClass DQTestClass;
 
-typedef EH_STD::__deque__<DQTestClass, eh_allocator(DQTestClass)/*, 0UL*/ > TestDeque;		//*TY 04/30/2000 - removed third template parameter which is sgi extension
+typedef EH_STD::__deque__<DQTestClass, eh_allocator(DQTestClass) > TestDeque;
 
 inline sequence_container_tag
 container_category(const TestDeque&)
@@ -59,11 +59,11 @@ void test_deque()
     ConstCheck( testDeque, test_copy_construct<TestDeque>() );
     WeakCheck( testDeque, test_insert_one<TestDeque>(testDeque) );
     StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque,0) );
-    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque, (int)testDeque.size()) );
+    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque, testDeque.size()) );
 
     WeakCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base) ) );
     StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), 0 ) );
-    StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), (int)testDeque.size() ) );
+    StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), testDeque.size() ) );
 
     EH_STD::size_t insCnt = random_number(random_base);
     DQTestClass *insFirst = new TestDeque::value_type[insCnt+1];

@@ -477,20 +477,13 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 #endif
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+
 template <class _Tp, size_t _Max_size>
 struct _Alloc_traits<_Tp, _Pthread_alloc_template<_Max_size> >
 {
   typedef __allocator<_Tp, _Pthread_alloc_template<_Max_size> > 
           allocator_type;
 };
-
-/*
-template <class _Tp, class _Atype, size_t _Max>
-struct _Alloc_traits<_Tp, __allocator<_Atype, _Pthread_alloc_template<_Max> > >
-{
-  typedef __allocator<_Tp, _Pthread_alloc_template<_Max> > allocator_type;
-};
-*/
 
 template <class _Tp, class _Atype>
 struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
@@ -503,9 +496,15 @@ struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
 #if !defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 
 template <class _Tp1, class _Tp2>
-inline allocator<_Tp2>
-__stl_alloc_rebind(pthread_allocator<_Tp1>&, const _Tp2*) {
-  return allocator<_Tp2>();
+inline pthread_allocator<_Tp2>&
+__stl_alloc_rebind(pthread_allocator<_Tp1>& __x, const _Tp2*) {
+  return (pthread_allocator<_Tp2>&)__x;
+}
+
+template <class _Tp1, class _Tp2>
+inline pthread_allocator<_Tp2>
+__stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*) {
+  return pthread_allocator<_Tp2>();
 }
 
 #endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
