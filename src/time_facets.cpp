@@ -17,6 +17,7 @@
  */ 
 
 #include "stlport_prefix.h"
+#include <cstdio>
 #include <stl/_time_facets.h>
 #include <stl/_istream.h>
 #include "c_locale.h"
