@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/03/19 16:22:08 ptr>
+// -*- C++ -*- Time-stamp: <01/03/26 16:58:33 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -211,7 +211,7 @@ Thread::~Thread()
 #ifdef __FIT_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
-#ifdef __FIT_PTHREADS
+#ifdef _PTHREADS
   user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __FIT_WIN32THREADS
