@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/19 20:39:36 ptr>
+// -*- C++ -*- Time-stamp: <03/02/05 13:39:45 ptr>
 
 /*
  *
@@ -639,21 +639,9 @@ class Semaphore
 #endif        
       }
 
-    int wait()
-      {
-#ifdef __FIT_WIN32THREADS
-        if ( WaitForSingleObject( _sem, -1 ) == WAIT_FAILED ) {
-          return -1;
-        }
-        return 0;
-#endif
-#ifdef __FIT_UITHREADS
-        return sema_wait( &_sem );
-#endif
-#ifdef _PTHREADS
-        return sem_wait( &_sem );
-#endif
-      }
+    __FIT_DECLSPEC int wait();
+    __FIT_DECLSPEC int wait_time( const timespec *t ); // wait for time t, or signal
+    __FIT_DECLSPEC int wait_delay( const timespec *t ); // wait, timeout is delay t, or signal
 
     int try_wait()
       {

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/12 19:08:22 ptr>
+// -*- C++ -*- Time-stamp: <03/02/05 13:41:45 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -320,6 +320,51 @@ int Condition::wait_delay( const timespec *t )
 #endif
 #ifdef _NOTHREADS
   return 0;
+#endif
+}
+
+__FIT_DECLSPEC
+int Semaphore::wait_time( const timespec *t ) // wait for time t, or signal
+{
+#ifdef __FIT_WIN32THREADS
+  time_t ct = time( 0 );
+  time_t _conv = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+
+  unsigned ms = _conv >= ct ? _conv - ct : 1;
+
+  if ( WaitForSingleObject( _sem, ms ) == WAIT_FAILED ) {
+    return -1;
+  }
+  return 0;
+#endif
+#ifdef __FIT_UITHREADS
+#warning "Fix me!"
+#endif
+#ifdef _PTHREADS
+  return sem_timedwait( &_sem, t );
+#endif
+}
+
+__FIT_DECLSPEC
+int Semaphore::wait_delay( const timespec *t ) // wait, timeout is delay t, or signal
+{
+#ifdef __FIT_WIN32THREADS
+  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+
+  if ( WaitForSingleObject( _sem, ms ) == WAIT_FAILED ) {
+    return -1;
+  }
+  return 0;
+#endif
+#ifdef __FIT_UITHREADS
+#warning "Fix me!"
+#endif
+#ifdef _PTHREADS
+  timespec ct;
+  Thread::gettime( &ct );
+  timespec st = ct;
+  st += *t;
+  return sem_timedwait( &_sem, t );
 #endif
 }
 
