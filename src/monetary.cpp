@@ -135,7 +135,7 @@ template class money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 
 
 #ifndef _STLP_NO_WCHAR_T
-#  if !( defined (__CYGWIN__) && __GNUC_MINOR__ <= 95 )
+#  if !( defined (__CYGWIN__) && __GNUC__ == 2 && __GNUC_MINOR__ < 95 )
 // fbp : HACK : linker chokes on this instantiation + one in locale.cpp
 template class money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 #  endif

@@ -2,9 +2,11 @@
 
 # include <stl/_sparc_atomic.h>
 
-# ifndef __GNUC__
-
-# define _STLP_ASM_VOLATILE asm
+# ifdef __GNUC__
+#  define _STLP_ASM_VOLATILE asm volatile
+# else
+#  define _STLP_ASM_VOLATILE asm
+# endif
 
 /*
 **  int _STLP_atomic_exchange (void *pvalue, int value)
@@ -20,7 +22,9 @@ __stl_atomic_t _STLP_atomic_exchange (__stl_atomic_t *pvalue, __stl_atomic_t val
   _STLP_ASM_VOLATILE  ("        membar  #LoadLoad | #LoadStore   "); // Ensure the cas finishes before
   _STLP_ASM_VOLATILE  ("        retl                         ");    // return
   _STLP_ASM_VOLATILE  ("        mov     %o3, %o0     ");           // Set the new value
+# ifndef __GNUC__
   return (__stl_atomic_t)(long)pvalue;
+# endif
 }
 
 extern "C"
@@ -51,4 +55,4 @@ _STLP_atomic_decrement (__stl_atomic_t *pvalue)
   _STLP_ASM_VOLATILE  ("        mov    %o1, %o0                 ");  // Set the return value, unused
 }
 
-# endif /* __GNUC__ */
+// # endif /* __GNUC__ */

@@ -25,7 +25,7 @@ STATIC_SUFFIX=_static
 INSTALL_STEP=install_bc
 
 all : platform all_dynamic all_static
-	
+
 !include common_macros.mak
 
 RM=-rd /S /Q

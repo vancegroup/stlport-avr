@@ -21,7 +21,7 @@ struct _STLP_atomic_global {
 #endif
 
 
-#if defined (__GNUC__) && (defined (_STLP_NO_SGI_IOSTREAMS) || defined (_STLP_NO_EXTERN_INLINE))
+#if defined (__GNUC__) && (defined (_STLP_NO_SGI_IOSTREAMS) /* || defined (_STLP_NO_EXTERN_INLINE) */ )
 
 /*
 **  int _STLP_atomic_exchange (void *pvalue, int value)

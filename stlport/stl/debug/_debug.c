@@ -343,7 +343,7 @@ __stl_debug_engine<_Dummy>::_Invalidate_all(__owned_list* __l) {
   _STLP_RELEASE_LOCK(__l->_M_lock);
 }
 
-// boris : this is unasafe routine; should be used within critical section only !
+// boris : this is unasafe routine; should be used from within critical section only !
 template <class _Dummy>
 void  _STLP_CALL
 __stl_debug_engine<_Dummy>::_Stamp_all(__owned_list* __l, __owned_list* __o) {
@@ -373,7 +373,7 @@ __stl_debug_engine<_Dummy>::_Verify(const __owned_list* __l) {
 
 template <class _Dummy>
 void _STLP_CALL  
-__stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y /*, bool __swap_roots */) {
+__stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y) {
 
 # ifdef OBSOLETE 
   __x._Invalidate_all();
@@ -383,39 +383,20 @@ __stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y /*
   //  according to the standard : --no swap() function invalidates any references, pointers,  or  itera-
   //  tors referring to the elements of the containers being swapped.
 
-  __owned_list* __tmp_x;
-  __owned_list* __tmp_y;
+  __owned_link* __tmp;
 
-  // boris : there is a deadlock potential situation here; 
-  // we do not lock two containers sequentially !
+  // boris : there is a deadlock potential situation here if we lock two containers sequentially.
+  // As user is supposed to provide its own synchronization around swap() ( it is unsafe to do any container/iterator access
+  // in parallel with swap()), we just do not use any locking at all -- that behaviour is closer to non-debug version
 
-  _STLP_ACQUIRE_LOCK(__x._M_lock);
-  // stamp x's list with y
+  __tmp = __x._M_node._M_next;
+
   _Stamp_all(&__x, &__y);
-  __tmp_x = __x->_M_node._M_next;
-  __x->_M_node._M_next = 0;
-  _STLP_RELEASE_LOCK(__x._M_lock);
-
-  _STLP_ACQUIRE_LOCK(__y._M_lock);
-  // stamp y's list with x
   _Stamp_all(&__y, &__x);
-  __tmp_y = __y->_M_node._M_next;
-  __y->_M_node._M_next = __tmp_x;  
-  _STLP_RELEASE_LOCK(__y._M_lock);
-  
-  _STLP_ACQUIRE_LOCK(__x._M_lock);
-  // before finishing swap, check if x's list gained any elements since 
-  // we saved it to the temporary. 
-  if (__x->_M_node._M_next) {
-    __tmp_x = __x->_M_node._M_next;
-    while (__tmp_x && __tmp_x->_M_next)
-      __tmp_x = __tmp_x->_M_next;
-    // concatenate x's list with what we have prepared
-    __tmp_x->_M_next = __tmp_y;
-  } else 
-    // otherwise, just finish swap normally
-    __x->_M_node._M_next = __tmp_y;
-  _STLP_RELEASE_LOCK(__x._M_lock);
+
+  __x._M_node._M_next = __y._M_node._M_next;
+  __y._M_node._M_next = __tmp;  
+
 }
 
 template <class _Dummy>
