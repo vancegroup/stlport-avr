@@ -1,5 +1,4 @@
 #include <set>
-#include <vector>
 #include <algorithm>
 
 #include "cppunit/cppunit_proxy.h"
@@ -19,6 +18,7 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(insert);
   CPPUNIT_TEST(find);
+  CPPUNIT_TEST(bounds);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -27,6 +27,7 @@ class SetTest : public CPPUNIT_NS::TestCase
     void erase();
     void insert();
     void find();
+    void bounds();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -95,4 +96,68 @@ void SetTest::find()
   set<int> s;
 
   CPPUNIT_ASSERT( s.find(0) == s.end() );
+
+  set<int> const& crs = s;
+
+  CPPUNIT_ASSERT( crs.find(0) == crs.end() );
+}
+
+void SetTest::bounds()
+{
+  int array1 [] = { 1, 3, 6, 7 };
+  set<int> s(array1, array1 + sizeof(array1) / sizeof(array1[0]));
+  set<int> const& crs = s;
+
+  set<int>::iterator sit;
+  set<int>::const_iterator scit;
+  pair<set<int>::iterator, set<int>::iterator> pit;
+  pair<set<int>::const_iterator, set<int>::const_iterator> pcit;
+
+  //Check iterator on mutable set
+  sit = s.lower_bound(2);
+  CPPUNIT_ASSERT( sit != s.end() );
+  CPPUNIT_ASSERT( *sit == 3 );
+
+  sit = s.upper_bound(5);
+  CPPUNIT_ASSERT( sit != s.end() );
+  CPPUNIT_ASSERT( *sit == 6 );
+
+  pit = s.equal_range(6);
+  CPPUNIT_ASSERT( pit.first != pit.second );
+  CPPUNIT_ASSERT( pit.first != s.end() );
+  CPPUNIT_ASSERT( *pit.first == 6 );
+  CPPUNIT_ASSERT( pit.second != s.end() );
+  CPPUNIT_ASSERT( *pit.second == 7 );
+
+  //Check const_iterator on mutable set
+  scit = s.lower_bound(2);
+  CPPUNIT_ASSERT( scit != s.end() );
+  CPPUNIT_ASSERT( *scit == 3 );
+
+  scit = s.upper_bound(5);
+  CPPUNIT_ASSERT( scit != s.end() );
+  CPPUNIT_ASSERT( *scit == 6 );
+
+  pcit = s.equal_range(6);
+  CPPUNIT_ASSERT( pcit.first != pcit.second );
+  CPPUNIT_ASSERT( pcit.first != s.end() );
+  CPPUNIT_ASSERT( *pcit.first == 6 );
+  CPPUNIT_ASSERT( pcit.second != s.end() );
+  CPPUNIT_ASSERT( *pcit.second == 7 );
+
+  //Check const_iterator on const set
+  scit = crs.lower_bound(2);
+  CPPUNIT_ASSERT( scit != crs.end() );
+  CPPUNIT_ASSERT( *scit == 3 );
+
+  scit = crs.upper_bound(5);
+  CPPUNIT_ASSERT( scit != crs.end() );
+  CPPUNIT_ASSERT( *scit == 6 );
+
+  pcit = crs.equal_range(6);
+  CPPUNIT_ASSERT( pcit.first != pcit.second );
+  CPPUNIT_ASSERT( pcit.first != crs.end() );
+  CPPUNIT_ASSERT( *pcit.first == 6 );
+  CPPUNIT_ASSERT( pcit.second != crs.end() );
+  CPPUNIT_ASSERT( *pcit.second == 7 );
 }

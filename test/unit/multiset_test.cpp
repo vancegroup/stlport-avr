@@ -62,15 +62,36 @@ void MultisetTest::mset3()
 {
   int array [] = { 3, 6, 1, 2, 3, 2, 6, 7, 9 };
 
+  //Check iterator on a mutable set
   mset s(array, array + 9);
   mset::iterator i;
   i = s.lower_bound(3);
   CPPUNIT_ASSERT(*i == 3);
   i = s.upper_bound(3);
   CPPUNIT_ASSERT(*i == 6);
-  pair<mset::const_iterator, mset::const_iterator> p = s.equal_range(5);
+  pair<mset::iterator, mset::iterator> p = s.equal_range(5);
   CPPUNIT_ASSERT(*(p.first) == 6);
   CPPUNIT_ASSERT(*(p.second) == 6);
+
+  //Check const_iterator on a mutable multiset
+  mset::const_iterator ci;
+  ci = s.lower_bound(3);
+  CPPUNIT_ASSERT(*ci == 3);
+  ci = s.upper_bound(3);
+  CPPUNIT_ASSERT(*ci == 6);
+  pair<mset::const_iterator, mset::const_iterator> cp = s.equal_range(5);
+  CPPUNIT_ASSERT(*(cp.first) == 6);
+  CPPUNIT_ASSERT(*(cp.second) == 6);
+
+  //Check const_iterator on a const multiset
+  mset const& crs = s;
+  ci = crs.lower_bound(3);
+  CPPUNIT_ASSERT(*ci == 3);
+  ci = crs.upper_bound(3);
+  CPPUNIT_ASSERT(*ci == 6);
+  cp = crs.equal_range(5);
+  CPPUNIT_ASSERT(*(cp.first) == 6);
+  CPPUNIT_ASSERT(*(cp.second) == 6);
 }
 void MultisetTest::mset5()
 {
