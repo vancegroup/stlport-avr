@@ -486,8 +486,8 @@ namespace __std_alias = std;
 #   define _STLP_USING_VENDOR_STD
 #  else
 #   define _STLP_VENDOR_STD __std_alias
-// #   define _STLP_USING_VENDOR_STD _STLP_USING_NAMESPACE(_STLP_VENDOR_STD)
-#   define _STLP_USING_VENDOR_STD
+#   define _STLP_USING_VENDOR_STD _STLP_USING_NAMESPACE(_STLP_VENDOR_STD)
+// #   define _STLP_USING_VENDOR_STD
 #  endif
 
 /* tune things that come from C library */
@@ -812,7 +812,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   ifndef _STLP_THROW
 #    define _STLP_THROW(x)
 #   endif
-#   define _STLP_RETHROW 
+#   define _STLP_RETHROW {}
 #   define _STLP_UNWIND(action) 
 #   define _STLP_THROWS(x)
 #   define _STLP_NOTHROW 

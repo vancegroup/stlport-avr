@@ -33,10 +33,12 @@ _STLP_DECLSPEC double _STLP_CALL abs(const complex<double>& __z)
   return _STLP_HYPOT(__z._M_re, __z._M_im);
 }
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC long double _STLP_CALL abs(const complex<long double>& __z)
 {
   return _STLP_HYPOTL(__z._M_re, __z._M_im);
 }
+#endif
 
 // Phase
 
@@ -50,10 +52,12 @@ _STLP_DECLSPEC double _STLP_CALL arg(const complex<double>& __z)
   return _STLP_ATAN2(__z._M_im, __z._M_re);
 }
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC long double _STLP_CALL arg(const complex<long double>& __z) 
 {
   return _STLP_ATAN2L(__z._M_im, __z._M_re);
 }
+#endif
 
 // Construct a complex number from polar representation
 
@@ -67,11 +71,12 @@ _STLP_DECLSPEC complex<double> _STLP_CALL polar(const double& __rho, const doubl
   return complex<double>(__rho * _STLP_COS(__phi), __rho * _STLP_SIN(__phi));
 }
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC complex<long double> _STLP_CALL polar(const long double& __rho, const long double& __phi)
 {
   return complex<long double>(__rho * _STLP_COSL(__phi), __rho * _STLP_SINL(__phi));
 }
-
+#endif
 
 // Division
 
@@ -160,7 +165,7 @@ complex<double>::_div(const double& __z1_r,
   }
 }
 
-
+#ifndef _STLP_NO_LONG_DOUBLE
 void  _STLP_CALL
 complex<long double>::_div(const long double& __z1_r, const long double& __z1_i,
                            const long double& __z2_r, const long double& __z2_i,
@@ -203,6 +208,7 @@ complex<long double>::_div(const long double& __z1_r,
     __res_i = - (__z1_r * __ratio) / __denom;
   }
 }
+#endif
 
 //----------------------------------------------------------------------
 // Square root
@@ -251,7 +257,7 @@ sqrt(const complex<double>& z) {
   return result;
 }
 
-
+#ifndef _STLP_NO_LONG_DOUBLE
 complex<long double> _STLP_CALL
 sqrt(const complex<long double>& z) {
   long double re = z._M_re;
@@ -272,6 +278,7 @@ sqrt(const complex<long double>& z) {
   }
   return result;
 }
+#endif
 
 _STLP_END_NAMESPACE
 

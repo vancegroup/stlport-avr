@@ -272,43 +272,53 @@ inline bool _Stl_is_neg_nan     (double x) { return _fp_isNAN(x) && x < 0; }
     { return ecvtbuf(x, n, pt, sign, buf); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { return fcvtbuf(x, n, pt, sign, buf); }
+# ifndef _STLP_NO_LONG_DOUBLE
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return ecvtbuf(x, n, pt, sign, buf); }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return fcvtbuf(x, n, pt, sign, buf); }
+# endif
 #elif defined (_STLP_USE_GLIBC)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { return buf + ecvt_r(x, n, pt, sign, buf, NDIG+2); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { return buf + fcvt_r(x, n, pt, sign, buf, NDIG+2); }
+#  ifndef _STLP_NO_LONG_DOUBLE
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return buf + qecvt_r(x, n, pt, sign, buf, NDIG+2); }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return buf + qfcvt_r(x, n, pt, sign, buf, NDIG+2); }
+#  endif
 #elif defined (__sun)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { return econvert(x, n, pt, sign, buf); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { return fconvert(x, n, pt, sign, buf); }
+#  ifndef _STLP_NO_LONG_DOUBLE
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return qeconvert(&x, n, pt, sign, buf); }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return qfconvert(&x, n, pt, sign, buf); }
+#  endif
 #elif defined (__DECCXX) 
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { return (ecvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { return (fcvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
+#  ifndef _STLP_NO_LONG_DOUBLE
 // fbp : no "long double" conversions !
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return (ecvt_r((double)x, n, pt, sign, buf, NDIG)==0 ? buf : 0) ; }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return (fcvt_r((double)x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
+#  endif
 #elif defined (__hpux)
    inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
      { return ecvt(x, n, pt, sign); }
    inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
      { return fcvt(x, n, pt, sign); }
+# ifndef _STLP_NO_LONG_DOUBLE
+
 #  if defined( _REENTRANT ) && (defined(_PTHREADS_DRAFT4) || defined(PTHREAD_THREADS_MAX))
    inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
      { return (_ldecvt_r(*(long_double*)&x, n, pt, sign, buf, NDIG+2)==0 ? buf : 0); }
@@ -320,30 +330,37 @@ inline bool _Stl_is_neg_nan     (double x) { return _fp_isNAN(x) && x < 0; }
    inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
      { return _ldfcvt(*(long_double*)&x, n, pt, sign); }
 #  endif
+# endif
 #elif defined (_AIX)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { LOCK_CVT RETURN_CVT(ecvt, x, n, pt, sign, buf) }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { LOCK_CVT RETURN_CVT(fcvt, x, n, pt, sign, buf) }
+# ifndef _STLP_NO_LONG_DOUBLE
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { LOCK_CVT RETURN_CVT(ecvt, x, n, pt, sign, buf) }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { LOCK_CVT RETURN_CVT(fcvt, x, n, pt, sign, buf) }
+# endif
 #elif defined (__unix)  && !defined(__FreeBSD__)  && !defined(__NetBSD__) && !defined(__APPLE__)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { return ecvt_r(x, n, pt, sign, buf); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
     { return fcvt_r(x, n, pt, sign, buf); }
+# ifndef _STLP_NO_LONG_DOUBLE
   inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return qecvt_r(x, n, pt, sign, buf); }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return qfcvt_r(x, n, pt, sign, buf); }
+#  endif
 #elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
 // those guys claim _cvt functions being reentrant.
 inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf) {  return _ecvt(x, n, pt, sign); }
 inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf) { return _fcvt(x, n, pt, sign); }
+# ifndef _STLP_NO_LONG_DOUBLE
 inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf) { return _ecvt((double)x, n, pt, sign); }
 inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf) { return _fcvt((double)x, n, pt, sign); }
+# endif
 #elif defined (__ISCPP__)
 inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
@@ -351,20 +368,24 @@ inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
 
+# ifndef _STLP_NO_LONG_DOUBLE
 inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
 
 inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
+# endif
 #elif defined (__MRC__) || defined(__SC__)
 inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* )
 { return ecvt( x, n, pt, sign ); }
 inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* )
 { return fcvt(x, n, pt, sign); }
+#ifndef _STLP_NO_LONG_DOUBLE
 inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* )
 { return ecvt( x, n, pt, sign ); }
 inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
 { return fcvt(x, n, pt, sign); }
+#endif
 #endif
 
 

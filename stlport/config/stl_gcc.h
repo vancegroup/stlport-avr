@@ -76,9 +76,10 @@ typedef unsigned int wint_t;
   * symbols will be generated. */
 
 #   define _STLP_NO_STATIC_TEMPLATE_DATA
-#   define  _STLP_STATIC_CONST_INIT_BUG 1
+#   define _STLP_STATIC_CONST_INIT_BUG 1
 #   define _STLP_STATIC_TEMPLATE_DATA 0
 #   define _STLP_WEAK_ATTRIBUTE 0
+#   define _STLP_NO_LONG_DOUBLE
 
 #  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
 #   define __DECLARE_INSTANCE(type,item,init) type item init
@@ -253,13 +254,21 @@ typedef unsigned int wint_t;
 #   define _STLP_NATIVE_INCLUDE_PATH g++
 # endif
 
-# ifndef __FreeBSD__
 // <exception> et al
+# ifdef __FreeBSD__
+
+#   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
+#   endif
+
+# else
+
 #   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/g++-v3
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
+
 # endif
 
 #endif /* GNUC_MINOR < 8 */

@@ -144,6 +144,8 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
   return true;
 }
 
+# ifndef _STLP_NO_LONG_DOUBLE
+
 //===== methods ======
 template <class _CharT, class _InputIter>
 _InputIter 
@@ -164,6 +166,7 @@ money_get<_CharT, _InputIter>::do_get(_InputIter __s, _InputIter  __end, bool  _
     __err |= ios_base::eofbit;
   return __s;
 }
+# endif
 
 template <class _CharT, class _InputIter>
 _InputIter 

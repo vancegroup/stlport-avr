@@ -428,11 +428,14 @@ union _D_rep
   unsigned short rep[4];
   double val;
 };
+
+# ifndef _STLP_NO_LONG_DOUBLE
 union _L_rep
 {
   unsigned short rep[8];
   long double val;
 };
+# endif
 
 template <class __dummy>
 class _LimG 

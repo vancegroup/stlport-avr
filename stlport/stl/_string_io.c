@@ -62,13 +62,18 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
   return __os;
 }
 
+# ifdef _STLP_OWN_IOSTREAMS
+#  define _STLP_USING_IO
+# else
+#  define _STLP_USING_IO _STLP_USING_VENDOR_STD
+# endif
+ 
 template <class _CharT, class _Traits, class _Alloc>
 basic_istream<_CharT, _Traits>& _STLP_CALL 
 operator>>(basic_istream<_CharT, _Traits>& __is,
            basic_string<_CharT,_Traits, _Alloc>& __s)
 {
-  _STLP_USING_VENDOR_STD
-
+  _STLP_USING_IO
   typedef basic_istream<_CharT, _Traits> __istream;
   typename __istream::sentry __sentry(__is);
 
@@ -134,7 +139,7 @@ getline(basic_istream<_CharT, _Traits>& __is,
         basic_string<_CharT,_Traits,_Alloc>& __s,
         _CharT __delim)
 {
-  _STLP_USING_VENDOR_STD
+  _STLP_USING_IO
   typedef basic_istream<_CharT, _Traits> __istream;
   size_t __nread = 0;
   typename basic_istream<_CharT, _Traits>::sentry __sentry(__is, true);
@@ -172,7 +177,7 @@ template <class _CharT, class _Traits, class _Alloc>
 _OSTREAM_DLL&  _STLP_CALL operator<<(_OSTREAM_DLL& __os, 
                     const basic_string<_CharT,_Traits,_Alloc>& __s)
 {
-  _STLP_USING_VENDOR_STD
+  _STLP_USING_IO
   streambuf* __buf = __os.rdbuf();
   if (__buf) {
     size_t __n = __s.size();
@@ -207,7 +212,7 @@ _OSTREAM_DLL&  _STLP_CALL operator<<(_OSTREAM_DLL& __os,
 template <class _CharT, class _Traits, class _Alloc>
 _ISTREAM_DLL& _STLP_CALL operator>>(_ISTREAM_DLL& __is, basic_string<_CharT,_Traits,_Alloc>& __s)
 {
-  _STLP_USING_VENDOR_STD
+  _STLP_USING_IO
   if (!__is)
     return __is;
 
@@ -279,7 +284,7 @@ _ISTREAM_DLL& _STLP_CALL getline(_ISTREAM_DLL& __is,
                  basic_string<_CharT,_Traits,_Alloc>& __s,
                  _CharT __delim)
 {
-  _STLP_USING_VENDOR_STD
+  _STLP_USING_IO
   streambuf* __buf = __is.rdbuf();
   if (__buf) {
     size_t __nread = 0;
@@ -316,6 +321,7 @@ _ISTREAM_DLL& _STLP_CALL getline(_ISTREAM_DLL& __is,
 
 _STLP_END_NAMESPACE
 
+# undef _STLP_USING_IO
 # undef basic_string
 
 #endif

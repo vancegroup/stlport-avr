@@ -12,18 +12,16 @@ NULL=nul
 ################################################################################
 # Begin Project
 RSC=rc.exe
-CPP=icl.exe
+CPP=cl.exe
+LINK32=link.exe
 F90=fl32.exe
 
 OUTDIR=.
 INTDIR=.
 
 # set this directories 
+STL_PATH=..\..
 
-STL_INCL=-I../../stlport
-
-VC_INCL=.
-# d:/vc41/msdev/include
 
 Dep_stl = stl_test.obj accum1.obj accum2.obj \
 	adjdiff0.obj adjdiff1.obj adjdiff2.obj \
@@ -131,19 +129,66 @@ Dep_stl = stl_test.obj accum1.obj accum2.obj \
 	vec1.obj vec2.obj vec3.obj vec4.obj vec5.obj vec6.obj vec7.obj vec8.obj \
         hmap1.obj hmmap1.obj hset2.obj hmset1.obj slist1.obj string1.obj bitset1.obj
 
-LINK32=link.exe
+CPP_PRJ_LINK = /link /incremental:no /LIBPATH:$(STL_PATH)\lib
 
-# ADD BASE F90 /Ox /c /nologo
-# ADD F90 /Ox /c /nologo
-F90_PROJ=/Ox /c /nologo
+CPP_PRJ_CMN = /nologo /W3 /GR /GX /DWIN32 /D_WINDOWS /D_CONSOLE /I$(STL_PATH)\stlport /I.
 
-CPP_PROJ=/nologo /W4 /MD /GX /Zd /D "WIN32" /D "_STLP_DEBUG" /D "_CONSOLE" $(STL_INCL) -D_STLP_NO_SGI_IOSTREAMS /I$(VC_INCL) /I.
-CPP_LIBS = /link /libpath:"..\..\lib"
+# #  CPP_PROJ=/nologo /W3 /MDd /GX /Zd /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I.
+
+#
+#LIBTYPE = STATIC
+LIBTYPE = DYNAMIC
+#
+#DEBUG = STL
+#DEBUG = ON
+DEBUG =
+# 
+IOS = SGI
+#IOS = NOSGI
+#IOS = NONE
+
+!IF "$(IOS)" == "NOSGI"
+CPP_PRJ_IOS = /D_STLP_NO_SGI_IOSTREAMS
+!ELSEIF "$(IOS)" == "NONE"
+CPP_PRJ_IOS = /D_STLP_NO_IOSTREAM
+!ELSE
+CPP_PRJ_IOS = 
+!ENDIF
+
+#MT/MD etc should be LAST in CPP_PRJ_LIBTYP string!!!
+#Library selection should be BEFORE debug processing!!!
+!IF "$(LIBTYPE)" == "STATIC"
+CPP_PRJ_LIBTYP = /D_STLP_USE_STATIC_LIB /MT
+!ELSE
+CPP_PRJ_LIBTYP = /D_STLP_USE_DYNAMIC_LIB /MD
+!ENDIF
+
+!IF "$(DEBUG)" == ""
+CPP_PRJ_DBG = /DNDEBUG /O2
+!ELSE
+CPP_PRJ_LIBTYP = $(CPP_PRJ_LIBTYP)d
+CPP_PRJ_DBG = /D_DEBUG /Od
+!IF "$(DEBUG)" == "STL"
+CPP_PRJ_DBG = $(CPP_PRJ_DBG) /D_STLP_DEBUG
+!ENDIF
+CPP_PRJ_CMN = $(CPP_PRJ_CMN) /Zi
+!ENDIF
+
+# # Use this flags to test non-SGI iostreams
+# CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I. /D_STLP_NO_NEW_IOSTREAMS
+# CPP_PROJ=/nologo /W3 /MD /GX /Zd /Zi /D "WIN32" /D "_CONSOLE" $(STL_INCL) /I$(VC_INCL) /I.
+# # linker finds proper STLport lib automatically, only path to the
+# # library is needed
+# CPP_LIBS = /link /libpath:"..\..\lib"
+
+CPP_PROJ = $(CPP_PRJ_CMN) $(CPP_PRJ_IOS) $(CPP_PRJ_LIBTYP) $(CPP_PRJ_DBG)
 
 check: stl_test.out
 
 stl_test.out : $(Dep_stl)
-	$(CPP) $(CPP_PROJ) $(Dep_stl) $(CPP_LIBS)
+#	$(CPP) $(CPP_PROJ) $(Dep_stl) $(CPP_LIBS)
+#	stl_test < stdin
+	$(CPP) $(CPP_PROJ) $(Dep_stl) $(CPP_PRJ_LINK)
 	stl_test > stl_test.out < stdin
 	echo done
 
@@ -151,13 +196,15 @@ clean :
 	-@erase "$(INTDIR)\*.obj"
 	-@erase "$(OUTDIR)\*.exe"
 	-@erase "$(OUTDIR)\*.obj"
+	-@erase "$(OUTDIR)\*.ilk"
+	-@erase "$(OUTDIR)\*.pdb"
 
 
 .exe.out:
 	$< > $@
 
 .cpp.exe:
-  $(CPP) $(CPP_PROJ) -DMAIN $< $(CPP_LIBS)
+  $(CPP) $(CPP_PROJ) -DMAIN  $< $(CPP_PRJ_LINK)
 
 .c.obj:
    $(CPP) $(CPP_PROJ) /c $<

@@ -4,6 +4,21 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	
 	* stl/_deque.h : deque<>::erase bug (introduced in 4.1b4) fixed (thanks to BruceFlorman) 
 	               : default parameter in constructor bug fixed (Thanks to Alex Vanic) 
+
+	* stl_msvc.h : explicit template function agruments enabled for VC++; 
+	  use_facet<> now fully conforms to the standard with VC++. (Thanks Jeff Kohn for the input)
+
+	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
+	
+	* New makefiles added for Intel C++ 5.0 and VC++ 6.0 in src/, test/eh, test/regression (Thanks to Marcello Pietrobon)
+
+	* _STLP_NO_LONG_DOUBLE case handled for STLport iostreams as well (thanks John Daniel)
+	
+	* SUN CC compiler template cache is being properly cleaned up (Thanks Whitney Kew)
+	
+	* stl/_rope.h/.c, src/mrcpp.mak, src/mrc.mak, stl/_tree.h : MPW & MRC fixes by Tsutomu Yoshida
+
+	* stl_gcc.h : added path for <exceptions> et al for gcc-2.95.3 on FreeBSD (Thanks to 
 	
 	* _tree.h /_tree.c : pointers used as return values instead of iterators for implementation 
 	  functions, for efficiency.
@@ -16,11 +31,20 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
 	* c_locale_win32.c : incomple fix for locale completed (thanks to Alberto Barbati)
 
+	* c_locale.h : _Locale_ALPHA definition for VC++ and mingw32 fixed (thanks Danny Smith)
+	
 	* _threads.h : fixed _DECTHREADS block to work on both DEC and HP
 
 	* _hash_set.h : fixed typo in MSVC++ bug workaround ( Thanks to Jon_Hanson for the report)
-	
 
+	* _config.h : _STLP_RETHROW changed to avoid warnings with NO_EXCEPTIONS (thanks Richmond)	
+
+	* _hashtable.c : prime list definition made consistent (thanks Rainer Schnitker)
+
+	* stl_hpacc.h :  _STLP_FORCE_ALLOCATORS workaround used for Version 3.15 also (thanks Rainer Schnitker)
+
+	* stl/_string_io.c : fixed using directive in operator >>() (thanks Rainer Schnitker)
+	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* _istream.h, _ostream.h, _ios.h, _fstream.h : guard macros fixed to not clash with .h files in "stlport" directory

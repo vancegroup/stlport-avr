@@ -51,7 +51,7 @@ clean :
 	$< > $@
 
 .cpp.exe:
-  $(CPP) $(CPP_PROJ) -DMAIN $<
+  $(CPP) $(CPP_PROJ) -DMAIN $< $(CPP_LIBS)
 
 .c.obj:
    $(CPP) $(CPP_PROJ) /c $<

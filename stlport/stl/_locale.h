@@ -64,7 +64,7 @@ public:
     friend class _Locale;
     
   private:                        // Invalidate assignment and copying.
-    facet(const facet&);          
+    facet(const facet&) : _Refcount_Base(1), _M_delete(__F._M_delete == 0)  {};       
     void operator=(const facet&); 
     
   private:                        // Data members.

@@ -60,12 +60,12 @@ public:
   typedef basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > string_type;
 
   money_get(size_t __refs = 0) : _BaseFacet(__refs) {}
-
+# ifndef _STLP_NO_LONG_DOUBLE
   iter_type get(iter_type __s, iter_type  __end, bool __intl,
                 ios_base&  __str, ios_base::iostate&  __err,
                 long double& __units) const
     { return do_get(__s,  __end, __intl,  __str,  __err, __units); }
-  
+# endif  
   iter_type get(iter_type __s, iter_type  __end, bool __intl,
                 ios_base&  __str, ios_base::iostate& __err,
                 string_type& __digits) const
@@ -75,9 +75,11 @@ public:
 
 protected:
   ~money_get() {}
+# ifndef _STLP_NO_LONG_DOUBLE
   virtual iter_type do_get(iter_type __s, iter_type  __end, bool  __intl,
                            ios_base&  __str, ios_base::iostate& __err,
                            long double& __units) const;
+# endif
   virtual iter_type do_get(iter_type __s, iter_type __end, bool __intl,
                            ios_base&  __str, ios_base::iostate& __err,
                            string_type& __digits) const;
@@ -390,10 +392,11 @@ public:
   typedef basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > string_type;
 
   money_put(size_t __refs = 0) : _BaseFacet(__refs) {}
-
+# ifndef _STLP_NO_LONG_DOUBLE
   iter_type put(iter_type __s, bool __intl, ios_base& __str,
                 char_type  __fill, long double __units) const
     { return do_put(__s, __intl, __str, __fill, __units); }
+# endif
   iter_type put(iter_type __s, bool __intl, ios_base& __str,
                 char_type  __fill, 
                 const string_type& __digits) const
@@ -403,6 +406,7 @@ public:
 
 protected:
   ~money_put() {}
+# ifndef _STLP_NO_LONG_DOUBLE
   virtual iter_type do_put(iter_type __s, bool  __intl, ios_base&  __str,
                            char_type __fill, long double /*  __units */ ) const {
 
@@ -410,7 +414,7 @@ protected:
     _CharT  __buf[64];
     return do_put(__s, __intl, __str, __fill, __buf + 0);
   }
-    
+# endif    
   virtual iter_type do_put(iter_type __s, bool  __intl, ios_base&  __str,
                            char_type __fill,
                            const string_type& __digits) const;

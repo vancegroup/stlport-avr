@@ -472,7 +472,7 @@ public:                         // Constructor, destructor.
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   deque(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a) : 
+        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
     _Deque_base<_Tp, _Alloc>(__a) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());

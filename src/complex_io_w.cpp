@@ -33,17 +33,19 @@ operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<float>&);
 _STLP_OPERATOR_SPEC basic_istream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
 operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<double>&);
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_OPERATOR_SPEC basic_istream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
 operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<long double>&);
+
+_STLP_OPERATOR_SPEC basic_ostream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
+operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<long double>&);
+#endif
 
 _STLP_OPERATOR_SPEC basic_ostream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
 operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<float>&);
 
 _STLP_OPERATOR_SPEC basic_ostream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
 operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<double>&);
-
-_STLP_OPERATOR_SPEC basic_ostream<wchar_t, char_traits<wchar_t> >&  _STLP_CALL
-operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<long double>&);
 
 # endif /* _STLP_NO_WCHAR_T */
 

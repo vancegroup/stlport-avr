@@ -228,7 +228,9 @@ void  _STLP_CALL _Initialize_get_float(const ctype<wchar_t>&,
 # endif
 void  _STLP_CALL __string_to_float(const string&, float&);
 void  _STLP_CALL __string_to_float(const string&, double&);
+# ifndef _STLP_NO_LONG_DOUBLE
 void  _STLP_CALL __string_to_float(const string&, long double&);
+# endif
 # endif
 
 _STLP_END_NAMESPACE

@@ -136,10 +136,11 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x);
 
 void  _STLP_CALL __string_to_float(const string&, float&);
 void  _STLP_CALL __string_to_float(const string&, double&);
-void  _STLP_CALL __string_to_float(const string&, long double&);
-
 extern char* _STLP_CALL __write_float(char*, ios_base::fmtflags, int, double);
+# ifndef _STLP_NO_LONG_DOUBLE
+void  _STLP_CALL __string_to_float(const string&, long double&);
 extern char* _STLP_CALL __write_float(char*, ios_base::fmtflags, int, long double);
+# endif
 
 #ifndef _STLP_NO_WCHAR_T
 extern wchar_t* _STLP_CALL __convert_float_buffer(const char*, const char*, wchar_t*, const ctype<wchar_t>&, wchar_t);

@@ -108,7 +108,9 @@ public:                         // Formatted output.
   _Self& operator<<(float __x)
     { return _M_put_num(*this,  __STATIC_CAST(double,__x)); }
   _Self& operator<<(double __x) { return _M_put_num(*this,  __x); }
+# ifndef _STLP_NO_LONG_DOUBLE
   _Self& operator<<(long double __x) { return _M_put_num(*this,  __x); }
+# endif
   _Self& operator<<(const void* __x) { return _M_put_num(*this,  __x); }
 # ifndef _STLP_NO_BOOL
   _Self& operator<<(bool __x) { return _M_put_num(*this,  __x); }

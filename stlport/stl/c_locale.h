@@ -265,8 +265,8 @@ struct _Locale_messages;
 #  define _Locale_XDIGIT _HEX
 #  define _Locale_PUNCT  _PUNCT
 #  define _Locale_SPACE  _SPACE
-#  define _Locale_PRINT  (_ALPHA | _DIGIT | _SPACE | _PUNCT) 
-  /* was : (_BLANK|_PUNCT|_UPPER|_LOWER|_DIGIT) */
+#  define _Locale_PRINT  (_ALPHA | _DIGIT | _BLANK | _PUNCT)
+// is this one has to be so complex ?  
 #  define _Locale_ALPHA  ( _ALPHA & ~ (_UPPER | _LOWER )) 
 #elif defined(__MRC__) || defined(__SC__)		//*TY 02/24/2000 - added support for MPW
 #  define _Locale_CNTRL  _CTL

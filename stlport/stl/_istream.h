@@ -129,7 +129,9 @@ public:                         // Formatted input of numbers.
 #endif 
   _Self& operator>> (float& __val)  { _M_get_num(*this, __val); return *this; }
   _Self& operator>> (double& __val) { _M_get_num(*this, __val); return *this; }
+# ifndef _STLP_NO_LONG_DOUBLE
   _Self& operator>> (long double& __val) { _M_get_num(*this, __val); return *this; }
+# endif
 # ifndef _STLP_NO_BOOL
   _Self& operator>> (bool& __val) { _M_get_num(*this, __val); return *this; }
 # endif

@@ -72,7 +72,7 @@ _STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
 	      Sleep(1 << (__log_nsec - 20));
 	  }
 #     elif defined (_STLP_UNIX)
-          struct ::timespec __ts;
+          struct timespec __ts;
           /* Max sleep is 2**27nsec ~ 60msec      */
           __ts.tv_sec = 0;
           __ts.tv_nsec = 1 << __log_nsec;

@@ -5,7 +5,7 @@
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 # endif
 
-# define _STLP_IMPORT_TEMPLATE_KEYWORD import
+# define _STLP_IMPORT_TEMPLATE_KEYWORD extern
 
 # include <config/stl_msvc.h>
 

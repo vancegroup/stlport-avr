@@ -65,7 +65,7 @@ clean : $(CLEAN_SPECIFIC)
 	-$(RM) $(RELEASE_OBJDIR_static) $(DEBUG_OBJDIR_static) $(STLDEBUG_OBJDIR_static) \
         $(RELEASE_OBJDIR_staticx) $(DEBUG_OBJDIR_staticx) $(STLDEBUG_OBJDIR_staticx) \
         $(RELEASE_OBJDIR_dynamic) $(DEBUG_OBJDIR_dynamic) $(STLDEBUG_OBJDIR_dynamic) \
-        SunWS_cache Templates.DB tempinc
+        $(OUTDIR)$(PATH_SEP)SunWS_cache SunWS_cache $(OUTDIR)$(PATH_SEP)Templates.DB Templates.DB tempinc
 
 clobber : clean clean_all_obj
 	-$(RM) $(OUTDIR)$(PATH_SEP)$(DEBUG_NAME).* \

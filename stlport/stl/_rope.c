@@ -317,19 +317,16 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree()
 	case _S_leaf:
 	    {
 	      typedef _Rope_RopeLeaf<_CharT,_Alloc> _Rope_RopeLeaf_T;
-              _Rope_RopeLeaf_T* __l
-		= (_Rope_RopeLeaf_T*)this;
-	      __l->_Rope_RopeLeaf_T::~_Rope_RopeLeaf();
+          _Rope_RopeLeaf_T* __l = (_Rope_RopeLeaf_T*)this;
+          _Destroy(__l); // ->_Rope_RopeLeaf<_CharT,_Alloc>::~_Rope_RopeLeaf();
 	      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, _Rope_RopeLeaf_T).deallocate(__l, 1);
 	        break;
 	    }
 	case _S_concat:
 	    {
                typedef _Rope_RopeConcatenation<_CharT,_Alloc> _Rope_RopeConcatenation_T;
-               _Rope_RopeConcatenation_T* __c
-                   = (_Rope_RopeConcatenation_T*)this;
-               __c->_Rope_RopeConcatenation_T::
-                       ~_Rope_RopeConcatenation();
+               _Rope_RopeConcatenation_T* __c  = (_Rope_RopeConcatenation_T*)this;
+               _Destroy(__c);
                _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
                                _Rope_RopeConcatenation_T).deallocate(__c, 1);
 	        break;
@@ -337,9 +334,8 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree()
 	case _S_function:
 	    {
             typedef _Rope_RopeFunction<_CharT,_Alloc> _Rope_RopeFunctionT;
-              _Rope_RopeFunctionT* __f
-                  = (_Rope_RopeFunctionT*)this;
-              __f->_Rope_RopeFunctionT::~_Rope_RopeFunction();
+              _Rope_RopeFunctionT* __f = (_Rope_RopeFunctionT*)this;
+              _Destroy(__f);
               _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
                                  _Rope_RopeFunctionT).deallocate(__f, 1);
 	        break;
@@ -347,10 +343,8 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree()
 	case _S_substringfn:
 	    {
             typedef _Rope_RopeSubstring<_CharT,_Alloc> _Rope_RopeSubstring_T;
-              _Rope_RopeSubstring_T* __ss =
-                      (_Rope_RopeSubstring_T*)this;
-              __ss->_Rope_RopeSubstring_T::
-                        ~_Rope_RopeSubstring();
+              _Rope_RopeSubstring_T* __ss = (_Rope_RopeSubstring_T*)this;
+              _Destroy(__ss);
               _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
                               _Rope_RopeSubstring_T).deallocate(__ss, 1);
 		break;
@@ -1122,9 +1116,11 @@ rope<_CharT,_Alloc>::_S_min_len[__ROPE_DEPTH_SIZE] __ROPE_TABLE_BODY ;
 __DECLARE_INSTANCE(const unsigned long, 
                    crope::_S_min_len[__ROPE_DEPTH_SIZE],
                    __ROPE_TABLE_BODY);
+#  ifndef _STLP_NO_WCHAR_T
 __DECLARE_INSTANCE(const unsigned long, 
                    wrope::_S_min_len[__ROPE_DEPTH_SIZE],
                    __ROPE_TABLE_BODY);
+#  endif
 # endif
 # undef __ROPE_DEPTH_SIZE
 # undef __ROPE_MAX_DEPTH

@@ -61,8 +61,8 @@ _STLP_DECLSPEC complex<double> _STLP_CALL cos(const complex<double>& z) {
   return complex<double>(_STLP_COS(z._M_re) * _STLP_COSH(z._M_im),
                         -_STLP_SIN(z._M_re) * _STLP_SINH(z._M_im));
 }
-#ifndef _STLP_NO_LONG_DOUBLE
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC complex<long double> _STLP_CALL cos(const complex<long double>& z) {
   return complex<long double>(_STLP_COSL(z._M_re) * _STLP_COSHL(z._M_im),
                               -_STLP_SINL(z._M_re) * _STLP_SINHL(z._M_im));

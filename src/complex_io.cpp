@@ -41,13 +41,14 @@ operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
 }
 
+#ifndef _STLP_NO_LONG_DOUBLE
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
 operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z)
 {
   return __os << '(' << __z.real() << ',' << __z.imag() << ')';
 }
-
+#endif
 
 // Specialization for narrow characters; lets us avoid widen.
 _STLP_OPERATOR_SPEC
@@ -104,6 +105,7 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<double>& __z)
   return __is;
 }
 
+#  ifndef _STLP_NO_LONG_DOUBLE
 _STLP_OPERATOR_SPEC
 basic_istream<char, char_traits<char> >& _STLP_CALL
 operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& __z) {
@@ -129,6 +131,7 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& 
     __z = complex<long double>(__re, __im);
   return __is;
 }
+#  endif
 
 # endif /* MSVC */
 

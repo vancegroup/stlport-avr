@@ -643,6 +643,7 @@ double _Stl_string_to_double(const char * s) {
 }
 
 
+#ifndef _STLP_NO_LONG_DOUBLE
 /*
  * __string_to_long_double is just lifted from atold, the difference being
  * that we just use '.' for the decimal point, rather than let it
@@ -765,6 +766,7 @@ _Stl_string_to_long_double(const char * s) {
 
   return x;
 }
+#endif
 
 void  _STLP_CALL
 __string_to_float(const string& v, float& val) {
@@ -776,10 +778,12 @@ __string_to_float(const string& v, double& val) {
     val = _Stl_string_to_double(v.data());
 }
 
+#ifndef _STLP_NO_LONG_DOUBLE
 void  _STLP_CALL
 __string_to_float(const string& v, long double& val) {
     val = _Stl_string_to_long_double(v.data());
 }
+#endif
 
 _STLP_END_NAMESPACE
 

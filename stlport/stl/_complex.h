@@ -37,8 +37,9 @@ template <class _Tp> struct complex;
 
 _STLP_TEMPLATE_NULL  struct _STLP_CLASS_DECLSPEC complex<float>;
 _STLP_TEMPLATE_NULL  struct _STLP_CLASS_DECLSPEC complex<double>;
+# ifndef _STLP_NO_LONG_DOUBLE
 _STLP_TEMPLATE_NULL  struct _STLP_CLASS_DECLSPEC complex<long double>;
-
+# endif
 # endif
 
 template <class _Tp>
@@ -200,8 +201,9 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
   complex(const complex<float>& __z)    : _M_re(__z._M_re), _M_im(__z._M_im) {} 
 
   inline explicit complex(const complex<double>& __z);
+# ifndef _STLP_NO_LONG_DOUBLE
   inline explicit complex(const complex<long double>& __z);
-
+# endif
   // Element access.
   value_type real() const { return _M_re; }
   value_type imag() const { return _M_im; }
@@ -338,8 +340,9 @@ _STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<double> {
   complex(const complex<double>& __z)
     : _M_re(__z._M_re), _M_im(__z._M_im) {}
   inline complex(const complex<float>& __z);
+# ifndef _STLP_NO_LONG_DOUBLE
   explicit inline complex(const complex<long double>& __z);
-
+# endif
   // Element access.
   value_type real() const { return _M_re; }
   value_type imag() const { return _M_im; }
@@ -463,6 +466,7 @@ _STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<double> {
   value_type _M_im;
 };
 
+# ifndef _STLP_NO_LONG_DOUBLE
 
 _STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<long double> {
   typedef long double value_type;
@@ -601,14 +605,17 @@ _STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<long double> {
   value_type _M_im;
 };
 
+# endif /* _STLP_NO_LONG_DOUBLE */
+
 // Converting constructors from one of these three specialized types
 // to another.
 
 inline complex<float>::complex(const complex<double>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
-inline complex<float>::complex(const complex<long double>& __z)
-  : _M_re(__z._M_re), _M_im(__z._M_im) {}
 inline complex<double>::complex(const complex<float>& __z)
+  : _M_re(__z._M_re), _M_im(__z._M_im) {}
+# ifndef _STLP_NO_LONG_DOUBLE
+inline complex<float>::complex(const complex<long double>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
 inline complex<double>::complex(const complex<long double>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
@@ -616,6 +623,7 @@ inline complex<long double>::complex(const complex<float>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
 inline complex<long double>::complex(const complex<double>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
+# endif
 
 # endif /* SPECIALIZATIONS */
 
@@ -764,7 +772,7 @@ _STLP_DECLSPEC complex<float> _STLP_CALL polar(const float& __rho, const float& 
 _STLP_DECLSPEC complex<double> _STLP_CALL polar(const double& __rho, const double& __phi);
 
 
-# ifdef _STLP_LONG_DOUBLE
+# ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC long double  _STLP_CALL arg(const complex<long double>&);
 _STLP_DECLSPEC long double  _STLP_CALL abs(const complex<long double>&);
 _STLP_DECLSPEC complex<long double>  _STLP_CALL polar(const long double&, const long double&);
@@ -832,7 +840,7 @@ _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
 operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<double>& __z);
 
-#  ifdef _STLP_LONG_DOUBLE
+#  ifndef _STLP_NO_LONG_DOUBLE
 
 _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
@@ -855,7 +863,7 @@ _STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL 
 _STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator<<(
         basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<float>&);
 
-#  ifdef _STLP_LONG_DOUBLE
+#  ifndef _STLP_NO_LONG_DOUBLE
 _STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator>>(
         basic_istream<wchar_t, char_traits<wchar_t> >&, complex<long double>&);
 _STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator<<(
@@ -917,6 +925,7 @@ _STLP_DECLSPEC complex<double> _STLP_CALL sinh(const complex<double>&);
 _STLP_DECLSPEC complex<double> _STLP_CALL cosh(const complex<double>&);
 _STLP_DECLSPEC complex<double> _STLP_CALL tanh(const complex<double>&);
 
+# ifndef _STLP_NO_LONG_DOUBLE
 _STLP_DECLSPEC complex<long double> _STLP_CALL sqrt(const complex<long double>&);
 _STLP_DECLSPEC complex<long double> _STLP_CALL exp(const complex<long double>&);
 _STLP_DECLSPEC complex<long double> _STLP_CALL log(const complex<long double>&);
@@ -935,6 +944,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL tan(const complex<long double>&);
 _STLP_DECLSPEC complex<long double> _STLP_CALL sinh(const complex<long double>&);
 _STLP_DECLSPEC complex<long double> _STLP_CALL cosh(const complex<long double>&);
 _STLP_DECLSPEC complex<long double> _STLP_CALL tanh(const complex<long double>&);
+# endif
 
 _STLP_END_NAMESPACE
 
