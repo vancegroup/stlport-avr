@@ -219,7 +219,7 @@ public:                         // Constructor, destructor, assignment.
   }*/
   
   explicit basic_string(__partial_move_source<_Self> src)
-    : _String_base<_CharT,_Alloc>(_AsPartialMoveSource<_String_base<_CharT,_Alloc> >(src.get())) {
+    : _String_base<_CharT,_Alloc>(__partial_move_source<_String_base<_CharT,_Alloc> >(src.get())) {
   }
   
   // Check to see if _InputIterator is an integer type.  If so, then
