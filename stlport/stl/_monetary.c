@@ -71,6 +71,7 @@ __DECLARE_INSTANCE(locale::id, money_put_wchar_t_2::id, );
 
 // money_get facets
 
+
 // helper functions for do_get
 template <class _InIt1, class _InIt2>
 pair<_InIt1, bool> __get_string(_InIt1 __first,     _InIt1 __last,
@@ -79,16 +80,17 @@ pair<_InIt1, bool> __get_string(_InIt1 __first,     _InIt1 __last,
   return make_pair(__pr.first, __pr.second == __str_last);
 }
 
+# ifdef OBSOLETE
 template <class _InIt, class _OuIt, class _CharT>
-pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
-                                       _OuIt    __out,
-                                       const ctype<_CharT>& __c_type,
-                                       _CharT   __point,
-                                       size_t      __frac_digits,
-				       bool&    __syntax_ok)
+bool __get_monetary_value(_InIt& __first, _InIt __last,
+                          _OuIt    __out,
+                          const ctype<_CharT>& __c_type,
+                          _CharT   __point,
+                          size_t      __frac_digits,
+                          bool&    __syntax_ok)
 {
   if (__first == __last || !__c_type.is(ctype_base::digit, *__first))
-    return make_pair(__first, false);
+    return false;
 
   while (__first != __last && __c_type.is(ctype_base::digit, *__first))
     *__out++ = *__first++;
@@ -96,7 +98,7 @@ pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
   if (__first == __last || *__first != __point) {
     for (int __digits = 0; __digits != __frac_digits; ++__digits)
       *__out++ = _CharT('0');
-    return make_pair(__first, true);
+    return true;
   }
 
   ++__first;
@@ -110,23 +112,27 @@ pair<_InIt, bool> __get_monetary_value(_InIt __first, _InIt __last,
 
   __syntax_ok = (__digits == __frac_digits);  
 
-  return pair<_InIt, bool>(__first, true);
+  return true;
 }
+# endif
 
 template <class _InIt, class _OuIt, class _CharT>
-pair<_InIt, bool>
-__get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
+bool
+__get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
                      const ctype<_CharT>& _c_type,
                      _CharT   __point,
                      int      __frac_digits,
                      _CharT __sep,
                      const string& __grouping,
-		     bool&         __syntax_ok)
+                     bool&         __syntax_ok)
 {
   if (__first == __last || !_c_type.is(ctype_base::digit, *__first))
-    return pair<_InIt, bool>(__first, false);
+    return false;
 
-  string __group_sizes;
+  char __group_sizes[64];
+  char* __group_sizes_end = __group_sizes;
+
+  //   string __group_sizes;
   char   __current_group_size = 0;
 
   while (__first != __last) {
@@ -136,7 +142,7 @@ __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
     }
     else
     if (*__first == __sep) {
-      __group_sizes.push_back(__current_group_size);
+      *__group_sizes_end++ = __current_group_size;
       __current_group_size = 0;
       ++__first;
     }
@@ -144,21 +150,25 @@ __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
       break;
   }
 
-  if (__group_sizes.size() != 0)
-    __group_sizes.push_back(__current_group_size);
-
-  __syntax_ok = __valid_grouping(__group_sizes.data(), __group_sizes.data()+__group_sizes.size(), 
-				 __grouping.data(), __grouping.data()+ __grouping.size());  
-
-  if (__first == __last || *__first != __point) {
-    for (int __digits = 0; __digits != __frac_digits; ++__digits)
-      *__out++ = _CharT('0');
-    return make_pair(__first, true); // OK not to have decimal point
+  if (__grouping.size() == 0)
+    __syntax_ok = true;
+  else {
+    if (__group_sizes_end != __group_sizes)
+      *__group_sizes_end++ = __current_group_size;
+    
+    __syntax_ok = __valid_grouping(__group_sizes, __group_sizes_end,
+                                   __grouping.data(), __grouping.data()+ __grouping.size());  
+    
+    if (__first == __last || *__first != __point) {
+      for (int __digits = 0; __digits != __frac_digits; ++__digits)
+        *__out++ = _CharT('0');
+      return true; // OK not to have decimal point
+    }
   }
 
   ++__first;
 
-  int __digits = 0;
+  size_t __digits = 0;
 
   while (__first != __last && _c_type.is(ctype_base::digit, *__first)) {
       *__out++ = *__first++;
@@ -167,7 +177,7 @@ __get_monetary_value(_InIt __first, _InIt __last, _OuIt __out,
 
   __syntax_ok = __syntax_ok && (__digits == __frac_digits);
 
-  return pair<_InIt, bool>(__first, true);
+  return true;
 }
 
 //===== methods ======
@@ -306,36 +316,57 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
       string __grouping = __intl ? __punct_intl.grouping()
                                  : __punct.grouping();
       bool __syntax_ok = true;
+
+      bool __result;
+
+      _CharT __sep = __intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
+      __result = __get_monetary_value(__s, __end, __out, __c_type,
+                                      __point, __frac_digits,
+                                      __sep,
+                                      __grouping, __syntax_ok);      
+      if (!__syntax_ok)
+        __err |= ios_base::failbit;
+      if (!__result) {
+        __err = ios_base::failbit;
+        return __s;
+      }
+      break;
+      
+# ifdef OBSOLETE
       pair<_InputIter, bool> __result;
       if (__grouping.size() == 0) {
         __result = __get_monetary_value(__s, __end, __out, __c_type,
                                         __point, __frac_digits,
-					__syntax_ok);
+                                        __syntax_ok);
         if (!__syntax_ok)
-	  __err |= ios_base::failbit;
-	if (!__result.second) {
-	  __err |= ios_base::failbit;
-	  return __result.first;
-	}
+          __err |= ios_base::failbit;
+        if (!__result.second) {
+          __err |= ios_base::failbit;
+          return __result.first;
+        }
       }
       else {
         _CharT __sep = __intl ? __punct_intl.thousands_sep()
-                              : __punct.thousands_sep();
+          : __punct.thousands_sep();
         __result = __get_monetary_value(__s, __end, __out, __c_type,
                                         __point, __frac_digits,
                                         __sep,
                                         __grouping, __syntax_ok);
-      
-	if (!__syntax_ok)
-	  __err |= ios_base::failbit;
+        
+        if (!__syntax_ok)
+          __err |= ios_base::failbit;
         if (!__result.second) {
           __err = ios_base::failbit;
-	  return __result.first;
+          return __result.first;
         }
       }
       __s = __result.first;
       break;
+# endif
+
     }                           // Close money_base::value case
+
+
     }                           // Close switch statement
   }                             // Close for loop
 
