@@ -48,7 +48,8 @@
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1300)
 /*
  * MSVC7.x needs this include even if it is not a good thing to include
- * it directly.
+ * it directly. As long as the MSVC message won't be clearer it will be
+ * like that!
  */
 #  ifndef _STLP_STRING_H
 #    include <stl/_string.h>
@@ -59,7 +60,9 @@
 #  endif
 #endif /* _STLP_MSVC >= 1300 */
 
-# define _STLP_OWN_STDEXCEPT 1
+# ifdef _STLP_OWN_IOSTREAMS
+#  define _STLP_OWN_STDEXCEPT 1
+# endif /* _STLP_OWN_IOSTREAMS */
 
 _STLP_BEGIN_NAMESPACE
 

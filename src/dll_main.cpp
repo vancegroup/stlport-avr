@@ -137,7 +137,7 @@ range_error::~range_error() _STLP_NOTHROW_INHERENTLY {}
 overflow_error::~overflow_error() _STLP_NOTHROW_INHERENTLY {}
 underflow_error::~underflow_error() _STLP_NOTHROW_INHERENTLY {}
 
-# endif
+# endif /* _STLP_OWN_STDEXCEPT */
 
 # ifdef  _STLP_NO_BAD_ALLOC
 const nothrow_t nothrow /* = {} */;

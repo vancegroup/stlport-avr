@@ -30,10 +30,6 @@
 #  include <stl/_deque.h>
 # endif
 
-#ifndef _STLP_NEED_MYSTERIOUS_COPY
-#  define __t_copy __t
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
-
 _STLP_BEGIN_NAMESPACE
 
 // Non-inline member functions from _Deque_base.
@@ -260,13 +256,10 @@ void __deque__<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_last - 1.
 template <class _Tp, class _Alloc >
 void __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t) {
-#ifdef _STLP_NEED_MYSTERIOUS_COPY
-  value_type __t_copy = __t;
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
-    _Copy_Construct(this->_M_finish._M_cur, __t_copy);
+    _Copy_Construct(this->_M_finish._M_cur, __t);
     this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
@@ -293,15 +286,12 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux() {
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
 void __deque__<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t) {
-#ifdef _STLP_NEED_MYSTERIOUS_COPY
-  value_type __t_copy = __t;
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
   _M_reserve_map_at_front();
   *(this->_M_start._M_node - 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
     this->_M_start._M_set_node(this->_M_start._M_node - 1);
     this->_M_start._M_cur = this->_M_start._M_last - 1;
-    _Copy_Construct(this->_M_start._M_cur, __t_copy);
+    _Copy_Construct(this->_M_start._M_cur, __t);
   }
   _STLP_UNWIND((++this->_M_start, 
                 this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), this->buffer_size())));
@@ -626,10 +616,6 @@ _STLP_END_NAMESPACE
 # undef const_iterator
 # undef size_type
 # undef value_type
-
-#ifndef _STLP_NEED_MYSTERIOUS_COPY
-#  undef __t_copy
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
 
 #endif /*  _STLP_DEQUE_C */
 

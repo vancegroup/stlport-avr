@@ -640,7 +640,7 @@ basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s,
 
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _Traits, _Alloc> & __s)  
-  : _String_base<_CharT,_Alloc>(__s.get_allocator(), __s.size() + 1) {  
+  : _String_base<_CharT,_Alloc>(__s.get_allocator()) {  
   _M_range_initialize(__s._M_Start(), __s._M_Finish());  
 } 
   

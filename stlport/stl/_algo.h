@@ -480,7 +480,7 @@ void nth_element(_RandomAccessIter __first, _RandomAccessIter __nth,
 // auxiliary class for lower_bound, etc.
 template <class _T1, class _T2>
 struct __less_2 {
-  bool operator() (const _T1& __x, const _T2 __y) const { return __x < __y ; } 
+  bool operator() (const _T1& __x, const _T2& __y) const { return __x < __y ; } 
 };
 
 template <class _T1, class _T2>
@@ -498,8 +498,8 @@ inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
                                    const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
     return __lower_bound(__first, __last, __val, 
-			 __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
-			 _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+                         __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                         _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Tp, class _Compare>
@@ -518,7 +518,7 @@ inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __upper_bound(__first, __last, __val, 
-		       __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                       __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
                        _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
@@ -540,7 +540,7 @@ inline pair<_ForwardIter, _ForwardIter>
 equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __equal_range(__first, __last, __val,  
-		       __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                       __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
                        _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 

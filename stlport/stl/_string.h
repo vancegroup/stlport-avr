@@ -252,8 +252,7 @@ public:                         // Constructor, destructor, assignment.
 
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a = allocator_type())
-    : _String_base<_CharT,_Alloc>(__a)
-  {
+    : _String_base<_CharT,_Alloc>(__a) {
     _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
     _M_range_initialize(__f, __l);
   }
@@ -263,11 +262,10 @@ public:                         // Constructor, destructor, assignment.
 # if defined (_STLP_USE_NATIVE_STRING) && ! defined (_STLP_DEBUG)
   // these conversion operations still needed for
   // strstream, etc.
-  basic_string (const __std_string& __x): _String_base<_CharT,_Alloc>(allocator_type())
-    {
-      const _CharT* __s = __x.data();
-      _M_range_initialize(__s, __s + __x.size()); 
-    }
+  basic_string (const __std_string& __x): _String_base<_CharT,_Alloc>(allocator_type()) {
+    const _CharT* __s = __x.data();
+    _M_range_initialize(__s, __s + __x.size()); 
+  }
   
   operator __std_string() const { return __std_string(this->data(), this->size()); }
 # endif

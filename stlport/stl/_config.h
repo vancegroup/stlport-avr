@@ -831,7 +831,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
   __TRIVIAL_CONSTRUCTOR(__type) __TRIVIAL_DESTRUCTOR(__type)
 
 # if ! (defined ( _STLP_NO_EXCEPTIONS ) || defined (_STLP_HAS_NO_EXCEPTIONS) \
-	|| defined ( _STLP_USE_EXCEPTIONS ))
+  || defined ( _STLP_USE_EXCEPTIONS ))
 #  define _STLP_USE_EXCEPTIONS
 # endif 
 
