@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/10/14 22:03:22 ptr>
+// -*- C++ -*- Time-stamp: <99/10/18 10:54:12 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -51,6 +51,10 @@ namespace __impl {
 #ifndef _WIN32
 using std::cerr;
 using std::endl;
+#endif
+
+#ifdef _WIN32
+using std::timespec;
 #endif
 
 __XMT_DLL

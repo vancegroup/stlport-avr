@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/10/14 21:19:35 ptr>
+// -*- C++ -*- Time-stamp: <99/10/18 10:53:18 ptr>
 
 /*
  *
@@ -435,7 +435,11 @@ class Condition
 #endif
       }
 
+#ifndef _WIN32
     __XMT_DLL int wait_time( const timespec *abstime );
+#else
+    __XMT_DLL int wait_time( const std::timespec *abstime );
+#endif
 
     int signal()
       {
@@ -535,7 +539,11 @@ class Thread
     static __XMT_DLL void unblock_signal( int sig );
     static __XMT_DLL void signal_handler( int sig, SIG_PF );
 
+#ifndef _WIN32
     static __XMT_DLL void sleep( timespec *t, timespec *e = 0 );
+#else
+    static __XMT_DLL void sleep( std::timespec *t, std::timespec *e = 0 );
+#endif
 
     bool good() const
       { return _id != bad_thread_key; }
