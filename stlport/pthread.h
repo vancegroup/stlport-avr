@@ -20,11 +20,11 @@
 #  define _STLP_DONT_POP_0x280
 # endif
 
-//# if defined (__GNUC__) && defined (__APPLE__)
-//#  include <../pthread.h>
-//# else
+# if defined (__SUNPRO_CC)
+# include "/usr/include/pthread.h"
+# else
 # include _STLP_NATIVE_C_HEADER(pthread.h)
-//# endif
+# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x280)
 #  if ! defined (_STLP_DONT_POP_0x280)

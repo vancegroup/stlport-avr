@@ -90,6 +90,9 @@
 // #  define _STLP_NATIVE_C_HEADER(header) <../CC/##header##.SUNWCCh>
 #  define _STLP_NATIVE_CPP_C_HEADER(header) <../CC/##header##.SUNWCCh>
 #  define _STLP_NATIVE_C_INCLUDE_PATH /usr/include
+# elif defined( __SunOS_5_5_1 ) || defined( __SunOS_5_6 ) || defined( __SunOS_5_7 )
+#  define _STLP_NATIVE_C_INCLUDE_PATH ../CC/std
+#  define _STLP_NATIVE_CPP_INCLUDE_PATH ../CC/std
 # else
 #  define _STLP_NATIVE_C_INCLUDE_PATH /usr/include
 #  define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../CC/std

@@ -69,8 +69,11 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* debug/_vector.h : removed extra guard for MSCV around member template constructor (thanks Alberto Barbati)
 	
 	* _fstream.h : added extension basic_fstream<> constructors taking protection parameter (thanks Mukesh Kapoor for the idea)
+
+	* stl_sunpro.h : added additional C include directory choice for Solaris 6&7 (thanks John E. Bossom)
 	
-	
+        * _vector.c : added _vector.h inclusion for _STLP_LINK_TIME_INSTANTIATION case (thanks Alex Vanic)
+
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
 	* _threads.h, debug/_debug.h etc : STLport iostreams library made binary compatible with user code compiler w/o multithreaded switch (-D_REENTRANT is not necessary anymore)

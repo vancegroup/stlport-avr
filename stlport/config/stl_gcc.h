@@ -158,7 +158,7 @@ typedef unsigned int wint_t;
 #     define _STLP_NO_METHOD_SPECIALIZATION 1
 #     define _STLP_NO_MEMBER_TEMPLATES 1
 #     define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-
+#     define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
 /*  DJGPP doesn't seem to implement it in 2.8.x */
 #     ifdef DJGPP
 #      define  _STLP_NO_STATIC_TEMPLATE_DATA 1
