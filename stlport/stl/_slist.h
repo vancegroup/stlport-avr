@@ -48,8 +48,12 @@
 #  include <stl/_slist_base.h>
 # endif
 
-# undef slist
-# define  slist  __WORKAROUND_DBG_RENAME(slist)
+#ifdef _STLP_DEBUG
+# ifdef slist
+#  undef  slist
+# endif
+# define slist __WORKAROUND_DBG_RENAME(slist)
+#endif
 
 _STLP_BEGIN_NAMESPACE 
 
@@ -709,7 +713,6 @@ public:
 # endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 
-
 template <class _Tp, class _Alloc>
 inline bool  _STLP_CALL
 operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2)
@@ -737,6 +740,10 @@ operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2)
 # undef _STLP_TEMPLATE_HEADER
 # undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
+#ifdef _STLP_DEBUG
+# undef  slist
+#endif
+
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <>
 struct __move_traits<_Slist_node_base> : __move_traits_POD
@@ -753,16 +760,11 @@ struct __move_traits<slist<_Tp, _Alloc> > :
 {};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-
 _STLP_END_NAMESPACE
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_slist.c>
 # endif
-
-#  undef  slist
-
-#  define __slist__ __FULL_NAME(slist)
 
 #if defined (_STLP_DEBUG)
 # include <stl/debug/_slist.h>
@@ -771,6 +773,13 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 // Specialization of insert_iterator so that insertions will be constant
 // time rather than linear time.
+
+#ifdef _STLP_DEBUG
+# ifdef slist
+#  undef  slist
+# endif
+# define slist __WORKAROUND_DBG_RENAME(slist)
+#endif
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 
@@ -811,10 +820,14 @@ public:
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
+#ifdef _STLP_DEBUG
+# undef  slist
+#endif
+
 _STLP_END_NAMESPACE
 
 # if defined ( _STLP_USE_WRAPPER_FOR_ALLOC_PARAM )
-# include <stl/wrappers/_slist.h>
+//# include <stl/wrappers/_slist.h>
 # endif
 
 #endif /* _STLP_INTERNAL_SLIST_H */

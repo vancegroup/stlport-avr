@@ -19,8 +19,15 @@
 #ifndef _STLP_SLIST_C
 #define _STLP_SLIST_C
 
-# undef slist
-# define  slist  __WORKAROUND_DBG_RENAME(slist)
+#ifndef _STLP_INTERNAL_SLIST_H
+# include <stl/_slist.h>
+#endif
+
+#ifdef _STLP_DEBUG
+# undef  slist
+# define slist __WORKAROUND_DBG_RENAME(slist)
+#endif
+
 # if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
 #  define size_type          size_t
 # endif
@@ -35,7 +42,7 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
   while (__cur != __last_node) {
     _Slist_node<_Tp>* __tmp = __cur;
     __cur = (_Slist_node<_Tp>*) __cur->_M_next;
-    _Destroy(&__tmp->_M_data);
+    _STLP_STD::_Destroy(&__tmp->_M_data);
     _M_head.deallocate(__tmp,1);
   }
   __before_first->_M_next = __last_node;
@@ -163,8 +170,13 @@ void slist<_Tp,_Alloc>::sort()
   }
 }
 
-# undef slist
+#if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
 # undef size_type
+#endif
+
+#ifdef _STLP_DEBUG
+# undef  slist
+#endif
 
 _STLP_END_NAMESPACE
 

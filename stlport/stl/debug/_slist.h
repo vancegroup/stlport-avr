@@ -32,10 +32,12 @@
 #define _STLP_FILE_UNIQUE_ID SLIST_H
 _STLP_INSTRUMENT_FILE();
 
-# ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
-#  undef  _DBG_slist
+//# ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
+#  ifdef _DBG_slist
+#   undef  _DBG_slist
+#  endif
 #  define _DBG_slist slist
-# endif
+//# endif
 
 #  define _STLP_DBG_SLIST_BASE __WORKAROUND_DBG_RENAME(slist) <_Tp, _Alloc>
 
@@ -449,8 +451,11 @@ public:
   }
   void merge(_Self& __x) {
     _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(_Base::begin(), _Base::end()))
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(__x.begin()._M_iterator, __x.end()._M_iterator))
+    /* comments below due to bug in GCC compilers: ones eat all memory  and die if see
+     * something like namespace_name::func_name() - ptr
+     */
+    _STLP_DEBUG_CHECK( /* _STLP_STD:: */ is_sorted(_Base::begin(), _Base::end()))
+    _STLP_DEBUG_CHECK( /* _STLP_STD:: */ is_sorted(__x.begin()._M_iterator, __x.end()._M_iterator))
     _Base::merge((_Base&)__x);
   }
   void sort() {
@@ -491,8 +496,11 @@ public:
   template <class _StrictWeakOrdering> 
   void merge(_Self& __x, _StrictWeakOrdering __ord) {
     _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(_Base::begin(), _Base::end(), __ord))
-    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(__x.begin()._M_iterator, __x.end()._M_iterator, __ord))
+    /* comments below due to bug in GCC compilers: ones eat all memory  and die if see
+     * something like namespace_name::func_name() - ptr
+     */
+    _STLP_DEBUG_CHECK( /* _STLP_STD:: */ is_sorted(_Base::begin(), _Base::end(), __ord))
+    _STLP_DEBUG_CHECK( /* _STLP_STD:: */ is_sorted(__x.begin()._M_iterator, __x.end()._M_iterator, __ord))
     _Base::merge((_Base&)__x, __ord);
   }
 
