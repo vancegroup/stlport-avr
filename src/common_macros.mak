@@ -94,7 +94,6 @@ $(RELEASE_OBJDIR_static)$(PATH_SEP)fstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)strstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)sstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)ios.$(OBJEXT) \
-$(RELEASE_OBJDIR_static)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)istream.$(OBJEXT) \
 $(RELEASE_OBJDIR_static)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -130,7 +129,6 @@ $(DEBUG_OBJDIR_static)$(PATH_SEP)fstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)strstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)sstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)ios.$(OBJEXT) \
-$(DEBUG_OBJDIR_static)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)istream.$(OBJEXT) \
 $(DEBUG_OBJDIR_static)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -165,7 +163,6 @@ $(STLDEBUG_OBJDIR_static)$(PATH_SEP)fstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)strstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)sstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)ios.$(OBJEXT) \
-$(STLDEBUG_OBJDIR_static)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)istream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_static)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -202,7 +199,6 @@ $(RELEASE_OBJDIR_staticx)$(PATH_SEP)fstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)strstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)sstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)ios.$(OBJEXT) \
-$(RELEASE_OBJDIR_staticx)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)istream.$(OBJEXT) \
 $(RELEASE_OBJDIR_staticx)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -238,7 +234,6 @@ $(DEBUG_OBJDIR_staticx)$(PATH_SEP)fstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)strstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)sstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)ios.$(OBJEXT) \
-$(DEBUG_OBJDIR_staticx)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)istream.$(OBJEXT) \
 $(DEBUG_OBJDIR_staticx)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -273,7 +268,6 @@ $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)fstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)strstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)sstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)ios.$(OBJEXT) \
-$(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)istream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_staticx)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -311,7 +305,6 @@ $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)fstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)strstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)sstream.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)ios.$(OBJEXT) \
-$(RELEASE_OBJDIR_dynamic)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)istream.$(OBJEXT) \
 $(RELEASE_OBJDIR_dynamic)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -347,7 +340,6 @@ $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)fstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)strstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)sstream.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)ios.$(OBJEXT) \
-$(DEBUG_OBJDIR_dynamic)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)istream.$(OBJEXT) \
 $(DEBUG_OBJDIR_dynamic)$(PATH_SEP)ostream.$(OBJEXT) \
@@ -383,7 +375,6 @@ $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)fstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)strstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)sstream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)ios.$(OBJEXT) \
-$(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)stdio_streambuf.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)istream.$(OBJEXT) \
 $(STLDEBUG_OBJDIR_dynamic)$(PATH_SEP)ostream.$(OBJEXT) \
