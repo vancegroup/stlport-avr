@@ -212,7 +212,7 @@ __deque__<_Tp,_Alloc>::erase(iterator __first, iterator __last)
       copy_backward(this->_M_start, __first, __last);
       iterator __new_start = this->_M_start + __n;
       _Destroy(this->_M_start, __new_start);
-      this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node);
+      this->_M_destroy_nodes(this->_M_start._M_node, __new_start._M_node);
       this->_M_start = __new_start;
     }
     else {
