@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/05/10 16:25:39 ptr>
+// -*- C++ -*- Time-stamp: <00/05/18 15:17:10 ptr>
 
 /*
  *
@@ -21,7 +21,7 @@
 #ifndef __XMT_H
 #define __XMT_H
 
-#ident "$SunId$ %Q%"
+#ident "$SunId$"
 
 #ifndef __config_feature_h
 #include <config/feature.h>
