@@ -27,8 +27,8 @@
 # include <cstdlib>
 #endif
 
-#ifndef _STLP_CWCHAR
-# include <cwchar>
+#ifndef _STLP_CWCHAR_H
+# include <stl/_cwchar.h>
 #endif
 
 #ifndef _STLP_INTERNAL_THREADS_H
@@ -174,8 +174,8 @@ public:                         // Helper functions for locale globals.
   // same, but throws
   facet* _M_use_facet(const id&) const;
   static void _STLP_CALL _M_throw_runtime_error(const char* = 0);
-  static void _STLP_CALL _S_initialize();
-  static void _STLP_CALL _S_uninitialize();
+    // static void _STLP_CALL _S_initialize();
+    // static void _STLP_CALL _S_uninitialize();
 
 private:                        // More helper functions.
   //  static _Locale_impl* _STLP_CALL _S_copy_impl(_Locale_impl*, bool);

@@ -38,8 +38,38 @@ _STLP_BEGIN_NAMESPACE
 // using _STLP_VENDOR_EXCEPT_STD::bad_cast;
 // #endif
 
-_Locale_impl::_Locale_impl(const char* s) : name(s) {}
-_Locale_impl::~_Locale_impl() {}
+static _Stl_aligned_buffer<_Locale_impl::Init> __Loc_init_buf;
+long _Locale_impl::Init::_S_count = 0;
+
+_Locale_impl::Init::Init()
+{
+  if ( _S_count++ == 0 ) {
+//# if defined (__BORLANDC__) && defined (_RTLDLL)
+//    _Stl_loc_init_num_put();
+//    _Stl_loc_init_num_get();
+//    _Stl_loc_init_monetary();
+//    _Stl_loc_init_time_facets();
+//#endif
+    _Locale_impl::_S_initialize();
+  }
+}
+
+_Locale_impl::Init::~Init() {
+  if ( --_S_count == 0 )
+    _Locale_impl::_S_uninitialize();
+}
+
+_Locale_impl::_Locale_impl(const char* s) : 
+    name(s)
+{
+  new (&__Loc_init_buf) Init();
+}
+
+_Locale_impl::~_Locale_impl()
+{
+  (&__Loc_init_buf)->~Init();
+}
+
 void _Locale_impl::incr() {}
 void _Locale_impl::decr() {}
 
@@ -92,7 +122,7 @@ _Stl_loc_assign_ids() {
   //  locale::id::_S_max                               = 39;
 }
 
-static _Stl_aligned_buffer<_Locale_impl> _S_classic_locale;
+// static _Stl_aligned_buffer<_Locale_impl> _S_classic_locale;
 
 static _Stl_aligned_buffer<collate<char> > _S_collate_char;
 static _Stl_aligned_buffer<ctype<char> > _S_ctype_char;
@@ -193,12 +223,15 @@ static locale::facet* _S_classic_facets[] = {
   0
 };
 
-_Locale_impl* 
-_Locale_impl::make_classic_locale() {
+static _Stl_aligned_buffer<_Locale_impl> _Locale_impl_buf;
+static _Locale_impl *_Stl_classic_locale_impl = new (&_Locale_impl_buf) _Locale_impl("C");
+static ios_base::Init _IosInit;
+
+void _Locale_impl::make_classic_locale() {
   // The classic locale contains every facet that belongs to a category.
-  _Locale_impl* classic = &_S_classic_locale;
+  _Locale_impl* classic = &_Locale_impl_buf;
   
-  new (classic) _Locale_impl("C");
+  // new (classic) _Locale_impl("C");
 
   classic->facets = _S_classic_facets;
   classic->_M_size = locale::id::_S_max;
@@ -241,13 +274,11 @@ _Locale_impl::make_classic_locale() {
   new (&_S_money_get_wchar) money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
   new (&_S_money_put_wchar) money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
 # endif
-
-  return classic;
 }
 
 #ifdef _STLP_LEAKS_PEDANTIC
 void _Locale_impl::free_classic_locale() {
-  _Locale_impl* classic = &_S_classic_locale;
+  _Locale_impl* classic = _S_classic_locale;
   
 # ifndef _STLP_NO_WCHAR_T
   (&_S_time_put_wchar)->~time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
@@ -312,9 +343,7 @@ bool locale::operator()(const wstring& __x,
 #  endif
 # endif
 
-
-_Locale_impl*   _Stl_loc_global_impl    = 0;
-locale          _Stl_loc_classic_locale(&_S_classic_locale);
+static locale _Stl_loc_classic_locale(_Stl_classic_locale_impl);
 _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
   
 //----------------------------------------------------------------------
@@ -337,55 +366,29 @@ locale::_M_throw_runtime_error(const char* name)
   _STLP_THROW(runtime_error(buf));
 }
 
-#if !( defined (__BORLANDC__) && defined(_RTLDLL))
-
-long ios_base::_Loc_init::_S_count = 0;
-
-ios_base::_Loc_init::_Loc_init() {
-  if (_S_count == 0)
-      locale::_S_initialize();
-}
-
-ios_base::_Loc_init::~_Loc_init() {
-    if (_S_count > 0)
-      locale::_S_uninitialize();
-}
-
-#endif /* _RTLDLL */
-
 // Initialization of the locale system.  This must be called before
 // any locales are constructed.  (Meaning that it must be called when
 // the I/O library itself is initialized.)
 void _STLP_CALL
-locale::_S_initialize()
+_Locale_impl::_S_initialize()
 {
-  // additional check for singleton count : linker may choose to alter the order of function calls on initialization
-  if (ios_base::_Loc_init::_S_count > 0 )
-    return;
   _Stl_loc_assign_ids();
-  _Stl_loc_global_impl = _Locale_impl::make_classic_locale();
-  ++ios_base::_Loc_init::_S_count;
+  make_classic_locale();
 }
 
-
-
 void _STLP_CALL
-locale::_S_uninitialize()
+_Locale_impl::_S_uninitialize()
 {
-  // additional check for singleton count : linker may choose to alter the order of function calls on initialization
-  if (ios_base::_Loc_init::_S_count == 0 )
-    return;
-  _Stl_loc_global_impl->decr();
+  _Stl_classic_locale_impl->decr();
 #ifdef _STLP_LEAKS_PEDANTIC
-  _Locale_impl::free_classic_locale();
+  free_classic_locale();
 #endif // _STLP_LEAKS_PEDANTIC
-  --ios_base::_Loc_init::_S_count;
 }
 
 
 // Default constructor: create a copy of the global locale.
 locale::locale() : _M_impl(0) {
-  _M_impl = _S_copy_impl(_Stl_loc_global_impl);
+  _M_impl = _S_copy_impl(_Stl_classic_locale_impl);
 }
 
 locale::locale(_Locale_impl* impl) : _M_impl(impl)
@@ -460,11 +463,11 @@ locale::global(const locale& L)
   L._M_impl->incr();
   {
     _STLP_auto_lock lock(_Stl_loc_global_locale_lock);
-    _Stl_loc_global_impl->decr();     // We made a copy, so it can't be zero.
-    _Stl_loc_global_impl = L._M_impl;
+    _Stl_classic_locale_impl->decr();     // We made a copy, so it can't be zero.
+    _Stl_classic_locale_impl = L._M_impl;
   }
 
-                                // Set the global C locale, if appropriate.
+  // Set the global C locale, if appropriate.
 #if !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
   if (L.name() != _Nameless)
     setlocale(LC_ALL, L.name().c_str());
@@ -494,6 +497,4 @@ _STLP_END_NAMESPACE
 //
 // Facets included in classic locale :
 //
-
-
 

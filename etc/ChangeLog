@@ -1,8 +1,18 @@
+2004-02-05  Petr Ovchenkov  <ptr@Island...>
+
+	* iostream.cpp, _ios_base.h, iostream, locale_impl.h, locale_impl.cpp:
+	revise standard iostream and locale initialization, remove worrits about
+	order of static objects initialization as soon as possible; all real
+	initialization situated in the locale_impl.cpp; locale initialization
+	moved to _Locale_impl constructor---locale will be correctly initialized
+	either via direct locale usage, or during standard iostream initialization,
+	as ios_base member. This changes may lead to problems with Digital Mars
+	and Borland compilers---should be checked and fixed.
+
 2004-02-03  Francois Dumont <dums@s...>
 	* integration of a portage to the Windows CE .NET (eMebedded Visual
 	C++ 4) compiler thanks Zdenek Nemek
 	
-
 2004-02-02  Petr Ovchenkov  <ptr@Island...>
 
 	* _iostream_string.h: avoid usage of iostring in the _STLP_DEBUG mode,

@@ -19,6 +19,7 @@
 # include "stlport_prefix.h"
 # include <algorithm>
 # include <stl/_ios.h>
+# include "aligned_buffer.h"
 
 _STLP_BEGIN_NAMESPACE
 
@@ -271,7 +272,6 @@ void ios_base::_M_copy_state(const ios_base& x) {
   }
 }
 
-
 // ios's (protected) default constructor.  The standard says that all 
 // fields have indeterminate values; we initialize them to zero for
 // simplicity.  The only thing that really matters is that the arrays
@@ -289,7 +289,8 @@ ios_base::ios_base()
 { }
 
 // ios's destructor.
-ios_base::~ios_base() {
+ios_base::~ios_base()
+{
   _M_invoke_callbacks(erase_event);
   free(_M_callbacks);
   free(_M_iwords);

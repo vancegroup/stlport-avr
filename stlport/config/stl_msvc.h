@@ -252,3 +252,7 @@
 #    endif
 
 #   include <config/vc_select_lib.h>
+
+// Local Variables:
+// mode:C++
+// End:

@@ -77,17 +77,18 @@ _STLP_DECLSPEC ostream cerr(0);
 _STLP_DECLSPEC ostream clog(0);
 # endif
 
+# ifndef _STLP_NO_WCHAR_T
 _STLP_DECLSPEC wistream wcin(0);
 _STLP_DECLSPEC wostream wcout(0);
 _STLP_DECLSPEC wostream wcerr(0);
 _STLP_DECLSPEC wostream wclog(0);
+# endif
 
 #if defined(__MWERKS__)
 # pragma suppress_init_code off
 #endif
 
 #else
-
 
 // Definitions of the eight global I/O objects that are declared in 
 // <iostream>.  Disgusting hack: we deliberately define them with the
@@ -145,14 +146,16 @@ long ios_base::Init::_S_count = 0;
 // by default, those are synced
 bool ios_base::_S_was_synced = true;
 
-ios_base::Init::Init() {
-    if (_S_count == 0)
-      ios_base::_S_initialize();
+ios_base::Init::Init()
+{
+  if (_S_count++ == 0)
+    ios_base::_S_initialize();
 }
 
-ios_base::Init::~Init() {
-    if (_S_count > 0)
-      ios_base::_S_uninitialize();
+ios_base::Init::~Init()
+{
+  if (--_S_count == 0)
+    ios_base::_S_uninitialize();
 }
 
 
@@ -200,19 +203,11 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode )
 
 void  _STLP_CALL ios_base::_S_initialize()
 {
-
-  if (ios_base::Init::_S_count > 0) 
-    return ;
 # if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(_STLP_WINCE)
   using _SgI::stdio_istreambuf;
   using _SgI::stdio_ostreambuf;
 # endif
   _STLP_TRY {
-    // Run constructors for the four narrow stream objects.
-    // check with locale system
-    if (_Loc_init::_S_count == 0) {
-      locale::_S_initialize();
-    }
 #if !defined(_STLP_WINCE)
 #  ifdef _STLP_REDIRECT_STDSTREAMS
     istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(0);
@@ -279,8 +274,6 @@ void  _STLP_CALL ios_base::_S_initialize()
     
 # endif /*  _STLP_NO_WCHAR_T */
 #endif /* _STLP_WINCE */
-
-    ++ios_base::Init::_S_count;
   }
 
   _STLP_CATCH_ALL {}
@@ -288,9 +281,6 @@ void  _STLP_CALL ios_base::_S_initialize()
 
 void _STLP_CALL ios_base::_S_uninitialize()
 {
-  if (ios_base::Init::_S_count == 0) 
-    return ;
-
   // Note that destroying output streambufs flushes the buffers.
 
   istream* ptr_cin  = &cin;
@@ -339,11 +329,6 @@ void _STLP_CALL ios_base::_S_uninitialize()
   _Destroy(ptr_wclog);
 
 # endif
-    if (_Loc_init::_S_count > 0) {
-      locale::_S_uninitialize();
-    }
-
-    --ios_base::Init::_S_count;
 }
 
 

@@ -42,30 +42,46 @@ _STLP_BEGIN_NAMESPACE
 // be used for classic locale only
 class _STLP_CLASS_DECLSPEC _Locale_impl
 {
-public:
-  _Locale_impl(const char* s);
-  //  _Locale_impl(const _Locale_impl&);
-  virtual ~_Locale_impl();
+  public:
+    _Locale_impl(const char* s);
+    //  _Locale_impl(const _Locale_impl&);
+    virtual ~_Locale_impl();
 
-  virtual void incr();
-  virtual void decr();
+    virtual void incr();
+    virtual void decr();
 
-  size_t size() const { return _M_size; }
+    size_t size() const { return _M_size; }
 
-  static _Locale_impl* make_classic_locale();
+    static void make_classic_locale();
 #ifdef _STLP_LEAKS_PEDANTIC
-  static void free_classic_locale();
+    static void free_classic_locale();
 #endif // _STLP_LEAKS_PEDANTIC
   
-  locale::facet** facets;
-  size_t _M_size;
+    locale::facet** facets;
+    size_t _M_size;
 
-  basic_string<char, char_traits<char>, allocator<char> > name;
+    basic_string<char, char_traits<char>, allocator<char> > name;
 
-  static void _STLP_CALL _M_throw_bad_cast();
+    static void _STLP_CALL _M_throw_bad_cast();
 
-private:
-  void operator=(const _Locale_impl&);
+  private:
+    void operator=(const _Locale_impl&);
+
+    // private:
+  public:
+    class _STLP_CLASS_DECLSPEC Init
+    {
+      public:
+        Init();
+        ~Init();
+      private:
+        static long _S_count;
+        // friend class _Locale_impl;
+    };
+
+    static void _STLP_CALL _S_initialize();
+    static void _STLP_CALL _S_uninitialize();
+    friend class Init;
 };
 
 inline _Locale_impl*  _STLP_CALL _S_copy_impl(_Locale_impl* I) {
@@ -74,18 +90,14 @@ inline _Locale_impl*  _STLP_CALL _S_copy_impl(_Locale_impl* I) {
     return I;
 }
 
-extern _Locale_impl*   _Stl_loc_global_impl;
-// extern locale*         _Stl_loc_classic_locale;
-extern _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock;
-
 _STLP_END_NAMESPACE
 
 # if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
 #  undef _STLP_FILE_UNIQUE_ID
 # endif
 
-
-
 #endif
 
-
+// Local Variables:
+// mode:C++
+// End:

@@ -75,17 +75,17 @@ extern _STLP_DECLSPEC wostream wcerr;
 extern _STLP_DECLSPEC wostream wclog;
 # endif
 
-# ifndef __LOCALE_INITIALIZED
-#  define __LOCALE_INITIALIZED
+//# ifndef __LOCALE_INITIALIZED
+//#  define __LOCALE_INITIALIZED
 // Global initializer object, to ensure initialization of locale subsystem.
-static ios_base::_Loc_init _LocInit;
-# endif
+//static ios_base::_Loc_init _LocInit;
+//# endif
 
-# ifndef __IOS_BASE_INITIALIZED
-#  define __IOS_BASE_INITIALIZED
+//# ifndef __IOS_BASE_INITIALIZED
+//#  define __IOS_BASE_INITIALIZED
 // Global initializer object, to ensure construction of static objects.
-static ios_base::Init _IosInit;
-# endif
+//static ios_base::Init _IosInit;
+//# endif
 
 _STLP_END_NAMESPACE
 

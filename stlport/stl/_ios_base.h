@@ -258,15 +258,17 @@ public:
   // implementations where such a thing is required) is declared in
   // <iostream>
   
-  class _STLP_CLASS_DECLSPEC Init {
-  public:
-    Init();
-    ~Init();
-  private:
-    static long _S_count;
-    friend class ios_base;
+  class _STLP_CLASS_DECLSPEC Init
+  {
+    public:
+      Init();
+      ~Init();
+    private:
+      static long _S_count;
+      friend class ios_base;
   };
 
+#if 0
   // this class is needed to ensure locale initialization w/o <iostream> inclusion
   class _STLP_CLASS_DECLSPEC _Loc_init {
   public:
@@ -277,6 +279,7 @@ public:
     static long _S_count;
     friend class ios_base;
   };
+#endif
 
   friend class Init;
 
@@ -366,32 +369,6 @@ inline ios_base& _STLP_CALL fixed(ios_base& __s)
 
 inline ios_base& _STLP_CALL scientific(ios_base& __s)
   { __s.setf(ios_base::scientific, ios_base::floatfield); return __s; }
-
-#if defined(__BORLANDC__) && defined(_RTLDLL)
-
-long ios_base::_Loc_init::_S_count = 0;
-
-void _STLP_CALL _Stl_loc_init_num_put();
-void _STLP_CALL _Stl_loc_init_num_get();
-void _STLP_CALL _Stl_loc_init_monetary();
-void _STLP_CALL _Stl_loc_init_time_facets();
-
-inline ios_base::_Loc_init::_Loc_init() {
-  if (_S_count++ == 0) {
-      _Stl_loc_init_num_put();
-      _Stl_loc_init_num_get();
-      _Stl_loc_init_monetary();
-      _Stl_loc_init_time_facets();
-      locale::_S_initialize();
-  }
-}
-
-inline ios_base::_Loc_init::~_Loc_init() {
-    if (--_S_count == 0)
-      locale::_S_uninitialize();
-}
-
-#endif /* __BORLANDC__ */
 
 _STLP_END_NAMESPACE
 
