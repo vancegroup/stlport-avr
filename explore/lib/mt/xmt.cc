@@ -2,12 +2,12 @@
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
- * Petr Ovtchenkov
+ * Petr Ovchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 1.2
+ * Licensed under the Academic Free License Version 2.0
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -677,7 +677,8 @@ Thread::~Thread()
   ((Init *)Init_buf)->~Init();
 
   // _STLP_ASSERT( _id == bad_thread_id );
-  Thread::kill( SIGTERM );
+  // Thread::kill( SIGTERM );
+  // Thread::signal_exit( SIGTERM ); // call handler directly, avoid signal delivery
 }
 
 __FIT_DECLSPEC
