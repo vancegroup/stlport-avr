@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/07 17:19:22 ptr>
+// -*- C++ -*- Time-stamp: <03/01/12 19:08:22 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -205,6 +205,42 @@ int Condition::try_wait_time( const timespec *abstime )
 }
 
 __FIT_DECLSPEC
+int Condition::try_wait_delay( const timespec *t )
+{
+  if ( _val == false ) {
+#ifdef WIN32
+    MT_LOCK( _lock );
+    _val = false;
+    ResetEvent( _cond );
+    MT_UNLOCK( _lock );
+    unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+    int ret = WaitForSingleObject( _cond, ms );
+    if ( ret == WAIT_FAILED ) {
+      return -1;
+    }
+    if ( ret == WAIT_TIMEOUT ) {
+      SetEvent( _cond );
+      return ETIME;
+    }
+    return 0;
+#elif defined(__unix) && !defined(_NOTHREADS)
+    timespec ct;
+    Thread::gettime( &ct );
+    timespec st = ct;
+    st += *t;
+
+    return this->try_wait_time( &st );
+#endif
+
+#ifdef _NOTHREADS
+    return 0;
+#endif
+  }
+
+  return 0;
+}
+
+__FIT_DECLSPEC
 int Condition::wait_time( const timespec *abstime )
 {
 #ifdef WIN32
@@ -250,6 +286,37 @@ int Condition::wait_time( const timespec *abstime )
   }
 
   return ret;
+#endif
+#ifdef _NOTHREADS
+  return 0;
+#endif
+}
+
+__FIT_DECLSPEC
+int Condition::wait_delay( const timespec *t )
+{
+#ifdef WIN32
+  MT_LOCK( _lock );
+  _val = false;
+  ResetEvent( _cond );
+  MT_UNLOCK( _lock );
+  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  int ret = WaitForSingleObject( _cond, ms );
+  if ( ret == WAIT_FAILED ) {
+    return -1;
+  }
+  if ( ret == WAIT_TIMEOUT ) {
+    SetEvent( _cond );
+    return ETIME;
+  }
+  return 0;
+#elif defined(__unix) && !defined(_NOTHREADS)
+  timespec ct;
+  Thread::gettime( &ct );
+  timespec st = ct;
+  st += *t;
+
+  return this->wait_time( &st );
 #endif
 #ifdef _NOTHREADS
   return 0;
