@@ -75,12 +75,12 @@ struct _Land3<__true_type, __true_type, __true_type> {
 //logical or of 2 predicated
 template <class _P1, class _P2>
 struct _Lor2 {
-	typedef __true_type _Ret;
+  typedef __true_type _Ret;
 };
 
 template<>
 struct _Lor2<__false_type, __false_type> {
-	typedef __false_type _Ret;
+  typedef __false_type _Ret;
 };
 
 // logical or of 3 predicated
