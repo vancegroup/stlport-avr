@@ -9,8 +9,6 @@
 
 #   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 
-#   define _STLP_HAS_NO_NEW_C_HEADERS     1
-
 # if defined(__FreeBSD__) || defined (__hpux)
 #  define _STLP_NO_WCHAR_T
 # endif
@@ -124,21 +122,20 @@ typedef unsigned int wint_t;
 
 /* g++ 2.7.x and above */
 #   define _STLP_LONG_LONG long long 
-#   define _STLP_HAS_NO_NEW_IOSTREAMS     1
 
-# ifdef __HONOR_STD
-#   define _STLP_VENDOR_GLOBAL_CSTD       1
-# else
-/* dwa 12/18/99 -- fhonor-std doesn't actually work in gcc 2.95.2
- * also note that __HONOR_STD is not automatically defined in 
- * accordance with -fhonor-std. */
-#   if (__GNUC__ < 3) || (__GNUC__ == 2 && __GNUC_MINOR__ <= 95)
+// gcc 3.0 does have new iostreams, but we cannot really wrap them properly.
+
+#    define _STLP_HAS_NO_NEW_IOSTREAMS     1
+
+#   if (__GNUC__ < 3)
+#    define _STLP_HAS_NO_NEW_C_HEADERS     1
+#    define _STLP_VENDOR_GLOBAL_CSTD       1
+#    ifndef __HONOR_STD
 #     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
+#    endif
 #   endif
-# endif
 
 #   if (__GNUC_MINOR__ < 95)  && (__GNUC__ < 3)
-#     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
 /* egcs fails to initialize builtin types in expr. like this : new(p) char();  */
 #     define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 #     define _STLP_INCOMPLETE_EXCEPTION_HEADER
@@ -226,48 +223,53 @@ typedef unsigned int wint_t;
 #     define _STLP_HAS_NO_EXCEPTIONS  1
 #   endif
 
-#if (__GNUC_MINOR__ < 8)  && (__GNUC__ < 3)
+# if (__GNUC__ >= 3)
 
-# define _STLP_NO_OWN_IOSTREAMS 1
-# undef  _STLP_OWN_IOSTREAMS
-# define _STLP_NATIVE_INCLUDE_PATH ../g++-include
+#  define _STLP_NATIVE_INCLUDE_PATH ../g++-v3
+#  define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../g++-v3/backward
+
+# elif (__GNUC_MINOR__ < 8)
+
+#  define _STLP_NO_OWN_IOSTREAMS 1
+#  undef  _STLP_OWN_IOSTREAMS
+#  define _STLP_NATIVE_INCLUDE_PATH ../g++-include
 
 /* tuning of static template data members workaround */
-# if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
-#  if ( _STLP_WEAK_ATTRIBUTE > 0 )
-#   define _STLP_WEAK __attribute__ (( weak ))
-#  else
-#   define _STLP_WEAK
-#  endif /* _STLP_WEAK_ATTRIBUTE */
+#  if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
+#   if ( _STLP_WEAK_ATTRIBUTE > 0 )
+#    define _STLP_WEAK __attribute__ (( weak ))
+#   else
+#    define _STLP_WEAK
+#   endif /* _STLP_WEAK_ATTRIBUTE */
 
 #   ifdef __PUT_STATIC_DATA_MEMBERS_HERE
 #    define __DECLARE_INSTANCE(type,item,init) type item _STLP_WEAK init
 #   else
 #    define __DECLARE_INSTANCE(type,item,init)
 #   endif /* __PUT_STATIC_DATA_MEMBERS_HERE */
+#  endif /* _STLP_STATIC_TEMPLATE_DATA */
 
-# endif /* _STLP_STATIC_TEMPLATE_DATA */
-
-#else
+# else
 
 // gcc-2.95.0 used to use "g++-3" directory which has been changed to "g++" in
 // system-dependent "include" for 2.95.2 except for Cygwin and Mingw packages.
 // I expect "g++-3" not being used in later releases.
 // If your installation use "g++-3" include directory for any reason (pre-2.95.2 or Win binary kit),
 // please change the macro below to point to your directory. 
+
 # if defined(__DJGPP)
 #   define _STLP_NATIVE_INCLUDE_PATH ../lang/cxx
-# elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) ) )
-#   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 # elif (__GNUC__ >= 3) || (__GNUC_MINOR__ >= 97)
 #   define _STLP_NATIVE_INCLUDE_PATH ../include/g++-v3
+# elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) ) )
+#   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 # elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3)
 // this really sucks, as GNUpro does not really identifies itself, so we have to guess 
 // depending on a platform
 #   ifdef __hpux
-#   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
+#    define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 #   else
-#   define _STLP_NATIVE_INCLUDE_PATH ../g++-2
+#    define _STLP_NATIVE_INCLUDE_PATH ../g++-2
 #   endif
 # else
 #   define _STLP_NATIVE_INCLUDE_PATH g++
@@ -275,15 +277,12 @@ typedef unsigned int wint_t;
 
 // <exception> et al
 # ifdef __FreeBSD__
-
 #   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
-
 # else
-
 #   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
-#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH /procket/dv-tmp-4/boris/local/include/g++-v3
+// #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../g++-v3
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif

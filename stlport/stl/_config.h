@@ -435,7 +435,7 @@
  * user. _STLP_REDEFINE_STD is being used for wrapper files that include native headers
  * to temporary undef the std macro. */
 #  if defined ( _STLP_USE_NAMESPACES ) && defined ( _STLP_USE_OWN_NAMESPACE ) \
-   &&! defined ( _STLP_DONT_REDEFINE_STD )
+   && ! defined ( _STLP_DONT_REDEFINE_STD )
 #   define _STLP_REDEFINE_STD 1
 #  else
 #   undef  _STLP_REDEFINE_STD

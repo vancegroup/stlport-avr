@@ -151,8 +151,14 @@ _STLP_BEGIN_NAMESPACE
 # ifdef _STLP_NO_WCHAR_T
 typedef int wint_t;
 # else
+// gcc 3.0 has a glitch : wint_t only sucked into the global namespace if _GLIBCPP_USE_WCHAR_T is defined
+#  if defined (__GNUC__) && ! defined (_GLIBCPP_USE_WCHAR_T)
+using ::wint_t;
+#  else
 using _STLP_VENDOR_CSTD::wint_t;
+#  endif
 # endif
+
 using _STLP_VENDOR_CSTD::size_t;
 
 #  if !defined (_STLP_NO_NATIVE_MBSTATE_T)

@@ -20,6 +20,7 @@
 #  define  COMPLEX_IMPL_H
 
 #include <complex>
+#include <stl/_cmath.h>
 
 # if (defined (__sgi) && !defined(__GNUC__)) || defined (__DECCXX)
 
@@ -50,6 +51,7 @@
 # define _STLP_HYPOTL _STLP_VENDOR_CSTD::hypotl
 
 #else
+
 # define _STLP_ABSF (float)_STLP_DO_ABS(double)
 # define _STLP_ABSL (long double)_STLP_DO_ABS(double)
 # define _STLP_ATAN2F (float)_STLP_DO_ATAN2(double)
@@ -72,6 +74,7 @@
 # define _STLP_COSHL   (long double)_STLP_DO_COSH(double)
 # define _STLP_HYPOTF   (float)_STLP_DO_HYPOT(double)
 # define _STLP_HYPOTL   (long double)_STLP_DO_HYPOT(double)
+
 #endif
 
 # define _STLP_ABS      (double)_STLP_DO_ABS(double)

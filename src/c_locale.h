@@ -32,7 +32,7 @@
 # define _STLP_C_LOCALE_IMPL_H
 
 # include <stl/c_locale.h>
-# include <cwchar>
+# include <wchar.h>
 
 #define _Locale_MAX_SIMPLE_NAME 256
 

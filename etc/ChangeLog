@@ -32,6 +32,12 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 
 	* test/eh/gcc.mak : directories stuff fixed (Thanks Brodie)
 
+	* stl/_cmath.h : extracted from <cmath> for better decoupling
+
+	* stl/_std_prolog.h, stl/_std_epilog.h : hooks for future alternative namespace inclusion style.
+
+	* config/stl_gcc.h : gcc-3.0 now supported
+	
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 
