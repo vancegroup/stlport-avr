@@ -69,7 +69,10 @@ using _STLP_VENDOR_CSTD::wctomb;
 #endif
 using _STLP_VENDOR_CSTD::bsearch;
 using _STLP_VENDOR_CSTD::qsort;
+// boris : if we do not have native float abs, we define ours; then we cannot do "using" for "other" abs 
+# ifdef _STLP_HAS_NATIVE_FLOAT_ABS 
 using _STLP_VENDOR_CSTD::abs;
+# endif
 using _STLP_VENDOR_CSTD::div;
 using _STLP_VENDOR_CSTD::labs;
 using _STLP_VENDOR_CSTD::ldiv;

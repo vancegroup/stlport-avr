@@ -1,8 +1,6 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-# include <config/stl_solaris.h>
-
 #  define _STLP_LONG_LONG  long long
 #  define _STLP_LINK_TIME_INSTANTIATION 1
 
@@ -58,11 +56,11 @@ namespace std {
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 # endif
 
-// # if (__SUNPRO_CC < 0x520) || (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
+# if (__SUNPRO_CC < 0x520) || (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
 // this is not really true ; but use of new-style native headers bring in namespace problems,
 // so it works better with our wrapper only.
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
-// # endif
+# endif
 
 // those do not depend on compatibility
 # if (__SUNPRO_CC < 0x510)
@@ -159,3 +157,4 @@ namespace std {
 
 #  endif /* <  5.0 */
 
+# include <config/stl_solaris.h>

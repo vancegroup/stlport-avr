@@ -147,6 +147,11 @@ _STLP_END_NAMESPACE
 
 
 # ifdef _STLP_IMPORT_VENDOR_CSTD
+
+#if defined (__SUNPRO_CC) && defined (_STLP_NO_OWN_IOSTREAMS) && !defined (_STLP_HAS_NO_NEW_C_HEADERS)
+using _STLP_VENDOR_CSTD::wint_t; 
+#endif
+
 _STLP_BEGIN_NAMESPACE
 # ifdef _STLP_NO_WCHAR_T
 typedef int wint_t;
@@ -158,6 +163,7 @@ using ::wint_t;
 using _STLP_VENDOR_CSTD::wint_t;
 #  endif
 # endif
+
 
 using _STLP_VENDOR_CSTD::size_t;
 

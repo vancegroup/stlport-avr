@@ -153,7 +153,10 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 // this inclusion is potential hazard to bring up all sorts
 // of old-style headers. Let's assume vendor already know how
 // to deal with that.
-#  include <time.h>
+#  include <ctime>
+# if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+using _STLP_VENDOR_CSTD::time_t;
+# endif
 #  include <synch.h>
 #  include <cstdio>
 #  include <cwchar>
