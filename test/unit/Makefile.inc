@@ -81,4 +81,6 @@ SRC_CPP = cppunit/test_main.cpp \
 	transform_test.cpp \
 	unary_test.cpp \
 	unique_test.cpp \
-	vector_test.cpp 
+	vector_test.cpp \
+	sstream_test.cpp \
+	fstream_test.cpp
