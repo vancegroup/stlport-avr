@@ -1,14 +1,14 @@
-// -*- C++ -*- Time-stamp: <03/09/25 19:08:44 ptr>
+// -*- C++ -*- Time-stamp: <04/04/09 15:43:11 ptr>
 
 /*
  *
- * Copyright (c) 1997-1999, 2002, 2003
+ * Copyright (c) 1997-1999, 2002, 2003, 2004
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 1.2
+ * Licensed under the Academic Free License Version 2.0
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -39,42 +39,46 @@
 #include <cstddef>
 #include <stdexcept>
 
+#if !defined(_STLPORT_VERSION) && !defined(__STATIC_CAST)
+# define __STATIC_CAST(t,v) static_cast<t>(v)
+#endif
+
 #ifdef WIN32
 # include <windows.h>
 # include <memory>
 # include <ctime>
 # include <limits>
-# define ETIME   62      /* timer expired                        */
+# define ETIME   62      /* timer expired */
 # pragma warning( disable : 4290)
 #endif // WIN32
 
 #ifdef __unix
-#  if defined( _REENTRANT ) && !defined(_NOTHREADS)
-#    if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
-#      include <ctime>
-#    endif
-#    ifdef _PTHREADS
-#      include <pthread.h>
-#      include <semaphore.h>
-#    else
-#      include <thread.h>
-#      include <synch.h>
-#    endif
-#  elif !defined(_NOTHREADS) // !_REENTRANT
-#    define _NOTHREADS
+# if defined( _REENTRANT ) && !defined(_NOTHREADS)
+#  if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
+#   include <ctime>
 #  endif
+#  ifdef _PTHREADS
+#   include <pthread.h>
+#   include <semaphore.h>
+#  else
+#   include <thread.h>
+#   include <synch.h>
+#  endif
+# elif !defined(_NOTHREADS) // !_REENTRANT
+#  define _NOTHREADS
+# endif
 // #  define __DLLEXPORT
 #endif // __unix
 
 #ifdef __FIT_NOVELL_THREADS // Novell NetWare
-#  if defined( _REENTRANT ) && !defined(_NOTHREADS)
-#    include <nwthread.h>
-#    include <nwsemaph.h>
-#    include <nwproc.h>
-#    include <ctime>
-#  elif !defined(_NOTHREADS) // !_REENTRANT
-#    define _NOTHREADS
-#  endif
+# if defined( _REENTRANT ) && !defined(_NOTHREADS)
+#  include <nwthread.h>
+#  include <nwsemaph.h>
+#  include <nwproc.h>
+#  include <ctime>
+# elif !defined(_NOTHREADS) // !_REENTRANT
+#  define _NOTHREADS
+# endif
 #endif
 
 #ifdef N_PLAT_NLM
@@ -102,19 +106,19 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 
 #ifdef _REENTRANT
 
-#  define MT_REENTRANT(point,nm) __impl::Locker nm(point)
-#  define MT_REENTRANT_RS(point,nm) __impl::LockerRS nm(point)
-#  define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
-#  define MT_LOCK(point)         point.lock()
-#  define MT_UNLOCK(point)       point.unlock()
+# define MT_REENTRANT(point,nm) __impl::Locker nm(point)
+# define MT_REENTRANT_RS(point,nm) __impl::LockerRS nm(point)
+# define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
+# define MT_LOCK(point)         point.lock()
+# define MT_UNLOCK(point)       point.unlock()
 
 #else // !_REENTRANT
 
-#  define MT_REENTRANT(point,nm) ((void)0)
-#  define MT_REENTRANT_RS(point,nm) ((void)0)
-#  define MT_REENTRANT_SDS(point,nm) ((void)0) // obsolete, use MT_REENTRANT_RS
-#  define MT_LOCK(point)         ((void)0)
-#  define MT_UNLOCK(point)       ((void)0)
+# define MT_REENTRANT(point,nm) ((void)0)
+# define MT_REENTRANT_RS(point,nm) ((void)0)
+# define MT_REENTRANT_SDS(point,nm) ((void)0) // obsolete, use MT_REENTRANT_RS
+# define MT_LOCK(point)         ((void)0)
+# define MT_UNLOCK(point)       ((void)0)
 
 #endif // _REENTRANT
 
@@ -124,26 +128,26 @@ extern "C" {
 
 #ifndef SIG_PF // sys/signal.h
 
-#  ifdef WIN32
+# ifdef WIN32
 typedef void __cdecl SIG_FUNC_TYP(int);
-#  else
+# else
 typedef void SIG_FUNC_TYP(int);
-#  endif
+# endif
 typedef SIG_FUNC_TYP *SIG_TYP;
-#  define SIG_PF SIG_TYP
+# define SIG_PF SIG_TYP
 
-#  ifndef SIG_DFL
-#    define SIG_DFL (SIG_PF)0
-#  endif
-#  ifndef SIG_ERR
-#    define SIG_ERR (SIG_PF)-1
-#  endif
-#  ifndef SIG_IGN
-#    define SIG_IGN (SIG_PF)1
-#  endif
-#  ifndef SIG_HOLD
-#    define SIG_HOLD (SIG_PF)2
-#  endif
+# ifndef SIG_DFL
+#  define SIG_DFL (SIG_PF)0
+# endif
+# ifndef SIG_ERR
+#  define SIG_ERR (SIG_PF)-1
+# endif
+# ifndef SIG_IGN
+#  define SIG_IGN (SIG_PF)1
+# endif
+# ifndef SIG_HOLD
+#  define SIG_HOLD (SIG_PF)2
+# endif
 #endif // SIG_PF
 
 } // extern "C"
@@ -206,16 +210,16 @@ class __mutex_base
         if ( SCOPE || RECURSIVE_SAFE ) {
           pthread_mutexattr_t att;
           pthread_mutexattr_init( &att );
-#  ifdef __FIT_PSHARED_MUTEX
+# ifdef __FIT_PSHARED_MUTEX
           if ( SCOPE ) {
             int _err = pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
           }
-#  endif // __FIT_PSHARED_MUTEX
-#  ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
+# endif // __FIT_PSHARED_MUTEX
+# ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
           if ( RECURSIVE_SAFE ) {
             int _err = pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE );
           }
-#  endif
+# endif
           pthread_mutex_init( &_M_lock, &att );
           pthread_mutexattr_destroy( &att );
         } else {
@@ -408,26 +412,26 @@ class __Spinlock :
 
     void lock()
       {
-#ifdef _PTHREADS
+# ifdef _PTHREADS
         pthread_spin_lock( &_M_lock );
-#endif
+# endif
       }
 
     int trylock()
       {
-#ifdef _PTHREADS
+# ifdef _PTHREADS
         return pthread_spin_trylock( &_M_lock );
-#endif
-#ifdef _NOTHREADS
+# endif
+# ifdef _NOTHREADS
         return 0;
-#endif
+# endif
       }
 
     void unlock()
       {
-#ifdef _PTHREADS
+# ifdef _PTHREADS
         pthread_spin_unlock( &_M_lock );
-#endif
+# endif
       }
 };
 
@@ -445,49 +449,49 @@ class __SpinlockRS :
 
     void lock()
       {
-#  ifndef _NOTHREADS
-#    ifdef _PTHREADS
+# ifndef _NOTHREADS
+#  ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
-#    endif
+#  endif
         if ( _c_id == _id ) {
           ++_count;
           return;
         }
-#    ifdef _PTHREADS
+#  ifdef _PTHREADS
         pthread_spin_lock( &_M_lock );
-#    endif
+#  endif
         _id = _c_id;
         _count = 0;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
       }
 
     int trylock()
       {
-#  ifdef _NOTHREADS
+# ifdef _NOTHREADS
         return 0;
-#  else // _NOTHREADS
-#    ifdef _PTHREADS
+# else // _NOTHREADS
+#  ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
-#    endif
+#  endif
         if ( _c_id == _id ) {
           ++_count;
           return 0;
         }
-#    ifdef _PTHREADS
+#  ifdef _PTHREADS
         int res = pthread_spin_trylock( &_M_lock );
-#    endif
+#  endif
         if ( res != 0 ) {
           return res;
         }
@@ -496,34 +500,34 @@ class __SpinlockRS :
         _count = 0;
 
         return 0;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
       }
 
     void unlock()
       {
-#  ifndef _NOTHREADS
+# ifndef _NOTHREADS
         if ( --_count == 0 ) {
-#   ifdef _PTHREADS
+#  ifdef _PTHREADS
           _id =  __STATIC_CAST(pthread_t,-1);
           pthread_spin_unlock( &_M_lock );
-#   endif
-#  endif // !_NOTHREADS
+#  endif
+# endif // !_NOTHREADS
         }
       }
   protected:
-#  ifndef _NOTHREADS
+# ifndef _NOTHREADS
     unsigned _count;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
 
-#  ifdef _PTHREADS
+# ifdef _PTHREADS
     pthread_t _id;
-#  endif
-#  ifdef __FIT_UITHREADS
+# endif
+# ifdef __FIT_UITHREADS
     thread_t  _id;
-#  endif
-#  ifdef __FIT_NOVELL_THREADS
+# endif
+# ifdef __FIT_NOVELL_THREADS
     int _id;
-#  endif
+# endif
 };
 #endif // __FIT_PTHREAD_SPINLOCK
 
@@ -550,15 +554,15 @@ class __Mutex<true,SCOPE> : // Recursive Safe
   public:
     __Mutex() :
         _count( 0 ),
-#  ifdef __FIT_UITHREADS
+# ifdef __FIT_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
-#  endif
-#  ifdef _PTHREADS
+# endif
+# ifdef _PTHREADS
         _id( __STATIC_CAST(pthread_t,-1) )
-#  endif
-#  ifdef __FIT_NOVELL_THREADS
+# endif
+# ifdef __FIT_NOVELL_THREADS
         _id( -1 )
-#  endif
+# endif
       { }
 
     ~__Mutex()
@@ -566,32 +570,32 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 
     void lock()
       {
-#  ifndef _NOTHREADS
-#    ifdef _PTHREADS
+# ifndef _NOTHREADS
+#  ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
-#    endif
+#  endif
         if ( _c_id == _id ) {
           ++_count;
           return;
         }
-#    ifdef _PTHREADS
+#  ifdef _PTHREADS
         pthread_mutex_lock( &_M_lock );
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         mutex_lock( &_M_lock );
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         WaitOnLocalSemaphore( this->_M_lock );
-#    endif
+#  endif
         _id = _c_id;
         _count = 0;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
       }
 
     // Equivalent to lock(), except that if the mutex object referenced
@@ -603,31 +607,31 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 
     int trylock()
       {
-#  ifdef _NOTHREADS
+# ifdef _NOTHREADS
         return 0;
-#  else // _NOTHREADS
-#    ifdef _PTHREADS
+# else // _NOTHREADS
+#  ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         int _c_id = GetThreadID();
-#    endif
+#  endif
         if ( _c_id == _id ) {
           ++_count;
           return 0;
         }
-#    ifdef _PTHREADS
+#  ifdef _PTHREADS
         int res = pthread_mutex_trylock( &_M_lock );
-#    endif
-#    ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         int res = mutex_trylock( &_M_lock );
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
         int res = ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
-#    endif
+#  endif
         if ( res != 0 ) {
           return res;
         }
@@ -636,26 +640,26 @@ class __Mutex<true,SCOPE> : // Recursive Safe
         _count = 0;
 
         return 0;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
       }
 
     void unlock()
       {
-#  ifndef _NOTHREADS
+# ifndef _NOTHREADS
         if ( --_count == 0 ) {
-#    ifdef __FIT_UITHREADS
+#  ifdef __FIT_UITHREADS
           _id = __STATIC_CAST(thread_t,-1);
           mutex_unlock( &_M_lock );
-#    endif
-#    ifdef _PTHREADS
+#  endif
+#  ifdef _PTHREADS
           _id =  __STATIC_CAST(pthread_t,-1);
           pthread_mutex_unlock( &_M_lock );
-#    endif
-#    ifdef __FIT_NOVELL_THREADS
+#  endif
+#  ifdef __FIT_NOVELL_THREADS
           _id = -1;
           SignalLocalSemaphore( this->_M_lock );
-#    endif
-#  endif // !_NOTHREADS
+#  endif
+# endif // !_NOTHREADS
         }
       }
 
@@ -664,19 +668,19 @@ class __Mutex<true,SCOPE> : // Recursive Safe
       { }
 
   protected:
-#  ifndef _NOTHREADS
+# ifndef _NOTHREADS
     unsigned _count;
-#  endif // !_NOTHREADS
+# endif // !_NOTHREADS
 
-#  ifdef _PTHREADS
+# ifdef _PTHREADS
     pthread_t _id;
-#  endif
-#  ifdef __FIT_UITHREADS
+# endif
+# ifdef __FIT_UITHREADS
     thread_t  _id;
-#  endif
-#  ifdef __FIT_NOVELL_THREADS
+# endif
+# ifdef __FIT_NOVELL_THREADS
     int _id;
-#  endif
+# endif
 };
 #endif // __unix && !__FIT_XSI_THR
 
