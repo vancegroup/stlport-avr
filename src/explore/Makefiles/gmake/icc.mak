@@ -3,7 +3,7 @@
 
 #INCLUDES :=
 
-CXX := icc
+CXX := icpc
 CC := icc
 
 ifdef TARGET_OS
