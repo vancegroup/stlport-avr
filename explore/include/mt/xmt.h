@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/08 13:55:23 ptr>
+// -*- C++ -*- Time-stamp: <99/02/09 16:23:20 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -8,14 +8,15 @@
 #include <stdexcept>
 
 #ifdef WIN32
-#include <windows.h>
+#  include <windows.h>
 // #define pthread_mutex_t            CRITICAL_SECTION
 // #define pthread_mutex_init( a, b ) InitializeCriticalSection( a )
 // #define pthread_mutex_destroy( a ) DeleteCriticalSection( a )
 // #define pthread_mutex_lock( a )    EnterCriticalSection( a )
 // #define pthread_mutex_unlock( a )  LeaveCriticalSection( a )
-#include <memory>
+#  include <memory>
 #  define _REENTRANT
+#  define __DLLEXPORT __declspec( dllexport )
 #else
 #  if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
 #    include <ctime>
@@ -26,6 +27,7 @@
 #  ifdef _SOLARIS_THREADS
 #    include <thread.h>
 #  endif
+#  define __DLLEXPORT
 #endif
 
 namespace __impl {
@@ -132,13 +134,16 @@ class Thread
   public:
     typedef int (*entrance_type)( void * );
 
+    __DLLEXPORT
     Thread();
 
-    explicit Thread( entrance_type entrance, const void *p = 0, size_t psz = 0 );
+    explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0 );
 
+    __DLLEXPORT
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
+    __DLLEXPORT
     int join();
-    static void exit( int code = 0 );
+    static __DLLEXPORT void exit( int code = 0 );
 
   private:
     Thread( const Thread& )
