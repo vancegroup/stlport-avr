@@ -2,7 +2,7 @@
 #ifndef _STLP_INTERNAL_STREAMBUF
 #include <stl/_streambuf.h>
 #endif
-#ifndef _STLP_ISTREAM_H
+#ifndef _STLP_ISTREAM
 #include <istream>              // Includes <ostream>, <ios>, <iosfwd>
 #endif
 #ifndef _STLP_STRING_H

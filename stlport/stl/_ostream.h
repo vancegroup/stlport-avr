@@ -20,7 +20,7 @@
 #ifndef _STLP_INTERNAL_OSTREAM_H
 #define _STLP_INTERNAL_OSTREAM_H
 
-#ifndef _STLP_IOS_H
+#ifndef _STLP_INTERNAL_IOS_H
 # include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.
 #endif
 
@@ -347,7 +347,7 @@ _STLP_END_NAMESPACE
 #  include <stl/_ostream.c>
 # endif
 
-#endif /* _STLP_OSTREAM_H */
+#endif /* _STLP_INTERNAL_OSTREAM_H */
 
 // Local Variables:
 // mode:C++

@@ -1,6 +1,24 @@
 # include <algorithm>
 # include <vector>
 
+# include <iostream>
+# include <limits>
+# include <stdio.h>
+
+using namespace std;
+
+int main()
+{
+  long a = 17;
+  //  while (cin >> a) 
+  printf("%f %f\n", (double)(100.0/0.0), numeric_limits<double>::quiet_NaN());
+}
+
+
+
+
+# if 0
+
 int copy1_test(int, char**)
 {
   char string[23] = "A string to be copied.";
@@ -11,8 +29,6 @@ int copy1_test(int, char**)
   return 0;
 }
 
-
-# if 0
 # include <hash_map>
 #include <iostream>
 

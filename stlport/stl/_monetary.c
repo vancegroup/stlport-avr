@@ -20,7 +20,7 @@
 
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
-#ifndef _STLP_IOS_H
+#ifndef _STLP_INTERNAL_IOS_H
 # include <stl/_ios.h>
 #endif
 

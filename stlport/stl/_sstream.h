@@ -29,7 +29,7 @@
 # include <stl/_streambuf.h>
 #endif
 
-#ifndef _STLP_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM_H
 # include <stl/_istream.h> // Includes <ostream>, <ios>, <iosfwd>
 #endif
 

@@ -1,7 +1,7 @@
-The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
+The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* _istream.h, _ostream.h, _ios.h, _fstream.h : guard macros fixed to not clash with .h files in "stlport" directory
-	  (thanks to Gerd Hoeren for the report)
+	  Also all uses of those macros fixed. (thanks to Gerd Hoeren for the report)
 
 	* _debug.c/_debug.h : fixed swap() for rb_tree and list (thanks to Gerd Hoeren for the report)
 	  swap() changed not to invalidate any iterators, as prescribed by the standard 
