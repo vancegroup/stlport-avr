@@ -1,7 +1,14 @@
-2003-11-17 Francois Dumont <dums@s...>
+2003-11-29  Petr Ovchenkov  <ptr@Island...>
 
-  * _alloc.h: Move of the definition of _Alloc_Traits before inclusion of _pthread_alloc.h
-              thanks Diego Klabjan
+	* cwchar, _config.h, _cwchar.h, _stdio_file.h, c_locale.h:
+	support for OpenBSD, gcc 3.3.1
+	
+	* src/explore/Makefiles/gmake/...: support for OpenBSD, gcc 3.3.1
+
+2003-11-17  Francois Dumont  <dums@s...>
+
+	* _alloc.h: Move of the definition of _Alloc_Traits before inclusion
+	of _pthread_alloc.h; thanks Diego Klabjan
 
 2003-11-16  Petr Ovchenkov  <ptr@Island...>
 
@@ -17,7 +24,7 @@
 	iterswp1_test into iterswp.cpp, add new tests for properly deduce
 	value type of iterator, when dereference return some proxy object.
 
-2003-11-15 Francois Dumont  <dums@s...>
+2003-11-15  Francois Dumont  <dums@s...>
 
 	* _string.h: implementation of the expression template for string
 	addition with other string or C string or char.
