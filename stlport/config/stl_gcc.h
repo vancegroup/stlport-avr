@@ -7,32 +7,24 @@
 # define _STLP_USE_GLIBC
 #endif
 
-#   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
+#define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 
-# if defined (__hpux) || defined(__amigaos__) || ( defined(__OS2__) && defined(__EMX__) )
-#  define _STLP_NO_WCHAR_T
-# elif defined(__FreeBSD__)
-# if (__FreeBSD_cc_version < 500005)
+#if defined (__hpux) || defined(__amigaos__) || ( defined(__OS2__) && defined(__EMX__) )
 # define _STLP_NO_WCHAR_T
-# else
-# define _STLP_FREEBSD_HAS_WFUNCS
-# endif /* __FreeBSD_cc_version < 500005 */
-# endif
+#endif
 
 #ifdef __USLC__
 # include <config/stl_sco.h>
 #endif
 
-# if defined (__sun)
-
+#if defined (__sun)
 // gcc does not support ELF64 yet ; however; it supports ultrasparc + v8plus.
 // limits.h contains invalid values for this combination
 # if (defined  (__sparc_v9__) || defined (__sparcv9)) && ! defined ( __WORD64 )
 #  define __LONG_MAX__ 2147483647L
 # endif
-
-#  include <config/stl_solaris.h>
-# endif
+# include <config/stl_solaris.h>
+#endif
 
 // no thread support on AmigaOS
 #if defined (__amigaos__)
@@ -43,62 +35,65 @@
 // azov: gcc on lynx have a bug that causes internal
 // compiler errors when compiling STLport with namespaces turned on. 
 // When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
-# if defined (__Lynx__) && (__GNUC__ < 3)
-#   define _STLP_HAS_NO_NAMESPACES 1
-#   define _STLP_NO_STATIC_TEMPLATE_DATA 1
+#if defined (__Lynx__) && (__GNUC__ < 3)
+# define _STLP_HAS_NO_NAMESPACES 1
+# define _STLP_NO_STATIC_TEMPLATE_DATA 1
 //  turn off useless warning about including system headers
-#   define __NO_INCLUDE_WARN__ 1
-# endif
+# define __NO_INCLUDE_WARN__ 1
+#endif
 
 
-/* Tru64 Unix, AIX, HP : gcc there by default uses uses native ld and hence cannot auto-instantiate 
+/* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate 
    static template data. If you are using GNU ld, please say so in stl_user_config.h header */    
-# if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
+#if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
    ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux) || defined(__amigaos__) )
-#   define _STLP_NO_STATIC_TEMPLATE_DATA
-# endif
+# define _STLP_NO_STATIC_TEMPLATE_DATA
+#endif
 
-# if defined(__DJGPP)
-#   define _STLP_RAND48		1
-#   define _NOTHREADS		1
-#   undef  _PTHREADS
-#   define _STLP_LITTLE_ENDIAN
-# endif 
+#if !defined(_REENTRANT) && ((defined(__FreeBSD__) && defined(THREAD_SAFE)) || \
+                             (defined(__OpenBSD__) && defined(_POSIX_THREADS)) || \
+                             (defined(__MINGW32__) && defined(_MT)))
+# define _REENTRANT
+#endif // (__FreeBSD__ && THREAD_SAFE) || (__OpenBSD__ && _POSIX_THREADS) || (__MINGW32__ && _MT)
 
-# if defined(__MINGW32__)
+#if defined(__DJGPP)
+# define _STLP_RAND48		1
+# define _NOTHREADS		1
+# undef  _PTHREADS
+# define _STLP_LITTLE_ENDIAN
+#endif 
+
+#if defined(__MINGW32__)
 /* Mingw32, egcs compiler using the Microsoft C runtime */
-#   undef  _STLP_NO_DRAND48
-#   define _STLP_NO_DRAND48
-#   ifdef _MT
-#     define _REENTRANT
-#   endif
-#  define _STLP_IMPORT_DECLSPEC __attribute__((dllimport))
-#  define _STLP_EXPORT_DECLSPEC __attribute__((dllexport))
-#  define _STLP_CLASS_IMPORT_DECLSPEC __attribute__((dllimport))
-#  define _STLP_CLASS_EXPORT_DECLSPEC __attribute__((dllexport))
-#  define _STLP_CALL
+# undef  _STLP_NO_DRAND48
+# define _STLP_NO_DRAND48
+# define _STLP_IMPORT_DECLSPEC __attribute__((dllimport))
+# define _STLP_EXPORT_DECLSPEC __attribute__((dllexport))
+# define _STLP_CLASS_IMPORT_DECLSPEC __attribute__((dllimport))
+# define _STLP_CLASS_EXPORT_DECLSPEC __attribute__((dllexport))
+# define _STLP_CALL
 
-#  if defined (_STLP_USE_DYNAMIC_LIB)
-#   define _STLP_USE_DECLSPEC 1
+# if defined (_STLP_USE_DYNAMIC_LIB)
+#  define _STLP_USE_DECLSPEC 1
 // #   define _STLP_USE_TEMPLATE_EXPORT 1
 /* Using dynamic library in MinGW requires _STLP_NO_CUSTOM_IO */
-# define _STLP_NO_CUSTOM_IO
-#  endif
-
+#  define _STLP_NO_CUSTOM_IO
 # endif
 
-#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (_STLP_FREEBSD_HAS_WFUNCS) || defined (__sun)) 
-#ifndef __MINGW32__
-#   define _STLP_NO_NATIVE_MBSTATE_T      1
 #endif
-#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
-# elif defined(__linux__)
-#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
-# elif defined (__sun)
-#   define _STLP_WCHAR_BORLAND_EXCLUDE
-#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+
+#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun)) 
+# ifndef __MINGW32__
+#  define _STLP_NO_NATIVE_MBSTATE_T      1
+# endif
+# define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+# define _STLP_NO_NATIVE_WIDE_STREAMS   1
+//#elif defined(__linux__)
+//# define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1 // ????!!!!!!!! - ptr
+//# define _STLP_NO_NATIVE_WIDE_STREAMS   1
+#elif defined (__sun)
+# define _STLP_WCHAR_BORLAND_EXCLUDE
+# define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #endif
 
 /* Mac OS X is a little different with namespaces and cannot instantiate
@@ -401,8 +396,3 @@ At least problem present in gcc 3.1.1 and not exist in 2.95.3, 3.2.3, 3.3
 # if defined (__hpux) && defined(__GNUC__)
 #   define _STLP_NO_LONG_DOUBLE
 # endif
-
-
-#ifdef _STLP_FREEBSD_HAS_WFUNCS
-#  undef _STLP_FREEBSD_HAS_WFUNCS
-#endif
