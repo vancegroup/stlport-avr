@@ -228,7 +228,7 @@
 
 /* Use own namespace always if possible and not explicitly instructed otherwise */
 # if defined (_STLP_USE_NAMESPACES) && !defined (_STLP_BROKEN_USING_DIRECTIVE) && \
-     !defined(_STLP_NO_OWN_NAMESPACE)
+     /* !defined (_STLP_OWN_IOSTREAMS) && */ !defined(_STLP_NO_OWN_NAMESPACE)
 #  undef  _STLP_USE_OWN_NAMESPACE
 #  define _STLP_USE_OWN_NAMESPACE  1
 # else
@@ -469,7 +469,7 @@
  * try importing 'em.
  * MSVC has ambiguity problem when we try to import C-style std:: stuff back into global namespace */
 #  if defined (_STLP_USE_NAMESPACES) && \
-   ( defined(_STLP_USE_OWN_NAMESPACE) || defined (_STLP_DEBUG) || defined (_STLP_VENDOR_GLOBAL_CSTD))
+   ( defined(_STLP_USE_OWN_NAMESPACE) || defined (_STLP_VENDOR_GLOBAL_CSTD))
 #    define  _STLP_IMPORT_VENDOR_CSTD 1
 #  endif
 

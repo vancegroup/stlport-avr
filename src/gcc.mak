@@ -19,7 +19,7 @@ LIB_BASENAME = libstlport_gcc
 #
 LINK=ar cr
 # 2.95 flag
-DYN_LINK=c++ -pthreads -fexceptions -shared -o
+DYN_LINK=c++ -pthread -fexceptions -shared -o
 
 OBJEXT=o
 DYNEXT=so

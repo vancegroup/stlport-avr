@@ -87,16 +87,15 @@
 /* 
  * _STLP_USE_OWN_NAMESPACE/_STLP_NO_OWN_NAMESPACE
  * If defined, STLport uses _STL:: namespace, else std::
- * The reason you have to use separate namespace is that new-style IO
+ * The reason you have to use separate namespace in wrapper mode is that new-style IO
  * compiled library may have its own idea about STL stuff (string, vector, etc.),
  * so redefining them in the same namespace would break ODR and may cause
  * undefined behaviour. Rule of thumb is - if new-style iostreams are
  * available, there WILL be a conflict. Otherwise you should be OK.
- * This flag is going to be defined by default in stl_config.h if _STLP_USE_NEW_IOSTREAMS is on.
- * But you may wish to force it anyway.
- * Alternatively, you may want to disable it setting _STLP_NO_OWN_NAMESPACE on.
+ * In STLport iostreams mode, there is no need for this flag other than to facilitate
+ * link with third-part libraries compiled with different standard library implementation.
  */
-
+// #  define _STLP_USE_OWN_NAMESPACE 1
 // #  define _STLP_NO_OWN_NAMESPACE  1
 
 
