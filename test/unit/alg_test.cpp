@@ -69,10 +69,10 @@ void AlgTest::alg4()
   years.push_back(2001);
   years.push_back(1999);
   sort(years.begin(), years.end());
-  CPPUNIT_ASSERT(years[0]=1962);
-  CPPUNIT_ASSERT(years[1]=1992);
-  CPPUNIT_ASSERT(years[2]=1999);
-  CPPUNIT_ASSERT(years[3]=2001);
+  CPPUNIT_ASSERT(years[0]==1962);
+  CPPUNIT_ASSERT(years[1]==1992);
+  CPPUNIT_ASSERT(years[2]==1999);
+  CPPUNIT_ASSERT(years[3]==2001);
 }
 void AlgTest::alg5()
 {
@@ -82,8 +82,8 @@ void AlgTest::alg5()
   years.push_back(2001);
   years.push_back(1999);
   sort(years.begin(), years.end()); // <-- changed!
-  CPPUNIT_ASSERT(years[0]=1962);
-  CPPUNIT_ASSERT(years[1]=1992);
-  CPPUNIT_ASSERT(years[2]=1999);
-  CPPUNIT_ASSERT(years[3]=2001);
+  CPPUNIT_ASSERT(years[0]==1962);
+  CPPUNIT_ASSERT(years[1]==1992);
+  CPPUNIT_ASSERT(years[2]==1999);
+  CPPUNIT_ASSERT(years[3]==2001);
 }

@@ -71,14 +71,12 @@ void CopyTest::copy3()
   string result = os.str();
   CPPUNIT_ASSERT(!strcmp(result.c_str(),"0 1 2 3 4 5 6 7 8 9 "));
 }
-void CopyTest::copy4()
-{
-  typedef vector<int> IVec;
+void CopyTest::copy4() {
   vector<int> v1(10);
   for(size_t loc = 0; loc < v1.size(); loc++)
     v1[loc] = loc;
   vector<int> v2;
-  insert_iterator<IVec> i(v2, v2.begin());
+  insert_iterator<vector<int> > i(v2, v2.begin());
   copy(v1.begin(), v1.end(), i);
 
   ostringstream os;

@@ -29,5 +29,5 @@ void TimesTest::times()
 {
   int input [4] = { 1, 5, 7, 2 };
   int total = accumulate(input, input + 4, 1, multiplies<int>());
-  CPPUNIT_ASSERT(total=70);
+  CPPUNIT_ASSERT(total==70);
 }
