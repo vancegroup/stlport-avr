@@ -105,11 +105,11 @@ _STLP_END_NAMESPACE
 # endif
 #endif
 
-# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-_STLP_BEGIN_NAMESPACE  
-using namespace _STLP_VENDOR_CSTD;
-_STLP_END_NAMESPACE
-#endif /* _STLP_IMPORT_VENDOR_CSTD */
+//# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+//_STLP_BEGIN_NAMESPACE  
+//using namespace _STLP_VENDOR_CSTD;
+//_STLP_END_NAMESPACE
+//#endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif /* _STLP_CWCHAR_H */
 

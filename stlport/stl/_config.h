@@ -467,7 +467,7 @@
 #    define __WORKAROUND_RENAME(X) X
 #  endif
 #  if defined ( _STLP_DEBUG )
-#    define __WORKAROUND_DBG_RENAME(X) __##X
+#    define __WORKAROUND_DBG_RENAME(X) __stlpdebug_##X
 #  else
 #    define __WORKAROUND_DBG_RENAME(X) __WORKAROUND_RENAME(X)
 #  endif
@@ -557,7 +557,11 @@ namespace __std_alias = std;
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 #   define _STLP_STD      _STL
-
+/* reverse namespace injection schema */
+namespace _STLP_STD { }
+namespace std {
+  using namespace _STLP_STD;
+}
 #  else
 #   ifdef _STLP_DEBUG
 namespace stdD = std;
@@ -568,7 +572,7 @@ namespace stdD = std;
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD {
 #  define _STLP_END_NAMESPACE }
 
-_STLP_BEGIN_NAMESPACE _STLP_END_NAMESPACE
+// _STLP_BEGIN_NAMESPACE _STLP_END_NAMESPACE
 
 namespace stlport = _STLP_STD;
 // backward compatibility 

@@ -34,11 +34,11 @@
 # include <cstddef>
 #endif
 
-# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-_STLP_BEGIN_NAMESPACE  
-using namespace _STLP_VENDOR_CSTD;
-_STLP_END_NAMESPACE
-#endif /* _STLP_IMPORT_VENDOR_CSTD */
+//# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+//_STLP_BEGIN_NAMESPACE  
+//using namespace _STLP_VENDOR_CSTD;
+//_STLP_END_NAMESPACE
+//#endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #ifndef __TYPE_TRAITS_H
 # include <stl/type_traits.h>

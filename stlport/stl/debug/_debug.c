@@ -318,9 +318,9 @@ template <class _Dummy>
 void _STLP_CALL 
 __stl_debug_engine<_Dummy>::_Terminate()
 {
-# ifdef _STLP_USE_NAMESPACES
-  using namespace _STLP_STD;
-# endif
+//# ifdef _STLP_USE_NAMESPACES
+//  using namespace _STLP_STD;
+//# endif
 # if defined (_STLP_USE_EXCEPTIONS) && ! defined (_STLP_NO_DEBUG_EXCEPTIONS)
   throw __stl_debug_exception();
 # else
