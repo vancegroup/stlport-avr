@@ -97,7 +97,7 @@ namespace std
 
 # ifdef _STLP_USE_OWN_MBSTATE_T
 
-_STLP_BEGIN_NAMESPACE
+// _STLP_BEGIN_NAMESPACE
 
 // to be compatible across different SUN platforms
 #ifdef __sun
@@ -140,7 +140,7 @@ inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
 
 typedef struct __stl_mbstate_t mbstate_t;
 
-_STLP_END_NAMESPACE
+// _STLP_END_NAMESPACE
 
 # endif /* _STLP_USE_OWN_MBSTATE_T */
 
