@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/02 18:26:40 ptr>
+// -*- C++ -*- Time-stamp: <99/02/05 16:05:21 ptr>
 #ifndef __xxx_plock_h
 #define __xxx_plock_h
 
@@ -134,9 +134,9 @@ class Thread
 
     Thread();
 
-    explicit Thread( entrance_type entrance, void *p = 0, size_t psz = 0 );
+    explicit Thread( entrance_type entrance, const void *p = 0, size_t psz = 0 );
 
-    void launch( entrance_type entrance, void *p = 0, size_t psz = 0 );
+    void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
     int join();
     static void exit( int code = 0 );
 
@@ -144,7 +144,7 @@ class Thread
     Thread( const Thread& )
       { }
 
-    void _create( void *p, size_t psz ) throw(runtime_error);
+    void _create( const void *p, size_t psz ) throw(runtime_error);
     static void *_call( void *p );
 
     static void unexpected();
