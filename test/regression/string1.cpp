@@ -210,3 +210,40 @@ int string_c_str_test( int, char ** )
 
   return 0;
 }
+
+int string_replace_test(int, char**)
+{
+  string v( "78" );
+  string s( "123456" );
+
+  string::iterator i = s.begin() + 1;
+  s.replace( i, i + 3, v.begin(), v.end() );
+
+  if ( s != "17856" ) {
+    return -1;
+  }
+
+  s = "123456";
+  s.replace( i, i + 3, i + 5, s.end() );
+
+  if ( s != "15656" ) {
+    return -1;
+  }
+
+  s = "123456";
+  s.replace( i, i + 3, i, i + 2 );
+
+  if ( s != "12356" ) {
+    return -1;
+  }
+ 
+  s = "123456";
+  s.replace( i, i + 3, i + 1, s.end() );
+
+  if ( s != "1345656" ) {
+    return -1;
+  }
+
+  return 0;
+}
+
