@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/01/12 16:00:22 ptr>
+// -*- C++ -*- Time-stamp: <01/01/31 10:50:13 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -78,10 +78,6 @@ namespace __impl {
 #ifndef _WIN32
 using __STD::cerr;
 using __STD::endl;
-#endif
-
-#ifdef _WIN32
-using std::timespec;
 #endif
 
 __PG_DECLSPEC
@@ -437,11 +433,7 @@ void Thread::sleep( timespec *t, timespec *r )
 }
 
 __PG_DECLSPEC
-#ifdef WIN32
-void Thread::gettime( std::timespec *t )
-#else
 void Thread::gettime( timespec *t )
-#endif
 {
 #ifdef __linux
   timeval tv;
