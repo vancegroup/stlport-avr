@@ -1,8 +1,14 @@
+2004-04-23  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_rope.h: allow search of rope, like done in string
+
 2004-04-21  Francois Dumont <dums@...>
+
 	* stlport/stl/pointers/README: Creation of a documentation on the new
 	pointer partial specialization feature.
 
 2004-04-20  Francois Dumont <dums@s...>
+
 	* Modifications to have the lib built even with no exception support.
 
 	* stlport/stl/_pair.h: modification of the make_pair signature. After the latest
