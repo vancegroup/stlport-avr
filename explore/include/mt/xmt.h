@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/07/02 13:21:42 ptr>
+// -*- C++ -*- Time-stamp: <03/07/09 23:19:04 ptr>
 
 /*
  *
@@ -308,7 +308,7 @@ class __Mutex :
         EnterCriticalSection( &_M_lock );
 #endif
 #ifdef __FIT_NOVELL_THREADS
-        WaitOnLocalSemaphore( _M_lock );
+        WaitOnLocalSemaphore( this->_M_lock );
 #endif
       }
 
@@ -325,7 +325,7 @@ class __Mutex :
         return TryEnterCriticalSection( &_M_lock ) != 0 ? 0 : -1;
 #endif
 #ifdef __FIT_NOVELL_THREADS
-        return ExamineLocalSemaphore( _M_lock ) > 0 ? WaitOnLocalSemaphore( _M_lock ) : -1;
+        return ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
 #endif
 #ifdef _NOTHREADS
         return 0;
@@ -345,7 +345,7 @@ class __Mutex :
         LeaveCriticalSection( &_M_lock );
 #endif
 #ifdef __FIT_NOVELL_THREADS
-        SignalLocalSemaphore( _M_lock );
+        SignalLocalSemaphore( this->_M_lock );
 #endif
       }
 
@@ -412,7 +412,7 @@ class __Mutex<true,SCOPE> : // Recursive Safe
           mutex_lock( &_M_lock );
 #    endif
 #    ifdef __FIT_NOVELL_THREADS
-          WaitOnLocalSemaphore( _M_lock );
+          WaitOnLocalSemaphore( this->_M_lock );
 #    endif
           _id = _c_id;
           _count = 0;
@@ -451,7 +451,7 @@ class __Mutex<true,SCOPE> : // Recursive Safe
           res = mutex_trylock( &_M_lock );
 #    endif
 #    ifdef __FIT_NOVELL_THREADS
-          res = ExamineLocalSemaphore( _M_lock ) > 0 ? WaitOnLocalSemaphore( _M_lock ) : -1;
+          res = ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
 #    endif
           if ( res != 0 ) {
             return res;
@@ -462,6 +462,7 @@ class __Mutex<true,SCOPE> : // Recursive Safe
         }
         ++_count;
 
+        return 0;
 #  endif // !_NOTHREADS
       }
 
@@ -479,7 +480,7 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 #    endif
 #    ifdef __FIT_NOVELL_THREADS
           _id = -1;
-          SignalLocalSemaphore( _M_lock );
+          SignalLocalSemaphore( this->_M_lock );
 #    endif
 #  endif // !_NOTHREADS
         }
