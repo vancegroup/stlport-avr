@@ -18,13 +18,15 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(set2);
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(insert);
+  CPPUNIT_TEST(find);
   CPPUNIT_TEST_SUITE_END();
 
-protected:
-  void set1();
-  void set2();
-  void erase();
-  void insert();
+  protected:
+    void set1();
+    void set2();
+    void erase();
+    void insert();
+    void find();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -88,3 +90,9 @@ void SetTest::insert()
   CPPUNIT_ASSERT( *i == 0 );
 }
 
+void SetTest::find()
+{
+  set<int> s;
+
+  CPPUNIT_ASSERT( s.find(0) == s.end() );
+}
