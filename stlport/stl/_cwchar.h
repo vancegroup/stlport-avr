@@ -70,7 +70,6 @@ extern wchar_t  *wmemset();
 extern int      wprintf();
 extern int      wscanf();
 #  endif
-
 # endif
 
 #if defined(__MSL__) && __MSL__ <= 0x51FF	/* dwa 2/28/99 - not yet implemented by MSL  */

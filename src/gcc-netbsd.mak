@@ -6,7 +6,7 @@
 # compiler
 #
 CC = gcc 
-CXX = c++ -nostdinc++ -fexceptions
+CXX = c++ -fexceptions
 
 #
 # Basename for libraries
@@ -19,7 +19,7 @@ LIB_BASENAME = libstlport_gcc
 #
 LINK=ar crv
 # 2.95 flag
-DYN_LINK=c++ -nostdinc++ -lpthread -fexceptions -shared -fPIC -o
+DYN_LINK=c++ -lpthread -fexceptions -shared -fPIC -o
 
 OBJEXT=o
 DYNEXT=so

@@ -470,17 +470,15 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 	// and we get this for free.
 	bool __comp_pos_v = _M_key_compare( _S_key(__position._M_node), _KeyOfValue()(__v) );
 	
-	if (__comp_pos_v
-	    && _M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) )) {
-	  
+	if (__comp_pos_v == false)  // compare > and compare < both false so compare equal
+	  return position;
+	//Below __comp_pos_v == true
+	if(_M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) )) {
 	  if (_S_right(__position._M_node) == 0)
 	    return _M_insert(0, __position._M_node, __v, __position._M_node);
 	  else
 	    return _M_insert(__after._M_node, __after._M_node, __v);
-	} else { // Equivalent case -- already tested above and found comp_v_pos is false
-	  if (__comp_pos_v == false) // compare > and compare < both false so compare equal
-	    return __position;
-	  else
+	} else {
 	    return insert_unique(__v).first;
 	}
       }

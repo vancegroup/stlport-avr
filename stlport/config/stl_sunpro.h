@@ -23,7 +23,6 @@
 # elif (__SUNPRO_CC >= 0x500) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 ))
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC
 # elif (defined (__SUNPRO_CC_COMPAT) && __SUNPRO_CC_COMPAT == 4)
-#  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC4
 # else
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC

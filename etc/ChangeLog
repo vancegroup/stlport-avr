@@ -6,6 +6,15 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* src/vc6.mak : RC macro definition restored (Thanks Graham)
 
 	* stl/_cmath.h, <cmath> : parts of code moved to <cmath> as <valarray> uses it (Thanks Synge Todo)
+
+	* stl/_tree.c : fixed insert_unique() with a hint bug (Thanks Serge Pashkov)
+ 	
+	* src/gcc-*.mak : removed -nostdinc++ option
+
+	* stl_solaris.h : definition of _STLP_SUNPRO_EXCLUDE made dependant on _XOPEN macro instead of SUN CC macros (Thanks ecohen for the report)
+
+	* fstream.cpp : mmap_chunk made to be 1M instead of 16M as was originally intended (thanks Alexey Starikovskiy)
+	* stl_sunpro.h : _STLP_LIMITED_DEFAULT_TEMPLATES not defined for compat mode anymore ( thanks Michael Kopp)
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

@@ -1038,7 +1038,8 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 #endif
 }
 
-# define MMAP_CHUNK 0x1000000UL
+// fbp : let us map 1 MB maximum, just be sure not to trash VM
+# define MMAP_CHUNK 0x100000UL
 
 int _STLP_CALL
 _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this)  
@@ -1079,7 +1080,6 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
 
       __this->_M_mmap_len = __size - __offset;
 
-      // fbp : let us map 1 MB maximum, just be sure not to trash VM
       if (__this->_M_mmap_len > MMAP_CHUNK)
 	__this->_M_mmap_len = MMAP_CHUNK;
 
