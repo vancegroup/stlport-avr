@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/08 13:54:36 ptr>
+// -*- C++ -*- Time-stamp: <99/02/09 16:24:21 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -28,9 +28,10 @@ using std::cerr;
 using std::endl;
 
 #ifdef WIN32
-int __thr_key = TlsAlloc();
+__declspec( dllexport ) int __thr_key = TlsAlloc();
 #endif
 
+__DLLEXPORT
 Thread::Thread() :
 #ifdef WIN32
     _id( INVALID_HANDLE_VALUE ),
@@ -42,12 +43,14 @@ Thread::Thread() :
     _param_sz( 0 )
 { }
 
+__DLLEXPORT
 Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz ) :
     _entrance( entrance ),
     _param( 0 ),
     _param_sz( 0 )
 { _create( p, psz ); }
 
+__DLLEXPORT
 void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 {
 #ifdef WIN32
@@ -60,6 +63,7 @@ void Thread::launch( entrance_type entrance, const void *p, size_t psz )
   }
 }
 
+__DLLEXPORT
 int Thread::join()
 {
 #ifdef WIN32
@@ -85,6 +89,7 @@ int Thread::join()
   return ret_code;
 }
 
+__DLLEXPORT
 void Thread::exit( int code )
 {
 #ifdef _PTHREADS
