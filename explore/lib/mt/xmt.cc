@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/09/15 17:20:08 ptr>
+// -*- C++ -*- Time-stamp: <03/09/25 12:18:48 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -143,7 +143,11 @@ extern "C" void __at_fork_child()
 #ifdef _PTHREADS
   if ( detail::Init_count > 0 ) {
      // otherwise we do it in Thread::Init::Init() below
+#ifndef __FreeBSD__
     pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
+#else
+// should be fixed...
+#endif // __FreeBSD__
     pthread_key_create( &detail::_mt_key, 0 );
     pthread_setspecific( detail::_mt_key, detail::_uw_save );
     detail::_uw_save = 0;
@@ -407,7 +411,11 @@ int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signa
 #warning "Fix me!"
 #endif
 #ifdef _PTHREADS
+# ifndef __FreeBSD__
   return sem_timedwait( &_sem, abstime );
+# else
+  return -1; // not implemented
+# endif
 #endif
 #ifdef __FIT_NOVELL_THREADS
   time_t ct = time( 0 );
@@ -436,7 +444,11 @@ int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay 
   timespec st;
   Thread::gettime( &st );
   st += *interval;
+# ifndef __FreeBSD__
   return sem_timedwait( &_sem, &st );
+# else
+  return -1; // not implemented
+# endif
 #endif
 #ifdef __FIT_NOVELL_THREADS
   unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
@@ -472,10 +484,12 @@ Thread::Init::Init()
     thr_keycreate( &_mt_key, 0 );
 #endif
 #ifdef _PTHREADS
+# ifndef __FreeBSD__
     if ( pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child ) ) {
       _F_lockunlock
       throw std::runtime_error( "Problems with pthread_atfork" );
     }
+# endif // !__FreeBSD__
     pthread_key_create( &_mt_key, 0 );
 #endif
 #ifdef __FIT_WIN32THREADS
@@ -515,7 +529,12 @@ const Thread::thread_id_type Thread::bad_thread_id = INVALID_HANDLE_VALUE;
 #endif // __FIT_WIN32THREADS
 
 #if defined(__FIT_UITHREADS) || defined(_PTHREADS)
+# ifndef __FreeBSD__
 const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::thread_id_type,-1);
+# else // __FreeBSD__
+// pthread_t is defined as 'typedef struct pthread *pthread_t;'
+const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::thread_id_type,0);
+# endif // !__FreeBSD__
 #endif // __FIT_UITHREADS || _PTHREADS
 
 #ifdef __FIT_NOVELL_THREADS
@@ -532,8 +551,8 @@ __FIT_DECLSPEC
 void Thread::_dealloc_uw()
 {
   if ( uw_alloc_size != 0 ) {
-    _STLP_ASSERT( _id != bad_thread_id );
-    _STLP_ASSERT( is_self() );
+    // _STLP_ASSERT( _id != bad_thread_id );
+    // _STLP_ASSERT( is_self() );
 #ifdef __FIT_UITHREADS
     _uw_alloc_type *user_words;
     thr_getspecific( _mt_key, &(static_cast<void *>(user_words)) );
@@ -556,8 +575,8 @@ void Thread::_dealloc_uw()
 __FIT_DECLSPEC
 Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 {
-  _STLP_ASSERT( _id != bad_thread_id );
-  _STLP_ASSERT( is_self() );
+  // _STLP_ASSERT( _id != bad_thread_id );
+  // _STLP_ASSERT( is_self() );
 
   _uw_alloc_type *user_words;
 
@@ -883,7 +902,7 @@ void Thread::signal_exit( int sig )
     static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ))
     + Thread::_self_idx;
   Thread *me = reinterpret_cast<Thread *>(*reinterpret_cast<void **>(user_words));
-  _STLP_ASSERT( me->is_self() );
+  // _STLP_ASSERT( me->is_self() );
 
   // follow part of _call
   if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
@@ -973,7 +992,7 @@ void Thread::sleep( timespec *abstime, timespec *real_time )
 __FIT_DECLSPEC
 void Thread::gettime( timespec *t )
 {
-#ifdef __linux
+#if defined(__linux) || defined(__FreeBSD__)
   timeval tv;
   gettimeofday( &tv, 0 );
   TIMEVAL_TO_TIMESPEC( &tv, t );
