@@ -16,11 +16,13 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(SetTest);
   CPPUNIT_TEST(set1);
   CPPUNIT_TEST(set2);
+  CPPUNIT_TEST(erase);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void set1();
   void set2();
+  void erase();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -64,3 +66,12 @@ void SetTest::set2()
   CPPUNIT_ASSERT (distance(s2.begin(), s2.end()) == 0);
   CPPUNIT_ASSERT (distance(s3.begin(), s3.end()) == 5);
 }
+
+void SetTest::erase()
+{
+  set<int, less<int> > s;
+  s.insert(1);
+  s.erase(s.begin());
+  CPPUNIT_ASSERT( s.empty() );
+}
+

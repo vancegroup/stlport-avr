@@ -17,6 +17,7 @@ class ListTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(list2);
   CPPUNIT_TEST(list3);
   CPPUNIT_TEST(list4);
+  CPPUNIT_TEST(erase)
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -24,6 +25,7 @@ protected:
   void list2();
   void list3();
   void list4();
+  void erase();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ListTest);
@@ -125,3 +127,12 @@ void ListTest::list4()
   CPPUNIT_ASSERT(distance(l1.begin(), l1.end()) == 0);
   CPPUNIT_ASSERT(distance(l2.begin(), l2.end()) == 6);
 }
+
+void ListTest::erase()
+{
+  list<int> l;
+  l.push_back( 1 );
+  l.erase( l.begin() );
+  CPPUNIT_ASSERT( l.empty() );
+}
+
