@@ -1,16 +1,19 @@
-2004-04-27  Francois Dumont <dums@s...>
+2004-05-07  Petr Ovtchenkov  <ptr@Island...>
 
-  * stlport/stl/_complex.h
-    removal of a macro guard on the template != operator.
-    
-  * test/unit/complex_test.cpp
-    creation of a test case for the complex class.
+	* stlport/stl/_set.h: fix definition of const/non-const iterators. Thanks Ilya Chvetsov for report.
 
-2004-04-26  Francois Dumont <dums@s...>
+	* test/unit/set_test.cpp: test that detect bug above.
 
-  * stlport/stl/_fstream.h
-    src/fstream.cpp: extension of the fstream interface to accept Win32
-    HANDLE on construction and in the open method.
+2004-04-27  Francois Dumont  <dums@s...>
+
+	* stlport/stl/_complex.h: removal of a macro guard on the template != operator.
+
+	* test/unit/complex_test.cpp: creation of a test case for the complex class.
+
+2004-04-26  Francois Dumont  <dums@s...>
+
+	* stlport/stl/_fstream.h, src/fstream.cpp: extension of the fstream interface to accept Win32
+	HANDLE on construction and in the open method.
 
 2004-04-26  Petr Ovtchenkov  <ptr@Island...>
 
