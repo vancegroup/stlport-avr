@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/04 18:43:06 ptr>
+// -*- C++ -*- Time-stamp: <99/02/05 16:05:21 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -41,13 +41,13 @@ Thread::Thread() :
     _param_sz( 0 )
 { }
 
-Thread::Thread( Thread::entrance_type entrance, void *p, size_t psz ) :
+Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz ) :
     _entrance( entrance ),
     _param( 0 ),
     _param_sz( 0 )
 { _create( p, psz ); }
 
-void Thread::launch( entrance_type entrance, void *p, size_t psz )
+void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 {
 #ifdef WIN32
   if ( _id == INVALID_HANDLE_VALUE ) {
@@ -97,7 +97,7 @@ void Thread::exit( int code )
 #endif
 }
 
-void Thread::_create( void *p, size_t psz ) throw(runtime_error)
+void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer
     // Hey, deallocation SHOULD be either in this method, or in _call ONLY,
@@ -109,7 +109,7 @@ void Thread::_create( void *p, size_t psz ) throw(runtime_error)
     std::memcpy( _param, p, psz );
 #endif
   } else {
-    _param = p;	  
+    _param = const_cast<void *>(p);	  
   }
   _param_sz = psz;
 
