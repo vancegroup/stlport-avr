@@ -524,17 +524,12 @@ namespace __std_alias = std;
 # if defined (_STLP_USE_NAMESPACES)
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)
-#   ifdef _STLP_DEBUG
-#    define _STLP_STD      _STLD
-#   else
-#    define _STLP_STD      _STL
-#   endif
+#   define _STLP_STD      _STL
 #  else
 #   ifdef _STLP_DEBUG
-#    define _STLP_STD      stdD
-#   else
-#    define _STLP_STD      std
+namespace stdD = std;
 #   endif
+#   define _STLP_STD      std
 #  endif /* _STLP_USE_OWN_NAMESPACE */
 
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD {

@@ -23,7 +23,7 @@ all: all_dynamic symbolic_links  all_static
 
 include common_macros.mak
 
-CXXFLAGS_COMMON = -mt +w2 -features=rtti -xildoff ${STL_INCL}
+CXXFLAGS_COMMON = -mt +w2 -library=no%Cstd -features=rtti -xildoff ${STL_INCL}
 
 SHCXXFLAGS = -PIC
 

@@ -134,19 +134,16 @@ CXX = $(CC)
 # DEBUG_FLAGS=-compat=4
 
 
-CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_OWN_IOSTREAMS -D_STLP_HAS_NO_NEW_IOSTREAMS
-# CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_OWN_IOSTREAMS
+CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -qoption ccfe -expand=1000 -qoption ccfe -instlib=../../lib/libstlport_sunpro.so
 
-
-
-LIBS = -lm -liostream 
+LIBS = -L../../lib -lstlport_sunpro -lm
 LIBSTDCXX = 
 
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
-	echo 'a string' | ./$(TEST_EXE) > $(TEST)
+	LD_LIBRARY_PATH="../../lib;${LD_LIBRARY_PATH}" ./$(TEST_EXE) < stdin > $(TEST)
 
 SUFFIXES: .cpp.o.exe.out.res
 

@@ -30,7 +30,9 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = ${STL_INCL} -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+# CXXFLAGS = ${STL_INCL} -library=no%Cstd -qoption ccfe -instlib=../../lib/libstlport_sunpro.so -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
+
+CXXFLAGS = ${STL_INCL} -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D_STLP_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
@@ -39,7 +41,7 @@ CXXFLAGS = ${STL_INCL} -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_T
 LIBS = -lm 
 LIBSTDCXX = 
 
-LIBSTLPORT = -L../../lib -lstlport_sunpro
+LIBSTLPORT = -library=no%Cstd -L../../lib -lstlport_sunpro 
 
 
 check: $(TEST)

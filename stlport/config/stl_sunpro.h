@@ -50,7 +50,7 @@
 #   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../CCios
 #  endif
 
-// #  define _STLP_STATIC_CONST_INIT_BUG 1
+#  define _STLP_STATIC_CONST_INIT_BUG 1
 
 # if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...
@@ -63,8 +63,12 @@
 // # if (__SUNPRO_CC < 0x530) || (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
 // this is not really true ; but use of new-style native headers bring in namespace problems,
 // so it works better with our wrapper only.
-#  define _STLP_HAS_NO_NEW_C_HEADERS 1
+// #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 // # endif
+
+# if defined (_STLP_OWN_IOSTREAMS) && ! defined (_STLP_NO_OWN_NAMESPACE)
+#  define _STLP_NO_OWN_NAMESPACE
+# endif
 
 // those do not depend on compatibility
 # if (__SUNPRO_CC < 0x510)

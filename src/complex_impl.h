@@ -20,6 +20,8 @@
 #  define  COMPLEX_IMPL_H
 
 #include <complex>
+#include <cmath>
+#include <math.h>
 #include <stl/_cmath.h>
 
 # if (defined (__sgi) && !defined(__GNUC__)) || defined (__DECCXX)

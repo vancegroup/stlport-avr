@@ -36,8 +36,6 @@
 # include <cwchar>
 #endif
 
-// #define __SGI_CPP_LIMITS
-
 _STLP_BEGIN_NAMESPACE
 
 enum float_round_style {

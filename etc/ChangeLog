@@ -15,6 +15,9 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* etc/*.txt : files list broken up into several categories for future reorganization
 
 	* stl_msvc.h : fixed library selection for .NET (Thanks Franz Zetting)
+
+	* New namespace inclusion schema implemented for SUN CC (no C library includes, no std:: redefinition).
+ 	  Works only for _STLP_NO_OWN_NAMESPACE and _STLP_OWN_IOSTREAMS settings. 
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
