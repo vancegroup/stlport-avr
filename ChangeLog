@@ -11,6 +11,8 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 	* <iostream> : fixed _STLP_OUTERMOST_HEADER_ID macro
 
 	* cin/cout/cerr redefined if no namespaces and SGI iostreams are used, for all compilers, just in case. 
+
+	* _sparc_atomic.h : fixed and improved atomic ops for gcc
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
