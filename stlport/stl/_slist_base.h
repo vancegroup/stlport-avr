@@ -40,8 +40,7 @@ struct _Slist_node_base
 
 inline _Slist_node_base*
 __slist_make_link(_Slist_node_base* __prev_node,
-                  _Slist_node_base* __new_node)
-{
+                  _Slist_node_base* __new_node) {
   __new_node->_M_next = __prev_node->_M_next;
   __prev_node->_M_next = __new_node;
   return __new_node;
