@@ -1,6 +1,6 @@
-#include <stdexcept>
 #include <bitset>
 #include <algorithm>
+
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
