@@ -151,6 +151,11 @@
 
 // #define _STLP_GCC_USES_GNU_LD
 
+/*
+ * This option will force users to use exclusivelly standard C++ headers as reference in section
+ * 17.4.1.2 Table 11 and Table 12.
+ */
+// #define _STLP_USE_STD_HEADERS
 
 //==========================================================
 // Compatibility section
@@ -172,7 +177,6 @@
 /* 
  * You should define this macro if compiling with MFC - STLport <stl/_config.h>
  * then include <afx.h> instead of <windows.h> to get synchronisation primitives 
- *
  */
 
 // # define _STLP_USE_MFC 1
@@ -194,6 +198,23 @@
  */
 
 // # define _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS 1
+
+/*
+ * The agregation of strings using the + operator is an expensive operation
+ * as it requires construction of temporary objects that need memory allocation
+ * and deallocation. The problem can be even more important if you are adding
+ * several strings together in a single expression. To avoid this problem STLport
+ * implement expression template. With this technique addition of 2 string is not
+ * a string anymore but a temporary object having a reference to each of the 
+ * original strings involved in the expression. This object carry information
+ * directly to the destination string to set its size correctly and only make
+ * a single call to the allocator. This technique can be extended to addition of 
+ * N elements where elements being basic_string, C string or character type.
+ * The drawback can be longer compilation time.
+ * STLport rebuild: Yes
+ */
+
+// #define _STLP_USE_TEMPLATE_EXPRESSION 1
 
 //==========================================================
 

@@ -49,6 +49,22 @@
 
 _STLP_BEGIN_NAMESPACE
 
+// A helper class to use a char_traits as a function object.
+template <class _Traits>
+struct _Not_within_traits : public unary_function<typename _Traits::char_type, bool> {
+  typedef typename _Traits::char_type _CharT;
+  const _CharT* _M_first;
+  const _CharT* _M_last;
+
+  _Not_within_traits(const _CharT* __f, const _CharT* __l) 
+    : _M_first(__f), _M_last(__l) {}
+
+  bool operator()(const _CharT& __x) const {
+    return find_if(_M_first, _M_last, 
+                   _Eq_char_bound<_Traits>(__x)) == _M_last;
+  }
+};
+
 // ------------------------------------------------------------
 // Non-inline declarations.
 
@@ -63,6 +79,13 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
     this->_M_throw_length_error();
 
   size_type __n = (max)(__res_arg, size()) + 1;
+  if (__n == capacity() + 1)
+    return;
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+  if (__n <= _DEFAULT_SIZE)
+    return;
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+
   pointer __new_start = this->_M_end_of_storage.allocate(__n);
   pointer __new_finish = __new_start;
 
@@ -86,6 +109,11 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
   if (size() + __n > capacity())
     reserve(size() + (max)(size(), __n));
   if (__n > 0) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf())
+      _Traits::assign(this->_M_finish + 1, __n - 1, __c);
+    else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     uninitialized_fill_n(this->_M_finish + 1, __n - 1, __c);
     _STLP_TRY {
       _M_construct_null(this->_M_finish + __n);
@@ -126,6 +154,11 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_i
     else {
       const _CharT* __f1 = __first;
       ++__f1;
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+      if (this->_M_using_static_buf())
+        _M_copy(__f1, __last, this->_M_Finish() + 1);
+      else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
       uninitialized_copy(__f1, __last, this->_M_finish + 1);
       _STLP_TRY {
         _M_construct_null(this->_M_finish + __n);
@@ -200,6 +233,11 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
       const size_type __elems_after = this->_M_finish - __position;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+        if (this->_M_using_static_buf())
+          _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
+        else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
         uninitialized_copy((this->_M_finish - __n) + 1, this->_M_finish + 1,
                            this->_M_finish + 1);
         this->_M_finish += __n;
@@ -208,9 +246,19 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
         _Traits::assign(__position, __n, __c);
       }
       else {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+        if (this->_M_using_static_buf())
+          _Traits::assign(this->_M_finish + 1, __n - __elems_after - 1, __c);
+        else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
         uninitialized_fill_n(this->_M_finish + 1, __n - __elems_after - 1, __c);
         this->_M_finish += __n - __elems_after;
         _STLP_TRY {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy(__position, __old_finish + 1, this->_M_finish);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy(__position, __old_finish + 1, this->_M_finish);
           this->_M_finish += __elems_after;
         }
@@ -253,6 +301,11 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
       const ptrdiff_t __elems_after = this->_M_finish - __position;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+        if (this->_M_using_static_buf())
+          _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
+        else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
         uninitialized_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
         iterator __move_dest = __position + __n;
@@ -292,9 +345,19 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
       else {
         const_iterator __mid = __first;
         advance(__mid, __elems_after + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+        if (this->_M_using_static_buf())
+          _M_copy(__mid, __last, this->_M_finish + 1);
+        else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
         uninitialized_copy(__mid, __last, this->_M_finish + 1);
         this->_M_finish += __n - __elems_after;
         _STLP_TRY {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy(__position, __old_finish + 1, this->_M_finish);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy(__position, __old_finish + 1, this->_M_finish);
           this->_M_finish += __elems_after;
         }
@@ -504,7 +567,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_t
     const_reverse_iterator __rresult =
       _STLP_STD::find_if(__rlast, rend(),
 		 		 		  _Not_within_traits<_Traits>((const _CharType*)__s, 
-		 		 		 		 		 		      (const _CharType*)__s + __n));
+		 		 		 		 		 		                  (const _CharType*)__s + __n));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }

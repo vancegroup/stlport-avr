@@ -46,9 +46,7 @@
 #endif
 
 #ifdef _STLP_USE_TEMPLATE_EXPRESSION
-#  ifndef _STLP_STRING_SUM_H
-#   include <stl/_string_sum.h>
-#  endif
+# include <stl/_string_sum.h>
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 
 #if defined( __MWERKS__ ) && ! defined (_STLP_USE_OWN_NAMESPACE)
@@ -83,166 +81,13 @@
 // a user-defined non-POD type.  However, _CharT must still have a
 // default constructor.
 
+#include <stl/_string_base.h>
+
 _STLP_BEGIN_NAMESPACE
 
 # ifdef _STLP_DEBUG
 #  define basic_string _Nondebug_string
 # endif
-
-// A helper class to use a char_traits as a function object.
-
-template <class _Traits>
-struct _Not_within_traits : public unary_function<typename _Traits::char_type, bool> {
-  typedef typename _Traits::char_type _CharT;
-  const _CharT* _M_first;
-  const _CharT* _M_last;
-
-  _Not_within_traits(const typename _Traits::char_type* __f, 
-		 		      const typename _Traits::char_type* __l) 
-    : _M_first(__f), _M_last(__l) {}
-
-  bool operator()(const typename _Traits::char_type& __x) const {
-    return find_if(_M_first, _M_last, 
-                   _Eq_char_bound<_Traits>(__x)) == _M_last;
-  }
-};
-
-// ------------------------------------------------------------
-// Class _String_base.  
-
-// _String_base is a helper class that makes it it easier to write an
-// exception-safe version of basic_string.  The constructor allocates,
-// but does not initialize, a block of memory.  The destructor
-// deallocates, but does not destroy elements within, a block of
-// memory.  The destructor assumes that _M_start either is null, or else
-// points to a block of memory that was allocated using _String_base's 
-// allocator and whose size is _M_end_of_storage._M_data - _M_start.
-
-template <class _Tp, class _Alloc> 
-class _String_base {
-protected:
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
-  enum {_DEFAULT_SIZE = 8};
-private:
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-  union {
-    _Tp*  _M_dynamic_buf;
-    _Tp   _M_static_buf[_DEFAULT_SIZE];
-  } _M_buffers;
-#else
-  _Tp*    _M_start;
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-protected:
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-  bool _M_static_buf() const {
-    return (_M_end_of_storage._M_data == _M_buffers._M_static_buf + _DEFAULT_SIZE);
-  }
-  _Tp const* _M_Start() const {
-    return _M_static_buf()?_M_buffers._M_static_buf:_M_buffers._M_dynamic_buf;
-  }
-  _Tp* _M_Start() {
-    return _M_static_buf()?_M_buffers._M_static_buf:_M_buffers._M_dynamic_buf;
-  }
-#else
-  _Tp const* _M_Start() const {return _M_start;}
-  _Tp* _M_Start() {return _M_start;}
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-
-  _Tp*    _M_finish;
-  _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
-
-  _Tp const* _M_Finish() const {return _M_finish;}
-  _Tp* _M_Finish() {return _M_finish;}
-
-  // Precondition: 0 < __n <= max_size().
-  void _M_allocate_block(size_t __n = _DEFAULT_SIZE);
-  void _M_deallocate_block() {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (!_M_static_buf() && (_M_buffers._M_dynamic_buf != 0))
-      _M_end_of_storage.deallocate(_M_buffers._M_dynamic_buf, _M_end_of_storage._M_data - _M_buffers._M_dynamic_buf); 
-#else
-    if (_M_start != 0)
-      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-  }
-  
-  size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
-
-  _String_base(const allocator_type& __a)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE) {}
-#else
-    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0) {}
-#endif
-  
-  _String_base(const allocator_type& __a, size_t __n)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE)
-    {if (__n > _DEFAULT_SIZE) _M_allocate_block(__n);}
-#else
-    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0)
-    {_M_allocate_block(__n); }
-#endif
-
-  ~_String_base() { _M_deallocate_block(); }
-
-  void _M_reset(_Tp *__start, _Tp *__finish, _Tp *__end_of_storage) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    _M_buffers._M_dynamic_buf = __start;
-#else
-    _M_start = __start;
-#endif
-    _M_finish = __finish;
-    _M_end_of_storage._M_data = __end_of_storage;
-  }
-
-  void _M_destroy_back () {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (!_M_static_buf())
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-      _STLP_STD::_Destroy(_M_finish);
-  }
-
-  void _M_destroy_range(size_t __from_off = 0, size_t __to_off = 1) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (!_M_static_buf())
-		  _STLP_STD::_Destroy_Range(_M_buffers._M_dynamic_buf + __from_off, _M_finish + __to_off);
-#else
-		_STLP_STD::_Destroy_Range(_M_start + __from_off, _M_finish + __to_off);
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-  }
-
-  void _M_destroy_ptr_range(_Tp *__f, _Tp *__l) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (!_M_static_buf())
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-		  _STLP_STD::_Destroy_Range(__f, __l);
-  }
-
-  void _M_Swap(_String_base<_Tp, _Alloc> &__s) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (_M_static_buf())
-      _STLP_STD::swap(_M_buffers, __s._M_buffers);
-    else
-      _STLP_STD::swap(_M_buffers._M_dynamic_buf, __s._M_buffers._M_dynamic_buf);
-#else
-    _STLP_STD::swap(_M_start, __s._M_start);
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    _STLP_STD::swap(_M_finish, __s._M_finish);
-    _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
-  }
-
-  void _M_throw_length_error() const;
-  void _M_throw_out_of_range() const;
-};
-
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _String_base<char, allocator<char> >;
-#  if defined (_STLP_HAS_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS _String_base<wchar_t, allocator<wchar_t> >;
-#  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 // ------------------------------------------------------------
 // Class basic_string.  
@@ -358,6 +203,13 @@ public:                         // Constructor, destructor, assignment.
                const allocator_type& __a = allocator_type())
     : _String_base<_CharT,_Alloc>(__a, __n + 1)
   {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf()) {
+      _Traits::assign(this->_M_Start(), __n, __c);
+      this->_M_finish = this->_M_Start() + __n;
+    }
+    else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     this->_M_finish = uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
@@ -372,7 +224,7 @@ public:                         // Constructor, destructor, assignment.
   
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))		 		 //*ty 04/30/2001 - mpw compilers choke on this ctor
+#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))          //*ty 04/30/2001 - mpw compilers choke on this ctor
   template <class _InputIterator> 
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -442,10 +294,15 @@ protected:
 private:                        // Helper functions used by constructors
                                 // and elsewhere.
   // fbp : simplify integer types (char, wchar)
-  void _M_construct_null_aux(_CharT* __p, const __false_type&) {
+  void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf())
+      _Traits::assign(*__p, _M_null());
+    else
+#endif /*_STLP_USE_SHORT_STRING_OPTIM*/
     _STLP_STD::_Construct(__p);
   }
-  void _M_construct_null_aux(_CharT* __p, const __true_type&) {
+  void _M_construct_null_aux(_CharT* __p, const __true_type& /*_Is_Integral*/) {
     *__p = 0;
   }
 
@@ -502,6 +359,13 @@ private:
                            const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf()) {
+      _M_copy(__f, __l, this->_M_Start());
+      this->_M_finish = this->_M_Start() + __n;
+    }
+    else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
@@ -514,6 +378,13 @@ private:
   template <class _Integer> 
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
     this->_M_allocate_block(__n + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf()) {
+      _Traits::assign(this->_M_Start(), __n, __x);
+      this->_M_finish = this->_M_Start() + __n;
+    }
+    else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     this->_M_finish = uninitialized_fill_n(this->_M_Start(), __n, __x);
     _M_terminate_string();
   }
@@ -528,6 +399,13 @@ private:
   void _M_range_initialize(const _CharT* __f, const _CharT* __l) {
     ptrdiff_t __n = __l - __f;
     this->_M_allocate_block(__n + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+    if (this->_M_using_static_buf()) {
+      _M_copy(__f, __l, this->_M_Start());
+      this->_M_finish = this->_M_Start() + __n;
+    }
+    else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
@@ -663,50 +541,55 @@ private:                        // Helper functions for append.
 
   template <class _InputIter> 
   _Self& _M_append(_InputIter __first, _InputIter __last, 
-                const input_iterator_tag &) {
-		for ( ; __first != __last ; ++__first)
-		  push_back(*__first);
-		return *this;
-	}
+                   const input_iterator_tag &) {
+    for ( ; __first != __last ; ++__first)
+      push_back(*__first);
+    return *this;
+  }
 
   template <class _ForwardIter> 
   _Self& _M_append(_ForwardIter __first, _ForwardIter __last, 
                    const forward_iterator_tag &)  {
     if (__first != __last) {
-		     const size_type __old_size = size();
-		     difference_type __n = distance(__first, __last);
-		     if (__STATIC_CAST(size_type,__n) > max_size() || __old_size > max_size() - __STATIC_CAST(size_type,__n))
-		       this->_M_throw_length_error();
-		     if (__old_size + __n > capacity()) {
-		       const size_type __len = __old_size +
-		                             (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-		       pointer __new_start = this->_M_end_of_storage.allocate(__len);
-		       pointer __new_finish = __new_start;
-		       _STLP_TRY {
-		         __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
-		         __new_finish = uninitialized_copy(__first, __last, __new_finish);
-		         _M_construct_null(__new_finish);
-		       }
-		       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-		                     this->_M_end_of_storage.deallocate(__new_start,__len)));
-		       this->_M_destroy_range();
-		       this->_M_deallocate_block();
+         const size_type __old_size = size();
+         difference_type __n = distance(__first, __last);
+         if (__STATIC_CAST(size_type,__n) > max_size() || __old_size > max_size() - __STATIC_CAST(size_type,__n))
+           this->_M_throw_length_error();
+         if (__old_size + __n > capacity()) {
+           const size_type __len = __old_size +
+                                 (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+           pointer __new_start = this->_M_end_of_storage.allocate(__len);
+           pointer __new_finish = __new_start;
+           _STLP_TRY {
+             __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
+             __new_finish = uninitialized_copy(__first, __last, __new_finish);
+             _M_construct_null(__new_finish);
+           }
+           _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
+                         this->_M_end_of_storage.deallocate(__new_start,__len)));
+           this->_M_destroy_range();
+           this->_M_deallocate_block();
            this->_M_reset(__new_start, __new_finish, __new_start + __len);
-		     }
-		     else {
-		       _ForwardIter __f1 = __first;
-		       ++__f1;
-		       uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
-		       _STLP_TRY {
-		         _M_construct_null(this->_M_Finish() + __n);
-		       }
-		       _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __n));
-		       _Traits::assign(*end(), *__first);
-		       this->_M_finish += __n;
-		     }
-		   }
-		   return *this;  
-		 }
+         }
+         else {
+           _ForwardIter __f1 = __first;
+           ++__f1;
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+           if (this->_M_using_static_buf())
+             _M_copy(__f1, __last, this->_M_Finish() + 1);
+           else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+           uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
+           _STLP_TRY {
+             _M_construct_null(this->_M_Finish() + __n);
+           }
+           _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __n));
+           _Traits::assign(*end(), *__first);
+           this->_M_finish += __n;
+         }
+       }
+       return *this;  
+     }
 
   template <class _Integer> 
   _Self& _M_append_dispatch(_Integer __n, _Integer __x, const __true_type& /*Integral*/) {
@@ -915,13 +798,18 @@ private:  // Helper functions for insert.
 
   template <class _ForwardIter>
   void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-		             const random_access_iterator_tag &) {
+                 const random_access_iterator_tag &) {
     //This version has to take care about self referencing
     if (__first != __last) {
       difference_type __n = __last - __first;
       if (this->_M_end_of_storage._M_data - this->_M_Finish() >= __n + 1) {
         const difference_type __elems_after = this->_M_Finish() - __position;
         if (__elems_after >= __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
           this->_M_finish += __n;
           iterator __move_dest = __position + __n;
@@ -964,9 +852,19 @@ private:  // Helper functions for insert.
           pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
           advance(__mid, __elems_after + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy(__mid, __last, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+            if (this->_M_using_static_buf())
+              _M_copy(__position, __old_finish + 1, this->_M_Finish());
+            else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
             uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
@@ -983,13 +881,18 @@ private:  // Helper functions for insert.
 
   template <class _ForwardIter>
   void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-		             const forward_iterator_tag &) {
+                 const forward_iterator_tag &) {
     //This version can't have self referencing
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
       if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
-      	const difference_type __elems_after = this->_M_finish - __position;
+        const difference_type __elems_after = this->_M_finish - __position;
         if (__elems_after >= __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
           this->_M_finish += __n;
           _Traits::move(__position + __n, __position, (__elems_after - __n) + 1);
@@ -999,9 +902,19 @@ private:  // Helper functions for insert.
           pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
           advance(__mid, __elems_after + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy(__mid, __last, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+            if (this->_M_using_static_buf())
+              _M_copy(__position, __old_finish + 1, this->_M_Finish());
+            else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
             uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
@@ -1180,7 +1093,7 @@ private:                        // Helper functions for replace.
 
 #ifndef _STLP_MEMBER_TEMPLATES
   _Self& _M_replace(iterator __first, iterator __last,
-		 		            const_iterator __f, const_iterator __l, const random_access_iterator_tag&);
+                     const_iterator __f, const_iterator __l, const random_access_iterator_tag&);
 #else /* _STLP_MEMBER_TEMPLATES */
 
   template <class _Integer>
@@ -1199,13 +1112,13 @@ private:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     _InputIter __f, _InputIter __l, const input_iterator_tag &__ite_tag) {
     //no overlapping issue in this method
-		for ( ; __first != __last && __f != __l; ++__first, ++__f)
-	    _Traits::assign(*__first, *__f);
-	  if (__f == __l)
-	    erase(__first, __last);
-	  else
-	    _M_insert(__last, __f, __l, __ite_tag);
-	  return *this;
+    for ( ; __first != __last && __f != __l; ++__first, ++__f)
+      _Traits::assign(*__first, *__f);
+    if (__f == __l)
+      erase(__first, __last);
+    else
+      _M_insert(__last, __f, __l, __ite_tag);
+    return *this;
   }
 
   template <class _InputIter>
@@ -1222,23 +1135,23 @@ private:                        // Helper functions for replace.
       else {
         _InputIter __m = __f + __len;
         if ((__l <= __first) || (__f >= __last)) {
-				  //no overlap:
+          //no overlap:
           _M_copy(__f, __m, __first);
           _M_insert(__last, __m, __l, __ite_tag);
         }
         else {
-				  //we have to take care of reallocation:
-				  const difference_type __off_dest = __first - this->begin();
-				  const difference_type __off_src = __f - this->begin();
-				  _M_insert(__last, __m, __l, __ite_tag);
-				  _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
+          //we have to take care of reallocation:
+          const difference_type __off_dest = __first - this->begin();
+          const difference_type __off_src = __f - this->begin();
+          _M_insert(__last, __m, __l, __ite_tag);
+          _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
         }
       }
       return *this;
     }
-	  else {
-		  return _M_replace(__first, __last, __f, __l, forward_iterator_tag());
-	  }
+    else {
+      return _M_replace(__first, __last, __f, __l, forward_iterator_tag());
+    }
   }
 
   template <class _ForwardIter> 
@@ -1251,8 +1164,8 @@ private:                        // Helper functions for replace.
       erase(__first + __n, __last);
     }
     else {
-		  _ForwardIter __m = __f;
-		  advance(__m, __len);
+      _ForwardIter __m = __f;
+      advance(__m, __len);
       _M_copy(__f, __m, __first);
       _M_insert(__last, __m, __l, __ite_tag);
     }
@@ -1434,155 +1347,7 @@ public:                        // Helper functions for compare.
   }
 
 #ifdef _STLP_USE_TEMPLATE_EXPRESSION
-public:
-  template <class _Left, class _Right, class _StorageDir>
-  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) 
-    : _String_base<_CharT,_Alloc>(allocator_type(), __s.size()){
-    _M_append_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  basic_string(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
-               size_type __pos, size_type __n = npos, 
-               const allocator_type& __a = allocator_type())
-    : _String_base<_CharT,_Alloc>(__a, (__pos <= __s.size())?((min) (__n, __s.size() - __pos)):0) {
-    size_type __size = __s.size();
-    if (__pos > __size)
-      this->_M_throw_out_of_range();
-    else
-      _M_append_sum(__s, __pos, (min) (__n, __size - __pos));
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& operator=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_assign_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& operator+=(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_append_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_append_sum(__s); 
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& append(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                size_type __pos, size_type __n) {
-   if (__pos > __s.size())
-     this->_M_throw_out_of_range();
-   return _M_append_sum(__s, __pos, __n);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_assign_sum(__s); 
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& assign(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, 
-                size_type __pos, size_type __n) {
-    if (__pos > __s.size())
-      this->_M_throw_out_of_range();
-    return _M_assign_sum(__s, __pos, __n);
-  }
-
-private:
-  value_type* _M_append_fast(__char_wrapper<value_type> __c, value_type *__buf, size_type /*__pos*/, size_type /*__n*/) {
-     _STLP_STD::_Copy_Construct(__buf, __c.getValue());
-     return __buf + 1;
-  }
-  value_type* _M_append_fast(__cstr_wrapper<value_type> const& __s, value_type *__buf, 
-                             size_type __pos, size_type __n) {
-    return uninitialized_copy(__s.c_str() + __pos, __s.c_str() + (min)(__pos + __n, __s.size()), __buf);
-  }
-  value_type* _M_append_fast(__bstr_wrapper<value_type, traits_type, _Alloc> __s, value_type *__buf, 
-                             size_type __pos, size_type __n) {
-    return _M_append_fast(__s.b_str(), __buf, __pos, __n);
-  }
-  value_type* _M_append_fast(_Self const& __s, value_type *__buf, 
-                             size_type __pos, size_type __n) {
-    return uninitialized_copy(__s.begin() + __pos, __s.begin() + (min)(__pos + __n, __s.size()), __buf);
-  }
-  value_type* _M_append_fast(__sum_storage_elem<value_type, traits_type, _Alloc> const& __s, value_type *__buf, 
-                             size_type __pos, size_type __n) {
-    return __buf;
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  value_type* _M_append_fast(__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, value_type *__buf,
-                             size_type __pos, size_type __n) {
-    if (__n == 0) {
-      return __buf;
-    }
-    if (__pos < __s.getLhs().size()) {
-      if (__n < (__s.getLhs().size() - __pos)) {
-        return _M_append_fast(__s.getLhs(), __buf, __pos, __n);
-      } else {
-        return _M_append_fast(__s.getRhs(), _M_append_fast(__s.getLhs(), __buf, __pos, __n),
-                              0, __n - (__s.getLhs().size() - __pos));
-      }
-    } else {
-      return _M_append_fast(__s.getRhs(), __buf, __pos - __s.getLhs().size(), __n);
-    }
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_overflow (size_type __new_size, __bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                             size_type __pos, size_type __n) {
-		pointer __new_start = this->_M_end_of_storage.allocate(__new_size);
-		pointer __new_finish = __new_start;
-		_STLP_TRY {
-      __new_finish = _M_append_fast(__s, __new_start, __pos, __n);
-		  _M_construct_null(__new_finish);
-		}
-		_STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-		              this->_M_end_of_storage.deallocate(__new_start,__new_size)));
-		this->_M_destroy_range();
-		this->_M_deallocate_block();
-    this->_M_reset(__new_start, __new_finish, __new_start + __new_size);
-    return *this;
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                        size_type __pos = 0, size_type __n = npos) {
-    //TODO: We systematically use a new allocation to avoid the self referencing trouble, try to avoid it.
-    size_type __len = size();
-    const size_type __s_size = (min) (__s.size() - __pos, __n);
-		if (__s_size > max_size() || __len > (max_size() - __s_size))
-		  this->_M_throw_length_error();
-    if (__s_size > __len) {
-      __len = __len + (max)(__len, __s_size) + 1;
-    }
-    return _M_assign_overflow(__len, __s, __pos, __n);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_append_sum (__bstr_sum<value_type, traits_type, _Alloc, _Left, _Right, _StorageDir> const& __s, 
-                        size_type __pos = 0, size_type __n = npos) {
-		const size_type __old_size = size();
-		size_type __s_size = (min)(__s.size() - __pos, __n);
-		if (__s_size > max_size() || __old_size > (max_size() - __s_size))
-		  this->_M_throw_length_error();
-		if (__old_size + __s_size > capacity()) {
-		  const size_type __len = __old_size +
-		                        (max)(__old_size, __s_size) + 1;
-      _M_assign_overflow(__len, __s, __pos, __n);
-		}
-		else {
-		  _STLP_TRY {
-        _M_append_fast(__s, this->_M_Finish() + 1, __pos + 1, __n);
-		    _M_construct_null(this->_M_Finish() + __s_size);
-		  }
-		  _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size));
-		  _Traits::assign(*end(), __s[__pos]);
-		  this->_M_finish += __s_size;
-		}
-		return *this;  
-  }
+# include <stl/_string_sum_methods.h>
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 };
 

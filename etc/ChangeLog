@@ -1,3 +1,9 @@
+2003-11-29 Francois Dumont <dums@s...>
+
+  * _string.h: Implementation of the short string optimization. basic_string have now a
+               short static buffer to avoid call to the allocator when the string
+               is short.
+               
 2003-11-29  Petr Ovchenkov  <ptr@Island...>
 
 	* cwchar, _config.h, _cwchar.h, _stdio_file.h, c_locale.h:

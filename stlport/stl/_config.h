@@ -115,13 +115,8 @@
 #  define _STLP_FUNCTION_TMPL_PARTIAL_ORDER 1
 #endif
 
-#if !defined (_STLP_DONT_USE_TEMPLATE_EXPRESSION) && !defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES) \
-    && !defined (_STLP_DEBUG) && !defined (_STLP_USE_TEMPLATE_EXPRESSION)
-#  define _STLP_USE_TEMPLATE_EXPRESSION 1
-#endif
-
 #if !defined (_STLP_DONT_USE_SHORT_STRING_OPTIM) && !defined (_STLP_USE_SHORT_STRING_OPTIM)
-//#  define _STLP_USE_SHORT_STRING_OPTIM 1
+#  define _STLP_USE_SHORT_STRING_OPTIM 1
 #endif
 
 
@@ -1066,6 +1061,16 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
          "implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch"\
          "and build STLport library."
 # endif /* _STLP_FULL_ADL_IMPLEMENTED && _STLP_NO_OWN_IOSTREAMS */
+
+# if defined (_STLP_USE_TEMPLATE_EXPRESSION) && defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES)
+#  error "Your compiler is not able to handle template expressions."\
+         "Please turn off _STLP_USE_TEMPLATE_EXPRESSION switch." 
+# endif /* _STLP_USE_TEMPLATE_EXPRESSION && _STLP_NO_MEMBER_TEMPLATE_CLASSES */
+
+# if defined (_STLP_DEBUG) && defined (_STLP_NO_OWN_IOSTREAMS)
+#  error "The special STLport debug mode can only be used with own STLport iostream"
+# endif /* _STLP_DEBUG && _STLP_NO_OWN_IOSTREAMS */
+
 
 # if defined ( _STLP_USE_ABBREVS )
 #  include <stl/_abbrevs.h>
