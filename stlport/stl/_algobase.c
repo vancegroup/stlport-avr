@@ -29,11 +29,6 @@
 #  include <stl/_algobase.h>
 # endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ALGOBASE_C
-_STLP_INSTRUMENT_FILE();
-# endif /* _STLP_DEBUG */
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _InputIter1, class _InputIter2>
@@ -314,17 +309,9 @@ _ForwardIter1 __find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 #if ! defined (_STLP_INTERNAL_ITERATOR_H)
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
-
 _STLP_END_NAMESPACE
 # include <stl/_iterator.h>
 _STLP_BEGIN_NAMESPACE 
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ALGOBASE_C
-# endif
 
 #endif /*_STLP_INTERNAL_ITERATOR_H*/
 
@@ -399,10 +386,6 @@ _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
 }
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif /* _STLP_ALGOBASE_C */
 

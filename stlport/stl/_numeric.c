@@ -30,11 +30,6 @@
 # include <stl/_numeric.h>
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID NUMERIC_C
-_STLP_INSTRUMENT_FILE();
-# endif /* _STLP_DEBUG */
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _InputIterator, class _OutputIterator, class _Tp,
@@ -101,10 +96,6 @@ _Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)
 }
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif /*  _STLP_NUMERIC_C */
 

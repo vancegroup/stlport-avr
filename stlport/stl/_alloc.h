@@ -68,12 +68,6 @@
 # include <stl/_construct.h>
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ALLOC_H
-_STLP_INSTRUMENT_FILE();
-# endif
-
-
 #ifndef __ALLOC
 #   define __ALLOC __sgi_alloc
 #endif
@@ -552,10 +546,6 @@ struct __move_traits<_STLP_alloc_proxy<_Value, _Tp, _Alloc> > :
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_alloc.c>

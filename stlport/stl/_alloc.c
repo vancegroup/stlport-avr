@@ -62,11 +62,6 @@ inline void* __stlp_chunk_malloc(size_t __bytes) { return _STLP_STD::__stl_new(_
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes-size_t(1))>>(int)_ALIGN_SHIFT)
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ALLOC_C
-_STLP_INSTRUMENT_FILE();
-# endif
-
 _STLP_BEGIN_NAMESPACE
 
 template <int __inst>
@@ -399,10 +394,6 @@ __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
 #  endif /* _STLP_STATIC_TEMPLATE_DATA */
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 # undef _S_FREELIST_INDEX
 

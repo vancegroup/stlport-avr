@@ -35,11 +35,6 @@
 #include <limits>
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID VALARRAY_H
-_STLP_INSTRUMENT_FILE();
-# endif
-
 _STLP_BEGIN_NAMESPACE
 
 class slice;
@@ -1651,10 +1646,6 @@ valarray<_Tp>::operator[](const _Valarray_size_t& __addr)
 }
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_valarray.c>

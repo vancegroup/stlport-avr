@@ -32,9 +32,6 @@
 
 #include <stl/debug/_iterator.h>
 
-#define _STLP_FILE_UNIQUE_ID VECTOR_H
-_STLP_INSTRUMENT_FILE();
-
 // # ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 #  undef  _DBG_vector
 #  define _DBG_vector vector
@@ -346,7 +343,6 @@ public:
 
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
 #undef _STLP_DBG_VECTOR_BASE
 #undef _DBG_vector
 

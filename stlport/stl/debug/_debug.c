@@ -35,9 +35,6 @@
 #  define _STLP_RELEASE_LOCK(_Lock)
 # endif /* _STLP_THREADS */
 
-#define _STLP_FILE_UNIQUE_ID DEBUG_C
-_STLP_INSTRUMENT_FILE();
-
 _STLP_BEGIN_NAMESPACE
 
 //==========================================================
@@ -152,8 +149,6 @@ void  _STLP_CALL __invalidate_iterator(const __owned_list* __base,
 
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
-
 # endif /* _STLP_DEBUG */
 
 # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
@@ -240,8 +235,6 @@ _STLP_END_NAMESPACE
 #    include <cstdarg>
 #    include <cstdio>
 
-#define _STLP_FILE_UNIQUE_ID DEBUG_C
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Dummy>
@@ -279,8 +272,6 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 }
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_FILE_UNIQUE_ID
 
 #  endif /* _STLP_DEBUG_MESSAGE */
 
@@ -333,8 +324,6 @@ _STLP_END_NAMESPACE
 # endif /* _STLP_ASSERTIONS */
 
 #ifdef _STLP_DEBUG
-
-#define _STLP_FILE_UNIQUE_ID DEBUG_C
 
 _STLP_BEGIN_NAMESPACE
 
@@ -484,8 +473,6 @@ __stl_debug_engine<_Dummy>::_Check_if_owner( const __owned_list * __l, const __o
 
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_FILE_UNIQUE_ID
 
 #endif /* _STLP_DEBUG */
 

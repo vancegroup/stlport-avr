@@ -29,9 +29,6 @@
 
 #include <stl/debug/_iterator.h>
 
-#define _STLP_FILE_UNIQUE_ID SLIST_H
-_STLP_INSTRUMENT_FILE();
-
 //# ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 #  ifdef _DBG_slist
 #   undef  _DBG_slist
@@ -521,8 +518,6 @@ public:
 #undef _STLP_TEMPLATE_HEADER
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_FILE_UNIQUE_ID
 
 #endif /* _STLP_INTERNAL_DBG_SLIST_H */
 

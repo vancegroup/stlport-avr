@@ -30,11 +30,6 @@
 #  include <stl/_algo.h>
 # endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ALGO_C
-_STLP_INSTRUMENT_FILE();
-# endif /* _STLP_DEBUG */
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _BidirectionalIter, class _Distance, class _Compare>
@@ -1762,10 +1757,6 @@ bool __is_sorted(_ForwardIter __first, _ForwardIter __last,
 # endif /* _STLP_NO_EXTENSIONS */
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 # undef __stl_threshold
 

@@ -1,7 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
-
 /*
  *
  * Copyright (c) 1994
@@ -37,9 +33,6 @@
 #include <stl/debug/_iterator.h>
 #include <stl/_function.h>
 #include <stl/_alloc.h>
-
-#define _STLP_FILE_UNIQUE_ID TREE_H
-_STLP_INSTRUMENT_FILE();
 
 #  undef _DBG_Rb_tree
 #  define _DBG_Rb_tree _Rb_tree
@@ -261,7 +254,6 @@ public:
          
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
 #undef  _STLP_DBG_TREE_SUPER
 
 #endif /* _STLP_INTERNAL_DBG_TREE_H */

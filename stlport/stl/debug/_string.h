@@ -1,6 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
 /*
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
@@ -23,9 +20,6 @@
 #define _STLP_DBG_STRING_H
 
 #include <stl/debug/_iterator.h>
-
-#define _STLP_FILE_UNIQUE_ID STRING_H
-_STLP_INSTRUMENT_FILE();
 
 # define _STLP_DBG_STRING_BASE _Nondebug_string <_CharT, _Traits, _Alloc>
 
@@ -894,8 +888,6 @@ istream& _STLP_CALL operator>>(istream& __is, basic_string<_CharT,_Traits,_Alloc
 #undef _STLP_DBG_STRING_BASE
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_FILE_UNIQUE_ID
 
 #endif /* _STLP_DBG_STRING */
 

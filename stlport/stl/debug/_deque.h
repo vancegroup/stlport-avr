@@ -1,7 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
-
 /*
  *
  * Copyright (c) 1994
@@ -35,9 +31,6 @@
 #define _STLP_INTERNAL_DBG_DEQUE_H
 
 #include <stl/debug/_iterator.h>
-
-#define _STLP_FILE_UNIQUE_ID DEQUE_H
-_STLP_INSTRUMENT_FILE();
 
 # if !defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM) && !defined (_STLP_NO_DEFAULT_NON_TYPE_PARAM)
 #  undef  _DBG_deque
@@ -377,10 +370,11 @@ public:                         // Erase
 
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
-
 # undef _DBG_deque
 # undef _STLP_DEQUE_SUPER
   
 #endif /* _STLP_INTERNAL_DEQUE_H */
 
+// Local Variables:
+// mode:C++
+// End:

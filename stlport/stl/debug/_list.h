@@ -1,7 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
-
 /*
  *
  * Copyright (c) 1994
@@ -39,9 +35,6 @@
 # endif
 
 #include <stl/debug/_iterator.h>
-
-#define _STLP_FILE_UNIQUE_ID LIST_H
-_STLP_INSTRUMENT_FILE();
 
 # ifndef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 #  undef  _DBG_list
@@ -412,7 +405,8 @@ public:
 
 _STLP_END_NAMESPACE 
 
-#undef _STLP_FILE_UNIQUE_ID
-
 #endif /* _STLP_INTERNAL_LIST_H */
 
+// Local Variables:
+// mode:C++
+// End:

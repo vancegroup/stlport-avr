@@ -41,11 +41,6 @@
 
 # include <stl/_range_errors.h>
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID ROPE_C
-_STLP_INSTRUMENT_FILE();
-# endif
-
 _STLP_BEGIN_NAMESPACE
 
 # if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
@@ -1534,10 +1529,6 @@ inline void rotate(
 #   undef size_type
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 # endif /* ROPEIMPL_H */
 

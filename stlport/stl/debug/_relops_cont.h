@@ -1,6 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
 // This is an implementation file which
 // is intended to be included multiple times with different _STLP_ASSOCIATIVE_CONTAINER
 // setting
@@ -40,3 +37,7 @@ struct __action_on_move<_STLP_TEMPLATE_CONTAINER > {
 };
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+// Local Variables:
+// mode:C++
+// End:

@@ -1,8 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
-
-
 /*
  *
  * Copyright (c) 1997
@@ -27,9 +22,6 @@
 
 # include <stl/_pair.h>
 # include <stl/_alloc.h>
-
-#define _STLP_FILE_UNIQUE_ID ITERATOR_H
-_STLP_INSTRUMENT_FILE();
 
 # define _STLP_DBG_ALLOCATOR_SELECT( _Tp ) _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp )
 
@@ -394,6 +386,8 @@ iterator_category(const  _DBG_iter_base<_Container>&) {
 
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
-
 #endif /* INTERNAL_H */
+
+// Local Variables:
+// mode:C++
+// End:

@@ -131,6 +131,7 @@
  */
 
 // # define _STLP_DEBUG_UNINITIALIZED 1
+// # define _STLP_DEBUG_ALLOC 1
 
 /*
  * Uncomment and provide a definition for the byte with which raw memory

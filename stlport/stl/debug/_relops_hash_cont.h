@@ -38,3 +38,7 @@ struct __action_on_move<_STLP_TEMPLATE_CONTAINER > {
 };
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+// Local Variables:
+// mode:C++
+// End:

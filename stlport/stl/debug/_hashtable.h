@@ -1,6 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
 /*
  *
  * Copyright (c) 1994
@@ -37,9 +34,6 @@
 // hash_set, hash_map, hash_multiset, and hash_multimap.
 
 # include <stl/debug/_iterator.h>
-
-#define _STLP_FILE_UNIQUE_ID HASHTABLE_H
-_STLP_INSTRUMENT_FILE();
 
 #  undef  hashtable
 #  undef  _DBG_hashtable
@@ -276,7 +270,6 @@ struct __move_traits<_DBG_hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> > :
 
 _STLP_END_NAMESPACE
 
-#undef _STLP_FILE_UNIQUE_ID
 #undef  hashtable
 
 #endif /* _STLP_INTERNAL_HASHTABLE_H */
