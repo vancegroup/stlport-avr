@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/06/01 11:29:38 ptr>
+// -*- C++ -*- Time-stamp: <00/06/06 15:44:14 degor>
 
 /*
  * Copyright (c) 1999-2000
@@ -32,6 +32,9 @@
 #include <functional>
 #include <cerrno>
 #include <string>
+#ifdef __Linux
+#include <sys/time.h>
+#endif
 
 #ifdef WIN32
 // #include <iostream>
@@ -412,6 +415,26 @@ void Thread::sleep( timespec *t, timespec *r )
     r->tv_sec = ms / 1000;
     r->tv_nsec = (ms % 1000) * 1000000;
   }
+#endif
+}
+
+__PG_DECLSPEC
+#ifdef WIN32
+void Thread::gettime( std::timespec *t )
+#else
+void Thread::gettime( timespec *t )
+#endif
+{
+#ifdef __Linux
+  timeval tv;
+  gettimeofday( &tv, 0 );
+  TIMEVAL_TO_TIMESPEC( &tv, t );
+#elif defined( WIN32 )
+  time_t ct = time( 0 );
+  t->tv_sec = ct / 1000;
+  t->tv_nsec = (ct % 1000) * 1000000;
+#elif defined(__linux)
+  clock_gettime( t );
 #endif
 }
 

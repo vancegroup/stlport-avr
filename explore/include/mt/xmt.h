@@ -571,8 +571,10 @@ class Thread
 
 #ifndef _WIN32
     static __PG_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
+    static __PG_DECLSPEC void gettime( timespec *t );
 #else
     static __PG_DECLSPEC void sleep( std::timespec *t, std::timespec *e = 0 );
+    static __PG_DECLSPEC void gettime( std::timespec *t );
 #endif
 
     bool good() const
