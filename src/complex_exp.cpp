@@ -232,3 +232,4 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& a
 }
 
 _STLP_END_NAMESPACE
+

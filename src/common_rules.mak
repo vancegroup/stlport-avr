@@ -83,10 +83,11 @@ install_unix :
 		$(INSTALL_H) $$file $(INSTALLDIR_INC)/$$file ; \
           done \
 	done
-	-$(RM) $(INSTALLDIR_LIB)
+
 	./mkinstalldirs $(INSTALLDIR_LIB)
 	for file in `ls $(OUTDIR)/$(LIB_BASENAME)*`; \
 	do \
+        -$(RM)  $(INSTALLDIR_LIB)/$file
 	$(INSTALL_LIB)  $$file $(INSTALLDIR_LIB); \
 	done
 	-$(RM) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)

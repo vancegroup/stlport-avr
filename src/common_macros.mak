@@ -41,8 +41,8 @@ STLDEBUG_OBJDIR_dynamic=$(OBJDIR)$(PATH_SEP)DebugSTLD
 # and libraries go into /usr/local/lib. Please override any of them if desired. 
 #
 
-# INSTALLDIR=/usr/local
-INSTALLDIR=/tmp
+INSTALLDIR=/usr/local
+# INSTALLDIR=/tmp
 INSTALLDIR_INC=$(INSTALLDIR)/include/stlport
 INSTALLDIR_LIB=$(INSTALLDIR)/lib
 

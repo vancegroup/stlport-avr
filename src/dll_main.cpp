@@ -45,6 +45,7 @@
 #include <limits>
 #include <string>
 #include <stdexcept>
+#include <bitset>
 
 # if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
 // for rope static members
@@ -137,6 +138,7 @@ template class _List_global<bool>;
 template class _Sl_global<bool>;
 template class _Stl_prime<bool>;
 template class _LimG<bool>;
+template class _Bs_G<bool>;
 
 template class _STLP_CLASS_DECLSPEC allocator<char>;
 template class _STLP_CLASS_DECLSPEC _STL_alloc_proxy<char *,char, allocator<char> >;
