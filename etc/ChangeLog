@@ -1,3 +1,11 @@
+2004-04-01  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_string.h: reorder of in-class template and
+	quazi-specialization function make VC happy, ref. 2004-03-29
+
+	* stlport/stl/debug/_string.h: fix insert and replace for
+	iterators that refer to same string in _STLP_DEBUG mode.
+
 2004-03-31  Petr Ovtchenkov  <ptr@Island...>
 
 	* src/explore/nmake-evc4-arm.mak, src/explore/nmake-evc4-x86.mak, etc.:
