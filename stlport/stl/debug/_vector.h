@@ -256,10 +256,13 @@ public:
     __invalidate_range(&_M_iter_list, __first+1, end());
     return iterator(&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
-
   void clear() { 
     _M_iter_list._Invalidate_all();
     _Base::clear();
+  }
+  void push_back(const _Tp& __x) {
+    if (size()+1 > capacity()) _M_iter_list._Invalidate_all();
+    _Base::push_back(__x);
   }
 };
 

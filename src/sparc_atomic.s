@@ -14,13 +14,13 @@
 _STLP_atomic_exchange:
 0:
 	        ld      [%o0], %o2              ! Set the current value
-	        mov     %o1, %o3                                ! Set the new value
-	        swap     [%o0], %o3         ! Do the compare and swap
+	        mov     %o1, %o3                ! Set the new value
+!	        swap     [%o0], %o3             ! Do the compare and swap
+	        cas     [%o0], %o2, %o3 
 	        cmp     %o2, %o3                ! Check whether successful
-	        bne     0b                  ! Retry upon failure
-! ifdef (__sparcv8plus, membar  #LoadLoad | #LoadStore)  ! Ensure the cas finishes before
+	        bne     0b                      ! Retry upon failure
 	        stbar
-	        mov     %o2, %o0                                ! Set the new value
+	        mov     %o2, %o0                ! Set the new value
 	        retl                            ! return
 	        nop
 	        .size   _STLP_atomic_exchange,(.-_STLP_atomic_exchange)
@@ -34,10 +34,11 @@ _STLP_atomic_increment:
 1:
 	        ld      [%o0], %o2              ! set the current
 	        add             %o2, 0x1, %o3                   ! Increment and store current
-	        swap     [%o0], %o3         ! Do the compare and swap
+!	        swap     [%o0], %o3         ! Do the compare and swap
+	        cas     [%o0], %o2, %o3 
 	        cmp     %o3, %o2                ! Check whether successful
 	        bne     1b                                         ! Retry if we failed.
-	!        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
+	        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
 	                                        ! returning
 	        nop
 	        retl                            ! return
@@ -55,11 +56,11 @@ _STLP_atomic_decrement:
 2:
 	        ld      [%o0], %o2              ! set the current
 	        sub     %o2, 0x1, %o3                   ! decrement and store current
-	        swap    [%o0], %o3         ! Do the compare and swap
-
+!	        swap    [%o0], %o3         ! Do the compare and swap
+	        cas     [%o0], %o2, %o3 
 	        cmp     %o3, %o2                ! Check whether successful
 	        bne     2b                                         ! Retry if we failed.
-	!        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
+	        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
 	        nop
 	                                        ! returning
 	        retl                            ! return

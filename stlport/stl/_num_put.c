@@ -259,6 +259,13 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
       }
     else
       __basechars = 0;
+ 
+     // make sure there is room at the end of the buffer
+     // we pass to __insert_grouping
+    char __grpbuf[64];
+    copy(__buf, __iend, (char *) __grpbuf);
+    __buf = __grpbuf;
+    __iend = __grpbuf + __len; 
     __len = __insert_grouping(__buf, __iend, __grouping, __np.thousands_sep(), 
                               '+', '-', __basechars);
   }

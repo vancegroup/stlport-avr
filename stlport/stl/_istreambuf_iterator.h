@@ -142,8 +142,8 @@ _STLP_EXPORT_TEMPLATE_CLASS istreambuf_iterator<wchar_t, char_traits<wchar_t> >;
 template <class _CharT, class _Traits>
 inline input_iterator_tag _STLP_CALL iterator_category(const istreambuf_iterator<_CharT, _Traits>&) { return input_iterator_tag(); }
 template <class _CharT, class _Traits>
-inline streamoff _STLP_CALL 
-distance_type(const istreambuf_iterator<_CharT, _Traits>&) { typedef streamoff __off_type; return __off_type(); }
+inline streamoff* _STLP_CALL 
+distance_type(const istreambuf_iterator<_CharT, _Traits>&) { return (streamoff*)0; }
 template <class _CharT, class _Traits>
 inline _CharT* _STLP_CALL value_type(const istreambuf_iterator<_CharT, _Traits>&) { return (_CharT*)0; }
 # endif
