@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/07/10 00:01:14 ptr>
+# -*- makefile -*- Time-stamp: <04/03/03 15:34:48 ptr>
 # $Id$
 
 clobber::
@@ -14,6 +14,9 @@ clobber::
 	@-rm -f ${SO_NAME_OUT_STLDBGx}
 	@-rm -f ${SO_NAME_OUT_STLDBGxx}
 	@-rm -f ${SO_NAME_OUT_STLDBGxxx}
+	@-rm -f ${A_NAME_OUT}
+	@-rm -f ${A_NAME_OUT_DBG}
+	@-rm -f ${A_NAME_OUT_STLDBG}
 
 distclean::
 	@-rm -f $(INSTALL_LIB_DIR)/$(SO_NAME)
@@ -28,3 +31,6 @@ distclean::
 	@-rm -f $(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBGx)
 	@-rm -f $(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBGxx)
 	@-rm -f $(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBGxxx)
+	@-rm -f $(INSTALL_LIB_DIR)/${A_NAME_OUT}
+	@-rm -f $(INSTALL_LIB_DIR_DBG)/${A_NAME_OUT_DBG}
+	@-rm -f $(INSTALL_LIB_DIR_STLDBG)/${A_NAME_OUT_STLDBG}
