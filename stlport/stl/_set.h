@@ -143,28 +143,41 @@ public:
   iterator insert(iterator __position, const value_type& __x) {
     return _M_t.insert_unique(/* _Rep_type::_M_unconst( */ __position /* ) */, __x);
   }
-#ifdef _STLP_MEMBER_TEMPLATES
+# ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last) {
     _M_t.insert_unique(__first, __last);
   }
-#else
+# else
   void insert(const_iterator __first, const_iterator __last) {
     _M_t.insert_unique(__first, __last);
   }
   void insert(const value_type* __first, const value_type* __last) {
     _M_t.insert_unique(__first, __last);
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+# endif /* _STLP_MEMBER_TEMPLATES */
+# ifndef _STLP_DEBUG
   void erase(iterator __position) { 
-    _M_t.erase( /* _Rep_type::_M_unconst( */ __position /* ) */ ); 
+    _M_t.erase( __position._M_node ); 
   }
+# else // _STLP_DEBUG
+  void erase(iterator __position) {
+    _M_t.erase( typename _Rep_type::iterator( __position._Owner(), __position._M_iterator ) );
+  }
+# endif // _STLP_DEBUG
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
+# ifndef _STLP_DEBUG
   void erase(iterator __first, iterator __last) { 
-    _M_t.erase( /* _Rep_type::_M_unconst( */ __first /* ) */, /* _Rep_type::_M_unconst( */ __last /* ) */ ); 
+    _M_t.erase( __first, __last ); 
   }
+# else // _STLP_DEBUG
+  void erase(iterator __first, iterator __last) {
+    _M_t.erase( typename _Rep_type::iterator( __first._Owner(), __first._M_iterator ),
+                typename _Rep_type::iterator( __last._Owner(),  __last._M_iterator ) );
+  }
+# endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }
 
   // set operations:
