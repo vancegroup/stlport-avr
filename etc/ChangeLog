@@ -1,3 +1,13 @@
+2004-04-15  Petr Ovtchenkov  <ptr@Island...>
+
+	* test/unit/partial_test.cpp: wrong comparison during test
+
+	* test/unit/sort_test.cpp: ditto
+
+	* test/unit/rm_cp_test.cpp: #ifndef not required---should work
+
+	* test/unit/unique_test.cpp: ditto
+
 2004-04-14  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/typeinfo, stlport/config/stl_wince_4.h, stlport/stl/debug/_debug.c: adaptation for Win CE .NET;
