@@ -1,13 +1,13 @@
-// -*- C++ -*- Time-stamp: <03/06/09 14:31:09 ptr>
+// -*- C++ -*- Time-stamp: <03/07/01 19:37:01 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002
+ * Copyright (c) 1997-1999, 2002, 2003
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 1.0
+ * Licensed under the Academic Free License Version 1.2
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -28,7 +28,9 @@
 #endif
 
 #include <sys/types.h>
-#include <unistd.h>
+#ifndef _WIN32
+# include <unistd.h>
+#endif
 #include <fcntl.h>
 
 #include <xmt.h>
@@ -59,6 +61,8 @@
 #include <cmath> // for time operations
 
 #ifdef WIN32
+
+# pragma warning( disable : 4290)
 // #include <iostream>
 // #include <iomanip>
 // #include <win_config.h>
@@ -86,6 +90,8 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 #  endif
 #endif
 
+namespace detail {
+
 int Init_count = 0;
 
 #ifdef __FIT_NOVELL_THREADS
@@ -100,8 +106,8 @@ void *_uw_save = 0;
 
 #ifdef _PTHREADS
 __impl::Mutex _F_lock;
-#  define _F_locklock   _F_lock.lock();
-#  define _F_lockunlock _F_lock.unlock();
+#  define _F_locklock  detail::_F_lock.lock();
+#  define _F_lockunlock detail::_F_lock.unlock();
 #endif
 
 #ifdef __FIT_UITHREADS
@@ -113,12 +119,14 @@ __impl::Mutex _F_lock;
 #  define _F_lockunlock
 #endif
 
+} // namespace detail
+
 extern "C" void __at_fork_prepare()
 {
   _F_locklock
 #ifdef _PTHREADS
-  if ( Init_count > 0 ) {
-    _uw_save = pthread_getspecific( ::_mt_key );
+  if ( detail::Init_count > 0 ) {
+    detail::_uw_save = pthread_getspecific( detail::_mt_key );
   }
 #endif
 }
@@ -133,14 +141,14 @@ extern "C" void __at_fork_parent()
 extern "C" void __at_fork_child()
 {
 #ifdef _PTHREADS
-  if ( Init_count > 0 ) {
+  if ( detail::Init_count > 0 ) {
      // otherwise we do it in Thread::Init::Init() below
     pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
-    pthread_key_create( &::_mt_key, 0 );
-    pthread_setspecific( _mt_key, _uw_save );
-    _uw_save = 0;
+    pthread_key_create( &detail::_mt_key, 0 );
+    pthread_setspecific( detail::_mt_key, detail::_uw_save );
+    detail::_uw_save = 0;
     // Note, that only calling thread inherited when we use POSIX:
-    Init_count = 1; // i.e. only ONE (calling) thread...
+    detail::Init_count = 1; // i.e. only ONE (calling) thread...
   }
 #endif
   _F_lockunlock
@@ -438,7 +446,11 @@ int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay 
 
 char *Init_buf[32];
 // int Thread::Init::_count = 0;
-int& Thread::Init::_count( ::Init_count ); // trick to avoid friend declarations
+#if defined(_MSC_VER) && (_MSC_VER <= 1200)
+int& Thread::Init::_count = detail::Init_count; // trick to avoid friend declarations
+#else
+int& Thread::Init::_count( detail::Init_count ); // trick to avoid friend declarations
+#endif
 
 const std::string msg1( "Can't create thread" );
 const std::string msg2( "Can't fork" );
@@ -510,7 +522,11 @@ const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::threa
 const Thread::thread_id_type Thread::bad_thread_id = EFAILURE;
 #endif // __FIT_NOVELL_THREADS
 
-Thread::thread_key_type& Thread::_mt_key( ::_mt_key );
+#if defined(_MSC_VER) && (_MSC_VER <= 1200)
+Thread::thread_key_type& Thread::_mt_key = detail::_mt_key;
+#else
+Thread::thread_key_type& Thread::_mt_key( detail::_mt_key );
+#endif
 
 __FIT_DECLSPEC
 void Thread::_dealloc_uw()
@@ -646,10 +662,12 @@ bool Thread::is_self()
 {
 #ifdef _PTHREADS
   return good() && (_id == pthread_self());
-#elif defined( __FIT_UITHREADS )
+#elif defined(__FIT_UITHREADS)
   return good() && (_id == thr_self());
-#elif defined( __FIT_NOVELL_THREADS )
+#elif defined(__FIT_NOVELL_THREADS)
   return good() && (_id == GetThreadID());
+#elif defined(__FIT_WIN32THREADS)
+  return good() && (_id == GetCurrentThread());
 #else
 #  error "Fix me! (replace pthread_self())"
 #endif
@@ -975,6 +993,7 @@ void Thread::gettime( timespec *t )
 #endif
 }
 
+#ifndef _WIN32
 __FIT_DECLSPEC
 void Thread::fork() throw( fork_in_parent, std::runtime_error )
 {
@@ -1014,6 +1033,7 @@ void Thread::become_daemon() throw( fork_in_parent, std::runtime_error )
   }
 #endif
 }
+#endif // _WIN32
 
 // #ifdef __GNUC__
 // void Thread::_create( const void *p, size_t psz )
