@@ -332,14 +332,6 @@ void _STLP_CALL
 locale::_S_uninitialize()
 {
   _Stl_loc_global_impl->decr();
-
-  // if (_Stl_loc_global_impl->_M_decr() == 0)
-  //    delete _Stl_loc_global_impl;
-  
-  //  delete _Stl_loc_classic_locale;
-
-  //   _Stl_loc_global_impl = 0;
-  //   _Stl_loc_classic_locale = 0;
 }
 
 
@@ -361,8 +353,6 @@ locale::locale(const locale& L) _STLP_NOTHROW
 // Destructor.
 locale::~locale() _STLP_NOTHROW
 {
-  //  if (_M_impl->_M_decr() == 0)
-  //    delete _M_impl;
   _M_impl->decr();
 }
 
@@ -459,16 +449,18 @@ _STLP_END_NAMESPACE
 //
 
 
+# if 0
 # include "ctype.cpp"
 # include "collate.cpp"
 # include "codecvt.cpp"
-# include "numpunct.cpp"
+
 # include "num_put_float.cpp"
 # include "num_put.cpp"
-
-# include "num_get_float.cpp"
+# include "numpunct.cpp"
 # include "num_get.cpp"
+# include "num_get_float.cpp"
 
 # include "monetary.cpp"
 # include "time_facets.cpp"
 # include "messages.cpp"
+# endif

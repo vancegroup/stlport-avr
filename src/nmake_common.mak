@@ -42,6 +42,19 @@ report_dirs_vc :
    $(CXX) $(CXXFLAGS_RELEASE_static) $<
 
 
+{$(SRCDIR)}.cpp{$(RELEASE_OBJDIR_staticx)}.obj:
+   $(CXX) $(CXXFLAGS_RELEASE_staticx) $< 
+
+{$(SRCDIR)}.c{$(RELEASE_OBJDIR_staticx)}.obj:
+   $(CC) $(CXXFLAGS_RELEASE_staticx) $< 
+
+{$(SRCDIR)}.c{$(RELEASE_OBJDIR_staticx)}.sbr:
+   $(CC) $(CXXFLAGS_RELEASE_staticx) $< 
+
+{$(SRCDIR)}.cpp{$(RELEASE_OBJDIR_staticx)}.sbr:
+   $(CXX) $(CXXFLAGS_RELEASE_staticx) $<
+
+
 {$(SRCDIR)}.cpp{$(RELEASE_OBJDIR_dynamic)}.obj:
    $(CXX) $(CXXFLAGS_RELEASE_dynamic) $< 
 
@@ -68,6 +81,18 @@ report_dirs_vc :
 {$(SRCDIR)}.cpp{$(DEBUG_OBJDIR_static)}.sbr:
    $(CXX) $(CXXFLAGS_DEBUG_static) $<
 
+{$(SRCDIR)}.cpp{$(DEBUG_OBJDIR_staticx)}.obj:
+   $(CXX) $(CXXFLAGS_DEBUG_staticx) $<
+
+{$(SRCDIR)}.c{$(DEBUG_OBJDIR_staticx)}.obj:
+   $(CC) $(CXXFLAGS_DEBUG_staticx) $<
+
+{$(SRCDIR)}.c{$(DEBUG_OBJDIR_staticx)}.sbr:
+   $(CC) $(CXXFLAGS_DEBUG_staticx) $<
+
+{$(SRCDIR)}.cpp{$(DEBUG_OBJDIR_staticx)}.sbr:
+   $(CXX) $(CXXFLAGS_DEBUG_staticx) $<
+
 {$(SRCDIR)}.cpp{$(DEBUG_OBJDIR_dynamic)}.obj:
    $(CXX) $(CXXFLAGS_DEBUG_dynamic) $<
 
@@ -93,6 +118,18 @@ report_dirs_vc :
 
 {$(SRCDIR)}.cpp{$(STLDEBUG_OBJDIR_static)}.sbr:
    $(CXX) $(CXXFLAGS_STLDEBUG_static) $<
+
+{$(SRCDIR)}.cpp{$(STLDEBUG_OBJDIR_staticx)}.obj:
+   $(CXX) $(CXXFLAGS_STLDEBUG_staticx) $<
+
+{$(SRCDIR)}.c{$(STLDEBUG_OBJDIR_staticx)}.obj:
+   $(CC) $(CXXFLAGS_STLDEBUG_staticx) $<
+
+{$(SRCDIR)}.c{$(STLDEBUG_OBJDIR_staticx)}.sbr:
+   $(CC) $(CXXFLAGS_STLDEBUG_staticx) $<
+
+{$(SRCDIR)}.cpp{$(STLDEBUG_OBJDIR_staticx)}.sbr:
+   $(CXX) $(CXXFLAGS_STLDEBUG_staticx) $<
 
 {$(SRCDIR)}.cpp{$(STLDEBUG_OBJDIR_dynamic)}.obj:
    $(CXX) $(CXXFLAGS_STLDEBUG_dynamic) $<

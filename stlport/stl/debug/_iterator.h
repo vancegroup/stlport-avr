@@ -358,9 +358,8 @@ operator+(ptrdiff_t __n, const _DBG_iter<_Container, _Traits>& __it) {
 
 
 # ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
-
 # if defined (_STLP_NESTED_TYPE_PARAM_BUG) \
-   || ( defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500) \
+   || ( defined (__SUNPRO_CC) && __SUNPRO_CC < 0x600) \
    || ( defined (_STLP_MSVC) && (_STLP_MSVC < 1100) )
 #  define _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS 1
 # endif
@@ -390,15 +389,6 @@ iterator_category(const  _DBG_iter_base<_Container>&) {
 # define _Get_iter(__x)   __x
 # define _Debug_iter(__x, __y) __y
 
-# if 0
-template <class _Iterator>
-class __debug_iterator_traits
-{
-public:
-  typedef _Iterator __underlying_iterator_type;
-  typedef pair<__underlying_iterator_type, __underlying_iterator_type> __underlying_iterator_pair;
-};
-# endif
 _STLP_END_NAMESPACE
 
 #endif /* INTERNAL_H */

@@ -80,42 +80,6 @@ pair<_InIt1, bool> __get_string(_InIt1 __first,     _InIt1 __last,
   return make_pair(__pr.first, __pr.second == __str_last);
 }
 
-# ifdef OBSOLETE
-template <class _InIt, class _OuIt, class _CharT>
-bool __get_monetary_value(_InIt& __first, _InIt __last,
-                          _OuIt    __out,
-                          const ctype<_CharT>& __c_type,
-                          _CharT   __point,
-                          size_t      __frac_digits,
-                          bool&    __syntax_ok)
-{
-  if (__first == __last || !__c_type.is(ctype_base::digit, *__first))
-    return false;
-
-  while (__first != __last && __c_type.is(ctype_base::digit, *__first))
-    *__out++ = *__first++;
-
-  if (__first == __last || *__first != __point) {
-    for (int __digits = 0; __digits != __frac_digits; ++__digits)
-      *__out++ = _CharT('0');
-    return true;
-  }
-
-  ++__first;
-
-  size_t __digits = 0;
-
-  while (__first != __last && __c_type.is(ctype_base::digit, *__first)) {
-    *__out++ = *__first++;
-    ++__digits;
-  }
-
-  __syntax_ok = (__digits == __frac_digits);  
-
-  return true;
-}
-# endif
-
 template <class _InIt, class _OuIt, class _CharT>
 bool
 __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
@@ -129,10 +93,8 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
   if (__first == __last || !_c_type.is(ctype_base::digit, *__first))
     return false;
 
-  char __group_sizes[64];
-  char* __group_sizes_end = __group_sizes;
-
-  //   string __group_sizes;
+  char __group_sizes[128];
+  char* __group_sizes_end = __grouping.size() == 0 ? 0 : __group_sizes;
   char   __current_group_size = 0;
 
   while (__first != __last) {
@@ -140,11 +102,13 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
       ++__current_group_size;
       *__out++ = *__first++;
     }
-    else
-    if (*__first == __sep) {
-      *__group_sizes_end++ = __current_group_size;
-      __current_group_size = 0;
-      ++__first;
+    else if (__group_sizes_end) {
+      if (*__first == __sep) {
+	*__group_sizes_end++ = __current_group_size;
+	__current_group_size = 0;
+	++__first;
+      }
+      else break;
     }
     else
       break;
@@ -319,11 +283,14 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
 
       bool __result;
 
-      _CharT __sep = __intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
+      _CharT __sep = __grouping.size() == 0 ? _CharT() : 
+	__intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
+
       __result = __get_monetary_value(__s, __end, __out, __c_type,
                                       __point, __frac_digits,
                                       __sep,
                                       __grouping, __syntax_ok);      
+
       if (!__syntax_ok)
         __err |= ios_base::failbit;
       if (!__result) {
@@ -332,38 +299,6 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
       }
       break;
       
-# ifdef OBSOLETE
-      pair<_InputIter, bool> __result;
-      if (__grouping.size() == 0) {
-        __result = __get_monetary_value(__s, __end, __out, __c_type,
-                                        __point, __frac_digits,
-                                        __syntax_ok);
-        if (!__syntax_ok)
-          __err |= ios_base::failbit;
-        if (!__result.second) {
-          __err |= ios_base::failbit;
-          return __result.first;
-        }
-      }
-      else {
-        _CharT __sep = __intl ? __punct_intl.thousands_sep()
-          : __punct.thousands_sep();
-        __result = __get_monetary_value(__s, __end, __out, __c_type,
-                                        __point, __frac_digits,
-                                        __sep,
-                                        __grouping, __syntax_ok);
-        
-        if (!__syntax_ok)
-          __err |= ios_base::failbit;
-        if (!__result.second) {
-          __err = ios_base::failbit;
-          return __result.first;
-        }
-      }
-      __s = __result.first;
-      break;
-# endif
-
     }                           // Close money_base::value case
 
 
@@ -495,10 +430,10 @@ money_put<_CharT, _OutputIter>
     
   size_t __width        = __str.width();
 
-#if !defined(_STLP_DEBUG) || !defined(__HP_aCC) || (__HP_aCC > 1)
-  size_t __value_length = __digits_last - __digits_first;
-#else // --ptr: workaround for aCC A.03.13, with , __HP_aCC == 1
+#if defined(_STLP_DEBUG) && (defined(__HP_aCC) || (__HP_aCC <= 1))
   size_t __value_length = operator -(__digits_last, __digits_first);
+#else
+  size_t __value_length = __digits_last - __digits_first;
 #endif
 
   size_t __length       = __value_length;

@@ -470,8 +470,8 @@ void __format_float_fixed(char * buf, const char * bp,
 void __format_nan_or_inf(char * buf, double x,
 			 ios_base::fmtflags flags)
 {
-  static const char* inf[2] = { "inf", "INF" };
-  static const char* nan[2] = { "nan", "NAN" };
+  static const char* inf[2] = { "inf", "Inf" };
+  static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan = 0;
   if (_Stl_is_inf((double)x)) {            // Infinity
     inf_or_nan = inf;

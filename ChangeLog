@@ -6,6 +6,9 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* _debug.c/_debug.h : fixed swap() for rb_tree and list (thanks to Gerd Hoeren for the report)
 	  swap() changed not to invalidate any iterators, as prescribed by the standard 
 
+	* facets_byname.cpp source introduced to replace all xx_byname.cpp files;
+ 	  restored separate facets .cpp complilation (they used to be included in locale_impl.cpp)
+	
 	* monetary.cpp : unneded hack for cygwin removed (thanks to Dean Sturtevant) 
 
 	* <iostream> : fixed _STLP_OUTERMOST_HEADER_ID macro
@@ -62,6 +65,12 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* _string_io.c : fixed Intel C++ compilation bug in native streams mode
 
 	* fstream.cpp : added write-sharing for fstream file handle (Thanks to Leland Best)
+
+	* KAI C++ 4.0 is now supported on SUN
+
+	* "INF/NAN" string representation for uppercase changed to "Inf/NaN" to behave like printf() on most systems.
+	
+	* debug/_iterator.c : fixed SUN 6.0 compiler internal error 
 	
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :

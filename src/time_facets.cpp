@@ -24,6 +24,9 @@
 
 _STLP_BEGIN_NAMESPACE
 
+char* _STLP_CALL
+__write_integer(char* buf, ios_base::fmtflags flags, long x);
+
 // The function copy_cstring is used to initialize a string
 // with a C-style string.  Used to initialize the month and weekday
 // tables in time_get and time_put.  Called only by _Init_timeinfo

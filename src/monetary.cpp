@@ -129,16 +129,14 @@ money_base::pattern moneypunct<wchar_t, false>::do_neg_format() const
 # if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
 template class money_get<char, istreambuf_iterator<char, char_traits<char> > >;
-
 template class money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 // template class money_put<char, char*>;
 
-
 #ifndef _STLP_NO_WCHAR_T
 template class money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-// template class money_get<wchar_t, const wchar_t*>;
 template class money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class money_put<wchar_t, wchar_t*>;
+// template class money_get<wchar_t, const wchar_t*>;
 #endif
 
 # endif

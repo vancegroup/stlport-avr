@@ -729,11 +729,4 @@ void _Locale::insert_messages_facets(const char* pname)
 _STLP_END_NAMESPACE
 
 
-# include "ctype_byname.cpp"
-# include "collate_byname.cpp"
-# include "codecvt_byname.cpp"
-# include "numpunct_byname.cpp"
-# include "monetary_byname.cpp"
-# include "messages_byname.cpp"
-
 

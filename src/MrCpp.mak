@@ -81,16 +81,13 @@ Dependencies  Ä  $OutOfDate #*TY 02/26/2000 - MakeDepend does not work unless al
 STLportLibSrcFiles        =  ¶
 				c_locale_stub.cpp	¶
 				codecvt.cpp	¶
-				codecvt_byname.cpp	¶
 				collate.cpp	¶
-				collate_byname.cpp	¶
 				complex.cpp	¶
 				complex_exp.cpp	¶
 				complex_io.cpp	¶
 				complex_io_w.cpp	¶
 				complex_trig.cpp	¶
 				ctype.cpp	¶
-				ctype_byname.cpp	¶
 				dll_main.cpp	¶
 				fstream.cpp	¶
 				ios.cpp	¶
@@ -98,24 +95,21 @@ STLportLibSrcFiles        =  ¶
 				istream.cpp	¶
 				locale.cpp	¶
 				locale_catalog.cpp	¶
+				facets_byname.cpp	¶
 				locale_impl.cpp	¶
 				messages.cpp	¶
-				messages_byname.cpp	¶
 				monetary.cpp	¶
-				monetary_byname.cpp	¶
 				num_get.cpp	¶
 				num_get_float.cpp	¶
 				num_put.cpp	¶
 				num_put_float.cpp	¶
 				numpunct.cpp	¶
-				numpunct_byname.cpp	¶
 				ostream.cpp	¶
 				sstream.cpp	¶
 				stdio_streambuf.cpp	¶
 				streambuf.cpp	¶
 				string_w.cpp	¶
 				strstream.cpp	¶
-			#	test.cpp	¶
 				time_facets.cpp	¶
 				# end		#*TY 11/25/2000 - updated for STLport.4.1
 
@@ -125,16 +119,13 @@ STLportLibSrcFiles        =  ¶
 STLportLibObjFiles-PPC    =  ¶
 				{ObjDir}c_locale_stub.cpp.x	¶
 				{ObjDir}codecvt.cpp.x	¶
-				{ObjDir}codecvt_byname.cpp.x	¶
 				{ObjDir}collate.cpp.x	¶
-				{ObjDir}collate_byname.cpp.x	¶
 				{ObjDir}complex.cpp.x	¶
 				{ObjDir}complex_exp.cpp.x	¶
 				{ObjDir}complex_io.cpp.x	¶
 				{ObjDir}complex_io_w.cpp.x	¶
 				{ObjDir}complex_trig.cpp.x	¶
 				{ObjDir}ctype.cpp.x	¶
-				{ObjDir}ctype_byname.cpp.x	¶
 				{ObjDir}dll_main.cpp.x	¶
 				{ObjDir}fstream.cpp.x	¶
 				{ObjDir}ios.cpp.x	¶
@@ -142,24 +133,21 @@ STLportLibObjFiles-PPC    =  ¶
 				{ObjDir}istream.cpp.x	¶
 				{ObjDir}locale.cpp.x	¶
 				{ObjDir}locale_catalog.cpp.x	¶
+				{ObjDir}facets_byname.cpp.x	¶
 				{ObjDir}locale_impl.cpp.x	¶
 				{ObjDir}messages.cpp.x	¶
-				{ObjDir}messages_byname.cpp.x	¶
 				{ObjDir}monetary.cpp.x	¶
-				{ObjDir}monetary_byname.cpp.x	¶
 				{ObjDir}num_get.cpp.x	¶
 				{ObjDir}num_get_float.cpp.x	¶
 				{ObjDir}num_put.cpp.x	¶
 				{ObjDir}num_put_float.cpp.x	¶
 				{ObjDir}numpunct.cpp.x	¶
-				{ObjDir}numpunct_byname.cpp.x	¶
 				{ObjDir}ostream.cpp.x	¶
 				{ObjDir}sstream.cpp.x	¶
 				{ObjDir}stdio_streambuf.cpp.x	¶
 				{ObjDir}streambuf.cpp.x	¶
 				{ObjDir}string_w.cpp.x	¶
 				{ObjDir}strstream.cpp.x	¶
-			#	{ObjDir}test.cpp.x	¶
 				{ObjDir}time_facets.cpp.x	¶
 				# end		#*TY 11/25/2000 - updated for STLport.4.1
 

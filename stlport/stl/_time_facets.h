@@ -27,8 +27,8 @@
 # include <ctime>                // Needed (for struct tm) by time facets
 #endif
 
-#include <stl/c_locale.h>		//*TY 03/01/2001 - needed for _Locale_time
-#include <stl/_ios_base.h>		//*TY 03/01/2001 - needed for ios_base::iostate; needed for string in _Time_Info; needed for locale::facet
+#include <stl/c_locale.h>
+#include <stl/_ios_base.h>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -268,13 +268,13 @@ private:
 
 # ifdef _STLP_USE_TEMPLATE_EXPORT
 _STLP_EXPORT_TEMPLATE_CLASS time_get<char, istreambuf_iterator<char, char_traits<char> > >;
-// _STLP_EXPORT_TEMPLATE_CLASS time_get<char, const char*>;
 _STLP_EXPORT_TEMPLATE_CLASS time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_get<char, const char*>;
 // _STLP_EXPORT_TEMPLATE_CLASS time_put<char, char*>;
 #  ifndef _STLP_NO_WCHAR_T
 _STLP_EXPORT_TEMPLATE_CLASS time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-// _STLP_EXPORT_TEMPLATE_CLASS time_get<wchar_t, const wchar_t*>;
 _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+// _STLP_EXPORT_TEMPLATE_CLASS time_get<wchar_t, const wchar_t*>;
 // _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, wchar_t*>;
 #  endif /* INSTANTIATE_WIDE_STREAMS */
 
