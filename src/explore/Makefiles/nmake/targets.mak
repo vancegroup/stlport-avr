@@ -1,4 +1,4 @@
-# Time-stamp: <04/03/31 08:06:57 ptr>
+# Time-stamp: <04/05/01 00:45:03 ptr>
 # $Id$
 
 # dependency output parser
@@ -77,6 +77,12 @@ OBJ=$(OBJ:.o@ =.o@)
 OBJ=$(OBJ:.o@=.o obj\evc4-arm\shared\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ=$(OBJ:.o@=.o obj\evc4-x86\shared\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ=$(OBJ:.o@=.o obj\arm-evc3\shared\)
+!else
+OBJ=$(OBJ:.o@=.o obj\x86-evc3\shared\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ=$(OBJ:.o@=.o obj\vc6\shared\)
 !endif
