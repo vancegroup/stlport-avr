@@ -77,11 +77,13 @@ template<class _Tp> struct auto_ptr :  public __ptr_base {
 #if defined (_STLP_MEMBER_TEMPLATES)
 # if !defined (_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> auto_ptr(auto_ptr<_Tp1>& __r) {
-    this->__set((_Tp*)__r.release());
+    _Tp* __conversionCheck = __r.release();
+    this->__set(__conversionCheck);
   }
 # endif	
   template<class _Tp1> auto_ptr<_Tp>& operator=(auto_ptr<_Tp1>& __r) {
-    reset(__r.release());
+    _Tp* __conversionCheck = __r.release();
+    reset(__conversionCheck);
     return *this;
   }
 #endif /* _STLP_MEMBER_TEMPLATES */

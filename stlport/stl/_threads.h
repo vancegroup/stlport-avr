@@ -112,7 +112,7 @@ extern "C" {
 #    endif
 #   endif
 
-#if (_MSC_VER >= 1300)
+#if (_MSC_VER >= 1300) || defined (_STLP_NEW_PLATFORM_SDK)
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);

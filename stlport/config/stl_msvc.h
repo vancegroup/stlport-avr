@@ -2,6 +2,11 @@
 // It is internal STLport header - DO NOT include it directly
 // Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0, ICL
 
+
+// boris : this setting is here as we cannot detect precense of new Platform SDK automatically 
+// If you are using new PSDK with VC++ 6.0 or lower, please define this to get correct prototypes for InterlockedXXX functions
+# define _STLP_NEW_PLATFORM_SDK
+
 // Common features for VC++ 4.0 and higher
 # ifdef _M_IA64
 #  define _STLP_NATIVE_HEADER(x) <../crt/##x>
