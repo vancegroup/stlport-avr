@@ -200,7 +200,7 @@ public:                         // Size, capacity, etc.
   void resize(size_type __n, _CharT __c) {
     if (__n > this->capacity())
       _Invalidate_all();
-    else
+    else if ( __n < this->size() )
       _Invalidate_iterators(this->begin() + __n, this->end());
     _Base::resize(__n, __c);
   }
