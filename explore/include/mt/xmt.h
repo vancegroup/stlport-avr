@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/05 14:06:37 ptr>
+// -*- C++ -*- Time-stamp: <03/02/12 15:09:35 ptr>
 
 /*
  *
@@ -674,7 +674,7 @@ class Semaphore
     int post()
       {
 #ifdef __FIT_WIN32THREADS
-#  warning "Fix me!"
+        return ReleaseSemaphore( _sem, 1, 0 ) != 0 ? 0 : -1;
 #endif
 #ifdef __FIT_UITHREADS
         return sema_post( &_sem );
