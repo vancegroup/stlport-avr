@@ -1,4 +1,4 @@
-# Time-stamp: <03/10/10 16:04:51 ptr>
+# Time-stamp: <04/03/09 20:14:25 ptr>
 # $Id$
 
 .SUFFIXES:
@@ -29,6 +29,9 @@ include ${RULESBASE}/$(USE_MAKE)/$(COMPILER_NAME).mak
 include ${RULESBASE}/$(USE_MAKE)/targetdirs.mak
 # extern libraries
 include ${RULESBASE}/$(USE_MAKE)/$(OSNAME)/extern.mak
+
+# os-specific local rules
+-include specific.mak
 
 # derive common targets (*.o, *.d),
 # build rules (including output catalogs)
