@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/03/19 19:19:46 ptr>
+// -*- C++ -*- Time-stamp: <01/05/30 17:51:48 ptr>
 
 /*
  *
@@ -135,6 +135,25 @@ extern "C" unsigned long __stdcall _xcall( void *p ); // forward declaration
 #else
 using std::runtime_error;
 #endif
+
+class fork_in_parent :
+        public exception
+{
+  public:
+    fork_in_parent() throw()
+      { _pid = 0; }
+    fork_in_parent( pid_t p ) throw()
+      { _pid = p; }
+    virtual ~fork_in_parent() throw()
+      { }
+    virtual const char *what() const throw()
+      { return "class fork_in_parent"; }
+    pid_t pid() throw()
+      { return _pid; }
+
+  private:
+    pid_t _pid;
+};
 
 class Mutex
 {
@@ -523,7 +542,7 @@ class Thread
         Init();
         ~Init();
       private:
-        static int _count;
+        static int& _count;
     };
 
     __PG_DECLSPEC Thread( unsigned flags = 0 );
@@ -548,6 +567,8 @@ class Thread
 
     static __PG_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
     static __PG_DECLSPEC void gettime( timespec *t );
+    static __PG_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+    static __PG_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
 
     bool good() const
       { return _id != bad_thread_key; }
@@ -571,11 +592,11 @@ class Thread
     Thread( const Thread& )
       { }
 
-#ifdef __GNUC__
-    void _create( const void *p, size_t psz );
-#else
+//#ifdef __GNUC__
+//    void _create( const void *p, size_t psz );
+//#else
     void _create( const void *p, size_t psz ) throw( std::runtime_error);
-#endif
+//#endif
     static void *_call( void *p );
 
     static void unexpected();
@@ -584,10 +605,10 @@ class Thread
     static alloc_type alloc;
     static int _idx; // user words index
 #ifndef __FIT_WIN32THREADS
-    static thread_key_type _mt_key;
+    static thread_key_type& _mt_key;
 #endif
 #ifdef __FIT_WIN32THREADS
-    static unsigned long _mt_key;
+    static unsigned long& _mt_key;
 #endif
     size_t uw_alloc_size;
 
