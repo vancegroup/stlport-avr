@@ -5,6 +5,7 @@
 #include <stl/c_locale.h>
 #include <stdio.h>
 #include <wctype.h>
+#include <string.h>
 
 /* Structure describing locale data in core for a category.  */
 struct locale_data
@@ -104,7 +105,7 @@ const char *_Locale_ctype_default( char *nm )
 const char *_Locale_numeric_default( char *buf )
 {
   char *num = getenv( "LC_NUMERIC" );
-  printf( "%s:%d %s\n", __FILE__, __LINE__ );
+  printf( "%s:%d %s\n", __FILE__, __LINE__, buf );
   // return 0;
   if ( num == 0 || *num == '0' ) {
     num = getenv( "LANG" );
@@ -401,7 +402,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
 {
   size_t n;
 
-  n = __strxfrm_l( dest, dest_n, src, (__c_locale)__loc );
+  n = __strxfrm_l( dest, src, dest_n, (__c_locale)__loc );
 
   return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
 }
@@ -414,7 +415,7 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
 {
   size_t n;
 
-  n = __wcsxfrm_l( dest, dest_n, src, (__c_locale)__loc );
+  n = __wcsxfrm_l( dest, src, dest_n, (__c_locale)__loc );
 
   return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
 }
