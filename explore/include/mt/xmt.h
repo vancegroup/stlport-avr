@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/12/07 19:09:52 ptr>
+// -*- C++ -*- Time-stamp: <01/01/03 15:34:21 ptr>
 
 /*
  *
@@ -525,11 +525,11 @@ class Thread
       daemon    = THR_DAEMON
 #endif
 #if defined(_PTHREADS)
-      bound     = 0,
-      detached  = PTHREAD_CREATE_DETACHED,
-      new_lwp   = 0,
+      bound     = PTHREAD_SCOPE_SYSTEM,   // otherwise, PTHREAD_SCOPE_PROCESS, default
+      detached  = PTHREAD_CREATE_DETACHED,// otherwise, PTHREAD_CREATE_JOINABLE, default
+      new_lwp   = 0, // pthread_setconcurrency( pthread_getconcurrency() + 1 );
       suspended = 0,
-      daemon    = PTHREAD_SCOPE_SYSTEM
+      daemon    = detached
 #endif
 #ifdef __STL_WIN32THREADS
       bound     = 0,
@@ -651,5 +651,17 @@ class Thread
 };
 
 } // namespace __impl
+
+timespec operator +( const timespec& a, const timespec& b );
+timespec operator -( const timespec& a, const timespec& b );
+timespec operator /( const timespec& a, unsigned b );
+timespec operator /( const timespec& a, unsigned long b );
+
+// timespec& operator =( timespec& a, const timespec& b );
+timespec& operator +=( timespec& a, const timespec& b );
+timespec& operator -=( timespec& a, const timespec& b );
+timespec& operator /=( timespec& a, unsigned b );
+timespec& operator /=( timespec& a, unsigned long b );
+
 
 #endif // __XMT_H
