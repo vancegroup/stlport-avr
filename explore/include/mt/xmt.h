@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/16 11:28:24 ptr>
+// -*- C++ -*- Time-stamp: <99/04/16 17:40:32 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -73,6 +73,8 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 }
 
 namespace __impl {
+
+extern __DLLEXPORT void signal_throw( int sig ) throw( int );
 
 #ifndef WIN32
 using std::size_t;
