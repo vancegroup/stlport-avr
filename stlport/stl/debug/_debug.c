@@ -192,7 +192,7 @@ _STLP_BEGIN_NAMESPACE
 # endif /* _STLP_USE_WIDE_INTERFACE */
 
 # define _STLP_MESSAGE_TABLE_BODY = { \
-_STLP_STRING_LITERAL("\n" _STLP_PERCENT_S "(%d): STL error: %s\n"), \
+_STLP_STRING_LITERAL("\n" _STLP_PERCENT_S "(%d): STL error: " _STLP_PERCENT_S "\n"), \
 _STLP_STRING_LITERAL(_STLP_PERCENT_S "(%d): STL assertion failure : " _STLP_PERCENT_S "\n" _STLP_ASSERT_MSG_TRAILER), \
 _STLP_STRING_LITERAL("\n" _STLP_PERCENT_S "(%d): STL error : " _STLP_PERCENT_S "\n" _STLP_PERCENT_S "(%d): STL assertion failure:     " _STLP_PERCENT_S " \n" _STLP_ASSERT_MSG_TRAILER), \
 _STLP_STRING_LITERAL("Invalid argument to operation (see operation documentation)"),                  \
