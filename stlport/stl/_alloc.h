@@ -340,6 +340,10 @@ public:
   size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
   void construct(pointer __p, const _Tp& __val) const { _STLP_STD::construct(__p, __val); }
   void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
+# if defined(__MRC__)||defined(__SC__)		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
+  template <class _T2> bool operator==(const allocator<_T2>&) const  { return true; }
+  template <class _T2> bool operator!=(const allocator<_T2>&) const { return false; }
+# endif
 };
 
 _STLP_TEMPLATE_NULL
@@ -357,9 +361,9 @@ public:
     typedef allocator<_Tp1> other;
   };
 # endif
-# if !(defined(__MRC__)||defined(__SC__))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
-  template <class _T2> bool operator==(const allocator<_T2>&)  { return true; }
-  template <class _T2> bool operator!=(const allocator<_T2>&) { return false; }
+# if defined(__MRC__)||defined(__SC__)		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
+  template <class _T2> bool operator==(const allocator<_T2>&) const  { return true; }
+  template <class _T2> bool operator!=(const allocator<_T2>&) const { return false; }
 # endif
 };
 
