@@ -1,3 +1,8 @@
+2003-12-20 Francois Dumont <dums@s...>
+
+  * _vector.h: Implementation of the pointer specialization for vector to 
+               avoid code bloat.
+
 2003-11-29 Francois Dumont <dums@s...>
 
   * _string.h: Implementation of the short string optimization. basic_string have now a
