@@ -106,7 +106,7 @@ obj/%.i : %.cpp
 
 %.out: %.cpp
 	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -o $*
+	$(CXX) $(CXXFLAGS) $*.o $(LIBS) $(LIBSTLPORT)  -o $*
 	./$* > $@
 	-rm -f $*
 
