@@ -77,20 +77,6 @@
 
 #  define _STLP_HAS_NO_NEW_IOSTREAMS 1
 
-// in case of SGI iostreams, we have to rename our streams not to clash with those
-// provided in native lib
-# if defined (_STLP_OWN_IOSTREAMS)
-# define cin _STL_cin
-# define cout _STL_cout
-# define cerr _STL_cerr
-# define clog _STL_clog
-# define strstream _STL_strstream 
-# define ostrstream _STL_ostrstream
-# define istrstream _STL_istrstream
-# define strstreambuf _STL_strstreambuf
-# endif
-
-
 #  define _STLP_NO_NEW_NEW_HEADER 1
 // #  define _STLP_NO_RELOPS_NAMESPACE
 #  define _STLP_HAS_NO_NAMESPACES 1

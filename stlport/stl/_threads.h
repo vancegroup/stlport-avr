@@ -47,11 +47,9 @@
 # define _STLP_MUTEX_INITIALIZER
 # endif
 
-# if defined (_STLP_WIN32) || defined (__sgi)
+# if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
   typedef long __stl_atomic_t;
-# elif defined (_STLP_SPARC_SOLARIS_THREADS)
-  typedef int __stl_atomic_t;
-# else
+# else 
   typedef size_t __stl_atomic_t;
 #endif  
 
@@ -224,8 +222,6 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex_base
   volatile __stl_atomic_t _M_lock;
 #endif
 
-  // #if defined(_STLP_SGI_THREADS) || defined(_STLP_WIN32THREADS)
-
 #if defined (_STLP_ATOMIC_EXCHANGE)
 
   inline void _M_initialize() { _M_lock=0; }
@@ -243,6 +239,13 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex_base
 #   elif defined(_STLP_SGI_THREADS) && __mips >= 3 \
 	 && (defined (_ABIN32) || defined(_ABI64))
         __lock_release(__lock);
+#   elif defined (_STLP_SPARC_SOLARIS_THREADS)
+#    ifdef __WORD64
+	asm("membar #StoreStore ; membar #LoadStore");
+#    else
+	asm(" stbar ");
+#    endif
+        *__lock = 0;	
 #   else
         *__lock = 0;
         // This is not sufficient on many multiprocessors, since
@@ -297,7 +300,7 @@ false); }
 
 // This class could be just a smart pointer, but we do want to keep 
 // WIN32 optimized at a maximum
-#if (defined(__sgi)) || defined(_STLP_WIN32)
+#if  defined(_STLP_ATOMIC_EXCHANGE)
 struct _STLP_CLASS_DECLSPEC _STL_mutex_indirect : _STL_mutex_base {};
 #else
 struct _STLP_CLASS_DECLSPEC _STL_mutex_indirect
@@ -360,7 +363,6 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex : public _STL_mutex_indirect {
   inline _STL_mutex () {
     _M_initialize();
   }
-
   inline ~_STL_mutex () {
     _M_destroy();
   }
@@ -378,7 +380,7 @@ struct _STLP_CLASS_DECLSPEC _Refcount_Base
   // The data member _M_ref_count
   volatile __stl_atomic_t _M_ref_count;
 
-# if !defined (_STLP_WIN32) && !defined (__sgi)
+# if !defined (_STLP_ATOMIC_EXCHANGE)
   _STL_mutex _M_mutex;
 # endif
 
@@ -389,7 +391,7 @@ struct _STLP_CLASS_DECLSPEC _Refcount_Base
 # if defined (_STLP_THREADS) && defined ( _STLP_ATOMIC_EXCHANGE )
    void _M_incr() { _STLP_ATOMIC_INCREMENT((__stl_atomic_t*)&_M_ref_count); }
    void _M_decr() { _STLP_ATOMIC_DECREMENT((__stl_atomic_t*)&_M_ref_count); }
-# elif defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS) || defined (_STLP_OS2THREADS)
+# elif defined(_STLP_THREADS)
   void _M_incr() {
     _M_mutex._M_acquire_lock();
     ++_M_ref_count;

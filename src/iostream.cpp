@@ -24,6 +24,16 @@
 #include <stdio_streambuf>
 #include "aligned_buffer.h"
 
+// boris : note this is repeated in <iostream>
+#ifndef _STLP_USE_NAMESPACES
+// in case of SGI iostreams, we have to rename our streams not to clash with those
+// provided in native lib
+# define cin _STLP_cin
+# define cout _STLP_cout
+# define cerr _STLP_cerr
+# define clog _STLP_clog
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 #if defined (__BORLANDC__) && ! defined (_STLP_USE_GLIBC)

@@ -36,7 +36,7 @@ include common_macros.mak
 
 WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized
 
-CXXFLAGS_COMMON =  -mcpu=ultrasparc -D_STLP_ULTRASPARC -nostdinc++ -fexceptions -ftemplate-depth-32 -shared -I${STLPORT_DIR} ${WARNING_FLAGS}
+CXXFLAGS_COMMON =  -nostdinc++ -fexceptions -ftemplate-depth-32 -shared -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O2
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fPIC
@@ -52,6 +52,10 @@ LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -Wl,-soname,${RELEASE_DYNL
 LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} -Wl,-soname,${DEBUG_DYNLIB_SONAME}
 
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -Wl,-soname,${STLDEBUG_DYNLIB_SONAME}
+
+LDLIBS_RELEASE_dynamic =  -lposix4
+
+LDLIBS_STLDEBUG_dynamic = -lposix4
 
 include common_percent_rules.mak
 include common_rules.mak
