@@ -265,19 +265,35 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 # endif
 
+/* macro to convert the allocator for initialization
+ * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
+#if defined (_STLP_MEMBER_TEMPLATES) || ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+/* if _STLP_NO_TEMPLATE_CONVERSIONS is set, the member template constructor is
+ * not used implicitly to convert allocator parameter, so let us do it explicitly */
+# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_NO_TEMPLATE_CONVERSIONS)
+#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
+# else
+#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
+# endif
+/* else convert, but only if partial specialization works, since else
+ * Container::allocator_type won't be different */
+#else 
+#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
+#endif /* _STLP_MEMBER_TEMPLATES || !_STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 // Another allocator adaptor: _Alloc_traits.  This serves two
 // purposes.  First, make it possible to write containers that can use
 // either SGI-style allocators or standard-conforming allocator.
 
 // The fully general version.
 template <class _Tp, class _Allocator>
-struct _Alloc_traits
-{
+struct _Alloc_traits {
   typedef _Allocator _Orig;
 # if defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) 
   typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
   typedef typename _Rebind_type::other  allocator_type;
-  static allocator_type create_allocator(const _Orig& __a) { return allocator_type(__a); }
+  static allocator_type create_allocator(const _Orig& __a)
+  { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
 # else
   // this is not actually true, used only to pass this type through
   // to dynamic overload selection in _STLP_alloc_proxy methods
@@ -439,27 +455,12 @@ template <class _Tp, class _Tp1>
 struct _Alloc_traits<_Tp, allocator<_Tp1> > {
   typedef allocator<_Tp1> _Orig;
   typedef allocator<_Tp> allocator_type;
-  static allocator_type create_allocator(const allocator<_Tp1 >& __a) { return allocator_type(__a); }
+  static allocator_type create_allocator(const allocator<_Tp1 >& __a)
+  { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-/* macro to convert the allocator for initialization
- * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
-#if defined (_STLP_MEMBER_TEMPLATES) || ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-/* if _STLP_NO_TEMPLATE_CONVERSIONS is set, the member template constructor is
- * not used implicitly to convert allocator parameter, so let us do it explicitly */
-# if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_NO_TEMPLATE_CONVERSIONS)
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-# else
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
-# endif
-/* else convert, but only if partial specialization works, since else
- * Container::allocator_type won't be different */
-#else 
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
-
-# if defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) 
+# if defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) && defined (_STLP_MEMBER_TEMPLATES)
 template <class _Tp, class _Alloc>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
 __stl_alloc_create(const _Alloc& __a, const _Tp*) {
