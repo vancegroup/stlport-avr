@@ -176,23 +176,22 @@ operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x) {
 
 template <class _Container>
 class back_insert_iterator 
-  : public iterator<output_iterator_tag,void,void,void,void>
-{
+  : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* container;
+  _Container* _M_container;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
 
-  explicit back_insert_iterator(_Container& __x) : container(&__x) {}
+  explicit back_insert_iterator(_Container& __x) : _M_container(&__x) {}
   back_insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __value) { 
-    container->push_back(__value);
+  operator=(const typename _Container::value_type& __val) { 
+    _M_container->push_back(__val);
     return *this;
   }
   back_insert_iterator<_Container>& operator*() { return *this; }
   back_insert_iterator<_Container>& operator++() { return *this; }
-  back_insert_iterator<_Container>& operator++(int) { return *this; }
+  back_insert_iterator<_Container>  operator++(int) { return *this; }
 };
 
 template <class _Container>
@@ -202,22 +201,21 @@ inline back_insert_iterator<_Container>  _STLP_CALL back_inserter(_Container& __
 
 template <class _Container>
 class front_insert_iterator 
-  : public iterator<output_iterator_tag,void,void,void,void>
-{
+  : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* container;
+  _Container* _M_container;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
-  explicit front_insert_iterator(_Container& __x) : container(&__x) {}
+  explicit front_insert_iterator(_Container& __x) : _M_container(&__x) {}
   front_insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __value) { 
-    container->push_front(__value);
+  operator=(const typename _Container::value_type& __val) { 
+    _M_container->push_front(__val);
     return *this;
   }
   front_insert_iterator<_Container>& operator*() { return *this; }
   front_insert_iterator<_Container>& operator++() { return *this; }
-  front_insert_iterator<_Container>& operator++(int) { return *this; }
+  front_insert_iterator<_Container>  operator++(int) { return *this; }
 };
 
 template <class _Container>
@@ -227,20 +225,19 @@ inline front_insert_iterator<_Container>  _STLP_CALL front_inserter(_Container& 
 
 template <class _Container>
 class insert_iterator 
-  : public iterator<output_iterator_tag,void,void,void,void>
-{
+  : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* container;
-  typename _Container::iterator iter;
+  _Container* _M_container;
+  typename _Container::iterator _M_iter;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
   insert_iterator(_Container& __x, typename _Container::iterator __i) 
-    : container(&__x), iter(__i) {}
+    : _M_container(&__x), _M_iter(__i) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __value) { 
-    iter = container->insert(iter, __value);
-    ++iter;
+  operator=(const typename _Container::value_type& __val) { 
+    _M_iter = _M_container->insert(_M_iter, __val);
+    ++_M_iter;
     return *this;
   }
   insert_iterator<_Container>& operator*() { return *this; }
@@ -250,8 +247,7 @@ public:
 
 template <class _Container, class _Iterator>
 inline insert_iterator<_Container>  _STLP_CALL
-inserter(_Container& __x, _Iterator __i)
-{
+inserter(_Container& __x, _Iterator __i) {
   typedef typename _Container::iterator __iter;
   return insert_iterator<_Container>(__x, __iter(__i));
 }
