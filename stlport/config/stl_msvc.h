@@ -12,11 +12,27 @@
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../crt/##header>
 #  define _STLP_GLOBAL_NEW_HANDLER
 # else
+#  if defined(UNDER_CE) && UNDER_CE >= 400
+#   if defined(_X86_)
+#       define _STLP_NATIVE_HEADER(x) <../Emulator/##x>
+#       define _STLP_NATIVE_C_HEADER(x) <../Emulator/##x>
+#       define _STLP_NATIVE_CPP_C_HEADER(x) <../Emulator/##x>
+#       define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../Emulator/##x>
+#       define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../Emulator/##header>
+#   elif defined(_ARM_)
+#       define _STLP_NATIVE_HEADER(x) <../Armv4/##x>
+#       define _STLP_NATIVE_C_HEADER(x) <../Armv4/##x>
+#       define _STLP_NATIVE_CPP_C_HEADER(x) <../Armv4/##x>
+#       define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../Armv4/##x>
+#       define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../Armv4/##header>
+#   endif
+#  else
 #  define _STLP_NATIVE_HEADER(x) <../include/##x>
 #  define _STLP_NATIVE_C_HEADER(x) <../include/##x>
 #  define _STLP_NATIVE_CPP_C_HEADER(x) <../include/##x>
 #  define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../include/##x>
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
+# endif
 # endif
 
 # define _STLP_CALL __cdecl
@@ -188,12 +204,24 @@
 
 // If we are under Windows CE, include appropriate config
 
-# ifdef UNDER_CE
+# if defined(UNDER_CE)
+#   if UNDER_CE < 400
 #   include <config/stl_wince.h>
+#   else
+#       include <config/stl_wince_4.h>
+#   endif
 # endif
 
 # ifdef __ICL
 #  define _STLP_LIB_BASENAME "stlport_icl"
+# elif defined(_STLP_WCE_NET)
+#   if defined(_X86_)
+#       define _STLP_LIB_BASENAME "stlport_x86"
+#   elif defined(_ARM_)
+#       define _STLP_LIB_BASENAME "stlport_ARM"
+#   else
+#       define _STLP_LIB_BASENAME "stlport_wce4"
+#   endif
 # else
 # if (_MSC_VER >= 1310) 
 #   define _STLP_LIB_BASENAME "stlport_vc71"
