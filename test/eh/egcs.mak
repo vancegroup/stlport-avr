@@ -72,4 +72,4 @@ SUFFIXES: .cpp.o.exe.out.res
 	$(CXX) $(CXXFLAGS) -E $<  -o $@
 
 clean:
-	-rm -fr ${TEST_EXE} *.o *.rpo *.obj *.out core *~ Templates.DB
+	-rm -fr ${TEST_EXE} $(OBJDIR) $(D_OBJDIR) $(NOSGI_OBJDIR) *.o *.rpo *.obj *.out core *~ Templates.DB

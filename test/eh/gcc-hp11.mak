@@ -56,14 +56,24 @@ all: $(TEST_EXE) $(D_TEST_EXE) $(NOSGI_TEST_EXE)
 check_nosgi: $(NOSGI_TEST)
 check_d: $(D_TEST)
 
+OBJDIR=obj
+D_OBJDIR=d_obj
+NOSGI_OBJDIR=nosgi_obj
 
-$(TEST_EXE) : $(OBJECTS)
+$(OBJDIR):
+	mkdir obj
+$(D_OBJDIR):
+	mkdir d_obj
+$(NOSGI_OBJDIR):
+	mkdir nosgi_obj
+
+$(TEST_EXE) : $(OBJDIR) $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBSTLPORT) $(LIBS) -o $(TEST_EXE)
 
-$(D_TEST_EXE) : $(D_OBJECTS)
+$(D_TEST_EXE) : $(D_OBJDIR) $(D_OBJECTS)
 	$(CXX) $(D_CXXFLAGS) $(D_OBJECTS) $(D_LIBSTLPORT) $(LIBS) -o $(D_TEST_EXE)
 
-$(NOSGI_TEST_EXE) : $(NOSGI_OBJECTS)
+$(NOSGI_TEST_EXE) : $(NOSGI_OBJDIR) $(NOSGI_OBJECTS)
 	$(CXX) $(NOSGI_CXXFLAGS) $(NOSGI_OBJECTS) $(LIBS) -o $(NOSGI_TEST_EXE)
 
 

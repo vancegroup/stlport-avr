@@ -33,13 +33,13 @@ TEST  = ./eh_test.out
 D_TEST = ./eh_test_d.out
 NOSGI_TEST = ./eh_test_nosgi.out
 
-CC = /lang/cygnus/99r1/bin/c++ -pthreads
+CC =c++
 CXX = $(CC)
 
 # dwa 12/22/99 -- had to turn off -ansi flag so we could use SGI IOSTREAMS
 # also, test_slist won't compile with -O3/-O2 when targeting PPC. It fails 
 # in the assembler with 'invalid relocation type'
-CXXFLAGS = -Wall -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW
+CXXFLAGS = -Wall -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -g -D_STLP_HAS_NO_NAMESPACES
 D_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D_STLP_DEBUG
 NOSGI_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_OWN_IOSTREAMS -DEH_VECTOR_OPERATOR_NEW
 
@@ -95,10 +95,9 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -D_STLP_DEBUG -D_STLP_NO_OWN_IOSTREAMS -g -o $*.o
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -O2 -o $*.o
 	$(CXX) $(CXXFLAGS) $*.o $(LIBSTLPORT) $(LIBS) -o $*
 	./$* > $@
-#	-rm -f $*
 
 %.s: %.cpp
 	$(CXX) $(CXXFLAGS) -O4 -S -pto $<  -o $@

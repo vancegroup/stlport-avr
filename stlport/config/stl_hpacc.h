@@ -72,11 +72,10 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
   typedef typename _STLP_dummy_type1:: _STLP_TEMPLATE rebind<t>::other _STLP_dummy_type2;
 
 #    if defined(_HP_NAMESPACE_STD) // option -AA
-// Not tested this option. Just copied stuff from 314
 // from now, we have a full standard lib in namespace std
-#      define _STLP_NATIVE_INCLUDE_PATH       ../include_std
-#      define _STLP_NATIVE_C_INCLUDE_PATH     ../include_std
-#      define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include_std
+#      define _STLP_NATIVE_INCLUDE_PATH       ../include
+#      define _STLP_NATIVE_C_INCLUDE_PATH     ../include
+#      define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include
 #      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
 #     define _STLP_HP_ACC_COMPAT            -1
 #    else // option -Aa
