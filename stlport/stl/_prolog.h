@@ -4,7 +4,7 @@
  * allow reentrancy of this header.
  */
 /* We undef "std" on entry , as STLport headers may include native ones. */
-/* # undef std */
+#undef std
 
 # ifdef _STLP_PROLOG_HEADER_INCLUDED
 #   error STlport prolog header can't be reincluded as long as epilog hasn't be included.
