@@ -88,7 +88,13 @@ extern "C" {
 #  if defined(__ISCPP__)
 #   include <c_locale_is/filestat.h>
 #  endif
-
+#  if defined(__BEOS__) && defined(__INTEL__)
+#   include <fcntl.h>
+#   include <sys/stat.h>         // For _fstat
+#   define _S_IREAD S_IREAD
+#   define _S_IWRITE S_IWRITE
+#   define _S_IFREG S_IFREG
+#  endif
 #else
 #error "Configure i/o !"
 #endif

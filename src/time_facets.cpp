@@ -358,7 +358,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
 	break;
       {
 	int diff;
-#ifdef	__USE_BSD
+#if defined(__USE_BSD) || defined(__BEOS__)
 	diff = t->tm_gmtoff;
 #else
 	diff = t->__tm_gmtoff;

@@ -188,7 +188,7 @@ extern "C" char *_ldfcvt(long_double, int, int *, int *);
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (__MWERKS__)
+#if defined (__MWERKS__) || defined(__BEOS__)
 #  define USE_SPRINTF_INSTEAD
 #endif
 
