@@ -380,8 +380,9 @@ public:
   const_pointer address(const_reference __x) const { return &__x; }
   // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
-    if (__n > max_size())
+    if (__n > max_size()) {
       __THROW_BAD_ALLOC;
+    }
     return __n != 0 ? __REINTERPRET_CAST(value_type*,__sgi_alloc::allocate(__n * sizeof(value_type))) : 0;
   }
   // __p is permitted to be a null pointer, only if n==0.
