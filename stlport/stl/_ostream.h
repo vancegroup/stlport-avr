@@ -95,9 +95,15 @@ public:                         // Formatted output.
   // this is needed for compiling with option char = unsigned
   _Self& operator<<(unsigned char __x) { _M_put_char(__x); return *this; }
 # endif
-  _Self& operator<<(short __x) { return _M_put_num(*this,  __STATIC_CAST(long,__x)); }
+  _Self& operator<<(short __x) { 
+    long __tmp = ((this->flags() & basefield) != ios_base::dec)?(unsigned short)__x:__x;
+    return _M_put_num(*this,  __tmp);
+  }
   _Self& operator<<(unsigned short __x) { return _M_put_num(*this,  __STATIC_CAST(unsigned long,__x)); }
-  _Self& operator<<(int __x) { return _M_put_num(*this,  __STATIC_CAST(long,__x)); }
+  _Self& operator<<(int __x) { 
+    long __tmp = ((this->flags() & basefield) != ios_base::dec)?(unsigned int)__x:__x;
+    return _M_put_num(*this,  __tmp);
+  }
   _Self& operator<<(unsigned int __x) { return _M_put_num(*this,  __STATIC_CAST(unsigned long,__x)); }
   _Self& operator<<(long __x) { return _M_put_num(*this,  __x); }
   _Self& operator<<(unsigned long __x) { return _M_put_num(*this,  __x); }
@@ -131,14 +137,17 @@ public:                         // Buffer positioning and manipulation.
   }
 
   _Self& seekp(pos_type __pos) {
-    if (this->rdbuf() && !this->fail())
-      this->rdbuf()->pubseekpos(__pos, ios_base::out);
+    if (this->rdbuf() && !this->fail()) {
+      if (this->rdbuf()->pubseekpos(__pos) == pos_type(-1)) {
+        this->setstate(ios_base::failbit);
+      }
+    }
     return *this;
   }
 
   _Self& seekp(off_type __off, ios_base::seekdir __dir) {
     if (this->rdbuf() && !this->fail())
-      this->rdbuf()->pubseekoff(__off, __dir, ios_base::out);
+      this->rdbuf()->pubseekoff(__off, __dir);
     return *this;
   }
 
