@@ -208,13 +208,16 @@ public:                         // Opening and closing files.
     return _M_base._M_open(__s, __m, __protection) ? this : 0;
   }
   
-  _Self* open(int __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
-    return _M_base._M_open(__id, _Init_mode) ? this : 0;
-  }
-
   _STLP_fd fd() const { return _M_base.__get_fd(); }
 
+  _Self* open(int __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
+    return this->_M_open(__id, _Init_mode);
+  }
 # endif
+
+  _Self* _M_open(int __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
+    return _M_base._M_open(__id, _Init_mode) ? this : 0;
+  }
 
   _Self* close();
 

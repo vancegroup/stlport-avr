@@ -134,7 +134,7 @@ _Stl_create_filebuf(FILE* f, ios_base::openmode mode )
   result = new basic_filebuf<char, char_traits<char> >();
 
   _STLP_TRY {
-    result->open(_FILE_fd(*f), mode);
+    result->_M_open(_FILE_fd(*f), mode);
   }
   _STLP_CATCH_ALL {}
 
@@ -155,7 +155,7 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode )
   result = new basic_filebuf<wchar_t, char_traits<wchar_t> >();
 
   _STLP_TRY {
-    result->open(_FILE_fd(*f), mode);
+    result->_M_open(_FILE_fd(*f), mode);
   }
   _STLP_CATCH_ALL {}
 

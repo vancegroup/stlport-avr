@@ -114,6 +114,12 @@ install_unix :
 	ln -s $(INSTALLDIR_LIB)/$(RELEASE_DYNLIB) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)
 	ln -s $(INSTALLDIR_LIB)/$(STLDEBUG_DYNLIB) $(INSTALLDIR_LIB)/$(STLDEBUG_NAME).$(DYNEXT)
 
+install_sun : install_unix
+	  for file in `cat ../stlport/$$dir/export.sun`; \
+	  do \
+		$(INSTALL_H) ../stlport/$$dir/$$file $(INSTALLDIR_INC)/$$dir ; \
+          done
+
 $(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) : $(OUTDIR) $(RELEASE_OBJDIR_dynamic) $(DEF_FILE) $(RELEASE_OBJECTS_dynamic)
 	$(DYN_LINK) $(DYNLINK_OUT)$(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) $(LDFLAGS_RELEASE_dynamic) $(RELEASE_OBJECTS_dynamic) $(LDLIBS_RELEASE_dynamic) 
 

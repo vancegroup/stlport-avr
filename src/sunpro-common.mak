@@ -16,7 +16,7 @@ STEXT=a
 RM=rm -rf
 PATH_SEP=/
 MKDIR=mkdir -p
-INSTALL_STEP = install_unix 
+INSTALL_STEP = install_sun
 PREPARE_STEP = prepare_sunpro
 
 all: all_dynamic symbolic_links  all_static
