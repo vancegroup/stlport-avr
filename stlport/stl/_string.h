@@ -172,7 +172,7 @@ public:                         // Constructor, destructor, assignment.
   basic_string();
 
   explicit basic_string(const allocator_type& __a)
-    : _String_base<_CharT,_Alloc>(__a, _DEFAULT_SIZE) { 
+      : _String_base<_CharT,_Alloc>(__a /* , _DEFAULT_SIZE */ ) { 
     _M_terminate_string(); 
   }
 
@@ -1346,3 +1346,9 @@ _STLP_END_NAMESPACE
 # include <stl/_string_hash.h>
 
 #endif /* _STLP_INTERNAL_STRING_H */
+
+/*
+ * Local Variables:
+ * mode:C++
+ * End:
+ */

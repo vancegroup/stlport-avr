@@ -1,6 +1,3 @@
-// Local Variables:
-// mode:C++
-// End:
 /*
  *
  *
@@ -79,12 +76,12 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
     this->_M_throw_length_error();
 
   size_type __n = (max)(__res_arg, size()) + 1;
-  if (__n == capacity() + 1)
+  if (__n <= capacity() + 1)
     return;
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-  if (__n <= _DEFAULT_SIZE)
-    return;
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//#ifdef _STLP_USE_SHORT_STRING_OPTIM
+//  if (__n <= _DEFAULT_SIZE)
+//    return;
+//#endif /* _STLP_USE_SHORT_STRING_OPTIM */
 
   pointer __new_start = this->_M_end_of_storage.allocate(__n);
   pointer __new_finish = __new_start;
@@ -598,7 +595,7 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 
 // _String_base methods
-template <class _Tp, class _Alloc> 
+template <class _Tp, class _Alloc>
 void _String_base<_Tp,_Alloc>::_M_throw_length_error() const {
     __stl_throw_length_error("basic_string");
 }
@@ -632,7 +629,7 @@ void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
  
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT, _Traits, _Alloc>::basic_string()
-  : _String_base<_CharT,_Alloc>(allocator_type(), _DEFAULT_SIZE) {  
+    : _String_base<_CharT,_Alloc>(allocator_type()/* , _DEFAULT_SIZE */ ) {  
   _M_terminate_string();  
 } 
 
