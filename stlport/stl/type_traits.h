@@ -65,7 +65,7 @@ struct __true_type {};
 struct __false_type {};
 
 
-template <int _Is> struct __bool2type {};
+template <int _Is> struct __bool2type { typedef __false_type _Ret; };
 
 _STLP_TEMPLATE_NULL
 struct __bool2type<1> { typedef __true_type _Ret; };
@@ -88,6 +88,11 @@ struct _Land3<__true_type, __true_type, __true_type> {
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
 template <int _IsPOD> struct __type_traits_aux {
+   typedef __false_type    has_trivial_default_constructor;
+   typedef __false_type    has_trivial_copy_constructor;
+   typedef __false_type    has_trivial_assignment_operator;
+   typedef __false_type    has_trivial_destructor;
+   typedef __false_type    is_POD_type;
 };
 
 _STLP_TEMPLATE_NULL

@@ -124,20 +124,6 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 # define _STLP_LDOUBLE_SNAN_REP { 0x7ff9, 0, 0, 0, 0, 0, 0, 0 }
 
 # elif defined (_STLP_LITTLE_ENDIAN)
-
-# if 0
-#  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
-#  define _STLP_FLOAT_QNAN_REP { 0, 0xffc0 }
-#  define _STLP_FLOAT_SNAN_REP { 0, 0xff80 }
-#  define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
-#  define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0xfff8 }
-#  define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0xfff0 }
-// note : this is IA-32 80-bit address. Won't work for any other little-endian
-// machines !
-#  define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
-#  define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xc000, 0xffff}
-#  define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
-# else
 #  define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
 #  define _STLP_FLOAT_QNAN_REP { 0, 0x7fa0 }
 #  define _STLP_FLOAT_SNAN_REP { 0, 0x7fc0 }
@@ -147,7 +133,6 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 #  define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
 #  define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
 #  define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff }
-# endif
 #else 
 
 /* This is an architecture we don't know how to handle.  Return some 
