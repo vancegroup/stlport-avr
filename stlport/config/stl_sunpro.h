@@ -159,9 +159,10 @@
         int     __filler[6];
       #endif
     } __mbstate_t;
-
+# ifndef _STLP_HAS_NO_NAMESPACES
     namespace std {
         typedef __mbstate_t     mbstate_t;
     }
     using std::mbstate_t;
+# endif
 #endif  /* __MBSTATET_H */

@@ -248,12 +248,12 @@ public:
   iterator erase(iterator __position) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     _STLP_VERBOSE_ASSERT(__position._M_iterator !=this->_M_finish,_StlMsg_ERASE_PAST_THE_END)
-    __invalidate_range(&_M_iter_list, __position, end());
+    __invalidate_range(&_M_iter_list, __position+1, end());
     return iterator(&_M_iter_list,_Base::erase(__position._M_iterator));
   }
   iterator erase(iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(__check_range(__first,__last,begin(), end()))
-    __invalidate_range(&_M_iter_list, __first, end());
+    _STLP_DEBUG_CHECK(__check_range(__first,__last, begin(), end()))
+    __invalidate_range(&_M_iter_list, __first+1, end());
     return iterator(&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
 
