@@ -221,24 +221,26 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 } /* extern "C" */
 
 
+_STLP_BEGIN_NAMESPACE
+
 void force_link()
 {
   float f;
-  f = std::numeric_limits<float>::infinity();
-  f = std::numeric_limits<float>::quiet_NaN();
-  f = std::numeric_limits<float>::signaling_NaN();
+  f = numeric_limits<float>::infinity();
+  f = numeric_limits<float>::quiet_NaN();
+  f = numeric_limits<float>::signaling_NaN();
   double d;
-  d = std::numeric_limits<double>::infinity();
-  d = std::numeric_limits<double>::quiet_NaN();
-  d = std::numeric_limits<double>::signaling_NaN();
+  d = numeric_limits<double>::infinity();
+  d = numeric_limits<double>::quiet_NaN();
+  d = numeric_limits<double>::signaling_NaN();
 #ifndef _STLP_NO_LONG_DOUBLE
   long double ld;
-  ld = std::numeric_limits<long double>::infinity();
-  ld = std::numeric_limits<long double>::quiet_NaN();
-  ld = std::numeric_limits<long double>::signaling_NaN();
+  ld = numeric_limits<long double>::infinity();
+  ld = numeric_limits<long double>::quiet_NaN();
+  ld = numeric_limits<long double>::signaling_NaN();
 #endif
   
-  std::set<int>::iterator iter;
+  set<int>::iterator iter;
   // _M_increment; _M_decrement instantiation
   ++iter;
   --iter;
@@ -247,5 +249,7 @@ void force_link()
   unsigned char uc = _Bs_G<bool>::_S_bit_count[0];
   uc += _Bs_G<bool>::_S_first_one[0];
 }
+
+_STLP_END_NAMESPACE
 
 # endif

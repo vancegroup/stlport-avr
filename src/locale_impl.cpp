@@ -123,7 +123,7 @@ static _Stl_aligned_buffer<time_put<wchar_t, ostreambuf_iterator<wchar_t, char_t
 
 # endif
 
-// static _Messages _Null_messages;
+static _Messages _Null_messages;
 
 static locale::facet* _S_classic_facets[] = {
   (locale::facet*)0,
@@ -198,7 +198,7 @@ _Locale_impl::make_classic_locale() {
   new (&_S_time_get_char) time_get<char, istreambuf_iterator<char, char_traits<char> > >(1);
   new (&_S_time_put_char) time_put<char, ostreambuf_iterator<char, char_traits<char> > >(1);
   // messages category
-  //  new (&_S_messages_char)messages<char>(&_Null_messages);
+  new (&_S_messages_char)messages<char>(&_Null_messages);
 
 # ifndef _STLP_NO_WCHAR_T
   // ctype category

@@ -4,7 +4,7 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
 	* stl_sunpro.h : turned off _STL_STATIC_CONST_INIT_BUG
 
-	* dll_main.cpp : forced ling of Bs_G static data members (thanks  Sandy Martel)
+	* dll_main.cpp : forced ling of Bs_G static data members (thanks  Sandy Martel). Function wrapped in STLport namespace.
 
 	* _alloc.c : fixed _STLP_CHUNK_MALLOC for debug malloc configuration (thanks  Markus Schöpflin)
 
@@ -19,6 +19,12 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
 	* New namespace inclusion schema implemented for SUN CC (no C library includes, no std:: redefinition).
  	  Works only for _STLP_NO_OWN_NAMESPACE and _STLP_OWN_IOSTREAMS settings. 
+
+	* char_traits.h : fpos<> operators == made members (thanks  Thomas Witt)
+
+	* _threads.h : added using directive for Solaris x86 compile (thanks Mukesh Kapoor)
+
+	* _threads.h : fixed InterlockedXXX definitions for VC++ 6.0 SP5 (thanks AndreasM)
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
