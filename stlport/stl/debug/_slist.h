@@ -251,10 +251,6 @@ public:
     _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InIter, iterator>::_Ret _IsSListIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InIter, const_iterator>::_Ret _IsSListConstIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _Lor2<_IsSListIterator, _IsSListConstIterator>::_Ret _DoCheck))
-    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), _DoCheck()))
     _Base::insert_after(__pos._M_iterator, __first, __last);
   }
 
@@ -264,10 +260,6 @@ public:
   void insert(iterator __pos, _InIter __first, _InIter __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InIter, iterator>::_Ret _IsSListIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InIter, const_iterator>::_Ret _IsSListConstIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _Lor2<_IsSListIterator, _IsSListConstIterator>::_Ret _DoCheck))
-    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), _DoCheck()))
     _Base::insert(__pos._M_iterator, __first, __last);
   }
 
@@ -278,7 +270,6 @@ public:
     _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), __true_type()))
     _Base::insert_after(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
   void insert_after(iterator __pos,
@@ -292,7 +283,6 @@ public:
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), __true_type()))
     _Base::insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
   void insert(iterator __pos, const value_type* __first, 
