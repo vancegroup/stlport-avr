@@ -63,9 +63,9 @@ NOSGI_OBJDIR=nosgi_obj
 $(OBJDIR):
 	mkdir obj
 $(D_OBJDIR):
-	mkdir obj
+	mkdir d_obj
 $(NOSGI_OBJDIR):
-	mkdir obj
+	mkdir nosgi_obj
 
 $(TEST_EXE) : $(OBJDIR) $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBSTLPORT) $(LIBS) -o $(TEST_EXE)

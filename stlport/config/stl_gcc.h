@@ -283,7 +283,7 @@ typedef unsigned int wint_t;
 # else
 
 #   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
-#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/g++-v3
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH /procket/dv-tmp-4/boris/local/include/g++-v3
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif

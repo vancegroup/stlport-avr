@@ -26,7 +26,12 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	* src/ftream.cpp, c_locale_win32.c : fixes for UNICODE compilation (thanks Valo)
 
 	* stl_gcc.h, etc : changes for GCC support on Tru64 (thanks Tobias Ernst)
-	
+
+	* _alloc.c : for MS VC, malloc_dbg only used when _STLP_DEBUG_ALLOC is set, not for all debug configs
+ 	  (Thanks Anton Ephanov)
+
+	* test/eh/gcc.mak : directories stuff fixed (Thanks Brodie)
+
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 

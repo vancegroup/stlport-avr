@@ -114,9 +114,9 @@ struct __stl_mbstate_t {
     _M_state[0] = __st;              
     return *this;
   } 
-  __stl_mbstate_t(const __stl_mbstate_t& __x) : _M_state(__x._M_state) {}         
+  __stl_mbstate_t(const __stl_mbstate_t& __x) {_M_state[0]= __x._M_state[0]; }         
   __stl_mbstate_t& operator=(const __stl_mbstate_t& __x) {
-    _M_state= __x._M_state;              
+    _M_state[0]= __x._M_state[0];              
     return *this;
   }
 # if defined (__sun)
