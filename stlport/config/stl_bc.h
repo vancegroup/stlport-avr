@@ -159,6 +159,10 @@ typedef char    mbstate_t;
 #  endif
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
+# if (__BORLANDC__ >= 0x560)
+#  define _STLP_IS_NATIVE_LIB
+# endif
+
 # ifndef _STLP_IS_NATIVE_LIB
 // boris : in native package there's no automatic lib linking, as per Borland process
 #  define _STLP_LIB_STATIC_SUFFIX "st"
