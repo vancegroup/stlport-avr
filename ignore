@@ -15,3 +15,7 @@ lib
 .*
 core
 CVS
+SunWS_cache
+Templates.DB
+*.gz
+doc

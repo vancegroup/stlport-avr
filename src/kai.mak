@@ -13,8 +13,13 @@ LIB_BASENAME = libstlport_kcc
 # guts for common stuff
 #
 #
+
+WARNING_FLAGS= --one_per --thread_safe +K0 --exceptions --abstract_pointer
+
+CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
+
 LINK=ar crv
-DYN_LINK=ar crv
+DYN_LINK=KCC ${CXXFLAGS_COMMON} -o
 
 OBJEXT=o
 DYNEXT=so
@@ -28,10 +33,6 @@ INSTALL_STEP = install_unix
 all: all_dynamic symbolic_links all_static
 
 include common_macros.mak
-
-WARNING_FLAGS= --one_per --thread_safe +K0 --exceptions --abstract_pointer
-
-CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O2
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2  -KPIC

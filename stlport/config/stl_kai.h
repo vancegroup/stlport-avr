@@ -3,9 +3,6 @@
 #if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 # define _STLP_RAND48 1
 #endif
-// #  define _STLP_RAND48 1
-
-#  define _STLP_VENDOR_MB_NAMESPACE _STLP_VENDOR_STD
 
 #  ifndef __KAI_STRICT /* _NO_LONGLONG */
 #   define _STLP_LONG_LONG long long
@@ -15,10 +12,9 @@
 #    define _STLP_HAS_NO_EXCEPTIONS
 #  endif
 
-// #  define _STLP_LINK_TIME_INSTANTIATION 1
-#  define _STLP_VENDOR_GLOBAL_CSTD 1
-#  define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
-#  define _STLP_NO_NATIVE_WIDE_STREAMS 1
+# ifndef __BUILDING_STLPORT
+#  define _STLP_LINK_TIME_INSTANTIATION 1
+# endif
 
 // two levels of macros do not work good with kcc.
 #   define _STLP_NATIVE_HEADER(header)    <../include/##header> 
@@ -33,3 +29,22 @@
 // KAI C++ uses EDG front-end, but apparently different switches
 // #  define __EDG_SWITCHES 1
 
+
+#  define _STLP_VENDOR_GLOBAL_CSTD 1
+#  define _STLP_VENDOR_MB_NAMESPACE std
+
+// boris : some of those may also apply to KCC 3.4
+# if __KCC_VERSION < 4000
+#  define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
+
+# endif
+
+// this is multiplatform compiler, so here should go system-dependant section
+// This really should be in platform-specific files, like stl_solaris.h
+# ifdef __linux__
+#  define _STLP_NO_NATIVE_WIDE_STREAMS 1
+#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+# elif defined (__sun) || defined (sun)
+// # define _STLP_VENDOR_MB_NAMESPACE
+#  include <config/stl_solaris.h>
+# endif

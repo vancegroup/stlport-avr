@@ -34,7 +34,7 @@ CXXFLAGS = -w -mt --one_per ${STL_INCL} -D__STL_USE_NEWALLOC -DEH_VECTOR_OPERATO
 # CXXFLAGS = -w -mt --one_per -D__STL_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
 
 # This is to test with STLport iostreams
-LIBS = -L../../libstlport -lstlport -lm 
+LIBS = -L../../lib -lstlport_kcc -lm 
 
 LIBSTDCXX = 
 
