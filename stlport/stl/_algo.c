@@ -768,8 +768,14 @@ void __insertion_sort(_RandomAccessIter __first,
                       _RandomAccessIter __last,
                       _Tp *, _Compare __comp) {
   if (__first == __last) return;
-  for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
+  for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i) {
+#ifdef _MSC_VER // VCs pass *__i by reference here (compiler's bug!), use workaround; 2004-03-30 -ptr
+    _Tp __a(*__i);
+    __linear_insert(__first, __i, __a, __comp);
+#else
     __linear_insert(__first, __i, _Tp(*__i), __comp);  //*TY 12/26/1998 - supply *__i as __val
+#endif
+  }
 }
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
