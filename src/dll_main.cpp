@@ -174,7 +174,7 @@ template class _List_base<void*,allocator<void*> >;
 template class __list__<void*,allocator<void*> >;
 
 template class _Slist_base<void*, allocator<void*> >;
-template class __slist__<void*, allocator<void*> >;
+template class slist<void*, allocator<void*> >;
 # endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 template class _Rb_global<bool>;
