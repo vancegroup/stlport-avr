@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/03/03 14:00:36 ptr>
+// -*- C++ -*- Time-stamp: <00/04/04 11:41:28 ptr>
 
 /*
  *
@@ -128,7 +128,12 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 namespace __impl {
 
 extern __PG_DECLSPEC void signal_throw( int sig ) throw( int );
+#ifdef __unix
 extern "C"  void *_xcall( void * ); // forward declaration
+#endif
+#ifdef WIN32
+extern "C" unsigned long __stdcall _xcall( void *p ); // forward declaration
+#endif
 
 #ifndef WIN32
 using std::size_t;
@@ -486,9 +491,9 @@ class Thread
 #endif
 
 #ifdef __STL_USE_SGI_ALLOCATORS
-    typedef __STD::alloc alloc;
+    typedef __STD::alloc alloc_type;
 #else 
-    typedef __STD::allocator<long *> alloc;
+    typedef __STD::allocator<long *> alloc_type;
 #endif
 
     enum {
@@ -575,6 +580,7 @@ class Thread
     static void unexpected();
     static void terminate();
 
+    static alloc_type alloc;
     static int _idx; // user words index
 #ifndef WIN32
     static thread_key_type _mt_key;
@@ -603,7 +609,13 @@ class Thread
     unsigned _flags;
     //  Mutex _params_lock; --- no needs
     friend class Init;
-    friend void * _xcall( void * ); // extern "C", wrap for thread_create
+    // extern "C", wrap for thread_create
+#ifdef __unix
+    friend void *_xcall( void * );
+#endif
+#ifdef WIN32
+    friend unsigned long __stdcall _xcall( void *p );
+#endif
 };
 
 } // namespace __impl
