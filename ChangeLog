@@ -80,6 +80,8 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* "INF/NAN" string representation for uppercase changed to "Inf/NaN" to behave like printf() on most systems.
 	
 	* debug/_iterator.c : fixed SUN 6.0 compiler internal error 
+
+	* typeinfo.h : global scope used to import bad_cast, etc. (thanks to Val Melamed)
 	
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
