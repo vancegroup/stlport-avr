@@ -224,9 +224,9 @@
 #  define _STLP_LIB_BASENAME "stlport_icl"
 # elif defined(_STLP_WCE_NET)
 #   if defined(_X86_)
-#       define _STLP_LIB_BASENAME "stlport_x86"
+#       define _STLP_LIB_BASENAME "stlport_evc4-x86"
 #   elif defined(_ARM_)
-#       define _STLP_LIB_BASENAME "stlport_ARM"
+#       define _STLP_LIB_BASENAME "stlport_evc4-arm"
 #   else
 #       define _STLP_LIB_BASENAME "stlport_wce4"
 #   endif
