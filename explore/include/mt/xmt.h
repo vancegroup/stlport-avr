@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/09/08 11:41:25 ptr>
+// -*- C++ -*- Time-stamp: <00/12/06 15:51:22 ptr>
 
 /*
  *
@@ -622,12 +622,12 @@ class Thread
 
 #ifdef _PTHREADS
     pthread_t _id;
-#  ifdef __sun
-#    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
+// #  ifdef __sun
+// #    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via cond_wait
     Condition _suspend;
-#  endif
+// #  endif
 #endif
 #ifdef __STL_UITHREADS
     thread_t  _id;

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/09/28 14:20:24 ptr>
+// -*- C++ -*- Time-stamp: <00/12/06 15:51:22 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -276,19 +276,20 @@ int Thread::suspend()
     return SuspendThread( _id );
 #endif
 #ifdef __STL_PTHREADS
-#  ifdef __sun
-    // pthread_suspend is from X/Open
-#    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
-    // sorry, POSIX threads don't have suspend/resume calls, so it should
+    // sorry, POSIX threads don't have pthread_{suspend,continue} calls, so it should
     // be simulated via condwait
+#  ifdef __hpux
+    // but HP-UX 11.00 implementation of POSIX threads has extention (or it in X/Open?)
+    // pthread_{suspend,continue}, I use it:
+    return pthread_suspend( _id );
+#  else
     if ( _id != pthread_self() ) {
       throw __STD::domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
       // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
     }
-    _suspend.wait();
+    return _suspend.wait(); // thr_suspend and pthread_cond_wait return 0 in success
 #  endif
-    return pthread_suspend( _id );
-#endif
+#endif // __STL_PTHREADS
 #ifdef __STL_UITHREADS
     return thr_suspend( _id );
 #endif
@@ -305,14 +306,16 @@ int Thread::resume()
     return ResumeThread( _id );
 #endif
 #ifdef __STL_PTHREADS
-#  ifdef __sun
-    // pthread_continue is from X/Open
-#    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
-    // sorry, POSIX threads don't have suspend/resume calls, so it should
+    // sorry, POSIX threads don't have pthread_{suspend,continue} calls, so it should
     // be simulated via condwait
-    _suspend.set( true ); // less syscall than _suspend.signal();
-#  endif
+#  ifdef __hpux
+    // but HP-UX 11.00 implementation of POSIX threads has extention (or it in X/Open?)
+    // pthread_{suspend,continue}, I use it:
     return pthread_continue( _id );
+#  else
+    return _suspend.set( true ) == false ? 0 : -1; // less syscall than _suspend.signal();
+#  endif
+    
 #endif
 #ifdef __STL_UITHREADS
     return thr_continue( _id );
