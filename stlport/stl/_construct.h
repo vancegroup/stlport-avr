@@ -68,7 +68,7 @@ inline void _Destroy(_Tp* __pointer) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
   __destroy_aux(__pointer, _Trivial_destructor());
 # ifdef _STLP_DEBUG_UNINITIALIZED
-	memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
+  memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
 # endif
 }
 
@@ -104,7 +104,7 @@ _Construct_aux (__p, _HasDefaultZeroValue(__p)._Answer() );
 template <class _T1, class _T2>
 inline void _Copy_Construct(_T1* __p, const _T2& __val) {
 # ifdef _STLP_DEBUG_UNINITIALIZED
-	memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
+  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 # endif
   _STLP_PLACEMENT_NEW (__p) _T1(__val);
 }
@@ -122,10 +122,9 @@ inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const __true_type& /*_IsPO
 template <class _T1, class _T2>
 inline void _Move_Construct(_T1* __p, _T2& __val) {
 # ifdef _STLP_DEBUG_UNINITIALIZED
-	memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
+  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 # endif
   _Move_Construct_Aux(__p, __val, _Is_POD(__p)._Answer());
-  //_STLP_PLACEMENT_NEW (__p) _T1(_AsMoveSource(__val));
 }
 
 # if defined(_STLP_NEW_REDEFINE)
@@ -137,31 +136,31 @@ inline void _Move_Construct(_T1* __p, _T2& __val) {
 
 template <class _ForwardIterator>
 _STLP_INLINE_LOOP void
-__destroy_aux(_ForwardIterator __first, _ForwardIterator __last, const __false_type& /*_Trivial_destructor*/) {
+__destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __false_type& /*_Trivial_destructor*/) {
   for ( ; __first != __last; ++__first)
-    _STLP_STD::_Destroy(&*__first);
+    __destroy_aux(&(*__first), __false_type());
 }
 
 template <class _ForwardIterator> 
 inline void
-__destroy_aux(_ForwardIterator __first, _ForwardIterator __last, const __true_type& /*_Trivial_destructor*/) {
+__destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __true_type& /*_Trivial_destructor*/) {
 # ifdef _STLP_DEBUG_UNINITIALIZED
-  //We are going to call _Destroy just for the _STLP_DEBUG_UNINITIALIZED option:
+  //We call _Destroy just for the _STLP_DEBUG_UNINITIALIZED option:
   for ( ; __first != __last; ++__first)
-    _STLP_STD::_Destroy(&*__first);
+    __destroy_aux(&(*__first), __true_type());
 # endif
 }
 
 template <class _ForwardIterator, class _Tp>
 inline void 
-__destroy(_ForwardIterator __first, _ForwardIterator __last, _Tp*) {
+__destroy_range(_ForwardIterator __first, _ForwardIterator __last, _Tp*) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
-  __destroy_aux(__first, __last, _Trivial_destructor());
+  __destroy_range_aux(__first, __last, _Trivial_destructor());
 }
 
 template <class _ForwardIterator>
 inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last) {
-  __destroy(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
+  __destroy_range(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
 }
 
 inline void _Destroy_Range(char*, char*) {}
@@ -174,12 +173,16 @@ template <class _ForwardIterator, class _Tp>
 _STLP_INLINE_LOOP void
 __destroy_mv_srcs_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const __false_type& /*_Trivial_destructor*/) {
   typedef typename __full_move_traits<_Tp>::supported _Full_move;
-  __destroy_aux(__first, __last, _Full_move());
+  __destroy_range_aux(__first, __last, _Full_move());
 }
 
 template <class _ForwardIterator, class _Tp> 
 inline void
-__destroy_mv_srcs_aux(_ForwardIterator, _ForwardIterator, _Tp*, const __true_type&/*_Trivial_destructor*/) {}
+__destroy_mv_srcs_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const __true_type&/*_Trivial_destructor*/) {
+# ifdef _STLP_DEBUG_UNINITIALIZED
+  __destroy_range_aux(__first, __last, __true_type());
+# endif
+}
 
 template <class _ForwardIterator, class _Tp>
 inline void 
@@ -209,6 +212,7 @@ template <class _Tp>
 inline _Tp __default_constructed(_Tp* __p) {
   return __default_constructed_aux(__p, _HasDefaultZeroValue(__p)._Answer());
 }
+
 
 #  define _STLP_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)
 # else

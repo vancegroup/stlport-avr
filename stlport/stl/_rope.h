@@ -1281,7 +1281,7 @@ protected:
     }
    _STLP_UNWIND(_STLP_CREATE_ALLOCATOR(allocator_type,__a, 
                                    _RopeLeaf).deallocate(__space, 1))
-	  return __space;
+    return __space;
   }
 
   static _RopeConcatenation* _S_new_RopeConcatenation(
@@ -1327,8 +1327,8 @@ protected:
     _STLP_TRY {
       return _S_new_RopeLeaf(__buf, _p_size, __a);
     }
-    _STLP_UNWIND(_RopeRep::_S_free_string(__buf, _p_size, __a));
-    _STLP_RET_AFTER_THROW(0);
+    _STLP_UNWIND(_RopeRep::_S_free_string(__buf, _p_size, __a))
+    _STLP_RET_AFTER_THROW(0)
   }
             
 
@@ -1468,8 +1468,7 @@ public:
   { }
 
   rope(_CharT __c, const allocator_type& __a = allocator_type())
-    : _M_tree_ptr(__a, (_RopeRep*)0)
-  {
+    : _M_tree_ptr(__a, (_RopeRep*)0) {
     _CharT* __buf = _M_tree_ptr.allocate(_S_rounded_up_size(1));
 
     _Copy_Construct(__buf, __c);
@@ -1477,7 +1476,7 @@ public:
       _M_tree_ptr._M_data = _S_new_RopeLeaf(__buf, 1, __a);
     }
     _STLP_UNWIND(_RopeRep::_S_free_string(__buf, 1, __a))
-      }
+  }
 
   rope(size_t __n, _CharT __c,     
        const allocator_type& __a = allocator_type()):
@@ -1502,36 +1501,35 @@ public:
       uninitialized_fill_n(__rest_buffer, __rest, __c);
       _S_cond_store_eos(__rest_buffer[__rest]);
       _STLP_TRY {
-		__remainder = _S_new_RopeLeaf(__rest_buffer, __rest, __a);
+        __remainder = _S_new_RopeLeaf(__rest_buffer, __rest, __a);
       }
       _STLP_UNWIND(_RopeRep::_S_free_string(__rest_buffer, __rest, __a))
-		}
+    }
     __remainder_rope._M_tree_ptr._M_data = __remainder;
     if (__exponent != 0) {
-      _CharT* __base_buffer =
-		_M_tree_ptr.allocate(_S_rounded_up_size(__exponentiate_threshold));
+      _CharT* __base_buffer = _M_tree_ptr.allocate(_S_rounded_up_size(__exponentiate_threshold));
       _RopeLeaf* __base_leaf;
       rope<_CharT,_Alloc> __base_rope;
       uninitialized_fill_n(__base_buffer, __exponentiate_threshold, __c);
       _S_cond_store_eos(__base_buffer[__exponentiate_threshold]);
       _STLP_TRY {
-		__base_leaf = _S_new_RopeLeaf(__base_buffer,
+        __base_leaf = _S_new_RopeLeaf(__base_buffer,
                                       __exponentiate_threshold, __a);
       }
       _STLP_UNWIND(_RopeRep::_S_free_string(__base_buffer, 
                                             __exponentiate_threshold, __a))
-		__base_rope._M_tree_ptr._M_data = __base_leaf;
+      __base_rope._M_tree_ptr._M_data = __base_leaf;
       if (1 == __exponent) {
-		__result = __base_rope;
+        __result = __base_rope;
 #         ifndef __GC
-		_STLP_ASSERT(2 == __result._M_tree_ptr._M_data->_M_ref_count)
-		// One each for base_rope and __result
+          _STLP_ASSERT(2 == __result._M_tree_ptr._M_data->_M_ref_count)
+          // One each for base_rope and __result
 #         endif
       } else {
-		__result = power(__base_rope, __exponent, _Concat_fn());
+        __result = power(__base_rope, __exponent, _Concat_fn());
       }
       if (0 != __remainder) {
-		__result += __remainder_rope;
+        __result += __remainder_rope;
       }
     } else {
       __result = __remainder_rope;
@@ -1593,13 +1591,11 @@ public:
     _S_unref(__old);
   }
 
-  _CharT back() const
-  {
+  _CharT back() const {
     return _S_fetch(_M_tree_ptr._M_data, _M_tree_ptr._M_data->_M_size._M_data - 1);
   }
 
-  void push_front(_CharT __x)
-  {
+  void push_front(_CharT __x) {
     _RopeRep* __old = _M_tree_ptr._M_data;
     _RopeRep* __left =
       _STLP_ROPE_FROM_UNOWNED_CHAR_PTR(&__x, 1, get_allocator());
@@ -1609,7 +1605,7 @@ public:
       _S_unref(__left);
     }
     _STLP_UNWIND(_S_unref(__left))
-      }
+  }
 
   void pop_front()
   {

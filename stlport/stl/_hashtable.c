@@ -26,6 +26,10 @@
 #ifndef _STLP_HASHTABLE_C
 #define _STLP_HASHTABLE_C
 
+#ifndef _STLP_INTERNAL_HASHTABLE_H
+# include <stl/_hashtable.h>
+#endif
+
 #ifdef _STLP_DEBUG
 #  define hashtable __WORKAROUND_DBG_RENAME(hashtable)
 #endif
@@ -160,23 +164,30 @@ hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
 
 template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
 __reference__ 
-hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::find_or_insert(const value_type& __obj)
+hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::_M_insert(const value_type& __obj)
 {
-
-  _Node* __first = _M_find(_M_get_key(__obj));
-  if (__first)
-    return __first->_M_val;
-
   resize(_M_num_elements._M_data + 1);
 
   size_type __n = _M_bkt_num(__obj);
-  __first = (_Node*)_M_buckets[__n];
+  _Node* __first = (_Node*)_M_buckets[__n];
 
   _Node* __tmp = _M_new_node(__obj);
   __tmp->_M_next = __first;
   _M_buckets[__n] = __tmp;
   ++_M_num_elements._M_data;
   return __tmp->_M_val;
+}
+
+template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
+__reference__ 
+hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>::find_or_insert(const value_type& __obj)
+{
+
+  _Node* __first = _M_find(_M_get_key(__obj));
+  if (__first)
+    return __first->_M_val;
+  else
+    return _M_insert(__obj);
 }
 
 template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
@@ -434,7 +445,7 @@ void hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
     }
     _M_num_elements._M_data = __ht._M_num_elements._M_data;
   }
-  _STLP_UNWIND(clear());
+  _STLP_UNWIND(clear())
 }
 
 # undef __iterator__ 

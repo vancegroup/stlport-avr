@@ -416,13 +416,13 @@ public:
     typedef allocator<_Tp1> other;
   };
 # endif
-# if defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
+# if defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__))  //*ty 03/24/2001 - MPW compilers get confused on these operator definitions
   template <class _T2> bool operator==(const allocator<_T2>&) const _STLP_NOTHROW { return true; }
   template <class _T2> bool operator!=(const allocator<_T2>&) const _STLP_NOTHROW { return false; }
 # endif
 };
 
-#if !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
+#if !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))  //*ty 03/24/2001 - MPW compilers get confused on these operator definitions
 template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW { return true; }
 template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW { return false; }
 #endif
@@ -495,16 +495,26 @@ private:
   typedef _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
 public:
   _Value _M_data;
-  inline _STLP_alloc_proxy(const _MaybeReboundAlloc& __a, _Value __p) : _MaybeReboundAlloc(__a), _M_data(__p) {}
 
+  _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, _Value __p) :
+    _MaybeReboundAlloc(__a), _M_data(__p) {}
+
+  _STLP_alloc_proxy (__partial_move_source<_Self> src) :
+    _MaybeReboundAlloc(_AsPartialMoveSource<_Base>(src.get())), _M_data(_AsPartialMoveSource<_Value>(src.get()._M_data)) {}
+
+  _STLP_alloc_proxy (__full_move_source<_Self> src) :
+    _MaybeReboundAlloc(_AsFullMoveSource<_Base>(src.get())), _M_data(_AsFullMoveSource<_Value>(src.get()._M_data)) {}  
 # if 0
+/*
+public:
   inline _STLP_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
   // construction/destruction
   inline _Self& operator = (const _Self& __x) { 
     *(_MaybeReboundAlloc*)this = *(_MaybeReboundAlloc*)__x;
     _M_data = __x._M_data; return *this; 
   } 
-  inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; } 
+  inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; }
+*/
 # endif
   // Unified interface to perform allocate()/deallocate() with limited
   // language support
@@ -520,13 +530,43 @@ public:
 };
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char *,char,allocator<char> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char*, char,allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t*, wchar_t,allocator<wchar_t> >;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 # undef _STLP_NODE_ALLOCATOR_THREADS
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Value, class _Tp, class _Alloc>
+struct __partial_move_traits<_STLP_alloc_proxy<_Value, _Tp, _Alloc> > {
+  typedef typename __partial_move_traits<_Value>::implemented _ValueImpl;
+  typedef typename __partial_move_traits<_Alloc>::implemented _AllocImpl;
+  typedef typename _Lor2<_ValueImpl, _AllocImpl>::_Ret implemented;
+};
+
+/*
+  * The allocator granted by STLport can all be fully moved without any specific
+  * full move constructor as it is stateless:
+  */
+template <class _Tp>
+struct __full_move_traits<allocator<_Tp> > {
+  typedef __true_type supported;
+  typedef __false_type implemented;
+};
+
+template <class _Value, class _Tp, class _Alloc>
+struct __full_move_traits<_STLP_alloc_proxy<_Value, _Tp, _Alloc> > {
+  typedef typename __full_move_traits<_Value>::supported _ValueSup;
+  typedef typename __full_move_traits<_Alloc>::supported _AllocSup;
+  typedef typename _Land2<_ValueSup, _AllocSup>::_Ret supported;
+  
+  typedef typename __full_move_traits<_Value>::implemented _ValueImpl;
+  typedef typename __full_move_traits<_Alloc>::implemented _AllocImpl;
+  typedef typename _Lor2<_ValueImpl, _AllocImpl>::_Ret implemented;
+};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

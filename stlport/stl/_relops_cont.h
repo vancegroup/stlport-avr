@@ -31,7 +31,7 @@ inline void  _STLP_CALL swap(_STLP_TEMPLATE_CONTAINER& __x,
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 _STLP_TEMPLATE_HEADER
 struct __partial_move_traits<_STLP_TEMPLATE_CONTAINER > {
-  typedef __true_type supported;
+  typedef __true_type implemented;
 };
 
 _STLP_TEMPLATE_HEADER

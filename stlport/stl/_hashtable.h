@@ -297,12 +297,12 @@ public:
   }
 
   explicit hashtable(__partial_move_source<_Self> src)
-	  : _M_hash(src.get()._M_hash),
-		  _M_equals(src.get()._M_equals),
-		  _M_get_key(src.get()._M_get_key),
-		  _M_buckets(_AsPartialMoveSource(src.get()._M_buckets)),
-		  _M_num_elements(src.get()._M_num_elements) {
-  }	
+    : _M_hash(src.get()._M_hash),
+      _M_equals(src.get()._M_equals),
+      _M_get_key(src.get()._M_get_key),
+      _M_buckets(_AsPartialMoveSource(src.get()._M_buckets)),
+      _M_num_elements(src.get()._M_num_elements) {
+  }
 
   _Self& operator= (const _Self& __ht)
   {
@@ -352,7 +352,7 @@ public:
   const_iterator end() const { return const_iterator((_Node*)0, this); }
 
   static bool _STLP_CALL _M_equal (const hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>&,
-			const hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>&);
+                                   const hashtable<_Val, _Key, _HF, _ExK, _EqK, _All>&);
 
 public:
 
@@ -579,7 +579,7 @@ private:
       _Copy_Construct(&__n->_M_val, __obj);
       //      return __n;
     }
-    _STLP_UNWIND(_M_num_elements.deallocate(__n, 1));
+    _STLP_UNWIND(_M_num_elements.deallocate(__n, 1))
     return __n;
   }
   

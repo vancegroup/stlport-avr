@@ -203,7 +203,7 @@ private:
       _Copy_Construct(&__node->_M_data, __x);
       __node->_M_next = 0;
     }
-    _STLP_UNWIND(this->_M_head.deallocate(__node, 1));
+    _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
     return __node;
   }
   
@@ -214,7 +214,7 @@ private:
       _STLP_STD::_Construct(&__node->_M_data);
       __node->_M_next = 0;
     }
-    _STLP_UNWIND(this->_M_head.deallocate(__node, 1));
+    _STLP_UNWIND(this->_M_head.deallocate(__node, 1))
     return __node;
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/

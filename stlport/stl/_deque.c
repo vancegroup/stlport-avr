@@ -56,7 +56,7 @@ void _Deque_base<_Tp,_Alloc>::_M_initialize_map(size_t __num_elements) {
     _M_create_nodes(__nstart, __nfinish);
   }
   _STLP_UNWIND((_M_map.deallocate(_M_map._M_data, _M_map_size._M_data), 
-                _M_map._M_data = 0, _M_map_size._M_data = 0));
+                _M_map._M_data = 0, _M_map_size._M_data = 0))
   _M_start._M_set_node(__nstart);
   this->_M_finish._M_set_node(__nfinish - 1);
   _M_start._M_cur = _M_start._M_first;
@@ -71,7 +71,7 @@ void _Deque_base<_Tp,_Alloc>::_M_create_nodes(_Tp** __nstart,
     for (__cur = __nstart; __cur < __nfinish; ++__cur)
       *__cur = _M_map_size.allocate(this->buffer_size());
   }
-  _STLP_UNWIND(_M_destroy_nodes(__nstart, __cur));
+  _STLP_UNWIND(_M_destroy_nodes(__nstart, __cur))
 }
 
 template <class _Tp, class _Alloc >
@@ -120,7 +120,7 @@ void __deque__<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
     _STLP_TRY {
       uninitialized_fill(__new_start, this->_M_start, __x);
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
     this->_M_start = __new_start;
   }
   else if (__pos._M_cur == this->_M_finish._M_cur) {
@@ -128,7 +128,7 @@ void __deque__<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
     _STLP_TRY {
       uninitialized_fill(this->_M_finish, __new_finish, __x);
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node+1, __new_finish._M_node+1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node+1, __new_finish._M_node+1))
     this->_M_finish = __new_finish;
   }
   else 
@@ -147,7 +147,7 @@ void __deque__<_Tp, _Alloc>::insert(iterator __pos,
     _STLP_TRY {
       uninitialized_copy(__first, __last, __new_start);
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
     this->_M_start = __new_start;
   }
   else if (__pos._M_cur == this->_M_finish._M_cur) {
@@ -156,7 +156,7 @@ void __deque__<_Tp, _Alloc>::insert(iterator __pos,
       uninitialized_copy(__first, __last, this->_M_finish);
     }
     _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, 
-                                  __new_finish._M_node + 1));
+                                  __new_finish._M_node + 1))
     this->_M_finish = __new_finish;
   }
   else
@@ -173,7 +173,7 @@ void __deque__<_Tp,_Alloc>::insert(iterator __pos,
     _STLP_TRY {
       uninitialized_copy(__first, __last, __new_start);
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
     this->_M_start = __new_start;
   }
   else if (__pos._M_cur == this->_M_finish._M_cur) {
@@ -181,7 +181,7 @@ void __deque__<_Tp,_Alloc>::insert(iterator __pos,
     _STLP_TRY {
       uninitialized_copy(__first, __last, this->_M_finish);
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1,__new_finish._M_node + 1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1,__new_finish._M_node + 1))
     this->_M_finish = __new_finish;
   }
   else
@@ -249,7 +249,7 @@ void __deque__<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
 
 
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur, __cur)));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur, __cur)))
 }
 
 
@@ -264,7 +264,7 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t) {
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
   _STLP_UNWIND(this->_M_map_size.deallocate(*(this->_M_finish._M_node + 1), 
-                                            this->buffer_size()));
+                                            this->buffer_size()))
 }
 
 # if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -279,7 +279,7 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux() {
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
   _STLP_UNWIND(this->_M_map_size.deallocate(*(this->_M_finish._M_node + 1), 
-                                            this->buffer_size()));
+                                            this->buffer_size()))
 }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
@@ -294,7 +294,7 @@ void __deque__<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t) {
     _Copy_Construct(this->_M_start._M_cur, __t);
   }
   _STLP_UNWIND((++this->_M_start, 
-                this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), this->buffer_size())));
+                this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), this->buffer_size())))
 } 
 
 
@@ -310,7 +310,7 @@ void __deque__<_Tp,_Alloc>::_M_push_front_aux() {
     _STLP_STD::_Construct(this->_M_start._M_cur);
   }
   _STLP_UNWIND((++this->_M_start, this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), 
-                                                               this->buffer_size())));
+                                                               this->buffer_size())))
 } 
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
@@ -409,7 +409,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         fill(__old_start, __pos, __x_copy);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
   }
   else {
     iterator __new_finish = _M_reserve_elements_at_back(__n);
@@ -432,7 +432,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         fill(__pos, __old_finish, __x_copy);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
   }
 }
 
@@ -464,7 +464,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         copy(__mid, __last, __old_start);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
   }
   else {
     iterator __new_finish = _M_reserve_elements_at_back(__n);
@@ -488,7 +488,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         copy(__first, __mid, __pos);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
   }
 }
 
@@ -519,7 +519,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         copy(__mid, __last, __old_start);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
   }
   else {
     iterator __new_finish = _M_reserve_elements_at_back(__n);
@@ -541,7 +541,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         copy(__first, __mid, __pos);
       }
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
   }
 }
 
@@ -558,7 +558,7 @@ void __deque__<_Tp,_Alloc>::_M_new_elements_at_front(size_type __new_elems) {
       *(this->_M_start._M_node - __i) = this->_M_map_size.allocate(this->buffer_size());
   }
   _STLP_UNWIND(for (size_type __j = 1; __j < __i; ++__j)
-                 this->_M_map_size.deallocate(*(this->_M_start._M_node - __j), this->buffer_size()));
+                 this->_M_map_size.deallocate(*(this->_M_start._M_node - __j), this->buffer_size()))
 }
 
 template <class _Tp, class _Alloc >
@@ -572,7 +572,7 @@ void __deque__<_Tp,_Alloc>::_M_new_elements_at_back(size_type __new_elems) {
       *(this->_M_finish._M_node + __i) = this->_M_map_size.allocate(this->buffer_size());
   }
   _STLP_UNWIND(for (size_type __j = 1; __j < __i; ++__j)
-                 this->_M_map_size.deallocate(*(this->_M_finish._M_node + __j), this->buffer_size()));
+                 this->_M_map_size.deallocate(*(this->_M_finish._M_node + __j), this->buffer_size()))
 }
 
 template <class _Tp, class _Alloc >

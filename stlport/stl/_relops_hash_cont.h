@@ -34,7 +34,7 @@ swap(_STLP_TEMPLATE_CONTAINER& __hm1, _STLP_TEMPLATE_CONTAINER& __hm2)
 
 _STLP_TEMPLATE_HEADER
 struct __partial_move_traits<_STLP_TEMPLATE_CONTAINER > {
-  typedef __true_type supported;
+  typedef __true_type implemented;
 };
 
 _STLP_TEMPLATE_HEADER

@@ -220,12 +220,12 @@ public:                         // Constructor, destructor, assignment.
     _M_terminate_string();
   }
 
-  /*explicit basic_string(__full_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_FullMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
-  }*/
-  
   explicit basic_string(__partial_move_source<_Self> src)
-    : _String_base<_CharT,_Alloc>(__partial_move_source<_String_base<_CharT,_Alloc> >(src.get())) {
+    : _String_base<_CharT,_Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
+  }
+
+  explicit basic_string(__full_move_source<_Self> src)
+    : _String_base<_CharT, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
   }
   
   // Check to see if _InputIterator is an integer type.  If so, then
@@ -334,7 +334,7 @@ private:
     _STLP_TRY {
       _M_construct_null_aux(this->_M_Finish(), __is_integral);
     }
-    _STLP_UNWIND(this->_M_destroy_range(0,0));
+    _STLP_UNWIND(this->_M_destroy_range(0,0))
   }
 
   void _M_terminate_string_aux(const __true_type& __is_integral) {
@@ -371,7 +371,7 @@ private:
     _STLP_TRY {
       _M_append(__f, __l, __tag);
     }
-    _STLP_UNWIND(this->_M_destroy_range());
+    _STLP_UNWIND(this->_M_destroy_range())
   }
 
   template <class _ForwardIter> 
@@ -586,7 +586,7 @@ private:                        // Helper functions for append.
              _M_construct_null(__new_finish);
            }
            _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                         this->_M_end_of_storage.deallocate(__new_start,__len)));
+                         this->_M_end_of_storage.deallocate(__new_start,__len)))
            this->_M_destroy_range();
            this->_M_deallocate_block();
            this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -603,7 +603,7 @@ private:                        // Helper functions for append.
            _STLP_TRY {
              _M_construct_null(this->_M_Finish() + __n);
            }
-           _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __n));
+           _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __n))
            _Traits::assign(*end(), *__first);
            this->_M_finish += __n;
          }
@@ -799,7 +799,7 @@ private:  // Helper functions for insert.
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start,__len)));
+                  this->_M_end_of_storage.deallocate(__new_start,__len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -853,7 +853,7 @@ private:  // Helper functions for insert.
             this->_M_finish += __elems_after;
           }
           _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
-                        this->_M_finish = __old_finish));
+                        this->_M_finish = __old_finish))
           _M_copy(__first, __mid, __position);
         }
       }
@@ -1290,7 +1290,7 @@ swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _CharT, class _Traits, class _Alloc>
 struct __partial_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type supported;
+  typedef __true_type implemented;
 };
 
 template <class _CharT, class _Traits, class _Alloc>
@@ -1298,12 +1298,11 @@ struct __action_on_move<basic_string<_CharT,_Traits,_Alloc> > {
   typedef __true_type swap;
 };
 
-/*
 template <class _CharT, class _Traits, class _Alloc>
 struct __full_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type supported;
+  typedef typename __full_move_traits<_String_base<_CharT, _Alloc> >::supported supported;
+  typedef __true_type implemented;
 };
-*/
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 template <class _CharT, class _Traits, class _Alloc> 

@@ -1,10 +1,12 @@
 #
+# Note : this makefile is for gcc-2.95 and later under cygwin!
+#
+
+#
 # compiler
 #
 CC = gcc
 CXX = g++
-
-COMP = cygwin
 
 #
 # Basename for libraries
@@ -16,7 +18,7 @@ LIB_BASENAME = libstlport_cygwin
 #
 #
 LINK=ar crv
-DYN_LINK=g++ -o
+DYN_LINK=g++ -shared -o
 
 OBJEXT=o
 DYNEXT=dll
@@ -25,11 +27,9 @@ RM=rm -rf
 PATH_SEP=/
 MKDIR=mkdir -p
 COMP=cygwin
-
-# STATIC_SUFFIX=_static
-
-all: all_static
 INSTALL_STEP = install_unix
+
+all: all_dynamic all_static
 
 include common_macros.mak
 
@@ -56,7 +56,6 @@ LDFLAGS_STLDEBUG_static =
 LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -Wl,--export-all-symbols -Wl,--out-implib,${OUTDIR}/${STLDEBUG_NAME}.a
 
 include common_percent_rules.mak
-
 include common_rules.mak
 
 

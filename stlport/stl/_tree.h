@@ -247,7 +247,7 @@ protected:
     _STLP_TRY {
       _Copy_Construct(&__tmp->_M_value_field, __x);
     }
-    _STLP_UNWIND(this->_M_header.deallocate(__tmp,1));
+    _STLP_UNWIND(this->_M_header.deallocate(__tmp,1))
     return __tmp;
   }
 

@@ -87,7 +87,7 @@ struct _Deque_iterator_base {
   enum _Constants { 
     _blocksize = _MAX_BYTES, 
     __buffer_size = (sizeof(_Tp) < (size_t)_blocksize ?
-   		    ( (size_t)_blocksize / sizeof(_Tp)) : size_t(1))
+                  ( (size_t)_blocksize / sizeof(_Tp)) : size_t(1))
   };
 
   typedef random_access_iterator_tag iterator_category;
@@ -499,13 +499,13 @@ public:                         // Constructor, destructor.
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  /*explicit deque(__full_move_source<_Self> src)
-	  : _Deque_base<_Tp, _Alloc>(_FullMoveSource<_Deque_base<_Tp, _Alloc> >(src.get())) {
-  }*/
-
   explicit deque(__partial_move_source<_Self> src)
-    : _Deque_base<_Tp, _Alloc>(src.get()) {
+    : _Deque_base<_Tp, _Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
     src.get()._M_map._M_data = 0;
+  }
+
+  explicit deque(__full_move_source<_Self> src)
+    : _Deque_base<_Tp, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
   }
 
   ~deque() { 
@@ -768,7 +768,7 @@ protected:                        // Internal construction/destruction
       for ( ; __first != __last; ++__first)
         push_back(*__first);
     }
-    _STLP_UNWIND(clear());
+    _STLP_UNWIND(clear())
   }
   template <class _ForwardIterator>
   void  _M_range_initialize(_ForwardIterator __first,
@@ -788,7 +788,7 @@ protected:                        // Internal construction/destruction
     }
     uninitialized_copy(__first, __last, this->_M_finish._M_first);
    }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)))
  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -827,7 +827,7 @@ void  insert(iterator __pos,
       uninitialized_copy(__first, __last, __new_start);
       this->_M_start = __new_start;
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+    _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
   }
   else if (__pos._M_cur == this->_M_finish._M_cur) {
     iterator __new_finish = _M_reserve_elements_at_back(__n);
@@ -835,7 +835,7 @@ void  insert(iterator __pos,
       uninitialized_copy(__first, __last, this->_M_finish);
       this->_M_finish = __new_finish;
     }
-    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));
+    _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
   }
   else
     _M_insert_aux(__pos, __first, __last, __n);
@@ -881,7 +881,7 @@ void  insert(iterator __pos,
           copy(__mid, __last, __old_start);
         }
       }
-      _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
+      _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
     }
     else {
       iterator __new_finish = _M_reserve_elements_at_back(__n);
@@ -905,7 +905,7 @@ void  insert(iterator __pos,
           copy(__first, __mid, __pos);
         }
       }
-      _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));
+      _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
     }
   }
 #else /* _STLP_MEMBER_TEMPLATES */
@@ -961,6 +961,20 @@ protected:                      // Allocation of _M_map and nodes
 # include <stl/_relops_cont.h>
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Alloc>
+struct __full_move_traits<_Deque_base<_Tp, _Alloc> > {
+  typedef typename __full_move_traits<_Alloc>::supported supported;
+  typedef __false_type implemented;
+};
+
+template <class _Tp, class _Alloc>
+struct __full_move_traits<deque<_Tp, _Alloc> > {
+  typedef typename __full_move_traits<_Deque_base<_Tp, _Alloc> >::supported supported;
+  typedef __true_type implemented;
+};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE 
 

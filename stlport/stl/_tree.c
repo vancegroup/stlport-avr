@@ -625,7 +625,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc> ::_M_copy(_Rb_tree_node<_Value
       __x = _S_left(__x);
     }
   }
-  _STLP_UNWIND(_M_erase(__top));
+  _STLP_UNWIND(_M_erase(__top))
 
   return __top;
 }

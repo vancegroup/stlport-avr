@@ -247,7 +247,7 @@ protected:
     _STLP_TRY {
       _Copy_Construct(&__p->_M_data, __x);
     }
-    _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
+    _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
     return __p;
   }
 
@@ -258,7 +258,7 @@ protected:
     _STLP_TRY {
       _STLP_STD::_Construct(&__p->_M_data);
     }
-    _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
+    _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
     return __p;
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/

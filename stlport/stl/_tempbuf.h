@@ -119,7 +119,7 @@ public:
       if (_M_len > 0)
         _M_initialize_buffer(*__first, _Trivial());
     }
-    _STLP_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0);
+    _STLP_UNWIND(free(_M_buffer); _M_buffer = 0; _M_len = 0)
   }
  
   ~_Temporary_buffer() {  

@@ -208,14 +208,14 @@ public:
       _M_s.push_back(__x); 
       push_heap(_M_s.begin(), _M_s.end(), comp);
     }
-    _STLP_UNWIND(_M_s.clear());
+    _STLP_UNWIND(_M_s.clear())
   }
   void pop() {
     _STLP_TRY {
       pop_heap(_M_s.begin(), _M_s.end(), comp);
       _M_s.pop_back();
     }
-    _STLP_UNWIND(_M_s.clear());
+    _STLP_UNWIND(_M_s.clear())
   }
 };
 

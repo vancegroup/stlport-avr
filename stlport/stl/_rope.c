@@ -374,7 +374,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree()
 template <class _CharT, class _Alloc>
 __RopeLeaf__*
 rope<_CharT,_Alloc>::_S_leaf_concat_char_iter
-		(_RopeLeaf* __r, const _CharT* __iter, size_t __len)
+    (_RopeLeaf* __r, const _CharT* __iter, size_t __len)
 {
     size_t __old_len = __r->_M_size._M_data;
     _CharT* __new_data = __r->_M_size.allocate(_S_rounded_up_size(__old_len + __len));
@@ -384,11 +384,10 @@ rope<_CharT,_Alloc>::_S_leaf_concat_char_iter
     uninitialized_copy_n(__iter, __len, __new_data + __old_len);
     _S_cond_store_eos(__new_data[__old_len + __len]);
     _STLP_TRY {
-	__result = _S_new_RopeLeaf(__new_data, __old_len + __len,
-				   __r->get_allocator());
+    __result = _S_new_RopeLeaf(__new_data, __old_len + __len, __r->get_allocator());
     }
     _STLP_UNWIND(_RopeRep::_S_free_string(__new_data, __old_len + __len,
-					     __r->get_allocator()));
+                 __r->get_allocator()))
     return __result;
 }
 
@@ -453,7 +452,7 @@ rope<_CharT,_Alloc>::_S_tree_concat (_RopeRep* __left, _RopeRep* __right)
 	   __result->_M_unref_nonnil();
         }
       _STLP_UNWIND((_STLP_CREATE_ALLOCATOR(allocator_type,(allocator_type&)__left->_M_size,
-                                    _RopeConcatenation).deallocate(__result,1)));
+                                    _RopeConcatenation).deallocate(__result,1)))
 		// In case of exception, we need to deallocate
 		// otherwise dangling result node.  But caller
 		// still owns its children.  Thus unref is
@@ -497,7 +496,7 @@ rope<_CharT,_Alloc>::_S_concat_char_iter
 	  _STLP_TRY {
 	    __result = _S_tree_concat(__left, __nright);
           }
-	  _STLP_UNWIND(_S_unref(__left); _S_unref(__nright));
+	  _STLP_UNWIND(_S_unref(__left); _S_unref(__nright))
 #         ifndef __GC
 	    _STLP_ASSERT(1 == __result->_M_ref_count)
 #         endif
@@ -510,7 +509,7 @@ rope<_CharT,_Alloc>::_S_concat_char_iter
       __r->_M_ref_nonnil();
       __result = _S_tree_concat(__r, __nright);
     }
-    _STLP_UNWIND(_S_unref(__r); _S_unref(__nright));
+    _STLP_UNWIND(_S_unref(__r); _S_unref(__nright))
 #   ifndef __GC
       _STLP_ASSERT(1 == __result->_M_ref_count)
 #   endif
@@ -620,8 +619,8 @@ rope<_CharT,_Alloc>::_S_concat_rep(_RopeRep* __left, _RopeRep* __right)
     _STLP_TRY {
       return(_S_tree_concat(__left, __right));
     }
-    _STLP_UNWIND(_S_unref(__left); _S_unref(__right));
-    _STLP_RET_AFTER_THROW(0);
+    _STLP_UNWIND(_S_unref(__left); _S_unref(__right))
+    _STLP_RET_AFTER_THROW(0)
 }
 
 template <class _CharT, class _Alloc>
@@ -721,7 +720,7 @@ rope<_CharT,_Alloc>::_S_substring(_RopeRep* __base,
 		  (*(__f->_M_fn))(__start, __result_len, __section);
                 }
 		_STLP_UNWIND(_RopeRep::_S_free_string(
-	               __section, __result_len, __base->get_allocator()));
+	               __section, __result_len, __base->get_allocator()))
 		_S_cond_store_eos(__section[__result_len]);
 		return _S_new_RopeLeaf(__section, __result_len,
 				       __base->get_allocator());
@@ -1152,20 +1151,20 @@ rope<_CharT,_Alloc>::_S_balance(_RopeRep* __r)
       _S_add_to_forest(__r, __forest);
       for (__i = 0; __i <= _RopeRep::_S_max_rope_depth; ++__i) 
         if (0 != __forest[__i]) {
-#	ifndef __GC
-	  _Self_destruct_ptr __old(__result);
-#	endif
-	  __result = _S_concat_rep(__forest[__i], __result);
-	__forest[__i]->_M_unref_nonnil();
-#	if !defined(__GC) && defined(_STLP_USE_EXCEPTIONS)
-	  __forest[__i] = 0;
-#	endif
+# ifndef __GC
+          _Self_destruct_ptr __old(__result);
+# endif
+          __result = _S_concat_rep(__forest[__i], __result);
+          __forest[__i]->_M_unref_nonnil();
+# if !defined(__GC) && defined(_STLP_USE_EXCEPTIONS)
+          __forest[__i] = 0;
+# endif
       }
     }
-    _STLP_UNWIND(for(__i = 0; __i <= _RopeRep::_S_max_rope_depth; __i++)
-		 _S_unref(__forest[__i]))
+    _STLP_UNWIND(for(__i = 0; __i <= _RopeRep::_S_max_rope_depth; ++__i)
+    _S_unref(__forest[__i]))
     if (__result->_M_depth > _RopeRep::_S_max_rope_depth) {
-	__stl_throw_range_error("rope too long");
+      __stl_throw_range_error("rope too long");
     }
     return(__result);
 }
@@ -1176,15 +1175,15 @@ void
 rope<_CharT,_Alloc>::_S_add_to_forest(_RopeRep* __r, _RopeRep** __forest)
 {
     if (__r -> _M_is_balanced) {
-	_S_add_leaf_to_forest(__r, __forest);
-	return;
+      _S_add_leaf_to_forest(__r, __forest);
+      return;
     }
     _STLP_ASSERT(__r->_M_tag == _RopeRep::_S_concat)
     {
-	_RopeConcatenation* __c = (_RopeConcatenation*)__r;
+      _RopeConcatenation* __c = (_RopeConcatenation*)__r;
 
-	_S_add_to_forest(__c->_M_left, __forest);
-	_S_add_to_forest(__c->_M_right, __forest);
+      _S_add_to_forest(__c->_M_left, __forest);
+      _S_add_to_forest(__c->_M_right, __forest);
     }
 }
 

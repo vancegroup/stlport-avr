@@ -94,7 +94,7 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
     _M_construct_null(__new_finish);
   }
   _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start, __new_finish), 
-                this->_M_end_of_storage.deallocate(__new_start, __n)));
+                this->_M_end_of_storage.deallocate(__new_start, __n)))
 
   this->_M_destroy_range();
   this->_M_deallocate_block();
@@ -118,7 +118,7 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
     _STLP_TRY {
       _M_construct_null(this->_M_finish + __n);
     }
-    _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n));
+    _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n))
     _Traits::assign(*end(), __c);
     this->_M_finish += __n;
   }
@@ -146,7 +146,7 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_i
         _M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_end_of_storage.deallocate(__new_start,__len)));
+                    this->_M_end_of_storage.deallocate(__new_start,__len)))
       this->_M_destroy_range();
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -163,7 +163,7 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_i
       _STLP_TRY {
         _M_construct_null(this->_M_finish + __n);
       }
-      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n));
+      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n))
       _Traits::assign(*end(), *__first);
       this->_M_finish += __n;
     }
@@ -217,7 +217,7 @@ _CharT* basic_string<_CharT,_Traits,_Alloc> ::_M_insert_aux(_CharT* __p,
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
-                  this->_M_end_of_storage.deallocate(__new_start,__len)));
+                  this->_M_end_of_storage.deallocate(__new_start,__len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -263,7 +263,7 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
           this->_M_finish += __elems_after;
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish), 
-                      this->_M_finish = __old_finish));
+                      this->_M_finish = __old_finish))
         _Traits::assign(__position, __elems_after + 1, __c);
       }
     }
@@ -280,7 +280,7 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
         _M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_end_of_storage.deallocate(__new_start,__len)));
+                    this->_M_end_of_storage.deallocate(__new_start,__len)))
       this->_M_destroy_range();
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);    
@@ -344,7 +344,7 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
           this->_M_finish += __elems_after;
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish), 
-                      this->_M_finish = __old_finish));
+                      this->_M_finish = __old_finish))
         if (!__self_ref)
           _M_copy(__first, __mid, __position);
         else
@@ -363,7 +363,7 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
         _M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_end_of_storage.deallocate(__new_start,__len)));
+                    this->_M_end_of_storage.deallocate(__new_start,__len)))
       this->_M_destroy_range();
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);

@@ -846,7 +846,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   define _STLP_UNWIND(action) catch(...) { action; throw; }
 
 #   ifdef _STLP_THROW_RETURN_BUG
-#     define _STLP_RET_AFTER_THROW(data) return data
+#     define _STLP_RET_AFTER_THROW(data) return data;
 #   else
 #     define _STLP_RET_AFTER_THROW(data)
 #   endif

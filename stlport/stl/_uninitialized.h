@@ -106,8 +106,8 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
       _Copy_Construct(&*__cur, *__first);
     return __cur;
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur));
-  _STLP_RET_AFTER_THROW(__cur);
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_RET_AFTER_THROW(__cur)
 }
 
 template <class _InputIter, class _ForwardIter>
@@ -144,8 +144,8 @@ __uninitialized_copy_n(_InputIter __first, _Size __count,
       _Copy_Construct(&*__cur, *__first);
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur));
-  _STLP_RET_AFTER_THROW((pair<_InputIter, _ForwardIter>(__first, __cur)));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_RET_AFTER_THROW((pair<_InputIter, _ForwardIter>(__first, __cur)))
 }
 
 # if defined(_STLP_NONTEMPL_BASE_MATCH_BUG) 
@@ -203,7 +203,7 @@ __uninitialized_fill(_ForwardIter __first, _ForwardIter __last,
     for ( ; __cur != __last; ++__cur)
       _Copy_Construct(&*__cur, __x);
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
 }
 
 template <class _ForwardIter, class _Tp>
@@ -231,8 +231,8 @@ __uninitialized_fill_n(_ForwardIter __first, _Size __n,
       _Copy_Construct(&*__cur, __x);
     return __cur;
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur));
-  _STLP_RET_AFTER_THROW(__cur);
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
+  _STLP_RET_AFTER_THROW(__cur)
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
@@ -269,8 +269,8 @@ __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_TRY {
     return __uninitialized_copy(__first2, __last2, __mid , _IS_POD_ITER(__result, _ForwardIter));
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid));
-  _STLP_RET_AFTER_THROW(__mid);
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid))
+  _STLP_RET_AFTER_THROW(__mid)
 }
 
 // __uninitialized_fill_copy
@@ -286,8 +286,8 @@ __uninitialized_fill_copy(_ForwardIter __result, _ForwardIter __mid, const _Tp& 
   _STLP_TRY {
     return __uninitialized_copy(__first, __last, __mid, _I_POD());
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid));
-  _STLP_RET_AFTER_THROW(__result);
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid))
+  _STLP_RET_AFTER_THROW(__result)
 }
 
 // __uninitialized_copy_fill
@@ -304,7 +304,7 @@ __uninitialized_copy_fill(_InputIter __first1, _InputIter __last1,
   _STLP_TRY {
     __uninitialized_fill(__mid2, __last2, __x, _I_POD());
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first2, __mid2));
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first2, __mid2))
 }
 
 // __uninitialized_move
@@ -327,8 +327,8 @@ __uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __resul
       _Move_Construct(&*__cur, *__first);
     return __cur;
   }
-  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur));
-  _STLP_RET_AFTER_THROW(__cur);
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
+  _STLP_RET_AFTER_THROW(__cur)
 }
 
 _STLP_END_NAMESPACE

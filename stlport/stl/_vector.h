@@ -70,6 +70,7 @@ public:
   typedef _Vector_base<_Tp, _Alloc> _Self;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
 
   _Vector_base(const _Alloc& __a)
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, 0) {
@@ -85,7 +86,7 @@ public:
 
   _Vector_base(__partial_move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsPartialMoveSource<_STLP_alloc_proxy<_Tp*, _Tp, allocator_type> >(src.get()._M_end_of_storage)) {
+      _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
     //Set the source destroyable:
     src.get()._M_start = 0;
     src.get()._M_finish = 0;
@@ -93,12 +94,12 @@ public:
 
   _Vector_base(__full_move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsPartialMoveSource<_STLP_alloc_proxy<_Tp*, _Tp, allocator_type> >(src.get()._M_end_of_storage)) {
+      _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
     //Won't be destroyed
   }
 
   ~_Vector_base() { 
-    if (_M_start !=0) 
+    if (_M_start != 0) 
     _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
   }
 
@@ -108,7 +109,7 @@ protected:
 
   _Tp* _M_start;
   _Tp* _M_finish;
-  _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
+  _AllocProxy _M_end_of_storage;
 };
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
@@ -163,7 +164,7 @@ protected:
         __new_finish = __uninitialized_move(__position, this->_M_finish, __new_finish, __false_type());
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
-                  this->_M_end_of_storage.deallocate(__new_start,__len)));
+                  this->_M_end_of_storage.deallocate(__new_start,__len)))
 
     _STLP_STD::_Destroy_Mvd_Sources(this->_M_start, this->_M_finish);
     this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
@@ -177,7 +178,7 @@ protected:
     
     pointer __new_start = this->_M_end_of_storage.allocate(__len);
     pointer __new_finish = (pointer)__copy_trivial(this->_M_start, __position, __new_start);
-      // handle insertion
+    // handle insertion
     __new_finish = fill_n(__new_finish, __fill_len, __x);
     if (!__atend)
       // copy remainder
@@ -251,11 +252,11 @@ public:
   }
 
   explicit vector(__partial_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_AsPartialMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
+    : _Vector_base<_Tp, _Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
   }
 
   explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_AsFullMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
+    : _Vector_base<_Tp, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
   }
   
 #if defined (_STLP_MEMBER_TEMPLATES)
@@ -502,7 +503,7 @@ public:
           __new_finish = __uninitialized_move(__position, this->_M_finish, __new_finish, _IsPODType());
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
-                      this->_M_end_of_storage.deallocate(__new_start,__len)));
+                      this->_M_end_of_storage.deallocate(__new_start,__len)))
         _M_clear();
         _M_set(__new_start, __new_finish, __new_start + __len);
       }
@@ -579,8 +580,8 @@ protected:
 #endif
       return __result;
     }
-    _STLP_UNWIND(this->_M_end_of_storage.deallocate(__result, __n));
-    _STLP_RET_AFTER_THROW(__result);
+    _STLP_UNWIND(this->_M_end_of_storage.deallocate(__result, __n))
+    _STLP_RET_AFTER_THROW(__result)
   }
 
 
@@ -616,8 +617,22 @@ protected:
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp, class _Alloc>
+struct __partial_move_traits<_Vector_base<_Tp, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Tp, class _Alloc>
+struct __full_move_traits<_Vector_base<_Tp, _Alloc> > {
+  typedef typename _Vector_base<_Tp, _Alloc>::_AllocProxy _AllocProxy;
+  typedef typename __full_move_traits<_AllocProxy>::supported supported;
+  typedef typename __full_move_traits<_AllocProxy>::implemented implemented;
+};
+
+template <class _Tp, class _Alloc>
 struct __full_move_traits<vector<_Tp, _Alloc> > {
-  typedef typename __full_move_traits<_Alloc>::supported supported;
+  typedef _Vector_base<_Tp, _Alloc> _Base;
+  typedef typename __full_move_traits<_Base>::supported supported;
+  typedef typename __full_move_traits<_Base>::implemented implemented;
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 

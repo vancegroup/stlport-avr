@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <string>
-//#include <slist>
+#include <slist>
 #include <list>
-//#include <deque>
+#include <deque>
 //#include <set>
 #include <iostream>
 
@@ -43,6 +43,20 @@ void standard_test2(_Container const& ref_cont) {
     vec_cont.push_back(ref_cont);
   }
   stlp_test(pvalue == &(*vec_cont.front().begin()).first);
+}
+
+void stlp_type_test (__true_type const&) {
+  stlp_test(true);
+}
+
+void stlp_type_test (__false_type const&) {
+  stlp_test(false);
+}
+
+template <class _Container>
+void CheckFullMoveSupport (_Container const&) {
+  typedef typename __full_move_traits<_Container>::supported BoolType;
+  stlp_type_test(BoolType());
 }
 
 
@@ -108,6 +122,12 @@ int move_construct_test(int, char**)
 
   cout << "vector<list<int>>";
   standard_test1(list<int>(10));
+
+  cout << "full move string support: ";CheckFullMoveSupport(string());
+  cout << "full move vector<int> support: ";CheckFullMoveSupport(vector<int>());
+  cout << "full move deque<int> support: ";CheckFullMoveSupport(deque<int>());
+  cout << "full move list<int> support: ";CheckFullMoveSupport(list<int>());
+  cout << "full move slist<int> support: ";CheckFullMoveSupport(slist<int>());
 /*
   cout << "vector<slist<int>>";
   standard_test1(slist<int>(10));

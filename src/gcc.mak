@@ -53,10 +53,3 @@ include common_percent_rules.mak
 include common_rules.mak
 
 
-#install: all
-#	cp -p $(LIB_TARGET) ${D_LIB_TARGET} ../lib
-
-#%.s: %.cpp
-#	$(CXX) $(CXXFLAGS) -O4 -S -pto $<  -o $@
-
-
