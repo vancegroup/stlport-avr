@@ -140,7 +140,10 @@ void ListTest::erase()
   list<int>::iterator lit;
   lit = l.erase(l.begin());
   CPPUNIT_ASSERT( *lit == 1 );
-  
+
   lit = l.erase(l.begin(), --l.end());
   CPPUNIT_ASSERT( *lit == 3 );
+
+  l.clear();
+  CPPUNIT_ASSERT( l.empty() );
 }
