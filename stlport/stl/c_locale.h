@@ -356,6 +356,16 @@ struct _Locale_messages;
 #  define _Locale_SPACE  __dj_ISSPACE
 #  define _Locale_PRINT  __dj_ISPRINT
 #  define _Locale_ALPHA  __dj_ISALPHA
+#elif defined (_STLP_SCO_OPENSERVER)
+#  define _Locale_CNTRL _C
+#  define _Locale_UPPER _U
+#  define _Locale_LOWER _L
+#  define _Locale_DIGIT _N
+#  define _Locale_XDIGIT _X
+#  define _Locale_PUNCT _P
+#  define _Locale_SPACE _S
+#  define _Locale_PRINT _R
+#  define _Locale_ALPHA _A
 #endif
 
 # endif /* _STLP_C_LOCALE_H */

@@ -31,3 +31,5 @@
 #           define _UITHREADS     /* if      UnixWare < 7.0.1 */
 #           define _STLP_UITHREADS
 #     endif /* _REENTRANT */
+
+# define _STLP_SCO_OPENSERVER

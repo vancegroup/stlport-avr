@@ -76,6 +76,11 @@
 # endif
 #endif
 
+#ifdef _STLP_MSVC
+#pragma optimize("g",off)
+#endif 
+
+
 _STLP_BEGIN_NAMESPACE
 
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
@@ -216,37 +221,31 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 } /* extern "C" */
 
 
-#ifdef _STLP_MSVC
-#pragma optimize("g",off)
-#endif 
-
-
 void force_link()
 {
-float f;
-f = std::numeric_limits<float>::infinity();
-f = std::numeric_limits<float>::quiet_NaN();
-f = std::numeric_limits<float>::signaling_NaN();
-double d;
-d = std::numeric_limits<double>::infinity();
-d = std::numeric_limits<double>::quiet_NaN();
-d = std::numeric_limits<double>::signaling_NaN();
+  float f;
+  f = std::numeric_limits<float>::infinity();
+  f = std::numeric_limits<float>::quiet_NaN();
+  f = std::numeric_limits<float>::signaling_NaN();
+  double d;
+  d = std::numeric_limits<double>::infinity();
+  d = std::numeric_limits<double>::quiet_NaN();
+  d = std::numeric_limits<double>::signaling_NaN();
 #ifndef _STLP_NO_LONG_DOUBLE
-long double ld;
-ld = std::numeric_limits<long double>::infinity();
-ld = std::numeric_limits<long double>::quiet_NaN();
-ld = std::numeric_limits<long double>::signaling_NaN();
+  long double ld;
+  ld = std::numeric_limits<long double>::infinity();
+  ld = std::numeric_limits<long double>::quiet_NaN();
+  ld = std::numeric_limits<long double>::signaling_NaN();
 #endif
-
-std::set<int>::iterator iter;
-// _M_increment; _M_decrement instantiation
-++iter;
---iter;
-
+  
+  std::set<int>::iterator iter;
+  // _M_increment; _M_decrement instantiation
+  ++iter;
+  --iter;
+  
+  // force bitset globals to be instantiated
+  unsigned char uc = _Bs_G<bool>::_S_bit_count[0];
+  uc += _Bs_G<bool>::_S_first_one[0];
 }
-
-#ifdef _STLP_MSVC
-#pragma optimize("g", on)
-#endif 
 
 # endif

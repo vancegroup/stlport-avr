@@ -50,7 +50,7 @@
 #   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../CCios
 #  endif
 
-#  define _STLP_STATIC_CONST_INIT_BUG 1
+// #  define _STLP_STATIC_CONST_INIT_BUG 1
 
 # if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...

@@ -40,19 +40,21 @@
     }
 # endif
 
+
 // Specialised debug form of malloc which does not provide "false"
 // memory leaks when run with debug CRT libraries.
 #if defined(_STLP_MSVC) && (_STLP_MSVC>=1020 && defined(_STLP_DEBUG_ALLOC)) && ! defined (_STLP_WINCE)
 #  include <crtdbg.h>
-#  define   _STLP_CHUNK_MALLOC(s)         _STLP_CHECK_NULL_ALLOC(_malloc_dbg(s, _CRT_BLOCK, __FILE__, __LINE__))
+inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_malloc_dbg(__bytes, _CRT_BLOCK, __FILE__, __LINE__)); }
 #else	// !_DEBUG
 # ifdef _STLP_NODE_ALLOC_USE_MALLOC
 #  include <cstdlib>
-#  define   _STLP_CHUNK_MALLOC(s)         _STLP_CHECK_NULL_ALLOC(_STLP_VENDOR_CSTD::malloc(s))
+inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_STLP_VENDOR_CSTD::malloc(__bytes)); }
 # else
-#  define   _STLP_CHUNK_MALLOC(s)         __stl_new(s)
+inline void* __stlp_chunk_malloc(size_t __bytes) { return _STLP_STD::__stl_new(__bytes); }
 # endif
 #endif	// !_DEBUG
+
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes-size_t(1))>>(int)_ALIGN_SHIFT)
 
@@ -215,7 +217,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
       ((_Obj*)_S_start_free) -> _M_free_list_link = *__my_free_list;
       *__my_free_list = (_Obj*)_S_start_free;
     }
-    _S_start_free = (char*)_STLP_CHUNK_MALLOC(__bytes_to_get);
+    _S_start_free = (char*)__stlp_chunk_malloc(__bytes_to_get);
     if (0 == _S_start_free) {
       size_t __i;
       _Obj* _STLP_VOLATILE* __my_free_list;
@@ -236,7 +238,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
 	}
       }
       _S_end_free = 0;	// In case of exception.
-      _S_start_free = (char*)_STLP_CHUNK_MALLOC(__bytes_to_get);
+      _S_start_free = (char*)__stlp_chunk_malloc(__bytes_to_get);
     /*
       (char*)malloc_alloc::allocate(__bytes_to_get);
       */

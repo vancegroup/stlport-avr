@@ -299,6 +299,14 @@ typedef unsigned int wint_t;
 # define _STLP_NATIVE_C_INCLUDE_PATH ../include
 
 
+#ifdef _SCO_ELF
+# define _STLP_SCO_OPENSERVER
+#     if defined(_REENTRANT)
+#           define _UITHREADS     /* if      UnixWare < 7.0.1 */
+#           define _STLP_UITHREADS
+#     endif /* _REENTRANT */
+#endif
+
 // Tune settings for the case where static template data members are not 
 // instaniated by default
 # if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )

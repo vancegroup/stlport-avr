@@ -48,7 +48,7 @@ typedef long double max_double_type;
 # endif
 
 //# if !(defined(_STLP_USE_GLIBC) || defined(__FreeBSD__) || defined(__NetBSD__) || defined (_AIX) || defined(__MVS__) || defined (__OS400__) || defined (__QNXNTO__) || defined (__APPLE__) || defined (__DJGPP))
-# if defined (__sun) || defined (__digital__) || defined (__sgi)
+# if defined (__sun) || defined (__digital__) || defined (__sgi) || defined (_STLP_SCO_OPENSERVER)
 // DEC, SGI & Solaris need this
 #  include <values.h>
 #  include <nan.h>
@@ -67,7 +67,7 @@ typedef long double max_double_type;
 
 # include <cstdlib>
 
-#if defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP)
+#if defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP)  || defined (_STLP_SCO_OPENSERVER)
 # include <float.h>
 #endif
 
@@ -289,6 +289,17 @@ inline bool _Stl_is_neg_nan     (double x) { return _fp_isNAN(x) && x < 0; }
     { return buf + qecvt_r(x, n, pt, sign, buf, NDIG+2); }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return buf + qfcvt_r(x, n, pt, sign, buf, NDIG+2); }
+#  endif
+#elif defined (_STLP_SCO_OPENSERVER)
+  inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+    { return ecvt(x, n, pt, sign); }
+  inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+    { return fcvt(x, n, pt, sign); }
+#  ifndef _STLP_NO_LONG_DOUBLE
+  inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+    { return ecvtl(x, n, pt, sign); }
+  inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+    { return fcvtl(x, n, pt, sign); }
 #  endif
 #elif defined (__sun)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
