@@ -6,114 +6,10 @@ srcdir = .
 VPATH = .
 
 # point this to proper location
-STL_INCL=-I../../stlport
 
-# This is for dumb native make
-OBJ_LIST  = stl_test.o accum1.o accum2.o \
-	adjdiff0.o adjdiff1.o adjdiff2.o \
-	adjfind0.o adjfind1.o adjfind2.o \
-	advance.o \
-	alg1.o alg2.o alg3.o alg4.o alg5.o \
-	bcompos1.o bcompos2.o \
-	bind1st1.o bind1st2.o \
-	bind2nd1.o bind2nd2.o \
-	binsert1.o binsert2.o \
-	binsrch1.o binsrch2.o \
-	bnegate1.o bnegate2.o bvec1.o \
-	copy1.o copy2.o copy3.o copy4.o \
-	copyb.o copyb0.o \
-	count0.o count1.o \
-	countif1.o \
-	deque1.o \
-	divides.o \
-	eqlrnge0.o eqlrnge1.o eqlrnge2.o \
-	equal0.o equal1.o equal2.o \
-	equalto.o \
-	fill1.o filln1.o \
-	find0.o find1.o \
-	findif0.o findif1.o \
-	finsert1.o finsert2.o \
-	foreach0.o foreach1.o \
-	func1.o func2.o func3.o \
-	gener1.o gener2.o \
-	genern1.o genern2.o \
-	greateq.o greater.o \
-	incl0.o incl1.o incl2.o \
-	inplmrg1.o inplmrg2.o \
-	inrprod0.o inrprod1.o inrprod2.o \
-	insert1.o insert2.o \
-	iota1.o \
-	istmit1.o \
-	iter1.o iter2.o iter3.o iter4.o \
-	iterswp0.o iterswp1.o \
-	less.o \
-	lesseq.o \
-	lexcmp1.o lexcmp2.o \
-	list1.o list2.o list3.o list4.o \
-	logicand.o logicnot.o \
-	logicor.o \
-	lwrbnd1.o lwrbnd2.o \
-	map1.o \
-	max1.o max2.o \
-	maxelem1.o maxelem2.o \
-	merge0.o merge1.o merge2.o \
-	min1.o min2.o \
-	minelem1.o minelem2.o \
-	minus.o \
-	mismtch0.o mismtch1.o mismtch2.o \
-	mkheap0.o mkheap1.o \
-	mmap1.o mmap2.o \
-	modulus.o \
-	mset1.o mset3.o mset4.o mset5.o \
-	negate.o nequal.o \
-	nextprm0.o nextprm1.o nextprm2.o \
-	nthelem0.o nthelem1.o nthelem2.o \
-	ostmit.o \
-	pair0.o pair1.o pair2.o \
-	parsrt0.o parsrt1.o parsrt2.o \
-	parsrtc0.o parsrtc1.o parsrtc2.o \
-	partsrt0.o \
-	partsum0.o partsum1.o partsum2.o \
-	pheap1.o pheap2.o \
-	plus.o \
-	pqueue1.o \
-	prevprm0.o prevprm1.o prevprm2.o \
-	ptition0.o ptition1.o \
-	ptrbinf1.o ptrbinf2.o \
-	ptrunf1.o ptrunf2.o \
-	queue1.o \
-	rawiter.o \
-	remcopy1.o \
-	remcpif1.o \
-	remif1.o \
-	remove1.o \
-	repcpif1.o \
-	replace0.o replace1.o replcpy1.o replif1.o \
-	revbit1.o revbit2.o \
-	revcopy1.o reverse1.o reviter1.o reviter2.o \
-	rndshuf0.o rndshuf1.o rndshuf2.o \
-	rotate0.o rotate1.o rotcopy0.o rotcopy1.o \
-	search0.o search1.o search2.o \
-	set1.o set2.o \
-	setdiff0.o setdiff1.o setdiff2.o \
-	setintr0.o setintr1.o setintr2.o \
-	setsymd0.o setsymd1.o setsymd2.o \
-	setunon0.o setunon1.o setunon2.o \
-	sort1.o sort2.o \
-	stack1.o stack2.o \
-	stblptn0.o stblptn1.o \
-	stblsrt1.o stblsrt2.o \
-	swap1.o \
-	swprnge1.o \
-	times.o \
-	trnsfrm1.o trnsfrm2.o \
-	ucompos1.o ucompos2.o \
-	unegate1.o unegate2.o \
-	uniqcpy1.o uniqcpy2.o \
-	unique1.o unique2.o \
-	uprbnd1.o uprbnd2.o \
-	vec1.o vec2.o vec3.o vec4.o vec5.o vec6.o vec7.o vec8.o \
-        hmap1.o hmmap1.o hset2.o hmset1.o string1.o bitset1.o slist1.o
+
+# PWD is here because SC5 wants absolute path ;(
+STL_INCL=-I${PWD}/../../stlport
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -219,46 +115,67 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	unique1.cpp unique2.cpp \
 	uprbnd1.cpp uprbnd2.cpp \
 	vec1.cpp vec2.cpp vec3.cpp vec4.cpp vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
-        hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp string1.cpp bitset1.cpp
+        hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp slist1.cpp string1.cpp bitset1.cpp
 
-OBJECTS = $(OBJ_LIST)
+# STAT_MODULE=stat.o
+OBJECTS = $(LIST:%.cpp=%.o) $(STAT_MODULE)
 EXECS = $(LIST:%.cpp=%.exe)
 TESTS = $(LIST:%.cpp=%.out)
 TEST_EXE  = stl_test.exe
 TEST  = stl_test.out
 
-CC = cxx
+CC = CC
 CXX = $(CC)
-# CXXFLAGS = -O -w0 ${STL_INCL}  -I.
-CXXFLAGS =  ${STL_INCL}  -std strict_ansi_errors -I. -D__NO_USE_STD_IOSTREAM -D_STLP_NO_OWN_IOSTREAMS -D_STLP_DEBUG
+# DEBUG_FLAGS=-g
+# DEBUG_FLAGS=-O
 
-LIBS = -lm 
+# DEBUG_FLAGS=-D_STLP_DEBUG
+
+# DEBUG_FLAGS=-compat=4
+
+
+CXXFLAGS = -xarch=v9 +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_OWN_IOSTREAMS -D_STLP_HAS_NO_NEW_IOSTREAMS
+# CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_OWN_IOSTREAMS
+
+
+
+LIBS = -lm -liostream 
 LIBSTDCXX = 
 
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
-	echo 'a string' | $(TEST_EXE) > $(TEST)
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(OBJECTS) $(LIBS) -o $(TEST_EXE)
+	echo 'a string' | ./$(TEST_EXE) > $(TEST)
 
-.SUFFIXES: .cpp .i .o .exe .out .res
+SUFFIXES: .cpp.o.exe.out.res
 
 %.o : %.cpp
-	$(CXX) $(CXXFLAGS) $*.cpp -c -o $@
+	$(CXX) $(CXXFLAGS) $< -c -o $@
+
+%.i : %.cpp
+	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $*.cpp -c -USINGLE -DMAIN -g -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -o $*.exe
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -o $*.o
+	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -g -o $*.exe
 	./$*.exe > $@
 	-rm -f $*.exe
 
 istmit1.out: istmit1.cpp
-	$(CXX) $(CXXFLAGS) istmit1.cpp $(STAT_MODULE) $(LIBSTDCXX) -lstdc++ $(LIBS) -o istmit1
+	$(CXX) $(CXXFLAGS) $< $(STAT_MODULE) $(LIBSTDCXX) -lstdc++ $(LIBS) -o istmit1
 	echo 'a string' | ./istmit1 > istmit1.out
 	-rm -f ./istmit1
 
+$(STAT_MODULE): stat.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O5 -S -pta -noex $*.cpp  -o $@
+	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -S -pto $<  -o $@
+
+#	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -noex -D_STLP_NO_EXCEPTIONS -S -pto $<  -o $@
+
+#	$(CXX) $(CXXFLAGS) -O4 -noex -D_STLP_NO_EXCEPTIONS -D_STLP_NO_EXCEPTIONS -S -pta $<  -o $@
 
 clean:
-	-rm -fr *.exe *.o *.rpo *.obj *.out cxx_repository
+	-rm -fr *.exe *.o *.rpo *.obj *.out Templates.DB SunWS_cache

@@ -11,7 +11,7 @@
 # endif
 
 #  if (__SUNPRO_CC >= 0x500 ) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 )) \
-    && defined (_STLP_NO_SGI_IOSTREAMS) && ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)
+    && defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)
 #    error "The wrapper (_STLP_NO_OWN_IOSTREAMS) mode does not work well without _STLP_HAS_NO_NEW_IOSTREAMS. Please set this flag. You will also have to use -liostream option on link phase."
 // #   define _STLP_HAS_NO_NEW_IOSTREAMS
 #  endif

@@ -88,6 +88,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* stl_watcom.h : added switches; disabled own iosterams by default (thanks Steven Green)
 
 	* <exception> : added throw spec for what(); stl_sgi.h : made _STLP_NO_EXCEPTIONS depend on __EXCEPTIONS macro (Thanks Anton Ephanov)
+
+	* _string_io.c : operator << : fixed width() interpretation bug
 	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 

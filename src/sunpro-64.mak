@@ -12,3 +12,5 @@ CC = CC -xarch=v9
 CXX = CC -xarch=v9
 
 COMP = SUN64
+
+include sunpro-common.mak

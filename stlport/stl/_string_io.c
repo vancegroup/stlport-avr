@@ -7,7 +7,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# ifdef _STLP_OWN_IOSTREAMS
+# if defined (_STLP_OWN_IOSTREAMS)
 #  define _STLP_USING_IO
 # else
 #  define _STLP_USING_IO _STLP_USING_VENDOR_STD
@@ -36,7 +36,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
            const basic_string<_CharT,_Traits,_Alloc>& __s)
 {
 
-  _STLP_USING_VENDOR_STD
+  _STLP_USING_IO
   typedef basic_ostream<_CharT, _Traits> __ostream;
   typename __ostream::sentry __sentry(__os);
   bool __ok = false;
@@ -49,7 +49,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
     const size_t __w = __os.width(0);
     basic_streambuf<_CharT, _Traits>* __buf = __os.rdbuf();
 
-    if (__w > 0 && __n < __w) {
+    if (__n < __w) {
       __pad_len = __w - __n;
     }
     
@@ -185,10 +185,9 @@ _OSTREAM_DLL&  _STLP_CALL operator<<(_OSTREAM_DLL& __os,
     const bool __left = (__os.flags() & ios::left) !=0;
     const size_t __w = __os.width();
 
-    if (__w > 0) {
-      __n = (min)(__w, __n);
-      __pad_len = __w - __n;
-    }
+    if (__n < __w) { 
+      __pad_len = __w - __n; 
+    } 
     
     if (!__left)
       __stlp_string_fill(__os, __buf, __pad_len);

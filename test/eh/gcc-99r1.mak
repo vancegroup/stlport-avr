@@ -41,7 +41,7 @@ CXX = $(CC)
 # in the assembler with 'invalid relocation type'
 CXXFLAGS = -Wall -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW
 D_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D_STLP_DEBUG
-NOSGI_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_SGI_IOSTREAMS -DEH_VECTOR_OPERATOR_NEW
+NOSGI_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_OWN_IOSTREAMS -DEH_VECTOR_OPERATOR_NEW
 
 check: $(TEST)
 
@@ -95,7 +95,7 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -D_STLP_DEBUG -D_STLP_NO_SGI_IOSTREAMS -g -o $*.o
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -D_STLP_DEBUG -D_STLP_NO_OWN_IOSTREAMS -g -o $*.o
 	$(CXX) $(CXXFLAGS) $*.o $(LIBSTLPORT) $(LIBS) -o $*
 	./$* > $@
 #	-rm -f $*

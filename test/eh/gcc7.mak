@@ -36,7 +36,7 @@ NOSGI_TEST = ./eh_test_nosgi.out
 CC = c++
 CXX = $(CC)
 
-CXXFLAGS = -Wall -fhandle-exceptions -g ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_SGI_IOSTREAMS -D_STLP_DEBUG_UNINITIALIZED
+CXXFLAGS = -Wall -fhandle-exceptions -g ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_OWN_IOSTREAMS -D_STLP_DEBUG_UNINITIALIZED
 
 check: $(TEST)
 

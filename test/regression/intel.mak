@@ -137,7 +137,7 @@ LINK32=link.exe
 # ADD F90 /Ox /c /nologo
 F90_PROJ=/Ox /c /nologo
 
-CPP_PROJ=/nologo /W4 /MD /GX /Zd /D "WIN32" /D "_STLP_DEBUG" /D "_CONSOLE" $(STL_INCL) -D_STLP_NO_SGI_IOSTREAMS /I$(VC_INCL) /I.
+CPP_PROJ=/nologo /W4 /MD /GX /Zd /D "WIN32" /D "_STLP_DEBUG" /D "_CONSOLE" $(STL_INCL) -D_STLP_NO_OWN_IOSTREAMS /I$(VC_INCL) /I.
 CPP_LIBS = /link /libpath:"..\..\lib"
 
 check: stl_test.out

@@ -22,6 +22,7 @@ int adjdiff1_test(int, char**)
   vector <int> result(v.size());
   adjacent_difference(v.begin(), v.end(), result.begin());
   ostream_iterator<int> iter(cout, " ");
+  // vector<int>::iterator iter;
   copy(v.begin(), v.end(), iter);
   cout << endl;
   copy(result.begin(), result.end(), iter);

@@ -32,7 +32,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-# CXXFLAGS = -J 4 -ansi -LANG:std -I. ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_SGI_IOSTREAMS -D_STLP_NO_NEW_IOSTREAMS
+# CXXFLAGS = -J 4 -ansi -LANG:std -I. ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_OWN_IOSTREAMS -D_STLP_NO_NEW_IOSTREAMS
 CXXFLAGS = -J 4 -ansi -LANG:std -I. ${STL_INCL} ${DEBUG_FLAGS} -I.
 
 LIBS = -L../../lib -lstlport_mipspro -lm 

@@ -115,7 +115,7 @@ TEST_EXE  = stl_test.exe
 TEST  = stl_test.out
 
 CC = icc.exe
-CXX = $(CC) -D_STLP_NO_SGI_IOSTREAMS
+CXX = $(CC) -D_STLP_NO_OWN_IOSTREAMS
 DEBUG_FLAGS=
 # Use this for a Debug version
 #DEBUG_FLAGS=-O- -Ti+

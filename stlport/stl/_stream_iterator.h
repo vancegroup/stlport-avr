@@ -56,7 +56,6 @@
 #ifndef _STLP_INTERNAL_ISTREAM_H
 # include <stl/_istream.h>
 #endif
-
 #endif /* _STLP_OWN_IOSTREAMS */
 
 // istream_iterator and ostream_iterator look very different if we're

@@ -31,6 +31,10 @@
 #  include <stl/_prolog.h>
 # endif
 
+#if defined (_STLP_IMPORT_VENDOR_STD)
+# include _STLP_NATIVE_HEADER(iterator)
+#endif /* IMPORT */
+
 # ifndef _STLP_INTERNAL_ITERATOR_H
 #  include <stl/_iterator.h>
 # endif
@@ -38,10 +42,6 @@
 # ifndef _STLP_INTERNAL_STREAM_ITERATOR_H
 #  include <stl/_stream_iterator.h>
 # endif
-
-#if defined (_STLP_IMPORT_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(iterator)
-#endif /* IMPORT */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x38)
 #  include <stl/_epilog.h>

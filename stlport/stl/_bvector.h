@@ -230,6 +230,8 @@ public:
   allocator_type get_allocator() const { 
     return _STLP_CONVERT_ALLOCATOR((const __chunk_allocator_type&)_M_end_of_storage, bool); 
   }
+  static allocator_type __get_dfl_allocator() { return allocator_type(); }
+   
   _Bvector_base(const allocator_type& __a)
     : _M_start(), _M_finish(), _M_end_of_storage(_STLP_CONVERT_ALLOCATOR(__a, __chunk_type),
 						 (__chunk_type*)0) {
@@ -284,7 +286,7 @@ protected:
 # else
 #  define __BVECTOR_QUALIFIED __WORKAROUND_DBG_RENAME(vector) <bool, allocator<bool> >
 # endif
-#ifdef _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
+#if defined (_STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS)
 # define __BVECTOR __BVECTOR_QUALIFIED
 #else
 # define __BVECTOR __WORKAROUND_DBG_RENAME(vector)
@@ -453,8 +455,7 @@ public:
   const_reference at(size_type __n) const
     { _M_range_check(__n); return (*this)[__n]; }
 
-  explicit __BVECTOR(const allocator_type& __a = 
-		     allocator_type())
+  explicit __BVECTOR(const allocator_type& __a = allocator_type())
     : _Bvector_base<_Alloc >(__a) {}
 
   __BVECTOR(size_type __n, bool __value,

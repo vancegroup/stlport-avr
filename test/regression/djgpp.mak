@@ -4,7 +4,7 @@
 
 # Modified from gcc.mak by Tanes Sriviroolchai (tanes73@yahoo.com) for
 # using with DJGPP. It will use gcc to compile and link. While linking
-# if _STLP_NO_SGI_IOSTREAMS is defined, we need to link with libstdcxx
+# if _STLP_NO_OWN_IOSTREAMS is defined, we need to link with libstdcxx
 # also. 
 
 .SUFFIXES:	.cc .cpp .o .exe .out
@@ -133,9 +133,9 @@ CXX = $(CC)
 
 # DEBUG_FLAGS= -D_STLP_DEBUG
 
-#CXXFLAGS = -Wall -D_STLP_NO_SGI_IOSTREAMS -D_STLP_WHOLE_NATIVE_STD -fhonor-std -D__HONOR_STD ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+#CXXFLAGS = -Wall -D_STLP_NO_OWN_IOSTREAMS -D_STLP_WHOLE_NATIVE_STD -fhonor-std -D__HONOR_STD ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
-CXXFLAGS = -Wall -mbnu210 -ftemplate-depth-32 -D_STLP_NO_SGI_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+CXXFLAGS = -Wall -mbnu210 -ftemplate-depth-32 -D_STLP_NO_OWN_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
 LIBS = ../../lib/libstlport_djgpp_static.a -lstdcxx -lm 
 LIBSTDCXX = 

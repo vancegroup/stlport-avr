@@ -248,7 +248,7 @@ PATHPAS = .;
 PATHASM = .;
 PATHRC = .;
 
-# USERDEFINES = __STL_NO_SGI_IOSTREAMS
+# USERDEFINES = _STLP_NO_OWN_IOSTREAMS
 SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES;_DEBUG
 
  # ---------------------------------------------------------------------------
