@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/07/01 19:37:01 ptr>
+// -*- C++ -*- Time-stamp: <03/07/02 13:12:17 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -978,9 +978,17 @@ void Thread::gettime( timespec *t )
   gettimeofday( &tv, 0 );
   TIMEVAL_TO_TIMESPEC( &tv, t );
 #elif defined( WIN32 )
-  time_t ct = time( 0 );
-  t->tv_sec = ct; // ct / 1000;
-  t->tv_nsec = 0; // (ct % 1000) * 1000000;
+  union {
+    FILETIME ft; // 100 ns intervals since Jan 1 1601 (UTC)
+      __int64 t;
+  } ft;
+  GetSystemTimeAsFileTime( &ft.ft );
+  t->tv_sec = int(ft.t / (__int64)10000000 - (__int64)(11644473600)); // 60 * 60 * 24 * 134774, 1970 - 1601
+  t->tv_nsec = int(ft.t %  (__int64)(10000000)) * 100;
+    
+  //time_t ct = time( 0 );
+  //t->tv_sec = ct; // ct / 1000;
+  //t->tv_nsec = 0; // (ct % 1000) * 1000000;
 #elif defined(__sun) || defined(__hpux)
   clock_gettime( CLOCK_REALTIME, t );
 #elif defined(N_PLAT_NLM)
