@@ -2,6 +2,12 @@
 
 	* stlport/stl/_set.h: fix problems with erase functions.
 
+	* stlport/stl/_string.h: VC compiler expect only one variant---template
+	or not---of replace function with four iterators in parameters.
+
+	* test/unit/nmake-src-prefix.mak: really know what do with sources
+	in cppunit.
+
 2004-03-25  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_string_base.h: enlarge default string static buffer size
