@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/02/02 21:34:17 ptr>
+// -*- C++ -*- Time-stamp: <00/02/14 19:53:11 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -456,8 +456,8 @@ void *Thread::_call( void *p )
   set_unexpected( unexpected );
   set_terminate( terminate );
 #else
-  std::set_unexpected( unexpected );
-  std::set_terminate( terminate );
+  __STD::set_unexpected( unexpected );
+  __STD::set_terminate( terminate );
 #endif
 	
   try {
@@ -468,7 +468,7 @@ void *Thread::_call( void *p )
 
     me->_id = bad_thread_key;
   }
-  catch ( std::exception& e ) {
+  catch ( __STD::exception& e ) {
 #ifndef _WIN32
     cerr << e.what() << endl;
 #endif
