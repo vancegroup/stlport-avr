@@ -125,11 +125,13 @@
 
 # if (_MSC_VER <= 1310) 
 #  define _STLP_VENDOR_GLOBAL_CSTD
-// They included the necessary coding,
-// but the beta still has an issue with template classes
-// ok:    class a { static const int v = 2; };
-// error: template &lt;class _Tp> class a { static const int v = 2; };
-#  if !defined (_STLP_WHOLE_NATIVE_STD) && ! defined (_STLP_REDEFINE_STD)
+#  if !defined(_STLP_WHOLE_NATIVE_STD) && !defined(_STLP_REDEFINE_STD)
+/*
+ * All VC compilers has a problem with import whole namespace, i.e. sentence
+ *   namespace std { uning namespace _STL; }
+ * has no effect.
+ * The only way is to redefine name 'std'.
+ */
 #    define _STLP_REDEFINE_STD
 #  endif
 # endif /* (_MSC_VER <= 1310) */
@@ -142,15 +144,6 @@
 #  define _STLP_DONT_RETURN_VOID 1
 #  define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
-/* MSVC 6.0 has bad_alloc, but
- *   - new not throw bad_alloc
- *   - 'using _STLP_VENDOR_EXCEPT_STD::bad_alloc' or
- *     'typdef _STLP_VENDOR_EXCEPT_STD::bad_alloc bad_alloc'
- *     lead to bug---linker still search _STL::bad_alloc
- */ 
-#  define _STLP_NO_BAD_ALLOC
-#  define _STLP_BROKEN_BAD_ALLOC_CLASS
-#  define _STLP_BROKEN_BAD_CAST_CLASS
 #  ifdef _DEBUG
 #   define _STLP_USE_ABBREVS
 #  endif
