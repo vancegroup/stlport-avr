@@ -45,7 +45,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _Iterator>
 inline bool  _STLP_CALL
 __in_range_aux(const _Iterator& __it, const _Iterator& __first,
-               const _Iterator& __last, random_access_iterator_tag) {
+               const _Iterator& __last, const random_access_iterator_tag &) {
     return ( __it >= __first && 
              __it < __last);
 }
@@ -56,7 +56,7 @@ inline bool _STLP_CALL  __in_range_aux(_Iterator1 __it, const _Iterator& __first
 # else
 inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
 # endif
-                                       const _Iterator& __last, forward_iterator_tag) {
+                                       const _Iterator& __last, const forward_iterator_tag &) {
     _Iterator1 __i(__first);
     for (;  __i != __last && __i != __it; ++__i);
     return (__i!=__last);
@@ -66,7 +66,7 @@ inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& 
 template <class _Iterator1, class _Iterator>
 inline bool  _STLP_CALL
 __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
-               const _Iterator& __last, bidirectional_iterator_tag) {
+               const _Iterator& __last, const bidirectional_iterator_tag &) {
     _Iterator1 __i(__first);
     for (;  __i != __last && __i != __it; ++__i);
     return (__i !=__last);

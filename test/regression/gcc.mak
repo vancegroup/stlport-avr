@@ -136,7 +136,7 @@ LIBSTDCXX =
 check: $(TEST)
 
 $(TEST) : $(OBJECTS)
-	$(CXX) $(CXXFLAGS) ${REPO_FLAGS} $(OBJECTS) $(LIBS) -o $(TEST_EXE)
+	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} ${REPO_FLAGS} $(OBJECTS) $(LIBS) -o $(TEST_EXE)
 	echo 'a string' | ./$(TEST_EXE) > $(TEST)
 
 

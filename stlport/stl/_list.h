@@ -310,14 +310,14 @@ public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template<class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          __true_type) {
+                          const __true_type&) {
     _M_fill_insert(__pos, (size_type) __n, (_Tp) __x);
   }
   template <class _InputIter>
   void 
   _M_insert_dispatch(iterator __position,
 		     _InputIter __first, _InputIter __last,
-		     __false_type) 
+		     const __false_type&) 
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position, const _Tp* __first, const _Tp* __last) {
     for ( ; __first != __last; ++__first)
@@ -430,12 +430,12 @@ public:
   }
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, __true_type)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
     { assign((size_type) __n, (_Tp) __val); }
 
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first2, _InputIterator __last2,
-                          __false_type) {
+                          const __false_type&) {
     iterator __first1 = begin();
     iterator __last1 = end();
     for ( ; __first1 != __last1 && __first2 != __last2; ++__first1, ++__first2)

@@ -1,4 +1,14 @@
-The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
+The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
+	
+	* _range_erors.h : depandancy ob <stdexcept> and <string> removed for own iostreams mode
+	(thanks Doug Gilbert)
+
+	* debug/_list.h : "typename" added in new methods (thanks Doug Gilbert)
+
+	* _config.h, src/common_macros.mak : beta version number bumped 
+		
+	
+The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 
 	* sparc_atomic.s : file missing from the distribution restored
 

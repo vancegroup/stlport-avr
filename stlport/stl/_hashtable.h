@@ -390,7 +390,7 @@ public:
 
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l,
-                     input_iterator_tag)
+                     const input_iterator_tag &)
   {
     for ( ; __f != __l; ++__f)
       insert_unique(*__f);
@@ -398,7 +398,7 @@ public:
 
   template <class _InputIterator>
   void insert_equal(_InputIterator __f, _InputIterator __l,
-                    input_iterator_tag)
+                    const input_iterator_tag &)
   {
     for ( ; __f != __l; ++__f)
       insert_equal(*__f);
@@ -406,7 +406,7 @@ public:
 
   template <class _ForwardIterator>
   void insert_unique(_ForwardIterator __f, _ForwardIterator __l,
-                     forward_iterator_tag)
+                     const forward_iterator_tag &)
   {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);
@@ -416,7 +416,7 @@ public:
 
   template <class _ForwardIterator>
   void insert_equal(_ForwardIterator __f, _ForwardIterator __l,
-                    forward_iterator_tag)
+                    const forward_iterator_tag &)
   {
     size_type __n = distance(__f, __l);
     resize(_M_num_elements._M_data + __n);

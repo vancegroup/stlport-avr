@@ -4,7 +4,7 @@ SHELL=/bin/sh
 # Versioning
 #
 VERSION_MAJOR=4
-VERSION_MINOR=1
+VERSION_MINOR=5
 
 # This one is not always present; it is only used for bugfixing release versions which are backwards
 # compatible with minor version
@@ -12,7 +12,7 @@ PATCH_SUFFIX=
 
 # This one is not always present; it should be empty for release versions.
 # We do not assume any binary compatibility for betas.
-BETA_SUFFIX=.b7
+BETA_SUFFIX=.b8
 
 VERSION_SUFFIX= .$(VERSION_MAJOR).$(VERSION_MINOR)$(BETA_SUFFIX)
 

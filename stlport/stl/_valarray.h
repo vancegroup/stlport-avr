@@ -124,8 +124,8 @@ public:
   // Extension: constructor that doesn't initialize valarray elements to a
   // specific value.  This is faster for types such as int and double.
 private:
-  void _M_initialize(__true_type) {}
-  void _M_initialize(__false_type)
+  void _M_initialize(const __true_type&) {}
+  void _M_initialize(const __false_type&)
     { uninitialized_fill_n(this->_M_first, this->_M_size, value_type()); }
 
 public:

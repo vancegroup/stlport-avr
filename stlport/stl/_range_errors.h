@@ -21,9 +21,28 @@
 
 // _STLP_DONT_THROW_RANGE_ERRORS is a hook so that users can disable
 // this exception throwing.
-#if defined(_STLP_CAN_THROW_RANGE_ERRORS) && defined(_STLP_USE_EXCEPTIONS) && !defined(_STLP_DONT_THROW_RANGE_ERRORS)
+#if defined(_STLP_CAN_THROW_RANGE_ERRORS) && defined(_STLP_USE_EXCEPTIONS) \
+    && !defined(_STLP_DONT_THROW_RANGE_ERRORS)
 # define _STLP_THROW_RANGE_ERRORS
 #endif
+
+// For the STLport iostreams, only declaration here, definition is in the lib
+
+#if defined ( _STLP_OWN_IOSTREAMS  ) && ! defined (_STLP_EXTERN_RANGE_ERRORS) 
+#  define _STLP_EXTERN_RANGE_ERRORS
+# endif
+
+#if defined (_STLP_EXTERN_RANGE_ERRORS)
+_STLP_BEGIN_NAMESPACE
+void  _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg);
+void  _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg);
+void  _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg);
+void  _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg);
+void  _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg);
+_STLP_END_NAMESPACE
+#else
+// For wrapper mode and throwing range errors, include the
+// stdexcept header and throw the appropriate exceptions directly.
 
 #if defined(_STLP_THROW_RANGE_ERRORS)
 # ifndef _STLP_STDEXCEPT
@@ -43,22 +62,7 @@
 # endif
 #endif
 
-// For the SGI 7.3 compiler, declare these functions here and define them
-// elsewhere.
-#if defined ( _STLP_OWN_IOSTREAMS  ) && ! defined (_STLP_EXTERN_RANGE_ERRORS) 
-#  define _STLP_EXTERN_RANGE_ERRORS
-# endif
 _STLP_BEGIN_NAMESPACE
-
-#if defined (_STLP_EXTERN_RANGE_ERRORS)
-void  _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg);
-void  _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg);
-void  _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg);
-void  _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg);
-void  _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg);
-// For other compilers where we're throwing range errors, include the
-// stdexcept header and throw the appropriate exceptions directly.
-#else
 inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
   _STLP_THROW_MSG(range_error, __msg); 
 }
@@ -78,9 +82,12 @@ inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* _
 inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) { 
   _STLP_THROW_MSG(overflow_error, __msg); 
 }
+_STLP_END_NAMESPACE
+
+# undef _STLP_THROW_MSG
+
 # endif /* EXTERN_RANGE_ERRORS */
 
-_STLP_END_NAMESPACE
 
 #endif /* _STLP_RANGE_ERRORS_H */
 

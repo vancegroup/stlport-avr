@@ -34,7 +34,7 @@
 # endif
 
 #  if (defined (__SUNPRO_CC) && (__SUNPRO_CC > 0x500)) || \
-     ( defined (__IBMCPP__) && (__IBMCPP__ == 500) || ! ( defined (__HP_aCC) && (__HP_aCC >= 30000) ))
+     !( defined (__IBMCPP__) && (__IBMCPP__ == 500) || ! ( defined (__HP_aCC) && (__HP_aCC >= 30000) ))
 # ifndef _STLP_HAS_NO_NAMESPACES
 namespace std {
 # endif

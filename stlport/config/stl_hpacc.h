@@ -76,7 +76,7 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
 #      define _STLP_NATIVE_INCLUDE_PATH       ../include
 #      define _STLP_NATIVE_C_INCLUDE_PATH     ../include
 #      define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include
-#      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
+// #      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
 #     define _STLP_HP_ACC_COMPAT            -1
 #    else // option -Aa
 #     define _STLP_NATIVE_INCLUDE_PATH       ../include
@@ -103,7 +103,7 @@ typedef typename _STLP_dummy_type1:: _STLP_TEMPLATE rebind<t>::other _STLP_dummy
 #      define _STLP_NATIVE_INCLUDE_PATH       ../include_std
 #      define _STLP_NATIVE_C_INCLUDE_PATH     ../include_std
 #      define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include_std
-#      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
+// #      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
 #     define _STLP_HP_ACC_COMPAT            -1
 #    else // kind of compatibility mode
 #     define _STLP_NATIVE_INCLUDE_PATH       ../include

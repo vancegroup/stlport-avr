@@ -277,13 +277,13 @@ public:
   }
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, __true_type)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
     { _M_fill_assign((size_type) __n, (_Tp) __val); }
 
   template <class _InputIter>
   void
   _M_assign_dispatch(_InputIter __first, _InputIter __last,
-		     __false_type) {
+		     const __false_type&) {
     _Node_base* __prev = &this->_M_head._M_data;
     _Node* __node = (_Node*) this->_M_head._M_data._M_next;
     while (__node != 0 && __first != __last) {
@@ -382,14 +382,14 @@ private:
 
   template <class _Integer>
   void _M_insert_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                             __true_type) {
+                             const __true_type&) {
     _M_insert_after_fill(__pos, __n, __x);
   }
 
   template <class _InIter>
   void _M_insert_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last,
-                             __false_type) {
+                             const __false_type&) {
     while (__first != __last) {
       __pos = __slist_make_link(__pos, _M_create_node(*__first));
       ++__first;

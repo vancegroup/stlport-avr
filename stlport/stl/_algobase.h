@@ -106,7 +106,7 @@ inline const _Tp& (max)(const _Tp& __a, const _Tp& __b, _Compare __comp) {
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
                           _OutputIter __result,
-                          input_iterator_tag, _Distance*) {
+                          const input_iterator_tag &, _Distance*) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -115,7 +115,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-			  _OutputIter __result, forward_iterator_tag, _Distance* ) {
+			  _OutputIter __result, const forward_iterator_tag &, _Distance* ) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -124,7 +124,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-			  _OutputIter __result, bidirectional_iterator_tag, _Distance* __dis) {
+			  _OutputIter __result, const bidirectional_iterator_tag &, _Distance* __dis) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -134,7 +134,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
 template <class _RandomAccessIter, class _OutputIter, class _Distance>
 inline _OutputIter
 __copy(_RandomAccessIter __first, _RandomAccessIter __last,
-       _OutputIter __result, random_access_iterator_tag, _Distance*) {
+       _OutputIter __result, const random_access_iterator_tag &, _Distance*) {
   for (_Distance __n = __last - __first; __n > 0; --__n) {
     *__result = *__first;
     ++__first;
@@ -158,7 +158,7 @@ template <class _BidirectionalIter1, class _BidirectionalIter2,
 inline _BidirectionalIter2 __copy_backward(_BidirectionalIter1 __first, 
                                            _BidirectionalIter1 __last, 
                                            _BidirectionalIter2 __result,
-                                           bidirectional_iterator_tag,
+                                           const bidirectional_iterator_tag &,
                                            _Distance*) 
 {
   while (__first != __last)
@@ -170,7 +170,7 @@ template <class _RandomAccessIter, class _BidirectionalIter, class _Distance>
 inline _BidirectionalIter __copy_backward(_RandomAccessIter __first, 
                                           _RandomAccessIter __last, 
                                           _BidirectionalIter __result,
-                                          random_access_iterator_tag,
+                                          const random_access_iterator_tag &,
                                           _Distance*)
 {
   for (_Distance __n = __last - __first; __n > 0; --__n)
@@ -185,27 +185,27 @@ __copy_trivial_backward(const void* __first, const void* __last, void* __result)
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __false_type) {
+inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
   return __copy(__first, __last, __result, 
                 _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
 		_STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
+inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
 // we know they all pointers, so this cast is OK 
   //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
   return (_OutputIter)__copy_trivial(__first, __last, __result);
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
+inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
   return __copy_ptrs(__first, __last, __result, 
                      _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter), 
                                    _STLP_VALUE_TYPE(__result, _OutputIter))._Ret());
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, __false_type) {
+inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
   return __copy(__first, __last, __result, 
 		_STLP_ITERATOR_CATEGORY(__first, _InputIter), _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
@@ -217,21 +217,21 @@ inline _OutputIter copy(_InputIter __first, _InputIter __last, _OutputIter __res
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __false_type) {
+inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
   return __copy_backward(__first, __last, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter), _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
+inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
   return (_OutputIter)__copy_trivial_backward(__first, __last, __result);  
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, __false_type) {
+inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
   return __copy_backward(__first, __last, __result, _STLP_ITERATOR_CATEGORY(__first,_InputIter), _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
+inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
   return __copy_backward_ptrs(__first, __last, __result,  
                               _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter), 
                                             _STLP_VALUE_TYPE(__result, _OutputIter))._Ret());
@@ -283,7 +283,7 @@ template <class _InputIter, class _Size, class _OutputIter>
 _STLP_INLINE_LOOP 
 pair<_InputIter, _OutputIter> __copy_n(_InputIter __first, _Size __count,
                                        _OutputIter __result,
-                                       input_iterator_tag) {
+                                       const input_iterator_tag &) {
   for ( ; __count > 0; --__count) {
     *__result = *__first;
     ++__first;
@@ -296,7 +296,7 @@ template <class _RAIter, class _Size, class _OutputIter>
 inline pair<_RAIter, _OutputIter>
 __copy_n(_RAIter __first, _Size __count,
          _OutputIter __result,
-         random_access_iterator_tag) {
+         const random_access_iterator_tag &) {
   _RAIter __last = __first + __count;
   return pair<_RAIter, _OutputIter>(__last, copy(__first, __last, __result));
 }

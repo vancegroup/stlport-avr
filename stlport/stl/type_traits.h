@@ -239,7 +239,7 @@ template <class _Tp>
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
 
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-#   define _IS_POD_ITER(_It, _Tp) *(typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type*)0
+#   define _IS_POD_ITER(_It, _Tp) *(typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type*)0x2000
 #  else
 #   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
 #  endif
@@ -365,11 +365,11 @@ _STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
 // Those adaptors are here to fix common compiler bug regarding builtins:
 // expressions like int k = int() should initialize k to 0
 template <class _Tp>
-_Tp __default_constructed_aux(_Tp*, __false_type) {
+_Tp __default_constructed_aux(_Tp*, const __false_type&) {
     return _Tp();
 }
 template <class _Tp>
-_Tp __default_constructed_aux(_Tp*, __true_type) {
+_Tp __default_constructed_aux(_Tp*, const __true_type&) {
     return _Tp(0);
 }
 

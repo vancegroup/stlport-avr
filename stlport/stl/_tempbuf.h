@@ -95,8 +95,8 @@ private:
     }
   }
 
-  void _M_initialize_buffer(const _Tp&, __true_type) {}
-  void _M_initialize_buffer(const _Tp& val, __false_type) {
+  void _M_initialize_buffer(const _Tp&, const __true_type&) {}
+  void _M_initialize_buffer(const _Tp& val, const __false_type&) {
     uninitialized_fill_n(_M_buffer, _M_len, val);
   }
 

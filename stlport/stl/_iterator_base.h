@@ -174,13 +174,13 @@ inline typename iterator_traits<_Iter>::value_type* __value_type(const _Iter&) {
 
 template <class _Iter>
 inline random_access_iterator_tag 
-__iterator_category(const _Iter&, __true_type) {
+__iterator_category(const _Iter&, const __true_type&) {
   return random_access_iterator_tag();
 }
 
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE iterator_traits<_Iter>::iterator_category
-__iterator_category(const _Iter&, __false_type) {
+__iterator_category(const _Iter&, const __false_type&) {
   typedef typename iterator_traits<_Iter>::iterator_category _Category;
   return _Category();
 }
@@ -191,14 +191,14 @@ inline ptrdiff_t* _STLP_CALL __distance_type(const _Iter&) { return (ptrdiff_t*)
 
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE iterator_traits<_Iter>::value_type* 
-__value_type(const _Iter&, __false_type) {
+__value_type(const _Iter&, const __false_type&) {
   typedef typename iterator_traits<_Iter>::value_type _value_type;
   return __STATIC_CAST(_value_type*,0);
 }
 
 template <class _Tp>
 inline _Tp*  
-__value_type(const _Tp*, __true_type) {
+__value_type(const _Tp*, const __true_type&) {
   return __STATIC_CAST(_Tp*, 0);
 }
 
@@ -271,21 +271,21 @@ inline _Distance* _STLP_CALL distance_type(const random_access_iterator<_Tp, _Di
 
 template <class _InputIterator, class _Distance>
 inline void _STLP_CALL __distance(_InputIterator __first, _InputIterator __last,
-				  _Distance& __n, input_iterator_tag) {
+				  _Distance& __n, const input_iterator_tag &) {
   while (__first != __last) { ++__first; ++__n; }
 }
 
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
 template <class _ForwardIterator, class _Distance>
 inline void _STLP_CALL __distance(_ForwardIterator __first, _ForwardIterator __last,
-				  _Distance& __n, forward_iterator_tag) {
+				  _Distance& __n, const forward_iterator_tag &) {
   while (__first != __last) { ++__first; ++__n; }
 }
 
 template <class _BidirectionalIterator, class _Distance>
 _STLP_INLINE_LOOP void _STLP_CALL __distance(_BidirectionalIterator __first, 
 					     _BidirectionalIterator __last,
-					     _Distance& __n, bidirectional_iterator_tag) {
+					     _Distance& __n, const bidirectional_iterator_tag &) {
     while (__first != __last) { ++__first; ++__n; }
 }
 # endif
@@ -293,7 +293,7 @@ _STLP_INLINE_LOOP void _STLP_CALL __distance(_BidirectionalIterator __first,
 template <class _RandomAccessIterator, class _Distance>
 inline void _STLP_CALL __distance(const _RandomAccessIterator& __first, 
 				  const _RandomAccessIterator& __last, 
-				  _Distance& __n, random_access_iterator_tag) {
+				  _Distance& __n, const random_access_iterator_tag &) {
   __n += __last - __first;
 }
 
@@ -307,7 +307,7 @@ inline void _STLP_CALL distance(const _InputIterator& __first,
 
 template <class _InputIterator>
 inline _STLP_DIFFERENCE_TYPE(_InputIterator) _STLP_CALL
-__distance(_InputIterator __first, _InputIterator __last, input_iterator_tag) {
+__distance(_InputIterator __first, _InputIterator __last, const input_iterator_tag &) {
   _STLP_DIFFERENCE_TYPE(_InputIterator) __n = 0;
   while (__first != __last) {
     ++__first; ++__n;
@@ -319,7 +319,7 @@ __distance(_InputIterator __first, _InputIterator __last, input_iterator_tag) {
 template <class _ForwardIterator>
 inline _STLP_DIFFERENCE_TYPE(_ForwardIterator) _STLP_CALL 
 __distance(_ForwardIterator __first, _ForwardIterator __last,
-           forward_iterator_tag)
+           const forward_iterator_tag &)
 {
   _STLP_DIFFERENCE_TYPE(_ForwardIterator) __n = 0;
   while (__first != __last) {
@@ -332,7 +332,7 @@ template <class _BidirectionalIterator>
 _STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) _STLP_CALL 
 __distance(_BidirectionalIterator __first, 
            _BidirectionalIterator __last,
-           bidirectional_iterator_tag) {
+           const bidirectional_iterator_tag &) {
   _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) __n = 0;
   while (__first != __last) {
     ++__first; ++__n;
@@ -344,7 +344,7 @@ __distance(_BidirectionalIterator __first,
 template <class _RandomAccessIterator>
 inline _STLP_DIFFERENCE_TYPE(_RandomAccessIterator) _STLP_CALL
 __distance(const _RandomAccessIterator& __first, const _RandomAccessIterator& __last,
-           random_access_iterator_tag) {
+           const random_access_iterator_tag &) {
   return __last - __first;
 }
 
@@ -397,26 +397,26 @@ inline void  _STLP_CALL _Distance(_InputIterator __first,
 # endif
 
 template <class _InputIter, class _Distance>
-_STLP_INLINE_LOOP void  _STLP_CALL __advance(_InputIter& __i, _Distance __n, input_iterator_tag) {
+_STLP_INLINE_LOOP void  _STLP_CALL __advance(_InputIter& __i, _Distance __n, const input_iterator_tag &) {
   while (__n--) ++__i;
 }
 
 // fbp : added output iterator tag variant
 template <class _InputIter, class _Distance>
-_STLP_INLINE_LOOP void  _STLP_CALL __advance(_InputIter& __i, _Distance __n, output_iterator_tag) {
+_STLP_INLINE_LOOP void  _STLP_CALL __advance(_InputIter& __i, _Distance __n, const output_iterator_tag &) {
   while (__n--) ++__i;
 }
 
 # if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _ForwardIterator, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL __advance(_ForwardIterator& i, _Distance n, forward_iterator_tag) {
+_STLP_INLINE_LOOP void _STLP_CALL __advance(_ForwardIterator& i, _Distance n, const forward_iterator_tag &) {
     while (n--) ++i;
 }
 # endif
 
 template <class _BidirectionalIterator, class _Distance>
 _STLP_INLINE_LOOP void _STLP_CALL __advance(_BidirectionalIterator& __i, _Distance __n, 
-                      bidirectional_iterator_tag) {
+                      const bidirectional_iterator_tag &) {
   if (__n > 0)
     while (__n--) ++__i;
   else
@@ -425,7 +425,7 @@ _STLP_INLINE_LOOP void _STLP_CALL __advance(_BidirectionalIterator& __i, _Distan
 
 template <class _RandomAccessIterator, class _Distance>
 inline void _STLP_CALL __advance(_RandomAccessIterator& __i, _Distance __n, 
-                      random_access_iterator_tag) {
+                      const random_access_iterator_tag &) {
   __i += __n;
 }
 

@@ -47,9 +47,9 @@ _STLP_BEGIN_NAMESPACE
 
 # ifdef _STLP_TRIVIAL_DESTRUCTOR_BUG
 template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, __false_type) { __pointer->~_Tp(); }
+inline void __destroy_aux(_Tp* __pointer, const __false_type&) { __pointer->~_Tp(); }
 template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, __true_type) {}
+inline void __destroy_aux(_Tp* __pointer, const __true_type&) {}
 # endif
 
 template <class _Tp>
@@ -102,13 +102,13 @@ inline void _Construct(_T1* __p) {
 
 template <class _ForwardIterator>
 _STLP_INLINE_LOOP void
-__destroy_aux(_ForwardIterator __first, _ForwardIterator __last, __false_type) {
+__destroy_aux(_ForwardIterator __first, _ForwardIterator __last, const __false_type&) {
   for ( ; __first != __last; ++__first)
     _Destroy(&*__first);
 }
 
 template <class _ForwardIterator> 
-inline void __destroy_aux(_ForwardIterator, _ForwardIterator, __true_type) {}
+inline void __destroy_aux(_ForwardIterator, _ForwardIterator, const __true_type&) {}
 
 template <class _ForwardIterator, class _Tp>
 inline void 

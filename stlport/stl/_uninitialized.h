@@ -51,7 +51,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter 
 __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     __true_type) {
+                     const __true_type&) {
   return __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter> :: _Ret());
 }
 
@@ -59,7 +59,7 @@ template <class _InputIter, class _ForwardIter>
 _STLP_INLINE_LOOP
 _ForwardIter 
 __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     __false_type)
+                     const __false_type&)
 {
   _ForwardIter __cur = __result;
   _STLP_TRY {
@@ -76,7 +76,7 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter
 uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result) {
-  return __uninitialized_copy(__first, __last, __result,  _Is_POD(_STLP_VALUE_TYPE(__result, _ForwardIter))._Ret());
+  return __uninitialized_copy(__first, __last, __result,  _IS_POD_ITER(__result, _ForwardIter));
 }
 
 inline char* 
@@ -99,7 +99,7 @@ _STLP_INLINE_LOOP
 pair<_InputIter, _ForwardIter>
 __uninitialized_copy_n(_InputIter __first, _Size __count,
                        _ForwardIter __result,
-                       input_iterator_tag)
+                       const input_iterator_tag &)
 {
   _ForwardIter __cur = __result;
   _STLP_TRY {
@@ -118,7 +118,7 @@ template <class _InputIterator, class _Size, class _ForwardIterator>
 inline pair<_InputIterator, _ForwardIterator>
 __uninitialized_copy_n(_InputIterator __first, _Size __count,
                        _ForwardIterator __result,
-                       forward_iterator_tag) {
+                       const forward_iterator_tag &) {
   return __uninitialized_copy_n(__first, __count, __result, input_iterator_tag());
 }
 
@@ -126,7 +126,7 @@ template <class _InputIterator, class _Size, class _ForwardIterator>
 inline pair<_InputIterator, _ForwardIterator>
 __uninitialized_copy_n(_InputIterator __first, _Size __count,
                        _ForwardIterator __result,
-                       bidirectional_iterator_tag) {
+                       const bidirectional_iterator_tag &) {
   return __uninitialized_copy_n(__first, __count, __result, input_iterator_tag());
 }
 # endif
@@ -134,7 +134,7 @@ __uninitialized_copy_n(_InputIterator __first, _Size __count,
 
 template <class _RandomAccessIter, class _Size, class _ForwardIter>
 inline pair<_RandomAccessIter, _ForwardIter>
-__uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __result, random_access_iterator_tag) {
+__uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __result, const random_access_iterator_tag &) {
   _RandomAccessIter __last = __first + __count;
   return pair<_RandomAccessIter, _ForwardIter>( __last, __uninitialized_copy(__first, __last, __result, 
                                                                              _IS_POD_ITER(__result, _ForwardIter)));
@@ -154,14 +154,14 @@ uninitialized_copy_n(_InputIter __first, _Size __count,
 template <class _ForwardIter, class _Tp>
 inline void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
-                     const _Tp& __x, __true_type) {
+                     const _Tp& __x, const __true_type&) {
   _STLP_STD::fill(__first, __last, __x);
 }
 
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
-                     const _Tp& __x, __false_type)
+                     const _Tp& __x, const __false_type&)
 {
   _ForwardIter __cur = __first;
   _STLP_TRY {
@@ -181,14 +181,14 @@ inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
-                       const _Tp& __x, __true_type) {
+                       const _Tp& __x, const __true_type&) {
   return _STLP_STD::fill_n(__first, __n, __x);
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
-                       const _Tp& __x, __false_type)
+                       const _Tp& __x, const __false_type&)
 {
   _ForwardIter __cur = __first;
   _STLP_TRY {

@@ -123,7 +123,7 @@ template <class _InputIter, class _Integer>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
 	      int __base, _Integer& __val, 
-	      int __got, bool __is_negative, char __separator, const string& __grouping, __true_type) 
+	      int __got, bool __is_negative, char __separator, const string& __grouping, const __true_type&) 
 {
   bool __overflow = false;
   _Integer __result = 0;
@@ -182,7 +182,7 @@ template <class _InputIter, class _Integer>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
 	      int __base, _Integer& __val, 
-	      int __got, bool __is_negative, char __separator, const string& __grouping, __false_type) 
+	      int __got, bool __is_negative, char __separator, const string& __grouping, const __false_type&) 
 {
   bool __overflow = false;
   _Integer __result = 0;

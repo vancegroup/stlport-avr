@@ -320,7 +320,7 @@ inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last,
 
 template <class _BidirectionalIter>
 _STLP_INLINE_LOOP void 
-__reverse(_BidirectionalIter __first, _BidirectionalIter __last, bidirectional_iterator_tag) {
+__reverse(_BidirectionalIter __first, _BidirectionalIter __last, const bidirectional_iterator_tag &) {
   while (true)
     if (__first == __last || __first == --__last)
       return;
@@ -331,7 +331,7 @@ __reverse(_BidirectionalIter __first, _BidirectionalIter __last, bidirectional_i
 
 template <class _RandomAccessIter>
 _STLP_INLINE_LOOP void 
-__reverse(_RandomAccessIter __first, _RandomAccessIter __last, random_access_iterator_tag) {
+__reverse(_RandomAccessIter __first, _RandomAccessIter __last, const random_access_iterator_tag &) {
   for (; __first < __last; ++__first) iter_swap(__first, --__last);
 }
 

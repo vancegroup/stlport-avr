@@ -234,14 +234,14 @@ __unique_copy(_InputIterator __first, _InputIterator __last,
 template <class _InputIter, class _OutputIter, class _BinaryPredicate>
 inline _OutputIter 
 __unique_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
-              _BinaryPredicate __binary_pred, output_iterator_tag) {
+              _BinaryPredicate __binary_pred, const output_iterator_tag &) {
   return __unique_copy(__first, __last, __result, __binary_pred, _STLP_VALUE_TYPE(__first, _InputIter));
 }
 
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
 _STLP_INLINE_LOOP _ForwardIter 
 __unique_copy(_InputIter __first, _InputIter __last, _ForwardIter __result, 
-              _BinaryPredicate __binary_pred, forward_iterator_tag) {
+              _BinaryPredicate __binary_pred, const forward_iterator_tag &) {
   *__result = *__first;
   while (++__first != __last)
     if (!__binary_pred(*__result, *__first)) *++__result = *__first;
@@ -253,7 +253,7 @@ template <class _InputIterator, class _BidirectionalIterator, class _BinaryPredi
 inline _BidirectionalIterator 
 __unique_copy(_InputIterator __first, _InputIterator __last,
               _BidirectionalIterator __result, _BinaryPredicate __binary_pred,
-              bidirectional_iterator_tag) {
+              const bidirectional_iterator_tag &) {
   return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
 
@@ -261,7 +261,7 @@ template <class _InputIterator, class _RandomAccessIterator, class _BinaryPredic
 inline _RandomAccessIterator 
 __unique_copy(_InputIterator __first, _InputIterator __last,
               _RandomAccessIterator __result, _BinaryPredicate __binary_pred,
-              random_access_iterator_tag) {
+              const random_access_iterator_tag &) {
   return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
 # endif /* _STLP_NONTEMPL_BASE_MATCH_BUG */
@@ -293,7 +293,7 @@ _ForwardIter __rotate(_ForwardIter __first,
                       _ForwardIter __middle,
                       _ForwardIter __last,
                       _Distance*,
-                      forward_iterator_tag) {
+                      const forward_iterator_tag &) {
   if (__first == __middle)
     return __last;
   if (__last  == __middle)
@@ -326,7 +326,7 @@ _BidirectionalIter __rotate(_BidirectionalIter __first,
                             _BidirectionalIter __middle,
                             _BidirectionalIter __last,
                             _Distance*,
-                            bidirectional_iterator_tag) {
+                            const bidirectional_iterator_tag &) {
   if (__first == __middle)
     return __last;
   if (__last  == __middle)
@@ -407,7 +407,7 @@ _RandomAccessIter __rotate(_RandomAccessIter __first,
 template <class _RandomAccessIter, class _Distance>
 inline _RandomAccessIter 
 __rotate(_RandomAccessIter __first, _RandomAccessIter __middle, _RandomAccessIter __last,
-         _Distance * __dis, random_access_iterator_tag) {
+         _Distance * __dis, const random_access_iterator_tag &) {
   return __rotate(__first, __middle, __last,
                   __dis, _STLP_VALUE_TYPE(__first, _RandomAccessIter));
 }
@@ -578,7 +578,7 @@ template <class _ForwardIter, class _Predicate>
 _STLP_INLINE_LOOP _ForwardIter __partition(_ForwardIter __first,
                                            _ForwardIter __last,
                                            _Predicate   __pred,
-                                           forward_iterator_tag) {
+                                           const forward_iterator_tag &) {
   if (__first == __last) return __first;
 
   while (__pred(*__first))
@@ -598,7 +598,7 @@ template <class _BidirectionalIter, class _Predicate>
 _STLP_INLINE_LOOP _BidirectionalIter __partition(_BidirectionalIter __first,
                                                  _BidirectionalIter __last,
                                                  _Predicate __pred,
-                                                 bidirectional_iterator_tag) {
+                                                 const bidirectional_iterator_tag &) {
   while (true) {
     while (true)
       if (__first == __last)
@@ -626,7 +626,7 @@ inline
 _BidirectionalIter __partition(_BidirectionalIter __first,
                                _BidirectionalIter __last,
 			       _Predicate __pred,
-			       random_access_iterator_tag) {
+			       const random_access_iterator_tag &) {
   return __partition(__first, __last, __pred, bidirectional_iterator_tag());
 }
 # endif

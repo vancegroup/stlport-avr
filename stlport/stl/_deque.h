@@ -448,14 +448,14 @@ public:                         // Constructor, destructor.
 #ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _Integer>
-  void _M_initialize_dispatch(_Integer __n, _Integer __x, __true_type) {
+  void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     this->_M_initialize_map(__n);
     _M_fill_initialize(__x);
   }
 
   template <class _InputIter>
   void _M_initialize_dispatch(_InputIter __first, _InputIter __last,
-                              __false_type) {
+                              const __false_type&) {
     _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
@@ -537,17 +537,17 @@ public:
 private:                        // helper functions for assign() 
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, __true_type)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
     { _M_fill_assign((size_type) __n, (_Tp) __val); }
 
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
-                          __false_type) {
+                          const __false_type&) {
     _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 
   template <class _InputIter>
-  void _M_assign_aux(_InputIter __first, _InputIter __last, input_iterator_tag) {
+  void _M_assign_aux(_InputIter __first, _InputIter __last, const input_iterator_tag &) {
     iterator __cur = begin();
     for ( ; __first != __last && __cur != end(); ++__cur, ++__first)
       *__cur = *__first;
@@ -559,7 +559,7 @@ private:                        // helper functions for assign()
 
   template <class _ForwardIterator>
   void _M_assign_aux(_ForwardIterator __first, _ForwardIterator __last,
-                     forward_iterator_tag) {
+                     const forward_iterator_tag &) {
     size_type __len = distance(__first, __last);
     if (__len > size()) {
       _ForwardIterator __mid = __first;
@@ -667,14 +667,14 @@ public:                         // Insert
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          __true_type) {
+                          const __true_type&) {
     _M_fill_insert(__pos, (size_type) __n, (value_type) __x);
   }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
-                          __false_type) {
+                          const __false_type&) {
     insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 
@@ -725,7 +725,7 @@ protected:                        // Internal construction/destruction
   template <class _InputIterator>
   void _M_range_initialize(_InputIterator __first,
 			   _InputIterator __last,
-			   input_iterator_tag) {
+			   const input_iterator_tag &) {
     this->_M_initialize_map(0);
     _STLP_TRY {
       for ( ; __first != __last; ++__first)
@@ -736,7 +736,7 @@ protected:                        // Internal construction/destruction
  template <class _ForwardIterator>
  void  _M_range_initialize(_ForwardIterator __first,
                            _ForwardIterator __last,
-                           forward_iterator_tag)  {
+                           const forward_iterator_tag &)  {
    size_type __n = distance(__first, __last);
    this->_M_initialize_map(__n);
    _Map_pointer __cur_node;
@@ -775,7 +775,7 @@ void
 insert(iterator __pos,
        _InputIterator __first,
        _InputIterator __last,
-       input_iterator_tag)
+       const input_iterator_tag &)
 {
   copy(__first, __last, inserter(*this, __pos));
 }
@@ -784,7 +784,7 @@ template <class _ForwardIterator>
 void  insert(iterator __pos,
 	     _ForwardIterator __first,
 	     _ForwardIterator __last,
-	     forward_iterator_tag)
+	     const forward_iterator_tag &)
  {
   size_type __n = distance(__first, __last);
   if (__pos._M_cur == this->_M_start._M_cur) {

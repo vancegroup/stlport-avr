@@ -279,7 +279,7 @@ extern const char __hex_char_table_hi[];
 
 template <class _Integer>
 inline char* _STLP_CALL
-__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, __true_type /* is_signed */)
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __true_type& /* is_signed */)
 {
   __max_int_t __temp = __x;
 
@@ -299,7 +299,7 @@ __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, 
 
 template <class _Integer>
 inline char* _STLP_CALL
-__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags, __false_type /* is_signed */)
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags, const __false_type& /* is_signed */)
 {
   for (; __x != 0; __x /= 10)
     *--__ptr = (int)(__x % 10) + '0';

@@ -366,7 +366,7 @@ protected:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void _M_initialize_range(_InputIterator __first, _InputIterator __last,
-			input_iterator_tag) {
+			const input_iterator_tag &) {
     this->_M_start = iterator();
     this->_M_finish = iterator();
     this->_M_end_of_storage._M_data = 0;
@@ -376,7 +376,7 @@ protected:
 
   template <class _ForwardIterator>
   void _M_initialize_range(_ForwardIterator __first, _ForwardIterator __last,
-                           forward_iterator_tag) {
+                           const forward_iterator_tag &) {
     size_type __n = distance(__first, __last);
     _M_initialize(__n);
     //    copy(__first, __last, _M_start);
@@ -386,7 +386,7 @@ protected:
   template <class _InputIterator>
   void _M_insert_range(iterator __pos,
                        _InputIterator __first, _InputIterator __last,
-                       input_iterator_tag) {
+                       const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
       __pos = insert(__pos, *__first);
       ++__pos;
@@ -396,7 +396,7 @@ protected:
   template <class _ForwardIterator>
   void _M_insert_range(iterator __position,
                        _ForwardIterator __first, _ForwardIterator __last,
-                       forward_iterator_tag) {
+                       const forward_iterator_tag &) {
     if (__first != __last) {
       size_type __n = distance(__first, __last);
       if (capacity() - size() >= __n) {
@@ -481,14 +481,14 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
-  void _M_initialize_dispatch(_Integer __n, _Integer __x, __true_type) {
+  void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     _M_initialize(__n);
     fill(this->_M_start._M_p, this->_M_end_of_storage._M_data, __x ? ~0 : 0);
   }
     
   template <class _InputIterator>
   void _M_initialize_dispatch(_InputIterator __first, _InputIterator __last,
-                              __false_type) {
+                              const __false_type&) {
     _M_initialize_range(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
@@ -567,16 +567,16 @@ public:
   }
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, __true_type)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
     { _M_fill_assign((size_t) __n, (bool) __val); }
 
   template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last, __false_type)
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last, const __false_type&)
     { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
 
   template <class _InputIterator>
   void _M_assign_aux(_InputIterator __first, _InputIterator __last,
-                     input_iterator_tag) {
+                     const input_iterator_tag &) {
     iterator __cur = begin();
     for ( ; __first != __last && __cur != end(); ++__cur, ++__first)
       *__cur = *__first;
@@ -588,7 +588,7 @@ public:
 
   template <class _ForwardIterator>
   void _M_assign_aux(_ForwardIterator __first, _ForwardIterator __last,
-                     forward_iterator_tag) {
+                     const forward_iterator_tag &) {
     size_type __len = distance(__first, __last);
     if (__len < size())
       erase(copy(__first, __last, begin()), end());
@@ -645,14 +645,14 @@ public:
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          __true_type) {
+                          const __true_type&) {
     _M_fill_insert(__pos, (size_type) __n, (bool) __x);
   }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
-                          __false_type) {
+                          const __false_type&) {
     _M_insert_range(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 

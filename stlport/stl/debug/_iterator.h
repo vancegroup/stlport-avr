@@ -30,72 +30,72 @@ _STLP_BEGIN_NAMESPACE
 //============================================================
 
 template <class _Iterator>
-void _Decrement(_Iterator& __it, bidirectional_iterator_tag) {
+void _Decrement(_Iterator& __it, const bidirectional_iterator_tag &) {
   --__it;
 }
 
 template <class _Iterator>
-void _Decrement(_Iterator& __it, random_access_iterator_tag) {
+void _Decrement(_Iterator& __it, const random_access_iterator_tag &) {
   --__it;
 }
 
 // # ifdef _STLP_NO_ARROW_OPERATOR
 
 template <class _Iterator>
-void _Decrement(_Iterator& __it, forward_iterator_tag) {
+void _Decrement(_Iterator& __it, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
 }
 
 template <class _Iterator>
-void _Advance(_Iterator&, ptrdiff_t, forward_iterator_tag) {
+void _Advance(_Iterator&, ptrdiff_t, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
 }
 
 template <class _Iterator>
-void _Advance(_Iterator& __it, ptrdiff_t, bidirectional_iterator_tag) {
+void _Advance(_Iterator& __it, ptrdiff_t, const bidirectional_iterator_tag &) {
   _STLP_ASSERT(0)  
 }
 
 // # endif
 
 template <class _Iterator>
-void _Advance(_Iterator& __it, ptrdiff_t __n, random_access_iterator_tag) {
+void _Advance(_Iterator& __it, ptrdiff_t __n, const random_access_iterator_tag &) {
   __it += __n;
 }
 
 template <class _Iterator>
-ptrdiff_t _DBG_distance(const _Iterator& __x, const _Iterator& __y, random_access_iterator_tag) {
+ptrdiff_t _DBG_distance(const _Iterator& __x, const _Iterator& __y, const random_access_iterator_tag &) {
   return __x - __y;
 }
 
 // # ifdef _STLP_NO_ARROW_OPERATOR
 template <class _Iterator>
-ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, forward_iterator_tag) {
+ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
   return 0;
 }
 
 template <class _Iterator>
-ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, bidirectional_iterator_tag) {
+ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, const bidirectional_iterator_tag &) {
   _STLP_ASSERT(0)  
   return 0;
 }
 
 template <class _Iterator>
-bool _CompareIt(const _Iterator&, const _Iterator&, forward_iterator_tag) {
+bool _CompareIt(const _Iterator&, const _Iterator&, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
   return false;
 }
 
 template <class _Iterator>
-bool _CompareIt(const _Iterator&, const _Iterator&, bidirectional_iterator_tag) {
+bool _CompareIt(const _Iterator&, const _Iterator&, const bidirectional_iterator_tag &) {
   _STLP_ASSERT(0)  
   return false;
 }
 // # endif
 
 template <class _Iterator>
-bool _CompareIt(const _Iterator& __x, const _Iterator& __y, random_access_iterator_tag) {
+bool _CompareIt(const _Iterator& __x, const _Iterator& __y, const random_access_iterator_tag &) {
   return __x < __y;
 }
 
@@ -107,12 +107,12 @@ bool _Dereferenceable(_Iterator __it) {
 
 
 template <class _Iterator>
-bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, forward_iterator_tag) {
+bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, const forward_iterator_tag &) {
   return (__n == 1) && _Dereferenceable(__it);
 }
 
 template <class _Iterator>
-bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, bidirectional_iterator_tag) {
+bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, const bidirectional_iterator_tag &) {
   typedef typename _Iterator::_Container_type __container_type;
   __container_type* __c = __it._Get_container_ptr();
   return (__n == 1 && __it._M_iterator != __c->end() ) ||
@@ -120,7 +120,7 @@ bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, bidirectional_iterator
 }
 
 template <class _Iterator>
-bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, random_access_iterator_tag) {
+bool _Incrementable(const _Iterator& __it, ptrdiff_t __n, const random_access_iterator_tag &) {
   typedef typename _Iterator::_Container_type __container_type;
   __container_type* __c = __it._Get_container_ptr();
   ptrdiff_t __new_pos = (__it._M_iterator - __c->begin()) + __n;

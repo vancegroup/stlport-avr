@@ -189,32 +189,32 @@ _STLP_BEGIN_NAMESPACE
 //=============================================================
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, 
-                                      random_access_iterator_tag) { 
+                                      const random_access_iterator_tag&) { 
     return (__i1< __i2) || (__i1 == __i2);
 }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2,
-                                      bidirectional_iterator_tag) { 
+                                      const bidirectional_iterator_tag&) { 
     // check if comparable
     bool __dummy(__i1==__i2);
     return (__dummy==__dummy); 
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, forward_iterator_tag) { 
+inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, const forward_iterator_tag&) { 
     // check if comparable
     bool __dummy(__i1==__i2);
     return (__dummy==__dummy); 
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, input_iterator_tag) { 
+inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, const input_iterator_tag&) { 
     return true; 
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, output_iterator_tag) { 
+inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, const output_iterator_tag&) { 
     return true; 
 }
 

@@ -349,10 +349,10 @@ public:                         // Constructor, destructor, assignment.
 private:                        // Helper functions used by constructors
                                 // and elsewhere.
   // fbp : simplify integer types (char, wchar)
-  void _M_construct_null_aux(_CharT* __p, __false_type) {
+  void _M_construct_null_aux(_CharT* __p, const __false_type&) {
     _Construct(__p);
   }
-  void _M_construct_null_aux(_CharT* __p, __true_type) {
+  void _M_construct_null_aux(_CharT* __p, const __true_type&) {
     *__p = 0;
   }
 
@@ -364,14 +364,14 @@ private:
   // Helper functions used by constructors.  It is a severe error for
   // any of them to be called anywhere except from within constructors.
 
-  void _M_terminate_string_aux(__false_type) {
+  void _M_terminate_string_aux(const __false_type&) {
     _STLP_TRY {
       _M_construct_null(this->_M_finish);
     }
     _STLP_UNWIND(_Destroy(this->_M_start, this->_M_finish));
   }
 
-  void _M_terminate_string_aux(__true_type) {
+  void _M_terminate_string_aux(const __true_type&) {
     *(this->_M_finish)=0;
   }
 
@@ -383,7 +383,7 @@ private:
     
   template <class _InputIter>
   void _M_range_initialize(_InputIter __f, _InputIter __l,
-                           input_iterator_tag) {
+                           const input_iterator_tag &) {
     this->_M_allocate_block(8);
     _M_construct_null(this->_M_finish);
     _STLP_TRY {
@@ -394,7 +394,7 @@ private:
 
   template <class _ForwardIter>
   void _M_range_initialize(_ForwardIter __f, _ForwardIter __l, 
-                           forward_iterator_tag) {
+                           const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
     this->_M_finish = uninitialized_copy(__f, __l, this->_M_start);
@@ -407,14 +407,14 @@ private:
   }
 
   template <class _Integer>
-  void _M_initialize_dispatch(_Integer __n, _Integer __x, __true_type) {
+  void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     this->_M_allocate_block(__n + 1);
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __x);
     _M_terminate_string();
   }
 
   template <class _InputIter>
-  void _M_initialize_dispatch(_InputIter __f, _InputIter __l, __false_type) {
+  void _M_initialize_dispatch(_InputIter __f, _InputIter __l, const __false_type&) {
      _M_range_initialize(__f, __l);
   }
     
@@ -551,7 +551,7 @@ private:                        // Helper functions for append.
 #ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _InputIter>
-  _Self& append(_InputIter __first, _InputIter __last, input_iterator_tag)
+  _Self& append(_InputIter __first, _InputIter __last, const input_iterator_tag &)
   {
 	  for ( ; __first != __last ; ++__first)
 	    push_back(*__first);
@@ -560,7 +560,7 @@ private:                        // Helper functions for append.
 
   template <class _ForwardIter>
   _Self& append(_ForwardIter __first, _ForwardIter __last, 
-                       forward_iterator_tag)  {
+                       const forward_iterator_tag &)  {
     if (__first != __last) {
 	    const size_type __old_size = size();
 	    difference_type __n = distance(__first, __last);
@@ -600,13 +600,13 @@ private:                        // Helper functions for append.
 	}
 
   template <class _Integer>
-  _Self& _M_append_dispatch(_Integer __n, _Integer __x, __true_type) {
+  _Self& _M_append_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     return append((size_type) __n, (_CharT) __x);
   }
 
   template <class _InputIter>
   _Self& _M_append_dispatch(_InputIter __f, _InputIter __l,
-                                   __false_type) {
+                                   const __false_type&) {
     return append(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
 
@@ -652,13 +652,13 @@ private:                        // Helper functions for assign.
 #ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _Integer>
-  _Self& _M_assign_dispatch(_Integer __n, _Integer __x, __true_type) {
+  _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     return assign((size_type) __n, (_CharT) __x);
   }
 
   template <class _InputIter>
   _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l,
-                                   __false_type)  {
+                                   const __false_type&)  {
           pointer __cur = this->_M_start;
 	  while (__f != __l && __cur != this->_M_finish) {
 	    _Traits::assign(*__cur, *__f);
@@ -761,7 +761,7 @@ private:                        // Helper functions for insert.
 
   template <class _InputIter>
   void insert(iterator __p, _InputIter __first, _InputIter __last,
-	      input_iterator_tag)
+	      const input_iterator_tag &)
   {
 	  for ( ; __first != __last; ++__first) {
 	    __p = insert(__p, *__first);
@@ -771,7 +771,7 @@ private:                        // Helper functions for insert.
 
   template <class _ForwardIter>
   void insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-	      forward_iterator_tag)  {
+	      const forward_iterator_tag &)  {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
       if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
@@ -825,13 +825,13 @@ private:                        // Helper functions for insert.
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __p, _Integer __n, _Integer __x,
-                          __true_type) {
+                          const __true_type&) {
     insert(__p, (size_type) __n, (_CharT) __x);
   }
 
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
-                          __false_type) {
+                          const __false_type&) {
     insert(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
@@ -978,20 +978,20 @@ private:                        // Helper functions for replace.
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                                     _Integer __n, _Integer __x,
-                                    __true_type) {
+                                    const __true_type&) {
     return replace(__first, __last, (size_type) __n, (_CharT) __x);
   }
 
   template <class _InputIter>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                                     _InputIter __f, _InputIter __l,
-                                    __false_type) {
+                                    const __false_type&) {
     return replace(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
 
   template <class _InputIter>
   _Self& replace(iterator __first, iterator __last,
-                        _InputIter __f, _InputIter __l, input_iterator_tag)  {
+                        _InputIter __f, _InputIter __l, const input_iterator_tag &)  {
 	  for ( ; __first != __last && __f != __l; ++__first, ++__f)
 	    _Traits::assign(*__first, *__f);
 
@@ -1005,7 +1005,7 @@ private:                        // Helper functions for replace.
   template <class _ForwardIter>
   _Self& replace(iterator __first, iterator __last,
                         _ForwardIter __f, _ForwardIter __l, 
-                        forward_iterator_tag)  {
+                        const forward_iterator_tag &)  {
 	  difference_type __n = distance(__f, __l);
 	  const difference_type __len = __last - __first;
 	  if (__len >= __n) {

@@ -207,7 +207,7 @@ public:
   }
 
   void resize(size_type __new_size, const _Tp& __x) {
-    _Base::iterator __i = _Base::begin();
+    typename _Base::iterator __i = _Base::begin();
     size_type __len = 0;
     for ( ; __i != _Base::end() && __len < __new_size; ++__i, ++__len);
     
@@ -220,10 +220,10 @@ public:
   void resize(size_type __new_size) { this->resize(__new_size, _Tp()); }
 
   void remove(const _Tp& __value) {
-    _Base::iterator __first = _Base::begin();
-    _Base::iterator __last = _Base::end();
+    typename _Base::iterator __first = _Base::begin();
+    typename _Base::iterator __last = _Base::end();
     while (__first != __last) {
-      _Base::iterator __next = __first;
+      typename _Base::iterator __next = __first;
       ++__next;
       if (__value == *__first) erase(iterator(&_M_iter_list,__first));
       __first = __next;
