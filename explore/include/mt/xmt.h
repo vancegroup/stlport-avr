@@ -1,8 +1,8 @@
-// -*- C++ -*- Time-stamp: <99/05/19 21:16:24 ptr>
+// -*- C++ -*- Time-stamp: <99/05/24 15:36:53 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
-#ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
+#ident "$SunId$ %Q%"
 
 #include <cstddef>
 #include <stdexcept>
@@ -10,8 +10,12 @@
 #ifdef WIN32
 #  include <windows.h>
 #  include <memory>
-#  define _REENTRANT
-#  define __DLLEXPORT __declspec( dllexport )
+#  ifndef _REENTRANT
+#    define _REENTRANT
+#  endif
+#  ifndef __DLLEXPORT
+#    define __DLLEXPORT __declspec( dllexport )
+#  endif
 #else
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
 #    if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
