@@ -254,6 +254,11 @@ class __mutex_base
         CloseLocalSemaphore( _M_lock );
 #endif
       }
+
+  private:
+    __mutex_base( const __mutex_base& )
+      { }
+
   protected:
 #ifdef _PTHREADS
     pthread_mutex_t _M_lock;
@@ -377,6 +382,10 @@ class __Mutex :
         SignalLocalSemaphore( this->_M_lock );
 #endif
       }
+
+  private:
+    __Mutex( const __Mutex& )
+      { }
 
 #ifndef __FIT_WIN32THREADS
   private:
@@ -650,6 +659,10 @@ class __Mutex<true,SCOPE> : // Recursive Safe
         }
       }
 
+  private:
+    __Mutex( const __Mutex& )
+      { }
+
   protected:
 #  ifndef _NOTHREADS
     unsigned _count;
@@ -678,6 +691,8 @@ class __Locker
       { const_cast<__Mutex<R,SCOPE>&>(m).unlock(); }
 
   private:
+    __Locker( const __Locker& )
+      { }
     const __Mutex<R,SCOPE>& m;
 };
 
@@ -893,6 +908,10 @@ class Condition
 #endif
     Mutex _lock;
     bool _val;
+
+  private:
+    Condition( const Condition& )
+      { }
 };
 
 class Semaphore
@@ -1020,6 +1039,9 @@ class Semaphore
 #ifdef __FIT_NOVELL_THREADS
     LONG _sem;
 #endif
+  private:
+    Semaphore( const Semaphore& )
+      { }
 };
 
 class Thread
