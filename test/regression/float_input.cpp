@@ -48,7 +48,6 @@ int float_input_test()
 
   istr.str("1.2345e+04");
   istr >> in_val;
-  cout << endl << in_val << endl;
   STLP_CHECK(istr);
   STLP_CHECK(check_float(in_val, 12345.0f));
   istr.clear();

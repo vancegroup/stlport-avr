@@ -196,8 +196,7 @@ public:                         // Constructor, destructor, assignment.
 
   basic_string(const _CharT* __s, size_type __n,
                const allocator_type& __a = allocator_type()) 
-    : _String_base<_CharT,_Alloc>(__a) 
-    { 
+    : _String_base<_CharT,_Alloc>(__a) { 
       _STLP_FIX_LITERAL_BUG(__s)
       _M_range_initialize(__s, __s + __n); 
     }

@@ -38,6 +38,10 @@
 # include <stl/_ctype.h>
 #endif
 
+#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+# include <stl/_iostream_string.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
@@ -203,8 +207,6 @@ template <class _InputIter, class _Integer>
 bool _STLP_CALL
 __get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val);
 
-inline bool _STLP_CALL __get_fdigit(char& __c, const char*);
-inline bool _STLP_CALL __get_fdigit_or_sep(char& __c, char __sep, const char *);
 # ifndef _STLP_NO_WCHAR_T
 bool _STLP_CALL __get_fdigit(wchar_t&, const wchar_t*);
 bool _STLP_CALL __get_fdigit_or_sep(wchar_t&, wchar_t, const wchar_t*);
@@ -226,10 +228,10 @@ _Initialize_get_float(const ctype<char>&,
 void  _STLP_CALL _Initialize_get_float(const ctype<wchar_t>&,
                                         wchar_t&, wchar_t&, wchar_t&, wchar_t&, wchar_t*);
 # endif
-void  _STLP_CALL __string_to_float(const string&, float&);
-void  _STLP_CALL __string_to_float(const string&, double&);
+void  _STLP_CALL __string_to_float(const __iostring&, float&);
+void  _STLP_CALL __string_to_float(const __iostring&, double&);
 # ifndef _STLP_NO_LONG_DOUBLE
-void  _STLP_CALL __string_to_float(const string&, long double&);
+void  _STLP_CALL __string_to_float(const __iostring&, long double&);
 # endif
 # endif
 

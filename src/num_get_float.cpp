@@ -70,8 +70,8 @@ typedef unsigned _STLP_LONG_LONG uint64;
 // Multiplication of two 64-bit integers, giving a 128-bit result.
 // Taken from Algorithm M in Knuth section 4.3.1, with the loop 
 // hand-unrolled.
-inline void _Stl_mult64(const uint64 u, const uint64 v,
-                   uint64& high, uint64& low)
+void _Stl_mult64(const uint64 u, const uint64 v,
+                 uint64& high, uint64& low)
 {
   const uint64 low_mask = ULL(0xffffffff);
   const uint64 u0 = u & low_mask;
@@ -255,13 +255,13 @@ void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo)
   }
 
   if( (prodlo & _Stl_HIBITULL) != 0 ) {     /* first guard bit a one */		//*TY 03/25/2000 - added explicit comparison to zero to avoid reliance to the implicit conversion from uint64 to bool
-#if !defined(__SC__)			//*TY 03/25/2000 - 
+#if !defined(__SC__)                  //*TY 03/25/2000 - 
     if( ((p & 0x1) != 0) ||
        prodlo != _Stl_HIBITULL ) {    /* not borderline for round to even */
-#else							//*TY 03/25/2000 - added workaround for SCpp compiler
-	bool b1 = ((p & 0x1) != 0);
-    if( b1 || prodlo != _Stl_HIBITULL ) {		//*TY 03/25/2000 - SCpp confuses on this particular original boolean expression
-#endif							//*TY 03/25/2000 - 
+#else                                 //*TY 03/25/2000 - added workaround for SCpp compiler
+  bool b1 = ((p & 0x1) != 0);
+    if( b1 || prodlo != _Stl_HIBITULL ) { //*TY 03/25/2000 - SCpp confuses on this particular original boolean expression
+#endif                                    //*TY 03/25/2000 - 
       /* round */
       p++;
       if(p==0)
@@ -344,16 +344,15 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 inline double _Stl_atod(char *buffer, int ndigit, int dexp)
 {
-	decimal d;	// ref. inside macintosh powerpc numerics p.9-13
-	
-	d.sgn = 0;
-	d.exp = dexp;
-	d.sig.length = ndigit;
-	for( int i = 0; i < ndigit; ++i )
-	{
-		d.sig.text[i] = buffer[i] + '0';
-	}
-	return dec2num( &d );
+  decimal d;	// ref. inside macintosh powerpc numerics p.9-13
+
+  d.sgn = 0;
+  d.exp = dexp;
+  d.sig.length = ndigit;
+  for( int i = 0; i < ndigit; ++i ) {
+    d.sig.text[i] = buffer[i] + '0';
+  }
+  return dec2num( &d );
 }
 
 #else  /* IEEE representation */
@@ -455,7 +454,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp)
 #if !defined(__SC__)
            guard = (uint32) ((value>> 63) & 1 );
 #else
-           guard = to_ulong((value>> 63) & 1 );		//*TY 03/25/2000 - use member function instead of problematic conversion operator utilization
+           guard = to_ulong((value>> 63) & 1 );   //*TY 03/25/2000 - use member function instead of problematic conversion operator utilization
 #endif
            value = 0;
       }
@@ -464,9 +463,9 @@ double _Stl_atod(char *buffer, int ndigit, int dexp)
           rest = value & (((ULL(1) << lead0)-1)-1);
 #if !defined(__SC__)
           guard = (uint32) (((value>> lead0)-1) & 1);
-#else		//*TY 03/25/2000 - 
+#else     //*TY 03/25/2000 - 
           guard = to_ulong(((value>> lead0)-1) & 1); 
-#endif		//*TY 03/25/2000 - 
+#endif    //*TY 03/25/2000 - 
           value >>= /*(uint64)*/ lead0; /* exponent is zero */
       }
 
@@ -769,19 +768,19 @@ _Stl_string_to_long_double(const char * s) {
 #endif
 
 void  _STLP_CALL
-__string_to_float(const string& v, float& val) {
-    val = _Stl_string_to_double(v.data());
+__string_to_float(const __iostring& v, float& val) {
+    val = _Stl_string_to_double(v.c_str());
 }
 
 void  _STLP_CALL
-__string_to_float(const string& v, double& val) {
-    val = _Stl_string_to_double(v.data());
+__string_to_float(const __iostring& v, double& val) {
+    val = _Stl_string_to_double(v.c_str());
 }
 
 #ifndef _STLP_NO_LONG_DOUBLE
 void  _STLP_CALL
-__string_to_float(const string& v, long double& val) {
-    val = _Stl_string_to_long_double(v.data());
+__string_to_float(const __iostring& v, long double& val) {
+    val = _Stl_string_to_long_double(v.c_str());
 }
 #endif
 

@@ -38,16 +38,16 @@ _M_do_get_integer(_InputIter&, _InputIter&, ios_base&, ios_base::iostate&, _Inte
 
 // _M_do_get_integer and its helper functions.  
 
-inline bool _STLP_CALL __get_fdigit(char& __c, const char*)
+inline bool _STLP_CALL __get_fdigit(char __c, const char*)
   { return __c >= '0' && __c <= '9'; }
 
-inline bool _STLP_CALL __get_fdigit_or_sep(char& __c, char __sep, const char *)
+inline bool _STLP_CALL __get_fdigit_or_sep(char& __c, char __sep, const char *__digits)
 { 
   if (__c == __sep) { 
     __c = ',' ; 
     return true ;
   } else
-    return  ( __c >= '0' && __c <= '9');
+    return  __get_fdigit(__c, __digits);
 }
 
 inline int _STLP_CALL
@@ -303,9 +303,9 @@ _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
 // _M_read_float and its helper functions.
 template <class _InputIter, class _CharT>
 _InputIter  _STLP_CALL
-__copy_sign(_InputIter __first, _InputIter __last, string& __v,
+__copy_sign(_InputIter __first, _InputIter __last, __iostring& __v,
             _CharT __xplus, _CharT __xminus) {
-    if (__first != __last) {
+  if (__first != __last) {
     _CharT __c = *__first;
     if (__c == __xplus)
       ++__first;
@@ -320,8 +320,8 @@ __copy_sign(_InputIter __first, _InputIter __last, string& __v,
 
 template <class _InputIter, class _CharT>
 bool _STLP_CALL
-__copy_digits(_InputIter& __first, _InputIter& __last,
-              string& __v, const _CharT* __digits)
+__copy_digits(_InputIter& __first, _InputIter __last,
+              __iostring& __v, const _CharT* __digits)
 {
   bool __ok = false;
 
@@ -339,8 +339,8 @@ __copy_digits(_InputIter& __first, _InputIter& __last,
 
 template <class _InputIter, class _CharT>
 bool _STLP_CALL
-__copy_grouped_digits(_InputIter& __first, _InputIter& __last,
-                      string& __v, const _CharT * __digits,
+__copy_grouped_digits(_InputIter& __first, _InputIter __last,
+                      __iostring& __v, const _CharT * __digits,
                       _CharT __sep, const string& __grouping,
                       bool& __grouping_ok)
 {
@@ -376,7 +376,7 @@ __copy_grouped_digits(_InputIter& __first, _InputIter& __last,
 
 template <class _InputIter, class _CharT>
 bool _STLP_CALL
-_M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s, _CharT*)
+_M_read_float(__iostring& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s, _CharT*)
 {
   // Create a string, copying characters of the form 
   // [+-]? [0-9]* .? [0-9]* ([eE] [+-]? [0-9]+)?
@@ -407,7 +407,7 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
   __in = __copy_sign(__in, __end, __buf, __xplus, __xminus);
 
   // Get an optional string of digits.
-  if (__grouping.size() != 0)
+  if (!__grouping.empty())
     __digits_before_dot = __copy_grouped_digits(__in, __end, __buf, __digits,
                                                 __sep, __grouping, __grouping_ok);
   else
@@ -582,7 +582,7 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     float& __val) const {
-  string __buf ;
+  __iostring __buf ;
   bool __ok = _M_read_float(__buf, __in, __end, __str, (_CharT*)0 );
   __string_to_float(__buf, __val);  
   __err = __STATIC_CAST(ios_base::iostate, __ok ? ios_base::goodbit : ios_base::failbit);
@@ -596,7 +596,7 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err, 
                                     double& __val) const {
-  string __buf ;
+  __iostring __buf ;
   bool __ok = _M_read_float(__buf, __in, __end, __str, (_CharT*)0 );
   __string_to_float(__buf, __val);
   __err = __STATIC_CAST(ios_base::iostate, __ok ? ios_base::goodbit : ios_base::failbit);
@@ -611,7 +611,7 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     long double& __val) const {
-  string __buf ;
+  __iostring __buf ;
   bool __ok = _M_read_float(__buf, __in, __end, __str, (_CharT*)0 );
   __string_to_float(__buf, __val);
   __err = __STATIC_CAST(ios_base::iostate, __ok ? ios_base::goodbit : ios_base::failbit);

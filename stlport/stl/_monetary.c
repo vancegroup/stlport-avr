@@ -108,9 +108,9 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
     }
     else if (__group_sizes_end) {
       if (*__first == __sep) {
-	*__group_sizes_end++ = __current_group_size;
-	__current_group_size = 0;
-	++__first;
+        *__group_sizes_end++ = __current_group_size;
+        __current_group_size = 0;
+        ++__first;
       }
       else break;
     }
@@ -118,7 +118,7 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
       break;
   }
 
-  if (__grouping.size() == 0)
+  if (__grouping.empty())
     __syntax_ok = true;
   else {
     if (__group_sizes_end != __group_sizes)
@@ -154,8 +154,8 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
 template <class _CharT, class _InputIter>
 _InputIter 
 money_get<_CharT, _InputIter>::do_get(_InputIter __s, _InputIter  __end, bool  __intl,
-				      ios_base&  __str, ios_base::iostate& __err,
-				      long double& __units) const {
+                                      ios_base&  __str, ios_base::iostate& __err,
+                                      long double& __units) const {
   string_type __buf;
   __s = do_get(__s, __end, __intl, __str, __err, __buf);
 
@@ -175,9 +175,9 @@ money_get<_CharT, _InputIter>::do_get(_InputIter __s, _InputIter  __end, bool  _
 template <class _CharT, class _InputIter>
 _InputIter 
 money_get<_CharT, _InputIter>::do_get(iter_type __s, 
-				      iter_type  __end, bool  __intl,
-				      ios_base&  __str, ios_base::iostate&  __err,
-				      string_type& __digits) const {
+                                      iter_type  __end, bool  __intl,
+                                      ios_base&  __str, ios_base::iostate&  __err,
+                                      string_type& __digits) const {
   if (__s == __end) {
     __err |= ios_base::eofbit;
     return __s;
@@ -258,7 +258,7 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
             break;
           }
           __err = ios_base::failbit;
-	  //          return __s;
+//        return __s;
         } 
         else {
           if (*__s == __ps[0]) {
@@ -273,7 +273,7 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
             break;
           }
           __err = ios_base::failbit;
-	  //          return __s;
+//        return __s;
         }
       }
       return __s;
@@ -291,7 +291,7 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
       bool __result;
 
       _CharT __sep = __grouping.size() == 0 ? _CharT() : 
-	__intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
+      __intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
 
       __result = __get_monetary_value(__s, __end, __out, __c_type,
                                       __point, __frac_digits,
@@ -411,12 +411,7 @@ money_put<_CharT, _OutputIter>
   // by frac_digits.  If there is only one group, we need first
   // to duplicate it.
 
-  // __basic_iostring<_CharT> __new_digits;
-#ifndef _STLP_DEBUG
-  __basic_iostring(_CharT) __new_digits;
-#else
-  string_type __new_digits;
-#endif
+  _STLP_BASIC_IOSTRING(_CharT) __new_digits;
   if (!__grouping.empty()) {
     __new_digits.assign(__digits_first, __digits_last);
     __insert_grouping(__new_digits,

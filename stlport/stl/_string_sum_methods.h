@@ -15,6 +15,8 @@
 
 /*
  * All the necessary methods used for template expressions with basic_string
+ * This file do not have to be macro guarded as it is only used in the _string.h
+ * file and it is a part of the basic_string definition.
  */
 
 public:
