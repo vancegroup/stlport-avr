@@ -229,16 +229,14 @@ public:                         // Constructor, destructor, assignment.
   template <class _InputIterator> 
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
-    : _String_base<_CharT,_Alloc>(__a)
-  {
+    : _String_base<_CharT,_Alloc>(__a) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator> 
   basic_string(_InputIterator __f, _InputIterator __l)
-    : _String_base<_CharT,_Alloc>(allocator_type())
-  {
+    : _String_base<_CharT,_Alloc>(allocator_type()) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
@@ -373,6 +371,10 @@ private:
   void _M_range_initialize(_ForwardIter __f, _ForwardIter __l, 
                            const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
+#else
+  void _M_range_initialize(const _CharT* __f, const _CharT* __l) {
+    ptrdiff_t __n = __l - __f;
+#endif
     this->_M_allocate_block(__n + 1);
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
     if (this->_M_using_static_buf()) {
@@ -384,6 +386,8 @@ private:
     this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
+
+#ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _InputIter> 
   void _M_range_initialize(_InputIter __f, _InputIter __l) {
@@ -409,22 +413,6 @@ private:
      _M_range_initialize(__f, __l);
   }
     
-#else /* _STLP_MEMBER_TEMPLATES */
-
-  void _M_range_initialize(const _CharT* __f, const _CharT* __l) {
-    ptrdiff_t __n = __l - __f;
-    this->_M_allocate_block(__n + 1);
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (this->_M_using_static_buf()) {
-      _M_copy(__f, __l, this->_M_Start());
-      this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
-    _M_terminate_string();
-  }
-
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // Iterators.
