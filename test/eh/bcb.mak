@@ -56,7 +56,8 @@ LDFLAGS = -L..\..\lib;$(BCB)\..\lib cw32i.lib stlp.4.5.lib
 # ---------------------------------------------------------------------------
 
 all : $(PROJECT)
-	eh_test.exe -s 100
+        cd ..\..\lib
+	..\test\eh\eh_test.exe -s 100
 
 $(PROJECT) : $(OBJFILES)
 	$(BCC32) -e$(PROJECT) $(CFLAG1) $(LDFLAGS) $(OBJFILES)

@@ -266,7 +266,7 @@ LDFLAGS =  -L..\..\lib;$(BCB)\..\lib stlpst.lib
 all : $(PROJECT)
 
 $(PROJECT) : $(OBJFILES)
-	$(BCB)\BIN\$(BCC32) -e$(PROJECT) $(CFLAG1) $(OBJFILES)
+	$(BCB)\BIN\$(BCC32) -e$(PROJECT) $(CFLAG1) $(LDFLAGS) $(OBJFILES)
 
 clean:
 	del *.obj *.exe *.core *.tds

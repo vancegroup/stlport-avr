@@ -27,7 +27,7 @@ STEXT=lib
 #RM=-rd /S /Q
 RM=-rd /S
 PATH_SEP=\\
-MKDIR=-md /S
+MKDIR=-mkdir
 STATIC_SUFFIX=st
 INSTALL_STEP=install_bc
 
@@ -37,7 +37,7 @@ all : platform all_dynamic all_static
 
 #RM=-rd /S /Q
 RM=-rd /S
-MKDIR=-md /S
+MKDIR=-mkdir
 
 DYNAMIC_DEFS=_RTLDLL;_WIN32;_DLL;_STLP_DESIGNATED_DLL
 STATIC_DEFS=_LIB;_WIN32;_STLP_NO_FORCE_INSTANTIATE

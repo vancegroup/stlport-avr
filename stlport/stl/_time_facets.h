@@ -280,8 +280,8 @@ _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_
 
 # endif
 
-# ifdef __BORLANDC__
-inline void _Stl_loc_init_time_facets() {
+# if defined (__BORLANDC__) && defined (_RTLDLL)
+void _STLP_CALL _Stl_loc_init_time_facets() {
   
   time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 16;
   time_get<char, const char*>::id._M_index         = 17;

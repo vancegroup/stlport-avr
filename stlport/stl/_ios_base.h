@@ -371,15 +371,15 @@ inline ios_base& _STLP_CALL scientific(ios_base& __s)
   { __s.setf(ios_base::scientific, ios_base::floatfield); return __s; }
 
 #if defined(__BORLANDC__) && defined(_RTLDLL)
-void _Stl_loc_init_num_put();
-void _Stl_loc_init_num_get();
-void _Stl_loc_init_monetary();
-void _Stl_loc_init_time_facets();
+void _STLP_CALL _Stl_loc_init_num_put();
+void _STLP_CALL _Stl_loc_init_num_get();
+void _STLP_CALL _Stl_loc_init_monetary();
+void _STLP_CALL _Stl_loc_init_time_facets();
 #endif
 
 inline ios_base::_Loc_init::_Loc_init() {
   if (_S_count++ == 0) {
-# if defined(__BORLANDC__) && defined(_RTLDLL)
+# if 0 // defined(__BORLANDC__) && defined(_RTLDLL)
     _Stl_loc_init_num_put();
     _Stl_loc_init_num_get();
     _Stl_loc_init_monetary();
