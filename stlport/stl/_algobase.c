@@ -25,6 +25,10 @@
 #ifndef _STLP_ALGOBASE_C
 #define _STLP_ALGOBASE_C
 
+# if !defined (_STLP_INTERNAL_ALGOBASE_H)
+#  include "stl/_algobase.h"
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _InputIter1, class _InputIter2>

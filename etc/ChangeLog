@@ -96,6 +96,20 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* _algo.c : eliminated default-constructed iterators, to lift unnecessary restriction (thanks Tonci Tomic )
  	
 	* _vector.h : fixed bug in assign() : copy used instead of __copy_aux (Thanks Tim Finer)
+
+	* stl_sunpro.h : restored _STLP_HAS_NO_NEW_C_HEADERS switch for SUN CC 4.2
+
+	* <new> : __stl_new definition put into the namespace (thanks Satoshi Nakamura)
+
+	* bcb*.mak : fixed md command and DYN_LINK (thanks Kirby Zhou)
+
+	* stl_user_config.h : added _STLP_USE_CUSTOM_CHAR_TYPES_IO switch to optimize iostreams for default case
+	
+	* debug/_vector.h : fixed debug check bug (thanks Gerd Hoeren)
+
+	* _alloc.h : allocator::construct uses std::_Construct (thanks Gert Grossmann)
+
+	* stl?_alloc_old.h : restored (thanks Gert Grossmann)
 	
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :

@@ -39,8 +39,6 @@ void _Decrement(_Iterator& __it, const random_access_iterator_tag &) {
   --__it;
 }
 
-// # ifdef _STLP_NO_ARROW_OPERATOR
-
 template <class _Iterator>
 void _Decrement(_Iterator& __it, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
@@ -56,8 +54,6 @@ void _Advance(_Iterator& __it, ptrdiff_t, const bidirectional_iterator_tag &) {
   _STLP_ASSERT(0)  
 }
 
-// # endif
-
 template <class _Iterator>
 void _Advance(_Iterator& __it, ptrdiff_t __n, const random_access_iterator_tag &) {
   __it += __n;
@@ -68,7 +64,6 @@ ptrdiff_t _DBG_distance(const _Iterator& __x, const _Iterator& __y, const random
   return __x - __y;
 }
 
-// # ifdef _STLP_NO_ARROW_OPERATOR
 template <class _Iterator>
 ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, const forward_iterator_tag &) {
   _STLP_ASSERT(0)
@@ -92,7 +87,6 @@ bool _CompareIt(const _Iterator&, const _Iterator&, const bidirectional_iterator
   _STLP_ASSERT(0)  
   return false;
 }
-// # endif
 
 template <class _Iterator>
 bool _CompareIt(const _Iterator& __x, const _Iterator& __y, const random_access_iterator_tag &) {

@@ -22,6 +22,7 @@
 # endif
 
 #ifdef _STLP_WINCE
+_STLP_BEGIN_NAMESPACE
 
 inline void* _STLP_CALL __stl_new(size_t __n) {
   return ::malloc(__n);
@@ -30,6 +31,7 @@ inline void* _STLP_CALL __stl_new(size_t __n) {
 inline void _STLP_CALL __stl_delete(void* __p) {
   free(__p);
 }
+_STLP_END_NAMESPACE
 
 #else
 

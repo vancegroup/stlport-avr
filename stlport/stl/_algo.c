@@ -26,6 +26,10 @@
 #ifndef _STLP_ALGO_C
 # define _STLP_ALGO_C
 
+# if !defined (_STLP_INTERNAL_ALGO_H)
+#  include "stl/_algo.h"
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _BidirectionalIter, class _Distance, class _Compare>

@@ -19,7 +19,7 @@ LINK_OUT=
 DYNLINK_OUT=
 LINK = tlib /P256
 # Use objs in RTL build tree
-DYN_LINK = ilink32 -L$(BCB)\..\lib
+DYN_LINK = ilink32 -L$(BCB)\lib
 OBJEXT=obj
 DYNEXT=dll
 STEXT=lib
