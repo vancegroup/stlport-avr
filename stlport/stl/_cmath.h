@@ -35,9 +35,6 @@ struct _STL_math_proxy {
   static inline _Tp _do_frexp(const _Tp& __x, int* __y)    { return _STLP_VENDOR_CSTD::frexp(__x, __y); } 
   static inline _Tp _do_ldexp(const _Tp& __x, int __y)    { return _STLP_VENDOR_CSTD::ldexp(__x, __y); } 
   static inline _Tp _do_modf(const _Tp& __x, double* __y) { return _STLP_VENDOR_CSTD::modf(__x, __y); }
-# if defined (__sun)  
-  static inline _Tp _do_modff(const _Tp& __x, float* __y)  { return ::modff(__x, __y); }
-# endif
   static inline _Tp _do_log(const _Tp& __x)     { return _STLP_VENDOR_CSTD::log(__x); } 
   static inline _Tp _do_log10(const _Tp& __x)   { return _STLP_VENDOR_CSTD::log10(__x); } 
   static inline _Tp _do_pow(const _Tp& __x, const _Tp& __y)    { return _STLP_VENDOR_CSTD::pow(__x, __y); } 
@@ -65,8 +62,6 @@ struct _STL_math_proxy {
 #  define _STLP_DO_FREXP(_Tp) _STL_math_proxy<_Tp>::_do_frexp
 #  define _STLP_DO_LDEXP(_Tp) _STL_math_proxy<_Tp>::_do_ldexp
 #  define _STLP_DO_MODF(_Tp) _STL_math_proxy<_Tp>::_do_modf
-#  define _STLP_DO_MODFF(_Tp) _STL_math_proxy<_Tp>::_do_modff
-
 #  define _STLP_DO_LOG(_Tp)   _STL_math_proxy<_Tp>::_do_log
 #  define _STLP_DO_LOG10(_Tp) _STL_math_proxy<_Tp>::_do_log10
 #  define _STLP_DO_POW(_Tp)   _STL_math_proxy<_Tp>::_do_pow
@@ -92,7 +87,6 @@ struct _STL_math_proxy {
 #  define _STLP_DO_FREXP(_Tp) _STLP_VENDOR_CSTD::frexp
 #  define _STLP_DO_LDEXP(_Tp) _STLP_VENDOR_CSTD::ldexp
 #  define _STLP_DO_MODF(_Tp) _STLP_VENDOR_CSTD::modf
-#  define _STLP_DO_MODFF(_Tp) _STLP_VENDOR_CSTD::modff
 #  define _STLP_DO_LOG(_Tp)   _STLP_VENDOR_CSTD::log
 #  define _STLP_DO_LOG10(_Tp) _STLP_VENDOR_CSTD::log10
 #  define _STLP_DO_POW(_Tp)   _STLP_VENDOR_CSTD::pow
@@ -132,9 +126,13 @@ inline float fmod (float __x, float __y)      { return _STLP_DO_FMOD(float)(__x,
 inline float frexp(float __x, int* __y)       { return _STLP_DO_FREXP(float)(__x, __y); }
 inline float ldexp(float __x, int __y)        { return _STLP_DO_LDEXP(float)(__x, __y); }
 // fbp : float versions are not always available
-# ifdef __sun
-inline float modf (float __x, float* __y)     { return _STLP_DO_MODFF(float)(__x, __y); }
-# endif
+inline float modf (float __x, float* __y)     { 
+  double __dd[2]; 
+  double __res = _STLP_DO_MODF(double)((double)__x, __dd); 
+  __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1]; 
+  return (float)__res; 
+}
+
 inline float log (float __x)                  { return _STLP_DO_LOG(float)(__x); }
 inline float log10(float __x)                 { return _STLP_DO_LOG10(float)(__x); }
 inline float pow (float __x, float __y)       { return _STLP_DO_POW(float)(__x, __y); }
@@ -166,7 +164,7 @@ inline long double ldexp(long double __x, int __y)        { return _STLP_DO_LDEX
 // fbp : long double versions are not available
 inline long double modf (long double __x, long double* __y)     { 
   double __dd[2]; 
-  double __res = _STLP_DO_MODF(long double)((double)__x, __dd); 
+  double __res = _STLP_DO_MODF(double)((double)__x, __dd); 
   __y[0] = (long double)__dd[0] ; __y[1] = (long double)__dd[1]; 
   return (long double)__res; 
 }
