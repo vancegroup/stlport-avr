@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/09/22 09:59:47 ptr>
+// -*- C++ -*- Time-stamp: <99/10/14 21:19:35 ptr>
 
 /*
  *
@@ -45,7 +45,22 @@
 #  ifndef _REENTRANT
 #    define _REENTRANT
 #  endif
-#else
+#  include <ctime>
+
+namespace std {
+
+typedef struct  timespec {              /* definition per POSIX.4 */
+        time_t          tv_sec;         /* seconds */
+        long            tv_nsec;        /* and nanoseconds */
+} timespec_t;
+
+typedef struct timespec timestruc_t;    /* definition per SVr4 */
+
+#define ETIME   62      /* timer expired                        */
+
+} // namespace std
+
+#else // !WIN32
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
 #    if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
 #      include <ctime>
@@ -71,7 +86,7 @@
 #    define _NOTHREADS
 #  endif
 // #  define __DLLEXPORT
-#endif
+#endif // !WIN32
 
 #ifdef _REENTRANT
 
@@ -420,6 +435,8 @@ class Condition
 #endif
       }
 
+    __XMT_DLL int wait_time( const timespec *abstime );
+
     int signal()
       {
         MT_REENTRANT( _lock, _1 );
@@ -517,6 +534,8 @@ class Thread
     static __XMT_DLL void block_signal( int sig );
     static __XMT_DLL void unblock_signal( int sig );
     static __XMT_DLL void signal_handler( int sig, SIG_PF );
+
+    static __XMT_DLL void sleep( timespec *t, timespec *e = 0 );
 
     bool good() const
       { return _id != bad_thread_key; }
