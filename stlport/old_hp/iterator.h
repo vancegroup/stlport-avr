@@ -118,8 +118,9 @@ using STLPORT::front_inserter;
 using STLPORT::back_inserter;
 
 using STLPORT::reverse_iterator;
+# if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 using STLPORT::reverse_bidirectional_iterator;
-
+# endif
 using STLPORT::istream_iterator;
 using STLPORT::ostream_iterator;
 

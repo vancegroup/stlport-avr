@@ -25,7 +25,7 @@
 # if defined (__BORLANDC__)
 #  include <new.>
 # else
-#  ifdef __GNUC__
+#  if defined (__GNUC__) && (__GNUC__ >=3)
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 #  else
 #   include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
