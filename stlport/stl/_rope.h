@@ -75,14 +75,13 @@
 #    include <mutex.h>
 # endif
 
-//For HP aCC and MPW/MRC this template function is just too much
-#ifdef __HP_aCC
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) _Alloc_traits<_Tp,__atype>::allocator_type(__a)
-#elif defined(__MRC__)||defined(__SC__)		//*ty 04/22/2001 - 
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create<_Tp,__atype>(__a,(_Tp*)0)
-#else
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
+#ifdef _STLP_MEMBER_TEMPLATE_CLASSES 
+#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) _Alloc_traits<_Tp,__atype>::create_allocator(__a) 
+#elif defined(__MRC__)||defined(__SC__) 
+#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create<_Tp,__atype>(__a,(_Tp*)0) 
+#else 
+#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create(__a,(_Tp*)0) 
+#endif 
 
 _STLP_BEGIN_NAMESPACE
 

@@ -415,6 +415,7 @@ struct _Alloc_traits
 # if defined (_STLP_MEMBER_TEMPLATE_CLASSES) 
   typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
   typedef typename _Rebind_type::other  allocator_type;
+  static allocator_type create_allocator(const allocator<_Tp >& __a) { return allocator_type(__a); }
 # else
   // this is not actually true, used only to pass this type through
   // to dynamic overload selection in _STLP_alloc_proxy methods
@@ -432,6 +433,7 @@ template <class _Tp, class _Tp1>
 struct _Alloc_traits<_Tp, allocator<_Tp1> > {
   typedef allocator<_Tp1> _Orig;
   typedef allocator<_Tp> allocator_type;
+  static allocator_type create_allocator(const allocator<_Tp >& __a) { return allocator_type(__a); }
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 

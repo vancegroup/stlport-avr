@@ -410,8 +410,8 @@ public:
 
   // 23.3.5.1 constructors:
   bitset() {}
-  bitset(unsigned long __val) : 
-    _Base_bitset<_Words >(__val) { _M_do_sanitize(); }
+
+  bitset(unsigned long __val) : _Base_bitset<_Words>(__val) { _M_do_sanitize(); }
 
 # ifdef _STLP_MEMBER_TEMPLATES
   template<class _CharT, class _Traits, class _Alloc>

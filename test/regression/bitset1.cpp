@@ -29,10 +29,10 @@ using namespace std;
 int bitset1_test(int, char**)
 {
   cout<<"Results of bitset1_test:"<<endl;
+# if ! defined (_STLP_MSVC) && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
   bitset<13U> b1(0xFFFF);
   bitset<13U> b2(0x1111);
   // Boris : MSVC just cannot take it right
-# if ! defined (_STLP_MSVC)
   cout << "b1 size = " << b1.size() << endl;
 # if !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
   cout << "b1 = "<<b1<<endl;
