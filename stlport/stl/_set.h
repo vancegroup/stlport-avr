@@ -65,9 +65,6 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing set
-#ifdef _STLP_DEBUG
-  typedef typename _Rep_type::iterator _Tree_Iterator;
-#endif
 
 public:
 
@@ -144,9 +141,7 @@ public:
 
   // insert/erase
   pair<iterator,bool> insert(const value_type& __x) {
-    typedef typename _Rep_type::iterator _Rep_iterator;
-    pair<_Rep_iterator, bool> __tmp = _M_t.insert_unique(__x);
-    return pair<iterator, bool>(__tmp.first, __tmp.second);
+    return _M_t.insert_unique(__x);
   }
   iterator insert(iterator __pos, const value_type& __x) {
     return _M_t.insert_unique( __pos , __x);
@@ -164,55 +159,43 @@ public:
     _M_t.insert_unique(__first, __last);
   }
 # endif /* _STLP_MEMBER_TEMPLATES */
-# ifndef _STLP_DEBUG
-  void erase(iterator __pos) { _M_t.erase( __pos._M_node ); }
-# else // _STLP_DEBUG
-  void erase(iterator __pos) {
-    _Tree_Iterator __tree_pos(__pos._Owner(), __pos._M_iterator);
-    _M_t.erase( __tree_pos );
-  }
-# endif // _STLP_DEBUG
+  void erase(iterator __pos) { _M_t.erase(__pos); }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
-# ifndef _STLP_DEBUG
   void erase(iterator __first, iterator __last) { 
     _M_t.erase(__first, __last ); 
   }
-# else // _STLP_DEBUG
-  void erase(iterator __first, iterator __last) {
-    _Tree_Iterator __tree_first(__first._Owner(), __first._M_iterator);
-    _Tree_Iterator __tree_last(__last._Owner(),  __last._M_iterator);
-    _M_t.erase(__tree_first, __tree_last);
-  }
-# endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }
 
   // set operations:
 # if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )
   template <class _KT>
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
+  template <class _KT>
+  iterator find(const _KT& __x) { return _M_t.find(__x); }
 # else
   const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
+  iterator find(const key_type& __x) { return _M_t.find(__x); }
 # endif
   size_type count(const key_type& __x) const { 
     return _M_t.find(__x) == _M_t.end() ? 0 : 1 ; 
   }
-  const_iterator lower_bound(const key_type& __x) const {
-    return _M_t.lower_bound(__x);
+  iterator lower_bound(const key_type& __x) { return _M_t.lower_bound(__x); }
+  const_iterator lower_bound(const key_type& __x) const { return _M_t.lower_bound(__x); }
+  iterator upper_bound(const key_type& __x) { return _M_t.upper_bound(__x); }
+  const_iterator upper_bound(const key_type& __x) const { return _M_t.upper_bound(__x); }
+  pair<iterator, iterator> equal_range(const key_type& __x) {
+    return _M_t.equal_range(__x);
   }
-  const_iterator upper_bound(const key_type& __x) const {
-    return _M_t.upper_bound(__x); 
-  }
-  pair<iterator,iterator> equal_range(const key_type& __x) const {
+  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
     return _M_t.equal_range(__x);
   }
 };
 
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
-class multiset _STLP_STLPORT_CLASS_1
-{
+class multiset _STLP_STLPORT_CLASS_1 {
   typedef multiset<_Key, _Compare, _Alloc> _Self;
 public:
   // typedefs:
@@ -227,9 +210,9 @@ public:
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
   typedef typename _Rep_type::const_reference const_reference;
+  typedef typename _Rep_type::iterator iterator;
   typedef typename _Rep_type::const_iterator const_iterator;
-  typedef const_iterator iterator;
-  typedef typename _Rep_type::const_reverse_iterator reverse_iterator;
+  typedef typename _Rep_type::reverse_iterator reverse_iterator;
   typedef typename _Rep_type::const_reverse_iterator const_reverse_iterator;
   typedef typename _Rep_type::size_type size_type;
   typedef typename _Rep_type::difference_type difference_type;
@@ -237,9 +220,7 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multiset
-#ifdef _STLP_DEBUG
-  typedef typename _Rep_type::iterator _Tree_Iterator;
-#endif
+
 public:
   // allocation/deallocation
 
@@ -296,8 +277,7 @@ public:
   }
 
   multiset(__move_source<_Self> src)
-    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {
-  }
+    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
 
   // accessors:
 
@@ -305,10 +285,14 @@ public:
   value_compare value_comp() const { return _M_t.key_comp(); }
   allocator_type get_allocator() const { return _M_t.get_allocator(); }
 
-  iterator begin() const { return _M_t.begin(); }
-  iterator end() const { return _M_t.end(); }
-  reverse_iterator rbegin() const { return _M_t.rbegin(); } 
-  reverse_iterator rend() const { return _M_t.rend(); }
+  iterator begin() { return _M_t.begin(); }
+  iterator end() { return _M_t.end(); }
+  const_iterator begin() const { return _M_t.begin(); }
+  const_iterator end() const { return _M_t.end(); }
+  reverse_iterator rbegin() { return _M_t.rbegin(); } 
+  reverse_iterator rend() { return _M_t.rend(); }
+  const_reverse_iterator rbegin() const { return _M_t.rbegin(); } 
+  const_reverse_iterator rend() const { return _M_t.rend(); }
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
@@ -319,7 +303,7 @@ public:
     return _M_t.insert_equal(__x);
   }
   iterator insert(iterator __pos, const value_type& __x) {
-    return _M_t.insert_equal(/* _Rep_type::_M_unconst( */ __pos /* ) */, __x);
+    return _M_t.insert_equal(__pos, __x);
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
@@ -335,46 +319,35 @@ public:
     _M_t.insert_equal(__first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
-# ifndef _STLP_DEBUG
-  void erase(iterator __pos) { _M_t.erase( __pos._M_node ); }
-# else // _STLP_DEBUG
-  void erase(iterator __pos) {
-    _Tree_Iterator __tree_pos(__pos._Owner(), __pos._M_iterator);
-    _M_t.erase(__tree_pos);
-  }
-# endif // _STLP_DEBUG
+  void erase(iterator __pos) { _M_t.erase(__pos); }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
-# ifndef _STLP_DEBUG
   void erase(iterator __first, iterator __last) {
     _M_t.erase( __first, __last );
   }
-# else // _STLP_DEBUG
-  void erase(iterator __first, iterator __last) {
-    _Tree_Iterator __tree_first(__first._Owner(), __first._M_iterator);
-    _Tree_Iterator __tree_last(__last._Owner(),  __last._M_iterator);
-    _M_t.erase(__tree_first, __tree_last);
-  }
-# endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }
 
   // multiset operations:
 
 # if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )
   template <class _KT>
-  iterator find(const _KT& __x) const { return _M_t.find(__x); }
+  iterator find(const _KT& __x) { return _M_t.find(__x); }
+  template <class _KT>
+  const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
 # else
-  iterator find(const key_type& __x) const { return _M_t.find(__x); }
+  iterator find(const key_type& __x) { return _M_t.find(__x); }
+  const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
 # endif
   size_type count(const key_type& __x) const { return _M_t.count(__x); }
-  iterator lower_bound(const key_type& __x) const {
-    return _M_t.lower_bound(__x);
+  iterator lower_bound(const key_type& __x) { return _M_t.lower_bound(__x); }
+  const_iterator lower_bound(const key_type& __x) const { return _M_t.lower_bound(__x); }
+  iterator upper_bound(const key_type& __x) { return _M_t.upper_bound(__x); }
+  const_iterator upper_bound(const key_type& __x) const { return _M_t.upper_bound(__x); }
+  pair<iterator, iterator> equal_range(const key_type& __x) {
+    return _M_t.equal_range(__x);
   }
-  iterator upper_bound(const key_type& __x) const {
-    return _M_t.upper_bound(__x); 
-  }
-  pair<iterator,iterator> equal_range(const key_type& __x) const {
+  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
     return _M_t.equal_range(__x);
   }
 };
