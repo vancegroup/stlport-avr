@@ -109,13 +109,21 @@ inline void _FILE_I_set(FILE *__f, char* __begin, char* __next, char* __end) {
 }
 
 # define _STLP_FILE_I_O_IDENTICAL 1
+// Implementation for eMbedded Visual C++ 3.0
+#elif defined (_STLP_WCE_EVC3)
+
+inline int _FILE_fd(const FILE *__f) { return (int)::_fileno((FILE*)__f); }
+
+# undef _STLP_FILE_I_O_IDENTICAL
+
 // Implementation for the IRIX C library.
 // Solaris interface looks to be identical.
 #elif !defined(_STLP_USE_GLIBC) && \
     ( defined(__sgi) || \
       ( defined(__sun) && ! defined (_LP64) )  || \
       defined (__osf__) || defined(__DECCXX) || \
-      defined (_STLP_MSVC) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP) || defined (_AIX) || defined (_CRAY))
+      (defined (_STLP_MSVC) && !defined (_STLP_WCE_EVC3)) || \
+      defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP) || defined (_AIX) || defined (_CRAY))
 
 #if defined ( _MSC_VER ) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP)
 typedef  char* _File_ptr_type;

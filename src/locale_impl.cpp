@@ -197,7 +197,7 @@ static locale::facet* _S_classic_facets[] = {
 # ifndef _STLP_NO_MBSTATE_T
   &_S_codecvt_wchar,
 # else
-  0
+  0,
 # endif
   &_S_moneypunct_true_wchar,
   &_S_moneypunct_false_wchar,
@@ -456,7 +456,7 @@ locale::global(const locale& L) {
   }
 
   // Set the global C locale, if appropriate.
-#if !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
+#if !defined(_STLP_NO_LOCALE_SUPPORT) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
   if (L.name() != _Nameless)
     setlocale(LC_ALL, L.name().c_str());
 #endif

@@ -50,7 +50,7 @@ struct _STL_math_proxy {
   static inline _Tp _do_tan(const _Tp& __x)     { return _STLP_VENDOR_CSTD::tan(__x); } 
   static inline _Tp _do_tanh(const _Tp& __x)    { return _STLP_VENDOR_CSTD::tanh(__x); } 
   static inline _Tp _do_exp(const _Tp& __x)     { return _STLP_VENDOR_CSTD::exp(__x); } 
-#if defined(_STLP_WCE_NET) 
+#ifdef _STLP_WCE
   static inline _Tp _do_hypot(const _Tp& __x, const _Tp& __y)   { return _STLP_VENDOR_CSTD::sqrt(__x * __x + __y * __y); } 
 #else  
   static inline _Tp _do_hypot(const _Tp& __x, const _Tp& __y)   { return _STLP_VENDOR_CSTD::hypot(__x, __y); } 

@@ -103,6 +103,12 @@ OBJ_DBG=$(OBJ_DBG:.o@ =.o@)
 OBJ_DBG=$(OBJ_DBG:.o@=.o obj\evc4-arm\shared-g\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ_DBG=$(OBJ_DBG:.o@=.o obj\evc4-x86\shared-g\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ_DBG=$(OBJ_DBG:.o@=.o obj\arm-evc3\shared-g\)
+!else
+OBJ_DBG=$(OBJ_DBG:.o@=.o obj\x86-evc3\shared-g\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_DBG=$(OBJ_DBG:.o@=.o obj\vc6\shared-g\)
 !endif
@@ -119,6 +125,12 @@ OBJ_STLDBG=$(OBJ_STLDBG:.o@ =.o@)
 OBJ_STLDBG=$(OBJ_STLDBG:.o@=.o obj\evc4-arm\shared-stlg\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ_STLDBG=$(OBJ_STLDBG:.o@=.o obj\evc4-x86\shared-stlg\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ_STLDBG=$(OBJ_STLDBG:.o@=.o obj\arm-evc3\shared-stlg\)
+!else
+OBJ_STLDBG=$(OBJ_STLDBG:.o@=.o obj\x86-evc3\shared-stlg\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_STLDBG=$(OBJ_STLDBG:.o@=.o obj\vc6\shared-stlg\)
 !endif
@@ -131,6 +143,12 @@ OBJ_A=$(OBJ_A:.o@ =.o@)
 OBJ_A=$(OBJ_A:.o@=.o obj\evc4-arm\static\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ_A=$(OBJ_A:.o@=.o obj\evc4-x86\static\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ_A=$(OBJ_A:.o@=.o obj\arm-evc3\static\)
+!else
+OBJ_A=$(OBJ_A:.o@=.o obj\x86-evc3\static\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_A=$(OBJ_A:.o@=.o obj\vc6\static\)
 !endif
@@ -142,6 +160,12 @@ OBJ_A_DBG=$(OBJ_A_DBG:.o@ =.o@)
 OBJ_A_DBG=$(OBJ_A_DBG:.o@=.o obj\evc4-arm\static-g\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ_A_DBG=$(OBJ_A_DBG:.o@=.o obj\evc4-x86\static-g\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ_A_DBG=$(OBJ_A_DBG:.o@=.o obj\arm-evc3\static-g\)
+!else
+OBJ_A_DBG=$(OBJ_A_DBG:.o@=.o obj\x86-evc3\static-g\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_A_DBG=$(OBJ_A_DBG:.o@=.o obj\vc6\static-g\)
 !endif
@@ -153,6 +177,12 @@ OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@ =.o@)
 OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@=.o obj\evc4-arm\static-stlg\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@=.o obj\evc4-x86\static-stlg\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@=.o obj\arm-evc3\static-stlg\)
+!else
+OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@=.o obj\x86-evc3\static-stlg\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_A_STLDBG=$(OBJ_A_STLDBG:.o@=.o obj\vc6\static-stlg\)
 !endif
@@ -165,6 +195,12 @@ RES=$(RES:.res@ =.res@)
 RES=$(RES:.res@=.res obj\evc4-arm\shared\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 RES=$(RES:.res@=.res obj\evc4-x86\shared\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+RES=$(RES:.res@=.res obj\arm-evc3\shared\)
+!else
+RES=$(RES:.res@=.res obj\x86-evc3\shared\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 RES=$(RES:.res@=.res obj\vc6\shared\)
 !endif
@@ -176,6 +212,12 @@ RES_DBG=$(RES_DBG:.res@ =.res@)
 RES_DBG=$(RES_DBG:.res@=.res obj\evc4-arm\shared-g\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 RES_DBG=$(RES_DBG:.res@=.res obj\evc4-x86\shared-g\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+RES_DBG=$(RES_DBG:.res@=.res obj\arm-evc3\shared-g\)
+!else
+RES_DBG=$(RES_DBG:.res@=.res obj\x86-evc3\shared-g\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 RES_DBG=$(RES_DBG:.res@=.res obj\vc6\shared-g\)
 !endif
@@ -187,6 +229,12 @@ RES_STLDBG=$(RES_STLDBG:.res@ =.res@)
 RES_STLDBG=$(RES_STLDBG:.res@=.res obj\evc4-arm\shared-stlg\)
 !elseif "$(COMPILER_NAME)" == "evc4-x86"
 RES_STLDBG=$(RES_STLDBG:.res@=.res obj\evc4-x86\shared-stlg\)
+!elseif "$(COMPILER_NAME)" == "evc3"
+!if "$(TARGET_PROC)" == "arm"
+RES_STLDBG=$(RES_STLDBG:.res@=.res obj\arm-evc3\shared-stlg\)
+!else
+RES_STLDBG=$(RES_STLDBG:.res@=.res obj\x86-evc3\shared-stlg\)
+!endif
 !elseif "$(COMPILER_NAME)" == "vc6"
 RES_STLDBG=$(RES_STLDBG:.res@=.res obj\vc6\shared-stlg\)
 !endif

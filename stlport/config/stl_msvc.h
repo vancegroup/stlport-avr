@@ -209,12 +209,16 @@
 // If we are under Windows CE, include appropriate config
 
 # if defined(UNDER_CE)
-#  if UNDER_CE < 400
+#  if _MSC_VER < 1200
+    // Microsoft Visual C++ 5 with Windows CE Toolkit;
+    // could also be Visual C++ 6 with toolkit, but we can't detect that.
+    // the Windows CE Toolkit is obsolete, anyway
 #   include <config/stl_wince.h>
 #  else
-#   include <config/stl_wince_4.h>
+    // common header for eMbedded Visual C++ 3 and .NET
+#   include <config/stl_evc.h>
 #  endif
-# endif
+# endif /* UNDER_CE */
 
 # if !( defined(_STLP_WINCE) )
 #  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
@@ -246,6 +250,12 @@
 # if !defined(_STLP_DONT_FORCE_MSVC_LIB_NAME) && !defined(_STLP_NO_OWN_IOSTREAMS)
 #  ifdef __ICL
 #   define _STLP_LIB_BASENAME "stlport_icl"
+#  elif defined(_STLP_WCE_EVC3)
+#   if defined(_X86_)
+#    define _STLP_LIB_BASENAME "stlport_evc3-x86"
+#   elif defined(_ARM_)
+#    define _STLP_LIB_BASENAME "stlport_evc3-arm"
+#   endif /* _STLP_WCE_EVC3 */
 #  elif defined(_STLP_WCE_NET)
 #   if defined(_X86_)
 #    define _STLP_LIB_BASENAME "stlport_evc4-x86"

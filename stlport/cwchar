@@ -25,7 +25,7 @@
 #  include <cstddef>
 # endif
 
-# if ! defined (_STLP_WINCE)
+# if !defined(_STLP_WINCE) && !defined(_STLP_WCE_EVC3)
 
 # if defined (__BORLANDC__) &&  (__BORLANDC__ >= 0x530 ) && ! defined (_STLP_OWN_IOSTREAMS)
 /*  Borland defines this stuff here */
@@ -245,7 +245,7 @@ _STLP_END_NAMESPACE
 # undef _STLP_WCHAR_SUNPRO_EXCLUDE
 # undef _STLP_WCHAR_MSL_EXCLUDE
 
-# endif /* WINCE */
+# endif /* !defined(_STLP_WINCE) && !defined(_STLP_WCE_EVC3) */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x120)
 #  include <stl/_epilog.h>

@@ -28,7 +28,7 @@
 #include <stl/_fstream.h>
 #include "fstream_impl.h"
 
-# if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
+# if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
 # if defined (__BORLANDC__)
 // #  include <cio.h>
 #  include <cfcntl.h>
@@ -56,7 +56,7 @@ stdio_streambuf_base::~stdio_streambuf_base()
 
 _STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n)
 {
-#if defined(_STLP_WCE_NET)
+#ifdef _STLP_WCE
     // no buffering in windows ce .NET
 #else
     _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
@@ -146,7 +146,7 @@ streamsize stdio_istreambuf::showmanyc()
     return -1;
   else {
     int fd = _FILE_fd(_M_file);
-# if defined(_STLP_WCE_NET)
+# ifdef _STLP_WCE
 // not sure if i can mix win32 io mode with ftell but time will show
 // cannot use WIN32_IO implementation since missing stat
     long tmp= _STLP_VENDOR_CSTD::ftell(_M_file);
@@ -176,7 +176,7 @@ streamsize stdio_istreambuf::showmanyc()
 
 stdio_istreambuf::int_type stdio_istreambuf::underflow()
 {
-#if defined(_STLP_WCE_NET)
+#ifdef _STLP_WCE
   int c = fgetc(_M_file);
 #else
   int c = getc(_M_file);
@@ -191,7 +191,7 @@ stdio_istreambuf::int_type stdio_istreambuf::underflow()
 
 stdio_istreambuf::int_type stdio_istreambuf::uflow()
 {
-#if defined(_STLP_WCE_NET)
+#ifdef _STLP_WCE
   int c = fgetc(_M_file);
 #else
   int c = getc(_M_file);
@@ -247,7 +247,7 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c)
 
   // Write the character c, and whatever else might be in the buffer.
   else {
-#if defined(_STLP_WCE_NET)
+#ifdef _STLP_WCE
     int result = fputc(c, _M_file);
 #else
     int result = putc(c, _M_file);  

@@ -49,7 +49,7 @@ extern "C" {
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
-#elif defined(_STLP_WCE_NET)
+#elif defined(_STLP_WCE)
 long _STLP_STDCALL InterlockedIncrement(long*);
 long _STLP_STDCALL InterlockedDecrement(long*);
 long _STLP_STDCALL InterlockedExchange(long*, long);
@@ -61,12 +61,12 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #endif
 
-#if defined(_STLP_WCE_NET) && defined(_ARM_)
+#if defined(_STLP_WCE) && defined(_ARM_)
 void _STLP_STDCALL Sleep(unsigned long);
 #else
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
 #endif
-#if defined(_STLP_WCE_NET)
+#ifdef _STLP_WCE
 void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
 #else
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutputString);
@@ -74,7 +74,7 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
 
 #ifdef _STLP_DEBUG
 typedef unsigned long DWORD;
-# ifdef _STLP_WCE_NET
+#ifdef _STLP_WCE
 DWORD _STLP_STDCALL GetCurrentThreadId();
 # else
 _STLP_IMPORT_DECLSPEC DWORD _STLP_STDCALL GetCurrentThreadId();

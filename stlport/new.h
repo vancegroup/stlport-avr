@@ -20,7 +20,7 @@
 #  define _STLP_DONT_POP_HEADER_ID
 # endif
 
-# ifndef _STLP_WINCE
+# if !defined(_STLP_WINCE) && !defined(_STLP_NO_NEW_HEADER)
 # if defined (__BORLANDC__)
 #  include <new.>
 # elif (__INTEL_COMPILER >= 800)

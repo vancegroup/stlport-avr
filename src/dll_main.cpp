@@ -140,8 +140,10 @@ underflow_error::~underflow_error() _STLP_NOTHROW_INHERENTLY {}
 
 # endif /* _STLP_OWN_STDEXCEPT */
 
+# if !defined(_STLP_WCE_EVC3)
 # ifdef  _STLP_NO_BAD_ALLOC
 const nothrow_t nothrow /* = {} */;
+# endif
 # endif
 
 # ifndef _STLP_NO_FORCE_INSTANTIATE
