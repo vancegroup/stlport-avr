@@ -270,20 +270,19 @@ public:
 
   //This method is template to avoid its instanciation if it is not call!
   //non-const version
-  /* template <int _Dummy> */
   _BString& _M_get_storage() {
     return _rhs._M_get_storage(*this, _StorageDirection());
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                        __on_left const& /*StorageDir*/) {
+                           __on_left const& /*StorageDir*/) {
     return _lhs._M_get_storage(__ref);
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                        __on_right const& /*StorageDir*/) {
+                           __on_right const& /*StorageDir*/) {
     return _rhs._M_get_storage(__ref);
   }
 
@@ -293,20 +292,19 @@ public:
   }
 
   //const version
-  /* template <int _Dummy> */
   _BString const& _M_get_storage() const {
     return _M_get_storage(*this, _StorageDirection());
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                              __on_left const& /*StorageDir*/) const {
+                                 __on_left const& /*StorageDir*/) const {
     return _lhs._M_get_storage(__ref);
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                              __on_right const& /*StorageDir*/) const {
+                                 __on_right const& /*StorageDir*/) const {
     return _rhs._M_get_storage(__ref);
   }
 

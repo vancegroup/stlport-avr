@@ -189,14 +189,14 @@ uninitialized_copy_n(_InputIter __first, _Size __count,
 template <class _ForwardIter, class _Tp>
 inline void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
-                     const _Tp& __x, const __true_type&) {
+                     const _Tp& __x, const __true_type& /*IsPOD*/) {
   _STLP_STD::fill(__first, __last, __x);
 }
 
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
-                     const _Tp& __x, const __false_type&)
+                     const _Tp& __x, const __false_type& /*IsPOD*/)
 {
   _ForwardIter __cur = __first;
   _STLP_TRY {
@@ -216,14 +216,14 @@ inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
-                       const _Tp& __x, const __true_type&) {
+                       const _Tp& __x, const __true_type& /*IsPOD*/) {
   return _STLP_STD::fill_n(__first, __n, __x);
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
-                       const _Tp& __x, const __false_type&)
+                       const _Tp& __x, const __false_type& /*IsPOD*/)
 {
   _ForwardIter __cur = __first;
   _STLP_TRY {
@@ -253,7 +253,7 @@ template <class _InputIter1, class _InputIter2, class _ForwardIter>
 inline _ForwardIter
 __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
-                          _ForwardIter __result, __true_type)
+                          _ForwardIter __result, const __true_type& /*IsPOD*/)
 {
   return __uninitialized_copy(__first2, __last2, 
                               __uninitialized_copy(__first1, __last1, __result, __true_type()), __true_type());
@@ -263,7 +263,7 @@ template <class _InputIter1, class _InputIter2, class _ForwardIter>
 inline _ForwardIter
 __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
-                          _ForwardIter __result, __false_type)
+                          _ForwardIter __result, const __false_type& /*IsPOD*/)
 {
   _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _IS_POD_ITER(__result, _ForwardIter));
   _STLP_TRY {

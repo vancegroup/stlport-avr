@@ -120,14 +120,7 @@
  * do not have virtual destructors). To disable this workaround turn this macro on:
  */
 // #define   _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
-/*
- * For compiler not supporting partial template specialization or ordering of
- * template functions STLport implement a workaround based on inheritance
- * detection. This inheritance can introduce trouble in client code when
- * a user class derived a STL container (which is not advised as STL containers
- * do not have virtual destructors). To disable this workaround turn this macro on:
- */
-// #define   _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
+
 /*
  * Uncomment this to force all debug diagnostic to be directed through a
  * user-defined global function:
