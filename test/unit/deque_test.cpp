@@ -1,5 +1,8 @@
 #include <deque>
 #include <algorithm>
+#ifndef _STLP_NO_EXCEPTIONS
+# include <stdexcept>
+#endif
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -14,10 +17,12 @@ class DequeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(DequeTest);
   CPPUNIT_TEST(deque1);
+  CPPUNIT_TEST(at);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void deque1();
+  void at();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DequeTest);
@@ -54,4 +59,31 @@ void DequeTest::deque1()
   nb = dit - dit;
   nb = cdit - cdit;
   CPPUNIT_ASSERT(!((dit < cdit) || (dit > cdit) || (dit != cdit) || !(dit <= cdit) || !(dit >= cdit)));
+}
+
+void DequeTest::at() {
+  deque<int> d;
+  deque<int> const& cd = d;
+  
+  d.push_back(10);
+  CPPUNIT_ASSERT( d.at(0) == 10 );
+  d.at(0) = 20;
+  CPPUNIT_ASSERT( cd.at(0) == 20 );
+  
+#ifndef _STLP_NO_EXCEPTIONS
+  while (true) {
+    try {
+      d.at(1) = 20;
+      CPPUNIT_ASSERT(false);
+    }
+    catch (std::out_of_range const& except) {
+      CPPUNIT_ASSERT(true);
+      return;
+    }
+    catch (...) {
+      CPPUNIT_ASSERT(false);
+      return;
+    }
+  }
+#endif
 }

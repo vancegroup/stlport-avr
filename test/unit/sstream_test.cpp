@@ -11,9 +11,9 @@ using namespace std;
 //
 // TestCase class
 //
-class sstreamTest : public CPPUNIT_NS::TestCase
+class SstreamTest : public CPPUNIT_NS::TestCase
 {
-  CPPUNIT_TEST_SUITE(sstreamTest);
+  CPPUNIT_TEST_SUITE(SstreamTest);
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
   CPPUNIT_TEST(io);
@@ -25,12 +25,12 @@ protected:
   void io();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sstreamTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(SstreamTest);
 
 //
 // tests implementation
 //
-void sstreamTest::output()
+void SstreamTest::output()
 {
   ostringstream s;
 
@@ -38,7 +38,7 @@ void sstreamTest::output()
   CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
 }
 
-void sstreamTest::input()
+void SstreamTest::input()
 {
   istringstream s( "1\n2\nabcd\nghk lm\nabcd ef" );
   int i = 0;
@@ -64,7 +64,7 @@ void sstreamTest::input()
   CPPUNIT_ASSERT( str == "abcd ef" );
 }
 
-void sstreamTest::io()
+void SstreamTest::io()
 {
   stringstream s;
 

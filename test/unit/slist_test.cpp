@@ -16,10 +16,12 @@ class SlistTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(SlistTest);
   CPPUNIT_TEST(slist1);
+  CPPUNIT_TEST(erase);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void slist1();
+  void erase();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SlistTest);
@@ -80,4 +82,27 @@ sorted: lst
   buff=os4.rdbuf();
   result=buff->str();
   CPPUNIT_ASSERT(!strcmp(result.c_str(),"lst"));
+}
+
+void SlistTest::erase()
+{
+  int array[] = { 0, 1, 2, 3, 4 };
+  slist<int> sl(array, array + 5);
+  slist<int>::iterator slit;
+  
+  slit = sl.erase(sl.begin());
+  CPPUNIT_ASSERT( *slit == 1);
+  
+  ++slit++; ++slit;
+  slit = sl.erase(sl.begin(), slit);
+  CPPUNIT_ASSERT( *slit == 3 );
+  
+  sl.assign(array, array + 5);
+  
+  slit = sl.erase_after(sl.begin());
+  CPPUNIT_ASSERT( *slit == 2 );
+  
+  slit = sl.begin(); ++slit; ++slit;
+  slit = sl.erase_after(sl.begin(), slit);
+  CPPUNIT_ASSERT( *slit == 3 );
 }

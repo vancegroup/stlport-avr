@@ -40,11 +40,11 @@ void ListTest::list1()
 
   list<int> l1(array1, array1 + 3);
   list<int> l2(array2, array2 + 2);
-  std::list<int>::iterator i1 = l1.begin();
-  std::list<int>::const_iterator ci(i1);
-  std::list<int>::const_iterator ci1(ci);
+  list<int>::iterator i1 = l1.begin();
+  list<int>::const_iterator ci(i1);
+  list<int>::const_iterator ci1(ci);
   l1.splice(i1, l2);
-  std::list<int>::iterator i2 = l1.begin();
+  list<int>::iterator i2 = l1.begin();
   CPPUNIT_ASSERT(*i2++==1);
   CPPUNIT_ASSERT(*i2++==4);
   CPPUNIT_ASSERT(*i2++==9);
@@ -58,7 +58,7 @@ void ListTest::list2()
 
   list<int> l1(array1, array1 + 2);
   list<int> l2(array2, array2 + 2);
-  std::list<int>::iterator i = l1.begin();
+  list<int>::iterator i = l1.begin();
   i++;
   l1.splice(i, l2, l2.begin(), l2.end());
   i = l1.begin();
@@ -72,7 +72,7 @@ void ListTest::list3()
   char array [] = { 'x', 'l', 'x', 't', 's', 's' };
 
   list<char> str(array, array + 6);
-  std::list<char>::iterator i;
+  list<char>::iterator i;
 
   str.reverse();
   i = str.begin();
@@ -110,7 +110,7 @@ void ListTest::list4()
   list<int> l1(array1, array1 + 4);
   list<int> l2(array2, array2 + 2);
   l1.merge(l2);
-  std::list<int>::iterator i = l1.begin();
+  list<int>::iterator i = l1.begin();
   CPPUNIT_ASSERT(*i++==1);
   CPPUNIT_ASSERT(*i++==2);
   CPPUNIT_ASSERT(*i++==3);
@@ -132,7 +132,15 @@ void ListTest::erase()
 {
   list<int> l;
   l.push_back( 1 );
-  l.erase( l.begin() );
+  l.erase(l.begin());
   CPPUNIT_ASSERT( l.empty() );
+  
+  int array[] = { 0, 1, 2, 3 };
+  l.assign(array, array + 4);
+  list<int>::iterator lit;
+  lit = l.erase(l.begin());
+  CPPUNIT_ASSERT( *lit == 1 );
+  
+  lit = l.erase(l.begin(), --l.end());
+  CPPUNIT_ASSERT( *lit == 3 );
 }
-

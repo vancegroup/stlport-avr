@@ -11,9 +11,9 @@ using namespace std;
 //
 // TestCase class
 //
-class fstreamTest : public CPPUNIT_NS::TestCase
+class FstreamTest : public CPPUNIT_NS::TestCase
 {
-  CPPUNIT_TEST_SUITE(fstreamTest);
+  CPPUNIT_TEST_SUITE(FstreamTest);
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
   CPPUNIT_TEST(io);
@@ -25,12 +25,12 @@ protected:
   void io();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(fstreamTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(FstreamTest);
 
 //
 // tests implementation
 //
-void fstreamTest::output()
+void FstreamTest::output()
 {
   ofstream f( "test_file.txt" );
 
@@ -38,7 +38,7 @@ void fstreamTest::output()
   // CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
 }
 
-void fstreamTest::input()
+void FstreamTest::input()
 {
   ifstream f( "test_file.txt" );
   int i = 0;
@@ -64,7 +64,7 @@ void fstreamTest::input()
   CPPUNIT_ASSERT( str == "abcd ef" );
 }
 
-void fstreamTest::io()
+void FstreamTest::io()
 {
   basic_fstream<char,char_traits<char> > f( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
 

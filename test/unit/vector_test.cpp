@@ -1,5 +1,8 @@
 #include <vector>
 #include <algorithm>
+#ifndef _STLP_NO_EXCEPTIONS
+# include <stdexcept>
+#endif
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -20,7 +23,8 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(vec_test_5);
   CPPUNIT_TEST(vec_test_6);
   CPPUNIT_TEST(vec_test_7);
-  CPPUNIT_TEST(vec_test_8);
+  CPPUNIT_TEST(capacity);
+  CPPUNIT_TEST(at);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -31,7 +35,8 @@ protected:
   void vec_test_5();
   void vec_test_6();
   void vec_test_7();
-  void vec_test_8();
+  void capacity();
+  void at();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorTest);
@@ -150,6 +155,7 @@ void VectorTest::vec_test_6()
   int array [] = { 1, 4, 9, 16, 25, 36 };
 
   vector<int> v(array, array + 6);
+  vector<int>::iterator vit;
 
   CPPUNIT_ASSERT( v.size() == 6 );
   CPPUNIT_ASSERT( v[0] == 1 );
@@ -159,7 +165,8 @@ void VectorTest::vec_test_6()
   CPPUNIT_ASSERT( v[4] == 25 );
   CPPUNIT_ASSERT( v[5] == 36 );
 
-  v.erase( v.begin() ); // Erase first element.
+  vit = v.erase( v.begin() ); // Erase first element.
+  CPPUNIT_ASSERT( *vit == 4 );
   
   CPPUNIT_ASSERT( v.size() == 5 );
   CPPUNIT_ASSERT( v[0] == 4 );
@@ -168,7 +175,8 @@ void VectorTest::vec_test_6()
   CPPUNIT_ASSERT( v[3] == 25 );
   CPPUNIT_ASSERT( v[4] == 36 );
 
-  v.erase(v.end() - 1); // Erase last element.
+  vit = v.erase(v.end() - 1); // Erase last element.
+  CPPUNIT_ASSERT( vit == v.end() );
 
   CPPUNIT_ASSERT( v.size() == 4 );
   CPPUNIT_ASSERT( v[0] == 4 );
@@ -191,8 +199,13 @@ void VectorTest::vec_test_7()
   int array2 [] = { 9, 16 };
 
   vector<int> v(array1, array1 + 3);
-  v.insert(v.begin(), 0); // Insert before first element.
-  v.insert(v.end(), 36);  // Insert after last element.
+  vector<int>::iterator vit;
+  vit = v.insert(v.begin(), 0); // Insert before first element.
+  CPPUNIT_ASSERT( *vit == 0 );
+  
+  vit = v.insert(v.end(), 36);  // Insert after last element.
+  CPPUNIT_ASSERT( *vit == 36 );
+  
 
   CPPUNIT_ASSERT( v.size() == 5 );
   CPPUNIT_ASSERT( v[0] == 0 );
@@ -216,7 +229,7 @@ void VectorTest::vec_test_7()
 
 }
 
-void VectorTest::vec_test_8()
+void VectorTest::capacity()
 {
   vector<int> v;
 
@@ -226,3 +239,31 @@ void VectorTest::vec_test_8()
   v.reserve(5000);
   CPPUNIT_ASSERT( v.capacity() == 5000 );
 }
+
+void VectorTest::at() {
+  vector<int> v;
+  vector<int> const& cv = v;
+  
+  v.push_back(10);
+  CPPUNIT_ASSERT( v.at(0) == 10 );
+  v.at(0) = 20;
+  CPPUNIT_ASSERT( cv.at(0) == 20 );
+  
+#ifndef _STLP_NO_EXCEPTIONS
+  while (true) {
+    try {
+      v.at(1) = 20;
+      CPPUNIT_ASSERT(false);
+    }
+    catch (std::out_of_range const& except) {
+      CPPUNIT_ASSERT(true);
+      return;
+    }
+    catch (...) {
+      CPPUNIT_ASSERT(false);
+      return;
+    }
+  }
+#endif
+}
+
