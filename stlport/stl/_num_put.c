@@ -354,13 +354,20 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
       break;
     default: 
       {
+#if defined(__HP_aCC) && (__HP_aCC == 1)
+        bool _IsSigned = !((_Integer)-1 > 0);
+	if (_IsSigned)
+	  __ptr = __write_decimal_backward(__ptr, __x, __flags, __true_type() );
+        else
+	  __ptr = __write_decimal_backward(__ptr, __x, __flags, __false_type() );
+#else
 	typedef typename __bool2type<numeric_limits<_Integer>::is_signed>::_Ret _IsSigned;
 	__ptr = __write_decimal_backward(__ptr, __x, __flags, _IsSigned());
+# endif
       }
       break;
     }  
   }
-  
   // return pointer to beginning of the string
   return __ptr;
 }

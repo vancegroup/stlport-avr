@@ -83,6 +83,10 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* typeinfo.h : global scope used to import bad_cast, etc. (thanks to Val Melamed)
 	
+	* debug/_list.h : missing template versions of remove_if(), merge() added. Missing regular sort() added.
+	 (Thanks to dgehri)
+
+	* debug/_slist.h : missing sort() (template and regular) interface added
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 

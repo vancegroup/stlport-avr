@@ -41,8 +41,9 @@ all: all_dynamic all_static symbolic_links
 
 include common_macros.mak
 
-WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -ftemplate-depth-32
+WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized
 
+# CXXFLAGS_COMMON = -ftemplate-depth-32 -I${STLPORT_DIR} ${WARNING_FLAGS}
 CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O
@@ -53,6 +54,10 @@ CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fPIC
 
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
 CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG
+
+LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -Wl,+h${RELEASE_DYNLIB_SONAME}
+LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} -Wl,+h${DEBUG_DYNLIB_SONAME}
+LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -Wl,+h${STLDEBUG_DYNLIB_SONAME}
 
 include common_percent_rules.mak
 include common_rules.mak

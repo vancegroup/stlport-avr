@@ -116,9 +116,11 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
 #    endif /* _NAMESPACE_STD */
 #   endif /* 314 */
 
-#  if (__HP_aCC >= 30000 && __HP_aCC < 31400)
+#  if ((__HP_aCC >= 30000 && __HP_aCC < 31400) || (__HP_aCC == 1)) // A.03.13: __HP_aCC == 1
 
+#if (__HP_aCC != 1)
 #   define _STLP_HAS_NO_NEW_C_HEADERS 1
+#endif
 
 #   define _STLP_HAS_NO_NEW_IOSTREAMS
 #   define _STLP_NO_QUALIFIED_FRIENDS       1
@@ -139,7 +141,12 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
 #   define _INCLUDE_XOPEN_SOURCE
 #   define _INCLUDE_AES_SOURCE
 #  endif /* < 314 */
-
+#   if __HP_aCC == 1
+#     define _STLP_BROKEN_USING_IN_CLASS
+#     define _STLP_USING_BASE_MEMBER
+#     define _STLP_NO_CWCHAR
+// #     define _STLP_NO_WCHAR_T 1
+#   endif
 # endif /* HP_ACC */
 
 // 

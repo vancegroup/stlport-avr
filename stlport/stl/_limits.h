@@ -322,6 +322,8 @@ class   numeric_limits<unsigned long>
 
 # endif
 
+#if !defined(__GNUC__) || (__GNUC__ == 2 && __GNUC_MINOR__ <= 96)
+
 _STLP_TEMPLATE_NULL
 class   numeric_limits<_STLP_LONG_LONG>
   : public _Integer_limits<_STLP_LONG_LONG, LONGLONG_MIN, LONGLONG_MAX, -1, true>
@@ -331,6 +333,86 @@ _STLP_TEMPLATE_NULL
 class   numeric_limits<unsigned _STLP_LONG_LONG>
   : public _Integer_limits<unsigned _STLP_LONG_LONG, 0, ULONGLONG_MAX, -1, true>
 {};
+#else /* gcc 2.97 (after 2000-11-01), 2.98, 3.0 */
+/*
+ newest gcc has new mangling scheme, that has problem
+ with generating name [instantiated] of template specialization like
+ _Integer_limits<_STLP_LONG_LONG, LONGLONG_MIN, LONGLONG_MAX, -1, true>
+                                  ~~~~~~~~~~~~  ~~~~~~~~~~~~
+ Below is code that solve this problem.
+   - ptr
+ */
+_STLP_TEMPLATE_NULL
+class   numeric_limits<_STLP_LONG_LONG>
+  : public _Numeric_limits_base<_STLP_LONG_LONG> 
+{
+public:
+
+  static _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return LONGLONG_MIN; }
+  static _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return LONGLONG_MAX; }
+
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  enum {
+# else
+  static const int 
+# endif  
+  digits = ((int)((sizeof(_STLP_LONG_LONG) * (CHAR_BIT))) - 1),
+  digits10 = (digits * 301UL) / 1000,
+  radix = 2
+# if ! defined ( _STLP_STATIC_CONST_INIT_BUG)
+  ;
+  static const bool
+# else
+  ,
+# endif
+  is_specialized = true,
+  is_signed = true,
+  is_integer = true,
+  is_exact = true,
+  is_bounded = true,
+  is_modulo = true
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  }
+# endif
+  ;
+};
+
+_STLP_TEMPLATE_NULL
+class   numeric_limits<unsigned _STLP_LONG_LONG>
+  : public _Numeric_limits_base<unsigned _STLP_LONG_LONG> 
+{
+public:
+
+  static unsigned _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return 0ULL; }
+  static unsigned _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return ULONGLONG_MAX; }
+
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  enum {
+# else
+  static const int 
+# endif  
+  digits = ((int)((sizeof(unsigned _STLP_LONG_LONG) * (CHAR_BIT)))),
+  digits10 = (digits * 301UL) / 1000,
+  radix = 2
+# if ! defined ( _STLP_STATIC_CONST_INIT_BUG)
+  ;
+  static const bool
+# else
+  ,
+# endif
+  is_specialized = true,
+  is_signed = false,
+  is_integer = true,
+  is_exact = true,
+  is_bounded = true,
+  is_modulo = true
+# if defined ( _STLP_STATIC_CONST_INIT_BUG)
+  }
+# endif
+  ;
+};
+
+# endif /* __GNUC__ > 2000-11-01 */
 
 #endif /* _STLP_LONG_LONG */
 

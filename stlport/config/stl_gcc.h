@@ -109,17 +109,19 @@ typedef unsigned int wint_t;
 /* dwa 12/18/99 -- fhonor-std doesn't actually work in gcc 2.95.2
  * also note that __HONOR_STD is not automatically defined in 
  * accordance with -fhonor-std. */
-#   define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
+#   if (__GNUC__ < 3) || (__GNUC__ == 2 && __GNUC_MINOR__ <= 95)
+#     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
+#   endif
 # endif
 
-#   if (__GNUC_MINOR__ < 95)
+#   if (__GNUC_MINOR__ < 95)  && (__GNUC__ < 3)
 #     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
 /* egcs fails to initialize builtin types in expr. like this : new(p) char();  */
 #     define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 #     define _STLP_INCOMPLETE_EXCEPTION_HEADER
 #   endif
 
-#   if (__GNUC_MINOR__ < 9) /* gcc 2.8 */
+#   if (__GNUC_MINOR__ < 9)  && (__GNUC__ < 3) /* gcc 2.8 */
 #     define _STLP_NO_TEMPLATE_CONVERSIONS
 #     define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #     define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
@@ -201,7 +203,7 @@ typedef unsigned int wint_t;
 #     define _STLP_HAS_NO_EXCEPTIONS  1
 #   endif
 
-#if (__GNUC_MINOR__ < 8)
+#if (__GNUC_MINOR__ < 8)  && (__GNUC__ < 3)
 
 # define _STLP_NO_SGI_IOSTREAMS 1
 # undef  _STLP_OWN_IOSTREAMS
@@ -241,9 +243,11 @@ typedef unsigned int wint_t;
 // please change the macro below to point to your directory. 
 # if defined(__DJGPP)
 #   define _STLP_NATIVE_INCLUDE_PATH ../lang/cxx
-# elif (__GNUC_MINOR__ == 95 && !( defined (__FreeBSD__) || defined (__NetBSD__) ) )
+# elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) ) )
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
-# elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95)
+# elif (__GNUC__ >= 3) || (__GNUC_MINOR__ >= 97)
+#   define _STLP_NATIVE_INCLUDE_PATH ../include/g++-v3
+# elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3)
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-2
 # else
 #   define _STLP_NATIVE_INCLUDE_PATH g++
@@ -251,7 +255,11 @@ typedef unsigned int wint_t;
 
 # ifndef __FreeBSD__
 // <exception> et al
-#  define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
+#   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/g++-v3
+#   else
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
+#   endif
 # endif
 
 #endif /* GNUC_MINOR < 8 */

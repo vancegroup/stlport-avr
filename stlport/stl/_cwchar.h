@@ -43,6 +43,34 @@ typedef long int wint_t;
 
 # else 
 #  include _STLP_NATIVE_C_HEADER(wchar.h)
+
+#  if defined(__sun) && (defined(_XOPEN_SOURCE) || (_XOPEN_VERSION - 0 == 4))
+extern wint_t   btowc();
+extern int      fwprintf();
+extern int      fwscanf();
+extern int      fwide();
+extern int      mbsinit();
+extern size_t   mbrlen();
+extern size_t   mbrtowc();
+extern size_t   mbsrtowcs();
+extern int      swprintf();
+extern int      swscanf();
+extern int      vfwprintf();
+extern int      vwprintf();
+extern int      vswprintf();
+extern size_t   wcrtomb();
+extern size_t   wcsrtombs();
+extern wchar_t  *wcsstr();
+extern int      wctob();
+extern wchar_t  *wmemchr();
+extern int      wmemcmp();
+extern wchar_t  *wmemcpy();
+extern wchar_t  *wmemmove();
+extern wchar_t  *wmemset();
+extern int      wprintf();
+extern int      wscanf();
+#  endif
+
 # endif
 
 #if defined(__MSL__) && __MSL__ <= 0x51FF	/* dwa 2/28/99 - not yet implemented by MSL  */

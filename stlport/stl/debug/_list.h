@@ -239,12 +239,31 @@ public:
     _Invalidate_all();
     _Base::reverse();
   }
+  void unique() {
+    _Invalidate_all();
+    _Base::unique();
+  }
   void sort() {
     _Invalidate_all();
     _Base::sort();
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
+
+  template <class _Predicate> void remove_if(_Predicate __pred)  {
+    _Base::remove_if(__pred);
+  }
+  template <class _BinaryPredicate>
+    void unique(_BinaryPredicate __binary_pred) {
+    _Base::unique(__binary_pred);
+  }
+  template <class _StrictWeakOrdering>
+    void merge(_Self& __x,
+	       _StrictWeakOrdering __comp) {
+    __x._Invalidate_all();
+    _Base::merge(__x, __comp);
+  }
+
   template <class _StrictWeakOrdering>
   void sort(_StrictWeakOrdering __comp) {
       _Invalidate_all();

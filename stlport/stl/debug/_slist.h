@@ -349,6 +349,10 @@ public:
     _Base::merge((_Base&)__x);
     __x._Invalidate_all();
   }
+  void sort() {
+    _Invalidate_all();
+    _Base::sort();
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -368,6 +372,11 @@ public:
     __x._Invalidate_all();    
   }
 
+  template <class _StrictWeakOrdering>
+  void sort(_StrictWeakOrdering __comp) {
+      _Invalidate_all();
+      _Base::sort(__comp);
+  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 };

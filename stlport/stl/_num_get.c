@@ -252,7 +252,11 @@ _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
                   ios_base::iostate& __err, _Integer& __val, _CharT* __pc) 
 {
 
+#if defined(__HP_aCC) && (__HP_aCC == 1)
+  bool _IsSigned = !((_Integer)(-1) > 0);
+#else
   typedef typename __bool2type<numeric_limits<_Integer>::is_signed>::_Ret _IsSigned;
+#endif
 
   const numpunct<_CharT>& __numpunct = *(const numpunct<_CharT>*)__str._M_numpunct_facet();
   const string& __grouping = __str._M_grouping(); // cached copy
@@ -275,7 +279,14 @@ _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
     const bool __negative = __base_or_zero & 2;
     const int __base = __base_or_zero >> 2;
 
+#if defined(__HP_aCC) && (__HP_aCC == 1)
+     if (_IsSigned)
+       __result = __get_integer(__in, __end, __base,  __val, __got, __negative, __numpunct.thousands_sep(), __grouping, __true_type() );
+     else
+      __result = __get_integer(__in, __end, __base,  __val, __got, __negative, __numpunct.thousands_sep(), __grouping, __false_type() );
+#else
     __result = __get_integer(__in, __end, __base,  __val, __got, __negative, __numpunct.thousands_sep(), __grouping, _IsSigned());
+# endif
   }
 
   __err = __STATIC_CAST(ios_base::iostate, __result ? ios_base::goodbit : ios_base::failbit);
