@@ -162,17 +162,38 @@ protected:
 
   void _M_Swap(_String_base<_Tp, _Alloc> &__s) {
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
-    if (_M_using_static_buf())
-      _STLP_STD::swap(_M_buffers, __s._M_buffers);
+    if (_M_using_static_buf()) {
+      if (__s._M_using_static_buf()) {
+        _STLP_STD::swap(_M_buffers, __s._M_buffers);
+        _Tp *__tmp = _M_finish;
+        _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
+        __s._M_finish = __s._M_buffers._M_static_buf + (__tmp - _M_buffers._M_static_buf);
+      } else {
+        __s._M_Swap(*this);
+        return;
+      }
+    }
+    else if (__s._M_using_static_buf()) {
+      _Tp *__tmp = _M_buffers._M_dynamic_buf;
+      _Tp *__tmp_finish = _M_finish;
+      _Tp *__tmp_end_data = _M_end_of_storage._M_data;
+      _M_buffers = __s._M_buffers;
+      _M_end_of_storage._M_data = _M_buffers._M_static_buf + _DEFAULT_SIZE;
+      _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
+      __s._M_buffers._M_dynamic_buf = __tmp;
+      __s._M_end_of_storage._M_data = __tmp_end_data;
+      __s._M_finish = __tmp_finish;
+    }
     else {
       _STLP_STD::swap(_M_buffers._M_dynamic_buf, __s._M_buffers._M_dynamic_buf);
       _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+      _STLP_STD::swap(_M_finish, __s._M_finish);
     }
 #else
     _STLP_STD::swap(_M_start, __s._M_start);
     _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
     _STLP_STD::swap(_M_finish, __s._M_finish);
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }
 
   void _M_throw_length_error() const;
