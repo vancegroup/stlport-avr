@@ -33,6 +33,20 @@ CFLAGS = -pthread $(OPT)
 CXXFLAGS = -pthread -fexceptions -fident $(OPT)
 endif
 
+ifeq ($(OSNAME),openbsd)
+CCFLAGS = -pthread $(OPT)
+CFLAGS = -pthread $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+endif
+
+ifeq ($(OSNAME),freebsd)
+CCFLAGS = -pthread $(OPT)
+CFLAGS = -pthread $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+endif
+
 CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
 
