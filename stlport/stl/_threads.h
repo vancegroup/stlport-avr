@@ -91,63 +91,8 @@ using namespace _STLP_VENDOR_CSTD;
 #  endif // !_STLP_USE_PTHREAD_SPINLOCK 
 
 # elif defined(_STLP_WIN32THREADS)
-#  if !defined (_STLP_WINDOWS_H_INCLUDED) && ! defined (_WINDOWS_H)
-#   if ! (defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || defined (__MINGW32__) || defined (__DMC__))
-#    ifdef _STLP_USE_MFC
-#     include <afx.h>
-#    else
-#     include <windows.h>
-#    endif
-#    define _STLP_WINDOWS_H_INCLUDED
-#   else 
-// This section serves as a replacement for windows.h header for Visual C++
-extern "C" {
-#   if (defined(_M_MRX000) || defined(_M_ALPHA) \
-       || (defined(_M_PPC) && (_MSC_VER >= 1000))) && !defined(RC_INVOKED)
-#    define InterlockedIncrement       _InterlockedIncrement
-#    define InterlockedDecrement       _InterlockedDecrement
-#    define InterlockedExchange        _InterlockedExchange
-#    define _STLP_STDCALL
-#   else
-#    ifdef _MAC
-#     define _STLP_STDCALL _cdecl
-#    else
-#     define _STLP_STDCALL __stdcall
-#    endif
-#   endif
 
-#if (_MSC_VER >= 1300) || defined (_STLP_NEW_PLATFORM_SDK)
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
-#else
-  // boris : for the latest SDK, you may actually need the other version of the declaration (above)
-  // even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
-#endif
-
-_STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
-_STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
-
-#ifdef _STLP_DEBUG
-typedef unsigned long DWORD;
-_STLP_IMPORT_DECLSPEC DWORD _STLP_STDCALL GetCurrentThreadId();
-#endif /* _STLP_DEBUG */
-
-#    if defined (InterlockedIncrement)
-#     pragma intrinsic(_InterlockedIncrement)
-#     pragma intrinsic(_InterlockedDecrement)
-#     pragma intrinsic(_InterlockedExchange)
-#    endif
-} /* extern "C" */
-
-#   endif /* STL_MSVC */
-
-#   define _STLP_WINDOWS_H_INCLUDED
-
-#  endif /* _STLP_WIN32 */
+#  include <stl/_windows.h>
 
 #  ifndef _STLP_ATOMIC_INCREMENT
 #   define _STLP_ATOMIC_INCREMENT(__x)           InterlockedIncrement((long*)__x)

@@ -168,7 +168,7 @@ _STLP_END_NAMESPACE
 #  endif /* _STLP_USE_NEW_C_HEADERS */
 
 # if defined (_STLP_WIN32)
-#  include <stl/_threads.h>
+#  include <stl/_windows.h>
 # endif /* _STLP_WIN32 */
 
 //==========================================================
@@ -264,8 +264,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 		 _STLP_WINCE_TRACE(__buffer);
 # elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__))
     char __buffer [4096];
-    _vsnprintf(__buffer, sizeof(__buffer) / sizeof(char),
-               __format_str, __args);
+    vsnprintf(__buffer, sizeof(__buffer) / sizeof(char), __format_str, __args);
     OutputDebugStringA(__buffer);
 # elif defined (__amigaos__)
     STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
