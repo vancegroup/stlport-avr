@@ -31,14 +31,14 @@ include common_macros.mak
 
 WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized
 
-CXXFLAGS_COMMON = -I${STLPORT_DIR} -I/usr/local/depot/libstdc++/2.8.1.1/include/g++ -I/usr/local/depot/libstdc++/2.8.1.1/sparc-sun-solaris2.6/include ${WARNING_FLAGS}
+CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 # -O does not always work for gcc-2.8
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON)
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -fpic
 
-CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
-CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fpic
+CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -O -g
+CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -O -g -fpic
 
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
 CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fpic

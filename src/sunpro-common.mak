@@ -27,7 +27,7 @@ CXXFLAGS_COMMON = -mt +w2 -library=no%Cstd -features=rtti -xildoff ${STL_INCL} $
 
 SHCXXFLAGS = -PIC
 
-DEBUG_FLAGS = -g +w2 -D_STLP_DEBUG
+DEBUG_FLAGS = -O -g +w2 -D_STLP_DEBUG
 
 #
 # Try those flags to see if they help to get maximum efficiency :
