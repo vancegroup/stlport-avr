@@ -1,9 +1,13 @@
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
-
+	
+	* stl/_fstream.c : _M_underflow bug fix for custom codecvt facets (thanks Alberto Barbati)
+	
+	* bcc55.mak : c_locale.c added to the link command (thanks Steve Loves)
+	
 	* _iterator_base.h & many other places : iterator tags are being accepted by const reference 
 	   instead of value, to fix segmentation faults experienced on certain platforms with beta7.
 	  That also should improve efficiency on same platforms (apparently, empty unreferenced 
-	  objects with no constructors/destructors were copied on the stach when passed by value).
+	  objects with no constructors/destructors were copied on the stack when passed by value).
 	  Accompanied change eliminates hardcoded deference hack used in previous beta.
 	  Thanks everybody who reported this.
 
