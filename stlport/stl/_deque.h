@@ -620,7 +620,7 @@ public:                         // push_* and pop_*
 # if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() {
     if (this->_M_finish._M_cur != this->_M_finish._M_last - 1) {
-      _Construct(this->_M_finish._M_cur);
+      _STLP_STD::_Construct(this->_M_finish._M_cur);
       ++this->_M_finish._M_cur;
     }
     else
@@ -628,7 +628,7 @@ public:                         // push_* and pop_*
   }
   void push_front() {
     if (this->_M_start._M_cur != this->_M_start._M_first) {
-      _Construct(this->_M_start._M_cur - 1);
+      _STLP_STD::_Construct(this->_M_start._M_cur - 1);
       --this->_M_start._M_cur;
     }
     else

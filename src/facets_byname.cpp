@@ -977,14 +977,17 @@ _STLP_END_NAMESPACE
 
 #include <stl/_messages_facets.h>
 #include "message_facets.h"
-#include <typeinfo>
+
+#ifndef _STLP_NO_RTTI
+# include <typeinfo>
+#endif /*_STLP_NO_RTTI*/
 
 _STLP_BEGIN_NAMESPACE
 
 void _Catalog_locale_map::insert(int key, const locale& L)
 {
   _STLP_TRY {
-#if !defined(_STLP_NO_TYPEINFO)
+#if !defined(_STLP_NO_TYPEINFO) && !defined(_STLP_NO_RTTI)
     // Don't bother to do anything unless we're using a non-default ctype facet
 # ifdef _STLP_NO_WCHAR_T
     typedef char _Char;

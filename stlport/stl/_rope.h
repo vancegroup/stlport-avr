@@ -1717,7 +1717,7 @@ public:
 
   size_type max_size() const {
     return _S_min_len[__ROPE_MAX_DEPTH-1] - 1;
-    //  Guarantees that the result can be sufficirntly
+    //  Guarantees that the result can be sufficiently
     //  balanced.  Longer ropes will probably still work,
     //  but it's harder to make guarantees.
   }

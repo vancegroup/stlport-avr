@@ -2,7 +2,7 @@
 # compiler
 #
 CC = gcc
-CXX = c++
+CXX = g++
 
 COMP = cygwin
 
@@ -16,7 +16,7 @@ LIB_BASENAME = libstlport_cygwin
 #
 #
 LINK=ar crv
-DYN_LINK=c++ -o
+DYN_LINK=g++ -o
 
 OBJEXT=o
 DYNEXT=dll
@@ -29,6 +29,7 @@ COMP=cygwin
 # STATIC_SUFFIX=_static
 
 all: all_static
+INSTALL_STEP = install_unix
 
 include common_macros.mak
 

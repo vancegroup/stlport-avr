@@ -96,6 +96,7 @@ class _DBG_vector : private __range_checker<_Tp>, public _STLP_DBG_VECTOR_BASE
 {
 private:
   typedef _STLP_DBG_VECTOR_BASE _Base;
+  typedef __range_checker<_Tp> _CheckRange;
   typedef _DBG_vector<_Tp, _Alloc> _Self;
   mutable __owned_list _M_iter_list;
 
@@ -175,7 +176,7 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   _DBG_vector(const _Self& __x) 
-    : __range_checker<_Tp>(__x), _STLP_DBG_VECTOR_BASE(__x), _M_iter_list(_Get_base()) {}
+    : _CheckRange(__x), _STLP_DBG_VECTOR_BASE(__x), _M_iter_list(_Get_base()) {}
 
   explicit _DBG_vector(__partial_move_source<_Self> src)
     : _STLP_DBG_VECTOR_BASE(_AsPartialMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())),
@@ -192,7 +193,7 @@ public:
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) 
-    : __range_checker<_Tp>(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
+    : _CheckRange(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
 
@@ -200,21 +201,21 @@ public:
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last)
-    : __range_checker<_Tp>(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last), 
+    : _CheckRange(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last), 
       _M_iter_list(_Get_base()) {
     }
 # endif
 #else
   _DBG_vector(const _Tp* __first, const _Tp* __last,
               const allocator_type& __a = allocator_type())
-    : __range_checker<_Tp>(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
+    : _CheckRange(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
 
   // mysterious VC++ bug ?
   _DBG_vector(const_iterator __first, const_iterator __last , 
               const allocator_type& __a = allocator_type())
-    : __range_checker<_Tp>(__first._M_iterator, __last._M_iterator), 
+    : _CheckRange(__first._M_iterator, __last._M_iterator), 
       _STLP_DBG_VECTOR_BASE(__first._M_iterator, __last._M_iterator, __a), 
       _M_iter_list(_Get_base()) {
       }

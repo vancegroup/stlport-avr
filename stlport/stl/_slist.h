@@ -211,7 +211,7 @@ private:
   _Node* _M_create_node() {
     _Node* __node = this->_M_head.allocate(1);
     _STLP_TRY {
-      _Construct(&__node->_M_data);
+      _STLP_STD::_Construct(&__node->_M_data);
       __node->_M_next = 0;
     }
     _STLP_UNWIND(this->_M_head.deallocate(__node, 1));

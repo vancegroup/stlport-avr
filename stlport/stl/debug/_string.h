@@ -35,7 +35,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _CharT,class _Traits, class _Alloc>
 inline _CharT*
 value_type(const  _DBG_iter_base< _STLP_DBG_STRING_BASE >&) {
-return (_CharT*)0;
+  return (_CharT*)0;
 }
 template <class _CharT, class _Traits, class _Alloc>
 inline random_access_iterator_tag
@@ -49,6 +49,7 @@ class basic_string : private __range_checker<_CharT>, public _STLP_DBG_STRING_BA
 {
 private:
   typedef _STLP_DBG_STRING_BASE _Base;
+  typedef __range_checker<_CharT> _CheckRange;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
 
 public:
@@ -96,7 +97,7 @@ public:
     : _STLP_DBG_STRING_BASE(__r, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _Self& __s): 
-    __range_checker<_CharT>(__s), _STLP_DBG_STRING_BASE(__s), _M_iter_list(_Get_base()) {}
+    _CheckRange(__s), _STLP_DBG_STRING_BASE(__s), _M_iter_list(_Get_base()) {}
 
   basic_string(const _Self& __s, size_type __pos, size_type __n = _Base::npos,
                const allocator_type& __a = allocator_type()):
@@ -127,26 +128,26 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||defined(__SC__))
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
-		 		     const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
-    : __range_checker<_CharT>(__f, __l), 
+               const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
+    : _CheckRange(__f, __l), 
       _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {
   }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
-    : __range_checker<_CharT>(__f, __l), 
+    : _CheckRange(__f, __l), 
       _STLP_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {
   }
 #  endif
 #else /* _STLP_MEMBER_TEMPLATES */
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a = allocator_type())
-    : __range_checker<_CharT>(__f, __l),
+    : _CheckRange(__f, __l),
       _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {
   }
   basic_string(const_iterator __f, const_iterator __l, 
-		 		     const allocator_type & __a = allocator_type())
-    : __range_checker<_CharT>(__f._M_iterator, __l._M_iterator),
+               const allocator_type & __a = allocator_type())
+    : _CheckRange(__f._M_iterator, __l._M_iterator),
       _STLP_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator, __a), _M_iter_list(_Get_base()) {
   }
 

@@ -143,6 +143,7 @@ struct _Rb_tree_base_iterator
   typedef bidirectional_iterator_tag iterator_category;
   typedef ptrdiff_t                  difference_type;
   _Base_ptr _M_node;
+  _Rb_tree_base_iterator() : _M_node(0) {}
   bool operator==(const _Rb_tree_base_iterator& __y) const {
     return _M_node == __y._M_node;
   }
@@ -160,7 +161,7 @@ template <class _Value, class _Traits> struct _Rb_tree_iterator : public _Rb_tre
   typedef _Rb_tree_iterator<_Value, _Traits> _Self;
   typedef _Rb_tree_node<_Value>* _Link_type;
 
-  _Rb_tree_iterator() { _M_node = 0; }
+  _Rb_tree_iterator() {}
   _Rb_tree_iterator(_Link_type __x) { _M_node = __x; }
   _Rb_tree_iterator(const _Rb_tree_iterator<_Value, 
                     _Nonconst_traits<_Value> >& __it) { _M_node = __it._M_node; }
@@ -429,9 +430,9 @@ public:
   void erase(iterator __position) {
     _Link_type __y = 
       (_Link_type) _Rb_global_inst::_Rebalance_for_erase(__position._M_node,
-							 this->_M_header._M_data->_M_parent,
-							 this->_M_header._M_data->_M_left,
-							 this->_M_header._M_data->_M_right);
+                                                         this->_M_header._M_data->_M_parent,
+                                                         this->_M_header._M_data->_M_left,
+                                                         this->_M_header._M_data->_M_right);
     _STLP_STD::_Destroy(&__y->_M_value_field);
     this->_M_header.deallocate(__y,1);
     --_M_node_count;
@@ -484,9 +485,9 @@ private:
     
     while (__x != 0) 
       if (!_M_key_compare(_S_key(__x), __k))
-	__y = __x, __x = _S_left(__x);
+        __y = __x, __x = _S_left(__x);
       else
-	__x = _S_right(__x);
+        __x = _S_right(__x);
     if (__y == this->_M_header._M_data || _M_key_compare(__k, _S_key(__y)))
       __y = this->_M_header._M_data;
     return __y;
@@ -498,9 +499,9 @@ private:
     
     while (__x != 0) 
       if (!_M_key_compare(_S_key(__x), __k))
-	__y = __x, __x = _S_left(__x);
+        __y = __x, __x = _S_left(__x);
       else
-	__x = _S_right(__x);
+        __x = _S_right(__x);
     
     return __y;
   }
@@ -511,9 +512,9 @@ private:
     
     while (__x != 0) 
       if (_M_key_compare(__k, _S_key(__x)))
-	__y = __x, __x = _S_left(__x);
+        __y = __x, __x = _S_left(__x);
       else
-	__x = _S_right(__x);
+        __x = _S_right(__x);
     
     return __y;
   }
@@ -529,7 +530,7 @@ public:
   }
   pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
     return pair<const_iterator,const_iterator>(lower_bound(__x),
-					       upper_bound(__x));
+                                               upper_bound(__x));
   }
 
 public:

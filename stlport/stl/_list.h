@@ -256,7 +256,7 @@ protected:
   {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
-      _Construct(&__p->_M_data);
+      _STLP_STD::_Construct(&__p->_M_data);
     }
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
     return __p;

@@ -63,29 +63,29 @@ struct loaded_l10nfile
 
 
 extern const char *_nl_normalize_codeset PARAMS ((const char *codeset,
-						  size_t name_len));
+                                                  size_t name_len));
 
 extern struct loaded_l10nfile *
 _nl_make_l10nflist PARAMS ((struct loaded_l10nfile **l10nfile_list,
-			    const char *dirlist, size_t dirlist_len, int mask,
-			    const char *language, const char *territory,
-			    const char *codeset,
-			    const char *normalized_codeset,
-			    const char *modifier, const char *special,
-			    const char *sponsor, const char *revision,
-			    const char *filename, int do_allocate));
+                            const char *dirlist, size_t dirlist_len, int mask,
+                            const char *language, const char *territory,
+                            const char *codeset,
+                            const char *normalized_codeset,
+                            const char *modifier, const char *special,
+                            const char *sponsor, const char *revision,
+                            const char *filename, int do_allocate));
 
 
 extern const char *_nl_expand_alias PARAMS ((const char *name));
 
 extern int _nl_explode_name PARAMS ((char *name, const char **language,
-				     const char **modifier,
-				     const char **territory,
-				     const char **codeset,
-				     const char **normalized_codeset,
-				     const char **special,
-				     const char **sponsor,
-				     const char **revision));
+                                     const char **modifier,
+                                     const char **territory,
+                                     const char **codeset,
+                                     const char **normalized_codeset,
+                                     const char **special,
+                                     const char **sponsor,
+                                     const char **revision));
 
 
 
@@ -180,8 +180,8 @@ extern const char _nl_C_name[];
    and fill in *NAME with the actual name used.  The directories
    listed in LOCALE_PATH are searched for the locale files.  */
 extern const struct locale_data *_nl_find_locale (const char *locale_path,
-						  size_t locale_path_len,
-						  int category, char **name);
+                                                  size_t locale_path_len,
+                                                  int category, char **name);
 
 /* Try to load the file described by FILE.  */
 extern void _nl_load_locale (struct loaded_l10nfile *file, int category);

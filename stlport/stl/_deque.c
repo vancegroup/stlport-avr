@@ -274,7 +274,7 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux() {
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
-    _Construct(this->_M_finish._M_cur);
+    _STLP_STD::_Construct(this->_M_finish._M_cur);
     this->_M_finish._M_set_node(this->_M_finish._M_node + 1);
     this->_M_finish._M_cur = this->_M_finish._M_first;
   }
@@ -307,7 +307,7 @@ void __deque__<_Tp,_Alloc>::_M_push_front_aux() {
   _STLP_TRY {
     this->_M_start._M_set_node(this->_M_start._M_node - 1);
     this->_M_start._M_cur = this->_M_start._M_last - 1;
-    _Construct(this->_M_start._M_cur);
+    _STLP_STD::_Construct(this->_M_start._M_cur);
   }
   _STLP_UNWIND((++this->_M_start, this->_M_map_size.deallocate(*(this->_M_start._M_node - 1), 
                                                                this->buffer_size())));
