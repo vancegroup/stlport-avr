@@ -1,8 +1,9 @@
-# Time-stamp: <03/07/15 12:45:30 ptr>
+# Time-stamp: <04/03/09 17:02:03 ptr>
 # $Id$
 
 ifndef BUILD_DATE
 
+ifndef TARGET_OS
 OSNAME := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 
 # RedHat use nonstandard options for uname at least in cygwin,
@@ -11,9 +12,16 @@ ifeq (cygwin,$(findstring cygwin,$(OSNAME)))
 OSNAME := $(shell uname -o | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 
-OSREL := $(shell uname -r | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
+OSREL  := $(shell uname -r | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 P_ARCH := $(shell uname -p | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
+else
+OSNAME := $(shell echo ${TARGET_OS} | sed 's/.*-.*-\([a-z]*\).*/\1/' )
+OSREL  := $(shell echo ${TARGET_OS} | sed 's/.*-.*-[a-z]*\(.*\)/\1/' )
+M_ARCH := $(shell echo ${TARGET_OS} | sed 's/\(.*\)-.*-[a-z]*.*/\1/' )
+P_ARCH := unknown
+endif
+
 NODENAME := $(shell uname -n | tr '[A-Z]' '[a-z]' )
 SYSVER := $(shell uname -v )
 USER := $(shell echo $$USER )
