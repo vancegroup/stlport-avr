@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/03/12 13:41:28 ptr>
+// -*- C++ -*- Time-stamp: <99/03/29 18:33:18 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -33,7 +33,7 @@ __declspec( dllexport ) int __thr_key = TlsAlloc();
 #endif
 
 __DLLEXPORT
-Thread::Thread() :
+Thread::Thread( unsigned __f ) :
 #ifdef WIN32
     _id( INVALID_HANDLE_VALUE ),
 #else
@@ -41,14 +41,16 @@ Thread::Thread() :
 #endif
     _entrance( 0 ),
     _param( 0 ),
-    _param_sz( 0 )
+    _param_sz( 0 ),
+    _flags( __f )
 { }
 
 __DLLEXPORT
-Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz ) :
+Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f ) :
     _entrance( entrance ),
     _param( 0 ),
-    _param_sz( 0 )
+    _param_sz( 0 ),
+    _flags( __f )
 { _create( p, psz ); }
 
 __DLLEXPORT
@@ -86,7 +88,7 @@ int Thread::join()
   }
 #else // !WIN32
   int ret_code = 0;
-  if ( _id != -1 ) {
+  if ( _id != -1 && (_flags & (daemon | detached) ) == 0 ) {
 #  ifdef _PTHREADS
     pthread_join( _id, (void **)(&ret_code) );
 #  endif
@@ -181,10 +183,10 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
   err = pthread_create( &_id, 0, entrance_type_C(_call), this );
 #endif
 #ifdef _SOLARIS_THREADS
-  err = thr_create( 0, 0, entrance_type_C(_call), this, 0, &_id );
+  err = thr_create( 0, 0, entrance_type_C(_call), this, _flags, &_id );
 #endif
 #ifdef WIN32
-  _id = CreateThread( 0, 0, entrance_type_C(_call), this, 0, &_thr_id );
+  _id = CreateThread( 0, 0, entrance_type_C(_call), this, _flags, &_thr_id );
   err = GetLastError();
 #endif
   if ( err != 0 ) {
