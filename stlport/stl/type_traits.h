@@ -150,7 +150,6 @@ _STLP_TEMPLATE_NULL struct _Is_rational<float> {
 _STLP_TEMPLATE_NULL struct _Is_rational<double> {
   typedef __true_type _Rational;
 };
-# endif
 
 # if !defined ( _STLP_NO_LONG_DOUBLE )
 _STLP_TEMPLATE_NULL struct _Is_rational<long double> {
@@ -204,18 +203,6 @@ struct _PointerShim {
 // These are the discriminating functions
 char _STLP_CALL _IsP(bool, _PointerShim);  // no implementation is required
 char* _STLP_CALL _IsP(bool, ...);          // no implementation is required
-
-template <class _Tp>
-char _STLP_CALL _IsSameFun(bool, _Tp*, _Tp*); // no implementation is required
-char* _STLP_CALL _IsSameFun(bool, ...);          // no implementation is required
-
-template <class _Tp1, class _Tp2>
-struct _IsSame {
-  // boris : check!
-  static _Tp1* __null_rep1();
-  static _Tp2* __null_rep2();
-  enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(),__null_rep2())) == sizeof(char)) };
-};
 
 template <class _Tp>
 struct _IsPtr {
@@ -442,7 +429,6 @@ struct _IsPOD {
   typedef typename __type_traits<_Tp>::is_POD_type _Type;
   static _Type _Answer() { return _Type(); }
 };
-#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
 template <class _Tp> 
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 

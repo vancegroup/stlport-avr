@@ -54,7 +54,8 @@ SRCS = accum1.cpp accum2.cpp adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
 	trnsfrm2.cpp tstdeq.cpp ucompos1.cpp ucompos2.cpp unegate1.cpp \
 	unegate2.cpp uniqcpy1.cpp uniqcpy2.cpp unique1.cpp unique2.cpp \
 	uprbnd1.cpp uprbnd2.cpp vec1.cpp vec2.cpp vec3.cpp vec4.cpp \
-	vec5.cpp vec6.cpp vec7.cpp vec8.cpp
+	vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
+	move_constructor.cpp
 
 
 .cpp.exe:

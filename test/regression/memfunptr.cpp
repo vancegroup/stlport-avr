@@ -169,3 +169,4 @@ void Class::vf1c(const S1&) const
 #ifdef _STLP_DONT_TEST_RETURN_VOID
 #  undef _STLP_DONT_TEST_RETURN_VOID
 #endif
+
