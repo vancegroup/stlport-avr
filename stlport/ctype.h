@@ -16,18 +16,18 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x219
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x219) && ! defined (_STLP_DONT_POP_0x219)
-#  define _STLP_DONT_POP_0x219
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x219) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # include _STLP_NATIVE_C_HEADER(ctype.h)
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x219)
-#  if ! defined (_STLP_DONT_POP_0x219)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
 #   endif
-#   undef  _STLP_DONT_POP_0x219
+#   undef  _STLP_DONT_POP_HEADER_ID
 # endif
 
 

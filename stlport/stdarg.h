@@ -16,18 +16,19 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x261
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x261) && ! defined (_STLP_DONT_POP_0x261)
-#  define _STLP_DONT_POP_0x261
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x261) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # include _STLP_NATIVE_C_HEADER(stdarg.h)
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x261)
-#  if ! defined (_STLP_DONT_POP_0x261)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_0x261
+#  else
+#    undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:

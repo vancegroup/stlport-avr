@@ -16,8 +16,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x244
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x244) && ! defined (_STLP_DONT_POP_0x244)
-#  define _STLP_DONT_POP_0x244
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x244) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if ! defined (exception) && (! defined (__KCC) || (__KCC_VERSION < 4000)) && \
@@ -34,11 +34,12 @@
 # endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x244)
-#  if ! defined (_STLP_DONT_POP_0x244)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_0x244
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:

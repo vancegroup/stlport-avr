@@ -32,8 +32,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x423
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x423) && ! defined (_STLP_DONT_POP_0x423)
-#  define _STLP_DONT_POP_0x423
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x423) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if   ! defined (_STLP_NO_EXCEPTION_HEADER)
@@ -69,9 +69,6 @@
 #      include <config/_msvc_warnings_off.h>
 #    endif
 
-# if !defined(_STLP_EXCEPTION_BASE) && !defined(_STLP_BROKEN_EXCEPTION_CLASS)
-#  define _STLP_EXCEPTION_BASE _STLP_VENDOR_EXCEPT_STD::exception
-# endif
 
 #  ifdef _STLP_USE_OWN_NAMESPACE
 
@@ -91,7 +88,7 @@ using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #  endif
 
 // weird errors
-# if (! defined (__BORLANDC__)) || (defined (__STD_EXCEPTION) && defined (__RWSTD_EXCEPTION_SEEN) && defined ( _STLP_DONT_POP_0x423))
+# if (! defined (__BORLANDC__)) || (defined (__STD_EXCEPTION) && defined (__RWSTD_EXCEPTION_SEEN) && defined ( _STLP_DONT_POP_HEADER_ID))
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected;
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected_handler;
 using _STLP_VENDOR_UNEXPECTED_STD::set_unexpected;
@@ -134,38 +131,35 @@ bool uncaught_exception(); // not implemented under mpw as of Jan/1999
 _STLP_BEGIN_NAMESPACE
 
 // section 18.6.1
-	class exception 
-	{
-	public:
+class _STLP_CLASS_DECLSPEC exception 
+{
+public:
 # ifdef _STLP_OWN_IOSTREAMS
-	        exception() _STLP_NOTHROW;
-	        virtual ~exception() _STLP_NOTHROW;
-		virtual const char* what() const _STLP_NOTHROW;
+  exception() _STLP_NOTHROW;
+  virtual ~exception() _STLP_NOTHROW;
+  virtual const char* what() const _STLP_NOTHROW;
 # else
-	        exception() _STLP_NOTHROW {}
-		virtual ~exception() _STLP_NOTHROW {}
-		virtual const char* what() const _STLP_NOTHROW {return "class exception";}
+  exception() _STLP_NOTHROW {}
+  virtual ~exception() _STLP_NOTHROW {}
+  virtual const char* what() const _STLP_NOTHROW {return "class exception";}
 # endif
-	};
-	
-	
+};
+
 
 // section 18.6.2.1
-	class bad_exception : public exception 
-	{
-	public:
+class _STLP_CLASS_DECLSPEC bad_exception : public exception 
+{
+public:
 # ifdef _STLP_OWN_IOSTREAMS
-	  bad_exception() _STLP_NOTHROW;
-	  ~bad_exception() _STLP_NOTHROW;
-	  const char* what() const _STLP_NOTHROW;
+  bad_exception() _STLP_NOTHROW;
+  ~bad_exception() _STLP_NOTHROW;
+  const char* what() const _STLP_NOTHROW;
 # else
-	  bad_exception() _STLP_NOTHROW {}
-	  ~bad_exception() _STLP_NOTHROW {}
-	  const char* what() const _STLP_NOTHROW {return "class bad_exception";}
+  bad_exception() _STLP_NOTHROW {}
+  ~bad_exception() _STLP_NOTHROW {}
+  const char* what() const _STLP_NOTHROW {return "class bad_exception";}
 # endif
-	};
-
-# define _STLP_EXCEPTION_BASE exception
+};
 
 _STLP_END_NAMESPACE
 
@@ -178,11 +172,12 @@ _STLP_END_NAMESPACE
 #endif /* _STLP_EXCEPTION_H */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x423)
-#  if ! defined (_STLP_DONT_POP_0x423)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_0x423
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:

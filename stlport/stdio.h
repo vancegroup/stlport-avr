@@ -16,6 +16,8 @@
 # ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x264
 #  include <stl/_prolog.h>
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x264) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if ! defined (_STLP_WINCE)
@@ -38,8 +40,12 @@
 # endif /* WINCE */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x264)
-#  include <stl/_epilog.h>
-#  undef _STLP_OUTERMOST_HEADER_ID
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
+#   include <stl/_epilog.h>
+#   undef  _STLP_OUTERMOST_HEADER_ID
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:

@@ -16,8 +16,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x256
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && ! defined (_STLP_DONT_POP_0x256)
-#  define _STLP_DONT_POP_0x256
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 
@@ -26,11 +26,12 @@
 # endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x256)
-#  if ! defined (_STLP_DONT_POP_0x256)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_0x256
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:

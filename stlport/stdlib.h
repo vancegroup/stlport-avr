@@ -16,18 +16,19 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x265
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x265) && ! defined (_STLP_DONT_POP_0x265)
-#  define _STLP_DONT_POP_0x265
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x265) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # include _STLP_NATIVE_C_HEADER(stdlib.h)
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x265)
-#  if ! defined (_STLP_DONT_POP_0x265)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
 #  endif
-#  undef  _STLP_DONT_POP_0x265
 # endif
 
 // Local Variables:

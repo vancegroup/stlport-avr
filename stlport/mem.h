@@ -20,8 +20,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x245
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x245) && ! defined (_STLP_DONT_POP_0x245)
-#  define _STLP_DONT_POP_0x245
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x245) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if (__BORLANDC__ > 0x530) && !defined(__linux__)
@@ -35,11 +35,11 @@
 # define _STLP_mem_h 1
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x245)
-#  if ! defined (_STLP_DONT_POP_0x245)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
 #   endif
-#   undef  _STLP_DONT_POP_0x245
+#   undef  _STLP_DONT_POP_HEADER_ID
 # endif
 
 #endif /* _STLP_mem_h */

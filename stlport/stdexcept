@@ -21,8 +21,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x63
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x63) && ! defined (_STLP_DONT_POP_0x63)
-#  define _STLP_DONT_POP_0x63
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x63) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # ifdef _STLP_PRAGMA_ONCE
@@ -178,11 +178,12 @@ _STLP_END_NAMESPACE
 #  define _STLP_STDEXCEPT 1
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x63)
-#  if ! defined (_STLP_DONT_POP_0x63)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_0x63
+#  else
+#   undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 #endif /* _STLP_STDEXCEPT */

@@ -19,8 +19,8 @@
 # if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x824
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x824) && ! defined (_STLP_DONT_POP_0x824)
-#  define _STLP_DONT_POP_0x824
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x824) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if defined (__BORLANDC__)
@@ -32,11 +32,11 @@
 # endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x824)
-#  if ! defined (_STLP_DONT_POP_0x824)
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
 #   include <stl/_epilog.h>
 #   undef  _STLP_OUTERMOST_HEADER_ID
 #   endif
-#   undef  _STLP_DONT_POP_0x824
+#   undef  _STLP_DONT_POP_HEADER_ID
 # endif
 
 #endif /* _STLP_OLDSTD_exception */

@@ -16,6 +16,8 @@
 # ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x269
 #  include <stl/_prolog.h>
+# elif (_STLP_OUTERMOST_HEADER_ID == 0x269) && !defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
 # endif
 
 # if defined (__BORLANDC__)
@@ -24,13 +26,17 @@
 #  include _STLP_NATIVE_C_HEADER(string.h)
 # endif
 
-# if defined (__BORLANDC__) && defined (_STLP_IMPORT_VENDOR_CSTD)
-#  include <using/cstring>
-# endif /* BORLAND */
+#  if defined (__BORLANDC__) && defined (_STLP_IMPORT_VENDOR_CSTD)
+#   include <using/cstring>
+#  endif /* BORLAND */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x269)
-#  include <stl/_epilog.h>
-#  undef _STLP_OUTERMOST_HEADER_ID
+#  if ! defined (_STLP_DONT_POP_HEADER_ID)
+#   include <stl/_epilog.h>
+#   undef  _STLP_OUTERMOST_HEADER_ID
+#  else
+#    undef  _STLP_DONT_POP_HEADER_ID
+#  endif
 # endif
 
 // Local Variables:
