@@ -38,10 +38,10 @@ public:
 };
 
 template <class _InternT, class _ExternT, class _StateT>
-class _STLP_CLASS_DECLSPEC codecvt {};
+class codecvt {};
  
 template <class _InternT, class _ExternT, class _StateT>
-class _STLP_CLASS_DECLSPEC codecvt_byname {};
+class codecvt_byname {};
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC codecvt<char, char, mbstate_t>

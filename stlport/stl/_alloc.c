@@ -119,7 +119,7 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
 # ifdef _STLP_THREADS
 
 template <bool __threads, int __inst>
-class _STLP_CLASS_DECLSPEC _Node_Alloc_Lock {
+class _Node_Alloc_Lock {
 public:
   _Node_Alloc_Lock() { 
     
@@ -355,7 +355,7 @@ _STLP_END_NAMESPACE
 
 # undef _S_FREELIST_INDEX
 
-# endif /* OWN_IOSTREAMS */
+# endif /* _STLP_EXPOSE_GLOBALS_IMPLEMENTATION */
 
 #endif /*  _STLP_ALLOC_C */
 

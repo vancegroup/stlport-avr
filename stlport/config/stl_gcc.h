@@ -92,10 +92,11 @@ typedef unsigned int wint_t;
 #  define _STLP_NO_CSTD_FUNCTION_IMPORTS
  /* Workaround for the broken Mac OS X C++ preprocessor which cannot handle
   * parameterized macros in #include statements */
-#  define _STLP_NATIVE_HEADER(header) <../c++/##header##>
-#  define _STLP_NATIVE_C_HEADER(header) <../bsd/##header##>
-#  define _STLP_NATIVE_CPP_C_HEADER(header) <../c++/##header##>
-#  define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../c++/##header##>
+#  define _STLP_NATIVE_HEADER(header) <../g++/##header##>
+#  define _STLP_NATIVE_C_HEADER(header) <../include/##header##>
+#  define _STLP_NATIVE_CPP_C_HEADER(header) <../g++/##header##>
+#  define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../g++/##header##>
+#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../g++/##header##>
 # endif
 
 /* g++ 2.7.x and above */

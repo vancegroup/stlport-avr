@@ -25,7 +25,7 @@ MKDIR=mkdir -p
 COMP=WATCOM
 INSTALL_STEP = install_unix 
 
-all: all_dynamic all_static symbolic_links 
+all: all_dynamic symbolic_links  all_static 
 
 CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 

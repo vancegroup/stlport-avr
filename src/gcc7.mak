@@ -25,7 +25,7 @@ MKDIR=mkdir -p
 COMP=GCC7${ARCH}
 INSTALL_STEP = install_unix 
 
-all: symbolic_links all_dynamic all_static
+all: all_dynamic all_static symbolic_links 
 
 include common_macros.mak
 

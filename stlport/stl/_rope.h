@@ -75,6 +75,13 @@
 #    include <mutex.h>
 # endif
 
+//For HP aCC this template function is just too much
+#ifdef __HP_aCC
+#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) _Alloc_traits<_Tp,__atype>::allocator_type(__a)
+#else
+#define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 // First a lot of forward declarations.  The standard seems to require
@@ -1246,12 +1253,12 @@ protected:
   static _RopeLeaf* _S_new_RopeLeaf(__GC_CONST _CharT *__s,
                                     size_t _p_size, allocator_type __a)
   {
-    _RopeLeaf* __space = __stl_alloc_create(__a, (_RopeLeaf*)0).allocate(1,(const void*)0);
+   _RopeLeaf* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a, _RopeLeaf).allocate(1,(const void*)0);
     _STLP_TRY {
       _STLP_PLACEMENT_NEW(__space) _RopeLeaf(__s, _p_size, __a);
     }
-    _STLP_UNWIND(__stl_alloc_create(__a, 
-                                    (_RopeLeaf*)0).deallocate(__space, 1))
+   _STLP_UNWIND(_STLP_CREATE_ALLOCATOR(allocator_type,__a, 
+                                   _RopeLeaf).deallocate(__space, 1))
 	  return __space;
   }
 
@@ -1259,16 +1266,16 @@ protected:
                                                       _RopeRep* __left, _RopeRep* __right,
                                                       allocator_type __a)
   {
-    _RopeConcatenation* __space = __stl_alloc_create(__a,
-                                                     (_RopeConcatenation*)0).allocate(1,(const void*)0);
+   _RopeConcatenation* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a,
+                                                    _RopeConcatenation).allocate(1,(const void*)0);
     return _STLP_PLACEMENT_NEW(__space) _RopeConcatenation(__left, __right, __a);
   }
 
   static _RopeFunction* _S_new_RopeFunction(char_producer<_CharT>* __f,
                                             size_t _p_size, bool __d, allocator_type __a)
   {
-    _RopeFunction* __space = __stl_alloc_create(__a, 
-                                                (_RopeFunction*)0).allocate(1,(const void*)0);
+   _RopeFunction* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a, 
+                                               _RopeFunction).allocate(1,(const void*)0);
     return _STLP_PLACEMENT_NEW(__space) _RopeFunction(__f, _p_size, __d, __a);
   }
 
@@ -1276,8 +1283,8 @@ protected:
                                               _Rope_RopeRep<_CharT,_Alloc>* __b, size_t __s,
                                               size_t __l, allocator_type __a)
   {
-    _RopeSubstring* __space = __stl_alloc_create(__a, 
-                                                 (_RopeSubstring*)0).allocate(1,(const void*)0);
+   _RopeSubstring* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a, 
+                                                _RopeSubstring).allocate(1,(const void*)0);
     return _STLP_PLACEMENT_NEW(__space) _RopeSubstring(__b, __s, __l, __a);
   }
 
@@ -1290,7 +1297,7 @@ protected:
   {
     if (0 == _p_size) return 0;
 
-    _CharT* __buf = __stl_alloc_create(__a, (_CharT*)0).allocate(_S_rounded_up_size(_p_size));
+   _CharT* __buf = _STLP_CREATE_ALLOCATOR(allocator_type,__a, _CharT).allocate(_S_rounded_up_size(_p_size));
 
     uninitialized_copy_n(__s, _p_size, __buf);
     _S_cond_store_eos(__buf[_p_size]);

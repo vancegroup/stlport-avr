@@ -62,18 +62,17 @@ CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g $(SHCXXFLAGS) ${DEBUG_dynamic_rep
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) ${STLDEBUG_static_rep} -D_STLP_DEBUG
 CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) ${STLDEBUG_dynamic_rep} -D_STLP_DEBUG
 
-LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static} sparc_atomic.S
-LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -h${RELEASE_DYNLIB_SONAME} sparc_atomic.S
+LDFLAGS_RELEASE_static = ${CXXFLAGS_RELEASE_static} sparc_atomic.s
+LDFLAGS_RELEASE_dynamic = ${CXXFLAGS_RELEASE_dynamic} -h${RELEASE_DYNLIB_SONAME} sparc_atomic.s
 
-LDFLAGS_DEBUG_static = ${CXXFLAGS_DEBUG_static} sparc_atomic.S
-LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} -h${DEBUG_DYNLIB_SONAME} sparc_atomic.S
+LDFLAGS_DEBUG_static = ${CXXFLAGS_DEBUG_static} sparc_atomic.s
+LDFLAGS_DEBUG_dynamic = ${CXXFLAGS_DEBUG_dynamic} -h${DEBUG_DYNLIB_SONAME} sparc_atomic.s
 
-LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static} sparc_atomic.S
-LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -h${STLDEBUG_DYNLIB_SONAME} sparc_atomic.S
+LDFLAGS_STLDEBUG_static = ${CXXFLAGS_STLDEBUG_static} sparc_atomic.s
+LDFLAGS_STLDEBUG_dynamic = ${CXXFLAGS_STLDEBUG_dynamic} -h${STLDEBUG_DYNLIB_SONAME} sparc_atomic.s
 
 LDLIBS_RELEASE_dynamic =  -lposix4
 LDLIBS_STLDEBUG_dynamic = -lposix4
-
 
 include common_percent_rules.mak
 include common_rules.mak

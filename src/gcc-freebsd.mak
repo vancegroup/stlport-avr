@@ -30,7 +30,7 @@ MKDIR=mkdir -p
 COMP=GCC-FREEBSD
 INSTALL_STEP = install_unix 
 
-all: gmake_message symbolic_links  all_dynamic all_static
+all: gmake_message  all_dynamic all_static symbolic_links 
 
 gmake_message:
 	echo "Note : this makefile requires gmake on FreeBSD"

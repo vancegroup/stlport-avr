@@ -35,7 +35,7 @@ COMP=DEC
 # all: all_dynamic all_static
 # Boris : do not see a reasonable way to link static library witout instantiating in .o 
 # Anyone ?
-all: msg symbolic_links all_dynamic
+all: msg all_dynamic symbolic_links
 
 msg:
 	@echo "*** ATTENTION! ***"

@@ -370,10 +370,9 @@ public:                         // Basic types
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   typedef random_access_iterator_tag _Iterator_category;
-
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Base::allocator_type allocator_type;
 
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
 public:                         // Iterators
   typedef typename _Base::iterator       iterator;
   typedef typename _Base::const_iterator const_iterator;

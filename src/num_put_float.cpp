@@ -192,6 +192,7 @@ _STLP_BEGIN_NAMESPACE
 #  define USE_SPRINTF_INSTEAD
 #endif
 
+# if defined (_AIX)
 // Some OS'es only provide non-reentrant primitives, so we have to use additional synchronization here
 #  ifdef _REENTRANT 
 static  _STL_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
@@ -201,6 +202,7 @@ static  _STL_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
 #   define LOCK_CVT
 #   define RETURN_CVT (ecvt, x, n, pt, sign, buf) return ecvt(x, n, pt, sign);
 #  endif
+# endif
 
 // Tests for infinity and NaN differ on different OSs.  We encapsulate
 // these differences here.

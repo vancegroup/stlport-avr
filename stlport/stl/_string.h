@@ -117,7 +117,7 @@ struct _Not_within_traits
 // Additionally, _String_base encapsulates the difference between
 // old SGI-style allocators and standard-conforming allocators.
 
-template <class _Tp, class _Alloc> class _STLP_CLASS_DECLSPEC _String_base {
+template <class _Tp, class _Alloc> class _String_base {
 public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
@@ -180,7 +180,7 @@ _STLP_EXPORT_TEMPLATE_CLASS _String_base<wchar_t, allocator<wchar_t> >;
 struct _String_reserve_t {};
 
 template <class _CharT, class _Traits, class _Alloc> 
-class _STLP_CLASS_DECLSPEC basic_string : protected _String_base<_CharT,_Alloc> {
+class basic_string : protected _String_base<_CharT,_Alloc> {
 private:                        // Protected members inherited from base.
   typedef _String_base<_CharT,_Alloc> _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;

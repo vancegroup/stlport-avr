@@ -299,7 +299,7 @@ ws(basic_istream<_CharT, _Traits>& __is);
 // Class iostream.
 
 template <class _CharT, class _Traits>
-class _STLP_CLASS_DECLSPEC basic_iostream 
+class basic_iostream 
   : public basic_istream<_CharT, _Traits>,
     public basic_ostream<_CharT, _Traits>
 {

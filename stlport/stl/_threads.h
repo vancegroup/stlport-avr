@@ -77,7 +77,7 @@
 #  endif
 
 //HPUX variants have (on some platforms optional) non-standard "DCE" pthreads impl
-#  if 0 /* defined(_DECTHREADS_)  */
+#  if defined(_DECTHREADS_)
 #   define _STLP_PTHREAD_ATTR_DEFAULT pthread_mutexattr_default
 #  else
 #   define _STLP_PTHREAD_ATTR_DEFAULT 0
@@ -237,10 +237,10 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex_base
 	 && (defined (_ABIN32) || defined(_ABI64))
         __lock_release(__lock);
 #   elif defined (_STLP_SPARC_SOLARIS_THREADS)
-#    ifdef __WORD64
+#    if defined (__WORD64) || defined (__arch64__)
 	asm("membar #StoreStore ; membar #LoadStore");
 #    else
-	asm(" stbar ");
+	//	asm(" stbar ");
 #    endif
         *__lock = 0;	
 #   else

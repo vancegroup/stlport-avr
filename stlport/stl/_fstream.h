@@ -441,7 +441,7 @@ public:
 // to the regular internal buffer.  (2) We've exhausted the internal buffer,
 // and we need to replentish it.  
 template <class _CharT, class _Traits>
-class  _STLP_CLASS_DECLSPEC _Underflow {
+class _Underflow {
 public:
   typedef typename _Traits::int_type int_type;
   typedef _Traits                    traits_type;

@@ -38,6 +38,8 @@
 #endif
 
 
+typedef STLPORT::rope<char, eh_allocator(char) > TestRope;
+
 # if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
 
 // Instantiate TestRope static data members
@@ -55,9 +57,6 @@ const unsigned long TestRope::_S_min_len[46] = { \
 /* 45 */2971215073ul };
 
 # endif /* ( _STLP_STATIC_TEMPLATE_DATA < 1 ) */
-
-// typedef rope<TestClass, alloc> TestRope;
-typedef STLPORT::rope<char, eh_allocator(char) > TestRope;
 
 inline sequence_container_tag
 container_category(const TestRope&)

@@ -27,47 +27,47 @@ _STLP_BEGIN_NAMESPACE
 class _STLP_CLASS_DECLSPEC ios_base;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_ios;
+class basic_ios;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_streambuf;
+class basic_streambuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_istream;
+class basic_istream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_ostream;
+class basic_ostream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_iostream;
+class basic_iostream;
 
 template <class _CharT, __DFL_TMPL_PARAM( _Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_stringbuf;
+class basic_stringbuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_istringstream;
+class basic_istringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_ostringstream;
+class basic_ostringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
           __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_stringstream;
+class basic_stringstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_filebuf;
+class basic_filebuf;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_ifstream;
+class basic_ifstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_ofstream;
+class basic_ofstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
-class _STLP_CLASS_DECLSPEC basic_fstream;
+class basic_fstream;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class istreambuf_iterator;
@@ -85,7 +85,7 @@ typedef basic_ios<wchar_t, char_traits<wchar_t> > wios;
 class locale;
 # ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
-struct _STLP_CLASS_DECLSPEC _Use_facet {
+struct _Use_facet {
   const locale& __loc;
   _Use_facet(const locale& __p_loc) : __loc(__p_loc) {}
   inline const _Facet& operator *() const;

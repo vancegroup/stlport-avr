@@ -8,7 +8,10 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* facets_byname.cpp source introduced to replace all xx_byname.cpp files;
  	  restored separate facets .cpp complilation (they used to be included in locale_impl.cpp)
-	
+
+	* introduced _STLP_USE_PERTHREAD_ALLOC to optionally use per-thread allocator 
+	  (_Pthread_alloc from _pthread_alloc.h) as the deafult node allocator. Only works with pthreads for now.
+	  
 	* monetary.cpp : unneded hack for cygwin removed (thanks to Dean Sturtevant) 
 
 	* <iostream> : fixed _STLP_OUTERMOST_HEADER_ID macro
@@ -68,6 +71,10 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* KAI C++ 4.0 is now supported on SUN
 
+	* MAC OS X compilation fixed (thanks Patrick Luby for the patch)
+
+	* HP aCC fixes by Michael Tsirkin
+	
 	* "INF/NAN" string representation for uppercase changed to "Inf/NaN" to behave like printf() on most systems.
 	
 	* debug/_iterator.c : fixed SUN 6.0 compiler internal error 

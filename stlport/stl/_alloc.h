@@ -264,7 +264,26 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 # endif
 
+# if defined (_STLP_USE_PERTHREAD_ALLOC)
+
+_STLP_END_NAMESPACE
+// include additional header here
+# include <stl/_pthread_alloc.h>
+_STLP_BEGIN_NAMESPACE
+
+#  if defined ( _STLP_DEBUG_ALLOC )
+typedef __debug_alloc<__pthread_alloc> __sgi_alloc;
+#  else
+typedef __pthread_alloc __sgi_alloc;
+#  endif /* _STLP_DEBUG_ALLOC */
+
+typedef __pthread_alloc __single_client_alloc;
+typedef __pthread_alloc __multithreaded_alloc;
+
+# else
+
 # if defined ( _STLP_USE_NEWALLOC )
+
 #  if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<__new_alloc> __sgi_alloc;
 #  else
@@ -275,14 +294,18 @@ typedef __new_alloc __single_client_alloc;
 typedef __new_alloc __multithreaded_alloc;
 
 #  elif defined (_STLP_USE_MALLOC)
+
 #   if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<__malloc_alloc<0> > __sgi_alloc;
 #   else
 typedef __malloc_alloc<0> __sgi_alloc;
 #   endif /* _STLP_DEBUG_ALLOC */
+
 typedef __malloc_alloc<0> __single_client_alloc;
 typedef __malloc_alloc<0> __multithreaded_alloc;
+
 # else
+
 #   if defined ( _STLP_DEBUG_ALLOC )
 typedef __debug_alloc<_Node_alloc> __sgi_alloc;
 #   else
@@ -293,6 +316,7 @@ typedef __node_alloc<false, 0> __single_client_alloc;
 typedef __node_alloc<true, 0>  __multithreaded_alloc;
 
 #  endif /* _STLP_USE_NEWALLOC */
+# endif /* PTHREAD_ALLOC */
 
 // This implements allocators as specified in the C++ standard.  
 //
@@ -303,7 +327,7 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // to refer to a template member of a dependent type.
 
 template <class _Tp>
-class _STLP_CLASS_DECLSPEC allocator {
+class allocator {
 public:
 
   typedef _Tp        value_type;
@@ -452,7 +476,7 @@ __stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>
 
 // inheritance is being used for EBO optimization
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
-class _STLP_CLASS_DECLSPEC _STL_alloc_proxy : public _MaybeReboundAlloc {
+class _STL_alloc_proxy : public _MaybeReboundAlloc {
 private:
   typedef _MaybeReboundAlloc _Base;
   typedef _STL_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
@@ -487,7 +511,7 @@ _STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t
 
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_alloc.c>
 # endif
 

@@ -52,6 +52,10 @@
 #  include <locale>
 # endif
 
+# if defined (_STLP_UNIX)
+#  define _STLP_HAS_PERTHREAD_ALLOC
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
@@ -128,6 +132,10 @@ template class _STLP_CLASS_DECLSPEC __node_alloc<true,0>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<true,0> >;
 template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<false,0> >;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
+#ifdef _STLP_HAS_PERTHREAD_ALLOCATOR
+template class _STLP_CLASS_DECLSPEC __Pthread_alloc<_MAX_BYTES>;
+template class _STLP_CLASS_DECLSPEC __debug_alloc<__pthread_alloc>;
+#endif
 
 template class allocator<void*>;
 template class _STL_alloc_proxy<void**, void*, allocator<void*> >;
