@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/16 20:22:19 ptr>
+// -*- C++ -*- Time-stamp: <99/02/25 17:46:22 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -88,6 +88,7 @@ class Mutex
 #endif
       }
 
+#if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
     int trylock()
       {
 #ifdef _PTHREADS
@@ -100,6 +101,7 @@ class Mutex
 	return TryEnterCriticalSection( &mutex ) != 0 ? 0 : -1;
 #endif
       }
+#endif // !WIN32 || _WIN32_WINNT >= 0x0400
 
     void unlock()
       {

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/16 13:23:07 ptr>
+// -*- C++ -*- Time-stamp: <99/02/25 18:19:17 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -10,6 +10,7 @@
 #ifdef WIN32
 #include <iostream>
 #include <iomanip>
+#include <win_config.h>
 
 using namespace std;
 #endif
