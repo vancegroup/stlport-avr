@@ -39,6 +39,7 @@
 # endif
 
 # ifdef _STLP_MSVC
+
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 
 # ifndef __BUILDING_STLPORT
@@ -176,7 +177,7 @@
 # endif /* __ICL */
 
 
-#    if defined (__ICL) || (_MSC_VER < 1200) && ! defined (__BUILDING_STLPORT)
+#    if defined (__ICL) || (_MSC_VER < 1200)
 //    only static SGI lib now works for ICL and VC 5.0
 #     undef  _STLP_USE_STATIC_LIB
 #     define _STLP_USE_STATIC_LIB

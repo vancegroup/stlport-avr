@@ -47,6 +47,14 @@
 # define _STLP_MUTEX_INITIALIZER
 # endif
 
+# if defined (_STLP_WIN32) || defined (__sgi)
+  typedef long __stl_atomic_t;
+# elif defined (__sun) && defined (__sparc)
+  typedef int __stl_atomic_t;
+# else
+  typedef size_t __stl_atomic_t;
+#endif  
+
 # if defined(_STLP_SGI_THREADS)
 #  include <mutex.h>
 // Hack for SGI o32 compilers.
@@ -133,10 +141,10 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 #  define _STLP_ATOMIC_EXCHANGE __ATOMIC_EXCH_LONG
 #  define _STLP_ATOMIC_INCREMENT(__x, __y) __ATOMIC_ADD_LONG(__x, 1)
 #  define _STLP_ATOMIC_DECREMENT(__x, __y) __ATOMIC_ADD_LONG(__x, -1)
-//# elif defined(__sun) && defined (__sparc) 
-//	extern "C" unsigned int __stl_atomic_exchange(__stl_atomic_t * __x, __stl_atomic_t __v);
-//	extern "C" void __stl_atomic_decrement(__stl_atomic_t* i);
-//	extern "C" void __stl_atomic_increment(__stl_atomic_t* i);
+# elif defined(_STLP_SPARC_SOLARIS_THREADS) 
+extern "C" unsigned int _STLP_atomic_exchange(__stl_atomic_t * __x, __stl_atomic_t __v);
+extern "C" void _STLP_atomic_decrement(__stl_atomic_t* i);
+extern "C" void _STLP_atomic_increment(__stl_atomic_t* i);
 # elif defined (_STLP_UITHREADS)
 // this inclusion is potential hazard to bring up all sorts
 // of old-style headers. Let's assume vendor already know how
@@ -145,9 +153,6 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 #  include <synch.h>
 #  include <cstdio>
 #  include <cwchar>
-
-
-
 #elif defined(_STLP_OS2THREADS)
   // This section serves to replace os2.h for VisualAge C++
   typedef unsigned long ULONG;
@@ -181,13 +186,6 @@ flAttr, BOOL32 fState);
 # endif
 
 _STLP_BEGIN_NAMESPACE
-
-# if defined (_STLP_WIN32) || defined (__sgi)
-  typedef long __stl_atomic_t;
-# else
-  typedef size_t __stl_atomic_t;
-#endif  
-
 // Helper struct.  This is a workaround for various compilers that don't
 // handle static variables in inline functions properly.
 template <int __inst>

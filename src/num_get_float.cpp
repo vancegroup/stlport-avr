@@ -358,7 +358,7 @@ inline double _Stl_atod(char *buffer, int ndigit, int dexp)
 
 #else  /* IEEE representation */
 
-#ifdef __ICL
+#if 0 // def __ICL
 // turn off optimization here
 #  pragma optimize "off"
 #endif

@@ -1,10 +1,9 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-// #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
+# define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 
-// Intel is not able to export templates from DLL or LIB, so 
-// # define _STLP_NO_FORCE_INSTANTIATE 1
+# define _STLP_IMPORT_TEMPLATE_KEYWORD import
 
 # include <config/stl_msvc.h>
 

@@ -12,3 +12,7 @@
 #if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 # define _STLP_RAND48 1
 #endif
+
+# if defined (__sparc) &&  ! defined (__STLP_NO_SGI_IOSTREAMS)
+#  define _STLP_SPARC_SOLARIS_THREADS
+# endif

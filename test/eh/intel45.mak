@@ -34,7 +34,7 @@ CPP_PRJ_CMN = /nologo /W3 /GR /GX /DWIN32 /D_WINDOWS /D_CONSOLE /I$(STL_PATH)\st
 
 #
 LIBTYPE = STATIC
-#LIBTYPE = DYNAMIC
+# LIBTYPE = DYNAMIC
 #
 #DEBUG = STL
 DEBUG = ON
@@ -55,9 +55,9 @@ CPP_PRJ_IOS =
 #MT/MD etc should be LAST in CPP_PRJ_LIBTYP string!!!
 #Library selection should be BEFORE debug processing!!!
 !IF "$(LIBTYPE)" == "STATIC"
-CPP_PRJ_LIBTYP = /D__STL_USE_STATIC_LIB /MT
+CPP_PRJ_LIBTYP = /MT
 !ELSE
-CPP_PRJ_LIBTYP = /D__STL_USE_DYNAMIC_LIB /MD
+CPP_PRJ_LIBTYP = /MD
 !ENDIF
 
 !IF "$(DEBUG)" == ""

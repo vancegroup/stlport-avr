@@ -30,7 +30,7 @@
 // the platform makefile when addinf compilers to this list, otherwise 
 // this will result in worse build performance.
 
-# if defined (_STLP_MSVC)
+# if defined (_STLP_MSVC) || defined (__ICL)
 # ifndef _STLP_USE_DECLSPEC
 # include <climits>
 # include <cmath>
