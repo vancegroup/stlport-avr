@@ -381,7 +381,7 @@ public:
           __new_finish = __uninitialized_copy(__first, __last, __new_finish, _IsPODType());
           __new_finish = reinterpret_cast<pointer>(__ucopy_trivial(__position, this->_M_finish, __new_finish));
         }
-        _STLP_UNWIND(this->_M_end_of_storage.deallocate(__new_start,__len));
+        _STLP_UNWIND(this->_M_end_of_storage.deallocate(__new_start,__len))
         _M_clear();
         _M_set(__new_start, __new_finish, __new_start + __len);
       }
@@ -438,10 +438,10 @@ protected:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIterator>
   pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first,
-				                       _ForwardIterator __last)
+                               _ForwardIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
   pointer _M_allocate_and_copy(size_type __n, const_pointer __first,
-			                         const_pointer __last)
+                               const_pointer __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   {
     pointer __result = this->_M_end_of_storage.allocate(__n);
@@ -453,8 +453,8 @@ protected:
 #endif
       return __result;
     }
-    _STLP_UNWIND(this->_M_end_of_storage.deallocate(__result, __n));
-    _STLP_RET_AFTER_THROW(__result);
+    _STLP_UNWIND(this->_M_end_of_storage.deallocate(__result, __n))
+    _STLP_RET_AFTER_THROW(__result)
   }
 
 
