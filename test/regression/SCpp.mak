@@ -250,14 +250,7 @@ Regression_Objects_68K  = ¶
 	"{ObjDir}unique2.cpp.o" ¶
 	"{ObjDir}uprbnd1.cpp.o" ¶
 	"{ObjDir}uprbnd2.cpp.o" ¶
-	"{ObjDir}vec1.cpp.o" ¶
-	"{ObjDir}vec2.cpp.o" ¶
-	"{ObjDir}vec3.cpp.o" ¶
-	"{ObjDir}vec4.cpp.o" ¶
-	"{ObjDir}vec5.cpp.o" ¶
-	"{ObjDir}vec6.cpp.o" ¶
-	"{ObjDir}vec7.cpp.o" ¶
-	"{ObjDir}vec8.cpp.o" ¶
+	"{ObjDir}vec.cpp.o" ¶
 	"{ObjDir}move_constructor.cpp.o" ¶
 #	end
 
@@ -584,14 +577,7 @@ Regression_Objects_68K  = ¶
 	"{ObjDir}unique2.cpp.o" ¶
 	"{ObjDir}uprbnd1.cpp.o" ¶
 	"{ObjDir}uprbnd2.cpp.o" ¶
-	"{ObjDir}vec1.cpp.o" ¶
-	"{ObjDir}vec2.cpp.o" ¶
-	"{ObjDir}vec3.cpp.o" ¶
-	"{ObjDir}vec4.cpp.o" ¶
-	"{ObjDir}vec5.cpp.o" ¶
-	"{ObjDir}vec6.cpp.o" ¶
-	"{ObjDir}vec7.cpp.o" ¶
-	"{ObjDir}vec8.cpp.o" ¶
+	"{ObjDir}vec.cpp.o" ¶
 	"{ObjDir}move_constructor.cpp.o" ¶
 #	end
 

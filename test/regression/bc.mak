@@ -41,13 +41,7 @@ check: $(Dep_os)
 	stl_test.exe < stdin > stl_test.out
 
 Dep_osdexe = \
-   vec2.obj\
-   vec7.obj\
-   vec6.obj\
-   vec5.obj\
-   vec4.obj\
-   vec3.obj\
-   vec8.obj\
+   vec.obj\
    stat.obj\
    uprbnd2.obj\
    uprbnd1.obj\
@@ -69,7 +63,6 @@ Dep_osdexe = \
    stblsrt1.obj\
    stblptn1.obj\
    stblptn0.obj\
-   vec1.obj\
    rotcopy0.obj\
    stack1.obj\
    sort2.obj\
@@ -278,13 +271,7 @@ stl_test.exe : $(Dep_osdexe)
   $(TLINK32) @&&|
  /v $(IDE_LinkFLAGS32) $(LinkerOptsAt_osdexe) $(LinkerInheritOptsAt_osdexe) +
 ${BCROOT}\LIB\c0x32.obj+
-vec2.obj+
-vec7.obj+
-vec6.obj+
-vec5.obj+
-vec4.obj+
-vec3.obj+
-vec8.obj+
+vec.obj+
 stat.obj+
 uprbnd2.obj+
 uprbnd1.obj+
@@ -306,7 +293,6 @@ stblsrt2.obj+
 stblsrt1.obj+
 stblptn1.obj+
 stblptn0.obj+
-vec1.obj+
 rotcopy0.obj+
 stack1.obj+
 sort2.obj+
@@ -544,39 +530,9 @@ slist1.obj :  slist1.cpp
  $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ slist1.cpp
 |
 
-vec2.obj :  vec2.cpp
+vec.obj :  vec.cpp
   $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec2.cpp
-|
-
-vec7.obj :  vec7.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec7.cpp
-|
-
-vec6.obj :  vec6.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec6.cpp
-|
-
-vec5.obj :  vec5.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec5.cpp
-|
-
-vec4.obj :  vec4.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec4.cpp
-|
-
-vec3.obj :  vec3.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec3.cpp
-|
-
-vec8.obj :  vec8.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec8.cpp
+ $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec.cpp
 |
 
 stat.obj :  stat.cpp
@@ -682,11 +638,6 @@ stblptn1.obj :  stblptn1.cpp
 stblptn0.obj :  stblptn0.cpp
   $(BCC32) -c @&&|
  $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ stblptn0.cpp
-|
-
-vec1.obj :  vec1.cpp
-  $(BCC32) -c @&&|
- $(CompOptsAt_osdexe) $(CompInheritOptsAt_osdexe) -o$@ vec1.cpp
 |
 
 rotcopy0.obj :  rotcopy0.cpp

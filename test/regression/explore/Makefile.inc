@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/11/16 19:24:10 ptr>
+# -*- makefile -*- Time-stamp: <04/02/12 22:20:38 ptr>
 # $Id$
 
 PRGNAME = stl_test
@@ -106,8 +106,8 @@ SRC_CPP = ../stl_test.cpp ../accum1.cpp ../accum2.cpp \
         ../uniqcpy1.cpp ../uniqcpy2.cpp \
         ../unique1.cpp ../unique2.cpp \
         ../uprbnd1.cpp ../uprbnd2.cpp \
-        ../vec1.cpp ../vec2.cpp ../vec3.cpp ../vec4.cpp ../vec5.cpp ../vec6.cpp ../vec7.cpp ../vec8.cpp \
         ../hmmap1.cpp ../hset2.cpp ../hmset1.cpp ../slist1.cpp ../hmap1.cpp ../string1.cpp ../bitset1.cpp \
         ../string_mt.cpp ../move_constructor.cpp ../ioiter.cpp \
-	../short_string.cpp ../ptr_specialization.cpp ../float_output.cpp
+	../short_string.cpp ../ptr_specialization.cpp ../float_output.cpp \
+	../vec.cpp
 

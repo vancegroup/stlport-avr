@@ -113,9 +113,8 @@ OBJ_LIST  = stl_test.o accum1.o accum2.o \
 	uniqcpy1.o uniqcpy2.o \
 	unique1.o unique2.o \
 	uprbnd1.o uprbnd2.o \
-	vec1.o vec2.o vec3.o vec4.o vec5.o vec6.o vec7.o vec8.o \
   hmap1.o hmmap1.o hset2.o hmset1.o string1.o bitset1.o slist1.o \
-  move_constructor.o
+  move_constructor.o vec.o
 
 LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	adjdiff0.cpp adjdiff1.cpp adjdiff2.cpp \
@@ -220,9 +219,8 @@ LIST  = stl_test.cpp accum1.cpp accum2.cpp \
 	uniqcpy1.cpp uniqcpy2.cpp \
 	unique1.cpp unique2.cpp \
 	uprbnd1.cpp uprbnd2.cpp \
-	vec1.cpp vec2.cpp vec3.cpp vec4.cpp vec5.cpp vec6.cpp vec7.cpp vec8.cpp \
   hmap1.cpp hmmap1.cpp hset2.cpp hmset1.cpp string1.cpp bitset1.cpp \
-  move_constructor.cpp
+  move_constructor.cpp vec.cpp
 
 OBJECTS = $(OBJ_LIST)
 EXECS = $(LIST:%.cpp=%.exe)

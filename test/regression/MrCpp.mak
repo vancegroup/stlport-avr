@@ -251,14 +251,7 @@ Regression_Objects_PPC  = ¶
 	"{ObjDir}unique2.cpp.x" ¶
 	"{ObjDir}uprbnd1.cpp.x" ¶
 	"{ObjDir}uprbnd2.cpp.x" ¶
-	"{ObjDir}vec1.cpp.x" ¶
-	"{ObjDir}vec2.cpp.x" ¶
-	"{ObjDir}vec3.cpp.x" ¶
-	"{ObjDir}vec4.cpp.x" ¶
-	"{ObjDir}vec5.cpp.x" ¶
-	"{ObjDir}vec6.cpp.x" ¶
-	"{ObjDir}vec7.cpp.x" ¶
-	"{ObjDir}vec8.cpp.x" ¶
+	"{ObjDir}vec.cpp.x" ¶
 	"{ObjDir}move_constructor.cpp.x" ¶
 	# end
 

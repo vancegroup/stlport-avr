@@ -10,13 +10,7 @@ CPP32=cpp32
 PROJECT = stl_test.exe
 
 OBJFILES = \
-   vec2.obj\
-   vec7.obj\
-   vec6.obj\
-   vec5.obj\
-   vec4.obj\
-   vec3.obj\
-   vec8.obj\
+   vec.obj\
    stat.obj\
    uprbnd2.obj\
    uprbnd1.obj\
@@ -38,7 +32,6 @@ OBJFILES = \
    stblsrt1.obj\
    stblptn1.obj\
    stblptn0.obj\
-   vec1.obj\
    rotcopy0.obj\
    stack1.obj\
    sort2.obj\

@@ -109,9 +109,8 @@ OBJECTS  = stl_test.o accum1.o accum2.o \
 	uniqcpy1.o uniqcpy2.o \
 	unique1.o unique2.o \
 	uprbnd1.o uprbnd2.o \
-	vec1.o vec2.o vec3.o vec4.o vec5.o vec6.o vec7.o vec8.o \
   hmap1.o hmmap1.o hset2.o hmset1.o slist1.o string1.o bitset1.o \
-  move_constructor.o
+  move_constructor.o vec.o
 
 TEST_EXE  = stl_test.exe
 TEST  = stl_test.out
