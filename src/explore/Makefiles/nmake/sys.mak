@@ -3,7 +3,9 @@
 
 # shared library:
 SO  = dll
-LIB = lib
+# The cooool Microsoft programmers pass LIB from line below into environment var!!!!
+# LIB = lib
+LIBEXT = lib
 EXP = exp
 # executable:
 EXE = .exe
