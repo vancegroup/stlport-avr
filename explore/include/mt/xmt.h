@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/05/06 11:45:44 ptr>
+// -*- C++ -*- Time-stamp: <03/05/28 10:43:31 ptr>
 
 /*
  *
@@ -75,7 +75,11 @@
 #  endif
 #endif
 
-#if defined(_WIN32) || defined(N_PLAT_NLM)
+#ifdef N_PLAT_NLM
+# include <sys/time.h> // timespec, timespec_t
+#endif
+
+#ifdef _WIN32
 extern "C" {
 
 typedef struct  timespec {              /* definition per POSIX.4 */
@@ -83,10 +87,16 @@ typedef struct  timespec {              /* definition per POSIX.4 */
         long            tv_nsec;        /* and nanoseconds */
 } timespec_t;
 
+} // extern "C"
+#endif // _WIN32
+
+#if defined(_WIN32) || defined(N_PLAT_NLM)
+extern "C" {
+
 typedef struct timespec timestruc_t;    /* definition per SVr4 */
 
 } // extern "C"
-#endif // _WIN32 || N_PLAT_NLM
+#endif
 
 #ifdef _REENTRANT
 
