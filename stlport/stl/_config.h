@@ -49,12 +49,11 @@
    whether or not _STLP_ASSERTIONS is defined.
 */
 
-/* SGI basic release */
+/* The last SGI STL release we merged with */
 #   define __SGI_STL                                      0x330
 
 /* STLport version */
-#   define _STLPORT_VERSION                              0x415
-#   define __SGI_STL_PORT                                 _STLPORT_VERSION
+#   define _STLPORT_VERSION                               0x415
 
 /* Placeholder for user to override settings.
  * It could be also used to mask settings from 
@@ -699,7 +698,7 @@ namespace stlport = _STLP_STD;
 # endif
 
 #if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
-# if (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC)
+# if (defined (__sgi) && ! defined (__GNUC__)) || defined (__SUNPRO_CC) || defined (__xlC__)
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<const_iterator> const_reverse_iterator; \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<iterator> reverse_iterator

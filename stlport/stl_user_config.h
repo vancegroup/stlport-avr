@@ -18,7 +18,7 @@
  *
  * To hold user-definable portion of STLport settings which may be overridden
  * on per-project basis.
- * Please note that if you use SGI iostreams (compiled STLport) then you have
+ * Please note that if you use STLport iostreams (compiled library) then you have
  * to use consistent settings when you compile STLport library and your project. 
  * Those settings are defined in _site_config.h and have to be the same for a given
  * STLport installation.
@@ -31,7 +31,7 @@
 //              Features selection
 //==========================================================
 
-/* _STLP_NO_SGI_IOSTREAMS: 
+/* _STLP_NO_OWN_IOSTREAMS: 
  * __STL_NO_SGI_IOSTREAMS (older version)
  *  This is major configuration switch.
  *  Turn it on to disable use of SGI iostreams and use wrappers 
@@ -42,7 +42,7 @@
  *
  */
 
-// # define   _STLP_NO_SGI_IOSTREAMS	1
+// # define   _STLP_NO_OWN_IOSTREAMS	1
 
 
 /* 
@@ -60,7 +60,7 @@
 
 /*
  * Use this switch for embedded systems where no iostreams are available
- * at all. SGI iostreams will get disabled automatically then.
+ * at all. STLport own iostreams will also get disabled automatically then.
  */
 // # define _STLP_NO_IOSTREAMS 1
 
@@ -69,7 +69,7 @@
  * That gets you checked iterators/ranges in the manner
  * of "Safe STL". Very useful for debugging. Thread-safe.
  * Please do not forget to link proper STLport library flavor
- * (e.g libstlport_gcc_stldebug.a) when you set this flag in SGI iostreams mode.
+ * (e.g libstlport_gcc_stldebug.a) when you set this flag in STLport iostreams mode.
  */
 // #define   _STLP_DEBUG 1
 
@@ -136,7 +136,7 @@
 // define _STLP_NO_ANACHRONISMS 1
 
 /*
- *  Define this macro to disable SGI/STLport extensions (for example, to make sure your code will 
+ *  Define this macro to disable STLport extensions (for example, to make sure your code will 
  *  compile with some other implementation )
  */
 // define _STLP_NO_EXTENSIONS   1

@@ -59,9 +59,7 @@ _STLP_BEGIN_NAMESPACE
 
 // The vector base class serves two purposes.  First, its constructor
 // and destructor allocate (but don't initialize) storage.  This makes
-// exception safety easier.  Second, the base class encapsulates all of
-// the differences between SGI-style allocators and standard-conforming
-// allocators.
+// exception safety easier.
 
 template <class _Tp, class _Alloc> 
 class _Vector_base {

@@ -151,7 +151,6 @@ _STLP_END_NAMESPACE
 #  include _STLP_NATIVE_HEADER(stdexcept)
 # endif
 
-#  undef  __SGI_STDEXCEPT_SEEN
 #  define _STLP_STDEXCEPT 1
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x63)
@@ -162,7 +161,7 @@ _STLP_END_NAMESPACE
 #   undef  _STLP_DONT_POP_0x63
 # endif
 
-#endif /* __SGI_STDEXCEPT */
+#endif /* _STLP_STDEXCEPT */
 
 // Local Variables:
 // mode:C++

@@ -26,7 +26,7 @@
 #endif
 
 #if defined(_STLP_THROW_RANGE_ERRORS)
-# ifndef __SGI_STDEXCEPT
+# ifndef _STLP_STDEXCEPT
 #  include <stdexcept>
 # endif
 # ifndef _STLP_STRING

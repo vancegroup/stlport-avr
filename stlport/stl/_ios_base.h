@@ -18,7 +18,7 @@
 #ifndef _STLP_IOS_BASE_H
 #define _STLP_IOS_BASE_H
 
-#ifndef __SGI_STDEXCEPT
+#ifndef _STLP_STDEXCEPT
 #include <stdexcept>
 #endif
 #ifndef _STLP_UTILITY

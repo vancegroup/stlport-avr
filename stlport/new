@@ -89,7 +89,7 @@ public:
   bad_alloc(const bad_alloc&) _STLP_NOTHROW_INHERENTLY { }
   bad_alloc& operator=(const bad_alloc&) _STLP_NOTHROW_INHERENTLY {return *this;}
   ~bad_alloc () _STLP_NOTHROW_INHERENTLY { }
-  const char* what() const _STLP_NOTHROW { return "bad alloc"; }
+  const char* what() const _STLP_NOTHROW_INHERENTLY { return "bad alloc"; }
 };
 
 _STLP_END_NAMESPACE

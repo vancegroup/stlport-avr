@@ -4,8 +4,9 @@
  * This section sets new-style macros based on old-style ones, for compatibility
  */
 
-# if defined (__STL_NO_SGI_IOSTREAMS) && ! defined ( _STLP_NO_SGI_IOSTREAMS )
-#  define _STLP_NO_SGI_IOSTREAMS __STL_NO_SGI_IOSTREAMS
+# if (defined (__STL_NO_SGI_IOSTREAMS) || defined (_STLP_NO_SGI_IOSTREAMS)) \
+  && ! defined ( _STLP_NO_SGI_IOSTREAMS )
+#  define _STLP_NO_OWN_IOSTREAMS
 # endif
 
 # if defined (__STL_NO_NEW_IOSTREAMS) && ! defined ( _STLP_NO_NEW_IOSTREAMS )

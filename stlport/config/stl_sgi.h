@@ -21,6 +21,10 @@
 
 #define _STL_HAS_NAMESPACES
 
+#if ! defined (__EXCEPTIONS) && ! defined (_STLP_NO_EXCEPTIONS)
+# define _STLP_NO_EXCEPTIONS
+#endif
+
 // #define _STLP_NOTHROW throw()
      
 #  define __EDG_SWITCHES

@@ -26,11 +26,11 @@
 
 // compatibility section
 
-# if defined (_STLP_NO_IOSTREAMS) || defined (_STLP_NO_NEW_IOSTREAMS) && ! defined ( _STLP_NO_SGI_IOSTREAMS )
-#  define _STLP_NO_SGI_IOSTREAMS
+# if defined (_STLP_NO_IOSTREAMS) || defined (_STLP_NO_NEW_IOSTREAMS) && ! defined ( _STLP_NO_OWN_IOSTREAMS )
+#  define _STLP_NO_OWN_IOSTREAMS
 # endif
 
-# if !defined (_STLP_NO_SGI_IOSTREAMS) &&  ! defined (_STLP_OWN_IOSTREAMS)
+# if !defined (_STLP_NO_OWN_IOSTREAMS) &&  ! defined (_STLP_OWN_IOSTREAMS)
 #  define _STLP_OWN_IOSTREAMS
 # endif
 

@@ -1,11 +1,9 @@
 //==========================================
 
+# define __SGI_STL_PORT  _STLPORT_VERSION
+
 # if defined (_STLP_DEBUG) && ! defined ( __STL_DEBUG )
 #  define __STL_DEBUG _STLP_DEBUG
-# endif
-
-# if defined (_STLP_OWN_IOSTREAMS) && ! defined ( __SGI_STL_OWN_IOSTREAMS )
-#  define __SGI_STL_OWN_IOSTREAMS
 # endif
 
 # if defined (_STLP_USE_NAMESPACES)

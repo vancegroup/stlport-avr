@@ -114,9 +114,6 @@ struct _Not_within_traits
 // points to a block of memory that was allocated using _String_base's 
 // allocator and whose size is _M_end_of_storage._M_data - _M_start.
 
-// Additionally, _String_base encapsulates the difference between
-// old SGI-style allocators and standard-conforming allocators.
-
 template <class _Tp, class _Alloc> class _String_base {
 public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)

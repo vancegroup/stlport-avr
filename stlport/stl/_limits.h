@@ -36,7 +36,7 @@
 # include <cwchar>
 #endif
 
-#define __SGI_CPP_LIMITS
+// #define __SGI_CPP_LIMITS
 
 _STLP_BEGIN_NAMESPACE
 
@@ -538,7 +538,7 @@ _STLP_END_NAMESPACE
 #  include <stl/_limits.c>
 # endif
 
-#endif /* __SGI_CPP_LIMITS */
+#endif
 
 // Local Variables:
 // mode:C++

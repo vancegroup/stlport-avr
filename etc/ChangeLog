@@ -4,6 +4,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
 	* etc/ subdirectory created; miscellanous files moved there
 
+	* Macro _STLP_NO_SGI_IOSTREAMS renamed to _STLP_NO_OWN_IOSTREAMS, old references to SGI removed; 
+	
 	* "prepare" target added to all makefiles in src/; should be run before using STLport;
 	  on most platforms it's empty, on some of them it creates necessary symbolic links, etc.
 	
@@ -84,7 +86,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* debug/_list.h : added remove() to do iterator invalidation; range erase() fixed to do invalidation
 
 	* stl_watcom.h : added switches; disabled own iosterams by default (thanks Steven Green)
-	
+
+	* <exception> : added throw spec for what(); stl_sgi.h : made _STLP_NO_EXCEPTIONS depend on __EXCEPTIONS macro (Thanks Anton Ephanov)
 	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 

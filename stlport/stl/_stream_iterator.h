@@ -57,7 +57,7 @@
 # include <stl/_istream.h>
 #endif
 
-#endif /* SGI_OWN_IOSTREAMS */
+#endif /* _STLP_OWN_IOSTREAMS */
 
 // istream_iterator and ostream_iterator look very different if we're
 // using new, templatized iostreams than if we're using the old cfront
