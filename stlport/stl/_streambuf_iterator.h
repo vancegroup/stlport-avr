@@ -27,6 +27,9 @@
  *   You should not attempt to use it directly.
  */
 
+//dums: NOT USED
+#if 0
+/*
 #if !defined (_STLP_INTERNAL_STREAMBUF_ITERATOR_H)
 #define _STLP_INTERNAL_STREAMBUF_ITERATOR_H
 
@@ -77,6 +80,7 @@ _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_STREAMBUF_ITERATOR_H */
 
+#endif //0
 // Local Variables:
 // mode:C++
 // End:
