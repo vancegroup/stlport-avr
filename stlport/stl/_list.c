@@ -82,7 +82,7 @@ _List_base<_Tp,_Alloc>::clear()
 # endif
 
 template <class _Tp, class _Alloc>
-void list<_Tp, _Alloc>::resize(size_type __new_size, _Tp __x)
+void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x)
 {
   iterator __i = begin();
   size_type __len = 0;
