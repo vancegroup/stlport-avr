@@ -740,10 +740,6 @@ operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2)
 # undef _STLP_TEMPLATE_HEADER
 # undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
-#ifdef _STLP_DEBUG
-# undef  slist
-#endif
-
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <>
 struct __move_traits<_Slist_node_base> : __move_traits_POD
@@ -759,6 +755,10 @@ struct __move_traits<slist<_Tp, _Alloc> > :
   __move_traits_aux<_Slist_base<_Tp, _Alloc> >
 {};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+#ifdef _STLP_DEBUG
+# undef  slist
+#endif
 
 _STLP_END_NAMESPACE
 
