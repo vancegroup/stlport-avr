@@ -17,8 +17,8 @@ stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 
 ifeq ($(OSNAME),linux)
-release-shared : LDLIBS = -lpthread -lstlport_gcc
-stldbg-shared  : LDLIBS = -lpthread -lstlport_gcc_stldebug
-dbg-shared     : LDLIBS = -lpthread -lstlport_gcc_debug
+release-shared : LDLIBS = -lpthread -lstlport_icc
+stldbg-shared  : LDLIBS = -lpthread -lstlport_icc_stldebug
+dbg-shared     : LDLIBS = -lpthread -lstlport_icc_debug
 endif
 
