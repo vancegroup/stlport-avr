@@ -98,7 +98,10 @@ public:                         // Formatted input of numbers.
   _Self& operator>> (short& __val) {
     long __lval;
     unsigned short __uval;
-   _M_get_num(*this, __lval);
+    _M_get_num(*this, __lval);
+    if ( this->fail() ) {
+      return *this;
+    }
     __val = __STATIC_CAST(short, __lval);
     __uval = __lval;
     // check if we lose digits
@@ -111,6 +114,9 @@ public:                         // Formatted input of numbers.
     long __lval;
     unsigned int __uval;
     _M_get_num(*this, __lval);
+    if ( this->fail() ) {
+      return *this;
+    }
     __val = __lval;
     __uval = __lval;
     // check if we lose digits
