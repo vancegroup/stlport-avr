@@ -1,6 +1,6 @@
-// -*- C++ -*- Time-stamp: <99/02/05 16:05:21 ptr>
-#ifndef __xxx_plock_h
-#define __xxx_plock_h
+// -*- C++ -*- Time-stamp: <99/02/08 13:55:23 ptr>
+#ifndef __XMT_H
+#define __XMT_H
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -201,4 +201,4 @@ class Thread
 
 #endif
 
-#endif // __xxx_plock_h
+#endif // __XMT_H
