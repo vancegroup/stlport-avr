@@ -1,16 +1,20 @@
 The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
+	* sparc_atomic.s : file missing from the distribution restored
+	
 	* stl/_deque.h : deque<>::erase bug (introduced in 4.1b4) fixed (thanks to BruceFlorman) 
 	               : default parameter in constructor bug fixed (Thanks to Alex Vanic) 
 	
 	* _tree.h /_tree.c : pointers used as return values instead of iterators for implementation 
 	  functions, for efficiency.
+
+	* _algo.h/.c : added leading underscrore to some symbols (Thanks to Ed James-Beckerman for the report)
 	
-	* dll_main.cpp : fixed nothrow initialization (Thanks to Dan Ingold)
+	* dll_main.cpp : fixed nothrow object initialization (Thanks to Dan Ingold)
 
 	* beta suffix in common_macros.mak updated (thanks to Whitney Kew)
 
-	* c_locale_win32.c : incomple fix for local completed (thanks to Alberto Barbati)
+	* c_locale_win32.c : incomple fix for locale completed (thanks to Alberto Barbati)
 
 	* _threads.h : fixed _DECTHREADS block to work on both DEC and HP
 

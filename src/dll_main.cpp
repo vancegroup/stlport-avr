@@ -165,10 +165,6 @@ template class basic_string<char, char_traits<char>, allocator<char> >;
 
 _STLP_END_NAMESPACE
 
-# if 0 // defined (_STLP_SPARC_SOLARIS_THREADS) && ! defined (__GNUC__)
-#  include "sparc_atomic.cpp"
-# endif
-
 # if defined (_WIN32) && defined (_STLP_USE_DECLSPEC)
 // stlportmt.cpp : Defines the entry point for the DLL application.
 //
