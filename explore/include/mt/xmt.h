@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/09/25 11:37:51 ptr>
+// -*- C++ -*- Time-stamp: <03/01/06 21:59:48 ptr>
 
 /*
  *
@@ -569,7 +569,11 @@ class Thread
     static __FIT_DECLSPEC void signal_handler( int sig, SIG_PF );
     static __FIT_DECLSPEC void signal_exit( int sig ); // signal handler
 
+    // sleep at least up to time t
     static __FIT_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
+    // delay execution at least on time interval t
+    static __FIT_DECLSPEC void delay( timespec *t, timespec *e = 0 );
+    // get precise time
     static __FIT_DECLSPEC void gettime( timespec *t );
     static __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
     static __FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
