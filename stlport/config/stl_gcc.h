@@ -50,7 +50,7 @@
 # define _STLP_NO_STATIC_TEMPLATE_DATA
 #endif
 
-#if !defined(_REENTRANT) && ((defined(__FreeBSD__) && defined(_THREAD_SAFE)) || defined(_THREAD_SAFE) \
+#if !defined(_REENTRANT) && ((defined(__FreeBSD__) && defined(_THREAD_SAFE)) || defined(_THREAD_SAFE) || \
                              (defined(__OpenBSD__) && defined(_POSIX_THREADS)) || \
                              (defined(__MINGW32__) && defined(_MT)))
 # define _REENTRANT
