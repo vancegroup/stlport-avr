@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/09/07 14:22:52 ptr>
+// -*- C++ -*- Time-stamp: <99/09/10 15:40:31 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -88,11 +88,12 @@ Thread::Init::~Init()
 
 int Thread::_idx = 0;
 
-Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
 #ifdef WIN32
 const Thread::thread_key_type Thread::bad_thread_key = INVALID_HANDLE_VALUE;
+unsigned long Thread::_mt_key = __STATIC_CAST(unsigned long,-1);
 #else
 const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thread_key_type,-1);
+Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
 #endif
 
 __XMT_DLL
