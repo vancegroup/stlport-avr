@@ -10,6 +10,10 @@
 using namespace std;
 #endif
 
+void stlp_test(bool res) {
+  cout << " ... " << (res?"pass":"fail") << endl;
+}
+
 int main(int argc, char** argv) {
     int iter_count = ( argc>1 ? 10000 : 1);
     for (; iter_count; iter_count--) {
@@ -48,6 +52,7 @@ int main(int argc, char** argv) {
         bind1st1_test(argc, argv);
         cout.flush();
         bind1st2_test(argc, argv);
+
         cout.flush();
         bind2nd1_test(argc, argv);
         cout.flush();
@@ -208,6 +213,7 @@ int main(int argc, char** argv) {
         lwrbnd1_test(argc, argv);
         cout.flush();
         lwrbnd2_test(argc, argv);
+
         cout.flush();
         map1_test(argc, argv);
         cout.flush();
@@ -352,6 +358,7 @@ int main(int argc, char** argv) {
         cout.flush();
         replcpy1_test(argc, argv);
         cout.flush();
+
         replif1_test(argc, argv);
         cout.flush();
 #if ! (defined(__SUNPRO_CC) && (__SUNPRO_CC<0x410))
@@ -402,6 +409,7 @@ int main(int argc, char** argv) {
         cout.flush();
         setintr0_test(argc, argv);
         cout.flush();
+
         setintr1_test(argc, argv);
         cout.flush();
         setintr2_test(argc, argv);

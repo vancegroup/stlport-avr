@@ -273,6 +273,7 @@ struct _IsPtrCondNot {
 #endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
 template <class _Tp>
+
 struct _IsPtrType {
 #if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   typedef typename _Is_integer<_Tp>::_Integral _Tr1;
@@ -353,6 +354,7 @@ struct __type_traits {
           - You must not rename members without making the corresponding
             name change in the compiler
           - Members you add will be treated like regular members unless
+
             you add the appropriate support in the compiler. */
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
@@ -520,6 +522,7 @@ struct _IsStlportClassCondNotAux<__false_type> {
 template <class _CondT, class _Tp>
 struct _IsStlportClassCondNot {
   typedef typename _IsStlportClassCondNotAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret _Ret;
+
 };
 #else
 template <class _DummyCondT, class _Tp>
@@ -542,23 +545,23 @@ struct _SwapImplemented {
 
 template <class _Tp>
 struct __action_on_move {
-	typedef __false_type swap;
+  typedef __false_type swap;
 };
 
 template <class _Tp1, class _Tp2> 
 struct _SwapOnMove {
-	typedef typename __action_on_move<_Tp1>::swap _Enabled1;
+  typedef typename __action_on_move<_Tp1>::swap _Enabled1;
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
   typedef typename _IsStlportClassCondNot<_Enabled1, _Tp1>::_Ret _Enabled2;
 #else
   typedef __false_type _Enabled2;
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
-	typedef typename _Lor2<_Enabled1, _Enabled2>::_Ret _Enabled;
+  typedef typename _Lor2<_Enabled1, _Enabled2>::_Ret _Enabled;
 
   typedef typename _AreSameTypes<_Tp1,_Tp2>::_Ret _SameTypes;
 
   typedef typename _Land3<_Enabled, _SameTypes, __true_type>::_Ret _Type;
-	static _Type _Answer() {return _Type();}
+  static _Type _Answer() {return _Type();}
 };
 
 template<class _Tp1, class _Tp2>

@@ -119,7 +119,6 @@
 #  define _STLP_USE_SHORT_STRING_OPTIM 1
 #endif
 
-
 #if defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
 #  define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
 #endif
@@ -558,6 +557,7 @@ namespace __std_alias = std;
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 #   define _STLP_STD      _STL
+
 #  else
 #   ifdef _STLP_DEBUG
 namespace stdD = std;
@@ -664,9 +664,13 @@ namespace stlport = _STLP_STD;
 #  else
 #   define __ASSIGN_MUTABLE(type,x,y) __CONST_CAST(type,x)=y
 #   define mutable
+
 #  endif
 # if defined (_STLP_NO_SIGNED_BUILTINS)
 /* old HP-UX doesn't understand "signed" keyword */
+
+
+
 #  define signed
 # endif
 
@@ -729,6 +733,7 @@ namespace stlport = _STLP_STD;
 # if defined (__SGI_STL_NO_ARROW_OPERATOR) && ! defined (_STLP_NO_ARROW_OPERATOR)
 # define _STLP_NO_ARROW_OPERATOR
 # endif
+
 
 # if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !( defined (_STLP_NO_ARROW_OPERATOR)) \
@@ -837,6 +842,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #    define _STLP_THROW(x) throw x
 #   endif
 #   define _STLP_RETHROW throw
+
 #   define _STLP_UNWIND(action) catch(...) { action; throw; }
 
 #   ifdef _STLP_THROW_RETURN_BUG

@@ -22,8 +22,8 @@ int short_string_test(int, char**)
   cout<<"Results of short_string_test:"<<endl;
 
   /*
-   * Writing this test case the short string size within STLport is 8 chars
-   * so we are going to use in this test 4 chars string as the short string
+   * Writing this test case, the short string size within STLport is 8 chars.
+   * So we are going to use in this test 4 chars string as the short string
    * and 64 chars as the long one.
    */
   string const ref_short_str1("str1"), ref_short_str2("str2");

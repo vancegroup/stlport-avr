@@ -22,11 +22,10 @@
 #define _STLP_VOID_PTR_TRAITS_H
 
 /*
- * Little struct traits to cast any qualified pointer type to void*
- * and reverse. This struct is only defined for pointer types and 
- * do not use the STLport cast macro as a compiler that support
- * partial template specialization can't not support the C++ cast
- * correctly
+ * Struct traits to cast any qualified pointer type to void* and reverse.
+ * This struct is only defined for pointer types.
+ * NOTE: We do not use the STLport cast macro as a compiler that support
+ * partial template specialization can't not support the C++ cast correctly
  */
 
 /*
@@ -145,6 +144,87 @@ struct __void_ptr_traits {
   inline static void *& ref_cast(_Tp *&__ref) {
     return __cv::ref_cast(reinterpret_cast<void_cv_type &>(__ref));
   }
+};
+
+template <class _Tp, class _Iterator>
+struct __iterator_wrapper {
+  typedef __void_ptr_traits<_Tp> cast_traits;
+  typedef iterator_traits<_Iterator> _IteTraits;
+  
+  typedef typename _IteTraits::iterator_category iterator_category;
+  typedef void*  value_type;
+  typedef typename _IteTraits::difference_type difference_type;
+  typedef void** pointer;
+  typedef void*  reference;
+
+  typedef __iterator_wrapper<_Tp, _Iterator> _Self;
+
+  __iterator_wrapper(_Iterator & __ite) : _M_ite(__ite) {}
+
+  reference operator*() const { return cast_traits::cast(*_M_ite); }
+
+  _Self& operator++() {
+    ++_M_ite;
+    return *this;
+  }
+
+  _Self& operator--() {
+    --_M_ite;
+    return *this;
+  }
+
+  _Self& operator += (difference_type __offset) {
+    _M_ite += __offset;
+    return *this;
+  }
+  difference_type operator -(_Self const& __other) const {
+    return _M_ite - __other._M_ite;
+  }
+
+  bool operator == (_Self const& __other) const {
+    return _M_ite == __other._M_ite;
+  }
+
+  bool operator != (_Self const& __other) const {
+    return _M_ite != __other._M_ite;
+  }
+
+  bool operator < (_Self const& __rhs) const {
+    return _M_ite < __rhs._M_ite;
+  }
+
+private:
+  _Iterator &_M_ite;
+};
+
+   
+template <class _Tp, class _UnaryPredicate>
+struct __unary_pred_wrapper {
+  typedef __void_ptr_traits<_Tp> cast_traits;
+  
+  __unary_pred_wrapper (_UnaryPredicate const& __pred) : _M_pred(__pred) {}
+  
+  inline bool operator () (void *__ptr) const {
+    return _M_pred(cast_traits::cast(__ptr));
+  }
+
+private:
+  _UnaryPredicate _M_pred;  
+};
+
+
+template <class _Tp, class _BinaryPredicate>
+struct __binary_pred_wrapper {
+  typedef __void_ptr_traits<_Tp> cast_traits;
+
+  __binary_pred_wrapper (_BinaryPredicate const& __pred) : _M_pred(__pred) {}
+
+  inline bool operator () (void *__first, void *__second) const {
+    return _M_pred(cast_traits::cast(__first), cast_traits::cast(__second));
+  }
+
+private:
+  _BinaryPredicate _M_pred;
 };
 
 #endif /* _STLP_VOID_PTR_TRAITS_H */

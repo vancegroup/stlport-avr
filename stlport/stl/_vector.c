@@ -32,7 +32,7 @@
 
 # if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 #  define iterator       _Tp*
-#  define size_type           size_t
+#  define size_type      size_t
 # endif
 
 #ifdef _STLP_DEBUG
@@ -41,6 +41,10 @@
 #endif
 
 #include <stl/_range_errors.h>
+
+#ifndef _STLP_NEED_MYSTERIOUS_COPY
+# define __x_copy __x
+#endif /* _STLP_NEED_MYSTERIOUS_COPY */
 
 _STLP_BEGIN_NAMESPACE
 
@@ -55,8 +59,7 @@ void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
 }
 
 template <class _Tp, class _Alloc>
-void 
-vector<_Tp, _Alloc>::reserve(size_type __n) {
+void vector<_Tp, _Alloc>::reserve(size_type __n) {
   if (capacity() < __n) {
     if (max_size() < __n) {
       this->_M_throw_length_error();
@@ -75,13 +78,13 @@ vector<_Tp, _Alloc>::reserve(size_type __n) {
 }
 
 template <class _Tp, class _Alloc>
-void 
-vector<_Tp, _Alloc>::_M_fill_insert(
-				    iterator __position, 
-				    size_type __n, const _Tp& __x) {
+void vector<_Tp, _Alloc>::_M_fill_insert(iterator __position,
+                                         size_type __n, const _Tp& __x) {
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
+#ifdef _STLP_NEED_MYSTERIOUS_COPY
       _Tp __x_copy = __x;
+#endif /* _STLP_NEED_MYSTERIOUS_COPY */
       const size_type __elems_after = this->_M_finish - __position;
       pointer __old_finish = this->_M_finish;
       if (__elems_after > __n) {
@@ -104,9 +107,7 @@ vector<_Tp, _Alloc>::_M_fill_insert(
 }
 
 template <class _Tp, class _Alloc>
-vector<_Tp,_Alloc>& 
-vector<_Tp,_Alloc>::operator=(const vector<_Tp, _Alloc>& __x)
-{
+vector<_Tp,_Alloc>& vector<_Tp,_Alloc>::operator=(const vector<_Tp, _Alloc>& __x) {
   if (&__x != this) {
     const size_type __xlen = __x.size();
     if (__xlen > capacity()) {
@@ -149,6 +150,10 @@ _STLP_END_NAMESPACE
 #ifdef _STLP_DEBUG
 # undef vector
 #endif
+
+#ifndef _STLP_NEED_MYSTERIOUS_COPY
+# undef __x_copy
+#endif /* _STLP_NEED_MYSTERIOUS_COPY */
 
 #endif /*  _STLP_VECTOR_C */
 

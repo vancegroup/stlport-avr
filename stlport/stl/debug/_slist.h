@@ -85,8 +85,8 @@ protected:
   typedef typename _Base::iterator _Base_iterator;
 
 public:
-  const _Base* _Get_base() const { return (const _Base*)this; }
-  _Base* _Get_base() { return (_Base*)this; }
+  const _Base* _Get_base() const { return __STATIC_CAST(const _Base*, this); }
+  _Base* _Get_base() { return __STATIC_CAST(_Base*, this); }
 
 public:
 
@@ -98,19 +98,20 @@ public:
 #else
   _DBG_slist(size_type __n, const value_type& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-		      const allocator_type& __a =  allocator_type())
+             const allocator_type& __a =  allocator_type())
     : _STLP_DBG_SLIST_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
+
   
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _DBG_slist(size_type __n) : _STLP_DBG_SLIST_BASE(__n) , _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   explicit _DBG_slist(__partial_move_source<_Self> src)
-		: _STLP_DBG_SLIST_BASE(_AsPartialMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , 
+    : _STLP_DBG_SLIST_BASE(_AsPartialMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , 
       _M_iter_list(_Get_base()) {}
   
   /*explicit _DBG_slist(__full_move_source<_Self> src)
-		   : _STLP_DBG_SLIST_BASE(_FullMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , _M_iter_list(_Get_base()) {
+     : _STLP_DBG_SLIST_BASE(_FullMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }*/
 
@@ -119,7 +120,7 @@ public:
   // already does them.
   template <class _InputIterator>
   _DBG_slist(_InputIterator __first, _InputIterator __last,
-		      const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : __range_checker<_Tp>(__first, __last), 
       _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     } 
@@ -134,13 +135,13 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
 
   _DBG_slist(const value_type* __first, const value_type* __last,
-        const allocator_type& __a =  allocator_type())
+             const allocator_type& __a =  allocator_type())
     : __range_checker<_Tp>(__first, __last), 
       _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base())  {
     }
 
   _DBG_slist(const_iterator __first, const_iterator __last,
-		      const allocator_type& __a = allocator_type() )
+             const allocator_type& __a = allocator_type() )
     : __range_checker<_Tp>(__first._M_iterator, __last._M_iterator), 
       _STLP_DBG_SLIST_BASE(__first._M_iterator, __last._M_iterator, __a), _M_iter_list(_Get_base()) {
     }
@@ -150,6 +151,7 @@ public:
   _DBG_slist(const _Self& __x) : 
     __range_checker<_Tp>(__x), _STLP_DBG_SLIST_BASE(__x), _M_iter_list(_Get_base()) {}
   
+
   _Self& operator= (const _Self& __x) {
     if (this != &__x) {
       _Invalidate_iterators(this->begin(), this->end());
@@ -198,11 +200,11 @@ public:
     _Base::pop_front();
   }
   iterator previous(const_iterator __pos) {
-		_STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
-		return iterator(&_M_iter_list,_Base::previous(__pos._M_iterator));
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
+    return iterator(&_M_iter_list,_Base::previous(__pos._M_iterator));
   }
   const_iterator previous(const_iterator __pos) const {
-		_STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     return const_iterator(&_M_iter_list,_Base::previous(__pos._M_iterator));
   }
 
@@ -220,8 +222,8 @@ public:
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   iterator insert_after(iterator __pos) {
-		return insert_after(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp));
-	}
+    return insert_after(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp));
+  }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void insert_after(iterator __pos, size_type __n, const value_type& __x) {
@@ -364,8 +366,8 @@ public:
     if (__before_first != __before_last) {
       _Base::splice_after(__pos._M_iterator, 
                           __before_first._M_iterator, __before_last._M_iterator);
-      __before_first++;
-      __before_last++;
+      ++__before_first;
+      ++__before_last;
       __invalidate_range(__before_first._Owner(), __before_first, __before_last);
     }
   }

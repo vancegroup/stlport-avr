@@ -136,19 +136,15 @@ protected:
 public:
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
-  iterator begin() { return iterator(&_M_iter_list, _Base::begin()); }
+  iterator begin()             { return iterator(&_M_iter_list, _Base::begin()); }
   const_iterator begin() const { return const_iterator(&_M_iter_list, _Base::begin()); }
-  iterator end() { return iterator(&_M_iter_list, _Base::end()); }
-  const_iterator end() const { return const_iterator(&_M_iter_list, _Base::end()); }
+  iterator end()               { return iterator(&_M_iter_list, _Base::end()); }
+  const_iterator end() const   { return const_iterator(&_M_iter_list, _Base::end()); }
 
-  reverse_iterator rbegin()
-    { return reverse_iterator(end()); }
-  const_reverse_iterator rbegin() const
-    { return const_reverse_iterator(end()); }
-  reverse_iterator rend()
-    { return reverse_iterator(begin()); }
-  const_reverse_iterator rend() const
-    { return const_reverse_iterator(begin()); }
+  reverse_iterator rbegin()             { return reverse_iterator(end()); }
+  const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+  reverse_iterator rend()               { return reverse_iterator(begin()); }
+  const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
   reference operator[](size_type __n) {
     _STLP_VERBOSE_ASSERT(__n < _Base::size(), _StlMsg_OUT_OF_BOUNDS)
@@ -165,6 +161,7 @@ protected:
   const _Base* _Get_base() const { return (const _Base*)this; }
 
 public:
+
   explicit _DBG_vector(const allocator_type& __a = allocator_type())
     : _STLP_DBG_VECTOR_BASE(__a), _M_iter_list(_Get_base())  {}
 
@@ -202,6 +199,7 @@ public:
     : __range_checker<_Tp>(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
+
 
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>

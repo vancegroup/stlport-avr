@@ -1,12 +1,12 @@
 /*
  *
- * Copyright (c) 2003 
+ * Copyright (c) 2003
  * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -24,7 +24,7 @@
 #include <stl/pointers/_void_ptr_traits.h>
 
 /*
- * void* specialization used in all pointer specializations
+ * void* specialization to break the potential loop instanciation with pointer specialization
  */
 template <class _Alloc>
 class vector<void*, _Alloc> : protected _Vector_base<void*, _Alloc> _STLP_STLPORT_CLASS_N
@@ -61,7 +61,7 @@ protected:
 			                    size_type __fill_len, bool __atend = false) {
     const size_type __old_size = size();
     const size_type __len = __old_size + (max)(__old_size, __fill_len);
-    
+
     pointer __new_start = this->_M_end_of_storage.allocate(__len);
     pointer __new_finish = (pointer)__copy_trivial(this->_M_start, __position, __new_start);
       // handle insertion
@@ -72,7 +72,7 @@ protected:
     _M_clear();
     _M_set(__new_start, __new_finish, __new_start + __len);
   }
- 
+
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish-this->_M_start))
       this->_M_throw_out_of_range();
@@ -110,7 +110,7 @@ public:
   reference at(size_type __n) { _M_range_check(__n); return (*this)[__n]; }
   const_reference at(size_type __n) const { _M_range_check(__n); return (*this)[__n]; }
 
-  explicit vector(const allocator_type& __a = allocator_type()) : 
+  explicit vector(const allocator_type& __a = allocator_type()) :
     _Vector_base<void*, _Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -118,9 +118,9 @@ public:
 #else
   vector(size_type __n, void *__val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type()) 
-    : _Vector_base<void*, _Alloc>(__n, __a) { 
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val); 
+         const allocator_type& __a = allocator_type())
+    : _Vector_base<void*, _Alloc>(__n, __a) {
+    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val);
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -130,15 +130,15 @@ public:
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  vector(const _Self& __x) 
-    : _Vector_base<void*, _Alloc>(__x.size(), __x.get_allocator()) { 
+  vector(const _Self& __x)
+    : _Vector_base<void*, _Alloc>(__x.size(), __x.get_allocator()) {
     this->_M_finish = reinterpret_cast<void**>(__ucopy_trivial(__x._M_start, __x._M_finish, this->_M_start));
   }
 
   /*explicit vector(__full_move_source<_Self> src)
     : _Vector_base<void*, _Alloc>(_FullMoveSource<_Vector_base<void*, _Alloc> >(src.get())) {
   }*/
-  
+
   explicit vector(__partial_move_source<_Self> src)
     : _Vector_base<void*, _Alloc>(_AsPartialMoveSource<_Vector_base<void*, _Alloc> >(src.get())) {
 	  //Set the source destroyable:
@@ -146,13 +146,13 @@ public:
 	  //This one is usefull for the hashtable Move_Constructor:
 	  src.get()._M_finish = 0;
   }
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __val, const __true_type& /*_IsIntegral*/) {
     this->_M_start = this->_M_end_of_storage.allocate(__n);
-    this->_M_end_of_storage._M_data = this->_M_start + __n; 
+    this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val);
   }
 
@@ -182,8 +182,8 @@ public:
 #else
   vector(void *__first, void *__last,
          const allocator_type& __a = allocator_type())
-    : _Vector_base<void*, _Alloc>(__last - __first, __a) { 
-      this->_M_finish = __ucopy_trivial(__first, __last, this->_M_start); 
+    : _Vector_base<void*, _Alloc>(__last - __first, __a) {
+      this->_M_finish = __ucopy_trivial(__first, __last, this->_M_start);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -200,7 +200,7 @@ public:
 
   void assign(size_type __n, void *__val) { _M_fill_assign(__n, __val); }
   void _M_fill_assign(size_type __n, void *__val);
-  
+
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIter>
   void _M_assign_aux(_ForwardIter __first, _ForwardIter __last, const forward_iterator_tag &)
@@ -209,7 +209,7 @@ public:
 #endif
   {
     size_type __len = distance(__first, __last);
-    
+
     if (__len > capacity()) {
       iterator __tmp = _M_allocate_and_copy(__len, __first, __last);
       _M_clear();
@@ -242,7 +242,7 @@ public:
     else
       insert(end(), __first, __last);
   }
-  
+
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type& /*_IsIntegral*/)
     { assign((size_type) __n, (void*) __val); }
@@ -339,7 +339,7 @@ public:
 
   template <class _ForwardIterator>
   void _M_range_insert(iterator __position, _ForwardIterator __first, _ForwardIterator __last,
-                       const forward_iterator_tag &) 
+                       const forward_iterator_tag &)
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,
               const_iterator __first, const_iterator __last)
@@ -389,7 +389,7 @@ public:
   }
   void insert (iterator __pos, size_type __n, void *__x)
   { _M_fill_insert(__pos, __n, __x); }
-  
+
   void pop_back() {
     --this->_M_finish;
   }
@@ -409,7 +409,7 @@ public:
 #else
   void resize(size_type __new_size, void *__x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-    if (__new_size < size()) 
+    if (__new_size < size())
       erase(begin() + __new_size, end());
     else
       insert(end(), __new_size - size(), __x);
@@ -419,7 +419,7 @@ public:
   void resize(size_type __new_size) { resize(__new_size, static_cast<void*>(0)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void clear() { 
+  void clear() {
     erase(begin(), end());
   }
 
@@ -437,10 +437,10 @@ protected:
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIterator>
-  pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first, 
+  pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first,
 				                       _ForwardIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
-  pointer _M_allocate_and_copy(size_type __n, const_pointer __first, 
+  pointer _M_allocate_and_copy(size_type __n, const_pointer __first,
 			                         const_pointer __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   {
@@ -460,12 +460,12 @@ protected:
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  void _M_range_initialize(_InputIterator __first,  
+  void _M_range_initialize(_InputIterator __first,
                            _InputIterator __last, const input_iterator_tag &) {
     for ( ; __first != __last; ++__first)
       push_back(*__first);
   }
-  // This function is only called by the constructor. 
+  // This function is only called by the constructor.
   template <class _ForwardIterator>
   void _M_range_initialize(_ForwardIterator __first,
                            _ForwardIterator __last, const forward_iterator_tag &) {
@@ -474,7 +474,7 @@ protected:
     this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _IsPODType());
   }
-  
+
 #endif /* _STLP_MEMBER_TEMPLATES */
 };
 
@@ -484,15 +484,12 @@ protected:
 
 
 template <class _Tp, class _Alloc>
-class vector<_Tp*, _Alloc>
+class vector<_Tp*, _Alloc> _STLP_STLPORT_CLASS_1
 {
   //Member datas as a void* vector:
   typedef typename _Alloc_traits<void*, _Alloc>::allocator_type _VoidAlloc;
   typedef vector<void*, _VoidAlloc> _Base;
-  _Base _M_datas;
-
-  typedef typename _Base::iterator base_iterator;
-  typedef typename _Base::const_iterator base_const_iterator;
+  _Base _M_container;
 
   typedef __void_ptr_traits<_Tp> cast_traits;
 
@@ -521,35 +518,35 @@ public:
   }
   */
 public:
-  iterator begin()             { return cast_traits::ite_cast(_M_datas.begin()); }
-  const_iterator begin() const { return cast_traits::const_ite_cast(_M_datas.begin()); }
-  iterator end()               { return cast_traits::ite_cast(_M_datas.end()); }
-  const_iterator end() const   { return cast_traits::const_ite_cast(_M_datas.end()); }
+  iterator begin()             { return cast_traits::ite_cast(_M_container.begin()); }
+  const_iterator begin() const { return cast_traits::const_ite_cast(_M_container.begin()); }
+  iterator end()               { return cast_traits::ite_cast(_M_container.end()); }
+  const_iterator end() const   { return cast_traits::const_ite_cast(_M_container.end()); }
 
   reverse_iterator rbegin()              { return reverse_iterator(end()); }
   const_reverse_iterator rbegin() const  { return const_reverse_iterator(end()); }
   reverse_iterator rend()                { return reverse_iterator(begin()); }
   const_reverse_iterator rend() const    { return const_reverse_iterator(begin()); }
 
-  size_type size() const        { return _M_datas.size(); }
-  size_type max_size() const    { return _M_datas.max_size(); }
+  size_type size() const        { return _M_container.size(); }
+  size_type max_size() const    { return _M_container.max_size(); }
 
-  size_type capacity() const    { return _M_datas.capacity(); }
-  bool empty() const            { return _M_datas.empty(); }
+  size_type capacity() const    { return _M_container.capacity(); }
+  bool empty() const            { return _M_container.empty(); }
 
-  reference operator[](size_type __n) { return cast_traits::ref_cast(_M_datas[__n]); }
-  const_reference operator[](size_type __n) const { return cast_traits::cast(_M_datas[__n]); }
+  reference operator[](size_type __n) { return cast_traits::ref_cast(_M_container[__n]); }
+  const_reference operator[](size_type __n) const { return cast_traits::cast(_M_container[__n]); }
 
-  reference front()             { return cast_traits::ref_cast(_M_datas.front()); }
-  const_reference front() const { return cast_traits::cast(_M_datas.front()); }
-  reference back()              { return cast_traits::ref_cast(_M_datas.back()); }
-  const_reference back() const  { return cast_traits::cast(_M_datas.back()); }
+  reference front()             { return cast_traits::ref_cast(_M_container.front()); }
+  const_reference front() const { return cast_traits::cast(_M_container.front()); }
+  reference back()              { return cast_traits::ref_cast(_M_container.back()); }
+  const_reference back() const  { return cast_traits::cast(_M_container.back()); }
 
-  reference at(size_type __n) { return cast_traits::ref_cast(_M_datas.at(__n)); }
-  const_reference at(size_type __n) const { return cast_traits::cast(_M_datas.at(__n)); }
+  reference at(size_type __n) { return cast_traits::ref_cast(_M_container.at(__n)); }
+  const_reference at(size_type __n) const { return cast_traits::cast(_M_container.at(__n)); }
 
   explicit vector(const allocator_type& __a = allocator_type()) :
-  _M_datas(__a) {}
+  _M_container(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(size_type __n, value_type __val = 0,
@@ -557,22 +554,22 @@ public:
   vector(size_type __n, value_type __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
          const allocator_type& __a = allocator_type()) 
-    : _M_datas(__n, cast_traits::cast(__val), __a) {}
+    : _M_container(__n, cast_traits::cast(__val), __a) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(size_type __n)
-    : _M_datas(__n, allocator_type() ) {}
+    : _M_container(__n, allocator_type() ) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   vector(const _Self& __x) 
-    : _M_datas(__x._M_datas) {}
+    : _M_container(__x._M_container) {}
 
   /*explicit vector(__full_move_source<_Self> src)
     : _Vector_base<value_type, _Alloc>(_FullMoveSource<_Vector_base<value_type, _Alloc> >(src.get())) {
   }*/
   
   explicit vector(__partial_move_source<_Self> src)
-    : _M_datas(__partial_move_source<_Base>(src.get()._M_datas)) {}
+    : _M_container(__partial_move_source<_Base>(src.get()._M_container)) {}
   
 #if defined (_STLP_MEMBER_TEMPLATES)
 
@@ -580,33 +577,35 @@ public:
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
-  _M_datas(__first, __last, __a) {}
+  _M_container(__iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last), __a) {}
 
  # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last) :
-  _M_datas(__first, __last) {}
+  _M_container(__iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last)) {}
  # endif
 
 #else
   vector(const value_type* __first, const value_type* __last,
          const allocator_type& __a = allocator_type())
-    : _M_datas(__first, __last, __a) {}
+    : _M_container(__first, __last, __a) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator=(const _Self& __x) {
-    _M_datas = __x._M_datas;
+    _M_container = __x._M_container;
     return *this;
   }
 
-  void reserve(size_type __n) {_M_datas.reserve(__n);}
-  void assign(size_type __n, value_type __val) { _M_datas.assign(__n, cast_traits::cast(__val)); }
+  void reserve(size_type __n) {_M_container.reserve(__n);}
+  void assign(size_type __n, value_type __val) { _M_container.assign(__n, cast_traits::cast(__val)); }
   
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  void assign(_InputIterator __first, _InputIterator __last) {_M_datas.assign(__first, __last);}
+  void assign(_InputIterator __first, _InputIterator __last) {
+    _M_container.assign(__iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last));
+  }
 #else
-  void assign(const_iterator __first, const_iterator __last) {_M_datas.assign(__first, __last);}
+  void assign(const_iterator __first, const_iterator __last) {_M_container.assign(__first, __last);}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -614,7 +613,7 @@ public:
 #else
   void push_back(value_type __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-    _M_datas.push_back(cast_traits::cast(__x));
+    _M_container.push_back(cast_traits::cast(__x));
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -622,7 +621,7 @@ public:
 #else
   iterator insert(iterator __pos, value_type __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-    return cast_traits::ite_cast(_M_datas.insert(cast_traits::ite_cast(__pos), cast_traits::cast(__x)));
+    return cast_traits::ite_cast(_M_container.insert(cast_traits::ite_cast(__pos), cast_traits::cast(__x)));
  }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -630,24 +629,29 @@ public:
   iterator insert(iterator __position) { return insert(__position, static_cast<value_type>(0)); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  void swap(_Self& __x) {_M_datas.swap(__x._M_datas);}
+  void swap(_Self& __x) {_M_container.swap(__x._M_container);}
 
 #if defined ( _STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
+  void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
+    _M_container.insert(cast_traits::ite_cast(__pos),
+                        __iterator_wrapper<_Tp, _InputIterator>(__first), __iterator_wrapper<_Tp, _InputIterator>(__last));
+  }
 #else /* _STLP_MEMBER_TEMPLATES */
-  void insert(iterator __pos, const_iterator __first, const_iterator __last)
+  void insert(iterator __pos, const_iterator __first, const_iterator __last) {
+    _M_container.insert(cast_traits::ite_cast(__pos), __first, __last);
+  }
 #endif /* _STLP_MEMBER_TEMPLATES */
-  {_M_datas.insert(cast_traits::ite_cast(__pos), __first, __last);}
 
-  void insert (iterator __pos, size_type __n, value_type __x)
-  { _M_datas.insert(cast_traits::ite_cast(__pos), __n, cast_traits::cast(__x)); }
+  void insert (iterator __pos, size_type __n, value_type __x) {
+    _M_container.insert(cast_traits::ite_cast(__pos), __n, cast_traits::cast(__x));
+  }
   
-  void pop_back() {_M_datas.pop_back();}
-  iterator erase(iterator __pos) {return cast_traits::ite_cast(_M_datas.erase(cast_traits::ite_cast(__pos)));}
+  void pop_back() {_M_container.pop_back();}
+  iterator erase(iterator __pos) {return cast_traits::ite_cast(_M_container.erase(cast_traits::ite_cast(__pos)));}
   iterator erase(iterator __first, iterator __last) {
-    return cast_traits::ite_cast(_M_datas.erase(cast_traits::ite_cast(__first), 
-                                                cast_traits::ite_cast(__last)));
+    return cast_traits::ite_cast(_M_container.erase(cast_traits::ite_cast(__first), 
+                                                    cast_traits::ite_cast(__last)));
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -655,14 +659,14 @@ public:
 #else
   void resize(size_type __new_size, value_type __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-    _M_datas.resize(__new_size, cast_traits::cast(__x));
+    _M_container.resize(__new_size, cast_traits::cast(__x));
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { resize(__new_size, static_cast<value_type>(0)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void clear() { _M_datas.clear();}
+  void clear() { _M_container.clear();}
 };
 
 

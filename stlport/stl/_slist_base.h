@@ -64,7 +64,7 @@ public:
   static _Slist_node_base* _STLP_CALL __previous(_Slist_node_base* __head,
                                                  const _Slist_node_base* __node);
   static const _Slist_node_base* _STLP_CALL __previous(const _Slist_node_base* __head,
-					    const _Slist_node_base* __node) {
+                                                       const _Slist_node_base* __node) {
     return _Sl_global<_Dummy>::__previous((_Slist_node_base*)__head, __node);
   }
 };

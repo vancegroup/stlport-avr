@@ -407,7 +407,7 @@ class _STLP_CLASS_DECLSPEC _STLP_mutex_RS : public _STLP_mutex
 #  endif
 
   private:
-    _STLP_mutex_RS(const _STLP_mutex_RS&) {}
+    _STLP_mutex_RS(const _STLP_mutex_RS&) : _STLP_mutex() {}
     void operator=(const _STLP_mutex_RS&) {}
 };
 

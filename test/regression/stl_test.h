@@ -243,4 +243,6 @@ extern int string1_test (int, char**);
 extern int bitset1_test (int, char**);
 extern int move_construct_test (int, char**);
 extern int ioiter_test (int, char**);
+
+void stlp_test(bool res);
 #endif

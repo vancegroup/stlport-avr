@@ -42,6 +42,12 @@
 #  include <iostream.h>
 # endif
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID LEAKCHECK_H
+
+_STLP_INSTRUMENT_FILE();
+# endif
+
 EH_BEGIN_NAMESPACE
 
 template <class T1, class T2>
@@ -64,13 +70,13 @@ void CheckInvariant(const C&)
 }
 
 /*===================================================================================
-	WeakCheck
+  WeakCheck
 
-	EFFECTS: Given a value and an operation, repeatedly applies the operation to a
-		copy of the value triggering the nth possible exception, where n increments
-		with each repetition until no exception is thrown or max_iters is reached.
-		Reports any detected memory leaks and checks any invariant defined for the
-		value type whether the operation succeeds or fails.
+  EFFECTS: Given a value and an operation, repeatedly applies the operation to a
+    copy of the value triggering the nth possible exception, where n increments
+    with each repetition until no exception is thrown or max_iters is reached.
+    Reports any detected memory leaks and checks any invariant defined for the
+    value type whether the operation succeeds or fails.
 ====================================================================================*/
 template <class Value, class Operation>
 void WeakCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
@@ -100,7 +106,7 @@ void WeakCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
         EH_ASSERT( !failed );
         
         if ( succeeded )
-			gTestController.ReportSuccess(count);
+          gTestController.ReportSuccess(count);
     }
     EH_ASSERT( succeeded || failed );	// Make sure the count hasn't gone over
 }
@@ -215,5 +221,9 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
     }
     EH_ASSERT( succeeded || failed );	// Make sure the count hasn't gone over
 }
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#undef _STLP_FILE_UNIQUE_ID
+# endif
 
 #endif // INCLUDED_MOTU_LeakCheck

@@ -158,6 +158,13 @@ struct __select {
 // The original version of this source code may be found at
 // http://opensource.adobe.com.
 
+/*
+ * dums : Warning: This technique can tell you if 2 types are the same regardless of the
+ *        qualifiers. For instance _IsSame<char, const char>::_Ret will be 1 because
+ *        char* can be implicitely cast to const char*. It has to be taken into account
+ *        for the partial specialization version.
+ */
+
 // These are the discriminating functions
 template <class _Tp>
 char _STLP_CALL _IsSameFun(bool, _Tp*, _Tp*); // no implementation is required
@@ -172,16 +179,49 @@ struct _IsSame {
 
 # else /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
-template <class _Tp1, class _Tp2>
-struct _IsSame { enum { _Ret = 0 }; };
-
 // template <class _Tp1, class _Tp2>
 // struct _IsSameType {   static __false_type _Ret() { return __false_type(); }  };
 
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 
 template <class _Tp>
-struct _IsSame<_Tp, _Tp> { enum { _Ret = 1 }; };
+struct _Unqualified {
+  typedef _Tp _Type;
+};
+
+template <class _Tp>
+struct _Unqualified<_Tp const> {
+  typedef _Tp _Type;
+};
+
+template <class _Tp>
+struct _Unqualified<_Tp volatile> {
+  typedef _Tp _Type;
+};
+
+template <class _Tp>
+struct _Unqualified<_Tp const volatile> {
+  typedef _Tp _Type;
+};
+
+template <class _Tp1, class _Tp2>
+struct _IsSameAux { enum { _Ret = 0 }; };
+
+template <class _Tp>
+struct _IsSameAux<_Tp, _Tp> { enum { _Ret = 1 }; };
+
+template <class _Tp1, class _Tp2>
+struct _IsSame {
+  typedef typename _Unqualified<_Tp1>::_Type _UnqualifiedTp1;
+  typedef typename _Unqualified<_Tp1>::_Type _UnqualifiedTp2;
+  
+  enum { _Ret = _IsSameAux<_UnqualifiedTp1, _UnqualifiedTp2>::_Ret };
+};
+
+#  else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+template <class _Tp1, class _Tp2>
+struct _IsSame { enum { _Ret = 0 }; };
 
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 

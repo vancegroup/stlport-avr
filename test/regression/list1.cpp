@@ -20,6 +20,8 @@ int array2 [] = { 1, 4 };
   list<int> l1(array1, array1 + 3);
   list<int> l2(array2, array2 + 2);
   std::list<int>::iterator i1 = l1.begin();
+  std::list<int>::const_iterator ci(i1);
+  std::list<int>::const_iterator ci1(ci);
   l1.splice(i1, l2);
   std::list<int>::iterator i2 = l1.begin();
   while(i2 != l1.end())

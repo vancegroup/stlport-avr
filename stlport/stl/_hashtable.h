@@ -470,7 +470,7 @@ public:
   reference find_or_insert(const value_type& __obj);
 
 private:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )  && !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC_)))
+# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )  && !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))
   template <class _KT> 
    _Node* _M_find(const _KT& __key) const
 # else

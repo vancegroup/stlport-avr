@@ -100,7 +100,7 @@ struct hash_void
   size_t operator()(void* x) const { return (size_t)x; }
 };
 
-typedef std::hash_set<void*, ::hash_void, std::equal_to<void*> > allocation_set;
+typedef EH_STD::hash_set<void*, ::hash_void, EH_STD::equal_to<void*> > allocation_set;
 # endif
 
 static allocation_set& alloc_set()
@@ -112,6 +112,11 @@ static allocation_set& alloc_set()
 // Prevents infinite recursion during allocation
 static bool using_alloc_set = false;
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID NC_ALLOC_CPP
+_STLP_INSTRUMENT_FILE();
+# endif
+
 # if !defined (NO_FAST_ALLOCATOR)
 //
 //	FastAllocator -- speeds up construction of TestClass objects when
@@ -122,6 +127,7 @@ class FastAllocator
 {
 public:
 //	FastAllocator() : mFree(0), mUsed(0) {}
+
 	
 	static void *Allocate( size_t s )
 	{
@@ -193,7 +199,7 @@ inline char* AllocateBlock( size_t s )
 # if !defined (NO_FAST_ALLOCATOR)    
     char * const p = (char*)gFastAllocator.Allocate( s );
     if ( p != 0 )
-    	return p;
+      return p;
 # endif    
 
     return (char*)EH_CSTD::malloc(s);
@@ -201,25 +207,23 @@ inline char* AllocateBlock( size_t s )
 
 static void* OperatorNew( size_t s )
 {
-    if ( !using_alloc_set )
-	{
-		simulate_possible_failure();
-    	alloc_count++;
-    }
+  if ( !using_alloc_set ) {
+    simulate_possible_failure();
+    ++alloc_count;
+  }
     
-    char *p = AllocateBlock(s);
-	
-	if ( gTestController.TrackingEnabled()
-		&& gTestController.LeakDetectionEnabled()
-		&& !using_alloc_set )
-	{
-		using_alloc_set = true;
-		EH_ASSERT( alloc_set().find( p ) == alloc_set().end() );
-		alloc_set().insert( p );
-		using_alloc_set = false;
-	}
+  char *p = AllocateBlock(s);
 
-    return p;
+  if ( gTestController.TrackingEnabled()
+    && gTestController.LeakDetectionEnabled()
+    && !using_alloc_set ) {
+    using_alloc_set = true;
+    EH_ASSERT( alloc_set().find( p ) == alloc_set().end() );
+    alloc_set().insert( p );
+    using_alloc_set = false;
+  }
+
+  return p;
 }
 
 void* _STLP_CALL operator new(size_t s) 
@@ -276,26 +280,23 @@ void _STLP_CALL operator delete(void* s) throw()
 void _STLP_CALL operator delete(void* s)
 # endif
 {
-	if ( s != 0 )
-	{
-	    if ( !using_alloc_set )
-	    {
-	    	alloc_count--;
+  if ( s != 0 ) {
+    if ( !using_alloc_set ) {
+      --alloc_count;
 
-			if ( gTestController.TrackingEnabled() && gTestController.LeakDetectionEnabled() )
-			{
-				using_alloc_set = true;
-				allocation_set::iterator p = alloc_set().find( (char*)s );
-				EH_ASSERT( p != alloc_set().end() );
-				alloc_set().erase( p );
-				using_alloc_set = false;
-			}
-		}
+      if ( gTestController.TrackingEnabled() && gTestController.LeakDetectionEnabled() ) {
+        using_alloc_set = true;
+        allocation_set::iterator p = alloc_set().find( (char*)s );
+        EH_ASSERT( p != alloc_set().end() );
+        alloc_set().erase( p );
+        using_alloc_set = false;
+      }
+    }
 # if ! defined (NO_FAST_ALLOCATOR)	
-		if ( !gFastAllocator.Free( s ) )
+    if ( !gFastAllocator.Free( s ) )
 # endif   
-		    EH_CSTD::free(s);
-	}
+      EH_CSTD::free(s);
+  }
 }
 
 
@@ -372,3 +373,6 @@ long& TestController::Failure_threshold()
 	return failure_threshold;
 }
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif

@@ -56,34 +56,34 @@ no
 //#  include <stldebug.h>
 void __stl_debug_message(const char * format_str, ...)
 {
-	std::va_list args;
-	va_start( args, format_str );
-	char msg[256];
-	std::vsnprintf(msg, sizeof(msg)/sizeof(*msg) - 1, format_str, args );
-	DebugStr( c2pstr(msg) );
+  std::va_list args;
+  va_start( args, format_str );
+  char msg[256];
+  std::vsnprintf(msg, sizeof(msg)/sizeof(*msg) - 1, format_str, args );
+  DebugStr( c2pstr(msg) );
 }
 # else
 /*===================================================================================
-	__assertion_failed  (override standard library function)
+  __assertion_failed  (override standard library function)
 
-	EFFECTS: Breaks into the debugger and shows the assertion. This implementation
-		is Mac-specific; others could be added for other platforms.
+  EFFECTS: Breaks into the debugger and shows the assertion. This implementation
+           is Mac-specific; others could be added for other platforms.
 ====================================================================================*/
 extern "C"
 {
-	void __assertion_failed(char *condition, char *testfilename, int lineno);
-	void __assertion_failed(char *condition, char *testfilename, int lineno)
-	{
-	    char msg[256];
-	    std::strncpy( msg, condition, 255 );
-	    std::strncat( msg, ": ", 255 );
-	    std::strncat(  msg, testfilename, 255 );
-	    std::strncat( msg, ", ", 255 );
-	    char line[20];
-	    std::sprintf( line, "%d", lineno );
-	    std::strncat(  msg, line, 255 );
-	    DebugStr( c2pstr( msg ) );
-	}
+  void __assertion_failed(char *condition, char *testfilename, int lineno);
+  void __assertion_failed(char *condition, char *testfilename, int lineno)
+  {
+      char msg[256];
+      std::strncpy( msg, condition, 255 );
+      std::strncat( msg, ": ", 255 );
+      std::strncat(  msg, testfilename, 255 );
+      std::strncat( msg, ", ", 255 );
+      char line[20];
+      std::sprintf( line, "%d", lineno );
+      std::strncat(  msg, line, 255 );
+      DebugStr( c2pstr( msg ) );
+  }
 }
 # endif
 
@@ -117,9 +117,9 @@ namespace  // dwa 1/21/00 - must use unnamed namespace here to avoid conflict un
 
 
 /*===================================================================================
-	usage  (file-static helper)
+  usage  (file-static helper)
 
-	EFFECTS: Prints a message describing the command-line parameters
+  EFFECTS: Prints a message describing the command-line parameters
 ====================================================================================*/
 static void usage(const char* name)
 {
@@ -178,8 +178,8 @@ int _STLP_CALL main(int argc, char** argv)
 
     cerr << argv[0]<<" : Exception handling testsuite.\n";
     cerr.flush();
-	
-	bool track_allocations = false;
+
+  bool track_allocations = false;
     // parse parameters :
     // leak_test [-iterations] [-test] ...
     for (cur_argv=1; cur_argv<argc; cur_argv++) {

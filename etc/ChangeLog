@@ -1,3 +1,20 @@
+2004-01-09 Francois Dumont <dums@s...>
+
+  * type_manip.h: Correction of the _IsSame struct for compiler supporting partial template
+               specialization to make it behave like the simulation version that is to say
+               regardless or the qualifiers.
+
+2004-01-07 Francois Dumont <dums@s...>
+
+  * _vector.c _deque.c: Mysterious copies of instance to store in the containers has
+               been removed. They can be reactivated using _STLP_NEED_MYSTERIOUS_COPY
+               macro.
+
+2004-01-05 Francois Dumont <dums@s...>
+
+  * _list.h, _slist.h: Implementation of the pointer specialization for list
+               and slist.
+
 2003-12-31 Petr Ovchenkov  <ptr@Island...>
 
 	* _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
@@ -828,6 +845,7 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 	  For backward compatibility, most of user-settable __STL_xxx macros are accepted.
 
 	* Versioning of shared libraries made UNIX-compliant
+
 	
 	* Some temporary lifetime problems in SGI iostreams which may introduce memory corruption, fixed.
 

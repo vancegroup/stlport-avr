@@ -46,6 +46,7 @@
 #endif
 
 #ifdef _STLP_USE_TEMPLATE_EXPRESSION
+
 # include <stl/_string_sum.h>
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 
@@ -60,26 +61,30 @@
 
 #endif // __MWERKS__
 
-// Standard C++ string class.  This class has performance
-// characteristics very much like vector<>, meaning, for example, that
-// it does not perform reference-count or copy-on-write, and that
-// concatenation of two strings is an O(N) operation. 
+/*
+ * Standard C++ string class.  This class has performance
+ * characteristics very much like vector<>, meaning, for example, that
+ * it does not perform reference-count or copy-on-write, and that
+ * concatenation of two strings is an O(N) operation. 
 
-// There are three reasons why basic_string is not identical to
-// vector.  First, basic_string always stores a null character at the
-// end; this makes it possible for c_str to be a fast operation.
-// Second, the C++ standard requires basic_string to copy elements
-// using char_traits<>::assign, char_traits<>::copy, and
-// char_traits<>::move.  This means that all of vector<>'s low-level
-// operations must be rewritten.  Third, basic_string<> has a lot of
-// extra functions in its interface that are convenient but, strictly
-// speaking, redundant.
+ * There are three reasons why basic_string is not identical to
+ * vector.
+ * First, basic_string can always stores a null character
+ * at the end (macro dependent); this makes it possible for c_str to
+ * be a fast operation.
+ * Second, the C++ standard requires basic_string to copy elements
+ * using char_traits<>::assign, char_traits<>::copy, and
+ * char_traits<>::move.  This means that all of vector<>'s low-level
+ * operations must be rewritten.  Third, basic_string<> has a lot of
+ * extra functions in its interface that are convenient but, strictly
+ * speaking, redundant.
 
-// Additionally, the C++ standard imposes a major restriction: according
-// to the standard, the character type _CharT must be a POD type.  This
-// implementation weakens that restriction, and allows _CharT to be a
-// a user-defined non-POD type.  However, _CharT must still have a
-// default constructor.
+ * Additionally, the C++ standard imposes a major restriction: according
+ * to the standard, the character type _CharT must be a POD type.  This
+ * implementation weakens that restriction, and allows _CharT to be a
+ * a user-defined non-POD type.  However, _CharT must still have a
+ * default constructor.
+ */
 
 #include <stl/_string_base.h>
 
@@ -116,6 +121,7 @@ private:                        // Protected members inherited from base.
   // fbp : used to optimize char/wchar_t cases, and to simplify
   // _STLP_DEF_CONST_PLCT_NEW_BUG problem workaround
   typedef typename _Is_integer<_CharT>::_Integral _Char_Is_Integral;
+  typedef typename _IsPOD<_CharT>::_Type _Char_Is_POD;
   typedef random_access_iterator_tag r_a_i_t;
 public:
   typedef _CharT value_type;
@@ -146,13 +152,13 @@ public:
   typedef _String_reserve_t _Reserve_t;
 # if defined (_STLP_USE_NATIVE_STRING) && ! defined (_STLP_DEBUG)
 #  if (defined(__IBMCPP__) && (500 <= __IBMCPP__) && (__IBMCPP__ < 600) )
-   // this typedef is being used for conversions
-   typedef typename _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
-    typename _STLP_VENDOR_STD::allocator<_CharT> > __std_string;
+  // this typedef is being used for conversions
+  typedef typename _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
+  typename _STLP_VENDOR_STD::allocator<_CharT> > __std_string;
 #  else
-   // this typedef is being used for conversions
-   typedef _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
-    _STLP_VENDOR_STD::allocator<_CharT> > __std_string;
+  // this typedef is being used for conversions
+  typedef _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
+  _STLP_VENDOR_STD::allocator<_CharT> > __std_string;
 #  endif
 # endif
   
@@ -294,7 +300,7 @@ protected:
 private:                        // Helper functions used by constructors
                                 // and elsewhere.
   // fbp : simplify integer types (char, wchar)
-  void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) {
+  void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) const {
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
     if (this->_M_using_static_buf())
       _Traits::assign(*__p, _M_null());
@@ -302,31 +308,55 @@ private:                        // Helper functions used by constructors
 #endif /*_STLP_USE_SHORT_STRING_OPTIM*/
     _STLP_STD::_Construct(__p);
   }
-  void _M_construct_null_aux(_CharT* __p, const __true_type& /*_Is_Integral*/) {
+  void _M_construct_null_aux(_CharT* __p, const __true_type& /*_Is_Integral*/) const {
     *__p = 0;
   }
 
-  void _M_construct_null(_CharT* __p) {
+  void _M_force_construct_null(_CharT* __p, const __true_type& /* _Is_POD */) const{
+    /*Nothing to do*/
+  }
+  void _M_force_construct_null(_CharT* __p, const __false_type& /* _Is_POD */) const {
     _M_construct_null_aux(__p, _Char_Is_Integral());
+  }
+
+  void _M_construct_null(_CharT* __p) const {
+#ifdef _STLP_FORCE_STRING_TERMINATION
+    typedef __false_type _Answer;
+#else
+    typedef _Char_Is_POD _Answer;
+#endif
+    _M_force_construct_null(__p, _Answer());
   }
 
 private:                        
   // Helper functions used by constructors.  It is a severe error for
   // any of them to be called anywhere except from within constructors.
 
-  void _M_terminate_string_aux(const __false_type& /*IsIntegral*/) {
+  void _M_terminate_string_aux(const __false_type& __is_integral) {
     _STLP_TRY {
-      _M_construct_null(this->_M_Finish());
+      _M_construct_null_aux(this->_M_Finish(), __is_integral);
     }
     _STLP_UNWIND(this->_M_destroy_range(0,0));
   }
 
-  void _M_terminate_string_aux(const __true_type& /*IsIntegral*/) {
-    *(this->_M_Finish())=0;
+  void _M_terminate_string_aux(const __true_type& __is_integral) {
+    _M_construct_null_aux(this->_M_Finish(), __is_integral);
+  }
+
+  void _M_force_terminate_string(const __true_type& /* _Is_POD */) {
+    /*Nothing to do*/
+  }
+  void _M_force_terminate_string(const __false_type& /* _Is_POD */) {
+    _M_terminate_string_aux(_Char_Is_Integral());
   }
 
   void _M_terminate_string() {
-    _M_terminate_string_aux(_Char_Is_Integral());
+#ifdef _STLP_FORCE_STRING_TERMINATION
+    typedef __false_type _Answer;
+#else
+    typedef _Char_Is_POD _Answer;
+#endif
+    _M_force_terminate_string(_Answer());
   }
 
 #ifndef _STLP_MEMBER_TEMPLATES
@@ -600,6 +630,7 @@ private:                        // Helper functions for append.
   _Self& _M_append_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*Integral*/) {
     return _M_append(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
+
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -964,6 +995,7 @@ private:  // Helper functions for insert.
     //call _M_copy as being here means that __result is not within [__first, __last)
     for ( ; __first != __last; ++__first, ++__result)
       _Traits::assign(*__result, *__first);
+
   }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -982,6 +1014,7 @@ public:                         // Erase.
 
   _Self& erase(size_type __pos = 0, size_type __n = npos) {
     if (__pos > size())
+
       this->_M_throw_out_of_range();
     erase(begin() + __pos, begin() + __pos + (min) (__n, size() - __pos));
     return *this;
@@ -1009,6 +1042,7 @@ public:                         // Erase.
 public:                         // Replace.  (Conceptually equivalent
                                 // to erase followed by insert.)
   _Self& replace(size_type __pos, size_type __n, 
+
                  const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -1150,20 +1184,20 @@ private:                        // Helper functions for replace.
         if ((__l <= __first) || (__f >= __last)) {
           //no overlap:
           _M_copy(__f, __m, __first);
-          _M_insert(__last, __m, __l, __ite_tag);
+          _M_insert(__last, __m, __l, r_a_i_t());
         }
         else {
           //we have to take care of reallocation:
           const difference_type __off_dest = __first - this->begin();
           const difference_type __off_src = __f - this->begin();
-          _M_insert(__last, __m, __l, __ite_tag);
+          _M_insert(__last, __m, __l, r_a_i_t());
           _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
         }
       }
       return *this;
     }
     else {
-      return _M_replace(__first, __last, __f, __l, forward_iterator_tag());
+      return _M_replace(__first, __last, __f, __l, r_a_i_t());
     }
   }
 
@@ -1217,7 +1251,12 @@ public:                         // Other modifier member functions.
 
 public:                         // Conversion to C string.
 
-  const _CharT* c_str() const { return this->_M_Start(); }
+  const _CharT* c_str() const {
+#ifndef _STLP_FORCE_STRING_TERMINATION
+    _M_force_construct_null(__CONST_CAST(_CharT*, this->_M_Finish()), __false_type());
+#endif /*_STLP_FORCE_STRING_TERMINATION*/
+    return this->_M_Start();
+  }
   const _CharT* data()  const { return this->_M_Start(); }
 
 public:                         // find.
@@ -1247,6 +1286,7 @@ public:                         // rfind.
   size_type rfind(_CharT __c, size_type __pos = npos) const;
 
 public:                         // find_first_of
+
   
   size_type find_first_of(const _Self& __s, size_type __pos = 0) const 
     { return find_first_of(__s._M_Start(), __pos, __s.size()); }

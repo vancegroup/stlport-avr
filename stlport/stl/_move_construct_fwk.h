@@ -33,13 +33,13 @@ _STLP_BEGIN_NAMESPACE
  *************************************************************/
 template <class _Tp>
 class __partial_move_source {
-	_Tp &_data;
+  _Tp &_data;
 public:
-	explicit __partial_move_source (_Tp &_src) : _data(_src)
-	{};
+  explicit __partial_move_source (_Tp &_src) : _data(_src)
+  {};
 
-	_Tp& get() const
-	{return _data;}
+  _Tp& get() const
+  {return _data;}
 };
 
 //Class used to signal partial move support.
@@ -92,22 +92,10 @@ struct __full_move_traits {
 };
 
 template <class _Tp>
-struct _FullMoveSourceTraits {
-	typedef typename __full_move_traits<_Tp>::supported _FullMvSupRet;
-  enum {_FullMvSup = __type2bool<_FullMvSupRet>::_Ret};
-  typedef typename __select<_FullMvSup,
-                            __full_move_source<_Tp>,
-                            _Tp const&>::_Ret _Type;
-};
-
-/*
-template <class _Tp>
-inline  _STLP_TYPENAME_ON_RETURN_TYPE _FullMoveSourceTraits<_Tp>::_Type
-_ForceFullMoveSource(_Tp &src) {
-	typedef typename _FullMoveSourceTraits<_Tp>::_Type _MvSrcType;
-	return _MvSrcType(src);
+inline __full_move_source<_Tp>
+_FullMoveSource(_Tp &src) {
+  return __full_move_source<_Tp>(src);
 }
-*/
 
 //To implement a full move constructor, the aggregated datas has also to handle the
 //full move constructor as no destruction will occur, this can be done with the 
@@ -115,16 +103,16 @@ _ForceFullMoveSource(_Tp &src) {
 template <class _Tp>
 inline  __full_move_source<_Tp>
 _ForceFullMoveSource(_Tp &src) {
-	return __full_move_source<_Tp>(src);
+  return __full_move_source<_Tp>(src);
 }
 
 template <class _Tp>
 struct _MoveConstructSupported {
-	typedef typename __partial_move_traits<_Tp>::supported _PartialSup;
-	typedef typename __full_move_traits<_Tp>::supported _FullSup;
+  typedef typename __partial_move_traits<_Tp>::supported _PartialSup;
+  typedef typename __full_move_traits<_Tp>::supported _FullSup;
 
-	typedef typename _Lor2<_PartialSup, _FullSup>::_Ret _Ret;
-	static _Ret _Answer() {return _Ret();}
+  typedef typename _Lor2<_PartialSup, _FullSup>::_Ret _Ret;
+  static _Ret _Answer() {return _Ret();}
 };
 
 template<class _Tp>
@@ -134,7 +122,7 @@ _MoveConstructSupported<_Tp> _IsMoveConstructSupported (_Tp const* pt)
 template <class _Tp>
 struct _MoveSourceTraits {
   typedef typename _PartialMoveSourceTraits<_Tp>::_Type _PartialSrcType;
-	typedef typename __full_move_traits<_Tp>::supported _FullMvSupRet;
+  typedef typename __full_move_traits<_Tp>::supported _FullMvSupRet;
   enum {_FullMvSup = __type2bool<_FullMvSupRet>::_Ret};
   typedef typename __select<_FullMvSup,
                             __full_move_source<_Tp>,
@@ -144,8 +132,8 @@ struct _MoveSourceTraits {
 template <class _Tp>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _MoveSourceTraits<_Tp>::_Type 
 _AsMoveSource(_Tp &src) {
-	typedef typename _MoveSourceTraits<_Tp>::_Type _MvSrcType;
-	return _MvSrcType(src);
+  typedef typename _MoveSourceTraits<_Tp>::_Type _MvSrcType;
+  return _MvSrcType(src);
 }
 
 _STLP_END_NAMESPACE

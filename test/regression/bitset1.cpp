@@ -51,6 +51,7 @@ int bitset1_test(int, char**)
   disp_bitset("b1 = ", b1);
   cout << "b1 nb bits set = " << b1.count() << endl;
   cout << "b2 nb bits set = " << b2.count() << endl;
+  cout << endl;
   return 0;
 }
 

@@ -129,7 +129,7 @@ protected:
 
   // handles insertions on overflow
   void _M_insert_overflow(pointer __position, const _Tp& __x, const __false_type& /*IsPOD*/, 
-			  size_type __fill_len, bool __atend = false) {
+                          size_type __fill_len, bool __atend = false) {
     const size_type __old_size = size();
     const size_type __len = __old_size + (max)(__old_size, __fill_len);
     
@@ -156,7 +156,7 @@ protected:
   }
 
   void _M_insert_overflow(pointer __position, const _Tp& __x, const __true_type& /*IsPOD*/, 
-			  size_type __fill_len, bool __atend = false) {
+                          size_type __fill_len, bool __atend = false) {
     const size_type __old_size = size();
     const size_type __len = __old_size + (max)(__old_size, __fill_len);
     
@@ -543,6 +543,8 @@ protected:
     _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish);
     this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
     //    }
+
+
   }
 
   void _M_set(pointer __s, pointer __f, pointer __e) {
@@ -604,7 +606,8 @@ protected:
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT) 
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#warning VECTOR HERE
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;

@@ -1,8 +1,9 @@
 // STLport regression testsuite component.
 // To compile as a separate example, please #define MAIN.
 
-#include <iostream>
 #include <slist>
+#include <iostream>
+// #include <list>
 #include <iterator>
 
 #ifdef MAIN 
@@ -16,10 +17,13 @@ using namespace std;
 int slist1_test(int, char**)
 {
   cout<<"Results of slist1_test:"<<endl;
-char array [] = { 'x', 'l', 'x', 't', 's', 's' };
+  char array [] = { 'x', 'l', 'x', 't', 's', 's' };
   ostream_iterator<char> o(cout,"");
   slist<char> str(array+0, array + 6);
-  std::slist<char>::iterator i;
+  slist<char>::iterator i;
+  //Check const_iterator construction from iterator
+  slist<char>::const_iterator ci(i);
+  slist<char>::const_iterator ci2(ci);
   cout << "original: ";
   copy(str.begin(), str.end(),o);
   cout << endl;
@@ -42,6 +46,6 @@ char array [] = { 'x', 'l', 'x', 't', 's', 's' };
   str.sort();
   for(i = str.begin(); i != str.end(); i++)
     cout << *i;
-  cout << endl;
+  cout << endl << endl;
   return 0;
 }
