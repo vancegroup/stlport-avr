@@ -53,6 +53,7 @@ void UniqueTest::unique1()
   CPPUNIT_ASSERT(numbers[6]==3);
   CPPUNIT_ASSERT(numbers[7]==4);
 }
+
 void UniqueTest::unique2()
 {
 
@@ -71,12 +72,14 @@ void UniqueTest::unique2()
   CPPUNIT_ASSERT(!strcmp(labels[5], "Y"));
 
 }
+
 void UniqueTest::uniqcpy1()
 {
   int numbers[8] = { 0, 1, 1, 2, 2, 2, 3, 4 };
   int result[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
   unique_copy((int*)numbers, (int*)numbers + 8, (int*)result);
+
   // 0 1 2 3 4 0 0 0 
   CPPUNIT_ASSERT(result[0]==0);
   CPPUNIT_ASSERT(result[1]==1);
@@ -87,9 +90,9 @@ void UniqueTest::uniqcpy1()
   CPPUNIT_ASSERT(result[6]==0);
   CPPUNIT_ASSERT(result[7]==0);
 }
+
 void UniqueTest::uniqcpy2()
 {
-#ifndef UNDER_CE
   char* labels[] = { "Q","Q","W","W","E","E","R","T","T","Y","Y" };
 
   const unsigned count = sizeof(labels) / sizeof(labels[0]);
@@ -104,5 +107,4 @@ void UniqueTest::uniqcpy2()
   CPPUNIT_ASSERT(!strcmp(uCopy[3], "R"));
   CPPUNIT_ASSERT(!strcmp(uCopy[4], "T"));
   CPPUNIT_ASSERT(!strcmp(uCopy[5], "Y"));
-#endif
 }
