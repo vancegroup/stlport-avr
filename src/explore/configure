@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <03/11/16 00:20:44 ptr>
+# Time-stamp: <04/04/30 22:04:48 ptr>
 # $Id$
 
 
@@ -10,6 +10,7 @@ configmak=./Makefiles/config.mak
 
 # echo "# STLPORT_DIR := /export/home/windows/guest/STLlab/STLport" >> ${configmak}
 # echo "# MSVC_DIR := c:/Program Files/Microsoft Visual Studio/VC98" >> ${configmak}
+# echo "# TARGET_PROC=x86" >> ${configmak}
 
 write_option() {
   target=`echo $1 | sed -e 's/^[^=]*=//'`
