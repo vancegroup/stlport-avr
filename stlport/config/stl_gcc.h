@@ -275,11 +275,6 @@ typedef unsigned int wint_t;
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
 
-# ifdef __hpux 
-#   undef _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH
-#   define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include.dist
-# endif
-
 # endif
 
 #endif /* GNUC_MINOR < 8 */
