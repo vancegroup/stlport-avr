@@ -112,9 +112,9 @@ _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate<wchar_t>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>;
 #  endif
 
-# if !(defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500 )
+# if !(defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500 ) && !defined(_STLP_WINCE)
 // Typedefs for ordinary (narrow-character) streams.
-_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >;
+//_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >;
 # endif
 
 typedef basic_istream<char, char_traits<char> >   istream;

@@ -15,8 +15,10 @@
  * modified is included with the above copyright notice.
  *
  */ 
-# include "stlport_prefix.h"
-#include <stdio_streambuf>
+
+#include "stlport_prefix.h"
+#include "stdio_streambuf.h"
+// #include "file_streambuf.h"
 
 #ifdef _STLP_UNIX
 #include <sys/types.h>
@@ -43,7 +45,7 @@ __SGI_BEGIN_NAMESPACE
 // Class stdio_streambuf_base
 
 stdio_streambuf_base::stdio_streambuf_base(FILE* file)
-  : _STLP_STD::basic_streambuf<char, _STLP_STD::char_traits<char> >(file, 0),
+    : /* _STLP_STD::FILE_basic_streambuf(file, 0), */
     _M_file(file)
 {}
 

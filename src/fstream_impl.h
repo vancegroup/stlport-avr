@@ -19,7 +19,7 @@
 #ifndef FSTREAM_IMPL_H
 # define FSTREAM_IMPL_H
 
-#include <stl/_stdio_file.h>
+#include "_stdio_file.h"
 
 # ifdef _STLP_HAS_NO_NAMESPACES
 #  define __SGI_BEGIN_NAMESPACE

@@ -38,14 +38,14 @@
 #include <stl/_codecvt.h>
 #endif
 
-#ifndef _STLP_STDIO_FILE_H
-#include <stl/_stdio_file.h>
-#endif
+//#ifndef _STLP_STDIO_FILE_H
+//#include <stl/_stdio_file.h>
+//#endif
 
 #if !defined (_STLP_USE_UNIX_IO) && !defined(_STLP_USE_WIN32_IO) \
     && ! defined (_STLP_USE_UNIX_EMULATION_IO) && !defined (_STLP_USE_STDIO_IO)
 
-# if defined (_STLP_UNIX)  || defined (__CYGWIN__) 
+# if defined (_STLP_UNIX)  || defined (__CYGWIN__) || defined (__amigaos__) || defined (__EMX__)
 // open/close/read/write
 #  define _STLP_USE_UNIX_IO
 # elif defined (_STLP_WIN32)  && ! defined (__CYGWIN__)
@@ -117,9 +117,9 @@ public:
   // Returns true if we're in binary mode or if we're using an OS or file 
   // system where there is no distinction between text and binary mode.
   bool _M_in_binary_mode() const {
-# if defined (_STLP_UNIX) || defined (_STLP_MAC)  || defined(__BEOS__)
+# if defined (_STLP_UNIX) || defined (_STLP_MAC)  || defined(__BEOS__) || defined (__amigaos__) 
     return true;
-# elif defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined (_STLP_VM)
+# elif defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined (_STLP_VM) || defined (__EMX__)
     return (_M_openmode & ios_base::binary) != 0;
 # else 
 #   error "Port!"
@@ -174,7 +174,7 @@ class _Noconv_output< char_traits<char> >;
 template <class _CharT, class _Traits>
 class _Underflow;
 
- _STLP_TEMPLATE_NULL class _Underflow< char, char_traits<char> >;
+_STLP_TEMPLATE_NULL class _Underflow< char, char_traits<char> >;
 
 template <class _CharT, class _Traits>
 class basic_filebuf : public basic_streambuf<_CharT, _Traits>
@@ -352,7 +352,7 @@ public:
   int_type
   _M_do_noconv_input() {
     _M_ext_buf_converted = _M_ext_buf_end;
-    this->setg((char_type*)_M_ext_buf, (char_type*)_M_ext_buf, (char_type*)_M_ext_buf_end);
+    /* this-> */ _Base::setg((char_type*)_M_ext_buf, (char_type*)_M_ext_buf, (char_type*)_M_ext_buf_end);
     return traits_type::to_int_type(*_M_ext_buf);
   }
 };

@@ -21,8 +21,9 @@
 // #include <stl/_istream.h>
 
 #include <stl/_fstream.h>
-#include <stdio_streambuf>
+#include "stdio_streambuf.h"
 #include "aligned_buffer.h"
+#include "_stdio_file.h"
 
 // boris : note this is repeated in <iostream>
 #ifndef _STLP_USE_NAMESPACES
