@@ -634,7 +634,7 @@ public:
     void _M_copy_from_string(const string& __s,
 			     size_t __pos,
 			     size_t __n) {
-      typedef char_traits<char> _Traits;
+      typedef typename string::traits_type _Traits;
 #endif
       reset();
       size_t __tmp = _Nb;
@@ -644,7 +644,7 @@ public:
         // boris : widen() ?
         if (__k == '1')
           set(__i);
-        else if (__k !='0')
+        else if (__k != '0')
           __stl_throw_invalid_argument("bitset");
       }
     }
@@ -658,9 +658,10 @@ public:
     {
       __s.assign(_Nb, '0');
       
-      for (size_t __i = 0; __i < _Nb; ++__i) 
-	if (_Unchecked_test(__i))
-	  __s[_Nb - 1 - __i] = '1';
+      for (size_t __i = 0; __i < _Nb; ++__i) {
+	      if (_Unchecked_test(__i))
+	        __s[_Nb - 1 - __i] = '1';
+      }
     }
 
 # if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)

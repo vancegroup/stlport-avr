@@ -106,13 +106,7 @@ extern "C"
 # include <except.h>
 #endif
 
-# if defined(EH_USE_NAMESPACES)
-namespace  // dwa 1/21/00 - must use unnamed namespace here to avoid conflict under gcc using native streams
-{
-using EH_STD::cerr;
-using EH_STD::endl;
-}
-# endif
+EH_USE_STD
 
 
 /*===================================================================================

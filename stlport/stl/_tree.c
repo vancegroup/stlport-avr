@@ -31,10 +31,15 @@
 #ifndef _STLP_TREE_C
 #define _STLP_TREE_C
 
+#ifndef _STLP_INTERNAL_TREE_H
+# include <stl/_tree.h>
+#endif
+
 // fbp: these defines are for outline methods definitions.
 // needed for definitions to be portable. Should not be used in method bodies.
 # if defined  ( _STLP_NESTED_TYPE_PARAM_BUG )
-#  define __iterator__        _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> > #  define __size_type__       size_t
+#  define __iterator__        _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> > 
+#  define __size_type__       size_t
 #  define iterator __iterator__
 # else
 #  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
@@ -405,7 +410,7 @@ template <class _Key, class _Value, class _KeyOfValue,
   iterator __j = iterator(__y);   
   if (__comp)
     if (__j == begin())     
-      return pair<iterator,bool>(_M_insert(__x, __y, __v), true);
+      return pair<iterator,bool>(_M_insert(/* __x*/ __y, __y, __v), true);
     else
       --__j;
   if (_M_key_compare(_S_key(__j._M_node), _KeyOfValue()(__v)))
@@ -634,7 +639,7 @@ _Rb_tree<_Key,_Value,_KeyOfValue,
   while (__x != 0) {
     _M_erase(_S_right(__x));
     _Link_type __y = _S_left(__x);
-    _Destroy(&__x->_M_value_field);
+    _STLP_STD::_Destroy(&__x->_M_value_field);
     this->_M_header.deallocate(__x,1);
     __x = __y;
   }

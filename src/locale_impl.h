@@ -44,6 +44,9 @@ public:
   size_t size() const { return _M_size; }
 
   static _Locale_impl* make_classic_locale();
+#ifdef _STLP_LEAKS_PEDANTIC
+  static void free_classic_locale();
+#endif // _STLP_LEAKS_PEDANTIC
   
   locale::facet** facets;
   size_t _M_size;

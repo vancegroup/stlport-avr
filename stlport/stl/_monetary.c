@@ -18,6 +18,10 @@
 #ifndef _STLP_MONETARY_C
 #define _STLP_MONETARY_C
 
+# ifndef _STLP_INTERNAL_MONETARY_H
+#  include <stl/_monetary.h>
+# endif
+
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
 #ifndef _STLP_INTERNAL_IOS_H
@@ -224,10 +228,10 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
         ++__s;
       break;
     case money_base::symbol: {
-      string_type __cs = __intl ? __punct_intl.curr_symbol()
+      string_type __curs = __intl ? __punct_intl.curr_symbol()
                                 : __punct.curr_symbol();
       pair<iter_type, bool>
-      __result  = __get_string(__s, __end, __cs.begin(), __cs.end());
+      __result  = __get_string(__s, __end, __curs.begin(), __curs.end());
       if (!__result.second && __symbol_required)
         __err = ios_base::failbit;
       __s = __result.first;
@@ -351,24 +355,23 @@ money_put<_CharT, _OutputIter>
   typedef moneypunct<_CharT, true>  _Punct_intl;
 
   locale __loc = __str.getloc();
-  const _Ctype&      __c_type      = use_facet<_Ctype>(__loc) ;
+  const _Ctype&      __c_type     = use_facet<_Ctype>(__loc) ;
   const _Punct&      __punct      = use_facet<_Punct>(__loc) ;
   const _Punct_intl& __punct_intl = use_facet<_Punct_intl>(__loc) ;
 
   // some special characters
-
   char_type __minus = __c_type.widen('-');
   char_type __plus  = __c_type.widen('+');
   char_type __space = __c_type.widen(' ');
   char_type __zero  = __c_type.widen('0');
   char_type __point = __intl ? __c_type.widen(__punct_intl.decimal_point())
-			     : __c_type.widen(__punct.decimal_point());
+                             : __c_type.widen(__punct.decimal_point());
 
   char_type __sep = __intl ? __punct_intl.thousands_sep()
-			   : __punct     .thousands_sep();
+                           : __punct.thousands_sep();
 
   string __grouping = __intl ? __punct_intl.grouping()
-		             : __punct     .grouping();
+                             : __punct.grouping();
 				
   int __frac_digits      = __intl ? __punct_intl.frac_digits() 
                                   : __punct.frac_digits();
@@ -376,12 +379,11 @@ money_put<_CharT, _OutputIter>
   string_type __curr_sym = __intl ? __punct_intl.curr_symbol() 
                                   : __punct.curr_symbol();
 
-    // if there are no digits we are going to return __s.  If there
-    // are digits, but not enough to fill the frac_digits, we are
-    // going to add zeros.  I don't know whether this is right or
-    // not.
-
-  if (__digits.size() == 0) 
+  // if there are no digits we are going to return __s.  If there
+  // are digits, but not enough to fill the frac_digits, we are
+  // going to add zeros.  I don't know whether this is right or
+  // not.
+  if (__digits.empty()) 
     return __s;
 
   typename string_type::const_iterator __digits_first = __digits.begin();
@@ -391,12 +393,10 @@ money_put<_CharT, _OutputIter>
   if (__is_negative)
     ++__digits_first;
 
-  string_type __sign = __intl ?
-			 __is_negative ? __punct_intl.negative_sign()
-				       : __punct_intl.positive_sign()
-			      :
-			 __is_negative ? __punct.negative_sign()
-				       : __punct.positive_sign();
+  string_type __sign = __intl ? __is_negative ? __punct_intl.negative_sign()
+                                              : __punct_intl.positive_sign()
+                              : __is_negative ? __punct.negative_sign()
+                                              : __punct.positive_sign();
   typename string_type::const_iterator __cp = __digits_first;
   while (__cp != __digits_last && __c_type.is(ctype_base::digit, *__cp))
     ++__cp;
@@ -413,25 +413,17 @@ money_put<_CharT, _OutputIter>
 
   string_type __new_digits(__digits_first, __digits_last);
 
-  if (__grouping.size() != 0) {
-    if (__grouping.size() == 1)
-      __grouping.push_back(__grouping[0]);
-    __grouping[0] += __frac_digits;
-    _CharT* __data_ptr = __CONST_CAST(_CharT*,__new_digits.data());
-    _CharT* __data_end = __data_ptr + __new_digits.size();
-    
-    ptrdiff_t __value_length = __insert_grouping(__data_ptr,
-	  				         __data_end,
-					         __grouping,
-					         __sep,
-					         __plus, __minus, 0);
+  if (!__grouping.empty()) {
+    __insert_grouping(__new_digits,
+                      (__frac_digits == 0)?__new_digits.size():__frac_digits,
+                      __grouping,
+                      __sep, __plus, __minus, 0);
     __digits_first = __new_digits.begin();
-    __digits_last  = __digits_first + __value_length;
+    __digits_last  = __new_digits.end();
   }
 
   // Determine the amount of padding required, if any.  
-    
-  size_t __width        = __str.width();
+  size_t __width = __str.width();
 
 #if defined(_STLP_DEBUG) && (defined(__HP_aCC) || (__HP_aCC <= 1))
   size_t __value_length = operator -(__digits_last, __digits_first);
@@ -439,7 +431,7 @@ money_put<_CharT, _OutputIter>
   size_t __value_length = __digits_last - __digits_first;
 #endif
 
-  size_t __length       = __value_length;
+  size_t __length = __value_length;
       
   __length += __sign.size();
   if (__frac_digits != 0)
@@ -448,15 +440,16 @@ money_put<_CharT, _OutputIter>
   bool __generate_curr = (__str.flags() & ios_base::showbase) !=0;
   if (__generate_curr)
     __length += __curr_sym.size();
-  money_base::pattern __format =
-    __intl ? (__is_negative ? __punct_intl.neg_format() 
-                            : __punct_intl.pos_format())
-           : (__is_negative ? __punct.neg_format() 
-                            : __punct.pos_format());
+  money_base::pattern __format = __intl ? (__is_negative ? __punct_intl.neg_format()
+                                                         : __punct_intl.pos_format())
+                                        : (__is_negative ? __punct.neg_format()
+                                                         : __punct.pos_format());
   {
-    for (int __i = 0; __i < 4; ++__i)
-      if (__format.field[__i] == (char) money_base::space)
-        ++__length;
+    //space can only be second or third (22.2.6.3-1):
+    if (__format.field[1] == (char) money_base::space)
+      ++__length;
+    if (__format.field[2] == (char) money_base::space)
+      ++__length;
   }
 
   size_t __fill_amt = __length < __width ? __width - __length : 0;
@@ -483,7 +476,7 @@ money_put<_CharT, _OutputIter>
         __s = copy(__curr_sym.begin(), __curr_sym.end(), __s);
     }
     else if (__ffield == money_base::sign) {
-      if (__sign.size() != 0)
+      if (!__sign.empty())
         *__s++ = __sign[0];
     }
     else if (__ffield == money_base::value) {

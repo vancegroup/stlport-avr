@@ -26,6 +26,10 @@
 #ifndef _STLP_LIST_C
 #define _STLP_LIST_C
 
+#ifndef _STLP_INTERNAL_LIST_H
+# include <stl/_list.h>
+#endif
+
 #if defined (__WATCOMC__)
 #include <vector>
 #endif
@@ -66,7 +70,7 @@ _List_base<_Tp,_Alloc>::clear()
   while (__cur != this->_M_node._M_data) {
     _List_node<_Tp>* __tmp = __cur;
     __cur = (_List_node<_Tp>*) __cur->_M_next;
-    _Destroy(&__tmp->_M_data);
+    _STLP_STD::_Destroy(&__tmp->_M_data);
     this->_M_node.deallocate(__tmp, 1);
   }
   this->_M_node._M_data->_M_next = this->_M_node._M_data;
@@ -78,7 +82,7 @@ _List_base<_Tp,_Alloc>::clear()
 # endif
 
 template <class _Tp, class _Alloc>
-void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x)
+void list<_Tp, _Alloc>::resize(size_type __new_size, _Tp __x)
 {
   iterator __i = begin();
   size_type __len = 0;
@@ -149,14 +153,14 @@ void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
 void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
 	      _StrictWeakOrdering __comp) {
-  typedef typename list<_Tp, _Alloc>::iterator iterator;
-  iterator __first1 = __that.begin();
-  iterator __last1 = __that.end();
-  iterator __first2 = __x.begin();
-  iterator __last2 = __x.end();
+  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+  _Literator __first1 = __that.begin();
+  _Literator __last1 = __that.end();
+  _Literator __first2 = __x.begin();
+  _Literator __last2 = __x.end();
   while (__first1 != __last1 && __first2 != __last2)
     if (__comp(*__first2, *__first1)) {
-      iterator __next = __first2;
+      _Literator __next = __first2;
       _List_global_inst::_Transfer(__first1._M_node, __first2._M_node, (++__next)._M_node);
       __first2 = __next;
     }

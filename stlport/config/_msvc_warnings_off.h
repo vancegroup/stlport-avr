@@ -5,8 +5,8 @@
  * arrow operator warning
  * copy constr & assignment cannot be generated
  * "forcing value to bool 'true' or 'false'
- * typedef used instaead of full type
- * 4018 : signed/unsigned mismatch, 4146 - result still unsigned 
+ * typedef used instead of full type
+ * 4018 : signed/unsigned mismatch, 4146 - result still unsigned
  * 4100: unreferenced formal parameter
  * 4663: C++ language change: to explicitly specialize class template 'identifier' use the following syntax
  */
@@ -16,5 +16,5 @@
 // multiple copy constructors/assignment operators specified,
 // with member templates are bogus...
 #   pragma warning ( disable : 4521 4522)
-#  endif  
+#  endif
 # endif

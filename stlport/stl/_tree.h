@@ -205,6 +205,7 @@ template <class _Tp, class _Alloc> struct _Rb_tree_base
       _M_header._M_data = _M_header.allocate(1); 
   }
   ~_Rb_tree_base() { 
+	  if (_M_header._M_data != 0)
     _M_header.deallocate(_M_header._M_data,1); 
   }
   allocator_type get_allocator() const { 
@@ -219,6 +220,7 @@ protected:
 template <class _Key, class _Value, class _KeyOfValue, class _Compare,
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) > class _Rb_tree : public _Rb_tree_base<_Value, _Alloc> {
   typedef _Rb_tree_base<_Value, _Alloc> _Base;
+  typedef _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> _Self;
 protected:
   typedef _Rb_tree_node_base* _Base_ptr;
   typedef _Rb_tree_node<_Value> _Node;
@@ -324,7 +326,7 @@ public:
     : _Rb_tree_base<_Value, _Alloc>(__a), _M_node_count(0), _M_key_compare(__comp) 
     { _M_empty_initialize(); }
 
-  _Rb_tree(const _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& __x) 
+  _Rb_tree(const _Self& __x) 
     : _Rb_tree_base<_Value, _Alloc>(__x.get_allocator()),
       _M_node_count(0), _M_key_compare(__x._M_key_compare)
   { 
@@ -338,6 +340,17 @@ public:
     }
     _M_node_count = __x._M_node_count;
   }
+
+  /*explicit _Rb_tree(__full_move_source<_Self> src)
+	  : _Rb_tree_base<_Value, _Alloc>(_FullMoveSource<_Rb_tree_base<_Value, _Alloc> >(src.get())) {
+  }*/
+
+  explicit _Rb_tree(__partial_move_source<_Self> src)
+	  : _Rb_tree_base<_Value, _Alloc>(src.get()) {
+	  src.get()._M_header._M_data = 0;
+	  src.get()._M_node_count = 0;
+  }
+
   ~_Rb_tree() { clear(); }
   _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& operator=(const _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& __x);
 
@@ -372,7 +385,7 @@ public:
   size_type max_size() const { return size_type(-1); }
 
   void swap(_Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& __t) {
-    _STLP_STD::swap(this->_M_header._M_data, __t._M_header._M_data);
+    _STLP_STD::swap(this->_M_header, __t._M_header);
     _STLP_STD::swap(_M_node_count, __t._M_node_count);
     _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
   }
@@ -419,7 +432,7 @@ public:
 							 this->_M_header._M_data->_M_parent,
 							 this->_M_header._M_data->_M_left,
 							 this->_M_header._M_data->_M_right);
-    _Destroy(&__y->_M_value_field);
+    _STLP_STD::_Destroy(&__y->_M_value_field);
     this->_M_header.deallocate(__y,1);
     --_M_node_count;
   }
@@ -454,7 +467,7 @@ public:
 
 public:
                                 // set operations:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS ) && !defined(__MRC__) && !defined(__SC__)
+# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS ) && !defined(__MRC__) && !(defined(__SC__) && !defined(__DMC__))
   template <class _KT> iterator find(const _KT& __x) { return iterator(_M_find(__x)); }
   template <class _KT> const_iterator find(const _KT& __x) const { return const_iterator(_M_find(__x)); }
 private:

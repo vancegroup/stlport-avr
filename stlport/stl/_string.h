@@ -91,12 +91,12 @@ template <class _Traits> struct _Not_within_traits
   const _CharT* _M_last;
 
   _Not_within_traits(const typename _Traits::char_type* __f, 
-		     const typename _Traits::char_type* __l) 
+		 		      const typename _Traits::char_type* __l) 
     : _M_first(__f), _M_last(__l) {}
 
   bool operator()(const typename _Traits::char_type& __x) const {
-    return find_if((_CharT*)_M_first, (_CharT*)_M_last, 
-                   _Eq_char_bound<_Traits>(__x)) == (_CharT*)_M_last;
+    return find_if(_M_first, _M_last, 
+                   _Eq_char_bound<_Traits>(__x)) == _M_last;
   }
 };
 
@@ -187,8 +187,11 @@ public:
 
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
-# ifdef _STLP_STATIC_CONST_INIT_BUG
+# if defined(_STLP_STATIC_CONST_INIT_BUG)
   enum { npos = -1 };
+# elif __GNUC__ == 2 && __GNUC_MINOR__ == 96
+  // inline initializer conflicts with 'extern template' 
+  static const size_t npos ;
 # else
   static const size_t npos = ~(size_t)0;
 # endif
@@ -259,7 +262,7 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||defined(__SC__))		//*ty 04/30/2001 - mpw compilers choke on this ctor
+#if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))		//*ty 04/30/2001 - mpw compilers choke on this ctor
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator> basic_string(_InputIterator __f, _InputIterator __l)
     : _String_base<_CharT,_Alloc>(allocator_type())
@@ -299,7 +302,7 @@ public:                         // Constructor, destructor, assignment.
   operator __std_string() const { return __std_string(this->data(), this->size()); }
 # endif
 
-  ~basic_string() { _Destroy(this->_M_start, this->_M_finish + 1); }
+  ~basic_string() { _STLP_STD::_Destroy(this->_M_start, this->_M_finish + 1); }
     
   _Self& operator=(const _Self& __s) {
     if (&__s != this) 
@@ -341,7 +344,7 @@ private:
     _STLP_TRY {
       _M_construct_null(this->_M_finish);
     }
-    _STLP_UNWIND(_Destroy(this->_M_start, this->_M_finish));
+    _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_start, this->_M_finish));
   }
 
   void _M_terminate_string_aux(const __true_type&) {
@@ -352,6 +355,18 @@ private:
     _M_terminate_string_aux(_Char_Is_Integral());
   }
 
+#ifndef _STLP_MEMBER_TEMPLATES
+  bool _M_inside(const _CharT* __s ) const {
+    return (__s >= this->_M_start) && (__s < this->_M_finish);
+  }
+#else
+  template <class _InputIter>
+  bool _M_inside(_InputIter __i) const {
+    const _CharT* __s = __STATIC_CAST(const _CharT*, &(*__i));
+    return (__s >= this->_M_start) && (__s < this->_M_finish);
+  }
+#endif /*_STLP_MEMBER_TEMPLATES*/
+
 #ifdef _STLP_MEMBER_TEMPLATES
     
   template <class _InputIter> void _M_range_initialize(_InputIter __f, _InputIter __l,
@@ -361,7 +376,7 @@ private:
     _STLP_TRY {
       append(__f, __l);
     }
-    _STLP_UNWIND(_Destroy(this->_M_start, this->_M_finish + 1));
+    _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_start, this->_M_finish + 1));
   }
 
   template <class _ForwardIter> void _M_range_initialize(_ForwardIter __f, _ForwardIter __l, 
@@ -434,7 +449,7 @@ public:                         // Size, capacity, etc.
   void clear() {
     if (!empty()) {
       _Traits::assign(*(this->_M_start), _M_null());
-      _Destroy(this->_M_start+1, this->_M_finish+1);
+      _STLP_STD::_Destroy(this->_M_start+1, this->_M_finish+1);
       this->_M_finish = this->_M_start;
     }
   } 
@@ -509,7 +524,7 @@ public:                         // Append, operator+=, push_back.
 
   void pop_back() {
     _Traits::assign(*(this->_M_finish - 1), _M_null());
-    _Destroy(this->_M_finish);
+    _STLP_STD::_Destroy(this->_M_finish);
     --this->_M_finish;
   }
 
@@ -541,9 +556,9 @@ private:                        // Helper functions for append.
 	        __new_finish = uninitialized_copy(__first, __last, __new_finish);
 	        _M_construct_null(__new_finish);
 	      }
-	      _STLP_UNWIND((_Destroy(__new_start,__new_finish),
+	      _STLP_UNWIND((_STLP_STD::_Destroy(__new_start,__new_finish),
 	                    this->_M_end_of_storage.deallocate(__new_start,__len)));
-	      _Destroy(this->_M_start, this->_M_finish + 1);
+	      _STLP_STD::_Destroy(this->_M_start, this->_M_finish + 1);
 	      this->_M_deallocate_block();
 	      this->_M_start = __new_start;
 	      this->_M_finish = __new_finish;
@@ -556,7 +571,7 @@ private:                        // Helper functions for append.
 	      _STLP_TRY {
 	        _M_construct_null(this->_M_finish + __n);
 	      }
-	      _STLP_UNWIND(_Destroy(this->_M_finish + 1, this->_M_finish + __n));
+	      _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_finish + 1, this->_M_finish + __n));
 	      _Traits::assign(*end(), *__first);
 	      this->_M_finish += __n;
 	    }
@@ -598,42 +613,53 @@ public:                         // Assign
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
+private:                        // Helper functions for assign.
+
+  template <class _Integer> 
+  _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type&) {
+    return assign((size_type) __n, (_CharT) __x);
+  }
+
+  template <class _InputIter> 
+  _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l,
+			    const __false_type&)  {
+    pointer __cur = this->_M_start;
+    while (__f != __l && __cur != this->_M_finish) {
+      _Traits::assign(*__cur, *__f);
+      ++__f;
+      ++__cur;
+    }
+    if (__f == __l)
+      erase(__cur, end());
+    else
+      append(__f, __l);
+    return *this;
+  }
+  
+public:
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
   template <class _InputIter> _Self& assign(_InputIter __first, _InputIter __last) {
     typedef typename _Is_integer<_InputIter>::_Integral _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
-#else
-
-  _Self& assign(const _CharT* __f, const _CharT* __l);
 #endif  /* _STLP_MEMBER_TEMPLATES */
 
-private:                        // Helper functions for assign.
-
-#ifdef _STLP_MEMBER_TEMPLATES
-
-  template <class _Integer> _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type&) {
-    return assign((size_type) __n, (_CharT) __x);
+  // if member templates are on, this works as specialization 
+  _Self& assign(const _CharT* __f, const _CharT* __l)
+  {
+    ptrdiff_t __n = __l - __f;
+    if (__STATIC_CAST(size_type,__n) <= size()) {
+      _Traits::copy(this->_M_start, __f, __n);
+      erase(begin() + __n, end());
+    }
+    else {
+      _Traits::copy(this->_M_start, __f, size());
+      append(__f + size(), __l);
+    }
+    return *this;
   }
-
-  template <class _InputIter> _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l,
-                                   const __false_type&)  {
-          pointer __cur = this->_M_start;
-	  while (__f != __l && __cur != this->_M_finish) {
-	    _Traits::assign(*__cur, *__f);
-	    ++__f;
-	    ++__cur;
-	  }
-	  if (__f == __l)
-	    erase(__cur, end());
-	  else
-	    append(__f, __l);
-	  return *this;
-	}
-
-#endif  /* _STLP_MEMBER_TEMPLATES */
-
+  
 public:                         // Insert
 
   _Self& insert(size_type __pos, const _Self& __s) {
@@ -641,29 +667,30 @@ public:                         // Insert
       this->_M_throw_out_of_range();
     if (size() > max_size() - __s.size())
       this->_M_throw_length_error();
-    insert(begin() + __pos, __s._M_start, __s._M_finish);
+    _M_insert(begin() + __pos, __s._M_start, __s._M_finish, 
+              random_access_iterator_tag());
     return *this;
   }
 
   _Self& insert(size_type __pos, const _Self& __s,
-                       size_type __beg, size_type __n) {
+                size_type __beg, size_type __n) {
     if (__pos > size() || __beg > __s.size())
       this->_M_throw_out_of_range();
     size_type __len = (min) (__n, __s.size() - __beg);
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
-    insert(begin() + __pos,
-           __s._M_start + __beg, __s._M_start + __beg + __len);
+    _M_insert(begin() + __pos, 
+              __s._M_start + __beg, __s._M_start + __beg + __len,
+              random_access_iterator_tag());
     return *this;
   }
-
   _Self& insert(size_type __pos, const _CharT* __s, size_type __n) {
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos > size())
       this->_M_throw_out_of_range();
     if (size() > max_size() - __n)
       this->_M_throw_length_error();
-    insert(begin() + __pos, __s, __s + __n);
+    _M_insert(begin() + __pos, __s, __s + __n, random_access_iterator_tag());
     return *this;
   }
 
@@ -674,7 +701,7 @@ public:                         // Insert
     size_type __len = _Traits::length(__s);
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
-    insert(this->_M_start + __pos, __s, __s + __len);
+    _M_insert(this->_M_start + __pos, __s, __s + __len, random_access_iterator_tag());
     return *this;
   }
     
@@ -710,11 +737,31 @@ public:                         // Insert
 
 #else /* _STLP_MEMBER_TEMPLATES */
 
-  void insert(iterator __p, const _CharT* __first, const _CharT* __last);
+private:  // Helper functions for insert.
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-private:                        // Helper functions for insert.
+  template <class _ForwardIter>
+  void _M_insert_overflow(iterator __position, _ForwardIter __first, _ForwardIter __last,
+                          difference_type __n) {
+    const size_type __old_size = this->size();        
+    const size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+    pointer __new_start = this->_M_end_of_storage.allocate(__len);
+    pointer __new_finish = __new_start;
+    _STLP_TRY {
+      __new_finish = uninitialized_copy(this->_M_start, __position, __new_start);
+      __new_finish = uninitialized_copy(__first, __last, __new_finish);
+      __new_finish = uninitialized_copy(__position, this->_M_finish, __new_finish);
+      _M_construct_null(__new_finish);
+    }
+    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
+                  this->_M_end_of_storage.deallocate(__new_start,__len)));
+    _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish + 1);
+    this->_M_deallocate_block();
+    this->_M_start = __new_start;
+    this->_M_finish = __new_finish;
+    this->_M_end_of_storage._M_data = __new_start + __len; 
+  }
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -727,7 +774,8 @@ private:                        // Helper functions for insert.
 	  }
 	}
 
-  template <class _ForwardIter> void insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
+  template <class _ForwardIter> 
+  void insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
 	      const forward_iterator_tag &)  {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
@@ -740,7 +788,7 @@ private:                        // Helper functions for insert.
 	  this->_M_finish += __n;
 	  _Traits::move(__position + __n,
 			__position, (__elems_after - __n) + 1);
-	  _M_copy(__first, __last, __position);
+	  _M_move(__first, __last, __position);
 	      }
 	else {
 	  _ForwardIter __mid = __first;
@@ -751,9 +799,9 @@ private:                        // Helper functions for insert.
 	          uninitialized_copy(__position, __old_finish + 1, this->_M_finish);
 	          this->_M_finish += __elems_after;
 	        }
-	        _STLP_UNWIND((_Destroy(__old_finish + 1, this->_M_finish), 
+	        _STLP_UNWIND((_STLP_STD::_Destroy(__old_finish + 1, this->_M_finish), 
 	                      this->_M_finish = __old_finish));
-	        _M_copy(__first, __mid, __position);
+	        _M_move(__first, __mid, __position);
 	}
       }
       else {
@@ -769,9 +817,9 @@ private:                        // Helper functions for insert.
 	          = uninitialized_copy(__position, this->_M_finish, __new_finish);
 	        _M_construct_null(__new_finish);
 	      }
-	      _STLP_UNWIND((_Destroy(__new_start,__new_finish),
+	      _STLP_UNWIND((_STLP_STD::_Destroy(__new_start,__new_finish),
 	                    this->_M_end_of_storage.deallocate(__new_start,__len)));
-	      _Destroy(this->_M_start, this->_M_finish + 1);
+	      _STLP_STD::_Destroy(this->_M_start, this->_M_finish + 1);
 	      this->_M_deallocate_block();
 	      this->_M_start = __new_start;
 	      this->_M_finish = __new_finish;
@@ -796,13 +844,26 @@ private:                        // Helper functions for insert.
       _Traits::assign(*__result, *__first);
   }
 
+  template <class _InputIterator>
+  void _M_move(_InputIterator __first, _InputIterator __last, pointer __result) {
+    //call _M_copy as being here means that __result is not within [__first, __last)
+    for ( ; __first != __last; ++__first, ++__result)
+      _Traits::assign(*__result, *__first);
+  }
+
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   pointer _M_insert_aux(pointer, _CharT);
 
-  void 
-  _M_copy(const _CharT* __first, const _CharT* __last, _CharT* __result) {
+  void _M_copy(const _CharT* __first, const _CharT* __last, _CharT* __result) {
     _Traits::copy(__result, __first, __last - __first);
+  }
+  void _M_move(const _CharT* __first, const _CharT* __last, _CharT* __result) {
+    _Traits::move(__result, __first, __last - __first);
+  }
+
+  void _M_move(const _CharT* __first, const _CharT* __last, _CharT* __result) {
+    _Traits::move(__result, __first, __last - __first);
   }
 
 public:                         // Erase.
@@ -817,7 +878,7 @@ public:                         // Erase.
   iterator erase(iterator __position) {
                                 // The move includes the terminating _CharT().
     _Traits::move(__position, __position + 1, this->_M_finish - __position);
-    _Destroy(this->_M_finish);
+    _STLP_STD::_Destroy(this->_M_finish);
     --this->_M_finish;
     return __position;
   }
@@ -827,7 +888,7 @@ public:                         // Erase.
                                 // The move includes the terminating _CharT().
       traits_type::move(__first, __last, (this->_M_finish - __last) + 1);
       pointer __new_finish = this->_M_finish - (__last - __first);
-      _Destroy(__new_finish + 1, this->_M_finish + 1);
+      _STLP_STD::_Destroy(__new_finish + 1, this->_M_finish + 1);
       this->_M_finish = __new_finish;
     }
     return __first;
@@ -836,27 +897,28 @@ public:                         // Erase.
 public:                         // Replace.  (Conceptually equivalent
                                 // to erase followed by insert.)
   _Self& replace(size_type __pos, size_type __n, 
-                        const _Self& __s) {
+                 const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
     const size_type __len = (min) (__n, size() - __pos);
     if (size() - __len >= max_size() - __s.size())
       this->_M_throw_length_error();
-    return replace(begin() + __pos, begin() + __pos + __len, 
-                   __s._M_start, __s._M_finish);
+    return _M_replace(begin() + __pos, begin() + __pos + __len, 
+                      __s._M_start, __s._M_finish, random_access_iterator_tag());
   }
 
   _Self& replace(size_type __pos1, size_type __n1,
-                        const _Self& __s,
-                        size_type __pos2, size_type __n2) {
+                 const _Self& __s,
+                 size_type __pos2, size_type __n2) {
     if (__pos1 > size() || __pos2 > __s.size())
       this->_M_throw_out_of_range();
     const size_type __len1 = (min) (__n1, size() - __pos1);
     const size_type __len2 = (min) (__n2, __s.size() - __pos2);
     if (size() - __len1 >= max_size() - __len2)
       this->_M_throw_length_error();
-    return replace(begin() + __pos1, begin() + __pos1 + __len1,
-                   __s._M_start + __pos2, __s._M_start + __pos2 + __len2);
+    return _M_replace(begin() + __pos1, begin() + __pos1 + __len1,
+                      __s._M_start + __pos2, __s._M_start + __pos2 + __len2,
+                      random_access_iterator_tag());
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -867,8 +929,8 @@ public:                         // Replace.  (Conceptually equivalent
     const size_type __len = (min) (__n1, size() - __pos);
     if (__n2 > max_size() || size() - __len >= max_size() - __n2)
       this->_M_throw_length_error();
-    return replace(begin() + __pos, begin() + __pos + __len,
-                   __s, __s + __n2);
+    return _M_replace(begin() + __pos, begin() + __pos + __len,
+                      __s, __s + __n2, random_access_iterator_tag());
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -880,12 +942,13 @@ public:                         // Replace.  (Conceptually equivalent
     const size_type __n2 = _Traits::length(__s);
     if (__n2 > max_size() || size() - __len >= max_size() - __n2)
       this->_M_throw_length_error();
-    return replace(begin() + __pos, begin() + __pos + __len,
-                   __s, __s + _Traits::length(__s));
+    return _M_replace(begin() + __pos, begin() + __pos + __len,
+                      __s, __s + _Traits::length(__s), 
+                      random_access_iterator_tag());
   }
 
   _Self& replace(size_type __pos, size_type __n1,
-                        size_type __n2, _CharT __c) {
+                 size_type __n2, _CharT __c) {
     if (__pos > size())
       this->_M_throw_out_of_range();
     const size_type __len = (min) (__n1, size() - __pos);
@@ -894,9 +957,10 @@ public:                         // Replace.  (Conceptually equivalent
     return replace(begin() + __pos, begin() + __pos + __len, __n2, __c);
   }
 
-  _Self& replace(iterator __first, iterator __last, 
-                        const _Self& __s) 
-    { return replace(__first, __last, __s._M_start, __s._M_finish); }
+  _Self& replace(iterator __first, iterator __last, const _Self& __s) {
+    return _M_replace(__first, __last, __s._M_start, __s._M_finish,
+                      random_access_iterator_tag());
+  }
 
   _Self& replace(iterator __first, iterator __last,
                         const _CharT* __s, size_type __n) 
@@ -909,7 +973,7 @@ public:                         // Replace.  (Conceptually equivalent
   }
 
   _Self& replace(iterator __first, iterator __last, 
-                        size_type __n, _CharT __c);
+                 size_type __n, _CharT __c);
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
@@ -944,13 +1008,46 @@ private:                        // Helper functions for replace.
                         _InputIter __f, _InputIter __l, const input_iterator_tag &)  {
 	  for ( ; __first != __last && __f != __l; ++__first, ++__f)
 	    _Traits::assign(*__first, *__f);
-
 	  if (__f == __l)
 	    erase(__first, __last);
 	  else
-	    insert(__last, __f, __l);
+	    _M_insert(__last, __f, __l, __ite_tag);
 	  return *this;
-	}
+  }
+
+  template <class _InputIter>
+  _Self& replace(iterator __first, iterator __last,
+                 _InputIter __f, _InputIter __l, const random_access_iterator_tag &) {
+    //might be overlapping
+    if (_M_inside(__f)) {
+      difference_type __n = __l - __f;
+      const difference_type __len = __last - __first;
+      if (__len >= __n) {
+        _M_move(__f, __l, __first);
+        erase(__first + __n, __last);
+      }
+      else {
+        _InputIter __m = __f + __len;
+        if ((__l <= __first) || (__f >= __last)) {
+				  //no overlap:
+          _M_copy(__f, __m, __first);
+          insert(__last, __m, __l);
+        }
+        else {
+				  //we have to take care of reallocation:
+				  const difference_type __off_dest = __first - this->begin();
+				  const difference_type __off_src = __f - this->begin();
+				  insert(__last, __m, __l);
+				  _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
+        }
+      }
+      return *this;
+    }
+	  else {
+		  return replace(__first, __last, __f, __l, forward_iterator_tag());
+	  }
+  }
+
 
   template <class _ForwardIter> _Self& replace(iterator __first, iterator __last,
                         _ForwardIter __f, _ForwardIter __l, 
@@ -962,13 +1059,27 @@ private:                        // Helper functions for replace.
 	    erase(__first + __n, __last);
 	  }
 	  else {
-	    _ForwardIter __m = __f;
-	    advance(__m, __len);
-	    _M_copy(__f, __m, __first);
-	    insert(__last, __m, __l);
+		  return _M_replace(__first, __last, __f, __l, forward_iterator_tag());
 	  }
-	  return *this;
-	}
+  }
+
+  template <class _ForwardIter> 
+  _Self& _M_replace(iterator __first, iterator __last,
+                 _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
+    difference_type __n = distance(__f, __l);
+    const difference_type __len = __last - __first;
+    if (__len >= __n) {
+      _M_copy(__f, __l, __first);
+      erase(__first + __n, __last);
+    }
+    else {
+		  _ForwardIter __m = __f;
+		  advance(__m, __len);
+      _M_copy(__f, __m, __first);
+      _M_insert(__last, __m, __l, __ite_tag);
+    }
+    return *this;
+  }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -1003,7 +1114,11 @@ public:                         // find.
     { _STLP_FIX_LITERAL_BUG(__s) return find(__s, __pos, _Traits::length(__s)); }
 
   size_type find(const _CharT* __s, size_type __pos, size_type __n) const;
-  size_type find(_CharT __c, size_type __pos = 0) const;
+
+  // WIE: Versant schema compiler 5.2.2 ICE workaround
+  size_type find(_CharT __c) const
+    { return find(__c, 0) ; }
+  size_type find(_CharT __c, size_type __pos /* = 0 */) const;
 
 public:                         // rfind.
 
@@ -1143,6 +1258,11 @@ public:                        // Helper functions for compare.
   }
 };
 
+#if ! defined (__STLP_STATIC_CONST_INIT_BUG) && \
+  __GNUC__ == 2 && __GNUC_MINOR__ == 96
+template <class _CharT, class _Traits, class _Alloc>
+const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
+#endif
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<char, char_traits<char>, allocator<char> >;
@@ -1393,6 +1513,13 @@ template <class _CharT, class _Traits, class _Alloc> void  _STLP_CALL _S_string_
 
 # undef basic_string
 
+#if defined(_STLP_WINCE)
+// A couple of functions to transfer between ASCII/Unicode
+
+wstring __ASCIIToWide(const char *ascii);
+string __WideToASCII(const wchar_t *wide);
+#endif
+
 _STLP_END_NAMESPACE
 
 # ifdef _STLP_DEBUG
@@ -1406,7 +1533,7 @@ _STLP_END_NAMESPACE
 # include <stl/_string_io.h>  
 # include <stl/_string_hash.h>  
 
-#endif /* _STLP_STRING */
+#endif /* _STLP_STRING_H */
 
 
 // Local Variables:

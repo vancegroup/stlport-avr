@@ -1,3 +1,7 @@
+// Local Variables:
+// mode:C++
+// End:
+
 /*
  *
  * Copyright (c) 1994
@@ -96,22 +100,30 @@ public:                         // Basic accessors
   const_reverse_iterator rend() const 
     { return const_reverse_iterator(begin()); }
 
-  reference operator[](size_type __n)
-    { return begin()[difference_type(__n)]; }
-  const_reference operator[](size_type __n) const 
-    { return begin()[difference_type(__n)]; }
-
-  reference front() { return *begin(); }
-  reference back() {
-    iterator __tmp = end();
-    --__tmp;
-    return *__tmp;
+  reference operator[](size_type __n) {
+    _STLP_VERBOSE_ASSERT(__n < _Base::size(), _StlMsg_OUT_OF_BOUNDS)
+    return _Base::operator[](__n);
+	}
+  const_reference operator[](size_type __n) const {
+    _STLP_VERBOSE_ASSERT(__n < _Base::size(), _StlMsg_OUT_OF_BOUNDS)
+    return _Base::operator[](__n);
   }
-  const_reference front() const { return *begin(); }
+
+  reference front() {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *begin();
+  }
+  const_reference front() const {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *begin();
+  }
+  reference back() {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *(--end());
+  }
   const_reference back() const {
-    const_iterator __tmp = end();
-    --__tmp;
-    return *__tmp;
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *(--end());
   }
 
 public:                         // Constructor, destructor.
@@ -148,8 +160,10 @@ public:                         // Constructor, destructor.
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator= (const _Self& __x) {
-    _Invalidate_all();
-    (_Base&)*this = (const _Base&)__x; 
+    if (this != &__x) {
+      _Invalidate_all();
+      _Base::operator=((const _Base&)__x);
+    }
     return *this;
   }
 
@@ -160,6 +174,7 @@ public:                         // Constructor, destructor.
 
 public: 
   void assign(size_type __n, const _Tp& __val) {
+    _Invalidate_all();
     _Base::assign(__n, __val);
   }
 
@@ -167,56 +182,76 @@ public:
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
+    _STLP_DEBUG_CHECK(__check_range(__first,__last))
+    _Invalidate_all();
     _Base::assign(__first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 public:                         // push_* and pop_*
   
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  void push_back(const value_type& __t = _Tp()) {
+#else
   void push_back(const value_type& __t) {
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     _Invalidate_all();
     _Base::push_back(__t);
   }
 
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() {
     _Invalidate_all();
     _Base::push_back();
   }
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  void push_front(const value_type& __t = _Tp()) {
+#else
   void push_front(const value_type& __t) {
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     _Invalidate_all();
     _Base::push_front(__t);
   }
 
+# if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_front() {
-    _Base::push_front();
     _Invalidate_all();
+    _Base::push_front();
   }
-
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void pop_back() {
-    _Invalidate_iterator(end());
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    _Invalidate_iterator(this->end());
     _Base::pop_back();
   }
 
   void pop_front() {
-    _Invalidate_iterator(begin());        
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    _Invalidate_iterator(this->begin());        
     _Base::pop_front();
   }
 
 public:                         // Insert
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __position, const value_type& __x = _Tp()) {
+#else
   iterator insert(iterator __position, const value_type& __x) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     return iterator(&_M_iter_list, _Base::insert(__position._M_iterator, __x));
   }
 
+#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __position) { 
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     // fbp : invalidation !
     return iterator(&_M_iter_list, _Base::insert(__position._M_iterator));
   }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void insert(iterator __position, size_type __n, const value_type& __x) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
@@ -244,12 +279,6 @@ public:                         // Insert
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  //  void resize(size_type __new_size, const value_type& __x) {
-  //    _Base::resize(__new_size, __x);
-  //  }
-
-  //  void resize(size_type new_size) { resize(new_size, value_type()); }
-
 public:                         // Erase
   iterator erase(iterator __pos) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos) && (__pos != end()))
@@ -267,53 +296,13 @@ public:                         // Erase
   }
 };
 
-# ifdef _STLP_EXTRA_OPERATORS_FOR_DEBUG
-// Nonmember functions.
-
-template<class _Tp, class _Alloc>
-inline bool operator==(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
-{
-    return (const _STLP_DEQUE_SUPER&)__x == (const _STLP_DEQUE_SUPER&)__y;
-}
-
-template<class _Tp, class _Alloc>
-inline bool operator<(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
-{
-  return (const _STLP_DEQUE_SUPER&)__x < (const _STLP_DEQUE_SUPER&)__y;
-}
-
-#if defined(_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
-
-template<class _Tp, class _Alloc>
-inline bool operator>(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
-{
-  return __y < __x; 
-}
-
-template<class _Tp, class _Alloc>
-inline bool operator>=(const _DBG_deque<_Tp,_Alloc >& __x, const _DBG_deque<_Tp,_Alloc >& __y)
-{
-  return !(__x < __y); 
-}
-
-template<class _Tp, class _Alloc>
-inline bool operator<=(const _DBG_deque<_Tp,_Alloc >& __x,
-		       const _DBG_deque<_Tp,_Alloc >& __y)
-{
- return !(__y < __x); 
-}
-# endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
-#endif /* _STLP_EXTRA_OPERATORS_FOR_DEBUG */
-
-
-#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-template<class _Tp, class _Alloc>
-inline void 
-swap(_DBG_deque<_Tp,_Alloc>& __x, _DBG_deque<_Tp,_Alloc>& __y)
-{
-  __x.swap(__y);
-}
-#endif
+#define _STLP_TEMPLATE_HEADER template <class _Tp, class _Alloc>
+#define _STLP_TEMPLATE_CONTAINER _DBG_deque<_Tp, _Alloc>
+#define _STLP_TEMPLATE_CONTAINER_BASE _STLP_DEQUE_SUPER
+#include <stl/debug/_relops_cont.h>
+#undef _STLP_TEMPLATE_CONTAINER_BASE
+#undef _STLP_TEMPLATE_CONTAINER
+#undef _STLP_TEMPLATE_HEADER
 
 _STLP_END_NAMESPACE 
 
@@ -322,6 +311,3 @@ _STLP_END_NAMESPACE
   
 #endif /* _STLP_INTERNAL_DEQUE_H */
 
-// Local Variables:
-// mode:C++
-// End:

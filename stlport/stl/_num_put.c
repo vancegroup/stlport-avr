@@ -18,6 +18,10 @@
 #ifndef _STLP_NUM_PUT_C
 #define _STLP_NUM_PUT_C
 
+#ifndef _STLP_INTERNAL_NUM_PUT_H
+# include <stl/_num_put.h>
+#endif
+
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
 #ifndef _STLP_LIMITS_H
@@ -44,7 +48,7 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
                       _OutputIter __out,
                       ios_base::fmtflags __flags,
                       streamsize __width, _CharT __fill,
-                      _CharT __plus, _CharT __minus) {
+                      _CharT __xplus, _CharT __xminus) {
   if (__width <= __last - __first)
     return copy(__first, __last, __out);
   else {
@@ -56,7 +60,7 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
       return fill_n(__out, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __first != __last &&
-             (*__first == __plus || *__first == __minus)) {
+             (*__first == __xplus || *__first == __xminus)) {
       *__out++ = *__first++;
       __out = fill_n(__out, __pad, __fill);
       return copy(__first, __last, __out);
@@ -82,30 +86,18 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
   wchar_t __wbuf[128];
   wchar_t* __eend = __convert_float_buffer(__ibuf, __iend, __wbuf,
                                            __ct, __decimal_point);
-  if (__grouping.size() != 0) {
+  if (!__grouping.empty()) {
     // In order to do separator-insertion only to the left of the
-    // decimal point, we adjust the size of the first (right-most)
-    // group.  We need to be careful if there is only one entry in
-    // grouping:  in this case we need to duplicate the first entry.
+    // decimal point, we pass this position to the __insert_grouping function.
+    size_t __dec_pos = __wbuf.find(__decimal_point);
 
-    string __new_grouping = __grouping;
-    wchar_t* __decimal_pos = find(__wbuf, __eend, __decimal_point);
-    if (__grouping.size() == 1)
-      __new_grouping.push_back(__grouping[0]);
-
-	// dwa 1/24/00 - try as I might, there doesn't seem to be a way
-    // to suppress the warning
-    __new_grouping[0] += __STATIC_CAST(char, __eend - __decimal_pos);
-    ptrdiff_t __len = __insert_grouping(__wbuf, __eend, __new_grouping,
-					__sep,
-					__ct.widen('+'), __ct.widen('-'),
-					0);
-    __eend = __wbuf + __len;
+    __insert_grouping(__wbuf, (__dec_pos == string::npos)?__wbuf.size():__dec_pos, 
+                      __grouping, __sep, __ct.widen('+'), __ct.widen('-'), 0);
   }
 
-  return __copy_float_and_fill(__wbuf, __eend, __out,
-                               __f.flags(), __f.width(0), __fill,
-                               __ct.widen('+'), __ct.widen('-')); 
+  return __copy_float_and_fill(__CONST_CAST(wchar_t*, __wbuf.data()), 
+                               __CONST_CAST(wchar_t*, __wbuf.data()) + __wbuf.size(), __out,
+                               __f.flags(), __f.width(0), __fill, __ct.widen('+'), __ct.widen('-')); 
 }
 # endif /* WCHAR_T */
 
@@ -118,7 +110,7 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
             char __sep, const string& __grouping)
 {
   __adjust_float_buffer(__ibuf, __iend, __decimal_point);
-  if (__grouping.size() != 0) {
+  if (!__grouping.empty()) {
     string __new_grouping = __grouping;
     const char * __decimal_pos = find(__ibuf, __iend, __decimal_point);
     if (__grouping.size() == 1)
@@ -129,7 +121,8 @@ __put_float(char* __ibuf, char* __iend, _OutputIter __out,
     __iend = __ibuf + __len;
   }
 
-  return __copy_float_and_fill(__ibuf, __iend, __out,
+  return __copy_float_and_fill(__CONST_CAST(char*, __str.data()), 
+                               __CONST_CAST(char*, __str.data()) + __str.size(), __out,
                                __f.flags(), __f.width(0), __fill, '+', '-');
 }
 
@@ -138,15 +131,17 @@ _OutputIter _STLP_CALL
 _M_do_put_float(_OutputIter __s, ios_base& __f,
                 _CharT __fill, _Float __x)
 {
-  char   __buf[128];
-  char* __iend = __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
+  string __buf;
+  __buf.reserve(128);
+  __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
-  //  locale __loc = __f.getloc();
   const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
   
-  return __put_float(__buf, __iend, __s, __f, __fill,
+  return __put_float(__CONST_CAST(char*, __buf.c_str()), 
+                     __CONST_CAST(char*, __buf.c_str()) + __buf.size(),
+                     __s, __f, __fill,
                      __np.decimal_point(),
-		     __np.thousands_sep(), __f._M_grouping());
+		                 __np.thousands_sep(), __f._M_grouping());
 }
 
 // _M_do_put_integer and its helper functions.
@@ -156,7 +151,7 @@ _OutputIter _STLP_CALL
 __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
                         _OutputIter __out,
                         ios_base::fmtflags __flg, streamsize __wid, _CharT __fill,
-                        _CharT __plus, _CharT __minus)
+                        _CharT __xplus, _CharT __xminus)
 {
   if (__len >= __wid)
     return copy(__buf, __buf + __len, __out);
@@ -169,7 +164,7 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
       return fill_n(__out, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __len != 0 &&
-             (__buf[0] == __plus || __buf[0] == __minus)) {
+             (__buf[0] == __xplus || __buf[0] == __xminus)) {
       *__out++ = __buf[0];
       __out = fill_n(__out, __pad, __fill);
       return copy(__buf + 1, __buf + __len, __out);
@@ -201,8 +196,8 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   //  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
   const ctype<wchar_t>& __ct = *(const ctype<wchar_t>*)__f._M_ctype_facet();
 
-  wchar_t __plus  = __ct.widen('+');
-  wchar_t __minus = __ct.widen('-');
+  wchar_t __xplus  = __ct.widen('+');
+  wchar_t __xminus = __ct.widen('-');
 
   wchar_t __wbuf[64];
   __ct.widen(__buf, __iend, __wbuf);
@@ -227,11 +222,11 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
       __basechars = 0;
 
     __len = __insert_grouping(__wbuf, __eend, __grouping, __np.thousands_sep(),
-			      __plus, __minus, __basechars);
+			      __xplus, __xminus, __basechars);
   }
 
   return __copy_integer_and_fill((wchar_t*)__wbuf, __len, __s,
-                                 __flags, __f.width(0), __fill, __plus, __minus);
+                                 __flags, __f.width(0), __fill, __xplus, __xminus);
 }
 #endif
 
@@ -241,7 +236,9 @@ _OutputIter _STLP_CALL
 __put_integer(char* __buf, char* __iend, _OutputIter __s,
               ios_base& __f, ios_base::fmtflags __flags, char __fill)
 {
+  char __grpbuf[64];
   ptrdiff_t __len = __iend - __buf;
+  char __grpbuf[64];
 
   //  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
   //  const string& __grouping = __np.grouping();
@@ -253,16 +250,16 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
     int __basechars;
     if (__flags & ios_base::showbase)
       switch (__flags & ios_base::basefield) {
-	case ios_base::hex: __basechars = 2; break;
-	case ios_base::oct: __basechars = 1; break;
-	default: __basechars = 0;
+        case ios_base::hex: __basechars = 2; break;
+        case ios_base::oct: __basechars = 1; break;
+        default: __basechars = 0;
       }
     else
       __basechars = 0;
  
      // make sure there is room at the end of the buffer
      // we pass to __insert_grouping
-    char __grpbuf[64];
+
     copy(__buf, __iend, (char *) __grpbuf);
     __buf = __grpbuf;
     __iend = __grpbuf + __len; 
@@ -288,15 +285,13 @@ template <class _Integer>
 inline char* _STLP_CALL
 __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __true_type& /* is_signed */)
 {
-  __max_int_t __temp = __x;
-
   const bool __negative = __x < 0 ;
+  __max_int_t __temp = __x;
+  __umax_int_t __utemp = __negative?-__temp:__temp;
 
-  if (__negative) __temp = -__temp;
-
-  for (; __temp != 0; __temp /= 10)
-    *--__ptr = (int)(__temp % 10) + '0';	  
-  // put sign if requested
+  for (; __utemp != 0; __utemp /= 10)
+    *--__ptr = (int)(__utemp % 10) + '0';	  
+  // put sign if needed or requested
   if (__negative)
     *--__ptr = '-';
   else if (__flags & ios_base::showpos)
@@ -306,10 +301,13 @@ __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, 
 
 template <class _Integer>
 inline char* _STLP_CALL
-__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags, const __false_type& /* is_signed */)
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __false_type& /* is_signed */)
 {
   for (; __x != 0; __x /= 10)
     *--__ptr = (int)(__x % 10) + '0';
+  // put sign if requested
+  if (__flags & ios_base::showpos)
+    *--__ptr = '+';
   return __ptr;
 }
 
@@ -512,16 +510,28 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 
 #endif /* _STLP_LONG_LONG */
 
-template <class _CharT, class _OutputIter>  
-_OutputIter 
-num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
-                                     const void* __val) const {
-# ifdef _STLP_LONG_LONG
-  return this->do_put(__s, __f, __fill, __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val));
+
+// lib.facet.num.put.virtuals "12 For conversion from void* the specifier is %p."
+template <class _CharT, class _OutputIter>
+_OutputIter
+num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__fill*/,
+				     const void* __val) const {
+  const ctype<_CharT>& __c_type = *(const ctype<_CharT>*)__f._M_ctype_facet();
+  ios_base::fmtflags __save_flags = __f.flags();
+
+  __f.setf(ios_base::hex, ios_base::basefield);
+  __f.setf(ios_base::showbase);
+  __f.setf(ios_base::internal, ios_base::adjustfield);
+  __f.width((sizeof(void*) * 2) + 2); // digits in pointer type plus '0x' prefix
+# if defined(_STLP_LONG_LONG) && !defined(__MRC__) //*ty 11/24/2001 - MrCpp can not cast from void* to long long
+  _OutputIter result = this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val));
 # else
-  return this->do_put(__s, __f, __fill, __REINTERPRET_CAST(unsigned long,__val));
+  _OutputIter result = this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val));
 # endif
+  __f.flags(__save_flags);
+  return result;
 }
+
 _STLP_END_NAMESPACE
 
 # endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */

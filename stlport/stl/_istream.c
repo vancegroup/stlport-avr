@@ -18,6 +18,10 @@
 #ifndef _STLP_ISTREAM_C
 #define _STLP_ISTREAM_C
 
+#ifndef _STLP_INTERNAL_ISTREAM_H
+# include <stl/_istream.h>
+#endif
+
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
 #ifndef _STLP_LIMITS_H
@@ -130,7 +134,7 @@ struct _Scan_for_char_val
 
   char_type _M_val;
 
-  _Scan_for_char_val(char_type __value) : _M_val(__value) {}
+  _Scan_for_char_val(char_type __val) : _M_val(__val) {}
 
   const char_type*
   operator()(const char_type* __first, const char_type* __last) const {
@@ -149,7 +153,7 @@ struct _Scan_for_int_val
 
   int_type _M_val;
 
-  _Scan_for_int_val(int_type __value) : _M_val(__value) {}
+  _Scan_for_int_val(int_type __val) : _M_val(__val) {}
 
   const char_type*
   operator()(const char_type* __first, const char_type* __last) const {
@@ -449,7 +453,7 @@ basic_istream<_CharT, _Traits>::seekg(pos_type __pos) {
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   if (!this->fail() && __buf)
-    __buf->pubseekpos(__pos, ios_base::in);
+    __buf->pubseekpos(__pos);
   return *this;
 }
 
@@ -461,7 +465,7 @@ basic_istream<_CharT, _Traits>::seekg(off_type __off, ios_base::seekdir __dir)
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   if (!this->fail() && __buf)
-    __buf->pubseekoff(__off, __dir, ios_base::in);
+    __buf->pubseekoff(__off, __dir);
   return *this;
 }
 
@@ -528,6 +532,7 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Char
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   // The operations that can potentially throw are sbumpc, snextc, and sgetc.
   _STLP_TRY {
+# if 0
     int_type __c = __buf->sgetc();
     while (true) {
       if (__that->_S_eof(__c)) {
@@ -554,6 +559,46 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Char
       ++__n;
       __c = __buf->snextc();
     }
+# else
+// int_type __c = __buf->sbumpc(); // __buf->sgetc();
+while (true) {
+
+int_type __c = __buf->sbumpc(); // sschwarz
+
+if (__that->_S_eof(__c)) {
+if (__n < _Num || __is_getline)
+__status |= ios_base::eofbit;
+break;
+}
+
+else if (__is_delim(__c)) {
+if (__extract_delim) { // Extract and discard current character.
+// __buf->sbumpc();
+++__n;
+}
+break;
+}
+
+else { // regular character
+
+*__s++ = _Traits::to_char_type(__c);
+++__n;
+
+}
+
+if (__n == _Num) {
+if (__is_getline) // didn't find delimiter as one of the _Num chars
+__status |= ios_base::failbit;
+break;
+}
+
+// *__s++ = _Traits::to_char_type(__c);
+// ++__n;
+
+}
+
+# endif
+
   }
   _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);

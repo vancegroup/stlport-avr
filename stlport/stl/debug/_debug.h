@@ -35,6 +35,9 @@
 #   define _STLP_FILE__ __FILE__
 # endif
  
+# define _STLP_FILE_UNIQUE_ID DEBUG_H
+_STLP_INSTRUMENT_FILE();
+
 enum {
   _StlFormat_ERROR_RETURN,
   _StlFormat_ASSERTION_FAILURE,
@@ -161,6 +164,7 @@ _STLP_END_NAMESPACE
     if (!(expr)) { STLPORT::__stl_debugger::_VerboseAssert\
                                  ( # expr,  __diag_num, _STLP_FILE__, __LINE__ ); \
          }
+                               //( # expr,  __diag_num, _STLP_FILE__, __LINE__ );
 # endif
 
 #  define _STLP_DEBUG_CHECK(expr) _STLP_ASSERT(expr)
@@ -170,12 +174,14 @@ _STLP_END_NAMESPACE
 #  define _STLP_VERBOSE_RETURN(__expr,__diag_num) if (!(__expr)) { \
        __stl_debugger::_IndexedError(__diag_num, __FILE__ , __LINE__); \
        return false; }
+       //__stl_debugger::_IndexedError(__diag_num, _STLP_FILE__ , __LINE__);
 # endif
 
 # ifndef _STLP_VERBOSE_RETURN_0
 #  define _STLP_VERBOSE_RETURN_0(__expr,__diag_num) if (!(__expr)) { \
        __stl_debugger::_IndexedError(__diag_num, __FILE__ , __LINE__); \
        return 0; }
+       //__stl_debugger::_IndexedError(__diag_num, _STLP_FILE__ , __LINE__);
 # endif
 
 #if ! defined (_STLP_INTERNAL_THREADS_H)
@@ -200,14 +206,14 @@ inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __
                                       const bidirectional_iterator_tag&) { 
     // check if comparable
     bool __dummy(__i1==__i2);
-    return (__dummy==__dummy); 
+    return (__dummy==__dummy);
 }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, const forward_iterator_tag&) { 
     // check if comparable
     bool __dummy(__i1==__i2);
-    return (__dummy==__dummy); 
+    return (__dummy==__dummy);
 }
 
 template <class _Iterator>
@@ -336,9 +342,7 @@ public:
   }
   
   mutable __owned_link              _M_node; 
-  // # ifdef _STLP_THREADS
-  mutable _STLP_mutex                _M_lock;
-  // # endif
+  mutable _STLP_mutex               _M_lock;
   
 private:
   // should never be called, should be left undefined,
@@ -372,6 +376,33 @@ void _STLP_CALL  __invalidate_range(const __owned_list* __base,
 template <class _Iterator>
 void  _STLP_CALL __invalidate_iterator(const __owned_list* __base, 
                                        const _Iterator& __it);
+
+template <class _Tp>
+class __range_checker {
+protected:
+  __range_checker() {}
+
+#if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _InputIter>
+  __range_checker(const _InputIter& __f, const _InputIter& __l) {
+    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    _M_check_dispatch(__f, __l, _Integral());
+  }
+
+  template <class _Integer>
+  void _M_check_dispatch(_Integer , _Integer, const __true_type& /*IsIntegral*/) {
+  }
+
+  template <class _InputIter>
+  void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const __false_type& /*IsIntegral*/) {
+    _STLP_DEBUG_CHECK(__check_range(__f,__l))
+  }
+#else //_STLP_MEMBER_TEMPLATES
+  __range_checker(const _Tp *__f, const _Tp *__l) {
+    _STLP_DEBUG_CHECK(__check_range(__f,__l))
+  }
+#endif //_STLP_MEMBER_TEMPLATES
+};
 
 //============================================================
 
@@ -411,7 +442,7 @@ _STLP_END_NAMESPACE
 # if !defined( _STLP_DEBUG_TERMINATE )
 #   define __stl_debug_terminate __stl_debugger::_Terminate
 # else
-    extern  void __stl_debug_terminate(void);
+    extern  void __stl_debug_terminate();
 # endif
 
 #endif
@@ -425,4 +456,3 @@ _STLP_END_NAMESPACE
 // Local Variables:
 // mode:C++
 // End:
-

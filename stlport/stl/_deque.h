@@ -151,7 +151,6 @@ struct _Deque_iterator_base {
 };
 
 
-
 template <class _Tp, class _Traits>
 struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
 
@@ -181,7 +180,7 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
 
   _STLP_DEFINE_ARROW_OPERATOR
 
-  difference_type operator-(const _Self& __x) const { return this->_M_subtract(__x); }
+  difference_type operator-(const _Const_self& __x) const { return this->_M_subtract(__x); }
 
   _Self& operator++() { this->_M_increment(); return *this; }
   _Self operator++(int)  {
@@ -212,6 +211,7 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
 
   reference operator[](difference_type __n) const { return *(*this + __n); }
 };
+
 
 template <class _Tp, class _Traits>
 inline _Deque_iterator<_Tp, _Traits> _STLP_CALL
@@ -327,7 +327,7 @@ public:
   typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type _Map_alloc_type;
 
   typedef _Deque_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
-  typedef _Deque_iterator<_Tp, _Const_traits<_Tp> >   const_iterator;
+  typedef _Deque_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
 
   static size_t  _STLP_CALL buffer_size() { return (size_t)_Deque_iterator_base<_Tp>::__buffer_size; } 
 
@@ -341,7 +341,6 @@ public:
       _M_map_size(__a, (size_t)0) {
   }
   ~_Deque_base();    
-  allocator_type get_allocator() const { return _M_map_size; }
 
 protected:
   void _M_initialize_map(size_t);
@@ -427,6 +426,7 @@ public:                         // Basic accessors
   size_type size() const { return this->_M_finish - this->_M_start; }
   size_type max_size() const { return size_type(-1); }
   bool empty() const { return this->_M_finish == this->_M_start; }
+  allocator_type get_allocator() const { return this->_M_map_size; }
 
 public:                         // Constructor, destructor.
   explicit deque(const allocator_type& __a = allocator_type()) 
@@ -437,13 +437,15 @@ public:                         // Constructor, destructor.
       __uninitialized_copy(__x.begin(), __x.end(), this->_M_start, _IsPODType()); 
   }
 
-  deque(size_type __n, const value_type& __value,
+  deque(size_type __n, const value_type& __val,
         const allocator_type& __a = allocator_type()) : 
     _Deque_base<_Tp, _Alloc>(__a, __n)
-    { _M_fill_initialize(__value); }
+    { _M_fill_initialize(__val); }
   // int,long variants may be needed 
+#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n) : _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-    { _M_fill_initialize(value_type()); }
+    { _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -493,7 +495,7 @@ public:                         // Constructor, destructor.
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   ~deque() { 
-    _Destroy(this->_M_start, this->_M_finish); 
+    _STLP_STD::_Destroy(this->_M_start, this->_M_finish); 
   }
 
   _Self& operator= (const _Self& __x);
@@ -575,17 +577,25 @@ private:                        // helper functions for assign()
 
 public:                         // push_* and pop_*
   
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  void push_back(const value_type& __t = _Tp()) {
+#else
   void push_back(const value_type& __t) {
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     if (this->_M_finish._M_cur != this->_M_finish._M_last - 1) {
-      _Construct(this->_M_finish._M_cur, __t);
+      _Copy_Construct(this->_M_finish._M_cur, __t);
       ++this->_M_finish._M_cur;
     }
     else
       _M_push_back_aux_v(__t);
   }
-  void push_front(const value_type& __t) {
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  void push_front(const value_type& __t = _Tp())   {
+#else
+  void push_front(const value_type& __t)   {
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     if (this->_M_start._M_cur != this->_M_start._M_first) {
-      _Construct(this->_M_start._M_cur - 1, __t);
+      _Copy_Construct(this->_M_start._M_cur - 1, __t);
       --this->_M_start._M_cur;
     }
     else
@@ -609,12 +619,12 @@ public:                         // push_* and pop_*
     else
       _M_push_front_aux();
   }
-# endif
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void pop_back() {
     if (this->_M_finish._M_cur != this->_M_finish._M_first) {
       --this->_M_finish._M_cur;
-      _Destroy(this->_M_finish._M_cur);
+      _STLP_STD::_Destroy(this->_M_finish._M_cur);
     }
     else
       _M_pop_back_aux();
@@ -622,7 +632,7 @@ public:                         // push_* and pop_*
 
   void pop_front() {
     if (this->_M_start._M_cur != this->_M_start._M_last - 1) {
-      _Destroy(this->_M_start._M_cur);
+      _STLP_STD::_Destroy(this->_M_start._M_cur);
       ++this->_M_start._M_cur;
     }
     else 
@@ -631,7 +641,11 @@ public:                         // push_* and pop_*
 
 public:                         // Insert
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __position, const value_type& __x = _Tp()) {
+#else
   iterator insert(iterator __position, const value_type& __x) {
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     if (__position._M_cur == this->_M_start._M_cur) {
       push_front(__x);
       return this->_M_start;
@@ -647,8 +661,10 @@ public:                         // Insert
     }
   }
 
+#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __position)
-    { return insert(__position, value_type()); }
+    { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void insert(iterator __pos, size_type __n, const value_type& __x) {
     _M_fill_insert(__pos, __n, __x);
@@ -687,7 +703,7 @@ public:                         // Insert
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  void resize(size_type __new_size, const value_type& __x) {
+  void resize(size_type __new_size, value_type __x) {
     const size_type __len = size();
     if (__new_size < __len) 
       erase(this->_M_start + __new_size, this->_M_finish);
@@ -695,7 +711,9 @@ public:                         // Insert
       insert(this->_M_finish, __new_size - __len, __x);
   }
 
-  void resize(size_type new_size) { resize(new_size, value_type()); }
+#if defined(_STLP_DONT_SUP_DFLT_PARAM)
+  void resize(size_type new_size) { resize(new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 public:                         // Erase
   iterator erase(iterator __pos) {
@@ -718,7 +736,7 @@ public:                         // Erase
 
 protected:                        // Internal construction/destruction
 
-  void _M_fill_initialize(const value_type& __value);
+  void _M_fill_initialize(const value_type& __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES 
 
@@ -751,7 +769,7 @@ protected:                        // Internal construction/destruction
     }
     uninitialized_copy(__first, __last, this->_M_finish._M_first);
    }
-  _STLP_UNWIND(_Destroy(this->_M_start, iterator(*__cur_node, __cur_node)));
+  _STLP_UNWIND(_STLP_STD::_Destroy(this->_M_start, iterator(*__cur_node, __cur_node)));
  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -762,7 +780,7 @@ protected:                        // Internal push_* and pop_*
 # ifndef _STLP_NO_ANACHRONISMS
   void _M_push_back_aux();
   void _M_push_front_aux();
-# endif
+# endif /*_STLP_DONT_SUP_DFLT_PARAM !_STLP_NO_ANACHRONISMS*/
   void _M_pop_back_aux();
   void _M_pop_front_aux();
 
@@ -808,8 +826,12 @@ void  insert(iterator __pos,
 }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  iterator _M_insert_aux(iterator __pos, const value_type& __x = _Tp());
+#else
   iterator _M_insert_aux(iterator __pos, const value_type& __x);
   iterator _M_insert_aux(iterator __pos);
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   iterator _M_insert_aux_prepare(iterator __pos);
 
   void _M_insert_aux(iterator __pos, size_type __n, const value_type& __x);
@@ -920,67 +942,11 @@ protected:                      // Allocation of _M_map and nodes
  
 };
 
-// Nonmember functions.
-
-template <class _Tp, class _Alloc >
-inline bool  _STLP_CALL operator==(const deque<_Tp, _Alloc>& __x,
-                                   const deque<_Tp, _Alloc>& __y)
-{
-  return __x.size() == __y.size() &&
-  equal(__x.begin(), __x.end(), __y.begin());
-}
-
-template <class _Tp, class _Alloc >
-inline bool  _STLP_CALL operator<(const deque<_Tp, _Alloc>& __x,
-                                  const deque<_Tp, _Alloc>& __y)
-{
-  return lexicographical_compare(__x.begin(), __x.end(), 
-                                 __y.begin(), __y.end());
-}
-
-#if defined(_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
-
-template <class _Tp, class _Alloc >
-inline bool  _STLP_CALL operator!=(const deque<_Tp, _Alloc>& __x,
-                                  const deque<_Tp, _Alloc>& __y)
-{
-  return  !(__x == __y); 
-}
-
-template <class _Tp, class _Alloc >
-inline bool  _STLP_CALL operator>(const deque<_Tp, _Alloc>& __x,
-                                  const deque<_Tp, _Alloc>& __y)
-{
-  return __y < __x; 
-}
-
-template <class _Tp, class _Alloc >
-inline bool _STLP_CALL operator>=(const deque<_Tp, _Alloc>& __x,
-                                  const deque<_Tp, _Alloc>& __y)
-{
-  return !(__x < __y); 
-}
-
-template <class _Tp, class _Alloc >
-inline bool _STLP_CALL operator<=(const deque<_Tp, _Alloc>& __x,
-                                  const deque<_Tp, _Alloc>& __y)
-{
- return !(__y < __x); 
-}
-
-
-# endif /* _STLP_SEPARATE_RELOPS_NAMESPACE */
-
-# if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-
-template <class _Tp, class _Alloc>
-inline void _STLP_CALL 
-swap(deque<_Tp,_Alloc>& __x, deque<_Tp,_Alloc>& __y)
-{
-  __x.swap(__y);
-}
-
-# endif
+# define _STLP_TEMPLATE_CONTAINER deque<_Tp, _Alloc>
+# define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
+# include <stl/_relops_cont.h>
+# undef _STLP_TEMPLATE_CONTAINER
+# undef _STLP_TEMPLATE_HEADER
 
 _STLP_END_NAMESPACE 
 

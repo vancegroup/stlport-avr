@@ -26,7 +26,7 @@
 #define _STLP_ALGOBASE_C
 
 # if !defined (_STLP_INTERNAL_ALGOBASE_H)
-#  include "stl/_algobase.h"
+#  include <stl/_algobase.h>
 # endif
 
 _STLP_BEGIN_NAMESPACE

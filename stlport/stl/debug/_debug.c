@@ -109,7 +109,7 @@ void  _STLP_CALL __invalidate_range(const __owned_list* __base,
     _L_type* __prev;
 
     for (__prev = (_L_type*)&__base->_M_node, __pos= (_L_type*)__prev->_M_next; 
-         __pos!=0;) {	    
+         __pos!=0;) {		     
         if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos))
             &&  __in_range_aux(
 			       *(_Iterator*)__pos,
@@ -138,12 +138,12 @@ void  _STLP_CALL __invalidate_iterator(const __owned_list* __base,
          __position!= 0;) {
       // this requires safe iterators to be derived from __owned_link
        if ((__position != (_L_type*)&__it) && *((_Iterator*)__position)==__it) {
-	    __position->_M_owner = 0;
-	    __position = (_L_type*) (__prev->_M_next = __position->_M_next);
+		     __position->_M_owner = 0;
+		     __position = (_L_type*) (__prev->_M_next = __position->_M_next);
         }
        else {
-	 __prev = __position;
-	 __position=(_L_type*)__position->_M_next;
+		  __prev = __position;
+		  __position=(_L_type*)__position->_M_next;
        }
     }
     _STLP_RELEASE_LOCK(__base->_M_lock)
@@ -160,11 +160,11 @@ _STLP_END_NAMESPACE
 #   include <cstdlib>
 #  else
 #   include <stdlib.h>
-#  endif
+#  endif /* _STLP_USE_NEW_C_HEADERS */
 
 # if defined (_STLP_WIN32)
 #  include <stl/_threads.h>
-# endif
+# endif /* _STLP_WIN32 */
 
 //==========================================================
 // .c section
@@ -243,8 +243,8 @@ template <class _Dummy>
 void _STLP_CALL  
 __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 {
-	STLPORT_CSTD::va_list __args;
-	va_start( __args, __format_str );
+		 STLPORT_CSTD::va_list __args;
+		 va_start( __args, __format_str );
 
 # if defined (_STLP_WINCE)
 	TCHAR __buffer[512];
@@ -257,9 +257,11 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
 	_STLP_WINCE_TRACE(__buffer);
 # elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__))
     char __buffer [4096];
-    vsnprintf(__buffer, sizeof(__buffer) / sizeof(char),
+    _vsnprintf(__buffer, sizeof(__buffer) / sizeof(char),
                __format_str, __args);
     OutputDebugStringA(__buffer);
+# elif defined (__amigaos__)
+    STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
 # else
     STLPORT_CSTD::vfprintf(stderr, __format_str, __args);
 # endif /* WINCE */
@@ -276,6 +278,7 @@ _STLP_END_NAMESPACE
 
 #  endif /* _STLP_DEBUG_MESSAGE */
 
+#  endif /* _STLP_DEBUG_MESSAGE */
 
 _STLP_BEGIN_NAMESPACE
 
@@ -285,7 +288,7 @@ void _STLP_CALL
 __stl_debug_engine<_Dummy>::_IndexedError(int __error_ind, const char* __f, int __l)
 {
   __stl_debug_message(_Message_table[_StlFormat_ERROR_RETURN], 
-		      __f, __l, _Message_table[__error_ind]);
+		 		       __f, __l, _Message_table[__error_ind]);
 }
 
 template <class _Dummy>
@@ -293,7 +296,7 @@ void _STLP_CALL
 __stl_debug_engine<_Dummy>::_VerboseAssert(const char* __expr, int __error_ind, const char* __f, int __l)
 {
   __stl_debug_message(_Message_table[_StlFormat_VERBOSE_ASSERTION_FAILURE],
-		      __f, __l, _Message_table[__error_ind], __f, __l, __expr);
+		 		       __f, __l, _Message_table[__error_ind], __f, __l, __expr);
   __stl_debug_terminate();
 }
 
@@ -485,4 +488,3 @@ _STLP_END_NAMESPACE
 // Local Variables:
 // mode:C++
 // End:
-

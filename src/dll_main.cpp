@@ -26,14 +26,15 @@
 # define __PUT_STATIC_DATA_MEMBERS_HERE
 # define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 
+# include "stlport_prefix.h"
+
 # if !defined(_STLP_DEBUG) && ! defined (_STLP_ASSERTIONS)
 # define _STLP_ASSERTIONS 1
 # endif
 
-# include "stlport_prefix.h"
-
 #include <utility>
 
+#include <stl/debug/_debug.h>
 #include <memory>
 #include <vector>
 #include <set>
@@ -52,7 +53,8 @@
 # endif
 
 # if defined (_STLP_UNIX)
-#  define _STLP_HAS_PERTHREAD_ALLOC
+#  define _STLP_HAS_PERTHREAD_ALLOCATOR
+# include <stl/_pthread_alloc.h>
 # endif
 
 // boris : this piece of code duplicated from _range_errors.h
@@ -154,10 +156,6 @@ template class _STLP_CLASS_DECLSPEC __node_alloc<true,0>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<true,0> >;
 template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<false,0> >;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
-#ifdef _STLP_HAS_PERTHREAD_ALLOCATOR
-template class _STLP_CLASS_DECLSPEC __Pthread_alloc<_MAX_BYTES>;
-template class _STLP_CLASS_DECLSPEC __debug_alloc<__pthread_alloc>;
-#endif
 template class _STLP_CLASS_DECLSPEC __malloc_alloc<0>;
 
 # if defined (_STLP_THREADS) && ! defined ( _STLP_ATOMIC_EXCHANGE ) && (defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS)  || defined (_STLP_OS2THREADS))
@@ -192,11 +190,16 @@ template class basic_string<char, char_traits<char>, allocator<char> >;
 
 _STLP_END_NAMESPACE
 
+#define FORCE_SYMBOL extern
+
 # if defined (_WIN32) && defined (_STLP_USE_DECLSPEC) && ! defined (_STLP_USE_STATIC_LIB) && ! defined (_STLP_USE_STATICX_LIB)
 // stlportmt.cpp : Defines the entry point for the DLL application.
 //
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#undef FORCE_SYMBOL 
+#define FORCE_SYMBOL APIENTRY
 
 extern "C" {
 
@@ -221,7 +224,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 _STLP_BEGIN_NAMESPACE
 
-void force_link()
+void FORCE_SYMBOL
+force_link()
 {
   float f;
   f = numeric_limits<float>::infinity();

@@ -75,7 +75,7 @@
 #    include <mutex.h>
 # endif
 
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES 
+#ifdef _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM 
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a)) 
 #elif defined(__MRC__)||defined(__SC__) 
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create<_Tp,__atype>(__a,(_Tp*)0) 
@@ -439,10 +439,10 @@ public:
                              allocator_type __a) {
 
     if (!_S_is_basic_char_type((_CharT*)0)) {
-      _Destroy(__s, __s + __len);
+      _STLP_STD::_Destroy(__s, __s + __len);
     }
     //  This has to be a static member, so this gets a bit messy
-#   ifdef _STLP_MEMBER_TEMPLATE_CLASSES
+#   ifdef _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM
     __a.deallocate(__s, _S_rounded_up_size(__len));		//*ty 03/24/2001 - restored not to use __stl_alloc_rebind() since it is not defined under _STLP_MEMBER_TEMPLATE_CLASSES
 #   else
     __stl_alloc_rebind (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
@@ -885,6 +885,11 @@ public:
   _Rope_iterator_base(const _Self& __x) {
     if (0 != __x._M_buf_ptr) {
       *this = __x;
+      if (_M_buf_start == __x._M_tmp_buf) {
+        _M_buf_start = _M_tmp_buf;
+        _M_buf_end = _M_tmp_buf + (__x._M_buf_end - __x._M_buf_start);
+        _M_buf_ptr = _M_tmp_buf + (__x._M_buf_ptr - __x._M_buf_start);
+      }
     } else {
       _M_current_pos = __x._M_current_pos;
       _M_root = __x._M_root;
@@ -931,6 +936,11 @@ public:
   _Self& operator= (const _Self& __x) {
     if (0 != __x._M_buf_ptr) {
       *(__STATIC_CAST(_Base*,this)) = __x;
+      if (_M_buf_start == __x._M_tmp_buf) {
+        _M_buf_start = _M_tmp_buf;
+        _M_buf_end = _M_tmp_buf + (__x._M_buf_end - __x._M_buf_start);
+        _M_buf_ptr = _M_tmp_buf + (__x._M_buf_ptr - __x._M_buf_start);
+      }
     } else {
       this->_M_current_pos = __x._M_current_pos;
       this->_M_root = __x._M_root;
@@ -1036,6 +1046,11 @@ public:
     if (0 != __x._M_buf_ptr) {
       _M_root_rope = __x._M_root_rope;
       *(__STATIC_CAST(_Base*,this)) = __x;
+      if (_M_buf_start == __x._M_tmp_buf) {
+        _M_buf_start = _M_tmp_buf;
+        _M_buf_end = _M_tmp_buf + (__x._M_buf_end - __x._M_buf_start);
+        _M_buf_ptr = _M_tmp_buf + (__x._M_buf_ptr - __x._M_buf_start);
+      }
     } else {
       this->_M_current_pos = __x._M_current_pos;
       this->_M_root = __x._M_root;
@@ -1613,7 +1628,7 @@ public:
   }
 
   void copy(_CharT* __buffer) const {
-    _Destroy(__buffer, __buffer + size());
+    _STLP_STD::_Destroy(__buffer, __buffer + size());
     _S_flatten(_M_tree_ptr._M_data, __buffer);
   }
 
@@ -1627,7 +1642,7 @@ public:
     size_t _p_size = size();
     size_t __len = (__pos + __n > _p_size? _p_size - __pos : __n);
 
-    _Destroy(__buffer, __buffer + __len);
+    _STLP_STD::_Destroy(__buffer, __buffer + __len);
     _S_flatten(_M_tree_ptr._M_data, __pos, __len, __buffer);
     return __len;
   }
@@ -2444,9 +2459,9 @@ inline void swap(rope<_CharT,_Alloc>& __x, rope<_CharT,_Alloc>& __y) {
 }
 #else
 
-inline void swap(crope __x, crope __y) { __x.swap(__y); }
+inline void swap(crope& __x, crope& __y) { __x.swap(__y); }
 # ifdef _STLP_HAS_WCHAR_T	// dwa 8/21/97
-inline void swap(wrope __x, wrope __y) { __x.swap(__y); }
+inline void swap(wrope& __x, wrope& __y) { __x.swap(__y); }
 # endif
 
 #endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */

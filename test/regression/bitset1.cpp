@@ -26,6 +26,17 @@
 using namespace std;
 #endif
 
+void disp_bitset(char const* pname, bitset<13U> const& bset) {
+  // Boris : MSVC just cannot take it right
+//# if ! (defined (_STLP_MSVC) && (_MSC_VER < 1300)) && ! (defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
+# if !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
+  cout << pname << bset << endl;
+# else
+  cout << pname << bset.to_string CHART () << endl;
+# endif
+//# endif /* MSVC || SUNPRO*/
+}
+
 int bitset1_test(int, char**)
 {
   cout<<"Results of bitset1_test:"<<endl;

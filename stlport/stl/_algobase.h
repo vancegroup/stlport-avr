@@ -59,6 +59,10 @@ _STLP_BEGIN_NAMESPACE
 // swap and iter_swap
 template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
+#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  typedef typename _SwapImplemented<_Tp>::_Ret _Implemented;
+  __swap_aux(__a, __b, _Implemented());
+#else
   _Tp __tmp = __a;
   __a = __b;
   __b = __tmp;
@@ -318,21 +322,20 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
 //--------------------------------------------------
 // fill and fill_n
 
-
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP
-void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __value) {
+void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   for ( ; __first != __last; ++__first)
-    *__first = __value;
+    *__first = __val;
 }
 
 template <class _OutputIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP
-_OutputIter fill_n(_OutputIter __first, _Size __n, const _Tp& __value) {
+_OutputIter fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   _STLP_FIX_LITERAL_BUG(__first)
   for ( ; __n > 0; --__n, ++__first)
-    *__first = __value;
+    *__first = __val;
   return __first;
 }
 
@@ -340,19 +343,19 @@ _OutputIter fill_n(_OutputIter __first, _Size __n, const _Tp& __value) {
 // Specialization: for one-byte types we can use memset.
 
 inline void fill(unsigned char* __first, unsigned char* __last,
-                 const unsigned char& __value) {
-  unsigned char __tmp = __value;
+                 const unsigned char& __val) {
+  unsigned char __tmp = __val;
   memset(__first, __tmp, __last - __first);
 }
 # ifndef _STLP_NO_SIGNED_BUILTINS
 inline void fill(signed char* __first, signed char* __last,
-                 const signed char& __value) {
-  signed char __tmp = __value;
+                 const signed char& __val) {
+  signed char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
 # endif
-inline void fill(char* __first, char* __last, const char& __value) {
-  char __tmp = __value;
+inline void fill(char* __first, char* __last, const char& __val) {
+  char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
 
@@ -360,21 +363,21 @@ inline void fill(char* __first, char* __last, const char& __value) {
 
 template <class _Size>
 inline unsigned char* fill_n(unsigned char* __first, _Size __n,
-                             const unsigned char& __value) {
-  fill(__first, __first + __n, __value);
+                             const unsigned char& __val) {
+  fill(__first, __first + __n, __val);
   return __first + __n;
 }
 
 template <class _Size>
 inline signed char* fill_n(char* __first, _Size __n,
-                           const signed char& __value) {
-  fill(__first, __first + __n, __value);
+                           const signed char& __val) {
+  fill(__first, __first + __n, __val);
   return __first + __n;
 }
 
 template <class _Size>
-inline char* fill_n(char* __first, _Size __n, const char& __value) {
-  fill(__first, __first + __n, __value);
+inline char* fill_n(char* __first, _Size __n, const char& __val) {
+  fill(__first, __first + __n, __val);
   return __first + __n;
 }
 
@@ -521,11 +524,11 @@ int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
 // count
 template <class _InputIter, class _Tp>
 _STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_InputIter)
-count(_InputIter __first, _InputIter __last, const _Tp& __value) {
+count(_InputIter __first, _InputIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   _STLP_DIFFERENCE_TYPE(_InputIter) __n = 0;
   for ( ; __first != __last; ++__first)
-    if (*__first == __value)
+    if (*__first == __val)
       ++__n;
   return __n;
 }

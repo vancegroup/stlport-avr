@@ -165,11 +165,11 @@ inline _Tp power(_Tp __x, _Integer __n) {
 template <class _ForwardIterator, class _Tp>
 _STLP_INLINE_LOOP
 void 
-iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __value)
+iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __val)
 {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   while (__first != __last)
-    *__first++ = __value++;
+    *__first++ = __val++;
 }
 # endif
 

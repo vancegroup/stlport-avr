@@ -18,6 +18,10 @@
 #ifndef _STLP_NUM_GET_C
 #define _STLP_NUM_GET_C
 
+#ifndef _STLP_INTERNAL_NUM_GET_H
+# include <stl/_num_get.h>
+#endif
+
 # if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
 
 #ifndef _STLP_LIMITS_H
@@ -59,7 +63,8 @@ int
 _M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT*)
 {
   _CharT __atoms[5];
-  const ctype<_CharT>& __c_type = *(const ctype<_CharT>*)__str._M_ctype_facet();
+  const ctype<_CharT>& __c_type = use_facet< ctype<_CharT> >(__str.getloc());
+  // const ctype<_CharT>& __c_type = *(const ctype<_CharT>*)__str._M_ctype_facet();
 
   __c_type.widen(__narrow_atoms, __narrow_atoms + 5, __atoms);
 
@@ -383,7 +388,8 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
 
   bool   __grouping_ok = true;
 
-  const ctype<_CharT>& __ct = *(const ctype<_CharT>*)__s._M_ctype_facet();
+  const ctype<_CharT>& __ct = use_facet< ctype<_CharT> >(__s.getloc());
+  // const ctype<_CharT>& __ct = *(const ctype<_CharT>*)__s._M_ctype_facet();
   const numpunct<_CharT>& __numpunct = *(const numpunct<_CharT>*)__s._M_numpunct_facet();
   const string& __grouping = __s._M_grouping(); // cached copy
 
@@ -615,14 +621,14 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base&
     __err |= ios_base::eofbit;
   return __in;
 }
-#endif /* _STLP_LONG_DOUBLE */
+#endif /* _STLP_NO_LONG_DOUBLE */
 
 template <class _CharT, class _InputIter>  
 _InputIter 
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err,
                            void*& __p) const {
-# ifdef _STLP_LONG_LONG
+# if defined(_STLP_LONG_LONG)&&!defined(__MRC__)		//*ty 12/07/2001 - MrCpp can not cast from long long to void*
   unsigned _STLP_LONG_LONG __val;
 # else
   unsigned long __val;

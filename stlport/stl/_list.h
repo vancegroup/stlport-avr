@@ -77,6 +77,12 @@ template <class _Tp>
 struct _List_node : public _List_node_base {
   _Tp _M_data;
   __TRIVIAL_STUFF(_List_node)
+
+#ifdef __DMC__
+  // for some reason, Digital Mars C++ needs a constructor...
+ private:
+  _List_node();
+#endif
 };
 
 struct _List_iterator_base {
@@ -180,8 +186,10 @@ public:
     _M_node._M_data = __n;
   }
   ~_List_base() {
+	  if (_M_node._M_data != 0) {
     clear();
     _M_node.deallocate(_M_node._M_data, 1);
+  }
   }
 
   void clear();
@@ -230,7 +238,11 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 protected:
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+  _Node* _M_create_node(const _Tp& __x = _Tp())
+#else
   _Node* _M_create_node(const _Tp& __x)
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
@@ -240,6 +252,7 @@ protected:
     return __p;
   }
 
+#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   _Node* _M_create_node()
   {
     _Node* __p = this->_M_node.allocate(1);
@@ -249,9 +262,10 @@ protected:
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1));
     return __p;
   }
+#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 public:
-# if !(defined(__MRC__)||defined(__SC__))
+# if !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))
   explicit
 # endif
   list(const allocator_type& __a = allocator_type()) :
@@ -289,8 +303,11 @@ public:
     _STLP_STD::swap(this->_M_node, __x._M_node); 
   }
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __position, const _Tp& __x = _Tp()) {
+#else
   iterator insert(iterator __position, const _Tp& __x) {
-
+#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     _Node* __tmp = _M_create_node(__x);
     _List_node_base* __n = __position._M_node;
     _List_node_base* __p = __n->_M_prev;
@@ -342,7 +359,7 @@ public:
   iterator insert(iterator __position) { return insert(__position, _Tp()); }
   void push_front() {insert(begin());}
   void push_back() {insert(end());}
-# endif
+# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   iterator erase(iterator __position) {
     _List_node_base* __next_node = __position._M_node->_M_next;
@@ -350,7 +367,7 @@ public:
     _Node* __n = (_Node*) __position._M_node;
     __prev_node->_M_next = __next_node;
     __next_node->_M_prev = __prev_node;
-    _Destroy(&__n->_M_data);
+    _STLP_STD::_Destroy(&__n->_M_data);
     this->_M_node.deallocate(__n, 1);
     return iterator((_Node*)__next_node);
     }
@@ -361,7 +378,7 @@ public:
     return __last;
   }
 
-  void resize(size_type __new_size, const _Tp& __x);
+  void resize(size_type __new_size, _Tp __x);
   void resize(size_type __new_size) { this->resize(__new_size, _Tp()); }
 
   void pop_front() { erase(begin()); }
@@ -369,10 +386,10 @@ public:
     iterator __tmp = end();
     erase(--__tmp);
   }
-  list(size_type __n, const _Tp& __value,
+  list(size_type __n, const _Tp& __val,
        const allocator_type& __a = allocator_type())
     : _List_base<_Tp, _Alloc>(__a)
-    { this->insert(begin(), __n, __value); }
+    { this->insert(begin(), __n, __val); }
   explicit list(size_type __n)
     : _List_base<_Tp, _Alloc>(allocator_type())
     { this->insert(begin(), __n, _Tp()); }
@@ -406,6 +423,15 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
   list(const list<_Tp, _Alloc>& __x) : _List_base<_Tp, _Alloc>(__x.get_allocator())
     { insert(begin(), __x.begin(), __x.end()); }
+
+  /*explicit list(__full_move_source<_Self> src)
+	  : _List_base<_Tp, _Alloc>(_FullMoveSource<_List_base<_Tp, _Alloc> >(src.get())) {
+  }*/
+
+  explicit list(__partial_move_source<_Self> src)
+	  : _List_base<_Tp, _Alloc>(src.get()) {
+	  src.get()._M_node._M_data = 0;
+  }
 
   ~list() { }
 
@@ -464,13 +490,13 @@ public:
       _List_global_inst::_Transfer(__position._M_node, __first._M_node, __last._M_node);
   }
 
-  void remove(const _Tp& __value) {
+  void remove(const _Tp& __val) {
     iterator __first = begin();
     iterator __last = end();
     while (__first != __last) {
       iterator __next = __first;
       ++__next;
-      if (__value == *__first) erase(__first);
+      if (__val == *__first) erase(__first);
       __first = __next;
     }
   }
@@ -536,30 +562,13 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y)
   return __i1 == __end1 && __i2 == __end2;
 }
 
-template <class _Tp, class _Alloc>
-inline bool  _STLP_CALL operator<(const list<_Tp,_Alloc>& __x,
-                                  const list<_Tp,_Alloc>& __y)
-{
-  return lexicographical_compare(__x.begin(), __x.end(),
-                                 __y.begin(), __y.end());
-}
-
-# define _STLP_TEMPLATE_CONTAINER list<_Tp, _Alloc>
+# define _STLP_EQUAL_OPERATOR_SPECIALIZED
 # define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
-_STLP_RELOPS_OPERATORS(_STLP_TEMPLATE_HEADER, _STLP_TEMPLATE_CONTAINER)
+# define _STLP_TEMPLATE_CONTAINER list<_Tp, _Alloc>
+# include <stl/_relops_cont.h>
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
-
-#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
-
-template <class _Tp, class _Alloc>
-inline void _STLP_CALL 
-swap(list<_Tp, _Alloc>& __x, list<_Tp, _Alloc>& __y)
-{
-  __x.swap(__y);
-}
-
-#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
+# undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
 _STLP_END_NAMESPACE 
 

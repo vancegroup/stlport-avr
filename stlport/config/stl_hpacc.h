@@ -31,7 +31,12 @@
 //
 #  if defined(__HP_aCC)
 
+# if __HP_aCC < 33100
 #   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../iostream
+# else
+#   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../include/iostream
+# endif
+
 #   define _STLP_LONG_LONG long long
 
 #if (__HP_aCC <= 30000 && __HP_aCC >= 12100)
@@ -71,11 +76,21 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
   typedef typename _Alloc_traits<t,a>::_Orig _STLP_dummy_type1;\
   typedef typename _STLP_dummy_type1:: _STLP_TEMPLATE rebind<t>::other _STLP_dummy_type2;
 
+# if !defined( _INCLUDE__STDC_A1_SOURCE ) // HP-UX 11i only
+#  define _STLP_HAS_NO_UNIX98_WCHAR_EXTENSIONS
+# endif
+
 #    if defined(_HP_NAMESPACE_STD) // option -AA
 // from now, we have a full standard lib in namespace std
-#      define _STLP_NATIVE_INCLUDE_PATH       ../include
-#      define _STLP_NATIVE_C_INCLUDE_PATH     ../include
-#      define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include
+//
+// -AA indicates that we are compiling against Rogue Wave 2.2.1
+// STL shipped with the HP aCC compiler. -AA tells the compiler
+// to use the STL defined in the include_std directory.
+//
+# define _STLP_NATIVE_INCLUDE_PATH ../include_std
+# define _STLP_NATIVE_C_INCLUDE_PATH ../include_std
+# define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include_std
+
 // #      define _STLP_HPACC_ONLY_NATIVE_STRING 1 // STLPort _string.c includes <locale>
 #     define _STLP_HP_ACC_COMPAT            -1
 #    else // option -Aa

@@ -29,12 +29,13 @@
 
 _STLP_BEGIN_NAMESPACE
 
-template <class _CharT, class _Traits>
+template<class _CharT, class _Traits>
 extern basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_ostreambuf(basic_ostream<_CharT, _Traits>& ) ;
 
 // The default template argument is declared in iosfwd
-template<class _CharT, class _Traits>
-class ostreambuf_iterator
+template <class _CharT, class _Traits>
+class ostreambuf_iterator : 
+  public iterator<output_iterator_tag, void, void, void, void>
 {
 public:
   typedef _CharT                           char_type;

@@ -130,9 +130,7 @@ public:
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  map(const map<_Key,_Tp,_Compare,_Alloc>& __x) : _M_t(__x._M_t) {}
-  map<_Key,_Tp,_Compare,_Alloc>&
-  operator=(const map<_Key, _Tp, _Compare, _Alloc>& __x)
+  _Self& operator=(const _Self& __x)
   {
     _M_t = __x._M_t;
     return *this; 
@@ -159,10 +157,10 @@ public:
     iterator __i = lower_bound(__k);
     // __i->first is greater than or equivalent to __k.
     if (__i == end() || key_comp()(__k, (*__i).first))
-      __i = insert(__i, value_type(__k, _Tp()));
+      __i = insert(__i, value_type(__k, _STLP_DEFAULT_CONSTRUCTED(_Tp)));
     return (*__i).second;
   }
-  void swap(map<_Key,_Tp,_Compare,_Alloc>& __x) { _M_t.swap(__x._M_t); }
+  void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
 
@@ -302,9 +300,7 @@ public:
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  multimap(const multimap<_Key,_Tp,_Compare,_Alloc>& __x) : _M_t(__x._M_t) { }
-  multimap<_Key,_Tp,_Compare,_Alloc>&
-  operator=(const multimap<_Key,_Tp,_Compare,_Alloc>& __x) {
+  _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
     return *this; 
   }
@@ -326,7 +322,7 @@ public:
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
-  void swap(multimap<_Key,_Tp,_Compare,_Alloc>& __x) { _M_t.swap(__x._M_t); }
+  void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
 

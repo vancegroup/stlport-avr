@@ -28,6 +28,10 @@
 #pragma warning 368 9
 #endif
 
+#ifndef _STLP_INTERNAL_ALLOC_H
+#  include <stl/_alloc.h>
+#endif
+
 # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 # ifdef _STLP_SGI_THREADS
@@ -178,6 +182,7 @@ __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
   // #       endif /* _STLP_THREADS */
   // acquire lock
+  _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   ((_Obj *)__p) -> _M_free_list_link = *__my_free_list;
   *__my_free_list = (_Obj *)__p;
   // lock is released here

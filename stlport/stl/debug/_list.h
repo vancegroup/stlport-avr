@@ -1,3 +1,7 @@
+// Local Variables:
+// mode:C++
+// End:
+
 /*
  *
  * Copyright (c) 1994
@@ -72,7 +76,17 @@ public:
 
 protected:
   mutable __owned_list _M_iter_list;
-  void _Invalidate_all() { _M_iter_list._Invalidate_all();}
+  void _Invalidate_iterator(const iterator& __it) { 
+    __invalidate_iterator(&_M_iter_list,__it);
+  }
+  void _Invalidate_iterators(const iterator& __first, const iterator& __last) {
+    __invalidate_range(&_M_iter_list, __first, __last);
+  }
+  void _Invalidate_all() {
+    _M_iter_list._Invalidate_all();
+  }
+
+  typedef typename _Base::iterator _Base_iterator;
 
 public:
   const _Base* _Get_base() const { return (const _Base*)this; }
@@ -89,6 +103,13 @@ public:
 
   // We don't need any dispatching tricks here, because insert does all of
   // that anyway.  
+#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+  template <class _InputIterator>
+  _DBG_list(_InputIterator __first, _InputIterator __last,
+						const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+    : __range_checker<_Tp>(__first, __last), 
+      _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
+    }
 #  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last)
@@ -113,9 +134,12 @@ public:
   _DBG_list(const _Self& __x) : 
     _STLP_DBG_LIST_BASE(__x) , _M_iter_list(_Get_base()) {}
 
-  _Self& operator=(const _Self& __x) {
-    _Invalidate_all();
-    _Base::operator=((const _Base&)__x);
+  _Self& operator= (const _Self& __x) {
+    if (this != &__x) {
+      //Should not invalidate end iterator
+      _Invalidate_iterators(this->begin(), this->end());
+      _Base::operator=((const _Base&)__x);
+    }
     return *this;
   }
 
@@ -133,16 +157,31 @@ public:
   const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
   // those are here to enforce checking
-  reference front() { return *begin(); }
-  const_reference front() const { return *begin(); }
-  reference back() { return *(--end()); }
-  const_reference back() const { return *(--end()); }
+  reference front() {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *begin();
+  }
+  const_reference front() const {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *begin();
+  }
+  reference back() {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *(--end());
+  }
+  const_reference back() const {
+    _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
+    return *(--end());
+  }
 
   void swap(_Self& __x) {
     _M_iter_list._Swap_owners(__x._M_iter_list);
     _Base::swap(__x); 
   }
 
+#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __position, const _Tp& __x = _Tp()) {
+#else
   iterator insert(iterator __position, const _Tp& __x) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
       return iterator(&_M_iter_list,_Base::insert(__position._M_iterator, __x) );
@@ -231,7 +270,7 @@ public:
   }
 
   void clear() {   
-    _Invalidate_all();
+    _Invalidate_iterators(this->begin(), this->end());
     _Base::clear(); 
   }
 
@@ -240,6 +279,7 @@ public:
     _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
     _Base::splice(__position._M_iterator, __x);
+    //dums: Invalidation according the Standard C++98 but against the SGI specs:
     __x._Invalidate_all();
   }
 
@@ -250,6 +290,8 @@ public:
     // fbp : CHECK !!!
 	// __invalidate_iterator(&__x._M_iter_list, __i);
     _Base::splice(__position._M_iterator, __x, __i._M_iterator);
+    //dums: Invalidation according the Standard C++98 but against the SGI specs:
+    __x._Invalidate_iterator(__i);
   }
 
   void splice(iterator __position, _Self& __x, iterator __first, iterator __last) {
@@ -257,14 +299,16 @@ public:
     _STLP_VERBOSE_ASSERT(__first._Owner()==&__x._M_iter_list && __last._Owner()==&__x._M_iter_list, 
 			 _StlMsg_NOT_OWNER)
     _Base::splice(__position._M_iterator, __x, __first._M_iterator, __last._M_iterator);
+    //dums: Invalidation according the Standard C++98 but against the SGI specs:
+    __x._Invalidate_iterators(__first, __last);
   }
 
-  void merge(_Self& __x) {   
-    __x._Invalidate_all();
-    _Base::merge(__x); 
+  void merge(_Self& __x) {
+    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(this->begin(), this->end()))
+    _STLP_DEBUG_CHECK(_STLP_STD::is_sorted(__x.begin(), __x.end()))
+    _Base::merge(__x);
   }
   void reverse() {
-    _Invalidate_all();
     _Base::reverse();
   }
   void unique() {
@@ -272,7 +316,6 @@ public:
     _Base::unique();
   }
   void sort() {
-    _Invalidate_all();
     _Base::sort();
   }
 
@@ -294,41 +337,21 @@ public:
 
   template <class _StrictWeakOrdering>
   void sort(_StrictWeakOrdering __comp) {
-      _Invalidate_all();
-      _Base::sort(__comp);
+    _Base::sort(__comp);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 };
 
-#ifdef _STLP_EXTRA_OPERATORS_FOR_DEBUG
-template <class _Tp, class _Alloc>
-_STLP_INLINE_LOOP bool operator==(const _DBG_list<_Tp,_Alloc>& __x,
-				  const _DBG_list<_Tp,_Alloc>& __y)
-{
-  return (const _STLP_DBG_LIST_BASE&)__x == (const _STLP_DBG_LIST_BASE&)__y;
-}
-template <class _Tp, class _Alloc>
-inline bool operator<(const _DBG_list<_Tp,_Alloc>& __x,
-                      const _DBG_list<_Tp,_Alloc>& __y)
-{
-  return (const _STLP_DBG_LIST_BASE&)__x < (const _STLP_DBG_LIST_BASE&)__y;
-}
-#endif
-
-#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
-template <class _Tp, class _Alloc>
-inline void 
-swap(_DBG_list<_Tp, _Alloc>& __x, _DBG_list<_Tp, _Alloc>& __y)
-{
-  __x.swap(__y);
-}
-#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
+#define _STLP_TEMPLATE_HEADER template <class _Tp, class _Alloc>
+#define _STLP_TEMPLATE_CONTAINER _DBG_list<_Tp,_Alloc>
+#define _STLP_TEMPLATE_CONTAINER_BASE _STLP_DBG_LIST_BASE
+#include <stl/debug/_relops_cont.h>
+#undef _STLP_TEMPLATE_CONTAINER_BASE
+#undef _STLP_TEMPLATE_CONTAINER
+#undef _STLP_TEMPLATE_HEADER
 
 _STLP_END_NAMESPACE 
 
 #endif /* _STLP_INTERNAL_LIST_H */
 
-// Local Variables:
-// mode:C++
-// End:

@@ -51,6 +51,8 @@ public:
 private:
   typedef _Rb_tree<key_type, value_type, 
     _Identity<value_type>, key_compare, _Alloc> _Rep_type;
+  typedef set<_Key, _Compare, _Alloc> _Self;
+
 public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
@@ -109,9 +111,7 @@ public:
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  set(const set<_Key,_Compare,_Alloc>& __x) : _M_t(__x._M_t) {}
-  set<_Key,_Compare,_Alloc>& operator=(const set<_Key, _Compare, _Alloc>& __x)
-  { 
+  _Self& operator=(const _Self& __x) { 
     _M_t = __x._M_t; 
     return *this;
   }
@@ -129,7 +129,7 @@ public:
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
-  void swap(set<_Key,_Compare,_Alloc>& __x) { _M_t.swap(__x._M_t); }
+  void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
   pair<iterator,bool> insert(const value_type& __x) { 
@@ -265,11 +265,18 @@ public:
    
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  multiset(const multiset<_Key,_Compare,_Alloc>& __x) : _M_t(__x._M_t) {}
-  multiset<_Key,_Compare,_Alloc>&
-  operator=(const multiset<_Key,_Compare,_Alloc>& __x) {
+  multiset(const _Self& __x) : _M_t(__x._M_t) {}
+  _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t; 
     return *this;
+  }
+
+  /*explicit multiset(__full_move_source<_Self> src)
+    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
+  }*/
+
+  explicit multiset(__partial_move_source<_Self> src)
+    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
   }
 
   // accessors:
@@ -285,7 +292,7 @@ public:
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
-  void swap(multiset<_Key,_Compare,_Alloc>& __x) { _M_t.swap(__x._M_t); }
+  void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
   iterator insert(const value_type& __x) { 

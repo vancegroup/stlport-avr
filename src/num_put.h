@@ -35,7 +35,7 @@ template <class Char>
 ptrdiff_t 
 __insert_grouping_aux(Char* first, Char* last, const string& grouping,
                       Char separator, Char Plus, Char Minus,
-		      int basechars)
+		                  int basechars)
 {
   typedef string::size_type str_size;
 

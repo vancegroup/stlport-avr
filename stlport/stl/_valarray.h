@@ -19,11 +19,11 @@
 #ifndef _STLP_VALARRAY_H
 #define _STLP_VALARRAY_H
 
-#ifndef _STLP_CMATH
-#include <cmath>
+#ifndef _STLP_CMATH_H_HEADER
+#include <stl/_cmath.h>
 #endif
-#ifndef _STLP_NEW_HEADER
-#include <new>
+#ifndef _STLP_INTERNAL_NEW_HEADER
+#include <stl/_new.h>
 #endif
 #ifndef _STLP_INTERNAL_ALGO_H
 #include <stl/_algo.h>
@@ -41,7 +41,6 @@ class slice;
 class gslice;
 
 template <class _Tp> class valarray;
-// fbp : those are for MSVC
 typedef valarray<bool>    _Valarray_bool;
 typedef valarray<size_t>  _Valarray_size_t;
 
@@ -101,8 +100,8 @@ public:
 
   // Basic constructors
   valarray() : _Valarray_base<_Tp>() {}
-  valarray(size_t __n) : _Valarray_base<_Tp>(__n)
-    { uninitialized_fill_n(this->_M_first, this->_M_size, value_type()); }
+  explicit valarray(size_t __n) : _Valarray_base<_Tp>(__n)
+    { uninitialized_fill_n(this->_M_first, this->_M_size, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
   valarray(const value_type& __x, size_t __n) : _Valarray_base<_Tp>(__n)
     { uninitialized_fill_n(this->_M_first, this->_M_size, __x); }
   valarray(const value_type* __p, size_t __n) : _Valarray_base<_Tp>(__n)
@@ -119,7 +118,7 @@ public:
   valarray(const indirect_array<_Tp>&);
 
   // Destructor
-  ~valarray() { _Destroy(this->_M_first, this->_M_first + this->_M_size); }
+  ~valarray() { _STLP_STD::_Destroy(this->_M_first, this->_M_first + this->_M_size); }
 
   // Extension: constructor that doesn't initialize valarray elements to a
   // specific value.  This is faster for types such as int and double.
@@ -165,7 +164,7 @@ public:                         // Subsetting operations with auxiliary type
   valarray<_Tp>            operator[](slice) const;
   slice_array<_Tp>    operator[](slice);
   valarray<_Tp>            operator[](gslice) const;
-  gslice_array<_Tp>   operator[](gslice);  
+  gslice_array<_Tp>   operator[](const gslice&);  
   valarray<_Tp>            operator[](const _Valarray_bool&) const;
   mask_array<_Tp>     operator[](const _Valarray_bool&);
   valarray<_Tp>            operator[](const _Valarray_size_t&) const;
@@ -188,12 +187,7 @@ public:                         // Unary operators.
     return __tmp;
   }
 
-  _Valarray_bool operator!() const {
-    _Valarray_bool __tmp(this->size(), _Valarray_bool::_NoInit());
-    for (size_t __i = 0; __i < this->size(); ++__i)
-      __tmp[__i] = !(*this)[__i];
-    return __tmp;
-  }
+  _Valarray_bool operator!() const;
 
 public:                         // Scalar computed assignment.
   valarray<_Tp>& operator*= (const value_type& __x) {
@@ -351,7 +345,7 @@ public:                         // Other member functions.
   }
   
   void resize(size_t __n, value_type __x = value_type()) {
-    _Destroy(this->_M_first, this->_M_first + this->_M_size);
+    _STLP_STD::_Destroy(this->_M_first, this->_M_first + this->_M_size);
     this->_Valarray_base<_Tp>::_M_deallocate();
     this->_Valarray_base<_Tp>::_M_allocate(__n);
     uninitialized_fill_n(this->_M_first, this->_M_size, __x);
@@ -1182,7 +1176,7 @@ public:
       _M_array[__index] >>= __x[__i];
   }
 
-  void operator=(const value_type& __c) const {
+  void operator=(const value_type& __c) {
     size_t __index = _M_slice.start();
     for (size_t __i = 0;
          __i < _M_slice.size();
@@ -1202,6 +1196,8 @@ private:
 
 private:                        // Disable assignment and default constructor
   slice_array();
+  slice_array(const slice_array&);
+  slice_array& operator=(const slice_array&);
 };
 
 // valarray member functions dealing with slice and slice_array
@@ -1256,7 +1252,10 @@ public:
       : 0;
   }
 
+# ifndef __HP_aCC
 private:
+# endif
+
   size_t _M_start;
   _Valarray_size_t _M_lengths;
   _Valarray_size_t _M_strides;
@@ -1372,7 +1371,7 @@ public:
     }
   }
 
-  void operator= (const value_type& __c) const {
+  void operator= (const value_type& __c) {
     if (!_M_gslice._M_empty()) {
       _Gslice_Iter __i(_M_gslice);
       do _M_array[__i._M_1d_idx] = __c; while(__i._M_incr());
@@ -1382,7 +1381,7 @@ public:
   ~gslice_array() {}
 
 private:                        
-  gslice_array(gslice __gslice, valarray<_Tp>& __array)
+  gslice_array(const gslice& __gslice, valarray<_Tp>& __array)
     : _M_gslice(__gslice), _M_array(__array)
     {}
 
@@ -1408,7 +1407,7 @@ inline valarray<_Tp>::valarray(const gslice_array<_Tp>& __x)
 }
 
 template <class _Tp>
-inline gslice_array<_Tp> valarray<_Tp>::operator[](gslice __slice) {
+inline gslice_array<_Tp> valarray<_Tp>::operator[](const gslice& __slice) {
   return gslice_array<_Tp>(__slice, *this);
 }
 

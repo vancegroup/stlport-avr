@@ -56,16 +56,19 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 */
 
 #ifdef __WATCOMC__
-# include <cwchar>
+# include <stl/_cwchar.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
-struct __true_type {};
-struct __false_type {};
+_STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
+  typedef __true_type _Integral;
+};
 
 
-template <int _Is> struct __bool2type { };
+template <int _Is> struct __bool2type {
+  typedef __false_type _Ret; 
+};
 
 _STLP_TEMPLATE_NULL
 struct __bool2type<1> { typedef __true_type _Ret; };
@@ -73,16 +76,15 @@ struct __bool2type<1> { typedef __true_type _Ret; };
 _STLP_TEMPLATE_NULL
 struct __bool2type<0> { typedef __false_type _Ret; };
 
-// logical end of 3 predicated
-template <class _P1, class _P2, class _P3>
-struct _Land3 {
-  typedef __false_type _Ret;
+_STLP_TEMPLATE_NULL struct _Is_rational<double> {
+  typedef __true_type _Rational;
 };
 
 _STLP_TEMPLATE_NULL
 struct _Land3<__true_type, __true_type, __true_type> {
   typedef __true_type _Ret;
 };
+# endif
 
 
 // Forward declarations.
@@ -135,6 +137,18 @@ char _STLP_CALL _IsP(bool, _PointerShim); // no implementation is required
 char* _STLP_CALL _IsP(bool, ...);          // no implementation is required
 
 template <class _Tp>
+char _STLP_CALL _IsSameFun(bool, _Tp*, _Tp*); // no implementation is required
+char* _STLP_CALL _IsSameFun(bool, ...);          // no implementation is required
+
+template <class _Tp1, class _Tp2>
+struct _IsSame {
+  // boris : check!
+  static _Tp1* __null_rep1();
+  static _Tp2* __null_rep2();
+  enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(),__null_rep2())) == sizeof(char)) };
+};
+
+template <class _Tp>
 struct _IsPtr {
   
   // This template meta function takes a type T
@@ -146,9 +160,24 @@ struct _IsPtr {
 
 };
 
+template <class _CondT, class _Tp>
+struct _IsPtrCondNot {
+  enum { _Ret = _IsPtr<_Tp>::_Ret };
+};
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+
 template <class _Tp>
 struct _IsPtrType {
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
+  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
+
+  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
+
+  enum { _Is = _IsPtrCond<_Tr3, _Tp>::_Ret } ;
+#else
   enum { _Is =  _IsPtr<_Tp>::_Ret } ;
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
   typedef __bool2type< _Is > _BT;
   typedef typename _BT::_Ret _Type;
   static _Type _Ret() { return _Type(); }
@@ -156,20 +185,50 @@ struct _IsPtrType {
 
 template <class _Tp1, class _Tp2>
 struct _BothPtrType {
-  typedef __bool2type< _IsPtr<_Tp1>::_Ret> _B1;
-  typedef __bool2type< _IsPtr<_Tp2>::_Ret> _B2;
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  typedef typename _Is_integer<_Tp1>::_Integral _Tr11;
+  typedef typename _Is_rational<_Tp1>::_Rational _Tr12;
+
+  typedef typename _Lor2<_Tr11, _Tr12>::_Ret _Tr13;
+
+  enum { _Is1 = _IsPtrCond<_Tr13, _Tp1>::_Ret } ;
+#else
+  enum { _Is1 =  _IsPtr<_Tp1>::_Ret } ;
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+  typedef __bool2type<_Is1> _B1;
   typedef typename _B1::_Ret _Type1;
+
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  typedef typename _Is_integer<_Tp2>::_Integral _Tr21;
+  typedef typename _Is_rational<_Tp2>::_Rational _Tr22;
+
+  typedef typename _Lor2<_Tr21, _Tr22>::_Ret _Tr23;
+  typedef typename _Land2<_Tr23, _Type1>::_Ret _Tr24;
+
+  enum { _Is2 = _IsPtrCond<_Tr24, _Tp2>::_Ret } ;
+#else
+  enum { _Is2 =  _IsPtrCond<_Type1, _Tp2>::_Ret } ;
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+  typedef __bool2type< _IsPtr<_Tp2>::_Ret> _B2;
   typedef typename _B2::_Ret _Type2;
-  typedef typename _Land3<_Type1, _Type2, __true_type>::_Ret _Type;
+
+  typedef typename _Land2<_Type1, _Type2>::_Ret _Type;
   static _Type _Ret() { return _Type(); }
 };
 
 // we make general case dependant on the fact the type is actually a pointer.
- 
 template <class _Tp>
 struct __type_traits : __type_traits_aux<_IsPtr<_Tp>::_Ret> {};
 
-# else
+# else /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
+
+template <class _Tp>  struct _IsPtr { enum { _Ret = 0 }; };
+template <class _Tp>  struct _IsPtrType { 
+  static __false_type _Ret() { return __false_type();} 
+};
+template <class _Tp1, class _Tp2>  struct _BothPtrType { 
+  static __false_type _Ret() { return __false_type();} 
+};
 
 template <class _Tp>
 struct __type_traits { 
@@ -205,6 +264,12 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType {
   static __false_type _Ret() { return __false_type();} 
 };
 
+template <class _Tp1, class _Tp2>
+struct _IsSame { enum { _Ret = 0 }; };
+
+// template <class _Tp1, class _Tp2>
+// struct _IsSameType {   static __false_type _Ret() { return __false_type(); }  };
+
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp>  struct _IsPtr<_Tp*> { enum { _Ret = 1 }; };
 template <class _Tp>  struct _IsPtrType<_Tp*> { 
@@ -213,6 +278,8 @@ template <class _Tp>  struct _IsPtrType<_Tp*> {
 template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> { 
   static __true_type _Ret() { return __true_type();} 
 };
+template <class _Tp>
+struct _IsSame<_Tp, _Tp> { enum { _Ret = 1 }; };
 #  endif
 
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
@@ -267,19 +334,20 @@ template <class _Tp> struct _Is_integer {
 _STLP_TEMPLATE_NULL struct _Is_integer<bool> {
   typedef __true_type _Integral;
 };
+#endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
 #endif /* _STLP_NO_BOOL */
 
 _STLP_TEMPLATE_NULL struct _Is_integer<char> {
   typedef __true_type _Integral;
 };
+#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 
 #ifndef _STLP_NO_SIGNED_BUILTINS
 
 _STLP_TEMPLATE_NULL struct _Is_integer<signed char> {
   typedef __true_type _Integral;
 };
-#endif
 
 _STLP_TEMPLATE_NULL struct _Is_integer<unsigned char> {
   typedef __true_type _Integral;
@@ -331,10 +399,10 @@ _STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
 
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
-  enum { _SameSize = (sizeof(_Tp1) == sizeof(_Tp2)) } ;
+  enum { _Same = _IsSame<_Tp1,_Tp2>::_Ret } ;
   typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
   typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
-  typedef typename __bool2type< _SameSize >::_Ret _Tr3;
+  typedef typename __bool2type< _Same >::_Ret _Tr3;
   typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
   static _Type _Ret() { return _Type(); }
 };
@@ -354,7 +422,7 @@ template <class _Tp>
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
 
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-#   if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || ( defined (__sgi) && defined (_COMPILER_VERSION))
+#   if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || ( defined (__sgi) && defined (_COMPILER_VERSION)) || defined (__DMC__)
 #   define _IS_POD_ITER(_It, _Tp) __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()
 #   else
 #   define _IS_POD_ITER(_It, _Tp) typename __type_traits< typename iterator_traits< _Tp >::value_type >::is_POD_type()

@@ -67,17 +67,17 @@ LDFLAGS_COMMON_static=$(LDFLAGS_COMMON)
 LDFLAGS_COMMON_dynamic=$(LDFLAGS_COMMON) /dll /incremental:no
 
 
-CXXFLAGS_DEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_static)\\" /Fd"$(DEBUG_OBJDIR_static)\\" /YXstlport_prefix.h /Fp$(DEBUG_OBJDIR_static)\stlport.pch
+CXXFLAGS_DEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_static)\\" /Fd"$(DEBUG_OBJDIR_static)\\"
 
-CXXFLAGS_DEBUG_staticx=$(FLAGS_COMMON_static) /MDd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_staticx)\\" /Fd"$(DEBUG_OBJDIR_staticx)\\" /YXstlport_prefix.h /Fp$(DEBUG_OBJDIR_staticx)\stlport.pch
+CXXFLAGS_DEBUG_staticx=$(FLAGS_COMMON_static) /MDd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_staticx)\\" /Fd"$(DEBUG_OBJDIR_staticx)\\"
 
-CXXFLAGS_DEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_dynamic)\\" /Fd"$(DEBUG_OBJDIR_dynamic)\\" /YXstlport_prefix.h /Fp$(DEBUG_OBJDIR_dynamic)\stlport.pch
+CXXFLAGS_DEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /Fo"$(DEBUG_OBJDIR_dynamic)\\" /Fd"$(DEBUG_OBJDIR_dynamic)\\"
 
-CXXFLAGS_STLDEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_static)\\" /Fd"$(STLDEBUG_OBJDIR_static)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_static)\stlport.pch 
+CXXFLAGS_STLDEBUG_static=$(FLAGS_COMMON_static) /MTd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_static)\\" /Fd"$(STLDEBUG_OBJDIR_static)\\"
 
-CXXFLAGS_STLDEBUG_staticx=$(FLAGS_COMMON_static) /MDd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_staticx)\\" /Fd"$(STLDEBUG_OBJDIR_staticx)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_staticx)\stlport.pch 
+CXXFLAGS_STLDEBUG_staticx=$(FLAGS_COMMON_static) /MDd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_staticx)\\" /Fd"$(STLDEBUG_OBJDIR_staticx)\\"
 
-CXXFLAGS_STLDEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_dynamic)\\" /Fd"$(STLDEBUG_OBJDIR_dynamic)\\"  /YXstlport_prefix.h /Fp$(STLDEBUG_OBJDIR_dynamic)\stlport.pch 
+CXXFLAGS_STLDEBUG_dynamic=$(FLAGS_COMMON_dynamic) /MDd $(FLAGS_DEBUG) /D "_STLP_DEBUG" /Fo"$(STLDEBUG_OBJDIR_dynamic)\\" /Fd"$(STLDEBUG_OBJDIR_dynamic)\\"
 
 
 LDFLAGS_DEBUG_static=$(LDFLAGS_COMMON_static)
@@ -90,11 +90,11 @@ LDFLAGS_STLDEBUG_dynamic=$(LDFLAGS_COMMON_dynamic) $(LDFLAGS_DEBUG) /implib:"$(O
 # LDFLAGS_STLDEBUG_static=$(LDFLAGS_COMMON_static)  /DEBUGTYPE:CV
 # LDFLAGS_STLDEBUG_dynamic=$(LDFLAGS_COMMON_dynamic) /DEBUG /DEBUGTYPE:CV /implib:"$(OUTDIR)\$(STLDEBUG_NAME).$(STEXT)" 
 
-CXXFLAGS_RELEASE_static=$(FLAGS_COMMON_static) /MT $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_static)\\" /Fd"$(RELEASE_OBJDIR_static)\\"  /YXstlport_prefix.h /Fp$(RELEASE_OBJDIR_static)\stlport.pch
+CXXFLAGS_RELEASE_static=$(FLAGS_COMMON_static) /MT $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_static)\\" /Fd"$(RELEASE_OBJDIR_static)\\"
 
-CXXFLAGS_RELEASE_staticx=$(FLAGS_COMMON_static) /MD $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_staticx)\\" /Fd"$(RELEASE_OBJDIR_staticx)\\"  /YXstlport_prefix.h /Fp$(RELEASE_OBJDIR_staticx)\stlport.pch
+CXXFLAGS_RELEASE_staticx=$(FLAGS_COMMON_static) /MD $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_staticx)\\" /Fd"$(RELEASE_OBJDIR_staticx)\\"
 
-CXXFLAGS_RELEASE_dynamic=$(FLAGS_COMMON_dynamic) /MD $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_dynamic)\\" /Fd"$(RELEASE_OBJDIR_dynamic)\\" /YXstlport_prefix.h /Fp$(RELEASE_OBJDIR_dynamic)\stlport.pch
+CXXFLAGS_RELEASE_dynamic=$(FLAGS_COMMON_dynamic) /MD $(FLAGS_NDEBUG) /Fo"$(RELEASE_OBJDIR_dynamic)\\" /Fd"$(RELEASE_OBJDIR_dynamic)\\"
 
 LDFLAGS_RELEASE_static=$(LDFLAGS_COMMON_static)
 LDFLAGS_RELEASE_dynamic=$(LDFLAGS_COMMON_dynamic) $(LDFLAGS_RELEASE) /implib:"$(OUTDIR)\$(RELEASE_NAME).$(STEXT)" 

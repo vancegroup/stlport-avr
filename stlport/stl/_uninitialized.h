@@ -44,7 +44,44 @@
 
 _STLP_BEGIN_NAMESPACE
 
-// uninitialized_copy
+inline void*
+__ucopy_trivial(const void* __first, const void* __last, void* __result) {
+  //dums: this version can use memcpy (__copy_trivial can't)
+  return (__last == __first) ? __result : 
+    ((char*)memcpy(__result, __first, ((const char*)__last - (const char*)__first))) + 
+    ((const char*)__last - (const char*)__first);
+}
+
+template <class _InputIter, class _OutputIter>
+inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
+                               const __false_type& /*IsOKToMemCpy*/) {
+  return __copy(__first, __last, __result, 
+                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
+                _STLP_DISTANCE_TYPE(__first, _InputIter));
+}
+template <class _InputIter, class _OutputIter>
+inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
+                               const __true_type& /*IsOKToMemCpy*/) {
+// we know they all pointers, so this cast is OK 
+  //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
+  return (_OutputIter)__ucopy_trivial(__first, __last, __result);
+}
+
+template <class _InputIter, class _OutputIter>
+inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, 
+                               const __true_type& /*BothPtrType*/) {
+  return __ucopy_ptrs(__first, __last, __result, 
+                      _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter), 
+                                    _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+}
+
+template <class _InputIter, class _OutputIter>
+inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, 
+                               const __false_type& /*BothPtrType*/) {
+  return __copy(__first, __last, __result, 
+		            _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
+                _STLP_DISTANCE_TYPE(__first, _InputIter));
+}
 
 // Valid if copy construction is equivalent to assignment, and if the
 //  destructor is trivial.
@@ -64,10 +101,10 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur)
-      _Construct(&*__cur, *__first);
+      _Copy_Construct(&*__cur, *__first);
     return __cur;
   }
-  _STLP_UNWIND(_Destroy(__result, __cur));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__result, __cur));
 # ifdef _STLP_THROW_RETURN_BUG
   return __cur;
 # endif
@@ -81,13 +118,13 @@ uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result)
 
 inline char* 
 uninitialized_copy(const char* __first, const char* __last, char* __result) {
-  return  (char*)__copy_trivial (__first, __last, __result);
+  return  (char*)__ucopy_trivial (__first, __last, __result);
 }
 
 #  ifdef _STLP_HAS_WCHAR_T // dwa 8/15/97
 inline wchar_t* 
 uninitialized_copy(const wchar_t* __first, const wchar_t* __last, wchar_t* __result) {
-  return  (wchar_t*)__copy_trivial (__first, __last, __result);
+  return  (wchar_t*)__ucopy_trivial (__first, __last, __result);
 }
 #  endif /* _STLP_HAS_WCHAR_T */
 
@@ -104,10 +141,10 @@ __uninitialized_copy_n(_InputIter __first, _Size __count,
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur) 
-      _Construct(&*__cur, *__first);
+      _Copy_Construct(&*__cur, *__first);
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
-  _STLP_UNWIND(_Destroy(__result, __cur));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__result, __cur));
 # ifdef _STLP_THROW_RETURN_BUG
   return pair<_InputIter, _ForwardIter>(__first, __cur);
 # endif
@@ -166,9 +203,9 @@ __uninitialized_fill(_ForwardIter __first, _ForwardIter __last,
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __cur != __last; ++__cur)
-      _Construct(&*__cur, __x);
+      _Copy_Construct(&*__cur, __x);
   }
-  _STLP_UNWIND(_Destroy(__first, __cur));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__first, __cur));
 }
 
 template <class _ForwardIter, class _Tp>
@@ -193,10 +230,10 @@ __uninitialized_fill_n(_ForwardIter __first, _Size __n,
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __n > 0; --__n, ++__cur)
-      _Construct(&*__cur, __x);
+      _Copy_Construct(&*__cur, __x);
     return __cur;
   }
-  _STLP_UNWIND(_Destroy(__first, __cur));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__first, __cur));
 # ifdef _STLP_THROW_RETURN_BUG
   return __cur;
 # endif
@@ -236,7 +273,7 @@ __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_TRY {
     return __uninitialized_copy(__first2, __last2, __mid , _IS_POD_ITER(__result, _ForwardIter));
   }
-  _STLP_UNWIND(_Destroy(__result, __mid));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__result, __mid));
 # ifdef _STLP_THROW_RETURN_BUG
   return __mid;
 # endif
@@ -255,7 +292,7 @@ __uninitialized_fill_copy(_ForwardIter __result, _ForwardIter __mid, const _Tp& 
   _STLP_TRY {
     return __uninitialized_copy(__first, __last, __mid, _I_POD());
   }
-  _STLP_UNWIND(_Destroy(__result, __mid));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__result, __mid));
 # ifdef _STLP_THROW_RETURN_BUG
   return __result;
 # endif
@@ -275,7 +312,7 @@ __uninitialized_copy_fill(_InputIter __first1, _InputIter __last1,
   _STLP_TRY {
     __uninitialized_fill(__mid2, __last2, __x, _I_POD());
   }
-  _STLP_UNWIND(_Destroy(__first2, __mid2));
+  _STLP_UNWIND(_STLP_STD::_Destroy(__first2, __mid2));
 }
 
 _STLP_END_NAMESPACE

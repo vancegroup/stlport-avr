@@ -1,3 +1,8 @@
+// Local Variables:
+// mode:C++
+// End:
+
+
 /*
  *
  * Copyright (c) 1997
@@ -313,7 +318,7 @@ operator<(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Container
 template <class _Container>
 inline bool 
 operator>(const _DBG_iter_base<_Container>& __x,
-	  const _DBG_iter_base<_Container>& __y) { 
+		   const _DBG_iter_base<_Container>& __y) { 
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
   return _CompareIt(__y._M_iterator , __x._M_iterator, _Category());
 }
@@ -329,7 +334,7 @@ operator>=(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Containe
 template <class _Container>
 inline bool 
 operator<=(const _DBG_iter_base<_Container>& __x,
-	  const _DBG_iter_base<_Container>& __y) {
+		   const _DBG_iter_base<_Container>& __y) {
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category; 
   return !_CompareIt(__y._M_iterator , __x._M_iterator, _Category());
 }
@@ -387,8 +392,3 @@ iterator_category(const  _DBG_iter_base<_Container>&) {
 _STLP_END_NAMESPACE
 
 #endif /* INTERNAL_H */
-
-// Local Variables:
-// mode:C++
-// End:
-

@@ -27,7 +27,7 @@
 # define _STLP_ALGO_C
 
 # if !defined (_STLP_INTERNAL_ALGO_H)
-#  include "stl/_algo.h"
+#  include <stl/_algo.h>
 # endif
 
 _STLP_BEGIN_NAMESPACE
@@ -223,12 +223,12 @@ _STLP_INLINE_LOOP _OutputIterator
 __unique_copy(_InputIterator __first, _InputIterator __last,
               _OutputIterator __result,
               _BinaryPredicate __binary_pred, _Tp*) {
-  _Tp __value = *__first;
-  *__result = __value;
+  _Tp __val = *__first;
+  *__result = __val;
   while (++__first != __last)
-    if (!__binary_pred(__value, *__first)) {
-      __value = *__first;
-      *++__result = __value;
+    if (!__binary_pred(__val, *__first)) {
+      __val = *__first;
+      *++__result = __val;
     }
   return ++__result;
 }
