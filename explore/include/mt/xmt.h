@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/09/15 17:51:42 ptr>
+// -*- C++ -*- Time-stamp: <03/09/25 12:17:07 ptr>
 
 /*
  *
@@ -206,14 +206,14 @@ class __mutex_base
         if ( SCOPE || RECURSIVE_SAFE ) {
           pthread_mutexattr_t att;
           pthread_mutexattr_init( &att );
+#  ifdef __FIT_PSHARED_MUTEX
           if ( SCOPE ) {
             int _err = pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
-            _STLP_ASSERT( _err == 0 );
           }
+#  endif // __FIT_PSHARED_MUTEX
 #  ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
           if ( RECURSIVE_SAFE ) {
             int _err = pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE );
-            _STLP_ASSERT( _err == 0 );
           }
 #  endif
           pthread_mutex_init( &_M_lock, &att );
@@ -277,8 +277,9 @@ class __mutex_base
 #endif
 };
 
-// The IEEE Std. 1003.1j-2000 introduces functions to implement spinlocks.
+#ifdef __FIT_PTHREAD_SPINLOCK
 
+// The IEEE Std. 1003.1j-2000 introduces functions to implement spinlocks.
 template <bool SCOPE>
 class __spinlock_base
 {
@@ -301,6 +302,8 @@ class __spinlock_base
     pthread_spinlock_t _M_lock;
 #endif
 };
+
+#endif // __FIT_PTHREAD_SPINLOCK
 
 
 // Portable Mutex implementation. If the parameter RECURSIVE_SAFE
@@ -889,7 +892,6 @@ class Condition
     LONG _cond;
 #endif
     Mutex _lock;
-    // __STLPORT_STD::_STL_mutex_lock _lock;
     bool _val;
 };
 
@@ -1120,12 +1122,12 @@ class Thread
     static __FIT_DECLSPEC int xalloc();
     long&  iword( int __idx )
       {
-        _STLP_ASSERT( is_self() );
+        // _STLP_ASSERT( is_self() );
         return *static_cast<long *>(_alloc_uw( __idx ));
       }
     void*& pword( int __idx )
       {
-        _STLP_ASSERT( is_self() );
+        // _STLP_ASSERT( is_self() );
         return *reinterpret_cast<void **>(_alloc_uw( __idx ));
       }
 
