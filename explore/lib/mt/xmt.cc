@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/08/28 13:15:23 ptr>
+// -*- C++ -*- Time-stamp: <00/08/31 15:36:40 ptr>
 
 /*
  * Copyright (c) 1999-2000
@@ -175,15 +175,6 @@ const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thr
 Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
 #endif
 
-#if 0
-#  ifdef _PTHREADS
-pthread_mutex_t _iM_lock = PTHREAD_MUTEX_INITIALIZER;
-#  endif
-#  ifdef __STL_UITHREADS
-mutex_t _iM_lock = DEFAULTMUTEX;
-#  endif
-#endif
-
 __PG_DECLSPEC
 Thread::Thread( unsigned __f ) :
     _id( bad_thread_key ),
@@ -279,6 +270,9 @@ int Thread::suspend()
     return SuspendThread( _id );
 #endif
 #ifdef __STL_PTHREADS
+#  ifdef __sun
+    // pthread_suspend is from X/Open
+#    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via condwait
     if ( _id != pthread_self() ) {
@@ -286,6 +280,8 @@ int Thread::suspend()
       // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
     }
     _suspend.wait();
+#  endif
+    return pthread_suspend( _id );
 #endif
 #ifdef __STL_UITHREADS
     return thr_suspend( _id );
@@ -303,9 +299,14 @@ int Thread::resume()
     return ResumeThread( _id );
 #endif
 #ifdef __STL_PTHREADS
+#  ifdef __sun
+    // pthread_continue is from X/Open
+#    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via condwait
     _suspend.set( true ); // less syscall than _suspend.signal();
+#  endif
+    return pthread_continue( _id );
 #endif
 #ifdef __STL_UITHREADS
     return thr_continue( _id );
@@ -473,10 +474,16 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
   pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
 //  pthread_attr_setstacksize( &attr, 0x100000 );
   pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
-  if ( _flags & (daemon | detached) ) {
+  if ( _flags & daemon ) {
+    pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
+  } else {
+    pthread_attr_setscope( &attr, PTHREAD_SCOPE_PROCESS );
+  }
+  if ( _flags & detached ) {
     pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
   }
   // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+  pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
   err = pthread_create( &_id, &attr, _xcall, this );
 #  else
   err = pthread_create( &_id, 0, _xcall, this );
