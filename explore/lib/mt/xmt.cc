@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/07/06 14:42:15 ptr>
+// -*- C++ -*- Time-stamp: <00/08/09 18:15:19 ptr>
 
 /*
  * Copyright (c) 1999-2000
@@ -32,8 +32,9 @@
 #include <functional>
 #include <cerrno>
 #include <string>
-#ifdef __Linux
-#include <sys/time.h>
+
+#ifdef __linux
+#  include <sys/time.h>
 #endif
 
 #ifdef WIN32
@@ -96,21 +97,17 @@ int Condition::wait_time( const timespec *abstime )
   return 0;
 #endif
 #ifdef _PTHREADS
-  MT_REENTRANT( _lock, _1 ); // ??
+  MT_REENTRANT( _lock, _x1 ); // ??
   _val = false;
   timespec _abstime = *abstime;
-#  ifdef __Linux
   int ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
-# elif
-  int ret = pthread_cond_wait( &_cond, &_lock._M_lock, &_abstime );
-# endif
   if ( ret == ETIMEDOUT ) {
     _val = true;
   }
   return ret;
-#endif
+#endif // _PTHREADS
 #ifdef __STL_UITHREADS
-  MT_REENTRANT( _lock, _1 );
+  MT_REENTRANT( _lock, _x1 );
   _val = false;
   int ret;
   timespec _abstime = *abstime;
@@ -176,6 +173,15 @@ unsigned long Thread::_mt_key = __STATIC_CAST(unsigned long,-1);
 #else
 const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thread_key_type,-1);
 Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
+#endif
+
+#if 0
+#  ifdef _PTHREADS
+pthread_mutex_t _iM_lock = PTHREAD_MUTEX_INITIALIZER;
+#  endif
+#  ifdef __STL_UITHREADS
+mutex_t _iM_lock = DEFAULTMUTEX;
+#  endif
 #endif
 
 __PG_DECLSPEC
@@ -363,8 +369,8 @@ void Thread::block_signal( int sig )
 #  ifdef __STL_SOLARIS_THREADS
   thr_sigsetmask( SIG_BLOCK, &sigset, 0 );
 #  endif
-#  if defined(__STL_PTHREADS) && !defined(__Linux)
-  pthread_sigsetmask( SIG_BLOCK, &sigset, 0 );
+#  if defined(_PTHREADS)
+  pthread_sigmask( SIG_BLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
 }
@@ -380,8 +386,8 @@ void Thread::unblock_signal( int sig )
 #  ifdef __STL_UITHREADS
   thr_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
-#  if defined(__STL_PTHREADS) && !defined(__Linux)
-  pthread_sigsetmask( SIG_UNBLOCK, &sigset, 0 );
+#  if defined(_PTHREADS)
+  pthread_sigmask( SIG_UNBLOCK, &sigset, 0 );
 #  endif
 #endif // __unix
 }
@@ -425,7 +431,7 @@ void Thread::gettime( std::timespec *t )
 void Thread::gettime( timespec *t )
 #endif
 {
-#ifdef __Linux
+#ifdef __linux
   timeval tv;
   gettimeofday( &tv, 0 );
   TIMEVAL_TO_TIMESPEC( &tv, t );
@@ -433,8 +439,7 @@ void Thread::gettime( timespec *t )
   time_t ct = time( 0 );
   t->tv_sec = ct / 1000;
   t->tv_nsec = (ct % 1000) * 1000000;
-#elif defined(__SunOS_5_5) || defined(__SunOS_5_6) || \
-      defined(__SunOS_5_7) || defined(__SunOS_5_8)
+#elif defined(__sun) || defined(__hpux)
   clock_gettime( CLOCK_REALTIME, t );
 #else
 #error "You should implement OS-dependent precise clock"
@@ -462,8 +467,23 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
   _param_sz = psz;
 
   int err;
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
+#  ifdef __hpux
+  pthread_attr_t attr;
+  pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+//  pthread_attr_setstacksize( &attr, 0x100000 );
+  pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+  if ( _flags & (daemon | detached) ) {
+    pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
+  }
+  // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+  err = pthread_create( &_id, &attr, _xcall, this );
+#  else
   err = pthread_create( &_id, 0, _xcall, this );
+#  endif
+#  ifdef __hpux
+  pthread_attr_destroy( &attr );
+#  endif
 #endif
 #ifdef __STL_UITHREADS
   err = thr_create( 0, 0, _xcall, this, _flags, &_id );
@@ -476,6 +496,7 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
+    cerr << "Error during thread creation: " << err << endl;
     throw __STD::runtime_error( msg1 );
   }
 }
@@ -510,10 +531,12 @@ void *Thread::_call( void *p )
   size_t _param_sz = me->_param_sz;
   int ret;
 
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
+#  ifndef __hpux
   if ( me->_flags & (daemon | detached) ) {
     pthread_detach( me->_id );
   }
+#  endif
 #endif
 
 #ifdef WIN32
@@ -596,7 +619,7 @@ long& Thread::iword( int __idx )
 #ifdef __STL_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
   user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __STL_WIN32THREADS
@@ -617,7 +640,7 @@ long& Thread::iword( int __idx )
 #ifdef __STL_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
 #ifdef __STL_WIN32THREADS
@@ -642,7 +665,7 @@ long& Thread::iword( int __idx )
 #ifdef __STL_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
 #ifdef __STL_WIN32THREADS
@@ -662,7 +685,7 @@ void*& Thread::pword( int __idx )
 #ifdef __STL_UITHREADS
   thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
   user_words =  reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
 #endif
 #ifdef __STL_WIN32THREADS
@@ -679,7 +702,7 @@ void*& Thread::pword( int __idx )
 #ifdef __STL_UITHREADS
     thr_setspecific( _mt_key, user_words );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_setspecific( _mt_key, user_words );
 #endif
 #ifdef __STL_WIN32THREADS
@@ -700,7 +723,7 @@ void*& Thread::pword( int __idx )
 #ifdef __STL_UITHREADS
     thr_setspecific( _mt_key, *user_words );
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     pthread_setspecific( _mt_key, *user_words );
 #endif
 #ifdef __STL_WIN32THREADS
@@ -715,3 +738,4 @@ void*& Thread::pword( int __idx )
 }
 
 } // namespace __impl
+
