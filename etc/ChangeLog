@@ -1,3 +1,13 @@
+2004-05-14  Francois Dumont <dums@...>
+
+  * stlport/stl/_tree.h
+    stlport/stl/_tree.c
+    stlport/stl/_set.h
+    stlport/stl/_map.h
+    Modification of the _Rb_tree implementation to restore the
+    non mutability of the set iterators but to keep distinct type
+    between it and the const_iterator.
+
 2004-05-13  Francois Dumont <dums@...>
 
   * stlport/config/stl_evc.h

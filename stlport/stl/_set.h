@@ -39,6 +39,29 @@
 
 _STLP_BEGIN_NAMESPACE
 
+/*
+ * dums: A special iterator/const_iterator traits for set and multiset for which even
+ * the iterator is not mutable
+ */
+template <class _Tp>
+struct _Nonconst_set_traits;
+
+template <class _Tp>
+struct _Const_set_traits {
+  typedef _Tp value_type;
+  typedef const _Tp&  reference;
+  typedef const _Tp*  pointer;
+  typedef _Nonconst_set_traits<_Tp> _Non_const_traits;
+};
+
+template <class _Tp>
+struct _Nonconst_set_traits {
+  typedef _Tp value_type;
+  typedef const _Tp& reference;
+  typedef const _Tp* pointer;
+  typedef _Nonconst_set_traits<_Tp> _Non_const_traits;
+};
+
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class set {
@@ -49,8 +72,13 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-  typedef _Rb_tree<key_type, value_type,
-    _Identity<value_type>, key_compare, _Alloc> _Rep_type;
+  
+private:
+  typedef _Const_set_traits<value_type> _ConstIteTraits;
+  typedef _Rb_tree<key_type, key_compare, 
+                   value_type, _Identity<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
+
+public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -159,7 +187,7 @@ public:
     _M_t.insert_unique(__first, __last);
   }
 # endif /* _STLP_MEMBER_TEMPLATES */
-  void erase(iterator __pos) { _M_t.erase(__pos); }
+  void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }
@@ -204,8 +232,13 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-  typedef _Rb_tree<key_type, value_type, 
-                  _Identity<value_type>, key_compare, _Alloc> _Rep_type;
+  
+private:
+  typedef _Const_set_traits<value_type> _ConstIteTraits;
+  typedef _Rb_tree<key_type, key_compare, 
+                   value_type, _Identity<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
+                  
+public:                  
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -319,7 +352,7 @@ public:
     _M_t.insert_equal(__first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
-  void erase(iterator __pos) { _M_t.erase(__pos); }
+  void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) { 
     return _M_t.erase(__x); 
   }

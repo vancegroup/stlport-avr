@@ -156,8 +156,8 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
   typedef _Value value_type;
   typedef typename _Traits::reference  reference;
   typedef typename _Traits::pointer    pointer;
-  typedef _Rb_tree_iterator<_Value, _Nonconst_traits<_Value> > iterator;
-  typedef _Rb_tree_iterator<_Value, _Const_traits<_Value> >    const_iterator;
+  typedef typename _Traits::_Non_const_traits _Non_const_traits;
+  typedef _Rb_tree_iterator<_Value, _Non_const_traits > iterator;
   typedef _Rb_tree_iterator<_Value, _Traits> _Self;
   typedef _Rb_tree_node_base*    _Base_ptr;
   typedef _Rb_tree_node<_Value>* _Link_type;
@@ -252,11 +252,12 @@ protected:
 };
 
 
-template <class _Key, class _Value, class _KeyOfValue, class _Compare,
+template <class _Key, class _Compare, 
+          class _Value, class _KeyOfValue, class _ConstIteTraits,
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class _Rb_tree : public _Rb_tree_base<_Value, _Alloc> {
   typedef _Rb_tree_base<_Value, _Alloc> _Base;
-  typedef _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> _Self;
+  typedef _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _ConstIteTraits, _Alloc> _Self;
 protected:
   typedef _Rb_tree_node_base * _Base_ptr;
   typedef _Rb_tree_node<_Value> _Node;
@@ -331,8 +332,9 @@ protected:
     { return _Rb_tree_node_base::_S_maximum(__x); }
 
 public:
-  typedef _Rb_tree_iterator<value_type, _Nonconst_traits<value_type> > iterator;
-  typedef _Rb_tree_iterator<value_type, _Const_traits<value_type> > const_iterator;
+  typedef typename _ConstIteTraits::_Non_const_traits _NonConstIteTraits;
+  typedef _Rb_tree_iterator<value_type, _NonConstIteTraits> iterator;
+  typedef _Rb_tree_iterator<value_type, _ConstIteTraits> const_iterator;
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 private:
@@ -556,8 +558,7 @@ public:
     return pair<iterator, iterator>(lower_bound(__x), upper_bound(__x));
   }
   pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
-    return pair<const_iterator,const_iterator>(lower_bound(__x),
-                                               upper_bound(__x));
+    return pair<const_iterator,const_iterator>(lower_bound(__x), upper_bound(__x));
   }
 
 #ifdef _STLP_DEBUG

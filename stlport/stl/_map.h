@@ -66,12 +66,14 @@ public:
     }
   };
 
+protected:
+  typedef _Const_traits<value_type> _ConstIteTraits;
 # ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
-  typedef _Rb_tree<key_type, value_type, 
-                   _Select1st_hint<value_type, _Key>, key_compare, _Alloc> _Rep_type;
+  typedef _Rb_tree<key_type, key_compare,
+                   value_type, _Select1st_hint<value_type, _Key>, _ConstIteTraits, _Alloc> _Rep_type;
 # else
-  typedef _Rb_tree<key_type, value_type, 
-                   _Select1st<value_type>, key_compare, _Alloc> _Rep_type;
+  typedef _Rb_tree<key_type, key_compare,
+                   value_type, _Select1st<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
 # endif
   _Rep_type _M_t;  // red-black tree representing map
 public:
@@ -221,8 +223,7 @@ public:
 
 template <class _Key, class _Tp, __DFL_TMPL_PARAM(_Compare, less<_Key> ), 
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
-class multimap _STLP_STLPORT_CLASS_1
-{
+class multimap _STLP_STLPORT_CLASS_1 {
   typedef multimap<_Key, _Tp, _Compare, _Alloc> _Self;
 public:
 
@@ -245,12 +246,14 @@ public:
     }
   };
 
+protected:
+  typedef _Const_traits<value_type> _ConstIteTraits;
 # ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
-  typedef _Rb_tree<key_type, value_type, 
-                  _Select1st_hint<value_type, _Key>, key_compare, _Alloc> _Rep_type;
+  typedef _Rb_tree<key_type, key_compare, 
+                   value_type, _Select1st_hint<value_type, _Key>, _ConstIteTraits, _Alloc> _Rep_type;
 # else
-  typedef _Rb_tree<key_type, value_type, 
-                  _Select1st<value_type>, key_compare, _Alloc> _Rep_type;
+  typedef _Rb_tree<key_type, key_compare, 
+                   value_type, _Select1st<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
 # endif
   _Rep_type _M_t;  // red-black tree representing multimap
 public:

@@ -37,29 +37,31 @@
 #  undef _DBG_Rb_tree
 #  define _DBG_Rb_tree _Rb_tree
 
-# define _STLP_DBG_TREE_SUPER __WORKAROUND_DBG_RENAME(Rb_tree) <_Key, _Value, _KeyOfValue, _Compare, _Alloc>
+# define _STLP_DBG_TREE_SUPER __WORKAROUND_DBG_RENAME(Rb_tree) <_Key, _Compare, _Value, _KeyOfValue, _ConstIteTraits, _Alloc>
 
 _STLP_BEGIN_NAMESPACE
 
 # ifdef _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
-template <class _Key, class _Value, class _KeyOfValue, class _Compare, class _Alloc >
+template <class _Key, class _Compare, 
+          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc >
 inline _Value*
 value_type(const  _DBG_iter_base< _STLP_DBG_TREE_SUPER >&) {
   return (_Value*)0;
 }
-template <class _Key, class _Value, class _KeyOfValue, class _Compare, class _Alloc >
+template <class _Key, class _Compare, 
+          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc >
 inline bidirectional_iterator_tag
 iterator_category(const  _DBG_iter_base< _STLP_DBG_TREE_SUPER >&) {
   return bidirectional_iterator_tag();
 }
 # endif
-
-template <class _Key, class _Value, class _KeyOfValue, class _Compare,
+template <class _Key, class _Compare, 
+          class _Value, class _KeyOfValue, class _ConstIteTraits, 
           _STLP_DBG_ALLOCATOR_SELECT(_Value) >
 class _DBG_Rb_tree : public _STLP_DBG_TREE_SUPER 
 {
   typedef _STLP_DBG_TREE_SUPER _Base;
-  typedef _DBG_Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc> _Self;
+  typedef _DBG_Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _ConstIteTraits, _Alloc> _Self;
 protected:
   friend class __owned_link;
   mutable __owned_list _M_iter_list;
@@ -68,8 +70,9 @@ public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
   typedef typename _Base::key_type key_type;
   
-  typedef _DBG_iter<_Base, _Nonconst_traits<value_type> > iterator;
-  typedef _DBG_iter<_Base, _Const_traits<value_type> > const_iterator;
+  typedef typename _ConstIteTraits::_Non_const_traits _NonConstIteTraits;
+  typedef _DBG_iter<_Base, _NonConstIteTraits> iterator;
+  typedef _DBG_iter<_Base, _ConstIteTraits> const_iterator;
 
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
