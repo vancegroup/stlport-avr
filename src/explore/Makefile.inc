@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <03/11/14 21:02:34 ptr>
+# -*- Makefile -*- Time-stamp: <04/03/25 23:18:30 ptr>
 # $Id$
 
 LIBNAME = stlport
@@ -10,7 +10,6 @@ SRC_CPP = ../dll_main.cpp \
           ../strstream.cpp \
           ../sstream.cpp \
           ../ios.cpp \
-          ../streambuf.cpp \
           ../stdio_streambuf.cpp \
           ../istream.cpp \
           ../ostream.cpp \
