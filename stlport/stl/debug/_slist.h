@@ -90,13 +90,14 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
-  _DBG_slist(_InputIterator __first, _InputIterator __last):
+  _DBG_slist(_InputIterator __first, _InputIterator __last) :
     _STLP_DBG_SLIST_BASE(__first, __last, allocator_type()), _M_iter_list(_Get_base()) {} 
-
+# endif
   template <class _InputIterator>
   _DBG_slist(_InputIterator __first, _InputIterator __last,
-	     const allocator_type& __a) : 
+	     const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
     _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {} 
 
 #else /* _STLP_MEMBER_TEMPLATES */

@@ -192,11 +192,7 @@ inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIte
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
 // we know they all pointers, so this cast is OK 
-#if !(defined(__MRC__)||defined(__SC__))		//*TY 03/03/2001 - although I believe this modification is not only for mpw compilers but applicable to all platforms...
-  return (_OutputIter)__copy_trivial(__first, __last, __result);  
-#else											//*TY 03/03/2001 - 
-  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));	//*TY 12/16/2000 - since not all iterators can be converted to void*
-#endif											//*TY 03/03/2001 - for instance, _DBG_iter does not provide conversion to void*
+  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
 }
 
 template <class _InputIter, class _OutputIter>

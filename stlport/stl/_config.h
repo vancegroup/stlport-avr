@@ -673,6 +673,14 @@ namespace stlport = _STLP_STD;
 #   define _STLP_NULL_TMPL_ARGS
 # endif
 
+# ifndef _STLP_ALLOCATOR_TYPE_DFL
+#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS 
+#   define _STLP_ALLOCATOR_TYPE_DFL 
+#  else
+#   define _STLP_ALLOCATOR_TYPE_DFL = allocator_type()
+#  endif
+# endif
+
 # if defined (__SGI_STL_NO_ARROW_OPERATOR) && ! defined (_STLP_NO_ARROW_OPERATOR)
 # define _STLP_NO_ARROW_OPERATOR
 # endif

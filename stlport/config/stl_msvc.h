@@ -72,6 +72,8 @@
 #  define _STLP_STATIC_CONST_INIT_BUG   1
 //  these work, as long they are inline
 #   define _STLP_INLINE_MEMBER_TEMPLATES 1
+// VC++ cannot handle default allocator argument in template constructors
+#   define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
 // there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
 #   define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 # endif

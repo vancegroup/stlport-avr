@@ -229,15 +229,16 @@ public:
   // already does them.
   template <class _InputIterator>
   slist(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a) : 
+        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
     _Slist_base<_Tp,_Alloc>(__a)
   { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   // VC++ needs this crazyness
   template <class _InputIterator>
   slist(_InputIterator __first, _InputIterator __last) :
     _Slist_base<_Tp,_Alloc>(allocator_type())
   { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
-  
+# endif  
 #else /* _STLP_MEMBER_TEMPLATES */
   slist(const_iterator __first, const_iterator __last,
         const allocator_type& __a =  allocator_type() ) :

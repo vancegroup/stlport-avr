@@ -100,15 +100,17 @@ public:
            const hasher& __hf)
     : _M_ht(__n, __hf, key_equal(), allocator_type())
     { _M_ht.insert_unique(__f, __l); }
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   hash_set(_InputIterator __f, _InputIterator __l, size_type __n,
            const hasher& __hf, const key_equal& __eql)
     : _M_ht(__n, __hf, __eql, allocator_type())
     { _M_ht.insert_unique(__f, __l); }
+#  endif
   template <class _InputIterator>
   hash_set(_InputIterator __f, _InputIterator __l, size_type __n,
            const hasher& __hf, const key_equal& __eql,
-           const allocator_type& __a)
+           const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_ht(__n, __hf, __eql, __a)
     { _M_ht.insert_unique(__f, __l); }
 #else
@@ -302,9 +304,15 @@ public:
     : _M_ht(__n, __hf, key_equal(), allocator_type())
     { _M_ht.insert_equal(__f, __l); }
   template <class _InputIterator>
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+  hash_multiset(_InputIterator __f, _InputIterator __l, size_type __n,
+                const hasher& __hf, const key_equal& __eql)
+    : _M_ht(__n, __hf, __eql, allocator_type())
+    { _M_ht.insert_equal(__f, __l); }
+# endif
   hash_multiset(_InputIterator __f, _InputIterator __l, size_type __n,
                 const hasher& __hf, const key_equal& __eql,
-                const allocator_type& __a = allocator_type())
+                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_ht(__n, __hf, __eql, __a)
     { _M_ht.insert_equal(__f, __l); }
 #else

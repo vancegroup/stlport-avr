@@ -379,12 +379,17 @@ public:
     { this->insert(begin(), __n, _Tp()); }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-
   // We don't need any dispatching tricks here, because insert does all of
-  // that anyway.  
+  // that anyway.
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+  template <class _InputIterator>
+  list(_InputIterator __first, _InputIterator __last)
+    : _List_base<_Tp, _Alloc>(allocator_type())
+  { insert(begin(), __first, __last); }
+# endif  
   template <class _InputIterator>
   list(_InputIterator __first, _InputIterator __last,
-       const allocator_type& __a = allocator_type())
+       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _List_base<_Tp, _Alloc>(__a)
   { insert(begin(), __first, __last); }
   

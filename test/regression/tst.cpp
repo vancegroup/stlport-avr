@@ -1,3 +1,33 @@
+
+#include <string>
+#include <iostream>			// regular I/O streams
+#include <fstream>			// file streams
+using namespace std;
+
+int main()
+{
+    string fname("abc.def");
+    fstream cfile;
+    fstream dfile;
+
+    cout << "Open " << fname << " for read" << endl;
+    cfile.open(fname.c_str(), ios::in);
+    if (cfile.is_open()) {
+	cout << fname << " exists" << endl;
+	cfile.close();
+    }
+    cout << "Open " << fname << " for write" << endl;
+    cfile.open(fname.c_str(), ios::out);
+    if (!cfile.is_open()) {
+	cout << "Can't open " << fname << " for output" << endl;
+	exit(1);
+    }
+
+    cout << fname << " has been opened for writing" << endl;
+    cfile.close();
+}
+
+# if 0
 # include <algorithm>
 # include <vector>
 
@@ -5,7 +35,29 @@
 # include <limits>
 # include <stdio.h>
 
-using namespace std;
+    #include <vector>
+
+    int main()
+    {
+	vector<int> myVector;
+
+	// const_iterator
+	for (vector<int>::const_iterator i = myVector.begin();
+	     i != myVector.end(); ++i) {
+	}
+
+	// reverse_iterator
+	for (vector<int>::reverse_iterator i = myVector.rbegin();
+	     i != myVector.rend(); ++i) {
+	}
+
+	// const_reverse_iterator
+	//
+	// no match for `reverse_iterator<const int *> & != reverse_iterator<int *>'
+	for (vector<int>::const_reverse_iterator i = myVector.rbegin();
+	     i != ((const vector<int>&)myVector).rend(); ++i) {
+	}
+    }
 
 int main()
 {
@@ -17,7 +69,7 @@ int main()
 
 
 
-# if 0
+
 
 int copy1_test(int, char**)
 {

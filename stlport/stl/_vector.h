@@ -214,7 +214,7 @@ public:
                                            (const_pointer)__x._M_finish, this->_M_start, _IsPODType());
   }
   
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __value, __true_type) {
@@ -230,16 +230,17 @@ public:
   }
 
   // Check whether it's an integral type.  If so, it's not an iterator.
+ # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last) :
     _Vector_base<_Tp, _Alloc>(allocator_type()) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
-
+ # endif
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
-         const allocator_type& __a) :
+         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
     _Vector_base<_Tp, _Alloc>(__a) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());

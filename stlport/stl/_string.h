@@ -279,9 +279,12 @@ public:                         // Constructor, destructor, assignment.
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __c);
     _M_terminate_string();
   }
+
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
 #if defined (_STLP_MEMBER_TEMPLATES)
+  static allocator_type __allocator_type() { return allocator_type(); }
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _String_base<_CharT,_Alloc>(allocator_type())
@@ -289,9 +292,10 @@ public:                         // Constructor, destructor, assignment.
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
+# endif
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
-               const allocator_type & __a)
+               const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
     : _String_base<_CharT,_Alloc>(__a)
   {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;

@@ -342,9 +342,10 @@ _STLP_TEMPLATE_NULL struct _Sanitize<0UL> {
 template<size_t _Nb>
 class bitset : public _Base_bitset<__BITSET_WORDS(_Nb) > 
 {
+public:
+  enum { _Words = __BITSET_WORDS(_Nb) } ;
 
 private:
-  enum { _Words = __BITSET_WORDS(_Nb) } ;
   typedef _Base_bitset< _Words > _Base;
 
   void _M_do_sanitize() {

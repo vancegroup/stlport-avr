@@ -81,13 +81,14 @@ public:
     : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_unique(__first, __last); }
-
+# endif
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
-      const allocator_type& __a)
+      const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 #else
   set(const value_type* __first, const value_type* __last) 
@@ -230,15 +231,16 @@ public:
     : _M_t(_Compare(), allocator_type())
     { _M_t.insert_equal(__first, __last); }
 
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_equal(__first, __last); }
-
+# endif
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp,
-           const allocator_type& __a)
+           const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
 
 #else

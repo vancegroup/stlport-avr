@@ -97,19 +97,25 @@ public:                         // Hooks for manipulators.  The arguments are
 public:                         // Formatted input of numbers.
   _Self& operator>> (short& __val) {
     long __lval;
-    _M_get_num(*this, __lval);
+    unsigned short __uval;
+   _M_get_num(*this, __lval);
     __val = __STATIC_CAST(short, __lval);
+    __uval = __lval;
     // check if we lose digits
-    if ((__val != __lval) && ((unsigned short)__val != __lval))
+    //    if ((__val != __lval) && ((unsigned short)__val != __lval))
+    if ((__val != __lval) && ((long)__uval != __lval))
       this->setstate(ios_base::failbit); 
     return *this; 
   }
   _Self& operator>> (int& __val) { 
     long __lval;
+    unsigned int __uval;
     _M_get_num(*this, __lval);
     __val = __lval;
+    __uval = __lval;
     // check if we lose digits
-    if ((__val != __lval) && ((unsigned int)__val != __lval))
+    //    if ((__val != __lval) && ((unsigned int)__val != __lval))
+    if ((__val != __lval) && ((long)__uval != __lval))
       this->setstate(ios_base::failbit); 
     return *this;
   }

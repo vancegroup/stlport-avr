@@ -82,7 +82,7 @@ RELEASE_LINK_COMMANDS_static=\
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)codecvt.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)collate.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)ctype.$(OBJEXT) \
-+$(RELEASE_OBJDIR_static)$(PATH_SEP)message_facets.$(OBJEXT) \
++$(RELEASE_OBJDIR_static)$(PATH_SEP)messages.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)monetary.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)num_get.$(OBJEXT) \
 +$(RELEASE_OBJDIR_static)$(PATH_SEP)num_get_float.$(OBJEXT) \
@@ -116,7 +116,7 @@ DEBUG_LINK_COMMANDS_static= \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)codecvt.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)collate.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)ctype.$(OBJEXT) \
-+$(DEBUG_OBJDIR_static)$(PATH_SEP)message_facets.$(OBJEXT) \
++$(DEBUG_OBJDIR_static)$(PATH_SEP)messages.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)monetary.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)num_get.$(OBJEXT) \
 +$(DEBUG_OBJDIR_static)$(PATH_SEP)num_get_float.$(OBJEXT) \
@@ -149,7 +149,7 @@ STLDEBUG_LINK_COMMANDS_static= \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)codecvt.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)collate.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)ctype.$(OBJEXT) \
-+$(STLDEBUG_OBJDIR_static)$(PATH_SEP)message_facets.$(OBJEXT) \
++$(STLDEBUG_OBJDIR_static)$(PATH_SEP)messages.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)monetary.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)num_get.$(OBJEXT) \
 +$(STLDEBUG_OBJDIR_static)$(PATH_SEP)num_get_float.$(OBJEXT) \

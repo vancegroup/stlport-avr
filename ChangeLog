@@ -87,6 +87,11 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	 (Thanks to dgehri)
 
 	* debug/_slist.h : missing sort() (template and regular) interface added
+
+	* _istream.h : eliminated warning about comparison with unsigned (Thanks to Gerd Hoeren for the report)
+
+	* template constructors for containers changed to be one version with default allocator agrument, where possible.
+	
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 

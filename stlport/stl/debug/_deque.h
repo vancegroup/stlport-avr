@@ -129,11 +129,13 @@ public:                         // Constructor, destructor.
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   _DBG_deque(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a) : 
+        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
     _STLP_DEQUE_SUPER(__first, __last, __a) , _M_iter_list(_Get_base()) {}
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_deque(_InputIterator __first, _InputIterator __last):
     _STLP_DEQUE_SUPER(__first, __last, allocator_type()) , _M_iter_list(_Get_base()) {}
+# endif
 #else /* _STLP_MEMBER_TEMPLATES */
   _DBG_deque(const value_type* __first, const value_type* __last,
         const allocator_type& __a = allocator_type()) 

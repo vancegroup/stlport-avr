@@ -1,6 +1,6 @@
 SHELL=/bin/sh
 
-include common_macros.mak
+!include common_macros.mak
 
 # INSTALLDIR=/usr/local
 # INSTALLDIR_INC=$(INSTALLDIR)/include/stlport

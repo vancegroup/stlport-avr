@@ -152,14 +152,15 @@ public:
   _DBG_vector(const _Self& __x) 
     : _STLP_DBG_VECTOR_BASE(__x), _M_iter_list((const _Base*)this) {}
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES) && ! defined (_STLP_MSVC)
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last):
     _STLP_DBG_VECTOR_BASE(__first, __last), _M_iter_list((const _Base*)this) {}
-
+# endif
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last,
-         const allocator_type& __a) :
+         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) :
     _STLP_DBG_VECTOR_BASE(__first, __last, __a), _M_iter_list((const _Base*)this) {}
 
 #else

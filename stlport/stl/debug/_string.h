@@ -90,15 +90,15 @@ public:                         // Constructor, destructor, assignment.
     _STLP_DBG_STRING_BASE(__n, __c, __a), _M_iter_list(_Get_base()) {}
 
 #if defined (_STLP_MEMBER_TEMPLATES)
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l):
     _STLP_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {}
-
+#  endif
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
-		    const allocator_type & __a):
+		    const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL):
     _STLP_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {}
-
 #else /* _STLP_MEMBER_TEMPLATES */
   basic_string(const_iterator __f, const_iterator __l, 
 		    const allocator_type & __a = allocator_type()):

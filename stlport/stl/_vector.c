@@ -102,11 +102,11 @@ __vector__<_Tp,_Alloc>::operator=(const __vector__<_Tp, _Alloc>& __x)
       this->_M_end_of_storage._M_data = this->_M_start + __xlen;
     }
     else if (size() >= __xlen) {
-      pointer __i = __copy_ptrs((const_pointer)__x._M_start+0, (const_pointer)__x._M_finish+0, this->_M_start, _TrivialAss());
+      pointer __i = __copy_ptrs((const_pointer)__x._M_start+0, (const_pointer)__x._M_finish+0, (pointer)this->_M_start, _TrivialAss());
       _Destroy(__i, this->_M_finish);
     }
     else {
-      __copy_ptrs((const_pointer)__x._M_start, (const_pointer)__x._M_start + size(), this->_M_start, _TrivialAss());
+      __copy_ptrs((const_pointer)__x._M_start, (const_pointer)__x._M_start + size(), (pointer)this->_M_start, _TrivialAss());
       __uninitialized_copy((const_pointer)__x._M_start + size(), (const_pointer)__x._M_finish+0, this->_M_finish, _IsPODType());
     }
     this->_M_finish = this->_M_start + __xlen;

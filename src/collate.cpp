@@ -31,7 +31,6 @@ int collate<char>::do_compare(const char* low1, const char* high1,
   return __lexicographical_compare_3way(low1, high1, low2, high2);
 }
 
-
 string collate<char>::do_transform(const char* low, const char* high) const
 {
   return string(low, high);
@@ -43,6 +42,9 @@ long collate<char>::do_hash(const char* low, const char* high) const {
     result = 5 * result + *low;
   return result;
 }
+
+
+
 
 # ifndef _STLP_NO_WCHAR_T
 // collate<wchar_t>
@@ -56,12 +58,12 @@ collate<wchar_t>::do_compare(const wchar_t* low1, const wchar_t* high1,
   return __lexicographical_compare_3way(low1, high1, low2, high2);
 }
 
+
 wstring
 collate<wchar_t>::do_transform(const wchar_t* low, const wchar_t* high) const
 {
   return wstring(low, high);
 }
-
 
 long collate<wchar_t>::do_hash(const wchar_t* low, const wchar_t* high) const
 {
