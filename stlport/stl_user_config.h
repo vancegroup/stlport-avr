@@ -85,7 +85,6 @@
 
 
 /* 
- *
  *  _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream classes
  *  with custom types (which is most likely the case).
  *  Custom means types other than char, wchar and char_traits<>,
@@ -96,7 +95,6 @@
  *  That also guarantees that you still use optimized standard i/o when you compile your program without optimization. 
  *  Option does not affect STLport library build; you may use the same binary library with and without this option, 
  *  on per-project basis.
- *
  */
 // #define _STLP_NO_CUSTOM_IO
 
