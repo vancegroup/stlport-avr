@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/05/13 21:59:38 ptr>
+// -*- C++ -*- Time-stamp: <99/05/19 21:16:24 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -191,7 +191,12 @@ class MutexSDS : // Self Deadlock Safe
   public:
     MutexSDS() :
         _count( 0 ),
+#ifdef __unix
         _id( -1 )
+#endif
+#ifdef WIN32
+        _id( INVALID_HANDLE_VALUE )
+#endif
       { }
 
     void lock()
@@ -216,7 +221,12 @@ class MutexSDS : // Self Deadlock Safe
     void unlock()
       {
         if ( --_count == 0 ) {
+#ifdef __unix
           _id = -1;
+#endif
+#ifdef WIN32
+          _id = INVALID_HANDLE_VALUE;
+#endif
           Mutex::unlock();
         }
       }
