@@ -1,3 +1,13 @@
+2004-04-06  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_prolog.h: when we in _STLP_REDEFINE_STD mode, we really
+	need to #undef std, see mistake 2004-02-19 below.
+
+	* stlport/config/stl_msvc.h: partially undo workaround 2004-03-30,
+	not required; problem was solved by #undef std in _prolog.h
+
+	* stlport/stl/_abbrevs.h: add new abbrevs---VC6 has problems in debug mode
+
 2004-04-03  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl_user_config.h: expose _STLP_DONT_FORCE_MSVC_LIB_NAME for
