@@ -18,7 +18,7 @@ int accum1_test(int, char**)
 {
   cout<<"Results of accum1_test:"<<endl;
   vector <int> v(5);
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     v[i] = i + 1;
   int sum = accumulate(v.begin(), v.end(), 0);
   cout << "sum = " << sum << endl;
