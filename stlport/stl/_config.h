@@ -430,16 +430,6 @@
 #  endif
 #  define __FULL_NAME(X) __WORKAROUND_RENAME(X)
 
-/* provide a mechanism to redefine std:: namespace in a way that is transparent to the 
- * user. _STLP_REDEFINE_STD is being used for wrapper files that include native headers
- * to temporary undef the std macro. */
-#  if defined ( _STLP_USE_NAMESPACES ) && defined ( _STLP_USE_OWN_NAMESPACE ) \
-   && ! defined ( _STLP_DONT_REDEFINE_STD )
-#   define _STLP_REDEFINE_STD 1
-#  else
-#   undef  _STLP_REDEFINE_STD
-#  endif
-
 /* this always mean the C library is in global namespace */
 # if defined (_STLP_HAS_NO_NEW_C_HEADERS) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
 #  define _STLP_VENDOR_GLOBAL_CSTD 1
@@ -993,12 +983,6 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   define _STLP_NEW_IO_NAMESPACE
 #  endif
 # endif
-
-/* We disable link-time instantiation of RW library because
- * it is not compatible with std renaming */
-#if 0 /* !(defined(_STLP_DONT_RENAME_STD) || defined(__BORLANDC__) || defined(_RWSTD_COMPILE_INSTANTIATE)) */
-#  define _RWSTD_COMPILE_INSTANTIATE
-#endif
 
 #ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 # define _STLP_RELOPS_OPERATORS(_TMPL, _TP) \

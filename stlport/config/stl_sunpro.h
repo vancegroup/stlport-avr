@@ -40,11 +40,13 @@
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-# endif
+# endif 
 
 
-# if defined (_STLP_OWN_IOSTREAMS) && ! defined (_STLP_NO_OWN_NAMESPACE)
-#  define _STLP_NO_OWN_NAMESPACE
+# if defined (_STLP_OWN_IOSTREAMS)
+#  if ! defined (_STLP_NO_OWN_NAMESPACE)
+#   define _STLP_NO_OWN_NAMESPACE
+#  endif
 # else
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 # endif
