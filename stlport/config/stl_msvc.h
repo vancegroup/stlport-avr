@@ -27,12 +27,12 @@
 #       define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../Armv4/##header>
 #   endif
 #  else
-#  define _STLP_NATIVE_HEADER(x) <../include/##x>
-#  define _STLP_NATIVE_C_HEADER(x) <../include/##x>
-#  define _STLP_NATIVE_CPP_C_HEADER(x) <../include/##x>
-#  define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../include/##x>
-#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
-# endif
+#   define _STLP_NATIVE_HEADER(x) <../include/##x>
+#   define _STLP_NATIVE_C_HEADER(x) <../include/##x>
+#   define _STLP_NATIVE_CPP_C_HEADER(x) <../include/##x>
+#   define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../include/##x>
+#   define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
+#  endif
 # endif
 
 # define _STLP_CALL __cdecl
@@ -151,6 +151,9 @@
 #  define _STLP_NO_BAD_ALLOC
 #  define _STLP_BROKEN_BAD_ALLOC_CLASS
 #  define _STLP_BROKEN_BAD_CAST_CLASS
+#  ifdef _DEBUG
+#   define _STLP_USE_ABBREVS
+#  endif
 # endif /* (_MSC_VER <= 1200) */
 
 # if ( _MSC_VER<=1010 )
@@ -213,53 +216,120 @@
 // If we are under Windows CE, include appropriate config
 
 # if defined(UNDER_CE)
-#   if UNDER_CE < 400
+#  if UNDER_CE < 400
 #   include <config/stl_wince.h>
-#   else
-#       include <config/stl_wince_4.h>
-#   endif
+#  else
+#   include <config/stl_wince_4.h>
+#  endif
 # endif
 
-# ifdef __ICL
-#  define _STLP_LIB_BASENAME "stlport_icl"
-# elif defined(_STLP_WCE_NET)
+# if !( defined(_STLP_WINCE) )
+#  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+#  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
+# endif
+
+# if !( defined(_STLP_MSVC) && _STLP_MSVC < 1100)
+#  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+#  define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+# endif
+
+# if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) || \
+       defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB) ) && \
+       !(defined(_STLP_USE_STATIC_LIB) || defined(_STLP_USE_STATICX_LIB))
+#  undef  _STLP_USE_DECLSPEC
+#  define _STLP_USE_DECLSPEC 1
+# endif
+
+# ifndef _STLP_IMPORT_TEMPLATE_KEYWORD
+#  if defined(_STLP_MSVC) && _STLP_MSVC > 1300
+#   define _STLP_IMPORT_TEMPLATE_KEYWORD
+#  else
+#   define _STLP_IMPORT_TEMPLATE_KEYWORD  extern
+#  endif
+# endif
+# define _STLP_EXPORT_TEMPLATE_KEYWORD
+
+
+# if !defined(_STLP_DONT_FORCE_MSVC_LIB_NAME) && !defined(_STLP_NO_OWN_IOSTREAMS)
+#  ifdef __ICL
+#   define _STLP_LIB_BASENAME "stlport_icl"
+#  elif defined(_STLP_WCE_NET)
 #   if defined(_X86_)
-#       define _STLP_LIB_BASENAME "stlport_evc4-x86"
+#    define _STLP_LIB_BASENAME "stlport_evc4-x86"
 #   elif defined(_ARM_)
-#       define _STLP_LIB_BASENAME "stlport_evc4-arm"
+#    define _STLP_LIB_BASENAME "stlport_evc4-arm"
 #   else
-#       define _STLP_LIB_BASENAME "stlport_wce4"
+#    define _STLP_LIB_BASENAME "stlport_wce4"
 #   endif
-# else
-# if (_MSC_VER >= 1310) 
-#   define _STLP_LIB_BASENAME "stlport_vc71"
-# elif (_MSC_VER >= 1300) 
-#   define _STLP_LIB_BASENAME "stlport_vc70"
-# elif (_MSC_VER >= 1200)
+#  else
+#   if (_MSC_VER >= 1310) 
+#    define _STLP_LIB_BASENAME "stlport_vc71"
+#   elif (_MSC_VER >= 1300) 
+#    define _STLP_LIB_BASENAME "stlport_vc70"
+#   elif (_MSC_VER >= 1200)
 //#   ifdef _UNICODE
 //#    define _STLP_LIB_BASENAME "stlport_vc6_unicode"
 //#   else
 #    define _STLP_LIB_BASENAME "stlport_vc6"
 //#   endif
-#  elif (_MSC_VER >= 1100)
+#   elif (_MSC_VER >= 1100)
 //#   ifdef _UNICODE
 //#    define _STLP_LIB_BASENAME "stlport_vc5_unicode"
 //#   else
 #    define _STLP_LIB_BASENAME "stlport_vc5"
 //#   endif
-#  endif /* (_MSC_VER >= 1200) */
-# endif /* __ICL */
+#   endif /* (_MSC_VER >= 1200) */
+#  endif /* __ICL */
 
 
-#    if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
+#  if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
 //    only static STLport lib now works for ICL and VC 5.0
-#     undef  _STLP_USE_STATIC_LIB
-#     define _STLP_USE_STATIC_LIB
+#   undef  _STLP_USE_STATIC_LIB
+#   define _STLP_USE_STATIC_LIB
 //    disable hook which makes template symbols to be searched for in the library
-#     undef _STLP_NO_CUSTOM_IO
-#    endif
+#   undef _STLP_NO_CUSTOM_IO
+#  endif
 
-#   include <config/vc_select_lib.h>
+#  if (defined(_RTLDLL) && defined(_STLP_USE_STATIC_LIB)) || defined(_STLP_USE_STATICX_LIB)
+#   define _STLP_LIB_STATIC_SUFFIX "_staticx"
+#  else
+#   define _STLP_LIB_STATIC_SUFFIX "_static"
+#  endif
+
+#  if !defined (_STLP_LIB_STATIC_SUFFIX)
+#   define _STLP_LIB_STATIC_SUFFIX ""
+#  endif
+
+// Note : the code below is intended to make use of compiled
+// STLport iostreams easier. If you are with to change names used for
+// STLport libraries , please also change RELEASE_NAME and DEBUG_NAME
+// macros in makefile ../../src/vc6.mak (or whatever .mak you are using to build
+// STLport). If you are using binaries, you may just rename the binaries.
+#  if !defined (__BUILDING_STLPORT)
+#   if defined (_STLP_USE_DECLSPEC)
+#    ifdef _STLP_DEBUG
+#     pragma comment(lib, _STLP_LIB_BASENAME"_stldebug.lib")
+#    elif (defined (_DEBUG) || defined (__DEBUG)) && defined (_STLP_USE_DEBUG_LIB)
+#     pragma comment(lib, _STLP_LIB_BASENAME"_debug.lib")
+#    else
+#     pragma comment(lib, _STLP_LIB_BASENAME".lib")
+#    endif
+#   else /* _STLP_USE_DECLSPEC */
+// fbp : for static linking, debug setting _MUST_ correspond to what
+// has been compiled into binary lib
+#    ifdef _STLP_DEBUG
+#     if (! defined (_DEBUG))
+#      error "For static link with STLport library, _DEBUG setting MUST be on when _STLP_DEBUG is on. (/MTd forces _DEBUG)"
+#     endif
+#     pragma comment(lib, _STLP_LIB_BASENAME"_stldebug"_STLP_LIB_STATIC_SUFFIX".lib")
+#    elif (defined (_DEBUG) || defined (__DEBUG)) && defined (_STLP_USE_DEBUG_LIB)
+#     pragma comment(lib, _STLP_LIB_BASENAME"_debug"_STLP_LIB_STATIC_SUFFIX".lib")
+#    else
+#     pragma comment(lib, _STLP_LIB_BASENAME""_STLP_LIB_STATIC_SUFFIX".lib")
+#    endif
+#   endif /* _STLP_USE_DECLSPEC */
+#  endif /* __BUILDING_STLPORT */
+# endif // !_STLP_DONT_FORCE_MSVC_LIB_NAME) && !_STLP_NO_OWN_IOSTREAMS
 
 // Local Variables:
 // mode:C++
