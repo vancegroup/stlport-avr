@@ -15,8 +15,8 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef _STLP_IOS_H
-#define _STLP_IOS_H
+#ifndef _STLP_INTERNAL_IOS_H
+#define _STLP_INTERNAL_IOS_H
 
 
 #ifndef _STLP_IOS_BASE_H

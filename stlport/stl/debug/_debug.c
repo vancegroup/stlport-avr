@@ -337,20 +337,30 @@ _STLP_BEGIN_NAMESPACE
 template <class _Dummy>
 void  _STLP_CALL
 __stl_debug_engine<_Dummy>::_Invalidate_all(__owned_list* __l) {
+  _STLP_ACQUIRE_LOCK(__l->_M_lock);
+  _Stamp_all(__l, 0);
+  __l->_M_node._M_next =0;
+  _STLP_RELEASE_LOCK(__l->_M_lock);
+}
+
+// boris : this is unasafe routine; should be used within critical section only !
+template <class _Dummy>
+void  _STLP_CALL
+__stl_debug_engine<_Dummy>::_Stamp_all(__owned_list* __l, __owned_list* __o) {
   // crucial
   if (__l->_M_node._M_owner) {
     for (__owned_link*  __position = (__owned_link*)__l->_M_node._M_next; 
 	 __position != 0; __position= (__owned_link*)__position->_M_next) {
       _STLP_ASSERT(__position->_Owner()== __l)
-      __position->_M_owner=0;
+      __position->_M_owner=__o;
     }
-    __l->_M_node._M_next =0;
   }
 }
 
 template <class _Dummy>
 void  _STLP_CALL
 __stl_debug_engine<_Dummy>::_Verify(const __owned_list* __l) {
+  _STLP_ACQUIRE_LOCK(__l->_M_lock);
   if (__l) {
     _STLP_ASSERT(__l->_M_node._Owner() != 0)
     for (__owned_link* __position = (__owned_link*)__l->_M_node._M_next; 
@@ -358,18 +368,54 @@ __stl_debug_engine<_Dummy>::_Verify(const __owned_list* __l) {
       _STLP_ASSERT(__position->_Owner()== __l)
     }
   }
+  _STLP_RELEASE_LOCK(__l->_M_lock);
 }
 
 template <class _Dummy>
 void _STLP_CALL  
-__stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y, bool __swap_roots) {
+__stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y /*, bool __swap_roots */) {
+
+# ifdef OBSOLETE 
   __x._Invalidate_all();
   __y._Invalidate_all();
-  if (__swap_roots) {
-    __owned_list* __tmp = __x._M_node._M_owner;
-    __x._M_node._M_owner=__y._M_node._M_owner;
-    __y._M_node._M_owner=__tmp;
-  }
+# endif
+
+  //  according to the standard : --no swap() function invalidates any references, pointers,  or  itera-
+  //  tors referring to the elements of the containers being swapped.
+
+  __owned_list* __tmp_x;
+  __owned_list* __tmp_y;
+
+  // boris : there is a deadlock potential situation here; 
+  // we do not lock two containers sequentially !
+
+  _STLP_ACQUIRE_LOCK(__x._M_lock);
+  // stamp x's list with y
+  _Stamp_all(&__x, &__y);
+  __tmp_x = __x->_M_node._M_next;
+  __x->_M_node._M_next = 0;
+  _STLP_RELEASE_LOCK(__x._M_lock);
+
+  _STLP_ACQUIRE_LOCK(__y._M_lock);
+  // stamp y's list with x
+  _Stamp_all(&__y, &__x);
+  __tmp_y = __y->_M_node._M_next;
+  __y->_M_node._M_next = __tmp_x;  
+  _STLP_RELEASE_LOCK(__y._M_lock);
+  
+  _STLP_ACQUIRE_LOCK(__x._M_lock);
+  // before finishing swap, check if x's list gained any elements since 
+  // we saved it to the temporary. 
+  if (__x->_M_node._M_next) {
+    __tmp_x = __x->_M_node._M_next;
+    while (__tmp_x && __tmp_x->_M_next)
+      __tmp_x = __tmp_x->_M_next;
+    // concatenate x's list with what we have prepared
+    __tmp_x->_M_next = __tmp_y;
+  } else 
+    // otherwise, just finish swap normally
+    __x->_M_node._M_next = __tmp_y;
+  _STLP_RELEASE_LOCK(__x._M_lock);
 }
 
 template <class _Dummy>

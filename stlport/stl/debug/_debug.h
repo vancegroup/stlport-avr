@@ -115,10 +115,12 @@ struct __stl_debug_engine {
 
   static void _STLP_CALL  _Verify(const __owned_list*);
   
-  static void _STLP_CALL  _Swap_owners(__owned_list&, __owned_list& , bool __swap_roots);
+  static void _STLP_CALL  _Swap_owners(__owned_list&, __owned_list& /*, bool __swap_roots */ );
  
   static void _STLP_CALL  _Invalidate_all(__owned_list*);
   
+  static void _STLP_CALL  _Stamp_all(__owned_list*, __owned_list*);
+
   static void _STLP_CALL  _M_detach(__owned_list*, __owned_link*);
 
   static void _STLP_CALL  _M_attach(__owned_list*, __owned_link*);
@@ -323,8 +325,8 @@ public:
     __stl_debugger::_Verify(this); 
   }
   
-  void _Swap_owners(__owned_list& __y, bool __swap_roots =false) { 
-    __stl_debugger::_Swap_owners(*this, __y, __swap_roots); 
+  void _Swap_owners(__owned_list& __y) { 
+    __stl_debugger::_Swap_owners(*this, __y); 
   }
  
   void _Invalidate_all() { 

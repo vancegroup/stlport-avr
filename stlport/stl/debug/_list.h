@@ -139,7 +139,7 @@ public:
   const_reference back() const { return *(--end()); }
 
   void swap(_Self& __x) {
-    _M_iter_list._Swap_owners(__x._M_iter_list, true);
+    _M_iter_list._Swap_owners(__x._M_iter_list);
     _Base::swap(__x); 
   }
 

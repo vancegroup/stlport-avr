@@ -110,8 +110,8 @@ public:
     return const_reverse_iterator(begin());
   }
   void swap(_Self& __t) {
-    _M_iter_list._Swap_owners(__t._M_iter_list, true);
     _Base::swap(__t);
+    _M_iter_list._Swap_owners(__t._M_iter_list);
   }
     
 public:

@@ -15,8 +15,8 @@
  * modified is included with the above copyright notice.
  *
  */ 
-#ifndef _STLP_ISTREAM_H
-#define _STLP_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM_H
+#define _STLP_INTERNAL_ISTREAM_H
 
 // this block is included by _ostream.h, we include it here to lower #include level
 # if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR)

@@ -21,8 +21,8 @@
  * for the MIPS, SPARC, Alpha and ia32 architectures.
  */
 
-#ifndef _STLP_LIMITS_H
-# define _STLP_LIMITS_H
+#ifndef _STLP_INTERNAL_LIMITS_H
+# define _STLP_INTERNAL_LIMITS_H
 
 #ifndef _STLP_CLIMITS
 # include <climits>

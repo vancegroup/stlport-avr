@@ -17,8 +17,8 @@
  */ 
 
 
-#ifndef _STLP_OSTREAM_H
-#define _STLP_OSTREAM_H
+#ifndef _STLP_INTERNAL_OSTREAM_H
+#define _STLP_INTERNAL_OSTREAM_H
 
 #ifndef _STLP_IOS_H
 # include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.

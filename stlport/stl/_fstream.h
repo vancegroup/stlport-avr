@@ -19,8 +19,8 @@
 // basic_ofstream, and basic_fstream.  These classes represent
 // streambufs and streams whose sources or destinations are files.
 
-#ifndef _STLP_FSTREAM_H
-#define _STLP_FSTREAM_H
+#ifndef _STLP_INTERNAL_FSTREAM_H
+#define _STLP_INTERNAL_FSTREAM_H
 
 #if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
 #error This header file requires the -LANG:std option
