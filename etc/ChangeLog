@@ -1,8 +1,17 @@
 2004-04-14  Petr Ovtchenkov  <ptr@Island...>
 
+	* stlport/typeinfo, stlport/config/stl_wince_4.h, stlport/stl/debug/_debug.c: adaptation for Win CE .NET;
+	Thanks Zdenek Nemec.
+
 	* stlport/stl/_algobase.h: calculate difference once
 
-	* stlport/stl/pointers/_vector.h: missed return
+	* stlport/stl/pointers/_vector.h: missed returns. Thanks KL.
+
+	* stlport/stl/pointers/_list.h: idem.
+
+	* stlport/stl/pointers/_deque.h: idem.
+
+	* stlport/stl/pointers/_slist.h: idem.
 
 	* stlport/stl/_vector.c, stlport/stl/_vector.h: big enough functions moved to non-inline section
 
