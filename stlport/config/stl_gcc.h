@@ -65,6 +65,9 @@
 # elif defined(__linux__)
 #   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #   define _STLP_NO_NATIVE_WIDE_STREAMS   1
+# elif defined (__sun)
+#   define _STLP_WCHAR_BORLAND_EXCLUDE
+#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #endif
 
 /* Mac OS X is a little different with namespaces and cannot instantiate
