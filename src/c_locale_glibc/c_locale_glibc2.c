@@ -99,9 +99,9 @@ const char *_Locale_ctype_default( char *nm )
 
 const char *_Locale_numeric_default( char *buf )
 {
+  char *num = getenv( "LC_NUMERIC" );
   printf( "%s:%d %s\n", __FILE__, __LINE__ );
   // return 0;
-  char *num = getenv( "LC_NUMERIC" );
   if ( num == 0 || *num == '0' ) {
     num = getenv( "LANG" );
   }
