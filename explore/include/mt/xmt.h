@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/08/31 15:41:41 ptr>
+// -*- C++ -*- Time-stamp: <00/09/08 11:41:25 ptr>
 
 /*
  *
@@ -6,7 +6,7 @@
  * Petr Ovchenkov
  *
  * Copyright (c) 1999-2000
- * ParallelGraphics
+ * ParallelGraphics Ltd.
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -21,7 +21,14 @@
 #ifndef __XMT_H
 #define __XMT_H
 
-#ident "$SunId$"
+#ifdef __unix
+#  ifdef __HP_aCC
+#pragma VERSIONID "$SunId$"
+#  else
+#pragma ident "$SunId$"
+#  endif
+#endif
+
 
 #ifndef __config_feature_h
 #include <config/feature.h>
@@ -399,20 +406,21 @@ class Condition
           }
           return 0;
 #endif
+#if defined(__STL_UITHREADS) || defined(_PTHREADS)
+          MT_REENTRANT( _lock, _x1 );
+          int ret = 0;
+          while ( !_val ) {
+            ret =
 #ifdef _PTHREADS
-          return pthread_cond_wait( &_cond, &_lock._M_lock );
+              pthread_cond_wait( &_cond, &_lock._M_lock );
 #endif
 #ifdef __STL_UITHREADS
-          MT_REENTRANT( _lock, _x1 );
-          int ret;
-          while ( !_val ) {
-            ret = cond_wait( &_cond, /* &_lock.mutex */ &_lock._M_lock );
+              cond_wait( &_cond, &_lock._M_lock );
+#endif
           }
-
           return ret;
 #endif
         }
-
         return 0;
       }
 
@@ -428,17 +436,18 @@ class Condition
         }
         return 0;
 #endif
-#ifdef _PTHREADS
-        MT_REENTRANT( _lock, _x1 ); // ??
-        _val = false;
-        return pthread_cond_wait( &_cond, &_lock._M_lock );
-#endif
-#ifdef __STL_UITHREADS
+#if defined(_PTHREADS) || defined(__STL_UITHREADS)
         MT_REENTRANT( _lock, _x1 );
         _val = false;
         int ret;
         while ( !_val ) {
-          ret = cond_wait( &_cond, /* &_lock.mutex */ &_lock._M_lock );
+          ret =
+#ifdef _PTHREADS
+            pthread_cond_wait( &_cond, &_lock._M_lock );
+#endif
+#ifdef __STL_UITHREADS
+            cond_wait( &_cond, &_lock._M_lock );
+#endif
         }
 
         return ret;

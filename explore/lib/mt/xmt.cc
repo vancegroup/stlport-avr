@@ -1,11 +1,11 @@
-// -*- C++ -*- Time-stamp: <00/08/31 15:36:40 ptr>
+// -*- C++ -*- Time-stamp: <00/09/08 11:38:06 ptr>
 
 /*
- * Copyright (c) 1999-2000
- * ParallelGraphics
- *
  * Copyright (c) 1997-1999
  * Petr Ovchenkov
+ *
+ * Copyright (c) 1999-2000
+ * ParallelGraphics
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -17,7 +17,13 @@
  * in supporting documentation.
  */
 
-#ident "$SunId$"
+#ifdef __unix
+#  ifdef __HP_aCC
+#pragma VERSIONID "$SunId$"
+#  else
+#pragma ident "$SunId$"
+#  endif
+#endif
 
 #include <xmt.h>
 
