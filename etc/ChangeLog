@@ -1,45 +1,50 @@
 2004-01-22  Francois Dumont <dums@s...>
 
-  * _new.h: check of the _STLP_USE_EXCEPTIONS before correction of the new
-    operator behavior and bad_alloc exception definition.
+	* _new.h: check of the _STLP_USE_EXCEPTIONS before correction of the new
+	operator behavior and bad_alloc exception definition.
 
-  * _ios_base.h: removal of the _M_get_facet function not fully implemented
-    and unused thanks Ulrich Eckhardt.
+	* _ios_base.h: removal of the _M_get_facet function not fully implemented
+	and unused thanks Ulrich Eckhardt.
 
-  * _algo.h: correction of the __less_2 helper struct to remove
-    copy thanks Sergey Volk
+	* _algo.h: correction of the __less_2 helper struct to remove
+	copy thanks Sergey Volk
 
 2004-01-19  Petr Ovchenkov  <ptr@Island...>
 
-  * _debug.c: avoid recursive locks in __owner_list's mutex---equivalent
-  code use underlie iterators, not debug wrapper iterators. By the way this
-  approach faster---no excessive checks; solved by Boris Fomitchev.
+	* _debug.c: avoid recursive locks in __owner_list's mutex---equivalent
+	code use underlie iterators, not debug wrapper iterators. By the way this
+	approach faster---no excessive checks; solved by Boris Fomitchev.
 
-  * _thread.h, _debug.h: recursive-safe mutex structure removed---not
-  required more; see reason just above.
+	* _thread.h, _debug.h: recursive-safe mutex structure removed---not
+	required more; see reason just above.
 
 2004-01-09  Francois Dumont <dums@s...>
 
-  * type_manip.h: Correction of the _IsSame struct to have both partial template
-    specialization version and the other behaving similarly.
+	* type_manip.h: Correction of the _IsSame struct to have both partial template
+	specialization version and the other behaving similarly.
 
 2004-01-07  Francois Dumont <dums@s...>
 
-  * _deque.c: Mysterious copies of instance to store in the containers
-              has been removed.
+	* _deque.c: Mysterious copies of instance to store in the containers
+	has been removed.
 
 2004-01-05  Francois Dumont <dums@s...>
 
-  * _list.h, _slist.h: Implementation of the pointer specialization for list
-    and slist.
+	* _list.h, _slist.h: Implementation of the pointer specialization for list
+	and slist.
 
 2003-12-31  Petr Ovchenkov  <ptr@Island...>
 
-  * _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
+	* _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
 
-  * debug/_vector.h: pointer specialization for vector not derived
-    from _Vector_base, so we should avoid references on _Vector_base
-    class members in debug wrapper.
+	* debug/_vector.h: pointer specialization for vector not derived
+	from _Vector_base, so we should avoid references on _Vector_base
+	class members in debug wrapper.
+
+2003-12-22  Francois Dumont  <dums@s...>
+
+	* _string.h: use _STLP_FORCE_STRING_TERMINATION flag to enforce
+	null-termination of data associated with string.
  
 2003-12-20  Francois Dumont  <dums@s...>
 
