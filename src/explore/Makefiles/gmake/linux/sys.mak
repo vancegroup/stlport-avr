@@ -1,11 +1,11 @@
-# Time-stamp: <03/10/27 18:47:14 ptr>
+# Time-stamp: <04/03/03 15:49:24 ptr>
 # $Id$
 
 SO := so
 
 ARCH := a
 AR := ar
-AR_INS_R := -r
+AR_INS_R := -rs
 AR_EXTR := -x
 AR_OUT = $@
 
