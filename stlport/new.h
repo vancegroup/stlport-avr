@@ -25,7 +25,11 @@
 # if defined (__BORLANDC__)
 #  include <new.>
 # else
-#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
+#  ifdef __GNUC__
+#   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
+#  else
+#   include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
+#  endif
 # endif
 # endif /* STL_WINCE */
 
