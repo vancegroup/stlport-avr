@@ -28,32 +28,30 @@ _STLP_BEGIN_NAMESPACE
 // exp
 
 _STLP_DECLSPEC complex<float>  _STLP_CALL
-exp(const complex<float>& z)
-{
+exp(const complex<float>& z) {
   float expx = _STLP_EXPF(z._M_re);
   return complex<float>(expx * _STLP_COSF(z._M_im),
                         expx * _STLP_SINF(z._M_im));
 }
 
-_STLP_DECLSPEC complex<double> _STLP_CALL exp(const complex<double>& z)
-{
+_STLP_DECLSPEC complex<double> _STLP_CALL exp(const complex<double>& z) {
   double expx = _STLP_EXP(z._M_re);
   return complex<double>(expx * _STLP_COS(z._M_im),
                          expx * _STLP_SIN(z._M_im));
 }
 
-_STLP_DECLSPEC complex<long double> _STLP_CALL exp(const complex<long double>& z)
-{
+# ifndef _STLP_NO_LONG_DOUBLE
+_STLP_DECLSPEC complex<long double> _STLP_CALL exp(const complex<long double>& z) {
   long double expx = _STLP_EXPL(z._M_re);
   return complex<long double>(expx * _STLP_COSL(z._M_im),
                               expx * _STLP_SINL(z._M_im));
 }
+# endif
 
 //----------------------------------------------------------------------
 // log10
 
-_STLP_DECLSPEC complex<float> _STLP_CALL log10(const complex<float>& z)
-{
+_STLP_DECLSPEC complex<float> _STLP_CALL log10(const complex<float>& z) {
   complex<float> r;
   static float ln10_inv = 1.f / _STLP_LOGF(10.f);
 
@@ -62,8 +60,7 @@ _STLP_DECLSPEC complex<float> _STLP_CALL log10(const complex<float>& z)
   return r;
 }
 
-_STLP_DECLSPEC complex<double> _STLP_CALL log10(const complex<double>& z)
-{
+_STLP_DECLSPEC complex<double> _STLP_CALL log10(const complex<double>& z) {
   complex<double> r;
   static double ln10_inv = 1. / _STLP_LOG(10.);
 
@@ -72,8 +69,8 @@ _STLP_DECLSPEC complex<double> _STLP_CALL log10(const complex<double>& z)
   return r;
 }
 
-_STLP_DECLSPEC complex<long double> _STLP_CALL log10(const complex<long double>& z)
-{
+#ifndef _STLP_NO_LONG_DOUBLE
+_STLP_DECLSPEC complex<long double> _STLP_CALL log10(const complex<long double>& z) {
   complex<long double> result;
   static long double ln10_inv = 1.l / _STLP_LOGL(10.l);
 
@@ -81,13 +78,12 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL log10(const complex<long double>&
   result._M_re = _STLP_LOG10L(_STLP_HYPOTL(z._M_re, z._M_im));
   return result;
 }
-
+# endif
 
 //----------------------------------------------------------------------
 // log
 
-_STLP_DECLSPEC complex<float> _STLP_CALL log(const complex<float>& z)
-{
+_STLP_DECLSPEC complex<float> _STLP_CALL log(const complex<float>& z) {
   complex<float> r;
 
   r._M_im = _STLP_ATAN2F(z._M_im, z._M_re);
@@ -95,8 +91,7 @@ _STLP_DECLSPEC complex<float> _STLP_CALL log(const complex<float>& z)
   return r;
 }
 
-_STLP_DECLSPEC complex<double> _STLP_CALL log(const complex<double>& z)
-{
+_STLP_DECLSPEC complex<double> _STLP_CALL log(const complex<double>& z) {
   complex<double> r;
 
   r._M_im = _STLP_ATAN2(z._M_im, z._M_re);
@@ -104,15 +99,15 @@ _STLP_DECLSPEC complex<double> _STLP_CALL log(const complex<double>& z)
   return r;
 }
 
-_STLP_DECLSPEC complex<long double> _STLP_CALL log(const complex<long double>& z)
-{
+#ifndef _STLP_NO_LONG_DOUBLE
+_STLP_DECLSPEC complex<long double> _STLP_CALL log(const complex<long double>& z) {
   complex<long double> result;
 
   result._M_im = _STLP_ATAN2L(z._M_im, z._M_re);
   result._M_re = _STLP_LOGL(_STLP_HYPOTL(z._M_re, z._M_im));
   return result;
 }
-
+# endif
 
 //----------------------------------------------------------------------
 // pow
@@ -165,11 +160,11 @@ _STLP_DECLSPEC complex<double> _STLP_CALL pow(const complex<double>& z_in, int n
   complex<double> z = z_in;
   z = __power(z, (n < 0 ? -n : n), multiplies< complex<double> >());
   if (n < 0)
-#if !defined(__SC__)			//*TY 04/15/2000 - 
+#if !defined(__SC__)      //*TY 04/15/2000 - 
     return 1. / z;
-#else							//*TY 04/15/2000 - added workaround for SCpp compiler
-	return double(1.0) / z;		//*TY 04/15/2000 - it incorrectly assign long double attribute to floating point literals
-#endif							//*TY 04/15/2000 - 
+#else                     //*TY 04/15/2000 - added workaround for SCpp compiler
+	return double(1.0) / z; //*TY 04/15/2000 - it incorrectly assign long double attribute to floating point literals
+#endif                    //*TY 04/15/2000 - 
   else
     return z;
 }
@@ -212,7 +207,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& z
 }
 
 _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& a,
-                         const long double& b) {
+                                                   const long double& b) {
   long double logr = _STLP_LOGL(_STLP_HYPOTL(a._M_re,a._M_im));
   long double logi = _STLP_ATAN2L(a._M_im, a._M_re);
   long double x = _STLP_EXPL(logr * b);
@@ -222,7 +217,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& a
 }  
 
 _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& a,
-                         const complex<long double>& b) {
+                                                   const complex<long double>& b) {
   long double logr = _STLP_LOGL(_STLP_HYPOTL(a._M_re,a._M_im));
   long double logi = _STLP_ATAN2L(a._M_im, a._M_re);
   long double x = _STLP_EXPL(logr*b._M_re - logi*b._M_im);
@@ -232,4 +227,3 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL pow(const complex<long double>& a
 }
 
 _STLP_END_NAMESPACE
-

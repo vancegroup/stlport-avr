@@ -1,3 +1,17 @@
+2004-05-13  Francois Dumont <dums@...>
+
+  * stlport/config/stl_evc.h
+    test/unit/nmake-evc3.mak
+    Portage to the WinCE 3 platform thanks Michael Fink
+
+2004-05-13  Francois Dumont <dums@s...>
+
+  * stlport/stl/_set.h
+    Addition of the const/non-const methods for many methods now that
+    iterator are not const_iterator anymore.
+    Correction of the multiset interface to be homogeneous with the
+    set interface.
+
 2004-05-09  Francois Dumont <dums@...>
 
   * stlport/stl/char_traits.h
