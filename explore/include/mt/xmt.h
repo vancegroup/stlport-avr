@@ -1,11 +1,11 @@
-// -*- C++ -*- Time-stamp: <01/01/31 10:47:42 ptr>
+// -*- C++ -*- Time-stamp: <01/03/19 19:19:46 ptr>
 
 /*
  *
  * Copyright (c) 1997-1999
  * Petr Ovchenkov
  *
- * Copyright (c) 1999-2000
+ * Copyright (c) 1999-2001
  * ParallelGraphics Ltd.
  *
  * This material is provided "as is", with absolutely no warranty expressed
@@ -23,9 +23,9 @@
 
 #ifdef __unix
 #  ifdef __HP_aCC
-#pragma VERSIONID "$SunId$"
+#pragma VERSIONID "@(#)$Id$"
 #  else
-#pragma ident "$SunId$"
+#pragma ident "@(#)$Id$"
 #  endif
 #endif
 
@@ -33,18 +33,14 @@
 #include <config/feature.h>
 #endif
 
+#include <memory>
 #include <cstddef>
 #include <stdexcept>
 
 #ifdef WIN32
 #  include <windows.h>
 #  include <memory>
-#  ifndef _REENTRANT
-#    define _REENTRANT
-#  endif
 #  include <ctime>
-
-// namespace std {
 
 extern "C" {
 
@@ -55,32 +51,18 @@ typedef struct  timespec {              /* definition per POSIX.4 */
 
 typedef struct timespec timestruc_t;    /* definition per SVr4 */
 
-}
+} // extern "C"
 
 #define ETIME   62      /* timer expired                        */
-
-// } // namespace std
 
 #else // !WIN32
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
 #    if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
 #      include <ctime>
 #    endif
-#    if !defined(_PTHREADS) && !defined(_SOLARIS_THREADS)
-#      ifdef __STL_THREADS
-#        ifdef __STL_SOLARIS_THREADS
-#          define _SOLARIS_THREADS
-#        elif defined( __STL_PTHREADS )
-#          define _PTHREADS
-#        endif
-#      else
-#        define _SOLARIS_THREADS // my default choice
-#      endif
-#    endif
 #    ifdef _PTHREADS
 #      include <pthread.h>
-#    endif
-#    ifdef __STL_UITHREADS
+#    else
 #      include <thread.h>
 #    endif
 #  elif !defined(_NOTHREADS) // !_REENTRANT
@@ -146,7 +128,7 @@ extern "C" unsigned long __stdcall _xcall( void *p ); // forward declaration
 #endif
 
 #ifndef WIN32
-using std::size_t;
+// using std::size_t;
 #endif
 #ifdef __GNUC__
   // using std::runtime_error;
@@ -162,7 +144,7 @@ class Mutex
 #ifdef _PTHREADS
 	pthread_mutex_init( &_M_lock, 0 );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 	mutex_init( &_M_lock, 0, 0 );
 #endif
 #ifdef WIN32
@@ -175,7 +157,7 @@ class Mutex
 #ifdef _PTHREADS
 	pthread_mutex_destroy( &_M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 	mutex_destroy( &_M_lock );
 #endif
 #ifdef WIN32
@@ -185,13 +167,13 @@ class Mutex
 
     void lock()
       {
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
 	pthread_mutex_lock( &_M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 	mutex_lock( &_M_lock );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
 	EnterCriticalSection( &_M_lock );
 #endif
       }
@@ -199,13 +181,13 @@ class Mutex
 #if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
     int trylock()
       {
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
 	return pthread_mutex_trylock( &_M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 	return mutex_trylock( &_M_lock );
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
 	return TryEnterCriticalSection( &_M_lock ) != 0 ? 0 : -1;
 #endif
 #ifdef _NOTHREADS
@@ -216,13 +198,13 @@ class Mutex
 
     void unlock()
       {
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
 	pthread_mutex_unlock( &_M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
 	mutex_unlock( &_M_lock );
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
 	LeaveCriticalSection( &_M_lock );
 #endif
       }
@@ -231,15 +213,15 @@ class Mutex
 #ifdef _PTHREADS
     pthread_mutex_t _M_lock;
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     mutex_t _M_lock;
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     CRITICAL_SECTION _M_lock;
 #endif
 
   private:
-#ifndef WIN32
+#ifndef __FIT_WIN32THREADS
     friend class Condition;
 #endif
 };
@@ -251,7 +233,7 @@ class MutexSDS : // Self Deadlock Safe
     MutexSDS() :
         _count( 0 ),
 #ifdef __unix
-#  ifdef __STL_UITHREADS
+#  ifdef __FIT_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
 #  elif defined(_PTHREADS)
         _id( __STATIC_CAST(pthread_t,-1) )
@@ -260,7 +242,7 @@ class MutexSDS : // Self Deadlock Safe
 #  endif
 #endif
 
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         _id( INVALID_HANDLE_VALUE )
 #endif
       { }
@@ -270,10 +252,10 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         HANDLE _c_id = GetCurrentThread();
 #endif
         if ( _c_id != _id ) {
@@ -288,14 +270,14 @@ class MutexSDS : // Self Deadlock Safe
       {
         if ( --_count == 0 ) {
 #ifdef __unix
-#  ifdef __STL_UITHREADS
+#  ifdef __FIT_UITHREADS
          _id = __STATIC_CAST(thread_t,-1);
 #  elif defined(_PTHREADS)
          _id =  __STATIC_CAST(pthread_t,-1);
 #  endif
 #endif
 
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
           _id = INVALID_HANDLE_VALUE;
 #endif
           Mutex::unlock();
@@ -307,10 +289,10 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef _PTHREADS
     pthread_t _id;
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     thread_t  _id;
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     HANDLE    _id;
 #endif
 };
@@ -347,26 +329,26 @@ class Condition
     Condition() :
         _val( true )
       {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         _cond = CreateEvent( 0, TRUE, TRUE, 0 );
 #endif
 #ifdef _PTHREADS
         pthread_cond_init( &_cond, 0 );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
         cond_init( &_cond, 0, 0 );
 #endif
       }
 
     ~Condition()
       {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         CloseHandle( _cond );
 #endif
 #ifdef _PTHREADS
         pthread_cond_destroy( &_cond );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
         cond_destroy( &_cond );
 #endif
       }
@@ -377,14 +359,14 @@ class Condition
 
         bool tmp = _val;
         _val = __v;
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
          if ( __v == true && tmp == false ) {
            SetEvent( _cond );
          } else if ( __v == false && tmp == true ) {
            ResetEvent( _cond );
          }
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
         if ( __v == true && tmp == false ) {
           cond_signal( &_cond );
         }
@@ -403,13 +385,13 @@ class Condition
     int try_wait()
       {
         if ( _val == false ) {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
           if ( WaitForSingleObject( _cond, -1 ) == WAIT_FAILED ) {
             return -1;
           }
           return 0;
 #endif
-#if defined(__STL_UITHREADS) || defined(_PTHREADS)
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
           MT_REENTRANT( _lock, _x1 );
           int ret = 0;
           while ( !_val ) {
@@ -417,7 +399,7 @@ class Condition
 #ifdef _PTHREADS
               pthread_cond_wait( &_cond, &_lock._M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
               cond_wait( &_cond, &_lock._M_lock );
 #endif
           }
@@ -429,7 +411,7 @@ class Condition
 
     int wait()
       {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         MT_LOCK( _lock );
         _val = false;
         ResetEvent( _cond );
@@ -439,7 +421,7 @@ class Condition
         }
         return 0;
 #endif
-#if defined(_PTHREADS) || defined(__STL_UITHREADS)
+#if defined(_PTHREADS) || defined(__FIT_UITHREADS)
         MT_REENTRANT( _lock, _x1 );
         _val = false;
         int ret;
@@ -448,7 +430,7 @@ class Condition
 #ifdef _PTHREADS
             pthread_cond_wait( &_cond, &_lock._M_lock );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
             cond_wait( &_cond, &_lock._M_lock );
 #endif
         }
@@ -467,13 +449,13 @@ class Condition
         MT_REENTRANT( _lock, _x1 );
 
         _val = true;
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
         return SetEvent( _cond ) == FALSE ? -1 : 0;
 #endif
 #ifdef _PTHREADS
         return pthread_cond_signal( &_cond );
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
         return cond_signal( &_cond );
 #endif
 #ifdef _NOTHREADS
@@ -482,13 +464,13 @@ class Condition
       }
 
   protected:
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     HANDLE _cond;
 #endif
 #ifdef _PTHREADS
     pthread_cond_t _cond;
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     cond_t _cond;
 #endif
     Mutex _lock;
@@ -500,24 +482,19 @@ class Thread
 {
   public:
     typedef int (*entrance_type)( void * );
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
     typedef HANDLE thread_key_type;
 #endif
-#ifdef __STL_PTHREADS
+#ifdef _PTHREADS
     typedef pthread_key_t thread_key_type;
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     typedef thread_key_t thread_key_type;
 #endif
-
-#ifdef __STL_USE_SGI_ALLOCATORS
-    typedef __STD::alloc alloc_type;
-#else 
-    typedef __STD::allocator<long *> alloc_type;
-#endif
+    typedef std::allocator<long *> alloc_type;
 
     enum {
-#ifdef __STL_UITHREADS // __STL_SOLARIS_THREADS
+#ifdef __FIT_UITHREADS // __STL_SOLARIS_THREADS
       bound     = THR_BOUND,
       detached  = THR_DETACHED,
       new_lwp   = THR_NEW_LWP,
@@ -531,7 +508,7 @@ class Thread
       suspended = 0,
       daemon    = detached
 #endif
-#ifdef __STL_WIN32THREADS
+#ifdef __FIT_WIN32THREADS
       bound     = 0,
       detached  = 0,
       new_lwp   = 0,
@@ -562,7 +539,7 @@ class Thread
     __PG_DECLSPEC int resume();
     __PG_DECLSPEC int kill( int sig );
     static __PG_DECLSPEC void exit( int code = 0 );
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     static __PG_DECLSPEC int join_all();
 #endif
     static __PG_DECLSPEC void block_signal( int sig );
@@ -580,11 +557,11 @@ class Thread
     __PG_DECLSPEC long&  iword( int __idx );
     __PG_DECLSPEC void*& pword( int __idx );
 
-#ifndef WIN32
+#ifndef __FIT_WIN32THREADS
     static thread_key_type mtkey()
       { return _mt_key; }
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     static unsigned long mtkey()
       { return _mt_key; }
 #endif
@@ -606,10 +583,10 @@ class Thread
 
     static alloc_type alloc;
     static int _idx; // user words index
-#ifndef WIN32
+#ifndef __FIT_WIN32THREADS
     static thread_key_type _mt_key;
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     static unsigned long _mt_key;
 #endif
     size_t uw_alloc_size;
@@ -623,10 +600,10 @@ class Thread
     Condition _suspend;
 // #  endif
 #endif
-#ifdef __STL_UITHREADS
+#ifdef __FIT_UITHREADS
     thread_t  _id;
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     HANDLE    _id;
     unsigned long _thr_id;
 #endif
@@ -640,24 +617,12 @@ class Thread
 #ifdef __unix
     friend void *_xcall( void * );
 #endif
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
     friend unsigned long __stdcall _xcall( void *p );
 #endif
 };
 
 } // namespace __impl
-
-// #ifdef _MSC_VER // VC 5
-// extern "C" {
-
-// struct  timespec { /* definition per POSIX.4 */
-//   time_t tv_sec;         /* seconds */
-//  long   tv_nsec;        /* and nanoseconds */
-// };
-
-// }
-
-// #endif // _MSC_VER
 
 timespec operator +( const timespec& a, const timespec& b );
 timespec operator -( const timespec& a, const timespec& b );
