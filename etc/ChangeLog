@@ -37,7 +37,10 @@ The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	* stl/_std_prolog.h, stl/_std_epilog.h : hooks for future alternative namespace inclusion style.
 
 	* config/stl_gcc.h : gcc-3.0 now supported
-	
+
+	* src/gcc-beos.h : only static library is being built (dynamic stil don't work) (thanks John Maddock)
+
+	* using/iostream : included using/istream and using/ostream
 	
 The following changes were made in 4.5 beta 7 since 4.1 beta 6 :
 

@@ -1,3 +1,6 @@
+
+# include <using/istream>
+
 using _STLP_VENDOR_STD::cin;
 using _STLP_VENDOR_STD::cout;
 using _STLP_VENDOR_STD::cerr;

@@ -1,3 +1,4 @@
+# include <using/ostream>
 
 using _STLP_NEW_IO_NAMESPACE::basic_istream;
 using _STLP_NEW_IO_NAMESPACE::basic_iostream;

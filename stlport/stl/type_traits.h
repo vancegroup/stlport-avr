@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef __TYPE_TRAITS_H
-#define __TYPE_TRAITS_H
+#ifndef _STLP_TYPE_TRAITS_H
+#define _STLP_TYPE_TRAITS_H
 
 /*
 This header file provides a framework for allowing compile time dispatch
@@ -59,24 +59,10 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 # include <cwchar>
 #endif
 
+_STLP_BEGIN_NAMESPACE
+
 struct __true_type {};
 struct __false_type {};
-
-template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
-
-_STLP_TEMPLATE_NULL
-struct __bool2type<true> { typedef __true_type _Ret; };
-
-// logical end of 3 predicated
-template <class _P1, class _P2, class _P3>
-struct _Land3 {
-  typedef __false_type _Ret;
-};
-
-_STLP_TEMPLATE_NULL
-struct _Land3<__true_type, __true_type, __true_type> {
-  typedef __true_type _Ret;
-};
 
 // Forward declarations.
 template <class _Tp> struct __type_traits; 
@@ -201,6 +187,22 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType<_Tp1*, _Tp2*> {
 
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
+template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
+
+_STLP_TEMPLATE_NULL
+struct __bool2type<true> { typedef __true_type _Ret; };
+
+// logical end of 3 predicated
+template <class _P1, class _P2, class _P3>
+struct _Land3 {
+  typedef __false_type _Ret;
+};
+
+_STLP_TEMPLATE_NULL
+struct _Land3<__true_type, __true_type, __true_type> {
+  typedef __true_type _Ret;
+};
+
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
   enum { _SameSize = (sizeof(_Tp1) == sizeof(_Tp2)) } ;
@@ -211,29 +213,16 @@ struct _OKToMemCpy {
   static _Type _Ret() { return _Type(); }
 };
 
-#if defined(__MRC__)||defined(__SC__)		//*TY 03/01/2001 - added workaround for mpw compilers
-_STLP_BEGIN_NAMESPACE						//*TY 03/01/2001 - they confuse as if the instantiated specializaion is already defined.
-#endif
-
 template <class _Tp1, class _Tp2>
 inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
   return _OKToMemCpy<_Tp1, _Tp2>();
 }
-
-#if defined(__MRC__)||defined(__SC__)
-_STLP_END_NAMESPACE
-#endif
 
 template <class _Tp> 
 struct _IsPOD {
   typedef typename __type_traits<_Tp>::is_POD_type _Type;
   static _Type _Ret() { return _Type(); }
 };
-
-#if defined(__MRC__)||defined(__SC__)		//*TY 03/01/2001 - added workaround for mpw compilers
-_STLP_BEGIN_NAMESPACE						//*TY 03/01/2001 - they confuse as if the instantiated specializaion is already defined.
-#endif
-
 
 template <class _Tp> 
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
@@ -247,11 +236,6 @@ inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 #  else
 #   define _IS_POD_ITER(_It, _Tp) _Is_POD( _STLP_VALUE_TYPE( _It, _Tp ) )._Ret()
 #  endif
-
-#if defined(__MRC__)||defined(__SC__)
-_STLP_END_NAMESPACE
-#endif
-
 
 // Provide some specializations.  This is harmless for compilers that
 //  have built-in __types_traits support, and essential for compilers
@@ -387,6 +371,8 @@ _Tp __default_constructed(_Tp* __p) {
 # else
 #  define _STLP_DEFAULT_CONSTRUCTED(_TTp) _TTp()
 # endif
+
+_STLP_END_NAMESPACE
 
 #endif /* __TYPE_TRAITS_H */
 

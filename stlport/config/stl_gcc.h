@@ -123,13 +123,10 @@ typedef unsigned int wint_t;
 /* g++ 2.7.x and above */
 #   define _STLP_LONG_LONG long long 
 
-// gcc 3.0 does have new iostreams, but we cannot really wrap them properly.
-
-#    define _STLP_HAS_NO_NEW_IOSTREAMS     1
-
 #   if (__GNUC__ < 3)
 #    define _STLP_HAS_NO_NEW_C_HEADERS     1
 #    define _STLP_VENDOR_GLOBAL_CSTD       1
+#    define _STLP_HAS_NO_NEW_IOSTREAMS     1
 #    ifndef __HONOR_STD
 #     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
 #    endif

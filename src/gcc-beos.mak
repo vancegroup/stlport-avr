@@ -24,7 +24,7 @@ PATH_SEP=/
 MKDIR=mkdir -p
 COMP=GCC-BEOS
 
-all: msg all_static all_dynamic
+all: msg all_static
 
 msg:
 	mkdir -p ../stlport/beos
