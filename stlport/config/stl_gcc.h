@@ -249,7 +249,13 @@ typedef unsigned int wint_t;
 # elif (__GNUC__ >= 3) || (__GNUC_MINOR__ >= 97)
 #   define _STLP_NATIVE_INCLUDE_PATH ../include/g++-v3
 # elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3)
+// this really sucks, as GNUpro does not really identifies itself, so we have to guess 
+// depending on a platform
+#   ifdef __hpux
+#   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
+#   else
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-2
+#   endif
 # else
 #   define _STLP_NATIVE_INCLUDE_PATH g++
 # endif
@@ -268,6 +274,11 @@ typedef unsigned int wint_t;
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
+
+# ifdef __hpux 
+#   undef _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH
+#   define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include.dist
+# endif
 
 # endif
 

@@ -7,6 +7,12 @@
 
 _STLP_BEGIN_NAMESPACE
 
+# ifdef _STLP_OWN_IOSTREAMS
+#  define _STLP_USING_IO
+# else
+#  define _STLP_USING_IO _STLP_USING_VENDOR_STD
+# endif
+
 #if defined (_STLP_USE_NEW_IOSTREAMS)
 
 template <class _CharT, class _Traits>
@@ -61,12 +67,6 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
 
   return __os;
 }
-
-# ifdef _STLP_OWN_IOSTREAMS
-#  define _STLP_USING_IO
-# else
-#  define _STLP_USING_IO _STLP_USING_VENDOR_STD
-# endif
  
 template <class _CharT, class _Traits, class _Alloc>
 basic_istream<_CharT, _Traits>& _STLP_CALL 
@@ -321,7 +321,7 @@ _ISTREAM_DLL& _STLP_CALL getline(_ISTREAM_DLL& __is,
 
 _STLP_END_NAMESPACE
 
-# undef _STLP_USING_IO
+// # undef _STLP_USING_IO
 # undef basic_string
 
 #endif

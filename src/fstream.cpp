@@ -28,6 +28,12 @@
 // open/close/read/write
 #  include <sys/stat.h>           // For stat
 #  include <sys/mman.h>           // For mmap
+
+//  on HP-UX 11, this one contradicts with pthread.h on pthread_atfork, unless we unset this
+#  if defined (__hpux) && defined (__GNUC__)
+#   undef _INCLUDE_POSIX1C_SOURCE
+#  endif
+
 #  include <unistd.h>
 #  include <fcntl.h>
 # ifdef __APPLE__
@@ -217,11 +223,14 @@ streamoff __file_size(_STLP_fd fd) {
 
 #   elif defined (_STLP_USE_WIN32_IO)
 
-  DWORD FileSizeHigh;
-  DWORD FileSize = GetFileSize(fd, &FileSizeHigh);
-  // may use 64-bit
-  ret = (((__int64)FileSizeHigh) << 32) | (__int64)FileSize;
-  
+ LARGE_INTEGER li;
+ li.LowPart = GetFileSize(fd, (unsigned long*) &li.HighPart);
+ if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR )
+ {
+   ret = 0;
+ }
+ ret = li.QuadPart;
+
 # else
   (void)fd;    // dwa 4/27/00 - suppress unused parameter warning  
 # endif
@@ -926,14 +935,12 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
 
 #elif defined (_STLP_USE_WIN32_IO)
 
-  long hi_seek = ULL(offset) >> 32;
-  long ret = SetFilePointer(_M_file_id, offset, &hi_seek, whence);
-  if (ret == -1)
-    result = ret;
-  else {
-    result = hi_seek;
-    result = (ULL(result)<<32) | ret;
-  }
+  LARGE_INTEGER li;
+  li.QuadPart = offset;
+  li.LowPart = SetFilePointer(_M_file_id, li.LowPart, &li.HighPart, whence);
+  if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR)
+    result = -1; // Error
+  result = li.QuadPart;
 
 #else
 #   error "Port!"

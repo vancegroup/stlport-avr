@@ -8,6 +8,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* stl_msvc.h : explicit template function agruments enabled for VC++; 
 	  use_facet<> now fully conforms to the standard with VC++. (Thanks Jeff Kohn for the input)
 
+	* fstream.cpp : LARGE_INTEGER used to work around Intel shift instruction bug (thanks Thomas Meischner)
+	
 	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
 	
 	* New makefiles added for Intel C++ 5.0 and VC++ 6.0 in src/, test/eh, test/regression (Thanks to Marcello Pietrobon)
@@ -44,6 +46,9 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* stl_hpacc.h :  _STLP_FORCE_ALLOCATORS workaround used for Version 3.15 also (thanks Rainer Schnitker)
 
 	* stl/_string_io.c : fixed using directive in operator >>() (thanks Rainer Schnitker)
+
+	* debug/_deque.h : a check in erase() fixed (thanks Andreas Malzahn)
+
 	
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 

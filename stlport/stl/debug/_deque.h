@@ -257,7 +257,7 @@ public:                         // Erase
   }
 
   iterator erase(iterator __first, iterator __last) {
-    _STLP_DEBUG_CHECK(__first >= begin() && __last >= end())
+    _STLP_DEBUG_CHECK(__first >= begin() && __last <= end())
     return iterator (&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
   
