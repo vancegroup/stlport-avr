@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/09 16:24:21 ptr>
+// -*- C++ -*- Time-stamp: <99/02/16 13:23:07 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -51,6 +51,16 @@ Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz ) :
 { _create( p, psz ); }
 
 __DLLEXPORT
+Thread::~Thread()
+{
+#ifdef WIN32
+  __stl_assert( _id == INVALID_HANDLE_VALUE );
+#else
+  __stl_assert( _id == -1 );
+#endif
+}
+
+__DLLEXPORT
 void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 {
 #ifdef WIN32
@@ -87,6 +97,52 @@ int Thread::join()
 #endif // !WIN32
 
   return ret_code;
+}
+
+__DLLEXPORT
+int Thread::suspend()
+{
+#ifdef WIN32
+  if ( _id != INVALID_HANDLE_VALUE ) {
+    return SuspendThread( _id );
+  }
+#else
+  if ( _id != -1 ) {
+#  ifdef _PTHREADS
+    // sorry, POSIX threads don't have suspend/resume calls, so it should
+    // be simulated via condwait
+    _suspend.wait();
+#  endif
+#  ifdef _SOLARIS_THREADS
+    return thr_suspend( _id );
+#  endif
+  }
+#endif
+
+  return -1;
+}
+
+__DLLEXPORT
+int Thread::resume()
+{
+#ifdef WIN32
+  if ( _id != INVALID_HANDLE_VALUE ) {
+    return ResumeThread( _id );
+  }
+#else
+  if ( _id != -1 ) {
+#  ifdef _PTHREADS
+    // sorry, POSIX threads don't have suspend/resume calls, so it should
+    // be simulated via condwait
+    _suspend.set( true ); // less syscall than _suspend.signal();
+#  endif
+#  ifdef _SOLARIS_THREADS
+    return thr_continue( _id );
+#  endif
+  }
+#endif
+
+  return -1;
 }
 
 __DLLEXPORT
@@ -159,6 +215,15 @@ void *Thread::_call( void *p )
 	
   try {
     ret = me->_entrance( me->_param );
+    // I should be make me->_id = -1; here...
+    // Next line is in conflict what I say in this function begin.
+    // So don't delete Thread before it termination!
+#ifdef WIN32
+    me->_id = INVALID_HANDLE_VALUE;
+#else
+    me->_id = -1;
+#endif
+    // 
   }
   catch ( std::exception& e ) {
     cerr << e.what() << endl;
@@ -182,7 +247,7 @@ void *Thread::_call( void *p )
   }
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
-  Thread::exit( ret );
+//  Thread::exit( ret );
 #endif
   return (void *)ret;
 }
