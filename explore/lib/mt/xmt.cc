@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/06/06 15:44:14 degor>
+// -*- C++ -*- Time-stamp: <00/07/06 14:42:15 ptr>
 
 /*
  * Copyright (c) 1999-2000
@@ -433,8 +433,11 @@ void Thread::gettime( timespec *t )
   time_t ct = time( 0 );
   t->tv_sec = ct / 1000;
   t->tv_nsec = (ct % 1000) * 1000000;
-#elif defined(__linux)
-  clock_gettime( t );
+#elif defined(__SunOS_5_5) || defined(__SunOS_5_6) || \
+      defined(__SunOS_5_7) || defined(__SunOS_5_8)
+  clock_gettime( CLOCK_REALTIME, t );
+#else
+#error "You should implement OS-dependent precise clock"
 #endif
 }
 
