@@ -4,6 +4,7 @@
 #	#*TY 05/23/1999 - updated for STLport-3.2
 #	#*TY 08/03/1999 - updated for STLport-3.2.1
 # 	#*TY 05/21/2000 - updated for STLport-4.0
+#	#*TY 03/20/2001 - updated for STLport-4.1
 #	
 #	this document describes the detailed instructions for building and running the STL testsuite (regression and eh) 
 #	as the mpw tools, as well as building STLportLib which provides the standard conforming iostream.
@@ -32,6 +33,7 @@
 #			under "{ShellDirectory}Startup Items:" directory.
 #	
 #(# INSTALL (1)
+begin
 	unset STL # to unconditionally re-setup STL variable
 	if !"{STL}"
 		Set exit 0
@@ -59,16 +61,19 @@
 	else
 		alert "the path to ∂"∂{STL∂}∂" has been set up as: ∂n'{STL}' .∂nMake sure this is up to date."
 	end
+end ∑∑ "{worksheet}"
 #)#
 
 #	===============================================================================================================
 #	(2) make alias for the CIncludes folder at the same level as 'stlport' folder.
 #
 #(# INSTALL (2)
+begin
 	SendAE -e "FNDRsali" -t "Finder" -----alis "{CIncludes}:CIncludes" ∑dev:null 	# create the alias
 	set alias_ `exists -a "{CIncludes}:"≈CIncludes≈` 								# get the exact name for the alias
 	duplicate -y "{alias_}" "{STL}:CIncludes" 										# copy it into the destination
 	delete -ay "{alias_}" 															# clean up
+end ∑∑ "{worksheet}"
 #)#
 
 
@@ -78,6 +83,7 @@
 #		WARNING: THIS STEP IS QUITE TIME CONSUMING
 #
 #(# INSTALL (3) OPTIONAL
+begin
 	set -e exit 0
 	set self_ "{active}"
 	for f_ in	`exists -f ∂
@@ -114,6 +120,7 @@
 		SetFile -c 'MPS ' -label 6 "{self_}" # sky color
 	Format -l 'MPW Shell Script' -f "{Font}" -s "{FontSize}" "{self_}"
 	set -e exit 1
+end ∑∑ "{worksheet}"
 #)#
 
 
