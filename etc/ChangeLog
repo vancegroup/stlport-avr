@@ -1,5 +1,8 @@
 2004-03-30  Petr Ovtchenkov  <ptr@Island...>
 
+	* stlport/stl/_algo.c: workaround for VC compilers---ones pass reference
+	to parent object directly, pay no regard for temporary object
+
 	* stlport/new, stlport/stl/_new.h, stlport/typeinfo, stlport/config/stl_msvc.h:
 	workaround for VC6's problem with 'using' directive, while import native
 	bad_alloc and some other classes into STLport's namespace
