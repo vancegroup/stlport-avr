@@ -1,21 +1,30 @@
-2004-01-09 Francois Dumont <dums@s...>
+2004-01-19  Petr Ovchenkov  <ptr@Island...>
 
-  * type_manip.h: Correction of the _IsSame struct for compiler supporting partial template
-               specialization to make it behave like the simulation version that is to say
-               regardless or the qualifiers.
+	* _debug.c: avoid recursive locks in __owner_list's mutex---equivalent
+	code use underlie iterators, not debug wrapper iterators. By the way this
+	approach faster---no excessive checks; solved by Boris Fomitchev.
+	
+	* _thread.h, _debug.h: recursive-safe mutex structure removed---not
+	required more; see reason just above.
 
-2004-01-07 Francois Dumont <dums@s...>
+2004-01-09  Francois Dumont <dums@s...>
 
-  * _vector.c _deque.c: Mysterious copies of instance to store in the containers has
-               been removed. They can be reactivated using _STLP_NEED_MYSTERIOUS_COPY
-               macro.
+	* type_manip.h: Correction of the _IsSame struct for compiler supporting
+	partial template specialization to make it behave like the simulation
+	version that is to say regardless or the qualifiers.
 
-2004-01-05 Francois Dumont <dums@s...>
+2004-01-07  Francois Dumont <dums@s...>
 
-  * _list.h, _slist.h: Implementation of the pointer specialization for list
-               and slist.
+	* _vector.c, _deque.c: Mysterious copies of instance to store
+	in the containers has been removed. They can be reactivated using
+	_STLP_NEED_MYSTERIOUS_COPY macro.
 
-2003-12-31 Petr Ovchenkov  <ptr@Island...>
+2004-01-05  Francois Dumont <dums@s...>
+
+	* _list.h, _slist.h: Implementation of the pointer specialization for list
+	and slist.
+
+2003-12-31  Petr Ovchenkov  <ptr@Island...>
 
 	* _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
 
@@ -23,16 +32,16 @@
 	from _Vector_base, so we should avoid references on _Vector_base
 	class members in debug wrapper.
  
-2003-12-20 Francois Dumont  <dums@s...>
+2003-12-20  Francois Dumont  <dums@s...>
 
 	* _vector.h: Implementation of the pointer specialization for vector to 
 	avoid code bloat.
 
-2003-11-29 Francois Dumont  <dums@s...>
+2003-11-29  Francois Dumont  <dums@s...>
 
-	* _string.h: Implementation of the short string optimization. basic_string have now a
-	short static buffer to avoid call to the allocator when the string
-	is short.
+	* _string.h: Implementation of the short string optimization.
+	basic_string have now a short static buffer to avoid call
+	to the allocator when the string is short.
                
 2003-11-29  Petr Ovchenkov  <ptr@Island...>
 
