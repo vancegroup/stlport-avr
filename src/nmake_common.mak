@@ -16,8 +16,8 @@ install_headers_vc:
 	@echo Done copying STLport headers.
 
 check_env_vc:
-	@if not exist "%MSVCDir%\lib" echo "Please set up MSVCDir environment variable. Did you run vcvars32.bat ?"
-	@if not exist "%MSVCDir%\lib" dir "%MSVCDir%\lib"
+	@if not exist "%MSVCDir%\lib\*.*" echo "Please set up MSVCDir environment variable. Did you run vcvars32.bat ?"
+	@if not exist "%MSVCDir%\lib\*.*" dir "%MSVCDir%\lib"
 
 install_vc : all check_env_vc install_libs_vc install_dlls install_headers_vc report_dirs_vc
 

@@ -34,8 +34,17 @@
 #  define _STLP_OWN_IOSTREAMS
 # endif
 
+# if (defined (_STLP_NOTHREADS) || defined (_STLP_NO_THREADS) || defined (NOTHREADS))
+#  if ! defined (_NOTHREADS)
+#   define _NOTHREADS
+#  endif
+#  if ! defined (_STLP_NO_THREADS)
+#   define _STLP_NO_THREADS
+#  endif
+# endif
+
 # if defined (_STLP_OWN_IOSTREAMS) \
-  && !defined (_STLP_NO_THREADS) && ! defined (_NOTHREADS) && !defined (_REENTRANT)
+  && !defined (_STLP_NO_THREADS) && !defined (_REENTRANT)
 
 #  if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__COMO__) && !defined(_MT)
 #   error "Only multi-threaded runtime library may be linked with STLport!"  

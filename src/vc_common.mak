@@ -1,11 +1,6 @@
 #
 #
 
-!IF "$(OS)" == "Windows_NT"
-NULL=
-!ELSE 
-NULL=nul
-!ENDIF 
 
 #
 # Tools
@@ -42,7 +37,14 @@ INSTALL_STEP=install_vc
 
 !include common_macros_windows.mak
 
+!IF "$(OS)" == "Windows_NT"
+NULL=
 RM=-rd /S /Q
+!ELSE 
+RM=-deltree /Y
+NULL=nul
+!ENDIF 
+
 
 #
 # Flags

@@ -228,7 +228,7 @@ struct _STLP_mutex_spin {
 
 struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
 {
-#if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS) // || defined(_STLP_WIN32THREADS)
+#if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS)
   // It should be relatively easy to get this to work on any modern Unix.
   volatile __stl_atomic_t _M_lock;
 #endif

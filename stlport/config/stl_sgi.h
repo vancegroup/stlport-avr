@@ -37,9 +37,9 @@
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 // #  define _STLP_VENDOR_GLOBAL_EXCEPT_STD
 
-# if ! defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_NO_NEW_IOSTREAMS)
+// # if ! defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_NO_NEW_IOSTREAMS)
 #  define _STLP_NO_POST_COMPATIBLE_SECTION
-# endif
+// # endif
 
 #  include <standards.h>
 

@@ -31,7 +31,7 @@
 
 # define _STLP_VENDOR_UNEXPECTED_STD
 
-# if defined ( _MT ) && !defined (_NOTHREADS) && !defined (_REENTRANT)
+# if defined ( _MT ) && !defined (_STLP_NO_THREADS)  && !defined (_REENTRANT)
 #   define _REENTRANT 1
 # endif
 
@@ -167,24 +167,20 @@
 # ifdef __ICL
 #  define _STLP_LIB_BASENAME "stlport_icl"
 # else
-# if (_MSC_VER <= 1300) 
-#  ifdef _UNICODE
-#   define _STLP_LIB_BASENAME "stlport_vc7_unicode"
-#  else
+# if (_MSC_VER >= 1300) 
 #   define _STLP_LIB_BASENAME "stlport_vc7"
-#  endif
 # elif (_MSC_VER >= 1200)
-#   ifdef _UNICODE
-#    define _STLP_LIB_BASENAME "stlport_vc6_unicode"
-#   else
+//#   ifdef _UNICODE
+//#    define _STLP_LIB_BASENAME "stlport_vc6_unicode"
+//#   else
 #    define _STLP_LIB_BASENAME "stlport_vc6"
-#   endif
+//#   endif
 #  elif (_MSC_VER >= 1100)
-#   ifdef _UNICODE
-#    define _STLP_LIB_BASENAME "stlport_vc5_unicode"
-#   else
+//#   ifdef _UNICODE
+//#    define _STLP_LIB_BASENAME "stlport_vc5_unicode"
+//#   else
 #    define _STLP_LIB_BASENAME "stlport_vc5"
-#   endif
+//#   endif
 #  endif /* (_MSC_VER >= 1200) */
 # endif /* __ICL */
 

@@ -43,6 +43,13 @@
 #include <sys/types.h>          // For off_t
 #endif /* __unix */
 
+#ifdef __BORLANDC__
+# include <mem.h>
+# include <string.h>
+# include <_stddef.h>
+class mbstate_t;
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 # ifdef _STLP_OWN_IOSTREAMS

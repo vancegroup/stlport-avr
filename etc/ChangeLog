@@ -1,16 +1,22 @@
 The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
+	* _config.h, _epilog.h : new namespace inclusion schema implemented for own iostreams mode
+	 (no std:: redefinition; _STL:: namespace imported into std::, instead of std:: imported to _STL.
+	  C library header files wrappers become obsolete if this mode is used and no own namespace is selected.
+	  They will be moved out to distinct directory in the next release, and default is going to be no own namespace 
+	  with own iostreams.)
+
 	* iostreams ported to SCO OpenServer (thanks Emmanuel Soden)
 
 	* stl_sunpro.h : turned off _STL_STATIC_CONST_INIT_BUG
 
-	* dll_main.cpp : forced ling of Bs_G static data members (thanks  Sandy Martel). Function wrapped in STLport namespace.
+	* dll_main.cpp : forced link of Bs_G static data members (thanks  Sandy Martel). Function wrapped in STLport namespace.
 
 	* _alloc.c : fixed _STLP_CHUNK_MALLOC for debug malloc configuration (thanks  Markus Schöpflin)
 
 	* _config_compat.h : fixed compatibility section for _STLP_NO_OWN_IOSTREAMS
 
-	* fstream.cpp , vc6.unicode.mak : fixed bug in wide streams handling for VC6 (thanks Jim Dolter)
+	* fstram.cpp , vc6.unicode.mak : fixed bug in wide streams handling for VC6 (thanks Jim Dolter)
 
 	* etc/*.txt : files list broken up into several categories for future reorganization
 
@@ -30,8 +36,14 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
 	* common.mak : default install directory for Unix set to /usr/local
 
+	* _string.h : _M_null expressed via _STLP_DEFAULT_CONSTRUCTED (Thanks Anthony)
+
+	* _site_config.h : made sure _STLP_NO_THREADS are set if _NOTHREADS is on (Thanks Jeppe Madsen)
+
+	* _config.h : _STLP_WIN32THREADS is set (bugfix) ( thanks to Andreas Malzahn )
 	
-The following changes were made in 4.5 release since 4.5 beta 8 :
+The following changes were The following changes were made in 4.5 release since 4.5 beta 8 :
+made in 4.5 release since 4.5 beta 8 :
 	
 	* _threads.h, debug/_debug.h etc : STLport iostreams library made binary compatible with user code compiler w/o multithreaded switch (-D_REENTRANT is not necessary anymore)
 	

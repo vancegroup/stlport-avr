@@ -181,22 +181,25 @@ _Locale_impl::make_classic_locale() {
   
   new (classic) _Locale_impl("C");
 
+  classic->facets = _S_classic_facets;
+  classic->_M_size = locale::id::_S_max;
+
   // ctype category
   new(&_S_ctype_char) ctype<char>(0, false, 1);
   // collate category
   new(&_S_collate_char) collate<char>(1);
   new(&_S_codecvt_char) codecvt<char, char, mbstate_t>(1);
-  // monetary category
-  new (&_S_moneypunct_true_char) moneypunct<char, true>(1);
-  new (&_S_moneypunct_false_char) moneypunct<char, false>(1);
-  new (&_S_money_get_char) money_get<char, istreambuf_iterator<char, char_traits<char> > >(1);
-  new (&_S_money_put_char) money_put<char, ostreambuf_iterator<char, char_traits<char> > >(1);
   // numeric category
   new(&_S_numpunct_char) numpunct<char>(1);
   new (&_S_num_get_char) num_get<char, istreambuf_iterator<char, char_traits<char> > >(1);
   new (&_S_num_put_char) num_put<char, ostreambuf_iterator<char, char_traits<char> > >(1);
   new (&_S_time_get_char) time_get<char, istreambuf_iterator<char, char_traits<char> > >(1);
   new (&_S_time_put_char) time_put<char, ostreambuf_iterator<char, char_traits<char> > >(1);
+  // monetary category
+  new (&_S_moneypunct_true_char) moneypunct<char, true>(1);
+  new (&_S_moneypunct_false_char) moneypunct<char, false>(1);
+  new (&_S_money_get_char) money_get<char, istreambuf_iterator<char, char_traits<char> > >(1);
+  new (&_S_money_put_char) money_put<char, ostreambuf_iterator<char, char_traits<char> > >(1);
   // messages category
   new (&_S_messages_char)messages<char>(&_Null_messages);
 
@@ -206,22 +209,20 @@ _Locale_impl::make_classic_locale() {
   // collate category
   new(&_S_collate_wchar) collate<wchar_t>(1);
   new(&_S_codecvt_wchar) codecvt<wchar_t, char, mbstate_t>(1);
-  // monetary category
-  new (&_S_moneypunct_true_wchar) moneypunct<wchar_t, true>(1);
-  new (&_S_moneypunct_false_wchar) moneypunct<wchar_t, false>(1);
-  new (&_S_money_get_wchar) money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
-  new (&_S_money_put_wchar) money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
   // numeric category
   new(&_S_numpunct_wchar) numpunct<wchar_t>(1);
   new (&_S_num_get_wchar) num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
   new (&_S_num_put_wchar) num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
   new (&_S_time_get_wchar) time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
   new (&_S_time_put_wchar) time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
-  //  new (&_S_messages_wchar)messages<wchar_t>(&_Null_messages);
+  new (&_S_messages_wchar)messages<wchar_t>(&_Null_messages);
+  // monetary category
+  new (&_S_moneypunct_true_wchar) moneypunct<wchar_t, true>(1);
+  new (&_S_moneypunct_false_wchar) moneypunct<wchar_t, false>(1);
+  new (&_S_money_get_wchar) money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
+  new (&_S_money_put_wchar) money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1);
 # endif
 
-  classic->facets = _S_classic_facets;
-  classic->_M_size = locale::id::_S_max;
   return classic;
 }
 

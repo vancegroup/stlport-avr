@@ -47,6 +47,8 @@
 # elif defined (__sun) || defined (sun)
 // # define _STLP_VENDOR_MB_NAMESPACE
 #  include <config/stl_solaris.h>
+# elif defined (__hpux)
+#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS
 # elif defined (__sgi)
 // this requires some discrimination on whether we are actually on 
 // a system officially supported by KAI. 

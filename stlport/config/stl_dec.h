@@ -1,8 +1,15 @@
 # define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
 
+
 # define _STLP_NATIVE_HEADER(header) <../cxx/##header>
 # define _STLP_NATIVE_C_HEADER(x) <../include/##x>
+
+#if (__DECCXX_VER < 60300000)
 # define _STLP_NATIVE_CPP_C_HEADER(header) <../cxx/##header>
+#else
+# define _STLP_NATIVE_CPP_C_HEADER(header) </usr/include/cxx_cname/##header>
+#endif
+
 # define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../cxx/##header>
 # define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../cxx/##header>
 

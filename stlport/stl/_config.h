@@ -237,10 +237,6 @@
 
 #  undef _STLP_NAMESPACE
 
-# if (defined (_STLP_NOTHREADS) || defined (_STLP_NO_THREADS) || defined (NOTHREADS)) && ! defined (_NOTHREADS)
-#  define _NOTHREADS
-# endif
-
 # if !defined(_NOTHREADS) && ! defined (_STLP_THREADS_DEFINED)
 
 #  if defined(_PTHREADS)
@@ -257,6 +253,7 @@
 #   elif defined(__DECC) || defined(__DECCXX)
 #    define _STLP_DEC_THREADS
 #   elif defined (_STLP_WIN32) && ! defined (_STLP_PTHREADS)
+#    define _STLP_WIN32THREADS 1
 #   elif ((defined (__sun) && !defined (__linux__)) \
      || defined(_UITHREADS) ) && !defined(_STLP_PTHREADS)
 #     define _STLP_UITHREADS
@@ -468,7 +465,7 @@
 /* if using stlport:: namespace or if C library stuff is not in vendor's std::,
  * try importing 'em.
  * MSVC has ambiguity problem when we try to import C-style std:: stuff back into global namespace */
-#  if defined (_STLP_USE_NAMESPACES) && \
+#  if defined (_STLP_USE_NAMESPACES) && /* ! defined (_STLP_OWN_IOSTREAMS) && */ \
    ( defined(_STLP_USE_OWN_NAMESPACE) || defined (_STLP_VENDOR_GLOBAL_CSTD))
 #    define  _STLP_IMPORT_VENDOR_CSTD 1
 #  endif

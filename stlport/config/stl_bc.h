@@ -11,7 +11,8 @@
 #   define  _STLP_CALL __cdecl
 # endif
 
-# define __STL_USE_OWN_NAMESPACE
+# define _USE_STLP
+// # define _STLP_USE_OWN_NAMESPACE
 # define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
 # define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
 
