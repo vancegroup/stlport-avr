@@ -1187,7 +1187,7 @@ AC_TRY_LINK(
     [ 
      int b(5); a.ptr=&b;],
     [ac_cv_unused_required="no"],
-    [AC_DEFINE(__SGI_STL_NO_ARROW_OPERATOR) ac_cv_unused_required="yes"]
+    [AC_DEFINE(_STPL_NO_ARROW_OPERATOR) ac_cv_unused_required="yes"]
     )
 AC_MSG_RESULT($ac_cv_unused_required)
 
@@ -1325,7 +1325,7 @@ AC_ARG_ENABLE(sgi-allocators,[--enable-sgi-allocators : set default parameter to
 [
 case "$enableval" in
 	  yes ) AC_MSG_RESULT(Config arg  --enable-sgi-allocators : SGI-style alloc as default allocator) 
-                AC_DEFINE(_STLP_USE_SGI_ALLOCATORS);;
+                AC_DEFINE(_STLP_USE_RAW_SGI_ALLOCATORS);;
 	    * ) AC_MSG_RESULT(Config default: using allocator<T> as default allocator if possible )
 esac
 ],

@@ -1,8 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-# ifndef _STLP_NO_SGI_IOSTREAMS
-#  define _STLP_NOSGI_IOSTREAMS
+# ifndef _STLP_NO_OWN_IOSTREAMS 
+#  define _STLP_NO_OWN_IOSTREAMS
 # endif
 
 # define _STLP_NO_RELOPS_NAMESPACE

@@ -24,7 +24,7 @@
 #   define _STLP_NO_NATIVE_MBSTATE_T 1
 #  endif
 
-// #  if ! defined ( _STLP_NO_SGI_IOSTREAMS )
+// #  if ! defined ( _STLP_NO_OWN_IOSTREAMS )
 // #   define _MBSTATE_T
 // #   define _STD_MBSTATE_T
 // #  else
@@ -37,7 +37,7 @@
 
 // For SPARC we use lightweight synchronization
 # if defined (__sparc) &&  (defined (_REENTRANT) || defined (_PTHREADS)) \
-     && (defined (__GNUC__) || ! defined (_STLP_NO_SGI_IOSTREAMS) ) \
+     && (defined (__GNUC__) || ! defined (_STLP_NO_OWN_IOSTREAMS) ) \
      && !defined(_NOTHREADS) && ! defined (_STLP_NO_SPARC_SOLARIS_THREADS)
 #  define _STLP_SPARC_SOLARIS_THREADS
 #  define _STLP_THREADS

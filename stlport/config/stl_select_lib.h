@@ -1,11 +1,11 @@
-# if !defined (_STLP_NO_SGI_IOSTREAMS)
+# if !defined (_STLP_NO_OWN_IOSTREAMS)
 
 #  if ! defined (_STLP_LIB_STATIC_SUFFIX)
 #   define _STLP_LIB_STATIC_SUFFIX ""
 #  endif
 
 // Note : the code below is intended to make use of compiled
-// SGI iostreams easier. If you are with to change names used for
+// STLport iostreams easier. If you are with to change names used for
 // STLport libraries , please also change RELEASE_NAME and DEBUG_NAME
 // macros in makefile ../../src/vc6.mak (or whatever .mak you are using to build
 // STLport). If you are using binaries, you may just rename the binaries.

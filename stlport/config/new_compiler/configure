@@ -2972,7 +2972,7 @@ else
   cat conftest.$ac_ext >&5
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
-#define __SGI_STL_NO_ARROW_OPERATOR 1
+#define _STLP_NO_ARROW_OPERATOR 1
 EOF
  ac_cv_unused_required="yes"
     
@@ -3204,7 +3204,7 @@ if test "${enable_sgi_allocators+set}" = set; then
 case "$enableval" in
 	  yes ) echo "$ac_t""Config arg  --enable-sgi-allocators : SGI-style alloc as default allocator" 1>&6 
                 cat >> confdefs.h <<\EOF
-#define _STLP_USE_SGI_ALLOCATORS 1
+#define _STLP_USE_RAW_SGI_ALLOCATORS 1
 EOF
 ;;
 	    * ) echo "$ac_t""Config default: using allocator<T> as default allocator if possible " 1>&6

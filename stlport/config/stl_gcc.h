@@ -200,7 +200,7 @@ typedef unsigned int wint_t;
 
 #if (__GNUC_MINOR__ < 8)  && (__GNUC__ < 3)
 
-# define _STLP_NO_SGI_IOSTREAMS 1
+# define _STLP_NO_OWN_IOSTREAMS 1
 # undef  _STLP_OWN_IOSTREAMS
 # define _STLP_NATIVE_INCLUDE_PATH ../g++-include
 

@@ -55,7 +55,7 @@ using _STLP_NEW_IO_NAMESPACE::money_put;
 using _STLP_NEW_IO_NAMESPACE::moneypunct;
 using _STLP_NEW_IO_NAMESPACE::moneypunct_byname;
 
-#if !defined (__SGI_STL_OWN_IOSTREAMS) && !defined (_STLP_NO_NATIVE_MESSAGE_FACET)
+#if !defined (_STLP_OWN_IOSTREAMS) && !defined (_STLP_NO_NATIVE_MESSAGE_FACET)
 using _STLP_NEW_IO_NAMESPACE::messages_base;
 using _STLP_NEW_IO_NAMESPACE::messages;
 using _STLP_NEW_IO_NAMESPACE::messages_byname;

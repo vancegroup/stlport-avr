@@ -18,9 +18,6 @@
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
 # endif
 
-# define _STLP_MSVC50_COMPATIBILITY   1
-# define _STLP_MINIMUM_IMPORT_STD
-
 # define _STLP_CALL __cdecl
 
 # ifndef _STLP_LONG_LONG
@@ -39,8 +36,11 @@
 # endif
 
 # define _STLP_WCHAR_T_IS_USHORT      1
+# define _STLP_MINIMUM_IMPORT_STD
 
 # ifdef _STLP_MSVC
+
+# define _STLP_MSVC50_COMPATIBILITY   1
 
 // # define _STLP_STATIC_CONST_INIT_BUG   1
 # define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
@@ -120,8 +120,8 @@
 # endif
 
 # if defined (_STLP_MSVC) && ( _STLP_MSVC < 1100 )
-#  ifndef _STLP_NO_SGI_IOSTREAMS
-#   define _STLP_NO_SGI_IOSTREAMS
+#  ifndef _STLP_NO_OWN_IOSTREAMS
+#   define _STLP_NO_OWN_IOSTREAMS
 #   undef  _STLP_OWN_IOSTREAMS
 #  endif
 // #  define _STLP_NESTED_TYPE_PARAM_BUG 1
@@ -181,7 +181,7 @@
 
 
 #    if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
-//    only static SGI lib now works for ICL and VC 5.0
+//    only static STLport lib now works for ICL and VC 5.0
 #     undef  _STLP_USE_STATIC_LIB
 #     define _STLP_USE_STATIC_LIB
 //    disable hook which makes template symbols to be searched for in the library

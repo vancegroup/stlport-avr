@@ -76,7 +76,7 @@
 # endif
 
 #ifdef _STLP_MEMBER_TEMPLATE_CLASSES 
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) _Alloc_traits<_Tp,__atype>::create_allocator(__a) 
+#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a)) 
 #elif defined(__MRC__)||defined(__SC__) 
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create<_Tp,__atype>(__a,(_Tp*)0) 
 #else 

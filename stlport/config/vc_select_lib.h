@@ -8,8 +8,7 @@
 #   define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 #  endif
 
-
-#  if !defined (_STLP_NO_SGI_IOSTREAMS)
+#  if !defined (_STLP_NO_OWN_IOSTREAMS)
 
 #    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
      || defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB) ) \

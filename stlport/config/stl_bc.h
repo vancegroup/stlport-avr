@@ -37,7 +37,7 @@
 // BCB 2 or less (Borland 5.02)
 #if ( __BORLANDC__ < 0x530 )
 
-#  define _STLP_NO_SGI_IOSTREAMS
+#  define _STLP_NO_OWN_IOSTREAMS
 #  undef  _STLP_OWN_IOSTREAMS
 
 #  define _STLP_GLOBAL_VENDOR_CSTD 1
@@ -135,7 +135,7 @@ typedef char    mbstate_t;
 #  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
 #  define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 
-#   if !defined (_STLP_NO_SGI_IOSTREAMS)
+#   if !defined (_STLP_NO_OWN_IOSTREAMS)
 
 #    if ( defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) \
      || defined (_STLP_USE_DYNAMIC_LIB) ) \
