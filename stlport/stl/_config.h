@@ -55,6 +55,8 @@
 /* STLport version */
 #   define _STLPORT_VERSION                               0x500
 
+# define _STLP_STLPORT_DBG_LEVEL 1
+# define _STLP_STANDARD_DBG_LEVEL 2
 /* Placeholder for user to override settings.
  * It could be also used to mask settings from 
  * different directories.
@@ -1068,7 +1070,7 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 # if defined (_STLP_FULL_ADL_IMPLEMENTED) && defined (_STLP_NO_OWN_IOSTREAMS) && !defined (_STLP_USE_NO_IOSTREAMS)
 #  error "Invalid configuration, STLport wrapper iostream mode can't be used with compiler \
 implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch \
-and build STLport library."
+or turn on _STLP_USE_NO_IOSTREAMS if you are not using any component of the iostream library."
 # endif /* _STLP_FULL_ADL_IMPLEMENTED && _STLP_NO_OWN_IOSTREAMS */
 
 # if defined (_STLP_USE_TEMPLATE_EXPRESSION) && defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES)
