@@ -395,7 +395,7 @@ codecvt_byname<wchar_t, char, mbstate_t>
       return error;
     }
 
-    if (chars_read == (size_t) -1) {
+    if (chars_read == (size_t) -2) {
       from_next = from;
       to_next   = to;
       return partial;
