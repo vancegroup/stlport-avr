@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/06/16 15:32:20 ptr>
+// -*- C++ -*- Time-stamp: <04/07/23 15:24:06 ptr>
 
 /*
  *
@@ -337,13 +337,13 @@ class __Mutex :
     void lock()
       {
 #ifdef _PTHREADS
-        pthread_mutex_lock( &_M_lock );
+        pthread_mutex_lock( &this->_M_lock );
 #endif
 #ifdef __FIT_UITHREADS
-        mutex_lock( &_M_lock );
+        mutex_lock( &this->_M_lock );
 #endif
 #ifdef __FIT_WIN32THREADS
-        EnterCriticalSection( &_M_lock );
+        EnterCriticalSection( &this->_M_lock );
 #endif
 #ifdef __FIT_NOVELL_THREADS
         WaitOnLocalSemaphore( this->_M_lock );
@@ -354,13 +354,13 @@ class __Mutex :
     int trylock()
       {
 #ifdef _PTHREADS
-        return pthread_mutex_trylock( &_M_lock );
+        return pthread_mutex_trylock( &this->_M_lock );
 #endif
 #ifdef __FIT_UITHREADS
-        return mutex_trylock( &_M_lock );
+        return mutex_trylock( &this->_M_lock );
 #endif
 #ifdef __FIT_WIN32THREADS
-        return TryEnterCriticalSection( &_M_lock ) != 0 ? 0 : -1;
+        return TryEnterCriticalSection( &this->_M_lock ) != 0 ? 0 : -1;
 #endif
 #ifdef __FIT_NOVELL_THREADS
         return ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
@@ -374,13 +374,13 @@ class __Mutex :
     void unlock()
       {
 #ifdef _PTHREADS
-        pthread_mutex_unlock( &_M_lock );
+        pthread_mutex_unlock( &this->_M_lock );
 #endif
 #ifdef __FIT_UITHREADS
-        mutex_unlock( &_M_lock );
+        mutex_unlock( &this->_M_lock );
 #endif
 #ifdef __FIT_WIN32THREADS
-        LeaveCriticalSection( &_M_lock );
+        LeaveCriticalSection( &this->_M_lock );
 #endif
 #ifdef __FIT_NOVELL_THREADS
         SignalLocalSemaphore( this->_M_lock );
@@ -413,14 +413,14 @@ class __Spinlock :
     void lock()
       {
 # ifdef _PTHREADS
-        pthread_spin_lock( &_M_lock );
+        pthread_spin_lock( &this->_M_lock );
 # endif
       }
 
     int trylock()
       {
 # ifdef _PTHREADS
-        return pthread_spin_trylock( &_M_lock );
+        return pthread_spin_trylock( &this->_M_lock );
 # endif
 # ifdef _NOTHREADS
         return 0;
@@ -430,7 +430,7 @@ class __Spinlock :
     void unlock()
       {
 # ifdef _PTHREADS
-        pthread_spin_unlock( &_M_lock );
+        pthread_spin_unlock( &this->_M_lock );
 # endif
       }
 };
@@ -464,7 +464,7 @@ class __SpinlockRS :
           return;
         }
 #  ifdef _PTHREADS
-        pthread_spin_lock( &_M_lock );
+        pthread_spin_lock( &this->_M_lock );
 #  endif
         _id = _c_id;
         _count = 0;
@@ -490,7 +490,7 @@ class __SpinlockRS :
           return 0;
         }
 #  ifdef _PTHREADS
-        int res = pthread_spin_trylock( &_M_lock );
+        int res = pthread_spin_trylock( &this->_M_lock );
 #  endif
         if ( res != 0 ) {
           return res;
@@ -509,7 +509,7 @@ class __SpinlockRS :
         if ( --_count == 0 ) {
 #  ifdef _PTHREADS
           _id =  __STATIC_CAST(pthread_t,-1);
-          pthread_spin_unlock( &_M_lock );
+          pthread_spin_unlock( &this->_M_lock );
 #  endif
 # endif // !_NOTHREADS
         }
