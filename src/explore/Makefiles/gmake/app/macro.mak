@@ -1,0 +1,8 @@
+# Time-stamp: <03/07/15 17:54:22 ptr>
+# $Id$
+
+PRG        := $(OUTPUT_DIR)/${PRGNAME}${EXE}
+PRG_DBG    := $(OUTPUT_DIR_DBG)/${PRGNAME}${EXE}
+PRG_STLDBG := $(OUTPUT_DIR_STLDBG)/${PRGNAME}${EXE}
+
+LDFLAGS += ${LDSEARCH}
