@@ -17,7 +17,13 @@
 # define _STLP_CWCHAR_H
 
 # ifdef __GNUC__
-# include <cstddef> 
+# include <cstddef>
+
+# if (__GNUC__ >= 3) && defined(__CYGWIN__) // this total HACK is the only expedient way I could cygwin to work with GCC 3.0
+#  define __need_wint_t
+#  include <cstddef>
+# endif
+
 # endif
 
 # if ! defined (_STLP_WINCE)
