@@ -14,7 +14,8 @@
 # define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #endif
 
-# if !(defined ( __KCC ) && __KCC_VERSION > 3400 )
+# if !(defined ( __KCC ) && __KCC_VERSION > 3400 ) && \
+  ((defined(__SunOS_5_5_1) || defined(__SunOS_5_6) ))
 #  ifndef _STLP_NO_NATIVE_MBSTATE_T
 #   define _STLP_NO_NATIVE_MBSTATE_T 1
 #  endif

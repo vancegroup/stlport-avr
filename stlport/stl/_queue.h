@@ -49,7 +49,7 @@
 _STLP_BEGIN_NAMESPACE
 
 # if ! defined ( _STLP_LIMITED_DEFAULT_TEMPLATES )
-template <class _Tp, class _Sequence = STLPORT::deque<_Tp> >
+template <class _Tp, class _Sequence = deque<_Tp> >
 # elif defined ( _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
 #  define _STLP_QUEUE_ARGS _Tp
 template <class _Tp>
