@@ -102,11 +102,11 @@
 
 
 /*
- * If _STLP_USE_OWN_NAMESPACE is in effect, STLport by default will not try
- * to rename std:: for the user
- * to _STL::. If you do want this feature, please define the following switch :
+ * If _STLP_USE_OWN_NAMESPACE is in effect, STLport by default will try
+ * to rename std:: for the user to _STL::. If you do want this feature, 
+ * please define the following switch :
  */
-// # define _STLP_REDEFINE_STD 1
+// # define _STLP_DONT_REDEFINE_STD 1
 
 
 /*
@@ -215,6 +215,25 @@
  */
 
 // #define _STLP_USE_TEMPLATE_EXPRESSION 1
+
+/*
+ * By default the STLport basic_string implementation use a little static buffer
+ * (of 8 char type when writing this doc) to avoid systematically memory allocation
+ * in case of little basic_string. The drawback of such a method is bigger 
+ * basic_string size and some performance penalty for method like swap. If you
+ * prefer systematical dynamic allocation turn on this macro.
+ */
+// #define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
+
+/*
+ * To reduce the famous code bloat trouble due to the use of templates STLport grant
+ * a specialization of the vector container for pointer types. So all instanciations
+ * of vector with a pointer type will use the same implementation based on a vector
+ * of void*. If you prefer systematical instanciation turn on this macro.
+ * Remark: This feature is only implemented for compilers supporting partial template
+ * specialization.
+ */
+// #define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
 
 //==========================================================
 

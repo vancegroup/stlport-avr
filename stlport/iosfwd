@@ -24,11 +24,15 @@
 #  include <stl/_prolog.h>
 # endif
 
+# ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+# endif
+
 # if defined (_STLP_OWN_IOSTREAMS)
 
 #  if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR)
 #   include <cwchar>
-#  endif			
+#  endif /* _STLP_HAS_WCHAR_T && !_STLP_CWCHAR */			
 
 #  include <stl/_iosfwd.h>
 
@@ -36,7 +40,7 @@
 
 #  include <stl/char_traits.h> 
 
-# else
+# else /* !_STLP_OWN_IOSTREAMS && !_STLP_USE_NO_IOSTREAMS*/
 
 _STLP_BEGIN_NAMESPACE
 template <class _Tp> class allocator;
@@ -44,7 +48,7 @@ _STLP_END_NAMESPACE
 
 #  include <wrap_std/iosfwd>
 
-# endif
+# endif /* _STLP_OWN_IOSTREAMS */
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1034)
 #  include <stl/_epilog.h>

@@ -797,91 +797,8 @@ private:  // Helper functions for insert.
   }
 
   template <class _ForwardIter>
-  void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-                 const random_access_iterator_tag &) {
-    //This version has to take care about self referencing
-    if (__first != __last) {
-      difference_type __n = __last - __first;
-      if (this->_M_end_of_storage._M_data - this->_M_Finish() >= __n + 1) {
-        const difference_type __elems_after = this->_M_Finish() - __position;
-        if (__elems_after >= __n) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-          if (this->_M_using_static_buf())
-            _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
-          else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
-          this->_M_finish += __n;
-          iterator __move_dest = __position + __n;
-          iterator __move_dest_end = __position + __elems_after + 1;
-          const _CharT* __first_ite = __STATIC_CAST(const _CharT*, &(*__first));
-          const _CharT* __last_ite = __STATIC_CAST(const _CharT*, &(*__last));
-          //We have to check that the source buffer won't be modified by the _Traits::move
-          if ((__first_ite >= __move_dest) && (__first_ite < __move_dest_end)) {
-            if (__last_ite <= __move_dest_end) {
-              __first += __n;
-              __last += __n;
-              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-              _M_copy(__first, __last, __position);
-            }
-            else {
-              _ForwardIter __mid = __move_dest_end;
-              difference_type __mid_pos = __mid - __first_ite;
-              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-              _M_copy(__mid, __last, __position + __mid_pos);
-              __first += __n;
-              __mid += __n;
-              _M_copy(__first, __mid, __position);
-            }
-          }
-          else if ((__last_ite > __move_dest) && (__last_ite <= __move_dest_end)) {
-            _ForwardIter __mid = __move_dest;
-            difference_type __mid_pos = __mid - __first_ite;
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-            _M_copy(__first, __mid, __position);
-            __mid += __n;
-            __last += __n;
-            _M_copy(__mid, __last, __position + __mid_pos);
-          }
-          else {
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-            _M_move(__first, __last, __position);
-          }
-        }
-        else {
-          pointer __old_finish = this->_M_Finish();
-          _ForwardIter __mid = __first;
-          advance(__mid, __elems_after + 1);
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-          if (this->_M_using_static_buf())
-            _M_copy(__mid, __last, this->_M_Finish() + 1);
-          else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
-          this->_M_finish += __n - __elems_after;
-          _STLP_TRY {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-            if (this->_M_using_static_buf())
-              _M_copy(__position, __old_finish + 1, this->_M_Finish());
-            else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-            uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
-            this->_M_finish += __elems_after;
-          }
-          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
-                        this->_M_finish = __old_finish));
-          _M_move(__first, __mid, __position);
-        }
-      }
-      else {
-        _M_insert_overflow(__position, __first, __last, __n);
-      }
-    }
-  }
-
-  template <class _ForwardIter>
-  void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-                 const forward_iterator_tag &) {
+  void _M_insert_over(iterator __position, _ForwardIter __first, _ForwardIter __last, 
+                     const __false_type& /*OKToMemCpy or ForwardIter*/) {
     //This version can't have self referencing
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
@@ -927,6 +844,102 @@ private:  // Helper functions for insert.
         _M_insert_overflow(__position, __first, __last, __n);
       }
     }
+  }
+
+  template <class _RandomIter>
+  void _M_insert_over(iterator __position, _RandomIter __first, _RandomIter __last, 
+                     const __true_type& /*OKToMemCpy*/) {
+    //This version has to take care about self referencing
+    if (__first != __last) {
+      difference_type __n = __last - __first;
+      if (this->_M_end_of_storage._M_data - this->_M_Finish() >= __n + 1) {
+        const difference_type __elems_after = this->_M_Finish() - __position;
+        if (__elems_after >= __n) {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
+          this->_M_finish += __n;
+          iterator __move_dest = __position + __n;
+          iterator __move_dest_end = __position + __elems_after + 1;
+          const _CharT* __first_ite = __REINTERPRET_CAST(const _CharT*, &(*__first));
+          const _CharT* __last_ite = __REINTERPRET_CAST(const _CharT*, &(*__last));
+          //We have to check that the source buffer won't be modified by the _Traits::move
+          if ((__first_ite >= __move_dest) && (__first_ite < __move_dest_end)) {
+            if (__last_ite <= __move_dest_end) {
+              __first += __n;
+              __last += __n;
+              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
+              _M_copy(__first, __last, __position);
+            }
+            else {
+              _RandomIter __mid = __move_dest_end;
+              difference_type __mid_pos = __mid - __first_ite;
+              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
+              _M_copy(__mid, __last, __position + __mid_pos);
+              __first += __n;
+              __mid += __n;
+              _M_copy(__first, __mid, __position);
+            }
+          }
+          else if ((__last_ite > __move_dest) && (__last_ite <= __move_dest_end)) {
+            _RandomIter __mid = __move_dest;
+            difference_type __mid_pos = __mid - __first_ite;
+            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
+            _M_copy(__first, __mid, __position);
+            __mid += __n;
+            __last += __n;
+            _M_copy(__mid, __last, __position + __mid_pos);
+          }
+          else {
+            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
+            _M_move(__first, __last, __position);
+          }
+        }
+        else {
+          pointer __old_finish = this->_M_Finish();
+          _RandomIter __mid = __first;
+          advance(__mid, __elems_after + 1);
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+          if (this->_M_using_static_buf())
+            _M_copy(__mid, __last, this->_M_Finish() + 1);
+          else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
+          this->_M_finish += __n - __elems_after;
+          _STLP_TRY {
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+            if (this->_M_using_static_buf())
+              _M_copy(__position, __old_finish + 1, this->_M_Finish());
+            else
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+            uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
+            this->_M_finish += __elems_after;
+          }
+          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
+                        this->_M_finish = __old_finish));
+          _M_move(__first, __mid, __position);
+        }
+      }
+      else {
+        _M_insert_overflow(__position, __first, __last, __n);
+      }
+    }
+  }
+
+  template <class _RandomIter>
+  void _M_insert(iterator __position, _RandomIter __first, _RandomIter __last, 
+                 const random_access_iterator_tag &) {
+     typedef typename _AreSameTypes<iterator, _RandomIter>::_Ret _SameTypes;
+     return _M_insert_over(__position, __first, __last, _SameTypes());
+  }
+
+  template <class _ForwardIter>
+  void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
+                 const forward_iterator_tag &) {
+  return _M_insert_over(__position, __first, __last, __false_type());
   }
 
   template <class _Integer>
@@ -1032,7 +1045,7 @@ public:                         // Replace.  (Conceptually equivalent
   }
 
   _Self& replace(size_type __pos, size_type __n1,
-                        const _CharT* __s) {
+                 const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -1109,21 +1122,21 @@ private:                        // Helper functions for replace.
   }
 
   template <class _InputIter>
-  _Self& _M_replace(iterator __first, iterator __last,
-                    _InputIter __f, _InputIter __l, const input_iterator_tag &__ite_tag) {
+  _Self& _M_replace_aux(iterator __first, iterator __last,
+                        _InputIter __f, _InputIter __l, const __false_type& /*IsSame or ForwardIter*/) {
     //no overlapping issue in this method
     for ( ; __first != __last && __f != __l; ++__first, ++__f)
       _Traits::assign(*__first, *__f);
     if (__f == __l)
       erase(__first, __last);
     else
-      _M_insert(__last, __f, __l, __ite_tag);
+      insert(__last, __f, __l);
     return *this;
   }
 
-  template <class _InputIter>
-  _Self& _M_replace(iterator __first, iterator __last,
-                 _InputIter __f, _InputIter __l, const random_access_iterator_tag &__ite_tag) {
+  template <class _RandomIter>
+  _Self& _M_replace_aux(iterator __first, iterator __last,
+                        _RandomIter __f, _RandomIter __l, const __true_type& /*IsSame*/) {
     //might be overlapping
     if (_M_inside(__f)) {
       difference_type __n = __l - __f;
@@ -1152,6 +1165,19 @@ private:                        // Helper functions for replace.
     else {
       return _M_replace(__first, __last, __f, __l, forward_iterator_tag());
     }
+  }
+
+  template <class _InputIter>
+  _Self& _M_replace(iterator __first, iterator __last,
+                    _InputIter __f, _InputIter __l, const input_iterator_tag &) {
+    return _M_replace_aux(__first, __last, __f, __l, __false_type());
+  }
+
+  template <class _RandomIter>
+  _Self& _M_replace(iterator __first, iterator __last,
+                    _RandomIter __f, _RandomIter __l, const random_access_iterator_tag &__ite_tag) {
+    typedef typename _AreSameTypes<iterator, _RandomIter>::_Ret _SameTypes;
+    return _M_replace_aux(__first, __last, __f, __l, _SameTypes());
   }
 
   template <class _ForwardIter> 

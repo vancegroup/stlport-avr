@@ -411,10 +411,9 @@ _STLP_TEMPLATE_NULL struct __type_traits<long double> : __type_traits_aux<1> {};
 
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
-  enum { _Same = _IsSame<_Tp1,_Tp2>::_Ret } ;
   typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
   typedef typename __type_traits<_Tp2>::has_trivial_assignment_operator _Tr2;
-  typedef typename __bool2type< _Same >::_Ret _Tr3;
+  typedef typename _AreSameTypes<_Tp1, _Tp2>::_Ret _Tr3;
   typedef typename _Land3<_Tr1, _Tr2, _Tr3>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
@@ -556,8 +555,7 @@ struct _SwapOnMove {
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 	typedef typename _Lor2<_Enabled1, _Enabled2>::_Ret _Enabled;
 
-  enum { _Same = _IsSame<_Tp1,_Tp2>::_Ret };
-  typedef typename __bool2type< _Same >::_Ret _SameTypes;
+  typedef typename _AreSameTypes<_Tp1,_Tp2>::_Ret _SameTypes;
 
   typedef typename _Land3<_Enabled, _SameTypes, __true_type>::_Ret _Type;
 	static _Type _Answer() {return _Type();}

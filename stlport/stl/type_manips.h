@@ -187,6 +187,12 @@ struct _IsSame<_Tp, _Tp> { enum { _Ret = 1 }; };
 
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
+template <class _Tp1, class _Tp2>
+struct _AreSameTypes {
+  enum { _Same = _IsSame<_Tp1, _Tp2>::_Ret };
+  typedef typename __bool2type<_Same>::_Ret _Ret;
+};
+
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 
 template <class _Derived, class _Base>

@@ -144,7 +144,13 @@ __destroy_aux(_ForwardIterator __first, _ForwardIterator __last, const __false_t
 
 template <class _ForwardIterator> 
 inline void
-__destroy_aux(_ForwardIterator, _ForwardIterator, const __true_type& /*_Trivial_destructor*/) {}
+__destroy_aux(_ForwardIterator, _ForwardIterator, const __true_type& /*_Trivial_destructor*/) {
+# ifdef _STLP_DEBUG_UNINITIALIZED
+  //We are going to call _Destroy just for the _STLP_DEBUG_UNINITIALIZED option:
+  for ( ; __first != __last; ++__first)
+    _STLP_STD::_Destroy(&*__first);
+# endif
+}
 
 template <class _ForwardIterator, class _Tp>
 inline void 

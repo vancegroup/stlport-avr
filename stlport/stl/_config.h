@@ -120,6 +120,11 @@
 #endif
 
 
+#if defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
+#  define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
+#endif
+
+
 # if !defined (_STLP_BIG_ENDIAN) && ! defined (_STLP_LITTLE_ENDIAN)
 #  if defined(_MIPSEB) || defined (__sparc) || \
       defined (_AIX) || defined (__hpux) || defined(macintosh) || defined (_MAC)
@@ -1057,14 +1062,14 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 # endif
 
 # if defined (_STLP_FULL_ADL_IMPLEMENTED) && defined (_STLP_NO_OWN_IOSTREAMS) && !defined (_STLP_USE_NO_IOSTREAMS)
-#  error "Invalid configuration, STLport wrapper iostream mode can't be used with compiler"\
-         "implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch"\
-         "and build STLport library."
+#  error Invalid configuration, STLport wrapper iostream mode can't be used with compiler \
+implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch \
+and build STLport library.
 # endif /* _STLP_FULL_ADL_IMPLEMENTED && _STLP_NO_OWN_IOSTREAMS */
 
 # if defined (_STLP_USE_TEMPLATE_EXPRESSION) && defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES)
-#  error "Your compiler is not able to handle template expressions."\
-         "Please turn off _STLP_USE_TEMPLATE_EXPRESSION switch." 
+#  error Your compiler is not able to handle template expressions. \
+Please turn off _STLP_USE_TEMPLATE_EXPRESSION switch.
 # endif /* _STLP_USE_TEMPLATE_EXPRESSION && _STLP_NO_MEMBER_TEMPLATE_CLASSES */
 
 # if defined (_STLP_DEBUG) && defined (_STLP_NO_OWN_IOSTREAMS)

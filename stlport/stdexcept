@@ -45,9 +45,19 @@
 # include <stl/_alloc.h>
 #endif
 
-#ifndef _STLP_STRING_H
-#include <stl/_string.h>
-#endif
+#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1300)
+/*
+ * MSVC7.x needs this include even if it is not a good thing to include
+ * it directly.
+ */
+#  ifndef _STLP_STRING_H
+#    include <stl/_string.h>
+#  endif
+#else
+#  ifndef _STLP_STRING_FWD_H
+#   include <stl/_string_fwd.h>
+#  endif
+#endif /* _STLP_MSVC >= 1300 */
 
 # define _STLP_OWN_STDEXCEPT 1
 
