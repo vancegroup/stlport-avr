@@ -22,9 +22,11 @@
 #ifndef _STLP_CMATH_H_HEADER
 #include <stl/_cmath.h>
 #endif
-#ifndef _STLP_INTERNAL_NEW_HEADER
-#include <stl/_new.h>
+
+#ifndef _STLP_NEW_HEADER
+#include <new>
 #endif
+
 #ifndef _STLP_INTERNAL_ALGO_H
 #include <stl/_algo.h>
 #endif
