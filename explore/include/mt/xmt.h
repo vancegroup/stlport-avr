@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/12 23:20:20 ptr>
+// -*- C++ -*- Time-stamp: <03/01/17 08:22:10 ptr>
 
 /*
  *
@@ -161,23 +161,41 @@ class fork_in_parent :
     pid_t _pid;
 };
 
-class Mutex
+// if parameter SCOPE (process scope) true, PTHREAD_PROCESS_SHARED will
+// be used; otherwise PTHREAD_PROCESS_PRIVATE.
+// Of cause, system must support process scope...
+template <bool SCOPE>
+class __mutex_base
 {
   public:
-    Mutex()
+    __mutex_base()
       {
 #ifdef _PTHREADS
-	pthread_mutex_init( &_M_lock, 0 );
+        if ( SCOPE ) {
+          pthread_mutexattr_t att;
+          pthread_mutexattr_init( &att );
+          pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+          pthread_mutex_init( &_M_lock, &att );
+          pthread_mutexattr_destroy( &att );
+        } else {
+          pthread_mutex_init( &_M_lock, 0 );
+        }
 #endif
 #ifdef __FIT_UITHREADS
-	mutex_init( &_M_lock, 0, 0 );
+        if ( SCOPE ) {
+          // or USYNC_PROCESS_ROBUST to detect already initialized mutex
+          // in process scope
+          mutex_init( &_M_lock, USYNC_PROCESS, 0 );
+        } else {
+          mutex_init( &_M_lock, 0, 0 );
+        }
 #endif
 #ifdef WIN32
 	InitializeCriticalSection( &_M_lock );
 #endif
       }
 
-    ~Mutex()
+    ~__mutex_base()
       {
 #ifdef _PTHREADS
 	pthread_mutex_destroy( &_M_lock );
@@ -189,6 +207,35 @@ class Mutex
 	DeleteCriticalSection( &_M_lock );
 #endif
       }
+  protected:
+#ifdef _PTHREADS
+    pthread_mutex_t _M_lock;
+#endif
+#ifdef __FIT_UITHREADS
+    mutex_t _M_lock;
+#endif
+#ifdef __FIT_WIN32THREADS
+    CRITICAL_SECTION _M_lock;
+#endif
+
+#ifndef __FIT_WIN32THREADS
+  private:
+    friend class Condition;
+#endif
+};
+
+// if parameter R (recursive), than __Mutex will be recursive-safe
+// and may be not recursive-safe for R = false.
+template <bool R, bool SCOPE>
+class __Mutex :
+    public __mutex_base<SCOPE>
+{
+  public:
+    __Mutex()
+      { }
+
+    ~__Mutex()
+      { }
 
     void lock()
       {
@@ -245,108 +292,151 @@ class Mutex
     CRITICAL_SECTION _M_lock;
 #endif
 
-  private:
 #ifndef __FIT_WIN32THREADS
+  private:
     friend class Condition;
 #endif
 };
 
-class MutexSDS : // Self Deadlock Safe
-        public Mutex
+// Recursive Safe mutex.
+
+// This specialization need for POSIX and DCE threads,
+// because Windows CriticalSection is recursive safe.
+// By the way, point for enhancement:  __UNIX_98
+// (or XSI---X/Open System Interfaces Extention) has recursive mutex option.
+// Another specialization?
+
+#ifdef __unix
+
+template <bool SCOPE>
+class __Mutex<true,SCOPE> : // Recursive Safe
+    public __mutex_base<SCOPE>
 {
   public:
-    MutexSDS() :
+    __Mutex() :
         _count( 0 ),
-#ifdef __unix
-#  ifdef __FIT_UITHREADS
+#ifdef __FIT_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
-#  elif defined(_PTHREADS)
+#endif
+#ifdef _PTHREADS
         _id( __STATIC_CAST(pthread_t,-1) )
-#  else
-#    error "only POSIX and Solaris threads supported now in *NIXes"
-#  endif
 #endif
+      { }
 
-#ifdef __FIT_WIN32THREADS
-        _id( INVALID_HANDLE_VALUE )
-#endif
+    ~__Mutex()
       { }
 
     void lock()
       {
-#ifdef _PTHREADS
+#ifndef _NOTHREADS
+#  ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
-#endif
-#ifdef __FIT_UITHREADS
+#  endif
+#  ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
-#endif
-#ifdef __FIT_WIN32THREADS
-        HANDLE _c_id = GetCurrentThread();
-#endif
+#  endif
         if ( _c_id != _id ) {
-          Mutex::lock();
+#  ifdef _PTHREADS
+          pthread_mutex_lock( &_M_lock );
+#  endif
+#  ifdef __FIT_UITHREADS
+          mutex_lock( &_M_lock );
+#  endif
           _id = _c_id;
           _count = 0;
         }
         ++_count;
+#endif // !_NOTHREADS
+      }
+
+    // Equivalent to lock(), except that if the mutex object referenced
+    // by mutex is currently locked the call return immediately.
+    // If mutex is currently owned by the calling thread, the mutex lock count
+    // incremented by one and the trylock() function immediately return success
+    // (value 0). Otherwise, if mutex is currently owned by another thread,
+    // return error (non-zero).
+
+    int trylock()
+      {
+#ifdef _NOTHREADS
+        return 0;
+#else // _NOTHREADS
+#  ifdef _PTHREADS
+        pthread_t _c_id = pthread_self();
+#  endif
+#  ifdef __FIT_UITHREADS
+        thread_t _c_id = thr_self();
+#  endif
+        if ( _c_id != _id ) {
+          int res;
+#  ifdef _PTHREADS
+          res = pthread_mutex_trylock( &_M_lock );
+#  endif
+#  ifdef __FIT_UITHREADS
+          res = mutex_trylock( &_M_lock );
+#  endif
+          if ( res != 0 ) {
+            return res;
+          }
+
+          _id = _c_id;
+          _count = 0;
+        }
+        ++_count;
+
+#endif // !_NOTHREADS
       }
 
     void unlock()
       {
+#ifndef _NOTHREADS
         if ( --_count == 0 ) {
-#ifdef __unix
 #  ifdef __FIT_UITHREADS
-         _id = __STATIC_CAST(thread_t,-1);
-#  elif defined(_PTHREADS)
-         _id =  __STATIC_CAST(pthread_t,-1);
+          _id = __STATIC_CAST(thread_t,-1);
+          mutex_unlock( &_M_lock );
 #  endif
-#endif
-
-#ifdef __FIT_WIN32THREADS
-          _id = INVALID_HANDLE_VALUE;
-#endif
-          Mutex::unlock();
+#  ifdef _PTHREADS
+          _id =  __STATIC_CAST(pthread_t,-1);
+          pthread_mutex_unlock( &_M_lock );
+#  endif
+#endif // !_NOTHREADS
         }
       }
 
   protected:
+#ifndef _NOTHREADS
     unsigned _count;
+#endif // !_NOTHREADS
+
 #ifdef _PTHREADS
     pthread_t _id;
 #endif
 #ifdef __FIT_UITHREADS
     thread_t  _id;
 #endif
-#ifdef __FIT_WIN32THREADS
-    HANDLE    _id;
-#endif
 };
 
-class Locker
+#endif // __unix
+
+template <bool R, bool PS>
+class __Locker
 {
   public:
-    Locker( const Mutex& point ) :
+    __Locker( const __Mutex<R,PS>& point ) :
       m( point )
-      { const_cast<Mutex&>(m).lock(); }
-    ~Locker()
-      { const_cast<Mutex&>(m).unlock(); }
+      { const_cast<__Mutex<R,PS>&>(m).lock(); }
+    ~__Locker()
+      { const_cast<__Mutex<R,PS>&>(m).unlock(); }
 
   private:
-    const Mutex& m;
+    const __Mutex<R,PS>& m;
 };
 
-class LockerSDS // self deadlock safe
-{
-  public:
-    LockerSDS( const MutexSDS& point ) :
-      m( point )
-      { const_cast<MutexSDS&>(m).lock(); }
-    ~LockerSDS()
-      { const_cast<MutexSDS&>(m).unlock(); }
+typedef __Mutex<false,false>  Mutex;
+typedef __Mutex<true,false>   MutexSDS;
 
-  private:
-    const MutexSDS& m;
-};
+typedef __Locker<false,false> Locker;
+typedef __Locker<true,false>  LockerSDS;
 
 class Condition
 {
