@@ -46,7 +46,7 @@ NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D__STL_NO_SGI_
 check: $(TEST)
 
 LIBS = -lm 
-D_LIBSTLPORT = -L../../lib -lstlport_cygwin_debug
+D_LIBSTLPORT = -L../../lib -lstlport_cygwin_stldebug
 LIBSTLPORT = -L../../lib -lstlport_cygwin
 
 all: $(TEST_EXE) $(D_TEST_EXE) $(NOSGI_TEST_EXE)
@@ -98,8 +98,8 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -o $*
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -D__STL_DEBUG -D_REENTRANT -o $*.o
+	$(CXX) $(CXXFLAGS) $*.o $(D_LIBSTLPORT) $(LIBS) -o $*
 	./$* > $@
 	-rm -f $*
 

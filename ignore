@@ -1,0 +1,11 @@
+ignore
+dev/*
+fix/*
+*.o
+*.obj
+*~
+*.exe
+*.core
+*.bak
+*.out
+CVS

@@ -135,14 +135,14 @@ template class money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 
 
 #ifndef _STLP_NO_WCHAR_T
-#  if !( defined (__CYGWIN__) && __GNUC__ == 2 && __GNUC_MINOR__ < 95 )
+// #  if !( defined (__CYGWIN__) && __GNUC__ == 2 && __GNUC_MINOR__ < 95 )
 // fbp : HACK : linker chokes on this instantiation + one in locale.cpp
 template class money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 #  endif
 // template class money_get<wchar_t, const wchar_t*>;
 template class money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class money_put<wchar_t, wchar_t*>;
-#endif /* INSTANTIATE_WIDE_STREAMS */
+// #endif /* INSTANTIATE_WIDE_STREAMS */
 // #endif
 
 # endif
