@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/07/11 15:19:10 ptr>
+// -*- C++ -*- Time-stamp: <02/08/01 09:18:13 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -44,7 +44,9 @@
 #include <string>
 
 #ifdef __linux
-#define __USE_GNU
+#  ifndef __USE_GNU
+#    define __USE_GNU
+#  endif
 #  include <sys/time.h>
 #endif
 
