@@ -17,7 +17,6 @@
 
 #  define _STLP_USE_UNIX_EMULATION_IO	1
 #  define _STLP_USE_AUTO_PTR_CONVERSIONS	1
-#  define _STLP_STATIC_CONST_INIT_BUG
 
 # ifdef __INTEL__
 #  define _STLP_LITTLE_ENDIAN
@@ -37,12 +36,20 @@
 #  define _STLP_NO_FRIEND_TEMPLATES 1	// Bug mysteriously reintroduced in this version.
 #  define _STLP_THROW_RETURN_BUG	1
 
+//  *** Version-specific settings ***
+
+#  if __MWERKS__ >= 0x2405
+#   define _STLP_HAS_NATIVE_FLOAT_ABS
+#  endif
+
+#  if __MWERKS__ < 0x2405
+#   define _STLP_STATIC_CONST_INIT_BUG
+#  endif
+
 #  if __MWERKS__ <= 0x2303
 #   define _STLP_NO_TEMPLATE_CONVERSIONS	1
 #   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD	1
 #  endif
-
-//  *** Version-specific settings ***
 
 #  if __MWERKS__ < 0x2301
 #   define _STLP_MEMBER_SPECIALIZATION_BUG	1

@@ -123,6 +123,10 @@ typedef unsigned int wint_t;
 /* g++ 2.7.x and above */
 #   define _STLP_LONG_LONG long long 
 
+#   if (__GNUC__ >= 3)
+#    define _STLP_HAS_NATIVE_FLOAT_ABS
+#   endif
+
 #   if (__GNUC__ < 3)
 #    define _STLP_HAS_NO_NEW_C_HEADERS     1
 #    define _STLP_VENDOR_GLOBAL_CSTD       1

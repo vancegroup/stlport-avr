@@ -964,8 +964,8 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 /* We only need to expose details of global implementation if we are building STLport 
    or have not instantiated everything in the lib */
 # if defined (__BUILDING_STLPORT) || defined (_STLP_NO_FORCE_INSTANTIATE)
-#  undef  _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
-#  define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION 1
+#   undef  _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
+#   define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION 1
 # endif
 
 #else
