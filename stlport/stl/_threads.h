@@ -254,10 +254,11 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
 	 && (defined (_ABIN32) || defined(_ABI64))
         __lock_release(__lock);
 #   elif defined (_STLP_SPARC_SOLARIS_THREADS)
-#    if defined (__WORD64) || defined (__arch64__)
+#    if defined (__WORD64) || defined (__arch64__) \
+     || defined (__sparcv9) || defined (__sparcv8plus)
 	asm("membar #StoreStore ; membar #LoadStore");
 #    else
-	//	asm(" stbar ");
+	asm(" stbar ");
 #    endif
         *__lock = 0;	
 #   else

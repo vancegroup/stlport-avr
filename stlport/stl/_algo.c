@@ -103,10 +103,8 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
     return find(__first1, __last1, *__first2);
 
   // General case.
-
-  _ForwardIter2 __p1, __p;
-
-  __p1 = __first2; ++__p1;
+  _ForwardIter2 __p1 = __first2; 
+  ++__p1;
 
   _ForwardIter1 __current = __first1;
 
@@ -115,7 +113,7 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
     if (__first1 == __last1)
       return __last1;
 
-    __p = __p1;
+    _ForwardIter2 __p = __p1;
     __current = __first1; 
     if (++__current == __last1)
       return __last1;
@@ -926,14 +924,13 @@ _BidirectionalIter1 __rotate_adaptive(_BidirectionalIter1 __first,
                                       _Distance __len1, _Distance __len2,
                                       _BidirectionalIter2 __buffer,
                                       _Distance __buffer_size) {
-  _BidirectionalIter2 __buffer_end;
   if (__len1 > __len2 && __len2 <= __buffer_size) {
-    __buffer_end = copy(__middle, __last, __buffer);
+    _BidirectionalIter2 __buffer_end = copy(__middle, __last, __buffer);
     copy_backward(__first, __middle, __last);
     return copy(__buffer, __buffer_end, __first);
   }
   else if (__len1 <= __buffer_size) {
-    __buffer_end = copy(__first, __middle, __buffer);
+    _BidirectionalIter2 __buffer_end = copy(__first, __middle, __buffer);
     copy(__middle, __last, __first);
     return copy_backward(__buffer, __buffer_end, __last);
   }
@@ -1172,11 +1169,10 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
 {
   _Distance __len = distance(__first, __last);
   _Distance __half;
-  _ForwardIter __middle;
 
   while (__len > 0) {
     __half = __len >> 1;
-    __middle = __first;
+    _ForwardIter __middle = __first;
     advance(__middle, __half);
     if (__comp(__val, *__middle))
       __len = __half;
@@ -1196,11 +1192,10 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
 {
   _Distance __len = distance(__first, __last);
   _Distance __half;
-  _ForwardIter __middle, __left, __right;
 
   while (__len > 0) {
     __half = __len >> 1;
-    __middle = __first;
+    _ForwardIter __middle = __first;
     advance(__middle, __half);
     if (__comp(*__middle, __val)) {
       __first = __middle;
@@ -1210,9 +1205,9 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
     else if (__comp(__val, *__middle))
       __len = __half;
     else {
-      __left = lower_bound(__first, __middle, __val, __comp);
+      _ForwardIter __left = lower_bound(__first, __middle, __val, __comp);
       advance(__first, __len);
-      __right = upper_bound(++__middle, __first, __val, __comp);
+      _ForwardIter __right = upper_bound(++__middle, __first, __val, __comp);
       return pair<_ForwardIter, _ForwardIter>(__left, __right);
     }
   }

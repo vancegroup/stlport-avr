@@ -161,6 +161,11 @@
 
 // # define _STLP_USE_MFC 1
 
+
+// boris : this setting is here as we cannot detect precense of new Platform SDK automatically 
+// If you are using new PSDK with VC++ 6.0 or lower, please define this to get correct prototypes for InterlockedXXX functions
+// # define _STLP_NEW_PLATFORM_SDK 1
+
 /*
  * Use minimum set of default arguments on template classes that have more
  * than one - for example map<>, set<>.

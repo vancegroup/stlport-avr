@@ -66,11 +66,11 @@ _M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT
   bool __negative = false;
   _CharT __c = *__in;
 
-  if (__c == __atoms[1] /* __minus_char */ ) {
+  if (__c == __atoms[1] /* __xminus_char */ ) {
     __negative = true;
     ++__in;
   }
-  else if (__c == __atoms[0] /* __plus_char */ ) 
+  else if (__c == __atoms[0] /* __xplus_char */ ) 
     ++__in;
 
 
@@ -300,12 +300,12 @@ _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
 template <class _InputIter, class _CharT>
 _InputIter  _STLP_CALL
 __copy_sign(_InputIter __first, _InputIter __last, string& __v,
-            _CharT __plus, _CharT __minus) {
+            _CharT __xplus, _CharT __xminus) {
     if (__first != __last) {
     _CharT __c = *__first;
-    if (__c == __plus)
+    if (__c == __xplus)
       ++__first;
-    else if (__c == __minus) {
+    else if (__c == __xminus) {
       __v.push_back('-');
       ++__first;
     }
@@ -391,16 +391,16 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
   _CharT __sep = __numpunct.thousands_sep();
 
   _CharT __digits[10];
-  _CharT __plus;
-  _CharT __minus;
+  _CharT __xplus;
+  _CharT __xminus;
 
   _CharT __pow_e;
   _CharT __pow_E;
 
-  _Initialize_get_float(__ct, __plus, __minus, __pow_e, __pow_E, __digits);
+  _Initialize_get_float(__ct, __xplus, __xminus, __pow_e, __pow_E, __digits);
 
   // Get an optional sign
-  __in = __copy_sign(__in, __end, __buf, __plus, __minus);
+  __in = __copy_sign(__in, __end, __buf, __xplus, __xminus);
 
   // Get an optional string of digits.
   if (__grouping.size() != 0)
@@ -423,7 +423,7 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
   if (__ok && __in != __end && (*__in == __pow_e || *__in == __pow_E)) {
     __buf.push_back('e');
     ++__in;
-    __in = __copy_sign(__in, __end, __buf, __plus, __minus);
+    __in = __copy_sign(__in, __end, __buf, __xplus, __xminus);
     __ok = __copy_digits(__in, __end, __buf, __digits);
     // If we have an exponent then the sign 
     // is optional but the digits aren't.
