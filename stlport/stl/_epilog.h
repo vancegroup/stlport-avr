@@ -25,21 +25,21 @@
 /*  We redefine "std" to "stlport", so that user code may use std:: transparently */
 #   undef  std
 #   define std STLPORT
-# else
-# if defined(__cplusplus)
-#  ifndef _STLP_CONFIG_H
-#   include <stl/_config.h>
-#  endif
+//# else
+//# if defined(__cplusplus)
+//#  ifndef _STLP_CONFIG_H
+//#   include <stl/_config.h>
+//#  endif
 
 // this was for the reverse namespace injection schema
-#  if defined (_STLP_USE_OWN_NAMESPACE) && (defined (_STLP_OWN_IOSTREAMS) || defined (_STLP_HAS_NO_NEW_IOSTREAMS))
-namespace _STLP_STD {}
-namespace std {
-  using namespace _STLP_STD;
-}
-#  endif
+//#  if defined (_STLP_USE_OWN_NAMESPACE) && (defined (_STLP_OWN_IOSTREAMS) || defined (_STLP_HAS_NO_NEW_IOSTREAMS))
+//namespace _STLP_STD {}
+//namespace std {
+//  using namespace _STLP_STD;
+//}
+//#  endif
 
-# endif /* __cplusplus */
+//# endif /* __cplusplus */
 # endif
 
 
