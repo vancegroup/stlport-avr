@@ -1,3 +1,16 @@
+2004-03-30  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/new, stlport/stl/_new.h, stlport/typeinfo, stlport/config/stl_msvc.h:
+	workaround for VC6's problem with 'using' directive, while import native
+	bad_alloc and some other classes into STLport's namespace
+
+	* stlport/stl/_streambuf.h: export template class, to make VCs to be happy.
+
+	* stlport/stl/_valarray.h: use <new>, not <stl/_new.h>
+
+	* src/explore/Makefiles/nmake/lib/macro.mak, test/unit/nmake-vc6.mak:
+	fix static library names
+
 2004-03-29  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_set.h: fix problems with erase functions.
