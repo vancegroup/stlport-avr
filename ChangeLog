@@ -57,8 +57,12 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* _istream.c : use of bind2nd (which required _function.h inclusion) changed to use alternate functor (thanks to Sergei Nikolaev)
  	
-	* stl_msvc.h : removed erroneous _STLP_USE_TEMPLATE_EXPORT setting which caused major code bloat for non-SGI-iostreams builds on VC++ (Thanks to Johannes Brunen for the report)
+	* stl_msvc.h : removed erroneous _STLP_USE_TEMPLATE_EXPORT setting which caused major code bloat for native streams builds on VC++ (Thanks to Johannes Brunen for the report)
 
+	* _string_io.c : fixed Intel C++ compilation bug in native streams mode
+
+	* fstream.cpp : added write-sharing for fstream file handle (Thanks to Leland Best)
+	
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 

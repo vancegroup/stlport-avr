@@ -520,7 +520,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   case ios_base::out:
   case ios_base::out | ios_base::trunc:
     dwDesiredAccess = GENERIC_WRITE;
-    dwShareMode = FILE_SHARE_READ;
+    dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
     dwCreationDisposition = OPEN_ALWAYS;
     // boris : even though it is very non-intuitive, standard
     // requires them both to behave same.
@@ -529,7 +529,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
 
   case ios_base::out | ios_base::app:
     dwDesiredAccess = GENERIC_WRITE;
-    dwShareMode = FILE_SHARE_READ;
+    dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
     dwCreationDisposition = OPEN_ALWAYS;
     break;
   case ios_base::in:
@@ -540,12 +540,12 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     break;
   case ios_base::in | ios_base::out:
     dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
-    dwShareMode = FILE_SHARE_READ;
+    dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
     dwCreationDisposition = OPEN_EXISTING;
     break;
   case ios_base::in | ios_base::out | ios_base::trunc:
     dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
-    dwShareMode = FILE_SHARE_READ;
+    dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
     dwCreationDisposition = OPEN_ALWAYS;
     doTruncate = true;
     break;

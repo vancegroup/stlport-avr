@@ -396,6 +396,7 @@ money_get<_CharT, _InputIter>::do_get(iter_type __s,
   }
   if (__s == __end)
     __err |= ios::eofbit;
+
   return __s;
 }
 
@@ -574,7 +575,6 @@ money_put<_CharT, _OutputIter>
   if (!(__fill_pos & (ios_base::right | ios_base::internal)))
     __s = fill_n(__s, __fill_amt, __fill);
   
-
   return __s;
 }
 

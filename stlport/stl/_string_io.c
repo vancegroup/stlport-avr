@@ -23,6 +23,7 @@ __stlp_string_fill(basic_ostream<_CharT, _Traits>& __os,
     __ok = __ok && !_Traits::eq_int_type(__buf->sputc(__f), _Traits::eof());
   return __ok;
 }
+
 template <class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, 
@@ -79,7 +80,7 @@ operator>>(basic_istream<_CharT, _Traits>& __is,
     //    const _C_type& _Ctype = use_facet<_C_type>(__loc);
     const _C_type& _Ctype = *(const _C_type*)__is._M_ctype_facet();
 #else
-# if defined (_STLP_MSVC) && (_STLP_MSVC <= 1200 )
+# if defined (_STLP_MSVC) && (_STLP_MSVC <= 1200 ) || defined (__ICL)
     const locale& __loc = __is.getloc();
     const _C_type& _Ctype = use_facet(__loc , ( _C_type * ) 0, true);
 # elif defined (__SUNPRO_CC)
