@@ -142,6 +142,15 @@
 #  define _STLP_DONT_RETURN_VOID 1
 #  define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
+/* MSVC 6.0 has bad_alloc, but
+ *   - new not throw bad_alloc
+ *   - 'using _STLP_VENDOR_EXCEPT_STD::bad_alloc' or
+ *     'typdef _STLP_VENDOR_EXCEPT_STD::bad_alloc bad_alloc'
+ *     lead to bug---linker still search _STL::bad_alloc
+ */ 
+#  define _STLP_NO_BAD_ALLOC
+#  define _STLP_BROKEN_BAD_ALLOC_CLASS
+#  define _STLP_BROKEN_BAD_CAST_CLASS
 # endif /* (_MSC_VER <= 1200) */
 
 # if ( _MSC_VER<=1010 )

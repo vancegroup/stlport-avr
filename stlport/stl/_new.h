@@ -1,14 +1,14 @@
 
 #ifndef _STLP_NEW_H_HEADER
-# define _STLP_NEW_H_HEADER
+#define _STLP_NEW_H_HEADER
 
-# if defined(_STLP_USE_EXCEPTIONS) && defined(_STLP_NO_BAD_ALLOC)
+#if defined(_STLP_USE_EXCEPTIONS) && defined(_STLP_NO_BAD_ALLOC)
 
 # ifndef _STLP_NEW_DONT_THROW
-#   define _STLP_NEW_DONT_THROW 1
+#  define _STLP_NEW_DONT_THROW 1
 # endif /* _STLP_NEW_DONT_THROW */
 
-#  include <exception>
+# include <exception>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -20,7 +20,7 @@ extern _STLP_DECLSPEC const nothrow_t nothrow;
 #  define nothrow nothrow_t()
 # endif
 
-class bad_alloc : public _STLP_EXCEPTION_BASE { 
+class bad_alloc : public exception { 
 public:
   bad_alloc () _STLP_NOTHROW_INHERENTLY { }
   bad_alloc(const bad_alloc&) _STLP_NOTHROW_INHERENTLY { }
@@ -56,13 +56,13 @@ using _STLP_VENDOR_EXCEPT_STD::bad_alloc;
 using _STLP_VENDOR_EXCEPT_STD::nothrow_t;
 using _STLP_VENDOR_EXCEPT_STD::nothrow;
 
-#  if defined (_STLP_GLOBAL_NEW_HANDLER)
+#   if defined (_STLP_GLOBAL_NEW_HANDLER)
 using ::new_handler;
 using ::set_new_handler;
-#  else
+#   else
 using _STLP_VENDOR_EXCEPT_STD::new_handler;
 using _STLP_VENDOR_EXCEPT_STD::set_new_handler;
-#  endif
+#   endif
     
 _STLP_END_NAMESPACE
 
@@ -79,15 +79,22 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-#if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (__xlC__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
+# if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (__xlC__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
 inline void* _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n, __FILE__, __LINE__)); }
 inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p, __FILE__, __LINE__); }
-#else
+# else
 inline void* _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n)); }
 inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p); }
-#endif
+# endif
 _STLP_END_NAMESPACE
 
-# endif /* _STLP_WINCE */
+#endif /* _STLP_WINCE */
 
 #endif /* _STLP_NEW_H_HEADER */
+
+
+/* Local Variables:
+ * mode:C++
+ * End:
+ */
+
