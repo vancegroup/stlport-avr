@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/05 13:41:45 ptr>
+// -*- C++ -*- Time-stamp: <03/02/12 14:01:50 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -360,11 +360,10 @@ int Semaphore::wait_delay( const timespec *t ) // wait, timeout is delay t, or s
 #warning "Fix me!"
 #endif
 #ifdef _PTHREADS
-  timespec ct;
-  Thread::gettime( &ct );
-  timespec st = ct;
+  timespec st;
+  Thread::gettime( &st );
   st += *t;
-  return sem_timedwait( &_sem, t );
+  return sem_timedwait( &_sem, &st );
 #endif
 }
 
