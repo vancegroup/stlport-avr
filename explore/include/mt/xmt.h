@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/05/29 19:42:16 ptr>
+// -*- C++ -*- Time-stamp: <03/06/21 11:57:22 ptr>
 
 /*
  *
@@ -101,14 +101,16 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 #ifdef _REENTRANT
 
 #  define MT_REENTRANT(point,nm) __impl::Locker nm(point)
-#  define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point)
+#  define MT_REENTRANT_RS(point,nm) __impl::LockerRS nm(point)
+#  define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
 #  define MT_LOCK(point)         point.lock()
 #  define MT_UNLOCK(point)       point.unlock()
 
 #else
 
 #  define MT_REENTRANT(point,nm) ((void)0)
-#  define MT_REENTRANT_SDS(point,nm) ((void)0)
+#  define MT_REENTRANT_RS(point,nm) ((void)0)
+#  define MT_REENTRANT_SDS(point,nm) ((void)0) // obsolete, use MT_REENTRANT_RS
 #  define MT_LOCK(point)         ((void)0)
 #  define MT_UNLOCK(point)       ((void)0)
 
