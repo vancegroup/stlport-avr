@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/09 16:23:20 ptr>
+// -*- C++ -*- Time-stamp: <99/02/16 20:22:19 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -9,11 +9,6 @@
 
 #ifdef WIN32
 #  include <windows.h>
-// #define pthread_mutex_t            CRITICAL_SECTION
-// #define pthread_mutex_init( a, b ) InitializeCriticalSection( a )
-// #define pthread_mutex_destroy( a ) DeleteCriticalSection( a )
-// #define pthread_mutex_lock( a )    EnterCriticalSection( a )
-// #define pthread_mutex_unlock( a )  LeaveCriticalSection( a )
 #  include <memory>
 #  define _REENTRANT
 #  define __DLLEXPORT __declspec( dllexport )
@@ -30,6 +25,20 @@
 #  define __DLLEXPORT
 #endif
 
+#ifdef _REENTRANT
+
+#  define MT_REENTRANT(point,nm) __impl::Locker nm(point)
+#  define MT_LOCK(point)         point.lock()
+#  define MT_UNLOCK(point)       point.unlock()
+
+#else
+
+#  define MT_REENTRANT(point,nm) ((void)0)
+#  define MT_LOCK(point)         ((void)0)
+#  define MT_UNLOCK(point)       ((void)0)
+
+#endif
+
 namespace __impl {
 
 #ifndef WIN32
@@ -40,8 +49,7 @@ using std::runtime_error;
 class Mutex
 {
   public:
-    Mutex()// :
-//	count( 0 )
+    Mutex()
       {
 #ifdef _PTHREADS
 	pthread_mutex_init( &mutex, 0 );
@@ -69,7 +77,6 @@ class Mutex
 
     void lock()
       {
-//	++count;
 #ifdef _PTHREADS
 	pthread_mutex_lock( &mutex );
 #endif
@@ -79,7 +86,19 @@ class Mutex
 #ifdef WIN32
 	EnterCriticalSection( &mutex );
 #endif
-//	own = pthread_self();
+      }
+
+    int trylock()
+      {
+#ifdef _PTHREADS
+	return pthread_mutex_trylock( &mutex );
+#endif
+#ifdef _SOLARIS_THREADS
+	return mutex_trylock( &mutex );
+#endif
+#ifdef WIN32
+	return TryEnterCriticalSection( &mutex ) != 0 ? 0 : -1;
+#endif
       }
 
     void unlock()
@@ -93,14 +112,9 @@ class Mutex
 #ifdef WIN32
 	LeaveCriticalSection( &mutex );
 #endif
-//	--count;
       }
 
   protected:
-//    void __lock()
-//      {	++count; }
-//    void __unlock()
-//      { --count; }
 #ifdef _PTHREADS
     pthread_mutex_t mutex;
 #endif
@@ -112,8 +126,9 @@ class Mutex
 #endif
 
   private:
-//    pthread_t own;
-//    int count;
+#ifdef _SOLARIS_THREADS
+    friend class Condition;
+#endif
 };
 
 class Locker
@@ -129,21 +144,169 @@ class Locker
     const Mutex& m;
 };
 
+class Condition
+{
+  public:
+    Condition() :
+        _val( true )
+      {
+#ifdef WIN32
+        _cond = CreateEvent( 0, TRUE, TRUE, 0 );
+#endif
+#ifdef _PTHREADS
+        pthread_cond_init( &_cond, 0 );
+#endif
+#ifdef _SOLARIS_THREADS
+        cond_init( &_cond, 0, 0 );
+#endif
+      }
+
+    ~Condition()
+      {
+#ifdef WIN32
+        CloseHandle( _cond );
+#endif
+#ifdef _PTHREADS
+        pthread_cond_destroy( &_cond );
+#endif
+#ifdef _SOLARIS_THREADS
+        cond_destroy( &_cond );
+#endif
+      }
+
+    bool set( bool __v )
+      {
+        MT_REENTRANT( _lock, _1 );
+
+        bool tmp = _val;
+        _val = __v;
+#ifdef WIN32
+         if ( __v == true && tmp == false ) {
+           SetEvent( _cond );
+         } else if ( __v == false && tmp == true ) {
+           ResetEvent( _cond );
+         }
+#endif
+#ifdef _SOLARIS_THREADS
+        if ( __v == true && tmp == false ) {
+          cond_signal( &_cond );
+        }
+#endif
+#ifdef _PTHREADS
+        if ( __v == true && tmp == false ) {
+          pthread_cond_signal( &_cond );
+        }
+#endif
+        return tmp;
+      }
+
+    bool set() const
+      { return _val; }
+
+    int try_wait()
+      {
+        if ( _val == false ) {
+#ifdef WIN32
+          if ( WaitForSingleObject( _cond, -1 ) == WAIT_FAILED ) {
+            return -1;
+          }
+          return 0;
+#endif
+#ifdef _PTHREADS
+          return pthread_cond_wait( &_cond );
+#endif
+#ifdef _SOLARIS_THREADS
+          MT_REENTRANT( _cond_lock, _1 );
+          int ret;
+          while ( !_val ) {
+            ret = cond_wait( &_cond, &_lock.mutex );
+          }
+
+          return ret;
+#endif
+        }
+
+        return 0;
+      }
+
+    int wait()
+      {
+        set( false );
+#ifdef WIN32
+        if ( WaitForSingleObject( _cond, -1 ) == WAIT_FAILED ) {
+          return -1;
+        }
+        return 0;
+#endif
+#ifdef _PTHREADS
+          return pthread_cond_wait( &_cond );
+#endif
+#ifdef _SOLARIS_THREADS
+        MT_REENTRANT( _cond_lock, _1 );
+        int ret;
+        while ( !_val ) {
+          ret = cond_wait( &_cond, &_lock.mutex );
+        }
+
+        return ret;
+#endif
+      }
+
+    int signal()
+      {
+        MT_REENTRANT( _lock, _1 );
+
+        _val = true;
+#ifdef WIN32
+        return SetEvent( _cond ) == FALSE ? -1 : 0;
+#endif
+#ifdef _PTHREADS
+        return pthread_cond_signal( &_cond );
+#endif
+#ifdef _SOLARIS_THREADS
+        return cond_signal( &_cond );
+#endif
+      }
+
+  protected:
+#ifdef WIN32
+    HANDLE _cond;
+#endif
+#ifdef _PTHREADS
+    pthread_cond_t _cond;
+#endif
+#ifdef _SOLARIS_THREADS
+    cond_t _cond;
+    Mutex _cond_lock;
+#endif
+    Mutex _lock;
+    bool _val;
+};
+
 class Thread
 {
   public:
     typedef int (*entrance_type)( void * );
 
-    __DLLEXPORT
-    Thread();
+    __DLLEXPORT Thread();
 
     explicit __DLLEXPORT Thread( entrance_type entrance, const void *p = 0, size_t psz = 0 );
 
+    __DLLEXPORT ~Thread();
+
     __DLLEXPORT
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
-    __DLLEXPORT
-    int join();
+    __DLLEXPORT int join();
+    __DLLEXPORT int suspend();
+    __DLLEXPORT int resume();
     static __DLLEXPORT void exit( int code = 0 );
+
+    bool good() const
+#ifdef WIN32
+      { return _id != INVALID_HANDLE_VALUE; }
+#else
+      { return _id != -1; }
+#endif
 
   private:
     Thread( const Thread& )
@@ -158,6 +321,10 @@ class Thread
 
 #ifdef _PTHREADS
     pthread_t _id;
+
+    // sorry, POSIX threads don't have suspend/resume calls, so it should
+    // be simulated via cond_wait
+    Condition _suspend;
 #endif
 #ifdef _SOLARIS_THREADS
     thread_t  _id;
@@ -173,37 +340,5 @@ class Thread
 };
 
 } // namespace __impl
-
-#ifdef _REENTRANT
-
-#  define MT_REENTRANT(point,nm) __impl::Locker nm(point)
-#  define MT_LOCK(point)         point.lock()
-#  define MT_UNLOCK(point)       point.unlock()
-
-#  define MT_MUTEX_LOCK(l)     mutex_lock(l)
-#  define MT_MUTEX_UNLOCK(l)   mutex_unlock(l)
-#  define MT_MUTEX_INIT(l,f)   mutex_init(l,f,0)
-#  define MT_MUTEX_DESTROY(l)  mutex_destroy(l)
-#  define MT_COND_INIT(c,f)    cond_init(c,f,0)
-#  define MT_COND_WAIT(c,mp)   cond_wait(c,mp)
-#  define MT_COND_SIGNAL(c)    cond_signal(c)
-#  define MT_COND_DESTROY(c)   cond_destroy(c)
-
-#else
-
-#  define MT_REENTRANT(point,nm) ((void)0)
-#  define MT_LOCK(point)         ((void)0)
-#  define MT_UNLOCK(point)       ((void)0)
-
-#  define MT_MUTEX_LOCK(l)
-#  define MT_MUTEX_UNLOCK(l)
-#  define MT_MUTEX_INIT(l,f)
-#  define MT_MUTEX_DESTROY(l)
-#  define MT_COND_INIT(c,f)
-#  define MT_COND_WAIT(c,mp)
-#  define MT_COND_SIGNAL(c)
-#  define MT_COND_DESTROY(c)
-
-#endif
 
 #endif // __XMT_H
