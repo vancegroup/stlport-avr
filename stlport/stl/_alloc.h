@@ -357,10 +357,16 @@ public:
     typedef allocator<_Tp1> other;
   };
 # endif
+# if !(defined(__MRC__)||defined(__SC__))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
+  template <class _T2> bool operator==(const allocator<_T2>&)  { return true; }
+  template <class _T2> bool operator!=(const allocator<_T2>&) { return false; }
+# endif
 };
 
+#if !(defined(__MRC__)||defined(__SC__))		//*ty 03/24/2001 - MPW compilers get confused on these operator definitions
 template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const allocator<_T1>&, const allocator<_T2>&)  { return true; }
 template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) { return false; }
+#endif
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS allocator<char>;
