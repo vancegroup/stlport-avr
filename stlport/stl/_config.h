@@ -937,9 +937,10 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #  endif
 
 /* We only need to expose details of streams implementation 
-   if we cannot tell if we are using static or dynamic lib and 
+//   if we cannot tell if we are using static or dynamic lib and 
    if we use non-standard i/o or are building STLport*/
 # if defined (__BUILDING_STLPORT) || !(defined (_STLP_USE_DECLSPEC) && defined (_STLP_NO_CUSTOM_IO))
+// # if defined (__BUILDING_STLPORT) ||  defined (_STLP_NO_FORCE_INSTANTIATE) || !defined(_STLP_NO_CUSTOM_IO)
 #  define _STLP_EXPOSE_STREAM_IMPLEMENTATION 1
 # endif
 

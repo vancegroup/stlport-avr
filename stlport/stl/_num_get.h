@@ -64,7 +64,7 @@ public:
   }
 # endif
 
-# ifdef OBSOLETE
+# ifdef _STLP_FIX_LIBRARY_ISSUES
   _InputIter get(_InputIter __in, _InputIter __end, ios_base& __str,
                 ios_base::iostate& __err, short& __val) const {
     return do_get(__in, __end, __str, __err, __val);
@@ -155,7 +155,7 @@ protected:
                            ios_base::iostate& __err, unsigned int& __val) const;
   virtual _InputIter do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err, unsigned long& __val) const;
-# ifdef OBSOLETE
+# ifdef _STLP_FIX_LIBRARY_ISSUES
   // issue 118 : those are actually not supposed to be here
   virtual _InputIter do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err, short& __val) const;
