@@ -1,4 +1,7 @@
 
+// include system features file
+# include <sys/feature_tests.h>
+
 // system-dependent defines 
 
 # if defined (__SunOS_5_8) && ! defined (_STLP_HAS_NO_NEW_C_HEADERS) && ( __cplusplus >= 199711L)

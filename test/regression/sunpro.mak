@@ -134,7 +134,7 @@ CXX = $(CC)
 # DEBUG_FLAGS=-compat=4
 
 
-CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -I. -qoption ccfe -expand=1000 -qoption ccfe -instlib=../../lib/libstlport_sunpro.so
+CXXFLAGS = +w2 ${STL_INCL} ${DEBUG_FLAGS} -library=no%Cstd  -I. -qoption ccfe -expand=1000 -qoption ccfe -instlib=../../lib/libstlport_sunpro.so
 
 LIBS = -L../../lib -lstlport_sunpro -lm
 LIBSTDCXX = 

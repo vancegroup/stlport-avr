@@ -76,6 +76,7 @@ long collate<wchar_t>::do_hash(const wchar_t* low, const wchar_t* high) const
 
 _STLP_END_NAMESPACE
 
+
 // Local Variables:
 // mode:C++
 // End:

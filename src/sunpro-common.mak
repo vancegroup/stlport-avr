@@ -68,4 +68,27 @@ LDLIBS_RELEASE_dynamic =  -lposix4
 LDLIBS_STLDEBUG_dynamic = -lposix4
 
 include common_percent_rules.mak
+
+#	for file in `cat ../etc/std_headers.txt ../etc/std_headers_classic_iostreams.txt ../etc/std_headers_cpp_runtime.txt ../etc/std_headers_cpp_runtime_h.txt`; \
+
+../stlport/algorithm.SUNWCCh :
+	for file in `cat ../etc/std_headers.txt ../etc/std_headers_classic_iostreams.txt ../etc/std_headers_c.txt   ../etc/std_headers_cpp_runtime.txt ../etc/std_headers_c_h.txt  ../etc/std_headers_cpp_runtime_h.txt`; \
+	do \
+	  rm -f ../stlport/$$file.SUNWCCh ; \
+	  (cd ../stlport ; ln -s $$file $$file.SUNWCCh) ; \
+        done
+
+#	for file in `cat ../etc/std_headers_c_h.txt ../etc/std_headers_c.txt`; \
+#	do \
+#	rm -f ../stlport/$$file; \
+#	done
+
+prepare_sunpro : ../stlport/algorithm.SUNWCCh
+
+remove_c_headers : 
+	for file in `cat ../etc/std_headers_c_h.txt ../etc/std_headers_c.txt`; \
+	do \
+	rm -f ../stlport/$$file ../stlport/$$file.SUNWCCh; \
+	done
+
 include common_rules.mak
