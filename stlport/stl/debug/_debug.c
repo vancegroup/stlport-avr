@@ -184,11 +184,12 @@ _STLP_BEGIN_NAMESPACE
 # define _STLP_STRING_LITERAL(__x) __x
 # endif
 
-# ifdef _STLP_WINCE
+# ifdef _STLP_USE_WIDE_INTERFACE
+// note: WinCE needs this to format single-byte strings in __stl_debug_engine::_Message
 #  define _STLP_PERCENT_S "%hs" 
 # else
 #  define _STLP_PERCENT_S "%s" 
-# endif /* _STLP_WINCE */
+# endif /* _STLP_USE_WIDE_INTERFACE */
 
 # define _STLP_MESSAGE_TABLE_BODY = { \
 _STLP_STRING_LITERAL("\n" _STLP_PERCENT_S "(%d): STL error: %s\n"), \
