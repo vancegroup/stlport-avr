@@ -21,6 +21,11 @@ This directory contains miscellanous files for STLport-4.5 release.
 
  * std_headers.txt      - a list of headers to be duplicated as .SUNWCCh or .stdh
 
+                         LOGOS
+
+ * stlport_powered_red.gif     Those are "Powered by STLport" logos. You are more than welcome
+   stlport_powered_white.gif   to put those logos on webpages for your product if it uses STLport.
+
                          GOODIES
 
  * msvcincl.dat         - the file to be placed in Windows directory 
