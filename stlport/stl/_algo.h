@@ -216,7 +216,7 @@ replace_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
 
 template <class Iterator, class _OutputIter, class _Predicate, class _Tp>
 _STLP_INLINE_LOOP _OutputIter 
-replace_copy_if(Iterator __first, Iterator __last,
+replace_copy_if(_Iterator __first, _Iterator __last,
                 _OutputIter __result,
                 _Predicate __pred, const _Tp& __new_value) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))

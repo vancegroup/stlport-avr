@@ -459,14 +459,6 @@ public:                         // Constructor, destructor.
     _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
-  // Check whether it's an integral type.  If so, it's not an iterator.
-  template <class _InputIterator>
-  deque(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a = allocator_type()) : 
-    _Deque_base<_Tp, _Alloc>(__a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
-    _M_initialize_dispatch(__first, __last, _Integral());
-  }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   // VC++ needs this
   template <class _InputIterator>
@@ -476,9 +468,19 @@ public:                         // Constructor, destructor.
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 # endif
+
+  // Check whether it's an integral type.  If so, it's not an iterator.
+  template <class _InputIterator>
+  deque(_InputIterator __first, _InputIterator __last,
+        const allocator_type& __a) : 
+    _Deque_base<_Tp, _Alloc>(__a) {
+    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    _M_initialize_dispatch(__first, __last, _Integral());
+  }
+
 # else
   deque(const value_type* __first, const value_type* __last,
-        const allocator_type& __a = _STLP_ALLOCATOR_TYPE_DFL) 
+        const allocator_type& __a = allocator_type() ) 
     : _Deque_base<_Tp, _Alloc>(__a, __last - __first) { 
     __uninitialized_copy(__first, __last, this->_M_start, _IsPODType()); 
   }
@@ -706,7 +708,7 @@ public:                         // Erase
       pop_front();
     }
     else {
-      copy_backward(__next, this->_M_finish, __pos);
+      copy(__next, this->_M_finish, __pos);
       pop_back();
     }
     return this->_M_start + __index;

@@ -1,5 +1,8 @@
 The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 
+	* stl/_deque.h : deque<>::erase bug (introduced in 4.1b4) fixed (thanks to BruceFlorman) 
+	               : default parameter in constructor bug fixed (Thanks to Alex Vanic) 
+	
 	* _tree.h /_tree.c : pointers used as return values instead of iterators for implementation 
 	  functions, for efficiency.
 	
@@ -10,7 +13,10 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* c_locale_win32.c : incomple fix for local completed (thanks to Alberto Barbati)
 
 	* _threads.h : fixed _DECTHREADS block to work on both DEC and HP
+
+	* _hash_set.h : fixed typo in MSVC++ bug workaround ( Thanks to Jon_Hanson for the report)
 	
+
 The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* _istream.h, _ostream.h, _ios.h, _fstream.h : guard macros fixed to not clash with .h files in "stlport" directory
