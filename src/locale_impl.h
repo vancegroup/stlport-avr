@@ -29,11 +29,6 @@
 #include <stl/debug/_debug.h>
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID LOCALE_IMPL_H_NAME
-_STLP_INSTRUMENT_FILE();
-# endif
-
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
@@ -91,10 +86,6 @@ inline _Locale_impl*  _STLP_CALL _S_copy_impl(_Locale_impl* I) {
 }
 
 _STLP_END_NAMESPACE
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif
 
