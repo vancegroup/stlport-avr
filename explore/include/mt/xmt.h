@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/02/21 15:23:57 ptr>
+// -*- C++ -*- Time-stamp: <00/02/24 19:28:18 ptr>
 
 /*
  *
@@ -30,14 +30,6 @@
 // #include <stl_config.h>
 #include <cstddef>
 #include <stdexcept>
-
-#ifndef __XMT_DLL
-#  if defined( WIN32 ) && defined( _MSC_VER )
-#    define __XMT_DLL __declspec( dllimport )
-#  else
-#    define __XMT_DLL
-#  endif
-#endif
 
 #ifdef WIN32
 #  include <windows.h>
@@ -136,7 +128,7 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 
 namespace __impl {
 
-extern __XMT_DLL void signal_throw( int sig ) throw( int );
+extern __PG_DECLSPEC void signal_throw( int sig ) throw( int );
 
 #ifndef WIN32
 using std::size_t;
@@ -440,9 +432,9 @@ class Condition
       }
 
 #ifndef _WIN32
-    __XMT_DLL int wait_time( const timespec *abstime );
+    __PG_DECLSPEC int wait_time( const timespec *abstime );
 #else
-    __XMT_DLL int wait_time( const std::timespec *abstime );
+    __PG_DECLSPEC int wait_time( const std::timespec *abstime );
 #endif
 
     int signal()
@@ -525,28 +517,28 @@ class Thread
         static int _count;
     };
 
-    __XMT_DLL Thread( unsigned flags = 0 );
+    __PG_DECLSPEC Thread( unsigned flags = 0 );
 
-    explicit __XMT_DLL Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
+    explicit __PG_DECLSPEC Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
 
-    __XMT_DLL ~Thread();
+    __PG_DECLSPEC ~Thread();
 
-    __XMT_DLL
+    __PG_DECLSPEC
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
-    __XMT_DLL int join();
-    __XMT_DLL int suspend();
-    __XMT_DLL int resume();
-    __XMT_DLL int kill( int sig );
-    static __XMT_DLL void exit( int code = 0 );
-    static __XMT_DLL int join_all();
-    static __XMT_DLL void block_signal( int sig );
-    static __XMT_DLL void unblock_signal( int sig );
-    static __XMT_DLL void signal_handler( int sig, SIG_PF );
+    __PG_DECLSPEC int join();
+    __PG_DECLSPEC int suspend();
+    __PG_DECLSPEC int resume();
+    __PG_DECLSPEC int kill( int sig );
+    static __PG_DECLSPEC void exit( int code = 0 );
+    static __PG_DECLSPEC int join_all();
+    static __PG_DECLSPEC void block_signal( int sig );
+    static __PG_DECLSPEC void unblock_signal( int sig );
+    static __PG_DECLSPEC void signal_handler( int sig, SIG_PF );
 
 #ifndef _WIN32
-    static __XMT_DLL void sleep( timespec *t, timespec *e = 0 );
+    static __PG_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
 #else
-    static __XMT_DLL void sleep( std::timespec *t, std::timespec *e = 0 );
+    static __PG_DECLSPEC void sleep( std::timespec *t, std::timespec *e = 0 );
 #endif
 
     bool good() const
@@ -554,8 +546,8 @@ class Thread
 
     static int xalloc()
       { return _idx++; }
-    __XMT_DLL long&  iword( int __idx );
-    __XMT_DLL void*& pword( int __idx );
+    __PG_DECLSPEC long&  iword( int __idx );
+    __PG_DECLSPEC void*& pword( int __idx );
 
 #ifndef WIN32
     static thread_key_type mtkey()
