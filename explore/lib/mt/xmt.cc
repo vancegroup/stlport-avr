@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/06/15 21:31:58 ptr>
+// -*- C++ -*- Time-stamp: <02/06/21 10:23:08 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -37,6 +37,7 @@
 #endif
 
 #include <iostream>
+#include <iomanip>
 #include <memory>
 #include <functional>
 #include <cerrno>
@@ -83,26 +84,14 @@ int Init_count = 0;
 unsigned long _mt_key = __STATIC_CAST(unsigned long,-1);
 #else
 __impl::Thread::thread_key_type _mt_key = __STATIC_CAST(__impl::Thread::thread_key_type,-1);
+void *_uw_save = 0;
 #endif
 
-/* Sorry, here should be static mutex initialization */
 
 #ifdef _PTHREADS
-pthread_mutex_t _F_lock = PTHREAD_MUTEX_INITIALIZER;
-#endif
-
-#ifdef __FIT_UITHREADS
-mutex_t _F_lock = DEFAULTMUTEX;
-#endif
-
-#ifdef __FIT_WIN32THREADS
-CRITICAL_SECTION _F_lock = ???;
-#endif
-
-extern "C" void __at_fork_prepare()
-{
-#ifdef _PTHREADS
-  pthread_mutex_lock( &_F_lock );
+__impl::Mutex _F_lock;
+#  define _F_locklock   _F_lock.lock();
+#  define _F_lockunlock _F_lock.unlock();
 #endif
 
 #ifdef __FIT_UITHREADS
@@ -110,20 +99,24 @@ extern "C" void __at_fork_prepare()
 #endif
 
 #ifdef __FIT_WIN32THREADS
+#  define _F_locklock
+#  define _F_lockunlock
+#endif
+
+extern "C" void __at_fork_prepare()
+{
+  _F_locklock
+#ifdef _PTHREADS
+  if ( Init_count > 0 ) {
+    _uw_save = pthread_getspecific( ::_mt_key );
+  }
 #endif
 }
 
 extern "C" void __at_fork_parent()
 {
+  _F_lockunlock
 #ifdef _PTHREADS
-  pthread_mutex_unlock( &_F_lock );
-#endif
-
-#ifdef __FIT_UITHREADS
-#  error "Unimplemented"
-#endif
-
-#ifdef __FIT_WIN32THREADS
 #endif
 }
 
@@ -134,18 +127,13 @@ extern "C" void __at_fork_child()
      // otherwise we do it in Thread::Init::Init() below
     pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
     pthread_key_create( &::_mt_key, 0 );
-    // Only calling thread inherited when we use POSIX:
-    Init_count = 1;
+    pthread_setspecific( _mt_key, _uw_save );
+    _uw_save = 0;
+    // Note, that only calling thread inherited when we use POSIX:
+    Init_count = 1; // i.e. only ONE (calling) thread...
   }
-  pthread_mutex_unlock( &_F_lock );
 #endif
-
-#ifdef __FIT_UITHREADS
-#  error "Unimplemented"
-#endif
-
-#ifdef __FIT_WIN32THREADS
-#endif
+  _F_lockunlock
 }
 
 namespace __impl {
@@ -209,29 +197,22 @@ int Condition::wait_time( const timespec *abstime )
 
 char *Init_buf[32];
 // int Thread::Init::_count = 0;
-int& Thread::Init::_count( ::Init_count );
+int& Thread::Init::_count( ::Init_count ); // trick to avoid friend declarations
 
 const std::string msg1( "Can't create thread" );
 const std::string msg2( "Can't fork" );
 
-__FIT_DECLSPEC
-void signal_throw( int sig ) throw( int )
-{
-  throw sig;
-}
+// __FIT_DECLSPEC
+// void signal_throw( int sig ) throw( int )
+// {
+//   throw sig;
+// }
 
-__FIT_DECLSPEC
-void signal_thead_exit( int sig )
-{
-  Thread::exit( 0 );
-}
 
 Thread::Init::Init()
 {
   // This is performance problem, let's consider replace to atomic lock...
-#ifdef _PTHREADS
-  pthread_mutex_lock( &_F_lock );
-#endif
+  _F_locklock
 
   if ( _count++ == 0 ) {
 #ifdef __FIT_UITHREADS
@@ -239,7 +220,7 @@ Thread::Init::Init()
 #endif
 #ifdef _PTHREADS
     if ( pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child ) ) {
-      pthread_mutex_unlock( &_F_lock );
+      _F_lockunlock
       throw std::runtime_error( "Problems with pthread_atfork" );
     }
     pthread_key_create( &_mt_key, 0 );
@@ -247,19 +228,16 @@ Thread::Init::Init()
 #ifdef __FIT_WIN32THREADS
     _mt_key = TlsAlloc();
 #endif
+    Thread::_self_idx = Thread::xalloc();
   }
 
-#ifdef _PTHREADS
-  pthread_mutex_unlock( &_F_lock );
-#endif
+  _F_lockunlock
 }
 
 Thread::Init::~Init()
 {
   // This is performance problem, let's consider replace to atomic lock...
-#ifdef _PTHREADS
-  pthread_mutex_lock( &_F_lock );
-#endif
+  _F_locklock
 
   if ( --_count == 0 ) {
 #ifdef __FIT_WIN32THREADS
@@ -270,13 +248,14 @@ Thread::Init::~Init()
 #endif
   }
 
-#ifdef _PTHREADS
-  pthread_mutex_unlock( &_F_lock );
-#endif
+  _F_lockunlock
 }
 
 Thread::alloc_type Thread::alloc;
 int Thread::_idx = 0;
+int Thread::_self_idx = 0;
+Mutex Thread::_idx_lock;
+Mutex Thread::_start_lock;
 
 #ifdef WIN32
 const Thread::thread_key_type Thread::bad_thread_key = INVALID_HANDLE_VALUE;
@@ -287,6 +266,82 @@ const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thr
 // Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
 Thread::thread_key_type& Thread::_mt_key( ::_mt_key );
 #endif
+
+__FIT_DECLSPEC
+void Thread::_dealloc_uw()
+{
+  if ( uw_alloc_size != 0 ) {
+    _STLP_ASSERT( _id != bad_thread_key );
+    _STLP_ASSERT( is_self() );
+#ifdef __FIT_UITHREADS
+    _uw_alloc_type *user_words;
+    thr_getspecific( _mt_key, &(static_cast<void *>(user_words)) );
+#endif
+#ifdef _PTHREADS
+    _uw_alloc_type *user_words = static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ));
+#endif
+#ifdef __FIT_WIN32THREADS
+    _uw_alloc_type *user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
+#endif
+    alloc.deallocate( user_words, uw_alloc_size );
+    user_words = 0;
+    uw_alloc_size = 0;
+  }
+}
+
+__FIT_DECLSPEC
+Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
+{
+  _STLP_ASSERT( _id != bad_thread_key );
+  _STLP_ASSERT( is_self() );
+
+  _uw_alloc_type *user_words;
+
+  if ( uw_alloc_size == 0 ) {
+    uw_alloc_size = sizeof( _uw_alloc_type ) * (__idx + 1);
+    user_words = alloc.allocate( uw_alloc_size );
+    std::fill( user_words, user_words + uw_alloc_size, 0 );
+#ifdef __FIT_UITHREADS
+    thr_setspecific( _mt_key, user_words );
+#endif
+#ifdef _PTHREADS
+    pthread_setspecific( _mt_key, user_words );
+#endif
+#ifdef __FIT_WIN32THREADS
+    TlsSetValue( _mt_key, user_words );
+#endif
+  } else {
+#ifdef __FIT_UITHREADS
+    thr_getspecific( _mt_key, &(static_cast<void *>(user_words)) );
+#endif
+#ifdef _PTHREADS
+    user_words = static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ));
+#endif
+#ifdef __FIT_WIN32THREADS
+    user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
+#endif
+    if ( (__idx + 1) * sizeof( _uw_alloc_type ) > uw_alloc_size ) {
+      size_t tmp = sizeof( _uw_alloc_type ) * (__idx + 1);
+       _uw_alloc_type *_mtmp = alloc.allocate( tmp );
+      std::copy( user_words, user_words + uw_alloc_size, _mtmp );
+      std::fill( _mtmp + uw_alloc_size, _mtmp + tmp, 0 );
+      alloc.deallocate( user_words, uw_alloc_size );
+      user_words = _mtmp;
+      uw_alloc_size = tmp;
+#ifdef __FIT_UITHREADS
+      thr_setspecific( _mt_key, user_words );
+#endif
+#ifdef _PTHREADS
+      pthread_setspecific( _mt_key, user_words );
+#endif
+#ifdef __FIT_WIN32THREADS
+      TlsSetValue( _mt_key, user_words );
+#endif
+    }
+  }
+
+  return user_words + __idx;
+}
 
 __FIT_DECLSPEC
 Thread::Thread( unsigned __f ) :
@@ -315,19 +370,8 @@ Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsig
 __FIT_DECLSPEC
 Thread::~Thread()
 {
-  long **user_words;
-
-#ifdef __FIT_UITHREADS
-  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
-#endif
-#ifdef _PTHREADS
-  user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
-#endif
-#ifdef __FIT_WIN32THREADS
-  user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
-#endif
-  if ( user_words != 0 ) {
-    alloc.deallocate( user_words, uw_alloc_size );
+  if ( is_self() ) {
+    _dealloc_uw();
   }
 
   ((Init *)Init_buf)->~Init();
@@ -337,6 +381,18 @@ Thread::~Thread()
 #else
   // __stl_assert( _id == -1 );
   kill( SIGTERM );
+#endif
+}
+
+__FIT_DECLSPEC
+bool Thread::is_self()
+{
+#ifdef _PTHREADS
+  return good() && (_id == pthread_self());
+#elif defined( __FIT_UITHREADS )
+  return good() && (_id == thr_self());
+#else
+#  error "Fix me! (replace pthread_self())"
 #endif
 }
 
@@ -452,7 +508,7 @@ int Thread::kill( int sig )
 }
 
 __FIT_DECLSPEC
-void Thread::exit( int code )
+void Thread::_exit( int code )
 {
 #ifdef _PTHREADS
   pthread_exit( (void *)code );
@@ -522,6 +578,36 @@ void Thread::signal_handler( int sig, SIG_PF handler )
   act.sa_handler = handler;
   sigaction( sig, &act, 0 );
 #endif // __unix
+}
+
+__FIT_DECLSPEC
+void Thread::signal_exit( int sig )
+{
+#ifdef _PTHREADS
+  _uw_alloc_type *user_words =
+    static_cast<_uw_alloc_type *>(pthread_getspecific( _mt_key ))
+    + Thread::_self_idx;
+  Thread *me = reinterpret_cast<Thread *>(*reinterpret_cast<void **>(user_words));
+  _STLP_ASSERT( me->is_self() );
+
+  // follow part of _call
+  if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+    me->_id = bad_thread_key;
+  }
+  void *_param     = me->_param;
+  size_t _param_sz = me->_param_sz;
+  try {
+    if ( _param_sz > sizeof(void *) ) { // that's allocated
+      delete [] __STATIC_CAST(char *,_param);
+      _param_sz = 0;
+      _param = 0;
+    }
+  }
+  catch ( ... ) {
+  }
+#endif
+  Thread::_exit( 0 );
+  // Thread::exit( 0 );
 }
 
 __FIT_DECLSPEC
@@ -630,17 +716,24 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
     // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
     // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
   }
+  _start_lock.lock(); // allow finish new thread creation before this 
+                      // thread will start to run
   err = pthread_create( &_id, _flags != 0 ? &attr : 0, _xcall, this );
+  _start_lock.unlock();
   if ( _flags != 0 ) {
     pthread_attr_destroy( &attr );
   }
 #endif
 #ifdef __FIT_UITHREADS
+  _start_lock.lock();
   err = thr_create( 0, 0, _xcall, this, _flags, &_id );
+  _start_lock.unlock();
 #endif
 #ifdef __FIT_WIN32THREADS
+  _start_lock.lock();
   _id = CreateThread( 0, 0, _xcall, this, _flags, &_thr_id );
   err = GetLastError();
+  _start_lock.unlock();
 #endif
   if ( err != 0 ) {
     if ( psz > sizeof(void *) ) { // clear allocated here
@@ -671,10 +764,11 @@ extern "C" {
 
 void *Thread::_call( void *p )
 {
+  _start_lock.lock(); // allow finish thread creation in parent thread
   Thread *me = static_cast<Thread *>(p);
 
   // After exit of me->_entrance, there is may be no more *me itself,
-  // so it's members may be unaccessable. Don't use me->"*" after call
+  // so it's members may be unaccessible. Don't use me->"*" after call
   // of me->_entrance!!!
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
@@ -695,7 +789,10 @@ void *Thread::_call( void *p )
   std::set_unexpected( Thread::unexpected );
   std::set_terminate( Thread::terminate );
 #endif
-	
+
+  me->pword( _self_idx ) = me; // to have chance make Thread sanity by signal
+  signal_handler( SIGTERM, signal_exit ); // set handler for sanity
+  _start_lock.unlock();
   try {
     ret = me->_entrance( me->_param );
     // I should make me->_id = bad_thread_key; here...
@@ -738,7 +835,7 @@ void *Thread::_call( void *p )
   }
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
-  Thread::exit( ret );
+  Thread::_exit( ret );
 #endif
   return (void *)ret;
 }
@@ -749,9 +846,9 @@ void *Thread::_call( void *p )
 void Thread::unexpected()
 {
 #ifndef _WIN32
-  // cerr << "\nUnexpected exception" << endl;
+  cerr << "\nUnexpected exception" << endl;
 #endif
-  Thread::exit( 0 );
+  signal_exit( SIGTERM );  // Thread::_exit( 0 );
 }
 
 void Thread::terminate()
@@ -759,121 +856,13 @@ void Thread::terminate()
 #ifndef _WIN32
   cerr << "\nTerminate exception" << endl;
 #endif
-  Thread::exit( 0 );
+  signal_exit( SIGTERM );  // Thread::_exit( 0 );
 }
 
-__FIT_DECLSPEC
-long& Thread::iword( int __idx )
+int Thread::xalloc()
 {
-  long **user_words;
-
-#ifdef __FIT_UITHREADS
-  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
-#endif
-#ifdef _PTHREADS
-  user_words = reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
-#endif
-#ifdef __FIT_WIN32THREADS
-  user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
-#endif
-  if ( user_words == 0 ) {
-    uw_alloc_size = sizeof( long ) * (__idx + 1);
-#ifdef _MSC_VER
-    user_words = alloc.allocate( uw_alloc_size, (const void *)0 );
-#else
-    user_words = alloc.allocate( uw_alloc_size );
-#endif
-    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
-#ifdef __FIT_UITHREADS
-    thr_setspecific( _mt_key, user_words );
-#endif
-#ifdef _PTHREADS
-    pthread_setspecific( _mt_key, user_words );
-#endif
-#ifdef __FIT_WIN32THREADS
-    TlsSetValue( _mt_key, user_words );
-#endif
-  } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
-    size_t tmp = sizeof( long ) * (__idx + 1);
-#ifdef _MSC_VER
-    long **_mtmp = alloc.allocate( tmp, (const void *)0 );
-#else // __STL_USE_SGI_ALLOCATORS
-    long **_mtmp = alloc.allocate( tmp );
-#endif // __STL_USE_SGI_ALLOCATORS
-    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
-    alloc.deallocate( user_words, uw_alloc_size );
-    user_words = _mtmp;
-    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
-    uw_alloc_size = tmp;
-#ifdef __FIT_UITHREADS
-    thr_setspecific( _mt_key, user_words );
-#endif
-#ifdef _PTHREADS
-    pthread_setspecific( _mt_key, user_words );
-#endif
-#ifdef __FIT_WIN32THREADS
-    TlsSetValue( _mt_key, user_words );
-#endif
-  }
-
-  long *_ytmp = (long *)&user_words[__idx];
-  return *_ytmp;
-}
-
-__FIT_DECLSPEC
-void*& Thread::pword( int __idx )
-{
-  long **user_words;
-
-#ifdef __FIT_UITHREADS
-  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
-#endif
-#ifdef _PTHREADS
-  user_words =  reinterpret_cast<long **>(pthread_getspecific( _mt_key ));
-#endif
-#ifdef __FIT_WIN32THREADS
-  user_words = reinterpret_cast<long **>( TlsGetValue( _mt_key ) );
-#endif
-  if ( user_words == 0 ) {
-    uw_alloc_size = sizeof( long ) * (__idx + 1);
-// #ifdef _MSC_VER
-//    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
-// #else
-    user_words = alloc.allocate( uw_alloc_size );
-// #endif
-    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
-#ifdef __FIT_UITHREADS
-    thr_setspecific( _mt_key, user_words );
-#endif
-#ifdef _PTHREADS
-    pthread_setspecific( _mt_key, user_words );
-#endif
-#ifdef __FIT_WIN32THREADS
-    TlsSetValue( _mt_key, user_words );
-#endif
-  } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
-    size_t tmp = sizeof( long ) * (__idx + 1);
-    long **_mtmp = alloc.allocate( tmp );
-    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
-    alloc.deallocate( user_words, uw_alloc_size );
-    user_words = _mtmp;
-    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
-    uw_alloc_size = tmp;
-#ifdef __FIT_UITHREADS
-    thr_setspecific( _mt_key, *user_words );
-#endif
-#ifdef _PTHREADS
-    pthread_setspecific( _mt_key, *user_words );
-#endif
-#ifdef __FIT_WIN32THREADS
-    TlsSetValue( _mt_key, *user_words );
-#endif
-  }
-
-  // void *_xtmp = *(user_words + __idx);
-  // void **_ytmp = (void **)(*user_words + __idx);
-  void **_ytmp = (void **)&user_words[__idx];
-  return *_ytmp;
+  Locker _l( _idx_lock );
+  return _idx++;
 }
 
 } // namespace __impl
