@@ -35,9 +35,9 @@
 #ifndef _WIN32
 #  include <ostream>
 #endif
-#ifdef __SGI_STL_OWN_IOSTREAMS
+// #ifdef __SGI_STL_OWN_IOSTREAMS
 #include <iostream>
-#endif
+// #endif
 #include <memory>
 #include <functional>
 #include <cerrno>
