@@ -104,11 +104,11 @@ _Rb_global<_Dummy>::_Rebalance(_Rb_tree_node_base* __x,
       else {
         if (__x == __x->_M_parent->_M_right) {
           __x = __x->_M_parent;
-          _Rb_global::_Rotate_left(__x, __root);
+          _Rotate_left(__x, __root);
         }
         __x->_M_parent->_M_color = _S_rb_tree_black;
         __x->_M_parent->_M_parent->_M_color = _S_rb_tree_red;
-        _Rb_global::_Rotate_right(__x->_M_parent->_M_parent, __root);
+        _Rotate_right(__x->_M_parent->_M_parent, __root);
       }
     }
     else {
@@ -122,11 +122,11 @@ _Rb_global<_Dummy>::_Rebalance(_Rb_tree_node_base* __x,
       else {
         if (__x == __x->_M_parent->_M_left) {
           __x = __x->_M_parent;
-          _Rb_global::_Rotate_right(__x, __root);
+          _Rotate_right(__x, __root);
         }
         __x->_M_parent->_M_color = _S_rb_tree_black;
         __x->_M_parent->_M_parent->_M_color = _S_rb_tree_red;
-        _Rb_global::_Rotate_left(__x->_M_parent->_M_parent, __root);
+        _Rotate_left(__x->_M_parent->_M_parent, __root);
       }
     }
   }
@@ -206,7 +206,7 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
         if (__w->_M_color == _S_rb_tree_red) {
           __w->_M_color = _S_rb_tree_black;
           __x_parent->_M_color = _S_rb_tree_red;
-          _Rb_global::_Rotate_left(__x_parent, __root);
+          _Rotate_left(__x_parent, __root);
           __w = __x_parent->_M_right;
         }
         if ((__w->_M_left == 0 || 
@@ -220,13 +220,13 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
               __w->_M_right->_M_color == _S_rb_tree_black) {
             if (__w->_M_left) __w->_M_left->_M_color = _S_rb_tree_black;
             __w->_M_color = _S_rb_tree_red;
-            _Rb_global::_Rotate_right(__w, __root);
+            _Rotate_right(__w, __root);
             __w = __x_parent->_M_right;
           }
           __w->_M_color = __x_parent->_M_color;
           __x_parent->_M_color = _S_rb_tree_black;
           if (__w->_M_right) __w->_M_right->_M_color = _S_rb_tree_black;
-          _Rb_global::_Rotate_left(__x_parent, __root);
+          _Rotate_left(__x_parent, __root);
           break;
         }
       } else {                  // same as above, with _M_right <-> _M_left.
@@ -234,7 +234,7 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
         if (__w->_M_color == _S_rb_tree_red) {
           __w->_M_color = _S_rb_tree_black;
           __x_parent->_M_color = _S_rb_tree_red;
-          _Rb_global::_Rotate_right(__x_parent, __root);
+          _Rotate_right(__x_parent, __root);
           __w = __x_parent->_M_left;
         }
         if ((__w->_M_right == 0 || 
@@ -248,13 +248,13 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
               __w->_M_left->_M_color == _S_rb_tree_black) {
             if (__w->_M_right) __w->_M_right->_M_color = _S_rb_tree_black;
             __w->_M_color = _S_rb_tree_red;
-            _Rb_global::_Rotate_left(__w, __root);
+            _Rotate_left(__w, __root);
             __w = __x_parent->_M_left;
           }
           __w->_M_color = __x_parent->_M_color;
           __x_parent->_M_color = _S_rb_tree_black;
           if (__w->_M_left) __w->_M_left->_M_color = _S_rb_tree_black;
-          _Rb_global::_Rotate_right(__x_parent, __root);
+          _Rotate_right(__x_parent, __root);
           break;
         }
       }
