@@ -1,9 +1,10 @@
-// -*- C++ -*- Time-stamp: <99/06/23 19:44:27 ptr>
+// -*- C++ -*- Time-stamp: <99/08/17 12:17:21 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
 #ident "$SunId$ %Q%"
 
+#include <stl_config.h>
 #include <cstddef>
 #include <stdexcept>
 
@@ -14,7 +15,7 @@
 #    define _REENTRANT
 #  endif
 #  ifndef __DLLEXPORT
-#    define __DLLEXPORT __declspec( dllexport )
+// #    define __DLLEXPORT __declspec( dllexport )
 #  endif
 #else
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
@@ -35,13 +36,13 @@
 #    ifdef _PTHREADS
 #      include <pthread.h>
 #    endif
-#    ifdef _SOLARIS_THREADS
+#    ifdef __STL_UITHREADS
 #      include <thread.h>
 #    endif
 #  elif !defined(_NOTHREADS) // !_REENTRANT
 #    define _NOTHREADS
 #  endif
-#  define __DLLEXPORT
+// #  define __DLLEXPORT
 #endif
 
 #ifdef _REENTRANT
@@ -105,53 +106,53 @@ class Mutex
     Mutex()
       {
 #ifdef _PTHREADS
-	pthread_mutex_init( &mutex, 0 );
+	pthread_mutex_init( &_M_lock, 0 );
 #endif
-#ifdef _SOLARIS_THREADS
-	mutex_init( &mutex, 0, 0 );
+#ifdef __STL_UITHREADS
+	mutex_init( &_M_lock, 0, 0 );
 #endif
 #ifdef WIN32
-	InitializeCriticalSection( &mutex );
+	InitializeCriticalSection( &_M_lock );
 #endif
       }
 
     ~Mutex()
       {
 #ifdef _PTHREADS
-	pthread_mutex_destroy( &mutex );
+	pthread_mutex_destroy( &_M_lock );
 #endif
-#ifdef _SOLARIS_THREADS
-	mutex_destroy( &mutex );
+#ifdef __STL_UITHREADS
+	mutex_destroy( &_M_lock );
 #endif
 #ifdef WIN32
-	DeleteCriticalSection( &mutex );
+	DeleteCriticalSection( &_M_lock );
 #endif
       }
 
     void lock()
       {
-#ifdef _PTHREADS
-	pthread_mutex_lock( &mutex );
+#ifdef __STL_PTHREADS
+	pthread_mutex_lock( &_M_lock );
 #endif
-#ifdef _SOLARIS_THREADS
-	mutex_lock( &mutex );
+#ifdef __STL_UITHREADS
+	mutex_lock( &_M_lock );
 #endif
-#ifdef WIN32
-	EnterCriticalSection( &mutex );
+#ifdef __STL_WIN32THREADS
+	EnterCriticalSection( &_M_lock );
 #endif
       }
 
 #if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
     int trylock()
       {
-#ifdef _PTHREADS
-	return pthread_mutex_trylock( &mutex );
+#ifdef __STL_PTHREADS
+	return pthread_mutex_trylock( &_M_lock );
 #endif
-#ifdef _SOLARIS_THREADS
-	return mutex_trylock( &mutex );
+#ifdef __STL_UITHREADS
+	return mutex_trylock( &_M_lock );
 #endif
-#ifdef WIN32
-	return TryEnterCriticalSection( &mutex ) != 0 ? 0 : -1;
+#ifdef __STL_WIN32THREADS
+	return TryEnterCriticalSection( &_M_lock ) != 0 ? 0 : -1;
 #endif
 #ifdef _NOTHREADS
         return 0;
@@ -161,30 +162,30 @@ class Mutex
 
     void unlock()
       {
-#ifdef _PTHREADS
-	pthread_mutex_unlock( &mutex );
+#ifdef __STL_PTHREADS
+	pthread_mutex_unlock( &_M_lock );
 #endif
-#ifdef _SOLARIS_THREADS
-	mutex_unlock( &mutex );
+#ifdef __STL_UITHREADS
+	mutex_unlock( &_M_lock );
 #endif
 #ifdef WIN32
-	LeaveCriticalSection( &mutex );
+	LeaveCriticalSection( &_M_lock );
 #endif
       }
 
   protected:
 #ifdef _PTHREADS
-    pthread_mutex_t mutex;
+    pthread_mutex_t _M_lock;
 #endif
-#ifdef _SOLARIS_THREADS
-    mutex_t mutex;
+#ifdef __STL_UITHREADS
+    mutex_t _M_lock;
 #endif
 #ifdef WIN32
-    CRITICAL_SECTION mutex;
+    CRITICAL_SECTION _M_lock;
 #endif
 
   private:
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
     friend class Condition;
 #endif
 };
@@ -196,7 +197,7 @@ class MutexSDS : // Self Deadlock Safe
     MutexSDS() :
         _count( 0 ),
 #ifdef __unix
-        _id( -1 )
+        _id( __STATIC_CAST(thread_t,-1) )
 #endif
 #ifdef WIN32
         _id( INVALID_HANDLE_VALUE )
@@ -208,7 +209,7 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef _PTHREADS
         pthread_t _c_id = pthread_self();
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         thread_t _c_id = thr_self();
 #endif
 #ifdef WIN32
@@ -226,7 +227,7 @@ class MutexSDS : // Self Deadlock Safe
       {
         if ( --_count == 0 ) {
 #ifdef __unix
-          _id = -1;
+          _id = __STATIC_CAST(thread_t,-1);
 #endif
 #ifdef WIN32
           _id = INVALID_HANDLE_VALUE;
@@ -240,7 +241,7 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef _PTHREADS
     pthread_t _id;
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
     thread_t  _id;
 #endif
 #ifdef WIN32
@@ -286,7 +287,7 @@ class Condition
 #ifdef _PTHREADS
         pthread_cond_init( &_cond, 0 );
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         cond_init( &_cond, 0, 0 );
 #endif
       }
@@ -299,7 +300,7 @@ class Condition
 #ifdef _PTHREADS
         pthread_cond_destroy( &_cond );
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         cond_destroy( &_cond );
 #endif
       }
@@ -317,7 +318,7 @@ class Condition
            ResetEvent( _cond );
          }
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         if ( __v == true && tmp == false ) {
           cond_signal( &_cond );
         }
@@ -345,11 +346,11 @@ class Condition
 #ifdef _PTHREADS
           return pthread_cond_wait( &_cond );
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
           MT_REENTRANT( _lock, _1 );
           int ret;
           while ( !_val ) {
-            ret = cond_wait( &_cond, &_lock.mutex );
+            ret = cond_wait( &_cond, /* &_lock.mutex */ &_lock._M_lock );
           }
 
           return ret;
@@ -376,12 +377,12 @@ class Condition
         _val = false;
         return pthread_cond_wait( &_cond );
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         MT_REENTRANT( _lock, _1 );
         _val = false;
         int ret;
         while ( !_val ) {
-          ret = cond_wait( &_cond, &_lock.mutex );
+          ret = cond_wait( &_cond, /* &_lock.mutex */ &_lock._M_lock );
         }
 
         return ret;
@@ -402,7 +403,7 @@ class Condition
 #ifdef _PTHREADS
         return pthread_cond_signal( &_cond );
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
         return cond_signal( &_cond );
 #endif
 #ifdef _NOTHREADS
@@ -417,10 +418,11 @@ class Condition
 #ifdef _PTHREADS
     pthread_cond_t _cond;
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
     cond_t _cond;
 #endif
     Mutex _lock;
+    // __STLPORT_STD::_STL_mutex_lock _lock;
     bool _val;
 };
 
@@ -434,12 +436,12 @@ class Thread
 #ifdef _PTHREADS
     typedef pthread_key_t thread_key_type;
 #endif
-#ifdef __STL_SOLARIS_THREADS
+#ifdef __STL_UITHREADS
     typedef thread_key_t thread_key_type;
 #endif
 
 #ifdef __STL_USE_STD_ALLOCATORS
-    typedef std::allocator<void *> alloc;
+    typedef std::allocator<long *> alloc;
 #else 
     typedef __STD::alloc alloc;
 #endif
@@ -523,7 +525,7 @@ class Thread
     // be simulated via cond_wait
     Condition _suspend;
 #endif
-#ifdef _SOLARIS_THREADS
+#ifdef __STL_UITHREADS
     thread_t  _id;
 #endif
 #ifdef WIN32
