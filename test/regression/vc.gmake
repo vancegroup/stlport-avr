@@ -141,7 +141,7 @@ $(TEST) : $(OBJECTS) stl_test.out
 	echo 'a string' | ./$(TEST_EXE) > $(TEST)
 
 %$(OBJ): %.cpp
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(REPO_FLAGS) $(.IMPSRC) -c $<
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(REPO_FLAGS) -c $<
 
 %.out: %.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} -USINGLE -DMAIN $< 
