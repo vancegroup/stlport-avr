@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/05/28 10:43:31 ptr>
+// -*- C++ -*- Time-stamp: <03/05/29 19:42:16 ptr>
 
 /*
  *
@@ -394,6 +394,9 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 #    endif
 #    ifdef __FIT_UITHREADS
         thread_t _c_id = thr_self();
+#    endif
+#    ifdef __FIT_NOVELL_THREADS
+        int _c_id = GetThreadID();
 #    endif
         if ( _c_id != _id ) {
 #    ifdef _PTHREADS
