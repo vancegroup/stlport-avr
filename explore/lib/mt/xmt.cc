@@ -44,6 +44,7 @@
 #include <string>
 
 #ifdef __linux
+#define __USE_GNU
 #  include <sys/time.h>
 #endif
 
