@@ -25,9 +25,9 @@ release-static:	LDFLAGS += ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),linux)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxxx) ${LDSEARCH}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxxx) ${LDSEARCH}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExxx) ${LDSEARCH}
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH}
 dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
