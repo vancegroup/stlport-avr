@@ -1,3 +1,8 @@
+2004-03-15  Petr Ovchenkov  <ptr@Island...>
+
+	* test/unit: unit test suite intended for test/regression replacement.
+	Zdenek Nemec contribution.
+
 2004-03-01 Francois Dumont <dums@s...>
 
 	* _hash_fun.h: Correction of the hash struct specialization for the _STLP_LONG_LONG
