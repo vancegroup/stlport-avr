@@ -172,10 +172,12 @@ using _STLP_VENDOR_MB_NAMESPACE::mbstate_t;
 
 # if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE) \
   && (!defined(__MSL__) || __MSL__ > 0x6001)
-# if ! (defined (__KCC) && defined (sun))
+#  if ! (defined (__KCC) && defined (sun))
 using _STLP_VENDOR_MB_NAMESPACE::btowc;
+#   if (!defined(__MSL__) || __MSL__ > 0x7001)
 using _STLP_VENDOR_MB_NAMESPACE::mbsinit;
-# endif
+#   endif
+#  endif
 using _STLP_VENDOR_MB_NAMESPACE::mbrlen;
 using _STLP_VENDOR_MB_NAMESPACE::mbrtowc;
 using _STLP_VENDOR_MB_NAMESPACE::mbsrtowcs;
@@ -220,7 +222,7 @@ using _STLP_VENDOR_CSTD::vfwprintf;
 using _STLP_VENDOR_CSTD::vwprintf;
 using _STLP_VENDOR_CSTD::vswprintf;
 
-#   if !defined(__MSL__) || __MSL__ > 0x6001
+#   if !defined(__MSL__) || __MSL__ > 0x7001
 using _STLP_VENDOR_CSTD::wcsftime;
 #   endif
 using _STLP_VENDOR_CSTD::wcstok;
