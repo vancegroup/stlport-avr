@@ -17,12 +17,14 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
   CPPUNIT_TEST(io);
+  CPPUNIT_TEST(err);
   CPPUNIT_TEST_SUITE_END();
 
-protected:
-  void output();
-  void input();
-  void io();
+  protected:
+    void output();
+    void input();
+    void io();
+    void err();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FstreamTest);
@@ -95,4 +97,22 @@ void FstreamTest::io()
   getline( f, s );
   CPPUNIT_ASSERT( s == "abcd ef" );
   CPPUNIT_ASSERT( f.eof() );
+}
+
+void FstreamTest::err()
+{
+  basic_fstream<char,char_traits<char> > f( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
+
+  CPPUNIT_ASSERT( f.is_open() );
+
+  int i = 9;
+  f << i;
+  i = 0;
+  f.seekg( 0, ios_base::beg );
+  f >> i;
+  CPPUNIT_ASSERT( i == 9 );
+  f >> i;
+  CPPUNIT_ASSERT( f.fail() );
+  CPPUNIT_ASSERT( f.eof() );
+  CPPUNIT_ASSERT( i == 9 );
 }

@@ -17,12 +17,18 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
   CPPUNIT_TEST(io);
+  CPPUNIT_TEST(err);
+  CPPUNIT_TEST(err_long);
+  CPPUNIT_TEST(maxint);
   CPPUNIT_TEST_SUITE_END();
 
-protected:
-  void output();
-  void input();
-  void io();
+  protected:
+    void output();
+    void input();
+    void io();
+    void err();
+    void err_long();
+    void maxint();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SstreamTest);
@@ -91,4 +97,53 @@ void SstreamTest::io()
   getline( s, str );
   CPPUNIT_ASSERT( str == "abcd ef" );
   CPPUNIT_ASSERT( s.eof() );
+}
+
+void SstreamTest::err()
+{
+  stringstream s( "9" );
+
+  int i = 0;
+  s >> i;
+  CPPUNIT_ASSERT( i == 9 );
+  s >> i;
+  CPPUNIT_ASSERT( s.fail() );
+  CPPUNIT_ASSERT( s.eof() );
+  CPPUNIT_ASSERT( i == 9 );
+}
+
+void SstreamTest::err_long()
+{
+  stringstream s( "9" );
+
+  long i = 0;
+  s >> i;
+  CPPUNIT_ASSERT( i == 9 );
+  s >> i;
+  CPPUNIT_ASSERT( s.fail() );
+  CPPUNIT_ASSERT( s.eof() );
+  CPPUNIT_ASSERT( i == 9 );
+}
+
+void SstreamTest::maxint()
+{
+  stringstream s;
+
+  s << INT_MAX << " " << UINT_MAX << " " << LONG_MAX << " " << ULONG_MAX << " "
+    << INT_MIN << " " << LONG_MIN;
+
+  int i = 0;
+  unsigned int u = 0;
+  long l = 0;
+  unsigned long ul = 0;
+
+  s >> i >> u >> l >> ul;
+  CPPUNIT_ASSERT( i == INT_MAX );
+  CPPUNIT_ASSERT( u == UINT_MAX );
+  CPPUNIT_ASSERT( l == LONG_MAX );
+  CPPUNIT_ASSERT( ul == ULONG_MAX );
+
+  s >> i >> l;
+  CPPUNIT_ASSERT( i == INT_MIN );
+  CPPUNIT_ASSERT( l == LONG_MIN );
 }
