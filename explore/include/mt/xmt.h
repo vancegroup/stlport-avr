@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/06/20 12:20:18 ptr>
+// -*- C++ -*- Time-stamp: <02/07/10 19:20:07 ptr>
 
 /*
  *
@@ -464,6 +464,7 @@ class Condition
       }
 
     __FIT_DECLSPEC int wait_time( const timespec *abstime );
+    __FIT_DECLSPEC int try_wait_time( const timespec *abstime );
 
     int signal()
       {
