@@ -1146,7 +1146,7 @@ private:                        // Helper functions for replace.
         erase(__first + __n, __last);
       }
       else {
-        _InputIter __m = __f + __len;
+        _RandomIter __m = __f + __len;
         if ((__l <= __first) || (__f >= __last)) {
           //no overlap:
           _M_copy(__f, __m, __first);
