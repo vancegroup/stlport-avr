@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/14 15:59:23 ptr>
+// -*- C++ -*- Time-stamp: <03/05/05 21:39:18 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -43,6 +43,9 @@
 #include <memory>
 #include <functional>
 #include <cerrno>
+#ifdef N_PLAT_NLM
+# include <nwerrno.h>
+#endif
 #include <string>
 
 #ifdef __linux
@@ -84,12 +87,14 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 
 int Init_count = 0;
 
-#ifdef WIN32
-unsigned long _mt_key = __STATIC_CAST(unsigned long,-1);
-#else
+#ifdef __FIT_NOVELL_THREADS
+__impl::Thread::thread_key_type _mt_key = 0;
+#else // !__FIT_NOVELL_THREADS
 __impl::Thread::thread_key_type _mt_key = __STATIC_CAST(__impl::Thread::thread_key_type,-1);
+# ifndef __FIT_WIN32THREADS
 void *_uw_save = 0;
-#endif
+# endif
+#endif // !__FIT_NOVELL_THREADS
 
 
 #ifdef _PTHREADS
@@ -102,7 +107,7 @@ __impl::Mutex _F_lock;
 #  error "Unimplemented"
 #endif
 
-#ifdef __FIT_WIN32THREADS
+#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
 #  define _F_locklock
 #  define _F_lockunlock
 #endif
@@ -150,14 +155,18 @@ using std::endl;
 __FIT_DECLSPEC
 int Condition::try_wait_time( const timespec *abstime )
 {
+#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
+  MT_LOCK( _lock );
+#endif
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
+  MT_REENTRANT( _lock, _x1 );
+#endif
   if ( _val == false ) {
-#ifdef WIN32
-    MT_LOCK( _lock );
-    _val = false;
+#ifdef __FIT_WIN32THREADS
     ResetEvent( _cond );
-    MT_UNLOCK( _lock );
     time_t ct = time( 0 );
-    unsigned ms = abstime->tv_sec >= ct ? abstime->tv_sec - ct + abstime->tv_nsec / 1000000 : 1;
+    unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
+    MT_UNLOCK( _lock );
     int ret = WaitForSingleObject( _cond, ms );
     if ( ret == WAIT_FAILED ) {
       return -1;
@@ -168,48 +177,55 @@ int Condition::try_wait_time( const timespec *abstime )
     }
     return 0;
 #endif
-#ifdef _PTHREADS
-    MT_REENTRANT( _lock, _x1 ); // ??
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
     int ret = 0;
     timespec _abstime = *abstime;
     while ( !_val ) {
+# ifdef _PTHREADS
       ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
       if ( ret == ETIMEDOUT ) {
         break;
       }
-    }
-
-    return ret;
-#endif // _PTHREADS
-#ifdef __FIT_UITHREADS
-    MT_REENTRANT( _lock, _x1 );
-    int ret = 0;
-    timespec _abstime = *abstime;
-    while ( !_val ) {
+# endif
+# ifdef __FIT_UITHREADS
       ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
       if ( ret == ETIME ) {
         ret = ETIMEDOUT;
       } else if ( ret == ETIMEDOUT ) {
         break;
       }
+# endif
     }
 
     return ret;
+#endif // _PTHREADS || __FIT_UITHREADS
+#ifdef __FIT_NOVELL_THREADS
+    time_t ct = time( 0 );
+    unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
+    MT_UNLOCK( _lock );
+    return TimedWaitOnLocalSemaphore( _cond, ms );
 #endif
 #ifdef _NOTHREADS
     return 0;
 #endif
   }
-
+#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
+  MT_UNLOCK( _lock );
+#endif
   return 0;
 }
 
 __FIT_DECLSPEC
 int Condition::try_wait_delay( const timespec *interval )
 {
+#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
+  MT_LOCK( _lock );
+#endif
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
+  MT_REENTRANT( _lock, _x1 );
+#endif
   if ( _val == false ) {
 #ifdef WIN32
-    MT_LOCK( _lock );
     _val = false;
     ResetEvent( _cond );
     MT_UNLOCK( _lock );
@@ -223,12 +239,36 @@ int Condition::try_wait_delay( const timespec *interval )
       return ETIME;
     }
     return 0;
-#elif defined(__unix) && !defined(_NOTHREADS)
+#endif
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
     timespec ct;
     Thread::gettime( &ct );
     ct += *interval;
 
-    return this->try_wait_time( &ct );
+    int ret = 0;
+    timespec _abstime = ct;
+    while ( !_val ) {
+# ifdef _PTHREADS
+      ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
+      if ( ret == ETIMEDOUT ) {
+        break;
+      }
+# endif
+# ifdef __FIT_UITHREADS
+      ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
+      if ( ret == ETIME ) {
+        ret = ETIMEDOUT;
+      } else if ( ret == ETIMEDOUT ) {
+        break;
+      }
+# endif
+    }
+
+    return ret;
+#endif // _PTHREADS || __FIT_UITHREADS
+#ifdef __FIT_NOVELL_THREADS
+    MT_UNLOCK( _lock );
+    return TimedWaitOnLocalSemaphore( _cond, interval->tv_sec * 1000 + interval->tv_nsec / 1000000 );
 #endif
 
 #ifdef _NOTHREADS
@@ -236,19 +276,22 @@ int Condition::try_wait_delay( const timespec *interval )
 #endif
   }
 
+#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
+  MT_UNLOCK( _lock );
+#endif
   return 0;
 }
 
 __FIT_DECLSPEC
 int Condition::wait_time( const timespec *abstime )
 {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
   MT_LOCK( _lock );
   _val = false;
   ResetEvent( _cond );
-  MT_UNLOCK( _lock );
   time_t ct = time( 0 );
-  unsigned ms = abstime->tv_sec >= ct ? abstime->tv_sec - ct + abstime->tv_nsec / 1000000 : 1;
+  unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
+  MT_UNLOCK( _lock );
   int ret = WaitForSingleObject( _cond, ms );
   if ( ret == WAIT_FAILED ) {
     return -1;
@@ -286,6 +329,14 @@ int Condition::wait_time( const timespec *abstime )
 
   return ret;
 #endif
+#ifdef __FIT_NOVELL_THREADS
+  MT_LOCK( _lock );
+  _val = false;
+  time_t ct = time( 0 );
+  unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
+  MT_UNLOCK( _lock );
+  return TimedWaitOnLocalSemaphore( _cond, ms );
+#endif
 #ifdef _NOTHREADS
   return 0;
 #endif
@@ -294,12 +345,12 @@ int Condition::wait_time( const timespec *abstime )
 __FIT_DECLSPEC
 int Condition::wait_delay( const timespec *interval )
 {
-#ifdef WIN32
+#ifdef __FIT_WIN32THREADS
   MT_LOCK( _lock );
   _val = false;
   ResetEvent( _cond );
-  MT_UNLOCK( _lock );
   unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
+  MT_UNLOCK( _lock );
   int ret = WaitForSingleObject( _cond, ms );
   if ( ret == WAIT_FAILED ) {
     return -1;
@@ -309,12 +360,20 @@ int Condition::wait_delay( const timespec *interval )
     return ETIME;
   }
   return 0;
-#elif defined(__unix) && !defined(_NOTHREADS)
+#endif
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
   timespec ct;
   Thread::gettime( &ct );
   ct += *interval;
 
   return this->wait_time( &ct );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+  MT_LOCK( _lock );
+  _val = false;
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
+  MT_UNLOCK( _lock );
+  return TimedWaitOnLocalSemaphore( _cond, ms );
 #endif
 #ifdef _NOTHREADS
   return 0;
@@ -341,6 +400,13 @@ int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signa
 #ifdef _PTHREADS
   return sem_timedwait( &_sem, abstime );
 #endif
+#ifdef __FIT_NOVELL_THREADS
+  time_t ct = time( 0 );
+  time_t _conv = abstime->tv_sec * 1000 + abstime->tv_nsec / 1000000;
+
+  unsigned ms = _conv >= ct ? _conv - ct : 1;
+  return TimedWaitOnLocalSemaphore( _sem, ms );
+#endif
 }
 
 __FIT_DECLSPEC
@@ -362,6 +428,10 @@ int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay 
   Thread::gettime( &st );
   st += *interval;
   return sem_timedwait( &_sem, &st );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
+  return TimedWaitOnLocalSemaphore( _sem, ms );
 #endif
 }
 
@@ -427,21 +497,25 @@ int Thread::_self_idx = 0;
 Mutex Thread::_idx_lock;
 Mutex Thread::_start_lock;
 
-#ifdef WIN32
-const Thread::thread_key_type Thread::bad_thread_key = INVALID_HANDLE_VALUE;
-// unsigned long Thread::_mt_key = __STATIC_CAST(unsigned long,-1);
-unsigned long& Thread::_mt_key( ::_mt_key );
-#else
-const Thread::thread_key_type Thread::bad_thread_key = __STATIC_CAST(Thread::thread_key_type,-1);
-// Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
+#ifdef __FIT_WIN32THREADS
+const Thread::thread_id_type Thread::bad_thread_id = INVALID_HANDLE_VALUE;
+#endif // __FIT_WIN32THREADS
+
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
+const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::thread_id_type,-1);
+#endif // __FIT_UITHREADS || _PTHREADS
+
+#ifdef __FIT_NOVELL_THREADS
+const Thread::thread_id_type Thread::bad_thread_id = EFAILURE;
+#endif // __FIT_NOVELL_THREADS
+
 Thread::thread_key_type& Thread::_mt_key( ::_mt_key );
-#endif
 
 __FIT_DECLSPEC
 void Thread::_dealloc_uw()
 {
   if ( uw_alloc_size != 0 ) {
-    _STLP_ASSERT( _id != bad_thread_key );
+    _STLP_ASSERT( _id != bad_thread_id );
     _STLP_ASSERT( is_self() );
 #ifdef __FIT_UITHREADS
     _uw_alloc_type *user_words;
@@ -453,6 +527,9 @@ void Thread::_dealloc_uw()
 #ifdef __FIT_WIN32THREADS
     _uw_alloc_type *user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
 #endif
+#ifdef __FIT_NOVELL_THREADS
+    _uw_alloc_type *user_words = *static_cast<_uw_alloc_type **>(threadCustomDataPtr);
+#endif // __FIT_NOVELL_THREADS
     alloc.deallocate( user_words, uw_alloc_size );
     user_words = 0;
     uw_alloc_size = 0;
@@ -462,7 +539,7 @@ void Thread::_dealloc_uw()
 __FIT_DECLSPEC
 Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 {
-  _STLP_ASSERT( _id != bad_thread_key );
+  _STLP_ASSERT( _id != bad_thread_id );
   _STLP_ASSERT( is_self() );
 
   _uw_alloc_type *user_words;
@@ -480,6 +557,9 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 #ifdef __FIT_WIN32THREADS
     TlsSetValue( _mt_key, user_words );
 #endif
+#ifdef __FIT_NOVELL_THREADS
+    *static_cast<_uw_alloc_type **>(threadCustomDataPtr) = user_words;
+#endif
   } else {
 #ifdef __FIT_UITHREADS
     thr_getspecific( _mt_key, &(static_cast<void *>(user_words)) );
@@ -489,6 +569,9 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 #endif
 #ifdef __FIT_WIN32THREADS
     user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
+#endif
+#ifdef __FIT_NOVELL_THREADS
+    user_words = *static_cast<_uw_alloc_type **>(threadCustomDataPtr);
 #endif
     if ( (__idx + 1) * sizeof( _uw_alloc_type ) > uw_alloc_size ) {
       size_t tmp = sizeof( _uw_alloc_type ) * (__idx + 1);
@@ -507,6 +590,9 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 #ifdef __FIT_WIN32THREADS
       TlsSetValue( _mt_key, user_words );
 #endif
+#ifdef __FIT_NOVELL_THREADS
+      *static_cast<_uw_alloc_type **>(threadCustomDataPtr) = user_words;
+#endif
     }
   }
 
@@ -515,7 +601,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 
 __FIT_DECLSPEC
 Thread::Thread( unsigned __f ) :
-    _id( bad_thread_key ),
+    _id( bad_thread_id ),
     _entrance( 0 ),
     _param( 0 ),
     _param_sz( 0 ),
@@ -547,7 +633,7 @@ Thread::~Thread()
   ((Init *)Init_buf)->~Init();
 
 #ifdef WIN32
-  _STLP_ASSERT( _id == bad_thread_key );
+  _STLP_ASSERT( _id == bad_thread_id );
 #else
   // __stl_assert( _id == -1 );
   kill( SIGTERM );
@@ -561,6 +647,8 @@ bool Thread::is_self()
   return good() && (_id == pthread_self());
 #elif defined( __FIT_UITHREADS )
   return good() && (_id == thr_self());
+#elif defined( __FIT_NOVELL_THREADS )
+  return good() && (_id == GetThreadID());
 #else
 #  error "Fix me! (replace pthread_self())"
 #endif
@@ -569,7 +657,7 @@ bool Thread::is_self()
 __FIT_DECLSPEC
 void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 {
-  if ( _id == bad_thread_key ) {
+  if ( _id == bad_thread_id ) {
     _entrance = entrance;
     _create( p, psz );
   }
@@ -580,23 +668,32 @@ int Thread::join()
 {
 #ifdef __FIT_WIN32THREADS
   unsigned long ret_code = 0;
-  if ( _id != bad_thread_key ) {
+  if ( _id != bad_thread_id ) {
     WaitForSingleObject( _id, -1 );
     GetExitCodeThread( _id, &ret_code );
-    _id = bad_thread_key;
+    _id = bad_thread_id;
   }
-#else // !WIN32
+#endif // __FIT_WIN32THREADS
+#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
   int ret_code = 0;
-  if ( _id != bad_thread_key && (_flags & (daemon | detached) ) == 0 ) {
+  if ( _id != bad_thread_id && (_flags & (daemon | detached) ) == 0 ) {
 #  ifdef _PTHREADS
     pthread_join( _id, (void **)(&ret_code) );
 #  endif
 #  ifdef __FIT_UITHREADS
     thr_join( _id, 0, (void **)(&ret_code) );
 #  endif
-    _id = bad_thread_key;
+    _id = bad_thread_id;
   }
-#endif // !WIN32
+#endif // __FIT_UITHREADS || PTHREADS
+
+#ifdef __FIT_NOVELL_THREADS
+  int ret_code = 0;
+  if ( _id != bad_thread_id ) {
+    _thr_join.wait();
+    _id = bad_thread_id;
+  }
+#endif // __FIT_NOVELL_THREADS
 
   return ret_code;
 }
@@ -604,7 +701,7 @@ int Thread::join()
 __FIT_DECLSPEC
 int Thread::suspend()
 {
-  if ( _id != bad_thread_key ) {
+  if ( _id != bad_thread_id ) {
 #ifdef __FIT_WIN32THREADS
     return SuspendThread( _id );
 #endif
@@ -626,6 +723,9 @@ int Thread::suspend()
 #ifdef __FIT_UITHREADS
     return thr_suspend( _id );
 #endif
+#ifdef __FIT_NOVELL_THREADS
+    return SuspendThread( _id );
+#endif
   }
 
   return -1;
@@ -634,7 +734,7 @@ int Thread::suspend()
 __FIT_DECLSPEC
 int Thread::resume()
 {
-  if ( _id != bad_thread_key ) {
+  if ( _id != bad_thread_id ) {
 #ifdef __FIT_WIN32THREADS
     return ResumeThread( _id );
 #endif
@@ -653,6 +753,9 @@ int Thread::resume()
 #ifdef __FIT_UITHREADS
     return thr_continue( _id );
 #endif
+#ifdef __FIT_NOVELL_THREADS
+    return ResumeThread( _id );
+#endif
   }
 
   return -1;
@@ -661,7 +764,7 @@ int Thread::resume()
 __FIT_DECLSPEC
 int Thread::kill( int sig )
 {
-  if ( _id != bad_thread_key ) {
+  if ( _id != bad_thread_id ) {
 #ifdef __FIT_UITHREADS
     return thr_kill( _id, sig );
 #endif
@@ -688,6 +791,9 @@ void Thread::_exit( int code )
 #endif
 #ifdef __FIT_WIN32THREADS
   ExitThread( code );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+  ExitThread( EXIT_THREAD, code );
 #endif
 }
 
@@ -762,7 +868,7 @@ void Thread::signal_exit( int sig )
 
   // follow part of _call
   if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
-    me->_id = bad_thread_key;
+    me->_id = bad_thread_id;
   }
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
@@ -792,6 +898,14 @@ void Thread::delay( timespec *interval, timespec *remain )
     remain->tv_sec = 0;
     remain->tv_nsec = 0;
   }
+#endif
+#ifdef N_PLAT_NLM
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
+  ::delay( ms );
+  if ( remain != 0 ) { // Novell not return remain time interval
+    remain->tv_sec = 0;
+    remain->tv_nsec = 0;
+  }  
 #endif
 }
 
@@ -824,6 +938,17 @@ void Thread::sleep( timespec *abstime, timespec *real_time )
     real_time->tv_nsec = abstime->tv_nsec;
   }
 #endif
+#ifdef N_PLAT_NLM
+  time_t ct = time( 0 );
+  time_t _conv = abstime->tv_sec * 1000 + abstime->tv_nsec / 1000000;
+
+  unsigned ms = _conv >= ct ? _conv - ct : 1;
+  ::delay( ms );
+  if ( real_time != 0 ) { // Novell not return elapsed time interval
+    real_time->tv_sec = abstime->tv_sec;
+    real_time->tv_nsec = abstime->tv_nsec;
+  }
+#endif
 }
 
 __FIT_DECLSPEC
@@ -835,10 +960,15 @@ void Thread::gettime( timespec *t )
   TIMEVAL_TO_TIMESPEC( &tv, t );
 #elif defined( WIN32 )
   time_t ct = time( 0 );
-  t->tv_sec = ct / 1000;
-  t->tv_nsec = (ct % 1000) * 1000000;
+  t->tv_sec = ct; // ct / 1000;
+  t->tv_nsec = 0; // (ct % 1000) * 1000000;
 #elif defined(__sun) || defined(__hpux)
   clock_gettime( CLOCK_REALTIME, t );
+#elif defined(N_PLAT_NLM)
+  time_t ct = time(0); // GetHighResolutionTimer (ret current time in 100 microsec increments)
+                       // GetSuperHighResolutionTimer() (ret current time in 838 nanosec increments)
+  t->tv_sec = ct;
+  t->tv_nsec = 0;
 #else
 #error "You should implement OS-dependent precise clock"
 #endif
@@ -847,6 +977,7 @@ void Thread::gettime( timespec *t )
 __FIT_DECLSPEC
 void Thread::fork() throw( fork_in_parent, std::runtime_error )
 {
+#ifdef __unix
   fork_in_parent f( ::fork() );
   if ( f.pid() > 0 ) {
     throw f;
@@ -854,11 +985,13 @@ void Thread::fork() throw( fork_in_parent, std::runtime_error )
   if ( f.pid() == -1 ) {
     throw std::runtime_error( msg2 );
   }
+#endif
 }
 
 __FIT_DECLSPEC
 void Thread::become_daemon() throw( fork_in_parent, std::runtime_error )
 {
+#ifdef __unix
   try {
     Thread::fork();
 
@@ -878,6 +1011,7 @@ void Thread::become_daemon() throw( fork_in_parent, std::runtime_error )
   catch ( std::runtime_error& ) {
     throw;
   }
+#endif
 }
 
 // #ifdef __GNUC__
@@ -900,7 +1034,7 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
   }
   _param_sz = psz;
 
-  int err;
+  int err = 0;
 #ifdef _PTHREADS
   pthread_attr_t attr;
   if ( _flags != 0 ) {
@@ -934,6 +1068,24 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
   err = GetLastError();
   _start_lock.unlock();
 #endif
+#ifdef __FIT__NOVELL_THREADS
+  _start_lock.lock();
+#ifdef __FIT_NOVELL_THREADS
+  if ( (flags & detached) == 0 ) {
+    _thr_join.set( false );
+  }
+#endif
+  _id = BeginThread( _xcall, 0, 65536, this );
+  if ( _id == bad_thread_id ) {
+    err = ::errno;
+#ifdef __FIT_NOVELL_THREADS
+    if ( (flags & detached) == 0 ) {
+      _thr_join.signal();
+    }
+#endif
+  }
+  _start_lock.unlock();
+#endif
   if ( err != 0 ) {
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
@@ -957,6 +1109,12 @@ extern "C" {
   unsigned long __stdcall _xcall( void *p )
   {
     return (unsigned long)Thread::_call( p );
+  }
+#endif
+#ifdef N_PLAT_NLM
+  void _xcall( void *p )
+  {
+    Thread::_call( p );
   }
 #endif
 } // extern "C"
@@ -994,12 +1152,12 @@ void *Thread::_call( void *p )
   _start_lock.unlock();
   try {
     ret = me->_entrance( me->_param );
-    // I should make me->_id = bad_thread_key; here...
+    // I should make me->_id = bad_thread_id; here...
     // This is in conflict what I say in the begin of this function.
     // So don't delete Thread before it termination!
 
     if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
-      me->_id = bad_thread_key;
+      me->_id = bad_thread_id;
     }
   }
   catch ( std::exception& e ) {
@@ -1035,6 +1193,11 @@ void *Thread::_call( void *p )
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
   Thread::_exit( ret );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+  if ( (me->_flags & detached) == 0 ) {
+    me->_thr_join.signal();
+  }
 #endif
   return (void *)ret;
 }
