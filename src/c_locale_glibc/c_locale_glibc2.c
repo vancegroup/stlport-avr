@@ -33,6 +33,10 @@ struct locale_data
 
 typedef __locale_t __c_locale;
 
+#if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
+# define __nl_langinfo_l nl_langinfo_l
+#endif
+
 #define __LOCALE_CREATE(nm,category) (void*)__newlocale(1 << category, nm, 0 )
 #define __LOCALE_DESTROY(__loc)      __freelocale((__c_locale)__loc)
 

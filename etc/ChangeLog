@@ -1,4 +1,8 @@
-2004-03-15  Petr Ovchenkov  <ptr@Island...>
+2004-03-24  Petr Ovtchenkov  <ptr@Island...>
+
+	* c_locale_glibc2.c: real locale implementation for glibc 2.3.x.
+
+2004-03-15  Petr Ovtchenkov  <ptr@Island...>
 
 	* test/unit: unit test suite intended for test/regression replacement.
 	Zdenek Nemec contribution.
@@ -18,7 +22,7 @@
 	* Addition of many missing macro guards in the stlport public headers to avoid to break
 	the stlport prolog/epilog include framework.
 
-2004-02-19  Petr Ovchenkov  <ptr@Island...>
+2004-02-19  Petr Ovtchenkov  <ptr@Island...>
 
 	* _slist.h, debug/_slist.h,, dll_main.cpp: remove excess slist redefinitions
 
@@ -42,16 +46,16 @@
 	* _list.h: Modification of the base list class based on the slist implementation.
 	The list do not allocate a node systematically anymore even for the empty list.
 
-2004-02-14  Petr Ovchenkov  <ptr@Island...>
+2004-02-14  Petr Ovtchenkov  <ptr@Island...>
 
 	* debug/_relops_cont.h, debug/_string.h: fix typos in template specializations.
 
-2004-02-12  Petr Ovchenkov  <ptr@Island...>
+2004-02-12  Petr Ovtchenkov  <ptr@Island...>
 
 	* explore/icc.mak: experimental make system support Intel's icc compiler
 	on Linux.
 
-2004-02-05  Petr Ovchenkov  <ptr@Island...>
+2004-02-05  Petr Ovtchenkov  <ptr@Island...>
 
 	* iostream.cpp, _ios_base.h, iostream, locale_impl.h, locale_impl.cpp:
 	revise standard iostream and locale initialization, remove worrits about
@@ -67,13 +71,13 @@
 	* integration of a portage to the Windows CE .NET (eMebedded Visual
 	C++ 4) compiler thanks Zdenek Nemek
 	
-2004-02-02  Petr Ovchenkov  <ptr@Island...>
+2004-02-02  Petr Ovtchenkov  <ptr@Island...>
 
 	* _iostream_string.h: avoid usage of iostring in the _STLP_DEBUG mode,
 	due to iostring::iterator not convertable into string::iterator in this
 	mode.
 
-2004-01-29  Petr Ovchenkov  <ptr@Island...>
+2004-01-29  Petr Ovtchenkov  <ptr@Island...>
 
 	* _string.c: avoid 'insert( iterator, const_iterator, const_iterator )'
 	instantiation in the 'replace'---VC6 has problem here.
@@ -97,7 +101,7 @@
 	* _algo.h: correction of the __less_2 helper struct to remove
 	copy thanks Sergey Volk
 
-2004-01-19  Petr Ovchenkov  <ptr@Island...>
+2004-01-19  Petr Ovtchenkov  <ptr@Island...>
 
 	* _debug.c: avoid recursive locks in __owner_list's mutex---equivalent
 	code use underlie iterators, not debug wrapper iterators. By the way this
@@ -121,7 +125,7 @@
 	* _list.h, _slist.h: Implementation of the pointer specialization for list
 	and slist.
 
-2003-12-31  Petr Ovchenkov  <ptr@Island...>
+2003-12-31  Petr Ovtchenkov  <ptr@Island...>
 
 	* _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
 
@@ -145,7 +149,7 @@
 	basic_string have now a short static buffer to avoid call
 	to the allocator when the string is short.
                
-2003-11-29  Petr Ovchenkov  <ptr@Island...>
+2003-11-29  Petr Ovtchenkov  <ptr@Island...>
 
 	* cwchar, _config.h, _cwchar.h, _stdio_file.h, c_locale.h:
 	support for OpenBSD, gcc 3.3.1
@@ -157,7 +161,7 @@
 	* _alloc.h: Move of the definition of _Alloc_Traits before inclusion
 	of _pthread_alloc.h; thanks Diego Klabjan
 
-2003-11-16  Petr Ovchenkov  <ptr@Island...>
+2003-11-16  Petr Ovtchenkov  <ptr@Island...>
 
 	* _algobase.h, _algo.c: iter_swap and __insertion_sort don't
 	properly deduce value type of iterator, instead uses dereference's
@@ -181,7 +185,7 @@
 	or octo bases that is display according its size for the compiler.
 	thanks Tanaka.
 
-2003-11-14  Petr Ovchenkov  <ptr@Island...>
+2003-11-14  Petr Ovtchenkov  <ptr@Island...>
 
 	* src/c_locale.c, src/c_locale_glibc/c_locale_glibc2.c:	step to
 	real locales support with glibc >= 2.2.x
@@ -194,7 +198,7 @@
 
 	* src/explore, test/regression/explore: exprimental make system.
 
-2003-11-13  Petr Ovchenkov  <ptr@island...>
+2003-11-13  Petr Ovtchenkov  <ptr@island...>
 
 	* STLport (repository): current development moved to CVS HEAD stream.
 
@@ -221,13 +225,13 @@
         * _monetary.c: fix an other memory overrun on monetary display;
         thanks Tanaka.
 
-2003-10-26  Petr Ovchenkov  <ptr@island...>
+2003-10-26  Petr Ovtchenkov  <ptr@island...>
 
 	* ioiter.cpp, gcc.mak, stl_test.h, stl_test.cpp, stl_test.exp
 	(test/regression): tests for postfix increment operator and
 	indirection of istreambuf_iterator.
 
-2003-10-25  Petr Ovchenkov  <ptr@island...>
+2003-10-25  Petr Ovtchenkov  <ptr@island...>
 
 	* _istreambuf_iterator.h: fix postfix increment operator
 	of istreambuf_iterator to provide conformance with
@@ -277,7 +281,7 @@
 	* _valarray.h: correction of the missing slice_array copy constructor
 	and assignment operator in the private section (thanks Tanaka)
 
-2003-10-11  Petr Ovchenkov  <ptr@island...>
+2003-10-11  Petr Ovtchenkov  <ptr@island...>
 
 	* _sstream.c: [io]?stringstream must do equivalent of seek at end,
 	after opened with ios_base::ate; this behaviour useful only when buffer
@@ -302,7 +306,7 @@
 	* como 4.3.0 on linux support (thanks Synge Todo and Karel Gardas)
   
 	* Quazy-leak patch: make memory detection tools happier,
-	option _STLP_LEAKS_PEDANTIC in _site_config.h. (thanks Petr Ovchenkov)
+	option _STLP_LEAKS_PEDANTIC in _site_config.h. (thanks Petr Ovtchenkov)
   
 2003-09-19  Francois Dumont  <dums@s...>
   
@@ -423,7 +427,7 @@
 
 	* complex.cpp, _complex.h : template<> used for specializations
 
-	* _num_put.c : unised locale variable removed (thanks Petr Ovchenkov)
+	* _num_put.c : unised locale variable removed (thanks Petr Ovtchenkov)
 
 	* _algo.h : __reverse beautified (thanks Kabanov)
 
@@ -999,7 +1003,7 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 	
 	* debug/_list.h : added checking versions of pop_back/pop_front (thanks to Per Liboriussen)
 
-	* src/c_locale_win32.c : fix for VC5sp3 (thanks to Petr Ovchenkov), fix for day of week order (thanks to Danny Smith),
+	* src/c_locale_win32.c : fix for VC5sp3 (thanks to Petr Ovtchenkov), fix for day of week order (thanks to Danny Smith),
 	  fix for null-termination in my_ltoa (thanks to Serge Pashkov)
 	
 	* Some warnings in debug mode fixed (thanks to Marco)
@@ -1199,7 +1203,7 @@ The following changes were made in 4.1 beta 3 since 4.1 beta 2 :
 
 	* src/sgi_mipspro.mak added, for SGI MIPSPro compilation
 
-	* merged series of HP/SUN minor fixes by Petr Ovchenkov 
+	* merged series of HP/SUN minor fixes by Petr Ovtchenkov 
 	
 	* merged series of Intel 4.5 fixes by Serge 
 
@@ -1257,9 +1261,9 @@ The following changes were made in 4.1 beta 2 since 4.1 beta 1 :
 	  changed to explicit "this->".
 	
 	* _complex.h : signatures of some methods changed to take value_type instead of const value_type&, 
-	   for better conformance (thanks to Petr Ovchenkov)
+	   for better conformance (thanks to Petr Ovtchenkov)
 
-	* Bunch of fixes to compile with gcc on HP-UX 10, 11 (thanks to Petr Ovchenkov)
+	* Bunch of fixes to compile with gcc on HP-UX 10, 11 (thanks to Petr Ovtchenkov)
 
 	* Code duplication for __STL_INLINE_MEMBER_TEMPLATES removed -- corresponding methods are always inlined
 
