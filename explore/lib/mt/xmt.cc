@@ -161,6 +161,7 @@ Thread::Init::~Init()
   }
 }
 
+Thread::alloc_type Thread::alloc;
 int Thread::_idx = 0;
 
 #ifdef WIN32
@@ -210,13 +211,13 @@ Thread::~Thread()
   user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
 #endif
   if ( user_words != 0 ) {
-    alloc().deallocate( user_words, uw_alloc_size );
+    alloc.deallocate( user_words, uw_alloc_size );
   }
 
   ((Init *)Init_buf)->~Init();
 
 #ifdef WIN32
-  __stl_assert( _id == bad_thread_key );
+  __STL_ASSERT( _id == bad_thread_key );
 #else
   // __stl_assert( _id == -1 );
   kill( SIGTERM );
@@ -451,11 +452,19 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 #endif
 
 extern "C" {
+#ifdef __unix
   void *_xcall( void *p )
   {
     return Thread::_call( p );
   }
-}
+#endif
+#ifdef WIN32
+  unsigned long __stdcall _xcall( void *p )
+  {
+    return (unsigned long)Thread::_call( p );
+  }
+#endif
+} // extern "C"
 
 void *Thread::_call( void *p )
 {
@@ -564,12 +573,12 @@ long& Thread::iword( int __idx )
     uw_alloc_size = sizeof( long ) * (__idx + 1);
 #ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
 #  ifdef _MSC_VER
-    user_words = alloc().allocate( uw_alloc_size, (const void *)0 );
+    user_words = alloc.allocate( uw_alloc_size, (const void *)0 );
 #  else
-    user_words = alloc().allocate( uw_alloc_size );
+    user_words = alloc.allocate( uw_alloc_size );
 #  endif
 #else // __STL_USE_SGI_ALLOCATORS
-    user_words = alloc::allocate( uw_alloc_size );
+    user_words = alloc.allocate( uw_alloc_size );
 #endif // __STL_USE_SGI_ALLOCATORS
     __STD::fill( *user_words, *user_words + uw_alloc_size, 0 );
 #ifdef __STL_UITHREADS
@@ -585,15 +594,15 @@ long& Thread::iword( int __idx )
     size_t tmp = sizeof( long ) * (__idx + 1);
 #ifndef __STL_USE_SGI_ALLOCATORS // __STL_USE_STD_ALLOCATORS
 #ifdef _MSC_VER
-    long **_mtmp = alloc().allocate( tmp, (const void *)0 );
+    long **_mtmp = alloc.allocate( tmp, (const void *)0 );
 #else // __STL_USE_SGI_ALLOCATORS
-    long **_mtmp = alloc().allocate( tmp );
+    long **_mtmp = alloc.allocate( tmp );
 #endif // __STL_USE_SGI_ALLOCATORS
     __STD::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
-    alloc().deallocate( user_words, uw_alloc_size );
+    alloc.deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
 #else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
-    user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
+    user_words = alloc.reallocate( user_words, uw_alloc_size, tmp );
 #endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     __STD::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
@@ -631,7 +640,7 @@ void*& Thread::pword( int __idx )
 // #ifdef _MSC_VER
 //    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
 // #else
-    user_words = alloc().allocate( uw_alloc_size );
+    user_words = alloc.allocate( uw_alloc_size );
 // #endif
     __STD::fill( *user_words, *user_words + uw_alloc_size, 0 );
 #ifdef __STL_UITHREADS
@@ -646,12 +655,12 @@ void*& Thread::pword( int __idx )
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
 #ifndef  __STL_USE_SGI_ALLOCATORS
-    long **_mtmp = alloc().allocate( tmp );
+    long **_mtmp = alloc.allocate( tmp );
     __STD::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
-    alloc().deallocate( user_words, uw_alloc_size );
+    alloc.deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
 #else // __STL_USE_SGI_ALLOCATORS
-    user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
+    user_words = alloc.reallocate( user_words, uw_alloc_size, tmp );
 #endif // __STL_USE_SGI_ALLOCATORS
     __STD::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
