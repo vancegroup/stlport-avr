@@ -55,7 +55,7 @@ extern "C" {
  * Typedefs:
  */
 
-#ifdef __GNUC__
+#if defined (__GNUC__) || defined (_KCC)
 typedef unsigned short int _Locale_mask_t;
 #else
 typedef unsigned int _Locale_mask_t;

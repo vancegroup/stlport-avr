@@ -2,7 +2,7 @@
 # compiler
 #
 CC = gcc
-CXX = c++  -pthread
+CXX = c++  -pthread -nostdinc++ -fexceptions
 
 #
 # Basename for libraries
@@ -41,13 +41,13 @@ WARNING_FLAGS= -W -Wno-sign-compare -Wno-unused -Wno-uninitialized -D_STLP_USE_G
 CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O2
-CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fpic
+CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fPIC
 
 CXXFLAGS_DEBUG_static = $(CXXFLAGS_COMMON) -g
-CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fpic
+CXXFLAGS_DEBUG_dynamic = $(CXXFLAGS_COMMON) -g -fPIC
 
 CXXFLAGS_STLDEBUG_static = $(CXXFLAGS_DEBUG_static) -D_STLP_DEBUG
-CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fpic
+CXXFLAGS_STLDEBUG_dynamic = $(CXXFLAGS_DEBUG_dynamic) -D_STLP_DEBUG -fPIC
 
 include common_percent_rules.mak
 include common_rules.mak

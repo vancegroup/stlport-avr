@@ -229,7 +229,7 @@ class _Isentry {
     void operator=(const _Self&) {}
   };
   
-# if defined (_STLP_USE_TEMPLATE_EXPORT) || defined(__MRC__) || defined(__SC__)
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
 #  undef sentry
 # else
   // close basic_istream class definition here

@@ -27,7 +27,7 @@ INSTALL_STEP=install_bc
 # static builds, but cannot be used - some weird compile errors..
 all : all_dynamic
 
-!include common_macros.mak
+!include common_macros_windows.mak
 
 DYNAMIC_DEFS=_RTLDLL
 STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE

@@ -32,7 +32,7 @@ Dep_stl = stl_test.obj accum1.obj accum2.obj \
 	bcompos1.obj bcompos2.obj \
 	bind1st1.obj bind1st2.obj \
 	bind2nd1.obj bind2nd2.obj \
-	binsert1.obj binsert2.cpp \
+	binsert1.obj binsert2.obj \
 	binsrch1.obj binsrch2.obj \
 	bnegate1.obj bnegate2.obj bvec1.obj \
 	copy1.obj copy2.obj copy3.obj copy4.obj \

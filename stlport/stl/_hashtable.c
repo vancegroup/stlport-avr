@@ -43,7 +43,7 @@ _STLP_BEGIN_NAMESPACE
 
 #if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 template <class _Tp>
-const unsigned long _Stl_prime<_Tp>::_M_list[__stl_num_primes] = __PRIME_LIST_BODY;
+const size_t _Stl_prime<_Tp>::_M_list[__stl_num_primes] = __PRIME_LIST_BODY;
 #else
 __DECLARE_INSTANCE(const unsigned long, 
 		   _Stl_prime_type::_M_list[], =__PRIME_LIST_BODY);

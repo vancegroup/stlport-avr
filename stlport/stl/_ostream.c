@@ -177,7 +177,7 @@ bool basic_ostream<_CharT, _Traits>
 // Helper function for numeric output.
 
 template <class _CharT, class _Traits, class _Number>
-_STLP_DECLSPEC basic_ostream<_CharT, _Traits>&  _STLP_CALL
+basic_ostream<_CharT, _Traits>&  _STLP_CALL
 _M_put_num(basic_ostream<_CharT, _Traits>& __os, _Number __x)
 {
   typedef typename basic_ostream<_CharT, _Traits>::sentry _Sentry;

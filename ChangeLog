@@ -11,12 +11,50 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* <iostream> : fixed _STLP_OUTERMOST_HEADER_ID macro
 
 	* cin/cout/cerr redefined if no namespaces and SGI iostreams are used, for all compilers, just in case. 
-
 	* _sparc_atomic.h : fixed and improved atomic ops for gcc
 
 	* test/regression : non-backward-compatible old-style __STL_xx macros use changed to _STLP_xx
 
 	* config/st_gcc.h : disabled non-standard "extern" use for non-DLL templates 
+
+	* mingw32 - used 'windows.h replacement' section in _threads.h (thanks to Danny Smith)
+
+	* locale Win32 bug fixed (thanks to Alberto Balbarti)
+
+	* mingw32 : _STLP_CONST_INIT_BUG defined for dll (thanks to Danny Smith)
+
+	* "make clean" glitches fixed (thanks to Whitney Kew for the report)
+
+	* _fstream.c : fixed codecvt bug for variable width encoding
+
+	* _STLP_ABORT macro introduced to avoid clashes with third-party sw redefining abort() (thanks to Jerry)
+
+	* c_locale_win32 : fixed parse bug in __ParseLocaleString (thanks to Danny Smith)
+
+	* extra declspecs removed from templates to fix VC++ 7.0 ; only concrete classes have specifiers (thanks to Holger Stasch for the report)
+
+	* stl_msvc.h, _hashtable.h/.c : fixes for IA64 compilation (thanks to Rainer Schnitker )
+
+	* fixed bug in "make install" on Unix (thanks to Carlos Paniago)
+
+	* dll_main.cpp : DisableThreadLibraryCalls used for optimization (thanks to Alberto Barbati)
+	
+	* dll_main.cpp : a dummy function added to force <limits> guts for static VC++ link (thanks to Alberto Barbati)
+
+	* gcc-linux.mak : flags fixed (thanks to Levente Farkas )
+
+	* stl_msvc.h, stl_intel.h : fixed __ICL version test (thanks to Serge Pashkov)
+
+	* versioning schema changed on Windows to have .dll extension (thanks everybody for the feedback)
+
+	* NetBSD makefiles fixed
+
+	* A bunch of fixes by Tsutomu Yoshida : MPW fixes plus :
+	* stl/_config.h : I believe the definition for _STLP_STD under debug/non-debug configurations swapped.
+
+	* typeinfo.h : added check for _STLP_NO_NEW_HEADER for using declaration.
+          Otherwise three classes will not be included in the namespace std when #include <typeinfo>.
+
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 

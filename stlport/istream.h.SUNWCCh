@@ -33,6 +33,7 @@ using _STLP_STD::basic_istream;
 using _STLP_STD::basic_iostream;
 using _STLP_STD::istream;
 using _STLP_STD::iostream;
+using _STLP_STD::ios;
 #   ifndef _STLP_NO_WCHAR_T
 using _STLP_STD::wistream;
 using _STLP_STD::wiostream;

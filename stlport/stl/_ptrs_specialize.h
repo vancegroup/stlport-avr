@@ -8,6 +8,7 @@
 #    define _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
 # else
 // Compiler can handle generic -> operator.
+#  define _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Tp)		//*TY 2/28/01 - re-inserted per previous beta
 #  ifdef __BORLANDC__
 #   define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(*(*this)); }
 #  elif defined ( _STLP_WINCE )

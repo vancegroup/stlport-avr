@@ -186,7 +186,7 @@ inline ptrdiff_t* distance_type(const _Ht_iterator<_Val,_Traits,_Key,_HF,_ExK,_E
 template <class _Tp>
 class _Stl_prime {
 public:
-  static const unsigned long _M_list[__stl_num_primes];
+  static const size_t _M_list[__stl_num_primes];
 };
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT) 

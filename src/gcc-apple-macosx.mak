@@ -35,7 +35,7 @@ include common_macros.mak
 
 WARNING_FLAGS= -W -Wno-sign-compare -Wno-unused -Wno-uninitialized
 
-CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}
+CXXFLAGS_COMMON = -I${STLPORT_DIR} ${WARNING_FLAGS}  -traditional-cpp
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O2
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fPIC

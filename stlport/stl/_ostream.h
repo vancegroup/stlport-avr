@@ -31,7 +31,7 @@
 _STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _Traits, class _Number> 
-_STLP_DECLSPEC basic_ostream<_CharT, _Traits>& _STLP_CALL
+basic_ostream<_CharT, _Traits>& _STLP_CALL
 _M_put_num(basic_ostream<_CharT, _Traits>& __os, _Number __x);
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)

@@ -48,11 +48,12 @@
 
 #  if defined (_STLP_USE_DYNAMIC_LIB)
 #   define _STLP_USE_DECLSPEC 1
+#   define _STLP_USE_TEMPLATE_EXPORT 1
 #  endif
 
 # endif
 
-/* ||  */
+// boris : some linuxes require that, too. Not sure what macro to use for that
 # if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun))
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
 #   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
@@ -80,6 +81,8 @@ typedef unsigned int wint_t;
 
 #  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
 #   define __DECLARE_INSTANCE(type,item,init) type item init
+#  else
+#   define __DECLARE_INSTANCE(type,item,init)
 #  endif
 
 /* Mac OS X needs all "::" scope references to be "std::" */

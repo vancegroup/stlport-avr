@@ -46,9 +46,9 @@ NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D__STL_NO_SGI_
 
 check: $(TEST)
 
-LIBS = -lm 
-D_LIBSTLPORT = -L../../lib -R../../lib -lstlport_gcc_stldebug_41
-LIBSTLPORT = -L../../lib -R../../lib -lstlport_gcc_41
+LIBS = -lm -lpthread
+D_LIBSTLPORT = -L../../lib -R../../lib -lstlport_gcc_stldebug
+LIBSTLPORT = -L../../lib -R../../lib -lstlport_gcc
 
 all: $(TEST_EXE) $(D_TEST_EXE) $(NOSGI_TEST_EXE)
 

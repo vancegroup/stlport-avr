@@ -39,7 +39,7 @@
 # else
 #  include <cstdlib>
 #  include <cstdio>
-#  define _STLP_THROW_MSG(ex,msg)  puts(msg),abort()
+#  define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
 # endif
 #endif
 

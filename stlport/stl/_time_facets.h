@@ -27,6 +27,9 @@
 # include <ctime>                // Needed (for struct tm) by time facets
 #endif
 
+#include <stl/c_locale.h>		//*TY 03/01/2001 - needed for _Locale_time
+#include <stl/_ios_base.h>		//*TY 03/01/2001 - needed for ios_base::iostate; needed for string in _Time_Info; needed for locale::facet
+
 _STLP_BEGIN_NAMESPACE
 
 // Template functions used by time_get

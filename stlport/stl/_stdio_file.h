@@ -154,8 +154,7 @@ __f.__pad[3] = __end - __next;
 
 # define _STLP_FILE_I_O_IDENTICAL
 
-
-#elif defined (__CYGWIN__) || defined(__FreeBSD__)  || defined(__NetBSD__)
+#elif defined (__CYGWIN__) || defined(__FreeBSD__)  || defined(__NetBSD__) || ( defined(__GNUC__) && defined(__APPLE__) )
 
 # if 0
 inline int   _FILE_fd(const FILE& __f) { return __f._file; }

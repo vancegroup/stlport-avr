@@ -315,10 +315,8 @@ __stl_debug_engine<_Dummy>::_Terminate()
 # endif
 # if defined (_STLP_USE_EXCEPTIONS) && ! defined (_STLP_NO_DEBUG_EXCEPTIONS)
   throw __stl_debug_exception();
-# elif defined (_STLP_WINCE)
-  TerminateProcess(GetCurrentProcess(), 0);
 # else
-  abort();
+  _STLP_ABORT();
 # endif
 }
 

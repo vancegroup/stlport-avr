@@ -32,12 +32,15 @@
 #endif
 
 // if <typeinfo> already included, do not import anything
-# if defined  (_STLP_USE_OWN_NAMESPACE) && ! defined (_STLP_TYPEINFO)
+		//*TY 03/17/2001 - added check for _STLP_NO_NEW_NEW_HEADER since when this is defined, <typeinfo> pulls in <typeinfo.h>
+# if defined  (_STLP_USE_OWN_NAMESPACE) && ! (defined (_STLP_TYPEINFO) && !defined(_STLP_NO_NEW_NEW_HEADER))
 
 _STLP_BEGIN_NAMESPACE
 
 using /*_STLP_VENDOR_EXCEPT_STD */ :: type_info;
+# if !(defined(__MRC__) || defined(__SC__))		//*TY 03/17/2001 - mpw does not utilize bad_typeid yet
 using _STLP_VENDOR_EXCEPT_STD :: bad_typeid;
+# endif
 using _STLP_VENDOR_EXCEPT_STD :: bad_cast;
 
 _STLP_END_NAMESPACE

@@ -46,8 +46,9 @@
 #include <bitset>
 
 # if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
-// for rope static members
+// for rope, locale static members
 #  include <rope>
+#  include <locale>
 # endif
 
 _STLP_BEGIN_NAMESPACE
@@ -173,6 +174,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     switch (ul_reason_for_call)
 	{
 		case DLL_PROCESS_ATTACH:
+		  DisableThreadLibraryCalls((HINSTANCE)hModule);
 		case DLL_THREAD_ATTACH:
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
@@ -180,4 +182,21 @@ BOOL APIENTRY DllMain( HANDLE hModule,
     }
     return TRUE;
 }
+
+
+void force_link()
+{
+  std::numeric_limits<float>::infinity();
+  std::numeric_limits<float>::quiet_NaN();
+  std::numeric_limits<float>::signaling_NaN();
+  std::numeric_limits<double>::infinity();
+  std::numeric_limits<double>::quiet_NaN();
+  std::numeric_limits<double>::signaling_NaN();
+#ifndef __STL_NO_LONG_DOUBLE
+  std::numeric_limits<long double>::infinity();
+  std::numeric_limits<long double>::quiet_NaN();
+  std::numeric_limits<long double>::signaling_NaN();
+#endif
+}
+
 # endif

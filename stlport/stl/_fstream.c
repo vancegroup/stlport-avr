@@ -518,10 +518,11 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux()
   // Fill the external buffer.  Start with any leftover characters that
   // didn't get converted last time.
   if (_M_ext_buf_end > _M_ext_buf_converted)
-    // boris : let us use copy_backward to be safe
-    //    _M_ext_buf_end = copy(_M_ext_buf_converted, _M_ext_buf_end, _M_ext_buf);
-    _M_ext_buf_end = copy_backward(_M_ext_buf_converted, _M_ext_buf_end, 
-                                   _M_ext_buf+ (_M_ext_buf_end - _M_ext_buf_converted));
+
+    _M_ext_buf_end = copy(_M_ext_buf_converted, _M_ext_buf_end, _M_ext_buf);
+    // boris : copy_backward did not work
+    //_M_ext_buf_end = copy_backward(_M_ext_buf_converted, _M_ext_buf_end, 
+    //_M_ext_buf+ (_M_ext_buf_end - _M_ext_buf_converted));
   else
     _M_ext_buf_end = _M_ext_buf;
 

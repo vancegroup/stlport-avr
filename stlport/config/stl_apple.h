@@ -62,7 +62,7 @@ typedef int wint_t;
 #endif
 
 #if defined(__SC__)
-#define _STLP_VENDER_LONG_DOUBLE_MATH				//*TY 12/03/2000 - SCpp's native math type is long double
+#define _STLP_VENDOR_LONG_DOUBLE_MATH				//*TY 12/03/2000 - SCpp's native math type is long double
 #endif
 
 #ifndef _STLP_NATIVE_INCLUDE_PATH

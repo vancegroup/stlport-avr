@@ -381,7 +381,7 @@ extern "C" {
 
   void* _Locale_time_create(const char * name)
   {
-    int size, month, dayofweek, dayindex;
+    int size, month, dayofweek;
     char cname[_Locale_MAX_SIMPLE_NAME];
 
     _Locale_time_t *ltime=(_Locale_time_t*)malloc(sizeof(_Locale_time_t));;
@@ -424,12 +424,12 @@ extern "C" {
 
     for(dayofweek=LOCALE_SABBREVDAYNAME1; dayofweek<=LOCALE_SABBREVDAYNAME7; dayofweek++)
       {
-	int dayindex= ( dayofweek != LOCALE_SDAYNAME7 ) ?
+	int dayindex= ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ?
 	  dayofweek-LOCALE_SDAYNAME1+1 : 0;
 	size=GetLocaleInfoA(ltime->lcid, dayofweek, NULL, 0);
 	ltime->abbrev_dayofweek[dayindex]=(char*)malloc(size);
 	if(!ltime->abbrev_dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
-	GetLocaleInfoA(ltime->lcid, dayofweek, ltime->abbrev_dayofweek[dayofweek-LOCALE_SABBREVDAYNAME1], size);
+	GetLocaleInfoA(ltime->lcid, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
 	__ConvertFromACP(ltime->abbrev_dayofweek[dayindex], size, ltime->cp);
       }
 
@@ -1468,40 +1468,49 @@ const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int TableSiz
   return lname;
 }
 
-int __ParseLocaleString(const char* lname, char* lang, char* ctry, char* page)
+int __ParseLocaleString(const char* lname, char* lang, char* ctry,
+char* page)
 {
-  int param;
-  size_t len;
-  char ch;
+  int param=0;
+  size_t len=0;
+  char ch=lname[0];
 
-  if(lname[0]=='.') // Only code page provided
+  if(ch==0)
+     return 0;
+    
+  else if(ch=='.') // Only code page provided
     {
       if(strlen(lname+1)>MAX_CP_LEN) return -1; // CP number too long
       strcpy(page, lname+1);
-      lang[0] = 0; ctry[0] = 0;
+      lang[0] = 0; ctry[0] = 0;  //necessary? calling function does this too
       return 0;
     }
 
-  for(param=0;;param++) // Full string
+  while (ch!=0) // Parse string
     {
       len=strcspn(lname, "_.,"); // ',' for compability with POSIX
 
       ch=lname[len];
-
-      if(param==0 && len<MAX_LANG_LEN && ch!='.')
-	strncpy(lang, lname, len);
+      if((param==0) && (len<MAX_LANG_LEN))
+        {
+          if (ch!='.') // hence '_', ',' or '/0'
+                strncpy(lang, lname, len);
+          else  // no ctry, read lang and skip ctry on next pass
+            {
+              ctry[0]=0;  
+              strncpy(lang, lname, len);
+              param++;    
+             }
+         }
       else if(param==1 && len<MAX_CTRY_LEN && ch!='_')
-	strncpy(ctry, lname, len);
+            strncpy(ctry, lname, len);
       else if(param==2 && len<MAX_CP_LEN && (ch==0 || ch==','))
-	strncpy(page, lname, len);
+            strncpy(page, lname, len);
       else
-	return -1;
-
+        return -1;
       if(ch==',') break; // Modifier found. In NT not used.
-
-      if(ch==0) break;
-
-      lname+=len+1;
+      param++;
+      lname+=(len+1);
     }
   return 0;
 }
@@ -1635,7 +1644,7 @@ char* __Extract_locale_name(const char* loc, int category, char* buf)
   char *expr;
   size_t len_name;
   buf[0] = 0;
-  if(category<LC_ALL && category>LC_MAX) return NULL;
+  if(category < LC_ALL || category > LC_MAX) return NULL;
 
   if(loc[0]=='L' && loc[1]=='C' && loc[2]=='_')
     {

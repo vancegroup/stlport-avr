@@ -52,8 +52,10 @@ static void _STLP_dummy_literal_3() { const char *p = "123456700000000000000089"
 #     define _STLP_HAS_NO_NEW_IOSTREAMS      1
 #     define _STLP_DONT_THROW_RANGE_ERRORS   1
 #     define _STLP_STATIC_CONST_INIT_BUG 1
+#if (__HP_aCC  < 12700)
 //new flag: on most HP compilers cwchar is missing
 #     define _STLP_NO_CWCHAR
+#endif
 
 #     define _STLP_FORCE_ALLOCATORS(t,a) \
   typedef typename _Alloc_traits<t,a>::_Orig _STLP_dummy_type1;\

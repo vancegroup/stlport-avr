@@ -42,8 +42,8 @@
 #  include <cstdlib>
 # endif
 
-// On SUN, zero-initialization works just fine...
-# ifdef __sun
+// On SUN and Mac OS X gcc, zero-initialization works just fine...
+# if defined (__sun) || ( defined(__GNUC__) && defined(__APPLE__) )
 # define _STLP_MUTEX_INITIALIZER
 # endif
 
@@ -85,8 +85,8 @@
 
 # elif defined(_STLP_WIN32)
 
-#  if !defined (_STLP_WINDOWS_H_INCLUDED) && ! defined (_WINDOWS_) && ! defined (__WINDOWS__)
-#   if ! (defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) )
+#  if !defined (_STLP_WINDOWS_H_INCLUDED) && ! defined (_WINDOWS_) && ! defined (__WINDOWS__) && ! defined (_WINDOWS_H)
+#   if ! (defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || defined (__MINGW32__)) 
 // #    define NOMINMAX
 #    ifdef _STLP_USE_MFC
 #     include <afx.h>

@@ -54,7 +54,7 @@
 
 /* STLport version */
 #   define _STLPORT_VERSION                              0x415
-#   define __SGI_STL_PORT                                 _STLP_VERSION
+#   define __SGI_STL_PORT                                 _STLPORT_VERSION
 
 /* Placeholder for user to override settings.
  * It could be also used to mask settings from 
@@ -129,6 +129,9 @@
 
 #ifndef _STLP_UINT32_T
 # define _STLP_UINT32_T unsigned long
+#endif
+#ifndef _STLP_ABORT
+# define _STLP_ABORT() abort()
 #endif
 
 # if !defined (_STLP_HAS_NO_NAMESPACES)
@@ -543,9 +546,9 @@ namespace __std_alias = std;
 #   endif
 #  else
 #   ifdef _STLP_DEBUG
-#    define _STLP_STD      std
-#   else
 #    define _STLP_STD      stdD
+#   else
+#    define _STLP_STD      std
 #   endif
 #  endif /* _STLP_USE_OWN_NAMESPACE */
 
@@ -925,6 +928,10 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   define  _STLP_CLASS_DECLSPEC  _STLP_CLASS_IMPORT_DECLSPEC
 #  endif
 
+#  ifndef _STLP_STATIC_CONST_INIT_BUG
+// constant data members cannot be exported; using workaround here
+#   define _STLP_STATIC_CONST_INIT_BUG
+#  endif
 # else /* Not using DLL export/import specifications */
 
 #  define _STLP_DECLSPEC

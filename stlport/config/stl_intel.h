@@ -1,7 +1,7 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-# if (__ICL >=0x450)
+# if (__ICL >= 450)
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 # endif
 

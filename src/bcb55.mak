@@ -26,7 +26,7 @@ INSTALL_STEP=install_bc
 
 all : platform all_dynamic all_static
 
-!include common_macros.mak
+!include common_macros_windows.mak
 
 RM=-rd /S /Q
 MKDIR=-mkdir -p

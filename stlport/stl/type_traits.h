@@ -206,11 +206,18 @@ struct _OKToMemCpy {
   static _Type _Ret() { return _Type(); }
 };
 
+#if defined(__MRC__)||defined(__SC__)		//*TY 03/01/2001 - added workaround for mpw compilers
+_STLP_BEGIN_NAMESPACE						//*TY 03/01/2001 - they confuse as if the instantiated specializaion is already defined.
+#endif
 
 template <class _Tp1, class _Tp2>
 inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*)  {
   return _OKToMemCpy<_Tp1, _Tp2>();
 }
+
+#if defined(__MRC__)||defined(__SC__)
+_STLP_END_NAMESPACE
+#endif
 
 template <class _Tp> 
 struct _IsPOD {
@@ -218,8 +225,16 @@ struct _IsPOD {
   static _Type _Ret() { return _Type(); }
 };
 
+#if defined(__MRC__)||defined(__SC__)		//*TY 03/01/2001 - added workaround for mpw compilers
+_STLP_BEGIN_NAMESPACE						//*TY 03/01/2001 - they confuse as if the instantiated specializaion is already defined.
+#endif
+
 template <class _Tp> 
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); } 
+
+#if defined(__MRC__)||defined(__SC__)
+_STLP_END_NAMESPACE
+#endif
 
 
 // Provide some specializations.  This is harmless for compilers that

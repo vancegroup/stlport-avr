@@ -29,7 +29,7 @@ _STLP_BEGIN_NAMESPACE
 extern const unsigned char __digit_val_table[];
 
 template < class _InputIter, class _Integer, class _CharT>
-_InputIter _STLP_DECLSPEC _STLP_CALL
+_InputIter _STLP_CALL
 _M_do_get_integer(_InputIter&, _InputIter&, ios_base&, ios_base::iostate&, _Integer&, _CharT*);
 
 // _M_do_get_integer and its helper functions.  
@@ -247,7 +247,7 @@ __get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val)
 }
 
 template <class _InputIter, class _Integer, class _CharT>
-_InputIter  _STLP_DECLSPEC _STLP_CALL
+_InputIter _STLP_CALL
 _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
                   ios_base::iostate& __err, _Integer& __val, _CharT* __pc) 
 {
@@ -360,7 +360,7 @@ __copy_grouped_digits(_InputIter& __first, _InputIter& __last,
 
 
 template <class _InputIter, class _CharT>
-bool  _STLP_DECLSPEC _STLP_CALL
+bool _STLP_CALL
 _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s, _CharT*)
 {
   // Create a string, copying characters of the form 
@@ -425,8 +425,28 @@ _M_read_float(string& __buf, _InputIter& __in, _InputIter& __end, ios_base& __s,
 // num_get<>, num_put<>
 //
 
+# if ( _STLP_STATIC_TEMPLATE_DATA > 0 ) 
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
+# else
+
+typedef num_get<char, const char*> num_get_char;
+typedef num_get<char, istreambuf_iterator<char, char_traits<char> > > num_get_char_2;
+
+__DECLARE_INSTANCE(locale::id, num_get_char::id, );
+__DECLARE_INSTANCE(locale::id, num_get_char_2::id, );
+
+# ifndef _STLP_NO_WCHAR_T
+
+typedef num_get<wchar_t, const wchar_t*> num_get_wchar_t;
+typedef num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > num_get_wchar_t_2;
+
+__DECLARE_INSTANCE(locale::id, num_get_wchar_t::id, );
+__DECLARE_INSTANCE(locale::id, num_get_wchar_t_2::id, );
+
+# endif
+
+# endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 # ifndef _STLP_NO_BOOL
 template <class _CharT, class _InputIter>

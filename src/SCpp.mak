@@ -202,4 +202,7 @@ build	ÄÄ	"{ObjDir}"STLportLib{config_}.o
 install  ÄÄ  build
 	###
 	echo "¶nInstalling:     ¶{stl¶}:lib:STLportLib{config_}.o"
+	if !`exists "{stl}":lib:`
+		newfolder "{stl}":lib:
+	end
 	duplicate -y "{ObjDir}"STLportLib{config_}.o "{stl}":lib:STLportLib{config_}.o

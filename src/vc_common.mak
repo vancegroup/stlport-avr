@@ -40,7 +40,7 @@ DYNLINK_OUT=/out:
 STATIC_SUFFIX=_static
 INSTALL_STEP=install_vc
 
-!include common_macros.mak
+!include common_macros_windows.mak
 
 RM=-rd /S /Q
 

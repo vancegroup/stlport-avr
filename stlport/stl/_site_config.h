@@ -137,7 +137,7 @@
  *	void __stl_debug_terminate(void). This allows
  * you to take control of assertion behaviour for debugging purposes.
  * Default routine throws unique exception if _STLP_USE_EXCEPTIONS is set,
- * calls abort() otherwise.
+ * calls _STLP_ABORT() otherwise.
  * Note : If you set this macro, you must supply __stl_debug_terminate 
  * function definition somewhere.
  */
@@ -145,7 +145,7 @@
 
 /*
  * Comment this out to enable throwing exceptions from default __stl_debug_terminate()
- * instead of calling abort().
+ * instead of calling _STLP_ABORT().
  */
 #define   _STLP_NO_DEBUG_EXCEPTIONS 1
 

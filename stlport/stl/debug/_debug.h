@@ -99,7 +99,7 @@ struct __stl_debug_engine {
   static void _STLP_CALL  _VerboseAssert(const char* __expr, int __error_ind, const char* __f, int __l);
 
   // If exceptions are present, sends unique exception
-  // If not, calls abort() to terminate
+  // If not, calls _STLP_ABORT() to terminate
   // Use _STLP_DEBUG_TERMINATE to override
   static void _STLP_CALL  _Terminate();
 

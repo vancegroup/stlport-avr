@@ -625,7 +625,7 @@ private:
 // Class basic_fstream<>
 
 template <class _CharT, class _Traits>
-class _STLP_DECLSPEC basic_fstream : public basic_iostream<_CharT, _Traits>
+class basic_fstream : public basic_iostream<_CharT, _Traits>
 {
 public:                         // Types
   typedef _CharT                     char_type;

@@ -26,7 +26,7 @@ INSTALL_STEP=install_bc
 
 all : all_dynamic all_static
 
-!include common_macros.mak
+!include common_macros_windows.mak
 
 DYNAMIC_DEFS=_RTLDLL;_DLL
 STATIC_DEFS=_LIB;_STLP_NO_FORCE_INSTANTIATE

@@ -61,7 +61,7 @@ typedef int ptrdiff_t;
 #endif
 
 #ifndef _ABORT_DEFINED
-# define abort() TerminateProcess(GetCurrentProcess(), 0)
+# define _STLP_ABORT() TerminateProcess(GetCurrentProcess(), 0)
 # define _ABORT_DEFINED
 #endif
 

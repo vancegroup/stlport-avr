@@ -3,11 +3,20 @@
 // Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0, ICL
 
 // Common features for VC++ 4.0 and higher
-# define _STLP_NATIVE_HEADER(x) <../include/##x>
-# define _STLP_NATIVE_C_HEADER(x) <../include/##x>
-# define _STLP_NATIVE_CPP_C_HEADER(x) <../include/##x>
-# define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../include/##x>
-# define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
+# ifdef _M_IA64
+#  define _STLP_NATIVE_HEADER(x) <../crt/##x>
+#  define _STLP_NATIVE_C_HEADER(x) <../crt/##x>
+#  define _STLP_NATIVE_CPP_C_HEADER(x) <../crt/##x>
+#  define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../crt/##x>
+#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../crt/##header>
+#  define _STLP_GLOBAL_NEW_HANDLER
+# else
+#  define _STLP_NATIVE_HEADER(x) <../include/##x>
+#  define _STLP_NATIVE_C_HEADER(x) <../include/##x>
+#  define _STLP_NATIVE_CPP_C_HEADER(x) <../include/##x>
+#  define _STLP_NATIVE_OLD_STREAMS_HEADER(x) <../include/##x>
+#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
+# endif
 
 # define _STLP_MSVC50_COMPATIBILITY   1
 # define _STLP_MINIMUM_IMPORT_STD
@@ -62,7 +71,7 @@
 #  define _STLP_NO_FRIEND_TEMPLATES
 #  define _STLP_STATIC_CONST_INIT_BUG   1
 //  these work, as long they are inline
-#   define _STLP_INLINEf_MEMBER_TEMPLATES 1
+#   define _STLP_INLINE_MEMBER_TEMPLATES 1
 // there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
 #   define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 # endif
@@ -168,7 +177,7 @@
 # endif /* __ICL */
 
 
-#    if (defined (__ICL) && (__ICL < 0x450)) || (_MSC_VER < 1200)
+#    if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
 //    only static SGI lib now works for ICL and VC 5.0
 #     undef  _STLP_USE_STATIC_LIB
 #     define _STLP_USE_STATIC_LIB

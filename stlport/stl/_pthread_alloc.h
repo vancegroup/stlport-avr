@@ -232,7 +232,7 @@ _Pthread_alloc_template<_Max_size>::_S_get_per_thread_state()
 	__THROW_BAD_ALLOC;
       } else {
 	// EINVAL
-	abort();
+	_STLP_ABORT();
       }
     }
     return __result;

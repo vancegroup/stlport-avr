@@ -25,7 +25,7 @@ platform:
 	-@$(MKDIR) $(OBJDIR)
 
 clean_all_obj:
-	-$(RM) obj
+	-$(RM) $(OUTDIR)$(PATH_SEP)obj
 
 ######   Targets ##################
 
@@ -50,7 +50,7 @@ install :  all $(INSTALL_STEP)
 clean : $(CLEAN_SPECIFIC)
 	-$(RM) $(RELEASE_OBJDIR_static) $(DEBUG_OBJDIR_static) \
         $(STLDEBUG_OBJDIR_static) $(RELEASE_OBJDIR_dynamic) \
-        $(DEBUG_OBJDIR_dynamic) $(STLDEBUG_OBJDIR_dynamic) SunWS_cache Templates.DB tempinc
+        $(DEBUG_OBJDIR_dynamic) $(STLDEBUG_OBJDIR_dynamic) $(OUTDIR)$(PATH_SEP)SunWS_cache $(OUTDIR)$(PATH_SEP)Templates.DB $(OUTDIR)$(PATH_SEP)tempinc
 
 clobber : clean clean_all_obj
 	-$(RM) $(OUTDIR)$(PATH_SEP)$(DEBUG_NAME).* \
@@ -87,7 +87,7 @@ install_unix :
 	./mkinstalldirs $(INSTALLDIR_LIB)
 	for file in `ls $(OUTDIR)/$(LIB_BASENAME)*`; \
 	do \
-        -$(RM)  $(INSTALLDIR_LIB)/$file
+        -$(RM)  $(INSTALLDIR_LIB)/$file \
 	$(INSTALL_LIB)  $$file $(INSTALLDIR_LIB); \
 	done
 	-$(RM) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)

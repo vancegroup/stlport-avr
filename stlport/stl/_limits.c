@@ -189,24 +189,24 @@ const _F_rep _LimG<__dummy>::_F_sNaN  = {_STLP_FLOAT_SNAN_REP};
 
 #else
 
-__DECLARE_INSTANCE(_F_rep,
+__DECLARE_INSTANCE( const _F_rep,
                    _LimG<bool>::_F_inf,  = _STLP_FLOAT_INF_REP);
-__DECLARE_INSTANCE(_F_rep,
+__DECLARE_INSTANCE( const _F_rep,
                    _LimG<bool>::_F_qNaN,  = _STLP_FLOAT_QNAN_REP);
-__DECLARE_INSTANCE(_F_rep,
+__DECLARE_INSTANCE( const _F_rep,
                    _LimG<bool>::_F_sNaN,  = _STLP_FLOAT_SNAN_REP);
-__DECLARE_INSTANCE(_D_rep,
+__DECLARE_INSTANCE( const _D_rep,
                    _LimG<bool>::_D_inf,  = _STLP_DOUBLE_INF_REP);
-__DECLARE_INSTANCE(_D_rep,
+__DECLARE_INSTANCE( const _D_rep,
                    _LimG<bool>::_D_qNaN,  = _STLP_DOUBLE_QNAN_REP);
-__DECLARE_INSTANCE(_D_rep,
+__DECLARE_INSTANCE( const _D_rep,
                    _LimG<bool>::_D_sNaN,  = _STLP_DOUBLE_SNAN_REP);
 # ifndef _STLP_NO_LONG_DOUBLE
-__DECLARE_INSTANCE(_L_rep,
+__DECLARE_INSTANCE( const _L_rep,
                    _LimG<bool>::_L_inf,  = _STLP_LDOUBLE_INF_REP);
-__DECLARE_INSTANCE(_D_rep,
+__DECLARE_INSTANCE( const _D_rep,
                    _LimG<bool>::_L_qNaN,  = _STLP_LDOUBLE_QNAN_REP);
-__DECLARE_INSTANCE(_L_rep,
+__DECLARE_INSTANCE( const _L_rep,
                    _LimG<bool>::_L_sNaN,  = _STLP_LDOUBLE_SNAN_REP);
 # endif
 
