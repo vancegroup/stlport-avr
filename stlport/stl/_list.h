@@ -253,9 +253,9 @@ public:
 
 protected:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node_base* _M_create_node(const _Tp& __x = _Tp()) {
+  _Node_base* _M_create_node(const_reference __x = value_type()) {
 #else
-  _Node_base* _M_create_node(const _Tp& __x) {
+  _Node_base* _M_create_node(const_reference __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
@@ -319,9 +319,9 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position, const _Tp& __x = _Tp()) {
+  iterator insert(iterator __position, const_reference __x = value_type()) {
 #else
-  iterator insert(iterator __position, const _Tp& __x) {
+  iterator insert(iterator __position, const_reference __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
     _Node_base* __tmp = _M_create_node(__x);
     _Node_base* __n = __position._M_node;
@@ -345,14 +345,14 @@ private:
   template<class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
                           const __true_type& /*_IsIntegral*/) {
-    _M_fill_insert(__pos, (size_type) __n, (_Tp) __x);
+    _M_fill_insert(__pos, __n, __x);
   }
   template <class _InputIter>
   void _M_insert_dispatch(iterator __position,
                           _InputIter __first, _InputIter __last,
                           const __false_type& /*_IsIntegral*/) {
 #else /* _STLP_MEMBER_TEMPLATES */
-  void _M_insert(iterator __position, const _Tp* __first, const _Tp* __last) {
+  void _M_insert(iterator __position, const value_type* __first, const value_type* __last) {
     for (; __first != __last; ++__first)
       insert(__position, *__first);
   }
@@ -376,14 +376,14 @@ private:
   template<class _Integer>
   void _M_splice_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
                           const __true_type& /*_IsIntegral*/) {
-    _M_fill_insert(__pos, (size_type) __n, (_Tp) __x);
+    _M_fill_insert(__pos, __n, __x);
   }
   template <class _InputIter>
   void _M_splice_insert_dispatch(iterator __position,
                           _InputIter __first, _InputIter __last,
                           const __false_type& /*_IsIntegral*/) {
 #else /* _STLP_MEMBER_TEMPLATES */
-  void insert(iterator __position, const _Tp* __first, const _Tp* __last) {
+  void insert(iterator __position, const value_type* __first, const value_type* __last) {
     _Self __tmp(__first, __last);
     splice(__position, __tmp);
   }
@@ -395,20 +395,21 @@ private:
   }
   
 public:
-  void insert(iterator __pos, size_type __n, const _Tp& __x) { _M_fill_insert(__pos, __n, __x); }
+  void insert(iterator __pos, size_type __n, const_reference __x) 
+  { _M_fill_insert(__pos, __n, __x); }
   
 private:
-  void _M_fill_insert(iterator __pos, size_type __n, const _Tp& __x) {
+  void _M_fill_insert(iterator __pos, size_type __n, const_reference __x) {
     for ( ; __n > 0; --__n)
       insert(__pos, __x);
   }
   
 public:  
-  void push_front(const _Tp& __x) { insert(begin(), __x); }
-  void push_back (const _Tp& __x) { insert(end(), __x); }
+  void push_front(const_reference __x) { insert(begin(), __x); }
+  void push_back (const_reference __x) { insert(end(), __x); }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position) { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  iterator insert(iterator __position) { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
   void push_front() {insert(begin());}
   void push_back() {insert(end());}
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
@@ -431,10 +432,10 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  void resize(size_type __new_size, const _Tp& __x = _Tp());
+  void resize(size_type __new_size, const_reference __x = value_type());
 #else
-  void resize(size_type __new_size, const _Tp& __x);
-  void resize(size_type __new_size) { this->resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  void resize(size_type __new_size, const_reference __x);
+  void resize(size_type __new_size) { this->resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
 
   void pop_front() { erase(begin()); }
@@ -443,9 +444,9 @@ public:
     erase(--__tmp);
   }
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit _LIST_IMPL(size_type __n, const _Tp& __val = _Tp(),
+  explicit _LIST_IMPL(size_type __n, const_reference __val = value_type(),
 #else
-  _LIST_IMPL(size_type __n, const _Tp& __val,
+  _LIST_IMPL(size_type __n, const_reference __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
        const allocator_type& __a = allocator_type())
     : _List_base<_Tp, _Alloc>(__a)
@@ -454,7 +455,7 @@ public:
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _LIST_IMPL(size_type __n)
     : _List_base<_Tp, _Alloc>(allocator_type())
-    { this->insert(begin(), __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+    { this->insert(begin(), __n, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -474,7 +475,7 @@ public:
   
 #else /* _STLP_MEMBER_TEMPLATES */
 
-  _LIST_IMPL(const _Tp* __first, const _Tp* __last,
+  _LIST_IMPL(const value_type* __first, const value_type* __last,
        const allocator_type& __a = allocator_type())
     : _List_base<_Tp, _Alloc>(__a)
     { _M_insert(begin(), __first, __last); }
@@ -493,7 +494,7 @@ public:
 
   ~_LIST_IMPL() { }
 
-  _LIST_IMPL<_Tp, _Alloc>& operator=(const _Self& __x);
+  _Self& operator=(const _Self& __x);
 
 public:
   // assign(), a generalized assignment member function.  Two
@@ -501,9 +502,9 @@ public:
   // The range version is a member template, so we dispatch on whether
   // or not the type is an integer.
 
-  void assign(size_type __n, const _Tp& __val) { _M_fill_assign(__n, __val); }
+  void assign(size_type __n, const_reference __val) { _M_fill_assign(__n, __val); }
 
-  void _M_fill_assign(size_type __n, const _Tp& __val);
+  void _M_fill_assign(size_type __n, const_reference __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -515,7 +516,7 @@ public:
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
                           const __true_type& /*_IsIntegral*/) {
-    assign((size_type) __n, (_Tp) __val);
+    _M_fill_assign(__n, __val);
   }
 
   template <class _InputIterator>
@@ -560,7 +561,7 @@ public:
       _List_global_inst::_Transfer(__position._M_node, __first._M_node, __last._M_node);
   }
 
-  void remove(const _Tp& __val) {
+  void remove(const_reference __val) {
     iterator __first = begin();
     iterator __last = end();
     while (__first != __last) {
@@ -572,11 +573,11 @@ public:
   }
   
   void unique() {
-    _S_unique(*this, equal_to<_Tp>());
+    _S_unique(*this, equal_to<value_type>());
   }
   
   void merge(_Self& __x) {
-    _S_merge(*this, __x, less<_Tp>());
+    _S_merge(*this, __x, less<value_type>());
   }
 
   void reverse() {
@@ -589,7 +590,7 @@ public:
   }    
   
   void sort() {
-    _S_sort(*this, less<_Tp>());
+    _S_sort(*this, less<value_type>());
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES

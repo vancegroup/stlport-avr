@@ -21,13 +21,13 @@ release-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 
-ifeq ($(OSNAME),sunos)
-release-shared : LDLIBS = -lstlport_gcc -lrt
-stldbg-shared  : LDLIBS = -lstlport_gcc_stldebug -lrt
-dbg-shared     : LDLIBS = -lstlport_gcc_debug -lrt
-else
 release-shared : LDLIBS = -lstlport_gcc
 stldbg-shared  : LDLIBS = -lstlport_gcc_stldebug
 dbg-shared     : LDLIBS = -lstlport_gcc_debug
+
+ifeq ($(OSNAME),sunos)
+release-shared : LDLIBS += -lrt
+stldbg-shared  : LDLIBS += -lrt
+dbg-shared     : LDLIBS += -lrt
 endif
 
