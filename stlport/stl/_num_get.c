@@ -125,7 +125,7 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 	      int __base, _Integer& __val, 
 	      int __got, bool __is_negative, char __separator, const string& __grouping, const __true_type&) 
 {
-  bool __overflow = false;
+  bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
   char __group_sizes[64];
@@ -153,11 +153,11 @@ __get_integer(_InputIter& __first, _InputIter& __last,
      ++__current_group_size;
      
      if (__result < __over_base)
-       __overflow = true;  // don't need to keep accumulating
+       __ovflow = true;  // don't need to keep accumulating
      else {
        _Integer __next = __STATIC_CAST(_Integer, __base * __result - __n);
        if (__result != 0)
-	 __overflow = __overflow || __next >= __result;
+	 __ovflow = __ovflow || __next >= __result;
        __result = __next;
      }
    }
@@ -168,13 +168,13 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 
    // fbp : added to not modify value if nothing was read
    if (__got > 0) {
-       __val = __overflow
+       __val = __ovflow
 	 ? __is_negative ? (numeric_limits<_Integer>::min)()
 	 : (numeric_limits<_Integer>::max)()
 	 : (__is_negative ? __result : __STATIC_CAST(_Integer, -__result));
    }
   // overflow is being treated as failure
-  return ((__got > 0) && !__overflow) && (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
+  return ((__got > 0) && !__ovflow) && (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
 									    __grouping.data(), __grouping.data()+ __grouping.size())) ;
 }
 
@@ -184,7 +184,7 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 	      int __base, _Integer& __val, 
 	      int __got, bool __is_negative, char __separator, const string& __grouping, const __false_type&) 
 {
-  bool __overflow = false;
+  bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
   char __group_sizes[64];
@@ -212,11 +212,11 @@ __get_integer(_InputIter& __first, _InputIter& __last,
     ++__current_group_size;
 
     if (__result > __over_base)
-      __overflow = true;  //don't need to keep accumulating
+      __ovflow = true;  //don't need to keep accumulating
     else {
       _Integer __next = __STATIC_CAST(_Integer, __base * __result + __n);
 	if (__result != 0)
-	  __overflow = __overflow || __next <= __result;
+	  __ovflow = __ovflow || __next <= __result;
 	__result = __next;
       }      
   }
@@ -227,12 +227,12 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 
   // fbp : added to not modify value if nothing was read
   if (__got > 0) {
-      __val = __overflow
+      __val = __ovflow
 	? (numeric_limits<_Integer>::max)()
 	: (__is_negative ? __STATIC_CAST(_Integer, -__result) : __result);      
   }
   // overflow is being treated as failure
-  return ((__got > 0) && !__overflow) && 
+  return ((__got > 0) && !__ovflow) && 
     (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
 					 __grouping.data(), __grouping.data()+ __grouping.size())) ;
 }
