@@ -145,48 +145,9 @@ protected:
 
   // handles insertions on overflow
   void _M_insert_overflow(pointer __position, const _Tp& __x, const __false_type& /*IsPOD*/, 
-                          size_type __fill_len, bool __atend = false) {
-    const size_type __old_size = size();
-    const size_type __len = __old_size + (max)(__old_size, __fill_len);
-    
-    pointer __new_start = this->_M_end_of_storage.allocate(__len);
-    pointer __new_finish = __new_start;
-    _STLP_TRY {
-      __new_finish = __uninitialized_move(this->_M_start, __position, __new_start, __false_type());
-      // handle insertion
-      if (__fill_len == 1) {
-        _Copy_Construct(__new_finish, __x);
-        ++__new_finish;
-      } else
-        __new_finish = __uninitialized_fill_n(__new_finish, __fill_len, __x, __false_type());
-      if (!__atend)
-        // copy remainder
-        __new_finish = __uninitialized_move(__position, this->_M_finish, __new_finish, __false_type());
-    }
-    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
-                  this->_M_end_of_storage.deallocate(__new_start,__len)))
-
-    _STLP_STD::_Destroy_Mvd_Sources(this->_M_start, this->_M_finish);
-    this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
-    _M_set(__new_start, __new_finish, __new_start + __len);
-  }
-
+                          size_type __fill_len, bool __atend = false);
   void _M_insert_overflow(pointer __position, const _Tp& __x, const __true_type& /*IsPOD*/, 
-                          size_type __fill_len, bool __atend = false) {
-    const size_type __old_size = size();
-    const size_type __len = __old_size + (max)(__old_size, __fill_len);
-    
-    pointer __new_start = this->_M_end_of_storage.allocate(__len);
-    pointer __new_finish = (pointer)__copy_trivial(this->_M_start, __position, __new_start);
-    // handle insertion
-    __new_finish = fill_n(__new_finish, __fill_len, __x);
-    if (!__atend)
-      // copy remainder
-      __new_finish = (pointer)__copy_trivial(__position, this->_M_finish, __new_finish);
-    _M_clear();
-    _M_set(__new_start, __new_finish, __new_start + __len);
-  }
- 
+                          size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish-this->_M_start))
       this->_M_throw_out_of_range();
@@ -380,27 +341,10 @@ public:
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
+  iterator insert(iterator __position, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp));
 #else
-  iterator insert(iterator __position, const _Tp& __x) {
+  iterator insert(iterator __position, const _Tp& __x);
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-    size_type __n = __position - begin();
-    if (this->_M_finish != this->_M_end_of_storage._M_data) {
-      if (__position == end()) {
-        _Copy_Construct(this->_M_finish, __x);
-        ++this->_M_finish;
-      } else {
-        _Copy_Construct(this->_M_finish, *(this->_M_finish - 1));
-        ++this->_M_finish;
-        _Tp __x_copy = __x;
-        __copy_backward_ptrs(__position, this->_M_finish - 2, this->_M_finish - 1, _TrivialAss());
-        *__position = __x_copy;
-      }
-    }
-    else
-      _M_insert_overflow(__position, __x, _IsPODType(), 1UL);
-    return begin() + __n;
-  }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() { push_back(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
