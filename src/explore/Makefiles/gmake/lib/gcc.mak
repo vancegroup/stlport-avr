@@ -14,6 +14,14 @@ dbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_DBGxx) ${L
 stldbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_STLDBGxx) ${LDSEARCH}
 release-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic -Wl,+h$(SO_NAMExx) ${LDSEARCH}
 else
+ifeq ($(OSNAME),openbsd)
+dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${LDSEARCH}
+dbg-static:	LDFLAGS += ${LDSEARCH}
+stldbg-static:	LDFLAGS += ${LDSEARCH}
+release-static:	LDFLAGS += ${LDSEARCH}
+else
 dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH}
 stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH}
 release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH}
@@ -21,5 +29,5 @@ dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
 endif
-
+endif
 
