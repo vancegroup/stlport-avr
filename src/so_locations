@@ -1,6 +1,0 @@
-libstlport_mipspro_41.so \
-		:st = .text 0x5ff00000, 0x000e0000:\
-		:st = .data 0x5ffe0000, 0x00020000:
-libstlport_mipspro_stldebug_41.so \
-		:st = .text 0x5fdd0000, 0x00110000:\
-		:st = .data 0x5fee0000, 0x00020000:
