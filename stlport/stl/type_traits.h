@@ -301,7 +301,7 @@ struct _BothPtrType {
 #else
   enum { _Is1 =  _IsPtr<_Tp1>::_Ret } ;
 #endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-  typedef __bool2type<_Is1> _B1;
+  typedef __bool2type< _Is1 > _B1;
   typedef typename _B1::_Ret _Type1;
 
 #if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
@@ -315,7 +315,7 @@ struct _BothPtrType {
 #else
   enum { _Is2 =  _IsPtrCond<_Type1, _Tp2>::_Ret } ;
 #endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-  typedef __bool2type< _IsPtr<_Tp2>::_Ret> _B2;
+  typedef __bool2type< _Is2 > _B2;
   typedef typename _B2::_Ret _Type2;
 
   typedef typename _Land2<_Type1, _Type2>::_Ret _Type;
@@ -441,10 +441,11 @@ struct _DefaultZeroValue {
   typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
 
 #if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
-  typedef typename __bool2type< _IsPtrCondNot<_Tr3, _Tp>::_Ret>::_Ret _Tr4;
+  enum { _IsPtrVal = _IsPtrCondNot<_Tr3, _Tp>::_Ret };
 #else
-  typedef typename __bool2type< _IsPtr<_Tp>::_Ret>::_Ret _Tr4;
+  enum { _IsPtrVal = _IsPtr<_Tp>::_Ret };
 #endif /* !_STLP_CLASS_PARTIAL_SPECIALIZATION && _STLP_MEMBER_TEMPLATE_CLASSES*/
+  typedef typename __bool2type< _IsPtrVal >::_Ret _Tr4;
 
   typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
