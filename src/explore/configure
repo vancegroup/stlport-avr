@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Time-stamp: <03/07/31 14:20:30 ptr>
+# $Id$
+
+
+configmak=./Makefiles/config.mak
+
+rm -f ${configmak}
+
+echo "# STLPORT_DIR := /export/home/windows/guest/STLlab/STLport" >> ${configmak}
+echo "# MSVC_DIR := c:/Program Files/Microsoft Visual Studio/VC98" >> ${configmak}
+
+while :
+do
+  case $# in
+    0)
+      break
+      ;;
+  esac
+  option=$1
+  shift
+  case $option in
+    --target=*)
+      target=`echo $option | sed -e 's/^[^=]*=//'`
+      echo TARGET_OS := $target >> ${configmak}
+      ;;
+  esac
+done
+
