@@ -253,7 +253,9 @@ public:
   }
   iterator erase(iterator __first, iterator __last) {
     _STLP_DEBUG_CHECK(__check_range(__first,__last, begin(), end()))
-    __invalidate_range(&_M_iter_list, __first+1, end());
+    __invalidate_range(&_M_iter_list, __first._M_iterator == this->_M_finish ? 
+		       __first : __first+1, end());
+    //    __invalidate_range(&_M_iter_list, __first+1, end());
     return iterator(&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
   void clear() { 

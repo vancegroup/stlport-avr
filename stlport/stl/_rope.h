@@ -200,7 +200,7 @@ template<class _Sequence
 # endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 >
 // The 3rd parameter works around a common compiler bug.
-class sequence_buffer : public output_iterator {
+class sequence_buffer : public iterator <output_iterator_tag, void, void, void, void> {
 public:
 #       ifndef __TYPEDEF_WORKAROUND
   typedef typename _Sequence::value_type value_type;

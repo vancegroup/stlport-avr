@@ -936,11 +936,6 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #   define __USE_STD_IOSTREAM
 #  endif
 
-# ifndef _STLP_USE_CUSTOM_CHAR_TYPES_IO
-#  undef _STLP_NO_CUSTOM_IO
-#  define _STLP_NO_CUSTOM_IO 1
-# endif
-
 /* We only need to expose details of streams implementation 
    if we use non-standard i/o or are building STLport*/
 # if defined (__BUILDING_STLPORT) ||  defined (_STLP_NO_FORCE_INSTANTIATE) || !defined(_STLP_NO_CUSTOM_IO)

@@ -76,15 +76,18 @@
 
 /* 
  *
- *  _STLP_USE_CUSTOM_CHAR_TYPES_IO : define this only if you instantiate basic_xxx iostream classes 
- *  with custom types. Custom means types other than char, wchar and char_traits<>,
+ *  _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream classes  with custom types (which is most likely the case).
+ *  Custom means types other than char, wchar and char_traits<>,
  *  like basic_ostream<my_char_type, my_traits<my_char_type> >
- *  When this option is off, most non-inline template functions definitions for iostreams are not seen by the client.
- *  Default is off, which saves a lot of compile time for most compilers, also object and executable size for some.
+ *  When this option is on, most non-inline template functions definitions for iostreams are not seen by the client.
+ *  Default is off, just not to break compilation for those who do use those types.
+ *  which saves a lot of compile time for most compilers, also object and executable size for some.
  *  That also guarantees that you still use optimized standard i/o when you compile your program without optimization. 
+ *  Option does not affect STLport library build; you may use the same binary library with and without this option, 
+ *  on per-project basis.
  *
  */
-// #define _STLP_USE_CUSTOM_CHAR_TYPES_IO 1
+// #define _STLP_NO_CUSTOM_IO
 
 
 /* 

@@ -21,8 +21,6 @@
 #  include <stl/_prolog.h>
 # endif
 
-// # include <stl/_new.h>
-
 #ifdef _STLP_WINCE
 
 inline void* _STLP_CALL __stl_new(size_t __n) {
