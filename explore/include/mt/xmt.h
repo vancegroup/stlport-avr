@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <01/01/03 15:34:21 ptr>
+// -*- C++ -*- Time-stamp: <01/01/31 10:47:42 ptr>
 
 /*
  *
@@ -44,7 +44,9 @@
 #  endif
 #  include <ctime>
 
-namespace std {
+// namespace std {
+
+extern "C" {
 
 typedef struct  timespec {              /* definition per POSIX.4 */
         time_t          tv_sec;         /* seconds */
@@ -53,9 +55,11 @@ typedef struct  timespec {              /* definition per POSIX.4 */
 
 typedef struct timespec timestruc_t;    /* definition per SVr4 */
 
+}
+
 #define ETIME   62      /* timer expired                        */
 
-} // namespace std
+// } // namespace std
 
 #else // !WIN32
 #  if defined( _REENTRANT ) && !defined(_NOTHREADS)
@@ -456,11 +460,7 @@ class Condition
 #endif
       }
 
-#ifndef _WIN32
     __PG_DECLSPEC int wait_time( const timespec *abstime );
-#else
-    __PG_DECLSPEC int wait_time( const std::timespec *abstime );
-#endif
 
     int signal()
       {
@@ -569,13 +569,8 @@ class Thread
     static __PG_DECLSPEC void unblock_signal( int sig );
     static __PG_DECLSPEC void signal_handler( int sig, SIG_PF );
 
-#ifndef _WIN32
     static __PG_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
     static __PG_DECLSPEC void gettime( timespec *t );
-#else
-    static __PG_DECLSPEC void sleep( std::timespec *t, std::timespec *e = 0 );
-    static __PG_DECLSPEC void gettime( std::timespec *t );
-#endif
 
     bool good() const
       { return _id != bad_thread_key; }
@@ -652,6 +647,18 @@ class Thread
 
 } // namespace __impl
 
+// #ifdef _MSC_VER // VC 5
+// extern "C" {
+
+// struct  timespec { /* definition per POSIX.4 */
+//   time_t tv_sec;         /* seconds */
+//  long   tv_nsec;        /* and nanoseconds */
+// };
+
+// }
+
+// #endif // _MSC_VER
+
 timespec operator +( const timespec& a, const timespec& b );
 timespec operator -( const timespec& a, const timespec& b );
 timespec operator /( const timespec& a, unsigned b );
@@ -662,6 +669,5 @@ timespec& operator +=( timespec& a, const timespec& b );
 timespec& operator -=( timespec& a, const timespec& b );
 timespec& operator /=( timespec& a, unsigned b );
 timespec& operator /=( timespec& a, unsigned long b );
-
 
 #endif // __XMT_H
