@@ -89,12 +89,14 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 
 	* Removed all dead code blocks marked by #if OBSOLETE and #if 0
 
-	* Updates build spec file for Linux rpm (thanks Levene Farkas, HArold van Oostrom)
+	* Updates build spec file for Linux rpm (thanks Levene Farkas, Harold van Oostrom)
 
 	* complex_trig.cpp : limits changed to be static, for performance optimization (thanks Sergei Nikolaev)
 
 	* _algo.c : eliminated default-constructed iterators, to lift unnecessary restriction (thanks Tonci Tomic )
  	
+	* _vector.h : fixed bug in assign() : copy used instead of __copy_aux (Thanks Tim Finer)
+	
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
