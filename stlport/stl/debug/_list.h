@@ -210,13 +210,15 @@ public:
 
   template <class _InputIterator>
   void insert(iterator __position, _InputIterator __first, _InputIterator __last) {
-    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
+    _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __position))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
     
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InputIterator, iterator>::_Ret _IsListIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _AreSameTypes<_InputIterator, const_iterator>::_Ret _IsListConstIterator))
-    _STLP_STD_DEBUG_DO((typedef typename _Lor2<_IsListIterator, _IsListConstIterator>::_Ret _DoCheck))
-    _STLP_STD_DEBUG_CHECK(__check_infinite_loop(__last, end(), _DoCheck()))
+# if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+    typedef typename _AreSameTypes<_InputIterator, iterator>::_Ret _IsListIterator;
+    typedef typename _AreSameTypes<_InputIterator, const_iterator>::_Ret _IsListConstIterator;
+    typedef typename _Lor2<_IsListIterator, _IsListConstIterator>::_Ret _DoCheck;
+    _STLP_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, _DoCheck()))
+# endif
     
     _Base::insert(__position._M_iterator, __first, __last);
   }
@@ -233,7 +235,7 @@ public:
               const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__position))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    _STLP_STD_DEBUG_CHECK(__check_infinit_loop(__last, end(), __true_type()))
+    _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, __true_type()))
     _Base::insert(__position._M_iterator, __first._M_iterator, __last._M_iterator);
   }
   

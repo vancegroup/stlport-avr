@@ -55,7 +55,6 @@ enum {
   _StlMsg_NOT_IN_RANGE_2       ,
   _StlMsg_INVALID_ADVANCE      ,
   _StlMsg_SINGULAR_ITERATOR    ,
-  _StlMsg_INFINIT_LOOP         ,
   // debug alloc messages
   _StlMsg_DBA_DELETED_TWICE    ,
   _StlMsg_DBA_NEVER_ALLOCATED  ,
@@ -70,7 +69,7 @@ enum {
 };
 
 /* have to hardcode that ;() */
-# define _StlMsg_MAX 28
+# define _StlMsg_MAX 27
 
 _STLP_BEGIN_NAMESPACE
 
@@ -360,14 +359,6 @@ private:
 
 // forward declaratioins
 
-template <class _Iterator, class _EndIterator>
-bool _STLP_CALL __check_infinite_loop(const _Iterator&, const _EndIterator&, const __false_type&) {
-  return true;
-}
-
-template <class _Iterator>
-bool _STLP_CALL __check_infinite_loop(const _Iterator&, const _Iterator&, const __true_type&);
-
 template <class _Iterator>
 bool  _STLP_CALL __check_range(const _Iterator&, const _Iterator&);
 template <class _Iterator>
@@ -446,6 +437,21 @@ inline bool _STLP_CALL  __check_if_owner( const __owned_list* __owner,
                                           const _Iterator& __it) {
   return __stl_debugger::_Check_if_owner(__owner, (const __owned_link&)__it);
 }
+
+template <class _Iterator>
+inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
+                                             const _Iterator& __it,
+                                             const __false_type&) {
+  return false;
+}
+
+template <class _Iterator>
+inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
+                                             const _Iterator& __it,
+                                             const __true_type&) {
+  return !__check_if_owner(__owner, __it);
+}
+
 
 _STLP_END_NAMESPACE
 
