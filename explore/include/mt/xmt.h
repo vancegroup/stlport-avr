@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/05/24 15:36:53 ptr>
+// -*- C++ -*- Time-stamp: <99/06/21 12:02:34 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -364,6 +364,7 @@ class Condition
 #ifdef WIN32
         MT_LOCK( _lock );
         _val = false;
+        ResetEvent( _cond );
         MT_UNLOCK( _lock );
         if ( WaitForSingleObject( _cond, -1 ) == WAIT_FAILED ) {
           return -1;
