@@ -1,13 +1,21 @@
-2003-12-20 Francois Dumont <dums@s...>
+2003-12-31 Petr Ovchenkov  <ptr@Island...>
 
-  * _vector.h: Implementation of the pointer specialization for vector to 
-               avoid code bloat.
+	* _vector.h, _vector.c, _hashtable.h: remove excess vector redefinitions
 
-2003-11-29 Francois Dumont <dums@s...>
+	* debug/_vector.h: pointer specialization for vector not derived
+	from _Vector_base, so we should avoid references on _Vector_base
+	class members in debug wrapper.
+ 
+2003-12-20 Francois Dumont  <dums@s...>
 
-  * _string.h: Implementation of the short string optimization. basic_string have now a
-               short static buffer to avoid call to the allocator when the string
-               is short.
+	* _vector.h: Implementation of the pointer specialization for vector to 
+	avoid code bloat.
+
+2003-11-29 Francois Dumont  <dums@s...>
+
+	* _string.h: Implementation of the short string optimization. basic_string have now a
+	short static buffer to avoid call to the allocator when the string
+	is short.
                
 2003-11-29  Petr Ovchenkov  <ptr@Island...>
 
