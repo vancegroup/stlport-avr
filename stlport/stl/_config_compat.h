@@ -5,7 +5,7 @@
  */
 
 # if (defined (__STL_NO_SGI_IOSTREAMS) || defined (_STLP_NO_SGI_IOSTREAMS)) \
-  && ! defined ( _STLP_NO_SGI_IOSTREAMS )
+  && ! defined ( _STLP_NO_OWN_IOSTREAMS )
 #  define _STLP_NO_OWN_IOSTREAMS
 # endif
 

@@ -679,8 +679,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   default:
     return false;
   }
-  // # elif defined(_STLP_USE_WIN32_IO) && defined (_MSC_VER) || (defined(__MINGW32__) && defined(__MSVCRT__))
-# elif (defined(__STL_USE_WIN32_IO) && defined (_MSC_VER) && !defined(__STL_WINCE)) || \
+# elif (defined(_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined(__STL_WINCE)) || \
         (defined(__MINGW32__) && defined(__MSVCRT__))
 
   if (_M_is_open || file_no == -1)
