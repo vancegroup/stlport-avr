@@ -50,9 +50,9 @@ template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
 class hash_map _STLP_STLPORT_CLASS_1
 {
 private:
-  typedef _STLP_HASHTABLE _Ht;
   typedef hash_map<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> _Self;
 public:
+  typedef _STLP_HASHTABLE _Ht;
   typedef typename _Ht::key_type key_type;
   typedef _Tp data_type;
   typedef _Tp mapped_type;
@@ -89,8 +89,8 @@ public:
            const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
 
-  explicit hash_map(__partial_move_source<_Self> src)
-    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  hash_map(__move_source<_Self> src)
+    : _M_ht(_AsMoveSource(src.get()._M_ht)) {
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -260,8 +260,8 @@ public:
                 const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
 
-  explicit hash_multimap(__partial_move_source<_Self> src)
-    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  hash_multimap(__move_source<_Self> src)
+    : _M_ht(_AsMoveSource(src.get()._M_ht)) {
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -390,7 +390,6 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #define _STLP_TEMPLATE_CONTAINER hash_multimap<_Key,_Tp,_HashFcn,_EqlKey,_Alloc>
 #include <stl/_relops_hash_cont.h>
-
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
@@ -398,6 +397,15 @@ public:
 // and hash_multimap.
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct __move_traits<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+{};
+
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+{};
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 class insert_iterator<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
@@ -461,6 +469,8 @@ public:
 # define __hash_map__ __FULL_NAME(hash_map)
 # define __hash_multimap__ __FULL_NAME(hash_multimap)
 
+# undef _STLP_KEY_PAIR
+# undef _STLP_HASHTABLE
 
 _STLP_END_NAMESPACE
 

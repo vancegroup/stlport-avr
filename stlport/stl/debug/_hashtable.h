@@ -99,17 +99,17 @@ protected:
 
 public:
   _DBG_hashtable(size_type __n,
-		 		  const _HF&  __hf,
-		 		  const _EqK& __eql,
-		 		  const _ExK& __ext,
-		 		  const allocator_type& __a = allocator_type()):
+                 const _HF&  __hf,
+                 const _EqK& __eql,
+                 const _ExK& __ext,
+                 const allocator_type& __a = allocator_type()):
     _STLP_DBG_HT_SUPER(__n, __hf, __eql, __ext, __a),
     _M_iter_list(_Get_base()) {}
   
   _DBG_hashtable(size_type __n,
-		 		  const _HF&    __hf,
-		 		  const _EqK&   __eql,
-		 		  const allocator_type& __a = allocator_type()):
+                 const _HF&    __hf,
+                 const _EqK&   __eql,
+                 const allocator_type& __a = allocator_type()):
     
     _STLP_DBG_HT_SUPER(__n, __hf, __eql, __a),
     _M_iter_list(_Get_base()) {}
@@ -118,15 +118,10 @@ public:
     _STLP_DBG_HT_SUPER(__ht),
     _M_iter_list(_Get_base()) {}
   
-  explicit _DBG_hashtable(__partial_move_source<_Self> src) :
-    _STLP_DBG_HT_SUPER(_AsPartialMoveSource<_STLP_DBG_HT_SUPER >(src.get())),
-    _M_iter_list(_Get_base()) {}
-  
-  /*explicit _DBG_hashtable(__full_move_source<_Self> src) :
-    _STLP_DBG_HT_SUPER(_FullMoveSource<_STLP_DBG_HT_SUPER >(src.get())),
-    _M_iter_list(_Get_base()) {
-    src.get()._M_iter_list._Invalidate_all();
-  }*/
+  _DBG_hashtable(__move_source<_Self> src) :
+    _STLP_DBG_HT_SUPER(_AsMoveSource<_STLP_DBG_HT_SUPER >(src.get())), _M_iter_list(_Get_base()) {
+    src.get()._M_iter_list._M_invalidate_all();
+  }
   
   _Self& operator= (const _Self& __ht) {
     if (this !=  &__ht) {
@@ -271,6 +266,13 @@ private:
 #undef _STLP_TEMPLATE_CONTAINER_BASE
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
+struct __move_traits<_DBG_hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> > :
+  __move_traits_aux<hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> >
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

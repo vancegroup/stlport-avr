@@ -60,7 +60,6 @@ template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
-
 class queue {
 # if defined ( _STLP_QUEUE_ARGS )
   typedef deque<_Tp> _Sequence;
@@ -82,12 +81,8 @@ public:
   queue() : _M_s() {}
   explicit queue(const _Sequence& __c) : _M_s(__c) {}
 
-  /*explicit queue(__full_move_source<_Self> src)
-    : _M_s(_FullMoveSource<_Sequence>(src.get()._M_s)) {
-  }*/
-
-  explicit queue(__partial_move_source<_Self> src)
-    : _M_s(_AsPartialMoveSource(src.get()._M_s)) {
+  queue(__move_source<_Self> src)
+    : _M_s(_AsMoveSource(src.get()._M_s)) {
   }
 
   bool empty() const { return _M_s.empty(); }
@@ -158,8 +153,8 @@ public:
     : _M_s(__s), comp(__x)
     { make_heap(_M_s.begin(), _M_s.end(), comp); }
 
-  explicit priority_queue(__partial_move_source<_Self> src)
-    : _M_s(_AsPartialMoveSource(src.get()._M_s)), comp(_AsPartialMoveSource(src.get().comp)) {
+  priority_queue(__move_source<_Self> src)
+    : _M_s(_AsMoveSource(src.get()._M_s)), comp(_AsMoveSource(src.get().comp)) {
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -218,6 +213,18 @@ public:
     _STLP_UNWIND(_M_s.clear())
   }
 };
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Sequence>
+struct __move_traits<queue<_Tp, _Sequence> > :
+  __move_traits_aux<_Sequence>
+{};
+
+template <class _Tp, class _Sequence, class _Compare>
+struct __move_traits<priority_queue<_Tp, _Sequence, _Compare> > :
+  __move_traits_aux2<_Sequence, _Compare>
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

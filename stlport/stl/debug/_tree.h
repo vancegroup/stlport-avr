@@ -107,15 +107,10 @@ public:
   _DBG_Rb_tree(const _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>& __x):
     _STLP_DBG_TREE_SUPER(__x), _M_iter_list(_Get_base()) {}
 
-  explicit _DBG_Rb_tree(__partial_move_source<_Self> src):
-    _STLP_DBG_TREE_SUPER(_AsPartialMoveSource<_STLP_DBG_TREE_SUPER >(src.get())), 
-    _M_iter_list(_Get_base()) {}
-
-  /*explicit _DBG_Rb_tree(__full_move_source<_Self> src):
-    _STLP_DBG_TREE_SUPER(_FullMoveSource<_STLP_DBG_TREE_SUPER >(src.get())), 
-    _M_iter_list(_Get_base()) {
+  _DBG_Rb_tree(__move_source<_Self> src):
+    _STLP_DBG_TREE_SUPER(_AsMoveSource<_STLP_DBG_TREE_SUPER >(src.get())), _M_iter_list(_Get_base()) {
     src.get()._M_iter_list._Invalidate_all();
-  }*/
+  }
 
   ~_DBG_Rb_tree() {}
 

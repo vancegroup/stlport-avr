@@ -105,7 +105,7 @@
 
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 
-# if (__DECCXX_VER <= 60400000)
+# if (__DECCXX_VER <= 60600000)
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1 
 # endif
 

@@ -119,13 +119,8 @@ public:
   slist(const _Self& __x) : _Slist_base<void*,_Alloc>(__x.get_allocator())
     { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
-  /*explicit slist(__full_move_source<_Self> src)
-    : _Slist_base<void*, _Alloc>(_FullMoveSource<_Slist_base<void*, _Alloc> >(src.get())) {
-  }*/
-
-  explicit slist(__partial_move_source<_Self> src)
-    : _Slist_base<void*, _Alloc>(src.get()) {
-    src.get()._M_head._M_data._M_next = 0;
+  slist(__move_source<_Self> src)
+    : _Slist_base<void*, _Alloc>(__move_source<_Base>(src.get())) {
   }
 
   _Self& operator= (const _Self& __x);
@@ -632,12 +627,8 @@ public:
 
   slist(const _Self& __x) : _M_container(__x._M_container) {}
 
-  /*explicit slist(__full_move_source<_Self> src)
-    : _Slist_base<void*, _Alloc>(_FullMoveSource<_Slist_base<void*, _Alloc> >(src.get())) {
-  }*/
-
-  explicit slist(__partial_move_source<_Self> src)
-    : _M_container(__partial_move_source<_Base>(src.get()._M_container)) {}
+  slist(__move_source<_Self> src)
+    : _M_container(__move_source<_Base>(src.get()._M_container)) {}
 
   _Self& operator= (const _Self& __x) {
     _M_container = __x._M_container;

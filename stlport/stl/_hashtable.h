@@ -140,7 +140,7 @@ template <class _Val, class _Traits, class _Traits1, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 inline bool 
 operator==(const _Ht_iterator<_Val, _Traits,_Key,_HF,_ExK,_EqK,_All>& __x, 
-	   const _Ht_iterator<_Val, _Traits1,_Key,_HF,_ExK,_EqK,_All>& __y) { 
+           const _Ht_iterator<_Val, _Traits1,_Key,_HF,_ExK,_EqK,_All>& __y) { 
   return __x._M_cur == __y._M_cur; 
 }
 
@@ -149,7 +149,7 @@ template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 inline bool 
 operator!=(const _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All>& __x, 
-	   const _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All>& __y) { 
+           const _Hashtable_iterator<_Val,_Key,_HF,_ExK,_EqK,_All>& __y) { 
   return __x._M_cur != __y._M_cur; 
 }
 #else
@@ -168,7 +168,7 @@ template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 inline bool 
 operator!=(const _Ht_iterator<_Val, _Nonconst_traits<_Val>,_Key,_HF,_ExK,_EqK,_All>& __x, 
-	   const _Ht_iterator<_Val, _Const_traits<_Val>,_Key,_HF,_ExK,_EqK,_All>& __y) { 
+           const _Ht_iterator<_Val, _Const_traits<_Val>,_Key,_HF,_ExK,_EqK,_All>& __y) { 
   return __x._M_cur != __y._M_cur; 
 }
 #endif
@@ -280,8 +280,7 @@ public:
       _M_equals(__eql),
       _M_get_key(_ExK()),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,void*)),
-      _M_num_elements(_STLP_CONVERT_ALLOCATOR(__a,_Node), (size_type)0)
-  {
+      _M_num_elements(_STLP_CONVERT_ALLOCATOR(__a,_Node), (size_type)0) {
     _M_initialize_buckets(__n);
   }
 
@@ -291,21 +290,19 @@ public:
       _M_equals(__ht._M_equals),
       _M_get_key(__ht._M_get_key),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(),void*)),
-      _M_num_elements((const _M_node_allocator_type&)__ht._M_num_elements, (size_type)0)
-  {
+      _M_num_elements((const _M_node_allocator_type&)__ht._M_num_elements, (size_type)0) {
     _M_copy_from(__ht);
   }
 
-  explicit hashtable(__partial_move_source<_Self> src)
-    : _M_hash(src.get()._M_hash),
-      _M_equals(src.get()._M_equals),
-      _M_get_key(src.get()._M_get_key),
-      _M_buckets(_AsPartialMoveSource(src.get()._M_buckets)),
+  hashtable(__move_source<_Self> src)
+    : _M_hash(_AsMoveSource(src.get()._M_hash)),
+      _M_equals(_AsMoveSource(src.get()._M_equals)),
+      _M_get_key(_AsMoveSource(src.get()._M_get_key)),
+      _M_buckets(_AsMoveSource(src.get()._M_buckets)),
       _M_num_elements(src.get()._M_num_elements) {
   }
 
-  _Self& operator= (const _Self& __ht)
-  {
+  _Self& operator= (const _Self& __ht) {
     if (&__ht != this) {
       clear();
       _M_hash = __ht._M_hash;
@@ -322,8 +319,7 @@ public:
   size_type max_size() const { return size_type(-1); }
   bool empty() const { return size() == 0; }
 
-  void swap(_Self& __ht)
-  {
+  void swap(_Self& __ht) {
     _STLP_STD::swap(_M_hash, __ht._M_hash);
     _STLP_STD::swap(_M_equals, __ht._M_equals);
     _STLP_STD::swap(_M_get_key, __ht._M_get_key);
@@ -331,8 +327,7 @@ public:
     _STLP_STD::swap(_M_num_elements, __ht._M_num_elements);
   }
 
-  iterator begin()
-  { 
+  iterator begin() { 
     for (size_type __n = 0; __n < _M_buckets.size(); ++__n)
       if (_M_buckets[__n])
         return iterator((_Node*)_M_buckets[__n], this);
@@ -341,11 +336,12 @@ public:
 
   iterator end() { return iterator((_Node*)0, this); }
 
-  const_iterator begin() const
-  {
-    for (size_type __n = 0; __n < _M_buckets.size(); ++__n)
-      if (_M_buckets[__n])
+  const_iterator begin() const {
+    for (size_type __n = 0; __n < _M_buckets.size(); ++__n) {
+      if (_M_buckets[__n]) {
         return const_iterator((_Node*)_M_buckets[__n], this);
+      }
+    }
     return end();
   }
 

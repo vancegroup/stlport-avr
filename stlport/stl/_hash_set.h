@@ -44,9 +44,10 @@ template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class hash_set _STLP_STLPORT_CLASS_1
 {
-private:
-  typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>, 
+public:
+  typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>,
                     _EqualKey, _Alloc> _Ht;
+private:
   typedef hash_set<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
   typedef typename _Ht::iterator _ht_iterator;
 public:
@@ -86,8 +87,8 @@ public:
            const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
 
-  explicit hash_set(__partial_move_source<_Self> src)
-    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  hash_set(__move_source<_Self> src)
+    : _M_ht(_AsMoveSource(src.get()._M_ht)) {
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -220,9 +221,10 @@ template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class hash_multiset _STLP_STLPORT_CLASS_1
 {
-private:
-  typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>, 
+public:
+  typedef hashtable<_Value, _Value, _HashFcn, _Identity<_Value>,
                     _EqualKey, _Alloc> _Ht;
+private:
   typedef hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
 
 public:
@@ -264,8 +266,8 @@ public:
                 const allocator_type& __a)
     : _M_ht(__n, __hf, __eql, __a) {}
 
-  explicit hash_multiset(__partial_move_source<_Self> src)
-    : _M_ht(_AsPartialMoveSource(src.get()._M_ht)) {
+  hash_multiset(__move_source<_Self> src)
+    : _M_ht(_AsMoveSource(src.get()._M_ht)) {
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -401,6 +403,15 @@ public:
 // and hash_multiset.
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct __move_traits<hash_set<_Value, _HashFcn, _EqualKey, _Alloc> > :
+  __move_traits_aux<typename hash_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+{};
+
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct __move_traits<hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
+  __move_traits_aux<typename hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+{};
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 class insert_iterator<hash_set<_Value, _HashFcn, _EqualKey, _Alloc> > {

@@ -42,18 +42,15 @@ _STLP_BEGIN_NAMESPACE
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class set {
+  typedef set<_Key, _Compare, _Alloc> _Self;
 public:
 // typedefs:
   typedef _Key     key_type;
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-private:
-  typedef _Rb_tree<key_type, value_type, 
+  typedef _Rb_tree<key_type, value_type,
     _Identity<value_type>, key_compare, _Alloc> _Rep_type;
-  typedef set<_Key, _Compare, _Alloc> _Self;
-
-public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -74,7 +71,7 @@ public:
 
   set() : _M_t(_Compare(), allocator_type()) {}
   explicit set(const _Compare& __comp,
-	       const allocator_type& __a = allocator_type())
+               const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) {}
 
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -113,12 +110,8 @@ public:
 
   set(const _Self& __x) : _M_t(__x._M_t) {}
 
-  /*explicit set(__full_move_source<_Self> src)
-    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
-  }*/
-
-  explicit set(__partial_move_source<_Self> src)
-    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
+  set(__move_source<_Self> src)
+    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {
   }
 
   _Self& operator=(const _Self& __x) { 
@@ -210,10 +203,8 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-private:
   typedef _Rb_tree<key_type, value_type, 
                   _Identity<value_type>, key_compare, _Alloc> _Rep_type;
-public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -283,12 +274,8 @@ public:
     return *this;
   }
 
-  /*explicit multiset(__full_move_source<_Self> src)
-    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
-  }*/
-
-  explicit multiset(__partial_move_source<_Self> src)
-    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
+  multiset(__move_source<_Self> src)
+    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {
   }
 
   // accessors:
@@ -363,10 +350,14 @@ public:
 
 # define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Alloc>
 # define _STLP_TEMPLATE_CONTAINER set<_Key,_Compare,_Alloc>
+# define _STLP_TEMPLATE_CONTAINER_BASE typename set<_Key,_Compare,_Alloc>::_Rep_type
 # include <stl/_relops_cont.h>
+# undef  _STLP_TEMPLATE_CONTAINER_BASE
 # undef  _STLP_TEMPLATE_CONTAINER
 # define _STLP_TEMPLATE_CONTAINER multiset<_Key,_Compare,_Alloc>
+# define _STLP_TEMPLATE_CONTAINER_BASE typename multiset<_Key,_Compare,_Alloc>::_Rep_type
 # include <stl/_relops_cont.h>
+# undef  _STLP_TEMPLATE_CONTAINER_BASE
 # undef  _STLP_TEMPLATE_CONTAINER
 # undef  _STLP_TEMPLATE_HEADER
 

@@ -55,8 +55,8 @@ void stlp_type_test (__false_type const&) {
 
 template <class _Container>
 void CheckFullMoveSupport (_Container const&) {
-  typedef typename __full_move_traits<_Container>::supported BoolType;
-  stlp_type_test(BoolType());
+  typedef typename __move_traits<_Container>::complete _Complete;
+  stlp_type_test(_Complete());
 }
 
 
@@ -123,11 +123,11 @@ int move_construct_test(int, char**)
   cout << "vector<list<int>>";
   standard_test1(list<int>(10));
 
-  cout << "full move string support: ";CheckFullMoveSupport(string());
-  cout << "full move vector<int> support: ";CheckFullMoveSupport(vector<int>());
-  cout << "full move deque<int> support: ";CheckFullMoveSupport(deque<int>());
-  cout << "full move list<int> support: ";CheckFullMoveSupport(list<int>());
-  cout << "full move slist<int> support: ";CheckFullMoveSupport(slist<int>());
+  cout << "complete move string support: ";CheckFullMoveSupport(string());
+  cout << "complete move vector<int> support: ";CheckFullMoveSupport(vector<int>());
+  cout << "complete move deque<int> support: ";CheckFullMoveSupport(deque<int>());
+  cout << "complete move list<int> support: ";CheckFullMoveSupport(list<int>());
+  cout << "complete move slist<int> support: ";CheckFullMoveSupport(slist<int>());
 /*
   cout << "vector<slist<int>>";
   standard_test1(slist<int>(10));

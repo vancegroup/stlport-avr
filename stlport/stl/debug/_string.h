@@ -104,26 +104,21 @@ public:
     _STLP_DBG_STRING_BASE(__s, __pos, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __s, size_type __n,
-		 		     const allocator_type& __a = allocator_type()):
+               const allocator_type& __a = allocator_type()):
     _STLP_DBG_STRING_BASE(__s, __n, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(const _CharT* __s,
-		 		     const allocator_type& __a = allocator_type()):
+               const allocator_type& __a = allocator_type()):
     _STLP_DBG_STRING_BASE(__s, __a), _M_iter_list(_Get_base()) {}
 
   basic_string(size_type __n, _CharT __c,
-		 		     const allocator_type& __a = allocator_type()):
+               const allocator_type& __a = allocator_type()):
     _STLP_DBG_STRING_BASE(__n, __c, __a), _M_iter_list(_Get_base()) {}
 
-  explicit basic_string(__partial_move_source<_Self> src):
-    _STLP_DBG_STRING_BASE(_AsPartialMoveSource<_STLP_DBG_STRING_BASE >(src.get())), _M_iter_list(_Get_base()) {
+  basic_string(__move_source<_Self> src):
+    _STLP_DBG_STRING_BASE(_AsMoveSource<_Base >(src.get())), _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }
-
-  /*explicit basic_string(__full_move_source<_Self> src):
-    _STLP_DBG_STRING_BASE(_FullMoveSource<_STLP_DBG_STRING_BASE >(src.get())), _M_iter_list(_Get_base()) {
-    src.get()._Invalidate_all();
-  }*/
 
 #if defined (_STLP_MEMBER_TEMPLATES) && !(defined(__MRC__)||defined(__SC__))
   template <class _InputIterator>
@@ -851,21 +846,14 @@ inline void swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _CharT, class _Traits, class _Alloc>
-struct __partial_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type implemented;
-};
+struct __move_traits<basic_string<_CharT,_Traits,_Alloc> > :
+  __move_traits_help<_STLP_DBG_STRING_BASE >
+{};
 
 template <class _CharT, class _Traits, class _Alloc>
 struct __action_on_move<basic_string<_CharT,_Traits,_Alloc> > {
   typedef __true_type swap;
 };
-
-/*
-template <class _CharT, class _Traits, class _Alloc>
-struct __full_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type supported;
-};
-*/
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 // I/O.  
@@ -903,6 +891,7 @@ istream& _STLP_CALL operator>>(istream& __is, basic_string<_CharT,_Traits,_Alloc
 #endif /* _STLP_USE_NEW_IOSTREAMS */
 #endif /* if _STLP_EXTRA_OPERATORS_FOR_DEBUG */
 
+#undef _STLP_DBG_STRING_BASE
 
 _STLP_END_NAMESPACE
 

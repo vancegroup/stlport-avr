@@ -150,15 +150,10 @@ public:                         // Constructor, destructor.
     _STLP_DEQUE_SUPER(__n), _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  explicit _DBG_deque(__partial_move_source<_Self> src)
-    : _STLP_DEQUE_SUPER(_AsPartialMoveSource<_STLP_DEQUE_SUPER >(src.get())), _M_iter_list(_Get_base()) {
+  _DBG_deque(__move_source<_Self> src)
+    : _STLP_DEQUE_SUPER(_AsMoveSource<_STLP_DEQUE_SUPER >(src.get())), _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }
-
-  /*explicit _DBG_deque(__full_move_source<_Self> src)
-    : _STLP_DEQUE_SUPER(_FullMoveSource<_STLP_DEQUE_SUPER >(src.get())), _M_iter_list(_Get_base()) {
-    src.get()._Invalidate_all();
-  }*/
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>

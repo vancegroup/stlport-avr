@@ -172,8 +172,8 @@ inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 template <class _ForwardIterator, class _Tp>
 _STLP_INLINE_LOOP void
 __destroy_mv_srcs_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const __false_type& /*_Trivial_destructor*/) {
-  typedef typename __full_move_traits<_Tp>::supported _Full_move;
-  __destroy_range_aux(__first, __last, _Full_move());
+  typedef typename __move_traits<_Tp>::complete _Complete_move;
+  __destroy_range_aux(__first, __last, _Complete_move());
 }
 
 template <class _ForwardIterator, class _Tp> 

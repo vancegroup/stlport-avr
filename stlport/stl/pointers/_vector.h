@@ -58,7 +58,7 @@ protected:
   typedef __true_type _IsPODType;
 
   void _M_insert_overflow(pointer __position, void* __x,
-			                    size_type __fill_len, bool __atend = false) {
+                          size_type __fill_len, bool __atend = false) {
     const size_type __old_size = size();
     const size_type __len = __old_size + (max)(__old_size, __fill_len);
 
@@ -135,16 +135,8 @@ public:
     this->_M_finish = reinterpret_cast<void**>(__ucopy_trivial(__x._M_start, __x._M_finish, this->_M_start));
   }
 
-  /*explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<void*, _Alloc>(_FullMoveSource<_Vector_base<void*, _Alloc> >(src.get())) {
-  }*/
-
-  explicit vector(__partial_move_source<_Self> src)
-    : _Vector_base<void*, _Alloc>(_AsPartialMoveSource<_Vector_base<void*, _Alloc> >(src.get())) {
-	  //Set the source destroyable:
-	  src.get()._M_start = 0;
-	  //This one is usefull for the hashtable Move_Constructor:
-	  src.get()._M_finish = 0;
+  vector(__move_source<_Self> src)
+    : _Vector_base<void*, _Alloc>(__move_source<_Base>(src.get())) {
   }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
@@ -564,12 +556,8 @@ public:
   vector(const _Self& __x) 
     : _M_container(__x._M_container) {}
 
-  /*explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<value_type, _Alloc>(_FullMoveSource<_Vector_base<value_type, _Alloc> >(src.get())) {
-  }*/
-  
-  explicit vector(__partial_move_source<_Self> src)
-    : _M_container(__partial_move_source<_Base>(src.get()._M_container)) {}
+  explicit vector(__move_source<_Self> src)
+    : _M_container(__move_source<_Base>(src.get()._M_container)) {}
   
 #if defined (_STLP_MEMBER_TEMPLATES)
 

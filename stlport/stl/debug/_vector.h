@@ -178,16 +178,10 @@ public:
   _DBG_vector(const _Self& __x) 
     : _CheckRange(__x), _STLP_DBG_VECTOR_BASE(__x), _M_iter_list(_Get_base()) {}
 
-  explicit _DBG_vector(__partial_move_source<_Self> src)
-    : _STLP_DBG_VECTOR_BASE(_AsPartialMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())),
-      _M_iter_list(_Get_base()) {
+  _DBG_vector(__move_source<_Self> src)
+    : _STLP_DBG_VECTOR_BASE(_AsMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())), _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }
-
-  /*explicit _DBG_vector(__full_move_source<_Self> src)
-    : _STLP_DBG_VECTOR_BASE(_FullMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())), _M_iter_list(_Get_base()) {
-    src.get()._Invalidate_all();
-  }*/
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>

@@ -1,3 +1,8 @@
+2004-02-18  Francois Dumont <dums@s...>
+
+  * _list.h: Modification of the base list class based on the slist implementation.
+    The list do not allocate a node systematically anymore even for the empty list.
+
 2004-02-14  Petr Ovchenkov  <ptr@Island...>
 
 	* debug/_relops_cont.h, debug/_string.h: fix typos in template specializations.
@@ -6,7 +11,6 @@
 
 	* explore/icc.mak: experimental make system support Intel's icc compiler
 	on Linux.
-
 
 2004-02-05  Petr Ovchenkov  <ptr@Island...>
 

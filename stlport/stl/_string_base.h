@@ -125,24 +125,14 @@ protected:
     }
 #endif
 
-  _String_base(__partial_move_source<_Self> src)
+  _String_base(__move_source<_Self> src)
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
-    : _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
+    : _M_end_of_storage(_AsMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
       _M_move_src(src.get());
 #else
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
+      _M_end_of_storage(_AsMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
       src.get()._M_start = 0;
-#endif
-    }
-
-  _String_base(__full_move_source<_Self> src)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-    : _M_end_of_storage(_AsFullMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
-      _M_move_src(src.get());
-#else
-    : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsFullMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
 #endif
     }
 
@@ -230,16 +220,9 @@ _STLP_EXPORT_TEMPLATE_CLASS _String_base<wchar_t, allocator<wchar_t> >;
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _CharT, class _Alloc>
-struct __partial_move_traits<_String_base<_CharT,_Alloc> > {
-  typedef __true_type implemented;
-};
-
-template <class _CharT, class _Alloc>
-struct __full_move_traits<_String_base<_CharT,_Alloc> > {
-  typedef typename _String_base<_CharT,_Alloc>::_AllocProxy _Proxy;
-  typedef typename __full_move_traits<_Proxy>::supported supported;
-  typedef typename __full_move_traits<_Proxy>::implemented implemented;
-};
+struct __move_traits<_String_base<_CharT,_Alloc> > :
+  __move_traits_help<typename _String_base<_CharT,_Alloc>::_AllocProxy>
+{};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 

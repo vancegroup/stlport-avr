@@ -76,31 +76,25 @@ public:
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, 0) {
   }
   _Vector_base(size_t __n, const _Alloc& __a)
-    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, 0)
-  {
+    : _M_start(0), _M_finish(0), _M_end_of_storage(__a, 0) {
     _M_start = _M_end_of_storage.allocate(__n);
     _M_finish = _M_start;
     _M_end_of_storage._M_data = _M_start + __n;
     _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
   }
 
-  _Vector_base(__partial_move_source<_Self> src)
+  _Vector_base(__move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
-    //Set the source destroyable:
+      _M_end_of_storage(_AsMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
+    //Set the source as empty:
     src.get()._M_start = 0;
     src.get()._M_finish = 0;
-  }
-
-  _Vector_base(__full_move_source<_Self> src)
-    : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
-      _M_end_of_storage(_AsPartialMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
-    //Won't be destroyed
+    src.get()._M_end_of_storage._M_data = 0;
   }
 
   ~_Vector_base() { 
     if (_M_start != 0) 
-    _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
   }
 
 protected:
@@ -246,19 +240,14 @@ public:
 
   vector(const _Self& __x) 
     : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
-    this->_M_finish = __uninitialized_copy(__CONST_CAST(const_iterator, __x._M_start), 
-                                           __CONST_CAST(const_iterator, __x._M_finish), 
+    this->_M_finish = __uninitialized_copy(__x.begin(), __x.end(),
                                            this->_M_start, _IsPODType());
   }
 
-  explicit vector(__partial_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
+  vector(__move_source<_Self> src)
+    : _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {
   }
 
-  explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
-  }
-  
 #if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
@@ -609,31 +598,22 @@ protected:
 #  include <stl/pointers/_vector.h>
 # endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
-# define _STLP_TEMPLATE_CONTAINER vector<_Tp, _Alloc>
 # define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
+# define _STLP_TEMPLATE_CONTAINER vector<_Tp, _Alloc>
 # include <stl/_relops_cont.h>
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp, class _Alloc>
-struct __partial_move_traits<_Vector_base<_Tp, _Alloc> > {
-  typedef __true_type implemented;
-};
+struct __move_traits<_Vector_base<_Tp, _Alloc> > :
+  __move_traits_help<typename _Vector_base<_Tp, _Alloc>::_AllocProxy>
+{};
 
 template <class _Tp, class _Alloc>
-struct __full_move_traits<_Vector_base<_Tp, _Alloc> > {
-  typedef typename _Vector_base<_Tp, _Alloc>::_AllocProxy _AllocProxy;
-  typedef typename __full_move_traits<_AllocProxy>::supported supported;
-  typedef typename __full_move_traits<_AllocProxy>::implemented implemented;
-};
-
-template <class _Tp, class _Alloc>
-struct __full_move_traits<vector<_Tp, _Alloc> > {
-  typedef _Vector_base<_Tp, _Alloc> _Base;
-  typedef typename __full_move_traits<_Base>::supported supported;
-  typedef typename __full_move_traits<_Base>::implemented implemented;
-};
+struct __move_traits<vector<_Tp, _Alloc> > :
+  __move_traits_aux<_Vector_base<_Tp, _Alloc> >
+{};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 

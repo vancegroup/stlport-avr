@@ -32,86 +32,34 @@ _STLP_BEGIN_NAMESPACE
  *The source HAS to be a valid instance after the move!
  *************************************************************/
 template <class _Tp>
-class __partial_move_source {
-  _Tp &_data;
+class __move_source {
+  _Tp &_M_data;
 public:
-  explicit __partial_move_source (_Tp &_src) : _data(_src)
+  explicit __move_source (_Tp &_src) : _M_data(_src)
   {};
 
   _Tp& get() const
-  {return _data;}
+  {return _M_data;}
 };
 
-//Class used to signal partial move constructor implementation.
+//Class used to signal move constructor support, implementation and type.
 template <class _Tp>
-struct __partial_move_traits {
+struct __move_traits {
+  /*
+   * implemented tells if a the special move constructor has to be called or the classic
+   * copy constructor is just fine. Most of the time the copy constructor is fine only
+   * if the following info is true.
+   */
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
   typedef typename _IsStlportClass<_Tp>::_Ret implemented;
 #else
-  //By default not implemented:
   typedef __false_type implemented;
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
-};
-
-template <class _Tp>
-struct _PartialMoveSourceTraits {
-  typedef typename __partial_move_traits<_Tp>::implemented _PartialMvImplRet;
-  enum {_PartialMvImpl = __type2bool<_PartialMvImplRet>::_Ret};
-  typedef typename __select<_PartialMvImpl,
-                            __partial_move_source<_Tp>,
-                            _Tp const&>::_Ret _Type;
-};
-
-//The helper function
-template <class _Tp>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _PartialMoveSourceTraits<_Tp>::_Type
-_AsPartialMoveSource (_Tp &src) {
-  typedef typename _PartialMoveSourceTraits<_Tp>::_Type _SrcType;
-  return _SrcType(src);
-};
-
-/*************************************************************
- *Full move:
- *The source do not required to be destroyable after the move
- * but it HAS to release all the managed ressources as the
- * destructor won't be called.
- *************************************************************/
-template <class _Tp>
-class __full_move_source {
-  _Tp &_data;
-public:
-  explicit __full_move_source (_Tp &_src) : _data(_src)
-  {};
-
-  _Tp& get() const
-  {return _data;}
-};
-
-/*
- * A little class to report trouble in terms of compile error:
- * If the compiler complains that you lack a construstor from a
- * __invalid_source<_Tp> type it means that the move constructor
- * framework for _Tp is misconfigured.
- */
-template <class _Tp>
-class __invalid_source {
-public:
-  explicit __invalid_source (_Tp &_src) {};
-};
-
-/*
- *Class used to signal full move support.
- * supported means that the object is conform to the full move concept
- * implemented means that a special full_move constructor has been implemented
- *             for this purpose.
- */
-template <class _Tp>
-struct __full_move_traits {
   /*
-   * By default POD types do support it without implementing it.
+   * complete tells if the move is complete or partial, that is to say, does the source
+   * needs to be destroyed once it has been moved.
    */
-  typedef typename __type_traits<_Tp>::is_POD_type supported;
-  typedef __false_type implemented;
+  typedef typename __type_traits<_Tp>::has_trivial_destructor complete;
 };
 
 /*
@@ -121,58 +69,64 @@ struct __full_move_traits {
  * revealing the configuration problem.
  */
 template <class _Tp>
-struct _FullMoveSourceTraits {
-  typedef typename __full_move_traits<_Tp>::implemented _FullMvImpRet;
-  enum {_FullMvImp = __type2bool<_FullMvImpRet>::_Ret};
-  typedef typename __select<_FullMvImp,
-                            __full_move_source<_Tp>,
-                            _Tp const&>::_Ret _AuxType;
-  typedef typename __full_move_traits<_Tp>::supported _FullMvSupRet;
-  enum {_FullMvSup = __type2bool<_FullMvSupRet>::_Ret};
-  typedef typename __select<_FullMvSup,
-                            _AuxType,
-                            __invalid_source<_Tp> >::_Ret _Type;
+struct _MoveSourceTraits {
+  typedef typename __move_traits<_Tp>::implemented _MvImpRet;
+  enum {_MvImp = __type2bool<_MvImpRet>::_Ret};
+  typedef typename __select<_MvImp,
+                            __move_source<_Tp>,
+                            _Tp const&>::_Ret _Type;
 };
 
 //The helper function
 template <class _Tp>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _FullMoveSourceTraits<_Tp>::_Type
-_AsFullMoveSource (_Tp &src) {
-  typedef typename _FullMoveSourceTraits<_Tp>::_Type _SrcType;
+inline _STLP_TYPENAME_ON_RETURN_TYPE _MoveSourceTraits<_Tp>::_Type
+_AsMoveSource (_Tp &src) {
+  typedef typename _MoveSourceTraits<_Tp>::_Type _SrcType;
   return _SrcType(src);
 };
 
-template <class _Tp>
-struct _MoveConstructImplemented {
-  typedef typename __partial_move_traits<_Tp>::implemented _PartialImpl;
-  typedef typename __full_move_traits<_Tp>::implemented _FullImpl;
-
-  typedef typename _Lor2<_PartialImpl, _FullImpl>::_Ret _Ret;
-  static _Ret _Answer() {return _Ret();}
+struct __move_traits_POD {
+  typedef __false_type implemented;
+  typedef __true_type complete;
 };
 
-template<class _Tp>
-_MoveConstructImplemented<_Tp> _IsMoveConstructImplemented (_Tp const* pt)
-{return _MoveConstructImplemented<_Tp>();}
-
+//Helper structs used for many class.
 template <class _Tp>
-struct _MoveSourceTraits {
-  typedef typename _PartialMoveSourceTraits<_Tp>::_Type _PartialSrcType;
-  typedef typename _FullMoveSourceTraits<_Tp>::_Type _FullSrcType;
-  typedef typename __full_move_traits<_Tp>::supported _FullMvSupRet;
-  enum {_FullMvSup = __type2bool<_FullMvSupRet>::_Ret};
-  //The full move is prefered to the partial:
-  typedef typename __select<_FullMvSup,
-                            _FullSrcType,
-                            _PartialSrcType>::_Ret _Type;
+struct __move_traits_aux {
+  typedef typename __move_traits<_Tp>::implemented implemented;
+  typedef typename __move_traits<_Tp>::complete complete;
 };
 
+template <class _Tp1, class _Tp2>
+struct __move_traits_aux2 {
+  typedef __move_traits<_Tp1> _MoveTraits1;
+  typedef __move_traits<_Tp2> _MoveTraits2;
+
+  typedef typename _Lor2<typename _MoveTraits1::implemented,
+                         typename _MoveTraits2::implemented>::_Ret implemented;
+  typedef typename _Land2<typename _MoveTraits1::complete,
+                          typename _MoveTraits2::complete>::_Ret complete;
+};
+
+/*
+ * Most of the time a class implement a move constructor but its use depends
+ * on a third party, this is what the following struct is for.
+ */
 template <class _Tp>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _MoveSourceTraits<_Tp>::_Type 
-_AsMoveSource(_Tp &src) {
-  typedef typename _MoveSourceTraits<_Tp>::_Type _MvSrcType;
-  return _MvSrcType(src);
-}
+struct __move_traits_help {
+  typedef __true_type implemented;
+  typedef typename __move_traits<_Tp>::complete complete;
+};
+
+template <class _Tp1, class _Tp2>
+struct __move_traits_help2 {
+  typedef __move_traits<_Tp1> _MoveTraits1;
+  typedef __move_traits<_Tp2> _MoveTraits2;
+
+  typedef __true_type implemented;
+  typedef typename _Land2<typename _MoveTraits1::complete,
+                          typename _MoveTraits2::complete>::_Ret complete;
+};
 
 _STLP_END_NAMESPACE
 

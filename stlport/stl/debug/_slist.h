@@ -106,15 +106,11 @@ public:
   explicit _DBG_slist(size_type __n) : _STLP_DBG_SLIST_BASE(__n) , _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  explicit _DBG_slist(__partial_move_source<_Self> src)
-    : _STLP_DBG_SLIST_BASE(_AsPartialMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , 
-      _M_iter_list(_Get_base()) {}
+  _DBG_slist(__move_source<_Self> src)
+    : _STLP_DBG_SLIST_BASE(_AsMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , _M_iter_list(_Get_base()) {
+    _Invalidate_all();
+  }
   
-  /*explicit _DBG_slist(__full_move_source<_Self> src)
-     : _STLP_DBG_SLIST_BASE(_FullMoveSource<_STLP_DBG_SLIST_BASE >(src.get())) , _M_iter_list(_Get_base()) {
-    src.get()._Invalidate_all();
-  }*/
-
 #ifdef _STLP_MEMBER_TEMPLATES
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.

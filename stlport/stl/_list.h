@@ -63,9 +63,9 @@ struct _List_node_base {
 template <class _Dummy>
 class _List_global {
 public:
-  typedef _List_node_base _Node;
-  static void  _STLP_CALL _Transfer(_List_node_base* __position,
-                                    _List_node_base* __first, _List_node_base* __last);
+  typedef _List_node_base _Node_base;
+  static void  _STLP_CALL _Transfer(_Node_base* __position,
+                                    _Node_base* __first, _Node_base* __last);
 };
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -166,34 +166,46 @@ class _List_base
 {
 protected:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
+  typedef _List_node_base _Node_base;
   typedef _List_node<_Tp> _Node;
-  typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type
-           _Node_allocator_type;
+  typedef _List_base<_Tp, _Alloc> _Self;
+  typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _Node_allocator_type;
 public:
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type
-          allocator_type;
+  typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
+  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 
   allocator_type get_allocator() const {
     return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp);
   }
 
-  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), __STATIC_CAST(_Node*, 0)) {
-    _Node* __n = _M_node.allocate(1);
-    __n->_M_next = __n;
-    __n->_M_prev = __n;
-    _M_node._M_data = __n;
+  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base() ) {
+    _M_empty_initialize();
   }
-  ~_List_base() {
-    if (_M_node._M_data != 0) {
-      clear();
-      _M_node.deallocate(_M_node._M_data, 1);
+  _List_base(__move_source<_Self> src) :
+    _M_node(_AsMoveSource<_AllocProxy>(src.get()._M_node)) {
+    if (src.get().empty())
+      //We force this to empty.
+      _M_empty_initialize();
+    else {
+      src.get()._M_empty_initialize();
+      _M_node._M_data._M_prev->_M_next = &_M_node._M_data;
     }
+  }
+    
+  ~_List_base() {
+    clear();
   }
 
   void clear();
+  bool empty() const { return _M_node._M_data._M_next == &_M_node._M_data; }
+
+  void _M_empty_initialize() {
+    _M_node._M_data._M_next = &_M_node._M_data;
+    _M_node._M_data._M_prev = _M_node._M_data._M_next;
+  }
 
 public:
-  _STLP_alloc_proxy<_Node*, _Node, _Node_allocator_type>  _M_node;
+  _AllocProxy _M_node;
 };
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
@@ -218,13 +230,14 @@ class list : public _List_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
 {
   typedef _List_base<_Tp, _Alloc> _Base;
   typedef list<_Tp, _Alloc> _Self;
+  typedef _List_node<_Tp> _Node;
+  typedef _List_node_base _Node_base;
 public:      
   typedef _Tp value_type;
   typedef value_type* pointer;
   typedef const value_type* const_pointer;
   typedef value_type& reference;
   typedef const value_type& const_reference;
-  typedef _List_node<_Tp> _Node;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
@@ -238,9 +251,9 @@ public:
 
 protected:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node* _M_create_node(const _Tp& __x = _Tp())
+  _Node_base* _M_create_node(const _Tp& __x = _Tp())
 #else
-  _Node* _M_create_node(const _Tp& __x)
+  _Node_base* _M_create_node(const _Tp& __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
   {
     _Node* __p = this->_M_node.allocate(1);
@@ -252,7 +265,7 @@ protected:
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  _Node* _M_create_node()
+  _Node_base* _M_create_node()
   {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
@@ -270,11 +283,11 @@ public:
   list(const allocator_type& __a = allocator_type()) :
     _List_base<_Tp, _Alloc>(__a) {}
 
-  iterator begin()                      { return iterator(this->_M_node._M_data->_M_next); }
-  const_iterator begin() const          { return const_iterator(this->_M_node._M_data->_M_next); }
+  iterator begin()                      { return iterator(this->_M_node._M_data._M_next); }
+  const_iterator begin() const          { return const_iterator(this->_M_node._M_data._M_next); }
 
-  iterator end()                        { return this->_M_node._M_data; }
-  const_iterator end() const            { return this->_M_node._M_data; }
+  iterator end()                        { return iterator(&this->_M_node._M_data); }
+  const_iterator end() const            { return const_iterator(__CONST_CAST(_Node_base*, &this->_M_node._M_data)); }
 
   reverse_iterator rbegin()             { return reverse_iterator(end()); }
   const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
@@ -282,7 +295,6 @@ public:
   reverse_iterator rend()               { return reverse_iterator(begin()); }
   const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
-  bool empty() const { return this->_M_node._M_data->_M_next == this->_M_node._M_data; }
   size_type size() const {
     size_type __result = distance(begin(), end());
     return __result;
@@ -295,7 +307,15 @@ public:
   const_reference back() const  { return *(--end()); }
 
   void swap(list<_Tp, _Alloc>& __x) {
-    _STLP_STD::swap(this->_M_node, __x._M_node); 
+    if (__x.empty()) {
+      __x.splice(__x.begin(), *this);
+    }
+    else if (this->empty()) {
+      this->splice(this->begin(), __x);
+    } else {
+      _STLP_STD::swap(this->_M_node, __x._M_node);
+      _STLP_STD::swap(this->_M_node._M_data._M_prev->_M_next, __x._M_node._M_data._M_prev->_M_next);
+    }
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -303,9 +323,9 @@ public:
 #else
   iterator insert(iterator __position, const _Tp& __x) {
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-    _Node* __tmp = _M_create_node(__x);
-    _List_node_base* __n = __position._M_node;
-    _List_node_base* __p = __n->_M_prev;
+    _Node_base* __tmp = _M_create_node(__x);
+    _Node_base* __n = __position._M_node;
+    _Node_base* __p = __n->_M_prev;
     __tmp->_M_next = __n;
     __tmp->_M_prev = __p;
     __p->_M_next = __tmp;
@@ -356,8 +376,8 @@ public:
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   iterator erase(iterator __position) {
-    _List_node_base* __next_node = __position._M_node->_M_next;
-    _List_node_base* __prev_node = __position._M_node->_M_prev;
+    _Node_base* __next_node = __position._M_node->_M_next;
+    _Node_base* __prev_node = __position._M_node->_M_prev;
     _Node* __n = __STATIC_CAST(_Node*, __position._M_node);
     __prev_node->_M_next = __next_node;
     __next_node->_M_prev = __prev_node;
@@ -429,13 +449,8 @@ public:
   list(const list<_Tp, _Alloc>& __x) : _List_base<_Tp, _Alloc>(__x.get_allocator())
     { insert(begin(), __x.begin(), __x.end()); }
 
-  /*explicit list(__full_move_source<_Self> src)
-	  : _List_base<_Tp, _Alloc>(_FullMoveSource<_List_base<_Tp, _Alloc> >(src.get())) {
-  }*/
-
-  explicit list(__partial_move_source<_Self> src)
-	  : _List_base<_Tp, _Alloc>(src.get()) {
-	  src.get()._M_node._M_data = 0;
+  list(__move_source<_Self> src)
+    : _List_base<_Tp, _Alloc>(_AsMoveSource<_Base>(src.get())) {
   }
 
   ~list() { }
@@ -517,8 +532,8 @@ public:
   }
 
   void reverse() {
-    _List_node_base* __p = this->_M_node._M_data;
-    _List_node_base* __tmp = __p;
+    _Node_base* __p = &this->_M_node._M_data;
+    _Node_base* __tmp = __p;
     do {
       _STLP_STD::swap(__tmp->_M_next, __tmp->_M_prev);
       __tmp = __tmp->_M_prev;     // Old next node is now prev.
@@ -540,7 +555,7 @@ public:
 
   template <class _StrictWeakOrdering>
     void merge(list<_Tp, _Alloc>& __x,
-	  _StrictWeakOrdering __comp) {
+    _StrictWeakOrdering __comp) {
     _S_merge(*this, __x, __comp);
   }
 
@@ -582,6 +597,21 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y)
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
 # undef _STLP_EQUAL_OPERATOR_SPECIALIZED
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <>
+struct __move_traits<_List_node_base> : __move_traits_POD
+{};
+template <class _Tp, class _Alloc>
+struct __move_traits<_List_base<_Tp, _Alloc> > :
+  __move_traits_help<typename _List_base<_Tp, _Alloc>::_AllocProxy>
+{};
+
+template <class _Tp, class _Alloc>
+struct __move_traits<list<_Tp, _Alloc> > :
+  __move_traits_aux<_List_base<_Tp, _Alloc> >
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

@@ -220,12 +220,8 @@ public:                         // Constructor, destructor, assignment.
     _M_terminate_string();
   }
 
-  explicit basic_string(__partial_move_source<_Self> src)
-    : _String_base<_CharT,_Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
-  }
-
-  explicit basic_string(__full_move_source<_Self> src)
-    : _String_base<_CharT, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
+  basic_string(__move_source<_Self> src)
+    : _String_base<_CharT, _Alloc>(__move_source<_Base>(src.get())) {
   }
   
   // Check to see if _InputIterator is an integer type.  If so, then
@@ -1289,26 +1285,19 @@ swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _CharT, class _Traits, class _Alloc>
-struct __partial_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef __true_type implemented;
-};
-
-template <class _CharT, class _Traits, class _Alloc>
 struct __action_on_move<basic_string<_CharT,_Traits,_Alloc> > {
   typedef __true_type swap;
 };
 
 template <class _CharT, class _Traits, class _Alloc>
-struct __full_move_traits<basic_string<_CharT,_Traits,_Alloc> > {
-  typedef typename __full_move_traits<_String_base<_CharT, _Alloc> >::supported supported;
-  typedef __true_type implemented;
-};
+struct __move_traits<basic_string<_CharT,_Traits,_Alloc> > :
+  __move_traits_aux<_String_base<_CharT, _Alloc> >
+{};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 template <class _CharT, class _Traits, class _Alloc> 
 void  _STLP_CALL _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,
-                    _CharT* __buf,
-                    size_t __n);
+                                _CharT* __buf, size_t __n);
 
 #if defined(_STLP_WINCE) || defined(_STLP_WCE_NET)
 // A couple of functions to transfer between ASCII/Unicode

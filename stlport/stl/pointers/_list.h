@@ -74,11 +74,11 @@ public:
   list(const allocator_type& __a = allocator_type()) :
     _List_base<void*, _Alloc>(__a) {}
 
-  iterator begin()                      { return iterator(this->_M_node._M_data->_M_next); }
-  const_iterator begin() const          { return const_iterator(this->_M_node._M_data->_M_next); }
+  iterator begin()                      { return iterator(this->_M_node._M_data._M_next); }
+  const_iterator begin() const          { return const_iterator(this->_M_node._M_data._M_next); }
 
-  iterator end()                        { return this->_M_node._M_data; }
-  const_iterator end() const            { return this->_M_node._M_data; }
+  iterator end()                        { return iterator(&this->_M_node._M_data); }
+  const_iterator end() const            { return const_iterator(__CONST_CAST(_List_node_base*, &this->_M_node._M_data)); }
 
   reverse_iterator rbegin()             { return reverse_iterator(end()); }
   const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
@@ -86,7 +86,7 @@ public:
   reverse_iterator rend()               { return reverse_iterator(begin()); }
   const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
-  bool empty() const { return this->_M_node._M_data->_M_next == this->_M_node._M_data; }
+  bool empty() const { return this->_M_node._M_data._M_next == &this->_M_node._M_data; }
   size_type size() const {
     size_type __result = distance(begin(), end());
     return __result;
@@ -232,13 +232,8 @@ public:
   list(const _Self& __x) : _List_base<void*, _Alloc>(__x.get_allocator())
     { insert(begin(), __x.begin(), __x.end()); }
 
-  /*explicit list(__full_move_source<_Self> src)
-	  : _List_base<void*, _Alloc>(_FullMoveSource<_List_base<void*, _Alloc> >(src.get())) {
-  }*/
-
-  explicit list(__partial_move_source<_Self> src)
-    : _List_base<void*, _Alloc>(src.get()) {
-    src.get()._M_node._M_data = 0;
+  list(__move_source<_Self> src)
+    : _List_base<void*, _Alloc>(_AsMoveSource<_Base>(src.get())) {
   }
 
   ~list() { }
@@ -318,7 +313,7 @@ public:
   }
 
   void reverse() {
-    _List_node_base* __p = this->_M_node._M_data;
+    _List_node_base* __p = &this->_M_node._M_data;
     _List_node_base* __tmp = __p;
     do {
       _STLP_STD::swap(__tmp->_M_next, __tmp->_M_prev);
@@ -437,12 +432,8 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
   list(const _Self& __x) : _M_container(__x._M_container) {}
 
-  /*explicit list(__full_move_source<_Self> src)
-	  : _List_base<void*, _Alloc>(_FullMoveSource<_List_base<void*, _Alloc> >(src.get())) {
-  }*/
-
-  explicit list(__partial_move_source<_Self> src)
-	  : _M_container(__partial_move_source<_Base>(src.get()._M_container)) {}
+  list(__move_source<_Self> src)
+    : _M_container(_AsMoveSource<_Base>(src.get()._M_container)) {}
 
   ~list() { }
 

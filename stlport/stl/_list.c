@@ -44,17 +44,17 @@ _STLP_BEGIN_NAMESPACE
 template <class _Dummy>
 void _STLP_CALL
 _List_global<_Dummy>::_Transfer(_List_node_base* __position, 
-				_List_node_base* __first, _List_node_base* __last) {
+                                _List_node_base* __first, _List_node_base* __last) {
   if (__position != __last) {
     // Remove [first, last) from its old position.
-    ((_Node*) (__last->_M_prev))->_M_next = __position;
-    ((_Node*) (__first->_M_prev))->_M_next    = __last;
-    ((_Node*) (__position->_M_prev))->_M_next = __first; 
+    __last->_M_prev->_M_next     = __position;
+    __first->_M_prev->_M_next    = __last;
+    __position->_M_prev->_M_next = __first; 
     
     // Splice [first, last) into its new position.
-    _Node* __tmp = (_Node*) (__position->_M_prev);
+    _Node_base* __tmp = __position->_M_prev;
     __position->_M_prev = __last->_M_prev;
-    __last->_M_prev      = __first->_M_prev; 
+    __last->_M_prev     = __first->_M_prev; 
     __first->_M_prev    = __tmp;
   }
 }
@@ -63,18 +63,16 @@ _List_global<_Dummy>::_Transfer(_List_node_base* __position,
 
 
 template <class _Tp, class _Alloc>
-void 
-_List_base<_Tp,_Alloc>::clear() 
-{
-  _List_node<_Tp>* __cur = (_List_node<_Tp>*) this->_M_node._M_data->_M_next;
-  while (__cur != this->_M_node._M_data) {
-    _List_node<_Tp>* __tmp = __cur;
-    __cur = (_List_node<_Tp>*) __cur->_M_next;
+void _List_base<_Tp,_Alloc>::clear() {
+  _Node* __cur = __STATIC_CAST(_Node*, _M_node._M_data._M_next);
+  while (__cur != &(_M_node._M_data)) {
+    _Node* __tmp = __cur;
+    __cur = __STATIC_CAST(_Node*, __cur->_M_next);
     _STLP_STD::_Destroy(&__tmp->_M_data);
     this->_M_node.deallocate(__tmp, 1);
   }
-  this->_M_node._M_data->_M_next = this->_M_node._M_data;
-  this->_M_node._M_data->_M_prev = this->_M_node._M_data;
+  _M_node._M_data._M_next = &_M_node._M_data;
+  _M_node._M_data._M_prev = &_M_node._M_data;
 }
 
 # if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
@@ -82,21 +80,19 @@ _List_base<_Tp,_Alloc>::clear()
 # endif
 
 template <class _Tp, class _Alloc>
-void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x)
-{
+void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x) {
   iterator __i = begin();
   size_type __len = 0;
   for ( ; __i != end() && __len < __new_size; ++__i, ++__len);
 
   if (__len == __new_size)
     erase(__i, end());
-  else                          // __i == end()
+  else // __i == end()
     insert(end(), __new_size - __len, __x);
 }
 
 template <class _Tp, class _Alloc>
-list<_Tp, _Alloc>& list<_Tp, _Alloc>::operator=(const list<_Tp, _Alloc>& __x)
-{
+list<_Tp, _Alloc>& list<_Tp, _Alloc>::operator=(const list<_Tp, _Alloc>& __x) {
   if (this != &__x) {
     iterator __first1 = begin();
     iterator __last1 = end();
@@ -125,10 +121,11 @@ void list<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
 
 template <class _Tp, class _Alloc, class _Predicate> 
 void _S_remove_if(list<_Tp, _Alloc>& __that, _Predicate __pred)  {
-  typename list<_Tp, _Alloc>::iterator __first = __that.begin();
-  typename list<_Tp, _Alloc>::iterator __last = __that.end();
+  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+  _Literator __first = __that.begin();
+  _Literator __last = __that.end();
   while (__first != __last) {
-    typename list<_Tp, _Alloc>::iterator __next = __first;
+    _Literator __next = __first;
     ++__next;
     if (__pred(*__first)) __that.erase(__first);
     __first = __next;
@@ -137,10 +134,11 @@ void _S_remove_if(list<_Tp, _Alloc>& __that, _Predicate __pred)  {
 
 template <class _Tp, class _Alloc, class _BinaryPredicate>
 void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
-  typename list<_Tp, _Alloc>::iterator __first = __that.begin();
-  typename list<_Tp, _Alloc>::iterator __last = __that.end();
+  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+  _Literator __first = __that.begin();
+  _Literator __last = __that.end();
   if (__first == __last) return;
-  typename list<_Tp, _Alloc>::iterator __next = __first;
+  _Literator __next = __first;
   while (++__next != __last) {
     if (__binary_pred(*__first, *__next))
       __that.erase(__next);
@@ -152,7 +150,7 @@ void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
 void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
-	      _StrictWeakOrdering __comp) {
+              _StrictWeakOrdering __comp) {
   typedef typename list<_Tp, _Alloc>::iterator _Literator;
   _Literator __first1 = __that.begin();
   _Literator __last1 = __that.end();
@@ -166,27 +164,28 @@ void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
     }
     else
       ++__first1;
-  if (__first2 != __last2) _List_global_inst::_Transfer(__last1._M_node, __first2._M_node, __last2._M_node);
+  if (__first2 != __last2)
+    _List_global_inst::_Transfer(__last1._M_node, __first2._M_node, __last2._M_node);
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
 void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   // Do nothing if the list has length 0 or 1.
-  if (__that._M_node._M_data->_M_next != __that._M_node._M_data &&
-      (__that._M_node._M_data->_M_next)->_M_next != __that._M_node._M_data) {
+  if (__that._M_node._M_data._M_next != &__that._M_node._M_data &&
+      __that._M_node._M_data._M_next->_M_next != &__that._M_node._M_data) {
     list<_Tp, _Alloc> __carry;
 #if !defined (__WATCOMC__)
     list<_Tp, _Alloc> __counter[64];
 #else
     vector<list<_Tp, _Alloc>, _Alloc> __counter(64);
-#endif		//*TY 05/25/2000 - 
+#endif  //*TY 05/25/2000 - 
     int __fill = 0;
     while (!__that.empty()) {
       __carry.splice(__carry.begin(), __that, __that.begin());
       int __i = 0;
       while(__i < __fill && !__counter[__i].empty()) {
-	_S_merge(__counter[__i], __carry, __comp);
-	__carry.swap(__counter[__i++]);
+        _S_merge(__counter[__i], __carry, __comp);
+        __carry.swap(__counter[__i++]);
       }
       __carry.swap(__counter[__i]);         
       if (__i == __fill) ++__fill;

@@ -175,7 +175,7 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
     _Deque_iterator_base<value_type>(__x) {}
 
   reference operator*() const { 
-      return *this->_M_cur; 
+    return *this->_M_cur;
   }
 
   _STLP_DEFINE_ARROW_OPERATOR
@@ -320,11 +320,15 @@ distance_type(const _Deque_iterator<_Tp, _Traits  >&) { return 0; }
 
 template <class _Tp, class _Alloc>
 class _Deque_base {
+  typedef _Deque_base<_Tp, _Alloc> _Self;
 public:
   typedef _Tp value_type;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type  allocator_type;
+  typedef _STLP_alloc_proxy<size_t, value_type,  allocator_type> _Alloc_proxy;
+  
   typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type _Map_alloc_type;
+  typedef _STLP_alloc_proxy<value_type**, value_type*, _Map_alloc_type> _Map_alloc_proxy;
 
   typedef _Deque_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
   typedef _Deque_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
@@ -340,6 +344,15 @@ public:
     : _M_start(), _M_finish(), _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0), 
       _M_map_size(__a, (size_t)0) {
   }
+
+  _Deque_base(__move_source<_Self> src)
+    : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
+      _M_map(_AsMoveSource<_Map_alloc_proxy>(src.get()._M_map)),
+      _M_map_size(_AsMoveSource<_Alloc_proxy>(src.get()._M_map_size)) {
+    src.get()._M_map._M_data = 0;
+    src.get()._M_map_size._M_data = 0;
+  }
+  
   ~_Deque_base();    
 
 protected:
@@ -351,8 +364,8 @@ protected:
 protected:
   iterator _M_start;
   iterator _M_finish;
-  _STLP_alloc_proxy<value_type**, value_type*, _Map_alloc_type>  _M_map;
-  _STLP_alloc_proxy<size_t, value_type,  allocator_type>   _M_map_size;  
+  _Map_alloc_proxy  _M_map;
+  _Alloc_proxy      _M_map_size;  
 };
 
 
@@ -499,13 +512,8 @@ public:                         // Constructor, destructor.
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  explicit deque(__partial_move_source<_Self> src)
-    : _Deque_base<_Tp, _Alloc>(_AsPartialMoveSource<_Base>(src.get())) {
-    src.get()._M_map._M_data = 0;
-  }
-
-  explicit deque(__full_move_source<_Self> src)
-    : _Deque_base<_Tp, _Alloc>(_AsFullMoveSource<_Base>(src.get())) {
+  deque(__move_source<_Self> src)
+    : _Deque_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {
   }
 
   ~deque() { 
@@ -964,16 +972,15 @@ protected:                      // Allocation of _M_map and nodes
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp, class _Alloc>
-struct __full_move_traits<_Deque_base<_Tp, _Alloc> > {
-  typedef typename __full_move_traits<_Alloc>::supported supported;
-  typedef __false_type implemented;
-};
+struct __move_traits<_Deque_base<_Tp, _Alloc> > :
+  __move_traits_help2<typename _Deque_base<_Tp, _Alloc>::_Map_alloc_proxy,
+                      typename _Deque_base<_Tp, _Alloc>::_Alloc_proxy>
+{};
 
 template <class _Tp, class _Alloc>
-struct __full_move_traits<deque<_Tp, _Alloc> > {
-  typedef typename __full_move_traits<_Deque_base<_Tp, _Alloc> >::supported supported;
-  typedef __true_type implemented;
-};
+struct __move_traits<deque<_Tp, _Alloc> > :
+  __move_traits_aux<_Deque_base<_Tp, _Alloc> >
+{};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE 

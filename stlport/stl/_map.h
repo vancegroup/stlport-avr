@@ -66,7 +66,6 @@ public:
     }
   };
 
-private:
 # ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
   typedef _Rb_tree<key_type, value_type, 
                    _Select1st_hint<value_type, _Key>, key_compare, _Alloc> _Rep_type;
@@ -134,16 +133,11 @@ public:
 
   map(const _Self& __x) : _M_t(__x._M_t) {}
 
-  /*explicit map(__full_move_source<_Self> src)
-    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
-  }*/
-
-  explicit map(__partial_move_source<_Self> src)
-    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
+  map(__move_source<_Self> src)
+    : _M_t(_AsMoveSource(src.get()._M_t)) {
   }
 
-  _Self& operator=(const _Self& __x)
-  {
+  _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
     return *this; 
   }
@@ -251,7 +245,6 @@ public:
     }
   };
 
-private:
 # ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
   typedef _Rb_tree<key_type, value_type, 
                   _Select1st_hint<value_type, _Key>, key_compare, _Alloc> _Rep_type;
@@ -316,12 +309,8 @@ public:
 
   multimap(const _Self& __x) : _M_t(__x._M_t) { }
 
-  /*explicit multimap(__full_move_source<_Self> src)
-    : _M_t(_FullMoveSource<_Rep_type>(src.get()._M_t)) {
-  }*/
-
-  explicit multimap(__partial_move_source<_Self> src)
-    : _M_t(_AsPartialMoveSource(src.get()._M_t)) {
+  multimap(__move_source<_Self> src)
+    : _M_t(_AsMoveSource(src.get()._M_t)) {
   }
 
   _Self& operator=(const _Self& __x) {
@@ -395,7 +384,6 @@ public:
 };
 
 # define _STLP_TEMPLATE_HEADER template <class _Key, class _Tp, class _Compare, class _Alloc>
-
 # define _STLP_TEMPLATE_CONTAINER map<_Key,_Tp,_Compare,_Alloc>
 
 // fbp : if this template header gets protected against your will, report it !
@@ -409,6 +397,18 @@ public:
 
 # undef  _STLP_TEMPLATE_CONTAINER
 # undef  _STLP_TEMPLATE_HEADER
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Key, class _Tp, class _Compare, class _Alloc>
+struct __move_traits<map<_Key,_Tp,_Compare,_Alloc> > :
+  __move_traits_aux<typename map<_Key,_Tp,_Compare,_Alloc>::_Rep_type>
+{};
+
+template <class _Key, class _Tp, class _Compare, class _Alloc>
+struct __move_traits<multimap<_Key,_Tp,_Compare,_Alloc> > :
+  __move_traits_aux<typename multimap<_Key,_Tp,_Compare,_Alloc>::_Rep_type>
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

@@ -106,7 +106,7 @@ public:
 #else
   _DBG_list(size_type __n, const _Tp& __x,
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
-						const allocator_type& __a = allocator_type())
+            const allocator_type& __a = allocator_type())
     : _STLP_DBG_LIST_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -114,14 +114,9 @@ public:
     : _STLP_DBG_LIST_BASE(__n), _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  explicit _DBG_list(__partial_move_source<_Self> src)
-		: _STLP_DBG_LIST_BASE(_AsPartialMoveSource<_STLP_DBG_LIST_BASE >(src.get())), 
+  _DBG_list(__move_source<_Self> src)
+    : _STLP_DBG_LIST_BASE(_AsMoveSource<_STLP_DBG_LIST_BASE >(src.get())), 
       _M_iter_list(_Get_base()) {}
-  
-  /*explicit _DBG_list(__full_move_source<_Self> src)
-		   : _STLP_DBG_LIST_BASE(_FullMoveSource<_STLP_DBG_LIST_BASE >(src.get())), _M_iter_list(_Get_base()) {
-    src.get()._Invalidate_all();
-  }*/
   
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -129,7 +124,7 @@ public:
   // that anyway.  
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last,
-						const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
+            const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : __range_checker<_Tp>(__first, __last), 
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
@@ -143,7 +138,7 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
 
   _DBG_list(const _Tp* __first, const _Tp* __last,
-						const allocator_type& __a = allocator_type())
+            const allocator_type& __a = allocator_type())
     : __range_checker<_Tp>(__first, __last), 
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
@@ -362,7 +357,7 @@ public:
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _Predicate> 
-	void remove_if(_Predicate __pred) {
+  void remove_if(_Predicate __pred) {
     _Base_iterator __first = _Base::begin(), __last = _Base::end();
     while (__first != __last) {
       _Base_iterator __next = __first;

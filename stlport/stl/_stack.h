@@ -48,6 +48,9 @@ class stack {
 
 # ifdef _STLP_STACK_ARGS 
   typedef deque<_Tp> _Sequence;
+  typedef stack<_Tp> _Self;
+# else
+  typedef stack<_Tp, _Sequence> _Self;
 # endif
 
 public:
@@ -58,18 +61,22 @@ public:
   typedef typename _Sequence::reference       reference;
   typedef typename _Sequence::const_reference const_reference;
 protected:
-  _Sequence c;
+  _Sequence _M_s;
 public:
-  stack() : c() {}
-  explicit stack(const _Sequence& __s) : c(__s) {}
+  stack() : _M_s() {}
+  explicit stack(const _Sequence& __s) : _M_s(__s) {}
 
-  bool empty() const { return c.empty(); }
-  size_type size() const { return c.size(); }
-  reference top() { return c.back(); }
-  const_reference top() const { return c.back(); }
-  void push(const value_type& __x) { c.push_back(__x); }
-  void pop() { c.pop_back(); }
-  const _Sequence& _Get_c() const { return c; }
+  stack(__move_source<_Self> src)
+    : _M_s(_AsMoveSource(src.get()._M_s)) {
+  }
+
+  bool empty() const { return _M_s.empty(); }
+  size_type size() const { return _M_s.size(); }
+  reference top() { return _M_s.back(); }
+  const_reference top() const { return _M_s.back(); }
+  void push(const value_type& __x) { _M_s.push_back(__x); }
+  void pop() { _M_s.pop_back(); }
+  const _Sequence& _Get_s() const { return _M_s; }
 };
 
 # ifndef _STLP_STACK_ARGS
@@ -80,23 +87,30 @@ public:
 # endif
 
 template < _STLP_STACK_HEADER_ARGS >
-inline bool _STLP_CALL  operator==(const stack< _STLP_STACK_ARGS >& __x, const stack< _STLP_STACK_ARGS >& __y)
-{
-  return __x._Get_c() == __y._Get_c();
+inline bool _STLP_CALL  operator==(const stack< _STLP_STACK_ARGS >& __x,
+                                   const stack< _STLP_STACK_ARGS >& __y) {
+  return __x._Get_s() == __y._Get_s();
 }
 
 template < _STLP_STACK_HEADER_ARGS >
-inline bool _STLP_CALL  operator<(const stack< _STLP_STACK_ARGS >& __x, const stack< _STLP_STACK_ARGS >& __y)
-{
-  return __x._Get_c() < __y._Get_c();
+inline bool _STLP_CALL  operator<(const stack< _STLP_STACK_ARGS >& __x,
+                                  const stack< _STLP_STACK_ARGS >& __y) {
+  return __x._Get_s() < __y._Get_s();
 }
 
 _STLP_RELOPS_OPERATORS(template < _STLP_STACK_HEADER_ARGS >, stack< _STLP_STACK_ARGS >)
     
-_STLP_END_NAMESPACE
-
 #  undef _STLP_STACK_ARGS
 #  undef _STLP_STACK_HEADER_ARGS
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Sequence>
+struct __move_traits<stack<_Tp, _Sequence> > :
+  __move_traits_aux<_Sequence>
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_STACK_H */
 
