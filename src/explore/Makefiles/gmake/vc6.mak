@@ -24,8 +24,8 @@ RC_OUTPUT_OPTION = /fo $@
 DEFS += /D "WIN32" /D "_WINDOWS"
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
-CFLAGS = /nologo /TC /W3 /GR /GX $(OPT)
-CXXFLAGS = /nologo /TP /W3 /GR /GX $(OPT)
+CFLAGS = /nologo /TC /W3 /GR /GX /Zm800 $(OPT)
+CXXFLAGS = /nologo /TP /W3 /GR /GX /Zm800 $(OPT)
 COMPILE.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) /c
 COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) /c
 LINK.cc = $(LINK) /nologo $(LDFLAGS) $(TARGET_ARCH)

@@ -84,6 +84,9 @@ public:                      // Opening and closing files.
   bool _M_open(const char*, ios_base::openmode, long __protection);
   bool _M_open(const char*, ios_base::openmode);
   bool _M_open(int __id, ios_base::openmode = ios_base::__default_mode);
+#ifdef _STLP_USE_WIN32_IO
+  bool _M_open(_STLP_fd __id, ios_base::openmode = ios_base::__default_mode);
+#endif /* _STLP_USE_WIN32_IO */
   bool _M_close();
 
 public:                      // Low-level I/O, like Unix read/write
@@ -136,7 +139,7 @@ protected:                      // Data members.
   FILE* _M_file;
 # endif
 # ifdef _STLP_USE_WIN32_IO
-  void* _M_view_id; 
+  _STLP_fd _M_view_id; 
 # endif
 
   ios_base::openmode _M_openmode     ;
@@ -213,6 +216,13 @@ public:                         // Opening and closing files.
   _Self* open(int __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
     return this->_M_open(__id, _Init_mode);
   }
+
+#  ifdef _STLP_USE_WIN32_IO
+  _Self* open(_STLP_fd __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
+    return _M_base._M_open(__id, _Init_mode) ? this : 0;
+  }
+#  endif /* _STLP_USE_WIN32_IO */
+
 # endif
 
   _Self* _M_open(int __id, ios_base::openmode _Init_mode = ios_base::__default_mode) {
@@ -524,6 +534,7 @@ public:                         // Constructors, destructor.
   }
 
 # ifndef _STLP_NO_EXTENSIONS
+
   explicit basic_ifstream(int __id, ios_base::openmode __mod = ios_base::in) : 
     basic_ios<_CharT, _Traits>(),  basic_istream<_CharT, _Traits>(0), _M_buf() {
     this->init(&_M_buf);
@@ -538,6 +549,15 @@ public:                         // Constructors, destructor.
       this->setstate(ios_base::failbit);  
   }
   
+#  ifdef _STLP_USE_WIN32_IO
+  explicit basic_ifstream(_STLP_fd __id, ios_base::openmode __mod = ios_base::in) : 
+    basic_ios<_CharT, _Traits>(),  basic_istream<_CharT, _Traits>(0), _M_buf() {
+    this->init(&_M_buf);
+    if (!_M_buf.open(__id, __mod | ios_base::in))
+      this->setstate(ios_base::failbit);
+  }
+#  endif /* _STLP_USE_WIN32_IO */
+
 # endif
 
   ~basic_ifstream() {}
@@ -611,6 +631,15 @@ public:                         // Constructors, destructor.
     if (!_M_buf.open(__s, __m | ios_base::out, __protection))
       this->setstate(ios_base::failbit);  
   }
+#  ifdef _STLP_USE_WIN32_IO
+  explicit basic_ofstream(_STLP_fd __id, ios_base::openmode __mod = ios_base::out) 
+    : basic_ios<_CharT, _Traits>(), basic_ostream<_CharT, _Traits>(0),
+    _M_buf() {
+ 	this->init(&_M_buf);
+ 	if (!_M_buf.open(__id, __mod | ios_base::out))
+ 	  this->setstate(ios_base::failbit);
+  }
+#  endif /* _STLP_USE_WIN32_IO */
 # endif
   
   ~basic_ofstream() {}

@@ -673,6 +673,36 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode)
 }
 
       
+#ifdef _STLP_USE_WIN32_IO
+bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
+#if (defined (_MSC_VER) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)) || \
+    (defined (__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
+
+  if (_M_is_open || (long)__id == -1)
+    return false;
+
+  if (init_mode != ios_base::__default_mode)
+    _M_openmode = init_mode;
+  else
+    _M_openmode = _SgI::_get_osfflags((int)__id, __id);
+  
+#else
+  (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
+
+  // not available for the API
+  return false;
+
+#endif
+
+  _M_is_open = true;
+  _M_file_id = __id;
+  _M_should_close = false;
+  _M_regular_file = _SgI::__is_regular_file(_M_file_id);
+
+  return true;
+}
+#endif /* _STLP_USE_WIN32_IO */
+
 // Associated the filebuf with a file descriptor pointing to an already-
 // open file.  Mode is set to be consistent with the way that the file
 // was opened.
@@ -726,13 +756,10 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
 # elif (defined(_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET) ) || \
         (defined(__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
 
-  if (_M_is_open || file_no == -1)
-    return false;
-
   HANDLE oshandle = (HANDLE)_get_osfhandle(file_no);
   
   if ((long)oshandle != -1)
-	file_no = (int)oshandle;
+	  file_no = (int)oshandle;
   else
     return false;
   
@@ -1081,11 +1108,11 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
   // destroy view handle as well
   if ( _M_view_id != NULL )
     CloseHandle(_M_view_id);
-  _M_view_id = 0;
+  _M_view_id = NULL;
   base = 0;
 #else
-  (void)len;		//*TY 02/26/2000 - unused variables
-  (void)base;		//*TY 02/26/2000 - 
+  (void)len;    //*TY 02/26/2000 - unused variables
+  (void)base;   //*TY 02/26/2000 - 
 #endif
 }
 
@@ -1093,8 +1120,7 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 # define MMAP_CHUNK 0x100000UL
 
 int _STLP_CALL
-_Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this)  
-{
+_Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this) {
   if (!__this->_M_in_input_mode) {
     if (!__this->_M_switch_to_input_mode())
       return traits_type::eof();

@@ -9,7 +9,7 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/top.mak
 
 
-INCLUDES += /I $(STLPORT_INCLUDE_DIR)
+INCLUDES += /I $(STLPORT_INCLUDE_DIR) /I ..\vc_warning_disable.h
 
 # options for build with boost support
 ifdef STLP_BUILD_BOOST_PATH

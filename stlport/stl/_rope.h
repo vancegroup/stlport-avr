@@ -2088,9 +2088,9 @@ public:
     const_iterator __result = search(const_begin() + (ptrdiff_t)__pos, const_end(),
                                      __s, __s + _S_char_ptr_len(__s));
     __result_pos = __result.index();
-#           ifndef _STLP_OLD_ROPE_SEMANTICS
+# ifndef _STLP_OLD_ROPE_SEMANTICS
     if (__result_pos == size()) __result_pos = npos;
-#           endif
+# endif
     return __result_pos;
   }
 
@@ -2114,7 +2114,7 @@ public:
     return reference(this, __pos);
   }
 
-#       ifdef __STD_STUFF
+# ifdef __STD_STUFF
   reference operator[] (size_type __pos) {
     return reference(this, __pos);
   }
@@ -2147,7 +2147,7 @@ public:
 
   reverse_iterator rbegin() { return mutable_rbegin(); }
 
-#       else
+# else
 
   const_iterator end() { return const_end(); }
 

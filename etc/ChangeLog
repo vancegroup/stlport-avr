@@ -1,3 +1,9 @@
+2004-04-26  Francois Dumont <dums@s...>
+
+  * stlport/stl/_fstream.h
+    src/fstream.cpp: extension of the fstream interface to accept Win32
+    HANDLE on construction and in the open method.
+
 2004-04-26  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_istream.h: don't change value while input error happens. Thanks Nix.
@@ -15,8 +21,6 @@
 	pointer partial specialization feature.
 
 2004-04-20  Francois Dumont <dums@s...>
-
-	* Modifications to have the lib built even with no exception support.
 
 	* stlport/stl/_pair.h: modification of the make_pair signature. After the latest
 	Standard revision it takes params per value and not reference to const.
