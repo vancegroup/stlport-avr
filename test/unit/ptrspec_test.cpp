@@ -2,7 +2,6 @@
 #include <list>
 #include <slist>
 #include <deque>
-#include <set>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -51,7 +50,6 @@ TEST_INSTANCIATE_CONTAINER(vector);
 TEST_INSTANCIATE_CONTAINER(list);
 TEST_INSTANCIATE_CONTAINER(slist);
 TEST_INSTANCIATE_CONTAINER(deque);
-TEST_INSTANCIATE_CONTAINER(set);
 #endif
 
 //
