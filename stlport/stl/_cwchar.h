@@ -91,37 +91,51 @@ namespace std
 #  endif
 #endif
 
-# if defined ( _STLP_OWN_IOSTREAMS ) && defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_NO_MBSTATE_T)
+# if defined ( _STLP_OWN_IOSTREAMS ) && defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_NO_MBSTATE_T) && ! defined (_MBSTATE_T)
 #  define _STLP_USE_OWN_MBSTATE_T
+#  define _MBSTATE_T
 # endif
 
 # ifdef _STLP_USE_OWN_MBSTATE_T
 
 _STLP_BEGIN_NAMESPACE
 
+// to be compatible across different SUN platforms
+#ifdef __sun
+# define __stl_mbstate_t __mbstate_t
+#endif
+
 struct __stl_mbstate_t;
 
 # ifdef __cplusplus
 struct __stl_mbstate_t { 
-  __stl_mbstate_t( long __st = 0 ) : _M_state(__st) {}
+  __stl_mbstate_t( long __st = 0 ) { _M_state[0] = __st ; }
   __stl_mbstate_t& operator=(const long __st) {
-    _M_state= __st;              
+    _M_state[0] = __st;              
     return *this;
   } 
   __stl_mbstate_t(const __stl_mbstate_t& __x) : _M_state(__x._M_state) {}         
   __stl_mbstate_t& operator=(const __stl_mbstate_t& __x) {
     _M_state= __x._M_state;              
     return *this;
-  }       
-  long _M_state;
+  }
+# if defined (__sun)
+#  ifdef _LP64
+  long _M_state[4];
+#  else
+  int _M_state[6];
+#  endif
+# else       
+  long _M_state[1];
+# endif
 };          
 
 inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
-  return ( __x._M_state == __y._M_state );
+  return ( __x._M_state[0] == __y._M_state[0] );
 }
 
 inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
-  return ( __x._M_state == __y._M_state );
+  return ( __x._M_state[0] == __y._M_state[0] );
 }
 # endif
 
@@ -129,7 +143,7 @@ typedef struct __stl_mbstate_t mbstate_t;
 
 _STLP_END_NAMESPACE
 
-# endif
+# endif /* _STLP_USE_OWN_MBSTATE_T */
 
 
 # ifdef _STLP_IMPORT_VENDOR_CSTD
