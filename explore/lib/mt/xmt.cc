@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/09/08 11:38:06 ptr>
+// -*- C++ -*- Time-stamp: <00/09/28 14:20:24 ptr>
 
 /*
  * Copyright (c) 1997-1999
@@ -479,17 +479,18 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
   pthread_attr_t attr;
   pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
 //  pthread_attr_setstacksize( &attr, 0x100000 );
-  pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
-  if ( _flags & daemon ) {
-    pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
-  } else {
+//  pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+  // PTHREAD_SCOPE_PROCESS is unbound thread, that what I need
+//  if ( _flags & daemon ) {
+//    pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
+//  } else {
     pthread_attr_setscope( &attr, PTHREAD_SCOPE_PROCESS );
-  }
+//  }
   if ( _flags & detached ) {
     pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
   }
   // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
-  pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+  // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
   err = pthread_create( &_id, &attr, _xcall, this );
 #  else
   err = pthread_create( &_id, 0, _xcall, this );
