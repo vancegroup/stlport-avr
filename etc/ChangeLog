@@ -1,3 +1,7 @@
+2004-02-14  Petr Ovchenkov  <ptr@Island...>
+
+	* debug/_relops_cont.h, debug/_string.h: fix typos in template specializations.
+
 2004-02-12  Petr Ovchenkov  <ptr@Island...>
 
 	* explore/icc.mak: experimental make system support Intel's icc compiler
