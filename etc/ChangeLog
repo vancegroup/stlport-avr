@@ -40,6 +40,8 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* type_traits.h : __default_constructed() inlined (Thanks Matt Davies)
 
 	* new.h : fix for gcc-3.0 to look in backward directory (Thanks Ken) 
+
+	* stlport/using/h/streambuf.h added (Thanks Gennadiy)
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	
