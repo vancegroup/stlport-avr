@@ -178,15 +178,15 @@ template <class _Container>
 class back_insert_iterator 
   : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* _M_container;
+  _Container& _M_container;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
 
-  explicit back_insert_iterator(_Container& __x) : _M_container(&__x) {}
+  explicit back_insert_iterator(_Container& __x) : _M_container(__x) {}
   back_insert_iterator<_Container>&
   operator=(const typename _Container::value_type& __val) { 
-    _M_container->push_back(__val);
+    _M_container.push_back(__val);
     return *this;
   }
   back_insert_iterator<_Container>& operator*() { return *this; }
@@ -203,14 +203,14 @@ template <class _Container>
 class front_insert_iterator 
   : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* _M_container;
+  _Container& _M_container;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
-  explicit front_insert_iterator(_Container& __x) : _M_container(&__x) {}
+  explicit front_insert_iterator(_Container& __x) : _M_container(__x) {}
   front_insert_iterator<_Container>&
   operator=(const typename _Container::value_type& __val) { 
-    _M_container->push_front(__val);
+    _M_container.push_front(__val);
     return *this;
   }
   front_insert_iterator<_Container>& operator*() { return *this; }
@@ -227,16 +227,16 @@ template <class _Container>
 class insert_iterator 
   : public iterator<output_iterator_tag,void,void,void,void> {
 protected:
-  _Container* _M_container;
+  _Container& _M_container;
   typename _Container::iterator _M_iter;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
   insert_iterator(_Container& __x, typename _Container::iterator __i) 
-    : _M_container(&__x), _M_iter(__i) {}
+    : _M_container(__x), _M_iter(__i) {}
   insert_iterator<_Container>&
   operator=(const typename _Container::value_type& __val) { 
-    _M_iter = _M_container->insert(_M_iter, __val);
+    _M_iter = _M_container.insert(_M_iter, __val);
     ++_M_iter;
     return *this;
   }
