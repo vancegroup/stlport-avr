@@ -1,12 +1,12 @@
-// -*- C++ -*- Time-stamp: <00/02/24 19:28:18 ptr>
+// -*- C++ -*- Time-stamp: <00/03/03 14:00:36 ptr>
 
 /*
  *
  * Copyright (c) 1997-1999
  * Petr Ovchenkov
  *
- * Copyright (c) 1999
- * ParallelGraphics Software Systems
+ * Copyright (c) 1999-2000
+ * ParallelGraphics
  
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -27,7 +27,6 @@
 #include <config/feature.h>
 #endif
 
-// #include <stl_config.h>
 #include <cstddef>
 #include <stdexcept>
 
@@ -102,33 +101,34 @@ extern "C" {
 
 #ifndef SIG_PF // sys/signal.h
 
-#ifdef WIN32
+#  ifdef WIN32
 typedef void __cdecl SIG_FUNC_TYP(int);
-#else
+#  else
 typedef void SIG_FUNC_TYP(int);
-#endif
+#  endif
 typedef SIG_FUNC_TYP *SIG_TYP;
-#define SIG_PF SIG_TYP
+#  define SIG_PF SIG_TYP
 
-#ifndef SIG_DFL
-#define SIG_DFL (SIG_PF)0
-#endif
-#ifndef SIG_ERR
-#define SIG_ERR (SIG_PF)-1
-#endif
-#ifndef SIG_IGN
-#define SIG_IGN (SIG_PF)1
-#endif
-#ifndef SIG_HOLD
-#define SIG_HOLD (SIG_PF)2
-#endif
+#  ifndef SIG_DFL
+#    define SIG_DFL (SIG_PF)0
+#  endif
+#  ifndef SIG_ERR
+#    define SIG_ERR (SIG_PF)-1
+#  endif
+#  ifndef SIG_IGN
+#    define SIG_IGN (SIG_PF)1
+#  endif
+#  ifndef SIG_HOLD
+#    define SIG_HOLD (SIG_PF)2
+#  endif
+#endif // SIG_PF
 
-#endif
-}
+} // extern "C"
 
 namespace __impl {
 
 extern __PG_DECLSPEC void signal_throw( int sig ) throw( int );
+extern "C"  void *_xcall( void * ); // forward declaration
 
 #ifndef WIN32
 using std::size_t;
@@ -530,7 +530,9 @@ class Thread
     __PG_DECLSPEC int resume();
     __PG_DECLSPEC int kill( int sig );
     static __PG_DECLSPEC void exit( int code = 0 );
+#ifdef __STL_UITHREADS
     static __PG_DECLSPEC int join_all();
+#endif
     static __PG_DECLSPEC void block_signal( int sig );
     static __PG_DECLSPEC void unblock_signal( int sig );
     static __PG_DECLSPEC void signal_handler( int sig, SIG_PF );
@@ -601,6 +603,7 @@ class Thread
     unsigned _flags;
     //  Mutex _params_lock; --- no needs
     friend class Init;
+    friend void * _xcall( void * ); // extern "C", wrap for thread_create
 };
 
 } // namespace __impl

@@ -1,4 +1,22 @@
-// -*- C++ -*- Time-stamp: <00/02/24 19:30:49 ptr>
+// -*- C++ -*- Time-stamp: <00/03/03 14:01:25 ptr>
+
+/*
+ *
+ * Copyright (c) 1997-1999
+ * Petr Ovchenkov
+ *
+ * Copyright (c) 1999-2000
+ * ParallelGraphics
+ 
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use, copy, modify, distribute and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appear in all copies and
+ * that both that copyright notice and this permission notice appear
+ * in supporting documentation.
+ */
 
 #ident "$SunId$ %Q%"
 
@@ -23,6 +41,7 @@
 // using namespace std;
 #endif
 
+/*
 extern "C" {
 #ifdef WIN32
   typedef unsigned long (__stdcall *entrance_type_C)( void * );
@@ -30,6 +49,7 @@ extern "C" {
   typedef void *(*entrance_type_C)( void * );
 #endif
 }
+*/
 
 #ifdef WIN32
 #  if 0
@@ -312,15 +332,15 @@ void Thread::exit( int code )
 #endif
 }
 
+#ifdef __STL_UITHREADS
 __PG_DECLSPEC
 int Thread::join_all()
 {
-#ifdef __STL_UITHREADS
   while ( thr_join( 0, 0, 0 ) == 0 ) ;
-#endif
 
   return 0;
 }
+#endif
 
 __PG_DECLSPEC
 void Thread::block_signal( int sig )
@@ -406,13 +426,13 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 
   int err;
 #ifdef __STL_PTHREADS
-  err = pthread_create( &_id, 0, entrance_type_C(_call), this );
+  err = pthread_create( &_id, 0, _xcall, this );
 #endif
 #ifdef __STL_UITHREADS
-  err = thr_create( 0, 0, entrance_type_C(_call), this, _flags, &_id );
+  err = thr_create( 0, 0, _xcall, this, _flags, &_id );
 #endif
 #ifdef __STL_WIN32THREADS
-  _id = CreateThread( 0, 0, entrance_type_C(_call), this, _flags, &_thr_id );
+  _id = CreateThread( 0, 0, _xcall, this, _flags, &_thr_id );
   err = GetLastError();
 #endif
   if ( err != 0 ) {
@@ -426,6 +446,13 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 #ifdef _WIN32
 #pragma warning( disable : 4101 )
 #endif
+
+extern "C" {
+  void *_xcall( void *p )
+  {
+    return Thread::_call( p );
+  }
+}
 
 void *Thread::_call( void *p )
 {
@@ -448,8 +475,8 @@ void *Thread::_call( void *p )
   set_unexpected( unexpected );
   set_terminate( terminate );
 #else
-  std::set_unexpected( unexpected );
-  std::set_terminate( terminate );
+  std::set_unexpected( Thread::unexpected );
+  std::set_terminate( Thread::terminate );
 #endif
 	
   try {
@@ -615,13 +642,8 @@ void*& Thread::pword( int __idx )
 #endif
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
-// #if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
 #ifndef  __STL_USE_SGI_ALLOCATORS
-// #ifdef _MSC_VER
-//     long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
-// #else
     long **_mtmp = alloc().allocate( tmp );
-// #endif
     __STD::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
