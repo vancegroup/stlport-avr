@@ -28,6 +28,7 @@ RM=rm -Rf
 PATH_SEP=/
 MKDIR=mkdir -p
 COMP=GCC$(ARCH)
+INSTALL_STEP = install_unix 
 
 all: all_dynamic all_static
 
