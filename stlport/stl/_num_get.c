@@ -622,7 +622,11 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err,
                            void*& __p) const {
-    ptrdiff_t __val;
+# ifdef _STLP_LONG_LONG
+  unsigned _STLP_LONG_LONG __val;
+# else
+  unsigned long __val;
+# endif
     iter_type __tmp = _M_do_get_integer(__in, __end, __str, __err, __val, (_CharT*)0 );
     if (!(__err & ios_base::failbit))
       __p = __REINTERPRET_CAST(void*,__val);

@@ -107,7 +107,7 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -D_STLP_DEBUG -D_STLP_NO_OWN_IOSTREAMS -g -o $*.o
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -o $*.o
 	$(CXX) $(CXXFLAGS) $*.o $(LIBSTLPORT) $(LIBS) -o $*
 	./$* > $@
 #	-rm -f $*
