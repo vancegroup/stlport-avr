@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>STLport - Getting Started</title>
+
+<!--  header goes there -->
+<!-- Header for stlport.org contents -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Boris Fomitchev">
+<meta name="Keywords" content="STL, C++, Standard, Template, Library, stlport, SGI, gcc, g++, GNU, Borland, Visual, SUN, SUNPro">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<div align = center>
+ <center>
+  <table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="4" width="776">
+  <tr height="64"><td bgcolor="#99ccff" >
+  <table cellspacing="0" cellpadding="0" width="768">
+   <tr  cellspacing="0" cellpadding="0">
+    <td width="248" align="left">
+     <img border="0" src="images/logo_1.jpg" 
+      alt="STLport.org - &quot;Templates that fit&quot;" width="248" height="64">
+    </td>
+    <td bgcolor="#99ccff" width="520">     
+      <table border="0" cellpadding="0" cellspacing="0" width="520">
+       <tr height = "24"> 
+         <td align="right" valign="top" bgcolor="#99ccff" CLASS=HEADER>
+<!---          <img border="0" src="images/logo_2.jpg" width="220" height="20"> -->
+         </td> 
+       </tr>
+      </table>
+    </td>
+   </tr>
+  </table>
+</td></tr>
+</table>
+ </center>
+</div>
+<!-- End header for stlport.org contents -->
+
+
+
+<!--  content bar goes there -->
+<div align="center">
+  <center>
+  <table border="0" cellpadding="4" cellspacing="0" width="776" height="100%">
+    <tr>
+      <td valign="top" width="134">
+
+<table bgcolor="#99CCFF" border="0" cellpadding="8" cellspacing="0" width="142">
+  <tr>
+    <td bgcolor="#d0d0d0" valign="top" align="left" nowrap><b>Contents</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EEEEEE" valign="top" align="left" nowrap CLASS=CONTENTS>
+      <b>Introduction</b><br>
+      
+      &nbsp; <a href="index.html">About STLport</a><br>
+      &nbsp; <a href="sgi_stl.html">SGI STL Base</a><br>
+      &nbsp; <a href="story.html">STLport Story</a><br>
+<!--      &nbsp; <a href="projects.html">Portofolio</a> -->
+      
+      <p><b>STLport Features</b><br>
+      &nbsp; <a href="platforms.html">Portability</a><br>
+      &nbsp; <a href="debug_mode.html">Debug Mode</a><br>
+      &nbsp; <a href="sgi_stl.html#thread_safety">Thread Safety</a><br>
+      &nbsp; <a href="exception_safety.html">Exception Safety</a>
+      </p>
+
+      <p><b>Getting Started</b><br>
+
+      &nbsp; <a href="install.html">Download and Install</a><br>
+      &nbsp; <a href="select_io.html">Select Streams Mode</a><br>
+      &nbsp; <a href="use_stlport.html">Compiling with STLport</a>
+      </p>
+
+      <p><b>White Papers</b><br>
+      &nbsp; <a href="release_notes.html">Release Notes</a><br>
+<!--      &nbsp; <a href="FAQ.html">FAQ</a><br> -->
+      &nbsp; <a href="compiler_readmes.html">READMEs</a><br>
+      &nbsp; <a href="vendor_interface.html">Interface with std::</a><br>
+      &nbsp; <a href="wrappers.html">Wrappers</a><br>
+      &nbsp; <a href="configure.html">Config manual</a><br>
+      &nbsp; <a href="testsuite.html">Regression Test</a><br>
+      &nbsp; <a href="eh_testsuite.html">Exception Test</a>
+      </p>
+
+      <p><b>Feedback</b><br>
+      &nbsp; <a href="bug_report.html">Bug Reports</a><br>
+      &nbsp; <a href="http://www.stlport.org/cgi-bin/forum/forum.cgi">Forum</a><br>
+      </p>
+      
+      <p><b>Appendix</b><br>
+      &nbsp; <a href="thanks.html">Acknowledgements</a><br>
+<!--      &nbsp; <a href="copyrights.html">Copyrights</a><br> -->
+      &nbsp; <a href="license.html">Your Free Licence</a></p>
+
+    </td>
+  </tr>
+</table>
+
+</td>
+<td valign="top" width="618">
+
+
+        <h1>Getting Started : Building STLport</font></h1>
+
+        <h3><a name="no_sgi_iostreams"></a>Installing STLport for use without SGI iostreams (Default)</h3>
+
+	In this mode, you will use wrappers around  your compiler's iostreams 
+	libabry, as in previous STLport releases.
+
+	All you	have to do to use STLport in this mode is to uncomment 
+        <b>__STL_NO_SGI_IOSTREAMS</b> setting in <b>"stlport/stl/_site_config.h"</b>
+       to disable use of SGI iostreams and to use wrappers around your existing iostreams. 
+
+       Note though :
+       <ul>
+       <li>New-style ANSI iostreams may not be provided by your compiler vendor;</li>
+       <li>If provided, vendor iostreams are most likely slower than SGI version.</li>
+       </ul>
+      If you have decided to disable SGI iostreams, you may stop reading here.
+      To use wrapper mode, you do not have to build any binary libraries, as everything you need
+      is contained in the header files already.
+      
+      <h3><a name="beta"></a>Building STLport (SGI iostreams) library</h3>
+
+In this mode, you will use SGI implemnentation of iostreams instead of the one that comes
+with your compiler. It does contain some non-template code so you have to build STLport 
+iostreams library in <b>"src"</b> directory to link your project with. 
+
+Below are step-by-step instructions to build STLport library:
+<ol>
+<li>Do make sure you have followed instructions for default installation above.</li>
+
+<li>Go to <b>"src"</b> subdirectory. It contains various makefiles for different compilers.
+    If iostreams library is not yet ported to your compiler (please see <a href="release_notes.html">Release Notes</a> for details), you may revert to use wrapper
+    mode or port it. Please refer
+    to <a href="porting_iostreams.html">porting document</a> to learn how to port iostreams library
+    to your compiler. The porting procedure is usually straightforward on UNIXes.
+</li>
+
+<li>Using appropriate makefile, do <b>"make clean all"</b> to build STLport libraries
+    (makefiles are set up to build several different flavors - debug/nondebug,
+    static/dynamic versions).    
+    <i>Note : your make program may have different name, like "nmake" for Visual C++, so, with "nmake", do "nmake clean all"</i>
+</li>
+    
+<li>If make fails, you may try fixing the build yourself and/or report it to <a href="http://www.stlport.org/forum">STLport Forum</a>.
+</li>
+
+<li>Do <b>"make install"</b> to install resulting libraries into <b>"lib"</b> subdirectory. On Windows, this step also copies .dll libraries to system directory to be accessible at runtime.</li>
+
+</li>
+
+   <p><h4>Notes</h4>
+   When using STLport as a dynamic library, please make sure you put in the <b>PATH</b>
+   and distribute it together with your executable. This extra dependency is certainly
+   in favor of using static linking. However, if your project deploys any
+   Win DLL's using STLport, you <b>have</b> to use STLport as Win DLL, too. This is because
+   it contains some static variables (like <b>cerr</b> stream) which would otherwise be duplicated
+   in every DLL. This problem does not arise in Unix world.
+   <p>
+   <i>[ Visual C++ specific ]</i> If using STLport as DLL, please be sure to use <b>/MD[d]</b> 
+   compiler option to pick up all dynamic libraries.
+
+   <h3>Testing STLport</h3>
+   STLport provides two <b>test suites</b> - <a href="testsuite.html">regression
+   test</a> and <a href="eh_testsuite.html">exception handling test</a>.<br>
+   It is recommended that you run them to verify your new STLport installation works OK.
+<p>&nbsp;        
+
+<!--  footer goes there -->
+<!-- Footer for stlport.org contents -->
+
+    </tr>
+  </table>
+  </center>
+</div>
+
+<center>
+ <table border="0" cellspacing="0" cellpadding="0" width="760">
+   <tr>
+    <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+   </tr>
+ </table>
+
+  <table border="0" cellspacing="0" cellpadding="0" width="760">
+    <tr>
+      <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+    </tr>
+    <tr>
+     <td align = "center">
+      <br>
+      <address class=FOOTNOTE>Copyright © 1999,2000 by Boris Fomitchev.&nbsp;&nbsp;
+       &nbsp;Last modified: July 14, 2000
+     </td>
+    </tr>
+  </table>
+</center>
+<!-- End footer for stlport.org contents -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+/*
+ * Copyright (c) 1999 
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+
+#ifndef __STLPORT_NEW
+# define __STLPORT_NEW
+
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x447
+#  include <stl/_prolog.h>
+# endif
+
+#ifdef __STL_WINCE
+
+inline void* __STL_CALL __stl_new(size_t __n) {
+  return ::malloc(__n);
+}
+
+inline void __STL_CALL __stl_delete(void* __p) {
+  free(__p);
+}
+
+#else
+
+#ifndef __STLPORT_CSTDDEF
+// size_t
+# include <cstddef>
+#endif
+
+#if defined (__BORLANDC__) && (__BORLANDC__ > 0x520)
+// new.h uses ::malloc ;(
+# include <cstdlib>
+using __STL_VENDOR_CSTD::malloc;
+#endif
+
+# if !defined (__STL_NO_NEW_NEW_HEADER)
+#   include __STL_NATIVE_CPP_RUNTIME_HEADER(new)
+#  else
+#   include  <new.h>
+# endif
+
+# ifndef __STL_NO_BAD_ALLOC
+#  ifdef __STL_USE_OWN_NAMESPACE
+    __STL_BEGIN_NAMESPACE
+    using __STL_VENDOR_EXCEPT_STD::bad_alloc;
+    using __STL_VENDOR_EXCEPT_STD::nothrow_t;
+    using __STL_VENDOR_EXCEPT_STD::nothrow;
+
+#  if defined (__STL_GLOBAL_NEW_HANDLER)
+    using ::new_handler;
+    using ::set_new_handler;
+#  else
+    using __STL_VENDOR_EXCEPT_STD::new_handler;
+    using __STL_VENDOR_EXCEPT_STD::set_new_handler;
+#  endif
+    
+    __STL_END_NAMESPACE
+
+#  endif /* __STL_OWN_NAMESPACE */
+# else /* __STL_NO_BAD_ALLOC */
+
+#  include <exception>
+
+__STL_BEGIN_NAMESPACE
+
+class nothrow_t {};
+
+# ifdef __SGI_STL_OWN_IOSTREAMS
+extern nothrow_t nothrow;
+# else
+#  define nothrow nothrow_t()
+# endif
+
+class bad_alloc : public __STL_EXCEPTION_BASE { 
+public:
+  bad_alloc () __STL_NOTHROW_INHERENTLY { }
+  bad_alloc(const bad_alloc&) __STL_NOTHROW_INHERENTLY { }
+  bad_alloc& operator=(const bad_alloc&) __STL_NOTHROW_INHERENTLY {return *this;}
+  ~bad_alloc () __STL_NOTHROW_INHERENTLY { }
+  const char* what() const __STL_NOTHROW { return "bad alloc"; }
+};
+
+__STL_END_NAMESPACE
+
+#endif /* __STL_NO_BAD_ALLOC */
+
+# if defined (__STL_NO_NEW_NEW_HEADER) || defined (__STL_NO_BAD_ALLOC) && ! defined (__STL_CHECK_NULL_ALLOC)
+#  define __STL_CHECK_NULL_ALLOC(__x) if (__x == 0) __STL_THROW(bad_alloc()); return __x
+# else
+#  define __STL_CHECK_NULL_ALLOC(__x) return __x
+# endif
+
+__STL_BEGIN_NAMESPACE
+#if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (__xlC__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
+inline void*  __STL_CALL __stl_new(size_t __n) {  __STL_CHECK_NULL_ALLOC(::operator __STL_NEW(__n, __FILE__, __LINE__)); }
+inline void __STL_CALL __stl_delete(void* __p) { ::operator delete(__p, __FILE__, __LINE__); }
+#else
+inline void*  __STL_CALL __stl_new(size_t __n)   { __STL_CHECK_NULL_ALLOC(::operator __STL_NEW(__n)); }
+inline void   __STL_CALL __stl_delete(void* __p) { ::operator delete(__p); }
+#endif
+__STL_END_NAMESPACE
+
+#endif /* WINCE */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x447)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
+#endif /* __STLPORT_NEW */
+
+// Local Variables:
+// mode:C++
+// End:

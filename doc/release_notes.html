@@ -1,0 +1,300 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>STLport - Release Notes</title>
+
+<!--  header goes there -->
+<!-- Header for stlport.org contents -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Boris Fomitchev">
+<meta name="Keywords" content="STL, C++, Standard, Template, Library, stlport, SGI, gcc, g++, GNU, Borland, Visual, SUN, SUNPro">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<div align = center>
+ <center>
+  <table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="4" width="776">
+  <tr height="64"><td bgcolor="#99ccff" >
+  <table cellspacing="0" cellpadding="0" width="768">
+   <tr  cellspacing="0" cellpadding="0">
+    <td width="248" align="left">
+     <img border="0" src="images/logo_1.jpg" 
+      alt="STLport.org - &quot;Templates that fit&quot;" width="248" height="64">
+    </td>
+    <td bgcolor="#99ccff" width="520">     
+      <table border="0" cellpadding="0" cellspacing="0" width="520">
+       <tr height = "24"> 
+         <td align="right" valign="top" bgcolor="#99ccff" CLASS=HEADER>
+<!---          <img border="0" src="images/logo_2.jpg" width="220" height="20"> -->
+         </td> 
+       </tr>
+      </table>
+    </td>
+   </tr>
+  </table>
+</td></tr>
+</table>
+ </center>
+</div>
+<!-- End header for stlport.org contents -->
+
+
+<!--  content bar goes there -->
+<div align="center">
+  <center>
+  <table border="0" cellpadding="4" cellspacing="0" width="776" height="100%">
+    <tr>
+      <td valign="top" width="134">
+
+<table bgcolor="#99CCFF" border="0" cellpadding="8" cellspacing="0" width="142">
+  <tr>
+    <td bgcolor="#d0d0d0" valign="top" align="left" nowrap><b>Contents</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EEEEEE" valign="top" align="left" nowrap CLASS=CONTENTS>
+      <b>Introduction</b><br>
+      
+      &nbsp; <a href="index.html">About STLport</a><br>
+      &nbsp; <a href="sgi_stl.html">SGI STL Base</a><br>
+      &nbsp; <a href="story.html">STLport Story</a><br>
+<!--      &nbsp; <a href="projects.html">Portofolio</a> -->
+      
+      <p><b>STLport Features</b><br>
+      &nbsp; <a href="platforms.html">Portability</a><br>
+      &nbsp; <a href="debug_mode.html">Debug Mode</a><br>
+      &nbsp; <a href="sgi_stl.html#thread_safety">Thread Safety</a><br>
+      &nbsp; <a href="exception_safety.html">Exception Safety</a>
+      </p>
+
+      <p><b>Getting Started</b><br>
+
+      &nbsp; <a href="install.html">Download and Install</a><br>
+      &nbsp; <a href="select_io.html">Select Streams Mode</a><br>
+      &nbsp; <a href="use_stlport.html">Compiling with STLport</a>
+      </p>
+
+      <p><b>White Papers</b><br>
+      &nbsp; <a href="release_notes.html">Release Notes</a><br>
+<!--      &nbsp; <a href="FAQ.html">FAQ</a><br> -->
+      &nbsp; <a href="compiler_readmes.html">READMEs</a><br>
+      &nbsp; <a href="vendor_interface.html">Interface with std::</a><br>
+      &nbsp; <a href="wrappers.html">Wrappers</a><br>
+      &nbsp; <a href="configure.html">Config manual</a><br>
+      &nbsp; <a href="testsuite.html">Regression Test</a><br>
+      &nbsp; <a href="eh_testsuite.html">Exception Test</a>
+      </p>
+
+      <p><b>Feedback</b><br>
+      &nbsp; <a href="bug_report.html">Bug Reports</a><br>
+      &nbsp; <a href="http://www.stlport.org/cgi-bin/forum/forum.cgi">Forum</a><br>
+      </p>
+      
+      <p><b>Appendix</b><br>
+      &nbsp; <a href="thanks.html">Acknowledgements</a><br>
+<!--      &nbsp; <a href="copyrights.html">Copyrights</a><br> -->
+      &nbsp; <a href="license.html">Your Free Licence</a></p>
+
+    </td>
+  </tr>
+</table>
+
+</td>
+<td valign="top" width="618">
+
+
+        <h1><font color="#000080">STLport 4.0 Release Notes</font></h1>
+
+	STLport 4.0 is a major release. Finally, it offers complete C++ standard library!
+	Here is a list of major changes in 4.0 :
+        <ul>
+
+	<li>Complete ANSI C++ standard library, including &lt;complex&gt; and SGI iostreams.</li>
+
+	<li>Can be configured to use either SGI or native iostreams.</li>
+
+	<li>Debug mode completely redesigned. Debug mode containers are 
+	  implemented in terms of wrappers around non-debug ones.
+	  That provides for more clean and efficient implementation.
+	  In Debug Mode, different namespace <b>_STLD::</b> is being used,
+	  so no link-time clashes between debug and non-debug versions are possible.</li>
+
+	<li>New platforms - gcc-2.95, Mingw32, Borland C++ Builder 5.5, SUN CC 6.0 Early Access, SUN CC in compatibility mode.</li>
+
+        </ul>
+
+
+	Minor changes:
+	<ul>
+
+	<li> std:: is not used for STLport namespace even with SGI iostreams,
+	  to avoid possible clashes and facilitate 3rd-party library use.
+          Same macro redefinition technique for _STL:: used to keep clients
+	  code which uses literal std::.</li>
+
+	<li>C library headers wrapping changed to account for multiple inclusion tricks
+	  (needed by gcc-2.95 mostly)</li>
+
+	<li>auto_ptr updated, now it passes polymorphic tests with VC++</li>
+
+	<li>config changes - "configure" made obsolete and moved into "stlport/config/new_compiler"</li>
+	<li>Lot of minor bugfixes.</li>
+	</ul>
+
+        <h2><font color="#000080">STLport 3.2.1 Release Notes</font></h2>
+
+	<p>STLport 3.2.1 is a minor release in terms of functionality, but it is a huge
+        leap forward in terms of usability. 
+
+	<h2>std::renaming</h2>
+	3.2.1 finally solved the conflict between STLport string and std::string, which
+        used to be worked around by using namespace stlport::, to avoid link- and run-time
+        clashes. Refer to <a href="vendor_interface.html">"Cooperation with native standard library"</a> 
+        section for details.
+	In 3.2.1, new, completely transparent scheme introduced to redefine <b>"std::"</b> in user
+sources to <b>"stlport::"</b> via macros. Before 3.2.1, it was not possible, because not all headers were provided
+ with necessary wrappers. 
+Now, when user writes <b>"std::"</b> in application code, it yields the same results as if he wrote <b>"stlport::"</b>.<br>
+The biggest advantage is that now absolutely no modifications in client code are needed to use.
+STLport instead of native STL lib, which turns STLport into seamless drop-in component!
+ 
+	<h2>Windows improvements</h2>
+	STLport 3.2.1 provides the mechanism to export static members of default node allocator
+	from a designated user's DLL, which solves the problem observed with default allocator
+	and passing objects across DLL boundaries. Currently, one of user's DLL is supposed to
+	be designated to export STLport symbols. That will change as soon as STLport will provide
+	iostreams library.<p>
+	For MT compilation, <b>&lt;windows.h&gt;</b> is not included anymore to get synchronization
+	function prototypes. That significally reduces compilation time.
+	<p>	
+	<h2>Quality improvements</h2>
+	<p>3.2.1 provides further code bloat reduction - hashtable uses vector <b>&lt;void*&gt;</b> internally.
+	<h2>New platforms</h2>
+	Configuration files provided for DEC C++ 6.x/5.x , Borland C++ 5.02, KAI C++.
+	Windows CE configuration provided.
+	<hr>	
+
+        <h2><font color="#000080">STLport 3.2 Release Notes</font></h2>
+
+	<p>STLport 3.2 is a major change from 3.12. It provides new components, new wrappers
+        and fixes many portability issues.
+	<h2>New Components</h2>
+	New standard header files are provided : &lt;limits;&gt; and &lt;valarray&gt;.
+	Also, STLport now provide complete set of C library headers which are currently
+        wrappers for either old-style or new-style native C library headers.
+	<h2>Headers reorganization</h2>
+	Main STLport include directory renamed to <b>stlport</b>. 
+	Old HP-style STL headers moved to <b>stlport/hp</b> directory.
+	<h2>Quality improvements</h2>
+	<p>3.2 provides new workarounds for standard allocators : EBO (empty-base optimization),
+        for automatic space optimization for instanceless allocators. Allocators with instances
+        now can be used with any compiler. Chunking problem is fixed - no memory overuse.
+	<p>Major restructuring - non-inline code moved to .c implementation files.
+        That makes huge code bloat reduction for compilers that support separate compilation model,
+	like IBM xlC. If this model is not supported, .c file is being included in corresponding .h file.
+	<p><a href="debug_mode.html">Debug</a> mode redesigned for less code bloat and memory footprint.
+	Now it use single-linked lists for iterators lists and tables for error reporting. Also it provides more flexible control on error reporting for user - now you can control whether debug aasertion throws an exception or not, or to supply your own termination routine in addition to reporting one.
+	<h2>New platforms</h2>
+	Configuration files provided for Apogee C++, Borland C++ Builder 4.
+	<h2>Smoother portability</h2>
+	<p>New workarounds are used for compilers with limited capabilities. Standard forms of distance() 
+	and operator -&gt; for iterators is supported for them in 3.2. Additional user-level switch 
+        __STL_MINIMUM_DEFAULT_TEMPLATE_PARAMS is added to use minimum set of default arguments on 
+        template classes that have more than one - for example map&lt;&gt;, set&lt;&gt;. This is supposed to help compiling existing standard code which use shortest notation.
+	Many other portability issues reported for 3.12 are fixed, including workaround for famous Sun CC 4.2 bug. __STL_USE_MFC switch added for MFC cooperation. 
+        <h2>Configuration engine changes</h2>
+	<p><a href="configure.html">Configuration</a> switches changed - those describing compiler misfeatures changed so that
+	the compiler that implements complete ANSI C++ Standard and has no bugs would have empty
+        configuration file.  
+	<br>
+	<hr>	
+        <h2><font color="#000080">STLport 3.12 Release Notes</font></h2>
+
+        <h2>Configuration changes</h2>
+        <p>In 3.12, the confuguration headers stlcomp.h and configure script reside in
+config/ directory. stlcomp.h has been splitted to compiler-specific-headers. As now stl_config.h
+        includes &lt;config/stlcomp.h&gt;, your compiler must be able to understand UNIX-style paths.
+        Most compilers do that automatically, but some (MetroWerks CodeWarrior) require setting the option to do that..</p>
+        <h2>Cooperation with compiler's C++ library</h2>
+        <p>STLport 3.12 is capable of&nbsp; using separate namespace <b>stlport::</b>
+        to avoid conflicts with standard C++ library that comes with the
+        compiler. If your compiler provides new-style <b>&lt;iostream&gt;</b>,
+        please be sure to read the <a href="vendor_interface.html">document
+        describing this technique</a>.</p>
+        <h2>New-style iostreams:</h2>
+        <p>In STLport 3.12, <b>__STL_USE_NEW_IOSTREAMS&nbsp; </b>macro controls
+        whether you are using templatized iostreams or not. This setting is
+        important - STLport's <b>&lt;iostream&gt;</b> imports appropriate
+        version of native iostreams (&lt;<b>iostream</b>&gt; vs. &lt;<b>iostream.h</b>&gt;
+        depending on it. This also affects the choice of <a href="vendor_interface.html#option_2">own
+        namespace mode</a>.</p>
+        <p>Use of other new-style header names like <tt>&lt;<b>vector</b>&gt;</tt>
+        with STLport is highly recommended. </p>
+        <h2>allocator&lt;&gt;</h2>
+        <p>In STLport 3.12, the default <b>_Alloc</b> parameter to standard
+        container is always <b>allocator&lt;&gt;</b> (unlike in SGI STL, where
+        it is only so when the compiler supports partial specialization and
+        other new features).</p>
+        <h2>Underscored&nbsp; names</h2>
+        <p>All inernal names in STLport 3.12 starts with undercsore
+        (&quot;_&quot;), as specified by C++ standard.</p>
+        <h2><a name="new headers"></a>New-style C library headers</h2>
+        In this release, <b>__STL_USE_NEW_STYLE_HEADERS</b> only controls
+        STLport choice of using new-style C library headers : &lt;cstdio&gt; vs.
+        &lt;stdio.h&gt;, etc.
+        <h2>Bitset - additional parameter</h2>
+        <p>SGI STL introduced extra template parameter BufSize for bitset : <b>_WordT,
+        </b>which defaults to unsigned long. For 64-bits architectures, you may
+        wish to change it to be long long. Note that explicit use of extra
+        parameter will lead to non-portability with other STL implementations.</p>
+        <h2>Deque - additional parameter</h2>
+        <p>SGI STL introduced extra template parameter BufSize for deque : <tt>deque&lt;class
+        T, class Alloc, size_t BufSize=0&gt;</tt>. <br>
+        That allows you to specify deque buffer size on per-instance basis. </p>
+        <p>Some compilers (<b>Borland, Visual, SunPro, ..</b>.) are unhappy
+        about non-type template parameters (particularly when deque is being
+        passed as parameter to functions). For these compilers, only default
+        buffer size option is available. You may still specify buffer size using
+        <tt>__deque__&lt;T,Alloc,BufSize&gt;</tt>. </p>
+        <p> Note that explicit use of extra parameter will lead to
+        non-portability with other STL implementations. You may force full
+        version to be the default ( <tt>deque&lt;class T, class Alloc=allocator&lt;T&gt;,
+        size_t BufSize=0&gt;</tt> ) by disabling <tt>__STL_NON_TYPE_TMPL_PARAM_BUG</tt>
+        switch. Note that you may have problems instantiating template functions
+        taking deque as its argument then.</p>
+
+<!--  footer goes there -->
+<!-- Footer for stlport.org contents -->
+
+    </tr>
+  </table>
+  </center>
+</div>
+
+<center>
+ <table border="0" cellspacing="0" cellpadding="0" width="760">
+   <tr>
+    <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+   </tr>
+ </table>
+
+  <table border="0" cellspacing="0" cellpadding="0" width="760">
+    <tr>
+      <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+    </tr>
+    <tr>
+     <td align = "center">
+      <br>
+      <address class=FOOTNOTE>Copyright © 1999,2000 by Boris Fomitchev.&nbsp;&nbsp;
+       &nbsp;Last modified: July 14, 2000
+     </td>
+    </tr>
+  </table>
+</center>
+<!-- End footer for stlport.org contents -->
+
+
+</body>
+
+</html>

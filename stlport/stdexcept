@@ -1,0 +1,169 @@
+/*
+ * Copyright (c) 1996,1997
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Copyright (c) 1999 
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+
+#ifndef __SGI_STDEXCEPT
+
+# if !defined (__STL_OUTERMOST_HEADER_ID)
+#  define __STL_OUTERMOST_HEADER_ID 0x63
+#  include <stl/_prolog.h>
+# elif (__STL_OUTERMOST_HEADER_ID == 0x63) && ! defined (__STL_DONT_POP_0x63)
+#  define __STL_DONT_POP_0x63
+# endif
+
+# if !defined(__SGI_STDEXCEPT_SEEN) && \
+   (!defined (__STL_USE_NATIVE_STDEXCEPT) || defined (__STL_USE_OWN_NAMESPACE))
+
+#  define __SGI_STDEXCEPT_SEEN 1
+
+#  include <exception>
+
+#if defined(__STL_USE_EXCEPTIONS) || \
+    !(defined(_MIPS_SIM) && defined(_ABIO32) && _MIPS_SIM == _ABIO32)
+
+# include <cstring>
+
+#ifndef __SGI_STL_INTERNAL_ALLOC_H
+# include <stl/_alloc.h>
+#endif
+
+#ifndef __SGI_STL_STRING_FWD_H
+# include <stl/_string_fwd.h>
+#endif
+
+# define __STL_OWN_STDEXCEPT 1
+
+__STL_BEGIN_NAMESPACE
+
+class __STL_CLASS_DECLSPEC __Named_exception : public __STL_EXCEPTION_BASE {
+public:
+  __Named_exception(const string& __str) 
+# ifdef __SGI_STL_OWN_IOSTREAMS
+    ;
+  const char* what() const __STL_NOTHROW_INHERENTLY;
+# else
+  {
+    strncpy(_M_name, __get_c_string(__str), _S_bufsize);
+    _M_name[_S_bufsize - 1] = '\0';
+  }
+  const char* what() const __STL_NOTHROW_INHERENTLY { return _M_name; }
+# endif
+
+private:
+  enum { _S_bufsize = 256 };
+  char _M_name[_S_bufsize];
+};
+
+class __STL_CLASS_DECLSPEC logic_error : public __Named_exception {
+public:
+  logic_error(const string& __s) : __Named_exception(__s) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~logic_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC runtime_error : public __Named_exception {
+public:
+  runtime_error(const string& __s) : __Named_exception(__s) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~runtime_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC domain_error : public logic_error {
+public:
+  domain_error(const string& __arg) : logic_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~domain_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC invalid_argument : public logic_error {
+public:
+  invalid_argument(const string& __arg) : logic_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~invalid_argument() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC length_error : public logic_error {
+public:
+  length_error(const string& __arg) : logic_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~length_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC out_of_range : public logic_error {
+public:
+  out_of_range(const string& __arg) : logic_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~out_of_range() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC range_error : public runtime_error {
+public:
+  range_error(const string& __arg) : runtime_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~range_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC overflow_error : public runtime_error {
+public:
+  overflow_error(const string& __arg) : runtime_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~overflow_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+class __STL_CLASS_DECLSPEC underflow_error : public runtime_error {
+public:
+  underflow_error(const string& __arg) : runtime_error(__arg) {}
+# ifdef __SGI_STL_OWN_IOSTREAMS
+  ~underflow_error() __STL_NOTHROW_INHERENTLY;
+# endif
+};
+
+__STL_END_NAMESPACE
+
+#endif /* Not o32, and no exceptions */
+# endif /* __STL_STDEXCEPT_SEEN */
+
+
+#if defined (__STL_USE_NATIVE_STDEXCEPT)
+#  include __STL_NATIVE_HEADER(stdexcept)
+# endif
+
+#  undef  __SGI_STDEXCEPT_SEEN
+#  define __SGI_STDEXCEPT 1
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x63)
+#  if ! defined (__STL_DONT_POP_0x63)
+#   include <stl/_epilog.h>
+#   undef  __STL_OUTERMOST_HEADER_ID
+#   endif
+#   undef  __STL_DONT_POP_0x63
+# endif
+
+#endif /* __SGI_STDEXCEPT */
+
+// Local Variables:
+// mode:C++
+// End:
+

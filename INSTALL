@@ -1,0 +1,127 @@
+**********************************************************************
+* 	INSTALL file for STLport 4.0                                 *
+*                                                                    *
+**********************************************************************
+
+STLport-4.0 now comes with SGI iostream implementation, providing
+full ANSI C++ Standard library !
+
+This distribution contains STLport sources only.
+To use SGI iostreams, you have to build STLport library from sources in "src" 
+directory and link your programs with it.
+
+This is major change since pre-4.0 releases, please read the instructions carefully.
+
+==== Unpacking and installing STLport ==========
+
+1) Unpack STLport archive to a directory accessible during compilation.
+   NOTE : DO NOT overwrite header files coming with the compiler, even if you made
+   a backup - this won't work ! Most probably, you've already unpacked the archive before
+   reading this file though ;)
+
+2) Make sure "stlport" directory of this distribution comes before compiler's one 
+   in your search path when you compile the project;
+
+   Note: for SUnPro CC 5.0 and higher, there is a special directory "stlport/SC5"
+         to be set in search path due to specific SUNpro search rules)/
+
+3) Make sure you do not rename this "stlport" subdirectory -
+   that may result in compilation errors.
+
+   NOTE : Do NOT attempt to run "configure" ! It is deprecated, moved to safe standalone folder
+          and should be used as a helper to create initial config for a new compiler only. 
+          Your compiler should be auto-recognized.
+	  Please edit appropriate configuration header for your compiler
+          directly if you have to make compiler-specific configuration changes.
+
+   IMPORTANT :
+   If you DO NOT plan to use SGI iostreams implementation, please : 
+   3a) uncomment __STL_NO_SGI_IOSTREAMS setting in "stlport/stl/_site_config.h" to disable use
+       of SGI iostreams and to use wrappers around your existing iostreams. 
+       After disabling SGI iostreams, you will use wrappers around  your compiler's iostreams 
+       libabry, as in previous STLport releases.
+       No binary library for STLport needs to be built in this case.
+       Note though :
+        - new-style ANSI iostreams may not be available on your system;
+        - compiler's iostreams are most likely slower than SGI version.
+  If you decide to disable SGI iostreams, you may stop reading here.
+
+
+==== Building STLport (SGI iostreams) library ==========
+
+Below are step-by-step instructions to build STLport library:
+
+4)  Go to "src" subdirectory. It contains various makefiles for different compilers.
+    If you are not able to find makefile for your particular compiler, please use
+    one that looks most similar to your make engine to create your own.
+
+5)  Using appropriate makefile, do "make clean all" to build the STLport libraries
+    (makefiles are set up to build several different flavors - debug/nondebug,
+    static/dynamic versions).
+    Optionally, do "make install" to copy STLport headers and libraries to shared location.
+
+    Note : your "make" program may have different name, like "nmake" for Visual C++.
+
+    Examples : 
+     1. If you are building STLport for just one compiler, you may do something like that
+        (DOS syntax for Visual C++ below):
+        copy vc6.mak makefile
+        nmake clean all
+        nmake install
+
+     2. If you plan to build STLport with multiple compilers, use "make -f" :
+	make -f gcc.mak clean install
+	make -f sunpro.mak clean install
+
+        This will build and install STLport for gcc & SUN CC.
+
+        "install" target works on most platforms.
+
+         On Win32, it does the following :
+          - copies STLport headers in "stlport" subdirectory of your compiler's INCLUDE directory;
+          - copies STLport .lib files in your compiler's LIB directory;
+          - copies STLport DLLs to Windows system directory so they can be found at runtime.
+
+	 On UNIX, it does the following :
+          - copies STLport headers in "stlport" subdirectory of system's local include directory (default is /usr/local/include);
+          - copies STLport .a and .so files to system local library directory (default is /usr/local/lib);
+
+6)  If build fails, you may choose to :
+     - try fixing the build ;
+     - wait until somebody else will submit corresponding changes to be incorporated in next STLport 
+       release/snapshot. To use STLport w/o SGI iostreams, please do step 3a).
+
+    In case you do fix STLport, please submit your patches to fbp@stlport.org or (better)
+    to STLport Forum (http://www.stlport.org/forum)
+
+7) Do "make install" to install resulting libraries into "./lib" subdirectory.
+ 
+==== Linking your application with STLport library ==========
+
+8) Supply the "lib" subdirectory to the library search path and add desired 
+   library to the list of libraries to link with.
+   Examples (imagine you have mytest.cpp in the same directory as this file is):
+	With gcc     : gcc -I./stlport mytest.cpp -L./lib/ -lstlport_gcc
+	With DEC CC  : cxx -I./stlport mytest.cpp -L./lib/ -lstlport_deccxx
+	With SUN CC  : CC -I./stlport/SC5 mytest.cpp -L./lib/ -lstlport_sunpro
+	.....
+   [ Visual C++ specific ] For VC++, you do not have to specify "stlport-msvc-XXX.lib" explicitly,
+   as it is being choosen and forced to link automatically by "#pragma"'s in stlport/config/stl_select_lib.h.
+   Appropriate version is being selected based on /MD[d] vs /MT[d] options and __STL_DEBUG setting.
+   All you have to do is to set library search path for the linker.
+	Example :
+           cl.exe /I.\stlport mytest.cpp /link /libpath:.\lib /MD
+
+9) If you linked your application with shared STLport library (.so or .dll), please make your .so or
+   .dll's to be found in PATH at runtime. On Windows, the simplest way to do it
+   is to copy all .dll's to Windows system directory. Or, you might choose to add directory
+   containing STLport to the PATH environment string. 
+
+10) Have fun !
+
+07/07/00, Boris Fomitchev.
+
+
+
+
+

@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 1997-1999
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Copyright (c) 1999 
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+
+#ifndef __SGI_STL_STRING
+# define __SGI_STL_STRING
+
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x68
+#  include <stl/_prolog.h>
+# endif
+
+
+#if defined (__STL_USE_NATIVE_STRING)
+
+// as part of compiled runtime library depends on it.
+// DO NOT use SGI <string> with native <iostream> unless you recompile 
+// standard C++ runtime library with STLport installed. 
+
+# if defined (__STL_MSVC)
+#  include <streambuf>
+#  include <istream>
+# endif
+
+#  include __STL_NATIVE_HEADER(string)
+
+# endif /* __STL_USE_NATIVE_STRING */
+
+# if !defined (__STL_USE_NATIVE_STRING) || defined (__STL_USE_OWN_NAMESPACE)
+# include <stl/_string.h>
+# else
+# include <stl/_string_hash.h>
+# endif /*__STL_USE_NATIVE_STRING */
+
+// cleanup
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x68)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
+#endif /* __SGI_STL_STRING */
+
+// Local Variables:
+// mode:C++
+// End:
+

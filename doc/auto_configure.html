@@ -1,0 +1,222 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>STLport - Running "configure"</title>
+
+<!--  header goes there -->
+<!-- Header for stlport.org contents -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Boris Fomitchev">
+<meta name="Keywords" content="STL, C++, Standard, Template, Library, stlport, SGI, gcc, g++, GNU, Borland, Visual, SUN, SUNPro">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<div align = center>
+ <center>
+  <table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="4" width="776">
+  <tr height="64"><td bgcolor="#99ccff" >
+  <table cellspacing="0" cellpadding="0" width="768">
+   <tr  cellspacing="0" cellpadding="0">
+    <td width="248" align="left">
+     <img border="0" src="images/logo_1.jpg" 
+      alt="STLport.org - &quot;Templates that fit&quot;" width="248" height="64">
+    </td>
+    <td bgcolor="#99ccff" width="520">     
+      <table border="0" cellpadding="0" cellspacing="0" width="520">
+       <tr height = "24"> 
+         <td align="right" valign="top" bgcolor="#99ccff" CLASS=HEADER>
+<!---          <img border="0" src="images/logo_2.jpg" width="220" height="20"> -->
+         </td> 
+       </tr>
+      </table>
+    </td>
+   </tr>
+  </table>
+</td></tr>
+</table>
+ </center>
+</div>
+<!-- End header for stlport.org contents -->
+
+
+<!--  content bar goes there -->
+<div align="center">
+  <center>
+  <table border="0" cellpadding="4" cellspacing="0" width="776" height="100%">
+    <tr>
+      <td valign="top" width="134">
+
+<table bgcolor="#99CCFF" border="0" cellpadding="8" cellspacing="0" width="142">
+  <tr>
+    <td bgcolor="#d0d0d0" valign="top" align="left" nowrap><b>Contents</b></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EEEEEE" valign="top" align="left" nowrap CLASS=CONTENTS>
+      <b>Introduction</b><br>
+      
+      &nbsp; <a href="index.html">About STLport</a><br>
+      &nbsp; <a href="sgi_stl.html">SGI STL Base</a><br>
+      &nbsp; <a href="story.html">STLport Story</a><br>
+<!--      &nbsp; <a href="projects.html">Portofolio</a> -->
+      
+      <p><b>STLport Features</b><br>
+      &nbsp; <a href="platforms.html">Portability</a><br>
+      &nbsp; <a href="debug_mode.html">Debug Mode</a><br>
+      &nbsp; <a href="sgi_stl.html#thread_safety">Thread Safety</a><br>
+      &nbsp; <a href="exception_safety.html">Exception Safety</a>
+      </p>
+
+      <p><b>Getting Started</b><br>
+
+      &nbsp; <a href="install.html">Download and Install</a><br>
+      &nbsp; <a href="select_io.html">Select Streams Mode</a><br>
+      &nbsp; <a href="use_stlport.html">Compiling with STLport</a>
+      </p>
+
+      <p><b>White Papers</b><br>
+      &nbsp; <a href="release_notes.html">Release Notes</a><br>
+<!--      &nbsp; <a href="FAQ.html">FAQ</a><br> -->
+      &nbsp; <a href="compiler_readmes.html">READMEs</a><br>
+      &nbsp; <a href="vendor_interface.html">Interface with std::</a><br>
+      &nbsp; <a href="wrappers.html">Wrappers</a><br>
+      &nbsp; <a href="configure.html">Config manual</a><br>
+      &nbsp; <a href="testsuite.html">Regression Test</a><br>
+      &nbsp; <a href="eh_testsuite.html">Exception Test</a>
+      </p>
+
+      <p><b>Feedback</b><br>
+      &nbsp; <a href="bug_report.html">Bug Reports</a><br>
+      &nbsp; <a href="http://www.stlport.org/cgi-bin/forum/forum.cgi">Forum</a><br>
+      </p>
+      
+      <p><b>Appendix</b><br>
+      &nbsp; <a href="thanks.html">Acknowledgements</a><br>
+<!--      &nbsp; <a href="copyrights.html">Copyrights</a><br> -->
+      &nbsp; <a href="license.html">Your Free Licence</a></p>
+
+    </td>
+  </tr>
+</table>
+
+</td>
+<td valign="top" width="618">
+
+
+        <h1><font color="#000080">Running "configure" </font></h1>
+
+        <font size="1"><em><strong>by Boris Fomitchev</strong></em></font>
+
+        <h3>Configuring STLport for new compiler with UNIX shell</h3>
+
+        <p><i>Note: this document describes the procedure ot tuning STLport for
+        new compiler, not the one that is already supported. If your compiler is listed
+        as supported, this is absolutely unnecessary.</i>
+        
+	<p>STLport comes with &quot;configure&quot; shell script to help in the
+	initial step to tune the library for a new compiler. 
+	It sets up stlconf.h configuration header
+        with proper flags depending on features of the compiler and user-defined
+        options. 
+	Recommended way to create new configuration is to run "configure"
+	in "config/new_compiler" directory and create <b>stl_yourcompiler.h</b> in "config"
+	directory based on switches defined by "configure" in stlconf.h.
+	<b>Do not</b> expect STLport to be configured just by running "configure".
+
+        <p>Here is an example how to specify the parameters to "configure" (for Bourne-like
+        shells): <b><br>
+        host&gt; cd STLport/config<br>
+        host&gt; CXX=CC CXXFLAGS=&quot;-xwe -noex&quot; ./configure --enable-malloc</b></p>
+        <p>This will set up workarounds necessary for &quot;<b>CC</b>&quot;
+        compiler as well as specify malloc-based allocator as the default one. <br>
+        
+	Run &quot;<b>configure --help</b>&quot; to see list of options
+        available. For most reliable results, you should specify <b>CXXFLAGS</b>
+        to contain the option turning warnings into errors.
+        &quot;configure&quot; tries to scan warnings, but that not always works.
+        After testing your compiler features and setting options specified,
+        &quot;configure&quot; creates <b>stlconf.h</b> file using <b>config/stlconf.h</b>
+        as input. Macro <b>__AUTO_CONFIGURED</b> indicates that the package has
+        been configured. If it is not set (before you run configure), <b>stlconf.h</b>
+        includes <b>stlcomp.h</b> header to set up conservative configuration
+        and recognize the compiler version. <b>config/stlconf.h</b> can be
+        safely copied to stlconf.h to restore unconfigured status-quo.</p>
+        
+	<h3>Configuring STLport on other platforms</h3>
+        
+	The above may also work on other systems with UNIX-like toolsets on&nbsp;
+        them.&nbsp; <br>
+        
+	For example, the <a href="http://www.cygnus.com">cygwin32</a>&nbsp;
+        suite for Windows 95/NT runs &quot;configure&quot; just fine.&nbsp;&nbsp;&nbsp;
+        <br>
+        
+	You can also change &lt;stlcomp.h&gt; for your system manually.<br>
+        Please consider contributing your changes back to the&nbsp; STLport
+        project!
+        
+	<h3>&quot;configure&quot; synopsys (Bourne shells):</h3>
+        
+	<p>&gt; [environment] <b>./configure</b> [user-defined options]</p>
+        
+	<h3>&quot;configure&quot; synopsys (C-shells):</h3>
+        <p>&gt; <b>env </b>[environment] <b>./configure</b> [user-defined
+        options]</p>
+        
+	<p><b>&quot;configure&quot; script runs series of tests to determine
+        detailed characteristics of your compiler.</b></p>
+        <p>In [environment] , you may specify the following parameters</p>
+        <p><b>CXX=&lt;compiler_name&gt;, </b>default is <b>c++</b></p>
+        <p><b>CXXFLAGS=&lt;<i>cxx compiler flags you will most likely use</i>&gt;
+        . <br>
+        </b>That may be needed to set up some features correctly. That is, if
+        you plan to use exception handling, and your compiler doesn't enable
+        them by default, specify the option enabling EH there. <br>
+        It is also helpful to specify an option turning warnings into errors
+        here to get most reliable configuration ( For example, warnings could be
+        like that : <i>&quot;Warning: namespaces are mostly broken in this
+        release&quot;</i>, and they're indeed broken. ).</p>
+
+        <p>In case you are not able to run configure, you might have to know
+        internal STLport macros describing compiler features/bugs
+	Please refer to the <a href = "configure.html">Configuration Manual</a> for the values.
+
+        <h3>Modifying the configuration engine</h3>
+        <p>Don't edit the &quot;configure&quot; script directly, use <b>config/configure.in</b>
+        source + <b>GNU autoconf</b> instead.
+
+<!--  footer goes there -->
+<!-- Footer for stlport.org contents -->
+
+    </tr>
+  </table>
+  </center>
+</div>
+
+<center>
+ <table border="0" cellspacing="0" cellpadding="0" width="760">
+   <tr>
+    <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+   </tr>
+ </table>
+
+  <table border="0" cellspacing="0" cellpadding="0" width="760">
+    <tr>
+      <td bgcolor="#003399" height="2"><spacer type=block width=1 height=2></td>
+    </tr>
+    <tr>
+     <td align = "center">
+      <br>
+      <address class=FOOTNOTE>Copyright © 1999,2000 by Boris Fomitchev.&nbsp;&nbsp;
+       &nbsp;Last modified: July 14, 2000
+     </td>
+    </tr>
+  </table>
+</center>
+<!-- End footer for stlport.org contents -->
+
+
+</body>
+
+</html>

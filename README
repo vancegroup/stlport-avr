@@ -1,0 +1,62 @@
+**********************************************************************
+* 	README file for STLport 4.0 beta                             *
+*                                                                    *
+**********************************************************************
+
+This directory contains STLport-4.0 release.
+
+What's inside :
+
+README      -  this file
+INSTALL     - installation instructions
+TODO        - list of prospective changes
+
+stlport     - main STLport include directory
+src         - source and makefiles for SGI iostreams implementation (optional)
+lib         - installation directory for STLport library (if you use SGI iostreams only)
+test/test   - regression test NOT using SGI iostream AND using old-style headers
+test/eh     - exception handling test using SGI iostreams and new-style headers
+test/nico   - examples from Nicolai Josuttis's last book "C++ Standard Library"
+test/standalone - integrity test for each standard header
+
+
+IMPORTANT:
+
+Since STLport 4.0, SGI iostreams setting is on by default. 
+Please refer to INSTALL file for details.
+
+GETTING STLPORT
+
+To download the latest version of STLport, please be sure to visit
+http://www.stlport.org
+
+LEGALESE
+
+This software is being distributed under the following terms :
+
+ *
+ *
+ * Copyright (c) 1994
+ * Hewlett-Packard Company
+ *
+ * Copyright (c) 1996-1999
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Copyright (c) 1997
+ * Moscow Center for SPARC Technology
+ *
+ * Copyright (c) 1999, 2000
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+
+**********************************************************************
+
