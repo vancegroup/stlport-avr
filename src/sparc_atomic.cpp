@@ -10,7 +10,7 @@
 **  int _STLP_atomic_exchange (void *pvalue, int value)
 */
 extern "C"
-/* __stl_atomic_t */ void _STLP_atomic_exchange (__stl_atomic_t *pvalue, __stl_atomic_t value)
+__stl_atomic_t _STLP_atomic_exchange (__stl_atomic_t *pvalue, __stl_atomic_t value)
 {
   _STLP_ASM_VOLATILE  ("        ld      [%o0], %o2   ");            // Set the current value
   _STLP_ASM_VOLATILE  ("        mov     %o1, %o3  ");                                // Set the new value
@@ -20,6 +20,7 @@ extern "C"
   _STLP_ASM_VOLATILE  ("        membar  #LoadLoad | #LoadStore   "); // Ensure the cas finishes before
   _STLP_ASM_VOLATILE  ("        retl                         ");    // return
   _STLP_ASM_VOLATILE  ("        mov     %o3, %o0     ");           // Set the new value
+  return (__stl_atomic_t)(long)pvalue;
 }
 
 extern "C"

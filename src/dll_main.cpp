@@ -60,6 +60,7 @@ void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) {
   _STLP_THROW_MSG(out_of_range, __msg); 
 }
 
+
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) { 
   _STLP_THROW_MSG(length_error, __msg); 
 }
@@ -92,6 +93,7 @@ __Named_exception::__Named_exception(const string& __str) {
   strncpy(_M_name, __get_c_string(__str), _S_bufsize);
   _M_name[_S_bufsize - 1] = '\0';
 }
+
 const char* __Named_exception::what() const _STLP_NOTHROW_INHERENTLY { return _M_name; }
 
 // boris : those are needed to force typeinfo nodes to be created in here only

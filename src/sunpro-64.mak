@@ -3,7 +3,7 @@
 #
 LIB_BASENAME = libstlport_sunpro64
 
-STL_INCL= -I. -I${PWD}/../stlport/SC5
+STL_INCL= -I. -I${PWD}/../stlport
 CXXFLAGS_COMMON = -mt -pta +w2 -features=rtti -xildoff ${STL_INCL} -xarch=v9
 
 SHCXXFLAGS = -PIC

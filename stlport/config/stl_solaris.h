@@ -14,7 +14,9 @@
 #endif
 
 // For SPARC Ultra and higher, we use lightweight synchronization
-# if defined (__sparc) &&  ( defined  (__sparc_v9__) || defined (__sparcv9) || defined (_STLP_ULTRASPARC)) \
-     && ! defined (__STLP_NO_SGI_IOSTREAMS) && !defined(_NOTHREADS)
+# if defined (__sparc) &&  (defined (_REENTRANT) || defined (_PTHREADS)) \
+     && ( defined  (__sparc_v9__) || defined (__sparcv9) || defined (_STLP_ULTRASPARC)) \
+     && (defined (__GNUC__) || ! defined (__STLP_NO_SGI_IOSTREAMS)) && !defined(_NOTHREADS)
 #  define _STLP_SPARC_SOLARIS_THREADS
+#  define _STLP_THREADS
 # endif

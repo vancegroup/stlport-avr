@@ -238,19 +238,23 @@
 #  define _NOTHREADS
 # endif
 
-# if defined(_PTHREADS) && !defined(_NOTHREADS)
+# if !defined(_NOTHREADS) && ! defined (_STLP_THREADS)
+
+#  if defined(_PTHREADS)
 #     define _STLP_PTHREADS
-# endif
-# if defined(_UITHREADS) && !defined(_NOTHREADS)
+#     define _STLP_THREADS
+#  endif
+#  if defined(_UITHREADS)
 #     define _STLP_UITHREADS
-# endif
-# ifdef _REENTRANT
-#  if !defined(_NOTHREADS)
+#     define _STLP_THREADS
+#  endif
+
+#  if defined (_REENTRANT)
 #   if defined (__sgi)
 #    define _STLP_SGI_THREADS
-#  elif defined(__DECC) || defined(__DECCXX)
+#   elif defined(__DECC) || defined(__DECCXX)
 #    define _STLP_DEC_THREADS
-#  elif ((defined (__sun) && !defined (__linux__) && ! defined (_STLP_SPARC_SOLARIS_THREADS)) || defined(_UITHREADS) ) && !defined(_PTHREADS)
+#   elif ((defined (__sun) && !defined (__linux__)) || defined(_UITHREADS) ) && !defined(_PTHREADS)
 #     define _STLP_UITHREADS
 #   elif defined (_WIN32) || defined (WIN32) || defined (__WIN32__)
 #     define _STLP_WIN32THREADS
@@ -259,8 +263,9 @@
 #   else
 #     define _STLP_PTHREADS
 #   endif /* __sgi */
-# endif /* _NOTHREADS */
-# endif /* _REENTRANT */
+#   define _STLP_THREADS
+#  endif /* _REENTRANT */
+# endif
 
 # define _STL_STATIC_MUTEX _STL_mutex_base
 
@@ -268,9 +273,7 @@
 #  define _STLP_USE_MFC 1
 # endif
 
-#if defined(_STLP_WIN32THREADS) || defined(_STLP_SGI_THREADS) \
-    || defined(_STLP_PTHREADS) || defined(_STLP_UITHREADS) || defined(_STLP_OS2THREADS)
-#   define _STLP_THREADS
+#if defined (_STLP_THREADS)
 #   define _STLP_VOLATILE volatile
 /* windows.h _MUST be included before bool definition ;( */
 # if defined  (_STLP_WIN32THREADS) && defined (_STLP_NO_BOOL)
@@ -281,8 +284,6 @@
 #   else
 #    include <windows.h>
 #   endif
-// #   undef min
-// #   undef max
 #   define _STLP_WINDOWS_H_INCLUDED
 # endif
 #else
