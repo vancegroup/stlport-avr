@@ -389,8 +389,10 @@ void  _STLP_CALL __invalidate_iterator(const __owned_list* __base,
 
 #ifndef _STLP_MEMBER_TEMPLATES
 template <class _Tp, class _InputIterator>
-#endif
 class __range_checker {
+#else
+class _STLP_CLASS_DECLSPEC __range_checker {
+#endif
 protected:
   __range_checker() {}
 
