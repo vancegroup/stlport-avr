@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/04/14 18:01:24 ptr>
+// -*- C++ -*- Time-stamp: <02/04/22 10:35:29 ptr>
 
 /*
  *
@@ -120,6 +120,8 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 namespace __impl {
 
 extern __FIT_DECLSPEC void signal_throw( int sig ) throw( int );
+extern __FIT_DECLSPEC void signal_thread_exit( int sig );
+
 #ifdef __unix
 extern "C"  void *_xcall( void * ); // forward declaration
 #endif
