@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/14 16:00:11 ptr>
+// -*- C++ -*- Time-stamp: <03/03/26 15:10:33 ptr>
 
 /*
  *
@@ -482,7 +482,7 @@ class Condition
 #endif
       }
 
-    bool set( bool __v )
+    bool set( bool __v, bool _broadcast = false )
       {
         MT_REENTRANT( _lock, _x1 );
 
@@ -497,12 +497,20 @@ class Condition
 #endif
 #ifdef __FIT_UITHREADS
         if ( __v == true && tmp == false ) {
-          cond_signal( &_cond );
+          if ( _broadcast ) {
+            cond_broadcast( &_cond );
+          } else {
+            cond_signal( &_cond );
+          }
         }
 #endif
 #ifdef _PTHREADS
         if ( __v == true && tmp == false ) {
-          pthread_cond_signal( &_cond );
+          if ( _broadcast ) {
+            pthread_cond_broadcast( &_cond );
+          } else {
+            pthread_cond_signal( &_cond );
+          }
         }
 #endif
         return tmp;
@@ -576,7 +584,7 @@ class Condition
     __FIT_DECLSPEC int try_wait_time( const timespec *abstime );
     __FIT_DECLSPEC int try_wait_delay( const timespec *abstime );
 
-    int signal()
+    int signal( bool _broadcast = false )
       {
         MT_REENTRANT( _lock, _x1 );
 
@@ -585,10 +593,10 @@ class Condition
         return SetEvent( _cond ) == FALSE ? -1 : 0;
 #endif
 #ifdef _PTHREADS
-        return pthread_cond_signal( &_cond );
+        return _broadcast ? pthread_cond_broadcast( &_cond ) : pthread_cond_signal( &_cond );
 #endif
 #ifdef __FIT_UITHREADS
-        return cond_signal( &_cond );
+        return _broadcast ? cond_broadcast( &_cond ) : cond_signal( &_cond );
 #endif
 #ifdef _NOTHREADS
         return 0;
