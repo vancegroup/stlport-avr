@@ -118,7 +118,7 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 #  define _STLP_NONTEMPL_BASE_MATCH_BUG
 #  define _STLP_NO_EXCEPTION_HEADER 1
 #  define _STLP_NO_BAD_ALLOC 1
-#  define _STLP_NO_ARROW_OPERATOR 1
+
 #  define _STLP_NESTED_TYPE_PARAM_BUG 1
 
 #  define _STLP_NO_CSTD_FUNCTION_IMPORTS 1
@@ -127,6 +127,7 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 #   define _STLP_NO_BOOL 1
 #   define _STLP_NEED_EXPLICIT 1
 #   define _STLP_NEED_MUTABLE 1
+#   define _STLP_NO_ARROW_OPERATOR 1
 #  endif
 // This one is present in 11, but apparently has bugs (with auto_ptr).
 #   define _STLP_NO_NEW_STYLE_CASTS 1

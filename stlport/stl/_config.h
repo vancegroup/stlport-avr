@@ -263,6 +263,8 @@
 #     define _STLP_WIN32THREADS
 #   elif defined (__OS2__)
 #     define _STLP_OS2THREADS
+#   elif defined(__BEOS__)
+#     define _STLP_BETHREADS
 #   else
 #     define _STLP_PTHREADS
 #   endif /* __sgi */

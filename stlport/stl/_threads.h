@@ -151,6 +151,11 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 #  include <synch.h>
 #  include <cstdio>
 #  include <cwchar>
+# elif defined (_STLP_BETHREADS)
+#  include <OS.h>
+#include <cassert>
+#include <stdio.h>
+#  define _STLP_MUTEX_INITIALIZER = { 0 }
 #elif defined(_STLP_OS2THREADS)
   // This section serves to replace os2.h for VisualAge C++
   typedef unsigned long ULONG;
@@ -288,6 +293,24 @@ false); }
     DosRequestMutexSem(_M_lock, -1);
   }
   inline void _M_release_lock() { DosReleaseMutexSem(_M_lock); }
+#elif defined(_STLP_BETHREADS)
+  sem_id sem;
+  inline void _M_initialize() 
+  {
+     sem = create_sem(1, "STLPort");
+     assert(sem > 0);
+  }
+  inline void _M_destroy() 
+  {
+     int t = delete_sem(sem);
+     assert(t == B_NO_ERROR);
+  }
+  inline void _M_acquire_lock();
+  inline void _M_release_lock() 
+  {
+     status_t t = release_sem(sem);
+     assert(t == B_NO_ERROR);
+  }
 #else /* No threads */
   inline void _M_initialize() {}
   inline void _M_destroy() {}
@@ -298,7 +321,7 @@ false); }
 
 // This class could be just a smart pointer, but we do want to keep 
 // WIN32 optimized at a maximum
-#if  defined(_STLP_ATOMIC_EXCHANGE)
+#if  defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_BETHREADS)
 struct _STLP_CLASS_DECLSPEC _STLP_mutex_indirect : _STLP_mutex_base {};
 #else
 struct _STLP_CLASS_DECLSPEC _STLP_mutex_indirect
@@ -460,6 +483,61 @@ private:
   void operator=(const _STLP_auto_lock&);
   _STLP_auto_lock(const _STLP_auto_lock&);
 };
+
+
+
+#ifdef _STLP_BETHREADS
+
+template <int __inst>
+struct _STLP_beos_static_lock_data
+{
+	static bool is_init;
+	struct mutex_t : public _STLP_mutex
+	{
+		mutex_t()
+		{
+			_STLP_beos_static_lock_data<0>::is_init = true;
+		}
+		~mutex_t()
+		{
+			_STLP_beos_static_lock_data<0>::is_init = false;
+		}
+	};
+	static mutex_t mut;
+};
+
+template <int __inst>
+bool _STLP_beos_static_lock_data<__inst>::is_init = false;
+template <int __inst>
+typename _STLP_beos_static_lock_data<__inst>::mutex_t _STLP_beos_static_lock_data<__inst>::mut;
+
+
+inline void _STLP_mutex_base::_M_acquire_lock() 
+{
+	if(sem == 0)
+	{
+		// we need to initialise on demand here
+		// to prevent race conditions use our global
+		// mutex if it's available:
+		if(_STLP_beos_static_lock_data<0>::is_init)
+		{
+			_STLP_auto_lock al(_STLP_beos_static_lock_data<0>::mut);
+			if(sem == 0) _M_initialize();
+		}
+		else
+		{
+			// no lock available, we must still be
+			// in startup code, THERE MUST BE ONE THREAD
+			// ONLY active at this point.
+			_M_initialize();
+		}
+    }
+	status_t t;
+    t = acquire_sem(sem);
+    assert(t == B_NO_ERROR);
+}
+
+#endif
 
 _STLP_END_NAMESPACE
 
