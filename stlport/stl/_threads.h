@@ -72,7 +72,7 @@
 #  define _STLP_ATOMIC_DECREMENT(__x) __add_and_fetch(__x, (size_t) -1)
 # elif defined(_STLP_PTHREADS)
 #  include <pthread.h>
-#  if defined (PTHREAD_MUTEX_INITIALIZER) && ! defined (_STLP_MUTEX_INITIALIZER)
+#  if defined (PTHREAD_MUTEX_INITIALIZER) && ! defined (_STLP_MUTEX_INITIALIZER) && defined (_REENTRANT)
 #   define _STLP_MUTEX_INITIALIZER = { PTHREAD_MUTEX_INITIALIZER }
 #  endif
 

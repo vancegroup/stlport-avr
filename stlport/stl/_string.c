@@ -552,9 +552,9 @@ template <class _Tp, class _Alloc> void _String_base<_Tp, _Alloc>::_M_allocate_b
  
 template <class _CharT, class _Traits, class _Alloc> basic_string<_CharT, _Traits, _Alloc>::basic_string()
   : _String_base<_CharT,_Alloc>(allocator_type()) {  
-  _M_start  = _M_end_of_storage.allocate(8);  
-  _M_finish = _M_start;  
-  _M_end_of_storage._M_data = _M_start + 8;  
+  this->_M_start = this->_M_end_of_storage.allocate(8); 
+  this->_M_finish = this->_M_start; 
+  this->_M_end_of_storage._M_data = this->_M_start + 8; 
   _M_terminate_string();  
 } 
 

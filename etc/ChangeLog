@@ -42,6 +42,14 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* new.h : fix for gcc-3.0 to look in backward directory (Thanks Ken) 
 
 	* stlport/using/h/streambuf.h added (Thanks Gennadiy)
+
+	* A bunch of changes for Borland static and DLL compile (Thanks Nathan York)
+
+	* stl/_algo.c : fixed find_end() bug (Thanks Alberto Barbati)
+
+	* stl/_queue.h : priority_queue<>::_comp renamed to "comp" as standard states (thanks Todd Greer)
+
+	
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

@@ -131,49 +131,49 @@ public:
   typedef typename _Sequence::const_reference const_reference;
 protected:
   _Sequence c;
-  _Compare _comp;
+  _Compare comp;
 public:
   priority_queue() : c() {}
-  explicit priority_queue(const _Compare& __x) :  c(), _comp(__x) {}		//*TY 01/10/1999 - ugrified comp
+  explicit priority_queue(const _Compare& __x) :  c(), comp(__x) {}
   priority_queue(const _Compare& __x, const _Sequence& __s) 
-    : c(__s), _comp(__x) 		//*TY 01/10/1999 - ugrified comp
-    { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
+    : c(__s), comp(__x)
+    { make_heap(c.begin(), c.end(), comp); }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last) 
-    : c(__first, __last) { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
+    : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
 
   template <class _InputIterator>
   priority_queue(_InputIterator __first, 
                  _InputIterator __last, const _Compare& __x)
-    : c(__first, __last), _comp(__x) 		//*TY 01/10/1999 - ugrified comp
-    { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
+    : c(__first, __last), comp(__x)
+    { make_heap(c.begin(), c.end(), comp); }
 
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last,
                  const _Compare& __x, const _Sequence& __s)
-  : c(__s), _comp(__x)		//*TY 01/10/1999 - ugrified comp
+  : c(__s), comp(__x)
   { 
     c.insert(c.end(), __first, __last);
-    make_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
+    make_heap(c.begin(), c.end(), comp);
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
   priority_queue(const value_type* __first, const value_type* __last) 
-    : c(__first, __last) { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
+    : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
 
   priority_queue(const value_type* __first, const value_type* __last, 
                  const _Compare& __x) 
-    : c(__first, __last), _comp(__x)		//*TY 01/10/1999 - ugrified comp
-    { make_heap(c.begin(), c.end(), _comp); }		//*TY 01/10/1999 - ugrified comp
+    : c(__first, __last), comp(__x)
+    { make_heap(c.begin(), c.end(), comp); }
 
   priority_queue(const value_type* __first, const value_type* __last, 
                  const _Compare& __x, const _Sequence& __c)
-    : c(__c), _comp(__x) 		//*TY 01/10/1999 - ugrified comp
+    : c(__c), comp(__x)
   { 
     c.insert(c.end(), __first, __last);
-    make_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
+    make_heap(c.begin(), c.end(), comp);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -183,13 +183,13 @@ public:
   void push(const value_type& __x) {
     _STLP_TRY {
       c.push_back(__x); 
-      push_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
+      push_heap(c.begin(), c.end(), comp);
     }
     _STLP_UNWIND(c.clear());
   }
   void pop() {
     _STLP_TRY {
-      pop_heap(c.begin(), c.end(), _comp);		//*TY 01/10/1999 - ugrified comp
+      pop_heap(c.begin(), c.end(), comp);
       c.pop_back();
     }
     _STLP_UNWIND(c.clear());

@@ -963,7 +963,8 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
   li.LowPart = SetFilePointer(_M_file_id, li.LowPart, &li.HighPart, whence);
   if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR)
     result = -1; // Error
-  result = li.QuadPart;
+  else
+    result = li.QuadPart;
 
 #else
 #   error "Port!"

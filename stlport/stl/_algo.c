@@ -210,7 +210,7 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 		    forward_iterator_tag(),
                     forward_iterator_tag(),
 # endif
-                    __less(_STLP_VALUE_TYPE(__first1, _ForwardIter1))
+                    __equal_to(_STLP_VALUE_TYPE(__first1, _ForwardIter1))
     );
 }
 

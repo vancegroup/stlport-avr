@@ -65,10 +65,13 @@ struct __true_type {};
 struct __false_type {};
 
 
-template <bool _Is> struct __bool2type { typedef __false_type _Ret; };
+template <bool _Is> struct __bool2type {};
 
 _STLP_TEMPLATE_NULL
 struct __bool2type<true> { typedef __true_type _Ret; };
+
+_STLP_TEMPLATE_NULL
+struct __bool2type<false> { typedef __false_type _Ret; };
 
 // logical end of 3 predicated
 template <class _P1, class _P2, class _P3>
