@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/05/05 21:39:18 ptr>
+// -*- C++ -*- Time-stamp: <03/06/06 19:18:16 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -45,6 +45,7 @@
 #include <cerrno>
 #ifdef N_PLAT_NLM
 # include <nwerrno.h>
+# include <nwadv.h>
 #endif
 #include <string>
 
@@ -528,7 +529,7 @@ void Thread::_dealloc_uw()
     _uw_alloc_type *user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
 #endif
 #ifdef __FIT_NOVELL_THREADS
-    _uw_alloc_type *user_words = *static_cast<_uw_alloc_type **>(threadCustomDataPtr);
+    _uw_alloc_type *user_words = *static_cast<_uw_alloc_type **>(GetThreadDataAreaPtr());
 #endif // __FIT_NOVELL_THREADS
     alloc.deallocate( user_words, uw_alloc_size );
     user_words = 0;
@@ -558,7 +559,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
     TlsSetValue( _mt_key, user_words );
 #endif
 #ifdef __FIT_NOVELL_THREADS
-    *static_cast<_uw_alloc_type **>(threadCustomDataPtr) = user_words;
+    *static_cast<_uw_alloc_type **>(GetThreadDataAreaPtr()) = user_words;
 #endif
   } else {
 #ifdef __FIT_UITHREADS
@@ -571,7 +572,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
     user_words = static_cast<_uw_alloc_type *>(TlsGetValue( _mt_key ));
 #endif
 #ifdef __FIT_NOVELL_THREADS
-    user_words = *static_cast<_uw_alloc_type **>(threadCustomDataPtr);
+    user_words = *static_cast<_uw_alloc_type **>(GetThreadDataAreaPtr());
 #endif
     if ( (__idx + 1) * sizeof( _uw_alloc_type ) > uw_alloc_size ) {
       size_t tmp = sizeof( _uw_alloc_type ) * (__idx + 1);
@@ -591,7 +592,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
       TlsSetValue( _mt_key, user_words );
 #endif
 #ifdef __FIT_NOVELL_THREADS
-      *static_cast<_uw_alloc_type **>(threadCustomDataPtr) = user_words;
+      *static_cast<_uw_alloc_type **>(GetThreadDataAreaPtr()) = user_words;
 #endif
     }
   }
