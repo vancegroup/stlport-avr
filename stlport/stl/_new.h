@@ -2,15 +2,13 @@
 #ifndef _STLP_NEW_H_HEADER
 #define _STLP_NEW_H_HEADER
 
-#if defined(_STLP_USE_EXCEPTIONS) && defined(_STLP_NO_BAD_ALLOC)
-
-# ifndef _STLP_NEW_DONT_THROW
-#  define _STLP_NEW_DONT_THROW 1
-# endif /* _STLP_NEW_DONT_THROW */
+#if defined(_STLP_USE_EXCEPTIONS) && ( defined(_STLP_NO_BAD_ALLOC) || defined(_STLP_NEW_DONT_THROW) )
 
 # include <exception>
 
 _STLP_BEGIN_NAMESPACE
+
+#  if defined (_STLP_NO_BAD_ALLOC)
 
 struct nothrow_t {};
 
@@ -20,6 +18,13 @@ extern _STLP_DECLSPEC const nothrow_t nothrow;
 #  define nothrow nothrow_t()
 # endif
 
+#  endif /* _STLP_NO_BAD_ALLOC */
+
+/*
+ * STLport own bad_alloc exception to be used if the native C++ library
+ * do not define it or when the new operator do not throw it to avoid
+ * a useless library dependency.
+ */
 class bad_alloc : public exception { 
 public:
   bad_alloc () _STLP_NOTHROW_INHERENTLY { }
@@ -31,7 +36,7 @@ public:
 
 _STLP_END_NAMESPACE
 
-#endif /* _STLP_USE_EXCEPTIONS && _STLP_NO_BAD_ALLOC */
+#endif /* _STLP_USE_EXCEPTIONS && (_STLP_NO_BAD_ALLOC || _STLP_NEW_DONT_THROW) */
 
 #if defined(_STLP_WINCE) || defined(_STLP_RTTI_BUG)
 _STLP_BEGIN_NAMESPACE
@@ -47,12 +52,16 @@ _STLP_END_NAMESPACE
 
 #else /* _STLP_WINCE */
 
-# ifndef _STLP_NO_BAD_ALLOC
-#  ifdef _STLP_USE_OWN_NAMESPACE
+# if defined (_STLP_USE_OWN_NAMESPACE)
 
 _STLP_BEGIN_NAMESPACE
 
+#  if !defined(_STLP_NEW_DONT_THROW)
 using _STLP_VENDOR_EXCEPT_STD::bad_alloc;
+#  endif
+
+#  if !defined(_STLP_NO_BAD_ALLOC)
+
 using _STLP_VENDOR_EXCEPT_STD::nothrow_t;
 using _STLP_VENDOR_EXCEPT_STD::nothrow;
 
@@ -64,14 +73,18 @@ using _STLP_VENDOR_EXCEPT_STD::new_handler;
 using _STLP_VENDOR_EXCEPT_STD::set_new_handler;
 #   endif
     
-_STLP_END_NAMESPACE
+#  endif /* !_STLP_NO_BAD_ALLOC */
 
-#  endif /* _STLP_OWN_NAMESPACE */
-# endif /* _STLP_NO_BAD_ALLOC */
+_STLP_END_NAMESPACE
+# endif /* _STLP_USE_OWN_NAMESPACE */
+
+# if defined (_STLP_NO_BAD_ALLOC) && !defined(_STLP_NEW_DONT_THROW)
+#  define _STLP_NEW_DONT_THROW 1
+# endif /* _STLP_NEW_DONT_THROW */
 
 # if defined (_STLP_USE_EXCEPTIONS) && \
     (defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW))
-#  define _STLP_CHECK_NULL_ALLOC(__x) void* __y = __x;if (__y == 0){_STLP_THROW(bad_alloc());}return __y
+#  define _STLP_CHECK_NULL_ALLOC(__x) void* __y = __x;if (__y == 0){_STLP_THROW(_STLP_STD::bad_alloc());}return __y
 # else
 #  define _STLP_CHECK_NULL_ALLOC(__x) return __x
 # endif
