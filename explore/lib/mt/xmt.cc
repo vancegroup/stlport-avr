@@ -144,7 +144,7 @@ extern "C" void __at_fork_child()
 #ifdef _PTHREADS
   if ( detail::Init_count > 0 ) {
      // otherwise we do it in Thread::Init::Init() below
-#if !(defined(__FreeBSD__) || defined(__OpenBSD__))
+# if !(defined(__FreeBSD__) || defined(__OpenBSD__))
     // I am misunderstand this point, Solaris 7 require this (to be restored)
 
     // pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
@@ -152,9 +152,9 @@ extern "C" void __at_fork_child()
     // while Linux (and other) inherit this setting from parent process?
     // At least Linux glibc 2.2.5 try to made lock in recursive
     // call of pthread_atfork
-#else
+# else
 // should be fixed...
-#endif // !(__FreeBSD__ || __OpenBSD__)
+# endif // !(__FreeBSD__ || __OpenBSD__)
     pthread_key_create( &detail::_mt_key, 0 );
     pthread_setspecific( detail::_mt_key, detail::_uw_save );
     detail::_uw_save = 0;
@@ -418,7 +418,7 @@ int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signa
 #warning "Fix me!"
 #endif
 #ifdef _PTHREADS
-# ifndef __FreeBSD__
+# if !(defined(__FreeBSD__) || defined(__OpenBSD__))
   return sem_timedwait( &_sem, abstime );
 # else
   return -1; // not implemented
@@ -451,7 +451,7 @@ int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay 
   timespec st;
   Thread::gettime( &st );
   st += *interval;
-# ifndef __FreeBSD__
+# if !(defined(__FreeBSD__) || defined(__OpenBSD__))
   return sem_timedwait( &_sem, &st );
 # else
   return -1; // not implemented
@@ -496,7 +496,7 @@ Thread::Init::Init()
       _F_lockunlock
       throw std::runtime_error( "Problems with pthread_atfork" );
     }
-# endif // !__FreeBSD__
+# endif // !(__FreeBSD__ || __OpenBSD__)
     pthread_key_create( &_mt_key, 0 );
 #endif
 #ifdef __FIT_WIN32THREADS
@@ -536,12 +536,12 @@ const Thread::thread_id_type Thread::bad_thread_id = INVALID_HANDLE_VALUE;
 #endif // __FIT_WIN32THREADS
 
 #if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-# ifndef __FreeBSD__
+# if !(defined(__FreeBSD__) || defined(__OpenBSD__))
 const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::thread_id_type,-1);
-# else // __FreeBSD__
+# else // __FreeBSD__ || __OpenBSD__
 // pthread_t is defined as 'typedef struct pthread *pthread_t;'
 const Thread::thread_id_type Thread::bad_thread_id = __STATIC_CAST(Thread::thread_id_type,0);
-# endif // !__FreeBSD__
+# endif // !(__FreeBSD__ || __OpenBSD__)
 #endif // __FIT_UITHREADS || _PTHREADS
 
 #ifdef __FIT_NOVELL_THREADS
@@ -997,7 +997,7 @@ void Thread::sleep( timespec *abstime, timespec *real_time )
 __FIT_DECLSPEC
 void Thread::gettime( timespec *t )
 {
-#if defined(__linux) || defined(__FreeBSD__)
+#if defined(__linux) || defined(__FreeBSD__) || defined(__OpenBSD__)
   timeval tv;
   gettimeofday( &tv, 0 );
   TIMEVAL_TO_TIMESPEC( &tv, t );
