@@ -460,7 +460,7 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 
 	// Check for only one member -- in that case, __position points to itself,
 	// and attempting to increment will cause an infinite loop.
-	if (__after->_M_left == __this->._M_header._M_data)
+	if (__after->_M_left == __this->_M_header._M_data)
 	  // Check guarantees exactly one member, so comparison was already
 	  // performed and we know the result; skip repeating it in _M_insert
 	  // by specifying a non-zero fourth argument.
