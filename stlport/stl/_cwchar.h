@@ -16,18 +16,20 @@
 #ifndef _STLP_CWCHAR_H
 # define _STLP_CWCHAR_H
 
-#ifndef _STLP_NO_WCHAR_T
-#ifdef __cplusplus
-# include <cwchar>
-#else
-# include <wchar.h>
-#endif
-#endif
+# ifndef _STLP_NO_WCHAR_T
+#  ifdef __cplusplus
+#   include <cwchar>
+#  else
+#   include <wchar.h>
+#  endif
+# endif
 
-# if defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || defined(__FreeBSD__) || defined(__OpenBSD__) || (defined (__GNUC__) && defined (__APPLE__) || defined( __Lynx__ )) || defined (_STLP_NO_WCHAR_T)
-
+# if defined (_STLP_NO_WCHAR_T) || \
+     defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || \
+     defined(__OpenBSD__) || \
+     (defined (__GNUC__) && (defined (__APPLE__) || defined( __Lynx__ )))
 #  include _STLP_NATIVE_C_HEADER(stddef.h)
-#  if defined (__FreeBSD__) || defined (__Lynx__)
+#  if defined (__Lynx__)
 #   ifndef _WINT_T
 typedef long int wint_t;
 #    define _WINT_T

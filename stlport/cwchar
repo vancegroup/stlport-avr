@@ -32,16 +32,17 @@
 #   include <iosfwd>
 # endif
 
-# if !  defined (_STLP_NO_CWCHAR) && defined  (_STLP_USE_NEW_C_HEADERS)
+# if !defined(_STLP_NO_CWCHAR) && defined(_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cwchar)
 #  if defined(__OpenBSD__)
 typedef _BSD_WINT_T_ wint_t;
 #  endif /* __OpenBSD__ */
 
-# elif defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)) || defined (__BORLANDC__) || defined(__FreeBSD__) || defined(__OpenBSD__) || (defined (__GNUC__) && defined (__APPLE__) || defined( __Lynx__ )) || defined (_STLP_NO_WCHAR_T)
-
+# elif defined (_STLP_NO_WCHAR_T) || defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)) || defined (__BORLANDC__) || \
+     defined(__OpenBSD__) || \
+     (defined (__GNUC__) && (defined (__APPLE__) || defined( __Lynx__ )))
 #  include _STLP_NATIVE_C_HEADER(stddef.h)
-#  if defined (__FreeBSD__) || defined (__Lynx__)
+#  if defined (__Lynx__)
 #   ifndef _WINT_T
 typedef long int wint_t;
 #    define _WINT_T
@@ -50,7 +51,6 @@ typedef long int wint_t;
 #  if defined(__OpenBSD__)
 typedef _BSD_WINT_T_ wint_t;
 #  endif /* __OpenBSD__ */
-
 # else 
 #  include _STLP_NATIVE_C_HEADER(wchar.h)
 
