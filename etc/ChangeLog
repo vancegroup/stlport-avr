@@ -1,3 +1,13 @@
+2003-11-15 Francois Dumont <dums@s...>
+
+  * _string.h: implementation of the expression template for string addition with other 
+               string or C string or char.
+
+  * _ostream.h: adoption of the classic (even if not clear in the standard) ouput
+                for short and int negative values in hexa or octo bases that is display 
+                according its size for the compiler.
+                thanks Tanaka.
+
 2003-11-14  Petr Ovchenkov  <ptr@Island...>
 
 	* src/c_locale.c, src/c_locale_glibc/c_locale_glibc2.c:	step to

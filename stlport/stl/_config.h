@@ -115,6 +115,12 @@
 #  define _STLP_FUNCTION_TMPL_PARTIAL_ORDER 1
 #endif
 
+#if !defined (_STLP_DONT_USE_TEMPLATE_EXPRESSION) && !defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES) \
+    && !defined (_STLP_DEBUG) && !defined (_STLP_USE_TEMPLATE_EXPRESSION)
+#define _STLP_USE_TEMPLATE_EXPRESSION 1
+#endif
+
+
 # if !defined (_STLP_BIG_ENDIAN) && ! defined (_STLP_LITTLE_ENDIAN)
 #  if defined(_MIPSEB) || defined (__sparc) || \
       defined (_AIX) || defined (__hpux) || defined(macintosh) || defined (_MAC)
@@ -1033,7 +1039,7 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #  define _STLP_RELOPS_OPERATORS(_TMPL, _TP)
 # endif
 
-# if defined (_STLP_FULL_ADL_IMPLEMENTED) && defined (_STLP_NO_OWN_IOSTREAMS)
+# if defined (_STLP_FULL_ADL_IMPLEMENTED) && defined (_STLP_NO_OWN_IOSTREAMS) && !defined (_STLP_USE_NO_IOSTREAMS)
 #  error "Invalid configuration, STLport wrapper iostream mode can't be used with compiler"\
          "implementing full Argument Dependent Lookup. Please turn off _STLP_NO_OWN_IOSTREAMS switch"\
          "and build STLport library."

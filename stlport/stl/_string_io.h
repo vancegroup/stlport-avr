@@ -20,7 +20,7 @@
 #define _STLP_STRING_IO_H
 
 // this is for link-time instantiation
-#if !defined  ( _STLP_STRING )
+#if !defined  ( _STLP_STRING_H )
 # include <string>
 # endif
 
@@ -41,6 +41,18 @@ template <class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os, 
            const basic_string<_CharT,_Traits,_Alloc>& __s);
+
+#ifdef _STLP_USE_TEMPLATE_EXPRESSION
+
+template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right>
+basic_ostream<_CharT, _Traits>& _STLP_CALL
+operator<<(basic_ostream<_CharT, _Traits>& __os, 
+           const __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right>& __sum) {
+  basic_string<_CharT, _Traits, _Alloc> __tmp(__sum);
+  return __os << __tmp;
+}
+
+#endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 
 template <class _CharT, class _Traits, class _Alloc>
 basic_istream<_CharT, _Traits>&  _STLP_CALL

@@ -103,8 +103,8 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
 
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT, _Traits, _Alloc>&
-basic_string<_CharT, _Traits, _Alloc>::append(const _CharT* __first,
-                                              const _CharT* __last) {
+basic_string<_CharT, _Traits, _Alloc>::_M_append(const_iterator __first, const_iterator __last,
+                                                 const random_access_iterator_tag&) {
   if (__first != __last) {
     const size_type __old_size = size();
     ptrdiff_t __n = __last - __first;
@@ -606,7 +606,7 @@ basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s,
 
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _Traits, _Alloc> & __s)  
-  : _String_base<_CharT,_Alloc>(__s.get_allocator()) {  
+  : _String_base<_CharT,_Alloc>(__s.get_allocator(), __s.size() + 1) {  
   _M_range_initialize(__s._M_start, __s._M_finish);  
 } 
   
