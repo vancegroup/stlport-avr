@@ -31,14 +31,10 @@
 
 # define _STLP_WCHAR_T_IS_USHORT      1
 
-# define _STLP_STATIC_CONST_INIT_BUG   1
-
-// common for VC++ and ICL
-# if ! defined (__ICL) || (__ICL > 0x400)
-#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
-# endif
-
 # ifdef _STLP_MSVC
+
+// # define _STLP_STATIC_CONST_INIT_BUG   1
+# define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
 
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 
@@ -65,6 +61,10 @@
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_FRIEND_TEMPLATES
 #  define _STLP_STATIC_CONST_INIT_BUG   1
+//  these work, as long they are inline
+#   define _STLP_INLINEf_MEMBER_TEMPLATES 1
+// there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
+#   define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 # endif
 
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
@@ -86,16 +86,7 @@
 # endif /* (_MSC_VER <= 1300) */
 
 # if (_MSC_VER <= 1200)  // including MSVC 6.0
-
-// there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
-# define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-
 #  define _STLP_GLOBAL_NEW_HANDLER
-
-#  ifdef _STLP_MSVC
-//  these work, as long they are inline
-#   define _STLP_INLINE_MEMBER_TEMPLATES 1
-#  endif
 # endif /* (_MSC_VER <= 1200) */
 
 # if ( _MSC_VER<=1010 )
@@ -177,7 +168,7 @@
 # endif /* __ICL */
 
 
-#    if defined (__ICL) || (_MSC_VER < 1200)
+#    if (defined (__ICL) && (__ICL < 0x450)) || (_MSC_VER < 1200)
 //    only static SGI lib now works for ICL and VC 5.0
 #     undef  _STLP_USE_STATIC_LIB
 #     define _STLP_USE_STATIC_LIB

@@ -12,8 +12,9 @@
 #include<stack>
 #include<vector>
 #include <slist>
+#ifndef __WATCOMC__
 #include <rope>
-
+#endif
 #ifdef TEST_PTHREAD
 #include<pthread_alloc>
 #endif

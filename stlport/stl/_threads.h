@@ -132,10 +132,11 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 
 #  endif /* _WINDOWS_ */
 
-#  define _STLP_ATOMIC_INCREMENT(__x)           InterlockedIncrement((long*)__x)
-#  define _STLP_ATOMIC_DECREMENT(__x)           InterlockedDecrement((long*)__x)
-#  define _STLP_ATOMIC_EXCHANGE(__x, __y)       InterlockedExchange((long*)__x, (long)__y)
-
+#  ifndef _STLP_ATOMIC_INCREMENT
+#   define _STLP_ATOMIC_INCREMENT(__x)           InterlockedIncrement((long*)__x)
+#   define _STLP_ATOMIC_DECREMENT(__x)           InterlockedDecrement((long*)__x)
+#   define _STLP_ATOMIC_EXCHANGE(__x, __y)       InterlockedExchange((long*)__x, (long)__y)
+#  endif
 # elif defined(__DECC) || defined(__DECCXX)
 #  include <machine/builtins.h>
 #  define _STLP_ATOMIC_EXCHANGE __ATOMIC_EXCH_LONG

@@ -15,11 +15,11 @@ DYN_LINK=xilink.exe
 LIB_BASENAME=stlport_icl
 COMP=ICL
 
-EXTRA_COMMON_FLAGS= -D_MBCS
+EXTRA_COMMON_FLAGS= -D_MBCS -Qwd186
 EXTRA_DEBUG_FLAGS=
 EXTRA_NDEBUG_FLAGS= -Qsox-
 
-all: platform all_static 
+all: platform all_dynamic all_static 
 
 !INCLUDE vc_common.mak
 

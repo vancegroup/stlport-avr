@@ -934,7 +934,7 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 
 #  define _STLP_EXPORT_TEMPLATE_CLASS _STLP_EXPORT template class _STLP_CLASS_DECLSPEC
 
-#  if defined (_STLP_MSVC) || defined (__ICL)
+#  if defined (_STLP_MSVC) || (defined (__ICL) && (__ICL < 450))
 #   define _STLP_STATIC_MEMBER_DECLSPEC
 #  else
 #   define _STLP_STATIC_MEMBER_DECLSPEC _STLP_DECLSPEC

@@ -110,7 +110,11 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   __allocator_type::deallocate(__real_p, __real_n);
 }
 
-
+#ifdef __WATCOMC__
+#pragma warning 367 9
+#pragma warning 368 9
+#pragma warning 13 9
+#endif
 
 # ifdef _STLP_THREADS
 

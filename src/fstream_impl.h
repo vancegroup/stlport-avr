@@ -38,9 +38,6 @@ using _STLP_STD::ios_base;
 using _STLP_STD::streamsize;
 using _STLP_STD::streamoff;
 using _STLP_STD::char_traits;
-# if !(_MSCVER<=1100)
- using _STLP_STD::char_traits;
-# endif
 # ifndef _STLP_USE_UNIX_IO
 using _STLP_VENDOR_CSTD::FILE;
 using _STLP_VENDOR_CSTD::ftell;

@@ -2,12 +2,17 @@
 // It is internal STLport header - DO NOT include it directly
 
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
+#  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS // (reg)
+
+
+
 
 // On QNX, headers are supposed to be found in /usr/include,
 // so default "../include" should work.
 # ifndef __QNX__
 #  define _STLP_NATIVE_INCLUDE_PATH ../h
-# else
+# endif
+
 // Inline replacements for locking calls under Watcom
 // Define _STLP_NO_WATCOM_INLINE_INTERLOCK to keep using
 // standard WIN32 calls
@@ -64,11 +69,9 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 #define __stl_InterlockedExchange       InterlockedExchange
 #endif /* INLINE INTERLOCK */
 
-#define _STLP_ATOMIC_INCREMENT      __stl_InterlockedIncrement
-#define _STLP_ATOMIC_DECREMENT      __stl_InterlockedDecrement
-#define _STLP_ATOMIC_EXCHANGE       __stl_InterlockedExchange
-
-# endif
+#define _STLP_ATOMIC_INCREMENT(__x) __stl_InterlockedIncrement((long*)__x)
+#define _STLP_ATOMIC_DECREMENT(__x) __stl_InterlockedDecrement((long*)__x)
+#define _STLP_ATOMIC_EXCHANGE(__x, __y) __stl_InterlockedExchange((long*)__x, (long)__y)
 
 // boris : is this true or just the header is not in /usr/include ?
 # ifdef __QNX__
