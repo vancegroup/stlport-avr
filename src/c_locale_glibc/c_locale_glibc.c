@@ -123,6 +123,7 @@ static void
 _Remove_locale (int locale, struct locale_data *data)
 {
   /* this should eventually call _nl_remove_locale() in glibc 2.1 */
+  /* _nl_remove_locale( locale, data ); */
 }
 
 /* couldn't find where LOCALE_PATH was defined in glibc,
@@ -475,19 +476,26 @@ void* _Locale_ctype_create(const char * name) {
 
   lctype->__class = (_Locale_mask_t *)
     (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_CLASS)] .string) + 128;
-#if BYTE_ORDER == BIG_ENDIAN
+#ifdef _STLP_GLIBC_LOCALE_2
+  lctype->__tolower = (const int *)
+    (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOLOWER)].string) + 128;
+  lctype->__toupper = (const int *)
+    (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOUPPER)].string) + 128;
+#else
+# if BYTE_ORDER == BIG_ENDIAN
   lctype->__tolower = (const int *)
     (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOLOWER_EB)].string) + 128;
   lctype->__toupper = (const int *)
     (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOUPPER_EB)].string) + 128;
-#elif BYTE_ORDER == LITTLE_ENDIAN
+# elif BYTE_ORDER == LITTLE_ENDIAN
   lctype->__tolower = (const int *)
     (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOLOWER_EL)].string) + 128;
   lctype->__toupper = (const int *)
     (ctypes[_NL_ITEM_INDEX (_NL_CTYPE_TOUPPER_EL)].string) + 128;
-#else
-#error bizarre byte order
-#endif
+# else
+#  error bizarre byte order
+# endif
+#endif /* _STLP_GLIBC_LOCALE_2 */
   return lctype;
 }
 char* _Locale_ctype_name(const void* lctype,
@@ -516,17 +524,21 @@ int _Locale_tolower(struct _Locale_ctype* lctype, int c) {
 static inline size_t
 cname_lookup (wint_t wc, const struct locale_data* loc)
 {
+#ifdef _STLP_GLIBC_LOCALE_2
+  printf( "******** Fix me: %s:%d", __FILE__, __LINE__ );
+  return ~((size_t) 0);
+#else
   unsigned int *__nl_ctype_names;
   unsigned int hash_size, hash_layers;
   size_t result, cnt;
 
-#if BYTE_ORDER == BIG_ENDIAN
+# if BYTE_ORDER == BIG_ENDIAN
   __nl_ctype_names = (unsigned int*)loc->values[_NL_ITEM_INDEX(_NL_CTYPE_NAMES_EB)].string;
-#elif BYTE_ORDER == LITTLE_ENDIAN
+# elif BYTE_ORDER == LITTLE_ENDIAN
   __nl_ctype_names = (unsigned int*)loc->values[_NL_ITEM_INDEX(_NL_CTYPE_NAMES_EL)].string;
-#else
-#error bizarre byte order
-#endif
+# else
+#  error bizarre byte order
+# endif
 
   hash_size = loc->values[_NL_ITEM_INDEX(_NL_CTYPE_HASH_SIZE)].word;
   hash_layers = loc->values[_NL_ITEM_INDEX(_NL_CTYPE_HASH_LAYERS)].word;
@@ -538,6 +550,7 @@ cname_lookup (wint_t wc, const struct locale_data* loc)
     result += hash_size;
   }
   return cnt < hash_layers ? result : ~((size_t) 0);
+#endif
 }
 
 
