@@ -32,10 +32,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ReviterTest);
 //
 void ReviterTest::reviter1()
 {
-int array [] = { 1, 5, 2, 3 };
+  int array [] = { 1, 5, 2, 3 };
 
   vector<int> v(array, array + 4);
-  typedef std::vector<int>::reverse_iterator reviter;
+  typedef vector<int>::reverse_iterator reviter;
   reviter r(v.rend());
   r--;
 
@@ -49,8 +49,8 @@ void ReviterTest::reviter2()
 {
   int array [] = { 1, 5, 2, 3 };
 
-  std::vector<int> v(array, array + 4);
-  std::vector<int>::reverse_iterator r;
+  vector<int> v(array, array + 4);
+  vector<int>::reverse_iterator r;
   r = v.rbegin();
   CPPUNIT_ASSERT(*r++ == 3);
   CPPUNIT_ASSERT(*r++ == 2);
@@ -63,7 +63,7 @@ void ReviterTest::revbit1()
   int array [] = { 1, 5, 2, 3 };
 
   list<int> v(array, array + 4);
-  std::list<int>::reverse_iterator r(v.rbegin());
+  list<int>::reverse_iterator r(v.rbegin());
   CPPUNIT_ASSERT(*r++ == 3);
   CPPUNIT_ASSERT(*r++ == 2);
   CPPUNIT_ASSERT(*r++ == 5);

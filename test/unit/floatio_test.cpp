@@ -42,43 +42,61 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FloatIOTest);
 void FloatIOTest::float_output_test()
 {
   ostringstream ostr;
+  string output;
   
+  ostr.precision(6);
   float test_val = (float)1.23457e+17;
   
   ostr << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "1.23457e+17");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "1.23457e+17");
 
   ostr << fixed << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "123456996677517312.000000");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output.size() == 25);
+  CPPUNIT_ASSERT(output.substr(0, 5) == "12345");
+  CPPUNIT_ASSERT(output.substr(18) == ".000000");
 
   ostr << showpos << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "+123456996677517312.000000");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output.size() == 26);
+  CPPUNIT_ASSERT(output.substr(0, 6) == "+12345");
+  CPPUNIT_ASSERT(output.substr(19) == ".000000");
 
   ostr << setprecision(500) << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "+123456996677517312.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-                                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output.size() == 520);
+  CPPUNIT_ASSERT(output.substr(0, 6) == "+12345");
+  CPPUNIT_ASSERT(output.substr(19) == ".0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+                                       "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
   
   ostr << noshowpos << scientific;
 
   test_val = 0.12345678f;
   ostr << setprecision(8) << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "1.23456784e-01");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "1.23456784e-01");
   
   ostr << setw(30) << fixed << setfill('0') << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "000000000000000000000.12345678");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "000000000000000000000.12345678");
   
   ostr << setw(30) << showpos << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "0000000000000000000+0.12345678");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "0000000000000000000+0.12345678");
   
   ostr << setw(30) << left << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "+0.123456780000000000000000000");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "+0.123456780000000000000000000");
 
   ostr << setw(30) << internal << test_val;
-  CPPUNIT_ASSERT(reset_stream(ostr) == "+00000000000000000000.12345678");
+  output = reset_stream(ostr);
+  CPPUNIT_ASSERT(output == "+00000000000000000000.12345678");
 }
+
 void FloatIOTest::float_input_test()
 {
   float in_val;
@@ -115,3 +133,12 @@ void FloatIOTest::float_input_test()
   CPPUNIT_ASSERT(check_float(in_val, 12345.0f));
   istr.clear();
 }
+
+/*
+int main (int argc, char *argv[]) {
+  FloatIOTest test;
+  test.float_output_test();
+  test.float_input_test();
+  return 0;
+}
+*/

@@ -73,5 +73,8 @@ void SetTest::erase()
   s.insert(1);
   s.erase(s.begin());
   CPPUNIT_ASSERT( s.empty() );
+  
+  unsigned int nb = s.erase(1);
+  CPPUNIT_ASSERT(nb == 0);
 }
 
