@@ -1,8 +1,8 @@
-// -*- C++ -*- Time-stamp: <99/02/08 13:50:21 ptr>
+// -*- C++ -*- Time-stamp: <99/02/08 13:54:36 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
-#include <plock.h>
+#include <xmt.h>
 
 #include <cstring>
 #include <ostream>
