@@ -55,9 +55,9 @@ public:
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
   typedef typename _Rep_type::const_reference const_reference;
+  typedef typename _Rep_type::iterator iterator;
   typedef typename _Rep_type::const_iterator const_iterator;
-  typedef const_iterator iterator;
-  typedef typename _Rep_type::const_reverse_iterator reverse_iterator;
+  typedef typename _Rep_type::reverse_iterator reverse_iterator;
   typedef typename _Rep_type::const_reverse_iterator const_reverse_iterator;
   typedef typename _Rep_type::size_type size_type;
   typedef typename _Rep_type::difference_type difference_type;
@@ -129,10 +129,14 @@ public:
   value_compare value_comp() const { return _M_t.key_comp(); }
   allocator_type get_allocator() const { return _M_t.get_allocator(); }
 
-  iterator begin() const { return _M_t.begin(); }
-  iterator end() const { return _M_t.end(); }
-  reverse_iterator rbegin() const { return _M_t.rbegin(); } 
-  reverse_iterator rend() const { return _M_t.rend(); }
+  iterator begin() { return _M_t.begin(); }
+  iterator end() { return _M_t.end(); }
+  const_iterator begin() const { return _M_t.begin(); }
+  const_iterator end() const { return _M_t.end(); }
+  reverse_iterator rbegin() { return _M_t.rbegin(); } 
+  reverse_iterator rend() { return _M_t.rend(); }
+  const_reverse_iterator rbegin() const { return _M_t.rbegin(); }
+  const_reverse_iterator rend() const { return _M_t.rend(); }
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
