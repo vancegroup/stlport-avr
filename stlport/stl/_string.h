@@ -166,7 +166,7 @@ public:                         // Constructor, destructor, assignment.
   basic_string();
 
   explicit basic_string(const allocator_type& __a)
-    : _String_base<_CharT,_Alloc>(__a, 8) { 
+    : _String_base<_CharT,_Alloc>(__a, _DEFAULT_SIZE) { 
     _M_terminate_string(); 
   }
 

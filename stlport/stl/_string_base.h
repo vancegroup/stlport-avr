@@ -40,7 +40,7 @@ class _String_base {
 protected:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
-  //dums: Some compiler(MSVC6) require it to be public!
+  //dums: Some compiler(MSVC6) require it to be public not only protected!
 public:
   enum {_DEFAULT_SIZE = 8};
 private:
@@ -164,13 +164,15 @@ protected:
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
     if (_M_using_static_buf())
       _STLP_STD::swap(_M_buffers, __s._M_buffers);
-    else
+    else {
       _STLP_STD::swap(_M_buffers._M_dynamic_buf, __s._M_buffers._M_dynamic_buf);
+      _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+    }
 #else
     _STLP_STD::swap(_M_start, __s._M_start);
+    _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
     _STLP_STD::swap(_M_finish, __s._M_finish);
-    _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
   }
 
   void _M_throw_length_error() const;

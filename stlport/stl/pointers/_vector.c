@@ -74,14 +74,11 @@ vector<void*,_Alloc>& vector<void*,_Alloc>::operator=(const vector<void*, _Alloc
       this->_M_end_of_storage._M_data = this->_M_start + __xlen;
     }
     else if (size() >= __xlen) {
-      pointer __i = __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start), __CONST_CAST(const_pointer, __x._M_finish), 
-                                this->_M_start, _TrivialAss());
+      __copy_trivial(__x._M_start, __x._M_finish, this->_M_start);
     }
     else {
-      __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start), 
-                  __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialAss());
-      __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start) + size(), 
-                           __CONST_CAST(const_pointer, __x._M_finish)+0, this->_M_finish, _IsPODType());
+      __copy_trivial(__x._M_start, __x._M_start + size(), this->_M_start);
+      __ucopy_trivial(__x._M_start + size(), __x._M_finish, this->_M_finish);
     }
     this->_M_finish = this->_M_start + __xlen;
   }

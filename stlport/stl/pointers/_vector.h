@@ -329,10 +329,8 @@ public:
   }
 
   template <class _InputIterator>
-  void _M_range_insert(iterator __pos, 
-		       _InputIterator __first, 
-		       _InputIterator __last,
-		       const input_iterator_tag &) {
+  void _M_range_insert(iterator __pos, _InputIterator __first, _InputIterator __last,
+                       const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
       __pos = insert(__pos, *__first);
       ++__pos;
@@ -340,8 +338,7 @@ public:
   }
 
   template <class _ForwardIterator>
-  void _M_range_insert(iterator __position,
-                       _ForwardIterator __first, _ForwardIterator __last,
+  void _M_range_insert(iterator __position, _ForwardIterator __first, _ForwardIterator __last,
                        const forward_iterator_tag &) 
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,
@@ -380,9 +377,9 @@ public:
         pointer __new_start = this->_M_end_of_storage.allocate(__len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
-          __new_finish = __uninitialized_move(this->_M_start, __position, __new_start, _IsPODType());
+          __new_finish = reinterpret_cast<pointer>(__ucopy_trivial(this->_M_start, __position, __new_start));
           __new_finish = __uninitialized_copy(__first, __last, __new_finish, _IsPODType());
-          __new_finish = __uninitialized_move(__position, this->_M_finish, __new_finish, _IsPODType());
+          __new_finish = reinterpret_cast<pointer>(__ucopy_trivial(__position, this->_M_finish, __new_finish));
         }
         _STLP_UNWIND(this->_M_end_of_storage.deallocate(__new_start,__len));
         _M_clear();
@@ -641,7 +638,7 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos, const_iterator __first, const_iterator __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
-  {_M_datas.insert(reinterpret_cast<base_iterator>(__pos), __first, __last);}
+  {_M_datas.insert(cast_traits::ite_cast(__pos), __first, __last);}
 
   void insert (iterator __pos, size_type __n, value_type __x)
   { _M_datas.insert(cast_traits::ite_cast(__pos), __n, cast_traits::cast(__x)); }
