@@ -1,0 +1,23 @@
+***********************************************
+
+This directory contains miscellanous files for STLport-4.5 release.
+
+***********************************************
+
+                 PROJECT COORDINATION FILES
+
+ * ChangeLog            - Log of changes since  STLport 4.0 release
+ * ChangeLog-4.0        - Log of changes before STLport 4.0 release
+
+ * TODO                 - Some future plans and directions 
+
+                 CVS HOUSEKEEPING, SCRIPTS
+
+ * cvsignore            - 
+ * scvs
+
+                         GOODIES
+
+ * msvcincl.dat         - the file to be placed in Windows directory 
+                          to exclude STLport files from VC++ dependancy checks
+
