@@ -38,6 +38,7 @@
 #include <set>
 #include <list>
 #include <slist>
+#include <deque>
 #include <stl/_hashtable.h>
 #include <limits>
 #include <string>
@@ -175,6 +176,11 @@ template class __list__<void*,allocator<void*> >;
 
 template class _Slist_base<void*, allocator<void*> >;
 template class slist<void*, allocator<void*> >;
+
+template class _STLP_alloc_proxy<size_t, void*, allocator<void*> >;
+template class _STLP_alloc_proxy<void***, void**, allocator<void**> >;
+template class _Deque_base<void*,allocator<void*> >;
+template class deque<void*,allocator<void*> >;
 # endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 template class _Rb_global<bool>;

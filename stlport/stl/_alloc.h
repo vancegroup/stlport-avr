@@ -156,7 +156,7 @@ private:
   }; // that is 8 bytes for sure
   // Sunpro CC has bug on enums, so extra_before/after set explicitly
   enum { __pad=8, __magic=0xdeba, __deleted_magic = 0xdebd,
-	 __shred_byte= _STLP_SHRED_BYTE
+         __shred_byte= _STLP_SHRED_BYTE
   };
 
   enum { __extra_before = 16, __extra_after = 8 };
