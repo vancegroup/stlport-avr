@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/02/02 18:29:54 ptr>
+// -*- C++ -*- Time-stamp: <99/02/04 18:43:06 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -8,6 +8,9 @@
 
 #ifdef WIN32
 #include <iostream>
+#include <iomanip>
+
+using namespace std;
 #endif
 
 extern "C" {
@@ -20,14 +23,16 @@ extern "C" {
 
 namespace __impl {
 
-// #ifndef WIN32
 using std::cerr;
 using std::endl;
-// #endif
+
+#ifdef WIN32
+int __thr_key = TlsAlloc();
+#endif
 
 Thread::Thread() :
 #ifdef WIN32
-    _id( (HANDLE)-1 ),
+    _id( INVALID_HANDLE_VALUE ),
 #else
     _id( -1 ),
 #endif
@@ -45,7 +50,7 @@ Thread::Thread( Thread::entrance_type entrance, void *p, size_t psz ) :
 void Thread::launch( entrance_type entrance, void *p, size_t psz )
 {
 #ifdef WIN32
-  if ( _id == (HANDLE)-1 ) {
+  if ( _id == INVALID_HANDLE_VALUE ) {
 #else
   if ( _id == -1 ) {
 #endif
@@ -58,26 +63,23 @@ int Thread::join()
 {
 #ifdef WIN32
   unsigned long ret_code = 0;
-  if ( _id != (HANDLE)-1 ) {
-#else
-  int ret_code = 0;
-  if ( _id != -1 ) {
-#endif
-#ifdef _PTHREADS
-    pthread_join( _id, (void **)(&ret_code) );
-#endif
-#ifdef _SOLARIS_THREADS
-    thr_join( _id, 0, (void **)(&ret_code) );
-#endif
-#ifdef WIN32
+  if ( _id != INVALID_HANDLE_VALUE ) {
     WaitForSingleObject( _id, -1 );
     GetExitCodeThread( _id, &ret_code );
-    _id = (HANDLE)-1;
-#endif
-#ifndef WIN32
-    _id = -1;
-#endif
+    _id = INVALID_HANDLE_VALUE;
   }
+#else // !WIN32
+  int ret_code = 0;
+  if ( _id != -1 ) {
+#  ifdef _PTHREADS
+    pthread_join( _id, (void **)(&ret_code) );
+#  endif
+#  ifdef _SOLARIS_THREADS
+    thr_join( _id, 0, (void **)(&ret_code) );
+#  endif
+    _id = -1;
+  }
+#endif // !WIN32
 
   return ret_code;
 }
@@ -97,17 +99,15 @@ void Thread::exit( int code )
 
 void Thread::_create( void *p, size_t psz ) throw(runtime_error)
 {
-//	if ( _param_sz != 0 ) {
-//	  delete [] _param;
-//	}
-  if ( psz > sizeof(void *) ) {
+  if ( psz > sizeof(void *) ) { // can't pass on pointer
+    // Hey, deallocation SHOULD be either in this method, or in _call ONLY,
+    // and never more!
     _param = new char [psz];
 #ifdef WIN32
     memcpy( _param, p, psz );
 #else
     std::memcpy( _param, p, psz );
 #endif
-//	  MT_LOCK( _params_lock );
   } else {
     _param = p;	  
   }
@@ -125,7 +125,7 @@ void Thread::_create( void *p, size_t psz ) throw(runtime_error)
   err = GetLastError();
 #endif
   if ( err != 0 ) {
-    if ( psz > sizeof( void *) ) {
+    if ( psz > sizeof( void *) ) { // clear allocated here
       delete [] _param;
     }
     throw runtime_error( "Thread creation error" );
@@ -135,8 +135,12 @@ void Thread::_create( void *p, size_t psz ) throw(runtime_error)
 void *Thread::_call( void *p )
 {
   Thread *me = static_cast<Thread *>(p);
-//	if ( me->_param_sz != 0 ) {
-//	}
+
+  // After exit of me->_entrance, there is may be no more *me itself,
+  // so it's members may be unaccessable. Don't use me->"*" after call
+  // of me->_entrance!!!
+  void *_param     = me->_param;
+  size_t _param_sz = me->_param_sz;
   int ret;
 
 #ifdef WIN32
@@ -149,12 +153,6 @@ void *Thread::_call( void *p )
 	
   try {
     ret = me->_entrance( me->_param );
-	  
-    if ( me->_param_sz > sizeof(void *) ) {
-      delete [] me->_param;
-      me->_param_sz = 0;
-      me->_param = 0;
-    }
   }
   catch ( std::exception& e ) {
     cerr << e.what() << endl;
@@ -164,6 +162,19 @@ void *Thread::_call( void *p )
     cerr << "Oh, oh, say baby Sally. Dick and Jane launch." << endl;
     ret = -1;
   }
+
+  try {
+    if ( _param_sz > sizeof(void *) ) { // that's allocated
+      delete [] _param;
+      _param_sz = 0;
+      _param = 0;
+    }
+  }
+  catch ( ... ) {
+    cerr << "(+)" << endl;
+    ret = -1;
+  }
+
 #if defined( __SUNPRO_CC ) && defined( __i386 )
   Thread::exit( ret );
 #endif
