@@ -80,7 +80,7 @@ void _List_base<_Tp,_Alloc>::clear() {
 # endif
 
 template <class _Tp, class _Alloc>
-void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x) {
+void _LIST_IMPL<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x) {
   iterator __i = begin();
   size_type __len = 0;
   for ( ; __i != end() && __len < __new_size; ++__i, ++__len);
@@ -92,7 +92,7 @@ void list<_Tp, _Alloc>::resize(size_type __new_size, const _Tp& __x) {
 }
 
 template <class _Tp, class _Alloc>
-list<_Tp, _Alloc>& list<_Tp, _Alloc>::operator=(const list<_Tp, _Alloc>& __x) {
+_LIST_IMPL<_Tp, _Alloc>& _LIST_IMPL<_Tp, _Alloc>::operator=(const _LIST_IMPL<_Tp, _Alloc>& __x) {
   if (this != &__x) {
     iterator __first1 = begin();
     iterator __last1 = end();
@@ -109,7 +109,7 @@ list<_Tp, _Alloc>& list<_Tp, _Alloc>::operator=(const list<_Tp, _Alloc>& __x) {
 }
 
 template <class _Tp, class _Alloc>
-void list<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
+void _LIST_IMPL<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
   iterator __i = begin();
   for ( ; __i != end() && __n > 0; ++__i, --__n)
     *__i = __val;
@@ -120,8 +120,8 @@ void list<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
 }
 
 template <class _Tp, class _Alloc, class _Predicate> 
-void _S_remove_if(list<_Tp, _Alloc>& __that, _Predicate __pred)  {
-  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+void _S_remove_if(_LIST_IMPL<_Tp, _Alloc>& __that, _Predicate __pred)  {
+  typedef typename _LIST_IMPL<_Tp, _Alloc>::iterator _Literator;
   _Literator __first = __that.begin();
   _Literator __last = __that.end();
   while (__first != __last) {
@@ -133,8 +133,8 @@ void _S_remove_if(list<_Tp, _Alloc>& __that, _Predicate __pred)  {
 }
 
 template <class _Tp, class _Alloc, class _BinaryPredicate>
-void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
-  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+void _S_unique(_LIST_IMPL<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
+  typedef typename _LIST_IMPL<_Tp, _Alloc>::iterator _Literator;
   _Literator __first = __that.begin();
   _Literator __last = __that.end();
   if (__first == __last) return;
@@ -149,9 +149,9 @@ void _S_unique(list<_Tp, _Alloc>& __that, _BinaryPredicate __binary_pred) {
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
+void _S_merge(_LIST_IMPL<_Tp, _Alloc>& __that, _LIST_IMPL<_Tp, _Alloc>& __x,
               _StrictWeakOrdering __comp) {
-  typedef typename list<_Tp, _Alloc>::iterator _Literator;
+  typedef typename _LIST_IMPL<_Tp, _Alloc>::iterator _Literator;
   _Literator __first1 = __that.begin();
   _Literator __last1 = __that.end();
   _Literator __first2 = __x.begin();
@@ -169,16 +169,16 @@ void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
 }
 
 template <class _Tp, class _Alloc, class _StrictWeakOrdering>
-void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
-  // Do nothing if the list has length 0 or 1.
+void _S_sort(_LIST_IMPL<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
+  // Do nothing if the _LIST_IMPL has length 0 or 1.
   if (__that._M_node._M_data._M_next != &__that._M_node._M_data &&
       __that._M_node._M_data._M_next->_M_next != &__that._M_node._M_data) {
-    list<_Tp, _Alloc> __carry;
+    _LIST_IMPL<_Tp, _Alloc> __carry;
 #if !defined (__WATCOMC__)
-    list<_Tp, _Alloc> __counter[64];
+    _LIST_IMPL<_Tp, _Alloc> __counter[64];
 #else
-    vector<list<_Tp, _Alloc>, _Alloc> __counter(64);
-#endif  //*TY 05/25/2000 - 
+    vector<_LIST_IMPL<_Tp, _Alloc>, _Alloc> __counter(64);
+#endif  //TY 05/25/2000 - 
     int __fill = 0;
     while (!__that.empty()) {
       __carry.splice(__carry.begin(), __that, __that.begin());
@@ -197,7 +197,8 @@ void _S_sort(list<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   }
 }
 
-# undef  list
+# undef  _LIST_IMPL
+# undef list
 # undef  size_type
 
 _STLP_END_NAMESPACE

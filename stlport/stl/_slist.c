@@ -50,8 +50,7 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
 }
 
 template <class _Tp, class _Alloc>
-slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x)
-{
+_SLIST_IMPL<_Tp,_Alloc>& _SLIST_IMPL<_Tp,_Alloc>::operator=(const _SLIST_IMPL<_Tp,_Alloc>& __x) {
   if (&__x != this) {
     _Node_base* __p1 = &this->_M_head._M_data;
     _Node* __n1 = (_Node*) this->_M_head._M_data._M_next;
@@ -72,7 +71,7 @@ slist<_Tp,_Alloc>& slist<_Tp,_Alloc>::operator=(const slist<_Tp,_Alloc>& __x)
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
+void _SLIST_IMPL<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) { 
   _Node_base* __prev = &this->_M_head._M_data;
   _Node* __node = (_Node*) this->_M_head._M_data._M_next;
   for ( ; __node != 0 && __n > 0 ; --__n) {
@@ -88,8 +87,7 @@ void slist<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
 
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x)
-{
+void _SLIST_IMPL<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur->_M_next != 0 && __len > 0) {
     --__len;
@@ -102,8 +100,7 @@ void slist<_Tp,_Alloc>::resize(size_type __len, const _Tp& __x)
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::remove(const _Tp& __val)
-{
+void _SLIST_IMPL<_Tp,_Alloc>::remove(const _Tp& __val) {
   _Node_base* __cur = &this->_M_head._M_data;
   while (__cur && __cur->_M_next) {
     if (((_Node*) __cur->_M_next)->_M_data == __val)
@@ -114,8 +111,7 @@ void slist<_Tp,_Alloc>::remove(const _Tp& __val)
 }
 
 template <class _Tp, class _Alloc> 
-void slist<_Tp,_Alloc>::unique()
-{
+void _SLIST_IMPL<_Tp,_Alloc>::unique() {
   _Node_base* __cur = this->_M_head._M_data._M_next;
   if (__cur) {
     while (__cur->_M_next) {
@@ -129,8 +125,7 @@ void slist<_Tp,_Alloc>::unique()
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x)
-{
+void _SLIST_IMPL<_Tp,_Alloc>::merge(_SLIST_IMPL<_Tp,_Alloc>& __x) {
   _Node_base* __n1 = &this->_M_head._M_data;
   while (__n1->_M_next && __x._M_head._M_data._M_next) {
     if (((_Node*) __x._M_head._M_data._M_next)->_M_data < 
@@ -145,8 +140,7 @@ void slist<_Tp,_Alloc>::merge(slist<_Tp,_Alloc>& __x)
 }
 
 template <class _Tp, class _Alloc>
-void slist<_Tp,_Alloc>::sort()
-{
+void _SLIST_IMPL<_Tp,_Alloc>::sort() {
   if (this->_M_head._M_data._M_next && this->_M_head._M_data._M_next->_M_next) {
     _Self __carry;
     _Self __counter[64];

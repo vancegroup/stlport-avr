@@ -106,12 +106,18 @@ protected:
   _AllocProxy _M_end_of_storage;
 };
 
+# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#  define _VECTOR_IMPL _Vector_impl
+# else
+#  define _VECTOR_IMPL vector
+# endif
+
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class vector : protected _Vector_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
+class _VECTOR_IMPL : protected _Vector_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
 {
 private:
   typedef _Vector_base<_Tp, _Alloc> _Base;
-  typedef vector<_Tp, _Alloc> _Self;
+  typedef _VECTOR_IMPL<_Tp, _Alloc> _Self;
 public:
   typedef _Tp value_type;
   typedef value_type* pointer;
@@ -218,13 +224,13 @@ public:
   reference at(size_type __n) { _M_range_check(__n); return (*this)[__n]; }
   const_reference at(size_type __n) const { _M_range_check(__n); return (*this)[__n]; }
 
-  explicit vector(const allocator_type& __a = allocator_type()) : 
+  explicit _VECTOR_IMPL(const allocator_type& __a = allocator_type()) : 
     _Vector_base<_Tp, _Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit vector(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
+  explicit _VECTOR_IMPL(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
 #else
-  vector(size_type __n, const _Tp& __val,
+  _VECTOR_IMPL(size_type __n, const _Tp& __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
          const allocator_type& __a = allocator_type()) 
     : _Vector_base<_Tp, _Alloc>(__n, __a) { 
@@ -232,19 +238,19 @@ public:
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit vector(size_type __n)
+  explicit _VECTOR_IMPL(size_type __n)
     : _Vector_base<_Tp, _Alloc>(__n, allocator_type() ) {
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); 
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  vector(const _Self& __x) 
+  _VECTOR_IMPL(const _Self& __x) 
     : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
     this->_M_finish = __uninitialized_copy(__x.begin(), __x.end(),
                                            this->_M_start, _IsPODType());
   }
 
-  vector(__move_source<_Self> src)
+  _VECTOR_IMPL(__move_source<_Self> src)
     : _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {
   }
 
@@ -266,7 +272,7 @@ public:
 
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
-  vector(_InputIterator __first, _InputIterator __last,
+  _VECTOR_IMPL(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
     _Vector_base<_Tp, _Alloc>(__a) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
@@ -275,7 +281,7 @@ public:
   
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
-  vector(_InputIterator __first, _InputIterator __last) :
+  _VECTOR_IMPL(_InputIterator __first, _InputIterator __last) :
     _Vector_base<_Tp, _Alloc>(allocator_type()) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
@@ -283,14 +289,14 @@ public:
 # endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
 
 #else /* _STLP_MEMBER_TEMPLATES */
-  vector(const _Tp* __first, const _Tp* __last,
+  _VECTOR_IMPL(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
     : _Vector_base<_Tp, _Alloc>(__last - __first, __a) { 
       this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _IsPODType()); 
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  ~vector() { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); }
+  ~_VECTOR_IMPL() { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); }
 
   _Self& operator=(const _Self& __x);
 
@@ -306,11 +312,11 @@ public:
   
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIter>
-  void _M_assign_aux(_ForwardIter __first, _ForwardIter __last, const forward_iterator_tag &)
+  void _M_assign_aux(_ForwardIter __first, _ForwardIter __last, const forward_iterator_tag &) {
 #else
-  void assign(const_iterator __first, const_iterator __last)
+  void assign(const_iterator __first, const_iterator __last) {
+    typedef const_iterator _ForwardIter;
 #endif
-  {
     size_type __len = distance(__first, __last);  
     if (__len > capacity()) {
       iterator __tmp = _M_allocate_and_copy(__len, __first, __last);
@@ -323,12 +329,8 @@ public:
       this->_M_finish = __new_finish;
     }
     else {
-# if defined ( _STLP_MEMBER_TEMPLATES )
       _ForwardIter __mid = __first;
       advance(__mid, size());
-# else
-      const_iterator __mid = __first + size() ;
-# endif
       copy(__first, __mid, this->_M_start);
       this->_M_finish = __uninitialized_copy(__mid, __last, this->_M_finish, _IsPODType());
     }
@@ -350,7 +352,7 @@ public:
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
                           const __true_type& /*_IsIntegral*/)
-    { assign((size_type) __n, (_Tp) __val); }
+    { _M_fill_assign(__n, __val); }
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
@@ -411,6 +413,7 @@ public:
     _STLP_STD::swap(this->_M_end_of_storage, __x._M_end_of_storage);
   }
 
+private:
   void _M_fill_insert (iterator __pos, size_type __n, const _Tp& __x);
 
 #if defined ( _STLP_MEMBER_TEMPLATES)
@@ -428,13 +431,15 @@ public:
     _M_range_insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 
+public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
-
+  
+private:
   template <class _InputIterator>
   void _M_range_insert(iterator __pos, 
                        _InputIterator __first, _InputIterator __last,
@@ -448,13 +453,12 @@ public:
   template <class _ForwardIterator>
   void _M_range_insert(iterator __position,
                        _ForwardIterator __first, _ForwardIterator __last,
-                       const forward_iterator_tag &) 
+                       const forward_iterator_tag &) {
 #else /* _STLP_MEMBER_TEMPLATES */
+public:
   void insert(iterator __position,
-              const_iterator __first, const_iterator __last)
+              const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
-
-  {
     if (__first != __last) {
       size_type __n = distance(__first, __last);
 
@@ -498,6 +502,8 @@ public:
       }
     }
   }
+  
+public:
   void insert (iterator __pos, size_type __n, const _Tp& __x)
   { _M_fill_insert(__pos, __n, __x); }
   
@@ -562,7 +568,7 @@ protected:
   {
     pointer __result = this->_M_end_of_storage.allocate(__n);
     _STLP_TRY {
-#if !defined(__MRC__)		//*TY 12/17/2000 - added workaround for MrCpp. it confuses on nested try/catch block
+#if !defined(__MRC__)  //*TY 12/17/2000 - added workaround for MrCpp. it confuses on nested try/catch block
       __uninitialized_copy(__first, __last, __result, _IsPODType());
 #else
       uninitialized_copy(__first, __last, __result);
@@ -621,6 +627,11 @@ struct __move_traits<vector<_Tp, _Alloc> > :
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;
+
+# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+_STLP_EXPORT_TEMPLATE_CLASS _Vector_impl<void*,allocator<void*> >;
+# endif
+
 _STLP_EXPORT_TEMPLATE_CLASS vector<void*,allocator<void*> >;
 # endif
 
@@ -635,6 +646,8 @@ _STLP_END_NAMESPACE
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_vector.c>
 # endif
+
+# undef _VECTOR_IMPL
 
 #ifndef _STLP_INTERNAL_BVECTOR_H
 # include <stl/_bvector.h>

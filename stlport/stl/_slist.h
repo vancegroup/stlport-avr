@@ -58,15 +58,13 @@
 _STLP_BEGIN_NAMESPACE 
 
 template <class _Tp>
-class _Slist_node : public _Slist_node_base
-{
+class _Slist_node : public _Slist_node_base {
 public:
   _Tp _M_data;
   __TRIVIAL_STUFF(_Slist_node)
 };
 
 struct _Slist_iterator_base {
-
   typedef size_t               size_type;
   typedef ptrdiff_t            difference_type;
   typedef forward_iterator_tag iterator_category;
@@ -93,8 +91,7 @@ inline forward_iterator_tag _STLP_CALL iterator_category(const _Slist_iterator_b
 #endif
 
 template <class _Tp, class _Traits>
-class _Slist_iterator : public _Slist_iterator_base
-{
+class _Slist_iterator : public _Slist_iterator_base {
 public:
   typedef typename _Traits::value_type value_type;
   typedef typename _Traits::pointer    pointer;
@@ -174,14 +171,19 @@ public:
     return _STLP_CONVERT_ALLOCATOR((const _M_node_allocator_type&)_M_head, _Tp); 
   }
   _AllocProxy _M_head;
-};  
+};
+
+# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#  define _SLIST_IMPL _Slist_impl
+# else
+#  define _SLIST_IMPL slist
+# endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class slist : protected _Slist_base<_Tp,_Alloc> _STLP_STLPORT_CLASS_N
-{
+class _SLIST_IMPL : protected _Slist_base<_Tp,_Alloc> _STLP_STLPORT_CLASS_N {
 private:
   typedef _Slist_base<_Tp,_Alloc> _Base;
-  typedef slist<_Tp,_Alloc> _Self;
+  typedef _SLIST_IMPL<_Tp,_Alloc> _Self;
 public:
   typedef _Tp                value_type;
 
@@ -235,18 +237,18 @@ public:
   allocator_type get_allocator() const { return _Base::get_allocator(); }
 
 
-  explicit slist(const allocator_type& __a = allocator_type()) : _Slist_base<_Tp,_Alloc>(__a) {}
+  explicit _SLIST_IMPL(const allocator_type& __a = allocator_type()) : _Slist_base<_Tp,_Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n, const value_type& __x = _Tp(),
+  explicit _SLIST_IMPL(size_type __n, const value_type& __x = _Tp(),
 #else
-  slist(size_type __n, const value_type& __x,
+  _SLIST_IMPL(size_type __n, const value_type& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a =  allocator_type()) : _Slist_base<_Tp,_Alloc>(__a)
     { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
-  explicit slist(size_type __n) : _Slist_base<_Tp,_Alloc>(allocator_type())
+  explicit _SLIST_IMPL(size_type __n) : _Slist_base<_Tp,_Alloc>(allocator_type())
     { _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
@@ -254,40 +256,39 @@ public:
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last,
+  _SLIST_IMPL(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) : 
-    _Slist_base<_Tp,_Alloc>(__a)
-
-  { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
+    _Slist_base<_Tp,_Alloc>(__a) {
+    _M_insert_after_range(&this->_M_head._M_data, __first, __last);
+  }
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   // VC++ needs this crazyness
   template <class _InputIterator>
-  slist(_InputIterator __first, _InputIterator __last) :
+  _SLIST_IMPL(_InputIterator __first, _InputIterator __last) :
     _Slist_base<_Tp,_Alloc>(allocator_type())
   { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 # endif  
 #else /* _STLP_MEMBER_TEMPLATES */
-  slist(const_iterator __first, const_iterator __last,
+  _SLIST_IMPL(const_iterator __first, const_iterator __last,
         const allocator_type& __a =  allocator_type() ) :
     _Slist_base<_Tp,_Alloc>(__a)
     { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
-  slist(const value_type* __first, const value_type* __last,
+  _SLIST_IMPL(const value_type* __first, const value_type* __last,
         const allocator_type& __a =  allocator_type()) : 
     _Slist_base<_Tp,_Alloc>(__a)
     { _M_insert_after_range(&this->_M_head._M_data, __first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-
-  slist(const _Self& __x) : _Slist_base<_Tp,_Alloc>(__x.get_allocator())
+  _SLIST_IMPL(const _Self& __x) : _Slist_base<_Tp,_Alloc>(__x.get_allocator())
     { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
-  slist(__move_source<_Self> src)
+  _SLIST_IMPL(__move_source<_Self> src)
     : _Slist_base<_Tp, _Alloc>(_AsMoveSource<_Base>(src.get())) {
   }
 
   _Self& operator= (const _Self& __x);
 
-  ~slist() {}
+  ~_SLIST_IMPL() {}
 
 public:
   // assign(), a generalized assignment member function.  Two
@@ -296,17 +297,19 @@ public:
   // or not the type is an integer.
 
   void assign(size_type __n, const _Tp& __val) { _M_fill_assign(__n, __val); }
-
+  
+private:
   void _M_fill_assign(size_type __n, const _Tp& __val);
 
 #ifdef _STLP_MEMBER_TEMPLATES
-
+public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
-
+  
+private:
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
                           const __true_type& /*_IsIntegral*/) {
@@ -316,6 +319,9 @@ public:
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
                           const __false_type& /*_IsIntegral*/) {
+#else
+public:
+  void assign(const_pointer __first, const_pointer __last) {
     _Node_base* __prev = &this->_M_head._M_data;
     _Node_base* __node = this->_M_head._M_data._M_next;
     while (__node != 0 && __first != __last) {
@@ -329,7 +335,21 @@ public:
     else
       this->_M_erase_after(__prev, 0);
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+  void assign(const_iterator __first, const_iterator __last) {
+#endif /* _STLP_MEMBER_TEMPLATES */  
+    _Node_base* __prev = &this->_M_head._M_data;
+    _Node_base* __node = this->_M_head._M_data._M_next;
+    while (__node != 0 && __first != __last) {
+      __STATIC_CAST(_Node*, __node)->_M_data = *__first;
+      __prev = __node;
+      __node = __node->_M_next;
+      ++__first;
+    }
+    if (__first != __last)
+      _M_insert_after_range(__prev, __first, __last);
+    else
+      this->_M_erase_after(__prev, 0);
+  }
 
 public:
 
@@ -412,13 +432,11 @@ private:
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InIter>
   void _M_insert_after_range(_Node_base* __pos, 
                              _InIter __first, _InIter __last) {
     typedef typename _Is_integer<_InIter>::_Integral _Integral;
-
     _M_insert_after_range(__pos, __first, __last, _Integral());
   }
 
@@ -432,21 +450,7 @@ private:
   void _M_insert_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last,
                              const __false_type&) {
-    while (__first != __last) {
-      __pos = __slist_make_link(__pos, _M_create_node(*__first));
-      ++__first;
-    }
-  }
-
 #else /* _STLP_MEMBER_TEMPLATES */
-
-  void _M_insert_after_range(_Node_base* __pos,
-                             const_iterator __first, const_iterator __last) {
-    while (__first != __last) {
-      __pos = __slist_make_link(__pos, _M_create_node(*__first));
-      ++__first;
-    }
-  }
   void _M_insert_after_range(_Node_base* __pos,
                              const value_type* __first,
                              const value_type* __last) {
@@ -454,10 +458,87 @@ private:
       __pos = __slist_make_link(__pos, _M_create_node(*__first));
       ++__first;
     }
-
+  }
+  void _M_insert_after_range(_Node_base* __pos,
+                             const_iterator __first, const_iterator __last) {
+#endif /* _STLP_MEMBER_TEMPLATES */
+    while (__first != __last) {
+      __pos = __slist_make_link(__pos, _M_create_node(*__first));
+      ++__first;
+    }
   }
 
+#ifdef _STLP_MEMBER_TEMPLATES
+  // Check whether it's an integral type.  If so, it's not an iterator.
+  template <class _InIter>
+  void _M_splice_after_range(_Node_base* __pos, 
+                             _InIter __first, _InIter __last) {
+    typedef typename _Is_integer<_InIter>::_Integral _Integral;
+    _M_splice_after_range(__pos, __first, __last, _Integral());
+  }
+
+  template <class _Integer>
+  void _M_splice_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
+                             const __true_type&) {
+    _M_insert_after_fill(__pos, __n, __x);
+  }
+
+  template <class _InIter>
+  void _M_splice_after_range(_Node_base* __pos,
+                             _InIter __first, _InIter __last,
+                             const __false_type&) {
+#else /* _STLP_MEMBER_TEMPLATES */
+  void _M_splice_after_range(_Node_base* __pos,
+                             const value_type* __first,
+                             const value_type* __last) {
+    while (__first != __last) {
+      __pos = __slist_make_link(__pos, _M_create_node(*__first));
+      ++__first;
+    }
+  }
+  void _M_splice_after_range(_Node_base* __pos,
+                             const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
+    //We use a temporary slist to avoid the auto reference troubles (infinite loop)
+    _Self __tmp(__first, __last);
+    splice_after(__pos, __tmp.before_begin());
+  }
+
+#ifdef _STLP_MEMBER_TEMPLATES
+  // Check whether it's an integral type.  If so, it's not an iterator.
+  template <class _InIter>
+  void _M_splice_range(_Node_base* __pos, 
+                       _InIter __first, _InIter __last) {
+    typedef typename _Is_integer<_InIter>::_Integral _Integral;
+    _M_splice_range(__pos, __first, __last, _Integral());
+  }
+
+  template <class _Integer>
+  void _M_splice_range(_Node_base* __pos, _Integer __n, _Integer __x,
+                       const __true_type&) {
+    _M_insert_after_fill(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), __n, __x);
+  }
+
+  template <class _InIter>
+  void _M_splice_range(_Node_base* __pos,
+                       _InIter __first, _InIter __last,
+                       const __false_type&) {
+#else /* _STLP_MEMBER_TEMPLATES */
+  void _M_splice_range(_Node_base* __pos,
+                       const value_type* __first,
+                       const value_type* __last) {
+    while (__first != __last) {
+      __pos = __slist_make_link(__pos, _M_create_node(*__first));
+      ++__first;
+    }
+  }
+  void _M_splice_range(_Node_base* __pos,
+                       const_iterator __first, const_iterator __last) {
+#endif /* _STLP_MEMBER_TEMPLATES */
+    //We use a temporary slist to avoid the auto reference troubles (infinite loop)
+    _Self __tmp(__first, __last);
+    splice(__pos, __tmp);
+  }
 
 public:
 
@@ -480,27 +561,20 @@ public:
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InIter>
   void insert_after(iterator __pos, _InIter __first, _InIter __last) {
-    _M_insert_after_range(__pos._M_node, __first, __last);
-  }
-
 #else /* _STLP_MEMBER_TEMPLATES */
-
-  void insert_after(iterator __pos,
-                    const_iterator __first, const_iterator __last) {
-    _M_insert_after_range(__pos._M_node, __first, __last);
-  }
   void insert_after(iterator __pos,
                     const value_type* __first, const value_type* __last) {
     _M_insert_after_range(__pos._M_node, __first, __last);
   }
-
+  void insert_after(iterator __pos,
+                    const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
-
+    _M_splice_after_range(__pos._M_node, __first, __last);
+  }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   iterator insert(iterator __pos, const value_type& __x = _Tp()) {
@@ -523,29 +597,20 @@ public:
   } 
     
 #ifdef _STLP_MEMBER_TEMPLATES
-
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InIter>
   void insert(iterator __pos, _InIter __first, _InIter __last) {
-    _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
-                          __first, __last);
-  }
-
 #else /* _STLP_MEMBER_TEMPLATES */
-
-  void insert(iterator __pos, const_iterator __first, const_iterator __last) {
-    _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
-                          __first, __last);
-  }
   void insert(iterator __pos, const value_type* __first, 
                               const value_type* __last) {
     _M_insert_after_range(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node), 
                           __first, __last);
   }
-
+  void insert(iterator __pos, const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
-
+    _M_splice_range(__pos._M_node, __first, __last);
+  }
 
 public:
   iterator erase_after(iterator __pos) {
@@ -605,14 +670,14 @@ public:
   void splice(iterator __pos, _Self& __x) {
     if (__x._M_head._M_data._M_next)
       _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
-                           &__x._M_head._M_data, _Sl_global_inst::__previous(&__x._M_head._M_data, 0));
+                                      &__x._M_head._M_data, _Sl_global_inst::__previous(&__x._M_head._M_data, 0));
   }
 
   // Linear in distance(begin(), __pos), and in distance(__x.begin(), __i).
   void splice(iterator __pos, _Self& __x, iterator __i) {
     _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
-                         _Sl_global_inst::__previous(&__x._M_head._M_data, __i._M_node),
-                         __i._M_node);
+                                    _Sl_global_inst::__previous(&__x._M_head._M_data, __i._M_node),
+                                    __i._M_node);
   }
 
   // Linear in distance(begin(), __pos), in distance(__x.begin(), __first),
@@ -620,15 +685,14 @@ public:
   void splice(iterator __pos, _Self& __x, iterator __first, iterator __last) {
     if (__first != __last)
       _Sl_global_inst::__splice_after(_Sl_global_inst::__previous(&this->_M_head._M_data, __pos._M_node),
-                           _Sl_global_inst::__previous(&__x._M_head._M_data, __first._M_node),
-                           _Sl_global_inst::__previous(__first._M_node, __last._M_node));
+                                      _Sl_global_inst::__previous(&__x._M_head._M_data, __first._M_node),
+                                      _Sl_global_inst::__previous(__first._M_node, __last._M_node));
   }
 
 public:
   void reverse() { 
     if (this->_M_head._M_data._M_next)
       this->_M_head._M_data._M_next = _Sl_global_inst::__reverse(this->_M_head._M_data._M_next);
-
   }
 
   void remove(const _Tp& __val); 
@@ -682,8 +746,8 @@ public:
   template <class _StrictWeakOrdering> 
   void sort(_StrictWeakOrdering __comp) {
     if (this->_M_head._M_data._M_next && this->_M_head._M_data._M_next->_M_next) {
-      slist __carry;
-      slist __counter[64];
+      _SLIST_IMPL __carry;
+      _SLIST_IMPL __counter[64];
       int __fill = 0;
       while (!empty()) {
         _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, this->_M_head._M_data._M_next);
@@ -715,9 +779,7 @@ public:
 
 template <class _Tp, class _Alloc>
 inline bool  _STLP_CALL
-operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2)
-
-{
+operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
   typedef typename slist<_Tp,_Alloc>::const_iterator const_iterator;
   const_iterator __end1 = _SL1.end();
   const_iterator __end2 = _SL2.end();
@@ -787,38 +849,38 @@ template <class _Tp, class _Alloc>
 class insert_iterator<slist<_Tp, _Alloc> > {
 protected:
   typedef slist<_Tp, _Alloc> _Container;
-  _Container* container;
-  typename _Container::iterator iter;
+  _Container* _M_container;
+  typename _Container::iterator _M_iter;
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
   typedef void                value_type;
   typedef void                difference_type;
   typedef void                pointer;
-
-
   typedef void                reference;
 
   insert_iterator(_Container& __x, typename _Container::iterator __i) 
-    : container(&__x) {
+    : _M_container(&__x) {
     if (__i == __x.begin())
-      iter = __x.before_begin();
+      _M_iter = __x.before_begin();
     else
-      iter = __x.previous(__i);
+      _M_iter = __x.previous(__i);
   }
-
 
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
-    iter = container->insert_after(iter, __val);
+  operator = (const typename _Container::value_type& __val) { 
+    _M_iter = _M_container->insert_after(_M_iter, __val);
     return *this;
   }
+  
   insert_iterator<_Container>& operator*() { return *this; }
   insert_iterator<_Container>& operator++() { return *this; }
   insert_iterator<_Container>& operator++(int) { return *this; }
 };
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+#undef _SLIST_IMPL
 
 #ifdef _STLP_DEBUG
 # undef  slist

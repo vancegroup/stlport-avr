@@ -85,6 +85,12 @@ void _Deque_base<_Tp,_Alloc>::_M_destroy_nodes(_Tp** __nstart,
 
 // Non-inline member functions
 
+# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#  define _DEQUE_IMPL _Deque_impl
+# else
+#  define _DEQUE_IMPL __deque__
+# endif
+
 # if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // qualified references 
 #   define __iterator__           _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >
@@ -93,12 +99,12 @@ void _Deque_base<_Tp,_Alloc>::_M_destroy_nodes(_Tp** __nstart,
 #   define size_type              size_t
 #   define value_type             _Tp
 # else
-#  define __iterator__           _STLP_TYPENAME_ON_RETURN_TYPE __deque__<_Tp, _Alloc>::iterator
+#  define __iterator__           _STLP_TYPENAME_ON_RETURN_TYPE _DEQUE_IMPL<_Tp, _Alloc>::iterator
 # endif
 
 template <class _Tp, class _Alloc >
-__deque__<_Tp, _Alloc >&  
-__deque__<_Tp, _Alloc >::operator= (const __deque__<_Tp, _Alloc >& __x) {
+_DEQUE_IMPL<_Tp, _Alloc >&  
+_DEQUE_IMPL<_Tp, _Alloc >::operator= (const _DEQUE_IMPL<_Tp, _Alloc >& __x) {
   const size_type __len = size();
   if (&__x != this) {
     if (__len >= __x.size())
@@ -113,7 +119,7 @@ __deque__<_Tp, _Alloc >::operator= (const __deque__<_Tp, _Alloc >& __x) {
 }        
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
+void _DEQUE_IMPL<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
                                              size_type __n, const value_type& __x) {
   if (__pos._M_cur == this->_M_start._M_cur) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
@@ -138,7 +144,7 @@ void __deque__<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
 #ifndef _STLP_MEMBER_TEMPLATES  
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp, _Alloc>::insert(iterator __pos,
+void _DEQUE_IMPL<_Tp, _Alloc>::insert(iterator __pos,
                                     const value_type* __first,
                                     const value_type* __last) {
   size_type __n = __last - __first;
@@ -164,7 +170,7 @@ void __deque__<_Tp, _Alloc>::insert(iterator __pos,
 }
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::insert(iterator __pos,
+void _DEQUE_IMPL<_Tp,_Alloc>::insert(iterator __pos,
                                    const_iterator __first,
                                    const_iterator __last) {
   size_type __n = __last - __first;
@@ -191,7 +197,7 @@ void __deque__<_Tp,_Alloc>::insert(iterator __pos,
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 template <class _Tp, class _Alloc >
-__iterator__ __deque__<_Tp,_Alloc>::erase(iterator __first, iterator __last) {
+__iterator__ _DEQUE_IMPL<_Tp,_Alloc>::erase(iterator __first, iterator __last) {
   if (__first == this->_M_start && __last == this->_M_finish) {
     clear();
     return this->_M_finish;
@@ -218,7 +224,7 @@ __iterator__ __deque__<_Tp,_Alloc>::erase(iterator __first, iterator __last) {
 }
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::clear() {
+void _DEQUE_IMPL<_Tp,_Alloc>::clear() {
   for (_Map_pointer __node = this->_M_start._M_node + 1;
        __node < this->_M_finish._M_node;
        ++__node) {
@@ -240,7 +246,7 @@ void __deque__<_Tp,_Alloc>::clear() {
 // Precondition: this->_M_start and this->_M_finish have already been initialized,
 // but none of the deque's elements have yet been constructed.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
   _Map_pointer __cur;
   _STLP_TRY {
     for (__cur = this->_M_start._M_node; __cur < this->_M_finish._M_node; ++__cur)
@@ -255,7 +261,7 @@ void __deque__<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
 
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_last - 1.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t) {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t) {
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
@@ -270,7 +276,7 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux_v(const value_type& __t) {
 # if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_last - 1.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_push_back_aux() {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_push_back_aux() {
   _M_reserve_map_at_back();
   *(this->_M_finish._M_node + 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
@@ -285,7 +291,7 @@ void __deque__<_Tp,_Alloc>::_M_push_back_aux() {
 
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t) {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t) {
   _M_reserve_map_at_front();
   *(this->_M_start._M_node - 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
@@ -301,7 +307,7 @@ void __deque__<_Tp,_Alloc>::_M_push_front_aux_v(const value_type& __t) {
 # if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
 // Called only if this->_M_start._M_cur == this->_M_start._M_first.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_push_front_aux() {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_push_front_aux() {
   _M_reserve_map_at_front();
   *(this->_M_start._M_node - 1) = this->_M_map_size.allocate(this->buffer_size());
   _STLP_TRY {
@@ -316,7 +322,7 @@ void __deque__<_Tp,_Alloc>::_M_push_front_aux() {
 
 // Called only if this->_M_finish._M_cur == this->_M_finish._M_first.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_pop_back_aux() {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_pop_back_aux() {
   this->_M_map_size.deallocate(this->_M_finish._M_first, this->buffer_size());
   this->_M_finish._M_set_node(this->_M_finish._M_node - 1);
   this->_M_finish._M_cur = this->_M_finish._M_last - 1;
@@ -328,7 +334,7 @@ void __deque__<_Tp,_Alloc>::_M_pop_back_aux() {
 // function), and if this->_M_start._M_cur == this->_M_start._M_last, then the deque 
 // must have at least two nodes.
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_pop_front_aux() {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_pop_front_aux() {
   _STLP_STD::_Destroy(this->_M_start._M_cur);
   this->_M_map_size.deallocate(this->_M_start._M_first, this->buffer_size());
   this->_M_start._M_set_node(this->_M_start._M_node + 1);
@@ -338,7 +344,7 @@ void __deque__<_Tp,_Alloc>::_M_pop_front_aux() {
 
 
 template <class _Tp, class _Alloc >
-__iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux_prepare(iterator __pos) {
+__iterator__ _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux_prepare(iterator __pos) {
   difference_type __index = __pos - this->_M_start;
   if (__index < difference_type(size() / 2)) {
     push_front(front());
@@ -364,7 +370,7 @@ __iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux_prepare(iterator __pos) {
 }
 
 template <class _Tp, class _Alloc >
-__iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
+__iterator__ _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
                                                   const value_type& __x) {
   value_type __x_copy = __x;
   _STLP_MPWFIX_TRY		//*TY 06/01/2000 - mpw forget to call dtor on __x_copy without this try block
@@ -376,7 +382,7 @@ __iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
 template <class _Tp, class _Alloc >
-__iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos) {
+__iterator__ _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux(iterator __pos) {
   __pos = _M_insert_aux_prepare(__pos);
   _STLP_STD::_Construct(__pos);
   return __pos;
@@ -384,7 +390,7 @@ __iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
                                           size_type __n,
                                           const value_type& __t) {
   const difference_type __elems_before = __pos - this->_M_start;
@@ -438,7 +444,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
 
 #ifndef _STLP_MEMBER_TEMPLATES 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
                                           const value_type* __first,
                                           const value_type* __last,
                                           size_type __n) {
@@ -493,7 +499,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
 }
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
                                           const_iterator __first,
                                           const_iterator __last,
                                           size_type __n) {
@@ -548,7 +554,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_new_elements_at_front(size_type __new_elems) {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_new_elements_at_front(size_type __new_elems) {
   size_type __new_nodes
       = (__new_elems + this->buffer_size() - 1) / this->buffer_size();
   _M_reserve_map_at_front(__new_nodes);
@@ -562,7 +568,7 @@ void __deque__<_Tp,_Alloc>::_M_new_elements_at_front(size_type __new_elems) {
 }
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_new_elements_at_back(size_type __new_elems) {
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_new_elements_at_back(size_type __new_elems) {
   size_type __new_nodes
       = (__new_elems + this->buffer_size() - 1) / this->buffer_size();
   _M_reserve_map_at_back(__new_nodes);
@@ -576,7 +582,7 @@ void __deque__<_Tp,_Alloc>::_M_new_elements_at_back(size_type __new_elems) {
 }
 
 template <class _Tp, class _Alloc >
-void __deque__<_Tp,_Alloc>::_M_reallocate_map(size_type __nodes_to_add,
+void _DEQUE_IMPL<_Tp,_Alloc>::_M_reallocate_map(size_type __nodes_to_add,
                                               bool __add_at_front) {
   size_type __old_num_nodes = this->_M_finish._M_node - this->_M_start._M_node + 1;
   size_type __new_num_nodes = __old_num_nodes + __nodes_to_add;
@@ -616,6 +622,7 @@ _STLP_END_NAMESPACE
 # undef const_iterator
 # undef size_type
 # undef value_type
+# undef _DEQUE_IMPL
 
 #endif /*  _STLP_DEQUE_C */
 

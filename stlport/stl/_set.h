@@ -65,6 +65,10 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing set
+#ifdef _STLP_DEBUG
+  typedef typename _Rep_type::iterator _Tree_Iterator;
+#endif
+
 public:
 
   // allocation/deallocation
@@ -140,8 +144,8 @@ public:
     pair<_Rep_iterator, bool> __tmp = _M_t.insert_unique(__x);
     return pair<iterator, bool>(__tmp.first, __tmp.second);
   }
-  iterator insert(iterator __position, const value_type& __x) {
-    return _M_t.insert_unique(/* _Rep_type::_M_unconst( */ __position /* ) */, __x);
+  iterator insert(iterator __pos, const value_type& __x) {
+    return _M_t.insert_unique( __pos , __x);
   }
 # ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -157,12 +161,11 @@ public:
   }
 # endif /* _STLP_MEMBER_TEMPLATES */
 # ifndef _STLP_DEBUG
-  void erase(iterator __position) { 
-    _M_t.erase( __position._M_node ); 
-  }
+  void erase(iterator __pos) { _M_t.erase( __pos._M_node ); }
 # else // _STLP_DEBUG
-  void erase(iterator __position) {
-    _M_t.erase( typename _Rep_type::iterator( __position._Owner(), __position._M_iterator ) );
+  void erase(iterator __pos) {
+    _Tree_Iterator __tree_pos(__pos._Owner(), __pos._M_iterator);
+    _M_t.erase( __tree_pos );
   }
 # endif // _STLP_DEBUG
   size_type erase(const key_type& __x) { 
@@ -170,12 +173,13 @@ public:
   }
 # ifndef _STLP_DEBUG
   void erase(iterator __first, iterator __last) { 
-    _M_t.erase( __first, __last ); 
+    _M_t.erase(__first, __last ); 
   }
 # else // _STLP_DEBUG
   void erase(iterator __first, iterator __last) {
-    _M_t.erase( typename _Rep_type::iterator( __first._Owner(), __first._M_iterator ),
-                typename _Rep_type::iterator( __last._Owner(),  __last._M_iterator ) );
+    _Tree_Iterator __tree_first(__first._Owner(), __first._M_iterator);
+    _Tree_Iterator __tree_last(__last._Owner(),  __last._M_iterator);
+    _M_t.erase(__tree_first, __tree_last);
   }
 # endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }
@@ -229,6 +233,9 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multiset
+#ifdef _STLP_DEBUG
+  typedef typename _Rep_type::iterator _Tree_Iterator;
+#endif
 public:
   // allocation/deallocation
 
@@ -307,8 +314,8 @@ public:
   iterator insert(const value_type& __x) { 
     return _M_t.insert_equal(__x);
   }
-  iterator insert(iterator __position, const value_type& __x) {
-    return _M_t.insert_equal(/* _Rep_type::_M_unconst( */ __position /* ) */, __x);
+  iterator insert(iterator __pos, const value_type& __x) {
+    return _M_t.insert_equal(/* _Rep_type::_M_unconst( */ __pos /* ) */, __x);
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
@@ -325,12 +332,11 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 # ifndef _STLP_DEBUG
-  void erase(iterator __position) {
-    _M_t.erase( __position._M_node );
-  }
+  void erase(iterator __pos) { _M_t.erase( __pos._M_node ); }
 # else // _STLP_DEBUG
-  void erase(iterator __position) {
-    _M_t.erase( typename _Rep_type::iterator( __position._Owner(), __position._M_iterator ) );
+  void erase(iterator __pos) {
+    _Tree_Iterator __tree_pos(__pos._Owner(), __pos._M_iterator);
+    _M_t.erase(__tree_pos);
   }
 # endif // _STLP_DEBUG
   size_type erase(const key_type& __x) { 
@@ -342,8 +348,9 @@ public:
   }
 # else // _STLP_DEBUG
   void erase(iterator __first, iterator __last) {
-    _M_t.erase( typename _Rep_type::iterator( __first._Owner(), __first._M_iterator ),
-                typename _Rep_type::iterator( __last._Owner(),  __last._M_iterator ) );
+    _Tree_Iterator __tree_first(__first._Owner(), __first._M_iterator);
+    _Tree_Iterator __tree_last(__last._Owner(),  __last._M_iterator);
+    _M_t.erase(__tree_first, __tree_last);
   }
 # endif // _STLP_DEBUG
   void clear() { _M_t.clear(); }

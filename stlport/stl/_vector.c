@@ -55,7 +55,7 @@ void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::reserve(size_type __n) {
+void _VECTOR_IMPL<_Tp, _Alloc>::reserve(size_type __n) {
   if (capacity() < __n) {
     if (max_size() < __n) {
       this->_M_throw_length_error();
@@ -74,8 +74,8 @@ void vector<_Tp, _Alloc>::reserve(size_type __n) {
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_insert(iterator __position,
-                                         size_type __n, const _Tp& __x) {
+void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert(iterator __position,
+                                               size_type __n, const _Tp& __x) {
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _Tp __x_copy = __x;
@@ -101,7 +101,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert(iterator __position,
 }
 
 template <class _Tp, class _Alloc>
-vector<_Tp,_Alloc>& vector<_Tp,_Alloc>::operator=(const vector<_Tp, _Alloc>& __x) {
+_VECTOR_IMPL<_Tp,_Alloc>& _VECTOR_IMPL<_Tp,_Alloc>::operator=(const _VECTOR_IMPL<_Tp, _Alloc>& __x) {
   if (&__x != this) {
     const size_type __xlen = __x.size();
     if (__xlen > capacity()) {
@@ -124,9 +124,9 @@ vector<_Tp,_Alloc>& vector<_Tp,_Alloc>::operator=(const vector<_Tp, _Alloc>& __x
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
+void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
   if (__n > capacity()) {
-    vector<_Tp, _Alloc> __tmp(__n, __val, get_allocator());
+    _VECTOR_IMPL<_Tp, _Alloc> __tmp(__n, __val, get_allocator());
     __tmp.swap(*this);
   }
   else if (__n > size()) {
