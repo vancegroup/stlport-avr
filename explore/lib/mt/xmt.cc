@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/06/21 10:23:08 ptr>
+// -*- C++ -*- Time-stamp: <02/07/11 15:19:10 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -142,6 +142,63 @@ namespace __impl {
 using std::cerr;
 using std::endl;
 #endif
+
+__FIT_DECLSPEC
+int Condition::try_wait_time( const timespec *abstime )
+{
+  if ( _val == false ) {
+#ifdef WIN32
+    MT_LOCK( _lock );
+    _val = false;
+    ResetEvent( _cond );
+    MT_UNLOCK( _lock );
+    time_t ct = time( 0 );
+    unsigned ms = abstime->tv_sec >= ct ? abstime->tv_sec - ct + abstime->tv_nsec / 1000000 : 1;
+    int ret = WaitForSingleObject( _cond, ms );
+    if ( ret == WAIT_FAILED ) {
+      return -1;
+    }
+    if ( ret == WAIT_TIMEOUT ) {
+      SetEvent( _cond );
+      return ETIME;
+    }
+    return 0;
+#endif
+#ifdef _PTHREADS
+    MT_REENTRANT( _lock, _x1 ); // ??
+    int ret = 0;
+    timespec _abstime = *abstime;
+    while ( !_val ) {
+      ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
+      if ( ret == ETIMEDOUT ) {
+        break;
+      }
+    }
+
+    return ret;
+#endif // _PTHREADS
+#ifdef __FIT_UITHREADS
+    MT_REENTRANT( _lock, _x1 );
+    int ret = 0;
+    timespec _abstime = *abstime;
+    while ( !_val ) {
+      ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
+      if ( ret == ETIME ) {
+        ret = ETIMEDOUT;
+      } else if ( ret == ETIMEDOUT ) {
+        break;
+      }
+    }
+
+    return ret;
+#endif
+#ifdef _NOTHREADS
+    return 0;
+#endif
+  }
+
+  return 0;
+}
 
 __FIT_DECLSPEC
 int Condition::wait_time( const timespec *abstime )
@@ -574,7 +631,7 @@ void Thread::signal_handler( int sig, SIG_PF handler )
   sigemptyset( &act.sa_mask );
   sigaddset( &act.sa_mask, sig );
  
-  act.sa_flags = 0;
+  act.sa_flags = 0; // SA_RESTART;
   act.sa_handler = handler;
   sigaction( sig, &act, 0 );
 #endif // __unix
@@ -607,7 +664,6 @@ void Thread::signal_exit( int sig )
   }
 #endif
   Thread::_exit( 0 );
-  // Thread::exit( 0 );
 }
 
 __FIT_DECLSPEC
