@@ -1030,12 +1030,6 @@ __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 #  define _STLP_PSPEC3(t1,t2,t3)	/* nothing */
 # endif
 
-# ifdef _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
-#  define _STLP_OPSPEC2(t1,t2) < t1,t2 >
-# else
-#  define _STLP_OPSPEC2(t1,t2)	/* nothing */
-# endif
-
 //Activation of the partial template workaround:
 # if !defined(_STLP_DONT_USE_PARTIAL_SPEC_WRKD) \
     && (!defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) || !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER))

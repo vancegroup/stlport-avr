@@ -15,7 +15,7 @@
 # define _STLP_USE_OWN_MBSTATE_T
 // # define _STLP_USE_OWN_NAMESPACE
 # define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
-# define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
+// # define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
 
 // most of <exception> contents is still in global namespace
 // # define _STLP_VENDOR_UNEXPECTED_STD
