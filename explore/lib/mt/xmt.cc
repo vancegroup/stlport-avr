@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/02/12 14:01:50 ptr>
+// -*- C++ -*- Time-stamp: <03/02/14 12:53:53 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002
@@ -205,7 +205,7 @@ int Condition::try_wait_time( const timespec *abstime )
 }
 
 __FIT_DECLSPEC
-int Condition::try_wait_delay( const timespec *t )
+int Condition::try_wait_delay( const timespec *interval )
 {
   if ( _val == false ) {
 #ifdef WIN32
@@ -213,7 +213,7 @@ int Condition::try_wait_delay( const timespec *t )
     _val = false;
     ResetEvent( _cond );
     MT_UNLOCK( _lock );
-    unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+    unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
     int ret = WaitForSingleObject( _cond, ms );
     if ( ret == WAIT_FAILED ) {
       return -1;
@@ -226,10 +226,9 @@ int Condition::try_wait_delay( const timespec *t )
 #elif defined(__unix) && !defined(_NOTHREADS)
     timespec ct;
     Thread::gettime( &ct );
-    timespec st = ct;
-    st += *t;
+    ct += *interval;
 
-    return this->try_wait_time( &st );
+    return this->try_wait_time( &ct );
 #endif
 
 #ifdef _NOTHREADS
@@ -293,14 +292,14 @@ int Condition::wait_time( const timespec *abstime )
 }
 
 __FIT_DECLSPEC
-int Condition::wait_delay( const timespec *t )
+int Condition::wait_delay( const timespec *interval )
 {
 #ifdef WIN32
   MT_LOCK( _lock );
   _val = false;
   ResetEvent( _cond );
   MT_UNLOCK( _lock );
-  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
   int ret = WaitForSingleObject( _cond, ms );
   if ( ret == WAIT_FAILED ) {
     return -1;
@@ -313,10 +312,9 @@ int Condition::wait_delay( const timespec *t )
 #elif defined(__unix) && !defined(_NOTHREADS)
   timespec ct;
   Thread::gettime( &ct );
-  timespec st = ct;
-  st += *t;
+  ct += *interval;
 
-  return this->wait_time( &st );
+  return this->wait_time( &ct );
 #endif
 #ifdef _NOTHREADS
   return 0;
@@ -324,11 +322,11 @@ int Condition::wait_delay( const timespec *t )
 }
 
 __FIT_DECLSPEC
-int Semaphore::wait_time( const timespec *t ) // wait for time t, or signal
+int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signal
 {
 #ifdef __FIT_WIN32THREADS
   time_t ct = time( 0 );
-  time_t _conv = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  time_t _conv = abstime->tv_sec * 1000 + abstime->tv_nsec / 1000000;
 
   unsigned ms = _conv >= ct ? _conv - ct : 1;
 
@@ -341,15 +339,15 @@ int Semaphore::wait_time( const timespec *t ) // wait for time t, or signal
 #warning "Fix me!"
 #endif
 #ifdef _PTHREADS
-  return sem_timedwait( &_sem, t );
+  return sem_timedwait( &_sem, abstime );
 #endif
 }
 
 __FIT_DECLSPEC
-int Semaphore::wait_delay( const timespec *t ) // wait, timeout is delay t, or signal
+int Semaphore::wait_delay( const timespec *interval ) // wait, timeout is delay t, or signal
 {
 #ifdef __FIT_WIN32THREADS
-  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
 
   if ( WaitForSingleObject( _sem, ms ) == WAIT_FAILED ) {
     return -1;
@@ -362,7 +360,7 @@ int Semaphore::wait_delay( const timespec *t ) // wait, timeout is delay t, or s
 #ifdef _PTHREADS
   timespec st;
   Thread::gettime( &st );
-  st += *t;
+  st += *interval;
   return sem_timedwait( &_sem, &st );
 #endif
 }
@@ -782,41 +780,43 @@ void Thread::signal_exit( int sig )
 }
 
 __FIT_DECLSPEC
-void Thread::sleep( timespec *t, timespec *r ) // sleep at least up to time t
+void Thread::sleep( timespec *abstime, timespec *real_time ) // sleep at least up to time t
 {
 #ifdef __unix
-  nanosleep( t, r );
+  nanosleep( abstime, real_time );
 #endif
 #ifdef WIN32
   time_t ct = time( 0 );
-  time_t _conv = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  time_t _conv = abstime->tv_sec * 1000 + abstime->tv_nsec / 1000000;
 
   unsigned ms = _conv >= ct ? _conv - ct : 1;
   Sleep( ms );
-  if ( r != 0 ) {
-    r->tv_sec = ms / 1000;
-    r->tv_nsec = (ms % 1000) * 1000000;
+  if ( real_time != 0 ) { // M$ not return real elapsed time
+    real_time->tv_sec = ms / 1000;
+    real_time->tv_nsec = (ms % 1000) * 1000000;
   }
 #endif
 }
 
 __FIT_DECLSPEC
-void Thread::delay( timespec *t, timespec *r ) // delay execution at least on time interval t
+void Thread::delay( timespec *interval, timespec *real_interval ) // delay execution at least on time interval t
 {
 #ifdef __unix
   timespec ct;
   gettime( &ct );
   timespec st = ct;
-  st += *t;
-  nanosleep( &st, r );
-  *r -= ct;
+  st += *interval;
+  nanosleep( &st, real_interval );
+  if ( real_interval != 0 ) {
+    *real_interval -= ct;
+  }
 #endif
 #ifdef WIN32
-  unsigned ms = t->tv_sec * 1000 + t->tv_nsec / 1000000;
+  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
   Sleep( ms );
-  if ( r != 0 ) {
-    r->tv_sec = ms / 1000;
-    r->tv_nsec = (ms % 1000) * 1000000;
+  if ( real_interval != 0 ) { // M$ not return elapsed time interval
+    real_interval->tv_sec = ms / 1000;
+    real_interval->tv_nsec = (ms % 1000) * 1000000;
   }
 #endif
 }
