@@ -249,9 +249,9 @@ streamoff __file_size(_STLP_fd fd) {
  if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR )
  {
    ret = 0;
- }
- ret = li.QuadPart;
-
+ } else
+   ret = li.QuadPart;
+ 
 # else
   (void)fd;    // dwa 4/27/00 - suppress unused parameter warning  
 # endif
