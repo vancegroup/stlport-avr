@@ -390,7 +390,7 @@ template <class _RandomAccessIter, class _OutputIter, class _Distance>
 inline _OutputIter __swap_move(_RandomAccessIter __first, _RandomAccessIter __last, _OutputIter __result, 
                                const random_access_iterator_tag &, _Distance*) {
   for (_Distance __n = __last - __first; __n > 0; --__n) {
-	  (*__result).swap(*__first);
+    (*__result).swap(*__first);
     ++__first;
     ++__result;
   }

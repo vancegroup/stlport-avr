@@ -359,17 +359,9 @@ private:
     _M_force_terminate_string(_Answer());
   }
 
-#ifndef _STLP_MEMBER_TEMPLATES
   bool _M_inside(const _CharT* __s ) const {
     return (__s >= this->_M_Start()) && (__s < this->_M_Finish());
   }
-#else
-  template <class _InputIter>
-  bool _M_inside(_InputIter __i) const {
-    const _CharT* __s = __STATIC_CAST(const _CharT*, &(*__i));
-    return (__s >= this->_M_Start()) && (__s < this->_M_Finish());
-  }
-#endif /*_STLP_MEMBER_TEMPLATES*/
 
 #ifdef _STLP_MEMBER_TEMPLATES
 
@@ -708,7 +700,7 @@ private:
     }
     return *this;
   }
-  
+
 public:                         // Insert
 
   _Self& insert(size_type __pos, const _Self& __s) {
@@ -716,7 +708,7 @@ public:                         // Insert
       this->_M_throw_out_of_range();
     if (size() > max_size() - __s.size())
       this->_M_throw_length_error();
-    _M_insert(begin() + __pos, __s._M_Start(), __s._M_Finish(), r_a_i_t());
+    _M_insert(begin() + __pos, __s._M_Start(), __s._M_Finish(), &__s == this);
     return *this;
   }
 
@@ -728,7 +720,7 @@ public:                         // Insert
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
     _M_insert(begin() + __pos, 
-              __s._M_Start() + __beg, __s._M_Start() + __beg + __len, r_a_i_t());
+              __s._M_Start() + __beg, __s._M_Start() + __beg + __len, &__s == this);
     return *this;
   }
   _Self& insert(size_type __pos, const _CharT* __s, size_type __n) {
@@ -737,7 +729,7 @@ public:                         // Insert
       this->_M_throw_out_of_range();
     if (size() > max_size() - __n)
       this->_M_throw_length_error();
-    _M_insert(begin() + __pos, __s, __s + __n, r_a_i_t());
+    _M_insert(begin() + __pos, __s, __s + __n, _M_inside(__s));
     return *this;
   }
 
@@ -748,7 +740,7 @@ public:                         // Insert
     size_type __len = _Traits::length(__s);
     if (size() > max_size() - __len)
       this->_M_throw_length_error();
-    _M_insert(this->_M_Start() + __pos, __s, __s + __len, r_a_i_t());
+    _M_insert(this->_M_Start() + __pos, __s, __s + __len, _M_inside(__s));
     return *this;
   }
     
@@ -773,6 +765,10 @@ public:                         // Insert
 
   void insert(iterator __p, size_t __n, _CharT __c);
 
+  void insert(iterator __p, const_iterator __first, const_iterator __last) {
+    _M_insert(__p, __first, __last, _M_inside(__first));
+  }
+  
 #ifdef _STLP_MEMBER_TEMPLATES
 
   // Check to see if _InputIterator is an integer type.  If so, then
@@ -783,20 +779,13 @@ public:                         // Insert
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 
-#else /* _STLP_MEMBER_TEMPLATES */
-
-  void insert(iterator __p, const_iterator __first, const_iterator __last) {
-    _M_insert(__p, __first, __last, r_a_i_t());
-  }
-
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 private:  // Helper functions for insert.
 
-#ifndef _STLP_MEMBER_TEMPLATES
-  void _M_insert(iterator __p, const_iterator __first, const_iterator __last, 
-                 const random_access_iterator_tag&);
-#else
+  void _M_insert(iterator __p, const_iterator __first, const_iterator __last, bool __self_ref);
+                 
+#ifdef _STLP_MEMBER_TEMPLATES
 
   template <class _ForwardIter>
   void _M_insert_overflow(iterator __position, _ForwardIter __first, _ForwardIter __last,
@@ -819,8 +808,8 @@ private:  // Helper functions for insert.
   }
 
   template <class _InputIter> 
-  void _M_insert(iterator __p, _InputIter __first, _InputIter __last,
-                 const input_iterator_tag &) {
+  void _M_insertT(iterator __p, _InputIter __first, _InputIter __last,
+                  const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
       __p = insert(__p, *__first);
       ++__p;
@@ -828,9 +817,8 @@ private:  // Helper functions for insert.
   }
 
   template <class _ForwardIter>
-  void _M_insert_over(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-                     const __false_type& /*OKToMemCpy or ForwardIter*/) {
-    //This version can't have self referencing
+  void _M_insertT(iterator __position, _ForwardIter __first, _ForwardIter __last, 
+                  const forward_iterator_tag &) {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
       if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
@@ -877,102 +865,6 @@ private:  // Helper functions for insert.
     }
   }
 
-  template <class _RandomIter>
-  void _M_insert_over(iterator __position, _RandomIter __first, _RandomIter __last, 
-                     const __true_type& /*OKToMemCpy*/) {
-    //This version has to take care about self referencing
-    if (__first != __last) {
-      difference_type __n = __last - __first;
-      if (this->_M_end_of_storage._M_data - this->_M_Finish() >= __n + 1) {
-        const difference_type __elems_after = this->_M_Finish() - __position;
-        if (__elems_after >= __n) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-          if (this->_M_using_static_buf())
-            _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
-          else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
-          this->_M_finish += __n;
-          iterator __move_dest = __position + __n;
-          iterator __move_dest_end = __position + __elems_after + 1;
-          const _CharT* __first_ite = __REINTERPRET_CAST(const _CharT*, &(*__first));
-          const _CharT* __last_ite = __REINTERPRET_CAST(const _CharT*, &(*__last));
-          //We have to check that the source buffer won't be modified by the _Traits::move
-          if ((__first_ite >= __move_dest) && (__first_ite < __move_dest_end)) {
-            if (__last_ite <= __move_dest_end) {
-              __first += __n;
-              __last += __n;
-              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-              _M_copy(__first, __last, __position);
-            }
-            else {
-              _RandomIter __mid = __move_dest_end;
-              difference_type __mid_pos = __mid - __first_ite;
-              _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-              _M_copy(__mid, __last, __position + __mid_pos);
-              __first += __n;
-              __mid += __n;
-              _M_copy(__first, __mid, __position);
-            }
-          }
-          else if ((__last_ite > __move_dest) && (__last_ite <= __move_dest_end)) {
-            _RandomIter __mid = __move_dest;
-            difference_type __mid_pos = __mid - __first_ite;
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-            _M_copy(__first, __mid, __position);
-            __mid += __n;
-            __last += __n;
-            _M_copy(__mid, __last, __position + __mid_pos);
-          }
-          else {
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-            _M_move(__first, __last, __position);
-          }
-        }
-        else {
-          pointer __old_finish = this->_M_Finish();
-          _RandomIter __mid = __first;
-          advance(__mid, __elems_after + 1);
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-          if (this->_M_using_static_buf())
-            _M_copy(__mid, __last, this->_M_Finish() + 1);
-          else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
-          this->_M_finish += __n - __elems_after;
-          _STLP_TRY {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-            if (this->_M_using_static_buf())
-              _M_copy(__position, __old_finish + 1, this->_M_Finish());
-            else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-            uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
-            this->_M_finish += __elems_after;
-          }
-          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
-                        this->_M_finish = __old_finish));
-          _M_move(__first, __mid, __position);
-        }
-      }
-      else {
-        _M_insert_overflow(__position, __first, __last, __n);
-      }
-    }
-  }
-
-  template <class _RandomIter>
-  void _M_insert(iterator __position, _RandomIter __first, _RandomIter __last, 
-                 const random_access_iterator_tag &) {
-     typedef typename _AreSameTypes<iterator, _RandomIter>::_Ret _SameTypes;
-     return _M_insert_over(__position, __first, __last, _SameTypes());
-  }
-
-  template <class _ForwardIter>
-  void _M_insert(iterator __position, _ForwardIter __first, _ForwardIter __last, 
-                 const forward_iterator_tag &) {
-  return _M_insert_over(__position, __first, __last, __false_type());
-  }
-
   template <class _Integer>
   void _M_insert_dispatch(iterator __p, _Integer __n, _Integer __x,
                           const __true_type& /*Integral*/) {
@@ -981,7 +873,7 @@ private:  // Helper functions for insert.
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
                           const __false_type& /*Integral*/) {
-    _M_insert(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+    _M_insertT(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
   template <class _InputIterator>
@@ -1042,7 +934,6 @@ public:                         // Erase.
 public:                         // Replace.  (Conceptually equivalent
                                 // to erase followed by insert.)
   _Self& replace(size_type __pos, size_type __n, 
-
                  const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -1050,7 +941,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (size() - __len >= max_size() - __s.size())
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len, 
-                      __s._M_Start(), __s._M_Finish(), r_a_i_t());
+                      __s._M_Start(), __s._M_Finish(), &__s == this);
   }
 
   _Self& replace(size_type __pos1, size_type __n1,
@@ -1063,7 +954,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (size() - __len1 >= max_size() - __len2)
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos1, begin() + __pos1 + __len1,
-                      __s._M_Start() + __pos2, __s._M_Start() + __pos2 + __len2, r_a_i_t());
+                      __s._M_Start() + __pos2, __s._M_Start() + __pos2 + __len2, &__s == this);
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -1075,7 +966,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (__n2 > max_size() || size() - __len >= max_size() - __n2)
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len,
-                      __s, __s + __n2, r_a_i_t());
+                      __s, __s + __n2, _M_inside(__s));
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -1088,7 +979,7 @@ public:                         // Replace.  (Conceptually equivalent
     if (__n2 > max_size() || size() - __len >= max_size() - __n2)
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len,
-                      __s, __s + _Traits::length(__s), r_a_i_t());
+                      __s, __s + _Traits::length(__s), _M_inside(__s));
   }
 
   _Self& replace(size_type __pos, size_type __n1,
@@ -1102,24 +993,28 @@ public:                         // Replace.  (Conceptually equivalent
   }
 
   _Self& replace(iterator __first, iterator __last, const _Self& __s) {
-    return _M_replace(__first, __last, __s._M_Start(), __s._M_Finish(), r_a_i_t());
+    return _M_replace(__first, __last, __s._M_Start(), __s._M_Finish(), &__s == this);
   }
 
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __s, size_type __n) {
     _STLP_FIX_LITERAL_BUG(__s) 
-    return _M_replace(__first, __last, __s, __s + __n, r_a_i_t()); 
+    return _M_replace(__first, __last, __s, __s + __n, _M_inside(__s)); 
   }
 
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
-    return _M_replace(__first, __last, __s, __s + _Traits::length(__s), r_a_i_t());
+    return _M_replace(__first, __last, __s, __s + _Traits::length(__s), _M_inside(__s));
   }
 
   _Self& replace(iterator __first, iterator __last, 
                  size_type __n, _CharT __c);
 
+  _Self& replace(iterator __first, iterator __last,
+                 const_iterator __f, const_iterator __l) {
+    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
+  }
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
 #ifdef _STLP_MEMBER_TEMPLATES
@@ -1129,20 +1024,14 @@ public:                         // Replace.  (Conceptually equivalent
     typedef typename _Is_integer<_InputIter>::_Integral _Integral;
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  _Self& replace(iterator __first, iterator __last,
-                 const_iterator __f, const_iterator __l) {
-    return _M_replace(__first, __last, __f, __l, r_a_i_t());
-  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 private:                        // Helper functions for replace.
 
-#ifndef _STLP_MEMBER_TEMPLATES
   _Self& _M_replace(iterator __first, iterator __last,
-                     const_iterator __f, const_iterator __l, const random_access_iterator_tag&);
-#else /* _STLP_MEMBER_TEMPLATES */
-
+                    const_iterator __f, const_iterator __l, bool __self_ref);
+                     
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
@@ -1152,71 +1041,24 @@ private:                        // Helper functions for replace.
   template <class _InputIter> 
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
-    return _M_replace(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
+    return _M_replaceT(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
 
   template <class _InputIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                        _InputIter __f, _InputIter __l, const __false_type& /*IsSame or ForwardIter*/) {
-    //no overlapping issue in this method
+  _Self& _M_replaceT(iterator __first, iterator __last,
+                     _InputIter __f, _InputIter __l, const input_iterator_tag&__ite_tag) {
     for ( ; __first != __last && __f != __l; ++__first, ++__f)
       _Traits::assign(*__first, *__f);
     if (__f == __l)
       erase(__first, __last);
     else
-      insert(__last, __f, __l);
+      _M_insertT(__last, __f, __l, __ite_tag);
     return *this;
   }
 
-  template <class _RandomIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                        _RandomIter __f, _RandomIter __l, const __true_type& /*IsSame*/) {
-    //might be overlapping
-    if (_M_inside(__f)) {
-      difference_type __n = __l - __f;
-      const difference_type __len = __last - __first;
-      if (__len >= __n) {
-        _M_move(__f, __l, __first);
-        erase(__first + __n, __last);
-      }
-      else {
-        _RandomIter __m = __f + __len;
-        if ((__l <= __first) || (__f >= __last)) {
-          //no overlap:
-          _M_copy(__f, __m, __first);
-          _M_insert(__last, __m, __l, r_a_i_t());
-        }
-        else {
-          //we have to take care of reallocation:
-          const difference_type __off_dest = __first - this->begin();
-          const difference_type __off_src = __f - this->begin();
-          _M_insert(__last, __m, __l, r_a_i_t());
-          _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
-        }
-      }
-      return *this;
-    }
-    else {
-      return _M_replace(__first, __last, __f, __l, r_a_i_t());
-    }
-  }
-
-  template <class _InputIter>
-  _Self& _M_replace(iterator __first, iterator __last,
-                    _InputIter __f, _InputIter __l, const input_iterator_tag &) {
-    return _M_replace_aux(__first, __last, __f, __l, __false_type());
-  }
-
-  template <class _RandomIter>
-  _Self& _M_replace(iterator __first, iterator __last,
-                    _RandomIter __f, _RandomIter __l, const random_access_iterator_tag &__ite_tag) {
-    typedef typename _AreSameTypes<iterator, _RandomIter>::_Ret _SameTypes;
-    return _M_replace_aux(__first, __last, __f, __l, _SameTypes());
-  }
-
   template <class _ForwardIter> 
-  _Self& _M_replace(iterator __first, iterator __last,
-                 _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
+  _Self& _M_replaceT(iterator __first, iterator __last,
+                     _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
     difference_type __n = distance(__f, __l);
     const difference_type __len = __last - __first;
     if (__len >= __n) {
@@ -1227,7 +1069,7 @@ private:                        // Helper functions for replace.
       _ForwardIter __m = __f;
       advance(__m, __len);
       _M_copy(__f, __m, __first);
-      _M_insert(__last, __m, __l, __ite_tag);
+      _M_insertT(__last, __m, __l, __ite_tag);
     }
     return *this;
   }

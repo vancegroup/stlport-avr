@@ -375,13 +375,11 @@ __iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux_prepare(iterator __pos) {
 
 template <class _Tp, class _Alloc >
 __iterator__ __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
-                                                  const value_type& __t) {
-#ifdef _STLP_NEED_MYSTERIOUS_COPY
-  value_type __t_copy = __t;
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
+                                                  const value_type& __x) {
+  value_type __x_copy = __x;
   _STLP_MPWFIX_TRY		//*TY 06/01/2000 - mpw forget to call dtor on __x_copy without this try block
   __pos = _M_insert_aux_prepare(__pos);
-  *__pos = __t_copy;
+  *__pos = __x_copy;
   return __pos;
   _STLP_MPWFIX_CATCH		//*TY 06/01/2000 - 
 }
@@ -401,9 +399,7 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
                                           const value_type& __t) {
   const difference_type __elems_before = __pos - this->_M_start;
   size_type __length = this->size();
-#ifdef _STLP_NEED_MYSTERIOUS_COPY
-  value_type __t_copy = __t;
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
+  value_type __x_copy = __t;
   if (__elems_before < difference_type(__length / 2)) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
     iterator __old_start = this->_M_start;
@@ -414,13 +410,13 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         uninitialized_copy(this->_M_start, __start_n, __new_start);
         this->_M_start = __new_start;
         copy(__start_n, __pos, __old_start);
-        fill(__pos - difference_type(__n), __pos, __t_copy);
+        fill(__pos - difference_type(__n), __pos, __x_copy);
       }
       else {
         __uninitialized_copy_fill(this->_M_start, __pos, __new_start, 
-                                  this->_M_start, __t_copy);
+                                  this->_M_start, __x_copy);
         this->_M_start = __new_start;
-        fill(__old_start, __pos, __t_copy);
+        fill(__old_start, __pos, __x_copy);
       }
     }
     _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node));
@@ -437,13 +433,13 @@ void __deque__<_Tp,_Alloc>::_M_insert_aux(iterator __pos,
         uninitialized_copy(__finish_n, this->_M_finish, this->_M_finish);
         this->_M_finish = __new_finish;
         copy_backward(__pos, __finish_n, __old_finish);
-        fill(__pos, __pos + difference_type(__n), __t_copy);
+        fill(__pos, __pos + difference_type(__n), __x_copy);
       }
       else {
         __uninitialized_fill_copy(this->_M_finish, __pos + difference_type(__n),
-                                  __t_copy, __pos, this->_M_finish);
+                                  __x_copy, __pos, this->_M_finish);
         this->_M_finish = __new_finish;
-        fill(__pos, __old_finish, __t_copy);
+        fill(__pos, __old_finish, __x_copy);
       }
     }
     _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1));

@@ -2,6 +2,7 @@
 // To compile as a separate example, please #define MAIN.
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include "stl_test.h"
@@ -71,6 +72,13 @@ int string1_test(int, char**)
   //Should be: This This is test string for string calls
   cout << str;
   stlp_test(str == "This This is test string for string calls");
+
+#ifdef _STLP_MEMBER_TEMPLATES
+  vector<int> int_vect;
+  //Just a compile time test:
+  str.insert(str.end(), int_vect.begin(), int_vect.end());
+#endif
+
   
   cout << endl;
 

@@ -58,45 +58,41 @@ iterator_category(const  _DBG_iter_base< _STLP_DBG_VECTOR_BASE >&) {
 # endif
 
 template <class _Tp, class _NcIt>
-struct _Vector_nonconst_traits
-{
-		 typedef _Nonconst_traits<_Tp> _BaseT;
-		 typedef _Tp value_type;
-		 typedef _Tp& reference;
-		 typedef _Tp* pointer;
-		 typedef _Vector_nonconst_traits<_Tp, _NcIt> _Non_const_traits;
+struct _Vector_nonconst_traits {
+  typedef _Nonconst_traits<_Tp> _BaseT;
+  typedef _Tp value_type;
+  typedef _Tp& reference;
+  typedef _Tp* pointer;
+  typedef _Vector_nonconst_traits<_Tp, _NcIt> _Non_const_traits;
 };
 
 template <class _Tp, class _NcIt>
-struct _Vector_const_traits
-{
-		 typedef _Const_traits<_Tp> _BaseT;
-		 typedef _Tp value_type;
-		 typedef const _Tp& reference;
-		 typedef const _Tp* pointer;
-		 typedef _Vector_nonconst_traits<_Tp, _NcIt> _Non_const_traits;
+struct _Vector_const_traits {
+  typedef _Const_traits<_Tp> _BaseT;
+  typedef _Tp value_type;
+  typedef const _Tp& reference;
+  typedef const _Tp* pointer;
+  typedef _Vector_nonconst_traits<_Tp, _NcIt> _Non_const_traits;
 };
 
 _STLP_TEMPLATE_NULL
-struct _Vector_nonconst_traits<bool, _Bit_iterator>
-{
-		 typedef _Bit_iterator::value_type value_type;
-		 typedef _Bit_iterator::reference reference;
-		 typedef _Bit_iterator::pointer pointer;
-		 typedef _Vector_nonconst_traits<bool, _Bit_iterator> _Non_const_traits;
+struct _Vector_nonconst_traits<bool, _Bit_iterator> {
+  typedef _Bit_iterator::value_type value_type;
+  typedef _Bit_iterator::reference reference;
+  typedef _Bit_iterator::pointer pointer;
+  typedef _Vector_nonconst_traits<bool, _Bit_iterator> _Non_const_traits;
 };
 
 _STLP_TEMPLATE_NULL
-struct _Vector_const_traits<bool, _Bit_iterator>
-{
-		 typedef _Bit_const_iterator::value_type value_type;
-		 typedef _Bit_const_iterator::reference reference;
-		 typedef _Bit_const_iterator::pointer pointer;
-		 typedef _Vector_nonconst_traits<bool, _Bit_iterator> _Non_const_traits;
+struct _Vector_const_traits<bool, _Bit_iterator> {
+  typedef _Bit_const_iterator::value_type value_type;
+  typedef _Bit_const_iterator::reference reference;
+  typedef _Bit_const_iterator::pointer pointer;
+  typedef _Vector_nonconst_traits<bool, _Bit_iterator> _Non_const_traits;
 };
 
 template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
-class _DBG_vector : public _STLP_DBG_VECTOR_BASE, private __range_checker<_Tp>
+class _DBG_vector : private __range_checker<_Tp>, public _STLP_DBG_VECTOR_BASE
 {
 private:
   typedef _STLP_DBG_VECTOR_BASE _Base;
@@ -182,13 +178,13 @@ public:
     : __range_checker<_Tp>(__x), _STLP_DBG_VECTOR_BASE(__x), _M_iter_list(_Get_base()) {}
 
   explicit _DBG_vector(__partial_move_source<_Self> src)
-		: _STLP_DBG_VECTOR_BASE(_AsPartialMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())),
+    : _STLP_DBG_VECTOR_BASE(_AsPartialMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())),
       _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }
 
   /*explicit _DBG_vector(__full_move_source<_Self> src)
-		   : _STLP_DBG_VECTOR_BASE(_FullMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())), _M_iter_list(_Get_base()) {
+    : _STLP_DBG_VECTOR_BASE(_FullMoveSource<_STLP_DBG_VECTOR_BASE >(src.get())), _M_iter_list(_Get_base()) {
     src.get()._Invalidate_all();
   }*/
 
@@ -210,14 +206,14 @@ public:
 # endif
 #else
   _DBG_vector(const _Tp* __first, const _Tp* __last,
-         const allocator_type& __a = allocator_type())
+              const allocator_type& __a = allocator_type())
     : __range_checker<_Tp>(__first, __last), _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
 
   // mysterious VC++ bug ?
   _DBG_vector(const_iterator __first, const_iterator __last , 
-		       const allocator_type& __a = allocator_type())
+              const allocator_type& __a = allocator_type())
     : __range_checker<_Tp>(__first._M_iterator, __last._M_iterator), 
       _STLP_DBG_VECTOR_BASE(__first._M_iterator, __last._M_iterator, __a), 
       _M_iter_list(_Get_base()) {
@@ -294,7 +290,7 @@ public:
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
     size_type __old_capacity = this->capacity();
     _Base::insert(__position._M_iterator,
-		 		   __first._M_iterator, __last._M_iterator);        
+                  __first._M_iterator, __last._M_iterator);        
     _Compare_Capacity(__old_capacity);
   }
 

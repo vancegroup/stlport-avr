@@ -288,13 +288,11 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __position, size_t __n
   }
 }
 
-#ifndef _STLP_MEMBER_TEMPLATES
-
 template <class _CharT, class _Traits, class _Alloc>
 void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
                                                     const_iterator __first, const_iterator __last,
-                                                    const random_access_iterator_tag&)
-{
+                                                    bool __self_ref) {
+  //this version has to take care about the auto referencing
   if (__first != __last) {
     const ptrdiff_t __n = __last - __first;
     if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
@@ -308,43 +306,27 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
         uninitialized_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
-        iterator __move_dest = __position + __n;
-        iterator __move_dest_end = __position + __elems_after + 1;
-        //We have to check that the source buffer won't be modified by the move
-        if ((__first >= __move_dest) && (__first < __move_dest_end)) {
-          if (__last <= __move_dest_end) {
+        _Traits::move(__position + __n, __position, (__elems_after - __n) + 1);
+        if (!__self_ref || __last < __position) {
+          _M_copy(__first, __last, __position);
+        }
+        else {
+          //We have to check that the source buffer hasn't move
+          if (__first >= __position) {
+            //The source buffer has move
             __first += __n;
             __last += __n;
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
             _M_copy(__first, __last, __position);
           }
           else {
-            const_iterator __mid = __move_dest_end;
-            difference_type __mid_pos = __mid - __first;
-            _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-            _M_copy(__mid, __last, __position + __mid_pos);
-            __first += __n;
-            __mid += __n;
-            _M_copy(__first, __mid, __position);
+            //The source buffer hasn't move, it has been duplicated
+            _M_move(__first, __last, __position);
           }
-        }
-        else if ((__last > __move_dest) && (__last <= __move_dest_end)) {
-          const_iterator __mid = __move_dest;
-          difference_type __mid_pos = __mid - __first;
-          _Traits::move(__move_dest, __position, (__elems_after - __n) + 1);
-          _M_copy(__first, __mid, __position);
-          __mid += __n;
-          __last += __n;
-          _M_copy(__mid, __last, __position + __mid_pos);
-        }
-        else {
-          _Traits::move(__position + __n, __position, (__elems_after - __n) + 1);
-          _M_move(__first, __last, __position);
         }
       }
       else {
         const_iterator __mid = __first;
-        advance(__mid, __elems_after + 1);
+        __mid += __elems_after + 1;
 #ifdef _STLP_USE_SHORT_STRING_OPTIM
         if (this->_M_using_static_buf())
           _M_copy(__mid, __last, this->_M_finish + 1);
@@ -363,7 +345,10 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish), 
                       this->_M_finish = __old_finish));
-        _M_move(__first, __mid, __position);
+        if (!__self_ref)
+          _M_copy(__first, __mid, __position);
+        else
+          _M_move(__first, __mid, __position);
       }
     }
     else {
@@ -386,8 +371,6 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __position,
   }
 }
 
-#endif /* _STLP_MEMBER_TEMPLATES */
-
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT,_Traits,_Alloc>& 
 basic_string<_CharT,_Traits,_Alloc> ::replace(iterator __first, iterator __last, size_type __n, _CharT __c)
@@ -405,55 +388,48 @@ basic_string<_CharT,_Traits,_Alloc> ::replace(iterator __first, iterator __last,
   return *this;
 }
 
-#ifndef _STLP_MEMBER_TEMPLATES
-
 template <class _CharT, class _Traits, class _Alloc> 
 basic_string<_CharT,_Traits,_Alloc>& 
 basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __last,
                                                  const_iterator __f, const_iterator __l,
-                                                 const random_access_iterator_tag&)
+                                                 bool __self_ref)
 {
   const ptrdiff_t       __n = __l - __f;
   const difference_type __len = __last - __first;
   if (__len >= __n) {
-    _M_move(__f, __l, __first);
+    if (!__self_ref || __l < __first || __f >= __last)
+      _M_copy(__f, __l, __first);
+    else
+      _M_move(__f, __l, __first);
     erase(__first + __n, __last);
   }
   else {
     const _CharT* __m = __f + __len;
-    if (_M_inside(__f)) {
-      if ((__l <= __first) || (__f >= __last)) {
-				//no overlap:
-        _M_copy(__f, __m, __first);
-        insert(__last, __m, __l);
-      }
-      else {
-				//we have to take care of reallocation:
-				const difference_type __off_dest = __first - this->begin();
-				const difference_type __off_src = __f - this->begin();
-				insert(__last, __m, __l);
-				_Traits::move(begin() + __off_dest, begin() + __off_src, __n);
-      }
-    }
-    else {
+    if (!__self_ref) {
+      //no overlap:
       _M_copy(__f, __m, __first);
       insert(__last, __m, __l);
+    }
+    else {
+      //we have to take care of reallocation:
+      const difference_type __off_dest = __first - this->begin();
+      const difference_type __off_src = __f - this->begin();
+      insert(__last, __m, __l);
+      _Traits::move(begin() + __off_dest, begin() + __off_src, __n);
     }
   }
   return *this;
 }
-
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__ 
 basic_string<_CharT,_Traits,_Alloc> ::find(const _CharT* __s, size_type __pos, size_type __n) const {
   if (__pos + __n > size())
     return npos;
   else {
-    const const_pointer __result =
-      _STLP_STD::search((const _CharT*)this->_M_Start() + __pos, (const _CharT*)this->_M_finish, 
-		 		 		 __s, __s + __n, _Eq_traits<_Traits>());
-    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
+    const_pointer __result =
+      _STLP_STD::search(this->_M_Start() + __pos, this->_M_Finish(), 
+                        __s, __s + __n, _Eq_traits<_Traits>());
+    return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
   }
 }
 
@@ -462,10 +438,10 @@ basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
   if (__pos >= size())
     return npos;
   else {
-    const const_pointer __result =
-      _STLP_STD::find_if((const _CharT*)this->_M_Start() + __pos, (const _CharT*)this->_M_finish,
-		 		 		  _Eq_char_bound<_Traits>(__c));
-    return __result != this->_M_finish ? __result - this->_M_Start() : npos;
+    const_pointer __result =
+      _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
+                         _Eq_char_bound<_Traits>(__c));
+    return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
   }
 }    
 
@@ -492,10 +468,10 @@ basic_string<_CharT,_Traits,_Alloc> ::rfind(_CharT __c, size_type __pos) const {
   if (__len < 1)
     return npos;
   else {
-    const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
+    const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const_reverse_iterator __rresult =
       _STLP_STD::find_if(const_reverse_iterator(__last), rend(),
-              _Eq_char_bound<_Traits>(__c));
+                         _Eq_char_bound<_Traits>(__c));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
@@ -549,7 +525,7 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(_CharT __c, size_type __
     return npos;
   else {
     const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
-		 		 		 		 		 		                        _Neq_char_bound<_Traits>(__c));
+                                                _Neq_char_bound<_Traits>(__c));
     return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }    
@@ -566,8 +542,8 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_t
     const_reverse_iterator __rlast = const_reverse_iterator(__last);
     const_reverse_iterator __rresult =
       _STLP_STD::find_if(__rlast, rend(),
-		 		 		  _Not_within_traits<_Traits>((const _CharType*)__s, 
-		 		 		 		 		 		                  (const _CharType*)__s + __n));
+                         _Not_within_traits<_Traits>((const _CharType*)__s, 
+                                                     (const _CharType*)__s + __n));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
@@ -583,7 +559,7 @@ basic_string<_CharT, _Traits, _Alloc> ::find_last_not_of(_CharT __c, size_type _
     const_reverse_iterator __rlast = const_reverse_iterator(__last);
     const_reverse_iterator __rresult =
       _STLP_STD::find_if(__rlast, rend(),
-		 		 		  _Neq_char_bound<_Traits>(__c));
+                         _Neq_char_bound<_Traits>(__c));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }

@@ -79,7 +79,7 @@ public:
     _M_start = _M_end_of_storage.allocate(__n);
     _M_finish = _M_start;
     _M_end_of_storage._M_data = _M_start + __n;
-	_STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
+    _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
   }
 
   ~_Vector_base() { 
@@ -241,16 +241,17 @@ public:
   
   explicit vector(__partial_move_source<_Self> src)
     : _Vector_base<_Tp, _Alloc>(_AsPartialMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
-	  //Set the source destroyable:
-	  src.get()._M_start = 0;
-	  //This one is usefull for the hashtable Move_Constructor:
-	  src.get()._M_finish = 0;
+    //Set the source destroyable:
+    src.get()._M_start = 0;
+    //This one is usefull for the hashtable Move_Constructor:
+    src.get()._M_finish = 0;
   }
   
 #if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _Integer>
-  void _M_initialize_aux(_Integer __n, _Integer __val, const __true_type& /*_IsIntegral*/) {
+  void _M_initialize_aux(_Integer __n, _Integer __val,
+                         const __true_type& /*_IsIntegral*/) {
     this->_M_start = this->_M_end_of_storage.allocate(__n);
     this->_M_end_of_storage._M_data = this->_M_start + __n; 
     this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val);
@@ -263,14 +264,6 @@ public:
   }
 
   // Check whether it's an integral type.  If so, it's not an iterator.
- # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
-  template <class _InputIterator>
-  vector(_InputIterator __first, _InputIterator __last) :
-    _Vector_base<_Tp, _Alloc>(allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
-    _M_initialize_aux(__first, __last, _Integral());
-  }
- # endif
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
@@ -278,8 +271,17 @@ public:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
+  
+# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+  template <class _InputIterator>
+  vector(_InputIterator __first, _InputIterator __last) :
+    _Vector_base<_Tp, _Alloc>(allocator_type()) {
+    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    _M_initialize_aux(__first, __last, _Integral());
+  }
+# endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
 
-#else
+#else /* _STLP_MEMBER_TEMPLATES */
   vector(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
     : _Vector_base<_Tp, _Alloc>(__last - __first, __a) { 
@@ -308,12 +310,11 @@ public:
   void assign(const_iterator __first, const_iterator __last)
 #endif
   {
-    size_type __len = distance(__first, __last);
-    
+    size_type __len = distance(__first, __last);  
     if (__len > capacity()) {
       iterator __tmp = _M_allocate_and_copy(__len, __first, __last);
-    _M_clear();
-    _M_set(__tmp, __tmp + __len, __tmp + __len);
+      _M_clear();
+      _M_set(__tmp, __tmp + __len, __tmp + __len);
     }
     else if (size() >= __len) {
       iterator __new_finish = copy(__first, __last, this->_M_start);
@@ -322,20 +323,20 @@ public:
     }
     else {
 # if defined ( _STLP_MEMBER_TEMPLATES )
-          _ForwardIter __mid = __first;
-          advance(__mid, size());
+      _ForwardIter __mid = __first;
+      advance(__mid, size());
 # else
-          const_iterator __mid = __first + size() ;
+      const_iterator __mid = __first + size() ;
 # endif
-    copy(__first, __mid, this->_M_start);
-    this->_M_finish = __uninitialized_copy(__mid, __last, this->_M_finish, _IsPODType());
+      copy(__first, __mid, this->_M_start);
+      this->_M_finish = __uninitialized_copy(__mid, __last, this->_M_finish, _IsPODType());
     }
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   void _M_assign_aux(_InputIter __first, _InputIter __last,
-		     const input_iterator_tag &) {
+                     const input_iterator_tag &) {
     iterator __cur = begin();
     for ( ; __first != __last && __cur != end(); ++__cur, ++__first)
       *__cur = *__first;
@@ -346,11 +347,13 @@ public:
   }
   
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
+  void _M_assign_dispatch(_Integer __n, _Integer __val,
+                          const __true_type& /*_IsIntegral*/)
     { assign((size_type) __n, (_Tp) __val); }
 
   template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last, const __false_type&)
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
+                          const __false_type& /*_IsIntegral*/)
     { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
 
   template <class _InputIterator>
@@ -433,9 +436,8 @@ public:
 
   template <class _InputIterator>
   void _M_range_insert(iterator __pos, 
-		       _InputIterator __first, 
-		       _InputIterator __last,
-		       const input_iterator_tag &) {
+                       _InputIterator __first, _InputIterator __last,
+                       const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
       __pos = insert(__pos, *__first);
       ++__pos;
@@ -444,8 +446,7 @@ public:
 
   template <class _ForwardIterator>
   void _M_range_insert(iterator __position,
-                       _ForwardIterator __first,
-                       _ForwardIterator __last,
+                       _ForwardIterator __first, _ForwardIterator __last,
                        const forward_iterator_tag &) 
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,
@@ -539,12 +540,8 @@ public:
 protected:
 
   void _M_clear() {
-    //    if (this->_M_start) {
     _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish);
     this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
-    //    }
-
-
   }
 
   void _M_set(pointer __s, pointer __f, pointer __e) {
@@ -556,10 +553,10 @@ protected:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _ForwardIterator>
   pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first, 
-				_ForwardIterator __last)
+                               _ForwardIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
   pointer _M_allocate_and_copy(size_type __n, const_pointer __first, 
-			       const_pointer __last)
+                               const_pointer __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   {
     pointer __result = this->_M_end_of_storage.allocate(__n);

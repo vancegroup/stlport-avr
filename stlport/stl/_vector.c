@@ -42,10 +42,6 @@
 
 #include <stl/_range_errors.h>
 
-#ifndef _STLP_NEED_MYSTERIOUS_COPY
-# define __x_copy __x
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc> 
@@ -82,9 +78,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert(iterator __position,
                                          size_type __n, const _Tp& __x) {
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
-#ifdef _STLP_NEED_MYSTERIOUS_COPY
       _Tp __x_copy = __x;
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
       const size_type __elems_after = this->_M_finish - __position;
       pointer __old_finish = this->_M_finish;
       if (__elems_after > __n) {
@@ -150,10 +144,6 @@ _STLP_END_NAMESPACE
 #ifdef _STLP_DEBUG
 # undef vector
 #endif
-
-#ifndef _STLP_NEED_MYSTERIOUS_COPY
-# undef __x_copy
-#endif /* _STLP_NEED_MYSTERIOUS_COPY */
 
 #endif /*  _STLP_VECTOR_C */
 
