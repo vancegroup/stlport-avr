@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/09/25 17:50:44 ptr>
+// -*- C++ -*- Time-stamp: <03/12/05 16:42:57 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -105,6 +105,7 @@ void *_uw_save = 0;
 
 
 #ifdef _PTHREADS
+// __impl::__Mutex<false,true> _F_lock;
 __impl::Mutex _F_lock;
 #  define _F_locklock  detail::_F_lock.lock();
 #  define _F_lockunlock detail::_F_lock.unlock();
@@ -143,11 +144,17 @@ extern "C" void __at_fork_child()
 #ifdef _PTHREADS
   if ( detail::Init_count > 0 ) {
      // otherwise we do it in Thread::Init::Init() below
-#ifndef __FreeBSD__
-    pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
+#if !(defined(__FreeBSD__) || defined(__OpenBSD__))
+    // I am misunderstand this point, Solaris 7 require this (to be restored)
+
+    // pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child );
+
+    // while Linux (and other) inherit this setting from parent process?
+    // At least Linux glibc 2.2.5 try to made lock in recursive
+    // call of pthread_atfork
 #else
 // should be fixed...
-#endif // __FreeBSD__
+#endif // !(__FreeBSD__ || __OpenBSD__)
     pthread_key_create( &detail::_mt_key, 0 );
     pthread_setspecific( detail::_mt_key, detail::_uw_save );
     detail::_uw_save = 0;
@@ -484,7 +491,7 @@ Thread::Init::Init()
     thr_keycreate( &_mt_key, 0 );
 #endif
 #ifdef _PTHREADS
-# ifndef __FreeBSD__
+# if !(defined(__FreeBSD__) || defined(__OpenBSD__))
     if ( pthread_atfork( __at_fork_prepare, __at_fork_parent, __at_fork_child ) ) {
       _F_lockunlock
       throw std::runtime_error( "Problems with pthread_atfork" );
