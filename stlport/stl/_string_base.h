@@ -35,7 +35,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
-template <class _Tp, class _Alloc> 
+#ifndef _STLP_SHORT_STRING_SZ
+# define _STLP_SHORT_STRING_SZ 32
+#endif
+
+template <class _Tp, class _Alloc>
 class _String_base {
   typedef _String_base<_Tp, _Alloc> _Self;
 protected:
@@ -43,7 +47,7 @@ protected:
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 public:
   //dums: Some compiler(MSVC6) require it to be public not simply protected!
-  enum {_DEFAULT_SIZE = 8};
+  enum {_DEFAULT_SIZE = _STLP_SHORT_STRING_SZ};
   //This is needed by the full move framework
   typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
 private:
@@ -211,6 +215,8 @@ protected:
   void _M_throw_out_of_range() const;
 };
 
+#undef _STLP_SHORT_STRING_SZ
+
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _String_base<char, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
@@ -229,3 +235,10 @@ struct __move_traits<_String_base<_CharT,_Alloc> > :
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_STRING_BASE_H */
+
+/*
+ * Local Variables:
+ * mode:C++
+ * End:
+ */
+
