@@ -4,6 +4,10 @@
  * allow reentrancy of this header.
  */
 
+# ifndef _STLP_PROLOG_HEADER_INCLUDED
+#   error STLport epilog header can't be included as long as prolog hasn't be included.
+# endif
+
 /* If the platform provides any specific epilog actions,
    like #pragmas, do include platform-specific prolog file */
 # if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
@@ -43,9 +47,5 @@
 # endif
 
 
-
-
-
-
-
+# undef _STLP_PROLOG_HEADER_INCLUDED
 

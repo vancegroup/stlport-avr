@@ -6,6 +6,12 @@
 /* We undef "std" on entry , as STLport headers may include native ones. */
 /* # undef std */
 
+# ifdef _STLP_PROLOG_HEADER_INCLUDED
+#   error STlport prolog header can't be reincluded as long as epilog hasn't be included.
+# endif
+
+# define _STLP_PROLOG_HEADER_INCLUDED
+
 # ifndef _STLP_CONFIG_H
 #  include <stl/_config.h>
 # endif
