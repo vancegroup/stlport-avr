@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/16 17:41:03 ptr>
+// -*- C++ -*- Time-stamp: <99/05/06 17:36:22 ptr>
 
 #ident "%Z% $Date$ $Revision$ $RCSfile$ %Q%"
 
@@ -439,8 +439,17 @@ long&  Thread::iword( int __idx )
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
+#if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+#ifdef _MSC_VER
+    user_words = alloc().allocate( uw_alloc_size, (const void *)0 );
+#endif
+#ifdef __STL_USE_STD_ALLOCATORS
+    user_words = alloc().allocate( uw_alloc_size );
+#endif
+#else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     user_words = alloc::allocate( uw_alloc_size );
-    __STD::fill( (long *)user_words, (long *)(user_words) + uw_alloc_size, 0 );
+#endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
+    std::fill( (long *)user_words, (long *)(user_words) + uw_alloc_size, 0 );
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, user_words );
 #endif
@@ -453,14 +462,18 @@ long&  Thread::iword( int __idx )
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
 #if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+#ifdef _MSC_VER
+    void *_mtmp = alloc().allocate( tmp, (const void *)0 );
+#else // __STL_USE_STD_ALLOCATORS
     void *_mtmp = alloc().allocate( tmp );
-    __STD::copy( (long *)user_words, (long *)(user_words) + uw_alloc_size, _mtmp );
+#endif // __STL_USE_STD_ALLOCATORS
+    std::copy( (long *)user_words, (long *)(user_words) + uw_alloc_size, (long *)_mtmp );
     alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
-#else
+#else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
-#endif
-    __STD::fill( (long *)(user_words) + uw_alloc_size, (long *)(user_words) + tmp, 0 );
+#endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
+    std::fill( (long *)(user_words) + uw_alloc_size, (long *)(user_words) + tmp, 0 );
     uw_alloc_size = tmp;
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, user_words );
@@ -488,12 +501,16 @@ void*& Thread::pword( int __idx )
   user_words = pthread_getspecific( _mt_key );
 #endif
 #ifdef WIN32
-  user_words = TlsGetValue( _mt_key );
+  user_words = reinterpret_cast<long *>( TlsGetValue( _mt_key ) );
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
+#ifdef _MSC_VER
+    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
+#else
     user_words = (long *)alloc().allocate( uw_alloc_size );
-    __STD::fill( user_words, user_words + uw_alloc_size, 0 );
+#endif
+    std::fill( user_words, user_words + uw_alloc_size, 0 );
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, (void *)user_words );
 #endif
@@ -506,14 +523,18 @@ void*& Thread::pword( int __idx )
   } else if ( (__idx + 1) * sizeof( long ) > uw_alloc_size ) {
     size_t tmp = sizeof( long ) * (__idx + 1);
 #if defined( __STL_USE_STD_ALLOCATORS ) || defined( _MSC_VER )
+#ifdef _MSC_VER
+    long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
+#else
     long *_mtmp = (long *)alloc().allocate( tmp );
-    __STD::copy( user_words, user_words + uw_alloc_size, _mtmp );
+#endif
+    std::copy( user_words, user_words + uw_alloc_size, _mtmp );
     alloc().deallocate( (void *)user_words, uw_alloc_size );
     user_words = _mtmp;
 #else
     user_words = (long *)alloc::reallocate( (void *)user_words, uw_alloc_size, tmp );
 #endif
-    __STD::fill( user_words + uw_alloc_size, user_words + tmp, 0 );
+    std::fill( user_words + uw_alloc_size, user_words + tmp, 0 );
     uw_alloc_size = tmp;
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, (void *)user_words );

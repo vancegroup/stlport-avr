@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/04/16 17:40:32 ptr>
+// -*- C++ -*- Time-stamp: <99/05/06 17:09:14 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -60,14 +60,26 @@ extern "C" {
 
 #ifndef SIG_PF // sys/signal.h
 
+#ifdef WIN32
+typedef void __cdecl SIG_FUNC_TYP(int);
+#else
 typedef void SIG_FUNC_TYP(int);
+#endif
 typedef SIG_FUNC_TYP *SIG_TYP;
 #define SIG_PF SIG_TYP
 
+#ifndef SIG_DFL
 #define SIG_DFL (SIG_PF)0
+#endif
+#ifndef SIG_ERR
 #define SIG_ERR (SIG_PF)-1
+#endif
+#ifndef SIG_IGN
 #define SIG_IGN (SIG_PF)1
+#endif
+#ifndef SIG_HOLD
 #define SIG_HOLD (SIG_PF)2
+#endif
 
 #endif
 }
