@@ -16,7 +16,7 @@ SOAP_DIR = /opt/gSOAP-2.2.3
 BOOST_DIR = $(SRCROOT)/../extern/boost
 !endif
 !ifndef STLPORT_DIR
-STLPORT_DIR = e:\STLport-R451_dev
+STLPORT_DIR = ../../stlport
 !endif
 !ifndef CoMT_DIR
 CoMT_DIR = $(SRCROOT)
