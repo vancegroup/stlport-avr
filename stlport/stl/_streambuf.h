@@ -76,7 +76,7 @@ private:                        // Data members.
   locale _M_locale;             // The streambuf's locale object
 
 public:                         // Extension: locking, for thread safety.
-  _STL_mutex _M_lock;
+  _STLP_mutex _M_lock;
 
 public:                         // Destructor.
   virtual ~basic_streambuf();
@@ -338,7 +338,7 @@ private:                        // Data members.
   locale _M_locale;
 
 public:                         // Extension: locking, for thread safety.
-  _STL_mutex _M_lock;
+  _STLP_mutex _M_lock;
 
 public:                         // Destructor.
   virtual ~basic_streambuf _STLP_PSPEC2(char, char_traits<char>) ();

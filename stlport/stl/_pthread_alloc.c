@@ -219,7 +219,7 @@ template <size_t _Max_size>
 bool _Pthread_alloc<_Max_size>::_S_key_initialized = false;
 
 template <size_t _Max_size>
-_STL_mutex_base _Pthread_alloc<_Max_size>::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
+_STLP_mutex_base _Pthread_alloc<_Max_size>::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
 
 template <size_t _Max_size>
 char *_Pthread_alloc<_Max_size>::_S_start_free = 0;

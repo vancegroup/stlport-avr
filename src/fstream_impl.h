@@ -46,8 +46,8 @@ using _STLP_VENDOR_CSTD::ftell;
 using _STLP_STD::_FILE_fd;
 # endif
 
-extern bool __is_regular_file(_STL_fd fd);
-extern streamoff __file_size(_STL_fd fd);
+extern bool __is_regular_file(_STLP_fd fd);
+extern streamoff __file_size(_STLP_fd fd);
 
 __SGI_END_NAMESPACE
 

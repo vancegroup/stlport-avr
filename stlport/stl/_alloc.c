@@ -140,7 +140,7 @@ public:
         _S_lock._M_release_lock(); 
   }
   
-  static _STL_STATIC_MUTEX _S_lock;
+  static _STLP_STATIC_MUTEX _S_lock;
 };
 
 # endif  /* _STLP_THREADS */
@@ -294,7 +294,7 @@ __oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
 
 #ifdef _STLP_THREADS
     template <bool __threads, int __inst>
-    _STL_STATIC_MUTEX
+    _STLP_STATIC_MUTEX
     _Node_Alloc_Lock<__threads, __inst>::_S_lock _STLP_MUTEX_INITIALIZER;
 #endif
 
@@ -338,10 +338,10 @@ __DECLARE_INSTANCE(_Node_alloc_obj * _STLP_VOLATILE,
                    _STLP_ALLOC_THREADS::_S_free_list[_STLP_NFREELISTS],
                    ={0});
 #   ifdef _STLP_THREADS
-__DECLARE_INSTANCE(_STL_STATIC_MUTEX,
+__DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _STLP_ALLOC_NOTHREADS_LOCK::_S_lock,
                    _STLP_MUTEX_INITIALIZER);
-__DECLARE_INSTANCE(_STL_STATIC_MUTEX,
+__DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _STLP_ALLOC_THREADS_LOCK::_S_lock,
                    _STLP_MUTEX_INITIALIZER);
 #   endif

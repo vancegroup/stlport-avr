@@ -65,7 +65,7 @@
 // # define _STLP_NO_IOSTREAMS 1
 
 /* 
- * Set _STLP_DEBUG or __STL_DEBUG to turn the "Debug Mode" on.
+ * Set _STLP_DEBUG to turn the "Debug Mode" on.
  * That gets you checked iterators/ranges in the manner
  * of "Safe STL". Very useful for debugging. Thread-safe.
  * Please do not forget to link proper STLport library flavor
@@ -82,6 +82,30 @@
  */
 
 // #define _STLP_NO_RELOPS_NAMESPACE 1
+
+
+/*
+ * If _STLP_USE_OWN_NAMESPACE is in effect, STLport will try to rename std:: for the user
+ * to _STL::. If you don't want this feature, or if it does not quite work for your
+ * setup (like you are using third-party library that has to use vendor's STL), 
+ * please define the following switch :
+ */
+// # define _STLP_DONT_REDEFINE_STD 1
+
+
+/*
+ * _STLP_WHOLE_NATIVE_STD : only meaningful in _STLP_USE_OWN_NAMESPACE mode.
+ * Normally, STLport only imports necessary components from native std:: namespace -
+ * those not yet provided by STLport (<iostream>, <complex>, etc.) 
+ * and their dependencies (<string>, <stdexcept>). 
+ * You might want everything from std:: being available in std:: namespace when you
+ * include corresponding STLport header (like STLport <map> provides std::map as well, etc.),
+ * if you are going to use both stlport:: and std:: components in your code.
+ * Otherwise this option is not recommended as it increases the size of your object files
+ * and slows down compilation.
+ */
+// # define _STLP_WHOLE_NATIVE_STD
+
 
 /*
  * Use this option to catch uninitialized members in your classes.

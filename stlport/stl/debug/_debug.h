@@ -335,7 +335,7 @@ public:
   
   mutable __owned_link              _M_node; 
 # ifdef _STLP_THREADS
-  mutable _STL_mutex                _M_lock;
+  mutable _STLP_mutex                _M_lock;
 # endif
   
 private:

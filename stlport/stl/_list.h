@@ -187,7 +187,7 @@ public:
   void clear();
 
 public:
-  _STL_alloc_proxy<_Node*, _Node, _Node_allocator_type>  _M_node;
+  _STLP_alloc_proxy<_Node*, _Node, _Node_allocator_type>  _M_node;
 };
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >

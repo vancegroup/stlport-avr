@@ -229,8 +229,8 @@ TEST  = stl_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = -J 4 -ansi -LANG:std -I. -D__STL_DEBUG ${STL_INCL} ${DEBUG_FLAGS} -I. -D__STL_NO_SGI_IOSTREAMS -D__STL_NO_NEW_IOSTREAMS
-CXXFLAGS = -J 4 -ansi -LANG:std -I. -D__STL_DEBUG ${STL_INCL} ${DEBUG_FLAGS} -I. -D__STL_NO_SGI_IOSTREAMS
+CXXFLAGS = -J 4 -ansi -LANG:std -I. -D_STLP_DEBUG ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_SGI_IOSTREAMS -D_STLP_NO_NEW_IOSTREAMS
+CXXFLAGS = -J 4 -ansi -LANG:std -I. -D_STLP_DEBUG ${STL_INCL} ${DEBUG_FLAGS} -I. -D_STLP_NO_SGI_IOSTREAMS
 
 
 LIBS = -lm 
@@ -259,11 +259,11 @@ istmit1.out: istmit1.cpp
 	-rm -f ./istmit1
 
 .cpp.s:
-	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -S -pto $<  -o $@
+	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -noex -D__STL_NO_EXCEPTIONS -S -pto $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -noex -D_STLP_NO_EXCEPTIONS -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O4 -noex -D__STL_NO_EXCEPTIONS -D__STL_NO_EXCEPTIONS -S -pta $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O4 -noex -D_STLP_NO_EXCEPTIONS -D_STLP_NO_EXCEPTIONS -S -pta $<  -o $@
 
 clean:
 	-rm -fr *.exe *.o *.rpo *.obj *.out Templates.DB SunWS_cache

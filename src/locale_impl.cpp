@@ -281,7 +281,7 @@ bool locale::operator()(const wstring& __x,
 
 _Locale_impl*   _Stl_loc_global_impl    = 0;
 locale          _Stl_loc_classic_locale((_Locale_impl*) &_S_classic_locale);
-_STL_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
+_STLP_STATIC_MUTEX _Stl_loc_global_locale_lock _STLP_MUTEX_INITIALIZER;
 
   
 //----------------------------------------------------------------------
@@ -414,7 +414,7 @@ locale::global(const locale& L)
 
   L._M_impl->incr();
   {
-    _STL_auto_lock lock(_Stl_loc_global_locale_lock);
+    _STLP_auto_lock lock(_Stl_loc_global_locale_lock);
     _Stl_loc_global_impl->decr();     // We made a copy, so it can't be zero.
     _Stl_loc_global_impl = L._M_impl;
   }

@@ -167,7 +167,7 @@ ios_base::openmode flag_to_openmode(int mode)
 
 // Helper functions for _Filebuf_base.
 
-bool __is_regular_file(_STL_fd fd) {
+bool __is_regular_file(_STLP_fd fd) {
 
 #if defined (_STLP_UNIX)
 
@@ -196,7 +196,7 @@ bool __is_regular_file(_STL_fd fd) {
 }
 
 // Number of characters in the file.  
-streamoff __file_size(_STL_fd fd) {
+streamoff __file_size(_STLP_fd fd) {
  streamoff ret = 0;
 
 #if defined (_STLP_UNIX)
@@ -333,7 +333,7 @@ size_t
 _Filebuf_base::_M_page_size = 4096;
 
 _Filebuf_base::_Filebuf_base()
-  : _M_file_id((_STL_fd)-1),
+  : _M_file_id((_STLP_fd)-1),
     _M_openmode(0),
     _M_is_open(false),
     _M_should_close(false)
@@ -384,7 +384,7 @@ _Filebuf_base::_M_file_size()
 bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
                             long permission)
 {
-  _STL_fd file_no;
+  _STLP_fd file_no;
 
   if (_M_is_open)
     return false;
@@ -681,7 +681,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   
 
   _M_is_open = true;
-  _M_file_id = (_STL_fd)file_no;
+  _M_file_id = (_STLP_fd)file_no;
   _M_should_close = false;
   _M_regular_file = _SgI::__is_regular_file(_M_file_id);
 
@@ -900,7 +900,7 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
 
   switch(dir) {
   case ios_base::beg:
-    if (offset < 0 || offset > _M_file_size())
+    if (offset < 0 /* || offset > _M_file_size() */ )
       return streamoff(-1);
     whence = STL_SEEK_SET;
     break;
@@ -908,7 +908,7 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
     whence = STL_SEEK_CUR;
     break;
   case ios_base::end:
-    if (offset > 0 || -offset > _M_file_size())
+    if (/* offset > 0 || */  -offset > _M_file_size() )
       return streamoff(-1);
     whence = STL_SEEK_END;
     break;

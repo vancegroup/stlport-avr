@@ -393,7 +393,7 @@ public:
 
   unsigned char _M_depth;
   __GC_CONST _CharT* _M_c_string;
-  _STL_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
+  _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
 
 # ifdef _STLP_NO_ARROW_OPERATOR
   _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {}
@@ -1152,7 +1152,7 @@ public:
   allocator_type get_allocator() const { return allocator_type(_M_tree_ptr); }
 public:
   // The only data member of a rope:
-  _STL_alloc_proxy<_RopeRep*, _CharT, allocator_type> _M_tree_ptr;
+  _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type> _M_tree_ptr;
 
   typedef _Rope_RopeConcatenation<_CharT,_Alloc> _RopeConcatenation;
   typedef _Rope_RopeLeaf<_CharT,_Alloc> _RopeLeaf;

@@ -125,12 +125,12 @@ TEST  = stl_test.out
 CC = c++
 CXX = $(CC)
 
-DEBUG_FLAGS= -D__STL_DEBUG
+DEBUG_FLAGS= -D_STLP_DEBUG
 
-# CXXFLAGS = -Wall -D__STL_NO_SGI_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
-CXXFLAGS = -Wall ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS} 
+CXXFLAGS = -Wall -O3 -D_STLP_NO_SGI_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+# CXXFLAGS = -Wall ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS} 
 
-LIBS = -L../../lib -lstlport_cygwin_stldebug -lm 
+# LIBS = -L../../lib -lstlport_gcc_stldebug -lm 
 LIBSTDCXX = 
 
 check: $(TEST)
@@ -158,7 +158,7 @@ $(STAT_MODULE): stat.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} ${REPO_FLAGS} -c $< -o $@
 
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O3 -fno-exceptions -D__STL_NO_EXCEPTIONS -S $<  -o $*.s
+	$(CXX) $(CXXFLAGS) -O3 -fno-exceptions -D_STLP_NO_EXCEPTIONS -S $<  -o $*.s
 
 %.i: %.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} -E $<  > $@

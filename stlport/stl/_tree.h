@@ -215,7 +215,7 @@ struct _Rb_tree_base
   }
 protected:
   typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _M_node_allocator_type;
-  _STL_alloc_proxy<_Node*, _Node, _M_node_allocator_type> _M_header;
+  _STLP_alloc_proxy<_Node*, _Node, _M_node_allocator_type> _M_header;
 };
 
 

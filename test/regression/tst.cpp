@@ -1,7 +1,7 @@
-
 #include <string>
 #include <iostream>			// regular I/O streams
 #include <fstream>			// file streams
+
 using namespace std;
 
 int main()
@@ -12,13 +12,13 @@ int main()
 
     cout << "Open " << fname << " for read" << endl;
     cfile.open(fname.c_str(), ios::in);
-    if (cfile.is_open()) {
+    if (cfile) {
 	cout << fname << " exists" << endl;
 	cfile.close();
     }
     cout << "Open " << fname << " for write" << endl;
     cfile.open(fname.c_str(), ios::out);
-    if (!cfile.is_open()) {
+    if (!cfile) {
 	cout << "Can't open " << fname << " for output" << endl;
 	exit(1);
     }

@@ -6,12 +6,19 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 	* _debug.c/_debug.h : fixed swap() for rb_tree and list (thanks to Gerd Hoeren for the report)
 	  swap() changed not to invalidate any iterators, as prescribed by the standard 
 
+	* forced _REENTRANT to be defined when compiling with STLport iostreams and _STLP_DEBUG
+	  (without _STLP_DEBUG it seems to be binary compatible even without that)
+	
 	* facets_byname.cpp source introduced to replace all xx_byname.cpp files;
  	  restored separate facets .cpp complilation (they used to be included in locale_impl.cpp)
 
 	* introduced _STLP_USE_PERTHREAD_ALLOC to optionally use per-thread allocator 
 	  (_Pthread_alloc from _pthread_alloc.h) as the deafult node allocator. Only works with pthreads for now.
 	  
+	* Switches _STLP_DONT_REDEFINE_STD and _STLP_WHOLE_VENOR_STD are back (thanks to  Anton Ephanov for the report)
+	
+	* _vector.h : fixed bug in template version of insert (Thanks to Yotam Medini for the report)
+	
 	* monetary.cpp : unneded hack for cygwin removed (thanks to Dean Sturtevant) 
 
 	* <iostream> : fixed _STLP_OUTERMOST_HEADER_ID macro
@@ -92,7 +99,11 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* template constructors for containers changed to be one version with default allocator agrument, where possible.
 	
+        * remaining _STL_ prefixes changed to _STLP_
 	
+	* Solaris 7 compilation fixed
+
+        * fstream.cpp : seek() allowed to seek past the end of the stream (Thanks to Phillip Toland for the input)
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* All internal macros changed to have prefix _STLP_ instead of __STL or __STLPORT or __SGI_STL.

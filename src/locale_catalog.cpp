@@ -122,7 +122,7 @@ static hash_map<const char*, pair<void*, size_t>, hash<const char*>, __eqstr>* m
 // We have a single lock for all of the hash tables.  We may wish to 
 // replace it with six different locks.
 /* REFERENCED */
-_STL_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
+_STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
 
 static void*
 __acquire_category(const char* name, loc_create_func_t create_obj,
@@ -130,7 +130,7 @@ __acquire_category(const char* name, loc_create_func_t create_obj,
 {
   typedef Category_Map::iterator Category_iterator;
   pair<Category_iterator, bool> result;
-  _STL_auto_lock sentry(__category_hash_lock);
+  _STLP_auto_lock sentry(__category_hash_lock);
 
   typedef const char* key_type; 
   pair<const key_type, pair<void*,size_t> > __e(name, pair<void*,size_t>((void*)0,size_t(0)));
@@ -170,7 +170,7 @@ __release_category(void* cat,
                  loc_name_func_t get_name,
                  Category_Map* M)
 {
-  _STL_auto_lock sentry(__category_hash_lock);
+  _STLP_auto_lock sentry(__category_hash_lock);
 
   if (cat && M) {
     // Find the name of the category object.

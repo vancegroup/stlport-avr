@@ -138,7 +138,7 @@ template class _STLP_CLASS_DECLSPEC __debug_alloc<__pthread_alloc>;
 #endif
 
 template class allocator<void*>;
-template class _STL_alloc_proxy<void**, void*, allocator<void*> >;
+template class _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 template class _Vector_base<void*,allocator<void*> >;
 # if defined (_STLP_DEBUG)
 template class __WORKAROUND_DBG_RENAME(vector) <void*,allocator<void*> >;
@@ -153,7 +153,7 @@ template class _LimG<bool>;
 template class _Bs_G<bool>;
 
 template class _STLP_CLASS_DECLSPEC allocator<char>;
-template class _STLP_CLASS_DECLSPEC _STL_alloc_proxy<char *,char, allocator<char> >;
+template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<char *,char, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC _String_base<char, allocator<char> >;
 
 # ifdef _STLP_DEBUG
@@ -201,7 +201,7 @@ void force_link()
   std::numeric_limits<double>::infinity();
   std::numeric_limits<double>::quiet_NaN();
   std::numeric_limits<double>::signaling_NaN();
-#ifndef __STL_NO_LONG_DOUBLE
+#ifndef _STLP_NO_LONG_DOUBLE
   std::numeric_limits<long double>::infinity();
   std::numeric_limits<long double>::quiet_NaN();
   std::numeric_limits<long double>::signaling_NaN();

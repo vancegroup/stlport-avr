@@ -130,7 +130,7 @@ DEBUG_FLAGS=
 # DEBUG_FLAGS=-O
 # DEBUG_FLAGS=-O4
 
-CXXFLAGS = -D__STL_NO_SGI_IOSTREAMS ${STL_INCL} ${DEBUG_FLAGS} -I.
+CXXFLAGS = -D_STLP_NO_SGI_IOSTREAMS ${STL_INCL} ${DEBUG_FLAGS} -I.
 
 LIBS = -lm 
 LIBSTDCXX = 
@@ -161,11 +161,11 @@ $(STAT_MODULE): stat.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -S -pto $<  -o $@
+	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -noex -D__STL_NO_EXCEPTIONS -S -pto $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -noex -D_STLP_NO_EXCEPTIONS -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O4 -noex -D__STL_NO_EXCEPTIONS -D__STL_NO_EXCEPTIONS -S -pta $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O4 -noex -D_STLP_NO_EXCEPTIONS -D_STLP_NO_EXCEPTIONS -S -pta $<  -o $@
 
 clean:
 	-rm -fr *.exe *.o *.rpo *.obj *.out tempinc

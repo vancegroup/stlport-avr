@@ -192,7 +192,8 @@ inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIte
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, __true_type) {
 // we know they all pointers, so this cast is OK 
-  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
+  //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
+  return (_OutputIter)__copy_trivial(__first, __last, __result);
 }
 
 template <class _InputIter, class _OutputIter>
@@ -262,7 +263,7 @@ _STLP_DECLARE_COPY_TRIVIAL(unsigned long)
 #if !defined(_STLP_NO_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT) 
 _STLP_DECLARE_COPY_TRIVIAL(wchar_t)
 #endif
-#ifdef _STL_LONG_LONG
+#ifdef _STLP_LONG_LONG
 _STLP_DECLARE_COPY_TRIVIAL(long long)
 _STLP_DECLARE_COPY_TRIVIAL(unsigned long long)
 #endif 

@@ -42,7 +42,7 @@
 #  endif
 
 // boris : you may change that to build non-threadsafe STLport library
-#  if defined (__BUILDING_STLPORT)
+#  if defined (__BUILDING_STLPORT) || defined (_STLP_DEBUG)
 #   define _REENTRANT 1
 #  endif
 

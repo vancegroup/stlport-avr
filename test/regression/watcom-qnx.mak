@@ -125,9 +125,9 @@ TEST  = stl_test.out
 CC = cc
 CXX = $(CC)
 
-# DEBUG_FLAGS= -D__STL_DEBUG -g
+# DEBUG_FLAGS= -D_STLP_DEBUG -g
 
-CXXFLAGS = -D__STL_NO_SGI_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
+CXXFLAGS = -D_STLP_NO_SGI_IOSTREAMS ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
 LIBS = -lm 
 LIBSTDCXX = 
@@ -157,7 +157,7 @@ $(STAT_MODULE): stat.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} ${REPO_FLAGS} -c $< -o $@
 
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O3 -fno-exceptions -D__STL_NO_EXCEPTIONS -S $<  -o $*.s
+	$(CXX) $(CXXFLAGS) -O3 -fno-exceptions -D_STLP_NO_EXCEPTIONS -S $<  -o $*.s
 
 %.i: %.cpp
 	$(CXX) $(CXXFLAGS) -E $<  > $@

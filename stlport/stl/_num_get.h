@@ -108,7 +108,7 @@ public:
     return do_get(__in, __end, __str, __err, __val);
   }
 
-#endif /* _STL_LONG_LONG */
+#endif /* _STLP_LONG_LONG */
 
   _InputIter get(_InputIter __in, _InputIter __end, ios_base& __str,
                  ios_base::iostate& __err, float& __val) const {

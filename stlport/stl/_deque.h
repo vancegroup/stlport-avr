@@ -352,8 +352,8 @@ protected:
 protected:
   iterator _M_start;
   iterator _M_finish;
-  _STL_alloc_proxy<value_type**, value_type*, _Map_alloc_type>  _M_map;
-  _STL_alloc_proxy<size_t, value_type,  allocator_type>   _M_map_size;  
+  _STLP_alloc_proxy<value_type**, value_type*, _Map_alloc_type>  _M_map;
+  _STLP_alloc_proxy<size_t, value_type,  allocator_type>   _M_map_size;  
 };
 
 

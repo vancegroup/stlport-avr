@@ -230,7 +230,7 @@ TEST  = stl_test.out
 CC = cxx
 CXX = $(CC)
 # CXXFLAGS = -O -w0 ${STL_INCL}  -I.
-CXXFLAGS =  ${STL_INCL}  -std strict_ansi_errors -I. -D__NO_USE_STD_IOSTREAM -D__STL_NO_SGI_IOSTREAMS -D__STL_DEBUG
+CXXFLAGS =  ${STL_INCL}  -std strict_ansi_errors -I. -D__NO_USE_STD_IOSTREAM -D_STLP_NO_SGI_IOSTREAMS -D_STLP_DEBUG
 
 LIBS = -lm 
 LIBSTDCXX = 

@@ -249,7 +249,7 @@ protected:
 
   _Bit_iterator _M_start;
   _Bit_iterator _M_finish;
-  _STL_alloc_proxy<__chunk_type*, __chunk_type, __chunk_allocator_type> _M_end_of_storage;  
+  _STLP_alloc_proxy<__chunk_type*, __chunk_type, __chunk_allocator_type> _M_end_of_storage;  
 };
 
 

@@ -63,7 +63,7 @@ inline _Locale_impl*  _STLP_CALL _S_copy_impl(_Locale_impl* I) {
 
 extern _Locale_impl*   _Stl_loc_global_impl;
 // extern locale*         _Stl_loc_classic_locale;
-extern _STL_STATIC_MUTEX _Stl_loc_global_locale_lock;
+extern _STLP_STATIC_MUTEX _Stl_loc_global_locale_lock;
 
 _STLP_END_NAMESPACE
 

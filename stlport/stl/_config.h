@@ -233,6 +233,8 @@
      !defined(_STLP_NO_OWN_NAMESPACE)
 #  undef  _STLP_USE_OWN_NAMESPACE
 #  define _STLP_USE_OWN_NAMESPACE  1
+# else
+#  undef _STLP_WHOLE_NATIVE_STD
 # endif
 
 #  undef _STLP_NAMESPACE
@@ -270,7 +272,7 @@
 #  endif /* _REENTRANT */
 # endif
 
-# define _STL_STATIC_MUTEX _STL_mutex_base
+# define _STLP_STATIC_MUTEX _STLP_mutex_base
 
 # if defined (_MFC_VER) && !defined (_STLP_USE_MFC)
 #  define _STLP_USE_MFC 1
@@ -432,7 +434,8 @@
 /* provide a mechanism to redefine std:: namespace in a way that is transparent to the 
  * user. _STLP_REDEFINE_STD is being used for wrapper files that include native headers
  * to temporary undef the std macro. */
-#  if defined ( _STLP_USE_NAMESPACES ) && defined ( _STLP_USE_OWN_NAMESPACE )
+#  if defined ( _STLP_USE_NAMESPACES ) && defined ( _STLP_USE_OWN_NAMESPACE ) \
+   &&! defined ( _STLP_DONT_REDEFINE_STD )
 #   define _STLP_REDEFINE_STD 1
 #  else
 #   undef  _STLP_REDEFINE_STD
@@ -452,7 +455,10 @@
 # if !defined (_STLP_HAS_NO_NAMESPACES)
 /* Import some vendor's headers into corresponding STLport ones if they might be needed
  * (if we wrap native iostreams and use namepace other than std::) */
-#  if ( defined (_STLP_USE_OWN_NAMESPACE) || ( defined (_STLP_DEBUG) && defined (_STLP_USE_NAMESPACES) ) ) \
+#  if defined (_STLP_WHOLE_NATIVE_STD)
+#    define  _STLP_IMPORT_VENDOR_STD 1
+#    undef   _STLP_MINIMUM_IMPORT_STD
+#  elif (defined (_STLP_USE_OWN_NAMESPACE) || ( defined (_STLP_DEBUG) && defined (_STLP_USE_NAMESPACES))) \
        && defined (_STLP_USE_NEW_IOSTREAMS) && ! defined (_STLP_OWN_IOSTREAMS)
 #    define  _STLP_IMPORT_VENDOR_STD 1
 #  endif

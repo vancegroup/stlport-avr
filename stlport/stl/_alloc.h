@@ -417,7 +417,7 @@ struct _Alloc_traits
   typedef typename _Rebind_type::other  allocator_type;
 # else
   // this is not actually true, used only to pass this type through
-  // to dynamic overload selection in _STL_alloc_proxy methods
+  // to dynamic overload selection in _STLP_alloc_proxy methods
   typedef _Allocator allocator_type;
 # endif
 };
@@ -476,15 +476,15 @@ __stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>
 
 // inheritance is being used for EBO optimization
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
-class _STL_alloc_proxy : public _MaybeReboundAlloc {
+class _STLP_alloc_proxy : public _MaybeReboundAlloc {
 private:
   typedef _MaybeReboundAlloc _Base;
-  typedef _STL_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
+  typedef _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
 public:
   _Value _M_data;
   // construction/destruction
-  inline _STL_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
-  inline _STL_alloc_proxy(const _MaybeReboundAlloc& __a, _Value __p) : _MaybeReboundAlloc(__a), _M_data(__p) {}
+  inline _STLP_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
+  inline _STLP_alloc_proxy(const _MaybeReboundAlloc& __a, _Value __p) : _MaybeReboundAlloc(__a), _M_data(__p) {}
   inline _Self& operator = (const _Self& __x) { _M_data = __x._M_data; return *this; } 
   inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; } 
   // Unified interface to perform allocate()/deallocate() with limited
@@ -501,9 +501,9 @@ public:
 };
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<char *,char,allocator<char> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char *,char,allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t *,wchar_t,allocator<wchar_t> >;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 

@@ -129,8 +129,8 @@ int ios_base::_S_index = 0;
 
 int _STLP_CALL ios_base::xalloc()
 {
-  static _STL_STATIC_MUTEX L _STLP_MUTEX_INITIALIZER;
-  _STL_auto_lock sentry(L);
+  static _STLP_STATIC_MUTEX L _STLP_MUTEX_INITIALIZER;
+  _STLP_auto_lock sentry(L);
   return _S_index++;
 }
 

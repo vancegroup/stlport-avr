@@ -128,7 +128,7 @@ CXX = $(CC)
 # DEBUG_FLAGS=-g
 DEBUG_FLAGS=-O
 # DEBUG_FLAGS=-O4
-DEBUG_FLAGS=-D__STL_DEBUG
+DEBUG_FLAGS=-D_STLP_DEBUG
 DEBUG_FLAGS=
 
 
@@ -166,11 +166,11 @@ $(STAT_MODULE): stat.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -S -pto $<  -o $@
+	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O5 -D__STL_USE_MALLOC -noex -D__STL_NO_EXCEPTIONS -S -pto $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O5 -D_STLP_USE_MALLOC -noex -D_STLP_NO_EXCEPTIONS -S -pto $<  -o $@
 
-#	$(CXX) $(CXXFLAGS) -O4 -noex -D__STL_NO_EXCEPTIONS -D__STL_NO_EXCEPTIONS -S -pta $<  -o $@
+#	$(CXX) $(CXXFLAGS) -O4 -noex -D_STLP_NO_EXCEPTIONS -D_STLP_NO_EXCEPTIONS -S -pta $<  -o $@
 
 clean:
 	-rm -fr *.exe *.o *.rpo *.obj *.out Templates.DB SunWS_cache ti_files

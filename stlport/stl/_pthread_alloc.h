@@ -107,7 +107,7 @@ public: // but only for internal use:
 private:
   // Chunk allocation state. And other shared state.
   // Protected by _S_chunk_allocator_lock.
-  static _STL_mutex_base _S_chunk_allocator_lock;
+  static _STLP_mutex_base _S_chunk_allocator_lock;
   static char *_S_start_free;
   static char *_S_end_free;
   static size_t _S_heap_size;

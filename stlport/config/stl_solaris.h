@@ -13,8 +13,7 @@
 # define _STLP_RAND48 1
 #endif
 
-#if !defined (_MBSTATE_T) && !defined (_STD_MBSTATE_T) \
- 	&& (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) || ! defined (_WCHAR_ISO_SUNWCC_H))
+#if !defined (_MBSTATE_T) && !defined (_STD_MBSTATE_T) && (defined(__SunOS_5_5_1) || defined(__SunOS_5_6) )
 
 # define _STLP_WCHAR_SUNPRO_EXCLUDE 1
 

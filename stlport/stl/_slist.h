@@ -161,7 +161,7 @@ public:
   allocator_type get_allocator() const { 
     return _STLP_CONVERT_ALLOCATOR((const _M_node_allocator_type&)_M_head, _Tp); 
   }
-  _STL_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _M_head;
+  _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _M_head;
 };  
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >

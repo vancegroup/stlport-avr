@@ -123,7 +123,7 @@ public:
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
   _Tp*    _M_start;
   _Tp*    _M_finish;
-  _STL_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
+  _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
                                 // Precondition: 0 < __n <= max_size().
   void _M_allocate_block(size_t __n) { 
     if ((__n <= (max_size()+1)) && (__n>0)){

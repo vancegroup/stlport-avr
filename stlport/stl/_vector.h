@@ -87,7 +87,7 @@ public:
 protected:
   _Tp* _M_start;
   _Tp* _M_finish;
-  _STL_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
+  _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _M_end_of_storage;
 };
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
@@ -423,7 +423,7 @@ public:
           __uninitialized_copy(this->_M_finish - __n, this->_M_finish, this->_M_finish, _IsPODType());
           this->_M_finish += __n;
           __copy_backward_ptrs(__position, __old_finish - __n, __old_finish, _TrivialAss());
-          __copy_aux(__first, __last, __position, _TrivialAss());
+          copy(__first, __last, __position);
         }
         else {
 # if defined ( _STLP_MEMBER_TEMPLATES )
@@ -436,7 +436,7 @@ public:
           this->_M_finish += __n - __elems_after;
           __uninitialized_copy(__position, __old_finish, this->_M_finish, _IsPODType());
           this->_M_finish += __elems_after;
-          __copy_aux(__first, __mid, __position, _TrivialAss());
+          copy(__first, __mid, __position);
         } /* elems_after */
       }
       else {
@@ -557,7 +557,7 @@ protected:
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT) 
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
-_STLP_EXPORT_TEMPLATE_CLASS _STL_alloc_proxy<void**, void*, allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS vector<void*,allocator<void*> >;
 # endif

@@ -29,7 +29,7 @@ CC = e:\lang\como\bin\como
 CXX = $(CC) 
 
 # __COMO__ appears not to be defined automatically ;(
-CXXFLAGS = -D__COMO__ -D_MSC_VER=1200 --exceptions --microsoft -D__STL_DEBUG -I${STL_INCL}  -I. ${CXX_EXTRA_FLAGS}
+CXXFLAGS = -D__COMO__ -D_MSC_VER=1200 --exceptions --microsoft -D_STLP_DEBUG -I${STL_INCL}  -I. ${CXX_EXTRA_FLAGS}
 
 LIBS = -lm 
 LIBSTDCXX = 

@@ -242,7 +242,7 @@ private:
   key_equal             _M_equals;
   _ExK                  _M_get_key;
   _BucketVector         _M_buckets;
-  _STL_alloc_proxy<size_type, _Node, _M_node_allocator_type>  _M_num_elements;
+  _STLP_alloc_proxy<size_type, _Node, _M_node_allocator_type>  _M_num_elements;
   const _Node* _M_get_bucket(size_t __n) const { return (_Node*)_M_buckets[__n]; }
 
 public:

@@ -37,7 +37,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = -w ${STL_INCL} -D__STL_NO_CUSTOM_IO
+CXXFLAGS = -w ${STL_INCL} -D_STLP_NO_CUSTOM_IO
 
 LIBS = -lm 
 

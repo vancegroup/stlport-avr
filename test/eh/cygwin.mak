@@ -40,8 +40,8 @@ CXX = $(CC)
 # also, test_slist won't compile with -O3/-O2 when targeting PPC. It fails 
 # in the assembler with 'invalid relocation type'
 CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW
-D_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D__STL_DEBUG -D__STL_USE_STATIC_LIB
-NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D__STL_NO_SGI_IOSTREAMS -D__STL_DEBUG_UNINITIALIZED -DEH_VECTOR_OPERATOR_NEW
+D_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D_STLP_DEBUG -D_STLP_USE_STATIC_LIB
+NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_SGI_IOSTREAMS -D_STLP_DEBUG_UNINITIALIZED -DEH_VECTOR_OPERATOR_NEW
 
 check: $(TEST)
 
@@ -98,7 +98,7 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -D__STL_DEBUG -D_REENTRANT -o $*.o
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -g -D_STLP_DEBUG -D_REENTRANT -o $*.o
 	$(CXX) $(CXXFLAGS) $*.o $(D_LIBSTLPORT) $(LIBS) -o $*
 	./$* > $@
 	-rm -f $*

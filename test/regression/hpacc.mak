@@ -133,7 +133,7 @@ TEST  = stl_test.out
 CC = aCC
 CXX = $(CC)
 
-# DEBUG_FLAGS= -D__STL_DEBUG
+# DEBUG_FLAGS= -D_STLP_DEBUG
 
 CXXFLAGS = -Wl,+vshlibunsats -Aa ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} ${STL_VERSION_FLAGS}
 
@@ -168,7 +168,7 @@ $(STAT_MODULE): stat.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} ${REPO_FLAGS} -c $< -o $@
 
 %.s: %.cpp
-	$(CXX) $(CXXFLAGS) +O3 +noeh -D__STL_NO_EXCEPTIONS -S $<  -o $*.s
+	$(CXX) $(CXXFLAGS) +O3 +noeh -D_STLP_NO_EXCEPTIONS -S $<  -o $*.s
 
 %.i: %.cpp
 	$(CXX) $(CXXFLAGS) ${DEBUG_FLAGS} -E $<  > $@

@@ -27,8 +27,8 @@
 #   define _STLP_ACQUIRE_LOCK(_Lock) _Lock._M_acquire_lock();
 #   define _STLP_RELEASE_LOCK(_Lock) _Lock._M_release_lock();
 #  else
-#   define _STLP_ACQUIRE_LOCK(_Lock) ((_STL_mutex&)_Lock)._M_acquire_lock();
-#   define _STLP_RELEASE_LOCK(_Lock) ((_STL_mutex&)_Lock)._M_release_lock();
+#   define _STLP_ACQUIRE_LOCK(_Lock) ((_STLP_mutex&)_Lock)._M_acquire_lock();
+#   define _STLP_RELEASE_LOCK(_Lock) ((_STLP_mutex&)_Lock)._M_release_lock();
 #  endif /* _STLP_NEED_MUTABLE */
 # else
 #  define _STLP_ACQUIRE_LOCK(_Lock)

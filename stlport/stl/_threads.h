@@ -186,7 +186,7 @@ _STLP_BEGIN_NAMESPACE
 // Helper struct.  This is a workaround for various compilers that don't
 // handle static variables in inline functions properly.
 template <int __inst>
-struct _STL_mutex_spin {
+struct _STLP_mutex_spin {
   enum { __low_max = 30, __high_max = 1000 };
   // Low if we suspect uniprocessor, high for multiprocessor.
   static unsigned __max;
@@ -210,9 +210,9 @@ struct _STL_mutex_spin {
 // constructors, no base classes, no virtual functions, and no private or
 // protected members.
 
-// For non-static cases, clients should use  _STL_mutex.
+// For non-static cases, clients should use  _STLP_mutex.
 
-struct _STLP_CLASS_DECLSPEC _STL_mutex_base
+struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
 {
 #if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS) || defined(_STLP_WIN32THREADS)
   // It should be relatively easy to get this to work on any modern Unix.
@@ -225,7 +225,7 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex_base
   inline void _M_destroy() {}
 
   void _M_acquire_lock() {
-    _STL_mutex_spin<0>::_M_do_lock(&_M_lock);
+    _STLP_mutex_spin<0>::_M_do_lock(&_M_lock);
   }
 
   inline void _M_release_lock() {
@@ -298,9 +298,9 @@ false); }
 // This class could be just a smart pointer, but we do want to keep 
 // WIN32 optimized at a maximum
 #if  defined(_STLP_ATOMIC_EXCHANGE)
-struct _STLP_CLASS_DECLSPEC _STL_mutex_indirect : _STL_mutex_base {};
+struct _STLP_CLASS_DECLSPEC _STLP_mutex_indirect : _STLP_mutex_base {};
 #else
-struct _STLP_CLASS_DECLSPEC _STL_mutex_indirect
+struct _STLP_CLASS_DECLSPEC _STLP_mutex_indirect
 {
   void*    _M_lock;
 
@@ -356,16 +356,16 @@ struct _STLP_CLASS_DECLSPEC _STL_mutex_indirect
 // Locking class.  The constructor initializes the lock, the destructor destroys it.
 // Well - behaving class, does not need static initializer
 
-struct _STLP_CLASS_DECLSPEC _STL_mutex : public _STL_mutex_indirect {
-  inline _STL_mutex () {
+struct _STLP_CLASS_DECLSPEC _STLP_mutex : public _STLP_mutex_indirect {
+  inline _STLP_mutex () {
     _M_initialize();
   }
-  inline ~_STL_mutex () {
+  inline ~_STLP_mutex () {
     _M_destroy();
   }
 private:
-  _STL_mutex(const _STL_mutex&);
-  void operator=(const _STL_mutex&);
+  _STLP_mutex(const _STLP_mutex&);
+  void operator=(const _STLP_mutex&);
 };
 
 // Class _Refcount_Base provides a type, __stl_atomic_t, a data member,
@@ -378,7 +378,7 @@ struct _STLP_CLASS_DECLSPEC _Refcount_Base
   volatile __stl_atomic_t _M_ref_count;
 
 # if !defined (_STLP_ATOMIC_EXCHANGE)
-  _STL_mutex _M_mutex;
+  _STLP_mutex _M_mutex;
 # endif
 
   // Constructor
@@ -417,7 +417,7 @@ inline __stl_atomic_t _Atomic_swap(volatile __stl_atomic_t * __p, __stl_atomic_t
 // We use a template here only to get a unique initialized instance.
 template<int __dummy>
 struct _Swap_lock_struct {
-  static _STL_STATIC_MUTEX _S_swap_lock;
+  static _STLP_STATIC_MUTEX _S_swap_lock;
 };
 
 
@@ -441,23 +441,23 @@ _Atomic_swap(volatile __stl_atomic_t * __p, __stl_atomic_t __q) {
 }
 # endif
 
-// A locking class that uses _STL_STATIC_MUTEX.  The constructor takes
-// a reference to an _STL_STATIC_MUTEX, and acquires a lock.  The destructor
+// A locking class that uses _STLP_STATIC_MUTEX.  The constructor takes
+// a reference to an _STLP_STATIC_MUTEX, and acquires a lock.  The destructor
 // releases the lock.
 // It's not clear that this is exactly the right functionality.
 // It will probably change in the future.
 
-struct _STLP_CLASS_DECLSPEC _STL_auto_lock
+struct _STLP_CLASS_DECLSPEC _STLP_auto_lock
 {
-  _STL_STATIC_MUTEX& _M_lock;
+  _STLP_STATIC_MUTEX& _M_lock;
   
-  _STL_auto_lock(_STL_STATIC_MUTEX& __lock) : _M_lock(__lock)
+  _STLP_auto_lock(_STLP_STATIC_MUTEX& __lock) : _M_lock(__lock)
     { _M_lock._M_acquire_lock(); }
-  ~_STL_auto_lock() { _M_lock._M_release_lock(); }
+  ~_STLP_auto_lock() { _M_lock._M_release_lock(); }
 
 private:
-  void operator=(const _STL_auto_lock&);
-  _STL_auto_lock(const _STL_auto_lock&);
+  void operator=(const _STLP_auto_lock&);
+  _STLP_auto_lock(const _STLP_auto_lock&);
 };
 
 _STLP_END_NAMESPACE

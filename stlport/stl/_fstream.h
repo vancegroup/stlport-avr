@@ -63,9 +63,9 @@
 
 
 #if defined (_STLP_USE_WIN32_IO)
-typedef void* _STL_fd;
+typedef void* _STLP_fd;
 #elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO) || defined (_STLP_USE_UNIX_IO)
-typedef int _STL_fd;
+typedef int _STLP_fd;
 #else
 #error "Configure i/o !"
 #endif
@@ -130,7 +130,7 @@ protected:                      // Static data members.
   static size_t _M_page_size;
 
 protected:                      // Data members.
-  _STL_fd _M_file_id;
+  _STLP_fd _M_file_id;
 # ifdef _STLP_USE_STDIO_IO
   // for stdio, the whole FILE* is being kept here
   FILE* _M_file;
@@ -150,7 +150,7 @@ public :
   bool __is_open()      const { return (_M_is_open !=0 ); } 
   bool __should_close() const { return (_M_should_close != 0); } 
   bool __regular_file() const { return (_M_regular_file != 0); }
-  _STL_fd __get_fd() const { return _M_file_id; }
+  _STLP_fd __get_fd() const { return _M_file_id; }
 };
 
 
@@ -212,7 +212,7 @@ public:                         // Opening and closing files.
     return _M_base._M_open(__id, _Init_mode) ? this : 0;
   }
 
-  _STL_fd fd() const { return _M_base.__get_fd(); }
+  _STLP_fd fd() const { return _M_base.__get_fd(); }
 
 # endif
 
