@@ -14,12 +14,16 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
  	  for _M_close on Win32 (Thanks Stephen Baker)
 	
 	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
+
+	* stl_solaris.h : added _STLP_NO_NATIVE_WIDE_FUNCTIONS
 	
 	* New makefiles added for Intel C++ 5.0 and VC++ 6.0 in src/, test/eh, test/regression (Thanks to Marcello Pietrobon)
 
 	* _STLP_NO_LONG_DOUBLE case handled for STLport iostreams as well (thanks John Daniel)
 	
 	* SUN CC compiler template cache is being properly cleaned up (Thanks Whitney Kew)
+
+	* type_traits.h : added bool parameter to shut up warnings on some compilers (Thanks glassman)
 	
 	* stl/_rope.h/.c, src/mrcpp.mak, src/mrc.mak, stl/_tree.h : MPW & MRC fixes by Tsutomu Yoshida
 
@@ -105,7 +109,7 @@ The following changes were made in 4.1 beta 6 since 4.1 beta 5 :
 
 	* stl_msvc.h, _hashtable.h/.c : fixes for IA64 compilation (thanks to Rainer Schnitker )
 
-	* fixed bug in "make install" on Unix (thanks to Carlos Paniago)
+	* fixed bugs in "make install" on Unix (thanks to Carlos Paniago)
 
 	* dll_main.cpp : DisableThreadLibraryCalls used for optimization (thanks to Alberto Barbati)
 	

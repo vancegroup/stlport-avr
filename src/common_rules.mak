@@ -71,7 +71,7 @@ clobber : clean clean_all_obj
 	-$(RM) $(OUTDIR)$(PATH_SEP)$(DEBUG_NAME).* \
                $(OUTDIR)$(PATH_SEP)$(RELEASE_NAME).* $(OUTDIR)$(PATH_SEP)$(STLDEBUG_NAME).*
 
-HEADER_DIRS1 = . SC5 using wrap_std
+HEADER_DIRS1 = . using wrap_std old_hp
 HEADER_DIRS2 = config stl stl/debug stl/wrappers using/h  wrap_std/h
 
 symbolic_links :
@@ -98,17 +98,16 @@ install_unix :
 		$(INSTALL_H) $$file $(INSTALLDIR_INC)/$$file ; \
           done \
 	done
-
 	./mkinstalldirs $(INSTALLDIR_LIB)
 	for file in `ls $(OUTDIR)/$(LIB_BASENAME)*`; \
 	do \
-        -$(RM)  $(INSTALLDIR_LIB)/$file \
-	$(INSTALL_LIB)  $$file $(INSTALLDIR_LIB); \
+         $(RM)  $(INSTALLDIR_LIB)/$$file; \
+	 $(INSTALL_LIB)  $$file $(INSTALLDIR_LIB); \
 	done
-	-$(RM) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)
-	-$(RM) $(INSTALLDIR_LIB)/$(STLDEBUG_NAME).$(DYNEXT)
-	ln -s $(RELEASE_DYNLIB) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)
-	-ln -s $(STLDEBUG_DYNLIB) $(INSTALLDIR_LIB)/$(STLDEBUG_NAME).$(DYNEXT)
+	$(RM) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)
+	$(RM) $(INSTALLDIR_LIB)/$(STLDEBUG_NAME).$(DYNEXT)
+	ln -s $(INSTALLDIR_LIB)/$(RELEASE_DYNLIB) $(INSTALLDIR_LIB)/$(RELEASE_NAME).$(DYNEXT)
+	ln -s $(INSTALLDIR_LIB)/$(STLDEBUG_DYNLIB) $(INSTALLDIR_LIB)/$(STLDEBUG_NAME).$(DYNEXT)
 
 $(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) : $(OUTDIR) $(RELEASE_OBJDIR_dynamic) $(DEF_FILE) $(RELEASE_OBJECTS_dynamic)
 	$(DYN_LINK) $(DYNLINK_OUT)$(OUTDIR)$(PATH_SEP)$(RELEASE_DYNLIB) $(LDFLAGS_RELEASE_dynamic) $(RELEASE_OBJECTS_dynamic) $(LDLIBS_RELEASE_dynamic) 

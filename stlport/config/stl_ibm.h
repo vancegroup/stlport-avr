@@ -114,6 +114,11 @@
 #  define _STLP_NO_LONG_DOUBLE 1
 #endif
 
+#if __IBMCPP__ >= 365
+// does not have new C headers, but has div()
+#  define _STLP_LDIV
+#endif
+
 #endif /* xlC 5 */
 
 /* detect xlC5 by: */

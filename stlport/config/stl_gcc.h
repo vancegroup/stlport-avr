@@ -81,12 +81,6 @@ typedef unsigned int wint_t;
 #   define _STLP_WEAK_ATTRIBUTE 0
 #   define _STLP_NO_LONG_DOUBLE
 
-#  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
-#   define __DECLARE_INSTANCE(type,item,init) type item init
-#  else
-#   define __DECLARE_INSTANCE(type,item,init)
-#  endif
-
 /* Mac OS X needs all "::" scope references to be "std::" */
 #  undef _STLP_VENDOR_GLOBAL_STD
 #  undef _STLP_VENDOR_GLOBAL_CSTD
@@ -210,15 +204,6 @@ typedef unsigned int wint_t;
 # undef  _STLP_OWN_IOSTREAMS
 # define _STLP_NATIVE_INCLUDE_PATH ../g++-include
 
-# if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
-#   define _STLP_STATIC_TEMPLATE_DATA 0
-#   if !defined ( _STLP_WEAK_ATTRIBUTE )
-#    define _STLP_WEAK_ATTRIBUTE 0
-#   endif
-# else
-#   define _STLP_STATIC_TEMPLATE_DATA 1
-# endif
-
 /* tuning of static template data members workaround */
 # if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
 #  if ( _STLP_WEAK_ATTRIBUTE > 0 )
@@ -269,7 +254,7 @@ typedef unsigned int wint_t;
 
 # else
 
-#   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
+#   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/g++-v3
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
@@ -281,6 +266,24 @@ typedef unsigned int wint_t;
 
 # define _STLP_NATIVE_CPP_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
 # define _STLP_NATIVE_C_INCLUDE_PATH ../include
+
+
+// Tune settings for the case where static template data members are not 
+// instaniated by default
+# if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
+#   define _STLP_STATIC_TEMPLATE_DATA 0
+#   if !defined ( _STLP_WEAK_ATTRIBUTE )
+#    define _STLP_WEAK_ATTRIBUTE 0
+#   endif
+#  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
+#   define __DECLARE_INSTANCE(type,item,init) type item init
+#  else
+#   define __DECLARE_INSTANCE(type,item,init)
+#  endif
+# else
+#   define _STLP_STATIC_TEMPLATE_DATA 1
+# endif
+
 
 
 

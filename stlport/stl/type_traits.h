@@ -115,17 +115,19 @@ struct _PointerShim {
 
 // These are the discriminating functions
 
-char _STLP_CALL _IsP(_PointerShim); // no implementation is required
-char* _STLP_CALL _IsP(...);          // no implementation is required
+char _STLP_CALL _IsP(bool, _PointerShim); // no implementation is required
+char* _STLP_CALL _IsP(bool, ...);          // no implementation is required
 
 template <class _Tp>
 struct _IsPtr {
+  
   // This template meta function takes a type T
   // and returns true exactly when T is a pointer.
   // One can imagine meta-functions discriminating on
   // other criteria.
   static _Tp& __null_rep();
-  enum { _Ret = (sizeof(_IsP(__null_rep())) == sizeof(char)) };
+  enum { _Ret = (sizeof(_IsP(false,__null_rep())) == sizeof(char)) };
+
 };
 
 template <class _Tp>
