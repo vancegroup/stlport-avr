@@ -1,8 +1,8 @@
-# Time-stamp: <03/10/10 15:54:44 ptr>
+# Time-stamp: <03/11/30 11:46:14 ptr>
 # $Id$
 
 #INCLUDES = -I$(SRCROOT)/include
-#INCLUDES :=
+INCLUDES :=
 
 CXX := c++
 CC := gcc
@@ -41,6 +41,13 @@ CXXFLAGS = -pthread -fexceptions -fident $(OPT)
 endif
 
 ifeq ($(OSNAME),freebsd)
+CCFLAGS = -pthread $(OPT)
+CFLAGS = -pthread $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+endif
+
+ifeq ($(OSNAME),hp-ux)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
