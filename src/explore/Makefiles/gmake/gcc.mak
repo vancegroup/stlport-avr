@@ -4,7 +4,7 @@
 #INCLUDES = -I$(SRCROOT)/include
 #INCLUDES :=
 
-CXX := g++
+CXX := c++
 CC := gcc
 
 ifdef TARGET_OS
@@ -14,12 +14,6 @@ endif
 
 DEFS ?=
 OPT ?=
-
-# options for build with boost support
-ifdef STLP_BUILD_BOOST_PATH
-INCLUDES += -I$(STLP_BUILD_BOOST_PATH)
-DEFS += -DBOOST_STDLIB_CONFIG="<boost/config/stdlib/stlport.hpp>"
-endif
 
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}

@@ -14,3 +14,10 @@ INCLUDES += -I$(STLPORT_INCLUDE_DIR)
 ifeq ($(OSNAME),linux)
 DEFS += -D_STLP_REAL_LOCALE_IMPLEMENTED -D_GNU_SOURCE
 endif
+
+# options for build with boost support
+ifdef STLP_BUILD_BOOST_PATH
+INCLUDES += -I$(STLP_BUILD_BOOST_PATH)
+DEFS += -DBOOST_STDLIB_CONFIG="<boost/config/stdlib/stlport.hpp>"
+endif
+
