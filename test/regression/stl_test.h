@@ -84,6 +84,8 @@ extern int iter3_test  ( int, char**);
 extern int iter4_test  ( int, char**);
 extern int iterswp0_test  ( int, char**);
 extern int iterswp1_test  ( int, char**);
+extern int iterswp2_test  ( int, char**);
+extern int iterswp3_test  ( int, char**);
 extern int less_test  ( int, char**);
 extern int lesseq_test  ( int, char**);
 extern int lexcmp1_test  ( int, char**);
@@ -239,4 +241,6 @@ extern int hmset1_test  ( int, char**);
 extern int slist1_test (int, char**);
 extern int string1_test (int, char**);
 extern int bitset1_test (int, char**);
+extern int move_construct_test (int, char**);
+extern int ioiter_test (int, char**);
 #endif

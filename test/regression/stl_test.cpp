@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         cout.flush();
         bnegate2_test(argc, argv);
         cout.flush();
-	bvec1_test(argc, argv);
+	      bvec1_test(argc, argv);
         cout.flush();
         copy1_test(argc, argv);
         cout.flush();
@@ -178,6 +178,10 @@ int main(int argc, char** argv) {
         iterswp0_test(argc, argv);
         cout.flush();
         iterswp1_test(argc, argv);
+        cout.flush();
+        iterswp2_test(argc, argv);
+        cout.flush();
+        iterswp3_test(argc, argv);
         cout.flush();
         less_test(argc, argv);
         cout.flush();
@@ -488,7 +492,11 @@ int main(int argc, char** argv) {
         cout.flush();
         string1_test (argc, argv);
         cout.flush();
-	bitset1_test (argc, argv); 
+        bitset1_test (argc, argv); 
+        cout.flush();
+        move_construct_test (argc, argv);
+        cout.flush();
+        ioiter_test (argc, argv);
         cout.flush();
     }
     return 0;
