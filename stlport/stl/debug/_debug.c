@@ -211,6 +211,7 @@ _STLP_STRING_LITERAL("Deallocating a memory block allocated for another type"), 
 _STLP_STRING_LITERAL("Size of block passed to deallocate() doesn't match block size"),  \
 _STLP_STRING_LITERAL("Pointer underrun - safety margin at front of memory block overwritten"),  \
 _STLP_STRING_LITERAL("Pointer overrrun - safety margin at back of memory block overwritten"),   \
+_STLP_STRING_LITERAL("Attempt to dereference null pointer returned by auto_ptr::get()"),   \
 _STLP_STRING_LITERAL("Unknown problem") \
   }
 
