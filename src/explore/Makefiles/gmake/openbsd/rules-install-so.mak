@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/07/10 13:22:04 ptr>
+# -*- makefile -*- Time-stamp: <04/03/16 17:22:33 ptr>
 # $Id$
 
 INSTALL_TAGS ?= install-release-shared install-dbg-shared install-stldbg-shared
@@ -20,6 +20,9 @@ install-release-shared:	release-shared
 	@if [ -f $(INSTALL_LIB_DIR)/${SO_NAMExxx} ] ; then \
 	  rm $(INSTALL_LIB_DIR)/${SO_NAMExxx}; \
 	fi
+	@if [ ! -d $(INSTALL_LIB_DIR) ] ; then \
+	  mkdir -p $(INSTALL_LIB_DIR) ; \
+	fi
 	$(INSTALL_SO) ${SO_NAME_OUTxxx} $(INSTALL_LIB_DIR)
 	(cd $(INSTALL_LIB_DIR) && \
 	 { ln -s ${SO_NAMExxx} ${SO_NAMExx}; \
@@ -39,6 +42,9 @@ install-dbg-shared:	dbg-shared
 	@if [ -f $(INSTALL_LIB_DIR_DBG)/${SO_NAME_DBGxxx} ] ; then \
 	  rm $(INSTALL_LIB_DIR_DBG)/${SO_NAME_DBGxxx}; \
 	fi
+	@if [ ! -d $(INSTALL_LIB_DIR_DBG) ] ; then \
+	  mkdir -p $(INSTALL_LIB_DIR_DBG) ; \
+	fi
 	$(INSTALL_SO) ${SO_NAME_OUT_DBGxxx} $(INSTALL_LIB_DIR_DBG)
 	(cd $(INSTALL_LIB_DIR_DBG) && \
 	 { ln -s ${SO_NAME_DBGxxx} ${SO_NAME_DBGxx}; \
@@ -57,6 +63,9 @@ install-stldbg-shared:	stldbg-shared
 	fi
 	@if [ -f $(INSTALL_LIB_DIR_STLDBG)/${SO_NAME_STLDBGxxx} ] ; then \
 	  rm $(INSTALL_LIB_DIR_STLDBG)/${SO_NAME_STLDBGxxx}; \
+	fi
+	@if [ ! -d $(INSTALL_LIB_DIR_STLDBG) ] ; then \
+	  mkdir -p $(INSTALL_LIB_DIR_STLDBG) ; \
 	fi
 	$(INSTALL_SO) ${SO_NAME_OUT_STLDBGxxx} $(INSTALL_LIB_DIR_STLDBG)
 	(cd $(INSTALL_LIB_DIR_STLDBG) && \
