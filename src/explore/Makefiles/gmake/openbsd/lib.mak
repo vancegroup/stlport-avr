@@ -1,7 +1,8 @@
 # -*- makefile -*- Time-stamp: <03/07/11 12:59:11 ptr>
 # $Id$
 
-DBG_SUFFIX := -g
+# DBG_SUFFIX := -g
+DBG_SUFFIX := debug
 
 # Shared libraries:
 
