@@ -17,12 +17,14 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(set1);
   CPPUNIT_TEST(set2);
   CPPUNIT_TEST(erase);
+  CPPUNIT_TEST(insert);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void set1();
   void set2();
   void erase();
+  void insert();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -41,6 +43,7 @@ void SetTest::set1()
   int count = s.erase(42);
   CPPUNIT_ASSERT (count == 1);
 }
+
 void SetTest::set2()
 {
   typedef set<int, less<int> > int_set;
@@ -76,5 +79,12 @@ void SetTest::erase()
   
   unsigned int nb = s.erase(1);
   CPPUNIT_ASSERT(nb == 0);
+}
+
+void SetTest::insert()
+{
+  set<int> s;
+  set<int>::iterator i = s.insert( s.end(), 0 );
+  CPPUNIT_ASSERT( *i == 0 );
 }
 
