@@ -232,7 +232,7 @@ private:
   _STLP_FORCE_ALLOCATORS(_Val, _All)
   typedef typename _Alloc_traits<_Node, _All>::allocator_type _M_node_allocator_type;
   typedef typename _Alloc_traits<void*, _All>::allocator_type _M_node_ptr_allocator_type;
-  typedef __vector__<void*, _M_node_ptr_allocator_type> _BucketVector;
+  typedef vector<void*, _M_node_ptr_allocator_type> _BucketVector;
 public:
   typedef typename _Alloc_traits<_Val,_All>::allocator_type allocator_type;
   allocator_type get_allocator() const { 

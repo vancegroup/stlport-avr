@@ -52,8 +52,10 @@
 #  include <stl/_range_errors.h>
 # endif
 
+#ifdef _STLP_DEBUG
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
+#endif
 
 _STLP_BEGIN_NAMESPACE 
 
@@ -609,9 +611,11 @@ _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;
 _STLP_EXPORT_TEMPLATE_CLASS vector<void*,allocator<void*> >;
 # endif
 
-#  undef  vector
-#  undef  __vector__
-#  define __vector__ __WORKAROUND_RENAME(vector)
+#ifdef _STLP_DEBUG
+# undef  vector
+#endif
+// #  undef  __vector__
+// #  define __vector__ __WORKAROUND_RENAME(vector)
 
 _STLP_END_NAMESPACE
 

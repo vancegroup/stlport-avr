@@ -35,8 +35,10 @@
 #  define size_type           size_t
 # endif
 
+#ifdef _STLP_DEBUG
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
+#endif
 
 #include <stl/_range_errors.h>
 
@@ -54,7 +56,7 @@ void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
 
 template <class _Tp, class _Alloc>
 void 
-__vector__<_Tp, _Alloc>::reserve(size_type __n) {
+vector<_Tp, _Alloc>::reserve(size_type __n) {
   if (capacity() < __n) {
     if (max_size() < __n) {
       this->_M_throw_length_error();
@@ -74,7 +76,7 @@ __vector__<_Tp, _Alloc>::reserve(size_type __n) {
 
 template <class _Tp, class _Alloc>
 void 
-__vector__<_Tp, _Alloc>::_M_fill_insert(
+vector<_Tp, _Alloc>::_M_fill_insert(
 				    iterator __position, 
 				    size_type __n, const _Tp& __x) {
   if (__n != 0) {
@@ -102,8 +104,8 @@ __vector__<_Tp, _Alloc>::_M_fill_insert(
 }
 
 template <class _Tp, class _Alloc>
-__vector__<_Tp,_Alloc>& 
-__vector__<_Tp,_Alloc>::operator=(const __vector__<_Tp, _Alloc>& __x)
+vector<_Tp,_Alloc>& 
+vector<_Tp,_Alloc>::operator=(const vector<_Tp, _Alloc>& __x)
 {
   if (&__x != this) {
     const size_type __xlen = __x.size();
@@ -127,9 +129,9 @@ __vector__<_Tp,_Alloc>::operator=(const __vector__<_Tp, _Alloc>& __x)
 }
 
 template <class _Tp, class _Alloc>
-void __vector__<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
+void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
   if (__n > capacity()) {
-    __vector__<_Tp, _Alloc> __tmp(__n, __val, get_allocator());
+    vector<_Tp, _Alloc> __tmp(__n, __val, get_allocator());
     __tmp.swap(*this);
   }
   else if (__n > size()) {
@@ -142,12 +144,14 @@ void __vector__<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
 
 _STLP_END_NAMESPACE
 
-# undef size_type
-# undef iterator
+// # undef size_type
+// # undef iterator
+#ifdef _STLP_DEBUG
 # undef vector
+#endif
 
 #endif /*  _STLP_VECTOR_C */
 
-      // Local Variables:
-	// mode:C++
-	// End:
+// Local Variables:
+// mode:C++
+// End:
