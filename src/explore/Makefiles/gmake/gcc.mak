@@ -43,6 +43,7 @@ endif
 ifeq ($(OSNAME),freebsd)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
+DEFS += -D_REENTRANT
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
 CXXFLAGS = -pthread -fexceptions -fident $(OPT)
 endif
