@@ -71,7 +71,7 @@
  * Please do not forget to link proper STLport library flavor
  * (e.g libstlport_gcc_stldebug.a) when you set this flag in STLport iostreams mode.
  */
-//#define   _STLP_DEBUG 1
+// #define   _STLP_DEBUG 1
 
 
 /* 
@@ -87,7 +87,7 @@
  *  on per-project basis.
  *
  */
-//#define _STLP_NO_CUSTOM_IO
+// #define _STLP_NO_CUSTOM_IO
 
 
 /* 
