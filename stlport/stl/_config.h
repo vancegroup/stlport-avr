@@ -252,7 +252,6 @@
 #     define _STLP_THREADS
 #  endif
 
-#  if defined (_REENTRANT)
 #   if defined (__sgi) && ! defined (__KCC) && ! defined (__GNUC__)  
 #    define _STLP_SGI_THREADS
 #   elif defined(__DECC) || defined(__DECCXX)
@@ -268,9 +267,11 @@
 #   else
 #     define _STLP_PTHREADS
 #   endif /* __sgi */
+# endif
+
+#  if defined (_REENTRANT) && ! defined (_STLP_THREADS)
 #   define _STLP_THREADS
 #  endif /* _REENTRANT */
-# endif
 
 # define _STLP_STATIC_MUTEX _STLP_mutex_base
 

@@ -116,7 +116,7 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   __allocator_type::deallocate(__real_p, __real_n);
 }
 
-# ifdef _STLP_THREADS
+// # ifdef _STLP_THREADS
 
 template <bool __threads, int __inst>
 class _Node_Alloc_Lock {
@@ -143,7 +143,7 @@ public:
   static _STLP_STATIC_MUTEX _S_lock;
 };
 
-# endif  /* _STLP_THREADS */
+// # endif  /* _STLP_THREADS */
 
 
 template <bool __threads, int __inst>
@@ -151,10 +151,10 @@ void* _STLP_CALL
 __node_alloc<__threads, __inst>::_M_allocate(size_t __n) {
   void*  __r;
   _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifdef _STLP_THREADS
+  // #       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
-#       endif
+  // #       endif
   // Acquire the lock here with a constructor call.
   // This ensures that it is released in exit or during stack
   // unwinding.
@@ -171,10 +171,10 @@ template <bool __threads, int __inst>
 void _STLP_CALL
 __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
   _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
-#       ifdef _STLP_THREADS
+  // #       ifdef _STLP_THREADS
   /*REFERENCED*/
   _Node_Alloc_Lock<__threads, __inst> __lock_instance;
-#       endif /* _STLP_THREADS */
+  // #       endif /* _STLP_THREADS */
   // acquire lock
   ((_Obj *)__p) -> _M_free_list_link = *__my_free_list;
   *__my_free_list = (_Obj *)__p;
@@ -292,11 +292,11 @@ __node_alloc<__threads, __inst>::_S_refill(size_t __n)
 template <int __inst>
 __oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
 
-#ifdef _STLP_THREADS
+// #ifdef _STLP_THREADS
     template <bool __threads, int __inst>
     _STLP_STATIC_MUTEX
     _Node_Alloc_Lock<__threads, __inst>::_S_lock _STLP_MUTEX_INITIALIZER;
-#endif
+// #endif
 
 template <bool __threads, int __inst>
 _Node_alloc_obj * _STLP_VOLATILE
@@ -337,14 +337,14 @@ __DECLARE_INSTANCE(size_t, _STLP_ALLOC_THREADS::_S_heap_size,=0);
 __DECLARE_INSTANCE(_Node_alloc_obj * _STLP_VOLATILE,
                    _STLP_ALLOC_THREADS::_S_free_list[_STLP_NFREELISTS],
                    ={0});
-#   ifdef _STLP_THREADS
+// #   ifdef _STLP_THREADS
 __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _STLP_ALLOC_NOTHREADS_LOCK::_S_lock,
                    _STLP_MUTEX_INITIALIZER);
 __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _STLP_ALLOC_THREADS_LOCK::_S_lock,
                    _STLP_MUTEX_INITIALIZER);
-#   endif
+// #   endif
 
 # undef _STLP_ALLOC_THREADS
 # undef _STLP_ALLOC_NOTHREADS

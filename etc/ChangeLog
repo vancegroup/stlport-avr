@@ -1,5 +1,7 @@
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	
+	* _threads.h, debug/_debug.h etc : STLport iostreams library made binary compatible with user code compiler w/o multithreaded switch (-D_REENTRANT is not necessary anymore)
+	
 	* config/stl_msvc.h, <cmath> : corrected _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS for VC++ 6.0 SP5 
 	  (Thanks Alberto Barbati)
 
@@ -36,6 +38,7 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* stl_solaris.h : mbstate_t stuff defined here, old-style C headers used (Thanks Mukesh Kapoor)
 
 	* type_traits.h : __default_constructed() inlined (Thanks Matt Davies)
+
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

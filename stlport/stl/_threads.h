@@ -231,6 +231,7 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base
   volatile __stl_atomic_t _M_lock;
 #endif
 
+#ifdef _STLP_THREADS
 #if defined (_STLP_ATOMIC_EXCHANGE)
 
   inline void _M_initialize() { _M_lock=0; }
@@ -317,6 +318,7 @@ false); }
      status_t t = release_sem(sem);
      assert(t == B_NO_ERROR);
   }
+#endif
 #else /* No threads */
   inline void _M_initialize() {}
   inline void _M_destroy() {}

@@ -176,7 +176,7 @@ _STLP_END_NAMESPACE
        return 0; }
 # endif
 
-#if defined (_STLP_THREADS) && ! defined (_STLP_INTERNAL_THREADS_H)
+#if ! defined (_STLP_INTERNAL_THREADS_H)
 # include <stl/_threads.h>
 #endif
 
@@ -334,9 +334,9 @@ public:
   }
   
   mutable __owned_link              _M_node; 
-# ifdef _STLP_THREADS
+  // # ifdef _STLP_THREADS
   mutable _STLP_mutex                _M_lock;
-# endif
+  // # endif
   
 private:
   // should never be called, should be left undefined,

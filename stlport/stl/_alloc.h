@@ -60,7 +60,7 @@
 #  include <new>
 # endif
 
-#if defined (_STLP_THREADS) && ! defined (_STLP_INTERNAL_THREADS_H)
+#if /* defined (_STLP_THREADS) && */ ! defined (_STLP_INTERNAL_THREADS_H)
 # include <stl/_threads.h>
 #endif
 
