@@ -155,7 +155,7 @@ template class basic_string<char, char_traits<char>, allocator<char> >;
 
 _STLP_END_NAMESPACE
 
-# ifdef _STLP_SPARC_SOLARIS_THREADS
+# if defined (_STLP_SPARC_SOLARIS_THREADS) && ! defined (__GNUC__)
 #  include "sparc_atomic.cpp"
 # endif
 

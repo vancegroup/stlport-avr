@@ -1,7 +1,7 @@
 ignore
-./dev
-./fix
-./lib
+dev
+fix
+lib
 *.o
 *.obj
 *~
@@ -12,4 +12,6 @@ ignore
 *.out
 *.pdb
 *.pch
+.*
+core
 CVS

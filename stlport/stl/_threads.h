@@ -142,9 +142,6 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 #  define _STLP_ATOMIC_DECREMENT(__x, __y) __ATOMIC_ADD_LONG(__x, -1)
 # elif defined(_STLP_SPARC_SOLARIS_THREADS)
 #  include <stl/_sparc_atomic.h>
-#  define _STLP_ATOMIC_INCREMENT(__x)           _STLP_atomic_increment((__stl_atomic_t*)__x)
-#  define _STLP_ATOMIC_DECREMENT(__x)           _STLP_atomic_decrement((__stl_atomic_t*)__x)
-#  define _STLP_ATOMIC_EXCHANGE(__x, __y)       _STLP_atomic_exchange((__stl_atomic_t*)__x, (__stl_atomic_t)__y)
 # elif defined (_STLP_UITHREADS)
 // this inclusion is potential hazard to bring up all sorts
 // of old-style headers. Let's assume vendor already know how

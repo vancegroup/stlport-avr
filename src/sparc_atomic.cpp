@@ -1,8 +1,17 @@
-# ifndef __GNUC__
-
-# define _STLP_NO_EXTERN_INLINE
 
 # include <stl/_sparc_atomic.h>
+
+# if 0
+extern "C"
+__stl_atomic_t _STLP_atomic_exchange (volatile __stl_atomic_t *pvalue1, __stl_atomic_t value2)
+{
+  register __stl_atomic_t value1;
+  do { 
+       value1 = *pvalue1;  
+  } while ( value1 != _STLP_exch_asm(pvalue1, value2) ) ;
+  return value1; 
+}
+# endif
 
 #  define _STLP_ASM_VOLATILE asm
 
@@ -50,5 +59,3 @@ _STLP_atomic_decrement (__stl_atomic_t *pvalue)
   _STLP_ASM_VOLATILE  ("        retl                           ");   // return
   _STLP_ASM_VOLATILE  ("        mov    %o1, %o0                 ");  // Set the return value, unused
 }
-
-# endif /* __GNUC__ */
