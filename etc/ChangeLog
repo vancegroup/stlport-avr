@@ -1,3 +1,35 @@
+2004-03-25  Petr Ovtchenkov  <ptr@Island...>
+
+	* stlport/stl/_string_base.h: enlarge default string static buffer size
+
+	* stlport/stl/debug/_string.h: avoid attempt to invalidate iterators beyond
+	string size range.
+
+	* stlport/config/stl_gcc.h: instantiation scheme that idefault used---witout
+	--repo option---in gcc 3 made void of sense explicit instantiation within
+	library---nothing except increased library size.
+	Define _STLP_NO_FORCE_INSTANTIATE is default now for gcc 3.x.
+
+	* stlport/stl/_streambuf.h: remove specialization of
+	basic_streambuf<char, char_traits<char> >---reference to FILE struct here
+	isn't required and really not used anyware. Functionality of standard io
+	streams, including synchronization with C std io streams provided in
+	src/stdio_streambuf.cpp
+
+	* stlport/stl/_iosfwd.h: same.
+
+	* src/fstream_impl.h, src/iostream.cpp, src/stdio_streambuf.cpp: same.
+	
+	* src/streambuf.cpp: removed.
+
+	* stlport/stl/_stdio_file.h: moved...
+	* src/_stdio_file.h: ...here
+
+	* stlport/stdio_streambuf: moved...
+	* src/_stdio_file.h: ...here
+
+	* src/explore/Makefile.inc: remove streambuf.cpp
+
 2004-03-24  Petr Ovtchenkov  <ptr@Island...>
 
 	* c_locale_glibc2.c: real locale implementation for glibc 2.3.x.
