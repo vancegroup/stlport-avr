@@ -1,3 +1,9 @@
+2004-03-31  Petr Ovtchenkov  <ptr@Island...>
+
+	* src/explore/nmake-evc4-arm.mak, src/explore/nmake-evc4-x86.mak, etc.:
+	rules for eVC4 compilers---ARM and ix86 target architectures.
+	Contribution by Zdenek Nemec.
+
 2004-03-30  Petr Ovtchenkov  <ptr@Island...>
 
 	* stlport/stl/_algo.c: workaround for VC compilers---ones pass reference
