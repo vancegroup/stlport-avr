@@ -1,8 +1,8 @@
 // -*- C++ -*- Time-stamp: <03/12/31 13:18:56 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002, 2003
- * Petr Ovchenkov
+ * Copyright (c) 1997-1999, 2002, 2003, 2004
+ * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
@@ -26,6 +26,8 @@
 #ident "@(#)$Id$"
 #  endif
 #endif
+
+#include <config/feature.h>
 
 #include <sys/types.h>
 #ifndef _WIN32
