@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/03/03 14:01:25 ptr>
+// -*- C++ -*- Time-stamp: <00/04/04 19:05:25 ptr>
 
 /*
  *
@@ -32,6 +32,7 @@
 #include <memory>
 #include <functional>
 #include <cerrno>
+#include <string>
 
 #ifdef WIN32
 // #include <iostream>
@@ -126,6 +127,8 @@ int Condition::wait_time( const timespec *abstime )
 
 char *Init_buf[32];
 int Thread::Init::_count = 0;
+
+const __STD::string msg1( "Can't create thread" );
 
 __PG_DECLSPEC
 void signal_throw( int sig ) throw( int )
@@ -439,7 +442,7 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
-    throw runtime_error( "Can't create thread" );
+    throw runtime_error( msg1 );
   }
 }
 
