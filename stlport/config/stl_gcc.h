@@ -297,6 +297,10 @@ At least problem present in gcc 3.1.1 and not exist in 2.95.3, 3.2.3, 3.3
 #   endif
 #  endif
 #  define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH/backward
+/* Instantiation scheme that used (default) in gcc 3 made void of sense explicit
+   instantiation within library: nothing except increased library size. - ptr
+ */
+#  define _STLP_NO_FORCE_INSTANTIATE 
 
 # elif (__GNUC_MINOR__ < 8)
 
