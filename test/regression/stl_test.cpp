@@ -14,6 +14,16 @@ void stlp_test(bool res) {
   cout << " ... " << (res?"pass":"fail") << endl;
 }
 
+typedef int (*test_func)( int, char ** );
+
+void _stlp_test_name( const char *name )
+{
+  cout << name;
+  cout.flush();
+}
+
+#define TEST(t) _stlp_test_name( #t ); stlp_test( t(argc,argv) == 0 ? true : false )
+
 int main(int argc, char** argv) {
     int iter_count = ( argc>1 ? 10000 : 1);
     for (; iter_count; iter_count--) {
@@ -70,7 +80,7 @@ int main(int argc, char** argv) {
         cout.flush();
         bnegate2_test(argc, argv);
         cout.flush();
-	      bvec1_test(argc, argv);
+        bvec1_test(argc, argv);
         cout.flush();
         copy1_test(argc, argv);
         cout.flush();
@@ -504,8 +514,9 @@ int main(int argc, char** argv) {
         cout.flush();
         move_construct_test (argc, argv);
         cout.flush();
-        ioiter_test (argc, argv);
-        cout.flush();
+        TEST(ioiter_test);
+        TEST(string_mt_test);
+        TEST(ptr_specialization_test);
     }
     return 0;
 }

@@ -1,6 +1,9 @@
-// -*- C++ -*- Time-stamp: <03/09/23 09:12:29 ptr>
+// -*- C++ -*- Time-stamp: <04/01/16 21:32:26 ptr>
+
 
 #include <string>
+
+#if defined(_STLP_PTHREADS) || defined(_STLP_WIN32THREADS)
 
 #ifdef _STLP_PTHREADS
 # include <pthread.h>
@@ -40,7 +43,7 @@ DWORD __stdcall f (void *)
   return 0;
 }
 
-int string_mt_test( int, char *const* )
+int string_mt_test( int, char ** )
 {
   const int nth = 2;
 #if defined(_STLP_PTHREADS)
@@ -70,3 +73,11 @@ int string_mt_test( int, char *const* )
 
   return 0;
 }
+#else // !_STLP_PTHREADS && !_STLP_WIN32THREADS
+
+int string_mt_test( int, char ** )
+{
+  return -1;
+}
+
+#endif // _STLP_PTHREADS || _STLP_WIN32THREADS

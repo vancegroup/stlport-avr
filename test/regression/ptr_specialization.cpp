@@ -7,9 +7,9 @@
 #include <deque>
 #include <set>
 
+#ifdef MAIN
 #include <iostream>
 
-#ifdef MAIN
 #define ptr_specialization_test main
 #endif
 
@@ -48,7 +48,9 @@ struct binary_pred {
 
 int ptr_specialization_test (int, char**)
 {
+#ifdef MAIN
   cout << "Results of ptr_specialization_test :" << endl;
+#endif
 
   vector<int*> pint_vect;
   vector<int const*> pcint_vect;
@@ -107,7 +109,9 @@ int ptr_specialization_test (int, char**)
   pcint_deque.assign(pint_vect.begin(), pint_vect.end());
   //pint_deque.assign(pcint_vect.begin(), pcint_vect.end());
 
+#ifdef MAIN
   cout << "succeed" << endl;
+#endif
 
   return 0;
 }
