@@ -471,7 +471,7 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 	bool __comp_pos_v = _M_key_compare( _S_key(__position._M_node), _KeyOfValue()(__v) );
 	
 	if (__comp_pos_v == false)  // compare > and compare < both false so compare equal
-	  return position;
+	  return __position;
 	//Below __comp_pos_v == true
 	if(_M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) )) {
 	  if (_S_right(__position._M_node) == 0)

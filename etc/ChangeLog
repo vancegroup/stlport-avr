@@ -1,5 +1,5 @@
 The following changes were made in 4.5 release since 4.5 beta 8 :
-
+	
 	* config/stl_msvc.h, <cmath> : corrected _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS for VC++ 6.0 SP5 
 	  (Thanks Alberto Barbati)
 
@@ -22,6 +22,10 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 	* config/_epilog.h : added option pop section for Borland. 
 
 	* stl/_threads.h : fixed InterlockedXXX declarations for MS .NET (thanks Piers Haken)
+
+	* vc7.mak makefile added for MS VC++ 7.0 (.NET)
+
+	* fixed _STLP_ITERATOR_CATEGORY, etc. for Mwerks CodeWarrior 5.0
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	
