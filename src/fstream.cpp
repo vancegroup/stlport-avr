@@ -580,7 +580,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     if (fseek(_M_file, 0, SEEK_END) == -1)
       _M_is_open = false;
   
-#   elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
 
   DWORD dwDesiredAccess, dwShareMode, dwCreationDisposition;
   bool  doTruncate = false;
@@ -622,16 +622,16 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     return false;               // flags allowed by the C++ standard.
   }
 
-  #if defined(_STLP_WINCE) || defined(_STLP_WCE_NET)
-    file_no = CreateFile(__ASCIIToWide(name).c_str(),
-  #else
+#  if defined(_STLP_USE_WIDE_INTERFACE)
+    file_no = CreateFile (__ASCIIToWide(name).c_str(),
+#  else
     file_no = CreateFileA(name,
-  #endif
-                  dwDesiredAccess, dwShareMode, 0,
-			dwCreationDisposition, permission, 0);
+#  endif
+                          dwDesiredAccess, dwShareMode, 0,
+                          dwCreationDisposition, permission, 0);
   
   if ( file_no == INVALID_HANDLE_VALUE )
-  return false;
+    return false;
 
   if ((doTruncate && SetEndOfFile(file_no) == 0) ||
       ((openmode & ios_base::ate) && SetFilePointer(file_no, 0, NULL, FILE_END) == -1)) {

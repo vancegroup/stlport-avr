@@ -3,7 +3,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#ifdef _STLP_WCE_NET
+#if defined(_STLP_USE_WIDE_INTERFACE)
 wstring __ASCIIToWide(const char *ascii) {
     size_t size=strlen(ascii);
     wchar_t* buff=new wchar_t[size+1];

@@ -39,14 +39,14 @@ protected:
   void revcopy1();
   void reverse1();
 
-  static bool odd(int a_)
-  {
-    return (a_ % 2) != 0;
-  }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RmCpTest);
 
+static bool odd(int a_)
+{
+  return (a_ % 2) != 0;
+}
 //
 // tests implementation
 //

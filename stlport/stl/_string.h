@@ -1319,7 +1319,7 @@ template <class _CharT, class _Traits, class _Alloc>
 void  _STLP_CALL _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,
                                 _CharT* __buf, size_t __n);
 
-#if defined(_STLP_WINCE) || defined(_STLP_WCE_NET)
+#if defined(_STLP_USE_WIDE_INTERFACE)
 // A couple of functions to transfer between ASCII/Unicode
 wstring __ASCIIToWide(const char *ascii);
 string __WideToASCII(const wchar_t *wide);
