@@ -25,12 +25,6 @@
 
 # define _STLP_DBG_ALLOCATOR_SELECT( _Tp ) _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp )
 
-# if defined (_STLP_MSVC)
-#  define _STLP_DBG_IDENTITY( __base ) _STL_dbg_aux< __base >::_SameClass
-# else
-#  define _STLP_DBG_IDENTITY( __base ) 
-# endif
-
 _STLP_BEGIN_NAMESPACE
 
 //============================================================

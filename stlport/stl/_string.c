@@ -380,8 +380,8 @@ basic_string<_CharT,_Traits,_Alloc>
     return npos;
   else {
     const const_pointer __result =
-      search((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish, 
-             __s, __s + __n, _Eq_traits<_Traits>());
+      _STLP_STD::search((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish, 
+			__s, __s + __n, _Eq_traits<_Traits>());
     return __result != this->_M_finish ? __result - this->_M_start : npos;
   }
 }
@@ -395,8 +395,8 @@ basic_string<_CharT,_Traits,_Alloc>
     return npos;
   else {
     const const_pointer __result =
-      find_if((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish,
-              _Eq_char_bound<_Traits>(__c));
+      _STLP_STD::find_if((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish,
+			 _Eq_char_bound<_Traits>(__c));
     return __result != this->_M_finish ? __result - this->_M_start : npos;
   }
 }    
@@ -414,9 +414,9 @@ basic_string<_CharT,_Traits,_Alloc>
     return (min) (__len, __pos);
   else {
     const_pointer __last = this->_M_start + (min) (__len - __n, __pos) + __n;
-    const_pointer __result = find_end((const_pointer)this->_M_start, __last,
-				      __s, __s + __n,
-				      _Eq_traits<_Traits>());
+    const_pointer __result = _STLP_STD::find_end((const_pointer)this->_M_start, __last,
+						 __s, __s + __n,
+						 _Eq_traits<_Traits>());
     return __result != __last ? __result - this->_M_start : npos;
   }
 }
@@ -433,7 +433,7 @@ basic_string<_CharT,_Traits,_Alloc>
   else {
     const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const_reverse_iterator __rresult =
-      find_if(const_reverse_iterator(__last), rend(),
+      _STLP_STD::find_if(const_reverse_iterator(__last), rend(),
               _Eq_char_bound<_Traits>(__c));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
@@ -484,7 +484,7 @@ basic_string<_CharT,_Traits,_Alloc>
   if (__pos > size())
     return npos;
   else {
-    const_pointer __result = find_if((const _CharT*)this->_M_start + __pos, 
+    const_pointer __result = _STLP_STD::find_if((const _CharT*)this->_M_start + __pos, 
 				      (const _CharT*)this->_M_finish,
                                 _Not_within_traits<_Traits>((const _CharType*)__s, 
 							    (const _CharType*)__s + __n));
@@ -500,8 +500,8 @@ basic_string<_CharT,_Traits,_Alloc>
   if (__pos > size())
     return npos;
   else {
-    const_pointer __result = find_if((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish,
-                                     _Neq_char_bound<_Traits>(__c));
+    const_pointer __result = _STLP_STD::find_if((const _CharT*)this->_M_start + __pos, (const _CharT*)this->_M_finish,
+						_Neq_char_bound<_Traits>(__c));
     return __result != this->_M_finish ? __result - this->_M_start : npos;
   }
 }    
@@ -520,9 +520,9 @@ basic_string<_CharT,_Traits,_Alloc>
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const_reverse_iterator __rlast = const_reverse_iterator(__last);
     const_reverse_iterator __rresult =
-      find_if(__rlast, rend(),
-              _Not_within_traits<_Traits>((const _CharType*)__s, 
-					  (const _CharType*)__s + __n));
+      _STLP_STD::find_if(__rlast, rend(),
+			 _Not_within_traits<_Traits>((const _CharType*)__s, 
+						     (const _CharType*)__s + __n));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
@@ -540,8 +540,8 @@ basic_string<_CharT, _Traits, _Alloc>
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const_reverse_iterator __rlast = const_reverse_iterator(__last);
     const_reverse_iterator __rresult =
-      find_if(__rlast, rend(),
-              _Neq_char_bound<_Traits>(__c));
+      _STLP_STD::find_if(__rlast, rend(),
+			 _Neq_char_bound<_Traits>(__c));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
@@ -553,7 +553,7 @@ void _STLP_CALL _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,
 {
   if (__n > 0) {
     __n = (min) (__n - 1, __s.size());
-    copy(__s.begin(), __s.begin() + __n, __buf);
+    _STLP_STD::copy(__s.begin(), __s.begin() + __n, __buf);
     __buf[__n] = _CharT();
   }
 }

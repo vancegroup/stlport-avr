@@ -137,7 +137,7 @@ inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f.__pad[3]; }
 inline char& _FILE_I_preincr(FILE& __f)
 { --__f.__pad[3]; return *(char*) (++__f.__pad[0]); }
 inline char& _FILE_I_postincr(FILE& __f)
-{ --__f.__pad[3]; return *(char*) (__f.__pad[0]); }
+{ --__f.__pad[3]; return *(char*) (__f.__pad[0]++); }
 inline char& _FILE_I_predecr(FILE& __f)
 { ++__f.__pad[3]; return *(char*) (--__f.__pad[0]); }
 inline char& _FILE_I_postdecr(FILE& __f)

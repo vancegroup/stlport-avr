@@ -322,6 +322,7 @@ template <class _Tp, class _Alloc>
 class _Deque_base {
 public:
   typedef _Tp value_type;
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type  allocator_type;
   typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type _Map_alloc_type;
 
@@ -372,6 +373,7 @@ public:                         // Basic types
 
   typedef typename _Base::allocator_type allocator_type;
 
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
 public:                         // Iterators
   typedef typename _Base::iterator       iterator;
   typedef typename _Base::const_iterator const_iterator;

@@ -378,6 +378,7 @@ public:
   _Tag _M_tag:8;
   bool _M_is_balanced:8;
 
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Alloc_traits<_CharT,_Alloc>::allocator_type
   allocator_type;
   
@@ -491,6 +492,7 @@ public:
                                 /* _S_rounded_up_size(size), except */
                                 /* in the GC case, in which it   */
                                 /* doesn't matter.               */
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Rope_RopeRep<_CharT,_Alloc>::allocator_type allocator_type;
   _Rope_RopeLeaf(__GC_CONST _CharT* __d, size_t _p_size, allocator_type __a)
     : _Rope_RopeRep<_CharT,_Alloc>(_Rope_RopeRep<_CharT,_Alloc>::_S_leaf, 0, true, _p_size, __a), 
@@ -526,6 +528,7 @@ struct _Rope_RopeConcatenation : public _Rope_RopeRep<_CharT,_Alloc> {
 public:
   _Rope_RopeRep<_CharT,_Alloc>* _M_left;
   _Rope_RopeRep<_CharT,_Alloc>* _M_right;
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Rope_RopeRep<_CharT,_Alloc>::allocator_type allocator_type;
   _Rope_RopeConcatenation(_Rope_RopeRep<_CharT,_Alloc>* __l,
                           _Rope_RopeRep<_CharT,_Alloc>* __r,
@@ -568,6 +571,7 @@ public:
     delete ((_Rope_RopeFunction *)__tree) -> _M_fn;
   }
 #   endif
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Rope_RopeRep<_CharT,_Alloc>::allocator_type allocator_type;
 # ifdef _STLP_NO_ARROW_OPERATOR
   _Rope_RopeFunction() {}
@@ -647,6 +651,7 @@ public:
     }
   }
 
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Rope_RopeRep<_CharT,_Alloc>::allocator_type allocator_type;
 
   _Rope_RopeSubstring(_Rope_RopeRep<_CharT,_Alloc>* __b, size_t __s,
@@ -1135,6 +1140,7 @@ protected:
   
 public:
   typedef _Rope_RopeRep<_CharT, _Alloc> _RopeRep;
+  _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
   typedef typename _Alloc_traits<_CharT,_Alloc>::allocator_type  allocator_type;
   allocator_type get_allocator() const { return allocator_type(_M_tree_ptr); }
 public:

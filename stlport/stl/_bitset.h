@@ -63,22 +63,17 @@
 #  include <istream>
 # endif
 
-
 #define __BITS_PER_WORD (CHAR_BIT*sizeof(unsigned long))
-#define __BITSET_WORDS(__n) ((__n) < 1 ? 1 : ((__n) + __BITS_PER_WORD - 1)/__BITS_PER_WORD)
+#define __BITSET_WORDS(__n) ((__n + __BITS_PER_WORD - 1)/__BITS_PER_WORD)
 
 _STLP_BEGIN_NAMESPACE
 
 // structure to aid in counting bits
-template<bool __dummy> 
-struct _Bit_count {
+template<class _Dummy> 
+struct _Bs_G {
   static unsigned char _S_bit_count[256];
-};
-
-// Mapping from 8 bit unsigned integers to the index of the first one
-// bit:
-template<bool __dummy> 
-struct _First_one {
+  // Mapping from 8 bit unsigned integers to the index of the first one
+  // bit:
   static unsigned char _S_first_one[256];
 };
 
@@ -177,7 +172,7 @@ struct _Base_bitset {
     const unsigned char* __end_ptr = (const unsigned char*)(_M_w+_Nw);
 
     while ( __byte_ptr < __end_ptr ) {
-      __result += _Bit_count<true>::_S_bit_count[*__byte_ptr];
+      __result += _Bs_G<bool>::_S_bit_count[*__byte_ptr];
       __byte_ptr++;
     }
     return __result;
@@ -191,7 +186,6 @@ struct _Base_bitset {
   // find the next "on" bit that follows "prev"
   size_t _M_do_find_next(size_t __prev, size_t __not_found) const;
 };
-
 
 //
 // Base class: specialization for a single word.
@@ -248,7 +242,7 @@ struct _Base_bitset<1UL> {
     const unsigned char* __byte_ptr = (const unsigned char*)&_M_w;
     const unsigned char* __end_ptr = ((const unsigned char*)&_M_w)+sizeof(_M_w);
     while ( __byte_ptr < __end_ptr ) {
-      __result += _Bit_count<true>::_S_bit_count[*__byte_ptr];
+      __result += _Bs_G<bool>::_S_bit_count[*__byte_ptr];
       __byte_ptr++;
     }
     return __result;
@@ -282,7 +276,7 @@ _Base_bitset<1UL>::_M_do_find_first(size_t __not_found) const
       unsigned char __this_byte
         = __STATIC_CAST(unsigned char,(__thisword & (~(unsigned char)0)));
       if ( __this_byte )
-        return __j*CHAR_BIT + _First_one<true>::_S_first_one[__this_byte];
+        return __j*CHAR_BIT + _Bs_G<bool>::_S_first_one[__this_byte];
 
       __thisword >>= CHAR_BIT;
     }
@@ -316,7 +310,7 @@ _Base_bitset<1UL>::_M_do_find_next(size_t __prev,
       unsigned char __this_byte
         = __STATIC_CAST(unsigned char,(__thisword & (~(unsigned char)0)));
       if ( __this_byte )
-        return __j*CHAR_BIT + _First_one<true>::_S_first_one[__this_byte];
+        return __j*CHAR_BIT + _Bs_G<bool>::_S_first_one[__this_byte];
 
       __thisword >>= CHAR_BIT;
     }
@@ -347,6 +341,7 @@ _STLP_TEMPLATE_NULL struct _Sanitize<0UL> {
 template<size_t _Nb>
 class bitset : public _Base_bitset<__BITSET_WORDS(_Nb) > 
 {
+
 private:
   typedef _Base_bitset<__BITSET_WORDS(_Nb) > _Base;
 
@@ -682,10 +677,10 @@ public:
     return __result;
   }
 # endif 
+
 };
 
 // ------------------------------------------------------------
-
 //
 // 23.3.5.3 bitset operations:
 //
@@ -749,6 +744,7 @@ inline _OSTREAM_DLL&  _STLP_CALL operator<<(_OSTREAM_DLL& __os, const bitset<_Nb
 # endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
 #  undef  bitset
+
 
 _STLP_END_NAMESPACE
 

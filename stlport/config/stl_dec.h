@@ -98,7 +98,10 @@
 
 // unsigned 32-bit integer type
 #  define _STLP_UINT32_T unsigned int
-#  define _STLP_RAND48 1
+#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
+# define _STLP_RAND48 1
+#endif
+// #  define _STLP_RAND48 1
 
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 

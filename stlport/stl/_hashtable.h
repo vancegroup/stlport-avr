@@ -228,6 +228,7 @@ private:
   typedef _Hashtable_node<_Val> _Node;
 
 private:
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Node, _All>::allocator_type _M_node_allocator_type;
   typedef typename _Alloc_traits<void*, _All>::allocator_type _M_node_ptr_allocator_type;
   typedef __vector__<void*, _M_node_ptr_allocator_type> _BucketVector;

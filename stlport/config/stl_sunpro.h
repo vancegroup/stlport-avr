@@ -1,24 +1,9 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-// system-dependent defines 
-
-# if defined(__SunOS_5_5_1)
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-# endif
-
-# if defined (__SunOS_5_8) && ( __cplusplus >= 199711L)
-#  define _STLP_HAS_NATIVE_FLOAT_ABS
-# endif
-
+# include <config/stl_solaris.h>
 
 #  define _STLP_LONG_LONG  long long
-// on solaris 2.x only ?
-
-#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
-# define _STLP_RAND48 1
-#endif
-
 #  define _STLP_LINK_TIME_INSTANTIATION 1
 
 # if ! defined(_BOOL)

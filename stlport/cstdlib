@@ -27,16 +27,6 @@
 #  include _STLP_NATIVE_C_HEADER(stdlib.h)
 # endif
 
-# if 0 /* defined (__sun) */
-#  define _STLP_LLABS   llabs
-#  define _STLP_LLDIV   lldiv
-#  define _STLP_LLDIV_T lldiv_t
-# endif
-
-// dwa 2/28/99 - work around MSL bugs. Not strictly correct (actual
-// namespace where div_t is defined is detectable), but probably the
-// best we can do. We expect this to be fixed by the time Pro5 is
-// released.
 # if defined( __MSL__ ) && __MSL__ <= 0x5003
 namespace std {
 	typedef ::div_t div_t;
@@ -73,7 +63,7 @@ using _STLP_VENDOR_CSTD::strtol;
 using _STLP_VENDOR_CSTD::strtoul;
 using _STLP_VENDOR_CSTD::system;
 
-#if ! (defined (_STLP_NO_NATIVE_WIDE_STREAMS) || defined (_STLP_NO_MBSTATE_T))
+#if ! (defined (_STLP_NO_NATIVE_WIDE_STREAMS) || defined (_STLP_NO_MBSTATE_T) )
 using _STLP_VENDOR_CSTD::wcstombs;
 using _STLP_VENDOR_CSTD::wctomb;
 #endif

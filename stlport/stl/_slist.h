@@ -133,6 +133,7 @@ inline _Tp* _STLP_CALL value_type(const _Slist_iterator<_Tp, _Traits>&) { return
 
 template <class _Tp, class _Alloc> 
 struct _Slist_base {
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type allocator_type;
   typedef _Slist_node<_Tp> _Node;
 
@@ -182,6 +183,7 @@ public:
   typedef _Slist_iterator<_Tp, _Nonconst_traits<_Tp> >  iterator;
   typedef _Slist_iterator<_Tp, _Const_traits<_Tp> >     const_iterator;
 
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Base::allocator_type allocator_type;
 
 

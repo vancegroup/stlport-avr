@@ -161,6 +161,7 @@ template <class _Tp, class _Alloc>
 class _List_base 
 {
 protected:
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef _List_node<_Tp> _Node;
   typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type
            _Node_allocator_type;
@@ -219,6 +220,7 @@ public:
   typedef _List_node<_Tp> _Node;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Base::allocator_type allocator_type;
   typedef bidirectional_iterator_tag _Iterator_category;
 
@@ -497,7 +499,7 @@ public:
   }
   template <class _BinaryPredicate>
     void unique(_BinaryPredicate __binary_pred) {
-    _S_unique(*this, __pred);
+    _S_unique(*this, __binary_pred);
   }
 
   template <class _StrictWeakOrdering>

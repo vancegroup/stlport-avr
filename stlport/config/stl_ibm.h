@@ -4,9 +4,13 @@
 #if !defined(__IBMCPP__) || (__IBMCPP__ != 500)
 # define _STLP_HAS_NO_NEW_C_HEADERS 1
 #endif
+
 // string literal problem, same as with SUN and aCC
 # define _STLP_INLINE_STRING_LITERAL_BUG 1
 # define _STLP_HAS_NATIVE_FLOAT_ABS
+
+#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+
 
 # ifdef __IBMCPP__
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
@@ -57,15 +61,9 @@
 #  define _STLP_DONT_USE_BOOL_TYPEDEF 1
 #  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 #  define _STLP_HAS_NO_NAMESPACES 1
-
 #  define _STLP_NEED_TYPENAME 1
 #  define _STLP_NEED_EXPLICIT 1
-
-// #  define _STLP_HAS_NO_EXCEPTIONS 1
-// #  define _STLP_NO_EXCEPTION_SPEC 1
-
 #  define _STLP_NO_ARROW_OPERATOR 1
-
 #  define _STLP_NO_NEW_STYLE_CASTS 1
 #  define _STLP_NO_WCHAR_T 1
 #  define _STLP_NEED_MUTABLE 1
@@ -125,8 +123,10 @@
 //#pragma report(disable,CPPC1500029)
 // unsigned 32-bit integer type
 #  define _STLP_UINT32_T unsigned int
-#  define _STLP_RAND48 1
-#  define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
+#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
+# define _STLP_RAND48 1
+#endif
+// #  define _STLP_RAND48 1
 # endif /* __IBMCPP__ == 500 */
 
 

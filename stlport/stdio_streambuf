@@ -37,10 +37,6 @@
 #ifndef _STLP_STDIO_STREAMBUF
 #define _STLP_STDIO_STREAMBUF
 
-#if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#error This header file requires the -LANG:std option
-#endif
-
 #include <streambuf>            // For basic_streambuf<>
 #include <cstdio>              // For FILE.
 

@@ -200,6 +200,7 @@ template <class _Tp, class _Alloc>
 struct _Rb_tree_base
 {
   typedef _Rb_tree_node<_Tp> _Node;
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 
   _Rb_tree_base(const allocator_type& __a) : 

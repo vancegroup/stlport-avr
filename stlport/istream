@@ -19,10 +19,6 @@
 #ifndef _STLP_ISTREAM
 #define _STLP_ISTREAM
 
-#if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#error This header file requires the -LANG:std option
-#endif
-
 # ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1036
 #  include <stl/_prolog.h>

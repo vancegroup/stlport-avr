@@ -707,7 +707,7 @@ namespace stlport = _STLP_STD;
 #  endif
 # endif
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) && ! defined (_STLP_PARTIAL_SPECIALIZATION_BUG)
+#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
 # ifdef __sgi
 #  define _STLP_DECLARE_REVERSE_ITERATORS(__reverse_iterator) \
    typedef _STLP_STD:: _STLP_TEMPLATE reverse_iterator<const_iterator> const_reverse_iterator; \

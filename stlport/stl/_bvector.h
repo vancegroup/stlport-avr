@@ -258,8 +258,7 @@ protected:
 //  compiler support.  Otherwise, we define a class bit_vector which uses
 //  the default allocator. 
 
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) \
- && !defined(_STLP_PARTIAL_SPECIALIZATION_BUG) && ! defined(_STLP_NO_BOOL)
+#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined(_STLP_NO_BOOL)
 # define _STLP_VECBOOL_TEMPLATE
 # define __BVEC_TMPL_HEADER template <class _Alloc>
 #else
@@ -311,8 +310,7 @@ public:
   typedef _Bit_iterator                iterator;
   typedef _Bit_const_iterator          const_iterator;
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) && \
-  ! defined (_STLP_PARTIAL_SPECIALIZATION_BUG)
+#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
   typedef _STLP_STD::reverse_iterator<const_iterator> const_reverse_iterator;
   typedef _STLP_STD::reverse_iterator<iterator> reverse_iterator;
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */

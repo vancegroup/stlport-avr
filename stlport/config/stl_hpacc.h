@@ -2,7 +2,10 @@
 // It is internal STLport header - DO NOT include it directly
 
 // system C-library dependent
-#  define _STLP_RAND48 1
+#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
+# define _STLP_RAND48 1
+#endif
+// #  define _STLP_RAND48 1
 #  define _STLP_NO_NATIVE_MBSTATE_T      1
 #  define _STLP_HPACC_BROKEN_BUFEND       1
 #  define _STLP_WCHAR_HPACC_EXCLUDE      1

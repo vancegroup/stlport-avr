@@ -131,7 +131,7 @@ public:
   typedef typename _Sequence::const_reference const_reference;
 protected:
   _Sequence c;
-  _Compare _comp;		//*TY 01/10/1999 - ugrified comp
+  _Compare _comp;
 public:
   priority_queue() : c() {}
   explicit priority_queue(const _Compare& __x) :  c(), _comp(__x) {}		//*TY 01/10/1999 - ugrified comp

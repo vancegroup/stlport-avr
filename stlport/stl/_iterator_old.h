@@ -152,7 +152,7 @@ inline bool  _STLP_CALL operator!=(
 
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
-#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_PARTIAL_SPECIALIZATION_BUG)
+#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
 
 // This is the old version of reverse_iterator, as found in the original
 //  HP STL.  It does not use partial specialization.
@@ -337,7 +337,7 @@ operator+(_Distance __n,
                           Reference__, _Distance>(__x.base() - __n);
 }
 
-#endif /* ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_PARTIAL_SPECIALIZATION_BUG) */
+#endif /* ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) */
 
 _STLP_END_NAMESPACE
 

@@ -281,10 +281,11 @@ template <class _Integer>
 inline char* _STLP_CALL
 __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, __true_type /* is_signed */)
 {
-  __umax_int_t __temp;
+  __max_int_t __temp = __x;
 
   const bool __negative = __x < 0 ;
-  __temp = (__negative ? -__x : __x);
+
+  if (__negative) __temp = -__temp;
 
   for (; __temp != 0; __temp /= 10)
     *--__ptr = (int)(__temp % 10) + '0';	  

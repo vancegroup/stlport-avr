@@ -16,6 +16,10 @@
 #  define _STLP_NO_WCHAR_T
 # endif
 
+# if defined (__sun)
+#  include <config/stl_solaris.h>
+# endif
+
 # if defined(__DJGPP)
 #   define _STLP_RAND48		1
 #   define _NOTHREADS		1
@@ -42,9 +46,7 @@
 
 # endif
 
-/* cygwin is a little bit different, but most traits are same. */
-# if defined ( _STLP_USE_GLIBC  ) && !defined (__CYGWIN__) || defined (__MINGW32__)
-# else
+# if !(defined ( _STLP_USE_GLIBC  ) || defined (__CYGWIN__) || defined (__MINGW32__) || defined (__sun))
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
 # endif
 
@@ -85,8 +87,6 @@ typedef unsigned int wint_t;
 
 /* g++ 2.7.x and above */
 #   define _STLP_LONG_LONG long long 
-#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
 #   define _STLP_HAS_NO_NEW_IOSTREAMS     1
 
 # ifdef __HONOR_STD
@@ -102,12 +102,12 @@ typedef unsigned int wint_t;
 #     define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
 /* egcs fails to initialize builtin types in expr. like this : new(p) char();  */
 #     define _STLP_DEFAULT_CONSTRUCTOR_BUG 1
-#   else
-// boris : this is temporary
-#    undef _STLP_INCOMPLETE_EXCEPTION_HEADER
+#     define _STLP_INCOMPLETE_EXCEPTION_HEADER
 #   endif
 
 #   if (__GNUC_MINOR__ < 9) /* gcc 2.8 */
+#     define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+#     define _STLP_NO_NATIVE_WIDE_STREAMS   1
 #     define _STLP_NO_TEMPLATE_CONVERSIONS
 #     define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #     define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1

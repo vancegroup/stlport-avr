@@ -27,8 +27,7 @@
 #   include <iosfwd>
 # endif
 
-# if !  defined (_STLP_NO_CWCHAR)
-# if defined  (_STLP_USE_NEW_C_HEADERS)
+# if !  defined (_STLP_NO_CWCHAR) && defined  (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cwchar)
 
 # elif defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || defined(__FreeBSD__) || (defined (__GNUC__) && defined (__APPLE__\
@@ -44,7 +43,6 @@ typedef long int wint_t;
 
 # else 
 #  include _STLP_NATIVE_C_HEADER(wchar.h)
-# endif
 # endif
 
 #if defined(__MSL__) && __MSL__ <= 0x51FF	/* dwa 2/28/99 - not yet implemented by MSL  */

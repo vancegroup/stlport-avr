@@ -36,7 +36,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) && ! defined (_STLP_PARTIAL_SPECIALIZATION_BUG)
+#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
 // This is the new version of reverse_iterator, as defined in the
 //  draft C++ standard.  It relies on the iterator_traits template,
 //  which in turn relies on partial specialization.  The class
@@ -263,7 +263,7 @@ inserter(_Container& __x, _Iterator __i)
 
 _STLP_END_NAMESPACE
 
-#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_PARTIAL_SPECIALIZATION_BUG) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
+#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 # include <stl/_iterator_old.h>
 #endif /* __NO_PARTIAL_SPEC || ANACHRONISMS */
 

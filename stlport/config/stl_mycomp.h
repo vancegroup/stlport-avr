@@ -135,10 +135,6 @@
 // of itself for method declarations
 // #  define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
 
-// partial specialization has bugs that prevent you from
-// using new-style reverse_iterator
-// #  define _STLP_PARTIAL_SPECIALIZATION_BUG
-
 // Compiler has problems specializing members of partially 
 // specialized class
 // #  define _STLP_MEMBER_SPECIALIZATION_BUG

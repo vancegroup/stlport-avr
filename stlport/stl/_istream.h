@@ -97,7 +97,7 @@ public:                         // Formatted input of numbers.
     __val = __lval;
     // check if we lose digits
     if ((__val != __lval) && ((unsigned short)__val != __lval))
-      setstate(ios_base::failbit); 
+      this->setstate(ios_base::failbit); 
     return *this; 
   }
   _Self& operator>> (int& __val) { 
@@ -106,7 +106,7 @@ public:                         // Formatted input of numbers.
     __val = __lval;
     // check if we lose digits
     if ((__val != __lval) && ((unsigned int)__val != __lval))
-      setstate(ios_base::failbit); 
+      this->setstate(ios_base::failbit); 
     return *this;
   }
   _Self& operator>> (unsigned short& __val) { _M_get_num(*this, __val); return *this; }

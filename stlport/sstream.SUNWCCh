@@ -30,10 +30,6 @@
 
 # if defined (_STLP_OWN_IOSTREAMS)
 
-#  if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#   error This header file requires the -LANG:std option
-#  endif
-
 # include <stl/_sstream.h>
 
 # elif !defined (_STLP_USE_NO_IOSTREAMS)

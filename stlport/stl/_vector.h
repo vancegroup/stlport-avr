@@ -67,6 +67,7 @@ template <class _Tp, class _Alloc>
 class _Vector_base {
 public:
 
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 
   _Vector_base(const _Alloc& __a)
@@ -109,7 +110,7 @@ public:
   typedef random_access_iterator_tag _Iterator_category;
 
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
-
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Vector_base<_Tp, _Alloc>::allocator_type allocator_type;
 
   allocator_type get_allocator() const {

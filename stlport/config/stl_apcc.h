@@ -4,7 +4,10 @@
 #  define _STLP_HAS_NO_NEW_IOSTREAMS 1
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 
-#  define _STLP_RAND48 1
+#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
+# define _STLP_RAND48 1
+#endif
+// #  define _STLP_RAND48 1
 #  define _STLP_LONG_LONG long long
 #  define _STLP_NO_BAD_ALLOC 1
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1

@@ -131,11 +131,11 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 # define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
 # define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0xfff8 }
 # define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0xfff0 }
-// note : this is IA-32 80-bit address. WOn't work for any other little-endian
+// note : this is IA-32 80-bit address. Won't work for any other little-endian
 // machines !
-# define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x7fff, 0x8000 } // ????
-# define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xffff, 0xc000 } // ????
-# define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0x7fff, 0xa000 } // ????
+# define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x8000, 0x7fff }
+# define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xc000, 0xffff}
+# define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xa000, 0x7fff }
 
 #else 
 

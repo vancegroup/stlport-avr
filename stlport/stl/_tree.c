@@ -453,9 +453,14 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
     // first argument just needs to be non-null 
     else
       {
+	// Standard-conformance - does the insertion point fall immediately AFTER
+	// the hint?
+	iterator __after = __position;
+	++__after;
+
 	// Check for only one member -- in that case, __position points to itself,
 	// and attempting to increment will cause an infinite loop.
-	if (__position._M_node->_M_left == __position._M_node)
+	if (__after->_M_left == __this->._M_header._M_data)
 	  // Check guarantees exactly one member, so comparison was already
 	  // performed and we know the result; skip repeating it in _M_insert
 	  // by specifying a non-zero fourth argument.
@@ -463,10 +468,6 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 		
 	
 	// All other cases:
-	// Standard-conformance - does the insertion point fall immediately AFTER
-	// the hint?
-	iterator __after = __position;
-	++__after;
 	
 	// Optimization to catch insert-equivalent -- save comparison results,
 	// and we get this for free.
@@ -524,7 +525,8 @@ _Rb_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>
 	
 	if ( (!__comp_v_pos) // comp_v_pos true implies comp_v_pos false
 	     && __comp_pos_v
-	     && _M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) )) {
+	     && (__after._M_node == this->_M_header._M_data ||
+	        _M_key_compare( _KeyOfValue()(__v), _S_key(__after._M_node) ))) {
 	  
 	  if (_S_right(__position._M_node) == 0)
 	    return _M_insert(0, __position._M_node, __v, __position._M_node);
@@ -572,7 +574,8 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
       // Therefore, we want to know if compare(after, v) is false.
       // (i.e., we now pos < v, now we want to know if v <= after)
       // If not, invalid hint.
-      if ( !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__v) ) ) {
+      if ( __after._M_node==this->_M_header._M_data ||
+	   !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__v) ) ) {
         if (_S_right(__position._M_node) == 0)
           return _M_insert(0, __position._M_node, __v, __position._M_node);
         else
@@ -607,7 +610,8 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
       ++__after;
       
       if (__comp_pos_v
-	  && !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__v) ) ) {
+	  && ( __after._M_node==this->_M_header._M_data 
+	       || !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__v) ) ) ) {
         if (_S_right(__position._M_node) == 0)
           return _M_insert(0, __position._M_node, __v, __position._M_node);
         else
@@ -676,8 +680,6 @@ _Rb_tree<_Key,_Value,_KeyOfValue,_Compare,_Alloc>
   distance(__p.first, __p.second, __n);
   return __n;
 }
-
-
 
 inline int 
 __black_count(_Rb_tree_node_base* __node, _Rb_tree_node_base* __root)

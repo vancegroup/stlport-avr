@@ -119,6 +119,7 @@ struct _Not_within_traits
 
 template <class _Tp, class _Alloc> class _STLP_CLASS_DECLSPEC _String_base {
 public:
+  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
   _Tp*    _M_start;
   _Tp*    _M_finish;

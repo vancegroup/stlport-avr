@@ -1,6 +1,9 @@
 // STLport config file for KAI C++ compiler
 
-#  define _STLP_RAND48 1
+#if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
+# define _STLP_RAND48 1
+#endif
+// #  define _STLP_RAND48 1
 
 #  define _STLP_VENDOR_MB_NAMESPACE _STLP_VENDOR_STD
 

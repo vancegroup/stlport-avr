@@ -16,8 +16,8 @@
  *
  */ 
 
-#ifndef __sgi_template_complex
-#define __sgi_template_complex
+#ifndef _STLP_template_complex
+# define _STLP_template_complex
 
 # ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID  0x10
@@ -45,7 +45,7 @@
 #  undef _STLP_OUTERMOST_HEADER_ID
 # endif
 
-#endif /* __sgi_template_complex */
+#endif /* _STLP_template_complex */
 
 // Local Variables:
 // mode:C++
