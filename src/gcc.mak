@@ -5,7 +5,7 @@
 #
 # compiler
 #
-CC = gcc
+CC = gcc 
 CXX = c++ -pthreads -nostdinc++ -fexceptions
 
 #

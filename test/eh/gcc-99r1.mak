@@ -33,7 +33,7 @@ TEST  = ./eh_test.out
 D_TEST = ./eh_test_d.out
 NOSGI_TEST = ./eh_test_nosgi.out
 
-CC = /lang/cygnus/99r1/bin/c++ -pthreads 
+CC = /lang/cygnus/99r1/bin/c++ -pthreads -mcpu=ultrasparc -D_STLP_ULTRASPARC
 CXX = $(CC)
 
 # dwa 12/22/99 -- had to turn off -ansi flag so we could use SGI IOSTREAMS
@@ -66,7 +66,7 @@ $(NOSGI_TEST_EXE) : $(NOSGI_OBJECTS)
 
 
 $(TEST) : $(TEST_EXE)
-	$(TEST_EXE)
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" time ./$(TEST_EXE) -s 100
 
 $(D_TEST) : $(D_TEST_EXE)
 	$(D_TEST_EXE)

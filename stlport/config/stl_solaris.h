@@ -13,6 +13,8 @@
 # define _STLP_RAND48 1
 #endif
 
-# if defined (__sparc) &&  ! defined (__STLP_NO_SGI_IOSTREAMS)
+// For SPARC Ultra and higher, we use lightweight synchronization
+# if defined (__sparc) &&  ( defined  (__sparc_v9__) || defined (__sparcv9) || defined (_STLP_ULTRASPARC)) \
+     && ! defined (__STLP_NO_SGI_IOSTREAMS) && !defined(_NOTHREADS)
 #  define _STLP_SPARC_SOLARIS_THREADS
 # endif

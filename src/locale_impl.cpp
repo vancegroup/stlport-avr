@@ -34,6 +34,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_Locale_impl::_Locale_impl(const char* s) : name(s) {}
+_Locale_impl::~_Locale_impl() {}
+void _Locale_impl::incr() {}
+void _Locale_impl::decr() {}
+
 // _Locale_impl non-inline member functions.
 void _STLP_CALL
 _Locale_impl::_M_throw_bad_cast()

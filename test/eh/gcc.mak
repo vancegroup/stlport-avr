@@ -67,7 +67,7 @@ $(NOSGI_TEST_EXE) : $(NOSGI_OBJECTS)
 
 
 $(TEST) : $(TEST_EXE)
-	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(TEST_EXE) -s 100
+	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" time ./$(TEST_EXE) -s 100
 
 $(D_TEST) : $(D_TEST_EXE)
 	LD_LIBRARY_PATH="../../lib:$(LD_LIBRARY_PATH)" ./$(D_TEST_EXE) -s 100

@@ -46,9 +46,11 @@ _Locale::~_Locale() {
 void _Locale::remove(size_t index) {
   if (index > 0 && index < facets_vec.size()) {
     locale::facet* old = (locale::facet*)facets_vec[index];
-    if (old && old->_M_delete)
-      if (old->_M_decr() == 0)
+    if (old && old->_M_delete) {
+      old->_M_decr(); 
+      if (old->_M_ref_count == 0)
         delete old;
+    }
     facets_vec[index] = 0;
   }
 }

@@ -84,6 +84,8 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* gcc makefiles in src : "-fno-implement-inlines" removed
 
+	* Added workaround for gcc's limits.h and SUN Ultra with -mcpu=ultrasparc in 32-bit mode. 
+	
 	* ios_base:: type for constants  made "int" for all compilers, as it more efficient and perfectly compliant.
 	 	
 	* debug/_hashtable.h : fixed typo in swap() ( thanks to Gerd Hoeren for the report)

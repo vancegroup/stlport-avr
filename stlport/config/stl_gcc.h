@@ -16,6 +16,13 @@
 # endif
 
 # if defined (__sun)
+
+// gcc does not support ELF64 yet ; however; it supports ultrasparc + v8plus.
+// limits.h contains invalid values for this combination
+# if (defined  (__sparc_v9__) || defined (__sparcv9)) && ! defined ( __WORD64 )
+#  define __LONG_MAX__ 2147483647L
+# endif
+
 #  include <config/stl_solaris.h>
 # endif
 

@@ -137,11 +137,12 @@ _STLP_BEGIN_NAMESPACE
 	class exception 
 	{
 	public:
-		exception()_STLP_NOTHROW {}
 # ifdef _STLP_OWN_IOSTREAMS
+	        exception() _STLP_NOTHROW;
 	        virtual ~exception() _STLP_NOTHROW;
 		virtual const char* what() const _STLP_NOTHROW;
 # else
+	        exception() _STLP_NOTHROW {}
 		virtual ~exception() _STLP_NOTHROW {}
 		virtual const char* what() const _STLP_NOTHROW {return "class exception";}
 # endif
@@ -153,14 +154,14 @@ _STLP_BEGIN_NAMESPACE
 	class bad_exception : public exception 
 	{
 	public:
-		bad_exception() _STLP_NOTHROW {}
-
 # ifdef _STLP_OWN_IOSTREAMS
-	        ~bad_exception() _STLP_NOTHROW;
-		const char* what() const _STLP_NOTHROW;
+	  bad_exception() _STLP_NOTHROW;
+	  ~bad_exception() _STLP_NOTHROW;
+	  const char* what() const _STLP_NOTHROW;
 # else
-		~bad_exception() _STLP_NOTHROW {}
-	        const char* what() const _STLP_NOTHROW {return "class bad_exception";}
+	  bad_exception() _STLP_NOTHROW {}
+	  ~bad_exception() _STLP_NOTHROW {}
+	  const char* what() const _STLP_NOTHROW {return "class bad_exception";}
 # endif
 	};
 

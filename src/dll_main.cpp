@@ -79,7 +79,9 @@ __get_c_string(const string& __str) {
 
 
 # if defined (_STLP_NO_EXCEPTION_HEADER) || defined(_STLP_BROKEN_EXCEPTION_CLASS)
+exception::exception() _STLP_NOTHROW {}
 exception::~exception() _STLP_NOTHROW {}
+bad_exception::bad_exception() _STLP_NOTHROW {}
 bad_exception::~bad_exception() _STLP_NOTHROW {}
 const char* exception::what() const _STLP_NOTHROW {return "class exception";}
 const char* bad_exception::what() const _STLP_NOTHROW {return "class bad_exception";}

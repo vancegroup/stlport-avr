@@ -453,7 +453,7 @@ public:
   // Deallocate t. Assumes t is not 0.
   void _M_unref_nonnil()
   {
-    if (0 == _M_decr()) _M_free_tree();
+    _M_decr(); if (!_M_ref_count) _M_free_tree();
   }
   void _M_ref_nonnil()
   {

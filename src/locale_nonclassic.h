@@ -31,9 +31,8 @@ public:
   _Locale(const _Locale_impl&);
   ~_Locale();
 
-
   virtual void incr() { this->_M_incr(); }
-  virtual int decr() { int ret = (int)this->_M_decr(); if (!ret) delete this; return ret ; }
+  virtual void decr() { this->_M_decr(); if (!this->_M_ref_count) delete this;}
 
   void remove(size_t index);
   locale::facet* insert(locale::facet*, size_t index, bool do_incr);

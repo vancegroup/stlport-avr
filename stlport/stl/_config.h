@@ -250,10 +250,7 @@
 #    define _STLP_SGI_THREADS
 #  elif defined(__DECC) || defined(__DECCXX)
 #    define _STLP_DEC_THREADS
-#  elif 0 /* defined (__sun) && defined (__sparc) && defined(_STLP_OWN_IOSTREAMS) */
-#    define _STLP_SUN_SPARC_THREADS
-#  elif (defined (__sun) && defined (__SVR4)) || \
-         (defined(_UITHREADS) || defined (_STLP_SOLARIS_THREADS) && !defined(_NOTHREADS) && !defined(_PTHREADS))
+#  elif ((defined (__sun) && !defined (__linux__) && ! defined (_STLP_SPARC_SOLARIS_THREADS)) || defined(_UITHREADS) ) && !defined(_PTHREADS)
 #     define _STLP_UITHREADS
 #   elif defined (_WIN32) || defined (WIN32) || defined (__WIN32__)
 #     define _STLP_WIN32THREADS

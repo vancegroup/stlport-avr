@@ -141,10 +141,8 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 #  define _STLP_ATOMIC_EXCHANGE __ATOMIC_EXCH_LONG
 #  define _STLP_ATOMIC_INCREMENT(__x, __y) __ATOMIC_ADD_LONG(__x, 1)
 #  define _STLP_ATOMIC_DECREMENT(__x, __y) __ATOMIC_ADD_LONG(__x, -1)
-# elif defined(_STLP_SPARC_SOLARIS_THREADS) 
-extern "C" unsigned int _STLP_atomic_exchange(__stl_atomic_t * __x, __stl_atomic_t __v);
-extern "C" void _STLP_atomic_decrement(__stl_atomic_t* i);
-extern "C" void _STLP_atomic_increment(__stl_atomic_t* i);
+# elif defined(_STLP_SPARC_SOLARIS_THREADS)
+#  include <stl/_sparc_atomic.h> 
 # elif defined (_STLP_UITHREADS)
 // this inclusion is potential hazard to bring up all sorts
 // of old-style headers. Let's assume vendor already know how
@@ -384,22 +382,21 @@ struct _STLP_CLASS_DECLSPEC _Refcount_Base
   // _M_incr and _M_decr
 # if defined (_STLP_THREADS) && defined ( _STLP_ATOMIC_EXCHANGE )
    void _M_incr() { _STLP_ATOMIC_INCREMENT((__stl_atomic_t*)&_M_ref_count); }
-  __stl_atomic_t _M_decr() { return _STLP_ATOMIC_DECREMENT((__stl_atomic_t*)&_M_ref_count); }
+   void _M_decr() { _STLP_ATOMIC_DECREMENT((__stl_atomic_t*)&_M_ref_count); }
 # elif defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS) || defined (_STLP_OS2THREADS)
   void _M_incr() {
     _M_mutex._M_acquire_lock();
     ++_M_ref_count;
     _M_mutex._M_release_lock();
   }
-  __stl_atomic_t _M_decr() {
+  void _M_decr() {
     _M_mutex._M_acquire_lock();
-    volatile __stl_atomic_t __tmp = --_M_ref_count;
+    --_M_ref_count;
     _M_mutex._M_release_lock();
-    return __tmp;
   }
 # else  /* No threads */
   void _M_incr() { ++_M_ref_count; }
-  __stl_atomic_t _M_decr() { return --_M_ref_count; }
+  void _M_decr() { --_M_ref_count; }
 # endif
 };
 

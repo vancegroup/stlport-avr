@@ -34,12 +34,12 @@ _STLP_BEGIN_NAMESPACE
 class _STLP_CLASS_DECLSPEC _Locale_impl
 {
 public:
-  _Locale_impl(const char* s) : name(s) {}
+  _Locale_impl(const char* s);
   //  _Locale_impl(const _Locale_impl&);
-  virtual ~_Locale_impl() {}
+  virtual ~_Locale_impl();
 
-  virtual void incr() {}
-  virtual int decr() { return 1; }
+  virtual void incr();
+  virtual void decr();
 
   size_t size() const { return _M_size; }
 

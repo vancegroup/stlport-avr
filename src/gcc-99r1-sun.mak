@@ -36,7 +36,7 @@ include common_macros.mak
 
 WARNING_FLAGS= -Wall -W -Wno-sign-compare -Wno-unused -Wno-uninitialized
 
-CXXFLAGS_COMMON =  -nostdinc++ -fexceptions -ftemplate-depth-32 -shared -I${STLPORT_DIR} ${WARNING_FLAGS}
+CXXFLAGS_COMMON =  -mcpu=ultrasparc -D_STLP_ULTRASPARC -nostdinc++ -fexceptions -ftemplate-depth-32 -shared -I${STLPORT_DIR} ${WARNING_FLAGS}
 
 CXXFLAGS_RELEASE_static = $(CXXFLAGS_COMMON) -O2
 CXXFLAGS_RELEASE_dynamic = $(CXXFLAGS_COMMON) -O2 -fPIC

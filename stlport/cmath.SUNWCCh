@@ -191,7 +191,7 @@ inline float frexp(float __x, int* __y)       { return _STLP_DO_FREXP(float)(__x
 inline float ldexp(float __x, int __y)        { return _STLP_DO_LDEXP(float)(__x, __y); }
 // fbp : float versions are not always available
 # ifdef __sun
-float modf (float __x, float* __y)     { return _STLP_DO_MODFF(float)(__x, __y); }
+inline float modf (float __x, float* __y)     { return _STLP_DO_MODFF(float)(__x, __y); }
 # endif
 inline float log (float __x)                  { return _STLP_DO_LOG(float)(__x); }
 inline float log10(float __x)                 { return _STLP_DO_LOG10(float)(__x); }

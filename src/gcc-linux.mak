@@ -2,7 +2,7 @@
 # compiler
 #
 CC = gcc
-CXX = c++
+CXX = c++  -pthread
 
 #
 # Basename for libraries
