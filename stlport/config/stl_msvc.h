@@ -65,7 +65,9 @@
 //  using ::func_name results in ambiguity
 
 # if (_STLP_MSVC <= 1300) 
-#  define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
+#  if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 )
+#   define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
+#  endif
 #  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_FRIEND_TEMPLATES

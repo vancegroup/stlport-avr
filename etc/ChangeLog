@@ -1,3 +1,12 @@
+The following changes were made in 4.5 release since 4.5 beta 8 :
+
+	* config/stl_msvc.h, <cmath> : corrected _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS for VC++ 6.0 SP5 
+	  (Thanks Alberto Barbati)
+
+	* src/vc6.mak : RC macro definition restored (Thanks Graham)
+
+	* stl/_cmath.h, <cmath> : parts of code moved to <cmath> as <valarray> uses it (Thanks Synge Todo)
+	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	
 	* stl/_fstream.c : _M_underflow bug fix for custom codecvt facets (thanks Alberto Barbati)

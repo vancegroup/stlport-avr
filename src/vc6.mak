@@ -4,6 +4,7 @@
 
 CXX=cl.exe
 CC=cl.exe
+RC=rc
 
 LIB_BASENAME=stlport_vc6
 COMP=VC6
