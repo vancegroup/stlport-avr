@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/04/04 11:41:28 ptr>
+// -*- C++ -*- Time-stamp: <00/05/10 16:25:39 ptr>
 
 /*
  *
@@ -60,7 +60,7 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 #      ifdef __STL_THREADS
 #        ifdef __STL_SOLARIS_THREADS
 #          define _SOLARIS_THREADS
-#        elif __STL_PTHREADS
+#        elif defined( __STL_PTHREADS )
 #          define _PTHREADS
 #        endif
 #      else
@@ -229,7 +229,7 @@ class Mutex
 #endif
 
   private:
-#ifdef __STL_UITHREADS
+#if defined( __STL_UITHREADS ) || defined(__Linux)
     friend class Condition;
 #endif
 };
@@ -241,8 +241,15 @@ class MutexSDS : // Self Deadlock Safe
     MutexSDS() :
         _count( 0 ),
 #ifdef __unix
+#  ifdef __STL_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
+#  elif defined( __STL_PTHREADS)
+        _id( __STATIC_CAST(pthread_t,-1) )
+#  else
+#    error "only POSIX and Solaris threads supported now in *NIXes"
+#  endif
 #endif
+
 #ifdef WIN32
         _id( INVALID_HANDLE_VALUE )
 #endif
@@ -271,8 +278,13 @@ class MutexSDS : // Self Deadlock Safe
       {
         if ( --_count == 0 ) {
 #ifdef __unix
-          _id = __STATIC_CAST(thread_t,-1);
+#  ifdef __STL_UITHREADS
+         _id = __STATIC_CAST(thread_t,-1);
+#  elif defined( __STL_PTHREADS)
+         _id =  __STATIC_CAST(pthread_t,-1);
+#  endif
 #endif
+
 #ifdef WIN32
           _id = INVALID_HANDLE_VALUE;
 #endif
@@ -388,7 +400,11 @@ class Condition
           return 0;
 #endif
 #ifdef _PTHREADS
+#  ifdef __Linux
+          return pthread_cond_wait( &_cond, &_lock._M_lock );
+#  else
           return pthread_cond_wait( &_cond );
+#  endif
 #endif
 #ifdef __STL_UITHREADS
           MT_REENTRANT( _lock, _1 );
@@ -419,7 +435,11 @@ class Condition
 #ifdef _PTHREADS
         MT_REENTRANT( _lock, _1 ); // ??
         _val = false;
+#  ifdef __Linux
+        return pthread_cond_wait( &_cond, &_lock._M_lock );
+#  else
         return pthread_cond_wait( &_cond );
+#  endif
 #endif
 #ifdef __STL_UITHREADS
         MT_REENTRANT( _lock, _1 );
@@ -504,6 +524,13 @@ class Thread
       suspended = THR_SUSPENDED,
       daemon    = THR_DAEMON
 #endif
+#if defined(__STL_PTHREADS) && defined(__Linux)
+      bound     = 0,
+      detached  = PTHREAD_CREATE_DETACHED,
+      new_lwp   = 0,
+      suspended = 0,
+      daemon    = PTHREAD_SCOPE_SYSTEM
+#endif
 #ifdef __STL_WIN32THREADS
       bound     = 0,
       detached  = 0,
@@ -573,7 +600,7 @@ class Thread
 #ifdef __GNUC__
     void _create( const void *p, size_t psz );
 #else
-    void _create( const void *p, size_t psz ) throw(runtime_error);
+    void _create( const void *p, size_t psz ) throw( __STD::runtime_error);
 #endif
     static void *_call( void *p );
 
