@@ -209,9 +209,15 @@ public:
 
   typedef _String_reserve_t _Reserve_t;
 # if defined (_STLP_USE_NATIVE_STRING) && ! defined (_STLP_DEBUG)
-  // this typedef is being used for conversions
-  typedef _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
+#  if (defined(__IBMCPP__) && (500 <= __IBMCPP__) && (__IBMCPP__ < 600) )
+   // this typedef is being used for conversions
+   typedef typename _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
     _STLP_VENDOR_STD::allocator<_CharT> >  __std_string;
+#  else
+   // this typedef is being used for conversions
+   typedef _STLP_VENDOR_STD::basic_string<_CharT,_Traits, 
+    _STLP_VENDOR_STD::allocator<_CharT> >  __std_string;
+#  endif
 # endif
   
 public:                         // Constructor, destructor, assignment.

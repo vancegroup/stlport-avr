@@ -157,6 +157,10 @@ template class _STLP_CLASS_DECLSPEC __Pthread_alloc<_MAX_BYTES>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__pthread_alloc>;
 #endif
 
+# if defined (_STLP_THREADS) && ! defined ( _STLP_ATOMIC_EXCHANGE ) && (defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS)  || defined (_STLP_OS2THREADS))
+template class _STLP_CLASS_DECLSPEC _Swap_lock_struct<0>;
+# endif
+
 template class allocator<void*>;
 template class _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 template class _Vector_base<void*,allocator<void*> >;

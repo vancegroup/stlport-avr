@@ -29,7 +29,7 @@
 
 #ifndef errno
 
-# ifdef _STLP_IMPORT_VENDOR_CSTD
+# if defined (_STLP_IMPORT_VENDOR_CSTD) && ! defined (__IBMCPP__)
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::errno;
 _STLP_END_NAMESPACE

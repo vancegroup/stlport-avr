@@ -15,6 +15,9 @@ The following changes were made in 4.5 release since 4.5 beta 8 :
 
 	* fstream.cpp : mmap_chunk made to be 1M instead of 16M as was originally intended (thanks Alexey Starikovskiy)
 	* stl_sunpro.h : _STLP_LIMITED_DEFAULT_TEMPLATES not defined for compat mode anymore ( thanks Michael Kopp)
+	* dll_main.cpp : added instantiation for _Swap_lock_struct<> (thanks simonb)
+
+	* _ostream.c : fixed formatting bug for width()==1
 	
 The following changes were made in 4.5 beta 8 since 4.5 beta 7 :
 	

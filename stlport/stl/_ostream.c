@@ -222,8 +222,8 @@ void basic_ostream<_CharT, _Traits>::_M_put_char(_CharT __c)
     bool __failed = true;
     _STLP_TRY {
       streamsize __npad = this->width() > 0 ? this->width() - 1 : 0;
-
-      if (__npad <= 1)
+      //      if (__npad <= 1)
+      if (__npad == 0)
         __failed = this->_S_eof(this->rdbuf()->sputc(__c));
       else if ((this->flags() & ios_base::adjustfield) == ios_base::left) {
         __failed = this->_S_eof(this->rdbuf()->sputc(__c));
