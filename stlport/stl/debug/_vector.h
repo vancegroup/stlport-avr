@@ -344,6 +344,7 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
+
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
  _STLP_EXPORT_TEMPLATE_CLASS __range_checker <void*>;
  _STLP_EXPORT_TEMPLATE_CLASS _DBG_vector <void*,allocator<void*> >;

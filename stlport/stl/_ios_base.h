@@ -273,8 +273,8 @@ public:
     _Loc_init();
     ~_Loc_init();
   private:
-    static long _S_count;
     friend class locale;
+    static long _S_count;
     friend class ios_base;
   };
 

@@ -49,6 +49,10 @@ extern "C" {
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
+#elif defined(_STLP_WCE_NET)
+long _STLP_STDCALL InterlockedIncrement(long*);
+long _STLP_STDCALL InterlockedDecrement(long*);
+long _STLP_STDCALL InterlockedExchange(long*, long);
 #else
   // boris : for the latest SDK, you may actually need the other version of the declaration (above)
   // even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
@@ -57,8 +61,16 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #endif
 
+#if defined(_STLP_WCE_NET) && defined(_ARM_)
+void _STLP_STDCALL Sleep(unsigned long);
+#else
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
+#endif
+#if defined(_STLP_WCE_NET)
+void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
+#else
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutputString );
+#endif
 
 #ifdef _STLP_DEBUG
 typedef unsigned long DWORD;

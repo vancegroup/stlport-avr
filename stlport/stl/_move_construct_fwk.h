@@ -24,7 +24,7 @@
 _STLP_BEGIN_NAMESPACE
 
 /*************************************************************
- * Move construct feature
+ * Move constructor framework
  *************************************************************/
 
 /*************************************************************
@@ -71,7 +71,9 @@ _AsPartialMoveSource (_Tp &src) {
 
 /*************************************************************
  *Full move:
- *The source do not required to be destroyable after the move!
+ *The source do not required to be destroyable after the move
+ * but it HAS to release all the managed ressources as the
+ * destructor won't be called.
  *************************************************************/
 template <class _Tp>
 class __full_move_source {
@@ -87,22 +89,19 @@ public:
 //Class used to signal full move support.
 template <class _Tp>
 struct __full_move_traits {
-  //By default not supported
+  /*
+   * By default not supported, this feature is only available for compiler implementing
+   * partial template specialization
+   */
   typedef __false_type supported;
 };
 
-template <class _Tp>
-inline __full_move_source<_Tp>
-_FullMoveSource(_Tp &src) {
-  return __full_move_source<_Tp>(src);
-}
-
 //To implement a full move constructor, the aggregated datas has also to handle the
-//full move constructor as no destruction will occur, this can be done with the 
+//full move constructor as no destruction will occur, this can be check with the 
 //following method.
 template <class _Tp>
 inline  __full_move_source<_Tp>
-_ForceFullMoveSource(_Tp &src) {
+_AsFullMoveSource(_Tp &src) {
   return __full_move_source<_Tp>(src);
 }
 

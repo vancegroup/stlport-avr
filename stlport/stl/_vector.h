@@ -67,6 +67,7 @@ template <class _Tp, class _Alloc>
 class _Vector_base {
 public:
 
+  typedef _Vector_base<_Tp, _Alloc> _Self;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 
@@ -80,6 +81,20 @@ public:
     _M_finish = _M_start;
     _M_end_of_storage._M_data = _M_start + __n;
     _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
+  }
+
+  _Vector_base(__partial_move_source<_Self> src)
+    : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
+      _M_end_of_storage(_AsPartialMoveSource<_STLP_alloc_proxy<_Tp*, _Tp, allocator_type> >(src.get()._M_end_of_storage)) {
+    //Set the source destroyable:
+    src.get()._M_start = 0;
+    src.get()._M_finish = 0;
+  }
+
+  _Vector_base(__full_move_source<_Self> src)
+    : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
+      _M_end_of_storage(_AsPartialMoveSource<_STLP_alloc_proxy<_Tp*, _Tp, allocator_type> >(src.get()._M_end_of_storage)) {
+    //Won't be destroyed
   }
 
   ~_Vector_base() { 
@@ -235,16 +250,12 @@ public:
                                            this->_M_start, _IsPODType());
   }
 
-  /*explicit vector(__full_move_source<_Self> src)
-    : _Vector_base<_Tp, _Alloc>(_FullMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
-  }*/
-  
   explicit vector(__partial_move_source<_Self> src)
     : _Vector_base<_Tp, _Alloc>(_AsPartialMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
-    //Set the source destroyable:
-    src.get()._M_start = 0;
-    //This one is usefull for the hashtable Move_Constructor:
-    src.get()._M_finish = 0;
+  }
+
+  explicit vector(__full_move_source<_Self> src)
+    : _Vector_base<_Tp, _Alloc>(_AsFullMoveSource<_Vector_base<_Tp, _Alloc> >(src.get())) {
   }
   
 #if defined (_STLP_MEMBER_TEMPLATES)
@@ -602,6 +613,14 @@ protected:
 # include <stl/_relops_cont.h>
 # undef _STLP_TEMPLATE_CONTAINER
 # undef _STLP_TEMPLATE_HEADER
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Alloc>
+struct __full_move_traits<vector<_Tp, _Alloc> > {
+  typedef typename __full_move_traits<_Alloc>::supported supported;
+};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;

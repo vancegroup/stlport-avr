@@ -2,6 +2,28 @@
 #include <stl/_string.h>
 
 _STLP_BEGIN_NAMESPACE
+
+#ifdef _STLP_WCE_NET
+wstring __ASCIIToWide(const char *ascii) {
+    size_t size=strlen(ascii);
+    wchar_t* buff=new wchar_t[size+1];
+    mbstowcs( buff, ascii, size );
+    buff[size]=0x00;
+    wstring ret(buff);
+    delete[] buff;
+    return ret;
+}
+string __WideToASCII(const wchar_t *wide) {
+    size_t size=wcslen(wide);
+    char* buff=new char[size+1];
+    wcstombs( buff, wide, size );
+    buff[size]=0;
+    string ret(buff);
+    delete[] buff;
+    return ret;
+}
+#endif
+
 # ifndef _STLP_NO_FORCE_INSTANTIATE
 #  ifndef _STLP_NO_WCHAR_T
 template class _STLP_CLASS_DECLSPEC allocator<wchar_t>;

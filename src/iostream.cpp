@@ -65,10 +65,17 @@ using _STLP_VENDOR_CSTD::_streams;
 # pragma init_seg("STLPORT_NO_INIT")
 #endif
 
+# ifdef _STLP_REDIRECT_STDSTREAMS
+_STLP_DECLSPEC istream cin(0);
+_STLP_DECLSPEC ofstream cout;
+_STLP_DECLSPEC ofstream cerr;
+_STLP_DECLSPEC ofstream clog;
+# else
 _STLP_DECLSPEC istream cin(0);
 _STLP_DECLSPEC ostream cout(0);
 _STLP_DECLSPEC ostream cerr(0);
 _STLP_DECLSPEC ostream clog(0);
+# endif
 
 _STLP_DECLSPEC wistream wcin(0);
 _STLP_DECLSPEC wostream wcout(0);
@@ -193,6 +200,7 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode )
 
 void  _STLP_CALL ios_base::_S_initialize()
 {
+
   if (ios_base::Init::_S_count > 0) 
     return ;
 # if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(_STLP_WINCE)
@@ -206,10 +214,31 @@ void  _STLP_CALL ios_base::_S_initialize()
       locale::_S_initialize();
     }
 #if !defined(_STLP_WINCE)
-    istream* ptr_cin  = new((void*)&cin)  istream(0);
-    ostream* ptr_cout = new((void*)&cout) ostream(0);
-    ostream* ptr_cerr = new((void*)&cerr) ostream(0);
-    ostream* ptr_clog = new((void*)&clog) ostream(0);
+#  ifdef _STLP_REDIRECT_STDSTREAMS
+    istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(0);
+    ofstream* ptr_cout = new(static_cast<void*>(&cout)) ofstream;
+    ofstream* ptr_cerr = new(static_cast<void*>(&cerr)) ofstream;
+    ofstream* ptr_clog = new(static_cast<void*>(&clog)) ofstream;
+
+    // Initialize the four narrow stream objects.
+    if (_S_was_synced) {
+      ptr_cin->init(new stdio_istreambuf(stdin));
+      ptr_cout->open("/stdout.txt", ios::out);
+      ptr_cerr->open("/stderr.txt", ios::out);
+      ptr_clog->open("/stdlog.txt", ios::out);
+    } else {
+      ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
+      ptr_cin->init(_Stl_create_filebuf(stdout, ios_base::out));
+      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
+      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out)); 
+    }
+    ptr_cin->tie(ptr_cout);
+    ptr_cerr->setf(ios_base::unitbuf);
+#  else
+    istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(0);
+    ostream* ptr_cout = new(static_cast<void*>(&cout)) ostream(0);
+    ostream* ptr_cerr = new(static_cast<void*>(&cerr)) ostream(0);
+    ostream* ptr_clog = new(static_cast<void*>(&clog)) ostream(0);
 
     // Initialize the four narrow stream objects.
     if (_S_was_synced) {
@@ -225,6 +254,7 @@ void  _STLP_CALL ios_base::_S_initialize()
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
+#  endif /*_STLP_WCE_NET*/
 
 # ifndef _STLP_NO_WCHAR_T
 

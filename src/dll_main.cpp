@@ -66,7 +66,7 @@
 # endif
 # define _STLP_THROW_MSG(ex,msg)  throw ex(string(msg))
 #else
-# if defined (_STLP_WINCE)
+# if defined (_STLP_WINCE) || defined (_STLP_RTTI_BUG)
 #  define _STLP_THROW_MSG(ex,msg)  TerminateProcess(GetCurrentProcess(), 0)
 # else
 #  include <cstdlib>

@@ -1006,7 +1006,7 @@ void _Catalog_locale_map::insert(int key, const locale& L)
       if (!M) delete M;
 #endif
       M->insert(pair<const int, locale>(key, L));
-#if !defined(_STLP_NO_TYPEINFO)
+#if !defined(_STLP_NO_TYPEINFO) && !defined(_STLP_NO_RTTI)
     }
 # endif /* _STLP_NO_TYPEINFO */
   }

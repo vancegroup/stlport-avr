@@ -24,7 +24,16 @@
 #  include <stl/_prolog.h>
 # endif
 
+# ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+# endif
+
 # if defined (_STLP_OWN_IOSTREAMS)
+
+#ifdef _STLP_REDIRECT_STDSTREAMS
+// for ofstream redirection
+#include <fstream>
+#endif
 
 #include <stl/_iosfwd.h>
 #include <stl/_istream.h>
@@ -47,10 +56,17 @@ _STLP_BEGIN_NAMESPACE
 // program; the same applies to cout and wcout, and cerr/clog and
 // wcerr/wclog.
 
+# ifdef _STLP_REDIRECT_STDSTREAMS
+extern _STLP_DECLSPEC istream cin;
+extern _STLP_DECLSPEC ofstream cout;
+extern _STLP_DECLSPEC ofstream cerr;
+extern _STLP_DECLSPEC ofstream clog;
+# else
 extern _STLP_DECLSPEC istream cin;
 extern _STLP_DECLSPEC ostream cout;
 extern _STLP_DECLSPEC ostream cerr;
 extern _STLP_DECLSPEC ostream clog;
+# endif
 
 # ifndef _STLP_NO_WCHAR_T
 extern _STLP_DECLSPEC wistream wcin;

@@ -26,7 +26,7 @@
 #include <stl/_fstream.h>
 #include "fstream_impl.h"
 
-# if defined (_STLP_USE_WIN32_IO)
+# if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
 # if defined (__BORLANDC__)
 // #  include <cio.h>
 #  include <cfcntl.h>
@@ -54,7 +54,11 @@ stdio_streambuf_base::~stdio_streambuf_base()
 
 _STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n)
 {
-  _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
+#if defined(_STLP_WCE_NET)
+    // no buffering in windows ce .NET
+#else
+    _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
+#endif
   return this;
 }
 
@@ -86,6 +90,8 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
     return pos_type((streamoff)pos.__pos);
 #elif defined(__ISCPP__) || defined(__MVS__) || (__OS400__)
      return pos_type(pos.__fpos_elem[ 0 ]);
+#elif defined (__EMX__)
+     return pos_type((streamoff)pos._pos);
 #else
     return pos_type(pos);
 #endif
@@ -108,6 +114,10 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // 
 #elif defined(__MVS__) || (__OS400__)
   fpos_t p;
   p.__fpos_elem[0] = pos;
+#elif defined(__EMX__)
+  fpos_t p;
+  p._pos = pos;
+  memset( &(p._mbstate), 0, sizeof(p._mbstate) );
 #else
   fpos_t p(pos);
 #endif
@@ -133,8 +143,15 @@ streamsize stdio_istreambuf::showmanyc()
   if (feof(_M_file)) 
     return -1;
   else {
-    int fd = _FILE_fd(*_M_file);
-# ifdef _STLP_USE_WIN32_IO
+    int fd = _FILE_fd(_M_file);
+# if defined(_STLP_WCE_NET)
+// not sure if i can mix win32 io mode with ftell but time will show
+// cannot use WIN32_IO implementation since missing stat
+    long tmp= _STLP_VENDOR_CSTD::ftell(_M_file);
+     _STLP_VENDOR_CSTD::fseek(_M_file, 0, SEEK_END);
+    streamoff size= _STLP_VENDOR_CSTD::ftell(_M_file)-tmp;
+     _STLP_VENDOR_CSTD::fseek(_M_file, tmp, SEEK_SET);
+# elif defined(_STLP_USE_WIN32_IO)
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
     struct stat buf;
@@ -157,7 +174,11 @@ streamsize stdio_istreambuf::showmanyc()
 
 stdio_istreambuf::int_type stdio_istreambuf::underflow()
 {
+#if defined(_STLP_WCE_NET)
+  int c = fgetc(_M_file);
+#else
   int c = getc(_M_file);
+#endif
   if (c != EOF) {
     _STLP_VENDOR_CSTD::ungetc(c, _M_file);
     return c;
@@ -168,7 +189,11 @@ stdio_istreambuf::int_type stdio_istreambuf::underflow()
 
 stdio_istreambuf::int_type stdio_istreambuf::uflow()
 {
+#if defined(_STLP_WCE_NET)
+  int c = fgetc(_M_file);
+#else
   int c = getc(_M_file);
+#endif
   return c != EOF ? c : traits_type::eof();
 }
 
@@ -220,7 +245,11 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c)
 
   // Write the character c, and whatever else might be in the buffer.
   else {
-    int result = putc(c, _M_file);
+#if defined(_STLP_WCE_NET)
+    int result = fputc(c, _M_file);
+#else
+    int result = putc(c, _M_file);  
+#endif
     return result != EOF ? result : traits_type::eof();
   }
 }

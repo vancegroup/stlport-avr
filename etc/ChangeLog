@@ -1,3 +1,8 @@
+2004-02-03  Francois Dumont <dums@s...>
+	* integration of a portage to the Windows CE .NET (eMebedded Visual
+	C++ 4) compiler thanks Zdenek Nemek
+	
+
 2004-02-02  Petr Ovchenkov  <ptr@Island...>
 
 	* _iostream_string.h: avoid usage of iostring in the _STLP_DEBUG mode,

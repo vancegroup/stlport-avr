@@ -33,7 +33,7 @@ _STLP_END_NAMESPACE
 
 #endif /* _STLP_USE_EXCEPTIONS && _STLP_NO_BAD_ALLOC */
 
-#ifdef _STLP_WINCE
+#if defined(_STLP_WINCE) || defined(_STLP_RTTI_BUG)
 _STLP_BEGIN_NAMESPACE
 
 inline void* _STLP_CALL __stl_new(size_t __n) {
@@ -41,7 +41,7 @@ inline void* _STLP_CALL __stl_new(size_t __n) {
 }
 
 inline void _STLP_CALL __stl_delete(void* __p) {
-  free(__p);
+  ::free(__p);
 }
 _STLP_END_NAMESPACE
 
@@ -68,7 +68,6 @@ _STLP_END_NAMESPACE
     _STLP_END_NAMESPACE
 
 #  endif /* _STLP_OWN_NAMESPACE */
-
 # endif /* _STLP_NO_BAD_ALLOC */
 
 # if defined (_STLP_USE_EXCEPTIONS) && \
@@ -82,11 +81,11 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 
 #if (( defined(__IBMCPP__)|| defined(__OS400__) || defined (__xlC__) || defined (qTidyHeap)) && defined(__DEBUG_ALLOC__) )
-inline void*  _STLP_CALL __stl_new(size_t __n) {  _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n, __FILE__, __LINE__)); }
-inline void _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p, __FILE__, __LINE__); }
+inline void* _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n, __FILE__, __LINE__)); }
+inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p, __FILE__, __LINE__); }
 #else
-inline void*  _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n)); }
-inline void   _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p); }
+inline void* _STLP_CALL __stl_new(size_t __n)   { _STLP_CHECK_NULL_ALLOC(::operator _STLP_NEW(__n)); }
+inline void  _STLP_CALL __stl_delete(void* __p) { ::operator delete(__p); }
 #endif
 _STLP_END_NAMESPACE
 

@@ -80,9 +80,38 @@ _STLP_BEGIN_NAMESPACE
 
 #if !defined(_STLP_WINCE)
 //----------------------------------------------------------------------
+// windows CE 4.2 implementation, based on hack into FILE structure see FILECE in stl_wince_4.h
+#if defined(_STLP_WCE_NET)
+typedef  char* _File_ptr_type;
+inline int   _FILE_fd(const FILE *__f) { return (int) ((const FILECE*)__f)->_file; }
+inline char* _FILE_I_begin(const FILE *__f) { return (char*) ((const FILECE*)__f)->_base; }
+inline char* _FILE_I_next(const FILE *__f) { return (char*) ((const FILECE*)__f)->_ptr; }  
+inline char* _FILE_I_end(const FILE *__f)
+  { return (char*) ((const FILECE*)__f)->_ptr + ((const FILECE*)__f)->_cnt; }
+
+inline ptrdiff_t _FILE_I_avail(const FILE *__f) { return ((const FILECE*)__f)->_cnt; }
+
+inline char& _FILE_I_preincr(FILE *__f)
+  { --((FILECE*)__f)->_cnt; return *(char*) (++((FILECE*)__f)->_ptr); }
+inline char& _FILE_I_postincr(FILE *__f)
+  { --((FILECE*)__f)->_cnt; return *(char*) (((FILECE*)__f)->_ptr++); }
+inline char& _FILE_I_predecr(FILE *__f)
+  { ++((FILECE*)__f)->_cnt; return *(char*) (--((FILECE*)__f)->_ptr); }
+inline char& _FILE_I_postdecr(FILE *__f)
+  { ++((FILECE*)__f)->_cnt; return *(char*) (((FILECE*)__f)->_ptr--); }
+inline void  _FILE_I_bump(FILE *__f, int __n)
+  { ((FILECE*)__f)->_ptr += __n; ((FILECE*)__f)->_cnt -= __n; }
+
+inline void _FILE_I_set(FILE *__f, char* __begin, char* __next, char* __end) {
+  ((FILECE*)__f)->_base = (_File_ptr_type) __begin;
+  ((FILECE*)__f)->_ptr  = (_File_ptr_type) __next;
+  ((FILECE*)__f)->_cnt  = __end - __next;
+}
+
+# define _STLP_FILE_I_O_IDENTICAL 1
 // Implementation for the IRIX C library.
 // Solaris interface looks to be identical.
-#if !defined(_STLP_USE_GLIBC) && \
+#elif !defined(_STLP_USE_GLIBC) && \
     ( defined(__sgi) || \
       ( defined(__sun) && ! defined (_LP64) )  || \
       defined (__osf__) || defined(__DECCXX) || \

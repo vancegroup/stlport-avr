@@ -44,6 +44,13 @@
 #  define _STLP_MSVC _MSC_VER
 # endif
 
+
+# if defined(UNDER_CE) && UNDER_CE >= 400 && defined(_ARM_)
+// pretend i am _MSC_VER 1200 not 1201
+# undef _STLP_MSVC
+# define _STLP_MSVC 1200
+# endif
+
 # if defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
 /* AIX xlC, Visual Age C++ , OS-390 C++ */
 #  include <config/stl_ibm.h>
