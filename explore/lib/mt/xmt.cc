@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/09/10 15:40:31 ptr>
+// -*- C++ -*- Time-stamp: <99/10/14 22:03:22 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -20,6 +20,7 @@
 #endif
 #include <memory>
 #include <functional>
+#include <cerrno>
 
 #ifdef WIN32
 // #include <iostream>
@@ -51,6 +52,58 @@ namespace __impl {
 using std::cerr;
 using std::endl;
 #endif
+
+__XMT_DLL
+int Condition::wait_time( const timespec *abstime )
+{
+#ifdef WIN32
+  MT_LOCK( _lock );
+  _val = false;
+  ResetEvent( _cond );
+  MT_UNLOCK( _lock );
+  time_t ct = time( 0 );
+  unsigned ms = abstime->tv_sec >= ct ? abstime->tv_sec - ct + abstime->tv_nsec / 1000000 : 1;
+  int ret = WaitForSingleObject( _cond, ms );
+  if ( ret == WAIT_FAILED ) {
+    return -1;
+  }
+  if ( ret == WAIT_TIMEOUT ) {
+    SetEvent( _cond );
+    return ETIME;
+  }
+  return 0;
+#endif
+#ifdef _PTHREADS
+  MT_REENTRANT( _lock, _1 ); // ??
+  _val = false;
+  timespec _abstime = *abstime;
+  int ret = pthread_cond_wait( &_cond, &_lock._M_lock, &_abstime );
+  if ( ret == ETIMEDOUT ) {
+    _val = true;
+  }
+  return ret;
+#endif
+#ifdef __STL_UITHREADS
+  MT_REENTRANT( _lock, _1 );
+  _val = false;
+  int ret;
+  timespec _abstime = *abstime;
+  while ( !_val ) {
+    ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
+    if ( ret == ETIME ) {
+      _val = true;
+      ret = ETIMEDOUT;
+    } else if ( ret == ETIMEDOUT ) {
+      _val = true;
+    }
+  }
+
+  return ret;
+#endif
+#ifdef _NOTHREADS
+  return 0;
+#endif
+}
 
 char *Init_buf[32];
 int Thread::Init::_count = 0;
@@ -319,6 +372,22 @@ void Thread::signal_handler( int sig, SIG_PF handler )
 #endif // __unix
 }
 
+__XMT_DLL
+void Thread::sleep( timespec *t, timespec *r )
+{
+#ifdef __unix
+  nanosleep( t, r );
+#endif
+#ifdef WIN32
+  time_t ct = time( 0 );
+  unsigned ms = t->tv_sec >= ct ? t->tv_sec - ct + t->tv_nsec / 1000000 : 1;
+  Sleep( ms );
+  if ( r != 0 ) {
+    r->tv_sec = ms / 1000;
+    r->tv_nsec = (ms % 1000) * 1000000;
+  }
+#endif
+}
 
 void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 {
