@@ -44,9 +44,9 @@
 
 
 # if defined (_STLP_OWN_IOSTREAMS)
-#  if ! defined (_STLP_NO_OWN_NAMESPACE)
-#   define _STLP_NO_OWN_NAMESPACE
-#  endif
+//#  if ! defined (_STLP_NO_OWN_NAMESPACE)
+//#   define _STLP_NO_OWN_NAMESPACE
+//#  endif
 # else
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 # endif

@@ -82,7 +82,9 @@ HEADER_DIRS2 = config stl stl/debug stl/wrappers using/h  wrap_std/h
 symbolic_links :
 	$(RM) $(OUTDIR)/$(RELEASE_NAME).$(DYNEXT)
 	$(RM) $(OUTDIR)/$(STLDEBUG_NAME).$(DYNEXT)
+	$(RM) $(OUTDIR)/$(DEBUG_NAME).$(DYNEXT)
 	ln -s $(RELEASE_DYNLIB) $(OUTDIR)/$(RELEASE_NAME).$(DYNEXT)
+	-ln -s $(DEBUG_DYNLIB) $(OUTDIR)/$(DEBUG_NAME).$(DYNEXT)
 	ln -s $(STLDEBUG_DYNLIB) $(OUTDIR)/$(STLDEBUG_NAME).$(DYNEXT)
 
 install_unix :

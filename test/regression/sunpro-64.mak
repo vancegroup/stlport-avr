@@ -158,8 +158,8 @@ SUFFIXES: .cpp.o.exe.out.res
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -g -o $*.exe
+	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -D_REENTRANT -o $*.o
+	$(CXX) $(CXXFLAGS) $*.o $(LIBS) -lpthread -g -o $*.exe
 	LD_LIBRARY_PATH=../../lib:${LD_LIBRARY_PATH} ./$*.exe < stdin > $@
 	-rm -f $*.exe
 

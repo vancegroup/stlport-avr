@@ -80,7 +80,6 @@
 #pragma optimize("g",off)
 #endif 
 
-
 _STLP_BEGIN_NAMESPACE
 
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
@@ -168,7 +167,7 @@ template class _STLP_CLASS_DECLSPEC _Swap_lock_struct<0>;
 template class allocator<void*>;
 template class _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 template class _Vector_base<void*,allocator<void*> >;
-# if defined (_STLP_DEBUG)
+# if defined (_STLP_DEBUG) && ! defined (__SUNPRO_CC)
 template class __WORKAROUND_DBG_RENAME(vector) <void*,allocator<void*> >;
 # endif
 template class __vector__<void*,allocator<void*> >;
@@ -184,7 +183,7 @@ template class _STLP_CLASS_DECLSPEC allocator<char>;
 template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<char *,char, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC _String_base<char, allocator<char> >;
 
-# ifdef _STLP_DEBUG
+# if defined (_STLP_DEBUG) && ! defined (__SUNPRO_CC)
 template class _STLP_CLASS_DECLSPEC _Nondebug_string<char, char_traits<char>, allocator<char> >;
 # endif
 
@@ -219,7 +218,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 
 } /* extern "C" */
-
 
 _STLP_BEGIN_NAMESPACE
 

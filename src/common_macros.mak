@@ -6,17 +6,14 @@ SHELL=/bin/sh
 VERSION_MAJOR=4
 VERSION_MINOR=5
 
-# This one is not always present; it is only used for bugfixing release versions which are backwards
-# compatible with minor version
-PATCH_SUFFIX=1
-
 # This one is not always present; it should be empty for release versions.
 # We do not assume any binary compatibility for betas.
 BETA_SUFFIX=
 
 VERSION_SUFFIX= .$(VERSION_MAJOR).$(VERSION_MINOR)$(BETA_SUFFIX)
 
-DYNAMIC_SUFFIX= $(VERSION_SUFFIX)$(PATCH_SUFFIX)
+# DYNAMIC_SUFFIX= $(VERSION_SUFFIX)$(PATCH_SUFFIX)
+DYNAMIC_SUFFIX= $(VERSION_SUFFIX)
 
 #
 #  Directories

@@ -18,8 +18,8 @@ _STLP_atomic_exchange:
 	        swap     [%o0], %o3         ! Do the compare and swap
 	        cmp     %o2, %o3                ! Check whether successful
 	        bne     0b                  ! Retry upon failure
-	!        membar  #LoadLoad | #LoadStore  ! Ensure the cas finishes before
-	                                       ! returning
+! ifdef (__sparcv8plus, membar  #LoadLoad | #LoadStore)  ! Ensure the cas finishes before
+	        stbar
 	        mov     %o2, %o0                                ! Set the new value
 	        retl                            ! return
 	        nop
