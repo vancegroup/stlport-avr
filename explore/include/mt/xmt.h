@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <02/04/22 10:35:29 ptr>
+// -*- C++ -*- Time-stamp: <02/06/20 12:20:18 ptr>
 
 /*
  *
@@ -119,8 +119,8 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 
 namespace __impl {
 
-extern __FIT_DECLSPEC void signal_throw( int sig ) throw( int );
-extern __FIT_DECLSPEC void signal_thread_exit( int sig );
+// extern __FIT_DECLSPEC void signal_throw( int sig ) throw( int );
+// extern __FIT_DECLSPEC void signal_thread_exit( int sig );
 
 #ifdef __unix
 extern "C"  void *_xcall( void * ); // forward declaration
@@ -512,7 +512,6 @@ class Thread
 #ifdef __FIT_UITHREADS
     typedef thread_key_t thread_key_type;
 #endif
-    typedef std::allocator<long *> alloc_type;
 
     enum {
 #ifdef __FIT_UITHREADS // __STL_SOLARIS_THREADS
@@ -559,13 +558,13 @@ class Thread
     __FIT_DECLSPEC int suspend();
     __FIT_DECLSPEC int resume();
     __FIT_DECLSPEC int kill( int sig );
-    static __FIT_DECLSPEC void exit( int code = 0 );
 #ifdef __FIT_UITHREADS
     static __FIT_DECLSPEC int join_all();
 #endif
     static __FIT_DECLSPEC void block_signal( int sig );
     static __FIT_DECLSPEC void unblock_signal( int sig );
     static __FIT_DECLSPEC void signal_handler( int sig, SIG_PF );
+    static __FIT_DECLSPEC void signal_exit( int sig ); // signal handler
 
     static __FIT_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
     static __FIT_DECLSPEC void gettime( timespec *t );
@@ -574,11 +573,19 @@ class Thread
 
     bool good() const
       { return _id != bad_thread_key; }
+    __FIT_DECLSPEC bool is_self();
 
-    static int xalloc()
-      { return _idx++; }
-    __FIT_DECLSPEC long&  iword( int __idx );
-    __FIT_DECLSPEC void*& pword( int __idx );
+    static __FIT_DECLSPEC int xalloc();
+    long&  iword( int __idx )
+      {
+        _STLP_ASSERT( is_self() );
+        return *static_cast<long *>(_alloc_uw( __idx ));
+      }
+    void*& pword( int __idx )
+      {
+        _STLP_ASSERT( is_self() );
+        return *reinterpret_cast<void **>(_alloc_uw( __idx ));
+      }
 
 #ifndef __FIT_WIN32THREADS
     static thread_key_type mtkey()
@@ -590,27 +597,38 @@ class Thread
 #endif
     static const thread_key_type bad_thread_key;
 
+  protected:
+    static __FIT_DECLSPEC void _exit( int code = 0 );
+
   private:
     Thread( const Thread& )
       { }
 
-//#ifdef __GNUC__
-//    void _create( const void *p, size_t psz );
-//#else
     void _create( const void *p, size_t psz ) throw( std::runtime_error);
-//#endif
     static void *_call( void *p );
 
     static void unexpected();
     static void terminate();
 
+    // assume that sizeof( long ) >= sizeof( void * );
+    // otherwise, #ifdef workaround should be here.
+    // At present, I don't know such OS.
+#if 1
+    typedef long _uw_alloc_type;
+#endif
+    typedef std::allocator<_uw_alloc_type> alloc_type;
+    __FIT_DECLSPEC void _dealloc_uw();
+    __FIT_DECLSPEC _uw_alloc_type *_alloc_uw( int __idx );
+
     static alloc_type alloc;
     static int _idx; // user words index
-#ifndef __FIT_WIN32THREADS
-    static thread_key_type& _mt_key;
-#endif
+    static int _self_idx; // user words index, that word point to self
+    static Mutex _idx_lock;
+    static Mutex _start_lock;
 #ifdef __FIT_WIN32THREADS
     static unsigned long& _mt_key;
+#else
+    static thread_key_type& _mt_key;
 #endif
     size_t uw_alloc_size;
 
