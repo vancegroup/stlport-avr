@@ -757,13 +757,8 @@ public:                         // Insert
   }
 
   void insert(iterator __p, size_t __n, _CharT __c);
-
-  void insert(iterator __p, const_iterator __first, const_iterator __last) {
-    _M_insert(__p, __first, __last, _M_inside(__first));
-  }
   
 #ifdef _STLP_MEMBER_TEMPLATES
-
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
   template <class _InputIter>
@@ -771,8 +766,11 @@ public:                         // Insert
     typedef typename _Is_integer<_InputIter>::_Integral _Integral;
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
-
 #endif /* _STLP_MEMBER_TEMPLATES */
+
+  void insert(iterator __p, const_iterator __first, const_iterator __last) {
+    _M_insert(__p, __first, __last, _M_inside(__first));
+  }
 
 private:  // Helper functions for insert.
 
@@ -1014,16 +1012,9 @@ public:                         // Replace.  (Conceptually equivalent
   _Self& replace(iterator __first, iterator __last, 
                  size_type __n, _CharT __c);
 
-#if !defined(_MSC_VER) || !defined(_STLP_MEMBER_TEMPLATES)
-  _Self& replace(iterator __first, iterator __last,
-                 const_iterator __f, const_iterator __l) {
-    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
-  }
-#endif
-
+#ifdef _STLP_MEMBER_TEMPLATES
   // Check to see if _InputIter is an integer type.  If so, then
   // it can't be an iterator.
-#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIter>
   _Self& replace(iterator __first, iterator __last,
                  _InputIter __f, _InputIter __l) {
@@ -1031,6 +1022,11 @@ public:                         // Replace.  (Conceptually equivalent
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
+
+  _Self& replace(iterator __first, iterator __last,
+                 const_iterator __f, const_iterator __l) {
+    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
+  }
 
 private:                        // Helper functions for replace.
 
