@@ -74,7 +74,11 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
 
 #ifdef _STLP_DEBUG
 typedef unsigned long DWORD;
+# ifdef _STLP_WCE_NET
+DWORD _STLP_STDCALL GetCurrentThreadId();
+# else
 _STLP_IMPORT_DECLSPEC DWORD _STLP_STDCALL GetCurrentThreadId();
+# endif /* !STLP_WCE_NET */
 #endif /* _STLP_DEBUG */
 
 #    if defined (InterlockedIncrement)
