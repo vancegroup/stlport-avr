@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/05/10 16:25:37 ptr>
+// -*- C++ -*- Time-stamp: <00/05/18 14:46:41 ptr>
 
 /*
  *
@@ -18,7 +18,7 @@
  * in supporting documentation.
  */
 
-#ident "$SunId$ %Q%"
+#ident "$SunId$"
 
 #include <xmt.h>
 
