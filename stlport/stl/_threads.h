@@ -120,8 +120,6 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA( const char* lpOutpu
 
 #   endif /* STL_MSVC */
 
-// #   undef min
-// #   undef max
 #   define _STLP_WINDOWS_H_INCLUDED
 
 #  endif /* _WINDOWS_ */
@@ -221,7 +219,7 @@ struct _STL_mutex_spin {
 
 struct _STLP_CLASS_DECLSPEC _STL_mutex_base
 {
-#if defined(_STLP_ATOMIC_EXCHANGE)
+#if defined(_STLP_ATOMIC_EXCHANGE) || defined(_STLP_SGI_THREADS) || defined(_STLP_WIN32THREADS)
   // It should be relatively easy to get this to work on any modern Unix.
   volatile __stl_atomic_t _M_lock;
 #endif

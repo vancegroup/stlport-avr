@@ -3,8 +3,7 @@
  */
 
 /* Systems having GLIBC installed have different traits */
-#if ! defined (_STLP_USE_GLIBC) && \
-   ( defined (__linux__) || defined (__CYGWIN__) )
+#if ! defined (_STLP_USE_GLIBC) && ( defined (__linux__) || defined (__CYGWIN__) )
 # define _STLP_USE_GLIBC
 #endif
 
@@ -46,8 +45,11 @@
 
 # endif
 
-# if !(defined ( _STLP_USE_GLIBC  ) || defined (__CYGWIN__) || defined (__MINGW32__) || defined (__sun))
+/* ||  */
+# if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun))
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
+#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
 # endif
 
 
@@ -106,8 +108,6 @@ typedef unsigned int wint_t;
 #   endif
 
 #   if (__GNUC_MINOR__ < 9) /* gcc 2.8 */
-#     define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#     define _STLP_NO_NATIVE_WIDE_STREAMS   1
 #     define _STLP_NO_TEMPLATE_CONVERSIONS
 #     define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #     define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
