@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/06/24 18:49:06 ptr>
+// -*- C++ -*- Time-stamp: <99/08/17 12:28:21 ptr>
 
 #ident "$SunId$ %Q%"
 
@@ -77,14 +77,14 @@ Thread::Init::~Init()
 }
 
 int Thread::_idx = 0;
-Thread::thread_key_type Thread::_mt_key = -1;
+Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(thread_t,-1);
 
 __DLLEXPORT
 Thread::Thread( unsigned __f ) :
 #ifdef WIN32
     _id( INVALID_HANDLE_VALUE ),
 #else
-    _id( -1 ),
+    _id( __STATIC_CAST(thread_t,-1) ),
 #endif
     _entrance( 0 ),
     _param( 0 ),
@@ -110,10 +110,10 @@ Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsig
 __DLLEXPORT
 Thread::~Thread()
 {
-  void *user_words;
+  long **user_words;
 
 #ifdef __STL_SOLARIS_THREADS
-  thr_getspecific( _mt_key, &user_words );
+  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef _PTHREADS
   user_words = pthread_getspecific( _mt_key );
@@ -131,7 +131,7 @@ Thread::~Thread()
   __stl_assert( _id == INVALID_HANDLE_VALUE );
 #else
   // __stl_assert( _id == -1 );
-  kill( SIG_TERM );
+  kill( SIGTERM );
 #endif
 }
 
@@ -160,14 +160,14 @@ int Thread::join()
   }
 #else // !WIN32
   int ret_code = 0;
-  if ( _id != -1 && (_flags & (daemon | detached) ) == 0 ) {
+  if ( _id != __STATIC_CAST(thread_t,-1) && (_flags & (daemon | detached) ) == 0 ) {
 #  ifdef _PTHREADS
     pthread_join( _id, (void **)(&ret_code) );
 #  endif
 #  ifdef _SOLARIS_THREADS
     thr_join( _id, 0, (void **)(&ret_code) );
 #  endif
-    _id = -1;
+    _id = __STATIC_CAST(thread_t,-1);
   }
 #endif // !WIN32
 
@@ -182,7 +182,7 @@ int Thread::suspend()
     return SuspendThread( _id );
   }
 #else
-  if ( _id != -1 ) {
+  if ( _id != __STATIC_CAST(thread_t,-1) ) {
 #  ifdef _PTHREADS
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via condwait
@@ -325,7 +325,7 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
 {
   if ( psz > sizeof(void *) ) { // can't pass on pointer
     // Hey, deallocation SHOULD be either in this method, or in _call ONLY,
-    // and never more!
+    // and never more!    
     _param = new char [psz];
 #ifdef WIN32
     memcpy( _param, p, psz );
@@ -349,8 +349,8 @@ void Thread::_create( const void *p, size_t psz ) throw(runtime_error)
   err = GetLastError();
 #endif
   if ( err != 0 ) {
-    if ( psz > sizeof( void *) ) { // clear allocated here
-      delete [] _param;
+    if ( psz > sizeof(void *) ) { // clear allocated here
+      delete [] __STATIC_CAST(char *,_param);
     }
     throw runtime_error( "Can't create thread" );
   }
@@ -393,7 +393,7 @@ void *Thread::_call( void *p )
 #ifdef WIN32
     me->_id = INVALID_HANDLE_VALUE;
 #else
-    me->_id = -1;
+    me->_id = __STATIC_CAST(thread_t,-1);
 #endif
     // 
   }
@@ -419,7 +419,7 @@ void *Thread::_call( void *p )
 
   try {
     if ( _param_sz > sizeof(void *) ) { // that's allocated
-      delete [] _param;
+      delete [] __STATIC_CAST(char *,_param);
       _param_sz = 0;
       _param = 0;
     }
@@ -454,12 +454,12 @@ void Thread::terminate()
 }
 
 __DLLEXPORT
-long&  Thread::iword( int __idx )
+long& Thread::iword( int __idx )
 {
-  void *user_words;
+  long **user_words;
 
 #ifdef __STL_SOLARIS_THREADS
-  thr_getspecific( _mt_key, &user_words );
+  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef _PTHREADS
   user_words = pthread_getspecific( _mt_key );
@@ -478,7 +478,7 @@ long&  Thread::iword( int __idx )
 #else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     user_words = alloc::allocate( uw_alloc_size );
 #endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
-    std::fill( (long *)user_words, (long *)(user_words) + uw_alloc_size, 0 );
+    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, user_words );
 #endif
@@ -492,17 +492,17 @@ long&  Thread::iword( int __idx )
     size_t tmp = sizeof( long ) * (__idx + 1);
 #ifdef __STL_USE_STD_ALLOCATORS
 #ifdef _MSC_VER
-    void *_mtmp = alloc().allocate( tmp, (const void *)0 );
+    long **_mtmp = alloc().allocate( tmp, (const void *)0 );
 #else // __STL_USE_STD_ALLOCATORS
-    void *_mtmp = alloc().allocate( tmp );
+    long **_mtmp = alloc().allocate( tmp );
 #endif // __STL_USE_STD_ALLOCATORS
-    std::copy( (long *)user_words, (long *)(user_words) + uw_alloc_size, (long *)_mtmp );
+    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
     alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
 #else // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
     user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
 #endif // !__STL_USE_STD_ALLOCATORS && !_MSC_VER
-    std::fill( (long *)(user_words) + uw_alloc_size, (long *)(user_words) + tmp, 0 );
+    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
 #ifdef __STL_SOLARIS_THREADS
     thr_setspecific( _mt_key, user_words );
@@ -515,36 +515,37 @@ long&  Thread::iword( int __idx )
 #endif
   }
 
-  return *(static_cast<long *>(user_words) + __idx);
+  long *_ytmp = (long *)&user_words[__idx];
+  return *_ytmp;
 }
 
 __DLLEXPORT
 void*& Thread::pword( int __idx )
 {
-  long *user_words;
+  long **user_words;
 
 #ifdef __STL_SOLARIS_THREADS
-  thr_getspecific( _mt_key, (void **)&user_words );
+  thr_getspecific( _mt_key, reinterpret_cast<void **>(&user_words) );
 #endif
 #ifdef _PTHREADS
   user_words = pthread_getspecific( _mt_key );
 #endif
 #ifdef WIN32
-  user_words = reinterpret_cast<long *>( TlsGetValue( _mt_key ) );
+  user_words = reinterpret_cast<long **>( TlsGetValue( _mt_key ) );
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
 // #ifdef _MSC_VER
 //    user_words = (long *)alloc().allocate( uw_alloc_size, (const void *)0 );
 // #else
-    user_words = (long *)alloc().allocate( uw_alloc_size );
+    user_words = alloc().allocate( uw_alloc_size );
 // #endif
-    std::fill( user_words, user_words + uw_alloc_size, 0 );
+    std::fill( *user_words, *user_words + uw_alloc_size, 0 );
 #ifdef __STL_SOLARIS_THREADS
-    thr_setspecific( _mt_key, (void *)user_words );
+    thr_setspecific( _mt_key, user_words );
 #endif
 #ifdef _PTHREADS
-    pthread_setspecific( _mt_key, (void *)user_words );
+    pthread_setspecific( _mt_key, user_words );
 #endif
 #ifdef WIN32
     TlsSetValue( _mt_key, user_words );
@@ -555,29 +556,30 @@ void*& Thread::pword( int __idx )
 // #ifdef _MSC_VER
 //     long *_mtmp = (long *)alloc().allocate( tmp, (const void *)0 );
 // #else
-    long *_mtmp = (long *)alloc().allocate( tmp );
+    long **_mtmp = alloc().allocate( tmp );
 // #endif
-    std::copy( user_words, user_words + uw_alloc_size, _mtmp );
-    alloc().deallocate( (void *)user_words, uw_alloc_size );
+    std::copy( *user_words, *user_words + uw_alloc_size, *_mtmp );
+    alloc().deallocate( user_words, uw_alloc_size );
     user_words = _mtmp;
 #else
-    user_words = (long *)alloc::reallocate( (void *)user_words, uw_alloc_size, tmp );
+    user_words = alloc::reallocate( user_words, uw_alloc_size, tmp );
 #endif
-    std::fill( user_words + uw_alloc_size, user_words + tmp, 0 );
+    std::fill( *user_words + uw_alloc_size, *user_words + tmp, 0 );
     uw_alloc_size = tmp;
 #ifdef __STL_SOLARIS_THREADS
-    thr_setspecific( _mt_key, (void *)user_words );
+    thr_setspecific( _mt_key, *user_words );
 #endif
 #ifdef _PTHREADS
-    pthread_setspecific( _mt_key, (void *)user_words );
+    pthread_setspecific( _mt_key, *user_words );
 #endif
 #ifdef WIN32
-    TlsSetValue( _mt_key, (void *)user_words );
+    TlsSetValue( _mt_key, *user_words );
 #endif
   }
 
   // void *_xtmp = *(user_words + __idx);
-  void **_ytmp = (void **)(user_words + __idx);
+  // void **_ytmp = (void **)(*user_words + __idx);
+  void **_ytmp = (void **)&user_words[__idx];
   return *_ytmp;
 }
 
