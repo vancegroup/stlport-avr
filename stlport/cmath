@@ -168,7 +168,7 @@ struct _STL_math_proxy {
 
 _STLP_END_NAMESPACE
 
-# if ! defined (_STLP_USE_NEW_C_HEADERS) || defined(_STLP_MSVC)
+# if defined (_STLP_HAS_NO_NEW_C_HEADERS) || defined(_STLP_MSVC) || defined (__ICL)
 #  include <stl/_cmath.h>
 # endif /* NEW_C_HEADERS */
 

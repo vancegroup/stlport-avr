@@ -65,9 +65,10 @@
 //  using ::func_name results in ambiguity
 
 # if (_STLP_MSVC <= 1300) 
-#  if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 )
+// boris : not defining this macro for SP5 causes other problems
+// #  if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 )
 #   define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
-#  endif
+//#  endif
 #  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_FRIEND_TEMPLATES

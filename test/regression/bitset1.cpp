@@ -7,7 +7,7 @@
 #include <bitset>
 #include <algorithm>
 
-#if defined (_STLP_MSVC) && && (_MSC_VER < 1300)
+#if defined (_STLP_MSVC) && (_MSC_VER < 1300)
 # define _STLP_NON_TYPE_TMPL_PARAM_BUG
 # define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 #endif
