@@ -62,7 +62,7 @@ inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& 
     return (__i!=__last);
 }
 
-# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) /* OBSOLETE by inheritance */
+# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _Iterator1, class _Iterator>
 inline bool  _STLP_CALL
 __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
@@ -374,13 +374,8 @@ template <class _Dummy>
 void _STLP_CALL  
 __stl_debug_engine<_Dummy>::_Swap_owners(__owned_list& __x, __owned_list& __y) {
 
-# ifdef OBSOLETE 
-  __x._Invalidate_all();
-  __y._Invalidate_all();
-# endif
-
-  //  according to the standard : --no swap() function invalidates any references, pointers,  or  itera-
-  //  tors referring to the elements of the containers being swapped.
+  //  according to the standard : --no swap() function invalidates any references, 
+  //  pointers,  or  iterators referring to the elements of the containers being swapped.
 
   __owned_link* __tmp;
 

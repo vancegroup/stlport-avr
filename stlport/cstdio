@@ -23,6 +23,10 @@
 #  include <stl/_prolog.h>
 # endif
 
+#ifdef __Lynx__
+#  include _STLP_NATIVE_C_HEADER(stdarg.h)
+#endif
+
 # if defined (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
 # else

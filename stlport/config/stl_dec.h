@@ -78,13 +78,6 @@
 
 # ifdef __IMPLICIT_INCLUDE_ENABLED
 
-#ifdef OBSOLETE /* ndef _STLP_OWN_IOSTREAMS */
-// implicit include introduces conflicts
-// between stlport and native lib.
-# undef __IMPLICIT_INCLUDE_ENABLED
-
-#endif
-
 // but, works with ours ;).
 #  define _STLP_LINK_TIME_INSTANTIATION 1
 # else

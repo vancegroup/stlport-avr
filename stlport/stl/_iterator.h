@@ -166,15 +166,6 @@ operator-(const reverse_iterator<_Iterator>& __x,
   return __y.base() - __x.base();
 }
 
-# ifdef OBSOLETE
-template <class _Iterator>
-inline reverse_iterator<_Iterator>  _STLP_CALL
-operator+(typename reverse_iterator<_Iterator>::difference_type __n,
-          const reverse_iterator<_Iterator>& __x) {
-  return reverse_iterator<_Iterator>(__x.base() - __n);
-}
-# endif
-
 template <class _Iterator, class _DifferenceType>
 inline reverse_iterator<_Iterator>  _STLP_CALL
 operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x) {

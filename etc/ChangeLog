@@ -80,6 +80,14 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	* _istreambuf_iterator.h : fixed distance_type return type (thanks Anthony Williams)
 
 	* debug/_vector.h : debug version of push_back() added (thanks)
+
+	* Iostreams ported to LynxOS 3.0 (thanks Dmitry Azovtsev)
+ 	
+	* wrappers/*.h : added inclusions of the master header to fix xlC 3.x compile (Thanks Dmitry Azovtsev)
+
+	* Changes for BCB6 integration (thanks Nathan York)
+
+	* Removed all dead code blocks marked by #if OBSOLETE and #if 0
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :
 	

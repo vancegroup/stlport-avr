@@ -88,7 +88,7 @@ public:
     _BidirectionalIterator __tmp = current;
     return *--__tmp;
   }
-# if !(defined _STLP_NO_ARROW_OPERATOR && ! defined (_STLP_MSVC50_COMPATIBILITY))
+# if !(defined _STLP_NO_ARROW_OPERATOR) && ! defined (_STLP_MSVC50_COMPATIBILITY)
   _STLP_DEFINE_ARROW_OPERATOR
 # endif
   _Self& operator++() {
@@ -195,7 +195,7 @@ public:
   _RandomAccessIterator base() const { return __current; }
   _Reference operator*() const { return *(__current - (difference_type)1); }
 
-# if !(defined _STLP_NO_ARROW_OPERATOR && ! defined (_STLP_MSVC50_COMPATIBILITY))
+# if !(defined _STLP_NO_ARROW_OPERATOR) && ! defined (_STLP_MSVC50_COMPATIBILITY)
   _STLP_DEFINE_ARROW_OPERATOR
 # endif
 

@@ -27,6 +27,10 @@
 #ifndef _STLP_INTERNAL_WRAP_SLIST_H
 #define _STLP_INTERNAL_WRAP_SLIST_H
 
+#ifndef _STLP_INTERNAL_SLIST_H
+# include <stl/_slist.h>
+#endif
+
 # if defined (_STLP_DEBUG)
 #  define __SL_SUPER _DBG_slist<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # else

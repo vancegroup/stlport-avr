@@ -153,6 +153,31 @@ struct _Locale_messages;
 
 #endif /* IRIX */
 
+
+#if defined( __Lynx__ )
+ /* azov: On Lynx isalpha defined as (_U | _L), which gives us a mask 
+  * unusable in ctype_table. So we have to redefine it and use hard-coded 
+  * numbers (to avoid potential clashes if system headers change).
+  *
+  * P.S. Actually, I see no reason in using platform-specific masks - 
+  * having just one set of masks for all platforms should work just as
+  * well - we only use them internally and they don't have to be equal 
+  * to whatever defined in local ctype.h
+  *
+  */ 
+#   define _Locale_CNTRL  040     /* _C, Control character */
+#   define _Locale_UPPER  01      /* _U, Upper case */
+#   define _Locale_LOWER  02      /* _L, Lower case */
+#   define _Locale_DIGIT  04      /* _N, Numeral (digit) */
+#   define _Locale_XDIGIT 0200    /* _X, heXadecimal digit */
+#   define _Locale_PUNCT  020     /* _P, Punctuation */
+#   define _Locale_SPACE  010     /* _S, Spacing */
+#   define _Locale_ALPHA  040000  /* none, Alphanumerical */
+#   define _Locale_PRINT  (_Locale_PUNCT | _Locale_UPPER | _Locale_LOWER | \
+                           _Locale_DIGIT | _Locale_ALPHA | _Locale_XDIGIT |\
+                           _Locale_SPACE ) /* Printable */
+# endif /* __Lynx__ */
+
 #if defined(__GNUC__) || defined (__BORLANDC__) || defined (__COMO__)
 
 # if defined (__CYGWIN__)

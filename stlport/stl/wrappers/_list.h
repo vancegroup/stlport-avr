@@ -30,6 +30,10 @@
 #ifndef _STLP_INTERNAL_WRAP_LIST_H
 #define _STLP_INTERNAL_WRAP_LIST_H
 
+#ifndef _STLP_INTERNAL_LIST_H
+# include <stl/_list.h>
+#endif
+
 # ifdef _STLP_USE_NAMESPACES
 namespace STLPORT { 
 # endif

@@ -32,7 +32,8 @@
 # define _STLP_C_LOCALE_IMPL_H
 
 # include <stl/c_locale.h>
-# include <wchar.h>
+// # include <wchar.h>
+# include <stl/_cwchar.h>
 
 #define _Locale_MAX_SIMPLE_NAME 256
 
@@ -194,6 +195,7 @@ int _Locale_is_stateless (struct _Locale_ctype *);
  * and does not require the use of an mbstate_t value.
  */
 
+# ifndef _STLP_NO_WCHAR_T
 wint_t _Locale_btowc(struct _Locale_ctype *, int);
 int _Locale_wctob(struct _Locale_ctype *, wint_t);
 
@@ -235,6 +237,7 @@ size_t _Locale_wctomb(struct _Locale_ctype *,
  * if c is not a valid wide character, and (size_t) -2 if the length of
  * the multibyte character sequence is greater than n.
  */
+# endif
 
 size_t _Locale_unshift(struct _Locale_ctype *,
                        mbstate_t *,

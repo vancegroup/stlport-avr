@@ -24,6 +24,18 @@
 #  include <config/stl_solaris.h>
 # endif
 
+
+// azov: gcc on lynx have a bug that causes internal
+// compiler errors when compiling STLport with namespaces turned on. 
+// When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
+# if defined (__Lynx__) && (__GNUC__ < 3)
+#   define _STLP_HAS_NO_NAMESPACES 1
+#   define _STLP_NO_STATIC_TEMPLATE_DATA 1
+//  turn off useless warning about including system headers
+#   define __NO_INCLUDE_WARN__ 1
+# endif
+
+
 /* Tru64 Unix, AIX, HP : gcc there by default uses uses native ld and hence cannot auto-instantiate 
    static template data. If you are using GNU ld, please say so in stl_user_config.h header */    
 # if (__GNUC__ < 3) && ! (_STLP_GCC_USES_GNU_LD) && \
@@ -271,7 +283,7 @@ typedef unsigned int wint_t;
 #   define _STLP_NATIVE_INCLUDE_PATH ../include/g++-v3
 # elif ((__GNUC_MINOR__ >= 95 && __GNUC_MINOR__ < 97) && !( defined (__FreeBSD__) || defined (__NetBSD__) || defined(__sgi) ) )
 #   define _STLP_NATIVE_INCLUDE_PATH ../g++-3
-# elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3)
+# elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3) && !defined( __Lynx__ )
 // this really sucks, as GNUpro does not really identifies itself, so we have to guess 
 // depending on a platform
 #   ifdef __hpux
@@ -289,12 +301,16 @@ typedef unsigned int wint_t;
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
 # else
-#   if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
+// azov
+#   ifdef __Lynx__ 
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+#   else
+#    if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
 // #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../g++-v3
 #   else
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #   endif
-
+#  endif
 # endif
 
 #endif /* GNUC_MINOR < 8 */

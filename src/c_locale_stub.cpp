@@ -135,8 +135,10 @@ extern "C" {
  int _Locale_mb_cur_max (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
  int _Locale_mb_cur_min (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
  int _Locale_is_stateless (struct _Locale_ctype * __DUMMY_PAR) { return 1; }
+#ifndef _STLP_NO_WCHAR_T
  wint_t _Locale_btowc(struct _Locale_ctype * __DUMMY_PAR1, int __DUMMY_PAR) { return 0; }
  int _Locale_wctob(struct _Locale_ctype * __DUMMY_PAR2, wint_t __DUMMY_PAR) { return 0; }
+
  size_t _Locale_mbtowc(struct _Locale_ctype *__DUMMY_PAR1,
                                  wchar_t *__DUMMY_PAR2,
                                  const char *__DUMMY_PAR3, size_t __DUMMY_PAR4,
@@ -149,6 +151,8 @@ extern "C" {
                                  mbstate_t *__DUMMY_PAR5) {
   return (size_t) -1;
 }
+# endif
+
  size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
                                   mbstate_t *__DUMMY_PAR2,
                                   char *__DUMMY_PAR3, size_t __DUMMY_PAR4, char ** __DUMMY_PAR5) {

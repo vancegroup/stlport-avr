@@ -162,7 +162,7 @@
 # endif
 
 /* Operating system recognition (basic) */
-# if defined (__unix) || defined (__linux__) || defined (__QNX__) || defined (_AIX)  || defined (__NetBSD__)
+# if defined (__unix) || defined (__linux__) || defined (__QNX__) || defined (_AIX)  || defined (__NetBSD__) || defined (__Lynx__)
 #  define _STLP_UNIX 1
 #  if defined (__linux__) && ! defined (_STLP_USE_GLIBC)
 #   define _STLP_USE_GLIBC 1

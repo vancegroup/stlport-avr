@@ -30,6 +30,10 @@
 #ifndef _STLP_INTERNAL_WRAP_VECTOR_H
 #define _STLP_INTERNAL_WRAP_VECTOR_H
 
+#ifndef _STLP_INTERNAL_VECTOR_H
+# include <stl/_vector.h>
+#endif
+
 # if defined (_STLP_DEBUG)
 #  define _VEC_SUPER _DBG_vector<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
 # else

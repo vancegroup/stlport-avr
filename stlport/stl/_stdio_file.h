@@ -602,7 +602,35 @@ inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end)
 }
  
 # define _STLP_FILE_I_O_IDENTICAL
+
+#elif defined (__Lynx__)
+
+// the prototypes are taken from LynxOS patch for STLport 4.0
+inline int   _FILE_fd(const FILE& __f) { return __f._fd; }
+inline char* _FILE_I_begin(const FILE& __f) { return (char*) __f._base; }
+inline char* _FILE_I_next(const FILE& __f) { return (char*) __f._ptr; }  
+inline char* _FILE_I_end(const FILE& __f)
+  { return (char*) __f._ptr + __f._cnt; }
  
+inline ptrdiff_t _FILE_I_avail(const FILE& __f) { return __f._cnt; }
+ 
+inline char& _FILE_I_preincr(FILE& __f)
+  { --__f._cnt; return *(char*) (++__f._ptr); }
+inline char& _FILE_I_postincr(FILE& __f)
+  { --__f._cnt; return *(char*) (__f._ptr++); }
+inline char& _FILE_I_predecr(FILE& __f)
+   { ++__f._cnt; return *(char*) (--__f._ptr); }
+inline char& _FILE_I_postdecr(FILE& __f)
+  { ++__f._cnt; return *(char*) (__f._ptr--); }
+inline void  _FILE_I_bump(FILE& __f, int __n)
+  { __f._ptr += __n; __f._cnt -= __n; }
+
+inline void _FILE_I_set(FILE& __f, char* __begin, char* __next, char* __end) {
+  __f._base = __begin;
+  __f._ptr  = __next;
+  __f._cnt  = __end - __next;
+}
+# define _STLP_FILE_I_O_IDENTICAL
 
 #else  /* A C library that we don't have an implementation for. */
 

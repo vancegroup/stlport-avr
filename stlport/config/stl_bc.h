@@ -160,10 +160,43 @@ typedef char    mbstate_t;
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
 # if (__BORLANDC__ >= 0x560)
-#  define _STLP_IS_NATIVE_LIB
+// #  define _STLP_IS_NATIVE_LIB
+#  define _STLP_NATIVE_INCLUDE_PATH ../include/oldstl
 # endif
 
-# ifndef _STLP_IS_NATIVE_LIB
+# ifndef __BUILDING_STLPORT
+#  ifdef _STLP_DEBUG
+#   ifdef _MT
+#    ifdef _RTLDLL
+#      pragma comment(lib,"stlpmt_stldebug45.lib")
+#    else
+#     pragma comment(lib,"stlpmt_stldebugst.lib")
+#    endif
+#   else
+#    ifdef _RTLDLL
+#      pragma comment(lib,"stlp_stldebug45.lib")
+#    else
+#     pragma comment(lib,"stlp_stldebugst.lib")
+#    endif
+#   endif
+#  else
+#   ifdef _MT
+#    ifdef _RTLDLL
+#      pragma comment(lib,"stlpmt45.lib")
+#    else
+#     pragma comment(lib,"stlpmtst.lib")
+#    endif
+#  else
+#    ifdef _RTLDLL
+#      pragma comment(lib,"stlp45.lib")
+#    else
+#     pragma comment(lib,"stlpst.lib")
+#    endif
+#   endif
+#  endif
+# endif
+
+# if 0 // ndef _STLP_IS_NATIVE_LIB
 // boris : in native package there's no automatic lib linking, as per Borland process
 #  define _STLP_LIB_STATIC_SUFFIX "st"
 #  include <config/stl_select_lib.h>

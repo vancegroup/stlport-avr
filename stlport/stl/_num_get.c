@@ -524,7 +524,7 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end,
 
 # endif /* _STLP_NO_BOOL */
 
-# ifdef OBSOLETE
+# ifdef _STLP_FIX_LIBRARY_ISSUES
 template <class _CharT, class _InputIter>  
 _InputIter 
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
