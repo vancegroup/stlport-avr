@@ -1,14 +1,14 @@
-// -*- C++ -*- Time-stamp: <03/06/21 11:57:22 ptr>
+// -*- C++ -*- Time-stamp: <03/07/01 20:46:48 ptr>
 
 /*
  *
  * Copyright (c) 1997-1999, 2002, 2003
- * Petr Ovchenkov
+ * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 1.0
+ * Licensed under the Academic Free License Version 1.2
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -40,10 +40,14 @@
 #include <stdexcept>
 
 #ifdef WIN32
-#  include <windows.h>
-#  include <memory>
-#  include <ctime>
-#  define ETIME   62      /* timer expired                        */
+# include <windows.h>
+# include <memory>
+# include <ctime>
+# include <limits>
+# define ETIME   62      /* timer expired                        */
+# pragma warning( disable : 4290)
+#endif
+
 #endif // WIN32
 
 #ifdef __unix
@@ -167,6 +171,7 @@ extern "C" unsigned long __stdcall _xcall( void *p ); // forward declaration
 using std::runtime_error;
 #endif
 
+#ifndef _WIN32
 class fork_in_parent :
         public std::exception
 {
@@ -185,6 +190,7 @@ class fork_in_parent :
   private:
     pid_t _pid;
 };
+#endif // _WIN32
 
 // if parameter SCOPE (process scope) true, PTHREAD_PROCESS_SHARED will
 // be used; otherwise PTHREAD_PROCESS_PRIVATE.
@@ -734,6 +740,7 @@ class Semaphore
       {
 #ifdef __FIT_WIN32THREADS
         _sem = CreateSemaphore( NULL, cnt, INT_MAX, 0 ); // check!
+        _cnt = cnt;
 #endif
 #ifdef __FIT_UITHREADS
         sema_init( &_sem, cnt, ipc ? USYNC_PROCESS : USYNC_THREAD, 0 );
@@ -765,7 +772,9 @@ class Semaphore
     int wait()
       {
 #ifdef __FIT_WIN32THREADS
+        --_cnt;
         if ( WaitForSingleObject( _sem, -1 ) == WAIT_FAILED ) {
+          ++_cnt;
           return -1;
         }
         return 0;
@@ -787,7 +796,7 @@ class Semaphore
     int try_wait()
       {
 #ifdef __FIT_WIN32THREADS
-#  warning "Fix me!"
+        return _cnt > 0 ? (--_cnt, this->wait()) : -1;
 #endif
 #ifdef __FIT_UITHREADS
         return sema_trywait( &_sem );
@@ -803,7 +812,7 @@ class Semaphore
     int post()
       {
 #ifdef __FIT_WIN32THREADS
-        return ReleaseSemaphore( _sem, 1, 0 ) != 0 ? 0 : -1;
+        return ReleaseSemaphore( _sem, 1, &_cnt ) != 0 ? (++_cnt, 0) : -1;
 #endif
 #ifdef __FIT_UITHREADS
         return sema_post( &_sem );
@@ -819,10 +828,10 @@ class Semaphore
     int value()
       {
 #ifdef __FIT_WIN32THREADS
-#  warning "Fix me!"
+        return static_cast<int>(_cnt);
 #endif
 #ifdef __FIT_UITHREADS
-#  warning "No semaphore value for Solaris threads!"
+# warning "No semaphore value for Solaris threads!"
 #endif
 #ifdef _PTHREADS
         int v;
@@ -838,6 +847,7 @@ class Semaphore
   protected:
 #ifdef __FIT_WIN32THREADS
     HANDLE _sem;
+    long _cnt;
 #endif
 #ifdef __FIT_UITHREADS
     sema_t _sem;
@@ -938,8 +948,10 @@ class Thread
     static __FIT_DECLSPEC void delay( timespec *t, timespec *e = 0 );
     // get precise time
     static __FIT_DECLSPEC void gettime( timespec *t );
+#ifndef _WIN32
     static __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
     static __FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
+#endif
 
     bool good() const
       { return _id != bad_thread_id; }
