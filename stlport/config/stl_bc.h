@@ -119,11 +119,7 @@ typedef char    mbstate_t;
 // Stop complaint about constant being long
 #  pragma option -w-cln
 
-# if (__BORLANDC__ < 0x550)
-#  define _STLP_LIB_BASENAME "stlport_bcc"
-# else
-#  define _STLP_LIB_BASENAME "stlport_bcb55"
-# endif
+#  define _STLP_LIB_BASENAME "stlport_bcb"
 
 # if (__BORLANDC__ < 0x540)
 

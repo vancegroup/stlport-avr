@@ -48,7 +48,7 @@ USERDEFINES = _DEBUG
 SYSDEFINES = _RTLDLL;NO_STRICT;USEPACKAGES
 # SYSDEFINES = NO_STRICT;USEPACKAGES
  # ---------------------------------------------------------------------------
-CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWCR -D$(SYSDEFINES);$(USERDEFINES)
+CFLAG1 = -w- -jb -j1  -I.;..\..\stlport;$(BCB)\include; -Od -v -N -x -xp -tWC -D$(SYSDEFINES);$(USERDEFINES)
 
 LDFLAGS = -L..\..\lib
 

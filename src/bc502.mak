@@ -7,7 +7,7 @@ CXX=bcc32
 RC=brc32
 COMP=BCC502
 
-LIB_BASENAME=stlport_bcc
+LIB_BASENAME=stlport_bcb
 
 # ---------------------------------------------------------------------------
 

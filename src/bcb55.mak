@@ -9,9 +9,9 @@ CC=bcc32 -P
 CXX=bcc32
 
 RC=brc32
-COMP=BCB55
+COMP=BCB
 
-LIB_BASENAME=stlport_bcb55
+LIB_BASENAME=stlport_bcb
 
 # ---------------------------------------------------------------------------
 
