@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/09/25 12:17:07 ptr>
+// -*- C++ -*- Time-stamp: <03/09/25 19:08:44 ptr>
 
 /*
  *
@@ -1045,34 +1045,38 @@ class Thread
 #endif
 
     enum {
+      // thread mode flags
 #ifdef __FIT_UITHREADS // __STL_SOLARIS_THREADS
       bound     = THR_BOUND,
       detached  = THR_DETACHED,
       new_lwp   = THR_NEW_LWP,
       suspended = THR_SUSPENDED,
-      daemon    = THR_DAEMON
+      daemon    = THR_DAEMON,
 #endif
 #if defined(_PTHREADS)
       bound     = PTHREAD_SCOPE_SYSTEM,   // otherwise, PTHREAD_SCOPE_PROCESS, default
       detached  = PTHREAD_CREATE_DETACHED,// otherwise, PTHREAD_CREATE_JOINABLE, default
       new_lwp   = 0, // pthread_setconcurrency( pthread_getconcurrency() + 1 );
       suspended = 0,
-      daemon    = detached
+      daemon    = detached,
 #endif
 #ifdef __FIT_WIN32THREADS
       bound     = 0,
-      detached  = 0,
+      detached  = 0x2,
       new_lwp   = 0,
       suspended = CREATE_SUSPENDED,
-      daemon    = 0
+      daemon    = detached,
 #endif
 #ifdef __FIT_NOVELL_THREADS
       bound     = 0,
       detached  = 0x2,
       new_lwp   = 0,
       suspended = 0,
-      daemon    = detached
+      daemon    = detached,
 #endif
+      // state flags
+      goodbit = 0x00,
+      badbit  = 0x01
     };
 
     class Init
@@ -1116,7 +1120,12 @@ class Thread
 #endif
 
     bool good() const
-      { return _id != bad_thread_id; }
+      { return (_state == goodbit) && (_id != bad_thread_id); }
+    bool bad() const
+      { return (_state != goodbit) || (_id == bad_thread_id); }
+    bool is_join_req() // if true, you can (and should) use join()
+      { return (_id != bad_thread_id) && ((_flags & (daemon | detached)) == 0); }
+
     __FIT_DECLSPEC bool is_self();
 
     static __FIT_DECLSPEC int xalloc();
@@ -1168,6 +1177,7 @@ class Thread
     size_t uw_alloc_size;
 
     thread_id_type _id;
+    int _state; // state flags
 #ifdef _PTHREADS
 // #  ifdef __sun
 // #    error "Sorry, Solaris has no pthread_{suspend,continue} calls"

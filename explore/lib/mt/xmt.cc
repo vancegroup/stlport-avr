@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/09/25 12:18:48 ptr>
+// -*- C++ -*- Time-stamp: <03/09/25 17:50:44 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003
@@ -638,6 +638,7 @@ Thread::_uw_alloc_type *Thread::_alloc_uw( int __idx )
 __FIT_DECLSPEC
 Thread::Thread( unsigned __f ) :
     _id( bad_thread_id ),
+    _state( badbit ),
     _entrance( 0 ),
     _param( 0 ),
     _param_sz( 0 ),
@@ -668,12 +669,8 @@ Thread::~Thread()
 
   ((Init *)Init_buf)->~Init();
 
-#ifdef WIN32
-  _STLP_ASSERT( _id == bad_thread_id );
-#else
-  // __stl_assert( _id == -1 );
-  kill( SIGTERM );
-#endif
+  // _STLP_ASSERT( _id == bad_thread_id );
+  Thread::kill( SIGTERM );
 }
 
 __FIT_DECLSPEC
@@ -812,7 +809,7 @@ int Thread::kill( int sig )
 #ifdef __FIT_WIN32THREADS
   // The behavior of TerminateThread significant differ from SOLARIS and POSIX
   // threads, and I don't find analogs to workaround...
-    return TerminateThread( _id, 0 ) ? 0 : -1;
+    return TerminateThread( _id, sig ) ? 0 : -1;
 #endif
   }
   return -1;
@@ -904,6 +901,7 @@ void Thread::signal_exit( int sig )
   Thread *me = reinterpret_cast<Thread *>(*reinterpret_cast<void **>(user_words));
   // _STLP_ASSERT( me->is_self() );
 
+  me->_state = badbit;
   // follow part of _call
   if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
     me->_id = bad_thread_id;
@@ -1112,15 +1110,12 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
 #endif
 #ifdef __FIT_WIN32THREADS
   _start_lock.lock();
-  _id = CreateThread( 0, 0, _xcall, this, _flags, &_thr_id );
+  _id = CreateThread( 0, 0, _xcall, this, (_flags & suspended), &_thr_id );
   err = GetLastError();
   _start_lock.unlock();
 #endif
 #ifdef __FIT_NOVELL_THREADS
   _start_lock.lock();
-  if ( (_flags & detached) == 0 ) {
-    _thr_join.set( false );
-  }
   _id = BeginThread( _xcall, 0, 65536, this );
   if ( _id == bad_thread_id ) {
     err = errno; // not ::errno, due to #define errno  *__get_errno_ptr()
@@ -1130,6 +1125,7 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
   }
   _start_lock.unlock();
 #endif
+
   if ( err != 0 ) {
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
@@ -1193,9 +1189,11 @@ void *Thread::_call( void *p )
 
   me->pword( _self_idx ) = me; // to have chance make Thread sanity by signal
   signal_handler( SIGTERM, signal_exit ); // set handler for sanity
+  me->_state = goodbit;
   _start_lock.unlock();
   try {
     ret = me->_entrance( me->_param );
+    me->_state = badbit;
     // I should make me->_id = bad_thread_id; here...
     // This is in conflict what I say in the begin of this function.
     // So don't delete Thread before it termination!
@@ -1205,12 +1203,20 @@ void *Thread::_call( void *p )
     }
   }
   catch ( std::exception& e ) {
+    me->_state = badbit;
+    if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+      me->_id = bad_thread_id;
+    }
 #ifndef _WIN32
     cerr << e.what() << endl;
 #endif
     ret = -1;
   }
   catch ( int sig ) {
+    me->_state = badbit;
+    if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+      me->_id = bad_thread_id;
+    }
     // const char *_sig_ = strsignal( sig );
 #ifndef _WIN32
     cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
@@ -1218,6 +1224,10 @@ void *Thread::_call( void *p )
     ret = sig;
   }
   catch ( ... ) {
+    me->_state = badbit;
+    if ( (me->_flags & (daemon | detached)) != 0 ) { // otherwise join expected
+      me->_id = bad_thread_id;
+    }
 #ifndef _WIN32
     cerr << "\n--- Thread: unknown exception occur ---" << endl;
 #endif
@@ -1242,7 +1252,7 @@ void *Thread::_call( void *p )
   if ( (me->_flags & detached) == 0 ) {
     me->_thr_join.signal();
   }
-#endif
+#endif // __FIT_NOVELL_THREADS || __FIT_WIN32THREADS
   return (void *)ret;
 }
 #ifdef _WIN32
