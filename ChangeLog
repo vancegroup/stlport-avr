@@ -24,6 +24,8 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* pthread_alloc : split into <pthread_alloc>/<stl/_pthread_alloc.h>
 
+	* lightweight atomic ops used on SPARC v8plus and v9 (gcc and SUN CC)
+	
 	* Mac OS X support introduced (thanks to Patrick Luby) 
 
 	* SGI iostreams ported to DJGPP (thanks to Tanes Sriviroolchai)
@@ -38,7 +40,11 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* Set of HP fixes by Michael Tsirkin
 
+	* Set of Watcom fixes by Ricardo Gayozo
+
 	* Bunch of Apple MRC/MPW fixes by Tsutomu Yoshida integrated
+	
+	* Bunch of iostream fixes for Cygwin, Borland and Intel 4.5, by Serge Pashkov	
 	
 	* debug/_list.h : added checking versions of pop_back/pop_front (thanks to Per Liboriussen)
 
@@ -54,8 +60,6 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* stl/_ostream.h : << operator specializations added for compilers w/o partial ordering 
 	  (thanks to Alberto Barbati for pointing this out).
-
-	* Bunch of iostream fixes for Cygwin and Borland by Serge Pashkov
 
 	* "make install" on UNIX : fixed the target not to remove lib directory; 
 	   default installdir restored to be /usr/local (thanks to Jeff de Vries for the input)
