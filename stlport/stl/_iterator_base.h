@@ -75,7 +75,7 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 #   define _STLP_VALUE_TYPE(_It, _Tp)        (typename iterator_traits< _Tp >::value_type*)0
 #   define _STLP_DISTANCE_TYPE(_It, _Tp)     (typename iterator_traits< _Tp >::difference_type*)0
-#   if defined (__BORLANDC__)
+#   if defined (__BORLANDC__) || defined (__SUNPRO_CC)
 #    define _STLP_ITERATOR_CATEGORY(_It, _Tp) iterator_traits< _Tp >::iterator_category()
 #   else
 #    define _STLP_ITERATOR_CATEGORY(_It, _Tp) typename iterator_traits< _Tp >::iterator_category()

@@ -37,7 +37,6 @@
 
 # if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...
-
 #  define _STLP_STATIC_ARRAY_BUG 1
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1

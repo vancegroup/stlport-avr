@@ -24,9 +24,9 @@
 # include <string>
 # endif
 
-#ifndef _STLP_LOCALE
-# include <locale>
-#endif
+//#ifndef _STLP_LOCALE
+//# include <locale>
+//#endif
 
 # ifdef _STLP_DEBUG
 #  define basic_string _Nondebug_string

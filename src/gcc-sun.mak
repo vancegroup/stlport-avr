@@ -8,6 +8,10 @@
 CC = gcc
 CXX = c++ -pthreads
 
+CUR_DIR= ${PWD}/
+
+STLPORT_DIR=${PWD}/../stlport
+
 #
 # Basename for libraries
 #

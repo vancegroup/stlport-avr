@@ -35,8 +35,8 @@ struct _STL_math_proxy {
   static inline _Tp _do_frexp(const _Tp& __x, int* __y)    { return _STLP_VENDOR_CSTD::frexp(__x, __y); } 
   static inline _Tp _do_ldexp(const _Tp& __x, int __y)    { return _STLP_VENDOR_CSTD::ldexp(__x, __y); } 
   static inline _Tp _do_modf(const _Tp& __x, double* __y) { return _STLP_VENDOR_CSTD::modf(__x, __y); }
-# ifdef __sun  
-  static inline _Tp _do_modff(const _Tp& __x, float* __y)  { return _STLP_VENDOR_CSTD::modff(__x, __y); }
+# if defined (__sun)  
+  static inline _Tp _do_modff(const _Tp& __x, float* __y)  { return ::modff(__x, __y); }
 # endif
   static inline _Tp _do_log(const _Tp& __x)     { return _STLP_VENDOR_CSTD::log(__x); } 
   static inline _Tp _do_log10(const _Tp& __x)   { return _STLP_VENDOR_CSTD::log10(__x); } 
