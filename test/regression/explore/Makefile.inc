@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/10/26 18:39:52 ptr>
+# -*- makefile -*- Time-stamp: <03/11/16 19:24:10 ptr>
 # $Id$
 
 PRGNAME = stl_test
@@ -38,7 +38,7 @@ SRC_CPP = ../stl_test.cpp ../accum1.cpp ../accum2.cpp \
         ../iota1.cpp \
         ../istmit1.cpp \
         ../iter1.cpp ../iter2.cpp ../iter3.cpp ../iter4.cpp \
-        ../iterswp0.cpp ../iterswp1.cpp \
+        ../iterswp.cpp \
         ../less.cpp \
         ../lesseq.cpp \
         ../lexcmp1.cpp ../lexcmp2.cpp \
