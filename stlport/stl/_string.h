@@ -873,7 +873,7 @@ private:  // Helper functions for insert.
   
   void _M_insert_aux (iterator __p, const_iterator __first, const_iterator __last,
                       const __true_type&) {
-    insert(__p, __first, __last);
+    _M_insert(__p, __first, __last, _M_inside(__first));
   }
   
   template<class _InputIter>
