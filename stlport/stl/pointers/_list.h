@@ -104,6 +104,7 @@ public:
 
   _Self& operator=(const _Self& __x)    { _M_impl = __x._M_impl; return *this; }
   void swap(_Self& __x)                 { _M_impl.swap(__x._M_impl); }
+  void clear()                          { _M_impl.clear(); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos, const value_type& __x = value_type()) {
