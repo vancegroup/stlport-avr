@@ -1,11 +1,11 @@
-// -*- C++ -*- Time-stamp: <00/12/06 15:51:22 ptr>
+// -*- C++ -*- Time-stamp: <01/01/12 16:00:22 ptr>
 
 /*
  * Copyright (c) 1997-1999
  * Petr Ovchenkov
  *
- * Copyright (c) 1999-2000
- * ParallelGraphics
+ * Copyright (c) 1999-2001
+ * ParallelGraphics Ltd.
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -42,6 +42,8 @@
 #ifdef __linux
 #  include <sys/time.h>
 #endif
+
+#include <cmath> // for time operations
 
 #ifdef WIN32
 // #include <iostream>
@@ -478,29 +480,23 @@ void Thread::_create( const void *p, size_t psz ) throw(__STD::runtime_error)
 
   int err;
 #ifdef _PTHREADS
-#  ifdef __hpux
   pthread_attr_t attr;
-  pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
-//  pthread_attr_setstacksize( &attr, 0x100000 );
-//  pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
-  // PTHREAD_SCOPE_PROCESS is unbound thread, that what I need
-//  if ( _flags & daemon ) {
-//    pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM );
-//  } else {
-    pthread_attr_setscope( &attr, PTHREAD_SCOPE_PROCESS );
-//  }
-  if ( _flags & detached ) {
-    pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
+  if ( _flags != 0 ) {
+    pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+    // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+    if ( _flags & bound ) {
+      pthread_attr_setscope( &attr, bound ); // PTHREAD_SCOPE_PROCESS
+    }
+    if ( _flags & detached ) { // the same as daemon: detached == daemon for POSIX
+      pthread_attr_setdetachstate( &attr, detached ); // PTHREAD_CREATE_DETACHED
+    }
+    // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+    // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
   }
-  // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
-  // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
-  err = pthread_create( &_id, &attr, _xcall, this );
-#  else
-  err = pthread_create( &_id, 0, _xcall, this );
-#  endif
-#  ifdef __hpux
-  pthread_attr_destroy( &attr );
-#  endif
+  err = pthread_create( &_id, _flags != 0 ? &attr : 0, _xcall, this );
+  if ( _flags != 0 ) {
+    pthread_attr_destroy( &attr );
+  }
 #endif
 #ifdef __STL_UITHREADS
   err = thr_create( 0, 0, _xcall, this, _flags, &_id );
@@ -547,13 +543,13 @@ void *Thread::_call( void *p )
   size_t _param_sz = me->_param_sz;
   int ret;
 
-#ifdef _PTHREADS
-#  ifndef __hpux
-  if ( me->_flags & (daemon | detached) ) {
-    pthread_detach( me->_id );
-  }
-#  endif
-#endif
+//#ifdef _PTHREADS
+//#  ifndef __hpux
+//  if ( me->_flags & (daemon | detached) ) {
+//    pthread_detach( me->_id );
+//  }
+//#  endif
+//#endif
 
 #ifdef WIN32
   set_unexpected( unexpected );
@@ -755,3 +751,105 @@ void*& Thread::pword( int __idx )
 
 } // namespace __impl
 
+
+timespec operator +( const timespec& a, const timespec& b )
+{
+  timespec c;
+
+  c.tv_sec = a.tv_sec;
+  c.tv_nsec = a.tv_nsec;
+  c.tv_sec += b.tv_sec;
+  c.tv_nsec += b.tv_nsec;
+  c.tv_sec += c.tv_nsec / 1000000000;
+  c.tv_nsec %= 1000000000;
+
+  return c;
+}
+
+timespec operator -( const timespec& a, const timespec& b )
+{
+  timespec c;
+
+  c.tv_sec = a.tv_sec > b.tv_sec ? a.tv_sec - b.tv_sec : 0; // out_of_range?
+  if ( a.tv_nsec > b.tv_nsec ) {
+    c.tv_nsec = a.tv_nsec - b.tv_nsec;
+  } else if ( c.tv_sec > 0 ) {
+    --c.tv_sec;
+    c.tv_nsec = 1000000000 - a.tv_nsec + b.tv_nsec;
+  } else {
+    c.tv_nsec = 0; // out_of_range?
+  }
+
+  return c;
+}
+
+timespec operator /( const timespec& a, unsigned b )
+{
+  timespec c;
+  double d = a.tv_sec + 1.0e-9 * a.tv_nsec;
+  d /= b;
+
+  c.tv_nsec = int(1.0e9 * modf( d, &d ) + 0.5);
+  c.tv_sec = int(d);
+
+  return c;
+}
+
+timespec operator /( const timespec& a, unsigned long b )
+{
+  timespec c;
+  double d = a.tv_sec + 1.0e-9 * a.tv_nsec;
+  d /= b;
+
+  c.tv_nsec = int(1.0e9 * modf( d, &d ) + 0.5);
+  c.tv_sec = int(d);
+
+  return c;
+}
+
+timespec& operator +=( timespec& a, const timespec& b )
+{
+  a.tv_sec += b.tv_sec;
+  a.tv_nsec += b.tv_nsec;
+  a.tv_sec += a.tv_nsec / 1000000000;
+  a.tv_nsec %= 1000000000;
+
+  return a;
+}
+
+timespec& operator -=( timespec& a, const timespec& b )
+{
+  a.tv_sec = a.tv_sec > b.tv_sec ? a.tv_sec - b.tv_sec : 0; // out_of_range?
+  if ( a.tv_nsec > b.tv_nsec ) {
+    a.tv_nsec -= b.tv_nsec;
+  } else if ( a.tv_sec > 0 ) {
+    --a.tv_sec;
+    a.tv_nsec = 1000000000 - a.tv_nsec + b.tv_nsec;
+  } else {
+    a.tv_nsec = 0; // out_of_range?
+  }
+
+  return a;
+}
+
+timespec& operator /=( timespec& a, unsigned b )
+{
+  double d = a.tv_sec + 1.0e-9 * a.tv_nsec;
+  d /= b;
+
+  a.tv_nsec = int(1.0e9 * modf( d, &d ) + 0.5);
+  a.tv_sec = int(d);
+
+  return a;
+}
+
+timespec& operator /=( timespec& a, unsigned long b )
+{
+  double d = a.tv_sec + 1.0e-9 * a.tv_nsec;
+  d /= b;
+
+  a.tv_nsec = int(1.0e9 * modf( d, &d ) + 0.5);
+  a.tv_sec = int(d);
+
+  return a;
+}
