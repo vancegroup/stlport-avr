@@ -90,7 +90,7 @@ namespace std
 #  endif
 #endif
 
-# if defined ( _STLP_OWN_IOSTREAMS ) && defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_NO_MBSTATE_T) && ! defined (_MBSTATE_T)
+# if defined ( _STLP_OWN_IOSTREAMS ) && defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_NO_MBSTATE_T) && ! defined (_MBSTATE_T) && ! defined (__mbstate_t_defined)
 #  define _STLP_USE_OWN_MBSTATE_T
 #  define _MBSTATE_T
 # endif
@@ -167,7 +167,7 @@ using _STLP_VENDOR_CSTD::wint_t;
 
 using _STLP_VENDOR_CSTD::size_t;
 
-#  if !defined (_STLP_NO_NATIVE_MBSTATE_T)
+#  if !defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_USE_OWN_MBSTATE_T)
 using _STLP_VENDOR_MB_NAMESPACE::mbstate_t;
 
 # if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE) \

@@ -58,14 +58,15 @@
 
 # endif
 
-#if (defined(__linux__) /* && ! defined (_GNU_SOURCE) */ ) || \
+#if /* ( defined(__linux__)  && ! defined (_GNU_SOURCE)  )  || */ \
     defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun)) 
 #   define _STLP_NO_NATIVE_MBSTATE_T      1
-#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
 # endif
 
-
+#if defined(__linux__)
+#   define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+#   define _STLP_NO_NATIVE_WIDE_STREAMS   1
+#endif
 
 /* Mac OS X is a little different with namespaces and cannot instantiate
  * static data members in template classes */
