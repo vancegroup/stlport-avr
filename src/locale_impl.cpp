@@ -278,7 +278,7 @@ void _Locale_impl::make_classic_locale() {
 
 #ifdef _STLP_LEAKS_PEDANTIC
 void _Locale_impl::free_classic_locale() {
-  _Locale_impl* classic = _S_classic_locale;
+  _Locale_impl* classic = &_Locale_impl_buf;
   
 # ifndef _STLP_NO_WCHAR_T
   (&_S_time_put_wchar)->~time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >();
