@@ -120,7 +120,7 @@
 // #  define _STLP_NO_BAD_ALLOC  1
 
 // Define this if your compiler do not throw bad_alloc from the new operator
-// #  define _STLP_NEW_DONT_THROW  1
+// #  define _STLP_NEW_DONT_THROW_BAD_ALLOC  1
 
 // Uncomment if member template methods are not available
 // #  define _STLP_NO_MEMBER_TEMPLATES   1
