@@ -29,7 +29,7 @@ MKDIR=mkdir -p
 COMP=MIPS
 INSTALL_STEP = install_unix 
 
-all: msg symbolic_links all_dynamic all_static
+all: msg all_dynamic all_static symbolic_links 
 
 msg:
 	@echo "*** ATTENTION! ***"

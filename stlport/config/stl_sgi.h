@@ -32,6 +32,10 @@
 
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 
+# if ! defined (_STLP_NO_SGI_IOSTREAMS) && ! defined (_STLP_NO_NEW_IOSTREAMS)
+#  define _STLP_NO_POST_COMPATIBLE_SECTION
+# endif
+
 #  include <standards.h>
 
 # if !(_COMPILER_VERSION >= 730)

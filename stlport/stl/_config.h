@@ -1002,8 +1002,6 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #  include <stl/_abbrevs.h>
 # endif
 
-# include <stl/_config_compat_post.h>
-
 /* some cleanup */
 # undef _STLP_DONT_USE_BOOL_TYPEDEF
 # undef _STLP_YVALS_H

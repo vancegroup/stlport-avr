@@ -424,7 +424,7 @@ struct _Swap_lock_struct {
 // This should be portable, but performance is expected
 // to be quite awful.  This really needs platform specific
 // code.
-inline __stl_atomic_t _Atomic_swap(__stl_atomic_t * __p, __stl_atomic_t __q) {
+inline __stl_atomic_t _Atomic_swap(volatile __stl_atomic_t * __p, __stl_atomic_t __q) {
   _Swap_lock_struct<0>::_S_swap_lock._M_acquire_lock();
   __stl_atomic_t __result = *__p;
   *__p = __q;
@@ -434,7 +434,7 @@ inline __stl_atomic_t _Atomic_swap(__stl_atomic_t * __p, __stl_atomic_t __q) {
 # else
 /* no threads */
 static inline __stl_atomic_t  _STLP_CALL
-_Atomic_swap(__stl_atomic_t * __p, __stl_atomic_t __q) {
+_Atomic_swap(volatile __stl_atomic_t * __p, __stl_atomic_t __q) {
   __stl_atomic_t __result = *__p;
   *__p = __q;
   return __result;

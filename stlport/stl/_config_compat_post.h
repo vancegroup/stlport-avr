@@ -29,10 +29,6 @@
 #  define __STL_VENDOR_CSTD _STLP_VENDOR_CSTD
 # endif
 
-# if defined (_STLP_XXX) && ! defined ( __STL_XXX )
-#  define __STL_XXX _STLP_XXX
-# endif
-
 /*
 # if defined (_STLP_XXX) && ! defined ( __STL_XXX )
 #  define __STL_XXX _STLP_XXX
