@@ -64,8 +64,8 @@ public:
   reference back()              { return _M_impl.back(); }
   const_reference back() const  { return _M_impl.back(); }
 
-  reference at(size_type __n)             { _M_impl.at(__n); }
-  const_reference at(size_type __n) const { _M_impl.at(__n); }
+  reference at(size_type __n)             { return _M_impl.at(__n); }
+  const_reference at(size_type __n) const { return _M_impl.at(__n); }
 
 
   explicit vector(const allocator_type& __a = allocator_type()) : _M_impl(__a) {}

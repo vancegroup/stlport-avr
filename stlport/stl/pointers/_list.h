@@ -136,8 +136,8 @@ public:
   void push_back()  { _M_impl.push_back(); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  iterator erase(iterator __pos)                    { _M_impl.erase(__pos); }
-  iterator erase(iterator __first, iterator __last) { _M_impl.erase(__first, __last); }
+  iterator erase(iterator __pos)                    { return _M_impl.erase(__pos); }
+  iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const value_type& __x = value_type()) {

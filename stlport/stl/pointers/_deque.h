@@ -53,8 +53,8 @@ public:
   reference operator[](size_type __n)             { return _M_impl[__n]; }
   const_reference operator[](size_type __n) const { return _M_impl[__n]; }
 
-  reference at(size_type __n)             { _M_impl.at(__n); }
-  const_reference at(size_type __n) const { _M_impl.at(__n); }
+  reference at(size_type __n)             { return _M_impl.at(__n); }
+  const_reference at(size_type __n) const { return _M_impl.at(__n); }
 
   reference front()             { return _M_impl.front(); }
   reference back()              { return _M_impl.back(); }
@@ -174,8 +174,8 @@ public:
   void resize(size_type __new_size) { _M_impl.resize(__new_size); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  iterator erase(iterator __pos)                    { _M_impl.erase(__pos); }
-  iterator erase(iterator __first, iterator __last) { _M_impl.erase(__first, __last); }
+  iterator erase(iterator __pos)                    { return _M_impl.erase(__pos); }
+  iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
   void clear()                                      { _M_impl.clear(); }
   
 private:

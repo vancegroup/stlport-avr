@@ -187,15 +187,11 @@ public:
     _M_impl.insert(__pos, __first, __last);
   }
 
-  iterator erase_after(iterator __pos) 
-  { _M_impl.erase_after(__pos); }
-  iterator erase_after(iterator __before_first, iterator __last) 
-  { _M_impl.erase_after(__before_first, __last); }
+  iterator erase_after(iterator __pos) { return _M_impl.erase_after(__pos); }
+  iterator erase_after(iterator __before_first, iterator __last) { return _M_impl.erase_after(__before_first, __last); }
 
-  iterator erase(iterator __pos) 
-  { _M_impl.erase(__pos); }
-  iterator erase(iterator __first, iterator __last) 
-  { _M_impl.erase(__first, __last); }
+  iterator erase(iterator __pos) { return _M_impl.erase(__pos); }
+  iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const value_type& __x = value_type())
