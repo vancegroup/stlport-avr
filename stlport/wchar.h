@@ -29,7 +29,7 @@ using _STLP_VENDOR_CSTD::strlen;
 using _STLP_VENDOR_CSTD::strspn;
 # endif
 
-# if defined (__GNUC__) && defined (__APPLE__)
+# if (defined (__GNUC__) && defined (__APPLE__)) || defined(__OpenBSD__)
 #  include _STLP_NATIVE_C_HEADER(stddef.h)
 # else
 #  include _STLP_NATIVE_C_HEADER(wchar.h)
