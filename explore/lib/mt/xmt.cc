@@ -1,6 +1,16 @@
-// -*- C++ -*- Time-stamp: <99/08/17 12:28:21 ptr>
+// -*- C++ -*- Time-stamp: <99/09/03 10:47:11 ptr>
 
 #ident "$SunId$ %Q%"
+
+#ifdef WIN32
+#  ifdef _DLL
+#    define __XMT_DLL __declspec( dllexport )
+#  else
+#    define __XMT_DLL
+#  endif
+#else
+#  define __XMT_DLL
+#endif
 
 #include <xmt.h>
 
@@ -45,7 +55,7 @@ using std::endl;
 char *Init_buf[32];
 int Thread::Init::_count = 0;
 
-__DLLEXPORT
+__XMT_DLL
 void signal_throw( int sig ) throw( int )
 { throw sig; }
 
@@ -77,9 +87,10 @@ Thread::Init::~Init()
 }
 
 int Thread::_idx = 0;
-Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(thread_t,-1);
 
-__DLLEXPORT
+Thread::thread_key_type Thread::_mt_key = __STATIC_CAST(Thread::thread_key_type,-1);
+
+__XMT_DLL
 Thread::Thread( unsigned __f ) :
 #ifdef WIN32
     _id( INVALID_HANDLE_VALUE ),
@@ -95,7 +106,7 @@ Thread::Thread( unsigned __f ) :
   new( Init_buf ) Init();
 }
 
-__DLLEXPORT
+__XMT_DLL
 Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f ) :
     _entrance( entrance ),
     _param( 0 ),
@@ -107,7 +118,7 @@ Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsig
   _create( p, psz );
 }
 
-__DLLEXPORT
+__XMT_DLL
 Thread::~Thread()
 {
   long **user_words;
@@ -119,7 +130,7 @@ Thread::~Thread()
   user_words = pthread_getspecific( _mt_key );
 #endif
 #ifdef WIN32
-  user_words = TlsGetValue( _mt_key );
+  user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
 #endif
   if ( user_words != 0 ) {
     alloc().deallocate( user_words, uw_alloc_size );
@@ -135,7 +146,7 @@ Thread::~Thread()
 #endif
 }
 
-__DLLEXPORT
+__XMT_DLL
 void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 {
 #ifdef WIN32
@@ -148,7 +159,7 @@ void Thread::launch( entrance_type entrance, const void *p, size_t psz )
   }
 }
 
-__DLLEXPORT
+__XMT_DLL
 int Thread::join()
 {
 #ifdef WIN32
@@ -174,7 +185,7 @@ int Thread::join()
   return ret_code;
 }
 
-__DLLEXPORT
+__XMT_DLL
 int Thread::suspend()
 {
 #ifdef WIN32
@@ -201,7 +212,7 @@ int Thread::suspend()
   return -1;
 }
 
-__DLLEXPORT
+__XMT_DLL
 int Thread::resume()
 {
 #ifdef WIN32
@@ -224,7 +235,7 @@ int Thread::resume()
   return -1;
 }
 
-__DLLEXPORT
+__XMT_DLL
 int Thread::kill( int sig )
 {
 #ifdef __unix
@@ -247,7 +258,7 @@ int Thread::kill( int sig )
   return -1;
 }
 
-__DLLEXPORT
+__XMT_DLL
 void Thread::exit( int code )
 {
 #ifdef _PTHREADS
@@ -261,7 +272,7 @@ void Thread::exit( int code )
 #endif
 }
 
-__DLLEXPORT
+__XMT_DLL
 int Thread::join_all()
 {
 #ifdef __STL_SOLARIS_THREADS
@@ -271,7 +282,7 @@ int Thread::join_all()
   return 0;
 }
 
-__DLLEXPORT
+__XMT_DLL
 void Thread::block_signal( int sig )
 {
 #ifdef __unix
@@ -288,7 +299,7 @@ void Thread::block_signal( int sig )
 #endif // __unix
 }
 
-__DLLEXPORT
+__XMT_DLL
 void Thread::unblock_signal( int sig )
 {
 #ifdef __unix
@@ -305,7 +316,7 @@ void Thread::unblock_signal( int sig )
 #endif // __unix
 }
 
-__DLLEXPORT
+__XMT_DLL
 void Thread::signal_handler( int sig, SIG_PF handler )
 {
 #ifdef __unix  // catch SIGPIPE here
@@ -453,7 +464,7 @@ void Thread::terminate()
   Thread::exit( -2 );
 }
 
-__DLLEXPORT
+__XMT_DLL
 long& Thread::iword( int __idx )
 {
   long **user_words;
@@ -465,7 +476,7 @@ long& Thread::iword( int __idx )
   user_words = pthread_getspecific( _mt_key );
 #endif
 #ifdef WIN32
-  user_words = TlsGetValue( _mt_key );
+  user_words = reinterpret_cast<long **>(TlsGetValue( _mt_key ));
 #endif
   if ( user_words == 0 ) {
     uw_alloc_size = sizeof( long ) * (__idx + 1);
@@ -519,7 +530,7 @@ long& Thread::iword( int __idx )
   return *_ytmp;
 }
 
-__DLLEXPORT
+__XMT_DLL
 void*& Thread::pword( int __idx )
 {
   long **user_words;
