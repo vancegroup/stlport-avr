@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <99/09/03 15:02:17 ptr>
+// -*- C++ -*- Time-stamp: <99/09/07 11:59:43 ptr>
 #ifndef __XMT_H
 #define __XMT_H
 
@@ -435,10 +435,10 @@ class Thread
 {
   public:
     typedef int (*entrance_type)( void * );
-#ifdef WIN32
+#ifdef __STL_WIN32THREADS
     typedef int thread_key_type;
 #endif
-#ifdef _PTHREADS
+#ifdef __STL_PTHREADS
     typedef pthread_key_t thread_key_type;
 #endif
 #ifdef __STL_UITHREADS
@@ -459,7 +459,7 @@ class Thread
       suspended = THR_SUSPENDED,
       daemon    = THR_DAEMON
 #endif
-#ifdef WIN32
+#ifdef __STL_WIN32THREADS
       bound     = 0,
       detached  = 0,
       new_lwp   = 0,
@@ -496,11 +496,7 @@ class Thread
     static __XMT_DLL void signal_handler( int sig, SIG_PF );
 
     bool good() const
-#ifdef WIN32
-      { return _id != INVALID_HANDLE_VALUE; }
-#else
-      { return _id != -1; }
-#endif
+      { return _id != bad_thread_key; }
 
     static int xalloc()
       { return _idx++; }
@@ -509,6 +505,7 @@ class Thread
 
     static thread_key_type mtkey()
       { return _mt_key; }
+    static const thread_key_type bad_thread_key;
 
   private:
     Thread( const Thread& )
