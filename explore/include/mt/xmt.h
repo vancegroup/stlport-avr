@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <00/05/18 15:17:10 ptr>
+// -*- C++ -*- Time-stamp: <00/08/09 18:10:05 ptr>
 
 /*
  *
@@ -7,7 +7,7 @@
  *
  * Copyright (c) 1999-2000
  * ParallelGraphics
- 
+ *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
@@ -229,7 +229,7 @@ class Mutex
 #endif
 
   private:
-#if defined( __STL_UITHREADS ) || defined(__Linux)
+#ifndef WIN32
     friend class Condition;
 #endif
 };
@@ -243,7 +243,7 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef __unix
 #  ifdef __STL_UITHREADS
         _id( __STATIC_CAST(thread_t,-1) )
-#  elif defined( __STL_PTHREADS)
+#  elif defined(_PTHREADS)
         _id( __STATIC_CAST(pthread_t,-1) )
 #  else
 #    error "only POSIX and Solaris threads supported now in *NIXes"
@@ -280,7 +280,7 @@ class MutexSDS : // Self Deadlock Safe
 #ifdef __unix
 #  ifdef __STL_UITHREADS
          _id = __STATIC_CAST(thread_t,-1);
-#  elif defined( __STL_PTHREADS)
+#  elif defined(_PTHREADS)
          _id =  __STATIC_CAST(pthread_t,-1);
 #  endif
 #endif
@@ -363,7 +363,7 @@ class Condition
 
     bool set( bool __v )
       {
-        MT_REENTRANT( _lock, _1 );
+        MT_REENTRANT( _lock, _x1 );
 
         bool tmp = _val;
         _val = __v;
@@ -400,14 +400,10 @@ class Condition
           return 0;
 #endif
 #ifdef _PTHREADS
-#  ifdef __Linux
           return pthread_cond_wait( &_cond, &_lock._M_lock );
-#  else
-          return pthread_cond_wait( &_cond );
-#  endif
 #endif
 #ifdef __STL_UITHREADS
-          MT_REENTRANT( _lock, _1 );
+          MT_REENTRANT( _lock, _x1 );
           int ret;
           while ( !_val ) {
             ret = cond_wait( &_cond, /* &_lock.mutex */ &_lock._M_lock );
@@ -433,16 +429,12 @@ class Condition
         return 0;
 #endif
 #ifdef _PTHREADS
-        MT_REENTRANT( _lock, _1 ); // ??
+        MT_REENTRANT( _lock, _x1 ); // ??
         _val = false;
-#  ifdef __Linux
         return pthread_cond_wait( &_cond, &_lock._M_lock );
-#  else
-        return pthread_cond_wait( &_cond );
-#  endif
 #endif
 #ifdef __STL_UITHREADS
-        MT_REENTRANT( _lock, _1 );
+        MT_REENTRANT( _lock, _x1 );
         _val = false;
         int ret;
         while ( !_val ) {
@@ -464,7 +456,7 @@ class Condition
 
     int signal()
       {
-        MT_REENTRANT( _lock, _1 );
+        MT_REENTRANT( _lock, _x1 );
 
         _val = true;
 #ifdef WIN32
@@ -524,7 +516,7 @@ class Thread
       suspended = THR_SUSPENDED,
       daemon    = THR_DAEMON
 #endif
-#if defined(__STL_PTHREADS) && defined(__Linux)
+#if defined(_PTHREADS)
       bound     = 0,
       detached  = PTHREAD_CREATE_DETACHED,
       new_lwp   = 0,
