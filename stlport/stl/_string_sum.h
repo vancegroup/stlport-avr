@@ -338,6 +338,65 @@ operator + (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &_
                     __on_right>(__lhs, __rhs);
 }
 
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL 
+operator == (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+             const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return (__lhs.size() == __rhs.size()) && (__lhs._M_get_storage<0>() == __rhs._M_get_storage<0>());
+}
+
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL 
+operator < (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+            const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return __lhs._M_get_storage<0>() < __rhs._M_get_storage<0>();
+}
+
+#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
+
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL
+operator != (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+             const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return !(__lhs == __rhs);
+}
+
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL
+operator > (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+            const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return __rhs < __lhs;
+}
+
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL
+operator <= (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+             const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return !(__rhs < __lhs);
+}
+
+template <class _CharT, class _Traits, class _Alloc, 
+          class _Lh1, class _Rh1, class _StoreDir1,
+          class _Lh2, class _Rh2, class _StoreDir2>
+inline bool _STLP_CALL
+operator >= (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &__lhs,
+             const __bstr_sum<_CharT, _Traits, _Alloc, _Lh2, _Rh2, _StoreDir2> &__rhs) {
+  return !(__lhs < __rhs);
+}
+
+#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
+
+
 /*
  * This class will be used to simulate a temporary string that is required for
  * a call to the c_str method on the __bstr_sum class.
