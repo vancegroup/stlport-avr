@@ -186,6 +186,16 @@ struct __void_ptr_traits {
   }
 };
 
+template <>
+struct __void_ptr_traits<void> {
+  inline static void* cast(void *__ptr) { return __ptr; }
+  inline static void** ptr_cast(void **__ptr) { return __ptr; }
+  inline static void*const* const_ptr_cast(void *const*__ptr) { return __ptr; }
+  inline static void*** ptr_ptr_cast(void ***__ptr) { return __ptr; }
+  inline static void*& ref_cast(void *&__ref) { return __ref; }
+  inline static void*const& const_ref_cast(void *const&__ref) { return __ref; }
+};
+
 template <class _Tp, class _Iterator>
 struct __iterator_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
@@ -242,12 +252,6 @@ private:
   _Iterator &_M_ite;
 };
 
-
-//TODO
-template <class _Alloc>
-struct __alloc_wrapper {
-};
-
 template <class _Tp, class _UnaryPredicate>
 struct __unary_pred_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
@@ -275,18 +279,6 @@ struct __binary_pred_wrapper {
   bool operator () (void *__first, void *__second) const {
     return _M_pred(cast_traits::cast(__first), cast_traits::cast(__second));
   }
-
-  /*
-   * operators usefull for the _Rb_tree::_M_find template method
-   
-  template <class _K>
-  bool operator () (void *__first, _K const&__second) {
-    return _M_pred(cast_traits::cast(__first), __second);
-  }
-  template <class _K>
-  bool operator () (_K const&__first, void *__second) {
-    return _M_pred(__first, cast_traits::cast(__second));
-  }*/
 
 private:
   _BinaryPredicate _M_pred;

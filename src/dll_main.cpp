@@ -166,21 +166,25 @@ template class _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 template class _Vector_base<void*,allocator<void*> >;
 # if defined (_STLP_DEBUG) && ! defined (__SUNPRO_CC)
 template class __WORKAROUND_DBG_RENAME(vector) <void*,allocator<void*> >;
-template class __range_checker <void*>;
+# ifndef _STLP_MEMBER_TEMPLATES
+template class __range_checker <void*, vector<void*, allocator<void*> >::const_iterator>;
+# endif
 # endif
 template class vector<void*,allocator<void*> >;
 
 # ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+template class _Vector_impl<void*, allocator<void*> >;
+
 template class _List_base<void*,allocator<void*> >;
-template class __list__<void*,allocator<void*> >;
+template class _List_impl<void*,allocator<void*> >;
 
 template class _Slist_base<void*, allocator<void*> >;
-template class slist<void*, allocator<void*> >;
+template class _Slist_impl<void*, allocator<void*> >;
 
 template class _STLP_alloc_proxy<size_t, void*, allocator<void*> >;
 template class _STLP_alloc_proxy<void***, void**, allocator<void**> >;
 template class _Deque_base<void*,allocator<void*> >;
-template class deque<void*,allocator<void*> >;
+template class _Deque_impl<void*,allocator<void*> >;
 # endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
 template class _Rb_global<bool>;
@@ -218,19 +222,16 @@ extern "C" {
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-					 )
-{
-    switch (ul_reason_for_call)
-	{
-		case DLL_PROCESS_ATTACH:
-		  DisableThreadLibraryCalls((HINSTANCE)hModule);
-		case DLL_THREAD_ATTACH:
-		case DLL_THREAD_DETACH:
-		case DLL_PROCESS_DETACH:
-			break;
+                       LPVOID lpReserved) {
+  switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+      DisableThreadLibraryCalls((HINSTANCE)hModule);
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+      break;
     }
-    return TRUE;
+  return TRUE;
 }
 
 } /* extern "C" */
