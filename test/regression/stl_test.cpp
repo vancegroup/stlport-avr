@@ -6,7 +6,6 @@
 #include <iostream>
 #include "stl_test.h"
 
-
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
 #endif
@@ -215,6 +214,8 @@ int main(int argc, char** argv) {
         maxelem1_test(argc, argv);
         cout.flush();
         maxelem2_test(argc, argv);
+        cout.flush();
+        mem_ptr_fun_test(argc, argv);
         cout.flush();
         merge0_test(argc, argv);
         cout.flush();

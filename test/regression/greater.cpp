@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <algorithm>
-#include <functional>
+// #include <functional>
+
 
 #ifdef MAIN 
 #define greater_test main

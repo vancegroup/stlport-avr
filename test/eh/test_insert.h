@@ -42,10 +42,10 @@ struct map_tag {};
 struct multimap_tag {};
 
 template <class C, class Iter>
-EH_STD::size_t CountNewItems( const C&, const Iter& firstNew, 
+size_t CountNewItems( const C&, const Iter& firstNew, 
                       const Iter& lastNew, sequence_container_tag )
 {
-    EH_STD::size_t dist = 0;
+    size_t dist = 0;
 #if 0 //def __SUNPRO_CC
     EH_DISTANCE( firstNew, lastNew, dist );
 #else
@@ -55,14 +55,14 @@ EH_STD::size_t CountNewItems( const C&, const Iter& firstNew,
 }
 
 template <class C, class Iter>
-EH_STD::size_t CountNewItems( const C& c, const Iter& firstNew, 
+size_t CountNewItems( const C& c, const Iter& firstNew, 
                       const Iter& lastNew, multimap_tag )
 {
     return CountNewItems( c, firstNew, lastNew, sequence_container_tag() );
 }
 
 template <class C, class Iter>
-EH_STD::size_t CountNewItems( const C& c, const Iter& firstNew, 
+size_t CountNewItems( const C& c, const Iter& firstNew, 
                       const Iter& lastNew, multiset_tag )
 {
     return CountNewItems( c, firstNew, lastNew, sequence_container_tag() );
@@ -71,9 +71,9 @@ EH_STD::size_t CountNewItems( const C& c, const Iter& firstNew,
 
 template <class C, class Iter, class KeyOfValue>
 #ifdef __BORLANDC__
-EH_STD::size_t CountUniqueItems_Aux( const C& original, const Iter& firstNew, 
+size_t CountUniqueItems_Aux( const C& original, const Iter& firstNew, 
 #else
-EH_STD::size_t CountUniqueItems_Aux( const C& original, Iter firstNew, 
+size_t CountUniqueItems_Aux( const C& original, Iter firstNew, 
 #endif
                              Iter lastNew, const KeyOfValue& keyOfValue )
 {
@@ -82,7 +82,7 @@ EH_STD::size_t CountUniqueItems_Aux( const C& original, Iter firstNew,
 	typedef EH_STD::vector<key> key_list;
 	typedef typename key_list::iterator key_iterator;
 	key_list keys;
-	EH_STD::size_t dist = 0;
+	size_t dist = 0;
 #ifdef __SUNPRO_CC
 	EH_DISTANCE( firstNew, lastNew, dist );
 #else
@@ -95,7 +95,7 @@ EH_STD::size_t CountUniqueItems_Aux( const C& original, Iter firstNew,
 	EH_STD::sort( keys.begin(), keys.end() );
 	key_iterator last = EH_STD::unique( keys.begin(), keys.end() );
 	 
-    EH_STD::size_t cnt = 0;
+    size_t cnt = 0;
     for ( key_iterator tmp = keys.begin(); tmp != last; ++tmp )
     {
         if ( const_iter(original.find( *tmp )) == const_iter(original.end()) )
@@ -123,7 +123,7 @@ EH_END_NAMESPACE
 #endif
 
 template <class C, class Iter>
-EH_STD::size_t CountUniqueItems( const C& original, const Iter& firstNew, 
+size_t CountUniqueItems( const C& original, const Iter& firstNew, 
                          const Iter& lastNew, set_tag )
 {
     typedef typename C::value_type value_type;
@@ -132,7 +132,7 @@ EH_STD::size_t CountUniqueItems( const C& original, const Iter& firstNew,
 }
 
 template <class C, class Iter>
-EH_STD::size_t CountUniqueItems( const C& original, const Iter& firstNew, 
+size_t CountUniqueItems( const C& original, const Iter& firstNew, 
                          const Iter& lastNew, map_tag )
 {
 #ifdef EH_MULTI_CONST_TEMPLATE_ARG_BUG
@@ -146,7 +146,7 @@ EH_STD::size_t CountUniqueItems( const C& original, const Iter& firstNew,
 }
 
 template <class C, class Iter>
-EH_STD::size_t CountNewItems( const C& original, const Iter& firstNew, 
+size_t CountNewItems( const C& original, const Iter& firstNew, 
                       const Iter& lastNew, map_tag )
 {
     return CountUniqueItems( original, firstNew, lastNew, 
@@ -154,7 +154,7 @@ EH_STD::size_t CountNewItems( const C& original, const Iter& firstNew,
 }
 
 template <class C, class Iter>
-EH_STD::size_t CountNewItems( const C& original, const Iter& firstNew, 
+size_t CountNewItems( const C& original, const Iter& firstNew, 
                       const Iter& lastNew, set_tag )
 {
     return CountUniqueItems( original, firstNew, lastNew, 
@@ -164,7 +164,7 @@ EH_STD::size_t CountNewItems( const C& original, const Iter& firstNew,
 template <class C, class SrcIter>
 inline void VerifyInsertion( const C& original, const C& result, 
                              const SrcIter& firstNew, const SrcIter& lastNew, 
-                             EH_STD::size_t, associative_container_tag )
+                             size_t, associative_container_tag )
 {
     typedef typename C::const_iterator DstIter;
     DstIter first1 = original.begin();
@@ -217,54 +217,54 @@ inline void VerifyInsertion( const C& original, const C& result,
 template <class C, class SrcIter>
 inline void VerifyInsertion(
     const C& original, const C& result, const SrcIter& firstNew, 
-    const SrcIter& lastNew, EH_STD::size_t, set_tag )
+    const SrcIter& lastNew, size_t, set_tag )
 {
     VerifyInsertion( original, result, firstNew, lastNew, 
-                     EH_STD::size_t(0), associative_container_tag() );
+                     size_t(0), associative_container_tag() );
 }
 
 template <class C, class SrcIter>
 inline void VerifyInsertion(const C& original, const C& result, 
                             const SrcIter& firstNew, const SrcIter& lastNew, 
-                            EH_STD::size_t, multiset_tag )
+                            size_t, multiset_tag )
 {
     VerifyInsertion( original, result, firstNew, lastNew, 
-                     EH_STD::size_t(0), associative_container_tag() );
+                     size_t(0), associative_container_tag() );
 }
 
 template <class C, class SrcIter>
 inline void VerifyInsertion(
     const C& original, const C& result, const SrcIter& firstNew, 
-    const SrcIter& lastNew, EH_STD::size_t, map_tag )
+    const SrcIter& lastNew, size_t, map_tag )
 {
     VerifyInsertion( original, result, firstNew, lastNew, 
-                     EH_STD::size_t(0), associative_container_tag() );
+                     size_t(0), associative_container_tag() );
 }
 
 template <class C, class SrcIter>
 inline void VerifyInsertion(
     const C& original, const C& result, const SrcIter& firstNew, 
-    const SrcIter& lastNew, EH_STD::size_t, multimap_tag )
+    const SrcIter& lastNew, size_t, multimap_tag )
 {
     VerifyInsertion( original, result, firstNew, lastNew, 
-                     EH_STD::size_t(0), associative_container_tag() );
+                     size_t(0), associative_container_tag() );
 }
 
 template <class C, class SrcIter>
 void VerifyInsertion(
 # ifdef _MSC_VER
     const C& original, const C& result, SrcIter firstNew, 
-    SrcIter lastNew, EH_STD::size_t insPos, sequence_container_tag )
+    SrcIter lastNew, size_t insPos, sequence_container_tag )
 # else
     const C& original, const C& result, const SrcIter& firstNew, 
-    const SrcIter& lastNew, EH_STD::size_t insPos, sequence_container_tag )
+    const SrcIter& lastNew, size_t insPos, sequence_container_tag )
 # endif
 {
     typename C::const_iterator p1 = original.begin();
     typename C::const_iterator p2 = result.begin();
     SrcIter tmp(firstNew);
     
-    for ( EH_STD::size_t n = 0; n < insPos; n++, ++p1, ++p2)
+    for ( size_t n = 0; n < insPos; n++, ++p1, ++p2)
         EH_ASSERT( *p1 == *p2 );
 
     for (; tmp != lastNew; ++p2, ++tmp ) {
@@ -280,7 +280,7 @@ void VerifyInsertion(
 template <class C, class SrcIter>
 inline void VerifyInsertion( const C& original, const C& result, 
                              const SrcIter& firstNew, 
-                             const SrcIter& lastNew, EH_STD::size_t insPos )
+                             const SrcIter& lastNew, size_t insPos )
 {
     EH_ASSERT( result.size() == original.size() + 
             CountNewItems( original, firstNew, lastNew, 
@@ -290,14 +290,14 @@ inline void VerifyInsertion( const C& original, const C& result,
 }
 
 template <class C, class Value>
-void VerifyInsertN( const C& original, const C& result, EH_STD::size_t insCnt, 
-                    const Value& val, EH_STD::size_t insPos )
+void VerifyInsertN( const C& original, const C& result, size_t insCnt, 
+                    const Value& val, size_t insPos )
 {
     typename C::const_iterator p1 = original.begin();
     typename C::const_iterator p2 = result.begin();
 	(void)val;		//*TY 02/06/2000 - to suppress unused variable warning under nondebug build
 
-    for ( EH_STD::size_t n = 0; n < insPos; n++ )
+    for ( size_t n = 0; n < insPos; n++ )
         EH_ASSERT( *p1++ == *p2++ );
 
     while ( insCnt-- > 0 )
@@ -315,7 +315,7 @@ void VerifyInsertN( const C& original, const C& result, EH_STD::size_t insCnt,
 }
 
 template <class C>
-void prepare_insert_n( C&, EH_STD::size_t ) {}
+void prepare_insert_n( C&, size_t ) {}
 
 // Metrowerks 1.8 compiler requires that specializations appear first (!!)
 // or it won't call them. Fixed in 1.9, though.
@@ -333,7 +333,7 @@ struct test_insert_one
         MakeRandomValue( fInsVal );
         if ( pos != -1 )
         {
-            fPos = EH_STD::size_t(pos);
+            fPos = size_t(pos);
             if ( pos == 0 )
                 gTestController.SetCurrentTestName("single insertion at begin()");
             else
@@ -345,9 +345,9 @@ struct test_insert_one
 	
     void operator()( C& c ) const
     {
-        prepare_insert_n( c, (EH_STD::size_t)1 );
+        prepare_insert_n( c, (size_t)1 );
         typename C::iterator pos = c.begin();
-        EH_STD::advance( pos, EH_STD::size_t(fPos) );
+        EH_STD::advance( pos, size_t(fPos) );
         c.insert( pos, fInsVal );
 		
         // Prevent simulated failures during verification
@@ -358,19 +358,19 @@ struct test_insert_one
 private:
     typename C::value_type fInsVal;
     const C& original;
-    EH_STD::size_t fPos;
+    size_t fPos;
 };
 
 template <class C>
 struct test_insert_n
 {
-    test_insert_n( const C& orig, EH_STD::size_t insCnt, int pos =-1 )
+    test_insert_n( const C& orig, size_t insCnt, int pos =-1 )
         : original( orig ), fPos( random_number( orig.size() )), fInsCnt(insCnt)
     {
         MakeRandomValue( fInsVal );
         if (pos!=-1)
         {
-            fPos=EH_STD::size_t(pos);
+            fPos=size_t(pos);
             if (pos==0)
                 gTestController.SetCurrentTestName("n-ary insertion at begin()");
             else
@@ -395,8 +395,8 @@ struct test_insert_n
 private:
     typename C::value_type fInsVal;
     const C& original;
-    EH_STD::size_t fPos;
-    EH_STD::size_t fInsCnt;
+    size_t fPos;
+    size_t fInsCnt;
 };
 
 template <class C>
@@ -416,7 +416,7 @@ struct test_insert_value
         // Prevent simulated failures during verification
         gTestController.CancelFailureCountdown();
         // Success. Check results.
-        VerifyInsertion( original, c, &fInsVal, 1+&fInsVal, EH_STD::size_t(0) );
+        VerifyInsertion( original, c, &fInsVal, 1+&fInsVal, size_t(0) );
     }
 private:
     typename C::value_type fInsVal;
@@ -440,7 +440,7 @@ struct test_insert_noresize
         // Prevent simulated failures during verification
         gTestController.CancelFailureCountdown();
         // Success. Check results.
-        VerifyInsertion( original, c, &fInsVal, 1+&fInsVal, EH_STD::size_t(0) );
+        VerifyInsertion( original, c, &fInsVal, 1+&fInsVal, size_t(0) );
     }
 private:
     typename C::value_type fInsVal;
@@ -505,7 +505,7 @@ struct test_insert_range
         gTestController.SetCurrentTestName("range insertion");
         if ( pos != -1 )
         {
-            fPos = EH_STD::size_t(pos);
+            fPos = size_t(pos);
             if ( pos == 0 )
                 gTestController.SetCurrentTestName("range insertion at begin()");
             else

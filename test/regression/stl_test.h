@@ -102,6 +102,7 @@ extern int max1_test  ( int, char**);
 extern int max2_test  ( int, char**);
 extern int maxelem1_test  ( int, char**);
 extern int maxelem2_test  ( int, char**);
+extern int mem_ptr_fun_test  ( int, char**);
 extern int merge0_test  ( int, char**);
 extern int merge1_test  ( int, char**);
 extern int merge2_test  ( int, char**);

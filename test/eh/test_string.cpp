@@ -38,7 +38,7 @@ container_category(const TestString&)
 void test_string()
 {
     TestString testString, testString2;
-    EH_STD::size_t ropeSize = random_number(random_base);
+    size_t ropeSize = random_number(random_base);
 	
     while ( testString.size() < ropeSize )
     {
@@ -54,7 +54,7 @@ void test_string()
     WeakCheck( testString, test_insert_n<TestString>(testString, random_number(random_base), 0 ) );
     WeakCheck( testString, test_insert_n<TestString>(testString, random_number(random_base), (int)testString.size() ) );
 	
-    EH_STD::size_t insCnt = random_number(random_base);
+    size_t insCnt = random_number(random_base);
     TestString::value_type *insFirst = new TestString::value_type[1+insCnt];
 
     WeakCheck( testString, insert_range_tester(testString, insFirst, insFirst+insCnt) );

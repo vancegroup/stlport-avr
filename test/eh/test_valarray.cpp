@@ -38,7 +38,7 @@ container_category(const TestValarray&)
 void test_rope()
 {
     TestValarray testValarray, testValarray2;
-    EH_STD::size_t ropeSize = random_number(random_base);
+    size_t ropeSize = random_number(random_base);
 	
     while ( testValarray.size() < ropeSize )
     {
@@ -54,7 +54,7 @@ void test_rope()
     WeakCheck( testValarray, test_insert_n<TestValarray>(testValarray, random_number(random_base), 0 ) );
     WeakCheck( testValarray, test_insert_n<TestValarray>(testValarray, random_number(random_base), testValarray.size() ) );
 	
-    EH_STD::size_t insCnt = random_number(random_base);
+    size_t insCnt = random_number(random_base);
     TestValarray::value_type *insFirst = new TestValarray::value_type[1+insCnt];
 
     WeakCheck( testValarray, insert_range_tester(testValarray, insFirst, insFirst+insCnt) );

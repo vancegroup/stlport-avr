@@ -52,6 +52,7 @@ OBJECTS  = stl_test.o accum1.o accum2.o \
 	map1.o \
 	max1.o max2.o \
 	maxelem1.o maxelem2.o \
+	memfunptr.o \
 	merge0.o merge1.o merge2.o \
 	min1.o min2.o \
 	minelem1.o minelem2.o \

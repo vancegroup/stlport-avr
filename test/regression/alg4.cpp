@@ -21,7 +21,7 @@ int alg4_test(int, char**)
   years.push_back(2001);
   years.push_back(1999);
   sort(years.begin(), years.end());
-  std::vector<int>::const_iterator i;
+  vector<int>::const_iterator i;
   for(i = years.begin(); i != years.end(); i++)
     cout << *i << endl;
   return 0;

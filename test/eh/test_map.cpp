@@ -51,7 +51,7 @@ void test_multimap()
 {
     TestMultiMap testMultiMap, testMultiMap2;
 	
-    const EH_STD::size_t mapSize = random_number(random_base);
+    const size_t mapSize = random_number(random_base);
 	
     while ( testMultiMap.size() < mapSize )
     {
@@ -62,7 +62,7 @@ void test_multimap()
 
     StrongCheck( testMultiMap, test_insert_value<TestMultiMap>(testMultiMap) );
 
-    EH_STD::size_t insCnt = 1 + random_number(random_base);
+    size_t insCnt = 1 + random_number(random_base);
     TestMultiMap::value_type *insFirst = new TestMultiMap::value_type[insCnt];
 
     WeakCheck( testMultiMap, insert_range_tester(testMultiMap, insFirst, insFirst+insCnt) );
@@ -90,7 +90,7 @@ void CheckInvariant( const TestMap& m );
 void CheckInvariant( const TestMap& m )
 {	
 //	assert( map.__rb_verify() );
-    EH_STD::size_t total = 0;
+    size_t total = 0;
     EH_DISTANCE( m.begin(), m.end(), total );
     assert( m.size() == total );
 }
@@ -99,7 +99,7 @@ void test_map()
 {
     TestMap testMap, testMap2;
 	
-    const EH_STD::size_t mapSize = random_number(random_base);
+    const size_t mapSize = random_number(random_base);
 	
     while ( testMap.size() < mapSize )
     {
@@ -110,7 +110,7 @@ void test_map()
 
     StrongCheck( testMap, test_insert_value<TestMap>(testMap) );
 
-    EH_STD::size_t insCnt = random_number(random_base);
+    size_t insCnt = random_number(random_base);
     TestMap::value_type *insFirst = new TestMap::value_type[1+insCnt];
 
     WeakCheck( testMap, insert_range_tester(testMap, insFirst, insFirst+insCnt) );

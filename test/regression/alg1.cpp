@@ -15,9 +15,9 @@ using namespace std;
 int alg1_test(int, char**)
 {
   cout<<"Results of alg1_test:"<<endl;
-  int i = std::min(4, 7);
+  int i = min(4, 7);
   cout << "min(4, 7) = " << i << endl;
-  char c = std::max('a', 'z');
+  char c = max('a', 'z');
   cout << "max('a', 'z') = " << c << endl;
   return 0;
 }

@@ -6,9 +6,9 @@
 #include <windows.h>
 
 #define VER_MAJOR 4
-#define VER_MINOR 1
-#define VER_YEAR  2000
-#define VER_MMDD  1111
+#define VER_MINOR 6
+#define VER_YEAR  2003
+#define VER_MMDD  1031
 
 #define VERSION_STRING2(x) #x "\0"
 #define VERSION_STRING(x) VERSION_STRING2(x)
@@ -42,7 +42,7 @@ VALUE "LegalCopyright", "Copyright (C) Boris Fomitchev\0"
 
 VALUE "OriginalFilename", DLLNAME_STRING2(COMP,BUILD)
 
-VALUE "ProductName", "STLport Standard ANSI C++ Libarary\0"
+VALUE "ProductName", "STLport Standard ANSI C++ Library\0"
 VALUE "ProductVersion", VERSION_STR
 #ifdef BUILD
 VALUE "SpecialBuild", VERSION_STRING2(BUILD)

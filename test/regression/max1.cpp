@@ -14,6 +14,6 @@ using namespace std;
 int max1_test(int, char**)
 {
   cout<<"Results of max1_test:"<<endl;
-  cout << std::max(42, 100) << endl;
+  cout << max(42, 100) << endl;
   return 0;
 }

@@ -1,8 +1,9 @@
 // STLport regression testsuite component.
 // To compile as a separate example, please #define MAIN.
 
-#include <hash_map>
 #include <iostream>
+#include <hash_map>
+#include <rope>
 
 #ifdef MAIN 
 #define hmmap1_test main

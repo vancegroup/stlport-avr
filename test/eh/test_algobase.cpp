@@ -89,9 +89,10 @@ private:
 
 void test_algobase()
 {
-    char arr[ sizeof(TestClass) * kBufferSize ];
-    TestClass* c = (TestClass*)arr;
-    WeakCheck( c, test_uninitialized_copy() );
-    WeakCheck( c, test_uninitialized_fill() );
-    WeakCheck( c, test_uninitialized_fill_n() );
+  // force alignment
+  double arr[ sizeof(TestClass) * kBufferSize ];
+  TestClass* c = (TestClass*)arr;
+  WeakCheck( c, test_uninitialized_copy() );
+  WeakCheck( c, test_uninitialized_fill() );
+  WeakCheck( c, test_uninitialized_fill_n() );
 }

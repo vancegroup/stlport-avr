@@ -53,7 +53,7 @@ struct test_slist_sort
 void test_slist()
 {
 	TestSList testSList, testSList2;
-	EH_STD::size_t slistSize = random_number(random_base);
+	size_t slistSize = random_number(random_base);
 	
 	while ( testSList.size() < slistSize )
 	{
@@ -70,7 +70,7 @@ void test_slist()
 	WeakCheck( testSList, test_insert_n<TestSList>(testSList, random_number(random_base), 0 ) );
 	WeakCheck( testSList, test_insert_n<TestSList>(testSList, random_number(random_base), (int)testSList.size() ) );
 
-	EH_STD::size_t insCnt = random_number(random_base);
+	size_t insCnt = random_number(random_base);
 	TestClass *insFirst = new TestSList::value_type[1+insCnt];
 	WeakCheck( testSList, insert_range_tester(testSList, insFirst, insFirst+insCnt) );
 

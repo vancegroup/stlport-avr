@@ -1,6 +1,4 @@
-#ifdef MAIN 
-#define hmap1_test main
-#endif
+
 // STLport regression testsuite component.
 // To compile as a separate example, please #define MAIN.
 
@@ -10,6 +8,9 @@
 
 #if !defined (STLPORT) || defined(__STL_USE_NAMESPACES)
 using namespace std;
+#endif
+#ifdef MAIN 
+#define hmap1_test main
 #endif
 
 int hmap1_test(int, char**)

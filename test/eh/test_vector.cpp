@@ -35,9 +35,9 @@ container_category(const TestVector&)
   return sequence_container_tag();
 }
 
-void prepare_insert_n( TestVector& c, EH_STD::size_t insCnt );
+void prepare_insert_n( TestVector& c, size_t insCnt );
 
-void prepare_insert_n( TestVector& c, EH_STD::size_t insCnt )
+void prepare_insert_n( TestVector& c, size_t insCnt )
 {
     if ( random_number(2) )
         c.reserve( c.size() + insCnt );
@@ -45,7 +45,7 @@ void prepare_insert_n( TestVector& c, EH_STD::size_t insCnt )
 
 struct test_reserve
 {
-    test_reserve( EH_STD::size_t n ) : fAmount(n) {
+    test_reserve( size_t n ) : fAmount(n) {
             gTestController.SetCurrentTestName("vector::reserve()");
     }
 	
@@ -54,14 +54,14 @@ struct test_reserve
         v.reserve( fAmount );
     }
 private:
-    EH_STD::size_t fAmount;
+    size_t fAmount;
 };
 
-inline void prepare_insert_range( TestVector& vec, EH_STD::size_t, TestClass* first, TestClass* last )
+inline void prepare_insert_range( TestVector& vec, size_t, TestClass* first, TestClass* last )
 {
     if ( random_number(2) )
     {
-        EH_STD::ptrdiff_t d = 0;
+        ptrdiff_t d = 0;
         EH_DISTANCE( first, last, d );
         vec.reserve( vec.size() + d );
     }
@@ -74,7 +74,7 @@ void test_vector()
    
     TestVector emptyVector;
     TestVector testVector, testVector2;
-    EH_STD::size_t vectorSize = random_number(random_base);
+    size_t vectorSize = random_number(random_base);
 	
     testVector.reserve(vectorSize*4);
     while ( testVector.size() < vectorSize )
@@ -84,7 +84,7 @@ void test_vector()
         testVector2.push_back( TestClass() );
     }
 	
-    EH_STD::size_t insCnt = random_number(random_base);
+    size_t insCnt = random_number(random_base);
     TestClass *insFirst = new TestVector::value_type[1+ insCnt];
 
     ConstCheck( 0, test_construct_pointer_range<TestVector>(insFirst, insFirst+insCnt) );
