@@ -27,11 +27,13 @@ using namespace std;
   template class cont<int volatile*>; \
   template class cont<int const volatile*>
 
+# if !defined(_MSC_VER) || (_MSC_VER > 1200)  // including MSVC 6.0
 TEST_INSTANCIATE_CONTAINER(vector);
 TEST_INSTANCIATE_CONTAINER(list);
 TEST_INSTANCIATE_CONTAINER(slist);
 TEST_INSTANCIATE_CONTAINER(deque);
 TEST_INSTANCIATE_CONTAINER(set);
+#endif
 
 template <class _Tp>
 struct unary_pred {
