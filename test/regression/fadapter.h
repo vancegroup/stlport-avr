@@ -28,7 +28,7 @@ struct projectvoid :
   __void_tag operator()(const Arg1& x) const { return __void_tag(); }
 };
 
-# if !defined (__STL_MEMBER_POINTER_PARAM_BUG)
+# if !defined (_STLP_MEMBER_POINTER_PARAM_BUG)
 
 template <class Result>
 pointer_to_void_function<Result> ptr_fun(Result (*x)()) {

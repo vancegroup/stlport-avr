@@ -20,7 +20,7 @@ int istmit1_test(int, char**)
   int i = 0;
   cin.unsetf(ios::skipws); // Disable white-space skipping.
   cout << "Please enter a string: ";
-#ifndef __STL_LIMITED_DEFAULT_TEMPLATES
+#ifndef _STLP_LIMITED_DEFAULT_TEMPLATES
   istream_iterator<char> s(cin),meos;		//*TY 01/10/1999 - added eos()
 #else
   istream_iterator<char, ptrdiff_t> s(cin),meos;		//*TY 01/10/1999 - added eos()

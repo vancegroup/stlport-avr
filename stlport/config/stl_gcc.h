@@ -185,11 +185,11 @@ typedef unsigned int wint_t;
 // #    define _STLP_STRICT_ANSI 1
 #  endif
 
-# if !defined (__STRICT_ANSI__) || defined (__BUILDING_STLPORT)
-#    define _STLP_USE_TEMPLATE_EXPORT
-#    define _STLP_EXPORT_TEMPLATE_KEYWORD extern
-#    define _STLP_IMPORT_TEMPLATE_KEYWORD extern
-# endif
+//# if !defined (__STRICT_ANSI__) || defined (__BUILDING_STLPORT)
+//#    define _STLP_USE_TEMPLATE_EXPORT
+//#    define _STLP_EXPORT_TEMPLATE_KEYWORD extern
+//#    define _STLP_IMPORT_TEMPLATE_KEYWORD extern
+//# endif
 
 #   ifndef __EXCEPTIONS
 #     undef  _STLP_HAS_NO_EXCEPTIONS

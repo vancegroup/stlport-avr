@@ -14,6 +14,9 @@ The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
 	* _sparc_atomic.h : fixed and improved atomic ops for gcc
 
+	* test/regression : non-backward-compatible old-style __STL_xx macros use changed to _STLP_xx
+
+	* config/st_gcc.h : disabled non-standard "extern" use for non-DLL templates 
 	
 The following changes were made in 4.1 beta 5 since 4.1 beta 4 :
 
