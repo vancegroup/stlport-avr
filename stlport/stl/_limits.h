@@ -239,7 +239,7 @@ class numeric_limits : public _Numeric_limits_base<_Tp> {};
 
 _STLP_TEMPLATE_NULL
 class   numeric_limits<bool>
-  : public _Integer_limits<bool, false, true, 0, false>
+  : public _Integer_limits<bool, false, true, 1, false>
 {};
 
 #endif /* _STLP_NO_BOOL */

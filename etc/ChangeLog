@@ -5,6 +5,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* stl/_deque.h : deque<>::erase bug (introduced in 4.1b4) fixed (thanks to BruceFlorman) 
 	               : default parameter in constructor bug fixed (Thanks to Alex Vanic) 
 
+	* stl/_limits.h : numeric_limits<bool>::digits changed from 0 to 1 (Thanks Mukesh Kapoor)
+	
 	* stl_msvc.h : explicit template function agruments enabled for VC++; 
 	  use_facet<> now fully conforms to the standard with VC++. (Thanks Jeff Kohn for the input)
 
@@ -12,6 +14,8 @@ The following changes were made in 4.1 beta 7 since 4.1 beta 6 :
 	* fstream.cpp : ULL macro fixed for Win32
 	* fstream.cpp : Added test for for INVALID_HANDLE_VALUE and NULL base and _M_view_id,
  	  for _M_close on Win32 (Thanks Stephen Baker)
+
+	* iomanip : added operator for setfill object and istream (was ostream only) (Thanks Mukesh Kapoor)
 	
 	* stl/_locale.h , stl_intel.h : fixes for Intel 5.0 compiler (Thanks Anton and Marcello Pietrobon)
 
