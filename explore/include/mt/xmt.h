@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <03/01/06 21:59:48 ptr>
+// -*- C++ -*- Time-stamp: <03/01/12 23:20:20 ptr>
 
 /*
  *
@@ -64,8 +64,10 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 #    endif
 #    ifdef _PTHREADS
 #      include <pthread.h>
+#      include <semaphore.h>
 #    else
 #      include <thread.h>
+#      include <synch.h>
 #    endif
 #  elif !defined(_NOTHREADS) // !_REENTRANT
 #    define _NOTHREADS
@@ -466,7 +468,9 @@ class Condition
       }
 
     __FIT_DECLSPEC int wait_time( const timespec *abstime );
+    __FIT_DECLSPEC int wait_delay( const timespec *abstime );
     __FIT_DECLSPEC int try_wait_time( const timespec *abstime );
+    __FIT_DECLSPEC int try_wait_delay( const timespec *abstime );
 
     int signal()
       {
@@ -500,6 +504,105 @@ class Condition
     Mutex _lock;
     // __STLPORT_STD::_STL_mutex_lock _lock;
     bool _val;
+};
+
+class Semaphore
+{
+  public:
+    Semaphore( int cnt = 1, bool ipc = false )
+      {
+#ifdef __FIT_WIN32THREADS
+        _sem = CreateSemaphore( NULL, cnt, INT_MAX, 0 ); // check!
+#endif
+#ifdef __FIT_UITHREADS
+        sema_init( &_sem, cnt, ipc ? USYNC_PROCESS : USYNC_THREAD, 0 );
+#endif
+#ifdef _PTHREADS
+        sem_init( &_sem, ipc ? 1 : 0, cnt );
+#endif
+      }
+
+    ~Semaphore()
+      {
+#ifdef __FIT_WIN32THREADS
+        CloseHandle( _sem );
+#endif
+#ifdef __FIT_UITHREADS
+        sema_destroy( &_sem );
+#endif
+#ifdef _PTHREADS
+        sem_destroy( &_sem );
+#endif        
+      }
+
+    int wait()
+      {
+#ifdef __FIT_WIN32THREADS
+        if ( WaitForSingleObject( _sem, -1 ) == WAIT_FAILED ) {
+          return -1;
+        }
+        return 0;
+#endif
+#ifdef __FIT_UITHREADS
+        return sema_wait( &_sem );
+#endif
+#ifdef _PTHREADS
+        return sem_wait( &_sem );
+#endif
+      }
+
+    int try_wait()
+      {
+#ifdef __FIT_WIN32THREADS
+#  warning "Fix me!"
+#endif
+#ifdef __FIT_UITHREADS
+        return sema_trywait( &_sem );
+#endif
+#ifdef _PTHREADS
+        return sem_trywait( &_sem );
+#endif        
+      }
+
+    int post()
+      {
+#ifdef __FIT_WIN32THREADS
+#  warning "Fix me!"
+#endif
+#ifdef __FIT_UITHREADS
+        return sema_post( &_sem );
+#endif
+#ifdef _PTHREADS
+        return sem_post( &_sem );
+#endif        
+      }
+
+    int value()
+      {
+#ifdef __FIT_WIN32THREADS
+#  warning "Fix me!"
+#endif
+#ifdef __FIT_UITHREADS
+#  warning "No semaphore value for Solaris threads!"
+#endif
+#ifdef _PTHREADS
+        int v;
+        int e = sem_getvalue( &_sem, &v );
+        
+        return e == 0 ? v : -1;
+#endif        
+      }
+
+  protected:
+#ifdef __FIT_WIN32THREADS
+    HANDLE _sem;
+#endif
+#ifdef __FIT_UITHREADS
+    sema_t _sem;
+#endif
+#ifdef _PTHREADS
+    sem_t _sem;
+#endif
 };
 
 class Thread
