@@ -1,6 +1,6 @@
 /*
  * File to have Windows CE .NET (eMebedded Visual C++ 4) working with STLport
- * January 2004
+ * April 2004
  * Origin : Zdenek Nemec - zero@mapfactor.com
  */
 
@@ -10,9 +10,9 @@
 // this flag is being used by STLport to support 
 // old-fashioned Windows CE SDK (see stl_wince.h)
 // DO NOT USE with eMebedded Visual C++ 4!
-#ifdef _STLP_WINCE
-# undef _STLP_WINCE
-#endif
+# ifdef _STLP_WINCE
+#   undef _STLP_WINCE
+# endif
 
 // new STLport Windows CE .NET define
 # undef _STLP_WCE_NET
@@ -20,7 +20,7 @@
 
 // always threaded in Windows CE .NET
 # ifndef _MT                            
-  #define _MT
+#   define _MT
 # endif
 
 // workaround Pocket PC 2003 missing RTTI support in OS image
@@ -30,116 +30,51 @@
 // (at this time this bug seems to be in every SDK except 
 // version 4.0) you propably want to build your own image 
 // with Platform Builder to enable RTTI and exception.
-// TODO: RTTI patch integration (add /GX compiler option and 
-// replace __std_alias in _config.h)
-# undef _STLP_RTTI_BUG
-# define _STLP_RTTI_BUG
+//
+// This define is off by default since it's recommended
+// to use Microsoft RTTI patch. The patch is available at 
+// http://support.microsoft.com/default.aspx?scid=kb;[LN];830482
+// Do not forget to turn off /GX an /GR compiler options 
+// and link agaist Ccrtrtti.lib(rtti patch lib)
+// if you do not want c++ exceptions and/or this patch.
 
+//# undef _STLP_RTTI_BUG
+//# define _STLP_RTTI_BUG
 
 // Redirect cout, cerr and clog
 // ----------------------------
 // If defined redirect cout, cerr and clog to 
 // files stdout.txt, stderr.txt and stdlog.txt
-#define _STLP_REDIRECT_STDSTREAMS
 
-// iostream usage
-// --------------
-// TODO:
-// should be moved to global STLport conifig header
-// use of streams
-# undef _STLP_NO_OWN_IOSTREAMS
-# undef _STLP_NO_NEW_IOSTREAMS
-# undef _STLP_NO_IOSTREAMS
-# define _STLP_NO_CUSTOM_IO
-# define _STLP_OWN_IOSTREAMS
+// #define _STLP_REDIRECT_STDSTREAMS
 
+/*------ no user serviceable parts after this point ------*/
+
+// force exception std to std instead of __std_alias
+# ifdef _STLP_VENDOR_EXCEPT_STD
+#   undef _STLP_VENDOR_EXCEPT_STD
+# endif
+# define _STLP_VENDOR_EXCEPT_STD std
 
 // ensure _DEBUG is defined
-#if defined(DEBUG) && !defined(_DEBUG)
+# if defined(DEBUG) && !defined(_DEBUG)
 #   define _DEBUG
-#endif
-
-// warning suppress
-//# define _STLP_WCE_SUPPRESS_WRN
-//# ifdef _STLP_WCE_SUPPRESS_WRN
-// can't get rid of this using _msvc_warnings_off.h
-// seems it's needed to aim at prolog.h epilog.h coverage
-// _STLP_USE_ABBREVS needs some tweak as well to cover this
-//#undef _STLP_USE_ABBREVS  
-//#define _STLP_USE_ABBREVS 
-//# pragma warning( disable : 4786 )
-//# endif
-
-// TODO:
-// dynamic or static lib builds are not supported yet
-//# ifdef DLLSTLPORT_EXPORTS
-//#  define _STLP_USE_DYNAMIC_LIB
-//#  define _STLP_NO_ARROW_OPERATOR
-//# else
-//#  define _STLP_USE_STATIC_LIB
-//# endif
-
-
-// use of namespace
-// TODO: move to global config (fix with RTTI patch)
-# undef _STLP_NO_OWN_NAMESPACE
-# undef _STLP_DONT_RENAME_STD
-# undef _STLP_NO_NAMESPACES
-# undef _STLP_NO_RELOPS_NAMESPACE
-# define _STLP_USE_OWN_NAMESPACE
-
-// use debug mode
-# if 0 //defined(_DEBUG)
-#  define _STLP_DEBUG
-#  define _STLP_DEBUG_ALLOC
-#  define _STLP_DEBUG_UNINITIALIZED
-# else
-#  undef _STLP_DEBUG
-#  undef _STLP_DEBUG_ALLOC
-#  undef _STLP_DEBUG_UNINITIALIZED
 # endif
-# undef _STLP_USE_SYSTEM_ASSERT
-# undef _STLP_DEBUG_MESSAGE
-# undef _STLP_DEBUG_TERMINATE
-#ifndef _STLP_NO_DEBUG_EXCEPTIONS
-# define _STLP_NO_DEBUG_EXCEPTIONS
-#endif
 
+// threads
+# undef _REENTRANT
+#   define _REENTRANT
+# undef _NOTHREADS
 
-// exceptions
-# undef _STLP_NO_EXCEPTIONS
-# undef _STLP_NO_EXCEPTION_HEADER
-# undef _STLP_NO_BAD_ALLOC
+// use old fashioned headers (ctime vs. time.h)
+# undef _STLP_NO_NEW_C_HEADERS
+# define _STLP_NO_NEW_C_HEADERS
+
+// RTTI Bug support 
 # ifdef _STLP_RTTI_BUG
 #   define _STLP_NO_EXCEPTION_HEADER
 #   define _STLP_NO_EXCEPTIONS
 #   undef _STLP_USE_EXCEPTIONS
-# endif
-# undef _STLP_NO_TYPEINFO
-# define _STLP_NO_TYPEINFO
-
-// threads
-# undef _REENTRANT
-# define _REENTRANT
-# undef _NOTHREADS
-
-// native headers
-# undef _STLP_NO_NEW_C_HEADERS
-# define _STLP_NO_NEW_C_HEADERS
-
-// memory
-# undef _STLP_USE_RAW_SGI_ALLOCATORS
-# undef _STLP_USE_MALLOC
-# undef _STLP_USE_NEWALLOC
-
-
-// misc
-# undef _STLP_USE_MFC
-# undef _STLP_NO_FORCE_INSTANTIATE
-# define _STLP_NO_FORCE_INSTANTIATE
-
-// RTTI Bug support 
-# ifdef _STLP_RTTI_BUG
 #   ifdef _STLP_WINCE_USE_OUTPUTDEBUGSTRING
 #       define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
 #   else
@@ -148,10 +83,11 @@
 #   ifndef __THROW_BAD_ALLOC
 #       define __THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
 #   endif
+# else
+#   define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
 # endif
 
-//--- missin Windows CE .NET stuff
-
+// Missing Windows CE .NET things
 # ifndef _SIZE_T_DEFINED
     typedef unsigned int size_t;
 #   define _SIZE_T_DEFINED
@@ -165,21 +101,21 @@
 # ifndef _TIME_T_DEFINED
     typedef unsigned long time_t;
 #   define _TIME_T_DEFINED
-#endif
+# endif
 
-//ptrdiff_t is not defined in Windows CE SDK
+// ptrdiff_t is not defined in Windows CE SDK
 # ifndef _PTRDIFF_T_DEFINED
     typedef int ptrdiff_t;
 #   define _PTRDIFF_T_DEFINED
 # endif
 
-//clock_t is not defined in Windows CE SDK
+// clock_t is not defined in Windows CE SDK
 # ifndef _CLOCK_T_DEFINED
     typedef long clock_t;
 #   define _CLOCK_T_DEFINED
 # endif
 
-//struct tm is not defined in Windows CE SDK
+// Struct tm is not defined in Windows CE SDK
 # ifndef _TM_DEFINED
 struct tm {
         int tm_sec;     /* seconds after the minute - [0,59] */
@@ -195,8 +131,7 @@ struct tm {
 # define _TM_DEFINED
 # endif
 
-// struct for Windows CE FILE implementation
-// reverse hack
+// Struct for Windows CE FILE implementation reverse hack
 // this is ugly and could be danegerous in future Windows CE .NET SDKs
 # ifndef _FILECE_DEFINED
 typedef struct  {     
@@ -224,12 +159,11 @@ typedef _iobufce FILECE;
 # define _FILECE_DEFINED
 # endif
 
-
 // Some useful routines that are missing in Windows CE SDK
-#ifdef __cplusplus
+# ifdef __cplusplus
 extern "C"
 {
-#endif
+# endif
 
   char *      __cdecl getenv(const char *);
   struct tm * __cdecl gmtime(const time_t *);
@@ -237,14 +171,14 @@ extern "C"
   int         __cdecl rename(const char *, const char *);
   time_t      __cdecl time(time_t *);
 
-#ifdef __cplusplus
+# ifdef __cplusplus
 }
 
-#ifndef __PLACEMENT_NEW_INLINE
+# ifndef __PLACEMENT_NEW_INLINE
 inline void *__cdecl operator new(size_t, void *_P) { return (_P); }
 inline void __cdecl operator delete(void *, void *)    {return; }
-#define __PLACEMENT_NEW_INLINE
-#endif
+#   define __PLACEMENT_NEW_INLINE
+# endif
 
 // Only defined as macros in Windows CE SDK
 #include _STLP_NATIVE_C_HEADER(ctype.h)
@@ -262,7 +196,7 @@ inline int (isgraph)(int c) { return _isctype(c, _PUNCT|_ALPHA|_DIGIT); }
 inline int (iscntrl)(int c) { return _isctype(c, _CONTROL); }
 inline int (isascii)(int c) { return ((unsigned)(c) < 0x80); }
 
-#undef _isctype
+#   undef _isctype
 
 inline int (iswalpha)(int c) { return iswctype(c, _ALPHA); }
 inline int (iswupper)(int c) { return iswctype(c, _UPPER); }
@@ -277,38 +211,36 @@ inline int (iswgraph)(int c) { return iswctype(c, _PUNCT|_ALPHA|_DIGIT); }
 inline int (iswcntrl)(int c) { return iswctype(c, _CONTROL); }
 inline int (iswascii)(int c) { return ((unsigned)(c) < 0x80); }
 
-#endif /* __cplusplus */
+# endif /* __cplusplus */
 
-#if !defined(WIN32_LEAN_AND_MEAN)       // Minimise windows includes
-  #define WIN32_LEAN_AND_MEAN
-#endif
-#if !defined(VC_EXTRALEAN)
-  #define VC_EXTRALEAN
-#endif
-#if !defined(STRICT)
-  #define STRICT
-#endif
-#if !defined(NOMINMAX)
-  #define NOMINMAX
-#endif
+# if !defined(WIN32_LEAN_AND_MEAN)       // Minimise windows includes
+#   define WIN32_LEAN_AND_MEAN
+# endif
+# if !defined(VC_EXTRALEAN)
+#   define VC_EXTRALEAN
+# endif
+# if !defined(STRICT)
+#   define STRICT
+# endif
+# if !defined(NOMINMAX)
+#   define NOMINMAX
+# endif
 
-#ifndef __WINDOWS__
-#include <windows.h>
-#endif
+# ifndef __WINDOWS__
+#   include <windows.h>
+# endif
 
-#ifndef _ABORT_DEFINED
-# define _STLP_ABORT() TerminateProcess(GetCurrentProcess(), 0)
-# define _ABORT_DEFINED
-#endif
+# ifndef _ABORT_DEFINED
+#   define _STLP_ABORT() TerminateProcess(GetCurrentProcess(), 0)
+#   define _ABORT_DEFINED
+# endif
 
-#ifndef _ASSERT_DEFINED
-# define assert(expr) _STLP_ASSERT(expr)
-# define _ASSERT_DEFINED
-#endif
+# ifndef _ASSERT_DEFINED
+#   define assert(expr) _STLP_ASSERT(expr)
+#   define _ASSERT_DEFINED
+# endif
 
 // they say it's needed 
-# include <windows.h>
+#include <windows.h>
 
-#endif /* _STLP_WINCE_4_H */
-
-
+# endif /* _STLP_WINCE_4_H */

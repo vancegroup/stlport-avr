@@ -251,7 +251,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
      STLPORT_CSTD::va_list __args;
      va_start( __args, __format_str );
 
-# if defined (_STLP_WINCE)
+# if defined (_STLP_WINCE) || defined(_STLP_WCE_NET)
      TCHAR __buffer[512];
      int _convert = strlen(__format_str) + 1;
      LPWSTR _lpw = (LPWSTR)alloca(_convert*sizeof(wchar_t));

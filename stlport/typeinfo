@@ -45,15 +45,16 @@
 # if defined(_STLP_USE_NAMESPACES) && !defined(_STLP_OLDSTD_typeinfo) \
       && (defined(_STLP_VENDOR_GLOBAL_EXCEPT_STD) || \
           defined(_STLP_USE_OWN_NAMESPACE) || defined (_STLP_DEBUG))
-#  if defined(_STLP_MSVC) && (_STLP_MSVC <= 1200)
+#  if defined(_STLP_MSVC) && (_STLP_MSVC <= 1200) && !defined(_STLP_WCE_NET)
 class bad_cast : public exception {};
 #  endif
 
 _STLP_BEGIN_NAMESPACE
-// VC++ 6 has only this guy in ::
+// VC++ 6, eVC 4 has only this guy in ::
 // # if !(defined(_STLP_MSVC)&& (_STLP_MSVC <= 1200))
+#  ifndef _STLP_WCE_NET
 using _STLP_VENDOR_EXCEPT_STD::type_info;
-// # endif
+#  endif
 
 #  if !(defined(__MRC__) || defined(__SC__) || defined(__DMC__))
 using _STLP_VENDOR_EXCEPT_STD::bad_typeid;
@@ -63,7 +64,7 @@ using _STLP_VENDOR_EXCEPT_STD::bad_typeid;
 //# include <exception>
 //struct bad_cast : exception {};
 //#endif
-#  if defined(_STLP_MSVC) && (_STLP_MSVC <= 1200)
+#  if defined(_STLP_MSVC) && (_STLP_MSVC <= 1200) && !defined(_STLP_WCE_NET)
 using ::bad_cast;
 #  else
 using _STLP_VENDOR_EXCEPT_STD::bad_cast;

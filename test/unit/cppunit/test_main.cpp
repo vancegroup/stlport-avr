@@ -56,6 +56,8 @@ namespace CPPUNIT_NS
 # ifdef UNDER_CE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
+  //MessageBox(NULL, TEXT("Press Ok to start STLport testing..."), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
+
   int argc=1;
   size_t size=wcslen(lpCmdLine);
   char* buff=new char[size+1];
@@ -81,6 +83,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
       argv[argc][bp-start]=0;
       argc++;
     }
+  }
+
+  // set default output to stlp_test.txt if -f is not defined
+  bool f_supplied=false;
+  for(int i2=0; i2<argc; i2++){
+    if(argv[i2] && argv[i2][1] == 'f') {
+      f_supplied=true;
+      break;
+    }
+  }
+  if(!f_supplied) {
+    argc++;
+    argv[argc-1]=new char[18];
+    strncpy(argv[argc-1], "-f=/stlp_test.txt", 18);
   }
   
   delete[] buff;
@@ -122,6 +138,14 @@ int main(int argc, char** argv)
   delete reporter;
 
 # ifdef UNDER_CE
+  // let the user know we are done
+  /*
+  if(!num_errors)
+    MessageBox(NULL, TEXT("All STLport tests passed!"), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
+  else
+    MessageBox(NULL, TEXT("Some STLport tests failed! Check the output."), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
+  */
+
   // free args
   delete[] argv[1];
   delete[] argv[2];
