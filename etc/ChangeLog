@@ -68,6 +68,7 @@ The following changes were made in 4.5.1 beta 1 since 4.5 release:
 	
 	* debug/_vector.h : removed extra guard for MSCV around member template constructor (thanks Alberto Barbati)
 	
+	* _fstream.h : added extension basic_fstream<> constructors taking protection parameter (thanks Mukesh Kapoor for the idea)
 	
 	
 The following changes were made in 4.5 release since 4.5 beta 8 :

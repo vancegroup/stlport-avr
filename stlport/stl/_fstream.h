@@ -530,6 +530,14 @@ public:                         // Constructors, destructor.
     if (!_M_buf.open(__id, __mod | ios_base::in))
       this->setstate(ios_base::failbit);
   }
+  basic_ifstream(const char* __s, ios_base::openmode __m,
+		 long __protection) : 
+    basic_ios<_CharT, _Traits>(),  basic_istream<_CharT, _Traits>(0), _M_buf() {
+    this->init(&_M_buf);
+    if (!_M_buf.open(__s, __m | ios_base::in, __protection))
+      this->setstate(ios_base::failbit);  
+  }
+  
 # endif
 
   ~basic_ifstream() {}
@@ -597,8 +605,14 @@ public:                         // Constructors, destructor.
  	if (!_M_buf.open(__id, __mod | ios_base::out))
  	  this->setstate(ios_base::failbit);
   }
+  basic_ofstream(const char* __s, ios_base::openmode __m, long __protection) : 
+    basic_ios<_CharT, _Traits>(),  basic_ostream<_CharT, _Traits>(0), _M_buf() {
+    this->init(&_M_buf);
+    if (!_M_buf.open(__s, __m | ios_base::out, __protection))
+      this->setstate(ios_base::failbit);  
+  }
 # endif
-
+  
   ~basic_ofstream() {}
 
 public:                         // File and buffer operations.
@@ -663,6 +677,12 @@ public:                         // Constructors, destructor.
     this->init(&_M_buf);
     if (!_M_buf.open(__id, __mod))
       this->setstate(ios_base::failbit);
+  }
+  basic_fstream(const char* __s, ios_base::openmode __m, long __protection) : 
+    basic_ios<_CharT, _Traits>(),  basic_iostream<_CharT, _Traits>(0), _M_buf() {
+    this->init(&_M_buf);
+    if (!_M_buf.open(__s, __m, __protection))
+      this->setstate(ios_base::failbit);  
   }
 # endif    
   ~basic_fstream() {}
