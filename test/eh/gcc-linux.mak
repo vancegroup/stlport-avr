@@ -41,7 +41,7 @@ CXX = $(CC)
 # also, test_slist won't compile with -O3/-O2 when targeting PPC. It fails 
 # in the assembler with 'invalid relocation type'
 CXXFLAGS = -Wall ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW
-D_CXXFLAGS = -Wall -g -O ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D_STLP_DEBUG -D_STLP_USE_STATIC_LIB
+D_CXXFLAGS = -Wall -g ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -DEH_VECTOR_OPERATOR_NEW -D_STLP_DEBUG -D_STLP_USE_STATIC_LIB
 NOSGI_CXXFLAGS = -Wall -g -O2 ${STL_INCL} -I. ${CXX_EXTRA_FLAGS} -D_STLP_NO_OWN_IOSTREAMS -D_STLP_DEBUG_UNINITIALIZED -DEH_VECTOR_OPERATOR_NEW
 
 check: $(TEST)
@@ -105,8 +105,8 @@ obj/%.i : %.cpp
 	$(CXX) $(CXXFLAGS) $< -E -H > $@
 
 %.out: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -USINGLE -DMAIN -O3 -o $*.o
-	$(CXX) $(CXXFLAGS) $*.o $(LIBS) $(LIBSTLPORT)  -o $*
+	$(CXX) $(D_CXXFLAGS) $< -c -USINGLE -DMAIN -o $*.o
+	$(CXX) $(D_CXXFLAGS) $*.o $(LIBS) $(D_LIBSTLPORT)  -o $*
 	./$* > $@
 #	-rm -f $*
 

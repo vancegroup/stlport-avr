@@ -46,7 +46,7 @@ public:
   __IMPORT_WITH_REVERSE_ITERATORS(_Super)
     __IMPORT_SUPER_COPY_ASSIGNMENT(deque, _Self, _DEQUE_SUPER)
     deque() : _DEQUE_SUPER() { }
-  deque(size_type __n, const _Tp& __value) : _DEQUE_SUPER(__n, __value) { }
+  deque(size_type __n, const _Tp& __val) : _DEQUE_SUPER(__n, __val) { }
   explicit deque(size_type __n) : _DEQUE_SUPER(__n) { }
   deque(const _Tp* __first, const _Tp* __last) : _DEQUE_SUPER(__first, __last) { }
   deque(const_iterator __first, const_iterator __last) : _DEQUE_SUPER(__first, __last) { }

@@ -28,6 +28,10 @@
 #pragma warning 368 9
 #endif
 
+#ifndef _STLP_PTHREAD_ALLOC_H
+# include <stl/_pthread_alloc.h>
+#endif
+
 # if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
 # include <cerrno>
@@ -63,16 +67,22 @@ template <size_t _Max_size>
 _Pthread_alloc_per_thread_state<_Max_size> *
 _Pthread_alloc<_Max_size>::_S_get_per_thread_state()
 {
+
+    int __ret_code;
+    __state_type* __result;
+    
+    if (_S_key_initialized && (__result = (__state_type*) pthread_getspecific(_S_key)))
+      return __result;
+    
     /*REFERENCED*/
     _M_lock __lock_instance;	// Need to acquire lock here.
-    int __ret_code;
-    _Pthread_alloc_per_thread_state<_Max_size> * __result;
     if (!_S_key_initialized) {
-        if (pthread_key_create(&_S_key, _S_destructor)) {
-            __THROW_BAD_ALLOC;  // failed
-        }
-        _S_key_initialized = true;
+      if (pthread_key_create(&_S_key, _S_destructor)) {
+	__THROW_BAD_ALLOC;  // failed
+      }
+      _S_key_initialized = true;
     }
+
     __result = _S_new_per_thread_state();
     __ret_code = pthread_setspecific(_S_key, __result);
     if (__ret_code) {
@@ -91,7 +101,7 @@ _Pthread_alloc<_Max_size>::_S_get_per_thread_state()
 /* We assume that size is properly aligned.                             */
 template <size_t _Max_size>
 char *_Pthread_alloc<_Max_size>
-::_S_chunk_alloc(size_t __p_size, int &__nobjs)
+::_S_chunk_alloc(size_t __p_size, size_t &__nobjs)
 {
   {
     char * __result;
@@ -158,7 +168,7 @@ template <size_t _Max_size>
 void *_Pthread_alloc_per_thread_state<_Max_size>
 ::_M_refill(size_t __n)
 {
-    int __nobjs = 128;
+    size_t __nobjs = 128;
     char * __chunk =
 	_Pthread_alloc<_Max_size>::_S_chunk_alloc(__n, __nobjs);
     __obj * volatile * __my_free_list;
@@ -207,13 +217,13 @@ void *_Pthread_alloc<_Max_size>
     return(__result);
 }
 
-#if _STLP_STATIC_TEMPLATE_DATA > 0
+#if defined (_STLP_STATIC_TEMPLATE_DATA) && (_STLP_STATIC_TEMPLATE_DATA > 0)
 
 template <size_t _Max_size>
 _Pthread_alloc_per_thread_state<_Max_size> * _Pthread_alloc<_Max_size>::_S_free_per_thread_states = 0;
 
 template <size_t _Max_size>
-pthread_key_t _Pthread_alloc<_Max_size>::_S_key;
+pthread_key_t _Pthread_alloc<_Max_size>::_S_key =0;
 
 template <size_t _Max_size>
 bool _Pthread_alloc<_Max_size>::_S_key_initialized = false;
@@ -229,6 +239,16 @@ char *_Pthread_alloc<_Max_size>::_S_end_free = 0;
 
 template <size_t _Max_size>
 size_t _Pthread_alloc<_Max_size>::_S_heap_size = 0;
+
+ # else
+ 
+ __DECLARE_INSTANCE(template <size_t _Max_size> _Pthread_alloc_per_thread_state<_Max_size> *, _Pthread_alloc<_Max_size>::_S_free_per_thread_states, = 0);
+ __DECLARE_INSTANCE(template <size_t _Max_size> pthread_key_t, _Pthread_alloc<_Max_size>::_S_key, = 0);
+ __DECLARE_INSTANCE(template <size_t _Max_size> bool, _Pthread_alloc<_Max_size>::_S_key_initialized, = false);
+ __DECLARE_INSTANCE(template <size_t _Max_size> char *, _Pthread_alloc<_Max_size>::_S_start_free, = 0);
+ __DECLARE_INSTANCE(template <size_t _Max_size> char *, _Pthread_alloc<_Max_size>::_S_end_free, = 0);
+ __DECLARE_INSTANCE(template <size_t _Max_size> size_t, _Pthread_alloc<_Max_size>::_S_heap_size, = 0);
+
 # endif
 
 _STLP_END_NAMESPACE

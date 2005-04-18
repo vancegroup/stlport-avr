@@ -26,6 +26,10 @@
 #ifndef _STLP_TEMPBUF_C
 #define _STLP_TEMPBUF_C
 
+#ifndef _STLP_INTERNAL_TEMPBUF_H
+# include <stl/_tempbuf.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>

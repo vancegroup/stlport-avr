@@ -50,7 +50,7 @@ HP_VERSION=$(shell uname -r)
 ifeq (${HP_VERSION},B.10.20)
 PTHREAD_LIB=-lcma
 else
-PTHREAD_LIB=-lpthread
+PTHREAD_LIB=-lpthread +nostl
 endif
 
 LIBS = $(PTHREAD_LIB) -lm

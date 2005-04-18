@@ -42,7 +42,8 @@ extern basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_istreambuf(basic_istr
 // used. Calls to operator++ use sbumpc.
 
 template<class _CharT, class _Traits>
-class istreambuf_iterator
+class istreambuf_iterator : 
+  public iterator<input_iterator_tag, _CharT, typename _Traits::off_type, _CharT*, _CharT&>
 {
 public:
   typedef _CharT                           char_type;
@@ -63,7 +64,12 @@ public:
   inline istreambuf_iterator(basic_istream<_CharT, _Traits>& __is);
 
   char_type operator*() const { this->_M_getc(); return _M_c; }
-  istreambuf_iterator<_CharT, _Traits>& operator++() { this->_M_bumpc(); return *this; }
+  istreambuf_iterator<_CharT, _Traits>& operator++()
+      {
+        _M_buf->sbumpc();
+        _M_have_c = false;
+        return *this;
+      }
   istreambuf_iterator<_CharT, _Traits>  operator++(int);
 
   bool equal(const istreambuf_iterator<_CharT, _Traits>& __i) const {
@@ -77,8 +83,7 @@ public:
 private:
   void _M_init(streambuf_type* __p) {
     _M_buf = __p;
-    _M_eof = !__p;
-    //    _M_is_initialized = _M_eof;
+    _M_eof = (__p == 0);
     _M_have_c = false;
   }
 
@@ -99,16 +104,11 @@ private:
 # endif
   }
 
-  void _M_bumpc() {
-    _M_buf->sbumpc();
-    _M_have_c = false;
-  }
-
 private:
   streambuf_type* _M_buf;
   mutable _CharT _M_c;
-  mutable unsigned char _M_eof;
-  mutable unsigned char _M_have_c;
+  mutable bool _M_eof;
+  mutable bool _M_have_c;
 };
 
 template<class _CharT, class _Traits>
@@ -151,9 +151,12 @@ inline _CharT* _STLP_CALL value_type(const istreambuf_iterator<_CharT, _Traits>&
 template <class _CharT, class _Traits>
 istreambuf_iterator<_CharT, _Traits>
 istreambuf_iterator<_CharT, _Traits>::operator++(int) {
+  _M_getc(); // __tmp should avoid any future actions under
+  // underlined buffer---during call of operator *()
+  // (due to buffer for *this and __tmp are the same).
   istreambuf_iterator<_CharT, _Traits> __tmp = *this;
-  this->_M_bumpc();
-  this->_M_have_c = false;
+  _M_buf->sbumpc();
+  _M_have_c = false;
   return __tmp;
 }
 

@@ -30,7 +30,7 @@ TEST  = eh_test.out
 CC = CC
 CXX = $(CC)
 
-CXXFLAGS = ${STL_INCL} -xarch=v9 -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC -xildoff -g -D_REENTRANT
+CXXFLAGS = ${STL_INCL} -xarch=v9 -library=no%Cstd -features=rtti -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC -xildoff -g -D_REENTRANT -DNO_FAST_ALLOCATOR
 
 # This is to test with native STL
 # CXXFLAGS = +w2 -xildoff -D_STLP_USE_NEWALLOC -DEH_NO_SGI_STL -DEH_NEW_HEADERS -DEH_VECTOR_OPERATOR_NEW -DEH_DELETE_HAS_THROW_SPEC
