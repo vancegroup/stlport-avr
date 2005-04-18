@@ -23,7 +23,6 @@ _STLP_BEGIN_NAMESPACE
 # ifndef _STLP_NO_FORCE_INSTANTIATE
 
 // Force instantiation of stringstream classes.
-
 template class _STLP_CLASS_DECLSPEC basic_stringbuf<char, char_traits<char>, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC basic_ostringstream<char, char_traits<char>, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC basic_istringstream<char, char_traits<char>, allocator<char> >;
