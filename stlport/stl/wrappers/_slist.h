@@ -38,9 +38,7 @@
 # endif
 
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
  
 // provide a "default" list adaptor
 template <class _Tp>
@@ -51,7 +49,7 @@ public:
     __IMPORT_WITH_ITERATORS(_Super)
     __IMPORT_SUPER_COPY_ASSIGNMENT(slist, slist<_Tp>, __SL_SUPER)
     slist() { }
-    explicit slist(size_type __n, const _Tp& __value) : __SL_SUPER(__n, __value) { }
+    explicit slist(size_type __n, const _Tp& __val) : __SL_SUPER(__n, __val) { }
     explicit slist(size_type __n) :  __SL_SUPER(__n) { } 
     slist(const _Tp* __first, const _Tp* __last) : __SL_SUPER(__first, __last) { } 
     slist(const_iterator __first, const_iterator __last) : __SL_SUPER(__first, __last) { }
@@ -72,9 +70,7 @@ inline bool operator<(const slist<_Tp>& __x, const slist<_Tp>& __y) {
 #  endif
 #  undef __SL_SUPER
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_WRAP_SLIST_H */
 

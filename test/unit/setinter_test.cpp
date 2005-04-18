@@ -1,6 +1,5 @@
 #include <numeric>
 #include <string>
-#include <sstream>
 #include <iterator>
 #include <vector>
 #include <algorithm>
@@ -46,31 +45,33 @@ void SetIntersectionTest::setintr0()
   CPPUNIT_ASSERT(result[2]==0);
   CPPUNIT_ASSERT(result[3]==0);
 }
+
 void SetIntersectionTest::setintr1()
 {
   vector <int> v1(10);
   iota(v1.begin(), v1.end(), 0);
   vector <int> v2(10);
   iota(v2.begin(), v2.end(), 7);
-  ostringstream os;
-  ostream_iterator <int> iter(os, " ");
 
-  set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), iter);
-
-  stringbuf* buff=os.rdbuf();
-  string result=buff->str();
-  CPPUNIT_ASSERT(!strcmp(result.c_str(), "7 8 9 "));
-
+  vector<int> inter;
+  set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(inter));
+  CPPUNIT_ASSERT( inter.size() == 3 );
+  CPPUNIT_ASSERT( inter[0] == 7 );
+  CPPUNIT_ASSERT( inter[1] == 8 );
+  CPPUNIT_ASSERT( inter[2] == 9 );
 }
+
 void SetIntersectionTest::setintr2()
 {
   char* word1 = "ABCDEFGHIJKLMNO";
   char* word2 = "LMNOPQRSTUVWXYZ";
 
-  ostringstream os;
-  ostream_iterator <char> iter(os, " ");
-  set_intersection(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2), iter, less<char>());
-  stringbuf* buff=os.rdbuf();
-  string result=buff->str();
-  CPPUNIT_ASSERT(!strcmp(result.c_str(), "L M N O "));
+  string inter;
+  set_intersection(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),
+                   back_inserter(inter), less<char>());
+  CPPUNIT_ASSERT( inter.size() == 4 );
+  CPPUNIT_ASSERT( inter[0] == 'L' );
+  CPPUNIT_ASSERT( inter[1] == 'M' );
+  CPPUNIT_ASSERT( inter[2] == 'N' );
+  CPPUNIT_ASSERT( inter[3] == 'O' );
 }

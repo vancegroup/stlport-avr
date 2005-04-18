@@ -55,7 +55,7 @@ void MultisetTest::mset1()
 
   i = s.find(42);
   CPPUNIT_ASSERT(i != s.end());
-  int count = s.erase(42);
+  size_t count = s.erase(42);
   CPPUNIT_ASSERT(count == 2);
 }
 void MultisetTest::mset3()
@@ -79,9 +79,12 @@ void MultisetTest::mset3()
   CPPUNIT_ASSERT(*ci == 3);
   ci = s.upper_bound(3);
   CPPUNIT_ASSERT(*ci == 6);
-  pair<mset::const_iterator, mset::const_iterator> cp = s.equal_range(5);
+  pair<mset::const_iterator, mset::const_iterator> cp;
+#ifdef _STLP_MEMBER_TEMPLATES
+  cp = s.equal_range(5);
   CPPUNIT_ASSERT(*(cp.first) == 6);
   CPPUNIT_ASSERT(*(cp.second) == 6);
+#endif
 
   //Check const_iterator on a const multiset
   mset const& crs = s;

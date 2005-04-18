@@ -28,11 +28,11 @@
 #  pragma once
 # endif
 
-# if defined (_STLP_OWN_IOSTREAMS)
+#include <stl/_ioserr.h>
 
 #ifdef _STLP_REDIRECT_STDSTREAMS
 // for ofstream redirection
-#include <fstream>
+# include <fstream>
 #endif
 
 #include <stl/_iosfwd.h>
@@ -75,27 +75,10 @@ extern _STLP_DECLSPEC wostream wcerr;
 extern _STLP_DECLSPEC wostream wclog;
 # endif
 
-//# ifndef __LOCALE_INITIALIZED
-//#  define __LOCALE_INITIALIZED
-// Global initializer object, to ensure initialization of locale subsystem.
-//static ios_base::_Loc_init _LocInit;
-//# endif
-
-//# ifndef __IOS_BASE_INITIALIZED
-//#  define __IOS_BASE_INITIALIZED
-// Global initializer object, to ensure construction of static objects.
-//static ios_base::Init _IosInit;
-//# endif
-
 _STLP_END_NAMESPACE
 
-# elif defined ( _STLP_USE_NO_IOSTREAMS )
-#  include <stl/_null_stream.h>
-# else
-
-#  include <wrap_std/iostream>
-
-# endif /* STL_USE_NO_IOSTREAMS */
+//# elif defined ( _STLP_USE_NO_IOSTREAMS )
+//#  include <stl/_null_stream.h>
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1037)
 #  include <stl/_epilog.h>

@@ -19,22 +19,22 @@
 #ifndef _STLP_VALARRAY_H
 #define _STLP_VALARRAY_H
 
-#ifndef _STLP_CMATH_H_HEADER
-#include <stl/_cmath.h>
+#ifndef _STLP_CMATH
+#  include <cmath>
 #endif
 
 #ifndef _STLP_NEW_HEADER
-#include <new>
+#  include <new>
 #endif
 
 #ifndef _STLP_INTERNAL_ALGO_H
-#include <stl/_algo.h>
+#  include <stl/_algo.h>
 #endif
 #ifndef _STLP_INTERNAL_NUMERIC_H
-#include <stl/_numeric.h>
+#  include <stl/_numeric.h>
 #endif
 #ifndef _STLP_LIMITS_H
-#include <limits>
+#  include <limits>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -72,12 +72,12 @@ struct _Valarray_base
     if (__n != 0) {
       _M_first = __STATIC_CAST(_Tp*, (malloc(__n * sizeof(_Tp))));
       _M_size  = __n;
-#   if !defined(_STLP_NO_BAD_ALLOC) && defined(_STLP_USE_EXCEPTIONS)
+#if !defined(_STLP_NO_BAD_ALLOC) && defined(_STLP_USE_EXCEPTIONS)
       if (_M_first == 0) {
         _M_size = 0;
         throw _STLP_STD::bad_alloc();
       }
-#   endif
+#endif
     }
     else {
       _M_first = 0;
@@ -885,7 +885,7 @@ inline valarray<_Tp> abs(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ABS(_Tp)(__x[__i]);
+    __tmp[__i] = abs(__x[__i]);
   return __tmp;
 }
 
@@ -894,7 +894,7 @@ inline valarray<_Tp> acos(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ACOS(_Tp)(__x[__i]);
+    __tmp[__i] = acos(__x[__i]);
   return __tmp;
 }
 
@@ -903,7 +903,7 @@ inline valarray<_Tp> asin(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ASIN(_Tp)(__x[__i]);
+    __tmp[__i] = asin(__x[__i]);
   return __tmp;
 }
 
@@ -912,7 +912,7 @@ inline valarray<_Tp> atan(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ATAN(_Tp)(__x[__i]);
+    __tmp[__i] = atan(__x[__i]);
   return __tmp;
 }
 
@@ -922,7 +922,7 @@ inline valarray<_Tp> atan2(const valarray<_Tp>& __x,
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ATAN2(_Tp)(__x[__i], __y[__i]);
+    __tmp[__i] = atan2(__x[__i], __y[__i]);
   return __tmp;
 }
 
@@ -931,7 +931,7 @@ inline valarray<_Tp> atan2(const valarray<_Tp>& __x, const _Tp& __c) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ATAN2(_Tp)(__x[__i], __c);
+    __tmp[__i] = atan2(__x[__i], __c);
   return __tmp;
 }
 
@@ -940,7 +940,7 @@ inline valarray<_Tp> atan2(const _Tp& __c, const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_ATAN2(_Tp)(__c, __x[__i]);
+    __tmp[__i] = atan2(__c, __x[__i]);
   return __tmp;
 }
 
@@ -949,7 +949,7 @@ inline valarray<_Tp> cos(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_COS(_Tp)(__x[__i]);
+    __tmp[__i] = cos(__x[__i]);
   return __tmp;
 }
 
@@ -958,7 +958,7 @@ inline valarray<_Tp> cosh(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_COSH(_Tp)(__x[__i]);
+    __tmp[__i] = cosh(__x[__i]);
   return __tmp;
 }
 
@@ -967,7 +967,7 @@ inline valarray<_Tp> exp(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_EXP(_Tp)(__x[__i]);
+    __tmp[__i] = exp(__x[__i]);
   return __tmp;
 }
 
@@ -976,7 +976,7 @@ inline valarray<_Tp> log(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_LOG(_Tp)(__x[__i]);
+    __tmp[__i] = log(__x[__i]);
   return __tmp;
 }
 
@@ -985,17 +985,17 @@ inline valarray<_Tp> log10(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_LOG10(_Tp)(__x[__i]);
+    __tmp[__i] = log10(__x[__i]);
   return __tmp;
 }
 
 template <class _Tp>
 inline valarray<_Tp> pow(const valarray<_Tp>& __x,
-                           const valarray<_Tp>& __y) {
+                         const valarray<_Tp>& __y) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_POW(_Tp)(__x[__i], __y[__i]);
+    __tmp[__i] = pow(__x[__i], __y[__i]);
   return __tmp;
 }
 
@@ -1004,7 +1004,7 @@ inline valarray<_Tp> pow(const valarray<_Tp>& __x, const _Tp& __c) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_POW(_Tp)(__x[__i], __c);
+    __tmp[__i] = pow(__x[__i], __c);
   return __tmp;
 }
 
@@ -1013,7 +1013,7 @@ inline valarray<_Tp> pow(const _Tp& __c, const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_POW(_Tp)(__c, __x[__i]);
+    __tmp[__i] = pow(__c, __x[__i]);
   return __tmp;
 }
 
@@ -1022,7 +1022,7 @@ inline valarray<_Tp> sin(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_SIN(_Tp)(__x[__i]);
+    __tmp[__i] = sin(__x[__i]);
   return __tmp;
 }
 
@@ -1031,7 +1031,7 @@ inline valarray<_Tp> sinh(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_SINH(_Tp)(__x[__i]);
+    __tmp[__i] = sinh(__x[__i]);
   return __tmp;
 }
 
@@ -1040,7 +1040,7 @@ inline valarray<_Tp> sqrt(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_SQRT(_Tp)(__x[__i]);
+    __tmp[__i] = sqrt(__x[__i]);
   return __tmp;
 }
 
@@ -1049,7 +1049,7 @@ inline valarray<_Tp> tan(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_TAN(_Tp)(__x[__i]);
+    __tmp[__i] = tan(__x[__i]);
   return __tmp;
 }
 
@@ -1058,7 +1058,7 @@ inline valarray<_Tp> tanh(const valarray<_Tp>& __x) {
   typedef typename valarray<_Tp>::_NoInit _NoInit;
   valarray<_Tp> __tmp(__x.size(), _NoInit());
   for (size_t __i = 0; __i < __x.size(); ++__i)
-    __tmp[__i] = _STLP_DO_TANH(_Tp)(__x[__i]);
+    __tmp[__i] = tanh(__x[__i]);
   return __tmp;
 }
 
@@ -1206,8 +1206,7 @@ private:                        // Disable assignment and default constructor
 
 template <class _Tp>
 inline valarray<_Tp>::valarray(const slice_array<_Tp>& __x)
-  : _Valarray_base<_Tp>(__x._M_slice.size())
-{
+  : _Valarray_base<_Tp>(__x._M_slice.size()) {
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor
           _Is_Trivial;
   _M_initialize(_Is_Trivial());  
@@ -1400,8 +1399,7 @@ private:                        // Disable assignment
 
 template <class _Tp>
 inline valarray<_Tp>::valarray(const gslice_array<_Tp>& __x)
-  : _Valarray_base<_Tp>(__x._M_gslice._M_size())
-{
+  : _Valarray_base<_Tp>(__x._M_gslice._M_size()) {
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor
           _Is_Trivial;
   _M_initialize(_Is_Trivial());  

@@ -19,6 +19,13 @@ inline void* memmove(void* dst, const void* src, size_t len)
 
 #   endif
 
+#  ifndef _STLP_WCE
+// these functions just don't exist on Windows CE
+using _STLP_VENDOR_CSTD::strcoll;
+using _STLP_VENDOR_CSTD::strerror;
+using _STLP_VENDOR_CSTD::strxfrm;
+#  endif
+
 # if ! defined (__BORLANDC__)
 using _STLP_VENDOR_CSTD::memchr;
 using _STLP_VENDOR_CSTD::strchr;
@@ -36,12 +43,10 @@ using _STLP_VENDOR_CSTD::strcat;
 using _STLP_VENDOR_CSTD::strcmp;
 # endif
 
-using _STLP_VENDOR_CSTD::strcoll;
 # if !defined (strcpy)
 using _STLP_VENDOR_CSTD::strcpy;
 # endif
 using _STLP_VENDOR_CSTD::strcspn;
-using _STLP_VENDOR_CSTD::strerror;
 using _STLP_VENDOR_CSTD::strlen;
 using _STLP_VENDOR_CSTD::strncat;
 using _STLP_VENDOR_CSTD::strncmp;
@@ -50,5 +55,4 @@ using _STLP_VENDOR_CSTD::strncpy;
 using _STLP_VENDOR_CSTD::strspn;
 
 using _STLP_VENDOR_CSTD::strtok;
-using _STLP_VENDOR_CSTD::strxfrm;
 #  endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */

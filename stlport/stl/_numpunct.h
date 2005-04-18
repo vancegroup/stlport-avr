@@ -47,15 +47,16 @@ template <class _Ch, class _InIt> class num_get;
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC numpunct<char> : public locale::facet
 {
-  friend class _Locale;
-# ifndef _STLP_NO_FRIEND_TEMPLATES
+  friend class _Locale_impl;
+
+#ifndef _STLP_NO_FRIEND_TEMPLATES
   template <class _Ch, class _InIt> friend class num_get;
-# endif
+#endif
 public:
   typedef char               char_type;
   typedef string             string_type;
 
-  explicit numpunct(size_t __refs = 0) : _BaseFacet(__refs) {}
+  explicit numpunct(size_t __refs = 0) : locale::facet(__refs) {}
 
   char decimal_point() const { return do_decimal_point(); }
   char thousands_sep() const { return do_thousands_sep(); }
@@ -65,9 +66,9 @@ public:
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
-# ifndef _STLP_NO_FRIEND_TEMPLATES
+#ifndef _STLP_NO_FRIEND_TEMPLATES
 protected:
-# endif
+#endif
   ~numpunct();
 
   static _STLP_STATIC_MEMBER_DECLSPEC string  _M_truename;
@@ -86,12 +87,12 @@ protected:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC numpunct<wchar_t> : public locale::facet
 {
-  friend class _Locale;
+  friend class _Locale_impl;
 public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit numpunct(size_t __refs = 0) : _BaseFacet(__refs) {}
+  explicit numpunct(size_t __refs = 0) : locale::facet(__refs) {}
 
   wchar_t decimal_point() const { return do_decimal_point(); }
   wchar_t thousands_sep() const { return do_thousands_sep(); }
@@ -135,6 +136,11 @@ protected:
 
 private:
   _Locale_numeric* _M_numeric;
+
+  //explicitely defined as private to avoid warnings:
+  typedef numpunct_byname<char> _Self;
+  numpunct_byname(_Self const&);
+  _Self& operator = (_Self const&);
 };
 
 # ifndef _STLP_NO_WCHAR_T
@@ -156,6 +162,11 @@ protected:
 
 private:
   _Locale_numeric* _M_numeric;
+
+  //explicitely defined as private to avoid warnings:
+  typedef numpunct_byname<wchar_t> _Self;
+  numpunct_byname(_Self const&);
+  _Self& operator = (_Self const&);
 };
 
 # endif /* WCHAR_T */

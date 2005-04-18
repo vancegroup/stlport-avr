@@ -19,29 +19,25 @@
 #define _STLP_INTERNAL_ISTREAM_H
 
 // this block is included by _ostream.h, we include it here to lower #include level
-# if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR_H)
+#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR_H)
 #  include <stl/_cwchar.h>
-# endif
+#endif
 
-# ifndef _STLP_INTERNAL_IOS_H
+#ifndef _STLP_INTERNAL_IOS_H
 #  include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.
-# endif
+#endif
 
 #ifndef _STLP_INTERNAL_OSTREAM_H
-# include <stl/_ostream.h>              // Needed as a base class of basic_iostream.
+#  include <stl/_ostream.h>              // Needed as a base class of basic_iostream.
 #endif
 
 #ifndef _STLP_INTERNAL_ISTREAMBUF_ITERATOR_H
-# include <stl/_istreambuf_iterator.h>
+#  include <stl/_istreambuf_iterator.h>
 #endif
 
 #include <stl/_ctraits_fns.h>    // Helper functions that allow char traits
                                 // to be used as function objects.
 _STLP_BEGIN_NAMESPACE
-
-template <class _CharT, class _Traits, class _Number> 
-ios_base::iostate _STLP_CALL
-_M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val);
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 template <class _CharT, class _Traits>
@@ -51,9 +47,9 @@ class _Isentry;
 struct _No_Skip_WS {};        // Dummy class used by sentry.
 
 template <class _CharT, class _Traits>
-bool _M_init_skip(basic_istream<_CharT, _Traits>& __is);
+bool _M_init_skip(basic_istream<_CharT, _Traits>& __istr);
 template <class _CharT, class _Traits>
-bool _M_init_noskip(basic_istream<_CharT, _Traits>& __is);
+bool _M_init_noskip(basic_istream<_CharT, _Traits>& __istr);
 
 //----------------------------------------------------------------------
 // Class basic_istream, a class that performs formatted input through
@@ -65,6 +61,14 @@ bool _M_init_noskip(basic_istream<_CharT, _Traits>& __is);
 
 template <class _CharT, class _Traits>
 class basic_istream : virtual public basic_ios<_CharT, _Traits> {
+  typedef basic_istream<_CharT, _Traits> _Self;
+
+#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1300 && _STLP_MSVC <= 1310)
+  //explicitely defined as private to avoid warnings:
+  basic_istream(_Self const&);
+  _Self& operator = (_Self const&);
+#endif
+  
 public:
                          // Types
   typedef _CharT                     char_type;
@@ -73,7 +77,6 @@ public:
   typedef typename _Traits::off_type off_type;
   typedef _Traits                    traits_type;
   typedef basic_ios<_CharT, _Traits>     _Basic_ios;
-  typedef basic_istream<_CharT, _Traits> _Self;
 
   typedef basic_ios<_CharT, _Traits>& (_STLP_CALL *__ios_fn)(basic_ios<_CharT, _Traits>&);
   typedef ios_base& (_STLP_CALL *__ios_base_fn)(ios_base&);
@@ -95,53 +98,25 @@ public:                         // Hooks for manipulators.  The arguments are
   _Self& operator>> (__ios_base_fn __f) { __f(*this); return *this; }
 
 public:                         // Formatted input of numbers.
-  _Self& operator>> (short& __val) {
-    long __lval;
-    unsigned short __uval;
-    _M_get_num(*this, __lval);
-    if ( this->fail() ) {
-      return *this;
-    }
-    __val = __STATIC_CAST(short, __lval);
-    __uval = __lval;
-    // check if we lose digits
-    //    if ((__val != __lval) && ((unsigned short)__val != __lval))
-    if ((__val != __lval) && ((long)__uval != __lval))
-      this->setstate(ios_base::failbit); 
-    return *this; 
-  }
-  _Self& operator>> (int& __val) { 
-    long __lval;
-    unsigned int __uval;
-    _M_get_num(*this, __lval);
-    if ( this->fail() ) {
-      return *this;
-    }
-    __val = __lval;
-    __uval = __lval;
-    // check if we lose digits
-    //    if ((__val != __lval) && ((unsigned int)__val != __lval))
-    if ((__val != __lval) && ((long)__uval != __lval))
-      this->setstate(ios_base::failbit); 
-    return *this;
-  }
-  _Self& operator>> (unsigned short& __val) { _M_get_num(*this, __val); return *this; }
-  _Self& operator>> (unsigned int& __val) { _M_get_num(*this, __val); return *this; }
-  _Self& operator>> (long& __val) { _M_get_num(*this, __val); return *this; }
-  _Self& operator>> (unsigned long& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (short& __val);
+  _Self& operator>> (int& __val);
+  _Self& operator>> (unsigned short& __val);
+  _Self& operator>> (unsigned int& __val);
+  _Self& operator>> (long& __val);
+  _Self& operator>> (unsigned long& __val);
 #ifdef _STLP_LONG_LONG
-  _Self& operator>> (_STLP_LONG_LONG& __val) { _M_get_num(*this, __val); return *this; }
-  _Self& operator>> (unsigned _STLP_LONG_LONG& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (_STLP_LONG_LONG& __val);
+  _Self& operator>> (unsigned _STLP_LONG_LONG& __val);
 #endif 
-  _Self& operator>> (float& __val)  { _M_get_num(*this, __val); return *this; }
-  _Self& operator>> (double& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (float& __val);
+  _Self& operator>> (double& __val);
 # ifndef _STLP_NO_LONG_DOUBLE
-  _Self& operator>> (long double& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (long double& __val);
 # endif
 # ifndef _STLP_NO_BOOL
-  _Self& operator>> (bool& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (bool& __val);
 # endif
-  _Self& operator>> (void*& __val) { _M_get_num(*this, __val); return *this; }
+  _Self& operator>> (void*& __val);
 
 public:                         // Copying characters into a streambuf.
   _Self& operator>>(basic_streambuf<_CharT, _Traits>*);
@@ -223,24 +198,25 @@ class _Isentry {
   public:
     typedef _Traits traits_type;
     
-    explicit sentry(basic_istream<_CharT, _Traits>& __is,
+    explicit sentry(basic_istream<_CharT, _Traits>& __istr,
                     bool __noskipws = false) : 
-      _M_ok((__noskipws || !(__is.flags() & ios_base::skipws)) ? _M_init_noskip(__is) :  _M_init_skip(__is) )
-      /* , _M_buf(__is.rdbuf()) */
+      _M_ok((__noskipws || !(__istr.flags() & ios_base::skipws)) ? _M_init_noskip(__istr) : _M_init_skip(__istr) )
+      /* , _M_buf(__istr.rdbuf()) */
       {}
     
     // Calling this constructor is the same as calling the previous one with 
     // __noskipws = true, except that it doesn't require a runtime test.
-    sentry(basic_istream<_CharT, _Traits>& __is, _No_Skip_WS) : /* _M_buf(__is.rdbuf()), */
-      _M_ok(_M_init_noskip(__is)) {}
+    sentry(basic_istream<_CharT, _Traits>& __istr, _No_Skip_WS) : /* _M_buf(__istr.rdbuf()), */
+      _M_ok(_M_init_noskip(__istr)) {}
     
     ~sentry() {}
     
     operator bool() const { return _M_ok; }
     
   private:                        // Disable assignment and copy constructor.
+    //Implementation is here only to avoid warning with some compilers.
     sentry(const _Self&) : _M_ok(false) {}
-    void operator=(const _Self&) {}
+    _Self& operator=(const _Self&) { return *this; }
   };
   
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -260,7 +236,6 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_istream<wchar_t, char_traits<wchar_t> >;
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 // Non-member character and string extractor functions.
-
 template <class _CharT, class _Traits>
 inline basic_istream<_CharT, _Traits>& _STLP_CALL  
 operator>>(basic_istream<_CharT, _Traits>& __in, _CharT& __c) {
@@ -307,19 +282,47 @@ operator>>(basic_istream<char, _Traits>& __in, signed char* __s) {
 // istream manipulator.
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& _STLP_CALL
-ws(basic_istream<_CharT, _Traits>& __is) {
+ws(basic_istream<_CharT, _Traits>& __istr) {
   typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
-  _Sentry __sentry(__is, _No_Skip_WS()); // Don't skip whitespace.
+  _Sentry __sentry(__istr, _No_Skip_WS()); // Don't skip whitespace.
   if (__sentry)
-    __is._M_skip_whitespace(false);
-  return __is;
+    __istr._M_skip_whitespace(false);
+  return __istr;
 }
 
+// Helper functions for istream<>::sentry constructor.
+template <class _CharT, class _Traits>
+inline bool _M_init_skip(basic_istream<_CharT, _Traits>& __istr) {
+  if (__istr.good()) {
+    if (__istr.tie())
+      __istr.tie()->flush();
+    
+    __istr._M_skip_whitespace(true);
+  }
+  
+  if (!__istr.good()) {
+    __istr.setstate(ios_base::failbit);
+    return false;
+  } else
+    return true;
+}
 
+template <class _CharT, class _Traits>
+inline bool _M_init_noskip(basic_istream<_CharT, _Traits>& __istr) {
+  if (__istr.good()) {
+    if (__istr.tie())
+      __istr.tie()->flush();
+    
+    if (!__istr.rdbuf())
+      __istr.setstate(ios_base::badbit);
+  }
+  else
+    __istr.setstate(ios_base::failbit);
+  return __istr.good();
+}
 
 //----------------------------------------------------------------------
 // Class iostream.
-
 template <class _CharT, class _Traits>
 class basic_iostream 
   : public basic_istream<_CharT, _Traits>,
@@ -334,22 +337,21 @@ public:
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_iostream<char, char_traits<char> >;
+
 #  if ! defined (_STLP_NO_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS basic_iostream<wchar_t, char_traits<wchar_t> >;
 #  endif
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 template <class _CharT, class _Traits>
-basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_istreambuf(basic_istream<_CharT, _Traits>& __is) 
-{
-  return __is.rdbuf();
-}
+basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_istreambuf(basic_istream<_CharT, _Traits>& __istr) 
+{ return __istr.rdbuf(); }
 
 _STLP_END_NAMESPACE
 
-# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_istream.c>
-# endif
+#endif
 
 #endif /* _STLP_INTERNAL_ISTREAM_H */
 

@@ -1,6 +1,6 @@
 /***********************************************************************************
-	TestClass.cpp
-	
+  TestClass.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -15,21 +15,10 @@
 ***********************************************************************************/
 #include "TestClass.h"
 
-# if defined (EH_NEW_IOSTREAMS)
 #include <iostream>
-# else
-#include <iostream.h>
-# endif
 
-# ifdef EH_NEW_IOSTREAMS
-EH_STD::ostream& 
-operator << (EH_STD::ostream& s, 
-	     const TestClass& t) { 
-  return s<<t.value(); 
+std::ostream& operator << (std::ostream& s, const TestClass& t) { 
+  return s << t.value();
 } 
 
-# else
-ostream& 
-operator << (ostream& s, const TestClass& t) { return s<<t.value(); } 
-# endif
 

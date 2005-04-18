@@ -97,12 +97,6 @@ struct _List_iterator_base {
 
   void _M_incr() { _M_node = _M_node->_M_next; }
   void _M_decr() { _M_node = _M_node->_M_prev; }
-  bool operator==(const _List_iterator_base& __y ) const {
-    return _M_node == __y._M_node;
-  }
-  bool operator!=(const _List_iterator_base& __y ) const {
-    return _M_node != __y._M_node;
-  }
 };
 
 
@@ -112,9 +106,11 @@ struct _List_iterator : public _List_iterator_base {
   typedef typename _Traits::pointer    pointer;
   typedef typename _Traits::reference  reference;
 
-  typedef _List_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
-  typedef _List_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
-  typedef _List_iterator<_Tp, _Traits>                _Self;
+  typedef _List_iterator<_Tp, _Traits>         _Self;
+  typedef typename _Traits::_NonConstTraits    _NonConstTraits;
+  typedef _List_iterator<_Tp, _NonConstTraits> iterator;
+  typedef typename _Traits::_ConstTraits       _ConstTraits;
+  typedef _List_iterator<_Tp, _ConstTraits>    const_iterator;
 
   typedef bidirectional_iterator_tag iterator_category;
   typedef _List_node<_Tp> _Node;
@@ -123,6 +119,7 @@ struct _List_iterator : public _List_iterator_base {
 
   _List_iterator(_List_node_base* __x) : _List_iterator_base(__x) {}
   _List_iterator() : _List_iterator_base(0) {}
+  //copy constructor for iterator and constructor from iterator for const_iterator
   _List_iterator(const iterator& __x) :  _List_iterator_base(__x._M_node) {}
 
   reference operator*() const { return __STATIC_CAST(_Node*, this->_M_node)->_M_data; }
@@ -147,7 +144,24 @@ struct _List_iterator : public _List_iterator_base {
     this->_M_decr();
     return __tmp;
   }
+  bool operator==(const_iterator __y ) const {
+    return this->_M_node == __y._M_node;
+  }
+  bool operator!=(const_iterator __y ) const {
+    return this->_M_node != __y._M_node;
+  }
 };
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Tp, class _Traits>
+struct __type_traits<_List_iterator<_Tp, _Traits> > {
+  typedef __false_type   has_trivial_default_constructor;
+  typedef __true_type    has_trivial_copy_constructor;
+  typedef __true_type    has_trivial_assignment_operator;
+  typedef __true_type    has_trivial_destructor;
+  typedef __false_type   is_POD_type;
+};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
 template <class _Tp, class _Traits>
@@ -229,7 +243,11 @@ template <class _Tp, class _Alloc, class _StrictWeakOrdering>
 void _S_sort(_LIST_IMPL<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp);
 
 template <class _Tp, class _Alloc>
-class _LIST_IMPL : public _List_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N {
+class _LIST_IMPL : public _List_base<_Tp, _Alloc>
+#if !defined (_STLP_DEBUG) && defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+                   , public __stlport_class<_LIST_IMPL<_Tp, _Alloc> >
+#endif
+{
   typedef _List_base<_Tp, _Alloc> _Base;
   typedef _LIST_IMPL<_Tp, _Alloc> _Self;
   typedef _List_node<_Tp> _Node;
@@ -384,13 +402,13 @@ private:
                           const __false_type& /*_IsIntegral*/) {
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position, const value_type* __first, const value_type* __last) {
-    _Self __tmp(__first, __last);
+    _Self __tmp(__first, __last, this->get_allocator());
     splice(__position, __tmp);
   }
   void insert(iterator __position, const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
     //We use a temporary list to avoid the auto reference troubles (infinite loop)
-    _Self __tmp(__first, __last);
+    _Self __tmp(__first, __last, this->get_allocator());
     splice(__position, __tmp);
   }
   
@@ -670,7 +688,6 @@ _STLP_END_NAMESPACE
 // do a cleanup
 # undef _LIST_IMPL
 # undef list
-# define __list__ __FULL_NAME(list)
 
 #if defined (_STLP_DEBUG)
 # include <stl/debug/_list.h>

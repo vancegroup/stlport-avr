@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#ifndef _STLP_NO_EXCEPTIONS
+#if defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
 #endif
 
@@ -25,6 +25,8 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(vec_test_7);
   CPPUNIT_TEST(capacity);
   CPPUNIT_TEST(at);
+  CPPUNIT_TEST(pointer);
+  CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -37,6 +39,8 @@ protected:
   void vec_test_7();
   void capacity();
   void at();
+  void pointer();
+  void auto_ref();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorTest);
@@ -205,7 +209,6 @@ void VectorTest::vec_test_7()
   
   vit = v.insert(v.end(), 36);  // Insert after last element.
   CPPUNIT_ASSERT( *vit == 36 );
-  
 
   CPPUNIT_ASSERT( v.size() == 5 );
   CPPUNIT_ASSERT( v[0] == 0 );
@@ -227,6 +230,16 @@ void VectorTest::vec_test_7()
   CPPUNIT_ASSERT( v[5] == 25 );
   CPPUNIT_ASSERT( v[6] == 36 );
 
+  v.clear();
+  CPPUNIT_ASSERT( v.empty() );
+
+  v.insert(v.begin(), 5, 10);
+  CPPUNIT_ASSERT( v.size() == 5 );
+  CPPUNIT_ASSERT( v[0] == 10 );
+  CPPUNIT_ASSERT( v[1] == 10 );
+  CPPUNIT_ASSERT( v[2] == 10 );
+  CPPUNIT_ASSERT( v[3] == 10 );
+  CPPUNIT_ASSERT( v[4] == 10 );
 }
 
 void VectorTest::capacity()
@@ -249,8 +262,8 @@ void VectorTest::at() {
   v.at(0) = 20;
   CPPUNIT_ASSERT( cv.at(0) == 20 );
   
-#ifndef _STLP_NO_EXCEPTIONS
-  while (true) {
+#ifdef _STLP_USE_EXCEPTIONS
+  for (;;) {
     try {
       v.at(1) = 20;
       CPPUNIT_ASSERT(false);
@@ -267,3 +280,40 @@ void VectorTest::at() {
 #endif
 }
 
+void VectorTest::pointer()
+{
+  vector<int *> v1;
+  vector<int *> v2 = v1;
+  vector<int *> v3;
+  
+  v3.insert( v3.end(), v1.begin(), v1.end() );
+}
+
+void VectorTest::auto_ref()
+{
+  vector<int> ref;
+  for (int i = 0; i < 5; ++i) {
+    ref.push_back(i);
+  }
+
+  vector<vector<int> > v_v_int(1, ref);
+  v_v_int.push_back(v_v_int[0]);
+  v_v_int.push_back(ref);
+  v_v_int.push_back(v_v_int[0]);
+  v_v_int.push_back(v_v_int[0]);
+  v_v_int.push_back(ref);
+
+  vector<vector<int> >::iterator vvit(v_v_int.begin()), vvitEnd(v_v_int.end());
+  for (; vvit != vvitEnd; ++vvit) {
+    CPPUNIT_ASSERT( *vvit == ref );
+  }
+
+  /*
+   * Forbidden by the Standard:
+  v_v_int.insert(v_v_int.end(), v_v_int.begin(), v_v_int.end());
+  for (vvit = v_v_int.begin(), vvitEnd = v_v_int.end();
+       vvit != vvitEnd; ++vvit) {
+    CPPUNIT_ASSERT( *vvit == ref );
+  }
+   */
+}

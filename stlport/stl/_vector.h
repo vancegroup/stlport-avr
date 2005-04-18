@@ -30,32 +30,24 @@
 #ifndef _STLP_INTERNAL_VECTOR_H
 #define _STLP_INTERNAL_VECTOR_H
 
-
-
-# ifndef _STLP_INTERNAL_ALGOBASE_H
+#ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
-# endif
-
-# ifndef _STLP_INTERNAL_ALLOC_H
-#  include <stl/_alloc.h>
-# endif
-
-# ifndef _STLP_INTERNAL_ITERATOR_H
-#  include <stl/_iterator.h>
-# endif
-
-# ifndef _STLP_INTERNAL_UNINITIALIZED_H
-#  include <stl/_uninitialized.h>
-# endif
-
-# ifndef _STLP_RANGE_ERRORS_H
-#  include <stl/_range_errors.h>
-# endif
-
-#ifdef _STLP_DEBUG
-#  undef  vector
-#  define vector __WORKAROUND_DBG_RENAME(vector)
 #endif
+
+#ifndef _STLP_INTERNAL_ALLOC_H
+#  include <stl/_alloc.h>
+#endif
+
+#ifndef _STLP_INTERNAL_ITERATOR_H
+#  include <stl/_iterator.h>
+#endif
+
+#ifndef _STLP_INTERNAL_UNINITIALIZED_H
+#  include <stl/_uninitialized.h>
+#endif
+
+#undef  vector
+#define vector __WORKAROUND_DBG_RENAME(vector)
 
 _STLP_BEGIN_NAMESPACE 
 
@@ -106,14 +98,17 @@ protected:
   _AllocProxy _M_end_of_storage;
 };
 
-# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
 #  define _VECTOR_IMPL _Vector_impl
-# else
+#else
 #  define _VECTOR_IMPL vector
-# endif
+#endif
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class _VECTOR_IMPL : protected _Vector_base<_Tp, _Alloc> _STLP_STLPORT_CLASS_N
+class _VECTOR_IMPL : protected _Vector_base<_Tp, _Alloc>
+#if !defined (_STLP_DEBUG) && defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+                     , public __stlport_class<_VECTOR_IMPL<_Tp, _Alloc> >
+#endif
 {
 private:
   typedef _Vector_base<_Tp, _Alloc> _Base;
@@ -140,13 +135,31 @@ public:
     return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _Tp);
   }
 protected:
-  typedef typename  __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
-  typedef typename  __type_traits<_Tp>::has_trivial_assignment_operator _IsPODType;
+  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
+  typedef typename _TrivialUCopy<_Tp>::_Ret _TrivialUCpy;
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+  typedef typename __type_traits<_Tp>::is_POD_type _PODType;
 
   // handles insertions on overflow
-  void _M_insert_overflow(pointer __position, const _Tp& __x, const __false_type& /*IsPOD*/, 
-                          size_type __fill_len, bool __atend = false);
-  void _M_insert_overflow(pointer __position, const _Tp& __x, const __true_type& /*IsPOD*/, 
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/, 
+                              size_type __fill_len, bool __atend);
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __true_type& /*_Movable*/, 
+                              size_type __fill_len, bool __atend) {
+    //We need to take care of self referencing here:
+    if (_M_is_inside(__x)) {
+      _Tp __x_copy = __x;
+      _M_insert_overflow_aux(__pos, __x_copy, __false_type(), __fill_len, __atend);
+      return;
+    }
+    _M_insert_overflow_aux(__pos, __x, __false_type(), __fill_len, __atend);
+  }
+
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCpy*/, 
+                          size_type __fill_len, bool __atend = false) {
+    _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
+  }
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/, 
                           size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish-this->_M_start))
@@ -195,20 +208,20 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
          const allocator_type& __a = allocator_type()) 
     : _Vector_base<_Tp, _Alloc>(__n, __a) { 
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val); 
+    this->_M_finish = __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _VECTOR_IMPL(size_type __n)
     : _Vector_base<_Tp, _Alloc>(__n, allocator_type() ) {
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); 
+    this->_M_finish = __uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp), _PODType());
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   _VECTOR_IMPL(const _Self& __x) 
     : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
     this->_M_finish = __uninitialized_copy(__x.begin(), __x.end(),
-                                           this->_M_start, _IsPODType());
+                                           this->_M_start, _TrivialUCpy());
   }
 
   _VECTOR_IMPL(__move_source<_Self> src)
@@ -222,7 +235,7 @@ public:
                          const __true_type& /*_IsIntegral*/) {
     this->_M_start = this->_M_end_of_storage.allocate(__n);
     this->_M_end_of_storage._M_data = this->_M_start + __n; 
-    this->_M_finish = uninitialized_fill_n(this->_M_start, __n, __val);
+    this->_M_finish = __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
   }
 
   template <class _InputIterator>
@@ -234,30 +247,32 @@ public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   _VECTOR_IMPL(_InputIterator __first, _InputIterator __last,
-         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
+               const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
     _Vector_base<_Tp, _Alloc>(__a) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
   
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   _VECTOR_IMPL(_InputIterator __first, _InputIterator __last) :
     _Vector_base<_Tp, _Alloc>(allocator_type()) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
-# endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
+#  endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
 
 #else /* _STLP_MEMBER_TEMPLATES */
   _VECTOR_IMPL(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
     : _Vector_base<_Tp, _Alloc>(__last - __first, __a) { 
-      this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _IsPODType()); 
+      this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy()); 
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  ~_VECTOR_IMPL() { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); }
+  //As the vector container is a back insert oriented container it
+  //seems rather logical to destroy elements in reverse order.
+  ~_VECTOR_IMPL() { _STLP_STD::_Destroy_Range(rbegin(), rend()); }
 
   _Self& operator=(const _Self& __x);
 
@@ -271,7 +286,7 @@ public:
   void assign(size_type __n, const _Tp& __val) { _M_fill_assign(__n, __val); }
   void _M_fill_assign(size_type __n, const _Tp& __val);
   
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _ForwardIter>
   void _M_assign_aux(_ForwardIter __first, _ForwardIter __last, const forward_iterator_tag &) {
 #else
@@ -293,11 +308,11 @@ public:
       _ForwardIter __mid = __first;
       advance(__mid, size());
       copy(__first, __mid, this->_M_start);
-      this->_M_finish = __uninitialized_copy(__mid, __last, this->_M_finish, _IsPODType());
+      this->_M_finish = __uninitialized_copy(__mid, __last, this->_M_finish, _TrivialUCpy());
     }
   }
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
   void _M_assign_aux(_InputIter __first, _InputIter __last,
                      const input_iterator_tag &) {
@@ -327,7 +342,7 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
   void push_back(const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   void push_back(const _Tp& __x) {
@@ -337,18 +352,18 @@ public:
       ++this->_M_finish;
     }
     else
-      _M_insert_overflow(this->_M_finish, __x, _IsPODType(), 1UL, true);
+      _M_insert_overflow(this->_M_finish, __x, _TrivialCpy(), 1UL, true);
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __position, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp));
+  iterator insert(iterator __pos, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp));
 #else
-  iterator insert(iterator __position, const _Tp& __x);
+  iterator insert(iterator __pos, const _Tp& __x);
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() { push_back(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-  iterator insert(iterator __position) { return insert(__position, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  iterator insert(iterator __pos) { return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void swap(_Self& __x) {
@@ -358,10 +373,91 @@ public:
   }
 
 private:
+  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const __true_type& /*_Movable*/);
+  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const __false_type& /*_Movable*/);
   void _M_fill_insert (iterator __pos, size_type __n, const _Tp& __x);
 
-#if defined ( _STLP_MEMBER_TEMPLATES)
+  bool _M_is_inside(const value_type& __x) const {
+    return (&__x >= this->_M_start && &__x < this->_M_finish);
+  }
 
+#if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _ForwardIterator>
+  void _M_range_insert_realloc(iterator __pos,
+                               _ForwardIterator __first, _ForwardIterator __last,
+#else
+  void _M_range_insert_realloc(iterator __pos,
+                               const_iterator __first, const_iterator __last,
+#endif /* _STLP_MEMBER_TEMPLATES */
+                               size_type __n) {
+    const size_type __old_size = size();
+    const size_type __len = __old_size + (max)(__old_size, __n);
+    pointer __new_start = this->_M_end_of_storage.allocate(__len);
+    pointer __new_finish = __new_start;
+    _STLP_TRY {
+      __new_finish = __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCpy(), _Movable());
+      __new_finish = __uninitialized_copy(__first, __last, __new_finish, _TrivialUCpy());
+      __new_finish = __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCpy(), _Movable());
+    }
+    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
+                  this->_M_end_of_storage.deallocate(__new_start,__len)))
+    _M_clear_after_move();
+    _M_set(__new_start, __new_finish, __new_start + __len);
+  }
+
+#if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _ForwardIterator>
+  void _M_range_insert_aux(iterator __pos,
+                           _ForwardIterator __first, _ForwardIterator __last,
+#else
+  void _M_range_insert_aux(iterator __pos,
+                           const_iterator __first, const_iterator __last,
+#endif /* _STLP_MEMBER_TEMPLATES */
+                           size_type __n, const __true_type& /*_Movable*/) {
+    iterator __src = this->_M_finish - 1;
+    iterator __dst = __src + __n;
+    for (; __src >= __pos; --__dst, --__src) {
+      _STLP_STD::_Move_Construct(__dst, *__src);
+      _STLP_STD::_Destroy_Moved(__src);
+    }
+    __uninitialized_copy(__first, __last, __pos, _TrivialUCpy());
+    this->_M_finish += __n;
+  }
+
+#if defined (_STLP_MEMBER_TEMPLATES)
+  template <class _ForwardIterator>
+  void _M_range_insert_aux(iterator __pos,
+                           _ForwardIterator __first, _ForwardIterator __last,
+#else
+  void _M_range_insert_aux(iterator __pos,
+                           const_iterator __first, const_iterator __last,
+#endif /* _STLP_MEMBER_TEMPLATES */
+                           size_type __n, const __false_type& /*_Movable*/) {
+    const size_type __elems_after = this->_M_finish - __pos;
+    pointer __old_finish = this->_M_finish;
+    if (__elems_after > __n) {
+      __uninitialized_copy(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
+      this->_M_finish += __n;
+      __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialAss());
+      copy(__first, __last, __pos);
+    }
+    else {
+# if defined ( _STLP_MEMBER_TEMPLATES )
+      _ForwardIterator __mid = __first;
+      advance(__mid, __elems_after);
+# else
+      const_pointer __mid = __first + __elems_after;
+# endif
+      __uninitialized_copy(__mid, __last, this->_M_finish, _TrivialUCpy());
+      this->_M_finish += __n - __elems_after;
+      __uninitialized_copy(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
+      this->_M_finish += __elems_after;
+      copy(__first, __mid, __pos);
+    } /* elems_after */
+  }
+
+
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
                           const __true_type&) {
@@ -395,54 +491,25 @@ private:
   }
 
   template <class _ForwardIterator>
-  void _M_range_insert(iterator __position,
+  void _M_range_insert(iterator __pos,
                        _ForwardIterator __first, _ForwardIterator __last,
                        const forward_iterator_tag &) {
 #else /* _STLP_MEMBER_TEMPLATES */
 public:
-  void insert(iterator __position,
+  void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
+    /* This method do not check self referencing. 
+     * Standard forbids it, checked by the debug mode.
+     */
     if (__first != __last) {
       size_type __n = distance(__first, __last);
 
       if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
-        const size_type __elems_after = this->_M_finish - __position;
-        pointer __old_finish = this->_M_finish;
-        if (__elems_after > __n) {
-          __uninitialized_move(this->_M_finish - __n, this->_M_finish, this->_M_finish, _IsPODType());
-          this->_M_finish += __n;
-          __copy_backward_ptrs(__position, __old_finish - __n, __old_finish, _TrivialAss());
-          copy(__first, __last, __position);
-        }
-        else {
-# if defined ( _STLP_MEMBER_TEMPLATES )
-          _ForwardIterator __mid = __first;
-          advance(__mid, __elems_after);
-# else
-          const_pointer __mid = __first + __elems_after;
-# endif
-          __uninitialized_copy(__mid, __last, this->_M_finish, _IsPODType());
-          this->_M_finish += __n - __elems_after;
-          __uninitialized_move(__position, __old_finish, this->_M_finish, _IsPODType());
-          this->_M_finish += __elems_after;
-          copy(__first, __mid, __position);
-        } /* elems_after */
+        _M_range_insert_aux(__pos, __first, __last, __n, _Movable());
       }
       else {
-        const size_type __old_size = size();
-        const size_type __len = __old_size + (max)(__old_size, __n);
-        pointer __new_start = this->_M_end_of_storage.allocate(__len);
-        pointer __new_finish = __new_start;
-        _STLP_TRY {
-          __new_finish = __uninitialized_move(this->_M_start, __position, __new_start, _IsPODType());
-          __new_finish = __uninitialized_copy(__first, __last, __new_finish, _IsPODType());
-          __new_finish = __uninitialized_move(__position, this->_M_finish, __new_finish, _IsPODType());
-        }
-        _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
-                      this->_M_end_of_storage.deallocate(__new_start,__len)))
-        _M_clear();
-        _M_set(__new_start, __new_finish, __new_start + __len);
+        _M_range_insert_realloc(__pos, __first, __last, __n);
       }
     }
   }
@@ -455,21 +522,59 @@ public:
     --this->_M_finish;
     _STLP_STD::_Destroy(this->_M_finish);
   }
-  iterator erase(iterator __position) {
-    if (__position + 1 != end())
-      __move_ptrs(__position + 1, this->_M_finish, __position, _TrivialAss());
+
+protected:
+  iterator _M_erase(iterator __pos, const __true_type& /*_Movable*/) {
+    _STLP_STD::_Destroy(__pos);
+    iterator __dst = __pos, __src = __dst + 1;
+    iterator __end = end();
+    for (; __src != __end; ++__dst, ++__src) {
+      _STLP_STD::_Move_Construct(__dst, *__src);
+      _STLP_STD::_Destroy_Moved(__src);
+    }
+    this->_M_finish = __dst;
+    return __pos;
+  }
+  iterator _M_erase(iterator __pos, const __false_type& /*_Movable*/) {
+    if (__pos + 1 != end())
+      __copy_ptrs(__pos + 1, this->_M_finish, __pos, _TrivialAss());
     --this->_M_finish;
     _STLP_STD::_Destroy(this->_M_finish);
-    return __position;
+    return __pos;
   }
-  iterator erase(iterator __first, iterator __last) {
-    pointer __i = __move_ptrs(__last, this->_M_finish, __first, _TrivialAss());
+  iterator _M_erase(iterator __first, iterator __last, const __true_type& /*_Movable*/) {
+    iterator __dst = __first, __src = __last;
+    iterator __end = end();
+    for (; __dst != __last && __src != __end; ++__dst, ++__src) {
+      _STLP_STD::_Destroy(__dst);
+      _STLP_STD::_Move_Construct(__dst, *__src);
+    }
+    for (; __src != __end; ++__dst, ++__src) {
+      _STLP_STD::_Destroy_Moved(__dst);
+      _STLP_STD::_Move_Construct(__dst, *__src);
+    }
+    _STLP_STD::_Destroy_Moved_Range(__dst, __end);
+    this->_M_finish = __dst;
+    return __first;
+  }
+  iterator _M_erase(iterator __first, iterator __last, const __false_type& /*_Movable*/) {
+    pointer __i = __copy_ptrs(__last, this->_M_finish, __first, _TrivialAss());
     _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     this->_M_finish = __i;
     return __first;
   }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+public:
+  iterator erase(iterator __pos) {
+    return _M_erase(__pos, _Movable());
+  }
+  iterator erase(iterator __first, iterator __last) {
+    if (__first == __last)
+      return __first;
+    return _M_erase(__first, __last, _Movable());
+  }
+
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   void resize(size_type __new_size, const _Tp& __x) {
@@ -480,7 +585,7 @@ public:
       insert(end(), __new_size - size(), __x);
   }
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
+#if defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
@@ -491,7 +596,12 @@ public:
 protected:
 
   void _M_clear() {
-    _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish);
+    _STLP_STD::_Destroy_Range(rbegin(), rend());
+    this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
+  }
+
+  void _M_clear_after_move() {
+    _STLP_STD::_Destroy_Moved_Range(rbegin(), rend());
     this->_M_end_of_storage.deallocate(this->_M_start, this->_M_end_of_storage._M_data - this->_M_start);
   }
 
@@ -501,7 +611,7 @@ protected:
     this->_M_end_of_storage._M_data = __e;
   }
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _ForwardIterator>
   pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first, 
                                _ForwardIterator __last)
@@ -513,7 +623,7 @@ protected:
     pointer __result = this->_M_end_of_storage.allocate(__n);
     _STLP_TRY {
 #if !defined(__MRC__)  //*TY 12/17/2000 - added workaround for MrCpp. it confuses on nested try/catch block
-      __uninitialized_copy(__first, __last, __result, _IsPODType());
+      __uninitialized_copy(__first, __last, __result, _TrivialUCpy());
 #else
       uninitialized_copy(__first, __last, __result);
 #endif
@@ -524,7 +634,7 @@ protected:
   }
 
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void _M_range_initialize(_InputIterator __first,  
                            _InputIterator __last, const input_iterator_tag &) {
@@ -538,76 +648,54 @@ protected:
     size_type __n = distance(__first, __last);
     this->_M_start = this->_M_end_of_storage.allocate(__n);
     this->_M_end_of_storage._M_data = this->_M_start + __n;
-    this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _IsPODType());
+    this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
   }
   
 #endif /* _STLP_MEMBER_TEMPLATES */
 };
 
-# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
+#ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
 #  include <stl/pointers/_vector.h>
-# endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
+#endif /* _STLP_DONT_USE_PTR_SPECIALIZATIONS */
 
-# define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
-# define _STLP_TEMPLATE_CONTAINER vector<_Tp, _Alloc>
-# include <stl/_relops_cont.h>
-# undef _STLP_TEMPLATE_CONTAINER
-# undef _STLP_TEMPLATE_HEADER
+#define _STLP_TEMPLATE_HEADER    template <class _Tp, class _Alloc>
+#define _STLP_TEMPLATE_CONTAINER vector<_Tp, _Alloc>
+#include <stl/_relops_cont.h>
+#undef _STLP_TEMPLATE_CONTAINER
+#undef _STLP_TEMPLATE_HEADER
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 template <class _Tp, class _Alloc>
-struct __move_traits<_Vector_base<_Tp, _Alloc> > :
-  __move_traits_help<typename _Vector_base<_Tp, _Alloc>::_AllocProxy>
-{};
-
-template <class _Tp, class _Alloc>
-struct __move_traits<vector<_Tp, _Alloc> > :
-  __move_traits_aux<_Vector_base<_Tp, _Alloc> >
-{};
+struct __move_traits<vector<_Tp, _Alloc> > {
+  typedef __true_type implemented;
+  //Completness depends on the allocator:
+  typedef typename __move_traits<_Alloc>::complete complete;
+};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
-
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;
-
-# ifndef _STLP_DONT_USE_PTR_SPECIALIZATIONS
-_STLP_EXPORT_TEMPLATE_CLASS _Vector_impl<void*,allocator<void*> >;
-# endif
-
-_STLP_EXPORT_TEMPLATE_CLASS vector<void*,allocator<void*> >;
-# endif
-
-#ifdef _STLP_DEBUG
-# undef  vector
-#endif
-// #  undef  __vector__
-// #  define __vector__ __WORKAROUND_RENAME(vector)
 
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_vector.c>
-# endif
-
-# undef _VECTOR_IMPL
-
-#ifndef _STLP_INTERNAL_BVECTOR_H
-# include <stl/_bvector.h>
 #endif
 
-# if defined (_STLP_DEBUG)
-#  include <stl/debug/_vector.h>
-# endif
+#undef _VECTOR_IMPL
+#undef  vector
 
-# if defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
+#ifndef _STLP_INTERNAL_BVECTOR_H
+#  include <stl/_bvector.h>
+#endif
+
+#if defined (_STLP_DEBUG)
+#  include <stl/debug/_vector.h>
+#endif
+
+#if defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
 #  include <stl/wrappers/_vector.h>
-# endif
+#endif
 
 #endif /* _STLP_VECTOR_H */
 
 // Local Variables:
 // mode:C++
 // End:
-

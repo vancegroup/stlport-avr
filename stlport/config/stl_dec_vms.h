@@ -40,7 +40,7 @@
 
 
 #ifdef __NO_USE_STD_IOSTREAM
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
+#  define _STLP_USE_NO_IOSTREAMS 1
 # else
 // default is to use new iostreams, anyway
 # ifndef __USE_STD_IOSTREAM
@@ -48,22 +48,13 @@
 # endif
 #endif
 
-// # if !defined (_STLP_NEW_IOSTREAMS) && ! defined (_STLP_DONT_REDEFINE_STD) \
-//  && ! defined (_STLP_REDEFINE_STD)
-// # undef __PRAGMA_ENVIRONMENT
-//   #  define _STLP_DONT_REDEFINE_STD
-// # endif
-
-//# ifndef __STD_STRICT_ANSI_ERRORS
-//# endif
-
 #ifndef __EXCEPTIONS
 # define _STLP_HAS_NO_EXCEPTIONS 1
 #endif
 
 # ifdef __IMPLICIT_INCLUDE_ENABLED
 
-#ifndef _STLP_IOSTREAMS
+#ifdef _STLP_USE_NO_IOSTREAMS
 // implicit include introduces conflicts
 // between stlport and native lib.
 # undef __IMPLICIT_INCLUDE_ENABLED

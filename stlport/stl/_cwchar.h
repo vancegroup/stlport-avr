@@ -14,47 +14,51 @@
  */
 
 #ifndef _STLP_CWCHAR_H
-# define _STLP_CWCHAR_H
+#define _STLP_CWCHAR_H
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 #  ifdef __cplusplus
-#   include <cwchar>
+#    include <cwchar>
 #  else
-#   include <wchar.h>
+#    include <wchar.h>
 #  endif
-# endif
+#endif
 
-# if defined (_STLP_NO_WCHAR_T) || \
-     defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || \
-     defined(__OpenBSD__) || \
-     (defined (__GNUC__) && (defined (__APPLE__) || defined( __Lynx__ )))
+#if defined (_STLP_NO_WCHAR_T) || \
+    defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || \
+    defined(__OpenBSD__) || defined(__FreeBSD__) || \
+   (defined (__GNUC__) && (defined (__APPLE__) || defined( __Lynx__ )))
 #  include _STLP_NATIVE_C_HEADER(stddef.h)
 #  if defined (__Lynx__)
-#   ifndef _WINT_T
+#    ifndef _WINT_T
 typedef long int wint_t;
-#    define _WINT_T
-#   endif /* _WINT_T */
+#      define _WINT_T
+#    endif /* _WINT_T */
 #  endif
 #  if defined(__OpenBSD__)
 typedef _BSD_WINT_T_ wint_t;
 #  endif /* __OpenBSD__ */
-# endif
+#endif
 
-# if defined ( _STLP_OWN_IOSTREAMS ) && defined (_STLP_NO_NATIVE_MBSTATE_T) && ! defined (_STLP_NO_MBSTATE_T) && ! defined (_MBSTATE_T) && ! defined (__mbstate_t_defined)
+#if (defined(__OpenBSD__) || defined(__FreeBSD__)) && defined(__GNUC__) && !defined(_GLIBCPP_HAVE_MBSTATE_T)
+#  define __mbstate_t_defined // mbstate_t defined in native <cwchar>, so not defined in C!
+#endif
+
+#if !defined (_STLP_USE_NO_IOSTREAMS) && defined (_STLP_NO_NATIVE_MBSTATE_T) && !defined (_STLP_NO_MBSTATE_T) && !defined (_MBSTATE_T) && !defined (__mbstate_t_defined)
 #  define _STLP_USE_OWN_MBSTATE_T
 #  define _MBSTATE_T
-# endif
+#endif
 
-# ifdef _STLP_USE_OWN_MBSTATE_T
+#ifdef _STLP_USE_OWN_MBSTATE_T
 
 // to be compatible across different SUN platforms
-#ifdef __sun
-# define __stl_mbstate_t __mbstate_t
-#endif
+#  ifdef __sun
+#    define __stl_mbstate_t __mbstate_t
+#  endif
 
 struct __stl_mbstate_t;
 
-# ifdef __cplusplus
+#  ifdef __cplusplus
 struct __stl_mbstate_t { 
   __stl_mbstate_t( long __st = 0 ) { _M_state[0] = __st ; }
   __stl_mbstate_t& operator=(const long __st) {
@@ -66,15 +70,15 @@ struct __stl_mbstate_t {
     _M_state[0]= __x._M_state[0];              
     return *this;
   }
-# if defined (__sun)
-#  ifdef _LP64
+#    if defined (__sun)
+#      ifdef _LP64
   long _M_state[4];
-#  else
+#      else
   int _M_state[6];
-#  endif
-# else       
+#      endif
+#    else       
   long _M_state[1];
-# endif
+#    endif
 };          
 
 inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
@@ -84,7 +88,7 @@ inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
 inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
   return ( __x._M_state[0] == __y._M_state[0] );
 }
-# endif
+#  endif
 
 
 _STLP_BEGIN_NAMESPACE
@@ -93,18 +97,18 @@ typedef __stl_mbstate_t mbstate_t;
 
 _STLP_END_NAMESPACE
 
-# endif /* _STLP_USE_OWN_MBSTATE_T */
+#endif /* _STLP_USE_OWN_MBSTATE_T */
 
 #if !defined (_STLP_NO_WCHAR_T)
-# ifndef WCHAR_MIN
-#  define WCHAR_MIN 0
+#  ifndef WCHAR_MIN
+#    define WCHAR_MIN 0
 // SUNpro has some bugs with casts. wchar_t is size of int there anyway.
-#  if defined (__SUNPRO_CC) || defined (__DJGPP)
-#   define WCHAR_MAX (~0)
-#  else
-#   define WCHAR_MAX ((wchar_t)~0)
+#    if defined (__SUNPRO_CC) || defined (__DJGPP)
+#      define WCHAR_MAX (~0)
+#    else
+#      define WCHAR_MAX ((wchar_t)~0)
+#    endif
 #  endif
-# endif
 #endif
 
 //# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
@@ -114,4 +118,3 @@ _STLP_END_NAMESPACE
 //#endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif /* _STLP_CWCHAR_H */
-

@@ -32,7 +32,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Dummy>
 _Slist_node_base*  _STLP_CALL
@@ -93,7 +93,7 @@ _Sl_global<_Dummy>::size(_Slist_node_base* __node) {
   return __result;
 }
 
-#endif /* defined (__BUILDING_STLPORT) || ! defined (_STLP_OWN_IOSTREAMS) */
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

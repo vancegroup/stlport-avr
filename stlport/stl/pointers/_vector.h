@@ -176,6 +176,11 @@ private:
   _Base _M_impl;
 };
 
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _Vector_base<void*,allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _Vector_impl<void*,allocator<void*> >;
+#endif
+
 /*
  * The pointer partial specialization.
  */

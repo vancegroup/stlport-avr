@@ -18,6 +18,7 @@ class UnaryTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(ucompos2);
   CPPUNIT_TEST(unegate1);
   CPPUNIT_TEST(unegate2);
+  CPPUNIT_TEST(unegate3);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -25,6 +26,7 @@ protected:
   void ucompos2();
   void unegate1();
   void unegate2();
+  void unegate3();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UnaryTest);
@@ -35,6 +37,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(UnaryTest);
 void UnaryTest::unegate1()
 {
   int array [3] = { 1, 2, 3 };
+  //unary_negate<odd>::argument_type arg_val = 0;
   int* p = find_if((int*)array, (int*)array + 3, unary_negate<odd>(odd()));
   CPPUNIT_ASSERT((p != array + 3));
   CPPUNIT_ASSERT(*p==2);
@@ -46,6 +49,20 @@ void UnaryTest::unegate2()
   CPPUNIT_ASSERT(p != array + 3);
   CPPUNIT_ASSERT(*p==2);
 }
+
+bool test_func(const int &param) {
+  return param < 3;
+}
+void UnaryTest::unegate3()
+{
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+  int array [3] = { 1, 2, 3 };
+  int* p = find_if((int*)array, (int*)array + 3, not1(ptr_fun(test_func)));
+  CPPUNIT_ASSERT(p != array + 3);
+  CPPUNIT_ASSERT(*p==3);
+#endif
+}
+
 void UnaryTest::ucompos1()
 {
   int input [3] = { -1, -4, -16 };

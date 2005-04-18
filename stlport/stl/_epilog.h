@@ -5,31 +5,43 @@
  */
 
 #ifndef _STLP_PROLOG_HEADER_INCLUDED
-# error STLport epilog header can't be included as long as prolog hasn't be included.
+#  error STLport epilog header can not be included as long as prolog has not be included.
 #endif
 
 /* If the platform provides any specific epilog actions,
-   like #pragmas, do include platform-specific prolog file */
+ * like #pragmas, do include platform-specific prolog file 
+ */
 #if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
-# include <config/_epilog.h>
+#  include <config/_epilog.h>
 #endif
 
-#ifndef _STLP_NO_POST_COMPATIBLE_SECTION
-# include <stl/_config_compat_post.h>
+#if !defined (_STLP_NO_POST_COMPATIBLE_SECTION)
+#  include <stl/_config_compat_post.h>
 #endif
 
-/* provide a mechanism to redefine std:: namespace in a way that is transparent to the 
- * user. _STLP_REDEFINE_STD is being used for wrapper files that include native headers
- * to temporary undef the std macro. */
-#if !defined(_STLP_USE_NAMESPACES) && \
-    (defined(_STLP_USE_OWN_NAMESPACE) && !defined(_STLP_DONT_REDEFINE_STD) && !defined(_STLP_REDEFINE_STD))
-# define _STLP_REDEFINE_STD 1
-#endif
+#if defined (_STLP_USE_OWN_NAMESPACE)
 
-#if defined (_STLP_REDEFINE_STD)
-/*  We redefine "std" to "stlport", so that user code may use std:: transparently */
-# undef  std
-# define std STLPORT
+#  if !defined (_STLP_DONT_REDEFINE_STD)
+/*  We redefine "std" to STLPORT, so that user code may use std:: transparently 
+ *  The STLPORT macro contains the STLport namespace name containing all the std
+ *  stuff.
+ */
+#    ifdef std
+/*
+ * Looks like the compiler native library on which STLport rely defined the std macro.
+ * This might introduce major incompatibility so report the problem to the STLport
+ * forum or comment the following #error at your own risk.
+ */
+#      error Incompatible native Std library.
+#    endif /* std */
+#    define std STLPORT
+#  endif /* _STLP_DONT_REDEFINE_STD */
+
+#  if defined (_STLP_USE_NAMESPACES)
+//Here we don't use a macro as stlport is used as file name by boost and folder name under beos:
+namespace stlport = STLPORT;
+#  endif
+
 #endif
 
 #undef _STLP_PROLOG_HEADER_INCLUDED /* defined in _prolog.h */

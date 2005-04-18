@@ -29,15 +29,6 @@ inline void _STLP_CALL swap(_STLP_TEMPLATE_CONTAINER& __x, _STLP_TEMPLATE_CONTAI
 
 #endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-
-_STLP_TEMPLATE_HEADER
-struct __action_on_move<_STLP_TEMPLATE_CONTAINER > {
-  typedef __true_type swap;
-};
-
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 // Local Variables:
 // mode:C++
 // End:

@@ -31,41 +31,44 @@
 #define _STLP_INTERNAL_DBG_HASHTABLE_H
 
 // Hashtable class, used to implement the hashed associative containers
-// hash_set, hash_map, hash_multiset, and hash_multimap.
+// hash_set, hash_map, hash_multiset, and hash_multimap,
+// unordered_set, unordered_map, unordered_multiset, unordered_multimap
 
-# include <stl/debug/_iterator.h>
+#ifndef _STLP_DBG_ITERATOR_H
+#  include <stl/debug/_iterator.h>
+#endif
 
-#  undef  hashtable
-#  undef  _DBG_hashtable
-#  define _DBG_hashtable  hashtable
-
-#  define _STLP_DBG_HT_SUPER \
-__WORKAROUND_DBG_RENAME(hashtable) <_Val, _Key, _HF, _ExK, _EqK, _All>
+#define _STLP_DBG_HT_BASE \
+__WORKAROUND_DBG_RENAME(hashtable) <_Val, _Key, _HF, _Traits, _ExK, _EqK, _All>
 
 _STLP_BEGIN_NAMESPACE
 
-# ifdef _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS
+#if defined (_STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS)
 template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 inline _Val*
-value_type(const  _DBG_iter_base< _STLP_DBG_HT_SUPER >&) {
+value_type(const  _DBG_iter_base< _STLP_DBG_HT_BASE >&) {
   return (_Val*)0;
 }
 
 template <class _Val, class _Key, class _HF,
           class _ExK, class _EqK, class _All>
 inline forward_iterator_tag
-iterator_category(const  _DBG_iter_base< _STLP_DBG_HT_SUPER >&) {
+iterator_category(const  _DBG_iter_base< _STLP_DBG_HT_BASE >&) {
   return forward_iterator_tag();
 }
-# endif
+#endif
 
 template <class _Val, class _Key, class _HF,
-          class _ExK, class _EqK, class _All>
-class _DBG_hashtable : public _STLP_DBG_HT_SUPER
-{
-  typedef _DBG_hashtable<_Val, _Key, _HF, _ExK, _EqK, _All> _Self;
-  typedef _STLP_DBG_HT_SUPER _Base;
+          class _Traits, class _ExK, class _EqK, class _All>
+class hashtable : public _STLP_DBG_HT_BASE {
+  typedef hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> _Self;
+  typedef _STLP_DBG_HT_BASE _Base;
+
+  typedef typename _Traits::_NonConstTraits _NonConstTraits;
+  typedef typename _Traits::_ConstTraits _ConstTraits;
+  typedef typename _Traits::_NonConstLocalTraits _NonConstLocalTraits;
+  typedef typename _Traits::_ConstLocalTraits _ConstLocalTraits;
 
 public:
   typedef _Key key_type;
@@ -75,12 +78,18 @@ public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
 
 public:
-  typedef _DBG_iter<_Base, _Nonconst_traits<value_type> >  iterator;
-  typedef _DBG_iter<_Base, _Const_traits<value_type> > const_iterator;
+  typedef _DBG_iter<_Base, _DbgTraits<_NonConstTraits> > iterator;
+  typedef _DBG_iter<_Base, _DbgTraits<_ConstTraits> >    const_iterator;
+  //typedef _DBG_iter<_Base, _DbgTraits<_NonConstLocalTraits> > local_iterator;
+  typedef iterator local_iterator;
+  //typedef _DBG_iter<_Base, _DbgTraits<_ConstLocalTraits> >    const_local_iterator;
+  typedef const_iterator const_local_iterator;
+
   typedef typename _Base::iterator _Base_iterator;
   typedef typename _Base::const_iterator _Base_const_iterator;
 
 protected:
+  _Base* _Get_base() { return this; }
   void _Invalidate_iterator(const const_iterator& __it) { 
     __invalidate_iterator(&_M_iter_list,__it); 
   }
@@ -88,32 +97,29 @@ protected:
     __invalidate_range(&_M_iter_list, __first, __last);
   }
 
-  const _Base* _Get_base() const { return (const _Base*)this; }
-  _Base* _Get_base() { return (_Base*)this; }
-
 public:
-  _DBG_hashtable(size_type __n,
+  hashtable(size_type __n,
                  const _HF&  __hf,
                  const _EqK& __eql,
                  const _ExK& __ext,
                  const allocator_type& __a = allocator_type()):
-    _STLP_DBG_HT_SUPER(__n, __hf, __eql, __ext, __a),
+    _STLP_DBG_HT_BASE(__n, __hf, __eql, __ext, __a),
     _M_iter_list(_Get_base()) {}
   
-  _DBG_hashtable(size_type __n,
+  hashtable(size_type __n,
                  const _HF&    __hf,
                  const _EqK&   __eql,
                  const allocator_type& __a = allocator_type()):
     
-    _STLP_DBG_HT_SUPER(__n, __hf, __eql, __a),
+    _STLP_DBG_HT_BASE(__n, __hf, __eql, __a),
     _M_iter_list(_Get_base()) {}
   
-  _DBG_hashtable(const _Self& __ht):
-    _STLP_DBG_HT_SUPER(__ht),
+  hashtable(const _Self& __ht):
+    _STLP_DBG_HT_BASE(__ht),
     _M_iter_list(_Get_base()) {}
   
-  _DBG_hashtable(__move_source<_Self> src) :
-    _STLP_DBG_HT_SUPER(_AsMoveSource<_STLP_DBG_HT_SUPER >(src.get())), _M_iter_list(_Get_base()) {
+  hashtable(__move_source<_Self> src) :
+    _STLP_DBG_HT_BASE(__move_source<_Base>(src.get())), _M_iter_list(_Get_base()) {
     src.get()._M_iter_list._M_invalidate_all();
   }
   
@@ -133,9 +139,29 @@ public:
 
   iterator begin() { return iterator(&_M_iter_list, _Base::begin()); }
   iterator end()   { return iterator(&_M_iter_list, _Base::end()); }
+  local_iterator begin(size_type __n) {
+    //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
+    _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
+    return local_iterator(&_M_iter_list, _Base::begin(__n)); 
+  }
+  local_iterator end(size_type __n) {
+    //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
+    _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
+    return local_iterator(&_M_iter_list, _Base::end(__n));
+  }
 
   const_iterator begin() const { return const_iterator(&_M_iter_list, _Base::begin()); }
   const_iterator end() const { return const_iterator(&_M_iter_list, _Base::end()); }
+  const_local_iterator begin(size_type __n) const {
+    //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
+    _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
+    return const_local_iterator(&_M_iter_list, _Base::begin(__n)); 
+  }
+  const_local_iterator end(size_type __n) const {
+    //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
+    _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
+    return const_local_iterator(&_M_iter_list, _Base::end(__n));
+  }
 
   pair<iterator, bool> insert_unique(const value_type& __obj) {
     pair < _Base_iterator, bool> __res =
@@ -157,7 +183,7 @@ public:
     return iterator(&_M_iter_list, _Base::insert_equal_noresize(__obj));
   }
   
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l) {
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
@@ -171,14 +197,13 @@ public:
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
-
   void insert_unique(const value_type* __f, const value_type* __l) {
-    _STLP_DEBUG_CHECK(__check_range(__f, __l))
+    _STLP_DEBUG_CHECK(__check_ptr_range(__f, __l))
     _Base::insert_unique(__f, __l);
   }
   
   void insert_equal(const value_type* __f, const value_type* __l) {
-    _STLP_DEBUG_CHECK(__check_range(__f, __l))
+    _STLP_DEBUG_CHECK(__check_ptr_range(__f, __l))
     _Base::insert_equal(__f, __l);
   }
   
@@ -246,29 +271,24 @@ public:
     _Base::clear();
   }
 
+  size_type elems_in_bucket(size_type __n) const {
+    _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
+    return _Base::elems_in_bucket(__n);
+  }
+  float max_load_factor() const
+  { return _Base::max_load_factor(); }
+  void max_load_factor(float __z) {
+    _STLP_VERBOSE_ASSERT((__z > 0.0f), _StlMsg_INVALID_ARGUMENT)
+    _Base::max_load_factor(__z);
+  }
+
 private:
   __owned_list _M_iter_list;
-
 };
-
-#define _STLP_TEMPLATE_HEADER template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
-#define _STLP_TEMPLATE_CONTAINER _DBG_hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
-#define _STLP_TEMPLATE_CONTAINER_BASE hashtable<_Val,_Key,_HF,_ExK,_EqK,_All>
-#include <stl/debug/_relops_hash_cont.h>
-#undef _STLP_TEMPLATE_CONTAINER_BASE
-#undef _STLP_TEMPLATE_CONTAINER
-#undef _STLP_TEMPLATE_HEADER
-
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <class _Val, class _Key, class _HF, class _ExK, class _EqK, class _All>
-struct __move_traits<_DBG_hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> > :
-  __move_traits_aux<hashtable<_Val,_Key,_HF,_ExK,_EqK,_All> >
-{};
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 
-#undef  hashtable
+#undef _STLP_DBG_HT_BASE
 
 #endif /* _STLP_INTERNAL_HASHTABLE_H */
 

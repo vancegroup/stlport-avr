@@ -1,6 +1,6 @@
 /***********************************************************************************
-	test_rope.cpp
-	
+  test_rope.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -67,11 +67,11 @@ container_category(const TestRope&)
 void test_rope()
 {
     TestRope testRope, testRope2;
-    EH_STD::size_t ropeSize = random_number(random_base);
-	
+    size_t ropeSize = random_number(random_base);
+  
     while ( testRope.size() < ropeSize )
     {
-        TestRope::value_type x = TestRope::value_type(random_number(random_base));	// initialize before use
+        TestRope::value_type x = TestRope::value_type(random_number(random_base));  // initialize before use
         testRope.push_back( x );
         testRope2.push_back( TestRope::value_type() );
     }
@@ -82,8 +82,8 @@ void test_rope()
     WeakCheck( testRope, test_insert_n<TestRope>(testRope, random_number(random_base) ) );
     WeakCheck( testRope, test_insert_n<TestRope>(testRope, random_number(random_base), 0 ) );
     WeakCheck( testRope, test_insert_n<TestRope>(testRope, random_number(random_base), (int)testRope.size() ) );
-	
-    EH_STD::size_t insCnt = random_number(random_base);
+  
+    size_t insCnt = random_number(random_base);
     TestRope::value_type *insFirst = new TestRope::value_type[1+insCnt];
 
     WeakCheck( testRope, insert_range_tester(testRope, insFirst, insFirst+insCnt) );

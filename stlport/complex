@@ -24,7 +24,6 @@
 #  include <stl/_prolog.h>
 # endif
 
-# ifdef _STLP_OWN_IOSTREAMS
 // This header declares the template class complex, as described in 
 // in the draft C++ standard.  Single-precision complex numbers
 // are complex<float>, double-precision are complex<double>, and
@@ -35,10 +34,6 @@
   
 #  define _STLP_COMPLEX_NAMESPACE _STLP_STD
 #  include <stl/_complex.h>
-# else
-#  define _STLP_COMPLEX_NAMESPACE _STLP_VENDOR_STD
-#  include <wrap_std/complex>
-# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID ==  0x10 )
 #  include <stl/_epilog.h>

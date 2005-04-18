@@ -9,7 +9,7 @@
 #endif
 
 #ifdef _STLP_PROLOG_HEADER_INCLUDED
-#  error STlport prolog header can't be reincluded as long as epilog hasn't be included.
+#  error STlport prolog header can not be reincluded as long as epilog has not be included.
 #endif
 
 #define _STLP_PROLOG_HEADER_INCLUDED

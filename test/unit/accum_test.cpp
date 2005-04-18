@@ -30,16 +30,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AccumTest);
 //
 void AccumTest::accum1()
 {
-  vector <int> v(5);
-  for(size_t i = 0; i < v.size(); i++)
+  vector<int> v(5);
+  for(int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i + 1;
   int sum = accumulate(v.begin(), v.end(), 0);
   CPPUNIT_ASSERT(sum==15);
 }
 void AccumTest::accum2()
 {
-  vector <int> v(5);
-  for(size_t i = 0; i < v.size(); i++)
+  vector<int> v(5);
+  for(int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i + 1;
   int prod = accumulate(v.begin(), v.end(), 1, mult);
   CPPUNIT_ASSERT(prod==120);

@@ -18,6 +18,8 @@ class ListTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(list3);
   CPPUNIT_TEST(list4);
   CPPUNIT_TEST(erase)
+  CPPUNIT_TEST(push_back);
+  CPPUNIT_TEST(push_front);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -26,6 +28,8 @@ protected:
   void list3();
   void list4();
   void erase();
+  void push_back();
+  void push_front();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ListTest);
@@ -50,6 +54,21 @@ void ListTest::list1()
   CPPUNIT_ASSERT(*i2++==9);
   CPPUNIT_ASSERT(*i2++==16);
   CPPUNIT_ASSERT(*i2++==36);
+
+  //Default construct check (_STLP_DEF_CONST_PLCT_NEW_BUG)
+  list<int> l(2);
+  i1 = l.begin();
+  CPPUNIT_ASSERT( *(i1++) == 0 );
+  CPPUNIT_ASSERT( *i1 == 0 );
+#if 0
+  //A small compilation time check to be activated from time to time,
+  //compilation should fail.
+  {
+    list<char>::iterator l_char_ite;
+    list<int>::iterator l_int_ite;
+    CPPUNIT_ASSERT( l_char_ite != l_int_ite );
+  }
+#endif
 }
 void ListTest::list2()
 {
@@ -147,3 +166,45 @@ void ListTest::erase()
   l.clear();
   CPPUNIT_ASSERT( l.empty() );
 }
+
+void ListTest::push_back()
+{
+  list<int> l;
+  l.push_back( 1 );
+  l.push_back( 2 );
+  l.push_back( 3 );
+
+  list<int>::reverse_iterator r = l.rbegin();
+
+  CPPUNIT_ASSERT( *r == 3 );
+  l.push_back( 4 );
+  /*
+   * Following lines are commented, because ones show standard contradiction
+   * (24.4.1 and 23.2.2.3); but present behaviour is valid, 24.4.1, paragraphs 1 and 2,
+   * 24.4.1.3.3 and 23.1 paragraph 9 (Table 66). The 24.4.1 is more common rule,
+   * so it has preference under 23.2.2.3, by my opinion.
+   *
+   *      - ptr
+   */
+  // CPPUNIT_ASSERT( *r == 3 );
+  // ++r;
+  // CPPUNIT_ASSERT( *r == 2 );
+}
+
+void ListTest::push_front()
+{
+  list<int> l;
+  l.push_back( 1 );
+  l.push_back( 2 );
+  l.push_back( 3 );
+
+  list<int>::iterator i = l.begin();
+
+  CPPUNIT_ASSERT( *i == 1 );
+  l.push_front( 0 );
+  CPPUNIT_ASSERT( *i == 1 );
+  ++i;
+  CPPUNIT_ASSERT( *i == 2 );
+}
+
+

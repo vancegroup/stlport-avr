@@ -30,17 +30,17 @@
 #ifndef _STLP_INTERNAL_TEMPBUF_H
 #define _STLP_INTERNAL_TEMPBUF_H
 
-# ifndef _STLP_CLIMITS
+#ifndef _STLP_CLIMITS
 #  include <climits>
-# endif
+#endif
 
-# ifndef _STLP_CSTDLIB
+#ifndef _STLP_CSTDLIB
 #  include <cstdlib>
-# endif
+#endif
 
-# ifndef _STLP_INTERNAL_UNINITIALIZED_H
+#ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #  include <stl/_uninitialized.h>
-# endif
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -113,7 +113,7 @@ public:
 #   if defined(__sgi) && !defined(__GNUC__) && _COMPILER_VERSION < 730
     typedef typename __type_traits<_Tp>::is_POD_type _Trivial;
 #   else
-     typedef typename __type_traits<_Tp>::has_trivial_default_constructor  _Trivial;
+    typedef typename __type_traits<_Tp>::has_trivial_default_constructor  _Trivial;
 #   endif
     _STLP_TRY {
       _M_len = distance(__first, __last);

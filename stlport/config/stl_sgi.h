@@ -37,9 +37,7 @@
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 // #  define _STLP_VENDOR_GLOBAL_EXCEPT_STD
 
-// # if ! defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_NO_NEW_IOSTREAMS)
 #  define _STLP_NO_POST_COMPATIBLE_SECTION
-// # endif
 
 #  include <standards.h>
 
@@ -81,7 +79,7 @@
 #     define _STLP_LONG_LONG long long
 #   endif
 #   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
-#     define _STLP_HAS_NO_NEW_IOSTREAMS
+#     define _STLP_USE_NO_IOSTREAMS
 #   endif
 #   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
 #     define _STLP_NO_AT_MEMBER_FUNCTION

@@ -1,6 +1,6 @@
 /***********************************************************************************
-	TestClass.h
-	
+  TestClass.h
+  
  * Copyright (c) 1997-1998
  * Mark of the Unicorn, Inc.
  *
@@ -11,26 +11,19 @@
  * in supporting documentation.  Mark of the Unicorn makes no
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
-		
-		SUMMARY: TestClass simulates a class that uses resources. It is designed to
-			cause exceptions when it is constructed or copied.
-		
+    
+    SUMMARY: TestClass simulates a class that uses resources. It is designed to
+      cause exceptions when it is constructed or copied.
+    
 ***********************************************************************************/
 #ifndef INCLUDED_MOTU_TestClass
 #define INCLUDED_MOTU_TestClass 1
 
 # include "Prefix.h"
 
-# if defined (EH_NEW_HEADERS)
 #  include <functional>
 #  include <utility>
 #  include <climits>
-# else
-#  include <function.h>
-#  include <pair.h>
-#  include <limits.h>
-# endif
-
 
 #include <iosfwd>
 #include "random_number.h"
@@ -46,7 +39,7 @@ public:
     
     inline TestClass& operator=( const TestClass& rhs );
     inline int value() const;
-	
+  
     inline TestClass operator!() const;
 
     bool operator==( const TestClass& rhs ) const
@@ -61,12 +54,12 @@ public:
 protected:
     static inline unsigned int get_random(unsigned range = UINT_MAX);
 private:
-	inline void Init( int value );
+  inline void Init( int value );
 
 #if TESTCLASS_DEEP_DATA
     int *p;
 #else
-	int v;
+  int v;
 #endif
 };
 
@@ -84,45 +77,45 @@ __MSL_FIX_ITERATORS__( const pair_testclass_testclass );
 inline void TestClass::Init( int value )
 {
 #if TESTCLASS_DEEP_DATA
-	p = new int( value );
+  p = new int( value );
 #else
-	simulate_constructor();
-	v = value;
+  simulate_constructor();
+  v = value;
 #endif
 }
 
 inline TestClass::TestClass()
 {
-	Init( int(get_random()) );
+  Init( int(get_random()) );
 }
 
 inline TestClass::TestClass( int value )
 {
-	Init( value );
+  Init( value );
 }
 
 inline TestClass::TestClass( const TestClass& rhs )
 {
-	Init( rhs.value() );
+  Init( rhs.value() );
 }
 
 inline TestClass::~TestClass()
 {
 #if TESTCLASS_DEEP_DATA
-	delete p;
+  delete p;
 #else
-	simulate_destructor();
+  simulate_destructor();
 #endif
 }
 
 inline TestClass& TestClass::operator=( const TestClass& rhs )
 {
 #if TESTCLASS_DEEP_DATA
-	int *newP = new int( rhs.value() );
-	delete p;
-	p = newP;
+  int *newP = new int( rhs.value() );
+  delete p;
+  p = newP;
 #else
-	simulate_possible_failure();
+  simulate_possible_failure();
     v = rhs.value();
 #endif
     return *this;
@@ -131,9 +124,9 @@ inline TestClass& TestClass::operator=( const TestClass& rhs )
 inline int TestClass::value() const
 {
 #if TESTCLASS_DEEP_DATA
-	return *p;
+  return *p;
 #else
-	return v;
+  return v;
 #endif
 }
 
@@ -163,10 +156,6 @@ inline unsigned int TestClass::get_random( unsigned range )
     return random_number( range );
 }
 
-# ifdef EH_NEW_IOSTREAMS
-extern EH_STD::ostream& operator << ( EH_STD::ostream& s, const TestClass&);
-# else
-extern ostream& operator << ( ostream& s, const TestClass&);
-# endif
+extern std::ostream& operator << ( std::ostream& s, const TestClass&);
 
 #endif // INCLUDED_MOTU_TestClass

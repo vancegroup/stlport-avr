@@ -19,7 +19,7 @@
 # if ! defined (_STLP_WINCE)
 
 # ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID 15
+#  define _STLP_OUTERMOST_HEADER_ID 0x15
 #  include <stl/_prolog.h>
 # endif
 
@@ -42,7 +42,7 @@
 #  define stderr	(&_STLP_VENDOR_CSTD::__files[2])
 # endif
 
-#  if defined (_STLP_MSVC) || defined (__ICL)
+#  if (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL)
 inline
 int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
 {
@@ -110,7 +110,7 @@ using _STLP_VENDOR_CSTD::ungetc;
 using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
-#   if (defined (__MWERKS__) || defined (_STLP_MSVC) || defined (__ICL) || \
+#   if (defined (__MWERKS__) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL) || \
 ( defined (__BORLANDC__) && __BORLANDC__ > 0x530))
 using _STLP_VENDOR_CSTD::vsnprintf;
 #   endif
@@ -118,7 +118,7 @@ using _STLP_VENDOR_CSTD::vsnprintf;
 _STLP_END_NAMESPACE
 # endif /* _STLP_IMPORT_VENDOR_CSTD */
 
-# if (_STLP_OUTERMOST_HEADER_ID == 15)
+# if (_STLP_OUTERMOST_HEADER_ID == 0x15)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
 # endif

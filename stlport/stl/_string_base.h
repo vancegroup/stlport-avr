@@ -36,7 +36,7 @@
 _STLP_BEGIN_NAMESPACE
 
 #ifndef _STLP_SHORT_STRING_SZ
-# define _STLP_SHORT_STRING_SZ 32
+#  define _STLP_SHORT_STRING_SZ 16
 #endif
 
 template <class _Tp, class _Alloc>
@@ -44,15 +44,15 @@ class _String_base {
   typedef _String_base<_Tp, _Alloc> _Self;
 protected:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 public:
   //dums: Some compiler(MSVC6) require it to be public not simply protected!
   enum {_DEFAULT_SIZE = _STLP_SHORT_STRING_SZ};
   //This is needed by the full move framework
+  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
   typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
 private:
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
-  union {
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+  union _Buffers {
     _Tp*  _M_dynamic_buf;
     _Tp   _M_static_buf[_DEFAULT_SIZE];
   } _M_buffers;
@@ -60,7 +60,7 @@ private:
   _Tp*    _M_start;
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
 protected:
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
   bool _M_using_static_buf() const {
     return (_M_end_of_storage._M_data == _M_buffers._M_static_buf + _DEFAULT_SIZE);
   }
@@ -84,7 +84,7 @@ protected:
   // Precondition: 0 < __n <= max_size().
   void _M_allocate_block(size_t __n = _DEFAULT_SIZE);
   void _M_deallocate_block() {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (!_M_using_static_buf() && (_M_buffers._M_dynamic_buf != 0))
       _M_end_of_storage.deallocate(_M_buffers._M_dynamic_buf, _M_end_of_storage._M_data - _M_buffers._M_dynamic_buf); 
 #else
@@ -96,7 +96,7 @@ protected:
   size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
 
   _String_base(const allocator_type& __a)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE)
 #else
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0)
@@ -104,7 +104,7 @@ protected:
     {}
   
   _String_base(const allocator_type& __a, size_t __n)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE) {
       if (__n > _DEFAULT_SIZE) _M_allocate_block(__n);
 #else
@@ -113,7 +113,7 @@ protected:
 #endif
     }
 
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
   void _M_move_src (_Self &src) {
       if (src._M_using_static_buf()) {
         _M_buffers = src._M_buffers;
@@ -130,7 +130,7 @@ protected:
 #endif
 
   _String_base(__move_source<_Self> src)
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_end_of_storage(_AsMoveSource<_AllocProxy>(src.get()._M_end_of_storage)) {
       _M_move_src(src.get());
 #else
@@ -143,7 +143,7 @@ protected:
   ~_String_base() { _M_deallocate_block(); }
 
   void _M_reset(_Tp *__start, _Tp *__finish, _Tp *__end_of_storage) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     _M_buffers._M_dynamic_buf = __start;
 #else
     _M_start = __start;
@@ -153,14 +153,14 @@ protected:
   }
 
   void _M_destroy_back () {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (!_M_using_static_buf())
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
       _STLP_STD::_Destroy(_M_finish);
   }
 
   void _M_destroy_range(size_t __from_off = 0, size_t __to_off = 1) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (!_M_using_static_buf())
       _STLP_STD::_Destroy_Range(_M_buffers._M_dynamic_buf + __from_off, _M_finish + __to_off);
 #else
@@ -169,17 +169,17 @@ protected:
   }
 
   void _M_destroy_ptr_range(_Tp *__f, _Tp *__l) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (!_M_using_static_buf())
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
       _STLP_STD::_Destroy_Range(__f, __l);
   }
 
   void _M_Swap(_Self &__s) {
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (_M_using_static_buf()) {
       if (__s._M_using_static_buf()) {
-        _STLP_STD::swap(_M_buffers, __s._M_buffers);
+        _STLP_STD::swap<_Buffers>(_M_buffers, __s._M_buffers);
         _Tp *__tmp = _M_finish;
         _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
         __s._M_finish = __s._M_buffers._M_static_buf + (__tmp - _M_buffers._M_static_buf);
@@ -217,20 +217,12 @@ protected:
 
 #undef _STLP_SHORT_STRING_SZ
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _String_base<char, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS _String_base<wchar_t, allocator<wchar_t> >;
 #  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
-
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <class _CharT, class _Alloc>
-struct __move_traits<_String_base<_CharT,_Alloc> > :
-  __move_traits_help<typename _String_base<_CharT,_Alloc>::_AllocProxy>
-{};
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
+#endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 _STLP_END_NAMESPACE
 
@@ -241,4 +233,3 @@ _STLP_END_NAMESPACE
  * mode:C++
  * End:
  */
-

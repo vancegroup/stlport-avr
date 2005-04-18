@@ -31,12 +31,10 @@
 #define _STLP_INTERNAL_WRAP_LIST_H
 
 #ifndef _STLP_INTERNAL_LIST_H
-# include <stl/_list.h>
+#  include <stl/_list.h>
 #endif
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
 
 # if defined (_STLP_DEBUG)
 #  define __LIST_SUPER _DBG_list<_Tp, _STLP_DEFAULT_ALLOCATOR(_Tp) >
@@ -54,7 +52,7 @@ public:
     __IMPORT_WITH_REVERSE_ITERATORS(_Super)
     __IMPORT_SUPER_COPY_ASSIGNMENT(list, list<_Tp>, __LIST_SUPER)
     list() { }
-    explicit list(size_type __n, const _Tp& __value) : __LIST_SUPER(__n, __value) { }
+    explicit list(size_type __n, const _Tp& __val) : __LIST_SUPER(__n, __val) { }
     explicit list(size_type __n) :  __LIST_SUPER(__n) { } 
     list(const _Tp* __first, const _Tp* __last) : __LIST_SUPER(__first, __last) { } 
     list(const_iterator __first, const_iterator __last) : __LIST_SUPER(__first, __last) { }
@@ -75,9 +73,7 @@ inline bool operator<(const list<_Tp>& __x, const list<_Tp>& __y) {
 }
 #  endif
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_LIST_H */
 

@@ -18,49 +18,20 @@
 #ifndef _CPPUNITMPFR_H_
 #define _CPPUNITMPFR_H_
 
-// Usage: make this part of the project
-//#define CPPUNIT_LIB
-//  or
-//#define CPPUNIT_DUMMY
-//  or
-//#define CPPUNIT_MINI
-
-
-///////////////////////////////////////////////////////////
-#ifdef CPPUNIT_DUMMY
-  #define CPPUNIT_NS CppUnitDummy
-
-  namespace CPPUNIT_NS
-  {
-    class TestCase
-    {};
-  }
-
-  #define CPPUNIT_TEST_SUITE(X)
-  #define CPPUNIT_TEST(X)
-  #define CPPUNIT_TEST_SUITE_END()
-  #define CPPUNIT_TEST_SUITE_REGISTRATION(X)
-  #define CPPUNIT_ASSERT(X)
-  #define CPPUNIT_ASSERT_DOUBLES_EQUAL(X,Y,Z)
-  #define CPPUNIT_ASSERT_EQUAL(X,Y)
-  #define CPPUNIT_TEST_EXCEPTION(X,Y)
-#endif
-
-///////////////////////////////////////////////////////////
-#ifdef CPPUNIT_MINI
-  #define CPPUNIT_NS CppUnitMini
+#define CPPUNIT_NS CppUnitMini
   
-  #include <cstring>
+#include <cstring>
 
 
-  namespace CPPUNIT_NS
-  {
+namespace CPPUNIT_NS
+{
     class Reporter
     {
     public:
       virtual ~Reporter() {}
-      virtual void error(char *macroName, char *in_macro, char *in_file, int in_line) {}
-      virtual void progress(char *in_className, char *in_testName) {}
+      virtual void error(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
+      virtual void message( const char * /*msg*/ ) {}
+      virtual void progress( const char * /*in_className*/, const char * /*in_testName*/) {}
       virtual void printSummary() {}
     };
 
@@ -86,14 +57,21 @@
       int numErrors() { return m_numErrors; }
       static void registerTestCase(TestCase *in_testCase);
 
-      virtual void myRun(const char *in_name) {}
+      virtual void myRun(const char * /*in_name*/) {}
 
-      virtual void error(char *in_macroName, char *in_macro, char *in_file, int in_line)
+      virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line)
       {
         m_numErrors++;
         if(m_reporter)
         {
           m_reporter->error(in_macroName, in_macro, in_file, in_line);
+        }
+      }
+
+      static void message( const char *msg )
+      {
+        if ( m_reporter ) {
+          m_reporter->message( msg );
         }
       }
 
@@ -107,7 +85,7 @@
         return diff < in_maxErr;
       }
 
-      virtual void progress(char *in_className, char *in_functionName)
+      virtual void progress(const char *in_className, const char *in_functionName)
       {
         m_numTests++;
         if(m_reporter)
@@ -141,19 +119,23 @@
 
       static Reporter *m_reporter;
     };
-  }
+}
 
-  #define CPPUNIT_TEST_SUITE(X) virtual void myRun(const char *in_name) { char *className = #X;
-  #define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X)) {setUp(); progress(className, #X); X(); tearDown();}
-  #define CPPUNIT_TEST_EXCEPTION(X,Y) if(shouldRunThis(in_name, className, #X)) {progress(className, #X);}
-  #define CPPUNIT_TEST_SUITE_END() }
-  #define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local;
-
-  #define CPPUNIT_ASSERT(X) if(!(X)){ TestCase::error("CPPUNIT_ASSERT", #X, __FILE__, __LINE__); return; }
-  #define CPPUNIT_ASSERT_EQUAL(X,Y) if((X)!=(Y)){ TestCase::error("CPPUNIT_ASSERT_EQUAL", #X","#Y, __FILE__, __LINE__); return; }
-  #define CPPUNIT_ASSERT_DOUBLES_EQUAL(X,Y,Z) if(!equalDoubles((X),(Y),(Z))){ TestCase::error("CPPUNIT_ASSERT_DOUBLES_EQUAL", #X","#Y","#Z, __FILE__, __LINE__); return; }
-
+#define CPPUNIT_TEST_SUITE(X) virtual void myRun(const char *in_name) { char *className = #X;
+#if defined CPPUNIT_MINI_USE_EXCEPTIONS
+#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X)) { try { setUp(); progress(className, #X); X(); tearDown(); } catch(...) { TestCase::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); } }
+#else
+#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X)) {setUp(); progress(className, #X); X(); tearDown();}
 #endif
+#define CPPUNIT_TEST_EXCEPTION(X,Y) if(shouldRunThis(in_name, className, #X)) {progress(className, #X);}
+#define CPPUNIT_TEST_SUITE_END() }
+#define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local;
+
+#define CPPUNIT_CHECK(X) if(!(X)){ TestCase::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__); }
+#define CPPUNIT_ASSERT(X) if(!(X)){ TestCase::error("CPPUNIT_ASSERT", #X, __FILE__, __LINE__); return; }
+#define CPPUNIT_ASSERT_EQUAL(X,Y) if((X)!=(Y)){ TestCase::error("CPPUNIT_ASSERT_EQUAL", #X","#Y, __FILE__, __LINE__); return; }
+#define CPPUNIT_ASSERT_DOUBLES_EQUAL(X,Y,Z) if(!equalDoubles((X),(Y),(Z))){ TestCase::error("CPPUNIT_ASSERT_DOUBLES_EQUAL", #X","#Y","#Z, __FILE__, __LINE__); return; }
+#define CPPUNIT_MESSAGE(m) CPPUNIT_NS::TestCase::message(m)
 
 #endif // for header
 

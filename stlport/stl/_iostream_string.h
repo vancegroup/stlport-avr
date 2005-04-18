@@ -22,16 +22,16 @@
   */
 
  
-# ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
-# define _STLP_INTERNAL_IOSTREAM_STRING_H
+#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+#define _STLP_INTERNAL_IOSTREAM_STRING_H
 
-# ifndef _STLP_INTERNAL_ALLOC_H
+#ifndef _STLP_INTERNAL_ALLOC_H
 #  include <stl/_alloc.h>
-# endif /* _STLP_INTERNAL_ALLOC_H */
+#endif /* _STLP_INTERNAL_ALLOC_H */
 
-# ifndef _STLP_INTERNAL_STRING_H
+#ifndef _STLP_INTERNAL_STRING_H
 #  include <stl/_string.h>
-# endif /* _STLP_INTERNAL_STRING_H */
+#endif /* _STLP_INTERNAL_STRING_H */
 
 _STLP_BEGIN_NAMESPACE
 
@@ -48,11 +48,11 @@ private:
 public:
   typedef typename _Base::size_type size_type;
   typedef typename _Base::pointer pointer;
-# if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
-    typedef allocator<_Tp1> other;
+    typedef __iostring_allocator<_Tp1> other;
   };
-# endif
+#endif
 
   _CharT* allocate(size_type __n, const void* __ptr = 0) {
     if (__n > _BUF_SIZE) {
@@ -64,6 +64,23 @@ public:
     if (__p != _M_static_buf) _Base::deallocate(__p, __n);
   }
 };
+
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES)
+/*
+ * As the __iostring_allocator allocator will only be used in the basic_string implementation
+ * we known that it is never going to be bound to another type that the one used to instantiate
+ * the basic_string. This is why the associated __stl_alloc_rebind has only one template
+ * parameter.
+ */
+template <class _Tp>
+inline __iostring_allocator<_Tp>& _STLP_CALL
+__stl_alloc_rebind(__iostring_allocator<_Tp>& __a, const _Tp*) {  return __a; }
+template <class _Tp>
+inline __iostring_allocator<_Tp> _STLP_CALL
+__stl_alloc_create(const __iostring_allocator<_Tp>&, const _Tp*) { return __iostring_allocator<_Tp>(); }
+#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
+
+
 
 #ifndef _STLP_DEBUG
 
@@ -85,28 +102,28 @@ struct __basic_iostring : public basic_string<_CharT, char_traits<_CharT>, __ios
     _Base::operator=(__s);
     return *this;
   }
-
 };
 
 typedef __basic_iostring<char> __iostring;
 
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 typedef __basic_iostring<wchar_t> __iowstring;
-# endif
+#  endif
 
-# define _STLP_BASIC_IOSTRING(_CharT) __basic_iostring<_CharT>
+#  define _STLP_BASIC_IOSTRING(_CharT) __basic_iostring<_CharT>
 
 #else // _STLP_DEBUG
 
 typedef string __iostring;
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 typedef wstring __iowstring;
-# endif
+#  endif
 
-# define _STLP_BASIC_IOSTRING(_CharT) basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> >
+#  define _STLP_BASIC_IOSTRING(_CharT) basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> >
 
 #endif // _STLP_DEBUG
 
 _STLP_END_NAMESPACE
 
-# endif /* _STLP_INTERNAL_IOSTREAM_STRING_H */
+#endif /* _STLP_INTERNAL_IOSTREAM_STRING_H */
+

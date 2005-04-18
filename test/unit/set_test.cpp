@@ -19,6 +19,8 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(insert);
   CPPUNIT_TEST(find);
   CPPUNIT_TEST(bounds);
+  CPPUNIT_TEST(specialized_less);
+  CPPUNIT_TEST(implementation_check);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -28,9 +30,12 @@ class SetTest : public CPPUNIT_NS::TestCase
     void insert();
     void find();
     void bounds();
+    void specialized_less();
+    void implementation_check();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
+
 
 //
 // tests implementation
@@ -43,7 +48,7 @@ void SetTest::set1()
   CPPUNIT_ASSERT (s.count(42) == 1);
   s.insert(42);
   CPPUNIT_ASSERT (s.count(42) == 1);
-  int count = s.erase(42);
+  size_t count = s.erase(42);
   CPPUNIT_ASSERT (count == 1);
 }
 
@@ -51,7 +56,7 @@ void SetTest::set2()
 {
   typedef set<int, less<int> > int_set;
   int_set s;
-  pair<int_set::const_iterator, bool> p = s.insert(42);
+  pair<int_set::iterator, bool> p = s.insert(42);
   CPPUNIT_ASSERT (p.second == true);
   p = s.insert(42);
   CPPUNIT_ASSERT (p.second == false);
@@ -80,7 +85,7 @@ void SetTest::erase()
   s.erase(s.begin());
   CPPUNIT_ASSERT( s.empty() );
   
-  unsigned int nb = s.erase(1);
+  size_t nb = s.erase(1);
   CPPUNIT_ASSERT(nb == 0);
 }
 
@@ -129,6 +134,13 @@ void SetTest::bounds()
   CPPUNIT_ASSERT( pit.second != s.end() );
   CPPUNIT_ASSERT( *pit.second == 7 );
 
+  pit = s.equal_range(4);
+  CPPUNIT_ASSERT( pit.first == pit.second );
+  CPPUNIT_ASSERT( pit.first != s.end() );
+  CPPUNIT_ASSERT( *pit.first == 6 );
+  CPPUNIT_ASSERT( pit.second != s.end() );
+  CPPUNIT_ASSERT( *pit.second == 6 );
+
   //Check const_iterator on mutable set
   scit = s.lower_bound(2);
   CPPUNIT_ASSERT( scit != s.end() );
@@ -138,12 +150,14 @@ void SetTest::bounds()
   CPPUNIT_ASSERT( scit != s.end() );
   CPPUNIT_ASSERT( *scit == 6 );
 
+#ifdef _STLP_MEMBER_TEMPLATES
   pcit = s.equal_range(6);
   CPPUNIT_ASSERT( pcit.first != pcit.second );
   CPPUNIT_ASSERT( pcit.first != s.end() );
   CPPUNIT_ASSERT( *pcit.first == 6 );
   CPPUNIT_ASSERT( pcit.second != s.end() );
   CPPUNIT_ASSERT( *pcit.second == 7 );
+#endif
 
   //Check const_iterator on const set
   scit = crs.lower_bound(2);
@@ -160,4 +174,53 @@ void SetTest::bounds()
   CPPUNIT_ASSERT( *pcit.first == 6 );
   CPPUNIT_ASSERT( pcit.second != crs.end() );
   CPPUNIT_ASSERT( *pcit.second == 7 );
+}
+
+
+class SetTestClass {
+public:
+  SetTestClass (int data) : _data(data)
+  {}
+
+  int data() const {
+    return _data;
+  }
+
+private:
+  int _data;
+};
+
+namespace std {
+  template <>
+  struct less<SetTestClass> {
+    bool operator () (SetTestClass const& lhs, SetTestClass const& rhs) const {
+      return lhs.data() < rhs.data();
+    }
+  };
+};
+
+void SetTest::specialized_less()
+{
+  set<SetTestClass> s;
+  s.insert(SetTestClass(1));
+  s.insert(SetTestClass(3));
+  s.insert(SetTestClass(2));
+  s.insert(SetTestClass(0));
+
+  set<SetTestClass>::iterator sit(s.begin()), sitEnd(s.end());
+  int i = 0;
+  for (; sit != sitEnd; ++sit, ++i) {
+    CPPUNIT_ASSERT( sit->data() == i );
+  }
+}
+
+void SetTest::implementation_check()
+{
+  set<int> tree;
+  tree.insert(1);
+  set<int>::iterator it = tree.begin();
+  ++it;
+
+  CPPUNIT_ASSERT( it == tree.end() );
+  CPPUNIT_ASSERT( it != tree.begin() );
 }

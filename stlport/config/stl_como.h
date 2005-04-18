@@ -72,8 +72,8 @@
 
 // Comeau C++ under LINUX/INTEL/ELF
 // Preprocess away "long long" routines for now, even in relaxed mode
-# define __wcstoull_internal_defined	1
-# define __wcstoll_internal_defined	1
+# define __wcstoull_internal_defined  1
+# define __wcstoll_internal_defined  1
 
 #endif /* __COMO__ under __linux__ */
 
@@ -195,7 +195,7 @@ namespace std {
 #   define _STLP_NO_BAD_ALLOC 1
 #   define _STLP_NO_EXCEPTION_HEADER 1
 #   define _STLP_NO_NEW_NEW_HEADER 1
-#   define _STLP_NO_NEW_IOSTREAMS 1
+#   define _STLP_USE_NO_IOSTREAMS 1
 #  endif
 # endif
 

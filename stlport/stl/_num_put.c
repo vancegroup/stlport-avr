@@ -19,13 +19,11 @@
 #define _STLP_NUM_PUT_C
 
 #ifndef _STLP_INTERNAL_NUM_PUT_H
-# include <stl/_num_put.h>
+#  include <stl/_num_put.h>
 #endif
 
-# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
-
 #ifndef _STLP_LIMITS_H
-# include <stl/_limits.h>
+#  include <stl/_limits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -57,62 +55,59 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
 
     if (__dir == ios_base::left) {
       __out = copy(__first, __last, __out);
-      return fill_n(__out, __pad, __fill);
+      return __fill_n(__out, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __first != __last &&
              (*__first == __xplus || *__first == __xminus)) {
       *__out++ = *__first++;
-      __out = fill_n(__out, __pad, __fill);
+      __out = __fill_n(__out, __pad, __fill);
       return copy(__first, __last, __out);
     }
     else {
-      __out = fill_n(__out, __pad, __fill);
+      __out = __fill_n(__out, __pad, __fill);
       return copy(__first, __last, __out);
     }
   }
 }
 
-#ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 // Helper routine for wchar_t
 template <class _OutputIter>
 _OutputIter  _STLP_CALL
-__put_float(string &__str, _OutputIter __out,
+__put_float(__iostring &__str, _OutputIter __out,
             ios_base& __f, wchar_t __fill,
-            wchar_t __decimal_point,
-            wchar_t __sep, const string& __grouping)
-{
+            wchar_t __decimal_point, wchar_t __sep, 
+            size_t __group_pos, const string& __grouping) {
   const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
 
   __iowstring __wbuf;
   __convert_float_buffer(__str, __wbuf, __ct, __decimal_point);
 
   if (!__grouping.empty()) {
-    // In order to do separator-insertion only to the left of the
-    // decimal point, we pass this position to the __insert_grouping function.
-    size_t __dec_pos = __wbuf.find(__decimal_point);
-
-    __insert_grouping(__wbuf, (__dec_pos == string::npos)?__wbuf.size():__dec_pos, 
-                      __grouping, __sep, __ct.widen('+'), __ct.widen('-'), 0);
+    __insert_grouping(__wbuf, __group_pos, __grouping, 
+                      __sep, __ct.widen('+'), __ct.widen('-'), 0);
   }
 
   return __copy_float_and_fill(__CONST_CAST(wchar_t*, __wbuf.data()), 
                                __CONST_CAST(wchar_t*, __wbuf.data()) + __wbuf.size(), __out,
                                __f.flags(), __f.width(0), __fill, __ct.widen('+'), __ct.widen('-')); 
 }
-# endif /* WCHAR_T */
+#endif /* WCHAR_T */
+
 
 // Helper routine for char
-template <class _OutputIter, class Str>
+template <class _OutputIter>
 _OutputIter  _STLP_CALL
-__put_float( /* __iostring */ Str& __str, _OutputIter __out,
+__put_float(__iostring &__str, _OutputIter __out,
             ios_base& __f, char __fill,
-            char __decimal_point,
-            char __sep, const string& __grouping)
-{
-  __adjust_float_buffer(__str, __decimal_point);
+            char __decimal_point, char __sep, 
+            size_t __group_pos, const string& __grouping) {
+  if ((__group_pos < __str.size()) && (__str[__group_pos] == '.')) {
+    __str[__group_pos] = __decimal_point;
+  }
+
   if (!__grouping.empty()) {
-    size_t __dec_pos = __str.find(__decimal_point);
-    __insert_grouping(__str, (__dec_pos == string::npos)?__str.size():__dec_pos,
+    __insert_grouping(__str, __group_pos,
                       __grouping, __sep, '+', '-', 0);
   }
 
@@ -124,16 +119,35 @@ __put_float( /* __iostring */ Str& __str, _OutputIter __out,
 template <class _CharT, class _OutputIter, class _Float>
 _OutputIter _STLP_CALL
 _M_do_put_float(_OutputIter __s, ios_base& __f,
-                _CharT __fill, _Float __x)
-{
+                _CharT __fill, _Float __x) {
   __iostring __buf;
-  __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
-  const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+  size_t __group_pos = __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
   
+  const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+
   return __put_float(__buf, __s, __f, __fill,
-                     __np.decimal_point(),
-                     __np.thousands_sep(), __f._M_grouping());
+                     __np.decimal_point(), __np.thousands_sep(), 
+                     __group_pos, __f._M_grouping());
+}
+
+inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONG_DOUBLE __x) {
+  __get_floor_digits(__buf, __x);
+}
+
+#if !defined (_STLP_NO_WCHAR_T)
+inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LONG_DOUBLE __x) {
+  __iostring __buf;
+  __get_floor_digits(__buf, __x);
+
+  const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
+  __convert_float_buffer(__buf, __wbuf, __ct, wchar_t(0), false);
+}
+#endif
+
+template <class _CharT>
+void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT) &__buf, ios_base& __f, _STLP_LONG_DOUBLE __x) {
+  __get_money_digits_aux(__buf, __f, __x);
 }
 
 // _M_do_put_integer and its helper functions.
@@ -153,12 +167,12 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
 
     if (__dir == ios_base::left) {
       __out = copy(__buf, __buf + __len, __out);
-      return fill_n(__out, __pad, __fill);
+      return __fill_n(__out, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __len != 0 &&
              (__buf[0] == __xplus || __buf[0] == __xminus)) {
       *__out++ = __buf[0];
-      __out = fill_n(__out, __pad, __fill);
+      __out = __fill_n(__out, __pad, __fill);
       return copy(__buf + 1, __buf + __len, __out);
     }
     else if (__dir == ios_base::internal && __len >= 2 &&
@@ -166,17 +180,17 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
              (__flg & ios_base::basefield) == ios_base::hex) {
       *__out++ = __buf[0];
       *__out++ = __buf[1];
-      __out = fill_n(__out, __pad, __fill);
+      __out = __fill_n(__out, __pad, __fill);
       return copy(__buf + 2, __buf + __len, __out);
     }
     else {
-      __out = fill_n(__out, __pad, __fill);
+      __out = __fill_n(__out, __pad, __fill);
       return copy(__buf, __buf + __len, __out);
     }
   }
 }
 
-#ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 // Helper function for wchar_t
 template <class _OutputIter>
 _OutputIter _STLP_CALL
@@ -226,8 +240,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
 template <class _OutputIter>
 _OutputIter _STLP_CALL
 __put_integer(char* __buf, char* __iend, _OutputIter __s,
-              ios_base& __f, ios_base::fmtflags __flags, char __fill)
-{
+              ios_base& __f, ios_base::fmtflags __flags, char __fill) {
   char __grpbuf[64];
   ptrdiff_t __len = __iend - __buf;
 
@@ -260,7 +273,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   return __copy_integer_and_fill(__buf, __len, __s, __flags, __f.width(0), __fill, '+', '-');
 }
 
-#ifdef _STLP_LONG_LONG
+#if defined (_STLP_LONG_LONG)
 typedef _STLP_LONG_LONG __max_int_t;
 typedef unsigned _STLP_LONG_LONG __umax_int_t;
 #else
@@ -273,14 +286,13 @@ extern const char __hex_char_table_hi[];
 
 template <class _Integer>
 inline char* _STLP_CALL
-__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __true_type& /* is_signed */)
-{
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __true_type& /* is_signed */) {
   const bool __negative = __x < 0 ;
   __max_int_t __temp = __x;
   __umax_int_t __utemp = __negative?-__temp:__temp;
 
   for (; __utemp != 0; __utemp /= 10)
-    *--__ptr = (int)(__utemp % 10) + '0';	  
+    *--__ptr = (char)((int)(__utemp % 10) + '0');
   // put sign if needed or requested
   if (__negative)
     *--__ptr = '-';
@@ -291,10 +303,9 @@ __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, 
 
 template <class _Integer>
 inline char* _STLP_CALL
-__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __false_type& /* is_signed */)
-{
+__write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, const __false_type& /* is_signed */) {
   for (; __x != 0; __x /= 10)
-    *--__ptr = (int)(__x % 10) + '0';
+    *--__ptr = (char)((int)(__x % 10) + '0');
   // put sign if requested
   if (__flags & ios_base::showpos)
     *--__ptr = '+';
@@ -303,8 +314,7 @@ __write_decimal_backward(char* __ptr, _Integer __x, ios_base::fmtflags __flags, 
 
 template <class _Integer>
 char* _STLP_CALL
-__write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
-{
+__write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x) {
   char* __ptr = __buf;
   __umax_int_t __temp;
 
@@ -314,7 +324,6 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
       *--__ptr = '+';
   }
   else {
-    
     switch (__flags & ios_base::basefield) {
     case ios_base::oct:
       __temp = __x;
@@ -323,7 +332,7 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
         __temp &= 0xFFFFFFFF;
 
       for (; __temp != 0; __temp >>=3)
-        *--__ptr = (((unsigned)__temp)& 0x7) + '0';
+        *--__ptr = (char)((((unsigned)__temp)& 0x7) + '0');
       
       // put leading '0' is showbase is set
       if (__flags & ios_base::showbase)
@@ -361,7 +370,7 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
 # endif
       }
       break;
-    }  
+    }
   }
   // return pointer to beginning of the string
   return __ptr;
@@ -371,11 +380,32 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x)
 // num_put<>
 //
 
-# if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
+#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 
 template <class _CharT, class _OutputIterator>
 locale::id num_put<_CharT, _OutputIterator>::id;
-# else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
+
+#  if (defined(__CYGWIN__) || defined(__MINGW32__)) && defined(_STLP_USE_DYNAMIC_LIB)
+/*
+ * Under cygwin, when STLport is used as a shared library, the id needs
+ * to be specified as imported otherwise they will be duplicated in the
+ * calling executable.
+ */
+template <>
+_STLP_DECLSPEC locale::id num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_put<char, char*>::id;
+
+#    if !defined (_STLP_NO_WCHAR_T)
+template <>
+_STLP_DECLSPEC locale::id num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_put<wchar_t, wchar_t*>::id;
+#    endif
+
+#  endif /* __CYGWIN__ && _STLP_USE_DYNAMIC_LIB */
+
+#else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 typedef num_put<char, const char*> num_put_char;
 typedef num_put<char, char*> num_put_char_2;
@@ -385,7 +415,7 @@ __DECLARE_INSTANCE(locale::id, num_put_char::id, );
 __DECLARE_INSTANCE(locale::id, num_put_char_2::id, );
 __DECLARE_INSTANCE(locale::id, num_put_char_3::id, );
 
-# ifndef _STLP_NO_WCHAR_T
+#  if !defined (_STLP_NO_WCHAR_T)
 
 typedef num_put<wchar_t, const wchar_t*> num_put_wchar_t;
 typedef num_put<wchar_t, wchar_t*> num_put_wchar_t_2;
@@ -395,13 +425,13 @@ __DECLARE_INSTANCE(locale::id, num_put_wchar_t::id, );
 __DECLARE_INSTANCE(locale::id, num_put_wchar_t_2::id, );
 __DECLARE_INSTANCE(locale::id, num_put_wchar_t_3::id, );
 
-# endif
+#  endif
 
-# endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
+#endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 // issue 118
 
-# ifndef _STLP_NO_BOOL
+#if !defined (_STLP_NO_BOOL)
 
 template <class _CharT, class _OutputIter>  
 _OutputIter 
@@ -430,7 +460,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
                                  (_CharT) 0, (_CharT) 0);
 }
 
-# endif
+#endif
 
 template <class _CharT, class _OutputIter>
 _OutputIter 
@@ -464,7 +494,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
   return _M_do_put_float(__s, __f, __fill, __val);
 }
 
-#ifndef _STLP_NO_LONG_DOUBLE
+#if !defined (_STLP_NO_LONG_DOUBLE)
 template <class _CharT, class _OutputIter>  
 _OutputIter 
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
@@ -473,7 +503,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 }
 #endif
 
-#ifdef _STLP_LONG_LONG
+#if defined (_STLP_LONG_LONG)
 template <class _CharT, class _OutputIter>  
 _OutputIter 
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
@@ -523,8 +553,6 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
 }
 
 _STLP_END_NAMESPACE
-
-# endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
 #endif /* _STLP_NUM_PUT_C */
 

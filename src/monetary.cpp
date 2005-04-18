@@ -36,16 +36,16 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
 }
 
 // This is being used throughout the library
-string _S_empty_string("");
+string _S_empty_string;
 # ifndef _STLP_NO_WCHAR_T
-wstring _S_empty_wstring(L"");
+wstring _S_empty_wstring;
 # endif
 
 //
 // moneypunct<>
 //
 
-moneypunct<char, true>::moneypunct(size_t __refs) : _BaseFacet(__refs) { 
+moneypunct<char, true>::moneypunct(size_t __refs) : locale::facet(__refs) { 
     _Init_monetary_formats(_M_pos_format, _M_neg_format); 
 }
 moneypunct<char, true>::~moneypunct() {}
@@ -60,7 +60,7 @@ money_base::pattern moneypunct<char, true>::do_pos_format() const  {return _M_po
 money_base::pattern moneypunct<char, true>::do_neg_format() const {return _M_neg_format;}
 int moneypunct<char, true>::do_frac_digits() const {return 0;}
 
-moneypunct<char, false>::moneypunct(size_t __refs) : _BaseFacet(__refs) { 
+moneypunct<char, false>::moneypunct(size_t __refs) : locale::facet(__refs) { 
     _Init_monetary_formats(_M_pos_format, _M_neg_format); 
 }
 moneypunct<char, false>::~moneypunct() {}
@@ -79,7 +79,7 @@ int moneypunct<char, false>::do_frac_digits() const {return 0;}
 
 # ifndef _STLP_NO_WCHAR_T
 
-moneypunct<wchar_t, true>::moneypunct(size_t __refs) : _BaseFacet(__refs) { 
+moneypunct<wchar_t, true>::moneypunct(size_t __refs) : locale::facet(__refs) { 
     _Init_monetary_formats(_M_pos_format, _M_neg_format); 
 }
 moneypunct<wchar_t, true>::~moneypunct() {}
@@ -100,7 +100,7 @@ money_base::pattern moneypunct<wchar_t, true>::do_pos_format() const
 money_base::pattern moneypunct<wchar_t, true>::do_neg_format() const
   {return _M_neg_format;}
 
-moneypunct<wchar_t, false>::moneypunct(size_t __refs) : _BaseFacet(__refs) { 
+moneypunct<wchar_t, false>::moneypunct(size_t __refs) : locale::facet(__refs) { 
     _Init_monetary_formats(_M_pos_format, _M_neg_format); 
 }
 moneypunct<wchar_t, false>::~moneypunct() {}
@@ -129,13 +129,13 @@ money_base::pattern moneypunct<wchar_t, false>::do_neg_format() const
 
 # if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
-template class money_get<char, istreambuf_iterator<char, char_traits<char> > >;
-template class money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
+template class _STLP_CLASS_DECLSPEC money_get<char, istreambuf_iterator<char, char_traits<char> > >;
+template class _STLP_CLASS_DECLSPEC money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 // template class money_put<char, char*>;
 
 #ifndef _STLP_NO_WCHAR_T
-template class money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-template class money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+template class _STLP_CLASS_DECLSPEC money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+template class _STLP_CLASS_DECLSPEC money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 // template class money_put<wchar_t, wchar_t*>;
 // template class money_get<wchar_t, const wchar_t*>;
 #endif

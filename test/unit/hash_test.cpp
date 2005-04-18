@@ -7,9 +7,9 @@
 #include "cppunit/cppunit_proxy.h"
 
 #if defined (__MVS__)
-  #define star   92 
+const char star = 92;
 #else
-  #define star   42
+const char star = 42;
 #endif
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -26,6 +26,7 @@ class HashTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
+  //CPPUNIT_TEST(equality);
   CPPUNIT_TEST_SUITE_END();
 
   typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
@@ -35,6 +36,7 @@ protected:
   void hmmap1();
   void hmset1();
   void hset2();
+  //void equality();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
@@ -64,6 +66,17 @@ void HashTest::hmap1()
 
   p = m.insert(pair<const char, crope>('c', crope("100")));
   CPPUNIT_ASSERT(!p.second);
+
+  //Some iterators compare check, really compile time checks
+  maptype::iterator ite(m.begin());
+  maptype::const_iterator cite(m.begin());
+  cite = m.begin();
+  maptype const& cm = m;
+  cite = cm.begin();
+  CPPUNIT_ASSERT( ite == cite );
+  CPPUNIT_ASSERT( !(ite != cite) );
+  CPPUNIT_ASSERT( cite == ite );
+  CPPUNIT_ASSERT( !(cite != ite) );
 }
 void HashTest::hmmap1()
 {
@@ -73,10 +86,10 @@ void HashTest::hmmap1()
   m.insert(pair<const char,int>('X', 10)); // Standard way.
   CPPUNIT_ASSERT(m.count('X')==1);
 //  m.insert('X', 20); // Non-standard, but very convenient!
-  m.insert(pair<const char,int>('X', 20));	// jbuck: standard way
+  m.insert(pair<const char,int>('X', 20));  // jbuck: standard way
   CPPUNIT_ASSERT(m.count('X')==2);
 //  m.insert('Y', 32);
-  m.insert(pair<const char,int>('Y', 32));	// jbuck: standard way
+  m.insert(pair<const char,int>('Y', 32));  // jbuck: standard way
   mmap::iterator i = m.find('X'); // Find first match.
 
   CPPUNIT_ASSERT((*i).first=='X');
@@ -90,8 +103,16 @@ void HashTest::hmmap1()
   i++;
   CPPUNIT_ASSERT(i==m.end());
 
-  int count = m.erase('X');
+  size_t count = m.erase('X');
   CPPUNIT_ASSERT(count==2);
+
+  //Some iterators compare check, really compile time checks
+  mmap::iterator ite(m.begin());
+  mmap::const_iterator cite(m.begin());
+  CPPUNIT_ASSERT( ite == cite );
+  CPPUNIT_ASSERT( !(ite != cite) );
+  CPPUNIT_ASSERT( cite == ite );
+  CPPUNIT_ASSERT( !(cite != ite) );
 }
 void HashTest::hmset1()
 {
@@ -101,22 +122,47 @@ void HashTest::hmset1()
   CPPUNIT_ASSERT(s.count(star)==1);
   s.insert(star);
   CPPUNIT_ASSERT(s.count(star)==2);
-  hmset::iterator i = s.find(40);
+  hmset::iterator i = s.find(char(40));
   CPPUNIT_ASSERT(i == s.end());
 
   i = s.find(star);
   CPPUNIT_ASSERT(i != s.end())
   CPPUNIT_ASSERT(*i=='*');
-  int count = s.erase(star);
+  size_t count = s.erase(star);
   CPPUNIT_ASSERT(count==2);
 }
 void HashTest::hset2()
 {
   hash_set<int, hash<int>, equal_to<int> > s;
-  pair<std::hash_set<int, hash<int>, equal_to<int> >::const_iterator, bool> p = s.insert(42);
+  pair<hash_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
   CPPUNIT_ASSERT(p.second);
   CPPUNIT_ASSERT(*(p.first)==42);
 
   p = s.insert(42);
   CPPUNIT_ASSERT(!p.second);
 }
+
+/*
+ * Here is the test showing why equality operator on hash containers
+ * has no meaning:
+
+struct equality_hash_func {
+  size_t operator () (size_t val) const {
+    return val % 10;
+  }
+};
+
+void HashTest::equality()
+{
+  hash_set<size_t, equality_hash_func, equal_to<size_t> > s1, s2;
+
+  s1.insert(10);
+  s1.insert(20);
+
+  s2.insert(20);
+  s2.insert(10);
+
+  //s1 and s2 contains both 10 and 20:
+  CPPUNIT_ASSERT( s1 == s2 );
+}
+*/

@@ -20,37 +20,32 @@
 #define _STLP_STRING_FWD_H
 
 #ifndef _STLP_IOSFWD
-# include <iosfwd>
+#  include <iosfwd>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
-# if !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+#if !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, 
           class _Traits = char_traits<_CharT>, 
           class _Alloc = allocator<_CharT> >
 class basic_string;
-# else
+#else
 template <class _CharT, 
           class _Traits, 
           class _Alloc>
 class basic_string;
-# endif /* _STLP_LIMITED_DEFAULT_TEMPLATES */
+#endif /* _STLP_LIMITED_DEFAULT_TEMPLATES */
 
 typedef basic_string<char, char_traits<char>, allocator<char> > string;
 
-#  ifdef _STLP_HAS_WCHAR_T
+#ifdef _STLP_HAS_WCHAR_T
 typedef basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> > wstring;
-#  endif
+#endif
 
-# ifdef _STLP_OWN_IOSTREAMS
-_STLP_DECLSPEC const char*  _STLP_CALL
-__get_c_string(const string& __str);
-# else
-template <class _CharT, class _Traits, class _Alloc>
-const char* _STLP_CALL
-__get_c_string(const basic_string<_CharT, _Traits, _Alloc>& __str);
-# endif
+//This function limits header dependency between exception and string
+//implementation. It is implemented in _string.h
+const char*  _STLP_CALL __get_c_string(const string& __str);
 
 _STLP_END_NAMESPACE
 

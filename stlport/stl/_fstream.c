@@ -18,7 +18,9 @@
 #ifndef _STLP_FSTREAM_C
 #define _STLP_FSTREAM_C
 
-# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
+# ifndef _STLP_INTERNAL_FSTREAM_H
+#  include <stl/_fstream.h>
+# endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -66,15 +68,13 @@ basic_filebuf<_CharT, _Traits>::~basic_filebuf() {
 
 template <class _CharT, class _Traits>
 _STLP_TYPENAME_ON_RETURN_TYPE basic_filebuf<_CharT, _Traits>::int_type 
-basic_filebuf<_CharT, _Traits>::underflow() 
-{
+basic_filebuf<_CharT, _Traits>::underflow() {
   return _Underflow<_CharT, _Traits>::_M_doit(this);
 }
 
 template <class _CharT, class _Traits>
 basic_filebuf<_CharT, _Traits>* 
-basic_filebuf<_CharT, _Traits>::close()
-{
+basic_filebuf<_CharT, _Traits>::close() {
   bool __ok = this->is_open();
 
   if (_M_in_output_mode) {
@@ -111,8 +111,7 @@ basic_filebuf<_CharT, _Traits>::close()
 // It unmaps the memory-mapped file, if any, and sets
 // _M_in_input_mode to false.  
 template <class _CharT, class _Traits>
-void basic_filebuf<_CharT, _Traits>::_M_exit_input_mode()
-{
+void basic_filebuf<_CharT, _Traits>::_M_exit_input_mode() {
    if (_M_mmap_base != 0)
      _M_base._M_unmap(_M_mmap_base, _M_mmap_len); 
    _M_in_input_mode = false;
@@ -124,21 +123,17 @@ void basic_filebuf<_CharT, _Traits>::_M_exit_input_mode()
 // basic_filebuf<> overridden protected virtual member functions
 
 template <class _CharT, class _Traits>
-streamsize basic_filebuf<_CharT, _Traits>::showmanyc()
-{
+streamsize basic_filebuf<_CharT, _Traits>::showmanyc() {
   // Is there any possibility that reads can succeed?
   if (!this->is_open() || _M_in_output_mode || _M_in_error_mode)
     return -1;
-
   else if (_M_in_putback_mode)
     return this->egptr() - this->gptr();
-
   else if (_M_constant_width) {
     streamoff __pos  = _M_base._M_seek(0, ios_base::cur);
     streamoff __size = _M_base._M_file_size();
     return __pos >= 0 && __size > __pos ? __size - __pos : 0;
   }
-
   else 
     return 0;
 }
@@ -153,8 +148,7 @@ streamsize basic_filebuf<_CharT, _Traits>::showmanyc()
 // but the beginning is usually not _M_pback_buf.
 template <class _CharT, class _Traits>
 __BF_int_type__ 
-basic_filebuf<_CharT, _Traits>::pbackfail(int_type __c)
-{
+basic_filebuf<_CharT, _Traits>::pbackfail(int_type __c) {
   const int_type __eof = traits_type::eof();
 
   // If we aren't already in input mode, pushback is impossible.
@@ -205,8 +199,7 @@ basic_filebuf<_CharT, _Traits>::pbackfail(int_type __c)
 // the base class only sees [_M_int_buf, _M_int_buf_EOS - 1).
 template <class _CharT, class _Traits>
 __BF_int_type__
-basic_filebuf<_CharT, _Traits>::overflow(int_type __c)
-{
+basic_filebuf<_CharT, _Traits>::overflow(int_type __c) {
   // Switch to output mode, if necessary.
   if (!_M_in_output_mode)
     if (!_M_switch_to_output_mode())
@@ -218,7 +211,7 @@ basic_filebuf<_CharT, _Traits>::overflow(int_type __c)
 
   // Put __c at the end of the internal buffer.
   if (!traits_type::eq_int_type(__c, traits_type::eof()))
-    *__iend++ = __c;
+    *__iend++ = _Traits::to_char_type(__c);
 
   // For variable-width encodings, output may take more than one pass.
   while (__ibegin != __iend) {
@@ -258,15 +251,14 @@ basic_filebuf<_CharT, _Traits>::overflow(int_type __c)
 // This member function must be called before any I/O has been
 // performed on the stream, otherwise it has no effect.
 //
-// __buf == 0 && __n == 0 means to make ths stream unbuffered.
+// __buf == 0 && __n == 0 means to make this stream unbuffered.
 // __buf != 0 && __n > 0 means to use __buf as the stream's internal
 // buffer, rather than the buffer that would otherwise be allocated
 // automatically.  __buf must be a pointer to an array of _CharT whose
 // size is at least __n.
 template <class _CharT, class _Traits>
 basic_streambuf<_CharT, _Traits>*
-basic_filebuf<_CharT, _Traits>::setbuf(_CharT* __buf, streamsize __n)
-{
+basic_filebuf<_CharT, _Traits>::setbuf(_CharT* __buf, streamsize __n) {
   if (!_M_in_input_mode &&! _M_in_output_mode && !_M_in_error_mode &&
       _M_int_buf == 0) {
     if (__buf == 0 && __n == 0)
@@ -281,8 +273,7 @@ template <class _CharT, class _Traits>
 __BF_pos_type__
 basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
                                         ios_base::seekdir __whence,
-                                        ios_base::openmode /* dummy */)
-{
+                                        ios_base::openmode /* dummy */) {
   if (this->is_open() &&
       (__off == 0 || (_M_constant_width && this->_M_base._M_in_binary_mode()))) {
 
@@ -385,8 +376,7 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
 template <class _CharT, class _Traits>
 __BF_pos_type__
 basic_filebuf<_CharT, _Traits>::seekpos(pos_type __pos,
-                                        ios_base::openmode /* dummy */)
-{
+                                        ios_base::openmode /* dummy */) {
   if (this->is_open()) {
     if (!_M_seek_init(true))
       return pos_type(-1);
@@ -405,8 +395,7 @@ basic_filebuf<_CharT, _Traits>::seekpos(pos_type __pos,
 
 
 template <class _CharT, class _Traits>
-int basic_filebuf<_CharT, _Traits>::sync()
-{
+int basic_filebuf<_CharT, _Traits>::sync() {
   if (_M_in_output_mode)
     return traits_type::eq_int_type(this->overflow(traits_type::eof()),
                                     traits_type::eof())
@@ -420,8 +409,7 @@ int basic_filebuf<_CharT, _Traits>::sync()
 // Change the filebuf's locale.  This member function has no effect
 // unless it is called before any I/O is performed on the stream.
 template <class _CharT, class _Traits>
-void basic_filebuf<_CharT, _Traits>::imbue(const locale& __loc)
-{
+void basic_filebuf<_CharT, _Traits>::imbue(const locale& __loc) {
   if (!_M_in_input_mode &&! _M_in_output_mode && !_M_in_error_mode) {
     this->_M_setup_codecvt(__loc);
   }
@@ -437,9 +425,7 @@ void basic_filebuf<_CharT, _Traits>::imbue(const locale& __loc)
 // operation on a filebuf, or if we're performing an input operation 
 // immediately after a seek.
 template <class _CharT, class _Traits>
-bool basic_filebuf<_CharT, _Traits>::_M_switch_to_input_mode()
-{
-
+bool basic_filebuf<_CharT, _Traits>::_M_switch_to_input_mode() {
   if (this->is_open() && (((int)_M_base.__o_mode() & (int)ios_base::in) !=0)
       && (_M_in_output_mode == 0) && (_M_in_error_mode == 0)) {
     if (!_M_int_buf && !_M_allocate_buffers())
@@ -454,7 +440,6 @@ bool basic_filebuf<_CharT, _Traits>::_M_switch_to_input_mode()
     return true;
   }
   else
-
     return false;
 }
 
@@ -463,8 +448,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_switch_to_input_mode()
 // operation on a filebuf, or if we're performing an output operation 
 // immediately after a seek.
 template <class _CharT, class _Traits>
-bool basic_filebuf<_CharT, _Traits>::_M_switch_to_output_mode()
-{
+bool basic_filebuf<_CharT, _Traits>::_M_switch_to_output_mode() {
   if (this->is_open() && (_M_base.__o_mode() & (int)ios_base::out) &&
       _M_in_input_mode == 0 && _M_in_error_mode == 0) {
 
@@ -498,8 +482,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_switch_to_output_mode()
 
 template <class _CharT, class _Traits>
 __BF_int_type__
-basic_filebuf<_CharT, _Traits>::_M_input_error()
-{
+basic_filebuf<_CharT, _Traits>::_M_input_error() {
    this->_M_exit_input_mode();   
   _M_in_output_mode = false;
   _M_in_error_mode = true;
@@ -509,8 +492,7 @@ basic_filebuf<_CharT, _Traits>::_M_input_error()
 
 template <class _CharT, class _Traits>
 __BF_int_type__ 
-basic_filebuf<_CharT, _Traits>::_M_underflow_aux() 
-{
+basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
   // We have the state and file position from the end of the internal
   // buffer.  This round, they become the beginning of the internal buffer.
   _M_state    = _M_end_state;
@@ -529,7 +511,7 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux()
   // Now fill the external buffer with characters from the file.  This is
   // a loop because occasonally we don't get enough external characters
   // to make progress.
-  while (true) {
+  for (;;) {
     ptrdiff_t __n = _M_base._M_read(_M_ext_buf_end, _M_ext_buf_EOS - _M_ext_buf_end);
  
     // Don't enter error mode for a failed read.  Error mode is sticky,
@@ -555,15 +537,13 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux()
     // "enough" means the largest possible width of a single character.
     if (__status == _Codecvt::noconv)
       return _Noconv_input<_Traits>::_M_doit(this);
-
     else if (__status == _Codecvt::error ||
              (__inext != _M_int_buf && __enext == _M_ext_buf) ||
              (_M_constant_width &&
               //         __inext - _M_int_buf != _M_width * (__enext - _M_ext_buf)) ||
               (__inext - _M_int_buf) *  _M_width != (__enext - _M_ext_buf)) ||
              (__inext == _M_int_buf && __enext - _M_ext_buf >= _M_max_width))
-      return _M_input_error();
-    
+      return _M_input_error();    
     else if (__inext != _M_int_buf) {
       _M_ext_buf_converted = _M_ext_buf + (__enext - _M_ext_buf);
       this->setg(_M_int_buf, _M_int_buf, __inext);
@@ -582,8 +562,7 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux()
 // seek.
 template <class _CharT, class _Traits>
 __BF_int_type__
-basic_filebuf<_CharT, _Traits>::_M_output_error()
-{
+basic_filebuf<_CharT, _Traits>::_M_output_error() {
   _M_in_output_mode = false;
   _M_in_input_mode = false;
   _M_in_error_mode = true;
@@ -597,8 +576,7 @@ basic_filebuf<_CharT, _Traits>::_M_output_error()
 // buffer, changes the external file position, and changes the state.
 // Precondition: the internal buffer is empty.
 template <class _CharT, class _Traits>
-bool basic_filebuf<_CharT, _Traits>::_M_unshift()
-{
+bool basic_filebuf<_CharT, _Traits>::_M_unshift() {
   if (_M_in_output_mode && !_M_constant_width) {
     typename _Codecvt::result __status;
     do {
@@ -636,11 +614,9 @@ bool basic_filebuf<_CharT, _Traits>::_M_unshift()
 // basic_filebuf<>::overflow() for the reason.)
 template <class _CharT, class _Traits>
 bool 
-basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __n)
-{
-
+basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __n) {
   if (__buf == 0) {
-    _M_int_buf = __STATIC_CAST(_CharT*,malloc(__n * sizeof(_CharT)));
+    _M_int_buf = __STATIC_CAST(_CharT*, malloc(__n * sizeof(_CharT)));
     if (! _M_int_buf)
       return false;
     _M_int_buf_dynamic = true;
@@ -650,10 +626,10 @@ basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __
     _M_int_buf_dynamic = false;
   }
   
-  size_t __ebufsiz = (max)(__n * (max)(_M_codecvt->encoding(), 1),
-                      streamsize(_M_codecvt->max_length()));
+  size_t __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, (max)(_M_codecvt->encoding(), 1)),
+                           __STATIC_CAST(streamsize, _M_codecvt->max_length()));
 
-  _M_ext_buf = __STATIC_CAST(char*,malloc(__ebufsiz));
+  _M_ext_buf = __STATIC_CAST(char*, malloc(__ebufsiz));
   if (!_M_ext_buf) {
     _M_deallocate_buffers();
     return false;
@@ -666,8 +642,7 @@ basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __
 
 // Abbreviation for the most common case.
 template <class _CharT, class _Traits>
-bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers()
-{
+bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers() {
   // Choose a buffer that's at least 4096 characters long and that's a
   // multiple of the page size.
   streamsize __default_bufsiz =
@@ -676,8 +651,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers()
 }
 
 template <class _CharT, class _Traits>
-void basic_filebuf<_CharT, _Traits>::_M_deallocate_buffers()
-{
+void basic_filebuf<_CharT, _Traits>::_M_deallocate_buffers() {
   if (_M_int_buf_dynamic)
     free(_M_int_buf);
   free(_M_ext_buf);
@@ -702,7 +676,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_seek_init(bool __do_unshift) {
     bool __ok = !traits_type::eq_int_type(this->overflow(traits_type::eof()),
                                           traits_type::eof());
     if (__do_unshift)
-      __ok == __ok && this->_M_unshift();
+      __ok = __ok && this->_M_unshift();
     if (!__ok) {
       _M_in_output_mode = false;
       _M_in_error_mode = true;
@@ -722,8 +696,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_seek_init(bool __do_unshift) {
 // Change the filebuf's locale.  This member function has no effect
 // unless it is called before any I/O is performed on the stream.
 template <class _CharT, class _Traits>
-void basic_filebuf<_CharT, _Traits>::_M_setup_codecvt(const locale& __loc)
-{
+void basic_filebuf<_CharT, _Traits>::_M_setup_codecvt(const locale& __loc) {
   _M_codecvt = &use_facet<_Codecvt>(__loc) ;
   int __encoding    = _M_codecvt->encoding();
 
@@ -739,7 +712,8 @@ _STLP_END_NAMESPACE
 # undef __BF_pos_type__
 # undef __BF_off_type__
 
-# endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
-
 #endif /* _STLP_FSTREAM_C */
 
+// Local Variables:
+// mode:C++
+// End:

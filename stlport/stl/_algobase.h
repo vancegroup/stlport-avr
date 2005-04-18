@@ -31,28 +31,32 @@
 #ifndef _STLP_INTERNAL_ALGOBASE_H
 #define _STLP_INTERNAL_ALGOBASE_H
 
-# if ! defined (_STLP_CSTDDEF)
+#if ! defined (_STLP_CSTDDEF)
 #  include <cstddef>
-# endif
+#endif
 
 #ifndef _STLP_CSTRING
-# include <cstring>
+#  include <cstring>
 #endif
 
 #ifndef _STLP_CLIMITS
-# include <climits>
+#  include <climits>
 #endif
 
-# if ! defined (_STLP_CSTDLIB)
+#if ! defined (_STLP_CSTDLIB)
 #  include <cstdlib>
-# endif
+#endif
 
-# ifndef _STLP_INTERNAL_PAIR_H
+#ifndef _STLP_INTERNAL_PAIR_H
 #  include <stl/_pair.h>
-# endif
+#endif
 
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
-# include <stl/_iterator_base.h>
+#  include <stl/_iterator_base.h>
+#endif
+
+#ifndef _STLP_TYPE_TRAITS_H
+#  include <stl/type_traits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -85,16 +89,28 @@ inline void swap(_Tp& __a, _Tp& __b) {
 }
 
 template <class _ForwardIter1, class _ForwardIter2, class _Value>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value * ) {
+inline void __iter_swap_aux_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value *) {
   _Value tmp = *__i1;
   *__i1 = *__i2;
   *__i2 = tmp;
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __true_type& /*OKToSwap*/) {
+  swap(*__i1, *__i2);
+}
+
+template <class _ForwardIter1, class _ForwardIter2>
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __false_type& /*OKToSwap*/) {
+  __iter_swap_aux_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
+}
+
+template <class _ForwardIter1, class _ForwardIter2>
 inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
   // swap(*__i1, *__i2);
-  __iter_swap_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
+  __iter_swap_aux( __i1, __i2, _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
+                                           _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1), 
+                                           _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer());
 }
 
 //--------------------------------------------------
@@ -212,14 +228,12 @@ __copy_trivial_backward(const void* __first, const void* __last, void* __result)
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
                                const __false_type& /*IsOKToMemCpy*/) {
-  return __copy(__first, __last, __result, 
-                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
-                _STLP_DISTANCE_TYPE(__first, _InputIter));
+  return __copy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0);
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
                                const __true_type& /*IsOKToMemCpy*/) {
-// we know they all pointers, so this cast is OK 
+  // we know they all pointers, so this cast is OK 
   //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
   return (_OutputIter)__copy_trivial(__first, __last, __result);
 }
@@ -297,8 +311,8 @@ _STLP_DECLARE_COPY_TRIVIAL(unsigned long)
 _STLP_DECLARE_COPY_TRIVIAL(wchar_t)
 #endif
 #ifdef _STLP_LONG_LONG
-_STLP_DECLARE_COPY_TRIVIAL(long long)
-_STLP_DECLARE_COPY_TRIVIAL(unsigned long long)
+_STLP_DECLARE_COPY_TRIVIAL(_STLP_LONG_LONG)
+_STLP_DECLARE_COPY_TRIVIAL(unsigned _STLP_LONG_LONG)
 #endif 
 _STLP_DECLARE_COPY_TRIVIAL(float)
 _STLP_DECLARE_COPY_TRIVIAL(double)
@@ -348,75 +362,7 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
 }
 
 //--------------------------------------------------
-// move stuff rather than copy it, if the used type do not support move (supporting swap)
-// the following algos behave like copy:
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __swap_move(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const input_iterator_tag &, _Distance*) {
-  for ( ; __first != __last; ++__result, ++__first)
-    (*__result).swap(*__first);
-  return __result;
-}
-
-# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG) 
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __swap_move(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const forward_iterator_tag &, _Distance* ) {
-  for ( ; __first != __last; ++__result, ++__first)
-    (*__result).swap(*__first);
-  return __result;
-}
-
-
-template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __swap_move(_InputIter __first, _InputIter __last, _OutputIter __result, 
-                               const bidirectional_iterator_tag &, _Distance* ) {
-  for ( ; __first != __last; ++__result, ++__first)
-    (*__result).swap(*__first);
-  return __result;
-}
-# endif 
-
-template <class _RandomAccessIter, class _OutputIter, class _Distance>
-inline _OutputIter __swap_move(_RandomAccessIter __first, _RandomAccessIter __last, _OutputIter __result, 
-                               const random_access_iterator_tag &, _Distance*) {
-  for (_Distance __n = __last - __first; __n > 0; --__n) {
-    (*__result).swap(*__first);
-    ++__first;
-    ++__result;
-  }
-  return __result;
-}
-
-template <class _InputIter, class _OutputIter>
-inline _OutputIter __move_ptrs_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type& /*use_swap*/) {
-  //We have to use the usual copy with the assignment operator:
-  return __copy(__first, __last, __result, 
-                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
-                _STLP_DISTANCE_TYPE(__first, _InputIter));
-}
-template <class _InputIter, class _OutputIter>
-inline _OutputIter __move_ptrs_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type& /*use_swap*/) {
-  //We are going to swap rather than copy:
-  return __swap_move(__first, __last, __result, 
-                     _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
-                     _STLP_DISTANCE_TYPE(__first, _InputIter));
-}
-
-template <class _InputIter, class _OutputIter>
-inline _OutputIter __move_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type& /*_IsPOD*/) {
-  return __move_ptrs_aux(__first, __last, __result, _DoSwapOnMove(_STLP_VALUE_TYPE(__first, _InputIter), 
-                                                                  _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
-}
-template <class _InputIter, class _OutputIter>
-inline _OutputIter __move_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type& /*_IsPOD*/) {
-  //we are working on POD, we use memmove
-  return (_OutputIter)__copy_trivial(__first, __last, __result);
-}
-
-//--------------------------------------------------
 // fill and fill_n
-
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP
 void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
@@ -427,11 +373,18 @@ void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
 
 template <class _OutputIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP
-_OutputIter fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+_OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   _STLP_FIX_LITERAL_BUG(__first)
   for ( ; __n > 0; --__n, ++__first)
     *__first = __val;
   return __first;
+}
+
+template <class _OutputIter, class _Size, class _Tp>
+_STLP_INLINE_LOOP
+void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+  _STLP_FIX_LITERAL_BUG(__first)
+  __fill_n(__first, __n, __val);
 }
 
 
@@ -457,21 +410,21 @@ inline void fill(char* __first, char* __last, const char& __val) {
 #ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
 
 template <class _Size>
-inline unsigned char* fill_n(unsigned char* __first, _Size __n,
+inline unsigned char* __fill_n(unsigned char* __first, _Size __n,
                              const unsigned char& __val) {
   fill(__first, __first + __n, __val);
   return __first + __n;
 }
 
 template <class _Size>
-inline signed char* fill_n(char* __first, _Size __n,
+inline signed char* __fill_n(char* __first, _Size __n,
                            const signed char& __val) {
   fill(__first, __first + __n, __val);
   return __first + __n;
 }
 
 template <class _Size>
-inline char* fill_n(char* __first, _Size __n, const char& __val) {
+inline char* __fill_n(char* __first, _Size __n, const char& __val) {
   fill(__first, __first + __n, __val);
   return __first + __n;
 }
@@ -627,6 +580,7 @@ count(_InputIter __first, _InputIter __last, const _Tp& __val) {
 // find and find_if. Note find may be expressed in terms of find_if if appropriate binder was available.
 template <class _InputIter, class _Tp>
 _InputIter find(_InputIter __first, _InputIter __last, const _Tp& __val);
+
 template <class _InputIter, class _Predicate>
 _InputIter find_if(_InputIter __first, _InputIter __last, _Predicate __pred);
 

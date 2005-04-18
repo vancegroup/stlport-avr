@@ -29,7 +29,6 @@ protected:
   {
     return strcmp(a_, b_) < 0 ? 1 : 0;
   }
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BoundTest);
@@ -39,12 +38,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BoundTest);
 //
 void BoundTest::uprbnd1()
 {
-  int array[20];
+  int arr[20];
   for(int i = 0; i < 20; i++)
   {
-    array[i] = i/4;
+    arr[i] = i/4;
   }
-  int location = upper_bound((int*)array, (int*)array + 20, 3) - array;
+  int location = upper_bound((int*)arr, (int*)arr + 20, 3) - arr;
   CPPUNIT_ASSERT(location==16);
 }
 void BoundTest::uprbnd2()
@@ -58,13 +57,13 @@ void BoundTest::uprbnd2()
 }
 void BoundTest::lwrbnd1()
 {
-  std::vector <int> v1(20);
-  for(size_t i = 0; i < v1.size(); i++)
+  vector <int> v1(20);
+  for (int i = 0; (size_t)i < v1.size(); ++i)
   {
     v1[i] = i/4;
   }
   // 0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 
-  std::vector<int>::iterator location = lower_bound(v1.begin(), v1.end(), 3);
+  vector<int>::iterator location = lower_bound(v1.begin(), v1.end(), 3);
 
   CPPUNIT_ASSERT((location - v1.begin())==12);
 }

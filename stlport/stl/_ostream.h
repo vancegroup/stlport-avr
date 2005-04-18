@@ -21,18 +21,14 @@
 #define _STLP_INTERNAL_OSTREAM_H
 
 #ifndef _STLP_INTERNAL_IOS_H
-# include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.
+#  include <stl/_ios.h>                  // For basic_ios<>.  Includes <iosfwd>.
 #endif
 
 #ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
-# include <stl/_ostreambuf_iterator.h>
+#  include <stl/_ostreambuf_iterator.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
-
-template <class _CharT, class _Traits, class _Number> 
-basic_ostream<_CharT, _Traits>& _STLP_CALL
-_M_put_num(basic_ostream<_CharT, _Traits>& __os, _Number __x);
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 template <class _CharT, class _Traits>
@@ -47,9 +43,14 @@ _M_init(basic_ostream<_CharT, _Traits>& __str);
 // class basic_ostream<>
 
 template <class _CharT, class _Traits>
-class basic_ostream : virtual public basic_ios<_CharT, _Traits>
-{
+class basic_ostream : virtual public basic_ios<_CharT, _Traits> {
   typedef basic_ostream<_CharT, _Traits> _Self;
+
+#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1300 && _STLP_MSVC <= 1310)
+  //explicitely defined as private to avoid warnings:
+  basic_ostream(_Self const&);
+  _Self& operator = (_Self const&);
+#endif
   
 public:                         // Types
   typedef _CharT                     char_type;
@@ -95,31 +96,24 @@ public:                         // Formatted output.
   // this is needed for compiling with option char = unsigned
   _Self& operator<<(unsigned char __x) { _M_put_char(__x); return *this; }
 # endif
-  _Self& operator<<(short __x) { 
-    long __tmp = ((this->flags() & basefield) != ios_base::dec)?(unsigned short)__x:__x;
-    return _M_put_num(*this,  __tmp);
-  }
-  _Self& operator<<(unsigned short __x) { return _M_put_num(*this,  __STATIC_CAST(unsigned long,__x)); }
-  _Self& operator<<(int __x) { 
-    long __tmp = ((this->flags() & basefield) != ios_base::dec)?(unsigned int)__x:__x;
-    return _M_put_num(*this,  __tmp);
-  }
-  _Self& operator<<(unsigned int __x) { return _M_put_num(*this,  __STATIC_CAST(unsigned long,__x)); }
-  _Self& operator<<(long __x) { return _M_put_num(*this,  __x); }
-  _Self& operator<<(unsigned long __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<<(short __x);
+  _Self& operator<<(unsigned short __x);
+  _Self& operator<<(int __x);
+  _Self& operator<<(unsigned int __x);
+  _Self& operator<<(long __x);
+  _Self& operator<<(unsigned long __x);
 #ifdef _STLP_LONG_LONG
-  _Self& operator<< (_STLP_LONG_LONG __x)     { return _M_put_num(*this,  __x); }
-  _Self& operator<< (unsigned _STLP_LONG_LONG __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<< (_STLP_LONG_LONG __x);
+  _Self& operator<< (unsigned _STLP_LONG_LONG __x);
 #endif 
-  _Self& operator<<(float __x)
-    { return _M_put_num(*this,  __STATIC_CAST(double,__x)); }
-  _Self& operator<<(double __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<<(float __x);
+  _Self& operator<<(double __x);
 # ifndef _STLP_NO_LONG_DOUBLE
-  _Self& operator<<(long double __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<<(long double __x);
 # endif
-  _Self& operator<<(const void* __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<<(const void* __x);
 # ifndef _STLP_NO_BOOL
-  _Self& operator<<(bool __x) { return _M_put_num(*this,  __x); }
+  _Self& operator<<(bool __x);
 # endif
 
 public:                         // Buffer positioning and manipulation.
@@ -171,12 +165,11 @@ public:                         // Buffer positioning and manipulation.
     public:
       explicit sentry(basic_ostream<_CharT, _Traits>& __str)
         : _M_str(__str), /* _M_buf(__str.rdbuf()), */ _M_ok(_M_init(__str))
-      {
-      }
+      {}
       
       ~sentry() {
         if (_M_str.flags() & ios_base::unitbuf)
-# ifndef _STLP_INCOMPLETE_EXCEPTION_HEADER 
+# ifndef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
           if (!_STLP_VENDOR_EXCEPT_STD::uncaught_exception())
 # endif
             _M_str.flush();
@@ -184,8 +177,9 @@ public:                         // Buffer positioning and manipulation.
 
       operator bool() const { return _M_ok; }
     private:                        // Disable assignment and copy constructor.
-      sentry(const _Self& __s) : _M_str (__s._M_str) {};
-      void operator=(const _Self&) {};
+      //Implementation is here only to avoid warning with some compilers.
+      sentry(const _Self& __s) : _M_str(__s._M_str) {}
+      _Self& operator=(const _Self&) { return *this; }
     };
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 #  undef sentry
@@ -356,7 +350,7 @@ _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_ostream.c>
-# endif
+#endif
 
 #endif /* _STLP_INTERNAL_OSTREAM_H */
 

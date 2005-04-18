@@ -84,7 +84,6 @@
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 #  define _STLP_NO_EXCEPTION_HEADER 1
 
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
 #  define _STLP_NO_NEW_NEW_HEADER 1
 
 #  if defined (__OS2__) && (__IBMCPP__ <= 350)

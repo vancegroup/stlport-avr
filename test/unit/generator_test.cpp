@@ -65,13 +65,13 @@ void GeneratorTest::gener2()
 }
 void GeneratorTest::genern1()
 {
-#ifndef __STL_MEMBER_POINTER_PARAM_BUG		
+#ifndef __STL_MEMBER_POINTER_PARAM_BUG
   //*TY 07/18/98 - added conditional
-	// since ptr_gen() is not defined under this condition 
-	// (see xfunction.h)
+  // since ptr_gen() is not defined under this condition 
+  // (see xfunction.h)
   vector <int> v1(10);
   generate_n(v1.begin(), v1.size(), ptr_gen(cxxrand));
-#endif	//	__STL_MEMBER_POINTER_PARAM_BUG	//*TY 07/18/98 - added
+#endif  //  __STL_MEMBER_POINTER_PARAM_BUG  //*TY 07/18/98 - added
 }
 void GeneratorTest::genern2()
 {

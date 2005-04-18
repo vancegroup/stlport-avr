@@ -45,9 +45,8 @@ const size_t ctype<char>::table_size;
 // That is, the "table" seen by ctype<char> member functions is
 // _S_classic_table + 1.
 const ctype_base::mask 
-ctype<char>::_S_classic_table[257] = 
+ctype<char>::_S_classic_table[ctype<char>::table_size] = 
 {
-  ctype_base::mask(0) /* EOF */,
   cntrl /* null */,
   cntrl /* ^A */,
   cntrl /* ^B */,
@@ -200,7 +199,7 @@ ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::ma
 // version.  As before, these two tables assume the ASCII character
 // set.
 
-const unsigned char ctype<char>::_S_upper[256] =
+const unsigned char ctype<char>::_S_upper[ctype<char>::table_size] =
 {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -236,7 +235,7 @@ const unsigned char ctype<char>::_S_upper[256] =
   0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
 };
 
-const unsigned char ctype<char>::_S_lower[256] =
+const unsigned char ctype<char>::_S_lower[ctype<char>::table_size] =
 {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -298,7 +297,7 @@ struct _Ctype_not_mask {
 };
  
 ctype<char>::ctype(const ctype_base::mask * __tab, bool __del, size_t __refs) : 
-  _BaseFacet(__refs) /* , _M_ctype_table(0) */ {
+  locale::facet(__refs) /* , _M_ctype_table(0) */ {
   _M_ctype_table = __tab ? __tab : classic_table();
   _M_delete = __tab && __del;
 }
@@ -357,7 +356,7 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
 }
 
 
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 
   struct _Ctype_w_is_mask {
     typedef wchar_t argument_type;
@@ -368,10 +367,10 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
     
     _Ctype_w_is_mask(ctype_base::mask m, const ctype_base::mask* t)
       : M(m), table(t) {}
-    bool operator()(wchar_t c) const
-      { return c >= 0 && size_t(c) < ctype<char>::table_size && (table[c] & M); }
+    bool operator()(wchar_t c) const {
+      return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size && (table[c] & M);
+    }
   };
-
 
 //----------------------------------------------------------------------
 // ctype<wchar_t>
@@ -379,103 +378,91 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
 ctype<wchar_t>::~ctype() {}
 
 
-bool ctype<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const
-{
+bool ctype<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const {
   const ctype_base::mask * table = ctype<char>::classic_table();
-  return c >= 0 && size_t(c) < ctype<char>::table_size && (m & table[c]);
+  return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size && (m & table[c]);
 }
 
 const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
-                                     ctype_base::mask * vec) const
-{
+                                     ctype_base::mask * vec) const {
   // boris : not clear if this is the right thing to do...
   const ctype_base::mask * table = ctype<char>::classic_table();
   for ( ; low < high; ++low, ++vec) {
     wchar_t c = *low;
-    *vec = c >= 0 && size_t(c) < ctype<char>::table_size ? table[c] : ctype_base::mask (0);
+    *vec = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size ? table[c] : ctype_base::mask (0);
   }
   return high;
 }
 
 const wchar_t*
 ctype<wchar_t>::do_scan_is(ctype_base::mask  m,
-                           const wchar_t* low, const wchar_t* high) const
-{
+                           const wchar_t* low, const wchar_t* high) const {
   return find_if(low, high, _Ctype_w_is_mask(m, ctype<char>::classic_table()));
 }
 
 
 const wchar_t*
 ctype<wchar_t>::do_scan_not(ctype_base::mask  m,
-                            const wchar_t* low, const wchar_t* high) const
-{
-    return find_if(low, high, not1(_Ctype_w_is_mask(m, ctype<char>::classic_table())));
+                            const wchar_t* low, const wchar_t* high) const {
+  return find_if(low, high, not1(_Ctype_w_is_mask(m, ctype<char>::classic_table())));
 }
 
-wchar_t ctype<wchar_t>::do_toupper(wchar_t c) const
-{
-  return c >= 0 && size_t(c) < ctype<char>::table_size
+wchar_t ctype<wchar_t>::do_toupper(wchar_t c) const {
+  return /*c >= 0 && */size_t(c) < ctype<char>::table_size
     ? (wchar_t) ctype<char>::_S_upper[c]
     : c;
 }
 
 const wchar_t* 
-ctype<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const
-{
+ctype<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = c >= 0 && size_t(c) < ctype<char>::table_size
+    *low = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
       ? (wchar_t) ctype<char>::_S_upper[c]
       : c;
   }
   return high;
 }
 
-wchar_t ctype<wchar_t>::do_tolower(wchar_t c) const
-{
-  return c >= 0 && size_t(c) < ctype<char>::table_size
+wchar_t ctype<wchar_t>::do_tolower(wchar_t c) const {
+  return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
     ? (wchar_t) ctype<char>::_S_lower[c]
     : c;
 }
 
 const wchar_t* 
-ctype<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const
-{
+ctype<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = c >= 0 && size_t(c) < ctype<char>::table_size
+    *low = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
       ? (wchar_t) ctype<char>::_S_lower[c]
       : c;
   }
   return high;
 }
 
-wchar_t ctype<wchar_t>::do_widen(char c) const 
-{
-  return (wchar_t) c;
+wchar_t ctype<wchar_t>::do_widen(char c) const {
+  return (wchar_t)(unsigned char)c;
 }
 
 const char* 
 ctype<wchar_t>::do_widen(const char* low, const char* high,
-                         wchar_t* dest) const
-{
+                         wchar_t* dest) const {
   while (low != high)
-    *dest++ = (wchar_t) *low++;
+    *dest++ = (wchar_t)(unsigned char)*low++;
   return high;
 }
 
-char ctype<wchar_t>::do_narrow(wchar_t c, char dfault) const 
-{
-  return (char) c == c ? c : dfault;
+char ctype<wchar_t>::do_narrow(wchar_t c, char dfault) const {
+  return (unsigned char) c == c ? c : dfault;
 }
 
 const wchar_t* ctype<wchar_t>::do_narrow(const wchar_t* low,
                                          const wchar_t* high,
-                                         char dfault, char* dest) const
-{
+                                         char dfault, char* dest) const {
   while (low != high) {
     wchar_t c = *low++;
-    *dest++ = (char) c == c ? c : dfault;
+    *dest++ = (unsigned char) c == c ? c : dfault;
   }
 
   return high;

@@ -48,7 +48,7 @@ void EqualTest::eqlrnge1()
 {
   typedef vector <int> IntVec;
   IntVec v(10);
-  for(size_t i = 0; i < v.size(); i++)
+  for (int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i / 3;
 
   pair<IntVec::iterator, IntVec::iterator> range=equal_range(v.begin(), v.end(), 2);
@@ -77,7 +77,7 @@ void EqualTest::equal0()
 void EqualTest::equal1()
 {
   vector <int> v1(10);
-  for(size_t i = 0; i < v1.size(); i++)
+  for (int i = 0; (size_t)i < v1.size(); ++i)
     v1[i] = i;
   vector <int> v2(10);
   CPPUNIT_ASSERT(!equal(v1.begin(), v1.end(), v2.begin()));
@@ -89,8 +89,7 @@ void EqualTest::equal2()
 {
   vector <int> v1(10);
   vector <int> v2(10);
-  for(size_t i = 0; i < v1.size(); i++)
-  {
+  for (int i = 0; (size_t)i < v1.size(); ++i) {
     v1[i] = i;
     v2[i] = i * i;
   }

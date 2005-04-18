@@ -17,15 +17,14 @@
  */ 
 
 
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
 
-# if defined  (__SUNPPRO_CC)  && !defined (_STLP_NO_NEW_C_HEADERS)
+#if defined  (__SUNPPRO_CC)  && !defined (_STLP_NO_NEW_C_HEADERS)
 #  include <time.h>
 // For sunpro, it chokes if time.h is included through stat.h
-# endif
+#endif
 
 #include <fstream>
-
 
 #ifdef __CYGWIN__
 #  define __int64 long long
@@ -35,165 +34,171 @@
 extern "C" {
 // open/close/read/write
 #  include <sys/stat.h>           // For stat
-#if !defined (_CRAY) && ! defined (__EMX__)
-#  include <sys/mman.h>           // For mmap
-#endif
+#  if !defined (_CRAY) && ! defined (__EMX__)
+#    include <sys/mman.h>           // For mmap
+#  endif
 
 //  on HP-UX 11, this one contradicts with pthread.h on pthread_atfork, unless we unset this
 #  if defined (__hpux) && defined (__GNUC__)
-#   undef _INCLUDE_POSIX1C_SOURCE
+#    undef _INCLUDE_POSIX1C_SOURCE
 #  endif
 
 #  include <unistd.h>
 #  include <fcntl.h>
 }
-# ifdef __APPLE__
-#  include <sys/sysctl.h>
-# endif
+#  ifdef __APPLE__
+#    include <sys/sysctl.h>
+#  endif
 #elif defined (_STLP_USE_WIN32_IO)
-# define WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 
-# ifdef __BORLANDC__
-#  if (__BORLANDC__ > 0x530)
-#  include <cfcntl.h>            // For _O_RDONLY, etc
-#  else
-#  include <fcntl.h>            // For _O_RDONLY, etc
+#  ifdef __BORLANDC__
+#    if (__BORLANDC__ > 0x530)
+#      include <cfcntl.h>            // For _O_RDONLY, etc
+#    else
+#      include <fcntl.h>            // For _O_RDONLY, etc
+#    endif
+#    include <sys/stat.h>         // For _fstat
+#  elif !defined(_STLP_WCE)
+#    include <io.h>               // For _get_osfhandle
+#    include <fcntl.h>            // For _O_RDONLY, etc
+#    include <sys/stat.h>         // For _fstat
 #  endif
-#  include <sys/stat.h>         // For _fstat
-# elif !defined(_STLP_WCE)
-#  include <io.h>               // For _get_osfhandle
-#  include <fcntl.h>            // For _O_RDONLY, etc
-#  include <sys/stat.h>         // For _fstat
-# endif
-
-# define _TEXTBUF_SIZE 0x1000
+#  define _TEXTBUF_SIZE 0x1000
 #elif defined (_STLP_USE_UNIX_EMULATION_IO)
 #  if defined( __MSL__ )
-#   include <unistd.h>
+#    include <unistd.h>
 #  else
-#   include <io.h>
+#    include <io.h>
 #  endif
 #  include <fcntl.h>
 #  include <sys/stat.h>
-
 #elif defined (_STLP_USE_STDIO_IO)
 #  include <cstdio>
-
 #  if !(defined(__MRC__) || defined(__SC__) || defined(__ISCPP__) )
 extern "C" {
-#   include <sys/stat.h>
+#    include <sys/stat.h>
 }
 #  endif
 #  if defined( __MSL__ )
-#   include <unix.h>
+#    include <unix.h>
 #  endif
 #  if defined(__ISCPP__)
-#   include <c_locale_is/filestat.h>
+#    include <c_locale_is/filestat.h>
 #  endif
 #  if defined(__BEOS__) && defined(__INTEL__)
-#   include <fcntl.h>
-#   include <sys/stat.h>         // For _fstat
-#   define _S_IREAD S_IREAD
-#   define _S_IWRITE S_IWRITE
-#   define _S_IFREG S_IFREG
+#    include <fcntl.h>
+#    include <sys/stat.h>         // For _fstat
+#    define _S_IREAD S_IREAD
+#    define _S_IWRITE S_IWRITE
+#    define _S_IFREG S_IFREG
 #  endif
 #else
-#error "Configure i/o !"
+#  error "Configure i/o !"
+#endif
+
+#if defined (_STLP_USE_WIN32_IO)
+const _STLP_fd INVALID_STLP_FD = INVALID_HANDLE_VALUE;
+#  if !defined (INVALID_SET_FILE_POINTER)
+#    define INVALID_SET_FILE_POINTER 0xffffffff
+#  endif
+/*
+ * AFAWK for the moment the Win32 API is a 32 bits one. The following check will
+ * generate a compilation error if the file handler is not a 32 bits handler.
+ */
+const char __32_bits_handle_check[sizeof(_STLP_fd) == 4] = {0};
+#elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO) || defined (_STLP_USE_UNIX_IO)
+const _STLP_fd INVALID_STLP_FD = -1;
+#else
+#  error "Configure i/o !"
 #endif
 
 // map permission masks
 #if defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
-# ifndef S_IRUSR
-#  define S_IRUSR _S_IREAD
-#  define S_IWUSR _S_IWRITE
-#  define S_IRGRP _S_IREAD
-#  define S_IWGRP _S_IWRITE
-#  define S_IROTH _S_IREAD
-#  define S_IWOTH _S_IWRITE
-# endif
-# ifndef O_RDONLY
-#   define O_RDONLY _O_RDONLY
-#   define O_WRONLY _O_WRONLY
-#   define O_RDWR   _O_RDWR
-#   define O_APPEND _O_APPEND
-#   define O_CREAT  _O_CREAT
-#   define O_TRUNC  _O_TRUNC
-#   define O_TEXT   _O_TEXT
-#   define O_BINARY _O_BINARY
-# endif
-
-# ifdef __MSL__
-#  define _O_TEXT 0x0
-#  if !defined( O_TEXT )
-#   define O_TEXT _O_TEXT
+#  ifndef S_IRUSR
+#    define S_IRUSR _S_IREAD
+#    define S_IWUSR _S_IWRITE
+#    define S_IRGRP _S_IREAD
+#    define S_IWGRP _S_IWRITE
+#    define S_IROTH _S_IREAD
+#    define S_IWOTH _S_IWRITE
 #  endif
-#  define _S_IFREG S_IFREG
-#  define S_IREAD        S_IRUSR
-#  define S_IWRITE       S_IWUSR
-#  define S_IEXEC        S_IXUSR
-#  define _S_IWRITE S_IWRITE
-#  define _S_IREAD S_IREAD
-#  define _open open
-#  define _lseek lseek
-#  define _close close
-#  define _read read
-#  define _write write
-# endif
+#  ifndef O_RDONLY
+#    define O_RDONLY _O_RDONLY
+#    define O_WRONLY _O_WRONLY
+#    define O_RDWR   _O_RDWR
+#    define O_APPEND _O_APPEND
+#    define O_CREAT  _O_CREAT
+#    define O_TRUNC  _O_TRUNC
+#    define O_TEXT   _O_TEXT
+#    define O_BINARY _O_BINARY
+#  endif
 
+#  ifdef __MSL__
+#    define _O_TEXT 0x0
+#    if !defined( O_TEXT )
+#      define O_TEXT _O_TEXT
+#    endif
+#    define _S_IFREG S_IFREG
+#    define S_IREAD        S_IRUSR
+#    define S_IWRITE       S_IWUSR
+#    define S_IEXEC        S_IXUSR
+#    define _S_IWRITE S_IWRITE
+#    define _S_IREAD S_IREAD
+#    define _open open
+#    define _lseek lseek
+#    define _close close
+#    define _read read
+#    define _write write
+#  endif
 #endif
 
 #ifndef O_ACCMODE
-#   define O_ACCMODE (O_RDONLY|O_WRONLY|O_RDWR)
+#  define O_ACCMODE (O_RDONLY|O_WRONLY|O_RDWR)
 #endif
 
 #include "fstream_impl.h"
 
-# ifdef _STLP_LONG_LONG
-# define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-// # elif defined (_MSC_VER) || defined (__BORLANDC__)
-// # define ULL(x) ((__int64)x)
-# elif defined(__MRC__) || defined(__SC__)		//*TY 02/25/2000 - added support for MPW compilers
-# include <Math64.h>
-# define ULL(x) (U64SetU(x))
-# elif defined(__ISCPP__)
+#ifdef _STLP_LONG_LONG
+#  define ULL(x) ((unsigned _STLP_LONG_LONG)x)
+// #  elif defined (_MSC_VER) || defined (__BORLANDC__)
+// #    define ULL(x) ((__int64)x)
+#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
+#  include <Math64.h>
+#  define ULL(x) (U64SetU(x))
+#elif defined(__ISCPP__)
 #  include "uint64.h"
-# else
+#else
 #  error "there should be some long long type on the system!"
-# endif
+#endif
 
 __SGI_BEGIN_NAMESPACE
 
-#if !defined(__MSL__) && !defined(__MRC__) && !defined(__SC__) && !defined(_STLP_WCE)		//*TY 04/15/2000 - exclude mpw compilers also
-ios_base::openmode flag_to_openmode(int mode)
-{
-  ios_base::openmode ret;
+#if !defined(__MSL__) && !defined(__MRC__) && !defined(__SC__) && !defined(_STLP_WCE)    //*TY 04/15/2000 - exclude mpw compilers also
+ios_base::openmode flag_to_openmode(int mode) {
+  ios_base::openmode ret = ios_base::__default_mode;
   
   switch(mode & O_ACCMODE) {
-
   case O_RDONLY:
     ret = ios_base::in; break;
-
   case O_WRONLY:
     ret = ios_base::out; break;
-
   case O_RDWR:
     ret = ios_base::in | ios_base::out; break;
-
   }
 
   if (mode & O_APPEND)
     ret |= ios_base::app;
   
-#  ifdef _STLP_USE_WIN32_IO
+#  if defined (_STLP_USE_WIN32_IO)
   if (mode & O_BINARY)
     ret |= ios_base::binary;
-#  endif // _MSC_VER
+#  endif
 
   return ret;
-  
 }
-# endif /* MSL */
+#endif /* MSL */
 
 // Helper functions for _Filebuf_base.
 
@@ -204,9 +209,9 @@ bool __is_regular_file(_STLP_fd fd) {
   struct stat buf;
   return fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode);
 
-#elif defined(__MRC__) || defined(__SC__)		//*TY 02/25/2000 - added support for MPW compilers
+#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
 
-  #pragma unused(fd)
+#  pragma unused(fd)
   return true;  // each file is a regular file under mac os, isn't it? (we don't have fstat())
 
 #elif defined(_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
@@ -214,20 +219,19 @@ bool __is_regular_file(_STLP_fd fd) {
   struct stat buf;
   return fstat(fd, &buf) == 0 && (buf.st_mode & _S_IFREG) != 0 ;
 
-#   elif defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
+#elif defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
 
   return (GetFileType(fd) & ~FILE_TYPE_REMOTE) == FILE_TYPE_DISK;
 
 #else
   (void)fd;    // dwa 4/27/00 - suppress unused parameter warning
   return false;
-
 #endif
 }
 
 // Number of characters in the file.  
 streamoff __file_size(_STLP_fd fd) {
- streamoff ret = 0;
+  streamoff ret = 0;
 
 #if defined (_STLP_UNIX)
 
@@ -235,9 +239,9 @@ streamoff __file_size(_STLP_fd fd) {
   if(fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode))
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
-#elif defined(__MRC__) || defined(__SC__)		//*TY 02/25/2000 - added support for MPW compilers
+#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
 
-  #pragma unused(fd)
+#  pragma unused(fd)
 
 #elif defined(_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
 
@@ -245,20 +249,19 @@ streamoff __file_size(_STLP_fd fd) {
   if(fstat(fd, &buf) == 0 && (buf.st_mode & _S_IFREG) != 0)
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
-#   elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
 
  LARGE_INTEGER li;
  li.LowPart = GetFileSize(fd, (unsigned long*) &li.HighPart);
- if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR )
- {
+ if (li.LowPart == INVALID_FILE_SIZE && GetLastError() != NO_ERROR ) {
    ret = 0;
- } else
+ } 
+ else
    ret = li.QuadPart;
  
-# else
+#else
   (void)fd;    // dwa 4/27/00 - suppress unused parameter warning  
-# endif
-  
+#endif 
   return ret;
 }
 
@@ -266,20 +269,20 @@ streamoff __file_size(_STLP_fd fd) {
 // Visual C++ and Intel use this, but not Metrowerks
 // Also MinGW, msvcrt.dll (but not crtdll.dll) dependent version
 #if (!defined(__MSL__) && !defined(_STLP_WCE) && defined( _MSC_VER ) && defined(_WIN32)) || \
- (defined(__MINGW32__) && defined(__MSVCRT__))
+    (defined(__MINGW32__) && defined(__MSVCRT__))
 
 // fcntl(fileno, F_GETFL) for Microsoft library
 // 'semi-documented' defines:
-#define IOINFO_L2E          5
-#define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)
-#define _pioinfo(i) ( __pioinfo[(i) >> IOINFO_L2E] + \
+#  define IOINFO_L2E          5
+#  define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)
+#  define _pioinfo(i) ( __pioinfo[(i) >> IOINFO_L2E] + \
               ((i) & (IOINFO_ARRAY_ELTS - 1)) )
-#define FAPPEND         0x20    // O_APPEND flag
-#define FTEXT           0x80    // O_TEXT flag
+#  define FAPPEND         0x20    // O_APPEND flag
+#  define FTEXT           0x80    // O_TEXT flag
 // end of 'semi-documented' defines
 
 // fbp : empirical
-#define F_WRITABLE           0x04
+#  define F_WRITABLE      0x04
 
 // 'semi-documented' internal structure
 extern "C" {
@@ -287,18 +290,17 @@ extern "C" {
     long osfhnd;    // the real os HANDLE
     char osfile;    // file handle flags
     char pipech;    // pipe buffer
-#   ifdef _MT
+#  ifdef _MT
     // multi-threaded locking
     int lockinitflag;
     CRITICAL_SECTION lock;
-#   endif  /* _MT */
+#  endif  /* _MT */
   };
-#ifdef __MINGW32__
+#  ifdef __MINGW32__
  __MINGW_IMPORT ioinfo * __pioinfo[];
-#else
+#  else
   extern _CRTIMP ioinfo * __pioinfo[];
-#endif
-
+#  endif
 } // extern "C"
 // end of 'semi-documented' declarations 
 
@@ -317,28 +319,29 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
     mode |= O_BINARY;
 
   // we have to guess
-# ifdef __macintosh
+#  ifdef __macintosh
    DWORD dummy, dummy2;
    if (WriteFile(oshandle, &dummy2, 0, &dummy, 0))
      mode |= O_RDWR;
    else
      mode |= O_RDONLY;
-# else
+#  else
    // on Windows, this seems to work...
+  (void)oshandle; //unused variable
    if (dosflags & F_WRITABLE)
       mode |= O_RDWR;
    else
       mode |= O_RDONLY;
-# endif
+#  endif
   
   return flag_to_openmode(mode);
 }
 
 #elif defined(__DMC__)
 
-#define FHND_APPEND 0x04
-#define FHND_DEVICE 0x08
-#define FHND_TEXT   0x10
+#  define FHND_APPEND 0x04
+#  define FHND_DEVICE 0x08
+#  define FHND_TEXT   0x10
 
 extern "C" unsigned char __fhnd_info[_NFILE];
 
@@ -358,11 +361,11 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
       const int osflags = fp->_flag;
 
       if ((osflags & _IOREAD) && !(osflags & _IOWRT) && !(osflags & _IORW))
-	mode |= O_RDONLY;
+  mode |= O_RDONLY;
       else if ((osflags & _IOWRT) && !(osflags & _IOREAD) && !(osflags & _IORW))
-	mode |= O_WRONLY;
+  mode |= O_WRONLY;
       else
-	mode |= O_RDWR;
+  mode |= O_RDWR;
 
       break;
     }
@@ -379,34 +382,29 @@ __SGI_END_NAMESPACE
 // If we're on a Unix system, define some macros to encapsulate those
 // differences.
 #ifdef _STLP_USE_UNIX_IO
-# ifdef __sgi /* IRIX */
-#  define LSEEK lseek64
-#  define MMAP  mmap64
-# else
-#  define LSEEK lseek
-#  define MMAP  mmap
-# endif
-
-#ifndef MAP_FAILED /* MMAP failure return code */
-# define MAP_FAILED -1
-#endif
-
+#  ifdef __sgi /* IRIX */
+#    define LSEEK lseek64
+#    define MMAP  mmap64
+#  else
+#    define LSEEK lseek
+#    define MMAP  mmap
+#  endif
+#  ifndef MAP_FAILED /* MMAP failure return code */
+#    define MAP_FAILED -1
+#  endif
 #elif defined (_STLP_USE_UNIX_EMULATION_IO)
 #  define LSEEK _lseek
 #endif
 
-
 _STLP_BEGIN_NAMESPACE
 
-size_t
-_Filebuf_base::_M_page_size = 4096;
+size_t _Filebuf_base::_M_page_size = 4096;
 
 _Filebuf_base::_Filebuf_base()
-  : _M_file_id((_STLP_fd)-1),
+  : _M_file_id(INVALID_STLP_FD),
     _M_openmode(0),
     _M_is_open(false),
-    _M_should_close(false)
-{
+    _M_should_close(false) {
   if (!_M_page_size)
 #if defined (_STLP_UNIX)  && !defined(__DJGPP) && !defined(_CRAY)
 #  if defined (__APPLE__)
@@ -419,12 +417,12 @@ _Filebuf_base::_Filebuf_base()
    sysctl(mib, 2, &pagesize, &len, NULL, 0);
    _M_page_size = pagesize;
    }
-# elif defined(__DJGPP) && defined(_CRAY)
+#  elif defined(__DJGPP) && defined(_CRAY)
    _M_page_size = BUFSIZ;
 #  else
   _M_page_size = sysconf(_SC_PAGESIZE);
 #  endif
-# elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
   {
   SYSTEM_INFO SystemInfo;
   GetSystemInfo(&SystemInfo);
@@ -435,31 +433,25 @@ _Filebuf_base::_Filebuf_base()
   //  _M_trans_buf_end=0,   
   _M_view_id = 0;
 #endif
-
-  if (_M_page_size <=0 )
+  if (_M_page_size <= 0)
     _M_page_size = 4096;
-
 }
 
 
 // Return the size of the file.  This is a wrapper for stat.
 // Returns zero if the size cannot be determined or is ill-defined.
-streamoff 
-_Filebuf_base::_M_file_size()
-{
+streamoff _Filebuf_base::_M_file_size() {
   return _SgI::__file_size(_M_file_id);
 }
 
 bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
-                            long permission)
-{
+                            long permission) {
   _STLP_fd file_no;
 
   if (_M_is_open)
     return false;
 
 #if defined (_STLP_USE_UNIX_IO) || defined (_STLP_USE_UNIX_EMULATION_IO)
-
   int flags = 0;
 
   // Unix makes no distinction between text and binary files.
@@ -485,20 +477,16 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     return false;               // flags allowed by the C++ standard.
   }
 
-# if defined (_STLP_USE_UNIX_EMULATION_IO)
-
+#  if defined (_STLP_USE_UNIX_EMULATION_IO)
   if (openmode & ios_base::binary)
     flags |= O_BINARY;
   else
     flags |= O_TEXT;
 
   file_no = _open(name, flags, permission);
-
-# else
-
+#  else
   file_no = open(name, flags, permission);
-
-# endif /* _STLP_USE_UNIX_EMULATION_IO */
+#  endif /* _STLP_USE_UNIX_EMULATION_IO */
 
   if (file_no < 0)
     return false;
@@ -562,7 +550,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   }
 
   // fbp : TODO : set permissions !
-  (void)permission; // currently unused		//*TY 02/26/2000 - added to suppress warning message
+  (void)permission; // currently unused    //*TY 02/26/2000 - added to suppress warning message
   _M_file = fopen(name, flags);
  
   if (_M_file) {
@@ -576,9 +564,10 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
 
   _M_is_open = true;
 
-  if (openmode & ios_base::ate)
+  if (openmode & ios_base::ate) {
     if (fseek(_M_file, 0, SEEK_END) == -1)
       _M_is_open = false;
+  }
   
 #elif defined (_STLP_USE_WIN32_IO)
 
@@ -630,11 +619,12 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
                           dwDesiredAccess, dwShareMode, 0,
                           dwCreationDisposition, permission, 0);
   
-  if ( file_no == INVALID_HANDLE_VALUE )
+  if (file_no == INVALID_STLP_FD)
     return false;
 
   if ((doTruncate && SetEndOfFile(file_no) == 0) ||
-      ((openmode & ios_base::ate) && SetFilePointer(file_no, 0, NULL, FILE_END) == -1)) {
+      (((openmode & ios_base::ate) != 0) && 
+       (SetFilePointer(file_no, 0, NULL, FILE_END) == INVALID_SET_FILE_POINTER))) {
     CloseHandle(file_no);
     return false;
   }
@@ -642,9 +632,8 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   _M_is_open = true;
  
 #else
-# error "Port!"  
+#  error "Port!"
 #endif /* __unix */
-
 
   _M_file_id = file_no;
   _M_should_close = _M_is_open;
@@ -653,32 +642,31 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   if (_M_is_open)
     _M_regular_file = _SgI::__is_regular_file(_M_file_id);
   
-  return _M_is_open;
+  return (_M_is_open != 0);
 }
 
   
-bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode)
-{
+bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
   // This doesn't really grant everyone in the world read/write
   // access.  On Unix, file-creation system calls always clear 
   // bits that are set in the umask from the permissions flag.
-# ifdef _STLP_USE_WIN32_IO
+#ifdef _STLP_USE_WIN32_IO
   return this->_M_open(name, openmode, FILE_ATTRIBUTE_NORMAL);
-# elif defined(__MRC__) || defined(__SC__)		//*TY 02/26/2000 - added support for MPW compilers
+#elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
   return this->_M_open(name, openmode, 0);
-# else
+#else
   return this->_M_open(name, openmode, S_IRUSR | S_IWUSR | S_IRGRP | 
                                        S_IWGRP | S_IROTH | S_IWOTH);
-# endif
+#endif
 }
 
       
-#ifdef _STLP_USE_WIN32_IO
+#if defined (_STLP_USE_WIN32_IO)
 bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
-#if (defined (_MSC_VER) && !defined(_STLP_WCE)) || \
-    (defined (__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
+#  if (defined (_MSC_VER) && !defined(_STLP_WCE)) || \
+      (defined (__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
 
-  if (_M_is_open || (long)__id == -1)
+  if (_M_is_open || __id == INVALID_STLP_FD)
     return false;
 
   if (init_mode != ios_base::__default_mode)
@@ -686,20 +674,19 @@ bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
   else
     _M_openmode = _SgI::_get_osfflags((int)__id, __id);
   
-#else
-  (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
-
-  // not available for the API
-  return false;
-
-#endif
-
   _M_is_open = true;
   _M_file_id = __id;
   _M_should_close = false;
   _M_regular_file = _SgI::__is_regular_file(_M_file_id);
 
   return true;
+#  else
+  (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
+
+  // not available for the API
+  return false;
+
+#  endif
 }
 #endif /* _STLP_USE_WIN32_IO */
 
@@ -707,11 +694,10 @@ bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
 // open file.  Mode is set to be consistent with the way that the file
 // was opened.
 bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
-
   if (_M_is_open || file_no < 0)
     return false;
 
-# if defined (_STLP_UNIX)
+#if defined (_STLP_UNIX)
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
   int mode ;
   mode = fcntl(file_no, F_GETFL);
@@ -721,7 +707,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
 
   _M_openmode = _SgI::flag_to_openmode(mode);
   
-# elif defined(__MRC__) || defined(__SC__)		//*TY 02/26/2000 - added support for MPW compilers
+#elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
   switch( _iob[file_no]._flag & (_IOREAD|_IOWRT|_IORW) )
   {
@@ -732,10 +718,10 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   case _IORW:
     _M_openmode = ios_base::in | ios_base::out; break;
   default:
-  	return false;
+    return false;
   }
   
-# elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO) 
+#elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO) 
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
   int mode ;
   struct stat buf;
@@ -753,13 +739,13 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   default:
     return false;
   }
-# elif (defined(_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined(_STLP_WCE) ) || \
-        (defined(__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
+#elif (defined(_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined(_STLP_WCE) ) || \
+      (defined(__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
 
   HANDLE oshandle = (HANDLE)_get_osfhandle(file_no);
   
-  if ((long)oshandle != -1)
-	  file_no = (int)oshandle;
+  if (oshandle != INVALID_STLP_FD)
+    file_no = (int)oshandle;
   else
     return false;
   
@@ -768,15 +754,14 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   else
     _M_openmode = _SgI::_get_osfflags(file_no, oshandle);
   
-# else
+#else
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
 
   // not available for the API
   return false;
 
-# endif
+#endif
   
-
   _M_is_open = true;
   _M_file_id = (_STLP_fd)file_no;
   _M_should_close = false;
@@ -795,32 +780,32 @@ bool _Filebuf_base::_M_close() {
     ok = true;
   else {
     
-#   if defined (_STLP_USE_UNIX_IO)
+#if defined (_STLP_USE_UNIX_IO)
 
     ok = (close(_M_file_id) == 0);
 
-#   elif defined (_STLP_USE_UNIX_EMULATION_IO)
+#elif defined (_STLP_USE_UNIX_EMULATION_IO)
 
     ok = (_close(_M_file_id) == 0);
 
-#   elif defined (_STLP_USE_STDIO_IO)
+#elif defined (_STLP_USE_STDIO_IO)
 
     ok = (fclose(_M_file) == 0);
 
-#   elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
 
-    if ( _M_file_id != INVALID_HANDLE_VALUE ) {
+    if (_M_file_id != INVALID_STLP_FD) {
       ok = (CloseHandle(_M_file_id) != 0);
     }
     else {
       ok = false;
     }
     
-#   else
+#else
 
     ok = false;
 
-#   endif /* _STLP_USE_UNIX_IO */
+#endif /* _STLP_USE_UNIX_IO */
   }
 
   _M_is_open = _M_should_close = false;
@@ -829,22 +814,22 @@ bool _Filebuf_base::_M_close() {
 }
 
 
-# define _STLP_LF 10
-# define _STLP_CR 13
-# define _STLP_CTRLZ 26
+#define _STLP_LF 10
+#define _STLP_CR 13
+#define _STLP_CTRLZ 26
 
 // Read up to n characters into a buffer.  Return value is number of
 // characters read.
 ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
-#   if defined (_STLP_USE_UNIX_IO)
+#if defined (_STLP_USE_UNIX_IO)
 
   return read(_M_file_id, buf, n);
 
-#   elif defined (_STLP_USE_UNIX_EMULATION_IO)
+#elif defined (_STLP_USE_UNIX_EMULATION_IO)
 
   return _read(_M_file_id, buf, n);
 
-#   elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
   
   DWORD NumberOfBytesRead;
   ReadFile(_M_file_id, (LPVOID)buf, (DWORD)n, 
@@ -866,17 +851,17 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
           char peek = ' ';
           DWORD NumberOfBytesPeeked;
           ReadFile(_M_file_id, (LPVOID)&peek, 
-                        1, &NumberOfBytesPeeked, 0);
+                   1, &NumberOfBytesPeeked, 0);
           if (NumberOfBytesPeeked) {
             if (peek != _STLP_LF) { //not a <CR><LF> combination
-            * to ++ = _STLP_CR;
+              * to ++ = _STLP_CR;
               SetFilePointer(_M_file_id,(LONG)-1,0,SEEK_CUR);
-			}
+            }
             else {
               //We ignore the complete combinaison:
               SetFilePointer(_M_file_id,(LONG)-2,0,SEEK_CUR);
-			}
-		  }
+            }
+          }
         }
       } // found CR
     } // for
@@ -887,31 +872,30 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
   }
   return (ptrdiff_t)NumberOfBytesRead;
   
-#   elif defined (_STLP_USE_STDIO_IO)
+#elif defined (_STLP_USE_STDIO_IO)
   
   return fread(buf, 1, n, _M_file);
   
-#   else 
-#    error "Port!"
-# endif /* __unix */
+#else 
+#  error "Port!"
+#endif /* __unix */
 }
 
 // Write n characters from a buffer.  Return value: true if we managed
 // to write the entire buffer, false if we didn't.  
-bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
-  
-  while (true) {
+bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) { 
+  for (;;) {
     ptrdiff_t written;
     
-#   if defined (_STLP_USE_UNIX_IO)
+#if defined (_STLP_USE_UNIX_IO)
 
     written = write(_M_file_id, buf, n);
 
-#   elif defined (_STLP_USE_UNIX_EMULATION_IO)
+#elif defined (_STLP_USE_UNIX_EMULATION_IO)
 
     written = _write(_M_file_id, buf, n);
 
-#   elif defined (_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
 
     // In append mode, every write does an implicit seek to the end
     // of the file.
@@ -953,7 +937,7 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
       }
       // now write out the translated buffer
       char * writetextbuf = textbuf;
-      for (ptrdiff_t NumberOfBytesToWrite = ptrtextbuf - textbuf; 
+      for (DWORD NumberOfBytesToWrite = ptrtextbuf - textbuf;
            NumberOfBytesToWrite;) {
         DWORD NumberOfBytesWritten;
         WriteFile((HANDLE)_M_file_id, (LPVOID)writetextbuf, 
@@ -963,19 +947,19 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
         if (!NumberOfBytesWritten) // write shortfall
           return false;
         writetextbuf += NumberOfBytesWritten;
-        NumberOfBytesToWrite -=	NumberOfBytesWritten;
+        NumberOfBytesToWrite -=  NumberOfBytesWritten;
       }
       // count non-translated characters
       written = (nextblock - buf);
     }
 
-#   elif defined (_STLP_USE_STDIO_IO)
+#elif defined (_STLP_USE_STDIO_IO)
 
     written = fwrite(buf, 1, n, _M_file);
 
-#   else 
-#    error "Port!"
-#   endif /* __unix */ 
+#else 
+#  error "Port!"
+#endif /* __unix */ 
     
     if (n == written)
       return true;
@@ -990,20 +974,18 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
 
 
 #ifdef _STLP_USE_WIN32_IO
-# define STL_SEEK_SET FILE_BEGIN
-# define STL_SEEK_CUR FILE_CURRENT
-# define STL_SEEK_END FILE_END
+#  define STL_SEEK_SET FILE_BEGIN
+#  define STL_SEEK_CUR FILE_CURRENT
+#  define STL_SEEK_END FILE_END
 #else
-# define STL_SEEK_SET SEEK_SET
-# define STL_SEEK_CUR SEEK_CUR
-# define STL_SEEK_END SEEK_END
+#  define STL_SEEK_SET SEEK_SET
+#  define STL_SEEK_CUR SEEK_CUR
+#  define STL_SEEK_END SEEK_END
 #endif
 
 // Wrapper for lseek or the like.
-streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
-{
+streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir) {
   streamoff result = -1;
-
   int whence;
 
   switch(dir) {
@@ -1037,13 +1019,13 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
   LARGE_INTEGER li;
   li.QuadPart = offset;
   li.LowPart = SetFilePointer(_M_file_id, li.LowPart, &li.HighPart, whence);
-  if (li.LowPart == 0xFFFFFFFF && GetLastError() != NO_ERROR)
+  if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
     result = -1; // Error
   else
     result = li.QuadPart;
 
 #else
-#   error "Port!"
+#  error "Port!"
 #endif
 
   return result;
@@ -1070,19 +1052,21 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
 #elif defined (_STLP_USE_WIN32_IO)
 
   _M_view_id = CreateFileMapping(_M_file_id, (PSECURITY_ATTRIBUTES)0 ,
-				 PAGE_READONLY, 0 /* len >> 32 */ , 
-				 0 /* len & 0xFFFFFFFF */ ,             // low-order DWORD of size
-				 0);
+         PAGE_READONLY, 0 /* len >> 32 */ , 
+         0 /* len & 0xFFFFFFFF */ ,             // low-order DWORD of size
+         0);
 
   if (_M_view_id) {
-# if 0
+#  if 0
+/*
     printf("view %x created from file %x, error = %d, size = %d, map_offset = %d map_len = %d\n", 
-	   _M_view_id, _M_file_id, GetLastError(), 
-	   (int)cur_filesize, ULL(offset) & 0xffffffff, len);
-# endif
+     _M_view_id, _M_file_id, GetLastError(), 
+     (int)cur_filesize, ULL(offset) & 0xffffffff, len);
+*/
+#  endif
     
     base = MapViewOfFile(_M_view_id, FILE_MAP_READ, ULL(offset)>>32, 
-			 ULL(offset) & 0xffffffff, len);
+       ULL(offset) & 0xffffffff, len);
     // check if mapping succeded and is usable
     if (base ==0  || _M_seek(offset+len, ios_base::beg) < 0) {
       this->_M_unmap(base, len);
@@ -1091,8 +1075,8 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
   } else
     base = 0;
 #else
-  (void)len;		//*TY 02/26/2000 - unused variables
-  (void)offset;		//*TY 02/26/2000 - 
+  (void)len;    //*TY 02/26/2000 - unused variables
+  (void)offset;    //*TY 02/26/2000 - 
   base = 0;
 #endif
   return base;  
@@ -1110,6 +1094,7 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
     CloseHandle(_M_view_id);
   _M_view_id = NULL;
   base = 0;
+  (void)len; //unused variable
 #else
   (void)len;    //*TY 02/26/2000 - unused variables
   (void)base;   //*TY 02/26/2000 - 
@@ -1117,7 +1102,7 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 }
 
 // fbp : let us map 1 MB maximum, just be sure not to trash VM
-# define MMAP_CHUNK 0x100000UL
+#define MMAP_CHUNK 0x100000UL
 
 int _STLP_CALL
 _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this) {
@@ -1151,22 +1136,21 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
     streamoff __cur = __this->_M_base._M_seek(0, ios_base::cur);
     streamoff __size = __this->_M_base._M_file_size();
     if (__size > 0 && __cur >= 0 && __cur < __size) {
-      streamoff __offset    = (__cur / __this->_M_base.__page_size())
-	* __this->_M_base.__page_size();
+      streamoff __offset = (__cur / __this->_M_base.__page_size()) * __this->_M_base.__page_size();
       streamoff __remainder = __cur - __offset;
 
       __this->_M_mmap_len = __size - __offset;
 
       if (__this->_M_mmap_len > MMAP_CHUNK)
-	__this->_M_mmap_len = MMAP_CHUNK;
+        __this->_M_mmap_len = MMAP_CHUNK;
 
       if ((__this->_M_mmap_base =
-	   __this->_M_base._M_mmap(__offset, __this->_M_mmap_len)) != 0) {
-	__this->setg((char*) __this->_M_mmap_base,
-		     (char*) __this->_M_mmap_base + __remainder,
-		     (char*) __this->_M_mmap_base + __this->_M_mmap_len);
-	return traits_type::to_int_type(*__this->gptr());
-      } 
+        __this->_M_base._M_mmap(__offset, __this->_M_mmap_len)) != 0) {
+        __this->setg((char*) __this->_M_mmap_base,
+                     (char*) __this->_M_mmap_base + __remainder,
+                     (char*) __this->_M_mmap_base + __this->_M_mmap_len);
+        return traits_type::to_int_type(*__this->gptr());
+      }
     } else /* size > 0 ... */ {
       // There is nothing to map. We unmapped the file above, now zap pointers.
       __this->_M_mmap_base = 0;
@@ -1187,7 +1171,7 @@ template class basic_ifstream<char, char_traits<char> >;
 template class basic_ofstream<char, char_traits<char> >;
 template class basic_fstream<char, char_traits<char> >;
 
-#  ifndef _STLP_NO_WCHAR_T
+#  if !defined (_STLP_NO_WCHAR_T)
 template class _Underflow<wchar_t, char_traits<wchar_t> >;
 template class basic_filebuf<wchar_t, char_traits<wchar_t> >;
 template class basic_ifstream<wchar_t, char_traits<wchar_t> >;
@@ -1202,4 +1186,3 @@ _STLP_END_NAMESPACE
 // Local Variables:
 // mode:C++
 // End:
-

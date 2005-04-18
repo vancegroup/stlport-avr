@@ -18,7 +18,9 @@
 #ifndef _STLP_IOS_C
 #define _STLP_IOS_C
 
-#if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
+#ifndef _STLP_INTERNAL_IOS_H
+# include <stl/_ios.h>
+#endif
 
 #ifndef _STLP_INTERNAL_STREAMBUF
 # include <stl/_streambuf.h>
@@ -39,7 +41,7 @@ basic_ios<_CharT, _Traits>
     : ios_base(),
       _M_fill(_STLP_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
 {
-  init(__streambuf);
+  basic_ios<_CharT, _Traits>::init(__streambuf);
 }
 
 template <class _CharT, class _Traits>
@@ -118,6 +120,8 @@ void basic_ios<_CharT, _Traits>::_M_handle_exception(ios_base::iostate __flag)
 
 _STLP_END_NAMESPACE
 
-#endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
-
 #endif /* _STLP_IOS_C */
+
+// Local Variables:
+// mode:C++
+// End:

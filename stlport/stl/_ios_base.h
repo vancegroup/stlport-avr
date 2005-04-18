@@ -241,8 +241,6 @@ private:                        // Data members.
   void** _M_pwords;
   size_t _M_num_pwords;
 
-  static int _S_index;
-
 protected:
   // Cached copies of the curent locale's facets.  Set by init() and imbue().
   locale::facet* _M_cached_ctype;

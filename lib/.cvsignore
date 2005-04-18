@@ -2,3 +2,13 @@
 *.lib
 *.dll
 *.exp
+evc3-arm
+evc3-x86
+evc3-mips
+evc4-arm
+evc4-x86
+evc4-mips
+vc6
+vc7
+vc71
+vc8

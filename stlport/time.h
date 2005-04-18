@@ -20,7 +20,12 @@
 #  define _STLP_DONT_POP_HEADER_ID
 # endif
 
-# include _STLP_NATIVE_C_HEADER(time.h)
+# ifdef _STLP_WCE_EVC3
+#  pragma message("eMbedded Visual C++ 3 doesn't have a time.h header; STLport won't include native time.h here")
+# else
+#  include _STLP_NATIVE_C_HEADER(time.h)
+# endif // _STLP_WCE_EVC3
+
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x272)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)

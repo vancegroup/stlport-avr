@@ -35,14 +35,14 @@
 #  define back_insert_iterator           _bI__It
 #  define front_insert_iterator          _fI__It
 #  define raw_storage_iterator           _rS__It
-#  define _Const_traits _C_Tr
-#  define _Nonconst_traits _N_Tr
+#  define _Const_traits                  _C_Tr
+#  define _Nonconst_traits               _N_Tr
 
 // ugliness is intentional - to reduce conflicts probability
-#  define __malloc_alloc   M__A
-#  define __node_alloc     D__A
-#  define __new_alloc      N__A
-#  define __debug_alloc    G__A
+#  define __malloc_alloc    M__A
+#  define __node_alloc      D__A
+#  define __new_alloc       N__A
+#  define __debug_alloc     G__A
 #  define _STLP_alloc_proxy P__A
 
 #  define __deque_iterator         _dQ__It
@@ -59,7 +59,7 @@
 #  define _Hashtable_const_iterator   _hT__cIt
 #  define _Hashtable_node             _hT__N
 #  define _Hashtable_base             _hT__B
-#  define _Ht_iterator _Ht_It
+#  define _Ht_iterator                _Ht_It
 
 #  define __list_iterator          _L__It
 #  define __slist_iterator         _SL__It

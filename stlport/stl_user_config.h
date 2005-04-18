@@ -10,7 +10,6 @@
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
- *
  */
 
 /*
@@ -22,7 +21,6 @@
  * to use consistent settings when you compile STLport library and your project. 
  * Those settings are defined in _site_config.h and have to be the same for a given
  * STLport installation.
- *
  */
 
  
@@ -31,38 +29,14 @@
 //              Features selection
 //==========================================================
 
-/* _STLP_NO_OWN_IOSTREAMS: 
- * __STL_NO_SGI_IOSTREAMS (in older versions)
- *  This is major configuration switch.
- *  Turn it on to disable use of SGI iostreams and use wrappers 
- *  around your compiler's iostreams, like before.
- *  Keep it off if you want to use  SGI iostreams 
- *  (Note that in this case you have to compile library in ../src
- *  and supply resulting library at link time).
- *
- */
-
-// # define   _STLP_NO_OWN_IOSTREAMS	1
-
-
-/* 
- * This macro only works in non-SGI iostreams mode.
- *
- * Uncomment to suppress using new-style streams even if they are
- * available.
- * Beware - _STLP_USE_OWN_NAMESPACE depends on this macro, too.
- * Do that only if you are absolutely sure backwards-compatible 
- * <iostream.h> is not actually a wrapper with <iostream>
- * Hint : In VC++ 6.x, they are not.
- */
-
-// #define   _STLP_NO_NEW_IOSTREAMS	1
-
 /*
  * Use this switch for embedded systems where no iostreams are available
  * at all. STLport own iostreams will also get disabled automatically then.
+ * You can either use STLport iostreams, or no iostreams.
+ * If you want iostreams, you have to compile library in ../src and supply resulting
+ * library at link time.
  */
-// # define _STLP_NO_IOSTREAMS 1
+// #define _STLP_NO_IOSTREAMS 1
 
 /* 
  * Set _STLP_DEBUG to turn the "Debug Mode" on.
@@ -89,9 +63,9 @@
  *  with custom types (which is most likely the case).
  *  Custom means types other than char, wchar and char_traits<>,
  *  like basic_ostream<my_char_type, my_traits<my_char_type> >
- *  When this option is on, most non-inline template functions definitions for iostreams are not seen by the client.
- *  Default is off, just not to break compilation for those who do use those types.
+ *  When this option is on, most non-inline template functions definitions for iostreams are not seen by the client
  *  which saves a lot of compile time for most compilers, also object and executable size for some.
+ *  Default is off, just not to break compilation for those who do use those types.
  *  That also guarantees that you still use optimized standard i/o when you compile your program without optimization. 
  *  Option does not affect STLport library build; you may use the same binary library with and without this option, 
  *  on per-project basis.
@@ -111,10 +85,10 @@
 
 /*
  * If _STLP_USE_OWN_NAMESPACE is in effect, STLport by default will try
- * to rename std:: for the user to _STL::. If you do want this feature, 
- * please define the following switch :
+ * to rename std:: for the user to stlport::. If you do not want this feature, 
+ * please define the following switch and then use stlport::
  */
-// # define _STLP_DONT_REDEFINE_STD 1
+// #define _STLP_DONT_REDEFINE_STD 1
 
 
 /*
@@ -128,18 +102,18 @@
  * Otherwise this option is not recommended as it increases the size of your object files
  * and slows down compilation.
  */
-// # define _STLP_WHOLE_NATIVE_STD
+// #define _STLP_WHOLE_NATIVE_STD
 
 
 /*
  * Use this option to catch uninitialized members in your classes.
  * When it is set, construct() and destroy() fill the class storage
- * with _STLP_SHRED_BYTE (see below). 
+ * with _STLP_SHRED_BYTE (see below).
  * Note : _STLP_DEBUG and _STLP_DEBUG_ALLOC don't set this option automatically.
  */
 
-// # define _STLP_DEBUG_UNINITIALIZED 1
-// # define _STLP_DEBUG_ALLOC 1
+// #define _STLP_DEBUG_UNINITIALIZED 1
+// #define _STLP_DEBUG_ALLOC 1
 
 /*
  * Uncomment and provide a definition for the byte with which raw memory
@@ -155,7 +129,6 @@
  *  does not let gcc to implement automatic instantiation of static template data members/
  *  It is being put in this file as there is no way to check if we are using GNU ld automatically,
  *  so it becomes user's responsibility.
- * 
  */
 
 // #define _STLP_GCC_USES_GNU_LD
@@ -168,28 +141,43 @@
  *  Define this macro to disable anachronistic constructs (like the ones used in HP STL and
  *  not included in final standard, etc. 
  */
-// define _STLP_NO_ANACHRONISMS 1
+// #define _STLP_NO_ANACHRONISMS 1
 
 /*
  *  Define this macro to disable STLport extensions (for example, to make sure your code will 
  *  compile with some other implementation )
  */
-// define _STLP_NO_EXTENSIONS   1
+// #define _STLP_NO_EXTENSIONS   1
 
 /* 
  * You should define this macro if compiling with MFC - STLport <stl/_config.h>
  * then include <afx.h> instead of <windows.h> to get synchronisation primitives 
  */
-
-// # define _STLP_USE_MFC 1
-
+// #define _STLP_USE_MFC 1
 
 /*
  * boris : this setting is here as we cannot detect precense of new Platform SDK automatically 
  * If you are using new PSDK with VC++ 6.0 or lower,
  * please define this to get correct prototypes for InterlockedXXX functions
  */
-//# define _STLP_NEW_PLATFORM_SDK 1
+// #define _STLP_NEW_PLATFORM_SDK 1
+
+/*
+ * Some compilers support the automatic linking feature. 
+ * Uncomment the following if you prefer to specify the STLport library
+ * to link with yourself.
+ * For the moment, this feature is only supported and implemented within STLport
+ * by the Microsoft compilers.
+ */
+// #define _STLP_DONT_USE_AUTO_LINK 1
+
+/*
+ * When using automatic linking (see above), output a message that tells the 
+ * user which lib is getting linked via 'pragma message(..)'.
+ * This setting has no effect if automatic linking is not active.
+ */
+// #define _STLP_VERBOSE_AUTO_LINK 1
+
 
 /*
  * Use minimum set of default arguments on template classes that have more
@@ -201,8 +189,7 @@
  * Affects : map<>, multimap<>, set<>, multiset<>, hash_*<>, 
  * queue<>, priority_queue<>, stack<>, istream_iterator<>
  */
-
-// # define _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS 1
+// #define _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS 1
 
 /*
  * The agregation of strings using the + operator is an expensive operation
@@ -215,14 +202,14 @@
  * directly to the destination string to set its size correctly and only make
  * a single call to the allocator. This technique can be extended to addition of 
  * N elements where elements being basic_string, C string or character type.
- * The drawback can be longer compilation time.
+ * The drawback can be longer compilation time and bigger executable size.
  * STLport rebuild: Yes
  */
 // #define _STLP_USE_TEMPLATE_EXPRESSION 1
 
 /*
  * By default the STLport basic_string implementation use a little static buffer
- * (of 8 char type when writing this doc) to avoid systematically memory allocation
+ * (of 16 chars when writing this doc) to avoid systematically memory allocation
  * in case of little basic_string. The drawback of such a method is bigger 
  * basic_string size and some performance penalty for method like swap. If you
  * prefer systematical dynamic allocation turn on this macro.
@@ -236,8 +223,9 @@
  * method. This, of course, imply that there is no confusion between using &*begin()
  * or data method and the special c_str method. If you are not sure that there is
  * no such confusion in your code you should define the following macro.
- * Note 1: This macro has no effect on basic_string instanciation with no POD types
- *         (this is to avoid complicated instance management within the basic_string).
+ * Note 1: This macro has no effect on basic_string instanciated with no POD types
+ *         (this is to avoid complicated instance management within the basic_string
+            implementation).
  * Note 2: This feature goes against the C++ standard because we are forced to use a
  *         const_cast to assign the null terminated char in the c_str const method.
  * STLport rebuild: Yes
@@ -252,8 +240,11 @@
  * a container of void*. If you prefer systematical instanciation turn on this macro.
  * Remark: This feature is only implemented for compilers supporting partial template
  * specialization.
+ * Limitation: The container pointer specialization do not support pointer to function
+ * and pointer to class member method. So if you have instanciating any container with
+ * such a type compilation will failed.
  */
-// #define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
+// #define _STLP_USE_PTR_SPECIALIZATIONS 1
 
 /*
  * To achieve many different optimizations within the template implementations STLport
@@ -264,14 +255,7 @@
  * to use this feature at STLport built time you will have to define the
  * STLP_BUILD_BOOST_PATH enrironment variable with the value of the boost library path.
  */
-// #define _STLP_USE_BOOST_TYPE_TRAITS 1
-
-/*
- * MS VC compilers has ability to define required library at compile time
- * via #pragma comment(lib,libname)
- * uncomment this, if you want turn off this mechanism:
- */
-// #define _STLP_DONT_FORCE_MSVC_LIB_NAME
+// #define _STLP_USE_BOOST_SUPPORT 1
 
 //==========================================================
 

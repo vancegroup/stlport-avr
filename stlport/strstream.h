@@ -54,7 +54,7 @@ using _STLP_STD::strstream;
 
 
 // just include old-style strstream.h
-#  if defined (_MSC_VER) && (_MSC_VER <= 1200)
+#  if defined (_MSC_VER) && (_MSC_VER < 1300)
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstrea.h)
 #  else
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstream.h)

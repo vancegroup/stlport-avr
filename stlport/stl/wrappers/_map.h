@@ -24,9 +24,7 @@
 # include <stl/_map.h>
 #endif
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
 
 #  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __MAP_TEMPLATE_HEADER  template <class _Key, class _Tp>
@@ -139,9 +137,7 @@ inline bool operator<(const multimap< __MMAP_ARGUMENTS >& __x,
 
 # undef _Compare
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_WRAP_MAP_H */
 

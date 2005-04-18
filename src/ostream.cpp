@@ -23,18 +23,7 @@ _STLP_BEGIN_NAMESPACE
 #if !defined(_STLP_NO_FORCE_INSTANTIATE)
 
 // instantiations
-template  class _STLP_CLASS_DECLSPEC basic_ostream<char, char_traits<char> >;
-
-template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&  _STLP_CALL 
-_M_put_num(basic_ostream<char, char_traits<char> >&, long);
-template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&   _STLP_CALL 
-_M_put_num(basic_ostream<char, char_traits<char> >&, unsigned long);
-#  if defined (_STLP_LONG_LONG)
-template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >&  _STLP_CALL
-_M_put_num(basic_ostream<char, char_traits<char> >&, unsigned _STLP_LONG_LONG);
-template _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL
-_M_put_num(basic_ostream<char, char_traits<char> >&, _STLP_LONG_LONG);
-#  endif
+template class _STLP_CLASS_DECLSPEC basic_ostream<char, char_traits<char> >;
 
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 template  class _STLP_CLASS_DECLSPEC _Osentry<char, char_traits<char> >;

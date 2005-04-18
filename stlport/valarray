@@ -19,21 +19,25 @@
 #ifndef _STLP_VALARRAY
 #define _STLP_VALARRAY
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x76
 #  include <stl/_prolog.h>
-# endif
+#endif
+
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
 #include <stl/_valarray.h>
 
-#if defined (_STLP_WHOLE_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(valarray)
+#if defined (_STLP_IMPORT_VENDOR_STD)
+#  include _STLP_NATIVE_HEADER(valarray)
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x76)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x76)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_VALARRAY */
 

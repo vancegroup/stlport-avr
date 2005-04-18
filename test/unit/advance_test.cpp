@@ -29,7 +29,7 @@ void AdvanceTest::adv()
 {
   typedef vector <int> IntVector;
   IntVector v(10);
-  for(size_t i = 0; i < v.size(); i++)
+  for (int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i;
   IntVector::iterator location = v.begin();
   CPPUNIT_ASSERT(*location==0);

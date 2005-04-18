@@ -15,23 +15,30 @@
 #ifndef _STLP_SLIST
 #define _STLP_SLIST
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x58
 #  include <stl/_prolog.h>
-# endif
+#endif
+
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
 #ifndef _STLP_INTERNAL_SLIST_H
-# include <stl/_slist.h>
+#  include <stl/_slist.h>
 #endif
 
-#if defined (_STLP_WHOLE_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(slist)
+#if defined (_STLP_IMPORT_VENDOR_STD)
+//This is not a Standard header, it might failed for most of
+//the compilers so we comment it for the moment. Should be uncommented
+//on a compiler basis.
+//#  include _STLP_NATIVE_HEADER(slist)
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x58)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x58)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_SLIST */
 

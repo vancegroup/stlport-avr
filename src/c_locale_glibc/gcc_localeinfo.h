@@ -37,17 +37,17 @@
 #endif
 
 /* Encoding of locale name parts.  */
-#define CEN_REVISION		1
-#define CEN_SPONSOR		2
-#define CEN_SPECIAL		4
-#define XPG_NORM_CODESET	8
-#define XPG_CODESET		16
-#define TERRITORY		32
-#define CEN_AUDIENCE		64
-#define XPG_MODIFIER		128
+#define CEN_REVISION    1
+#define CEN_SPONSOR    2
+#define CEN_SPECIAL    4
+#define XPG_NORM_CODESET  8
+#define XPG_CODESET    16
+#define TERRITORY    32
+#define CEN_AUDIENCE    64
+#define XPG_MODIFIER    128
 
-#define CEN_SPECIFIC	(CEN_REVISION|CEN_SPONSOR|CEN_SPECIAL|CEN_AUDIENCE)
-#define XPG_SPECIFIC	(XPG_CODESET|XPG_NORM_CODESET|XPG_MODIFIER)
+#define CEN_SPECIFIC  (CEN_REVISION|CEN_SPONSOR|CEN_SPECIAL|CEN_AUDIENCE)
+#define XPG_SPECIFIC  (XPG_CODESET|XPG_NORM_CODESET|XPG_MODIFIER)
 
 
 struct loaded_l10nfile
@@ -90,7 +90,7 @@ extern int _nl_explode_name PARAMS ((char *name, const char **language,
 
 
 /* Magic number at the beginning of a locale data file for CATEGORY.  */
-#define	LIMAGIC(category)	(0x960617de ^ (category))
+#define  LIMAGIC(category)  (0x960617de ^ (category))
 
 /* Two special weight constants for the collation data.  */
 #define FORWARD_CHAR ((wchar_t) 0xfffffffd)
@@ -98,26 +98,26 @@ extern int _nl_explode_name PARAMS ((char *name, const char **language,
 #define IGNORE_CHAR ((wchar_t) 0xffffffff)
 
 #define MAX_USAGE_COUNT (UINT_MAX - 1)
-#define UNDELETABLE	UINT_MAX
+#define UNDELETABLE  UINT_MAX
 
 /* Structure describing locale data in core for a category.  */
 struct locale_data
 {
   const char *name;
-  const char *filedata;		/* Region mapping the file data.  */
-  off_t filesize;		/* Size of the file (and the region).  */
+  const char *filedata;    /* Region mapping the file data.  */
+  off_t filesize;    /* Size of the file (and the region).  */
 
   //  unsigned int usage_count;
   //  int mmaped;
 
-  unsigned int nstrings;	/* Number of strings below.  */
+  unsigned int nstrings;  /* Number of strings below.  */
   union locale_data_value
   {
     const wchar_t *wstr;
     const char *string;
     unsigned int word;
   }
-  values[0];	/* Items, usually pointers into `filedata'.  */
+  values[0];  /* Items, usually pointers into `filedata'.  */
 };
 
 /* We know three kinds of collation sorting rules.  */
@@ -148,7 +148,7 @@ enum value_type
 /* Structure to access `era' information from LC_TIME.  */
 struct era_entry
 {
-  u_int32_t direction;		/* Contains '+' or '-'.  */
+  u_int32_t direction;    /* Contains '+' or '-'.  */
   int32_t offset;
   int32_t start_date[3];
   int32_t stop_date[3];
@@ -204,4 +204,4 @@ extern const u_int32_t *__collate_symbol_hash;
 extern const char *__collate_symbol_strings;
 extern const u_int32_t *__collate_symbol_classes;
 
-#endif	/* localeinfo.h */
+#endif  /* localeinfo.h */

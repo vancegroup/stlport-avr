@@ -1,4 +1,5 @@
 #include <string>
+#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
 #include <sstream>
 #include <iterator>
 
@@ -134,3 +135,5 @@ void IoiterTest::ioiter_test()
 //#endif
   CPPUNIT_ASSERT( tmp == "abcd" );
 }
+
+#endif

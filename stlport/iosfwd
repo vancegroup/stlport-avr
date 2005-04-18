@@ -19,41 +19,30 @@
 #ifndef _STLP_IOSFWD
 #define _STLP_IOSFWD
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1034
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
-# if defined (_STLP_OWN_IOSTREAMS)
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 
 #  if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR)
-#   include <cwchar>
+#    include <cwchar>
 #  endif /* _STLP_HAS_WCHAR_T && !_STLP_CWCHAR */			
 
 #  include <stl/_iosfwd.h>
-
-# elif defined (_STLP_USE_NO_IOSTREAMS)
-
+#else
 #  include <stl/char_traits.h> 
+#endif /* _STLP_USE_NO_IOSTREAMS */
 
-# else /* !_STLP_OWN_IOSTREAMS && !_STLP_USE_NO_IOSTREAMS*/
-
-_STLP_BEGIN_NAMESPACE
-template <class _Tp> class allocator;
-_STLP_END_NAMESPACE
-
-#  include <wrap_std/iosfwd>
-
-# endif /* _STLP_OWN_IOSTREAMS */
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1034)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1034)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_IOSFWD */
 

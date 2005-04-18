@@ -1,13 +1,23 @@
 #include <vector>
+#include <deque>
 #include <string>
 #include <algorithm>
-
-#ifdef _STLP_PTHREADS
-# include <pthread.h>
+#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#  include <sstream>
 #endif
 
-#ifdef _STLP_WIN32THREADS
-# include <windows.h>
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#  include <stdexcept>
+#endif
+
+#if defined (STLPORT) && defined (_STLP_THREADS)
+#  ifdef _STLP_PTHREADS
+#    include <pthread.h>
+#  endif
+
+#  ifdef _STLP_WIN32THREADS
+#    include <windows.h>
+#  endif
 #endif
 
 #include "cppunit/cppunit_proxy.h"
@@ -22,6 +32,7 @@ using namespace std;
 class StringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(StringTest);
+  CPPUNIT_TEST(assign);
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(data);
   CPPUNIT_TEST(c_str);
@@ -30,7 +41,15 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
+#if defined (STLPORT) && defined (_STLP_THREADS)
   CPPUNIT_TEST(mt);
+#endif
+  CPPUNIT_TEST(short_string_optim_bug);
+  CPPUNIT_TEST(compare);
+  CPPUNIT_TEST(template_expresion);
+#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+  CPPUNIT_TEST(io);
+#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -42,20 +61,30 @@ protected:
   void resize();
   void short_string();
   void find();
+  void assign();
+#if defined (STLPORT) && defined (_STLP_THREADS)
   void mt();
+#endif
+  void short_string_optim_bug();
+  void compare();
+  void template_expresion();
+#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+  void io();
+#endif
 
-  static string func( const string& par )
-  {
+  static string func(const string& par) {
     string tmp( par );
-
     return tmp;
   }
 
-#if defined (_STLP_PTHREADS)
-  static void *f( void * )
-#elif defined (_STLP_WIN32THREADS)
-  static DWORD __stdcall f (void *)
-#endif
+#if defined (STLPORT) && defined (_STLP_THREADS)
+#  if defined (_STLP_PTHREADS)
+  static void* f(void*)
+#  elif defined (_STLP_WIN32THREADS)
+  static DWORD __stdcall f(void*)
+#  else
+#    error Unknown thread model.
+#  endif
   {
     string s( "qyweyuewunfkHBUKGYUGL,wehbYGUW^(@T@H!BALWD:h^&@#*@(#:JKHWJ:CND" );
 
@@ -65,6 +94,7 @@ protected:
 
     return 0;
   }
+#endif
 
 };
 
@@ -73,6 +103,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 //
 // tests implementation
 //
+#if defined (STLPORT) && defined (_STLP_THREADS)
 void StringTest::mt()
 {
   const int nth = 2;
@@ -89,6 +120,8 @@ void StringTest::mt()
 #endif // _STLP_PTHREADS
 
 #if defined (_STLP_WIN32THREADS)
+  //DWORD start = GetTickCount();
+
   HANDLE t[nth];
 
   int i; // VC6 not support in-loop scope of cycle var
@@ -96,16 +129,30 @@ void StringTest::mt()
     t[i] = CreateThread(NULL, 0, f, 0, 0, NULL);
   }
 
+#ifdef _STLP_WCE
+  // on evc3/evc4 WaitForMultipleObjects() with fWaitAll == TRUE is not supported
   for ( i = 0; i < nth; ++i ) {
     WaitForSingleObject(t[i], INFINITE);
   }
+#else
+  WaitForMultipleObjects(nth, t, TRUE, INFINITE);
+#endif
+
+  /*
+  DWORD duration = GetTickCount() - start;
+  ostringstream ostr;
+  ostr << "Duration: " << duration << endl;
+  CPPUNIT_MESSAGE(ostr.str().c_str());
+  */
 #endif
 
 #if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS)
-  // this test if useless without thrad support!
+  // this test is useless without thread support!
   CPPUNIT_ASSERT(false);
 #endif
 }
+#endif
+
 void StringTest::short_string()
 {
   string const ref_short_str1("str1"), ref_short_str2("str2");
@@ -161,28 +208,28 @@ void StringTest::short_string()
     str_vect.push_back(short_str2);
     str_vect.push_back(long_str2);
     CPPUNIT_ASSERT((str_vect[0] == ref_short_str1) &&
-                                                  (str_vect[1] == ref_long_str1) &&
-                                                  (str_vect[2] == ref_short_str2) &&
-                                                  (str_vect[3] == ref_long_str2));
+                   (str_vect[1] == ref_long_str1) &&
+                   (str_vect[2] == ref_short_str2) &&
+                   (str_vect[3] == ref_long_str2));
   }
 }
 
 void StringTest::erase()
 {
-  char const* array = "Hello, World!";
-  std::string v(array);
+  char const* c_str = "Hello, World!";
+  std::string str(c_str);
+  CPPUNIT_ASSERT( str == c_str );
   
-  CPPUNIT_ASSERT( v == array );
+  str.erase(str.begin() + 1, str.end() - 1); // Erase all but first and last.
   
-  v.erase(v.begin() + 1, v.end() - 1); // Erase all but first and last.
-  
-  for( size_t i = 0; i < v.size(); i++ ) {
+  size_t i;
+  for (i = 0; i < str.size(); ++i) {
     switch ( i ) {
       case 0:
-        CPPUNIT_ASSERT( v[i] == 'H' );
+        CPPUNIT_ASSERT( str[i] == 'H' );
         break;
       case 1:
-        CPPUNIT_ASSERT( v[i] == '!' );
+        CPPUNIT_ASSERT( str[i] == '!' );
         break;
       default:
         CPPUNIT_ASSERT( false );
@@ -190,12 +237,33 @@ void StringTest::erase()
     }
   } 
   
-  v.insert(1, (char*)array);
-  v.erase(v.begin()); // Erase first element.
-  v.erase(v.end() - 1); // Erase last element.
-  CPPUNIT_ASSERT( v == array );
-  v.clear(); // Erase all.
-  CPPUNIT_ASSERT( v.empty() );
+  str.insert(1, (char*)c_str);
+  str.erase(str.begin()); // Erase first element.
+  str.erase(str.end() - 1); // Erase last element.
+  CPPUNIT_ASSERT( str == c_str );
+  str.clear(); // Erase all.
+  CPPUNIT_ASSERT( str.empty() );
+
+  str = c_str;
+  CPPUNIT_ASSERT( str == c_str );
+
+  str.erase(1, str.size() - 1); // Erase all but first and last.
+  for (i = 0; i < str.size(); i++) {
+    switch ( i ) {
+      case 0:
+        CPPUNIT_ASSERT( str[i] == 'H' );
+        break;
+      case 1:
+        CPPUNIT_ASSERT( str[i] == '!' );
+        break;
+      default:
+        CPPUNIT_ASSERT( false );
+        break;
+    }
+  }
+
+  str.erase(1);
+  CPPUNIT_ASSERT( str == "H" );
 }
 
 void StringTest::data()
@@ -299,6 +367,36 @@ void StringTest::insert()
   //Just a compile time test:
   str.insert(str.end(), int_vect.begin(), int_vect.end());
 #endif
+
+  string str0;
+  str0.insert(str0.begin(), 5, '0');
+  CPPUNIT_ASSERT( str0 == "00000" );
+
+  string str1;
+  {
+    string::size_type pos = 0, nb = 2;
+    str1.insert(pos, nb, '1');
+  }
+  CPPUNIT_ASSERT( str1 == "11" );
+
+  str0.insert(0, str1);
+  CPPUNIT_ASSERT( str0 == "1100000" );
+
+  string str2("2345");
+  str0.insert(str0.size(), str2, 1, 2);
+  CPPUNIT_ASSERT( str0 == "110000034" );
+
+  str1.insert(str1.begin() + 1, 2, '2');
+  CPPUNIT_ASSERT( str1 == "1221" );
+
+  str1.insert(2, "333333", 3);
+  CPPUNIT_ASSERT( str1 == "1233321" );
+
+  str1.insert(4, "4444");
+  CPPUNIT_ASSERT( str1 == "12334444321" );
+
+  str1.insert(str1.begin() + 6, '5');
+  CPPUNIT_ASSERT( str1 == "123344544321" );
 }
 
 void StringTest::replace()
@@ -366,6 +464,13 @@ void StringTest::replace()
   str = strorg;
   str.replace(5, 5, str.c_str(), 10);
   CPPUNIT_ASSERT( str == "This This is test string for string calls" );
+
+#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
+  deque<char> cdeque;
+  cdeque.push_back('I');
+  str.replace(str.begin(), str.begin() + 11, cdeque.begin(), cdeque.end());
+  CPPUNIT_ASSERT( str == "Is test string for string calls" );
+#endif
 }
 
 void StringTest::resize()
@@ -416,3 +521,228 @@ void StringTest::find()
   CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
   CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
 }
+
+void StringTest::assign()
+{
+  string s;
+  char const* cstr = "test string for assign";
+
+  s.assign(cstr, cstr + 22);
+  CPPUNIT_ASSERT( s == "test string for assign" );
+
+  string s2("other test string");
+  s.assign(s2);
+  CPPUNIT_ASSERT( s == s2 );
+
+  static std::string str1;
+  static std::string str2;
+
+  // short string optim:
+  str1 = "123456";
+  // longer than short string:
+  str2 = "1234567890123456789012345678901234567890";
+
+  CPPUNIT_ASSERT(str1[5] == '6');
+  CPPUNIT_ASSERT(str2[29] == '0'); 
+}
+
+/* This test is to check if std::string properly supports the short string
+ * optimization. It has been found out that eMbedded Visual C++ 3.0 and .NET
+ * compilers for the ARM platform fail to pass structs and classes of certain
+ * size per value. This seems to be a known compiler bug. For other processors
+ * (e.g. x86) the error doesn't occur.
+ * (The ARM compiler creates a temporary object from teststr on the stack, to
+ * pass it to the helper function. It uses the copy constructor for this.
+ * After this the temporary object is copied to another place on the stack.
+ * The result is that the _M_finish pointer then points to the wrong buffer
+ * end and the size of the short string is incorrectly calculated.)
+ */
+void StringTest::short_string_optim_bug()
+{
+   string teststr("shortest");
+
+   bool short_string_optim_bug_helper(std::string teststr);
+
+   CPPUNIT_ASSERT(true == short_string_optim_bug_helper(teststr));
+}
+
+bool short_string_optim_bug_helper(std::string teststr)
+{
+   size_t ss = teststr.size();
+   return (ss == 8);
+} 
+
+void StringTest::compare()
+{
+  string str1("abcdef");
+  string str2;
+
+  str2 = "abcdef";
+  CPPUNIT_ASSERT( str1.compare(str2) == 0 );
+  str2 = "abcde";
+  CPPUNIT_ASSERT( str1.compare(str2) > 0 );
+  str2 = "abcdefg";
+  CPPUNIT_ASSERT( str1.compare(str2) < 0 );
+
+  CPPUNIT_ASSERT( str1.compare("abcdef") == 0 );
+  CPPUNIT_ASSERT( str1.compare("abcde") > 0 );
+  CPPUNIT_ASSERT( str1.compare("abcdefg") < 0 );
+
+  str2 = "cde";
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2) == 0 );
+  str2 = "cd";
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2) > 0 );
+  str2 = "cdef";
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2) < 0 );
+
+  str2 = "abcdef";
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2, 2, 3) == 0 );
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2, 2, 2) > 0 );
+  CPPUNIT_ASSERT( str1.compare(2, 3, str2, 2, 4) < 0 );
+
+  CPPUNIT_ASSERT( str1.compare(2, 3, "cdefgh", 3) == 0 );
+  CPPUNIT_ASSERT( str1.compare(2, 3, "cdefgh", 2) > 0 );
+  CPPUNIT_ASSERT( str1.compare(2, 3, "cdefgh", 4) < 0 );
+}
+
+void StringTest::template_expresion()
+{
+  string one("one"), two("two"), three("three");
+  string space(1, ' ');
+
+  {
+    string result(one + ' ' + two + ' ' + three);
+    CPPUNIT_CHECK( result == "one two three" );
+  }
+
+  {
+    string result(one + ' ' + two + ' ' + three, 4);
+    CPPUNIT_CHECK( result == "two three" );
+  }
+
+  {
+    string result(one + ' ' + two + ' ' + three, 4, 3);
+    CPPUNIT_CHECK( result == "two" );
+  }
+
+  //2 members expressions:
+  CPPUNIT_CHECK( (' ' + one) == " one" );
+  CPPUNIT_CHECK( (one + ' ') == "one " );
+  CPPUNIT_CHECK( (one + " two") == "one two" );
+  CPPUNIT_CHECK( ("one " + two) == "one two" );
+  CPPUNIT_CHECK( (one + space) == "one " );
+
+  //3 members expressions:
+  CPPUNIT_CHECK( ((one + space) + "two") == "one two" );
+  CPPUNIT_CHECK( ("one" + (space + two)) == "one two" );
+  CPPUNIT_CHECK( ((one + space) + two) == "one two" );
+  CPPUNIT_CHECK( (one + (space + two)) == "one two" );
+  CPPUNIT_CHECK( ((one + space) + 't') == "one t" );
+  CPPUNIT_CHECK( ('o' + (space + two)) == "o two" );
+
+  //4 members expressions:
+  CPPUNIT_CHECK( ((one + space) + (two + space)) == "one two " );
+
+  //special operators
+  {
+    string result;
+    result = one + space + two;
+    CPPUNIT_CHECK( result == "one two" );
+
+    result += space + three;
+    CPPUNIT_CHECK( result == "one two three" );
+  }
+
+  //special append method
+  {
+    string result;
+    //Use reserve to avoid reallocation and really test auto-referencing problems:
+    result.reserve(64);
+
+    result.append(one + space + two);
+    CPPUNIT_CHECK( result == "one two" );
+
+    result.append(space + result + space + three);
+    CPPUNIT_CHECK( result == "one two one two three" );
+
+    result = "one two";
+    result.append(space + three, 1, 2);
+    CPPUNIT_ASSERT( result == "one twoth" );
+
+    result.append(space + result);
+    CPPUNIT_CHECK( result == "one twoth one twoth" );
+  }
+
+  //special assign method
+  {
+    string result;
+    //Use reserve to avoid reallocation and really test auto-referencing problems:
+    result.reserve(64);
+
+    result.assign(one + space + two + space + three);
+    CPPUNIT_CHECK( result == "one two three" );
+
+    result.assign(one + space + two + space + three, 3, 5);
+    CPPUNIT_CHECK( result == " two " );
+
+    result.assign(one + result + three);
+    CPPUNIT_CHECK( result == "one two three" );
+  }
+
+  {
+    char result;
+
+    CPPUNIT_CHECK( !(one + ' ' + two).empty() );
+
+    result = (one + ' ' + two)[3];
+    CPPUNIT_CHECK( result == ' ' );
+
+    result = (one + ' ' + two).at(3);
+    CPPUNIT_CHECK( result == ' ' );
+
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+    for (;;) {
+      try {
+        result = (one + ' ' + two).at(10);
+        CPPUNIT_ASSERT(false);
+      }
+      catch (out_of_range const&) {
+        CPPUNIT_ASSERT(true);
+        return;
+      }
+      catch (...) {
+        CPPUNIT_ASSERT(false);
+        return;
+      }
+    }
+#endif
+  }
+}
+
+#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+void StringTest::io()
+{
+  string str("STLport");
+  {
+    ostringstream ostr;
+    ostr << str;
+    CPPUNIT_ASSERT( ostr.good() );
+    CPPUNIT_ASSERT( ostr.str() == str );
+  }
+  {
+    istringstream istr(str);
+    string istr_content;
+    istr >> istr_content;
+    CPPUNIT_ASSERT( !istr.fail() && istr.eof() );
+    CPPUNIT_ASSERT( istr_content == str );
+  }
+  {
+    istringstream istr(str);
+    istr.width(3);
+    string istr_content;
+    istr >> istr_content;
+    CPPUNIT_ASSERT( !istr.fail() && !istr.eof() );
+    CPPUNIT_ASSERT( istr_content == "STL" );
+  }
+}
+#endif

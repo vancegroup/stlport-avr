@@ -112,7 +112,16 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // 
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
   fpos_t p;
   p.__pos = pos;
+# ifdef _STLP_USE_UCLIBC
+#  ifdef __STDIO_MBSTATE
+  memset( &(p.__mbstate), 0, sizeof(p.__mbstate) );
+#  endif
+#  ifdef __STDIO_WIDE
+  p.mblen_pending = 0;
+#  endif
+# else
   memset( &(p.__state), 0, sizeof(p.__state) );
+# endif
 #elif defined(__MVS__) || (__OS400__)
   fpos_t p;
   p.__fpos_elem[0] = pos;

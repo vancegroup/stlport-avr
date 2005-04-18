@@ -24,15 +24,32 @@ string __WideToASCII(const wchar_t *wide) {
 }
 #endif
 
-# ifndef _STLP_NO_FORCE_INSTANTIATE
-#  ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_FORCE_INSTANTIATE)
+#  if !defined (_STLP_NO_WCHAR_T)
 template class _STLP_CLASS_DECLSPEC allocator<wchar_t>;
 template class _STLP_CLASS_DECLSPEC _String_base<wchar_t, allocator<wchar_t> >;
-# ifdef _STLP_DEBUG
-template class _STLP_CLASS_DECLSPEC _Nondebug_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
-# endif
-template class _STLP_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
-#  endif
-# endif
-_STLP_END_NAMESPACE
 
+#    if defined (_STLP_DEBUG)
+#      if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#        define basic_string _STLP_NON_DBG_NO_MEM_T_NAME(str)
+#      else
+#        define basic_string _STLP_NON_DBG_NAME(str)
+#      endif
+
+template class _STLP_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
+template class _STLP_CLASS_DECLSPEC _STLP_CONSTRUCT_CHECKER<basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> > >;
+
+#      undef basic_string
+#    endif
+
+#    if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#      define basic_string _STLP_NO_MEM_T_NAME(str)
+#    endif
+
+template class _STLP_CLASS_DECLSPEC basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
+
+#    undef basic_string
+#  endif
+#endif
+
+_STLP_END_NAMESPACE

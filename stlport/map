@@ -26,21 +26,25 @@
 #ifndef _STLP_MAP
 #define _STLP_MAP
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x43
 #  include <stl/_prolog.h>
-# endif
+#endif
+
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
 #include <stl/_map.h>
 
-#if defined (_STLP_WHOLE_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(map)
+#if defined (_STLP_IMPORT_VENDOR_STD)
+#  include _STLP_NATIVE_HEADER(map)
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x43)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x43)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_MAP */
 

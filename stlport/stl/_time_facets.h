@@ -24,11 +24,16 @@
 #define _STLP_INTERNAL_TIME_FACETS_H
 
 #ifndef _STLP_CTIME
-# include <ctime>                // Needed (for struct tm) by time facets
+#  include <ctime>                // Needed (for struct tm) by time facets
 #endif
 
-#include <stl/c_locale.h>
-#include <stl/_ios_base.h>
+#ifndef _STLP_C_LOCALE_H
+#  include <stl/c_locale.h>
+#endif
+
+#ifndef _STLP_IOS_BASE_H
+#  include <stl/_ios_base.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -100,15 +105,13 @@ public:
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
 class time_get : public locale::facet, public time_base 
 {
-    friend class _Locale;
-#ifdef _STLP_LEAKS_PEDANTIC
     friend class _Locale_impl;
-#endif
+
 public:
   typedef _Ch   char_type;
   typedef _InIt iter_type;
 
-  explicit time_get(size_t __refs = 0)   : _BaseFacet(__refs) {
+  explicit time_get(size_t __refs = 0) : locale::facet(__refs) {
       _Init_timeinfo(_M_timeinfo);
   }
   dateorder date_order() const { return do_date_order(); }
@@ -133,7 +136,7 @@ public:
 protected:
   _Time_Info _M_timeinfo;
 
-  time_get(_Locale_time *, size_t __refs) : _BaseFacet(__refs) {}
+  time_get(_Locale_time *, size_t __refs) : locale::facet(__refs) {}
 
   ~time_get() {}
 
@@ -183,6 +186,11 @@ protected:
   dateorder do_date_order() const { return __get_date_order(_M_time); }
 private:
   _Locale_time* _M_time;
+
+  typedef time_get_byname<_Ch, _InIt> _Self;
+  //explicitely defined as private to avoid warnings:
+  time_get_byname(_Self const&);
+  _Self& operator = (_Self const&);
 };
 
 // time_put facet
@@ -214,24 +222,21 @@ _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
 template<class _Ch, __DFL_TMPL_PARAM( _OutputIter , ostreambuf_iterator<_Ch> ) >
 class time_put : public locale::facet, public time_base
 {
-    friend class _Locale;
-#ifdef _STLP_LEAKS_PEDANTIC
     friend class _Locale_impl;
-#endif
 public:
   typedef _Ch      char_type;
   typedef _OutputIter iter_type;
 
-  explicit time_put(size_t __refs = 0) : _BaseFacet(__refs) {
+  explicit time_put(size_t __refs = 0) : locale::facet(__refs) {
     _Init_timeinfo(_M_timeinfo);
   }
 
   _OutputIter put(iter_type __s, ios_base& __f, _Ch __fill,
-		  const tm* __tmb,
-		  const _Ch* __pat, const _Ch* __pat_end) const;
+      const tm* __tmb,
+      const _Ch* __pat, const _Ch* __pat_end) const;
   
   _OutputIter put(iter_type __s, ios_base& __f, _Ch  __fill,
-		  const tm* __tmb, char __format, char __modifier = 0) const { 
+      const tm* __tmb, char __format, char __modifier = 0) const { 
     return do_put(__s, __f,  __fill, __tmb, __format, __modifier); 
   }
   
@@ -240,7 +245,7 @@ public:
 protected:
   _Time_Info _M_timeinfo;
 
-  time_put(_Locale_time* /*__time*/, size_t __refs) : _BaseFacet(__refs) {
+  time_put(_Locale_time* /*__time*/, size_t __refs) : locale::facet(__refs) {
     //    _Init_timeinfo(_M_timeinfo, __time);
   }
 
@@ -253,7 +258,7 @@ protected:
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , ostreambuf_iterator<_Ch> ) >
 class time_put_byname : public time_put<_Ch, _InIt> 
 {
-  friend class _Locale;
+  friend class _Locale_impl;
 public:
   typedef time_base::dateorder dateorder;
   typedef _InIt iter_type;
@@ -269,6 +274,11 @@ protected:
 
 private:
   _Locale_time* _M_time;
+
+  typedef time_put_byname<_Ch, _InIt> _Self;
+  //explicitely defined as private to avoid warnings:
+  time_put_byname(_Self const&);
+  _Self& operator = (_Self const&);
 };
 
 # ifdef _STLP_USE_TEMPLATE_EXPORT
@@ -309,7 +319,7 @@ _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_time_facets.c>
-# endif
+#endif
 
 #endif /* _STLP_INTERNAL_TIME_FACETS_H */
 

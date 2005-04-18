@@ -1,8 +1,8 @@
 /***********************************************************************************
-	test_push_back.h
-	
-		Interface for the test_push_back class
-		
+  test_push_back.h
+  
+    Interface for the test_push_back class
+    
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -13,7 +13,7 @@
  * in supporting documentation.  Mark of the Unicorn makes no
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
-		
+    
 ***********************************************************************************/
 #ifndef test_push_back_H_
 #define test_push_back_H_
@@ -26,25 +26,35 @@
 # include "Prefix.h"
 #include "nc_alloc.h"
 
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  define _STLP_FILE_UNIQUE_ID TEST_PUSH_BACK_H
+_STLP_INSTRUMENT_FILE();
+# endif
+
 template <class C>
 struct test_push_back
 {
-	test_push_back( const C& orig ) : original( orig )
-	{
+  test_push_back( const C& orig ) : original( orig )
+  {
         gTestController.SetCurrentTestName("push_back() method");
     }
-	
-	void operator()( C& c ) const
-	{
+  
+  void operator()( C& c ) const
+  {
       typedef typename C::value_type _value_type;
-		c.push_back(_value_type() );
-		// Prevent simulated failures during verification
+    c.push_back(_value_type() );
+    // Prevent simulated failures during verification
         gTestController.CancelFailureCountdown();
-		EH_ASSERT( c.size() == original.size() + 1 );
-		EH_ASSERT( EH_STD::equal( original.begin(), original.end(), c.begin() ) );
-	}
+    EH_ASSERT( c.size() == original.size() + 1 );
+    EH_ASSERT( EH_STD::equal( original.begin(), original.end(), c.begin() ) );
+  }
 private:
-	const C& original;
+  const C& original;
 };
+
+
+# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
+#  undef _STLP_FILE_UNIQUE_ID
+# endif
 
 #endif // test_push_back_H_

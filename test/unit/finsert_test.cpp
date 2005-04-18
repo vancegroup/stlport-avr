@@ -32,12 +32,19 @@ void FinsertTest::finsert1()
 {
   char* array [] = { "laurie", "jennifer", "leisa" };
   deque<char*> names;
-  copy(array, array + 3, front_insert_iterator<deque <char*> >(names));
+  front_insert_iterator<deque<char*> > fit(names);
+  fit = copy(array, array + 3, front_insert_iterator<deque <char*> >(names));
 
   CPPUNIT_ASSERT(names[0]==array[2]);
   CPPUNIT_ASSERT(names[1]==array[1]);
   CPPUNIT_ASSERT(names[2]==array[0]);
+
+  copy(array, array + 3, fit);
+  CPPUNIT_ASSERT(names[3]==array[2]);
+  CPPUNIT_ASSERT(names[4]==array[1]);
+  CPPUNIT_ASSERT(names[5]==array[0]);
 }
+
 void FinsertTest::finsert2()
 {
   char* array [] = { "laurie", "jennifer", "leisa" };

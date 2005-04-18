@@ -38,15 +38,18 @@
 // fbp: these defines are for outline methods definitions.
 // needed for definitions to be portable. Should not be used in method bodies.
 # if defined  ( _STLP_NESTED_TYPE_PARAM_BUG )
-#  define __iterator__  _Rb_tree_iterator<_Value, _STLP_HEADER_TYPENAME _ConstIteTraits::_Non_const_traits > 
+#  define __iterator__  _Rb_tree_iterator<_Value, _STLP_HEADER_TYPENAME _Traits::_NonConstTraits>
 #  define __size_type__ size_t
 #  define iterator __iterator__
 # else
-#  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _ConstIteTraits, _Alloc>::iterator
-#  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _ConstIteTraits, _Alloc>::size_type
+#  define __iterator__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::iterator
+#  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::size_type
 # endif
 
 #if defined ( _STLP_DEBUG)
+# if defined(_Rb_tree)
+#  undef _Rb_tree
+# endif
 #  define _Rb_tree __WORKAROUND_DBG_RENAME(Rb_tree)
 #endif
 
@@ -293,6 +296,9 @@ _Rb_global<_Dummy>::_M_increment(_Rb_tree_node_base* _M_node) {
       _M_node = __y;
       __y = __y->_M_parent;
     }
+    // check special case: This is necessary if _M_node is the
+    // _M_head and the tree contains only a single node __y. In
+    // that case parent, left and right all point to __y!
     if (_M_node->_M_right != __y)
       _M_node = __y;
   }
@@ -303,10 +309,10 @@ _Rb_global<_Dummy>::_M_increment(_Rb_tree_node_base* _M_node) {
 
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>&
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::operator=(
-  const _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>& __x) {
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>&
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::operator=(
+  const _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>& __x) {
   if (this != &__x) {
     // Note that _Key may be a constant type.
     clear();
@@ -332,9 +338,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::operator=(
 // __on_right != 0 to bypass comparison as false or __on_left != 0 to bypass
 // comparison as true)
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__ 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::_M_insert(_Rb_tree_node_base * __parent,
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_insert(_Rb_tree_node_base * __parent,
                                                                               const _Value& __val,
                                                                               _Rb_tree_node_base * __on_left,
                                                                               _Rb_tree_node_base * __on_right) {
@@ -364,9 +370,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::_M_insert(_R
 }
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_equal(const _Value& __val) {
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(const _Value& __val) {
   _Base_ptr __y = &this->_M_header._M_data;
   _Base_ptr __x = _M_root();
   while (__x != 0) {
@@ -379,9 +385,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_equal
 
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
-pair< _Rb_tree_iterator<_Value, _STLP_HEADER_TYPENAME _ConstIteTraits::_Non_const_traits>, bool>
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_unique(const _Value& __val) {
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+pair<__iterator__, bool>
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(const _Value& __val) {
   _Base_ptr __y = &this->_M_header._M_data;
   _Base_ptr __x = _M_root();
   bool __comp = true;
@@ -405,9 +411,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_uniqu
 // Modifications CRP 7/10/00 as noted to improve conformance and
 // efficiency.
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__ 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_unique(iterator __position,
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterator __position,
                                                                              const _Value& __val) {
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
@@ -507,9 +513,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_uniqu
 
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__ 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_equal(iterator __position,
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterator __position,
                                                                                  const _Value& __val) {
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
@@ -584,9 +590,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::insert_equal
 }
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 _Rb_tree_node_base* 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::_M_copy(_Rb_tree_node_base* __x,
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_copy(_Rb_tree_node_base* __x,
                                                                             _Rb_tree_node_base* __p) {
   // structural copy.  __x and __p must be non-null.
   _Base_ptr __top = _M_clone_node(__x);
@@ -615,9 +621,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc> ::_M_copy(_Rb_
 
 // this has to stay out-of-line : it's recursive
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 void 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>::_M_erase(_Rb_tree_node_base *__x) {
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::_M_erase(_Rb_tree_node_base *__x) {
   // erase without rebalancing
   while (__x != 0) {
     _M_erase(_S_right(__x));
@@ -629,9 +635,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>::_M_erase(_Rb_
 }
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __size_type__ 
-_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>::count(const _Key& __k) const {
+_Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::count(const _Key& __k) const {
   pair<const_iterator, const_iterator> __p = equal_range(__k);
   size_type __n = distance(__p.first, __p.second);
   return __n;
@@ -653,8 +659,8 @@ __black_count(_Rb_tree_node_base* __node, _Rb_tree_node_base* __root) {
 }
 
 template <class _Key, class _Compare, 
-          class _Value, class _KeyOfValue, class _ConstIteTraits, class _Alloc>
-bool _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_ConstIteTraits,_Alloc>::__rb_verify() const {
+          class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+bool _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::__rb_verify() const {
   if (_M_node_count == 0 || begin() == end())
     return ((_M_node_count == 0) &&
             (begin() == end()) &&

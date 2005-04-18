@@ -25,8 +25,8 @@
 
 namespace std
 {
-	template<class charT, class traits> class basic_istream;
-	template<class charT, class traits> class basic_ostream;
+  template<class charT, class traits> class basic_istream;
+  template<class charT, class traits> class basic_ostream;
 }
 
 # include _STLP_NATIVE_HEADER(string)

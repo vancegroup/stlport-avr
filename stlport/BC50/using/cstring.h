@@ -6,11 +6,11 @@ using _STLP_VENDOR_CSTD::size_t;
 #    undef memmove
 inline void* memcpy(void* dst, const void* src, size_t len)
 {
-	return _STLP_VENDOR_CSTD::__memcpy(dst, src, len);
+  return _STLP_VENDOR_CSTD::__memcpy(dst, src, len);
 }
 inline void* memmove(void* dst, const void* src, size_t len)
 {
-	return _STLP_VENDOR_CSTD::__memmove(dst, src, len);
+  return _STLP_VENDOR_CSTD::__memmove(dst, src, len);
 }
 #   else
 

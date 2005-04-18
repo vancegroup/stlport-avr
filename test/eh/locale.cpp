@@ -7,21 +7,21 @@ using namespace std;
 
 void main()
 {
-	try
-	{
-		locale c_loc;
-		//locale sys(c_loc, "LC_TIME=UKR_UKR.OCP;LC_NUMERIC=RUS_RUS.OCP;LC_CTYPE=ukr_ukr.ocp;", locale::numeric | locale::time | locale::ctype);
-		locale sys(".ocp");
-		locale::global(sys);
-		cin.imbue(sys);
-		cout.imbue(sys);
+  try
+  {
+    locale c_loc;
+    //locale sys(c_loc, "LC_TIME=UKR_UKR.OCP;LC_NUMERIC=RUS_RUS.OCP;LC_CTYPE=ukr_ukr.ocp;", locale::numeric | locale::time | locale::ctype);
+    locale sys(".ocp");
+    locale::global(sys);
+    cin.imbue(sys);
+    cout.imbue(sys);
 
-		cout<<"Locale name is: "<<sys.name().c_str()<<'\n';
+    cout<<"Locale name is: "<<sys.name().c_str()<<'\n';
 
-		cout<<"Enter real number:";
-		double value;
-		cin>>value;
-		cout<<value<<'\n';
+    cout<<"Enter real number:";
+    double value;
+    cin>>value;
+    cout<<value<<'\n';
 
         // Time test.
         long lcur_time;
@@ -46,15 +46,15 @@ void main()
         if(isupper('', cout.getloc())) puts("Upper");
         if(islower('¯', cout.getloc())) puts("Lower");
         /*for(int ch=128; ch<256; ch++)
-        	printf("Character %c (%d) - upper %c, lower %c\n",(char)ch, ch,toupper((char)ch, cout.getloc()), tolower((char)ch, cout.getloc()));*/
-	}
-	catch(exception &e)
-	{
-		cout<<"Exception fired:\n"<<e.what()<<'\n';
-	}
-	catch(...)
-	{
-		cout<<"Unknown exception throwed!\n";
-	}
-	cout.flush();
+          printf("Character %c (%d) - upper %c, lower %c\n",(char)ch, ch,toupper((char)ch, cout.getloc()), tolower((char)ch, cout.getloc()));*/
+  }
+  catch(exception &e)
+  {
+    cout<<"Exception fired:\n"<<e.what()<<'\n';
+  }
+  catch(...)
+  {
+    cout<<"Unknown exception throwed!\n";
+  }
+  cout.flush();
 }

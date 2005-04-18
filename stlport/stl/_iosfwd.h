@@ -1,5 +1,5 @@
-# ifndef _STLP_INTERNAL_IOSFWD
-#  define _STLP_INTERNAL_IOSFWD
+#ifndef _STLP_INTERNAL_IOSFWD
+#define _STLP_INTERNAL_IOSFWD
 
 #if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
 #error This header file requires the -LANG:std option
@@ -19,7 +19,7 @@
 // template arguments.  All of the other I/O headers include <iosfwd>.
 
 #ifndef _STLP_CHAR_TRAITS_H
-# include <stl/char_traits.h>
+#  include <stl/char_traits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

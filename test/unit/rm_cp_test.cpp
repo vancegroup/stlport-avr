@@ -82,8 +82,7 @@ void RmCpTest::revcopy1()
 void RmCpTest::replif1()
 {
   vector <int> v1(10);
-  size_t i;
-  for(i = 0; i < v1.size(); i++)
+  for (int i = 0; (size_t)i < v1.size(); ++i)
     v1[i] = i % 5;
 
   replace_if(v1.begin(), v1.end(), odd, 42);
@@ -133,7 +132,7 @@ void RmCpTest::replace0()
 void RmCpTest::replace1()
 {
   vector <int> v1(10);
-  for(size_t i = 0; i < v1.size(); i++)
+  for (int i = 0; (size_t)i < v1.size(); ++i)
     v1[i] = i % 5;
   replace(v1.begin(), v1.end(), 2, 42);
 
@@ -154,7 +153,7 @@ void RmCpTest::replace1()
 void RmCpTest::repcpif1()
 {
   vector <int> v1(10);
-  for(size_t i = 0; i < v1.size(); i++)
+  for (int i = 0; (size_t)i < v1.size(); ++i)
     v1[i] = i % 5;
   vector <int> v2(v1.size());
 

@@ -24,9 +24,7 @@
 # include <stl/_set.h>
 #endif
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
 
 #  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __SET_TEMPLATE_HEADER  template <class _Key>
@@ -130,9 +128,7 @@ inline bool operator<(const multiset< __MSET_ARGUMENTS >& __x,
 # undef __SET_SUPER 
 # undef _Compare
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_WRAP_SET_H */
 

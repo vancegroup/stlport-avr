@@ -1,6 +1,6 @@
 #include <vector>
+#include <list>
 #include <algorithm>
-#include <sstream>
 #include <numeric>
 
 #include "cppunit/cppunit_proxy.h"
@@ -50,13 +50,13 @@ void IterTest::iter1()
   for(i = v.begin(); i != v.end(); i++, counter++) {
     switch( counter ) {
       case 0:
-          CPPUNIT_ASSERT(!strcmp(*i,"zippy"));
+        CPPUNIT_ASSERT(!strcmp(*i,"zippy"));
       break;
       case 1:
-          CPPUNIT_ASSERT(!strcmp(*i,"motorboy"));
+        CPPUNIT_ASSERT(!strcmp(*i,"motorboy"));
       break;
       default:
-          CPPUNIT_ASSERT(false);
+        CPPUNIT_ASSERT(false);
       break;
     }
   }
@@ -72,13 +72,13 @@ void IterTest::iter3()
   for(it = v.rbegin(); it != v.rend(); it++, counter++) {
     switch( counter ) {
       case 1:
-          CPPUNIT_ASSERT(!strcmp(*it,"zippy"));
+        CPPUNIT_ASSERT(!strcmp(*it,"zippy"));
       break;
       case 0:
-          CPPUNIT_ASSERT(!strcmp(*it,"motorboy"));
+        CPPUNIT_ASSERT(!strcmp(*it,"motorboy"));
       break;
       default:
-          CPPUNIT_ASSERT(false);
+        CPPUNIT_ASSERT(false);
       break;
     }
   }
@@ -143,20 +143,28 @@ void IterTest::iterswp2()
   iter_swap( i1, i2 );
 
   CPPUNIT_ASSERT(( *i1 == v1 && *i2 == v0 ));
-
 }
+
+
 void IterTest::iterswp3()
 {
-  stringstream s0;
-  stringstream s1;
+  vector<int> vvref(10, 10);
+  vector<int> lvref(10, 20);
 
-  vector<bool> boolVector;
+  vector<vector<int> > vvints(4, vvref);
+  list<vector<int> > lvints(4, lvref);
 
-  boolVector.push_back( true );
-  boolVector.push_back( false );
+  iter_swap(vvints.begin(), lvints.begin());
+  CPPUNIT_CHECK( vvints.front() == lvref );
+  CPPUNIT_CHECK( lvints.front() == vvref );
 
-  sort( boolVector.begin(), boolVector.end() );
+#if defined (STLPORT) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  int *pvvint = &vvints.front().front();
+  int *plvint = &lvints.front().front();
 
-  CPPUNIT_ASSERT(boolVector[0]==false);
-  CPPUNIT_ASSERT(boolVector[1]==true);
+  iter_swap(vvints.begin(), lvints.begin());
+  //Check that elements have been swaped:
+  CPPUNIT_CHECK( pvvint == &lvints.front().front() );
+  CPPUNIT_CHECK( plvint == &vvints.front().front() );
+#endif
 }

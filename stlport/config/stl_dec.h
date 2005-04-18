@@ -63,12 +63,6 @@
 # endif
 #endif
 
-// # if !defined (_STLP_NEW_IOSTREAMS) && ! defined (_STLP_DONT_REDEFINE_STD) \
-//  && ! defined (_STLP_REDEFINE_STD)
-// # undef __PRAGMA_ENVIRONMENT
-//   #  define _STLP_DONT_REDEFINE_STD
-// # endif
-
 //# ifndef __STD_STRICT_ANSI_ERRORS
 //# endif
 

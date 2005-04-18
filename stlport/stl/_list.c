@@ -173,7 +173,7 @@ void _S_sort(_LIST_IMPL<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   // Do nothing if the _LIST_IMPL has length 0 or 1.
   if (__that._M_node._M_data._M_next != &__that._M_node._M_data &&
       __that._M_node._M_data._M_next->_M_next != &__that._M_node._M_data) {
-    _LIST_IMPL<_Tp, _Alloc> __carry;
+    _LIST_IMPL<_Tp, _Alloc> __carry(__that.get_allocator());
 #if !defined (__WATCOMC__)
     _LIST_IMPL<_Tp, _Alloc> __counter[64];
 #else

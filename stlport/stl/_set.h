@@ -39,32 +39,16 @@
 
 _STLP_BEGIN_NAMESPACE
 
-/*
- * dums: A special iterator/const_iterator traits for set and multiset for which even
- * the iterator is not mutable
- */
-template <class _Tp>
-struct _Nonconst_set_traits;
-
-template <class _Tp>
-struct _Const_set_traits {
-  typedef _Tp value_type;
-  typedef const _Tp&  reference;
-  typedef const _Tp*  pointer;
-  typedef _Nonconst_set_traits<_Tp> _Non_const_traits;
-};
-
-template <class _Tp>
-struct _Nonconst_set_traits {
-  typedef _Tp value_type;
-  typedef const _Tp& reference;
-  typedef const _Tp* pointer;
-  typedef _Nonconst_set_traits<_Tp> _Non_const_traits;
-};
+//Specific iterator traits creation
+_STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
-class set {
+class set
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+          : public __stlport_class<set<_Key, _Compare, _Alloc> >
+#endif
+{
   typedef set<_Key, _Compare, _Alloc> _Self;
 public:
 // typedefs:
@@ -72,11 +56,16 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-  
-private:
-  typedef _Const_set_traits<value_type> _ConstIteTraits;
+
+protected:
+  //Specific iterator traits creation
+  typedef _STLP_PRIV::_SetTraitsT<value_type> _SetTraits;
+
+public:
+  //dums: need the following public for the __move_traits framework
   typedef _Rb_tree<key_type, key_compare, 
-                   value_type, _Identity<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
+                   value_type, _Identity<value_type>, 
+                   _SetTraits, _Alloc> _Rep_type;
 
 public:
   typedef typename _Rep_type::pointer pointer;
@@ -189,7 +178,7 @@ public:
 # endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) { 
-    return _M_t.erase(__x); 
+    return _M_t.erase_unique(__x); 
   }
   void erase(iterator __first, iterator __last) { 
     _M_t.erase(__first, __last ); 
@@ -214,16 +203,23 @@ public:
   iterator upper_bound(const key_type& __x) { return _M_t.upper_bound(__x); }
   const_iterator upper_bound(const key_type& __x) const { return _M_t.upper_bound(__x); }
   pair<iterator, iterator> equal_range(const key_type& __x) {
-    return _M_t.equal_range(__x);
+    return _M_t.equal_range_unique(__x);
   }
   pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
-    return _M_t.equal_range(__x);
+    return _M_t.equal_range_unique(__x);
   }
 };
 
+//Specific iterator traits creation
+_STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
+
 template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
-class multiset _STLP_STLPORT_CLASS_1 {
+class multiset 
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+               : public __stlport_class<multiset<_Key, _Compare, _Alloc> >
+#endif
+{
   typedef multiset<_Key, _Compare, _Alloc> _Self;
 public:
   // typedefs:
@@ -232,11 +228,16 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
-  
-private:
-  typedef _Const_set_traits<value_type> _ConstIteTraits;
+ 
+protected:
+  //Specific iterator traits creation
+  typedef _STLP_PRIV::_MultisetTraitsT<value_type> _MultisetTraits;
+
+public:
+  //dums: need the following public for the __move_traits framework
   typedef _Rb_tree<key_type, key_compare, 
-                   value_type, _Identity<value_type>, _ConstIteTraits, _Alloc> _Rep_type;
+                   value_type, _Identity<value_type>, 
+                   _MultisetTraits, _Alloc> _Rep_type;
                   
 public:                  
   typedef typename _Rep_type::pointer pointer;
@@ -385,27 +386,33 @@ public:
   }
 };
 
+# undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 # define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Alloc>
 # define _STLP_TEMPLATE_CONTAINER set<_Key,_Compare,_Alloc>
-# define _STLP_TEMPLATE_CONTAINER_BASE typename set<_Key,_Compare,_Alloc>::_Rep_type
 # include <stl/_relops_cont.h>
-# undef  _STLP_TEMPLATE_CONTAINER_BASE
 # undef  _STLP_TEMPLATE_CONTAINER
 # define _STLP_TEMPLATE_CONTAINER multiset<_Key,_Compare,_Alloc>
-# define _STLP_TEMPLATE_CONTAINER_BASE typename multiset<_Key,_Compare,_Alloc>::_Rep_type
 # include <stl/_relops_cont.h>
-# undef  _STLP_TEMPLATE_CONTAINER_BASE
 # undef  _STLP_TEMPLATE_CONTAINER
 # undef  _STLP_TEMPLATE_HEADER
+
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+template <class _Key, class _Compare, class _Alloc>
+struct __move_traits<set<_Key,_Compare,_Alloc> > :
+  __move_traits_aux<typename set<_Key,_Compare,_Alloc>::_Rep_type>
+{};
+
+template <class _Key, class _Compare, class _Alloc>
+struct __move_traits<multiset<_Key,_Compare,_Alloc> > :
+  __move_traits_aux<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>
+{};
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 
 // do a cleanup
 # undef set
 # undef multiset
-// provide a way to access full funclionality 
-# define __set__  __FULL_NAME(set)
-# define __multiset__  __FULL_NAME(multiset)
 
 # ifdef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
 # include <stl/wrappers/_set.h>

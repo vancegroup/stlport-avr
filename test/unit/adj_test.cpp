@@ -54,7 +54,7 @@ void AdjTest::adjfind1()
 {
   typedef vector<int> IntVector;
   IntVector v(10);
-  for(size_t i = 0; i < v.size(); i++)
+  for (int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i;
   IntVector::iterator location;
   location = adjacent_find(v.begin(), v.end());
@@ -96,9 +96,9 @@ void AdjTest::adjdiff0()
 void AdjTest::adjdiff1()
 {
   vector <int> v(10);
-  for(size_t i = 0; i < v.size(); i++)
+  for(int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i * i;
-  vector <int> result(v.size());
+  vector<int> result(v.size());
   adjacent_difference(v.begin(), v.end(), result.begin());
   CPPUNIT_ASSERT(result[0]==0)
   CPPUNIT_ASSERT(result[1]==1)
@@ -114,7 +114,7 @@ void AdjTest::adjdiff1()
 void AdjTest::adjdiff2()
 {
   vector <int> v(10);
-  for(size_t i = 0; i < v.size(); i++)
+  for (int i = 0; (size_t)i < v.size(); ++i)
     v[i] = i + 1;
   vector <int> result(v.size());
   adjacent_difference(v.begin(), v.end(), result.begin(), mult);

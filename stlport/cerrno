@@ -21,15 +21,18 @@
 #  include <stl/_prolog.h>
 # endif
 
+# ifndef _STLP_WCE
 # if defined (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cerrno)
 # else
 #  include <errno.h>
 # endif
+# endif
 
 #ifndef errno
 
-# if defined (_STLP_IMPORT_VENDOR_CSTD) && ! defined (__IBMCPP__) && ! defined(__hpux)
+# if defined (_STLP_IMPORT_VENDOR_CSTD) && \
+  ! defined (__IBMCPP__) && ! defined(__hpux) && ! defined(__MWERKS__) && !defined(_STLP_WCE)
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::errno;
 _STLP_END_NAMESPACE

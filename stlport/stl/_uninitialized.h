@@ -30,17 +30,17 @@
 #ifndef _STLP_INTERNAL_UNINITIALIZED_H
 #define _STLP_INTERNAL_UNINITIALIZED_H
 
-# ifndef _STLP_CSTRING
+#ifndef _STLP_CSTRING
 #  include <cstring>
-# endif
+#endif
 
-# ifndef _STLP_INTERNAL_ALGOBASE_H
+#ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
-# endif
+#endif
 
-# ifndef _STLP_INTERNAL_CONSTRUCT_H
+#ifndef _STLP_INTERNAL_CONSTRUCT_H
 #  include <stl/_construct.h>
-# endif
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -57,9 +57,7 @@ __ucopy_trivial(const void* __first, const void* __last, void* __result) {
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
                                const __false_type& /*IsOKToMemCpy*/) {
-  return __copy(__first, __last, __result, 
-                _STLP_ITERATOR_CATEGORY(__first, _InputIter), 
-                _STLP_DISTANCE_TYPE(__first, _InputIter));
+  return __copy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0);
 }
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result, 
@@ -73,7 +71,7 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIter __result, 
                                const __true_type& /*BothPtrType*/) {
   return __ucopy_ptrs(__first, __last, __result, 
-                      _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter), 
+                      _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter),
                                     _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
 }
 
@@ -85,12 +83,20 @@ inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIte
                 _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 
-// Valid if copy construction is equivalent to assignment, and if the
-//  destructor is trivial.
+/*
+ * Valid if 
+ *  - copy construction is trivial
+ *  - assignment operator is trivial
+ * Most of the time a type having a trivial copy constructor will
+ * have a trivial assign operator and vise versa but in the rare case
+ * where it do not happen we prefer to call the trivial copy constructor
+ * to do the bit copy. Moreover if there is no trivial assign there is
+ * no chance to finally call a simple memcpy so no reason to use __ucopy_aux.
+ */
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter 
 __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     const __true_type& /*IsPOD*/) {
+                     const __true_type& /*TrivialCopyAndAssign*/) {
   return __ucopy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter> :: _Ret());
 }
 
@@ -98,12 +104,11 @@ template <class _InputIter, class _ForwardIter>
 _STLP_INLINE_LOOP
 _ForwardIter 
 __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     const __false_type& /*IsPOD*/)
-{
+                     const __false_type& /*TrivialCopyAndAssign*/) {
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur)
-      _Copy_Construct(&*__cur, *__first);
+      _Param_Construct(&*__cur, *__first);
     return __cur;
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
@@ -113,7 +118,9 @@ __uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __resul
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter
 uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result) {
-  return __uninitialized_copy(__first, __last, __result,  _IS_POD_ITER(__result, _ForwardIter));
+  return __uninitialized_copy(__first, __last, __result, 
+                              _UseTrivialUCopy(_STLP_VALUE_TYPE(__first, _InputIter),
+                                               _STLP_VALUE_TYPE(__result, _ForwardIter))._Answer());
 }
 
 inline char* 
@@ -136,12 +143,11 @@ _STLP_INLINE_LOOP
 pair<_InputIter, _ForwardIter>
 __uninitialized_copy_n(_InputIter __first, _Size __count,
                        _ForwardIter __result,
-                       const input_iterator_tag &)
-{
+                       const input_iterator_tag &) {
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur) 
-      _Copy_Construct(&*__cur, *__first);
+      _Param_Construct(&*__cur, *__first);
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __cur))
@@ -171,8 +177,10 @@ template <class _RandomAccessIter, class _Size, class _ForwardIter>
 inline pair<_RandomAccessIter, _ForwardIter>
 __uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __result, const random_access_iterator_tag &) {
   _RandomAccessIter __last = __first + __count;
-  return pair<_RandomAccessIter, _ForwardIter>( __last, __uninitialized_copy(__first, __last, __result, 
-                                                                             _IS_POD_ITER(__result, _ForwardIter)));
+  return pair<_RandomAccessIter, _ForwardIter>(__last, 
+                                               __uninitialized_copy(__first, __last, __result, 
+                                                                    _UseTrivialUCopy(_STLP_VALUE_TYPE(__first, _RandomAccessIter),
+                                                                                     _STLP_VALUE_TYPE(__result, _ForwardIter))._Answer()));
 }
 
 // this is used internally in <rope> , which is extension itself.
@@ -184,8 +192,13 @@ uninitialized_copy_n(_InputIter __first, _Size __count,
 }
 # endif /* _STLP_NO_EXTENSIONS */
 
-// Valid if copy construction is equivalent to assignment, and if the
-// destructor is trivial.
+/*
+ * Valid if :
+ * - we are using the copy constructor
+ * - copy construction is equivalent to assignment
+ * - destructor is trivial.
+ * All that is guaranty by the POD types.
+ */
 template <class _ForwardIter, class _Tp>
 inline void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
@@ -196,19 +209,18 @@ __uninitialized_fill(_ForwardIter __first, _ForwardIter __last,
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP void
 __uninitialized_fill(_ForwardIter __first, _ForwardIter __last, 
-                     const _Tp& __x, const __false_type& /*IsPOD*/)
-{
+                     const _Tp& __x, const __false_type& /*IsPOD*/) {
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __cur != __last; ++__cur)
-      _Copy_Construct(&*__cur, __x);
+      _Param_Construct(&*__cur, __x);
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
 }
 
 template <class _ForwardIter, class _Tp>
 inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const _Tp& __x) {
-  __uninitialized_fill(__first, __last, __x, _IS_POD_ITER(__first, _ForwardIter));
+  __uninitialized_fill(__first, __last, __x, _STLP_IS_POD_ITER(__first, _ForwardIter));
 }
 
 // Valid if copy construction is equivalent to assignment, and if the
@@ -217,18 +229,17 @@ template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
                        const _Tp& __x, const __true_type& /*IsPOD*/) {
-  return _STLP_STD::fill_n(__first, __n, __x);
+  return __fill_n(__first, __n, __x);
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP _ForwardIter
 __uninitialized_fill_n(_ForwardIter __first, _Size __n,
-                       const _Tp& __x, const __false_type& /*IsPOD*/)
-{
+                       const _Tp& __x, const __false_type& /*IsPOD*/) {
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __n > 0; --__n, ++__cur)
-      _Copy_Construct(&*__cur, __x);
+      _Param_Construct(&*__cur, __x);
     return __cur;
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
@@ -236,9 +247,9 @@ __uninitialized_fill_n(_ForwardIter __first, _Size __n,
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter 
+inline void
 uninitialized_fill_n(_ForwardIter __first, _Size __n, const _Tp& __x) {
-  return __uninitialized_fill_n(__first, __n, __x, _IS_POD_ITER(__first, _ForwardIter));
+  __uninitialized_fill_n(__first, __n, __x, _STLP_IS_POD_ITER(__first, _ForwardIter));
 }
 
 // Extensions: __uninitialized_copy_copy, __uninitialized_copy_fill, 
@@ -247,14 +258,13 @@ uninitialized_fill_n(_ForwardIter __first, _Size __n, const _Tp& __x) {
 // __uninitialized_copy_copy
 // Copies [first1, last1) into [result, result + (last1 - first1)), and
 //  copies [first2, last2) into
-//  [result, result + (last1 - first1) + (last2 - first2)).
+//  [result + (last1 - first1), result + (last1 - first1) + (last2 - first2)).
 
 template <class _InputIter1, class _InputIter2, class _ForwardIter>
 inline _ForwardIter
 __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
-                          _ForwardIter __result, const __true_type& /*IsPOD*/)
-{
+                          _ForwardIter __result, const __true_type& /*TrivialCopyAndAssign*/) {
   return __uninitialized_copy(__first2, __last2, 
                               __uninitialized_copy(__first1, __last1, __result, __true_type()), __true_type());
 }
@@ -263,11 +273,10 @@ template <class _InputIter1, class _InputIter2, class _ForwardIter>
 inline _ForwardIter
 __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
-                          _ForwardIter __result, const __false_type& /*IsPOD*/)
-{
-  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, _IS_POD_ITER(__result, _ForwardIter));
+                          _ForwardIter __result, const __false_type& /*TrivialCopyAndAssign*/) {
+  _ForwardIter __mid = __uninitialized_copy(__first1, __last1, __result, __false_type());
   _STLP_TRY {
-    return __uninitialized_copy(__first2, __last2, __mid , _IS_POD_ITER(__result, _ForwardIter));
+    return __uninitialized_copy(__first2, __last2, __mid , __false_type());
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid))
   _STLP_RET_AFTER_THROW(__mid)
@@ -279,12 +288,12 @@ __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
 template <class _ForwardIter, class _Tp, class _InputIter>
 inline _ForwardIter 
 __uninitialized_fill_copy(_ForwardIter __result, _ForwardIter __mid, const _Tp& __x,
-                          _InputIter __first, _InputIter __last)
-{
-  typedef typename __type_traits<_Tp>::is_POD_type _I_POD;
-  __uninitialized_fill(__result, __mid, __x, _I_POD());
+                          _InputIter __first, _InputIter __last) {
+  typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
+  typedef typename _TrivialUCopy<_Tp>::_Ret _Trivial_UCopy;
+  __uninitialized_fill(__result, __mid, __x, _Is_POD());
   _STLP_TRY {
-    return __uninitialized_copy(__first, __last, __mid, _I_POD());
+    return __uninitialized_copy(__first, __last, __mid, _Trivial_UCopy());
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __mid))
   _STLP_RET_AFTER_THROW(__result)
@@ -297,30 +306,29 @@ template <class _InputIter, class _ForwardIter, class _Tp>
 inline void
 __uninitialized_copy_fill(_InputIter __first1, _InputIter __last1,
                           _ForwardIter __first2, _ForwardIter __last2,
-                          const _Tp& __x)
-{
-  typedef typename __type_traits<_Tp>::is_POD_type _I_POD;
-  _ForwardIter __mid2 = __uninitialized_copy(__first1, __last1, __first2, _I_POD());
+                          const _Tp& __x) {
+  typedef typename __type_traits<_Tp>::is_POD_type _Is_POD;
+  typedef typename _TrivialUCopy<_Tp>::_Ret _Trivial_UCopy;
+  _ForwardIter __mid2 = __uninitialized_copy(__first1, __last1, __first2, _Trivial_UCopy());
   _STLP_TRY {
-    __uninitialized_fill(__mid2, __last2, __x, _I_POD());
+    __uninitialized_fill(__mid2, __last2, __x, _Is_POD());
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first2, __mid2))
 }
 
 // __uninitialized_move
-template <class _InputIter, class _ForwardIter>
+template <class _InputIter, class _ForwardIter, class _TrivialUCpy>
 inline _ForwardIter 
-__uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     const __true_type& /*IsPOD*/) {
-  return __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter> :: _Ret());
+__uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __result, _TrivialUCpy __trivial_ucpy,
+                     const __false_type& /*_Movable*/) {
+  return __uninitialized_copy(__first, __last, __result, __trivial_ucpy);
 }
 
-template <class _InputIter, class _ForwardIter>
+template <class _InputIter, class _ForwardIter, class _TrivialUCpy>
 _STLP_INLINE_LOOP
 _ForwardIter 
 __uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     const __false_type& /*IsPOD*/)
-{
+                     _TrivialUCpy , const __true_type& /*_Movable*/) {
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur)

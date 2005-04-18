@@ -22,8 +22,6 @@
 # include <stl/_num_get.h>
 #endif
 
-# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
-
 #ifndef _STLP_LIMITS_H
 # include <stl/_limits.h>
 #endif
@@ -60,8 +58,7 @@ extern const char __narrow_atoms[];
 
 template <class _InputIter, class _CharT>
 int 
-_M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT*)
-{
+_M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT*) {
   _CharT __atoms[5];
   const ctype<_CharT>& __c_type = *(const ctype<_CharT>*)__str._M_ctype_facet();
 
@@ -76,7 +73,6 @@ _M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT
   }
   else if (__c == __atoms[0] /* __xplus_char */ ) 
     ++__in;
-
 
   int __base;
   int __valid_zero = 0;
@@ -123,24 +119,23 @@ _M_get_base_or_zero(_InputIter& __in, _InputIter& __end, ios_base& __str, _CharT
 }
 
 
-template <class _InputIter, class _Integer>
+template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
               int __base, _Integer& __val, 
-              int __got, bool __is_negative, char __separator, const string& __grouping, const __true_type&) 
-{
+              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __true_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
   char __group_sizes[64];
-  int __current_group_size = 0;
+  char __current_group_size = 0;
   char* __group_sizes_end = __group_sizes;
   
   _Integer __over_base = (numeric_limits<_Integer>::min)() / __STATIC_CAST(_Integer, __base);
 
    for ( ; __first != __last ; ++__first) {
   
-     const char __c = *__first;
+     const _CharT __c = *__first;
      
      if (__is_group && __c == __separator) {
        *__group_sizes_end++ = __current_group_size;
@@ -172,34 +167,35 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 
    // fbp : added to not modify value if nothing was read
    if (__got > 0) {
-       __val = __ovflow
-         ? __is_negative ? (numeric_limits<_Integer>::min)()
-         : (numeric_limits<_Integer>::max)()
-         : (__is_negative ? __result : __STATIC_CAST(_Integer, -__result));
+       __val = __ovflow ? __is_negative ? (numeric_limits<_Integer>::min)()
+                                        : (numeric_limits<_Integer>::max)()
+                        : __is_negative ? __result 
+                                        : __STATIC_CAST(_Integer, -__result);
    }
   // overflow is being treated as failure
-  return ((__got > 0) && !__ovflow) && (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
-                                                                            __grouping.data(), __grouping.data()+ __grouping.size())) ;
+  return ((__got > 0) && !__ovflow) && 
+          (__is_group == 0 || 
+           __valid_grouping(__group_sizes, __group_sizes_end,
+                            __grouping.data(), __grouping.data()+ __grouping.size()));
 }
 
-template <class _InputIter, class _Integer>
+template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
               int __base, _Integer& __val, 
-              int __got, bool __is_negative, char __separator, const string& __grouping, const __false_type&) 
-{
+              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __false_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
   char __group_sizes[64];
-  int __current_group_size = 0;
+  char __current_group_size = 0;
   char* __group_sizes_end = __group_sizes;
 
   _Integer  __over_base = (numeric_limits<_Integer>::max)() / __STATIC_CAST(_Integer, __base);
 
   for ( ; __first != __last ; ++__first) {
 
-    const char __c = *__first;
+    const _CharT __c = *__first;
     
     if (__is_group && __c == __separator) {
       *__group_sizes_end++ = __current_group_size;
@@ -231,31 +227,31 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 
   // fbp : added to not modify value if nothing was read
   if (__got > 0) {
-      __val = __ovflow
-        ? (numeric_limits<_Integer>::max)()
-        : (__is_negative ? __STATIC_CAST(_Integer, -__result) : __result);      
+      __val = __ovflow ? (numeric_limits<_Integer>::max)()
+                       : (__is_negative ? __STATIC_CAST(_Integer, -__result) 
+                                        : __result);      
   }
+
   // overflow is being treated as failure
   return ((__got > 0) && !__ovflow) && 
-    (__is_group == 0 || __valid_grouping(__group_sizes, __group_sizes_end,
-                                         __grouping.data(), __grouping.data()+ __grouping.size())) ;
+          (__is_group == 0 || 
+           __valid_grouping(__group_sizes, __group_sizes_end,
+                            __grouping.data(), __grouping.data()+ __grouping.size()));
 }
 
 
-template <class _InputIter, class _Integer>
+template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
-__get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val)
-{
+__get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val, _CharT* /*dummy*/) {
   string __grp;
-  return __get_integer(__first, __last, 10, __val, 0, false, ' ', __grp, __false_type());
+  //Here there is no grouping so separator is not important, we just pass the default charater.
+  return __get_integer(__first, __last, 10, __val, 0, false, _CharT() /*separator*/, __grp, __false_type());
 }
 
 template <class _InputIter, class _Integer, class _CharT>
 _InputIter _STLP_CALL
 _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
-                  ios_base::iostate& __err, _Integer& __val, _CharT* __pc) 
-{
-
+                  ios_base::iostate& __err, _Integer& __val, _CharT* __pc) {
 #if defined(__HP_aCC) && (__HP_aCC == 1)
   bool _IsSigned = !((_Integer)(-1) > 0);
 #else
@@ -280,7 +276,7 @@ _M_do_get_integer(_InputIter& __in, _InputIter& __end, ios_base& __str,
       __result = false;    
   } else {
 
-    const bool __negative = __base_or_zero & 2;
+    const bool __negative = (__base_or_zero & 2) != 0;
     const int __base = __base_or_zero >> 2;
 
 #if defined(__HP_aCC) && (__HP_aCC == 1)
@@ -440,10 +436,31 @@ _M_read_float(__iostring& __buf, _InputIter& __in, _InputIter& __end, ios_base& 
 // num_get<>, num_put<>
 //
 
-# if ( _STLP_STATIC_TEMPLATE_DATA > 0 ) 
+#if ( _STLP_STATIC_TEMPLATE_DATA > 0 ) 
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
-# else
+
+#  if (defined(__CYGWIN__) || defined(__MINGW32__)) && defined(_STLP_USE_DYNAMIC_LIB)
+/*
+ * Under cygwin, when STLport is used as a shared library, the id needs
+ * to be specified as imported otherwise they will be duplicated in the
+ * calling executable.
+ */
+template <>
+_STLP_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_get<char, const char*>::id;
+
+#    ifndef _STLP_NO_WCHAR_T
+template <>
+_STLP_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id;
+#    endif
+
+#  endif /* __CYGWIN__ && _STLP_USE_DYNAMIC_LIB */
+
+#else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 typedef num_get<char, const char*> num_get_char;
 typedef num_get<char, istreambuf_iterator<char, char_traits<char> > > num_get_char_2;
@@ -451,7 +468,7 @@ typedef num_get<char, istreambuf_iterator<char, char_traits<char> > > num_get_ch
 __DECLARE_INSTANCE(locale::id, num_get_char::id, );
 __DECLARE_INSTANCE(locale::id, num_get_char_2::id, );
 
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 
 typedef num_get<wchar_t, const wchar_t*> num_get_wchar_t;
 typedef num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > num_get_wchar_t_2;
@@ -459,9 +476,9 @@ typedef num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > n
 __DECLARE_INSTANCE(locale::id, num_get_wchar_t::id, );
 __DECLARE_INSTANCE(locale::id, num_get_wchar_t_2::id, );
 
-# endif
+#  endif
 
-# endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
+#endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 # ifndef _STLP_NO_BOOL
 template <class _CharT, class _InputIter>
@@ -626,7 +643,7 @@ _InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err,
                            void*& __p) const {
-# if defined(_STLP_LONG_LONG)&&!defined(__MRC__)		//*ty 12/07/2001 - MrCpp can not cast from long long to void*
+# if defined(_STLP_LONG_LONG) && !defined(__MRC__)		//*ty 12/07/2001 - MrCpp can not cast from long long to void*
   unsigned _STLP_LONG_LONG __val;
 # else
   unsigned long __val;
@@ -659,8 +676,6 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in, _InputIter __end, ios_base&
 #endif /* _STLP_LONG_LONG */
 
 _STLP_END_NAMESPACE
-
-# endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
 #endif /* _STLP_NUMERIC_FACETS_C */
 

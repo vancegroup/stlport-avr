@@ -35,7 +35,9 @@ _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::jmp_buf;
 # ifndef _STLP_NO_CSTD_FUNCTION_IMPORTS
 #  ifndef setjmp
+#   if !defined(__MSL__) || ((__MSL__ > 0x7001) && (__MSL__ < 0x8000))
 using _STLP_VENDOR_CSTD::setjmp;
+#   endif
 #  endif
 using _STLP_VENDOR_CSTD::longjmp;
 # endif

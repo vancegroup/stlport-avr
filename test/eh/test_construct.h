@@ -1,6 +1,6 @@
 /***********************************************************************************
-	test_construct.h
-	
+  test_construct.h
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -11,7 +11,7 @@
  * in supporting documentation.  Mark of the Unicorn makes no
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
-		
+    
 ***********************************************************************************/
 #ifndef test_construct_H_
 #define test_construct_H_

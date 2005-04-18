@@ -1,21 +1,21 @@
 
 #ifndef _STLP_INTERNAL_STREAMBUF
-#include <stl/_streambuf.h>
+#  include <stl/_streambuf.h>
 #endif
 #ifndef _STLP_ISTREAM
-#include <istream>              // Includes <ostream>, <ios>, <iosfwd>
+#  include <istream>              // Includes <ostream>, <ios>, <iosfwd>
 #endif
 #ifndef _STLP_INTERNAL_STRING_H
-#include <stl/_string.h>
+#  include <stl/_string.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
 #ifndef _STLP_USE_NAMESPACES
-# define strstream _STLP_strstream 
-# define ostrstream _STLP_ostrstream
-# define istrstream _STLP_istrstream
-# define strstreambuf _STLP_strstreambuf
+#  define strstream _STLP_strstream 
+#  define ostrstream _STLP_ostrstream
+#  define istrstream _STLP_istrstream
+#  define strstreambuf _STLP_strstreambuf
 #endif
 
 //----------------------------------------------------------------------
@@ -136,6 +136,10 @@ public:
 
 private:
   strstreambuf _M_buf;
+
+  //explicitely defined as private to avoid warnings:
+  strstream(strstream const&);
+  strstream& operator = (strstream const&);
 };
 
 _STLP_END_NAMESPACE

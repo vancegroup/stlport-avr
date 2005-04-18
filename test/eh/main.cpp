@@ -1,6 +1,6 @@
 /***********************************************************************************
-	Main.cpp
-	
+  Main.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -50,11 +50,13 @@ no
 #  include <assert.h>
 # endif
 
-# if defined ( EH_USE_SGI_STL ) 
+# if defined (_STL_DEBUG)
+
+#  if defined ( EH_USE_SGI_STL ) 
 // Override assertion behavior
 #  include <cstdarg>
 //#  include <stldebug.h>
-void __stl_debug_message(const char * format_str, ...)
+void STLPORT::__stl_debug_message(const char * format_str, ...)
 {
   std::va_list args;
   va_start( args, format_str );
@@ -62,7 +64,7 @@ void __stl_debug_message(const char * format_str, ...)
   std::vsnprintf(msg, sizeof(msg)/sizeof(*msg) - 1, format_str, args );
   DebugStr( c2pstr(msg) );
 }
-# else
+#  else
 /*===================================================================================
   __assertion_failed  (override standard library function)
 
@@ -85,6 +87,8 @@ extern "C"
       DebugStr( c2pstr( msg ) );
   }
 }
+#  endif
+
 # endif
 
 #endif
@@ -146,11 +150,11 @@ static void usage(const char* name)
 
 int _STLP_CALL main(int argc, char** argv)
 {
-#if defined( __MWERKS__ ) && defined( macintosh )	// Get command line.
-	argc = ccommand(&argv);
-	// Allow the i/o window to be repositioned.
-//	EH_STD::string s;
-//	getline(EH_STD::cin, s);
+#if defined( __MWERKS__ ) && defined( macintosh )  // Get command line.
+  argc = ccommand(&argv);
+  // Allow the i/o window to be repositioned.
+//  EH_STD::string s;
+//  getline(EH_STD::cin, s);
 #endif
     unsigned int niters=2;
     bool run_all=true;
@@ -192,7 +196,7 @@ int _STLP_CALL main(int argc, char** argv)
             case 'v':
                 gTestController.SetVerbose(true);
                 break;
-#if 0	// This option was never actually used -- dwa 9/22/97
+#if 0  // This option was never actually used -- dwa 9/22/97
             case 'i':
                 gTestController.IgnoreLeaks(true);
                 break;
@@ -205,8 +209,8 @@ int _STLP_CALL main(int argc, char** argv)
                     usage(argv[0]);
                 break;
             case 't':
-            	track_allocations = true;
-            	break;
+              track_allocations = true;
+              break;
             case 'e':
                 gTestController.TurnOffExceptions();
                 break;
@@ -259,12 +263,12 @@ int _STLP_CALL main(int argc, char** argv)
         }
     }
 
-	gTestController.TrackAllocations( track_allocations );
+  gTestController.TrackAllocations( track_allocations );
 
     // Over and over...
     for ( unsigned i = 0; i < niters ; i++ )
     {
-   	cerr << "iteration #" << i << "\n";
+     cerr << "iteration #" << i << "\n";
         if (run_all || run_algobase) {
             gTestController.SetCurrentContainer("algobase");
             cerr << "EH test : algobase" << endl;
@@ -348,7 +352,7 @@ int _STLP_CALL main(int argc, char** argv)
 #endif // EH_HASHED_CONTAINERS_IMPLEMENTED
 
 #if defined( EH_ROPE_IMPLEMENTED )
-	// CW1.8 can't compile this for some reason!
+  // CW1.8 can't compile this for some reason!
 #if !( defined(__MWERKS__) && __MWERKS__ < 0x1900 )
         if (run_all || run_rope) {
             gTestController.SetCurrentContainer("rope");
@@ -380,8 +384,8 @@ int _STLP_CALL main(int argc, char** argv)
 #endif
     }
 
-	gTestController.TrackAllocations( false );
-	
+  gTestController.TrackAllocations( false );
+  
     cerr << "EH test : Done\n";
     return 0;
 }

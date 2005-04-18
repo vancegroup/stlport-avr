@@ -1,6 +1,6 @@
 /***********************************************************************************
-	random_number.h
-	
+  random_number.h
+  
  * Copyright (c) 1997-1998
  * Mark of the Unicorn, Inc.
  *
@@ -11,7 +11,7 @@
  * in supporting documentation.  Mark of the Unicorn makes no
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
-		
+    
 ***********************************************************************************/
 #ifndef RANDOM_NUMBER_DWA120298_H_
 #define RANDOM_NUMBER_DWA120298_H_

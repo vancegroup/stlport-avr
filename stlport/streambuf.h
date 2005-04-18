@@ -23,7 +23,7 @@
 #  include <stl/_prolog.h>
 # endif
 
-# if defined ( _STLP_OWN_IOSTREAMS )
+#include <stl/_ioserr.h>
 
 #ifdef __BORLANDC__
 #  include <streambuf.>
@@ -44,12 +44,6 @@ using _STLP_STD::wstreambuf;
 #   endif
 #  endif
 # endif /* _STLP_HAS_NO_NAMESPACES */
-
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-
-# include _STLP_NATIVE_OLD_STREAMS_HEADER(streambuf.h)
-
-# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x2067)
 #  include <stl/_epilog.h>

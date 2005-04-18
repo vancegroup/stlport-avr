@@ -185,12 +185,83 @@ private:
 /*
  * The pointer partial specialization.
  */
+
+ /*
+  * struct helper to cast deque iterators:
+  */
+template <class _Tp>
+struct _Ite_cast {
+  typedef _Deque_iterator<_Tp*, _Nonconst_traits<_Tp*> > iterator;
+  typedef _Deque_iterator<_Tp*, _Const_traits<_Tp*> >    const_iterator;
+  typedef _Deque_iterator<void*, _Nonconst_traits<void*> > void_iterator;
+  typedef _Deque_iterator<void*, _Const_traits<void*> > void_const_iterator;
+  typedef __void_ptr_traits<_Tp> cast_traits;
+
+  static iterator _M_cast (void_iterator const&__void_ite) {
+    iterator tmp;
+    tmp._M_cur = cast_traits::ptr_cast(__void_ite._M_cur);
+    tmp._M_first = cast_traits::ptr_cast(__void_ite._M_first);
+    tmp._M_last = cast_traits::ptr_cast(__void_ite._M_last);
+    tmp._M_node = cast_traits::ptr_ptr_cast(__void_ite._M_node);
+    return tmp;
+  }
+  static void_iterator _M_cast (iterator const&__t_ite) {
+    void_iterator tmp;
+    tmp._M_cur = cast_traits::ptr_cast(__t_ite._M_cur);
+    tmp._M_first = cast_traits::ptr_cast(__t_ite._M_first);
+    tmp._M_last = cast_traits::ptr_cast(__t_ite._M_last);
+    tmp._M_node = cast_traits::ptr_ptr_cast(__t_ite._M_node);
+    return tmp;
+  }
+
+  static const_iterator _M_ccast (void_const_iterator const&__void_ite) {
+    const_iterator tmp;
+    tmp._M_cur = cast_traits::ptr_cast(__void_ite._M_cur);
+    tmp._M_first = cast_traits::ptr_cast(__void_ite._M_first);
+    tmp._M_last = cast_traits::ptr_cast(__void_ite._M_last);
+    tmp._M_node = cast_traits::ptr_ptr_cast(__void_ite._M_node);
+    return tmp;
+  }
+
+  static void_const_iterator _M_ccast (const_iterator const&__t_ite) {
+    void_const_iterator tmp;
+    tmp._M_cur = cast_traits::ptr_cast(__t_ite._M_cur);
+    tmp._M_first = cast_traits::ptr_cast(__t_ite._M_first);
+    tmp._M_last = cast_traits::ptr_cast(__t_ite._M_last);
+    tmp._M_node = cast_traits::ptr_ptr_cast(__t_ite._M_node);
+    return tmp;
+  }
+};
+
+template <>
+struct _Ite_cast<void*> {
+  typedef _Deque_iterator<void*, _Nonconst_traits<void*> > iterator;
+  typedef _Deque_iterator<void*, _Const_traits<void*> > const_iterator;
+
+  static iterator _M_cast (iterator const&ite) {
+    return ite;
+  }
+
+  static const_iterator _M_ccast (const_iterator const&ite) {
+    return ite;
+  }
+};
+
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<size_t, void*,  allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void***, void**,  allocator<void**> >;
+_STLP_EXPORT template struct _STLP_CLASS_DECLSPEC _Deque_iterator<void*, _Nonconst_traits<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _Deque_base<void*,allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _Deque_impl<void*,allocator<void*> >;
+#endif
+
 template <class _Tp, class _Alloc>
 class deque<_Tp*, _Alloc> {
   typedef typename _Alloc_traits<void*, _Alloc>::allocator_type _VoidAlloc;
   typedef _Deque_impl<void*, _VoidAlloc> _Base;
   typedef deque<_Tp*, _Alloc> _Self;
   typedef __void_ptr_traits<_Tp> cast_traits;
+  typedef _Ite_cast<_Tp> ite_cast_traits;
 
 public:
   typedef _Tp* value_type;
@@ -208,48 +279,11 @@ public:
 
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
-private:
-  typedef typename _Base::iterator _BaseIterator;
-  static iterator _M_ite_cast (_BaseIterator const&__void_ite) {
-    iterator tmp;
-    tmp._M_cur = cast_traits::ptr_cast(__void_ite._M_cur);
-    tmp._M_first = cast_traits::ptr_cast(__void_ite._M_first);
-    tmp._M_last = cast_traits::ptr_cast(__void_ite._M_last);
-    tmp._M_node = cast_traits::ptr_ptr_cast(__void_ite._M_node);
-    return tmp;
-  }
-  static _BaseIterator _M_ite_cast (iterator const&__t_ite) {
-    _BaseIterator tmp;
-    tmp._M_cur = cast_traits::ptr_cast(__t_ite._M_cur);
-    tmp._M_first = cast_traits::ptr_cast(__t_ite._M_first);
-    tmp._M_last = cast_traits::ptr_cast(__t_ite._M_last);
-    tmp._M_node = cast_traits::ptr_ptr_cast(__t_ite._M_node);
-    return tmp;
-  }
-
-  typedef typename _Base::const_iterator _BaseCIterator;
-  static const_iterator _M_const_ite_cast (_BaseCIterator const&__void_ite) {
-    const_iterator tmp;
-    tmp._M_cur = cast_traits::ptr_cast(__void_ite._M_cur);
-    tmp._M_first = cast_traits::ptr_cast(__void_ite._M_first);
-    tmp._M_last = cast_traits::ptr_cast(__void_ite._M_last);
-    tmp._M_node = cast_traits::ptr_ptr_cast(__void_ite._M_node);
-    return tmp;
-  }
-  static _BaseCIterator _M_const_ite_cast (const_iterator const&__t_ite) {
-    _BaseCIterator tmp;
-    tmp._M_cur = cast_traits::ptr_cast(__t_ite._M_cur);
-    tmp._M_first = cast_traits::ptr_cast(__t_ite._M_first);
-    tmp._M_last = cast_traits::ptr_cast(__t_ite._M_last);
-    tmp._M_node = cast_traits::ptr_ptr_cast(__t_ite._M_node);
-    return tmp;
-  }
-
 public:                         // Basic accessors
-  iterator begin() { return _M_ite_cast(_M_impl.begin()); }
-  iterator end()   { return _M_ite_cast(_M_impl.end()); }
-  const_iterator begin() const { return _M_const_ite_cast(_M_impl.begin()); }
-  const_iterator end() const   { return _M_const_ite_cast(_M_impl.end()); }
+  iterator begin() { return ite_cast_traits::_M_cast(_M_impl.begin()); }
+  iterator end()   { return ite_cast_traits::_M_cast(_M_impl.end()); }
+  const_iterator begin() const { return ite_cast_traits::_M_ccast(_M_impl.begin()); }
+  const_iterator end() const   { return ite_cast_traits::_M_ccast(_M_impl.end()); }
 
   reverse_iterator rbegin() { return reverse_iterator(end()); }
   reverse_iterator rend()   { return reverse_iterator(begin()); }
@@ -318,7 +352,7 @@ public:                         // Basic accessors
 
   deque(const_iterator __first, const_iterator __last,
         const allocator_type& __a = allocator_type() ) 
-    : _M_impl(_M_const_ite_cast(__first), _M_const_ite_cast(__last),
+    : _M_impl(ite_cast_traits::_M_ccast(__first), ite_cast_traits::_M_ccast(__last),
               _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -343,7 +377,7 @@ public:                         // Basic accessors
   void assign(const value_type *__first, const value_type *__last) 
   { _M_impl.assign(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last)); }
   void assign(const_iterator __first, const_iterator __last) 
-  { _M_impl.assign(_M_const_ite_cast(__first), _M_const_ite_cast(__last)); }
+  { _M_impl.assign(ite_cast_traits::_M_ccast(__first), ite_cast_traits::_M_ccast(__last)); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -372,32 +406,32 @@ public:                         // Basic accessors
 #else
   iterator insert(iterator __pos, value_type __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-  { return _M_ite_cast(_M_impl.insert(_M_ite_cast(__pos), cast_traits::cast(__x))); }
+  { return ite_cast_traits::_M_cast(_M_impl.insert(ite_cast_traits::_M_cast(__pos), cast_traits::cast(__x))); }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos) { return insert(__pos, 0); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   void insert(iterator __pos, size_type __n, value_type __x) 
-  { _M_impl.insert(_M_ite_cast(__pos), __n, cast_traits::cast(__x)); }
+  { _M_impl.insert(ite_cast_traits::_M_cast(__pos), __n, cast_traits::cast(__x)); }
 
 #ifdef _STLP_MEMBER_TEMPLATES  
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    _M_impl.insert(_M_ite_cast(__pos), __iterator_wrapper<_Tp, _InputIterator>(__first),
-                                       __iterator_wrapper<_Tp, _InputIterator>(__last));
+    _M_impl.insert(ite_cast_traits::_M_cast(__pos), __iterator_wrapper<_Tp, _InputIterator>(__first),
+                                                    __iterator_wrapper<_Tp, _InputIterator>(__last));
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos,
               const_pointer __first, const_pointer __last) {
-    _M_impl.insert(_M_ite_cast(__pos), cast_traits::const_ptr_cast(__first),
+    _M_impl.insert(ite_cast_traits::_M_cast(__pos), cast_traits::const_ptr_cast(__first),
                                        cast_traits::const_ptr_cast(__last));
   }
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
-    _M_impl.insert(_M_ite_cast(__pos), _M_const_ite_cast(__first),
-                                       _M_const_ite_cast(__last));
+    _M_impl.insert(ite_cast_traits::_M_cast(__pos), ite_cast_traits::_M_ccast(__first),
+                                                    ite_cast_traits::_M_ccast(__last));
   }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -414,22 +448,16 @@ public:                         // Basic accessors
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   iterator erase(iterator __pos) 
-  { return _M_ite_cast(_M_impl.erase(_M_ite_cast(__pos))); }
+  { return ite_cast_traits::_M_cast(_M_impl.erase(ite_cast_traits::_M_cast(__pos))); }
 
   iterator erase(iterator __first, iterator __last) 
-  { return _M_ite_cast(_M_impl.erase(_M_ite_cast(__first), _M_ite_cast(__last))); }
+  { return ite_cast_traits::_M_cast(_M_impl.erase(ite_cast_traits::_M_cast(__first), 
+                                                  ite_cast_traits::_M_cast(__last))); }
   void clear() { _M_impl.clear(); }
   
 private:
   _Base _M_impl;
 };
-
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<size_t, void*,  allocator<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void***, void**,  allocator<void**> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Deque_base<void*,allocator<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Deque_impl<void*,allocator<void*> >;
-# endif
 
 #endif /* _STLP_SPECIALIZED_DEQUE_H */
 

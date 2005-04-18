@@ -44,13 +44,6 @@
 #  define _STLP_MSVC _MSC_VER
 # endif
 
-
-# if defined(UNDER_CE) && UNDER_CE >= 400 && defined(_ARM_)
-// pretend i am _MSC_VER 1200 not 1201
-# undef _STLP_MSVC
-# define _STLP_MSVC 1200
-# endif
-
 # if defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
 /* AIX xlC, Visual Age C++ , OS-390 C++ */
 #  include <config/stl_ibm.h>
@@ -66,8 +59,11 @@
 # elif (defined(__OS400__))
 /* AS/400 C++ */
 #  include <config/stl_as400.h>
+# elif defined(_MSC_VER) && (_MSC_VER >= 1200) && defined(UNDER_CE)
+/* Microsoft eMbedded Visual C++ 3.0, 4.0 (.NET) */
+#  include <config/stl_evc.h>
 # elif defined(_STLP_MSVC)
-/* Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0 */
+/* Microsoft Visual C++ 4.0, 4.1, 4.2, 5.0, 6.0, 7.0, 7.1, 8.0 */
 #  include <config/stl_msvc.h>
 # elif defined ( __BORLANDC__ )
 /* Borland C++ ( 4.x - 5.x ) */

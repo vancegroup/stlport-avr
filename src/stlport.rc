@@ -5,52 +5,59 @@
 
 #include <windows.h>
 
-#define VER_MAJOR 5
-#define VER_MINOR 0
-#define VER_YEAR  2003
-#define VER_MMDD  1130
+#include <stl/_stlport_version.h>
 
-#define VERSION_STRING2(x) #x "\0"
-#define VERSION_STRING(x) VERSION_STRING2(x)
-#define VERSION_ID VER_MAJOR, VER_MINOR, VER_YEAR, VER_MMDD
-#define VERSION_STR VERSION_STRING(VER_MAJOR.VER_MINOR.VER_YEAR.VER_MMDD)
+#define STRINGIZE(X) STRINGIZE_AUX(X)
+#define STRINGIZE_AUX(X) #X
 
-#define VERSION_STRING1(x) #x
-#define DLLNAME_STRING2(compstr,buildstr) \
-"STLPORT_" VERSION_STRING1(compstr) VERSION_STRING1(buildstr) "_\0" VERSION_STRING1(VER_MAJOR) VERSION_STRING1(VER_MINOR) ".DLL\0"
+#define CONCAT(A, B) CONCAT_AUX(A, B)
+#define CONCAT_AUX(A, B) CONCAT_AUX2(A ## B)
+#define CONCAT_AUX2(X) X
+
+#define VERSION_ID _STLPORT_MAJOR, _STLPORT_MINOR, _STLPORT_PATCHLEVEL, 0 
+#define VERSION_STR STRINGIZE(_STLPORT_MAJOR._STLPORT_MINOR._STLPORT_PATCHLEVEL)
+
+#if !defined (__GNUC__)
+//MSVC rc ressource compiler.
+#  define DLLNAME_STRING2(buildstr) \
+  STRINGIZE(CONCAT(CONCAT(stlport_, CONCAT(buildstr, CONCAT(_STLPORT_MAJOR, _STLPORT_MINOR))), .dll))
+#else
+//GNU windress ressource compiler.
+#  define DLLNAME_STRING2(buildstr) "stlport_" STRINGIZE(buildstr) STRINGIZE(_STLPORT_MAJOR) STRINGIZE(_STLPORT_MINOR) ".dll"
+#endif
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION VERSION_ID
 PRODUCTVERSION VERSION_ID
 FILEFLAGSMASK 0x3fL
 
-// FILEFLAGS VS_FF_DEBUG
+FILEFLAGS VS_FF_DEBUG
 
 FILEOS VOS__WINDOWS32
 FILETYPE VFT_DLL
 FILESUBTYPE VFT2_UNKNOWN
 BEGIN
-BLOCK "StringFileInfo"
-BEGIN
-BLOCK "040904B0"
-BEGIN
-VALUE "CompanyName", "STLport Consulting, Inc.\0"
-VALUE "FileDescription", "STLport\0"
-VALUE "FileVersion", VERSION_STR
-VALUE "InternalName", "STLPORT.DLL\0"
-VALUE "LegalCopyright", "Copyright (C) Boris Fomitchev\0"
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "STLport Consulting, Inc.\0"
+      VALUE "FileDescription", "STLport\0"
+      VALUE "FileVersion", VERSION_STR
+      VALUE "InternalName", "STLPORT.DLL\0"
+      VALUE "LegalCopyright", "Copyright (C) Boris Fomitchev\0"
 
-VALUE "OriginalFilename", DLLNAME_STRING2(COMP,BUILD)
+      VALUE "OriginalFilename", DLLNAME_STRING2(BUILD)
 
-VALUE "ProductName", "STLport Standard ANSI C++ Library\0"
-VALUE "ProductVersion", VERSION_STR
-#ifdef BUILD
-VALUE "SpecialBuild", VERSION_STRING2(BUILD)
+      VALUE "ProductName", "STLport Standard ANSI C++ Library\0"
+      VALUE "ProductVersion", VERSION_STR
+#ifdef BUILD_INFOS
+      VALUE "SpecialBuild", STRINGIZE(COMP) " " STRINGIZE(BUILD_INFOS)
 #endif
-END
-END
-BLOCK "VarFileInfo"
-BEGIN
-VALUE "Translation", 0x409, 1200
-END
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
 END

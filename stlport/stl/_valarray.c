@@ -26,7 +26,19 @@
 #ifndef _STLP_VALARRAY_C
 #define _STLP_VALARRAY_C
 
+#ifndef _STLP_VALARRAY_H
+# include <stl/_valarray.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+_Valarray_bool valarray<_Tp>:: operator!() const {
+  _Valarray_bool __tmp(this->size(), _Valarray_bool::_NoInit());
+  for (size_t __i = 0; __i < this->size(); ++__i)
+    __tmp[__i] = !(*this)[__i];
+  return __tmp;
+}
 
 // Behavior is undefined if __x and *this have different sizes
 template <class _Tp>
@@ -55,13 +67,12 @@ template <class _Size>
 bool _Gslice_Iter_tmpl<_Size>::_M_incr() {
   size_t __dim = _M_indices.size() - 1;
   ++_M_step;
-  while (true) {
+  for (;;) {
     _M_1d_idx += _M_gslice._M_strides[__dim];
     if (++_M_indices[__dim] != _M_gslice._M_lengths[__dim])
       return true;
     else if (__dim != 0) {
-      _M_1d_idx -=
-	_M_gslice._M_strides[__dim] * _M_gslice._M_lengths[__dim];
+      _M_1d_idx -= _M_gslice._M_strides[__dim] * _M_gslice._M_lengths[__dim];
       _M_indices[__dim] = 0;
       --__dim;
     }
@@ -85,7 +96,7 @@ valarray<_Tp>& valarray<_Tp>::operator=(const gslice_array<_Tp>& __x)
 }
 
 template <class _Tp>
-valarray<_Tp> valarray<_Tp>::operator[](gslice __slice) const
+valarray<_Tp> valarray<_Tp>::operator[](const gslice& __slice) const
 {
   valarray<_Tp> __tmp(__slice._M_size(), _NoInit());
   if (__tmp.size() != 0) {

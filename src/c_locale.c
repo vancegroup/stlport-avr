@@ -16,24 +16,25 @@
  *
  */ 
 
-# include "stlport_prefix.h" 
+#include "stlport_prefix.h"
 
-# include <stdlib.h>
+#include <stdlib.h>
 
-# ifdef _STLP_REAL_LOCALE_IMPLEMENTED
+#if defined (_STLP_REAL_LOCALE_IMPLEMENTED)
 #  include <limits.h>
 #  include "c_locale.h"
 #  if defined (WIN32) || defined (_WIN32)
-#   include "c_locale_win32/c_locale_win32.c"
+#    include "c_locale_win32/c_locale_win32.c"
 #  elif defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
-#   if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))  
-#    include "c_locale_glibc/c_locale_glibc2.c"
-/* #    define _STLP_GLIBC_LOCALE_2 */ /* glibc 1.90 and newer */
-/* #    include "c_locale_glibc/c_locale_glibc.c" */
-#   else
-#    include "c_locale_glibc/c_locale_glibc.c"
-#   endif
+#    if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))  
+#      include "c_locale_glibc/c_locale_glibc2.c"
+/* #      define _STLP_GLIBC_LOCALE_2 */ /* glibc 1.90 and newer */
+/* #      include "c_locale_glibc/c_locale_glibc.c" */
+#    else
+#      include "c_locale_glibc/c_locale_glibc.c"
+#    endif
 #  elif defined __ISCPP__
-#   include "c_locale_is/c_locale_is.cpp"
+#    include "c_locale_is/c_locale_is.cpp"
 #  endif
-# endif
+#endif
+

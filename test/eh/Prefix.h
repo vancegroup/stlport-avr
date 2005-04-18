@@ -11,9 +11,9 @@
  * in supporting documentation.  Mark of the Unicorn makes no
  * representations about the suitability of this software for any
  * purpose.  It is provided "as is" without express or implied warranty.
-			
-		SUMMARY: Configuration #defines for STL EH test suite
-		
+      
+    SUMMARY: Configuration #defines for STL EH test suite
+    
 ***********************************************************************************/
 
 #if ! defined (INCLUDED_MOTU_Prefix)
@@ -39,20 +39,21 @@
 
 //=========================================================================
 // SGI STL-specific #defines
-//	These control the behavior of the test suite when used with the SGI
-//	STL. They have no effect when testing other STL implementations.
+//  These control the behavior of the test suite when used with the SGI
+//  STL. They have no effect when testing other STL implementations.
 //=========================================================================
 
 // # define _STLP_USE_RAW_SGI_ALLOCATORS
 # ifndef _STLP_USE_NEWALLOC
 #  define _STLP_USE_NEWALLOC
 # endif
-# if !defined  (_STLP_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
+
+# if 0 // !defined  (_STLP_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
 #  define _STLP_NO_CUSTOM_IO
 # endif
 
 // Just include something to get whatever configuration header we're using.
-# include <stl/_config.h>
+# include <utility>
 
 # ifndef _STLP_CALL
 #  define _STLP_CALL
@@ -110,7 +111,7 @@
 # endif
 # define EH_STRING_IMPLEMENTED 1
 // # define EH_BITSET_IMPLEMENTED 1
-//# define EH_VALARRAY_IMPLEMENTED 1	- we have no tests yet for valarray
+//# define EH_VALARRAY_IMPLEMENTED 1  - we have no tests yet for valarray
 
 # define stl_destroy EH_STD::destroy
 # include <memory>
@@ -132,8 +133,8 @@ public:
   typedef const _Tp* const_pointer;
   typedef _Tp&       reference;
   typedef const _Tp& const_reference;
-  typedef size_t     size_type;
-  typedef ptrdiff_t  difference_type;
+  typedef EH_CSTD::size_t     size_type;
+  typedef EH_CSTD::ptrdiff_t  difference_type;
 # if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef EH_allocator<_Tp1> other;
@@ -159,9 +160,8 @@ public:
   // backwards compatibility
   void deallocate(pointer __p) const {  if (__p != 0) EH_STD::__new_alloc::deallocate((void*)__p, sizeof(value_type)); }
   size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
-  void construct(pointer __p, const _Tp& __val) const { _STLP_STD::construct(__p, __val); }
-  void destroy(pointer __p) const { _STLP_STD::destroy(__p); }
-
+  void construct(pointer __p, const _Tp& __val) const { stlport::construct(__p, __val); }
+  void destroy(pointer __p) const { stlport::destroy(__p); }
 };
 
 template <class _T1> inline bool  _STLP_CALL operator==(const EH_allocator<_T1>&, const EH_allocator<_T1>&)  { return true; }
@@ -210,14 +210,14 @@ _STLP_END_NAMESPACE
 #   if defined (_MSL_USING_NAMESPACE)
 #    define EH_USE_NAMESPACES 1
 #   endif
-#	define EH_BIT_VECTOR vector<bool>
+#  define EH_BIT_VECTOR vector<bool>
 #   define EH_DISTANCE( a, b, result ) do { result = distance( a, b ); } while (0)
 
 #  else
 
 #   error No configuration for earlier versions of MSL
 
-#  endif	// __MSL__ >= 24
+#  endif  // __MSL__ >= 24
 
 // Bugs fixed in CWPro3
 #  if __MWERKS__ < 0x2100
@@ -296,7 +296,7 @@ _STLP_END_NAMESPACE
 // Library-independent configuration.
 //
 #if defined( EH_MULTI_CONST_TEMPLATE_ARG_BUG) && !defined( EH_SELECT1ST_HINT )
-template <class Pair, class U>		
+template <class Pair, class U>    
 // JDJ (CW Pro1 doesn't like const when first_type is also const)
 struct eh_select1st_hint : public unary_function<Pair, U> {
     const U& operator () (const Pair& x) const { return x.first; }

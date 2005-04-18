@@ -33,20 +33,8 @@
 # pragma once
 #endif
 
-# if defined (_STLP_OWN_IOSTREAMS)
-#  include <stl/_fstream.h>
-
-# ifndef __LOCALE_INITIALIZED
-#  define __LOCALE_INITIALIZED
-_STLP_BEGIN_NAMESPACE
-// Global initializer object, to ensure construction of static objects.
-//static ios_base::_Loc_init _LocInit;
-_STLP_END_NAMESPACE
-# endif
-
-# elif !defined(_STLP_USE_NO_IOSTREAMS)
-#  include <wrap_std/fstream>
-# endif
+# include <stl/_ioserr.h>
+# include <stl/_fstream.h>
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1025)
 #  include <stl/_epilog.h>

@@ -21,7 +21,7 @@
 #  include <stl/_prolog.h>
 # endif
 
-# if defined ( _STLP_OWN_IOSTREAMS )
+#include <stl/_ioserr.h>
 
 #ifdef __BORLANDC__
 #  include <iomanip.>
@@ -44,18 +44,6 @@ using _STLP_STD::setw;
 
 // get all the pollution we want
 # include <iostream.h>
-
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-
-# include _STLP_NATIVE_OLD_STREAMS_HEADER(iomanip.h)
-
-# if defined  (_STLP_USE_NAMESPACES) && ! defined (_STLP_BROKEN_USING_DIRECTIVE)
-_STLP_BEGIN_NAMESPACE
-# include <using/h/iomanip.h>
-_STLP_END_NAMESPACE
-#  endif /* _STLP_USE_NAMESPACES */
-
-# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x2031)
 #  include <stl/_epilog.h>

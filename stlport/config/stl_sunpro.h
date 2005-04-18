@@ -8,12 +8,6 @@
 #  define _STLP_NO_BOOL 1
 # endif
 
-#  if (__SUNPRO_CC >= 0x500 ) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 )) \
-    && defined (_STLP_NO_OWN_IOSTREAMS) && ! defined (_STLP_HAS_NO_NEW_IOSTREAMS)
-#    error "The wrapper (_STLP_NO_OWN_IOSTREAMS) mode does not work well without _STLP_HAS_NO_NEW_IOSTREAMS. Please set this flag. You will also have to use -liostream option on link phase."
-// #   define _STLP_HAS_NO_NEW_IOSTREAMS
-#  endif
-
 // compatibility mode stuff
 # if (__SUNPRO_CC >= 0x510) && (!defined (__SUNPRO_CC_COMPAT) || (__SUNPRO_CC_COMPAT == 5 ))
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC/Cstd
@@ -26,12 +20,6 @@
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC
 # endif
 
-#  if (__SUNPRO_CC >= 0x500 ) && ( defined (_STLP_NO_NEW_IOSTREAMS) || defined (_STLP_HAS_NO_NEW_IOSTREAMS) )
-// if the project is set up to use libiostream (_STLP_NO_NEW_IOSTREAMS should be defined then),
-// use classic iostreams
-#   define _STLP_NATIVE_OLD_STREAMS_INCLUDE_PATH ../CCios
-#  endif
-
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 
 # if (__SUNPRO_CC < 0x530)
@@ -43,11 +31,7 @@
 # endif 
 
 
-# if defined (_STLP_OWN_IOSTREAMS)
-//#  if ! defined (_STLP_NO_OWN_NAMESPACE)
-//#   define _STLP_NO_OWN_NAMESPACE
-//#  endif
-# else
+# ifdef _STLP_USE_NO_IOSTREAMS
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 # endif
 
@@ -76,8 +60,8 @@
 // Features that depend on compatibility switch
 # if ( __SUNPRO_CC < 0x500 ) || (defined (__SUNPRO_CC_COMPAT) && (__SUNPRO_CC_COMPAT < 5))
 
-#  ifndef _STLP_HAS_NO_NEW_IOSTREAMS
-#   define _STLP_HAS_NO_NEW_IOSTREAMS 1
+#  ifndef _STLP_USE_NO_IOSTREAMS
+#   define _STLP_USE_NO_IOSTREAMS 1
 #  endif
 #  define _STLP_NO_NEW_NEW_HEADER 1
 // #  define _STLP_NO_RELOPS_NAMESPACE

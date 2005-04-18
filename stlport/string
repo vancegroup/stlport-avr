@@ -19,37 +19,29 @@
 #ifndef _STLP_STRING
 # define _STLP_STRING
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x68
 #  include <stl/_prolog.h>
-# endif
+#endif
 
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
-#if defined (_STLP_USE_NATIVE_STRING)
+#if defined (_STLP_USE_OWN_NAMESPACE)
+#  include <stl/_string.h>
+#endif
 
-// as part of compiled runtime library depends on it.
+#include <stl/_string_hash.h>
 
-# if defined (_STLP_MSVC)
-#  include <streambuf>
-#  include <istream>
-# endif
+#if !defined (_STLP_USE_NO_IOSTREAMS)
+#  include <stl/_string_io.h>
+#endif
 
-#  include _STLP_NATIVE_HEADER(string)
-
-# endif /* _STLP_USE_NATIVE_STRING */
-
-# if !defined (_STLP_USE_NATIVE_STRING) || defined (_STLP_USE_OWN_NAMESPACE)
-# include <stl/_string.h>
-# else
-# include <stl/_string_hash.h>
-# endif /*_STLP_USE_NATIVE_STRING */
-
-// cleanup
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x68)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x68)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_STRING */
 

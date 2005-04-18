@@ -26,21 +26,25 @@
 #ifndef _STLP_SET
 #define _STLP_SET
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x55
 #  include <stl/_prolog.h>
-# endif
+#endif
+
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
 #include <stl/_set.h>
 
-#if defined (_STLP_WHOLE_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(set)
+#if defined (_STLP_IMPORT_VENDOR_STD)
+#  include _STLP_NATIVE_HEADER(set)
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x55)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x55)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_SET */
 

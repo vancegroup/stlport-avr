@@ -7,7 +7,56 @@
 #include <wctype.h>
 #include <string.h>
 
+#include <stdint.h>
+
 /* Structure describing locale data in core for a category.  */
+/* GLIBC internal, see <glibc catalog>/locale/localeinfo.h */
+#if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
+
+/* GLIBC 2.3.x */
+struct locale_data
+{
+  const char *name;
+  const char *filedata;         /* Region mapping the file data.  */
+  off_t filesize;               /* Size of the file (and the region).  */
+  enum                          /* Flavor of storage used for those.  */
+  {
+    ld_malloced,                /* Both are malloc'd.  */
+    ld_mapped,                  /* name is malloc'd, filedata mmap'd */
+    ld_archive                  /* Both point into mmap'd archive regions.  */
+  } alloc;
+
+  /* This provides a slot for category-specific code to cache data computed
+     about this locale.  That code can set a cleanup function to deallocate
+     the data.  */
+  struct
+  {
+    void (*cleanup) (struct locale_data *);
+    union
+    {
+      void *data;
+      struct lc_time_data *time;
+      const struct gconv_fcts *ctype;
+    };
+  } private;
+
+  unsigned int usage_count;     /* Counter for users.  */
+
+  int use_translit;             /* Nonzero if the mb*towv*() and wc*tomb()
+                                   functions should use transliteration.  */
+
+  unsigned int nstrings;        /* Number of strings below.  */
+  union locale_data_value
+  {
+    const uint32_t *wstr;
+    const char *string;
+    unsigned int word;          /* Note endian issues vs 64-bit pointers.  */
+  }
+  values[1];     /* Items, usually pointers into `filedata'.  */
+};
+
+#else /* GLIBC 2.2.x */
+
 struct locale_data
 {
   const char *name;
@@ -25,12 +74,15 @@ struct locale_data
   unsigned int nstrings;        /* Number of strings below.  */
   union locale_data_value
   {
-    const unsigned int *str;
+    const uint32_t *wstr;
     const char *string;
     unsigned int word;
   }
   values[1];     /* Items, usually pointers into `filedata'.  */
 };
+
+#endif
+
 
 typedef __locale_t __c_locale;
 
@@ -192,45 +244,60 @@ void _Locale_monetary_destroy( void *__loc )
 void _Locale_messages_destroy( void* __loc )
 { __LOCALE_DESTROY(__loc); }
 
-char *_Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR)
-{
-  printf( "%s:%d\n", __FILE__, __LINE__ );
+/*
+ * locale loc expected either locale name indeed (platform-specific)
+ * or string like "LC_CTYPE=LocaleNameForCType;LC_NUMERIC=LocaleNameForNum;"
+ *
+ */
 
-  return 0;
+char *__Extract_locale_name( const char *loc, const char *category, char *buf )
+{
+  char *expr;
+  size_t len_name;
+  buf[0] = 0;
+
+  if( loc[0]=='L' && loc[1]=='C' && loc[2]=='_') {
+    expr = strstr( (char*)loc, category );
+    if ( expr == NULL )
+      return NULL; // Category not found.
+    ++expr;
+    len_name = strcspn( expr, ";" );
+    len_name = len_name > _Locale_MAX_SIMPLE_NAME ? _Locale_MAX_SIMPLE_NAME : len_name;
+    strncpy( buf, expr, len_name );
+    buf[len_name] = 0;
+    return buf;
+  }
+  return strncpy( buf, loc, _Locale_MAX_SIMPLE_NAME );
 }
 
-char *_Locale_extract_numeric_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
+char *_Locale_extract_ctype_name( const char *loc, char *buf )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
-  return 0;
+  return __Extract_locale_name( loc, "LC_CTYPE=", buf );
 }
 
-char *_Locale_extract_time_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
+char *_Locale_extract_numeric_name( const char *loc, char *buf )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
-  return 0;
+  return __Extract_locale_name( loc, "LC_NUMERIC=", buf );
 }
 
-char *_Locale_extract_collate_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
+char *_Locale_extract_time_name( const char *loc, char *buf )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
-  return 0;
+  return __Extract_locale_name( loc, "LC_TIME=", buf );
 }
 
-char *_Locale_extract_monetary_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
+char *_Locale_extract_collate_name( const char *loc, char *buf )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
-  return 0;
+  return __Extract_locale_name( loc, "LC_COLLATE=", buf );
 }
 
-char *_Locale_extract_messages_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
+char *_Locale_extract_monetary_name( const char *loc, char *buf )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 0;
+  return __Extract_locale_name( loc, "LC_MONETARY=", buf );
+}
+
+char *_Locale_extract_messages_name( const char *loc, char *buf )
+{
+  return __Extract_locale_name( loc, "LC_MESSAGES=", buf );
 }
 
 char *_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
@@ -245,13 +312,11 @@ char *_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const cha
 
 /* ctype */
 
-const _Locale_mask_t *_Locale_ctype_table( struct _Locale_ctype* __loc )
+const _Locale_mask_t *_Locale_ctype_table( struct _Locale_ctype *__loc )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
   /* return table with masks (upper, lower, alpha, etc.) */
-  return ((__c_locale)__loc)->__locales[LC_CTYPE]->values[_NL_ITEM_INDEX (_NL_CTYPE_CLASS)].string + 128;
-  /* return 0; */
+  /* return ((__c_locale)__loc)->__locales[LC_CTYPE]->values[_NL_ITEM_INDEX (_NL_CTYPE_CLASS)].string + 128; */
+  return ((__c_locale)__loc)->__ctype_b;
 }
 
 int _Locale_toupper( struct _Locale_ctype *__loc, int c )
@@ -593,24 +658,18 @@ const char *_Locale_t_fmt_ampm(struct _Locale_time *__loc )
 
 /* Messages */
 
-int _Locale_catopen(struct _Locale_messages *__loc, const char *__cat_name )
+nl_catd_type _Locale_catopen(struct _Locale_messages *__loc, const char *__cat_name )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return catopen( __cat_name, NL_CAT_LOCALE );
 }
 
-void _Locale_catclose(struct _Locale_messages *__loc, int __cat )
+void _Locale_catclose(struct _Locale_messages *__loc, nl_catd_type __cat )
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
   catclose( __cat );
 }
 
-const char *_Locale_catgets(struct _Locale_messages *__loc, int __cat,
+const char *_Locale_catgets(struct _Locale_messages *__loc, nl_catd_type __cat,
                             int __setid, int __msgid, const char *dfault)
 {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return catgets( __cat, __setid, __msgid, dfault );
 }

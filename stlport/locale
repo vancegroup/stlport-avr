@@ -29,18 +29,21 @@
 #  pragma once
 # endif
 
-# if defined (_STLP_OWN_IOSTREAMS)
+# include <stl/_ioserr.h>
 
 // Individual facets
 #ifndef _STLP_INTERNAL_CTYPE_H
-#include <stl/_ctype.h>
+# include <stl/_ctype.h>
 #endif
+
 #ifndef _STLP_INTERNAL_CODECVT_H
-#include <stl/_codecvt.h>
+# include <stl/_codecvt.h>
 #endif
+
 #ifndef _STLP_INTERNAL_COLLATE_H
-#include <stl/_collate.h>
+# include <stl/_collate.h>
 #endif
+
 #ifndef _STLP_INTERNAL_NUM_PUT_H
 # include <stl/_num_put.h>
 #endif
@@ -150,10 +153,6 @@ inline _CharT tolower(_CharT c, const locale& loc) {
 # endif
 
 _STLP_END_NAMESPACE
-
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <wrap_std/locale> 
-# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1041)
 #  include <stl/_epilog.h>

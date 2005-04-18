@@ -20,7 +20,7 @@ OUTDIR=.
 INTDIR=.
 
 # set this directories 
-STL_PATH=..\..
+STL_PATH=../..
 
 Dep_stl = TestClass.obj main.obj nc_alloc.obj \
 random_number.obj test_algo.obj test_algobase.obj test_bit_vector.obj test_deque.obj \
@@ -28,19 +28,19 @@ test_hash_map.obj test_hash_set.obj test_list.obj test_map.obj test_rope.obj tes
 test_slist.obj test_vector.obj test_string.obj test_bitset.obj test_valarray.obj
 
 # linker finds proper STLport lib automatically, only path to the library is needed
-CPP_PRJ_LINK = /link /incremental:no /LIBPATH:$(STL_PATH)\lib
+CPP_PRJ_LINK = /link /incremental:no /LIBPATH:$(STL_PATH)/lib
 
 #disable warnings complaining about debug ...info exceeded....
 CPP_PRJ_EXTRA =
-CPP_PRJ_CMN = /nologo /W3 /GR /GX /DWIN32 /D_WINDOWS /D_CONSOLE /I$(STL_PATH)\stlport /I.
+CPP_PRJ_CMN = /nologo /W3 /GR /GX /DWIN32 /D_WINDOWS /D_CONSOLE /I$(STL_PATH)/stlport /I.
 
 #
-LIBTYPE = STATIC
-# LIBTYPE = DYNAMIC
+#LIBTYPE = STATIC
+LIBTYPE = DYNAMIC
 #
 #DEBUG = STL
-DEBUG = ON
-#DEBUG =
+#DEBUG = ON
+DEBUG =
 # 
 IOS = SGI
 #IOS = NOSGI
@@ -59,7 +59,7 @@ CPP_PRJ_IOS =
 !IF "$(LIBTYPE)" == "STATIC"
 CPP_PRJ_LIBTYP = /D_STLP_USE_STATIC_LIB /MT
 !ELSE
-CPP_PRJ_LIBTYP = /D_STLP_USE_DYNAMIC_LIB /MD
+CPP_PRJ_LIBTYP = /MD
 !ENDIF
 
 !IF "$(DEBUG)" == ""
@@ -84,7 +84,7 @@ check: eh_test.out
 eh_test.out : $(Dep_stl)
 	$(CPP) $(CPP_PROJ) $(Dep_stl) /Feeh_test.exe $(CPP_PRJ_LINK)
 #  	    fbp : this is to locate DLL
-        cd ..\..\lib
+        cd ..\..\bin
 	..\test\eh\eh_test.exe -s 100
 	echo done
 

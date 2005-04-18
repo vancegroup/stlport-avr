@@ -15,6 +15,8 @@ class SortTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(SortTest);
   CPPUNIT_TEST(sort1);
   CPPUNIT_TEST(sort2);
+  CPPUNIT_TEST(sort3);
+  CPPUNIT_TEST(sort4);
   CPPUNIT_TEST(stblsrt1);
   CPPUNIT_TEST(stblsrt2);
   CPPUNIT_TEST_SUITE_END();
@@ -22,6 +24,8 @@ class SortTest : public CPPUNIT_NS::TestCase
 protected:
   void sort1();
   void sort2();
+  void sort3();
+  void sort4();
   void stblsrt1();
   void stblsrt2();
 
@@ -91,4 +95,56 @@ void SortTest::sort2()
   CPPUNIT_ASSERT(array[2]==19);
   CPPUNIT_ASSERT(array[1]==42);
   CPPUNIT_ASSERT(array[0]==50);
+}
+
+void SortTest::sort3()
+{
+  vector<bool> boolVector;
+
+  boolVector.push_back( true );
+  boolVector.push_back( false );
+
+  sort( boolVector.begin(), boolVector.end() );
+
+  CPPUNIT_ASSERT(boolVector[0]==false);
+  CPPUNIT_ASSERT(boolVector[1]==true);
+}
+
+/*
+ * A small utility class to check a potential compiler bug
+ * that can result in a bad sort algorithm behavior. The type
+ * _Tp of the SortTestFunc has to be SortTestAux without any
+ * reference qualifier.
+ */
+struct SortTestAux {
+  SortTestAux (bool &b) : _b(b)
+  {}
+
+  SortTestAux (SortTestAux const&other) : _b(other._b) {
+    _b = true;
+  }
+
+  bool &_b;
+
+private:
+  //explicitely defined as private to avoid warnings:
+  SortTestAux& operator = (SortTestAux const&);
+};
+
+template <class _Tp>
+void SortTestFunc (_Tp) {
+}
+
+void SortTest::sort4()
+{
+  bool copy_constructor_called = false;
+  SortTestAux instance(copy_constructor_called);
+  SortTestAux &r_instance = instance;
+  SortTestAux const& rc_instance = instance;
+
+  SortTestFunc(r_instance);
+  CPPUNIT_ASSERT(copy_constructor_called);
+  copy_constructor_called = false;
+  SortTestFunc(rc_instance);
+  CPPUNIT_ASSERT(copy_constructor_called);
 }

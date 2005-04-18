@@ -24,9 +24,12 @@
 #  include <stl/_prolog.h>
 # endif
 
-# if defined ( _STLP_OWN_IOSTREAMS )
+# ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+# endif
 
-#  include <stl/_istream.h>              // Includes <ostream> and <ios>
+# include <stl/_ioserr.h>
+# include <stl/_istream.h>              // Includes <ostream> and <ios>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -173,10 +176,6 @@ setfill(_CharT __c) {
 }
 
 _STLP_END_NAMESPACE
-
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <wrap_std/iomanip>
-# endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1030)
 #  include <stl/_epilog.h>

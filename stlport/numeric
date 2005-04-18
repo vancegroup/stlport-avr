@@ -23,21 +23,23 @@
 #ifndef _STLP_NUMERIC
 #define _STLP_NUMERIC
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x49
 #  include <stl/_prolog.h>
-# endif
-
-#ifndef _STLP_INTERNAL_FUNCTION_H
-# include <stl/_function.h>
 #endif
 
-#include <stl/_numeric.h>
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x49)
+#ifndef _STLP_INTERNAL_NUMERIC_H
+#  include <stl/_numeric.h>
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x49)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_NUMERIC */
 

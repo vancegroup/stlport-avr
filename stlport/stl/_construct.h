@@ -30,22 +30,18 @@
 #ifndef _STLP_INTERNAL_CONSTRUCT_H
 #define _STLP_INTERNAL_CONSTRUCT_H
 
-# if defined (_STLP_DEBUG_UNINITIALIZED) && ! defined (_STLP_CSTRING)
-# include <cstring>
-# endif
+#if defined (_STLP_DEBUG_UNINITIALIZED) && ! defined (_STLP_CSTRING)
+#  include <cstring>
+#endif
 
-//# ifndef _STLP_INTERNAL_NEW_HEADER
-//#  include <stl/_new.h>
-//# endif
 #include <new>
 
-
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
-# include <stl/_iterator_base.h>
+#  include <stl/_iterator_base.h>
 #endif
 
 #ifndef _STLP_MOVE_CONSTRUCT_FWK_H
-# include <stl/_move_construct_fwk.h>
+#  include <stl/_move_construct_fwk.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -59,7 +55,7 @@ inline void __destroy_aux(_Tp* __pointer, const __false_type& /*_Trivial_destruc
 #  endif
 }
 template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, const __true_type& /*_Trivial_destructor*/) {}
+inline void __destroy_aux(_Tp*, const __true_type& /*_Trivial_destructor*/) {}
 
 template <class _Tp>
 inline void _Destroy(_Tp* __pointer) {
@@ -67,6 +63,15 @@ inline void _Destroy(_Tp* __pointer) {
   __pointer;
 # endif	// _MSC_VER <= 1010
   typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
+  __destroy_aux(__pointer, _Trivial_destructor());
+# ifdef _STLP_DEBUG_UNINITIALIZED
+  memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
+# endif
+}
+
+template <class _Tp>
+inline void _Destroy_Moved(_Tp* __pointer) {
+  typedef typename __move_traits<_Tp>::complete _Trivial_destructor;
   __destroy_aux(__pointer, _Trivial_destructor());
 # ifdef _STLP_DEBUG_UNINITIALIZED
   memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
@@ -102,8 +107,16 @@ _Construct_aux (__p, _HasDefaultZeroValue(__p)._Answer() );
 # endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
 }
 
+template <class _Tp>
+inline void _Copy_Construct(_Tp* __p, const _Tp& __val) {
+# ifdef _STLP_DEBUG_UNINITIALIZED
+  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_Tp));
+# endif
+  _STLP_PLACEMENT_NEW (__p) _Tp(__val);
+}
+
 template <class _T1, class _T2>
-inline void _Copy_Construct(_T1* __p, const _T2& __val) {
+inline void _Param_Construct(_T1* __p, const _T2& __val) {
 # ifdef _STLP_DEBUG_UNINITIALIZED
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 # endif
@@ -144,12 +157,14 @@ __destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __f
 
 template <class _ForwardIterator> 
 inline void
+#ifdef _STLP_DEBUG_UNINITIALIZED
 __destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __true_type& /*_Trivial_destructor*/) {
-# ifdef _STLP_DEBUG_UNINITIALIZED
   //We call _Destroy just for the _STLP_DEBUG_UNINITIALIZED option:
   for ( ; __first != __last; ++__first)
     __destroy_aux(&(*__first), __true_type());
-# endif
+#else
+__destroy_range_aux(_ForwardIterator, _ForwardIterator, const __true_type& /*_Trivial_destructor*/) {
+#endif
 }
 
 template <class _ForwardIterator, class _Tp>
@@ -171,29 +186,14 @@ inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 # endif
 
 template <class _ForwardIterator, class _Tp>
-_STLP_INLINE_LOOP void
-__destroy_mv_srcs_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const __false_type& /*_Trivial_destructor*/) {
-  typedef typename __move_traits<_Tp>::complete _Complete_move;
-  __destroy_range_aux(__first, __last, _Complete_move());
-}
-
-template <class _ForwardIterator, class _Tp> 
-inline void
-__destroy_mv_srcs_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const __true_type&/*_Trivial_destructor*/) {
-# ifdef _STLP_DEBUG_UNINITIALIZED
-  __destroy_range_aux(__first, __last, __true_type());
-# endif
-}
-
-template <class _ForwardIterator, class _Tp>
 inline void 
-__destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp* __p) {
-  typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
-  __destroy_mv_srcs_aux(__first, __last, __p, _Trivial_destructor());
+__destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp*) {
+  typedef typename __move_traits<_Tp>::complete _CompleteMove;
+  __destroy_range_aux(__first, __last, _CompleteMove());
 }
 
 template <class _ForwardIterator>
-inline void _Destroy_Mvd_Sources(_ForwardIterator __first, _ForwardIterator __last) {
+inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last) {
   __destroy_mv_srcs(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
 }
 
@@ -226,9 +226,9 @@ inline _Tp __default_constructed(_Tp* __p) {
 // Old names from the HP STL.
 
 template <class _T1, class _T2>
-inline void construct(_T1* __p, const _T2& __val) {_Copy_Construct(__p, __val); }
+inline void construct(_T1* __p, const _T2& __val) {_Param_Construct(__p, __val); }
 template <class _T1>
-inline void construct(_T1* __p) { _Construct(__p); }
+inline void construct(_T1* __p) { _STLP_STD::_Construct(__p); }
 template <class _Tp>
 inline void destroy(_Tp* __pointer) {  _STLP_STD::_Destroy(__pointer); }
 template <class _ForwardIterator>

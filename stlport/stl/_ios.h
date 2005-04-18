@@ -138,16 +138,8 @@ basic_ios<_CharT, _Traits>::narrow(_CharT __c, char __default) const
 
 template <class _CharT, class _Traits>
 inline _CharT 
-basic_ios<_CharT, _Traits>::widen(char __c) const
-{ 
-  return ((const ctype<_CharT>*)this->_M_ctype_facet())->widen(__c); }
-
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS basic_ios<char, char_traits<char> >;
-#  if ! defined (_STLP_NO_WCHAR_T)
-_STLP_EXPORT_TEMPLATE_CLASS basic_ios<wchar_t, char_traits<wchar_t> >;
-#  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
+basic_ios<_CharT, _Traits>::widen(char __c) const 
+{ return ((const ctype<_CharT>*)this->_M_ctype_facet())->widen(__c); }
 
 # if !defined (_STLP_NO_METHOD_SPECIALIZATION)
 _STLP_TEMPLATE_NULL
@@ -165,12 +157,18 @@ basic_ios<char, char_traits<char> >::widen(char __c) const
 }
 # endif /* _STLP_NO_METHOD_SPECIALIZATION */
 
+# if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS basic_ios<char, char_traits<char> >;
+#  if ! defined (_STLP_NO_WCHAR_T)
+_STLP_EXPORT_TEMPLATE_CLASS basic_ios<wchar_t, char_traits<wchar_t> >;
+#  endif
+# endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_ios.c>
-# endif
+#endif
 
 // The following is needed to ensure that the inlined _Stl_loc_init functions
 // that ios_base::_Loc_init::_Loc_init() calls are found eventually.

@@ -22,7 +22,7 @@
 #define _STLP_SPECIALIZED_SLIST_H
 
 #ifndef _STLP_VOID_PTR_TRAITS_H
-# include <stl/pointers/_void_ptr_traits.h>
+#  include <stl/pointers/_void_ptr_traits.h>
 #endif
 
 /*
@@ -31,7 +31,7 @@
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
 class slist {
 private:
-  typedef _Slist_impl<_Tp, _Alloc> _Base;
+  typedef _STLP_PRIV::_Slist_impl<_Tp, _Alloc> _Base;
   typedef slist<_Tp, _Alloc> _Self;
 public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
@@ -245,17 +245,26 @@ private:
   _Base _M_impl;
 };
 
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_PRIV::_Slist_node<void*>;
+typedef _STLP_PRIV::_Slist_node<void*> _VoidPtrSNode;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base, _VoidPtrSNode, allocator<_VoidPtrSNode> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_PRIV::_Slist_base<void*, allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_PRIV::_Slist_impl<void*, allocator<void*> >;
+#endif
+
 /*
  * The pointer partial specialization.
  */
 template <class _Tp, class _Alloc>
-class slist<_Tp*, _Alloc> _STLP_STLPORT_CLASS_1 {
+class slist<_Tp*, _Alloc> {
 private:
   //Member datas as a void* slist:
   typedef typename _Alloc_traits<void*, _Alloc>::allocator_type _VoidAlloc;
-  typedef _Slist_impl<void*, _VoidAlloc> _Base;
+  typedef _STLP_PRIV::_Slist_impl<void*, _VoidAlloc> _Base;
   typedef slist<_Tp*, _Alloc> _Self;
   typedef __void_ptr_traits<_Tp> cast_traits;
+  typedef _STLP_PRIV::_Slist_node_base _Node_base;
 
 public:
   typedef _Tp*              value_type;
@@ -267,8 +276,8 @@ public:
   typedef ptrdiff_t         difference_type;
   typedef forward_iterator_tag _Iterator_category;
 
-  typedef _Slist_iterator<value_type, _Nonconst_traits<value_type> >  iterator;
-  typedef _Slist_iterator<value_type, _Const_traits<value_type> >     const_iterator;
+  typedef _STLP_PRIV::_Slist_iterator<value_type, _Nonconst_traits<value_type> >  iterator;
+  typedef _STLP_PRIV::_Slist_iterator<value_type, _Const_traits<value_type> >     const_iterator;
 
   _STLP_FORCE_ALLOCATORS(value_type, _Alloc)
   typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type allocator_type;
@@ -340,10 +349,10 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   iterator before_begin()             { return _M_impl.before_begin()._M_node; }
-  const_iterator before_begin() const { return const_cast<_Slist_node_base*>(_M_impl.before_begin()._M_node); }
+  const_iterator before_begin() const { return const_cast<_Node_base*>(_M_impl.before_begin()._M_node); }
 
   iterator begin()                    { return _M_impl.begin()._M_node; }
-  const_iterator begin() const        { return const_cast<_Slist_node_base*>(_M_impl.begin()._M_node);}
+  const_iterator begin() const        { return const_cast<_Node_base*>(_M_impl.begin()._M_node);}
 
   iterator end()                      { return _M_impl.end()._M_node; }
   const_iterator end() const          { return _M_impl.end()._M_node; }
@@ -372,7 +381,7 @@ public:
 
   iterator previous(const_iterator __pos) { return _M_impl.previous(__pos._M_node)._M_node; }
   const_iterator previous(const_iterator __pos) const
-  { return const_cast<_Slist_node_base*>(_M_impl.previous(__pos._M_node)._M_node); }
+  { return const_cast<_Node_base*>(_M_impl.previous(__pos._M_node)._M_node); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   iterator insert_after(iterator __pos, value_type __x = 0)
@@ -502,14 +511,6 @@ public:
 private:
   _Base _M_impl;
 };
-
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _Slist_node<void*>;
-typedef _Slist_node<void*> _VoidPtrSNode;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base, _VoidPtrSNode, allocator<_VoidPtrSNode> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Slist_base<void*, allocator<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Slist_impl<void*, allocator<void*> >;
-# endif
 
 #endif /* _STLP_SPECIALIZED_SLIST_H */
 

@@ -1,6 +1,6 @@
 /***********************************************************************************
-	test_string.cpp
-	
+  test_string.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -40,7 +40,7 @@ void test_string() {
     size_t ropeSize = random_number(random_base);
 
     while ( testString.size() < ropeSize ) {
-        TestString::value_type x = TestString::value_type(random_number(random_base)) ;	// initialize before use
+        TestString::value_type x = TestString::value_type(random_number(random_base)) ;  // initialize before use
         testString.append(1, x );
         testString2.append(1, TestString::value_type() );
     }

@@ -31,10 +31,17 @@ void BinsertTest::binsert1()
 {
   char* array [] = { "laurie", "jennifer", "leisa" };
   vector<char*> names;
-  copy(array, array + 3, back_insert_iterator<vector <char*> >(names));
+  back_insert_iterator<vector<char*> > bit(names);
+  bit = copy(array, array + 3, back_insert_iterator<vector <char*> >(names));
+
   CPPUNIT_ASSERT(!strcmp(names[0],array[0]));
   CPPUNIT_ASSERT(!strcmp(names[1],array[1]));
   CPPUNIT_ASSERT(!strcmp(names[2],array[2]));
+
+  copy(array, array + 3, bit);
+  CPPUNIT_ASSERT(!strcmp(names[3],array[0]));
+  CPPUNIT_ASSERT(!strcmp(names[4],array[1]));
+  CPPUNIT_ASSERT(!strcmp(names[5],array[2]));
 }
 void BinsertTest::binsert2()
 {

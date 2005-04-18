@@ -34,8 +34,10 @@ void InsertTest::insert1()
   char* array2 [] = { "amanda", "saskia", "carrie" };
 
   deque<char*> names(array1, array1 + 3);
-  std::deque<char*>::iterator i = names.begin() + 2;
-  copy(array2, array2 + 3, insert_iterator<deque <char*> >(names, i));
+  deque<char*>::iterator i = names.begin() + 2;
+
+  insert_iterator<deque <char*> > itd(names, i);
+  itd = copy(array2, array2 + 3, insert_iterator<deque <char*> >(names, i));
 
   CPPUNIT_ASSERT( !strcmp(names[0], "laurie") );
   CPPUNIT_ASSERT( !strcmp(names[1], "jennifer") );
@@ -43,6 +45,12 @@ void InsertTest::insert1()
   CPPUNIT_ASSERT( !strcmp(names[3], "saskia") );
   CPPUNIT_ASSERT( !strcmp(names[4], "carrie") );
   CPPUNIT_ASSERT( !strcmp(names[5], "leisa") );
+
+  copy(array1, array1 + 3, itd);
+  CPPUNIT_ASSERT( !strcmp(names[5], "laurie") );
+  CPPUNIT_ASSERT( !strcmp(names[6], "jennifer") );
+  CPPUNIT_ASSERT( !strcmp(names[7], "leisa") );
+  CPPUNIT_ASSERT( !strcmp(names[8], "leisa") );
 }
 void InsertTest::insert2()
 {

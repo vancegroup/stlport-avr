@@ -18,12 +18,21 @@
 #ifndef _CPPUNITPROXYINTERFACE_H_
 # define _CPPUNITPROXYINTERFACE_H_
 
-#if defined(CPPUNIT_MINI) || defined(CPPUNIT_DUMMY)
-#   include "cppunit_mini.h"
-#else
-#   include <cppunit/TestCase.h>
-#   include <cppunit/extensions/HelperMacros.h>
+ /*
+  * Exception-usage settings
+  */
+#ifdef CPPUNIT_MINI_USE_EXCEPTIONS
+# undef CPPUNIT_MINI_USE_EXCEPTIONS
 #endif
+
+ /*
+  * STLport specific
+  */
+#if defined _STLP_USE_EXCEPTIONS
+# define CPPUNIT_MINI_USE_EXCEPTIONS
+#endif
+
+# include "cppunit_mini.h"
 
 #endif
 

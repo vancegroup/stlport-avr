@@ -20,19 +20,21 @@
 #define _STLP_SLIST_C
 
 #ifndef _STLP_INTERNAL_SLIST_H
-# include <stl/_slist.h>
+#  include <stl/_slist.h>
 #endif
 
 #ifdef _STLP_DEBUG
-# undef  slist
-# define slist __WORKAROUND_DBG_RENAME(slist)
+#  undef  slist
+#  define slist __WORKAROUND_DBG_RENAME(slist)
 #endif
 
-# if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
-#  define size_type          size_t
-# endif
+#if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
+#  define size_type size_t
+#endif
 
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp, class _Alloc> 
 _Slist_node_base*
@@ -48,6 +50,10 @@ _Slist_base<_Tp,_Alloc>::_M_erase_after(_Slist_node_base* __before_first,
   __before_first->_M_next = __last_node;
   return __last_node;
 }
+
+#if defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
+_STLP_MOVE_TO_STD_NAMESPACE
+#endif
 
 template <class _Tp, class _Alloc>
 _SLIST_IMPL<_Tp,_Alloc>& _SLIST_IMPL<_Tp,_Alloc>::operator=(const _SLIST_IMPL<_Tp,_Alloc>& __x) {
@@ -130,7 +136,7 @@ void _SLIST_IMPL<_Tp,_Alloc>::merge(_SLIST_IMPL<_Tp,_Alloc>& __x) {
   while (__n1->_M_next && __x._M_head._M_data._M_next) {
     if (__STATIC_CAST(_Node*, __x._M_head._M_data._M_next)->_M_data < 
         __STATIC_CAST(_Node*, __n1->_M_next)->_M_data)
-      _Sl_global_inst::__splice_after(__n1, &__x._M_head._M_data, __x._M_head._M_data._M_next);
+      _STLP_PRIV::_Sl_global_inst::__splice_after(__n1, &__x._M_head._M_data, __x._M_head._M_data._M_next);
     __n1 = __n1->_M_next;
   }
   if (__x._M_head._M_data._M_next) {
@@ -146,7 +152,8 @@ void _SLIST_IMPL<_Tp,_Alloc>::sort() {
     _Self __counter[64];
     int __fill = 0;
     while (!empty()) {
-      _Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, this->_M_head._M_data._M_next);
+      _STLP_PRIV::_Sl_global_inst::__splice_after(&__carry._M_head._M_data, &this->_M_head._M_data, 
+                                                  this->_M_head._M_data._M_next);
       int __i = 0;
       while (__i < __fill && !__counter[__i].empty()) {
         __counter[__i].merge(__carry);
@@ -165,11 +172,15 @@ void _SLIST_IMPL<_Tp,_Alloc>::sort() {
 }
 
 #if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
-# undef size_type
+#  undef size_type
 #endif
 
 #ifdef _STLP_DEBUG
-# undef  slist
+#  undef  slist
+#endif
+
+#if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
+_STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 _STLP_END_NAMESPACE

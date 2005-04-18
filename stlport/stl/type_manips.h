@@ -25,7 +25,7 @@ struct __false_type {};
 
 //bool to type
 template <int _Is> struct __bool2type {
-  typedef __false_type _Ret; 
+  typedef __true_type _Ret; 
 };
 
 _STLP_TEMPLATE_NULL
@@ -49,6 +49,17 @@ _STLP_TEMPLATE_NULL
 struct __type2bool<__false_type> {
   enum {_Ret = 0};
 };
+
+//Negation
+template <class _BoolType>
+struct _Not {
+  typedef __false_type _Ret;
+};
+_STLP_TEMPLATE_NULL
+struct _Not<__false_type> {
+  typedef __true_type _Ret;
+};
+
 
 // logical and of 2 predicated
 template <class _P1, class _P2>
@@ -78,7 +89,7 @@ struct _Lor2 {
   typedef __true_type _Ret;
 };
 
-template<>
+_STLP_TEMPLATE_NULL
 struct _Lor2<__false_type, __false_type> {
   typedef __false_type _Ret;
 };
@@ -158,41 +169,69 @@ struct __select {
 // The original version of this source code may be found at
 // http://opensource.adobe.com.
 
-/*
- * dums : Addition of the qualifiers on the first discriminating function
- *        to make it behave closer to the version used with compilers
- *        implementing partial template specialization. Now the _IsSame
- *        should take into account the qualifiers.
- */
-
 // These are the discriminating functions
 template <class _Tp>
-char _STLP_CALL _IsSameFun(bool, _Tp const volatile *, _Tp const volatile *); // no implementation is required
+char _STLP_CALL _IsSameFun(bool, _Tp const volatile*, _Tp const volatile*); // no implementation is required
 char* _STLP_CALL _IsSameFun(bool, ...);       // no implementation is required
 
 template <class _Tp1, class _Tp2>
 struct _IsSame {
   static _Tp1* __null_rep1();
   static _Tp2* __null_rep2();
-  enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(),__null_rep2())) == sizeof(char)) };
+  enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(), __null_rep2())) == sizeof(char)) };
 };
 
 # else /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
 template <class _Tp1, class _Tp2>
-struct _IsSame { enum { _Ret = 0 }; };
+struct _IsSameAux { enum { _Ret = 0 }; };
+
+template <class _Tp>
+struct _UnCVType {
+  typedef _Tp _Type;
+};
 
 #  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
 
 template <class _Tp>
-struct _IsSame<_Tp, _Tp> { enum { _Ret = 1 }; };
+struct _IsSameAux<_Tp, _Tp> { enum { _Ret = 1 }; };
+
+template <class _Tp>
+struct _UnCVType<const _Tp> {
+  typedef _Tp _Type;
+};
+
+template <class _Tp>
+struct _UnCVType<volatile _Tp> {
+  typedef _Tp _Type;
+};
+
+template <class _Tp>
+struct _UnCVType<const volatile _Tp> {
+  typedef _Tp _Type;
+};
 
 #  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
+template <class _Tp1, class _Tp2>
+struct _IsSame {
+  typedef typename _UnCVType<_Tp1>::_Type _Type1;
+  typedef typename _UnCVType<_Tp2>::_Type _Type2;
+
+  enum { _Ret = _IsSameAux<_Type1, _Type2>::_Ret };
+};
+
 # endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
+/*
+ * The following struct will tell you if 2 types are the same, the limitations are:
+ *  - it compares the types without the const or volatile qualifiers, int and const int
+ *    will be concidered as same for instance.
+ *  - the previous remarks do not apply to pointer types, int* and int const* won't be
+ *    concidered as comparable. (int * and int *const are).
+ */
 template <class _Tp1, class _Tp2>
-struct _AreSameTypes {
+struct _AreSameUnCVTypes {
   enum { _Same = _IsSame<_Tp1, _Tp2>::_Ret };
   typedef typename __bool2type<_Same>::_Ret _Ret;
 };
@@ -208,8 +247,7 @@ struct _ConversionHelper {
 };
 
 template <class _Derived, class _Base>
-struct _IsConvertible
-{
+struct _IsConvertible {
   typedef _ConversionHelper<_Derived, _Base> _H;
   enum {exists = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeDerived()))) };
 };

@@ -21,7 +21,8 @@
 #include "locale_impl.h"
 #include "c_locale.h"
 
-#include "locale_nonclassic.h"
+//#include "locale_nonclassic.h"
+#include "locale_impl.h"
 
 
 #include <stl/_codecvt.h>
@@ -47,10 +48,11 @@ void __release_ctype(_Locale_ctype* cat);
 //----------------------------------------------------------------------
 // ctype_byname<char>
 
-ctype_byname<char>::ctype_byname(const char* name, size_t refs)
-  : ctype<char>(_M_byname_table+1, false, refs),
-  _M_ctype(__acquire_ctype(name)) {
-  
+ctype_byname<char>::ctype_byname(const char* name, size_t refs) :
+    ctype<char>( 0, false, refs),
+    _M_ctype(__acquire_ctype(name))
+{
+  ctype<char>::_M_ctype_table = _M_byname_table;
   if (!_M_ctype)
     locale::_M_throw_runtime_error();
   
@@ -59,10 +61,10 @@ ctype_byname<char>::ctype_byname(const char* name, size_t refs)
 
   const _Locale_mask_t* p = _Locale_ctype_table(_M_ctype);
 
-   if (!p)
-     locale::_M_throw_runtime_error(); 
+  if (!p)
+    locale::_M_throw_runtime_error(); 
 
-  for (size_t i = 0; i < table_size + 1; ++i) {
+  for (size_t i = 0; i < table_size; ++i) {
     _Locale_mask_t __m = p[i];
     if (__m & (upper | lower))
       __m |= alpha;
@@ -552,7 +554,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
         }
       }
       else {
-        pos_format.field[2] = (char) money_base::value;
+        pos_format.field[1] = (char) money_base::value;
         if (_Locale_p_sep_by_space(monetary)) {
           pos_format.field[2] = (char) money_base::space;
           pos_format.field[3] = (char) money_base::symbol;
@@ -578,7 +580,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
         }
       }
       else {
-        pos_format.field[1] = (char) money_base::value;
+        pos_format.field[0] = (char) money_base::value;
         if (_Locale_p_sep_by_space(monetary)) {
           pos_format.field[1] = (char) money_base::space;
           pos_format.field[2] = (char) money_base::symbol;
@@ -649,7 +651,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
         }
       }
       else {
-        neg_format.field[2] = (char) money_base::value;
+        neg_format.field[1] = (char) money_base::value;
         if (_Locale_n_sep_by_space(monetary)) {
           neg_format.field[2] = (char) money_base::space;
           neg_format.field[3] = (char) money_base::symbol;
@@ -675,7 +677,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
         }
       }
       else {
-        neg_format.field[1] = (char) money_base::value;
+        neg_format.field[0] = (char) money_base::value;
         if (_Locale_n_sep_by_space(monetary)) {
           neg_format.field[1] = (char) money_base::space;
           neg_format.field[2] = (char) money_base::symbol;
@@ -901,7 +903,7 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-void _Catalog_locale_map::insert(int key, const locale& L) {
+void _Catalog_locale_map::insert(nl_catd_type key, const locale& L) {
   _STLP_TRY {
 #if !defined(_STLP_NO_TYPEINFO) && !defined(_STLP_NO_RTTI)
     // Don't bother to do anything unless we're using a non-default ctype facet
@@ -916,12 +918,12 @@ void _Catalog_locale_map::insert(int key, const locale& L) {
     if (typeid(wct) != typeid(wctype)) {
 # endif /* _STLP_NO_TYPEINFO */
       if (!M)
-        M = new hash_map<int, locale, hash<int>, equal_to<int> >;
+        M = new map_type;
 
 #if defined(__SC__)
       if (!M) delete M;
 #endif
-      M->insert(pair<const int, locale>(key, L));
+      M->insert(map_type::value_type((long)key, L));
 #if !defined(_STLP_NO_TYPEINFO) && !defined(_STLP_NO_RTTI)
     }
 # endif /* _STLP_NO_TYPEINFO */
@@ -929,14 +931,14 @@ void _Catalog_locale_map::insert(int key, const locale& L) {
   _STLP_CATCH_ALL {}
 }
 
-void _Catalog_locale_map::erase(int key) {
+void _Catalog_locale_map::erase(nl_catd_type key) {
   if (M)
-    M->erase(key);
+    M->erase((long)key);
 }
 
-locale _Catalog_locale_map::lookup(int key) const {
+locale _Catalog_locale_map::lookup(nl_catd_type key) const {
   if (M) {
-    hash_map<int, locale, hash<int>, equal_to<int> >::iterator i = M->find(key);
+    map_type::const_iterator i = M->find((long)key);
     return i != M->end() ? (*i).second : locale::classic();
   }
   else
@@ -968,21 +970,20 @@ _Messages_impl::~_Messages_impl() {
   if (_M_map) delete _M_map;
 }
 
-int _Messages_impl::do_open(const string& filename, const locale& L) const {  
-  int result = _M_message_obj
-    ? _Locale_catopen(_M_message_obj, filename.c_str())
-    : -1;
+_Messages::catalog _Messages_impl::do_open(const string& filename, const locale& L) const {  
+  nl_catd_type result = _M_message_obj ? _Locale_catopen(_M_message_obj, filename.c_str())
+    : (nl_catd_type)(-1);
 
-  if (result >= 0 && _M_map != 0)
+  if (result != (nl_catd_type)(-1) && _M_map != 0)
     _M_map->insert(result, L);
 
-  return result;
+  return (_Messages::catalog)result;
 }
 
 string _Messages_impl::do_get(catalog cat,
                               int set, int p_id, const string& dfault) const {
   return _M_message_obj != 0 && cat >= 0
-    ? string(_Locale_catgets(_M_message_obj, cat, set, p_id, dfault.c_str()))
+    ? string(_Locale_catgets(_M_message_obj, (nl_catd_type)cat, set, p_id, dfault.c_str()))
     : dfault;
 }
 
@@ -992,15 +993,15 @@ wstring
 _Messages_impl::do_get(catalog thecat,
                        int set, int p_id, const wstring& dfault) const {
   typedef ctype<wchar_t> wctype;
-  const wctype& ct = use_facet<wctype>(_M_map->lookup(thecat));
+  const wctype& ct = use_facet<wctype>(_M_map->lookup((nl_catd_type)thecat));
 
-  const char* str = _Locale_catgets(_M_message_obj, thecat, set, p_id, "");
+  const char* str = _Locale_catgets(_M_message_obj, (nl_catd_type)thecat, set, p_id, "");
 
   // Verify that the lookup failed; an empty string might represent success.
   if (!str)
     return dfault;
   else if (str[0] == '\0') {
-    const char* str2 = _Locale_catgets(_M_message_obj, thecat, set, p_id, "*");
+    const char* str2 = _Locale_catgets(_M_message_obj, (nl_catd_type)thecat, set, p_id, "*");
     if (!str2 || ((str2[0] == '*') && (str2[1] == '\0')))
       return dfault;
   }
@@ -1019,8 +1020,8 @@ _Messages_impl::do_get(catalog thecat,
 
 void _Messages_impl::do_close(catalog thecat) const {
   if (_M_message_obj)
-    _Locale_catclose(_M_message_obj, thecat);
-  if (_M_map) _M_map->erase(thecat);
+    _Locale_catclose(_M_message_obj, (nl_catd_type)thecat);
+  if (_M_map) _M_map->erase((nl_catd_type)thecat);
 }
 
 
@@ -1028,9 +1029,9 @@ void _Messages_impl::do_close(catalog thecat) const {
 // messages<char>
 
 messages<char>::messages(size_t refs)  : 
-  _BaseFacet(refs), _M_impl(new _Messages_impl(false)) {}
+  locale::facet(refs), _M_impl(new _Messages_impl(false)) {}
 
-messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : _BaseFacet(refs), 
+messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : locale::facet(refs), 
   _M_impl(new _Messages_impl(false, msg_obj)) {}
 
 
@@ -1048,10 +1049,10 @@ messages_byname<char>::~messages_byname() {}
 // messages<wchar_t>
 
 messages<wchar_t>::messages(size_t refs)  : 
-  _BaseFacet(refs), _M_impl(new _Messages_impl(true)) {}
+  locale::facet(refs), _M_impl(new _Messages_impl(true)) {}
 
 messages<wchar_t>::messages(size_t refs, _Locale_messages* msg_obj)
-  : _BaseFacet(refs),
+  : locale::facet(refs),
     _M_impl(new _Messages_impl(true, msg_obj)) {}
 
 //----------------------------------------------------------------------

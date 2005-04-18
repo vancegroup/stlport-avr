@@ -1,4 +1,5 @@
 // STLport configuration file for Digital Mars C++
+#pragma message ("ENTERING STL_DMC.H")
 
 #ifndef _STLP_DMC_H
 # define _STLP_DMC_H
@@ -19,16 +20,10 @@
 
 # if !defined(_WIN32)
 // it's not fully supported on non-Win32 platforms
-#  define _STLP_NO_NEW_IOSTREAMS
 #  define _STLP_NO_NATIVE_WIDE_FUNCTIONS
 # endif
 
-# if defined(_STLP_NO_NEW_IOSTREAMS) || defined(_STLP_NO_OWN_IOSTREAMS)
-#  define _STLP_OWN_NAMESPACE
-# else
 #  define _STLP_NO_OWN_NAMESPACE
-# endif
-
 
 // select threads strategy
 # if defined (_MT) && !defined (_NOTHREADS)
@@ -100,7 +95,7 @@
 #  undef _STLP_NO_LONG_DOUBLE
 #  undef _STLP_NEED_MUTABLE
 #  undef _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
-#  undef _STLP_NO_BAD_ALLOC
+#  define _STLP_NO_BAD_ALLOC
 #  undef _STLP_DEBUG_ALLOC
 #  undef _STLP_NO_MEMBER_TEMPLATES
 #  undef _STLP_NO_MEMBER_TEMPLATE_CLASSES
@@ -145,21 +140,28 @@
 #  define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
 #  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
-#define _STLP_NATIVE_HEADER(header)    <../include/##header>
-#define _STLP_NATIVE_C_HEADER(header)    <../include/##header>
-#define _STLP_NATIVE_CPP_C_HEADER(header)    <../include/##header>
-#define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../include/##header>
-#define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
+#  define _STLP_NATIVE_HEADER(header)    <../include/##header>
+#  define _STLP_NATIVE_C_HEADER(header)    <../include/##header>
+#  define _STLP_NATIVE_CPP_C_HEADER(header)    <../include/##header>
+#  define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../include/##header>
+#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
 
+#ifdef __BUILDING_STLPORT
+#pragma message ("Building STLport")
+#endif
+#ifdef _WINDLL
+#pragma message ("Windows DLL")
+#endif
 
 # if defined(__BUILDING_STLPORT) && defined(_WINDLL)
 #  define _STLP_CALL __export
 
 #  undef _STLP_USE_DECLSPEC
 #  define _STLP_USE_DECLSPEC 1
+#  pragma message ("Using DECLSPEC")
 # endif
 
-# if !defined (__BUILDING_STLPORT) && !defined (_STLP_NO_OWN_IOSTREAMS)
+# if !defined (__BUILDING_STLPORT)
 #  if (defined (_DLL) && !defined (_STLP_DONT_USE_DLL)) || defined (_STLP_USE_DLL)
 #   undef  _STLP_USE_DECLSPEC
 #   define _STLP_USE_DECLSPEC 1

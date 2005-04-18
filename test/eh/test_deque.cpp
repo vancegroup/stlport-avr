@@ -1,6 +1,6 @@
 /***********************************************************************************
-	test_deque.cpp
-	
+  test_deque.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -46,7 +46,7 @@ container_category(const TestDeque&)
 
 void test_deque()
 {
-    EH_STD::size_t dequeSize = random_number(random_base);
+    size_t dequeSize = random_number(random_base);
     TestDeque emptyDeque;
     TestDeque testDeque, testDeque2;
     while ( testDeque.size() < dequeSize )
@@ -65,18 +65,18 @@ void test_deque()
     StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), 0 ) );
     StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), testDeque.size() ) );
 
-    EH_STD::size_t insCnt = random_number(random_base);
+    size_t insCnt = random_number(random_base);
     DQTestClass *insFirst = new TestDeque::value_type[insCnt+1];
 
     WeakCheck( testDeque, insert_range_tester(testDeque, (DQTestClass *)insFirst, 
-					      insFirst+insCnt) );
+                insFirst+insCnt) );
     StrongCheck( testDeque, insert_range_at_begin_tester(testDeque, (DQTestClass *)insFirst,
-							 insFirst+insCnt) );
+               insFirst+insCnt) );
     StrongCheck( testDeque, insert_range_at_end_tester(testDeque, (DQTestClass *)insFirst, 
-						       insFirst+insCnt) );
+                   insFirst+insCnt) );
 
     ConstCheck( 0, test_construct_pointer_range<TestDeque>( (DQTestClass *)insFirst, 
-							    insFirst+insCnt ) );
+                  insFirst+insCnt ) );
     delete[] insFirst;
 
     WeakCheck( testDeque, insert_range_tester(testDeque, testDeque2.begin(), testDeque2.end() ) );

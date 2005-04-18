@@ -26,23 +26,31 @@
 #ifndef _STLP_QUEUE
 #define _STLP_QUEUE
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x53
 #  include <stl/_prolog.h>
-# endif
+#endif
+
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
 #ifndef _STLP_INTERNAL_QUEUE_H
-# include <stl/_queue.h>
+#  include <stl/_queue.h>
 #endif
 
 #ifndef _STLP_INTERNAL_FUNCTION_H
-# include <functional>
+#  include <functional>
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x53)
+#if defined (_STLP_IMPORT_VENDOR_STD)
+#  include _STLP_NATIVE_HEADER(queue)
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x53)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_QUEUE */
 

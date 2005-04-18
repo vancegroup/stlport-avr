@@ -37,7 +37,7 @@ struct __char_wrapper {
 
   const_reference operator[] (size_t __n) const {
     //To avoid a check on __n we use this strange implementation
-    return *((&_Val)[__n]);
+    return (&_Val)[__n];
   }
 
 private:
@@ -123,13 +123,8 @@ public:
     return _rhs;
   }
 
-  /*
-   * The numerous basic_string methods, only the const one are
-   * implemented because they are the only one that are correct
-   * to call on a temporary basic_string.
-   */
   allocator_type get_allocator() const {
-    return _M_get_storage().get_allocator();
+    return _M_get_storage(false).get_allocator();
   }
 
   const_iterator begin() const { return _M_get_storage().begin(); }
@@ -142,7 +137,7 @@ public:
 
   size_t max_size() const { return _M_get_storage().max_size(); }
   size_type capacity() const { return size(); }
-  bool empty() const { return (size() == 0); }    
+  bool empty() const { return size() == 0; }    
 
   const_reference operator[](size_t __n) const {
     return (__n < _lhs.size())?_lhs[__n]:_rhs[__n - _lhs.size()];
@@ -225,7 +220,7 @@ public:
   {_M_get_storage().swap(__s);}
 
   const _CharT* c_str() const { return _M_get_storage().c_str(); }
-  const _CharT* data()  const { return c_str(); }
+  const _CharT* data()  const { return _M_get_storage().data(); }
 
   //find family
   size_type find(const _BString& __s, size_type __pos = 0) const {return _M_get_storage().find(__s, __pos);}
@@ -268,8 +263,8 @@ public:
   int compare(size_type __pos1, size_type __n1, const _CharT* __s) const {_M_get_storage().compare(__pos1, __n1, __s);}
   int compare(size_type __pos1, size_type __n1, const _CharT* __s, size_type __n2) const {return _M_get_storage().compare(__pos1, __n1, __s, __n2);}
 
-  //This method is template to avoid its instanciation if it is not call!
-  //non-const version
+  //Returns the underlying basic_string representation of the template expression
+  //The non const method will always initialise it.
   _BString& _M_get_storage() {
     return _rhs._M_get_storage(*this, _StorageDirection());
   }
@@ -291,26 +286,27 @@ public:
     return _M_get_storage(__ref, _StorageDirection());
   }
 
-  //const version
-  _BString const& _M_get_storage() const {
-    return _M_get_storage(*this, _StorageDirection());
+  //The const method can be invoked without initialising the basic_string so avoiding dynamic allocation.
+  _BString const& _M_get_storage(bool __do_init = true) const {
+    return _M_get_storage(*this, __do_init, _StorageDirection());
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                                 __on_left const& /*StorageDir*/) const {
-    return _lhs._M_get_storage(__ref);
+                                 bool __do_init, __on_left const& /*StorageDir*/) const {
+    return _lhs._M_get_storage(__ref, __do_init);
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
   _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
-                                 __on_right const& /*StorageDir*/) const {
-    return _rhs._M_get_storage(__ref);
+                                 bool __do_init, __on_right const& /*StorageDir*/) const {
+    return _rhs._M_get_storage(__ref, __do_init);
   }
 
   template <class _Lhs, class _Rhs, class _StorageDir>
-  _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref) const {
-    return _M_get_storage(__ref, _StorageDirection());
+  _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Lhs, _Rhs, _StorageDir>  const& __ref,
+                                 bool __do_init) const {
+    return _M_get_storage(__ref, __do_init, _StorageDirection());
   }
 
 private:
@@ -404,7 +400,7 @@ template <class _CharT, class _Traits, class _Alloc>
 struct __sum_storage_elem {
   typedef basic_string<_CharT, _Traits, _Alloc> _BString;
 
-  __sum_storage_elem() : _M_init(false)
+  __sum_storage_elem(_Alloc __alloc) : _M_init(false), _M_storage(__alloc)
   {}
 
   template <class _Left, class _Right, class _StorageDir>
@@ -416,8 +412,11 @@ struct __sum_storage_elem {
   }
 
   template <class _Left, class _Right, class _StorageDir>
-  _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>  const& __ref) const {
-    _M_Init(__ref);
+  _BString const& _M_get_storage(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>  const& __ref, 
+                                 bool __do_init) const {
+    if (__do_init) {
+      _M_Init(__ref);
+    }
     return _M_storage;
   }
   template <class _Left, class _Right, class _StorageDir>

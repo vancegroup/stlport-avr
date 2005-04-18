@@ -24,9 +24,7 @@
 # include <stl/_hash_set.h>
 #endif
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
 
 #  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
 #   define __HS_TEMPLATE_HEADER  template <class _Value>
@@ -139,9 +137,7 @@ inline bool operator==(const hash_multiset< __HS_ARGUMENTS >& __hs1,
 # undef __HS_BASE_ARGUMENTS
 # undef __HS_TEMPLATE_HEADER
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_HASH_SET_H */
 

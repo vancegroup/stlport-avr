@@ -14,14 +14,12 @@
  */
 
 #ifndef _STLP_IOSTREAM_H
-# define _STLP_IOSTREAM_H
+#define _STLP_IOSTREAM_H
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID 0x2035
-#  include <stl/_prolog.h>
-# endif
-
-# ifdef _STLP_OWN_IOSTREAMS
+#ifndef _STLP_OUTERMOST_HEADER_ID
+# define _STLP_OUTERMOST_HEADER_ID 0x2035
+# include <stl/_prolog.h>
+#endif
 
 #ifdef __BORLANDC__
 # include <iostream.>
@@ -30,31 +28,31 @@
 #endif
 
 // Those should be included all separately, as they do contain using declarations
-# include <streambuf.h>
-# include <ostream.h>
-# include <istream.h>
+#include <streambuf.h>
+#include <ostream.h>
+#include <istream.h>
 
-# ifndef _STLP_HAS_NO_NAMESPACES
+#ifndef _STLP_HAS_NO_NAMESPACES
 
-#  ifdef _STLP_BROKEN_USING_DIRECTIVE
+# ifdef _STLP_BROKEN_USING_DIRECTIVE
 using namespace _STLP_STD;
-#  else
+# else
 using _STLP_STD::cin;
 using _STLP_STD::cout;
 using _STLP_STD::clog;
 using _STLP_STD::cerr;
 using _STLP_STD::iostream;
 
-#   ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 using _STLP_STD::wcin;
 using _STLP_STD::wcout;
 using _STLP_STD::wclog;
 using _STLP_STD::wcerr;
-#   endif
-
 #  endif
 
-# endif /* _STLP_HAS_NO_NAMESPACES */
+# endif
+
+#endif /* _STLP_HAS_NO_NAMESPACES */
 
 // Obsolete classes for old-style backwards compatibility
 
@@ -103,14 +101,10 @@ class iostream_withassign : public iostream {
   }
 } ;
 
-# elif ! defined (_STLP_USE_NO_IOSTREAMS)
-#  include <wrap_std/h/iostream.h>
-# endif
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2035)
-#  include <stl/_epilog.h>
-#  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2035)
+# include <stl/_epilog.h>
+# undef _STLP_OUTERMOST_HEADER_ID
+#endif
 
 #endif /* _STLP_IOSTREAM_H */
 

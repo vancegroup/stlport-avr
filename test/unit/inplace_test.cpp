@@ -41,11 +41,11 @@ void InplaceTest::inplmrg1()
 }
 void InplaceTest::inplmrg2()
 {
-  vector <int> v1(10);
-  for(size_t i = 0; i < v1.size(); i++)
+  vector<size_t> v1(10);
+  for(size_t i = 0; i < v1.size(); ++i)
     v1[i] =(v1.size() - i - 1) % 5;
 
-  inplace_merge(v1.begin(), v1.begin() + 5, v1.end(), greater<int>());
+  inplace_merge(v1.begin(), v1.begin() + 5, v1.end(), greater<size_t>());
 
   CPPUNIT_ASSERT(v1[0]==4);
   CPPUNIT_ASSERT(v1[1]==4);

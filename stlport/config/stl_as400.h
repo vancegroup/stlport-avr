@@ -36,7 +36,6 @@
 
 // #  define _STLP_NO_EXCEPTION_HEADER
 
-#  define _STLP_HAS_NO_NEW_IOSTREAMS
 #  define _STLP_HAS_NO_NEW_C_HEADERS 
 
 #  define _STLP_STATIC_CONST_INIT_BUG

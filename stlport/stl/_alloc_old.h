@@ -71,7 +71,7 @@ struct __allocator : public _Alloc {
   size_type max_size() const _STLP_NOTHROW 
     { return size_t(-1) / sizeof(_Tp); }
 
-  void construct(pointer __p, const _Tp& __val) { _STLP_STD::_Copy_Construct(__p, __val); }
+  void construct(pointer __p, const_reference __val) { _STLP_STD::_Copy_Construct(__p, __val); }
   void destroy(pointer __p) { _STLP_STD::_Destroy(__p); }
 
   const __underlying_alloc& __get_underlying_alloc() const { return *this; }
@@ -194,7 +194,7 @@ struct _Alloc_traits<_Tp, __allocator<_Tp1, _Alloc > > {
 
 #endif
 
-#if !defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM) 
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) 
 
 // Versions for the predefined SGI-style allocators.
 

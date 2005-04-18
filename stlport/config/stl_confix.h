@@ -39,8 +39,8 @@
 # define _STLP_USE_MSIPL 1
 # if defined (__KCC) || (defined(__MSL_CPP__) && \
        ( (__MSL_CPP__ >= 0x5000 && defined( _MSL_NO_MESSAGE_FACET )) || \
-	 (__MSL_CPP__ < 0x5000 && defined( MSIPL_NL_TYPES )))  \
-	 )
+   (__MSL_CPP__ < 0x5000 && defined( MSIPL_NL_TYPES )))  \
+   )
 #  define _STLP_NO_NATIVE_MESSAGE_FACET 1
 # endif
 #endif

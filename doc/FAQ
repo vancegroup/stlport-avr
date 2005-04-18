@@ -1,0 +1,222 @@
+                           Content
+
+Q1 About STLport and availability
+
+Q1.0 What is STLport?
+Q1.1 What is benefits from using STLport?
+Q1.2 What versions of STLport available?
+
+Q2 General
+
+Q2.0 Do I need a C++ compiler?
+Q2.1 Do I need runtime libraries from C++ compiler?
+Q2.2 Can I use containers and algorithms from STLport and iostreams from
+library that shipout with compiler?
+Q2.3 Can I mix STL implementations in my project?
+Q2.4 When I switch to STLport in my application, I get errors. Is STLport
+so bad?
+
+Q3 Building
+
+Q3.0 On my XXXX Linux n.n g++ headers are in /usr/include/g++, but they
+are looked for in /usr/include/3.3.1. Is it a STLport bug?
+Q3.1 Do I need to build library to use STLport?
+Q3.2 During library compilation with MS VC++ 6.0 I see following error report:...
+Q3.3 Does anybody success in building STLport on OS Y with compiler K n.n?
+
+Q4 Installation
+
+Q4.1 I tried "make -f gcc.mak install", but it install nothing into
+/usr/local/. How I can install headers into /usr/local/include and
+libs into /usr/local/lib?
+
+Q5 Bug report
+
+Q5.0 I am found a bug. How I can report about it?
+
+Q6 Design
+
+Q6.0 In STLport present files like locale.h, setjmp.h, stdlib.h, etc.,
+that do nothing except include native headers. Why this files present in STLport?
+Q6.1 Is STLport a replacement for headers and libraries that shipout
+with compiler?
+                           Answers
+
+========================================================================
+
+Q1.0 What is STLport?
+A1.0 STLport is implementation of C++ Standard Library, as described in
+the INTERNATIONAL STANDARD ISO/IEC 14882:1998(E) and latest
+ISO/IEC 14882:2003(E).
+
+========================================================================
+
+Q1.1 What is benefits from using STLport?
+
+A1.1
+
+========================================================================
+
+Q1.2 What versions of STLport available?
+
+A1.2
+
+========================================================================
+
+Q2.0 Do I need a C++ compiler?
+
+A2.0 STLport is a C++ library. So answer is 'yes, you need'.
+
+========================================================================
+
+Q2.1 Do I need runtime libraries from C++ compiler?
+
+A2.1 In any case C++ language support from compiler is required
+for STLport (operators new, delete, RTTI, exceptions support). That's why
+in most cases you need some runtime libraries from C++ compiler.
+
+========================================================================
+
+Q2.2 Can I use containers and algorithms from STLport and iostreams from
+library that shipout with compiler?
+
+A2.2
+
+========================================================================
+
+Q2.3 Can I mix STL implementations in my project?
+
+A2.3
+
+========================================================================
+
+Q2.4 When I switch to STLport in my application, I get errors. Is STLport
+so bad?
+
+A2.4 Before you post such message, please, check the STLport WHITHOUT
+YOU errors:
+  - build STLport library
+  - build STLport unit tests
+  - run STLport unit tests
+If any of above steps fail, please, check you carefully follow
+build instructions report (in most cases you definitely should reread
+instructions and check that you correctly unpack archive in case you see
+'file not found' message). Build instructions you can found in files
+INSTALL, doc/README.*, build/README*, build/test/unit/README*.
+If you sure, write problem description
+http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID6&conf=DCConfID1
+(for stable, fixed release) or here
+http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID5&conf=DCConfID1
+(for betas). Don't foget to describe you operational environment, compiler
+version and STLport version.
+
+========================================================================
+
+Q3.0 On my XXXX Linux n.n g++ headers are in /usr/include/g++, but they
+are looked for in /usr/include/3.3.1. Is it a STLport bug?
+
+A3.0 Path to native compiler headers for gcc correspond to default path
+after build/install compiler (i.e. pathes from compiler origo).
+Package maintainers can use any path by own taste---we can't satisfy
+variety of distributions/packages.
+
+So you can:
+ - fix path in stlport sources (for you own needs)
+ - make request to package maintainer
+ - build and install compiler
+
+========================================================================
+
+Q3.1 Do I need to build library to use STLport?
+
+A3.1 You may omit usage (and, thus building) STLport library, but in this
+case you can't use iostreams, locale, complex.
+
+========================================================================
+
+Q3.2 During library compilation with MS VC++ 6.0 I see following error report:
+
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1123) : error C2733: second C linkage of overloaded function 'InterlockedIncrement' not allowed
+        C:\Program Files\Microsoft SDK\Include\.\winbase.h(1121) : see declaration of 'InterlockedIncrement'
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1130) : error C2733: second C linkage of overloaded function 'InterlockedDecrement' not allowed
+        C:\Program Files\Microsoft SDK\Include\.\winbase.h(1128) : see declaration of 'InterlockedDecrement'
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1138) : error C2733: second C linkage of overloaded function 'InterlockedExchange' not allowed
+        C:\Program Files\Microsoft SDK\Include\.\winbase.h(1135) : see declaration of 'InterlockedExchange'
+
+A3.2 You have SDK installed. Uncomment line
+#define _STLP_NEW_PLATFORM_SDK 1
+in the file stlport/stl_user_config.h. There is no way to detect SDK
+presence during preprocessor stage.
+
+========================================================================
+
+Q3.3 Does anybody success in building STLport on OS S with compiler K n.n?
+
+A3.3 See report about results of regression tests here: build/test/unit/STATUS.
+
+========================================================================
+
+Q4.1 I tried "make -f gcc.mak install", but it install nothing into
+/usr/local/. How I can install headers into /usr/local/include and
+libs into /usr/local/lib?
+
+A4.1 Installation in any system-wide place is issue of either 'package builder'
+or system administrator. He/she should be familiar with building package
+procedure and/or understand where headers and libraries should be situated.
+The place choice not issue of STLport.
+
+You can just use
+
+(cd ${STLPORT_SRC}/lib; tar cf - . ) | (cd ${TARGET_LIB_DIR}; tar xf - ); \
+ (cd ${STLPORT_SRC}; tar cf - stlport) | (cd ${TARGET_INCLUDE_DIR}; tar xf - )
+
+Sometimes we will think about 'make install', but not now.
+
+
+========================================================================
+
+Q5.0 I am found a bug. How I can report about it?
+
+A5.0 
+  0. Ensure that this is a really bug (standard violation, incorrect
+     behaviour with correct usage);
+  1. Ensure that bug is in STLport, not in your code;
+  2. Write short test that demonstrate this bug;
+  3. Write bug description and test here
+     http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID6&conf=DCConfID1
+     (for stable, fixed release) or here
+     http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID5&conf=DCConfID1
+     (for betas). Don't foget to describe you operational environment, compiler
+     version and STLport version.
+
+========================================================================
+
+Q6.0 In STLport present files like locale.h, setjmp.h, stdlib.h, etc.,
+that do nothing except include native headers. Why this files present in STLport?
+
+A6.0 Sometimes native C headers was using C++ one or was refering
+to the std namespace. That's why, if stddef whould absent in STLport, then
+
+#include <string>
+#include <stddef.h>
+
+may cause problem in following code, because std redefined in the end of
+<string> header, and std may be used in stddef.h:
+
+__BEGIN_NAMESPACE_STD
+....
+__END_NAMESPACE_STD
+
+where __BEGIN_NAMESPACE_STD is defined as 'namespace std {'.
+To avoid this, STLport has stddef.h header and provide correct masquerade
+for std.
+
+========================================================================
+
+Q6.1 Is STLport a replacement for headers and libraries that shipout
+with compiler?
+
+A6.1 In general no. In any case C++ language support from compiler is required
+for STLport (operators new, delete, RTTI, exceptions support). STLport also
+use 'native' headers and libraries to take interface to system functions and
+variables.

@@ -30,10 +30,6 @@
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #define _STLP_INTERNAL_FUNCTION_BASE_H
 
-#ifndef _STLP_CONFIG_H
-#include <stl/_config.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Arg, class _Result>

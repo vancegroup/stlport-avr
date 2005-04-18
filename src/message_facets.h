@@ -44,11 +44,12 @@ struct _Catalog_locale_map
   _Catalog_locale_map() : M(0) {}
   ~_Catalog_locale_map() { if (M) delete M; }
 
-  void insert(int key, const locale& L);
-  locale lookup(int key) const;
-  void erase(int key);
+  void insert(nl_catd_type key, const locale& L);
+  locale lookup(nl_catd_type key) const;
+  void erase(nl_catd_type key);
 
-  hash_map<int, locale, hash<int>, equal_to<int> >* M;
+  typedef hash_map<long, locale, hash<long>, equal_to<long> > map_type;
+  map_type *M;
 
 private:                        // Invalidate copy constructor and assignment
   _Catalog_locale_map(const _Catalog_locale_map&);

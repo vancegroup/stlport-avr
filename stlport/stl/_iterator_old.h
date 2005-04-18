@@ -88,7 +88,7 @@ public:
     _BidirectionalIterator __tmp = current;
     return *--__tmp;
   }
-# if !(defined _STLP_NO_ARROW_OPERATOR) && ! defined (_STLP_MSVC50_COMPATIBILITY)
+# if !(defined _STLP_NO_ARROW_OPERATOR)
   _STLP_DEFINE_ARROW_OPERATOR
 # endif
   _Self& operator++() {
@@ -159,12 +159,12 @@ inline bool  _STLP_CALL operator!=(
 
 template <class _RandomAccessIterator, 
 # if defined (__MSL__) && (__MSL__ >= 0x2405) \
-	|| defined(__MRC__) || defined(__SC__)		//*ty 03/22/2001 - give the default to the secont param under MPW. 
-												// I believe giving the default will cause any harm even though the 2nd type parameter 
-												// still have to be provided for T* type iterators.
-	__DFL_TMPL_PARAM(_Tp,iterator_traits<_RandomAccessIterator>::value_type),
+  || defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))    //*ty 03/22/2001 - give the default to the secont param under MPW. 
+                        // I believe giving the default will cause any harm even though the 2nd type parameter 
+                        // still have to be provided for T* type iterators.
+  __DFL_TMPL_PARAM(_Tp,iterator_traits<_RandomAccessIterator>::value_type),
 # else
-	class _Tp,
+  class _Tp,
 #endif
  __DFL_TMPL_PARAM(_Reference,_Tp&),
 # if defined (_STLP_MSVC50_COMPATIBILITY)
@@ -195,7 +195,7 @@ public:
   _RandomAccessIterator base() const { return __current; }
   _Reference operator*() const { return *(__current - (difference_type)1); }
 
-# if !(defined _STLP_NO_ARROW_OPERATOR) && ! defined (_STLP_MSVC50_COMPATIBILITY)
+# if !(defined _STLP_NO_ARROW_OPERATOR)
   _STLP_DEFINE_ARROW_OPERATOR
 # endif
 

@@ -95,14 +95,15 @@ inline char* __subformat(const string& format, char*& buf,
   return buf;
 }
 
+#ifdef __GNUC__
 /* The number of days from the first day of the first ISO week of this
    year to the year day YDAY with week day WDAY.  ISO weeks start on
    Monday; the first ISO week has the year's first Thursday.  YDAY may
    be as small as YDAY_MINIMUM.  */
-#define __ISO_WEEK_START_WDAY 1 /* Monday */
-#define __ISO_WEEK1_WDAY 4 /* Thursday */
-#define __YDAY_MINIMUM (-366)
-#define __TM_YEAR_BASE 1900
+#  define __ISO_WEEK_START_WDAY 1 /* Monday */
+#  define __ISO_WEEK1_WDAY 4 /* Thursday */
+#  define __YDAY_MINIMUM (-366)
+#  define __TM_YEAR_BASE 1900
 static int
 __iso_week_days (int yday, int wday)
 {
@@ -113,8 +114,10 @@ __iso_week_days (int yday, int wday)
           + __ISO_WEEK1_WDAY - __ISO_WEEK_START_WDAY);
 }
 
-#define	__is_leap(year)\
+#  define __is_leap(year)\
   ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
+
+#endif
 
 #define __hour12(hour) \
   (((hour) % 12 == 0) ? (12) : (hour) % 12)
@@ -255,9 +258,9 @@ char * __write_formatted_time(char* buf, char format, char modifier,
 #ifdef __GNUC__
 
       // fbp : at least on SUN 
-# if defined ( _STLP_UNIX ) && ! defined (__linux__)
-#  define __USE_BSD 1
-# endif
+#  if defined ( _STLP_UNIX ) && ! defined (__linux__)
+#    define __USE_BSD 1
+#  endif
  
    /*********************************************
     *     JGS, handle various extensions        *
@@ -347,7 +350,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
         diff = t->tm_gmtoff;
 #else
         diff = t->__tm_gmtoff;
-#endif	
+#endif
         if (diff < 0) {
           *buf++ = '-';
           diff = -diff;

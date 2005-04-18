@@ -40,9 +40,9 @@ public:
   
   allocator_type get_allocator() const { return _M_impl.get_allocator(); }
   
-# if !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))
+#if !(defined(__MRC__)||(defined(__SC__) && !defined(__DMC__)))
   explicit
-# endif
+#endif
   list(const allocator_type& __a = allocator_type()) :
     _M_impl(__a) {}
     
@@ -65,11 +65,11 @@ public:
        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_impl(__first, __last, __a) {}
   
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   list(_InputIterator __first, _InputIterator __last)
     : _M_impl(__first, __last) {}
-# endif
+#  endif
 
 #else /* _STLP_MEMBER_TEMPLATES */
   list(const value_type* __first, const value_type* __last,
@@ -135,7 +135,7 @@ public:
   iterator insert(iterator __pos) { return _M_impl.insert(__pos); }
   void push_front() { _M_impl.push_front(); }
   void push_back()  { _M_impl.push_back(); }
-# endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
   iterator erase(iterator __pos)                    { return _M_impl.erase(__pos); }
   iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
@@ -195,13 +195,14 @@ private:
   _Base _M_impl;
 };
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _List_node<void*>;
 typedef _List_node<void*> _VoidPtr_Node;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_VoidPtr_Node*, _VoidPtr_Node, allocator<_VoidPtr_Node> >;
-_STLP_EXPORT_TEMPLATE_CLASS _List_base<void*,allocator<void*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _List_impl<void*,allocator<void*> >;
-# endif
+_STLP_EXPORT_TEMPLATE_CLASS allocator<_VoidPtr_Node>;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_List_node_base, _VoidPtr_Node, allocator<_VoidPtr_Node> >;
+_STLP_EXPORT_TEMPLATE_CLASS _List_base<void*, allocator<void*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _List_impl<void*, allocator<void*> >;
+#endif
 
 /*
  * The pointer partial specialization.
@@ -279,7 +280,7 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
   list(const _Self& __x) : _M_impl(__x._M_impl) {}
 
-  list(__move_source<_Self> src) : _M_impl(_AsMoveSource<_Base>(src.get()._M_impl)) {}
+  list(__move_source<_Self> src) : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
 
   iterator begin()             { return _M_impl.begin()._M_node; }
   const_iterator begin() const { return _M_impl.begin()._M_node; }

@@ -22,6 +22,7 @@ protected:
   void bind1st1();
   void bind2nd1();
   void bind2nd2();
+  void bind2nd3();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BindTest);
@@ -54,4 +55,30 @@ void BindTest::bind2nd2()
   CPPUNIT_ASSERT(array[0]==1);
   CPPUNIT_ASSERT(array[1]==2);
   CPPUNIT_ASSERT(array[2]==4);
+}
+
+int test_func1 (const int &param1, const int &param2) {
+  return param1 + param2;
+}
+
+int test_func2 (int &param1, int param2) {
+  param1 += param2;
+  return param1 + param2;
+}
+
+void BindTest::bind2nd3()
+{
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+  int array[3] = { 1, 2, 3 };
+  transform(array, array + 3, array, bind2nd(ptr_fun(test_func1), 1));
+  transform(array, array + 3, array, bind1st(ptr_fun(test_func1), -1));
+  CPPUNIT_ASSERT(array[0]==1);
+  CPPUNIT_ASSERT(array[1]==2);
+  CPPUNIT_ASSERT(array[2]==4);
+
+  transform(array, array + 3, array, bind2nd(ptr_fun(test_func2), 10));
+  CPPUNIT_ASSERT(array[0]==1);
+  CPPUNIT_ASSERT(array[1]==2);
+  CPPUNIT_ASSERT(array[2]==4);
+#endif
 }

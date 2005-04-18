@@ -32,25 +32,21 @@ codecvt<char, char, mbstate_t>::~codecvt() {}
 int codecvt<char, char, mbstate_t>::do_length(const mbstate_t&,
                                               const  char* from, 
                                               const  char* end,
-                                              size_t mx) const
-{
+                                              size_t mx) const {
   return (int)(min) ( __STATIC_CAST(size_t, (end - from)), mx);
 }
 
-int codecvt<char, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
-{
+int codecvt<char, char, mbstate_t>::do_max_length() const _STLP_NOTHROW {
  return 1; 
 }
 
 bool
-codecvt<char, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW
-{
+codecvt<char, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW {
   return true;
 }
 
 int 
-codecvt<char, char, mbstate_t>::do_encoding() const _STLP_NOTHROW
-{
+codecvt<char, char, mbstate_t>::do_encoding() const _STLP_NOTHROW {
   return 1; 
 }
 
@@ -97,8 +93,7 @@ codecvt<wchar_t, char, mbstate_t>::do_out(state_type&         /* state */,
                                           const intern_type*& from_next,
                                           extern_type*        to,
                                           extern_type*        to_limit,
-                                          extern_type*&       to_next) const
-{
+                                          extern_type*&       to_next) const {
   ptrdiff_t len = (min) (from_end - from, to_limit - to);
   copy(from, from + len, to);
   from_next = from + len;
@@ -113,8 +108,7 @@ codecvt<wchar_t, char, mbstate_t>::do_in (state_type&       /* state */,
                                           const extern_type*& from_next,
                                           intern_type*        to,
                                           intern_type*        to_limit,
-                                          intern_type*&       to_next) const
-{
+                                          intern_type*&       to_next) const {
   ptrdiff_t len = (min) (from_end - from, to_limit - to);
   copy(__REINTERPRET_CAST(const unsigned char*, from), 
        __REINTERPRET_CAST(const unsigned char*, from) + len, to);
@@ -127,8 +121,7 @@ codecvt<wchar_t, char, mbstate_t>::result
 codecvt<wchar_t, char, mbstate_t>::do_unshift(state_type&   /* state */,
                                               extern_type*  to, 
                                               extern_type*  ,
-                                              extern_type*& to_next) const
-{
+                                              extern_type*& to_next) const {
   to_next = to;
   return noconv;
 }
@@ -138,16 +131,14 @@ int codecvt<wchar_t, char, mbstate_t>::do_encoding() const _STLP_NOTHROW {
 }
 
 
-bool codecvt<wchar_t, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW
-{
+bool codecvt<wchar_t, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW {
   return true;
 }
 
 int codecvt<wchar_t, char, mbstate_t>::do_length(const  state_type&,
                                                  const  extern_type* from, 
                                                  const  extern_type* end,
-                                                 size_t mx) const 
-{
+                                                 size_t mx) const {
   return (int)(min) ((size_t) (end - from), mx);
 }
 

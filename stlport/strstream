@@ -29,19 +29,11 @@
 #  include <stl/_prolog.h>
 # endif
 
-# if defined (_STLP_OWN_IOSTREAMS)
-
-#  include <stl/_strstream.h>
-
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-
-#  if defined (_STLP_USE_NEW_IOSTREAMS)
-#   include <wrap_std/strstream>
-#  else
-#   include <wrap_std/h/strstream.h>
-#  endif
-
+# ifdef _STLP_PRAGMA_ONCE
+#  pragma once
 # endif
+
+# include <stl/_strstream.h>
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1070)
 #  include <stl/_epilog.h>

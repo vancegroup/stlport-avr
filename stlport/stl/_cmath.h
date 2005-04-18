@@ -14,202 +14,260 @@
  */
 
 #ifndef _STLP_CMATH_H_HEADER
-# define _STLP_CMATH_H_HEADER
+#define _STLP_CMATH_H_HEADER
 
-# include <cmath>
+#define _STLP_MATH_INLINE(float_type, func, cfunc) \
+  inline float_type func (float_type x) { return ::cfunc(x); }
+#define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
+  inline float_type func (float_type x, type y) { return ::cfunc(x,y); }
 
-_STLP_BEGIN_NAMESPACE
+#define _STLP_MATH_INLINEX(__type,func,cfunc) \
+  inline __type func (__type x) { return __STATIC_CAST(__type,::cfunc((double)x)); }
+#define _STLP_MATH_INLINE2X(__type1,__type2,func,cfunc) \
+  inline __type1 func (__type1 x, __type2 y) { return __STATIC_CAST(__type1,::cfunc((double)x,y)); }
+#define _STLP_MATH_INLINE2PX(__type,func,cfunc) \
+  inline __type func (__type x, __type *y) { \
+     double tmp1, tmp2; \
+     tmp1 = ::cfunc(__STATIC_CAST(double,x),&tmp2); *y = __STATIC_CAST(__type,tmp2); \
+     return __STATIC_CAST(__type,tmp1); }
+#define _STLP_MATH_INLINE2XX(__type,func,cfunc) \
+  inline __type func (__type x, __type y) { return __STATIC_CAST(__type,::cfunc((double)x,(double)y)); }
 
-# ifdef _STLP_SAME_FUNCTION_NAME_RESOLUTION_BUG
+#if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_NO_VENDOR_MATH_L) && !defined (_STLP_NO_VENDOR_MATH_F) // && defined(_STLP_VENDOR_LONG_DOUBLE_MATH)
+#  define _STLP_DEF_MATH_INLINE(func,cf) \
+  _STLP_MATH_INLINE(float,func,cf##f) \
+  _STLP_MATH_INLINE(long double,func,cf##l)
+#  define _STLP_DEF_MATH_INLINE2(func,cf) \
+  _STLP_MATH_INLINE2(float,float,func,cf##f) \
+  _STLP_MATH_INLINE2(long double,long double,func,cf##l)
+#  define _STLP_DEF_MATH_INLINE2P(func,cf) \
+  _STLP_MATH_INLINE2(float,float *,func,cf##f) \
+  _STLP_MATH_INLINE2(long double,long double *,func,cf##l)
+#  define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+  _STLP_MATH_INLINE2(float,int *,func,cf##f) \
+  _STLP_MATH_INLINE2(long double,int *,func,cf##l)
+#  define _STLP_DEF_MATH_INLINE2I(func,cf) \
+  _STLP_MATH_INLINE2(float,int,func,cf##f) \
+  _STLP_MATH_INLINE2(long double,int,func,cf##l)
+#else // !_STLP_NO_LONG_DOUBLE
+#  if !defined (_STLP_NO_LONG_DOUBLE)
+#    if !defined (_STLP_NO_VENDOR_MATH_F)
+#      define _STLP_DEF_MATH_INLINE(func,cf) \
+      _STLP_MATH_INLINE(float,func,cf##f) \
+      _STLP_MATH_INLINEX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2(func,cf) \
+      _STLP_MATH_INLINE2(float,float,func,cf##f) \
+      _STLP_MATH_INLINE2XX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2P(func,cf) \
+      _STLP_MATH_INLINE2(float,float *,func,cf##f) \
+      _STLP_MATH_INLINE2PX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+      _STLP_MATH_INLINE2(float,int *,func,cf##f) \
+      _STLP_MATH_INLINE2X(long double,int *,func,cf)
+#      define _STLP_DEF_MATH_INLINE2I(func,cf) \
+      _STLP_MATH_INLINE2(float,int,func,cf##f) \
+      _STLP_MATH_INLINE2X(long double,int,func,cf)
+#    else
+#      define _STLP_DEF_MATH_INLINE(func,cf) \
+      _STLP_MATH_INLINEX(float,func,cf) \
+      _STLP_MATH_INLINEX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2(func,cf) \
+      _STLP_MATH_INLINE2XX(float,func,cf) \
+      _STLP_MATH_INLINE2XX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2P(func,cf) \
+      _STLP_MATH_INLINE2PX(float,func,cf) \
+      _STLP_MATH_INLINE2PX(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+      _STLP_MATH_INLINE2X(float,int *,func,cf) \
+      _STLP_MATH_INLINE2X(long double,int *,func,cf)
+#      define _STLP_DEF_MATH_INLINE2I(func,cf) \
+      _STLP_MATH_INLINE2X(float,int,func,cf) \
+      _STLP_MATH_INLINE2X(long double,int,func,cf)
+#    endif
+#  else
+#    if !defined (_STLP_NO_VENDOR_MATH_F)
+#      define _STLP_DEF_MATH_INLINE(func,cf) \
+      _STLP_MATH_INLINE(float,func,cf##f)
+#      define _STLP_DEF_MATH_INLINE2(func,cf) \
+      _STLP_MATH_INLINE2(float,float,func,cf##f)
+#      define _STLP_DEF_MATH_INLINE2P(func,cf) \
+      _STLP_MATH_INLINE2(float,float *,func,cf##f)
+#      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+      _STLP_MATH_INLINE2(float,int *,func,cf##f)
+#      define _STLP_DEF_MATH_INLINE2I(func,cf) \
+      _STLP_MATH_INLINE2(float,int,func,cf##f)
+#    else // _STLP_NO_VENDOR_MATH_F
+#      define _STLP_DEF_MATH_INLINE(func,cf) \
+      _STLP_MATH_INLINEX(float,func,cf)
+#      define _STLP_DEF_MATH_INLINE2(func,cf) \
+      _STLP_MATH_INLINE2XX(float,func,cf)
+#      define _STLP_DEF_MATH_INLINE2P(func,cf) \
+      _STLP_MATH_INLINE2PX(float,func,cf)
+#      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+      _STLP_MATH_INLINE2X(float,int *,func,cf)
+#      define _STLP_DEF_MATH_INLINE2I(func,cf) \
+      _STLP_MATH_INLINE2X(float,int,func,cf)
+#    endif // _STLP_NO_VENDOR_MATH_F
+#  endif
+#endif // !_STLP_NO_LONG_DOUBLE
 
-// this proxy is needed for some compilers to resolve problems
-// calling sqrt() from within sqrt(), etc.
-template <class _Tp>
-struct _STL_math_proxy {
-  static inline _Tp _do_abs(const _Tp& __x)     { return _STLP_VENDOR_CSTD::fabs(__x); } 
-  static inline _Tp _do_acos(const _Tp& __x)    { return _STLP_VENDOR_CSTD::acos(__x); } 
-  static inline _Tp _do_asin(const _Tp& __x)    { return _STLP_VENDOR_CSTD::asin(__x); } 
-  static inline _Tp _do_atan(const _Tp& __x)    { return _STLP_VENDOR_CSTD::atan(__x); } 
-  static inline _Tp _do_atan2(const _Tp& __x, const _Tp& __y)  { return _STLP_VENDOR_CSTD::atan2(__x, __y); } 
-  static inline _Tp _do_cos(const _Tp& __x)     { return _STLP_VENDOR_CSTD::cos(__x); } 
-  static inline _Tp _do_cosh(const _Tp& __x)    { return _STLP_VENDOR_CSTD::cosh(__x); } 
-  static inline _Tp _do_floor(const _Tp& __x)    { return _STLP_VENDOR_CSTD::floor(__x); } 
-  static inline _Tp _do_ceil(const _Tp& __x)    { return _STLP_VENDOR_CSTD::ceil(__x); } 
-  static inline _Tp _do_fmod(const _Tp& __x, const _Tp& __y)    { return _STLP_VENDOR_CSTD::fmod(__x, __y); } 
-  static inline _Tp _do_frexp(const _Tp& __x, int* __y)    { return _STLP_VENDOR_CSTD::frexp(__x, __y); } 
-  static inline _Tp _do_ldexp(const _Tp& __x, int __y)    { return _STLP_VENDOR_CSTD::ldexp(__x, __y); } 
-  static inline _Tp _do_modf(const _Tp& __x, double* __y) { return _STLP_VENDOR_CSTD::modf(__x, __y); }
-  static inline _Tp _do_log(const _Tp& __x)     { return _STLP_VENDOR_CSTD::log(__x); } 
-  static inline _Tp _do_log10(const _Tp& __x)   { return _STLP_VENDOR_CSTD::log10(__x); } 
-  static inline _Tp _do_pow(const _Tp& __x, const _Tp& __y)    { return _STLP_VENDOR_CSTD::pow(__x, __y); } 
-  static inline _Tp _do_pow(const _Tp& __x, int __y)    { return _STLP_VENDOR_CSTD::pow(__x, __y); } 
-  static inline _Tp _do_sin(const _Tp& __x)     { return _STLP_VENDOR_CSTD::sin(__x); } 
-  static inline _Tp _do_sinh(const _Tp& __x)    { return _STLP_VENDOR_CSTD::sinh(__x); } 
+#if defined (_STLP_WCE) || \
+   (defined(_STLP_MSVC) && (_STLP_MSVC <= 1300) && defined (_MSC_EXTENSIONS) /* && !defined(_STLP_WCE_NET) */)
+/*
+ * dums: VC6 has all the required C++ functions but only define them if
+ * _MSC_EXTENSIONS is not defined (a bug?). STLport just do the same
+ * thing also when _MSC_EXTENSIONS is defined.
+ */
+//We have to tell the compilers that abs, acos ... math functions are not intrinsic
+//otherwise we have Internal Compiler Error in release mode...
+#  pragma warning(push)
+#  pragma warning(disable: 4162) // no function with C linkage found
+#  pragma warning(disable: 4163) // not available as an intrinsic function
+#  pragma function (abs, acos, asin, atan, atan2, cos, cosh, exp, fabs, fmod, log, log10, sin, sinh, sqrt, tan, tanh)
+#  if defined (_STLP_WCE)
+#    pragma function (ceil, floor)
+#  endif
+#endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
 
-  static inline _Tp _do_sqrt(const _Tp& __x)    { return _STLP_VENDOR_CSTD::sqrt(__x); } 
-  static inline _Tp _do_tan(const _Tp& __x)     { return _STLP_VENDOR_CSTD::tan(__x); } 
-  static inline _Tp _do_tanh(const _Tp& __x)    { return _STLP_VENDOR_CSTD::tanh(__x); } 
-  static inline _Tp _do_exp(const _Tp& __x)     { return _STLP_VENDOR_CSTD::exp(__x); } 
-#ifdef _STLP_WCE
-  static inline _Tp _do_hypot(const _Tp& __x, const _Tp& __y)   { return _STLP_VENDOR_CSTD::sqrt(__x * __x + __y * __y); } 
-#else  
-  static inline _Tp _do_hypot(const _Tp& __x, const _Tp& __y)   { return _STLP_VENDOR_CSTD::hypot(__x, __y); } 
-#endif
-};
-
-#  define _STLP_DO_ABS(_Tp)   _STL_math_proxy<_Tp>::_do_abs
-#  define _STLP_DO_ACOS(_Tp)  _STL_math_proxy<_Tp>::_do_acos
-#  define _STLP_DO_ASIN(_Tp)  _STL_math_proxy<_Tp>::_do_asin
-#  define _STLP_DO_ATAN(_Tp)  _STL_math_proxy<_Tp>::_do_atan
-#  define _STLP_DO_ATAN2(_Tp) _STL_math_proxy<_Tp>::_do_atan2
-#  define _STLP_DO_COS(_Tp)   _STL_math_proxy<_Tp>::_do_cos
-#  define _STLP_DO_COSH(_Tp)  _STL_math_proxy<_Tp>::_do_cosh
-#  define _STLP_DO_FLOOR(_Tp) _STL_math_proxy<_Tp>::_do_floor
-#  define _STLP_DO_CEIL(_Tp) _STL_math_proxy<_Tp>::_do_ceil
-#  define _STLP_DO_FMOD(_Tp) _STL_math_proxy<_Tp>::_do_fmod
-#  define _STLP_DO_FREXP(_Tp) _STL_math_proxy<_Tp>::_do_frexp
-#  define _STLP_DO_LDEXP(_Tp) _STL_math_proxy<_Tp>::_do_ldexp
-#  define _STLP_DO_MODF(_Tp) _STL_math_proxy<_Tp>::_do_modf
-#  define _STLP_DO_LOG(_Tp)   _STL_math_proxy<_Tp>::_do_log
-#  define _STLP_DO_LOG10(_Tp) _STL_math_proxy<_Tp>::_do_log10
-#  define _STLP_DO_POW(_Tp)   _STL_math_proxy<_Tp>::_do_pow
-#  define _STLP_DO_SIN(_Tp)   _STL_math_proxy<_Tp>::_do_sin
-#  define _STLP_DO_SINH(_Tp)  _STL_math_proxy<_Tp>::_do_sinh
-#  define _STLP_DO_SQRT(_Tp)  _STL_math_proxy<_Tp>::_do_sqrt
-#  define _STLP_DO_TAN(_Tp)   _STL_math_proxy<_Tp>::_do_tan
-#  define _STLP_DO_TANH(_Tp)  _STL_math_proxy<_Tp>::_do_tanh
-#  define _STLP_DO_EXP(_Tp)   _STL_math_proxy<_Tp>::_do_exp
-#  define _STLP_DO_HYPOT(_Tp) _STL_math_proxy<_Tp>::_do_hypot
-
-# else /* _STLP_SAME_FUNCTION_NAME_RESOLUTION_BUG */
-
-#  define _STLP_DO_ABS(_Tp)   _STLP_VENDOR_CSTD::fabs
-#  define _STLP_DO_ACOS(_Tp)  _STLP_VENDOR_CSTD::acos
-#  define _STLP_DO_ASIN(_Tp)  _STLP_VENDOR_CSTD::asin
-#  define _STLP_DO_ATAN(_Tp)  _STLP_VENDOR_CSTD::atan
-#  define _STLP_DO_ATAN2(_Tp) _STLP_VENDOR_CSTD::atan2
-#  define _STLP_DO_COS(_Tp)   _STLP_VENDOR_CSTD::cos
-#  define _STLP_DO_COSH(_Tp)  _STLP_VENDOR_CSTD::cosh
-#  define _STLP_DO_FLOOR(_Tp)  _STLP_VENDOR_CSTD::floor
-#  define _STLP_DO_CEIL(_Tp)   _STLP_VENDOR_CSTD::ceil
-#  define _STLP_DO_FMOD(_Tp)   _STLP_VENDOR_CSTD::fmod
-#  define _STLP_DO_FREXP(_Tp) _STLP_VENDOR_CSTD::frexp
-#  define _STLP_DO_LDEXP(_Tp) _STLP_VENDOR_CSTD::ldexp
-#  define _STLP_DO_MODF(_Tp) _STLP_VENDOR_CSTD::modf
-#  define _STLP_DO_LOG(_Tp)   _STLP_VENDOR_CSTD::log
-#  define _STLP_DO_LOG10(_Tp) _STLP_VENDOR_CSTD::log10
-#  define _STLP_DO_POW(_Tp)   _STLP_VENDOR_CSTD::pow
-#  define _STLP_DO_SIN(_Tp)   _STLP_VENDOR_CSTD::sin
-#  define _STLP_DO_SINH(_Tp)  _STLP_VENDOR_CSTD::sinh
-#  define _STLP_DO_SQRT(_Tp)  _STLP_VENDOR_CSTD::sqrt
-#  define _STLP_DO_TAN(_Tp)   _STLP_VENDOR_CSTD::tan
-#  define _STLP_DO_TANH(_Tp)  _STLP_VENDOR_CSTD::tanh
-#  define _STLP_DO_EXP(_Tp)   _STLP_VENDOR_CSTD::exp
-//# if defined (__GNUC__) || defined ( __IBMCPP__ ) || defined (__SUNPRO_CC) || defined (__HP_aCC) || (_MSC_VER >= 1310)
-#  define _STLP_DO_HYPOT(_Tp) ::hypot
-// # else
-// #  define _STLP_DO_HYPOT(_Tp) _STLP_VENDOR_CSTD::hypot
-// # endif
-
-# endif /* _STLP_SAME_FUNCTION_NAME_RESOLUTION_BUG */
-
-_STLP_END_NAMESPACE
-
-# if (defined (_STLP_HAS_NO_NEW_C_HEADERS) || defined(_STLP_MSVC) || defined (__ICL)) && !defined (_STLP_HAS_NO_NAMESPACES)
-
-# if ! defined (_STLP_USE_NEW_C_HEADERS) 
-
-_STLP_BEGIN_NAMESPACE
-
-#  ifndef _STLP_HAS_NATIVE_FLOAT_ABS
-inline double abs(double __x)                 { return _STLP_DO_ABS(double)(__x); }
-inline float abs (float __x)                  { return _STLP_DO_ABS(float)(__x); }
+#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1310)
+inline double abs(double __x) { return ::fabs(__x); }
+#  ifndef __MVS__
+_STLP_DEF_MATH_INLINE(abs,fabs)
+#  else // __MVS__ has native long double abs?
+inline float abs(float __x) { return ::fabsf(__x); }
 #  endif
 
-inline double pow(double __x, int __y)        { return _STLP_DO_POW(double)(__x, __y); }
-inline float acos (float __x)                 { return _STLP_DO_ACOS(float)(__x); }
-inline float asin (float __x)                 { return _STLP_DO_ASIN(float)(__x); }
-inline float atan (float __x)                 { return _STLP_DO_ATAN(float)(__x); }
-inline float atan2(float __x, float __y)      { return _STLP_DO_ATAN2(float)(__x, __y); }
-inline float ceil (float __x)                 { return _STLP_DO_CEIL(float)(__x); }
-inline float cos (float __x)                  { return _STLP_DO_COS(float)(__x); }
-inline float cosh (float __x)                 { return _STLP_DO_COSH(float)(__x); }
-inline float exp (float __x)                  { return _STLP_DO_EXP(float)(__x); }
-# ifdef _STLP_USE_NAMESPACES
-inline float fabs (float __x)                 { return _STLP_DO_ABS(float)(__x); }
-# endif
-inline float floor(float __x)                 { return _STLP_DO_FLOOR(float)(__x); }
-inline float fmod (float __x, float __y)      { return _STLP_DO_FMOD(float)(__x, __y); }
-inline float frexp(float __x, int* __y)       { return _STLP_DO_FREXP(float)(__x, __y); }
-inline float ldexp(float __x, int __y)        { return _STLP_DO_LDEXP(float)(__x, __y); }
+_STLP_DEF_MATH_INLINE(acos,acos)
+_STLP_DEF_MATH_INLINE(asin,asin)
+_STLP_DEF_MATH_INLINE(atan,atan)
+_STLP_DEF_MATH_INLINE2(atan2,atan2)
+_STLP_DEF_MATH_INLINE(ceil,ceil)
+_STLP_DEF_MATH_INLINE(cos,cos)
+_STLP_DEF_MATH_INLINE(cosh,cosh)
+_STLP_DEF_MATH_INLINE(exp,exp)
+_STLP_DEF_MATH_INLINE(fabs,fabs)
+_STLP_DEF_MATH_INLINE(floor,floor)
+_STLP_DEF_MATH_INLINE2(fmod,fmod)
+_STLP_DEF_MATH_INLINE2PI(frexp,frexp)
+
+_STLP_DEF_MATH_INLINE2I(ldexp,ldexp)
+_STLP_DEF_MATH_INLINE(log,log)
+_STLP_DEF_MATH_INLINE(log10,log10)
+_STLP_DEF_MATH_INLINE2P(modf,modf)
+
+#if 0 // Unknown OS, where float/long double modf missed
 // fbp : float versions are not always available
-#if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 - 
+
+// Context of define of _STLP_VENDOR_LONG_DOUBLE_MATH should be changed:
+// many OS has *l math functions... -ptr
+
+# if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 - 
 inline float modf (float __x, float* __y)     { 
   double __dd[2]; 
-  double __res = _STLP_DO_MODF(double)((double)__x, __dd); 
+  double __res = ::modf((double)__x, __dd); 
   __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1]; 
   return (float)__res; 
 }
-#else  //*ty 11/25/2001 - i.e. for apple SCpp
+#  else  //*ty 11/25/2001 - i.e. for apple SCpp
 inline float modf (float __x, float* __y)     { 
   long double __dd[2]; 
-  long double __res = _STLP_DO_MODF(long double)((long double)__x, __dd); 
-  __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1]; 
-  return (float)__res; 
+  long double __res = ::modfl(__STATIC_CAST(long double,__x), __dd); 
+  __y[0] = __STATIC_CAST(float,__dd[0]); __y[1] = __STATIC_CAST(float,__dd[1]); 
+  return __STATIC_CAST(float,__res);
 }
-#endif  //*ty 11/25/2001 - 
-
-inline float log (float __x)                  { return _STLP_DO_LOG(float)(__x); }
-inline float log10(float __x)                 { return _STLP_DO_LOG10(float)(__x); }
-inline float pow (float __x, float __y)       { return _STLP_DO_POW(float)(__x, __y); }
-inline float pow (float __x, int __y)         { return _STLP_DO_POW(float)(__x, __y); }
-inline float sin (float __x)                  { return _STLP_DO_SIN(float)(__x); }
-inline float sinh (float __x)                 { return _STLP_DO_SINH(float)(__x); }
-inline float sqrt (float __x)                 { return _STLP_DO_SQRT(float)(__x); }
-inline float tan (float __x)                  { return _STLP_DO_TAN(float)(__x); }
-inline float tanh (float __x)                 { return _STLP_DO_TANH(float)(__x); }
-
-#  if ! (defined  (_STLP_NO_LONG_DOUBLE) || defined(_STLP_VENDOR_LONG_DOUBLE_MATH))
-
-#if !defined (__MVS__)
-inline long double abs (long double __x)                  { return _STLP_DO_ABS(long double)((double)__x); }
-#endif
-inline long double acos (long double __x)                 { return _STLP_DO_ACOS(long double)(__x); }
-inline long double asin (long double __x)                 { return _STLP_DO_ASIN(long double)(__x); }
-inline long double atan (long double __x)                 { return _STLP_DO_ATAN(long double)(__x); }
-inline long double atan2(long double __x, long double __y)      { return _STLP_DO_ATAN2(long double)(__x, __y); }
-inline long double ceil (long double __x)                 { return _STLP_DO_CEIL(long double)(__x); }
-inline long double cos (long double __x)                  { return _STLP_DO_COS(long double)(__x); }
-inline long double cosh (long double __x)                 { return _STLP_DO_COSH(long double)(__x); }
-inline long double exp (long double __x)                  { return _STLP_DO_EXP(long double)(__x); }
-inline long double fabs (long double __x)                 { return _STLP_DO_ABS(long double)(__x); }
-inline long double floor(long double __x)                 { return _STLP_DO_FLOOR(long double)(__x); }
-inline long double fmod (long double __x, long double __y)      { return _STLP_DO_FMOD(long double)(__x, __y); }
-inline long double frexp(long double __x, int* __y)       { return _STLP_DO_FREXP(long double)(__x, __y); }
-inline long double ldexp(long double __x, int __y)        { return _STLP_DO_LDEXP(long double)(__x, __y); }
+# endif  //*ty 11/25/2001 - 
 // fbp : long double versions are not available
-inline long double modf (long double __x, long double* __y)     { 
+inline long double modf (long double __x, long double* __y) { 
   double __dd[2]; 
-  double __res = _STLP_DO_MODF(double)((double)__x, __dd); 
+  double __res = ::modf((double)__x, __dd); 
   __y[0] = (long double)__dd[0] ; __y[1] = (long double)__dd[1]; 
   return (long double)__res; 
 }
-inline long double log (long double __x)                  { return _STLP_DO_LOG(long double)(__x); }
-inline long double log10(long double __x)                 { return _STLP_DO_LOG10(long double)(__x); }
-inline long double pow (long double __x, long double __y)       { return _STLP_DO_POW(long double)(__x, __y); }
-inline long double pow (long double __x, int __y)         { return _STLP_DO_POW(long double)(__x, __y); }
-inline long double sin (long double __x)                  { return _STLP_DO_SIN(long double)(__x); }
-inline long double sinh (long double __x)                 { return _STLP_DO_SINH(long double)(__x); }
-inline long double sqrt (long double __x)                 { return _STLP_DO_SQRT(long double)(__x); }
-inline long double tan (long double __x)                  { return _STLP_DO_TAN(long double)(__x); }
-inline long double tanh (long double __x)                 { return _STLP_DO_TANH(long double)(__x); }
+#endif // 0
 
-#  endif /* ! _STLP_NO_LONG_DOUBLE || _STLP_VENDOR_LONG_DOUBLE_MATH */
+_STLP_DEF_MATH_INLINE2(pow,pow)
 
+#  if !defined(_STLP_MSVC) /* || (_STLP_MSVC > 1300) */ || defined(_STLP_WCE) || !defined (_MSC_EXTENSIONS) /* && !defined(_STLP_WCE_NET) */
+#    ifndef _STLP_NO_VENDOR_MATH_F
+inline float       pow(float __x, int __y)       { return ::powf(__x, __STATIC_CAST(float,__y)); }
+#    else
+inline float       pow(float __x, int __y)       { return __STATIC_CAST(float,::pow(__x, __STATIC_CAST(float,__y))); }
+#    endif
+inline double      pow(double __x, int __y)      { return ::pow(__x, __STATIC_CAST(double,__y)); }
+#    if !defined (_STLP_NO_LONG_DOUBLE)
+#      if !defined(_STLP_NO_VENDOR_MATH_L)
+inline long double pow(long double __x, int __y) { return ::powl(__x, __STATIC_CAST(long double,__y)); }
+#      else
+inline long double pow(long double __x, int __y) { return __STATIC_CAST(long double,::pow(__x, __STATIC_CAST(long double,__y))); }
+#      endif
+#    endif
+#  else
+//The MS native pow version has a bugged overload so it is not imported
+//in the STLport namespace.
+//Here is the bugged version:
+//inline double pow(int __x, int __y)            { return (_Pow_int(__x, __y)); }
+inline double      pow(double __x, int __y)      { return (_Pow_int(__x, __y)); }
+inline float       pow(float __x, int __y)       { return (_Pow_int(__x, __y)); }
+inline long double pow(long double __x, int __y) { return (_Pow_int(__x, __y)); }
+#  endif
+
+_STLP_DEF_MATH_INLINE(sin,sin)
+_STLP_DEF_MATH_INLINE(sinh,sinh)
+_STLP_DEF_MATH_INLINE(sqrt,sqrt)
+_STLP_DEF_MATH_INLINE(tan,tan)
+_STLP_DEF_MATH_INLINE(tanh,tanh)
+
+#endif
+
+#if (defined (_STLP_MSVC) && !defined (_STLP_WCE)) || defined (__ICL)
+_STLP_MATH_INLINE2XX(float,hypot,hypot)
+_STLP_MATH_INLINE2XX(long double,hypot,hypot)
+#else
+#  if defined (_STLP_USE_UCLIBC) || defined (_STLP_WCE)
+inline double hypot(double x, double y) { return sqrt(x*x + y*y); }
+#  endif
+_STLP_DEF_MATH_INLINE2(hypot,hypot)
+#endif
+
+#if defined (_STLP_WCE) || \
+   (defined(_STLP_MSVC) && (_STLP_MSVC <= 1300) && defined (_MSC_EXTENSIONS) /* && !defined(_STLP_WCE_NET) */)
+//restoration of the default intrinsic status of those functions:
+#  pragma intrinsic (abs, acos, asin, atan, atan2, cos, cosh, exp, fabs, fmod, log, log10, sin, sinh, sqrt, tan, tanh)
+#  if defined (_STLP_WCE)
+#    pragma intrinsic (ceil, floor)
+#  endif
+#  pragma warning(pop)
+#endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
+
+_STLP_BEGIN_NAMESPACE
+using ::abs;
+using ::acos;
+using ::asin;
+using ::atan;
+using ::atan2;
+using ::ceil;
+using ::cos;
+using ::cosh;
+using ::exp;
+using ::fabs;
+using ::floor;
+using ::fmod;
+using ::frexp;
+using ::hypot;
+using ::ldexp;
+using ::log;
+using ::log10;
+using ::modf;
+using ::pow;
+using ::sin;
+using ::sinh;
+using ::sqrt;
+using ::tan;
+using ::tanh;
 _STLP_END_NAMESPACE
 
-# endif /* _STLP_USE_NEW_C_HEADERS */
-
-# endif /* (_STLP_HAS_NO_NEW_C_HEADERS || _STLP_MSVC || __ICL) && ! _STLP_HAS_NO_NAMESPACES */
-
 #endif /* CMATH_H */
+
+// Local Variables:
+// mode:C++
+// End:

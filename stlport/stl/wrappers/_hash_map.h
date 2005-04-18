@@ -24,9 +24,7 @@
 # include <stl/_hash_map.h>
 #endif
 
-# ifdef _STLP_USE_NAMESPACES
-namespace STLPORT { 
-# endif
+_STLP_BEGIN_NAMESPACE
 
 // provide a "default" hash_map adaptor
 #  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
@@ -136,9 +134,7 @@ inline bool operator==(const hash_multimap< __HM_ARGUMENTS >& __hm1,
 # undef __HM_ARGUMENTS
 # undef __HM_BASE_ARGUMENTS
 
-# ifdef _STLP_USE_NAMESPACES
-} /* namespace STLPORT */
-# endif
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_HASH_SET_H */
 

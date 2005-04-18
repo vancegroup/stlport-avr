@@ -46,7 +46,7 @@ void FuncTest::func1()
   v.push_back(1);
   v.push_back(5);
   int n = 0;
-  count_if(v.begin(), v.end(), bigger, n);
+  n = count_if(v.begin(), v.end(), bigger);
   CPPUNIT_ASSERT(n==2)
 }
 void FuncTest::func2()

@@ -106,6 +106,10 @@
 // Uncomment this if your compiler does not support exceptions
 // #  define _STLP_HAS_NO_EXCEPTIONS 1
 
+// Uncomment this when you are able to detect that the user do not
+// want to use the exceptions feature.
+// #  define _STLP_DONT_USE_EXCEPTIONS 1
+
 // Uncomment this if your compiler does not support exception specifications
 // #  define _STLP_NO_EXCEPTION_SPEC
 
@@ -128,8 +132,10 @@
 // Uncomment if member template classes are not available
 // #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES   1
 
-// Uncomment if you cannot access member template classe throught a class template parameter
-// # define _STLP_DONT_USE_NESTED_TCLASS_THROUGHT_TPARAM 1
+// Uncomment if your compiler do not support the std::allocator rebind technique
+// This is a special case of bad member template classes support, it is automatically
+// defined if _STLP_NO_MEMBER_TEMPLATE_CLASSES is defined.
+// # define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1
 
 // Uncomment if no "template" keyword should be used with member template classes
 // #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD   1
@@ -146,6 +152,9 @@
 // Define if class being partially specialized require full name (template parameters)
 // of itself for method declarations
 // #  define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
+
+// Compiler has problem with qualified specializations (cont int, volatile int...)
+// #  define _STLP_QUALIFIED_SPECIALIZATION_BUG
 
 // Compiler has problems specializing members of partially 
 // specialized class
@@ -228,9 +237,6 @@
 // Uncomment this to disble at() member functions for containers
 // #  define   _STLP_NO_AT_MEMBER_FUNCTION 1
 
-// Uncomment if native new-style iostreams are not available
-// #define    _STLP_HAS_NO_NEW_IOSTREAMS	1
-
 // Define this if compiler lacks <exception> header
 // #  define _STLP_NO_EXCEPTION_HEADER 1
 
@@ -255,6 +261,10 @@
 // the stlport namespace and called without scope (:: or std::)
 // #  define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
 
+// uncomment this if your compiler has problem with the import of a namespace in
+// an other one with the using namespace directive
+// #  define _STLP_USING_NAMESPACE_BUG 1
+
 // uncomment this if your compiler implement full ADL (Argument Dependent Lookup)
 // # define _STLP_FULL_ADL_IMPLEMENTED 1
 
@@ -271,11 +281,18 @@
 // #  define _STLP_MAKE_HEADER(path, header) <path/header>
 
 // This macro constructs native include header path from include path and name.
-// You may have do define it if experirncing problems with preprocessor
+// You may have do define it if experimenting problems with preprocessor
 // # define _STLP_NATIVE_HEADER(header) _STLP_MAKE_HEADER(_STLP_NATIVE_INCLUDE_PATH,header)
 
 // Same for C headers
 // #define _STLP_NATIVE_C_HEADER(header)
+
+// uncomment this if your compiler/platform do not fully support the IEC 559 floating point
+// numbers specification (also known as IEEE 754 in the US). This specification define the
+// infinity and NaN (Not a Number) representation. Unit tests should tell you if your compiler
+// support it.
+// #  define _STLP_NO_IEC559_SUPPORT 1
+
 
 //==========================================================
 # endif

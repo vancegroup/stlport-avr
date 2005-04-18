@@ -75,12 +75,11 @@ void MergeTest::merge2()
 {
   vector <int> v1(5);
   vector <int> v2(v1.size());
-  for(size_t i = 0; i < v1.size(); i++)
-  {
+  for (int i = 0; (size_t)i < v1.size(); ++i) {
     v1[i] = 10 - i;
     v2[i] =  7 - i;
   }
-  vector <int> result(v1.size() + v2.size());
+  vector<int> result(v1.size() + v2.size());
   merge(v1.begin(), v1.end(), v2.begin(), v2.end(), result.begin(), greater<int>() );
 
   CPPUNIT_ASSERT(result[0]==10);

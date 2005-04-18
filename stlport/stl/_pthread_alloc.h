@@ -26,18 +26,26 @@
 #ifndef _STLP_PTHREAD_ALLOC_H
 #define _STLP_PTHREAD_ALLOC_H
 
-// Pthread-specific node allocator.
-// This is similar to the default allocator, except that free-list
-// information is kept separately for each thread, avoiding locking.
-// This should be reasonably fast even in the presence of threads.
-// The down side is that storage may not be well-utilized.
-// It is not an error to allocate memory in thread A and deallocate
-// it in thread B.  But this effectively transfers ownership of the memory,
-// so that it can only be reallocated by thread B.  Thus this can effectively
-// result in a storage leak if it's done on a regular basis.
-// It can also result in frequent sharing of
-// cache lines among processors, with potentially serious performance
-// consequences.
+/*
+ * Pthread-specific node allocator.
+ * This is similar to the default allocator, except that free-list
+ * information is kept separately for each thread, avoiding locking.
+ * This should be reasonably fast even in the presence of threads.
+ * The down side is that storage may not be well-utilized.
+ * It is not an error to allocate memory in thread A and deallocate
+ * it in thread B.  But this effectively transfers ownership of the memory,
+ * so that it can only be reallocated by thread B.  Thus this can effectively
+ * result in a storage leak if it's done on a regular basis.
+ * It can also result in frequent sharing of
+ * cache lines among processors, with potentially serious performance
+ * consequences.
+ */
+
+#ifndef _STLP_PTHREADS
+#  error POSIX specific allocator implementation. Your system do not seems to \
+have this interface so please comment the _STLP_USE_PERTHREAD_ALLOC macro \
+or report to the STLport forum.
+#endif
 
 #include <pthread.h>
 
@@ -277,6 +285,9 @@ public:
   // __n is permitted to be 0.  The C++ standard says nothing about what
   // the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
+    if (__n > max_size()) {
+      __THROW_BAD_ALLOC;
+    }
     return __n != 0 ? __STATIC_CAST(_Tp*,_S_Alloc::allocate(__n * sizeof(_Tp)))
                     : 0;
   }
@@ -343,7 +354,7 @@ struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
 
 #endif
 
-#if !defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM)
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 
 template <class _Tp1, class _Tp2>
 inline pthread_allocator<_Tp2>&
@@ -357,7 +368,7 @@ __stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*) {
   return pthread_allocator<_Tp2>();
 }
 
-#endif /* _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM */
+#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 
 //
 // per_thread_allocator<> : this allocator always return memory to the same thread 
@@ -401,6 +412,9 @@ public:
   // __n is permitted to be 0.  The C++ standard says nothing about what
   // the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
+    if (__n > max_size()) {
+      __THROW_BAD_ALLOC;
+    }
     return __n != 0 ? __STATIC_CAST(_Tp*,_S_Alloc::allocate(__n * sizeof(_Tp), _M_state)): 0;
   }
 
@@ -460,7 +474,7 @@ struct _Alloc_traits<_Tp, per_thread_allocator<_Atype> >
 
 #endif
 
-#if !defined (_STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM)
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 
 template <class _Tp1, class _Tp2>
 inline per_thread_allocator<_Tp2>&
@@ -474,7 +488,7 @@ __stl_alloc_create(per_thread_allocator<_Tp1>&, const _Tp2*) {
   return per_thread_allocator<_Tp2>();
 }
 
-#endif /* _STLP_USE_NESTED_TCLASS_THROUGHT_TPARAM */
+#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 
 _STLP_END_NAMESPACE
 

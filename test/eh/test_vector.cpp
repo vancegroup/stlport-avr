@@ -1,6 +1,6 @@
 /***********************************************************************************
-	test_vector.cpp
-	
+  test_vector.cpp
+  
  * Copyright (c) 1997
  * Mark of the Unicorn, Inc.
  *
@@ -27,7 +27,11 @@
 #include "test_insert.h"
 #include "test_push_front.h"
 
+# if defined (__GNUC__) && defined (__APPLE__)
+typedef EH_STD::vector<TestClass, eh_allocator(TestClass) > TestVector;
+# else
 typedef EH_STD::__vector__<TestClass, eh_allocator(TestClass) > TestVector;
+# endif
 
 inline sequence_container_tag
 container_category(const TestVector&)
@@ -48,7 +52,7 @@ struct test_reserve
     test_reserve( size_t n ) : fAmount(n) {
             gTestController.SetCurrentTestName("vector::reserve()");
     }
-	
+  
     void operator()( TestVector& v ) const
     {
         v.reserve( fAmount );
@@ -75,7 +79,7 @@ void test_vector()
     TestVector emptyVector;
     TestVector testVector, testVector2;
     size_t vectorSize = random_number(random_base);
-	
+  
     testVector.reserve(vectorSize*4);
     while ( testVector.size() < vectorSize )
     {
@@ -83,7 +87,7 @@ void test_vector()
         testVector.push_back( x );
         testVector2.push_back( TestClass() );
     }
-	
+  
     size_t insCnt = random_number(random_base);
     TestClass *insFirst = new TestVector::value_type[1+ insCnt];
 
@@ -103,7 +107,7 @@ void test_vector()
     WeakCheck( testVector, test_insert_n<TestVector>(testVector, random_number(random_base), (int)testVector.size() ) );
 
     WeakCheck( testVector, insert_range_tester(testVector, testVector2.begin(), testVector2.end() ) );
-	
+  
 
     StrongCheck( testVector, test_reserve( testVector.capacity() + random_number(random_base) ) );
     StrongCheck( testVector, test_push_back<TestVector>(testVector) );

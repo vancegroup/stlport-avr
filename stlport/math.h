@@ -24,6 +24,9 @@
    ! (defined(__IBMCPP__) && (500 <= __IBMCPP__))
 #  define __EXCEPTION_WAS_REDEFINED 1
 #  define exception __math_exception
+#  ifdef _STLP_WCE_EVC3
+#   pragma warning(disable: 4005)
+#  endif
 # endif
 
 # include _STLP_NATIVE_C_HEADER(math.h)
@@ -31,6 +34,9 @@
 # if defined (__EXCEPTION_WAS_REDEFINED)
 #  undef exception
 #  undef __EXCEPTION_WAS_REDEFINED
+#  ifdef _STLP_WCE_EVC3
+#   pragma warning(default: 4005)
+#  endif
 # endif
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x244)

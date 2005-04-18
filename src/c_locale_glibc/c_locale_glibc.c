@@ -96,7 +96,7 @@ _Locale_extract_name ( const char *cname, char *into, int category )
 }
 
 char* _Locale_name(const struct locale_data* gcc_data, 
-			      char* buf)
+            char* buf)
 {
   if (!(gcc_data && gcc_data->name)) return 0;
   strncpy(buf, gcc_data->name, _Locale_MAX_SIMPLE_NAME);
@@ -113,7 +113,7 @@ char* _Locale_name(const struct locale_data* gcc_data,
     doing that.  */
 const struct locale_data *
 _Find_locale (char *locale_path, size_t locale_path_len,
-	      int category, char **name)
+        int category, char **name)
 {
   return __nl_find_locale(locale_path, locale_path_len, category, name);
 }
@@ -142,14 +142,14 @@ _Category_create(const char * name, int category)
   
   if (locpath_var != NULL && locpath_var[0] != '\0')
     if (argz_create_sep (locpath_var, ':',
-			 &locale_path, &locale_path_len) != 0)
+       &locale_path, &locale_path_len) != 0)
       return NULL;
   
   if (argz_add_sep (&locale_path, &locale_path_len, __LOCALE_PATH, ':') != 0)
     return NULL;
 
   return _Find_locale(locale_path, locale_path_len, 
-		      category, (char**)&name);
+          category, (char**)&name);
 }
 
 
@@ -226,7 +226,7 @@ _Locale_numeric_create(const char * name) {
 
 
 char* _Locale_numeric_name(const void* lnum, 
-				      char* buf) {
+              char* buf) {
   return _Locale_name(((struct _Locale_ctype*)lnum)->gcc_data, buf);
 }
 void _Locale_numeric_destroy(void* lnum)   
@@ -273,7 +273,7 @@ void* _Locale_monetary_create(const char* name) {
 }
 
 char* _Locale_monetary_name(const void* lmon,
-			    char* buf) {
+          char* buf) {
   return _Locale_name(((struct _Locale_monetary*)lmon)->gcc_data, buf);
 }
 
@@ -341,7 +341,7 @@ void* _Locale_time_create(const char * name) {
 }
 
 char* _Locale_time_name(const void* ltime, 
-			char* buf) {
+      char* buf) {
   return _Locale_name(((struct _Locale_time*)ltime)->gcc_data, buf);
 }
 char* _Locale_extract_time_name(const char* cname, char* buf) {
@@ -352,20 +352,20 @@ void _Locale_time_destroy(void* ltime) {
   free(ltime);
 }
 const char * _Locale_full_monthname(struct _Locale_time *ltime, int month) {
-	const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(MON_1)]);
-	return names[month]; 
+  const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(MON_1)]);
+  return names[month]; 
 }
 const char * _Locale_abbrev_monthname(struct _Locale_time *ltime, int month) {
-	const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(ABMON_1)]);
-	return names[month]; 
+  const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(ABMON_1)]);
+  return names[month]; 
 }
 const char * _Locale_full_dayofweek(struct _Locale_time *ltime, int day) {
-	const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(DAY_1)]);
-	return names[day]; 
+  const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(DAY_1)]);
+  return names[day]; 
 }
 const char * _Locale_abbrev_dayofweek(struct _Locale_time *ltime, int day) {
-	const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(ABDAY_1)]);
-	return names[day]; 
+  const char **names = (const char **)&(ltime->gcc_data->values[_NL_ITEM_INDEX(ABDAY_1)]);
+  return names[day]; 
 }
 const char* _Locale_d_t_fmt(struct _Locale_time* ltime) {
   return ltime->gcc_data->values[_NL_ITEM_INDEX(D_T_FMT)].string; 
@@ -499,7 +499,7 @@ void* _Locale_ctype_create(const char * name) {
   return lctype;
 }
 char* _Locale_ctype_name(const void* lctype,
-			 char* buf) {
+       char* buf) {
   return _Locale_name(((struct _Locale_ctype*)lctype)->gcc_data, buf);
 }
 void _Locale_ctype_destroy(void* lctype) {
@@ -636,9 +636,9 @@ size_t _Locale_mbtowc(struct _Locale_ctype *l,
 }
 
 size_t _Locale_wctomb(struct _Locale_ctype *l,
-		      char *to, size_t n,
-		      const wchar_t c,
-		      mbstate_t *shift_state)
+          char *to, size_t n,
+          const wchar_t c,
+          mbstate_t *shift_state)
 {
   char buf [MB_LEN_MAX];
   int ret;
@@ -658,8 +658,8 @@ size_t _Locale_wctomb(struct _Locale_ctype *l,
 }
 
 size_t _Locale_unshift(struct _Locale_ctype *l,
-		       mbstate_t * st,
-		       char *buf, size_t n, char **next) {
+           mbstate_t * st,
+           char *buf, size_t n, char **next) {
   *next = buf; /* JGS stateless, so don't need to do anything? */
   return 0;
 }
@@ -688,19 +688,19 @@ char* _Locale_extract_collate_name(const char* cname, char* buf) {
 
 /* copied from the IRIX version -JGS */
 char* _Locale_compose_name(char* buf,
-			   const char* ctype, const char* numeric,
-			   const char* time, const char* collate,
-			   const char* monetary, const char* messages,
-			   const char *default_name)
+         const char* ctype, const char* numeric,
+         const char* time, const char* collate,
+         const char* monetary, const char* messages,
+         const char *default_name)
 {
    (void) default_name;
 
     if ( !strcmp ( ctype, numeric ) &&
-	 !strcmp ( ctype, time ) &&
-	 !strcmp ( ctype, collate ) &&
-	 !strcmp ( ctype, monetary ) &&
-	 !strcmp ( ctype, messages ) )
-	return strcpy ( buf, ctype );
+   !strcmp ( ctype, time ) &&
+   !strcmp ( ctype, collate ) &&
+   !strcmp ( ctype, monetary ) &&
+   !strcmp ( ctype, messages ) )
+  return strcpy ( buf, ctype );
 
     strcpy ( buf, "/" );
     strcat ( buf, ctype );
@@ -731,8 +731,8 @@ char* _Locale_compose_name(char* buf,
  */
 int
 _Locale_strcmp(struct _Locale_collate * l,
-	       const char *s1, size_t n1,
-	       const char *s2, size_t n2)
+         const char *s1, size_t n1,
+         const char *s2, size_t n2)
 {
   int ret;
   int minN = n1 < n2 ? n1 : n2;
@@ -747,8 +747,8 @@ _Locale_strcmp(struct _Locale_collate * l,
 
 
 int _Locale_strwcmp(struct _Locale_collate*l,
-		    const wchar_t*s1, size_t n1,
-		    const wchar_t*s2, size_t n2)
+        const wchar_t*s1, size_t n1,
+        const wchar_t*s2, size_t n2)
 {
   int ret;
   int minN = n1 < n2 ? n1 : n2;
@@ -764,7 +764,7 @@ int _Locale_strwcmp(struct _Locale_collate*l,
 
 
 size_t _Locale_strxfrm(struct _Locale_collate* lcollate,
-		       char* dest, size_t destN, const char* src, size_t srcN)
+           char* dest, size_t destN, const char* src, size_t srcN)
 {
   size_t n;
   n = strxfrm(dest, src, destN);
@@ -775,8 +775,8 @@ size_t _Locale_strxfrm(struct _Locale_collate* lcollate,
 }
 
 size_t _Locale_strwxfrm(struct _Locale_collate* lcollate,
-			wchar_t* dest, size_t destN, 
-			const wchar_t* src, size_t srcN)
+      wchar_t* dest, size_t destN, 
+      const wchar_t* src, size_t srcN)
 {
   size_t n;
   n = wcsxfrm(dest, src, destN);

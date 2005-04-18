@@ -17,9 +17,40 @@
 #ifndef _STLP_BOOST_TYPE_TRAITS_H
 #define _STLP_BOOST_TYPE_TRAITS_H
 
-# include <boost/type_traits.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_float.hpp>
+#include <boost/type_traits/has_trivial_constructor.hpp>
+#include <boost/type_traits/has_trivial_copy.hpp>
+#include <boost/type_traits/has_trivial_assign.hpp>
+#include <boost/type_traits/has_trivial_destructor.hpp>
+#include <boost/type_traits/is_pod.hpp>
+#include <boost/type_traits/is_pointer.hpp>
+#include <boost/type_traits/is_reference.hpp>
+#include <boost/type_traits/remove_cv.hpp>
+#include <boost/type_traits/is_same.hpp>
 
+/*
+ * This file mostly wraps boost type_traits in the STLport type_traits.
+ * When checking a type traits like trivial assign operator for instance
+ * both the boost value and STLport values has to be taken into account
+ * as we don't know what the user might have prefer, specializing the boost
+ * type traits or the STLport one.
+ */
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp> struct _IsRef {
+  enum { _Ret = ::boost::is_reference<_Tp>::value };
+};
+
+template <class _Tp> struct _IsPtr {
+  enum { _Ret = ::boost::is_pointer<_Tp>::value };
+};
+
+template <class _Tp> struct _IsPtrType {
+  enum { is_pointer = ::boost::is_pointer<_Tp>::value };
+  typedef typename __bool2type<is_pointer>::_Ret _Type;
+  static _Type _Ret() { return _Type(); }
+};
 
 template <class _Tp> struct _Is_integer {
   enum { is_integral = ::boost::is_integral<_Tp>::value };
@@ -53,10 +84,8 @@ template <class _Tp1, class _Tp2>
 struct _BothPtrType {
   enum { pointer1 = ::boost::is_pointer<_Tp1>::value };
   enum { pointer2 = ::boost::is_pointer<_Tp2>::value };
-  typedef typename __bool2type<pointer1>::_Ret _Type1;
-  typedef typename __bool2type<pointer2>::_Ret _Type2;
-  
-  typedef typename _Land2<_Type1, _Type2>::_Ret _Type;
+
+  typedef typename __bool2type<pointer1 && pointer2>::_Ret _Type;
   static _Type _Ret() { return _Type(); }
 };
 
@@ -67,26 +96,50 @@ struct _OKToMemCpy {
   typedef typename ::boost::remove_cv<_Tp2>::type uncv2;
 
   enum { same = ::boost::is_same<uncv1, uncv2>::value };
-  enum { trivial_assign = ::boost::has_trivial_assign<uncv1>::value };
+  enum { boost_trivial_assign = ::boost::has_trivial_assign<uncv1>::value };
+  typedef typename __type_traits<uncv1>::has_trivial_assignment_operator _TrivialAssign;
+  enum { stlport_trivial_assign = __type2bool<_TrivialAssign>::_Ret };
+  enum { trivial_assign = boost_trivial_assign || stlport_trivial_assign };
 
-  typedef typename __bool2type<same>::_Ret _Same;
-  typedef typename __bool2type<trivial_assign>::_Ret _Trivial;
+  typedef typename __bool2type<same && trivial_assign>::_Ret _Type;
+  static _Type _Answer() { return _Type(); }
+};
 
-  typedef typename _Land2<_Same, _Trivial>::_Ret _Type;
+template <class _Tp>
+struct _TrivialUCopy {
+  enum { boost_trivial_copy = ::boost::has_trivial_copy<_Tp>::value };
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCopy;
+  enum { stlport_trivial_copy = __type2bool<_TrivialCopy>::_Ret };
+  enum { trivial_copy = boost_trivial_copy || stlport_trivial_copy };
+
+  enum { boost_trivial_assign = ::boost::has_trivial_assign<_Tp>::value };
+  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAssign;
+  enum { stlport_trivial_assign = __type2bool<_TrivialAssign>::_Ret };
+  enum { trivial_assign = boost_trivial_assign || stlport_trivial_assign };
+
+  typedef typename __bool2type<trivial_copy && trivial_assign>::_Ret _Ret;
+};
+
+template <class _Tp1, class _Tp2>
+struct _TrivialUCopyAux {
+  enum { trivial_copy = _TrivialUCopy<_Tp1>::trivial_copy };
+  enum { trivial_assign = _TrivialUCopy<_Tp1>::trivial_assign };
+
+  typedef typename ::boost::remove_cv<_Tp1>::type uncv1;
+  typedef typename ::boost::remove_cv<_Tp2>::type uncv2;
+  enum { same = ::boost::is_same<uncv1, uncv2>::value };
+
+  typedef typename __bool2type<trivial_copy && trivial_assign && same>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
 
 template <class _Tp>
 struct _DefaultZeroValue {
-  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
-  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
+  enum { is_integral = ::boost::is_integral<_Tp>::value };
+  enum { is_float = ::boost::is_float<_Tp>::value };
+  enum { is_pointer = ::boost::is_pointer<_Tp>::value };
 
-  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-
-  enum { pointer = ::boost::is_pointer<_Tp>::value };
-  typedef typename __bool2type< pointer >::_Ret _Tr4;
-
-  typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
+  typedef typename __bool2type<is_integral || is_float || is_pointer>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
 

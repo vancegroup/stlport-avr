@@ -31,35 +31,35 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LogicTest);
 //
 void LogicTest::logicand()
 {
-  int input1 [4] = { 1, 1, 0, 1 };
-  int input2 [4] = { 0, 1, 0, 0 };
+  bool input1 [4] = { true, true, false, true };
+  bool input2 [4] = { false, true, false, false };
 
-  int output [4];
-  transform((int*)input1, (int*)input1 + 4, (int*)input2, (int*)output, logical_and<bool>());
+  bool output [4];
+  transform((bool*)input1, (bool*)input1 + 4, (bool*)input2, (bool*)output, logical_and<bool>());
 
-  CPPUNIT_ASSERT(output[0]==0);
-  CPPUNIT_ASSERT(output[1]==1);
-  CPPUNIT_ASSERT(output[2]==0);
-  CPPUNIT_ASSERT(output[3]==0);
+  CPPUNIT_ASSERT(output[0]==false);
+  CPPUNIT_ASSERT(output[1]==true);
+  CPPUNIT_ASSERT(output[2]==false);
+  CPPUNIT_ASSERT(output[3]==false);
 }
 void LogicTest::logicnot()
 {
   bool input [7] = { 1, 0, 0, 1, 1, 1, 1 };
 
   int n = 0;
-  count_if(input, input + 7, logical_not<bool>(), n);
+  n = count_if(input, input + 7, logical_not<bool>());
   CPPUNIT_ASSERT(n==2);
 }
 void LogicTest::logicor()
 {
-  int input1 [4] = { 1, 1, 0, 1 };
-  int input2 [4] = { 0, 1, 0, 0 };
+  bool input1 [4] = { true, true, false, true };
+  bool input2 [4] = { false, true, false, false };
 
-  int output [4];
-  transform((int*)input1, (int*)input1 + 4, (int*)input2, (int*)output, logical_or<bool>());
+  bool output [4];
+  transform((bool*)input1, (bool*)input1 + 4, (bool*)input2, (bool*)output, logical_or<bool>());
 
-  CPPUNIT_ASSERT(output[0]==1);
-  CPPUNIT_ASSERT(output[1]==1);
-  CPPUNIT_ASSERT(output[2]==0);
-  CPPUNIT_ASSERT(output[3]==1);
+  CPPUNIT_ASSERT(output[0]==true);
+  CPPUNIT_ASSERT(output[1]==true);
+  CPPUNIT_ASSERT(output[2]==false);
+  CPPUNIT_ASSERT(output[3]==true);
 }

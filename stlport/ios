@@ -24,11 +24,12 @@
 #  include <stl/_prolog.h>
 # endif
 
-# if defined ( _STLP_OWN_IOSTREAMS )
-#  include <stl/_ios.h>
-# elif !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <wrap_std/ios>
+# ifdef _STLP_PRAGMA_ONCE
+#  pragma once
 # endif
+
+# include <stl/_ioserr.h>
+# include <stl/_ios.h>
 
 # if (_STLP_OUTERMOST_HEADER_ID == 0x1032)
 #  include <stl/_epilog.h>

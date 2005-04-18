@@ -43,12 +43,13 @@ template <class _CharT> class collate_byname {};
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate<char> : public locale::facet 
 {
-  friend class _Locale;
+  friend class _Locale_impl;
+
 public:
   typedef char   char_type;
   typedef string string_type;
 
-  explicit collate(size_t __refs = 0) : _BaseFacet(__refs) {}
+  explicit collate(size_t __refs = 0) : locale::facet(__refs) {}
 
   int compare(const char* __low1, const char* __high1,
               const char* __low2, const char* __high2) const {
@@ -81,12 +82,13 @@ private:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate<wchar_t> : public locale::facet 
 {
-  friend class _Locale;
+  friend class _Locale_impl;
+
 public:
   typedef wchar_t char_type;
   typedef wstring string_type;
 
-  explicit collate(size_t __refs = 0) : _BaseFacet(__refs) {}
+  explicit collate(size_t __refs = 0) : locale::facet(__refs) {}
 
   int compare(const wchar_t* __low1, const wchar_t* __high1,
               const wchar_t* __low2, const wchar_t* __high2) const {
@@ -158,20 +160,25 @@ private:
 
 # endif /* NO_WCHAR_T */
 
+#if defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  define locale _STLP_NO_MEM_T_NAME(loc)
+#endif
 
-template <class _CharT>
+template <class _CharT, class _Traits, class _Alloc>
 bool 
 __locale_do_operator_call (const locale* __that, 
-                           const basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> >& __x,
-                           const basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> >& __y) 
+                           const basic_string<_CharT, _Traits, _Alloc>& __x,
+                           const basic_string<_CharT, _Traits, _Alloc>& __y) 
 {
   collate<_CharT>* __f = (collate<_CharT>*)__that->_M_get_facet(collate<_CharT>::id);
   if (!__f)
     __that->_M_throw_runtime_error();
   return __f->compare(__x.data(), __x.data() + __x.size(),
-                      __y.data(), __y.data() + __y.size()) < 0;
-  
+                      __y.data(), __y.data() + __y.size()) < 0;  
 }
+#if defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  undef locale
+#endif
 
 _STLP_END_NAMESPACE
 

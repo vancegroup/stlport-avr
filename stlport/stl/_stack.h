@@ -44,8 +44,15 @@ template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
-class stack {
-
+class stack 
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+#  if defined (_STLP_STACK_ARGS)
+            : public __stlport_class<stack<_Tp> >
+#  else
+            : public __stlport_class<stack<_Tp, _Sequence> >
+#  endif
+#endif
+{
 # ifdef _STLP_STACK_ARGS 
   typedef deque<_Tp> _Sequence;
   typedef stack<_Tp> _Self;
@@ -61,22 +68,23 @@ public:
   typedef typename _Sequence::reference       reference;
   typedef typename _Sequence::const_reference const_reference;
 protected:
-  _Sequence _M_s;
+  //c is a Standard name (23.2.3.3), do no make it STLport naming convention compliant.
+  _Sequence c;
 public:
-  stack() : _M_s() {}
-  explicit stack(const _Sequence& __s) : _M_s(__s) {}
+  stack() : c() {}
+  explicit stack(const _Sequence& __s) : c(__s) {}
 
   stack(__move_source<_Self> src)
-    : _M_s(_AsMoveSource(src.get()._M_s)) {
+    : c(_AsMoveSource(src.get().c)) {
   }
 
-  bool empty() const { return _M_s.empty(); }
-  size_type size() const { return _M_s.size(); }
-  reference top() { return _M_s.back(); }
-  const_reference top() const { return _M_s.back(); }
-  void push(const value_type& __x) { _M_s.push_back(__x); }
-  void pop() { _M_s.pop_back(); }
-  const _Sequence& _Get_s() const { return _M_s; }
+  bool empty() const { return c.empty(); }
+  size_type size() const { return c.size(); }
+  reference top() { return c.back(); }
+  const_reference top() const { return c.back(); }
+  void push(const value_type& __x) { c.push_back(__x); }
+  void pop() { c.pop_back(); }
+  const _Sequence& _Get_s() const { return c; }
 };
 
 # ifndef _STLP_STACK_ARGS

@@ -105,8 +105,8 @@ typedef EH_STD::hash_set<void*, ::hash_void, EH_STD::equal_to<void*> > allocatio
 
 static allocation_set& alloc_set()
 {
-	static allocation_set s;
-	return s;
+  static allocation_set s;
+  return s;
 }
 
 // Prevents infinite recursion during allocation
@@ -119,70 +119,70 @@ _STLP_INSTRUMENT_FILE();
 
 # if !defined (NO_FAST_ALLOCATOR)
 //
-//	FastAllocator -- speeds up construction of TestClass objects when
+//  FastAllocator -- speeds up construction of TestClass objects when
 // TESTCLASS_DEEP_DATA is enabled, and speeds up tracking of allocations
 // when the suite is run with the -t option.
 //
 class FastAllocator
 {
 public:
-//	FastAllocator() : mFree(0), mUsed(0) {}
+//  FastAllocator() : mFree(0), mUsed(0) {}
 
-	
-	static void *Allocate( size_t s )
-	{
-	  void *result = 0;
+  
+  static void *Allocate( size_t s )
+  {
+    void *result = 0;
 
-		if ( s <= sizeof( Block ) )
-		{
-			if ( mFree != 0 )
-			{
-				result = mFree;
-				mFree = mFree->next;
-			}
-			else if ( mBlocks != 0 && mUsed < kBlockCount )
-			{
-				result =  (void*)&mBlocks[mUsed++];
-			}
-		}
-	 	return result;
-	}
-	
-	static bool Free( void* p )
-	{
-		Block* b = (Block*)p;
-		if ( mBlocks == 0 || b < mBlocks || b >= mBlocks + kBlockCount )
-			return false;
-		b->next = mFree;
-		mFree = b;
-		return true;
-	}
-	
-	struct Block;
-	friend struct Block;
-	
-	enum
-	{
-		// Number of fast allocation blocks to create.
-		kBlockCount = 1500,
-		
-		// You may need to adjust this number for your platform.
-		// A good choice will speed tests. A bad choice will still work.
-		kMinBlockSize = 48
-	};
-	
-	struct Block
-	{
-		union { 
+    if ( s <= sizeof( Block ) )
+    {
+      if ( mFree != 0 )
+      {
+        result = mFree;
+        mFree = mFree->next;
+      }
+      else if ( mBlocks != 0 && mUsed < kBlockCount )
+      {
+        result =  (void*)&mBlocks[mUsed++];
+      }
+    }
+     return result;
+  }
+  
+  static bool Free( void* p )
+  {
+    Block* b = (Block*)p;
+    if ( mBlocks == 0 || b < mBlocks || b >= mBlocks + kBlockCount )
+      return false;
+    b->next = mFree;
+    mFree = b;
+    return true;
+  }
+  
+  struct Block;
+  friend struct Block;
+  
+  enum
+  {
+    // Number of fast allocation blocks to create.
+    kBlockCount = 1500,
+    
+    // You may need to adjust this number for your platform.
+    // A good choice will speed tests. A bad choice will still work.
+    kMinBlockSize = 48
+  };
+  
+  struct Block
+  {
+    union { 
                     Block *next;
                     double dummy; // fbp - force alignment
                     char dummy2[kMinBlockSize];
                 };
-	};
-	
-	static Block* mBlocks;
-	static Block *mFree;
-	static size_t mUsed;
+  };
+  
+  static Block* mBlocks;
+  static Block *mFree;
+  static size_t mUsed;
 };
 
 FastAllocator::Block *FastAllocator::mBlocks = 
@@ -231,46 +231,46 @@ void* _STLP_CALL operator new(size_t s)
 throw(EH_STD::bad_alloc)
 #endif
 {
-	return OperatorNew( s );
+  return OperatorNew( s );
 }
 
 #ifdef EH_USE_NOTHROW
 void* _STLP_CALL operator new(size_t size, const EH_STD::nothrow_t&) throw()
 {
-	try
-	{
-		return OperatorNew( size );
-	}
-	catch(...)
-	{
-		return 0;
-	}
+  try
+  {
+    return OperatorNew( size );
+  }
+  catch(...)
+  {
+    return 0;
+  }
 }
 #endif
 
 # if defined (EH_VECTOR_OPERATOR_NEW)
 void* _STLP_CALL operator new[](size_t size ) throw(EH_STD::bad_alloc)
 {
-	return OperatorNew( size );
+  return OperatorNew( size );
 }
 
 #ifdef EH_USE_NOTHROW
 void* _STLP_CALL operator new[](size_t size, const EH_STD::nothrow_t&) throw()
 {
-	try
-	{
-		return OperatorNew( size );
-	}
-	catch(...)
-	{
-		return 0;
-	}
+  try
+  {
+    return OperatorNew( size );
+  }
+  catch(...)
+  {
+    return 0;
+  }
 }
 #endif
 
 void _STLP_CALL operator delete[](void* ptr) throw()
 {
-	operator delete( ptr );
+  operator delete( ptr );
 }
 # endif
 
@@ -292,7 +292,7 @@ void _STLP_CALL operator delete(void* s)
         using_alloc_set = false;
       }
     }
-# if ! defined (NO_FAST_ALLOCATOR)	
+# if ! defined (NO_FAST_ALLOCATOR)  
     if ( !gFastAllocator.Free( s ) )
 # endif   
       EH_CSTD::free(s);
@@ -301,18 +301,18 @@ void _STLP_CALL operator delete(void* s)
 
 
 /*===================================================================================
-	ClearAllocationSet  (private helper)
+  ClearAllocationSet  (private helper)
 
-	EFFECTS:  Empty the set of allocated blocks.
+  EFFECTS:  Empty the set of allocated blocks.
 ====================================================================================*/
 void TestController::ClearAllocationSet()
 {
-	if ( !using_alloc_set )
-	{
-		using_alloc_set = true;
-		alloc_set().clear();
-		using_alloc_set = false;
-	}
+  if ( !using_alloc_set )
+  {
+    using_alloc_set = true;
+    alloc_set().clear();
+    using_alloc_set = false;
+  }
 }
 
 
@@ -320,9 +320,9 @@ bool TestController::ReportLeaked()
 {
 
   EndLeakDetection();
-	
+  
   if (using_alloc_set)
-	  EH_ASSERT( alloc_count == static_cast<int>(alloc_set().size()) );
+    EH_ASSERT( alloc_count == static_cast<int>(alloc_set().size()) );
 
     if ( alloc_count!=0 || object_count!=0 )
     {
@@ -332,7 +332,7 @@ bool TestController::ReportLeaked()
             EH_STD::cerr<<"ERROR : "<<alloc_count<<" outstanding allocations.\n";
         if (object_count)
           EH_STD::cerr<<"ERROR : "<<object_count<<" non-destroyed objects.\n";
-	alloc_count = object_count = 0;
+  alloc_count = object_count = 0;
 
     return true;
 
@@ -344,11 +344,11 @@ bool TestController::ReportLeaked()
 
 
 /*===================================================================================
-	PrintTestName
+  PrintTestName
 
-	EFFECTS: Prints information about the current test. If err is false, ends with
-		an ellipsis, because the test is ongoing. If err is true an error is being
-		reported, and the output ends with an endl.
+  EFFECTS: Prints information about the current test. If err is false, ends with
+    an ellipsis, because the test is ongoing. If err is true an error is being
+    reported, and the output ends with an endl.
 ====================================================================================*/
 
 void
@@ -369,8 +369,8 @@ void TestController::ReportSuccess(int count) {
 
 long& TestController::Failure_threshold()
 {
-	static long failure_threshold = kNotInExceptionTest;
-	return failure_threshold;
+  static long failure_threshold = kNotInExceptionTest;
+  return failure_threshold;
 }
 
 # if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)

@@ -18,22 +18,23 @@
  */
 
 #ifndef _STLP_DEBUG_H
-# define _STLP_DEBUG_H
+#define _STLP_DEBUG_H
 
-# if defined (_STLP_ASSERTIONS) || defined (_STLP_DEBUG)
+#if defined (_STLP_ASSERTIONS) || defined (_STLP_DEBUG)
 
-#ifndef _STLP_CONFIG_H
-# include <stl/_config.h>
+#ifndef _STLP_TYPE_TRAITS_H
+#  include <stl/type_traits.h>
 #endif
 
-# if !defined (_STLP_EXTRA_OPERATORS_FOR_DEBUG) && \
-     ( defined (_STLP_BASE_MATCH_BUG) || (defined (_STLP_MSVC) && _STLP_MSVC < 1100 ) )
-#  define _STLP_EXTRA_OPERATORS_FOR_DEBUG
-# endif
 
-# if !defined(_STLP_FILE__)
-#   define _STLP_FILE__ __FILE__
-# endif
+#if !defined (_STLP_EXTRA_OPERATORS_FOR_DEBUG) && \
+   ( defined (_STLP_BASE_MATCH_BUG) || (defined (_STLP_MSVC) && _STLP_MSVC < 1100 ) )
+#  define _STLP_EXTRA_OPERATORS_FOR_DEBUG
+#endif
+
+#if !defined(_STLP_FILE__)
+#  define _STLP_FILE__ __FILE__
+#endif
 
 enum {
   _StlFormat_ERROR_RETURN,
@@ -45,6 +46,7 @@ enum {
   _StlMsg_ERASE_PAST_THE_END,
   _StlMsg_OUT_OF_BOUNDS,
   _StlMsg_NOT_OWNER,
+  _StlMsg_SHOULD_NOT_OWNER,
   _StlMsg_INVALID_ITERATOR,
   _StlMsg_INVALID_LEFTHAND_ITERATOR,
   _StlMsg_INVALID_RIGHTHAND_ITERATOR,
@@ -69,7 +71,7 @@ enum {
 };
 
 /* have to hardcode that ;() */
-# define _StlMsg_MAX 27
+# define _StlMsg_MAX 28
 
 _STLP_BEGIN_NAMESPACE
 
@@ -111,15 +113,19 @@ struct __stl_debug_engine {
 
   static bool _STLP_CALL  _Check_same_owner( const __owned_link& __i1, 
                                              const __owned_link& __i2);
-  static bool _STLP_CALL  _Check_same_owner_or_null( const __owned_link& __i1, 
+  static bool _STLP_CALL  _Check_same_or_null_owner( const __owned_link& __i1, 
                                                      const __owned_link& __i2);
-  static bool  _STLP_CALL _Check_if_owner( const __owned_list*, const __owned_link&);
+  static bool _STLP_CALL  _Check_if_owner( const __owned_list*, const __owned_link&);
+
+  static bool _STLP_CALL  _Check_if_not_owner( const __owned_list*, const __owned_link&);
 
   static void _STLP_CALL  _Verify(const __owned_list*);
   
-  static void _STLP_CALL  _Swap_owners(__owned_list&, __owned_list& /*, bool __swap_roots */ );
+  static void _STLP_CALL  _Swap_owners(__owned_list&, __owned_list&);
  
   static void _STLP_CALL  _Invalidate_all(__owned_list*);
+  
+  static void _STLP_CALL  _Set_owner(__owned_list& /*src*/, __owned_list& /*dst*/);
   
   static void _STLP_CALL  _Stamp_all(__owned_list*, __owned_list*);
 
@@ -196,57 +202,71 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
+/*
+ * Special debug iterator traits having an additionnal static member
+ * method _Check. It is used by the slit debug implementation to check
+ * the special before_begin iterator.
+ */
+template <class _Traits>
+struct _DbgTraits : _Traits {
+  typedef _DbgTraits<typename _Traits::_ConstTraits> _ConstTraits;
+  typedef _DbgTraits<typename _Traits::_NonConstTraits> _NonConstTraits;
+
+  template <class _Iterator>
+  static bool _Check(const _Iterator&) {return true;}
+};
+
 //=============================================================
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, 
                                       const random_access_iterator_tag&) { 
-    return (__i1 < __i2) || (__i1 == __i2);
+  return (__i1 < __i2) || (__i1 == __i2);
 }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2,
                                       const bidirectional_iterator_tag&) { 
-    // check if comparable
-    bool __dummy(__i1==__i2);
-    return (__dummy==__dummy);
+  // check if comparable
+  bool __dummy(__i1==__i2);
+  return (__dummy==__dummy);
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, const forward_iterator_tag&) { 
-    // check if comparable
-    bool __dummy(__i1==__i2);
-    return (__dummy==__dummy);
+inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2, 
+                                      const forward_iterator_tag&) { 
+  // check if comparable
+  bool __dummy(__i1==__i2);
+  return (__dummy==__dummy);
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, const input_iterator_tag&) { 
-    return true; 
+inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, 
+                                      const input_iterator_tag&) { 
+  return true; 
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, const output_iterator_tag&) { 
-    return true; 
+inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&, 
+                                      const output_iterator_tag&) { 
+  return true; 
 }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i2) { 
-    return __valid_range(__i1,__i2,_STLP_ITERATOR_CATEGORY(__i1, _Iterator));
+inline bool _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i2) {
+  return __valid_range(__i1,__i2,_STLP_ITERATOR_CATEGORY(__i1, _Iterator));
 }
 
 // Note : that means in range [i1, i2].
 template <class _Iterator>
-inline bool  _STLP_CALL __in_range(const _Iterator& _It, const _Iterator& __i1,
-                                   const _Iterator& __i2) { 
-    return __valid_range(__i1,_It,_STLP_ITERATOR_CATEGORY(__i1, _Iterator)) && 
-        __valid_range(_It,__i2,_STLP_ITERATOR_CATEGORY(_It, _Iterator));
+inline bool  _STLP_CALL __in_range(const _Iterator& _It, 
+                                   const _Iterator& __i1, const _Iterator& __i2) { 
+  return __valid_range(__i1,_It) && __valid_range(_It,__i2);
 }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __in_range(const _Iterator& __first, const _Iterator& __last, 
                                    const _Iterator& __start, const _Iterator& __finish) { 
-    return __valid_range(__first,__last,_STLP_ITERATOR_CATEGORY(__first, _Iterator)) &&
-        __valid_range(__start,__first,_STLP_ITERATOR_CATEGORY(__first, _Iterator)) && 
-        __valid_range(__last,__finish,_STLP_ITERATOR_CATEGORY(__last, _Iterator));
+  return __valid_range(__first,__last) && __valid_range(__start,__first) && __valid_range(__last,__finish);
 }
 
 //==========================================================
@@ -274,21 +294,21 @@ public:
     _Invalidate();
   }
   
-  const __owned_list* _Owner() const { 
-    return _M_owner; 
+  const __owned_list* _Owner() const {
+    return _M_owner;
   }
-  __owned_list* _Owner() { 
-    return _M_owner; 
+  __owned_list* _Owner() {
+    return _M_owner;
   }
-  void _Set_owner(const __owned_list* __o)  { 
-    _M_owner= __CONST_CAST(__owned_list*,__o); 
+  void _Set_owner(const __owned_list* __o) {
+    _M_owner= __CONST_CAST(__owned_list*,__o);
   }
   bool  _Valid() const { 
-    return _M_owner !=0; 
+    return _M_owner != 0;
   }
 
-  void _Invalidate() { _M_owner=0; _M_next = 0; }
-  void _Link_to_self() { _M_next= 0; }
+  void _Invalidate() { _M_owner = 0; _M_next = 0; }
+  void _Link_to_self() { _M_next = 0; }
 
   __owned_link* _Next() { return _M_next; }
   const __owned_link* _Next() const { return _M_next; }
@@ -301,10 +321,10 @@ public:
 
 class _STLP_CLASS_DECLSPEC __owned_list {
 public:
-  __owned_list(const void* __o) {
+  __owned_list(void* __o) {
     //    fprintf(stderr, "__owned_list(): %p\n",(void*)this);
-    _M_node._M_owner = __CONST_CAST(__owned_list*, __REINTERPRET_CAST(const __owned_list*,__o)); 
-    _M_node._M_next=0;
+    _M_node._M_owner = __REINTERPRET_CAST(__owned_list*,__o);
+    _M_node._M_next = 0;
   }
   ~__owned_list() {
     //    fprintf(stderr, "~__owned_list(): %p\n",(void*)this);
@@ -319,9 +339,9 @@ public:
     return (void*)_M_node._M_owner; 
   }
   bool  _Valid() const { 
-    return _M_node._M_owner!=0; 
+    return _M_node._M_owner != 0; 
   }
-  void _Invalidate() { _M_node._M_owner=0; }
+  void _Invalidate() { _M_node._M_owner = 0; }
   
   __owned_link* _First() { return _M_node._Next(); }
   __owned_link* _Last() { return 0 ; }
@@ -340,15 +360,19 @@ public:
   void _Invalidate_all() { 
     __stl_debugger::_Invalidate_all(this);
   }
+
+  void _Set_owner(__owned_list& __y) {
+    __stl_debugger::_Set_owner(*this, __y);
+  }
   
   mutable __owned_link _M_node; 
   mutable _STLP_mutex  _M_lock;
   
 private:
-  // should never be called, should be left undefined,
+  // should never be called, should be left not implemented,
   // but some compilers complain about it ;(
   __owned_list(const __owned_list&){}
-  void operator=(const __owned_list&) {}
+  __owned_list& operator = (const __owned_list&) { return *this; }
 
   friend class __owned_link;
   friend struct __stl_debug_engine<bool>;
@@ -360,76 +384,44 @@ private:
 // forward declaratioins
 
 template <class _Iterator>
-bool  _STLP_CALL __check_range(const _Iterator&, const _Iterator&);
+bool _STLP_CALL __check_range(const _Iterator&, const _Iterator&);
 template <class _Iterator>
-bool _STLP_CALL  __check_range(const _Iterator&, 
-                               const _Iterator&, const _Iterator&);
+bool _STLP_CALL __check_range(const _Iterator&, 
+                              const _Iterator&, const _Iterator&);
 template <class _Iterator>
-bool _STLP_CALL  __check_range(const _Iterator&, const _Iterator& , 
-                               const _Iterator&, const _Iterator& );
+bool _STLP_CALL __check_range(const _Iterator&, const _Iterator& , 
+                              const _Iterator&, const _Iterator& );
+template <class _Tp>
+bool _STLP_CALL __check_ptr_range(const _Tp*, const _Tp*);
+
 
 template <class _Iterator>
-void _STLP_CALL  __invalidate_range(const __owned_list* __base, 
-                                    const _Iterator& __first,
-                                    const _Iterator& __last);
+void _STLP_CALL __invalidate_range(const __owned_list* __base, 
+                                   const _Iterator& __first,
+                                   const _Iterator& __last);
 
 template <class _Iterator>
-void  _STLP_CALL __invalidate_iterator(const __owned_list* __base, 
-                                       const _Iterator& __it);
+void _STLP_CALL __invalidate_iterator(const __owned_list* __base, 
+                                      const _Iterator& __it);
+
+template <class _Iterator>
+void _STLP_CALL __change_range_owner(const _Iterator& __first,
+                                     const _Iterator& __last,
+                                     const __owned_list* __dst);
+
+template <class _Iterator>
+void  _STLP_CALL __change_ite_owner(const _Iterator& __it,
+                                    const __owned_list* __dst);
                                        
 
-#ifndef _STLP_MEMBER_TEMPLATES
-template <class _Tp, class _InputIterator>
-class __range_checker {
-#else
-class _STLP_CLASS_DECLSPEC __range_checker {
-#endif
-protected:
-  __range_checker() {}
-
-#if defined (_STLP_MEMBER_TEMPLATES)
-  template <class _InputIter>
-  __range_checker(const _InputIter& __f, const _InputIter& __l) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
-    _M_check_dispatch(__f, __l, _Integral());
-  }
-
-  template <class _Integer>
-  void _M_check_dispatch(_Integer , _Integer, const __true_type& /*IsIntegral*/) {}
-
-  template <class _InputIter>
-  void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const __false_type& /*IsIntegral*/) {
-    _STLP_DEBUG_CHECK(__check_range(__f,__l))
-  }
-#else //_STLP_MEMBER_TEMPLATES
-  /*
-   * The __true_type and __false_type parameters are here to distinguish
-   * between the 2 constructors if _InputIterator is equal to const _Tp*.
-   */
-  __range_checker(const _Tp *__f, const _Tp *__l, const __true_type&) {
-    _STLP_DEBUG_CHECK(__check_range(__f,__l))
-  }
-  __range_checker(_InputIterator __f, _InputIterator __l, const __false_type&) {
-    _STLP_DEBUG_CHECK(__check_range(__f, __l))
-  }
-#endif //_STLP_MEMBER_TEMPLATES
-};
-
-#ifndef _STLP_MEMBER_TEMPLATES
-# define _STLP_RANGE_CHECKER(a, b) __range_checker<a, b >
-#else
-# define _STLP_RANGE_CHECKER(a, b) __range_checker
-#endif
-
 //============================================================
-
 inline bool _STLP_CALL 
-__check_same_owner( const __owned_link& __i1, const __owned_link& __i2) {
+__check_same_owner(const __owned_link& __i1, const __owned_link& __i2) {
   return __stl_debugger::_Check_same_owner(__i1,__i2);
 }
 inline bool _STLP_CALL  
-__check_same_owner_or_null( const __owned_link& __i1, const __owned_link& __i2) {
-  return __stl_debugger::_Check_same_owner_or_null(__i1,__i2);
+__check_same_or_null_owner(const __owned_link& __i1, const __owned_link& __i2) {
+  return __stl_debugger::_Check_same_or_null_owner(__i1,__i2);
 }
 
 template <class _Iterator>
@@ -442,14 +434,14 @@ template <class _Iterator>
 inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
                                              const _Iterator& __it,
                                              const __false_type&) {
-  return false;
+  return true;
 }
 
 template <class _Iterator>
 inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
                                              const _Iterator& __it,
                                              const __true_type&) {
-  return !__check_if_owner(__owner, __it);
+  return __stl_debugger::_Check_if_not_owner(__owner, (const __owned_link&)__it);
 }
 
 

@@ -24,11 +24,15 @@
  */
 
 #ifndef _STLP_ALGO_C
-# define _STLP_ALGO_C
+#define _STLP_ALGO_C
 
-# if !defined (_STLP_INTERNAL_ALGO_H)
+#if !defined (_STLP_INTERNAL_ALGO_H)
 #  include <stl/_algo.h>
-# endif
+#endif
+
+#ifndef _STLP_INTERNAL_TEMPBUF_H
+#  include <stl/_tempbuf.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -50,9 +54,9 @@ _BidirectionalIter3 __merge_backward(_BidirectionalIter1 __first1,
                                      _Compare __comp);
 
 template <class _Tp>
-# if !(defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x420 ))
+#if !(defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x420 ))
 inline 
-# endif
+#endif
 const _Tp& __median(const _Tp& __a, const _Tp& __b, const _Tp& __c) {
   if (__a < __b)
     if (__b < __c)
@@ -70,9 +74,9 @@ const _Tp& __median(const _Tp& __a, const _Tp& __b, const _Tp& __c) {
 }
 
 template <class _Tp, class _Compare>
-# if !(defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x420 ))
+#if !(defined (__SUNPRO_CC) && (__SUNPRO_CC < 0x420 ))
 inline 
-# endif
+#endif
 const _Tp&
 __median(const _Tp& __a, const _Tp& __b, const _Tp& __c, _Compare __comp) {
   if (__comp(__a, __b))
@@ -92,8 +96,7 @@ __median(const _Tp& __a, const _Tp& __b, const _Tp& __c, _Compare __comp) {
 
 template <class _ForwardIter1, class _ForwardIter2>
 _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
-                     _ForwardIter2 __first2, _ForwardIter2 __last2) 
-{
+                     _ForwardIter2 __first2, _ForwardIter2 __last2) {
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   // Test for empty ranges
@@ -134,31 +137,113 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
   return __first1;
 }
 
-// search_n.  Search for __count consecutive copies of __val.
+template <class _RandomAccessIter, class _Integer, class _Tp,
+          class _BinaryPred, class _Distance>
+_RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last,
+                             _Integer __count, const _Tp& __val, _BinaryPred __pred,
+                             _Distance*, const random_access_iterator_tag &) {
+  _Distance __tailSize = __last - __first;
+  _Distance __pattSize = __count;
 
+  if (__tailSize >= __pattSize) {
+    _RandomAccessIter __backTrack;
+
+    _Distance __remainder, __prevRemainder;
+    _Distance __skipOffset = __pattSize - 1;
+
+    _RandomAccessIter __lookAhead = __first + __skipOffset;
+
+    for (;; __lookAhead += __pattSize ) { // the main loop...
+      //__lookAhead here is always pointing to the last element of next possible match.
+      __tailSize -= __pattSize;
+
+      for (;;) { // the skip loop...
+        if (__pred(*__lookAhead, __val))
+          break;
+        if (__tailSize < __pattSize)
+          return __last;
+
+        __lookAhead += __pattSize;
+        __tailSize -= __pattSize;
+      }
+
+      __remainder = __skipOffset;
+
+      for (__backTrack = __lookAhead - 1; __pred(*__backTrack, __val); --__backTrack ) {
+        if (--__remainder == 0)
+          return (__lookAhead - __skipOffset); //Success
+      }
+
+      for (;;) {
+        if (__remainder > __tailSize)
+          return __last; //failure
+
+        __lookAhead += __remainder;
+        __tailSize -= __remainder;
+
+        if (__pred(*__lookAhead, __val)) {
+          __prevRemainder = __remainder;
+          __backTrack = __lookAhead;
+
+          do {
+            if (--__remainder == 0)
+              return (__lookAhead - __skipOffset); //Success
+
+          } while (__pred(*--__backTrack, __val));
+
+          //adjust remainder for next comparison
+          __remainder += __skipOffset - __prevRemainder;
+        }
+        else
+          break;
+      }
+
+      //__lookAhead here is always pointing to the element of the last mismatch.
+      if (__tailSize < __pattSize)
+        return __last;
+    }
+  }
+
+  return __last; //failure
+}
+
+template <class _ForwardIter, class _Integer, class _Tp,
+          class _Distance, class _BinaryPred>
+_ForwardIter __search_n(_ForwardIter __first, _ForwardIter __last,
+                        _Integer __count, const _Tp& __val, _BinaryPred __pred,
+                        _Distance*, const forward_iterator_tag &) {
+  for (; (__first != __last) && !__pred(*__first, __val); ++__first) {}
+  while (__first != __last) {
+    _Integer __n = __count - 1;
+    _ForwardIter __i = __first;
+    ++__i;
+    while (__i != __last && __n != 0 && __pred(*__i, __val)) {
+      ++__i;
+      --__n;
+    }
+    if (__n == 0)
+      return __first;
+    else if (__i != __last)
+      for (__first = ++__i; (__first != __last) && !__pred(*__first, __val); ++__first) {}
+    else
+      break;
+  }
+  return __last;
+}
+
+// search_n.  Search for __count consecutive copies of __val.
 template <class _ForwardIter, class _Integer, class _Tp>
 _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
                       _Integer __count, const _Tp& __val) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__count <= 0)
     return __first;
-  else {
-    __first = find(__first, __last, __val);
-    while (__first != __last) {
-      _Integer __n = __count - 1;
-      _ForwardIter __i = __first;
-      ++__i;
-      while (__i != __last && __n != 0 && *__i == __val) {
-        ++__i;
-        --__n;
-      }
-      if (__n == 0)
-        return __first;
-      else
-        __first = find(__i, __last, __val);
-    }
-    return __last;
-  }
+  if (__count == 1)
+    //We use find when __count == 1 to use potential find overload.
+    return find(__first, __last, __val);
+  return __search_n(__first, __last, __count, __val, equal_to<_Tp>(),
+                    _STLP_DISTANCE_TYPE(__first, _ForwardIter),
+                    _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
 template <class _ForwardIter, class _Integer, class _Tp, class _BinaryPred>
@@ -168,50 +253,25 @@ _ForwardIter search_n(_ForwardIter __first, _ForwardIter __last,
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__count <= 0)
     return __first;
-  else {
-    while (__first != __last) {
-      if (__binary_pred(*__first, __val))
-        break;
-      ++__first;
-    }
-    while (__first != __last) {
-      _Integer __n = __count - 1;
-      _ForwardIter __i = __first;
-      ++__i;
-      while (__i != __last && __n != 0 && __binary_pred(*__i, __val)) {
-        ++__i;
-        --__n;
-      }
-      if (__n == 0)
-        return __first;
-      else {
-        while (__i != __last) {
-          if (__binary_pred(*__i, __val))
-            break;
-          ++__i;
-        }
-        __first = __i;
-      }
-    }
-    return __last;
-  }
+  return __search_n(__first, __last, __count, __val, __binary_pred,
+                    _STLP_DISTANCE_TYPE(__first, _ForwardIter),
+                    _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 } 
 
 template <class _ForwardIter1, class _ForwardIter2>
 _ForwardIter1 
 find_end(_ForwardIter1 __first1, _ForwardIter1 __last1, 
-         _ForwardIter2 __first2, _ForwardIter2 __last2)
-{
+         _ForwardIter2 __first2, _ForwardIter2 __last2) {
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   return __find_end(__first1, __last1, __first2, __last2,
-# if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
                     _STLP_ITERATOR_CATEGORY(__first1, _ForwardIter1),
                     _STLP_ITERATOR_CATEGORY(__first2, _ForwardIter2),
-# else
+#else
                     forward_iterator_tag(),
                     forward_iterator_tag(),
-# endif
+#endif
                     __equal_to(_STLP_VALUE_TYPE(__first1, _ForwardIter1))
     );
 }
@@ -250,7 +310,7 @@ __unique_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
   return ++__result;
 }
 
-# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _InputIterator, class _BidirectionalIterator, class _BinaryPredicate>
 inline _BidirectionalIterator 
 __unique_copy(_InputIterator __first, _InputIterator __last,
@@ -266,7 +326,7 @@ __unique_copy(_InputIterator __first, _InputIterator __last,
               const random_access_iterator_tag &) {
   return __unique_copy(__first, __last, __result, __binary_pred, forward_iterator_tag());
 }
-# endif /* _STLP_NONTEMPL_BASE_MATCH_BUG */
+#endif /* _STLP_NONTEMPL_BASE_MATCH_BUG */
 
 
 template <class _InputIter, class _OutputIter>
@@ -291,7 +351,7 @@ unique_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
 // rotate and rotate_copy, and their auxiliary functions
 
 template <class _ForwardIter, class _Distance>
-_ForwardIter __rotate(_ForwardIter __first,
+_ForwardIter __rotate_aux(_ForwardIter __first,
                       _ForwardIter __middle,
                       _ForwardIter __last,
                       _Distance*,
@@ -324,7 +384,7 @@ _ForwardIter __rotate(_ForwardIter __first,
 }
 
 template <class _BidirectionalIter, class _Distance>
-_BidirectionalIter __rotate(_BidirectionalIter __first,
+_BidirectionalIter __rotate_aux(_BidirectionalIter __first,
                             _BidirectionalIter __middle,
                             _BidirectionalIter __last,
                             _Distance*,
@@ -351,10 +411,10 @@ _BidirectionalIter __rotate(_BidirectionalIter __first,
 }
 
 template <class _RandomAccessIter, class _Distance, class _Tp>
-_RandomAccessIter __rotate(_RandomAccessIter __first,
-                           _RandomAccessIter __middle,
-                           _RandomAccessIter __last,
-                           _Distance *, _Tp *) {
+_RandomAccessIter __rotate_aux(_RandomAccessIter __first,
+                               _RandomAccessIter __middle,
+                               _RandomAccessIter __last,
+                               _Distance *, _Tp *) {
 
   _Distance __n = __last   - __first;
   _Distance __k = __middle - __first;
@@ -408,20 +468,25 @@ _RandomAccessIter __rotate(_RandomAccessIter __first,
 
 template <class _RandomAccessIter, class _Distance>
 inline _RandomAccessIter 
-__rotate(_RandomAccessIter __first, _RandomAccessIter __middle, _RandomAccessIter __last,
-         _Distance * __dis, const random_access_iterator_tag &) {
-  return __rotate(__first, __middle, __last,
-                  __dis, _STLP_VALUE_TYPE(__first, _RandomAccessIter));
+__rotate_aux(_RandomAccessIter __first, _RandomAccessIter __middle, _RandomAccessIter __last,
+             _Distance * __dis, const random_access_iterator_tag &) {
+  return __rotate_aux(__first, __middle, __last,
+                      __dis, _STLP_VALUE_TYPE(__first, _RandomAccessIter));
 }
 
 template <class _ForwardIter>
 _ForwardIter 
-rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last) {
+__rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last) {
   _STLP_DEBUG_CHECK(__check_range(__first, __middle))
   _STLP_DEBUG_CHECK(__check_range(__middle, __last))
-  return __rotate(__first, __middle, __last,
-                  _STLP_DISTANCE_TYPE(__first, _ForwardIter),
-                  _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+  return __rotate_aux(__first, __middle, __last,
+                      _STLP_DISTANCE_TYPE(__first, _ForwardIter),
+                      _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
+}
+
+template <class _ForwardIter>
+void rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last) {
+  __rotate(__first, __middle, __last);
 }
 
 // Return a random number in the range [0, __n).  This function encapsulates
@@ -455,14 +520,11 @@ void random_shuffle(_RandomAccessIter __first, _RandomAccessIter __last,
     iter_swap(__i, __first + __rand((__i - __first) + 1));
 }
 
-# ifndef _STLP_NO_EXTENSIONS
-
+#if !defined (_STLP_NO_EXTENSIONS)
 // random_sample and random_sample_n (extensions, not part of the standard).
-
 template <class _ForwardIter, class _OutputIter, class _Distance>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
-                            _OutputIter __out, const _Distance __n)
-{
+                            _OutputIter __out, const _Distance __n) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   _Distance __remaining = distance(__first, __last);
   _Distance __m = (min) (__n, __remaining);
@@ -485,8 +547,7 @@ template <class _ForwardIter, class _OutputIter, class _Distance,
           class _RandomNumberGenerator>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
                             _OutputIter __out, const _Distance __n,
-                            _RandomNumberGenerator& __rand)
-{
+                            _RandomNumberGenerator& __rand) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   _Distance __remaining = distance(__first, __last);
   _Distance __m = (min) (__n, __remaining);
@@ -568,7 +629,7 @@ random_sample(_InputIter __first, _InputIter __last,
                          __out_last - __out_first);
 }
 
-# endif /* _STLP_NO_EXTENSIONS */
+#endif /* _STLP_NO_EXTENSIONS */
 
 // partition, stable_partition, and their auxiliary functions
 
@@ -598,8 +659,8 @@ _STLP_INLINE_LOOP _BidirectionalIter __partition(_BidirectionalIter __first,
                                                  _BidirectionalIter __last,
                                                  _Predicate __pred,
                                                  const bidirectional_iterator_tag &) {
-  while (true) {
-    while (true) {
+  for (;;) {
+    for (;;) {
       if (__first == __last)
         return __first;
       else if (__pred(*__first))
@@ -608,7 +669,7 @@ _STLP_INLINE_LOOP _BidirectionalIter __partition(_BidirectionalIter __first,
         break;
     }
     --__last;
-    while (true) {
+    for (;;) {
       if (__first == __last)
         return __first;
       else if (!__pred(*__last))
@@ -621,7 +682,7 @@ _STLP_INLINE_LOOP _BidirectionalIter __partition(_BidirectionalIter __first,
   }
 }
 
-# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _BidirectionalIter, class _Predicate>
 inline
 _BidirectionalIter __partition(_BidirectionalIter __first,
@@ -630,7 +691,7 @@ _BidirectionalIter __partition(_BidirectionalIter __first,
                                const random_access_iterator_tag &) {
   return __partition(__first, __last, __pred, bidirectional_iterator_tag());
 }
-# endif
+#endif
 
 template <class _ForwardIter, class _Predicate>
 _ForwardIter partition(_ForwardIter __first, _ForwardIter __last, _Predicate   __pred) {
@@ -639,19 +700,24 @@ _ForwardIter partition(_ForwardIter __first, _ForwardIter __last, _Predicate   _
 }
 
 
+/* __pred_of_first: false if we know that __pred(*__first) is false, 
+ *                  true when we don't know the result of __pred(*__first).
+ * __not_pred_of_before_last: true if we know that __pred(*--__last) is true,
+ *                            false when we don't know the result of __pred(*--__last).
+ */
 template <class _ForwardIter, class _Predicate, class _Distance>
 _ForwardIter __inplace_stable_partition(_ForwardIter __first,
                                         _ForwardIter __last,
-                                        _Predicate __pred, _Distance __len) {
+                                        _Predicate __pred, _Distance __len, 
+                                        bool __pred_of_first, bool __pred_of_before_last) {
   if (__len == 1)
-    return __pred(*__first) ? __last : __first;
+    return (__pred_of_first && (__pred_of_before_last || __pred(*__first))) ? __last : __first;
   _ForwardIter __middle = __first;
-  advance(__middle, __len / 2);
-  return rotate(__inplace_stable_partition(__first, __middle, __pred, 
-                                           __len / 2),
-                __middle,
-                __inplace_stable_partition(__middle, __last, __pred,
-                                           __len - __len / 2));
+  _Distance __half_len = __len / 2;
+  advance(__middle, __half_len);
+  return __rotate(__inplace_stable_partition(__first, __middle, __pred, __half_len, __pred_of_first, false),
+                  __middle,
+                  __inplace_stable_partition(__middle, __last, __pred, __len - __half_len, true, __pred_of_before_last));
 }
 
 template <class _ForwardIter, class _Pointer, class _Predicate, 
@@ -659,13 +725,18 @@ template <class _ForwardIter, class _Pointer, class _Predicate,
 _ForwardIter __stable_partition_adaptive(_ForwardIter __first,
                                          _ForwardIter __last,
                                          _Predicate __pred, _Distance __len,
-                                         _Pointer __buffer,
-                                         _Distance __buffer_size) {
+                                         _Pointer __buffer, _Distance __buffer_size,
+                                         bool __pred_of_first, bool __pred_of_before_last) {
   if (__len <= __buffer_size) {
     _ForwardIter __result1 = __first;
     _Pointer __result2 = __buffer;
-    for ( ; __first != __last ; ++__first)
-      if (__pred(*__first)) {
+    if ((__first != __last) && (!__pred_of_first || __pred(*__first))) {
+      *__result2 = *__first;
+      ++__result2; ++__first; --__len;
+    }
+    for (; __first != __last ; ++__first, --__len) {
+      if (((__len == 1) && (__pred_of_before_last || __pred(*__first))) ||
+          ((__len != 1) && __pred(*__first))){
         *__result1 = *__first;
         ++__result1;
       }
@@ -673,54 +744,100 @@ _ForwardIter __stable_partition_adaptive(_ForwardIter __first,
         *__result2 = *__first;
         ++__result2;
       }
+    }
     copy(__buffer, __result2, __result1);
     return __result1;
   }
   else {
     _ForwardIter __middle = __first;
-    advance(__middle, __len / 2);
-    return rotate(__stable_partition_adaptive(
+    _Distance __half_len = __len / 2;
+    advance(__middle, __half_len);
+    return __rotate(__stable_partition_adaptive(
                           __first, __middle, __pred,
-                          __len / 2, __buffer, __buffer_size),
+                          __half_len, __buffer, __buffer_size,
+                          __pred_of_first, false),
                     __middle,
                     __stable_partition_adaptive(
                           __middle, __last, __pred,
-                          __len - __len / 2, __buffer, __buffer_size));
+                          __len - __half_len, __buffer, __buffer_size,
+                          true, __pred_of_before_last));
   }
 }
 
 template <class _ForwardIter, class _Predicate, class _Tp, class _Distance>
 inline _ForwardIter
-__stable_partition_aux(_ForwardIter __first, _ForwardIter __last, 
-                       _Predicate __pred, _Tp*, _Distance*) {
+__stable_partition_aux_aux(_ForwardIter __first, _ForwardIter __last, 
+                           _Predicate __pred, _Tp*, _Distance*, bool __pred_of_before_last = false) {
   _Temporary_buffer<_ForwardIter, _Tp> __buf(__first, __last);
   _STLP_MPWFIX_TRY    //*TY 06/01/2000 - they forget to call dtor for _Temporary_buffer if no try/catch block is present
   return (__buf.size() > 0) ?
     __stable_partition_adaptive(__first, __last, __pred,
                                 _Distance(__buf.requested_size()),
-                                __buf.begin(), __buf.size())  :
+                                __buf.begin(), __buf.size(),
+                                false, __pred_of_before_last)  :
     __inplace_stable_partition(__first, __last, __pred, 
-                               _Distance(__buf.requested_size()));
+                               _Distance(__buf.requested_size()),
+                               false, __pred_of_before_last);
   _STLP_MPWFIX_CATCH  //*TY 06/01/2000 - they forget to call dtor for _Temporary_buffer if no try/catch block is present
 }
 
 template <class _ForwardIter, class _Predicate>
 _ForwardIter 
+__stable_partition_aux(_ForwardIter __first, _ForwardIter __last, _Predicate __pred,
+                       const forward_iterator_tag &) {
+  return __stable_partition_aux_aux(__first, __last, __pred,
+                                    _STLP_VALUE_TYPE(__first, _ForwardIter),
+                                    _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+}
+
+template <class _BidirectIter, class _Predicate>
+_BidirectIter 
+__stable_partition_aux(_BidirectIter __first, _BidirectIter __last, _Predicate __pred,
+                       const bidirectional_iterator_tag &) {
+  for (--__last;;) {
+    if (__first == __last)
+      return __first;
+    else if (!__pred(*__last))
+      --__last;
+    else
+      break;
+  }
+  ++__last;
+  //Here we know that __pred(*--__last) is true
+  return __stable_partition_aux_aux(__first, __last, __pred,
+                                    _STLP_VALUE_TYPE(__first, _BidirectIter),
+                                    _STLP_DISTANCE_TYPE(__first, _BidirectIter), true);
+}
+
+#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+_BidirectIter 
+__stable_partition_aux(_BidirectIter __first, _BidirectIter __last, _Predicate __pred,
+                       const random_access_iterator_tag &) {
+  return __stable_partition_aux(__first, __last, __pred, bidirectional_iterator_tag());
+}
+#endif
+
+template <class _ForwardIter, class _Predicate>
+_ForwardIter 
 stable_partition(_ForwardIter __first, _ForwardIter __last, _Predicate __pred) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
-  if (__first == __last)
-    return __first;
-  else
-    return __stable_partition_aux(__first, __last, __pred,
-                                  _STLP_VALUE_TYPE(__first, _ForwardIter),
-                                  _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+  for (;;) {
+    if (__first == __last)
+      return __first;
+    else if (__pred(*__first))
+      ++__first;
+    else
+      break;
+  }
+  return __stable_partition_aux(__first, __last, __pred,
+                                _STLP_ITERATOR_CATEGORY(__first, _ForwardIter));
 }
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
 _RandomAccessIter __unguarded_partition(_RandomAccessIter __first, 
                                         _RandomAccessIter __last, 
                                         _Tp __pivot, _Compare __comp) {
-  while (true) {
+  for (;;) {
     while (__comp(*__first, __pivot))
       ++__first;
     --__last;
@@ -734,11 +851,10 @@ _RandomAccessIter __unguarded_partition(_RandomAccessIter __first,
 }
 
 // sort() and its auxiliary functions. 
-
-# define  __stl_threshold  16
+#define __stl_threshold  16
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
-void __unguarded_linear_insert(_RandomAccessIter __last, const _Tp& __val, 
+void __unguarded_linear_insert(_RandomAccessIter __last, _Tp __val, 
                                _Compare __comp) {
   _RandomAccessIter __next = __last;
   --__next;  
@@ -752,9 +868,9 @@ void __unguarded_linear_insert(_RandomAccessIter __last, const _Tp& __val,
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
 inline void __linear_insert(_RandomAccessIter __first, 
-                            _RandomAccessIter __last, const _Tp& __val, _Compare __comp) {
+                            _RandomAccessIter __last, _Tp __val, _Compare __comp) {
   //*TY 12/26/1998 - added __val as a paramter
-  //  _Tp __val = *__last;  //*TY 12/26/1998 - __val supplied by caller
+  //  _Tp __val = *__last;        //*TY 12/26/1998 - __val supplied by caller
   if (__comp(__val, *__first)) {
     copy_backward(__first, __last, __last + 1);
     *__first = __val;
@@ -768,14 +884,8 @@ void __insertion_sort(_RandomAccessIter __first,
                       _RandomAccessIter __last,
                       _Tp *, _Compare __comp) {
   if (__first == __last) return;
-  for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i) {
-#ifdef _MSC_VER // VCs pass *__i by reference here (compiler's bug!), use workaround; 2004-03-30 -ptr
-    _Tp __a(*__i);
-    __linear_insert(__first, __i, __a, __comp);
-#else
-    __linear_insert(__first, __i, _Tp(*__i), __comp);  //*TY 12/26/1998 - supply *__i as __val
-#endif
-  }
+  for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
+    __linear_insert<_RandomAccessIter, _Tp, _Compare>(__first, __i, *__i, __comp);  //*TY 12/26/1998 - supply *__i as __val
 }
 
 template <class _RandomAccessIter, class _Tp, class _Compare>
@@ -783,7 +893,7 @@ void __unguarded_insertion_sort_aux(_RandomAccessIter __first,
                                     _RandomAccessIter __last,
                                     _Tp*, _Compare __comp) {
   for (_RandomAccessIter __i = __first; __i != __last; ++__i)
-    __unguarded_linear_insert(__i, _Tp(*__i), __comp);
+    __unguarded_linear_insert<_RandomAccessIter, _Tp, _Compare>(__i, *__i, __comp);
 }
 
 template <class _RandomAccessIter, class _Compare>
@@ -896,7 +1006,8 @@ void __chunk_insertion_sort(_RandomAccessIter __first,
                             _RandomAccessIter __last,
                             _Distance __chunk_size, _Compare __comp) {
   while (__last - __first >= __chunk_size) {
-    __insertion_sort(__first, __first + __chunk_size, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
+    __insertion_sort(__first, __first + __chunk_size,
+                     _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
     __first += __chunk_size;
   }
   __insertion_sort(__first, __last, _STLP_VALUE_TYPE(__first,_RandomAccessIter), __comp);
@@ -940,7 +1051,7 @@ _BidirectionalIter1 __rotate_adaptive(_BidirectionalIter1 __first,
     return copy_backward(__buffer, __buffer_end, __last);
   }
   else
-    return rotate(__first, __middle, __last);
+    return __rotate(__first, __middle, __last);
 }
 
 template <class _BidirectionalIter, class _Distance, class _Pointer,
@@ -1288,7 +1399,7 @@ void __merge_without_buffer(_BidirectionalIter __first,
     __len11 +=distance(__first, __first_cut);
   }
   _BidirectionalIter __new_middle
-    = rotate(__first_cut, __middle, __second_cut);
+    = __rotate(__first_cut, __middle, __second_cut);
   __merge_without_buffer(__first, __first_cut, __new_middle, __len11, __len22,
                          __comp);
   __merge_without_buffer(__new_middle, __second_cut, __last, __len1 - __len11,
@@ -1309,7 +1420,7 @@ _BidirectionalIter3 __merge_backward(_BidirectionalIter1 __first1,
     return copy_backward(__first1, __last1, __result);
   --__last1;
   --__last2;
-  while (true) {
+  for (;;) {
     if (__comp(*__last2, *__last1)) {
       *--__result = *__last1;
       if (__first1 == __last1)
@@ -1728,7 +1839,7 @@ bool is_heap(_RandomAccessIter __first, _RandomAccessIter __last) {
 
 template <class _RandomAccessIter, class _StrictWeakOrdering>
 bool is_heap(_RandomAccessIter __first, _RandomAccessIter __last,
-	     _StrictWeakOrdering __comp) {
+       _StrictWeakOrdering __comp) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   return __is_heap(__first, __comp, __last - __first);
 }

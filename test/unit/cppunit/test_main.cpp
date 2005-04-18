@@ -16,12 +16,9 @@
 #include "cppunit_proxy.h"
 #include "file_reporter.h"
 
-#ifdef CPPUNIT_DUMMY
-int main( int argc, char* argv[] ) 
-{ 
-  return 0; 
-}
-#elif CPPUNIT_MINI
+#ifdef UNDER_CE
+# include <windows.h>
+#endif
 
 namespace CPPUNIT_NS
 {
@@ -53,6 +50,7 @@ namespace CPPUNIT_NS
     return m_numErrors;
   }  
 }
+
 # ifdef UNDER_CE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -153,4 +151,3 @@ int main(int argc, char** argv)
 
   return num_errors;
 }
-#endif

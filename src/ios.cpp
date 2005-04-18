@@ -126,13 +126,16 @@ locale ios_base::imbue(const locale& loc) {
     return previous;
 }
 
-int ios_base::_S_index = 0;
-
 int _STLP_CALL ios_base::xalloc()
 {
+  static int _S_index = 0;
+#if defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK)
+  return _STLP_ATOMIC_INCREMENT(&_S_index);
+#else
   static _STLP_STATIC_MUTEX L _STLP_MUTEX_INITIALIZER;
   _STLP_auto_lock sentry(L);
   return _S_index++;
+#endif
 }
 
 long& ios_base::iword(int index) {

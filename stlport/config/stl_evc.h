@@ -34,11 +34,21 @@
 // This is defined for all platforms using Windows CE
 # define _STLP_WCE
 
+// inherit all msvc6 options
+# include <config/stl_msvc.h>
 
 // Always threaded in eMbedded Visual C++ 3.0 and .NET
 # ifndef _MT
 #  define _MT
 # endif
+
+// we don't have a static native runtime library
+# undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+
+// no *f and *l math functions
+# define _STLP_NO_LONG_DOUBLE
+# define _STLP_NO_VENDOR_MATH_F
+# define _STLP_NO_VENDOR_MATH_L
 
 /*
  * Workaround Pocket PC 2003 missing RTTI support in OS image:
@@ -90,6 +100,16 @@
 #   define _STLP_VENDOR_EXCEPT_STD std
 # endif
 
+// short string optimization bug under evc3, evc4 using ARM compiler
+# if defined (ARM) || defined(_ARM_)
+#  define _STLP_DONT_USE_SHORT_STRING_OPTIM
+# endif
+
+// when using MFC, disable another placement new declaration, since there is one in wcealt.h
+#  if !defined(__BUILDING_STLPORT) && defined(_STLP_USE_MFC)
+#   define __PLACEMENT_NEW_INLINE
+#  endif
+
 // Ensure _DEBUG is defined.
 # if defined(DEBUG) && !defined(_DEBUG)
 #  define _DEBUG
@@ -112,7 +132,7 @@
 #  ifdef _STLP_WINCE_USE_OUTPUTDEBUGSTRING
 #   define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
 #  else
-#   define _STLP_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,MB_OK)
+#   define _STLP_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,0L/*MB_OK*/)
 #  endif
 #  ifndef __THROW_BAD_ALLOC
 #   define __THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
@@ -124,38 +144,46 @@
 /*
  * eMbedded Visual C++ .NET specific settings
  */
-# ifdef _STLP_WCE_NET
-
-// Struct for Windows CE FILE implementation.
-// This is ugly and could be dangerous in future Windows CE .NET SDKs.
-#  ifndef _FILECE_DEFINED
-typedef struct  {
-        char *_ptr;
-        int   _cnt;
-        char *_base;
-        int   _flag;
-
-        int   _charbuf;
-        int   _bufsiz;
-        unsigned    _res1;
-        unsigned    _res2;
-
-        unsigned    _res3;
-        unsigned    _res4;
-        unsigned    _res5;
-        void*       _file;
-
-        unsigned    _res6;
-        unsigned    _res7;
-        unsigned    _res8;
-        unsigned    _res9;
-} _iobufce;
-typedef _iobufce FILECE;
-#  define _FILECE_DEFINED
-# endif /* _FILECE_DEFINED */
-
-# endif /* _STLP_WCE_NET */
-
+#ifdef _STLP_WCE_NET
+// include headers for ARM and emulator
+#  if defined (_X86_)
+#    define _STLP_NATIVE_INCLUDE_PATH ../Emulator
+#  elif defined (_ARM_)
+#    if defined (ARMV4)
+#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+#    elif defined (ARMV4I)
+#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
+#    elif defined (ARMV4T)
+#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4t
+#    else
+#      error Unknown ARM SDK.
+#    endif
+#  elif defined (_MIPS_)
+#    if defined (MIPS16)
+#      define _STLP_NATIVE_INCLUDE_PATH ../mips16
+#    elif defined (MIPSII)
+#      define _STLP_NATIVE_INCLUDE_PATH ../mipsII
+#    elif defined (MIPSII_FP)
+#      define _STLP_NATIVE_INCLUDE_PATH ../mipsII_fp
+#    elif defined (MIPSIV)
+#      define _STLP_NATIVE_INCLUDE_PATH ../mipsIV
+#    elif defined (MIPSIV_FP)
+#      define _STLP_NATIVE_INCLUDE_PATH ../mipsIV_fp
+#    else
+#      error Unknown MIPS SDK.
+#    endif
+#  elif defined (SHx)
+#    if defined (SH3)
+#      define _STLP_NATIVE_INCLUDE_PATH ../sh3
+#    elif defined (SH4)
+#      define _STLP_NATIVE_INCLUDE_PATH ../sh4
+#    else
+#      error Unknown SHx SDK.
+#    endif
+#  else
+#    error Unknown SDK.
+#  endif
+#endif /* _STLP_WCE_NET */
 
 /*
  * eMbedded Visual C++ 3.0 specific settings
@@ -221,9 +249,14 @@ struct tm {
 # define _TM_DEFINED
 # endif
 
+// define placement new and delete operator
+// note: when MFCCE headers are included first, don't define the new operator,
+//       since it was already defined in wcealt.h
 # ifdef __cplusplus
 #  ifndef __PLACEMENT_NEW_INLINE
+#    ifndef _MFC_VER
 inline void *__cdecl operator new(size_t, void *_P) { return (_P); }
+#    endif /* _MFC_VER */
 inline void __cdecl operator delete(void *, void *) { return; }
 #   define __PLACEMENT_NEW_INLINE
 #  endif
@@ -232,6 +265,12 @@ inline void __cdecl operator delete(void *, void *) { return; }
 
 // evc3 doesn't have native wide functions, e.g. fgetwc, wmemmove
 # define _STLP_NO_NATIVE_WIDE_FUNCTIONS
+
+// evc3 doesn't have assert.h
+# ifndef _ASSERT_DEFINED
+#  define assert(expr) _STLP_ASSERT(expr)
+#  define _ASSERT_DEFINED
+# endif
 
 # endif /* _STLP_WCE_EVC3 */
 
@@ -252,17 +291,18 @@ inline void __cdecl operator delete(void *, void *) { return; }
 #  define NOMINMAX
 # endif
 
+/*
+ * original call: TerminateProcess(GetCurrentProcess(), 0);
+ * we substitute the GetCurrentProcess() with the result of the inline function
+ * defined in kfuncs.h, since we then can avoid including <windows.h> at all.
+ * all needed Win32 API functions are defined in <stl/_windows.h>
+ */
 # ifndef _ABORT_DEFINED
-#  define _STLP_ABORT() TerminateProcess(GetCurrentProcess(), 0)
+#  define _STLP_ABORT() TerminateProcess(reinterpret_cast<HANDLE>(66), 0)
 #  define _ABORT_DEFINED
 # endif
 
-# ifndef _ASSERT_DEFINED
-#  define assert(expr) _STLP_ASSERT(expr)
-#  define _ASSERT_DEFINED
-# endif
-
-// needed for TerminateProcess and others
-# include <windows.h>
+// Notice: windows.h isn't included here anymore; all needed defines are in
+// stl/_windows.h now
 
 #endif /* _STLP_EVC_H */

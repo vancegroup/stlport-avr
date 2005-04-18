@@ -17,8 +17,7 @@
  */ 
 
 # include "stlport_prefix.h"
-// #include <iterator>
-#include "complex_impl.h"
+#include <complex>
 #include <istream>
 
 _STLP_BEGIN_NAMESPACE

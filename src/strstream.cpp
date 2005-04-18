@@ -156,7 +156,7 @@ strstreambuf::int_type strstreambuf::overflow(int_type c) {
   }
 
   if (pptr() != epptr()) {
-    *pptr() = c;
+    *pptr() = traits_type::to_char_type(c);
     pbump(1);
     return c;
   }
@@ -164,12 +164,11 @@ strstreambuf::int_type strstreambuf::overflow(int_type c) {
     return traits_type::eof();
 }
 
-strstreambuf::int_type strstreambuf::pbackfail(int_type c)
-{
+strstreambuf::int_type strstreambuf::pbackfail(int_type c) {
   if (gptr() != eback()) {
-    if (c == _Traits::eof()) {
+    if (c == traits_type::eof()) {
       gbump(-1);
-      return _Traits::not_eof(c);
+      return traits_type::not_eof(c);
     }
     else if (c == gptr()[-1]) {
       gbump(-1);
@@ -177,12 +176,12 @@ strstreambuf::int_type strstreambuf::pbackfail(int_type c)
     }
     else if (!_M_constant) {
       gbump(-1);
-      *gptr() = c;
+      *gptr() = traits_type::to_char_type(c);
       return c;
     }
   }
 
-  return _Traits::eof();
+  return traits_type::eof();
 }
 
 strstreambuf::int_type strstreambuf::underflow()

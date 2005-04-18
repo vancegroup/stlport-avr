@@ -22,8 +22,6 @@
 # include <stl/_istream.h>
 #endif
 
-# if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION)
-
 #ifndef _STLP_LIMITS_H
 # include <stl/_limits.h>
 #endif
@@ -180,39 +178,6 @@ __pushback(basic_streambuf<_CharT, _Traits>* __buf, _CharT __c)
   return ret;
 }
 
-// Helper functions for istream<>::sentry constructor.
-template <class _CharT, class _Traits>
-bool
-_M_init_skip(basic_istream<_CharT, _Traits>& __is) {
-  if (__is.good()) {
-    if (__is.tie())
-      __is.tie()->flush();
-    
-    __is._M_skip_whitespace(true);
-  }
-  
-  if (!__is.good()) {
-    __is.setstate(ios_base::failbit);
-    return false;
-  } else
-    return true;
-}
-
-template <class _CharT, class _Traits>
-bool
-_M_init_noskip(basic_istream<_CharT, _Traits>& __is) {
-  if (__is.good()) {
-    if (__is.tie())
-      __is.tie()->flush();
-    
-    if (!__is.rdbuf())
-      __is.setstate(ios_base::badbit);
-  }
-  else
-    __is.setstate(ios_base::failbit);
-  return __is.good();
-}
-
 //----------------------------------------------------------------------
 // Definitions of basic_istream<>'s noninline member functions.
 
@@ -237,6 +202,107 @@ _M_get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val) {
   return __err;
 }
 
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (short& __val) {
+  long __lval;
+  unsigned short __uval;
+  _M_get_num(*this, __lval);
+  if ( this->fail() ) {
+    return *this;
+  }
+  __val = __STATIC_CAST(short, __lval);
+  __uval = __STATIC_CAST(unsigned short, __lval);
+  // check if we lose digits
+  //    if ((__val != __lval) && ((unsigned short)__val != __lval))
+  if ((__val != __lval) && ((long)__uval != __lval))
+    this->setstate(ios_base::failbit); 
+  return *this; 
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (int& __val) { 
+  long __lval;
+  unsigned int __uval;
+  _M_get_num(*this, __lval);
+  if ( this->fail() ) {
+    return *this;
+  }
+  __val = __lval;
+  __uval = __lval;
+  // check if we lose digits
+  //    if ((__val != __lval) && ((unsigned int)__val != __lval))
+  if ((__val != __lval) && ((long)__uval != __lval))
+    this->setstate(ios_base::failbit); 
+  return *this;
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (unsigned short& __val) {
+  _M_get_num(*this, __val); 
+  return *this; 
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (unsigned int& __val) {
+  _M_get_num(*this, __val);
+  return *this; 
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (long& __val) {
+  _M_get_num(*this, __val);
+  return *this; 
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (unsigned long& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+
+#ifdef _STLP_LONG_LONG
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (_STLP_LONG_LONG& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (unsigned _STLP_LONG_LONG& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+#endif 
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (float& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (double& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+#ifndef _STLP_NO_LONG_DOUBLE
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (long double& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+#endif
+#ifndef _STLP_NO_BOOL
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (bool& __val) {
+  _M_get_num(*this, __val);
+  return *this;
+}
+# endif
+
+template <class _CharT, class _Traits>
+basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (void*& __val) {
+  _M_get_num(*this, __val); 
+  return *this; 
+}
 
 // Unformatted input
 
@@ -384,9 +450,7 @@ basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::unget() {
     //     if (!__buf || _Traits::eq_int_type(__buf->sungetc(), _Traits::eof()))
     if (__buf) {
       _STLP_TRY {
-        _CharT __tmp;
-        __tmp = __buf->sungetc();
-        if (this->_S_eof(__tmp))
+        if (this->_S_eof(__buf->sungetc()))
           this->setstate(ios_base::badbit);
       }
       _STLP_CATCH_ALL {
@@ -517,73 +581,31 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Char
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   // The operations that can potentially throw are sbumpc, snextc, and sgetc.
   _STLP_TRY {
-# if 0
-    int_type __c = __buf->sgetc();
-    while (true) {
+    for (;;) {
+      int_type __c = __buf->sbumpc(); // sschwarz
+
       if (__that->_S_eof(__c)) {
         if (__n < _Num || __is_getline)
           __status |= ios_base::eofbit;
         break;
-      }
-
-      else if (__is_delim(__c)) {
-        if (__extract_delim) {  // Extract and discard current character.
-          __buf->sbumpc();
+      } else if (__is_delim(_Traits::to_char_type(__c))) {
+        if (__extract_delim) { // Extract and discard current character.
           ++__n;
+        } else if ( !__pushback(__buf, _Traits::to_char_type(__c)) ) { // leave delimiter
+          __status |= ios_base::failbit;
         }
         break;
+      } else { // regular character
+        *__s++ = _Traits::to_char_type(__c);
+        ++__n;
       }
 
-      else if (__n == _Num) {
-        if (__is_getline)
+      if (__n == _Num) {
+        if (__is_getline) // didn't find delimiter as one of the _Num chars
           __status |= ios_base::failbit;
         break;
       }
-        
-      *__s++ = _Traits::to_char_type(__c);
-      ++__n;
-      __c = __buf->snextc();
     }
-# else
-// int_type __c = __buf->sbumpc(); // __buf->sgetc();
-while (true) {
-
-int_type __c = __buf->sbumpc(); // sschwarz
-
-if (__that->_S_eof(__c)) {
-if (__n < _Num || __is_getline)
-__status |= ios_base::eofbit;
-break;
-}
-
-else if (__is_delim(__c)) {
-if (__extract_delim) { // Extract and discard current character.
-// __buf->sbumpc();
-++__n;
-}
-break;
-}
-
-else { // regular character
-
-*__s++ = _Traits::to_char_type(__c);
-++__n;
-
-}
-
-if (__n == _Num) {
-if (__is_getline) // didn't find delimiter as one of the _Num chars
-__status |= ios_base::failbit;
-break;
-}
-
-// *__s++ = _Traits::to_char_type(__c);
-// ++__n;
-
-}
-
-# endif
-
   }
   _STLP_CATCH_ALL {
     __that->_M_handle_exception(ios_base::badbit);
@@ -654,7 +676,7 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
       // The buffer contained fewer than _Num - __n characters.  Either we're
       // at eof, or we should refill the buffer and try again.
       else {
-	if (__that->_S_eof(__buf->sgetc())) {
+        if (__that->_S_eof(__buf->sgetc())) {
           __status |= ios_base::eofbit;
           __done = true;
         }
@@ -841,10 +863,10 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s)
       ? _M_read_buffered(this,  __buf, __nmax, __s,
                          _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
                          _Scan_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-			 false, true, false)
+       false, true, false)
       : _M_read_unbuffered(this,  __buf, __nmax, __s,
                            _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-			   false, true, false);
+         false, true, false);
     if (__n == 0)
       this->setstate(ios_base::failbit);
   }
@@ -859,10 +881,9 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s)
 template < class _CharT, class _Traits, class _Is_Delim>
 void _STLP_CALL 
 _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that, 
-		     basic_streambuf<_CharT, _Traits>* __buf,
-		     _Is_Delim __is_delim,
-		     bool __extract_delim, bool __set_failbit)
-{
+                     basic_streambuf<_CharT, _Traits>* __buf,
+                     _Is_Delim __is_delim,
+                     bool __extract_delim, bool __set_failbit) {
   bool __done = false;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
@@ -877,7 +898,7 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
                                   : ios_base::eofbit;
       }
 
-      else if (__is_delim(__c)) {
+      else if (__is_delim(_Traits::to_char_type(__c))) {
         __done = true;
         if (!__extract_delim)
           if (__that->_S_eof(__buf->sputbackc(_Traits::to_char_type(__c))))
@@ -900,10 +921,9 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
 template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim>
 void _STLP_CALL 
 _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that, 
-		   basic_streambuf<_CharT, _Traits>* __buf,
-		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-		   bool __extract_delim, bool __set_failbit)
-{
+                   basic_streambuf<_CharT, _Traits>* __buf,
+                   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
+                   bool __extract_delim, bool __set_failbit) {
   bool __at_eof      = false;
   bool __found_delim = false;
 
@@ -956,11 +976,10 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
 template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim>
 streamsize _STLP_CALL 
 _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
-		     basic_streambuf<_CharT, _Traits>* __buf,
-		     streamsize _Num, _Max_Chars __max_chars,
-		     _Is_Delim __is_delim,
-		     bool __extract_delim, bool __set_failbit)
-{
+                     basic_streambuf<_CharT, _Traits>* __buf,
+                     streamsize _Num, _Max_Chars __max_chars,
+                     _Is_Delim __is_delim,
+                     bool __extract_delim, bool __set_failbit) {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
@@ -975,7 +994,7 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
         break;
       }
 
-      else if (__is_delim(__c)) {
+      else if (__is_delim(_Traits::to_char_type(__c))) {
         if (__extract_delim)
           ++__n;
         else if (__that->_S_eof(__buf->sputbackc(_Traits::to_char_type(__c))))
@@ -999,12 +1018,11 @@ _M_ignore_unbuffered(basic_istream<_CharT, _Traits>* __that,
 template < class _CharT, class _Traits, class _Max_Chars, class _Is_Delim, class _Scan_Delim>
 streamsize _STLP_CALL 
 _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
-		   basic_streambuf<_CharT, _Traits>* __buf,
-		   streamsize _Num,
-		   _Max_Chars __max_chars,
-		   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-		   bool __extract_delim, bool __set_failbit)
-{
+                   basic_streambuf<_CharT, _Traits>* __buf,
+                   streamsize _Num,
+                   _Max_Chars __max_chars,
+                   _Is_Delim __is_delim, _Scan_Delim __scan_delim,
+                   bool __extract_delim, bool __set_failbit) {
   streamsize __n = 0;
   bool __at_eof = false;
   bool __done   = false;
@@ -1192,20 +1210,17 @@ void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit)
 
 template < class _CharT, class _Traits, class _Is_Delim>
 streamsize _STLP_CALL 
-_M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __src,
-		    basic_streambuf<_CharT, _Traits>* __dest,
-		    _Is_Delim __is_delim,
-		    bool __extract_delim, bool __rethrow)
-{
+_M_copy_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __src,
+                   basic_streambuf<_CharT, _Traits>* __dest,
+                   _Is_Delim __is_delim,
+                   bool __extract_delim, bool __rethrow) {
   streamsize __extracted = 0;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
   int_type __c;
 
   _STLP_TRY {
-  
-    while (true) {
-  
+    for (;;) {
       // Get a character. If there's an exception, catch and (maybe) rethrow it.
       __c = __src->sbumpc();
       
@@ -1215,18 +1230,16 @@ _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Cha
         break;
       }  
       // If it's the delimiter, then quit.
-      else if (__is_delim(__c)) {
+      else if (__is_delim(_Traits::to_char_type(__c))) {
         if (!__extract_delim && !__pushback(__src, _Traits::to_char_type(__c)))
           __status |= ios_base::failbit;
         break;
       }
-      
       else {
-      
         // Try to put the character in the output streambuf.
         bool __failed = false;
         _STLP_TRY {
-          if (!__that->_S_eof(__dest->sputc(__c)))
+          if (!__that->_S_eof(__dest->sputc(_Traits::to_char_type(__c))))
             ++__extracted;
           else
             __failed = true;
@@ -1245,7 +1258,7 @@ _M_copy_unbuffered( basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Cha
           break;
       }
 
-    } /* while (true) */
+    } /* for (;;) */
     
   }
   // fbp : this try/catch moved here in reasonable assumption
@@ -1281,7 +1294,7 @@ _M_copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
   bool __do_handle_exceptions;
 
   _STLP_TRY {
-    while (true) {
+    for (;;) {
       __do_handle_exceptions = false ;
       const _CharT* __last = __scan_delim(__first, __src->_M_egptr());
       
@@ -1306,7 +1319,7 @@ _M_copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
       __avail = __src->_M_egptr() - __first;
       
       if (__avail > 0)
-        {}	// dwa 1/16/00 -- suppress a Metrowerks warning
+        {}  // dwa 1/16/00 -- suppress a Metrowerks warning
       else if (__that->_S_eof(__c)) {
         __status |= ios_base::eofbit;
         break;
@@ -1410,6 +1423,8 @@ _STLP_END_NAMESPACE
 # undef __BIS_pos_type__
 # undef __BIS_off_type__
 
-# endif /* defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) */
-
 #endif /* _STLP_ISTREAM_C */
+
+// Local Variables:
+// mode:C++
+// End:

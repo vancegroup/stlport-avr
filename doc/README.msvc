@@ -1,0 +1,127 @@
+
+==================================================
+STLport README for Microsoft Visual C++ compilers.
+==================================================
+
+by: Francois Dumont, dums@stlport.com, last edited 08/02/2005
+
+============
+Introduction
+============
+This document describes how STLport can be compiled and used with Microsoft
+Visual C++ 6 SP5. It can also be used for the MSVC++ family.
+
+For any further comments or questsion visit STLport forum
+http://www.stlport.com/cgi-bin/forum/dcboard.cgi.
+
+=============
+Prerequisites
+=============
+To build and use STLport you will need following tools and libraries:
+ - Microsoft Visual C++ 6.0 with at least Service Pack 5 or any higher
+ version.
+
+===================
+Configuring STLport
+===================
+This is an optionnal step for the MSVC++ compilers, if you don't want to pass
+throught it just move to the 'Building STLport' section.
+
+Go to the STLport build/lib folder. Run
+	configure --help
+
+This command will present you the different available build options. Just follow
+the instructions to set STLport configuration according your needs.
+
+================
+Building STLport
+================
+This is a step by step description of the actions to take in order to have
+the STLport library built:
+
+1. Open a console window. You can get it executing cmd or command depending
+on your Windows OS.
+
+2. Go to MSVC++ Bin directory with a default MSVC6 install it is
+	cd "C:\Program Files\Microsoft Visual Studio\VC98\Bin"
+
+3. Run the vcvars32.bat script. This sets the environment variables required
+to have the MSVC++ compiler run during the build process. The most important
+one is the PATH variable so that you can call the cl.exe command which is the
+MSVC++ command line compiler. [You may omit this step, if you chose 'Install paths
+to access command-line tools' during Microsoft Visual Studio installation procedure.]
+
+4. Go to the STLport build/lib folder:
+	cd C:\STLport\build\lib
+
+5. Run the following command:
+	nmake /fnmake-vc6.mak install
+
+	nmake is the make utility from microsoft. /f is an nmake option
+telling it which make file script to use. You have of course to grant the 
+closer make file to your effective compiler.
+
+	Once the command return you will have all the necessary libraries within
+the STLport lib folder. For a description of the generated libraries check the README
+file within the src folder. You can also set special make process options, you will 
+find a list of those in the README.options file once again in the build/lib folder.
+
+===============
+Testing STLport
+===============
+You can use the unit tests to verify STLport behaves correctly. Change into
+STLports 'build/test/unit' folder and type:
+
+  nmake /fnmake-vc6.mak install
+
+Once the unit test is built you just need to run it. They can be found
+within the STLport bin folder.
+
+=============
+Using STLport
+=============
+Adjust your include and link paths in MSVC IDE (in 'Tools -> Options -> Directories'
+for MSVC6 IDE). In the include files add the path to STLport's 'stlport' folder. 
+Make sure it is the first directory listed there. Add STLport's 'lib' folder for
+the library files (order of paths doesn't matter here).
+
+Now you should be ready to use STLport.
+
+============
+Known issues
+============
+
+1. InterlockedIncrement
+
+	If you experiment trouble with the InterlockedIncrement Win32 API function
+like the following message:
+
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1392) : error C2733: second C
+linkage of overloaded function 'InterlockedIncrement' not allowed
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1390) : see declarati
+on of 'InterlockedIncrement'
+
+	It means that you are using the new Microsoft platform SDK. There is no
+way to known it from STLport so you have to signal it in the 
+stlport/stl_user_config.h file (uncomment appropriate #define in this file).
+
+2. C symbols in std namespace
+
+	The MSVC++ 6 has a bug when dealing with C symbols imported within the std 
+namespace. If you write the following code:
+
+#include <cstdio>
+
+using namespace std;
+
+int main(int, char**) {
+	int res = abs(-1);
+	return 0;
+}
+
+	VC6 will report an ambiguous symbol because it do not know if it has to use
+::abs or std::abs. For this reason injection of C symbols in the std namespace
+has been disable by default. To force it you have to define the 
+_STLP_DO_IMPORT_CSTD_FUNCTIONS macro. Doing so you will have to explicitely 
+scope all your C functions calls.
+
