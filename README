@@ -7,15 +7,24 @@ This directory contains STLport-5.0 release.
 
 What's inside :
 
-README      - this file
-INSTALL     - installation instructions
+README           - this file
+INSTALL          - installation instructions
 
-stlport     - main STLport include directory
-src         - source and makefiles for iostreams implementation
-lib         - installation directory for STLport library (if you use STLport iostreams only)
-test/regression   - regression test, using wrapper iostreams
-test/eh     - exception handling test using STLport iostreams
-etc         - miscellanous files (ChangeLog, TODO, scripts, etc.) 
+bin              - installation directory for STLport unit tests;
+                   it may contain more subdirs, if you use
+                   crosscompilation
+build/lib        - build directory for STLport library (if you use
+                   STLport iostreams and/or locale only)
+build/test/unit  - build directory for regression (unit) tests
+stlport          - main STLport include directory
+src              - source and makefiles for iostreams implementation
+lib              - installation directory for STLport library (if you
+                   use STLport iostreams and/or locale only);
+                   it may contain more subdirs, if you use
+                   crosscompilation
+test/unit        - unit (regression) tests
+test/eh          - exception handling test using STLport iostreams
+etc              - miscellanous files (ChangeLog, TODO, scripts, etc.) 
 
 GETTING STLPORT
 
@@ -24,7 +33,7 @@ http://www.stlport.com/download.html
 
 LEGALESE
 
-This software is being distributed under the following terms :
+This software is being distributed under the following terms:
 
  *
  *
