@@ -19,27 +19,27 @@
 #define _STLP_ISTREAM_C
 
 #ifndef _STLP_INTERNAL_ISTREAM_H
-# include <stl/_istream.h>
+#  include <stl/_istream.h>
 #endif
 
 #ifndef _STLP_LIMITS_H
-# include <stl/_limits.h>
+#  include <stl/_limits.h>
 #endif
 
 #ifndef _STLP_INTERNAL_NUM_GET_H
-# include <stl/_num_get.h>
+#  include <stl/_num_get.h>
 #endif
 
-# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
+#if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // no wchar_t is supported for this mode
-# define __BIS_int_type__ int
-# define __BIS_pos_type__ streampos
-# define __BIS_off_type__ streamoff
-# else
-# define __BIS_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::int_type
-# define __BIS_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::pos_type
-# define __BIS_off_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::off_type
-# endif
+#  define __BIS_int_type__ int
+#  define __BIS_pos_type__ streampos
+#  define __BIS_off_type__ streamoff
+#else
+#  define __BIS_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::int_type
+#  define __BIS_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::pos_type
+#  define __BIS_off_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_istream<_CharT, _Traits>::off_type
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -123,8 +123,7 @@ struct _Scan_for_not_wspace {
 };
 
 template <class _Traits>
-struct _Scan_for_char_val
-{
+struct _Scan_for_char_val {
   typedef typename _Traits::char_type char_type;
   typedef char_type*                  first_argument_type;
   typedef char_type*                  second_argument_type;
@@ -141,8 +140,7 @@ struct _Scan_for_char_val
 };
 
 template <class _Traits>
-struct _Scan_for_int_val
-{
+struct _Scan_for_int_val {
   typedef typename _Traits::char_type char_type;
   typedef typename _Traits::int_type  int_type;
   typedef char_type*                  first_argument_type;
@@ -165,8 +163,7 @@ struct _Scan_for_int_val
 
 template <class _CharT, class _Traits> 
 bool _STLP_CALL
-__pushback(basic_streambuf<_CharT, _Traits>* __buf, _CharT __c)
-{
+__pushback(basic_streambuf<_CharT, _Traits>* __buf, _CharT __c) {
   bool ret;
   _STLP_TRY {
     const typename _Traits::int_type __eof = _Traits::eof();
@@ -296,7 +293,7 @@ basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (bool
   _M_get_num(*this, __val);
   return *this;
 }
-# endif
+#endif
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (void*& __val) {
@@ -570,11 +567,10 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT& __c) {
 template < class _CharT, class _Traits, class _Is_Delim>
 streamsize _STLP_CALL 
 _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __buf,
-                       streamsize _Num, _CharT* __s,
-                       _Is_Delim __is_delim,
-                       bool __extract_delim, bool __append_null,
-                       bool __is_getline)
-{
+                   streamsize _Num, _CharT* __s,
+                   _Is_Delim __is_delim,
+                   bool __extract_delim, bool __append_null,
+                   bool __is_getline) {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   
@@ -588,14 +584,16 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Char
         if (__n < _Num || __is_getline)
           __status |= ios_base::eofbit;
         break;
-      } else if (__is_delim(_Traits::to_char_type(__c))) {
+      }
+      else if (__is_delim(_Traits::to_char_type(__c))) {
         if (__extract_delim) { // Extract and discard current character.
           ++__n;
         } else if ( !__pushback(__buf, _Traits::to_char_type(__c)) ) { // leave delimiter
           __status |= ios_base::failbit;
         }
         break;
-      } else { // regular character
+      }
+      else { // regular character
         *__s++ = _Traits::to_char_type(__c);
         ++__n;
       }
@@ -627,11 +625,10 @@ _M_read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_Char
 template < class _CharT, class _Traits, class _Is_Delim, class _Scan_Delim>
 streamsize _STLP_CALL 
 _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __buf,
-                     streamsize _Num, _CharT* __s,
-                     _Is_Delim __is_delim, _Scan_Delim __scan_delim,
-                     bool __extract_delim, bool __append_null,
-                     bool __is_getline)
-{
+                 streamsize _Num, _CharT* __s,
+                 _Is_Delim __is_delim, _Scan_Delim __scan_delim,
+                 bool __extract_delim, bool __append_null,
+                 bool __is_getline) {
   streamsize __n = 0;
   ios_base::iostate __status = 0;
   bool __done    = false;
@@ -640,7 +637,11 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
     while (__buf->_M_egptr() != __buf->_M_gptr() && !__done) {
       const _CharT* __first = __buf->_M_gptr();
       const _CharT* __last  = __buf->_M_egptr();
-      ptrdiff_t __request = _Num - __n;
+      //casting numeric_limits<ptrdiff_t>::max to streamsize only works is ptrdiff_t is signed or streamsize representation
+      //is larger than ptrdiff_t one.
+      typedef char __static_assert[(sizeof(streamsize) > sizeof(ptrdiff_t)) ||
+                                   (sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed];
+      ptrdiff_t __request = __STATIC_CAST(ptrdiff_t, (min) (__STATIC_CAST(streamsize, (numeric_limits<ptrdiff_t>::max)()), _Num - __n));
 
       const _CharT* __p  = __scan_delim(__first, __last);
       ptrdiff_t __chunk = (min) (ptrdiff_t(__p - __first), __request);
@@ -659,7 +660,7 @@ _M_read_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
       }
 
       // We terminated by reading all the characters we were asked for.
-      else if(__n == _Num) {
+      else if (__n == _Num) {
 
         // Find out if we have reached eof.  This matters for getline.
         if (__is_getline) {
@@ -772,8 +773,7 @@ basic_istream<_CharT, _Traits>::getline(_CharT* __s, streamsize __n,
 // put in a terminating null character.
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>&
-basic_istream<_CharT, _Traits>::read(char_type* __s, streamsize __n)
-{
+basic_istream<_CharT, _Traits>::read(char_type* __s, streamsize __n) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -805,8 +805,7 @@ basic_istream<_CharT, _Traits>::read(char_type* __s, streamsize __n)
 // we don't put in a terminating null character.
 template <class _CharT, class _Traits>
 streamsize
-basic_istream<_CharT, _Traits>::readsome(char_type* __s, streamsize __nmax)
-{
+basic_istream<_CharT, _Traits>::readsome(char_type* __s, streamsize __nmax) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -849,15 +848,14 @@ basic_istream<_CharT, _Traits>::readsome(char_type* __s, streamsize __nmax)
 }
 
 template <class _CharT, class _Traits>
-void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s)
-{
+void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s) {
   sentry __sentry(*this); // Skip whitespace.
 
   if (__sentry) {
     basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
     streamsize __nmax = this->width() > 0
       ? this->width() - 1
-      : (numeric_limits<streamsize>::max)() / sizeof(_CharT) - 1;
+      : ((numeric_limits<streamsize>::max)() / sizeof(_CharT)) - 1;
 
     streamsize __n = __buf->gptr() != __buf->egptr()
       ? _M_read_buffered(this,  __buf, __nmax, __s,
@@ -1087,33 +1085,30 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
   // decided to switch from buffered to unbuffered input.  We switch to
   // to _M_ignore_unbuffered.
 
-  return __n + _M_ignore_unbuffered( __that,  __buf, _Num, __max_chars,
+  return __n + _M_ignore_unbuffered(__that,  __buf, _Num, __max_chars,
                                     __is_delim, __extract_delim, __set_failbit);
 }
 
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>&
-basic_istream<_CharT, _Traits>::ignore(streamsize __n)
-{
+basic_istream<_CharT, _Traits>::ignore(streamsize __n) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
   if (__sentry) {
     basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
     typedef _Constant_unary_fun<bool, int_type> _Const_bool;
-    typedef _Constant_binary_fun<streamsize, streamsize, streamsize>
-      _Const_streamsize;
+    typedef _Constant_binary_fun<streamsize, streamsize, streamsize> _Const_streamsize;
     const streamsize __maxss = (numeric_limits<streamsize>::max)();
 
     if (__n == (numeric_limits<int>::max)()) {
       if (__buf->gptr() != __buf->egptr())
-        _M_gcount
-          = _M_ignore_buffered(this,  __buf,
-                               __maxss, _Const_streamsize(__maxss),
-                               _Const_bool(false),
-                               _Project2nd<const _CharT*, const _CharT*>(),
-                               false, false);
+        _M_gcount = _M_ignore_buffered(this,  __buf,
+                                       __maxss, _Const_streamsize(__maxss),
+                                       _Const_bool(false),
+                                       _Project2nd<const _CharT*, const _CharT*>(),
+                                       false, false);
       else
         _M_gcount = _M_ignore_unbuffered(this,  __buf,
                                          __maxss, _Const_streamsize(__maxss),
@@ -1121,12 +1116,11 @@ basic_istream<_CharT, _Traits>::ignore(streamsize __n)
     }
     else {
       if (__buf->gptr() != __buf->egptr())
-        _M_gcount
-          = _M_ignore_buffered(this,  __buf,
-                               __n, minus<streamsize>(),
-                               _Const_bool(false),
-                               _Project2nd<const _CharT*, const _CharT*>(),
-                               false, false);
+        _M_gcount = _M_ignore_buffered(this,  __buf,
+                                       __n, minus<streamsize>(),
+                                       _Const_bool(false),
+                                       _Project2nd<const _CharT*, const _CharT*>(),
+                                       false, false);
       else
         _M_gcount = _M_ignore_unbuffered(this,  __buf, __n, minus<streamsize>(),
                                          _Const_bool(false), false, false);
@@ -1138,8 +1132,7 @@ basic_istream<_CharT, _Traits>::ignore(streamsize __n)
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>&
-basic_istream<_CharT, _Traits>::ignore(streamsize __n, int_type __delim)
-{
+basic_istream<_CharT, _Traits>::ignore(streamsize __n, int_type __delim) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -1184,8 +1177,7 @@ basic_istream<_CharT, _Traits>::ignore(streamsize __n, int_type __delim)
 // This member function does not construct a sentry object, because
 // it is called from sentry's constructor.  
 template <class _CharT, class _Traits>
-void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit)
-{
+void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit) {
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   if (!__buf)
     this->setstate(ios_base::badbit);
@@ -1282,8 +1274,7 @@ streamsize _STLP_CALL
 _M_copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, _Traits>* __src,
                      basic_streambuf<_CharT, _Traits>* __dest,
                      _Scan_Delim __scan_delim, _Is_Delim __is_delim,
-                     bool __extract_delim, bool __rethrow)
-{
+                     bool __extract_delim, bool __rethrow) {
   streamsize __extracted = 0;
   ios_base::iostate __status = 0;
   typedef typename basic_istream<_CharT, _Traits>::int_type int_type;
@@ -1346,8 +1337,7 @@ _M_copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT,
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& 
 basic_istream<_CharT, _Traits>
-  ::get(basic_streambuf<_CharT, _Traits>& __dest, _CharT __delim)
-{
+  ::get(basic_streambuf<_CharT, _Traits>& __dest, _CharT __delim) {
   sentry __sentry(*this, _No_Skip_WS());
   this->_M_gcount = 0;
 
@@ -1375,8 +1365,7 @@ basic_istream<_CharT, _Traits>
 template <class _CharT, class _Traits> 
 basic_istream<_CharT, _Traits>& 
 basic_istream<_CharT, _Traits>
-  ::operator>>(basic_streambuf<_CharT, _Traits>* __dest)
-{
+  ::operator>>(basic_streambuf<_CharT, _Traits>* __dest) {
   streamsize __n = 0;
   typedef typename basic_istream<_CharT, _Traits>::sentry _Sentry;
   _Sentry __sentry(*this);
@@ -1408,8 +1397,7 @@ basic_iostream<_CharT, _Traits>
   ::basic_iostream(basic_streambuf<_CharT, _Traits>* __buf)
     : basic_ios<_CharT, _Traits>(),
       basic_istream<_CharT, _Traits>(__buf),
-      basic_ostream<_CharT, _Traits>(__buf)
-{
+      basic_ostream<_CharT, _Traits>(__buf) {
   this->init(__buf);
 }
 
@@ -1419,9 +1407,9 @@ basic_iostream<_CharT, _Traits>::~basic_iostream()
 
 _STLP_END_NAMESPACE
 
-# undef __BIS_int_type__
-# undef __BIS_pos_type__
-# undef __BIS_off_type__
+#undef __BIS_int_type__
+#undef __BIS_pos_type__
+#undef __BIS_off_type__
 
 #endif /* _STLP_ISTREAM_C */
 

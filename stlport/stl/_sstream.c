@@ -20,17 +20,17 @@
 #define _STLP_SSTREAM_C
 
 #ifndef _STLP_SSTREAM_H
-# include <stl/_sstream.h>
+#  include <stl/_sstream.h>
 #endif
 
-# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
+#if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
 // no wint_t is supported for this mode
-# define __BSB_int_type__ int
-# define __BSB_pos_type__ streampos
-# else
-# define __BSB_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::int_type
-# define __BSB_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::pos_type
-# endif
+#  define __BSB_int_type__ int
+#  define __BSB_pos_type__ streampos
+#else
+#  define __BSB_int_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::int_type
+#  define __BSB_pos_type__ _STLP_TYPENAME_ON_RETURN_TYPE basic_stringbuf<_CharT, _Traits, _Alloc>::pos_type
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -197,7 +197,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
     if (this->pbase() == _M_str.data() ) {
       ptrdiff_t __avail = _M_str.data() + _M_str.size() - this->pptr();
       if (__avail > __n) {
-        _Traits::copy(this->pptr(), __s, __n);
+        _Traits::copy(this->pptr(), __s, __STATIC_CAST(size_t, __n));
         this->pbump((int)__n);
         return __n;
       }
@@ -245,8 +245,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_xsputnc(char_type __c,
     if (this->pbase() == _M_str.data()) {
       ptrdiff_t __avail = _M_str.data() + _M_str.size() - this->pptr();
       if (__avail > __n) {
-        _Traits::assign(this->pptr(), __n, __c);
-        this->pbump((int)__n);
+        _Traits::assign(this->pptr(), __STATIC_CAST(size_t, __n), __c);
+        this->pbump(__STATIC_CAST(int, __n));
         return __n;
       }
       else {
@@ -258,24 +258,24 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_xsputnc(char_type __c,
     }
 
     // At this point we know we're appending.
+    size_t __app_size = __STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size())));
     if (this->_M_mode & ios_base::in) {
       ptrdiff_t __get_offset = this->gptr() - this->eback();
-      _M_str.append(__n, __c);
+      _M_str.append(__app_size, __c);
 
       _CharT* __data_ptr = __CONST_CAST(_CharT*,_M_str.data());
       size_t __data_size = _M_str.size();
 
-      this->setg(__data_ptr, __data_ptr + __get_offset, __data_ptr+__data_size);
+      this->setg(__data_ptr, __data_ptr + __get_offset, __data_ptr + __data_size);
       this->setp(__data_ptr, __data_ptr + __data_size);
       this->pbump((int)__data_size);
-
     }
     else {
       _M_append_buffer();
-      _M_str.append(__n, __c);      
+      _M_str.append(__app_size, __c);      
     }
 
-    __nwritten += __n;
+    __nwritten += __app_size;
   }
 
   return __nwritten;
@@ -307,17 +307,17 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::setbuf(_CharT*, streamsize __n) {
     if ((_M_mode & ios_base::out) && !(_M_mode & ios_base::in))
       _M_append_buffer();
 
-    _M_str.reserve(__n);
+    _M_str.reserve(__STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size()))));
 
-    _CharT* __data_ptr = __CONST_CAST(_CharT*,_M_str.data());
+    _CharT* __data_ptr = __CONST_CAST(_CharT*, _M_str.data());
     size_t __data_size = _M_str.size();
 
     if (__do_get_area) {
-      this->setg(__data_ptr, __data_ptr + __offg, __data_ptr+__data_size);
+      this->setg(__data_ptr, __data_ptr + __offg, __data_ptr + __data_size);
     }
 
     if (__do_put_area) {
-      this->setp(__data_ptr, __data_ptr+__data_size);
+      this->setp(__data_ptr, __data_ptr + __data_size);
       this->pbump((int)__offp);
     }
   }
@@ -333,13 +333,13 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
             ios_base::openmode __mode) {
   __mode &= _M_mode;
 
-  bool __in  = (__mode & ios_base::in) != 0;
-  bool __out = (__mode & ios_base::out) != 0;
+  bool __imode  = (__mode & ios_base::in) != 0;
+  bool __omode = (__mode & ios_base::out) != 0;
 
-  if ( !(__in || __out) )
+  if ( !(__imode || __omode) )
     return pos_type(off_type(-1));
 
-  if ( (__in && (this->gptr() == 0)) || (__out && (this->pptr() == 0)) )
+  if ( (__imode && (this->gptr() == 0)) || (__omode && (this->pptr() == 0)) )
     return pos_type(off_type(-1));
 
   if ((_M_mode & ios_base::out) && !(_M_mode & ios_base::in))
@@ -354,7 +354,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
     __newoff = _M_str.size();
     break;
   case ios_base::cur:
-    __newoff = __in ? this->gptr() - this->eback() : this->pptr() - this->pbase();
+    __newoff = __imode ? this->gptr() - this->eback() : this->pptr() - this->pbase();
     break;
   default:
     return pos_type(off_type(-1));
@@ -362,7 +362,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
 
   __off += __newoff;
 
-  if (__in) {
+  if (__imode) {
     ptrdiff_t __n = this->egptr() - this->eback();
 
     if (__off < 0 || __off > __n)
@@ -370,7 +370,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
     this->setg(this->eback(), this->eback() + __off, this->eback() + __n);
   }
 
-  if (__out) {
+  if (__omode) {
     ptrdiff_t __n = this->epptr() - this->pbase();
 
     if (__off < 0 || __off > __n)
@@ -388,26 +388,26 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
   ::seekpos(pos_type __pos, ios_base::openmode __mode) {
   __mode &= _M_mode;
 
-  bool __in  = (__mode & ios_base::in) != 0;
-  bool __out = (__mode & ios_base::out) != 0;
+  bool __imode  = (__mode & ios_base::in) != 0;
+  bool __omode = (__mode & ios_base::out) != 0;
 
-  if ( !(__in || __out) )
+  if ( !(__imode || __omode) )
     return pos_type(off_type(-1));
 
-  if ( (__in && (this->gptr() == 0)) || (__out && (this->pptr() == 0)) )
+  if ( (__imode && (this->gptr() == 0)) || (__omode && (this->pptr() == 0)) )
     return pos_type(off_type(-1));
 
   const off_type __n = __pos - pos_type(off_type(0));
   if ((_M_mode & ios_base::out) && !(_M_mode & ios_base::in))
     _M_append_buffer();
 
-  if (__in) {
+  if (__imode) {
     if (__n < 0 || __n > this->egptr() - this->eback())
       return pos_type(off_type(-1));
     this->setg(this->eback(), this->eback() + __n, this->egptr());
   }
 
-  if (__out) {
+  if (__omode) {
     if (__n < 0 || size_t(__n) > _M_str.size())
       return pos_type(off_type(-1));
 

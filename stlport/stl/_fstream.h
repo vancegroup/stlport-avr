@@ -393,11 +393,7 @@ public:
   _M_doit(basic_filebuf<char, char_traits<char> >* __buf, 
           char* __first, char* __last) {
     ptrdiff_t __n = __last - __first;
-    if (__buf->_M_write(__first, __n)) {
-      return true;
-    }
-    else
-      return false; 
+    return (__buf->_M_write(__first, __n));
   }
 };
 

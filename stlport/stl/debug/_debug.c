@@ -344,7 +344,8 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
   wvsprintf(__buffer, _lpw, __args);
   //wvsprintf(__buffer, __format_str, __args);
   _STLP_WINCE_TRACE(__buffer);
-#      elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__))
+#      elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || \
+            (defined (__BORLANDC__) && (__BORLANDC__ > 0x550)))
   char __buffer [4096];
   vsnprintf(__buffer, sizeof(__buffer) / sizeof(char), __format_str, __args);
   OutputDebugStringA(__buffer);
@@ -352,7 +353,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
   STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
 #      else
   STLPORT_CSTD::vfprintf(stderr, __format_str, __args);
-#      endif /* WINCE */
+#      endif
 
 #      ifdef _STLP_DEBUG_MESSAGE_POST
   _STLP_DEBUG_MESSAGE_POST

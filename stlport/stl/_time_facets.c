@@ -112,15 +112,11 @@ _RAIt _STLP_CALL
 __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end, _DiffType*) {
   typedef _DiffType difference_type;
   difference_type __n = __name_end - __name;
-  size_t __max_pos = 0;
   difference_type __i;
-  difference_type __pos = 0;
+  size_t __pos = 0;
   difference_type __check_count = __n;
   bool __do_check[_MAXNAMES];
   _RAIt __matching_name[_MAX_NAME_LENGTH];
-
-  for (__i = 0; __i < __n; ++__i)
-    __max_pos = (max)(__max_pos,  __name[__i].size());
 
   for (__i = 0; __i < _MAXNAMES; ++__i)
     __do_check[__i] = true;
@@ -132,9 +128,9 @@ __match(_InIt& __first, _InIt& __last, _RAIt __name, _RAIt __name_end, _DiffType
     for (__i = 0; __i < __n; ++__i) {
       if (__do_check[__i]) {
         if (*__first == __name[__i][__pos]) {
-          if (__pos == _DiffType(__name[__i].size()) - 1) {
+          if (__pos == (__name[__i].size() - 1)) {
             __do_check[__i] = 0;
-            __matching_name[__pos+1] = __name + __i;
+            __matching_name[__pos + 1] = __name + __i;
             --__check_count;
             if (__check_count == 0) {
               ++__first; 

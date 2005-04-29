@@ -432,7 +432,19 @@ _Atomic_swap(volatile __stl_atomic_t * __p, __stl_atomic_t __q) {
 
 inline void* _Atomic_swap_ptr(void* volatile* __p, void* __q) {
 #if defined (_STLP_THREADS) && defined (_STLP_ATOMIC_EXCHANGE_PTR)
+#  if defined (_STLP_MSVC)
+/* Here MSVC produces warning if 64 bits portability issue is activated.
+ * MSVC do not see that _STLP_ATOMIC_EXCHANGE_PTR is a macro which content
+ * is based on the platform, Win32 or Win64
+ */
+#    pragma warning (push)
+#    pragma warning (disable : 4311) // pointer truncation from void* to long
+#    pragma warning (disable : 4312) // conversion from long to void*  of greater size
+#  endif
   return _STLP_ATOMIC_EXCHANGE_PTR(__p,__q);
+#  if defined (_STLP_MSVC)
+#    pragma warning (pop)
+#  endif
 #else
   return (void*)_Atomic_swap((volatile __stl_atomic_t *)__p, (__stl_atomic_t)__q);
 #endif

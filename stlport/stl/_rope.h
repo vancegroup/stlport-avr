@@ -2263,13 +2263,10 @@ inline bool operator== (const _Rope_char_ptr_proxy<_CharT,_Alloc>& __x,
   return (__x._M_pos == __y._M_pos && __x._M_root == __y._M_root);
 }
 
-#ifdef _STLP_USE_NEW_IOSTREAMS
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 template<class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& operator<< (basic_ostream<_CharT, _Traits>& __o,
                                             const rope<_CharT, _Alloc>& __r);
-#elif ! defined (_STLP_USE_NO_IOSTREAMS)
-template<class _CharT, class _Alloc>
-ostream& operator<< (ostream& __o, const rope<_CharT,_Alloc>& __r);        
 #endif
         
 typedef rope<char, _STLP_DEFAULT_ALLOCATOR(char) > crope;

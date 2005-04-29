@@ -18,9 +18,13 @@
 #ifndef _STLP_FSTREAM_C
 #define _STLP_FSTREAM_C
 
-# ifndef _STLP_INTERNAL_FSTREAM_H
+#ifndef _STLP_INTERNAL_FSTREAM_H
 #  include <stl/_fstream.h>
-# endif
+#endif
+
+#ifndef _STLP_LIMITS_H
+#  include <stl/_limits.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -613,11 +617,19 @@ bool basic_filebuf<_CharT, _Traits>::_M_unshift() {
 // element than the buffer that the base class knows about.  (See 
 // basic_filebuf<>::overflow() for the reason.)
 template <class _CharT, class _Traits>
-bool 
-basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __n) {
+bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __n) {
+  //The major hypothesis in the following implementation is that size_t is unsigned:
+  typedef char __static_assert_unsigned_size_t[!numeric_limits<size_t>::is_signed];
+
   if (__buf == 0) {
-    _M_int_buf = __STATIC_CAST(_CharT*, malloc(__n * sizeof(_CharT)));
-    if (! _M_int_buf)
+    streamsize __bufsize = __n * sizeof(_CharT);
+    //We first check that the streamsize representation can't overflow a size_t one.
+    //If it can, we check that __bufsize is not higher than the size_t max value.
+    if ((sizeof(streamsize) > sizeof(size_t)) &&
+        (__bufsize > __STATIC_CAST(streamsize, (numeric_limits<size_t>::max)())))
+      return false;
+    _M_int_buf = __STATIC_CAST(_CharT*, malloc(__STATIC_CAST(size_t, __bufsize)));
+    if (!_M_int_buf)
       return false;
     _M_int_buf_dynamic = true;
   }
@@ -626,10 +638,16 @@ basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __
     _M_int_buf_dynamic = false;
   }
   
-  size_t __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, (max)(_M_codecvt->encoding(), 1)),
-                           __STATIC_CAST(streamsize, _M_codecvt->max_length()));
+  typedef char __static_asset[sizeof(streamsize) >= sizeof(int)];
+  streamsize __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, (max)(_M_codecvt->encoding(), 1)),
+                               __STATIC_CAST(streamsize, _M_codecvt->max_length()));
+  _M_ext_buf = 0;
+  if ((sizeof(streamsize) < sizeof(size_t)) ||
+      ((sizeof(streamsize) == sizeof(size_t)) && numeric_limits<streamsize>::is_signed) ||
+      (__ebufsiz <= __STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()))) {
+    _M_ext_buf = __STATIC_CAST(char*, malloc(__STATIC_CAST(size_t, __ebufsiz)));
+  }
 
-  _M_ext_buf = __STATIC_CAST(char*, malloc(__ebufsiz));
   if (!_M_ext_buf) {
     _M_deallocate_buffers();
     return false;

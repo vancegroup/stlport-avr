@@ -40,7 +40,7 @@
 #  endif
 
 //Pool of common warnings for all MSVC supported versions:
-//Many are only usefull if warning level is set to 4.
+//Many are only useful if warning level is set to 4.
 #  pragma warning( disable : 4100 ) // unreferenced formal parameter
 #  pragma warning( disable : 4127 ) // conditional expression is constant
 #  pragma warning( disable : 4146 ) // unary minus operator applied to unsigned type, result still unsigned

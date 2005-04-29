@@ -1,4 +1,3 @@
-# if defined (_STLP_USE_NEW_IOSTREAMS)
 using _STLP_NEW_IO_NAMESPACE::char_traits;
 using _STLP_NEW_IO_NAMESPACE::basic_ios;
 using _STLP_NEW_IO_NAMESPACE::basic_streambuf;
@@ -20,7 +19,6 @@ using _STLP_NEW_IO_NAMESPACE::stringbuf;
 using _STLP_NEW_IO_NAMESPACE::istringstream;
 using _STLP_NEW_IO_NAMESPACE::ostringstream;
 using _STLP_NEW_IO_NAMESPACE::stringstream;
-# endif
 
 using _STLP_NEW_IO_NAMESPACE::ios;
 using _STLP_NEW_IO_NAMESPACE::streambuf;
@@ -36,7 +34,7 @@ using _STLP_NEW_IO_NAMESPACE::fstream;
 using _STLP_NEW_IO_NAMESPACE::streampos;
 using _STLP_NEW_IO_NAMESPACE::streamoff;
 
-# if !defined (_STLP_NO_WIDE_STREAMS)
+#if !defined (_STLP_NO_WIDE_STREAMS)
 using _STLP_NEW_IO_NAMESPACE::wios;
 using _STLP_NEW_IO_NAMESPACE::wstreambuf;
 using _STLP_NEW_IO_NAMESPACE::wistream;
@@ -51,4 +49,4 @@ using _STLP_NEW_IO_NAMESPACE::wifstream;
 using _STLP_NEW_IO_NAMESPACE::wofstream;
 using _STLP_NEW_IO_NAMESPACE::wfstream;
 using _STLP_NEW_IO_NAMESPACE::wstreampos;
-# endif
+#endif

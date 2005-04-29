@@ -70,10 +70,6 @@ typedef ptrdiff_t streamoff;
 typedef off_t streamoff;
 #endif /* _STLP_HAS_NO_NEW_C_HEADERS */
 
-/* streamsize cannot be size_t because in this case we wouldn't
- * be able to represent all offsets between 2 positions represented
- * using streamsize with streamoff.
- */
 #if defined (_STLP_WIN32)
 typedef streamoff streamsize;
 #else

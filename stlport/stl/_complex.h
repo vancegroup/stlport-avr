@@ -821,11 +821,11 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL polar(const long double&, const l
 #endif
 
 
-#ifndef _STLP_USE_NO_IOSTREAMS
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 
 _STLP_END_NAMESPACE
 
-#include <iosfwd>
+#  include <iosfwd>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -857,7 +857,7 @@ _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_ostream<char, char_traits<char> >& _STLP_CALL 
 operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<double>& __z);
 
-#  if ! defined (_STLP_NO_LONG_DOUBLE)
+#  if !defined (_STLP_NO_LONG_DOUBLE)
 _STLP_OPERATOR_TEMPLATE
 _STLP_DECLSPEC basic_istream<char, char_traits<char> >& _STLP_CALL 
 operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& __z);
@@ -870,25 +870,23 @@ operator<<(basic_ostream<char, char_traits<char> >& __is, const complex<long dou
 
 #  if defined (_STLP_USE_TEMPLATE_EXPORT) && ! defined (_STLP_NO_WCHAR_T)
 
-_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator>>(
-        basic_istream<wchar_t, char_traits<wchar_t> >&, complex<double>&);
-_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator<<(
-        basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<double>&);
-_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator>>(
-        basic_istream<wchar_t, char_traits<wchar_t> >&, complex<float>&);
-_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator<<(
-        basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<float>&);
+_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<double>&);
+_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<double>&);
+_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<float>&);
+_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<float>&);
 
-#    ifndef _STLP_NO_LONG_DOUBLE
-_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator>>(
-        basic_istream<wchar_t, char_traits<wchar_t> >&, complex<long double>&);
-_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL operator<<(
-        basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<long double>&);
+#    if !defined (_STLP_NO_LONG_DOUBLE)
+_STLP_EXPORT_TEMPLATE basic_istream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator>>(basic_istream<wchar_t, char_traits<wchar_t> >&, complex<long double>&);
+_STLP_EXPORT_TEMPLATE basic_ostream<wchar_t, char_traits<wchar_t> >& _STLP_CALL
+operator<<(basic_ostream<wchar_t, char_traits<wchar_t> >&, const complex<long double>&);
 #    endif
-
-#  endif /* USE_TEMPLATE_EXPORT */
-
-#endif /* _STLP_USE_NEW_IOSTREAMS */
+#  endif
+#endif
 
 
 // Transcendental functions.  These are defined only for float, 

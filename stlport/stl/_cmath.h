@@ -129,7 +129,10 @@
 #  endif
 #endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
 
-#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1310)
+//MSVC starting with .Net 2003 has already all math functions in global namespace.
+//As Intel C++ compiler icl include MSVC headers it also have all math functions in ::
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC < 1310)) && \
+    (!defined (__ICL) || (_MSC_VER < 1310))
 inline double abs(double __x) { return ::fabs(__x); }
 #  ifndef __MVS__
 _STLP_DEF_MATH_INLINE(abs,fabs)
@@ -155,27 +158,27 @@ _STLP_DEF_MATH_INLINE(log,log)
 _STLP_DEF_MATH_INLINE(log10,log10)
 _STLP_DEF_MATH_INLINE2P(modf,modf)
 
-#if 0 // Unknown OS, where float/long double modf missed
+#  if 0 // Unknown OS, where float/long double modf missed
 // fbp : float versions are not always available
 
 // Context of define of _STLP_VENDOR_LONG_DOUBLE_MATH should be changed:
 // many OS has *l math functions... -ptr
 
-# if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 - 
+#    if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 - 
 inline float modf (float __x, float* __y)     { 
   double __dd[2]; 
   double __res = ::modf((double)__x, __dd); 
   __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1]; 
   return (float)__res; 
 }
-#  else  //*ty 11/25/2001 - i.e. for apple SCpp
+#    else  //*ty 11/25/2001 - i.e. for apple SCpp
 inline float modf (float __x, float* __y)     { 
   long double __dd[2]; 
   long double __res = ::modfl(__STATIC_CAST(long double,__x), __dd); 
   __y[0] = __STATIC_CAST(float,__dd[0]); __y[1] = __STATIC_CAST(float,__dd[1]); 
   return __STATIC_CAST(float,__res);
 }
-# endif  //*ty 11/25/2001 - 
+#    endif  //*ty 11/25/2001 - 
 // fbp : long double versions are not available
 inline long double modf (long double __x, long double* __y) { 
   double __dd[2]; 
@@ -183,7 +186,7 @@ inline long double modf (long double __x, long double* __y) {
   __y[0] = (long double)__dd[0] ; __y[1] = (long double)__dd[1]; 
   return (long double)__res; 
 }
-#endif // 0
+#  endif // 0
 
 _STLP_DEF_MATH_INLINE2(pow,pow)
 

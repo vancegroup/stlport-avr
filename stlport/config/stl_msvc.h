@@ -270,7 +270,8 @@ typedef char __stl_char;
 #  undef _STLP_NO_CUSTOM_IO
 #endif
 
-#if !defined (__BUILDING_STLPORT) && !defined (_STLP_NO_IOSTREAMS) && !defined (_STLP_DONT_USE_AUTO_LINK)
+#if !defined (__BUILDING_STLPORT) && !defined (_STLP_DONT_USE_AUTO_LINK) && \
+    !defined (_STLP_NO_IOSTREAMS) && !defined (_STLP_USE_NO_IOSTREAMS)
 
 #  define _STLP_STRINGIZE(X) _STLP_STRINGIZE_AUX(X)
 #  define _STLP_STRINGIZE_AUX(X) #X

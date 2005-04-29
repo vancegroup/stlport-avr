@@ -16,12 +16,10 @@
 #ifndef _STLP_STRSTREAM_H
 # define _STLP_STRSTREAM_H
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2071
 #  include <stl/_prolog.h>
-# endif
-
-# if defined ( _STLP_USE_NEW_IOSTREAMS )
+#endif
 
 // fbp - if we are going to use that consistently, let's do it
 #ifdef __BORLANDC__
@@ -30,10 +28,10 @@
 #  include <strstream>
 #endif
 
-# include  <iostream.h>
+#include <iostream.h>
 
 
-# ifndef _STLP_HAS_NO_NAMESPACES
+#ifndef _STLP_HAS_NO_NAMESPACES
 
 #  ifdef _STLP_BROKEN_USING_DIRECTIVE
 
@@ -48,28 +46,15 @@ using _STLP_STD::strstream;
 
 #  endif /* _STLP_BROKEN_USING_DIRECTIVE */
 
-# endif /* _STLP_HAS_NO_NAMESPACES */
+#endif /* _STLP_HAS_NO_NAMESPACES */
 
-# else
-
-
-// just include old-style strstream.h
-#  if defined (_MSC_VER) && (_MSC_VER < 1300)
-#   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstrea.h)
-#  else
-#   include _STLP_NATIVE_OLD_STREAMS_HEADER(strstream.h)
-#  endif
-
-# endif
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2071)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2071)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_STRSTREAM_H */
 
 // Local Variables:
 // mode:C++
 // End:
-

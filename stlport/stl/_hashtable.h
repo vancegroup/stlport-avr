@@ -60,6 +60,10 @@
  * unordered_set, unordered_map, unordered_multiset, unordered_multimap.
  */
 
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)  && !(defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)))
+#  define _STLP_DEFINE_HASH_EXTENSION
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -458,37 +462,36 @@ public:
   //reference find_or_insert(const value_type& __obj);
 
 private:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )  && !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))
+#if defined (_STLP_DEFINE_HASH_EXTENSION)
   template <class _KT> 
   _ElemsIte _M_find(const _KT& __key) const
-# else
+#else
   _ElemsIte _M_find(const key_type& __key) const
-# endif
+#endif
   {
     _ElemsCont &__mutable_elems = __CONST_CAST(_ElemsCont&, _M_elems);
     size_type __n = _M_bkt_num_key(__key);
     _ElemsIte __first(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
-    for ( ; (__first != __last) && !_M_equals(_M_get_key(*__first), __key);
-          ++__first);
+    for ( ; (__first != __last) && !_M_equals(_M_get_key(*__first), __key); ++__first);
     return __first != __last ? __first : __mutable_elems.end();
   } 
 
 public:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )  && !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))
+#if defined (_STLP_DEFINE_HASH_EXTENSION)
   template <class _KT> 
   iterator find(const _KT& __key) 
-# else
+#else
   iterator find(const key_type& __key) 
-# endif
+#endif
   { return _M_find(__key); } 
 
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )  && !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))
+#if defined (_STLP_DEFINE_HASH_EXTENSION)
   template <class _KT> 
   const_iterator find(const _KT& __key) const
-# else
+#else
   const_iterator find(const key_type& __key) const
-# endif
+#endif
   { return _M_find(__key); } 
 
   size_type count(const key_type& __key) const {
@@ -538,13 +541,23 @@ private:
     _M_buckets.assign(__n_buckets, __STATIC_CAST(_BucketType*, 0));
   }
 
+#if defined (_STLP_DEFINE_HASH_EXTENSION)
+  template <class _KT>
+  size_type _M_bkt_num_key(const _KT& __key) const
+#else
   size_type _M_bkt_num_key(const key_type& __key) const
+#endif
   { return _M_bkt_num_key(__key, bucket_count()); }
 
   size_type _M_bkt_num(const value_type& __obj) const
   { return _M_bkt_num_key(_M_get_key(__obj)); }
 
-  size_type _M_bkt_num_key(const key_type& __key, size_t __n) const
+#if defined (_STLP_DEFINE_HASH_EXTENSION)
+  template <class _KT>
+  size_type _M_bkt_num_key(const _KT& __key, size_type __n) const
+#else
+  size_type _M_bkt_num_key(const key_type& __key, size_type __n) const
+#endif
   { return _M_hash(__key) % __n; }
 
   size_type _M_bkt_num(const value_type& __obj, size_t __n) const
@@ -556,6 +569,8 @@ private:
 #undef hashtable
 
 _STLP_END_NAMESPACE
+
+#undef _STLP_DEFINE_HASH_EXTENSION
 
 #if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_hashtable.c>

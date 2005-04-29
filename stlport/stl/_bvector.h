@@ -85,7 +85,7 @@ inline void swap(_Bit_reference& __x, _Bit_reference& __y) {
   __y = __tmp;
 }
 
-// Might not be very usefull but costs nothing!
+// Might not be very useful but costs nothing!
 _STLP_TEMPLATE_NULL
 struct __type_traits<_Bit_reference> { 
   typedef __false_type    has_trivial_default_constructor;
