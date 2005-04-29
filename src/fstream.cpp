@@ -663,8 +663,8 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
       
 #if defined (_STLP_USE_WIN32_IO)
 bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
-#  if (defined (_MSC_VER) && !defined(_STLP_WCE)) || \
-      (defined (__MINGW32__) && defined(__MSVCRT__)) || defined(__DMC__)
+#  if (defined (_MSC_VER) && !defined (_STLP_WCE)) || \
+      (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
 
   if (_M_is_open || __id == INVALID_STLP_FD)
     return false;
@@ -830,47 +830,54 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
   return _read(_M_file_id, buf, n);
 
 #elif defined (_STLP_USE_WIN32_IO)
-  
-  DWORD NumberOfBytesRead;
-  ReadFile(_M_file_id, (LPVOID)buf, (DWORD)n, 
-           &NumberOfBytesRead, 0);
+  ptrdiff_t readen = 0;
+  for (; (n != readen); ) {
+    DWORD NumberOfBytesRead;
+    ReadFile(_M_file_id, buf + readen, 
+             __STATIC_CAST(DWORD, (min)(size_t(0xffffffff), (size_t)n)),
+             &NumberOfBytesRead, 0);
 
-  if ((! (_M_openmode & ios_base::binary)) && NumberOfBytesRead) { 
-    // translate CR-LFs to LFs in the buffer
-    char * to = buf, * last = buf + NumberOfBytesRead - 1;
-    char * from;
-    for (from = buf; from <= last && * from != _STLP_CTRLZ; ++ from ) {
-      if (* from != _STLP_CR)
-        * to ++ = * from;
-      else { // found CR
-        if (from < last) { // not at buffer end
-          if (* (from + 1) != _STLP_LF)
-            * to ++ = _STLP_CR;
-        }
-        else { // last char is CR, peek for LF
-          char peek = ' ';
-          DWORD NumberOfBytesPeeked;
-          ReadFile(_M_file_id, (LPVOID)&peek, 
-                   1, &NumberOfBytesPeeked, 0);
-          if (NumberOfBytesPeeked) {
-            if (peek != _STLP_LF) { //not a <CR><LF> combination
-              * to ++ = _STLP_CR;
-              SetFilePointer(_M_file_id,(LONG)-1,0,SEEK_CUR);
-            }
-            else {
-              //We ignore the complete combinaison:
-              SetFilePointer(_M_file_id,(LONG)-2,0,SEEK_CUR);
+    if (NumberOfBytesRead == 0)
+      break;
+
+    if (!(_M_openmode & ios_base::binary)) { 
+      // translate CR-LFs to LFs in the buffer
+      char *to = buf + readen, *last = buf + readen + NumberOfBytesRead - 1;
+      char *from = to;
+      for (; from <= last && *from != _STLP_CTRLZ; ++from) {
+        if (*from != _STLP_CR)
+          *to++ = *from;
+        else { // found CR
+          if (from < last) { // not at buffer end
+            if (*(from + 1) != _STLP_LF)
+              *to++ = _STLP_CR;
+          }
+          else { // last char is CR, peek for LF
+            char peek = ' ';
+            DWORD NumberOfBytesPeeked;
+            ReadFile(_M_file_id, (LPVOID)&peek, 1, &NumberOfBytesPeeked, 0);
+            if (NumberOfBytesPeeked) {
+              if (peek != _STLP_LF) { //not a <CR><LF> combination
+                *to++ = _STLP_CR;
+                SetFilePointer(_M_file_id, (LONG)-1, 0, SEEK_CUR);
+              }
+              else {
+                //We ignore the complete combinaison:
+                SetFilePointer(_M_file_id, (LONG)-2, 0, SEEK_CUR);
+              }
             }
           }
-        }
-      } // found CR
-    } // for
-    // seek back to TEXT end of file if hit CTRL-Z
-    if (from <= last) // terminated due to CTRLZ
-      SetFilePointer(_M_file_id,(LONG)((last+1) - from),0,SEEK_CUR);
-    NumberOfBytesRead = to - buf;
+        } // found CR
+      } // for
+      // seek back to TEXT end of file if hit CTRL-Z
+      if (from <= last) // terminated due to CTRLZ
+        SetFilePointer(_M_file_id, (LONG)((last+1) - from), 0, SEEK_CUR);
+      readen += to - (buf + readen);
+    }
+    else
+      readen += NumberOfBytesRead;
   }
-  return (ptrdiff_t)NumberOfBytesRead;
+  return readen;
   
 #elif defined (_STLP_USE_STDIO_IO)
   
@@ -897,17 +904,29 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
 
 #elif defined (_STLP_USE_WIN32_IO)
 
+    //In the following implementation we are going to cast most of the ptrdiff_t
+    //values in size_t to work with coherent unsigned values. Doing so make code
+    //more simple especially in the min function call.
+
     // In append mode, every write does an implicit seek to the end
     // of the file.
     if (_M_openmode & ios_base::app)
-      _M_seek( 0, ios_base::end);
+      _M_seek(0, ios_base::end);
     
     if (_M_openmode & ios_base::binary) { 
       // binary mode
+      size_t bytes_to_write = (size_t)n;
       DWORD NumberOfBytesWritten;
-      WriteFile(_M_file_id, (LPVOID)buf, (DWORD)n, 
-                &NumberOfBytesWritten, 0);
-      written = (ptrdiff_t)NumberOfBytesWritten;
+      written = 0;
+      for (; bytes_to_write != 0;) {
+        WriteFile(_M_file_id, buf + written, 
+                  __STATIC_CAST(DWORD, (min)(size_t(0xffffffff), bytes_to_write)),
+                  &NumberOfBytesWritten, 0);
+        if (NumberOfBytesWritten == 0)
+          return false;
+        bytes_to_write -= NumberOfBytesWritten;
+        written += NumberOfBytesWritten;
+      }
     }
     else {
       char textbuf[_TEXTBUF_SIZE + 1]; // extra 1 in case LF at end
@@ -926,7 +945,7 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
         * ptrtextbuf ++ = _STLP_CR;
         * ptrtextbuf ++ = _STLP_LF;
         nextblocksize = (min) (ptrdiff_t(endblock - nextblock), 
-                                             (max) (ptrdiff_t(0), ptrdiff_t(endtextbuf - ptrtextbuf)));
+                               (max) (ptrdiff_t(0), ptrdiff_t(endtextbuf - ptrtextbuf)));
       }
       // write out what's left, > condition is here since for LF at the end , 
       // endtextbuf may get < ptrtextbuf ...
@@ -937,17 +956,16 @@ bool _Filebuf_base::_M_write(char* buf, ptrdiff_t n) {
       }
       // now write out the translated buffer
       char * writetextbuf = textbuf;
-      for (DWORD NumberOfBytesToWrite = ptrtextbuf - textbuf;
+      for (size_t NumberOfBytesToWrite = (size_t)(ptrtextbuf - textbuf);
            NumberOfBytesToWrite;) {
         DWORD NumberOfBytesWritten;
-        WriteFile((HANDLE)_M_file_id, (LPVOID)writetextbuf, 
-                  NumberOfBytesToWrite, &NumberOfBytesWritten, 0);
-        if (NumberOfBytesWritten == NumberOfBytesToWrite)
-          break;
+        WriteFile((HANDLE)_M_file_id, writetextbuf, 
+                  __STATIC_CAST(DWORD, (min)(size_t(0xffffffff), NumberOfBytesToWrite)),
+                  &NumberOfBytesWritten, 0);
         if (!NumberOfBytesWritten) // write shortfall
           return false;
         writetextbuf += NumberOfBytesWritten;
-        NumberOfBytesToWrite -=  NumberOfBytesWritten;
+        NumberOfBytesToWrite -= NumberOfBytesWritten;
       }
       // count non-translated characters
       written = (nextblock - buf);
@@ -1050,11 +1068,10 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
     base =0;
 
 #elif defined (_STLP_USE_WIN32_IO)
-
   _M_view_id = CreateFileMapping(_M_file_id, (PSECURITY_ATTRIBUTES)0 ,
-         PAGE_READONLY, 0 /* len >> 32 */ , 
-         0 /* len & 0xFFFFFFFF */ ,             // low-order DWORD of size
-         0);
+                                 PAGE_READONLY, 0 /* len >> 32 */ , 
+                                 0 /* len & 0xFFFFFFFF */ , // low-order DWORD of size
+                                 0);
 
   if (_M_view_id) {
 #  if 0
@@ -1064,11 +1081,10 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
      (int)cur_filesize, ULL(offset) & 0xffffffff, len);
 */
 #  endif
-    
-    base = MapViewOfFile(_M_view_id, FILE_MAP_READ, ULL(offset)>>32, 
-       ULL(offset) & 0xffffffff, len);
+    base = MapViewOfFile(_M_view_id, FILE_MAP_READ, __STATIC_CAST(DWORD, ULL(offset) >> 32),
+                         __STATIC_CAST(DWORD, ULL(offset) & 0xffffffff), __STATIC_CAST(SIZE_T, len));
     // check if mapping succeded and is usable
-    if (base ==0  || _M_seek(offset+len, ios_base::beg) < 0) {
+    if (base == 0  || _M_seek(offset + len, ios_base::beg) < 0) {
       this->_M_unmap(base, len);
       base = 0;
     }

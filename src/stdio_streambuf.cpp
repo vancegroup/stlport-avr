@@ -21,24 +21,24 @@
 // #include "file_streambuf.h"
 
 #ifdef _STLP_UNIX
-#include <sys/types.h>
-#include <sys/stat.h>
+#  include <sys/types.h>
+#  include <sys/stat.h>
 #endif /* __unix */
 
 #include <stl/_fstream.h>
+#include <stl/_limits.h>
 #include "fstream_impl.h"
 
-# if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
-# if defined (__BORLANDC__)
+#if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
+#  if defined (__BORLANDC__)
 // #  include <cio.h>
-#  include <cfcntl.h>
-# else
-#  include <io.h>
-#  include <fcntl.h>
-# endif
-
+#    include <cfcntl.h>
+#  else
+#    include <io.h>
+#    include <fcntl.h>
+#  endif
 #  include <sys/stat.h>
-# endif
+#endif
 
 __SGI_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
@@ -49,27 +49,26 @@ stdio_streambuf_base::stdio_streambuf_base(FILE* file)
     _M_file(file)
 {}
 
-stdio_streambuf_base::~stdio_streambuf_base()
-{
+stdio_streambuf_base::~stdio_streambuf_base() {
   _STLP_VENDOR_CSTD::fflush(_M_file);
 }
 
-_STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n)
-{
+_STLP_STD::streambuf* stdio_streambuf_base::setbuf(char* s, streamsize n) {
 #ifdef _STLP_WCE
-    // no buffering in windows ce .NET
+  // no buffering in windows ce .NET
 #else
-    _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, n);
+  size_t __n_size_t = (sizeof(streamsize) > sizeof(size_t)) ? __STATIC_CAST(size_t, (min)(__STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()), n))
+                                                            : __STATIC_CAST(size_t, n);
+  _STLP_VENDOR_CSTD::setvbuf(_M_file, s, (s == 0 && n == 0) ? _IONBF : _IOFBF, __n_size_t);
 #endif
   return this;
 }
 
 stdio_streambuf_base::pos_type
 stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
-                              ios_base::openmode /* mode */)
-{
+                              ios_base::openmode /* mode */) {
   int whence;
-  switch(dir) {
+  switch (dir) {
   case ios_base::beg:
     whence = SEEK_SET;
     break;
@@ -82,8 +81,12 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
   default:
     return pos_type(-1);
   }
-      
-  if (_STLP_VENDOR_CSTD::fseek(_M_file, off, whence) == 0) {
+
+  //We also check that off is not larger than the fseek parameter that is supposed to take
+  //a long integer.
+  typedef char __static_assert[sizeof(off_type) >= sizeof(long)];
+  if (off <= numeric_limits<long>::max() && 
+      _STLP_VENDOR_CSTD::fseek(_M_file, __STATIC_CAST(long, off), whence) == 0) {
     fpos_t pos;
     _STLP_VENDOR_CSTD::fgetpos(_M_file, &pos);
     // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
@@ -91,9 +94,9 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
     return pos_type((streamoff)pos.__pos);
 #elif defined(__ISCPP__) || defined(__MVS__) || (__OS400__)
-     return pos_type(pos.__fpos_elem[ 0 ]);
+    return pos_type(pos.__fpos_elem[ 0 ]);
 #elif defined (__EMX__)
-     return pos_type((streamoff)pos._pos);
+    return pos_type((streamoff)pos._pos);
 #else
     return pos_type(pos);
 #endif
@@ -104,24 +107,22 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
 
 
 stdio_streambuf_base::pos_type
-stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // dwa 4/27/00 - suppress unused parameter warning
-{
-
+stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
   // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
   // of a primitive type
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
   fpos_t p;
   p.__pos = pos;
-# ifdef _STLP_USE_UCLIBC
-#  ifdef __STDIO_MBSTATE
+#  ifdef _STLP_USE_UCLIBC
+#    ifdef __STDIO_MBSTATE
   memset( &(p.__mbstate), 0, sizeof(p.__mbstate) );
-#  endif
-#  ifdef __STDIO_WIDE
+#    endif
+#    ifdef __STDIO_WIDE
   p.mblen_pending = 0;
-#  endif
-# else
+#    endif
+#  else
   memset( &(p.__state), 0, sizeof(p.__state) );
-# endif
+#  endif
 #elif defined(__MVS__) || (__OS400__)
   fpos_t p;
   p.__fpos_elem[0] = pos;
@@ -139,8 +140,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */)   // 
     return pos_type(-1);
 }
 
-int stdio_streambuf_base::sync()
-{
+int stdio_streambuf_base::sync() {
   return _STLP_VENDOR_CSTD::fflush(_M_file) == 0 ? 0 : -1;
 }
 
@@ -149,34 +149,33 @@ int stdio_streambuf_base::sync()
 
 stdio_istreambuf::~stdio_istreambuf() {}
 
-streamsize stdio_istreambuf::showmanyc()
-{
+streamsize stdio_istreambuf::showmanyc() {
   if (feof(_M_file)) 
     return -1;
   else {
     int fd = _FILE_fd(_M_file);
-# ifdef _STLP_WCE
+#ifdef _STLP_WCE
 // not sure if i can mix win32 io mode with ftell but time will show
 // cannot use WIN32_IO implementation since missing stat
     long tmp= _STLP_VENDOR_CSTD::ftell(_M_file);
      _STLP_VENDOR_CSTD::fseek(_M_file, 0, SEEK_END);
     streamoff size= _STLP_VENDOR_CSTD::ftell(_M_file)-tmp;
      _STLP_VENDOR_CSTD::fseek(_M_file, tmp, SEEK_SET);
-# elif defined(_STLP_USE_WIN32_IO)
+#elif defined (_STLP_USE_WIN32_IO)
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
     struct stat buf;
-# ifdef __BORLANDC__
+#  ifdef __BORLANDC__
     if(fstat(fd, &buf) == 0 && S_ISREG( buf.st_mode ) )
-# else
+#  else
     if(fstat(fd, &buf) == 0 && ( _S_IFREG & buf.st_mode ) )
-# endif
+#  endif
       size = ( buf.st_size > 0  ? buf.st_size : 0);
     else
       size = 0;
-# else
+#else
     streamoff size = _SgI::__file_size(fd);
-# endif
+#endif
     // fbp : we can use ftell as this flavour always use stdio.
     long pos = _STLP_VENDOR_CSTD::ftell(_M_file);
     return pos >= 0 && size > pos ? size - pos : 0;
@@ -198,8 +197,7 @@ stdio_istreambuf::int_type stdio_istreambuf::underflow()
     return traits_type::eof();
 }
 
-stdio_istreambuf::int_type stdio_istreambuf::uflow()
-{
+stdio_istreambuf::int_type stdio_istreambuf::uflow() {
 #ifdef _STLP_WCE
   int c = fgetc(_M_file);
 #else
@@ -208,8 +206,7 @@ stdio_istreambuf::int_type stdio_istreambuf::uflow()
   return c != EOF ? c : traits_type::eof();
 }
 
-stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c)
-{
+stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c) {
   if (c != traits_type::eof()) {
     int result = _STLP_VENDOR_CSTD::ungetc(c, _M_file);
     return result != EOF ? result : traits_type::eof();
@@ -229,13 +226,11 @@ stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c)
 
 stdio_ostreambuf::~stdio_ostreambuf() {}
 
-streamsize stdio_ostreambuf::showmanyc()
-{
+streamsize stdio_ostreambuf::showmanyc() {
   return -1;
 }
 
-stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c)
-{
+stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c) {
   // Write the existing buffer, without writing any additional character.
   if (c == traits_type::eof()) {
     // Do we have a buffer to write?

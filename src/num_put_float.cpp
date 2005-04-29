@@ -589,7 +589,7 @@ size_t __format_float(__iostring &buf, const char * bp,
   char static_buf[128];
   // Output of infinities and NANs does not depend on the format flags
   if (_Stl_is_nan_or_inf((double)x)) {       // Infinity or NaN
-    __format_nan_or_inf(static_buf, x, flags);
+    __format_nan_or_inf(static_buf, (double)x, flags);
     buf = static_buf;
   } 
   else {                        // representable number
@@ -758,8 +758,8 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
   case ios_base::fixed:
     bp = _Stl_qfcvtR(x, (min) (precision, MAXFCVT), &decpt, &sign, cvtbuf);
     break;
-  case ios_base::scientific :
-    bp = _Stl_qecvtR(x, (min) (precision + 1, MAXECVT),     &decpt, &sign, cvtbuf);
+  case ios_base::scientific:
+    bp = _Stl_qecvtR(x, (min) (precision + 1, MAXECVT), &decpt, &sign, cvtbuf);
     break;
   default :
     bp = _Stl_qecvtR(x, (min) (precision, MAXECVT), &decpt, &sign, cvtbuf);

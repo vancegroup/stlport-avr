@@ -253,6 +253,8 @@ template class _STLP_CLASS_DECLSPEC _String_base<char, allocator<char> >;
 
 #    if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #      define basic_string _STLP_NON_DBG_NO_MEM_T_NAME(str)
+#    else
+#      define basic_string _STLP_NON_DBG_NAME(str)
 #    endif
 
 template class _STLP_CLASS_DECLSPEC basic_string<char, char_traits<char>, allocator<char> >;
@@ -267,7 +269,7 @@ template class _STLP_CLASS_DECLSPEC _STLP_CONSTRUCT_CHECKER<basic_string<char, c
 
 template class _STLP_CLASS_DECLSPEC basic_string<char, char_traits<char>, allocator<char> >;
 
-#undef basic_string
+#  undef basic_string
 
 #endif /* _STLP_NO_FORCE_INSTANTIATE */
 

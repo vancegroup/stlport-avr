@@ -37,8 +37,6 @@
 #pragma warning( disable : 4127 ) // conditional expression is constant
 #pragma warning( disable : 4146 ) // unary minus applied to unsigned type
 #pragma warning( disable : 4245 ) // conversion from 'enum ' to 'unsigned int', signed/unsigned mismatch
-//This warning is due to the fact that Windows supports 64 bits file size (files
-//higher than 4Go but STLport do not support it yet.
 #pragma warning( disable : 4244 ) // implicit conversion: possible loss of data
 #pragma warning( disable : 4512 ) // assignment operator could not be generated
 #pragma warning( disable : 4571 ) // catch(...) blocks compiled with /EHs do not catch or re-throw Structured Exceptions

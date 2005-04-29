@@ -22,19 +22,22 @@
 // MAY BE REMOVED in a future standard revision.  You should use the
 // header <sstream> instead.
 
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
 #include <stl/_strstream.h>
 #include <stl/_algobase.h>
+#include <stl/_limits.h>
 
 _STLP_BEGIN_NAMESPACE
 
 // strstreambuf constructor, destructor.
 
 strstreambuf::strstreambuf(streamsize initial_capacity)
-   :  _M_alloc_fun(0), _M_free_fun(0),
-     _M_dynamic(true), _M_frozen(false), _M_constant(false)  
-{
-  streamsize n = (max)(initial_capacity, streamsize(16));
+   : _M_alloc_fun(0), _M_free_fun(0),
+     _M_dynamic(true), _M_frozen(false), _M_constant(false) {
+  typedef char __static_assert[sizeof(streamsize) > sizeof(size_t) ||
+                               ((sizeof(streamsize) == sizeof(size_t)) && (streamsize(-1) > 0))];
+  size_t n = __STATIC_CAST(size_t, (min)(__STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()),
+                                         (max)(initial_capacity, streamsize(16))));
 
   char* buf = _M_alloc(n);
   if (buf) {
@@ -43,13 +46,10 @@ strstreambuf::strstreambuf(streamsize initial_capacity)
   }
 }
 
-
-
 strstreambuf::strstreambuf(__alloc_fn alloc_f, __free_fn free_f)
   : _M_alloc_fun(alloc_f), _M_free_fun(free_f),
-    _M_dynamic(true), _M_frozen(false), _M_constant(false)
-{
-  streamsize n = 16;
+    _M_dynamic(true), _M_frozen(false), _M_constant(false) {
+  size_t n = 16;
 
   char* buf = _M_alloc(n);
   if (buf) {
@@ -60,67 +60,57 @@ strstreambuf::strstreambuf(__alloc_fn alloc_f, __free_fn free_f)
 
 strstreambuf::strstreambuf(char* get, streamsize n, char* put)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(false)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(false) {
   _M_setup(get, put, n);
 }
 
 strstreambuf::strstreambuf(signed char* get, streamsize n, signed char* put)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(false)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(false) {
   _M_setup(__REINTERPRET_CAST(char*,get), __REINTERPRET_CAST(char*,put), n);
 }
 
 strstreambuf::strstreambuf(unsigned char* get, streamsize n,
                            unsigned char* put)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(false)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(false) {
   _M_setup(__REINTERPRET_CAST(char*,get), __REINTERPRET_CAST(char*,put), n);
 }
 
 strstreambuf::strstreambuf(const char* get, streamsize n)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(true)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(true) {
   _M_setup(__CONST_CAST(char*,get), 0, n);
 }
 
 strstreambuf::strstreambuf(const signed char* get, streamsize n)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(true)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(true) {
   _M_setup(__REINTERPRET_CAST(char*, __CONST_CAST(signed char*,get)), 0, n);
 }
 
 strstreambuf::strstreambuf(const unsigned char* get, streamsize n)
   : _M_alloc_fun(0), _M_free_fun(0),
-    _M_dynamic(false), _M_frozen(false), _M_constant(true)
-{
+    _M_dynamic(false), _M_frozen(false), _M_constant(true) {
   _M_setup(__REINTERPRET_CAST(char*, __CONST_CAST(unsigned char*,get)), 0, n);
 }
 
-strstreambuf::~strstreambuf()
-{
+strstreambuf::~strstreambuf() {
   if (_M_dynamic && !_M_frozen)
     _M_free(eback());    
 }
 
-void strstreambuf::freeze(bool frozenflag)
-{
+void strstreambuf::freeze(bool frozenflag) {
   if (_M_dynamic)
     _M_frozen = frozenflag;
 }
 
-char* strstreambuf::str()
-{
+char* strstreambuf::str() {
   freeze(true);
   return eback();
 }
 
-int strstreambuf::pcount() const
-{
+int strstreambuf::pcount() const {
   return int(pptr() ? pptr() - pbase() : 0);
 }
 
@@ -184,8 +174,7 @@ strstreambuf::int_type strstreambuf::pbackfail(int_type c) {
   return traits_type::eof();
 }
 
-strstreambuf::int_type strstreambuf::underflow()
-{
+strstreambuf::int_type strstreambuf::underflow() {
   if (gptr() == egptr() && pptr() && pptr() > egptr())
     setg(eback(), gptr(), pptr());
 
@@ -196,15 +185,13 @@ strstreambuf::int_type strstreambuf::underflow()
 }
 
 basic_streambuf<char, char_traits<char> >* 
-strstreambuf::setbuf(char*, streamsize)
-{
+strstreambuf::setbuf(char*, streamsize) {
   return this;
 }
 
 strstreambuf::pos_type
 strstreambuf::seekoff(off_type off,
-                      ios_base::seekdir dir, ios_base::openmode mode)
-{
+                      ios_base::seekdir dir, ios_base::openmode mode) {
   bool do_get = false;
   bool do_put = false;
 
@@ -267,22 +254,19 @@ strstreambuf::seekoff(off_type off,
 }
 
 strstreambuf::pos_type
-strstreambuf::seekpos(pos_type pos, ios_base::openmode mode)
-{
+strstreambuf::seekpos(pos_type pos, ios_base::openmode mode) {
   return seekoff(pos - pos_type(off_type(0)), ios_base::beg, mode);
 }
 
 
-char* strstreambuf::_M_alloc(size_t n)
-{
+char* strstreambuf::_M_alloc(size_t n) {
   if (_M_alloc_fun)
     return __STATIC_CAST(char*,_M_alloc_fun(n));
   else
     return new char[n];
 }
 
-void strstreambuf::_M_free(char* p)
-{
+void strstreambuf::_M_free(char* p) {
   if (p)
     if (_M_free_fun)
       _M_free_fun(p);
@@ -290,8 +274,7 @@ void strstreambuf::_M_free(char* p)
       delete[] p;
 }
 
-void strstreambuf::_M_setup(char* get, char* put, streamsize n)
-{
+void strstreambuf::_M_setup(char* get, char* put, streamsize n) {
   if (get) {
     size_t N = n > 0 ? size_t(n) : n == 0 ? strlen(get) : size_t(INT_MAX);
     
@@ -309,26 +292,22 @@ void strstreambuf::_M_setup(char* get, char* put, streamsize n)
 // Class istrstream
 
 istrstream::istrstream(char* s)
-  : basic_istream<char, char_traits<char> >(0), _M_buf(s, 0)
-{
+  : basic_istream<char, char_traits<char> >(0), _M_buf(s, 0) {
   this->init(&_M_buf);
 }
 
 istrstream::istrstream(const char* s)
-  : basic_istream<char, char_traits<char> >(0), _M_buf(s, 0)
-{
+  : basic_istream<char, char_traits<char> >(0), _M_buf(s, 0) {
   this->init(&_M_buf);
 }
 
 istrstream::istrstream(char* s, streamsize n)
-  : basic_istream<char, char_traits<char> >(0), _M_buf(s, n)
-{
+  : basic_istream<char, char_traits<char> >(0), _M_buf(s, n) {
   this->init(&_M_buf);
 }
 
 istrstream::istrstream(const char* s, streamsize n)
-  : basic_istream<char, char_traits<char> >(0), _M_buf(s, n)
-{
+  : basic_istream<char, char_traits<char> >(0), _M_buf(s, n) {
   this->init(&_M_buf);
 }
 
@@ -344,37 +323,31 @@ char* istrstream::str() { return _M_buf.str(); }
 // Class ostrstream
 
 ostrstream::ostrstream()
-  : basic_ostream<char, char_traits<char> >(0), _M_buf()
-{
+  : basic_ostream<char, char_traits<char> >(0), _M_buf() {
   basic_ios<char, char_traits<char> >::init(&_M_buf);
 }
 
 ostrstream::ostrstream(char* s, int n, ios_base::openmode mode)
   : basic_ostream<char, char_traits<char> >(0), 
-    _M_buf(s, n, mode & ios_base::app ? s + strlen(s) : s)
-{
+    _M_buf(s, n, mode & ios_base::app ? s + strlen(s) : s) {
   basic_ios<char, char_traits<char> >::init(&_M_buf);
 }
 
 ostrstream::~ostrstream() {}
 
-strstreambuf* ostrstream::rdbuf() const 
-{
+strstreambuf* ostrstream::rdbuf() const {
   return __CONST_CAST(strstreambuf*,&_M_buf);
 }
 
-void ostrstream::freeze(bool freezeflag)
-{
+void ostrstream::freeze(bool freezeflag) {
   _M_buf.freeze(freezeflag);
 }
 
-char* ostrstream::str()
-{
+char* ostrstream::str() {
   return _M_buf.str();
 }
 
-int ostrstream::pcount() const
-{
+int ostrstream::pcount() const {
   return _M_buf.pcount();
 }
 
@@ -383,37 +356,31 @@ int ostrstream::pcount() const
 // Class strstream
 
 strstream::strstream()
-  : basic_iostream<char, char_traits<char> >(0), _M_buf()
-{
+  : basic_iostream<char, char_traits<char> >(0), _M_buf() {
   basic_ios<char, char_traits<char> >::init(&_M_buf);
 }
 
 strstream::strstream(char* s, int n, ios_base::openmode mode)
   : basic_iostream<char, char_traits<char> >(0), 
-    _M_buf(s, n, mode & ios_base::app ? s + strlen(s) : s)
-{
+    _M_buf(s, n, mode & ios_base::app ? s + strlen(s) : s) {
   basic_ios<char, char_traits<char> >::init(&_M_buf);
 }
   
 strstream::~strstream() {}
 
-strstreambuf* strstream::rdbuf() const
-{
+strstreambuf* strstream::rdbuf() const {
   return __CONST_CAST(strstreambuf*,&_M_buf);
 }
 
-void strstream::freeze(bool freezeflag)
-{
+void strstream::freeze(bool freezeflag) {
   _M_buf.freeze(freezeflag);
 }
 
-int strstream::pcount() const
-{
+int strstream::pcount() const {
   return _M_buf.pcount();
 }
 
-char* strstream::str()
-{
+char* strstream::str() {
   return _M_buf.str();
 }
 

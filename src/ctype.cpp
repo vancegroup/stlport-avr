@@ -380,7 +380,7 @@ ctype<wchar_t>::~ctype() {}
 
 bool ctype<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const {
   const ctype_base::mask * table = ctype<char>::classic_table();
-  return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size && (m & table[c]);
+  return c >= 0 && size_t(c) < ctype<char>::table_size && (m & table[c]);
 }
 
 const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
@@ -389,7 +389,7 @@ const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
   const ctype_base::mask * table = ctype<char>::classic_table();
   for ( ; low < high; ++low, ++vec) {
     wchar_t c = *low;
-    *vec = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size ? table[c] : ctype_base::mask (0);
+    *vec = c >= 0 && size_t(c) < ctype<char>::table_size ? table[c] : ctype_base::mask (0);
   }
   return high;
 }
@@ -408,7 +408,7 @@ ctype<wchar_t>::do_scan_not(ctype_base::mask  m,
 }
 
 wchar_t ctype<wchar_t>::do_toupper(wchar_t c) const {
-  return /*c >= 0 && */size_t(c) < ctype<char>::table_size
+  return c >= 0 && size_t(c) < ctype<char>::table_size
     ? (wchar_t) ctype<char>::_S_upper[c]
     : c;
 }
@@ -417,7 +417,7 @@ const wchar_t*
 ctype<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
+    *low = c >= 0 && size_t(c) < ctype<char>::table_size
       ? (wchar_t) ctype<char>::_S_upper[c]
       : c;
   }
@@ -425,7 +425,7 @@ ctype<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
 }
 
 wchar_t ctype<wchar_t>::do_tolower(wchar_t c) const {
-  return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
+  return c >= 0 && size_t(c) < ctype<char>::table_size
     ? (wchar_t) ctype<char>::_S_lower[c]
     : c;
 }
@@ -434,7 +434,7 @@ const wchar_t*
 ctype<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size
+    *low = c >= 0 && size_t(c) < ctype<char>::table_size
       ? (wchar_t) ctype<char>::_S_lower[c]
       : c;
   }

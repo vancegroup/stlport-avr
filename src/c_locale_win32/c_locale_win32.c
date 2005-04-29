@@ -238,7 +238,7 @@ void my_ltoa(long __x, char* buf) {
     *ptr++ = '0';
   else {
     for (; __x != 0; __x /= 10)
-      *ptr++ = (int)(__x % 10) + '0';
+      *ptr++ = (char)(__x % 10) + '0';
   }
   while(ptr > rbuf) *buf++ = *--ptr;
   //psw
@@ -268,25 +268,25 @@ extern "C" {
 
     __Extract_locale_name(name, LC_CTYPE, cname);
 
-    if(__GetLCIDFromName(cname, &ltype->lcid, cp_name)==-1)
+    if (__GetLCIDFromName(cname, &ltype->lcid, cp_name) == -1)
     { free(ltype); return NULL; }
     ltype->cp = atoi(cp_name);
 
     NativeCP=__intGetACP(ltype->lcid);
-    if(NativeCP == 0)
+    if (NativeCP == 0)
       NativeCP=__intGetOCP(ltype->lcid);
 
     /* Make table with all characters. */
-    for(i = 0; i < 256; ++i) Buffer[i] = i;
+    for (i = 0; i < 256; ++i) Buffer[i] = (unsigned char)i;
 
-    if(!GetCPInfo(NativeCP, &CPInfo)) { free(ltype); return NULL; }
+    if (!GetCPInfo(NativeCP, &CPInfo)) { free(ltype); return NULL; }
 
-    if(CPInfo.MaxCharSize > 1) {
-      for(ptr=(unsigned char*)CPInfo.LeadByte; *ptr && *(ptr+1); ptr+=2)
-        for(i=*ptr; i <= *(ptr+1); ++i) Buffer[i] = 0;
+    if (CPInfo.MaxCharSize > 1) {
+      for (ptr=(unsigned char*)CPInfo.LeadByte; *ptr && *(ptr+1); ptr+=2)
+        for (i=*ptr; i <= *(ptr+1); ++i) Buffer[i] = 0;
     }
 
-    if((UINT)NativeCP != ltype->cp) {
+    if ((UINT)NativeCP != ltype->cp) {
       OSVERSIONINFO ver_info;
       ver_info.dwOSVersionInfoSize = sizeof(ver_info);
       GetVersionEx(&ver_info);
@@ -299,12 +299,12 @@ extern "C" {
 
         GetStringTypeW(CT_CTYPE1, wbuffer, 256, ctable);
 
-        for(i = 0; i < 256; ++i)
+        for (i = 0; i < 256; ++i)
           ltype->ctable[i]=(unsigned int)ctable[i];
 
-        if(CPInfo.MaxCharSize > 1) {
-          for(ptr=(unsigned char*)CPInfo.LeadByte; *ptr && *(ptr+1); ptr+=2)
-            for(i=*ptr; i <= *(ptr+1); i++) ltype->ctable[i] = _LEADBYTE;
+        if (CPInfo.MaxCharSize > 1) {
+          for (ptr=(unsigned char*)CPInfo.LeadByte; *ptr && *(ptr+1); ptr+=2)
+            for (i=*ptr; i <= *(ptr+1); i++) ltype->ctable[i] = _LEADBYTE;
         }
 
         free(wbuffer);
@@ -316,9 +316,9 @@ extern "C" {
         // Convert character sequence to target code page.
         BufferSize = MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, NULL, 0);
         wbuffer = (wchar_t*)malloc(BufferSize*sizeof(wchar_t));
-        if(!MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize))
+        if (!MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize))
         { free(wbuffer); free(ltype); return NULL; }
-        if(!WideCharToMultiByte(ltype->cp, WC_COMPOSITECHECK | WC_SEPCHARS, wbuffer, BufferSize, (char*)TargetBuffer, 256, NULL, FALSE))
+        if (!WideCharToMultiByte(ltype->cp, WC_COMPOSITECHECK | WC_SEPCHARS, wbuffer, BufferSize, (char*)TargetBuffer, 256, NULL, FALSE))
         { free(wbuffer); free(ltype); return NULL; }
 
         free(wbuffer);

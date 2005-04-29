@@ -77,24 +77,24 @@ ctype_byname<char>::~ctype_byname() {
 }
 
 char ctype_byname<char>::do_toupper(char c) const {
-  return _Locale_toupper(_M_ctype, c);
+  return (char)_Locale_toupper(_M_ctype, c);
 }
 
 char ctype_byname<char>::do_tolower(char c) const {
-  return _Locale_tolower(_M_ctype, c);
+  return (char)_Locale_tolower(_M_ctype, c);
 }
 
 const char*
 ctype_byname<char>::do_toupper(char* first, const char* last) const {
   for ( ; first != last ; ++first) 
-    *first = _Locale_toupper(_M_ctype, *first);
+    *first = (char)_Locale_toupper(_M_ctype, *first);
   return last;
 }
 
 const char*
 ctype_byname<char>::do_tolower(char* first, const char* last) const {
   for ( ; first != last ; ++first) 
-    *first = _Locale_tolower(_M_ctype, *first);
+    *first = (char)_Locale_tolower(_M_ctype, *first);
   return last;
 }
 
