@@ -11,6 +11,13 @@ ifdef TARGET_OS
 # CC := ${TARGET_OS}-gcc
 endif
 
+CXX_VERSION := $(shell ${CXX} --version)
+CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
+CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
+# CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
+
+SYSINCLUDES := -I$(shell which icpc | xargs dirname | xargs dirname)/include/c++
+
 DEFS ?=
 OPT ?=
 
@@ -18,7 +25,7 @@ DEFS += -D_REENTRANT
 
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
-CPPFLAGS = $(DEFS) $(INCLUDES)
+CPPFLAGS = $(DEFS) $(INCLUDES) $(SYSINCLUDES)
 
 ifeq ($(OSNAME),linux)
 CCFLAGS = $(OPT)

@@ -80,13 +80,136 @@ in most cases you need some runtime libraries from C++ compiler.
 Q2.2 Can I use containers and algorithms from STLport and iostreams from
 library that shipout with compiler?
 
-A2.2
+A2.2 This is a case of STL implementations mix. See A2.3 below.
 
 ========================================================================
 
 Q2.3 Can I mix STL implementations in my project?
 
-A2.3
+A2.3 The short answer is 'No'.
+
+Indeed co-existence of two implementations possible, but this required
+a lot of knowledge as about both implementations, as about compiler and
+linkage. This issues should be taken into account both within STL library and
+during library usage. In common you can't use both implementation
+in the same namespace. So you should separate STL implementations into
+different namespaces. But due to absent of compilers that has full-featured
+support of Argument Dependent Lookup (ADL) (aka Koenig Lookup), you has no
+possibilty to select one or another implementation.
+
+ADL problem.
+
+In wrapper mode, all std references are replaced, thanks a simple macro,
+by the stlp_std namespace. Everything from the native compiler std namespace
+is injected to the stlp_std namespace with many using std::* directives.
+
+The problem arise when you specialized a standard class for one of your
+user types. You do it within the std namespace that, in wrapper mode
+becomes the stlp_std namespace. Then this specialization is just invisible
+from the native std namespace and won't be used.
+
+Things are somewhat worse: the problem arises even without any explicit
+specializations. It is not a bug, but the fact that old compilers just
+did not tried to find functions in the namespaces where arguments' classes
+are defined (indeed no compilers with full-featured support of ADL yet).
+
+Mix imlementation via library.
+
+Let's reduce all the complexity of STLport to some very simple example:
+
+namespace std {
+
+class string
+{
+  public:
+    class iterator { };
+
+    iterator begin();
+    iterator end();
+};
+
+template<class I, class T>
+void find(I begin, I end, T value);
+
+} // namespace std
+
+
+namespace stlport {
+
+using std::string;
+
+template<class I, class T>
+void find(I begin, I end, T value);
+
+void gee()
+{
+  string s;
+  find(s.begin(), s.end(), 10);
+}
+
+} // namespace stlport
+
+
+When a compiler supporting ADL finds the call to `find' within gee() function
+it should examine both namespace `stlport' and namespace `std' for
+the presence of `find'. It is caused by the fact that s.begin() returns
+object of type `std::string::iterator' which obviously defined in namespace
+`std' and the heart of ADL is finding functions not only within namespaces
+where the call is being made but also in the namespaces where the classes
+of arguments are defined...
+
+So, in our example compiler ends with two templates satisfying the call
+`find(s.begin(), s.end(), 10)': `std::find' and `stlport::find'.
+Since compiler can not choose any one of them it reports ambiguity.
+
+There is another aspect of mix implementations.
+Let's consider following code:
+
+a.h:
+
+#include <string>
+
+class A {
+  public:
+    A() {}
+
+    void push( const string s );
+    
+    string _str;
+};
+
+a.cpp:
+
+#include "a.h"
+
+void A::push( const string s )
+{
+  _str = s;
+}
+
+
+b.cpp:
+
+#include "a.h"
+
+string s;
+A a;
+
+void gee()
+{
+   a.push( s );
+}
+
+Now build library from a.cpp with string implementation Impl1;
+than build application with b.cpp that use string implementation Impl2,
+and link with mentioned above library. Compiler will pass. Linker may be
+pass too. But you application will crash (or randomly carash) either on
+call a.push, or on assignment _str = s. This is evident here, but not
+evident in real applications.
+
+The conclusion is: "Using Wrapper mode is very hard and we remove support
+for it". If you still want to play in mine picker, do it at you own risk
+and don't disturb us.
 
 ========================================================================
 

@@ -22,8 +22,23 @@ stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR} -Wl,-R${STLPORT_LIB_DIR}
 
 ifeq ($(OSNAME),linux)
-release-shared : LDLIBS = -lpthread -lstlport_icc
-stldbg-shared  : LDLIBS = -lpthread -lstlport_icc_stldebug
-dbg-shared     : LDLIBS = -lpthread -lstlport_icc_debug
+ifeq ($(CXX_VERSION_MAJOR),8)
+ifeq ($(CXX_VERSION_MINOR),0)
+# 8.0 build 20031016Z
+release-shared:	LDLIBS = -lpthread -lstlport
+stldbg-shared:	LDLIBS = -lpthread -lstlportstlg
+dbg-shared:	LDLIBS = -lpthread -lstlportg
+else
+# 8.1 build 028
+release-shared:	LDLIBS = -lpthread -lstlport -lcprts -lunwind
+stldbg-shared:	LDLIBS = -lpthread -lstlportstlg -lcprts -lunwind
+dbg-shared:	LDLIBS = -lpthread -lstlportg -lcprts -lunwind
+endif
+else
+# 7.1 build 20030307Z
+release-shared:	LDLIBS = -lpthread -lstlport
+stldbg-shared:	LDLIBS = -lpthread -lstlportstlg
+dbg-shared:	LDLIBS = -lpthread -lstlportg
+endif
 endif
 

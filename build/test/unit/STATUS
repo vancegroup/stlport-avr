@@ -66,14 +66,25 @@ Operational environment:   Linux 2.4.26/SMP glibc 2.2.5, IA32
 =======================================================================
 
 -----------------------------------------------------------------------
-Compiler:                       gcc 3.4.2
+Compiler:                       gcc 4.0.0
 -----------------------------------------------------------------------
-Date:                           2005-04-15
+Date:                           2005-04-25
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        All pass (322 tests)
+Status (release-shared):        All pass (324 tests)
 Notes:
-Status (stldbg-shared):         All pass (322 tests)
+Status (stldbg-shared):         All pass (324 tests)
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.2
+-----------------------------------------------------------------------
+Date:                           2005-04-24
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        All pass (324 tests)
+Notes:
+Status (stldbg-shared):         All pass (324 tests)
 Notes:
 
 -----------------------------------------------------------------------
@@ -99,7 +110,7 @@ Status (stldbg-shared):         All pass (282 tests)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:         gcc 3.3.1
+Compiler:                       gcc 3.3.1
 -----------------------------------------------------------------------
 Date:                           2004-08-26
 STLP Version:                   current CVS STLPORT_5_0 branch
@@ -141,6 +152,47 @@ Status (release-shared):        All pass (300 tests)
 Notes:                          use -fPIC both in lib and app; avoid code that run in static objects
                                 (compiler problems)
 Status (stldbg-shared):         All pass (300 tests)
+Notes:                          see notes above
+
+-----------------------------------------------------------------------
+Compiler:                       Intel(R) C++ Compiler/32-bit 8.1 Build 20050207Z (aka 8.1 028)
+-----------------------------------------------------------------------
+Date:                           2005-04-25
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        seems most tests itself pass, but run-time crash happens on exit
+Notes:                          bad_alloc tests crash:
+                                #0  0x40359781 in kill () from /lib/libc.so.6
+                                #1  0x40025e5e in pthread_kill () from /lib/libpthread.so.0
+                                #2  0x40026339 in raise () from /lib/libpthread.so.0
+                                #3  0x4035abe1 in abort () from /lib/libc.so.6
+                                #4  0x402268d5 in GetCurrentFrame32 () from /opt/intel_cc_80/lib/libunwind.so.5
+                                #5  0x40225ea9 in _Unwind_RaiseException_inner () from /opt/intel_cc_80/lib/libunwind.so.5
+                                #6  0x402f7a55 in __cxa_throw (obj=0x0, tinfo=0x0, dest=0)
+                                    at ../../.././libstdc++-v3/libsupc++/eh_throw.cc:75
+                                #7  0x0805fe57 in AllocatorTest::bad_alloc_test ()
+                                #8  0x080602ba in AllocatorTest::myRun ()
+                                #9  0x0804f5d3 in CppUnitMini::TestCase::run ()
+                                #10 0x0804f466 in main ()
+
+                                crash on exit:
+                                #0  0x4039ea3b in free () from /lib/libc.so.6
+                                #1  0x402f6711 in operator delete (ptr=0x0) at ../../.././libstdc++-v3/libsupc++/del_op.cc:40
+                                #2  0x402f678d in operator delete[] (ptr=0x0) at ../../.././libstdc++-v3/libsupc++/del_opv.cc:36
+                                #3  0x40293fb8 in ~ctype (this=0x835cd38)
+                                    at /export/hostel/build/compiler/gcc-3.4.1/i686-pc-linux-gnu/libstdc++-v3/include/bits/locale_facets.h:972
+                                #4  0x40199c96 in _Fac_tidy () from /opt/intel_cc_80/lib/libcprts.so.5
+                                #5  0x401f2658 in _Atexit_cleanup () from /opt/intel_cc_80/lib/libcprts.so.5
+                                #6  0x401f26f5 in _AtexitTool::~_AtexitTool () from /opt/intel_cc_80/lib/libcprts.so.5
+                                #7  0x4035c0a2 in __cxa_finalize () from /lib/libc.so.6
+                                #8  0x4016bff6 in __icrt_terminate () from /opt/intel_cc_80/lib/libcprts.so.5
+                                #9  0x401f4709 in _fini () from /opt/intel_cc_80/lib/libcprts.so.5
+                                #10 0x4000a136 in _dl_fini () from /lib/ld-linux.so.2
+                                #11 0x4035be53 in exit () from /lib/libc.so.6
+                                #12 0x40349155 in __libc_start_main () from /lib/libc.so.6
+                                #13 0x0804f311 in _start ()
+
+Status (stldbg-shared):         same as for release-shared
 Notes:                          see notes above
 
 -----------------------------------------------------------------------
@@ -227,40 +279,40 @@ Operational environment:        Windows XP Professionnal 2002 SP1
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 6 SP5
 -----------------------------------------------------------------------
-Date:                           2005-04-16
+Date:                           2005-04-27
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (318 tests)
+Status (release-shared):        All pass (320 tests)
 Notes:
-Status (dbg-shared):            All pass (318 tests)
+Status (dbg-shared):            All pass (320 tests)
 Notes:
-Status (stldbg-shared):         All pass (318 tests)
+Status (stldbg-shared):         All pass (320 tests)
 Notes:
-Status (release-static):        All pass (318 tests)
+Status (release-static):        All pass (320 tests)
 Notes:
-Status (dbg-static):            All pass (318 tests)
+Status (dbg-static):            All pass (320 tests)
 Notes:
-Status (stldbg-static):         All pass (318 tests)
+Status (stldbg-static):         All pass (320 tests)
 Notes:
 
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 2005 Beta1 Version 8.0.40607.16
 -----------------------------------------------------------------------
-Date:                           2005-04-08
+Date:                           2005-04-27
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
 Status (release-shared):        runtime fail
 Notes:                          Microsoft do not grant the msvcp80.dll file
                                 in their free package.
-Status (dbg-shared):            All pass (319 tests)
+Status (dbg-shared):            All pass (322 tests)
 Notes:
-Status (stldbg-shared):         All pass (319 tests)
+Status (stldbg-shared):         All pass (322 tests)
 Notes:
-Status (release-static):        All pass (319 tests)
+Status (release-static):        All pass (322 tests)
 Notes:
-Status (dbg-static):            All pass (319 tests)
+Status (dbg-static):            All pass (322 tests)
 Notes:
-Status (stldbg-static):         All pass (319 tests)
+Status (stldbg-static):         All pass (322 tests)
 Notes:
 
 -----------------------------------------------------------------------

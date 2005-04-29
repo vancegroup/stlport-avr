@@ -12,6 +12,9 @@ include ${SRCROOT}/Makefiles/top.mak
 INCLUDES += -I${STLPORT_INCLUDE_DIR}
 DEFS += -D_STLP_NO_CUSTOM_IO -D_STLP_LEAKS_PEDANTIC
 
+dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
+stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
+
 ifeq ($(OSNAME), cygming)
 release-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
 dbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
@@ -31,9 +34,6 @@ release-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
 dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
 stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
 endif
-
-dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
-stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
 
 ifeq ($(OSNAME),cygming)
 LIB_VERSION = ${LIBMAJOR}${LIBMINOR}

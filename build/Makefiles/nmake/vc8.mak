@@ -2,8 +2,8 @@
 #MSVC_DIR = c:\Program Files\Microsoft Visual Studio 8\VC
 #!endif
 
-CFLAGS_COMMON = /nologo /W4 /GR /EHsc
-CXXFLAGS_COMMON = /nologo /W4 /GR /EHsc
+CFLAGS_COMMON = /nologo /W4 /Wp64 /GR /EHsc
+CXXFLAGS_COMMON = /nologo /W4 /Wp64 /GR /EHsc
 
 #DEFS_DBG = /RTC1 /GS
 DEFS_STLDBG = /RTC1 /GS

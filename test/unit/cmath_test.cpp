@@ -29,8 +29,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CMathTest);
 
 
 /*
- * This function is not only usefull to compare floating point values,
- * it also leads to ambiguity problems if the functions do not have the
+ * This function is not only used to compare floating point values with a tolerance,
+ * it also leads to ambiguity problems if the called functions do not have the
  * right prototype.
  */
 template <class _Tp>
