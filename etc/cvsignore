@@ -33,5 +33,3 @@ Templates.DB
 test_file.txt
 make_snap.sh
 TAGS
-*.orig
-*.rej

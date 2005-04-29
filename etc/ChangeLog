@@ -1,3 +1,106 @@
+2005-04-28  Petr Ovtchenkov  <ptr@island...>
+
+	* stlport/stl/_sstream.h, _num_put.c: __in replaced by __imode, __out by __omode
+	or __oi due to MS privatize __in and __out. Thanks Michael Fink.
+
+2005-04-27  Francois Dumont  <dums@stlport...>
+
+	* src/fstream.cpp: Fix Win32-64 file stream implementation. _M_read and _M_write
+	can now correctly handle respectively read and write of really big buffers ( > 2Go)
+	
+	* using/iosfwd.h, stlport/strstream.h, stl/_rope.h, _rope.c, _complex.h: Removed 
+	references to the _STLP_USE_NEW_IOSTREAMS macro, STLport only support "new" 
+	iostreams.
+	
+	* test/unit/max_test.cpp, min_test.cpp: Add tests to check that min and max are not
+	defined as macros.
+	
+	* test/fstream_test.cpp: Add check in creation of test_file.txt as following tests
+	depends on its content.
+	
+	* src/strstream.cpp, stdio_streambuf.cpp, stlport/stl/_num_put.c, _num_get.c,
+	_fstream.c, _moneraty.c: Fix potential issue because of the difference between 
+	streamsize and size_t of ptrdiff_t. Add static assertion to clearly specify how 
+	streamsize must be to have a correct behavior.
+
+	* src/ctype.cpp: Restore check on wchar_t positivity as according 2005-02-22 
+	Petr Ovtchenkov reports wchar_t can be unsigned.
+	
+2005-04-26  Francois Dumont  <dums@stlport...>
+
+	* src/num_get_float.cpp: Fix mingwin support for 64bits integer type 
+	thanks Wlodek Szafran
+
+2005-04-25  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_time_facets.c: Fix __pos type in __match function and removed
+	unused __max_pos definition and initialisation.
+	
+	* src/c_locale_win32/c_locale_win32.c: Add some cast to remove warnings.
+	
+	* stlport/stl/_moneraty.c: Fix __witdh definition to use streamsize rather
+	than size_t to avoid warnings.
+
+2005-04-25  Petr Ovtchenkov  <ptr@island...>
+
+	* build/test/gcc.mak: workaround for [bug?] gmake, that sometimes loss
+	increment of target-specific macro and, may be, under condition.
+	Thanks Jeff Williams.
+
+	* build/Makefiles/gmake/icc.mak: add icc 8.1 compiler-specific libs
+
+	* build/Makefiles/gmake/icc.mak: detect icc version; add includes
+	from compiler to include path
+
+	* test/unit/cppunit/test_main.cpp, cppunit_mini.h: add option -x, run all
+	except specified CLASS::TEST.
+
+2005-04-23  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_ioerr.h: #error message modification thanks Michael Fink.
+	
+2005-04-22  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_istream.c: Fix _M_read_buffered function implementation, there
+	used to be a wrong implicit conversion from streamsize to ptrdiff_t, which fail
+	when sizeof(streamsize) > sizeof(ptrdiff_t). see 2005-04-21 Petr report.
+	
+	* test/unit/: Replaced all _STLP_NO_IOSTREAMS occurences with the STLport internal
+	equivalent _STLP_USE_NO_IOSTREAMS. The first one is defined by the client while the
+	second depends on the first and on the compiler abilities, makes the unit tests more
+	portable.
+	
+	* stlport/stl/_cmath.h: Fix for Intel C++ compiler that also have all C math functions
+	in global namespace.
+
+2005-04-21  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_hashtable.h: Extend the hashtable template methods extension
+	to the method computing the bucket from the key thanks Dominik Siatkowski.
+	
+	* stlport/stl/_threads.h: Disable 64 bits portability warning for MSVC compilers.
+	MSVC do not see that the called function comes from a macro that is different
+	under Win32 and Win64.
+	
+2005-04-21  Petr Ovtchenkov  <ptr@island...>
+
+	* test/unit/sstream_test.cpp, fstream_test.cpp: integral type for
+        ptrdiff_t shorter than for streamsize; this cause problem on
+	Win32 platform, that support files larger 4GB.
+	Thanks Timothy Tenebekov for report.
+
+2005-04-20  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/debug/_debug.c: Small Borland compiler fix to avoid call to
+	vsnprintf before version 0x550 thanks esanfo.
+	
+	* src/dll_main.cpp: Fix bug reported by Intel C++ (icl) compiler.
+	
+2005-04-20  Petr Ovtchenkov  <ptr@island...>
+
+	* src/num_get_float.c: use uint64_t for 64-bit, but unsigned long long
+	for constants. This fix problem on linux x86_64 [amd64].
+
 2005-04-16  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cppunit/test_main.cpp: Patch from Michael Fink to improve
@@ -5,13 +108,9 @@
 
 	* build/test/unit/STATUS: Update from Michael Fink and myself.
 
-
 	* build/Makefiles/nmake: Apply Michael Fink patch to generate .pdb file
-
 	even in release mode and to install them in bin and lib folders next to
-
 	the .dll and .lib files.
-
 
 	* stlport/stl/_algobase.c: Add missing const in return type of the const 
 	version of find specialized for const char*.
