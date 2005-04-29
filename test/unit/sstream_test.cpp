@@ -1,6 +1,6 @@
 #include <string>
 
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 #  include <memory>
 
@@ -20,6 +20,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(SstreamTest);
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
+  CPPUNIT_TEST(input_char);
   CPPUNIT_TEST(io);
   CPPUNIT_TEST(err);
   CPPUNIT_TEST(err_long);
@@ -35,6 +36,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   protected:
     void output();
     void input();
+    void input_char();
     void io();
     void err();
     void err_long();
@@ -87,6 +89,18 @@ void SstreamTest::input()
   CPPUNIT_ASSERT( s.eof() );
   CPPUNIT_ASSERT( str == "abcd ef" );
 }
+
+void SstreamTest::input_char()
+{
+  char buf[16] = { 0, '1', '2', '3' };
+  istringstream s( "0" );
+  s >> buf;
+
+  CPPUNIT_ASSERT( buf[0] == '0' );
+  CPPUNIT_ASSERT( buf[1] == 0 );
+  CPPUNIT_ASSERT( buf[2] == '2' );
+}
+
 
 void SstreamTest::io()
 {

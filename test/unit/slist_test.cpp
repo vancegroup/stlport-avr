@@ -1,6 +1,6 @@
 #include <slist>
 #include <algorithm>
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 #endif
 #include <iterator>
@@ -17,7 +17,7 @@ using namespace std;
 class SlistTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(SlistTest);
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(slist1);
 #endif
   CPPUNIT_TEST(erase);
@@ -26,7 +26,7 @@ class SlistTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   void slist1();
 #endif
   void erase();
@@ -39,7 +39,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SlistTest);
 //
 // tests implementation
 //
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 void SlistTest::slist1()
 {
 /*

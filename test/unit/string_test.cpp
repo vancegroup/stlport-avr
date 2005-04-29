@@ -2,7 +2,7 @@
 #include <deque>
 #include <string>
 #include <algorithm>
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 #endif
 
@@ -47,7 +47,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
   CPPUNIT_TEST(template_expresion);
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(io);
 #endif
   CPPUNIT_TEST_SUITE_END();
@@ -68,7 +68,7 @@ protected:
   void short_string_optim_bug();
   void compare();
   void template_expresion();
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   void io();
 #endif
 
@@ -719,7 +719,7 @@ void StringTest::template_expresion()
   }
 }
 
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 void StringTest::io()
 {
   string str("STLport");

@@ -206,5 +206,3 @@ void ListTest::push_front()
   ++i;
   CPPUNIT_ASSERT( *i == 2 );
 }
-
-

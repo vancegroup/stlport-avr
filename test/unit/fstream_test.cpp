@@ -1,5 +1,5 @@
 #include <string>
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <fstream>
 #  include <iostream>
 #  include <iomanip>
@@ -25,6 +25,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(FstreamTest);
   CPPUNIT_TEST(output);
   CPPUNIT_TEST(input);
+  CPPUNIT_TEST(input_char);
   CPPUNIT_TEST(io);
   CPPUNIT_TEST(err);
   CPPUNIT_TEST(tellg);
@@ -40,6 +41,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   protected:
     void output();
     void input();
+    void input_char();
     void io();
     void err();
     void tellg();
@@ -91,6 +93,17 @@ void FstreamTest::input()
   getline( f, str );
   CPPUNIT_ASSERT( f.eof() );
   CPPUNIT_ASSERT( str == "abcd ef" );
+}
+
+void FstreamTest::input_char()
+{
+  char buf[16] = { 0, '1', '2', '3' };
+  ifstream s( "test_file.txt" );
+  s >> buf;
+
+  CPPUNIT_ASSERT( buf[0] == '1' );
+  CPPUNIT_ASSERT( buf[1] == 0 );
+  CPPUNIT_ASSERT( buf[2] == '2' );
 }
 
 void FstreamTest::io()
@@ -150,29 +163,34 @@ void FstreamTest::err()
 
 void FstreamTest::tellg()
 {
-  // bogus ios_base::binary is for Wins
-  ofstream of( "test_file.txt", ios_base::out | ios_base::binary | ios_base::trunc );
-  CPPUNIT_ASSERT( of.is_open() );
-  int i;
+  {
+    // bogus ios_base::binary is for Wins
+    ofstream of("test_file.txt", ios_base::out | ios_base::binary | ios_base::trunc);
+    CPPUNIT_ASSERT( of.is_open() );
 
-  for ( i = 0; i < 50; ++i ) {
-    of << "line " << setiosflags(ios_base::right) << setfill('0') << setw(2) << i << "\n";
+    for (int i = 0; i < 50; ++i) {
+      of << "line " << setiosflags(ios_base::right) << setfill('0') << setw(2) << i << "\n";
+      CPPUNIT_ASSERT( !of.fail() );
+    }
+    of.close();
   }
-  of.close();
-  // bogus ios_base::binary is for Wins
-  ifstream is( "test_file.txt", ios_base::in | ios_base::binary );
-  CPPUNIT_ASSERT( is.is_open() );
-  string line;
-  char buf[64];
 
-  // CPPUNIT_ASSERT( is.tellg() == 0 );
-  streampos p = 0;
-  for ( i = 0; i < 50; ++i ) {
-    CPPUNIT_ASSERT( is.tellg() == p );
-    // getline( is, line, '\n' );
-    is.read( buf, 8 );
-    CPPUNIT_ASSERT( !is.fail() );
-    p += 8;
+  {
+    // bogus ios_base::binary is for Wins
+    ifstream is("test_file.txt", ios_base::in | ios_base::binary);
+    CPPUNIT_ASSERT( is.is_open() );
+    string line;
+    char buf[64];
+
+    // CPPUNIT_ASSERT( is.tellg() == 0 );
+    streampos p = 0;
+    for (int i = 0; i < 50; ++i) {
+      CPPUNIT_ASSERT( is.tellg() == p );
+      // getline( is, line, '\n' );
+      is.read( buf, 8 );
+      CPPUNIT_ASSERT( !is.fail() );
+      p += 8;
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 #include <algorithm>
-#if !defined (STLPORT) || !defined (_STLP_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #include <sstream>
 #include <functional>
 #include <iterator>

@@ -19,7 +19,7 @@
 #define _CPPUNITMPFR_H_
 
 #define CPPUNIT_NS CppUnitMini
-  
+ 
 #include <cstring>
 
 
@@ -53,11 +53,11 @@ namespace CPPUNIT_NS
       TestCase() { registerTestCase(this); }
       virtual ~TestCase() {}
       
-      static int run(Reporter *in_reporter = 0, const char *in_testName = "");
+      static int run(Reporter *in_reporter = 0, const char *in_testName = "", bool invert = false);
       int numErrors() { return m_numErrors; }
       static void registerTestCase(TestCase *in_testCase);
 
-      virtual void myRun(const char * /*in_name*/) {}
+      virtual void myRun(const char * /*in_name*/, bool invert = false) {}
 
       virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line)
       {
@@ -94,17 +94,19 @@ namespace CPPUNIT_NS
         }
       }
 
-      bool shouldRunThis(const char *in_desiredTest, const char *in_className, const char *in_functionName)
+      bool shouldRunThis(const char *in_desiredTest, const char *in_className, const char *in_functionName, bool invert = false )
       {
         if((in_desiredTest) && (in_desiredTest[0] != '\0'))
         {
           const char *ptr = strstr(in_desiredTest, "::");
           if(ptr)
           {
-            return (strncmp(in_desiredTest, in_className, strlen(in_className)) == 0)
-              && (strncmp(ptr + 2, in_functionName, strlen(in_functionName)) == 0);
+            bool decision = (strncmp(in_desiredTest, in_className, strlen(in_className)) == 0)
+                  && (strncmp(ptr + 2, in_functionName, strlen(in_functionName)) == 0);
+            return invert ? !decision : decision;
           }
-          return (strcmp(in_desiredTest, in_className) == 0);
+          bool decision = strcmp(in_desiredTest, in_className) == 0;
+          return invert ? !decision : decision;
         }
         return true;
       }
@@ -121,13 +123,13 @@ namespace CPPUNIT_NS
     };
 }
 
-#define CPPUNIT_TEST_SUITE(X) virtual void myRun(const char *in_name) { char *className = #X;
+#define CPPUNIT_TEST_SUITE(X) virtual void myRun(const char *in_name, bool invert = false ) { char *className = #X;
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
-#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X)) { try { setUp(); progress(className, #X); X(); tearDown(); } catch(...) { TestCase::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); } }
+#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X, invert)) { try { setUp(); progress(className, #X); X(); tearDown(); } catch(...) { TestCase::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); } }
 #else
-#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X)) {setUp(); progress(className, #X); X(); tearDown();}
+#  define CPPUNIT_TEST(X) if(shouldRunThis(in_name, className, #X, invert)) {setUp(); progress(className, #X); X(); tearDown();}
 #endif
-#define CPPUNIT_TEST_EXCEPTION(X,Y) if(shouldRunThis(in_name, className, #X)) {progress(className, #X);}
+#define CPPUNIT_TEST_EXCEPTION(X,Y) if(shouldRunThis(in_name, className, #X, invert)) {progress(className, #X);}
 #define CPPUNIT_TEST_SUITE_END() }
 #define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local;
 

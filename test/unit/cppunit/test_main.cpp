@@ -34,7 +34,7 @@ namespace CPPUNIT_NS
     m_root = in_testCase;
   }
 
-  int CPPUNIT_NS::TestCase::run(Reporter *in_reporter, const char *in_testName)
+  int CPPUNIT_NS::TestCase::run(Reporter *in_reporter, const char *in_testName, bool invert )
   {
     TestCase::m_reporter = in_reporter;
 
@@ -44,7 +44,7 @@ namespace CPPUNIT_NS
     TestCase *tmp = m_root;
     while(tmp != 0)
     {
-      tmp->myRun(in_testName);
+      tmp->myRun(in_testName, invert);
       tmp = tmp->m_next;
     }
     return m_numErrors;
@@ -109,11 +109,13 @@ int main(int argc, char** argv)
   // test [OPTIONS]
   // where OPTIONS are
   //  -t=CLASS[::TEST]    run the test class CLASS or member test CLASS::TEST
+  //  -x=CLASS[::TEST]    run all except the test class CLASS or member test CLASS::TEST
   //  -f=FILE             save output in file FILE instead of stdout
 
   int num_errors=0;
   char *fileName=0;
   char *testName="";
+  char *xtestName="";
 
   for(int i=1; i<argc; i++) {
     if(argv[i][0]!='-')
@@ -123,6 +125,8 @@ int main(int argc, char** argv)
     }
     else if(!strncmp(argv[i], "-f=", 3)) {
       fileName=argv[i]+3;
+    } else if ( !strncmp(argv[i], "-x=", 3) ) {
+      xtestName=argv[i]+3;
     }
   }
   CPPUNIT_NS::Reporter*   reporter=0;
@@ -131,7 +135,11 @@ int main(int argc, char** argv)
   else
       reporter=new FileReporter(stdout);
 
-  num_errors=CPPUNIT_NS::TestCase::run(reporter, testName);
+  if ( xtestName[0] != 0 ) {
+    num_errors=CPPUNIT_NS::TestCase::run(reporter, xtestName, true );
+  } else {
+    num_errors=CPPUNIT_NS::TestCase::run(reporter, testName);
+  }
   reporter->printSummary();
   delete reporter;
 
