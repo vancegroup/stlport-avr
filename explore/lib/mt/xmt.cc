@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/06/16 16:39:01 ptr>
+// -*- C++ -*- Time-stamp: <05/06/29 19:04:04 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002, 2003, 2004
@@ -47,7 +47,7 @@
 #include <memory>
 #include <functional>
 #include <cerrno>
-#ifdef N_PLAT_NLM
+#ifdef __FIT_NETWARE
 # include <nwerrno.h>
 # include <nwadv.h>
 #endif
@@ -960,7 +960,7 @@ void Thread::delay( timespec *interval, timespec *remain )
     remain->tv_nsec = 0;
   }
 #endif
-#ifdef N_PLAT_NLM
+#ifdef __FIT_NETWARE
   unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
   ::delay( ms );
   if ( remain != 0 ) { // Novell not return remain time interval
@@ -999,7 +999,7 @@ void Thread::sleep( timespec *abstime, timespec *real_time )
     real_time->tv_nsec = abstime->tv_nsec;
   }
 #endif
-#ifdef N_PLAT_NLM
+#ifdef __FIT_NETWARE
   time_t ct = time( 0 );
   time_t _conv = abstime->tv_sec * 1000 + abstime->tv_nsec / 1000000;
 
@@ -1033,7 +1033,7 @@ void Thread::gettime( timespec *t )
   //t->tv_nsec = 0; // (ct % 1000) * 1000000;
 #elif defined(__sun) || defined(__hpux)
   clock_gettime( CLOCK_REALTIME, t );
-#elif defined(N_PLAT_NLM)
+#elif defined(__FIT_NETWARE)
   time_t ct = time(0); // GetHighResolutionTimer (ret current time in 100 microsec increments)
                        // GetSuperHighResolutionTimer() (ret current time in 838 nanosec increments)
   t->tv_sec = ct;
@@ -1176,7 +1176,7 @@ extern "C" {
     return (unsigned long)Thread::_call( p );
   }
 #endif
-#ifdef N_PLAT_NLM
+#ifdef __FIT_NETWARE
   void _xcall( void *p )
   {
     Thread::_call( p );
@@ -1208,8 +1208,10 @@ void *Thread::_call( void *p )
   set_unexpected( unexpected );
   set_terminate( terminate );
 #else
+# ifndef __FIT_NETWARE
   std::set_unexpected( Thread::unexpected );
   std::set_terminate( Thread::terminate );
+# endif // !__FIT_NETWARE
 #endif
 
   me->pword( _self_idx ) = me; // to have chance make Thread sanity by signal
