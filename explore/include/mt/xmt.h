@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <04/07/23 15:24:06 ptr>
+// -*- C++ -*- Time-stamp: <05/08/19 17:34:31 ptr>
 
 /*
  *
@@ -707,6 +707,75 @@ typedef __Mutex<true,false>   MutexSDS; // obsolete, use instead MutexRS
 typedef __Locker<false,false> Locker;
 typedef __Locker<true,false>  LockerRS;
 typedef __Locker<true,false>  LockerSDS; // obsolete, use instead LockerRS
+
+class LockerExt
+{
+  public:
+#ifdef _PTHREADS
+    explicit LockerExt( const pthread_mutex_t& m ) :
+#endif
+#ifdef __FIT_UITHREADS
+    explicit LockerExt( const mutex_t& m ) :
+#endif
+#ifdef __FIT_WIN32THREADS
+    explicit LockerExt( const CRITICAL_SECTION& m ) :
+#endif
+#ifdef __FIT_NOVELL_THREADS
+    explicit LockerExt( const LONG& m ) :
+#endif
+        _M_lock( m )
+      {
+#ifdef _PTHREADS
+        pthread_mutex_lock( const_cast<pthread_mutex_t *>(&_M_lock) );
+#endif
+#ifdef __FIT_UITHREADS
+        mutex_lock( const_cast<mutex_t *>(&_M_lock) );
+#endif
+#ifdef __FIT_WIN32THREADS
+        EnterCriticalSection( const_cast<CRITICAL_SECTION *>(&_M_lock) );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+        WaitOnLocalSemaphore( const_cast<LONG&>(_M_lock) );
+#endif
+      }
+
+    ~LockerExt()
+      {
+#ifdef _PTHREADS
+        pthread_mutex_unlock( const_cast<pthread_mutex_t *>(&_M_lock) );
+#endif
+#ifdef __FIT_UITHREADS
+        mutex_unlock( const_cast<mutex_t *>(&_M_lock) );
+#endif
+#ifdef __FIT_WIN32THREADS
+        LeaveCriticalSection( const_cast<CRITICAL_SECTION *>(&_M_lock) );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+        SignalLocalSemaphore( const_cast<LONG&>(_M_lock) );
+#endif
+      }
+
+  private:
+    LockerExt( const LockerExt& m ) :
+        _M_lock( m._M_lock )
+      { }
+#ifdef _PTHREADS
+    const pthread_mutex_t& _M_lock;
+#endif
+#ifdef __FIT_UITHREADS
+    const mutex_t& _M_lock;
+#endif
+#ifdef __FIT_WIN32THREADS
+    const CRITICAL_SECTION& _M_lock;
+#endif
+#ifdef __FIT_NOVELL_THREADS
+    // This is for ...LocalSemaphore() calls
+    // Alternative is EnterCritSec ... ExitCritSec; but ...CritSec in Novell
+    // block all threads except current
+    const LONG& _M_lock;
+#endif
+    
+};
 
 class Condition
 {
