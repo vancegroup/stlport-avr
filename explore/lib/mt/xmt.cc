@@ -1,13 +1,13 @@
-// -*- C++ -*- Time-stamp: <05/06/29 19:04:04 ptr>
+// -*- C++ -*- Time-stamp: <05/09/11 11:58:35 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002, 2003, 2004
+ * Copyright (c) 1997-1999, 2002-2005
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 2.0
+ * Licensed under the Academic Free License Version 2.1
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -18,14 +18,6 @@
  * that both that copyright notice and this permission notice appear
  * in supporting documentation.
  */
-
-#ifdef __unix
-#  ifdef __HP_aCC
-#pragma VERSIONID "@(#)$Id$"
-#  else
-#ident "@(#)$Id$"
-#  endif
-#endif
 
 #include <config/feature.h>
 
@@ -1221,7 +1213,7 @@ void *Thread::_call( void *p )
   me->_state = goodbit;
   _start_lock.unlock();
   try {
-    ret = me->_entrance( me->_param );
+    ret = me->_entrance( _param );
     me->_state = badbit;
     // I should make me->_id = bad_thread_id; here...
     // This is in conflict what I say in the begin of this function.
