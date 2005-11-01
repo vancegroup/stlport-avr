@@ -1,4 +1,5 @@
 #include <string>
+#include "math_aux.h"
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
@@ -194,6 +195,20 @@ void SstreamTest::init_in()
   is >> n;
   CPPUNIT_ASSERT( !is.fail() );
   CPPUNIT_ASSERT( n == 12345 );
+
+  istringstream dis( "1.2345" );
+  double d;
+
+  dis >> d;
+  CPPUNIT_ASSERT( !dis.fail() );
+  CPPUNIT_ASSERT( are_equals(d, 1.2345) );
+
+  istringstream fis( "1.2345" );
+  float f;
+
+  fis >> f;
+  CPPUNIT_ASSERT( !fis.fail() );
+  CPPUNIT_ASSERT( are_equals(f, 1.2345f) );
 }
 
 void SstreamTest::init_out()

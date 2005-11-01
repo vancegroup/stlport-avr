@@ -7,7 +7,11 @@
 # tag with assignment fail, but work assignment for all tags
 # (really that more correct).
 
+ifneq ($(OSNAME), cygming)
+ifneq ($(OSNAME), windows)
 OPT += -fPIC
+endif
+endif
 
 ifndef NOT_USE_NOSTDLIB
 
@@ -123,7 +127,15 @@ release-static:	LDFLAGS += ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),cygming)
-OPT := 
+dbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_DBG},--export-all-symbols
+stldbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--export-all-symbols,--enable-auto-import
+release-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT},--export-all-symbols,--enable-auto-import
+dbg-static:	LDFLAGS += -static ${LDSEARCH}
+stldbg-static:	LDFLAGS += -static ${LDSEARCH}
+release-static:	LDFLAGS += -static ${LDSEARCH}
+endif
+
+ifeq ($(OSNAME),windows)
 dbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_DBG},--export-all-symbols
 stldbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--export-all-symbols,--enable-auto-import
 release-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT},--export-all-symbols,--enable-auto-import
@@ -148,6 +160,7 @@ COMPATIBILITY_VERSION := $(CURRENT_VERSION)
 dbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_DBGxx) -Wl ${LDSEARCH}
 stldbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_STLDBGxx) -Wl ${LDSEARCH}
 release-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAMExx) -Wl ${LDSEARCH}
+
 dbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 stldbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 release-static:	LDFLAGS += -staticlib ${LDSEARCH}

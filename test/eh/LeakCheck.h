@@ -22,15 +22,15 @@
 #ifndef INCLUDED_MOTU_LeakCheck
 #define INCLUDED_MOTU_LeakCheck 1
 
-# include "Prefix.h"
+#include "Prefix.h"
 
-# include "nc_alloc.h"
+#include "nc_alloc.h"
 
-#  include <cstdio>
-#  include <cassert>
-#  include <iterator>
+#include <cstdio>
+#include <cassert>
+#include <iterator>
 
-#  include <iostream>
+#include <iostream>
 
 EH_BEGIN_NAMESPACE
 
@@ -50,8 +50,7 @@ EH_END_NAMESPACE
 ====================================================================================*/
 template <class C>
 void CheckInvariant(const C&)
-{
-}
+{}
 
 /*===================================================================================
   WeakCheck
@@ -63,36 +62,34 @@ void CheckInvariant(const C&)
     value type whether the operation succeeds or fails.
 ====================================================================================*/
 template <class Value, class Operation>
-void WeakCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
-{
-    bool succeeded = false;
-    bool failed = false;
-    gTestController.SetCurrentTestCategory("weak");
-    for ( long count = 0; !succeeded && !failed && count < max_iters; count++ )
+void WeakCheck(const Value& v, const Operation& op, long max_iters = 2000000) {
+  bool succeeded = false;
+  bool failed = false;
+  gTestController.SetCurrentTestCategory("weak");
+  for (long count = 0; !succeeded && !failed && count < max_iters; ++count) {
+    gTestController.BeginLeakDetection();
     {
-        gTestController.BeginLeakDetection();
-        {
-            Value dup = v;
-# ifndef EH_NO_EXCEPTIONS
-            try {
-# endif
-                gTestController.SetFailureCountdown(count);
-                op( dup );
-                succeeded = true;
-# ifndef EH_NO_EXCEPTIONS
-            }
-            catch(...) {}  // Just try again.
-# endif
-            gTestController.CancelFailureCountdown();
-            CheckInvariant(dup);
-        }
-        failed = gTestController.ReportLeaked();
-        EH_ASSERT( !failed );
-        
-        if ( succeeded )
-          gTestController.ReportSuccess(count);
+      Value dup = v;
+#ifndef EH_NO_EXCEPTIONS
+      try {
+#endif
+        gTestController.SetFailureCountdown(count);
+        op( dup );
+        succeeded = true;
+#ifndef EH_NO_EXCEPTIONS
+      }
+      catch (...) {}  // Just try again.
+#endif
+      gTestController.CancelFailureCountdown();
+      CheckInvariant(dup);
     }
-    EH_ASSERT( succeeded || failed );  // Make sure the count hasn't gone over
+    failed = gTestController.ReportLeaked();
+    EH_ASSERT( !failed );
+
+    if ( succeeded )
+      gTestController.ReportSuccess(count);
+  }
+  EH_ASSERT( succeeded || failed );  // Make sure the count hasn't gone over
 }
 
 /*===================================================================================
@@ -103,34 +100,32 @@ void WeakCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
     invariant checking is performed. Leak checking still occurs.
 ====================================================================================*/
 template <class Value, class Operation>
-void ConstCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
-{
-    bool succeeded = false;
-    bool failed = false;
-    gTestController.SetCurrentTestCategory("const");
-    for ( long count = 0; !succeeded && !failed && count < max_iters; count++ )
+void ConstCheck(const Value& v, const Operation& op, long max_iters = 2000000) {
+  bool succeeded = false;
+  bool failed = false;
+  gTestController.SetCurrentTestCategory("const");
+  for (long count = 0; !succeeded && !failed && count < max_iters; ++count) {
+    gTestController.BeginLeakDetection();
     {
-        gTestController.BeginLeakDetection();
-        {
-# ifndef EH_NO_EXCEPTIONS
-            try {
+#ifndef EH_NO_EXCEPTIONS
+      try {
+#endif
+        gTestController.SetFailureCountdown(count);
+        op( v );
+        succeeded = true;
+#ifndef EH_NO_EXCEPTIONS
+      }
+      catch(...) {}  // Just try again.
 # endif
-                gTestController.SetFailureCountdown(count);
-                op( v );
-                succeeded = true;
-# ifndef EH_NO_EXCEPTIONS
-            }
-            catch(...) {}  // Just try again.
-# endif
-            gTestController.CancelFailureCountdown();
-        }
-        failed = gTestController.ReportLeaked();
-        EH_ASSERT( !failed );
-
-        if ( succeeded )
-      gTestController.ReportSuccess(count);
+      gTestController.CancelFailureCountdown();
     }
-    EH_ASSERT( succeeded || failed );  // Make sure the count hasn't gone over
+    failed = gTestController.ReportLeaked();
+    EH_ASSERT( !failed );
+
+    if ( succeeded )
+      gTestController.ReportSuccess(count);
+  }
+  EH_ASSERT( succeeded || failed );  // Make sure the count hasn't gone over
 }
 
 /*===================================================================================
@@ -147,8 +142,7 @@ void ConstCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
     
 ====================================================================================*/
 template <class Value, class Operation>
-void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 )
-{
+void StrongCheck(const Value& v, const Operation& op, long max_iters = 2000000) {
   bool succeeded = false;
   bool failed = false;
   gTestController.SetCurrentTestCategory("strong");
@@ -158,9 +152,9 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
     {
       Value dup = v;
       {
-# ifndef EH_NO_EXCEPTIONS
+#ifndef EH_NO_EXCEPTIONS
         try {
-# endif
+#endif
           gTestController.SetFailureCountdown(count);
           op( dup );
           succeeded = true;
@@ -200,9 +194,5 @@ void StrongCheck( const Value& v, const Operation& op, long max_iters = 2000000 
   }
   EH_ASSERT( succeeded || failed );  // Make sure the count hasn't gone over
 }
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif // INCLUDED_MOTU_LeakCheck

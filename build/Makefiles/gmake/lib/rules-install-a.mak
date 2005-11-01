@@ -3,6 +3,8 @@
 
 PHONY += install-release-static install-dbg-static install-stldbg-static
 
+install-static: install-release-static install-dbg-static install-stldbg-static
+
 install-release-static:	release-static
 	@if [ ! -d $(INSTALL_LIB_DIR) ] ; then \
 	  mkdir -p $(INSTALL_LIB_DIR) ; \

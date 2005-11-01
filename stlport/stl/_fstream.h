@@ -103,7 +103,7 @@ public:
   streamoff _M_get_offset(char* __first, char* __last) {
 #if defined (_STLP_UNIX) || defined (_STLP_MAC)
     return __last - __first;
-#else // defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS)
+#else // defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined(N_PLAT_NLM)
     return ( (_M_openmode & ios_base::binary) != 0 )
       ? (__last - __first)
       : count(__first, __last, '\n') + (__last - __first);
@@ -115,7 +115,7 @@ public:
   bool _M_in_binary_mode() const {
 #if defined (_STLP_UNIX) || defined (_STLP_MAC)  || defined(__BEOS__) || defined (__amigaos__) 
     return true;
-#elif defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined (_STLP_VM) || defined (__EMX__)
+#elif defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined (_STLP_VM) || defined (__EMX__) || defined(N_PLAT_NLM)
     return (_M_openmode & ios_base::binary) != 0;
 #else 
 #  error "Port!"
@@ -280,7 +280,7 @@ private:                        // Helper functions.
   
   bool _M_seek_init(bool __do_unshift);
 
-  void _M_setup_codecvt(const locale&);
+  void _M_setup_codecvt(const locale&, bool __on_imbue = true);
 
 private:                        // Data members used in all modes.
 
@@ -682,6 +682,15 @@ public:                         // Constructors, destructor.
     if (!_M_buf.open(__s, __m, __protection))
       this->setstate(ios_base::failbit);  
   }
+#  if defined (_STLP_USE_WIN32_IO)
+  explicit basic_fstream(_STLP_fd __id,
+    ios_base::openmode __mod = ios_base::in | ios_base::out) : 
+    basic_ios<_CharT, _Traits>(),  basic_iostream<_CharT, _Traits>(0), _M_buf() {
+    this->init(&_M_buf);
+    if (!_M_buf.open(__id, __mod))
+      this->setstate(ios_base::failbit);
+  }
+#  endif /* _STLP_USE_WIN32_IO */
 #endif    
   ~basic_fstream() {}
 

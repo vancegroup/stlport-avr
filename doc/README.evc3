@@ -3,7 +3,7 @@
 STLport README for eMbedded Visual C++ 3
 ========================================
 
-by: Michael Fink, vividos@users.sourceforge.net, last edited 2005-02-01
+by: Michael Fink, vividos@users.sourceforge.net, last edited 2005-05-30
 
 ============
 Introduction
@@ -27,6 +27,10 @@ To build and use STLport you will need following tools and libraries:
 ================
 Building STLport
 ================
+Note: if you don't plan to use the iostreams part of STLport (via the define
+_STLP_NO_IOSTREAMS), you don't have to build the library. You can skip straight
+to the "Using STLport" section.
+
 If you want to compile for the Pocket PC 2002 SDK (which in most cases you want)
 be sure to set the PLATFORM environment variable to "Pocket PC 2002", e.g. with
 this command:
@@ -42,18 +46,19 @@ PLATFORM variable set automatically.
 
 Go into STLport's 'build\lib' folder and type:
 
-  configure.bat -c evc3 -p ARM
+  configure.bat -c evc3
 
 The makefiles are configured with the given settings. Call configure.bat with
-the --help option to see all options. Replace 'ARM' with 'x86' to build for the
-emulator. The program automatically tells you which command line to use. If you
-want to install the libraries, add the "install" target as follows:
+the --help option to see all options. The program automatically tells you which
+command line to use. If you want to install the libraries, add the "install"
+target as follows:
 
   nmake /f nmake-evc3.mak install
 
 All libraries (debug, stldebug, release) are now built, static and shared
 ones. Import libraries (.lib files) are put in the 'lib\evc3-arm' folder, DLLs
-are put in the 'bin\evc3-arm' folder.
+are put in the 'bin\evc3-arm' folder. If you use another target platform, the
+name of the folder is changed accordingly, e.g. evc3-x86 for emulator files.
 
 Once STLport is built you can decrease the size of the STLport folder by
 removing intermediate build files. This is done with the following command:
@@ -87,21 +92,25 @@ Adjust your include and link paths in eVC3 in 'Tools -> Options -> Directories'
 and add the paths for all platforms and CPUs on which you want to use STLport.
 In the include files add the path to STLport's 'stlport' folder. Make sure it
 is the first directory listed there. Add STLport's 'lib\evc3-arm' or
-'lib\evc3-x86' (depending on what target you want to build) folder for the
-library files (order of paths doesn't matter here).
+'lib\evc3-x86' (depending on what target you use) folder for the library files
+(order of paths doesn't matter here).
 
-There are some preprocessor defines that controls usage of the STLport in evc3
+There are some preprocessor defines that control usage of the STLport in evc3
 projects:
 
 Define the symbol _STLP_USE_STATIC_LIB when you want to statically link against
 STLport. The linker will remove unused classes and methods then, saving some
 space in the executable.
 
-If you want automatic linking to the proper .lib file, you have to specify the
-define _STLP_USE_AUTO_LINK. When you define _STLP_VERBOSE_AUTO_LINK too, the
-library that is linked against is printed in the compiler output. When not using
-automatic linking, you have to specify the proper .lib file in the Project
-Settings, on the "link" tab. The .lib names have the following syntax:
+If you don't want to use the iostreams part of the library, you can specify the
+define _STLP_NO_IOSTREAMS. In this mode there is no need to link against the
+library.
+
+STLport uses automatic linking to find the proper .lib file. If you want to see
+what import library STLport is going to use, define _STLP_VERBOSE_AUTO_LINK.
+When not using automatic linking (by specifying _STLP_DONT_USE_AUTO_LINK), you
+have to specify the proper .lib file in the Project Settings, on the "link" tab.
+The .lib names have the following syntax:
 
    stlport_[static_](r|d|stld)<STLport-Version>.lib
 
@@ -111,10 +120,12 @@ Examples:
    stlport_d50.lib - dll debug version, Version 5.0.0
 
 Note that usage of the _STLP_DEBUG mode is currently not recommended for
-eMbedded Visual C++ builds using the ARM compiler.
+eMbedded Visual C++ builds using the ARM compiler, due to a compiler bug.
 
-When using STLport together with MFC, you have to define _STLP_USE_MFC to
-properly include and use STLport.
+When using STLport together with MFC, be sure to include the MFC headers first,
+then include STLport headers, e.g. in your Stdafx.h. This way STLport correctly
+recognizes MFC usage. You also can define the macro _STLP_USE_MFC, either in
+your project settings or in stl_user_config.h.
 
 Now you should be ready to use STLport.
 

@@ -226,7 +226,7 @@ template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
 class hash_multimap
-#if !defined (_STLP_DEBUG) && defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                     : public __stlport_class<hash_multimap<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> >
 #endif
 {
@@ -413,7 +413,7 @@ struct __move_traits<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+  __move_traits_help<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
 
 // Specialization of insert_iterator so that it will work for hash_map

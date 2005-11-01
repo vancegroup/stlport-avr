@@ -40,9 +40,10 @@ _STLP_BEGIN_NAMESPACE
 
 // messages facets
 
-class messages_base {
-public:
-  typedef int catalog;
+class messages_base
+{
+  public:
+    typedef int catalog;
 };
 
 template <class _CharT> class messages {};

@@ -23,12 +23,17 @@
 #ifndef _STLP_INTERNAL_CODECVT_H
 #define _STLP_INTERNAL_CODECVT_H
 
-# ifndef _STLP_C_LOCALE_H
+#ifndef _STLP_C_LOCALE_H
 #  include <stl/c_locale.h>
-# endif
-# ifndef _STLP_INTERNAL_LOCALE_H
+#endif
+
+#ifndef _STLP_INTERNAL_LOCALE_H
 #  include <stl/_locale.h>
-# endif
+#endif
+
+#ifndef _STLP_INTERNAL_ALGOBASE_H
+#  include <stl/_algobase.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -38,14 +43,123 @@ public:
 };
 
 template <class _InternT, class _ExternT, class _StateT>
-class codecvt : public locale::facet, public codecvt_base 
-{
+class codecvt : public locale::facet, public codecvt_base {
 public:
   typedef _InternT intern_type;
   typedef _ExternT extern_type;
   typedef _StateT state_type;
+
+#if defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
+  /* For the moment VC6 do not support this facet default implementation
+   * because of the static locale::id instance. When VC6 see this definition
+   * it goes crasy with locale::id static instances and all the has_facet tests
+   * unit tests are failing.
+   */
 };
- 
+#else
+  explicit codecvt(size_t __refs = 0) : locale::facet(__refs) {}
+
+  result out(state_type&          __state,
+             const intern_type*   __from,
+             const intern_type*   __from_end,
+             const intern_type*&  __from_next,
+             extern_type*         __to,
+             extern_type*         __to_limit,
+             extern_type*&        __to_next) const {
+    return do_out(__state,
+                  __from, __from_end, __from_next, 
+                  __to,   __to_limit, __to_next);
+  }
+  
+  result unshift(state_type&    __state,
+                 extern_type*   __to,
+                 extern_type*   __to_limit,
+                 extern_type*&  __to_next) const {
+    return do_unshift(__state, __to, __to_limit, __to_next);
+  }
+
+  result in(state_type&         __state,
+            const extern_type*  __from,
+            const extern_type*  __from_end,  
+            const extern_type*& __from_next,
+            intern_type*        __to, 
+            intern_type*        __to_limit, 
+            intern_type*&       __to_next) const {
+    return do_in(__state, 
+                 __from, __from_end, __from_next,
+                 __to,  __to_limit, __to_next);
+  }
+
+  int encoding() const _STLP_NOTHROW { return do_encoding(); }
+
+  bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
+
+  int length(const state_type&  __state,
+             const extern_type* __from,
+             const extern_type* __end,
+             size_t             __max) const {
+    return do_length(__state, __from, __end, __max);
+  }
+  
+  int max_length() const _STLP_NOTHROW { return do_max_length(); }
+
+  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+
+protected:
+  ~codecvt() {}
+
+  virtual result do_out(state_type& __state,
+            const intern_type*      __from,
+            const intern_type*      __from_end,
+            const intern_type*&     __from_next,
+            extern_type*            __to,
+            extern_type*            __to_limit,
+            extern_type*&           __to_next) const
+  { __from_next = __from; __to_next   = __to; return noconv; } 
+
+  virtual result do_in (state_type& __state,
+            const extern_type*      __from,
+            const extern_type*      __from_end,
+            const extern_type*&     __from_next,
+            intern_type*            __to,
+            intern_type*            __to_limit,
+            intern_type*&           __to_next) const
+  { __from_next = __from; __to_next   = __to; return noconv; } 
+
+  virtual result do_unshift(state_type& __state,
+            extern_type*                __to, 
+            extern_type*                __to_limit,
+            extern_type*&               __to_next) const
+  { __to_next = __to; return noconv; }
+
+  virtual int do_encoding() const _STLP_NOTHROW
+  { return 1; }
+
+  virtual bool do_always_noconv() const _STLP_NOTHROW
+  { return true; }
+  
+  virtual int do_length(const state_type&  __state,
+                        const extern_type* __from, 
+                        const extern_type* __end,
+                        size_t __max) const
+  { return (int)(min) ( __STATIC_CAST(size_t, (__end - __from)), __max); }
+
+  virtual int do_max_length() const _STLP_NOTHROW
+  { return 1; }
+
+private:
+  codecvt(const codecvt<intern_type, extern_type, state_type>&);
+  codecvt<intern_type, extern_type, state_type>& operator = (const codecvt<intern_type, extern_type, state_type>&);
+};
+
+#  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
+#    if (_STLP_STATIC_TEMPLATE_DATA > 0)
+template <class _InternT, class _ExternT, class _StateT>
+locale::id codecvt<_InternT, _ExternT, _StateT>::id;
+#    endif
+#  endif
+#endif
+
 template <class _InternT, class _ExternT, class _StateT>
 class codecvt_byname : public codecvt<_InternT, _ExternT, _StateT> {};
 

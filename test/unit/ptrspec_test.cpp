@@ -46,7 +46,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PtrSpecTest);
   template class cont<int volatile*>; \
   template class cont<int const volatile*>
 
-# if !defined(_MSC_VER) || (_MSC_VER > 1200)  // excluding MSVC 6.0
+#if !defined(_MSC_VER) || (_MSC_VER > 1200)  // excluding MSVC 6.0
 TEST_INSTANCIATE_CONTAINER(vector);
 TEST_INSTANCIATE_CONTAINER(list);
 TEST_INSTANCIATE_CONTAINER(slist);
@@ -83,11 +83,13 @@ void PtrSpecTest::ptr_specialization_test()
     func_vector.push_back(&FTypeInstance);
   }
 
+#if !defined(__GNUC__) || (__GNUC__ > 2)
   {
     typedef void (AClass::*MFType)();
     vector<MFType> mem_func_vector;
     mem_func_vector.push_back(&AClass::func);
   }
+#endif
 
   vector<int*> pint_vect;
   vector<int*> pint_vect2;

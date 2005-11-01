@@ -24,21 +24,22 @@
 #ifndef _STLP_STRSTREAM
 #define _STLP_STRSTREAM
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1070
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
-# include <stl/_strstream.h>
+#include <stl/_ioserr.h>
+#include <stl/_strstream.h>
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1070)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1070)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_STRSTREAM */
 

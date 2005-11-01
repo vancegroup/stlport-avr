@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <05/03/21 10:39:01 ptr>
+# Time-stamp: <05/09/21 00:17:55 ptr>
 # $Id$
 
 
@@ -30,8 +30,12 @@ Available options:
   --target=<target>     target platform (cross-compiling)
   --help                print this help message and exit
   --with-stlport=<dir>  use STLport in catalog <dir>
-  --with-msvc=<dir>     use MS VC from this catalog
-  --with-mssdk=<dir>    use MS SDK from this catalog
+  --with-mwcw=<dir>     Metrowerks CodeWarrior compiler catalog (useful for mw* compilers)
+                        i.e. something like "c:/Program Files/Metrowerks/CodeWarrior"
+  --with-nwsdk=<dir>    use Novell NDK/SDK from this catalog (useful for *-*-netware target)
+                        i.e. something like "c:/Novell/ndk/nwsdk"
+  --no-cygwin           Specific cygwin distribution option. Use it to build STLport using
+                        the cygwin tools but without dependency on the cygwin1.dll
   --with-extra-cxxflags=<options>
                         pass extra options to C++ compiler
   --clean               remove custom settings (file ${configmak})
@@ -74,14 +78,20 @@ do
     --with-stlport=*)
       write_option "$option" STLPORT_DIR
       ;;
-    --with-msvc=*)
-      write_option "$option" MSVC_DIR
-      ;;
-    --with-mssdk=*)
-      write_option "$option" MSSDK_DIR
-      ;;
     --with-extra-cxxflags=*)
       write_option "$option" EXTRA_CXXFLAGS
+      ;;
+    --with-nwsdk=*)
+      write_option "$option" NWSDK_DIR
+      ;;
+    --with-mwcw=*)
+      write_option "$option" MWCW_BASE
+      ;;
+    --no-cygwin)
+      write_option "-mno-cygwin" OPT
+      write_option -D_STLP_NO_CYGWIN DEFS
+      echo "--no-cygwin: Don't forget to uncomment _STLP_NO_CYGWIN macro"
+      echo "in stlport/stl/_site_config.h to use such a configuration."
       ;;
   esac
 done

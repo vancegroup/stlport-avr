@@ -1,3 +1,9 @@
+//We are including stdlib.h and stddef.h first because under MSVC 
+//those headers contains a errno macro definition without the underlying value 
+//definition.
+#include <stdlib.h>
+#include <stddef.h>
+
 #include <errno.h>
 #include <errno.h> // not typo, check errno def/undef/redef
 
@@ -22,9 +28,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ErrnoTest);
 
 void ErrnoTest::check()
 {
-  errno = 1;
+  //We are using ERANGE as it is part of the C++ ISO (see Table 26 in section 19.3)
+  //Using ERANGE improve the test as it means that the native errno.h file has really
+  //been included.
+  errno = ERANGE;
 
-  CPPUNIT_ASSERT( errno == 1 );
+  CPPUNIT_ASSERT( errno == ERANGE );
   errno = 0;
 
 /* Note: in common, you can't write ::errno or std::errno,

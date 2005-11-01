@@ -86,7 +86,7 @@ public:
   _BidirectionalIterator base() const { return current; }
   _Reference operator*() const {
     _BidirectionalIterator __tmp = current;
-    return *--__tmp;
+    return *(--__tmp);
   }
 # if !(defined _STLP_NO_ARROW_OPERATOR)
   _STLP_DEFINE_ARROW_OPERATOR

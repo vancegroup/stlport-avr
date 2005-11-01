@@ -1031,7 +1031,11 @@ bool _S_apply_to_pieces(_CharConsumer __c,
                         // begin and end are assumed to be in range.
                         
 template <class _CharT, class _Alloc>
-class rope {
+class rope
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+           : public __stlport_class<rope<_CharT, _Alloc> >
+#endif
+{
   typedef rope<_CharT,_Alloc> _Self;
 public:
   typedef _CharT value_type;
@@ -1414,6 +1418,11 @@ public:
   rope(const _Self& __x)
     : _M_tree_ptr(__x._M_tree_ptr, __x._M_tree_ptr._M_data) {
     _S_ref(_M_tree_ptr._M_data);
+  }
+  
+  rope(__move_source<_Self> __src)
+    : _M_tree_ptr(__src.get()._M_tree_ptr, __src.get()._M_tree_ptr._M_data) {
+    __src.get()._M_tree_ptr._M_data = 0;
   }
 
   ~rope() {
@@ -1924,8 +1933,14 @@ public:
     return rope<_CharT,_Alloc>(_S_substring(_M_tree_ptr._M_data, __pos, __pos + 1));
   }
 
-  // static const size_type npos;
+#if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum { npos = -1 };
+#elif __GNUC__ == 2 && __GNUC_MINOR__ == 96
+  // inline initializer conflicts with 'extern template' 
+  static const size_t npos;
+#else
+  static const size_t npos = ~(size_t)0;
+#endif
   
   size_type find(const _Self& __s, size_type __pos = 0) const {
     if (__pos >= size())
@@ -2020,6 +2035,12 @@ public:
 
 # endif
 }; //class rope
+
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) &&  \
+   (!defined (__GNUC__) || ((__GNUC__ == 2) && (__GNUC_MINOR__ == 96)))
+template <class _CharT, class _Alloc>
+const size_t rope<_CharT, _Alloc>::npos = ~(size_t) 0;
+#endif
 
 template <class _CharT, class _Alloc>
 inline _CharT 
@@ -2344,6 +2365,16 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
     return _My_rope::_S_fetch(_M_root->_M_tree_ptr._M_data, _M_pos);
   }
 }
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _CharT, class _Alloc>
+struct __move_traits<rope<_CharT, _Alloc> > {
+  typedef __true_type implemented;
+  //Completness depends on the allocator:
+  typedef typename __move_traits<_Alloc>::complete complete;
+};
+#endif
+
 
 _STLP_END_NAMESPACE
 

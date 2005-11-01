@@ -31,11 +31,6 @@
 # include <iostream.h>
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_ALGO_CPP
-_STLP_INSTRUMENT_FILE();
-# endif
-
 //
 // SortBuffer -- a buffer of SortClass objects that can be used to test sorting.
 //
@@ -257,8 +252,3 @@ void test_algo()
     WeakCheck( buf, test_stable_sort_2( buf ) );
     WeakCheck( buf, test_stable_partition( buf ) );
 }
-
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif

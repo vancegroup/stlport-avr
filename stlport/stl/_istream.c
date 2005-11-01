@@ -859,12 +859,12 @@ void basic_istream<_CharT, _Traits>::_M_formatted_get(_CharT* __s) {
 
     streamsize __n = __buf->gptr() != __buf->egptr()
       ? _M_read_buffered(this,  __buf, __nmax, __s,
-                         _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-                         _Scan_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-       false, true, false)
+                         _Is_wspace_null<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
+                         _Scan_wspace_null<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
+                         false, true, false)
       : _M_read_unbuffered(this,  __buf, __nmax, __s,
-                           _Is_wspace_null<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-         false, true, false);
+                           _Is_wspace_null<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
+                           false, true, false);
     if (__n == 0)
       this->setstate(ios_base::failbit);
   }
@@ -1183,12 +1183,12 @@ void basic_istream<_CharT, _Traits>::_M_skip_whitespace(bool __set_failbit) {
     this->setstate(ios_base::badbit);
   else if (__buf->gptr() != __buf->egptr())
     _M_ignore_buffered(this,  __buf,
-                       _Is_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
-                       _Scan_for_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
+                       _Is_not_wspace<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
+                       _Scan_for_not_wspace<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
                        false, __set_failbit);
   else
     _M_ignore_unbuffered(this,  __buf,
-                         _Is_not_wspace<_Traits>((const ctype<_CharT>*)this->_M_ctype_facet()),
+                         _Is_not_wspace<_Traits>(__STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())),
                          false, __set_failbit);
 }
 

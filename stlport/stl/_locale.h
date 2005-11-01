@@ -64,9 +64,7 @@ _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_imp
 class _STLP_CLASS_DECLSPEC locale {
 public:
   // types:
-  class _STLP_DECLSPEC facet :
-    protected _Refcount_Base
-  {
+  class _STLP_DECLSPEC facet : protected _Refcount_Base {
   protected:
     explicit facet(size_t __no_del = 0) : _Refcount_Base( __no_del == 0 ? 0 : 1 ), _M_delete(__no_del == 0) {}
     virtual ~facet();
@@ -140,8 +138,12 @@ protected:
 public:
 
   locale(const locale&, const locale&, category);
-  ~locale() _STLP_NOTHROW;
   const locale& operator=(const locale&) _STLP_NOTHROW;
+
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+  virtual
+#endif
+   ~locale() _STLP_NOTHROW;
 
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) && \
    !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)

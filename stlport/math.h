@@ -13,41 +13,43 @@
  *
  */
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x244
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x244) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x244) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# if ! defined (exception) && (! defined (__KCC) || (__KCC_VERSION < 4000)) && \
-   ! (defined(__IBMCPP__) && (500 <= __IBMCPP__))
+#if !defined (exception) && (!defined (__KCC) || (__KCC_VERSION < 4000)) && \
+    !(defined(__IBMCPP__) && (500 <= __IBMCPP__))
 #  define __EXCEPTION_WAS_REDEFINED 1
 #  define exception __math_exception
 #  ifdef _STLP_WCE_EVC3
-#   pragma warning(disable: 4005)
+#    pragma warning (push)
+#    pragma warning (disable: 4005)
 #  endif
-# endif
+#endif
 
-# include _STLP_NATIVE_C_HEADER(math.h)
+#include _STLP_NATIVE_C_HEADER(math.h)
 
-# if defined (__EXCEPTION_WAS_REDEFINED)
+#if defined (__EXCEPTION_WAS_REDEFINED)
 #  undef exception
 #  undef __EXCEPTION_WAS_REDEFINED
 #  ifdef _STLP_WCE_EVC3
-#   pragma warning(default: 4005)
+#    pragma warning (pop)
 #  endif
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x244)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x244)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
 #  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#    undef  _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+#endif
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

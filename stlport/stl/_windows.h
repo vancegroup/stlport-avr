@@ -33,7 +33,7 @@
 #  else
 // This section serves as a replacement for windows.h header for Visual C++
 extern "C" {
-#    if (defined(_M_AMD64) || defined(_M_IA64) || defined(_M_MRX000) || defined(_M_ALPHA) || \
+#    if (defined(_M_AMD64) || defined(_M_IA64) || (!defined(_STLP_WCE) && defined(_M_MRX000)) || defined(_M_ALPHA) || \
         (defined(_M_PPC) && (_MSC_VER >= 1000))) && !defined(RC_INVOKED)
 #      define InterlockedIncrement       _InterlockedIncrement
 #      define InterlockedDecrement       _InterlockedDecrement

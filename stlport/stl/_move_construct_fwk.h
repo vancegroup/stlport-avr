@@ -55,8 +55,10 @@ struct __move_traits {
    * copy constructor is just fine. Most of the time the copy constructor is fine only
    * if the following info is true.
    */
-#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
-  typedef typename _IsStlportClass<_Tp>::_Ret implemented;
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && \
+   !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && \
+   !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename _IsSTLportClass<_Tp>::_Ret implemented;
 #else
   typedef __false_type implemented;
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
@@ -115,7 +117,7 @@ struct __move_traits_aux2 {
 
 /*
  * Most of the time a class implement a move constructor but its use depends
- * on a third party, this is what the following struct is for.
+ * on a third party, this is what the following struct are for.
  */
 template <class _Tp>
 struct __move_traits_help {

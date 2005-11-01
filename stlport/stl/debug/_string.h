@@ -151,6 +151,11 @@ public:
     _STLP_NON_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {
   }
 #    endif
+#  else
+protected:
+    basic_string(_Base::_CalledFromWorkaround_t __x, const allocator_type& __a)
+      : _STLP_NON_DBG_STRING_BASE(__x, __a), _M_iter_list(_Get_base()) {}
+public:
 #  endif
 #endif
 

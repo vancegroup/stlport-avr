@@ -27,7 +27,7 @@
 #  include <stl/_string_fwd.h>
 #endif
 
-#ifndef _STLP_INTERNAL_FUNCTION_BASE_H
+#ifndef _STLP_INTERNAL_FUNCTION_H
 #  include <stl/_function.h>
 #endif
 
@@ -164,20 +164,17 @@ public:
 public:                         // Constructor, destructor, assignment.
   typedef typename _String_base<_CharT,_Alloc>::allocator_type allocator_type;
 
-  allocator_type get_allocator() const {
-    return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _CharT);
-  }
+  allocator_type get_allocator() const
+  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _CharT); }
 
   explicit basic_string(const allocator_type& __a = allocator_type())
-      : _String_base<_CharT,_Alloc>(__a, _Base::_DEFAULT_SIZE) {
-    _M_terminate_string();
-  }
+      : _String_base<_CharT,_Alloc>(__a, _Base::_DEFAULT_SIZE)
+  { _M_terminate_string(); }
 
   basic_string(_Reserve_t, size_t __n,
                const allocator_type& __a = allocator_type())
-    : _String_base<_CharT,_Alloc>(__a, __n + 1) {
-    _M_terminate_string();
-  }
+    : _String_base<_CharT,_Alloc>(__a, __n + 1)
+  { _M_terminate_string(); }
 
   basic_string(const _Self&);
 
@@ -238,6 +235,14 @@ public:                         // Constructor, destructor, assignment.
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #    endif
+#  else
+  /* We need an additionnal constructor to build an empty string without
+   * any allocation or termination char*/
+protected:
+  struct _CalledFromWorkaround_t {};
+  basic_string(_CalledFromWorkaround_t, const allocator_type &__a)
+    : _String_base<_CharT,_Alloc>(__a) {}
+public:
 #  endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
 #endif /* !__MRC__ || (__SC__ && !__DMC__) */
 
@@ -1198,7 +1203,7 @@ public:                         // find_first_not_of
     { return find_first_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const 
-    { _STLP_FIX_LITERAL_BUG(__s) return find_first_not_of(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return find_first_not_of(__s, __pos, _Traits::length(__s)); }
 
   size_type find_first_not_of(const _CharT* __s, size_type __pos,
                               size_type __n) const;
@@ -1209,7 +1214,7 @@ public:                         // find_last_not_of
 
   size_type find_last_not_of(const _Self& __s, 
                              size_type __pos = npos) const
-    { return find_last_not_of(__s._M_Start(), __pos, __s.size()); }
+  { return find_last_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_last_not_of(const _CharT* __s, size_type __pos = npos) const
     { _STLP_FIX_LITERAL_BUG(__s) return find_last_not_of(__s, __pos, _Traits::length(__s)); }
@@ -1220,17 +1225,12 @@ public:                         // find_last_not_of
   size_type find_last_not_of(_CharT __c, size_type __pos = npos) const;
 
 public:                         // Substring.
-  _Self substr(size_type __pos = 0, size_type __n = npos) const {
-    if (__pos > size())
-      this->_M_throw_out_of_range();
-    return _Self(this->_M_Start() + __pos, 
-                 this->_M_Start() + __pos + (min) (__n, size() - __pos));
-  }
+  _Self substr(size_type __pos = 0, size_type __n = npos) const
+  { return _Self(*this, __pos, __n, get_allocator()); }
 
 public:                         // Compare
-
   int compare(const _Self& __s) const 
-    { return _M_compare(this->_M_Start(), this->_M_Finish(), __s._M_Start(), __s._M_Finish()); }
+  { return _M_compare(this->_M_Start(), this->_M_Finish(), __s._M_Start(), __s._M_Finish()); }
 
   int compare(size_type __pos1, size_type __n1,
               const _Self& __s) const {
@@ -1295,8 +1295,8 @@ public:                        // Helper functions for compare.
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 };
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG) && \
-              __GNUC__ == 2 && __GNUC_MINOR__ == 96
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) &&  \
+   (!defined (__GNUC__) || ((__GNUC__ == 2) && (__GNUC_MINOR__ == 96)))
 template <class _CharT, class _Traits, class _Alloc>
 const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
 #endif
@@ -1339,7 +1339,13 @@ struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+/*#else
+ * There is no need to specialize for string and wstring in this case
+ * as the default __move_traits will already tell that string is movable
+ * but not complete. We cannot define is as complete as nothing guaranty
+ * that the STLport user hasn't specialized allocator<char> or wchar_t.
+ */
+#endif
 
 template <class _CharT, class _Traits, class _Alloc> 
 void _STLP_CALL _S_string_copy(const basic_string<_CharT,_Traits,_Alloc>& __s,

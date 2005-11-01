@@ -166,8 +166,8 @@ public:
     _M_head._M_data._M_next = 0; 
   }
   _Slist_base(__move_source<_Self> src) :
-    _M_head(_AsMoveSource(src.get()._M_head)) {
-      _M_head._M_data._M_next = 0;
+    _M_head(__move_source<_AllocProxy>(src.get()._M_head)) {
+      src.get()._M_head._M_data._M_next = 0;
   }
   ~_Slist_base() { _M_erase_after(&_M_head._M_data, 0); }
 
@@ -305,7 +305,7 @@ public:
     { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
   _SLIST_IMPL(__move_source<_Self> src)
-    : _STLP_PRIV::_Slist_base<_Tp, _Alloc>(_AsMoveSource<_Base>(src.get())) {}
+    : _STLP_PRIV::_Slist_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
 
   _Self& operator= (const _Self& __x);
 
@@ -834,19 +834,11 @@ operator==(const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 #undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <>
-struct __move_traits<_STLP_PRIV::_Slist_node_base> : __move_traits_POD
-{};
-
 template <class _Tp, class _Alloc>
-struct __move_traits<_STLP_PRIV::_Slist_base<_Tp, _Alloc> > :
-  __move_traits_help<typename _STLP_PRIV::_Slist_base<_Tp, _Alloc>::_AllocProxy>
-{};
-
-template <class _Tp, class _Alloc>
-struct __move_traits<slist<_Tp, _Alloc> > :
-  __move_traits_aux<_STLP_PRIV::_Slist_base<_Tp, _Alloc> >
-{};
+struct __move_traits<slist<_Tp, _Alloc> > {
+  typedef __true_type implemented;
+  typedef typename __move_traits<_Alloc>::complete complete;
+};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #ifdef _STLP_DEBUG

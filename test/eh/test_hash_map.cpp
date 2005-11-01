@@ -39,13 +39,11 @@ typedef EH_STD::__hash_multimap__<TestClass, TestClass, ThrowHash, ThrowEqual,
 
 
 inline multimap_tag
-container_category(const TestMultiMap&)
-{
+container_category(const TestMultiMap&) {
   return multimap_tag();
 }
 
-void test_hash_multimap()
-{
+void test_hash_multimap() {
 # if !(defined (_MSC_VER) && (_MSC_VER < 1100))
   TestMultiMap testMultiMap, testMultiMap2;
   
@@ -97,10 +95,9 @@ void test_hash_map()
 # if !(defined (_MSC_VER) && (_MSC_VER < 1100))
   TestMap testMap, testMap2;
   
-    const size_t hash_mapSize = random_number(random_base);
+  const size_t hash_mapSize = random_number(random_base);
 
-  while ( testMap.size() < hash_mapSize )
-  {
+  while ( testMap.size() < hash_mapSize ) {
     TestMap::value_type x;
     testMap.insert( x );
     testMap2.insert( TestMap::value_type() );

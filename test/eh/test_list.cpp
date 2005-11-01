@@ -28,11 +28,6 @@
 #include "test_push_front.h"
 #include "nc_alloc.h"
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_LIST_CPP
-_STLP_INSTRUMENT_FILE();
-# endif
-
 typedef EH_STD::__list__<TestClass, eh_allocator(TestClass) > TestList;
 
 inline sequence_container_tag
@@ -111,7 +106,3 @@ void test_list()
 
     WeakCheck( testList, test_assign_op<TestList>( testList2 ) );
 }
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif

@@ -15,44 +15,45 @@
 
 #ifndef _STLP_CTYPE_H
 
-// Workaround for a "misbehaviour" when compiling resource scripts using
-// eMbedded Visual C++. The standard .rc file includes windows header files,
-// which in turn include ctype.h, which results in warnings and errors
+/* Workaround for a "misbehaviour" when compiling resource scripts using
+ * eMbedded Visual C++. The standard .rc file includes windows header files,
+ * which in turn include ctype.h, which results in warnings and errors
+ */
 #if !defined(RC_INVOKED)
 
-#if !defined (_STLP_OUTERMOST_HEADER_ID)
-#  define _STLP_OUTERMOST_HEADER_ID 0x219
-#  include <stl/_prolog.h>
-#elif (_STLP_OUTERMOST_HEADER_ID == 0x219)
-#  define _STLP_DONT_POP_HEADER_ID
-#  define _STLP_CTYPE_H
-#endif
+#  if !defined (_STLP_OUTERMOST_HEADER_ID)
+#    define _STLP_OUTERMOST_HEADER_ID 0x219
+#    include <stl/_prolog.h>
+#  elif (_STLP_OUTERMOST_HEADER_ID == 0x219)
+#    define _STLP_DONT_POP_HEADER_ID
+#    define _STLP_CTYPE_H
+#  endif
 
-#include _STLP_NATIVE_C_HEADER(ctype.h)
+#  include _STLP_NATIVE_C_HEADER(ctype.h)
 
-#ifndef _STLP_CTYPE_H_SEEN
-#define _STLP_CTYPE_H_SEEN
+#  ifndef _STLP_CTYPE_H_SEEN
+#    define _STLP_CTYPE_H_SEEN
 
-// Undef convenience interfaces
-#  undef isspace
-#  undef isprint
-#  undef iscntrl
-#  undef isupper
-#  undef islower
-#  undef isalpha
-#  undef isdigit
-#  undef ispunct
-#  undef isxdigit
-#  undef isalnum
-#  undef isgraph
-#  undef toupper
-#  undef tolower
+/* Undef convenience interfaces */
+#    undef isspace
+#    undef isprint
+#    undef iscntrl
+#    undef isupper
+#    undef islower
+#    undef isalpha
+#    undef isdigit
+#    undef ispunct
+#    undef isxdigit
+#    undef isalnum
+#    undef isgraph
+#    undef toupper
+#    undef tolower
 
-#  if defined (UNDER_CE)
+#    if defined (UNDER_CE)
 
-#    if (_WIN32_WCE < 300)                  // Only wide chars for older versions
-#      define _isctype iswctype
-#    endif
+#      if (_WIN32_WCE < 300)     /* Only wide chars for older versions */
+#        define _isctype iswctype
+#      endif
 
 __inline int (isalpha)(int c) { return _isctype(c, _ALPHA); }
 __inline int (isupper)(int c) { return _isctype(c, _UPPER); }
@@ -67,7 +68,7 @@ __inline int (isgraph)(int c) { return _isctype(c, _PUNCT|_ALPHA|_DIGIT); }
 __inline int (iscntrl)(int c) { return _isctype(c, _CONTROL); }
 __inline int (isascii)(int c) { return ((unsigned)(c) < 0x80); }
 
-#  undef _isctype
+#      undef _isctype
 
 __inline int (iswalpha)(int c) { return iswctype(c, _ALPHA); }
 __inline int (iswupper)(int c) { return iswctype(c, _UPPER); }
@@ -82,23 +83,24 @@ __inline int (iswgraph)(int c) { return iswctype(c, _PUNCT|_ALPHA|_DIGIT); }
 __inline int (iswcntrl)(int c) { return iswctype(c, _CONTROL); }
 __inline int (iswascii)(int c) { return ((unsigned)(c) < 0x80); }
 
-#  endif /* UNDER_CE */
+#    endif /* UNDER_CE */
 
-#endif /* _STLP_CTYPE_H_SEEN */
+#  endif /* _STLP_CTYPE_H_SEEN */
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x219)
-#  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#    include <stl/_epilog.h>
-#    undef  _STLP_OUTERMOST_HEADER_ID
-#  else
-#    undef  _STLP_DONT_POP_HEADER_ID
+#  if (_STLP_OUTERMOST_HEADER_ID == 0x219)
+#    if ! defined (_STLP_DONT_POP_HEADER_ID)
+#      include <stl/_epilog.h>
+#      undef  _STLP_OUTERMOST_HEADER_ID
+#    else
+#      undef  _STLP_DONT_POP_HEADER_ID
+#    endif
 #  endif
-#endif
 
 #endif /* RC_INVOKED */
 
 #endif /* _STLP_CTYPE_H */
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

@@ -3,7 +3,7 @@
 STLport README for eMbedded Visual C++ 4
 ========================================
 
-by: Zdenek Nemec, zero@mapfactor.com, last edited 2005-02-01
+by: Zdenek Nemec, zero@mapfactor.com, last edited 2005-05-30
 
 ============
 Introduction
@@ -32,7 +32,7 @@ WCEROOT=C:\Program Files\Microsoft eMbedded C++ 4.0
 SDKROOT=C:\Program Files\Windows CE Tools
 
 Third, when you are 100percent sure you've set correctly systems variables go to the STLport/src/explore dir and run the configure.bat with
-proper -c and -p option (ie. "-c evc4 -p ARM" or "-c evc4 -p x86"),
+proper -c and option (ie. "-c evc4"),
 then invoke following command: 'nmake /f nmake-evc4.mak install' to build the library.
 
 If anything goes wrong check if you met all prerequisities and if you set system vars accordingly to the makfile you are using.

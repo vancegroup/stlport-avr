@@ -143,13 +143,13 @@ _RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last
                              _Integer __count, const _Tp& __val, _BinaryPred __pred,
                              _Distance*, const random_access_iterator_tag &) {
   _Distance __tailSize = __last - __first;
-  _Distance __pattSize = __count;
+  const _Distance __pattSize = __count;
 
   if (__tailSize >= __pattSize) {
     _RandomAccessIter __backTrack;
 
     _Distance __remainder, __prevRemainder;
-    _Distance __skipOffset = __pattSize - 1;
+    const _Distance __skipOffset = __pattSize - 1;
 
     _RandomAccessIter __lookAhead = __first + __skipOffset;
 
@@ -192,7 +192,7 @@ _RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last
           } while (__pred(*--__backTrack, __val));
 
           //adjust remainder for next comparison
-          __remainder += __skipOffset - __prevRemainder;
+          __remainder += __pattSize - __prevRemainder;
         }
         else
           break;
@@ -524,29 +524,29 @@ void random_shuffle(_RandomAccessIter __first, _RandomAccessIter __last,
 // random_sample and random_sample_n (extensions, not part of the standard).
 template <class _ForwardIter, class _OutputIter, class _Distance>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
-                            _OutputIter __out, const _Distance __n) {
+                            _OutputIter __out_ite, const _Distance __n) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   _Distance __remaining = distance(__first, __last);
   _Distance __m = (min) (__n, __remaining);
 
   while (__m > 0) {
     if (__random_number(__remaining) < __m) {
-      *__out = *__first;
-      ++__out;
+      *__out_ite = *__first;
+      ++__out_ite;
       --__m;
     }
 
     --__remaining;
     ++__first;
   }
-  return __out;
+  return __out_ite;
 }
 
 
 template <class _ForwardIter, class _OutputIter, class _Distance,
           class _RandomNumberGenerator>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
-                            _OutputIter __out, const _Distance __n,
+                            _OutputIter __out_ite, const _Distance __n,
                             _RandomNumberGenerator& __rand) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   _Distance __remaining = distance(__first, __last);
@@ -554,57 +554,57 @@ _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
 
   while (__m > 0) {
     if (__rand(__remaining) < __m) {
-      *__out = *__first;
-      ++__out;
+      *__out_ite = *__first;
+      ++__out_ite;
       --__m;
     }
 
     --__remaining;
     ++__first;
   }
-  return __out;
+  return __out_ite;
 }
 
 template <class _InputIter, class _RandomAccessIter, class _Distance>
 _RandomAccessIter __random_sample(_InputIter __first, _InputIter __last,
-                                  _RandomAccessIter __out,
+                                  _RandomAccessIter __out_ite,
                                   const _Distance __n) {
   _Distance __m = 0;
   _Distance __t = __n;
   for ( ; __first != __last && __m < __n; ++__m, ++__first) 
-    __out[__m] = *__first;
+    __out_ite[__m] = *__first;
 
   while (__first != __last) {
     ++__t;
     _Distance __M = __random_number(__t);
     if (__M < __n)
-      __out[__M] = *__first;
+      __out_ite[__M] = *__first;
     ++__first;
   }
 
-  return __out + __m;
+  return __out_ite + __m;
 }
 
 template <class _InputIter, class _RandomAccessIter,
           class _RandomNumberGenerator, class _Distance>
 _RandomAccessIter __random_sample(_InputIter __first, _InputIter __last,
-                                  _RandomAccessIter __out,
+                                  _RandomAccessIter __out_ite,
                                   _RandomNumberGenerator& __rand,
                                   const _Distance __n) {
   _Distance __m = 0;
   _Distance __t = __n;
   for ( ; __first != __last && __m < __n; ++__m, ++__first)
-    __out[__m] = *__first;
+    __out_ite[__m] = *__first;
 
   while (__first != __last) {
     ++__t;
     _Distance __M = __rand(__t);
     if (__M < __n)
-      __out[__M] = *__first;
+      __out_ite[__M] = *__first;
     ++__first;
   }
 
-  return __out + __m;
+  return __out_ite + __m;
 }
 
 template <class _InputIter, class _RandomAccessIter>

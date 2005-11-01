@@ -507,8 +507,16 @@ void StringTest::find()
   CPPUNIT_ASSERT( s.find("one") == 0 );
   CPPUNIT_ASSERT( s.find('t') == 4 );
   CPPUNIT_ASSERT( s.find('t', 5) == 8 );
-  CPPUNIT_ASSERT( s.find("four") == string::npos );
-  CPPUNIT_ASSERT( s.find("one", string::npos) == string::npos );
+  //We are trying to get a const reference to the npos string static member to
+  //force the compiler to allocate memory for this variable. It used to reveal
+  //a bug of STLport which was simply declaring npos without instanciating it.
+#if !defined (STLPORT) || !defined (_STLP_STATIC_CONST_INIT_BUG)
+  string::size_type const& npos_local = string::npos;
+#else
+#  define npos_local string::npos
+#endif
+  CPPUNIT_ASSERT( s.find("four") == npos_local );
+  CPPUNIT_ASSERT( s.find("one", string::npos) == npos_local );
 
   CPPUNIT_ASSERT( s.rfind("two") == 18 );
   CPPUNIT_ASSERT( s.rfind("two", 0) == string::npos );

@@ -22,19 +22,18 @@
 
 #include "Prefix.h"
 
-# if defined (EH_NEW_HEADERS)
+#if defined (EH_NEW_HEADERS)
 #  include <utility>
-# else
+#else
 #  include <pair.h>
-# endif
+#endif
 
 extern long alloc_count;
 extern long object_count;
 
-struct TestController
-{
-    // Report that the current test has succeeded.
-    static void ReportSuccess(int);
+struct TestController {
+  // Report that the current test has succeeded.
+  static void ReportSuccess(int);
 
   //
   // Leak detection
@@ -48,31 +47,31 @@ struct TestController
   
   // Call this to begin a new leak-detection cycle. Resets all
   // allocation counts, etc.
-    static void BeginLeakDetection();
+  static void BeginLeakDetection();
   
   // Returns true iff leak detection is currently in effect
   static bool LeakDetectionEnabled();
   
   // Ends leak detection and reports any resource leaks.
   // Returns true if any occurred.
-    static bool ReportLeaked();
+  static bool ReportLeaked();
 
   //
   // Exception-safety
   //
   
   // Don't test for exception-safety
-    static void TurnOffExceptions();
+  static void TurnOffExceptions();
     
   // Set operator new to fail on the nth invocation
-    static void SetFailureCountdown( long n );
+  static void SetFailureCountdown( long n );
   
   // Set operator new to never fail.
-    static void CancelFailureCountdown();
+  static void CancelFailureCountdown();
 
   // Throws an exception if the count has been reached. Call this
   // before every operation that might fail in the real world.
-    static void maybe_fail(long);
+  static void maybe_fail(long);
 
   //
   // Managing verbose feedback.
@@ -80,33 +79,33 @@ struct TestController
 
   // Call to begin a strong, weak, or const test. If verbose
   // reporting is enabled, prints the test category.
-    static void SetCurrentTestCategory( const char* str );
+  static void SetCurrentTestCategory( const char* str );
 
   // Call to set the name of the container being tested.
-    static void SetCurrentContainer( const char* str );
+  static void SetCurrentContainer( const char* str );
 
   // Sets the name of the current test.
-    static void SetCurrentTestName(const char* str);
+  static void SetCurrentTestName(const char* str);
 
-    // Turn verbose reporting on or off.
-    static void SetVerbose(bool val);
+  // Turn verbose reporting on or off.
+  static void SetVerbose(bool val);
 
 private:
   enum { kNotInExceptionTest = -1 };
   
   static void ClearAllocationSet();
-    static void EndLeakDetection();
+  static void EndLeakDetection();
   static void PrintTestName( bool err=false );
   
-    static long& Failure_threshold();
+  static long& Failure_threshold();
   static long possible_failure_count;
-    static const char* current_test;
-    static const char* current_test_category;
-    static const char* current_container;
-    static bool  nc_verbose;
-    static bool  never_fail;
-    static bool track_allocations;
-    static bool leak_detection_enabled;
+  static const char* current_test;
+  static const char* current_test_category;
+  static const char* current_container;
+  static bool  nc_verbose;
+  static bool  never_fail;
+  static bool track_allocations;
+  static bool leak_detection_enabled;
 };
 
 extern TestController gTestController;
@@ -115,82 +114,70 @@ extern TestController gTestController;
 // inline implementations
 //
 
-inline void simulate_possible_failure()
-{
-   gTestController.maybe_fail(0);
+inline void simulate_possible_failure() {
+  gTestController.maybe_fail(0);
 }
 
-inline void simulate_constructor()
-{
-   gTestController.maybe_fail(0);
-   object_count++;
+inline void simulate_constructor() {
+  gTestController.maybe_fail(0);
+  ++object_count;
 }
 
-inline void simulate_destructor()
-{
-   object_count--;
+inline void simulate_destructor() {
+  --object_count;
 }
 
-inline void TestController::TrackAllocations( bool track )
-{
+inline void TestController::TrackAllocations(bool track) {
   track_allocations = track;
 }
 
-inline bool TestController::TrackingEnabled()
-{
+inline bool TestController::TrackingEnabled() {
   return track_allocations;
 }
 
 inline void TestController::SetFailureCountdown(long count) {
-    Failure_threshold() = count;
+  Failure_threshold() = count;
   possible_failure_count = 0;
 }
 
 inline void TestController::CancelFailureCountdown() {
-    Failure_threshold() = kNotInExceptionTest;
+  Failure_threshold() = kNotInExceptionTest;
 }
 
-inline void TestController::BeginLeakDetection()
-{
-    alloc_count = 0;
-    object_count = 0;
-     ClearAllocationSet();
-     leak_detection_enabled = true;
+inline void TestController::BeginLeakDetection() {
+  alloc_count = 0;
+  object_count = 0;
+  ClearAllocationSet();
+  leak_detection_enabled = true;
 }
 
-inline bool TestController::LeakDetectionEnabled()
-{
+inline bool TestController::LeakDetectionEnabled() {
   return leak_detection_enabled;
 }
 
-inline void TestController::EndLeakDetection()
-{
+inline void TestController::EndLeakDetection() {
   leak_detection_enabled = false;
 }
 
-inline void TestController::SetCurrentTestCategory(const char* str)
-{
-    current_test_category=str;
-    if (nc_verbose)
-        PrintTestName();
+inline void TestController::SetCurrentTestCategory(const char* str) {
+  current_test_category = str;
+  if (nc_verbose)
+    PrintTestName();
 }
 
 inline void TestController::SetCurrentContainer(const char* str) {
-    current_container=str;
+  current_container=str;
 }
 
-inline void TestController::SetCurrentTestName(const char* str)
-{
-    current_test=str;
+inline void TestController::SetCurrentTestName(const char* str) {
+  current_test = str;
 }
 
-inline void TestController::SetVerbose(bool val)
-{
-  nc_verbose=val;
+inline void TestController::SetVerbose(bool val) {
+  nc_verbose = val;
 }
 
-inline void TestController::TurnOffExceptions()
-{
+inline void TestController::TurnOffExceptions() {
   never_fail = true;
 }
 

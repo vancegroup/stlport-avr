@@ -1,4 +1,4 @@
-# Time-stamp: <05/03/02 18:44:41 ptr>
+# Time-stamp: <05/09/09 22:00:37 ptr>
 # $Id$
 
 ifdef TARGET_OS
@@ -29,13 +29,13 @@ INSTALL_BIN_DIR        ?= ${SRCROOT}/../$(TARGET_NAME)bin
 # want---if one is defined it will not be overlaped.
 ifeq ("${TARGET_NAME}","")
 ifneq (${OSNAME},cygming)
+ifneq ($(OSNAME),windows)
 INSTALL_BIN_DIR_DBG    ?= ${SRCROOT}/../$(TARGET_NAME)bin-g
 INSTALL_BIN_DIR_STLDBG ?= ${SRCROOT}/../$(TARGET_NAME)bin-stlg
-else
-INSTALL_BIN_DIR_DBG    ?= ${INSTALL_BIN_DIR}
-INSTALL_BIN_DIR_STLDBG ?= ${INSTALL_BIN_DIR}
 endif
-else
+endif
+endif
+ifndef INSTALL_BIN_DIR_DBG
 INSTALL_BIN_DIR_DBG    ?= ${INSTALL_BIN_DIR}
 INSTALL_BIN_DIR_STLDBG ?= ${INSTALL_BIN_DIR}
 endif
@@ -54,8 +54,9 @@ INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
 
 PHONY += $(OUTPUT_DIRS) $(INSTALL_DIRS)
 
+ifneq (${OSNAME},windows)
 $(OUTPUT_DIRS):
-	@if [ -e $@ -a -f $@ ] ; then \
+	@if ${EXT_TEST} -e $@ -a -f $@ ; then \
 	  echo "ERROR: Regular file $@ present, directory instead expected" ; \
 	  exit 1; \
 	elif [ ! -d $@ ] ; then \
@@ -63,9 +64,16 @@ $(OUTPUT_DIRS):
 	fi
 
 $(INSTALL_DIRS):
-	@if [ -e $@ -a -f $@ ] ; then \
+	@if ${EXT_TEST} -e $@ -a -f $@ ; then \
 	  echo "ERROR: Regular file $@ present, directory instead expected" ; \
 	  exit 1; \
 	elif [ ! -d $@ ] ; then \
 	  mkdir -p $@ ; \
 	fi
+else
+$(OUTPUT_DIRS):
+	@if not exist $@ mkdir $(subst /,\,$@)
+
+$(INSTALL_DIRS):
+	@if not exist $@ mkdir $(subst /,\,$@)
+endif

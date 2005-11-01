@@ -1,26 +1,30 @@
-// 
-// This file defines site configuration.
-//
-//
+/* 
+ * This file defines site configuration.
+ */
 
 /* 
  * _STLP_NO_THREADS: if defined, STLport don't use any 
  * multithreading support. Synonym is _NOTHREADS
  */
-// #define _NOTHREADS
-// #define _STLP_NO_THREADS
+/*
+#define _NOTHREADS
+#define _STLP_NO_THREADS
+*/
 
-/* _PTHREADS: if defined, use Posix threads for multithreading support. */
-// #define _PTHREADS
+/* _PTHREADS: if defined, use POSIX threads for multithreading support. */
+/*
+#define _PTHREADS
+*/
 
-// compatibility section
+/* compatibility section
+ */
 
 #if (defined (_STLP_NOTHREADS) || defined (_STLP_NO_THREADS) || defined (NOTHREADS))
 #  if ! defined (_NOTHREADS)
-#   define _NOTHREADS
+#    define _NOTHREADS
 #  endif
 #  if ! defined (_STLP_NO_THREADS)
-#   define _STLP_NO_THREADS
+#    define _STLP_NO_THREADS
 #  endif
 #endif
 
@@ -28,59 +32,73 @@
 /*
  * Turn _STLP_USE_DYNAMIC_LIB to enforce use of .dll version of STLport library.
  * NOTE: please do that only if you know what you are doing!
- * Changing default will require you to change makefile in "src" accordingly
+ * Changing default will require you to change makefiles in "build" accordingly
  * and to rebuild STLPort library!
- * On UNIX, this has no effect.
- * Check src/explore/README.options file for help in building the require
- * STLport library version.
+ * On UNIX, this has no effect, see build/lib/README for make tags.
+ * See STLport configuration file (build/lib/configure.bat) for help in building
+ * the require library versions.
  */
-// #  define _STLP_USE_DYNAMIC_LIB
+/*
+#define _STLP_USE_DYNAMIC_LIB
+*/
 
 /*
  * Turn _STLP_USE_STATIC_LIB to enforce use of static version of STLport library.
  * NOTE: please do that only if you know what you are doing!
- * Changing default will require you to change makefile in "src" accordingly
+ * Changing default will require you to change makefile in "build" accordingly
  * and to rebuild STLPort library!
- * On UNIX, this has no effect. 
- * Check src/explore/README.options file for help in building the require
- * STLport library version.
+ * On UNIX, this has no effect, see build/lib/README for make tags. 
+ * See STLport configuration file (build/lib/configure.bat) for help in building
+ * the require library versions.
  */
-// # define _STLP_USE_STATIC_LIB
-#endif // !_STLP_USE_DYNAMIC_LIB && !_STLP_USE_STATIC_LIB
+/*
+#define _STLP_USE_STATIC_LIB
+*/
+#endif
+
+/*
+ * Signal STLport that we are using the cygwin distrib with the -mno-cygwin option.
+ * This is similar to a mingw environment except that relative path to native headers
+ * is different, this is why we need this macro.
+ */
+/*
+#define _STLP_NO_CYGWIN
+ */
 
 /* 
  * Edit relative path below (or put full path) to get native 
  * compiler vendor's headers included. Default is "../include"
  * for _STLP_NATIVE_INCLUDE_PATH, default for other macros is
  * _STLP_NATIVE_INCLUDE_PATH.
- * Hint : never install STLport in the directory that ends with "include"
+ * Hint: never install STLport in the directory that ends with "include"
  */
-// #  undef _STLP_NATIVE_INCLUDE_PATH
-// #  define _STLP_NATIVE_INCLUDE_PATH ../include
-// same for C library headers like <cstring>
-// #  undef _STLP_NATIVE_CPP_C_INCLUDE_PATH
-// #  define _STLP_NATIVE_CPP_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
-// same for C headers like <string.h>
-// #  undef _STLP_NATIVE_C_INCLUDE_PATH
-// #  define _STLP_NATIVE_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+/*
+#undef _STLP_NATIVE_INCLUDE_PATH
+#define _STLP_NATIVE_INCLUDE_PATH ../include
+*/
+/* same for C library headers like <cstring> */
+/*
+#undef _STLP_NATIVE_CPP_C_INCLUDE_PATH
+#define _STLP_NATIVE_CPP_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+*/
+/* same for C headers like <string.h> */
+/*
+#undef _STLP_NATIVE_C_INCLUDE_PATH
+#define _STLP_NATIVE_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+*/
 /* Some compilers locate basic C++ runtime support headers (<new>, <typeinfo>, <exception>) in separate directory */
-// #  undef _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH
-// #  define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+/*
+#undef _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH
+#define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
+*/
 
 /* 
- * _STLP_USE_OWN_NAMESPACE/_STLP_NO_OWN_NAMESPACE
- * If defined, STLport uses own namespace, else std::
- * The reason you have to use separate namespace in wrapper mode is that new-style IO
- * compiled library may have its own idea about STL stuff (string, vector, etc.),
- * so redefining them in the same namespace would break ODR and may cause
- * undefined behaviour. Rule of thumb is - if new-style iostreams are
- * available, there WILL be a conflict. Otherwise you should be OK.
- * In STLport iostreams mode, there is no need for this flag other than to facilitate
- * link with third-part libraries compiled with different standard library implementation.
+ * If namespases available, STLport use own namespace (and masquerade
+ * it as std). Disable own namespace may cause undefined behaviour.
  */
-// #  define _STLP_USE_OWN_NAMESPACE 1
-// #  define _STLP_NO_OWN_NAMESPACE  1
-
+/*
+#define _STLP_NO_OWN_NAMESPACE  1
+*/
 
 /* 
  * Uncomment _STLP_LEAKS_PEDANTIC to force deallocation of ALL allocated
@@ -91,20 +109,25 @@
  * its internal memory pool but only if STLport is used as a dynamic library
  * under Win32 (using MSVC like compilers).
  */
-
-// #define _STLP_LEAKS_PEDANTIC 1
+/*
+#define _STLP_LEAKS_PEDANTIC 1
+*/
 
 /* 
  * Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
  * instead of STLport optimized node allocator engine.
  */
-// #define   _STLP_USE_NEWALLOC   1
+/*
+#define _STLP_USE_NEWALLOC 1
+*/
 
 /* 
  * Uncomment _STLP_USE_MALLOC to force allocator<T> to use plain "malloc" 
  * instead of STLport optimized node allocator engine.
  */
-// #define   _STLP_USE_MALLOC 1
+/*
+#define _STLP_USE_MALLOC 1
+*/
 
 /*
  * Uncomment _STLP_USE_PERTHREAD_ALLOC to force allocator<T> to use 
@@ -112,13 +135,17 @@
  * environment. The implementation is based on the POSIX pthread
  * interface.
  */
-// #define _STLP_USE_PERTHREAD_ALLOC 1
+/*
+#define _STLP_USE_PERTHREAD_ALLOC 1
+*/
 
 /*
  * Set _STLP_DEBUG_ALLOC to use allocators that perform memory debugging,
  * such as padding/checking for memory consistency 
  */
-// #define   _STLP_DEBUG_ALLOC 1
+/*
+#define _STLP_DEBUG_ALLOC 1
+*/
 
 /*
  * For compiler not supporting partial template specialization or ordering of
@@ -127,7 +154,9 @@
  * a user class derived a STL container (which is not advised as STL containers
  * do not have virtual destructors). To disable this workaround turn this macro on:
  */
-// #define   _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
+/*
+#define _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
+*/
 
 /*
  * Uncomment this to force all debug diagnostic to be directed through a
@@ -139,7 +168,9 @@
  * Note : If you set this macro, you must supply __stl_debug_message 
  * function definition somewhere.
  */
-//#define _STLP_DEBUG_MESSAGE 1
+/*
+#define _STLP_DEBUG_MESSAGE 1
+*/
 
 /*
  * Uncomment this to force all failed assertions to be executed through
@@ -151,36 +182,43 @@
  * Note : If you set this macro, you must supply __stl_debug_terminate 
  * function definition somewhere.
  */
-//#define _STLP_DEBUG_TERMINATE 1
+/*
+#define _STLP_DEBUG_TERMINATE 1
+*/
 
 /*
  * Comment this out to enable throwing exceptions from default __stl_debug_terminate()
  * instead of calling _STLP_ABORT().
  */
- #define   _STLP_NO_DEBUG_EXCEPTIONS 1
+#define _STLP_NO_DEBUG_EXCEPTIONS 1
 
 /* 
  * Uncomment that to disable exception handling code 
  */
-// #define   _STLP_DONT_USE_EXCEPTIONS 1
+/*
+#define _STLP_DONT_USE_EXCEPTIONS 1
+*/
 
 /*
  * _STLP_NO_NAMESPACES: if defined, don't put the library in namespace
  * stlport:: or std::, even if the compiler supports namespaces
  */
+/*
+#define _STLP_NO_NAMESPACES 1
+*/
 
-// #define   _STLP_NO_NAMESPACES 1
-
-//==========================================================
-// Compatibility section
-//==========================================================
+/*==========================================================
+ * Compatibility section
+ *==========================================================*/
 
 /* 
  * Use abbreviated class names for linker benefit (don't affect interface).
  * This option is obsolete, but should work in this release.
  *
  */
-// # define _STLP_USE_ABBREVS
+/*
+#define _STLP_USE_ABBREVS
+*/
 
 /* 
  * This definition precludes STLport reverse_iterator to be compatible with
@@ -188,7 +226,9 @@
  * has no effect).
  * Use it _ONLY_ if you use SGI-style reverse_iterator<> template explicitly
  */
-// #    define _STLP_NO_MSVC50_COMPATIBILITY 1
+/*
+#define _STLP_NO_MSVC50_COMPATIBILITY 1
+*/
 
 /*
  * _STLP_USE_RAW_SGI_ALLOCATORS is a hook so that users can disable use of
@@ -196,7 +236,9 @@
  * raw allocators as default ones, without having to edit library headers.
  * Use of this macro is strongly discouraged.
  */
-// #define   _STLP_USE_RAW_SGI_ALLOCATORS 1
+/*
+#define _STLP_USE_RAW_SGI_ALLOCATORS 1
+*/
 
 /*
  * Use obsolete overloaded template functions iterator_category(), value_type(), distance_type()
@@ -207,19 +249,24 @@
  * please use public inheritance from iterator<> template to achieve desired effect. 
  * Second form is to disable old-style queries in any case.
  */
-// # define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-// # define _STLP_NO_OLD_HP_ITERATOR_QUERIES
+/*
+#define _STLP_USE_OLD_HP_ITERATOR_QUERIES
+#define _STLP_NO_OLD_HP_ITERATOR_QUERIES
+*/
 
 
-//==========================================================================
+/*==========================================================================*/
 
-// This section contains swithes which should be off by default,
-// but so few compilers would have it undefined, so that we set them here,
-// with the option to be turned off later in compiler-specific file
+/* This section contains swithes which should be off by default,
+ * but so few compilers would have it undefined, so that we set them here,
+ * with the option to be turned off later in compiler-specific file
+ */
 
-# define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-# define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 
-// Local Variables:
-// mode:C++
-// End:
+/*
+  Local Variables:
+  mode:C++
+  End:
+*/

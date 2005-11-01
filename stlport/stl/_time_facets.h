@@ -208,14 +208,14 @@ __write_formatted_time(char * __buf, char __format, char __modifier,
                        const _Time_Info& __table, const tm* __t);
 
 template <class _OuIt>
-inline _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
+inline _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out_ite,
                                    const ios_base& /* __loc */, char) {
-    return copy(__first, __last, __out);
+    return copy(__first, __last, __out_ite);
 }
 
 # ifndef _STLP_NO_WCHAR_T
 template <class _OuIt>
-_OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out,
+_OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out_ite,
                             const ios_base& __s, wchar_t);
 # endif
 

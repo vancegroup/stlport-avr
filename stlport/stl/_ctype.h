@@ -118,8 +118,8 @@ public:
 # endif
 
 protected:
-  const mask* table() const _STLP_NOTHROW {return _M_ctype_table;}
-  static const mask* _STLP_CALL classic_table() _STLP_NOTHROW { return _S_classic_table; }
+  const mask* table() const _STLP_NOTHROW { return _M_ctype_table; }
+  static const mask* _STLP_CALL classic_table() _STLP_NOTHROW;
 
   ~ctype();
 
@@ -140,14 +140,10 @@ private:
    bool operator()(char __c) {return (__m & (unsigned char) __c) != 0;}
   };
 
-  static const mask _S_classic_table[table_size];
 protected:
   const mask* _M_ctype_table;
 private:
   bool _M_delete;
-
-  static const unsigned char _S_upper[table_size];
-  static const unsigned char _S_lower[table_size];
 };
 
 _STLP_TEMPLATE_NULL

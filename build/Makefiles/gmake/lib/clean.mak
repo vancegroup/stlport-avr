@@ -1,6 +1,7 @@
 # -*- makefile -*- Time-stamp: <04/03/03 15:34:48 ptr>
 # $Id$
 
+ifneq ($(OSNAME),windows)
 clobber::
 	@-rm -f ${SO_NAME_OUT}
 	@-rm -f ${SO_NAME_OUTx}
@@ -42,3 +43,26 @@ distclean::
 	@-rm -f $(INSTALL_LIB_DIR)/${A_NAME_OUT}
 	@-rm -f $(INSTALL_LIB_DIR_DBG)/${A_NAME_OUT_DBG}
 	@-rm -f $(INSTALL_LIB_DIR_STLDBG)/${A_NAME_OUT_STLDBG}
+else
+clobber::
+	@if exist $(SO_NAME_OUT) del /f /q $(SO_NAME_OUT)
+	@if exist $(SO_NAME_OUT_DBG) del /f /q $(SO_NAME_OUT_DBG)
+	@if exist $(SO_NAME_OUT_STLDBG) del /f /q $(SO_NAME_OUT_STLDBG)
+	@if exist $(A_NAME_OUT) del /f /q $(A_NAME_OUT)
+	@if exist $(A_NAME_OUT_DBG) del /f /q $(A_NAME_OUT_DBG)
+	@if exist $(A_NAME_OUT_STLDBG) del /f /q $(A_NAME_OUT_STLDBG)
+	@if exist $(LIB_NAME_OUT) del /f /q $(LIB_NAME_OUT)
+	@if exist $(LIB_NAME_OUT_DBG) del /f /q $(LIB_NAME_OUT_DBG)
+	@if exist $(LIB_NAME_OUT_STLDBG) del /f /q $(LIB_NAME_OUT_STLDBG)
+	@if exist $(RES) del /f /q $(RES)
+	@if exist $(RES_DBG) del /f /q $(RES_DBG)
+	@if exist $(RES_STLDBG) del /f /q $(RES_STLDBG)
+
+distclean::
+	@if exist $(INSTALL_LIB_DIR)/$(SO_NAME) del /f /q $(INSTALL_LIB_DIR)/$(SO_NAME)
+	@if exist $(INSTALL_LIB_DIR_DBG)/$(SO_NAME_DBG) del /f /q $(INSTALL_LIB_DIR_DBG)/$(SO_NAME_DBG)
+	@if exist $(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBG) del /f /q $(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBG)
+	@if exist $(INSTALL_LIB_DIR)/$(A_NAME) del /f /q $(INSTALL_LIB_DIR)/$(A_NAME)
+	@if exist $(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG) del /f /q $(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG)
+	@if exist $(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG) del /f /q $(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG)
+endif

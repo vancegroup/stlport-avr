@@ -18,7 +18,7 @@
 #if ! defined (INCLUDED_MOTU_Tests)
 #define INCLUDED_MOTU_Tests 1
 
-# include "Prefix.h"
+#include "Prefix.h"
 
 void test_algobase();
 void test_algo();
@@ -31,14 +31,14 @@ void test_vector();
 void test_deque();
 void test_bit_vector();
 
-#if defined( EH_HASHED_CONTAINERS_IMPLEMENTED )
+#if defined (EH_HASHED_CONTAINERS_IMPLEMENTED)
 void test_hash_map();
 void test_hash_multimap();
 void test_hash_set();
 void test_hash_multiset();
 #endif
 
-#if defined( EH_ROPE_IMPLEMENTED )
+#if defined (EH_ROPE_IMPLEMENTED)
 void test_rope();
 #endif
 

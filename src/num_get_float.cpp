@@ -21,6 +21,10 @@
 #include <stl/_num_get.h>
 #include <stl/_istream.h>
 
+#ifdef __APPLE__
+#include <stdint.h>
+#endif
+
 #ifdef __linux__
 #  include <ieee754.h>
 #  include <stdint.h>
@@ -36,6 +40,37 @@ union _ll {
     uint32_t lo;
     uint32_t hi;
 #  endif
+#  if !defined(_STLP_BIG_ENDIAN) && !defined(_STLP_LITTLE_ENDIAN)
+#    error Unknown endianness.
+#  endif
+  } i32;
+};
+#endif
+
+#ifdef N_PLAT_NLM
+#  include <nlm/nwintxx.h>
+
+#ifdef INT64
+typedef unsigned INT64 uint64_t;
+#else
+// #error "Can't find INT64"
+// 64-bit int really not defined in headers
+// (_INTEGRAL_MAX_BITS < 64 in any case?), but compiler indeed know __int64
+//        - ptr, 2005-05-06
+typedef unsigned __int64 uint64_t; 
+#endif
+
+#ifdef INT32
+typedef unsigned INT32 uint32_t;
+#else
+#error "Can't find INT32"
+#endif
+
+union _ll {
+  uint64_t i64;
+  struct {
+    uint32_t lo;
+    uint32_t hi;
   } i32;
 };
 #endif
@@ -76,7 +111,7 @@ typedef unsigned __int64 uint64;
 #elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
 typedef unsigned long uint32;
 #  include "uint64.h"    //*TY 03/25/2000 - added 64bit math type definition
-#elif defined(__unix) || defined (__MINGW32__)
+#elif defined(__unix) || defined (__MINGW32__) || defined(N_PLAT_NLM)
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 #  define ULL(x) x##ULL
@@ -110,9 +145,13 @@ void _Stl_mult64(const uint64 u, const uint64 v,
 # define bit11 ULL(0x7ff)
 # define exponent_mask (bit11 << 52)
 
-inline void _Stl_set_exponent(uint64& val, uint64 exp) {
-  val = (val & ~exponent_mask) | ((exp & bit11) << 52);
-}
+#if !defined (__GNUC__) || (__GNUC__ != 3) || (__GNUC_MINOR__ != 4) || \
+    (!defined (__CYGWIN__) && !defined (__MINGW32__))
+//Generate bad code when compiled with -O2 option.
+inline
+#endif
+void _Stl_set_exponent(uint64 &val, uint64 exp)
+{ val = (val & ~exponent_mask) | ((exp & bit11) << 52); }
 
 /* Power of ten fractions for tenscale*/
 /* The constants are factored so that at most two constants

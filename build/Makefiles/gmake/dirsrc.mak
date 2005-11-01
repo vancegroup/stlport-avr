@@ -17,6 +17,9 @@ include ${RULESBASE}/rules-d.mak
 ifeq ($(OSNAME),cygming)
 include ${RULESBASE}/rules-res.mak
 endif
+ifeq ($(OSNAME),windows)
+include ${RULESBASE}/rules-res.mak
+endif
 # remove processed directory from list
 DIRS_UNIQUE_SRC := $(filter-out $(WORD1),$(DIRS_UNIQUE_SRC))
 # recursive include here:

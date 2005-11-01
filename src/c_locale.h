@@ -32,7 +32,7 @@
 # define _STLP_C_LOCALE_IMPL_H
 
 # include <stl/c_locale.h>
-// # include <wchar.h>
+/* # include <wchar.h> */
 # include <stl/_cwchar.h>
 
 # ifdef _STLP_REAL_LOCALE_IMPLEMENTED
@@ -62,7 +62,7 @@ extern "C" {
  * Typedefs:
  */
 
-#if defined (__GNUC__) || defined (_KCC) || defined(__ICC)
+#if (defined (__GNUC__) && !defined (__MINGW32__)) || defined (_KCC) || defined (__ICC)
 typedef unsigned short int _Locale_mask_t;
 #else
 typedef unsigned int _Locale_mask_t;

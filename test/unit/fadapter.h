@@ -7,7 +7,7 @@
 // to allow binders/composers usage
 struct __void_tag {};
 
-#if !defined (STLPORT) || defined (__STL_USE_NAMESPACES)
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 using std::unary_function;
 #endif
 
@@ -40,7 +40,7 @@ pointer_to_void_function<Result> ptr_gen(Result (*x)()) {
   return pointer_to_void_function<Result>(x);
 }
 
-#endif /*  !defined (__STL_MEMBER_POINTER_PARAM_BUG) */
+#endif /*  !defined (_STLP_MEMBER_POINTER_PARAM_BUG) */
 
 template <class Arg>
 class pointer_to_unary_procedure /* :public unary_function<Arg, __void_tag> */ {

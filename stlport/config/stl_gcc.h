@@ -6,24 +6,46 @@
 #if defined (__linux__) || defined(__CYGWIN__)
 #  ifndef _STLP_USE_GLIBC
 #    define _STLP_USE_GLIBC 1
-//#  ifdef _GLIBCPP_USE_NAMESPACES
-//#   undef _GLIBCPP_USE_NAMESPACES
-//#  endif
+/*
+#  ifdef _GLIBCPP_USE_NAMESPACES
+#    undef _GLIBCPP_USE_NAMESPACES
+#  endif
+*/
 #  endif
 #  if defined(__UCLIBC__) && !defined(_STLP_USE_UCLIBC)
 #    define _STLP_USE_UCLIBC 1
 #  endif
 #endif
 
-#if defined (__CYGWIN__)
-#  if (__GNUC__ >= 3) && (__GNUC_MINOR__ >= 3) && !defined (_GLIBCPP_USE_C99)
-#    define _STLP_NO_VENDOR_MATH_L
-#    define _STLP_NO_VENDOR_STDLIB_L
+#if defined (__CYGWIN__) && \
+     (__GNUC__ >= 3) && (__GNUC_MINOR__ >= 3) && !defined (_GLIBCPP_USE_C99)
+#  define _STLP_NO_VENDOR_MATH_L
+#  define _STLP_NO_VENDOR_STDLIB_L
+#endif
+
+#if (__GNUC__ < 3)
+#  define _STLP_NO_VENDOR_STDLIB_L
+#endif
+
+/* We guess if we are using the cygwin distrib that has a special include schema.
+ * There is no way to distinguish a cygwin distrib used in no-cygwin mode from a
+ * mingw install. We are forced to use a configuration option
+ */
+#if !defined (_STLP_NATIVE_INCLUDE_PATH) && \
+    (defined (__CYGWIN__) || defined (__MINGW32__) && defined (_STLP_NO_CYGWIN))
+#  if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 3))
+#    define _STLP_NATIVE_INCLUDE_PATH ../../../__GNUC__.__GNUC_MINOR__.__GNUC_PATCHLEVEL__/include/c++
+#  elif defined (_STLP_NO_CYGWIN)
+#    define _STLP_NATIVE_INCLUDE_PATH ../mingw
+/*#  else
+ * Before version gcc 3.4, the cygwin package include path was conform to the 
+ * GNU convention which is set later in this file.
+ */
 #  endif
 #endif
 
 #if (__GNUC__ < 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ < 4))
-//define for gcc versions before 3.4.0.
+/* define for gcc versions before 3.4.0. */
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 #endif
 
@@ -36,27 +58,29 @@
 #endif
 
 #if defined (__sun)
-// gcc does not support ELF64 yet ; however; it supports ultrasparc + v8plus.
-// limits.h contains invalid values for this combination
+/* gcc does not support ELF64 yet ; however; it supports ultrasparc + v8plus.
+ * limits.h contains invalid values for this combination
+ */
 #  if (defined  (__sparc_v9__) || defined (__sparcv9)) && ! defined ( __WORD64 )
 #    define __LONG_MAX__ 2147483647L
 #  endif
 #  include <config/stl_solaris.h>
 #endif
 
-// no thread support on AmigaOS
+/* no thread support on AmigaOS */
 #if defined (__amigaos__)
 #  define _NOTHREADS
 #  define _STLP_NO_THREADS
 #endif
 
-// azov: gcc on lynx have a bug that causes internal
-// compiler errors when compiling STLport with namespaces turned on. 
-// When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
+/* azov: gcc on lynx have a bug that causes internal
+ * compiler errors when compiling STLport with namespaces turned on. 
+ * When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
+ */
 #if defined (__Lynx__) && (__GNUC__ < 3)
 #  define _STLP_HAS_NO_NAMESPACES 1
 #  define _STLP_NO_STATIC_TEMPLATE_DATA 1
-//  turn off useless warning about including system headers
+/* turn off useless warning about including system headers */
 #  define __NO_INCLUDE_WARN__ 1
 #endif
 
@@ -72,7 +96,7 @@
                              (defined(__OpenBSD__) && defined(_POSIX_THREADS)) || \
                              (defined(__MINGW32__) && defined(_MT)))
 #  define _REENTRANT
-#endif // (__FreeBSD__ && _THREAD_SAFE) || (__OpenBSD__ && _POSIX_THREADS) || (__MINGW32__ && _MT)
+#endif /* (__FreeBSD__ && _THREAD_SAFE) || (__OpenBSD__ && _POSIX_THREADS) || (__MINGW32__ && _MT) */
 
 #if defined(__DJGPP)
 #  define _STLP_RAND48    1
@@ -88,7 +112,7 @@
 #  define _STLP_CALL
 
 #  if defined (_STLP_NEW_PLATFORM_SDK)
-//For the moment the SDK coming with Mingw still mimik the old platform SDK.
+/* For the moment the SDK coming with Mingw still mimik the old platform SDK. */
 #    undef _STLP_NEW_PLATFORM_SDK
 #  endif
 #endif /* __MINGW32__ */
@@ -105,16 +129,20 @@
 #  define _STLP_USE_DECLSPEC 1
 #endif
 
-#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun)) 
-#  ifndef __MINGW32__
-#    define _STLP_NO_NATIVE_MBSTATE_T      1
+#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun) || defined(__APPLE__)) 
+#  if !defined (__MINGW32__) && !defined (__CYGWIN__)
+#    define _STLP_NO_NATIVE_MBSTATE_T    1
 #  endif
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+#  if !defined (__MINGW32__) || (__GNUC__ < 3) || (__GNUC__ == 3) && (__GNUC_MINOR__ < 4)
+#    define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
+#  endif
 #  define _STLP_NO_NATIVE_WIDE_STREAMS   1
 #elif defined(__linux__)
 #  if (__GNUC__ < 3)
 #    define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-//#    define _STLP_NO_NATIVE_WIDE_STREAMS   1
+/*
+#    define _STLP_NO_NATIVE_WIDE_STREAMS   1
+*/
 #  endif
 #elif defined (__sun)
 #  define _STLP_WCHAR_BORLAND_EXCLUDE
@@ -156,6 +184,8 @@ typedef unsigned int wint_t;
 /* Mac OS X needs all "::" scope references to be "std::" */
 #  define _STLP_USE_NEW_C_HEADERS
 
+#  define _STLP_NO_VENDOR_STDLIB_L
+
 #endif /* __APPLE__ */
 
 
@@ -167,7 +197,9 @@ typedef unsigned int wint_t;
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../stlport/beos/##header##>
 #  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #  define _STLP_NO_NATIVE_WIDE_STREAMS   1
-//#  define _NOTHREADS 1
+/*
+#  define _NOTHREADS 1
+*/
 #  ifdef _PTHREADS
 #    undef  _PTHREADS
 #  endif
@@ -182,16 +214,20 @@ typedef unsigned int wint_t;
 #define _STLP_LONG_LONG long long 
 
 #ifdef _STLP_USE_UCLIBC
-//# ifndef __DO_C99_MATH__
+/*
+#  ifndef __DO_C99_MATH__
+*/
   /* No *f math fuctions variants (i.e. sqrtf, fabsf, etc.) */
 #  define _STLP_NO_VENDOR_MATH_F
   /* No *l math fuctions variants (i.e. sqrtl, fabsl, etc.) */
 #  define _STLP_NO_VENDOR_MATH_L
 #  define _STLP_NO_LONG_DOUBLE
-//# endif
+/*
+#  endif
+*/
 #endif
 
-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined (__OpenBSD__) || defined (__FreeBSD__)
 #  define _STLP_NO_VENDOR_MATH_L
 #  define _STLP_NO_VENDOR_STDLIB_L /* no llabs */
 #  ifndef __unix
@@ -199,11 +235,25 @@ typedef unsigned int wint_t;
 #  endif
 #endif
 
+#if defined (__alpha__)
+#  define _STLP_NO_VENDOR_MATH_L
+#endif
+
+#if defined (__hpux)
+#  define _STLP_NO_VENDOR_STDLIB_L /* no llabs */
+  /* No *f math fuctions variants (i.e. sqrtf, fabsf, etc.) */
+#  define _STLP_NO_VENDOR_MATH_F
+#endif
+
 #if (__GNUC__ >= 3)
 #  ifndef _STLP_HAS_NO_NEW_C_HEADERS
-//#   ifndef _STLP_USE_UCLIBC
+/*
+#    ifndef _STLP_USE_UCLIBC
+*/
 #    define _STLP_HAS_NATIVE_FLOAT_ABS
-//#   endif
+/*
+#    endif
+*/
 #  else
 #    ifdef _STLP_USE_GLIBC
 #      define _STLP_VENDOR_LONG_DOUBLE_MATH  1
@@ -218,15 +268,17 @@ typedef unsigned int wint_t;
 #  ifndef __HONOR_STD
 #    define _STLP_VENDOR_GLOBAL_EXCEPT_STD 1
 #  endif
-#endif
-
-// #  define _STLP_VENDOR_GLOBAL_CSTD       1
-
-#if (__GNUC_MINOR__ < 95)  && (__GNUC__ < 3)
-#  define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#  define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 /* egcs fails to initialize builtin types in expr. like this : new(p) char();  */
 #  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
+#endif
+
+/*
+#define _STLP_VENDOR_GLOBAL_CSTD 1
+*/
+
+#if (__GNUC__ == 2) && (__GNUC_MINOR__ < 95)
+#  define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#  define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 #  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
 #else
 #  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
@@ -301,14 +353,18 @@ __GIVE_UP_WITH_STL(GCC_272);
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )
 #  undef _STLP_LONG_LONG
-// #    define _STLP_STRICT_ANSI 1
+/*
+#    define _STLP_STRICT_ANSI 1
+*/
 #endif
 
-//#if !defined (__STRICT_ANSI__) || defined (__BUILDING_STLPORT)
-//#  define _STLP_USE_TEMPLATE_EXPORT
-//#  define _STLP_EXPORT_TEMPLATE_KEYWORD extern
-//#  define _STLP_IMPORT_TEMPLATE_KEYWORD extern
-//#endif
+/*
+#if !defined (__STRICT_ANSI__) || defined (__BUILDING_STLPORT)
+#  define _STLP_USE_TEMPLATE_EXPORT
+#  define _STLP_EXPORT_TEMPLATE_KEYWORD extern
+#  define _STLP_IMPORT_TEMPLATE_KEYWORD extern
+#endif
+*/
 
 #ifndef __EXCEPTIONS
 #  undef  _STLP_DONT_USE_EXCEPTIONS
@@ -318,10 +374,10 @@ __GIVE_UP_WITH_STL(GCC_272);
 #if (__GNUC__ >= 3)
 
 #  if !defined (_STLP_NATIVE_INCLUDE_PATH)
-#    if (((__GNUC__ == 3 ) && (__GNUC_MINOR__ == 0)) || ((__GNUC_MINOR__ < 3) && __APPLE__))
+#    if ( (__GNUC__ == 3 ) && ((__GNUC_MINOR__ == 0) || ((__GNUC_MINOR__ < 3) && __APPLE__)))
 #      define _STLP_NATIVE_INCLUDE_PATH ../g++-v3
 #    else
-#      if ((__GNUC_MINOR__ >= 3) && __APPLE__)
+#      if ( ((__GNUC__ == 4 ) || (__GNUC_MINOR__ >= 3)) && __APPLE__)
 #        define _STLP_NATIVE_INCLUDE_PATH ../c++
 /*
 * Before version 3.4.0 the 0 patch level was not part of the include path:
@@ -364,11 +420,12 @@ __GIVE_UP_WITH_STL(GCC_272);
 
 #else
 
-// gcc-2.95.0 used to use "g++-3" directory which has been changed to "g++" in
-// system-dependent "include" for 2.95.2 except for Cygwin and Mingw packages.
-// I expect "g++-3" not being used in later releases.
-// If your installation use "g++-3" include directory for any reason (pre-2.95.2 or Win binary kit),
-// please change the macro below to point to your directory. 
+/* gcc-2.95.0 used to use "g++-3" directory which has been changed to "g++" in
+ * system-dependent "include" for 2.95.2 except for Cygwin and Mingw packages.
+ * I expect "g++-3" not being used in later releases.
+ * If your installation use "g++-3" include directory for any reason (pre-2.95.2 or Win binary kit),
+ * please change the macro below to point to your directory.
+ */
 
 #  if !defined (_STLP_NATIVE_INCLUDE_PATH)
 #    if defined(__DJGPP)
@@ -379,8 +436,9 @@ __GIVE_UP_WITH_STL(GCC_272);
           !( defined (__FreeBSD__) || defined (__NetBSD__) || defined(__sgi) || defined (__OS2__) ) )
 #      define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 #    elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3) && !defined( __Lynx__ )
-// this really sucks, as GNUpro does not really identifies itself, so we have to guess 
-// depending on a platform
+/* this really sucks, as GNUpro does not really identifies itself, so we have to guess 
+ * depending on a platform
+ */
 #      ifdef __hpux
 #        define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 #      else
@@ -391,16 +449,18 @@ __GIVE_UP_WITH_STL(GCC_272);
 #    endif
 #  endif
 
-// <exception> et al
+/* <exception> et al */
 #  ifdef __FreeBSD__
 #    if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 95)
 #      define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #    endif
 #  else
-// azov
+/* azov */
 #    ifndef __Lynx__ 
 #      if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
-// #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../g++-v3
+/*
+#     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../g++-v3
+*/
 #      else
 #        define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include
 #      endif
@@ -421,8 +481,9 @@ __GIVE_UP_WITH_STL(GCC_272);
 #  endif /* _REENTRANT */
 #endif
 
-// Tune settings for the case where static template data members are not 
-// instaniated by default
+/* Tune settings for the case where static template data members are not 
+ * instaniated by default
+ */
 #if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
 #  define _STLP_STATIC_TEMPLATE_DATA 0
 #  if !defined ( _STLP_WEAK_ATTRIBUTE )

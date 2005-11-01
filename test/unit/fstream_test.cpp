@@ -9,13 +9,19 @@
 #  include "full_streambuf.h"
 #  include "cppunit/cppunit_proxy.h"
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //The macro value gives approximately the generated file
 //size in Go
 //#define CHECK_BIG_FILE 4
+
+#  if !defined(STLPORT) || !( (defined(_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
+                              (defined(__GNUC__) && (__GNUC__ < 3)) \
+                            )
+#    define DO_CUSTOM_FACET_TEST
+#  endif
 
 //
 // TestCase class
@@ -32,10 +38,13 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(buf);
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
-  //CPPUNIT_TEST(file_traits);
-#if defined (CHECK_BIG_FILE)
+  CPPUNIT_TEST(win32_file_format);
+#  if defined (DO_CUSTOM_FACET_TEST)
+  CPPUNIT_TEST(custom_facet);
+#  endif
+#  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);
-#endif
+#  endif
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -48,10 +57,13 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void buf();
     void rdbuf();
     void streambuf_output();
-    //void file_traits();
-#if defined (CHECK_BIG_FILE)
+    void win32_file_format();
+#  if defined (DO_CUSTOM_FACET_TEST)
+    void custom_facet();
+#  endif
+#  if defined (CHECK_BIG_FILE)
     void big_file();
-#endif
+#  endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FstreamTest);
@@ -303,37 +315,88 @@ void FstreamTest::streambuf_output()
 #  endif
 }
 
-/*
-template <typename _CharT>
-struct file_test_traits : public char_traits<_CharT> {
+void FstreamTest::win32_file_format()
+{
+  const char* file_name = "win32_file_format.tmp";
+  const size_t nb_lines = 2049;
+  {
+    ofstream out(file_name);
+    CPPUNIT_ASSERT( out.good() );
+    out << 'a';
+    for (size_t i = 0; i < nb_lines - 1; ++i) {
+      out << '\n';
+    }
+    out << '\r';
+    CPPUNIT_ASSERT( out.good() );
+  }
+  {
+    ifstream in(file_name);
+    CPPUNIT_ASSERT( in.good() );
+    string line, last_line;
+    size_t nb_read_lines = 0;
+    while (getline(in, line)) {
+      ++nb_read_lines;
+      last_line = line;
+    }
+    CPPUNIT_ASSERT( in.eof() );
+    CPPUNIT_ASSERT( nb_read_lines == nb_lines );
+    CPPUNIT_ASSERT( !last_line.empty() && (last_line[0] == '\r') );
+  }
+}
+
+#  if defined (DO_CUSTOM_FACET_TEST)
+struct my_state {
+  char dummy;
 };
 
-void FstreamTest::file_traits()
+struct my_traits : public char_traits<char> {
+  typedef my_state state_type;
+  typedef fpos<state_type> pos_type;
+};
+
+class my_codecvt : public codecvt<char, char, my_state>
+{
+public:
+  //static locale::id id;
+};
+
+//locale::id my_codecvt::id;
+
+void FstreamTest::custom_facet()
 {
   //File preparation:
   {
-    ofstream ofstr("test_file.txt", ios_base::binary);
-    //if (!ofstr)
-      //No test if we cannot create the file
-      //return;
+    ofstream ofstr("test_file.tmp", ios_base::binary);
     ofstr << "0123456789";
     CPPUNIT_ASSERT( ofstr );
   }
 
   {
-    typedef file_test_traits<char> ftraits;
-    typedef std::basic_ifstream<char, ftraits> ft_ifstreams;
-    typedef std::basic_string<char, ftraits> ft_string;
+    typedef basic_ifstream<char, my_traits> my_ifstream;
+    typedef basic_string<char, my_traits> my_string;
 
-    ft_ifstreams infile("test_file.txt");
-    CPPUNIT_ASSERT( infile );
-    ft_string res;
-    infile >> res;
-    CPPUNIT_ASSERT( infile );
+    my_ifstream ifstr("test_file.tmp");
+    CPPUNIT_ASSERT( ifstr );
+
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+    ifstr.imbue(locale::classic());
+    CPPUNIT_ASSERT( ifstr.fail() && !ifstr.bad() );
+    ifstr.clear();
+#endif
+    locale my_loc(locale::classic(), new my_codecvt());
+    ifstr.imbue(my_loc);
+    CPPUNIT_ASSERT( ifstr.good() );
+    /*
+    my_string res;
+    ifstr >> res;
+    CPPUNIT_ASSERT( !ifstr.fail() );
+    CPPUNIT_ASSERT( !ifstr.bad() );
+    CPPUNIT_ASSERT( ifstr.eof() );
     CPPUNIT_ASSERT( res == "0123456789" );
+    */
   }
 }
-*/
+#  endif
 
 #  if defined (CHECK_BIG_FILE)
 void FstreamTest::big_file()

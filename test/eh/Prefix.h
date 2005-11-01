@@ -16,7 +16,7 @@
     
 ***********************************************************************************/
 
-#if ! defined (INCLUDED_MOTU_Prefix)
+#ifndef INCLUDED_MOTU_Prefix
 #define INCLUDED_MOTU_Prefix 1
 
 // Gives much more thorough checking, but may slow the tests
@@ -32,7 +32,6 @@
 # define EH_USE_SGI_STL 1
 #endif
 
-
 #if EH_USE_SGI_STL
 
 #define EH_ASSERT _STLP_ASSERT
@@ -44,82 +43,77 @@
 //=========================================================================
 
 // # define _STLP_USE_RAW_SGI_ALLOCATORS
-# ifndef _STLP_USE_NEWALLOC
+#ifndef _STLP_USE_NEWALLOC
 #  define _STLP_USE_NEWALLOC
-# endif
+#endif
 
-# if 0 // !defined  (_STLP_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
+#if 0 // !defined  (_STLP_NO_CUSTOM_IO) && ! defined (__BORLANDC__)
 #  define _STLP_NO_CUSTOM_IO
-# endif
+#endif
 
 // Just include something to get whatever configuration header we're using.
-# include <utility>
+#include <utility>
 
-# ifndef _STLP_CALL
+#ifndef _STLP_CALL
 #  define _STLP_CALL
-# endif
+#endif
 
-# if defined(_STLP_USE_NAMESPACES)
+#if defined(_STLP_USE_NAMESPACES)
 #  define EH_USE_NAMESPACES _STLP_USE_NAMESPACES
-# endif
+#endif
 
-# define EH_BEGIN_NAMESPACE _STLP_BEGIN_NAMESPACE
-# define EH_END_NAMESPACE _STLP_END_NAMESPACE
+#define EH_BEGIN_NAMESPACE _STLP_BEGIN_NAMESPACE
+#define EH_END_NAMESPACE _STLP_END_NAMESPACE
 
-#  define EH_NEW_HEADERS 1
+#define EH_NEW_HEADERS 1
 
-# if defined (_STLP_USE_NEW_IOSTREAMS)
-#  define EH_NEW_IOSTREAMS 1
-# endif
+//#if defined (_STLP_USE_NEW_IOSTREAMS)
+#define EH_NEW_IOSTREAMS 1
+//#endif
 
-# if !defined (_STLP_USE_EXCEPTIONS)
+#if !defined (_STLP_USE_EXCEPTIONS)
 #  define EH_NO_EXCEPTIONS
-# endif
+#endif
 
-# if defined (_STLP_TEMPLATE_PARAM_SUBTYPE_BUG)
+#if defined (_STLP_TEMPLATE_PARAM_SUBTYPE_BUG)
 #  define EH_TEMPLATE_PARAM_SUBTYPE_BUG _STLP_TEMPLATE_PARAM_SUBTYPE_BUG
-# endif
+#endif
 
-# if defined(_STLP_MULTI_CONST_TEMPLATE_ARG_BUG)
+#if defined(_STLP_MULTI_CONST_TEMPLATE_ARG_BUG)
 #  define EH_MULTI_CONST_TEMPLATE_ARG_BUG _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
-# endif
+#endif
 
-# if defined (STLPORT)
+#if defined (STLPORT)
 #  define EH_STD STLPORT
-# elif defined(__STD)
+#elif defined(__STD)
 #  define EH_STD __STD
-# endif
+#endif
 
 // we want to be portable here, so std:: won't work.
-# if defined(STLPORT_CSTD)
+#if defined(STLPORT_CSTD)
 #  define EH_CSTD STLPORT_CSTD
-# else
+#else
 #  define EH_CSTD std
-# endif
+#endif
 
+#define EH_DISTANCE(a, b, result) EH_STD::distance(a, b, result)
 
-# define EH_DISTANCE( a, b, result ) EH_STD::distance( a, b, result )
-
-# define EH_HASHED_CONTAINERS_IMPLEMENTED 1
-# define EH_HASH_CONTAINERS_SUPPORT_RESIZE 1
-# define EH_HASH_CONTAINERS_SUPPORT_ITERATOR_CONSTRUCTION 1
-# define EH_SLIST_IMPLEMENTED 1
-# define EH_SELECT1ST_HINT __select1st_hint
+#define EH_HASHED_CONTAINERS_IMPLEMENTED 1
+#define EH_HASH_CONTAINERS_SUPPORT_RESIZE 1
+#define EH_HASH_CONTAINERS_SUPPORT_ITERATOR_CONSTRUCTION 1
+#define EH_SLIST_IMPLEMENTED 1
+#define EH_SELECT1ST_HINT __select1st_hint
 // fbp : DEC cxx is unable to compile it for some reason
-# if !( defined (__DECCXX)  || defined (__amigaos__) || (defined (__GNUC__) && (__GNUC_MINOR__ < 8)))
+#if !(defined (__DECCXX)  || defined (__amigaos__) || \
+      (defined (__GNUC__) && (__GNUC__ <= 2) && (__GNUC_MINOR__ < 8)))
 #  define EH_ROPE_IMPLEMENTED 1
-# endif
-# define EH_STRING_IMPLEMENTED 1
+#endif
+#define EH_STRING_IMPLEMENTED 1
 // # define EH_BITSET_IMPLEMENTED 1
 //# define EH_VALARRAY_IMPLEMENTED 1  - we have no tests yet for valarray
 
-# define stl_destroy EH_STD::destroy
-# include <memory>
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID PREFIX_H
-_STLP_INSTRUMENT_FILE();
-# endif
+#define stl_destroy EH_STD::destroy
+#include <memory>
 
 template <class _Tp>
 class /*_STLP_CLASS_DECLSPEC*/ EH_allocator;
@@ -317,10 +311,4 @@ struct eh_select1st_hint : public unary_function<Pair, U> {
 # define USING_CSTD_NAME(name)
 #endif
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
-
 #endif // INCLUDED_MOTU_Prefix
-
-

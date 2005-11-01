@@ -17,7 +17,8 @@ class ListTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(list2);
   CPPUNIT_TEST(list3);
   CPPUNIT_TEST(list4);
-  CPPUNIT_TEST(erase)
+  CPPUNIT_TEST(erase);
+  CPPUNIT_TEST(resize);
   CPPUNIT_TEST(push_back);
   CPPUNIT_TEST(push_front);
   CPPUNIT_TEST_SUITE_END();
@@ -28,6 +29,7 @@ protected:
   void list3();
   void list4();
   void erase();
+  void resize();
   void push_back();
   void push_front();
 };
@@ -165,6 +167,44 @@ void ListTest::erase()
 
   l.clear();
   CPPUNIT_ASSERT( l.empty() );
+}
+
+
+void ListTest::resize()
+{
+  {
+    list<int> l;
+    l.resize(5, 1);
+
+    size_t i;
+    list<int>::iterator lit(l.begin());
+    for (i = 0; i < 5; ++i) {
+      CPPUNIT_ASSERT( lit != l.end() );
+      CPPUNIT_ASSERT( *(lit++) == 1 );
+    }
+    CPPUNIT_ASSERT( lit == l.end() );
+
+    l.resize(3);
+    lit = l.begin();
+    for (i = 0; i < 3; ++i) {
+      CPPUNIT_ASSERT( lit != l.end() );
+      CPPUNIT_ASSERT( *(lit++) == 1 );
+    }
+    CPPUNIT_ASSERT( lit == l.end() );
+  }
+
+  {
+    list<int> l;
+    l.resize(5);
+
+    size_t i;
+    list<int>::iterator lit(l.begin());
+    for (i = 0; i < 5; ++i) {
+      CPPUNIT_ASSERT( lit != l.end() );
+      CPPUNIT_ASSERT( *(lit++) == 0 );
+    }
+    CPPUNIT_ASSERT( lit == l.end() );
+  }
 }
 
 void ListTest::push_back()

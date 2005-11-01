@@ -87,7 +87,7 @@ template <class _Alloc>
 void *  _STLP_CALL __debug_alloc<_Alloc>::allocate(size_t __n) {
   size_t __real_n = __n + __extra_before_chunk() + __extra_after_chunk();
   __alloc_header *__result = (__alloc_header *)__allocator_type::allocate(__real_n);
-  memset((char*)__result, __shred_byte, __real_n*sizeof(value_type));
+  memset((char*)__result, __shred_byte, __real_n * sizeof(value_type));
   __result->__magic = __magic;
   __result->__type_size = sizeof(value_type);
   __result->_M_size = (_STLP_UINT32_T)__n;
@@ -163,7 +163,7 @@ public:
   
   ~_Node_Alloc_Lock() {
 #    ifdef _STLP_SGI_THREADS
-    if (__threads && __us_rsthread_malloc)
+    if (__us_rsthread_malloc)
 #    endif /* !_STLP_SGI_THREADS */
         _S_lock._M_release_lock(); 
   }
@@ -335,9 +335,17 @@ __node_alloc<__threads, __inst>::_S_refill(size_t __n) {
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
 
 template <bool __threads, int __inst>
+struct __node_alloc_cleaner {
+  ~__node_alloc_cleaner() {
+    __node_alloc<__threads, __inst>::_S_dealloc_call();
+  }
+};
+
+template <bool __threads, int __inst>
 size_t& _STLP_CALL
 __node_alloc<__threads, __inst>::_S_alloc_call(size_t incr) {
-  static size_t _S_counter = 0;
+  static __node_alloc_cleaner<__threads, __inst> _S_node_alloc_cleaner;
+  static size_t _S_counter = 1;
   _S_counter += incr;
   return _S_counter;
 }
@@ -575,7 +583,7 @@ __node_alloc<__threads, __inst>::_S_dealloc_call() {
   size_t *pcounter = &_S_alloc_call(0);
   _STLP_ATOMIC_DECREMENT(pcounter);
   //As we are only releasing memory on shared library unload, counter
-  //can only reach 0 once threads has been stoped so we do not have to
+  //can only reach 0 once threads has been stopped so we do not have to
   //check atomic_decrement result.
   if (*pcounter == 0) {
     _S_chunk_dealloc();
@@ -597,6 +605,13 @@ __node_alloc<__threads, __inst>::_S_chunk_dealloc() {
     __pcur = __pnext;
   }
   _S_chunks = 0;
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  _S_free_mem_blocks = 0;
+#else
+  _S_start_free = _S_end_free = 0;
+#endif
+  _S_heap_size = 0;
+  memset((char*)_S_free_list, 0, _STLP_NFREELISTS * sizeof(_Obj*));
 }
 #endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
@@ -604,7 +619,7 @@ __node_alloc<__threads, __inst>::_S_chunk_dealloc() {
 #if (_STLP_STATIC_TEMPLATE_DATA > 0)
 // malloc_alloc out-of-memory handling
 template <int __inst>
-__oom_handler_type __malloc_alloc<__inst>::__oom_handler=(__oom_handler_type)0 ;
+__oom_handler_type __malloc_alloc<__inst>::__oom_handler = (__oom_handler_type)0;
 
 #  if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 template <bool __threads, int __inst>

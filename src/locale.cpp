@@ -19,19 +19,9 @@
 // This file is #included into locale_impl.cpp, due to locale use many
 // statics from locale_impl.cpp
 
-//# include "stlport_prefix.h"
-
-//#include <locale>
-//#include <stdexcept>
-//#include <stl/_algobase.h>
-
-//#include "locale_impl.h"
-
 _STLP_BEGIN_NAMESPACE
 
-static const string _Nameless("*");
-
-#if defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #  define locale _STLP_NO_MEM_T_NAME(loc)
 #endif
 
@@ -67,18 +57,15 @@ void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
   _STLP_THROW(runtime_error(buf));
 }
 
-#if !(defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK))
-static _STLP_STATIC_MUTEX _Index_lock _STLP_MUTEX_INITIALIZER;
-#endif
-
 // Takes a reference to a locale::id, and returns its numeric index.
 // If no numeric index has yet been assigned, assigns one.  The return
 // value is always positive.
 static size_t _Stl_loc_get_index(locale::id& id) {
   if (id._M_index == 0) {
-#if defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK)
+#if defined (_STLP_ATOMIC_INCREMENT)
     id._M_index = _STLP_ATOMIC_INCREMENT(&(locale::id::_S_max));
 #else
+    static _STLP_STATIC_MUTEX _Index_lock _STLP_MUTEX_INITIALIZER;
     _STLP_auto_lock sentry(_Index_lock);
     size_t new_index = locale::id::_S_max++;
     id._M_index = new_index;
@@ -88,8 +75,8 @@ static size_t _Stl_loc_get_index(locale::id& id) {
 }
 
 // Default constructor: create a copy of the global locale.
-locale::locale() : _M_impl( _get_Locale_impl( _Stl_global_locale->_M_impl ) ) {
-}
+locale::locale() : _M_impl(_get_Locale_impl(_Stl_get_global_locale()->_M_impl))
+{}
 
 // Copy constructor
 locale::locale(const locale& L) _STLP_NOTHROW
@@ -103,8 +90,7 @@ void locale::_M_insert(facet* f, locale::id& n) {
 
 locale::locale( _Locale_impl* impl ) :
   _M_impl( _get_Locale_impl( impl ) )
-{
-}
+{}
 
 // Create a locale from a name.
 locale::locale(const char* name)
@@ -268,18 +254,17 @@ locale::locale(const locale& L1, const locale& L2, category c)
 
 // Destructor.
 locale::~locale() _STLP_NOTHROW {
-  // _M_impl->decr();
-  if ( _M_impl )
-    _release_Locale_impl( _M_impl );
+  if (_M_impl)
+    _release_Locale_impl(_M_impl);
 }
 
 // Assignment operator.  Much like the copy constructor: just a bit of
 // pointer twiddling.
 const locale& locale::operator=(const locale& L) _STLP_NOTHROW {
   if (this->_M_impl != L._M_impl) {
-    if ( this->_M_impl )
-      _release_Locale_impl( this->_M_impl );
-    this->_M_impl = _get_Locale_impl( L._M_impl );
+    if (this->_M_impl)
+      _release_Locale_impl(this->_M_impl);
+    this->_M_impl = _get_Locale_impl(L._M_impl);
   }
   return *this;
 }
@@ -311,17 +296,16 @@ bool locale::operator!=(const locale& L) const {
 
 // static data members.
 
-const locale& _STLP_CALL locale::classic()
-{
-  return *_Stl_classic_locale;
+const locale& _STLP_CALL locale::classic() {
+  return *_Stl_get_classic_locale();
 }
 
 locale _STLP_CALL locale::global(const locale& L) {
-  locale old( _Stl_global_locale->_M_impl );
-  if ( _Stl_global_locale->_M_impl != L._M_impl ) {
-    _release_Locale_impl( _Stl_global_locale->_M_impl );
+  locale old(_Stl_get_global_locale()->_M_impl);
+  if (_Stl_get_global_locale()->_M_impl != L._M_impl) {
+    _release_Locale_impl(_Stl_get_global_locale()->_M_impl);
     // this assign should be atomic, should be fixed here:
-    _Stl_global_locale->_M_impl = _get_Locale_impl( L._M_impl );
+    _Stl_get_global_locale()->_M_impl = _get_Locale_impl(L._M_impl);
 
     // Set the global C locale, if appropriate.
 #if !defined(_STLP_NO_LOCALE_SUPPORT) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)

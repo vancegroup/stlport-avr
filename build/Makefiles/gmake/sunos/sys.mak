@@ -1,13 +1,5 @@
-# Time-stamp: <04/03/03 15:49:24 ptr>
+# Time-stamp: <05/09/09 21:10:32 ptr>
 # $Id$
-
-SO := so
-
-ARCH := a
-AR := ar
-AR_INS_R := -rs
-AR_EXTR := -x
-AR_OUT = $@
 
 INSTALL := /usr/ucb/install
 
@@ -15,3 +7,4 @@ INSTALL_SO := ${INSTALL} -c -m 0755
 INSTALL_A := ${INSTALL} -c -m 0644
 INSTALL_EXE := ${INSTALL} -c -m 0755
 
+EXT_TEST := /usr/bin/test

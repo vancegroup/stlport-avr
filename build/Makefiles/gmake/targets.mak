@@ -8,11 +8,17 @@ DIRS_UNIQUE_SRC := $(dir $(SRC_CPP) $(SRC_CC) $(SRC_C) )
 ifeq (${OSNAME},cygming)
 DIRS_UNIQUE_SRC += $(dir $(SRC_RC) )
 endif
+ifeq (${OSNAME},windows)
+DIRS_UNIQUE_SRC += $(dir $(SRC_RC) )
+endif
 DIRS_UNIQUE_SRC := $(sort $(DIRS_UNIQUE_SRC) )
 include ${RULESBASE}/${USE_MAKE}/dirsrc.mak
 
 ALLBASE    := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_C)))
 ifeq (${OSNAME},cygming)
+RCBASE    += $(basename $(notdir $(SRC_RC)))
+endif
+ifeq (${OSNAME},windows)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
 

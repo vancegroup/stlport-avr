@@ -707,7 +707,11 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
   char fmtbuf[32];
   fill_fmtbuf(fmtbuf, flags, 0);
   // snprintf(static_buf, 128+precision, fmtbuf, precision, x);
+# ifndef N_PLAT_NLM
   snprintf(ARRAY_AND_SIZE(static_buf), fmtbuf, precision, x);
+# else 
+  sprintf(static_buf, fmtbuf, precision, x);
+# endif
   buf = static_buf;
   // delete [] static_buf;
   return find_if(buf.begin(), buf.end(), GroupPos()) - buf.begin();
@@ -744,7 +748,11 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
   char fmtbuf[64];
   int i = fill_fmtbuf(fmtbuf, flags, 'L');
   // snprintf(static_buf, 128+precision, fmtbuf, precision, x);
+#   ifndef N_PLAT_NLM
   snprintf(ARRAY_AND_SIZE(static_buf), fmtbuf, precision, x);    
+#   else
+  sprintf(static_buf, fmtbuf, precision, x);
+#   endif
   // we should be able to return buf + sprintf(), but we do not trust'em...
   buf = static_buf;
   // delete [] static_buf;
@@ -774,7 +782,11 @@ void _STLP_CALL __get_floor_digits(__iostring &out, _STLP_LONG_DOUBLE __x) {
 #ifdef USE_SPRINTF_INSTEAD
   char cvtbuf[128];
 #  ifndef _STLP_NO_LONG_DOUBLE
+#   ifndef N_PLAT_NLM
   snprintf(ARRAY_AND_SIZE(cvtbuf), "%Lf", __x); // check for 1234.56!
+#   else
+  sprintf(cvtbuf, "%Lf", __x); // check for 1234.56!
+#   endif
 #  else
   snprintf(ARRAY_AND_SIZE(cvtbuf), "%f", __x);  // check for 1234.56!
 #  endif

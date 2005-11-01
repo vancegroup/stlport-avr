@@ -37,11 +37,6 @@
 #    define std STLPORT
 #  endif /* _STLP_DONT_REDEFINE_STD */
 
-#  if defined (_STLP_USE_NAMESPACES)
-//Here we don't use a macro as stlport is used as file name by boost and folder name under beos:
-namespace stlport = STLPORT;
-#  endif
-
 #endif
 
 #undef _STLP_PROLOG_HEADER_INCLUDED /* defined in _prolog.h */

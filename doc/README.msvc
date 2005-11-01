@@ -98,14 +98,23 @@ like the following message:
 
 C:\Program Files\Microsoft SDK\Include\.\winbase.h(1392) : error C2733: second C
 linkage of overloaded function 'InterlockedIncrement' not allowed
-C:\Program Files\Microsoft SDK\Include\.\winbase.h(1390) : see declarati
-on of 'InterlockedIncrement'
+C:\Program Files\Microsoft SDK\Include\.\winbase.h(1390) : see declaration of
+'InterlockedIncrement'
 
 	It means that you are using the new Microsoft platform SDK. There is no
 way to known it from STLport so you have to signal it in the 
-stlport/stl_user_config.h file (uncomment appropriate #define in this file).
+stlport/stl_user_config.h file (uncomment _STLP_NEW_PLATFORM_SDK in this file).
 
-2. C symbols in std namespace
+2. Native C/C++ library headers location
+
+	If you experiment trouble with location of ctime and other Standard headers
+while building or using STLport you might be using the compiler coming with a
+platform SDK. If so please uncomment _STLP_USING_PLATFORM_SDK_COMPILER in
+stlport/stl_user_config.h. If it still do not find native headers you will perhaps
+need to change native headers relative path used by STLport. In this case use
+_STLP_NATIVE_INCLUDE_PATH and associated macro in stlport/stl/_site_config.h.
+
+4. C symbols in std namespace
 
 	The MSVC++ 6 has a bug when dealing with C symbols imported within the std 
 namespace. If you write the following code:
@@ -120,8 +129,8 @@ int main(int, char**) {
 }
 
 	VC6 will report an ambiguous symbol because it do not know if it has to use
-::abs or std::abs. For this reason injection of C symbols in the std namespace
-has been disable by default. To force it you have to define the 
-_STLP_DO_IMPORT_CSTD_FUNCTIONS macro. Doing so you will have to explicitely 
+::abs or std::abs even if they are the same function. For this reason injection of
+C symbols in the std namespace has been disable by default. To force it you have to
+define the _STLP_DO_IMPORT_CSTD_FUNCTIONS macro. Doing so you will have to explicitely 
 scope all your C functions calls.
 

@@ -10,7 +10,6 @@
  * software for any purpose. It is provided "as is" without express or
  * implied warranty.
  *
- * $Id$
  */
 
 #include <limits>
@@ -36,10 +35,18 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
 
-
 #define CHECK_COND(X) if (!(X)) return false;
 
-template<class _Tp>
+bool valid_sign_info(bool, bool) 
+{ return true; }
+
+template <class _Tp>
+bool valid_sign_info(bool limit_is_signed, const _Tp &) {
+  return limit_is_signed && _Tp(-1) < 0 ||
+         !limit_is_signed && _Tp(-1) > 0;
+}
+
+template <class _Tp>
 bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
   typedef std::numeric_limits<_Tp> lim;
 
@@ -47,16 +54,21 @@ bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed 
   CHECK_COND(lim::is_integer);
   /*CHECK_COND(lim::is_modulo);*/
   CHECK_COND(lim::min() < lim::max());
-  CHECK_COND(unknown_sign || ((lim::is_signed && is_signed) || (!lim::is_signed && !is_signed)));
+  CHECK_COND((unknown_sign && ((lim::is_signed && (lim::min() != 0)) || (!lim::is_signed && (lim::min() == 0)))) ||
+             (!unknown_sign && ((lim::is_signed && is_signed) || (!lim::is_signed && !is_signed))));
+
+  if (unknown_sign) {
+    CHECK_COND(valid_sign_info(lim::is_signed, _Tp()));
+  }
 
   return true;
 }
 
-template<class _Tp>
+template <class _Tp>
 bool test_signed_integral_limits(const _Tp &__val) {
   return test_integral_limits(__val, false, true);
 }
-template<class _Tp>
+template <class _Tp>
 bool test_unsigned_integral_limits(const _Tp &__val) {
   return test_integral_limits(__val, false, false);
 }

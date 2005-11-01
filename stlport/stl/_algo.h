@@ -379,12 +379,12 @@ void random_shuffle(_RandomAccessIter __first, _RandomAccessIter __last,
 
 template <class _ForwardIter, class _OutputIter, class _Distance>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
-                            _OutputIter __out, const _Distance __n);
+                            _OutputIter __out_ite, const _Distance __n);
 
 template <class _ForwardIter, class _OutputIter, class _Distance,
           class _RandomNumberGenerator>
 _OutputIter random_sample_n(_ForwardIter __first, _ForwardIter __last,
-                            _OutputIter __out, const _Distance __n,
+                            _OutputIter __out_ite, const _Distance __n,
                             _RandomNumberGenerator& __rand);
 
 template <class _InputIter, class _RandomAccessIter>

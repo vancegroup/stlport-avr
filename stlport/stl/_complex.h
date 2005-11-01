@@ -195,7 +195,7 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
   typedef complex<float> _Self;
   // Constructors, destructor, assignment operator.
 
-  complex(value_type __x = 0.0, value_type __y = 0.0)
+  complex(value_type __x = 0.0f, value_type __y = 0.0f)
     : _M_re(__x), _M_im(__y) {}
 
   complex(const complex<float>& __z)    : _M_re(__z._M_re), _M_im(__z._M_im) {} 
@@ -212,7 +212,7 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
 
   _Self& operator= (value_type __x) {
     _M_re = __x;
-    _M_im = 0;
+    _M_im = 0.0f;
     return *this;
   }
   _Self& operator+= (value_type __x) {
@@ -351,7 +351,7 @@ struct _STLP_CLASS_DECLSPEC complex<double> {
 
   _Self& operator= (value_type __x) {
     _M_re = __x;
-    _M_im = 0;
+    _M_im = 0.0;
     return *this;
   }
   _Self& operator+= (value_type __x) {
@@ -473,7 +473,7 @@ struct _STLP_CLASS_DECLSPEC complex<long double> {
   typedef complex<long double> _Self;
 
   // Constructors, destructor, assignment operator.
-  complex(value_type __x = 0.0, value_type __y = 0.0)
+  complex(value_type __x = 0.0l, value_type __y = 0.0l)
     : _M_re(__x), _M_im(__y) {}
 
   complex(const complex<long double>& __z)
@@ -489,7 +489,7 @@ struct _STLP_CLASS_DECLSPEC complex<long double> {
 
   _Self& operator= (value_type __x) {
     _M_re = __x;
-    _M_im = 0;
+    _M_im = 0.0l;
     return *this;
   }
   _Self& operator+= (value_type __x) {

@@ -48,14 +48,22 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 template <class _Dummy>
 size_t _Stl_prime<_Dummy>::_S_max_nb_buckets() {
   const size_t _list[] = __PRIME_LIST_BODY;
+#ifndef __MWERKS__
   return _list[(sizeof(_list)/sizeof(_list[0])) - 1];
+#else
+  return _list[28/sizeof(size_t) - 1]; // stupid MWERKS!
+#endif
 }
 
 template <class _Dummy>
 size_t _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
   static const size_t _list[] = __PRIME_LIST_BODY;
   const size_t* __first = _list;
+#ifndef __MWERKS__
   const size_t* __last =  _list + (sizeof(_list)/sizeof(_list[0]));
+#else
+  const size_t* __last =  _list + (28/sizeof(size_t)); // stupid MWERKS
+#endif
   const size_t* pos = __lower_bound(__first, __last, __n, __less((size_t*)0), (ptrdiff_t*)0);
   return (pos == __last ? *(__last - 1) : *pos);
 };
@@ -129,21 +137,15 @@ template <class _Val, class _Key, class _HF,
 __iterator__ 
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::_M_insert_noresize(size_type __n, const value_type& __obj) {
-  _ElemsIte __cur;
-  if (_M_buckets[__n] != _M_buckets[__n + 1]) {
-    __cur = _M_elems.insert_after(_M_buckets[__n], __obj);
-  }
-  else {
-    size_type __prev = __n;
-    _ElemsIte __pos = _M_before_begin(__prev)._M_ite;
+  //We always insert this element as 1st in the bucket to not break
+  //the elements order as equal elements must be kept next to each other.
+  size_type __prev = __n;
+  _ElemsIte __pos = _M_before_begin(__prev)._M_ite;
 
-    fill(_M_buckets.begin() + __prev, _M_buckets.begin() + __n + 1, 
-         _M_elems.insert_after(__pos, __obj)._M_node);
-    __cur = _M_buckets[__n];
-  }
-
+  fill(_M_buckets.begin() + __prev, _M_buckets.begin() + __n + 1, 
+       _M_elems.insert_after(__pos, __obj)._M_node);
   ++_M_num_elements;
-  return __cur;
+  return iterator(_M_buckets[__n]);
 }
 
 template <class _Val, class _Key, class _HF, 
@@ -155,9 +157,19 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   _ElemsIte __cur(_M_buckets[__n]);
   _ElemsIte __last(_M_buckets[__n + 1]);
 
-  for (; __cur != __last; ++__cur) {
-    if (_M_equals(_M_get_key(*__cur), _M_get_key(__obj)))
-      return pair<iterator, bool>(iterator(__cur), false);
+  if (__cur != __last) {
+    for (; __cur != __last; ++__cur) {
+      if (_M_equals(_M_get_key(*__cur), _M_get_key(__obj)))
+        return pair<iterator, bool>(iterator(__cur), false);
+    }
+    /* Here we do not rely on the _M_insert_noresize method as we know
+     * that we cannot break element orders, elements are unique, and 
+     * insertion after the first bucket element is faster than what is 
+     * done in _M_insert_noresize.
+     */
+    __cur = _M_elems.insert_after(_M_buckets[__n], __obj);
+    ++_M_num_elements;
+    return pair<iterator, bool>(iterator(__cur), true);
   }
 
   return pair<iterator, bool>(_M_insert_noresize(__n, __obj), true);
@@ -190,8 +202,7 @@ __reference__
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::_M_insert(const value_type& __obj) {
   resize(_M_num_elements + 1);
-  size_type __n = _M_bkt_num(__obj);
-  return *(_M_insert_noresize(__n, __obj));
+  return *insert_unique_noresize(__obj).first;
 }
 
 /*
@@ -323,23 +334,24 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   size_type __l_bucket = __last != end() ? _M_bkt_num(*__last) : (_M_buckets.size() - 1);
 
   _ElemsIte __cur(_M_buckets[__f_bucket]);
+  size_type __prev_b = __f_bucket;
   _ElemsIte __prev;
   if (__cur == __first._M_ite) {
-    size_type __prev_b = __f_bucket;
     __prev = _M_before_begin(__prev_b)._M_ite;
   }
   else {
-    _ElemsIte __last(_M_buckets[++__f_bucket]);
+    ++__prev_b;
+    _ElemsIte __last(_M_buckets[__f_bucket + 1]);
     __prev = __cur++;
     for (; (__cur != __last) && (__cur != __first._M_ite); ++__prev, ++__cur);
   }
   //We do not use the slist::erase_after method taking a range to count the
-  //erased elements:
+  //number of erased elements:
   while (__cur != __last._M_ite) {
     __cur = _M_elems.erase_after(__prev);
     --_M_num_elements;
   }
-  fill(_M_buckets.begin() + __f_bucket, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
+  fill(_M_buckets.begin() + __prev_b, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
 }
 
 
@@ -364,8 +376,8 @@ template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::resize(size_type __num_elements_hint) {
-  if (((float)__num_elements_hint / (float)bucket_count() < max_load_factor()) &&
-      (max_load_factor() > load_factor())) {
+  if (((float)__num_elements_hint / (float)bucket_count() <= max_load_factor()) &&
+      (max_load_factor() >= load_factor())) {
     return;
   }
 

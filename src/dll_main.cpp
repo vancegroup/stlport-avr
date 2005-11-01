@@ -57,7 +57,7 @@
 #  include <locale>
 #endif
 
-#if defined (_STLP_UNIX) && !defined(_STLP_NO_THREADS)
+#if defined (_STLP_PTHREADS) && !defined (_STLP_NO_THREADS)
 #  define _STLP_HAS_PERTHREAD_ALLOCATOR
 #  include <stl/_pthread_alloc.h>
 #endif
@@ -82,8 +82,8 @@
 #  endif
 #endif
 
-#ifdef _STLP_MSVC
-#  pragma optimize("g",off)
+#if defined (_STLP_MSVC) && (_STLP_MSVC < 1310)
+#  pragma optimize("g", off)
 #endif 
 
 _STLP_BEGIN_NAMESPACE
@@ -274,24 +274,6 @@ template class _STLP_CLASS_DECLSPEC basic_string<char, char_traits<char>, alloca
 #endif /* _STLP_NO_FORCE_INSTANTIATE */
 
 _STLP_END_NAMESPACE
-
-#if defined(_STLP_LEAKS_PEDANTIC) && defined(_STLP_USE_DYNAMIC_LIB)
-/*
- * This small helper class purpose is to guaranty that the node
- * allocator memory pool will only be returned to the system
- * once the STLport library will have been unloaded.
- */
-static struct _Node_alloc_helper {
-  _Node_alloc_helper() {
-    _STLP_STD::__node_alloc<false,0>::_S_alloc_call();
-    _STLP_STD::__node_alloc<true,0>::_S_alloc_call();
-  }
-  ~_Node_alloc_helper() {
-    _STLP_STD::__node_alloc<false,0>::_S_dealloc_call();
-    _STLP_STD::__node_alloc<true,0>::_S_dealloc_call();
-  }
-} _Node_alloc_helper_inst;
-#endif
 
 #define FORCE_SYMBOL extern
 

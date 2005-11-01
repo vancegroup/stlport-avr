@@ -13,23 +13,24 @@
  *
  */
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x201
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x201) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x201) && ! defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# include _STLP_NATIVE_C_HEADER(limits.h)
+#include _STLP_NATIVE_C_HEADER(limits.h)
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x201)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x201)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_HEADER_ID
-# endif
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
+#  endif
+#  undef  _STLP_DONT_POP_HEADER_ID
+#endif
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

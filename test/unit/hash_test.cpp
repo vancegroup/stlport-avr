@@ -3,6 +3,7 @@
 #include <hash_map>
 #include <hash_set>
 #include <rope>
+#include <string>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -26,6 +27,7 @@ class HashTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
+  CPPUNIT_TEST(insert_erase);
   //CPPUNIT_TEST(equality);
   CPPUNIT_TEST_SUITE_END();
 
@@ -36,6 +38,7 @@ protected:
   void hmmap1();
   void hmset1();
   void hset2();
+  void insert_erase();
   //void equality();
 };
 
@@ -113,33 +116,78 @@ void HashTest::hmmap1()
   CPPUNIT_ASSERT( !(ite != cite) );
   CPPUNIT_ASSERT( cite == ite );
   CPPUNIT_ASSERT( !(cite != ite) );
+
+  typedef hash_multimap<size_t, size_t> HMapType;
+  HMapType hmap;
+
+  //We fill the map to implicitely start a rehash.
+  for (size_t counter = 0; counter < 3077; ++counter)
+    hmap.insert(HMapType::value_type(1, counter));
+
+  hmap.insert(HMapType::value_type(12325, 1));
+  hmap.insert(HMapType::value_type(12325, 2));
+
+  CPPUNIT_ASSERT( hmap.count(12325) == 2 );
+
+  //At this point 23 goes to the same bucket as 12325, it used to reveal a bug.
+  hmap.insert(HMapType::value_type(23, 0));
+
+  CPPUNIT_ASSERT( hmap.count(12325) == 2 );
 }
+
 void HashTest::hmset1()
 {
   hmset s;
-  CPPUNIT_ASSERT(s.count(star)==0);
+  CPPUNIT_ASSERT( s.count(star) == 0 );
   s.insert(star);
-  CPPUNIT_ASSERT(s.count(star)==1);
+  CPPUNIT_ASSERT( s.count(star) == 1 );
   s.insert(star);
-  CPPUNIT_ASSERT(s.count(star)==2);
+  CPPUNIT_ASSERT( s.count(star) == 2 );
   hmset::iterator i = s.find(char(40));
-  CPPUNIT_ASSERT(i == s.end());
+  CPPUNIT_ASSERT( i == s.end() );
 
   i = s.find(star);
-  CPPUNIT_ASSERT(i != s.end())
-  CPPUNIT_ASSERT(*i=='*');
-  size_t count = s.erase(star);
-  CPPUNIT_ASSERT(count==2);
+  CPPUNIT_ASSERT( i != s.end() )
+  CPPUNIT_ASSERT( *i == '*' );
+  CPPUNIT_ASSERT( s.erase(star) == 2 );
 }
 void HashTest::hset2()
 {
   hash_set<int, hash<int>, equal_to<int> > s;
   pair<hash_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
-  CPPUNIT_ASSERT(p.second);
-  CPPUNIT_ASSERT(*(p.first)==42);
+  CPPUNIT_ASSERT( p.second );
+  CPPUNIT_ASSERT( *(p.first) == 42 );
 
   p = s.insert(42);
-  CPPUNIT_ASSERT(!p.second);
+  CPPUNIT_ASSERT( !p.second );
+}
+
+
+void HashTest::insert_erase()
+{
+  typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
+  typedef pair<string, size_t> val_type;
+  {
+    hmap values;
+    CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
+    CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
+    CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
+
+    CPPUNIT_ASSERT( values.erase("foo") == 1 );
+    CPPUNIT_ASSERT( values.erase("bar") == 1 );
+    CPPUNIT_ASSERT( values.erase("abc") == 1 );
+  }
+
+  {
+    hmap values;
+    CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
+    CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
+    CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
+
+    CPPUNIT_ASSERT( values.erase("abc") == 1 );
+    CPPUNIT_ASSERT( values.erase("bar") == 1 );
+    CPPUNIT_ASSERT( values.erase("foo") == 1 );
+  }
 }
 
 /*

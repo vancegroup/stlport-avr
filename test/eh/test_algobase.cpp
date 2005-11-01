@@ -27,11 +27,6 @@
 #include "LeakCheck.h"
 #include "TestClass.h"
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_ALGOBASE_CPP
-_STLP_INSTRUMENT_FILE();
-# endif
-
 // EH_USE_STD
 
 enum { kBufferSize = 100 };
@@ -101,7 +96,3 @@ void test_algobase()
   WeakCheck( c, test_uninitialized_fill() );
   WeakCheck( c, test_uninitialized_fill_n() );
 }
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif

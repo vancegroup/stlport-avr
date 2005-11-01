@@ -120,7 +120,7 @@ public:
   
   hashtable(__move_source<_Self> src) :
     _STLP_DBG_HT_BASE(__move_source<_Base>(src.get())), _M_iter_list(_Get_base()) {
-    src.get()._M_iter_list._M_invalidate_all();
+    src.get()._M_iter_list._Invalidate_all();
   }
   
   _Self& operator= (const _Self& __ht) {

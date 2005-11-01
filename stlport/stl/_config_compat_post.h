@@ -1,4 +1,4 @@
-//==========================================
+/*========================================== */
 #if 1 /* def _STLP_3_COMPATIBILITY */
 
 # define __SGI_STL_PORT  _STLPORT_VERSION
@@ -38,7 +38,7 @@
 # define _STLP_USING_NAMESPACE_BUG
 #endif
 
-// provide a uniform way to access full funclionality
+/* provide a uniform way to access full funclionality */
 # define __slist__  __FULL_NAME(slist)
 # define __map__  __FULL_NAME(map)
 # define __multimap__  __FULL_NAME(multimap)

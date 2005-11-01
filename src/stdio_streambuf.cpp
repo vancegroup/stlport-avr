@@ -91,9 +91,9 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
     _STLP_VENDOR_CSTD::fgetpos(_M_file, &pos);
     // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
     // of a primitive type
-#if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
+#if (defined (__GLIBC__) && ((__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))))
     return pos_type((streamoff)pos.__pos);
-#elif defined(__ISCPP__) || defined(__MVS__) || (__OS400__)
+#elif defined (__ISCPP__) || defined (__MVS__) || defined (__OS400__)
     return pos_type(pos.__fpos_elem[ 0 ]);
 #elif defined (__EMX__)
     return pos_type((streamoff)pos._pos);

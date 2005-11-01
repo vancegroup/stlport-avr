@@ -23,6 +23,7 @@ are looked for in /usr/include/3.3.1. Is it a STLport bug?
 Q3.1 Do I need to build library to use STLport?
 Q3.2 During library compilation with MS VC++ 6.0 I see following error report:...
 Q3.3 Does anybody success in building STLport on OS Y with compiler K n.n?
+Q3.4 Does STLport support cross-compilation?
 
 Q4 Installation
 
@@ -32,7 +33,7 @@ libs into /usr/local/lib?
 
 Q5 Bug report
 
-Q5.0 I am found a bug. How I can report about it?
+Q5.0 I found a bug, how can I report about it?
 
 Q6 Design
 
@@ -40,6 +41,9 @@ Q6.0 In STLport present files like locale.h, setjmp.h, stdlib.h, etc.,
 that do nothing except include native headers. Why this files present in STLport?
 Q6.1 Is STLport a replacement for headers and libraries that shipout
 with compiler?
+Q6.2 My tool detect memory leaks in application with STLport. Is this leak
+from STLport?
+
                            Answers
 
 ========================================================================
@@ -54,6 +58,13 @@ ISO/IEC 14882:2003(E).
 Q1.1 What is benefits from using STLport?
 
 A1.1
+  - For multiplatform/multicompilers project a coherent Standard library
+implementation.
+  - An easy to use STL safe mode detecting bad use of containers and
+iterators.
+  - Some original optimizations: template expression for string
+concatenation, short string optimization, move semantic for STL containers
+combination like vector of vector, an efficient std::allocator.
 
 ========================================================================
 
@@ -94,7 +105,7 @@ linkage. This issues should be taken into account both within STL library and
 during library usage. In common you can't use both implementation
 in the same namespace. So you should separate STL implementations into
 different namespaces. But due to absent of compilers that has full-featured
-support of Argument Dependent Lookup (ADL) (aka Koenig Lookup), you has no
+support of Argument Dependent Lookup (ADL) (aka Koenig Lookup), you have no
 possibilty to select one or another implementation.
 
 ADL problem.
@@ -201,15 +212,14 @@ void gee()
 }
 
 Now build library from a.cpp with string implementation Impl1;
-than build application with b.cpp that use string implementation Impl2,
-and link with mentioned above library. Compiler will pass. Linker may be
-pass too. But you application will crash (or randomly carash) either on
+then build application with b.cpp that use string implementation Impl2,
+and link with mentioned above library. Compiler will pass. Linker may 
+pass too. But your application will crash (or randomly crash) either on
 call a.push, or on assignment _str = s. This is evident here, but not
 evident in real applications.
 
 The conclusion is: "Using Wrapper mode is very hard and we remove support
-for it". If you still want to play in mine picker, do it at you own risk
-and don't disturb us.
+for it".
 
 ========================================================================
 
@@ -217,7 +227,7 @@ Q2.4 When I switch to STLport in my application, I get errors. Is STLport
 so bad?
 
 A2.4 Before you post such message, please, check the STLport WHITHOUT
-YOU errors:
+YOUR errors:
   - build STLport library
   - build STLport unit tests
   - run STLport unit tests
@@ -226,12 +236,10 @@ build instructions report (in most cases you definitely should reread
 instructions and check that you correctly unpack archive in case you see
 'file not found' message). Build instructions you can found in files
 INSTALL, doc/README.*, build/README*, build/test/unit/README*.
-If you sure, write problem description
-http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID6&conf=DCConfID1
-(for stable, fixed release) or here
-http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID5&conf=DCConfID1
-(for betas). Don't foget to describe you operational environment, compiler
-version and STLport version.
+If you sure, submit bug report here:
+https://sourceforge.net/projects/stlport
+Don't forget to describe you operational environment, compiler version and
+STLport version.
 
 ========================================================================
 
@@ -244,7 +252,8 @@ Package maintainers can use any path by own taste---we can't satisfy
 variety of distributions/packages.
 
 So you can:
- - fix path in stlport sources (for you own needs)
+ - fix path in stlport administration config file stlport/stl/_site_config.h, 
+   see _STLP_NATIVE_INCLUDE_PATH macro and related.
  - make request to package maintainer
  - build and install compiler
 
@@ -266,7 +275,7 @@ C:\Program Files\Microsoft SDK\Include\.\winbase.h(1130) : error C2733: second C
 C:\Program Files\Microsoft SDK\Include\.\winbase.h(1138) : error C2733: second C linkage of overloaded function 'InterlockedExchange' not allowed
         C:\Program Files\Microsoft SDK\Include\.\winbase.h(1135) : see declaration of 'InterlockedExchange'
 
-A3.2 You have SDK installed. Uncomment line
+A3.2 You have a Platform SDK installed. Uncomment line
 #define _STLP_NEW_PLATFORM_SDK 1
 in the file stlport/stl_user_config.h. There is no way to detect SDK
 presence during preprocessor stage.
@@ -276,6 +285,24 @@ presence during preprocessor stage.
 Q3.3 Does anybody success in building STLport on OS S with compiler K n.n?
 
 A3.3 See report about results of regression tests here: build/test/unit/STATUS.
+
+========================================================================
+
+Q3.4 Does STLport support cross-compilation?
+
+A3.4 In case of gcc, use something like following sequence:
+
+  (cd build/lib; ./configure --target=${CROSSTARGET}; \
+     export PATH=${BASECROSS}/bin:${PATH}; make -f gcc.mak install-release-shared)
+
+where CROSSTARGET is gcc's cross prefix (something like 'i586-pc-linux-gnu',
+if C++ cross compiler named as 'i586-pc-linux-gnu-c++'), BASECROSS is base of
+cross-compiler's location (i.e. ${BASECROSS}/bin in case above is a location
+of 'i586-pc-linux-gnu-c++').
+
+In case of non-gcc crosses, we need hands-made target system identification.
+The sample of such compiler (supported by STLport) is MetroWerks Codewarrior
+for Novell Netware (mwccnlm).
 
 ========================================================================
 
@@ -298,19 +325,33 @@ Sometimes we will think about 'make install', but not now.
 
 ========================================================================
 
-Q5.0 I am found a bug. How I can report about it?
+Q5.0 I found a bug, how I can report about it?
 
 A5.0 
   0. Ensure that this is a really bug (standard violation, incorrect
-     behaviour with correct usage);
-  1. Ensure that bug is in STLport, not in your code;
-  2. Write short test that demonstrate this bug;
-  3. Write bug description and test here
-     http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID6&conf=DCConfID1
-     (for stable, fixed release) or here
-     http://www.stlport.com/cgi-bin/forum/dcboard.cgi?az=list&forum=DCForumID5&conf=DCConfID1
-     (for betas). Don't foget to describe you operational environment, compiler
-     version and STLport version.
+     behaviour with correct usage).
+  1. Ensure that bug is in STLport, not in your code (you can use _STLP_DEBUG
+     for that, see stlport/stl_user_config.h).
+  2. Ensure that you correctly build STLport---build and run unit tests
+     (build/test/unit) first with default settings, then with your settings
+     (if you change ones).
+  3. Write short test that demonstrate this bug.
+  4. Make sure that this test case really new, i.e. not covered by unit tests
+     (test/unit/*).
+  5. Compare your results with reported runs of unit tests (build/test/unit/STATUS).
+  6. Write bug description and test here
+     
+     https://sourceforge.net/projects/stlport
+
+     DON'T FORGET TO DESCRIBE:
+
+       - OPERATIONAL ENVIRONMENT
+       - COMPILER VERSION
+       - STLPORT VERSION
+       - RESULT OF UNIT TESTS
+
+     Keep in mind, that bug MUST be reproduced by other people, so give
+     enough information (but compactly, give only essential information).
 
 ========================================================================
 
@@ -343,3 +384,66 @@ A6.1 In general no. In any case C++ language support from compiler is required
 for STLport (operators new, delete, RTTI, exceptions support). STLport also
 use 'native' headers and libraries to take interface to system functions and
 variables.
+
+========================================================================
+
+Q6.2 My tool detect memory leaks in application with STLport. Is this leak
+from STLport?
+
+A6.2 In most cases this are 'pseudo memory leaks' that some tools wrongly
+supports.
+
+In the default compile of STLport, the node allocator is used to allocate
+internal memory. The node allocator works by pre-allocating a large chunk of
+memory and handing out small memory blocks out. The memory chunk is not freed
+during running an application that uses STLport (i.e. it don't returned to system,
+but reused inside application). See also http://www.sgi.com/tech/stl/alloc.html
+
+There are tools like BoundsChecker, Purify or Valgrind that check for memory
+leaks, for memory that isn't freed when no longer used. These tools may report
+false memory leaks when one uses STLport's node allocator. The memory chunk is
+normally freed at application end, but the memory checkers usually report memory
+leaks before that point. Another memory problem might be reported when you use
+shared libraries (e.g. DLL, this problem specific for Windows DLL model) that
+uses STLport internally and are statically link to it. If memory is allocated in
+a dll and released in an other then the STLport node allocator will keep the
+released memory for a future use. If you do not use this memory then your
+application global memory consumtion will grow until the appli crash even if there
+is no realy memory leak. This is why you should always use a coherent configuration
+everything in dll or everything in static lib.
+
+There are ways to remove the pseudo memory leaks (since the memory is properly
+freed at the end of the program, the leaks are just pseudo-ones). You could use
+another allocator that is used in STLport. Open the file
+"./stlport/stl/_site_config.h" and uncomment either one of the following:
+
+
+   _STLP_USE_NEWALLOC   enables a simple allocator that uses "new/delete"
+   _STLP_USE_MALLOC     enables a simple allocator that uses "malloc/free"
+
+The new/delete allocator has the advantage of giving an entry point to track
+memory starvation, see set_new_handler in your compiler doc or the C++ Standard
+for more information.
+
+Alternatively you can define the following symbol, just uncomment it in
+"./stlport/stl/_site_config.h".
+
+   _STLP_LEAKS_PEDANTIC
+
+The symbol forces freeing all memory chunks. Also see the comments around the
+symbol in the config file.
+
+Note that you have to recompile STLport AND your application and all of your
+dependent libraries if you make any change to the file!
+
+There are also some defines that help in debugging memory problems in STLport.
+In _STLP_DEBUG mode, just also define the following symbols, either in
+"./stlport/stl_user_config.h" or in your project settings:
+
+   _STLP_DEBUG_ALLOC
+   _STLP_DEBUG_UNINITIALIZED
+
+You don't need to rebuild STLport for these options, but you have to rebuild
+your application and all of your dependent libraries if you make any change to
+the file.
+

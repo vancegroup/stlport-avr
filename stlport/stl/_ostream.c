@@ -29,20 +29,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-// Helper functions for istream<>::sentry constructor.
-template <class _CharT, class _Traits>
-bool _M_init(basic_ostream<_CharT, _Traits>& __str) {
-  if (__str.good()) {
-    // boris : check if this is needed !
-    if (!__str.rdbuf())
-      __str.setstate(ios_base::badbit);
-    if (__str.tie())
-      __str.tie()->flush();
-    return __str.good();
-  } else
-    return false;
-}
-
 //----------------------------------------------------------------------
 // Definitions of non-inline member functions.
 

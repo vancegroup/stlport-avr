@@ -30,14 +30,12 @@
 _STLP_BEGIN_NAMESPACE
 
 // strstreambuf constructor, destructor.
-
 strstreambuf::strstreambuf(streamsize initial_capacity)
    : _M_alloc_fun(0), _M_free_fun(0),
      _M_dynamic(true), _M_frozen(false), _M_constant(false) {
-  typedef char __static_assert[sizeof(streamsize) > sizeof(size_t) ||
-                               ((sizeof(streamsize) == sizeof(size_t)) && (streamsize(-1) > 0))];
-  size_t n = __STATIC_CAST(size_t, (min)(__STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()),
-                                         (max)(initial_capacity, streamsize(16))));
+  size_t n = (sizeof(streamsize) > sizeof(size_t)) ? __STATIC_CAST(size_t, (min)(__STATIC_CAST(streamsize, (numeric_limits<size_t>::max)()),
+                                                                                 (max)(initial_capacity, streamsize(16))))
+                                                   : __STATIC_CAST(size_t, (max)(initial_capacity, streamsize(16)));
 
   char* buf = _M_alloc(n);
   if (buf) {

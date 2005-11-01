@@ -174,7 +174,7 @@ void *_Pthread_alloc_per_thread_state<_Max_size>
     __obj * volatile * __my_free_list;
     __obj * __result;
     __obj * __current_obj, * __next_obj;
-    int __i;
+    size_t __i;
 
     if (1 == __nobjs)  {
         return(__chunk);
@@ -185,7 +185,7 @@ void *_Pthread_alloc_per_thread_state<_Max_size>
     /* Build free list in chunk */
       __result = (__obj *)__chunk;
       *__my_free_list = __next_obj = (__obj *)(__chunk + __n);
-      for (__i = 1; ; __i++) {
+      for (__i = 1; ; ++__i) {
         __current_obj = __next_obj;
         __next_obj = (__obj *)((char *)__next_obj + __n);
         if (__nobjs - 1 == __i) {

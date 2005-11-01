@@ -78,26 +78,43 @@ using _STLP_VENDOR_EXCEPT_STD::exception;
 using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #    endif
 
-#    if !defined(_STLP_NO_USING_FOR_GLOBAL_FUNCTIONS)
+#    if !defined (_STLP_NO_USING_FOR_GLOBAL_FUNCTIONS)
 // fbp : many platforms present strange mix of
 // those in various namespaces
-#      if !defined(_STLP_VENDOR_UNEXPECTED_STD)
+#      if !defined (_STLP_VENDOR_UNEXPECTED_STD)
 #        define _STLP_VENDOR_UNEXPECTED_STD _STLP_VENDOR_EXCEPT_STD
+#      else
+/* The following definitions are for backward compatibility as _STLP_VENDOR_TERMINATE_STD
+ * and _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD has been introduce after _STLP_VENDOR_UNEXPECTED_STD
+ * and _STLP_VENDOR_UNEXPECTED_STD was the macro used in their place before that intriduction.
+ */
+#        if !defined (_STLP_VENDOR_TERMINATE_STD)
+#          define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_UNEXPECTED_STD
+#        endif
+#        if !defined (_STLP_VENDOR_UNCAUGHT_EXCEPTION_STD)
+#          define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_UNEXPECTED_STD
+#        endif
+#      endif
+#      if !defined (_STLP_VENDOR_TERMINATE_STD)
+#        define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_EXCEPT_STD
+#      endif
+#      if !defined (_STLP_VENDOR_UNCAUGHT_EXCEPTION_STD)
+#        define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_EXCEPT_STD
 #      endif
 // weird errors
 #      if (!defined (__BORLANDC__)) || (defined (__STD_EXCEPTION) && defined (__RWSTD_EXCEPTION_SEEN) && defined ( _STLP_DONT_POP_HEADER_ID))
-#        if !defined(_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
+#        if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected;
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected_handler;
 using _STLP_VENDOR_UNEXPECTED_STD::set_unexpected;
 #        endif
-using _STLP_VENDOR_UNEXPECTED_STD::terminate;
-using _STLP_VENDOR_UNEXPECTED_STD::terminate_handler;
-using _STLP_VENDOR_UNEXPECTED_STD::set_terminate;
+using _STLP_VENDOR_TERMINATE_STD::terminate;
+using _STLP_VENDOR_TERMINATE_STD::terminate_handler;
+using _STLP_VENDOR_TERMINATE_STD::set_terminate;
 #      endif
 
 #      if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT) 
-using _STLP_VENDOR_UNEXPECTED_STD::uncaught_exception;
+using _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD::uncaught_exception;
 #      endif
 #    endif /* !_STLP_NO_USING_FOR_GLOBAL_FUNCTIONS */
 _STLP_END_NAMESPACE

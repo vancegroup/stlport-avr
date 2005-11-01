@@ -1,4 +1,4 @@
-# Time-stamp: <05/03/02 18:37:16 ptr>
+# Time-stamp: <05/09/09 21:56:22 ptr>
 # $Id$
 
 .SUFFIXES:
@@ -20,10 +20,14 @@ all-shared:	release-shared	dbg-shared	stldbg-shared
 -include ${RULESBASE}/config.mak
 # define what make clone we use
 include ${RULESBASE}/make.mak
+ifndef OSNAME
 # identify OS and build date
 include ${RULESBASE}/$(USE_MAKE)/sysid.mak
-# OS-specific definitions, like ar, ln, install, etc.
-include ${RULESBASE}/$(USE_MAKE)/$(OSNAME)/sys.mak
+endif
+# OS-specific definitions, like ln, install, etc. (guest host)
+include ${RULESBASE}/$(USE_MAKE)/$(BUILD_OSNAME)/sys.mak
+# target OS-specific definitions, like ar, etc.
+include ${RULESBASE}/$(USE_MAKE)/$(OSNAME)/targetsys.mak
 # compiler, compiler options
 include ${RULESBASE}/$(USE_MAKE)/$(COMPILER_NAME).mak
 # rules to make dirs for targets
@@ -38,7 +42,9 @@ include ${RULESBASE}/$(USE_MAKE)/$(OSNAME)/extern.mak
 # build rules (including output catalogs)
 include ${RULESBASE}/$(USE_MAKE)/targets.mak
 # dependency
+ifneq ($(OSNAME),windows)
 include ${RULESBASE}/$(USE_MAKE)/depend.mak
+endif
 
 # general clean
 include ${RULESBASE}/clean.mak

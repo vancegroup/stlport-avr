@@ -256,12 +256,18 @@ public:
   _BString substr(size_type __pos = 0, size_type __n = _BString::npos) const {return _M_get_storage().substr(__pos, __n);}
 
   //compare
-  int compare(const _BString& __s) const {return _M_get_storage().compare(__s);}
-  int compare(size_type __pos1, size_type __n1, const _Self& __s) const {return _M_get_storage().compare(__pos1, __n1, __s);}
-  int compare(size_type __pos1, size_type __n1, const _Self& __s, size_type __pos2, size_type __n2) const {return _M_get_storage().compare(__pos1, __n1, __s, __pos2, __n2);}
-  int compare(const _CharT* __s) const {return _M_get_storage().compare(__s);}
-  int compare(size_type __pos1, size_type __n1, const _CharT* __s) const {_M_get_storage().compare(__pos1, __n1, __s);}
-  int compare(size_type __pos1, size_type __n1, const _CharT* __s, size_type __n2) const {return _M_get_storage().compare(__pos1, __n1, __s, __n2);}
+  int compare(const _BString& __s) const
+  { return _M_get_storage().compare(__s); }
+  int compare(size_type __pos1, size_type __n1, const _Self& __s) const
+  { return _M_get_storage().compare(__pos1, __n1, __s); }
+  int compare(size_type __pos1, size_type __n1, const _Self& __s, size_type __pos2, size_type __n2) const
+  { return _M_get_storage().compare(__pos1, __n1, __s, __pos2, __n2); }
+  int compare(const _CharT* __s) const
+  { return _M_get_storage().compare(__s); }
+  int compare(size_type __pos1, size_type __n1, const _CharT* __s) const
+  { return _M_get_storage().compare(__pos1, __n1, __s); }
+  int compare(size_type __pos1, size_type __n1, const _CharT* __s, size_type __n2) const
+  { return _M_get_storage().compare(__pos1, __n1, __s, __n2); }
 
   //Returns the underlying basic_string representation of the template expression
   //The non const method will always initialise it.

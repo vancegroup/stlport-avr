@@ -120,14 +120,19 @@ PODType* _Stl_copy_array(const PODType* array, size_t N) {
 }
 
 locale ios_base::imbue(const locale& loc) {
+  if (loc._M_impl != _M_locale._M_impl) {
     locale previous = _M_locale;
     _M_locale = loc;
     _M_invoke_callbacks(imbue_event);
     return previous;
+  }
+  else {
+    _M_invoke_callbacks(imbue_event);
+    return _M_locale;
+  }
 }
 
-int _STLP_CALL ios_base::xalloc()
-{
+int _STLP_CALL ios_base::xalloc() {
   static int _S_index = 0;
 #if defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK)
   return _STLP_ATOMIC_INCREMENT(&_S_index);

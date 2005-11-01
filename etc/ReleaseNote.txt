@@ -1,0 +1,54 @@
+5.0:
+
+- Major modifications
+
+	* No more wrapper mode: you can use STLport iostreams or no iostreams
+	at all.
+
+	* _STLP_NO_CUSTOM_IO now also hide basic_string implementation
+
+	* internal namespace schema has been modified, see doc folder for additionnal
+	informations.
+
+- Enhancements
+
+	* Support of many modern C++ compilers and platforms
+	  - gcc 3.4.0 and later
+	  - MSVC .Net 2002, 2003 and MSVC 2005 Beta
+	  - Windows CE 
+	see build/test/unit/STATUS for a complete list of tested platforms/compilers
+
+	* Move semantic: vector or deque of any other STL containers are using
+	move semantic when resized or modified rather than copy.
+
+	* New checks in safe STL mode like null pointer or check of iterator range
+	pass to container constructors.
+
+	* Expression template for string concatenation operations (available
+	throught the _STLP_USE_TEMPLATE_EXPRESSION config option)
+
+	* Implementation of the short string optimization trick, basic_string have
+	a small static buffer in this case.
+
+	* STL containers vector, deque, list and slist pointer specialization to
+	limit code bloats (see _STLP_USE_PTR_SPECIALIZATIONS on config file)
+
+	* Use of boost type_traits rather than internal equivalent when requested
+	(see _STLP_USE_BOOST_SUPPORT in config file)
+
+	* set/multiset, or map/multimap iterators cannot be compared anymore.
+
+	* unordered_set, unordered_multiset, unordered_map, unordered_multimap hash
+	containers implementation specified in the TR1 document.
+
+	* Thanks to the _STLP_LEAKS_PEDANTIC config option you can ask STLport to
+	clean its memory pool before being unloaded, useful to only detect real
+	memory leak problems.
+
+	* Creation of configuration scripts to make STLport configuration easier.
+
+	* Improvment of some algorithm like search_n or stable_sort.
+
+	* Ported to 64 bits platforms.
+
+	* Large file ( > 4 Go) stream support on Win32 platform.

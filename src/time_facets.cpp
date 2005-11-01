@@ -71,6 +71,13 @@ void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   table._M_am_pm[0] = _Locale_am_str(time);
   table._M_am_pm[1] = _Locale_pm_str(time);
   table._M_time_format = _Locale_t_fmt(time);
+  if ( table._M_time_format == "%T" ) {
+    table._M_time_format = "%H:%M:%S";
+  } else if ( table._M_time_format == "%r" ) {
+    table._M_time_format = "%I:%M:%S %p";
+  } else if ( table._M_time_format == "%R" ) {
+    table._M_time_format = "%H:%M";
+  }
   table._M_date_format = _Locale_d_fmt(time);
   table._M_date_time_format = _Locale_d_t_fmt(time);
   table._M_long_date_format = _Locale_long_d_fmt(time);

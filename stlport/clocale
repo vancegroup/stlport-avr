@@ -17,7 +17,7 @@
 #  define _STLP_CLOCALE
 
 # ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID  0x108
+#  define _STLP_OUTERMOST_HEADER_ID  0x109
 #  include <stl/_prolog.h>
 # endif
 
@@ -41,7 +41,7 @@ _STLP_END_NAMESPACE
 
 #endif /* _STLP_NO_LOCALE_SUPPORT */
 
-# if (_STLP_OUTERMOST_HEADER_ID ==  0x108 )
+# if (_STLP_OUTERMOST_HEADER_ID ==  0x109 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
 # endif

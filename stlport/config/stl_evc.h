@@ -34,6 +34,11 @@
 // This is defined for all platforms using Windows CE
 # define _STLP_WCE
 
+// Ensure _DEBUG is defined.
+# if defined(DEBUG) && !defined(_DEBUG)
+#  define _DEBUG
+# endif
+
 // inherit all msvc6 options
 # include <config/stl_msvc.h>
 
@@ -45,8 +50,7 @@
 // we don't have a static native runtime library
 # undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 
-// no *f and *l math functions
-# define _STLP_NO_LONG_DOUBLE
+// no *f and *l math functions available
 # define _STLP_NO_VENDOR_MATH_F
 # define _STLP_NO_VENDOR_MATH_L
 
@@ -110,11 +114,6 @@
 #   define __PLACEMENT_NEW_INLINE
 #  endif
 
-// Ensure _DEBUG is defined.
-# if defined(DEBUG) && !defined(_DEBUG)
-#  define _DEBUG
-# endif
-
 // threads
 # undef _REENTRANT
 # define _REENTRANT
@@ -143,9 +142,18 @@
 
 /*
  * eMbedded Visual C++ .NET specific settings
+ *
+ * Helper macros for including the native headers in cases where a file with
+ * the same name also exists in the STLport include folder. The idea behind
+ * this is that we first go up one directory and then down into a dir that
+ * is only present in the native install but not in STLport.
+ *
+ * Note: there is no way for us to distinguish between the emulator and a
+ * real x86 target platform, therefore you need to set this yourself if you
+ * are using a real x86 platform. Also note that 'x86' is defined itself,
+ * too, so you will probably need to use '../X86' instead.
  */
-#ifdef _STLP_WCE_NET
-// include headers for ARM and emulator
+#if defined(_STLP_WCE_NET) && !defined(_STLP_NATIVE_INCLUDE_PATH)
 #  if defined (_X86_)
 #    define _STLP_NATIVE_INCLUDE_PATH ../Emulator
 #  elif defined (_ARM_)
@@ -183,7 +191,7 @@
 #  else
 #    error Unknown SDK.
 #  endif
-#endif /* _STLP_WCE_NET */
+#endif
 
 /*
  * eMbedded Visual C++ 3.0 specific settings

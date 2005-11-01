@@ -131,7 +131,7 @@ namespace CPPUNIT_NS
 #endif
 #define CPPUNIT_TEST_EXCEPTION(X,Y) if(shouldRunThis(in_name, className, #X, invert)) {progress(className, #X);}
 #define CPPUNIT_TEST_SUITE_END() }
-#define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local;
+#define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local
 
 #define CPPUNIT_CHECK(X) if(!(X)){ TestCase::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__); }
 #define CPPUNIT_ASSERT(X) if(!(X)){ TestCase::error("CPPUNIT_ASSERT", #X, __FILE__, __LINE__); return; }

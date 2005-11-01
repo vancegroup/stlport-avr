@@ -31,7 +31,7 @@
 #  include <cstddef>
 #endif
 
-#if !defined (_STLP_DEBUG_H) && (defined  (_STLP_DEBUG) || defined (_STLP_ASSERTIONS))
+#if !defined (_STLP_DEBUG_H) && (defined(_STLP_DEBUG) || defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG_ALLOC))
 #  include <stl/debug/_debug.h>
 #endif
 
@@ -423,7 +423,14 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // to refer to a template member of a dependent type.
 
 template <class _Tp>
-class allocator {
+class allocator 
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+/* A small helper struct to recognize STLport allocator implementation
+ * from any user specialization one.
+ */
+  : public __stlport_class<allocator<_Tp> > 
+#endif
+{
 public:
 
   typedef _Tp        value_type;
@@ -451,12 +458,27 @@ public:
     if (__n > max_size()) {
       __THROW_BAD_ALLOC;
     }
-    return __n != 0 ? __REINTERPRET_CAST(value_type*,__sgi_alloc::allocate(__n * sizeof(value_type))) : 0;
+    if (__n != 0) {
+      _Tp* __ret = __REINTERPRET_CAST(value_type*,__sgi_alloc::allocate(__n * sizeof(value_type)));
+#ifdef _STLP_DEBUG_UNINITIALIZED
+      if (__ret != 0) {
+        memset((char*)__ret, _STLP_SHRED_BYTE, __n * sizeof(value_type));
+      }
+#endif
+      return __ret;
+    }
+    else
+      return 0;
   }
   // __p is permitted to be a null pointer, only if n==0.
   void deallocate(pointer __p, size_type __n) {
     _STLP_ASSERT( (__p == 0) == (__n == 0) )
-    if (__p != 0) __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
+    if (__p != 0) {
+#ifdef _STLP_DEBUG_UNINITIALIZED
+      memset((char*)__p, _STLP_SHRED_BYTE, __n * sizeof(value_type));
+#endif
+      __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
+    }
   }
   // backwards compatibility
   void deallocate(pointer __p) const {  if (__p != 0) __sgi_alloc::deallocate((void*)__p, sizeof(value_type)); }
@@ -598,17 +620,15 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
 struct __type_traits<allocator<_Tp> > {
-  typedef __true_type   has_trivial_default_constructor;
-  typedef __true_type   has_trivial_copy_constructor;
-  typedef __true_type   has_trivial_assignment_operator;
-  typedef __true_type   has_trivial_destructor;
-  typedef __false_type  is_POD_type;
+  typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
+  //The default allocator implementation which is recognize thanks to the
+  //__stlport_class inheritance is the stateless object so:
+  typedef _STLportAlloc has_trivial_default_constructor;
+  typedef _STLportAlloc has_trivial_copy_constructor;
+  typedef _STLportAlloc has_trivial_assignment_operator;
+  typedef _STLportAlloc has_trivial_destructor;
+  typedef _STLportAlloc is_POD_type;
 };
-
-template <class _Value, class _Tp, class _Alloc>
-struct __move_traits<_STLP_alloc_proxy<_Value, _Tp, _Alloc> > :
-  __move_traits_help2<_Value, _Alloc>
-{};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE

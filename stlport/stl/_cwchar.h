@@ -41,7 +41,7 @@ typedef _BSD_WINT_T_ wint_t;
 #endif
 
 #if (defined(__OpenBSD__) || defined(__FreeBSD__)) && defined(__GNUC__) && !defined(_GLIBCPP_HAVE_MBSTATE_T)
-#  define __mbstate_t_defined // mbstate_t defined in native <cwchar>, so not defined in C!
+#  define __mbstate_t_defined /* mbstate_t defined in native <cwchar>, so not defined in C! */
 #endif
 
 #if !defined (_STLP_USE_NO_IOSTREAMS) && defined (_STLP_NO_NATIVE_MBSTATE_T) && !defined (_STLP_NO_MBSTATE_T) && !defined (_MBSTATE_T) && !defined (__mbstate_t_defined)
@@ -51,7 +51,7 @@ typedef _BSD_WINT_T_ wint_t;
 
 #ifdef _STLP_USE_OWN_MBSTATE_T
 
-// to be compatible across different SUN platforms
+/* to be compatible across different SUN platforms */
 #  ifdef __sun
 #    define __stl_mbstate_t __mbstate_t
 #  endif
@@ -102,7 +102,7 @@ _STLP_END_NAMESPACE
 #if !defined (_STLP_NO_WCHAR_T)
 #  ifndef WCHAR_MIN
 #    define WCHAR_MIN 0
-// SUNpro has some bugs with casts. wchar_t is size of int there anyway.
+/* SUNpro has some bugs with casts. wchar_t is size of int there anyway. */
 #    if defined (__SUNPRO_CC) || defined (__DJGPP)
 #      define WCHAR_MAX (~0)
 #    else
@@ -111,10 +111,12 @@ _STLP_END_NAMESPACE
 #  endif
 #endif
 
-//# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-//_STLP_BEGIN_NAMESPACE  
-//using namespace _STLP_VENDOR_CSTD;
-//_STLP_END_NAMESPACE
-//#endif /* _STLP_IMPORT_VENDOR_CSTD */
+/*
+ * # if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
+ * _STLP_BEGIN_NAMESPACE  
+ * using namespace _STLP_VENDOR_CSTD;
+ * _STLP_END_NAMESPACE
+ * #endif 
+ */ /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif /* _STLP_CWCHAR_H */

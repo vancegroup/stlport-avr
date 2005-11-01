@@ -17,7 +17,7 @@
 # define _STLP_CLIMITS
 
 # ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID 0x107
+#  define _STLP_OUTERMOST_HEADER_ID 0x108
 #  include <stl/_prolog.h>
 # endif
 
@@ -33,7 +33,7 @@
 #  endif
 # endif
 
-# if (_STLP_OUTERMOST_HEADER_ID ==  0x107 )
+# if (_STLP_OUTERMOST_HEADER_ID ==  0x108 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
 # endif

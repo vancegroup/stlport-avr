@@ -13,48 +13,51 @@
  *
  */
 
-// Workaround for a "misbehaviour" when compiling resource scripts using
-// eMbedded Visual C++. The standard .rc file includes windows header files,
-// which in turn include stdarg.h, which results in warnings and errors
+/* Workaround for a "misbehaviour" when compiling resource scripts using
+ * eMbedded Visual C++. The standard .rc file includes windows header files,
+ * which in turn include stdarg.h, which results in warnings and errors
+ */
 #if !defined(RC_INVOKED)
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
-#  define _STLP_OUTERMOST_HEADER_ID 0x264
-#  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x264) && ! defined (_STLP_DONT_POP_HEADER_ID)
-#  define _STLP_DONT_POP_HEADER_ID
-# endif
-
-# if ! defined (_STLP_WINCE)
-# include _STLP_NATIVE_C_HEADER(stdio.h)
-
-#if defined (__SUNPRO_CC) && !defined (_STRUCT_FILE)
-# define _STRUCT_FILE
-#endif
-
-# ifdef __MWERKS__
-#  undef stdin
-#  undef stdout
-#  undef stderr
-
-#  define stdin   (&_STLP_VENDOR_CSTD::__files[0])
-#  define stdout  (&_STLP_VENDOR_CSTD::__files[1])
-#  define stderr  (&_STLP_VENDOR_CSTD::__files[2])
-# endif
-
-# endif /* WINCE */
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x264)
-#  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#  ifndef _STLP_OUTERMOST_HEADER_ID
+#    define _STLP_OUTERMOST_HEADER_ID 0x264
+#    include <stl/_prolog.h>
+#  elif (_STLP_OUTERMOST_HEADER_ID == 0x264) && !defined (_STLP_DONT_POP_HEADER_ID)
+#    define _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+
+#  if !defined (_STLP_WINCE)
+#    include _STLP_NATIVE_C_HEADER(stdio.h)
+
+#    if defined (__SUNPRO_CC) && !defined (_STRUCT_FILE)
+#      define _STRUCT_FILE
+#    endif
+
+#    if defined(__MWERKS__) && !defined(N_PLAT_NLM)
+#      undef stdin
+#      undef stdout
+#      undef stderr
+
+#      define stdin   (&_STLP_VENDOR_CSTD::__files[0])
+#      define stdout  (&_STLP_VENDOR_CSTD::__files[1])
+#      define stderr  (&_STLP_VENDOR_CSTD::__files[2])
+#    endif
+
+#  endif /* WINCE */
+
+#  if (_STLP_OUTERMOST_HEADER_ID == 0x264)
+#    if !defined (_STLP_DONT_POP_HEADER_ID)
+#      include <stl/_epilog.h>
+#      undef  _STLP_OUTERMOST_HEADER_ID
+#    else
+#      undef  _STLP_DONT_POP_HEADER_ID
+#    endif
+#  endif
 
 #endif /* RC_INVOKED */
 
-// Local Variables:
-// mode:C++
-// End:
+/*
+Local Variables:
+mode:C++
+End:
+*/

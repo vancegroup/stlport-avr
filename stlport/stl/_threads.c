@@ -46,13 +46,12 @@ _STLP_BEGIN_NAMESPACE
 
 # if (_STLP_STATIC_TEMPLATE_DATA > 0)
 
-#  ifdef _STLP_THREADS
-#  if !defined(_STLP_ATOMIC_EXCHANGE) && (defined(_STLP_PTHREADS) || defined(_STLP_UITHREADS) || defined(_STLP_OS2THREADS) || defined(_STLP_USE_PTHREAD_SPINLOCK))
+#  if defined (_STLP_USE_SWAP_LOCK_STRUCT)
 template<int __dummy>
 _STLP_STATIC_MUTEX
 _Swap_lock_struct<__dummy>::_S_swap_lock _STLP_MUTEX_INITIALIZER;
+#    undef _STLP_USE_SWAP_LOCK_STRUCT
 #  endif
-#  endif //_STLP_THREADS
 
 #  ifndef _STLP_USE_PTHREAD_SPINLOCK
 template <int __inst>
@@ -64,9 +63,10 @@ unsigned _STLP_mutex_spin<__inst>::__last = 0;
 
 # else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
-#  if defined(_STLP_PTHREADS) || defined(_STLP_UITHREADS) || defined(_STLP_OS2THREADS)
+#  if defined (_STLP_USE_SWAP_LOCK_STRUCT)
 __DECLARE_INSTANCE(_STLP_STATIC_MUTEX, _Swap_lock_struct<0>::_S_swap_lock, 
                    _STLP_MUTEX_INITIALIZER  );
+#    undef _STLP_USE_SWAP_LOCK_STRUCT
 #  endif /* _STLP_PTHREADS */
 
 #  ifndef _STLP_USE_PTHREAD_SPINLOCK

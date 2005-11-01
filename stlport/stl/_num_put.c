@@ -78,7 +78,7 @@ __put_float(__iostring &__str, _OutputIter __oi,
             ios_base& __f, wchar_t __fill,
             wchar_t __decimal_point, wchar_t __sep, 
             size_t __group_pos, const string& __grouping) {
-  const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
+  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
 
   __iowstring __wbuf;
   __convert_float_buffer(__str, __wbuf, __ct, __decimal_point);
@@ -124,7 +124,7 @@ _M_do_put_float(_OutputIter __s, ios_base& __f,
 
   size_t __group_pos = __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
   
-  const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
 
   return __put_float(__buf, __s, __f, __fill,
                      __np.decimal_point(), __np.thousands_sep(), 
@@ -140,7 +140,7 @@ inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LO
   __iostring __buf;
   __get_floor_digits(__buf, __x);
 
-  const ctype<wchar_t>& __ct = *(ctype<wchar_t>*)__f._M_ctype_facet() ;
+  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
   __convert_float_buffer(__buf, __wbuf, __ct, wchar_t(0), false);
 }
 #endif
@@ -165,7 +165,8 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
     //is larger than ptrdiff_t one.
     typedef char __static_assert[(sizeof(streamsize) > sizeof(ptrdiff_t)) ||
                                  (sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed];
-    ptrdiff_t __pad = __STATIC_CAST(ptrdiff_t, (min) (__STATIC_CAST(streamsize, (numeric_limits<ptrdiff_t>::max)()), __wid - __len));
+    ptrdiff_t __pad = __STATIC_CAST(ptrdiff_t, (min) (__STATIC_CAST(streamsize, (numeric_limits<ptrdiff_t>::max)()),
+                                                      __STATIC_CAST(streamsize, __wid - __len)));
     ios_base::fmtflags __dir = __flg & ios_base::adjustfield;
 
     if (__dir == ios_base::left) {
@@ -202,7 +203,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
               ios_base::fmtflags __flags, wchar_t __fill) {
   locale __loc = __f.getloc();
   //  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
-  const ctype<wchar_t>& __ct = *(const ctype<wchar_t>*)__f._M_ctype_facet();
+  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
 
   wchar_t __xplus  = __ct.widen('+');
   wchar_t __xminus = __ct.widen('-');
@@ -215,7 +216,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   //  const numpunct<wchar_t>& __np = use_facet<numpunct<wchar_t> >(__loc);
   //  const string& __grouping = __np.grouping();
 
-  const numpunct<wchar_t>& __np = *(const numpunct<wchar_t>*)__f._M_numpunct_facet();
+  const numpunct<wchar_t>& __np = *__STATIC_CAST(const numpunct<wchar_t>*, __f._M_numpunct_facet());
   const string& __grouping = __f._M_grouping();
 
   if (!__grouping.empty()) {
@@ -249,7 +250,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   //  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
   //  const string& __grouping = __np.grouping();
 
-  const numpunct<char>& __np = *(const numpunct<char>*)__f._M_numpunct_facet();
+  const numpunct<char>& __np = *__STATIC_CAST(const numpunct<char>*, __f._M_numpunct_facet());
   const string& __grouping = __f._M_grouping();
 
   if (!__grouping.empty()) {
@@ -446,7 +447,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
   //  typedef numpunct<_CharT> _Punct;
   //  const _Punct& __np = use_facet<_Punct>(__loc);
 
-  const numpunct<_CharT>& __np = *(const numpunct<_CharT>*)__f._M_numpunct_facet();
+  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
 
   basic_string<_CharT> __str = __val ? __np.truename() : __np.falsename();
 
@@ -538,7 +539,7 @@ template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__fill*/,
 				     const void* __val) const {
-  const ctype<_CharT>& __c_type = *(const ctype<_CharT>*)__f._M_ctype_facet();
+  const ctype<_CharT>& __c_type = *__STATIC_CAST(const ctype<_CharT>*, __f._M_ctype_facet());
   ios_base::fmtflags __save_flags = __f.flags();
 
   __f.setf(ios_base::hex, ios_base::basefield);

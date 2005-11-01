@@ -26,11 +26,6 @@
 # include "Prefix.h"
 #include "nc_alloc.h"
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_PUSH_BACK_H
-_STLP_INSTRUMENT_FILE();
-# endif
-
 template <class C>
 struct test_push_back
 {
@@ -51,10 +46,5 @@ struct test_push_back
 private:
   const C& original;
 };
-
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif // test_push_back_H_

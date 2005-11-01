@@ -30,10 +30,10 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 template <class _CharT, class _Traits>
 class _Osentry;
-# endif
+#endif
 
 template <class _CharT, class _Traits>
 bool
@@ -154,10 +154,10 @@ public:                         // Buffer positioning and manipulation.
   template <class _CharT, class _Traits>
   class _Osentry {
     typedef _Osentry<_CharT, _Traits> _Self;
-# else
+#else
     class sentry {
       typedef sentry _Self;
-# endif
+#endif
     private:
       basic_ostream<_CharT, _Traits>& _M_str;
       //      basic_streambuf<_CharT, _Traits>* _M_buf;
@@ -169,9 +169,9 @@ public:                         // Buffer positioning and manipulation.
       
       ~sentry() {
         if (_M_str.flags() & ios_base::unitbuf)
-# ifndef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#ifndef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
           if (!_STLP_VENDOR_EXCEPT_STD::uncaught_exception())
-# endif
+#endif
             _M_str.flush();
       }
 
@@ -181,28 +181,41 @@ public:                         // Buffer positioning and manipulation.
       sentry(const _Self& __s) : _M_str(__s._M_str) {}
       _Self& operator=(const _Self&) { return *this; }
     };
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 #  undef sentry
-# else
+#else
   // close basic_ostream class definition here    
 };
-# endif
-  
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#endif
+ 
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_ostream<char, char_traits<char> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Osentry<char, char_traits<char> >;
 #  if !defined (_STLP_NO_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS basic_ostream<wchar_t, char_traits<wchar_t> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Osentry<wchar_t, char_traits<wchar_t> >;
 #  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
+#endif /* _STLP_USE_TEMPLATE_EXPORT */
+
+// Helper functions for istream<>::sentry constructor.
+template <class _CharT, class _Traits>
+bool _M_init(basic_ostream<_CharT, _Traits>& __str) {
+  if (__str.good()) {
+    // boris : check if this is needed !
+    if (!__str.rdbuf())
+      __str.setstate(ios_base::badbit);
+    if (__str.tie())
+      __str.tie()->flush();
+    return __str.good();
+  }
+  else
+    return false;
+}
 
 template <class _CharT, class _Traits>
 inline basic_streambuf<_CharT, _Traits>* _STLP_CALL 
 _M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __St) 
-{
-  return __St.rdbuf();
-}
+{ return __St.rdbuf(); }
 
 // Non-member functions.
 
@@ -220,7 +233,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os, const _CharT* __s) {
   return __os;
 }
 
-# ifdef _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
+#if defined (_STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER)
 // some specializations
 
 inline basic_ostream<char, char_traits<char> >& _STLP_CALL
@@ -259,7 +272,7 @@ operator<<(basic_ostream<char, char_traits<char> >& __os, const unsigned char* _
   return __os;
 }
 
-# else
+#else
 
 // also for compilers who might use that
 template <class _CharT, class _Traits>
@@ -317,7 +330,7 @@ operator<<(basic_ostream<char, _Traits>& __os, const unsigned char* __s) {
   __os._M_put_nowiden(__REINTERPRET_CAST(const char*,__s));
   return __os;
 }
-# endif /* _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER */
+#endif /* _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER */
 
 //----------------------------------------------------------------------
 // basic_ostream manipulators.
@@ -346,7 +359,7 @@ flush(basic_ostream<_CharT, _Traits>& __os) {
 
 _STLP_END_NAMESPACE
 
-#  undef _STLP_MANIP_INLINE
+#undef _STLP_MANIP_INLINE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_ostream.c>

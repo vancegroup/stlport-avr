@@ -27,6 +27,28 @@ ALLOBJS = $(ALLOBJS:cppunit/=)
 	$(COMPILE_cc_STATIC_STLDBG) $(OUTPUT_OPTION_STATIC_STLDBG) $<
 
 #
+# rules for .c --> .o
+#
+
+{../../../test/unit}.c{$(OUTPUT_DIR)}.o:
+	$(COMPILE_c_REL) $(OUTPUT_OPTION) $<
+
+{../../../test/unit}.c{$(OUTPUT_DIR_DBG)}.o:
+	$(COMPILE_c_DBG) $(OUTPUT_OPTION_DBG) $<
+
+{../../../test/unit}.c{$(OUTPUT_DIR_STLDBG)}.o:
+	$(COMPILE_c_DBG) $(OUTPUT_OPTION_STLDBG) $<
+
+{../../../test/unit}.c{$(OUTPUT_DIR_A)}.o:
+	$(COMPILE_c_STATIC_REL) $(OUTPUT_OPTION_STATIC) $<
+
+{../../../test/unit}.c{$(OUTPUT_DIR_A_DBG)}.o:
+	$(COMPILE_c_STATIC_DBG) $(OUTPUT_OPTION_STATIC_DBG) $<
+
+{../../../test/unit}.c{$(OUTPUT_DIR_A_STLDBG)}.o:
+	$(COMPILE_c_STATIC_DBG) $(OUTPUT_OPTION_STATIC_STLDBG) $<
+
+#
 # rules for cppunit/.cpp --> .o
 #
 

@@ -29,8 +29,8 @@
 #  include <cstring>
 #endif
 
-#ifdef __unix
-#  include <sys/types.h>          // For off_t
+#if defined (__unix) || defined (N_PLAT_NLM)
+#  include <sys/types.h>         // For off_t
 #endif /* __unix */
 
 #ifdef __BORLANDC__
@@ -260,14 +260,26 @@ class _STLP_CLASS_DECLSPEC char_traits<wchar_t>
       !defined(_STLP_WCHAR_HPACC_EXCLUDE) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE)
 public:
   static wchar_t* _STLP_CALL move(wchar_t* __dest, const wchar_t* __src, size_t __n) {    
+#    ifndef N_PLAT_NLM
     return wmemmove(__dest, __src, __n);
+#    else
+    return (wchar_t *)memmove((char *)__dest, (const char *)__src, __n * sizeof(wchar_t) );
+#    endif
   }
   
   static wchar_t* _STLP_CALL copy(wchar_t* __dest, const wchar_t* __src, size_t __n) {
+#    ifndef N_PLAT_NLM
     return wmemcpy(__dest, __src, __n);
+#    else
+    wchar_t *tmp = __dest;
+    while ( __n-- != 0 ) {
+      *(__dest++) = *(__src++);
+    }
+    return tmp;
+#    endif
   } 
 
-#    if !defined (__DMC__)
+#    if !defined (__DMC__) && !defined(N_PLAT_NLM)
   static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n) {
     return wmemcmp(__s1, __s2, __n); 
   }
@@ -286,7 +298,14 @@ public:
   }
  
   static wchar_t* _STLP_CALL assign(wchar_t* __s, size_t __n, wchar_t __c) {
+#   ifndef N_PLAT_NLM
     return wmemset(__s, __c, __n);
+#   else
+    while ( __n-- != 0 ) {
+      *(__s++) = __c;
+    }
+    return __s;
+#   endif
   }
 #  endif
 };

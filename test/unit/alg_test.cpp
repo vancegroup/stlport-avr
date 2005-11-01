@@ -169,5 +169,11 @@ void AlgTest::search_n_test()
     CPPUNIT_ASSERT( *(dit++) > 3 );
     CPPUNIT_ASSERT( *dit > 3 );
   }
-}
 
+  // test for bug reported by Jim Xochellis
+  {
+    int array[] = {0, 0, 1, 0, 1, 1};
+    int* array_end = array + sizeof(array) / sizeof(*array);
+    CPPUNIT_ASSERT(search_n(array, array_end, 3, 1) == array_end);
+  }
+}

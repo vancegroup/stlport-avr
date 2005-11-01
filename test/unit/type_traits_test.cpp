@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -24,6 +25,7 @@ class TypeTraitsTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(both_pointer_type);
   CPPUNIT_TEST(ok_to_use_memcpy);
+  CPPUNIT_TEST(trivial_destructor);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -36,6 +38,7 @@ protected:
 #endif
   void both_pointer_type();
   void ok_to_use_memcpy();
+  void trivial_destructor();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
@@ -387,6 +390,24 @@ void TypeTraitsTest::ok_to_use_memcpy()
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, int_pointer) == 0 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_pointer) == 1 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_const_pointer) == 1 );
+}
+
+template <typename _Tp>
+int has_trivial_destructor(_Tp val) {
+  typedef typename __type_traits<_Tp>::has_trivial_destructor _TrivialDestructor;
+  return type_to_value(_TrivialDestructor());
+}
+void TypeTraitsTest::trivial_destructor()
+{
+  CPPUNIT_ASSERT( has_trivial_destructor(int_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(int_const_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(int_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(int_const_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(any) == 0 );
+  CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(any_pod) == 1 );
+  CPPUNIT_ASSERT( has_trivial_destructor(string()) == 0 );
 }
 
 #endif //STLPORT

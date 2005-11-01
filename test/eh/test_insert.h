@@ -31,11 +31,6 @@
 #include "nc_alloc.h"
 #include "ThrowCompare.h"
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_INSERT_H
-_STLP_INSTRUMENT_FILE();
-# endif
-
 // A classification system for containers, for verification
 struct container_tag {};
 struct sequence_container_tag  {};
@@ -324,7 +319,7 @@ void prepare_insert_n( C&, size_t ) {}
 
 // Metrowerks 1.8 compiler requires that specializations appear first (!!)
 // or it won't call them. Fixed in 1.9, though.
-inline void MakeRandomValue(bool& b) { b = bool(random_number(2)); }
+inline void MakeRandomValue(bool& b) { b = bool(random_number(2) != 0); }
 
 template<class T>
 inline void MakeRandomValue(T&) {}
@@ -553,9 +548,5 @@ test_insert_range<C, Iter> insert_range_at_end_tester( const C& orig, const Iter
 {
   return test_insert_range<C, Iter>( orig, first, last , (int)orig.size());
 }
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif // test_insert_H_

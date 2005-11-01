@@ -15,43 +15,35 @@
 ***********************************************************************************/
 #include "Tests.h"
 #if defined( EH_SLIST_IMPLEMENTED )
-#include "TestClass.h"
-#include "LeakCheck.h"
-# if defined (EH_NEW_HEADERS) && defined (EH_USE_SGI_STL)
-#include <slist>
-#else
-#include <slist.h>
-#endif
+#  include "TestClass.h"
+#  include "LeakCheck.h"
+#  if defined (EH_NEW_HEADERS) && defined (EH_USE_SGI_STL)
+#    include <slist>
+#  else
+#    include <slist.h>
+#  endif
 #include "test_construct.h"
 #include "test_assign_op.h"
 #include "test_push_back.h"
 #include "test_insert.h"
 #include "test_push_front.h"
 
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_SLIST_CPP
-_STLP_INSTRUMENT_FILE();
-# endif
-
-# if defined (__GNUC__) && defined (__APPLE__)
+#if defined (__GNUC__) && defined (__APPLE__)
 typedef EH_STD::slist<TestClass, eh_allocator(TestClass) > TestSList;
-# else
+#else
 typedef EH_STD::__slist__<TestClass, eh_allocator(TestClass) > TestSList;
-# endif
+#endif
 
 inline sequence_container_tag
-container_category(const TestSList&)
-{
+container_category(const TestSList&) {
   return sequence_container_tag();
 }
 
-struct test_slist_sort
-{
-    test_slist_sort() {
-        gTestController.SetCurrentTestName("slist::sort()");
-    }
-  void operator()( TestSList& slist ) const
-  {
+struct test_slist_sort {
+  test_slist_sort() {
+    gTestController.SetCurrentTestName("slist::sort()");
+  }
+  void operator()( TestSList& slist ) const {
     slist.sort();
     for ( TestSList::iterator p = slist.begin(), q; p != slist.end(); q = p, p++ )
       if ( p != slist.begin() )
@@ -59,13 +51,11 @@ struct test_slist_sort
   }
 };
 
-void test_slist()
-{
+void test_slist() {
   TestSList testSList, testSList2;
   size_t slistSize = random_number(random_base);
   
-  while ( testSList.size() < slistSize )
-  {
+  while (testSList.size() < slistSize) {
     TestClass x;
     testSList.push_front( x );
     testSList2.push_front( TestClass() );
@@ -95,11 +85,6 @@ void test_slist()
   ConstCheck( 0, test_construct_iter_range<TestSList>( testSList2 ) );
   ConstCheck( testSList, test_copy_construct<TestSList>() );
   WeakCheck( testSList, test_assign_op<TestSList>( testSList2 ) );
-
 }
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
 
 #endif // EH_SLIST_IMPLEMENTED

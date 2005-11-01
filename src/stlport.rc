@@ -5,6 +5,25 @@
 
 #include <windows.h>
 
+/* On some evc3/evc4 targets the windows.h doesn't include winver.h or doesn't
+ * define needed file version flags, so we redefine them here.
+ */
+#ifndef VS_FF_DEBUG
+#  define VS_FF_DEBUG    0x00000001L
+#endif
+
+#ifndef VOS__WINDOWS32
+#  define VOS__WINDOWS32 0x00000004L
+#endif
+
+#ifndef VFT_DLL
+#  define VFT_DLL        0x00000002L
+#endif
+
+#ifndef VFT2_UNKNOWN
+#  define VFT2_UNKNOWN   0x00000000L
+#endif
+
 #include <stl/_stlport_version.h>
 
 #define STRINGIZE(X) STRINGIZE_AUX(X)
@@ -14,7 +33,7 @@
 #define CONCAT_AUX(A, B) CONCAT_AUX2(A ## B)
 #define CONCAT_AUX2(X) X
 
-#define VERSION_ID _STLPORT_MAJOR, _STLPORT_MINOR, _STLPORT_PATCHLEVEL, 0 
+#define VERSION_ID _STLPORT_MAJOR, _STLPORT_MINOR, _STLPORT_PATCHLEVEL, 0
 #define VERSION_STR STRINGIZE(_STLPORT_MAJOR._STLPORT_MINOR._STLPORT_PATCHLEVEL)
 
 #if !defined (__GNUC__)

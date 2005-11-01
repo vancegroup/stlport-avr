@@ -13,31 +13,47 @@
  *
  */
 
-// Workaround for a "misbehaviour" when compiling resource scripts using
-// eMbedded Visual C++. The standard .rc file includes windows header files,
-// which in turn include stdlib.h, which results in warnings and errors
+/* Workaround for a "misbehaviour" when compiling resource scripts using
+ * eMbedded Visual C++. The standard .rc file includes windows header files,
+ * which in turn include stdlib.h, which results in warnings and errors
+ */
 #if !defined(RC_INVOKED)
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
-#  define _STLP_OUTERMOST_HEADER_ID 0x265
-#  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x265) && ! defined (_STLP_DONT_POP_HEADER_ID)
-#  define _STLP_DONT_POP_HEADER_ID
-# endif
-
-# include _STLP_NATIVE_C_HEADER(stdlib.h)
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x265)
-#  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#  if !defined (_STLP_OUTERMOST_HEADER_ID)
+#    define _STLP_OUTERMOST_HEADER_ID 0x265
+#    include <stl/_prolog.h>
+#  elif (_STLP_OUTERMOST_HEADER_ID == 0x265) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#    define _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+
+#  if defined (_MSC_VER) || (defined (__GNUC__) && defined (__MINGW32__))
+/* Native stdlib.h contains errno macro definition making inclusion of native
+ * errno.h in STLport errno.h impossible. We are then forced to include errno.h 
+ * first.
+ */
+#    include "errno.h"
+#  endif
+
+#  include _STLP_NATIVE_C_HEADER(stdlib.h)
+
+/* on evc3/evc4 including stdlib.h also defines setjmp macro */
+#  if defined(_STLP_WCE)
+#    define _STLP_NATIVE_SETJMP_H_INCLUDED
+#  endif
+
+#  if (_STLP_OUTERMOST_HEADER_ID == 0x265)
+#    if ! defined (_STLP_DONT_POP_HEADER_ID)
+#      include <stl/_epilog.h>
+#      undef  _STLP_OUTERMOST_HEADER_ID
+#    else
+#      undef  _STLP_DONT_POP_HEADER_ID
+#    endif
+#  endif
 
 #endif /* RC_INVOKED */
 
-// Local Variables:
-// mode:C++
-// End:
+/*
+  Local Variables:
+  mode:C++
+  End:
+*/

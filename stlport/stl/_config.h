@@ -70,14 +70,16 @@
 #include <stl_user_config.h>
 
 #if defined (__BUILDING_STLPORT)
-//For the STLport implementation we can use everything:
+/* For the STLport implementation we can use everything:
+ */
 #  if defined (_STLP_NO_ANACHRONISMS)
 #    undef _STLP_NO_ANACHRONISMS
 #  endif
 #  if defined (_STLP_NO_EXTENSIONS)
 #    undef _STLP_NO_EXTENSIONS
 #  endif
-//Moreover there are things that has no sens:
+/* Moreover there are things that has no sens:
+ */
 #  if defined (_STLP_NO_IOSTREAMS)
 #    error If you do not use iostreams you do not need to build the STLport library.
 #  endif
@@ -119,7 +121,8 @@
  * Performs integrity check on user-specified parameters
  * and site-specific settings.
  */
-// # include <stl/_check_config.h>
+/* # include <stl/_check_config.h>
+ */
 
 /* SGI terms */
 
@@ -158,11 +161,20 @@
 
 
 #if !defined (_STLP_BIG_ENDIAN) && ! defined (_STLP_LITTLE_ENDIAN)
-#  if defined(_MIPSEB) || defined (__sparc) || \
-      defined (_AIX) || defined (__hpux) || defined(macintosh) || defined (_MAC)
+#  if defined (_MIPSEB) || defined (__sparc) || defined (_AIX) || \
+      defined (__hpux) || defined (macintosh) || defined (_MAC)
 #    define _STLP_BIG_ENDIAN 1
-#  elif defined(__i386) || defined(_M_IX86) || defined(_M_ARM) || defined (__amd64__) || defined(_M_AMD64)
+#  elif defined (__i386) || defined (_M_IX86) || defined (_M_ARM) || \
+        defined (__amd64__) || defined (_M_AMD64) || defined (__x86_64__) || \
+        defined (__alpha__)
 #    define _STLP_LITTLE_ENDIAN 1
+#  elif defined (__ia64__)
+    /* itanium allows both settings (for instance via gcc -mbig-endian) - hence a seperate check is required */
+#    if defined (__BIG_ENDIAN__)
+#      define _STLP_BIG_ENDIAN 1
+#    else
+#      define _STLP_LITTLE_ENDIAN 1
+#    endif
 #  else
 #    define _STLP_UNKNOWN_ENDIAN 1
 #  endif
@@ -347,6 +359,8 @@
 #    define _STLP_OS2THREADS
 #  elif defined (__BEOS__)
 #    define _STLP_BETHREADS
+#  elif defined(__MWERKS__) && defined(N_PLAT_NLM) /* (__dest_os == __netware_os) */
+#    define _STLP_NWTHREADS
 #  else
 #    define _STLP_PTHREADS
 #  endif /* __sgi */
@@ -629,9 +643,17 @@ namespace __std_alias = std;
 #  if defined (_STLP_USE_OWN_NAMESPACE)
 #    if !defined (_STLP_DEBUG)
 #      if !defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
-#        define _STLP_STD_NAME  stlp_std
+#        ifndef _STLP_THREADS
+#          define _STLP_STD_NAME  stlpmtx_std
+#        else
+#          define _STLP_STD_NAME  stlp_std
+#        endif
 #      else
-#        define _STLP_STD_NAME  stlpx_std
+#        ifndef _STLP_THREADS
+#          define _STLP_STD_NAME  stlpxmtx_std
+#        else
+#          define _STLP_STD_NAME  stlpx_std
+#        endif
 #      endif
 #    else
 /*
@@ -640,9 +662,17 @@ namespace __std_alias = std;
  * than runtime.
  */
 #      if !defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
-#        define _STLP_STD_NAME  stlpd_std
+#        ifndef _STLP_THREADS
+#          define _STLP_STD_NAME  stlpdmtx_std
+#        else
+#          define _STLP_STD_NAME  stlpd_std
+#        endif
 #      else
-#        define _STLP_STD_NAME  stlpdx_std
+#        ifndef _STLP_THREADS
+#          define _STLP_STD_NAME  stlpdxmtx_std
+#        else
+#          define _STLP_STD_NAME  stlpdx_std
+#        endif
 #      endif
 #    endif
 namespace _STLP_STD_NAME { }
@@ -665,23 +695,18 @@ namespace _STLP_PRIV_NAME {
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD_NAME {
 #  define _STLP_END_NAMESPACE }
 #  if !defined (_STLP_USING_NAMESPACE_BUG)
-//We prefer to make private namespace a totaly seperated namespace...
+/* We prefer to make private namespace a totaly seperated namespace...
+ */
 #    define _STLP_PRIV ::_STLP_PRIV_NAME
 #    define _STLP_MOVE_TO_PRIV_NAMESPACE } namespace _STLP_PRIV_NAME {
 #    define _STLP_MOVE_TO_STD_NAMESPACE } namespace _STLP_STD_NAME {
 #  else
-//but sometimes we can't:
+/* but sometimes we can't:
+ */
 #    define _STLP_PRIV _STLP_PRIV_NAME
 #    define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
 #    define _STLP_MOVE_TO_STD_NAMESPACE }
 #  endif
-
-// _STLP_BEGIN_NAMESPACE _STLP_END_NAMESPACE
-
-//Backward compatibility:
-namespace _STL = _STLP_STD_NAME;
-#undef __STLPORT_NAMESPACE
-#define __STLPORT_NAMESPACE _STLP_STD_NAME
 
 /* decide whether or not we use separate namespace for rel ops */
 #  if defined(_STLP_NO_RELOPS_NAMESPACE)
@@ -695,6 +720,18 @@ namespace _STL = _STLP_STD_NAME;
 #  endif /* Use std::rel_ops namespace */
 
 #  define _STLP_STD ::_STLP_STD_NAME
+
+/* Official STLport namespace when std is not redefined.
+ * Here we don't use a macro as stlport is used as file name by boost
+ * and folder name under beos:
+ */
+namespace stlport = _STLP_STD_NAME;
+
+/* Backward compatibility:
+ */
+namespace _STL = _STLP_STD_NAME;
+#undef __STLPORT_NAMESPACE
+#define __STLPORT_NAMESPACE _STLP_STD_NAME
 
 #else /* _STLP_USE_NAMESPACES */
 /* STLport is being put into global namespace */
@@ -829,8 +866,9 @@ namespace _STL = _STLP_STD_NAME;
 #  endif
 #endif
 
-//When the compiler do not correctly initialized the basic types value in default parameters we prefer
-//to avoid them to be able to correct this bug.
+/* When the compiler do not correctly initialized the basic types value in default parameters we prefer
+ * to avoid them to be able to correct this bug.
+ */
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
 #  define _STLP_DONT_SUP_DFLT_PARAM 1
 #endif
@@ -1154,7 +1192,8 @@ typedef int bool;
 #  define _STLP_PSPEC3(t1,t2,t3)	/* nothing */
 #endif
 
-//Activation of the partial template workaround:
+/* Activation of the partial template workaround:
+ */
 #if !defined(_STLP_DONT_USE_PARTIAL_SPEC_WRKD) &&\
    (!defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) || !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER))
 #  define _STLP_USE_PARTIAL_SPEC_WORKAROUND

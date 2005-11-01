@@ -193,13 +193,13 @@ public:
     _M_empty_initialize();
   }
   _List_base(__move_source<_Self> src) :
-    _M_node(_AsMoveSource<_AllocProxy>(src.get()._M_node)) {
+    _M_node(__move_source<_AllocProxy>(src.get()._M_node)) {
     if (src.get().empty())
       //We force this to empty.
       _M_empty_initialize();
     else {
       src.get()._M_empty_initialize();
-      _M_node._M_data._M_prev->_M_next = &_M_node._M_data;
+      _M_node._M_data._M_prev->_M_next = _M_node._M_data._M_next->_M_prev = &_M_node._M_data;
     }
   }
     
@@ -507,8 +507,7 @@ public:
     { _M_insert(begin(), __x.begin(), __x.end()); }
 
   _LIST_IMPL(__move_source<_Self> src)
-    : _List_base<_Tp, _Alloc>(_AsMoveSource<_Base>(src.get())) {
-  }
+    : _List_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
 
   ~_LIST_IMPL() { }
 
@@ -665,18 +664,11 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
 # undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <>
-struct __move_traits<_List_node_base> : __move_traits_POD
-{};
 template <class _Tp, class _Alloc>
-struct __move_traits<_List_base<_Tp, _Alloc> > :
-  __move_traits_help<typename _List_base<_Tp, _Alloc>::_AllocProxy>
-{};
-
-template <class _Tp, class _Alloc>
-struct __move_traits<list<_Tp, _Alloc> > :
-  __move_traits_aux<_List_base<_Tp, _Alloc> >
-{};
+struct __move_traits<list<_Tp, _Alloc> > {
+  typedef __true_type implemented;
+  typedef typename __move_traits<_Alloc>::complete complete;
+};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE

@@ -30,6 +30,10 @@
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #define _STLP_INTERNAL_FUNCTION_BASE_H
 
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_TYPE_TRAITS_H)
+#  include <stl/type_traits.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 template <class _Arg, class _Result>
@@ -58,16 +62,35 @@ struct not_equal_to : public binary_function<_Tp,_Tp,bool>
 };
 
 template <class _Tp>
-struct greater : public binary_function<_Tp,_Tp,bool> 
+struct greater : public binary_function<_Tp,_Tp,bool>
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x > __y; }
 };
 
 template <class _Tp>
-struct less : public binary_function<_Tp,_Tp,bool> 
+struct less : public binary_function<_Tp,_Tp,bool>
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+/* less is the default template parameter for many STL containers, to fully use
+ * the move constructor feature we need to know that the default less is just a
+ * functor.
+ */ 
+              , public __stlport_class<less<_Tp> >
+#endif
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x < __y; }
 };
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct __type_traits<less<_Tp> > {
+  typedef typename _IsSTLportClass<less<_Tp> >::_Ret _STLportLess;
+  typedef _STLportLess has_trivial_default_constructor;
+  typedef _STLportLess has_trivial_copy_constructor;
+  typedef _STLportLess has_trivial_assignment_operator;
+  typedef _STLportLess has_trivial_destructor;
+  typedef _STLportLess is_POD_type;
+};
+#endif
 
 template <class _Tp>
 struct greater_equal : public binary_function<_Tp,_Tp,bool>

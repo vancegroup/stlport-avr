@@ -39,15 +39,13 @@ template <class _CharT, class _Traits>
 basic_ios<_CharT, _Traits>
   ::basic_ios(basic_streambuf<_CharT, _Traits>* __streambuf)
     : ios_base(),
-      _M_fill(_STLP_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0)
-{
+      _M_fill(_STLP_NULL_CHAR_INIT(_CharT)), _M_streambuf(0), _M_tied_ostream(0) {
   basic_ios<_CharT, _Traits>::init(__streambuf);
 }
 
 template <class _CharT, class _Traits>
 basic_streambuf<_CharT, _Traits>*
-basic_ios<_CharT, _Traits>::rdbuf(basic_streambuf<_CharT, _Traits>* __buf)
-{
+basic_ios<_CharT, _Traits>::rdbuf(basic_streambuf<_CharT, _Traits>* __buf) {
   basic_streambuf<_CharT, _Traits>* __tmp = _M_streambuf;
   _M_streambuf = __buf;
   this->clear();
@@ -56,8 +54,7 @@ basic_ios<_CharT, _Traits>::rdbuf(basic_streambuf<_CharT, _Traits>* __buf)
 
 template <class _CharT, class _Traits>
 basic_ios<_CharT, _Traits>&
-basic_ios<_CharT, _Traits>::copyfmt(const basic_ios<_CharT, _Traits>& __x)
-{
+basic_ios<_CharT, _Traits>::copyfmt(const basic_ios<_CharT, _Traits>& __x) {
   _M_invoke_callbacks(erase_event);
   _M_copy_state(__x);           // Inherited from ios_base.
   _M_fill = __x._M_fill;
@@ -68,17 +65,21 @@ basic_ios<_CharT, _Traits>::copyfmt(const basic_ios<_CharT, _Traits>& __x)
 }
 
 template <class _CharT, class _Traits>
-locale basic_ios<_CharT, _Traits>::imbue(const locale& __loc)
-{
+locale basic_ios<_CharT, _Traits>::imbue(const locale& __loc) {
   locale __tmp = ios_base::imbue(__loc);
+  _STLP_TRY {
+    if (_M_streambuf)
+      _M_streambuf->pubimbue(__loc);
 
-  if (_M_streambuf)
-    _M_streambuf->pubimbue(__loc);
-
-  // no throwing here
-  this->_M_cached_ctype = __loc._M_get_facet(ctype<char_type>::id) ;
-  this->_M_cached_numpunct = __loc._M_get_facet(numpunct<char_type>::id) ;
-  this->_M_cached_grouping = ((numpunct<char_type>*)_M_cached_numpunct)->grouping() ;
+    // no throwing here
+    this->_M_cached_ctype = __loc._M_get_facet(ctype<char_type>::id);
+    this->_M_cached_numpunct = __loc._M_get_facet(numpunct<char_type>::id);
+    this->_M_cached_grouping = ((numpunct<char_type>*)_M_cached_numpunct)->grouping();
+  }
+  _STLP_CATCH_ALL {
+    __tmp = ios_base::imbue(__tmp);
+    _M_handle_exception(ios_base::failbit);
+  }
   return __tmp;
 }
 

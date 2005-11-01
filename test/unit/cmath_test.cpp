@@ -6,6 +6,7 @@
 //defined in cstdlib
 #include <cstdlib>
 
+#include "math_aux.h"
 #include "cppunit/cppunit_proxy.h"
 
 //This test purpose is to check the right import of math.h C symbols
@@ -27,21 +28,6 @@ class CMathTest : public CPPUNIT_NS::TestCase
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CMathTest);
 
-
-/*
- * This function is not only used to compare floating point values with a tolerance,
- * it also leads to ambiguity problems if the called functions do not have the
- * right prototype.
- */
-template <class _Tp>
-bool are_equals(_Tp val, _Tp ref) {
-  if (val < ref) {
-    return (ref - val) <= std::numeric_limits<_Tp>::epsilon();
-  }
-  else {
-    return (val - ref) <= std::numeric_limits<_Tp>::epsilon();
-  }
-}
 //
 // tests implementation
 //
@@ -101,8 +87,10 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::exp(0.0), 1.0) );
   CPPUNIT_CHECK( are_equals(std::log(std::exp(1.0)), 1.0) );
   CPPUNIT_CHECK( are_equals(std::log10(100.0), 2.0) );
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
   CPPUNIT_CHECK( are_equals(std::modf(100.5, &double_val), 0.5) );
   CPPUNIT_CHECK( are_equals(double_val, 100.0) );
+#endif
   double_val = std::frexp(8.0, &int_val);
   CPPUNIT_CHECK( are_equals(double_val * std::pow(2.0, int_val), 8.0) );
   CPPUNIT_CHECK( are_equals(std::ldexp(1.0, 2), 4.0) );
@@ -112,7 +100,9 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::tan(std::atan2(1.0, 1.0)), 1.0) );
   CPPUNIT_CHECK( are_equals(std::cosh(0.0), 1.0) );
   CPPUNIT_CHECK( are_equals(std::sinh(0.0), 0.0) );
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
   CPPUNIT_CHECK( are_equals(std::tanh(0.0), 0.0) );
+#endif
 
   CPPUNIT_CHECK( are_equals(std::floor(1.5f), 1.0f) );
   CPPUNIT_CHECK( are_equals(std::ceil(1.5f), 2.0f) );
@@ -122,8 +112,10 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::exp(0.0f), 1.0f) );
   CPPUNIT_CHECK( are_equals(std::log(std::exp(1.0f)), 1.0f) );
   CPPUNIT_CHECK( are_equals(std::log10(100.0f), 2.0f) );
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
   CPPUNIT_CHECK( are_equals(std::modf(100.5f, &float_val), 0.5f) );
   CPPUNIT_CHECK( are_equals(float_val, 100.0f) );
+#endif
   float_val = std::frexp(8.0f, &int_val);
   CPPUNIT_CHECK( are_equals(float_val * std::pow(2.0f, int_val), 8.0f) );
   CPPUNIT_CHECK( are_equals(std::ldexp(1.0f, 2), 4.0f) );
@@ -133,7 +125,9 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::tan(std::atan2(1.0f, 1.0f)), 1.0f) );
   CPPUNIT_CHECK( are_equals(std::cosh(0.0f), 1.0f) );
   CPPUNIT_CHECK( are_equals(std::sinh(0.0f), 0.0f) );
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
   CPPUNIT_CHECK( are_equals(std::tanh(0.0f), 0.0f) );
+#endif
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
   CPPUNIT_CHECK( are_equals(std::floor(1.5l), 1.0l) );
@@ -144,8 +138,10 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::exp(0.0l), 1.0l) );
   CPPUNIT_CHECK( are_equals(std::log(std::exp(1.0l)), 1.0l) );
   CPPUNIT_CHECK( are_equals(std::log10(100.0l), 2.0l) );
+#  if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
   CPPUNIT_CHECK( are_equals(std::modf(100.5l, &long_double_val), 0.5l) );
   CPPUNIT_CHECK( are_equals(long_double_val, 100.0l) );
+#  endif
   long_double_val = std::frexp(8.0l, &int_val);
   CPPUNIT_CHECK( are_equals(long_double_val * std::pow(2.0l, int_val), 8.0l) );
   CPPUNIT_CHECK( are_equals(std::ldexp(1.0l, 2), 4.0l) );
@@ -156,7 +152,9 @@ void CMathTest::test()
   CPPUNIT_CHECK( are_equals(std::atan2(0.0l, 1.0l), 0.0l) );
   CPPUNIT_CHECK( are_equals(std::cosh(0.0l), 1.0l) );
   CPPUNIT_CHECK( are_equals(std::sinh(0.0l), 0.0l) );
+#  if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
   CPPUNIT_CHECK( are_equals(std::tanh(0.0l), 0.0l) );
+#  endif
 #endif
 
   CPPUNIT_CHECK( are_equals(std::sqrt(std::sqrt(std::sqrt(256.0))), 2.0) );

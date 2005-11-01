@@ -9,3 +9,6 @@ build different version of the STLport libraries.
   libraries you have to define the _STLP_USE_DYNAMIC_LIB
   macro in order to have your executable linked correctly.
 
+    To build STLport libraries that do not depend on cygwin1.dll
+  making them freely redistributable use the --no-cygwin configuration
+  option.

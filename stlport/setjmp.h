@@ -13,27 +13,35 @@
  *
  */
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x256
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && ! defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-
-# ifndef setjmp
+#if !defined (setjmp)
+#  define _STLP_NATIVE_SETJMP_H_INCLUDED
 #  include _STLP_NATIVE_C_HEADER(setjmp.h)
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x256)
+#if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED)
+/* See errno.h file for a description of this problem.
+ */
+#  error setjmp has been defined before inclusion of setjmp.h header.
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x256)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
 #  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#    undef  _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+#endif
 
-// Local Variables:
-// mode:C++
-// End:
+/*
+  Local Variables:
+  mode:C++
+  End:
+*/

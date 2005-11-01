@@ -10,7 +10,7 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/top.mak
 
 INCLUDES += -I${STLPORT_INCLUDE_DIR}
-DEFS += -D_STLP_NO_CUSTOM_IO -D_STLP_LEAKS_PEDANTIC
+DEFS += -D_STLP_NO_CUSTOM_IO
 
 ifeq ($(OSNAME), cygming)
 release-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB

@@ -16,45 +16,39 @@
 #ifndef test_construct_H_
 #define test_construct_H_
 
-# include "Prefix.h"
-# if defined (EH_NEW_HEADERS)
+#include "Prefix.h"
+#if defined (EH_NEW_HEADERS)
 #  include <algorithm>
 #  include <cassert>
 #  include <cstdlib>
-# else
+#else
 #  include <algo.h>
 #  include <assert.h>
 #  include <stdlib.h>
-# endif
-
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  define _STLP_FILE_UNIQUE_ID TEST_CONSTRUCT_H
-_STLP_INSTRUMENT_FILE();
-# endif
+#endif
 
 USING_CSTD_NAME(size_t)
 
 template <class T>
 struct test_copy_construct {
-    test_copy_construct() {
-        gTestController.SetCurrentTestName("copy constructor");
-    }
+  test_copy_construct() {
+    gTestController.SetCurrentTestName("copy constructor");
+  }
     
   void operator()( const T& t ) const {
     T aCopy( t );
     // Prevent simulated failures during verification
     gTestController.CancelFailureCountdown();
-    EH_ASSERT( aCopy == t );
+    //EH_ASSERT( aCopy == t );
     CheckInvariant(t);
   }
 };
 
 template <class T>
 struct test_default_construct {
-    test_default_construct() {
-        gTestController.SetCurrentTestName("default constructor");
-    }
+  test_default_construct() {
+    gTestController.SetCurrentTestName("default constructor");
+  }
     
   void operator()( int ) const {
     T t;
@@ -128,10 +122,4 @@ struct test_construct_iter_range {
   const T& fItems;
 };
 
-
-# if defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG)
-#  undef _STLP_FILE_UNIQUE_ID
-# endif
-
 #endif // test_construct_H_
-

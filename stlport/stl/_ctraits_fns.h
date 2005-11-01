@@ -18,7 +18,7 @@
 #ifndef _STLP_INTERNAL_CTRAITS_FUNCTIONS_H
 #define _STLP_INTERNAL_CTRAITS_FUNCTIONS_H
 
-#ifndef _STLP_INTERNAL_FUNCTION_H 
+#ifndef _STLP_INTERNAL_FUNCTION_BASE_H 
 #  include <stl/_function_base.h>
 #endif
 

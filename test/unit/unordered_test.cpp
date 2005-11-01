@@ -105,7 +105,7 @@ void UnorderedTest::umultiset()
     CPPUNIT_ASSERT( *ret == i );
   }
 
-  CPPUNIT_ASSERT( us.size() == 4000 );
+  CPPUNIT_ASSERT( us.size() == 2 * NB_ELEMS );
   vector<int> us_val;
 
   usettype::local_iterator lit, litEnd;
@@ -210,7 +210,7 @@ void UnorderedTest::umultimap()
     CPPUNIT_ASSERT( *ret == p );
   }
 
-  CPPUNIT_ASSERT( us.size() == 4000 );
+  CPPUNIT_ASSERT( us.size() == 2 * NB_ELEMS );
   typedef pair<int, int> ptype;
   vector<ptype> us_val;
 

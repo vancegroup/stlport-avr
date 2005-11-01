@@ -13,28 +13,37 @@
  *
  */
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x262
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x262) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x262) && ! defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# ifndef _STLP_WINCE
+#ifndef _STLP_WINCE
 
-# include _STLP_NATIVE_C_HEADER(stddef.h)
+#  if defined (_MSC_VER)
+/* Native stddef.h contains errno macro definition making inclusion of native
+ * errno.h in STLport errno.h impossible. We are then forced to include errno.h 
+ * first.
+ */
+#    include "errno.h"
+#  endif
 
-# endif /* WINCE */
+#  include _STLP_NATIVE_C_HEADER(stddef.h)
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x262)
+#endif /* WINCE */
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x262)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#   else
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
+#  else
 #    undef  _STLP_DONT_POP_HEADER_ID
-#   endif
-# endif
+#  endif
+#endif
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

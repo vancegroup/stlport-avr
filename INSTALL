@@ -3,13 +3,15 @@
 *                                                                    *
 **********************************************************************
 
-STLport-5.0 is a full ANSI C++ Standard library.
+STLport is a full ANSI C++ Standard library.
 
 This distribution contains STLport sources only, no binaries.
 To use STLport iostreams, locale and complex numbers, you have to build STLport
 library from sources in "build/lib" directory and link your programs with it.
 
-This is major change since pre-4.0 releases, please read the instructions carefully.
+Starting with 5.0 the 'wrapper' mode is not supported anymore. You cannot use native
+compiler iostreams implementation with STLport STL (see doc/FAQ for explanations).
+Now you have to choose between STLport iostreams or no iostreams.
 
 ==== Unpacking and installing STLport ==========
 
@@ -19,7 +21,7 @@ This is major change since pre-4.0 releases, please read the instructions carefu
    reading this file though ;)
 
 2) Make sure "stlport" directory of this distribution comes before compiler's one 
-   in your search path when you compile the project;
+   in your include paths when you compile the project.
 
    Note: for SunPro CC 5.0 and higher, there used to be special directory "stlport/SC5"
 	 this is now obsolete, please make sure you do not use it anymore.
@@ -27,12 +29,10 @@ This is major change since pre-4.0 releases, please read the instructions carefu
 3) Make sure you do not rename this "stlport" subdirectory -
    that may result in compilation errors.
 
-   NOTE:  Do NOT attempt to run "configure" if you don't use cross-compilation!
-          It is deprecated, moved to safe standalone folder
-          and should be used as a helper to create initial config for a new compiler only. 
-          Your compiler should be recognized by STLport source code with no configuring.
-	  Please edit appropriate configuration header for your compiler
-          directly if you have to make compiler-specific configuration changes.
+   NOTE:  Your compiler should be recognized by STLport source code with no configuring.
+          Please edit appropriate configuration header for your compiler
+          directly if you have to make compiler-specific configuration changes
+          (see stlport/config). 
 
 
 4)  Go to "build/lib" subdirectory. It contains various makefiles for different
@@ -44,24 +44,24 @@ This is major change since pre-4.0 releases, please read the instructions carefu
     Verify you can do command line compiles. IDE users may have to do something 
     special, like add environment variables (for Microsoft) or install 
     additional compiler components (for Metrowerks), before they can use their 
-    command line compilers.
+    command line compilers (see doc/README.xxxx for additionnal inrformation).
 
-   IMPORTANT:
+    IMPORTANT:
 
-   If you DO NOT plan to use STLport iostreams and/or locale implementation, you
-   do not have to build the library.
+    If you DO NOT plan to use STLport iostreams and/or locale implementation but just
+    the STL, you do not have to build the library.
  
-   If you have decided to disable STLport iostreams and locale, you may stop reading here.
+    If you have decided to disable STLport iostreams and locale, you may stop reading here.
 
 
 ==== Building STLport iostreams library ==========
 
 Below are step-by-step instructions to build STLport streams library. This is a general
-build process description, for a more detailed one check the doc folder:
+build process description, for a more detailed one check README files in the doc folder:
 
 5)  Using appropriate makefile, do
 
-      make -f <compiler name>.mak clean; make -f <compiler name>.mak depend
+      make -f <compiler name>.mak clean
       make -f <compiler name>.mak install
 
     to build the STLport libraries. Makefiles are set up to build several different
@@ -73,17 +73,18 @@ build process description, for a more detailed one check the doc folder:
     Examples : 
      1. If you are building STLport for just one compiler, you may do something like that
         (DOS syntax for Visual C++ below):
-        nmake -f vc6.mak clean
-        nmake -f vc6.mak install
+        nmake /fnmake-vc6.mak clean
+        nmake /fnmake-vc6.mak install
 
      2. If you plan to build STLport with multiple compilers, use "make -f" :
-	make -f gcc.mak clean install
-	make -f sunpro.mak clean install
+        make -f gcc.mak clean install
+        make -f sunpro.mak clean install
 
 
-    Note: 'install' taget work slightly different from ordinal---it install libraries into
-    <STLport root dir>/lib catalog, NOT IN SYSTEM CATALOG. You can do 'installation' with
-    following commands (on UNIX-like platforms):
+    Note: 'install' taget work slightly different from ordinal---it installs libraries into
+    <STLport root dir>/lib and bin catalog, NOT IN SYSTEM CATALOG. You can do the system
+    install by just copying stlport and lib folder to the destination of your choise. For
+    example on UNIX-like platforms this can be done with the following commands:
 
       su
       tar cf - stlport | (cd /usr/local/include; tar xf -)
@@ -93,10 +94,9 @@ build process description, for a more detailed one check the doc folder:
       chown -R root:root /usr/local/lib/libstlport*
       exit
 
-    or do following (on Windows platforms):
-
-      ....
-
+    Note: System install is optionnal, most of compilers/linkers support searching for includes
+    and libs throught out the whole filesystem, just check your documentation on how to acheive
+    this.
 
     If you use cross-compiler, you can find libraries in the <STLport root dir>/lib/<taget platform>
     catalog.
@@ -104,7 +104,7 @@ build process description, for a more detailed one check the doc folder:
 6)  If build fails, you may choose to :
      - try fixing the build ;
      - wait until somebody else will submit corresponding changes to be incorporated in next STLport 
-       release/snapshot. To use STLport w/o its own iostreams, please do step 3a).
+       release/snapshot.
 
     In case you do patch STLport, please submit your patches to support@stlport.com or (better)
     to STLport Forum (http://www.stlport.com/cgi-bin/forum/dcboard.cgi)
@@ -113,28 +113,53 @@ build process description, for a more detailed one check the doc folder:
 
 7) Check the build:
 
+    Example:
+    
+    - under Linux and other Unixes:
+
     cd build/test/unit
-    make -f <compiler name>.mak
-    ./obj/<compiler name>/shared/stl_unit_test
-    ./obj/<compiler name>/shared-stlg/stl_unit_test
+    make -f <compiler name>.mak install
+    ../../../bin/stl_unit_test
+    ../../../bin-g/stl_unit_test
+
+    - under Windows:
+
+    cd build\test\unit
+    nmake /fnmake-<compiler name>.mak install
+    cd ..\..\..\bin
+    stl_unit_test_r50
+    stl_unit_test_d50
+    stl_unit_test_stld50
 
 8) Supply the "lib" subdirectory to the library search path and add desired 
    library to the list of libraries to link with.
    Examples (imagine you have mytest.cpp in the same directory as this file is):
-	With gcc     : gcc -I./stlport mytest.cpp -L./lib/ -lstlport_gcc
-	With DEC CC  : cxx -I./stlport mytest.cpp -L./lib/ -lstlport_deccxx
-	With SUN CC  : CC -I./stlport mytest.cpp -L./lib/ -lstlport_sunpro
+	With gcc     : gcc -pthread -I./stlport mytest.cpp -L./lib/ -lstlport
+	With DEC CC  : cxx -I./stlport mytest.cpp -L./lib/ -lstlport
+	With SUN CC  : CC -mt -I./stlport mytest.cpp -L./lib/ -lstlport
 	.....
-   [ Visual C++ specific ] For VC++, you do not have to specify "stlport-msvc-XXX.lib" explicitly,
-   as it is being choosen and forced to link automatically by "#pragma"'s in stlport/config/stl_select_lib.h.
-   Appropriate version is being selected based on /MD[d] vs /MT[d] options and __STL_DEBUG setting.
+   [ Visual C++ specific ] For VC++, you do not have to specify "stlport_XXX.lib" explicitly,
+   as it is being choosen and forced to link automatically by "#pragma"'s in compiler config
+   file in stlport/config/stl_msvc.h.
+   Appropriate version is being selected based on /MD[d] vs /MT[d] options and _STLP_DEBUG setting.
    All you have to do is to set library search path for the linker.
 	Example :
            cl.exe /I.\stlport mytest.cpp /link /libpath:.\lib /MD
 
 9) If you linked your application with shared STLport library (.so or .dll), please make your .so or
    .dll's to be found in PATH at runtime. On Windows, the simplest way to do it
-   is to copy all .dll's to Windows system directory. Or, you might choose to add directory
-   containing STLport to the PATH environment string. 
+   is to copy all .dll's next to the executable. Or, you might choose to add bin directory
+   containing STLport dlls to the PATH environment string.
 
-10) Have fun !
+10) STLport build only multithreaded libraries, so your application should be compiled
+   as multithreaded too. Use -pthread (or -pthreads on Solaris) option for gcc, -mt for SunPro,
+   /MT for VC, and so on. Sometimes you should define _REENTRANT or something else, depends
+   upon platform/compiler. See compiler's and linker's options on command line when you build
+   unit tests (build/test/unit) for reference. The last is useful for ANY platform (special
+   attention for Windows users).
+
+11) Don't hesitate to read READMEs (doc/README*, build/lib/README*, build/test/unit/README*)
+   and doc/FAQ.
+
+12) Have fun!
+

@@ -39,7 +39,7 @@
 #  include <stl/_queue.h>
 #endif
 
-#ifndef _STLP_INTERNAL_FUNCTION_H
+#ifndef _STLP_FUNCTIONAL
 #  include <functional>
 #endif
 

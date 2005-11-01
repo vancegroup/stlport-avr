@@ -13,24 +13,28 @@
  *
  */
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x279
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x279) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x279) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# include _STLP_NATIVE_C_HEADER(wctype.h)
+/* evc3 doesn't have wctype.h */
+#if !defined(_STLP_WCE_EVC3) && !defined(N_PLAT_NLM)
+#  include _STLP_NATIVE_C_HEADER(wctype.h)
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x279)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x279)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
 #  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#    undef  _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+#endif
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

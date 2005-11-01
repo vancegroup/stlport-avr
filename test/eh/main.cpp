@@ -148,8 +148,17 @@ static void usage(const char* name)
 #  include <set.h>
 # endif
 
+#if defined(_WIN32_WCE)
+#include <fstream>
+#endif
+
 int _STLP_CALL main(int argc, char** argv)
 {
+#if defined(_WIN32_WCE)
+  std::ofstream file( "\\eh_test.txt" );
+  std::streambuf* old_cout_buf = cout.rdbuf(file.rdbuf());
+  std::streambuf* old_cerr_buf = cerr.rdbuf(file.rdbuf());
+#endif
 #if defined( __MWERKS__ ) && defined( macintosh )  // Get command line.
   argc = ccommand(&argv);
   // Allow the i/o window to be repositioned.
@@ -387,6 +396,13 @@ int _STLP_CALL main(int argc, char** argv)
   gTestController.TrackAllocations( false );
   
     cerr << "EH test : Done\n";
+
+#if defined(_WIN32_WCE)
+   cout.rdbuf(old_cout_buf);
+   cerr.rdbuf(old_cerr_buf);
+   file.close();
+#endif
+
     return 0;
 }
 

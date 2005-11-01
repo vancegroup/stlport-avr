@@ -258,7 +258,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_xsputnc(char_type __c,
     }
 
     // At this point we know we're appending.
-    size_t __app_size = __STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size())));
+    size_t __app_size = sizeof(streamsize) > sizeof(size_t) ? __STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size())))
+                                                            : __STATIC_CAST(size_t, __n);
     if (this->_M_mode & ios_base::in) {
       ptrdiff_t __get_offset = this->gptr() - this->eback();
       _M_str.append(__app_size, __c);
@@ -307,7 +308,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::setbuf(_CharT*, streamsize __n) {
     if ((_M_mode & ios_base::out) && !(_M_mode & ios_base::in))
       _M_append_buffer();
 
-    _M_str.reserve(__STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size()))));
+    _M_str.reserve(sizeof(streamsize) > sizeof(size_t) ? __STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size())))
+                                                       : __STATIC_CAST(size_t, __n));
 
     _CharT* __data_ptr = __CONST_CAST(_CharT*, _M_str.data());
     size_t __data_size = _M_str.size();
@@ -432,15 +434,25 @@ void basic_stringbuf<_CharT, _Traits, _Alloc>::_M_append_buffer() const {
   if (this->pbase() == this->_M_Buf && this->pptr() != this->_M_Buf) {
     basic_stringbuf<_CharT, _Traits, _Alloc>* __this = __CONST_CAST(_Self*,this);
     __this->_M_str.append((const _CharT*)this->pbase(), (const _CharT*)this->pptr());
+#ifndef __MWERKS__
     __this->setp(__CONST_CAST(_CharT*,_M_Buf),
                  __CONST_CAST(_CharT*,_M_Buf + __STATIC_CAST(int,_S_BufSiz)));
+#else // CodeWarrior treat const char * and const char [8] as different types
+    __this->setp((_CharT*)_M_Buf,
+                 (_CharT*)(_M_Buf + __STATIC_CAST(int,_S_BufSiz)));
+#endif
   }
 
   // Have we run off the end of the string?
   else if (this->pptr() == this->epptr()) {
     basic_stringbuf<_CharT, _Traits, _Alloc>* __this = __CONST_CAST(_Self*,this);
+#ifndef __MWERKS__
     __this->setp(__CONST_CAST(_CharT*,_M_Buf),
                  __CONST_CAST(_CharT*,_M_Buf + __STATIC_CAST(int,_S_BufSiz)));
+#else // CodeWarrior treat const char * and const char [8] as different types
+    __this->setp((_CharT*)_M_Buf,
+                 (_CharT*)(_M_Buf + __STATIC_CAST(int,_S_BufSiz)));
+#endif
   }
 }
 

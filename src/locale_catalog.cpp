@@ -15,7 +15,7 @@
  * modified is included with the above copyright notice.
  *
  */ 
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
 
 #include <hash_map>
 #include <string>
@@ -95,12 +95,30 @@ typedef char* (*loc_extract_name_func_t)(const char*, char*);
 typedef hash_map<string, pair<void*, size_t>, hash<string>, equal_to<string> > Category_Map;
 
 // Look up a category by name
-static Category_Map* ctype_hash;
-static Category_Map* numeric_hash;
-static Category_Map* time_hash;
-static Category_Map* collate_hash;
-static Category_Map* monetary_hash;
-static Category_Map* messages_hash;
+Category_Map** ctype_hash() {
+  static Category_Map *_S_ctype_hash = 0;
+  return &_S_ctype_hash;
+}
+Category_Map** numeric_hash() {
+  static Category_Map *_S_numeric_hash = 0;
+  return &_S_numeric_hash;
+}
+Category_Map** time_hash() {
+  static Category_Map *_S_time_hash = 0;
+  return &_S_time_hash;
+}
+Category_Map** collate_hash() {
+  static Category_Map *_S_collate_hash = 0;
+  return &_S_collate_hash;
+}
+Category_Map** monetary_hash() {
+  static Category_Map *_S_monetary_hash = 0;
+  return &_S_monetary_hash;
+}
+Category_Map** messages_hash() {
+  static Category_Map *_S_messages_hash;
+  return &_S_messages_hash;
+}
 
 // We have a single lock for all of the hash tables.  We may wish to 
 // replace it with six different locks.
@@ -192,56 +210,56 @@ _Locale_ctype* _STLP_CALL __acquire_ctype(const char* name) {
   return __REINTERPRET_CAST(_Locale_ctype*, __acquire_category(name, _Locale_extract_ctype_name, 
                                                                      _Loc_ctype_create, 
                                                                      _Loc_ctype_default, 
-                                                               &ctype_hash));
+                                                               ctype_hash()));
 }
 _Locale_numeric* _STLP_CALL __acquire_numeric(const char* name) {
   return __REINTERPRET_CAST(_Locale_numeric*, __acquire_category(name, _Locale_extract_numeric_name, 
                                                                        _Loc_numeric_create, 
                                                                        _Loc_numeric_default, 
-                                                                 &numeric_hash)); 
+                                                                 numeric_hash())); 
 }
 _Locale_time* _STLP_CALL __acquire_time(const char* name) {
   return __REINTERPRET_CAST(_Locale_time*, __acquire_category(name, _Locale_extract_time_name, 
                                                                     _Loc_time_create, 
                                                                     _Loc_time_default, 
-                                                              &time_hash)); 
+                                                              time_hash())); 
 }
 _Locale_collate* _STLP_CALL __acquire_collate(const char* name) {
   return __REINTERPRET_CAST(_Locale_collate*, __acquire_category(name, _Locale_extract_collate_name,
                                                                        _Loc_collate_create, 
                                                                        _Loc_collate_default, 
-                                                                 &collate_hash)); 
+                                                                 collate_hash())); 
 }
 _Locale_monetary* _STLP_CALL __acquire_monetary(const char* name) {
   return __REINTERPRET_CAST(_Locale_monetary*, __acquire_category(name, _Locale_extract_monetary_name, 
                                                                         _Loc_monetary_create, 
                                                                         _Loc_monetary_default, 
-                                                                  &monetary_hash)); 
+                                                                  monetary_hash())); 
 }
 _Locale_messages* _STLP_CALL __acquire_messages(const char* name) {
   return __REINTERPRET_CAST(_Locale_messages*, __acquire_category(name, _Locale_extract_messages_name, 
                                                                         _Loc_messages_create, 
                                                                         _Loc_messages_default, 
-                                                                  &messages_hash)); 
+                                                                  messages_hash())); 
 }
 
 void _STLP_CALL __release_ctype(_Locale_ctype* cat) {
-  __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, &ctype_hash);
+  __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, ctype_hash());
 }
 void _STLP_CALL __release_numeric(_Locale_numeric* cat) {
-  __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, &numeric_hash);
+  __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, numeric_hash());
 }
 void _STLP_CALL __release_time(_Locale_time* cat) {
-  __release_category(cat, _Loc_time_destroy, _Loc_time_name, &time_hash);
+  __release_category(cat, _Loc_time_destroy, _Loc_time_name, time_hash());
 }
 void _STLP_CALL __release_collate(_Locale_collate* cat) {
-  __release_category(cat, _Loc_collate_destroy, _Loc_collate_name, &collate_hash);
+  __release_category(cat, _Loc_collate_destroy, _Loc_collate_name, collate_hash());
 }
 void _STLP_CALL __release_monetary(_Locale_monetary* cat) {
-  __release_category(cat, _Loc_monetary_destroy, _Loc_monetary_name, &monetary_hash);
+  __release_category(cat, _Loc_monetary_destroy, _Loc_monetary_name, monetary_hash());
 }
 void _STLP_CALL __release_messages(_Locale_messages* cat) {
-  __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, &messages_hash);
+  __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, messages_hash());
 }
 
 _STLP_END_NAMESPACE

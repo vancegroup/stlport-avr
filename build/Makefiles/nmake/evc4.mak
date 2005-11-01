@@ -7,37 +7,49 @@ DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION)
 !error No target processor configured! Please rerun configure.bat!
 !endif
 
+!if "$(CC)" == ""
+!error CC not set, run the proper WCE*.bat from this shell to set it!
+!endif
+
+# All the batchfiles to setup the environment yield different
+# compilers which they put into CC.
+CXX = $(CC)
+
 !if "$(TARGET_PROC)" == "arm"
-CXX = clarm.exe
-CC = clarm.exe
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_" /D "ARMV4"
 OPT_COMMON =
 !endif
 
 !if "$(TARGET_PROC)" == "x86"
-CXX = cl.exe
-CC = cl.exe
 DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_" /D "_i386_"
-OPT_COMMON = /Gs8192 /GF
+OPT_COMMON = /Gs8192
 !endif
 
 !if "$(TARGET_PROC)" == "mips"
-CXX = clmips.exe
-CC = clmips.exe
 DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS"
-OPT_COMMON = /GF
+OPT_COMMON =
+!endif
+
+!if "$(TARGET_PROC)" == "sh3"
+DEFS_COMMON = $(DEFS_COMMON) /D "SH3" /D "_SH3_" /D "SHx"
+OPT_COMMON =
+!endif
+
+!if "$(TARGET_PROC)" == "sh4"
+DEFS_COMMON = $(DEFS_COMMON) /D "SH4" /D "_SH4_" /D "SHx"
+OPT_COMMON = /Qsh4
 !endif
 
 
 # exception handling support
-CFLAGS_COMMON = /nologo /TC /W4 /GR /GX
+CFLAGS_COMMON = /nologo /TC /W4 /GF /GR /GX
 CFLAGS_REL = $(CFLAGS_COMMON) $(OPT_REL)
 CFLAGS_STATIC_REL = $(CFLAGS_COMMON) $(OPT_STATIC_REL)
 CFLAGS_DBG = $(CFLAGS_COMMON) $(OPT_DBG)
 CFLAGS_STATIC_DBG = $(CFLAGS_COMMON) $(OPT_STATIC_DBG)
 CFLAGS_STLDBG = $(CFLAGS_COMMON) $(OPT_STLDBG)
 CFLAGS_STATIC_STLDBG = $(CFLAGS_COMMON) $(OPT_STATIC_STLDBG)
-CXXFLAGS_COMMON = /nologo /TP /W4 /GR /GX
+CXXFLAGS_COMMON = /nologo /TP /W4 /GF /GR /GX
 CXXFLAGS_REL = $(CXXFLAGS_COMMON) $(OPT_REL)
 CXXFLAGS_STATIC_REL = $(CXXFLAGS_COMMON) $(OPT_STATIC_REL)
 CXXFLAGS_DBG = $(CXXFLAGS_COMMON) $(OPT_DBG)

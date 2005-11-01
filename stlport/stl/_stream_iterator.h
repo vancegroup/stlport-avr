@@ -106,10 +106,15 @@ public:
   typedef const _Tp*                     pointer;
   typedef const _Tp&                     reference;
 
-  istream_iterator() : _M_stream(0), _M_ok(false) {}
-  istream_iterator(istream_type& __s) : _M_stream(&__s) { _M_read(); }
+  istream_iterator() : _M_stream(0), _M_ok(false), _M_read_done(true) {}
+  istream_iterator(istream_type& __s) : _M_stream(&__s), _M_ok(false), _M_read_done(false) {}
 
-  reference operator*() const { return _M_value; }
+  reference operator*() const {
+    if (!_M_read_done) {
+      _M_read();
+    }
+    return _M_value;
+  }
 
   _STLP_DEFINE_ARROW_OPERATOR
 
@@ -123,20 +128,28 @@ public:
     return __tmp;
   }
 
-  bool _M_equal(const _Self& __x) const
-    { return (_M_ok == __x._M_ok) && (!_M_ok || _M_stream == __x._M_stream); }
+  bool _M_equal(const _Self& __x) const {
+    if (!_M_read_done) {
+      _M_read();
+    }
+    if (!__x._M_read_done) {
+      __x._M_read();
+    }
+    return (_M_ok == __x._M_ok) && (!_M_ok || _M_stream == __x._M_stream);
+  }
 
 private:
   istream_type* _M_stream;
-  _Tp _M_value;
-  bool _M_ok;
+  mutable _Tp _M_value;
+  mutable bool _M_ok, _M_read_done;
 
-  void _M_read() {
-    _M_ok = (_M_stream && *_M_stream) ? true : false;
+  void _M_read() const {
+    _M_ok = ((_M_stream != 0) && !_M_stream->fail());
     if (_M_ok) {
       *_M_stream >> _M_value;
-      _M_ok = *_M_stream ? true : false;
+      _M_ok = !_M_stream->fail();
     }
+    _M_read_done = true;
   }
 };
 

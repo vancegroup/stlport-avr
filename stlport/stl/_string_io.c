@@ -32,12 +32,8 @@ operator << (basic_ostream<_CharT, _Traits>& __os,
   typedef basic_ostream<_CharT, _Traits> __ostream;
   typedef typename basic_string<_CharT, _Traits, _Alloc>::size_type size_type;
 
-  /* The hypothesis of this implementation is that size_type is unsigned
-   * and streamsize is at least equal to size_type.
-   * It is important in the way we compare it to streamsize.
-   */
+  // The hypothesis of this implementation is that size_type is unsigned:
   typedef char __static_assert_unsigned_size_type[__STATIC_CAST(size_type, -1) > 0];
-  typedef char __static_assert_gt_or_eq_size[sizeof(streamsize) >= sizeof(size_type)];
 
   typename __ostream::sentry __sentry(__os);
   bool __ok = false;
@@ -45,17 +41,13 @@ operator << (basic_ostream<_CharT, _Traits>& __os,
   if (__sentry) {
     __ok = true;
     size_type __n = __s.size();
-    streamsize __pad_len = 0;
     const bool __left = (__os.flags() & __ostream::left) != 0;
     const streamsize __w = __os.width(0);
     basic_streambuf<_CharT, _Traits>* __buf = __os.rdbuf();
 
-    /* If __n cast in streamsize is negative the string is already longer
-     * than the possible output stream width requested so no need to pad.
-     */
-    if ((__STATIC_CAST(streamsize, __n) >= 0) && (__w > __STATIC_CAST(streamsize, __n))) {
-      __pad_len = __w - __n;
-    }
+    const bool __need_pad = (((sizeof(streamsize) > sizeof(size_t)) && (__STATIC_CAST(streamsize, __n) < __w)) ||
+                             ((sizeof(streamsize) <= sizeof(size_t)) && (__n < __STATIC_CAST(size_t, __w))));
+    streamsize __pad_len = __need_pad ? __w - __n : 0;
     
     if (!__left)
       __ok = __stlp_string_fill(__os, __buf, __pad_len);    
@@ -79,12 +71,8 @@ operator >> (basic_istream<_CharT, _Traits>& __is,
   typedef basic_istream<_CharT, _Traits> __istream;
   typedef typename basic_string<_CharT, _Traits, _Alloc>::size_type size_type;
 
-  /* The hypothesis of this implementation is that size_type is unsigned
-   * and streamsize is at least equal to size_type.
-   * It is important in the way we compare it to streamsize.
-   */
+  // The hypothesis of this implementation is that size_type is unsigned:
   typedef char __static_assert_unsigned_size_type[__STATIC_CAST(size_type, -1) > 0];
-  typedef char __static_assert_gt_or_eq_size[sizeof(streamsize) >= sizeof(size_type)];
 
   typename __istream::sentry __sentry(__is);
 
@@ -99,11 +87,11 @@ operator >> (basic_istream<_CharT, _Traits>& __is,
     size_type __n;
     if (__width <= 0)
       __n = __s.max_size();
-    /* If string max_size() cast to streamsize is negative it means that
-     * the required extraction size will never exceed the possible string
-     * representation.
+    /* __width can only overflow size_type if sizeof(streamsize) > sizeof(size_type)
+     * because here we know that __width is positive and the stattic assertion check 
+     * that size_type is unsigned.
      */
-    else if ((__STATIC_CAST(streamsize, __s.max_size()) >= 0) && 
+    else if (sizeof(streamsize) > sizeof(size_type) && 
              (__width > __STATIC_CAST(streamsize, __s.max_size())))
       __n = 0;
     else {

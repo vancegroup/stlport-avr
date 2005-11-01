@@ -107,8 +107,8 @@ struct locale_data
   const char *filedata;    /* Region mapping the file data.  */
   off_t filesize;    /* Size of the file (and the region).  */
 
-  //  unsigned int usage_count;
-  //  int mmaped;
+  /*  unsigned int usage_count; */
+  /*  int mmaped; */
 
   unsigned int nstrings;  /* Number of strings below.  */
   union locale_data_value

@@ -40,166 +40,179 @@ const size_t ctype<char>::table_size;
 
 # define PRINTFLAG ctype_base::mask( _Locale_PRINT & ~(_Locale_UPPER | _Locale_LOWER | _Locale_ALPHA | _Locale_DIGIT | _Locale_PUNCT | _Locale_SPACE | _Locale_XDIGIT )) 
 
-// Ctype table for the ASCII character set.
-// There are 257 entries in this table.  The first is EOF (-1).  
-// That is, the "table" seen by ctype<char> member functions is
-// _S_classic_table + 1.
-const ctype_base::mask 
-ctype<char>::_S_classic_table[ctype<char>::table_size] = 
-{
-  cntrl /* null */,
-  cntrl /* ^A */,
-  cntrl /* ^B */,
-  cntrl /* ^C */,
-  cntrl /* ^D */,
-  cntrl /* ^E */,
-  cntrl /* ^F */,
-  cntrl /* ^G */,
-  cntrl /* ^H */,
-  ctype_base::mask(space | cntrl) /* tab */,
-  ctype_base::mask(space | cntrl) /* LF */,
-  ctype_base::mask(space | cntrl) /* ^K */,
-  ctype_base::mask(space | cntrl) /* FF */,
-  ctype_base::mask(space | cntrl) /* ^M */,
-  cntrl /* ^N */,
-  cntrl /* ^O */,
-  cntrl /* ^P */,
-  cntrl /* ^Q */,
-  cntrl /* ^R */,
-  cntrl /* ^S */,
-  cntrl /* ^T */,
-  cntrl /* ^U */,
-  cntrl /* ^V */,
-  cntrl /* ^W */,
-  cntrl /* ^X */,
-  cntrl /* ^Y */,
-  cntrl /* ^Z */,
-  cntrl /* esc */,
-  cntrl /* ^\ */,
-  cntrl /* ^] */,
-  cntrl /* ^^ */,
-  cntrl /* ^_ */,
-  ctype_base::mask (space | PRINTFLAG) /*  */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ! */,
-  ctype_base::mask (punct | PRINTFLAG ) /* " */,
-  ctype_base::mask (punct | PRINTFLAG ) /* # */,
-  ctype_base::mask (punct | PRINTFLAG ) /* $ */,
-  ctype_base::mask (punct | PRINTFLAG ) /* % */,
-  ctype_base::mask (punct | PRINTFLAG ) /* & */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ' */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ( */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ) */,
-  ctype_base::mask (punct | PRINTFLAG ) /* * */,
-  ctype_base::mask (punct | PRINTFLAG ) /* + */,
-  ctype_base::mask (punct | PRINTFLAG ) /* , */,
-  ctype_base::mask (punct | PRINTFLAG ) /* - */,
-  ctype_base::mask (punct | PRINTFLAG ) /* . */,
-  ctype_base::mask (punct | PRINTFLAG ) /* / */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 0 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 1 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 2 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 3 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 4 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 5 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 6 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 7 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 8 */,
-  ctype_base::mask(digit | PRINTFLAG | xdigit) /* 9 */,
-  ctype_base::mask (punct | PRINTFLAG ) /* : */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ; */,
-  ctype_base::mask (punct | PRINTFLAG ) /* < */,
-  ctype_base::mask (punct | PRINTFLAG ) /* = */,
-  ctype_base::mask (punct | PRINTFLAG ) /* > */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ? */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ! */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* A */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* B */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* C */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* D */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* E */,
-  ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* F */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* G */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* H */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* I */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* J */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* K */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* L */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* M */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* N */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* O */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* P */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* Q */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* R */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* S */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* T */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* U */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* V */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* W */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* X */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* Y */,
-  ctype_base::mask(alpha | PRINTFLAG | upper) /* Z */,
-  ctype_base::mask (punct | PRINTFLAG ) /* [ */,
-  ctype_base::mask (punct | PRINTFLAG ) /* \ */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ] */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ^ */,
-  ctype_base::mask (punct | PRINTFLAG ) /* _ */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ` */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* a */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* b */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* c */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* d */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* e */,
-  ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* f */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* g */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* h */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* i */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* j */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* k */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* l */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* m */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* n */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* o */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* p */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* q */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* r */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* s */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* t */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* u */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* v */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* w */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* y */,
-  ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
-  ctype_base::mask (punct | PRINTFLAG ) /* { */,
-  ctype_base::mask (punct | PRINTFLAG ) /* | */,
-  ctype_base::mask (punct | PRINTFLAG ) /* } */,
-  ctype_base::mask (punct | PRINTFLAG ) /* ~ */,
-  cntrl /* del (0x7f)*/,
+const ctype_base::mask* 
+ctype<char>::classic_table() _STLP_NOTHROW {
+  /* Ctype table for the ASCII character set.
+   * There are 257 entries in this table.  The first is EOF (-1).  
+   * That is, the "table" seen by ctype<char> member functions is
+   * _S_classic_table + 1.
+   */
+  /* The following static assert check that alpha is not defined as upper | lower.
+   * STLport flag character like 'a' with alpha | lower, if alpha is badly configure
+   * then 'a' will also be seen as upper which is wrong.
+   */
+#ifndef __MWERKS__
+  /* CodeWarrior 8 don't understabd this */
+  typedef char __static_assert[(alpha & (lower | upper)) == 0];
+#endif
+
+  static const ctype_base::mask _S_classic_table[table_size] = 
+  {
+    cntrl /* null */,
+    cntrl /* ^A */,
+    cntrl /* ^B */,
+    cntrl /* ^C */,
+    cntrl /* ^D */,
+    cntrl /* ^E */,
+    cntrl /* ^F */,
+    cntrl /* ^G */,
+    cntrl /* ^H */,
+    ctype_base::mask(space | cntrl) /* tab */,
+    ctype_base::mask(space | cntrl) /* LF */,
+    ctype_base::mask(space | cntrl) /* ^K */,
+    ctype_base::mask(space | cntrl) /* FF */,
+    ctype_base::mask(space | cntrl) /* ^M */,
+    cntrl /* ^N */,
+    cntrl /* ^O */,
+    cntrl /* ^P */,
+    cntrl /* ^Q */,
+    cntrl /* ^R */,
+    cntrl /* ^S */,
+    cntrl /* ^T */,
+    cntrl /* ^U */,
+    cntrl /* ^V */,
+    cntrl /* ^W */,
+    cntrl /* ^X */,
+    cntrl /* ^Y */,
+    cntrl /* ^Z */,
+    cntrl /* esc */,
+    cntrl /* ^\ */,
+    cntrl /* ^] */,
+    cntrl /* ^^ */,
+    cntrl /* ^_ */,
+    ctype_base::mask (space | PRINTFLAG) /*  */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ! */,
+    ctype_base::mask (punct | PRINTFLAG ) /* " */,
+    ctype_base::mask (punct | PRINTFLAG ) /* # */,
+    ctype_base::mask (punct | PRINTFLAG ) /* $ */,
+    ctype_base::mask (punct | PRINTFLAG ) /* % */,
+    ctype_base::mask (punct | PRINTFLAG ) /* & */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ' */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ( */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ) */,
+    ctype_base::mask (punct | PRINTFLAG ) /* * */,
+    ctype_base::mask (punct | PRINTFLAG ) /* + */,
+    ctype_base::mask (punct | PRINTFLAG ) /* , */,
+    ctype_base::mask (punct | PRINTFLAG ) /* - */,
+    ctype_base::mask (punct | PRINTFLAG ) /* . */,
+    ctype_base::mask (punct | PRINTFLAG ) /* / */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 0 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 1 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 2 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 3 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 4 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 5 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 6 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 7 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 8 */,
+    ctype_base::mask(digit | PRINTFLAG | xdigit) /* 9 */,
+    ctype_base::mask (punct | PRINTFLAG ) /* : */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ; */,
+    ctype_base::mask (punct | PRINTFLAG ) /* < */,
+    ctype_base::mask (punct | PRINTFLAG ) /* = */,
+    ctype_base::mask (punct | PRINTFLAG ) /* > */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ? */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ! */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* A */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* B */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* C */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* D */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* E */,
+    ctype_base::mask(alpha | PRINTFLAG | upper | xdigit) /* F */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* G */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* H */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* I */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* J */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* K */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* L */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* M */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* N */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* O */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* P */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* Q */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* R */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* S */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* T */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* U */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* V */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* W */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* X */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* Y */,
+    ctype_base::mask(alpha | PRINTFLAG | upper) /* Z */,
+    ctype_base::mask (punct | PRINTFLAG ) /* [ */,
+    ctype_base::mask (punct | PRINTFLAG ) /* \ */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ] */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ^ */,
+    ctype_base::mask (punct | PRINTFLAG ) /* _ */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ` */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* a */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* b */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* c */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* d */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* e */,
+    ctype_base::mask(alpha | PRINTFLAG | lower | xdigit) /* f */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* g */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* h */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* i */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* j */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* k */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* l */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* m */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* n */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* o */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* p */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* q */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* r */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* s */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* t */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* u */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* v */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* w */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* y */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
+    ctype_base::mask (punct | PRINTFLAG ) /* { */,
+    ctype_base::mask (punct | PRINTFLAG ) /* | */,
+    ctype_base::mask (punct | PRINTFLAG ) /* } */,
+    ctype_base::mask (punct | PRINTFLAG ) /* ~ */,
+    cntrl /* del (0x7f)*/,
     /* ASCII is a 7-bit code, so everything else is non-ASCII */
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
-ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0)
-};
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),
+    ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0),  ctype_base::mask(0)
+  };
+  return _S_classic_table;
+}
 
 // For every c in the range 0 <= c < 256, _S_upper[c] is the
 // uppercased version of c and _S_lower[c] is the lowercased
 // version.  As before, these two tables assume the ASCII character
 // set.
 
-const unsigned char ctype<char>::_S_upper[ctype<char>::table_size] =
+const unsigned char _S_upper[ctype<char>::table_size] =
 {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -235,7 +248,7 @@ const unsigned char ctype<char>::_S_upper[ctype<char>::table_size] =
   0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
 };
 
-const unsigned char ctype<char>::_S_lower[ctype<char>::table_size] =
+const unsigned char _S_lower[ctype<char>::table_size] =
 {
   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
   0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -271,6 +284,26 @@ const unsigned char ctype<char>::_S_lower[ctype<char>::table_size] =
   0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
 };
 
+//An helper struct to check wchar_t index without generating warnings
+//under some compilers (gcc) because of a limited range of value 
+//(when wchar_t is unsigned)
+template <bool _IsSigned>
+struct _WCharIndexT;
+
+_STLP_TEMPLATE_NULL
+struct _WCharIndexT<true> {
+  static bool in_range(wchar_t c, size_t upperBound) {
+    return c >= 0 && size_t(c) < upperBound;
+  }
+};
+_STLP_TEMPLATE_NULL
+struct _WCharIndexT<false> {
+  static bool in_range(wchar_t c, size_t upperBound) {
+    return size_t(c) < upperBound;
+  }
+};
+
+typedef _WCharIndexT<wchar_t(-1) < 0> _WCharIndex;
 
 // Some helper functions used in ctype<>::scan_is and scan_is_not.
 
@@ -282,7 +315,7 @@ struct _Ctype_is_mask {
   const ctype_base::mask* _M_table;
   
   _Ctype_is_mask(ctype_base::mask __m, const ctype_base::mask* __t) : _Mask(__m), _M_table(__t) {}
-  bool operator()(char __c) const { return (_M_table[(unsigned char) __c] & _Mask) != 0; }
+  bool operator()(char __c) const { return (_M_table[(unsigned char) __c] & _Mask) == _Mask; }
 };
 
 struct _Ctype_not_mask {
@@ -293,14 +326,14 @@ struct _Ctype_not_mask {
   const ctype_base::mask* _M_table;
   
   _Ctype_not_mask(ctype_base::mask __m, const ctype_base::mask* __t) : _Mask(__m), _M_table(__t) {}
-  bool operator()(char __c) const { return (_M_table[(unsigned char) __c] & _Mask) == 0; }
+  bool operator()(char __c) const { return (_M_table[(unsigned char) __c] & _Mask) != _Mask; }
 };
  
 ctype<char>::ctype(const ctype_base::mask * __tab, bool __del, size_t __refs) : 
-  locale::facet(__refs) /* , _M_ctype_table(0) */ {
-  _M_ctype_table = __tab ? __tab : classic_table();
-  _M_delete = __tab && __del;
-}
+  locale::facet(__refs),
+  _M_ctype_table(__tab ? __tab : classic_table()),
+  _M_delete(__tab && __del)
+{}
 
 ctype<char>::~ctype() {
   if (_M_delete)
@@ -317,21 +350,17 @@ ctype<char>::scan_not(ctype_base::mask  __m, const char* __low, const char* __hi
   return _STLP_STD::find_if(__low, __high, _Ctype_not_mask(__m, _M_ctype_table));
 }
 
-char        
-ctype<char>::do_toupper(char __c) const
+char ctype<char>::do_toupper(char __c) const
 { return (char) _S_upper[(unsigned char) __c]; }
-char        
-ctype<char>::do_tolower(char __c) const
+char ctype<char>::do_tolower(char __c) const
 { return (char) _S_lower[(unsigned char) __c]; }
-const char* 
-ctype<char>::do_toupper(char* __low, const char* __high) const {
+
+const char* ctype<char>::do_toupper(char* __low, const char* __high) const {
   for ( ; __low < __high; ++__low)
     *__low = (char) _S_upper[(unsigned char) *__low];
   return __high;
-}
-  
-const char* 
-ctype<char>::do_tolower(char* __low, const char* __high) const {
+}  
+const char* ctype<char>::do_tolower(char* __low, const char* __high) const {
   for ( ; __low < __high; ++__low)
     *__low = (char) _S_lower[(unsigned char) *__low];
   return __high;
@@ -368,7 +397,7 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
     _Ctype_w_is_mask(ctype_base::mask m, const ctype_base::mask* t)
       : M(m), table(t) {}
     bool operator()(wchar_t c) const {
-      return /*c >= 0 &&*/ size_t(c) < ctype<char>::table_size && (table[c] & M);
+      return _WCharIndex::in_range(c, ctype<char>::table_size) && (table[c] & M);
     }
   };
 
@@ -380,7 +409,7 @@ ctype<wchar_t>::~ctype() {}
 
 bool ctype<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const {
   const ctype_base::mask * table = ctype<char>::classic_table();
-  return c >= 0 && size_t(c) < ctype<char>::table_size && (m & table[c]);
+  return _WCharIndex::in_range(c, ctype<char>::table_size) && (m & table[c]);
 }
 
 const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
@@ -389,7 +418,7 @@ const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
   const ctype_base::mask * table = ctype<char>::classic_table();
   for ( ; low < high; ++low, ++vec) {
     wchar_t c = *low;
-    *vec = c >= 0 && size_t(c) < ctype<char>::table_size ? table[c] : ctype_base::mask (0);
+    *vec = _WCharIndex::in_range(c, ctype<char>::table_size) ? table[c] : ctype_base::mask(0);
   }
   return high;
 }
@@ -408,35 +437,31 @@ ctype<wchar_t>::do_scan_not(ctype_base::mask  m,
 }
 
 wchar_t ctype<wchar_t>::do_toupper(wchar_t c) const {
-  return c >= 0 && size_t(c) < ctype<char>::table_size
-    ? (wchar_t) ctype<char>::_S_upper[c]
-    : c;
+  return _WCharIndex::in_range(c, ctype<char>::table_size) ? (wchar_t)_S_upper[c]
+                                                           : c;
 }
 
 const wchar_t* 
 ctype<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = c >= 0 && size_t(c) < ctype<char>::table_size
-      ? (wchar_t) ctype<char>::_S_upper[c]
-      : c;
+    *low = _WCharIndex::in_range(c, ctype<char>::table_size) ? (wchar_t)_S_upper[c]
+                                                             : c;
   }
   return high;
 }
 
 wchar_t ctype<wchar_t>::do_tolower(wchar_t c) const {
-  return c >= 0 && size_t(c) < ctype<char>::table_size
-    ? (wchar_t) ctype<char>::_S_lower[c]
-    : c;
+  return _WCharIndex::in_range(c, ctype<char>::table_size) ? (wchar_t)_S_lower[c]
+                                                           : c;
 }
 
 const wchar_t* 
 ctype<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low) {
     wchar_t c = *low;
-    *low = c >= 0 && size_t(c) < ctype<char>::table_size
-      ? (wchar_t) ctype<char>::_S_lower[c]
-      : c;
+    *low = _WCharIndex::in_range(c, ctype<char>::table_size) ? (wchar_t)_S_lower[c]
+                                                             : c;
   }
   return high;
 }

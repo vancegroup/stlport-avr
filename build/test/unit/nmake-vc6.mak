@@ -3,5 +3,8 @@
 
 COMPILER_NAME=vc6
 
+OPT_STLDBG = /Zm800
+OPT_STATIC_STLDBG = /Zm800
+
 !include nmake-vc-common.mak
 

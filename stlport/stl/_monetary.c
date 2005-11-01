@@ -117,7 +117,7 @@ pair<_InIt1, bool> __get_string( _InIt1 __first, _InIt1 __last,
 
 template <class _InIt, class _OuIt, class _CharT>
 bool
-__get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
+__get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out_ite,
                      const ctype<_CharT>& _c_type,
                      _CharT __point, int __frac_digits, _CharT __sep,
                      const string& __grouping, bool &__syntax_ok) {
@@ -131,7 +131,7 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
   while (__first != __last) {
     if (_c_type.is(ctype_base::digit, *__first)) {
       ++__current_group_size;
-      *__out++ = *__first++;
+      *__out_ite++ = *__first++;
     }
     else if (__group_sizes_end) {
       if (*__first == __sep) {
@@ -156,7 +156,7 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
     
     if (__first == __last || *__first != __point) {
       for (int __digits = 0; __digits != __frac_digits; ++__digits)
-        *__out++ = _CharT('0');
+        *__out_ite++ = _CharT('0');
       return true; // OK not to have decimal point
     }
   }
@@ -166,7 +166,7 @@ __get_monetary_value(_InIt& __first, _InIt __last, _OuIt __out,
   int __digits = 0;
 
   while (__first != __last && _c_type.is(ctype_base::digit, *__first)) {
-      *__out++ = *__first++;
+      *__out_ite++ = *__first++;
      ++__digits;
   }
 
@@ -206,7 +206,7 @@ _InputIter _S_do_get(_InputIter __s, _InputIter __end, bool  __intl,
   int __i;
   bool __symbol_required = (__str.flags() & ios_base::showbase) != 0;
   string_type __buf;
-  back_insert_iterator<string_type> __out(__buf);
+  back_insert_iterator<string_type> __out_ite(__buf);
 
   for (__i = 0; __i < 4; ++__i) {
     switch (__format.field[__i]) {
@@ -292,7 +292,7 @@ _InputIter _S_do_get(_InputIter __s, _InputIter __end, bool  __intl,
       char_type __sep = __grouping.empty() ? char_type() : 
       __intl ? __punct_intl.thousands_sep() : __punct.thousands_sep();
 
-      __result = __get_monetary_value(__s, __end, __out, __c_type,
+      __result = __get_monetary_value(__s, __end, __out_ite, __c_type,
                                       __point, __frac_digits,
                                       __sep,
                                       __grouping, __syntax_ok);      

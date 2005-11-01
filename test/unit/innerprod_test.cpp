@@ -66,7 +66,7 @@ void InnerprodTest::inprod2()
     v1[i] = i + 1;
     v2[i] = v1.size() - i;
   }
-  size_t result=inner_product(v1.begin(), v1.end(), v2.begin(), 1, mult, add);
+  size_t result=inner_product(v1.begin(), v1.end(), v2.begin(), (size_t)1, mult, add);
 
   CPPUNIT_ASSERT(result == 64);
 }

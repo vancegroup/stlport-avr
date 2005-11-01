@@ -275,7 +275,7 @@ public:
     for ( ; __i != _Base::end() && __len < __new_size; ++__i, ++__len);
     
     if (__len == __new_size)
-      erase(this->end());
+      erase(iterator(&_M_iter_list, __i), this->end());
     else                          // __i == end()
       _Base::insert(_Base::end(), __new_size - __len, __x);
   }

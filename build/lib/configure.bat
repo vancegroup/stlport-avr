@@ -4,7 +4,7 @@ REM *
 REM * configure.bat for setting up compiling STLport under Windows
 REM * to see available options, call with option --help
 REM *
-REM * Copyright (C) 2004 Michael Fink
+REM * Copyright (C) 2004,2005 Michael Fink
 REM *
 REM **************************************************************************
 
@@ -16,7 +16,7 @@ echo.
 REM no options at all?
 if NOT "%1xyz123" == "xyz123" goto init
 
-echo Please specify some options or use "configure.bat --help" to see the
+echo Please specify some options or use "configure --help" to see the
 echo available options.
 goto skp_comp
 
@@ -26,7 +26,7 @@ REM initially create/overwrite config.mak
 echo # STLport Configuration Tool for Windows > ..\Makefiles\config.mak
 echo # >> ..\Makefiles\config.mak
 echo # config.mak generated with command line: >> ..\Makefiles\config.mak
-echo # configure.bat %1 %2 %3 %4 %5 %6 %7 %8 %9 >> ..\Makefiles\config.mak
+echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> ..\Makefiles\config.mak
 echo # >> ..\Makefiles\config.mak
 
 set STLPORT_COMPILE_COMMAND=
@@ -48,11 +48,6 @@ if "%1" == "-c" goto opt_comp
 if "%1" == "/c" goto opt_comp
 if "%1" == "--compiler" goto opt_comp
 
-REM processor option
-if "%1" == "-p" goto opt_proc
-if "%1" == "/p" goto opt_proc
-if "%1" == "--processor" goto opt_proc
-
 REM cross compiling
 if "%1" == "-x" goto opt_x
 if "%1" == "/x" goto opt_x
@@ -61,6 +56,12 @@ if "%1" == "--cross" goto opt_x
 REM C runtime library
 if "%1" == "--rtl-static" goto opt_rtl
 if "%1" == "--rtl-dynamic" goto opt_rtl
+
+REM additional compiler options
+if "%1" == "--extra-cxxflag" goto opt_xtra
+
+REM MinGW without Msys config
+if "%1" == "--mingw" goto opt_mingw
 
 REM clean rule
 if "%1" == "--clean" goto opt_clean
@@ -92,19 +93,12 @@ echo    msvc6    Microsoft Visual C++ 6.0
 echo    msvc7    Microsoft Visual C++ .NET 2002
 echo    msvc71   Microsoft Visual C++ .NET 2003
 echo    msvc8    Microsoft Visual C++ .NET 2005 (beta)
-REM echo    icl      Intel C++ Compiler
-echo    evc3     Microsoft eMbedded Visual C++ 3
-echo    evc4     Microsoft eMbedded Visual C++ .NET
-echo.
-echo "-p <processor>" or "--processor <processor>"
-echo    Sets target processor for given compiler; currently only used for
-echo    evc3 and evc4 compiler. The following keywords are available:
-echo    ARM     ARM processor
-echo    x86     x86 processor (Emulator)
-echo    MIPS    MIPS processor (evc3 only)
-echo    MIPS16  MIPS16 processor (evc4 only)
-echo    MIPSII  MIPS II processor (evc4 only)
-echo    MIPSIV  MIPS IV processor (evc4 only)
+echo    icl      Intel C++ Compiler
+echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
+echo    evc4     Microsoft eMbedded Visual C++ .NET (*)
+echo  (*) For these compilers the target processor is determined automatically.
+echo      You must run the WCE*.BAT file you wish to build STLport for before
+echo      running configure.
 echo.
 echo "-x"
 echo    Enables cross-compiling; the result is that all built files that are
@@ -124,6 +118,20 @@ echo    "--rtl-dynamic -> _STLP_USE_DYNAMIC_LIB"
 echo    "--rtl-static  -> _STLP_USE_STATIC_LIB"
 echo    This is a Microsoft-only option.
 echo.
+echo "--extra-cxxflag <additional compilation options>"
+echo    Use this option to add any compilation flag to the build system. For instance
+echo    it can be used to activate a specific processor optimization depending on your
+echo    processor. For Visual C++ .Net 2003, to activate pentium 3 optim you will use:
+echo    --extra-cxxflag /G7
+echo    If you have several options use several --extra-cxxflag options. For instance
+echo    to also force use of wchar_t as an intrinsic type:
+echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
+echo.
+echo "--mingw"
+echo    If you want to build STLport libraries using the MinGW package in a cmd or
+echo    command console that is to say without help of a Msys or Cygwin environment
+echo    you have to activate this option.
+echo.    
 echo "--clean"
 echo    Removes the build configuration file.
 goto skp_comp
@@ -184,14 +192,14 @@ echo Setting compiler: Microsoft eMbedded Visual C++ 3
 echo COMPILER_NAME=evc3 >> ..\Makefiles\config.mak
 echo CEVERSION=300 >> ..\Makefiles\config.mak
 set STLPORT_COMPILE_COMMAND=nmake -f nmake-evc3.mak
-goto oc_end
+goto proc
 
 :oc_evc4
 echo Setting compiler: Microsoft eMbedded Visual C++ .NET
 echo COMPILER_NAME=evc4 >> ..\Makefiles\config.mak
 echo CEVERSION=420 >> ..\Makefiles\config.mak
 set STLPORT_COMPILE_COMMAND=nmake -f nmake-evc4.mak
-goto oc_end
+goto proc
 
 :oc_end
 shift
@@ -201,65 +209,93 @@ goto cont_lp
 
 REM **************************************************************************
 REM *
-REM * Target processor configuration
+REM * Target processor configuration (automatic)
 REM *
 REM **************************************************************************
-:opt_proc
+:proc
 
-if "%STLPORT_SELECTED_CONFIG%" == "evc3" goto op_ok
-if "%STLPORT_SELECTED_CONFIG%" == "evc4" goto op_ok
+if "%CC%" == "" goto pr_err
+if "%TARGETCPU%" == "" goto pr_err
 
-echo Error: Setting processor for compiler other than evc3 and evc4!
-goto op_end
+if "%CC%" == "clarm.exe" goto prc_arm
+if "%CC%" == "cl.exe" goto prc_x86
+if "%CC%" == "clmips.exe" goto prc_mips
+if "%CC%" == "shcl.exe" goto prc_shx
+if "%CC%" == "clsh.exe" goto prc_shx
 
-:op_ok
+:prc_arm
+if "%TARGETCPU%" == "ARM" goto pr_arm
+if "%TARGETCPU%" == "ARMV4" goto pr_arm
+if "%TARGETCPU%" == "ARMV4I" goto pr_arm
+if "%TARGETCPU%" == "ARMV4T" goto pr_arm
+goto pr_err
 
-if "%2" == "ARM" goto op_arm
-if "%2" == "Arm" goto op_arm
-if "%2" == "arm" goto op_arm
+:prc_x86
+if "%TARGETCPU%" == "X86" goto pr_x86
+if "%TARGETCPU%" == "X86EMnset CFG=none" goto pr_x86
+if "%TARGETCPU%" == "emulator" goto pr_x86
+if "%TARGETCPU%" == "x86" goto pr_x86
+goto pr_err
 
-if "%2" == "X86" goto op_x86
-if "%2" == "x86" goto op_x86
+:prc_mips
+if "%TARGETCPU%" == "R4100" goto pr_mips
+if "%TARGETCPU%" == "R4111" goto pr_mips
+if "%TARGETCPU%" == "R4300" goto pr_mips
+if "%TARGETCPU%" == "MIPS16" goto pr_mips
+if "%TARGETCPU%" == "MIPSII" goto pr_mips
+if "%TARGETCPU%" == "MIPSII_FP" goto pr_mips
+if "%TARGETCPU%" == "MIPSIV" goto pr_mips
+if "%TARGETCPU%" == "MIPSIV_FP" goto pr_mips
 
-if "%2" == "MIPS" goto op_mips
-if "%2" == "MIPS16" goto op_mips
-if "%2" == "MIPSII" goto op_mips
-if "%2" == "MIPSIV" goto op_mips
+goto pr_err
 
-echo Unknown processor: %2
-goto op_end
+:prc_shx
+if "%TARGETCPU%" == "SH3" goto pr_sh3
+if "%TARGETCPU%" == "SH4" goto pr_sh4
+goto pr_err
 
-:op_arm
-echo Setting processor: ARM
+:pr_err
+echo Unknown target CPU: %TARGETCPU%
+goto pr_end
+
+:pr_arm
+echo Target processor: ARM
 echo TARGET_PROC=arm >> ..\Makefiles\config.mak
-goto op_end
+goto pr_end
 
-:op_x86
-echo Setting processor: x86 (Emulator)
+:pr_x86
+echo Target processor: x86 (Emulator)
 echo TARGET_PROC=x86 >> ..\Makefiles\config.mak
-goto op_end
+goto pr_end
 
-:op_mips
-echo Setting processor: MIPS
+:pr_mips
+echo Target processor: MIPS
 REM note, MIPSII (and all evc4 MIPS processors) are in the CE 4.0 SDK, so the
 REM version gets redefined here
 if "%STLPORT_SELECTED_CONFIG%" == "evc4" echo CEVERSION=400 >> ..\Makefiles\config.mak
 echo TARGET_PROC=mips >> ..\Makefiles\config.mak
 
-if "%2" == "MIPS16" echo DEFS_COMMON=/DMIPS16 >> ..\Makefiles\config.mak
-if "%2" == "MIPSII" echo DEFS_COMMON=/DMIPSII >> ..\Makefiles\config.mak
-if "%2" == "MIPSIV" echo DEFS_COMMON=/DMIPSIV >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPS16" echo DEFS_COMMON=/DMIPS16 >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII" echo DEFS_COMMON=/DMIPSII >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV" echo DEFS_COMMON=/DMIPSIV >> ..\Makefiles\config.mak
 
-if "%2" == "MIPS16" echo MIPS_MACHINE_TYPE=MIPS16 >> ..\Makefiles\config.mak
-if "%2" == "MIPSII" echo MIPS_MACHINE_TYPE=MIPS >> ..\Makefiles\config.mak
-if "%2" == "MIPSIV" echo MIPS_MACHINE_TYPE=MIPSFPU >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPS16" echo MIPS_MACHINE_TYPE=MIPS16 >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII" echo MIPS_MACHINE_TYPE=MIPS >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV" echo MIPS_MACHINE_TYPE=MIPSFPU >> ..\Makefiles\config.mak
+goto pr_end
 
-goto op_end
+:pr_sh3
+echo Target processor: %TARGETCPU%
+echo TARGET_PROC=sh3 >> ..\Makefiles\config.mak
+goto pr_end
 
-:op_end
-shift
+:pr_sh4
+echo Target processor: %TARGETCPU%
+echo TARGET_PROC=sh4 >> ..\Makefiles\config.mak
+goto pr_end
 
-goto cont_lp
+:pr_end
+goto oc_end
 
 
 REM **************************************************************************
@@ -298,6 +334,36 @@ if "%1" == "--rtl-dynamic" echo Selecting dynamic C runtime library for STLport
 if "%1" == "--rtl-dynamic" echo STLP_BUILD_FORCE_DYNAMIC_RUNTIME=1 >> ..\Makefiles\config.mak
 
 :or_end
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * Extra compilation flags
+REM *
+REM **************************************************************************
+:opt_xtra
+echo Adding '%2' compilation option
+if "%ONE_OPTION_ADDED%" == "1" goto ox_n
+
+echo DEFS = %2 >> ..\Makefiles\config.mak
+set ONE_OPTION_ADDED=1
+goto ox_end
+
+:ox_n
+echo DEFS = $(DEFS) %2 >> ..\Makefiles\config.mak
+
+:ox_end
+shift
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * MinGW build
+REM *
+REM **************************************************************************
+:opt_mingw
+echo Setting up for Mingw build.
+echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\config.mak
 goto cont_lp
 
 REM **************************************************************************

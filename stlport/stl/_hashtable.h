@@ -42,7 +42,7 @@
 #  include <stl/_iterator.h>
 #endif
 
-#ifndef _STLP_INTERNAL_FUNCTION_H
+#ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 #endif
 
@@ -201,6 +201,11 @@ template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 class hashtable {
   typedef hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> _Self;
+  typedef typename _Traits::_NonConstTraits _NonConstTraits;
+  typedef typename _Traits::_ConstTraits _ConstTraits;
+  typedef typename _Traits::_NonConstLocalTraits _NonConstLocalTraits;
+  typedef typename _Traits::_ConstLocalTraits _ConstLocalTraits;
+
 public:
   typedef _Key key_type;
   typedef _Val value_type;
@@ -209,9 +214,9 @@ public:
 
   typedef size_t            size_type;
   typedef ptrdiff_t         difference_type;
-  typedef value_type*       pointer;
+  typedef typename _NonConstTraits::pointer pointer;
   typedef const value_type* const_pointer;
-  typedef value_type&       reference;
+  typedef typename _NonConstTraits::reference reference;
   typedef const value_type& const_reference;
   typedef forward_iterator_tag _Iterator_category;
 
@@ -242,11 +247,6 @@ private:
   _BucketVector         _M_buckets;
   size_type             _M_num_elements;
   float                 _M_max_load_factor;
-
-  typedef typename _Traits::_NonConstTraits _NonConstTraits;
-  typedef typename _Traits::_ConstTraits _ConstTraits;
-  typedef typename _Traits::_NonConstLocalTraits _NonConstLocalTraits;
-  typedef typename _Traits::_ConstLocalTraits _ConstLocalTraits;
 
 public:
   typedef _STLP_PRIV::_Ht_iterator<_ElemsIte, _NonConstTraits> iterator;
@@ -308,8 +308,8 @@ public:
     : _M_hash(_AsMoveSource(src.get()._M_hash)),
       _M_equals(_AsMoveSource(src.get()._M_equals)),
       _M_get_key(_AsMoveSource(src.get()._M_get_key)),
-      _M_elems(_AsMoveSource(src.get()._M_elems)),
-      _M_buckets(_AsMoveSource(src.get()._M_buckets)),
+      _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
+      _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
       _M_num_elements(src.get()._M_num_elements),
       _M_max_load_factor(src.get()._M_max_load_factor) {
   }
@@ -590,7 +590,7 @@ _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
-struct __move_traits<hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All> > {
+struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
   //Hashtables are movable:
   typedef __true_type implemented;
 

@@ -27,6 +27,11 @@
 #  include _STLP_NATIVE_C_HEADER(stdlib.h)
 #endif
 
+/* on evc3/evc4 including stdlib.h also defines setjmp macro */
+#if defined(_STLP_WCE)
+#  define _STLP_NATIVE_SETJMP_H_INCLUDED
+#endif
+
 #if defined (__MSL__) && (__MSL__ <= 0x5003)
 namespace std {
 	typedef ::div_t div_t;
@@ -77,9 +82,15 @@ using _STLP_VENDOR_CSTD::qsort;
 using _STLP_VENDOR_CSTD::labs;
 using _STLP_VENDOR_CSTD::ldiv;
 #    if defined (_STLP_LONG_LONG) && !defined (_STLP_NO_VENDOR_STDLIB_L)
+#      if !defined(__sun)
 using _STLP_VENDOR_CSTD::llabs;
 using _STLP_VENDOR_CSTD::lldiv_t;
 using _STLP_VENDOR_CSTD::lldiv;
+#      else
+using ::llabs;
+using ::lldiv_t;
+using ::lldiv;
+#      endif
 #    endif
 using _STLP_VENDOR_CSTD::rand;
 using _STLP_VENDOR_CSTD::srand;
@@ -96,11 +107,11 @@ _STLP_END_NAMESPACE
 #endif
 
 //MSVC starting with .Net 2003 already define all math functions in global namespace:
-#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1310)
-inline long abs(long __x)             { return ::labs(__x); }
+#if !defined (_MSC_VER) || (_MSC_VER < 1310)
+inline long abs(long __x) { return ::labs(__x); }
 #endif
 
-#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400)
+#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline ldiv_t div(long __x, long __y) { return ::ldiv(__x, __y); }
 #endif
 
@@ -112,18 +123,29 @@ inline ldiv_t div(long __x, long __y) { return ::ldiv(__x, __y); }
 
 #if defined (_STLP_LONG_LONG)
 #  if !defined (_STLP_NO_VENDOR_STDLIB_L)
+#    if !defined(__sun)
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return _STLP_VENDOR_CSTD::llabs(__x); }
 inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return _STLP_VENDOR_CSTD::lldiv(__x, __y); } 
+#    else
+inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return ::llabs(__x); }
+inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return ::lldiv(__x, __y); }
+#    endif
 #  else
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; }
 #  endif
 #endif
 
-#if defined (_STLP_IMPORT_VENDOR_CSTD)
+#if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 // ad hoc, don't replace with _STLP_VENDOR_CSTD::abs here! - ptr 2005-03-05
 _STLP_BEGIN_NAMESPACE
 using ::abs;
+#  ifndef N_PLAT_NLM
 using ::div;
+#  else // N_PLAT_NLM
+// Don't use div from clib or libc on NetWare---buggy! - ptr 2005-06-06
+inline div_t div(int __x, int __y) { div_t d; d.quot = __x / __y; d.rem = __x % __y; return d; }
+inline ldiv_t div(long __x, long __y) { ldiv_t d; d.quot = __x / __y; d.rem = __x % __y; return d; }
+#  endif
 _STLP_END_NAMESPACE
 #endif
 

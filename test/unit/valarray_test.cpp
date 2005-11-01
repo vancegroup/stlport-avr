@@ -44,7 +44,9 @@ void ValarrayTest::transcendentals()
     tmp = sin(darray);
     tmp = sinh(darray);
     tmp = tan(darray);
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
     tmp = tanh(darray);
+#endif
     tmp = exp(darray);
     tmp = log(darray);
     tmp = log10(darray);
@@ -68,7 +70,9 @@ void ValarrayTest::transcendentals()
     tmp = sin(farray);
     tmp = sinh(farray);
     tmp = tan(farray);
+#if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
     tmp = tanh(farray);
+#endif
     tmp = exp(farray);
     tmp = log(farray);
     tmp = log10(farray);
@@ -93,7 +97,9 @@ void ValarrayTest::transcendentals()
     tmp = sin(ldarray);
     tmp = sinh(ldarray);
     tmp = tan(ldarray);
+#  if !defined (STLPORT) || !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_M_AMD64)
     tmp = tanh(ldarray);
+#  endif
     tmp = exp(ldarray);
     tmp = log(ldarray);
     tmp = log10(ldarray);

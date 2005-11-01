@@ -75,8 +75,7 @@ public:
   explicit stack(const _Sequence& __s) : c(__s) {}
 
   stack(__move_source<_Self> src)
-    : c(_AsMoveSource(src.get().c)) {
-  }
+    : c(_AsMoveSource(src.get().c)) {}
 
   bool empty() const { return c.empty(); }
   size_type size() const { return c.size(); }

@@ -9,7 +9,7 @@
 
 #include <config/stl_msvc.h>
 
-#ifdef _STLP_DONT_RETURN_VOID
+#if defined (_STLP_DONT_RETURN_VOID)
 #  undef _STLP_DONT_RETURN_VOID
 #endif /*_STLP_DONT_RETURN_VOID*/
 
@@ -19,6 +19,3 @@
 #if (__ICL >= 800)
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 #endif 
-
-#define _STLP_GLOBAL_NEW_HANDLER 1
-#define _STLP_NO_VENDOR_STDLIB_L 1

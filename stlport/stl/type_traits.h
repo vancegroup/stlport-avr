@@ -384,7 +384,7 @@ template <class _Tp>  struct _IsPtrType {
 template <class _Tp1, class _Tp2>  struct _BothPtrType { 
   enum { is_ptr1 = _IsPtr<_Tp1>::_Ret };
   enum { is_ptr2 = _IsPtr<_Tp2>::_Ret };
-  typedef typename __bool2type<is_ptr1 && is_ptr2>::_Ret _Type;
+  typedef typename __bool2type<(is_ptr1 && is_ptr2)>::_Ret _Type;
   static _Type _Ret() { return _Type();} 
 };
 
@@ -514,7 +514,7 @@ struct _OKToSwap {
   enum { is_ref1 = __type2bool<_IsRef1>::_Ret };
   enum { is_ref2 = __type2bool<_IsRef2>::_Ret };
 
-  typedef typename __bool2type<same && is_ref1 && is_ref2>::_Ret _Type;
+  typedef typename __bool2type<(same && is_ref1 && is_ref2)>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
 
@@ -543,88 +543,26 @@ inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
   return _DefaultZeroValue<_Tp>();
 }
 
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 /*
  * Base class used: 
  * - to simulate partial template specialization
  * - to simulate partial function ordering
+ * - to recognize STLport class from user specialized one
  */
 template <class _Tp>
 struct __stlport_class {
   typedef _Tp _Type;
 };
 
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-template <class _CondT>
-struct _IsConvertibleIfNotAux /*<__true_type>*/ {
-  template <class _Derived, class _Base>
-  struct _In {
-    typedef __false_type _Ret;
-  };
-};
-
-_STLP_TEMPLATE_NULL
-struct _IsConvertibleIfNotAux<__false_type> {
-  template <class _Derived, class _Base>
-  struct _In {
-    typedef typename _IsConvertibleType<_Derived, _Base>::_Type _Ret;
-  };
-};
-
-template <class _CondT, class _Derived, class _Base>
-struct _IsConvertibleIfNot {
-  typedef typename _IsConvertibleIfNotAux<_CondT>::_STLP_TEMPLATE _In<_Derived, _Base>::_Ret _Ret;
-};
-#  endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-
 template <class _Tp>
-struct _IsStlportClass {
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
-  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
-  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-
-  typedef typename _IsConvertibleIfNot<_Tr3, _Tp, __stlport_class<_Tp> >::_Ret _Ret;
-#  else
-  typedef typename _IsConvertible<_Tp, __stlport_class<_Tp> >::_Type _Ret;
-#  endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
+struct _IsSTLportClass {
+  typedef typename _IsConvertibleType<_Tp, __stlport_class<_Tp> >::_Type _Ret;
 };
 
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-template <class _CondT>
-struct _IsStlportClassCondNotAux /*<__true_type>*/ {
-  template <class _Tp>
-  struct _In {
-    typedef __true_type _Ret;
-  };
-};
-
-_STLP_TEMPLATE_NULL
-struct _IsStlportClassCondNotAux<__false_type> {
-  template <class _Tp>
-  struct _In {
-    typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
-  };
-};
-
-template <class _CondT, class _Tp>
-struct _IsStlportClassCondNot {
-  typedef typename _IsStlportClassCondNotAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret _Ret;
-
-};
-#  else
-template <class _DummyCondT, class _Tp>
-struct _IsStlportClassCondNot {
-  typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
-};
-#  endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-
-#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
-
-#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Tp>
 struct _SwapImplemented {
-  typedef typename _IsStlportClass<_Tp>::_Ret _Ret;
+  typedef typename _IsSTLportClass<_Tp>::_Ret _Ret;
 };
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 

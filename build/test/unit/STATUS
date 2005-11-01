@@ -62,6 +62,33 @@ Notes:                          Same as notes for release (above)
 
 
 =======================================================================
+Operational environment:   Linux 2.6.12/SMP glibc 2.2.5, IA32
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.4
+-----------------------------------------------------------------------
+Date:                           2005-11-01
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        All pass (332 tests)
+Notes:
+Status (stldbg-shared):         All pass (332 tests)
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.2
+-----------------------------------------------------------------------
+Date:                           2005-09-05
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        All pass (331 tests)
+Notes:
+Status (stldbg-shared):         All pass (331 tests)
+Notes:
+
+
+=======================================================================
 Operational environment:   Linux 2.4.26/SMP glibc 2.2.5, IA32
 =======================================================================
 
@@ -79,12 +106,12 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       gcc 3.4.2
 -----------------------------------------------------------------------
-Date:                           2005-04-24
+Date:                           2005-06-25
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        All pass (324 tests)
+Status (release-shared):        All pass (327 tests)
 Notes:
-Status (stldbg-shared):         All pass (324 tests)
+Status (stldbg-shared):         All pass (327 tests)
 Notes:
 
 -----------------------------------------------------------------------
@@ -273,78 +300,142 @@ Notes:                          run-time fail in LocaleTest::money_put_get
                                 ../../../stlport/stl/debug/_string.h(233): STL assertion failure:     __n < this->size()
 
 =======================================================================
-Operational environment:        Windows XP Professionnal 2002 SP1
+Operational environment:        Novell Netware 6 Support Pack Revision 03
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       Metrowerks CodeWarrior 8 (mwccnlm 3.0.3 build 356)
+-----------------------------------------------------------------------
+Date:                           2005-06-10
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        not implemented
+Notes:
+Status (dbg-shared):            not implemented
+Notes:
+Status (stldbg-shared):         not implemented
+Notes:
+Status (release-static):        Fail 11 of 323 tests
+Notes:                          FstreamTest:: fail;
+                                cmath_test.cpp(77) : CPPUNIT_CHECK(ldiv_res.quot == 1l);
+Status (dbg-static):            -
+Notes:
+Status (stldbg-static):         -
+Notes:
+
+
+
+=======================================================================
+Operational environment:        Windows XP Professionnal 2002 SP2
 =======================================================================
 
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 6 SP5
 -----------------------------------------------------------------------
-Date:                           2005-04-27
+Date:                           2005-10-08
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (320 tests)
+Status (release-shared):        All pass (327 tests)
 Notes:
-Status (dbg-shared):            All pass (320 tests)
+Status (dbg-shared):            All pass (327 tests)
 Notes:
-Status (stldbg-shared):         All pass (320 tests)
+Status (stldbg-shared):         All pass (327 tests)
 Notes:
-Status (release-static):        All pass (320 tests)
+Status (release-static):        All pass (327 tests)
 Notes:
-Status (dbg-static):            All pass (320 tests)
+Status (dbg-static):            All pass (327 tests)
 Notes:
-Status (stldbg-static):         All pass (320 tests)
+Status (stldbg-static):         All pass (327 tests)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:                       Visual C++ 2005 Beta1 Version 8.0.40607.16
+Compiler:                       Visual C++ 2005 Beta2 Version 8.0.50215-4400
 -----------------------------------------------------------------------
-Date:                           2005-04-27
+Date:                           2005-10-12
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        runtime fail
-Notes:                          Microsoft do not grant the msvcp80.dll file
+Status (release-shared):        All pass (330 tests)
+Notes:
+Status (dbg-shared):            Runtime fail
+Notes:                          Microsoft do not grant the msvcp80d.dll file
                                 in their free package.
-Status (dbg-shared):            All pass (322 tests)
+Status (stldbg-shared):         Idem dbg-shared.
 Notes:
-Status (stldbg-shared):         All pass (322 tests)
+Status (release-static):        All pass (330 tests)
 Notes:
-Status (release-static):        All pass (322 tests)
+Status (dbg-static):            All pass (330 tests)
 Notes:
-Status (dbg-static):            All pass (322 tests)
-Notes:
-Status (stldbg-static):         All pass (322 tests)
+Status (stldbg-static):         All pass (330 tests)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:                       g++ 3.3.3 (cygwin special)
+Compiler:                       Windows Server 2003 SP1 Platform SDK
+                                (cross compiling for AMD64)
+				Tests run under Windows XP Pro 64
 -----------------------------------------------------------------------
-Date:                           2005-04-08
+Date:                           2005-08-16
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       Henrik Goldman (hg@x-formation.com, www.x-formation.com)
+Status (release-shared):        All pass (327 tests)
+Notes:
+Status (dbg-shared):            All pass (327 tests)
+Notes:
+Status (stldbg-shared):         All pass (327 tests)
+Notes:
+Status (release-static):        All pass (327 tests)
+Notes:
+Status (dbg-static):            All pass (327 tests)
+Notes:
+Status (stldbg-static):         All pass (327 tests)
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       Visual C++ 2005 (Beta2) (8.0)
+                                (cross compiling for AMD64)
+				Tests run under Windows XP Pro 64
+-----------------------------------------------------------------------
+Date:                           2005-08-16
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       Henrik Goldman (hg@x-formation.com, www.x-formation.com)
+Status (release-shared):        All pass (327 tests)
+Notes:
+Status (dbg-shared):            All pass (327 tests)
+Notes:
+Status (stldbg-shared):         All pass (327 tests)
+Notes:
+Status (release-static):        All pass (327 tests)
+Notes:
+Status (dbg-static):            All pass (327 tests)
+Notes:
+Status (stldbg-static):         All pass (327 tests)
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       g++ 3.4.4 (cygwin special)
+-----------------------------------------------------------------------
+Date:                           2005-10-12
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (321 tests)
+Status (release-shared):        1 failure (332 tests)
 Notes:                          ExceptionTest::uncaught_exception fails when all tests
                                 are run but succeed with the -t=ExceptionTest option.
-Status (dbg-shared):            1 failure (321 tests)
+Status (dbg-shared):            1 failure (332 tests)
 Notes:                          Idem release-shared.
-Status (stldbg-shared):         1 failure (321 tests)
+Status (stldbg-shared):         1 failure (332 tests)
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.1 (mingw special)
 -----------------------------------------------------------------------
-Date:                           2005-04-08
+Date:                           2005-08-31
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status:                         Link time of unit tests fail.
-Status (release-shared):        In NO_IOSTREAMS mode All pass (286 tests)
- 
-Notes:
-Status (dbg-shared):            In NO_IOSTREAMS mode All pass (286 tests)
- 
-Notes:
-Status (stldbg-shared):         In NO_IOSTREAMS mode All pass (286 tests)
- 
-Notes:
+Status (release-shared):        1 failure (332 tests)
+Notes:                          Idem cygwin report above.
+Status (dbg-shared):            1 failure (332 tests)
+Notes:                          Idem cygwin report above.
+Status (stldbg-shared):         1 failure (332 tests)
+Notes:                          Idem cygwin report above.
 
 =======================================================================
 Operational environment:        Windows 2000 SP4
@@ -373,39 +464,58 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ .Net 2002 (7.0)
 -----------------------------------------------------------------------
-Date:                           2005-04-16
+Date:                           2005-10-23
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (319 tests)
+Status (release-shared):        All pass (325 tests)
 Notes:
-Status (dbg-shared):            All pass (319 tests)
+Status (dbg-shared):            All pass (325 tests)
 Notes:
-Status (stldbg-shared):         All pass (319 tests)
+Status (stldbg-shared):         All pass (325 tests)
 Notes:
-Status (release-static):        All pass (319 tests)
+Status (release-static):        All pass (325 tests)
 Notes:
-Status (dbg-static):            All pass (319 tests)
+Status (dbg-static):            All pass (325 tests)
 Notes:
-Status (stldbg-static):         All pass (319 tests)
+Status (stldbg-static):         All pass (325 tests)
 Notes:
 
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ .Net 2003 (7.1)
 -----------------------------------------------------------------------
-Date:                           2005-04-16
+Date:                           2005-10-23
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (320 tests)
+Status (release-shared):        All pass (330 tests)
 Notes:
-Status (dbg-shared):            All pass (320 tests)
+Status (dbg-shared):            All pass (330 tests)
 Notes:
-Status (stldbg-shared):         All pass (320 tests)
+Status (stldbg-shared):         All pass (330 tests)
 Notes:
-Status (release-static):        All pass (320 tests)
+Status (release-static):        All pass (330 tests)
 Notes:
-Status (dbg-static):            All pass (320 tests)
+Status (dbg-static):            All pass (330 tests)
 Notes:
-Status (stldbg-static):         All pass (320 tests)
+Status (stldbg-static):         All pass (330 tests)
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       Intel C++ compiler 9.0
+-----------------------------------------------------------------------
+Date:                           2005-07-24
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       dums (Francois Dumont)
+Status (release-shared):        3 failures (326 tests)
+Notes:
+Status (dbg-shared):            All pass (326 tests)
+Notes:
+Status (stldbg-shared):         All pass (326 tests)
+Notes:
+Status (release-static):        1 failure (325 tests)
+Notes:
+Status (dbg-static):            All pass (326 tests)
+Notes:
+Status (stldbg-static):         All pass (326 tests)
 Notes:
 
 =======================================================================
@@ -415,19 +525,19 @@ Operational environment:        Windows CE 3.0 Pocket PC 2002 (iPAQ h3950)
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ 3.0
 -----------------------------------------------------------------------
-Date:                           2005-04-13
+Date:                           2005-10-05
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (316 tests)
+Status (release-shared):        All pass (325 tests)
 Notes:
-Status (dbg-shared):            All pass (316 tests)
+Status (dbg-shared):            All pass (325 tests)
 Notes:
 Status (stldbg-shared):         Runtime failure
 Notes:                          Fails probably due to a bug in the ARM
                                 compiler
-Status (release-static):        All pass (316 tests)
+Status (release-static):        All pass (325 tests)
 Notes:
-Status (dbg-static):            All pass (316 tests)
+Status (dbg-static):            All pass (325 tests)
 Notes:
 Status (stldbg-static):         Runtime failure
 Notes:                          Idem stldbg-shared
@@ -439,20 +549,20 @@ Operational environment:        Windows CE 3.0 Pocket PC 2002 Emulator
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ 3.0
 -----------------------------------------------------------------------
-Date:                           2005-04-13
+Date:                           2005-10-05
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (316 tests)
+Status (release-shared):        All pass (325 tests)
 Notes:
-Status (dbg-shared):            All pass (316 tests)
+Status (dbg-shared):            All pass (325 tests)
 Notes:
-Status (stldbg-shared):         All pass (316 tests)
+Status (stldbg-shared):         All pass (325 tests)
 Notes:
-Status (release-static):        All pass (316 tests)
+Status (release-static):        All pass (325 tests)
 Notes:
-Status (dbg-static):            All pass (316 tests)
+Status (dbg-static):            All pass (325 tests)
 Notes:
-Status (stldbg-static):         All pass (316 tests)
+Status (stldbg-static):         All pass (325 tests)
 Notes:
 
 =======================================================================
@@ -462,19 +572,19 @@ Operational environment:        Windows CE 4.2 Pocket PC 2003 (iPAQ h6340)
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2005-02-16
+Date:                           2005-10-05
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (313 tests)
+Status (release-shared):        All pass (326 tests)
 Notes:
-Status (dbg-shared):            All pass (313 tests)
+Status (dbg-shared):            All pass (326 tests)
 Notes:
 Status (stldbg-shared):         Runtime failure
 Notes:                          refuses to start, maybe same problem
                                 as under eVC3/ARM
-Status (release-static):        All pass (313 tests)
+Status (release-static):        All pass (326 tests)
 Notes:
-Status (dbg-static):            All pass (313 tests)
+Status (dbg-static):            All pass (326 tests)
 Notes:
 Status (stldbg-static):         Runtime failure
 Notes:                          Idem stldbg-shared
@@ -486,18 +596,38 @@ Operational environment:        Windows CE 4.2 Pocket PC 2003 Emulator
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2005-02-16
+Date:                           2005-04-13
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (313 tests)
+Status (release-shared):        All pass (317 tests)
 Notes:
-Status (dbg-shared):            All pass (313 tests)
+Status (dbg-shared):            All pass (317 tests)
 Notes:
-Status (stldbg-shared):         All pass (313 tests)
+Status (stldbg-shared):         All pass (317 tests)
 Notes:
-Status (release-static):        All pass (313 tests)
+Status (release-static):        All pass (317 tests)
 Notes:
-Status (dbg-static):            All pass (313 tests)
+Status (dbg-static):            All pass (317 tests)
 Notes:
-Status (stldbg-static):         All pass (313 tests)
+Status (stldbg-static):         All pass (317 tests)
+Notes:
+
+=======================================================================
+Operational environment:        Microsoft Device Emulator V1.0 Windows
+                                Mobile 2003 SE (pre-release 050419)
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       eMbedded Visual C++ .NET SP4
+-----------------------------------------------------------------------
+Date:                           2005-07-25
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       mfink (Michael Fink)
+Status (release-shared):        All pass (322 tests)
+Notes:
+Status (dbg-shared):            All pass (322 tests)
+Notes:
+Status (release-static):        All pass (322 tests)
+Notes:
+Status (dbg-static):            All pass (322 tests)
 Notes:

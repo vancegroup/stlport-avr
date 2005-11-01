@@ -60,7 +60,7 @@ basic_filebuf<_CharT, _Traits>::basic_filebuf()
     _M_codecvt(0),
     _M_width(1), _M_max_width(1)
 {
-  this->_M_setup_codecvt(locale());
+  this->_M_setup_codecvt(locale(), false);
 }
 
 template <class _CharT, class _Traits>
@@ -223,11 +223,12 @@ basic_filebuf<_CharT, _Traits>::overflow(int_type __c) {
     char* __enext         = _M_ext_buf;
     typename _Codecvt::result __status
       = _M_codecvt->out(_M_state, __ibegin, __iend, __inext,
-                                  _M_ext_buf, _M_ext_buf_EOS, __enext);
-    if (__status == _Codecvt::noconv)
+                        _M_ext_buf, _M_ext_buf_EOS, __enext);
+    if (__status == _Codecvt::noconv) {
       return _Noconv_output<_Traits>::_M_doit(this, __ibegin, __iend)
         ? traits_type::not_eof(__c)
         : _M_output_error();
+    }
 
     // For a constant-width encoding we know that the external buffer
     // is large enough, so failure to consume the entire internal buffer
@@ -235,8 +236,8 @@ basic_filebuf<_CharT, _Traits>::overflow(int_type __c) {
     // For a variable-width encoding, however, we require only that we 
     // consume at least one internal character
     else if (__status != _Codecvt::error && 
-             ((__inext == __iend && (__enext - _M_ext_buf == 
-                                     _M_width * (__iend - __ibegin))) ||
+             (((__inext == __iend) && 
+               (__enext - _M_ext_buf == _M_width * (__iend - __ibegin))) ||
               (!_M_constant_width && __inext != __ibegin))) {
         // We successfully converted part or all of the internal buffer.
       ptrdiff_t __n = __enext - _M_ext_buf;
@@ -301,14 +302,10 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         streamoff __adjust = _M_mmap_len - (this->gptr() - (_CharT*) _M_mmap_base);
 
         // if __off == 0, we do not need to exit input mode and to shift file pointer
-        if (__off == 0) {
-          return pos_type(_M_base._M_seek(0, ios_base::cur) - __adjust);
-        }
-        else
-          return _M_seek_return(_M_base._M_seek(__off - __adjust, ios_base::cur), _State_type());
-      }
-      else if (_M_constant_width) { // Get or set the position.  
-
+        return __off == 0 ?
+          pos_type(_M_base._M_seek(0, ios_base::cur) - __adjust) :
+          _M_seek_return(_M_base._M_seek(__off - __adjust, ios_base::cur), _State_type());
+      } else if (_M_constant_width) { // Get or set the position.  
         streamoff __iadj = _M_width * (this->gptr() - this->eback());
         
         // Compensate for offset relative to gptr versus offset relative
@@ -317,19 +314,13 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         // but not set the current position.
         
         if (__iadj <= _M_ext_buf_end - _M_ext_buf) {
-          
           streamoff __eadj =  _M_base._M_get_offset(_M_ext_buf + __iadj, _M_ext_buf_end);
 
-          if (__off == 0) {
-            return pos_type(_M_base._M_seek(0, ios_base::cur) - __eadj);
-          }  else {
-            return _M_seek_return(_M_base._M_seek(__off - __eadj, ios_base::cur), _State_type());
-          }
+          return __off == 0 ?
+            pos_type(_M_base._M_seek(0, ios_base::cur) - __eadj) :
+            _M_seek_return(_M_base._M_seek(__off - __eadj, ios_base::cur), _State_type());
         }
-        else
-          return pos_type(-1);
-      }
-      else {                    // Get the position.  Encoding is var width.
+      } else {                    // Get the position.  Encoding is var width.
         // Get position in internal buffer.
         ptrdiff_t __ipos = this->gptr() - this->eback();
         
@@ -362,18 +353,14 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
             _M_base._M_get_offset(_M_ext_buf, _M_ext_buf_end);
           if (__cur != -1 && __cur + __adj >= 0)
             return _M_seek_return(__cur + __adj, __state);
-          else
-            return pos_type(-1);
         }
-        else                    // We failed the sanity check.
-          return pos_type(-1);
+        // We failed the sanity check here.
       }
     }
-    else                        // Unrecognized value for __whence.
-      return pos_type(-1);
+    // Unrecognized value for __whence here.
   }
-  else
-    return pos_type(-1);
+  
+  return pos_type(-1);
 }
 
 
@@ -390,11 +377,9 @@ basic_filebuf<_CharT, _Traits>::seekpos(pos_type __pos,
       _M_state = __pos.state();
       return _M_seek_return(__off, __pos.state());
     }
-    else
-      return pos_type(-1);
   }
-  else
-    return pos_type(-1);
+
+  return pos_type(-1);
 }
 
 
@@ -402,11 +387,8 @@ template <class _CharT, class _Traits>
 int basic_filebuf<_CharT, _Traits>::sync() {
   if (_M_in_output_mode)
     return traits_type::eq_int_type(this->overflow(traits_type::eof()),
-                                    traits_type::eof())
-      ? -1
-      : 0;
-  else
-    return 0;
+                                    traits_type::eof()) ? -1 : 0;
+  return 0;
 }
 
 
@@ -414,7 +396,7 @@ int basic_filebuf<_CharT, _Traits>::sync() {
 // unless it is called before any I/O is performed on the stream.
 template <class _CharT, class _Traits>
 void basic_filebuf<_CharT, _Traits>::imbue(const locale& __loc) {
-  if (!_M_in_input_mode &&! _M_in_output_mode && !_M_in_error_mode) {
+  if (!_M_in_input_mode && !_M_in_output_mode && !_M_in_error_mode) {
     this->_M_setup_codecvt(__loc);
   }
 }
@@ -443,8 +425,8 @@ bool basic_filebuf<_CharT, _Traits>::_M_switch_to_input_mode() {
     _M_in_input_mode = true;
     return true;
   }
-  else
-    return false;
+
+  return false;
 }
 
 
@@ -467,11 +449,10 @@ bool basic_filebuf<_CharT, _Traits>::_M_switch_to_output_mode() {
 
     this->setp(_M_int_buf, _M_int_buf_EOS - 1);
     _M_in_output_mode = true;
-
     return true;
   }
-  else
-    return false;
+
+  return false;
 }
 
 
@@ -513,7 +494,7 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
     _M_ext_buf_end = _M_ext_buf;
 
   // Now fill the external buffer with characters from the file.  This is
-  // a loop because occasonally we don't get enough external characters
+  // a loop because occasionally we don't get enough external characters
   // to make progress.
   for (;;) {
     ptrdiff_t __n = _M_base._M_read(_M_ext_buf_end, _M_ext_buf_EOS - _M_ext_buf_end);
@@ -594,7 +575,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_unshift() {
         return false;
       else if (!_M_write(_M_ext_buf, __enext - _M_ext_buf))
         return false;
-    } while(__status == _Codecvt::partial);
+    } while (__status == _Codecvt::partial);
   }
 
   return true;
@@ -711,17 +692,33 @@ bool basic_filebuf<_CharT, _Traits>::_M_seek_init(bool __do_unshift) {
 }
 
 
-// Change the filebuf's locale.  This member function has no effect
-// unless it is called before any I/O is performed on the stream.
+/* Change the filebuf's locale.  This member function has no effect
+ * unless it is called before any I/O is performed on the stream.
+ * This function is called on construction and on an imbue call. In the 
+ * case of the construction the codecvt facet might be a custom one if
+ * the basic_filebuf user has instanciate it with a custom char_traits.
+ * The user will have to call imbue before any I/O operation.
+ */
 template <class _CharT, class _Traits>
-void basic_filebuf<_CharT, _Traits>::_M_setup_codecvt(const locale& __loc) {
-  _M_codecvt = &use_facet<_Codecvt>(__loc) ;
-  int __encoding    = _M_codecvt->encoding();
+void basic_filebuf<_CharT, _Traits>::_M_setup_codecvt(const locale& __loc, bool __on_imbue) {
+  if (has_facet<_Codecvt>(__loc)) {
+    _M_codecvt = &use_facet<_Codecvt>(__loc) ;
+    int __encoding    = _M_codecvt->encoding();
 
-  _M_width          = (max)(__encoding, 1);
-  _M_max_width      = _M_codecvt->max_length();
-  _M_constant_width = __encoding > 0;
-  _M_always_noconv  = _M_codecvt->always_noconv();
+    _M_width          = (max)(__encoding, 1);
+    _M_max_width      = _M_codecvt->max_length();
+    _M_constant_width = __encoding > 0;
+    _M_always_noconv  = _M_codecvt->always_noconv();
+  }
+  else {
+    _M_codecvt = 0;
+    _M_width = _M_max_width = 1;
+    _M_constant_width = _M_always_noconv  = false;
+    if (__on_imbue) {
+      //This call will generate an exception reporting the problem.
+      use_facet<_Codecvt>(__loc);
+    }
+  }
 }
 
 _STLP_END_NAMESPACE

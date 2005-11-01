@@ -18,11 +18,10 @@
 #ifndef ThrowCompare_H_
 #define ThrowCompare_H_
 
-# include "Prefix.h"
-# include "TestClass.h"
+#include "Prefix.h"
+#include "TestClass.h"
 
-struct ThrowCompare
-{
+struct ThrowCompare {
   bool operator()( const TestClass& a, const TestClass& b ) const {
     simulate_possible_failure();
     return a < b;
@@ -30,19 +29,15 @@ struct ThrowCompare
 };
 
 
-struct ThrowEqual
-{
-  inline bool operator()( const TestClass& a, const TestClass& b ) const
-  {
+struct ThrowEqual {
+  inline bool operator()( const TestClass& a, const TestClass& b ) const {
     simulate_possible_failure();
     return a == b;
   }
 };
 
-struct ThrowHash // : private ThrowCompare
-{
-  inline EH_CSTD::size_t operator()( const TestClass& a ) const
-  {
+struct ThrowHash { // : private ThrowCompare
+  inline EH_CSTD::size_t operator()( const TestClass& a ) const {
     simulate_possible_failure();
     return EH_CSTD::size_t(a.value());
   }
