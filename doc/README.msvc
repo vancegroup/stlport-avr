@@ -11,8 +11,9 @@ Introduction
 This document describes how STLport can be compiled and used with Microsoft
 Visual C++ 6 SP5. It can also be used for the MSVC++ family.
 
-For any further comments or questsion visit STLport forum
-http://www.stlport.com/cgi-bin/forum/dcboard.cgi.
+For any further comments or questsion visit STLport mailing lists
+http://stlport.sourceforge.net/Maillists.shtml or forums
+https://sourceforge.net/forum/?group_id=146814
 
 =============
 Prerequisites

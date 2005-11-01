@@ -11,16 +11,18 @@ Introduction
 This document describes how STLport can be compiled and used with Microsoft
 eMbedded Visual C++ 3.
 
-For any further comments or questsion visit STLport forum
-http://www.stlport.com/cgi-bin/forum/dcboard.cgi.
+For any further comments or questsion visit STLport mailing lists
+http://stlport.sourceforge.net/Maillists.shtml or forums
+https://sourceforge.net/forum/?group_id=146814
+
 
 =============
 Prerequisites
 =============
 To build and use STLport you will need following tools and libraries:
  - eMbedded Visual C++ 3.0
- - latest CVS version of STLport, use
-   'cvs -d :pserver:cvs@cvs.stlport.com:/stlport checkout STLport' to get it.
+ - latest CVS version of STLport, use info from page
+   'http://stlport.sourceforge.net/CVS.shtml' to get it.
    Note that you may have to get a different branch, please check out the
    STLport forum "Announcements" which sourcecode is being worked on.
 

@@ -10,7 +10,9 @@ Introduction
 ============
 This document should provide step-by-step guidance for installing, testing and using the STLport library under Windows CE .NET 4.x
 (aka Windows Mobile 2003 aka Pocket PC 2003).
-For any further comments or questions visit the STLport forum http://www.stlport.com/cgi-bin/forum/dcboard.cgi.
+For any further comments or questions visit the STLport mailing lists
+http://stlport.sourceforge.net/Maillists.shtml or forums
+https://sourceforge.net/forum/?group_id=146814
 
 =============
 Prerequisites
@@ -18,7 +20,7 @@ Prerequisites
 To build and use the STLport you will need following tools and libraries:
  - eMbedded Visual C++ 4.0 sp3
  - Microsoft RTTI patch, to enable C++ exception handling, available at http://support.microsoft.com/default.aspx?scid=kb;[LN];830482
- - lastest CVS version of the STLport, use 'cvs -d :pserver:cvs@cvs.stlport.com:/stlport checkout STLport' to get it
+ - lastest CVS version of the STLport, use info from page 'http://stlport.sourceforge.net/CVS.shtml' to get it
 
 ================
 Building STLport

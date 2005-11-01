@@ -106,8 +106,8 @@ build process description, for a more detailed one check README files in the doc
      - wait until somebody else will submit corresponding changes to be incorporated in next STLport 
        release/snapshot.
 
-    In case you do patch STLport, please submit your patches to support@stlport.com or (better)
-    to STLport Forum (http://www.stlport.com/cgi-bin/forum/dcboard.cgi)
+    In case you do patch STLport, please submit your patches to
+    https://sourceforge.net/tracker/?atid=766246&group_id=146814&func=browse
 
 ==== Linking your application with STLport library ==========
 
