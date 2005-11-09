@@ -148,14 +148,14 @@
  * this is that we first go up one directory and then down into a dir that
  * is only present in the native install but not in STLport.
  *
- * Note: there is no way for us to distinguish between the emulator and a
- * real x86 target platform, therefore you need to set this yourself if you
- * are using a real x86 platform. Also note that 'x86' is defined itself,
- * too, so you will probably need to use '../X86' instead.
  */
 #if defined(_STLP_WCE_NET) && !defined(_STLP_NATIVE_INCLUDE_PATH)
 #  if defined (_X86_)
-#    define _STLP_NATIVE_INCLUDE_PATH ../Emulator
+#    if defined (emulator)
+#      define _STLP_NATIVE_INCLUDE_PATH ../Emulator
+#    else
+#      define _STLP_NATIVE_INCLUDE_PATH ../X86
+#    endif
 #  elif defined (_ARM_)
 #    if defined (ARMV4)
 #      define _STLP_NATIVE_INCLUDE_PATH ../Armv4
