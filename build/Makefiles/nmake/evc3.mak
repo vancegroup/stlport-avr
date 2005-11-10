@@ -23,6 +23,9 @@ OPT_COMMON =
 !if "$(TARGET_PROC)" == "x86"
 DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_"
 OPT_COMMON =
+!if "$(TARGET_PROC_SUBTYPE)" == "emulator"
+DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
+!endif
 !endif
 
 !if "$(TARGET_PROC)" == "mips"
