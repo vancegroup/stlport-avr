@@ -17,6 +17,7 @@ class MapTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(mmap1);
   CPPUNIT_TEST(mmap2);
   CPPUNIT_TEST(iterators);
+  CPPUNIT_TEST(empty_equal_range);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -24,6 +25,7 @@ protected:
   void mmap1();
   void mmap2();
   void iterators();
+  void empty_equal_range();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MapTest);
@@ -206,4 +208,21 @@ void MapTest::iterators()
   CPPUNIT_ASSERT( (*rci++).second == 'f' );
   CPPUNIT_ASSERT( (*rci).first == 6 );
   CPPUNIT_ASSERT( (*rci).second == 'f' );
+}
+
+void MapTest::empty_equal_range()
+{
+  typedef map<char, int, less<char> > maptype;
+  maptype m;
+  pair<maptype::iterator, maptype::iterator> ret;
+
+  maptype::iterator i = m.lower_bound( 'x' );
+  CPPUNIT_ASSERT( i == m.end() );
+
+  i = m.upper_bound( 'x' );
+  CPPUNIT_ASSERT( i == m.end() );
+
+  ret = m.equal_range('x');
+  CPPUNIT_ASSERT( ret.first == m.end() );
+  CPPUNIT_ASSERT( ret.second == m.end() );
 }

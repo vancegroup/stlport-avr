@@ -1,3 +1,11 @@
+2005-11-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_tree.h: check iterator returned from lower_bound
+	in equal_range_unique for end, to avoid increment [useful when
+	key not available].
+
+	* test/unit/map_test.cpp: test for problem above.
+
 2005-11-09  Francois Dumont  <dums@stlport...>
 
 	* build/test/eh/gcc.mak: Fix build system for Cygwin/MinGW systems that
