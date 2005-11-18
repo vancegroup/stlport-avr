@@ -51,6 +51,10 @@ namespace CPPUNIT_NS
   }  
 }
 
+#ifdef __SUNPRO_CC
+using namespace std;
+#endif // __SUNPRO_CC
+
 # ifdef UNDER_CE
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {

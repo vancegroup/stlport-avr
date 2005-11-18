@@ -2,7 +2,14 @@
 // It is internal STLport header - DO NOT include it directly
 
 #  define _STLP_LONG_LONG  long long
-#  define _STLP_LINK_TIME_INSTANTIATION 1
+
+// GAB: 11/09/05
+// Starting with 5.0 the STLport code expects to be 
+// instantiated during compile time. This is due to undefing
+// a number of defines that are also used in the c versions
+// of the file. When they are undefed the c version fails to
+// compile. 
+// #  define _STLP_LINK_TIME_INSTANTIATION 1
 
 # if ! defined(_BOOL)
 #  define _STLP_NO_BOOL 1
@@ -128,7 +135,7 @@
    // SUNPro C++ 4.0.1
 #     define _STLP_BASE_MATCH_BUG          1
 #     define _STLP_BASE_TYPEDEF_BUG        1
-#      if ( __SUNPRO_CC < 0x401 )
+#      if (( __SUNPRO_CC < 0x401 ) && !defined(__SUNPRO_C))
         __GIVE_UP_WITH_STL(SUNPRO_401)
 #      endif
 #    endif /* 4.0.1 */

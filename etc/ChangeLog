@@ -1,3 +1,65 @@
+2005-11-17  Gail Baker  <baker88@users.sourceforge.net>
+
+	* build/Makefiles/gmake/CC.mak, depend.mak, app/CC.mak, lib/CC.mak:
+	support of SunPro 5.7 compiler.
+
+	* build/lib/CC.mak: ditto
+
+	* stlport/stl/_rope.c: Removed extra semi-colons.
+	
+	* stlport/stl/_rope.h: Sunpro compiler had a problem with
+	the __ROPE_DEPTH_SIZE macro doing an addition. Changed to
+	a fixed value instead.
+
+	* stlport/cstdlib: Updated to allow the compiler to find abs and div
+
+	* stlport/config/stl_sunpro.h: Disabled _STLP_LINK_TIME_INSTANTIATION
+	since this nolonger works with current files. The issue here is that
+	a number of defines that are required in the C versions of the files
+	use defines that are undefed at the end of the include. So, when
+	the compiler finally compiles the C version at link time the defines
+	are lost and the files don't compile. Also added a minor change
+	to allow files that are compiled with cc to include stl_sunpro.h
+	without bailing out.
+
+	* stlport/stl/_bvector.h: Added stl/_range_errors.h required by
+	an exception that can be called.
+
+	* stlport/stl/_cmath.h: Changed to pull all math functions from std
+	namespace for SunPro compiles only.
+
+	* test/unit/fstream_test.cpp: Added SunPro compile to the list
+	of compilers that don't use the DO_CUSTOM_FACET_TEST.
+
+	* test/unit/string_test.cpp: Added Sun UI Threads to the list
+	of supported thread types in the test.
+
+	* test/unit/valarray_test.cpp: The compiler was having trouble
+	finding abs(). Added a "using std::abs" for the SunPro compiler
+	which solved the problem.
+
+	* test/unit/cppunit/cppunit_mini.h: Added additional using statements
+	for the str* commands.
+
+	* test/unit/cppunit/test_main.cpp: Added "using namespace std;"
+	for the SunPro compiler.
+
+	* build/test/unit/CC.mak: support of SunPro 5.7 compiler
+
+2005-11-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_messages_facets.h, src/messages.cpp: Move message facet
+	constructor private to guaranty that it is only called from the _Locale_impl
+	class for classic locale facets creation. Change constructor implementation
+	as now passed _Message instance is dynamically instanciated so needs to be
+	destroy on facet destruction; moreover the facet is also dynamically allocated
+	and has to be destroyed when reference counter reach 0.
+
+	* src/locale_impl.cpp: Removed call to now useless free_classic_locale function.
+	Change make_classic_locale implementation, now classic locale facets are
+	allocated on the heap and have to be destroyed like any ordinary facets
+	when reference counter reach 0.
+
 2005-11-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_tree.h: check iterator returned from lower_bound

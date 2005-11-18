@@ -317,8 +317,18 @@ struct _Rope_RopeRep
 {
   typedef _Rope_RopeRep<_CharT, _Alloc> _Self;
 public:
+  //
+  // GAB: 11/09/05
+  //
+  // "__ROPE_DEPTH_SIZE" is set to one more then the "__ROPE_MAX_DEPTH".
+  // This was originally just an addition of "__ROPE_MAX_DEPTH + 1" 
+  // but this addition causes the sunpro compiler to complain about 
+  // multiple declarations during the initialization of "_S_min_len". 
+  // Changed to be a fixed value and the sunpro compiler appears to 
+  // be happy???
+  //
 #  define __ROPE_MAX_DEPTH  45
-#  define __ROPE_DEPTH_SIZE __ROPE_MAX_DEPTH + 1
+#  define __ROPE_DEPTH_SIZE 46 // __ROPE_MAX_DEPTH + 1
   enum { _S_max_rope_depth = __ROPE_MAX_DEPTH };
   enum _Tag {_S_leaf, _S_concat, _S_substringfn, _S_function};
   // Apparently needed by VC++

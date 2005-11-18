@@ -21,7 +21,10 @@
 #  include <stl/_prolog.h>
 #endif
 
-#if defined (_STLP_USE_NEW_C_HEADERS)
+// GAB: 11/16/05
+// On the SunPro compiler we use the stdlib.h instead of cstdlib
+// to get the long long versions of lldiv() and llabs()
+#if defined (_STLP_USE_NEW_C_HEADERS) && !defined(__SUNPRO_CC)
 #  include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
 #else
 #  include _STLP_NATIVE_C_HEADER(stdlib.h)
@@ -106,13 +109,16 @@ _STLP_END_NAMESPACE
 #  pragma function (abs)
 #endif
 
+// The SunPro Compiler already has abs and div defined for the long case..
+#ifndef __SUNPRO_CC
 //MSVC starting with .Net 2003 already define all math functions in global namespace:
-#if !defined (_MSC_VER) || (_MSC_VER < 1310)
+#  if !defined (_MSC_VER) || (_MSC_VER < 1310)
 inline long abs(long __x) { return ::labs(__x); }
-#endif
+#  endif
 
-#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
+#  if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline ldiv_t div(long __x, long __y) { return ::ldiv(__x, __y); }
+#  endif
 #endif
 
 #if defined(_STLP_RESTORE_FUNCTION_INTRINSIC)

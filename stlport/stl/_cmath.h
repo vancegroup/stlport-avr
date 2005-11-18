@@ -16,7 +16,7 @@
 #ifndef _STLP_CMATH_H_HEADER
 #define _STLP_CMATH_H_HEADER
 
-#ifdef __sun
+#if defined(__sun) && defined(__GNUC)
 extern "C" {
 extern float __acosf(float);
 extern float __asinf(float);
@@ -71,11 +71,26 @@ extern long double __tanhl(long double);
      inline float_type func (float_type x) { return ::cfunc(x); }
 #  define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
      inline float_type func (float_type x, type y) { return ::cfunc(x,y); }
+#  define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
+#  define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
 #else
-#  define _STLP_MATH_INLINE(float_type, func, cfunc) \
-     inline float_type func (float_type x) { return ::__##cfunc(x); }
-#  define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
-     inline float_type func (float_type x, type y) { return ::__##cfunc(x,y); }
+#  ifndef __SUNPRO_CC
+#    define _STLP_MATH_INLINE(float_type, func, cfunc) \
+       inline float_type func (float_type x) { return ::__##cfunc(x); }
+#    define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
+       inline float_type func (float_type x, type y) { return ::__##cfunc(x,y); }
+#    define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
+#    define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
+#  else
+#    define _STLP_MATH_INLINE(float_type, func, cfunc) \
+       inline float_type func (float_type x) { return _STLP_VENDOR_CSTD::__##cfunc(x); }
+#    define _STLP_MATH_INLINE_D(float_type, func, cfunc) \
+       inline float_type func (float_type x) { return _STLP_VENDOR_CSTD::cfunc(x); }
+#    define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
+       inline float_type func (float_type x, type y) { return _STLP_VENDOR_CSTD::__##cfunc(x,y); }
+#    define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc) \
+       inline float_type func (float_type x, type y) { return _STLP_VENDOR_CSTD::cfunc(x,y); }
+#  endif
 #endif
 
 #define _STLP_MATH_INLINEX(__type,func,cfunc) \
@@ -93,18 +108,23 @@ extern long double __tanhl(long double);
 #if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_NO_VENDOR_MATH_L) && !defined (_STLP_NO_VENDOR_MATH_F) // && defined(_STLP_VENDOR_LONG_DOUBLE_MATH)
 #  define _STLP_DEF_MATH_INLINE(func,cf) \
   _STLP_MATH_INLINE(float,func,cf##f) \
+  _STLP_MATH_INLINE_D(double,func,cf) \
   _STLP_MATH_INLINE(long double,func,cf##l)
 #  define _STLP_DEF_MATH_INLINE2(func,cf) \
   _STLP_MATH_INLINE2(float,float,func,cf##f) \
+  _STLP_MATH_INLINE2_D(double,double,func,cf) \
   _STLP_MATH_INLINE2(long double,long double,func,cf##l)
 #  define _STLP_DEF_MATH_INLINE2P(func,cf) \
   _STLP_MATH_INLINE2(float,float *,func,cf##f) \
+  _STLP_MATH_INLINE2_D(double,double *,func,cf) \
   _STLP_MATH_INLINE2(long double,long double *,func,cf##l)
 #  define _STLP_DEF_MATH_INLINE2PI(func,cf) \
   _STLP_MATH_INLINE2(float,int *,func,cf##f) \
+  _STLP_MATH_INLINE2_D(double,int *,func,cf) \
   _STLP_MATH_INLINE2(long double,int *,func,cf##l)
 #  define _STLP_DEF_MATH_INLINE2I(func,cf) \
   _STLP_MATH_INLINE2(float,int,func,cf##f) \
+  _STLP_MATH_INLINE2_D(double,int,func,cf) \
   _STLP_MATH_INLINE2(long double,int,func,cf##l)
 #else // !_STLP_NO_LONG_DOUBLE
 #  if !defined (_STLP_NO_LONG_DOUBLE)
@@ -191,7 +211,9 @@ extern long double __tanhl(long double);
 //As Intel C++ compiler icl include MSVC headers it also have all math functions in ::
 // so we use _MSC_VER rather than _STLP_MSVC
 #if !defined (_MSC_VER) || (_MSC_VER < 1310)
+#  if !(defined(__sun) && defined(__SUNPRO_CC))
 inline double abs(double __x) { return ::fabs(__x); }
+#  endif
 #  ifndef __MVS__
 _STLP_DEF_MATH_INLINE(abs,fabs)
 #  else // __MVS__ has native long double abs?
@@ -253,7 +275,11 @@ _STLP_DEF_MATH_INLINE2(pow,pow)
 #      ifndef __sun
 inline float       pow(float __x, int __y)       { return ::powf(__x, __STATIC_CAST(float,__y)); }
 #      else
+#        ifndef __SUNPRO_CC
 inline float       pow(float __x, int __y)       { return ::__powf(__x, __STATIC_CAST(float,__y)); }
+#        else
+inline float       pow(float __x, int __y)       { return _STLP_VENDOR_CSTD::__powf(__x, __STATIC_CAST(float,__y)); }
+#        endif
 #      endif
 #    else
 inline float       pow(float __x, int __y)       { return __STATIC_CAST(float,::pow(__x, __STATIC_CAST(float,__y))); }
@@ -264,7 +290,11 @@ inline double      pow(double __x, int __y)      { return ::pow(__x, __STATIC_CA
 #        ifndef __sun
 inline long double pow(long double __x, int __y) { return ::powl(__x, __STATIC_CAST(long double,__y)); }
 #        else
+#          ifndef __SUNPRO_CC
 inline long double pow(long double __x, int __y) { return ::__powl(__x, __STATIC_CAST(long double,__y)); }
+#          else
+inline long double pow(long double __x, int __y) { return _STLP_VENDOR_CSTD::__powl(__x, __STATIC_CAST(long double,__y)); }
+#          endif
 #        endif
 #      else
 inline long double pow(long double __x, int __y) { return __STATIC_CAST(long double,::pow(__x, __STATIC_CAST(long double,__y))); }
@@ -289,6 +319,9 @@ _STLP_DEF_MATH_INLINE(tanh,tanh)
 #endif
 
 #if (defined (_STLP_MSVC) && !defined (_STLP_WCE)) || defined (__ICL) || defined(__sun)
+#  ifdef __SUNPRO_CC
+_STLP_MATH_INLINE2XX(double,hypot,hypot)
+#  endif
 _STLP_MATH_INLINE2XX(float,hypot,hypot)
 inline long double hypot(long double x, long double y) { return sqrt(x*x + y*y); }
 #else

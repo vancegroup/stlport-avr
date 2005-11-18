@@ -387,7 +387,7 @@ void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
                          size_t __size, const __true_type& /*basic char type*/) {
   _S_construct_null(__r->_M_data + __size);
   _STLP_ASSERT(__r->_M_c_string == __r->_M_data)
-};
+}
 
 template <class _CharT, class _Alloc>
 void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r, 
@@ -396,7 +396,7 @@ void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
     __r->_M_free_c_string();
     __r->_M_c_string = 0;
   }
-};
+}
 
 // As above, but it's OK to clobber original if refcount is 1
 template <class _CharT, class _Alloc>

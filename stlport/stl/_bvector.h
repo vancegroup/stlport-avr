@@ -32,7 +32,11 @@
 
 #ifndef _STLP_INTERNAL_VECTOR_H
 # include <stl/_vector.h>
-# endif
+#endif
+
+#ifndef _STLP_RANGE_ERRORS_H
+# include <stl/_range_errors.h>
+#endif
 
 #define _STLP_WORD_BIT (int(CHAR_BIT*sizeof(unsigned int)))
 

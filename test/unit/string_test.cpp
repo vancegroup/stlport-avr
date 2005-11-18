@@ -78,7 +78,7 @@ protected:
   }
 
 #if defined (STLPORT) && defined (_STLP_THREADS)
-#  if defined (_STLP_PTHREADS)
+#  if defined (_STLP_PTHREADS)  || defined (_STLP_UITHREADS)
   static void* f(void*)
 #  elif defined (_STLP_WIN32THREADS)
   static DWORD __stdcall f(void*)
@@ -146,7 +146,7 @@ void StringTest::mt()
   */
 #endif
 
-#if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS)
+#if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
   // this test is useless without thread support!
   CPPUNIT_ASSERT(false);
 #endif

@@ -29,6 +29,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ValarrayTest);
 // valarray functionality.
 void ValarrayTest::transcendentals()
 {
+#ifdef __SUNPRO_CC
+  using std::abs;
+#endif
   {
     valarray<double> darray;
     valarray<double> tmp;
