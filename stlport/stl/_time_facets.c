@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #ifndef _STLP_TIME_FACETS_C
 #define _STLP_TIME_FACETS_C
 
@@ -134,7 +134,7 @@ __match(_InIt& __first, _InIt& __last, const string *__name, const string *__nam
             __matching_name[__pos + 1] = __name + __i;
             --__check_count;
             if (__check_count == 0) {
-              ++__first; 
+              ++__first;
               return __name + __i;
             }
           }
@@ -142,7 +142,7 @@ __match(_InIt& __first, _InIt& __last, const string *__name, const string *__nam
         else {
           __do_check[__i] = 0;
           --__check_count;
-          if (__check_count == 0) 
+          if (__check_count == 0)
             return __matching_name[__pos];
         }
       }
@@ -240,7 +240,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
           }
           break;
         }
-        
+
         case 'H': case 'I': {
           bool __pr = __get_decimal_integer(__first, __last, __t->tm_hour, __STATIC_CAST(_Ch*, 0));
           if (!__pr)
@@ -273,7 +273,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
         }
 
         case 'p': {
-          const string* __pr = __match(__first, __last, 
+          const string* __pr = __match(__first, __last,
                                        __table._M_am_pm + 0, __table._M_am_pm + 2, __ct);
           if (__pr == __table._M_am_pm + 2)
             return __format;
@@ -314,7 +314,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
     else {
       if (*__first++ != __ct.widen(*__format)) break;
     }
-    
+
     ++__format;
   }
 
@@ -364,7 +364,7 @@ time_get<_Ch, _InIt>::do_get_date(_InIt __s, _InIt  __end,
 
   string_iterator __format = _M_timeinfo._M_date_format.begin();
   string_iterator __format_end = _M_timeinfo._M_date_format.end();
-  
+
   string_iterator __result
     = __get_formatted_time(__s, __end, __format, __format_end,
                            __STATIC_CAST(_Ch*, 0), _M_timeinfo,
@@ -387,12 +387,12 @@ time_get<_Ch, _InIt>::do_get_time(_InIt __s, _InIt  __end,
   typedef string::const_iterator string_iterator;
   string_iterator __format = _M_timeinfo._M_time_format.begin();
   string_iterator __format_end = _M_timeinfo._M_time_format.end();
-  
+
   string_iterator __result
     = __get_formatted_time(__s, __end, __format, __format_end,
-                           __STATIC_CAST(_Ch*, 0), _M_timeinfo, 
+                           __STATIC_CAST(_Ch*, 0), _M_timeinfo,
                            __str, __err, __t);
-  __err = __result == __format_end ? ios_base::goodbit 
+  __err = __result == __format_end ? ios_base::goodbit
                                    : ios_base::failbit;
   if (__s == __end)
     __err |= ios_base::eofbit;
@@ -408,13 +408,13 @@ time_get<_Ch, _InIt>::do_get_year(_InIt __s, _InIt  __end,
     __err = ios_base::failbit | ios_base::eofbit;
     return __s;
   }
-  
+
   bool __pr =  __get_decimal_integer(__s, __end, __t->tm_year, __STATIC_CAST(_Ch*, 0));
   __t->tm_year -= 1900;
   __err = __pr ? ios_base::goodbit : ios_base::failbit;
   if (__s == __end)
     __err |= ios_base::eofbit;
-  
+
   return __s;
 }
 
@@ -457,10 +457,10 @@ time_get<_Ch, _InIt>::do_get_monthname(_InIt __s, _InIt  __end,
 template<class _Ch, class _OutputIter>
 _OutputIter
 time_put<_Ch,_OutputIter>::put(_OutputIter __s, ios_base& __f, _Ch __fill,
-                               const tm* __tmb, const _Ch* __pat, 
+                               const tm* __tmb, const _Ch* __pat,
                                const _Ch* __pat_end) const {
   //  locale __loc = __f.getloc();
-  //  const ctype<_Ch>& _Ct = use_facet<ctype<_Ch> >(__loc); 
+  //  const ctype<_Ch>& _Ct = use_facet<ctype<_Ch> >(__loc);
   const ctype<_Ch>& _Ct = *__STATIC_CAST(const ctype<_Ch>*, __f._M_ctype_facet());
   while (__pat != __pat_end) {
     char __c = _Ct.narrow(*__pat, 0);
@@ -483,7 +483,7 @@ time_put<_Ch,_OutputIter>::put(_OutputIter __s, ios_base& __f, _Ch __fill,
 template<class _Ch, class _OutputIter>
 _OutputIter
 time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch /* __fill */,
-                                  const tm* __tmb, char __format, 
+                                  const tm* __tmb, char __format,
                                   char __modifier ) const {
   char __buf[64];
   char * __iend = __write_formatted_time(__buf, __format, __modifier,

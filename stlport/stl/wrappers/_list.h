@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -53,8 +53,8 @@ public:
     __IMPORT_SUPER_COPY_ASSIGNMENT(list, list<_Tp>, __LIST_SUPER)
     list() { }
     explicit list(size_type __n, const _Tp& __val) : __LIST_SUPER(__n, __val) { }
-    explicit list(size_type __n) :  __LIST_SUPER(__n) { } 
-    list(const _Tp* __first, const _Tp* __last) : __LIST_SUPER(__first, __last) { } 
+    explicit list(size_type __n) :  __LIST_SUPER(__n) { }
+    list(const _Tp* __first, const _Tp* __last) : __LIST_SUPER(__first, __last) { }
     list(const_iterator __first, const_iterator __last) : __LIST_SUPER(__first, __last) { }
 # undef __LIST_SUPER
 };

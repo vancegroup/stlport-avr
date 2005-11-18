@@ -21,7 +21,7 @@
   * is not standard conformant as it has an internal state (the static buffer)
   */
 
- 
+
 #ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
 #define _STLP_INTERNAL_IOSTREAM_STRING_H
 

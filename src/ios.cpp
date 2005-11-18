@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 # include "stlport_prefix.h"
 # include <algorithm>
@@ -32,7 +32,7 @@ __write_integer(char* buf, ios_base::fmtflags flags, long x);
 // class ios_base::failure, a subclass of exception.  It's used solely
 // for reporting errors.
 
-ios_base::failure::failure(const string& s) 
+ios_base::failure::failure(const string& s)
   : __Named_exception(s)
 {}
 
@@ -89,7 +89,7 @@ const ios_base::seekdir ios_base::end;
 // initialized to zero.  Returns a pointer to the new array, and the new
 // size.
 template <class PODType>
-pair<PODType*, size_t> 
+pair<PODType*, size_t>
 _Stl_expand_array(PODType* array, size_t N, int index)
 {
   if ((int)N < index + 1) {
@@ -100,7 +100,7 @@ _Stl_expand_array(PODType* array, size_t N, int index)
       fill(new_array + N, new_array + new_N, PODType());
       return pair<PODType*, size_t>(new_array, new_N);
     }
-    else 
+    else
       return pair<PODType*, size_t>(__STATIC_CAST(PODType*,0), 0);
   }
   else
@@ -159,7 +159,7 @@ long& ios_base::iword(int index) {
   }
 }
 
- 
+
 void*& ios_base::pword(int index) {
   static void* dummy = 0;
 
@@ -208,9 +208,9 @@ void ios_base::_M_throw_failure() {
   char buffer[256];
   char* ptr;
   strcpy(buffer, "ios failure: rdstate = 0x");
-  ptr = __write_integer(buffer+strlen(buffer), ios_base::hex, __STATIC_CAST(unsigned long,_M_iostate)); 
+  ptr = __write_integer(buffer+strlen(buffer), ios_base::hex, __STATIC_CAST(unsigned long,_M_iostate));
   strcpy(ptr, " mask = 0x");
-  ptr = __write_integer(buffer+strlen(buffer), ios_base::hex, __STATIC_CAST(unsigned long,_M_exception_mask)); 
+  ptr = __write_integer(buffer+strlen(buffer), ios_base::hex, __STATIC_CAST(unsigned long,_M_exception_mask));
   *ptr = 0;
   arg = buffer;
 # else
@@ -224,16 +224,16 @@ void ios_base::_M_throw_failure() {
 # endif
 }
 
-// Copy x's state to *this.  This member function is used in the 
+// Copy x's state to *this.  This member function is used in the
 // implementation of basic_ios::copyfmt.  Does not copy _M_exception_mask
-// or _M_iostate.  
+// or _M_iostate.
 void ios_base::_M_copy_state(const ios_base& x) {
   _M_fmtflags  = x._M_fmtflags; // Copy the flags, except for _M_iostate
   _M_openmode  = x._M_openmode; // and _M_exception_mask.
   _M_seekdir   = x._M_seekdir;
   _M_precision = x._M_precision;
   _M_width     = x._M_width;
-  
+
   if (_M_locale != x._M_locale) {
     _M_locale = x._M_locale;
     _M_cached_ctype = x._M_cached_ctype;
@@ -280,7 +280,7 @@ void ios_base::_M_copy_state(const ios_base& x) {
   }
 }
 
-// ios's (protected) default constructor.  The standard says that all 
+// ios's (protected) default constructor.  The standard says that all
 // fields have indeterminate values; we initialize them to zero for
 // simplicity.  The only thing that really matters is that the arrays
 // are all initially null pointers, and the array element counts are all

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -51,23 +51,23 @@ iterators invalidated are those referring to the deleted node.
 */
 
 #ifndef _STLP_INTERNAL_ALGOBASE_H
-#  include <stl/_algobase.h> 
+#  include <stl/_algobase.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ALLOC_H
-#  include <stl/_alloc.h> 
+#  include <stl/_alloc.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ITERATOR_H
-#  include <stl/_iterator.h> 
+#  include <stl/_iterator.h>
 #endif
 
 #ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h> 
+#  include <stl/_construct.h>
 #endif
 
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
-#  include <stl/_function_base.h> 
+#  include <stl/_function_base.h>
 #endif
 
 #if defined (_STLP_DEBUG)
@@ -252,7 +252,7 @@ protected:
     _M_header._M_data._M_right = &_M_header._M_data;
   }
 
-  
+
   void _M_rebind(_Node_base *__static_node) {
     if (_M_header._M_data._M_parent != 0) {
       _M_header._M_data._M_parent->_M_parent = &_M_header._M_data;
@@ -269,7 +269,7 @@ protected:
 };
 
 
-template <class _Key, class _Compare, 
+template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits,
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class _Rb_tree : public _Rb_tree_base<_Value, _Alloc> {
@@ -554,30 +554,30 @@ private:
   _Base_ptr _M_lower_bound(const key_type& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is not less than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
-    
-    while (__x != 0) 
+
+    while (__x != 0)
       if (!_M_key_compare(_S_key(__x), __k))
         __y = __x, __x = _S_left(__x);
       else
         __x = _S_right(__x);
-    
+
     return __y;
   }
 
   _Base_ptr _M_upper_bound(const key_type& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is greater than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
-    
-    while (__x != 0) 
+
+    while (__x != 0)
       if (_M_key_compare(__k, _S_key(__x)))
         __y = __x, __x = _S_left(__x);
       else
         __x = _S_right(__x);
-    
+
     return __y;
   }
-  
-public:  
+
+public:
   size_type count(const key_type& __x) const;
   iterator lower_bound(const key_type& __x) { return iterator(_M_lower_bound(__x)); }
   const_iterator lower_bound(const key_type& __x) const { return const_iterator(_M_lower_bound(__x)); }
@@ -634,13 +634,13 @@ struct __move_traits<_Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _All
 _STLP_END_NAMESPACE
 
 # if !defined (_STLP_LINK_TIME_INSTANTIATION)
-#  include <stl/_tree.c> 
+#  include <stl/_tree.c>
 # endif
 
 # undef _Rb_tree
 
 #if defined (_STLP_DEBUG)
-# include <stl/debug/_tree.h> 
+# include <stl/debug/_tree.h>
 #endif
 
 #endif /* _STLP_INTERNAL_TREE_H */

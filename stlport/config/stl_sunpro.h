@@ -35,7 +35,7 @@
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
-# endif 
+# endif
 
 
 # ifdef _STLP_USE_NO_IOSTREAMS
@@ -44,7 +44,7 @@
 
 // those do not depend on compatibility
 # if (__SUNPRO_CC < 0x510)
-#  define _STLP_NO_TYPENAME_ON_RETURN_TYPE 1 
+#  define _STLP_NO_TYPENAME_ON_RETURN_TYPE 1
 #  define _STLP_NONTEMPL_BASE_MATCH_BUG 1
 # endif
 
@@ -96,7 +96,7 @@
 # undef _STLP_NATIVE_C_HEADER
 # undef _STLP_NATIVE_CPP_C_HEADER
 
-#   define wint_t __wint_t 
+#   define wint_t __wint_t
 // famous CC 4.2 bug
 #   define _STLP_INLINE_STRING_LITERAL_BUG 1
 // /usr/include

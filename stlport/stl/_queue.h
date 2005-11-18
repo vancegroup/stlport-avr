@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -46,7 +46,7 @@
 # include <stl/_function.h>
 #endif
 
-#if defined(__SC__) && !defined(__DMC__)		//*ty 12/07/2001 - since "comp" is a built-in type and reserved under SCpp
+#if defined(__SC__) && !defined(__DMC__)    //*ty 12/07/2001 - since "comp" is a built-in type and reserved under SCpp
 #  define comp _Comp
 #endif
 
@@ -60,7 +60,7 @@ template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
-class queue 
+class queue
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 #  if defined (_STLP_QUEUE_ARGS)
             : public __stlport_class<queue<_Tp> >
@@ -112,7 +112,7 @@ public:
 #endif
 
 template < _STLP_QUEUE_HEADER_ARGS >
-inline bool _STLP_CALL 
+inline bool _STLP_CALL
 operator==(const queue<_STLP_QUEUE_ARGS >& __x, const queue<_STLP_QUEUE_ARGS >& __y) {
   return __x._Get_s() == __y._Get_s();
 }
@@ -126,7 +126,7 @@ operator<(const queue<_STLP_QUEUE_ARGS >& __x, const queue<_STLP_QUEUE_ARGS >& _
 _STLP_RELOPS_OPERATORS( template < _STLP_QUEUE_HEADER_ARGS >, queue<_STLP_QUEUE_ARGS > )
 
 # if !(defined ( _STLP_LIMITED_DEFAULT_TEMPLATES ) || defined ( _STLP_TEMPLATE_PARAM_SUBTYPE_BUG ))
-template <class _Tp, class _Sequence = vector<_Tp>, 
+template <class _Tp, class _Sequence = vector<_Tp>,
           class _Compare = less<_STLP_HEADER_TYPENAME _Sequence::value_type> >
 # elif defined ( _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS )
 template <class _Tp>
@@ -163,7 +163,7 @@ protected:
 public:
   priority_queue() : c() {}
   explicit priority_queue(const _Compare& __x) :  c(), comp(__x) {}
-  priority_queue(const _Compare& __x, const _Sequence& __s) 
+  priority_queue(const _Compare& __x, const _Sequence& __s)
     : c(__s), comp(__x)
     { make_heap(c.begin(), c.end(), comp); }
 
@@ -172,11 +172,11 @@ public:
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  priority_queue(_InputIterator __first, _InputIterator __last) 
+  priority_queue(_InputIterator __first, _InputIterator __last)
     : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
 
   template <class _InputIterator>
-  priority_queue(_InputIterator __first, 
+  priority_queue(_InputIterator __first,
                  _InputIterator __last, const _Compare& __x)
     : c(__first, __last), comp(__x)
     { make_heap(c.begin(), c.end(), comp); }
@@ -185,24 +185,24 @@ public:
   priority_queue(_InputIterator __first, _InputIterator __last,
                  const _Compare& __x, const _Sequence& __s)
   : c(__s), comp(__x)
-  { 
+  {
     c.insert(c.end(), __first, __last);
     make_heap(c.begin(), c.end(), comp);
   }
 
 #else /* _STLP_MEMBER_TEMPLATES */
-  priority_queue(const value_type* __first, const value_type* __last) 
+  priority_queue(const value_type* __first, const value_type* __last)
     : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
 
-  priority_queue(const value_type* __first, const value_type* __last, 
-                 const _Compare& __x) 
+  priority_queue(const value_type* __first, const value_type* __last,
+                 const _Compare& __x)
     : c(__first, __last), comp(__x)
     { make_heap(c.begin(), c.end(), comp); }
 
-  priority_queue(const value_type* __first, const value_type* __last, 
+  priority_queue(const value_type* __first, const value_type* __last,
                  const _Compare& __x, const _Sequence& __c)
     : c(__c), comp(__x)
-  { 
+  {
     c.insert(c.end(), __first, __last);
     make_heap(c.begin(), c.end(), comp);
   }
@@ -213,7 +213,7 @@ public:
   const_reference top() const { return c.front(); }
   void push(const value_type& __x) {
     _STLP_TRY {
-      c.push_back(__x); 
+      c.push_back(__x);
       push_heap(c.begin(), c.end(), comp);
     }
     _STLP_UNWIND(c.clear())

@@ -171,7 +171,7 @@ void MoveConstructorTest::move_construct_test()
   }
 
   // zero: don't like this kind of tests
-  // because of template test function 
+  // because of template test function
   // we should find another way to provide
   // move constructor testing...
 
@@ -186,10 +186,10 @@ void MoveConstructorTest::move_construct_test()
 
   /*
   int int_values[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-  
+
   set<int> int_set(int_values, int_values + sizeof(in_values) / sizeof(int));
   standard_test1(int_set);
-  
+
   multiset<int> int_multiset(int_values, int_values + sizeof(in_values) / sizeof(int));
   standard_test1(int_multiset);
   */
@@ -772,7 +772,7 @@ struct MovableStruct {
     nb_dft_construct_call = nb_cpy_construct_call = nb_mv_construct_call = 0;
     nb_destruct_call = 0;
   }
-  
+
   static size_t nb_dft_construct_call;
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
@@ -802,7 +802,7 @@ struct CompleteMovableStruct {
     nb_dft_construct_call = nb_cpy_construct_call = nb_mv_construct_call = 0;
     nb_destruct_call = 0;
   }
-  
+
   static size_t nb_dft_construct_call;
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
@@ -870,10 +870,10 @@ void MoveConstructorTest::move_traits()
       // vect contains 6 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 6 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 8 );
-      
+
       MovableStruct::reset();
       vect.erase(vect.end() - 2, vect.end());
-      
+
       // vect contains 4 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 2 );
@@ -884,7 +884,7 @@ void MoveConstructorTest::move_traits()
       // vect contains 3 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 3 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 4 );
-      
+
       MovableStruct::reset();
     }
     //vect with 3 elements and v2 with 4 elements are now out of scope
@@ -923,7 +923,7 @@ void MoveConstructorTest::move_traits()
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 0 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 0 );
-      
+
       CompleteMovableStruct::reset();
       vect.insert(vect.begin() + 2, v2.begin(), v2.end());
 
@@ -953,7 +953,7 @@ void MoveConstructorTest::move_traits()
       // vect contains 3 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 3 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 1 );
-      
+
       CompleteMovableStruct::reset();
     }
     //vect with 3 elements and v2 with 4 elements are now out of scope
@@ -987,7 +987,7 @@ void MoveConstructorTest::move_traits()
 
       MovableStruct::reset();
       deque<MovableStruct> d2 = deq;
-      
+
       CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 0 );
@@ -1008,10 +1008,10 @@ void MoveConstructorTest::move_traits()
       // deq contains 6 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 1 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 3 );
-      
+
       MovableStruct::reset();
       deq.erase(deq.end() - 3, deq.end() - 1);
-      
+
       // deq contains 4 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 1 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 3 );
@@ -1022,7 +1022,7 @@ void MoveConstructorTest::move_traits()
       // deq contains 3 elements
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 1 );
-    
+
       MovableStruct::reset();
     }
     //deq with 3 elements and d2 with 4 elements are now out of scope
@@ -1057,7 +1057,7 @@ void MoveConstructorTest::move_traits()
 
       CompleteMovableStruct::reset();
       deque<CompleteMovableStruct> d2 = deq;
-      
+
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_dft_construct_call == 0 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 0 );
@@ -1092,7 +1092,7 @@ void MoveConstructorTest::move_traits()
       // deq contains 3 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 0 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 1 );
-    
+
       CompleteMovableStruct::reset();
     }
     //deq with 3 elements and v2 with 4 elements are now out of scope
@@ -1150,7 +1150,7 @@ namespace std
     allocator() _STLP_NOTHROW {}
 #if defined (_STLP_MEMBER_TEMPLATES)
     template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW;
-#endif    
+#endif
     allocator(const allocator&) _STLP_NOTHROW {}
     ~allocator() _STLP_NOTHROW {}
     pointer address(reference __x) const { return &__x; }
@@ -1161,10 +1161,10 @@ namespace std
     void construct(pointer, const_reference) {}
     void destroy(pointer) {}
   };
-  
+
   _STLP_TEMPLATE_NULL
   struct less<struct_with_specialized_less> {
-    bool operator() (struct_with_specialized_less const&, 
+    bool operator() (struct_with_specialized_less const&,
                      struct_with_specialized_less const&) const;
   };
 }
@@ -1192,7 +1192,7 @@ void MoveConstructorTest::movable_declaration()
 #      endif
 #    endif
   }
-  
+
   {
     //crope, wrope:
     CPPUNIT_ASSERT( is_movable(crope()) );
@@ -1210,7 +1210,7 @@ void MoveConstructorTest::movable_declaration()
 #      endif
 #    endif
   }
-  
+
   {
     //vector:
     CPPUNIT_ASSERT( is_movable(vector<char>()) );
@@ -1222,7 +1222,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(vector<char>()) );
 #    endif
   }
-  
+
   {
     //deque:
     CPPUNIT_ASSERT( is_movable(deque<char>()) );
@@ -1246,7 +1246,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(list<char>()) );
 #    endif
   }
-  
+
   {
     //slist:
     CPPUNIT_ASSERT( is_movable(slist<char>()) );
@@ -1258,7 +1258,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(slist<char>()) );
 #    endif
   }
-  
+
   {
     //queue:
     CPPUNIT_ASSERT( is_movable(queue<char>()) );
@@ -1270,7 +1270,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(queue<char>()) );
 #    endif
   }
-  
+
   {
     //stack:
     CPPUNIT_ASSERT( is_movable(stack<char>()) );
@@ -1282,10 +1282,10 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(stack<char>()) );
 #    endif
   }
-  
+
   {
     //associative containers, set multiset, map, multimap:
-    
+
     //For associative containers it is important that less is correctly recognize as
     //the STLport less or a user specialized less:
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -1293,7 +1293,7 @@ void MoveConstructorTest::movable_declaration()
 #    endif
     CPPUNIT_ASSERT( !is_move_complete(less<struct_with_specialized_less>()) );
 
-    //set    
+    //set
     CPPUNIT_ASSERT( is_movable(set<char>()) );
     CPPUNIT_ASSERT( is_movable(set<specially_allocated_struct>()) );
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -1312,7 +1312,7 @@ void MoveConstructorTest::movable_declaration()
 #    else
     CPPUNIT_ASSERT( !is_move_complete(multiset<char>()) );
 #    endif
-  
+
     //map
     CPPUNIT_ASSERT( is_movable(map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(map<specially_allocated_struct, char>()) );
@@ -1325,7 +1325,7 @@ void MoveConstructorTest::movable_declaration()
 #    else
     CPPUNIT_ASSERT( !is_move_complete(map<char, char>()) );
 #    endif
-  
+
     //multimap
     CPPUNIT_ASSERT( is_movable(multimap<char, char>()) );
     CPPUNIT_ASSERT( is_movable(multimap<specially_allocated_struct, char>()) );
@@ -1341,7 +1341,7 @@ void MoveConstructorTest::movable_declaration()
   {
     //hashed containers, unordered_set unordered_multiset, unordered_map, unordered_multimap,
     //                   hash_set, hash_multiset, hash_map, hash_multimap:
-    
+
     //We only check that they are movable, completness is not yet supported
     CPPUNIT_ASSERT( is_movable(unordered_set<char>()) );
     CPPUNIT_ASSERT( is_movable(unordered_multiset<char>()) );

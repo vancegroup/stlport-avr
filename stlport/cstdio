@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -37,9 +37,9 @@
 #  undef stdin
 #  undef stdout
 #  undef stderr
-#  define stdin  	(&_STLP_VENDOR_CSTD::__files[0])
-#  define stdout	(&_STLP_VENDOR_CSTD::__files[1])
-#  define stderr	(&_STLP_VENDOR_CSTD::__files[2])
+#  define stdin    (&_STLP_VENDOR_CSTD::__files[0])
+#  define stdout  (&_STLP_VENDOR_CSTD::__files[1])
+#  define stderr  (&_STLP_VENDOR_CSTD::__files[2])
 # endif
 
 #  if ((defined (_STLP_MSVC) || defined (__ICL)) && (_MSC_VER < 1400)) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
@@ -47,7 +47,7 @@ inline int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
 { return _STLP_VENDOR_CSTD::_vsnprintf(s1, n, s2, v); }
 #  endif
 
-# ifdef _STLP_IMPORT_VENDOR_CSTD 
+# ifdef _STLP_IMPORT_VENDOR_CSTD
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::FILE;
 using _STLP_VENDOR_CSTD::fpos_t;

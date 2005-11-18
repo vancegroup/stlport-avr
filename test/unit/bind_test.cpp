@@ -34,7 +34,7 @@ void BindTest::bind1st1()
 {
   int array [3] = { 1, 2, 3 };
   int* p = remove_if((int*)array, (int*)array + 3, bind1st(less<int>(), 2));
-  
+
   CPPUNIT_ASSERT(p==&array[2]);
   CPPUNIT_ASSERT(array[0]==1);
   CPPUNIT_ASSERT(array[1]==2);

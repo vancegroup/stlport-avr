@@ -55,7 +55,7 @@ void MismatchTest::mismatch1()
   iota(v1.begin(), v1.end(), 0);
   iota(v2.begin(), v2.end(), 0);
   pair <IntVec::iterator, IntVec::iterator> result = mismatch(v1.begin(), v1.end(), v2.begin());
-  
+
   CPPUNIT_ASSERT(result.first == v1.end() && result.second == v2.end());
 
   v2[v2.size()/2] = 42;
@@ -71,7 +71,7 @@ void MismatchTest::mismatch2()
   char* n2[size];
   copy(n1, n1 + 5, (char**)n2);
   pair <char**, char**> result = mismatch((char**)n1, (char**)n1 + size, (char**)n2, str_equal);
-  
+
   CPPUNIT_ASSERT(result.first == n1 + size && result.second == n2 + size);
 
   n2[2] = "QED";

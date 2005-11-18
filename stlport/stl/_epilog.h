@@ -9,7 +9,7 @@
 #endif
 
 /* If the platform provides any specific epilog actions,
- * like #pragmas, do include platform-specific prolog file 
+ * like #pragmas, do include platform-specific prolog file
  */
 #if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
 #  include <config/_epilog.h>
@@ -22,7 +22,7 @@
 #if defined (_STLP_USE_OWN_NAMESPACE)
 
 #  if !defined (_STLP_DONT_REDEFINE_STD)
-/*  We redefine "std" to STLPORT, so that user code may use std:: transparently 
+/*  We redefine "std" to STLPORT, so that user code may use std:: transparently
  *  The STLPORT macro contains the STLport namespace name containing all the std
  *  stuff.
  */

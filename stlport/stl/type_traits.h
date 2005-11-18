@@ -6,13 +6,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -73,7 +73,7 @@ _STLP_BEGIN_NAMESPACE
 
 #ifndef _STLP_USE_BOOST_SUPPORT
 
-// The following could be written in terms of numeric_limits.  
+// The following could be written in terms of numeric_limits.
 // We're doing it separately to reduce the number of dependencies.
 
 template <class _Tp> struct _Is_integer {
@@ -159,7 +159,7 @@ _STLP_TEMPLATE_NULL struct _Is_rational<long double> {
 #  endif
 
 // Forward declarations.
-template <class _Tp> struct __type_traits; 
+template <class _Tp> struct __type_traits;
 template <int _IsPOD> struct __type_traits_aux {
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
@@ -178,7 +178,7 @@ struct __type_traits_aux<0> {
 };
 
 _STLP_TEMPLATE_NULL
-struct __type_traits_aux<1> { 
+struct __type_traits_aux<1> {
   typedef __true_type    has_trivial_default_constructor;
   typedef __true_type    has_trivial_copy_constructor;
   typedef __true_type    has_trivial_assignment_operator;
@@ -192,7 +192,7 @@ struct _IsRef {
 };
 
 #  if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
-/* 
+/*
  * Boris : simulation technique is used here according to Adobe Open Source License Version 1.0.
  * Copyright 2000 Adobe Systems Incorporated and others. All rights reserved.
  * Authors: Mat Marcus and Jesse Jones
@@ -344,7 +344,7 @@ struct __type_traits : __type_traits_aux<_IsPtr<_Tp>::_Ret> {};
 template <class _Tp>  struct _IsPtr { enum { _Ret = 0 }; };
 
 template <class _Tp>
-struct __type_traits { 
+struct __type_traits {
    typedef __true_type     this_dummy_member_must_be_first;
                    /* Do not remove this member. It informs a compiler which
                       automatically specializes __type_traits that this
@@ -353,7 +353,7 @@ struct __type_traits {
                       called __type_traits for something unrelated. */
 
    /* The following restrictions should be observed for the sake of
-      compilers which automatically produce type specific specializations 
+      compilers which automatically produce type specific specializations
       of this class:
           - You may reorder the members below if you wish
           - You may remove any of the members below if you wish
@@ -376,16 +376,16 @@ template <class _Tp> struct _IsRef<_Tp&> { enum { _Ret = 1 }; };
 template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<1> {};
 #    endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-template <class _Tp>  struct _IsPtrType { 
+template <class _Tp>  struct _IsPtrType {
   enum { is_ptr = _IsPtr<_Tp>::_Ret };
   typedef typename __bool2type<is_ptr>::_Ret _Type;
-  static _Type _Ret() { return _Type();} 
+  static _Type _Ret() { return _Type();}
 };
-template <class _Tp1, class _Tp2>  struct _BothPtrType { 
+template <class _Tp1, class _Tp2>  struct _BothPtrType {
   enum { is_ptr1 = _IsPtr<_Tp1>::_Ret };
   enum { is_ptr2 = _IsPtr<_Tp2>::_Ret };
   typedef typename __bool2type<(is_ptr1 && is_ptr2)>::_Ret _Type;
-  static _Type _Ret() { return _Type();} 
+  static _Type _Ret() { return _Type();}
 };
 
 #  endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
@@ -482,10 +482,10 @@ template <class _Tp>
 struct _IsRefType {
   enum { is_ref = _IsRef<_Tp>::_Ret };
   typedef typename __bool2type<is_ref>::_Ret _Type;
-  static _Type _Ret() { return _Type();} 
+  static _Type _Ret() { return _Type();}
 };
 
-template <class _Tp> 
+template <class _Tp>
 struct __call_traits {
 #if defined(_STLP_USE_BOOST_SUPPORT) && !defined(_STLP_NO_EXTENSIONS)
   typedef typename __select< ::boost::is_reference<_Tp>::value,
@@ -519,7 +519,7 @@ struct _OKToSwap {
 };
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
-inline _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2> 
+inline _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>
 _IsOKToSwap(_Tp1*, _Tp2*, const _IsRef1&, const _IsRef2&) {
   return _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>();
 }
@@ -544,7 +544,7 @@ inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
 }
 
 /*
- * Base class used: 
+ * Base class used:
  * - to simulate partial template specialization
  * - to simulate partial function ordering
  * - to recognize STLport class from user specialized one

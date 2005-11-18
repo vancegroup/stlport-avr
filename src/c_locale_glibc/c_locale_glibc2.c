@@ -28,7 +28,7 @@ struct locale_data
 
   /* This provides a slot for category-specific code to cache data computed
    * about this locale.  That code can set a cleanup function to deallocate
-   * the data.  
+   * the data.
   struct
   {
     void (*cleanup) (struct locale_data *);
@@ -405,7 +405,7 @@ size_t _Locale_mbtowc(struct _Locale_ctype *__DUMMY_PAR1,
 {
   printf( "%s:%d\n", __FILE__, __LINE__ );
 
-  return (size_t) -1; 
+  return (size_t) -1;
 }
 
 size_t _Locale_wctomb(struct _Locale_ctype *__DUMMY_PAR1,
@@ -505,7 +505,7 @@ char _Locale_thousands_sep(struct _Locale_numeric *__loc)
   return (__loc != 0) ? *(__nl_langinfo_l(THOUSEP, (__c_locale)__loc)) : ',';
 }
 
-const char* _Locale_grouping(struct _Locale_numeric *__loc) 
+const char* _Locale_grouping(struct _Locale_numeric *__loc)
 {
   return (__loc != 0 && _Locale_thousands_sep(__loc) != '\0' ) ?
     (__nl_langinfo_l(GROUPING, (__c_locale)__loc)) : "";
@@ -582,7 +582,7 @@ int _Locale_p_sep_by_space(struct _Locale_monetary *__loc)
   return __loc != 0 ? *(__nl_langinfo_l(P_SEP_BY_SPACE, (__c_locale)__loc)) : CHAR_MAX;
 }
 
-/* 
+/*
  * 0 Parentheses surround the quantity and currency_symbol
  * 1 The sign string precedes the quantity and currency_symbol
  * 2 The sign string succeeds the quantity and currency_symbol.
@@ -606,7 +606,7 @@ int _Locale_n_sep_by_space(struct _Locale_monetary *__loc)
   return __loc != 0 ? *(__nl_langinfo_l(N_SEP_BY_SPACE, (__c_locale)__loc)) : CHAR_MAX;
 }
 
-/* 
+/*
  * 0 Parentheses surround the quantity and currency_symbol
  * 1 The sign string precedes the quantity and currency_symbol
  * 2 The sign string succeeds the quantity and currency_symbol.

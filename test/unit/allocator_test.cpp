@@ -29,7 +29,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AllocatorTest);
 
 #if defined (_STLP_USE_EXCEPTIONS)
 
-struct BigStruct 
+struct BigStruct
 {
   char _data[4096];
 };

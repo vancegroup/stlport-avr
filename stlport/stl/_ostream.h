@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 
 #ifndef _STLP_INTERNAL_OSTREAM_H
@@ -51,7 +51,7 @@ class basic_ostream : virtual public basic_ios<_CharT, _Traits> {
   basic_ostream(_Self const&);
   _Self& operator = (_Self const&);
 #endif
-  
+
 public:                         // Types
   typedef _CharT                     char_type;
   typedef typename _Traits::int_type int_type;
@@ -105,7 +105,7 @@ public:                         // Formatted output.
 #ifdef _STLP_LONG_LONG
   _Self& operator<< (_STLP_LONG_LONG __x);
   _Self& operator<< (unsigned _STLP_LONG_LONG __x);
-#endif 
+#endif
   _Self& operator<<(float __x);
   _Self& operator<<(double __x);
 # ifndef _STLP_NO_LONG_DOUBLE
@@ -166,7 +166,7 @@ public:                         // Buffer positioning and manipulation.
       explicit sentry(basic_ostream<_CharT, _Traits>& __str)
         : _M_str(__str), /* _M_buf(__str.rdbuf()), */ _M_ok(_M_init(__str))
       {}
-      
+
       ~sentry() {
         if (_M_str.flags() & ios_base::unitbuf)
 #ifndef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
@@ -184,10 +184,10 @@ public:                         // Buffer positioning and manipulation.
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 #  undef sentry
 #else
-  // close basic_ostream class definition here    
+  // close basic_ostream class definition here
 };
 #endif
- 
+
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_ostream<char, char_traits<char> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Osentry<char, char_traits<char> >;
@@ -213,8 +213,8 @@ bool _M_init(basic_ostream<_CharT, _Traits>& __str) {
 }
 
 template <class _CharT, class _Traits>
-inline basic_streambuf<_CharT, _Traits>* _STLP_CALL 
-_M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __St) 
+inline basic_streambuf<_CharT, _Traits>* _STLP_CALL
+_M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __St)
 { return __St.rdbuf(); }
 
 // Non-member functions.

@@ -51,7 +51,7 @@ void FinsertTest::finsert2()
 
   deque<char*> names;
   copy(array, array + 3, front_inserter(names));
-  
+
   CPPUNIT_ASSERT(names[0]==array[2]);
   CPPUNIT_ASSERT(names[1]==array[1]);
   CPPUNIT_ASSERT(names[2]==array[0]);

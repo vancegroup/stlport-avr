@@ -144,7 +144,7 @@ void ListTest::list4()
   CPPUNIT_ASSERT(distance(l2.begin(), l2.end()) == 0);
 
   l1.swap(l2);
-  
+
   CPPUNIT_ASSERT(distance(l1.begin(), l1.end()) == 0);
   CPPUNIT_ASSERT(distance(l2.begin(), l2.end()) == 6);
 }
@@ -155,7 +155,7 @@ void ListTest::erase()
   l.push_back( 1 );
   l.erase(l.begin());
   CPPUNIT_ASSERT( l.empty() );
-  
+
   int array[] = { 0, 1, 2, 3 };
   l.assign(array, array + 4);
   list<int>::iterator lit;

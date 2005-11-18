@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -55,13 +55,13 @@ public:
 
 #  if defined (_STLP_BASE_MATCH_BUG)
 template <class _Tp>
-inline bool 
+inline bool
 operator==(const deque<_Tp>& __x, const deque<_Tp>& __y) {
     return __x.size() == __y.size() && equal(__x.begin(), __x.end(), __y.begin());
 }
 
 template <class _Tp>
-inline bool 
+inline bool
 operator<(const deque<_Tp>& __x, const deque<_Tp>& __y) {
     return lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
 }
@@ -69,7 +69,7 @@ operator<(const deque<_Tp>& __x, const deque<_Tp>& __y) {
 
 # undef _DEQUE_SUPER
 
-_STLP_END_NAMESPACE  
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

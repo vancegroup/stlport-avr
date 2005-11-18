@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
 // file directly.
@@ -103,7 +103,7 @@ public:
 
 
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
-class time_get : public locale::facet, public time_base 
+class time_get : public locale::facet, public time_base
 {
     friend class _Locale_impl;
 
@@ -141,11 +141,11 @@ protected:
   ~time_get() {}
 
   virtual dateorder do_date_order() const {return no_order;}
-    
+
   virtual iter_type do_get_time(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate&  __err,
                                 tm* __t) const;
-    
+
   virtual iter_type do_get_date(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate& __err,
                                 tm* __t) const;
@@ -158,7 +158,7 @@ protected:
                                      ios_base&,
                                      ios_base::iostate& __err,
                                      tm* __t) const;
-  
+
   virtual iter_type do_get_year(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate& __err,
                                 tm* __t) const;
@@ -170,7 +170,7 @@ _Locale_time* _STLP_CALL __acquire_time(const char* __name);
 void          _STLP_CALL __release_time(_Locale_time* __time);
 
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
-class time_get_byname : public time_get<_Ch, _InIt> 
+class time_get_byname : public time_get<_Ch, _InIt>
 {
 public:
   typedef  time_base::dateorder dateorder;
@@ -234,14 +234,14 @@ public:
   _OutputIter put(iter_type __s, ios_base& __f, _Ch __fill,
       const tm* __tmb,
       const _Ch* __pat, const _Ch* __pat_end) const;
-  
+
   _OutputIter put(iter_type __s, ios_base& __f, _Ch  __fill,
-      const tm* __tmb, char __format, char __modifier = 0) const { 
-    return do_put(__s, __f,  __fill, __tmb, __format, __modifier); 
+      const tm* __tmb, char __format, char __modifier = 0) const {
+    return do_put(__s, __f,  __fill, __tmb, __format, __modifier);
   }
-  
+
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-  
+
 protected:
   _Time_Info _M_timeinfo;
 
@@ -256,7 +256,7 @@ protected:
 };
 
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , ostreambuf_iterator<_Ch> ) >
-class time_put_byname : public time_put<_Ch, _InIt> 
+class time_put_byname : public time_put<_Ch, _InIt>
 {
   friend class _Locale_impl;
 public:
@@ -268,7 +268,7 @@ public:
     : time_put<_Ch, _InIt>((_Locale_time*) 0, __refs),
     _M_time(__acquire_time(__name))
   { _Init_timeinfo(this->_M_timeinfo, this->_M_time); }
-  
+
 protected:
   ~time_put_byname() { __release_time(_M_time); }
 
@@ -297,21 +297,21 @@ _STLP_EXPORT_TEMPLATE_CLASS time_put<wchar_t, ostreambuf_iterator<wchar_t, char_
 
 # if defined (__BORLANDC__) && defined (_RTLDLL)
 inline void _Stl_loc_init_time_facets() {
-  
+
   time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 16;
   time_get<char, const char*>::id._M_index         = 17;
   time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index                      = 18;
   time_put<char, char*>::id._M_index               = 19;
-  
+
 # ifndef _STLP_NO_WCHAR_T
-  
+
   time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                   = 35;
   time_get<wchar_t, const wchar_t*>::id._M_index   = 36;
   time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                   = 37;
   time_put<wchar_t, wchar_t*>::id._M_index         = 38;
-  
+
 # endif
-  
+
 }
 # endif
 

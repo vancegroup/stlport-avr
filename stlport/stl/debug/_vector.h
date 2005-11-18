@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -120,7 +120,7 @@ public:
 
   typedef _DBG_iter<_Base,
       _DbgTraits<_Vector_nonconst_traits<value_type, typename _Base::iterator> > > iterator;
-    
+
   typedef _DBG_iter<_Base,
       _DbgTraits<_Vector_const_traits<value_type, typename _Base::iterator> > > const_iterator;
 
@@ -130,14 +130,14 @@ protected:
     _M_iter_list._Invalidate_all();
   }
   void _Invalidate_iterator(const iterator& __it) {
-    __invalidate_iterator(&_M_iter_list, __it); 
+    __invalidate_iterator(&_M_iter_list, __it);
   }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last) {
     __invalidate_range(&_M_iter_list, __first, __last);
   }
   void _Check_Overflow(size_type __nb) {
     if (this->size()+__nb > this->capacity())
-      _Invalidate_all();  
+      _Invalidate_all();
   }
   void _Compare_Capacity (size_type __old_capacity) {
     if (this->capacity() > __old_capacity) {
@@ -177,7 +177,7 @@ public:
 #else
   _DBG_vector(size_type __n, const _Tp& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type()) 
+         const allocator_type& __a = allocator_type())
     : _STLP_DBG_VECTOR_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -185,7 +185,7 @@ public:
     : _STLP_DBG_VECTOR_BASE(__n), _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  _DBG_vector(const _Self& __x) 
+  _DBG_vector(const _Self& __x)
     : _ConstructCheck(__x), _STLP_DBG_VECTOR_BASE(__x), _M_iter_list(_Get_base()) {}
 
   _DBG_vector(__move_source<_Self> src)
@@ -196,7 +196,7 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last,
-         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) 
+         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_DBG_VECTOR_BASE(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
@@ -205,7 +205,7 @@ public:
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   _DBG_vector(_InputIterator __first, _InputIterator __last)
-    : _STLP_DBG_VECTOR_BASE(__first, __last), 
+    : _STLP_DBG_VECTOR_BASE(__first, __last),
       _M_iter_list(_Get_base()) {
     }
 # endif
@@ -217,10 +217,10 @@ public:
     }
 
   // mysterious VC++ bug ?
-  _DBG_vector(const_iterator __first, const_iterator __last , 
+  _DBG_vector(const_iterator __first, const_iterator __last ,
               const allocator_type& __a = allocator_type())
-    : _ConstructCheck(__first, __last), 
-      _STLP_DBG_VECTOR_BASE(__first._M_iterator, __last._M_iterator, __a), 
+    : _ConstructCheck(__first, __last),
+      _STLP_DBG_VECTOR_BASE(__first._M_iterator, __last._M_iterator, __a),
       _M_iter_list(_Get_base()) {
       }
 
@@ -281,7 +281,7 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
-  void insert(iterator __pos, 
+  void insert(iterator __pos,
               _InputIterator __first, _InputIterator __last) {
     typedef typename _AreSameUnCVTypes<_InputIterator, iterator>::_Ret _IsNonConstIterator;
     typedef typename _AreSameUnCVTypes<_InputIterator, const_iterator>::_Ret _IsConstIterator;
@@ -291,16 +291,16 @@ public:
     //Sequence requirements 23.1.1 Table 67:
     _STLP_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, _DoCheck()));
     size_type __old_capacity = this->capacity();
-    _Base::insert(__pos._M_iterator, __first, __last);  
+    _Base::insert(__pos._M_iterator, __first, __last);
     _Compare_Capacity(__old_capacity);
 }
 #else /* _STLP_MEMBER_TEMPLATES */
-  void insert (iterator __pos, 
+  void insert (iterator __pos,
                const value_type *__first, const value_type *__last) {
     _STLP_DEBUG_CHECK(__check_ptr_range(__first,__last))
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     size_type __old_capacity = this->capacity();
-    _Base::insert(__pos._M_iterator, __first, __last);        
+    _Base::insert(__pos._M_iterator, __first, __last);
     _Compare_Capacity(__old_capacity);
   }
 
@@ -311,7 +311,7 @@ public:
     //Sequence requirements 23.1.1 Table 67:
     _STLP_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, __true_type()));
     size_type __old_capacity = this->capacity();
-    _Base::insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);  
+    _Base::insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
     _Compare_Capacity(__old_capacity);
 }
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -321,7 +321,7 @@ public:
     _Check_Overflow(__n);
     _Base::insert(__pos._M_iterator, __n, __x);
   }
-  
+
   void pop_back() {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
     _Invalidate_iterator(this->end());
@@ -338,7 +338,7 @@ public:
     _Invalidate_iterators(__first, end());
     return iterator(&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
-  void clear() { 
+  void clear() {
     _Invalidate_all();
     _Base::clear();
   }

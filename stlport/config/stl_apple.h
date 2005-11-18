@@ -16,7 +16,7 @@
 # include <ConditionalMacros_AC.h>
 # include <Types_AC.h>
 # define _STLP_FILE__ _FILE_AC
-# define _STLP_DEBUG_MESSAGE      
+# define _STLP_DEBUG_MESSAGE
 # define __stl_debug_message ProgramBreak_AC
 # include <ConditionalMacros.h>
 # endif
@@ -83,7 +83,7 @@ typedef int wint_t;
 #define _STLP_USE_STDIO_IO 1       //*TY 02/24/2000 - see also ; ref.[ file _fstream.h; line 36 ]
 #define _STLP_NO_THREADS           //*TY 12/17/2000 - multi-thread capability not explored, yet.
 #undef _REENTRANT                  //*ty 11/24/2001 - to make sure no thread facility is activated
-#define _NOTHREADS                 //*ty 12/07/2001 - 
+#define _NOTHREADS                 //*ty 12/07/2001 -
 
 // native library limitations
 #define _STLP_VENDOR_GLOBAL_STD          // mpw's c++ libs do not utilize namespace std yet
@@ -102,7 +102,7 @@ typedef int wint_t;
 # define _STLP_MPWFIX_TRY try{                      //*TY 06/01/2000 - exception handling bug workaround
 # define _STLP_MPWFIX_CATCH }catch(...){throw;}              //*TY 06/01/2000 - exception handling bug workaround
 # define _STLP_MPWFIX_CATCH_ACTION(action) }catch(...){action;throw;}  //*TY 06/01/2000 - exception handling bug workaround
-# define _STLP_THROW_RETURN_BUG            // known limitation 
+# define _STLP_THROW_RETURN_BUG            // known limitation
 # define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION    // known limitation
 # define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX    // known limitation
 # define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER    // known limitation

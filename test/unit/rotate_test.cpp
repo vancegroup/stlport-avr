@@ -35,7 +35,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RotateTest);
 void RotateTest::rotate0()
 {
   int numbers[6] = { 0, 1, 2, 3, 4, 5 };
-  // 3 4 5 0 1 2 
+  // 3 4 5 0 1 2
   rotate((int*)numbers, numbers + 3, numbers + 6);
   CPPUNIT_ASSERT(numbers[0]==3);
   CPPUNIT_ASSERT(numbers[1]==4);
@@ -60,7 +60,7 @@ void RotateTest::rotate1()
   CPPUNIT_ASSERT(v1[7]==8);
   CPPUNIT_ASSERT(v1[8]==9);
   CPPUNIT_ASSERT(v1[9]==0);
-  
+
   rotate(v1.begin(), v1.begin()+2, v1.end());
   CPPUNIT_ASSERT(v1[0]==3);
   CPPUNIT_ASSERT(v1[1]==4);
@@ -72,7 +72,7 @@ void RotateTest::rotate1()
   CPPUNIT_ASSERT(v1[7]==0);
   CPPUNIT_ASSERT(v1[8]==1);
   CPPUNIT_ASSERT(v1[9]==2);
-  
+
   rotate(v1.begin(), v1.begin()+7, v1.end());
   CPPUNIT_ASSERT(v1[0]==0);
   CPPUNIT_ASSERT(v1[1]==1);
@@ -92,7 +92,7 @@ void RotateTest::rotcopy0()
 
   int result[6];
   rotate_copy((int*)numbers, (int*)numbers + 3, (int*)numbers + 6, (int*)result);
-  // 3 4 5 0 1 2 
+  // 3 4 5 0 1 2
   CPPUNIT_ASSERT(result[0]==3);
   CPPUNIT_ASSERT(result[1]==4);
   CPPUNIT_ASSERT(result[2]==5);

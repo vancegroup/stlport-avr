@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -244,27 +244,27 @@ _STLP_DEF_MATH_INLINE2P(modf,modf)
 // Context of define of _STLP_VENDOR_LONG_DOUBLE_MATH should be changed:
 // many OS has *l math functions... -ptr
 
-#    if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 - 
-inline float modf (float __x, float* __y)     { 
-  double __dd[2]; 
-  double __res = ::modf((double)__x, __dd); 
-  __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1]; 
-  return (float)__res; 
+#    if !defined(_STLP_VENDOR_LONG_DOUBLE_MATH)  //*ty 11/25/2001 -
+inline float modf (float __x, float* __y)     {
+  double __dd[2];
+  double __res = ::modf((double)__x, __dd);
+  __y[0] = (float)__dd[0] ; __y[1] = (float)__dd[1];
+  return (float)__res;
 }
 #    else  //*ty 11/25/2001 - i.e. for apple SCpp
-inline float modf (float __x, float* __y)     { 
-  long double __dd[2]; 
-  long double __res = ::modfl(__STATIC_CAST(long double,__x), __dd); 
-  __y[0] = __STATIC_CAST(float,__dd[0]); __y[1] = __STATIC_CAST(float,__dd[1]); 
+inline float modf (float __x, float* __y)     {
+  long double __dd[2];
+  long double __res = ::modfl(__STATIC_CAST(long double,__x), __dd);
+  __y[0] = __STATIC_CAST(float,__dd[0]); __y[1] = __STATIC_CAST(float,__dd[1]);
   return __STATIC_CAST(float,__res);
 }
-#    endif  //*ty 11/25/2001 - 
+#    endif  //*ty 11/25/2001 -
 // fbp : long double versions are not available
-inline long double modf (long double __x, long double* __y) { 
-  double __dd[2]; 
-  double __res = ::modf((double)__x, __dd); 
-  __y[0] = (long double)__dd[0] ; __y[1] = (long double)__dd[1]; 
-  return (long double)__res; 
+inline long double modf (long double __x, long double* __y) {
+  double __dd[2];
+  double __res = ::modf((double)__x, __dd);
+  __y[0] = (long double)__dd[0] ; __y[1] = (long double)__dd[1];
+  return (long double)__res;
 }
 #  endif // 0
 

@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -33,8 +33,8 @@ public:
     FileReporter(FILE* stream) : m_numErrors(0), m_numTests(0), _myStream(false) { _file=stream;  }
 
     virtual ~FileReporter() { if(_myStream) fclose(_file); else fflush(_file);  }
-    
-    virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) 
+
+    virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line)
     {
         m_numErrors++;
         fprintf(_file, "\n%s(%d) : %s(%s);\n", in_file, in_line, in_macroName, in_macro);
@@ -44,13 +44,13 @@ public:
     {
       fprintf(_file, "\t%s\n", msg );
     }
-  
-    virtual void progress(const char *in_className, const char *in_shortTestName) 
+
+    virtual void progress(const char *in_className, const char *in_shortTestName)
     {
         m_numTests++;
         fprintf(_file, "%s::%s\n", in_className, in_shortTestName);
     }
-    virtual void printSummary() 
+    virtual void printSummary()
     {
         if(m_numErrors > 0) {
             fprintf(_file, "There were errors! (%d of %d)\n", m_numErrors, m_numTests);

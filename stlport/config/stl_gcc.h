@@ -38,7 +38,7 @@
 #  elif defined (_STLP_NO_CYGWIN)
 #    define _STLP_NATIVE_INCLUDE_PATH ../mingw
 /*#  else
- * Before version gcc 3.4, the cygwin package include path was conform to the 
+ * Before version gcc 3.4, the cygwin package include path was conform to the
  * GNU convention which is set later in this file.
  */
 #  endif
@@ -74,7 +74,7 @@
 #endif
 
 /* azov: gcc on lynx have a bug that causes internal
- * compiler errors when compiling STLport with namespaces turned on. 
+ * compiler errors when compiling STLport with namespaces turned on.
  * When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
  */
 #if defined (__Lynx__) && (__GNUC__ < 3)
@@ -85,8 +85,8 @@
 #endif
 
 
-/* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate 
-   static template data. If you are using GNU ld, please say so in stl_user_config.h header */    
+/* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate
+   static template data. If you are using GNU ld, please say so in stl_user_config.h header */
 #if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
    ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux) || defined(__amigaos__) )
 #  define _STLP_NO_STATIC_TEMPLATE_DATA
@@ -103,7 +103,7 @@
 #  define _NOTHREADS    1
 #  undef  _PTHREADS
 #  define _STLP_LITTLE_ENDIAN
-#endif 
+#endif
 
 #if defined (__MINGW32__)
 /* Mingw32, egcs compiler using the Microsoft C runtime */
@@ -129,7 +129,7 @@
 #  define _STLP_USE_DECLSPEC 1
 #endif
 
-#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun) || defined(__APPLE__)) 
+#if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun) || defined(__APPLE__))
 #  if !defined (__MINGW32__) && !defined (__CYGWIN__)
 #    define _STLP_NO_NATIVE_MBSTATE_T    1
 #  endif
@@ -176,7 +176,7 @@ typedef unsigned int wint_t;
 #    define _STLP_NATIVE_C_HEADER(header) <../include/##header##>
 #    define _STLP_NATIVE_CPP_C_HEADER(header) <../g++/##header##>
 #    define _STLP_NATIVE_OLD_STREAMS_HEADER(header) <../g++/##header##>
-#    define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../g++/##header##> 
+#    define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../g++/##header##>
 #  endif /* __GNUC__ < 3 */
 
 #  define _STLP_NO_LONG_DOUBLE
@@ -211,7 +211,7 @@ typedef unsigned int wint_t;
 #endif
 
 /* g++ 2.7.x and above */
-#define _STLP_LONG_LONG long long 
+#define _STLP_LONG_LONG long long
 
 #ifdef _STLP_USE_UCLIBC
 /*
@@ -319,11 +319,11 @@ __GIVE_UP_WITH_STL(GCC_272);
 #  define  _STLP_STATIC_CONST_INIT_BUG 1
 #  define  _STLP_NO_METHOD_SPECIALIZATION 1
 
-#  if !defined (__CYGWIN32__) 
+#  if !defined (__CYGWIN32__)
 #    define _STLP_NESTED_TYPE_PARAM_BUG   1
 #    define _STLP_BASE_MATCH_BUG       1
 /*  unused operators are required (forward) */
-#    define  _STLP_CONST_CONSTRUCTOR_BUG 
+#    define  _STLP_CONST_CONSTRUCTOR_BUG
 #    define _STLP_NO_DEFAULT_NON_TYPE_PARAM
 #  endif
 #  define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
@@ -395,7 +395,7 @@ __GIVE_UP_WITH_STL(GCC_272);
 /* Instantiation scheme that used (default) in gcc 3 made void of sense explicit
    instantiation within library: nothing except increased library size. - ptr
  */
-#  define _STLP_NO_FORCE_INSTANTIATE 
+#  define _STLP_NO_FORCE_INSTANTIATE
 
 #elif (__GNUC_MINOR__ < 8)
 
@@ -436,7 +436,7 @@ __GIVE_UP_WITH_STL(GCC_272);
           !( defined (__FreeBSD__) || defined (__NetBSD__) || defined(__sgi) || defined (__OS2__) ) )
 #      define _STLP_NATIVE_INCLUDE_PATH ../g++-3
 #    elif (__GNUC_MINOR__ > 8) && (__GNUC_MINOR__ < 95) && (__GNUC__ < 3) && !defined( __Lynx__ )
-/* this really sucks, as GNUpro does not really identifies itself, so we have to guess 
+/* this really sucks, as GNUpro does not really identifies itself, so we have to guess
  * depending on a platform
  */
 #      ifdef __hpux
@@ -456,7 +456,7 @@ __GIVE_UP_WITH_STL(GCC_272);
 #    endif
 #  else
 /* azov */
-#    ifndef __Lynx__ 
+#    ifndef __Lynx__
 #      if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)
 /*
 #     define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../g++-v3
@@ -481,7 +481,7 @@ __GIVE_UP_WITH_STL(GCC_272);
 #  endif /* _REENTRANT */
 #endif
 
-/* Tune settings for the case where static template data members are not 
+/* Tune settings for the case where static template data members are not
  * instaniated by default
  */
 #if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )

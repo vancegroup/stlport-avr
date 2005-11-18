@@ -2,13 +2,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -20,16 +20,16 @@
  * Purpose of this file :
  *
  * To hold COMPILER-SPECIFIC portion of STLport settings.
- * In general, user should not edit this file unless 
+ * In general, user should not edit this file unless
  * using the compiler not recognized below.
  *
- * If your compiler is not being recognized yet, 
+ * If your compiler is not being recognized yet,
  * please look for definitions of macros in stl_mycomp.h,
- * copy stl_mycomp.h to stl_YOUR_COMPILER_NAME, 
+ * copy stl_mycomp.h to stl_YOUR_COMPILER_NAME,
  * adjust flags for your compiler, and add  <include config/stl_YOUR_COMPILER_NAME>
  * to the secton controlled by unique macro defined internaly by your compiler.
  *
- * To change user-definable settings, please edit <../stl_user_config.h> 
+ * To change user-definable settings, please edit <../stl_user_config.h>
  *
  */
 
@@ -44,7 +44,7 @@
 #  define _STLP_MSVC _MSC_VER
 # endif
 
-# if defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ ) 
+# if defined (__xlC__)  || defined (__IBMC__) || defined ( __IBMCPP__ )
 /* AIX xlC, Visual Age C++ , OS-390 C++ */
 #  include <config/stl_ibm.h>
 # elif defined (__INTEL_COMPILER) && defined(__unix__)
@@ -83,7 +83,7 @@
 /* Symantec 7.5 */
 #  include <config/stl_symantec.h>
 # elif defined (__MRC__) || (defined (__SC__) && (__SC__ >= 0x882))
-/* Apple MPW SCpp 8.8.2  
+/* Apple MPW SCpp 8.8.2
  * Apple MPW MrCpp 4.1.0 */
 #  include <config/stl_apple.h>
 # elif defined (__MWERKS__)

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -87,9 +87,9 @@ struct _Pthread_alloc_per_thread_state {
   }
   // Returns an object of size __n, and possibly adds to size n free list.
   void *_M_refill(size_t __n);
-  
-  _Pthread_alloc_obj* volatile __free_list[_S_NFREELISTS]; 
-  _Pthread_alloc_per_thread_state<_Max_size> * __next; 
+
+  _Pthread_alloc_obj* volatile __free_list[_S_NFREELISTS];
+  _Pthread_alloc_per_thread_state<_Max_size> * __next;
   // this data member is only to be used by per_thread_allocator, which returns memory to the originating thread.
   _STLP_mutex _M_lock;
 
@@ -131,7 +131,7 @@ private:
   static _Pthread_alloc_per_thread_state<_Max_size>* _S_free_per_thread_states;
   static pthread_key_t _S_key;
   static bool _S_key_initialized;
-        // Pthread key under which per thread state is stored. 
+        // Pthread key under which per thread state is stored.
         // Allocator instances that are currently unclaimed by any thread.
   static void _S_destructor(void *instance);
         // Function to be called on thread exit to reclaim per thread
@@ -189,7 +189,7 @@ public:
     }
 
     __a = _S_get_per_thread_state();
-    
+
     __my_free_list = __a->__free_list + _S_freelist_index(__n);
     __q -> __free_list_link = *__my_free_list;
     *__my_free_list = __q;
@@ -274,7 +274,7 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES) /* && defined (_STLP_FUNCTION_PARTIAL_ORDER) */
   template <class _OtherType> pthread_allocator(const pthread_allocator<_OtherType>&)
-		_STLP_NOTHROW {}
+    _STLP_NOTHROW {}
 #endif
 
   ~pthread_allocator() _STLP_NOTHROW {}
@@ -296,7 +296,7 @@ public:
   void deallocate(pointer __p, size_type __n)
     { _S_Alloc::deallocate(__p, __n * sizeof(_Tp)); }
 
-  size_type max_size() const _STLP_NOTHROW 
+  size_type max_size() const _STLP_NOTHROW
     { return size_t(-1) / sizeof(_Tp); }
 
   void construct(pointer __p, const _Tp& __val) { _STLP_PLACEMENT_NEW (__p) _Tp(__val); }
@@ -320,7 +320,7 @@ public:
 
 template <class _T1, class _T2>
 inline bool operator==(const pthread_allocator<_T1>&,
-                       const pthread_allocator<_T2>& a2) 
+                       const pthread_allocator<_T2>& a2)
 {
   return true;
 }
@@ -341,7 +341,7 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 template <class _Tp, size_t _Max_size>
 struct _Alloc_traits<_Tp, _Pthread_alloc<_Max_size> >
 {
-  typedef __allocator<_Tp, _Pthread_alloc<_Max_size> > 
+  typedef __allocator<_Tp, _Pthread_alloc<_Max_size> >
           allocator_type;
 };
 # endif
@@ -371,7 +371,7 @@ __stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*) {
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 
 //
-// per_thread_allocator<> : this allocator always return memory to the same thread 
+// per_thread_allocator<> : this allocator always return memory to the same thread
 // it was allocated from.
 //
 
@@ -394,14 +394,14 @@ public:
   };
 #endif
 
-  per_thread_allocator() _STLP_NOTHROW { 
+  per_thread_allocator() _STLP_NOTHROW {
     _M_state = _S_Alloc::_S_get_per_thread_state();
   }
   per_thread_allocator(const per_thread_allocator<_Tp>& __a) _STLP_NOTHROW : _M_state(__a._M_state){}
 
 #if defined (_STLP_MEMBER_TEMPLATES) /* && defined (_STLP_FUNCTION_PARTIAL_ORDER) */
   template <class _OtherType> per_thread_allocator(const per_thread_allocator<_OtherType>& __a)
-		_STLP_NOTHROW : _M_state(__a._M_state) {}
+    _STLP_NOTHROW : _M_state(__a._M_state) {}
 #endif
 
   ~per_thread_allocator() _STLP_NOTHROW {}
@@ -422,7 +422,7 @@ public:
   void deallocate(pointer __p, size_type __n)
     { _S_Alloc::deallocate(__p, __n * sizeof(_Tp), _M_state); }
 
-  size_type max_size() const _STLP_NOTHROW 
+  size_type max_size() const _STLP_NOTHROW
     { return size_t(-1) / sizeof(_Tp); }
 
   void construct(pointer __p, const _Tp& __val) { _STLP_PLACEMENT_NEW (__p) _Tp(__val); }
@@ -449,7 +449,7 @@ public:
 
 template <class _T1, class _T2>
 inline bool operator==(const per_thread_allocator<_T1>& __a1,
-                       const per_thread_allocator<_T2>& __a2) 
+                       const per_thread_allocator<_T2>& __a2)
 {
   return __a1._M_state == __a2._M_state;
 }

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -90,8 +90,8 @@ public:
 
 protected:
   _Base* _Get_base() { return this; }
-  void _Invalidate_iterator(const const_iterator& __it) { 
-    __invalidate_iterator(&_M_iter_list,__it); 
+  void _Invalidate_iterator(const const_iterator& __it) {
+    __invalidate_iterator(&_M_iter_list,__it);
   }
   void _Invalidate_iterators(const const_iterator& __first, const const_iterator& __last) {
     __invalidate_range(&_M_iter_list, __first, __last);
@@ -105,24 +105,24 @@ public:
                  const allocator_type& __a = allocator_type()):
     _STLP_DBG_HT_BASE(__n, __hf, __eql, __ext, __a),
     _M_iter_list(_Get_base()) {}
-  
+
   hashtable(size_type __n,
                  const _HF&    __hf,
                  const _EqK&   __eql,
                  const allocator_type& __a = allocator_type()):
-    
+
     _STLP_DBG_HT_BASE(__n, __hf, __eql, __a),
     _M_iter_list(_Get_base()) {}
-  
+
   hashtable(const _Self& __ht):
     _STLP_DBG_HT_BASE(__ht),
     _M_iter_list(_Get_base()) {}
-  
+
   hashtable(__move_source<_Self> src) :
     _STLP_DBG_HT_BASE(__move_source<_Base>(src.get())), _M_iter_list(_Get_base()) {
     src.get()._M_iter_list._Invalidate_all();
   }
-  
+
   _Self& operator= (const _Self& __ht) {
     if (this !=  &__ht) {
       //Should not invalidate end iterator
@@ -131,7 +131,7 @@ public:
     }
     return *this;
   }
-  
+
   void swap(_Self& __ht) {
    _M_iter_list._Swap_owners(__ht._M_iter_list);
    _Base::swap(__ht);
@@ -142,7 +142,7 @@ public:
   local_iterator begin(size_type __n) {
     //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
     _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
-    return local_iterator(&_M_iter_list, _Base::begin(__n)); 
+    return local_iterator(&_M_iter_list, _Base::begin(__n));
   }
   local_iterator end(size_type __n) {
     //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
@@ -155,7 +155,7 @@ public:
   const_local_iterator begin(size_type __n) const {
     //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
     _STLP_VERBOSE_ASSERT((__n < this->bucket_count()), _StlMsg_INVALID_ARGUMENT)
-    return const_local_iterator(&_M_iter_list, _Base::begin(__n)); 
+    return const_local_iterator(&_M_iter_list, _Base::begin(__n));
   }
   const_local_iterator end(size_type __n) const {
     //TODO: Add checks for iterator locality -> avoids comparison between different bucket iterators
@@ -172,17 +172,17 @@ public:
   iterator insert_equal(const value_type& __obj) {
     return iterator(&_M_iter_list, _Base::insert_equal(__obj));
   }
-  
+
   pair<iterator, bool> insert_unique_noresize(const value_type& __obj) {
     pair < _Base_iterator, bool> __res =
       _Base::insert_unique_noresize(__obj);
     return pair<iterator, bool> ( iterator(&_M_iter_list, __res.first), __res.second);
   }
-  
+
   iterator insert_equal_noresize(const value_type& __obj) {
     return iterator(&_M_iter_list, _Base::insert_equal_noresize(__obj));
   }
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l) {
@@ -201,32 +201,32 @@ public:
     _STLP_DEBUG_CHECK(__check_ptr_range(__f, __l))
     _Base::insert_unique(__f, __l);
   }
-  
+
   void insert_equal(const value_type* __f, const value_type* __l) {
     _STLP_DEBUG_CHECK(__check_ptr_range(__f, __l))
     _Base::insert_equal(__f, __l);
   }
-  
+
   void insert_unique(const_iterator __f, const_iterator __l) {
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
     _Base::insert_unique(__f._M_iterator, __l._M_iterator);
   }
-  
+
   void insert_equal(const_iterator __f, const_iterator __l) {
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
     _Base::insert_equal(__f._M_iterator, __l._M_iterator);
   }
 #endif /*_STLP_MEMBER_TEMPLATES */
-  
+
   iterator find(const key_type& __key) {
     return iterator(&_M_iter_list, _Base::find(__key));
-  } 
+  }
 
   const_iterator find(const key_type& __key) const {
     return const_iterator(&_M_iter_list, _Base::find(__key));
-  } 
+  }
 
-  pair<iterator, iterator> 
+  pair<iterator, iterator>
   equal_range(const key_type& __key) {
     pair < _Base_iterator, _Base_iterator > __res =
       _Base::equal_range(__key);
@@ -234,7 +234,7 @@ public:
                                     iterator(&_M_iter_list,__res.second));
   }
 
-  pair<const_iterator, const_iterator> 
+  pair<const_iterator, const_iterator>
   equal_range(const key_type& __key) const {
     pair <  _Base_const_iterator, _Base_const_iterator > __res =
       _Base::equal_range(__key);
@@ -257,7 +257,7 @@ public:
     _Base::erase(__it._M_iterator);
   }
   void erase(const_iterator __first, const_iterator __last) {
-    _STLP_DEBUG_CHECK(__check_range(__first, __last, 
+    _STLP_DEBUG_CHECK(__check_range(__first, __last,
                                     const_iterator(this->begin()), const_iterator(this->end())))
     _Invalidate_iterators(__first, __last);
     _Base::erase(__first._M_iterator, __last._M_iterator);
@@ -265,7 +265,7 @@ public:
   void resize(size_type __num_elements_hint) {
     _Base::resize(__num_elements_hint);
   }
-  
+
   void clear() {
     _Invalidate_iterators(this->begin(), this->end());
     _Base::clear();

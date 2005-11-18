@@ -66,12 +66,12 @@ void DequeTest::deque1()
 void DequeTest::at() {
   deque<int> d;
   deque<int> const& cd = d;
-  
+
   d.push_back(10);
   CPPUNIT_ASSERT( d.at(0) == 10 );
   d.at(0) = 20;
   CPPUNIT_ASSERT( cd.at(0) == 20 );
-  
+
 #if defined (_STLP_USE_EXCEPTIONS)
   for (;;) {
     try {

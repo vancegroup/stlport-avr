@@ -2,13 +2,13 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -20,7 +20,7 @@ _STLP_BEGIN_NAMESPACE
 
 #define _STLP_NON_DBG_STRING_BASE _STLP_NON_DBG_NAME(str)<_CharT, _Traits, _Alloc>
 
-template <class _CharT, class _Traits, class _Alloc> 
+template <class _CharT, class _Traits, class _Alloc>
 class basic_string : private __construct_checker<_STLP_NON_DBG_STRING_BASE >
                    , public _STLP_NON_DBG_STRING_BASE
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -74,13 +74,13 @@ public:                         // Constructor, destructor, assignment.
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL) :
-    _ConstructCheck(__f, __l), 
+    _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f, __l, __a) {
   }
 #  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l) :
-    _ConstructCheck(__f, __l), 
+    _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f, __l) {
   }
 #  endif
@@ -172,10 +172,10 @@ public:                         // Append, operator+=, push_back.
 #endif
 
 public:                         // Assign
-  
+
   _Self& assign(const _Self& __s) {
-    _DbgBase::assign(__s); 
-    return *this; 
+    _DbgBase::assign(__s);
+    return *this;
   }
 
   _Self& assign(const _Self& __s, size_type __pos, size_type __n) {
@@ -197,7 +197,7 @@ public:                         // Assign
 
   _Self& assign(size_type __n, _CharT __c) {
     _DbgBase::assign(__n, __c);
-    return *this;    
+    return *this;
   }
 
   template <class _InputIter>
@@ -206,7 +206,7 @@ public:                         // Assign
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _Invalidate_all();
     _Base::assign(__first, __last);
-    return *this;    
+    return *this;
   }
 
 #if !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
@@ -219,7 +219,7 @@ public:                         // Assign
     return *this;
   }
 #endif
-    
+
 public:                         // Insert
 
   _Self& insert(size_type __pos, const _Self& __s) {
@@ -243,7 +243,7 @@ public:                         // Insert
     _DbgBase::insert(__pos, __s);
     return *this;
   }
-    
+
   _Self& insert(size_type __pos, size_type __n, _CharT __c) {
     _DbgBase::insert(__pos, __n, __c);
     return *this;
@@ -263,7 +263,7 @@ protected:
                       const __true_type& /*_IsIterator*/) {
     _Base::insert(__p._M_iterator, __first._M_iterator, __last._M_iterator);
   }
-  
+
   template<class _InputIter>
   void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
                       const __false_type& /*_IsIterator*/) {
@@ -287,7 +287,7 @@ public:
 
 #if !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
   void insert(iterator __p, const_iterator __f, const_iterator __l) {
-    _DbgBase::insert(__p, __f, __l); 
+    _DbgBase::insert(__p, __f, __l);
   }
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f)_STLP_FIX_LITERAL_BUG(__l)
@@ -325,7 +325,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-  _Self& replace(size_type __pos, size_type __n1, const _CharT* __s, size_type __n2) {    
+  _Self& replace(size_type __pos, size_type __n1, const _CharT* __s, size_type __n2) {
     _STLP_FIX_LITERAL_BUG(__s)
     _DbgBase::replace(__pos, __n1, __s, __n2);
     return *this;
@@ -347,7 +347,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-  _Self& replace(iterator __first, iterator __last, const _CharT* __s, size_type __n) { 
+  _Self& replace(iterator __first, iterator __last, const _CharT* __s, size_type __n) {
     _STLP_FIX_LITERAL_BUG(__s)
     _DbgBase::replace(__first, __last, __s, __n);
     return *this;
@@ -370,12 +370,12 @@ private:
                       _RandomIter __f, _RandomIter __l, __true_type const& /*_IsIterator*/) {
     _Base::replace(__first._M_iterator, __last._M_iterator, __f._M_iterator, __l._M_iterator);
   }
-  
+
   template <class _InputIter>
   void _M_replace_aux(iterator __first, iterator __last,
                       _InputIter __f, _InputIter __l, __false_type const& /*_IsIterator*/) {
     _Base::replace(__first._M_iterator, __last._M_iterator, __f, __l);
-  }  
+  }
 
 public:
   template <class _InputIter>
@@ -393,7 +393,7 @@ public:
     _Compare_Capacity(__old_capacity);
     return *this;
   }
- 
+
 #if !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
   _Self& replace(iterator __first, iterator __last,
                  const_iterator __f, const_iterator __l) {

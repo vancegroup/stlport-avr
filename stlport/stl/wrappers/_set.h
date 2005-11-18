@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -55,26 +55,26 @@ public:
     // specific constructors
     explicit set() : __SET_SUPER(_Compare()) {}
     explicit set(const _Compare& __comp) : __SET_SUPER(__comp) {}
-    set(const value_type* __first, const value_type* __last) : 
+    set(const value_type* __first, const value_type* __last) :
         __SET_SUPER(__first, __last, _Compare()) { }
-    set(const value_type* __first, const value_type* __last, 
+    set(const value_type* __first, const value_type* __last,
         const _Compare& __comp) : __SET_SUPER(__first, __last, __comp) { }
-    set(const_iterator __first, const_iterator __last) : 
+    set(const_iterator __first, const_iterator __last) :
         __SET_SUPER(__first, __last, _Compare()) { }
-    set(const_iterator __first, const_iterator __last, 
+    set(const_iterator __first, const_iterator __last,
         const _Compare& __comp) : __SET_SUPER(__first, __last, __comp) { }
 };
 
 #  if defined (_STLP_BASE_MATCH_BUG)
-__SET_TEMPLATE_HEADER 
-inline bool operator==(const set< __SET_ARGUMENTS >& __x, 
+__SET_TEMPLATE_HEADER
+inline bool operator==(const set< __SET_ARGUMENTS >& __x,
                        const set< __SET_ARGUMENTS >& __y) {
   typedef __SET_SUPER _Super;
   return operator==((const _Super&)__x,(const _Super&)__y);
 }
 
-__SET_TEMPLATE_HEADER 
-inline bool operator<(const set< __SET_ARGUMENTS >& __x, 
+__SET_TEMPLATE_HEADER
+inline bool operator<(const set< __SET_ARGUMENTS >& __x,
                       const set< __SET_ARGUMENTS >& __y) {
   typedef __SET_SUPER _Super;
   return operator < ((const _Super&)__x , (const _Super&)__y);
@@ -82,7 +82,7 @@ inline bool operator<(const set< __SET_ARGUMENTS >& __x,
 #  endif
 
 // provide a "default" multiset adaptor
-__MSET_TEMPLATE_HEADER 
+__MSET_TEMPLATE_HEADER
 class multiset : public __MSET_SUPER
 {
     typedef multiset< __MSET_ARGUMENTS > _Self;
@@ -93,26 +93,26 @@ public:
     __IMPORT_SUPER_COPY_ASSIGNMENT(multiset, _Self, __MSET_SUPER)
     explicit multiset() : __MSET_SUPER(_Compare()) {}
     explicit multiset(const _Compare& __comp) : __MSET_SUPER(__comp) {}
-    multiset(const value_type* __first, const value_type* __last) : 
+    multiset(const value_type* __first, const value_type* __last) :
         __MSET_SUPER(__first, __last, _Compare()) { }
-    multiset(const value_type* __first, const value_type* __last, 
+    multiset(const value_type* __first, const value_type* __last,
         const _Compare& __comp) : __MSET_SUPER(__first, __last, __comp) { }
-    multiset(const_iterator __first, const_iterator __last) : 
+    multiset(const_iterator __first, const_iterator __last) :
         __MSET_SUPER(__first, __last, _Compare()) { }
-    multiset(const_iterator __first, const_iterator __last, 
+    multiset(const_iterator __first, const_iterator __last,
         const _Compare& __comp) : __MSET_SUPER(__first, __last, __comp) { }
 };
 
-#  if defined (_STLP_BASE_MATCH_BUG)   
-__MSET_TEMPLATE_HEADER 
-inline bool operator==(const multiset< __MSET_ARGUMENTS >& __x, 
+#  if defined (_STLP_BASE_MATCH_BUG)
+__MSET_TEMPLATE_HEADER
+inline bool operator==(const multiset< __MSET_ARGUMENTS >& __x,
                        const multiset< __MSET_ARGUMENTS >& __y) {
   typedef __MSET_SUPER  _Super;
   return (const _Super&)__x == (const _Super&)__y;
 }
 
-__MSET_TEMPLATE_HEADER 
-inline bool operator<(const multiset< __MSET_ARGUMENTS >& __x, 
+__MSET_TEMPLATE_HEADER
+inline bool operator<(const multiset< __MSET_ARGUMENTS >& __x,
                       const multiset< __MSET_ARGUMENTS >& __y) {
   typedef __MSET_SUPER _Super;
   return (const _Super&)__x < (const _Super&)__y;
@@ -125,7 +125,7 @@ inline bool operator<(const multiset< __MSET_ARGUMENTS >& __x,
 
 # undef __SET_TEMPLATE_HEADER
 # undef __SET_ARGUMENTS
-# undef __SET_SUPER 
+# undef __SET_SUPER
 # undef _Compare
 
 _STLP_END_NAMESPACE

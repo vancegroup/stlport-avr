@@ -10,13 +10,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -43,18 +43,18 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Dummy>
 void _STLP_CALL
-_List_global<_Dummy>::_Transfer(_List_node_base* __position, 
+_List_global<_Dummy>::_Transfer(_List_node_base* __position,
                                 _List_node_base* __first, _List_node_base* __last) {
   if (__position != __last) {
     // Remove [first, last) from its old position.
     __last->_M_prev->_M_next     = __position;
     __first->_M_prev->_M_next    = __last;
-    __position->_M_prev->_M_next = __first; 
-    
+    __position->_M_prev->_M_next = __first;
+
     // Splice [first, last) into its new position.
     _Node_base* __tmp = __position->_M_prev;
     __position->_M_prev = __last->_M_prev;
-    __last->_M_prev     = __first->_M_prev; 
+    __last->_M_prev     = __first->_M_prev;
     __first->_M_prev    = __tmp;
   }
 }
@@ -75,7 +75,7 @@ void _List_base<_Tp,_Alloc>::clear() {
   _M_node._M_data._M_prev = &_M_node._M_data;
 }
 
-# if defined (_STLP_NESTED_TYPE_PARAM_BUG) 
+# if defined (_STLP_NESTED_TYPE_PARAM_BUG)
 #  define size_type      size_t
 # endif
 
@@ -98,7 +98,7 @@ _LIST_IMPL<_Tp, _Alloc>& _LIST_IMPL<_Tp, _Alloc>::operator=(const _LIST_IMPL<_Tp
     iterator __last1 = end();
     const_iterator __first2 = __x.begin();
     const_iterator __last2 = __x.end();
-    while (__first1 != __last1 && __first2 != __last2) 
+    while (__first1 != __last1 && __first2 != __last2)
       *__first1++ = *__first2++;
     if (__first2 == __last2)
       erase(__first1, __last1);
@@ -119,7 +119,7 @@ void _LIST_IMPL<_Tp, _Alloc>::_M_fill_assign(size_type __n, const _Tp& __val) {
     erase(__i, end());
 }
 
-template <class _Tp, class _Alloc, class _Predicate> 
+template <class _Tp, class _Alloc, class _Predicate>
 void _S_remove_if(_LIST_IMPL<_Tp, _Alloc>& __that, _Predicate __pred)  {
   typedef typename _LIST_IMPL<_Tp, _Alloc>::iterator _Literator;
   _Literator __first = __that.begin();
@@ -178,7 +178,7 @@ void _S_sort(_LIST_IMPL<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
     _LIST_IMPL<_Tp, _Alloc> __counter[64];
 #else
     vector<_LIST_IMPL<_Tp, _Alloc>, _Alloc> __counter(64);
-#endif  //TY 05/25/2000 - 
+#endif  //TY 05/25/2000 -
     int __fill = 0;
     while (!__that.empty()) {
       __carry.splice(__carry.begin(), __that, __that.begin());
@@ -187,11 +187,11 @@ void _S_sort(_LIST_IMPL<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
         _S_merge(__counter[__i], __carry, __comp);
         __carry.swap(__counter[__i++]);
       }
-      __carry.swap(__counter[__i]);         
+      __carry.swap(__counter[__i]);
       if (__i == __fill) ++__fill;
-    } 
-    
-    for (int __i = 1; __i < __fill; ++__i) 
+    }
+
+    for (int __i = 1; __i < __fill; ++__i)
       _S_merge(__counter[__i], __counter[__i-1], __comp);
     __that.swap(__counter[__fill-1]);
   }

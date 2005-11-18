@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 # ifndef _STLP_NUM_PUT_H
 # define _STLP_NUM_PUT_H
@@ -36,7 +36,7 @@ _STLP_BEGIN_NAMESPACE
 // We assume, without checking, that *last is null and that there is enough
 // space in the buffer to extend the number past [first, last).
 template <class Char>
-ptrdiff_t 
+ptrdiff_t
 __insert_grouping_aux(Char* first, Char* last, const string& grouping,
                       Char separator, Char Plus, Char Minus,
                       int basechars)
@@ -52,13 +52,13 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
     sign = 1;
     ++first;
   }
- 
+
   first += basechars;
   str_size n = 0;               // Index of the current group.
   Char* cur_group = last;       // Points immediately beyond the rightmost
                                 // digit of the current group.
   int groupsize = 0;            // Size of the current group.
-  
+
   for (;;) {
     groupsize = n < grouping.size() ? grouping[n] : groupsize;
     ++n;
@@ -78,7 +78,7 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
 
 //Dynamic output buffer version.
 template <class Char, class Str>
-void 
+void
 __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __dec_pos,
                       const string& grouping,
                       Char separator, Char Plus, Char Minus,
@@ -97,13 +97,13 @@ __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __dec_pos
     sign = 1;
     ++__first_pos;
   }
- 
+
   __first_pos += basechars;
   str_size n = 0;                                                   // Index of the current group.
   typename basic_string<Char>::iterator cur_group(iostr.begin() + __dec_pos);  // Points immediately beyond the rightmost
                                                                     // digit of the current group.
   unsigned int groupsize = 0;                                       // Size of the current group.
-  
+
   for (;;) {
     groupsize = n < grouping.size() ? grouping[n] : groupsize;
     ++n;

@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -54,30 +54,30 @@ public:
     __IMPORT_SUPER_COPY_ASSIGNMENT(map, _Self, __MAP_SUPER)
     map() : __MAP_SUPER(_Compare()) {}
     explicit map(const _Compare& __comp) : __MAP_SUPER(__comp) {}
-    map(const typename _Super::value_type* __first, 
-	const typename _Super::value_type* __last) : 
+    map(const typename _Super::value_type* __first,
+	const typename _Super::value_type* __last) :
       __MAP_SUPER(__first, __last, _Compare()) { }
-    map(const typename _Super::value_type* __first, 
-	const typename _Super::value_type* __last, 
+    map(const typename _Super::value_type* __first,
+	const typename _Super::value_type* __last,
         const _Compare& __comp) : __MAP_SUPER(__first, __last, __comp) { }
-    map(typename _Super::const_iterator __first, 
-	typename _Super::const_iterator __last) : 
+    map(typename _Super::const_iterator __first,
+	typename _Super::const_iterator __last) :
         __MAP_SUPER(__first, __last, _Compare()) { }
-    map(typename _Super::const_iterator __first, 
-	typename _Super::const_iterator __last, 
+    map(typename _Super::const_iterator __first,
+	typename _Super::const_iterator __last,
         const _Compare& __comp) : __MAP_SUPER(__first, __last, __comp) { }
 };
 
 #  if defined (_STLP_BASE_MATCH_BUG)
 __MAP_TEMPLATE_HEADER
-inline bool operator==(const map< __MAP_ARGUMENTS >& __x, 
+inline bool operator==(const map< __MAP_ARGUMENTS >& __x,
                        const map< __MAP_ARGUMENTS >& __y) {
   typedef __MAP_SUPER _Super;
   return operator==((const _Super&)__x,(const _Super&)__y);
 }
 
 __MAP_TEMPLATE_HEADER
-inline bool operator<(const map< __MAP_ARGUMENTS >& __x, 
+inline bool operator<(const map< __MAP_ARGUMENTS >& __x,
                       const map< __MAP_ARGUMENTS >& __y) {
   typedef __MAP_SUPER _Super;
   return operator < ((const _Super&)__x,(const _Super&)__y);
@@ -97,30 +97,30 @@ public:
     __IMPORT_SUPER_COPY_ASSIGNMENT(multimap, _Self, __MMAP_SUPER)
     multimap() : __MMAP_SUPER(_Compare()) {}
     explicit multimap(const _Compare& __comp) : __MMAP_SUPER(__comp) {}
-    multimap(const typename _Super::value_type* __first, 
-	     const typename _Super::value_type* __last) : 
+    multimap(const typename _Super::value_type* __first,
+	     const typename _Super::value_type* __last) :
         __MMAP_SUPER(__first, __last, _Compare()) { }
     multimap(const typename _Super::value_type* __first,
-	     const typename _Super::value_type* __last, 
+	     const typename _Super::value_type* __last,
 	     const _Compare& __comp) : __MMAP_SUPER(__first, __last, __comp) { }
-    multimap(typename _Super::const_iterator __first, 
-	     typename _Super::const_iterator __last) : 
+    multimap(typename _Super::const_iterator __first,
+	     typename _Super::const_iterator __last) :
       __MMAP_SUPER(__first, __last, _Compare()) { }
-    multimap(typename _Super::const_iterator __first, 
-	     typename _Super::const_iterator __last, 
+    multimap(typename _Super::const_iterator __first,
+	     typename _Super::const_iterator __last,
 	     const _Compare& __comp) : __MMAP_SUPER(__first, __last, __comp) { }
 };
 
 #  if defined (_STLP_BASE_MATCH_BUG)
 __MMAP_TEMPLATE_HEADER
-inline bool operator==(const multimap< __MMAP_ARGUMENTS >& __x, 
+inline bool operator==(const multimap< __MMAP_ARGUMENTS >& __x,
                        const multimap< __MMAP_ARGUMENTS >& __y) {
   typedef __MMAP_SUPER  _Super;
   return (const _Super&)__x == (const _Super&)__y;
 }
 
 __MMAP_TEMPLATE_HEADER
-inline bool operator<(const multimap< __MMAP_ARGUMENTS >& __x, 
+inline bool operator<(const multimap< __MMAP_ARGUMENTS >& __x,
                       const multimap< __MMAP_ARGUMENTS >& __y) {
   typedef __MMAP_SUPER  _Super;
   return (const _Super&)__x < (const _Super&)__y;

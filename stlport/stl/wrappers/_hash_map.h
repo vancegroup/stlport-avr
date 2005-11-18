@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -58,7 +58,7 @@ public:
   hash_map(size_type __n, const hasher& __hf, const key_equal& __eql): __HM_SUPER(__n, __hf, __eql) {}
   hash_map(const value_type* __f, const value_type* __l) : __HM_SUPER(__f,__l) {}
   hash_map(const value_type* __f, const value_type* __l, size_type __n): __HM_SUPER(__f,__l,__n) {}
-  hash_map(const value_type* __f, const value_type* __l, size_type __n, 
+  hash_map(const value_type* __f, const value_type* __l, size_type __n,
            const hasher& __hf) : __HM_SUPER(__f,__l,__n,__hf) {}
   hash_map(const value_type* __f, const value_type* __l, size_type __n,
            const hasher& __hf, const key_equal& __eql) : __HM_SUPER(__f,__l,__n,__hf, __eql) {}
@@ -76,11 +76,11 @@ public:
 
 # if defined (_STLP_BASE_MATCH_BUG)
 __HM_TEMPLATE_HEADER
-inline bool operator==(const hash_map< __HM_ARGUMENTS >& __hm1, 
+inline bool operator==(const hash_map< __HM_ARGUMENTS >& __hm1,
                        const hash_map< __HM_ARGUMENTS >& __hm2)
 {
     typedef __HM_SUPER _Super;
-    return (const _Super&)__hm1 == (const _Super&)__hm2; 
+    return (const _Super&)__hm1 == (const _Super&)__hm2;
 }
 # endif
 
@@ -102,7 +102,7 @@ public:
   hash_multimap(size_type __n, const hasher& __hf, const key_equal& __eql): __HMM_SUPER(__n, __hf, __eql) {}
   hash_multimap(const value_type* __f, const value_type* __l) : __HMM_SUPER(__f,__l) {}
   hash_multimap(const value_type* __f, const value_type* __l, size_type __n): __HMM_SUPER(__f,__l,__n) {}
-  hash_multimap(const value_type* __f, const value_type* __l, size_type __n, 
+  hash_multimap(const value_type* __f, const value_type* __l, size_type __n,
            const hasher& __hf) : __HMM_SUPER(__f,__l,__n,__hf) {}
   hash_multimap(const value_type* __f, const value_type* __l, size_type __n,
            const hasher& __hf, const key_equal& __eql) : __HMM_SUPER(__f,__l,__n,__hf, __eql) {}
@@ -120,11 +120,11 @@ public:
 
 # if defined (_STLP_BASE_MATCH_BUG)
 __HM_TEMPLATE_HEADER
-inline bool operator==(const hash_multimap< __HM_ARGUMENTS >& __hm1, 
+inline bool operator==(const hash_multimap< __HM_ARGUMENTS >& __hm1,
                        const hash_multimap< __HM_ARGUMENTS >& __hm2)
 {
     typedef __HMM_SUPER _Super;
-    return (const _Super&)__hm1 == (const _Super&)__hm2; 
+    return (const _Super&)__hm1 == (const _Super&)__hm2;
 }
 # endif
 

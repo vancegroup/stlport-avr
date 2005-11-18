@@ -59,12 +59,12 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( !strcmp(m['x'].c_str(),"20") );
   m['x'] = "10"; // Correct mistake.
   CPPUNIT_ASSERT( !strcmp(m['x'].c_str(),"10") );
-  
+
   CPPUNIT_ASSERT( !strcmp(m['z'].c_str(),"") );
-  
+
   CPPUNIT_ASSERT( m.count('z')==1 );
   pair<maptype::iterator, bool> p =m.insert(pair<const char, crope>('c', crope("100")));
-  
+
   CPPUNIT_ASSERT(p.second);
 
   p = m.insert(pair<const char, crope>('c', crope("100")));

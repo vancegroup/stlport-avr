@@ -2,13 +2,13 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -43,7 +43,7 @@ typedef long double max_double_type;
 
 # ifdef _STLP_UNIX
 
-# if defined (__sun) 
+# if defined (__sun)
 #  include <floatingpoint.h>
 # endif
 
@@ -219,14 +219,14 @@ static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
 #ifndef USE_SPRINTF_INSTEAD
 # if defined (__hpux) || defined (__DJGPP) || (defined(_STLP_USE_GLIBC) && ! defined (__MSL__) ) \
   || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-#  if defined (isfinite) 
+#  if defined (isfinite)
 inline bool _Stl_is_nan_or_inf(double x) { return !isfinite(x); }
 #  else
 inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
 #  endif
 inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 ); }
 inline bool _Stl_is_inf(double x)        { return isinf(x); }
-// inline bool _Stl_is_neg_inf(double x)    { return isinf(x) < 0; }  
+// inline bool _Stl_is_neg_inf(double x)    { return isinf(x) < 0; }
 inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && x < 0; }
 # elif (defined(__unix) || defined(__unix__)) \
       && !defined(__APPLE__) && !defined(__DJGPP) && !defined(__osf__) \
@@ -239,15 +239,15 @@ inline bool _Stl_is_neg_nan(double x)    { return IsNegNAN(x); }
 inline bool _Stl_is_nan_or_inf(double x) {  return !_finite(x); }
 inline bool _Stl_is_inf(double x)        {  return _Stl_is_nan_or_inf(x) && ! _isnan(x);}
 inline bool _Stl_is_neg_inf(double x)    {  return _Stl_is_inf(x) && x < 0 ; }
-inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && x < 0 ; } 
+inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && x < 0 ; }
 # elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
 inline bool _Stl_is_nan_or_inf(double x) { return !_finite(x); }
-inline bool _Stl_is_inf(double x)        { 
-  int fclass = _fpclass(x); 
-  return fclass == _FPCLASS_NINF || fclass == _FPCLASS_PINF; 
+inline bool _Stl_is_inf(double x)        {
+  int fclass = _fpclass(x);
+  return fclass == _FPCLASS_NINF || fclass == _FPCLASS_PINF;
 }
 inline bool _Stl_is_neg_inf(double x)    { return _fpclass(x) == _FPCLASS_NINF; }
-inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && _copysign(1., x) < 0 ; } 
+inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && _copysign(1., x) < 0 ; }
 # elif defined(__MRC__) || defined(__SC__)    //*TY 02/24/2000 - added support for MPW
 bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !isfinite(x); }
 bool _Stl_is_inf(double x)        { return !isfinite(x); }
@@ -257,7 +257,7 @@ bool _Stl_is_neg_nan(double x)    { return isnan(x) && signbit(x); }
 inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
 inline bool _Stl_is_inf(double x)        {   return _Stl_is_nan_or_inf(x) && ! isnan(x); }
 inline bool _Stl_is_neg_inf(double x)    {   return _Stl_is_inf(x) && x < 0 ; }
-inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && copysign(1., x) < 0 ; } 
+inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && copysign(1., x) < 0 ; }
 # elif defined( _AIX ) // JFA 11-Aug-2000
 bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !finite(x); }
 bool _Stl_is_inf(double x)        { return !finite(x); }
@@ -335,7 +335,7 @@ inline bool _Stl_is_neg_nan(double x)    { return false; }
   inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
     { return qfconvert(&x, n, pt, sign, buf); }
 #    endif
-#  elif defined (__DECCXX) 
+#  elif defined (__DECCXX)
   inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
     { return (ecvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
   inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
@@ -435,7 +435,7 @@ inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
 // based on doprnt but is much simpler since it is concerned only
 // with floating point input and does not consider all formats.  It
 // also does not deal with blank padding, which is handled by
-// __copy_float_and_fill. 
+// __copy_float_and_fill.
 
 size_t __format_float_scientific(char * buf, const char * bp,
                                  int decpt, int sign, bool is_zero,
@@ -450,7 +450,7 @@ size_t __format_float_scientific(char * buf, const char * bp,
     *buf++ = '-';
   else if (flags & ios_base::showpos)
     *buf++ = '+';
-  
+
   // first digit of mantissa
   *buf++ = *bp++;
 
@@ -479,10 +479,10 @@ size_t __format_float_scientific(char * buf, const char * bp,
   // prepend leading zeros to exponent
   while (suffix > &expbuf[MAXESIZ - 2])
     *--suffix = '0';
-  
+
   // put in the exponent sign
   *--suffix = (char) ((decpt > 0 || is_zero ) ? '+' : '-');
-  
+
   // put in the e
   *--suffix = flags & ios_base::uppercase ? 'E' : 'e';
 
@@ -504,7 +504,7 @@ size_t __format_float_fixed(__iostring &buf, const char * bp,
     *sbuf++ = '-';
   else if (flags & ios_base::showpos)
     *sbuf++ = '+';
-  
+
   int rzero   = 0;
   int nn      = decpt;
   int k       = 0;
@@ -526,7 +526,7 @@ size_t __format_float_fixed(__iostring &buf, const char * bp,
   if (flags & ios_base::showpoint || precision > 0) {
     *sbuf++ = '.';
     ++__group_pos;
-  } 
+  }
 
   // digits after decimal point if any
   nn = (min) (precision, MAXFCVT);
@@ -576,11 +576,11 @@ void __format_nan_or_inf(char * buf, double x,
     else if (flags & ios_base::showpos)
       *buf++ = '+';
   }
-  strcpy(buf, flags & ios_base::uppercase ? inf_or_nan[1] : inf_or_nan[0]);  
+  strcpy(buf, flags & ios_base::uppercase ? inf_or_nan[1] : inf_or_nan[0]);
 }
 
 template <class max_double_type>
-static inline 
+static inline
 size_t __format_float(__iostring &buf, const char * bp,
                       int decpt, int sign, max_double_type x,
                       ios_base::fmtflags flags,
@@ -591,20 +591,20 @@ size_t __format_float(__iostring &buf, const char * bp,
   if (_Stl_is_nan_or_inf((double)x)) {       // Infinity or NaN
     __format_nan_or_inf(static_buf, (double)x, flags);
     buf = static_buf;
-  } 
+  }
   else {                        // representable number
     switch (flags & ios_base::floatfield) {
     case ios_base::scientific:
-      __group_pos = __format_float_scientific(static_buf, bp, decpt, sign, x == 0.0, 
+      __group_pos = __format_float_scientific(static_buf, bp, decpt, sign, x == 0.0,
                                               flags, precision, islong);
       buf = static_buf;
       break;
-      
+
     case ios_base::fixed:
-      __group_pos = __format_float_fixed(buf, bp, decpt, sign, true, 
+      __group_pos = __format_float_fixed(buf, bp, decpt, sign, true,
                                          flags, precision, islong);
       break;
-      
+
     default: // g format
       // establish default precision
       if (flags & ios_base::showpoint || precision > 0) {
@@ -612,11 +612,11 @@ size_t __format_float(__iostring &buf, const char * bp,
       }
       else
         precision = 6;
-      
+
       // reset exponent if value is zero
       if (x == 0)
         decpt = 1;
-      
+
       int kk = precision;
       if (!(flags & ios_base::showpoint)) {
         size_t n = strlen(bp);
@@ -625,7 +625,7 @@ size_t __format_float(__iostring &buf, const char * bp,
         while (kk >= 1 && bp[kk-1] == '0')
           --kk;
       }
-      
+
       if (decpt < -3 || decpt > precision) {
         precision = kk - 1;
         __group_pos = __format_float_scientific(static_buf, bp, decpt, sign, x == 0,
@@ -667,24 +667,24 @@ static int fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modifie
 
   fmtbuf[i++] = '.';
   fmtbuf[i++] = '*';
-  
+
   if (long_modifier)
     fmtbuf[i++] = long_modifier;
 
   switch (flags & ios_base::floatfield)
     {
     case ios_base::scientific:
-      fmtbuf[i++] = (flags & ios_base::uppercase) ?  'E' : 'e';      
+      fmtbuf[i++] = (flags & ios_base::uppercase) ?  'E' : 'e';
       break;
     case ios_base::fixed:
 #  if defined (__FreeBSD__)
       fmtbuf[i++] = 'f';
 #  else
-      fmtbuf[i++] = (flags & ios_base::uppercase) ? 'F' : 'f'; 
+      fmtbuf[i++] = (flags & ios_base::uppercase) ? 'F' : 'f';
 #  endif
       break;
     default:
-      fmtbuf[i++] = (flags & ios_base::uppercase) ?  'G' : 'g';      
+      fmtbuf[i++] = (flags & ios_base::uppercase) ?  'G' : 'g';
       break;
     }
 
@@ -709,7 +709,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
   // snprintf(static_buf, 128+precision, fmtbuf, precision, x);
 # ifndef N_PLAT_NLM
   snprintf(ARRAY_AND_SIZE(static_buf), fmtbuf, precision, x);
-# else 
+# else
   sprintf(static_buf, fmtbuf, precision, x);
 # endif
   buf = static_buf;
@@ -749,7 +749,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
   int i = fill_fmtbuf(fmtbuf, flags, 'L');
   // snprintf(static_buf, 128+precision, fmtbuf, precision, x);
 #   ifndef N_PLAT_NLM
-  snprintf(ARRAY_AND_SIZE(static_buf), fmtbuf, precision, x);    
+  snprintf(ARRAY_AND_SIZE(static_buf), fmtbuf, precision, x);
 #   else
   sprintf(static_buf, fmtbuf, precision, x);
 #   endif

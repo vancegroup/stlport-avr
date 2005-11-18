@@ -7,7 +7,7 @@
 
 # define _STLP_NATIVE_HEADER(__x) </usr/include/CC/##__x>
 # define _STLP_NATIVE_C_HEADER(__x) </usr/include/##__x>
-# define _STLP_NATIVE_OLD_STREAMS_HEADER(__x) </usr/include/CC/##__x> 
+# define _STLP_NATIVE_OLD_STREAMS_HEADER(__x) </usr/include/CC/##__x>
 # define _STLP_NATIVE_CPP_C_HEADER(__x) </usr/include/CC/##__x>
 # define _STLP_NATIVE_CPP_RUNTIME_HEADER(__x) </usr/include/CC/##__x>
 
@@ -26,7 +26,7 @@
 #endif
 
 // #define _STLP_NOTHROW throw()
-     
+
 #  define __EDG_SWITCHES
 
 // any version ???
@@ -68,7 +68,7 @@
 #   endif
 #   if !((_COMPILER_VERSION >= 721) && defined(_NAMESPACES))
 #     define _STLP_HAS_NO_NAMESPACES
-#   endif 
+#   endif
 #   if (_COMPILER_VERSION < 721) || !defined(_STL_HAS_NAMESPACES) || defined(_STLP_NO_NAMESPACES)
 #     define _STLP_NO_EXCEPTION_HEADER
 #   endif

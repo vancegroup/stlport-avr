@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -52,7 +52,7 @@
 #     define _STLP_NEED_TYPENAME 1
 #   endif
 #   if !defined(_WCHAR_T_IS_KEYWORD)
-#     undef _STLP_NO_WCHAR_T 
+#     undef _STLP_NO_WCHAR_T
 #     define _STLP_NO_WCHAR_T 1
 #   endif
 #   ifndef _PARTIAL_SPECIALIZATION_OF_CLASS_TEMPLATES

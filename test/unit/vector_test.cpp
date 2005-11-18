@@ -82,7 +82,7 @@ void VectorTest::vec_test_2()
 
   CPPUNIT_ASSERT( v1.size() == 1 );
   CPPUNIT_ASSERT( v1[0] == 3.56 );
- 
+
   CPPUNIT_ASSERT( v2.size() == 2 );
   CPPUNIT_ASSERT( v2[0] == 32.1 );
   CPPUNIT_ASSERT( v2[1] == 40.5 );
@@ -111,7 +111,7 @@ void VectorTest::vec_test_3()
   CPPUNIT_ASSERT( v2.size() == 2 );
   CPPUNIT_ASSERT( v2[0] == 'h' );
   CPPUNIT_ASSERT( v2[1] == 'o' );
-  
+
   CPPUNIT_ASSERT( (v1 == v2) == false );
 
   CPPUNIT_ASSERT( (v1 < v2) == true );
@@ -171,7 +171,7 @@ void VectorTest::vec_test_6()
 
   vit = v.erase( v.begin() ); // Erase first element.
   CPPUNIT_ASSERT( *vit == 4 );
-  
+
   CPPUNIT_ASSERT( v.size() == 5 );
   CPPUNIT_ASSERT( v[0] == 4 );
   CPPUNIT_ASSERT( v[1] == 9 );
@@ -206,7 +206,7 @@ void VectorTest::vec_test_7()
   vector<int>::iterator vit;
   vit = v.insert(v.begin(), 0); // Insert before first element.
   CPPUNIT_ASSERT( *vit == 0 );
-  
+
   vit = v.insert(v.end(), 36);  // Insert after last element.
   CPPUNIT_ASSERT( *vit == 36 );
 
@@ -256,12 +256,12 @@ void VectorTest::capacity()
 void VectorTest::at() {
   vector<int> v;
   vector<int> const& cv = v;
-  
+
   v.push_back(10);
   CPPUNIT_ASSERT( v.at(0) == 10 );
   v.at(0) = 20;
   CPPUNIT_ASSERT( cv.at(0) == 20 );
-  
+
 #ifdef _STLP_USE_EXCEPTIONS
   for (;;) {
     try {
@@ -285,7 +285,7 @@ void VectorTest::pointer()
   vector<int *> v1;
   vector<int *> v2 = v1;
   vector<int *> v3;
-  
+
   v3.insert( v3.end(), v1.begin(), v1.end() );
 }
 

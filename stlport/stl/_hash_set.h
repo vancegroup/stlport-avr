@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -45,7 +45,7 @@ _STLP_CREATE_HASH_ITERATOR_TRAITS(HashSetTraitsT, Const_traits)
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
-class hash_set 
+class hash_set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<hash_set<_Value, _HashFcn, _EqualKey, _Alloc> >
 #endif
@@ -54,7 +54,7 @@ class hash_set
   //Specific iterator traits creation
   typedef _STLP_PRIV::_HashSetTraitsT<_Value> _HashSetTraits;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn, 
+  typedef hashtable<_Value, _Value, _HashFcn,
                     _HashSetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
@@ -175,9 +175,9 @@ public:
   }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  void insert(_InputIterator __f, _InputIterator __l) 
+  void insert(_InputIterator __f, _InputIterator __l)
 #else
-  void insert(const_iterator __f, const_iterator __l) 
+  void insert(const_iterator __f, const_iterator __l)
   {_M_ht.insert_unique(__f, __l); }
   void insert(const value_type* __f, const value_type* __l)
 #endif
@@ -204,7 +204,7 @@ public:
   { return _M_ht.find(__key); }
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
     { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -229,7 +229,7 @@ _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMultisetTraitsT, Const_traits)
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
-class hash_multiset 
+class hash_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                     : public __stlport_class<hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc> >
 #endif
@@ -238,7 +238,7 @@ class hash_multiset
   //Specific iterator traits creation
   typedef _STLP_PRIV::_HashMultisetTraitsT<_Value> _HashMultisetTraits;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn, 
+  typedef hashtable<_Value, _Value, _HashFcn,
                     _HashMultisetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;
@@ -361,17 +361,17 @@ public:
     { return _M_ht.insert_equal(__obj); }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
-  void insert(_InputIterator __f, _InputIterator __l) 
+  void insert(_InputIterator __f, _InputIterator __l)
     { _M_ht.insert_equal(__f,__l); }
 #else
   void insert(const value_type* __f, const value_type* __l) {
     _M_ht.insert_equal(__f,__l);
   }
-  void insert(const_iterator __f, const_iterator __l) 
+  void insert(const_iterator __f, const_iterator __l)
     { _M_ht.insert_equal(__f, __l); }
 #endif /*_STLP_MEMBER_TEMPLATES */
   iterator insert_noresize(const value_type& __obj)
-    { return _M_ht.insert_equal_noresize(__obj); }    
+    { return _M_ht.insert_equal_noresize(__obj); }
 
 # if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )
   template <class _KT>
@@ -390,7 +390,7 @@ public:
   { return _M_ht.find(__key); }
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
     { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -452,7 +452,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }
@@ -479,7 +479,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }

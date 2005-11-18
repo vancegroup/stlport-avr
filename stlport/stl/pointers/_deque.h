@@ -6,7 +6,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -34,12 +34,12 @@ class deque {
   typedef deque<_Tp, _Alloc> _Self;
 public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  
+
   __IMPORT_WITH_REVERSE_ITERATORS(_Base)
   typedef typename _Base::_Iterator_category _Iterator_category;
 
   allocator_type get_allocator() const { return _M_impl.get_allocator(); }
-  
+
   iterator begin()             { return _M_impl.begin(); }
   iterator end()               { return _M_impl.end(); }
   const_iterator begin() const { return _M_impl.begin(); }
@@ -75,7 +75,7 @@ public:
   deque(size_type __n, const value_type& __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a = allocator_type()) : _M_impl(__n, __val, __a) {}
-        
+
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n) : _M_impl(__n) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
@@ -148,10 +148,10 @@ public:
   iterator insert(iterator __pos) { return _M_impl.insert(__pos); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  void insert(iterator __pos, size_type __n, const_reference __x) 
+  void insert(iterator __pos, size_type __n, const_reference __x)
   { _M_impl.insert(__pos, __n, __x); }
 
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
@@ -177,9 +177,9 @@ public:
   iterator erase(iterator __pos)                    { return _M_impl.erase(__pos); }
   iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first, __last); }
   void clear()                                      { _M_impl.clear(); }
-  
+
 private:
-  _Base _M_impl;  
+  _Base _M_impl;
 };
 
 /*
@@ -287,14 +287,14 @@ public:                         // Basic accessors
 
   reverse_iterator rbegin() { return reverse_iterator(end()); }
   reverse_iterator rend()   { return reverse_iterator(begin()); }
-  const_reverse_iterator rbegin() const 
+  const_reverse_iterator rbegin() const
   { return const_reverse_iterator(end()); }
-  const_reverse_iterator rend() const   
+  const_reverse_iterator rend() const
   { return const_reverse_iterator(begin()); }
 
   reference operator[](size_type __n)
   { return cast_traits::ref_cast(_M_impl[__n]); }
-  const_reference operator[](size_type __n) const 
+  const_reference operator[](size_type __n) const
   { return cast_traits::const_ref_cast(_M_impl[__n]); }
 
   reference at(size_type __n)
@@ -312,7 +312,7 @@ public:                         // Basic accessors
   bool empty() const         { return _M_impl.empty(); }
   allocator_type get_allocator() const { return _STLP_CONVERT_ALLOCATOR(_M_impl.get_allocator(), value_type); }
 
-  explicit deque(const allocator_type& __a = allocator_type()) 
+  explicit deque(const allocator_type& __a = allocator_type())
     : _M_impl(_STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 
   deque(const _Self& __x) : _M_impl(__x._M_impl) {}
@@ -324,7 +324,7 @@ public:                         // Basic accessors
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
         const allocator_type& __a = allocator_type())
     : _M_impl(__n, cast_traits::cast(__val), _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
-  // int,long variants may be needed 
+  // int,long variants may be needed
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n) : _M_impl(__n) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
@@ -339,19 +339,19 @@ public:                         // Basic accessors
 
   template <class _InputIterator>
   deque(_InputIterator __first, _InputIterator __last,
-        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL) 
+        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_impl(__iterator_wrapper<_Tp, _InputIterator>(__first),
-              __iterator_wrapper<_Tp, _InputIterator>(__last), 
+              __iterator_wrapper<_Tp, _InputIterator>(__last),
               _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 # else
   deque(const_pointer __first, const_pointer __last,
-        const allocator_type& __a = allocator_type() ) 
-    : _M_impl(cast_traits::const_ptr_cast(__first), 
-              cast_traits::const_ptr_cast(__last), 
+        const allocator_type& __a = allocator_type() )
+    : _M_impl(cast_traits::const_ptr_cast(__first),
+              cast_traits::const_ptr_cast(__last),
               _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 
   deque(const_iterator __first, const_iterator __last,
-        const allocator_type& __a = allocator_type() ) 
+        const allocator_type& __a = allocator_type() )
     : _M_impl(ite_cast_traits::_M_ccast(__first), ite_cast_traits::_M_ccast(__last),
               _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -374,9 +374,9 @@ public:                         // Basic accessors
                    __iterator_wrapper<_Tp, _InputIterator>(__last));
   }
 #else
-  void assign(const value_type *__first, const value_type *__last) 
+  void assign(const value_type *__first, const value_type *__last)
   { _M_impl.assign(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last)); }
-  void assign(const_iterator __first, const_iterator __last) 
+  void assign(const_iterator __first, const_iterator __last)
   { _M_impl.assign(ite_cast_traits::_M_ccast(__first), ite_cast_traits::_M_ccast(__last)); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -412,10 +412,10 @@ public:                         // Basic accessors
   iterator insert(iterator __pos) { return insert(__pos, 0); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  void insert(iterator __pos, size_type __n, value_type __x) 
+  void insert(iterator __pos, size_type __n, value_type __x)
   { _M_impl.insert(ite_cast_traits::_M_cast(__pos), __n, cast_traits::cast(__x)); }
 
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
     _M_impl.insert(ite_cast_traits::_M_cast(__pos), __iterator_wrapper<_Tp, _InputIterator>(__first),
@@ -447,14 +447,14 @@ public:                         // Basic accessors
   void resize(size_type __new_size) { _M_impl.resize(__new_size); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  iterator erase(iterator __pos) 
+  iterator erase(iterator __pos)
   { return ite_cast_traits::_M_cast(_M_impl.erase(ite_cast_traits::_M_cast(__pos))); }
 
-  iterator erase(iterator __first, iterator __last) 
-  { return ite_cast_traits::_M_cast(_M_impl.erase(ite_cast_traits::_M_cast(__first), 
+  iterator erase(iterator __first, iterator __last)
+  { return ite_cast_traits::_M_cast(_M_impl.erase(ite_cast_traits::_M_cast(__first),
                                                   ite_cast_traits::_M_cast(__last))); }
   void clear() { _M_impl.clear(); }
-  
+
 private:
   _Base _M_impl;
 };

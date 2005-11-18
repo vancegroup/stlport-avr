@@ -28,7 +28,7 @@ struct ref_locale {
 
 static const ref_locale tested_locales[] = {
 //{  name,         decimal_point, thousands_sep, money_int_prefix, money_prefix, money_int_suffix, money_int_suffix_old, money_suffix, money_decimal_point, money_thousands_sep},
-  { "fr_FR",       ",",           "\xa0",        "",               "",           "EUR ",           "FRF ",               "",           ",",                
+  { "fr_FR",       ",",           "\xa0",        "",               "",           "EUR ",           "FRF ",               "",           ",",
 #if defined (WIN32)
                                                                                                                                                             "\xa0" },
 #else
@@ -227,7 +227,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       if ( p != 0 ) {
         CPPUNIT_ASSERT( intl_fmp.pos_format().field[fieldIndex] == money_base::symbol );
         string::size_type p_old = strlen( rl.money_int_suffix_old );
-        CPPUNIT_ASSERT( (str_res.substr(index, p) == rl.money_int_suffix) || 
+        CPPUNIT_ASSERT( (str_res.substr(index, p) == rl.money_int_suffix) ||
                         ((p_old != 0) && (str_res.substr(index, p_old) ==  rl.money_int_suffix_old)) );
         if ( str_res.substr(index, p) == rl.money_int_suffix ) {
           index += p;
@@ -393,7 +393,7 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
   ostringstream ostrX;
   ostrX.imbue(loc);
   format = "%x %X";
-  
+
   ret = tmp.put(ostrX, ostrX, ' ', &xmas, format.data(), format.data() + format.size());
   CPPUNIT_ASSERT( !ret.failed() );
 
@@ -603,7 +603,7 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
     }
 #else
     //Without exception support we only test C locale.
-    if (tested_locales[i].name[0] != 'C' || 
+    if (tested_locales[i].name[0] != 'C' ||
         tested_locales[i].name[1] != 0)
       continue;
     loc.reset(new locale(tested_locales[i].name));
@@ -617,7 +617,7 @@ void LocaleTest::locale_by_name() {
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   /*
    * Check of the 22.1.1.2.7 standard point. Construction of a locale
-   * instance from a null pointer or an unknown name should result in 
+   * instance from a null pointer or an unknown name should result in
    * a runtime_error exception.
    */
   try {

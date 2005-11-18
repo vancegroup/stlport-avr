@@ -18,4 +18,4 @@
 
 #if (__ICL >= 800)
 #  define _STLP_STATIC_CONST_INIT_BUG 1
-#endif 
+#endif

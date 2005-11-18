@@ -44,7 +44,7 @@ void SortTest::stblsrt1()
 {
   int array[6] = { 1, 50, -10, 11, 42, 19 };
   stable_sort(array, array + 6);
-//-10 1 11 19 42 50 
+//-10 1 11 19 42 50
   CPPUNIT_ASSERT(array[0]==-10);
   CPPUNIT_ASSERT(array[1]==1);
   CPPUNIT_ASSERT(array[2]==11);
@@ -58,7 +58,7 @@ void SortTest::stblsrt2()
   char* letters[6] = {"bb", "aa", "ll", "dd", "qq", "cc" };
 
   stable_sort(letters, letters + 6, string_less);
-  // aa bb cc dd ll qq 
+  // aa bb cc dd ll qq
   CPPUNIT_ASSERT( strcmp(letters[0], "aa") == 0 );
   CPPUNIT_ASSERT( strcmp(letters[1], "bb") == 0 );
   CPPUNIT_ASSERT( strcmp(letters[2], "cc") == 0 );
@@ -72,7 +72,7 @@ void SortTest::sort1()
   int array[6] = { 1, 50, -10, 11, 42, 19 };
 
   sort(array, array + 6);
-  // -10 1 11 19 42 50  
+  // -10 1 11 19 42 50
   CPPUNIT_ASSERT(array[0]==-10);
   CPPUNIT_ASSERT(array[1]==1);
   CPPUNIT_ASSERT(array[2]==11);
@@ -88,7 +88,7 @@ void SortTest::sort2()
   int count = sizeof(array) / sizeof(array[0]);
   sort(array, array + count, greater<int>());
 
-  //  50 42 19 11 1 -10 
+  //  50 42 19 11 1 -10
   CPPUNIT_ASSERT(array[5]==-10);
   CPPUNIT_ASSERT(array[4]==1);
   CPPUNIT_ASSERT(array[3]==11);

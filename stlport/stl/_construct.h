@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -61,7 +61,7 @@ template <class _Tp>
 inline void _Destroy(_Tp* __pointer) {
 # if defined (_MSC_VER) && (_MSC_VER <= 1010)
   __pointer;
-# endif	// _MSC_VER <= 1010
+# endif  // _MSC_VER <= 1010
   typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
   __destroy_aux(__pointer, _Trivial_destructor());
 # ifdef _STLP_DEBUG_UNINITIALIZED
@@ -81,7 +81,7 @@ inline void _Destroy_Moved(_Tp* __pointer) {
 # if defined (new)
 #   define _STLP_NEW_REDEFINE new
 #   undef new
-# endif 
+# endif
 
 # ifdef _STLP_DEF_CONST_PLCT_NEW_BUG
 template <class _T1>
@@ -146,7 +146,7 @@ inline void _Move_Construct(_T1* __p, _T2& __val) {
 #  define new DEBUG_NEW
 # endif
 #  undef _STLP_NEW_REDEFINE
-# endif 
+# endif
 
 template <class _ForwardIterator>
 _STLP_INLINE_LOOP void
@@ -155,7 +155,7 @@ __destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __f
     __destroy_aux(&(*__first), __false_type());
 }
 
-template <class _ForwardIterator> 
+template <class _ForwardIterator>
 inline void
 #ifdef _STLP_DEBUG_UNINITIALIZED
 __destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, const __true_type& /*_Trivial_destructor*/) {
@@ -168,7 +168,7 @@ __destroy_range_aux(_ForwardIterator, _ForwardIterator, const __true_type& /*_Tr
 }
 
 template <class _ForwardIterator, class _Tp>
-inline void 
+inline void
 __destroy_range(_ForwardIterator __first, _ForwardIterator __last, _Tp*) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
   __destroy_range_aux(__first, __last, _Trivial_destructor());
@@ -186,7 +186,7 @@ inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 # endif
 
 template <class _ForwardIterator, class _Tp>
-inline void 
+inline void
 __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp*) {
   typedef typename __move_traits<_Tp>::complete _CompleteMove;
   __destroy_range_aux(__first, __last, _CompleteMove());

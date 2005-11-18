@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -69,7 +69,7 @@ class _DBG_list : private __construct_checker<_STLP_DBG_LIST_BASE >,
   typedef _DBG_list<_Tp, _Alloc> _Self;
   typedef __construct_checker<_STLP_DBG_LIST_BASE > _ConstructCheck;
 
-public:      
+public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
 
 public:
@@ -81,7 +81,7 @@ public:
 protected:
   __owned_list _M_iter_list;
   _Base* _Get_base() { return this; }
-  void _Invalidate_iterator(const iterator& __it) { 
+  void _Invalidate_iterator(const iterator& __it) {
     __invalidate_iterator(&_M_iter_list,__it);
   }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last) {
@@ -111,22 +111,22 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   _DBG_list(__move_source<_Self> src)
-    : _STLP_DBG_LIST_BASE(__move_source<_Base>(src.get())), 
+    : _STLP_DBG_LIST_BASE(__move_source<_Base>(src.get())),
       _M_iter_list(_Get_base()) {}
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   // We don't need any dispatching tricks here, because insert does all of
-  // that anyway.  
+  // that anyway.
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last,
             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   _DBG_list(_InputIterator __first, _InputIterator __last)
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_LIST_BASE(__first, __last), _M_iter_list(_Get_base()) {
     }
 #  endif
@@ -134,18 +134,18 @@ public:
 
   _DBG_list(const value_type* __first, const value_type* __last,
             const allocator_type& __a = allocator_type())
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_LIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
     }
   _DBG_list(const_iterator __first, const_iterator __last,
             const allocator_type& __a = allocator_type())
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_LIST_BASE(__first._M_iterator, __last._M_iterator, __a), _M_iter_list(_Get_base()) {
     }
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  _DBG_list(const _Self& __x) : 
+  _DBG_list(const _Self& __x) :
     _ConstructCheck(__x),
     _STLP_DBG_LIST_BASE(__x) , _M_iter_list(_Get_base()) {}
 
@@ -214,7 +214,7 @@ public:
     typedef typename _AreSameUnCVTypes<_InputIterator, iterator>::_Ret _IsListIterator;
     typedef typename _AreSameUnCVTypes<_InputIterator, const_iterator>::_Ret _IsListConstIterator;
     typedef typename _Lor2<_IsListIterator, _IsListConstIterator>::_Ret _DoCheck;
-#  endif 
+#  endif
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, _DoCheck()))
@@ -238,7 +238,7 @@ public:
 
   void insert(iterator __pos, size_type __n, const _Tp& __x) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
-    _Base::insert(__pos._M_iterator, __n, __x);    
+    _Base::insert(__pos._M_iterator, __n, __x);
   }
 
   void pop_back() {
@@ -273,7 +273,7 @@ public:
     typename _Base::iterator __i = _Base::begin();
     size_type __len = 0;
     for ( ; __i != _Base::end() && __len < __new_size; ++__i, ++__len);
-    
+
     if (__len == __new_size)
       erase(iterator(&_M_iter_list, __i), this->end());
     else                          // __i == end()
@@ -297,9 +297,9 @@ public:
     }
   }
 
-  void clear() {   
+  void clear() {
     _Invalidate_iterators(this->begin(), this->end());
-    _Base::clear(); 
+    _Base::clear();
   }
 
 public:
@@ -368,7 +368,7 @@ public:
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-  template <class _Predicate> 
+  template <class _Predicate>
   void remove_if(_Predicate __pred) {
     _Base_iterator __first = _Base::begin(), __last = _Base::end();
     while (__first != __last) {

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -58,15 +58,15 @@ struct pair {
 
 template <class _T1, class _T2>
 inline bool _STLP_CALL operator==(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
-{ 
-  return __x.first == __y.first && __x.second == __y.second; 
+{
+  return __x.first == __y.first && __x.second == __y.second;
 }
 
 template <class _T1, class _T2>
 inline bool _STLP_CALL operator<(const pair<_T1, _T2>& __x, const pair<_T1, _T2>& __y)
-{ 
-  return __x.first < __y.first || 
-         (!(__y.first < __x.first) && __x.second < __y.second); 
+{
+  return __x.first < __y.first ||
+         (!(__y.first < __x.first) && __x.second < __y.second);
 }
 
 #ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
@@ -123,7 +123,7 @@ inline pair<_T1, _T2> _STLP_CALL make_pair(_T1 __x, _T2 __y) {
 
 _STLP_END_NAMESPACE
 
-# if defined (_STLP_USE_NAMESPACES) || ! defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE) 
+# if defined (_STLP_USE_NAMESPACES) || ! defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 _STLP_BEGIN_RELOPS_NAMESPACE
 
 template <class _Tp>

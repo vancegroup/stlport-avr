@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 #include "stlport_prefix.h"
 #include <stl/_limits.h>
@@ -57,7 +57,7 @@ typedef unsigned INT64 uint64_t;
 // 64-bit int really not defined in headers
 // (_INTEGRAL_MAX_BITS < 64 in any case?), but compiler indeed know __int64
 //        - ptr, 2005-05-06
-typedef unsigned __int64 uint64_t; 
+typedef unsigned __int64 uint64_t;
 #endif
 
 #ifdef INT32
@@ -120,7 +120,7 @@ typedef uint64_t uint64;
 #endif
 
 // Multiplication of two 64-bit integers, giving a 128-bit result.
-// Taken from Algorithm M in Knuth section 4.3.1, with the loop 
+// Taken from Algorithm M in Knuth section 4.3.1, with the loop
 // hand-unrolled.
 void _Stl_mult64(const uint64 u, const uint64 v,
                  uint64& high, uint64& low) {
@@ -288,14 +288,14 @@ static const short _Stl_twoexp[80] = {
 void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo)
 {
   norm = 0;
-  if( ! (prodhi & _Stl_HIBITULL) ) { 
-                                /* leading bit is a zero 
-                                 * may have to normalize 
+  if( ! (prodhi & _Stl_HIBITULL) ) {
+                                /* leading bit is a zero
+                                 * may have to normalize
                                  */
     if(( prodhi == ~_Stl_HIBITULL) &&
        ((prodlo >> 62) == 0x3) ) {  /* normalization followed by round
                                      * would cause carry to create
-                                     * extra bit, so don't normalize 
+                                     * extra bit, so don't normalize
                                      */
       p = _Stl_HIBITULL;
       return;
@@ -309,13 +309,13 @@ void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo)
   }
 
   if( (prodlo & _Stl_HIBITULL) != 0 ) {     /* first guard bit a one */    //*TY 03/25/2000 - added explicit comparison to zero to avoid reliance to the implicit conversion from uint64 to bool
-#if !defined(__SC__)                  //*TY 03/25/2000 - 
+#if !defined(__SC__)                  //*TY 03/25/2000 -
     if( ((p & 0x1) != 0) ||
        prodlo != _Stl_HIBITULL ) {    /* not borderline for round to even */
 #else                                 //*TY 03/25/2000 - added workaround for SCpp compiler
   bool b1 = ((p & 0x1) != 0);
     if( b1 || prodlo != _Stl_HIBITULL ) { //*TY 03/25/2000 - SCpp confuses on this particular original boolean expression
-#endif                                    //*TY 03/25/2000 - 
+#endif                                    //*TY 03/25/2000 -
       /* round */
       p++;
       if(p==0)
@@ -430,17 +430,17 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
   int sexp;             /* scaling exponent */
 
   char *bufferend;              /* pointer to char after last digit */
-  
+
   /* Check for zero and treat it as a special case */
 
   if (buffer == 0){
-    return 0.0; 
+    return 0.0;
   }
 
   /* Convert the decimal digits to a binary integer. */
 
   bufferend = buffer + ndigit;
-  value = 0;                    
+  value = 0;
 
   while (buffer < bufferend) {
     value *= 10;
@@ -449,7 +449,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
 
   /* Check for zero and treat it as a special case */
   if (value == 0) {
-    return 0.0; 
+    return 0.0;
   }
 
   /* Normalize value */
@@ -469,7 +469,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
   value <<= /*(uint64)*/ (64-nzero);    //*TY 03/25/2000 - removed extraneous cast to uint64
   bexp -= 64-nzero;
 
-  /* At this point we have a 64b fraction and a binary exponent 
+  /* At this point we have a 64b fraction and a binary exponent
    * but have yet to incorporate the decimal exponent.
    */
 
@@ -504,9 +504,9 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
         rest = value & (((ULL(1) << lead0)-1)-1);
 #if !defined(__SC__)
         guard = (uint32) (((value>> lead0)-1) & 1);
-#else     //*TY 03/25/2000 - 
-        guard = to_ulong(((value>> lead0)-1) & 1); 
-#endif    //*TY 03/25/2000 - 
+#else     //*TY 03/25/2000 -
+        guard = to_ulong(((value>> lead0)-1) & 1);
+#endif    //*TY 03/25/2000 -
         value >>= /*(uint64)*/ lead0; /* exponent is zero */
       }
 
@@ -526,13 +526,13 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
     value >>= 10;
 #if !defined(__SC__)
     guard = (uint32) value & 1;
-#else    //*TY 03/25/2000 - 
+#else    //*TY 03/25/2000 -
     guard = to_ulong(value & 1);
 #endif
     value >>= 1;
 
     /*  value&1 guard   rest    Action
-     *  
+     *
      *  dc      0       dc      none
      *  1       1       dc      round
      *  0       1       0       none
@@ -541,7 +541,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
     if (guard) {
       if(((value&1)!=0) || (rest!=0)) {
         ++value;                        /* round */
-        if ((value >> 53) != 0) {       /* carry all the way across */    
+        if ((value >> 53) != 0) {       /* carry all the way across */
           value >>= 1;          /* renormalize */
           ++bexp;
         }
@@ -551,7 +551,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
      * Check for overflow
      * IEEE Double Precision Format
      * (From Table 7-8 of Kane and Heinrich)
-     * 
+     *
      * Fraction bits               52
      * Emax                     +1023
      * Emin                     -1022
@@ -560,7 +560,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
      * Integer bit             hidden
      * Total width in bits         64
      */
-  
+
     if (bexp > 1024) {          /* overflow */
       return numeric_limits<double>::infinity();
     }
@@ -579,11 +579,11 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
   ieee754_double v;
 
   char *bufferend;              /* pointer to char after last digit */
-  
+
   /* Check for zero and treat it as a special case */
 
   if (buffer == 0) {
-    return 0.0; 
+    return 0.0;
   }
 
   /* Convert the decimal digits to a binary integer. */
@@ -620,7 +620,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
   vv.i64 <<= nzero;    //*TY 03/25/2000 - removed extraneous cast to uint64
   bexp -= nzero;
 
-  /* At this point we have a 64b fraction and a binary exponent 
+  /* At this point we have a 64b fraction and a binary exponent
    * but have yet to incorporate the decimal exponent.
    */
 
@@ -660,9 +660,9 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
         rest = vv.i64 & (((ULL(1) << lead0)-1)-1);
 #if !defined(__SC__)
         guard = (uint32) (((vv.i64 >> lead0)-1) & 1);
-#else     //*TY 03/25/2000 - 
-        guard = to_ulong(((vv.i64 >> lead0)-1) & 1); 
-#endif    //*TY 03/25/2000 - 
+#else     //*TY 03/25/2000 -
+        guard = to_ulong(((vv.i64 >> lead0)-1) & 1);
+#endif    //*TY 03/25/2000 -
         vv.i64 >>= /*(uint64)*/ lead0; /* exponent is zero */
       }
 
@@ -685,13 +685,13 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
     vv.i64 >>= 10;
 #if !defined(__SC__)
     uint32_t guard = (uint32) vv.i64 & 1;
-#else    //*TY 03/25/2000 - 
+#else    //*TY 03/25/2000 -
     uint32_t guard = to_ulong(vv.i64 & 1);
 #endif
     vv.i64 >>= 1;
 
     /*  value&1 guard   rest    Action
-     *  
+     *
      *  dc      0       dc      none
      *  1       1       dc      round
      *  0       1       0       none
@@ -700,7 +700,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
     if (guard) {
       if (((vv.i64&1)!=0) || (rest!=0)) {
         vv.i64++;                        /* round */
-        if ((vv.i64>>53)!=0) {         /* carry all the way across */    
+        if ((vv.i64>>53)!=0) {         /* carry all the way across */
           vv.i64 >>= 1;          /* renormalize */
           ++bexp;
         }
@@ -710,7 +710,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
      * Check for overflow
      * IEEE Double Precision Format
      * (From Table 7-8 of Kane and Heinrich)
-     * 
+     *
      * Fraction bits               52
      * Emax                     +1023
      * Emin                     -1022
@@ -719,7 +719,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
      * Integer bit             hidden
      * Total width in bits         64
      */
-  
+
     if (bexp > 1024) {          /* overflow */
       return numeric_limits<double>::infinity();
     }
@@ -814,7 +814,7 @@ double _Stl_string_to_double(const char * s) {
     }
     if (c -= '0', c < 10) {
       do {
-        if (e <= 340) 
+        if (e <= 340)
           e = e * 10 + (int)c;
         else break;
         c = *s++;
@@ -823,9 +823,9 @@ double _Stl_string_to_double(const char * s) {
       if (negate_exp) {
         e = -e;
       }
-      if (e < -340 || e > 340) 
+      if (e < -340 || e > 340)
         exp = e;
-      else 
+      else
         exp += e;
     }
   }
@@ -858,7 +858,7 @@ double _Stl_string_to_double(const char * s) {
  * to us.
  */
 
-long double 
+long double
 _Stl_string_to_long_double(const char * s) {
   const int max_digits = 34;
   register unsigned c;
@@ -931,7 +931,7 @@ _Stl_string_to_long_double(const char * s) {
     }
     if (c -= '0', c < 10) {
       do {
-        if (e <= 340) 
+        if (e <= 340)
           e = e * 10 + c;
         else break;
         c = *s++;
@@ -940,9 +940,9 @@ _Stl_string_to_long_double(const char * s) {
       if (negate_exp) {
         e = -e;
       }
-      if (e < -(323+max_digits) || e > 308) 
+      if (e < -(323+max_digits) || e > 308)
         exp = e;
-      else 
+      else
         exp += e;
     }
   }

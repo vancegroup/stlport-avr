@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -44,7 +44,7 @@ template <class _Tp>
 # else
 template <class _Tp, class _Sequence>
 # endif
-class stack 
+class stack
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 #  if defined (_STLP_STACK_ARGS)
             : public __stlport_class<stack<_Tp> >
@@ -53,7 +53,7 @@ class stack
 #  endif
 #endif
 {
-# ifdef _STLP_STACK_ARGS 
+# ifdef _STLP_STACK_ARGS
   typedef deque<_Tp> _Sequence;
   typedef stack<_Tp> _Self;
 # else
@@ -106,7 +106,7 @@ inline bool _STLP_CALL  operator<(const stack< _STLP_STACK_ARGS >& __x,
 }
 
 _STLP_RELOPS_OPERATORS(template < _STLP_STACK_HEADER_ARGS >, stack< _STLP_STACK_ARGS >)
-    
+
 #  undef _STLP_STACK_ARGS
 #  undef _STLP_STACK_HEADER_ARGS
 

@@ -147,14 +147,14 @@ typedef typename _STLP_dummy_type1:: _STLP_TEMPLATE rebind<t>::other _STLP_dummy
 #   endif
 # endif /* HP_ACC */
 
-// 
+//
 # ifndef __HP_aCC
 #  define _STLP_NATIVE_INCLUDE_PATH ../CC
 #  define _STLP_NATIVE_C_INCLUDE_PATH ../include
 // it is HP's old cfront-based compiler.
 #  define _STLP_NO_BOOL 1
 // #  define _STLP_DONT_USE_BOOL_TYPEDEF 1
-#  define _STLP_NO_NEW_NEW_HEADER 1 
+#  define _STLP_NO_NEW_NEW_HEADER 1
 #  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 #  define _STLP_NO_SIGNED_BUILTINS
 #  define _STLP_HAS_NO_NAMESPACES 1

@@ -46,13 +46,13 @@ void IStreamIteratorTest::istmit1()
 {
   const char* buff = "MyString";
   istringstream istr(buff);
-  
+
   char buffer[100];
   size_t i = 0;
   istr.unsetf(ios::skipws); // Disable white-space skipping.
   istream_char_ite s(istr), meos;
   while (!(s == meos)  &&
-  //*TY 01/10/1999 - added end of stream check 
+  //*TY 01/10/1999 - added end of stream check
   // NOTE operator!= should not be used here ifndef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
          (*s != '\n') &&
          (i < sizeof(buffer) / sizeof(buffer[0]))) {  //*TY 07/28/98 - added index check
@@ -75,7 +75,7 @@ void IStreamIteratorTest::copy_n_test()
   {
     istringstream istr("aabbcd");
     string chars;
-    copy_n(copy_n(istream_char_ite(istr), 2, back_inserter(chars)).first, 
+    copy_n(copy_n(istream_char_ite(istr), 2, back_inserter(chars)).first,
           2, back_inserter(chars));
     CPPUNIT_ASSERT( chars == "aabb" );
     copy_n(istream_char_ite(istr), 2, back_inserter(chars));

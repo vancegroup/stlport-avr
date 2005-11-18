@@ -28,7 +28,7 @@ void BvectorTest::bvec1()
 {
   bool ii[3]= {1,0,1};
   bit_vector b(3);
-  
+
   CPPUNIT_ASSERT(b[0]==0);
   CPPUNIT_ASSERT(b[1]==0);
   CPPUNIT_ASSERT(b[2]==0);
@@ -57,10 +57,10 @@ void BvectorTest::bvec1()
   b[3] |= 1;
   CPPUNIT_ASSERT(!((b[0] != 1) || (b[1] != 0) || (b[2] != 1) || (b[3] != 1)));
 
-  
+
   bb[0] &= 0;
   bb[1] &= 0;
   bb[2] &= 1;
   bb[3] &= 1;
-  CPPUNIT_ASSERT(!((bb[0] != 0) || (bb[1] != 0) || (bb[2] != 1) || (bb[3] != 0)));  
+  CPPUNIT_ASSERT(!((bb[0] != 0) || (bb[1] != 0) || (bb[2] != 1) || (bb[3] != 0)));
 }

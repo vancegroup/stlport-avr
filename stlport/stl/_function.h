@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -86,7 +86,7 @@ struct __binary_fun_aux  : private _Operation
 # endif
 
 template <class _Predicate>
-class unary_negate 
+class unary_negate
     : public unary_function<typename __UNARY_ARG(_Predicate,argument_type), bool> {
   typedef unary_function<typename __UNARY_ARG(_Predicate,argument_type), bool> _Base;
 public:
@@ -103,18 +103,18 @@ public:
 };
 
 template <class _Predicate>
-inline unary_negate<_Predicate> 
+inline unary_negate<_Predicate>
 not1(const _Predicate& __pred) {
   return unary_negate<_Predicate>(__pred);
 }
 
-template <class _Predicate> 
-class binary_negate 
+template <class _Predicate>
+class binary_negate
     : public binary_function<typename __BINARY_ARG(_Predicate,first_argument_type),
-                             typename __BINARY_ARG(_Predicate,second_argument_type), 
+                             typename __BINARY_ARG(_Predicate,second_argument_type),
                              bool> {
   typedef binary_function<typename __BINARY_ARG(_Predicate,first_argument_type),
-                          typename __BINARY_ARG(_Predicate,second_argument_type), 
+                          typename __BINARY_ARG(_Predicate,second_argument_type),
                           bool> _Base;
 public:
   typedef typename _Base::first_argument_type first_argument_type;
@@ -127,18 +127,18 @@ protected:
 public:
   explicit binary_negate(const _Predicate& __x) : _M_pred(__x) {}
   bool operator()(_FstArgParamType __x, _SndArgParamType __y) const {
-    return !_M_pred(__x, __y); 
+    return !_M_pred(__x, __y);
   }
 };
 
 template <class _Predicate>
-inline binary_negate<_Predicate> 
+inline binary_negate<_Predicate>
 not2(const _Predicate& __pred) {
   return binary_negate<_Predicate>(__pred);
 }
 
-template <class _Operation> 
-class binder1st : 
+template <class _Operation>
+class binder1st :
     public unary_function<typename __BINARY_ARG(_Operation,second_argument_type),
                           typename __BINARY_ARG(_Operation,result_type) > {
   typedef unary_function<typename __BINARY_ARG(_Operation,second_argument_type),
@@ -158,18 +158,18 @@ public:
       : op(__x), _M_value(__y) {}
 
   result_type operator()(_ArgParamType __x) const {
-    return op(_M_value, __x); 
+    return op(_M_value, __x);
   }
 };
 
 template <class _Operation, class _Tp>
-inline binder1st<_Operation> 
+inline binder1st<_Operation>
 bind1st(const _Operation& __fn, const _Tp& __x) {
   typedef typename _Operation::first_argument_type _Arg1_type;
   return binder1st<_Operation>(__fn, _Arg1_type(__x));
 }
 
-template <class _Operation> 
+template <class _Operation>
 class binder2nd
   : public unary_function<typename __BINARY_ARG(_Operation,first_argument_type),
                           typename __BINARY_ARG(_Operation,result_type)> {
@@ -186,16 +186,16 @@ protected:
   _Operation op;
   typename _Operation::second_argument_type value;
 public:
-  binder2nd(const _Operation& __x, _ValueParamType __y) 
+  binder2nd(const _Operation& __x, _ValueParamType __y)
       : op(__x), value(__y) {}
 
   result_type operator()(_ArgParamType __x) const {
-    return op(__x, value); 
+    return op(__x, value);
   }
 };
 
 template <class _Operation, class _Tp>
-inline binder2nd<_Operation> 
+inline binder2nd<_Operation>
 bind2nd(const _Operation& __fn, const _Tp& __x) {
   typedef typename _Operation::second_argument_type _Arg2_type;
   return binder2nd<_Operation>(__fn, _Arg2_type(__x));
@@ -205,7 +205,7 @@ bind2nd(const _Operation& __fn, const _Tp& __x) {
 // unary_compose and binary_compose (extensions, not part of the standard).
 
 template <class _Operation1, class _Operation2>
-class unary_compose : 
+class unary_compose :
   public unary_function<typename __UNARY_ARG(_Operation2,argument_type),
                         typename __UNARY_ARG(_Operation1,result_type)> {
   typedef unary_function<typename __UNARY_ARG(_Operation2,argument_type),
@@ -219,7 +219,7 @@ protected:
   _Operation1 _M_fn1;
   _Operation2 _M_fn2;
 public:
-  unary_compose(const _Operation1& __x, const _Operation2& __y) 
+  unary_compose(const _Operation1& __x, const _Operation2& __y)
     : _M_fn1(__x), _M_fn2(__y) {}
 
   result_type operator()(_ArgParamType __x) const {
@@ -228,13 +228,13 @@ public:
 };
 
 template <class _Operation1, class _Operation2>
-inline unary_compose<_Operation1,_Operation2> 
+inline unary_compose<_Operation1,_Operation2>
 compose1(const _Operation1& __fn1, const _Operation2& __fn2) {
   return unary_compose<_Operation1,_Operation2>(__fn1, __fn2);
 }
 
 template <class _Operation1, class _Operation2, class _Operation3>
-class binary_compose : 
+class binary_compose :
     public unary_function<typename __UNARY_ARG(_Operation2,argument_type),
                           typename __BINARY_ARG(_Operation1,result_type)> {
   typedef unary_function<typename __UNARY_ARG(_Operation2,argument_type),
@@ -249,8 +249,8 @@ protected:
   _Operation2 _M_fn2;
   _Operation3 _M_fn3;
 public:
-  binary_compose(const _Operation1& __x, const _Operation2& __y, 
-                 const _Operation3& __z) 
+  binary_compose(const _Operation1& __x, const _Operation2& __y,
+                 const _Operation3& __z)
     : _M_fn1(__x), _M_fn2(__y), _M_fn3(__z) { }
 
   result_type operator()(_ArgParamType __x) const {
@@ -259,8 +259,8 @@ public:
 };
 
 template <class _Operation1, class _Operation2, class _Operation3>
-inline binary_compose<_Operation1, _Operation2, _Operation3> 
-compose2(const _Operation1& __fn1, const _Operation2& __fn2, 
+inline binary_compose<_Operation1, _Operation2, _Operation3>
+compose2(const _Operation1& __fn1, const _Operation2& __fn2,
          const _Operation3& __fn3) {
   return binary_compose<_Operation1,_Operation2,_Operation3>
     (__fn1, __fn2, __fn3);
@@ -276,7 +276,7 @@ template <class _Tp> struct identity : public _Identity<_Tp> {};
 template <class _Pair> struct select1st : public _Select1st<_Pair> {};
 template <class _Pair> struct select2nd : public _Select2nd<_Pair> {};
 
-template <class _Arg1, class _Arg2> 
+template <class _Arg1, class _Arg2>
 struct project1st : public _Project1st<_Arg1, _Arg2> {};
 
 template <class _Arg1, class _Arg2>
@@ -294,13 +294,13 @@ struct _Constant_void_fun {
 
   _Constant_void_fun(const result_type& __v) : _M_val(__v) {}
   const result_type& operator()() const { return _M_val; }
-};  
+};
 
 
 template <class _Result>
 struct constant_void_fun : public _Constant_void_fun<_Result> {
   constant_void_fun(const _Result& __v) : _Constant_void_fun<_Result>(__v) {}
-};  
+};
 
 template <class _Result, __DFL_TMPL_PARAM( _Argument , _Result) >
 struct constant_unary_fun : public _Constant_unary_fun<_Result, _Argument> {
@@ -326,7 +326,7 @@ inline constant_unary_fun<_Result,_Result> constant1(const _Result& __val) {
 }
 
 template <class _Result>
-inline constant_binary_fun<_Result,_Result,_Result> 
+inline constant_binary_fun<_Result,_Result,_Result>
 constant2(const _Result& __val) {
   return constant_binary_fun<_Result,_Result,_Result>(__val);
 }

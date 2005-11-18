@@ -49,7 +49,7 @@ removed: sstl
 uniqued: stl
 sorted: lst
 */
-  
+
   char array [] = { 'x', 'l', 'x', 't', 's', 's' };
   ostringstream os;
   ostream_iterator<char> o(os,"");
@@ -84,7 +84,7 @@ sorted: lst
   buff=os3.rdbuf();
   result=buff->str();
   CPPUNIT_ASSERT(!strcmp(result.c_str(),"stl"));
-  
+
   //cout << "sorted: ";
   str.sort();
   ostringstream os4;
@@ -110,19 +110,19 @@ void SlistTest::erase()
   int array[] = { 0, 1, 2, 3, 4 };
   slist<int> sl(array, array + 5);
   slist<int>::iterator slit;
-  
+
   slit = sl.erase(sl.begin());
   CPPUNIT_ASSERT( *slit == 1);
-  
+
   ++slit++; ++slit;
   slit = sl.erase(sl.begin(), slit);
   CPPUNIT_ASSERT( *slit == 3 );
-  
+
   sl.assign(array, array + 5);
-  
+
   slit = sl.erase_after(sl.begin());
   CPPUNIT_ASSERT( *slit == 2 );
-  
+
   slit = sl.begin(); ++slit; ++slit;
   slit = sl.erase_after(sl.begin(), slit);
   CPPUNIT_ASSERT( *slit == 3 );

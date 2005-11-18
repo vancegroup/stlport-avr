@@ -37,7 +37,7 @@ void UniqueTest::unique1()
 {
   int numbers[8] = { 0, 1, 1, 2, 2, 2, 3, 4 };
   unique((int*)numbers, (int*)numbers + 8);
-  // 0 1 2 3 4 2 3 4 
+  // 0 1 2 3 4 2 3 4
   CPPUNIT_ASSERT(numbers[0]==0);
   CPPUNIT_ASSERT(numbers[1]==1);
   CPPUNIT_ASSERT(numbers[2]==2);
@@ -74,7 +74,7 @@ void UniqueTest::uniqcpy1()
 
   unique_copy((int*)numbers, (int*)numbers + 8, (int*)result);
 
-  // 0 1 2 3 4 0 0 0 
+  // 0 1 2 3 4 0 0 0
   CPPUNIT_ASSERT(result[0]==0);
   CPPUNIT_ASSERT(result[1]==1);
   CPPUNIT_ASSERT(result[2]==2);
@@ -92,7 +92,7 @@ void UniqueTest::uniqcpy2()
   const unsigned count = sizeof(labels) / sizeof(labels[0]);
   char* uCopy[count];
   fill((char**)uCopy, (char**)uCopy + count, (char*)"");
-  
+
   unique_copy((char**)labels, (char**)labels + count, (char**)uCopy, str_equal);
 
   //QWERTY

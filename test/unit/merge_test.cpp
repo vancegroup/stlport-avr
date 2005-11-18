@@ -58,7 +58,7 @@ void MergeTest::merge1()
 
   vector <int> result(v1.size() + v2.size());
   merge(v1.begin(), v1.end(), v2.begin(), v2.end(), result.begin());
-  
+
   CPPUNIT_ASSERT(result[0]==0);
   CPPUNIT_ASSERT(result[1]==1);
   CPPUNIT_ASSERT(result[2]==2);

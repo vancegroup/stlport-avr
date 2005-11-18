@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
 // file directly.
@@ -48,9 +48,9 @@ _STLP_BEGIN_NAMESPACE
 // num_get facets
 
 # ifdef _STLP_LIMITED_DEFAULT_TEMPLATES
-template <class _CharT, class _InputIter>  
+template <class _CharT, class _InputIter>
 # else
-template <class _CharT, class _InputIter = istreambuf_iterator<_CharT> >  
+template <class _CharT, class _InputIter = istreambuf_iterator<_CharT> >
 # endif
 class num_get: public locale::facet
 {
@@ -60,7 +60,7 @@ public:
   typedef _InputIter iter_type;
 
   explicit num_get(size_t __refs = 0): locale::facet(__refs) {}
-    
+
 # ifndef _STLP_NO_BOOL
   _InputIter get(_InputIter __ii, _InputIter __end, ios_base& __str,
                 ios_base::iostate& __err, bool& __val) const {
@@ -142,7 +142,7 @@ public:
 protected:
   ~num_get() {}
 
-  typedef string               string_type; 
+  typedef string               string_type;
   typedef ctype<_CharT>        _Ctype;
   typedef numpunct<_CharT>     _Numpunct;
 
@@ -236,15 +236,15 @@ void  _STLP_CALL __string_to_float(const __iostring&, long double&);
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
 # if defined (__BORLANDC__) && defined (_RTLDLL)
-inline void _Stl_loc_init_num_get() {  
+inline void _Stl_loc_init_num_get() {
   num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index = 12;
   num_get<char, const char*>::id._M_index = 13;
-  
+
 #  ifndef _STLP_NO_WCHAR_T
   num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 31;
   num_get<wchar_t, const wchar_t*>::id._M_index = 32;
 #  endif
-} 
+}
 # endif /*  __BORLANDC__ && _RTLDLL */
 
 _STLP_END_NAMESPACE

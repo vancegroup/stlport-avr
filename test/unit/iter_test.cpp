@@ -92,7 +92,7 @@ void IterTest::iter4()
   v.push_back(2);
   v.push_back(3);
   // Position immediately after last item.
-  std::vector<int>::iterator i = v.end(); 
+  std::vector<int>::iterator i = v.end();
   // Move back one and then access.
   CPPUNIT_ASSERT((*--i)==3);
   i -= 2; // Jump back two items.

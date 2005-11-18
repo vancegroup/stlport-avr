@@ -19,7 +19,7 @@ public:
     : _nb_output(nb_output), _do_throw(do_throw)
   {}
 
-  std::string const& str() const 
+  std::string const& str() const
   { return _buf; }
 
 protected:

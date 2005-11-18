@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -57,7 +57,7 @@ public:
 
   typedef typename _Ht::hasher hasher;
   typedef typename _Ht::key_equal key_equal;
-  
+
   typedef typename _Ht::size_type size_type;
   typedef typename _Ht::difference_type difference_type;
   typedef typename _Ht::pointer pointer;
@@ -89,7 +89,7 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  unordered_map(_InputIterator __f, _InputIterator __l, 
+  unordered_map(_InputIterator __f, _InputIterator __l,
                 size_type __n = 100, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
@@ -103,7 +103,7 @@ public:
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_unique(__f, __l); }
 
-  unordered_map(const_iterator __f, const_iterator __l, 
+  unordered_map(const_iterator __f, const_iterator __l,
                 size_type __n = 100, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
@@ -132,7 +132,7 @@ public:
   template <class _InputIterator>
   void insert(_InputIterator __f, _InputIterator __l)
 #else
-  void insert(const value_type* __f, const value_type* __l) 
+  void insert(const value_type* __f, const value_type* __l)
   { _M_ht.insert_unique(__f,__l); }
   void insert(const_iterator __f, const_iterator __l)
 #endif /*_STLP_MEMBER_TEMPLATES */
@@ -161,13 +161,13 @@ public:
   _Tp& operator[](const key_type& __key) {
 #endif
     iterator __it = _M_ht.find(__key);
-    return (__it == _M_ht.end() ? 
-	    _M_ht._M_insert(value_type(__key, _STLP_DEFAULT_CONSTRUCTED(_Tp))).second : 
-	    (*__it).second );
+    return (__it == _M_ht.end() ?
+      _M_ht._M_insert(value_type(__key, _STLP_DEFAULT_CONSTRUCTED(_Tp))).second :
+      (*__it).second );
   }
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
   { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -254,7 +254,7 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  unordered_multimap(_InputIterator __f, _InputIterator __l, 
+  unordered_multimap(_InputIterator __f, _InputIterator __l,
                      size_type __n = 100, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
@@ -268,7 +268,7 @@ public:
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_equal(__f, __l); }
 
-  unordered_multimap(const_iterator __f, const_iterator __l, 
+  unordered_multimap(const_iterator __f, const_iterator __l,
                      size_type __n = 100, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
@@ -289,17 +289,17 @@ public:
   const_iterator begin() const { return _M_ht.begin(); }
   const_iterator end() const { return _M_ht.end(); }
 
-  iterator insert(const value_type& __obj) 
+  iterator insert(const value_type& __obj)
   { return _M_ht.insert_equal(__obj); }
   iterator insert(const_iterator /*__hint*/, const value_type& __obj)
   { return _M_ht.insert_equal(__obj); }
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(_InputIterator __f, _InputIterator __l) 
+  void insert(_InputIterator __f, _InputIterator __l)
 #else
-  void insert(const value_type* __f, const value_type* __l) 
+  void insert(const value_type* __f, const value_type* __l)
   { _M_ht.insert_equal(__f,__l); }
-  void insert(const_iterator __f, const_iterator __l) 
+  void insert(const_iterator __f, const_iterator __l)
 #endif /*_STLP_MEMBER_TEMPLATES */
   { _M_ht.insert_equal(__f, __l); }
 
@@ -321,7 +321,7 @@ public:
 
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
   { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -391,7 +391,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }
@@ -418,7 +418,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }
@@ -438,7 +438,7 @@ public:
 
 _STLP_END_NAMESPACE
 
-#if 0 //defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM) 
+#if 0 //defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
 #  include <stl/wrappers/_unordered_map.h>
 #endif /*  WRAPPER */
 

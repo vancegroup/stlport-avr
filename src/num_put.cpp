@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 # include "stlport_prefix.h"
 # include "num_put.h"
@@ -27,7 +27,7 @@ _STLP_BEGIN_NAMESPACE
 extern const char __hex_char_table_lo[];
 extern const char __hex_char_table_hi[];
 
-const char __hex_char_table_lo[18] = "0123456789abcdefx"; 
+const char __hex_char_table_lo[18] = "0123456789abcdefx";
 const char __hex_char_table_hi[18] = "0123456789ABCDEFX";
 
 char* _STLP_CALL
@@ -44,7 +44,7 @@ __write_integer(char* buf, ios_base::fmtflags flags, long x)
 ptrdiff_t _STLP_CALL
 __insert_grouping(char * first, char * last, const string& grouping,
                   char separator, char Plus, char Minus, int basechars) {
-  return __insert_grouping_aux(first, last, grouping, 
+  return __insert_grouping_aux(first, last, grouping,
                                separator, Plus, Minus, basechars);
 }
 
@@ -59,7 +59,7 @@ ptrdiff_t _STLP_CALL
 __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
                   wchar_t separator, wchar_t Plus, wchar_t Minus,
                   int basechars) {
-  return __insert_grouping_aux(first, last, grouping, separator, 
+  return __insert_grouping_aux(first, last, grouping, separator,
                                Plus, Minus, basechars);
 }
 

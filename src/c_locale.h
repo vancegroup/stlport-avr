@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 /*
  * It is impossible to write the C++ locale library in terms of locales
@@ -140,7 +140,7 @@ char * _Locale_compose_name(char *__buf,
  * The inputs to this function are six null-terminated strings: the
  * names of a locale's six categories.  Locale names for non-standard
  * categories are taken from __DefaultName.
- * __buf is a pointer to an array large enough to store at least 
+ * __buf is a pointer to an array large enough to store at least
  * _Locale_MAX_COMPOSITE_NAME characters.
  * This function constructs a (possibly composite) name describing the
  * locale as a whole, stores that name in buf as a null-terminated
@@ -175,7 +175,7 @@ int _Locale_tolower(struct _Locale_ctype *, int);
 /*
  * Wide character functions:
  */
-_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype *, wint_t, 
+_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype *, wint_t,
   _Locale_mask_t);
 wint_t _Locale_wchar_tolower(struct _Locale_ctype *, wint_t);
 wint_t _Locale_wchar_toupper(struct _Locale_ctype *, wint_t);

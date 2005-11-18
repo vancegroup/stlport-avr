@@ -8,12 +8,12 @@
 # endif
 
 # if defined (_STLP_USE_NAMESPACES)
-#  undef  __STL_USE_NAMESPACES 
+#  undef  __STL_USE_NAMESPACES
 #  define __STL_USE_NAMESPACES _STLP_USE_NAMESPACES
 # endif
 
 # if defined (_STLP_USE_EXCEPTIONS)
-#  undef  __STL_USE_EXCEPTIONS 
+#  undef  __STL_USE_EXCEPTIONS
 #  define __STL_USE_EXCEPTIONS _STLP_USE_EXCEPTIONS
 # endif
 

@@ -6,13 +6,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -50,7 +50,7 @@
 #  include <crtdbg.h>
 inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_malloc_dbg(__bytes, _CRT_BLOCK, __FILE__, __LINE__)); }
 inline void __stlp_chunck_free(void* __p) { _free_dbg(__p, _CRT_BLOCK); }
-#else	// !_DEBUG
+#else  // !_DEBUG
 # ifdef _STLP_NODE_ALLOC_USE_MALLOC
 #  include <cstdlib>
 inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_STLP_VENDOR_CSTD::malloc(__bytes)); }
@@ -59,7 +59,7 @@ inline void __stlp_chunck_free(void* __p) { _STLP_VENDOR_CSTD::free(__p); }
 inline void* __stlp_chunk_malloc(size_t __bytes) { return _STLP_STD::__stl_new(__bytes); }
 inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
 # endif
-#endif	// !_DEBUG
+#endif  // !_DEBUG
 
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes - size_t(1)) >> (int)_ALIGN_SHIFT)
@@ -105,17 +105,17 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
   _STLP_VERBOSE_ASSERT(__real_p->_M_size == __n, _StlMsg_DBA_SIZE_MISMATCH)
   // check pads on both sides
   unsigned char* __tmp;
-  for (__tmp= (unsigned char*)(__real_p+1); __tmp < (unsigned char*)__p; __tmp++) {  
+  for (__tmp= (unsigned char*)(__real_p+1); __tmp < (unsigned char*)__p; __tmp++) {
     _STLP_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_UNDERRUN)
       }
-  
+
   size_t __real_n= __n + __extra_before_chunk() + __extra_after_chunk();
-  
-  for (__tmp= ((unsigned char*)__p)+__n*sizeof(value_type); 
+
+  for (__tmp= ((unsigned char*)__p)+__n*sizeof(value_type);
        __tmp < ((unsigned char*)__real_p)+__real_n ; __tmp++) {
     _STLP_VERBOSE_ASSERT(*__tmp==__shred_byte, _StlMsg_DBA_OVERRUN)
   }
-  
+
   // that may be unfortunate, just in case
   __real_p->__magic=__deleted_magic;
   memset((char*)__p, __shred_byte, __n * sizeof(value_type));
@@ -128,25 +128,25 @@ __debug_alloc<_Alloc>::deallocate(void *__p, size_t __n) {
 template <bool __threads, int __inst>
 class _Node_Alloc_Lock {
 public:
-  _Node_Alloc_Lock() { 
-    
+  _Node_Alloc_Lock() {
+
 #  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
 #  else /* !_STLP_SGI_THREADS */
-    if (__threads) 
+    if (__threads)
 #  endif
-    	_S_lock._M_acquire_lock(); 
+      _S_lock._M_acquire_lock();
   }
-  
+
   ~_Node_Alloc_Lock() {
 #  ifdef _STLP_SGI_THREADS
     if (__threads && __us_rsthread_malloc)
 #  else /* !_STLP_SGI_THREADS */
     if (__threads)
 #  endif
-      _S_lock._M_release_lock(); 
+      _S_lock._M_release_lock();
   }
-  
+
   static _STLP_STATIC_MUTEX _S_lock;
 };
 
@@ -154,27 +154,27 @@ public:
 template <int __inst>
 class _Node_Alloc_Lock<true,__inst> {
 public:
-  _Node_Alloc_Lock() { 
+  _Node_Alloc_Lock() {
 #    ifdef _STLP_SGI_THREADS
     if (__us_rsthread_malloc)
 #    endif /* !_STLP_SGI_THREADS */
-      _S_lock._M_acquire_lock(); 
+      _S_lock._M_acquire_lock();
   }
-  
+
   ~_Node_Alloc_Lock() {
 #    ifdef _STLP_SGI_THREADS
     if (__us_rsthread_malloc)
 #    endif /* !_STLP_SGI_THREADS */
-        _S_lock._M_release_lock(); 
+        _S_lock._M_release_lock();
   }
-  
+
   static _STLP_STATIC_MUTEX _S_lock;
 };
 
 template <int __inst>
 class _Node_Alloc_Lock<false,__inst> {
 public:
-  _Node_Alloc_Lock() { }  
+  _Node_Alloc_Lock() { }
   ~_Node_Alloc_Lock() { }
 };
 
@@ -226,7 +226,7 @@ __node_alloc<__threads, __inst>::_M_deallocate(void *__p, size_t __n) {
 /* We hold the allocation lock.                                         */
 template <bool __threads, int __inst>
 char* _STLP_CALL
-__node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size, 
+__node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
                                                 int& __nobjs) {
   char* __result;
   size_t __total_bytes = _p_size * __nobjs;
@@ -238,7 +238,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
       _S_start_free += __total_bytes;
       return __result;
     }
-    
+
     if (__bytes_left >= _p_size) {
       __nobjs = (int)(__bytes_left/_p_size);
       __total_bytes = _p_size * __nobjs;
@@ -253,7 +253,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
     *__my_free_list = (_Obj*)_S_start_free;
   }
 
-  size_t __bytes_to_get = 
+  size_t __bytes_to_get =
     2 * __total_bytes + _S_round_up(_S_heap_size >> 4)
 #  ifdef _STLP_DO_CLEAN_NODE_ALLOC
     + sizeof(_Obj)
@@ -280,7 +280,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
         // right free list.
       }
     }
-    _S_end_free = 0;	// In case of exception.
+    _S_end_free = 0;  // In case of exception.
     _S_start_free = (char*)__stlp_chunk_malloc(__bytes_to_get);
     /*
     (char*)malloc_alloc::allocate(__bytes_to_get);
@@ -477,7 +477,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
     //We get rid of the leaving part of the mem block:
     if (__bytes_left != 0) {
       if ((__result != 0) && (__bytes_left > sizeof(_Mem_block))) {
-        //We use part of the block and there is enough mem left to put the block back to 
+        //We use part of the block and there is enough mem left to put the block back to
         //the free mem blocks:
         _Mem_block *__pnew_block = (_Mem_block*)(__new_buf_pos);
         __pnew_block->_M_end = __pblock->_M_end;
@@ -497,7 +497,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
   }
 
   //We haven't found a free block or not enough place, we ask memory to the the system:
-  size_t __bytes_to_get = 
+  size_t __bytes_to_get =
     2 * __total_bytes + _S_round_up(_S_heap_size >> 4)
 #ifdef _STLP_DO_CLEAN_NODE_ALLOC
     + sizeof(_Obj)

@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 # include "stlport_prefix.h"
 // Complex division and square roots.
 
@@ -42,12 +42,12 @@ _STLP_DECLSPEC long double _STLP_CALL abs(const complex<long double>& __z) {
 
 // Phase
 
-_STLP_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL
 _STLP_DECLSPEC float _STLP_CALL arg(const complex<float>& __z) {
   return ::atan2(__z._M_im, __z._M_re);
 }
 
-_STLP_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL
 _STLP_DECLSPEC double _STLP_CALL arg(const complex<double>& __z) {
   return ::atan2(__z._M_im, __z._M_re);
 }
@@ -70,7 +70,7 @@ _STLP_DECLSPEC complex<double> _STLP_CALL polar(const double& __rho, const doubl
 }
 
 #ifndef _STLP_NO_LONG_DOUBLE
-_STLP_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL
 _STLP_DECLSPEC complex<long double> _STLP_CALL polar(const long double& __rho, const long double& __phi) {
   return complex<long double>(__rho * ::cos(__phi), __rho * ::sin(__phi));
 }

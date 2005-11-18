@@ -6,13 +6,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -41,7 +41,7 @@ _STLP_BEGIN_NAMESPACE
 template <size_t _Max_size>
 void _Pthread_alloc<_Max_size>::_S_destructor(void * __instance)
 {
-    _M_lock __lock_instance;	// Need to acquire lock here.
+    _M_lock __lock_instance;  // Need to acquire lock here.
     _Pthread_alloc_per_thread_state<_Max_size>* __s =
         (_Pthread_alloc_per_thread_state<_Max_size> *)__instance;
     __s -> __next = _S_free_per_thread_states;
@@ -51,11 +51,11 @@ void _Pthread_alloc<_Max_size>::_S_destructor(void * __instance)
 template <size_t _Max_size>
 _Pthread_alloc_per_thread_state<_Max_size> *
 _Pthread_alloc<_Max_size>::_S_new_per_thread_state()
-{    
-    /* lock already held here.	*/
+{
+    /* lock already held here.  */
     if (0 != _S_free_per_thread_states) {
         _Pthread_alloc_per_thread_state<_Max_size> *__result =
-					_S_free_per_thread_states;
+          _S_free_per_thread_states;
         _S_free_per_thread_states = _S_free_per_thread_states -> __next;
         return __result;
     } else {
@@ -70,15 +70,15 @@ _Pthread_alloc<_Max_size>::_S_get_per_thread_state()
 
     int __ret_code;
     __state_type* __result;
-    
+
     if (_S_key_initialized && (__result = (__state_type*) pthread_getspecific(_S_key)))
       return __result;
-    
+
     /*REFERENCED*/
-    _M_lock __lock_instance;	// Need to acquire lock here.
+    _M_lock __lock_instance;  // Need to acquire lock here.
     if (!_S_key_initialized) {
       if (pthread_key_create(&_S_key, _S_destructor)) {
-	__THROW_BAD_ALLOC;  // failed
+  __THROW_BAD_ALLOC;  // failed
       }
       _S_key_initialized = true;
     }
@@ -87,10 +87,10 @@ _Pthread_alloc<_Max_size>::_S_get_per_thread_state()
     __ret_code = pthread_setspecific(_S_key, __result);
     if (__ret_code) {
       if (__ret_code == ENOMEM) {
-	__THROW_BAD_ALLOC;
+  __THROW_BAD_ALLOC;
       } else {
-	// EINVAL
-	_STLP_ABORT();
+  // EINVAL
+  _STLP_ABORT();
       }
     }
     return __result;
@@ -124,12 +124,12 @@ char *_Pthread_alloc<_Max_size>
         return(__result);
     } else {
         size_t __bytes_to_get =
-		2 * __total_bytes + _S_round_up(_S_heap_size >> 4);
+    2 * __total_bytes + _S_round_up(_S_heap_size >> 4);
         // Try to make use of the left-over piece.
         if (__bytes_left > 0) {
-            _Pthread_alloc_per_thread_state<_Max_size>* __a = 
+            _Pthread_alloc_per_thread_state<_Max_size>* __a =
                 (_Pthread_alloc_per_thread_state<_Max_size>*)
-			pthread_getspecific(_S_key);
+      pthread_getspecific(_S_key);
             __obj * volatile * __my_free_list =
                         __a->__free_list + _S_freelist_index(__bytes_left);
 
@@ -144,7 +144,7 @@ char *_Pthread_alloc<_Max_size>
           {
             const int __cache_line_size = 128;  // probable upper bound
             __bytes_to_get &= ~(__cache_line_size-1);
-            _S_start_free = (char *)memalign(__cache_line_size, __bytes_to_get); 
+            _S_start_free = (char *)memalign(__cache_line_size, __bytes_to_get);
             if (0 == _S_start_free) {
               _S_start_free = (char *)__malloc_alloc<0>::allocate(__bytes_to_get);
             }
@@ -170,7 +170,7 @@ void *_Pthread_alloc_per_thread_state<_Max_size>
 {
     size_t __nobjs = 128;
     char * __chunk =
-	_Pthread_alloc<_Max_size>::_S_chunk_alloc(__n, __nobjs);
+  _Pthread_alloc<_Max_size>::_S_chunk_alloc(__n, __nobjs);
     __obj * volatile * __my_free_list;
     __obj * __result;
     __obj * __current_obj, * __next_obj;
@@ -180,7 +180,7 @@ void *_Pthread_alloc_per_thread_state<_Max_size>
         return(__chunk);
     }
     __my_free_list = __free_list
-		 + _Pthread_alloc<_Max_size>::_S_freelist_index(__n);
+     + _Pthread_alloc<_Max_size>::_S_freelist_index(__n);
 
     /* Build free list in chunk */
       __result = (__obj *)__chunk;
@@ -206,7 +206,7 @@ void *_Pthread_alloc<_Max_size>
     size_t __copy_sz;
 
     if (__old_sz > _Max_size
-	&& __new_sz > _Max_size) {
+  && __new_sz > _Max_size) {
         return(realloc(__p, __new_sz));
     }
     if (_S_round_up(__old_sz) == _S_round_up(__new_sz)) return(__p);
@@ -241,7 +241,7 @@ template <size_t _Max_size>
 size_t _Pthread_alloc<_Max_size>::_S_heap_size = 0;
 
  # else
- 
+
  __DECLARE_INSTANCE(template <size_t _Max_size> _Pthread_alloc_per_thread_state<_Max_size> *, _Pthread_alloc<_Max_size>::_S_free_per_thread_states, = 0);
  __DECLARE_INSTANCE(template <size_t _Max_size> pthread_key_t, _Pthread_alloc<_Max_size>::_S_key, = 0);
  __DECLARE_INSTANCE(template <size_t _Max_size> bool, _Pthread_alloc<_Max_size>::_S_key_initialized, = false);

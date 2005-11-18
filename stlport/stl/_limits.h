@@ -2,13 +2,13 @@
  * Copyright (c) 1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -64,9 +64,9 @@ public:
 #if defined ( _STLP_STATIC_CONST_INIT_BUG)
   enum {
 #else
-  static const int 
+  static const int
 #endif
-  
+
   digits = 0,
   digits10 = 0,
   radix = 0,
@@ -76,14 +76,14 @@ public:
   max_exponent10 = 0
 
 #if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  ,  
+  ,
   has_denorm = denorm_absent,
   round_style = round_toward_zero,
 #else
   ;
   static const float_denorm_style has_denorm =  denorm_absent;
   static const float_round_style round_style = round_toward_zero;
-  static const bool 
+  static const bool
 #endif
 
     is_specialized = false,
@@ -103,7 +103,7 @@ public:
   }
 #endif
   ;
-    
+
   static __number _STLP_CALL epsilon() _STLP_NOTHROW     { return __number(); }
   static __number _STLP_CALL round_error() _STLP_NOTHROW { return __number(); }
 
@@ -141,8 +141,8 @@ public:
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum {
 #else
-  static const int 
-#endif  
+  static const int
+#endif
   digits = (__idigits < 0) ?
   ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1))
   : (__idigits),
@@ -179,31 +179,31 @@ public:
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum {
 #else
-  static const int 
-#endif  
+  static const int
+#endif
 
   digits = __Digits,
   digits10 = __Digits10,
 
   radix = (  FLT_RADIX /* 2 */ ),
-  min_exponent = __MinExp, 
+  min_exponent = __MinExp,
   max_exponent = __MaxExp,
   min_exponent10 = __MinExp10,
   max_exponent10 = __MaxExp10
 
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
-  ,  
+  ,
   has_denorm = denorm_indeterminate,
   round_style = __RoundStyle,
 #else
   ;
   static const float_denorm_style has_denorm = denorm_indeterminate;
   static const float_round_style round_style = __RoundStyle;
-  static const bool 
+  static const bool
 #endif
 
   is_specialized = true,
-  is_signed = true, 
+  is_signed = true,
 
   //IEC 559 specify the floating point representation of
   //infinity, quiet and signaling Not a Number. Not supporting
@@ -233,7 +233,7 @@ public:
 
 // The unspecialized class.
 
-template<class _Tp> 
+template<class _Tp>
 class numeric_limits : public _Numeric_limits_base<_Tp> {};
 
 // Specializations for all built-in integral types.
@@ -355,8 +355,8 @@ public:
 #    if defined ( _STLP_STATIC_CONST_INIT_BUG)
   enum {
 #    else
-  static const int 
-#    endif  
+  static const int
+#    endif
   digits = ((int)((sizeof(_STLP_LONG_LONG) * (CHAR_BIT))) - 1),
   digits10 = (digits * 301UL) / 1000,
   radix = 2
@@ -389,8 +389,8 @@ public:
 #    if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum {
 #    else
-  static const int 
-#    endif  
+  static const int
+#    endif
   digits = ((int)((sizeof(unsigned _STLP_LONG_LONG) * (CHAR_BIT)))),
   digits10 = (digits * 301UL) / 1000,
   radix = 2
@@ -419,14 +419,14 @@ public:
 // Specializations for all built-in floating-point types.
 template <class __dummy>
 class _LimG {
-public:  
+public:
   static float get_F_inf();
   static float get_F_qNaN();
   static float get_F_sNaN();
   static double get_D_inf();
   static double get_D_qNaN();
   static double get_D_sNaN();
-  
+
 #if !defined (_STLP_NO_LONG_DOUBLE)
   static long double get_LD_inf();
   static long double get_LD_qNaN();
@@ -434,13 +434,13 @@ public:
 #endif
 };
 
-#if defined (_STLP_USE_TEMPLATE_EXPORT) 
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _LimG<bool>;
 #endif
 
 _STLP_TEMPLATE_NULL
 class numeric_limits<float>
-  : public _Floating_limits<float, 
+  : public _Floating_limits<float,
                             FLT_MANT_DIG,   // Binary digits of precision
                             FLT_DIG,        // Decimal digits of precision
                             FLT_MIN_EXP,    // Minimum exponent
@@ -466,7 +466,7 @@ public:
 
 _STLP_TEMPLATE_NULL
 class numeric_limits<double>
-  : public _Floating_limits<double, 
+  : public _Floating_limits<double,
                             DBL_MANT_DIG,   // Binary digits of precision
                             DBL_DIG,        // Decimal digits of precision
                             DBL_MIN_EXP,    // Minimum exponent
@@ -492,9 +492,9 @@ public:
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
 
-_STLP_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL
 class numeric_limits<long double>
-  : public _Floating_limits<long double, 
+  : public _Floating_limits<long double,
                             LDBL_MANT_DIG,  // Binary digits of precision
                             LDBL_DIG,       // Decimal digits of precision
                             LDBL_MIN_EXP,   // Minimum exponent
@@ -509,15 +509,15 @@ public:
   static long double (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MAX; }
   static long double _STLP_CALL epsilon() _STLP_NOTHROW { return LDBL_EPSILON; }
   static long double _STLP_CALL round_error() _STLP_NOTHROW { return 4; } // Units: ulps.
-  static long double _STLP_CALL infinity() _STLP_NOTHROW { return _LimG<bool>::get_LD_inf(); } 
+  static long double _STLP_CALL infinity() _STLP_NOTHROW { return _LimG<bool>::get_LD_inf(); }
   static long double _STLP_CALL quiet_NaN() _STLP_NOTHROW { return _LimG<bool>::get_LD_qNaN(); }
   static long double _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _LimG<bool>::get_LD_sNaN(); }
 };
 
 #endif
 
-// We write special values (Inf and NaN) as bit patterns and 
-// cast the the appropriate floating-point types. 
+// We write special values (Inf and NaN) as bit patterns and
+// cast the the appropriate floating-point types.
 _STLP_END_NAMESPACE
 
 #if !defined (_STLP_LINK_TIME_INSTANTIATION)

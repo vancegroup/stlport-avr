@@ -10,13 +10,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -64,7 +64,7 @@ unsigned _STLP_mutex_spin<__inst>::__last = 0;
 # else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 #  if defined (_STLP_USE_SWAP_LOCK_STRUCT)
-__DECLARE_INSTANCE(_STLP_STATIC_MUTEX, _Swap_lock_struct<0>::_S_swap_lock, 
+__DECLARE_INSTANCE(_STLP_STATIC_MUTEX, _Swap_lock_struct<0>::_S_swap_lock,
                    _STLP_MUTEX_INITIALIZER  );
 #    undef _STLP_USE_SWAP_LOCK_STRUCT
 #  endif /* _STLP_PTHREADS */
@@ -90,16 +90,16 @@ template <int __inst>
 void _STLP_CALL
 _STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
 #     if defined(_STLP_WIN32THREADS)
-	  if (__log_nsec <= 20) {
-        // Note from boost (www.boost.org): 
+    if (__log_nsec <= 20) {
+        // Note from boost (www.boost.org):
         // Changed to Sleep(1) from Sleep(0).
         // According to MSDN, Sleep(0) will never yield
         // to a lower-priority thread, whereas Sleep(1)
         // will. Performance seems not to be affected.
-	      Sleep(1);
-	  } else {
-	      Sleep(1 << (__log_nsec - 20));
-	  }
+        Sleep(1);
+    } else {
+        Sleep(1 << (__log_nsec - 20));
+    }
 #    elif defined(_STLP_OS2THREADS)
       if (__log_nsec <= 20) {
          DosSleep(0);
@@ -124,9 +124,9 @@ _STLP_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock)
   if (_Atomic_swap(__lock, 1)) {
     unsigned __my_spin_max = _STLP_mutex_spin<0>::__max;
     unsigned __my_last_spins = _STLP_mutex_spin<0>::__last;
-    volatile unsigned __junk = 17; 	// Value doesn't matter.
+    volatile unsigned __junk = 17;   // Value doesn't matter.
     unsigned  __i;
-    
+
     for (__i = 0; __i < __my_spin_max; ++__i) {
       if (__i < __my_last_spins/2 || *__lock) {
         __junk *= __junk; __junk *= __junk;
@@ -139,24 +139,24 @@ _STLP_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock)
           // Thus it makes sense to spin longer the next time.
           _STLP_mutex_spin<0>::__last = __i;
           _STLP_mutex_spin<0>::__max = _STLP_mutex_spin<0>::__high_max;
-	    return;
+      return;
         }
       }
     }
-    
+
     // We are probably being scheduled against the other process.  Sleep.
     _STLP_mutex_spin<0>::__max = _STLP_mutex_spin<0>::__low_max;
-    
+
     for (__i = 0 ;; ++__i) {
       int __log_nsec = __i + 6;
-      
+
       if (__log_nsec > 27) __log_nsec = 27;
       if (!_Atomic_swap(__lock, 1)) {
-	  break;
+    break;
       }
       _S_nsec_sleep(__log_nsec);
     }
-    
+
   } /* first _Atomic_swap */
 # endif
 }

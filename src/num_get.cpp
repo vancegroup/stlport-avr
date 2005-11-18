@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #include "stlport_prefix.h"
 #include <stl/_num_get.h>
 #include <stl/_istream.h>
@@ -60,7 +60,7 @@ int _STLP_CALL __get_digit(wchar_t c,
 
 // boris : this takes reversed first string !
 bool  _STLP_CALL
-__valid_grouping(const char * first1, const char * last1, 
+__valid_grouping(const char * first1, const char * last1,
                  const char * first2, const char * last2) {
   if (first1 == last1 || first2 == last2) return true;
 
@@ -80,7 +80,7 @@ __valid_grouping(const char * first1, const char * last1,
 extern const unsigned char __digit_val_table[];
 extern const char __narrow_atoms[];
 
-const unsigned char __digit_val_table[128] = 
+const unsigned char __digit_val_table[128] =
 {
   0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
   0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
@@ -90,7 +90,7 @@ const unsigned char __digit_val_table[128] =
   0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
   0xFF,10,11,12,13,14,15,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
   0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
-};     
+};
 
 const char __narrow_atoms[5] = {'+', '-', '0', 'x', 'X'};
 
@@ -139,7 +139,7 @@ template class _STLP_CLASS_DECLSPEC istreambuf_iterator<char, char_traits<char> 
 // template class num_get<char, const char*>;
 template class num_get<char, istreambuf_iterator<char, char_traits<char> > >;
 #endif
- 
+
 // basic_streambuf<char, char_traits<char> >* _STLP_CALL _M_get_istreambuf(basic_istream<char, char_traits<char> >& ) ;
 
 _STLP_END_NAMESPACE

@@ -32,7 +32,7 @@ public:
   // Arithmetic op= operations involving built-in integer.
   _Self& operator<<= (unsigned int);          // platform specific
   _Self& operator>>= (unsigned int);          // platform specific
-  
+
   _Self& operator=  (unsigned long rhs) { return *this =  _Self(rhs); }
   _Self& operator+= (unsigned long rhs) { return *this += _Self(rhs); }
   _Self& operator-= (unsigned long rhs) { return *this -= _Self(rhs); }
@@ -133,14 +133,14 @@ _STLP_END_NAMESPACE // ugly!
 
 _STLP_BEGIN_NAMESPACE
 
-# if TYPE_LONGLONG 
+# if TYPE_LONGLONG
 typedef UInt64 uint64;
 # define ULL(x) (U64SetU(x))
 
 # else
-//  Apple's mpw sc compiler for 68k macintosh does not support native 64bit integer type. 
+//  Apple's mpw sc compiler for 68k macintosh does not support native 64bit integer type.
 //  Instead, it comes with external support library and struct data type representing 64bit int:
-//  
+//
 //    struct UnsignedWide {
 //      UInt32   hi;
 //      UInt32   lo;

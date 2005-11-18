@@ -37,7 +37,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
 
 #define CHECK_COND(X) if (!(X)) return false;
 
-bool valid_sign_info(bool, bool) 
+bool valid_sign_info(bool, bool)
 { return true; }
 
 template <class _Tp>

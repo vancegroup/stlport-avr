@@ -6,13 +6,13 @@
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -74,7 +74,7 @@ template <class _InputIterator1, class _InputIterator2, class _Tp,
           class _BinaryOperation1, class _BinaryOperation2>
 _STLP_INLINE_LOOP
 _Tp inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
-                  _InputIterator2 __first2, _Tp _Init, 
+                  _InputIterator2 __first2, _Tp _Init,
                   _BinaryOperation1 __binary_op1,
                   _BinaryOperation2 __binary_op2)
 {
@@ -86,13 +86,13 @@ _Tp inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
 
 template <class _InputIterator, class _OutputIterator, class _Tp,
           class _BinaryOperation>
-_OutputIterator 
-__partial_sum(_InputIterator __first, _InputIterator __last, 
+_OutputIterator
+__partial_sum(_InputIterator __first, _InputIterator __last,
               _OutputIterator __result, _Tp*, _BinaryOperation __binary_op);
 
 
 template <class _InputIterator, class _OutputIterator>
-inline _OutputIterator 
+inline _OutputIterator
 partial_sum(_InputIterator __first, _InputIterator __last,
             _OutputIterator __result) {
   return __partial_sum(__first, __last, __result, _STLP_VALUE_TYPE(__first, _InputIterator),
@@ -100,18 +100,18 @@ partial_sum(_InputIterator __first, _InputIterator __last,
 }
 
 template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
-inline _OutputIterator 
+inline _OutputIterator
 partial_sum(_InputIterator __first, _InputIterator __last,
             _OutputIterator __result, _BinaryOperation __binary_op) {
-  return __partial_sum(__first, __last, __result, _STLP_VALUE_TYPE(__first, _InputIterator), 
+  return __partial_sum(__first, __last, __result, _STLP_VALUE_TYPE(__first, _InputIterator),
                        __binary_op);
 }
 
 
-template <class _InputIterator, class _OutputIterator, class _Tp, 
+template <class _InputIterator, class _OutputIterator, class _Tp,
           class _BinaryOperation>
 _OutputIterator
-__adjacent_difference(_InputIterator __first, _InputIterator __last, 
+__adjacent_difference(_InputIterator __first, _InputIterator __last,
                       _OutputIterator __result, _Tp*,
                       _BinaryOperation __binary_op);
 
@@ -125,7 +125,7 @@ adjacent_difference(_InputIterator __first,
 }
 
 template <class _InputIterator, class _OutputIterator, class _BinaryOperation>
-_OutputIterator 
+_OutputIterator
 adjacent_difference(_InputIterator __first, _InputIterator __last,
                     _OutputIterator __result, _BinaryOperation __binary_op) {
   return __adjacent_difference(__first, __last, __result,
@@ -164,7 +164,7 @@ inline _Tp power(_Tp __x, _Integer __n) {
 
 template <class _ForwardIterator, class _Tp>
 _STLP_INLINE_LOOP
-void 
+void
 iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __val)
 {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))

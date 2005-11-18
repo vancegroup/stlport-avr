@@ -40,7 +40,7 @@ void FindTest::find0()
   int numbers[10] = { 0, 1, 4, 9, 16, 25, 36, 49, 64 };
 
   int *location = find((int*)numbers, (int*)numbers + 10, 25);
-  
+
   CPPUNIT_ASSERT((location - numbers)==5);
 
   int *out_range = find((int*)numbers, (int*)numbers + 10, 128);

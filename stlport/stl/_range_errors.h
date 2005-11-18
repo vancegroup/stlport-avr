@@ -63,24 +63,24 @@ _STLP_END_NAMESPACE
 // stdexcept header and throw the appropriate exceptions directly.
 
 _STLP_BEGIN_NAMESPACE
-inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
-  _STLP_THROW_MSG(range_error, __msg); 
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) {
+  _STLP_THROW_MSG(range_error, __msg);
 }
 
-inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) { 
-  _STLP_THROW_MSG(out_of_range, __msg); 
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) {
+  _STLP_THROW_MSG(out_of_range, __msg);
 }
 
-inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) { 
-  _STLP_THROW_MSG(length_error, __msg); 
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) {
+  _STLP_THROW_MSG(length_error, __msg);
 }
 
-inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg) { 
-  _STLP_THROW_MSG(invalid_argument, __msg); 
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg) {
+  _STLP_THROW_MSG(invalid_argument, __msg);
 }
 
-inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) { 
-  _STLP_THROW_MSG(overflow_error, __msg); 
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) {
+  _STLP_THROW_MSG(overflow_error, __msg);
 }
 _STLP_END_NAMESPACE
 

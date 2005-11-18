@@ -144,7 +144,7 @@ inline void *__cdecl operator new(size_t, void *_P) { return (_P); }
 # define _ASSERT_DEFINED
 #endif
 
-// they say it's needed 
+// they say it's needed
 # include <windows.h>
 
 #endif /* _STLP_WCE_H */

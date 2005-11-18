@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -47,16 +47,16 @@ struct binary_function {
   typedef _Arg1 first_argument_type;
   typedef _Arg2 second_argument_type;
   typedef _Result result_type;
-};      
+};
 
 template <class _Tp>
-struct equal_to : public binary_function<_Tp,_Tp,bool> 
+struct equal_to : public binary_function<_Tp,_Tp,bool>
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x == __y; }
 };
 
 template <class _Tp>
-struct not_equal_to : public binary_function<_Tp,_Tp,bool> 
+struct not_equal_to : public binary_function<_Tp,_Tp,bool>
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x != __y; }
 };
@@ -73,7 +73,7 @@ struct less : public binary_function<_Tp,_Tp,bool>
 /* less is the default template parameter for many STL containers, to fully use
  * the move constructor feature we need to know that the default less is just a
  * functor.
- */ 
+ */
               , public __stlport_class<less<_Tp> >
 #endif
 {
@@ -99,7 +99,7 @@ struct greater_equal : public binary_function<_Tp,_Tp,bool>
 };
 
 template <class _Tp>
-struct less_equal : public binary_function<_Tp,_Tp,bool> 
+struct less_equal : public binary_function<_Tp,_Tp,bool>
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x <= __y; }
 };
@@ -137,13 +137,13 @@ struct divides : public binary_function<_Tp,_Tp,_Tp> {
 };
 
 template <class _Tp>
-struct modulus : public binary_function<_Tp,_Tp,_Tp> 
+struct modulus : public binary_function<_Tp,_Tp,_Tp>
 {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x % __y; }
 };
 
 template <class _Tp>
-struct negate : public unary_function<_Tp,_Tp> 
+struct negate : public unary_function<_Tp,_Tp>
 {
   _Tp operator()(const _Tp& __x) const { return -__x; }
 };
@@ -194,7 +194,7 @@ struct _Project2nd : public binary_function<_Arg1, _Arg2, _Arg2> {
 
 #ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
 // fbp : sort of select1st just for maps
-template <class _Pair, class _Whatever>		
+template <class _Pair, class _Whatever>
 // JDJ (CW Pro1 doesn't like const when first_type is also const)
 struct __Select1st_hint : public unary_function<_Pair, _Whatever> {
     const _Whatever& operator () (const _Pair& __x) const { return __x.first; }

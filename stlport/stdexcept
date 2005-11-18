@@ -2,13 +2,13 @@
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -66,7 +66,7 @@ _STLP_BEGIN_NAMESPACE
         defined (_STLP_USE_DYNAMIC_LIB) && defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
 #      define _STLP_DO_WARNING_POP
 #      pragma warning (push)
-#      pragma warning (disable: 4275) // Non dll interface class 'exception' used as base 
+#      pragma warning (disable: 4275) // Non dll interface class 'exception' used as base
                                       // for dll-interface class '__Named_exception'
 #    endif
 
@@ -80,7 +80,7 @@ using _STLP_VENDOR_EXCEPT_STD::exception;
 
 class _STLP_CLASS_DECLSPEC __Named_exception : public _STLP_EXCEPTION_BASE {
 public:
-  __Named_exception(const string& __str) 
+  __Named_exception(const string& __str)
 #    ifndef _STLP_USE_NO_IOSTREAMS
     ;
   const char* what() const _STLP_NOTHROW_INHERENTLY;

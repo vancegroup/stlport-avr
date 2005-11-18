@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -35,7 +35,7 @@
  * and user-defined settings from <stl_user_config.h>.
  * See <config/stl_mycomp.h> and <stl_user_config.h> for the description
  * of those macros
- * 
+ *
  */
 
 /* Other macros defined by this file:
@@ -64,7 +64,7 @@
 #define _STLP_STANDARD_DBG_LEVEL 2
 
 /* Placeholder for user to override settings.
- * It could be also used to mask settings from 
+ * It could be also used to mask settings from
  * different directories.
  */
 #include <stl_user_config.h>
@@ -346,7 +346,7 @@
 #    define _STLP_THREADS
 #  endif
 
-#  if defined (__sgi) && !defined (__KCC) && !defined (__GNUC__)  
+#  if defined (__sgi) && !defined (__KCC) && !defined (__GNUC__)
 #    define _STLP_SGI_THREADS
 #  elif defined (__DECC) || defined (__DECCXX)
 #    define _STLP_DEC_THREADS
@@ -476,7 +476,7 @@
 #endif
 
 #if !defined (_STLP_WEAK)
-#  define _STLP_WEAK 
+#  define _STLP_WEAK
 #endif
 
 /* default parameters as template types derived from arguments ( not always supported ) */
@@ -488,7 +488,7 @@
 #    define _STLP_DEFAULT_TYPE_PARAM 1
 #  endif
 #  define __DFL_TMPL_PARAM( classname, defval ) class classname = defval
-#  define __DFL_TMPL_ARG(classname)  
+#  define __DFL_TMPL_ARG(classname)
 #endif
 
 /* default parameters as complete types */
@@ -629,9 +629,9 @@ namespace __std_alias = std;
 #  if !defined (_STLP_VENDOR_MB_NAMESPACE)
 #    define _STLP_VENDOR_MB_NAMESPACE _STLP_VENDOR_CSTD
 #  endif
-#else 
+#else
 /* compiler has no namespace support */
-#  define _STLP_VENDOR_STD 
+#  define _STLP_VENDOR_STD
 #  define _STLP_VENDOR_CSTD
 #  define _STLP_USING_NAMESPACE(x)
 #  define _STLP_USING_VENDOR_CSTD
@@ -742,14 +742,14 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_MOVE_TO_PRIV_NAMESPACE
 #  define _STLP_MOVE_TO_STD_NAMESPACE
 
-/* boris : it was found out that _STLP_USE_SEPARATE_RELOPS_NAMESPACE 
+/* boris : it was found out that _STLP_USE_SEPARATE_RELOPS_NAMESPACE
    causes less problems than having relational operator templates in global namespace
    Please define _STLP_NO_RELOPS_NAMESPACE in stl_user_config.h if your code rely on them. */
 #  if !defined (_STLP_NO_RELOPS_NAMESPACE)
 #    define _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 #  endif
-#  define _STLP_BEGIN_RELOPS_NAMESPACE 
-#  define _STLP_END_RELOPS_NAMESPACE 
+#  define _STLP_BEGIN_RELOPS_NAMESPACE
+#  define _STLP_END_RELOPS_NAMESPACE
 #  undef  _STLP_USE_OWN_NAMESPACE
 #endif  /* _STLP_USE_NAMESPACES */
 
@@ -820,7 +820,7 @@ namespace _STL = _STLP_STD_NAME;
 #if defined (_STLP_LOOP_INLINE_PROBLEMS)
 #  define _STLP_INLINE_LOOP
 #else
-#  define _STLP_INLINE_LOOP inline 
+#  define _STLP_INLINE_LOOP inline
 #endif
 
 #define _STLP_PRIVATE public
@@ -833,7 +833,7 @@ namespace _STL = _STLP_STD_NAME;
 
 #ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
 #  define _STLP_OPERATOR_TEMPLATE
-#else 
+#else
 #  define _STLP_OPERATOR_TEMPLATE _STLP_TEMPLATE_NULL
 #endif
 
@@ -859,8 +859,8 @@ namespace _STL = _STLP_STD_NAME;
 #endif
 
 #ifndef _STLP_ALLOCATOR_TYPE_DFL
-#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS 
-#    define _STLP_ALLOCATOR_TYPE_DFL 
+#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#    define _STLP_ALLOCATOR_TYPE_DFL
 #  else
 #    define _STLP_ALLOCATOR_TYPE_DFL = allocator_type()
 #  endif
@@ -934,7 +934,7 @@ namespace _STL = _STLP_STD_NAME;
 
 #define __IMPORT_ITERATORS(_Super)                                       \
     typedef typename _Super::iterator iterator;                          \
-    typedef typename _Super::const_iterator const_iterator; 
+    typedef typename _Super::const_iterator const_iterator;
 
 #define __IMPORT_REVERSE_ITERATORS(_Super)                                   \
     typedef typename _Super::const_reverse_iterator  const_reverse_iterator; \
@@ -958,16 +958,16 @@ namespace _STL = _STLP_STD_NAME;
 #define __IMPORT_WITH_REVERSE_ITERATORS(_Super) \
   __IMPORT_WITH_ITERATORS(_Super) __IMPORT_REVERSE_ITERATORS(_Super)
 
-#if defined (_STLP_TRIVIAL_CONSTRUCTOR_BUG) 
-#  define __TRIVIAL_CONSTRUCTOR(__type) __type() {}  
+#if defined (_STLP_TRIVIAL_CONSTRUCTOR_BUG)
+#  define __TRIVIAL_CONSTRUCTOR(__type) __type() {}
 #else
 #  define __TRIVIAL_CONSTRUCTOR(__type)
 #endif
 
 #if defined (_STLP_TRIVIAL_DESTRUCTOR_BUG)
-#  define __TRIVIAL_DESTRUCTOR(__type) ~__type() {}  
+#  define __TRIVIAL_DESTRUCTOR(__type) ~__type() {}
 #else
-#  define __TRIVIAL_DESTRUCTOR(__type) 
+#  define __TRIVIAL_DESTRUCTOR(__type)
 #endif
 
 #define __TRIVIAL_STUFF(__type)  \
@@ -979,7 +979,7 @@ namespace _STL = _STLP_STD_NAME;
 
 #if !defined (_STLP_DONT_USE_EXCEPTIONS) && !defined (_STLP_NO_EXCEPTIONS) && !defined (_STLP_USE_EXCEPTIONS)
 #  define _STLP_USE_EXCEPTIONS
-#endif 
+#endif
 
 #if defined (_STLP_USE_EXCEPTIONS)
 #  define _STLP_TRY try
@@ -1005,13 +1005,13 @@ namespace _STL = _STLP_STD_NAME;
 #    define _STLP_NOTHROW
 #  endif
 #else
-#  define _STLP_TRY 
+#  define _STLP_TRY
 #  define _STLP_CATCH_ALL if (false)
 #  ifndef _STLP_THROW
 #    define _STLP_THROW(x)
 #  endif
 #  define _STLP_RETHROW {}
-#  define _STLP_UNWIND(action) 
+#  define _STLP_UNWIND(action)
 #  define _STLP_THROWS(x)
 #  define _STLP_NOTHROW
 #  define _STLP_RET_AFTER_THROW(data)
@@ -1027,7 +1027,7 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_NOTHROW_INHERENTLY throw()
 #else
 #  define _STLP_THROWS_INHERENTLY(x)
-#  define _STLP_NOTHROW_INHERENTLY 
+#  define _STLP_NOTHROW_INHERENTLY
 #endif
 
 #if defined(_STLP_NO_BOOL)
@@ -1134,8 +1134,8 @@ typedef int bool;
 #    define _STLP_CLASS_IMPORT_DECLSPEC
 #  endif
 #  if defined (_STLP_DESIGNATED_DLL) /* This is a lib which will contain STLport exports */
-#    define  _STLP_DECLSPEC        _STLP_EXPORT_DECLSPEC 
-#    define  _STLP_CLASS_DECLSPEC  _STLP_CLASS_EXPORT_DECLSPEC 
+#    define  _STLP_DECLSPEC        _STLP_EXPORT_DECLSPEC
+#    define  _STLP_CLASS_DECLSPEC  _STLP_CLASS_EXPORT_DECLSPEC
 #  else
 #    define  _STLP_DECLSPEC        _STLP_IMPORT_DECLSPEC   /* Other modules, importing STLport exports */
 #    define  _STLP_CLASS_DECLSPEC  _STLP_CLASS_IMPORT_DECLSPEC
@@ -1150,7 +1150,7 @@ typedef int bool;
 
 #define _STLP_EXPORT_TEMPLATE_CLASS _STLP_EXPORT template class _STLP_CLASS_DECLSPEC
 
-#if defined (_STLP_MSVC) || defined (__ICL) 
+#if defined (_STLP_MSVC) || defined (__ICL)
 #  define _STLP_STATIC_MEMBER_DECLSPEC
 #else
 #  define _STLP_STATIC_MEMBER_DECLSPEC _STLP_DECLSPEC
@@ -1166,13 +1166,13 @@ typedef int bool;
 #    define __USE_STD_IOSTREAM
 #  endif
 
-/* We only need to expose details of streams implementation 
+/* We only need to expose details of streams implementation
    if we use non-standard i/o or are building STLport*/
 #  if defined (__BUILDING_STLPORT) || defined (_STLP_NO_FORCE_INSTANTIATE) || !defined(_STLP_NO_CUSTOM_IO)
 #    define _STLP_EXPOSE_STREAM_IMPLEMENTATION 1
 #  endif
 
-/* We only need to expose details of global implementation if we are building STLport 
+/* We only need to expose details of global implementation if we are building STLport
    or have not instantiated everything in the lib */
 #  if defined (__BUILDING_STLPORT) || defined (_STLP_NO_FORCE_INSTANTIATE)
 #    undef  _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
@@ -1188,8 +1188,8 @@ typedef int bool;
 #  define _STLP_PSPEC2(t1,t2) < t1,t2 >
 #  define _STLP_PSPEC3(t1,t2,t3) < t1,t2,t3 >
 #else
-#  define _STLP_PSPEC2(t1,t2)	/* nothing */
-#  define _STLP_PSPEC3(t1,t2,t3)	/* nothing */
+#  define _STLP_PSPEC2(t1,t2)  /* nothing */
+#  define _STLP_PSPEC3(t1,t2,t3)  /* nothing */
 #endif
 
 /* Activation of the partial template workaround:

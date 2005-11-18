@@ -18,7 +18,7 @@ struct nothrow_t {};
  * do not define it or when the new operator do not throw it to avoid
  * a useless library dependency.
  */
-class bad_alloc : public exception { 
+class bad_alloc : public exception {
 public:
   bad_alloc () _STLP_NOTHROW_INHERENTLY { }
   bad_alloc(const bad_alloc&) _STLP_NOTHROW_INHERENTLY { }
@@ -65,7 +65,7 @@ using ::set_new_handler;
 using _STLP_VENDOR_EXCEPT_STD::new_handler;
 using _STLP_VENDOR_EXCEPT_STD::set_new_handler;
 #      endif
-    
+
 #    endif /* !_STLP_NO_BAD_ALLOC */
 
 _STLP_END_NAMESPACE

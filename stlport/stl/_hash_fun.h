@@ -41,20 +41,20 @@ template <class _Key> struct hash { };
 
 inline size_t __stl_hash_string(const char* __s) {
   _STLP_FIX_LITERAL_BUG(__s)
-  unsigned long __h = 0; 
+  unsigned long __h = 0;
   for ( ; *__s; ++__s)
     __h = 5*__h + *__s;
-  
+
   return size_t(__h);
 }
 
 _STLP_TEMPLATE_NULL struct hash<char*> {
-  size_t operator()(const char* __s) const 
+  size_t operator()(const char* __s) const
   { _STLP_FIX_LITERAL_BUG(__s) return __stl_hash_string(__s); }
 };
 
 _STLP_TEMPLATE_NULL struct hash<const char*> {
-  size_t operator()(const char* __s) const 
+  size_t operator()(const char* __s) const
   { _STLP_FIX_LITERAL_BUG(__s) return __stl_hash_string(__s); }
 };
 

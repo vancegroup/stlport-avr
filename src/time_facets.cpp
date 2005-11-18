@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 #include "stlport_prefix.h"
 #include <cstdio>
@@ -84,7 +84,7 @@ void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   table._M_long_date_time_format = _Locale_long_d_t_fmt(time);
 }
 
-inline char* __subformat(const string& format, char*& buf, 
+inline char* __subformat(const string& format, char*& buf,
                          const _Time_Info&  table, const tm* t) {
   const char * cp = format.data();
   const char * cp_end = cp + format.size();
@@ -171,7 +171,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
       return buf;
     }
 
-    case 'd': 
+    case 'd':
       sprintf(buf, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_mday);
       return ((long)t->tm_mday < 10L && modifier == '#')?buf+1:buf + 2;
 
@@ -208,7 +208,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
        return ((long)t->tm_sec < 10L && modifier == '#')?buf+1:buf + 2;
 
     case 'U':
-      return __write_integer(buf, 0, 
+      return __write_integer(buf, 0,
                              long((t->tm_yday - t->tm_wday + 7) / 7));
       //      break;
 
@@ -264,11 +264,11 @@ char * __write_formatted_time(char* buf, char format, char modifier,
 
 #ifdef __GNUC__
 
-      // fbp : at least on SUN 
+      // fbp : at least on SUN
 #  if defined ( _STLP_UNIX ) && ! defined (__linux__)
 #    define __USE_BSD 1
 #  endif
- 
+
    /*********************************************
     *     JGS, handle various extensions        *
     *********************************************/
@@ -280,7 +280,7 @@ char * __write_formatted_time(char* buf, char format, char modifier,
                   buf);
 
     case 'C': /* POSIX.2 extension */
-      // same as 'd', the day 
+      // same as 'd', the day
       sprintf(buf, "%2ld", (long)t->tm_mday);
       return buf + 2;
 

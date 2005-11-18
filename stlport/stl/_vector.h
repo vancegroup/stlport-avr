@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -49,13 +49,13 @@
 #undef  vector
 #define vector __WORKAROUND_DBG_RENAME(vector)
 
-_STLP_BEGIN_NAMESPACE 
+_STLP_BEGIN_NAMESPACE
 
 // The vector base class serves two purposes.  First, its constructor
 // and destructor allocate (but don't initialize) storage.  This makes
 // exception safety easier.
 
-template <class _Tp, class _Alloc> 
+template <class _Tp, class _Alloc>
 class _Vector_base {
 public:
 
@@ -84,9 +84,9 @@ public:
     src.get()._M_end_of_storage._M_data = 0;
   }
 
-  ~_Vector_base() { 
-    if (_M_start != 0) 
-      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+  ~_Vector_base() {
+    if (_M_start != 0)
+      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
   }
 
 protected:
@@ -142,9 +142,9 @@ protected:
   typedef typename __type_traits<_Tp>::is_POD_type _PODType;
 
   // handles insertions on overflow
-  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/, 
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/,
                               size_type __fill_len, bool __atend);
-  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __true_type& /*_Movable*/, 
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __true_type& /*_Movable*/,
                               size_type __fill_len, bool __atend) {
     //We need to take care of self referencing here:
     if (_M_is_inside(__x)) {
@@ -155,11 +155,11 @@ protected:
     _M_insert_overflow_aux(__pos, __x, __false_type(), __fill_len, __atend);
   }
 
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCpy*/, 
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCpy*/,
                           size_type __fill_len, bool __atend = false) {
     _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
   }
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/, 
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/,
                           size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish-this->_M_start))
@@ -198,7 +198,7 @@ public:
   reference at(size_type __n) { _M_range_check(__n); return (*this)[__n]; }
   const_reference at(size_type __n) const { _M_range_check(__n); return (*this)[__n]; }
 
-  explicit _VECTOR_IMPL(const allocator_type& __a = allocator_type()) : 
+  explicit _VECTOR_IMPL(const allocator_type& __a = allocator_type()) :
     _Vector_base<_Tp, _Alloc>(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -206,8 +206,8 @@ public:
 #else
   _VECTOR_IMPL(size_type __n, const _Tp& __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type()) 
-    : _Vector_base<_Tp, _Alloc>(__n, __a) { 
+         const allocator_type& __a = allocator_type())
+    : _Vector_base<_Tp, _Alloc>(__n, __a) {
     this->_M_finish = __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
   }
 
@@ -218,8 +218,8 @@ public:
   }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  _VECTOR_IMPL(const _Self& __x) 
-    : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) { 
+  _VECTOR_IMPL(const _Self& __x)
+    : _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {
     this->_M_finish = __uninitialized_copy(__x.begin(), __x.end(),
                                            this->_M_start, _TrivialUCpy());
   }
@@ -234,7 +234,7 @@ public:
   void _M_initialize_aux(_Integer __n, _Integer __val,
                          const __true_type& /*_IsIntegral*/) {
     this->_M_start = this->_M_end_of_storage.allocate(__n);
-    this->_M_end_of_storage._M_data = this->_M_start + __n; 
+    this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
   }
 
@@ -252,7 +252,7 @@ public:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
-  
+
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   _VECTOR_IMPL(_InputIterator __first, _InputIterator __last) :
@@ -265,8 +265,8 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   _VECTOR_IMPL(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
-    : _Vector_base<_Tp, _Alloc>(__last - __first, __a) { 
-      this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy()); 
+    : _Vector_base<_Tp, _Alloc>(__last - __first, __a) {
+      this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -285,7 +285,7 @@ public:
 
   void assign(size_type __n, const _Tp& __val) { _M_fill_assign(__n, __val); }
   void _M_fill_assign(size_type __n, const _Tp& __val);
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _ForwardIter>
   void _M_assign_aux(_ForwardIter __first, _ForwardIter __last, const forward_iterator_tag &) {
@@ -293,7 +293,7 @@ public:
   void assign(const_iterator __first, const_iterator __last) {
     typedef const_iterator _ForwardIter;
 #endif
-    size_type __len = distance(__first, __last);  
+    size_type __len = distance(__first, __last);
     if (__len > capacity()) {
       iterator __tmp = _M_allocate_and_copy(__len, __first, __last);
       _M_clear();
@@ -324,7 +324,7 @@ public:
     else
       insert(end(), __first, __last);
   }
-  
+
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
                           const __true_type& /*_IsIntegral*/)
@@ -399,7 +399,7 @@ private:
       __new_finish = __uninitialized_copy(__first, __last, __new_finish, _TrivialUCpy());
       __new_finish = __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCpy(), _Movable());
     }
-    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish), 
+    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                   this->_M_end_of_storage.deallocate(__new_start,__len)))
     _M_clear_after_move();
     _M_set(__new_start, __new_finish, __new_start + __len);
@@ -478,10 +478,10 @@ public:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
-  
+
 private:
   template <class _InputIterator>
-  void _M_range_insert(iterator __pos, 
+  void _M_range_insert(iterator __pos,
                        _InputIterator __first, _InputIterator __last,
                        const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
@@ -499,7 +499,7 @@ public:
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
-    /* This method do not check self referencing. 
+    /* This method do not check self referencing.
      * Standard forbids it, checked by the debug mode.
      */
     if (__first != __last) {
@@ -513,11 +513,11 @@ public:
       }
     }
   }
-  
+
 public:
   void insert (iterator __pos, size_type __n, const _Tp& __x)
   { _M_fill_insert(__pos, __n, __x); }
-  
+
   void pop_back() {
     --this->_M_finish;
     _STLP_STD::_Destroy(this->_M_finish);
@@ -587,7 +587,7 @@ public:
 #else
   void resize(size_type __new_size, const _Tp& __x) {
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-    if (__new_size < size()) 
+    if (__new_size < size())
       erase(begin() + __new_size, end());
     else
       insert(end(), __new_size - size(), __x);
@@ -597,7 +597,7 @@ public:
   void resize(size_type __new_size) { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  void clear() { 
+  void clear() {
     erase(begin(), end());
   }
 
@@ -621,10 +621,10 @@ protected:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _ForwardIterator>
-  pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first, 
+  pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first,
                                _ForwardIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
-  pointer _M_allocate_and_copy(size_type __n, const_pointer __first, 
+  pointer _M_allocate_and_copy(size_type __n, const_pointer __first,
                                const_pointer __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   {
@@ -644,12 +644,12 @@ protected:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void _M_range_initialize(_InputIterator __first,  
+  void _M_range_initialize(_InputIterator __first,
                            _InputIterator __last, const input_iterator_tag &) {
     for ( ; __first != __last; ++__first)
       push_back(*__first);
   }
-  // This function is only called by the constructor. 
+  // This function is only called by the constructor.
   template <class _ForwardIterator>
   void _M_range_initialize(_ForwardIterator __first,
                            _ForwardIterator __last, const forward_iterator_tag &) {
@@ -658,7 +658,7 @@ protected:
     this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
   }
-  
+
 #endif /* _STLP_MEMBER_TEMPLATES */
 };
 

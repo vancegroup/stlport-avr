@@ -2,23 +2,23 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 
 // This header defines classes basic_stringbuf, basic_istringstream,
-// basic_ostringstream, and basic_stringstream.  These classes 
+// basic_ostringstream, and basic_stringstream.  These classes
 // represent streamsbufs and streams whose sources or destinations are
 // C++ strings.
 
@@ -88,9 +88,9 @@ protected:                      // Overridden virtual member functions.
 
   virtual _Base* setbuf(_CharT* __buf, streamsize __n);
   virtual pos_type seekoff(off_type __off, ios_base::seekdir __dir,
-                           ios_base::openmode __mode 
+                           ios_base::openmode __mode
                                       = ios_base::in | ios_base::out);
-  virtual pos_type seekpos(pos_type __pos, ios_base::openmode __mode 
+  virtual pos_type seekpos(pos_type __pos, ios_base::openmode __mode
                                       = ios_base::in | ios_base::out);
 
 private:                        // Helper functions.
@@ -143,7 +143,7 @@ public:                         // Member functions
 
   _String str() const { return _M_buf.str(); }
   void str(const _String& __s) { _M_buf.str(__s); }
-  
+
 private:
   basic_stringbuf<_CharT, _Traits, _Alloc> _M_buf;
 
@@ -216,7 +216,7 @@ public:                         // Typedefs
   typedef basic_iostream<_CharT, _Traits>            _Base;
   typedef basic_string<_CharT, _Traits, _Alloc>      _String;
   typedef basic_stringbuf<_CharT, _Traits, _Alloc>  _Buf;
-  
+
   typedef ios_base::openmode openmode;
 
 public:                         // Constructors, destructor.

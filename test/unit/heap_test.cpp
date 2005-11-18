@@ -52,7 +52,7 @@ void HeapTest::mkheap0()
 void HeapTest::mkheap1()
 {
   int numbers[6] = { 5, 10, 4, 13, 11, 19 };
-  
+
   make_heap(numbers, numbers + 6, greater<int>());
 
   CPPUNIT_ASSERT(numbers[0]==4)

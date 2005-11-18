@@ -2,13 +2,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -21,11 +21,11 @@
  *
  * A list of COMPILER-SPECIFIC portion of STLport settings.
  * This file is provided to help in manual configuration
- * of STLport. This file is being included by stlcomp.h 
+ * of STLport. This file is being included by stlcomp.h
  * when STLport is unable to identify your compiler.
- * Please remove the error diagnostic below before adjusting 
+ * Please remove the error diagnostic below before adjusting
  * macros.
- * 
+ *
  */
 # ifndef _STLP_MYCOMP_H
 #  define  _STLP_MYCOMP_H
@@ -44,7 +44,7 @@
 // Disables wchar_t functionality
 // #  define _STLP_NO_WCHAR_T  1
 
-// Define if wchar_t is not a unique type, and is actually a typedef to unsigned short. 
+// Define if wchar_t is not a unique type, and is actually a typedef to unsigned short.
 // #  define _STLP_WCHAR_T_IS_USHORT 1
 
 // Uncomment if long long is available
@@ -97,10 +97,10 @@
 // #  define _STLP_NO_STATIC_TEMPLATE_DATA 1
 // #  define _STLP_WEAK_ATTRIBUTE 1
 
-// Uncomment this if your compiler does not support namespaces 
+// Uncomment this if your compiler does not support namespaces
 // #  define _STLP_HAS_NO_NAMESPACES 1
 
-// Uncomment if "using" keyword does not work with template types 
+// Uncomment if "using" keyword does not work with template types
 // # define _STLP_BROKEN_USING_DIRECTIVE 1
 
 // Uncomment this if your compiler does not support exceptions
@@ -119,7 +119,7 @@
 // Define this if your compiler do not support return of void
 // # define _STLP_DONT_RETURN_VOID 1
 
-// Header <new> that comes with the compiler 
+// Header <new> that comes with the compiler
 // does not define bad_alloc exception
 // #  define _STLP_NO_BAD_ALLOC  1
 
@@ -156,7 +156,7 @@
 // Compiler has problem with qualified specializations (cont int, volatile int...)
 // #  define _STLP_QUALIFIED_SPECIALIZATION_BUG
 
-// Compiler has problems specializing members of partially 
+// Compiler has problems specializing members of partially
 // specialized class
 // #  define _STLP_MEMBER_SPECIALIZATION_BUG
 
@@ -185,11 +185,11 @@
 // (non-template)
 //#  define  _STLP_NONTEMPL_BASE_MATCH_BUG 1
 
-// Define if the compiler rejects outline method definition 
+// Define if the compiler rejects outline method definition
 // explicitly taking nested types/typedefs
 // #  define _STLP_NESTED_TYPE_PARAM_BUG   1
 
-// Compiler requires typename keyword on outline method definition 
+// Compiler requires typename keyword on outline method definition
 // explicitly taking nested types/typedefs
 // #define  _STLP_TYPENAME_ON_RETURN_TYPE
 
@@ -228,7 +228,7 @@
 // #  define _STLP_TRIVIAL_DESTRUCTOR_BUG    1
 
 // Define if having problems specializing maps/sets with
-// key type being const 
+// key type being const
 // #  define _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
 
 // Uncomment this to disable -> operators on all iterators
@@ -268,7 +268,7 @@
 // uncomment this if your compiler implement full ADL (Argument Dependent Lookup)
 // # define _STLP_FULL_ADL_IMPLEMENTED 1
 
-// Edit relative path below (or put full path) to get native 
+// Edit relative path below (or put full path) to get native
 // compiler headers included. Default is "../include".
 // C headers may reside in different directory, so separate macro is provided.
 // Hint : never install STLport in the directory that ends with "include"
@@ -277,7 +277,7 @@
 // # define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include
 
 // This macro constructs header path from directory and name.
-// You may change it if your compiler does not understand "/". 
+// You may change it if your compiler does not understand "/".
 // #  define _STLP_MAKE_HEADER(path, header) <path/header>
 
 // This macro constructs native include header path from include path and name.

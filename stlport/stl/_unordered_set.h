@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -44,7 +44,7 @@ class unordered_set
   //Specific iterator traits creation
   typedef _STLP_PRIV::_UnorderedSetTraitsT<_Value> _UnorderedSetTraits;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn, 
+  typedef hashtable<_Value, _Value, _HashFcn,
                     _UnorderedSetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
@@ -84,7 +84,7 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  unordered_set(_InputIterator __f, _InputIterator __l, 
+  unordered_set(_InputIterator __f, _InputIterator __l,
                 size_type __n = 100, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
@@ -98,7 +98,7 @@ public:
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_unique(__f, __l); }
 
-  unordered_set(const_iterator __f, const_iterator __l, 
+  unordered_set(const_iterator __f, const_iterator __l,
                 size_type __n = 100, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
@@ -119,15 +119,15 @@ public:
   const_iterator begin() const { return _M_ht.begin(); }
   const_iterator end() const { return _M_ht.end(); }
 
-  pair<iterator, bool> insert(const value_type& __obj) 
+  pair<iterator, bool> insert(const value_type& __obj)
   { return _M_ht.insert_unique(__obj); }
   iterator insert(const_iterator /*__hint*/, const value_type& __obj)
   { return _M_ht.insert_unique(__obj); }
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(_InputIterator __f, _InputIterator __l) 
+  void insert(_InputIterator __f, _InputIterator __l)
 #else
-  void insert(const_iterator __f, const_iterator __l) 
+  void insert(const_iterator __f, const_iterator __l)
   {_M_ht.insert_unique(__f, __l); }
   void insert(const value_type* __f, const value_type* __l)
 #endif
@@ -150,7 +150,7 @@ public:
   { return _M_ht.find(__key); }
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
   { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -182,7 +182,7 @@ _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultisetTraitsT, Const_traits)
 template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
-class unordered_multiset 
+class unordered_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> >
 #endif
@@ -191,7 +191,7 @@ class unordered_multiset
   //Specific iterator traits creation
   typedef _STLP_PRIV::_UnorderedMultisetTraitsT<_Value> _UnorderedMultisetTraits;
 public:
-  typedef hashtable<_Value, _Value, _HashFcn, 
+  typedef hashtable<_Value, _Value, _HashFcn,
                     _UnorderedMultisetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;
@@ -231,7 +231,7 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  unordered_multiset(_InputIterator __f, _InputIterator __l, 
+  unordered_multiset(_InputIterator __f, _InputIterator __l,
                      size_type __n = 100, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
@@ -245,7 +245,7 @@ public:
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_equal(__f, __l); }
 
-  unordered_multiset(const_iterator __f, const_iterator __l, 
+  unordered_multiset(const_iterator __f, const_iterator __l,
                      size_type __n = 100, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
@@ -272,11 +272,11 @@ public:
   { return _M_ht.insert_equal(__obj); }
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(_InputIterator __f, _InputIterator __l) 
+  void insert(_InputIterator __f, _InputIterator __l)
 #else
   void insert(const value_type* __f, const value_type* __l)
   { _M_ht.insert_equal(__f,__l); }
-  void insert(const_iterator __f, const_iterator __l) 
+  void insert(const_iterator __f, const_iterator __l)
 #endif /*_STLP_MEMBER_TEMPLATES */
   { _M_ht.insert_equal(__f, __l); }
 
@@ -297,7 +297,7 @@ public:
   { return _M_ht.find(__key); }
 
   size_type count(const key_type& __key) const { return _M_ht.count(__key); }
-  
+
   pair<iterator, iterator> equal_range(const key_type& __key)
   { return _M_ht.equal_range(__key); }
   pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
@@ -366,7 +366,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }
@@ -393,7 +393,7 @@ public:
   insert_iterator(_Container& __x, typename _Container::iterator)
     : container(&__x) {}
   insert_iterator<_Container>&
-  operator=(const typename _Container::value_type& __val) { 
+  operator=(const typename _Container::value_type& __val) {
     container->insert(__val);
     return *this;
   }
@@ -409,7 +409,7 @@ _STLP_END_NAMESPACE
 #  undef unordered_set
 #  undef unordered_multiset
 
-// provide a uniform way to access full funclionality 
+// provide a uniform way to access full funclionality
 #  define __unordered_set__       __FULL_NAME(unordered_set)
 #  define __unordered_multiset__  __FULL_NAME(unordered_multiset)
 

@@ -70,7 +70,7 @@ void SetUnionTest::setunon2()
   char* word2 = "LMNOPQRSTUVWXYZ";
 
   string diff;
-  set_union(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2), 
+  set_union(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),
             back_inserter(diff), less<char>());
   CPPUNIT_ASSERT( diff.size() == 26 );
   for (int i = 0; i < 26; ++i) {

@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #include "stlport_prefix.h"
 
 #include "message_facets.h"
@@ -30,12 +30,12 @@ messages<char>::messages(_Messages* imp) :
 messages<char>::~messages()
 { if (_M_impl && _M_impl->_M_delete) delete _M_impl; }
 
-messages<char>::catalog 
+messages<char>::catalog
 messages<char>::do_open(const string& filename, const locale& l) const
 { return _M_impl->do_open(filename, l); }
 
 string
-messages<char>::do_get(catalog cat, int set, int p_id, 
+messages<char>::do_get(catalog cat, int set, int p_id,
                        const string& dfault) const
 { return _M_impl->do_get(cat, set, p_id, dfault); }
 
@@ -65,7 +65,7 @@ messages<wchar_t>::messages(_Messages* imp) :
 messages<wchar_t>::~messages()
 { if (_M_impl && _M_impl->_M_delete) delete _M_impl; }
 
-messages<wchar_t>::catalog 
+messages<wchar_t>::catalog
 messages<wchar_t>::do_open(const string& filename, const locale& L) const
 { return _M_impl->do_open(filename, L); }
 

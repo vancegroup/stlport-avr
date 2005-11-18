@@ -2,13 +2,13 @@
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -60,7 +60,7 @@ typedef off64_t streamoff;
 typedef long streamoff;
 #elif defined (_STLP_WIN32)
 #  if defined (_STLP_LONG_LONG) && !defined (__CYGWIN__)
-//The Win32 file io API support 64 bits access so streamoff and streamsize 
+//The Win32 file io API support 64 bits access so streamoff and streamsize
 //has to reflect that. Do not change the stringbuf behavior.
 typedef _STLP_LONG_LONG streamoff;
 #  else
@@ -139,9 +139,9 @@ public:
 #endif
 
   static void _STLP_CALL assign(char_type& __c1, const char_type& __c2) { __c1 = __c2; }
-  static bool _STLP_CALL eq(const char_type& __c1, const char_type& __c2) 
+  static bool _STLP_CALL eq(const char_type& __c1, const char_type& __c2)
   { return __c1 == __c2; }
-  static bool _STLP_CALL lt(const char_type& __c1, const char_type& __c2) 
+  static bool _STLP_CALL lt(const char_type& __c1, const char_type& __c2)
   { return __c1 < __c2; }
 
   static int _STLP_CALL compare(const char_type* __s1, const char_type* __s2, size_t __n) {
@@ -165,14 +165,14 @@ public:
     return 0;
   }
 
-  static char_type* _STLP_CALL move(char_type* __s1, const char_type* __s2, size_t _Sz) {    
+  static char_type* _STLP_CALL move(char_type* __s1, const char_type* __s2, size_t _Sz) {
     return (_Sz == 0 ? __s1 : (char_type*)memmove(__s1, __s2, _Sz * sizeof(char_type)));
   }
-  
+
   static char_type* _STLP_CALL copy(char_type* __s1, const char_type* __s2, size_t __n) {
     return (__n == 0 ? __s1 :
       (char_type*)memcpy(__s1, __s2, __n * sizeof(char_type)));
-  } 
+  }
 
   static char_type* _STLP_CALL assign(char_type* __s, size_t __n, char_type __c) {
     for (size_t __i = 0; __i < __n; ++__i)
@@ -204,17 +204,17 @@ public:
 
 // Generic char_traits class.  Note that this class is provided only
 //  as a base for explicit specialization; it is unlikely to be useful
-//  as is for any particular user-defined type.  In particular, it 
+//  as is for any particular user-defined type.  In particular, it
 //  *will not work* for a non-POD type.
 
-template <class _CharT> 
+template <class _CharT>
 class char_traits
   : public __char_traits_base<_CharT, _CharT> {};
 
 // Specialization for char.
 
-_STLP_TEMPLATE_NULL 
-class _STLP_CLASS_DECLSPEC char_traits<char> 
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC char_traits<char>
   : public __char_traits_base<char, int> {
 public:
   typedef char char_type;
@@ -234,17 +234,17 @@ public:
   }
 
   static int _STLP_CALL compare(const char* __s1, const char* __s2, size_t __n) {
-    return memcmp(__s1, __s2, __n); 
+    return memcmp(__s1, __s2, __n);
   }
-  
+
   static size_t _STLP_CALL length(const char* __s) {
     return strlen(__s);
   }
 
   static void _STLP_CALL assign(char& __c1, const char& __c2) {
-    __c1 = __c2; 
+    __c1 = __c2;
   }
- 
+
   static char* _STLP_CALL assign(char* __s, size_t __n, char __c) {
     memset(__s, __c, __n);
     return __s;
@@ -253,20 +253,20 @@ public:
 
 #if defined (_STLP_HAS_WCHAR_T)
 // Specialization for wchar_t.
-_STLP_TEMPLATE_NULL 
+_STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC char_traits<wchar_t>
-  : public __char_traits_base<wchar_t, wint_t> {  
+  : public __char_traits_base<wchar_t, wint_t> {
 #  if !defined(_STLP_NO_NATIVE_WIDE_FUNCTIONS) && \
       !defined(_STLP_WCHAR_HPACC_EXCLUDE) && !defined(_STLP_WCHAR_BORLAND_EXCLUDE)
 public:
-  static wchar_t* _STLP_CALL move(wchar_t* __dest, const wchar_t* __src, size_t __n) {    
+  static wchar_t* _STLP_CALL move(wchar_t* __dest, const wchar_t* __src, size_t __n) {
 #    ifndef N_PLAT_NLM
     return wmemmove(__dest, __src, __n);
 #    else
     return (wchar_t *)memmove((char *)__dest, (const char *)__src, __n * sizeof(wchar_t) );
 #    endif
   }
-  
+
   static wchar_t* _STLP_CALL copy(wchar_t* __dest, const wchar_t* __src, size_t __n) {
 #    ifndef N_PLAT_NLM
     return wmemcpy(__dest, __src, __n);
@@ -277,26 +277,26 @@ public:
     }
     return tmp;
 #    endif
-  } 
+  }
 
 #    if !defined (__DMC__) && !defined(N_PLAT_NLM)
   static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n) {
-    return wmemcmp(__s1, __s2, __n); 
+    return wmemcmp(__s1, __s2, __n);
   }
 #    else
   static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n) {
     return __char_traits_base<wchar_t, wint_t>::compare(__s1, __s2, __n);
   }
 #    endif
-  
+
   static size_t _STLP_CALL length(const wchar_t* __s) {
     return wcslen(__s);
   }
-  
+
   static void _STLP_CALL assign(wchar_t& __c1, const wchar_t& __c2) {
-    __c1 = __c2; 
+    __c1 = __c2;
   }
- 
+
   static wchar_t* _STLP_CALL assign(wchar_t* __s, size_t __n, wchar_t __c) {
 #   ifndef N_PLAT_NLM
     return wmemset(__s, __c, __n);

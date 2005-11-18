@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #ifndef _STLP_LOCALE
 #define _STLP_LOCALE
 
@@ -58,7 +58,7 @@
 #include <stl/_messages_facets.h>
 
 // some stuff for streambuf iterators ended up defined there
-// Strictly speaking, _istream.h portion is only required for <iterator>, but it may break too many 
+// Strictly speaking, _istream.h portion is only required for <iterator>, but it may break too many
 // programs if we omit it
 #ifndef _STLP_ISTREAM_H
 # include <stl/_istream.h>
@@ -81,57 +81,57 @@
 
 _STLP_BEGIN_NAMESPACE
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isspace (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::space, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isprint (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::print, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool iscntrl (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::cntrl, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isupper (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::upper, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool islower (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::lower, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isalpha (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::alpha, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isdigit (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::digit, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool ispunct (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::punct, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isxdigit (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::xdigit, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isalnum (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::alnum, c);
 }
 
-template <class _CharT> 
+template <class _CharT>
 inline bool isgraph (_CharT c, const locale& loc) {
   return (use_facet<ctype<_CharT> >(loc)).is(ctype_base::graph, c);
 }

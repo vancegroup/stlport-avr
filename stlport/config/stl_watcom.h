@@ -1,7 +1,7 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
-# ifndef _STLP_USE_NO_IOSTREAMS 
+# ifndef _STLP_USE_NO_IOSTREAMS
 #  define _STLP_USE_NO_IOSTREAMS
 # endif
 
@@ -36,14 +36,14 @@ long    __stl_InterlockedDecrement( long *var );
         "inc eax"               \
         value [eax];
 
-        
+
 #pragma aux __stl_InterlockedDecrement parm [ ecx ] = \
         ".586"                  \
         "mov eax, 0FFFFFFFFh"   \
         "lock xadd [ecx], eax"       \
         "dec eax"               \
         value [eax];
-#else 
+#else
 // Single Processor, lock prefix not needed
 #pragma aux __stl_InterlockedIncrement parm [ ecx ] = \
         ".586"                  \
@@ -51,7 +51,7 @@ long    __stl_InterlockedDecrement( long *var );
         "xadd [ecx], eax"       \
         "inc eax"               \
         value [eax];
-        
+
 #pragma aux __stl_InterlockedDecrement parm [ ecx ] = \
         ".586"                  \
         "mov eax, 0FFFFFFFFh"   \
@@ -61,7 +61,7 @@ long    __stl_InterlockedDecrement( long *var );
 #endif // _STL_MULTIPROCESSOR
 
 long    __stl_InterlockedExchange( long *Destination, long Value );
-                
+
 // xchg has auto-lock
 #pragma aux __stl_InterlockedExchange parm [ecx] [eax] = \
         ".586"                  \
@@ -132,8 +132,8 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 // This one is present in 11, but apparently has bugs (with auto_ptr).
 #   define _STLP_NO_NEW_STYLE_CASTS 1
 
-// Get rid of Watcom's min and max macros 
-#undef min 
+// Get rid of Watcom's min and max macros
+#undef min
 #undef max
 
 // for switches (-xs,  -xss,  -xst)

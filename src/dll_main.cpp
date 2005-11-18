@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -84,28 +84,28 @@
 
 #if defined (_STLP_MSVC) && (_STLP_MSVC < 1310)
 #  pragma optimize("g", off)
-#endif 
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) { 
-  _STLP_THROW_MSG(range_error, __msg); 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) {
+  _STLP_THROW_MSG(range_error, __msg);
 }
 
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) { 
-  _STLP_THROW_MSG(out_of_range, __msg); 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) {
+  _STLP_THROW_MSG(out_of_range, __msg);
 }
 
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) { 
-  _STLP_THROW_MSG(length_error, __msg); 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) {
+  _STLP_THROW_MSG(length_error, __msg);
 }
 
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg) { 
-  _STLP_THROW_MSG(invalid_argument, __msg); 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg) {
+  _STLP_THROW_MSG(invalid_argument, __msg);
 }
 
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) { 
-  _STLP_THROW_MSG(overflow_error, __msg); 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) {
+  _STLP_THROW_MSG(overflow_error, __msg);
 }
 
 #if defined (_STLP_NO_EXCEPTION_HEADER) || defined (_STLP_BROKEN_EXCEPTION_CLASS)
@@ -172,16 +172,16 @@ template class _STLP_CLASS_DECLSPEC _Swap_lock_struct<0>;
  * use.
  */
 template class _STLP_CLASS_DECLSPEC allocator<_STLP_PRIV::_Slist_node_base*>;
-template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base**, 
-                                                      _STLP_PRIV::_Slist_node_base*, 
+template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base**,
+                                                      _STLP_PRIV::_Slist_node_base*,
                                                       allocator<_STLP_PRIV::_Slist_node_base*> >;
-template class _STLP_CLASS_DECLSPEC _Vector_base<_STLP_PRIV::_Slist_node_base*, 
+template class _STLP_CLASS_DECLSPEC _Vector_base<_STLP_PRIV::_Slist_node_base*,
                                                  allocator<_STLP_PRIV::_Slist_node_base*> >;
 #  if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
-template class _STLP_CLASS_DECLSPEC _Vector_impl<_STLP_PRIV::_Slist_node_base*, 
+template class _STLP_CLASS_DECLSPEC _Vector_impl<_STLP_PRIV::_Slist_node_base*,
                                                  allocator<_STLP_PRIV::_Slist_node_base*> >;
 #  endif
-template class _STLP_CLASS_DECLSPEC __WORKAROUND_DBG_RENAME(vector)<_STLP_PRIV::_Slist_node_base*, 
+template class _STLP_CLASS_DECLSPEC __WORKAROUND_DBG_RENAME(vector)<_STLP_PRIV::_Slist_node_base*,
                                                                     allocator<_STLP_PRIV::_Slist_node_base*> >;
 //End of hashtable bucket types export.
 
@@ -283,13 +283,13 @@ _STLP_END_NAMESPACE
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 
-#  undef FORCE_SYMBOL 
+#  undef FORCE_SYMBOL
 #  define FORCE_SYMBOL APIENTRY
 
 extern "C" {
 
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
+BOOL APIENTRY DllMain( HANDLE hModule,
+                       DWORD  ul_reason_for_call,
                        LPVOID) {
   switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH:

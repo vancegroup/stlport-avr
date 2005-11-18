@@ -100,7 +100,7 @@
 #  define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 #  define _STLP_STATIC_ARRAY_BUG 1
 
-// AIX xlC, Visual Age 3.0 for OS/2 and MS 
+// AIX xlC, Visual Age 3.0 for OS/2 and MS
 #  define _STLP_TRIVIAL_DESTRUCTOR_BUG
 
 #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
@@ -124,7 +124,7 @@
 /* detect xlC5 by: */
 #if defined(__IBMCPP__) && (500 <= __IBMCPP__) && (__IBMCPP__ < 700)
 #define _STLP_USE_EXCEPTIONS 1
-#define _STLP_STATIC_CONST_INIT_BUG 1 
+#define _STLP_STATIC_CONST_INIT_BUG 1
 //#pragma report(disable,CPPC1500029)
 // unsigned 32-bit integer type
 #  define _STLP_UINT32_T unsigned int

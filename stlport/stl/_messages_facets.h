@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
@@ -51,7 +51,7 @@ template <class _CharT> class messages {};
 class _Messages;
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base 
+class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base
 {
   friend class _Locale_impl;
 public:
@@ -92,7 +92,7 @@ private:
 #if !defined (_STLP_NO_WCHAR_T)
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base 
+class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base
 {
   friend class _Locale_impl;
 public:
@@ -101,7 +101,7 @@ public:
   typedef wstring  string_type;
 
   explicit messages(size_t __refs = 0);
-  
+
   inline catalog open(const string& __fn, const locale& __loc) const
     { return do_open(__fn, __loc); }
   inline string_type get(catalog __c, int __set, int __msgid,

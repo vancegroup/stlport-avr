@@ -12,7 +12,7 @@
 _STLP_BEGIN_NAMESPACE
 
 #ifndef _STLP_USE_NAMESPACES
-#  define strstream _STLP_strstream 
+#  define strstream _STLP_strstream
 #  define ostrstream _STLP_ostrstream
 #  define istrstream _STLP_istrstream
 #  define strstreambuf _STLP_strstreambuf
@@ -56,9 +56,9 @@ protected:                      // Overridden virtual member functions.
   virtual int_type underflow();
   virtual _Base* setbuf(char* __buf, streamsize __n);
   virtual pos_type seekoff(off_type __off, ios_base::seekdir __dir,
-                           ios_base::openmode __mode 
+                           ios_base::openmode __mode
                                       = ios_base::in | ios_base::out);
-  virtual pos_type seekpos(pos_type __pos, ios_base::openmode __mode 
+  virtual pos_type seekpos(pos_type __pos, ios_base::openmode __mode
                                       = ios_base::in | ios_base::out);
 
 private:                        // Helper functions.
@@ -87,7 +87,7 @@ public:
   istrstream(char* , streamsize);
   istrstream(const char*, streamsize);
   virtual ~istrstream();
-  
+
   strstreambuf* rdbuf() const;
   char* str();
 

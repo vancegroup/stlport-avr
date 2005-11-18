@@ -219,9 +219,9 @@ void StringTest::erase()
   char const* c_str = "Hello, World!";
   std::string str(c_str);
   CPPUNIT_ASSERT( str == c_str );
-  
+
   str.erase(str.begin() + 1, str.end() - 1); // Erase all but first and last.
-  
+
   size_t i;
   for (i = 0; i < str.size(); ++i) {
     switch ( i ) {
@@ -235,8 +235,8 @@ void StringTest::erase()
         CPPUNIT_ASSERT( false );
         break;
     }
-  } 
-  
+  }
+
   str.insert(1, (char*)c_str);
   str.erase(str.begin()); // Erase first element.
   str.erase(str.end() - 1); // Erase last element.
@@ -350,7 +350,7 @@ void StringTest::insert()
   str = strorg;
   str.insert(0, str.c_str() + str.size() / 2 - 1, str.size() / 2 + 1);
   CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
-  
+
   str = strorg;
   string::iterator b = str.begin();
   string::const_iterator s = str.begin() + str.size() / 2 - 1;
@@ -402,8 +402,8 @@ void StringTest::insert()
 void StringTest::replace()
 {
   /*
-   * This test case is for the non template basic_string::replace method, 
-   * this is why we play with the const iterators and reference to guaranty 
+   * This test case is for the non template basic_string::replace method,
+   * this is why we play with the const iterators and reference to guaranty
    * that the right method is called.
    */
   const string v( "78" );
@@ -413,7 +413,7 @@ void StringTest::replace()
   string::iterator i = s.begin() + 1;
   s.replace(i, i + 3, v.begin(), v.end());
   CPPUNIT_ASSERT( s == "17856" );
-  
+
   s = "123456";
   i = s.begin() + 1;
   s.replace(i, i + 1, v.begin(), v.end());
@@ -436,11 +436,11 @@ void StringTest::replace()
   ci = s.begin() + 1;
   s.replace(i, i + 3, ci + 1, cs.end());
   CPPUNIT_ASSERT( s == "1345656" );
-  
+
   s = "123456";
   s.replace(s.begin() + 4, s.end(), cs.begin(), cs.end());
   CPPUNIT_ASSERT( s == "1234123456" );
-  
+
   /*
    * This is the test for the template replace method.
    */
@@ -455,7 +455,7 @@ void StringTest::replace()
   s = "123456";
   s.replace(s.begin() + 4, s.end(), s.begin(), s.end());
   CPPUNIT_ASSERT( s == "1234123456" );
-  
+
   string strorg("This is test string for string calls");
   string str = strorg;
   str.replace(5, 15, str.c_str(), 10);
@@ -525,7 +525,7 @@ void StringTest::find()
 
   CPPUNIT_ASSERT( s.find_first_of("abcde") == 2 );
   CPPUNIT_ASSERT( s.find_last_of("abcde") == 26 );
-  
+
   CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
   CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
 }
@@ -551,7 +551,7 @@ void StringTest::assign()
   str2 = "1234567890123456789012345678901234567890";
 
   CPPUNIT_ASSERT(str1[5] == '6');
-  CPPUNIT_ASSERT(str2[29] == '0'); 
+  CPPUNIT_ASSERT(str2[29] == '0');
 }
 
 /* This test is to check if std::string properly supports the short string
@@ -578,7 +578,7 @@ bool short_string_optim_bug_helper(std::string teststr)
 {
    size_t ss = teststr.size();
    return (ss == 8);
-} 
+}
 
 void StringTest::compare()
 {

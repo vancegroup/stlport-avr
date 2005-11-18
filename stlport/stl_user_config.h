@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -18,12 +18,12 @@
  * To hold user-definable portion of STLport settings which may be overridden
  * on per-project basis.
  * Please note that if you use STLport iostreams (compiled library) then you have
- * to use consistent settings when you compile STLport library and your project. 
+ * to use consistent settings when you compile STLport library and your project.
  * Those settings are defined in _site_config.h and have to be the same for a given
  * STLport installation.
  */
 
- 
+
 /*==========================================================
  * User-settable macros that control compilation:
  *              Features selection
@@ -40,7 +40,7 @@
 #define _STLP_NO_IOSTREAMS 1
 */
 
-/* 
+/*
  * Set _STLP_DEBUG to turn the "Debug Mode" on.
  * That gets you checked iterators/ranges in the manner
  * of "Safe STL". Very useful for debugging. Thread-safe.
@@ -54,7 +54,7 @@
 /*
  * You can also choose the debug level:
  * STLport debug level: Default value
- *                      Check only what the STLport implementation concider as invalid. 
+ *                      Check only what the STLport implementation concider as invalid.
  *                      It also change the iterator invalidation schema.
  * Standard debug level: Check for all operations the standard concider as "undefined behavior"
  *                       even if STlport implement it correctly. It also invalidates iterators
@@ -65,8 +65,8 @@
 #define   _STLP_DEBUG_LEVEL _STLP_STANDARD_DBG_LEVEL
 */
 
-/* 
- * _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream 
+/*
+ * _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream
  * classes with custom types (which is most likely the case). Custom means types
  * other than char, wchar_t, char_traits<> and allocator<> like
  * basic_ostream<my_char_type, my_traits<my_char_type> > or
@@ -83,7 +83,7 @@
 #define _STLP_NO_CUSTOM_IO
 */
 
-/* 
+/*
  * _STLP_NO_RELOPS_NAMESPACE: if defined, don't put the relational
  * operator templates (>, <=. >=, !=) in namespace std::rel_ops, even
  * if the compiler supports namespaces.
@@ -96,7 +96,7 @@
 
 /*
  * If _STLP_USE_OWN_NAMESPACE is in effect, STLport by default will try
- * to rename std:: for the user to stlport::. If you do not want this feature, 
+ * to rename std:: for the user to stlport::. If you do not want this feature,
  * please define the following switch and then use stlport::
  */
 /*
@@ -106,8 +106,8 @@
 /*
  * _STLP_WHOLE_NATIVE_STD : only meaningful in _STLP_USE_OWN_NAMESPACE mode.
  * Normally, STLport only imports necessary components from native std:: namespace -
- * those not yet provided by STLport (<iostream>, <complex>, etc.) 
- * and their dependencies (<string>, <stdexcept>). 
+ * those not yet provided by STLport (<iostream>, <complex>, etc.)
+ * and their dependencies (<string>, <stdexcept>).
  * You might want everything from std:: being available in std:: namespace when you
  * include corresponding STLport header (like STLport <map> provides std::map as well, etc.),
  * if you are going to use both stlport:: and std:: components in your code.
@@ -132,8 +132,8 @@
 
 /*
  * Uncomment and provide a definition for the byte with which raw memory
- * will be filled if _STLP_DEBUG_ALLOC or _STLP_DEBUG_UNINITIALIZED is defined. 
- * Choose a value which is likely to cause a noticeable problem if dereferenced 
+ * will be filled if _STLP_DEBUG_ALLOC or _STLP_DEBUG_UNINITIALIZED is defined.
+ * Choose a value which is likely to cause a noticeable problem if dereferenced
  * or otherwise abused. A good value may already be defined for your platform; see
  * stl/_config.h
  */
@@ -157,30 +157,30 @@
 
 /*
  *  Define this macro to disable anachronistic constructs (like the ones used in HP STL and
- *  not included in final standard, etc. 
+ *  not included in final standard, etc.
  */
 /*
 #define _STLP_NO_ANACHRONISMS 1
 */
 
 /*
- *  Define this macro to disable STLport extensions (for example, to make sure your code will 
+ *  Define this macro to disable STLport extensions (for example, to make sure your code will
  *  compile with some other implementation )
  */
 /*
 #define _STLP_NO_EXTENSIONS 1
 */
 
-/* 
+/*
  * You should define this macro if compiling with MFC - STLport <stl/_config.h>
- * then include <afx.h> instead of <windows.h> to get synchronisation primitives 
+ * then include <afx.h> instead of <windows.h> to get synchronisation primitives
  */
 /*
 #define _STLP_USE_MFC 1
 */
 
 /*
- * boris : this setting is here as we cannot detect precense of new Platform SDK automatically 
+ * boris : this setting is here as we cannot detect precense of new Platform SDK automatically
  * If you are using new PSDK with VC++ 6.0 or lower,
  * please define this to get correct prototypes for InterlockedXXX functions
  */
@@ -199,7 +199,7 @@
 */
 
 /*
- * Some compilers support the automatic linking feature. 
+ * Some compilers support the automatic linking feature.
  * Uncomment the following if you prefer to specify the STLport library
  * to link with yourself.
  * For the moment, this feature is only supported and implemented within STLport
@@ -210,7 +210,7 @@
 */
 
 /*
- * When using automatic linking (see above), output a message that tells the 
+ * When using automatic linking (see above), output a message that tells the
  * user which lib is getting linked via 'pragma message(..)'.
  * This setting has no effect if automatic linking is not active.
  */
@@ -226,7 +226,7 @@
  * If _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS is set, you'll be able to compile
  * set<T> with those compilers, but you'll have to use __set__<T, less<T>>
  *
- * Affects : map<>, multimap<>, set<>, multiset<>, hash_*<>, 
+ * Affects : map<>, multimap<>, set<>, multiset<>, hash_*<>,
  * queue<>, priority_queue<>, stack<>, istream_iterator<>
  */
 /*
@@ -239,10 +239,10 @@
  * and deallocation. The problem can be even more important if you are adding
  * several strings together in a single expression. To avoid this problem STLport
  * implement expression template. With this technique addition of 2 string is not
- * a string anymore but a temporary object having a reference to each of the 
+ * a string anymore but a temporary object having a reference to each of the
  * original strings involved in the expression. This object carry information
  * directly to the destination string to set its size correctly and only make
- * a single call to the allocator. This technique can be extended to addition of 
+ * a single call to the allocator. This technique can be extended to addition of
  * N elements where elements being basic_string, C string or character type.
  * The drawback can be longer compilation time and bigger executable size.
  * STLport rebuild: Yes
@@ -254,7 +254,7 @@
 /*
  * By default the STLport basic_string implementation use a little static buffer
  * (of 16 chars when writing this doc) to avoid systematically memory allocation
- * in case of little basic_string. The drawback of such a method is bigger 
+ * in case of little basic_string. The drawback of such a method is bigger
  * basic_string size and some performance penalty for method like swap. If you
  * prefer systematical dynamic allocation turn on this macro.
  * STLport rebuild: Yes

@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #ifndef MESSAGE_FACETS_H
 #define MESSAGE_FACETS_H
 
@@ -32,7 +32,7 @@ _STLP_BEGIN_NAMESPACE
 // Forward declaration of an opaque type.
 struct _Catalog_locale_map;
 
-_Locale_messages* __acquire_messages(const char* name); 
+_Locale_messages* __acquire_messages(const char* name);
 void __release_messages(_Locale_messages* cat);
 
 // Class _Catalog_locale_map.  The reason for this is that, internally,
@@ -149,7 +149,7 @@ public:
                  const wstring& __dfault) const;
 # endif
   void do_close(catalog __c) const;
-  
+
   ~_Messages_impl();
 
 private:

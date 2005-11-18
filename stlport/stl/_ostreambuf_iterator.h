@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
 // file directly.
@@ -34,7 +34,7 @@ extern basic_streambuf<_CharT, _Traits>* _STLP_CALL _M_get_ostreambuf(basic_ostr
 
 // The default template argument is declared in iosfwd
 template <class _CharT, class _Traits>
-class ostreambuf_iterator : 
+class ostreambuf_iterator :
   public iterator<output_iterator_tag, void, void, void, void>
 {
 public:
@@ -59,8 +59,8 @@ public:
     _M_ok = _M_ok && !traits_type::eq_int_type(_M_buf->sputc(__c),
                                                traits_type::eof());
     return *this;
-  }    
-  
+  }
+
   ostreambuf_iterator<_CharT, _Traits>& operator*()     { return *this; }
   ostreambuf_iterator<_CharT, _Traits>& operator++()    { return *this; }
   ostreambuf_iterator<_CharT, _Traits>& operator++(int) { return *this; }
@@ -85,7 +85,7 @@ _STLP_EXPORT_TEMPLATE_CLASS ostreambuf_iterator<wchar_t, char_traits<wchar_t> >;
 
 # ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
 template <class _CharT, class _Traits>
-inline output_iterator_tag _STLP_CALL 
+inline output_iterator_tag _STLP_CALL
 iterator_category(const ostreambuf_iterator<_CharT, _Traits>&) { return output_iterator_tag(); }
 # endif
 

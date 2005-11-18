@@ -7,9 +7,9 @@
 
 // This file provides forward declarations of the most important I/O
 // classes.  Note that almost all of those classes are class templates,
-// with default template arguments.  According to the C++ standard, 
+// with default template arguments.  According to the C++ standard,
 // if a class template is declared more than once in the same scope
-// then only one of those declarations may have default arguments.  
+// then only one of those declarations may have default arguments.
 
 // <iosfwd> contains the same declarations as other headers, and including
 // both <iosfwd> and (say) <iostream> is permitted.  This means that only

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -53,7 +53,7 @@ typedef _BSD_WINT_T_ wint_t;
 #    endif /* __OpenBSD__ */
 #  elif defined(__MWERKS__) && defined(N_PLAT_NLM)
 #    include <wchar.h>
-#  else 
+#  else
 #    include _STLP_NATIVE_C_HEADER(wchar.h)
 
 #    if defined(__sun) && (defined(_XOPEN_SOURCE) || (_XOPEN_VERSION - 0 == 4))
@@ -84,7 +84,7 @@ extern int      wscanf();
 #    endif
 #  endif
 
-#  if defined(__MSL__) && __MSL__ <= 0x51FF	/* dwa 2/28/99 - not yet implemented by MSL  */
+#  if defined(__MSL__) && __MSL__ <= 0x51FF  /* dwa 2/28/99 - not yet implemented by MSL  */
 #    define _STLP_WCHAR_MSL_EXCLUDE 1
 namespace std
 { extern "C" size_t wcsftime(wchar_t * str, size_t max_size, const wchar_t * format_str, const struct tm * timeptr); }
@@ -107,7 +107,7 @@ namespace std
 #  ifdef _STLP_IMPORT_VENDOR_CSTD
 
 #    if defined (__SUNPRO_CC) && !defined (_STLP_HAS_NO_NEW_C_HEADERS)
-using _STLP_VENDOR_CSTD::wint_t; 
+using _STLP_VENDOR_CSTD::wint_t;
 #    endif
 
 _STLP_BEGIN_NAMESPACE

@@ -2,13 +2,13 @@
  * Copyright (c) 1998,1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -66,7 +66,7 @@ template <class _Int, _STLP_LIMITS_MIN_TYPE __imin, _STLP_LIMITS_MAX_TYPE __imax
 
 __declare_integer_limits_member(bool, is_specialized, true);
 __declare_integer_limits_member(int, digits, (__idigits < 0) ? \
-			    ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) \
+          ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) \
                             : (__idigits) );
 __declare_integer_limits_member(int, digits10, (int)(301UL * digits) /1000);
 __declare_integer_limits_member(bool, is_signed, __imin != 0);
@@ -88,15 +88,15 @@ const __type _Floating_limits< __number, __Digits, __Digits10,    \
          __IsIEC559, __RoundStyle>::\
          __mem
 
-__declare_float_limits_member(bool, is_specialized, true);  
-__declare_float_limits_member(int, digits, __Digits);  
-__declare_float_limits_member(int, digits10, __Digits10);  
-__declare_float_limits_member(bool, is_signed, true);  
-__declare_float_limits_member(int, radix, FLT_RADIX);  
-__declare_float_limits_member(int, min_exponent, __MinExp);  
-__declare_float_limits_member(int, max_exponent, __MaxExp);  
-__declare_float_limits_member(int, min_exponent10, __MinExp10);  
-__declare_float_limits_member(int, max_exponent10, __MaxExp10);  
+__declare_float_limits_member(bool, is_specialized, true);
+__declare_float_limits_member(int, digits, __Digits);
+__declare_float_limits_member(int, digits10, __Digits10);
+__declare_float_limits_member(bool, is_signed, true);
+__declare_float_limits_member(int, radix, FLT_RADIX);
+__declare_float_limits_member(int, min_exponent, __MinExp);
+__declare_float_limits_member(int, max_exponent, __MaxExp);
+__declare_float_limits_member(int, min_exponent10, __MinExp10);
+__declare_float_limits_member(int, max_exponent10, __MaxExp10);
 __declare_float_limits_member(bool, has_infinity, true);
 __declare_float_limits_member(bool, has_quiet_NaN, true);
 __declare_float_limits_member(bool, has_signaling_NaN, true);
@@ -139,7 +139,7 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 #  elif defined (_STLP_LITTLE_ENDIAN)
 
 #    if 0 /* defined(_STLP_MSVC) || defined(__linux__) */
-// some IA-32 platform ?? 
+// some IA-32 platform ??
 /*
 #      define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
 #      define _STLP_FLOAT_QNAN_REP { 0, 0xffc0 }
@@ -202,10 +202,10 @@ obviously wrong values. */
 #    if defined(_STLP_BIG_ENDIAN)
 
 #    elif defined (_STLP_LITTLE_ENDIAN)
-#    else 
+#    else
 
-//This is an architecture we don't know how to handle.  Return some 
-//obviously wrong values. 
+//This is an architecture we don't know how to handle.  Return some
+//obviously wrong values.
 #      define _STLP_FLOAT_INF_REP  { 0, 0 }
 #      define _STLP_FLOAT_QNAN_REP { 0, 0 }
 #      define _STLP_FLOAT_SNAN_REP { 0, 0 }
@@ -286,7 +286,7 @@ long double _LimG<__dummy>::get_LD_sNaN() {
 #  endif /* _STLP_NO_LONG_DOUBLE */
 
 #endif /* _STLP_EXPOSE_GLOBALS_IMPLEMENTATION */
-    
+
 #undef __declare_integer_limits_member
 #undef __declare_float_limits_member
 #undef __HACK_ILIMITS

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -88,18 +88,18 @@ protected:
 public:                         // Basic accessors
   iterator begin() { return iterator(&_M_iter_list, _Base::begin()); }
   iterator end() { return iterator(&_M_iter_list, _Base::end()); }
-  const_iterator begin() const { 
-    return const_iterator(&_M_iter_list, _Base::begin()); 
+  const_iterator begin() const {
+    return const_iterator(&_M_iter_list, _Base::begin());
   }
-  const_iterator end() const { 
-    return const_iterator(&_M_iter_list,  _Base::end()); 
+  const_iterator end() const {
+    return const_iterator(&_M_iter_list,  _Base::end());
   }
 
   reverse_iterator rbegin() { return reverse_iterator(end()); }
   reverse_iterator rend() { return reverse_iterator(begin()); }
-  const_reverse_iterator rbegin() const 
+  const_reverse_iterator rbegin() const
     { return const_reverse_iterator(end()); }
-  const_reverse_iterator rend() const 
+  const_reverse_iterator rend() const
     { return const_reverse_iterator(begin()); }
 
   reference operator[](size_type __n) {
@@ -131,7 +131,7 @@ public:                         // Basic accessors
 public:                         // Constructor, destructor.
   explicit _DBG_deque(const allocator_type& __a = allocator_type()) :
     _STLP_DEQUE_SUPER(__a), _M_iter_list(_Get_base()) {}
-  _DBG_deque(const _Self& __x) : 
+  _DBG_deque(const _Self& __x) :
     _ConstructCheck(__x), _STLP_DEQUE_SUPER(__x), _M_iter_list(_Get_base()) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -139,7 +139,7 @@ public:                         // Constructor, destructor.
 #else
   _DBG_deque(size_type __n, param_type __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-            const allocator_type& __a = allocator_type()) : 
+            const allocator_type& __a = allocator_type()) :
     _STLP_DEQUE_SUPER(__n, __x, __a), _M_iter_list(_Get_base()) {}
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit _DBG_deque(size_type __n) :
@@ -163,22 +163,22 @@ public:                         // Constructor, destructor.
   template <class _InputIterator>
   _DBG_deque(_InputIterator __first, _InputIterator __last)
     : _ConstructCheck(__first, __last),
-      _STLP_DEQUE_SUPER(__first, __last), 
+      _STLP_DEQUE_SUPER(__first, __last),
       _M_iter_list(_Get_base()) {
     }
 # endif
 #else /* _STLP_MEMBER_TEMPLATES */
   _DBG_deque(const value_type* __first, const value_type* __last,
-        const allocator_type& __a = allocator_type()) 
+        const allocator_type& __a = allocator_type())
     : _ConstructCheck(__first, __last),
-      _STLP_DEQUE_SUPER(__first, __last, __a), 
+      _STLP_DEQUE_SUPER(__first, __last, __a),
       _M_iter_list(_Get_base()) {
     }
 
   _DBG_deque(const_iterator __first, const_iterator __last,
-        const allocator_type& __a = allocator_type()) 
+        const allocator_type& __a = allocator_type())
     : _ConstructCheck(__first, __last),
-      _STLP_DEQUE_SUPER(__first._M_iterator, __last._M_iterator, __a), 
+      _STLP_DEQUE_SUPER(__first._M_iterator, __last._M_iterator, __a),
       _M_iter_list(_Get_base()) {
     }
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -196,7 +196,7 @@ public:                         // Constructor, destructor.
     _Base::swap(__x);
   }
 
-public: 
+public:
   void assign(size_type __n, const _Tp& __val) {
     _Invalidate_all();
     _Base::assign(__n, __val);
@@ -220,7 +220,7 @@ public:
   }
 
 public:                         // push_* and pop_*
-  
+
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back(const value_type& __t = _Tp()) {
 #else
@@ -261,7 +261,7 @@ public:                         // push_* and pop_*
 
   void pop_front() {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
-    _Invalidate_iterator(this->begin());        
+    _Invalidate_iterator(this->begin());
     _Base::pop_front();
   }
 
@@ -278,7 +278,7 @@ public:                         // Insert
   }
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos) { 
+  iterator insert(iterator __pos) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _Invalidate_all();
     return iterator(&_M_iter_list, _Base::insert(__pos._M_iterator));
@@ -291,7 +291,7 @@ public:                         // Insert
     _Base::insert(__pos._M_iterator, __n, __x);
   }
 
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
     typedef typename _AreSameUnCVTypes<_InputIterator, iterator>::_Ret _IsNonConstIterator;
@@ -352,7 +352,7 @@ public:                         // Erase
       _Invalidate_iterator(__pos);
     else {
       iterator __tmp = --(this->end());
-      if (__pos == __tmp) 
+      if (__pos == __tmp)
         _Invalidate_iterator(__pos);
       else
         _Invalidate_all();
@@ -374,7 +374,7 @@ public:                         // Erase
     }
     return iterator (&_M_iter_list, _Base::erase(__first._M_iterator, __last._M_iterator));
   }
-  
+
   void clear() {
     _Invalidate_all();
     _Base::clear();
@@ -400,7 +400,7 @@ _STLP_END_NAMESPACE
 
 # undef _DBG_deque
 # undef _STLP_DEQUE_SUPER
-  
+
 #endif /* _STLP_INTERNAL_DEQUE_H */
 
 // Local Variables:

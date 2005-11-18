@@ -73,7 +73,7 @@ void SetDifferenceTest::setsymd2()
   char* word2 = "LMNOPQRSTUVWXYZ";
 
   string diff;
-  set_symmetric_difference(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2), 
+  set_symmetric_difference(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),
                            back_inserter(diff), less<char>());
   CPPUNIT_ASSERT( diff.size() == 22 );
   char char_res[] = "ABCDEFGHIJKPQRSTUVWXYZ";
@@ -87,7 +87,7 @@ void SetDifferenceTest::setdiff0()
   int v1[3] = { 13, 18, 23 };
   int v2[4] = { 10, 13, 17, 23 };
   int result[4] = { 0, 0, 0, 0 };
-  //18 0 0 0 
+  //18 0 0 0
   //10 17 23 0
 
   set_difference((int*)v1, (int*)v1 + 3, (int*)v2, (int*)v2 + 4, (int*)result);

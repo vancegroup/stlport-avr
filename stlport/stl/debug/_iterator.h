@@ -3,13 +3,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -51,7 +51,7 @@ void _Advance(_Iterator&, ptrdiff_t, const forward_iterator_tag &) {
 
 template <class _Iterator>
 void _Advance(_Iterator& __it, ptrdiff_t, const bidirectional_iterator_tag &) {
-  _STLP_ASSERT(0)  
+  _STLP_ASSERT(0)
 }
 
 template <class _Iterator>
@@ -72,7 +72,7 @@ ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, const forward_iterat
 
 template <class _Iterator>
 ptrdiff_t _DBG_distance(const _Iterator&, const _Iterator&, const bidirectional_iterator_tag &) {
-  _STLP_ASSERT(0)  
+  _STLP_ASSERT(0)
   return 0;
 }
 
@@ -84,7 +84,7 @@ bool _CompareIt(const _Iterator&, const _Iterator&, const forward_iterator_tag &
 
 template <class _Iterator>
 bool _CompareIt(const _Iterator&, const _Iterator&, const bidirectional_iterator_tag &) {
-  _STLP_ASSERT(0)  
+  _STLP_ASSERT(0)
   return false;
 }
 
@@ -134,7 +134,7 @@ public:
   typedef typename _Container::iterator        _Nonconst_iterator;
   typedef typename _Container::const_iterator  _Const_iterator;
   typedef _Container                     _Container_type;
-    
+
 # ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
   typedef typename iterator_traits<_Const_iterator>::iterator_category _Iterator_category;
 # else
@@ -148,9 +148,9 @@ public:
     __owned_link(__c), _M_iterator(*__REINTERPRET_CAST(const _Nonconst_iterator *, &__it)) {}
 # else
     __owned_link(__c), _M_iterator(*(const _Nonconst_iterator*)&__it) {}
-# endif  
-  _Container* _Get_container_ptr() const { 
-    return (_Container*)__stl_debugger::_Get_container_ptr(this); 
+# endif
+  _Container* _Get_container_ptr() const {
+    return (_Container*)__stl_debugger::_Get_container_ptr(this);
   }
 
   void __increment();
@@ -197,7 +197,7 @@ struct _DBG_iter_mid : public _DBG_iter_base<_Container> {
 
   explicit _DBG_iter_mid(const _Nonconst_self& __it) :
       _DBG_iter_base<_Container>(__it) {}
-        
+
   _DBG_iter_mid(const __owned_list* __c, const _Const_iterator& __it) :
       _DBG_iter_base<_Container>(__c, __it) {}
 };
@@ -207,7 +207,7 @@ struct _DBG_iter : public _DBG_iter_mid<_Container, _Traits> {
   typedef _DBG_iter_base<_Container>          _Base;
 public:
   typedef typename _Base::value_type value_type;
-  typedef typename _Base::difference_type difference_type;    
+  typedef typename _Base::difference_type difference_type;
   typedef typename _Traits::reference  reference;
   typedef typename _Traits::pointer    pointer;
 
@@ -224,7 +224,7 @@ public:
   typedef typename _Base::iterator_category iterator_category;
 # endif
   typedef typename _Base::_Iterator_category  _Iterator_category;
-    
+
 public:
   _DBG_iter() {}
     // boris : real type of iter would be nice
@@ -238,7 +238,7 @@ public:
 
   _DBG_iter(const  _Self& __rhs) :
     _DBG_iter_mid<_Container, _Traits>(__rhs) {}
-  
+
   // This allows conversions from iterator to const_iterator without being
   // redundant with the copy assignment operator below.
   _Self& operator=(const _Nonconst_mid& __rhs) {
@@ -250,11 +250,11 @@ public:
     (_Base&)*this = __rhs;
     return *this;
   }
-  
+
   reference operator*() const;
 
   _STLP_DEFINE_ARROW_OPERATOR
-  
+
   _Self& operator++() {
     this->__increment();
     return *this;
@@ -273,12 +273,12 @@ public:
     this->__decrement();
     return __tmp;
   }
-  
+
   _Self& operator+=(difference_type __n) {
     this->__advance(__n);
     return *this;
   }
-  
+
   _Self& operator-=(difference_type __n) {
     this->__advance(-__n);
     return *this;
@@ -310,14 +310,14 @@ _DBG_iter<_Container, _Traits>::operator*() const {
 }
 
 template <class _Container>
-inline bool 
+inline bool
 operator==(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Container>& __y) {
   _STLP_DEBUG_CHECK(__check_same_or_null_owner(__x, __y))
   return __x._M_iterator==__y._M_iterator;
 }
 
 template <class _Container>
-inline bool 
+inline bool
 operator<(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Container>& __y) {
   _STLP_DEBUG_CHECK(__check_same_or_null_owner(__x, __y))
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
@@ -325,15 +325,15 @@ operator<(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Container
 }
 
 template <class _Container>
-inline bool 
+inline bool
 operator>(const _DBG_iter_base<_Container>& __x,
-		   const _DBG_iter_base<_Container>& __y) { 
+       const _DBG_iter_base<_Container>& __y) {
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
   return _CompareIt(__y._M_iterator , __x._M_iterator, _Category());
 }
 
 template <class _Container>
-inline bool 
+inline bool
 operator>=(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Container>& __y) {
   _STLP_DEBUG_CHECK(__check_same_or_null_owner(__x, __y))
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
@@ -341,17 +341,17 @@ operator>=(const _DBG_iter_base<_Container>& __x, const _DBG_iter_base<_Containe
 }
 
 template <class _Container>
-inline bool 
+inline bool
 operator<=(const _DBG_iter_base<_Container>& __x,
-		   const _DBG_iter_base<_Container>& __y) {
-  typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category; 
+       const _DBG_iter_base<_Container>& __y) {
+  typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
   return !_CompareIt(__y._M_iterator , __x._M_iterator, _Category());
 }
 
 template <class _Container>
-inline bool 
-operator!=(const _DBG_iter_base<_Container>& __x, 
-		    const _DBG_iter_base<_Container>& __y) {
+inline bool
+operator!=(const _DBG_iter_base<_Container>& __x,
+        const _DBG_iter_base<_Container>& __y) {
   _STLP_DEBUG_CHECK(__check_same_or_null_owner(__x, __y))
   return __x._M_iterator != __y._M_iterator;
 }
@@ -359,14 +359,14 @@ operator!=(const _DBG_iter_base<_Container>& __x,
 //------------------------------------------
 
 template <class _Container, class _Traits>
-inline _DBG_iter<_Container, _Traits> 
+inline _DBG_iter<_Container, _Traits>
 operator+(ptrdiff_t __n, const _DBG_iter<_Container, _Traits>& __it) {
   _DBG_iter<_Container, _Traits> __tmp(__it);
   return __tmp += __n;
 }
 
 /*
- * Helper classes to check iterator range or pointer validity 
+ * Helper classes to check iterator range or pointer validity
  * at construction time.
  */
 template <class _Container>
@@ -443,7 +443,7 @@ protected:
 # endif
 
 template <class _Container>
-inline ptrdiff_t* 
+inline ptrdiff_t*
 distance_type(const  _DBG_iter_base<_Container>&) { return (ptrdiff_t*) 0; }
 
 # if !defined (_STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS)
@@ -455,7 +455,7 @@ value_type(const  _DBG_iter_base<_Container>&) {
 }
 
 template <class _Container>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _DBG_iter_base<_Container>::_Iterator_category 
+inline _STLP_TYPENAME_ON_RETURN_TYPE _DBG_iter_base<_Container>::_Iterator_category
 iterator_category(const  _DBG_iter_base<_Container>&) {
   typedef typename _DBG_iter_base<_Container>::_Iterator_category _Category;
   return _Category();

@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -42,7 +42,7 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(MapTraitsT, traits)
 
-template <class _Key, class _Tp, __DFL_TMPL_PARAM(_Compare, less<_Key> ), 
+template <class _Key, class _Tp, __DFL_TMPL_PARAM(_Compare, less<_Key> ),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
 class map
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -59,7 +59,7 @@ public:
   typedef _Tp                   mapped_type;
   typedef pair<const _Key, _Tp> value_type;
   typedef _Compare              key_compare;
-    
+
   class value_compare
     : public binary_function<value_type, value_type, bool> {
   friend class map<_Key,_Tp,_Compare,_Alloc>;
@@ -79,7 +79,7 @@ protected:
 public:
   //dums: need the following public for the __move_traits framework
   typedef _Rb_tree<key_type, key_compare,
-                   value_type, _STLP_SELECT1ST(value_type, _Key), 
+                   value_type, _STLP_SELECT1ST(value_type, _Key),
                    _MapTraits, _Alloc> _Rep_type;
   _Rep_type _M_t;  // red-black tree representing map
 public:
@@ -130,7 +130,7 @@ public:
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 
   map(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type()) 
+    : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
   map(const_iterator __first, const_iterator __last, const _Compare& __comp,
@@ -147,7 +147,7 @@ public:
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
-    return *this; 
+    return *this;
   }
 
   // accessors:
@@ -178,7 +178,7 @@ public:
 
   // insert/erase
 
-  pair<iterator,bool> insert(const value_type& __x) 
+  pair<iterator,bool> insert(const value_type& __x)
     { return _M_t.insert_unique(__x); }
   iterator insert(iterator position, const value_type& __x)
     { return _M_t.insert_unique(position, __x); }
@@ -206,18 +206,18 @@ public:
 
   iterator find(const key_type& __x) { return _M_t.find(__x); }
   const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
-  size_type count(const key_type& __x) const { 
+  size_type count(const key_type& __x) const {
     return _M_t.find(__x) == _M_t.end() ? 0 : 1;
   }
   iterator lower_bound(const key_type& __x) {return _M_t.lower_bound(__x); }
   const_iterator lower_bound(const key_type& __x) const {
-    return _M_t.lower_bound(__x); 
+    return _M_t.lower_bound(__x);
   }
   iterator upper_bound(const key_type& __x) {return _M_t.upper_bound(__x); }
   const_iterator upper_bound(const key_type& __x) const {
-    return _M_t.upper_bound(__x); 
+    return _M_t.upper_bound(__x);
   }
-  
+
   pair<iterator,iterator> equal_range(const key_type& __x) {
     return _M_t.equal_range_unique(__x);
   }
@@ -229,9 +229,9 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(MultimapTraitsT, traits)
 
-template <class _Key, class _Tp, __DFL_TMPL_PARAM(_Compare, less<_Key> ), 
+template <class _Key, class _Tp, __DFL_TMPL_PARAM(_Compare, less<_Key> ),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
-class multimap 
+class multimap
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<multimap<_Key, _Tp, _Compare, _Alloc> >
 #endif
@@ -265,8 +265,8 @@ protected:
 
 public:
   //dums: need the following public for the __move_traits framework
-  typedef _Rb_tree<key_type, key_compare, 
-                   value_type, _STLP_SELECT1ST(value_type, _Key), 
+  typedef _Rb_tree<key_type, key_compare,
+                   value_type, _STLP_SELECT1ST(value_type, _Key),
                    _MultimapTraits, _Alloc> _Rep_type;
   _Rep_type _M_t;  // red-black tree representing multimap
 public:
@@ -275,7 +275,7 @@ public:
   typedef typename _Rep_type::reference reference;
   typedef typename _Rep_type::const_reference const_reference;
   typedef typename _Rep_type::iterator iterator;
-  typedef typename _Rep_type::const_iterator const_iterator; 
+  typedef typename _Rep_type::const_iterator const_iterator;
   typedef typename _Rep_type::reverse_iterator reverse_iterator;
   typedef typename _Rep_type::const_reverse_iterator const_reverse_iterator;
   typedef typename _Rep_type::size_type size_type;
@@ -289,7 +289,7 @@ public:
                     const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { }
 
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   multimap(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
@@ -331,7 +331,7 @@ public:
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
-    return *this; 
+    return *this;
   }
 
   // accessors:
@@ -359,7 +359,7 @@ public:
   iterator insert(iterator __position, const value_type& __x) {
     return _M_t.insert_equal(__position, __x);
   }
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last) {
     _M_t.insert_equal(__first, __last);
@@ -385,11 +385,11 @@ public:
   size_type count(const key_type& __x) const { return _M_t.count(__x); }
   iterator lower_bound(const key_type& __x) {return _M_t.lower_bound(__x); }
   const_iterator lower_bound(const key_type& __x) const {
-    return _M_t.lower_bound(__x); 
+    return _M_t.lower_bound(__x);
   }
   iterator upper_bound(const key_type& __x) {return _M_t.upper_bound(__x); }
   const_iterator upper_bound(const key_type& __x) const {
-    return _M_t.upper_bound(__x); 
+    return _M_t.upper_bound(__x);
   }
    pair<iterator,iterator> equal_range(const key_type& __x) {
     return _M_t.equal_range(__x);

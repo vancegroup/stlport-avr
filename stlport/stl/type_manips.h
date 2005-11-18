@@ -6,7 +6,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -25,7 +25,7 @@ struct __false_type {};
 
 //bool to type
 template <int _Is> struct __bool2type {
-  typedef __true_type _Ret; 
+  typedef __true_type _Ret;
 };
 
 _STLP_TEMPLATE_NULL
@@ -115,7 +115,7 @@ struct _Lor3<__false_type, __false_type, __false_type> {
 // Result evaluates to T if flag is true, and to U otherwise.
 ////////////////////////////////////////////////////////////////////////////////
 // BEWARE: If the compiler do not support partial template specialization or nested template
-//classes the default behavior of the __select is to concider the condition as false and so return 
+//classes the default behavior of the __select is to concider the condition as false and so return
 //the second template type!!
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
@@ -244,7 +244,7 @@ template <class _Derived, class _Base>
 struct _ConversionHelper {
   static char _Test(bool, _Base*);
   static _Derived* _MakeDerived();
-  
+
   static char* _Test(bool, ...);
 };
 

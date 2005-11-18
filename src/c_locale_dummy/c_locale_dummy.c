@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 /* This is a "stub" implementation of the "c_locale.h" interface,
    intended for operating systems where we have not yet written
@@ -82,22 +82,22 @@ void _Locale_collate_destroy(void* __DUMMY_PAR)  {}
 void _Locale_monetary_destroy(void* __DUMMY_PAR) {}
 void _Locale_messages_destroy(void* __DUMMY_PAR) {}
 
-char* _Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_extract_numeric_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_numeric_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_extract_time_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_time_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_extract_collate_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_collate_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
   { return 0; }
 
-char* _Locale_extract_monetary_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_monetary_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_extract_messages_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR) 
+char* _Locale_extract_messages_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
 char* _Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
@@ -190,7 +190,7 @@ size_t _Locale_strwxfrm(struct _Locale_collate* __DUMMY_PAR1,
 
 char _Locale_decimal_point(struct _Locale_numeric* __DUMMY_PAR) { return '.'; }
 char _Locale_thousands_sep(struct _Locale_numeric* __DUMMY_PAR) { return ','; }
-const char* _Locale_grouping(struct _Locale_numeric * __DUMMY_PAR) 
+const char* _Locale_grouping(struct _Locale_numeric * __DUMMY_PAR)
 { return ""; }
 
 const char * _Locale_true(struct _Locale_numeric * __DUMMY_PAR)  { return 0; }

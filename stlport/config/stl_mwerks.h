@@ -112,12 +112,12 @@
 #  endif
 
 
-// fixes to native inclusion wrappers. 
+// fixes to native inclusion wrappers.
 # if __MWERKS__ >= 0x2300  // CWPro5 changes paths - dwa 2/28/99
 #  ifdef N_PLAT_NLM
 #   define _STLP_NATIVE_INCLUDE_PATH  ../nwsdk/include/nlm
 #   define _STLP_NATIVE_C_INCLUDE_PATH  ../nwsdk/include/nlm
-#   define _STLP_NATIVE_HEADER(header)     <../nwsdk/include/nlm/##header>  
+#   define _STLP_NATIVE_HEADER(header)     <../nwsdk/include/nlm/##header>
 #   define _STLP_NATIVE_CPP_C_HEADER(header)     <../Libraries/MSL C++/Include/##header>
 #   define _STLP_NATIVE_C_HEADER(header)     <../nwsdk/include/nlm/##header>
 #   define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../Libraries/MSL C++/Include/##header>
@@ -128,12 +128,12 @@
 #   define _STLP_NO_VENDOR_MATH_L    1
      //#   define _MSL_NO_THROW_SPECS
      //#   define _STD
-     //#   define _CSTD 
+     //#   define _CSTD
 
 #  else
 #  define _STLP_NATIVE_INCLUDE_PATH  ../include
 #  define _STLP_NATIVE_C_INCLUDE_PATH  ../include
-#  define _STLP_NATIVE_HEADER(header)     <../include/##header>  
+#  define _STLP_NATIVE_HEADER(header)     <../include/##header>
 #  define _STLP_NATIVE_CPP_C_HEADER(header)     <../include/##header>
 #  define _STLP_NATIVE_C_HEADER(header)     <../include/##header>
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>

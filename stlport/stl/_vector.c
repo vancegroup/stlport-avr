@@ -10,13 +10,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -40,12 +40,12 @@ _STLP_BEGIN_NAMESPACE
 #  define __iterator__        _STLP_TYPENAME_ON_RETURN_TYPE _VECTOR_IMPL<_Tp, _Alloc>::iterator
 #endif
 
-template <class _Tp, class _Alloc> 
+template <class _Tp, class _Alloc>
 void _Vector_base<_Tp,_Alloc>::_M_throw_length_error() const {
   __stl_throw_length_error("vector");
 }
 
-template <class _Tp, class _Alloc> 
+template <class _Tp, class _Alloc>
 void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
   __stl_throw_out_of_range("vector");
 }
@@ -111,7 +111,7 @@ void _VECTOR_IMPL<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x
 }
 
 template <class _Tp, class _Alloc>
-void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n, 
+void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
                                                     const _Tp& __x, const __true_type& /*_Movable*/) {
   if (_M_is_inside(__x)) {
     _Tp __x_copy = __x;
@@ -128,7 +128,7 @@ void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __
   this->_M_finish += __n;
 }
 template <class _Tp, class _Alloc>
-void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n, 
+void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
                                                     const _Tp& __x, const __false_type& /*_Movable*/) {
   //Here self referencing needs to be checked even for non movable types.
   if (_M_is_inside(__x)) {
@@ -157,7 +157,7 @@ void _VECTOR_IMPL<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _M_fill_insert_aux(__pos, __n, __x, _Movable());
-    } else 
+    } else
       _M_insert_overflow(__pos, __x, _TrivialCpy(), __n);
   }
 }
@@ -176,7 +176,7 @@ _VECTOR_IMPL<_Tp,_Alloc>& _VECTOR_IMPL<_Tp,_Alloc>::operator=(const _VECTOR_IMPL
       _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     } else {
       __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start), __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialAss());
-      __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start) + size(), 
+      __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start) + size(),
                            __CONST_CAST(const_pointer, __x._M_finish)+0, this->_M_finish, _TrivialUCpy());
     }
     this->_M_finish = this->_M_start + __xlen;

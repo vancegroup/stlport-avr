@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -43,7 +43,7 @@ _STLP_BEGIN_NAMESPACE
 
 // provide a "default" hash_set adaptor
 __HS_TEMPLATE_HEADER
-class hash_set : public __HS_SUPER 
+class hash_set : public __HS_SUPER
 {
   typedef hash_set< __HS_ARGUMENTS > _Self;
 public:
@@ -77,11 +77,11 @@ public:
 
 # if defined (_STLP_BASE_MATCH_BUG)
 __HS_TEMPLATE_HEADER
-inline bool operator==(const hash_set< __HS_ARGUMENTS >& hs1, 
+inline bool operator==(const hash_set< __HS_ARGUMENTS >& hs1,
                        const hash_set< __HS_ARGUMENTS >& hs2)
 {
     typedef __HS_SUPER _Super;
-    return (const _Super&)hs1 == (const _Super&)hs2; 
+    return (const _Super&)hs1 == (const _Super&)hs2;
 }
 # endif
 
@@ -122,7 +122,7 @@ public:
 
 # if defined (_STLP_BASE_MATCH_BUG)
 __HS_TEMPLATE_HEADER
-inline bool operator==(const hash_multiset< __HS_ARGUMENTS >& __hs1, 
+inline bool operator==(const hash_multiset< __HS_ARGUMENTS >& __hs1,
                        const hash_multiset< __HS_ARGUMENTS >& __hs2)
 {
     typedef __HMS_SUPER  __s;

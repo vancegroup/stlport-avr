@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -59,15 +59,15 @@ typedef _BSD_WINT_T_ wint_t;
 struct __stl_mbstate_t;
 
 #  ifdef __cplusplus
-struct __stl_mbstate_t { 
+struct __stl_mbstate_t {
   __stl_mbstate_t( long __st = 0 ) { _M_state[0] = __st ; }
   __stl_mbstate_t& operator=(const long __st) {
-    _M_state[0] = __st;              
+    _M_state[0] = __st;
     return *this;
-  } 
-  __stl_mbstate_t(const __stl_mbstate_t& __x) {_M_state[0]= __x._M_state[0]; }         
+  }
+  __stl_mbstate_t(const __stl_mbstate_t& __x) {_M_state[0]= __x._M_state[0]; }
   __stl_mbstate_t& operator=(const __stl_mbstate_t& __x) {
-    _M_state[0]= __x._M_state[0];              
+    _M_state[0]= __x._M_state[0];
     return *this;
   }
 #    if defined (__sun)
@@ -76,10 +76,10 @@ struct __stl_mbstate_t {
 #      else
   int _M_state[6];
 #      endif
-#    else       
+#    else
   long _M_state[1];
 #    endif
-};          
+};
 
 inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y) {
   return ( __x._M_state[0] == __y._M_state[0] );
@@ -113,10 +113,10 @@ _STLP_END_NAMESPACE
 
 /*
  * # if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
- * _STLP_BEGIN_NAMESPACE  
+ * _STLP_BEGIN_NAMESPACE
  * using namespace _STLP_VENDOR_CSTD;
  * _STLP_END_NAMESPACE
- * #endif 
+ * #endif
  */ /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif /* _STLP_CWCHAR_H */

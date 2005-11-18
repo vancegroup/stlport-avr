@@ -31,18 +31,18 @@ void BcomposTest::bcompos1()
 {
   int array [6] = { -2, -1, 0, 1, 2, 3 };
 
-  binary_compose<logical_and<bool>, odd, positive> 
+  binary_compose<logical_and<bool>, odd, positive>
   b = binary_compose<logical_and<bool>, odd, positive>(logical_and<bool>(), odd(), positive());
 
   int* p = find_if((int*)array, (int*)array + 6, b);
   CPPUNIT_ASSERT(p != array + 6);
-  
+
 }
 void BcomposTest::bcompos2()
 {
   int array [6] = { -2, -1 , 0, 1, 2, 3 };
 
-  int* p = find_if((int*)array, (int*)array + 6, 
+  int* p = find_if((int*)array, (int*)array + 6,
   compose2(logical_and<bool>(), odd(), positive()));
   CPPUNIT_ASSERT(p != array + 6);
 }

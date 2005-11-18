@@ -2,13 +2,13 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -46,7 +46,7 @@ iterator_category(const  _DBG_iter_base< _STLP_NON_DBG_STRING_BASE >&) {
 }
 #endif
 
-template <class _CharT, class _Traits, class _Alloc> 
+template <class _CharT, class _Traits, class _Alloc>
 class basic_string : private _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING_BASE >
                    , public _STLP_NON_DBG_STRING_BASE
 #if !defined(basic_string) && defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -84,7 +84,7 @@ protected:
     }
   }
   void _Invalidate_iterator(const iterator& __it) {
-    __invalidate_iterator(&_M_iter_list, __it); 
+    __invalidate_iterator(&_M_iter_list, __it);
   }
   void _Invalidate_iterators(const iterator& __f, const iterator& __l) {
     __invalidate_range(&_M_iter_list, __f, __l);
@@ -131,7 +131,7 @@ public:
     _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {
   }
-  basic_string(const_iterator __f, const_iterator __l, 
+  basic_string(const_iterator __f, const_iterator __l,
                const allocator_type & __a = allocator_type()) :
     _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f._M_iterator, __l._M_iterator, __a), _M_iter_list(_Get_base()) {
@@ -141,13 +141,13 @@ public:
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL) :
-    _ConstructCheck(__f, __l), 
+    _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f, __l, __a), _M_iter_list(_Get_base()) {
   }
 #    if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l) :
-    _ConstructCheck(__f, __l), 
+    _ConstructCheck(__f, __l),
     _STLP_NON_DBG_STRING_BASE(__f, __l), _M_iter_list(_Get_base()) {
   }
 #    endif
@@ -196,13 +196,13 @@ public:                         // Iterators.
     _Base::_M_deallocate_block();
   }
 
-  reverse_iterator rbegin()             
+  reverse_iterator rbegin()
     { return reverse_iterator(iterator(&_M_iter_list,this->_M_Finish())); }
-  reverse_iterator rend()               
+  reverse_iterator rend()
     { return reverse_iterator(iterator(&_M_iter_list,this->_M_Start())); }
-  const_reverse_iterator rbegin() const 
+  const_reverse_iterator rbegin() const
     { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_Finish())); }
-  const_reverse_iterator rend()   const 
+  const_reverse_iterator rend()   const
     { return const_reverse_iterator(const_iterator(&_M_iter_list,this->_M_Start())); }
 
 public:                         // Size, capacity, etc.
@@ -224,17 +224,17 @@ public:                         // Size, capacity, etc.
   void clear() {
     _Invalidate_all();
     _Base::clear();
-  } 
+  }
 
 public:                         // Element access.
 
   const_reference operator[](size_type __n) const {
     _STLP_VERBOSE_ASSERT(__n < this->size(), _StlMsg_OUT_OF_BOUNDS)
-    return *(begin() + __n); 
+    return *(begin() + __n);
   }
   reference operator[](size_type __n) {
     _STLP_VERBOSE_ASSERT(__n < this->size(), _StlMsg_OUT_OF_BOUNDS)
-    return *(begin() + __n); 
+    return *(begin() + __n);
   }
 
   const_reference at(size_type __n) const {
@@ -255,7 +255,7 @@ public:                         // Append, operator+=, push_back.
   _Self& operator+=(const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return append(__s); 
+    return append(__s);
   }
   _Self& operator+=(_CharT __c) { push_back(__c); return *this; }
 
@@ -346,11 +346,11 @@ public:
     _Base::pop_back();
   }
 
-public:                         // Assign  
+public:                         // Assign
   _Self& assign(const _Self& __s) {
     _Invalidate_all();
-    _Base::assign(__s); 
-    return *this; 
+    _Base::assign(__s);
+    return *this;
   }
 
   _Self& assign(const _Self& __s, size_type __pos, size_type __n) {
@@ -376,7 +376,7 @@ public:                         // Assign
   _Self& assign(size_type __n, _CharT __c) {
     _Invalidate_all();
     _Base::assign(__n, __c);
-    return *this;    
+    return *this;
   }
 
 #if defined(_STLP_MEMBER_TEMPLATES)&& !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
@@ -385,7 +385,7 @@ public:                         // Assign
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _Base::assign(__first, __last);
-    return *this;    
+    return *this;
   }
 #endif
 
@@ -414,7 +414,7 @@ protected:
     _Base::_M_assign(__f, __l);
     return *this;
   }
-    
+
 public:                         // Insert
 
   _Self& insert(size_type __pos, const _Self& __s) {
@@ -446,7 +446,7 @@ public:                         // Insert
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
     return insert(__pos, __s, _Traits::length(__s));
   }
-    
+
   _Self& insert(size_type __pos, size_type __n, _CharT __c) {
     size_type __old_capacity = this->capacity();
     _Base::insert(__pos, __n, __c);
@@ -476,7 +476,7 @@ protected:
                       const __true_type& /*_IsIterator*/) {
     _Base::insert(__p._M_iterator, __first._M_iterator, __last._M_iterator);
   }
-  
+
   template<class _InputIter>
   void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
                       const __false_type& /*_IsIterator*/) {
@@ -505,7 +505,7 @@ public:
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__p))
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
     size_type __old_capacity = this->capacity();
-    _Base::insert(__p._M_iterator, __f._M_iterator, __l._M_iterator); 
+    _Base::insert(__p._M_iterator, __f._M_iterator, __l._M_iterator);
     _Compare_Capacity(__old_capacity);
   }
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
@@ -513,7 +513,7 @@ public:
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__p))
     _STLP_DEBUG_CHECK(__check_ptr_range(__f,__l))
     size_type __old_capacity = this->capacity();
-    _Base::insert(__p._M_iterator, __f, __l); 
+    _Base::insert(__p._M_iterator, __f, __l);
     _Compare_Capacity(__old_capacity);
   }
 #endif
@@ -535,7 +535,7 @@ public:                         // Erase.
   iterator erase(iterator __f, iterator __l) {
     _STLP_DEBUG_CHECK(__check_range(__f, __l, this->begin(), this->end()))
     _Invalidate_iterators(__f, end());
-    return iterator(&_M_iter_list, _Base::erase(__f._M_iterator, __l._M_iterator));   
+    return iterator(&_M_iter_list, _Base::erase(__f._M_iterator, __l._M_iterator));
   }
 
 public:                         // Substring.
@@ -560,7 +560,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-  _Self& replace(size_type __pos, size_type __n1, const _CharT* __s, size_type __n2) {    
+  _Self& replace(size_type __pos, size_type __n1, const _CharT* __s, size_type __n2) {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
     size_type __old_capacity = this->capacity();
@@ -593,7 +593,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-  _Self& replace(iterator __f, iterator __l, const _CharT* __s, size_type __n) { 
+  _Self& replace(iterator __f, iterator __l, const _CharT* __s, size_type __n) {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_DEBUG_CHECK(__check_range(__f, __l, this->begin(), this->end()))
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
@@ -628,12 +628,12 @@ private:
                       _RandomIter __f, _RandomIter __l, __true_type const& /*_IsIterator*/) {
     _Base::replace(__first._M_iterator, __last._M_iterator, __f._M_iterator, __l._M_iterator);
   }
-  
+
   template <class _InputIter>
   void _M_replace_aux(iterator __first, iterator __last,
                       _InputIter __f, _InputIter __l, __false_type const& /*_IsIterator*/) {
     _Base::replace(__first._M_iterator, __last._M_iterator, __f, __l);
-  }  
+  }
 
 public:
   template <class _InputIter>
@@ -652,7 +652,7 @@ public:
     return *this;
   }
 #endif
- 
+
 #if !defined (_STLP_MEMBER_TEMPLATES) || \
     !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
   _Self& replace(iterator __first, iterator __last,
@@ -660,8 +660,8 @@ public:
     _STLP_DEBUG_CHECK(__check_range(__first, __last, this->begin(), this->end()))
     _STLP_DEBUG_CHECK(__check_range(__f, __l))
     size_type __old_capacity = this->capacity();
-    _Base::replace(__first._M_iterator, __last._M_iterator, 
-           	       __f._M_iterator, __l._M_iterator);
+    _Base::replace(__first._M_iterator, __last._M_iterator,
+                    __f._M_iterator, __l._M_iterator);
     _Compare_Capacity(__old_capacity);
     return *this;
   }
@@ -685,7 +685,7 @@ public:                         // Other modifier member functions.
   }
 
 public:                        // Helper functions for compare.
-  
+
   static int _STLP_CALL _M_compare(const _CharT* __f1, const _CharT* __l1,
                                    const _CharT* __f2, const _CharT* __l2) {
     return _Base::_M_compare(__f1, __l1, __f2, __l2);
@@ -700,63 +700,63 @@ public:                        // Helper functions for compare.
   }
   static int _STLP_CALL _M_compare(const_iterator __f1, const_iterator __l1,
                                    const_iterator __f2, const_iterator __l2) {
-    return _Base::_M_compare(__f1._M_iterator, __l1._M_iterator, 
+    return _Base::_M_compare(__f1._M_iterator, __l1._M_iterator,
                              __f2._M_iterator, __l2._M_iterator);
   }
 
   /*
    * Some of the following methods do not really have to be implemented here
    * (those without any debug support) as they already are in the base class
-   * but some compilers have link trouble if they are missing so they are 
+   * but some compilers have link trouble if they are missing so they are
    * overloaded here.
    */
 public:                         // find.
-  size_type find(const _Self& __s, size_type __pos = 0) const 
+  size_type find(const _Self& __s, size_type __pos = 0) const
   { return _Base::find(__s, __pos); }
   size_type find(const _CharT* __s, size_type __pos = 0) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find(__s, __pos); 
+    return _Base::find(__s, __pos);
   }
   size_type find(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find(__s, __pos, __n); 
+    return _Base::find(__s, __pos, __n);
   }
   // WIE: Versant schema compiler 5.2.2 ICE workaround
   size_type find(_CharT __c) const { return find(__c, 0); }
-  size_type find(_CharT __c, size_type __pos /* = 0 */) const 
+  size_type find(_CharT __c, size_type __pos /* = 0 */) const
   { return _Base::find(__c, __pos); }
 
 public:                         // rfind.
-  size_type rfind(const _Self& __s, size_type __pos = _Base::npos) const 
+  size_type rfind(const _Self& __s, size_type __pos = _Base::npos) const
   { return _Base::rfind(__s, __pos); }
   size_type rfind(const _CharT* __s, size_type __pos = _Base::npos) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::rfind(__s, __pos); 
+    return _Base::rfind(__s, __pos);
   }
   size_type rfind(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::rfind(__s, __pos, __n); 
+    return _Base::rfind(__s, __pos, __n);
   }
   size_type rfind(_CharT __c, size_type __pos = _Base::npos) const
   { return _Base::rfind(__c, __pos); }
 
 public:                         // find_first_of
-  
-  size_type find_first_of(const _Self& __s, size_type __pos = 0) const 
+
+  size_type find_first_of(const _Self& __s, size_type __pos = 0) const
   { return _Base::find_first_of(__s, __pos); }
   size_type find_first_of(const _CharT* __s, size_type __pos = 0) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find_first_of(__s, __pos); 
+    return _Base::find_first_of(__s, __pos);
   }
   size_type find_first_of(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find_first_of(__s, __pos, __n); 
+    return _Base::find_first_of(__s, __pos, __n);
   }
   size_type find_first_of(_CharT __c, size_type __pos = 0) const
   { return _Base::find_first_of(__c, __pos); }
@@ -768,7 +768,7 @@ public:                         // find_last_of
   size_type find_last_of(const _CharT* __s, size_type __pos = _Base::npos) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find_last_of(__s, __pos); 
+    return _Base::find_last_of(__s, __pos);
   }
   size_type find_last_of(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)
@@ -781,19 +781,19 @@ public:                         // find_last_of
 
 public:                         // find_first_not_of
 
-  size_type find_first_not_of(const _Self& __s, size_type __pos = 0) const 
+  size_type find_first_not_of(const _Self& __s, size_type __pos = 0) const
   { return _Base::find_first_not_of(__s, __pos); }
   size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find_first_not_of(__s, __pos); 
+    return _Base::find_first_not_of(__s, __pos);
   }
   size_type find_first_not_of(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
     return _Base::find_first_not_of(__s, __pos, __n);
   }
-  size_type find_first_not_of(_CharT __c, size_type __pos = 0) const 
+  size_type find_first_not_of(_CharT __c, size_type __pos = 0) const
   { return _Base::find_first_not_of(__c, __pos); }
 
 public:                         // find_last_not_of
@@ -803,7 +803,7 @@ public:                         // find_last_not_of
   size_type find_last_not_of(const _CharT* __s, size_type __pos = _Base::npos) const {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    return _Base::find_last_not_of(__s, __pos); 
+    return _Base::find_last_not_of(__s, __pos);
   }
   size_type find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const {
     _STLP_FIX_LITERAL_BUG(__s)

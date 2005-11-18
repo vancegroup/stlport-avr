@@ -2,13 +2,13 @@
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -57,8 +57,8 @@ _Rope_iterator<_CharT, _Alloc>::_Rope_iterator(rope<_CharT,_Alloc>* __r, size_t 
   _M_root_rope(__r) { _RopeRep::_S_ref(this->_M_root); }
 
 template<class _CharT, class _Alloc>
-_Rope_iterator<_CharT, _Alloc>::_Rope_iterator(rope<_CharT,_Alloc>& __r, size_t __pos): 
-  _Rope_iterator_base<_CharT,_Alloc>(__r._M_tree_ptr._M_data, __pos), 
+_Rope_iterator<_CharT, _Alloc>::_Rope_iterator(rope<_CharT,_Alloc>& __r, size_t __pos):
+  _Rope_iterator_base<_CharT,_Alloc>(__r._M_tree_ptr._M_data, __pos),
   _M_root_rope(&__r) {
   _RopeRep::_S_ref(this->_M_root); if (!(__r.empty()))_S_setcache(*this);
 }
@@ -78,7 +78,7 @@ void _Rope_RopeRep<_CharT, _Alloc>::_M_free_c_string() {
 // Results in a valid buf_ptr if the iterator can be legitimately
 // dereferenced.
 template <class _CharT, class _Alloc>
-void _Rope_iterator_base<_CharT,_Alloc>::_S_setbuf( 
+void _Rope_iterator_base<_CharT,_Alloc>::_S_setbuf(
   _Rope_iterator_base<_CharT,_Alloc>& __x) {
   const _RopeRep* __leaf = __x._M_path_end._M_data[__x._M_leaf_index];
   size_t __leaf_pos = __x._M_leaf_pos;
@@ -86,7 +86,7 @@ void _Rope_iterator_base<_CharT,_Alloc>::_S_setbuf(
 
   switch(__leaf->_M_tag) {
   case _RopeRep::_S_leaf:
-    __x._M_buf_start = 
+    __x._M_buf_start =
       ((_Rope_RopeLeaf<_CharT,_Alloc>*)__leaf)->_M_data;
     __x._M_buf_ptr = __x._M_buf_start + (__pos - __leaf_pos);
     __x._M_buf_end = __x._M_buf_start + __leaf->_M_size._M_data;
@@ -121,7 +121,7 @@ void _Rope_iterator_base<_CharT,_Alloc>::_S_setbuf(
   }
 }
 
-// Set path and buffer inside a rope iterator.  We assume that 
+// Set path and buffer inside a rope iterator.  We assume that
 // pos and root are already set.
 template <class _CharT, class _Alloc>
 void _Rope_iterator_base<_CharT,_Alloc>::_S_setcache(
@@ -164,7 +164,7 @@ void _Rope_iterator_base<_CharT,_Alloc>::_S_setcache(
         const _RopeConcat* __c = __STATIC_CAST(const _RopeConcat*, __curr_rope);
         _RopeRep* __left = __c->_M_left;
         size_t __left_len = __left->_M_size._M_data;
-    
+
         __dirns <<= 1;
         if (__pos >= __curr_start_pos + __left_len) {
           __dirns |= 1;
@@ -214,7 +214,7 @@ _Rope_iterator_base<_CharT,_Alloc>& __x) {
   _STLP_ASSERT(__node_start_pos + __len == __x._M_current_pos)
     //  node_start_pos is starting position of last_node.
   while (--__current_index >= 0) {
-    if (!(__dirns & 1) /* Path turned left */) 
+    if (!(__dirns & 1) /* Path turned left */)
       break;
     __current_node = __x._M_path_end._M_data[__current_index];
     __c = __STATIC_CAST(const _RopeConcat*, __current_node);
@@ -311,7 +311,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
       typedef _Rope_RopeLeaf<_CharT,_Alloc> _RopeLeaf;
       _RopeLeaf* __l = __STATIC_CAST(_RopeLeaf*, this);
       _STLP_STD::_Destroy(__l); // ->_Rope_RopeLeaf<_CharT,_Alloc>::~_Rope_RopeLeaf();
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
+      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeLeaf).deallocate(__l, 1);
       break;
     }
@@ -320,7 +320,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
       typedef _Rope_RopeConcatenation<_CharT,_Alloc> _RopeConcatenation;
       _RopeConcatenation* __c  = __STATIC_CAST(_RopeConcatenation*, this);
       _STLP_STD::_Destroy(__c);
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
+      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeConcatenation).deallocate(__c, 1);
       break;
     }
@@ -329,7 +329,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
       typedef _Rope_RopeFunction<_CharT,_Alloc> _RopeFunction;
       _RopeFunction* __f = __STATIC_CAST(_RopeFunction*, this);
       _STLP_STD::_Destroy(__f);
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
+      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeFunction).deallocate(__f, 1);
       break;
     }
@@ -338,7 +338,7 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
       typedef _Rope_RopeSubstring<_CharT,_Alloc> _RopeSubstring;
       _RopeSubstring* __ss = (_RopeSubstring*)this;
       _STLP_STD::_Destroy(__ss);
-      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size, 
+      _STLP_CREATE_ALLOCATOR(allocator_type,(const allocator_type&)_M_size,
                              _RopeSubstring).deallocate(__ss, 1);
       break;
     }
@@ -370,7 +370,7 @@ rope<_CharT,_Alloc>::_S_leaf_concat_char_iter (
   size_t __old_len = __r->_M_size._M_data;
   _CharT* __new_data = __r->_M_size.allocate(_S_rounded_up_size(__old_len + __len));
   _RopeLeaf* __result;
-    
+
   uninitialized_copy_n(__r->_M_data, __old_len, __new_data);
   uninitialized_copy_n(__iter, __len, __new_data + __old_len);
   _S_construct_null(__new_data + __old_len + __len);
@@ -383,14 +383,14 @@ rope<_CharT,_Alloc>::_S_leaf_concat_char_iter (
 }
 
 template <class _CharT, class _Alloc>
-void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r, 
+void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
                          size_t __size, const __true_type& /*basic char type*/) {
   _S_construct_null(__r->_M_data + __size);
   _STLP_ASSERT(__r->_M_c_string == __r->_M_data)
 }
 
 template <class _CharT, class _Alloc>
-void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r, 
+void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
                          size_t, const __false_type& /*basic char type*/) {
   if (__r->_M_c_string != __r->_M_data && 0 != __r->_M_c_string) {
     __r->_M_free_c_string();
@@ -435,15 +435,15 @@ rope<_CharT,_Alloc>::_S_tree_concat (_RopeRep* __left, _RopeRep* __right) {
   _RopeConcatenation* __result =
     _S_new_RopeConcatenation(__left, __right, __left->get_allocator());
   size_t __depth = __result->_M_depth;
-    
+
   _STLP_ASSERT(__left->get_allocator() == __right->get_allocator())
   if (__depth > 20 && (__result->_M_size._M_data < 1000 ||
       __depth > _RopeRep::_S_max_rope_depth)) {
     _RopeRep* __balanced;
-      
+
     _STLP_TRY {
       __balanced = _S_balance(__result);
-     // _STLP_ASSERT(__result == __balanced || 
+     // _STLP_ASSERT(__result == __balanced ||
      //              1 == __result->_M_ref_count &&
      //              1 == __balanced->_M_ref_count)
       __result->_M_unref_nonnil();
@@ -462,7 +462,7 @@ rope<_CharT,_Alloc>::_S_tree_concat (_RopeRep* __left, _RopeRep* __right) {
 
 template <class _CharT, class _Alloc>
 __RopeRep__*
-rope<_CharT,_Alloc>::_S_concat_char_iter (_RopeRep* __r, 
+rope<_CharT,_Alloc>::_S_concat_char_iter (_RopeRep* __r,
                                           const _CharT*__s, size_t __slen) {
   _RopeRep* __result;
   if (0 == __slen) {
@@ -471,13 +471,13 @@ rope<_CharT,_Alloc>::_S_concat_char_iter (_RopeRep* __r,
   }
   if (0 == __r)
     return _S_RopeLeaf_from_unowned_char_ptr(__s, __slen, __r->get_allocator());
-  if (_RopeRep::_S_leaf == __r->_M_tag && 
+  if (_RopeRep::_S_leaf == __r->_M_tag &&
       __r->_M_size._M_data + __slen <= _S_copy_max) {
     __result = _S_leaf_concat_char_iter((_RopeLeaf*)__r, __s, __slen);
     // _STLP_ASSERT(1 == __result->_M_ref_count)
     return __result;
   }
-  if (_RopeRep::_S_concat == __r->_M_tag && 
+  if (_RopeRep::_S_concat == __r->_M_tag &&
       _RopeRep::_S_leaf == ((_RopeConcatenation*)__r)->_M_right->_M_tag) {
     _RopeLeaf* __right = (_RopeLeaf* )(((_RopeConcatenation* )__r)->_M_right);
     if (__right->_M_size._M_data + __slen <= _S_copy_max) {
@@ -504,7 +504,7 @@ rope<_CharT,_Alloc>::_S_concat_char_iter (_RopeRep* __r,
 }
 
 template <class _CharT, class _Alloc>
-__RopeRep__* 
+__RopeRep__*
 rope<_CharT,_Alloc>::_S_destr_concat_char_iter(
   _RopeRep* __r, const _CharT* __s, size_t __slen) {
   _RopeRep* __result;
@@ -582,10 +582,10 @@ rope<_CharT,_Alloc>::_S_concat_rep(_RopeRep* __left, _RopeRep* __right) {
                                         __STATIC_CAST(_RopeLeaf*, __right)->_M_data,
                                         __right->_M_size._M_data);
       }
-    } else if (_RopeRep::_S_concat == __left->_M_tag && 
+    } else if (_RopeRep::_S_concat == __left->_M_tag &&
                _RopeRep::_S_leaf == __STATIC_CAST(_RopeConcatenation*, __left)->_M_right->_M_tag) {
       _RopeLeaf* __leftright =
-        __STATIC_CAST(_RopeLeaf*, __STATIC_CAST(_RopeConcatenation*, __left)->_M_right); 
+        __STATIC_CAST(_RopeLeaf*, __STATIC_CAST(_RopeConcatenation*, __left)->_M_right);
       if (__leftright->_M_size._M_data + __right->_M_size._M_data <= _S_copy_max) {
         _RopeRep* __leftleft = __STATIC_CAST(_RopeConcatenation*, __left)->_M_left;
         _RopeRep* __rest = _S_leaf_concat_char_iter(__leftright,
@@ -610,13 +610,13 @@ rope<_CharT,_Alloc>::_S_concat_rep(_RopeRep* __left, _RopeRep* __right) {
 
 template <class _CharT, class _Alloc>
 __RopeRep__*
-rope<_CharT,_Alloc>::_S_substring(_RopeRep* __base, 
+rope<_CharT,_Alloc>::_S_substring(_RopeRep* __base,
                                   size_t __start, size_t __endp1) {
   if (0 == __base) return 0;
   size_t __len = __base->_M_size._M_data;
   size_t __adj_endp1;
   const size_t __lazy_threshold = 128;
-    
+
   if (__endp1 >= __len) {
     if (0 == __start) {
       __base->_M_ref_nonnil();
@@ -648,7 +648,7 @@ rope<_CharT,_Alloc>::_S_substring(_RopeRep* __base,
     __result = _S_concat_rep(__left_result, __right_result);
     // _STLP_ASSERT(1 == __result->_M_ref_count)
     return __result;
-    _STLP_MPWFIX_CATCH    //*TY 06/01/2000 - 
+    _STLP_MPWFIX_CATCH    //*TY 06/01/2000 -
   }
   case _RopeRep::_S_leaf:
   {
@@ -690,7 +690,7 @@ rope<_CharT,_Alloc>::_S_substring(_RopeRep* __base,
     _STLP_TRY {
       (*(__f->_M_fn))(__start, __result_len, __section);
     }
-    _STLP_UNWIND(_RopeRep::_S_free_string(__section, 
+    _STLP_UNWIND(_RopeRep::_S_free_string(__section,
                                           __result_len, __base->get_allocator()))
     _S_construct_null(__section + __result_len);
     return _S_new_RopeLeaf(__section, __result_len,
@@ -722,14 +722,14 @@ public:
     return true;
   }
 };
-      
+
 template<class _CharT>
 class _Rope_find_char_char_consumer : public _Rope_char_consumer<_CharT> {
 private:
   _CharT _M_pattern;
 public:
   size_t _M_count;  // Number of nonmatching characters
-  _Rope_find_char_char_consumer(_CharT __p) 
+  _Rope_find_char_char_consumer(_CharT __p)
     : _M_pattern(__p), _M_count(0) {}
   ~_Rope_find_char_char_consumer() {}
   bool operator() (const _CharT* __leaf, size_t __n) {
@@ -743,7 +743,7 @@ public:
   }
 };
 
-#if !defined (_STLP_USE_NO_IOSTREAMS)      
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 template<class _CharT, class _Traits>
 // Here _CharT is both the stream and rope character type.
 class _Rope_insert_char_consumer : public _Rope_char_consumer<_CharT> {
@@ -755,10 +755,10 @@ private:
   //explicitely defined as private to avoid warnings:
   _Self& operator = (_Self const&);
 public:
-  _Rope_insert_char_consumer(_Insert_ostream& __writer) 
+  _Rope_insert_char_consumer(_Insert_ostream& __writer)
     : _M_o(__writer) {};
 #  if defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))  //*TY 05/23/2000 - added support for mpw compiler's trigger function approach to generate vtable
-  ~_Rope_insert_char_consumer();    //*TY 05/23/2000 - 
+  ~_Rope_insert_char_consumer();    //*TY 05/23/2000 -
 #  else    //*TY 05/23/2000 -
   ~_Rope_insert_char_consumer() {}
 #  endif    //*TY 05/23/2000 -
@@ -766,11 +766,11 @@ public:
   bool operator() (const _CharT* __leaf, size_t __n);
   // Returns true to continue traversal.
 };
-      
+
 #  if defined (__MRC__) || (defined (__SC__) && !defined (__DMC__))    //*TY 05/23/2000 - added support for mpw compiler's trigger function approach to generate vtable
 template<class _CharT, class _Traits>
 _Rope_insert_char_consumer<_CharT, _Traits>::  ~_Rope_insert_char_consumer() {}
-#  endif    //*TY 05/23/2000 - 
+#  endif    //*TY 05/23/2000 -
 
 template<class _CharT, class _Traits>
 bool _Rope_insert_char_consumer<_CharT, _Traits>::operator()
@@ -790,7 +790,7 @@ bool _S_apply_to_pieces(_CharConsumer __c,
   typedef _Rope_RopeConcatenation<_CharT,_Alloc> _RopeConcatenation;
   typedef _Rope_RopeLeaf<_CharT,_Alloc> _RopeLeaf;
   typedef _Rope_RopeFunction<_CharT,_Alloc> _RopeFunction;
-  
+
   if (0 == __r) return true;
   switch(__r->_M_tag) {
   case _RopeRep::_S_concat:
@@ -858,7 +858,7 @@ basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
   const bool __left = (__o.flags() & ios::left) != 0;
   size_t __rope_len = __r.size();
   _Rope_insert_char_consumer<_CharT, _Traits> __c(__o);
-    
+
   const bool __need_pad = (((sizeof(streamsize) > sizeof(size_t)) && (__STATIC_CAST(streamsize, __rope_len) < __w)) ||
                            ((sizeof(streamsize) <= sizeof(size_t)) && (__rope_len < __STATIC_CAST(size_t, __w))));
   streamsize __pad_len = __need_pad ? __w - __rope_len : 0;
@@ -995,7 +995,7 @@ void rope<_CharT,_Alloc>::_S_dump(_RopeRep* __r, int __indent) {
       bool __too_big = __r->_M_size._M_data > __prefix->_M_size._M_data;
 
       _S_flatten(__prefix, __buffer);
-      __buffer[__prefix->_M_size._M_data] = _STLP_DEFAULT_CONSTRUCTED(_CharT); 
+      __buffer[__prefix->_M_size._M_data] = _STLP_DEFAULT_CONSTRUCTED(_CharT);
       printf("%s%s\n", (char*)__buffer, __too_big? "...\n" : "\n");
     } else {
       printf("\n");
@@ -1021,12 +1021,12 @@ void rope<_CharT,_Alloc>::_S_dump(_RopeRep* __r, int __indent) {
 template <class _CharT, class _Alloc>
 const unsigned long
 rope<_CharT,_Alloc>::_S_min_len[__ROPE_DEPTH_SIZE] __ROPE_TABLE_BODY;
-# else 
-__DECLARE_INSTANCE(const unsigned long, 
+# else
+__DECLARE_INSTANCE(const unsigned long,
                    crope::_S_min_len[__ROPE_DEPTH_SIZE],
                    __ROPE_TABLE_BODY);
 #  ifndef _STLP_NO_WCHAR_T
-__DECLARE_INSTANCE(const unsigned long, 
+__DECLARE_INSTANCE(const unsigned long,
                    wrope::_S_min_len[__ROPE_DEPTH_SIZE],
                    __ROPE_TABLE_BODY);
 #  endif
@@ -1052,7 +1052,7 @@ __RopeRep__* rope<_CharT,_Alloc>::_S_balance(_RopeRep* __r) {
 
   _STLP_TRY {
     _S_add_to_forest(__r, __forest);
-    for (__i = 0; __i <= _RopeRep::_S_max_rope_depth; ++__i) 
+    for (__i = 0; __i <= _RopeRep::_S_max_rope_depth; ++__i)
       if (0 != __forest[__i]) {
         _Self_destruct_ptr __old(__result);
         __result = _S_concat_rep(__forest[__i], __result);
@@ -1124,7 +1124,7 @@ rope<_CharT,_Alloc>::_S_add_leaf_to_forest(_RopeRep* __r, _RopeRep** __forest)
   }
   _STLP_ASSERT(_S_min_len[__i] <= __insertee->_M_size._M_data)
   _STLP_ASSERT(__forest[__i] == 0)
-  if (__i == _RopeRep::_S_max_rope_depth || 
+  if (__i == _RopeRep::_S_max_rope_depth ||
         __insertee->_M_size._M_data < _S_min_len[__i+1]) {
       __forest[__i] = __insertee;
       // refcount is OK since __insertee is now dead.
@@ -1140,7 +1140,7 @@ rope<_CharT,_Alloc>::_S_fetch(_RopeRep* __r, size_type __i)
     _CharT* __cstr = __r->_M_c_string;
 
     _STLP_ASSERT(__i < __r->_M_size._M_data)
-    if (0 != __cstr) return __cstr[__i]; 
+    if (0 != __cstr) return __cstr[__i];
     for(;;) {
       switch(__r->_M_tag) {
   case _RopeRep::_S_concat:
@@ -1239,7 +1239,7 @@ rope<_CharT,_Alloc>::_S_fetch_ptr(_RopeRep* __r, size_type __i)
 // flat strings.
 template <class _CharT, class _Alloc>
 int
-rope<_CharT,_Alloc>::_S_compare (const _RopeRep* __left, 
+rope<_CharT,_Alloc>::_S_compare (const _RopeRep* __left,
                                  const _RopeRep* __right)
 {
     size_t __left_len;
@@ -1389,11 +1389,11 @@ _Rope_rotate(_Rope_iterator<_CharT,_Alloc> __first,
                  && __middle.container() == __last.container())
     rope<_CharT,_Alloc>& __r(__first.container());
     rope<_CharT,_Alloc> __prefix = __r.substr(0, __first.index());
-    rope<_CharT,_Alloc> __suffix = 
+    rope<_CharT,_Alloc> __suffix =
       __r.substr(__last.index(), __r.size() - __last.index());
-    rope<_CharT,_Alloc> __part1 = 
+    rope<_CharT,_Alloc> __part1 =
       __r.substr(__middle.index(), __last.index() - __middle.index());
-    rope<_CharT,_Alloc> __part2 = 
+    rope<_CharT,_Alloc> __part2 =
       __r.substr(__first.index(), __middle.index() - __first.index());
     __r = __prefix;
     __r += __part1;
@@ -1419,10 +1419,10 @@ inline void rotate(
 # endif
 #endif /* _STLP_MSVC */
 
-#   undef __RopeLeaf__ 
-#   undef __RopeRep__ 
-#   undef __RopeLeaf 
-#   undef __RopeRep 
+#   undef __RopeLeaf__
+#   undef __RopeRep__
+#   undef __RopeLeaf
+#   undef __RopeRep
 #   undef size_type
 
 _STLP_END_NAMESPACE

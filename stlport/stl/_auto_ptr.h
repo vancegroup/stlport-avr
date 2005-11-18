@@ -2,13 +2,13 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -49,37 +49,37 @@ class auto_ptr :  public __ptr_base {
 public:
   typedef _Tp element_type;
   typedef auto_ptr<_Tp>           _Self;
-  
-  _Tp* release() {  
-    _Tp* __px = this->get(); 
-    this->_M_p = 0; 
-    return __px; 
+
+  _Tp* release() {
+    _Tp* __px = this->get();
+    this->_M_p = 0;
+    return __px;
   }
-  
+
   void reset(_Tp* __px=0) {
     _Tp* __pt = this->get();
-    if (__px != __pt) 
-      delete __pt; 
-    this->__set(__px); 
+    if (__px != __pt)
+      delete __pt;
+    this->__set(__px);
   }
 
-  _Tp* get() const { return __REINTERPRET_CAST(_Tp*,__CONST_CAST(void*,_M_p)); } 
+  _Tp* get() const { return __REINTERPRET_CAST(_Tp*,__CONST_CAST(void*,_M_p)); }
 
 # if !defined (_STLP_NO_ARROW_OPERATOR)
-  _Tp* operator->() const { 
+  _Tp* operator->() const {
     _STLP_VERBOSE_ASSERT(get()!=0, _StlMsg_AUTO_PTR_NULL)
-    return get(); 
+    return get();
   }
 # endif
-  _Tp& operator*() const  { 
+  _Tp& operator*() const  {
     _STLP_VERBOSE_ASSERT(get()!=0, _StlMsg_AUTO_PTR_NULL)
-    return *get(); 
+    return *get();
   }
-  
+
   auto_ptr() { this->_M_p = 0; }
-  
+
   explicit auto_ptr(_Tp* __px) { this->__set(__px); }
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
 # if !defined (_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> auto_ptr(auto_ptr<_Tp1>& __r) {
@@ -93,7 +93,7 @@ public:
     return *this;
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
-  
+
   auto_ptr(_Self& __r) { this->__set(__r.release()); }
 
   _Self& operator=(_Self& __r)  {
@@ -111,7 +111,7 @@ public:
     reset(__r.release());
     return *this;
   }
-  
+
 # if defined(_STLP_MEMBER_TEMPLATES) && !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> operator auto_ptr_ref<_Tp1>() {
     return auto_ptr_ref<_Tp1>(*this, this->get());

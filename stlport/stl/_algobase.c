@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -129,12 +129,12 @@ _STLP_INLINE_LOOP _RandomAccessIter __find(_RandomAccessIter __first, _RandomAcc
 }
 
 #if !defined (__BORLANDC__)
-inline char* 
+inline char*
 __find(char* __first, char* __last, char __val, const random_access_iterator_tag &) {
   void *res =  memchr(__first, __val, __last - __first);
   return res != 0 ? __STATIC_CAST(char*,res) : __last;
 }
-inline const char* 
+inline const char*
 __find(const char* __first, const char* __last, char __val, const random_access_iterator_tag &) {
   const void *res =  memchr(__first, __val, __last - __first);
   return res != 0 ? __STATIC_CAST(const char*,res) : __last;
@@ -224,9 +224,9 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
   if (__tmp == __last2) {
     while (__first1 != __last1 && !__predicate(*__first1, *__first2))
       ++__first1;
-    return __first1;    
+    return __first1;
   }
-  
+
   // General case.
 
   _ForwardIter2 __p1, __p;
@@ -247,7 +247,7 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
       return __last1;
 
     __p = __p1;
-    _ForwardIter1 __current = __first1; 
+    _ForwardIter1 __current = __first1;
     if (++__current == __last1) return __last1;
 
     while (__predicate(*__current, *__p)) {
@@ -284,7 +284,7 @@ _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
 // the *last* possible match.  Note that find_end for bidirectional iterators
 // is much faster than for forward iterators.
 
-// find_end for forward iterators. 
+// find_end for forward iterators.
 
 template <class _ForwardIter1, class _ForwardIter2,
   class _BinaryPredicate>
@@ -317,7 +317,7 @@ _ForwardIter1 __find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 _STLP_END_NAMESPACE
 # include <stl/_iterator.h>
-_STLP_BEGIN_NAMESPACE 
+_STLP_BEGIN_NAMESPACE
 
 #endif /*_STLP_INTERNAL_ITERATOR_H*/
 
@@ -326,7 +326,7 @@ template <class _BidirectionalIter1, class _BidirectionalIter2,
 _BidirectionalIter1
 __find_end(_BidirectionalIter1 __first1, _BidirectionalIter1 __last1,
            _BidirectionalIter2 __first2, _BidirectionalIter2 __last2,
-           const bidirectional_iterator_tag &, const bidirectional_iterator_tag &, 
+           const bidirectional_iterator_tag &, const bidirectional_iterator_tag &,
            _BinaryPredicate __comp) {
   typedef reverse_iterator<_BidirectionalIter1> _RevIter1;
   typedef reverse_iterator<_BidirectionalIter2> _RevIter2;
@@ -347,10 +347,10 @@ __find_end(_BidirectionalIter1 __first1, _BidirectionalIter1 __last1,
 }
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-template <class _ForwardIter1, class _ForwardIter2, 
+template <class _ForwardIter1, class _ForwardIter2,
   class _BinaryPredicate>
-_ForwardIter1 
-find_end(_ForwardIter1 __first1, _ForwardIter1 __last1, 
+_ForwardIter1
+find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
          _ForwardIter2 __first2, _ForwardIter2 __last2,
          _BinaryPredicate __comp) {
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))

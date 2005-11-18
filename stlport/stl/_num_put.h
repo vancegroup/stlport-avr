@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
 // file directly.
@@ -45,9 +45,9 @@ _STLP_BEGIN_NAMESPACE
 // num_put facet
 
 # ifdef _STLP_LIMITED_DEFAULT_TEMPLATES
-template <class _CharT, class _OutputIter>  
+template <class _CharT, class _OutputIter>
 # else
-template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_traits<_CharT> > >  
+template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_traits<_CharT> > >
 # endif
 class num_put: public locale::facet
 {
@@ -106,7 +106,7 @@ public:
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
-  ~num_put() {}   
+  ~num_put() {}
 # ifndef _STLP_NO_BOOL
   virtual _OutputIter do_put(_OutputIter __s, ios_base& __f, _CharT __fill, bool __val) const;
 # endif
@@ -119,7 +119,7 @@ protected:
 
 # ifdef _STLP_LONG_LONG
   virtual _OutputIter do_put(_OutputIter __s, ios_base& __f, _CharT __fill, _STLP_LONG_LONG __val) const;
-  virtual _OutputIter do_put(_OutputIter __s, ios_base& __f, _CharT __fill, 
+  virtual _OutputIter do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
                            unsigned _STLP_LONG_LONG __val) const ;
 # endif /* _STLP_LONG_LONG  */
   virtual _OutputIter do_put(_OutputIter __s, ios_base& __f, _CharT __fill, const void* __val) const;
@@ -179,17 +179,17 @@ extern void _STLP_CALL __insert_grouping(__iowstring&, size_t, const string&, wc
 
 # if defined (__BORLANDC__) && defined (_RTLDLL)
 inline void _Stl_loc_init_num_put() {
-  
+
   num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index = 14;
   num_put<char, char*>::id._M_index = 15;
-  
+
 #  ifndef _STLP_NO_WCHAR_T
   num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id._M_index = 33;
   num_put<wchar_t, wchar_t*>::id._M_index = 34;
 #  endif
-  
+
 }
- 
+
 # endif /* __BORLANDC__ && _RTLDLL */
 
 _STLP_END_NAMESPACE

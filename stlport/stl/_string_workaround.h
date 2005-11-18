@@ -5,7 +5,7 @@
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -51,15 +51,15 @@ public:                         // Constructor, destructor, assignment.
                const allocator_type& __a = allocator_type())
     : _STLP_NO_MEM_T_STRING_BASE(__r, __n, __a) {}
 
-  basic_string(const _Self& __s) 
+  basic_string(const _Self& __s)
     : _STLP_NO_MEM_T_STRING_BASE(__s) {}
 
   basic_string(const _Self& __s, size_type __pos, size_type __n = _NonDbgBase::npos,
-               const allocator_type& __a = allocator_type()) 
+               const allocator_type& __a = allocator_type())
     : _STLP_NO_MEM_T_STRING_BASE(__s, __pos, __n, __a) {}
 
   basic_string(const _CharT* __s, size_type __n,
-               const allocator_type& __a = allocator_type()) 
+               const allocator_type& __a = allocator_type())
     : _STLP_NO_MEM_T_STRING_BASE(__s, __n, __a) {}
 
   basic_string(const _CharT* __s,
@@ -72,11 +72,11 @@ public:                         // Constructor, destructor, assignment.
 
   basic_string(__move_source<_Self> src)
     : _STLP_NO_MEM_T_STRING_BASE(__move_source<_Base>(src.get())) {}
-  
+
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
 #if !(defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))) //*ty 04/30/2001 - mpw compilers choke on this ctor
-  template <class _InputIterator> 
+  template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), __a) {
@@ -84,7 +84,7 @@ public:                         // Constructor, destructor, assignment.
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
-  template <class _InputIterator> 
+  template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), allocator_type()) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
@@ -108,8 +108,8 @@ public:                         // Constructor, destructor, assignment.
     return *this;
   }
 
-private:          
-  template <class _InputIter> 
+private:
+  template <class _InputIter>
   void _M_range_initialize(_InputIter __f, _InputIter __l,
                            const input_iterator_tag &__tag) {
     this->_M_allocate_block();
@@ -120,8 +120,8 @@ private:
     _STLP_UNWIND(this->_M_destroy_range())
   }
 
-  template <class _ForwardIter> 
-  void _M_range_initialize(_ForwardIter __f, _ForwardIter __l, 
+  template <class _ForwardIter>
+  void _M_range_initialize(_ForwardIter __f, _ForwardIter __l,
                            const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
@@ -136,12 +136,12 @@ private:
     this->_M_terminate_string();
   }
 
-  template <class _InputIter> 
+  template <class _InputIter>
   void _M_range_initializeT(_InputIter __f, _InputIter __l) {
     _M_range_initialize(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
 
-  template <class _Integer> 
+  template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
     this->_M_allocate_block(__n + 1);
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
@@ -155,11 +155,11 @@ private:
     this->_M_terminate_string();
   }
 
-  template <class _InputIter> 
+  template <class _InputIter>
   void _M_initialize_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/) {
     _M_range_initializeT(__f, __l);
   }
-    
+
 public:                         // Append, operator+=, push_back.
   _Self& operator+=(const _Self& __s) {
     _NonDbgBase::operator+=(__s);
@@ -168,11 +168,11 @@ public:                         // Append, operator+=, push_back.
   _Self& operator+=(const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
     _NonDbgBase::operator+=(__s);
-    return *this; 
+    return *this;
   }
   _Self& operator+=(_CharT __c) {
     _NonDbgBase::operator+=(__c);
-    return *this; 
+    return *this;
   }
 
   _Self& append(const _Self& __s) {
@@ -220,16 +220,16 @@ public:                         // Append, operator+=, push_back.
 
 private:                        // Helper functions for append.
 
-  template <class _InputIter> 
-  _Self& _M_appendT(_InputIter __first, _InputIter __last, 
+  template <class _InputIter>
+  _Self& _M_appendT(_InputIter __first, _InputIter __last,
                    const input_iterator_tag &) {
     for ( ; __first != __last ; ++__first)
       _NonDbgBase::push_back(*__first);
     return *this;
   }
 
-  template <class _ForwardIter> 
-  _Self& _M_appendT(_ForwardIter __first, _ForwardIter __last, 
+  template <class _ForwardIter>
+  _Self& _M_appendT(_ForwardIter __first, _ForwardIter __last,
                     const forward_iterator_tag &)  {
     if (__first != __last) {
       const size_type __old_size = this->size();
@@ -269,9 +269,9 @@ private:                        // Helper functions for append.
         this->_M_finish += __n;
       }
     }
-    return *this;  
+    return *this;
   }
-  
+
   template <class _Integer>
   _Self& _M_append_dispatch(_Integer __n, _Integer __x, const __true_type& /*Integral*/) {
     return append((size_type) __n, (_CharT) __x);
@@ -283,13 +283,13 @@ private:                        // Helper functions for append.
   }
 
 public:                         // Assign
-  
+
   _Self& assign(const _Self& __s) {
     _NonDbgBase::assign(__s);
     return *this;
   }
 
-  _Self& assign(const _Self& __s, 
+  _Self& assign(const _Self& __s,
                 size_type __pos, size_type __n) {
     _NonDbgBase::assign(__s, __pos, __n);
     return *this;
@@ -314,12 +314,12 @@ public:                         // Assign
 
 private:                        // Helper functions for assign.
 
-  template <class _Integer> 
+  template <class _Integer>
   _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
     return assign((size_type) __n, (_CharT) __x);
   }
 
-  template <class _InputIter> 
+  template <class _InputIter>
   _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/)  {
     pointer __cur = this->_M_Start();
     while (__f != __l && __cur != this->_M_Finish()) {
@@ -333,18 +333,18 @@ private:                        // Helper functions for assign.
       _M_appendT(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
     return *this;
   }
-  
+
 public:
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-  template <class _InputIter> 
+  template <class _InputIter>
   _Self& assign(_InputIter __first, _InputIter __last) {
     typedef typename _Is_integer<_InputIter>::_Integral _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
 
 #if !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
-  /* This method is not part of the standard and is a specialization of the 
+  /* This method is not part of the standard and is a specialization of the
    * template method assign. It is only granted for convenience to call assign
    * with mixed parameters iterator and const_iterator.
    */
@@ -378,12 +378,12 @@ public:                         // Insert
     _NonDbgBase::insert(__pos, __s);
     return *this;
   }
-    
+
   _Self& insert(size_type __pos, size_type __n, _CharT __c) {
     _NonDbgBase::insert(__pos, __n, __c);
     return *this;
   }
-  
+
   iterator insert(iterator __p, _CharT __c) {
     return _NonDbgBase::insert(__p, __c);
   }
@@ -404,13 +404,13 @@ private:  // Helper functions for insert.
 
   void _M_insert(iterator __p, const _CharT* __f, const _CharT* __l, bool __self_ref) {
     _STLP_FIX_LITERAL_BUG(__f)_STLP_FIX_LITERAL_BUG(__l)
-    _NonDbgBase::_M_insert(__p, __f, __l, __self_ref); 
+    _NonDbgBase::_M_insert(__p, __f, __l, __self_ref);
   }
-                 
+
   template <class _ForwardIter>
   void _M_insert_overflow(iterator __position, _ForwardIter __first, _ForwardIter __last,
                           difference_type __n) {
-    const size_type __old_size = this->size();        
+    const size_type __old_size = this->size();
     const size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
     pointer __new_start = this->_M_end_of_storage.allocate(__len);
     pointer __new_finish = __new_start;
@@ -427,7 +427,7 @@ private:  // Helper functions for insert.
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
   }
 
-  template <class _InputIter> 
+  template <class _InputIter>
   void _M_insertT(iterator __p, _InputIter __first, _InputIter __last,
                   const input_iterator_tag &) {
     for ( ; __first != __last; ++__first) {
@@ -437,7 +437,7 @@ private:  // Helper functions for insert.
   }
 
   template <class _ForwardIter>
-  void _M_insertT(iterator __position, _ForwardIter __first, _ForwardIter __last, 
+  void _M_insertT(iterator __position, _ForwardIter __first, _ForwardIter __last,
                   const forward_iterator_tag &) {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
@@ -474,7 +474,7 @@ private:  // Helper functions for insert.
             uninitialized_copy(__position, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
-          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()), 
+          _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()),
                         this->_M_finish = __old_finish))
           _M_copyT(__first, __mid, __position);
         }
@@ -490,7 +490,7 @@ private:  // Helper functions for insert.
                           const __true_type& /*Integral*/) {
     insert(__p, (size_type) __n, (_CharT) __x);
   }
-  
+
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
                           const __false_type& /*Integral*/) {
@@ -506,14 +506,14 @@ private:  // Helper functions for insert.
     typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
     _M_insert_aux(__p, __first, __last, _CheckInside());
   }
-  
+
   template <class _RandomIter>
   void _M_insert_aux (iterator __p, _RandomIter __first, _RandomIter __last,
                       const __true_type& /*_CheckInside*/) {
     _STLP_FIX_LITERAL_BUG(__p)
     _M_insert(__p, &(*__first), &(*__last), _NonDbgBase::_M_inside(&(*__first)));
   }
-  
+
   template<class _InputIter>
   void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
                       const __false_type& /*_CheckInside*/) {
@@ -606,7 +606,7 @@ public:                         // Replace.  (Conceptually equivalent
     return *this;
   }
 
-  _Self& replace(iterator __first, iterator __last, 
+  _Self& replace(iterator __first, iterator __last,
                  size_type __n, _CharT __c) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _NonDbgBase::replace(__first, __last, __n, __c);
@@ -641,7 +641,7 @@ protected:                        // Helper functions for replace.
     _NonDbgBase::_M_replace(__first, __last, __f, __l, __self_ref);
     return *this;
   }
-                     
+
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
@@ -649,7 +649,7 @@ protected:                        // Helper functions for replace.
     return replace(__first, __last, (size_type) __n, (_CharT) __x);
   }
 
-  template <class _InputIter> 
+  template <class _InputIter>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
@@ -658,21 +658,21 @@ protected:                        // Helper functions for replace.
     typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
     return _M_replace_aux(__first, __last, __f, __l, _CheckInside());
   }
-  
+
   template <class _RandomIter>
   _Self& _M_replace_aux(iterator __first, iterator __last,
                         _RandomIter __f, _RandomIter __l, __true_type const& /*_CheckInside*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     return _M_replace(__first, __last, &(*__f), &(*__l), _NonDbgBase::_M_inside(&(*__f)));
   }
-  
+
   template <class _InputIter>
   _Self& _M_replace_aux(iterator __first, iterator __last,
                      _InputIter __f, _InputIter __l, __false_type const& /*_CheckInside*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     return _M_replaceT(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
   }
-  
+
   template <class _InputIter>
   _Self& _M_replaceT(iterator __first, iterator __last,
                      _InputIter __f, _InputIter __l, const input_iterator_tag&__ite_tag) {
@@ -686,7 +686,7 @@ protected:                        // Helper functions for replace.
     return *this;
   }
 
-  template <class _ForwardIter> 
+  template <class _ForwardIter>
   _Self& _M_replaceT(iterator __first, iterator __last,
                      _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
@@ -707,7 +707,7 @@ protected:                        // Helper functions for replace.
 
 public:                         // Other modifier member functions.
 
-  void swap(_Self& __s) 
+  void swap(_Self& __s)
   { _NonDbgBase::swap(__s); }
 
 public:                         // Substring.

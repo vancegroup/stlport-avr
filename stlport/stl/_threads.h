@@ -2,13 +2,13 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -44,21 +44,21 @@
 
 #if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
 typedef long __stl_atomic_t;
-#else 
+#else
 /* Don't import whole namespace!!!! - ptr */
 // # if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
 // // using _STLP_VENDOR_CSTD::size_t;
 // using namespace _STLP_VENDOR_CSTD;
 // # endif
 typedef size_t __stl_atomic_t;
-#endif  
+#endif
 
 #if defined(_STLP_SGI_THREADS)
 #  include <mutex.h>
 // Hack for SGI o32 compilers.
 #  if !defined(__add_and_fetch) && \
       (__mips < 3 || !(defined (_ABIN32) || defined(_ABI64)))
-#    define __add_and_fetch(__l,__v) add_then_test((unsigned long*)__l,__v)  
+#    define __add_and_fetch(__l,__v) add_then_test((unsigned long*)__l,__v)
 #    define __test_and_set(__l,__v)  test_and_set(__l,__v)
 #  endif /* o32 */
 
@@ -88,7 +88,7 @@ typedef size_t __stl_atomic_t;
 #    ifdef __OpenBSD__
 #      include <spinlock.h>
 #    endif
-#  endif // _STLP_USE_PTHREAD_SPINLOCK 
+#  endif // _STLP_USE_PTHREAD_SPINLOCK
 
 #elif defined(_STLP_WIN32THREADS)
 
@@ -229,7 +229,7 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base {
 #      else
     asm(" stbar ");
 #      endif
-    *__lock = 0;    
+    *__lock = 0;
 #    else
     *__lock = 0;
     // This is not sufficient on many multiprocessors, since
@@ -270,16 +270,16 @@ struct _STLP_CLASS_DECLSPEC _STLP_mutex_base {
   inline void _M_destroy() {
     pthread_mutex_destroy(&_M_lock);
   }
-  inline void _M_acquire_lock() { 
+  inline void _M_acquire_lock() {
 
 #      if defined ( __hpux ) && ! defined (PTHREAD_MUTEX_INITIALIZER)
     if (!_M_lock.field1)  _M_initialize();
 #      endif
-    pthread_mutex_lock(&_M_lock); 
+    pthread_mutex_lock(&_M_lock);
   }
   inline void _M_release_lock() { pthread_mutex_unlock(&_M_lock); }
 #    endif // !_STLP_USE_PTHREAD_SPINLOCK
-  
+
 #  elif defined (_STLP_UITHREADS)
   mutex_t _M_lock;
   inline void _M_initialize() {
@@ -372,7 +372,7 @@ private:
 /*
  * Class _Refcount_Base provides a type, __stl_atomic_t, a data member,
  * _M_ref_count, and member functions _M_incr and _M_decr, which perform
- * atomic preincrement/predecrement.  The constructor initializes 
+ * atomic preincrement/predecrement.  The constructor initializes
  * _M_ref_count.
  */
 class _STLP_CLASS_DECLSPEC _Refcount_Base

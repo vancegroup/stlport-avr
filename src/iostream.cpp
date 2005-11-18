@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #include "stlport_prefix.h"
 
 #include <istream>
@@ -43,7 +43,7 @@ using _STLP_VENDOR_CSTD::_streams;
 
 // This file handles iostream initialization.  It is inherently
 // nonportable, since the C++ language definition provides no mechanism
-// for controlling order of initialization of nonlocal objects.  
+// for controlling order of initialization of nonlocal objects.
 // Initialization has three parts, which must be performed in the following
 // order:
 //  (1) Initialize the locale system
@@ -54,11 +54,11 @@ using _STLP_VENDOR_CSTD::_streams;
 
 #if defined (_STLP_MSVC) || defined (__MWERKS__) || defined (__ICL) || defined (__ISCPP__)
 
-// Definitions of the eight global I/O objects that are declared in 
+// Definitions of the eight global I/O objects that are declared in
 // <iostream>. For VC++ we use the init_seg pragma to put the global I/O
 // objects into an initialization segment that will not
 // be executed. We then explicitly invoke the constructors
-// with placement new in ios_base::_S_initialize() 
+// with placement new in ios_base::_S_initialize()
 
 #  if defined (__MWERKS__)
 #    pragma suppress_init_code on
@@ -91,7 +91,7 @@ _STLP_DECLSPEC wostream wclog(0);
 
 #else
 
-// Definitions of the eight global I/O objects that are declared in 
+// Definitions of the eight global I/O objects that are declared in
 // <iostream>.  Disgusting hack: we deliberately define them with the
 // wrong types so that the constructors don't get run automatically.
 // We need special tricks to make sure that these objects are struct-
@@ -158,7 +158,7 @@ ios_base::Init::~Init() {
 
 filebuf*
 _Stl_create_filebuf(FILE* f, ios_base::openmode mode ) {
-  basic_filebuf<char, char_traits<char> >* result = 
+  basic_filebuf<char, char_traits<char> >* result =
     new basic_filebuf<char, char_traits<char> >();
 
   _STLP_TRY {
@@ -176,7 +176,7 @@ _Stl_create_filebuf(FILE* f, ios_base::openmode mode ) {
 #if !defined (_STLP_NO_WCHAR_T)
 wfilebuf*
 _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
-  basic_filebuf<wchar_t, char_traits<wchar_t> >* result =  
+  basic_filebuf<wchar_t, char_traits<wchar_t> >* result =
     new basic_filebuf<wchar_t, char_traits<wchar_t> >();
 
   _STLP_TRY {
@@ -215,7 +215,7 @@ void  _STLP_CALL ios_base::_S_initialize() {
       ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
       ptr_cin->init(_Stl_create_filebuf(stdout, ios_base::out));
       ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out)); 
+      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
@@ -234,7 +234,7 @@ void  _STLP_CALL ios_base::_S_initialize() {
       ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
       ptr_cin->init(_Stl_create_filebuf(stdout, ios_base::out));
       ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out)); 
+      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
@@ -246,12 +246,12 @@ void  _STLP_CALL ios_base::_S_initialize() {
     wostream* ptr_wcout = new(&wcout) wostream(0);
     wostream* ptr_wcerr = new(&wcerr) wostream(0);
     wostream* ptr_wclog = new(&wclog) wostream(0);
-    
+
     wfilebuf* win  = _Stl_create_wfilebuf(stdin, ios_base::in);
     wfilebuf* wout = _Stl_create_wfilebuf(stdout, ios_base::out);;
     wfilebuf* werr = _Stl_create_wfilebuf(stderr, ios_base::out);
     wfilebuf* wlog = _Stl_create_wfilebuf(stderr, ios_base::out);
-    
+
     ptr_wcin->init(win);
     ptr_wcout->init(wout);
     ptr_wcerr->init(werr);
@@ -259,7 +259,7 @@ void  _STLP_CALL ios_base::_S_initialize() {
 
     ptr_wcin->tie(ptr_wcout);
     ptr_wcerr->setf(ios_base::unitbuf);
-    
+
 #  endif /*  _STLP_NO_WCHAR_T */
 #endif /* _STLP_WINCE */
   }
@@ -324,7 +324,7 @@ bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
   using _SgI::stdio_istreambuf;
   using _SgI::stdio_ostreambuf;
 #  endif
-  
+
   bool was_synced =  _S_was_synced;
 
   // if by any chance we got there before std streams initialization,

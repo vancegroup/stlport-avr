@@ -10,7 +10,7 @@
 #  pragma warning( disable : 4610 ) // struct '...' can never be instantiated - user defined constructor required
 #endif
 
-#if (_MSC_VER < 1300) // VC6/eVC4 
+#if (_MSC_VER < 1300) // VC6/eVC4
 #  pragma warning( disable : 4097 ) // typedef-name used as based class of (...)
 #  pragma warning( disable : 4251 ) // DLL interface needed
 #  pragma warning( disable : 4284 ) // for -> operator

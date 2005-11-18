@@ -62,7 +62,7 @@ void BoundTest::lwrbnd1()
   {
     v1[i] = i/4;
   }
-  // 0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 
+  // 0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4
   vector<int>::iterator location = lower_bound(v1.begin(), v1.end(), 3);
 
   CPPUNIT_ASSERT((location - v1.begin())==12);

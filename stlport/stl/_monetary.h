@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 // WARNING: This is an internal header file, included by other C++
 // standard library headers.  You should not attempt to use this header
 // file directly.
@@ -131,7 +131,7 @@ protected:
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<char, false> : public locale::facet, public money_base 
+class _STLP_CLASS_DECLSPEC moneypunct<char, false> : public locale::facet, public money_base
 {
 public:
   typedef char                 char_type;
@@ -181,7 +181,7 @@ protected:
 # ifndef _STLP_NO_WCHAR_T
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, true> : public locale::facet, public money_base 
+class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, true> : public locale::facet, public money_base
 {
   friend class _Locale_impl;
 public:
@@ -226,7 +226,7 @@ protected:
 
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, false> : public locale::facet, public money_base 
+class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, false> : public locale::facet, public money_base
 {
   friend class _Locale_impl;
 public:
@@ -303,7 +303,7 @@ private:
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<char, false> : public moneypunct<char, false> 
+class _STLP_CLASS_DECLSPEC moneypunct_byname<char, false> : public moneypunct<char, false>
 {
 public:
   typedef money_base::pattern   pattern;
@@ -334,7 +334,7 @@ private:
 
 #if !defined (_STLP_NO_WCHAR_T)
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, true> : public moneypunct<wchar_t, true> 
+class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, true> : public moneypunct<wchar_t, true>
 {
 public:
   typedef money_base::pattern   pattern;
@@ -364,7 +364,7 @@ private:
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, false> : public moneypunct<wchar_t, false> 
+class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, false> : public moneypunct<wchar_t, false>
 {
 public:
   typedef money_base::pattern   pattern;
@@ -413,7 +413,7 @@ public:
                 char_type  __fill, _STLP_LONG_DOUBLE __units) const
     { return do_put(__s, __intl, __str, __fill, __units); }
   iter_type put(iter_type __s, bool __intl, ios_base& __str,
-                char_type  __fill, 
+                char_type  __fill,
                 const string_type& __digits) const
     { return do_put(__s, __intl, __str, __fill, __digits); }
 
@@ -452,7 +452,7 @@ inline void _Stl_loc_init_monetary() {
   money_get<wchar_t, const wchar_t*>::id._M_index  = 28;
   money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index                  = 29;
   money_put<wchar_t, wchar_t*>::id._M_index        = 30;
-# endif  
+# endif
 }
 #endif
 

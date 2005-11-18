@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 #include "stlport_prefix.h"
 #include "stdio_streambuf.h"
@@ -85,7 +85,7 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
   //We also check that off is not larger than the fseek parameter that is supposed to take
   //a long integer.
   typedef char __static_assert[sizeof(off_type) >= sizeof(long)];
-  if (off <= numeric_limits<long>::max() && 
+  if (off <= numeric_limits<long>::max() &&
       _STLP_VENDOR_CSTD::fseek(_M_file, __STATIC_CAST(long, off), whence) == 0) {
     fpos_t pos;
     _STLP_VENDOR_CSTD::fgetpos(_M_file, &pos);
@@ -150,7 +150,7 @@ int stdio_streambuf_base::sync() {
 stdio_istreambuf::~stdio_istreambuf() {}
 
 streamsize stdio_istreambuf::showmanyc() {
-  if (feof(_M_file)) 
+  if (feof(_M_file))
     return -1;
   else {
     int fd = _FILE_fd(_M_file);
@@ -254,7 +254,7 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c) {
 #ifdef _STLP_WCE
     int result = fputc(c, _M_file);
 #else
-    int result = putc(c, _M_file);  
+    int result = putc(c, _M_file);
 #endif
     return result != EOF ? result : traits_type::eof();
   }

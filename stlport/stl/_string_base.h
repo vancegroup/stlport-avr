@@ -2,16 +2,16 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
- * Copyright (c) 2003 
+ * Copyright (c) 2003
  * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -23,14 +23,14 @@
 #define _STLP_STRING_BASE_H
 
 // ------------------------------------------------------------
-// Class _String_base.  
+// Class _String_base.
 
 // _String_base is a helper class that makes it it easier to write an
 // exception-safe version of basic_string.  The constructor allocates,
 // but does not initialize, a block of memory.  The destructor
 // deallocates, but does not destroy elements within, a block of
 // memory.  The destructor assumes that _M_start either is null, or else
-// points to a block of memory that was allocated using _String_base's 
+// points to a block of memory that was allocated using _String_base's
 // allocator and whose size is _M_end_of_storage._M_data - _M_start.
 
 _STLP_BEGIN_NAMESPACE
@@ -86,13 +86,13 @@ protected:
   void _M_deallocate_block() {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (!_M_using_static_buf() && (_M_buffers._M_dynamic_buf != 0))
-      _M_end_of_storage.deallocate(_M_buffers._M_dynamic_buf, _M_end_of_storage._M_data - _M_buffers._M_dynamic_buf); 
+      _M_end_of_storage.deallocate(_M_buffers._M_dynamic_buf, _M_end_of_storage._M_data - _M_buffers._M_dynamic_buf);
 #else
     if (_M_start != 0)
-      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start); 
+      _M_end_of_storage.deallocate(_M_start, _M_end_of_storage._M_data - _M_start);
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }
-  
+
   size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
 
   _String_base(const allocator_type& __a)
@@ -102,7 +102,7 @@ protected:
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0)
 #endif
     {}
-  
+
   _String_base(const allocator_type& __a, size_t __n)
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE) {

@@ -34,12 +34,12 @@ class vector {
   typedef vector<_Tp, _Alloc> _Self;
 public:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  
+
   __IMPORT_WITH_REVERSE_ITERATORS(_Base)
   typedef typename _Base::_Iterator_category _Iterator_category;
-  
+
   allocator_type get_allocator() const { return _M_impl.get_allocator(); }
-  
+
   iterator begin()             { return _M_impl.begin(); }
   const_iterator begin() const { return _M_impl.begin(); }
   iterator end()               { return _M_impl.end(); }
@@ -75,7 +75,7 @@ public:
 #else
   vector(size_type __n, const_reference __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type()) 
+         const allocator_type& __a = allocator_type())
     : _M_impl(__n, __val, __a) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -92,7 +92,7 @@ public:
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL ) :
     _M_impl(__first, __last, __a) {}
-  
+
 # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last) :
@@ -111,7 +111,7 @@ public:
 
   void reserve(size_type __n) { _M_impl.reserve(__n); }
   void assign(size_type __n, const_reference __val) { _M_impl.assign(__n, __val); }
-  
+
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last)
@@ -143,20 +143,20 @@ public:
 
 #if defined ( _STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(iterator __pos, _InputIterator __first, _InputIterator __last) 
+  void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos, const_iterator __first, const_iterator __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   { _M_impl.insert(__pos, __first, __last); }
-  
+
   void insert (iterator __pos, size_type __n, const_reference __x)
   { _M_impl.insert(__pos, __n, __x); }
-  
+
   void pop_back() { _M_impl.pop_back(); }
-  
-  iterator erase(iterator __pos) 
+
+  iterator erase(iterator __pos)
   { return _M_impl.erase(__pos); }
-  iterator erase(iterator __first, iterator __last) 
+  iterator erase(iterator __first, iterator __last)
   { return _M_impl.erase(__first, __last); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -171,7 +171,7 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void clear() { _M_impl.clear(); }
-  
+
 private:
   _Base _M_impl;
 };
@@ -190,7 +190,7 @@ class vector<_Tp*, _Alloc> {
   typedef _Vector_impl<void*, _VoidAlloc> _Base;
   typedef vector<_Tp*, _Alloc> _Self;
   typedef __void_ptr_traits<_Tp> cast_traits;
-  
+
 public:
   typedef _Tp* value_type;
   typedef value_type* pointer;
@@ -207,7 +207,7 @@ public:
   _STLP_FORCE_ALLOCATORS(value_type, _Alloc)
   typedef typename _Alloc_traits<value_type, _Alloc>::allocator_type allocator_type;
 
-  allocator_type get_allocator() const 
+  allocator_type get_allocator() const
   { return _STLP_CONVERT_ALLOCATOR(_M_impl.get_allocator(), value_type); }
 
   iterator begin()             { return cast_traits::ptr_cast(_M_impl.begin()); }
@@ -237,7 +237,7 @@ public:
   reference at(size_type __n) { return cast_traits::ref_cast(_M_impl.at(__n)); }
   const_reference at(size_type __n) const { return cast_traits::const_ref_cast(_M_impl.at(__n)); }
 
-  explicit vector(const allocator_type& __a = allocator_type()) 
+  explicit vector(const allocator_type& __a = allocator_type())
     : _M_impl(_STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -245,7 +245,7 @@ public:
 #else
   vector(size_type __n, value_type __val,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type()) 
+         const allocator_type& __a = allocator_type())
     : _M_impl(__n, cast_traits::cast(__val), _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -253,31 +253,31 @@ public:
     : _M_impl(__n, allocator_type() ) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
-  vector(const _Self& __x) 
+  vector(const _Self& __x)
     : _M_impl(__x._M_impl) {}
 
   explicit vector(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
-  : _M_impl(__iterator_wrapper<_Tp, _InputIterator>(__first), 
+  : _M_impl(__iterator_wrapper<_Tp, _InputIterator>(__first),
             __iterator_wrapper<_Tp, _InputIterator>(__last),
             _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 
  # ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last)
-    : _M_impl(__iterator_wrapper<_Tp, _InputIterator>(__first), 
+    : _M_impl(__iterator_wrapper<_Tp, _InputIterator>(__first),
               __iterator_wrapper<_Tp, _InputIterator>(__last)) {}
  # endif
 
 #else
   vector(const_iterator __first, const_iterator __last,
          const allocator_type& __a = allocator_type())
-    : _M_impl(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last), 
+    : _M_impl(cast_traits::const_ptr_cast(__first), cast_traits::const_ptr_cast(__last),
               _STLP_CONVERT_ALLOCATOR(__a, void*)) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -285,7 +285,7 @@ public:
 
   void reserve(size_type __n) {_M_impl.reserve(__n);}
   void assign(size_type __n, value_type __val) { _M_impl.assign(__n, cast_traits::cast(__val)); }
-  
+
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
@@ -335,11 +335,11 @@ public:
   void insert (iterator __pos, size_type __n, value_type __x) {
     _M_impl.insert(cast_traits::ptr_cast(__pos), __n, cast_traits::cast(__x));
   }
-  
+
   void pop_back() {_M_impl.pop_back();}
   iterator erase(iterator __pos) {return cast_traits::ptr_cast(_M_impl.erase(cast_traits::ptr_cast(__pos)));}
   iterator erase(iterator __first, iterator __last) {
-    return cast_traits::ptr_cast(_M_impl.erase(cast_traits::ptr_cast(__first), 
+    return cast_traits::ptr_cast(_M_impl.erase(cast_traits::ptr_cast(__first),
                                                cast_traits::ptr_cast(__last)));
   }
 
@@ -355,7 +355,7 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void clear() { _M_impl.clear();}
-  
+
 private:
   _Base _M_impl;
 };

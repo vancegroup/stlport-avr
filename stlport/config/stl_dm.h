@@ -42,7 +42,7 @@
 // this one is not mandatory, just enabled
 # undef _STLP_USE_DEFALLOC
 
-// define _STLP_USE_ABBREVS if your linker has trouble with long 
+// define _STLP_USE_ABBREVS if your linker has trouble with long
 // external symbols
 # undef _STLP_USE_ABBREVS
 

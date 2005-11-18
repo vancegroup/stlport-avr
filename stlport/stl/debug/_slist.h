@@ -6,13 +6,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -92,7 +92,7 @@ protected:
     _M_iter_list._Invalidate_all();
   }
   void _Invalidate_iterator(const iterator& __it) {
-    __invalidate_iterator(&_M_iter_list, __it); 
+    __invalidate_iterator(&_M_iter_list, __it);
   }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last) {
     __invalidate_range(&_M_iter_list, __first, __last);
@@ -101,9 +101,9 @@ protected:
   typedef typename _Base::iterator _Base_iterator;
 
 public:
-  explicit slist(const allocator_type& __a = allocator_type()) 
+  explicit slist(const allocator_type& __a = allocator_type())
     : _STLP_DBG_SLIST_BASE(__a) , _M_iter_list(_Get_base()) {}
-  
+
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit slist(size_type __n, const value_type& __x = _Tp(),
 #else
@@ -112,7 +112,7 @@ public:
         const allocator_type& __a =  allocator_type())
     : _STLP_DBG_SLIST_BASE(__n, __x, __a), _M_iter_list(_Get_base()) {}
 
-  
+
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit slist(size_type __n) : _STLP_DBG_SLIST_BASE(__n) , _M_iter_list(_Get_base()) {}
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
@@ -121,41 +121,41 @@ public:
     : _STLP_DBG_SLIST_BASE(__move_source<_Base>(src.get())) , _M_iter_list(_Get_base()) {
     _Invalidate_all();
   }
-  
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   // We don't need any dispatching tricks here, because _M_insert_after_range
   // already does them.
   template <class _InputIterator>
   slist(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base()) {
-    } 
+    }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   slist(_InputIterator __first, _InputIterator __last)
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_SLIST_BASE(__first, __last), _M_iter_list(_Get_base()) {
-    } 
+    }
 #  endif
 #else /* _STLP_MEMBER_TEMPLATES */
 
   slist(const value_type* __first, const value_type* __last,
         const allocator_type& __a =  allocator_type())
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_SLIST_BASE(__first, __last, __a), _M_iter_list(_Get_base())  {
     }
 
   slist(const_iterator __first, const_iterator __last,
         const allocator_type& __a = allocator_type() )
-    : _ConstructCheck(__first, __last), 
+    : _ConstructCheck(__first, __last),
       _STLP_DBG_SLIST_BASE(__first._M_iterator, __last._M_iterator, __a), _M_iter_list(_Get_base()) {
     }
-  
+
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  slist(const _Self& __x) : 
-    _ConstructCheck(__x), 
+  slist(const _Self& __x) :
+    _ConstructCheck(__x),
     _STLP_DBG_SLIST_BASE(__x), _M_iter_list(_Get_base()) {}
 
   _Self& operator= (const _Self& __x) {
@@ -165,13 +165,13 @@ public:
     }
     return *this;
   }
-  
+
   ~slist() {}
 
 public:
   void assign(size_type __n, const value_type& __val) {
     _Invalidate_iterators(this->begin(), this->end());
-    _Base::assign(__n, __val); 
+    _Base::assign(__n, __val);
   }
 
 public:
@@ -191,7 +191,7 @@ public:
   const_iterator end() const
   { return const_iterator(&_M_iter_list, _Base::end()); }
 
-  void swap(_Self& __x) { 
+  void swap(_Self& __x) {
     _M_iter_list._Swap_owners(__x._M_iter_list);
     _Base::swap(__x);
   }
@@ -199,11 +199,11 @@ public:
 public:
   reference front() {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
-    return _Base::front(); 
+    return _Base::front();
   }
   const_reference front() const {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
-    return _Base::front(); 
+    return _Base::front();
   }
   void pop_front() {
     _STLP_VERBOSE_ASSERT(!this->empty(), _StlMsg_EMPTY_CONTAINER)
@@ -299,7 +299,7 @@ public:
     _STLP_DEBUG_CHECK(__check_range(__first, __last))
     _Base::insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
-  void insert(iterator __pos, const value_type* __first, 
+  void insert(iterator __pos, const value_type* __first,
                               const value_type* __last) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))
     _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _Base::before_begin()), _StlMsg_INVALID_ARGUMENT)
@@ -328,8 +328,8 @@ public:
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list, __pos))
     _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _Base::before_begin()), _StlMsg_INVALID_ARGUMENT)
     _Base::insert(__pos._M_iterator, __n, __x);
-  } 
-    
+  }
+
 public:
   iterator erase_after(iterator __pos) {
     _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
@@ -346,7 +346,7 @@ public:
     _STLP_DEBUG_CHECK(_Dereferenceable(__tmp))
     _Invalidate_iterators(__tmp, __last);
     return iterator(&_M_iter_list, _Base::erase_after(__before_first._M_iterator, __last._M_iterator));
-  } 
+  }
 
   iterator erase(iterator __pos) {
     _STLP_DEBUG_CHECK(_Dereferenceable(__pos))
@@ -374,7 +374,7 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
 
   void clear() {
-    _Invalidate_iterators(this->begin(), this->end());      
+    _Invalidate_iterators(this->begin(), this->end());
     _Base::clear();
   }
 
@@ -493,7 +493,7 @@ public:
   }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-  template <class _Predicate> 
+  template <class _Predicate>
   void remove_if(_Predicate __pred) {
     _Base_iterator __first = _Base::begin(), __last = _Base::end();
     while (__first != __last) {
@@ -507,7 +507,7 @@ public:
     }
   }
 
-  template <class _BinaryPredicate> 
+  template <class _BinaryPredicate>
   void unique(_BinaryPredicate __pred) {
     _Base_iterator __first = _Base::begin(), __last = _Base::end();
     if (__first == __last) return;
@@ -523,7 +523,7 @@ public:
     }
   }
 
-  template <class _StrictWeakOrdering> 
+  template <class _StrictWeakOrdering>
   void merge(_Self& __x, _StrictWeakOrdering __ord) {
     _STLP_VERBOSE_ASSERT(&__x!=this, _StlMsg_INVALID_ARGUMENT)
     /* comments below due to bug in GCC compilers: ones eat all memory  and die if see

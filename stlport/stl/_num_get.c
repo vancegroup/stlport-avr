@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #ifndef _STLP_NUM_GET_C
 #define _STLP_NUM_GET_C
 
@@ -34,15 +34,15 @@ template < class _InputIter, class _Integer, class _CharT>
 _InputIter _STLP_CALL
 _M_do_get_integer(_InputIter&, _InputIter&, ios_base&, ios_base::iostate&, _Integer&, _CharT*);
 
-// _M_do_get_integer and its helper functions.  
+// _M_do_get_integer and its helper functions.
 
 inline bool _STLP_CALL __get_fdigit(char __c, const char*)
   { return __c >= '0' && __c <= '9'; }
 
 inline bool _STLP_CALL __get_fdigit_or_sep(char& __c, char __sep, const char *__digits)
-{ 
-  if (__c == __sep) { 
-    __c = ',' ; 
+{
+  if (__c == __sep) {
+    __c = ',' ;
     return true ;
   } else
     return  __get_fdigit(__c, __digits);
@@ -57,7 +57,7 @@ __get_digit_from_table(unsigned __index)
 extern const char __narrow_atoms[];
 
 template <class _InputIter, class _CharT>
-int 
+int
 _M_get_base_or_zero(_InputIter& __in_ite, _InputIter& __end, ios_base& __str, _CharT*) {
   _CharT __atoms[5];
   const ctype<_CharT>& __c_type = *__STATIC_CAST(const ctype<_CharT>*, __str._M_ctype_facet());
@@ -71,13 +71,13 @@ _M_get_base_or_zero(_InputIter& __in_ite, _InputIter& __end, ios_base& __str, _C
     __negative = true;
     ++__in_ite;
   }
-  else if (__c == __atoms[0] /* __xplus_char */ ) 
+  else if (__c == __atoms[0] /* __xplus_char */ )
     ++__in_ite;
 
   int __base;
   int __valid_zero = 0;
-  
-  ios_base::fmtflags __basefield = __str.flags() & ios_base::basefield; 
+
+  ios_base::fmtflags __basefield = __str.flags() & ios_base::basefield;
 
   switch (__basefield) {
   case ios_base::oct:
@@ -122,7 +122,7 @@ _M_get_base_or_zero(_InputIter& __in_ite, _InputIter& __end, ios_base& __str, _C
 template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
-              int __base, _Integer& __val, 
+              int __base, _Integer& __val,
               int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __true_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
@@ -130,27 +130,27 @@ __get_integer(_InputIter& __first, _InputIter& __last,
   char __group_sizes[64];
   char __current_group_size = 0;
   char* __group_sizes_end = __group_sizes;
-  
+
   _Integer __over_base = (numeric_limits<_Integer>::min)() / __STATIC_CAST(_Integer, __base);
 
    for ( ; __first != __last ; ++__first) {
-  
+
      const _CharT __c = *__first;
-     
+
      if (__is_group && __c == __separator) {
        *__group_sizes_end++ = __current_group_size;
        __current_group_size = 0;
        continue;
      }
-     
+
      int __n = __get_digit_from_table(__c);
-     
+
      if (__n >= __base)
        break;
-     
+
      ++__got;
      ++__current_group_size;
-     
+
      if (__result < __over_base)
        __ovflow = true;  // don't need to keep accumulating
      else {
@@ -169,12 +169,12 @@ __get_integer(_InputIter& __first, _InputIter& __last,
    if (__got > 0) {
        __val = __ovflow ? __is_negative ? (numeric_limits<_Integer>::min)()
                                         : (numeric_limits<_Integer>::max)()
-                        : __is_negative ? __result 
+                        : __is_negative ? __result
                                         : __STATIC_CAST(_Integer, -__result);
    }
   // overflow is being treated as failure
-  return ((__got > 0) && !__ovflow) && 
-          (__is_group == 0 || 
+  return ((__got > 0) && !__ovflow) &&
+          (__is_group == 0 ||
            __valid_grouping(__group_sizes, __group_sizes_end,
                             __grouping.data(), __grouping.data()+ __grouping.size()));
 }
@@ -182,7 +182,7 @@ __get_integer(_InputIter& __first, _InputIter& __last,
 template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
-              int __base, _Integer& __val, 
+              int __base, _Integer& __val,
               int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __false_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
@@ -196,18 +196,18 @@ __get_integer(_InputIter& __first, _InputIter& __last,
   for ( ; __first != __last ; ++__first) {
 
     const _CharT __c = *__first;
-    
+
     if (__is_group && __c == __separator) {
       *__group_sizes_end++ = __current_group_size;
       __current_group_size = 0;
       continue;
     }
-    
+
     int __n = __get_digit_from_table(__c);
-    
+
     if (__n >= __base)
       break;
-    
+
     ++__got;
     ++__current_group_size;
 
@@ -218,7 +218,7 @@ __get_integer(_InputIter& __first, _InputIter& __last,
       if (__result != 0)
         __ovflow = __ovflow || __next <= __result;
         __result = __next;
-      }      
+      }
   }
 
   if (__is_group && __group_sizes_end != __group_sizes) {
@@ -228,13 +228,13 @@ __get_integer(_InputIter& __first, _InputIter& __last,
   // fbp : added to not modify value if nothing was read
   if (__got > 0) {
       __val = __ovflow ? (numeric_limits<_Integer>::max)()
-                       : (__is_negative ? __STATIC_CAST(_Integer, -__result) 
-                                        : __result);      
+                       : (__is_negative ? __STATIC_CAST(_Integer, -__result)
+                                        : __result);
   }
 
   // overflow is being treated as failure
-  return ((__got > 0) && !__ovflow) && 
-          (__is_group == 0 || 
+  return ((__got > 0) && !__ovflow) &&
+          (__is_group == 0 ||
            __valid_grouping(__group_sizes, __group_sizes_end,
                             __grouping.data(), __grouping.data()+ __grouping.size()));
 }
@@ -273,7 +273,7 @@ _M_do_get_integer(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
       __result = true;
     }
     else
-      __result = false;    
+      __result = false;
   } else {
 
     const bool __negative = (__base_or_zero & 2) != 0;
@@ -362,11 +362,11 @@ __copy_grouped_digits(_InputIter& __first, _InputIter __last,
     else
       break;
   }
-  
+
   if (__group_sizes_end != __group_sizes)
     *__group_sizes_end++ = __current_group_size;
   __grouping_ok = __valid_grouping(__group_sizes, __group_sizes_end, __grouping.data(), __grouping.data() + __grouping.size());
-  return __ok;	
+  return __ok;
 }
 
 
@@ -374,7 +374,7 @@ template <class _InputIter, class _CharT>
 bool _STLP_CALL
 _M_read_float(__iostring& __buf, _InputIter& __in_ite, _InputIter& __end, ios_base& __s, _CharT*)
 {
-  // Create a string, copying characters of the form 
+  // Create a string, copying characters of the form
   // [+-]? [0-9]* .? [0-9]* ([eE] [+-]? [0-9]+)?
 
   bool __digits_before_dot /* = false */;
@@ -418,17 +418,17 @@ _M_read_float(__iostring& __buf, _InputIter& __in_ite, _InputIter& __end, ios_ba
 
   // There have to be some digits, somewhere.
   __ok = __digits_before_dot || __digits_after_dot;
-  
+
   // Get an optional exponent.
   if (__ok && __in_ite != __end && (*__in_ite == __pow_e || *__in_ite == __pow_E)) {
     __buf.push_back('e');
     ++__in_ite;
     __in_ite = __copy_sign(__in_ite, __end, __buf, __xplus, __xminus);
     __ok = __copy_digits(__in_ite, __end, __buf, __digits);
-    // If we have an exponent then the sign 
+    // If we have an exponent then the sign
     // is optional but the digits aren't.
   }
-  
+
   return __ok;
 }
 
@@ -436,7 +436,7 @@ _M_read_float(__iostring& __buf, _InputIter& __in_ite, _InputIter& __end, ios_ba
 // num_get<>, num_put<>
 //
 
-#if ( _STLP_STATIC_TEMPLATE_DATA > 0 ) 
+#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
 
@@ -513,7 +513,7 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end,
     }
     if (__true_ok  && __n < __truename.size())  __true_ok  = false;
     if (__false_ok && __n < __falsename.size()) __false_ok = false;
-    
+
     if (__true_ok || __false_ok) {
       __err = ios_base::goodbit;
       __x = __true_ok;
@@ -545,15 +545,15 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end,
 # endif /* _STLP_NO_BOOL */
 
 # ifdef _STLP_FIX_LIBRARY_ISSUES
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err, short& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err, int& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
@@ -561,31 +561,31 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 
 # endif
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err, long& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     unsigned short& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
-                                    ios_base::iostate& __err, 
+                                    ios_base::iostate& __err,
                                     unsigned int& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     unsigned long& __val) const {
@@ -593,24 +593,24 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 }
 
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     float& __val) const {
   __iostring __buf ;
   bool __ok = _M_read_float(__buf, __in_ite, __end, __str, (_CharT*)0 );
-  __string_to_float(__buf, __val);  
+  __string_to_float(__buf, __val);
   __err = __STATIC_CAST(ios_base::iostate, __ok ? ios_base::goodbit : ios_base::failbit);
   if (__in_ite == __end)
     __err |= ios_base::eofbit;
   return __in_ite;
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
-                                    ios_base::iostate& __err, 
+                                    ios_base::iostate& __err,
                                     double& __val) const {
   __iostring __buf ;
   bool __ok = _M_read_float(__buf, __in_ite, __end, __str, (_CharT*)0 );
@@ -622,8 +622,8 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 }
 
 #ifndef _STLP_NO_LONG_DOUBLE
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     long double& __val) const {
@@ -637,12 +637,12 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 }
 #endif /* _STLP_NO_LONG_DOUBLE */
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                            ios_base::iostate& __err,
                            void*& __p) const {
-# if defined(_STLP_LONG_LONG) && !defined(__MRC__)		//*ty 12/07/2001 - MrCpp can not cast from long long to void*
+# if defined(_STLP_LONG_LONG) && !defined(__MRC__)    //*ty 12/07/2001 - MrCpp can not cast from long long to void*
   unsigned _STLP_LONG_LONG __val;
 # else
   unsigned long __val;
@@ -656,16 +656,16 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_b
 
 #ifdef _STLP_LONG_LONG
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     _STLP_LONG_LONG& __val) const {
   return _M_do_get_integer(__in_ite, __end, __str, __err, __val, (_CharT*)0 );
 }
 
-template <class _CharT, class _InputIter>  
-_InputIter 
+template <class _CharT, class _InputIter>
+_InputIter
 num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end, ios_base& __str,
                                     ios_base::iostate& __err,
                                     unsigned _STLP_LONG_LONG& __val) const {

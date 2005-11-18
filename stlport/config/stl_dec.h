@@ -15,7 +15,7 @@
 // Alpha is little-endian
 # define _STLP_LITTLE_ENDIAN
 
-// collisions 
+// collisions
 # define _STLP_DONT_PUT_STLPORT_IN_STD
 
 #if (__DECCXX_VER < 60000000)
@@ -24,7 +24,7 @@
 // work with namespaces ;(
 # define _STLP_HAS_NO_NAMESPACES 1
 
-# define _STLP_NO_NEW_NEW_HEADER 1 
+# define _STLP_NO_NEW_NEW_HEADER 1
 
 # define _STLP_NO_WCHAR_T  1
 # define _STLP_NEED_EXPLICIT  1
@@ -100,6 +100,6 @@
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 
 # if (__DECCXX_VER <= 60600000)
-#  define _STLP_HAS_NO_NEW_C_HEADERS 1 
+#  define _STLP_HAS_NO_NEW_C_HEADERS 1
 # endif
 

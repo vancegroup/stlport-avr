@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -42,7 +42,7 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
+template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>),
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -63,8 +63,8 @@ protected:
 
 public:
   //dums: need the following public for the __move_traits framework
-  typedef _Rb_tree<key_type, key_compare, 
-                   value_type, _Identity<value_type>, 
+  typedef _Rb_tree<key_type, key_compare,
+                   value_type, _Identity<value_type>,
                    _SetTraits, _Alloc> _Rep_type;
 
 public:
@@ -108,17 +108,17 @@ public:
       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 #else
-  set(const value_type* __first, const value_type* __last) 
-    : _M_t(_Compare(), allocator_type()) 
+  set(const value_type* __first, const value_type* __last)
+    : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
-  set(const value_type* __first, 
+  set(const value_type* __first,
       const value_type* __last, const _Compare& __comp,
       const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
 
   set(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type()) 
+    : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
   set(const_iterator __first, const_iterator __last, const _Compare& __comp,
@@ -132,8 +132,8 @@ public:
     : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {
   }
 
-  _Self& operator=(const _Self& __x) { 
-    _M_t = __x._M_t; 
+  _Self& operator=(const _Self& __x) {
+    _M_t = __x._M_t;
     return *this;
   }
 
@@ -147,7 +147,7 @@ public:
   iterator end() { return _M_t.end(); }
   const_iterator begin() const { return _M_t.begin(); }
   const_iterator end() const { return _M_t.end(); }
-  reverse_iterator rbegin() { return _M_t.rbegin(); } 
+  reverse_iterator rbegin() { return _M_t.rbegin(); }
   reverse_iterator rend() { return _M_t.rend(); }
   const_reverse_iterator rbegin() const { return _M_t.rbegin(); }
   const_reverse_iterator rend() const { return _M_t.rend(); }
@@ -177,11 +177,11 @@ public:
   }
 # endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
-  size_type erase(const key_type& __x) { 
-    return _M_t.erase_unique(__x); 
+  size_type erase(const key_type& __x) {
+    return _M_t.erase_unique(__x);
   }
-  void erase(iterator __first, iterator __last) { 
-    _M_t.erase(__first, __last ); 
+  void erase(iterator __first, iterator __last) {
+    _M_t.erase(__first, __last );
   }
   void clear() { _M_t.clear(); }
 
@@ -195,8 +195,8 @@ public:
   const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
   iterator find(const key_type& __x) { return _M_t.find(__x); }
 # endif
-  size_type count(const key_type& __x) const { 
-    return _M_t.find(__x) == _M_t.end() ? 0 : 1 ; 
+  size_type count(const key_type& __x) const {
+    return _M_t.find(__x) == _M_t.end() ? 0 : 1 ;
   }
   iterator lower_bound(const key_type& __x) { return _M_t.lower_bound(__x); }
   const_iterator lower_bound(const key_type& __x) const { return _M_t.lower_bound(__x); }
@@ -213,9 +213,9 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>), 
+template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>),
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
-class multiset 
+class multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<multiset<_Key, _Compare, _Alloc> >
 #endif
@@ -228,18 +228,18 @@ public:
   typedef _Key     value_type;
   typedef _Compare key_compare;
   typedef _Compare value_compare;
- 
+
 protected:
   //Specific iterator traits creation
   typedef _STLP_PRIV::_MultisetTraitsT<value_type> _MultisetTraits;
 
 public:
   //dums: need the following public for the __move_traits framework
-  typedef _Rb_tree<key_type, key_compare, 
-                   value_type, _Identity<value_type>, 
+  typedef _Rb_tree<key_type, key_compare,
+                   value_type, _Identity<value_type>,
                    _MultisetTraits, _Alloc> _Rep_type;
-                  
-public:                  
+
+public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -301,12 +301,12 @@ public:
            const _Compare& __comp,
            const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-   
+
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   multiset(const _Self& __x) : _M_t(__x._M_t) {}
   _Self& operator=(const _Self& __x) {
-    _M_t = __x._M_t; 
+    _M_t = __x._M_t;
     return *this;
   }
 
@@ -323,9 +323,9 @@ public:
   iterator end() { return _M_t.end(); }
   const_iterator begin() const { return _M_t.begin(); }
   const_iterator end() const { return _M_t.end(); }
-  reverse_iterator rbegin() { return _M_t.rbegin(); } 
+  reverse_iterator rbegin() { return _M_t.rbegin(); }
   reverse_iterator rend() { return _M_t.rend(); }
-  const_reverse_iterator rbegin() const { return _M_t.rbegin(); } 
+  const_reverse_iterator rbegin() const { return _M_t.rbegin(); }
   const_reverse_iterator rend() const { return _M_t.rend(); }
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
@@ -333,14 +333,14 @@ public:
   void swap(_Self& __x) { _M_t.swap(__x._M_t); }
 
   // insert/erase
-  iterator insert(const value_type& __x) { 
+  iterator insert(const value_type& __x) {
     return _M_t.insert_equal(__x);
   }
   iterator insert(iterator __pos, const value_type& __x) {
     return _M_t.insert_equal(__pos, __x);
   }
 
-#ifdef _STLP_MEMBER_TEMPLATES  
+#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last) {
     _M_t.insert_equal(__first, __last);
@@ -354,8 +354,8 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
-  size_type erase(const key_type& __x) { 
-    return _M_t.erase(__x); 
+  size_type erase(const key_type& __x) {
+    return _M_t.erase(__x);
   }
   void erase(iterator __first, iterator __last) {
     _M_t.erase( __first, __last );

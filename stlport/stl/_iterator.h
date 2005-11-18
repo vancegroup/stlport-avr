@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -44,7 +44,7 @@ _STLP_BEGIN_NAMESPACE
 //  standard, but it is retained for backward compatibility.
 
 template <class _Iterator>
-class reverse_iterator : 
+class reverse_iterator :
   public iterator<typename iterator_traits<_Iterator>::iterator_category,
                   typename iterator_traits<_Iterator>::value_type,
                   typename iterator_traits<_Iterator>::difference_type,
@@ -65,14 +65,14 @@ public:
   reverse_iterator() {}
   explicit reverse_iterator(iterator_type __x) : current(__x) {}
   reverse_iterator(const _Self& __x) : current(__x.current) {}
-  _Self& operator = (const _Self& __x) { current = __x.base(); return *this; } 
+  _Self& operator = (const _Self& __x) { current = __x.base(); return *this; }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _Iter>
   reverse_iterator(const reverse_iterator<_Iter>& __x) : current(__x.base()) {}
   template <class _Iter>
-  _Self& operator = (const reverse_iterator<_Iter>& __x) { current = __x.base(); return *this; } 
+  _Self& operator = (const reverse_iterator<_Iter>& __x) { current = __x.base(); return *this; }
 #endif /* _STLP_MEMBER_TEMPLATES */
-    
+
   iterator_type base() const { return current; }
   reference operator*() const {
     _Iterator __tmp = current;
@@ -112,17 +112,17 @@ public:
     current += __n;
     return *this;
   }
-  reference operator[](difference_type __n) const { return *(*this + __n); }  
-}; 
- 
+  reference operator[](difference_type __n) const { return *(*this + __n); }
+};
+
 template <class _Iterator>
-inline bool  _STLP_CALL operator==(const reverse_iterator<_Iterator>& __x, 
+inline bool  _STLP_CALL operator==(const reverse_iterator<_Iterator>& __x,
                                    const reverse_iterator<_Iterator>& __y) {
   return __x.base() == __y.base();
 }
 
 template <class _Iterator>
-inline bool _STLP_CALL operator<(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator<(const reverse_iterator<_Iterator>& __x,
                                  const reverse_iterator<_Iterator>& __y) {
   return __y.base() < __x.base();
 }
@@ -130,25 +130,25 @@ inline bool _STLP_CALL operator<(const reverse_iterator<_Iterator>& __x,
 #ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _Iterator>
-inline bool _STLP_CALL operator!=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator!=(const reverse_iterator<_Iterator>& __x,
                                   const reverse_iterator<_Iterator>& __y) {
   return !(__x == __y);
 }
 
 template <class _Iterator>
-inline bool _STLP_CALL operator>(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator>(const reverse_iterator<_Iterator>& __x,
                                  const reverse_iterator<_Iterator>& __y) {
   return __y < __x;
 }
 
 template <class _Iterator>
-inline bool _STLP_CALL operator<=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator<=(const reverse_iterator<_Iterator>& __x,
                                   const reverse_iterator<_Iterator>& __y) {
   return !(__y < __x);
 }
 
 template <class _Iterator>
-inline bool _STLP_CALL operator>=(const reverse_iterator<_Iterator>& __x, 
+inline bool _STLP_CALL operator>=(const reverse_iterator<_Iterator>& __x,
                                   const reverse_iterator<_Iterator>& __y) {
   return !(__x < __y);
 }
@@ -161,7 +161,7 @@ inline ptrdiff_t _STLP_CALL
 # else
 inline typename reverse_iterator<_Iterator>::difference_type _STLP_CALL
 # endif
-operator-(const reverse_iterator<_Iterator>& __x, 
+operator-(const reverse_iterator<_Iterator>& __x,
           const reverse_iterator<_Iterator>& __y) {
   return __y.base() - __x.base();
 }
@@ -175,7 +175,7 @@ operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x) {
 # endif
 
 template <class _Container>
-class back_insert_iterator 
+class back_insert_iterator
   : public iterator<output_iterator_tag,void,void,void,void> {
   typedef back_insert_iterator<_Container> _Self;
 protected:
@@ -191,7 +191,7 @@ public:
     container = __other.container;
     return *this;
   }
-  _Self& operator=(const typename _Container::value_type& __val) { 
+  _Self& operator=(const typename _Container::value_type& __val) {
     container->push_back(__val);
     return *this;
   }
@@ -206,7 +206,7 @@ inline back_insert_iterator<_Container>  _STLP_CALL back_inserter(_Container& __
 }
 
 template <class _Container>
-class front_insert_iterator 
+class front_insert_iterator
   : public iterator<output_iterator_tag,void,void,void,void> {
   typedef front_insert_iterator<_Container> _Self;
 protected:
@@ -221,7 +221,7 @@ public:
     container = __other.container;
     return *this;
   }
-  _Self& operator=(const typename _Container::value_type& __val) { 
+  _Self& operator=(const typename _Container::value_type& __val) {
     container->push_front(__val);
     return *this;
   }
@@ -236,7 +236,7 @@ inline front_insert_iterator<_Container>  _STLP_CALL front_inserter(_Container& 
 }
 
 template <class _Container>
-class insert_iterator 
+class insert_iterator
   : public iterator<output_iterator_tag,void,void,void,void> {
   typedef insert_iterator<_Container> _Self;
 protected:
@@ -246,7 +246,7 @@ protected:
 public:
   typedef _Container          container_type;
   typedef output_iterator_tag iterator_category;
-  insert_iterator(_Container& __x, typename _Container::iterator __i) 
+  insert_iterator(_Container& __x, typename _Container::iterator __i)
     : container(&__x), _M_iter(__i) {}
 
   _Self& operator=(_Self const& __other) {
@@ -254,7 +254,7 @@ public:
     _M_iter = __other._M_iter;
     return *this;
   }
-  _Self& operator=(const typename _Container::value_type& __val) { 
+  _Self& operator=(const typename _Container::value_type& __val) {
     _M_iter = container->insert(_M_iter, __val);
     ++_M_iter;
     return *this;

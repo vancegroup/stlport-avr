@@ -3,7 +3,7 @@
 // Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 Beta, ICL
 
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
-/* This is 64 bits platform SDK specific settings. There is no clear way to 
+/* This is 64 bits platform SDK specific settings. There is no clear way to
  * recognize the SDK coming with a compiler from the one freely available.
  * For the moment we hope that there is only one SDK for 64 bits windows so
  * we simply detect it using the _WIN64 macro.
@@ -73,7 +73,7 @@
 #    endif
 #  endif  //  (_STLP_MSVC >= 1300)
 
-#  if (_STLP_MSVC <= 1300) 
+#  if (_STLP_MSVC <= 1300)
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 // there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
@@ -102,8 +102,8 @@
  * dums: VC6 do not handle correctly member templates of class that are explicitely
  * instanciated to be exported. There is a workaround, seperate the non template methods
  * from the template ones within 2 different classes and only export the non template one.
- * It is implemented for basic_string and locale at the writing of this note. 
- * This problem has finally been concidered as not important enough to not use this feature. 
+ * It is implemented for basic_string and locale at the writing of this note.
+ * This problem has finally been concidered as not important enough to not use this feature.
  * Moreover boost (www.boost.org) required it to be granted.
  * The workaround is activated thanks to the _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND macro defined
  * later in this config file.
@@ -132,7 +132,7 @@
  * #include <map>
  * const foo_int bar = 0;
  *
- * As you can see foo is available without namespace specification as if 
+ * As you can see foo is available without namespace specification as if
  * a using namespace stlp_std has been performed. Defining _STLP_USING_NAMESPACE_BUG
  * restore the expected compilation error.
  */
@@ -140,7 +140,7 @@
 
 #endif /* _STLP_MSVC */
 
-#if (_MSC_VER <= 1310) 
+#if (_MSC_VER <= 1310)
 #  define _STLP_VENDOR_GLOBAL_CSTD
 #endif /* (_MSC_VER <= 1310) */
 
@@ -188,7 +188,7 @@ typedef char __stl_char;
 #  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS 1
 #  define _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
 #  define _STLP_QUALIFIED_SPECIALIZATION_BUG 1
-#  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1 
+#  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 #  define _STLP_THROW_RETURN_BUG 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
@@ -261,7 +261,7 @@ typedef char __stl_char;
 #    endif
 #  else
 /* The user is forcing use of STLport as a dynamic library. We signal it so
- * that the STLport namespace will be modify to report such a combination 
+ * that the STLport namespace will be modify to report such a combination
  * and force the user to link with the rebuild STLport library.
  */
 #    define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB

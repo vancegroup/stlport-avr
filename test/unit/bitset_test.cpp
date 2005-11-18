@@ -34,7 +34,7 @@ void BitsetTest::bitset1()
   CPPUNIT_ASSERT(b1==0x1FFF);
   CPPUNIT_ASSERT(b2.size()==13);
   CPPUNIT_ASSERT(b2==0x1111);
-  
+
   b1 = b1^(b2<<2);
   CPPUNIT_ASSERT(b1==0x1BBB);
 

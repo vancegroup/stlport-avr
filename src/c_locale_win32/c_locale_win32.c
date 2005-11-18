@@ -230,9 +230,9 @@ static int __GetDefaultCP(LCID lcid);
 static char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_t *ret_buf_size);
 static void my_ltoa(long __x, char* buf) ;
 
-void my_ltoa(long __x, char* buf) { 
+void my_ltoa(long __x, char* buf) {
   char rbuf[64];
-  char* ptr = rbuf; 
+  char* ptr = rbuf;
 
   if (__x == 0)
     *ptr++ = '0';
@@ -243,7 +243,7 @@ void my_ltoa(long __x, char* buf) {
   while(ptr > rbuf) *buf++ = *--ptr;
   /* psw */
   *buf = '\0';
-} 
+}
 
 # ifdef __cplusplus
 _STLP_BEGIN_NAMESPACE
@@ -786,7 +786,7 @@ extern "C" {
 
   int _Locale_mb_cur_min (struct _Locale_ctype *dummy) {
     (void*)dummy;
-    return 1; 
+    return 1;
   }
 
   int _Locale_is_stateless (struct _Locale_ctype * ltype) {
@@ -1318,7 +1318,7 @@ extern "C" {
         break;
       case '\'':
         ++cur_char;
-        while(*cur_char!='\'' && *cur_char!=0) 
+        while(*cur_char!='\'' && *cur_char!=0)
           *cur_output++=*cur_char++;
         break;
       default:
@@ -1368,7 +1368,7 @@ extern "C" {
             const char *dfault)
   { return dfault; }
 
-#ifdef __cplusplus    
+#ifdef __cplusplus
 } /* extern C */
 _STLP_END_NAMESPACE
 #endif
@@ -1377,18 +1377,18 @@ void __FixGrouping(char *grouping) {
   /* This converts NT version which uses '0' instead of 0, etc ; to ANSI */
   while (*grouping) {
     if (*grouping >= '0' && *grouping <= '9') {
-      *grouping = *grouping - '0'; 
+      *grouping = *grouping - '0';
       ++grouping;
-    } 
+    }
     else if (*grouping == ';') {
       char *tmp = grouping;
       /* remove ':' */
       for (tmp = grouping; *tmp; ++tmp)
         *tmp = *(tmp+1);
-    } 
+    }
     else
       ++grouping;
-  } 
+  }
 }
 
 const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int TableSize) {
@@ -1418,7 +1418,7 @@ int __ParseLocaleString(const char* lname, char* lang, char* ctry,
   char ch=lname[0];
 
   if (ch==0) return 0;
-    
+
   else if(ch=='.') { /* Only code page provided */
     if(strlen(lname+1)>MAX_CP_LEN) return -1; /* CP number too long */
     strcpy(page, lname+1);
@@ -1434,9 +1434,9 @@ int __ParseLocaleString(const char* lname, char* lang, char* ctry,
       if (ch!='.') /* hence '_', ',' or '/0' */
         strncpy(lang, lname, len);
       else { /* no ctry, read lang and skip ctry on next pass */
-        ctry[0]=0;  
+        ctry[0]=0;
         strncpy(lang, lname, len);
-        ++param;    
+        ++param;
       }
     }
     else if(param==1 && len<MAX_CTRY_LEN && ch!='_')
@@ -1498,7 +1498,7 @@ static BOOL CALLBACK EnumLocalesProcA(LPSTR locale) {
       }
       else CtryFlag = 1;
     }
-    else 
+    else
       CtryFlag = 1;
   }
 
@@ -1644,7 +1644,7 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
   from_offset = 0;
   while (size > 0) {
     from_size = trim_size_t_to_int(size);
-    wbuffer_size += MultiByteToWideChar(from_cp, MB_PRECOMPOSED, 
+    wbuffer_size += MultiByteToWideChar(from_cp, MB_PRECOMPOSED,
                                         from + from_offset, from_size, NULL, 0);
     from_offset += from_size;
     size -= from_size;
@@ -1658,7 +1658,7 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
   while (size > 0) {
     from_size = trim_size_t_to_int(size);
     wbuf_size = trim_size_t_to_int(wbuffer_size - wbuf_offset);
-    wbuf_offset += MultiByteToWideChar(from_cp, MB_PRECOMPOSED, 
+    wbuf_offset += MultiByteToWideChar(from_cp, MB_PRECOMPOSED,
                                        from + from_offset, from_size, wbuffer + wbuf_offset, wbuf_size);
     from_offset += from_size;
     size -= from_size;
@@ -1669,8 +1669,8 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
   size = wbuffer_size;
   while (size > 0) {
     wbuf_size = trim_size_t_to_int(size);
-    buffer_size += WideCharToMultiByte(to_cp, WC_COMPOSITECHECK | WC_SEPCHARS, 
-                                       wbuffer + wbuf_offset, wbuf_size, 
+    buffer_size += WideCharToMultiByte(to_cp, WC_COMPOSITECHECK | WC_SEPCHARS,
+                                       wbuffer + wbuf_offset, wbuf_size,
                                        NULL, 0, NULL, FALSE);
     wbuf_offset += wbuf_size;
     size -= wbuf_size;
@@ -1684,8 +1684,8 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
   while (size > 0) {
     wbuf_size = trim_size_t_to_int(size);
     to_size = trim_size_t_to_int(buffer_size);
-    buffer_size -= WideCharToMultiByte(to_cp, WC_COMPOSITECHECK | WC_SEPCHARS, 
-                                       wbuffer + wbuf_offset, wbuf_size, 
+    buffer_size -= WideCharToMultiByte(to_cp, WC_COMPOSITECHECK | WC_SEPCHARS,
+                                       wbuffer + wbuf_offset, wbuf_size,
                                        buffer, to_size, NULL, FALSE);
     wbuf_offset += wbuf_size;
     size -= wbuf_size;

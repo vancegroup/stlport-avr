@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 # include "stlport_prefix.h"
 
 #include <hash_map>
@@ -42,7 +42,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-_Locale_ctype* __acquire_ctype(const char* name); 
+_Locale_ctype* __acquire_ctype(const char* name);
 void __release_ctype(_Locale_ctype* cat);
 
 //----------------------------------------------------------------------
@@ -55,14 +55,14 @@ ctype_byname<char>::ctype_byname(const char* name, size_t refs) :
   ctype<char>::_M_ctype_table = _M_byname_table;
   if (!_M_ctype)
     locale::_M_throw_runtime_error();
-  
+
   // We have to do this, instead of just pointer twiddling, because
-  // ctype_base::mask isn't the same type as _Locale_mask_t.  
+  // ctype_base::mask isn't the same type as _Locale_mask_t.
 
   const _Locale_mask_t* p = _Locale_ctype_table(_M_ctype);
 
   if (!p)
-    locale::_M_throw_runtime_error(); 
+    locale::_M_throw_runtime_error();
 
   for (size_t i = 0; i < table_size; ++i) {
     _Locale_mask_t __m = p[i];
@@ -86,14 +86,14 @@ char ctype_byname<char>::do_tolower(char c) const {
 
 const char*
 ctype_byname<char>::do_toupper(char* first, const char* last) const {
-  for ( ; first != last ; ++first) 
+  for ( ; first != last ; ++first)
     *first = (char)_Locale_toupper(_M_ctype, *first);
   return last;
 }
 
 const char*
 ctype_byname<char>::do_tolower(char* first, const char* last) const {
-  for ( ; first != last ; ++first) 
+  for ( ; first != last ; ++first)
     *first = (char)_Locale_tolower(_M_ctype, *first);
   return last;
 }
@@ -121,7 +121,7 @@ ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
   : ctype<wchar_t>(refs),
     _M_ctype(__acquire_ctype(name)) {
   if (!_M_ctype)
-    locale::_M_throw_runtime_error();    
+    locale::_M_throw_runtime_error();
 }
 
 ctype_byname<wchar_t>::~ctype_byname() {
@@ -151,7 +151,7 @@ ctype_byname<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
   return high;
 }
 
-    
+
 const wchar_t*
 ctype_byname<wchar_t>
   ::do_scan_is(ctype_base::mask  m, const wchar_t* low, const wchar_t* high) const {
@@ -168,7 +168,7 @@ wchar_t ctype_byname<wchar_t>::do_toupper(wchar_t c) const {
   return _Locale_wchar_toupper(_M_ctype, c);
 }
 
-const wchar_t* 
+const wchar_t*
 ctype_byname<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low)
     *low = _Locale_wchar_toupper(_M_ctype, *low);
@@ -179,7 +179,7 @@ wchar_t ctype_byname<wchar_t>::do_tolower(wchar_t c) const {
   return _Locale_wchar_tolower(_M_ctype, c);
 }
 
-const wchar_t* 
+const wchar_t*
 ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low)
     *low = _Locale_wchar_tolower(_M_ctype, *low);
@@ -219,7 +219,7 @@ int collate_byname<char>::do_compare(const char* __low1,
                                      const char* __low2,
                                      const char* __high2) const {
   return _Locale_strcmp(_M_collate,
-                        __low1, __high1 - __low1, 
+                        __low1, __high1 - __low1,
                         __low2, __high2 - __low2);
 }
 
@@ -260,7 +260,7 @@ int collate_byname<wchar_t>::do_compare(const wchar_t* low1,
                                         const wchar_t* low2,
                                         const wchar_t* high2) const {
   return _Locale_strwcmp(_M_collate,
-                         low1, high1 - low1, 
+                         low1, high1 - low1,
                          low2, high2 - low2);
 }
 
@@ -428,7 +428,7 @@ bool codecvt_byname<wchar_t, char, mbstate_t>
   return false;
 }
 
-int 
+int
 codecvt_byname<wchar_t, char, mbstate_t>::do_length(const state_type&,
                                                     const  extern_type* from, const  extern_type* end,
                                                     size_t mx) const {
@@ -489,7 +489,7 @@ string numpunct_byname<char>::do_grouping() const {
 
 # ifndef _STLP_NO_WCHAR_T
 
-// numpunct_byname<wchar_t> 
+// numpunct_byname<wchar_t>
 
 numpunct_byname<wchar_t>::numpunct_byname(const char* name, size_t refs)
   : numpunct<wchar_t>(refs),
@@ -567,7 +567,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
           pos_format.field[2] = (char) money_base::symbol;
           pos_format.field[3] = (char) money_base::none;
         }
-      }       
+      }
       break;
     case 2: // The sign string succeeds the quantity and currency_symbol.
       if (_Locale_p_cs_precedes(monetary)) {
@@ -672,11 +672,11 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
           neg_format.field[2] = (char) money_base::space;
           neg_format.field[3] = (char) money_base::symbol;
         } else {
-          // a space not separates currency_symbol from a negative value. 
+          // a space not separates currency_symbol from a negative value.
           neg_format.field[2] = (char) money_base::symbol;
           neg_format.field[3] = (char) money_base::none;
         }
-      }       
+      }
       break;
     case 2: // The sign string succeeds the quantity and currency_symbol.
       if (_Locale_n_cs_precedes(monetary)) {
@@ -778,7 +778,7 @@ moneypunct_byname<char, true>::~moneypunct_byname() {
   __release_monetary(_M_monetary);
 }
 
-char moneypunct_byname<char, true>::do_decimal_point() const 
+char moneypunct_byname<char, true>::do_decimal_point() const
   {return _Locale_mon_decimal_point(_M_monetary);}
 
 char moneypunct_byname<char, true>::do_thousands_sep() const
@@ -796,7 +796,7 @@ string moneypunct_byname<char, true>::do_positive_sign() const
 string moneypunct_byname<char, true>::do_negative_sign() const
   {return _Locale_negative_sign(_M_monetary);}
 
-int moneypunct_byname<char, true>::do_frac_digits() const 
+int moneypunct_byname<char, true>::do_frac_digits() const
   {return _Locale_int_frac_digits(_M_monetary);}
 
 moneypunct_byname<char, false>::moneypunct_byname(const char * name,
@@ -829,7 +829,7 @@ string moneypunct_byname<char, false>::do_positive_sign() const
 string moneypunct_byname<char, false>::do_negative_sign() const
   {return _Locale_negative_sign(_M_monetary);}
 
-int moneypunct_byname<char, false>::do_frac_digits() const 
+int moneypunct_byname<char, false>::do_frac_digits() const
   {return _Locale_frac_digits(_M_monetary);}
 
 //
@@ -857,7 +857,7 @@ wchar_t moneypunct_byname<wchar_t, true>::do_thousands_sep() const
 
 string moneypunct_byname<wchar_t, true>::do_grouping() const
   {return _Locale_mon_grouping(_M_monetary);}
-  
+
 inline wstring __do_widen (string const& str) {
 # if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__) //*ty 05/26/2001 - added workaround for mpw
   wstring::_Reserve_t __Reserve;
@@ -870,16 +870,16 @@ inline wstring __do_widen (string const& str) {
   return result;
 }
 
-wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const 
+wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
   {return __do_widen(_Locale_int_curr_symbol(_M_monetary));}
 
-wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const 
+wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
   {return __do_widen(_Locale_positive_sign(_M_monetary));}
 
-wstring moneypunct_byname<wchar_t, true>::do_negative_sign() const 
+wstring moneypunct_byname<wchar_t, true>::do_negative_sign() const
   {return __do_widen(_Locale_negative_sign(_M_monetary));}
 
-int moneypunct_byname<wchar_t, true>::do_frac_digits() const 
+int moneypunct_byname<wchar_t, true>::do_frac_digits() const
   {return _Locale_int_frac_digits(_M_monetary);}
 
 moneypunct_byname<wchar_t, false>::moneypunct_byname(const char * name,
@@ -890,7 +890,7 @@ moneypunct_byname<wchar_t, false>::moneypunct_byname(const char * name,
   _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
-moneypunct_byname<wchar_t, false>::~moneypunct_byname() 
+moneypunct_byname<wchar_t, false>::~moneypunct_byname()
   {__release_monetary(_M_monetary);}
 
 wchar_t moneypunct_byname<wchar_t, false>::do_decimal_point() const
@@ -902,21 +902,21 @@ wchar_t moneypunct_byname<wchar_t, false>::do_thousands_sep() const
 string moneypunct_byname<wchar_t, false>::do_grouping() const
   {return _Locale_mon_grouping(_M_monetary);}
 
-wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const 
+wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
   {return __do_widen(_Locale_currency_symbol(_M_monetary));}
 
-wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const 
+wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
   {return __do_widen(_Locale_positive_sign(_M_monetary));}
 
-wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const 
+wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const
   {return __do_widen(_Locale_negative_sign(_M_monetary));}
 
-int moneypunct_byname<wchar_t, false>::do_frac_digits() const 
+int moneypunct_byname<wchar_t, false>::do_frac_digits() const
   {return _Locale_frac_digits(_M_monetary);}
 
 # endif
 
-_STLP_END_NAMESPACE  
+_STLP_END_NAMESPACE
 
 #include <stl/_messages_facets.h>
 #include "message_facets.h"
@@ -1003,18 +1003,18 @@ void _Catalog_nl_catd_map::erase(messages_base::catalog cat) {
 //
 //
 
-_Messages_impl::_Messages_impl(bool is_wide) : 
-  _M_message_obj(0), _M_map(0) { 
+_Messages_impl::_Messages_impl(bool is_wide) :
+  _M_message_obj(0), _M_map(0) {
   _M_delete = true;
-  if (is_wide) 
+  if (is_wide)
     _M_map = new _Catalog_locale_map;
   _M_message_obj = __acquire_messages("C");
 }
 
-_Messages_impl::_Messages_impl(bool is_wide, _Locale_messages* msg_obj ) : 
-  _M_message_obj(msg_obj), _M_map(0) { 
+_Messages_impl::_Messages_impl(bool is_wide, _Locale_messages* msg_obj ) :
+  _M_message_obj(msg_obj), _M_map(0) {
   _M_delete = true;
-  if (is_wide) 
+  if (is_wide)
     _M_map = new _Catalog_locale_map;
 }
 
@@ -1023,7 +1023,7 @@ _Messages_impl::~_Messages_impl() {
   if (_M_map) delete _M_map;
 }
 
-_Messages::catalog _Messages_impl::do_open(const string& filename, const locale& L) const {  
+_Messages::catalog _Messages_impl::do_open(const string& filename, const locale& L) const {
   nl_catd_type result = _M_message_obj ? _Locale_catopen(_M_message_obj, filename.c_str())
     : (nl_catd_type)(-1);
 
@@ -1066,7 +1066,7 @@ _Messages_impl::do_get(catalog thecat,
   // str is correct.  Now we must widen it to get a wstring.
   size_t n = strlen(str);
 
-  // NOT PORTABLE.  What we're doing relies on internal details of the 
+  // NOT PORTABLE.  What we're doing relies on internal details of the
   // string implementation.  (Contiguity of string elements.)
   wstring result(n, wchar_t(0));
   ct.widen(str, str + n, &*result.begin());
@@ -1086,10 +1086,10 @@ void _Messages_impl::do_close(catalog thecat) const {
 //----------------------------------------------------------------------
 // messages<char>
 
-messages<char>::messages(size_t refs)  : 
+messages<char>::messages(size_t refs)  :
   locale::facet(refs), _M_impl(new _Messages_impl(false)) {}
 
-messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : locale::facet(refs), 
+messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : locale::facet(refs),
   _M_impl(new _Messages_impl(false, msg_obj)) {}
 
 
@@ -1106,7 +1106,7 @@ messages_byname<char>::~messages_byname() {}
 //----------------------------------------------------------------------
 // messages<wchar_t>
 
-messages<wchar_t>::messages(size_t refs)  : 
+messages<wchar_t>::messages(size_t refs)  :
   locale::facet(refs), _M_impl(new _Messages_impl(true)) {}
 
 messages<wchar_t>::messages(size_t refs, _Locale_messages* msg_obj)

@@ -6,13 +6,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -233,7 +233,7 @@ public:
 #endif
 
 #if defined (_STLP_ATOMIC_CAS)
-/* 
+/*
  * Thanks to the support of the simple Compare And Swap atomic operation
  * we are able to grant a lock free node_alloc implementation.
  */
@@ -264,7 +264,7 @@ private:
   // if it is inconvenient to allocate the requested number.
   static char*  _STLP_CALL _S_chunk_alloc(size_t __p_size, int& __nobjs);
   // Chunk allocation state.
-  static _Obj * _STLP_VOLATILE _S_free_list[_STLP_NFREELISTS]; 
+  static _Obj * _STLP_VOLATILE _S_free_list[_STLP_NFREELISTS];
   // Amount of total allocated memory
   static size_t _S_heap_size;
 
@@ -334,7 +334,7 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 #  endif
 /* else convert, but only if partial specialization works, since else
  * Container::allocator_type won't be different */
-#else 
+#else
 #  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
 #endif /* _STLP_MEMBER_TEMPLATES || !_STLP_CLASS_PARTIAL_SPECIALIZATION */
 
@@ -346,7 +346,7 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
 template <class _Tp, class _Allocator>
 struct _Alloc_traits {
   typedef _Allocator _Orig;
-#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) 
+#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
   typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
   typedef typename _Rebind_type::other  allocator_type;
   static allocator_type create_allocator(const _Orig& __a)
@@ -414,7 +414,7 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 #  endif /* _STLP_USE_NEWALLOC */
 #endif /* _STLP_USE_PERTHREAD_ALLOC */
 
-// This implements allocators as specified in the C++ standard.  
+// This implements allocators as specified in the C++ standard.
 //
 // Note that standard-conforming allocators use many language features
 // that are not yet widely implemented.  In particular, they rely on
@@ -423,12 +423,12 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // to refer to a template member of a dependent type.
 
 template <class _Tp>
-class allocator 
+class allocator
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-  : public __stlport_class<allocator<_Tp> > 
+  : public __stlport_class<allocator<_Tp> >
 #endif
 {
 public:
@@ -448,7 +448,7 @@ public:
   allocator() _STLP_NOTHROW {}
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
-#endif    
+#endif
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
   ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) const {return &__x;}
@@ -528,7 +528,7 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 # endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 #if !defined (_STLP_FORCE_ALLOCATORS)
-#  define _STLP_FORCE_ALLOCATORS(a,y) 
+#  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_MEMBER_TEMPLATE_CLASSES)
@@ -583,12 +583,12 @@ public:
 #if 0
 /*
 public:
-  inline _STLP_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {} 
+  inline _STLP_alloc_proxy(const _Self& __x) : _MaybeReboundAlloc(__x), _M_data(__x._M_data) {}
   // construction/destruction
-  inline _Self& operator = (const _Self& __x) { 
+  inline _Self& operator = (const _Self& __x) {
     *(_MaybeReboundAlloc*)this = *(_MaybeReboundAlloc*)__x;
-    _M_data = __x._M_data; return *this; 
-  } 
+    _M_data = __x._M_data; return *this;
+  }
   inline _Self& operator = (const _Base& __x) { ((_Base&)*this) = __x; return *this; }
 */
 #endif
@@ -596,11 +596,11 @@ public:
   // language support
 #if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
   // else it is rebound already, and allocate() member is accessible
-  inline _Tp* allocate(size_t __n) { 
-    return __stl_alloc_rebind(__STATIC_CAST(_Base&,*this),(_Tp*)0).allocate(__n,0); 
+  inline _Tp* allocate(size_t __n) {
+    return __stl_alloc_rebind(__STATIC_CAST(_Base&,*this),(_Tp*)0).allocate(__n,0);
   }
-  inline void deallocate(_Tp* __p, size_t __n) { 
-    __stl_alloc_rebind(__STATIC_CAST(_Base&, *this),(_Tp*)0).deallocate(__p, __n); 
+  inline void deallocate(_Tp* __p, size_t __n) {
+    __stl_alloc_rebind(__STATIC_CAST(_Base&, *this),(_Tp*)0).deallocate(__p, __n);
   }
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 };

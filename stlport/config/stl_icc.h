@@ -34,7 +34,7 @@
 
 //#undef _STLP_WINCE
 
-#ifndef __GNUC__ 
+#ifndef __GNUC__
 # define __GNUC__ 3
 #endif
 

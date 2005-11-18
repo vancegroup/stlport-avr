@@ -2,35 +2,35 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 // This header is an extension.  It defines two streambufs:
 // stdio_istreambuf, a read-only streambuf synchronized with a C stdio
 // FILE object, and stdio_ostreambuf, a write-only streambuf
-// synchronized with a C stdio FILE object.  Note that neither 
+// synchronized with a C stdio FILE object.  Note that neither
 // stdio_istreambuf nor stdio_ostreambuf is a template; both classes
 // are derived from basic_streambuf<char, char_traits<char> >.
 
 // Note: the imbue() member function is a no-op.  In particular, these
 // classes assume that codecvt<char, char, mbstate_t> is always an identity
 // transformation.  This is true of the default locale, and of all locales
-// defined for the C I/O library.  If you need to use a locale where 
-// the codecvt<char, char, mbstate_t> facet performs a nontrivial 
+// defined for the C I/O library.  If you need to use a locale where
+// the codecvt<char, char, mbstate_t> facet performs a nontrivial
 // conversion, then you should use basic_filebuf<> instead of stdio_istreambuf
-// or stdio_ostreambuf.  (If you don't understand what any of this means, 
-// then it's not a feature you need to worry about.  Locales where 
+// or stdio_ostreambuf.  (If you don't understand what any of this means,
+// then it's not a feature you need to worry about.  Locales where
 // codecvt<char, char, mbstate_t> does something nontrivial are a rare
 // corner case.)
 

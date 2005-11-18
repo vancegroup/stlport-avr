@@ -2,13 +2,13 @@
  * Copyright (c) 1997-1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -50,8 +50,8 @@
 
 #  include _STLP_NATIVE_HEADER(memory)
 
-#  if defined (__MSL__) && (__MSL__ >= 0x2405	 && __MSL__ < 0x5201) 
-/*  980401 vss  MSL 2.4  Pro 3 Release  */	
+#  if defined (__MSL__) && (__MSL__ >= 0x2405   && __MSL__ < 0x5201)
+/*  980401 vss  MSL 2.4  Pro 3 Release  */
 #   include <new_mem.h>
 #  endif
 

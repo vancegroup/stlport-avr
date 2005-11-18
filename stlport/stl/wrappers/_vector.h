@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -55,7 +55,7 @@ public:
     vector(const_iterator __first, const_iterator __last) : _VEC_SUPER(__first,__last) { }
 # ifdef _STLP_DEBUG
   // certainly, no member templates here !
-    vector(const _Tp* __first, const _Tp* __last) : _VEC_SUPER(__first,__last) { }    
+    vector(const _Tp* __first, const _Tp* __last) : _VEC_SUPER(__first,__last) { }
 # endif
     ~vector() {}
 };
@@ -69,7 +69,7 @@ inline bool operator==(const vector<_Tp>& __x, const vector<_Tp>& __y) {
 
 template <class _Tp>
 inline bool operator<(const vector<_Tp>& __x, const vector<_Tp>& __y) {
-  return lexicographical_compare(__x.begin(), __x.end(), 
+  return lexicographical_compare(__x.begin(), __x.end(),
 				 __y.begin(), __y.end());
 }
 #  endif /* _STLP_BASE_MATCH_BUG */

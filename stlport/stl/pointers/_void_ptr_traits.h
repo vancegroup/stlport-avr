@@ -1,12 +1,12 @@
 /*
  *
- * Copyright (c) 2003 
+ * Copyright (c) 2003
  * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -200,7 +200,7 @@ template <class _Tp, class _Iterator>
 struct __iterator_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
   typedef iterator_traits<_Iterator> _IteTraits;
-  
+
   typedef typename _IteTraits::iterator_category iterator_category;
   typedef void*  value_type;
   typedef typename _IteTraits::difference_type difference_type;
@@ -255,15 +255,15 @@ private:
 template <class _Tp, class _UnaryPredicate>
 struct __unary_pred_wrapper {
   typedef __void_ptr_traits<_Tp> cast_traits;
-  
+
   __unary_pred_wrapper (_UnaryPredicate const& __pred) : _M_pred(__pred) {}
-  
+
   bool operator () (void *__ptr) const {
     return _M_pred(cast_traits::cast(__ptr));
   }
 
 private:
-  _UnaryPredicate _M_pred;  
+  _UnaryPredicate _M_pred;
 };
 
 

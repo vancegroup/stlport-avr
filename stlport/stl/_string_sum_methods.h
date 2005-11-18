@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2003 
+ * Copyright (c) 2003
  * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -21,14 +21,14 @@
 
 public:
   template <class _Left, class _Right, class _StorageDir>
-  basic_string(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) 
+  basic_string(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s)
     : _STLP_STRING_SUM_BASE(_Reserve_t(), __s.size(), __s.get_allocator()) {
     _M_append_sum(__s);
   }
 
   template <class _Left, class _Right, class _StorageDir>
   basic_string(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-               size_type __pos, size_type __n = _STLP_STRING_BASE_SCOPE npos, 
+               size_type __pos, size_type __n = _STLP_STRING_BASE_SCOPE npos,
                const allocator_type& __a = allocator_type())
     : _STLP_STRING_SUM_BASE(_Reserve_t(), (__pos <= __s.size())?((min) (__n, __s.size() - __pos)):0, __a) {
     size_type __size = __s.size();
@@ -50,7 +50,7 @@ public:
 
   template <class _Left, class _Right, class _StorageDir>
   _Self& append(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_append_sum(__s); 
+    return _M_append_sum(__s);
   }
 
   template <class _Left, class _Right, class _StorageDir>
@@ -63,11 +63,11 @@ public:
 
   template <class _Left, class _Right, class _StorageDir>
   _Self& assign(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_assign_sum(__s); 
+    return _M_assign_sum(__s);
   }
 
   template <class _Left, class _Right, class _StorageDir>
-  _Self& assign(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, 
+  _Self& assign(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
                 size_type __pos, size_type __n) {
     if (__pos > __s.size())
       this->_M_throw_out_of_range();
@@ -110,25 +110,25 @@ private:
                              size_type __pos, size_type __n) {
     return uninitialized_copy(__s + __pos, __s + __pos + (min)(__n, __s_size - __pos), __buf);
   }
-  _CharT* _M_append_fast_pos(__cstr_wrapper<_CharT> const& __s, _CharT *__buf, 
+  _CharT* _M_append_fast_pos(__cstr_wrapper<_CharT> const& __s, _CharT *__buf,
                              size_type __pos, size_type __n) {
     return _M_append_fast_pos(__s.c_str(), __s.size(), __buf, __pos, __n);
   }
-  _CharT* _M_append_fast_pos(__bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf, 
+  _CharT* _M_append_fast_pos(__bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf,
                              size_type __pos, size_type __n) {
     return _M_append_fast_pos(__s.b_str(), __buf, __pos, __n);
   }
-  _CharT* _M_append_fast_pos(_Self const& __s, _CharT *__buf, 
+  _CharT* _M_append_fast_pos(_Self const& __s, _CharT *__buf,
                              size_type __pos, size_type __n) {
     return _M_append_fast_pos(__s.data(), __s.size(), __buf, __pos, __n);
   }
-  _CharT* _M_append_fast_pos(__sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _CharT *__buf, 
+  _CharT* _M_append_fast_pos(__sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _CharT *__buf,
                              size_type __pos, size_type __n) {
     return __buf;
   }
 
   template <class _Left, class _Right, class _StorageDir>
-  _CharT* _M_append_fast_pos(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, 
+  _CharT* _M_append_fast_pos(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
                              _CharT *__buf, size_type __pos, size_type __n = _STLP_STRING_BASE_SCOPE npos) {
     if (__n == 0) {
       return __buf;
@@ -147,8 +147,8 @@ private:
   }
 
   /* Note: We always force use of dynamic buffer if the short string optim option is activated
-   * to avoid complicated code if the basic_string was instanciated with a non POD type. 
-   * In such a case we should use assignment for objects in the static array something that we 
+   * to avoid complicated code if the basic_string was instanciated with a non POD type.
+   * In such a case we should use assignment for objects in the static array something that we
    * do not do.
    */
   size_type _M_get_additional_size(size_type __new_size, const __false_type& /*_Char_Is_POD*/) const {
@@ -235,7 +235,7 @@ private:
     }
     return _M_assign_overflow_pos(__len, __s, __pos, __n);
   }
-  
+
   template <class _Left, class _Right, class _StorageDir>
   _Self& _M_append_sum (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     size_type __s_size = __s.size();
@@ -267,7 +267,7 @@ private:
       }
       _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size))
       /* The call to the traits::assign method is only important for non POD types because the instance
-       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed 
+       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
        * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
        * but we are not going to make two implementations just for that.
        */
@@ -278,7 +278,7 @@ private:
   }
 
   template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_append_sum_pos (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, 
+  _Self& _M_append_sum_pos (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
                             size_type __pos, size_type __n) {
     size_type __s_size = (min)(__s.size() - __pos, __n);
     if (__s_size == 0)
@@ -309,7 +309,7 @@ private:
       }
       _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size))
       /* The call to the traits::assign method is only important for non POD types because the instance
-       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed 
+       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
        * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
        * but we are not going to make two implementations just for that.
        */

@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 
 
 #ifndef _STLP_C_LOCALE_H
@@ -23,7 +23,7 @@
 /*
  * Implementation dependent definitions
  */
-#if defined(__sgi) 
+#if defined(__sgi)
 #  if defined(ROOT_65) /* IRIX 6.5.x */
 #    include <sgidefs.h>
 #    include <standards.h>
@@ -74,7 +74,7 @@ typedef char mbstate_t;
 #      endif
 #    endif /* _MBSTATE_T */
 
-#  endif /* ROOT65 */ 
+#  endif /* ROOT65 */
 
 #else /* __sgi */
 
@@ -108,7 +108,7 @@ struct _Locale_monetary;
 struct _Locale_messages;
 
 /*
-  Bitmask macros.  
+  Bitmask macros.
 */
 
 /*
@@ -151,16 +151,16 @@ struct _Locale_messages;
 
 
 #if defined (__Lynx__)
- /* azov: On Lynx isalpha defined as (_U | _L), which gives us a mask 
-  * unusable in ctype_table. So we have to redefine it and use hard-coded 
+ /* azov: On Lynx isalpha defined as (_U | _L), which gives us a mask
+  * unusable in ctype_table. So we have to redefine it and use hard-coded
   * numbers (to avoid potential clashes if system headers change).
   *
-  * P.S. Actually, I see no reason in using platform-specific masks - 
+  * P.S. Actually, I see no reason in using platform-specific masks -
   * having just one set of masks for all platforms should work just as
-  * well - we only use them internally and they don't have to be equal 
+  * well - we only use them internally and they don't have to be equal
   * to whatever defined in local ctype.h
   *
-  */ 
+  */
 #  define _Locale_CNTRL  040     /* _C, Control character */
 #  define _Locale_UPPER  01      /* _U, Upper case */
 #  define _Locale_LOWER  02      /* _L, Lower case */
@@ -201,7 +201,7 @@ struct _Locale_messages;
 #    define _Locale_ALPHA _CTYPE_A
 
 #  elif defined (__NetBSD__) || defined (__OpenBSD__) || defined (__amigaos__)
- 
+
 #    define _Locale_CNTRL _C
 #    define _Locale_UPPER _U
 #    define _Locale_LOWER _L
@@ -257,7 +257,7 @@ struct _Locale_messages;
 #    define _ISSPACE _S
 #    define _ISPRINT (_P | _U | _L | _N | _B)
 #    define _ISALPHA (_U | _L)
-#  endif 
+#  endif
 
 #  define _Locale_CNTRL  _ISCNTRL
 #  define _Locale_UPPER  _ISUPPER
@@ -308,7 +308,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _SPACE
 #  define _Locale_PRINT  (_ALPHA | _DIGIT | _BLANK | _PUNCT)
 /* is this one has to be so complex ? */
-#  define _Locale_ALPHA  ( _ALPHA & ~ (_UPPER | _LOWER )) 
+#  define _Locale_ALPHA  ( _ALPHA & ~ (_UPPER | _LOWER ))
 #elif defined (__DMC__)
 #  define _Locale_CNTRL  _CONTROL
 #  define _Locale_UPPER  _UPPER
@@ -319,7 +319,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _SPACE
 #  define _Locale_PRINT  (_UPPER | _LOWER | _DIGIT | _PUNCT | _SPACE)
 #  define _Locale_ALPHA  _ALPHA
-#elif defined(__MRC__) || defined(__SC__)		/* *TY 02/24/2000 - added support for MPW */
+#elif defined(__MRC__) || defined(__SC__)    /* *TY 02/24/2000 - added support for MPW */
 #  define _Locale_CNTRL  _CTL
 #  define _Locale_UPPER  _UPP
 #  define _Locale_LOWER  _LOW
@@ -341,7 +341,7 @@ struct _Locale_messages;
 #  define _Locale_ALPHA  256
 
 #elif defined (__GNUC__) && (__GNUC__ == 3) && defined (__APPLE__)
- 
+
 #  define _Locale_CNTRL _C
 #  define _Locale_UPPER _U
 #  define _Locale_LOWER _L
@@ -353,7 +353,7 @@ struct _Locale_messages;
 #  define _Locale_ALPHA _A
 
 #elif defined (__hpux) || defined (__osf__)
- 
+
 #  if defined(__HP_aCC) && !defined(_INCLUDE_HPUX_SOURCE)
 #    define _ISALPHA      0x001
 #    define _ISALNUM      0x002

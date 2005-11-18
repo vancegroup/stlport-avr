@@ -4,12 +4,12 @@ class __simple_alloc {
 public:
   typedef typename _Alloc::value_type __alloc_value_type;
   typedef _Tp value_type;
-  static size_t  _STLP_CALL __chunk(size_t __n) { 
-    return (sizeof(__alloc_value_type)==sizeof(value_type)) ? __n : 
-	    ((__n*sizeof(value_type)+sizeof(__alloc_value_type)-1)/sizeof(__alloc_value_type));
+  static size_t  _STLP_CALL __chunk(size_t __n) {
+    return (sizeof(__alloc_value_type)==sizeof(value_type)) ? __n :
+      ((__n*sizeof(value_type)+sizeof(__alloc_value_type)-1)/sizeof(__alloc_value_type));
   }
   static _Tp*  _STLP_CALL allocate(size_t __n) { return 0 == __n ? 0 : (_Tp*) __alloc_type::allocate(__chunk(__n)); }
-  static void  _STLP_CALL deallocate(_Tp * __p, size_t __n) { 
+  static void  _STLP_CALL deallocate(_Tp * __p, size_t __n) {
     __alloc_type::deallocate((__alloc_value_type*)__p, __chunk(__n)); }
 };
 
@@ -17,7 +17,7 @@ public:
 // into a standard-conforming allocator.   Note that this adaptor does
 // *not* assume that all objects of the underlying alloc class are
 // identical, nor does it assume that all of the underlying alloc's
-// member functions are static member functions.  Note, also, that 
+// member functions are static member functions.  Note, also, that
 // __allocator<_Tp, alloc> is essentially the same thing as allocator<_Tp>.
 
 template <class _Tp, class _Alloc>
@@ -42,7 +42,7 @@ struct __allocator : public _Alloc {
   __allocator(const __allocator<_Tp, _Alloc>& __a) _STLP_NOTHROW
     : _Alloc(__a) {}
 # if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-  template <class _Tp1> 
+  template <class _Tp1>
   __allocator(const __allocator<_Tp1, _Alloc>& __a) _STLP_NOTHROW
     : _Alloc(__a) {}
 # endif
@@ -59,8 +59,8 @@ struct __allocator : public _Alloc {
   _Tp* allocate(size_type __n, const void* = 0) {
     if (__n > max_size())
       __THROW_BAD_ALLOC;
-    return __n != 0 
-        ? __STATIC_CAST(_Tp*,__underlying_alloc::allocate(__n * sizeof(_Tp))) 
+    return __n != 0
+        ? __STATIC_CAST(_Tp*,__underlying_alloc::allocate(__n * sizeof(_Tp)))
         : 0;
   }
 
@@ -68,7 +68,7 @@ struct __allocator : public _Alloc {
   void deallocate(pointer __p, size_type __n)
     { if (__p) __underlying_alloc::deallocate(__p, __n * sizeof(_Tp)); }
 
-  size_type max_size() const _STLP_NOTHROW 
+  size_type max_size() const _STLP_NOTHROW
     { return size_t(-1) / sizeof(_Tp); }
 
   void construct(pointer __p, const_reference __val) { _STLP_STD::_Copy_Construct(__p, __val); }
@@ -175,7 +175,7 @@ struct _Alloc_traits<_Tp, __malloc_alloc<__inst> > {
 
 template <class _Tp, bool __threads, int __inst>
 struct _Alloc_traits<_Tp, __node_alloc<__threads, __inst> > {
-  typedef __allocator<_Tp, __node_alloc<__threads, __inst> > 
+  typedef __allocator<_Tp, __node_alloc<__threads, __inst> >
           allocator_type;
 };
 
@@ -194,7 +194,7 @@ struct _Alloc_traits<_Tp, __allocator<_Tp1, _Alloc > > {
 
 #endif
 
-#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) 
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 
 // Versions for the predefined SGI-style allocators.
 

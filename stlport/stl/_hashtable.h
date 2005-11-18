@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -69,8 +69,8 @@ _STLP_BEGIN_NAMESPACE
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 //Export of the classes used to represent buckets in the hashtable implementation.
 _STLP_EXPORT_TEMPLATE_CLASS allocator<_STLP_PRIV::_Slist_node_base*>;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base**, 
-                                              _STLP_PRIV::_Slist_node_base*, 
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base**,
+                                              _STLP_PRIV::_Slist_node_base*,
                                               allocator<_STLP_PRIV::_Slist_node_base*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<_STLP_PRIV::_Slist_node_base*, allocator<_STLP_PRIV::_Slist_node_base*> >;
 #  if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
@@ -158,13 +158,13 @@ _STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>::value_
 #  endif
 value_type(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&) {
   typedef typename _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>::value_type _Val;
-  return (_Val*) 0; 
+  return (_Val*) 0;
 }
 template <class _BaseIte, class _Traits>
-inline forward_iterator_tag iterator_category(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&) 
+inline forward_iterator_tag iterator_category(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&)
 { return forward_iterator_tag(); }
 template <class _BaseIte, class _Traits>
-inline ptrdiff_t* distance_type(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&) 
+inline ptrdiff_t* distance_type(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&)
 { return (ptrdiff_t*) 0; }
 #endif
 
@@ -180,7 +180,7 @@ public:
   static size_t _S_next_size(size_t);
 };
 
-#if defined (_STLP_USE_TEMPLATE_EXPORT) 
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS _Stl_prime<bool>;
 #endif
 
@@ -193,8 +193,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
  * do. If we're using standard-conforming allocators, then a hashtable
  * unconditionally has a member variable to hold its allocator, even if
  * it so happens that all instances of the allocator type are identical.
- * This is because, for hashtables, this extra storage is negligible.  
- * Additionally, a base class wouldn't serve any other purposes; it 
+ * This is because, for hashtables, this extra storage is negligible.
+ * Additionally, a base class wouldn't serve any other purposes; it
  * wouldn't, for example, simplify the exception-handling code.
  */
 template <class _Val, class _Key, class _HF,
@@ -356,13 +356,13 @@ public:
 public:
   //The number of buckets is size() - 1 because the last bucket always contains
   //_M_elems.end() to make algo easier to implement.
-  size_type bucket_count() const 
+  size_type bucket_count() const
   { return _M_buckets.size() - 1; }
-  size_type max_bucket_count() const 
-  { return _STLP_PRIV::_Stl_prime_type::_S_max_nb_buckets(); } 
-  size_type elems_in_bucket(size_type __bucket) const 
+  size_type max_bucket_count() const
+  { return _STLP_PRIV::_Stl_prime_type::_S_max_nb_buckets(); }
+  size_type elems_in_bucket(size_type __bucket) const
   { return distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
-  size_type bucket(const key_type& __k) const 
+  size_type bucket(const key_type& __k) const
   { return _M_bkt_num_key(__k); }
 
   // hash policy
@@ -385,7 +385,7 @@ protected:
 public:
   pair<iterator, bool> insert_unique_noresize(const value_type& __obj);
   iterator insert_equal_noresize(const value_type& __obj);
- 
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l) {
@@ -463,7 +463,7 @@ public:
 
 private:
 #if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT> 
+  template <class _KT>
   _ElemsIte _M_find(const _KT& __key) const
 #else
   _ElemsIte _M_find(const key_type& __key) const
@@ -475,24 +475,24 @@ private:
     _ElemsIte __last(_M_buckets[__n + 1]);
     for ( ; (__first != __last) && !_M_equals(_M_get_key(*__first), __key); ++__first);
     return __first != __last ? __first : __mutable_elems.end();
-  } 
+  }
 
 public:
 #if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT> 
-  iterator find(const _KT& __key) 
+  template <class _KT>
+  iterator find(const _KT& __key)
 #else
-  iterator find(const key_type& __key) 
+  iterator find(const key_type& __key)
 #endif
-  { return _M_find(__key); } 
+  { return _M_find(__key); }
 
 #if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT> 
+  template <class _KT>
   const_iterator find(const _KT& __key) const
 #else
   const_iterator find(const key_type& __key) const
 #endif
-  { return _M_find(__key); } 
+  { return _M_find(__key); }
 
   size_type count(const key_type& __key) const {
     const size_type __n = _M_bkt_num_key(__key);
@@ -502,8 +502,8 @@ public:
     for (; __cur != __last; ++__cur) {
       if (_M_equals(_M_get_key(*__cur), __key)) {
         size_type __result = 1;
-        for (++__cur; 
-             __cur != __last && _M_equals(_M_get_key(*__cur), __key); 
+        for (++__cur;
+             __cur != __last && _M_equals(_M_get_key(*__cur), __key);
              ++__result, ++__cur);
         return __result;
       }

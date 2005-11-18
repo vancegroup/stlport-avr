@@ -53,7 +53,7 @@ void PartialTest::parsrt0()
 
   partial_sort((int*)numbers, (int*)numbers + 3, (int*)numbers + 6);
 
-  // 1 2 3 5 4 6 
+  // 1 2 3 5 4 6
   CPPUNIT_ASSERT(numbers[0]==1);
   CPPUNIT_ASSERT(numbers[1]==2);
   CPPUNIT_ASSERT(numbers[2]==3);
@@ -64,8 +64,8 @@ void PartialTest::parsrt0()
 
 void PartialTest::parsrt1()
 {
-  // 8 8 5 3 7 6 5 3 2 4 
-  // 2 3 3 4 5 8 8 7 6 5 
+  // 8 8 5 3 7 6 5 3 2 4
+  // 2 3 3 4 5 8 8 7 6 5
   int numbers[10] ={ 8, 8, 5, 3, 7, 6, 5, 3, 2, 4 };
 
   vector <int> v1(numbers, numbers+10);
@@ -91,10 +91,10 @@ void PartialTest::parsrt2()
   vector <char*> v1(nameSize);
   for(size_t i = 0; i < v1.size(); i++)
     v1[i] = names[i];
-  
+
   partial_sort(v1.begin(), v1.begin() + nameSize / 2, v1.end(), str_compare);
 
-  // aa bb cc ff ee dd 
+  // aa bb cc ff ee dd
   CPPUNIT_ASSERT( strcmp(v1[0], "aa") == 0 );
   CPPUNIT_ASSERT( v1[0] == names[0] );
   CPPUNIT_ASSERT( strcmp(v1[1], "bb") == 0 );
@@ -115,7 +115,7 @@ void PartialTest::parsrtc0()
 
   int result[3];
   partial_sort_copy((int*)numbers, (int*)numbers + 6, (int*)result, (int*)result + 3);
-  //1 2 3 
+  //1 2 3
   CPPUNIT_ASSERT(result[0]==1);
   CPPUNIT_ASSERT(result[1]==2);
   CPPUNIT_ASSERT(result[2]==3);
@@ -125,8 +125,8 @@ void PartialTest::parsrtc1()
 {
   int numbers[10] ={ 3, 0, 4, 3, 2, 8, 2, 7, 7, 5 };
 
-  //3 0 4 3 2 8 2 7 7 5 
-  //0 2 2 3 3 
+  //3 0 4 3 2 8 2 7 7 5
+  //0 2 2 3 3
 
   vector <int> v1(numbers, numbers+10);
   vector <int> result(5);
@@ -149,7 +149,7 @@ void PartialTest::parsrtc2()
     v1[i] = names[i];
   vector <char*> result(3);
   partial_sort_copy(v1.begin(), v1.end(), result.begin(), result.end(), str_compare);
-  
+
   // aa bb cc
   CPPUNIT_ASSERT( strcmp( result[0], "aa" ) == 0 );
   CPPUNIT_ASSERT( result[0] == names[0] );
@@ -182,7 +182,7 @@ void PartialTest::partsum1()
   vector <int> v2(v1.size());
   partial_sum(v1.begin(), v1.end(), v2.begin());
 
-  // 0 1 3 6 10 15 21 28 36 45 
+  // 0 1 3 6 10 15 21 28 36 45
   CPPUNIT_ASSERT(v2[0]==0);
   CPPUNIT_ASSERT(v2[1]==1);
   CPPUNIT_ASSERT(v2[2]==3);
@@ -201,7 +201,7 @@ void PartialTest::partsum2()
   iota(v1.begin(), v1.end(), 1);
   vector <int> v2(v1.size());
   partial_sum(v1.begin(), v1.end(), v2.begin(), multiplies<int>());
-  // 1 2 6 24 120 
+  // 1 2 6 24 120
   CPPUNIT_ASSERT(v2[0]==1);
   CPPUNIT_ASSERT(v2[1]==2);
   CPPUNIT_ASSERT(v2[2]==6);

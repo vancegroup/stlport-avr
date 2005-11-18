@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 #include "stlport_prefix.h"
 
 #include "locale_impl.h"
@@ -133,7 +133,7 @@ void _STLP_CALL _Locale_impl::_S_uninitialize() {
 
 // _Locale_impl non-inline member functions.
 void _STLP_CALL _Locale_impl::_M_throw_bad_cast() {
-  _STLP_THROW(bad_cast());  
+  _STLP_THROW(bad_cast());
 }
 
 void _Locale_impl::insert( _Locale_impl *from, const locale::id& n ) {
@@ -533,7 +533,7 @@ locale* _Stl_get_global_locale() {
  * users static variable in order for him to be able to use Standard
  * streams in its variable initialization.
  * This variable is here because MSVC do not allow to change the initialization
- * segment in a given translation unit, iostream.cpp already contains an 
+ * segment in a given translation unit, iostream.cpp already contains an
  * initialization segment specification.
  */
 #  pragma warning (disable : 4073)
@@ -596,7 +596,7 @@ void _Locale_impl::make_classic_locale() {
 #ifndef _STLP_NO_MBSTATE_T
     new /*(&_S_codecvt_char_buf)*/ codecvt<char, char, mbstate_t>(),
 #else
-    0, 
+    0,
 #endif
     new /*(&_S_moneypunct_true_char_buf)*/ moneypunct<char, true>(),
     new /*(&_S_moneypunct_false_char_buf)*/ moneypunct<char, false>(),

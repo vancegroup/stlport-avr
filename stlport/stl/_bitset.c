@@ -2,13 +2,13 @@
  * Copyright (c) 1998
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -29,7 +29,7 @@ _STLP_BEGIN_NAMESPACE
 
 //
 // Definitions of non-inline functions from _Base_bitset.
-// 
+//
 
 template<size_t _Nw>
 void _Base_bitset<_Nw>::_M_do_left_shift(size_t __shift) {
@@ -44,7 +44,7 @@ void _Base_bitset<_Nw>::_M_do_left_shift(size_t __shift) {
     else {
       const size_t __sub_offset = __BITS_PER_WORD - __offset;
       for (size_t __n = _Nw - 1; __n > __wshift; --__n)
-        _M_w[__n] = (_M_w[__n - __wshift] << __offset) | 
+        _M_w[__n] = (_M_w[__n - __wshift] << __offset) |
                     (_M_w[__n - __wshift - 1] >> __sub_offset);
       _M_w[__wshift] = _M_w[0] << __offset;
     }
@@ -78,8 +78,8 @@ void _Base_bitset<_Nw>::_M_do_right_shift(size_t __shift) {
 
 template<size_t _Nw>
 unsigned long _Base_bitset<_Nw>::_M_do_to_ulong() const {
-  for (size_t __i = 1; __i < _Nw; ++__i) 
-    if (_M_w[__i]) 
+  for (size_t __i = 1; __i < _Nw; ++__i)
+    if (_M_w[__i])
       __stl_throw_overflow_error("bitset");
   return _M_w[0];
 } // End _M_do_to_ulong
@@ -107,7 +107,7 @@ size_t _Base_bitset<_Nw>::_M_do_find_first(size_t __not_found) const {
 
 template<size_t _Nw>
 size_t
-_Base_bitset<_Nw>::_M_do_find_next(size_t __prev, 
+_Base_bitset<_Nw>::_M_do_find_next(size_t __prev,
                                    size_t __not_found) const {
   // make bound inclusive
   ++__prev;

@@ -2,19 +2,19 @@
  * Copyright (c) 1999
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
  *
- */ 
+ */
 # include "stlport_prefix.h"
 
 #include <stl/_monetary.h>
@@ -23,7 +23,7 @@
 _STLP_BEGIN_NAMESPACE
 
 static void _Init_monetary_formats(money_base::pattern& pos_format,
-				   money_base::pattern& neg_format) {
+           money_base::pattern& neg_format) {
   pos_format.field[0] = (char) money_base::symbol;
   pos_format.field[1] = (char) money_base::sign;
   pos_format.field[2] = (char) money_base::none;
@@ -45,8 +45,8 @@ wstring _S_empty_wstring;
 // moneypunct<>
 //
 
-moneypunct<char, true>::moneypunct(size_t __refs) : locale::facet(__refs) { 
-    _Init_monetary_formats(_M_pos_format, _M_neg_format); 
+moneypunct<char, true>::moneypunct(size_t __refs) : locale::facet(__refs) {
+    _Init_monetary_formats(_M_pos_format, _M_neg_format);
 }
 moneypunct<char, true>::~moneypunct() {}
 
@@ -60,8 +60,8 @@ money_base::pattern moneypunct<char, true>::do_pos_format() const  {return _M_po
 money_base::pattern moneypunct<char, true>::do_neg_format() const {return _M_neg_format;}
 int moneypunct<char, true>::do_frac_digits() const {return 0;}
 
-moneypunct<char, false>::moneypunct(size_t __refs) : locale::facet(__refs) { 
-    _Init_monetary_formats(_M_pos_format, _M_neg_format); 
+moneypunct<char, false>::moneypunct(size_t __refs) : locale::facet(__refs) {
+    _Init_monetary_formats(_M_pos_format, _M_neg_format);
 }
 moneypunct<char, false>::~moneypunct() {}
 
@@ -79,8 +79,8 @@ int moneypunct<char, false>::do_frac_digits() const {return 0;}
 
 # ifndef _STLP_NO_WCHAR_T
 
-moneypunct<wchar_t, true>::moneypunct(size_t __refs) : locale::facet(__refs) { 
-    _Init_monetary_formats(_M_pos_format, _M_neg_format); 
+moneypunct<wchar_t, true>::moneypunct(size_t __refs) : locale::facet(__refs) {
+    _Init_monetary_formats(_M_pos_format, _M_neg_format);
 }
 moneypunct<wchar_t, true>::~moneypunct() {}
 
@@ -100,8 +100,8 @@ money_base::pattern moneypunct<wchar_t, true>::do_pos_format() const
 money_base::pattern moneypunct<wchar_t, true>::do_neg_format() const
   {return _M_neg_format;}
 
-moneypunct<wchar_t, false>::moneypunct(size_t __refs) : locale::facet(__refs) { 
-    _Init_monetary_formats(_M_pos_format, _M_neg_format); 
+moneypunct<wchar_t, false>::moneypunct(size_t __refs) : locale::facet(__refs) {
+    _Init_monetary_formats(_M_pos_format, _M_neg_format);
 }
 moneypunct<wchar_t, false>::~moneypunct() {}
 
@@ -142,7 +142,7 @@ template class _STLP_CLASS_DECLSPEC money_put<wchar_t, ostreambuf_iterator<wchar
 
 # endif
 
-_STLP_END_NAMESPACE  
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

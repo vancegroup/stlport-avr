@@ -2,13 +2,13 @@
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -113,7 +113,7 @@ using _STLP_VENDOR_TERMINATE_STD::terminate_handler;
 using _STLP_VENDOR_TERMINATE_STD::set_terminate;
 #      endif
 
-#      if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT) 
+#      if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
 using _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD::uncaught_exception;
 #      endif
 #    endif /* !_STLP_NO_USING_FOR_GLOBAL_FUNCTIONS */
@@ -142,7 +142,7 @@ bool uncaught_exception(); // not implemented under mpw as of Jan/1999
 */
 #endif // 0
 
-#endif /* _STLP_NO_EXCEPTION_HEADER */	
+#endif /* _STLP_NO_EXCEPTION_HEADER */
 
 #if defined (_STLP_NO_EXCEPTION_HEADER) || defined(_STLP_BROKEN_EXCEPTION_CLASS)
 #  ifndef _STLP_EXCEPTION_H
@@ -151,7 +151,7 @@ bool uncaught_exception(); // not implemented under mpw as of Jan/1999
 _STLP_BEGIN_NAMESPACE
 
 // section 18.6.1
-class _STLP_CLASS_DECLSPEC exception 
+class _STLP_CLASS_DECLSPEC exception
 {
 public:
 #  ifndef _STLP_USE_NO_IOSTREAMS
@@ -166,7 +166,7 @@ public:
 };
 
 // section 18.6.2.1
-class _STLP_CLASS_DECLSPEC bad_exception : public exception 
+class _STLP_CLASS_DECLSPEC bad_exception : public exception
 {
 public:
 #  ifndef _STLP_USE_NO_IOSTREAMS

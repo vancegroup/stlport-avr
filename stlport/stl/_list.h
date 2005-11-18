@@ -9,13 +9,13 @@
  * Copyright (c) 1997
  * Moscow Center for SPARC Technology
  *
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -202,7 +202,7 @@ public:
       _M_node._M_data._M_prev->_M_next = _M_node._M_data._M_next->_M_prev = &_M_node._M_data;
     }
   }
-    
+
   ~_List_base() {
     clear();
   }
@@ -229,7 +229,7 @@ template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
 class _LIST_IMPL;
 
 // helper functions to reduce code duplication
-template <class _Tp, class _Alloc, class _Predicate> 
+template <class _Tp, class _Alloc, class _Predicate>
 void _S_remove_if(_LIST_IMPL<_Tp, _Alloc>& __that, _Predicate __pred);
 
 template <class _Tp, class _Alloc, class _BinaryPredicate>
@@ -252,7 +252,7 @@ class _LIST_IMPL : public _List_base<_Tp, _Alloc>
   typedef _LIST_IMPL<_Tp, _Alloc> _Self;
   typedef _List_node<_Tp> _Node;
   typedef _List_node_base _Node_base;
-public:      
+public:
   typedef _Tp value_type;
   typedef value_type* pointer;
   typedef const value_type* const_pointer;
@@ -358,7 +358,7 @@ private:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
-  
+
   // Check whether it's an integral type.  If so, it's not an iterator.
   template<class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
@@ -380,7 +380,7 @@ private:
     for (; __first != __last; ++__first)
       insert(__position, *__first);
   }
-  
+
 public:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -388,7 +388,7 @@ public:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_splice_insert_dispatch(__pos, __first, __last, _Integral());
   }
-  
+
 private:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template<class _Integer>
@@ -411,18 +411,18 @@ private:
     _Self __tmp(__first, __last, this->get_allocator());
     splice(__position, __tmp);
   }
-  
+
 public:
-  void insert(iterator __pos, size_type __n, const_reference __x) 
+  void insert(iterator __pos, size_type __n, const_reference __x)
   { _M_fill_insert(__pos, __n, __x); }
-  
+
 private:
   void _M_fill_insert(iterator __pos, size_type __n, const_reference __x) {
     for ( ; __n > 0; --__n)
       insert(__pos, __x);
   }
-  
-public:  
+
+public:
   void push_front(const_reference __x) { insert(begin(), __x); }
   void push_back (const_reference __x) { insert(end(), __x); }
 
@@ -442,7 +442,7 @@ public:
     this->_M_node.deallocate(__n, 1);
     return iterator(__next_node);
   }
-  
+
   iterator erase(iterator __first, iterator __last) {
     while (__first != __last)
       erase(__first++);
@@ -457,7 +457,7 @@ public:
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
 
   void pop_front() { erase(begin()); }
-  void pop_back() { 
+  void pop_back() {
     iterator __tmp = end();
     erase(--__tmp);
   }
@@ -490,7 +490,7 @@ public:
        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _List_base<_Tp, _Alloc>(__a)
   { _M_insert(begin(), __first, __last); }
-  
+
 #else /* _STLP_MEMBER_TEMPLATES */
 
   _LIST_IMPL(const value_type* __first, const value_type* __last,
@@ -574,7 +574,7 @@ public:
     _List_global_inst::_Transfer(__position._M_node, __i._M_node, __j._M_node);
   }
   void splice(iterator __position, _Self&, iterator __first, iterator __last) {
-    if (__first != __last) 
+    if (__first != __last)
       _List_global_inst::_Transfer(__position._M_node, __first._M_node, __last._M_node);
   }
 
@@ -588,11 +588,11 @@ public:
       __first = __next;
     }
   }
-  
+
   void unique() {
     _S_unique(*this, equal_to<value_type>());
   }
-  
+
   void merge(_Self& __x) {
     _S_merge(*this, __x, less<value_type>());
   }
@@ -604,14 +604,14 @@ public:
       _STLP_STD::swap(__tmp->_M_next, __tmp->_M_prev);
       __tmp = __tmp->_M_prev;     // Old next node is now prev.
     } while (__tmp != __p);
-  }    
-  
+  }
+
   void sort() {
     _S_sort(*this, less<value_type>());
   }
 
 #ifdef _STLP_MEMBER_TEMPLATES
-  template <class _Predicate> 
+  template <class _Predicate>
   void remove_if(_Predicate __pred)  {
     _S_remove_if(*this, __pred);
   }
