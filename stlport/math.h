@@ -21,23 +21,21 @@
 #endif
 
 #if !defined (exception) && (!defined (__KCC) || (__KCC_VERSION < 4000)) && \
-    !(defined(__IBMCPP__) && (500 <= __IBMCPP__))
-#  define __EXCEPTION_WAS_REDEFINED 1
+    !(defined(__IBMCPP__) && (500 <= __IBMCPP__)) && !defined(_STLP_WCE_EVC3)
+#  define _STLP_EXCEPTION_WAS_REDEFINED 1
 #  define exception __math_exception
-#  ifdef _STLP_WCE_EVC3
-#    pragma warning (push)
-#    pragma warning (disable: 4005)
-#  endif
 #endif
 
 #include _STLP_NATIVE_C_HEADER(math.h)
 
-#if defined (__EXCEPTION_WAS_REDEFINED)
+#if defined (_STLP_EXCEPTION_WAS_REDEFINED)
 #  undef exception
-#  undef __EXCEPTION_WAS_REDEFINED
-#  ifdef _STLP_WCE_EVC3
-#    pragma warning (pop)
-#  endif
+#  undef _STLP_EXCEPTION_WAS_REDEFINED
+#endif
+
+#ifdef _STLP_WCE_EVC3
+#  undef _exception
+#  define _exception exception
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x244)

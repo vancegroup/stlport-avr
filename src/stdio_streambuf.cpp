@@ -155,6 +155,7 @@ streamsize stdio_istreambuf::showmanyc() {
   else {
     int fd = _FILE_fd(_M_file);
 #ifdef _STLP_WCE
+   (fd); // prevent warning about unused variable
 // not sure if i can mix win32 io mode with ftell but time will show
 // cannot use WIN32_IO implementation since missing stat
     long tmp= _STLP_VENDOR_CSTD::ftell(_M_file);

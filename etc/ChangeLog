@@ -1,3 +1,17 @@
+2005-11-18  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/nmake/lib/rules-install-so.mak, 
+	app/rules-install-so.mak: Add copy of manifest file when exist
+	rather than when compiler is Visual Studio 2005.
+
+	* src/stdio_streambuf.cpp: Removed warning for EVC 3 and 4 thanks
+	Michael Fink patch.
+
+	* stlport/stl/math.h, stdlib.h: Fix EVC3 warning thanks Michael Fink
+	patch.
+
+	* doc/README.evc3: doc update from Michael Fink.
+
 2005-11-17  Gail Baker  <baker88@users.sourceforge.net>
 
 	* build/Makefiles/gmake/CC.mak, depend.mak, app/CC.mak, lib/CC.mak:

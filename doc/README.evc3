@@ -3,7 +3,7 @@
 STLport README for eMbedded Visual C++ 3
 ========================================
 
-by: Michael Fink, vividos@users.sourceforge.net, last edited 2005-05-30
+by: Michael Fink, vividos@users.sourceforge.net, last edited 2005-11-15
 
 ============
 Introduction
@@ -114,12 +114,12 @@ When not using automatic linking (by specifying _STLP_DONT_USE_AUTO_LINK), you
 have to specify the proper .lib file in the Project Settings, on the "link" tab.
 The .lib names have the following syntax:
 
-   stlport_[static_](r|d|stld)<STLport-Version>.lib
+   stlport(d|stld)[_static].<STLport-Version>.lib
 
 Examples:
 
-   stlport_static_r50.lib - static release version, Version 5.0.0
-   stlport_d50.lib - dll debug version, Version 5.0.0
+   stlport_static.5.0.lib - static release version, Version 5.0.0
+   stlportd_50.lib - dll debug version, Version 5.0.0
 
 Note that usage of the _STLP_DEBUG mode is currently not recommended for
 eMbedded Visual C++ builds using the ARM compiler, due to a compiler bug.
@@ -134,12 +134,8 @@ Now you should be ready to use STLport.
 ============
 Known issues
 ============
- - Warning when compiling the library:
-   [...]\Pocket PC 2002\include\../include/math.h(16) : note C6311:
-   ../stlport\math.h(26) : see previous definition of 'exception'
-   This warning can be ignored.
-
  - Unit Tests in _STLP_DEBUG mode (target 'stldbg-shared') fails in
    __stl_debug_engine::_M_detach() for several tests due to unknown reasons.
    A compiler bug in the ARM compiler is suspected.
-   There is currently no workaround for this bug.
+   There is currently no workaround for this bug. It is recommended to not use
+   _STLP_DEBUG mode.
