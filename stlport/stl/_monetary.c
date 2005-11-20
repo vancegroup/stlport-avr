@@ -500,40 +500,42 @@ _OutputIter _S_do_put(_OutputIter __s, bool  __intl, ios_base&  __str,
   for (int __i = 0; __i < 4; ++__i) {
     char __ffield = __format.field[__i];
     switch (__ffield) {
-    case money_base::none:
-      if (__fill_amt != 0 && __fill_pos == ios_base::internal)
-        __s = __fill_n(__s, __fill_amt, __fill);
-      break;
-    case money_base::space:
-      *__s++ = __space;
-      if (__fill_amt != 0 && __fill_pos == ios_base::internal)
-        __s = __fill_n(__s, __fill_amt, __fill);
-      break;
-    case money_base::symbol:
-      if (__generate_curr)
-        __s = copy(__curr_sym.begin(), __curr_sym.end(), __s);
-      break;
-    case money_base::sign:
-      if (!__sign.empty())
-        *__s++ = __sign[0];
-      break;
-    case money_base::value:
-      if (__frac_digits == 0)
-        __s = copy(__digits_first, __digits_last, __s);
-      else {
-        if ((int)__value_length <= __frac_digits) {
-          *__s++ = __point;
+      case money_base::none:
+        if (__fill_amt != 0 && __fill_pos == ios_base::internal)
+          __s = __fill_n(__s, __fill_amt, __fill);
+        break;
+      case money_base::space:
+        *__s++ = __space;
+        if (__fill_amt != 0 && __fill_pos == ios_base::internal)
+          __s = __fill_n(__s, __fill_amt, __fill);
+        break;
+      case money_base::symbol:
+        if (__generate_curr)
+          __s = copy(__curr_sym.begin(), __curr_sym.end(), __s);
+        break;
+      case money_base::sign:
+        if (!__sign.empty())
+          *__s++ = __sign[0];
+        break;
+      case money_base::value:
+        if (__frac_digits == 0) {
           __s = copy(__digits_first, __digits_last, __s);
-          __s =  __fill_n(__s, __frac_digits - __value_length, __zero);
-        }
-        else {
-          __s = copy(__digits_first, __digits_last - __frac_digits, __s);
-          if (__frac_digits != 0) {
-            *__s++ = __point;
-            __s = copy(__digits_last - __frac_digits, __digits_last, __s);
+        } else {
+          if ((int)__value_length <= __frac_digits) {
+            // if we see '9' here, we should out 0.09
+            *__s++ = __zero;  // integer part is zero
+            *__s++ = __point; // decimal point
+            __s =  __fill_n(__s, __frac_digits - __value_length, __zero); // zeros
+            __s = copy(__digits_first, __digits_last, __s); // digits
+          } else {
+            __s = copy(__digits_first, __digits_last - __frac_digits, __s);
+            if (__frac_digits != 0) {
+              *__s++ = __point;
+              __s = copy(__digits_last - __frac_digits, __digits_last, __s);
+            }
           }
         }
-      }
+        break;
     } //Close for switch
   } // Close for loop
 

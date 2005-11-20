@@ -1,6 +1,4 @@
 # Time-stamp: <04/08/23 22:49:14 ptr>
-# $Id$
-
 
 #INCLUDES = -I$(SRCROOT)/include
 INCLUDES :=
@@ -27,9 +25,9 @@ LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
 OPT += -mt +w2
-CCFLAGS = -erroff=doubunder -library=no%Cstd,no%iostream,no%rwtools7-xildoff $(OPT) 
+CCFLAGS = -erroff=doubunder -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7-xildoff $(OPT) 
 CFLAGS = $(OPT)
-CXXFLAGS = -erroff=doubunder -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT)
+CXXFLAGS = -erroff=doubunder -qoption ccfe -expand=1000 -library=no%Cstd,no%iostream,no%rwtools7 -xildoff $(OPT)
 CDEPFLAGS = -xM
 CCDEPFLAGS = -xM
 
@@ -64,14 +62,4 @@ DP_OUTPUT_DIR_DBG = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR_DBG)/\1.o $@ : |g' > $@
 DP_OUTPUT_DIR_STLDBG = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR_STLDBG)/\1.o $@ : |g' > $@; \
                            [ -s $@ ] || rm -f $@
 
-PHONY += prepare_sunpro_include_files depend_sunpro
-
-compiler-dep :: prepare_sunpro_include_files 
-
-prepare_sunpro_include_files ::
-	@echo "Linking header files required for SunPro compiler"
-	@for file in `cat ${STLPORT_ETC_DIR}/std_headers*.txt`; do \
-	  echo "." | awk '{printf("%s", $$0)}' ; \
-	  (cd ${STLPORT_INCLUDE_DIR} ; rm -f $$file.SUNWCCh; ln -s ./$$file $$file.SUNWCCh) ; \
-        done; echo ""
 

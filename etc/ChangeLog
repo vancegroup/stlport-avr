@@ -1,3 +1,37 @@
+2005-11-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_put.h: check that incoming string has enough
+	digits for fractional part processing. This check includes
+	check for empty incoming string. (Thanks Leonardo [leoapsilva]
+	for the bug report).
+
+	* stlport/stl/_monetary.c: fix processing the case when
+	number of digits in value less then number of digits in fraction.
+
+	* src/facets_byname.cpp: international currency symbol should
+	be the first (not depends upon where currency symbol situated in
+	the national format).
+
+	* test/unit/locale_test.cpp: tests for problems this problems.
+
+2005-11-20  Gail Baker  <baker88@users.sourceforge.net>
+
+	* build/Makefiles/gmake/CC.mak: Updated compiler option
+	to compile larger inline functions inline.
+
+	* build/Makefiles/gmake/lib/CC.mak: Changed how the header
+	file linking is done to only do it once instead of with
+	every compile.
+
+	* build/lib/README: include instructions for SunPro compiler.
+ 
+	* build/test/unit/CC.mak: allow the STLP_DEBUG version to compile.
+
+2005-11-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stdlib.h: replace C++ comments by C, to satisfy -ansi
+	option of compiler.
+
 2005-11-18  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/nmake/lib/rules-install-so.mak, 

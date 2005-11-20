@@ -758,6 +758,100 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
   }
 }
 
+// international variant of monetary
+
+/*
+ * int_curr_symbol
+ *
+ *   The international currency symbol. The operand is a four-character
+ *   string, with the first three characters containing the alphabetic
+ *   international currency symbol in accordance with those specified
+ *   in the ISO 4217 specification. The fourth character is the character used
+ *   to separate the international currency symbol from the monetary quantity.
+ *
+ * (http://www.opengroup.org/onlinepubs/7990989775/xbd/locale.html)
+ */
+
+/*
+ * Standards are unclear in the usage of international currency
+ * and monetary formats.
+ * But I am expect that international currency symbol should be the first
+ * (not depends upon where currency symbol situated in the national
+ * format).
+ * 
+ * If this isn't so, let's see:
+ *       1 234.56 RUR
+ *       GBP 1,234.56
+ *       USD 1,234.56
+ * The situation really is worse than you see above:
+ * RUR typed wrong here---it prints '1 234.56 RUR ' (see space after RUR).
+ * This is due to intl_fmp.curr_symbol() == "RUR ". (see reference in comments
+ * above).
+ *
+ */
+
+static void _Init_monetary_formats_int(money_base::pattern& pos_format,
+                                       money_base::pattern& neg_format,
+                                       _Locale_monetary * monetary)
+{
+  pos_format.field[0] = (char) money_base::symbol;
+  // pos_format.field[1] = (char) money_base::space;
+
+  switch (_Locale_p_sign_posn(monetary)) {
+    case 0: // Parentheses surround the quantity and currency_symbol
+    case 1: // The sign string precedes the quantity and currency_symbol
+      pos_format.field[1] = (char) money_base::sign;
+      pos_format.field[2] = (char) money_base::value;
+      break;
+    case 2: // The sign string succeeds the quantity and currency_symbol.
+      pos_format.field[1] = (char) money_base::value;
+      pos_format.field[2] = (char) money_base::sign;
+      break;
+    case 3: // The sign string immediately precedes the currency_symbol.
+    case 4: // The sign string immediately succeeds the currency_symbol.
+    default:
+      if (_Locale_p_cs_precedes(monetary)) {
+        // 1 if currency_symbol precedes a positive value
+        pos_format.field[1] = (char) money_base::sign;
+        pos_format.field[2] = (char) money_base::value;
+      } else {
+        // 0 if currency_symbol succeeds a positive value
+        pos_format.field[1] = (char) money_base::value;
+        pos_format.field[2] = (char) money_base::sign;
+      }
+      break;
+  }
+  pos_format.field[3] = (char) money_base::none;
+
+  neg_format.field[0] = (char) money_base::symbol;
+  // neg_format.field[1] = (char) money_base::space;
+
+  switch (_Locale_n_sign_posn(monetary)) {
+    case 0: // Parentheses surround the quantity and currency_symbol
+    case 1: // The sign string precedes the quantity and currency_symbol
+      neg_format.field[1] = (char) money_base::sign;
+      neg_format.field[2] = (char) money_base::value;
+      break;
+    case 2: // The sign string succeeds the quantity and currency_symbol.
+      neg_format.field[1] = (char) money_base::value;
+      neg_format.field[2] = (char) money_base::sign;
+      break;
+    case 3: // The sign string immediately precedes the currency_symbol.
+    case 4: // The sign string immediately succeeds the currency_symbol.
+    default:
+      if (_Locale_n_cs_precedes(monetary)) {
+        // 1 if currency_symbol precedes a negative value
+        neg_format.field[1] = (char) money_base::sign;
+        neg_format.field[2] = (char) money_base::value;
+      } else {
+        // 0 if currency_symbol succeeds a negative value
+        neg_format.field[1] = (char) money_base::value;
+        neg_format.field[2] = (char) money_base::sign;
+      }
+      break;
+  }
+  neg_format.field[3] = (char) money_base::none;
+}
 
 //
 // moneypunct_byname<>
@@ -771,7 +865,7 @@ moneypunct_byname<char, true>::moneypunct_byname(const char * name,
   moneypunct<char, true>(refs), _M_monetary(__acquire_monetary(name)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error();
-  _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
+  _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
 moneypunct_byname<char, true>::~moneypunct_byname() {
@@ -842,7 +936,7 @@ moneypunct_byname<wchar_t, true>::moneypunct_byname(const char * name,
   moneypunct<wchar_t, true>(refs), _M_monetary(__acquire_monetary(name)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error();
-  _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
+  _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
 moneypunct_byname<wchar_t, true>::~moneypunct_byname() {

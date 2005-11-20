@@ -34,7 +34,7 @@ static const ref_locale tested_locales[] = {
 #else
                                                                                                                                                             " " },
 #endif
-  { "ru_RU.koi8r", ",",           ".",           "",               "",           "RUR ",           "",                   "",           ".",                 " " },
+  { "ru_RU.koi8r", ",",           ".",           "RUR ",           "",           "",               "",                   "\xd2\xd5\xc2", ".",               " " },
   { "en_GB",       ".",           ",",           "GBP ",           "\xa3",       "",               "",                   "",           ".",                 "," },
   { "en_US",       ".",           ",",           "USD ",           "$",          "",               "",                   "",           ".",                 "," },
   { "C",           ".",           ",",           "",               "",           "",               "",                   "",           " ",                 " " },
@@ -55,6 +55,7 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
   CPPUNIT_TEST(locale_init_problem);
+  CPPUNIT_TEST(money_put_X_bug);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,6 +67,7 @@ public:
   void collate_facet();
   void ctype_facet();
   void locale_init_problem();
+  void money_put_X_bug();
 private:
   void _loc_has_facet( const locale&, const ref_locale& );
   void _num_put_get( const locale&, const ref_locale& );
@@ -74,6 +76,7 @@ private:
   void _collate_facet( const locale&, const ref_locale& );
   void _ctype_facet( const locale&, const ref_locale& );
   void _locale_init_problem( const locale&, const ref_locale& );
+  void _money_put_X_bug( const locale&, const ref_locale& );
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LocaleTest);
@@ -132,22 +135,22 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
 {
   money_put<char> const& fmp = use_facet<money_put<char> >(loc);
   money_get<char> const& fmg = use_facet<money_get<char> >(loc);
-  moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
 
   ostringstream ostr;
   ostr.imbue(loc);
   ostr << showbase;
 
-  //Check a positive value
+  //Check a positive value (international format)
   {
     string str_res;
     //money_put
     {
+      moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
+
       ostreambuf_iterator<char> res = fmp.put(ostr, true, ostr, ' ', 123456);
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
-      //cout << str_res << endl;
 
       size_t fieldIndex = 0;
       size_t index = 0;
@@ -264,7 +267,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
   }
 
   ostr.str("");
-  //Check a negative value:
+  //Check a negative value (national format)
   {
     moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
     string str_res;
@@ -278,7 +281,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       size_t fieldIndex = 0;
       size_t index = 0;
 
-      if (intl_fmp.neg_format().field[fieldIndex] == money_base::sign) {
+      if (dom_fmp.neg_format().field[fieldIndex] == money_base::sign) {
         CPPUNIT_ASSERT( str_res.substr(index, dom_fmp.negative_sign().size()) == dom_fmp.negative_sign() );
         index += dom_fmp.negative_sign().size();
         ++fieldIndex;
@@ -290,8 +293,8 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
         index += p;
         ++fieldIndex;
       }
-      if (intl_fmp.neg_format().field[fieldIndex] == money_base::space ||
-          intl_fmp.neg_format().field[fieldIndex] == money_base::none) {
+      if (dom_fmp.neg_format().field[fieldIndex] == money_base::space ||
+          dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
         CPPUNIT_ASSERT( str_res[index++] == ' ' );
         ++fieldIndex;
       }
@@ -312,16 +315,17 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
 
       //space cannot be last:
       if ((fieldIndex < 3) &&
-          intl_fmp.neg_format().field[fieldIndex] == money_base::space) {
+          dom_fmp.neg_format().field[fieldIndex] == money_base::space) {
         CPPUNIT_ASSERT( str_res[index++] == ' ' );
         ++fieldIndex;
       }
+
       if (fieldIndex == 3) {
         //If none is last we should not add anything to the resulting string:
-        if (intl_fmp.neg_format().field[fieldIndex] == money_base::none) {
+        if (dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
           CPPUNIT_ASSERT( index == str_res.size() );
-        }
-        else {
+        } else {
+          CPPUNIT_ASSERT( dom_fmp.neg_format().field[fieldIndex] == money_base::symbol );
           CPPUNIT_ASSERT( str_res.substr(index, strlen(rl.money_suffix)) == rl.money_suffix );
         }
       }
@@ -345,6 +349,147 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       }
       else {
         CPPUNIT_ASSERT( val == -123456 );
+      }
+    }
+  }
+}
+
+
+// Test for bug in case when number of digits in value less then number
+// of digits in fraction. I.e. '9' should be printed as '0.09',
+// if x.frac_digits() == 2.
+
+void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
+{
+  money_put<char> const& fmp = use_facet<money_put<char> >(loc);
+  money_get<char> const& fmg = use_facet<money_get<char> >(loc);
+  moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
+
+  ostringstream ostr;
+  ostr.imbue(loc);
+  ostr << showbase;
+
+  // ostr.str("");
+  // Check value with one decimal digit:
+  {
+    moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
+    string str_res;
+    // Check money_put
+    {
+      ostreambuf_iterator<char> res = fmp.put(ostr, false, ostr, ' ', 9);
+
+      CPPUNIT_ASSERT( !res.failed() );
+      str_res = ostr.str();
+
+      size_t fieldIndex = 0;
+      size_t index = 0;
+
+      if (dom_fmp.pos_format().field[fieldIndex] == money_base::sign) {
+        CPPUNIT_ASSERT( str_res.substr(index, dom_fmp.positive_sign().size()) == dom_fmp.positive_sign() );
+        index += dom_fmp.positive_sign().size();
+        ++fieldIndex;
+      }
+
+      string::size_type p = strlen( rl.money_prefix );
+      if (p != 0) {
+        CPPUNIT_ASSERT( str_res.substr(index, p) == rl.money_prefix );
+        index += p;
+        ++fieldIndex;
+      }
+      if (dom_fmp.neg_format().field[fieldIndex] == money_base::space ||
+          dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
+        CPPUNIT_ASSERT( str_res[index++] == ' ' );
+        ++fieldIndex;
+      }
+      if (dom_fmp.frac_digits() != 0) {
+        CPPUNIT_ASSERT( str_res[index++] == '0' );
+        CPPUNIT_ASSERT( str_res[index++] == dom_fmp.decimal_point() );
+        for ( int fd = 1; fd < dom_fmp.frac_digits(); ++fd ) {
+          CPPUNIT_ASSERT( str_res[index++] == '0' );
+        }
+      }
+      CPPUNIT_ASSERT( str_res[index++] == '9' );
+      ++fieldIndex;
+
+      //space cannot be last:
+      if ((fieldIndex < 3) &&
+          dom_fmp.neg_format().field[fieldIndex] == money_base::space) {
+        CPPUNIT_ASSERT( str_res[index++] == ' ' );
+        ++fieldIndex;
+      }
+
+      if (fieldIndex == 3) {
+        //If none is last we should not add anything to the resulting string:
+        if (dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
+          CPPUNIT_ASSERT( index == str_res.size() );
+        } else {
+          CPPUNIT_ASSERT( dom_fmp.neg_format().field[fieldIndex] == money_base::symbol );
+          CPPUNIT_ASSERT( str_res.substr(index, strlen(rl.money_suffix)) == rl.money_suffix );
+        }
+      }
+    }
+  }
+
+  ostr.str("");
+  // Check value with two decimal digit:
+  {
+    moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
+    string str_res;
+    // Check money_put
+    {
+      ostreambuf_iterator<char> res = fmp.put(ostr, false, ostr, ' ', 90);
+
+      CPPUNIT_ASSERT( !res.failed() );
+      str_res = ostr.str();
+
+      size_t fieldIndex = 0;
+      size_t index = 0;
+
+      if (dom_fmp.pos_format().field[fieldIndex] == money_base::sign) {
+        CPPUNIT_ASSERT( str_res.substr(index, dom_fmp.positive_sign().size()) == dom_fmp.positive_sign() );
+        index += dom_fmp.positive_sign().size();
+        ++fieldIndex;
+      }
+
+      string::size_type p = strlen( rl.money_prefix );
+      if (p != 0) {
+        CPPUNIT_ASSERT( str_res.substr(index, p) == rl.money_prefix );
+        index += p;
+        ++fieldIndex;
+      }
+      if (dom_fmp.neg_format().field[fieldIndex] == money_base::space ||
+          dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
+        CPPUNIT_ASSERT( str_res[index++] == ' ' );
+        ++fieldIndex;
+      }
+      if (dom_fmp.frac_digits() != 0) {
+        CPPUNIT_ASSERT( str_res[index++] == '0' );
+        CPPUNIT_ASSERT( str_res[index++] == dom_fmp.decimal_point() );
+        for ( int fd = 1; fd < dom_fmp.frac_digits() - 1; ++fd ) {
+          CPPUNIT_ASSERT( str_res[index++] == '0' );
+        }
+      }
+      CPPUNIT_ASSERT( str_res[index++] == '9' );
+      if (dom_fmp.frac_digits() != 0) {
+        CPPUNIT_ASSERT( str_res[index++] == '0' );
+      }
+      ++fieldIndex;
+
+      //space cannot be last:
+      if ((fieldIndex < 3) &&
+          dom_fmp.neg_format().field[fieldIndex] == money_base::space) {
+        CPPUNIT_ASSERT( str_res[index++] == ' ' );
+        ++fieldIndex;
+      }
+
+      if (fieldIndex == 3) {
+        //If none is last we should not add anything to the resulting string:
+        if (dom_fmp.neg_format().field[fieldIndex] == money_base::none) {
+          CPPUNIT_ASSERT( index == str_res.size() );
+        } else {
+          CPPUNIT_ASSERT( dom_fmp.neg_format().field[fieldIndex] == money_base::symbol );
+          CPPUNIT_ASSERT( str_res.substr(index, strlen(rl.money_suffix)) == rl.money_suffix );
+        }
       }
     }
   }
@@ -396,8 +541,6 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
 
   ret = tmp.put(ostrX, ostrX, ' ', &xmas, format.data(), format.data() + format.size());
   CPPUNIT_ASSERT( !ret.failed() );
-
-  //cerr << ostrX.str() << endl;
 
   istringstream istrX( ostrX.str() );
   istreambuf_iterator<char> j( istrX );
@@ -660,6 +803,10 @@ void LocaleTest::money_put_get() {
   test_supported_locale(*this, &LocaleTest::_money_put_get);
 }
 
+void LocaleTest::money_put_X_bug() {
+  test_supported_locale(*this, &LocaleTest::_money_put_X_bug);
+}
+
 void LocaleTest::time_put_get() {
   test_supported_locale(*this, &LocaleTest::_time_put_get);
 }
@@ -717,7 +864,6 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
   }
   catch ( runtime_error& ) {
     CPPUNIT_ASSERT( false );
-    // cerr << "-- " << err.what() << endl;
   }
   catch ( ... ) {
    CPPUNIT_ASSERT( false );

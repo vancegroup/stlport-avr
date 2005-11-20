@@ -11,6 +11,11 @@ Quick start.
     make -f cygwin-vc6.mak install
   
 
+  GNU Make (SunOS), with SunPro CC:
+
+    make -f CC.mak depend
+    make -f CC.mak install
+
   Microsoft NMAKE (MS Windows), with VC6:
 
     nmake -f nmake-vc6 install

@@ -34,8 +34,10 @@
 #    include "errno.h"
 #  endif
 
-// forward-declaration for _exception struct; prevents warning message
-// ../include/stdlib.h(817) : warning C4115: '_exception' : named type definition in parentheses
+/*
+ forward-declaration for _exception struct; prevents warning message
+ ../include/stdlib.h(817) : warning C4115: '_exception' : named type definition in parentheses
+*/
 #  if defined(_STLP_WCE_EVC3)
 struct _exception;
 #  endif

@@ -1,48 +1,4 @@
 =======================================================================
-Operational environment:        Solaris 9, SPARC
-=======================================================================
-
------------------------------------------------------------------------
-Compiler:                       gcc 3.4.2
------------------------------------------------------------------------
-Date:                           2004-09-27
-STLP Version:                   current CVS STLPORT_5_0 branch
-Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        Fail 5 of 290 tests
-Notes:                          fail tests with locale, as expected
-Status (stldbg-shared):         Fail 5 of 290 tests
-Notes:                          fail tests with locale, as expected
-
------------------------------------------------------------------------
-Compiler:                       gcc 3.4.2
------------------------------------------------------------------------
-Date:                           2004-09-14
-STLP Version:                   current CVS STLPORT_5_0 branch
-Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        runtime fail
-Notes:                          uncatched exception during locale test:
-                                terminate called after throwing an instance of '_STL::runtime_error'
-                                what():  locale error
-                                It is like problem with exceptions, not with locale
-Status (stldbg-shared):         runtime fail
-Notes:
-
------------------------------------------------------------------------
-Compiler:                       gcc 3.4.1
------------------------------------------------------------------------
-Date:                           2004-09-14
-STLP Version:                   current CVS STLPORT_5_0 branch
-Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        runtime fail
-Notes:                          uncatched exception during locale test:
-                                terminate called after throwing an instance of '_STL::runtime_error'
-                                what():  locale error
-                                It is like problem with exceptions, not with locale
-Status (stldbg-shared):         runtime fail
-Notes:
-
-
-=======================================================================
 Operational environment:        cross for Linux 2.6.9 uClibc 0.9.27, IA32
 =======================================================================
 
@@ -68,12 +24,12 @@ Operational environment:   Linux 2.6.12/SMP glibc 2.2.5, IA32
 -----------------------------------------------------------------------
 Compiler:                       gcc 3.4.4
 -----------------------------------------------------------------------
-Date:                           2005-11-01
+Date:                           2005-11-20
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       ptr (Petr Ovtchenkov)
-Status (release-shared):        All pass (332 tests)
+Status (release-shared):        All pass (334 tests)
 Notes:
-Status (stldbg-shared):         All pass (332 tests)
+Status (stldbg-shared):         All pass (334 tests)
 Notes:
 
 -----------------------------------------------------------------------
@@ -631,3 +587,67 @@ Status (release-static):        All pass (322 tests)
 Notes:
 Status (dbg-static):            All pass (322 tests)
 Notes:
+
+=======================================================================
+Operational environment:        Solaris 9, SPARC
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.2
+-----------------------------------------------------------------------
+Date:                           2004-09-27
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        Fail 5 of 290 tests
+Notes:                          fail tests with locale, as expected
+Status (stldbg-shared):         Fail 5 of 290 tests
+Notes:                          fail tests with locale, as expected
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.2
+-----------------------------------------------------------------------
+Date:                           2004-09-14
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        runtime fail
+Notes:                          uncatched exception during locale test:
+                                terminate called after throwing an instance of '_STL::runtime_error'
+                                what():  locale error
+                                It is like problem with exceptions, not with locale
+Status (stldbg-shared):         runtime fail
+Notes:
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.1
+-----------------------------------------------------------------------
+Date:                           2004-09-14
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       ptr (Petr Ovtchenkov)
+Status (release-shared):        runtime fail
+Notes:                          uncatched exception during locale test:
+                                terminate called after throwing an instance of '_STL::runtime_error'
+                                what():  locale error
+                                It is like problem with exceptions, not with locale
+Status (stldbg-shared):         runtime fail
+Notes:
+
+=======================================================================
+Operational environment:        Solaris 10, SPARC
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       Sun Studio 10, SunPro CC 5.7
+-----------------------------------------------------------------------
+Date:                           2005-11-18
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       baker88 (Gail Baker)
+Status (release-shared):        Fail 1 of 330 tests
+Notes:                          mvctor_test.cpp(839) : CPPUNIT_ASSERT(MovableStruct::nb_destruct_call == 7);
+Status (dbg-shared):            Fail 1 of 330 tests
+Notes:                          mvctor_test.cpp(839) : CPPUNIT_ASSERT(MovableStruct::nb_destruct_call == 7);
+Status (stldbg-shared):         Runtime failure
+Notes:                          PartitionTest::stblptn1
+                                ../../stlport/stl/debug/_debug.c(518): STL assertion failure : __next && __next->_Owner() == __l
+                                Abort(coredump)
+
+
