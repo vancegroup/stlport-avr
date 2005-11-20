@@ -6,13 +6,13 @@
 	for the bug report).
 
 	* stlport/stl/_monetary.c: fix processing the case when
-	number of digits in value less then number of digits in fraction.
+	number of digits in value less than number of digits in fraction.
 
 	* src/facets_byname.cpp: international currency symbol should
 	be the first (not depends upon where currency symbol situated in
 	the national format).
 
-	* test/unit/locale_test.cpp: tests for problems this problems.
+	* test/unit/locale_test.cpp: tests for problems above.
 
 2005-11-20  Gail Baker  <baker88@users.sourceforge.net>
 
