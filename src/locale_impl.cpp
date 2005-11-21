@@ -645,8 +645,14 @@ void _Locale_impl::make_classic_locale() {
     0
   };
 
-  classic->facets_vec.reserve(sizeof(classic_facets) / sizeof(locale::facet *));
-  classic->facets_vec.assign(&classic_facets[0], classic_facets + sizeof(classic_facets) / sizeof(locale::facet *));
+  const size_t nb_classic_facets = sizeof(classic_facets) / sizeof(locale::facet *);
+
+  //As construction of a locale from a _Locale_impl do not automatically increment
+  //facets counter we have to deal with it ourself:
+  for_each(&classic_facets[0], &classic_facets[0] + nb_classic_facets, _get_facet);
+
+  classic->facets_vec.reserve(nb_classic_facets);
+  classic->facets_vec.assign(&classic_facets[0], &classic_facets[0] + nb_classic_facets);
 
   static locale _Locale_classic(classic);
   _Stl_classic_locale = &_Locale_classic;
