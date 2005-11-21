@@ -46,6 +46,9 @@
 
 	* doc/README.evc3: doc update from Michael Fink.
 
+	* stlport/*, stlport/*, tests/*: Clean up of trailing blank charaters
+	in all source files.
+
 2005-11-17  Gail Baker  <baker88@users.sourceforge.net>
 
 	* build/Makefiles/gmake/CC.mak, depend.mak, app/CC.mak, lib/CC.mak:
