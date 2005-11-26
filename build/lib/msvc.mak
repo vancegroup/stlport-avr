@@ -11,7 +11,8 @@
 !if (("$(COMPILER_NAME)" != "vc6") && \
      ("$(COMPILER_NAME)" != "vc70") && \
      ("$(COMPILER_NAME)" != "vc71") && \
-     ("$(COMPILER_NAME)" != "vc8"))
+     ("$(COMPILER_NAME)" != "vc8") && \
+     ("$(COMPILER_NAME)" != "icl"))
 !error '$(COMPILER_NAME)' not supported by this make file, please rerun 'configure' script and follow instructions.
 !endif
 
@@ -20,14 +21,7 @@ SRCROOT=..
 STLPORT_INCLUDE_DIR = ../../stlport
 !include Makefile.inc
 
-INCLUDES=$(INCLUDES) /I$(STLPORT_INCLUDE_DIR)
-
-!if "$(COMPILER)" != "dmc"
-INCLUDES=$(INCLUDES) /FI vc_warning_disable.h
-!else
-INCLUDES=$(INCLUDES) /D__BUILDING_STLPORT
-!endif
-# 
+INCLUDES=$(INCLUDES) /I$(STLPORT_INCLUDE_DIR) /FI vc_warning_disable.h
 
 !ifdef STLP_BUILD_BOOST_PATH
 INCLUDES=$(INCLUDES) /I "$(STLP_BUILD_BOOST_PATH)"
