@@ -5,54 +5,54 @@
  *          Michael Fink - vividos@users.sourceforge.net
  */
 
-# ifndef _STLP_EVC_H
-#  define _STLP_EVC_H
+#ifndef _STLP_EVC_H
+#define _STLP_EVC_H
 
 // This flag is being used by STLport to support
 // old-fashioned Windows CE SDK (see stl_wince.h)
 // do not use with eMebedded Visual C++ 3 or 4!
-# ifdef _STLP_WINCE
+#ifdef _STLP_WINCE
 #  undef _STLP_WINCE
-# endif
+#endif
 
 /* Compiler dependent define. The following defines may be available:
  * _STLP_WCE_EVC3 when compiling under eMbedded Visual C++ 3
  * _STLP_WCE_NET  when compiling under eMbedded Visual C++ .NET
  * _STLP_WCE      always defined when compiling with one of the above
  */
-# undef _STLP_WCE_EVC3
-# undef _STLP_WCE_NET
+#undef _STLP_WCE_EVC3
+#undef _STLP_WCE_NET
 
-# if (_WIN32_WCE > 300)
+#if (_WIN32_WCE > 300)
 #  define _STLP_WCE_NET UNDER_CE
-# elif (_WIN32_WCE == 300)
+#elif (_WIN32_WCE == 300)
 #  define _STLP_WCE_EVC3 UNDER_CE
-# else
+#else
 #  error No support for Windows CE below 3.0!
-# endif
+#endif
 
 // This is defined for all platforms using Windows CE
-# define _STLP_WCE
+#define _STLP_WCE
 
 // Ensure _DEBUG is defined.
-# if defined(DEBUG) && !defined(_DEBUG)
+#if defined(DEBUG) && !defined(_DEBUG)
 #  define _DEBUG
-# endif
+#endif
 
 // inherit all msvc6 options
-# include <config/stl_msvc.h>
+#include <config/stl_msvc.h>
 
 // Always threaded in eMbedded Visual C++ 3.0 and .NET
-# ifndef _MT
+#ifndef _MT
 #  define _MT
-# endif
+#endif
 
 // we don't have a static native runtime library
-# undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 
 // no *f and *l math functions available
-# define _STLP_NO_VENDOR_MATH_F
-# define _STLP_NO_VENDOR_MATH_L
+#define _STLP_NO_VENDOR_MATH_F
+#define _STLP_NO_VENDOR_MATH_L
 
 /*
  * Workaround Pocket PC 2003 missing RTTI support in OS image:
@@ -72,14 +72,14 @@
  *
  * Note: This option is always switched on for eMbedded Visual C++ 3!
  */
-// # define _STLP_RTTI_BUG
+//# define _STLP_RTTI_BUG
 
 /*
  * Redirect cout, cerr and clog:
  * If defined redirect cout, cerr and clog to
  * files stdout.txt, stderr.txt and stdlog.txt
  */
-// # define _STLP_REDIRECT_STDSTREAMS
+//# define _STLP_REDIRECT_STDSTREAMS
 
 /*
  * Static class members may generate LNK1179:
@@ -92,53 +92,53 @@
 
 // Use wide-string interface of windows native functions (CreateFile...).
 // Note that this should be defined all the time while under CE.
-# if defined(UNICODE)
+#if defined (UNICODE)
 #  define _STLP_USE_WIDE_INTERFACE
-# endif
+#endif
 
 // Force exception std to std instead of __std_alias.
-# if defined (__cplusplus) && ! defined (_STLP_HAS_NO_NAMESPACES)
+#if defined (__cplusplus) && !defined (_STLP_HAS_NO_NAMESPACES)
 #  ifdef _STLP_VENDOR_EXCEPT_STD
-#   undef _STLP_VENDOR_EXCEPT_STD
+#    undef _STLP_VENDOR_EXCEPT_STD
 #  endif
-#   define _STLP_VENDOR_EXCEPT_STD std
-# endif
+#  define _STLP_VENDOR_EXCEPT_STD std
+#endif
 
 // short string optimization bug under evc3, evc4 using ARM compiler
-# if defined (ARM) || defined(_ARM_)
+#if defined (ARM) || defined (_ARM_)
 #  define _STLP_DONT_USE_SHORT_STRING_OPTIM
-# endif
+#endif
 
 // when using MFC, disable another placement new declaration, since there is one in wcealt.h
-#  if !defined(__BUILDING_STLPORT) && defined(_STLP_USE_MFC)
-#   define __PLACEMENT_NEW_INLINE
-#  endif
+#if !defined (__BUILDING_STLPORT) && defined (_STLP_USE_MFC)
+#  define __PLACEMENT_NEW_INLINE
+#endif
 
 // threads
-# undef _REENTRANT
-# define _REENTRANT
-# undef _NOTHREADS
+#undef _REENTRANT
+#define _REENTRANT
+#undef _NOTHREADS
 
 // Use old fashioned headers (ctime vs. time.h).
-# undef _STLP_NO_NEW_C_HEADERS
-# define _STLP_NO_NEW_C_HEADERS
+#undef _STLP_NO_NEW_C_HEADERS
+#define _STLP_NO_NEW_C_HEADERS
 
 // RTTI Bug support
-# if defined(_STLP_RTTI_BUG) || defined(_STLP_WCE_EVC3)
+#if defined (_STLP_RTTI_BUG) || defined (_STLP_WCE_EVC3)
 #  define _STLP_NO_EXCEPTION_HEADER
 #  define _STLP_NO_EXCEPTIONS
 #  undef _STLP_USE_EXCEPTIONS
 #  ifdef _STLP_WINCE_USE_OUTPUTDEBUGSTRING
-#   define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
+#    define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
 #  else
-#   define _STLP_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,0L/*MB_OK*/)
+#    define _STLP_WINCE_TRACE(msg)   MessageBox(NULL,(msg),NULL,0L/*MB_OK*/)
 #  endif
 #  ifndef __THROW_BAD_ALLOC
-#   define __THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
+#    define __THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
 #  endif
-# else
+#else
 #  define _STLP_WINCE_TRACE(msg)   OutputDebugString(msg)
-# endif
+#endif
 
 /*
  * eMbedded Visual C++ .NET specific settings
@@ -196,53 +196,49 @@
 /*
  * eMbedded Visual C++ 3.0 specific settings
  */
-#ifdef _STLP_WCE_EVC3
+#if defined (_STLP_WCE_EVC3)
 
 // eMbedded 3 doesn't have mbstate_t and we could define _STLP_NO_MBSTATE_T,
 // but the flag isn't fully supported in STLport, and it's easier to use the
 // evc4 definition for that type.
 typedef int mbstate_t;
 
-// evc3 has no locale and time support
-#define _STLP_NO_LOCALE_SUPPORT
-#define _STLP_NO_TIME_SUPPORT
-
 // evc3 has new, but no explicit header
-#define _STLP_NO_NEW_HEADER
-#define _STLP_NO_NEW_NEW_HEADER
+#  define _STLP_NO_NEW_HEADER
+#  define _STLP_NO_NEW_NEW_HEADER
 
 // evc3 has no bad_alloc and no typeinfo
-# undef _STLP_NO_BAD_ALLOC
-# define _STLP_NO_BAD_ALLOC
+#  undef _STLP_NO_BAD_ALLOC
+#  define _STLP_NO_BAD_ALLOC
 
-# undef _STLP_NO_TYPEINFO
-# define _STLP_NO_TYPEINFO
+#  undef _STLP_NO_TYPEINFO
+#  define _STLP_NO_TYPEINFO
 
 // missing things in eMbedded Visual C++ 3.0 headers
-# ifndef _SIZE_T_DEFINED
+#  ifndef _SIZE_T_DEFINED
    typedef unsigned int size_t;
-#  define _SIZE_T_DEFINED
-# endif
+#    define _SIZE_T_DEFINED
+#  endif
 
-# ifndef _WCHAR_T_DEFINED
+#  ifndef _WCHAR_T_DEFINED
    typedef unsigned short wchar_t;
-#  define _WCHAR_T_DEFINED
-# endif
+#    define _WCHAR_T_DEFINED
+#  endif
 
 // ptrdiff_t is not defined in evc3 headers
-# ifndef _PTRDIFF_T_DEFINED
+#  ifndef _PTRDIFF_T_DEFINED
    typedef int ptrdiff_t;
-#  define _PTRDIFF_T_DEFINED
-# endif
+#    define _PTRDIFF_T_DEFINED
+#  endif
 
 // clock_t is not defined in evc3 headers
-# ifndef _CLOCK_T_DEFINED
+#  ifndef _CLOCK_T_DEFINED
    typedef long clock_t;
-#  define _CLOCK_T_DEFINED
-# endif
+#    define _CLOCK_T_DEFINED
+#  endif
 
 // Struct tm is not defined in evc3 headers
-# ifndef _TM_DEFINED
+#  ifndef _TM_DEFINED
 struct tm {
    int tm_sec;     /* seconds after the minute - [0,59] */
    int tm_min;     /* minutes after the hour - [0,59] */
@@ -254,50 +250,49 @@ struct tm {
    int tm_yday;    /* days since January 1 - [0,365] */
    int tm_isdst;   /* daylight savings time flag */
 };
-# define _TM_DEFINED
-# endif
+#    define _TM_DEFINED
+#  endif
 
 // define placement new and delete operator
 // note: when MFCCE headers are included first, don't define the new operator,
 //       since it was already defined in wcealt.h
-# ifdef __cplusplus
-#  ifndef __PLACEMENT_NEW_INLINE
-#    ifndef _MFC_VER
+#  ifdef __cplusplus
+#    ifndef __PLACEMENT_NEW_INLINE
+#      ifndef _MFC_VER
 inline void *__cdecl operator new(size_t, void *_P) { return (_P); }
-#    endif /* _MFC_VER */
+#      endif /* _MFC_VER */
 inline void __cdecl operator delete(void *, void *) { return; }
-#   define __PLACEMENT_NEW_INLINE
-#  endif
-
-# endif /* __cplusplus */
+#      define __PLACEMENT_NEW_INLINE
+#    endif
+#  endif /* __cplusplus */
 
 // evc3 doesn't have native wide functions, e.g. fgetwc, wmemmove
-# define _STLP_NO_NATIVE_WIDE_FUNCTIONS
+#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS
 
 // evc3 doesn't have assert.h
-# ifndef _ASSERT_DEFINED
-#  define assert(expr) _STLP_ASSERT(expr)
-#  define _ASSERT_DEFINED
-# endif
+#  ifndef _ASSERT_DEFINED
+#    define assert(expr) _STLP_ASSERT(expr)
+#    define _ASSERT_DEFINED
+#  endif
 
-# endif /* _STLP_WCE_EVC3 */
+#endif /* _STLP_WCE_EVC3 */
 
 
 // Minimize windows.h includes
-# if !defined(WIN32_LEAN_AND_MEAN)
+#if !defined (WIN32_LEAN_AND_MEAN)
 #  define WIN32_LEAN_AND_MEAN
-# endif
-# if !defined(VC_EXTRALEAN)
+#endif
+#if !defined (VC_EXTRALEAN)
 #  define VC_EXTRALEAN
-# endif
-# if !defined(STRICT)
+#endif
+#if !defined (STRICT)
 #  define STRICT
-# endif
+#endif
 
 // Don't let windows.h define its min and max macros.
-# if !defined(NOMINMAX)
+#if !defined (NOMINMAX)
 #  define NOMINMAX
-# endif
+#endif
 
 /*
  * original call: TerminateProcess(GetCurrentProcess(), 0);
@@ -305,10 +300,10 @@ inline void __cdecl operator delete(void *, void *) { return; }
  * defined in kfuncs.h, since we then can avoid including <windows.h> at all.
  * all needed Win32 API functions are defined in <stl/_windows.h>
  */
-# ifndef _ABORT_DEFINED
+#ifndef _ABORT_DEFINED
 #  define _STLP_ABORT() TerminateProcess(reinterpret_cast<HANDLE>(66), 0)
 #  define _ABORT_DEFINED
-# endif
+#endif
 
 // Notice: windows.h isn't included here anymore; all needed defines are in
 // stl/_windows.h now

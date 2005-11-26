@@ -276,13 +276,13 @@ public:
 // The following should be treated as private, at least for now.
 template<class _CharT>
 class _Rope_char_consumer {
-# ifndef _STLP_MEMBER_TEMPLATES
+#if !defined (_STLP_MEMBER_TEMPLATES)
 public:
   //Without member templates we have to use run-time parameterization.
   // The symmetry with char_producer is accidental and temporary.
   virtual ~_Rope_char_consumer() {};
   virtual bool operator()(const _CharT* __buffer, size_t __len) = 0;
-# endif
+#endif
 };
 
 //
@@ -346,8 +346,8 @@ public:
   allocator_type get_allocator() const { return allocator_type(_M_size);  }
 
   unsigned char _M_depth;
-  _CharT* _M_c_string;
-  _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
+  _CharT* _STLP_VOLATILE _M_c_string;
+  _STLP_PRIV _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
 
 # ifdef _STLP_NO_ARROW_OPERATOR
   _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {}
@@ -472,7 +472,7 @@ public:
 };
 
 template<class _CharT, class _Alloc>
-struct _Rope_RopeConcatenation : public _Rope_RopeRep<_CharT,_Alloc> {
+struct _Rope_RopeConcatenation : public _Rope_RopeRep<_CharT, _Alloc> {
 private:
   typedef _Rope_RopeRep<_CharT,_Alloc> _RopeRep;
 
@@ -498,8 +498,8 @@ public:
   }
 };
 
-template<class _CharT, class _Alloc>
-struct _Rope_RopeFunction : public _Rope_RopeRep<_CharT,_Alloc> {
+template <class _CharT, class _Alloc>
+struct _Rope_RopeFunction : public _Rope_RopeRep<_CharT, _Alloc> {
 private:
   typedef _Rope_RopeRep<_CharT,_Alloc> _RopeRep;
 public:
@@ -543,23 +543,17 @@ public:
  * deallocation, we treat the __result as a RopeFunction.
  */
 template<class _CharT, class _Alloc>
-//# if  ( defined (__IBMCPP__) && (__IBMCPP__ == 500) )  // JFA 10-Aug-2000 for some reason xlC cares about the order
-struct _Rope_RopeSubstring : public char_producer<_CharT> , public _Rope_RopeFunction<_CharT,_Alloc>
-//# else
-//struct _Rope_RopeSubstring : public _Rope_RopeFunction<_CharT,_Alloc>,
-//                             public char_producer<_CharT>
-//# endif
-{
+struct _Rope_RopeSubstring : public char_producer<_CharT>, public _Rope_RopeFunction<_CharT,_Alloc> {
 public:
   // XXX this whole class should be rewritten.
   typedef _Rope_RopeRep<_CharT,_Alloc> _RopeRep;
   _RopeRep *_M_base;      // not 0
   size_t _M_start;
-  virtual void operator()(size_t __start_pos, size_t __req_len,
-                          _CharT* __buffer) {
+  /* virtual */ void operator()(size_t __start_pos, size_t __req_len,
+                                _CharT* __buffer) {
     typedef _Rope_RopeFunction<_CharT,_Alloc> _RopeFunction;
     typedef _Rope_RopeLeaf<_CharT,_Alloc> _RopeLeaf;
-    switch(_M_base->_M_tag) {
+    switch (_M_base->_M_tag) {
     case _RopeRep::_S_function:
     case _RopeRep::_S_substringfn:
       {
@@ -594,9 +588,8 @@ public:
     _M_base->_M_ref_nonnil();
     this->_M_tag = _RopeRep::_S_substringfn;
   }
-  virtual ~_Rope_RopeSubstring() {
-    _M_base->_M_unref_nonnil();
-  }
+  virtual ~_Rope_RopeSubstring()
+  { _M_base->_M_unref_nonnil(); }
 };
 
 /*
@@ -1086,7 +1079,7 @@ public:
 
 public:
   // The only data member of a rope:
-  _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type> _M_tree_ptr;
+  _STLP_PRIV _STLP_alloc_proxy<_RopeRep*, _CharT, allocator_type> _M_tree_ptr;
 
 public:
   allocator_type get_allocator() const { return allocator_type(_M_tree_ptr); }
@@ -1137,7 +1130,7 @@ public:
   static _RopeRep* _S_concat_rep(_RopeRep* __left, _RopeRep* __right);
 
 public:
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharConsumer>
 #else
   typedef _Rope_char_consumer<_CharT>& _CharConsumer;
@@ -1180,14 +1173,14 @@ protected:
   static _RopeFunction* _S_new_RopeFunction(char_producer<_CharT>* __f,
                                             size_t _p_size, bool __d, allocator_type __a) {
    _RopeFunction* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a,
-                                               _RopeFunction).allocate(1,(const void*)0);
+                                                   _RopeFunction).allocate(1,(const void*)0);
     return _STLP_PLACEMENT_NEW(__space) _RopeFunction(__f, _p_size, __d, __a);
   }
 
   static _RopeSubstring* _S_new_RopeSubstring(_Rope_RopeRep<_CharT,_Alloc>* __b, size_t __s,
                                               size_t __l, allocator_type __a) {
    _RopeSubstring* __space = _STLP_CREATE_ALLOCATOR(allocator_type,__a,
-                                                _RopeSubstring).allocate(1,(const void*)0);
+                                                    _RopeSubstring).allocate(1,(const void*)0);
     return _STLP_PLACEMENT_NEW(__space) _RopeSubstring(__b, __s, __l, __a);
   }
 
@@ -1943,14 +1936,7 @@ public:
     return rope<_CharT,_Alloc>(_S_substring(_M_tree_ptr._M_data, __pos, __pos + 1));
   }
 
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum { npos = -1 };
-#elif __GNUC__ == 2 && __GNUC_MINOR__ == 96
-  // inline initializer conflicts with 'extern template'
-  static const size_t npos;
-#else
-  static const size_t npos = ~(size_t)0;
-#endif
+#include <stl/_string_npos.h>
 
   size_type find(const _Self& __s, size_type __pos = 0) const {
     if (__pos >= size())
@@ -2046,17 +2032,17 @@ public:
 # endif
 }; //class rope
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG) &&  \
-   (!defined (__GNUC__) || ((__GNUC__ == 2) && (__GNUC_MINOR__ == 96)))
+#if !defined (_STLP_STATIC_CONST_INIT_BUG)
+#  if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
 template <class _CharT, class _Alloc>
 const size_t rope<_CharT, _Alloc>::npos = ~(size_t) 0;
+#  endif
 #endif
 
 template <class _CharT, class _Alloc>
 inline _CharT
-_Rope_const_iterator< _CharT, _Alloc>::operator[](size_t __n) {
-  return rope<_CharT,_Alloc>::_S_fetch(this->_M_root, this->_M_current_pos + __n);
-}
+_Rope_const_iterator< _CharT, _Alloc>::operator[](size_t __n)
+{ return rope<_CharT,_Alloc>::_S_fetch(this->_M_root, this->_M_current_pos + __n); }
 
 template <class _CharT, class _Alloc>
 inline bool operator== (const _Rope_const_iterator<_CharT,_Alloc>& __x,
@@ -2067,63 +2053,54 @@ inline bool operator== (const _Rope_const_iterator<_CharT,_Alloc>& __x,
 
 template <class _CharT, class _Alloc>
 inline bool operator< (const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                       const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return (__x._M_current_pos < __y._M_current_pos);
-}
+                       const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return (__x._M_current_pos < __y._M_current_pos); }
 
 #ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 
 template <class _CharT, class _Alloc>
 inline bool operator!= (const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return !(__x == __y);
-}
+                        const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return !(__x == __y); }
 
 template <class _CharT, class _Alloc>
 inline bool operator> (const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                       const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return __y < __x;
-}
+                       const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return __y < __x; }
 
 template <class _CharT, class _Alloc>
 inline bool operator<= (const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return !(__y < __x);
-}
+                        const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return !(__y < __x); }
 
 template <class _CharT, class _Alloc>
 inline bool operator>= (const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return !(__x < __y);
-}
+                        const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return !(__x < __y); }
 
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _CharT, class _Alloc>
 inline ptrdiff_t operator-(const _Rope_const_iterator<_CharT,_Alloc>& __x,
-                           const _Rope_const_iterator<_CharT,_Alloc>& __y) {
-  return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos;
-}
+                           const _Rope_const_iterator<_CharT,_Alloc>& __y)
+{ return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos; }
 
 #if !defined( __MWERKS__ ) || __MWERKS__ >= 0x2000  // dwa 8/21/97  - "ambiguous access to overloaded function" bug.
 template <class _CharT, class _Alloc>
 inline _Rope_const_iterator<_CharT,_Alloc>
-operator-(const _Rope_const_iterator<_CharT,_Alloc>& __x, ptrdiff_t __n) {
-  return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos - __n);
-}
+operator-(const _Rope_const_iterator<_CharT,_Alloc>& __x, ptrdiff_t __n)
+{ return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos - __n); }
 # endif
 
 template <class _CharT, class _Alloc>
 inline _Rope_const_iterator<_CharT,_Alloc>
-operator+(const _Rope_const_iterator<_CharT,_Alloc>& __x, ptrdiff_t __n) {
-  return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos + __n);
-}
+operator+(const _Rope_const_iterator<_CharT,_Alloc>& __x, ptrdiff_t __n)
+{ return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos + __n); }
 
 template <class _CharT, class _Alloc>
 inline _Rope_const_iterator<_CharT,_Alloc>
-operator+(ptrdiff_t __n, const _Rope_const_iterator<_CharT,_Alloc>& __x) {
-  return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos + __n);
-}
+operator+(ptrdiff_t __n, const _Rope_const_iterator<_CharT,_Alloc>& __x)
+{ return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos + __n); }
 
 template <class _CharT, class _Alloc>
 inline bool operator== (const _Rope_iterator<_CharT,_Alloc>& __x,
@@ -2134,43 +2111,35 @@ inline bool operator== (const _Rope_iterator<_CharT,_Alloc>& __x,
 
 template <class _CharT, class _Alloc>
 inline bool operator< (const _Rope_iterator<_CharT,_Alloc>& __x,
-                       const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return (__x._M_current_pos < __y._M_current_pos);
-}
+                       const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return (__x._M_current_pos < __y._M_current_pos); }
 
-#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
-
+#if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 template <class _CharT, class _Alloc>
 inline bool operator!= (const _Rope_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return !(__x == __y);
-}
+                        const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return !(__x == __y); }
 
 template <class _CharT, class _Alloc>
 inline bool operator> (const _Rope_iterator<_CharT,_Alloc>& __x,
-                       const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return __y < __x;
-}
+                       const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return __y < __x; }
 
 template <class _CharT, class _Alloc>
 inline bool operator<= (const _Rope_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return !(__y < __x);
-}
+                        const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return !(__y < __x); }
 
 template <class _CharT, class _Alloc>
 inline bool operator>= (const _Rope_iterator<_CharT,_Alloc>& __x,
-                        const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return !(__x < __y);
-}
-
+                        const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return !(__x < __y); }
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _CharT, class _Alloc>
 inline ptrdiff_t operator-(const _Rope_iterator<_CharT,_Alloc>& __x,
-                           const _Rope_iterator<_CharT,_Alloc>& __y) {
-  return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos;
-}
+                           const _Rope_iterator<_CharT,_Alloc>& __y)
+{ return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos; }
 
 #if !defined( __MWERKS__ ) || __MWERKS__ >= 0x2000  // dwa 8/21/97  - "ambiguous access to overloaded function" bug.
 template <class _CharT, class _Alloc>
@@ -2301,26 +2270,22 @@ basic_ostream<_CharT, _Traits>& operator<< (basic_ostream<_CharT, _Traits>& __o,
 #endif
 
 typedef rope<char, _STLP_DEFAULT_ALLOCATOR(char) > crope;
-# ifdef _STLP_HAS_WCHAR_T
+#if defined (_STLP_HAS_WCHAR_T)
 typedef rope<wchar_t, _STLP_DEFAULT_ALLOCATOR(wchar_t) > wrope;
-# endif
+#endif
 
-inline crope::reference __mutable_reference_at(crope& __c, size_t __i) {
-  return __c.mutable_reference_at(__i);
-}
+inline crope::reference __mutable_reference_at(crope& __c, size_t __i)
+{ return __c.mutable_reference_at(__i); }
 
-# ifdef _STLP_HAS_WCHAR_T
-inline wrope::reference __mutable_reference_at(wrope& __c, size_t __i) {
-  return __c.mutable_reference_at(__i);
-}
-# endif
+#if defined (_STLP_HAS_WCHAR_T)
+inline wrope::reference __mutable_reference_at(wrope& __c, size_t __i)
+{ return __c.mutable_reference_at(__i); }
+#endif
 
-#ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
-
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _CharT, class _Alloc>
-inline void swap(rope<_CharT,_Alloc>& __x, rope<_CharT,_Alloc>& __y) {
-  __x.swap(__y);
-}
+inline void swap(rope<_CharT,_Alloc>& __x, rope<_CharT,_Alloc>& __y)
+{ __x.swap(__y); }
 #else
 
 inline void swap(crope& __x, crope& __y) { __x.swap(__y); }
@@ -2341,7 +2306,7 @@ _STLP_TEMPLATE_NULL struct hash<crope> {
   }
 };
 
-# ifdef _STLP_HAS_WCHAR_T  // dwa 8/21/97
+#if defined (_STLP_HAS_WCHAR_T)  // dwa 8/21/97
 _STLP_TEMPLATE_NULL struct hash<wrope> {
   size_t operator()(const wrope& __str) const {
     size_t _p_size = __str.size();
@@ -2352,19 +2317,18 @@ _STLP_TEMPLATE_NULL struct hash<wrope> {
 };
 #endif
 
-#ifndef _STLP_MSVC
+#if !defined (__BORLANDC__) && \
+    (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
-void _Rope_rotate(_Rope_iterator<_CharT,_Alloc> __first,
-                  _Rope_iterator<_CharT,_Alloc> __middle,
-                  _Rope_iterator<_CharT,_Alloc> __last);
+void _Rope_rotate(_Rope_iterator<_CharT, _Alloc> __first,
+                  _Rope_iterator<_CharT, _Alloc> __middle,
+                  _Rope_iterator<_CharT, _Alloc> __last);
 
-inline void rotate(_Rope_iterator<char,_STLP_DEFAULT_ALLOCATOR(char) > __first,
-                   _Rope_iterator<char,_STLP_DEFAULT_ALLOCATOR(char) > __middle,
-                   _Rope_iterator<char,_STLP_DEFAULT_ALLOCATOR(char) > __last) {
-  _Rope_rotate(__first, __middle, __last);
-}
-
+inline void rotate(_Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __first,
+                   _Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __middle,
+                   _Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __last)
+{ _Rope_rotate(__first, __middle, __last); }
 #endif
 
 template <class _CharT, class _Alloc>
@@ -2385,14 +2349,13 @@ struct __move_traits<rope<_CharT, _Alloc> > {
 };
 #endif
 
-
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_rope.c>
-# endif
+#endif
 
-# endif /* _STLP_INTERNAL_ROPE_H */
+#endif /* _STLP_INTERNAL_ROPE_H */
 
 // Local Variables:
 // mode:C++

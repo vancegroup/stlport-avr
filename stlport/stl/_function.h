@@ -40,13 +40,13 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# ifndef _STLP_NO_EXTENSIONS
+#if !defined (_STLP_NO_EXTENSIONS)
 // identity_element (not part of the C++ standard).
 template <class _Tp> inline _Tp identity_element(plus<_Tp>) {  return _Tp(0); }
 template <class _Tp> inline _Tp identity_element(multiplies<_Tp>) { return _Tp(1); }
-# endif
+#endif
 
-#  if defined (_STLP_BASE_TYPEDEF_BUG)
+#if defined (_STLP_BASE_TYPEDEF_BUG)
 // this workaround is needed for SunPro 4.0.1
 // suggested by "Martin Abernethy" <gma@paston.co.uk>:
 
@@ -55,22 +55,19 @@ template <class _Tp> inline _Tp identity_element(multiplies<_Tp>) { return _Tp(1
 // as type parameters. SUN C++ 4.0.1 compiler gives errors for template type parameters
 // of the form 'name1::name2', where name1 is itself a type parameter.
 template <class _Pair>
-struct __pair_aux : private _Pair
-{
+struct __pair_aux : private _Pair {
   typedef typename _Pair::first_type first_type;
   typedef typename _Pair::second_type second_type;
 };
 
 template <class _Operation>
-struct __unary_fun_aux : private _Operation
-{
+struct __unary_fun_aux : private _Operation {
   typedef typename _Operation::argument_type argument_type;
   typedef typename _Operation::result_type result_type;
 };
 
 template <class _Operation>
-struct __binary_fun_aux  : private _Operation
-{
+struct __binary_fun_aux  : private _Operation {
   typedef typename _Operation::first_argument_type first_argument_type;
   typedef typename _Operation::second_argument_type second_argument_type;
   typedef typename _Operation::result_type result_type;
@@ -79,16 +76,16 @@ struct __binary_fun_aux  : private _Operation
 #  define __UNARY_ARG(__Operation,__type)  __unary_fun_aux<__Operation>::__type
 #  define __BINARY_ARG(__Operation,__type)  __binary_fun_aux<__Operation>::__type
 #  define __PAIR_ARG(__Pair,__type)  __pair_aux<__Pair>::__type
-# else
+#else
 #  define __UNARY_ARG(__Operation,__type)  __Operation::__type
 #  define __BINARY_ARG(__Operation,__type) __Operation::__type
 #  define __PAIR_ARG(__Pair,__type) __Pair::__type
-# endif
+#endif
 
 template <class _Predicate>
 class unary_negate
-    : public unary_function<typename __UNARY_ARG(_Predicate,argument_type), bool> {
-  typedef unary_function<typename __UNARY_ARG(_Predicate,argument_type), bool> _Base;
+    : public unary_function<typename __UNARY_ARG(_Predicate, argument_type), bool> {
+  typedef unary_function<typename __UNARY_ARG(_Predicate, argument_type), bool> _Base;
 public:
   typedef typename _Base::argument_type argument_type;
 private:
@@ -110,11 +107,11 @@ not1(const _Predicate& __pred) {
 
 template <class _Predicate>
 class binary_negate
-    : public binary_function<typename __BINARY_ARG(_Predicate,first_argument_type),
-                             typename __BINARY_ARG(_Predicate,second_argument_type),
+    : public binary_function<typename __BINARY_ARG(_Predicate, first_argument_type),
+                             typename __BINARY_ARG(_Predicate, second_argument_type),
                              bool> {
-  typedef binary_function<typename __BINARY_ARG(_Predicate,first_argument_type),
-                          typename __BINARY_ARG(_Predicate,second_argument_type),
+  typedef binary_function<typename __BINARY_ARG(_Predicate, first_argument_type),
+                          typename __BINARY_ARG(_Predicate, second_argument_type),
                           bool> _Base;
 public:
   typedef typename _Base::first_argument_type first_argument_type;
@@ -139,10 +136,10 @@ not2(const _Predicate& __pred) {
 
 template <class _Operation>
 class binder1st :
-    public unary_function<typename __BINARY_ARG(_Operation,second_argument_type),
-                          typename __BINARY_ARG(_Operation,result_type) > {
-  typedef unary_function<typename __BINARY_ARG(_Operation,second_argument_type),
-                         typename __BINARY_ARG(_Operation,result_type) > _Base;
+    public unary_function<typename __BINARY_ARG(_Operation, second_argument_type),
+                          typename __BINARY_ARG(_Operation, result_type) > {
+  typedef unary_function<typename __BINARY_ARG(_Operation, second_argument_type),
+                         typename __BINARY_ARG(_Operation, result_type) > _Base;
 public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
@@ -171,10 +168,10 @@ bind1st(const _Operation& __fn, const _Tp& __x) {
 
 template <class _Operation>
 class binder2nd
-  : public unary_function<typename __BINARY_ARG(_Operation,first_argument_type),
-                          typename __BINARY_ARG(_Operation,result_type)> {
-  typedef unary_function<typename __BINARY_ARG(_Operation,first_argument_type),
-                         typename __BINARY_ARG(_Operation,result_type)> _Base;
+  : public unary_function<typename __BINARY_ARG(_Operation, first_argument_type),
+                          typename __BINARY_ARG(_Operation, result_type)> {
+  typedef unary_function<typename __BINARY_ARG(_Operation, first_argument_type),
+                         typename __BINARY_ARG(_Operation, result_type)> _Base;
 public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
@@ -201,15 +198,15 @@ bind2nd(const _Operation& __fn, const _Tp& __x) {
   return binder2nd<_Operation>(__fn, _Arg2_type(__x));
 }
 
-# ifndef _STLP_NO_EXTENSIONS
+#if !defined (_STLP_NO_EXTENSIONS)
 // unary_compose and binary_compose (extensions, not part of the standard).
 
 template <class _Operation1, class _Operation2>
 class unary_compose :
-  public unary_function<typename __UNARY_ARG(_Operation2,argument_type),
-                        typename __UNARY_ARG(_Operation1,result_type)> {
-  typedef unary_function<typename __UNARY_ARG(_Operation2,argument_type),
-                         typename __UNARY_ARG(_Operation1,result_type)> _Base;
+  public unary_function<typename __UNARY_ARG(_Operation2, argument_type),
+                        typename __UNARY_ARG(_Operation1, result_type)> {
+  typedef unary_function<typename __UNARY_ARG(_Operation2, argument_type),
+                         typename __UNARY_ARG(_Operation1, result_type)> _Base;
 public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
@@ -235,10 +232,10 @@ compose1(const _Operation1& __fn1, const _Operation2& __fn2) {
 
 template <class _Operation1, class _Operation2, class _Operation3>
 class binary_compose :
-    public unary_function<typename __UNARY_ARG(_Operation2,argument_type),
-                          typename __BINARY_ARG(_Operation1,result_type)> {
-  typedef unary_function<typename __UNARY_ARG(_Operation2,argument_type),
-                         typename __BINARY_ARG(_Operation1,result_type)> _Base;
+    public unary_function<typename __UNARY_ARG(_Operation2, argument_type),
+                          typename __BINARY_ARG(_Operation1, result_type)> {
+  typedef unary_function<typename __UNARY_ARG(_Operation2, argument_type),
+                         typename __BINARY_ARG(_Operation1, result_type)> _Base;
 public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
@@ -262,30 +259,27 @@ template <class _Operation1, class _Operation2, class _Operation3>
 inline binary_compose<_Operation1, _Operation2, _Operation3>
 compose2(const _Operation1& __fn1, const _Operation2& __fn2,
          const _Operation3& __fn3) {
-  return binary_compose<_Operation1,_Operation2,_Operation3>
-    (__fn1, __fn2, __fn3);
+  return binary_compose<_Operation1,_Operation2,_Operation3>(__fn1, __fn2, __fn3);
 }
 
-# endif /* _STLP_NO_EXTENSIONS */
-
-# ifndef _STLP_NO_EXTENSIONS
-
 // identity is an extension: it is not part of the standard.
-template <class _Tp> struct identity : public _Identity<_Tp> {};
+template <class _Tp> struct identity : public _STLP_PRIV _Identity<_Tp> {};
 // select1st and select2nd are extensions: they are not part of the standard.
-template <class _Pair> struct select1st : public _Select1st<_Pair> {};
-template <class _Pair> struct select2nd : public _Select2nd<_Pair> {};
+template <class _Pair> struct select1st : public _STLP_PRIV _Select1st<_Pair> {};
+template <class _Pair> struct select2nd : public _STLP_PRIV _Select2nd<_Pair> {};
 
 template <class _Arg1, class _Arg2>
-struct project1st : public _Project1st<_Arg1, _Arg2> {};
+struct project1st : public _STLP_PRIV _Project1st<_Arg1, _Arg2> {};
 
 template <class _Arg1, class _Arg2>
-struct project2nd : public _Project2nd<_Arg1, _Arg2> {};
+struct project2nd : public _STLP_PRIV _Project2nd<_Arg1, _Arg2> {};
 
 
 // constant_void_fun, constant_unary_fun, and constant_binary_fun are
 // extensions: they are not part of the standard.  (The same, of course,
 // is true of the helper functions constant0, constant1, and constant2.)
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Result>
 struct _Constant_void_fun {
@@ -296,23 +290,25 @@ struct _Constant_void_fun {
   const result_type& operator()() const { return _M_val; }
 };
 
+_STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Result>
-struct constant_void_fun : public _Constant_void_fun<_Result> {
-  constant_void_fun(const _Result& __v) : _Constant_void_fun<_Result>(__v) {}
+struct constant_void_fun : public _STLP_PRIV _Constant_void_fun<_Result> {
+  constant_void_fun(const _Result& __v)
+    : _STLP_PRIV _Constant_void_fun<_Result>(__v) {}
 };
 
 template <class _Result, __DFL_TMPL_PARAM( _Argument , _Result) >
-struct constant_unary_fun : public _Constant_unary_fun<_Result, _Argument> {
+struct constant_unary_fun : public _STLP_PRIV _Constant_unary_fun<_Result, _Argument> {
   constant_unary_fun(const _Result& __v)
-    : _Constant_unary_fun<_Result, _Argument>(__v) {}
+    : _STLP_PRIV _Constant_unary_fun<_Result, _Argument>(__v) {}
 };
 
 template <class _Result, __DFL_TMPL_PARAM( _Arg1 , _Result), __DFL_TMPL_PARAM( _Arg2 , _Arg1) >
 struct constant_binary_fun
-  : public _Constant_binary_fun<_Result, _Arg1, _Arg2> {
+  : public _STLP_PRIV _Constant_binary_fun<_Result, _Arg1, _Arg2> {
   constant_binary_fun(const _Result& __v)
-    : _Constant_binary_fun<_Result, _Arg1, _Arg2>(__v) {}
+    : _STLP_PRIV _Constant_binary_fun<_Result, _Arg1, _Arg2>(__v) {}
 };
 
 template <class _Result>
@@ -368,7 +364,7 @@ public:
   subtractive_rng() { _M_initialize(161803398ul); }
 };
 
-# endif /* _STLP_NO_EXTENSIONS */
+#endif /* _STLP_NO_EXTENSIONS */
 
 _STLP_END_NAMESPACE
 

@@ -15,15 +15,15 @@
  * modified is included with the above copyright notice.
  *
  */
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
 
-#include <stl/_monetary.h>
-#include <stl/_istream.h>
+#include <locale>
+#include <istream>
 
 _STLP_BEGIN_NAMESPACE
 
 static void _Init_monetary_formats(money_base::pattern& pos_format,
-           money_base::pattern& neg_format) {
+                                   money_base::pattern& neg_format) {
   pos_format.field[0] = (char) money_base::symbol;
   pos_format.field[1] = (char) money_base::sign;
   pos_format.field[2] = (char) money_base::none;

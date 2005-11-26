@@ -69,7 +69,7 @@ basic_streambuf<_CharT, _Traits>::xsgetn(_CharT* __s, streamsize __n) {
       if (!_Traits::eq_int_type(__c, __eof)) {
         *__s = _Traits::to_char_type(__c);
         ++__result;
-      ++__s;
+        ++__s;
       }
       else
         break;

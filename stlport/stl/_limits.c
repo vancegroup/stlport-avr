@@ -19,7 +19,7 @@
 #ifndef _STLP_LIMITS_C
 #define _STLP_LIMITS_C
 
-#ifndef _STLP_INTERNAL_LIMITS_H
+#ifndef _STLP_INTERNAL_LIMITS
 #  include <stl/_limits.h>
 #endif
 
@@ -28,6 +28,8 @@
 //==========================================================
 
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if !defined ( _STLP_STATIC_CONST_INIT_BUG)
 
@@ -305,6 +307,8 @@ long double _LimG<__dummy>::get_LD_sNaN() {
 #undef _STLP_LDOUBLE_INF_REP
 #undef _STLP_LDOUBLE_QNAN_REP
 #undef _STLP_LDOUBLE_SNAN_REP
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

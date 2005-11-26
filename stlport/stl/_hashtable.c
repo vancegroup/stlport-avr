@@ -25,11 +25,7 @@
 #define _STLP_HASHTABLE_C
 
 #ifndef _STLP_INTERNAL_HASHTABLE_H
-# include <stl/_hashtable.h>
-#endif
-
-#if defined (_STLP_DEBUG)
-#  define hashtable __WORKAROUND_DBG_RENAME(hashtable)
+#  include <stl/_hashtable.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -70,7 +66,11 @@ size_t _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
 
 #undef __PRIME_LIST_BODY
 
+#if defined (_STLP_DEBUG)
+#  define hashtable _STLP_NON_DBG_NAME(hashtable)
+#else
 _STLP_MOVE_TO_STD_NAMESPACE
+#endif
 
 // fbp: these defines are for outline methods definitions.
 // needed to definitions to be portable. Should not be used in method bodies.
@@ -95,7 +95,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 /*
- * This method is too complicated to implement for hashtable than do not
+ * This method is too difficult to implement for hashtable that do not
  * require a sorted operation on the stored type.
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
@@ -107,6 +107,9 @@ bool hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>::_M_equal(
 }
 */
 
+/* Returns the iterator before the first iterator of the bucket __n and set
+ * __n to the first previous bucket which have the same iterator first as __n.
+ */
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 __iterator__
@@ -334,14 +337,12 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   size_type __l_bucket = __last != end() ? _M_bkt_num(*__last) : (_M_buckets.size() - 1);
 
   _ElemsIte __cur(_M_buckets[__f_bucket]);
-  size_type __prev_b = __f_bucket;
   _ElemsIte __prev;
   if (__cur == __first._M_ite) {
-    __prev = _M_before_begin(__prev_b)._M_ite;
+    __prev = _M_before_begin(__f_bucket)._M_ite;
   }
   else {
-    ++__prev_b;
-    _ElemsIte __last(_M_buckets[__f_bucket + 1]);
+    _ElemsIte __last(_M_buckets[++__f_bucket]);
     __prev = __cur++;
     for (; (__cur != __last) && (__cur != __first._M_ite); ++__prev, ++__cur);
   }
@@ -351,10 +352,8 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     __cur = _M_elems.erase_after(__prev);
     --_M_num_elements;
   }
-  fill(_M_buckets.begin() + __prev_b, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
+  fill(_M_buckets.begin() + __f_bucket, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
 }
-
-
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
@@ -368,7 +367,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   //as a size_type. The result concerning the respect of the max_load_factor will then be
   //undefined.
   __num_buckets_hint = (max) (__num_buckets_hint, (size_type)((float)size() / max_load_factor()));
-  size_type __num_buckets = _STLP_PRIV::_Stl_prime_type::_S_next_size(__num_buckets_hint);
+  size_type __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
   _M_rehash(__num_buckets);
 }
 
@@ -382,7 +381,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
 
   size_type __num_buckets_hint = (size_type)((float)(max) (__num_elements_hint, size()) / max_load_factor());
-  size_type __num_buckets = _STLP_PRIV::_Stl_prime_type::_S_next_size(__num_buckets_hint);
+  size_type __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
   _M_rehash(__num_buckets);
 }
 
@@ -397,7 +396,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     __cur = _M_elems.begin();
     size_type __new_bucket = _M_bkt_num(*__cur, __num_buckets);
     if (__tmp[__new_bucket] != __tmp[__new_bucket + 1]) {
-      __tmp_elems.splice_after(__tmp[__new_bucket], _M_elems.before_begin());
+      __tmp_elems.splice_after(__tmp[__new_bucket], _M_elems, _M_elems.before_begin());
     }
     else {
       size_type __prev_bucket;
@@ -414,7 +413,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
         for (__prev = __pos, ++__pos; __pos._M_node != __tmp[__new_bucket]; ++__prev, ++__pos);
         ++__prev_bucket;
       }
-      __tmp_elems.splice_after(__prev, _M_elems.before_begin());
+      __tmp_elems.splice_after(__prev, _M_elems, _M_elems.before_begin());
       fill(__tmp.begin() + __prev_bucket, __tmp.begin() + __new_bucket + 1, __cur._M_node);
     }
   }
@@ -466,7 +465,11 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 #undef key_type
 #undef _Node
 #undef __stl_num_primes
-#undef hashtable
+
+#if defined (_STLP_DEBUG)
+#  undef hashtable
+_STLP_MOVE_TO_STD_NAMESPACE
+#endif
 
 _STLP_END_NAMESPACE
 

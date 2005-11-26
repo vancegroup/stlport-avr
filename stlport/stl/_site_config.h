@@ -20,10 +20,10 @@
  */
 
 #if (defined (_STLP_NOTHREADS) || defined (_STLP_NO_THREADS) || defined (NOTHREADS))
-#  if ! defined (_NOTHREADS)
+#  if !defined (_NOTHREADS)
 #    define _NOTHREADS
 #  endif
-#  if ! defined (_STLP_NO_THREADS)
+#  if !defined (_STLP_NO_THREADS)
 #    define _STLP_NO_THREADS
 #  endif
 #endif
@@ -65,7 +65,7 @@
 #define _STLP_NO_CYGWIN
  */
 
-/*
+/* 
  * Edit relative path below (or put full path) to get native
  * compiler vendor's headers included. Default is "../include"
  * for _STLP_NATIVE_INCLUDE_PATH, default for other macros is

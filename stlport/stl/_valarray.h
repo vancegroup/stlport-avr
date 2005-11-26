@@ -19,8 +19,8 @@
 #ifndef _STLP_VALARRAY_H
 #define _STLP_VALARRAY_H
 
-#ifndef _STLP_CMATH
-#  include <cmath>
+#ifndef _STLP_INTERNAL_CMATH
+#  include <stl/_cmath.h>
 #endif
 
 #ifndef _STLP_NEW_HEADER
@@ -35,8 +35,8 @@
 #  include <stl/_numeric.h>
 #endif
 
-#ifndef _STLP_LIMITS_H
-#  include <limits>
+#ifndef _STLP_INTERNAL_LIMITS
+#  include <stl/_limits.h>
 #endif
 
 /* As we only need the _STLP_ASSERT macro from _debug.h we test it to include _debug.h */

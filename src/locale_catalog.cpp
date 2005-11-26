@@ -19,66 +19,58 @@
 
 #include <hash_map>
 #include <string>
-#include "locale_impl.h"
+
+#include <locale>
+#include <istream>
+
 #include "c_locale.h"
-
 #include "locale_impl.h"
-
-
-#include <stl/_codecvt.h>
-#include <stl/_collate.h>
-#include <stl/_ctype.h>
-#include <stl/_monetary.h>
-#include <stl/_time_facets.h>
-#include <stl/_messages_facets.h>
-#include <stl/_istream.h>
-#include <stl/_num_get.h>
-#include <stl/_num_put.h>
-
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // those wrappers are needed to avoid extern "C"
 
- void* _Loc_ctype_create(const char * s)
-  { return (void*)_Locale_ctype_create(s); }
- void* _Loc_numeric_create(const char * s)
-  { return (void*)_Locale_numeric_create(s); }
- void* _Loc_time_create(const char * s)
-  { return (void*)_Locale_time_create(s); }
- void* _Loc_collate_create(const char * s)
-  { return (void*)_Locale_collate_create(s); }
- void* _Loc_monetary_create(const char * s)
-  { return (void*)_Locale_monetary_create(s); }
- void* _Loc_messages_create(const char * s)
-  { return (void*)_Locale_messages_create(s); }
+void* _Loc_ctype_create(const char * s)
+{ return (void*)_Locale_ctype_create(s); }
+void* _Loc_numeric_create(const char * s)
+{ return (void*)_Locale_numeric_create(s); }
+void* _Loc_time_create(const char * s)
+{ return (void*)_Locale_time_create(s); }
+void* _Loc_collate_create(const char * s)
+{ return (void*)_Locale_collate_create(s); }
+void* _Loc_monetary_create(const char * s)
+{ return (void*)_Locale_monetary_create(s); }
+void* _Loc_messages_create(const char * s)
+{ return (void*)_Locale_messages_create(s); }
 
- char* _Loc_ctype_name(const void* l, char* s)
-  { return _Locale_ctype_name(l, s); }
- char* _Loc_numeric_name(const void* l, char* s)
-  { return _Locale_numeric_name(l, s); }
- char* _Loc_time_name(const void* l, char* s)
-  { return _Locale_time_name(l,s); }
- char* _Loc_collate_name( const void* l, char* s)
-  { return _Locale_collate_name(l,s); }
- char* _Loc_monetary_name(const void* l, char* s)
-  { return _Locale_monetary_name(l,s); }
- char* _Loc_messages_name(const void* l, char* s)
-  { return _Locale_messages_name(l,s); }
+char* _Loc_ctype_name(const void* l, char* s)
+{ return _Locale_ctype_name(l, s); }
+char* _Loc_numeric_name(const void* l, char* s)
+{ return _Locale_numeric_name(l, s); }
+char* _Loc_time_name(const void* l, char* s)
+{ return _Locale_time_name(l,s); }
+char* _Loc_collate_name( const void* l, char* s)
+{ return _Locale_collate_name(l,s); }
+char* _Loc_monetary_name(const void* l, char* s)
+{ return _Locale_monetary_name(l,s); }
+char* _Loc_messages_name(const void* l, char* s)
+{ return _Locale_messages_name(l,s); }
 
- const char* _Loc_ctype_default(char* p)    { return _Locale_ctype_default(p); }
- const char* _Loc_numeric_default(char * p) { return _Locale_numeric_default(p); }
- const char* _Loc_time_default(char* p)     { return _Locale_time_default(p); }
- const char* _Loc_collate_default(char* p)  { return _Locale_collate_default(p); }
- const char* _Loc_monetary_default(char* p) { return _Locale_monetary_default(p); }
- const char* _Loc_messages_default(char* p) { return _Locale_messages_default(p); }
+const char* _Loc_ctype_default(char* p)    { return _Locale_ctype_default(p); }
+const char* _Loc_numeric_default(char * p) { return _Locale_numeric_default(p); }
+const char* _Loc_time_default(char* p)     { return _Locale_time_default(p); }
+const char* _Loc_collate_default(char* p)  { return _Locale_collate_default(p); }
+const char* _Loc_monetary_default(char* p) { return _Locale_monetary_default(p); }
+const char* _Loc_messages_default(char* p) { return _Locale_messages_default(p); }
 
- void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy(p); }
- void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy(p); }
- void _Loc_time_destroy(void* p)     {_Locale_time_destroy(p);}
- void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
- void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
- void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
+void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy(p); }
+void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy(p); }
+void _Loc_time_destroy(void* p)     {_Locale_time_destroy(p);}
+void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
+void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
+void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
 
 typedef void* (*loc_create_func_t)(const char *);
 typedef char* (*loc_name_func_t)(const void* l, char* s);
@@ -171,7 +163,6 @@ __acquire_category(const char* name, loc_extract_name_func_t extract_name,
   return (*result.first).second.first;
 }
 
-
 static void
 __release_category(void* cat,
                    loc_destroy_func_t destroy_fun,
@@ -194,7 +185,7 @@ __release_category(void* cat,
           void* cat1 = (*it).second.first;
           destroy_fun(cat1);
           pM->erase(it);
-#ifdef _STLP_LEAKS_PEDANTIC
+#if defined (_STLP_LEAKS_PEDANTIC)
           if (pM->empty()) {
             delete pM;
             *M = 0;
@@ -243,23 +234,19 @@ _Locale_messages* _STLP_CALL __acquire_messages(const char* name) {
                                                                   messages_hash()));
 }
 
-void _STLP_CALL __release_ctype(_Locale_ctype* cat) {
-  __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, ctype_hash());
-}
-void _STLP_CALL __release_numeric(_Locale_numeric* cat) {
-  __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, numeric_hash());
-}
-void _STLP_CALL __release_time(_Locale_time* cat) {
-  __release_category(cat, _Loc_time_destroy, _Loc_time_name, time_hash());
-}
-void _STLP_CALL __release_collate(_Locale_collate* cat) {
-  __release_category(cat, _Loc_collate_destroy, _Loc_collate_name, collate_hash());
-}
-void _STLP_CALL __release_monetary(_Locale_monetary* cat) {
-  __release_category(cat, _Loc_monetary_destroy, _Loc_monetary_name, monetary_hash());
-}
-void _STLP_CALL __release_messages(_Locale_messages* cat) {
-  __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, messages_hash());
-}
+void _STLP_CALL __release_ctype(_Locale_ctype* cat)
+{ __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, ctype_hash()); }
+void _STLP_CALL __release_numeric(_Locale_numeric* cat)
+{ __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, numeric_hash()); }
+void _STLP_CALL __release_time(_Locale_time* cat)
+{ __release_category(cat, _Loc_time_destroy, _Loc_time_name, time_hash()); }
+void _STLP_CALL __release_collate(_Locale_collate* cat)
+{ __release_category(cat, _Loc_collate_destroy, _Loc_collate_name, collate_hash()); }
+void _STLP_CALL __release_monetary(_Locale_monetary* cat)
+{ __release_category(cat, _Loc_monetary_destroy, _Loc_monetary_name, monetary_hash()); }
+void _STLP_CALL __release_messages(_Locale_messages* cat)
+{ __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, messages_hash()); }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE

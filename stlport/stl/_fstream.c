@@ -22,7 +22,7 @@
 #  include <stl/_fstream.h>
 #endif
 
-#ifndef _STLP_LIMITS_H
+#ifndef _STLP_INTERNAL_LIMITS
 #  include <stl/_limits.h>
 #endif
 
@@ -344,7 +344,7 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
             (__status == _Codecvt::noconv ||
              (__inext == __ibegin + __ipos &&
               equal(this->gptr(), this->eback(), __ibegin,
-                    _Eq_traits<traits_type>())))) {
+                    _STLP_PRIV _Eq_traits<traits_type>())))) {
           // Get the current position (at the end of the external buffer),
           // then adjust it.  Again, it might be a text-oriented stream.
           streamoff __cur = _M_base._M_seek(0, ios_base::cur);

@@ -35,9 +35,13 @@
 #  include <stl/_tree.h>
 #endif
 
+#if defined (_STLP_DEBUG)
+#  define _Rb_tree _STLP_NON_DBG_NAME(Rb_tree)
+#endif
+
 // fbp: these defines are for outline methods definitions.
 // needed for definitions to be portable. Should not be used in method bodies.
-#if defined  ( _STLP_NESTED_TYPE_PARAM_BUG )
+#if defined (_STLP_NESTED_TYPE_PARAM_BUG)
 #  define __iterator__  _Rb_tree_iterator<_Value, _STLP_HEADER_TYPENAME _Traits::_NonConstTraits>
 #  define __size_type__ size_t
 #  define iterator __iterator__
@@ -46,14 +50,9 @@
 #  define __size_type__  _STLP_TYPENAME_ON_RETURN_TYPE _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>::size_type
 #endif
 
-#if defined ( _STLP_DEBUG)
-#  if defined(_Rb_tree)
-#    undef _Rb_tree
-#  endif
-#  define _Rb_tree __WORKAROUND_DBG_RENAME(Rb_tree)
-#endif
-
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
@@ -146,17 +145,20 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
                                          _Rb_tree_node_base*& __leftmost,
                                          _Rb_tree_node_base*& __rightmost) {
   _Rb_tree_node_base* __y = __z;
-  _Rb_tree_node_base* __x = 0;
-  _Rb_tree_node_base* __x_parent = 0;
+  _Rb_tree_node_base* __x;
+  _Rb_tree_node_base* __x_parent;
+
   if (__y->_M_left == 0)     // __z has at most one non-null child. y == z.
     __x = __y->_M_right;     // __x might be null.
-  else
+  else {
     if (__y->_M_right == 0)  // __z has exactly one non-null child. y == z.
       __x = __y->_M_left;    // __x is not null.
     else {                   // __z has two non-null children.  Set __y to
       __y = _Rb_tree_node_base::_S_minimum(__y->_M_right);   //   __z's successor.  __x might be null.
       __x = __y->_M_right;
     }
+  }
+
   if (__y != __z) {          // relink y in place of z.  y is z's successor
     __z->_M_left->_M_parent = __y;
     __y->_M_left = __z->_M_left;
@@ -185,24 +187,29 @@ _Rb_global<_Dummy>::_Rebalance_for_erase(_Rb_tree_node_base* __z,
     if (__x) __x->_M_parent = __y->_M_parent;
     if (__root == __z)
       __root = __x;
-    else
+    else {
       if (__z->_M_parent->_M_left == __z)
         __z->_M_parent->_M_left = __x;
       else
         __z->_M_parent->_M_right = __x;
-    if (__leftmost == __z)
+    }
+
+    if (__leftmost == __z) {
       if (__z->_M_right == 0)        // __z->_M_left must be null also
         __leftmost = __z->_M_parent;
     // makes __leftmost == _M_header if __z == __root
       else
         __leftmost = _Rb_tree_node_base::_S_minimum(__x);
-    if (__rightmost == __z)
+    }
+    if (__rightmost == __z) {
       if (__z->_M_left == 0)         // __z->_M_right must be null also
         __rightmost = __z->_M_parent;
     // makes __rightmost == _M_header if __z == __root
       else                      // __x == __z->_M_left
         __rightmost = _Rb_tree_node_base::_S_maximum(__x);
+    }
   }
+
   if (__y->_M_color != _S_rb_tree_red) {
     while (__x != __root && (__x == 0 || __x->_M_color == _S_rb_tree_black))
       if (__x == __x_parent->_M_left) {
@@ -419,7 +426,7 @@ template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__
 _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterator __position,
-                                                                             const _Value& __val) {
+                                                                          const _Value& __val) {
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
     // if the container is empty, fall back on insert_unique.
@@ -521,7 +528,7 @@ template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__
 _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterator __position,
-                                                                                 const _Value& __val) {
+                                                                         const _Value& __val) {
   if (__position._M_node == this->_M_header._M_data._M_left) { // begin()
 
     // Check for zero members
@@ -648,8 +655,7 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::count(const _Key& __k
   return __n;
 }
 
-#ifdef _STLP_DEBUG
-
+#if defined (_STLP_DEBUG)
 inline int
 __black_count(_Rb_tree_node_base* __node, _Rb_tree_node_base* __root) {
   if (__node == 0)
@@ -699,14 +705,15 @@ bool _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>::__rb_verify() co
 
   return true;
 }
-
 #endif /* _STLP_DEBUG */
 
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
-# undef __iterator__
-# undef iterator
-# undef __size_type__
+#undef _Rb_tree
+#undef __iterator__
+#undef iterator
+#undef __size_type__
 
 #endif /*  _STLP_TREE_C */
 

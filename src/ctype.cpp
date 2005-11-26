@@ -16,11 +16,12 @@
  *
  */
 
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
 
 #include <algorithm>
-#include <stl/_ctype.h>
-#include <stl/_function.h>
+#include <locale>
+#include <functional>
+
 #include "c_locale.h"
 
 _STLP_BEGIN_NAMESPACE
@@ -30,15 +31,15 @@ _STLP_BEGIN_NAMESPACE
 
 // The classic table: static data members.
 
-# if !defined(_STLP_STATIC_CONST_INIT_BUG) && !(defined(__MRC__) || defined(__SC__))
+#if !defined(_STLP_STATIC_CONST_INIT_BUG) && !(defined(__MRC__) || defined(__SC__))
 //*TY 02/25/2000 - added workaround for MPW compilers; they confuse on in-class static const
 const size_t ctype<char>::table_size;
-# endif
+#endif
 
 // This macro is specifically for platforms where isprint() relies
 // on separate flag
 
-# define PRINTFLAG ctype_base::mask( _Locale_PRINT & ~(_Locale_UPPER | _Locale_LOWER | _Locale_ALPHA | _Locale_DIGIT | _Locale_PUNCT | _Locale_SPACE | _Locale_XDIGIT ))
+#define PRINTFLAG ctype_base::mask( _Locale_PRINT & ~(_Locale_UPPER | _Locale_LOWER | _Locale_ALPHA | _Locale_DIGIT | _Locale_PUNCT | _Locale_SPACE | _Locale_XDIGIT ))
 
 const ctype_base::mask*
 ctype<char>::classic_table() _STLP_NOTHROW {
@@ -48,12 +49,12 @@ ctype<char>::classic_table() _STLP_NOTHROW {
    * _S_classic_table + 1.
    */
   /* The following static assert check that alpha is not defined as upper | lower.
-   * STLport flag character like 'a' with alpha | lower, if alpha is badly configure
+   * STLport flags character like 'a' with alpha | lower, if alpha is badly configure
    * then 'a' will also be seen as upper which is wrong.
    */
-#ifndef __MWERKS__
+#if !defined (__MWERKS__)
   /* CodeWarrior 8 don't understabd this */
-  typedef char __static_assert[(alpha & (lower | upper)) == 0];
+  _STLP_STATIC_ASSERT((alpha & (lower | upper)) == 0);
 #endif
 
   static const ctype_base::mask _S_classic_table[table_size] =
@@ -290,12 +291,16 @@ const unsigned char _S_lower[ctype<char>::table_size] =
 template <bool _IsSigned>
 struct _WCharIndexT;
 
+#if !defined (__BORLANDC__) && \
+    !(defined (__GNUC__) && (defined (__MINGW32__) || defined (__CYGWIN__)))
 _STLP_TEMPLATE_NULL
 struct _WCharIndexT<true> {
   static bool in_range(wchar_t c, size_t upperBound) {
     return c >= 0 && size_t(c) < upperBound;
   }
 };
+#endif
+
 _STLP_TEMPLATE_NULL
 struct _WCharIndexT<false> {
   static bool in_range(wchar_t c, size_t upperBound) {
@@ -372,7 +377,7 @@ ctype<char>::do_widen(char __c) const { return __c; }
 const char*
 ctype<char>::do_widen(const char* __low, const char* __high,
                       char* __to) const {
-  __copy_trivial(__low, __high, __to);
+  _STLP_PRIV __copy_trivial(__low, __high, __to);
   return __high;
 }
 char
@@ -380,7 +385,7 @@ ctype<char>::do_narrow(char __c, char /* dfault */ ) const { return __c; }
 const char*
 ctype<char>::do_narrow(const char* __low, const char* __high,
                        char /* dfault */, char* __to) const {
-  __copy_trivial(__low, __high, __to);
+  _STLP_PRIV __copy_trivial(__low, __high, __to);
   return __high;
 }
 

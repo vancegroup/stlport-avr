@@ -22,20 +22,21 @@
 #  include <stl/_num_put.h>
 #endif
 
-#ifndef _STLP_LIMITS_H
+#ifndef _STLP_INTERNAL_LIMITS
 #  include <stl/_limits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
-// _M_do_put_float and its helper functions.  Strategy: write the output
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+// __do_put_float and its helper functions.  Strategy: write the output
 // to a buffer of char, transform the buffer to _CharT, and then copy
 // it to the output.
 
 template <class _CharT, class _OutputIter,class _Float>
 _OutputIter _STLP_CALL
-_M_do_put_float(_OutputIter __s, ios_base& __f, _CharT __fill,_Float    __x);
-
+__do_put_float(_OutputIter __s, ios_base& __f, _CharT __fill,_Float    __x);
 
 //----------------------------------------------------------------------
 // num_put facet
@@ -94,7 +95,6 @@ __put_float(__iostring &__str, _OutputIter __oi,
 }
 #endif /* WCHAR_T */
 
-
 // Helper routine for char
 template <class _OutputIter>
 _OutputIter  _STLP_CALL
@@ -118,7 +118,7 @@ __put_float(__iostring &__str, _OutputIter __oi,
 
 template <class _CharT, class _OutputIter, class _Float>
 _OutputIter _STLP_CALL
-_M_do_put_float(_OutputIter __s, ios_base& __f,
+__do_put_float(_OutputIter __s, ios_base& __f,
                 _CharT __fill, _Float __x) {
   __iostring __buf;
 
@@ -131,9 +131,8 @@ _M_do_put_float(_OutputIter __s, ios_base& __f,
                      __group_pos, __f._M_grouping());
 }
 
-inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONG_DOUBLE __x) {
-  __get_floor_digits(__buf, __x);
-}
+inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONG_DOUBLE __x)
+{ __get_floor_digits(__buf, __x); }
 
 #if !defined (_STLP_NO_WCHAR_T)
 inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LONG_DOUBLE __x) {
@@ -146,9 +145,8 @@ inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LO
 #endif
 
 template <class _CharT>
-void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT) &__buf, ios_base& __f, _STLP_LONG_DOUBLE __x) {
-  __get_money_digits_aux(__buf, __f, __x);
-}
+void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT) &__buf, ios_base& __f, _STLP_LONG_DOUBLE __x)
+{ __get_money_digits_aux(__buf, __f, __x); }
 
 // _M_do_put_integer and its helper functions.
 
@@ -163,8 +161,8 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
   else {
     //casting numeric_limits<ptrdiff_t>::max to streamsize only works is ptrdiff_t is signed or streamsize representation
     //is larger than ptrdiff_t one.
-    typedef char __static_assert[(sizeof(streamsize) > sizeof(ptrdiff_t)) ||
-                                 (sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed];
+    _STLP_STATIC_ASSERT((sizeof(streamsize) > sizeof(ptrdiff_t)) ||
+                        (sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed);
     ptrdiff_t __pad = __STATIC_CAST(ptrdiff_t, (min) (__STATIC_CAST(streamsize, (numeric_limits<ptrdiff_t>::max)()),
                                                       __STATIC_CAST(streamsize, __wid - __len)));
     ios_base::fmtflags __dir = __flg & ios_base::adjustfield;
@@ -284,8 +282,8 @@ typedef long __max_int_t;
 typedef unsigned long __umax_int_t;
 #endif
 
-extern const char __hex_char_table_lo[];
-extern const char __hex_char_table_hi[];
+_STLP_DECLSPEC const char* _STLP_CALL __hex_char_table_lo();
+_STLP_DECLSPEC const char* _STLP_CALL __hex_char_table_hi();
 
 template <class _Integer>
 inline char* _STLP_CALL
@@ -344,7 +342,7 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x) 
     case ios_base::hex:
       {
         const char* __table_ptr = (__flags & ios_base::uppercase) ?
-          __hex_char_table_hi : __hex_char_table_lo;
+          __hex_char_table_hi() : __hex_char_table_lo();
       __temp = __x;
       // if the size of integer is less than 8, clear upper part
       if ( sizeof(__x) < 8  && sizeof(__umax_int_t) >= 8 )
@@ -379,11 +377,13 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x) 
   return __ptr;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 //
 // num_put<>
 //
 
-#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
+#if (_STLP_STATIC_TEMPLATE_DATA > 0)
 
 template <class _CharT, class _OutputIterator>
 locale::id num_put<_CharT, _OutputIterator>::id;
@@ -458,9 +458,9 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
   if ((__flags & ios_base::adjustfield) == ios_base::internal)
     __flags = (__flags & ~ios_base::adjustfield) | ios_base::right;
 
-  return __copy_integer_and_fill(__str.c_str(), __str.size(), __s,
-                                 __flags, __f.width(0), __fill,
-                                 (_CharT) 0, (_CharT) 0);
+  return _STLP_PRIV __copy_integer_and_fill(__str.c_str(), __str.size(), __s,
+                                            __flags, __f.width(0), __fill,
+                                            (_CharT) 0, (_CharT) 0);
 }
 
 #endif
@@ -473,8 +473,8 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
   char __buf[64];               // Large enough for a base 8 64-bit integer,
                                 // plus any necessary grouping.
   ios_base::fmtflags __flags = __f.flags();
-  char* __ibeg = __write_integer_backward((char*)__buf+64, __flags, __val);
-  return __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
+  char* __ibeg = _STLP_PRIV __write_integer_backward((char*)__buf+64, __flags, __val);
+  return _STLP_PRIV __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
 }
 
 
@@ -486,24 +486,22 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
                                 // plus any necessary grouping.
 
   ios_base::fmtflags __flags = __f.flags();
-  char* __ibeg = __write_integer_backward((char*)__buf+64, __flags, __val);
-  return __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
+  char* __ibeg = _STLP_PRIV __write_integer_backward((char*)__buf+64, __flags, __val);
+  return _STLP_PRIV __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
 }
 
 template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
-                                     double __val) const {
-  return _M_do_put_float(__s, __f, __fill, __val);
-}
+                                     double __val) const
+{ return _STLP_PRIV __do_put_float(__s, __f, __fill, __val); }
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
 template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
-                                     long double __val) const {
-  return _M_do_put_float(__s, __f, __fill, __val);
-}
+                                     long double __val) const
+{ return _STLP_PRIV __do_put_float(__s, __f, __fill, __val); }
 #endif
 
 #if defined (_STLP_LONG_LONG)
@@ -515,8 +513,8 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
                                 // plus any necessary grouping.
 
   ios_base::fmtflags __flags = __f.flags();
-  char* __ibeg = __write_integer_backward((char*)__buf+64, __flags, __val);
-  return __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
+  char* __ibeg = _STLP_PRIV __write_integer_backward((char*)__buf+64, __flags, __val);
+  return _STLP_PRIV __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
 }
 
 template <class _CharT, class _OutputIter>
@@ -527,8 +525,8 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
                                 // plus any necessary grouping.
 
   ios_base::fmtflags __flags = __f.flags();
-  char* __ibeg = __write_integer_backward((char*)__buf+64, __flags, __val);
-  return __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
+  char* __ibeg = _STLP_PRIV __write_integer_backward((char*)__buf+64, __flags, __val);
+  return _STLP_PRIV __put_integer(__ibeg, (char*)__buf+64, __s, __f, __flags, __fill);
 }
 
 #endif /* _STLP_LONG_LONG */
@@ -538,7 +536,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__fill*/,
-             const void* __val) const {
+                                     const void* __val) const {
   const ctype<_CharT>& __c_type = *__STATIC_CAST(const ctype<_CharT>*, __f._M_ctype_facet());
   ios_base::fmtflags __save_flags = __f.flags();
 

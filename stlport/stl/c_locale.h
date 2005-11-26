@@ -24,28 +24,24 @@
  * Implementation dependent definitions
  */
 #if defined(__sgi)
-#  if defined(ROOT_65) /* IRIX 6.5.x */
+#  if defined (ROOT_65) /* IRIX 6.5.x */
 #    include <sgidefs.h>
 #    include <standards.h>
 #    include <wchar.h>
 #    include <ctype.h>
-
-#  else
-                  /* IRIX pre-6.5 */
+#  else /* IRIX pre-6.5 */
 #    include <sgidefs.h>
 #    include <standards.h>
-
 #    if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #      define _SIZE_T
 #      if (_MIPS_SZLONG == 32)
-typedef unsigned int    size_t;
+typedef unsigned int size_t;
 #      endif
 #      if (_MIPS_SZLONG == 64)
-typedef unsigned long   size_t;
+typedef unsigned long size_t;
 #      endif
 #    endif
-
-#    ifndef _WCHAR_T
+#    if !defined (_WCHAR_T)
 #      define _WCHAR_T
 #      if (_MIPS_SZLONG == 32)
 typedef long wchar_t;
@@ -54,8 +50,7 @@ typedef long wchar_t;
 typedef __int32_t wchar_t;
 #      endif
 #    endif /* _WCHAR_T */
-
-#    ifndef _WINT_T
+#    if !defined (_WINT_T)
 #      define _WINT_T
 #      if (_MIPS_SZLONG == 32)
 typedef long wint_t;
@@ -64,8 +59,7 @@ typedef long wint_t;
 typedef __int32_t wint_t;
 #      endif
 #    endif /* _WINT_T */
-
-#    ifndef _MBSTATE_T
+#    if !defined (_MBSTATE_T)
 #      define _MBSTATE_T
 #      ifdef _MSC_VER
 typedef int mbstate_t;
@@ -73,27 +67,23 @@ typedef int mbstate_t;
 typedef char mbstate_t;
 #      endif
 #    endif /* _MBSTATE_T */
-
 #  endif /* ROOT65 */
-
 #else /* __sgi */
-
-#  ifdef __cplusplus
-#    ifndef _STLP_CSTDDEF
-#      include <cstddef>
+#  if defined (__cplusplus)
+#    ifndef _STLP_INTERNAL_CSTDDEF
+#      include <stl/_cstddef.h>
 #    endif
-#    ifndef _STLP_CWCHAR_H
-#      include <stl/_cwchar.h>
+#    ifndef _STLP_INTERNAL_MBSTATE_T
+#      include <stl/_mbstate_t.h>
 #    endif
-#    ifndef _STLP_CCTYPE
-#      include <cctype>
+#    ifndef _STLP_INTERNAL_CCTYPE
+#      include <stl/_cctype.h>
 #    endif
 #  else
 #    include <stddef.h>
 #    include <wchar.h>
 #    include <ctype.h>
 #  endif
-
 #endif /* __sgi */
 
 /*
@@ -211,7 +201,7 @@ struct _Locale_messages;
 #    define _Locale_SPACE _S
 #    define _Locale_PRINT (_P|_U|_L|_N|_B)
 #    define _Locale_ALPHA (_U|_L)
-#  elif defined(__EMX__) /* OS/2 with emx runtime */
+#  elif defined (__EMX__) /* OS/2 with emx runtime */
 #    define _Locale_CNTRL _CNTRL
 #    define _Locale_UPPER _UPPER
 #    define _Locale_LOWER _LOWER
@@ -240,12 +230,12 @@ struct _Locale_messages;
 
 #endif /* gnu */
 
-#if ( defined(__sun) && defined (__SVR4) ) \
-    || (defined (__digital__) && defined (__unix__)) \
-    || defined(_AIX)
+#if (defined (__sun) && defined (__SVR4)) || \
+    (defined (__digital__) && defined (__unix__)) || \
+     defined (_AIX)
 /* fbp : condition from AT&T code*/
-#  if !(defined(__XPG4_CHAR_CLASS__) || defined(_XPG4_2) || \
-       (defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 == 4))) && ! defined (_ISCNTRL)
+#  if !(defined (__XPG4_CHAR_CLASS__) || defined (_XPG4_2) || \
+       (defined (_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 == 4))) && ! defined (_ISCNTRL)
   /* fbp : on 2.5.1, the defines are different ;( */
   /* # if ( defined (__sun) && defined (__SVR4) && ! defined (_ISCNTRL) ) */
 #    define _ISCNTRL _C
@@ -268,7 +258,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _ISSPACE
 #  define _Locale_PRINT  _ISPRINT
 #  define _Locale_ALPHA  _ISALPHA
-#elif defined (__MWERKS__) && defined(N_PLAT_NLM)
+#elif defined (__MWERKS__) && defined (N_PLAT_NLM)
 #  define _Locale_CNTRL  _CNTRL_
 #  define _Locale_UPPER  _UPPER_
 #  define _Locale_LOWER  _LOWER_
@@ -307,7 +297,6 @@ struct _Locale_messages;
 #  define _Locale_PUNCT  _PUNCT
 #  define _Locale_SPACE  _SPACE
 #  define _Locale_PRINT  (_ALPHA | _DIGIT | _BLANK | _PUNCT)
-/* is this one has to be so complex ? */
 #  define _Locale_ALPHA  ( _ALPHA & ~ (_UPPER | _LOWER ))
 #elif defined (__DMC__)
 #  define _Locale_CNTRL  _CONTROL
@@ -318,8 +307,8 @@ struct _Locale_messages;
 #  define _Locale_PUNCT  _PUNCT
 #  define _Locale_SPACE  _SPACE
 #  define _Locale_PRINT  (_UPPER | _LOWER | _DIGIT | _PUNCT | _SPACE)
-#  define _Locale_ALPHA  _ALPHA
-#elif defined(__MRC__) || defined(__SC__)    /* *TY 02/24/2000 - added support for MPW */
+#  define _Locale_ALPHA  _ALPHA & ~(_UPPER | _LOWER)
+#elif defined (__MRC__) || defined (__SC__)    /* *TY 02/24/2000 - added support for MPW */
 #  define _Locale_CNTRL  _CTL
 #  define _Locale_UPPER  _UPP
 #  define _Locale_LOWER  _LOW
@@ -329,7 +318,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _BLA
 #  define _Locale_PRINT  (_UPP | _LOW | _DIG | _PUN | _BLA)
 #  define _Locale_ALPHA  (_UPP | _LOW)
-#elif defined(__MLCCPP__)
+#elif defined (__MLCCPP__)
 #  define _Locale_CNTRL    1
 #  define _Locale_UPPER    2
 #  define _Locale_LOWER    4
@@ -339,9 +328,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE   64
 #  define _Locale_PRINT  128
 #  define _Locale_ALPHA  256
-
 #elif defined (__GNUC__) && (__GNUC__ == 3) && defined (__APPLE__)
-
 #  define _Locale_CNTRL _C
 #  define _Locale_UPPER _U
 #  define _Locale_LOWER _L
@@ -351,10 +338,8 @@ struct _Locale_messages;
 #  define _Locale_SPACE _S
 #  define _Locale_PRINT _R
 #  define _Locale_ALPHA _A
-
 #elif defined (__hpux) || defined (__osf__)
-
-#  if defined(__HP_aCC) && !defined(_INCLUDE_HPUX_SOURCE)
+#  if defined (__HP_aCC) && !defined (_INCLUDE_HPUX_SOURCE)
 #    define _ISALPHA      0x001
 #    define _ISALNUM      0x002
 #    define _ISBLANK      0x004
@@ -377,7 +362,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _ISSPACE
 #  define _Locale_PRINT  _ISPRINT
 #  define _Locale_ALPHA  _ISALPHA
-#elif defined (__MVS__) || defined(__OS400__)
+#elif defined (__MVS__) || defined (__OS400__)
 #  define _Locale_CNTRL __ISCNTRL
 #  define _Locale_UPPER __ISUPPER
 #  define _Locale_LOWER __ISLOWER
@@ -437,6 +422,13 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _SPACE
 #  define _Locale_PRINT  _PRINT
 #  define _Locale_ALPHA  _ALPHA
+#endif
+
+/* We arbitrarily concider _Locale_CNTRL macro to check locale facet numeric
+ * identifier has been defined for the platform/compiler:
+ */
+#if !defined (_Locale_CNTRL)
+#  error Unable to find your platform locale facets definitions, please grant them.
 #endif
 
 #endif /* _STLP_C_LOCALE_H */

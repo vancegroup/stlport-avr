@@ -27,28 +27,26 @@
 #ifndef _STLP_INTERNAL_ALLOC_H
 #define _STLP_INTERNAL_ALLOC_H
 
-#ifndef _STLP_CSTDDEF
-#  include <cstddef>
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
 #endif
 
 #if !defined (_STLP_DEBUG_H) && (defined(_STLP_DEBUG) || defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG_ALLOC))
 #  include <stl/debug/_debug.h>
 #endif
 
-#ifndef _STLP_CSTDLIB
-#  include <cstdlib>
+#ifndef _STLP_INTERNAL_CSTDLIB
+#  include <stl/_cstdlib.h>
 #endif
-#ifndef _STLP_CSTRING
-#  include <cstring>
+
+#ifndef _STLP_INTERNAL_CSTRING
+#  include <stl/_cstring.h>
 #endif
 
 #ifndef __THROW_BAD_ALLOC
 #  if !defined(_STLP_USE_EXCEPTIONS)
-#    if !defined (_STLP_CSTDIO)
-#      include <cstdio>
-#    endif
-#    if !defined (_STLP_CSTDLIB)
-#      include <cstdlib>
+#    ifndef _STLP_INTERNAL_CSTDIO
+#      include <stl/_cstdio.h>
 #    endif
 #    define __THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
 #  else /* !defined(_STLP_USE_EXCEPTIONS) */
@@ -232,30 +230,41 @@ public:
 #  define _STLP_DO_CLEAN_NODE_ALLOC
 #endif
 
-#if defined (_STLP_ATOMIC_CAS)
-/*
- * Thanks to the support of the simple Compare And Swap atomic operation
- * we are able to grant a lock free node_alloc implementation.
+/* When STLport is used without multi threaded safety we use the node allocator
+ * implementation with locks as locks becomes no-op. The lock free implementation
+ * always use system specific atomic operations which are slower than 'normal' 
+ * ones.
  */
-// dums: This feature is not mature enough to be released yet. We will see later when
-// some more tests will have been performed.
-//#  define _STLP_USE_LOCK_FREE_IMPLEMENTATION
-#endif
-
-#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  struct _Node_alloc_Mem_block {
-    //Pointer to the end of the memory block
-    char *_M_end;
-    //Pointer to the next memory block
-    _Node_alloc_Mem_block *_M_next;
-  };
+#if /*defined (_STLP_THREADS) && */ \
+    defined (_STLP_HAS_ATOMIC_FREELIST) && defined (_STLP_ATOMIC_ADD)
+/*
+ * We have an implementation of the atomic freelist (_STLP_atomic_freelist)
+ * for this architecture and compiler.  That means we can use the non-blocking
+ * implementation of the node-allocation engine.*/
+//#pragma message ("Using lock free implementation")
+#  define _STLP_USE_LOCK_FREE_IMPLEMENTATION
 #endif
 
 template <bool __threads, int __inst>
 class __node_alloc {
 _STLP_PRIVATE:
   static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
-  typedef _Node_alloc_obj _Obj;
+
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  typedef _STLP_atomic_freelist::item   _Obj;
+  typedef _STLP_atomic_freelist         _Freelist;
+  typedef _STLP_atomic_freelist         _ChunkList;
+
+  // Header of blocks of memory that have been allocated as part of
+  // a larger chunk but have not yet been chopped up into nodes.
+  struct _FreeBlockHeader : public _STLP_atomic_freelist::item {
+    char* _M_end;     // pointer to end of free memory
+  };
+#else
+  typedef _Node_alloc_obj       _Obj;
+  typedef _Obj* _STLP_VOLATILE  _Freelist;
+  typedef _Obj*                 _ChunkList;
+#endif
 
 private:
   // Returns an object of size __n, and optionally adds to size __n free list.
@@ -264,17 +273,21 @@ private:
   // if it is inconvenient to allocate the requested number.
   static char*  _STLP_CALL _S_chunk_alloc(size_t __p_size, int& __nobjs);
   // Chunk allocation state.
-  static _Obj * _STLP_VOLATILE _S_free_list[_STLP_NFREELISTS];
+  static _Freelist _S_free_list[_STLP_NFREELISTS];
   // Amount of total allocated memory
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  static _STLP_VOLATILE __stl_atomic_t _S_heap_size;
+#else
   static size_t _S_heap_size;
+#endif
 
   static void * _STLP_CALL _M_allocate(size_t __n);
   /* __p may not be 0 */
   static void _STLP_CALL _M_deallocate(void *__p, size_t __n);
 
 #if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  typedef _Node_alloc_Mem_block _Mem_block;
-  static _Mem_block* _S_free_mem_blocks;
+  // List of blocks of free memory
+  static _STLP_atomic_freelist  _S_free_mem_blocks;
 #else
   // Start of the current free memory buffer
   static char* _S_start_free;
@@ -283,18 +296,22 @@ private:
 #endif
 
 #if defined (_STLP_DO_CLEAN_NODE_ALLOC)
-  //A helper class to guaranty the memory pool management:
-  //friend struct _Node_alloc_helper;
-  //Some compilers (MSVC) seems to have trouble with friend declarations:
 public:
   // Methods to report alloc/dealloc calls to the counter system.
-  static size_t& _STLP_CALL _S_alloc_call(size_t incr = 1);
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  typedef _STLP_VOLATILE __stl_atomic_t _AllocCounter;
+#  else
+  typedef __stl_atomic_t _AllocCounter;
+#  endif
+  static _AllocCounter& _STLP_CALL _S_alloc_counter();
+  static void _STLP_CALL _S_alloc_call();
   static void _STLP_CALL _S_dealloc_call();
+
 private:
   // Free all the allocated chuncks of memory
   static void _STLP_CALL _S_chunk_dealloc();
   // Beginning of the linked list of allocated chunks of memory
-  static _Obj *_S_chunks;
+  static _ChunkList _S_chunks;
 #endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
 public:
@@ -422,19 +439,41 @@ typedef __node_alloc<true, 0>  __multithreaded_alloc;
 // templates, the typename keyword, and the use of the template keyword
 // to refer to a template member of a dependent type.
 
+/*
 template <class _Tp>
-class allocator
+struct _AllocatorAux {
+  typedef _Tp*       pointer;
+  typedef const _Tp* const_pointer;
+  typedef _Tp&       reference;
+  typedef const _Tp& const_reference;
+
+  pointer address(reference __x) const {return &__x;}
+  const_pointer address(const_reference __x) const { return &__x; }
+};
+
+template <class _Tp>
+struct _AllocatorAux<const _Tp> {
+  typedef _Tp*       pointer;
+  typedef const _Tp* const_pointer;
+  typedef _Tp&       reference;
+  typedef const _Tp& const_reference;
+
+  const_pointer address(const_reference __x) const { return &__x; }
+};
+*/
+
+template <class _Tp>
+class allocator //: public _AllocatorAux<_Tp>
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-  : public __stlport_class<allocator<_Tp> >
+                : public __stlport_class<allocator<_Tp> >
 #endif
 {
 public:
-
   typedef _Tp        value_type;
-  typedef value_type *       pointer;
+  typedef _Tp*       pointer;
   typedef const _Tp* const_pointer;
   typedef _Tp&       reference;
   typedef const _Tp& const_reference;
@@ -459,8 +498,8 @@ public:
       __THROW_BAD_ALLOC;
     }
     if (__n != 0) {
-      _Tp* __ret = __REINTERPRET_CAST(value_type*,__sgi_alloc::allocate(__n * sizeof(value_type)));
-#ifdef _STLP_DEBUG_UNINITIALIZED
+      _Tp* __ret = __REINTERPRET_CAST(value_type*, __sgi_alloc::allocate(__n * sizeof(value_type)));
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
       if (__ret != 0) {
         memset((char*)__ret, _STLP_SHRED_BYTE, __n * sizeof(value_type));
       }
@@ -474,7 +513,7 @@ public:
   void deallocate(pointer __p, size_type __n) {
     _STLP_ASSERT( (__p == 0) == (__n == 0) )
     if (__p != 0) {
-#ifdef _STLP_DEBUG_UNINITIALIZED
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
       memset((char*)__p, _STLP_SHRED_BYTE, __n * sizeof(value_type));
 #endif
       __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
@@ -565,6 +604,8 @@ __stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>
 #  include <stl/_alloc_old.h>
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // inheritance is being used for EBO optimization
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
 class _STLP_alloc_proxy : public _MaybeReboundAlloc {
@@ -578,7 +619,8 @@ public:
     _MaybeReboundAlloc(__a), _M_data(__p) {}
 
   _STLP_alloc_proxy (__move_source<_Self> src) :
-    _MaybeReboundAlloc(_AsMoveSource<_Base>(src.get())), _M_data(_AsMoveSource<_Value>(src.get()._M_data)) {}
+    _MaybeReboundAlloc(_STLP_PRIV _AsMoveSource<_Base>(src.get())),
+    _M_data(_STLP_PRIV _AsMoveSource<_Value>(src.get()._M_data)) {}
 
 #if 0
 /*
@@ -596,12 +638,10 @@ public:
   // language support
 #if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
   // else it is rebound already, and allocate() member is accessible
-  inline _Tp* allocate(size_t __n) {
-    return __stl_alloc_rebind(__STATIC_CAST(_Base&,*this),(_Tp*)0).allocate(__n,0);
-  }
-  inline void deallocate(_Tp* __p, size_t __n) {
-    __stl_alloc_rebind(__STATIC_CAST(_Base&, *this),(_Tp*)0).deallocate(__p, __n);
-  }
+  inline _Tp* allocate(size_t __n)
+  { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).allocate(__n, 0); }
+  inline void deallocate(_Tp* __p, size_t __n)
+  { __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).deallocate(__p, __n); }
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 };
 
@@ -610,10 +650,12 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<char*, char, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t*, wchar_t, allocator<wchar_t> >;
 #  endif
-#  if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
+#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #undef _STLP_NODE_ALLOCATOR_THREADS
 

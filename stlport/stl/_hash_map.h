@@ -36,9 +36,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#define  hash_map      __WORKAROUND_RENAME(hash_map)
-#define  hash_multimap __WORKAROUND_RENAME(hash_multimap)
-
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMapTraitsT, traits)
 
@@ -56,14 +53,22 @@ public:
   typedef _Key key_type;
   typedef _Tp data_type;
   typedef _Tp mapped_type;
+#if !defined (__DMC__)
   typedef pair<const key_type, data_type> value_type;
+#else
+  /* DMC goes to far in template instanciation and tries to fully instanciate
+   * slist<pair<const int, string> > for instance. The generation of assignment
+   * operator fails of course so we are force to use mutable key for this compiler.
+   */
+  typedef pair<key_type, data_type> value_type;
+#endif
 private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_HashMapTraitsT<value_type> _HashMapTraits;
+  typedef _STLP_PRIV _HashMapTraitsT<value_type> _HashMapTraits;
 
 public:
   typedef hashtable<value_type, key_type, _HashFcn, _HashMapTraits,
-                    _STLP_SELECT1ST(value_type,  _Key), _EqualKey, _Alloc > _Ht;
+                    _STLP_SELECT1ST(value_type, _Key), _EqualKey, _Alloc > _Ht;
 
   typedef typename _Ht::hasher hasher;
   typedef typename _Ht::key_equal key_equal;
@@ -236,10 +241,14 @@ public:
   typedef _Key key_type;
   typedef _Tp data_type;
   typedef _Tp mapped_type;
+#if !defined (__DMC__)
   typedef pair<const key_type, data_type> value_type;
+#else
+  typedef pair<key_type, data_type> value_type;
+#endif
 private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_HashMultimapTraitsT<value_type> _HashMultimapTraits;
+  typedef _STLP_PRIV _HashMultimapTraitsT<value_type> _HashMultimapTraits;
 
 public:
   typedef hashtable<value_type, key_type, _HashFcn, _HashMultimapTraits,
@@ -395,7 +404,6 @@ public:
     { return _M_ht.elems_in_bucket(__n); }
 };
 
-# undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 #define _STLP_TEMPLATE_HEADER template <class _Key, class _Tp, class _HashFcn, class _EqlKey, class _Alloc>
 #define _STLP_TEMPLATE_CONTAINER hash_map<_Key,_Tp,_HashFcn,_EqlKey,_Alloc>
 #include <stl/_relops_hash_cont.h>
@@ -408,12 +416,12 @@ public:
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  __move_traits_help<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_help<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
 
 // Specialization of insert_iterator so that it will work for hash_map
@@ -474,16 +482,8 @@ public:
 
 _STLP_END_NAMESPACE
 
-# undef hash_map
-# undef hash_multimap
-
-# if defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
-#  include <stl/wrappers/_hash_map.h>
-# endif /*  WRAPPER */
-
 #endif /* _STLP_INTERNAL_HASH_MAP_H */
 
 // Local Variables:
 // mode:C++
 // End:
-

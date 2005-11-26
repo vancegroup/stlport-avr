@@ -27,9 +27,8 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UniqueTest);
 
-static bool str_equal(const char* a_, const char* b_) {
-  return *a_ == *b_;
-}
+static bool str_equal(const char* a_, const char* b_)
+{ return *a_ == *b_; }
 //
 // tests implementation
 //
@@ -50,12 +49,11 @@ void UniqueTest::unique1()
 
 void UniqueTest::unique2()
 {
-
-  char* labels[] = { "Q","Q","W","W","E","E","R","T","T","Y","Y" };
+  const char* labels[] = {"Q", "Q", "W", "W", "E", "E", "R", "T", "T", "Y", "Y"};
 
   const unsigned count = sizeof(labels) / sizeof(labels[0]);
 
-  unique((char**)labels, (char**)labels + count, str_equal);
+  unique((const char**)labels, (const char**)labels + count, str_equal);
 
   // QWERTY
   CPPUNIT_ASSERT(*labels[0] == 'Q');
@@ -87,13 +85,15 @@ void UniqueTest::uniqcpy1()
 
 void UniqueTest::uniqcpy2()
 {
-  char* labels[] = { "Q","Q","W","W","E","E","R","T","T","Y","Y" };
+  const char* labels[] = {"Q", "Q", "W", "W", "E", "E", "R", "T", "T", "Y", "Y"};
+  const char **plabels = (const char**)labels;
 
-  const unsigned count = sizeof(labels) / sizeof(labels[0]);
+  const size_t count = sizeof(labels) / sizeof(labels[0]);
   char* uCopy[count];
-  fill((char**)uCopy, (char**)uCopy + count, (char*)"");
+  const char **puCopy = (const char**)uCopy;
+  fill(puCopy, puCopy + count, "");
 
-  unique_copy((char**)labels, (char**)labels + count, (char**)uCopy, str_equal);
+  unique_copy(plabels, plabels + count, puCopy, str_equal);
 
   //QWERTY
   CPPUNIT_ASSERT(*uCopy[0] == 'Q');

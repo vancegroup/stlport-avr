@@ -31,18 +31,17 @@
 #define _STLP_INTERNAL_SET_H
 
 #ifndef _STLP_INTERNAL_TREE_H
-#include <stl/_tree.h>
+#  include <stl/_tree.h>
 #endif
 
-#define set __WORKAROUND_RENAME(set)
-#define multiset __WORKAROUND_RENAME(multiset)
+#if !defined (_STLP_USE_PTR_SPECIALIZATIONS)
 
 _STLP_BEGIN_NAMESPACE
 
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>),
+template <class _Key, __DFL_TMPL_PARAM(_Compare, less<_Key>),
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -57,17 +56,16 @@ public:
   typedef _Compare key_compare;
   typedef _Compare value_compare;
 
-protected:
+private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_SetTraitsT<value_type> _SetTraits;
+  typedef _STLP_PRIV _SetTraitsT<value_type> _SetTraits;
 
 public:
-  //dums: need the following public for the __move_traits framework
-  typedef _Rb_tree<key_type, key_compare,
-                   value_type, _Identity<value_type>,
-                   _SetTraits, _Alloc> _Rep_type;
+  //Following typedef have to be public for __move_traits specialization.
+  typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
+                              value_type, _STLP_PRIV _Identity<value_type>,
+                              _SetTraits, _Alloc> _Rep_type;
 
-public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -86,23 +84,21 @@ private:
 public:
 
   // allocation/deallocation
-
-  set() : _M_t(_Compare(), allocator_type()) {}
-  explicit set(const _Compare& __comp,
+  explicit set(const _Compare& __comp = _Compare(),
                const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) {}
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
     { _M_t.insert_unique(__first, __last); }
 
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_unique(__first, __last); }
-# endif
+#  endif
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -129,8 +125,7 @@ public:
   set(const _Self& __x) : _M_t(__x._M_t) {}
 
   set(__move_source<_Self> src)
-    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {
-  }
+    : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
@@ -138,7 +133,6 @@ public:
   }
 
   // accessors:
-
   key_compare key_comp() const { return _M_t.key_comp(); }
   value_compare value_comp() const { return _M_t.key_comp(); }
   allocator_type get_allocator() const { return _M_t.get_allocator(); }
@@ -163,19 +157,19 @@ public:
   iterator insert(iterator __pos, const value_type& __x) {
     return _M_t.insert_unique( __pos , __x);
   }
-# ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last) {
     _M_t.insert_unique(__first, __last);
   }
-# else
+#else
   void insert(const_iterator __first, const_iterator __last) {
     _M_t.insert_unique(__first, __last);
   }
   void insert(const value_type* __first, const value_type* __last) {
     _M_t.insert_unique(__first, __last);
   }
-# endif /* _STLP_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) {
     return _M_t.erase_unique(__x);
@@ -186,18 +180,17 @@ public:
   void clear() { _M_t.clear(); }
 
   // set operations:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
   template <class _KT>
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
   template <class _KT>
   iterator find(const _KT& __x) { return _M_t.find(__x); }
-# else
+#else
   const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
   iterator find(const key_type& __x) { return _M_t.find(__x); }
-# endif
-  size_type count(const key_type& __x) const {
-    return _M_t.find(__x) == _M_t.end() ? 0 : 1 ;
-  }
+#endif
+  size_type count(const key_type& __x) const
+  { return _M_t.find(__x) == _M_t.end() ? 0 : 1 ; }
   iterator lower_bound(const key_type& __x) { return _M_t.lower_bound(__x); }
   const_iterator lower_bound(const key_type& __x) const { return _M_t.lower_bound(__x); }
   iterator upper_bound(const key_type& __x) { return _M_t.upper_bound(__x); }
@@ -213,8 +206,8 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare,less<_Key>),
-                     _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
+template <class _Key, __DFL_TMPL_PARAM(_Compare, less<_Key>),
+          _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<multiset<_Key, _Compare, _Alloc> >
@@ -229,17 +222,16 @@ public:
   typedef _Compare key_compare;
   typedef _Compare value_compare;
 
-protected:
+private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_MultisetTraitsT<value_type> _MultisetTraits;
+  typedef _STLP_PRIV _MultisetTraitsT<value_type> _MultisetTraits;
 
 public:
-  //dums: need the following public for the __move_traits framework
-  typedef _Rb_tree<key_type, key_compare,
-                   value_type, _Identity<value_type>,
-                   _MultisetTraits, _Alloc> _Rep_type;
+  //Following typedef have to be public for __move_traits specialization.
+  typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
+                              value_type, _STLP_PRIV _Identity<value_type>,
+                              _MultisetTraits, _Alloc> _Rep_type;
 
-public:
   typedef typename _Rep_type::pointer pointer;
   typedef typename _Rep_type::const_pointer const_pointer;
   typedef typename _Rep_type::reference reference;
@@ -258,24 +250,23 @@ private:
 public:
   // allocation/deallocation
 
-  multiset() : _M_t(_Compare(), allocator_type()) {}
-  explicit multiset(const _Compare& __comp,
+  explicit multiset(const _Compare& __comp = _Compare(),
                     const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) {}
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
     { _M_t.insert_equal(__first, __last); }
 
-# ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_equal(__first, __last); }
-# endif
+#  endif
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last,
            const _Compare& __comp,
@@ -340,11 +331,10 @@ public:
     return _M_t.insert_equal(__pos, __x);
   }
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(_InputIterator __first, _InputIterator __last) {
-    _M_t.insert_equal(__first, __last);
-  }
+  void insert(_InputIterator __first, _InputIterator __last)
+  { _M_t.insert_equal(__first, __last); }
 #else
   void insert(const value_type* __first, const value_type* __last) {
     _M_t.insert_equal(__first, __last);
@@ -364,15 +354,15 @@ public:
 
   // multiset operations:
 
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS )
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
   template <class _KT>
   iterator find(const _KT& __x) { return _M_t.find(__x); }
   template <class _KT>
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
-# else
+#else
   iterator find(const key_type& __x) { return _M_t.find(__x); }
   const_iterator find(const key_type& __x) const { return _M_t.find(__x); }
-# endif
+#endif
   size_type count(const key_type& __x) const { return _M_t.count(__x); }
   iterator lower_bound(const key_type& __x) { return _M_t.lower_bound(__x); }
   const_iterator lower_bound(const key_type& __x) const { return _M_t.lower_bound(__x); }
@@ -386,41 +376,36 @@ public:
   }
 };
 
-# undef _STLP_EQUAL_OPERATOR_SPECIALIZED
-# define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Alloc>
-# define _STLP_TEMPLATE_CONTAINER set<_Key,_Compare,_Alloc>
-# include <stl/_relops_cont.h>
-# undef  _STLP_TEMPLATE_CONTAINER
-# define _STLP_TEMPLATE_CONTAINER multiset<_Key,_Compare,_Alloc>
-# include <stl/_relops_cont.h>
-# undef  _STLP_TEMPLATE_CONTAINER
-# undef  _STLP_TEMPLATE_HEADER
+#else
+#  include <stl/pointers/_set.h>
+_STLP_BEGIN_NAMESPACE
+#endif /* _STLP_USE_PTR_SPECIALIZATIONS */
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Alloc>
+#define _STLP_TEMPLATE_CONTAINER set<_Key,_Compare,_Alloc>
+#include <stl/_relops_cont.h>
+#undef  _STLP_TEMPLATE_CONTAINER
+#define _STLP_TEMPLATE_CONTAINER multiset<_Key,_Compare,_Alloc>
+#include <stl/_relops_cont.h>
+#undef  _STLP_TEMPLATE_CONTAINER
+#undef  _STLP_TEMPLATE_HEADER
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Key, class _Compare, class _Alloc>
 struct __move_traits<set<_Key,_Compare,_Alloc> > :
-  __move_traits_aux<typename set<_Key,_Compare,_Alloc>::_Rep_type>
+  _STLP_PRIV __move_traits_aux<typename set<_Key,_Compare,_Alloc>::_Rep_type>
 {};
 
 template <class _Key, class _Compare, class _Alloc>
 struct __move_traits<multiset<_Key,_Compare,_Alloc> > :
-  __move_traits_aux<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>
+  _STLP_PRIV __move_traits_aux<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>
 {};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
-
-// do a cleanup
-# undef set
-# undef multiset
-
-# ifdef _STLP_USE_WRAPPER_FOR_ALLOC_PARAM
-# include <stl/wrappers/_set.h>
-# endif
 
 #endif /* _STLP_INTERNAL_SET_H */
 
 // Local Variables:
 // mode:C++
 // End:
-

@@ -26,9 +26,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# define  unordered_map      __WORKAROUND_RENAME(unordered_map)
-# define  unordered_multimap __WORKAROUND_RENAME(unordered_multimap)
-
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMapTraitsT, traits)
 
@@ -49,7 +46,7 @@ public:
   typedef pair<const key_type, data_type> value_type;
 private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_UnorderedMapTraitsT<value_type> _UnorderedMapTraits;
+  typedef _STLP_PRIV _UnorderedMapTraitsT<value_type> _UnorderedMapTraits;
 
 public:
   typedef hashtable<value_type, key_type, _HashFcn, _UnorderedMapTraits,
@@ -213,7 +210,7 @@ public:
   typedef pair<const key_type, data_type> value_type;
 private:
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_UnorderedMultimapTraitsT<value_type> _UnorderedMultimapTraits;
+  typedef _STLP_PRIV _UnorderedMultimapTraitsT<value_type> _UnorderedMultimapTraits;
 
 public:
   typedef hashtable<value_type, key_type, _HashFcn, _UnorderedMultimapTraits,
@@ -366,12 +363,12 @@ public:
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  __move_traits_help<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_help<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
-  __move_traits_help<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_help<typename unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
@@ -429,22 +426,10 @@ public:
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-// do a cleanup
-#undef unordered_map
-#undef unordered_multimap
-
-#define __unordered_map__ __FULL_NAME(unordered_map)
-#define __unordered_multimap__ __FULL_NAME(unordered_multimap)
-
 _STLP_END_NAMESPACE
-
-#if 0 //defined (_STLP_USE_WRAPPER_FOR_ALLOC_PARAM)
-#  include <stl/wrappers/_unordered_map.h>
-#endif /*  WRAPPER */
 
 #endif /* _STLP_INTERNAL_UNORDERED_MAP_H */
 
 // Local Variables:
 // mode:C++
 // End:
-

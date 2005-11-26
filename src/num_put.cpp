@@ -16,23 +16,24 @@
  *
  */
 
-# include "stlport_prefix.h"
-# include "num_put.h"
+#include "stlport_prefix.h"
+#include "num_put.h"
 
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // num_put
 
-extern const char __hex_char_table_lo[];
-extern const char __hex_char_table_hi[];
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
-const char __hex_char_table_lo[18] = "0123456789abcdefx";
-const char __hex_char_table_hi[18] = "0123456789ABCDEFX";
+_STLP_DECLSPEC const char* _STLP_CALL __hex_char_table_lo()
+{ return "0123456789abcdefx"; }
+
+_STLP_DECLSPEC const char* _STLP_CALL __hex_char_table_hi()
+{ return "0123456789ABCDEFX"; }
 
 char* _STLP_CALL
-__write_integer(char* buf, ios_base::fmtflags flags, long x)
-{
+__write_integer(char* buf, ios_base::fmtflags flags, long x) {
   char tmp[64];
   char* bufend = tmp+64;
   char* beg = __write_integer_backward(bufend, flags, x);
@@ -54,7 +55,7 @@ __insert_grouping(__iostring &str, size_t dec_pos, const string& grouping,
   __insert_grouping_aux(str, dec_pos, grouping, separator, Plus, Minus, basechars);
 }
 
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 ptrdiff_t _STLP_CALL
 __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
                   wchar_t separator, wchar_t Plus, wchar_t Minus,
@@ -69,8 +70,9 @@ __insert_grouping(__iowstring &str, size_t dec_pos, const string& grouping,
                   int basechars) {
   __insert_grouping_aux(str, dec_pos, grouping, separator, Plus, Minus, basechars);
 }
-# endif
+#endif
 
+_STLP_MOVE_TO_STD_NAMESPACE
 
 //----------------------------------------------------------------------
 // Force instantiation of num_put<>

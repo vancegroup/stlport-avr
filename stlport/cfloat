@@ -14,25 +14,25 @@
  */
 
 #ifndef _STLP_CFLOAT
-# define _STLP_CFLOAT
+#define _STLP_CFLOAT
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x106
 #  include <stl/_prolog.h>
-# endif
+#endif
 
 // Borland defines some implementation constants in std:: namespace,
 // we do not want to import them.
-# if defined  (_STLP_USE_NEW_C_HEADERS) && ! defined (__BORLANDC__)
+#if defined  (_STLP_USE_NEW_C_HEADERS) && !defined (__BORLANDC__)
 #  include _STLP_NATIVE_CPP_C_HEADER(cfloat)
-# else
+#else
 #  include _STLP_NATIVE_C_HEADER(float.h)
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x106 )
+#if (_STLP_OUTERMOST_HEADER_ID == 0x106 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_CFLOAT */
 

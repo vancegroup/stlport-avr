@@ -60,7 +60,6 @@ struct _Not<__false_type> {
   typedef __true_type _Ret;
 };
 
-
 // logical and of 2 predicated
 template <class _P1, class _P2>
 struct _Land2 {
@@ -118,20 +117,20 @@ struct _Lor3<__false_type, __false_type, __false_type> {
 //classes the default behavior of the __select is to concider the condition as false and so return
 //the second template type!!
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <int _Cond, class _Tp1, class _Tp2>
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <bool _Cond, class _Tp1, class _Tp2>
 struct __select {
   typedef _Tp1 _Ret;
 };
 
 template <class _Tp1, class _Tp2>
-struct __select<0, _Tp1, _Tp2> {
+struct __select<false, _Tp1, _Tp2> {
   typedef _Tp2 _Ret;
 };
 
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-#  ifdef _STLP_MEMBER_TEMPLATE_CLASSES
+#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 template <int _Cond>
 struct __select_aux {
   template <class _Tp1, class _Tp2>
@@ -162,7 +161,7 @@ struct __select {
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-# ifdef _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
+#if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 // Boris : simulation technique is used here according to Adobe Open Source License Version 1.0.
 // Copyright 2000 Adobe Systems Incorporated and others. All rights reserved.
 // Authors: Mat Marcus and Jesse Jones
@@ -181,7 +180,7 @@ struct _IsSame {
   enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(), __null_rep2())) == sizeof(char)) };
 };
 
-# else /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
+#else
 
 template <class _Tp1, class _Tp2>
 struct _IsSameAux { enum { _Ret = 0 }; };
@@ -191,11 +190,12 @@ struct _UnCVType {
   typedef _Tp _Type;
 };
 
-#  ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
 template <class _Tp>
 struct _IsSameAux<_Tp, _Tp> { enum { _Ret = 1 }; };
 
+#    if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
 template <class _Tp>
 struct _UnCVType<const _Tp> {
   typedef _Tp _Type;
@@ -210,8 +210,8 @@ template <class _Tp>
 struct _UnCVType<const volatile _Tp> {
   typedef _Tp _Type;
 };
-
-#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#    endif
+#  endif
 
 template <class _Tp1, class _Tp2>
 struct _IsSame {
@@ -221,7 +221,7 @@ struct _IsSame {
   enum { _Ret = _IsSameAux<_Type1, _Type2>::_Ret };
 };
 
-# endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
+#endif
 
 /*
  * The following struct will tell you if 2 types are the same, the limitations are:
@@ -251,13 +251,13 @@ struct _ConversionHelper {
 template <class _Derived, class _Base>
 struct _IsConvertible {
   typedef _ConversionHelper<_Derived, _Base> _H;
-  enum {exists = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeDerived()))) };
+  enum {value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeDerived()))) };
 };
 
 template <class _Derived, class _Base>
 struct _IsConvertibleType {
-  enum {exists = _IsConvertible<_Derived, _Base>::exists};
-  typedef __bool2type< exists > _BT;
+  enum {value = _IsConvertible<_Derived, _Base>::value};
+  typedef __bool2type<value> _BT;
   typedef typename _BT::_Ret _Type;
 };
 #else
@@ -269,6 +269,18 @@ struct _IsConvertible {
 template <class _Derived, class _Base>
 struct _IsConvertibleType {
   typedef __false_type _Type;
+};
+#endif
+
+template <class _Tp>
+struct _IsConst {
+  typedef __false_type _Ret;
+};
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
+template <class _Tp>
+struct _IsConst <const _Tp> {
+  typedef __true_type _Ret;
 };
 #endif
 

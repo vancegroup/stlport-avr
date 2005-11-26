@@ -277,41 +277,27 @@ char *__Extract_locale_name( const char *loc, const char *category, char *buf )
 }
 
 char *_Locale_extract_ctype_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_CTYPE=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_CTYPE=", buf ); }
 
 char *_Locale_extract_numeric_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_NUMERIC=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_NUMERIC=", buf ); }
 
 char *_Locale_extract_time_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_TIME=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_TIME=", buf ); }
 
 char *_Locale_extract_collate_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_COLLATE=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_COLLATE=", buf ); }
 
 char *_Locale_extract_monetary_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_MONETARY=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_MONETARY=", buf ); }
 
 char *_Locale_extract_messages_name( const char *loc, char *buf )
-{
-  return __Extract_locale_name( loc, "LC_MESSAGES=", buf );
-}
+{ return __Extract_locale_name( loc, "LC_MESSAGES=", buf ); }
 
 char *_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
                             const char*__DUMMY_PAR4,
-                            const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8)
-{
+                            const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return 0;
 }
 
@@ -326,62 +312,47 @@ const _Locale_mask_t *_Locale_ctype_table( struct _Locale_ctype *__loc )
 }
 
 int _Locale_toupper( struct _Locale_ctype *__loc, int c )
-{
-  return ((__c_locale)__loc)->__ctype_toupper[c];
-}
+{ return ((__c_locale)__loc)->__ctype_toupper[c]; }
 
 int _Locale_tolower( struct _Locale_ctype *__loc, int c )
-{
-  return ((__c_locale)__loc)->__ctype_tolower[c];
-}
+{ return ((__c_locale)__loc)->__ctype_tolower[c]; }
 
-# ifndef _STLP_NO_WCHAR_T
-_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR2, _Locale_mask_t __DUMMY_PAR3)
-{
+#if !defined (_STLP_NO_WCHAR_T)
+_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR2, _Locale_mask_t __DUMMY_PAR3) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return 0;
 }
 
-wint_t _Locale_wchar_tolower( struct _Locale_ctype *__loc, wint_t c )
-{
+wint_t _Locale_wchar_tolower( struct _Locale_ctype *__loc, wint_t c ) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
   return __towlower_l( c, ((__c_locale)__loc) );
 }
 
-wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c )
-{
+wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c ) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
   return __towupper_l( c, ((__c_locale)__loc) );
 }
-# endif
+#endif
 
-# ifndef _STLP_NO_MBSTATE_T
+#if !defined (_STLP_NO_MBSTATE_T)
 
-int _Locale_mb_cur_max( struct _Locale_ctype * __DUMMY_PAR)
-{
+int _Locale_mb_cur_max( struct _Locale_ctype * __DUMMY_PAR) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return 0;
 }
 
-int _Locale_mb_cur_min( struct _Locale_ctype * __DUMMY_PAR)
-{
+int _Locale_mb_cur_min( struct _Locale_ctype * __DUMMY_PAR) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return 0;
 }
 
-int _Locale_is_stateless( struct _Locale_ctype * __DUMMY_PAR)
-{
+int _Locale_is_stateless( struct _Locale_ctype * __DUMMY_PAR) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return 1;
 }
 
-#ifndef _STLP_NO_WCHAR_T
-wint_t _Locale_btowc( struct _Locale_ctype *__loc, int c )
-{
+#if !defined (_STLP_NO_WCHAR_T)
+wint_t _Locale_btowc(struct _Locale_ctype *__loc, int c) {
   wint_t _c;
   /* __c_locale __tmp = __uselocale( __loc ); */
   _c = btowc( c );
@@ -389,8 +360,7 @@ wint_t _Locale_btowc( struct _Locale_ctype *__loc, int c )
   return _c;
 }
 
-int _Locale_wctob( struct _Locale_ctype *__loc, wint_t c )
-{
+int _Locale_wctob(struct _Locale_ctype *__loc, wint_t c) {
   int _c;
   /* __c_locale __tmp = __uselocale( __loc ); */
   _c = wctob( c );
@@ -399,42 +369,34 @@ int _Locale_wctob( struct _Locale_ctype *__loc, wint_t c )
 }
 
 size_t _Locale_mbtowc(struct _Locale_ctype *__DUMMY_PAR1,
-                                 wchar_t *__DUMMY_PAR2,
-                                 const char *__DUMMY_PAR3, size_t __DUMMY_PAR4,
-                                 mbstate_t *__DUMMY_PAR5)
-{
+                      wchar_t *__DUMMY_PAR2,
+                      const char *__DUMMY_PAR3, size_t __DUMMY_PAR4,
+                      mbstate_t *__DUMMY_PAR5) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return (size_t) -1;
 }
 
 size_t _Locale_wctomb(struct _Locale_ctype *__DUMMY_PAR1,
-                                 char *__DUMMY_PAR2, size_t __DUMMY_PAR3,
-                                 const wchar_t __DUMMY_PAR4,
-                                 mbstate_t *__DUMMY_PAR5)
-{
+                      char *__DUMMY_PAR2, size_t __DUMMY_PAR3,
+                      const wchar_t __DUMMY_PAR4,
+                      mbstate_t *__DUMMY_PAR5) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return (size_t) -1;
 }
-# endif
+#endif
 
 size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
-                                  mbstate_t *__DUMMY_PAR2,
-                                  char *__DUMMY_PAR3, size_t __DUMMY_PAR4, char ** __DUMMY_PAR5)
-{
+                       mbstate_t *__DUMMY_PAR2,
+                       char *__DUMMY_PAR3, size_t __DUMMY_PAR4, char ** __DUMMY_PAR5) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
-
   return (size_t) -1;
 }
 
-# endif /*  _STLP_NO_MBSTATE_T */
-
+#endif /*  _STLP_NO_MBSTATE_T */
 
 /* Collate */
-int _Locale_strcmp( struct _Locale_collate * __loc,
-                    const char *s1, size_t n1, const char *s2, size_t n2 )
-{
+int _Locale_strcmp(struct _Locale_collate * __loc,
+                   const char *s1, size_t n1, const char *s2, size_t n2) {
   return __strcoll_l( s1, s2, (__c_locale)__loc );
 #if 0
   int ret;
@@ -447,12 +409,10 @@ int _Locale_strcmp( struct _Locale_collate * __loc,
 #endif
 }
 
-# ifndef _STLP_NO_WCHAR_T
-
+#if !defined (_STLP_NO_WCHAR_T)
 int _Locale_strwcmp( struct _Locale_collate *__loc,
                      const wchar_t *s1, size_t n1,
-                     const wchar_t *s2, size_t n2 )
-{
+                     const wchar_t *s2, size_t n2) {
   return __wcscoll_l( s1, s2, (__c_locale)__loc );
 #if 0
   int ret;
@@ -465,7 +425,7 @@ int _Locale_strwcmp( struct _Locale_collate *__loc,
 #endif
 }
 
-# endif
+#endif
 
 size_t _Locale_strxfrm(struct _Locale_collate *__loc,
                        char *dest, size_t dest_n,

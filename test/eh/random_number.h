@@ -16,8 +16,10 @@
 #ifndef RANDOM_NUMBER_DWA120298_H_
 #define RANDOM_NUMBER_DWA120298_H_
 
+#include <stddef.h>
+
 // Return a random number in the given range.
-unsigned random_number( unsigned range );
+unsigned random_number( size_t range );
 
 // default base for random container sizes
 extern unsigned random_base;

@@ -32,12 +32,13 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _InputIterator, class _OutputIterator, class _Tp,
           class _BinaryOperation>
 _OutputIterator
 __partial_sum(_InputIterator __first, _InputIterator __last,
-              _OutputIterator __result, _Tp*, _BinaryOperation __binary_op)
-{
+              _OutputIterator __result, _Tp*, _BinaryOperation __binary_op) {
   _STLP_DEBUG_CHECK(__check_range(__first, __last))
   if (__first == __last) return __result;
   *__result = *__first;
@@ -70,8 +71,7 @@ __adjacent_difference(_InputIterator __first, _InputIterator __last,
 
 
 template <class _Tp, class _Integer, class _MonoidOperation>
-_Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)
-{
+_Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr) {
   _STLP_MPWFIX_TRY
   if (__n == 0)
     return __identity_element(__opr);
@@ -94,6 +94,8 @@ _Tp __power(_Tp __x, _Integer __n, _MonoidOperation __opr)
   }
   _STLP_MPWFIX_CATCH_ACTION(__x = _Tp())
 }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

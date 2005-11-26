@@ -19,7 +19,7 @@
 #ifndef _STLP_SSTREAM_C
 #define _STLP_SSTREAM_C
 
-#ifndef _STLP_SSTREAM_H
+#ifndef _STLP_INTERNAL_SSTREAM
 #  include <stl/_sstream.h>
 #endif
 

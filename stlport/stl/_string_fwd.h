@@ -39,13 +39,17 @@ class basic_string;
 
 typedef basic_string<char, char_traits<char>, allocator<char> > string;
 
-#ifdef _STLP_HAS_WCHAR_T
+#if defined (_STLP_HAS_WCHAR_T)
 typedef basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> > wstring;
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 //This function limits header dependency between exception and string
 //implementation. It is implemented in _string.h
-const char*  _STLP_CALL __get_c_string(const string& __str);
+const char* _STLP_CALL __get_c_string(const string& __str);
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

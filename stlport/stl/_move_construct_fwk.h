@@ -18,7 +18,7 @@
 #define _STLP_MOVE_CONSTRUCT_FWK_H
 
 #ifndef _STLP_TYPE_TRAITS_H
-# include <stl/type_traits.h>
+#  include <stl/type_traits.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -69,6 +69,8 @@ struct __move_traits {
   typedef typename __type_traits<_Tp>::has_trivial_destructor complete;
 };
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 /*
  * This struct should never be used if the user has not explicitely stipulated
  * that its class support the full move concept. To check that the return type
@@ -77,11 +79,15 @@ struct __move_traits {
  */
 template <class _Tp>
 struct _MoveSourceTraits {
+#if !defined (__BORLANDC__)
   typedef typename __move_traits<_Tp>::implemented _MvImpRet;
   enum {_MvImp = __type2bool<_MvImpRet>::_Ret};
   typedef typename __select<_MvImp,
                             __move_source<_Tp>,
                             _Tp const&>::_Ret _Type;
+#else
+  typedef _Tp const& _Type;
+#endif
 };
 
 //The helper function
@@ -91,11 +97,6 @@ _AsMoveSource (_Tp &src) {
   typedef typename _MoveSourceTraits<_Tp>::_Type _SrcType;
   return _SrcType(src);
 }
-
-struct __move_traits_POD {
-  typedef __false_type implemented;
-  typedef __true_type complete;
-};
 
 //Helper structs used for many class.
 template <class _Tp>
@@ -134,6 +135,8 @@ struct __move_traits_help2 {
   typedef typename _Land2<typename _MoveTraits1::complete,
                           typename _MoveTraits2::complete>::_Ret complete;
 };
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

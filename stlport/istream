@@ -19,25 +19,25 @@
 #ifndef _STLP_ISTREAM
 #define _STLP_ISTREAM
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1036
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
-// boris : apparently, needed to resolve some
-// circular dependancies
-// #  include <iterator>
-# include <stl/_ioserr.h>
-# include <stl/_istream.h>
+#include <stl/_ioserr.h>
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1036)
+#ifndef _STLP_INTERNAL_ISTREAM
+#  include <stl/_istream.h>
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1036)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_ISTREAM */
 

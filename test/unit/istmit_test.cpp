@@ -19,7 +19,7 @@ class IStreamIteratorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(IStreamIteratorTest);
   CPPUNIT_TEST(istmit1);
-  //CPPUNIT_TEST(copy_n_test);
+  CPPUNIT_TEST(copy_n_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -75,10 +75,11 @@ void IStreamIteratorTest::copy_n_test()
   {
     istringstream istr("aabbcd");
     string chars;
-    copy_n(copy_n(istream_char_ite(istr), 2, back_inserter(chars)).first,
-          2, back_inserter(chars));
+    istream_char_ite ite = copy_n(copy_n(istream_char_ite(istr),
+                                         2, back_inserter(chars)).first,
+                                  2, back_inserter(chars)).first;
     CPPUNIT_ASSERT( chars == "aabb" );
-    copy_n(istream_char_ite(istr), 2, back_inserter(chars));
+    copy_n(ite, 2, back_inserter(chars));
     CPPUNIT_ASSERT( chars == "aabbcd" );
   }
 
@@ -92,19 +93,33 @@ void IStreamIteratorTest::copy_n_test()
     CPPUNIT_ASSERT( ints[0] == 11 );
     CPPUNIT_ASSERT( ints[1] == 22 );
     ints.clear();
+    istr.clear();
     copy_n(istream_string_ite(istr), 2, back_inserter(strings));
     CPPUNIT_ASSERT( strings.size() == 2 );
     CPPUNIT_ASSERT( strings[0] == "AA" );
     CPPUNIT_ASSERT( strings[1] == "BB" );
     strings.clear();
+    istr.clear();
+    /* The following code cannot work, '33' is extracted as a string
+     * in the previous copy_n call, this value is returned in the pair
+     * returned by copy_n but is lost as this istream_iterator is not used.
+     * copy_n and istream_iterator can only be combined safely if:
+     * - you always extract the same type of istream_iterator and you always reuse
+     * the istream_iterator returned by copy_n (see previous test with "aabbcd")
+     * - you extract different type of object and no object is convertible to an other
+     * as in this current test when you extract int and string (when you extract ints
+     * again it fails as int can be converted to strings.
+     * 
     copy_n(istream_int_ite(istr), 2, back_inserter(ints));
     CPPUNIT_ASSERT( ints.size() == 2 );
     CPPUNIT_ASSERT( ints[0] == 33 );
     CPPUNIT_ASSERT( ints[1] == 44 );
+    istr.clear();
     copy_n(istream_string_ite(istr), 2, back_inserter(strings));
     CPPUNIT_ASSERT( strings.size() == 2 );
     CPPUNIT_ASSERT( strings[0] == "CC" );
     CPPUNIT_ASSERT( strings[1] == "DD" );
+    */
   }
 
   {

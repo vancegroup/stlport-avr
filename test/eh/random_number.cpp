@@ -23,7 +23,7 @@
 # include <stdlib.h>
 #endif
 
-unsigned random_number( unsigned range )
+unsigned random_number( size_t range )
 {
 #if !defined( __SGI_STL )
   if (range == 0) return 0;

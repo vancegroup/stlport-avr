@@ -16,34 +16,32 @@
  *
  */
 
-# include "stlport_prefix.h"
+#include "stlport_prefix.h"
+
 #include <complex>
 #include <istream>
 
 _STLP_BEGIN_NAMESPACE
 
-# if ! (defined (_STLP_MSVC) && _STLP_MSVC < 1200)
+#if !(defined (_STLP_MSVC) && _STLP_MSVC < 1200)
 
 // Specializations for narrow characters; lets us avoid the nuisance of
 // widening.
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<float>& __z) {
-  return __os << '(' << (double)__z.real() << ',' << (double)__z.imag() << ')';
-}
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<float>& __z)
+{ return __os << '(' << (double)__z.real() << ',' << (double)__z.imag() << ')'; }
 
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>& __z) {
-  return __os << '(' << __z.real() << ',' << __z.imag() << ')';
-}
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<double>& __z)
+{ return __os << '(' << __z.real() << ',' << __z.imag() << ')'; }
 
 #ifndef _STLP_NO_LONG_DOUBLE
 _STLP_OPERATOR_SPEC
 basic_ostream<char, char_traits<char> >& _STLP_CALL
-operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z) {
-  return __os << '(' << __z.real() << ',' << __z.imag() << ')';
-}
+operator<< (basic_ostream<char, char_traits<char> >& __os, const complex<long double>& __z)
+{ return __os << '(' << __z.real() << ',' << __z.imag() << ')'; }
 #endif
 
 // Specialization for narrow characters; lets us avoid widen.
@@ -127,7 +125,7 @@ operator>>(basic_istream<char, char_traits<char> >& __is, complex<long double>& 
 }
 #  endif
 
-# endif /* MSVC */
+#endif /* MSVC */
 
 _STLP_END_NAMESPACE
 

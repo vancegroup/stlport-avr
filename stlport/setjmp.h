@@ -13,11 +13,14 @@
  *
  */
 
+#ifndef _STLP_SETJMP_H
+
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x256
 #  include <stl/_prolog.h>
-#elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x256) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
+#  define _STLP_SETJMP_H
 #endif
 
 #if !defined (setjmp)
@@ -39,6 +42,8 @@
 #    undef  _STLP_DONT_POP_HEADER_ID
 #  endif
 #endif
+
+#endif /* _STLP_SETJMP_H */
 
 /*
   Local Variables:

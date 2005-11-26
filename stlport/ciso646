@@ -21,7 +21,7 @@
 #  include <stl/_prolog.h>
 #endif
 
-#if !defined(_STLP_WCE_EVC3) && !defined(N_PLAT_NLM)
+#if !defined(_STLP_WCE_EVC3) && !defined (N_PLAT_NLM) && !defined (__BORLANDC__)
 #  if defined (_STLP_USE_NEW_C_HEADERS)
 #    include _STLP_NATIVE_CPP_C_HEADER(ciso646)
 #  else

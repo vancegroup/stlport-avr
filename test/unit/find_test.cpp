@@ -96,15 +96,19 @@ bool FindTest::div_3(int a_)
 void FindTest::find_char()
 {
   char str[] = "abcdefghij";
-  char *d = find((char*)str, (char*)str + sizeof(str) / sizeof(char), 'd');
+  char *pstr = (char*)str;
+  const char* cpstr = (const char*)str;
+  size_t str_size = sizeof(str) / sizeof(char);
+
+  char *d = find(pstr, pstr + str_size, 'd');
   CPPUNIT_ASSERT( *d == 'd' );
 
-  const char *e = find((const char*)str, (const char*)str + sizeof(str) / sizeof(char), 'e');
+  const char *e = find(cpstr, cpstr + str_size, 'e');
   CPPUNIT_ASSERT( *e == 'e' );
 
-  char *last = find((char*)str, (char*)str + sizeof(str) / sizeof(char), 'x');
-  CPPUNIT_ASSERT( last == (char *)(str + sizeof(str) / sizeof(char)));
+  char *last = find(pstr, pstr + str_size, 'x');
+  CPPUNIT_ASSERT( last == pstr + str_size );
 
-  const char *clast = find((const char*)str, (const char*)str + sizeof(str) / sizeof(char), 'x');
-  CPPUNIT_ASSERT( clast == (const char *)(str + sizeof(str) / sizeof(char)));
+  const char *clast = find(cpstr, cpstr + str_size, 'x');
+  CPPUNIT_ASSERT( clast == cpstr + str_size );
 }

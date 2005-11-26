@@ -36,7 +36,7 @@
 
 typedef TestClass DQTestClass;
 
-typedef EH_STD::__deque__<DQTestClass, eh_allocator(DQTestClass) > TestDeque;
+typedef EH_STD::deque<DQTestClass, eh_allocator(DQTestClass) > TestDeque;
 
 inline sequence_container_tag
 container_category(const TestDeque&)

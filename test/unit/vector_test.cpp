@@ -4,6 +4,8 @@
 # include <stdexcept>
 #endif
 
+#include "stack_allocator.h"
+
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -27,6 +29,7 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(at);
   CPPUNIT_TEST(pointer);
   CPPUNIT_TEST(auto_ref);
+  CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -41,6 +44,7 @@ protected:
   void at();
   void pointer();
   void auto_ref();
+  void allocator_with_state();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorTest);
@@ -316,4 +320,31 @@ void VectorTest::auto_ref()
     CPPUNIT_ASSERT( *vvit == ref );
   }
    */
+}
+
+void VectorTest::allocator_with_state()
+{
+  char buf1[1024];
+  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[1024];
+  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+
+  {
+    typedef vector<int, StackAllocator<int> > VectorInt;
+    VectorInt vint1(10, 0, stack1);
+    VectorInt vint1Cpy(vint1);
+
+    VectorInt vint2(10, 1, stack2);
+    VectorInt vint2Cpy(vint2);
+
+    vint1.swap(vint2);
+
+    CPPUNIT_ASSERT( vint1 == vint2Cpy );
+    CPPUNIT_ASSERT( vint2 == vint1Cpy );
+    CPPUNIT_ASSERT( vint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( vint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.OK() );
+  CPPUNIT_ASSERT( stack2.OK() );
 }

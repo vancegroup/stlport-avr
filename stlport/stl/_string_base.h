@@ -35,6 +35,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 #ifndef _STLP_SHORT_STRING_SZ
 #  define _STLP_SHORT_STRING_SZ 16
 #endif
@@ -179,10 +181,14 @@ protected:
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (_M_using_static_buf()) {
       if (__s._M_using_static_buf()) {
-        _STLP_STD::swap<_Buffers>(_M_buffers, __s._M_buffers);
+        _STLP_STD::swap(_M_buffers, __s._M_buffers);
         _Tp *__tmp = _M_finish;
         _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
         __s._M_finish = __s._M_buffers._M_static_buf + (__tmp - _M_buffers._M_static_buf);
+        //We need to swap _M_end_of_storage for allocators with state:
+        _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+        _M_end_of_storage._M_data = _M_buffers._M_static_buf + _DEFAULT_SIZE;
+        __s._M_end_of_storage._M_data = __s._M_buffers._M_static_buf + _DEFAULT_SIZE;
       } else {
         __s._M_Swap(*this);
         return;
@@ -193,6 +199,8 @@ protected:
       _Tp *__tmp_finish = _M_finish;
       _Tp *__tmp_end_data = _M_end_of_storage._M_data;
       _M_buffers = __s._M_buffers;
+      //We need to swap _M_end_of_storage for allocators with state:
+      _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
       _M_end_of_storage._M_data = _M_buffers._M_static_buf + _DEFAULT_SIZE;
       _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
       __s._M_buffers._M_dynamic_buf = __tmp;
@@ -223,6 +231,8 @@ _STLP_EXPORT_TEMPLATE_CLASS _String_base<char, allocator<char> >;
 _STLP_EXPORT_TEMPLATE_CLASS _String_base<wchar_t, allocator<wchar_t> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

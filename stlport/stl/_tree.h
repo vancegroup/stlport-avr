@@ -70,11 +70,9 @@ iterators invalidated are those referring to the deleted node.
 #  include <stl/_function_base.h>
 #endif
 
-#if defined (_STLP_DEBUG)
-#  define _Rb_tree __WORKAROUND_DBG_RENAME(Rb_tree)
-#endif
-
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 typedef bool _Rb_tree_Color_type;
 //const _Rb_tree_Color_type _S_rb_tree_red = false;
@@ -144,7 +142,6 @@ struct _Rb_tree_base_iterator {
   _Rb_tree_base_iterator(_Base_ptr __x) : _M_node(__x) {}
 };
 
-
 template <class _Value, class _Traits>
 struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
   typedef _Value value_type;
@@ -198,28 +195,36 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
   }
 };
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+_STLP_MOVE_TO_STD_NAMESPACE
 template <class _Value, class _Traits>
-struct __type_traits<_Rb_tree_iterator<_Value, _Traits> > {
+struct __type_traits<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > {
   typedef __false_type   has_trivial_default_constructor;
   typedef __true_type    has_trivial_copy_constructor;
   typedef __true_type    has_trivial_assignment_operator;
   typedef __true_type    has_trivial_destructor;
   typedef __false_type   is_POD_type;
 };
+_STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-# ifdef _STLP_USE_OLD_HP_ITERATOR_QUERIES
+#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
+_STLP_MOVE_TO_STD_NAMESPACE
 template <class _Value, class _Traits>
-inline _Value* value_type(const _Rb_tree_iterator<_Value, _Traits>&) { return (_Value*)0; }
-inline bidirectional_iterator_tag iterator_category(const _Rb_tree_base_iterator&) { return bidirectional_iterator_tag(); }
-inline ptrdiff_t* distance_type(const _Rb_tree_base_iterator&) { return (ptrdiff_t*) 0; }
+inline _Value* value_type(const _STLP_PRIV _Rb_tree_iterator<_Value, _Traits>&)
+{ return (_Value*)0; }
+inline bidirectional_iterator_tag iterator_category(const _STLP_PRIV _Rb_tree_base_iterator&)
+{ return bidirectional_iterator_tag(); }
+inline ptrdiff_t* distance_type(const _STLP_PRIV _Rb_tree_base_iterator&)
+{ return (ptrdiff_t*) 0; }
+_STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 // Base class to help EH
 
 template <class _Tp, class _Alloc>
-struct _Rb_tree_base {
+class _Rb_tree_base {
+public:
   typedef _Rb_tree_node_base _Node_base;
   typedef _Rb_tree_node<_Tp> _Node;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
@@ -252,7 +257,6 @@ protected:
     _M_header._M_data._M_right = &_M_header._M_data;
   }
 
-
   void _M_rebind(_Node_base *__static_node) {
     if (_M_header._M_data._M_parent != 0) {
       _M_header._M_data._M_parent->_M_parent = &_M_header._M_data;
@@ -268,6 +272,9 @@ protected:
   _AllocProxy _M_header;
 };
 
+#if defined (_STLP_DEBUG)
+#  define _Rb_tree _STLP_NON_DBG_NAME(Rb_tree)
+#endif
 
 template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits,
@@ -406,13 +413,11 @@ public:
   const_iterator end() const { return const_iterator(__CONST_CAST(_Base_ptr, &this->_M_header._M_data)); }
 
   reverse_iterator rbegin() { return reverse_iterator(end()); }
-  const_reverse_iterator rbegin() const {
-    return const_reverse_iterator(end());
-  }
+  const_reverse_iterator rbegin() const
+  { return const_reverse_iterator(end()); }
   reverse_iterator rend() { return reverse_iterator(begin()); }
-  const_reverse_iterator rend() const {
-    return const_reverse_iterator(begin());
-  }
+  const_reverse_iterator rend() const
+  { return const_reverse_iterator(begin()); }
   bool empty() const { return _M_node_count == 0; }
   size_type size() const { return _M_node_count; }
   size_type max_size() const { return size_type(-1); }
@@ -442,10 +447,10 @@ public:
   pair<iterator,bool> insert_unique(const value_type& __x);
   iterator insert_equal(const value_type& __x);
 
-  iterator insert_unique(iterator __position, const value_type& __x);
-  iterator insert_equal(iterator __position, const value_type& __x);
+  iterator insert_unique(iterator __pos, const value_type& __x);
+  iterator insert_equal(iterator __pos, const value_type& __x);
 
-#ifdef _STLP_MEMBER_TEMPLATES
+#if defined (_STLP_MEMBER_TEMPLATES)
   template<class _II> void insert_equal(_II __first, _II __last) {
     for ( ; __first != __last; ++__first)
       insert_equal(*__first);
@@ -473,8 +478,8 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  void erase(iterator __position) {
-    _Base_ptr __x = _Rb_global_inst::_Rebalance_for_erase(__position._M_node,
+  void erase(iterator __pos) {
+    _Base_ptr __x = _Rb_global_inst::_Rebalance_for_erase(__pos._M_node,
                                                           this->_M_header._M_data._M_parent,
                                                           this->_M_header._M_data._M_left,
                                                           this->_M_header._M_data._M_right);
@@ -492,7 +497,7 @@ public:
 
   size_type erase_unique(const key_type& __x) {
     iterator __i = find(__x);
-    if (__i != end()) {
+    if (__i._M_node != &this->_M_header._M_data) {
       erase(__i);
       return 1;
     }
@@ -500,7 +505,8 @@ public:
   }
 
   void erase(iterator __first, iterator __last) {
-    if (__first == begin() && __last == end())
+    if (__first._M_node == this->_M_header._M_data._M_left && // begin()
+        __last._M_node == &this->_M_header._M_data)           // end()
       clear();
     else
       while (__first != __last) erase(__first++);
@@ -522,17 +528,17 @@ public:
 
 public:
                                 // set operations:
-# if defined(_STLP_MEMBER_TEMPLATES) && ! defined ( _STLP_NO_EXTENSIONS ) && !defined(__MRC__) && !(defined(__SC__) && !defined(__DMC__))
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
   template <class _KT> iterator find(const _KT& __k) { return iterator(_M_find(__k)); }
   template <class _KT> const_iterator find(const _KT& __k) const { return const_iterator(_M_find(__k)); }
 private:
   template <class _KT> _Base_ptr _M_find(const _KT& __k) const
-# else
+#else
   iterator find(const key_type& __k) { return iterator(_M_find(__k)); }
   const_iterator find(const key_type& __k) const { return const_iterator(_M_find(__k)); }
 private:
   _Base_ptr _M_find(const key_type& __k) const
-# endif
+#endif
   {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data);      // Last node which is not less than __k.
     _Base_ptr __x = _M_root();      // Current node.
@@ -583,16 +589,15 @@ public:
   const_iterator lower_bound(const key_type& __x) const { return const_iterator(_M_lower_bound(__x)); }
   iterator upper_bound(const key_type& __x) { return iterator(_M_upper_bound(__x)); }
   const_iterator upper_bound(const key_type& __x) const { return const_iterator(_M_upper_bound(__x)); }
-  pair<iterator,iterator> equal_range(const key_type& __x) {
-    return pair<iterator, iterator>(lower_bound(__x), upper_bound(__x));
-  }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
-    return pair<const_iterator, const_iterator>(lower_bound(__x), upper_bound(__x));
-  }
+  pair<iterator,iterator> equal_range(const key_type& __x)
+  { return pair<iterator, iterator>(lower_bound(__x), upper_bound(__x)); }
+  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const
+  { return pair<const_iterator, const_iterator>(lower_bound(__x), upper_bound(__x)); }
   pair<iterator,iterator> equal_range_unique(const key_type& __x) {
     pair<iterator, iterator> __p;
     __p.second = lower_bound(__x);
-    if (__p.second != this->end() && !_M_key_compare(__x, _S_key(__p.second._M_node))) {
+    if (__p.second._M_node != &this->_M_header._M_data &&
+        !_M_key_compare(__x, _S_key(__p.second._M_node))) {
       __p.first = __p.second++;
     }
     else {
@@ -603,7 +608,8 @@ public:
   pair<const_iterator, const_iterator> equal_range_unique(const key_type& __x) const {
     pair<const_iterator, const_iterator> __p;
     __p.second = lower_bound(__x);
-    if (__p.second != this->end() && !_M_key_compare(__x, _S_key(__p.second._M_node))) {
+    if (__p.second._M_node != &this->_M_header._M_data &&
+        !_M_key_compare(__x, _S_key(__p.second._M_node))) {
       __p.first = __p.second++;
     }
     else {
@@ -612,36 +618,44 @@ public:
     return __p;
   }
 
-#ifdef _STLP_DEBUG
+#if defined (_STLP_DEBUG)
 public:
   // Debugging.
   bool __rb_verify() const;
 #endif //_STLP_DEBUG
 };
 
-# define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-# define _STLP_TEMPLATE_CONTAINER _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>
-# include <stl/_relops_cont.h>
-# undef _STLP_TEMPLATE_CONTAINER
-# undef _STLP_TEMPLATE_HEADER
-
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
-template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-struct __move_traits<_Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> >
-  : __move_traits_help2<_Compare, _Alloc> {};
+#if defined (_STLP_DEBUG)
+#  undef _Rb_tree
 #endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_tree.c>
-# endif
-
-# undef _Rb_tree
+#endif
 
 #if defined (_STLP_DEBUG)
-# include <stl/debug/_tree.h>
+#  include <stl/debug/_tree.h>
 #endif
+
+_STLP_BEGIN_NAMESPACE
+
+#define _STLP_TEMPLATE_HEADER template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+#define _STLP_TEMPLATE_CONTAINER _STLP_PRIV _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc>
+#include <stl/_relops_cont.h>
+#undef _STLP_TEMPLATE_CONTAINER
+#undef _STLP_TEMPLATE_HEADER
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+struct __move_traits<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> >
+  : _STLP_PRIV __move_traits_help2<_Compare, _Alloc> {};
+#endif
+
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_TREE_H */
 

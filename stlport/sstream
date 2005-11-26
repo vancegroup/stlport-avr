@@ -23,22 +23,23 @@
 #ifndef _STLP_SSTREAM
 #define _STLP_SSTREAM
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1059
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
-# include <stl/_ioserr.h>
-# include <stl/_sstream.h>
+#include <stl/_ioserr.h>
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1059)
+#include <stl/_sstream.h>
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1059)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_SSTREAM */
 

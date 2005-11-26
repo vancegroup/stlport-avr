@@ -37,9 +37,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AlgTest);
 void AlgTest::min_max()
 {
   int i = min(4, 7);
-  CPPUNIT_ASSERT(i==4);
+  CPPUNIT_ASSERT( i == 4 );
   char c = max('a', 'z');
-  CPPUNIT_ASSERT(c=='z');
+  CPPUNIT_ASSERT( c == 'z' );
+
+  c = min('a', 'z', greater<char>());
+  CPPUNIT_ASSERT( c == 'z' );
+  i = max(4, 7, greater<int>());
+  CPPUNIT_ASSERT( i == 4 );
 }
 
 void AlgTest::count_test()

@@ -25,8 +25,8 @@
 #  include <sys/stat.h>
 #endif /* __unix */
 
-#include <stl/_fstream.h>
-#include <stl/_limits.h>
+#include <fstream>
+#include <limits>
 #include "fstream_impl.h"
 
 #if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
@@ -84,7 +84,7 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
 
   //We also check that off is not larger than the fseek parameter that is supposed to take
   //a long integer.
-  typedef char __static_assert[sizeof(off_type) >= sizeof(long)];
+  _STLP_STATIC_ASSERT(sizeof(off_type) >= sizeof(long));
   if (off <= numeric_limits<long>::max() &&
       _STLP_VENDOR_CSTD::fseek(_M_file, __STATIC_CAST(long, off), whence) == 0) {
     fpos_t pos;

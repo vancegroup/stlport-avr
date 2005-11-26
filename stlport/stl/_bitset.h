@@ -64,6 +64,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // structure to aid in counting bits
 template<class _Dummy>
 class _Bs_G {
@@ -317,21 +319,21 @@ _STLP_TEMPLATE_NULL struct _Sanitize<0UL> {
   static void _STLP_CALL _M_do_sanitize(unsigned long) {}
 };
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 // ------------------------------------------------------------
 // Class bitset.
 //   _Nb may be any nonzero number of type size_t.
-
-
 template<size_t _Nb>
-class bitset : public _Base_bitset<__BITSET_WORDS(_Nb) > {
+class bitset : public _STLP_PRIV _Base_bitset<__BITSET_WORDS(_Nb) > {
 public:
   enum { _Words = __BITSET_WORDS(_Nb) } ;
 
 private:
-  typedef _Base_bitset< _Words > _Base;
+  typedef _STLP_PRIV _Base_bitset< _Words > _Base;
 
   void _M_do_sanitize() {
-    _Sanitize<_Nb%__BITS_PER_WORD >::_M_do_sanitize(this->_M_hiword());
+    _STLP_PRIV _Sanitize<_Nb%__BITS_PER_WORD >::_M_do_sanitize(this->_M_hiword());
   }
 public:
   typedef unsigned long _WordT;
@@ -340,7 +342,7 @@ public:
 
   // bit reference:
   struct reference {
-  typedef _Base_bitset<_Words > _Bitset_base;
+  typedef _STLP_PRIV _Base_bitset<_Words > _Bitset_base;
   typedef bitset<_Nb> _Bitset;
     //    friend _Bitset;
     _WordT *_M_wp;
@@ -393,13 +395,13 @@ public:
   // 23.3.5.1 constructors:
   bitset() {}
 
-  bitset(unsigned long __val) : _Base_bitset<_Words>(__val) { _M_do_sanitize(); }
+  bitset(unsigned long __val) : _STLP_PRIV _Base_bitset<_Words>(__val) { _M_do_sanitize(); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template<class _CharT, class _Traits, class _Alloc>
   explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
                   size_t __pos = 0)
-    : _Base_bitset<_Words >() {
+    : _STLP_PRIV _Base_bitset<_Words >() {
     if (__pos > __s.size())
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos,
@@ -409,7 +411,7 @@ public:
   bitset(const basic_string<_CharT, _Traits, _Alloc>& __s,
           size_t __pos,
           size_t __n)
-  : _Base_bitset<_Words >() {
+  : _STLP_PRIV _Base_bitset<_Words >() {
     if (__pos > __s.size())
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
@@ -418,8 +420,7 @@ public:
   explicit bitset(const string& __s,
                   size_t __pos = 0,
                   size_t __n = (size_t)-1)
-    : _Base_bitset<_Words >()
-  {
+    : _STLP_PRIV _Base_bitset<_Words >() {
     if (__pos > __s.size())
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
@@ -460,7 +461,7 @@ public:
   //
 
   bitset<_Nb>& _Unchecked_set(size_t __pos) {
-    this->_M_getword(__pos) |= _Base_bitset<_Words > ::_S_maskbit(__pos);
+    this->_M_getword(__pos) |= _STLP_PRIV _Base_bitset<_Words > ::_S_maskbit(__pos);
     return *this;
   }
 

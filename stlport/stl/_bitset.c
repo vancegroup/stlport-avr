@@ -23,14 +23,14 @@
 #  include <stl/_bitset.h>
 #endif
 
-#define __BITS_PER_WORD (CHAR_BIT*sizeof(unsigned long))
+#define __BITS_PER_WORD (CHAR_BIT * sizeof(unsigned long))
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
 //
 // Definitions of non-inline functions from _Base_bitset.
 //
-
 template<size_t _Nw>
 void _Base_bitset<_Nw>::_M_do_left_shift(size_t __shift) {
   if (__shift != 0) {
@@ -160,7 +160,7 @@ _Base_bitset<_Nw>::_M_do_find_next(size_t __prev,
   return __not_found;
 } // end _M_do_find_next
 
-
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #if !defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
 
@@ -228,6 +228,8 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
 #endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 // ------------------------------------------------------------
 // Lookup tables for find and count operations.
@@ -354,6 +356,8 @@ unsigned char _Bs_G<_Dummy>::_S_first_one(unsigned char __byte) {
   };
   return _first_one[__byte];
 };
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #endif /* _STLP_EXPOSE_GLOBALS_IMPLEMENTATION */
 

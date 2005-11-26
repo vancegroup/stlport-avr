@@ -2,9 +2,12 @@
 #include <algorithm>
 #include <hash_map>
 #include <hash_set>
-#include <rope>
+#if !defined (__BORLANDC__)
+#  include <rope>
+#endif
 #include <string>
 
+#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if defined (__MVS__)
@@ -23,23 +26,29 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
+#if !defined (__BORLANDC__)
   CPPUNIT_TEST(hmap1);
+#endif
   CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
   CPPUNIT_TEST(insert_erase);
   //CPPUNIT_TEST(equality);
+  CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST_SUITE_END();
 
   typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
 
 protected:
+#if !defined (__BORLANDC__)
   void hmap1();
+#endif
   void hmmap1();
   void hmset1();
   void hset2();
   void insert_erase();
   //void equality();
+  void allocator_with_state();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
@@ -47,6 +56,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 // tests implementation
 //
+#if !defined (__BORLANDC__)
 void HashTest::hmap1()
 {
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
@@ -81,6 +91,8 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( cite == ite );
   CPPUNIT_ASSERT( !(cite != ite) );
 }
+#endif
+
 void HashTest::hmmap1()
 {
   typedef hash_multimap<char, int, hash<char>,equal_to<char> > mmap;
@@ -214,3 +226,33 @@ void HashTest::equality()
   CPPUNIT_ASSERT( s1 == s2 );
 }
 */
+
+void HashTest::allocator_with_state()
+{
+  char buf1[2048];
+  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[2048];
+  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+
+  {
+    typedef hash_set<int, hash<int>, equal_to<int>, StackAllocator<int> > HashSetInt;
+    HashSetInt hint1(10, hash<int>(), equal_to<int>(), stack1);
+    int i;
+    for (i = 0; i < 5; ++i)
+      hint1.insert(i);
+    HashSetInt hint1Cpy(hint1);
+
+    HashSetInt hint2(10, hash<int>(), equal_to<int>(), stack2);
+    for (; i < 10; ++i)
+      hint2.insert(i);
+    HashSetInt hint2Cpy(hint2);
+
+    hint1.swap(hint2);
+
+    CPPUNIT_ASSERT( hint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( hint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.OK() );
+  CPPUNIT_ASSERT( stack2.OK() );
+}

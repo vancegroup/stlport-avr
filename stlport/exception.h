@@ -14,30 +14,25 @@
  */
 
 #ifndef _STLP_OLDSTD_exception
-# define _STLP_OLDSTD_exception
+#define _STLP_OLDSTD_exception
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x824
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x824) && ! defined (_STLP_DONT_POP_HEADER_ID)
-#  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# if defined (__BORLANDC__)
+#if defined (__BORLANDC__)
 #  include <exception.>
-# elif defined (_MSC_VER)
+#elif defined (_MSC_VER)
 #  include <exception>
-# else
+#else
 #  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x824)
-#  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_HEADER_ID
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x824)
+#  include <stl/_epilog.h>
+#  undef  _STLP_OUTERMOST_HEADER_ID
+#endif
 
 #endif /* _STLP_OLDSTD_exception */
 

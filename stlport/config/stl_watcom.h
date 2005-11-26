@@ -121,7 +121,7 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 
 #  define _STLP_NESTED_TYPE_PARAM_BUG 1
 
-#  define _STLP_NO_CSTD_FUNCTION_IMPORTS 1
+#  define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
 
 #  if (__WATCOM_CPLUSPLUS__ < 1100 )
 #   define _STLP_NO_BOOL 1

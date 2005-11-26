@@ -68,25 +68,45 @@ _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 //Export of the classes used to represent buckets in the hashtable implementation.
-_STLP_EXPORT_TEMPLATE_CLASS allocator<_STLP_PRIV::_Slist_node_base*>;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_STLP_PRIV::_Slist_node_base**,
-                                              _STLP_PRIV::_Slist_node_base*,
-                                              allocator<_STLP_PRIV::_Slist_node_base*> >;
-_STLP_EXPORT_TEMPLATE_CLASS _Vector_base<_STLP_PRIV::_Slist_node_base*, allocator<_STLP_PRIV::_Slist_node_base*> >;
-#  if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
-_STLP_EXPORT_TEMPLATE_CLASS _Vector_impl<_STLP_PRIV::_Slist_node_base*, allocator<_STLP_PRIV::_Slist_node_base*> >;
+#  if !defined (_STLP_USE_PTR_SPECIALIZATIONS)
+//If pointer specialization is enabled vector<_Slist_node_base*> will use the void*
+//storage type for which internal classes have already been exported.
+_STLP_EXPORT_TEMPLATE_CLASS allocator<_STLP_PRIV _Slist_node_base*>;
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Slist_node_base**, _Slist_node_base*,
+                                              allocator<_Slist_node_base*> >;
+_STLP_EXPORT_TEMPLATE_CLASS _Vector_base<_Slist_node_base*,
+                                         allocator<_Slist_node_base*> >;
+_STLP_MOVE_TO_STD_NAMESPACE
 #  endif
-_STLP_EXPORT_TEMPLATE_CLASS __WORKAROUND_DBG_RENAME(vector)<_STLP_PRIV::_Slist_node_base*, allocator<_STLP_PRIV::_Slist_node_base*> >;
+
+#  if defined (_STLP_DEBUG)
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#    define _STLP_NON_DBG_VECTOR _STLP_NON_DBG_NAME(vector)
+_STLP_EXPORT_TEMPLATE_CLASS __construct_checker<_STLP_NON_DBG_VECTOR<_Slist_node_base*, allocator<_Slist_node_base*> > >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_NON_DBG_VECTOR<_Slist_node_base*, allocator<_Slist_node_base*> >;
+#    undef _STLP_NON_DBG_VECTOR
+_STLP_MOVE_TO_STD_NAMESPACE
+#  endif
+
+_STLP_EXPORT_TEMPLATE_CLASS vector<_STLP_PRIV _Slist_node_base*,
+                                   allocator<_STLP_PRIV _Slist_node_base*> >;
 #endif
 
-#define hashtable __WORKAROUND_DBG_RENAME(hashtable)
+#if defined (_STLP_DEBUG)
+#  define hashtable _STLP_NON_DBG_NAME(hashtable)
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#endif
 
 // some compilers require the names of template parameters to be the same
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 class hashtable;
 
+#if !defined (_STLP_DEBUG)
 _STLP_MOVE_TO_PRIV_NAMESPACE
+#endif
 
 template <class _BaseIte, class _Traits>
 struct _Ht_iterator {
@@ -139,7 +159,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _BaseIte, class _Traits>
-struct __type_traits<_STLP_PRIV::_Ht_iterator<_BaseIte, _Traits> > {
+struct __type_traits<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > {
   typedef __false_type   has_trivial_default_constructor;
   typedef __true_type    has_trivial_copy_constructor;
   typedef __true_type    has_trivial_assignment_operator;
@@ -154,17 +174,17 @@ inline
 #  if defined (_STLP_NESTED_TYPE_PARAM_BUG)
 _STLP_TYPENAME_ON_RETURN_TYPE _Traits::value_type *
 #  else
-_STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>::value_type *
+_STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type *
 #  endif
-value_type(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&) {
-  typedef typename _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>::value_type _Val;
+value_type(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&) {
+  typedef typename _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type _Val;
   return (_Val*) 0;
 }
 template <class _BaseIte, class _Traits>
-inline forward_iterator_tag iterator_category(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&)
+inline forward_iterator_tag iterator_category(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&)
 { return forward_iterator_tag(); }
 template <class _BaseIte, class _Traits>
-inline ptrdiff_t* distance_type(const _STLP_PRIV::_Ht_iterator<_BaseIte,_Traits>&)
+inline ptrdiff_t* distance_type(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&)
 { return (ptrdiff_t*) 0; }
 #endif
 
@@ -186,7 +206,9 @@ _STLP_EXPORT_TEMPLATE_CLASS _Stl_prime<bool>;
 
 typedef _Stl_prime<bool> _Stl_prime_type;
 
+#if !defined (_STLP_DEBUG)
 _STLP_MOVE_TO_STD_NAMESPACE
+#endif
 
 /*
  * Hashtables handle allocators a bit differently than other containers
@@ -225,20 +247,28 @@ public:
 
 private:
   _STLP_FORCE_ALLOCATORS(_Val, _All)
-  typedef __WORKAROUND_DBG_RENAME(slist)<value_type, _All> _ElemsCont;
+#if defined (_STLP_DEBUG)
+  typedef _STLP_PRIV _STLP_NON_DBG_NAME(slist)<value_type, _All> _ElemsCont;
+#else
+  typedef slist<value_type, _All> _ElemsCont;
+#endif
   typedef typename _ElemsCont::iterator _ElemsIte;
   typedef typename _ElemsCont::const_iterator _ElemsConstIte;
-  typedef _STLP_PRIV::_Slist_node_base _BucketType;
+  typedef _STLP_PRIV _Slist_node_base _BucketType;
   typedef typename _Alloc_traits<_BucketType*, _All>::allocator_type _M_bucket_allocator_type;
   /*
    * We are going to use vector of _Slist_node_base pointers for 2 reasons:
    *  - limit code bloat, all hashtable instanciation use the same buckets representation.
-   *  - avoid STL_DEBUG performance trouble: with a vector of iterator on slist the resize
+   *  - avoid _STLP_DEBUG performance trouble: with a vector of iterator on slist the resize
    *    method would be too slow because the slist::splice_after method become linear on
    *    the number of iterators in the buckets rather than constant in time as the iterator
    *    has to be move from a slist to the other.
    */
-  typedef __WORKAROUND_DBG_RENAME(vector)<_BucketType*, _M_bucket_allocator_type> _BucketVector;
+#if defined (_STLP_DEBUG)
+  typedef _STLP_PRIV _STLP_NON_DBG_NAME(vector)<_BucketType*, _M_bucket_allocator_type> _BucketVector;
+#else
+  typedef vector<_BucketType*, _M_bucket_allocator_type> _BucketVector;
+#endif
 
   hasher                _M_hash;
   key_equal             _M_equals;
@@ -249,49 +279,87 @@ private:
   float                 _M_max_load_factor;
 
 public:
-  typedef _STLP_PRIV::_Ht_iterator<_ElemsIte, _NonConstTraits> iterator;
-  typedef _STLP_PRIV::_Ht_iterator<_ElemsIte, _ConstTraits> const_iterator;
+  typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _NonConstTraits> iterator;
+  typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _ConstTraits> const_iterator;
   //TODO: Avoids this debug check and make the local_iterator different from
   //iterator in debug mode too.
 #if !defined (_STLP_DEBUG)
-  typedef _STLP_PRIV::_Ht_iterator<_ElemsIte, _NonConstLocalTraits> local_iterator;
-  typedef _STLP_PRIV::_Ht_iterator<_ElemsIte, _ConstLocalTraits> const_local_iterator;
+  typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _NonConstLocalTraits> local_iterator;
+  typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _ConstLocalTraits> const_local_iterator;
 #else
   typedef iterator       local_iterator;
   typedef const_iterator const_local_iterator;
 #endif
 
-  typedef typename _Alloc_traits<_Val,_All>::allocator_type allocator_type;
+  typedef typename _Alloc_traits<_Val, _All>::allocator_type allocator_type;
   allocator_type get_allocator() const { return _M_elems.get_allocator(); }
 
+#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
   hashtable(size_type __n,
             const _HF&  __hf,
             const _EqK& __eql,
             const _ExK& __ext,
             const allocator_type& __a = allocator_type())
+#else
+  hashtable(size_type __n,
+            const _HF&  __hf,
+            const _EqK& __eql,
+            const _ExK& __ext)
+    : _M_hash(__hf),
+      _M_equals(__eql),
+      _M_get_key(__ext),
+      _M_elems(allocator_type()),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,_ElemsIte)),
+      _M_num_elements(0),
+      _M_max_load_factor(1.0f)
+  { _M_initialize_buckets(__n); }
+
+  hashtable(size_type __n,
+            const _HF&  __hf,
+            const _EqK& __eql,
+            const _ExK& __ext,
+            const allocator_type& __a)
+#endif
     : _M_hash(__hf),
       _M_equals(__eql),
       _M_get_key(__ext),
       _M_elems(__a),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,_ElemsIte)),
       _M_num_elements(0),
-      _M_max_load_factor(1.0f) {
-    _M_initialize_buckets(__n);
-  }
+      _M_max_load_factor(1.0f)
+  { _M_initialize_buckets(__n); }
 
+#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
   hashtable(size_type __n,
             const _HF&    __hf,
             const _EqK&   __eql,
             const allocator_type& __a = allocator_type())
+#else
+  hashtable(size_type __n,
+            const _HF&    __hf,
+            const _EqK&   __eql)
+    : _M_hash(__hf),
+      _M_equals(__eql),
+      _M_get_key(_ExK()),
+      _M_elems(allocator_type()),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,void*)),
+      _M_num_elements(0),
+      _M_max_load_factor(1.0f)
+  { _M_initialize_buckets(__n); }
+
+  hashtable(size_type __n,
+            const _HF&    __hf,
+            const _EqK&   __eql,
+            const allocator_type& __a)
+#endif
     : _M_hash(__hf),
       _M_equals(__eql),
       _M_get_key(_ExK()),
       _M_elems(__a),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,void*)),
       _M_num_elements(0),
-      _M_max_load_factor(1.0f) {
-    _M_initialize_buckets(__n);
-  }
+      _M_max_load_factor(1.0f)
+  { _M_initialize_buckets(__n); }
 
   hashtable(const _Self& __ht)
     : _M_hash(__ht._M_hash),
@@ -300,19 +368,17 @@ public:
       _M_elems(__ht.get_allocator()),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(),void*)),
       _M_num_elements(0),
-      _M_max_load_factor(1.0f) {
-    _M_copy_from(__ht);
-  }
+      _M_max_load_factor(1.0f)
+  { _M_copy_from(__ht); }
 
   hashtable(__move_source<_Self> src)
-    : _M_hash(_AsMoveSource(src.get()._M_hash)),
-      _M_equals(_AsMoveSource(src.get()._M_equals)),
-      _M_get_key(_AsMoveSource(src.get()._M_get_key)),
+    : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
+      _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
+      _M_get_key(_STLP_PRIV _AsMoveSource(src.get()._M_get_key)),
       _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
       _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
       _M_num_elements(src.get()._M_num_elements),
-      _M_max_load_factor(src.get()._M_max_load_factor) {
-  }
+      _M_max_load_factor(src.get()._M_max_load_factor) {}
 
   _Self& operator= (const _Self& __ht) {
     if (&__ht != this) {
@@ -359,7 +425,7 @@ public:
   size_type bucket_count() const
   { return _M_buckets.size() - 1; }
   size_type max_bucket_count() const
-  { return _STLP_PRIV::_Stl_prime_type::_S_max_nb_buckets(); }
+  { return _STLP_PRIV _Stl_prime_type::_S_max_nb_buckets(); }
   size_type elems_in_bucket(size_type __bucket) const
   { return distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
   size_type bucket(const key_type& __k) const
@@ -388,14 +454,12 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert_unique(_InputIterator __f, _InputIterator __l) {
-    insert_unique(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator));
-  }
+  void insert_unique(_InputIterator __f, _InputIterator __l)
+  { insert_unique(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator)); }
 
   template <class _InputIterator>
-  void insert_equal(_InputIterator __f, _InputIterator __l) {
-    insert_equal(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator));
-  }
+  void insert_equal(_InputIterator __f, _InputIterator __l)
+  { insert_equal(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator)); }
 
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l,
@@ -469,12 +533,14 @@ private:
   _ElemsIte _M_find(const key_type& __key) const
 #endif
   {
-    _ElemsCont &__mutable_elems = __CONST_CAST(_ElemsCont&, _M_elems);
     size_type __n = _M_bkt_num_key(__key);
     _ElemsIte __first(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
     for ( ; (__first != __last) && !_M_equals(_M_get_key(*__first), __key); ++__first);
-    return __first != __last ? __first : __mutable_elems.end();
+    if (__first != __last)
+      return __first;
+    else
+      return __CONST_CAST(_ElemsCont&, _M_elems).end();
   }
 
 public:
@@ -536,7 +602,7 @@ public:
 private:
 
   void _M_initialize_buckets(size_type __n) {
-    const size_type __n_buckets = _STLP_PRIV::_Stl_prime_type::_S_next_size(__n) + 1;
+    const size_type __n_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__n) + 1;
     _M_buckets.reserve(__n_buckets);
     _M_buckets.assign(__n_buckets, __STATIC_CAST(_BucketType*, 0));
   }
@@ -558,7 +624,7 @@ private:
 #else
   size_type _M_bkt_num_key(const key_type& __key, size_type __n) const
 #endif
-  { return _M_hash(__key) % __n; }
+  { return _M_hash.operator()(__key) % __n; }
 
   size_type _M_bkt_num(const value_type& __obj, size_t __n) const
   { return _M_bkt_num_key(_M_get_key(__obj), __n); }
@@ -566,7 +632,10 @@ private:
   void _M_copy_from(const _Self& __ht);
 };
 
-#undef hashtable
+#if defined (_STLP_DEBUG)
+#  undef hashtable
+_STLP_MOVE_TO_STD_NAMESPACE
+#endif
 
 _STLP_END_NAMESPACE
 

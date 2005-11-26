@@ -1613,13 +1613,13 @@ struct ps_foo {
 template<class Result>
 struct ps_foo<Result*,Result*> {
 	ps_foo<Result*,Result*>() {}
-	void bar() {}
+  void bar() {}
 };
 
 template<class Result>
 struct ps_foo<int*,Result> {
-	ps_foo<int*,Result*>() {}
-	void bar() {}
+  ps_foo<int*,Result*>() {}
+  void bar() {}
 
 };
 
@@ -1661,13 +1661,13 @@ template <class Arg,class Result>
 struct ps_foo {
     typedef Arg argument_type;
     typedef Result result_type;
-    void bar() {}	
+    void bar() {}  
 };   
 
 template<class Result>
 struct ps_foo<int*,int> {
-	ps_foo<Result*,Result*>() {}
-	void foo() {}
+  ps_foo<Result*,Result*>() {}
+  void foo() {}
 };
 
 ps_foo<char*, char*> p;
@@ -1708,8 +1708,8 @@ Result po_foo (const Arg& a,const Result&){ return (Result)a.nothing; }
 
 template <class T>
 struct A {
-	T a;
-	A(int _a) : a(_a) {}
+  T a;
+  A(int _a) : a(_a) {}
 };
 
 template<class T>
@@ -1841,7 +1841,7 @@ echo "configure:1839: checking for default type parameters" >&5
 #include "confdefs.h"
 
 template <class T> struct less {
-	typedef int int_t;
+  typedef int int_t;
   }; 
 
 template <class T, class T1=less<int> > 

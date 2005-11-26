@@ -27,24 +27,23 @@
  *   You should not attempt to use it directly.
  */
 
-
 #ifndef _STLP_INTERNAL_ALGOBASE_H
 #define _STLP_INTERNAL_ALGOBASE_H
 
-#if ! defined (_STLP_CSTDDEF)
-#  include <cstddef>
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
 #endif
 
-#ifndef _STLP_CSTRING
-#  include <cstring>
+#ifndef _STLP_INTERNAL_CSTRING
+#  include <stl/_cstring.h>
 #endif
 
 #ifndef _STLP_CLIMITS
 #  include <climits>
 #endif
 
-#if ! defined (_STLP_CSTDLIB)
-#  include <cstdlib>
+#ifndef _STLP_INTERNAL_CSTDLIB
+#  include <stl/_cstdlib.h>
 #endif
 
 #ifndef _STLP_INTERNAL_PAIR_H
@@ -62,6 +61,7 @@
 _STLP_BEGIN_NAMESPACE
 
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+_STLP_MOVE_TO_PRIV_NAMESPACE
 template <class _Tp>
 inline void __swap_aux(_Tp& __a, _Tp& __b, const __true_type& /*SwapImplemented*/) {
   __a.swap(__b);
@@ -73,6 +73,7 @@ inline void __swap_aux(_Tp& __a, _Tp& __b, const __false_type& /*SwapImplemented
   __a = __b;
   __b = __tmp;
 }
+_STLP_MOVE_TO_STD_NAMESPACE
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 
 // swap and iter_swap
@@ -80,13 +81,15 @@ template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   typedef typename _SwapImplemented<_Tp>::_Ret _Implemented;
-  __swap_aux(__a, __b, _Implemented());
+  _STLP_PRIV __swap_aux(__a, __b, _Implemented());
 #else
   _Tp __tmp = __a;
   __a = __b;
   __b = __tmp;
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 }
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2, class _Value>
 inline void __iter_swap_aux_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value *) {
@@ -105,23 +108,34 @@ inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __fa
   __iter_swap_aux_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _ForwardIter1, class _ForwardIter2>
 inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
   // swap(*__i1, *__i2);
-  __iter_swap_aux( __i1, __i2, _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
-                                           _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1),
-                                           _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer());
+  _STLP_PRIV __iter_swap_aux( __i1, __i2, _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
+                                                      _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1),
+                                                      _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer());
 }
 
 //--------------------------------------------------
 // min and max
 
-# if !defined (__BORLANDC__) || defined (_STLP_USE_OWN_NAMESPACE)
+#if !defined (__BORLANDC__) || defined (_STLP_USE_OWN_NAMESPACE)
+#  if defined (__BORLANDC__) && !defined (__STDC__)
+//In not ANSI mode Borland import min/max in global namespace which conflict
+//with STLport min/max when user does a 'using namespace std' in its code
+//(see test/unit/alg_test.cpp). To avoid this clash we simply import Borland min/max
+//in STLport namespace.
+using _STLP_VENDOR_STD::min;
+using _STLP_VENDOR_STD::max;
+#  else
 template <class _Tp>
 inline const _Tp& (min)(const _Tp& __a, const _Tp& __b) { return __b < __a ? __b : __a; }
 template <class _Tp>
 inline const _Tp& (max)(const _Tp& __a, const _Tp& __b) {  return  __a < __b ? __b : __a; }
-#endif /* __BORLANDC__ */
+#  endif
+#endif
 
 # if defined (__BORLANDC__) && ( __BORLANDC__ < 0x530 || defined (_STLP_USE_OWN_NAMESPACE))
 inline unsigned long (min) (unsigned long __a, unsigned long __b) { return __b < __a ? __b : __a; }
@@ -147,6 +161,8 @@ inline const _Tp& (max)(const _Tp& __a, const _Tp& __b, _Compare __comp) {
 // (2) If we're using random access iterators, then write the loop as
 // a for loop with an explicit count.
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
                           _OutputIter __result,
@@ -156,7 +172,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
   return __result;
 }
 
-# if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
                           _OutputIter __result, const forward_iterator_tag &, _Distance* ) {
@@ -165,7 +181,6 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
   return __result;
 }
 
-
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
                           _OutputIter __result, const bidirectional_iterator_tag &, _Distance* ) {
@@ -173,7 +188,7 @@ inline _OutputIter __copy(_InputIter __first, _InputIter __last,
     *__result = *__first;
   return __result;
 }
-# endif
+#endif
 
 template <class _RandomAccessIter, class _OutputIter, class _Distance>
 inline _OutputIter
@@ -254,11 +269,15 @@ inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter
                 _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _InputIter, class _OutputIter>
 inline _OutputIter copy(_InputIter __first, _InputIter __last, _OutputIter __result) {
-  _STLP_DEBUG_CHECK(__check_range(__first, __last))
-  return __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret());
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+  return _STLP_PRIV __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret());
 }
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last,
@@ -283,23 +302,25 @@ inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _O
                                             _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _InputIter, class _OutputIter>
 inline _OutputIter copy_backward(_InputIter __first, _InputIter __last, _OutputIter __result) {
-  _STLP_DEBUG_CHECK(__check_range(__first, __last))
-    return __copy_backward_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret() );
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+  return _STLP_PRIV __copy_backward_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret() );
 }
 
-#if ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined ( _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS )
-#define _STLP_DECLARE_COPY_TRIVIAL(_Tp)                                \
-inline _Tp* copy(const _Tp* __first, const _Tp* __last, _Tp* __result) \
-{ return (_Tp*)__copy_trivial(__first, __last, __result); } \
+#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+#  define _STLP_DECLARE_COPY_TRIVIAL(_Tp)                                       \
+inline _Tp* copy(const _Tp* __first, const _Tp* __last, _Tp* __result)          \
+{ return (_Tp*)__copy_trivial(__first, __last, __result); }                     \
 inline _Tp* copy_backward(const _Tp* __first, const _Tp* __last, _Tp* __result) \
 { return (_Tp*)__copy_trivial_backward(__first, __last, __result); }
 
 _STLP_DECLARE_COPY_TRIVIAL(char)
-# ifndef _STLP_NO_SIGNED_BUILTINS
+#  if !defined (_STLP_NO_SIGNED_BUILTINS)
 _STLP_DECLARE_COPY_TRIVIAL(signed char)
-# endif
+#  endif
 _STLP_DECLARE_COPY_TRIVIAL(unsigned char)
 _STLP_DECLARE_COPY_TRIVIAL(short)
 _STLP_DECLARE_COPY_TRIVIAL(unsigned short)
@@ -307,23 +328,25 @@ _STLP_DECLARE_COPY_TRIVIAL(int)
 _STLP_DECLARE_COPY_TRIVIAL(unsigned int)
 _STLP_DECLARE_COPY_TRIVIAL(long)
 _STLP_DECLARE_COPY_TRIVIAL(unsigned long)
-#if !defined(_STLP_NO_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
+#  if !defined(_STLP_NO_WCHAR_T) && !defined (_STLP_WCHAR_T_IS_USHORT)
 _STLP_DECLARE_COPY_TRIVIAL(wchar_t)
-#endif
-#ifdef _STLP_LONG_LONG
+#  endif
+#  if defined (_STLP_LONG_LONG)
 _STLP_DECLARE_COPY_TRIVIAL(_STLP_LONG_LONG)
 _STLP_DECLARE_COPY_TRIVIAL(unsigned _STLP_LONG_LONG)
-#endif
+#  endif
 _STLP_DECLARE_COPY_TRIVIAL(float)
 _STLP_DECLARE_COPY_TRIVIAL(double)
-# ifndef _STLP_NO_LONG_DOUBLE
+#  if !defined (_STLP_NO_LONG_DOUBLE)
 _STLP_DECLARE_COPY_TRIVIAL(long double)
-# endif
-#undef _STLP_DECLARE_COPY_TRIVIAL
+#  endif
+#  undef _STLP_DECLARE_COPY_TRIVIAL
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 //--------------------------------------------------
 // copy_n (not part of the C++ standard)
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
 _STLP_INLINE_LOOP
@@ -354,11 +377,13 @@ __copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
   return __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _InputIter, class _Size, class _OutputIter>
 inline pair<_InputIter, _OutputIter>
 copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
   _STLP_FIX_LITERAL_BUG(__first)
-  return __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+  return _STLP_PRIV __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
 
 //--------------------------------------------------
@@ -366,10 +391,12 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP
 void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
-  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     *__first = __val;
 }
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _OutputIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP
@@ -380,34 +407,36 @@ _OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   return __first;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _OutputIter, class _Size, class _Tp>
 _STLP_INLINE_LOOP
 void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   _STLP_FIX_LITERAL_BUG(__first)
-  __fill_n(__first, __n, __val);
+  _STLP_PRIV __fill_n(__first, __n, __val);
 }
 
 
 // Specialization: for one-byte types we can use memset.
-
 inline void fill(unsigned char* __first, unsigned char* __last,
                  const unsigned char& __val) {
   unsigned char __tmp = __val;
   memset(__first, __tmp, __last - __first);
 }
-# ifndef _STLP_NO_SIGNED_BUILTINS
+#if !defined (_STLP_NO_SIGNED_BUILTINS)
 inline void fill(signed char* __first, signed char* __last,
                  const signed char& __val) {
   signed char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
-# endif
+#endif
 inline void fill(char* __first, char* __last, const char& __val) {
   char __tmp = __val;
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
 
-#ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Size>
 inline unsigned char* __fill_n(unsigned char* __first, _Size __n,
@@ -429,6 +458,7 @@ inline char* __fill_n(char* __first, _Size __n, const char& __val) {
   return __first + __n;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 #endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
 
 
@@ -441,7 +471,7 @@ pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                         _InputIter1 __last1,
                                         _InputIter2 __first2) {
   _STLP_FIX_LITERAL_BUG(__first2)
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   while (__first1 != __last1 && *__first1 == *__first2) {
     ++__first1;
     ++__first2;
@@ -456,7 +486,7 @@ pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                         _InputIter2 __first2,
                                         _BinaryPredicate __binary_pred) {
   _STLP_FIX_LITERAL_BUG(__first2)
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   while (__first1 != __last1 && __binary_pred(*__first1, *__first2)) {
     ++__first1;
     ++__first2;
@@ -469,7 +499,7 @@ _STLP_INLINE_LOOP
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
                   _InputIter2 __first2) {
   _STLP_FIX_LITERAL_BUG(__first1) _STLP_FIX_LITERAL_BUG(__last1)  _STLP_FIX_LITERAL_BUG(__first2)
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2)
     if (!(*__first1 == *__first2))
       return false;
@@ -481,7 +511,7 @@ _STLP_INLINE_LOOP
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
                   _InputIter2 __first2, _BinaryPredicate __binary_pred) {
   _STLP_FIX_LITERAL_BUG(__first2)
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   for ( ; __first1 != __last1; ++__first1, ++__first2)
     if (!__binary_pred(*__first1, *__first2))
       return false;
@@ -508,19 +538,19 @@ lexicographical_compare(const unsigned char* __first1,
                         const unsigned char* __last2) {
   const size_t __len1 = __last1 - __first1;
   const size_t __len2 = __last2 - __first2;
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
-  _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
 
   const int __result = memcmp(__first1, __first2, (min) (__len1, __len2));
   return __result != 0 ? (__result < 0) : (__len1 < __len2);
 }
 
 
-# if !(CHAR_MAX == SCHAR_MAX)
+#if !(CHAR_MAX == SCHAR_MAX)
 inline bool lexicographical_compare(const char* __first1, const char* __last1,
                                     const char* __first2, const char* __last2) {
-  _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
-  _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
 
   return lexicographical_compare((const unsigned char*) __first1,
                                  (const unsigned char*) __last1,
@@ -528,6 +558,8 @@ inline bool lexicographical_compare(const char* __first1, const char* __last1,
                                  (const unsigned char*) __last2);
 }
 #endif /* CHAR_MAX == SCHAR_MAX */
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter1, class _InputIter2>
 int __lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
@@ -546,7 +578,7 @@ __lexicographical_compare_3way(const unsigned char* __first1,
 }
 
 
-# if !(CHAR_MAX == SCHAR_MAX)
+#if !(CHAR_MAX == SCHAR_MAX)
 inline int
 __lexicographical_compare_3way(const char* __first1, const char* __last1,
                                const char* __first2, const char* __last2) {
@@ -555,21 +587,22 @@ __lexicographical_compare_3way(const char* __first1, const char* __last1,
                                         (const unsigned char*) __first2,
                                         (const unsigned char*) __last2);
 }
-# endif
+#endif
 
-# ifndef _STLP_NO_EXTENSIONS
+_STLP_MOVE_TO_STD_NAMESPACE
 
+#if !defined (_STLP_NO_EXTENSIONS)
 template <class _InputIter1, class _InputIter2>
 int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
                                  _InputIter2 __first2, _InputIter2 __last2);
 
-# endif /* EXTENSIONS */
+#endif /* EXTENSIONS */
 
 // count
 template <class _InputIter, class _Tp>
 _STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_InputIter)
 count(_InputIter __first, _InputIter __last, const _Tp& __val) {
-  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _STLP_DIFFERENCE_TYPE(_InputIter) __n = 0;
   for ( ; __first != __last; ++__first)
     if (*__first == __val)
@@ -589,11 +622,15 @@ template <class _ForwardIter1, class _ForwardIter2, class _BinaryPred>
 _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
                      _ForwardIter2 __first2, _ForwardIter2 __last2, _BinaryPred  __predicate);
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // find_first_of
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
 _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
                            _ForwardIter __first2, _ForwardIter __last2,
                            _BinaryPredicate __comp);
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2,
           class _BinaryPredicate>
@@ -607,21 +644,25 @@ template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP void
 replace(_ForwardIter __first, _ForwardIter __last,
         const _Tp& __old_value, const _Tp& __new_value) {
-  _STLP_DEBUG_CHECK(__check_range(__first, __last))
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   for ( ; __first != __last; ++__first)
     if (*__first == __old_value)
       *__first = __new_value;
 }
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
 _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
                            const _Tp& __val, _Compare __comp, _Distance*);
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 _STLP_END_NAMESPACE
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_algobase.c>
-# endif
+#endif
 
 #endif /* _STLP_INTERNAL_ALGOBASE_H */
 

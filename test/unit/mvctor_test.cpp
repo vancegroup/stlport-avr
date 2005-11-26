@@ -732,6 +732,7 @@ void MoveConstructorTest::vector_test()
     }
   }
 
+#if !defined (__BORLANDC__)
   {
     //hash container move contructor:
     unordered_multiset<string> ref;
@@ -759,6 +760,7 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
+#endif
 }
 
 #if defined (STLPORT)
@@ -1100,23 +1102,30 @@ void MoveConstructorTest::move_traits()
   }
 }
 
-bool type_to_bool(__true_type const&)
+bool type_to_bool(__true_type)
 { return true; }
-bool type_to_bool(__false_type const&)
+bool type_to_bool(__false_type)
 { return false; }
 
 template <class _Tp>
-bool is_movable(const _Tp&) {
-  typedef __move_traits<_Tp> _TpMoveTraits;
-  typedef typename _TpMoveTraits::implemented _TpMovable;
-  return type_to_bool(_TpMovable());
+bool is_movable(_Tp) {
+#if defined (__BORLANDC__)
+  return __type2bool<typename __move_traits<_Tp>::implemented>::_Ret != 0;
+#else
+  typedef typename __move_traits<_Tp>::implemented _MovableTp;
+  return type_to_bool(_MovableTp());
+#endif
 }
 
 template <class _Tp>
 bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
+#if defined (__BORLANDC__)
+  return __type2bool<typename _TpMoveTraits::complete>::_Ret != 0;
+#else
   typedef typename _TpMoveTraits::complete _TpMoveComplete;
   return type_to_bool(_TpMoveComplete());
+#endif
 }
 
 struct specially_allocated_struct {

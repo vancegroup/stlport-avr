@@ -27,7 +27,7 @@
 #define _STLP_SLIST_BASE_C
 
 #ifndef _STLP_INTERNAL_SLIST_BASE_H
-# include <stl/_slist_base.h>
+#  include <stl/_slist_base.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

@@ -28,6 +28,10 @@
 #  include <stl/_ostreambuf_iterator.h>
 #endif
 
+#if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT) && !defined (_STLP_INTERNAL_EXCEPTION)
+#  include <stl/_exception.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -35,9 +39,12 @@ template <class _CharT, class _Traits>
 class _Osentry;
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _CharT, class _Traits>
-bool
-_M_init(basic_ostream<_CharT, _Traits>& __str);
+bool __init_bostr(basic_ostream<_CharT, _Traits>& __str);
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 //----------------------------------------------------------------------
 // class basic_ostream<>
@@ -164,13 +171,13 @@ public:                         // Buffer positioning and manipulation.
       bool _M_ok;
     public:
       explicit sentry(basic_ostream<_CharT, _Traits>& __str)
-        : _M_str(__str), /* _M_buf(__str.rdbuf()), */ _M_ok(_M_init(__str))
+        : _M_str(__str), /* _M_buf(__str.rdbuf()), */ _M_ok(_STLP_PRIV __init_bostr(__str))
       {}
 
       ~sentry() {
         if (_M_str.flags() & ios_base::unitbuf)
-#ifndef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-          if (!_STLP_VENDOR_EXCEPT_STD::uncaught_exception())
+#if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
+          if (!uncaught_exception())
 #endif
             _M_str.flush();
       }
@@ -197,9 +204,11 @@ _STLP_EXPORT_TEMPLATE_CLASS _Osentry<wchar_t, char_traits<wchar_t> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // Helper functions for istream<>::sentry constructor.
 template <class _CharT, class _Traits>
-bool _M_init(basic_ostream<_CharT, _Traits>& __str) {
+bool __init_bostr(basic_ostream<_CharT, _Traits>& __str) {
   if (__str.good()) {
     // boris : check if this is needed !
     if (!__str.rdbuf())
@@ -214,14 +223,15 @@ bool _M_init(basic_ostream<_CharT, _Traits>& __str) {
 
 template <class _CharT, class _Traits>
 inline basic_streambuf<_CharT, _Traits>* _STLP_CALL
-_M_get_ostreambuf(basic_ostream<_CharT, _Traits>& __St)
+__get_ostreambuf(basic_ostream<_CharT, _Traits>& __St)
 { return __St.rdbuf(); }
 
-// Non-member functions.
+_STLP_MOVE_TO_STD_NAMESPACE
 
+// Non-member functions.
 template <class _CharT, class _Traits>
 inline basic_ostream<_CharT, _Traits>& _STLP_CALL
-operator<<(basic_ostream<_CharT, _Traits>& __os, _CharT __c) {
+operator<<(basic_ostream<_CharT, _Traits>& __os, _CharT __c){
   __os._M_put_char(__c);
   return __os;
 }
@@ -358,8 +368,6 @@ flush(basic_ostream<_CharT, _Traits>& __os) {
 }
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_MANIP_INLINE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_ostream.c>

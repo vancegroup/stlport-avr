@@ -24,7 +24,7 @@ _STLP_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // messages<char>
 
-messages<char>::messages(_Messages* imp) :
+messages<char>::messages(_STLP_PRIV _Messages* imp) :
   _M_impl(imp) { if (imp) imp->_M_delete = true; }
 
 messages<char>::~messages()
@@ -42,6 +42,8 @@ messages<char>::do_get(catalog cat, int set, int p_id,
 void messages<char>::do_close(catalog cat) const
 { _M_impl->do_close(cat); }
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 _Messages::_Messages()
 {}
 
@@ -57,9 +59,11 @@ string _Messages::do_get(catalog, int, int, const string& dfault) const
 void _Messages::do_close(catalog) const
 {}
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 #if !defined (_STLP_NO_WCHAR_T)
 
-messages<wchar_t>::messages(_Messages* imp) :
+messages<wchar_t>::messages(_STLP_PRIV _Messages* imp) :
   _M_impl(imp) { if (imp) imp->_M_delete = true; }
 
 messages<wchar_t>::~messages()
@@ -77,9 +81,13 @@ messages<wchar_t>::do_get(catalog thecat,
 void messages<wchar_t>::do_close(catalog cat) const
 { _M_impl->do_close(cat); }
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 wstring
 _Messages::do_get(catalog, int, int, const wstring& dfault) const
 { return dfault; }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #endif
 

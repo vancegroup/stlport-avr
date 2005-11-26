@@ -30,7 +30,7 @@
 #  include <stl/_streambuf.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM
 #  include <stl/_istream.h>
 #endif
 

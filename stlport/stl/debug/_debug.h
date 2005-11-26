@@ -22,19 +22,22 @@
 
 #if defined (_STLP_ASSERTIONS) || defined (_STLP_DEBUG)
 
-#ifndef _STLP_TYPE_TRAITS_H
-#  include <stl/type_traits.h>
-#endif
+#  ifndef _STLP_TYPE_TRAITS_H
+#    include <stl/type_traits.h>
+#  endif
 
+#  if !defined (_STLP_EXTRA_OPERATORS_FOR_DEBUG) && \
+      (defined (_STLP_BASE_MATCH_BUG) || (defined (_STLP_MSVC) && _STLP_MSVC < 1100))
+#    define _STLP_EXTRA_OPERATORS_FOR_DEBUG
+#  endif
 
-#if !defined (_STLP_EXTRA_OPERATORS_FOR_DEBUG) && \
-   ( defined (_STLP_BASE_MATCH_BUG) || (defined (_STLP_MSVC) && _STLP_MSVC < 1100 ) )
-#  define _STLP_EXTRA_OPERATORS_FOR_DEBUG
-#endif
+#  if !defined (_STLP_FILE__)
+#    define _STLP_FILE__ __FILE__
+#  endif
 
-#if !defined(_STLP_FILE__)
-#  define _STLP_FILE__ __FILE__
-#endif
+_STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 enum {
   _StlFormat_ERROR_RETURN,
@@ -66,14 +69,14 @@ enum {
   _StlMsg_DBA_OVERRUN          ,
   // auto_ptr messages
   _StlMsg_AUTO_PTR_NULL    ,
+  //Memory alignent message
+  _StlMsg_WRONG_MEMORY_ALIGNMENT,
   _StlMsg_UNKNOWN
   /* _StlMsg_MAX */
 };
 
 /* have to hardcode that ;() */
-# define _StlMsg_MAX 28
-
-_STLP_BEGIN_NAMESPACE
+#  define _StlMsg_MAX 29
 
 // This class is unique (not inherited from exception),
 // to disallow catch in anything but (...)
@@ -107,8 +110,7 @@ struct __stl_debug_engine {
   // Use _STLP_DEBUG_TERMINATE to override
   static void _STLP_CALL  _Terminate();
 
-# ifdef _STLP_DEBUG
-
+#  if defined (_STLP_DEBUG)
   // owned_list/link delegate non-inline functions here
 
   static bool _STLP_CALL  _Check_same_owner( const __owned_link& __i1,
@@ -135,72 +137,75 @@ struct __stl_debug_engine {
 
   // accessor : check and get pointer to the container
   static void* _STLP_CALL  _Get_container_ptr(const __owned_link*);
-# endif /* _STLP_DEBUG */
+#  endif
 
   // debug messages and formats
   static _STLP_STATIC_MEMBER_DECLSPEC const char* _Message_table[_StlMsg_MAX];
 };
 
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#  if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE struct _STLP_CLASS_DECLSPEC __stl_debug_engine<bool>;
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
+#  endif /* _STLP_USE_TEMPLATE_EXPORT */
 
 typedef __stl_debug_engine<bool> __stl_debugger;
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 _STLP_END_NAMESPACE
 
-#  ifndef _STLP_ASSERT
-#   define _STLP_ASSERT(expr) \
-     if (!(expr)) {STLPORT::__stl_debugger::_Assert( # expr, _STLP_FILE__, __LINE__);}
+#  if !defined (_STLP_ASSERT)
+#    define _STLP_ASSERT(expr) \
+       if (!(expr)) { _STLP_PRIV __stl_debugger::_Assert( # expr, _STLP_FILE__, __LINE__); }
 #  endif
 
-# endif /* _STLP_ASSERTIONS || _STLP_DEBUG */
-
+#endif /* _STLP_ASSERTIONS || _STLP_DEBUG */
 
 // this section is for _STLP_DEBUG only
-#if defined ( _STLP_DEBUG )
+#if defined (_STLP_DEBUG)
 
-# ifndef _STLP_VERBOSE_ASSERT
+#  if !defined (_STLP_VERBOSE_ASSERT)
 // fbp : new form not requiring ";"
-#  define _STLP_VERBOSE_ASSERT(expr,__diag_num) \
-    if (!(expr)) { STLPORT::__stl_debugger::_VerboseAssert\
-                               ( # expr,  __diag_num, _STLP_FILE__, __LINE__ ); \
-         }
-# endif
+#    define _STLP_VERBOSE_ASSERT(expr, __diag_num) \
+       if (!(expr)) { _STLP_PRIV __stl_debugger::_VerboseAssert\
+                               ( # expr,  _STLP_PRIV __diag_num, _STLP_FILE__, __LINE__ ); \
+          }
+#  endif
 
 #  define _STLP_DEBUG_CHECK(expr) _STLP_ASSERT(expr)
 #  define _STLP_DEBUG_DO(expr)    expr;
 
 #  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
-#   define _STLP_STD_DEBUG_CHECK(expr) _STLP_DEBUG_CHECK(expr)
-#   define _STLP_STD_DEBUG_DO(expr) _STLP_DEBUG_DO(expr)
+#    define _STLP_STD_DEBUG_CHECK(expr) _STLP_DEBUG_CHECK(expr)
+#    define _STLP_STD_DEBUG_DO(expr) _STLP_DEBUG_DO(expr)
 #  else
-#   define _STLP_STD_DEBUG_CHECK(expr)
-#   define _STLP_STD_DEBUG_DO(expr)
+#    define _STLP_STD_DEBUG_CHECK(expr)
+#    define _STLP_STD_DEBUG_DO(expr)
 #  endif
 
-# ifndef _STLP_VERBOSE_RETURN
-#  define _STLP_VERBOSE_RETURN(__expr,__diag_num) if (!(__expr)) { \
-       __stl_debugger::_IndexedError(__diag_num, _STLP_FILE__ , __LINE__); \
-       return false; }
-# endif
+#  if !defined (_STLP_VERBOSE_RETURN)
+#    define _STLP_VERBOSE_RETURN(__expr,__diag_num) if (!(__expr)) { \
+         _STLP_PRIV __stl_debugger::_IndexedError(__diag_num, _STLP_FILE__ , __LINE__); \
+         return false; }
+#  endif
 
-# ifndef _STLP_VERBOSE_RETURN_0
-#  define _STLP_VERBOSE_RETURN_0(__expr,__diag_num) if (!(__expr)) { \
-       __stl_debugger::_IndexedError(__diag_num, _STLP_FILE__, __LINE__); \
-       return 0; }
-# endif
+#  if !defined (_STLP_VERBOSE_RETURN_0)
+#    define _STLP_VERBOSE_RETURN_0(__expr,__diag_num) if (!(__expr)) { \
+         _STLP_PRIV __stl_debugger::_IndexedError(__diag_num, _STLP_FILE__, __LINE__); \
+         return 0; }
+#  endif
 
-#if ! defined (_STLP_INTERNAL_THREADS_H)
-# include <stl/_threads.h>
-#endif
+#  ifndef _STLP_INTERNAL_THREADS_H
+#    include <stl/_threads.h>
+#  endif
 
-#ifndef _STLP_INTERNAL_ITERATOR_BASE_H
-# include <stl/_iterator_base.h>
-#endif
+#  ifndef _STLP_INTERNAL_ITERATOR_BASE_H
+#    include <stl/_iterator_base.h>
+#  endif
 
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 /*
  * Special debug iterator traits having an additionnal static member
@@ -219,9 +224,8 @@ struct _DbgTraits : _Traits {
 //=============================================================
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2,
-                                      const random_access_iterator_tag&) {
-  return (__i1 < __i2) || (__i1 == __i2);
-}
+                                      const random_access_iterator_tag&)
+{ return (__i1 < __i2) || (__i1 == __i2); }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __i2,
@@ -241,45 +245,37 @@ inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&,
-                                      const input_iterator_tag&) {
-  return true;
-}
+                                      const input_iterator_tag&)
+{ return true; }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __valid_range(const _Iterator&,const _Iterator&,
-                                      const output_iterator_tag&) {
-  return true;
-}
+                                      const output_iterator_tag&)
+{ return true; }
 
 template <class _Iterator>
-inline bool _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i2) {
-  return __valid_range(__i1,__i2,_STLP_ITERATOR_CATEGORY(__i1, _Iterator));
-}
+inline bool _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i2)
+{ return __valid_range(__i1,__i2,_STLP_ITERATOR_CATEGORY(__i1, _Iterator)); }
 
 // Note : that means in range [i1, i2].
 template <class _Iterator>
 inline bool  _STLP_CALL __in_range(const _Iterator& _It,
-                                   const _Iterator& __i1, const _Iterator& __i2) {
-  return __valid_range(__i1,_It) && __valid_range(_It,__i2);
-}
+                                   const _Iterator& __i1, const _Iterator& __i2)
+{ return __valid_range(__i1,_It) && __valid_range(_It,__i2); }
 
 template <class _Iterator>
 inline bool  _STLP_CALL __in_range(const _Iterator& __first, const _Iterator& __last,
-                                   const _Iterator& __start, const _Iterator& __finish) {
-  return __valid_range(__first,__last) && __valid_range(__start,__first) && __valid_range(__last,__finish);
-}
+                                   const _Iterator& __start, const _Iterator& __finish)
+{ return __valid_range(__first,__last) && __valid_range(__start,__first) && __valid_range(__last,__finish); }
 
 //==========================================================
 class _STLP_CLASS_DECLSPEC __owned_link {
 public:
-
   __owned_link() : _M_owner(0) {}
-  __owned_link(const __owned_list* __c) : _M_owner(0), _M_next(0) {
-    __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__c), this);
-  }
-  __owned_link(const __owned_link& __rhs): _M_owner(0) {
-    __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__rhs._M_owner), this);
-  }
+  __owned_link(const __owned_list* __c) : _M_owner(0), _M_next(0)
+  { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__c), this); }
+  __owned_link(const __owned_link& __rhs): _M_owner(0)
+  { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__rhs._M_owner), this); }
   __owned_link& operator=(const __owned_link& __rhs) {
     __owned_list* __new_owner = __CONST_CAST(__owned_list*,__rhs._M_owner);
     __owned_list* __old_owner = _M_owner;
@@ -294,19 +290,10 @@ public:
     _Invalidate();
   }
 
-  const __owned_list* _Owner() const {
-    return _M_owner;
-  }
-  __owned_list* _Owner() {
-    return _M_owner;
-  }
-  void _Set_owner(const __owned_list* __o) {
-    _M_owner= __CONST_CAST(__owned_list*,__o);
-  }
-  bool  _Valid() const {
-    return _M_owner != 0;
-  }
-
+  const __owned_list* _Owner() const { return _M_owner; }
+  __owned_list* _Owner() { return _M_owner; }
+  void _Set_owner(const __owned_list* __o) { _M_owner= __CONST_CAST(__owned_list*,__o); }
+  bool _Valid() const { return _M_owner != 0; }
   void _Invalidate() { _M_owner = 0; _M_next = 0; }
   void _Link_to_self() { _M_next = 0; }
 
@@ -332,15 +319,9 @@ public:
     // that prevents detach
     _M_node._Invalidate();
   }
-  const void* _Owner() const {
-    return (const void*)_M_node._M_owner;
-  }
-  void* _Owner() {
-    return (void*)_M_node._M_owner;
-  }
-  bool  _Valid() const {
-    return _M_node._M_owner != 0;
-  }
+  const void* _Owner() const { return (const void*)_M_node._M_owner; }
+  void* _Owner() { return (void*)_M_node._M_owner; }
+  bool  _Valid() const { return _M_node._M_owner != 0; }
   void _Invalidate() { _M_node._M_owner = 0; }
 
   __owned_link* _First() { return _M_node._Next(); }
@@ -349,21 +330,10 @@ public:
   const __owned_link* _First() const { return (__owned_link*)_M_node._M_next; }
   const __owned_link* _Last() const { return 0 ;}
 
-  void _Verify() const {
-    __stl_debugger::_Verify(this);
-  }
-
-  void _Swap_owners(__owned_list& __y) {
-    __stl_debugger::_Swap_owners(*this, __y);
-  }
-
-  void _Invalidate_all() {
-    __stl_debugger::_Invalidate_all(this);
-  }
-
-  void _Set_owner(__owned_list& __y) {
-    __stl_debugger::_Set_owner(*this, __y);
-  }
+  void _Verify() const { __stl_debugger::_Verify(this); }
+  void _Swap_owners(__owned_list& __y) { __stl_debugger::_Swap_owners(*this, __y); }
+  void _Invalidate_all() { __stl_debugger::_Invalidate_all(this); }
+  void _Set_owner(__owned_list& __y) { __stl_debugger::_Set_owner(*this, __y); }
 
   mutable __owned_link _M_node;
   mutable _STLP_mutex  _M_lock;
@@ -413,67 +383,63 @@ template <class _Iterator>
 void  _STLP_CALL __change_ite_owner(const _Iterator& __it,
                                     const __owned_list* __dst);
 
-
 //============================================================
 inline bool _STLP_CALL
-__check_same_owner(const __owned_link& __i1, const __owned_link& __i2) {
-  return __stl_debugger::_Check_same_owner(__i1,__i2);
-}
+__check_same_owner(const __owned_link& __i1, const __owned_link& __i2)
+{ return __stl_debugger::_Check_same_owner(__i1,__i2); }
+
 inline bool _STLP_CALL
-__check_same_or_null_owner(const __owned_link& __i1, const __owned_link& __i2) {
-  return __stl_debugger::_Check_same_or_null_owner(__i1,__i2);
-}
+__check_same_or_null_owner(const __owned_link& __i1, const __owned_link& __i2)
+{ return __stl_debugger::_Check_same_or_null_owner(__i1,__i2); }
 
 template <class _Iterator>
 inline bool _STLP_CALL  __check_if_owner( const __owned_list* __owner,
-                                          const _Iterator& __it) {
-  return __stl_debugger::_Check_if_owner(__owner, (const __owned_link&)__it);
-}
+                                          const _Iterator& __it)
+{ return __stl_debugger::_Check_if_owner(__owner, (const __owned_link&)__it); }
 
 template <class _Iterator>
 inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
                                              const _Iterator& __it,
-                                             const __false_type&) {
-  return true;
-}
+                                             const __false_type&)
+{ return true; }
 
 template <class _Iterator>
 inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
                                              const _Iterator& __it,
-                                             const __true_type&) {
-  return __stl_debugger::_Check_if_not_owner(__owner, (const __owned_link&)__it);
-}
+                                             const __true_type&)
+{ return __stl_debugger::_Check_if_not_owner(__owner, (const __owned_link&)__it); }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
-# endif /* _STLP_DEBUG */
+#endif /* _STLP_DEBUG */
 
-#if defined ( _STLP_ASSERTIONS )
+#if defined (_STLP_ASSERTIONS)
 
-# ifndef _STLP_ASSERT_MSG_TRAILER
-#  define _STLP_ASSERT_MSG_TRAILER
-# endif
+#  if !defined (_STLP_ASSERT_MSG_TRAILER)
+#    define _STLP_ASSERT_MSG_TRAILER
+#  endif
 
 // dwa 12/30/98 - if _STLP_DEBUG_MESSAGE is defined, the user can supply own definition.
-# if !defined( _STLP_DEBUG_MESSAGE )
-#   define __stl_debug_message __stl_debugger::_Message
-# else
-    extern  void __stl_debug_message(const char * format_str, ...);
-# endif
+#  if !defined (_STLP_DEBUG_MESSAGE)
+#    define __stl_debug_message __stl_debugger::_Message
+#  else
+extern  void __stl_debug_message(const char * format_str, ...);
+#  endif
 
 // fbp: if _STLP_DEBUG_TERMINATE is defined, the user can supply own definition.
-# if !defined( _STLP_DEBUG_TERMINATE )
-#   define __stl_debug_terminate __stl_debugger::_Terminate
-# else
-    extern  void __stl_debug_terminate();
-# endif
+#  if !defined (_STLP_DEBUG_TERMINATE)
+#    define __stl_debug_terminate __stl_debugger::_Terminate
+#  else
+extern  void __stl_debug_terminate();
+#  endif
 
 #endif
 
-# if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/debug/_debug.c>
-# endif
+#endif
 
 #endif /* DEBUG_H */
 

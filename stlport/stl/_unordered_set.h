@@ -24,9 +24,6 @@
 #  include <stl/_hashtable.h>
 #endif
 
-#define unordered_set      __WORKAROUND_RENAME(unordered_set)
-#define unordered_multiset __WORKAROUND_RENAME(unordered_multiset)
-
 _STLP_BEGIN_NAMESPACE
 
 //Specific iterator traits creation
@@ -42,10 +39,10 @@ class unordered_set
 {
   typedef unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_UnorderedSetTraitsT<_Value> _UnorderedSetTraits;
+  typedef _STLP_PRIV _UnorderedSetTraitsT<_Value> _UnorderedSetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedSetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedSetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;
@@ -189,10 +186,10 @@ class unordered_multiset
 {
   typedef unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Self;
   //Specific iterator traits creation
-  typedef _STLP_PRIV::_UnorderedMultisetTraitsT<_Value> _UnorderedMultisetTraits;
+  typedef _STLP_PRIV _UnorderedMultisetTraitsT<_Value> _UnorderedMultisetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedMultisetTraits, _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedMultisetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;
@@ -341,12 +338,12 @@ public:
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 struct __move_traits<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > :
-  __move_traits_aux<typename unordered_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_aux<typename unordered_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
 {};
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 struct __move_traits<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
-  __move_traits_aux<typename unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+  _STLP_PRIV __move_traits_aux<typename unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
 {};
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
@@ -404,18 +401,6 @@ public:
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
-
-// do a cleanup
-#  undef unordered_set
-#  undef unordered_multiset
-
-// provide a uniform way to access full funclionality
-#  define __unordered_set__       __FULL_NAME(unordered_set)
-#  define __unordered_multiset__  __FULL_NAME(unordered_multiset)
-
-# if defined ( _STLP_USE_WRAPPER_FOR_ALLOC_PARAM )
-#  include <stl/wrappers/_unordered_set.h>
-# endif /*  WRAPPER */
 
 #endif /* _STLP_INTERNAL_UNORDERED_SET_H */
 

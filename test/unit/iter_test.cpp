@@ -42,18 +42,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(IterTest);
 void IterTest::iter1()
 {
   vector<const char*> v; // Vector of character strings.
-  v.push_back((char*) "zippy"); // First element.
-  v.push_back((char*) "motorboy"); // Second element.
+  v.push_back("zippy"); // First element.
+  v.push_back("motorboy"); // Second element.
   typedef vector<const char*> vec;
-  vec::iterator i = v.begin(); // Position at end.
-  unsigned counter=0;
-  for(i = v.begin(); i != v.end(); i++, counter++) {
-    switch( counter ) {
+  unsigned counter = 0;
+  for (vec::iterator i = v.begin(); i != v.end(); ++i, ++counter) {
+    switch (counter) {
       case 0:
-        CPPUNIT_ASSERT(!strcmp(*i,"zippy"));
+        CPPUNIT_ASSERT(!strcmp(*i, "zippy"));
       break;
       case 1:
-        CPPUNIT_ASSERT(!strcmp(*i,"motorboy"));
+        CPPUNIT_ASSERT(!strcmp(*i, "motorboy"));
       break;
       default:
         CPPUNIT_ASSERT(false);
@@ -65,17 +64,17 @@ void IterTest::iter3()
 {
   typedef vector<const char*> Vec;
   Vec v; // Vector of character strings.
-  v.push_back((char*) "zippy"); // First element.
-  v.push_back((char*) "motorboy"); // Second element.
+  v.push_back("zippy"); // First element.
+  v.push_back("motorboy"); // Second element.
   Vec::reverse_iterator it;
-  unsigned counter=0;
-  for(it = v.rbegin(); it != v.rend(); it++, counter++) {
-    switch( counter ) {
+  unsigned counter = 0;
+  for (it = v.rbegin(); it != v.rend(); ++it, ++counter) {
+    switch (counter) {
       case 1:
-        CPPUNIT_ASSERT(!strcmp(*it,"zippy"));
+        CPPUNIT_ASSERT(!strcmp(*it, "zippy"));
       break;
       case 0:
-        CPPUNIT_ASSERT(!strcmp(*it,"motorboy"));
+        CPPUNIT_ASSERT(!strcmp(*it, "motorboy"));
       break;
       default:
         CPPUNIT_ASSERT(false);

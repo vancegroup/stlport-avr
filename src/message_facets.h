@@ -19,18 +19,15 @@
 #define MESSAGE_FACETS_H
 
 #include <string>
-#include <stl/_messages_facets.h>
-#include <stl/_ctype.h>
-// #include <istream>
+#include <locale>
 #include <typeinfo>
 #include <hash_map>
-// #include <map>
+
 #include "c_locale.h"
 
 _STLP_BEGIN_NAMESPACE
 
-// Forward declaration of an opaque type.
-struct _Catalog_locale_map;
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 _Locale_messages* __acquire_messages(const char* name);
 void __release_messages(_Locale_messages* cat);
@@ -68,9 +65,14 @@ private:                        // Invalidate copy constructor and assignment
 
 #if defined (_STLP_REAL_LOCALE_IMPLEMENTED) && (defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__))
 #  define _STLP_USE_NL_CATD_MAPPING
+#else
+/* If no mapping a message_base::catalog entry, int typedef according C++ Standard 22.2.7.1,
+ * has to be large enough to contain a nl_catd_type value.
+ */
+_STLP_STATIC_ASSERT(sizeof(nl_catd_type) <= sizeof(int));
 #endif
 
-class _Catalog_nl_catd_map {
+class _STLP_CLASS_DECLSPEC _Catalog_nl_catd_map {
 public:
   _Catalog_nl_catd_map()
   {}
@@ -112,11 +114,11 @@ private:
 #if defined (_STLP_USE_NL_CATD_MAPPING)
   mutable map_type M;
   mutable rmap_type Mr;
-  static int _count;
+  static _STLP_VOLATILE __stl_atomic_t _count;
 #endif
 };
 
-class _Messages {
+class _STLP_CLASS_DECLSPEC _Messages {
 public:
   typedef messages_base::catalog catalog;
 
@@ -125,29 +127,27 @@ public:
   virtual catalog do_open(const string& __fn, const locale& __loc) const;
   virtual string do_get(catalog __c, int __set, int __msgid,
                         const string& __dfault) const;
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
   virtual wstring do_get(catalog __c, int __set, int __msgid,
                          const wstring& __dfault) const;
-# endif
+#endif
   virtual void do_close(catalog __c) const;
   virtual ~_Messages();
   bool _M_delete;
 };
 
-class _Messages_impl : public _Messages {
+class _STLP_CLASS_DECLSPEC _Messages_impl : public _Messages {
 public:
-
   _Messages_impl(bool);
-
   _Messages_impl(bool, _Locale_messages*);
 
   catalog do_open(const string& __fn, const locale& __loc) const;
   string do_get(catalog __c, int __set, int __msgid,
                 const string& __dfault) const;
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
   wstring do_get(catalog __c, int __set, int __msgid,
                  const wstring& __dfault) const;
-# endif
+#endif
   void do_close(catalog __c) const;
 
   ~_Messages_impl();
@@ -157,6 +157,8 @@ private:
   _Catalog_locale_map* _M_map;
   mutable _Catalog_nl_catd_map _M_cat;
 };
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

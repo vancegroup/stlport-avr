@@ -4,6 +4,7 @@
 # include <stdexcept>
 #endif
 
+#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -19,12 +20,14 @@ class DequeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(deque1);
   CPPUNIT_TEST(at);
   CPPUNIT_TEST(auto_ref);
+  CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void deque1();
   void at();
   void auto_ref();
+  void allocator_with_state();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DequeTest);
@@ -55,11 +58,10 @@ void DequeTest::deque1()
   //Some compile time tests:
   deque<int>::iterator dit(d.begin());
   deque<int>::const_iterator cdit(d.begin());
-  size_t nb;
-  nb = dit - cdit;
-  nb = cdit - dit;
-  nb = dit - dit;
-  nb = cdit - cdit;
+  CPPUNIT_ASSERT( (dit - cdit) == 0 );
+  CPPUNIT_ASSERT( (cdit - dit) == 0 );
+  CPPUNIT_ASSERT( (dit - dit) == 0 );
+  CPPUNIT_ASSERT( (cdit - cdit) == 0 );
   CPPUNIT_ASSERT(!((dit < cdit) || (dit > cdit) || (dit != cdit) || !(dit <= cdit) || !(dit >= cdit)));
 }
 
@@ -108,4 +110,31 @@ void DequeTest::auto_ref()
   for (i = 0; i < 5; ++i) {
     CPPUNIT_ASSERT( d_d_int[i] == ref );
   }
+}
+
+void DequeTest::allocator_with_state()
+{
+  char buf1[1024];
+  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[1024];
+  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+
+  {
+    typedef deque<int, StackAllocator<int> > DequeInt;
+    DequeInt dint1(10, 0, stack1);
+    DequeInt dint1Cpy(dint1);
+
+    DequeInt dint2(10, 1, stack2);
+    DequeInt dint2Cpy(dint2);
+
+    dint1.swap(dint2);
+
+    CPPUNIT_ASSERT( dint1 == dint2Cpy );
+    CPPUNIT_ASSERT( dint2 == dint1Cpy );
+    CPPUNIT_ASSERT( dint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( dint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.OK() );
+  CPPUNIT_ASSERT( stack2.OK() );
 }

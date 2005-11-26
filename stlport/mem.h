@@ -13,39 +13,42 @@
  *
  */
 
-// Boris : highly questionable header for BC++
+/* Boris : highly questionable header for BC++ */
 
 #ifndef _STLP_mem_h
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x245
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x245) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x245) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# if (__BORLANDC__ > 0x530) && !defined(__linux__)
-#  include <rw/stddefs.h>
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID != 0x245) || defined (_STLP_DONT_POP_HEADER_ID)
+#  include _STLP_NATIVE_C_HEADER(mem.h)
+#else
+#  if (__BORLANDC__ > 0x530) && !defined (__linux__) && !defined (__cplusplus)
+#    include <rw/stddefs.h>
+#  endif
 
-#   undef __USING_CNAME__
+#  undef __USING_CNAME__
 
-#   include _STLP_NATIVE_C_HEADER(mem.h)
+#  include _STLP_NATIVE_C_HEADER(mem.h)
 
-# define _STLP_mem_h 1
+#  define _STLP_mem_h 1
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x245)
-#  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
-#   endif
-#   undef  _STLP_DONT_POP_HEADER_ID
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x245)
+#  if !defined (_STLP_DONT_POP_HEADER_ID)
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
+#  endif
+#  undef  _STLP_DONT_POP_HEADER_ID
+#endif
 
 #endif /* _STLP_mem_h */
 
-// #endif /* NATIVE */
-// Local Variables:
-// mode:C++
-// End:
-
+/* Local Variables:
+ * mode:C++
+ * End:
+ */

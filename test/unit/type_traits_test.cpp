@@ -43,12 +43,10 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
 
-int type_to_value(__true_type const&) {
-  return 1;
-}
-int type_to_value(__false_type const&) {
-  return 0;
-}
+int type_to_value(__true_type const&)
+{ return 1; }
+int type_to_value(__false_type const&)
+{ return 0; }
 
 int* int_pointer;
 int const* int_const_pointer;
@@ -393,7 +391,7 @@ void TypeTraitsTest::ok_to_use_memcpy()
 }
 
 template <typename _Tp>
-int has_trivial_destructor(_Tp val) {
+int has_trivial_destructor(_Tp) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _TrivialDestructor;
   return type_to_value(_TrivialDestructor());
 }

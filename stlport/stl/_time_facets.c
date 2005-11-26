@@ -19,22 +19,22 @@
 #define _STLP_TIME_FACETS_C
 
 #ifndef _STLP_INTERNAL_TIME_FACETS_H
-# include <stl/_time_facets.h>
+#  include <stl/_time_facets.h>
 #endif
 
 #ifndef _STLP_INTERNAL_NUM_PUT_H
-# include <stl/_num_put.h>
+#  include <stl/_num_put.h>
 #endif
 
 #ifndef _STLP_INTERNAL_NUM_GET_H
-# include <stl/_num_get.h>
+#  include <stl/_num_get.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // Declarations of static template members.
-#if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
+#if (_STLP_STATIC_TEMPLATE_DATA > 0)
 
 template <class _CharT, class _InputIterator>
 locale::id time_get<_CharT, _InputIterator>::id;
@@ -87,7 +87,7 @@ __DECLARE_INSTANCE(locale::id, time_put_char::id, );
 __DECLARE_INSTANCE(locale::id, time_put_char_2::id, );
 __DECLARE_INSTANCE(locale::id, time_put_char_3::id, );
 
-#  ifndef _STLP_NO_WCHAR_T
+#  if !defined (_STLP_NO_WCHAR_T)
 
 typedef time_get<wchar_t, const wchar_t*> time_get_wchar_t;
 typedef time_get<wchar_t, wchar_t*> time_get_wchar_t_2;
@@ -107,10 +107,12 @@ __DECLARE_INSTANCE(locale::id, time_put_wchar_t_3::id, );
 
 #endif /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
-template <class _InIt, class _CType>
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _InIt, class _CharT>
 const string* _STLP_CALL
 __match(_InIt& __first, _InIt& __last, const string *__name, const string *__name_end,
-        const _CType& __ct) {
+        const ctype<_CharT>& __ct) {
   typedef ptrdiff_t difference_type;
   difference_type __n = __name_end - __name;
   difference_type __i;
@@ -321,9 +323,9 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
   return __format;
 }
 
-template <class _InIt, class _CType>
+template <class _InIt, class _CharT>
 bool _STLP_CALL
-__get_short_or_long_dayname(_InIt& __first, _InIt& __last, const _CType& __ct,
+__get_short_or_long_dayname(_InIt& __first, _InIt& __last, const ctype<_CharT>& __ct,
                             const _Time_Info& __table, tm* __t) {
   const string* __pr =
     __match(__first, __last, __table._M_dayname + 0, __table._M_dayname + 14, __ct);
@@ -331,9 +333,9 @@ __get_short_or_long_dayname(_InIt& __first, _InIt& __last, const _CType& __ct,
   return __pr != __table._M_dayname + 14;
 }
 
-template <class _InIt, class _CType>
+template <class _InIt, class _CharT>
 bool _STLP_CALL
-__get_short_or_long_monthname(_InIt& __first, _InIt& __last, const _CType& __ct,
+__get_short_or_long_monthname(_InIt& __first, _InIt& __last, const ctype<_CharT>& __ct,
                               const _Time_Info& __table, tm* __t) {
   const string* __pr =
     __match(__first, __last, __table._M_monthname + 0, __table._M_monthname + 24, __ct);
@@ -355,6 +357,8 @@ __put_time(char * __first, char * __last, _OuIt __out_ite,
 }
 #endif
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _Ch, class _InIt>
 _InIt
 time_get<_Ch, _InIt>::do_get_date(_InIt __s, _InIt  __end,
@@ -366,9 +370,9 @@ time_get<_Ch, _InIt>::do_get_date(_InIt __s, _InIt  __end,
   string_iterator __format_end = _M_timeinfo._M_date_format.end();
 
   string_iterator __result
-    = __get_formatted_time(__s, __end, __format, __format_end,
-                           __STATIC_CAST(_Ch*, 0), _M_timeinfo,
-                           __str, __err, __t);
+    = _STLP_PRIV __get_formatted_time(__s, __end, __format, __format_end,
+                                      __STATIC_CAST(_Ch*, 0), _M_timeinfo,
+                                      __str, __err, __t);
   if (__result == __format_end)
     __err = ios_base::goodbit;
   else {
@@ -389,9 +393,9 @@ time_get<_Ch, _InIt>::do_get_time(_InIt __s, _InIt  __end,
   string_iterator __format_end = _M_timeinfo._M_time_format.end();
 
   string_iterator __result
-    = __get_formatted_time(__s, __end, __format, __format_end,
-                           __STATIC_CAST(_Ch*, 0), _M_timeinfo,
-                           __str, __err, __t);
+    = _STLP_PRIV __get_formatted_time(__s, __end, __format, __format_end,
+                                      __STATIC_CAST(_Ch*, 0), _M_timeinfo,
+                                      __str, __err, __t);
   __err = __result == __format_end ? ios_base::goodbit
                                    : ios_base::failbit;
   if (__s == __end)
@@ -409,7 +413,7 @@ time_get<_Ch, _InIt>::do_get_year(_InIt __s, _InIt  __end,
     return __s;
   }
 
-  bool __pr =  __get_decimal_integer(__s, __end, __t->tm_year, __STATIC_CAST(_Ch*, 0));
+  bool __pr =  _STLP_PRIV __get_decimal_integer(__s, __end, __t->tm_year, __STATIC_CAST(_Ch*, 0));
   __t->tm_year -= 1900;
   __err = __pr ? ios_base::goodbit : ios_base::failbit;
   if (__s == __end)
@@ -425,7 +429,7 @@ time_get<_Ch, _InIt>::do_get_weekday(_InIt __s, _InIt  __end,
                                      tm *__t) const {
   const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    __get_short_or_long_dayname(__s, __end, __ct, _M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_dayname(__s, __end, __ct, _M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -443,7 +447,7 @@ time_get<_Ch, _InIt>::do_get_monthname(_InIt __s, _InIt  __end,
                                        tm *__t) const {
   const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    __get_short_or_long_monthname(__s, __end, __ct, _M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_monthname(__s, __end, __ct, _M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -486,10 +490,10 @@ time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch /* __fill 
                                   const tm* __tmb, char __format,
                                   char __modifier ) const {
   char __buf[64];
-  char * __iend = __write_formatted_time(__buf, __format, __modifier,
-           _M_timeinfo, __tmb);
+  char * __iend = _STLP_PRIV __write_formatted_time(_STLP_ARRAY_AND_SIZE(__buf),
+                                                    __format, __modifier, _M_timeinfo, __tmb);
   //  locale __loc = __f.getloc();
-  return __put_time(__buf, __iend, __s, __f, _Ch());
+  return _STLP_PRIV __put_time(__buf, __iend, __s, __f, _Ch());
 }
 
 _STLP_END_NAMESPACE

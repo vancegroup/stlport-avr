@@ -27,6 +27,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _Traits>
 struct _Eq_traits
   : public binary_function<typename _Traits::char_type,
@@ -77,6 +79,8 @@ struct _Lt_traits
   { return _Traits::lt(__x, __y); }
 };
 #endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

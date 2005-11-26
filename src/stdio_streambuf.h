@@ -38,18 +38,16 @@
 #ifndef _STLP_STDIO_STREAMBUF
 #define _STLP_STDIO_STREAMBUF
 
-#if !defined(STLP_WINCE)
+#if !defined (STLP_WINCE)
 
-// #include <streambuf>            // For basic_streambuf<>
-// #include "file_streambuf.h"
-#include <stl/_streambuf.h>
-#include <cstdio>              // For FILE.
+#  include <streambuf>
+#  include <cstdio>              // For FILE.
 
-# ifndef _STLP_HAS_NO_NAMESPACES
+#  if !defined (_STLP_HAS_NO_NAMESPACES)
 // This is an extension.  It is in namespace SGI, not namespace std
 namespace _SgI {
 
-# ifdef _STLP_USE_NAMESPACES
+#    if defined (_STLP_USE_NAMESPACES)
 using namespace _STLP_STD;
   // MSVC needs this
 using _STLP_STD::streamsize;
@@ -57,13 +55,12 @@ using _STLP_STD::streambuf;
 using _STLP_STD::basic_streambuf;
 using _STLP_STD::ios_base;
   // using _STLP_STD::ios_base::openmode;
-# endif
-# endif
+#    endif
+#  endif
 
 // Base class for features common to stdio_istreambuf and stdio_ostreambuf
 class stdio_streambuf_base :
-        public basic_streambuf<char, char_traits<char> > /* FILE_basic_streambuf */
-{
+  public basic_streambuf<char, char_traits<char> > /* FILE_basic_streambuf */ {
 public:                         // Constructor, destructor.
   // The argument may not be null.  It must be an open file pointer.
   stdio_streambuf_base(FILE*);
@@ -86,11 +83,9 @@ protected:
   FILE* _M_file;
 };
 
-class stdio_istreambuf : public stdio_streambuf_base
-{
+class stdio_istreambuf : public stdio_streambuf_base {
 public:                         // Constructor, destructor.
-    stdio_istreambuf(FILE* __f) : stdio_streambuf_base(__f) {}
-
+  stdio_istreambuf(FILE* __f) : stdio_streambuf_base(__f) {}
   ~stdio_istreambuf();
 
 protected:                      // Virtual functions from basic_streambuf.
@@ -100,8 +95,7 @@ protected:                      // Virtual functions from basic_streambuf.
   virtual int_type pbackfail(int_type c = traits_type::eof());
 };
 
-class stdio_ostreambuf : public stdio_streambuf_base
-{
+class stdio_ostreambuf : public stdio_streambuf_base {
 public:                         // Constructor, destructor.
   stdio_ostreambuf(FILE* __f) : stdio_streambuf_base(__f) {}
   ~stdio_ostreambuf();
@@ -111,15 +105,14 @@ protected:                      // Virtual functions from basic_streambuf.
   int_type overflow(int_type c = traits_type::eof());
 };
 
-# ifndef _STLP_HAS_NO_NAMESPACES
+#  if !defined (_STLP_HAS_NO_NAMESPACES)
 } // Close namespace _SgI.
-# endif
-
-#endif /* _STLP_STDIO_STREAMBUF */
+#  endif
 
 #endif /* _STLP_WINCE */
+
+#endif /* _STLP_STDIO_STREAMBUF */
 
 // Local Variables:
 // mode:C++
 // End:
-

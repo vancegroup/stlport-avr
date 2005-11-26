@@ -1,26 +1,22 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+//#define _STLP_VERBOSE
 
-// versions ?
-#if defined(_STLP_DESIGNATED_DLL)
-#  define _STLP_CALL __cdecl __export
-#elif defined(_RTLDLL)
-#  define  _STLP_CALL __cdecl __import
-#else
-#  define  _STLP_CALL __cdecl
+#if (__BORLANDC__ < 0x550)
+#  error - Borland compilers below version 5.5 not supported.
 #endif
 
-#define _STLP_DONT_USE_PTR_SPECIALIZATIONS 1
-#define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
-#define _USE_STLP 1
-#define _STLP_USE_OWN_MBSTATE_T
-//#define _STLP_USE_OWN_NAMESPACE
-#define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
-//#define _STLP_OPERATOR_SPEC_NEEDS_TEMPLATE_ARGS
+#if (__BORLANDC__ < 0x560)
+#  define _STLP_QUALIFIED_SPECIALIZATION_BUG
+#  define _STLP_DONT_USE_PRIV_NAMESPACE
+#  define _STLP_NO_VENDOR_STDLIB_L
+#  define _STLP_NO_VENDOR_MATH_F
+#endif
 
-// most of <exception> contents is still in global namespace
-//#define _STLP_VENDOR_UNEXPECTED_STD
+#define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
+#define _STLP_USE_OWN_MBSTATE_T
+#define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
 
 // <limits> problem
 #define _STLP_STATIC_CONST_INIT_BUG
@@ -29,136 +25,102 @@
 #define _STLP_MEMBER_SPECIALIZATION_BUG 1
 #define _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
 
-#if ( __BORLANDC__ < 0x540 )
-// Borland C++ Builder 3 (?)
-// those are assumptions, if some of them actually work, please let me know
-// #  define _STLP_STATIC_CONST_INIT_BUG 1
-// #  define _STLP_THROW_RETURN_BUG 1
-#  define _STLP_NO_TEMPLATE_CONVERSIONS 1
-#  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
-#  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
-#  define _STLP_NO_TYPENAME_ON_RETURN_TYPE
-#else
-#  define _STLP_LONG_LONG  __int64
-#endif
-
-// BCB 2 or less (Borland 5.02)
-#if ( __BORLANDC__ < 0x530 )
-
-#  undef  _STLP_OWN_IOSTREAMS
-
-#  define _STLP_GLOBAL_VENDOR_CSTD 1
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
-#  define _STLP_HAS_NO_NEW_C_HEADERS 1
-
-#  define _STLP_NO_MEMBER_TEMPLATES 1
-#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
-#  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
-#  define _STLP_NO_FRIEND_TEMPLATES 1
-#  define _STLP_NO_QUALIFIED_FRIENDS 1
-#  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-#  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
-#  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
-
-#  define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
-
-#  define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1
-#  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
-#  define _STLP_MEMBER_SPECIALIZATION_BUG
-#  define _STLP_NO_EXCEPTION_HEADER 1
-#  define _STLP_NO_EXCEPTION_SPEC 1
-
-#  define _STLP_NO_BAD_ALLOC 1
-#  define _STLP_NO_ARROW_OPERATOR 1
-#  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
-
-typedef char    mbstate_t;
-
-#  define _STLP_NO_TYPEINFO
-#  define _STLP_NO_METHOD_SPECIALIZATION
-
-#endif
-
-// Borland 5.0x
-#if ( __BORLANDC__ < 0x520 )
-
-#  define _STLP_BROKEN_USING_DIRECTIVE 1
-#  define _STLP_EXPORT_KEYWORD _export
-#  define _STLP_IMPORT_KEYWORD _import
-#  define _STLP_EXPORT_TEMPLATE_KEYWORD _export
-#  define _STLP_IMPORT_TEMPLATE_KEYWORD _import
-#endif
-
-#if ( __BORLANDC__ < 0x501 )
-#  define  _STLP_NONTEMPL_BASE_MATCH_BUG 1
-#  define  _STLP_NO_WCHAR_T 1
-#endif
-
-// 4.x
-#if ( __BORLANDC__ < 0x500 )
-#  define _STLP_NESTED_TYPE_PARAM_BUG 1
-#  define _STLP_STATIC_ARRAY_BUG 1
-#  define _STLP_NO_BOOL 1
-#  define _STLP_HAS_NO_NAMESPACES 1
-#  define _STLP_NEED_TYPENAME 1
-#  define _STLP_NEED_EXPLICIT 1
-#  define _STLP_NEED_MUTABLE 1
-#  define _STLP_NO_WCHAR_T 1
-#endif
+#define _STLP_LONG_LONG  __int64
 
 // auto enable thread safety and exceptions:
 #ifndef _CPPUNWIND
 #  define _STLP_HAS_NO_EXCEPTIONS
 #endif
 
-#if defined ( __MT__ ) && !defined (_NOTHREADS) && !defined (_REENTRANT)
+#if defined (__MT__) && !defined (_NOTHREADS) && !defined (_REENTRANT)
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("multi threaded")
+#  endif
 #  define _REENTRANT 1
-#endif
-
-#if defined ( __DEBUG ) && ( __DEBUG > 1 )
-#  define _STLP_DEBUG
-#endif
-
-#if (__BORLANDC__ < 0x540)
-
-#  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
-#  define _STLP_IMPORT_TEMPLATE_KEYWORD  extern
-#  define _STLP_EXPORT_TEMPLATE_KEYWORD
-
-#  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
-
-#  if (defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) || \
-       defined (_STLP_USE_DYNAMIC_LIB)) && !defined (_STLP_USE_STATIC_LIB)
-#    undef  _STLP_USE_DECLSPEC
-#    define _STLP_USE_DECLSPEC
-#  endif
-
 #else
-
-#  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
-
-#  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
-
-#  if (defined (__DLL) || defined (_DLL) || defined (_WINDLL) || defined (_RTLDLL) || \
-       defined(_AFXDLL) || defined (_STLP_USE_DYNAMIC_LIB))
-#    undef  _STLP_USE_DECLSPEC
-#    define _STLP_USE_DECLSPEC 1
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("single threaded")
 #  endif
+#endif
 
-#  ifndef _STLP_IMPORT_TEMPLATE_KEYWORD
-#    define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
-#  endif
-#  define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
+#define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+#define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 
-#  if (__BORLANDC__ >= 0x560) && !defined (_STLP_OWN_IOSTREAMS)
-// #  define _STLP_IS_NATIVE_LIB
-#    if !defined (_STLP_NATIVE_INCLUDE_PATH)
-#      define _STLP_NATIVE_INCLUDE_PATH ../include/oldstl
+#define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+
+#if defined (__BUILDING_STLPORT)
+#  undef _STLP_USE_DYNAMIC_LIB
+#  undef _STLP_USE_STATIC_LIB
+#  if defined (_DLL)
+/* We are building the STLport dll */
+#    define _STLP_USE_DYNAMIC_LIB
+#    if !defined (_RTLDLL)
+#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#    endif
+#  else
+#    define _STLP_USE_STATIC_LIB
+#    if defined (_RTLDLL)
+#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 #    endif
 #  endif
-
+#else
+#  if defined (_RTLDLL)
+#    if !defined (_STLP_USE_STATIC_LIB)
+#      if !defined (_STLP_USE_DYNAMIC_LIB)
+#        define _STLP_USE_DYNAMIC_LIB
+#      endif
+#    else
+/* The user is forcing use of STLport as a dynamic library. We signal it so
+ * that the STLport namespace will be modify to report such a combination
+ * and force the user to link with the rebuilt STLport library.
+ */
+#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#    endif
+#  else
+#    if !defined(_STLP_USE_DYNAMIC_LIB)
+#      if !defined (_STLP_USE_STATIC_LIB)
+#        define _STLP_USE_STATIC_LIB
+#      endif
+#    else
+/* Idem previous remark but the user forces use of the static native runtime.
+ */
+#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#    endif
+#  endif
 #endif
+
+#if defined (_STLP_USE_DYNAMIC_LIB)
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("Using/Building STLport dll")
+#  endif
+#elif defined (_STLP_USE_STATIC_LIB)
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("Using/Building STLport lib")
+#  endif
+#else
+#  error Unknown STLport usage config (dll/lib ?)
+#endif
+
+#if defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("Using cross version of native runtime")
+#  endif
+#endif
+
+#if !defined (_STLP_IMPORT_TEMPLATE_KEYWORD)
+#  define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
+#endif
+#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
+
+#if defined (_STLP_USE_DYNAMIC_LIB)
+#  if defined (__BUILDING_STLPORT)
+#    define _STLP_CALL __cdecl __export
+#  else
+#    define  _STLP_CALL __cdecl __import
+#  endif
+#else
+#  define  _STLP_CALL __cdecl
+#endif
+
+#include <config/_auto_link.h>

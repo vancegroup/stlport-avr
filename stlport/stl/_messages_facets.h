@@ -48,11 +48,12 @@ class messages_base
 
 template <class _CharT> class messages {};
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
 class _Messages;
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base
-{
+class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base {
   friend class _Locale_impl;
 public:
   typedef messages_base::catalog catalog;
@@ -72,7 +73,7 @@ public:
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 private:
-  messages(_Messages*);
+  messages(_STLP_PRIV _Messages*);
 
 protected:
   messages(size_t, _Locale_messages*);
@@ -86,14 +87,13 @@ protected:
   void _M_initialize(const char* __name);
 
 private:
-  _Messages* _M_impl;
+  _STLP_PRIV _Messages* _M_impl;
 };
 
 #if !defined (_STLP_NO_WCHAR_T)
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base
-{
+class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base {
   friend class _Locale_impl;
 public:
   typedef messages_base::catalog catalog;
@@ -113,7 +113,7 @@ public:
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 private:
-  messages(_Messages*);
+  messages(_STLP_PRIV _Messages*);
 
 protected:
   messages(size_t, _Locale_messages*);
@@ -127,10 +127,10 @@ protected:
   void _M_initialize(const char* __name);
 
 private:
-  _Messages* _M_impl;
+  _STLP_PRIV _Messages* _M_impl;
 };
 
-# endif /* WCHAR_T */
+#endif
 
 template <class _CharT> class messages_byname {};
 

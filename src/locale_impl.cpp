@@ -17,21 +17,14 @@
  */
 #include "stlport_prefix.h"
 
-#include "locale_impl.h"
 #include <locale>
 #include <typeinfo>
 #include <algorithm>
-
 #include <stdexcept>
 
 #include "c_locale.h"
 #include "aligned_buffer.h"
-
 #include "locale_impl.h"
-#include <stl/_codecvt.h>
-#include <stl/_collate.h>
-#include <stl/_ctype.h>
-#include <stl/_monetary.h>
 #include "message_facets.h"
 
 _STLP_BEGIN_NAMESPACE
@@ -550,7 +543,7 @@ void _Locale_impl::make_classic_locale() {
   _Locale_impl *classic = new(&_Locale_classic_impl_buf) _Locale_impl("C");
 
   /*
-  static _Messages _Null_messages;
+  static _STLP_PRIV _Messages _Null_messages;
 
   static _Stl_aligned_buffer<collate<char> > _S_collate_char_buf;
   static _Stl_aligned_buffer<ctype<char> > _S_ctype_char_buf;
@@ -601,7 +594,7 @@ void _Locale_impl::make_classic_locale() {
     new /*(&_S_moneypunct_true_char_buf)*/ moneypunct<char, true>(),
     new /*(&_S_moneypunct_false_char_buf)*/ moneypunct<char, false>(),
     new /*(&_S_numpunct_char_buf)*/ numpunct<char>(),
-    new /*(&_S_messages_char_buf)*/ messages<char>(new _Messages()/*&_Null_messages*/),
+    new /*(&_S_messages_char_buf)*/ messages<char>(new _STLP_PRIV _Messages()/*&_Null_messages*/),
     new /*(&_S_money_get_char_buf)*/ money_get<char, istreambuf_iterator<char, char_traits<char> > >(),
     0,
     new /*(&_S_money_put_char_buf)*/ money_put<char, ostreambuf_iterator<char, char_traits<char> > >(),
@@ -626,7 +619,7 @@ void _Locale_impl::make_classic_locale() {
     new /*(&_S_moneypunct_true_wchar_buf)*/ moneypunct<wchar_t, true>(),
     new /*(&_S_moneypunct_false_wchar_buf)*/ moneypunct<wchar_t, false>(),
     new /*(&_S_numpunct_wchar_buf)*/ numpunct<wchar_t>(),
-    new /*(&_S_messages_wchar_buf)*/ messages<wchar_t>(new _Messages()/*&_Null_messages*/),
+    new /*(&_S_messages_wchar_buf)*/ messages<wchar_t>(new _STLP_PRIV _Messages()/*&_Null_messages*/),
 
     new /*(&_S_money_get_wchar_buf)*/ money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(),
     0,

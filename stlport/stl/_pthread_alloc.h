@@ -321,17 +321,13 @@ public:
 template <class _T1, class _T2>
 inline bool operator==(const pthread_allocator<_T1>&,
                        const pthread_allocator<_T2>& a2)
-{
-  return true;
-}
+{ return true; }
 
 #ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
 template <class _T1, class _T2>
 inline bool operator!=(const pthread_allocator<_T1>&,
                        const pthread_allocator<_T2>&)
-{
-  return false;
-}
+{ return false; }
 #endif
 
 
@@ -339,16 +335,13 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 
 # ifdef _STLP_USE_RAW_SGI_ALLOCATORS
 template <class _Tp, size_t _Max_size>
-struct _Alloc_traits<_Tp, _Pthread_alloc<_Max_size> >
-{
-  typedef __allocator<_Tp, _Pthread_alloc<_Max_size> >
-          allocator_type;
+struct _Alloc_traits<_Tp, _Pthread_alloc<_Max_size> > {
+  typedef __allocator<_Tp, _Pthread_alloc<_Max_size> > allocator_type;
 };
 # endif
 
 template <class _Tp, class _Atype>
-struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
-{
+struct _Alloc_traits<_Tp, pthread_allocator<_Atype> > {
   typedef pthread_allocator<_Tp> allocator_type;
 };
 

@@ -30,8 +30,8 @@
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
 #define _STLP_INTERNAL_ITERATOR_BASE_H
 
-#ifndef _STLP_CSTDDEF
-#  include <cstddef>
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
 #endif
 
 //# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
@@ -434,12 +434,12 @@ struct _Nonconst_Const_traits {
 template <class _Tp>                                            \
 struct _##Motif;                                                \
 template <class _Tp>                                            \
-struct _Const##Motif : public _STLP_STD::_Const_##Traits<_Tp> { \
+struct _Const##Motif : public _STLP_STD::_Const_##Traits<_Tp> {  \
   typedef _Const##Motif<_Tp> _ConstTraits;                      \
   typedef _##Motif<_Tp> _NonConstTraits;                        \
 };                                                              \
 template <class _Tp>                                            \
-struct _##Motif : public _STLP_STD::_Nonconst_##Traits<_Tp> {   \
+struct _##Motif : public _STLP_STD::_Nonconst_##Traits<_Tp> {    \
   typedef _Const##Motif<_Tp> _ConstTraits;                      \
   typedef _##Motif<_Tp> _NonConstTraits;                        \
 };

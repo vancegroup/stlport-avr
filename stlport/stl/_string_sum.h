@@ -18,6 +18,8 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 /*char wrapper to simulate basic_string*/
 template <class _CharT>
 struct __char_wrapper {
@@ -223,37 +225,54 @@ public:
   const _CharT* data()  const { return _M_get_storage().data(); }
 
   //find family
-  size_type find(const _BString& __s, size_type __pos = 0) const {return _M_get_storage().find(__s, __pos);}
-  size_type find(const _CharT* __s, size_type __pos = 0) const {return _M_get_storage().find(__s, __pos);}
-  size_type find(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().find(__s, __pos, __n);}
-  size_type find(_CharT __c, size_type __pos = 0) const {return _M_get_storage().find(__c, __pos);}
+  size_type find(const _BString& __s, size_type __pos = 0) const { return _M_get_storage().find(__s, __pos); }
+  size_type find(const _CharT* __s, size_type __pos = 0) const { return _M_get_storage().find(__s, __pos); }
+  size_type find(const _CharT* __s, size_type __pos, size_type __n) const { return _M_get_storage().find(__s, __pos, __n); }
+  size_type find(_CharT __c, size_type __pos = 0) const { return _M_get_storage().find(__c, __pos); }
 
-  size_type rfind(const _BString& __s, size_type __pos = _BString::npos) const {return _M_get_storage().rfind(__s, __pos);}
-  size_type rfind(const _CharT* __s, size_type __pos = _BString::npos) const {return _M_get_storage().rfind(__s, __pos); }
-  size_type rfind(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().rfind(__s, __pos, __n);}
-  size_type rfind(_CharT __c, size_type __pos = _BString::npos) const {return _M_get_storage().rfind(__c, __pos);}
+  size_type rfind(const _BString& __s, size_type __pos = _BString::npos) const { return _M_get_storage().rfind(__s, __pos); }
+  size_type rfind(const _CharT* __s, size_type __pos = _BString::npos) const { return _M_get_storage().rfind(__s, __pos); }
+  size_type rfind(const _CharT* __s, size_type __pos, size_type __n) const { return _M_get_storage().rfind(__s, __pos, __n); }
+  size_type rfind(_CharT __c, size_type __pos = _BString::npos) const { return _M_get_storage().rfind(__c, __pos); }
 
-  size_type find_first_of(const _BString& __s, size_type __pos = 0) const {return _M_get_storage().find_first_of(__s, __pos);}
-  size_type find_first_of(const _CharT* __s, size_type __pos = 0) const {return _M_get_storage().find_first_of(__s, __pos);}
-  size_type find_first_of(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().find_first_of(__s, __pos, __n);}
-  size_type find_first_of(_CharT __c, size_type __pos = 0) const {return _M_get_storage().find(__c, __pos);}
+  size_type find_first_of(const _BString& __s, size_type __pos = 0) const
+  { return _M_get_storage().find_first_of(__s, __pos); }
+  size_type find_first_of(const _CharT* __s, size_type __pos = 0) const
+  { return _M_get_storage().find_first_of(__s, __pos); }
+  size_type find_first_of(const _CharT* __s, size_type __pos, size_type __n) const
+  { return _M_get_storage().find_first_of(__s, __pos, __n); }
+  size_type find_first_of(_CharT __c, size_type __pos = 0) const
+  { return _M_get_storage().find(__c, __pos); }
 
-  size_type find_last_of(const _BString& __s, size_type __pos = _BString::npos) const {return _M_get_storage().find_last_of(__s, __pos);}
-  size_type find_last_of(const _CharT* __s, size_type __pos = _BString::npos) const {return _M_get_storage().find_last_of(__s, __pos);}
-  size_type find_last_of(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().find_last_of(__s, __pos, __n);}
-  size_type find_last_of(_CharT __c, size_type __pos = _BString::npos) const {return _M_get_storage().rfind(__c, __pos);}
+  size_type find_last_of(const _BString& __s, size_type __pos = _BString::npos) const
+  { return _M_get_storage().find_last_of(__s, __pos); }
+  size_type find_last_of(const _CharT* __s, size_type __pos = _BString::npos) const
+  { return _M_get_storage().find_last_of(__s, __pos); }
+  size_type find_last_of(const _CharT* __s, size_type __pos, size_type __n) const
+  { return _M_get_storage().find_last_of(__s, __pos, __n); }
+  size_type find_last_of(_CharT __c, size_type __pos = _BString::npos) const
+  { return _M_get_storage().rfind(__c, __pos); }
 
-  size_type find_first_not_of(const _BString& __s, size_type __pos = 0) const {return _M_get_storage().find_first_not_of(__s, __pos);}
-  size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const {return _M_get_storage().find_first_not_of(__s, __pos);}
-  size_type find_first_not_of(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().find_first_not_of(__s, __pos, __n);}
-  size_type find_first_not_of(_CharT __c, size_type __pos = 0) const {return _M_get_storage().find_first_not_of(__c, __pos);}
+  size_type find_first_not_of(const _BString& __s, size_type __pos = 0) const
+  { return _M_get_storage().find_first_not_of(__s, __pos); }
+  size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const
+  { return _M_get_storage().find_first_not_of(__s, __pos); }
+  size_type find_first_not_of(const _CharT* __s, size_type __pos, size_type __n) const
+  { return _M_get_storage().find_first_not_of(__s, __pos, __n); }
+  size_type find_first_not_of(_CharT __c, size_type __pos = 0) const
+  { return _M_get_storage().find_first_not_of(__c, __pos); }
 
-  size_type find_last_not_of(const _BString& __s, size_type __pos = _BString::npos) const {return _M_get_storage().find_last_not_of(__s, __pos);}
-  size_type find_last_not_of(const _CharT* __s, size_type __pos =_BString:: npos) const {return _M_get_storage().find_last_not_of(__s, __pos); }
-  size_type find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const {return _M_get_storage().find_last_not_of(__s, __pos, __n);}
-  size_type find_last_not_of(_CharT __c, size_type __pos = _BString::npos) const {return _M_get_storage().find_last_not_of(__c, __pos);}
+  size_type find_last_not_of(const _BString& __s, size_type __pos = _BString::npos) const
+  { return _M_get_storage().find_last_not_of(__s, __pos); }
+  size_type find_last_not_of(const _CharT* __s, size_type __pos =_BString:: npos) const
+  { return _M_get_storage().find_last_not_of(__s, __pos); }
+  size_type find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const
+  { return _M_get_storage().find_last_not_of(__s, __pos, __n); }
+  size_type find_last_not_of(_CharT __c, size_type __pos = _BString::npos) const
+  { return _M_get_storage().find_last_not_of(__c, __pos); }
 
-  _BString substr(size_type __pos = 0, size_type __n = _BString::npos) const {return _M_get_storage().substr(__pos, __n);}
+  _BString substr(size_type __pos = 0, size_type __n = _BString::npos) const
+  { return _M_get_storage().substr(__pos, __n); }
 
   //compare
   int compare(const _BString& __s) const
@@ -440,6 +459,8 @@ private:
   mutable bool _M_init;
   mutable basic_string<_CharT, _Traits, _Alloc> _M_storage;
 };
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

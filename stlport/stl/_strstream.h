@@ -1,10 +1,31 @@
+/*
+ * Copyright (c) 1999
+ * Silicon Graphics Computer Systems, Inc.
+ *
+ * Copyright (c) 1999
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+#ifndef _STLP_INTERNAL_STRSTREAM
+#define _STLP_INTERNAL_STRSTREAM
 
 #ifndef _STLP_INTERNAL_STREAMBUF
 #  include <stl/_streambuf.h>
 #endif
-#ifndef _STLP_ISTREAM
-#  include <istream>              // Includes <ostream>, <ios>, <iosfwd>
+
+#ifndef _STLP_INTERNAL_ISTREAM
+#  include <stl/_istream.h>              // Includes <ostream>, <ios>, <iosfwd>
 #endif
+
 #ifndef _STLP_INTERNAL_STRING_H
 #  include <stl/_string.h>
 #endif
@@ -22,8 +43,7 @@ _STLP_BEGIN_NAMESPACE
 // Class strstreambuf, a streambuf class that manages an array of char.
 // Note that this class is not a template.
 
-class _STLP_CLASS_DECLSPEC strstreambuf : public basic_streambuf<char, char_traits<char> >
-{
+class _STLP_CLASS_DECLSPEC strstreambuf : public basic_streambuf<char, char_traits<char> > {
 public:                         // Types.
   typedef char_traits<char>              _Traits;
   typedef basic_streambuf<char, char_traits<char> > _Base;
@@ -79,8 +99,7 @@ private:                        // Data members.
 //----------------------------------------------------------------------
 // Class istrstream, an istream that manages a strstreambuf.
 
-class _STLP_CLASS_DECLSPEC istrstream : public basic_istream<char, char_traits<char> >
-{
+class _STLP_CLASS_DECLSPEC istrstream : public basic_istream<char, char_traits<char> > {
 public:
   explicit istrstream(char*);
   explicit istrstream(const char*);
@@ -117,8 +136,7 @@ private:
 //----------------------------------------------------------------------
 // Class strstream
 
-class _STLP_CLASS_DECLSPEC strstream : public basic_iostream<char, char_traits<char> >
-{
+class _STLP_CLASS_DECLSPEC strstream : public basic_iostream<char, char_traits<char> > {
 public:
   typedef char                        char_type;
   typedef char_traits<char>::int_type int_type;
@@ -143,3 +161,5 @@ private:
 };
 
 _STLP_END_NAMESPACE
+
+#endif /* _STLP_INTERNAL_STRSTREAM */

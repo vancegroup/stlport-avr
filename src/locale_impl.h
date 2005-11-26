@@ -16,35 +16,40 @@
  *
  */
 
-# ifndef LOCALE_IMPL_H
-#  define  LOCALE_IMPL_H
+#ifndef LOCALE_IMPL_H
+#define LOCALE_IMPL_H
 
 #include <clocale>             // C locale header file.
 #include <vector>
 #include <string>
-#include <stl/_locale.h>
+#include <locale>
 #include "c_locale.h"
-
-#ifdef _STLP_DEBUG
-#include <stl/debug/_debug.h>
-#endif
 
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 //Export of _Locale_impl facets container:
+#  if !defined (_STLP_USE_PTR_SPECIALIZATIONS)
+//If we are using pointer specialization, vector<locale::facet*> will use
+//the already exported vector<void*> implementation.
 _STLP_EXPORT_TEMPLATE_CLASS allocator<locale::facet*>;
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<locale::facet**, locale::facet*, allocator<locale::facet*> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Vector_base<locale::facet*, allocator<locale::facet*> >;
-#  if !defined (_STLP_DONT_USE_PTR_SPECIALIZATIONS)
-_STLP_EXPORT_TEMPLATE_CLASS _Vector_impl<locale::facet*, allocator<locale::facet*> >;
+
+_STLP_MOVE_TO_STD_NAMESPACE
 #  endif
 #  if defined (_STLP_DEBUG)
-#    define _STLP_DBG_VECTOR_BASE __WORKAROUND_DBG_RENAME(vector)
-_STLP_EXPORT_TEMPLATE_CLASS __construct_checker<_STLP_DBG_VECTOR_BASE<locale::facet*, allocator<locale::facet*> > >;
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_DBG_VECTOR_BASE<locale::facet*, allocator<locale::facet*> >;
-#    undef _STLP_DBG_VECTOR_BASE
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#    define _STLP_NON_DBG_VECTOR _STLP_NON_DBG_NAME(vector)
+_STLP_EXPORT_TEMPLATE_CLASS __construct_checker<_STLP_NON_DBG_VECTOR<locale::facet*, allocator<locale::facet*> > >;
+_STLP_EXPORT_TEMPLATE_CLASS _STLP_NON_DBG_VECTOR<locale::facet*, allocator<locale::facet*> >;
+#    undef _STLP_NON_DBG_VECTOR
+_STLP_MOVE_TO_STD_NAMESPACE
 #  endif
+
 _STLP_EXPORT_TEMPLATE_CLASS vector<locale::facet*, allocator<locale::facet*> >;
 #endif
 
@@ -52,8 +57,7 @@ _STLP_EXPORT_TEMPLATE_CLASS vector<locale::facet*, allocator<locale::facet*> >;
 // Class _Locale_impl
 // This is the base class which implements access only and is supposed to
 // be used for classic locale only
-class _STLP_CLASS_DECLSPEC _Locale_impl :
-    public _Refcount_Base {
+class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
   public:
     _Locale_impl(const char* s);
     _Locale_impl(const _Locale_impl&);
@@ -63,7 +67,6 @@ class _STLP_CLASS_DECLSPEC _Locale_impl :
     ~_Locale_impl();
 
   public:
-
     size_t size() const { return facets_vec.size(); }
 
     basic_string<char, char_traits<char>, allocator<char> > name;
@@ -106,7 +109,6 @@ class _STLP_CLASS_DECLSPEC _Locale_impl :
     bool operator != (const locale& __loc) const { return __loc._M_impl != this; }
 
   private:
-
     vector<locale::facet*> facets_vec;
 
   private:

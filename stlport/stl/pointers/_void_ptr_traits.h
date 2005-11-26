@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2003
  * Francois Dumont
  *

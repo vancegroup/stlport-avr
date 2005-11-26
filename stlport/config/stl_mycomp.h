@@ -92,6 +92,10 @@
 // trouble with functions getting non-type-parameterized classes as parameters
 // #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 
+// Uncomment this if your compiler instanciate default parameter value
+// during template class instanciation.
+// #  define _STLP_DFLT_PARAM_INSTANCIATION_BUG
+
 // Uncomment this if your compiler lacks static data members.
 // Uncomment next line if your compiler supports __attribute__((weak))
 // #  define _STLP_NO_STATIC_TEMPLATE_DATA 1
@@ -260,6 +264,10 @@
 // uncomment this if your compiler consider as ambiguous a function imported within
 // the stlport namespace and called without scope (:: or std::)
 // #  define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
+
+// uncomment this if your compiler define all the C math functions C++ additional
+// overloads in ::namespace and not only in std::.
+// #  define _STLP_HAS_GLOBAL_C_MATH_FUNCTIONS 1
 
 // uncomment this if your compiler has problem with the import of a namespace in
 // an other one with the using namespace directive

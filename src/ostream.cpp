@@ -15,8 +15,9 @@
  * modified is included with the above copyright notice.
  *
  */
-# include "stlport_prefix.h"
-#include <stl/_ostream.h>
+#include "stlport_prefix.h"
+
+#include <ostream>
 
 _STLP_BEGIN_NAMESPACE
 

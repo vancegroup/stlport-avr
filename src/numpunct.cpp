@@ -15,8 +15,9 @@
  * modified is included with the above copyright notice.
  *
  */
-# include "stlport_prefix.h"
-# include <stl/_numpunct.h>
+#include "stlport_prefix.h"
+
+#include <locale>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -33,41 +34,31 @@ _STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_truename("true");
 _STLP_STATIC_MEMBER_DECLSPEC  string  numpunct<char>::_M_falsename("false");
 _STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_grouping("");
 
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 
 numpunct<wchar_t>::~numpunct() {}
 
 wchar_t numpunct<wchar_t>::do_decimal_point() const { return L'.'; }
 
 wchar_t numpunct<wchar_t>::do_thousands_sep() const
-{
-  return L',';
-}
+{ return L','; }
 
 string numpunct<wchar_t>::do_grouping() const
-{
-  return string();
-}
-
+{ return string(); }
 
 wstring numpunct<wchar_t>::do_truename() const
-{
-  return _M_truename;
-}
+{ return _M_truename; }
 
 wstring numpunct<wchar_t>::do_falsename() const
-{
-  return _M_falsename;
-}
+{ return _M_falsename; }
 
 _STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_truename(L"true");
 _STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_falsename(L"false");
 _STLP_STATIC_MEMBER_DECLSPEC  string numpunct<wchar_t>::_M_grouping("");
-# endif
+#endif
 
 _STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++
 // End:
-

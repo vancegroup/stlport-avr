@@ -27,8 +27,8 @@
 #ifndef _STLP_INTERNAL_SLIST_BASE_H
 #define _STLP_INTERNAL_SLIST_BASE_H
 
-#ifndef _STLP_CSTDDEF
-#  include <cstddef>
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ public:
                                                  const _Slist_node_base* __node);
   static const _Slist_node_base* _STLP_CALL __previous(const _Slist_node_base* __head,
                                                        const _Slist_node_base* __node) {
-    return _Sl_global<_Dummy>::__previous((_Slist_node_base*)__head, __node);
+    return _Sl_global<_Dummy>::__previous(__CONST_CAST(_Slist_node_base*, __head), __node);
   }
 };
 

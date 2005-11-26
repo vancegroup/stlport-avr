@@ -1,6 +1,7 @@
 #include <set>
 #include <algorithm>
 
+#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -21,6 +22,7 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(bounds);
   CPPUNIT_TEST(specialized_less);
   CPPUNIT_TEST(implementation_check);
+  CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST(reverse_iterator_test);
   CPPUNIT_TEST_SUITE_END();
 
@@ -33,6 +35,7 @@ class SetTest : public CPPUNIT_NS::TestCase
     void bounds();
     void specialized_less();
     void implementation_check();
+    void allocator_with_state();
     void reverse_iterator_test();
 };
 
@@ -252,4 +255,36 @@ void SetTest::reverse_iterator_test()
     CPPUNIT_ASSERT( *(rit++) == 1 );
     CPPUNIT_ASSERT( rit == ctree.rend() );
   }
+}
+
+void SetTest::allocator_with_state()
+{
+  char buf1[1024];
+  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[1024];
+  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+
+  {
+    typedef set<int, less<int>, StackAllocator<int> > SetInt;
+    SetInt sint1(less<int>(), stack1);
+    int i;
+    for (i = 0; i < 5; ++i)
+      sint1.insert(i);
+    SetInt sint1Cpy(sint1);
+
+    SetInt sint2(less<int>(), stack2);
+    for (; i < 10; ++i)
+      sint2.insert(i);
+    SetInt sint2Cpy(sint2);
+
+    sint1.swap(sint2);
+
+    CPPUNIT_ASSERT( sint1 == sint2Cpy );
+    CPPUNIT_ASSERT( sint2 == sint1Cpy );
+    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.OK() );
+  CPPUNIT_ASSERT( stack2.OK() );
 }

@@ -16,15 +16,16 @@
  *
  */
 
-# include "stlport_prefix.h"
-# include <algorithm>
-# include <stl/_ios.h>
-# include "aligned_buffer.h"
+#include "stlport_prefix.h"
+
+#include <algorithm>
+#include <ios>
+#include <locale>
+#include <ostream> // for __get_ostreambuf definition
+
+#include "aligned_buffer.h"
 
 _STLP_BEGIN_NAMESPACE
-
-char* _STLP_CALL
-__write_integer(char* buf, ios_base::fmtflags flags, long x);
 
 //----------------------------------------------------------------------
 // ios_base members
@@ -79,7 +80,7 @@ const ios_base::seekdir ios_base::beg;
 const ios_base::seekdir ios_base::cur;
 const ios_base::seekdir ios_base::end;
 
-# endif /*  _STLP_STATIC_CONST_INIT_BUG */
+#endif /*  _STLP_STATIC_CONST_INIT_BUG */
 
 // Internal functions used for managing exponentially-growing arrays of
 // POD types.
@@ -88,14 +89,14 @@ const ios_base::seekdir ios_base::end;
 // if necessary, so that array[index] is meaningful.  All new elements are
 // initialized to zero.  Returns a pointer to the new array, and the new
 // size.
+
 template <class PODType>
 pair<PODType*, size_t>
-_Stl_expand_array(PODType* array, size_t N, int index)
-{
+_Stl_expand_array(PODType* __array, size_t N, int index) {
   if ((int)N < index + 1) {
     size_t new_N = (max)(2 * N, size_t(index + 1));
     PODType* new_array
-      = __STATIC_CAST(PODType*,realloc(array, new_N * sizeof(PODType)));
+      = __STATIC_CAST(PODType*,realloc(__array, new_N * sizeof(PODType)));
     if (new_array) {
       fill(new_array + N, new_array + new_N, PODType());
       return pair<PODType*, size_t>(new_array, new_N);
@@ -104,7 +105,7 @@ _Stl_expand_array(PODType* array, size_t N, int index)
       return pair<PODType*, size_t>(__STATIC_CAST(PODType*,0), 0);
   }
   else
-    return pair<PODType*, size_t>(array, N);
+    return pair<PODType*, size_t>(__array, N);
 }
 
 // array is a pointer to N elements of type PODType.  Allocate a new
@@ -112,10 +113,10 @@ _Stl_expand_array(PODType* array, size_t N, int index)
 // Return a pointer to the new array.  It is assumed that array is non-null
 // and N is nonzero.
 template <class PODType>
-PODType* _Stl_copy_array(const PODType* array, size_t N) {
+PODType* _Stl_copy_array(const PODType* __array, size_t N) {
   PODType* result = __STATIC_CAST(PODType*,malloc(N * sizeof(PODType)));
   if (result)
-    copy(array, array + N, result);
+    copy(__array, __array + N, result);
   return result;
 }
 
@@ -133,12 +134,14 @@ locale ios_base::imbue(const locale& loc) {
 }
 
 int _STLP_CALL ios_base::xalloc() {
-  static int _S_index = 0;
-#if defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK)
+#if defined (_STLP_THREADS) && \
+    defined (_STLP_WIN32THREADS) && defined (_STLP_NEW_PLATFORM_SDK)
+  static volatile __stl_atomic_t _S_index = 0;
   return _STLP_ATOMIC_INCREMENT(&_S_index);
 #else
-  static _STLP_STATIC_MUTEX L _STLP_MUTEX_INITIALIZER;
-  _STLP_auto_lock sentry(L);
+  static int _S_index = 0;
+  static _STLP_STATIC_MUTEX __lock _STLP_MUTEX_INITIALIZER;
+  _STLP_auto_lock sentry(__lock);
   return _S_index++;
 #endif
 }
@@ -294,11 +297,10 @@ ios_base::ios_base()
     _M_iwords(0), _M_num_iwords(0),
     _M_pwords(0),
     _M_num_pwords(0) , _M_cached_ctype(0), _M_cached_numpunct(0)
-{ }
+{}
 
 // ios's destructor.
-ios_base::~ios_base()
-{
+ios_base::~ios_base() {
   _M_invoke_callbacks(erase_event);
   free(_M_callbacks);
   free(_M_iwords);
@@ -308,12 +310,12 @@ ios_base::~ios_base()
 //----------------------------------------------------------------------
 // Force instantiation of basic_ios
 // For DLL exports, they are already instantiated.
-#  if !defined(_STLP_NO_FORCE_INSTANTIATE)
+#if !defined(_STLP_NO_FORCE_INSTANTIATE)
 template class _STLP_CLASS_DECLSPEC basic_ios<char, char_traits<char> >;
-#   ifndef _STLP_NO_WCHAR_T
+#  if !defined (_STLP_NO_WCHAR_T)
 template class _STLP_CLASS_DECLSPEC basic_ios<wchar_t, char_traits<wchar_t> >;
-#   endif /* _STLP_NO_WCHAR_T */
-#  endif
+#  endif /* _STLP_NO_WCHAR_T */
+#endif
 
 _STLP_END_NAMESPACE
 

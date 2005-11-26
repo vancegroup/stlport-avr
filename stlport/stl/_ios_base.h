@@ -18,20 +18,20 @@
 #ifndef _STLP_IOS_BASE_H
 #define _STLP_IOS_BASE_H
 
-#ifndef _STLP_STDEXCEPT
-#include <stdexcept>
+#ifndef _STLP_INTERNAL_STDEXCEPT
+#  include <stl/_stdexcept.h>
 #endif
 
 #ifndef _STLP_UTILITY
-#include <utility>
+#  include <utility>
 #endif
 
 #ifndef _STLP_INTERNAL_LOCALE_H
-#include <stl/_locale.h>
+#  include <stl/_locale.h>
 #endif
 
 #ifndef _STLP_INTERNAL_STRING_H
-# include <stl/_string.h>
+#  include <stl/_string.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -64,12 +64,12 @@ public:
 # endif
 
   // Formatting flags.
-# ifdef _STLP_STATIC_CONST_INIT_BUG
+#if defined (_STLP_STATIC_CONST_INIT_BUG)
   enum  {
-# else
+#else
   // boris : type for all those constants is int
   static const int
-# endif
+#endif
     left       = 0x0001,
     right      = 0x0002,
     internal   = 0x0004,

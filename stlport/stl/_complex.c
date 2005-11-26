@@ -18,14 +18,18 @@
 #ifndef _STLP_COMPLEX_C
 #define _STLP_COMPLEX_C
 
-#ifndef _STLP_INTERNAL_COMPLEX_H
+#ifndef _STLP_INTERNAL_COMPLEX
 #  include <stl/_complex.h>
 #endif
 
 #if !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <istream>
+#  ifndef _STLP_INTERNAL_ISTREAM
+#    include <stl/_istream.h>
+#  endif
 
-#  include <sstream>
+#  ifndef _STLP_INTERNAL_SSTREAM
+#    include <stl/_sstream.h>
+#  endif
 
 #  ifndef _STLP_STRING_IO_H
 #    include <stl/_string_io.h>

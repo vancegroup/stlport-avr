@@ -22,14 +22,14 @@
 // represent streamsbufs and streams whose sources or destinations are
 // C++ strings.
 
-#ifndef _STLP_SSTREAM_H
-#define _STLP_SSTREAM_H
+#ifndef _STLP_INTERNAL_SSTREAM
+#define _STLP_INTERNAL_SSTREAM
 
 #ifndef _STLP_INTERNAL_STREAMBUF
 #  include <stl/_streambuf.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM
 #  include <stl/_istream.h> // Includes <ostream>, <ios>, <iosfwd>
 #endif
 
@@ -262,7 +262,7 @@ _STLP_END_NAMESPACE
 #  include <stl/_sstream.c>
 #endif
 
-#endif /* _STLP_SSTREAM_H */
+#endif /* _STLP_INTERNAL_SSTREAM */
 
 // Local Variables:
 // mode:C++

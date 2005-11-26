@@ -39,24 +39,23 @@
 // to test(), except that it does no range checking.  The non-const version
 // returns a reference to a bit, again without doing any range checking.
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2
 #  include <stl/_prolog.h>
-# endif
-
-#ifdef _STLP_PRAGMA_ONCE
-# pragma once
 #endif
 
-# include <stl/_bitset.h>
+#ifdef _STLP_PRAGMA_ONCE
+#  pragma once
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2 )
+#include <stl/_bitset.h>
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_BITSET */
-
 
 // Local Variables:
 // mode:C++

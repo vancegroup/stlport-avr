@@ -77,7 +77,7 @@ clobber : clean clean_all_obj
                $(OUTDIR)$(PATH_SEP)$(RELEASE_NAME).* $(OUTDIR)$(PATH_SEP)$(STLDEBUG_NAME).*
 
 HEADER_DIRS1 = . using wrap_std old_hp
-HEADER_DIRS2 = config stl stl/debug stl/pointers stl/wrappers using/h  wrap_std/h
+HEADER_DIRS2 = config stl stl/debug stl/pointers using/h  wrap_std/h
 
 symbolic_links :
 	$(RM) $(OUTDIR)/$(RELEASE_NAME).$(DYNEXT)

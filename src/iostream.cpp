@@ -18,9 +18,8 @@
 #include "stlport_prefix.h"
 
 #include <istream>
-//#include <stl/_istream.h>
+#include <fstream>
 
-#include <stl/_fstream.h>
 #include "stdio_streambuf.h"
 #include "aligned_buffer.h"
 #include "_stdio_file.h"
@@ -248,7 +247,7 @@ void  _STLP_CALL ios_base::_S_initialize() {
     wostream* ptr_wclog = new(&wclog) wostream(0);
 
     wfilebuf* win  = _Stl_create_wfilebuf(stdin, ios_base::in);
-    wfilebuf* wout = _Stl_create_wfilebuf(stdout, ios_base::out);;
+    wfilebuf* wout = _Stl_create_wfilebuf(stdout, ios_base::out);
     wfilebuf* werr = _Stl_create_wfilebuf(stderr, ios_base::out);
     wfilebuf* wlog = _Stl_create_wfilebuf(stderr, ios_base::out);
 

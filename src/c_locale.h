@@ -29,17 +29,17 @@
  */
 
 #ifndef _STLP_C_LOCALE_IMPL_H
-# define _STLP_C_LOCALE_IMPL_H
+#define _STLP_C_LOCALE_IMPL_H
 
-# include <stl/c_locale.h>
+#include <stl/c_locale.h>
 /* # include <wchar.h> */
-# include <stl/_cwchar.h>
+#include <stl/_mbstate_t.h>
 
-# ifdef _STLP_REAL_LOCALE_IMPLEMENTED
+#ifdef _STLP_REAL_LOCALE_IMPLEMENTED
 #  if defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__)
-#   include <nl_types.h>
+#    include <nl_types.h>
 #  endif
-# endif
+#endif
 
 #define _Locale_MAX_SIMPLE_NAME 256
 

@@ -1,6 +1,8 @@
 #include <list>
 #include <algorithm>
 
+#include "stack_allocator.h"
+
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -21,6 +23,8 @@ class ListTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(push_back);
   CPPUNIT_TEST(push_front);
+  CPPUNIT_TEST(allocator_with_state);
+  //CPPUNIT_TEST(const_list);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -32,6 +36,8 @@ protected:
   void resize();
   void push_back();
   void push_front();
+  void allocator_with_state();
+  //void const_list();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ListTest);
@@ -246,3 +252,103 @@ void ListTest::push_front()
   ++i;
   CPPUNIT_ASSERT( *i == 2 );
 }
+
+void ListTest::allocator_with_state()
+{
+  char buf1[1024];
+  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[1024];
+  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+
+  typedef list<int, StackAllocator<int> > ListInt;
+  {
+    ListInt lint1(10, 0, stack1);
+    ListInt lint1Cpy(lint1);
+
+    ListInt lint2(10, 1, stack2);
+    ListInt lint2Cpy(lint2);
+
+    lint1.swap(lint2);
+
+    CPPUNIT_ASSERT( lint1 == lint2Cpy );
+    CPPUNIT_ASSERT( lint2 == lint1Cpy );
+    CPPUNIT_ASSERT( lint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( lint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_CHECK( stack1.OK() );
+  CPPUNIT_CHECK( stack2.OK() );
+  stack1.reset(); stack2.reset();
+
+  {
+    ListInt lint1(10, 0, stack1);
+    ListInt lint2(10, 1, stack2);
+
+    lint1.splice(lint1.begin(), lint2);
+    CPPUNIT_ASSERT( lint1.size() == 20 );
+    CPPUNIT_ASSERT( lint2.empty() );
+  }
+  CPPUNIT_CHECK( stack1.OK() );
+  CPPUNIT_CHECK( stack2.OK() );
+  stack1.reset(); stack2.reset();
+
+  {
+    ListInt lint1(10, 0, stack1);
+    ListInt lint2(10, 1, stack2);
+
+    lint1.splice(lint1.begin(), lint2, lint2.begin());
+    CPPUNIT_ASSERT( lint1.size() == 11 );
+    CPPUNIT_ASSERT( lint2.size() == 9 );
+  }
+  CPPUNIT_CHECK( stack1.OK() );
+  CPPUNIT_CHECK( stack2.OK() );
+  stack1.reset(); stack2.reset();
+
+  {
+    ListInt lint1(10, 0, stack1);
+    ListInt lint2(10, 1, stack2);
+
+    ListInt::iterator lit(lint2.begin());
+    advance(lit, 5);
+    lint1.splice(lint1.begin(), lint2, lint2.begin(), lit);
+    CPPUNIT_ASSERT( lint1.size() == 15 );
+    CPPUNIT_ASSERT( lint2.size() == 5 );
+  }
+  CPPUNIT_CHECK( stack1.OK() );
+  CPPUNIT_CHECK( stack2.OK() );
+  stack1.reset(); stack2.reset();
+
+  {
+    ListInt lint1(10, 0, stack1);
+    ListInt lint2(10, 1, stack2);
+
+    ListInt lintref(stack2);
+    lintref.insert(lintref.begin(), 10, 1);
+    lintref.insert(lintref.begin(), 10, 0);
+
+    lint1.merge(lint2);
+    CPPUNIT_ASSERT( lint1.size() == 20 );
+    CPPUNIT_ASSERT( lint1 == lintref );
+    CPPUNIT_ASSERT( lint2.empty() );
+  }
+  CPPUNIT_CHECK( stack1.OK() );
+  CPPUNIT_CHECK( stack2.OK() );
+
+  {
+    //This is a compile time test.
+    //We check that sort implementation is correct when list is instanciated
+    //with an allocator that do not have a default constructor.
+    ListInt lint1(10, 0, stack1);
+    lint1.sort();
+    lint1.sort(greater<int>());
+  }
+}
+
+/*
+void ListTest::const_list()
+{
+  list<const int> cint_list;
+  cint_list.push_back(1);
+  cint_list.push_front(2);
+}
+*/

@@ -23,9 +23,10 @@
 // header <sstream> instead.
 
 #include "stlport_prefix.h"
-#include <stl/_strstream.h>
-#include <stl/_algobase.h>
-#include <stl/_limits.h>
+
+#include <strstream>
+#include <algorithm>
+#include <limits>
 
 _STLP_BEGIN_NAMESPACE
 

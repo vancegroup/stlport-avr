@@ -18,10 +18,10 @@
 #ifndef _STLP_STREAMBUF_H
 # define _STLP_STREAMBUF_H
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2067
 #  include <stl/_prolog.h>
-# endif
+#endif
 
 #include <stl/_ioserr.h>
 
@@ -31,24 +31,24 @@
 #  include <streambuf>
 #endif
 
-# include <ios.h>
+#include <ios.h>
 
-# ifndef _STLP_HAS_NO_NAMESPACES
+#ifndef _STLP_HAS_NO_NAMESPACES
 #  ifdef _STLP_BROKEN_USING_DIRECTIVE
-   using namespace _STLP_STD;
+_STLP_USING_NAMESPACE(stlport)
 #  else
 using _STLP_STD::basic_streambuf;
 using _STLP_STD::streambuf;
-#   ifndef _STLP_NO_WCHAR_T
+#    ifndef _STLP_NO_WCHAR_T
 using _STLP_STD::wstreambuf;
-#   endif
+#    endif
 #  endif
-# endif /* _STLP_HAS_NO_NAMESPACES */
+#endif /* _STLP_HAS_NO_NAMESPACES */
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2067)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2067)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_STREAMBUF_H */
 

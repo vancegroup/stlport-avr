@@ -14,12 +14,12 @@
  */
 
 #ifndef _STLP_IOMANIP_H
-# define _STLP_IOMANIP_H
+#define _STLP_IOMANIP_H
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2031
 #  include <stl/_prolog.h>
-# endif
+#endif
 
 #include <stl/_ioserr.h>
 
@@ -29,9 +29,9 @@
 #  include <iomanip>
 #endif
 
-#  ifndef _STLP_HAS_NO_NAMESPACES
+#ifndef _STLP_HAS_NO_NAMESPACES
 #  ifdef _STLP_BROKEN_USING_DIRECTIVE
-using namespace _STLP_STD;
+_STLP_USING_NAMESPACE(stlport)
 #  else
 using _STLP_STD::setiosflags;
 using _STLP_STD::resetiosflags;
@@ -40,15 +40,15 @@ using _STLP_STD::setfill;
 using _STLP_STD::setprecision;
 using _STLP_STD::setw;
 #  endif
-#  endif /* _STLP_HAS_NO_NAMESPACES */
+#endif /* _STLP_HAS_NO_NAMESPACES */
 
 // get all the pollution we want
-# include <iostream.h>
+#include <iostream.h>
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2031)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2031)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_IOMANIP_H */
 

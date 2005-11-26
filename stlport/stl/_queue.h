@@ -91,7 +91,7 @@ public:
   explicit queue(const _Sequence& __c) : c(__c) {}
 
   queue(__move_source<_Self> src)
-    : c(_AsMoveSource(src.get().c)) {}
+    : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
 
   bool empty() const { return c.empty(); }
   size_type size() const { return c.size(); }
@@ -168,7 +168,8 @@ public:
     { make_heap(c.begin(), c.end(), comp); }
 
   priority_queue(__move_source<_Self> src)
-    : c(_AsMoveSource(src.get().c)), comp(_AsMoveSource(src.get().comp)) {}
+    : c(_STLP_PRIV _AsMoveSource(src.get().c)),
+      comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
@@ -227,15 +228,15 @@ public:
   }
 };
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp, class _Sequence>
 struct __move_traits<queue<_Tp, _Sequence> > :
-  __move_traits_aux<_Sequence>
+  _STLP_PRIV __move_traits_aux<_Sequence>
 {};
 
 template <class _Tp, class _Sequence, class _Compare>
 struct __move_traits<priority_queue<_Tp, _Sequence, _Compare> > :
-  __move_traits_aux2<_Sequence, _Compare>
+  _STLP_PRIV __move_traits_aux2<_Sequence, _Compare>
 {};
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 

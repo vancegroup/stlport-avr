@@ -1,3 +1,87 @@
+2005-11-26  Francois Dumont  <dums@stlport...>
+
+        * stlport/stl/_complex.h: Move implementation of generic abs, arg and polar
+        after definition of double overload used in implementation. Thanks Kees de
+        Bruin
+
+        * stlport/stl/_threads.h, _alloc.h, _alloc.c: Fix lock free node allocator
+        implementation thanks Weis.
+
+        * stlport/stl/wrappers: Removed, no more maintained and complicated to fix
+	with the debug and pointer specialization implementations.
+
+        * test/unit/stack_allocator.h: Creation of an allocator using a stack buffer.
+        This allocator specificity is to not be stateless and not default constructible.
+
+        * test/unit/list_test.cpp, stlport/stl/_list.h, _list.c: Add of a test with the
+        StackAllocator. Fix list implementation to correctly handle allocator state
+        in the methods moving elements from a list instance to an other.
+
+        * stlport/stl/_carray.h: Creation of a new internal struct _CArray that mimic a C
+        array with the additionnal feature of being able to be instanciated with a type
+        without default constructor.
+
+        * stlport/stl/debug/_list.h: Adapt iterator invalidation according allocators
+        compare result.
+
+        * test/unit/slist_test.cpp, stlport/stl/_slist.h, _slist.c: idem list.
+
+        * stlport/stl/_slist.h: Modification of the splice_after methods signature. Users
+        now have to pass the source slist instance, this is mandatory in order to compare
+        the 2 slists allocator instance before moving an element from a slist instance to
+        an other.
+
+        * stlport/stl/_string_base.h: Fix _M_swap implementation for basic_string instanciation
+        with allocator having a state.
+
+        * stlport/stl/_list.c, _slist.c: sort methods now throw an overflow exception when lists
+        are too long to be sorted with the current algorithm. This is preferable to a buffer
+        overrun.
+
+        * stlport/stl/_alogobase.c: Small equal_range optimization, upper_bound is not called
+        anymore when lower_bound returned value is already not equivalent to the search value.
+
+	* build/Makefiles/gmake: Add build system for Digital Mars and Borland C++ compilers
+
+	* build/lib/configure.bat: Add following options
+	  --use-boost
+	  --not-thread-safe
+	  --no-rtti
+	see script for explanation. --mingw removed, detected with --compiler option, if
+	gcc, dmc or bcc then we are using MinGW tools.
+
+	* build/lib/configure: Add --not-thread-safe option
+
+	* build/Makefiles: Add build options to generate not thread safe libs and no rtti libs,
+	all compilers option has not been updated.
+
+	* stlport/c*: Modification of C++ headers wrapping C ones. All code moved to internal
+	headers in stlport/stl folder. Internal headers are only included if include comes from
+	user code otherwise only native header is included. Limit dependency between STLport
+	headers relations and native library once. Reported by problem building with Borland
+	compiler.
+
+	* test/unit/cppunit/cppunit_mini.h: Replace cstring include with string.h to avoid
+	references to std namespace in headers, should be more portable. Add typedef Base
+	definition in CPPUNIT_TEST_SUITE macro, used in calls to base class methods, help
+	Borland.
+
+	* Generalize use of secure string functions (strcpy_s for instance) for MSVC compilers
+	supporting it and tagging former versions like deprecated. The pragma warning that used
+	to disable this warning has been removed.
+
+	* stlport/BC50: Removed, no necassry anymore for supported Borland compiler versions.
+
+	* stlport/stl/debug: Implementation modification, now debug wrapper agregate a non debug
+	instance rather than inheriting from it. Makes debug implementation clearer as we are now 
+	forced to implement the complete containers interfaces.
+
+	* stlport/stl/pointers: Fix implementation in order to support Standard compilers
+	not accepting cast from function pointer to void*.
+
+	* *: Reinforce use of STLport private namespace (stlp_priv or stlport::priv) for all
+	internals algorithms.
+
 2005-11-21  Francois Dumont  <dums@stlport...>
 
 	* Fix classic locale facet initial reference counter thanks
@@ -11,13 +95,13 @@
 	for the bug report).
 
 	* stlport/stl/_monetary.c: fix processing the case when
-	number of digits in value less than number of digits in fraction.
+	number of digits in value less then number of digits in fraction.
 
 	* src/facets_byname.cpp: international currency symbol should
 	be the first (not depends upon where currency symbol situated in
 	the national format).
 
-	* test/unit/locale_test.cpp: tests for problems above.
+	* test/unit/locale_test.cpp: tests for reproducing this problems.
 
 2005-11-20  Gail Baker  <baker88@users.sourceforge.net>
 

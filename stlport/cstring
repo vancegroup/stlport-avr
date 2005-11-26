@@ -14,29 +14,25 @@
  */
 
 #ifndef _STLP_CSTRING
-# define _STLP_CSTRING
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x117
+#  define _STLP_CSTRING
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# if defined (_STLP_USE_NEW_C_HEADERS)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x117)
 #  include _STLP_NATIVE_CPP_C_HEADER(cstring)
-# else
-#  include _STLP_NATIVE_C_HEADER(string.h)
-# endif
+#else
+#  ifndef _STLP_INTERNAL_CSTRING
+#    include <stl/_cstring.h>
+#  endif
+#endif
 
-# ifdef _STLP_IMPORT_VENDOR_CSTD
-_STLP_BEGIN_NAMESPACE
-#  include <using/cstring>
-_STLP_END_NAMESPACE
-#endif /* _STLP_IMPORT_VENDOR_CSTD */
-
-# if (_STLP_OUTERMOST_HEADER_ID == 0x117)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x117)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_CSTRING */
 

@@ -50,8 +50,4 @@
 #  pragma warning( disable : 4571 ) // catch(...) blocks compiled with /EHs do not catch or re-throw Structured Exceptions
 #  pragma warning( disable : 4610 ) // struct '...' can never be instantiated - user defined construtor required
 
-// dums: This warning, signaling deprecated C functions like strncpy,
-// will have to be fixed one day:
-#  pragma warning( disable : 4996 ) // deprecated C symbols
-
 #endif

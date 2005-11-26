@@ -23,7 +23,7 @@
 #  include <stl/_ostream.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM
 #  include <stl/_istream.h>
 #endif
 
@@ -40,7 +40,7 @@ operator<<(basic_ostream<_CharT, _Traits>& __os,
 template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
 basic_ostream<_CharT, _Traits>& _STLP_CALL
 operator<<(basic_ostream<_CharT, _Traits>& __os,
-           const __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __sum) {
+           const _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __sum) {
   basic_string<_CharT, _Traits, _Alloc> __tmp(__sum);
   return __os << __tmp;
 }

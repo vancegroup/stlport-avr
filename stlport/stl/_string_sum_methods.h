@@ -21,16 +21,15 @@
 
 public:
   template <class _Left, class _Right, class _StorageDir>
-  basic_string(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s)
-    : _STLP_STRING_SUM_BASE(_Reserve_t(), __s.size(), __s.get_allocator()) {
-    _M_append_sum(__s);
-  }
+  basic_string(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s)
+    : _STLP_STRING_SUM_BASE(_Reserve_t(), __s.size(), __s.get_allocator())
+  { _M_append_sum(__s); }
 
   template <class _Left, class _Right, class _StorageDir>
-  basic_string(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-               size_type __pos, size_type __n = _STLP_STRING_BASE_SCOPE npos,
+  basic_string(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
+               size_type __pos, size_type __n = npos,
                const allocator_type& __a = allocator_type())
-    : _STLP_STRING_SUM_BASE(_Reserve_t(), (__pos <= __s.size())?((min) (__n, __s.size() - __pos)):0, __a) {
+    : _STLP_STRING_SUM_BASE(_Reserve_t(), (__pos <= __s.size()) ? ((min) (__n, __s.size() - __pos)) : 0, __a) {
     size_type __size = __s.size();
     if (__pos > __size)
       this->_M_throw_out_of_range();
@@ -38,98 +37,50 @@ public:
       _M_append_sum_pos(__s, __pos, (min) (__n, __size - __pos));
   }
 
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& operator=(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_assign_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& operator+=(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_append_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& append(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_append_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& append(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                size_type __pos, size_type __n) {
-   if (__pos > __s.size())
-     this->_M_throw_out_of_range();
-   return _M_append_sum_pos(__s, __pos, __n);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& assign(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    return _M_assign_sum(__s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& assign(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                size_type __pos, size_type __n) {
-    if (__pos > __s.size())
-      this->_M_throw_out_of_range();
-    return _M_assign_sum_pos(__s, __pos, __n);
-  }
-
 private:
-  _CharT* _M_append_fast(__char_wrapper<_CharT> __c, _CharT *__buf) {
-     _STLP_STD::_Copy_Construct(__buf, __c.getValue());
-     return __buf + 1;
+  _CharT* _M_append_fast(_STLP_PRIV __char_wrapper<_CharT> __c, _CharT *__buf) {
+    _STLP_STD::_Copy_Construct(__buf, __c.getValue());
+    return __buf + 1;
   }
-  _CharT* _M_append_fast(_CharT const* __s, size_type __s_size, _CharT *__buf) {
-    return uninitialized_copy(__s, __s + __s_size, __buf);
-  }
-  _CharT* _M_append_fast(__cstr_wrapper<_CharT> const& __s, _CharT *__buf) {
-    return _M_append_fast(__s.c_str(), __s.size(), __buf);
-  }
-  _CharT* _M_append_fast(__bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf) {
-    return _M_append_fast(__s.b_str(), __buf);
-  }
-  _CharT* _M_append_fast(_Self const& __s, _CharT *__buf) {
-    return _M_append_fast(__s.data(), __s.size(), __buf);
-  }
-  _CharT* _M_append_fast(__sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _CharT *__buf) {
-    return __buf;
-  }
+  _CharT* _M_append_fast(_CharT const* __s, size_type __s_size, _CharT *__buf)
+  { return uninitialized_copy(__s, __s + __s_size, __buf); }
+  _CharT* _M_append_fast(_STLP_PRIV __cstr_wrapper<_CharT> const& __s, _CharT *__buf)
+  { return _M_append_fast(__s.c_str(), __s.size(), __buf); }
+  _CharT* _M_append_fast(_STLP_PRIV __bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf)
+  { return _M_append_fast(__s.b_str(), __buf); }
+  _CharT* _M_append_fast(_Self const& __s, _CharT *__buf)
+  { return _M_append_fast(__s.data(), __s.size(), __buf); }
+  _CharT* _M_append_fast(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const&, _CharT *__buf)
+  { return __buf; }
   template <class _Left, class _Right, class _StorageDir>
-  _CharT* _M_append_fast(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, _CharT *__buf) {
-    return _M_append_fast(__s.getRhs(), _M_append_fast(__s.getLhs(), __buf));
-  }
+  _CharT* _M_append_fast(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, _CharT *__buf)
+  { return _M_append_fast(__s.getRhs(), _M_append_fast(__s.getLhs(), __buf)); }
 
-
-  _CharT* _M_append_fast_pos(__char_wrapper<_CharT> __c, _CharT *__buf, size_type /*__pos*/, size_type __n) {
+  _CharT* _M_append_fast_pos(_STLP_PRIV __char_wrapper<_CharT> __c, _CharT *__buf, size_type /*__pos*/, size_type __n) {
     if (__n == 0)
       return __buf;
     _STLP_STD::_Copy_Construct(__buf, __c.getValue());
     return __buf + 1;
   }
   _CharT* _M_append_fast_pos(_CharT const* __s, size_type __s_size, _CharT *__buf,
-                             size_type __pos, size_type __n) {
-    return uninitialized_copy(__s + __pos, __s + __pos + (min)(__n, __s_size - __pos), __buf);
-  }
-  _CharT* _M_append_fast_pos(__cstr_wrapper<_CharT> const& __s, _CharT *__buf,
-                             size_type __pos, size_type __n) {
-    return _M_append_fast_pos(__s.c_str(), __s.size(), __buf, __pos, __n);
-  }
-  _CharT* _M_append_fast_pos(__bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf,
-                             size_type __pos, size_type __n) {
-    return _M_append_fast_pos(__s.b_str(), __buf, __pos, __n);
-  }
+                             size_type __pos, size_type __n)
+  { return uninitialized_copy(__s + __pos, __s + __pos + (min)(__n, __s_size - __pos), __buf); }
+  _CharT* _M_append_fast_pos(_STLP_PRIV __cstr_wrapper<_CharT> const& __s, _CharT *__buf,
+                             size_type __pos, size_type __n)
+  { return _M_append_fast_pos(__s.c_str(), __s.size(), __buf, __pos, __n); }
+  _CharT* _M_append_fast_pos(_STLP_PRIV __bstr_wrapper<_CharT, _Traits, _Alloc> __s, _CharT *__buf,
+                             size_type __pos, size_type __n)
+  { return _M_append_fast_pos(__s.b_str(), __buf, __pos, __n); }
   _CharT* _M_append_fast_pos(_Self const& __s, _CharT *__buf,
-                             size_type __pos, size_type __n) {
-    return _M_append_fast_pos(__s.data(), __s.size(), __buf, __pos, __n);
-  }
-  _CharT* _M_append_fast_pos(__sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _CharT *__buf,
-                             size_type __pos, size_type __n) {
-    return __buf;
-  }
+                             size_type __pos, size_type __n)
+  { return _M_append_fast_pos(__s.data(), __s.size(), __buf, __pos, __n); }
+  _CharT* _M_append_fast_pos(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const&, _CharT *__buf,
+                             size_type, size_type)
+  { return __buf; }
 
   template <class _Left, class _Right, class _StorageDir>
-  _CharT* _M_append_fast_pos(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                             _CharT *__buf, size_type __pos, size_type __n = _STLP_STRING_BASE_SCOPE npos) {
+  _CharT* _M_append_fast_pos(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
+                             _CharT *__buf, size_type __pos, size_type __n = npos) {
     if (__n == 0) {
       return __buf;
     }
@@ -160,84 +111,11 @@ private:
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
     return 0;
   }
-  size_type _M_get_additional_size(size_type __new_size, const __true_type& /*_Char_Is_POD*/) const {
-    return 0;
-  }
+  size_type _M_get_additional_size(size_type, const __true_type& /*_Char_Is_POD*/) const
+  { return 0; }
 
   template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_overflow (size_type __new_size, __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    //To avoid problem with the string assumptions, never allocate a dynamic buffer smaller or equal
-    //than the static one:
-    if (__new_size < _Base::_DEFAULT_SIZE + 1)
-      __new_size = _Base::_DEFAULT_SIZE + 1;
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    pointer __new_start = this->_M_end_of_storage.allocate(__new_size);
-    pointer __new_finish = __new_start;
-    _STLP_TRY {
-      __new_finish = _M_append_fast(__s, __new_start);
-      this->_M_construct_null(__new_finish);
-    }
-    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start,__new_size)))
-    this->_M_destroy_range();
-    this->_M_deallocate_block();
-    this->_M_reset(__new_start, __new_finish, __new_start + __new_size);
-    return *this;
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_overflow_pos (size_type __new_size, __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                                 size_type __pos, size_type __n) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    //To avoid problem with the string assumptions, never allocate a dynamic buffer smaller or equal
-    //than the static one:
-    if (__new_size < _Base::_DEFAULT_SIZE + 1)
-      __new_size = _Base::_DEFAULT_SIZE + 1;
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    pointer __new_start = this->_M_end_of_storage.allocate(__new_size);
-    pointer __new_finish = __new_start;
-    _STLP_TRY {
-      __new_finish = _M_append_fast_pos(__s, __new_start, __pos, __n);
-      this->_M_construct_null(__new_finish);
-    }
-    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start,__new_size)))
-    this->_M_destroy_range();
-    this->_M_deallocate_block();
-    this->_M_reset(__new_start, __new_finish, __new_start + __new_size);
-    return *this;
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_sum (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
-    //TODO: We systematically use a new allocation to avoid the self referencing trouble, try to avoid it.
-    size_type __len = this->size();
-    const size_type __s_size = __s.size();
-    if (__s_size > this->max_size() || __len > (this->max_size() - __s_size))
-      this->_M_throw_length_error();
-    if (__s_size > __len) {
-      __len = __len + (max)(__len, __s_size) + 1;
-    }
-    return _M_assign_overflow(__len, __s);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_assign_sum_pos(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                           size_type __pos, size_type __n) {
-    //TODO: We systematically use a new allocation to avoid the self referencing trouble, try to avoid it.
-    size_type __len = this->size();
-    const size_type __s_size = (min) (__s.size() - __pos, __n);
-    if (__s_size > this->max_size() || __len > (this->max_size() - __s_size))
-      this->_M_throw_length_error();
-    if (__s_size > this->capacity()) {
-      __len = __len + (max)(__len, __s_size) + 1;
-    }
-    return _M_assign_overflow_pos(__len, __s, __pos, __n);
-  }
-
-  template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_append_sum (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
+  _Self& _M_append_sum (_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     size_type __s_size = __s.size();
     if (__s_size == 0)
       return *this;
@@ -278,8 +156,8 @@ private:
   }
 
   template <class _Left, class _Right, class _StorageDir>
-  _Self& _M_append_sum_pos (__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                            size_type __pos, size_type __n) {
+  _Self& _M_append_sum_pos(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
+                           size_type __pos, size_type __n) {
     size_type __s_size = (min)(__s.size() - __pos, __n);
     if (__s_size == 0)
       return *this;
@@ -318,8 +196,3 @@ private:
     }
     return *this;
   }
-
-#if defined (_STLP_STRING_DO_LOCAL_UNDEF)
-#  undef _STLP_STRING_DO_LOCAL_UNDEF
-#  undef _STLP_STRING_ADDITIONAL_INIT
-#endif

@@ -1,8 +1,8 @@
 #ifndef _STLP_INTERNAL_IOSFWD
 #define _STLP_INTERNAL_IOSFWD
 
-#if defined(__sgi) && !defined(__GNUC__) && !defined(_STANDARD_C_PLUS_PLUS)
-#error This header file requires the -LANG:std option
+#if defined (__sgi) && !defined (__GNUC__) && !defined (_STANDARD_C_PLUS_PLUS)
+#  error This header file requires the -LANG:std option
 #endif
 
 // This file provides forward declarations of the most important I/O
@@ -77,23 +77,23 @@ class ostreambuf_iterator;
 
 typedef basic_ios<char, char_traits<char> >    ios;
 
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 typedef basic_ios<wchar_t, char_traits<wchar_t> > wios;
-# endif
+#endif
 
 // Forward declaration of class locale, and of the most important facets.
 class locale;
-# ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+#if defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
 template <class _Facet>
 struct _Use_facet {
   const locale& __loc;
   _Use_facet(const locale& __p_loc) : __loc(__p_loc) {}
   inline const _Facet& operator *() const;
 };
-# define use_facet *_Use_facet
-# else
+#  define use_facet *_Use_facet
+#else
 template <class _Facet> inline const _Facet& use_facet(const locale&);
-# endif
+#endif
 
 template <class _CharT> class ctype;
 template <class _CharT> class ctype_byname;
@@ -105,17 +105,17 @@ _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype_byname<char>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate<char>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate_byname<char>;
 
-#  ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype<wchar_t>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate<wchar_t>;
 _STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>;
-#  endif
+#endif
 
-# if !(defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500 ) && !defined(_STLP_WINCE)
+#if !(defined (__SUNPRO_CC) && __SUNPRO_CC < 0x500 ) && !defined(_STLP_WINCE)
 // Typedefs for ordinary (narrow-character) streams.
 //_STLP_TEMPLATE_NULL class _STLP_CLASS_DECLSPEC basic_streambuf<char, char_traits<char> >;
-# endif
+#endif
 
 typedef basic_istream<char, char_traits<char> >   istream;
 typedef basic_ostream<char, char_traits<char> >   ostream;
@@ -132,7 +132,7 @@ typedef basic_ifstream<char, char_traits<char> > ifstream;
 typedef basic_ofstream<char, char_traits<char> > ofstream;
 typedef basic_fstream<char, char_traits<char> >  fstream;
 
-# ifndef _STLP_NO_WCHAR_T
+#if !defined (_STLP_NO_WCHAR_T)
 // Typedefs for wide-character streams.
 typedef basic_streambuf<wchar_t, char_traits<wchar_t> > wstreambuf;
 typedef basic_istream<wchar_t, char_traits<wchar_t> >   wistream;
@@ -148,7 +148,7 @@ typedef basic_filebuf<wchar_t, char_traits<wchar_t> >  wfilebuf;
 typedef basic_ifstream<wchar_t, char_traits<wchar_t> > wifstream;
 typedef basic_ofstream<wchar_t, char_traits<wchar_t> > wofstream;
 typedef basic_fstream<wchar_t, char_traits<wchar_t> >  wfstream;
-# endif
+#endif
 
 _STLP_END_NAMESPACE
 

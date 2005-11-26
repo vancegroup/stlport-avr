@@ -231,7 +231,7 @@ streamoff __file_size(_STLP_fd fd) {
 #if defined (_STLP_UNIX)
 
   struct stat buf;
-  if(fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode))
+  if (fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode))
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
 #elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
@@ -241,17 +241,14 @@ streamoff __file_size(_STLP_fd fd) {
 #elif defined(_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
 
   struct stat buf;
-  if(fstat(fd, &buf) == 0 && (buf.st_mode & _S_IFREG) != 0)
+  if (fstat(fd, &buf) == 0 && (buf.st_mode & _S_IFREG) != 0)
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
 #elif defined (_STLP_USE_WIN32_IO)
 
  LARGE_INTEGER li;
  li.LowPart = GetFileSize(fd, (unsigned long*) &li.HighPart);
- if (li.LowPart == INVALID_FILE_SIZE && GetLastError() != NO_ERROR ) {
-   ret = 0;
- }
- else
+ if (li.LowPart != INVALID_FILE_SIZE || GetLastError() == NO_ERROR)
    ret = li.QuadPart;
 
 #else
@@ -282,13 +279,13 @@ extern "C" {
     long osfhnd;    // the real os HANDLE
     char osfile;    // file handle flags
     char pipech;    // pipe buffer
-#  ifdef _MT
+#  if defined (_MT)
     // multi-threaded locking
     int lockinitflag;
     CRITICAL_SECTION lock;
 #  endif  /* _MT */
   };
-#  ifdef __MINGW32__
+#  if defined (__MINGW32__)
  __MINGW_IMPORT ioinfo * __pioinfo[];
 #  else
   extern _CRTIMP ioinfo * __pioinfo[];
@@ -316,7 +313,7 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
   // For Read/Write access we have to guess
   DWORD dummy, dummy2;
   BOOL writeOk = WriteFile(oshandle, &dummy2, 0, &dummy, 0);
-  BOOL readOk = ReadFile(oshandle, &dummy2, 0, &dummy, 0);
+  BOOL readOk = ReadFile(oshandle, &dummy2, 0, &dummy, NULL);
   if (writeOk && readOk)
     mode |= O_RDWR;
   else if (readOk)
@@ -354,7 +351,6 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
         mode |= O_WRONLY;
       else
         mode |= O_RDWR;
-
       break;
     }
   }
@@ -595,7 +591,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   DWORD dwShareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
 
 #  if defined(_STLP_USE_WIDE_INTERFACE)
-    file_no = CreateFile (__ASCIIToWide(name).c_str(),
+    file_no = CreateFile (_STLP_PRIV __ASCIIToWide(name).c_str(),
 #  else
     file_no = CreateFileA(name,
 #  endif
@@ -664,6 +660,7 @@ bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
 
   return true;
 #  else
+  (void)__id;
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
 
   // not available for the API
@@ -692,7 +689,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   _M_file_id = file_no;
 #elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
-  switch( _iob[file_no]._flag & (_IOREAD|_IOWRT|_IORW) )
+  switch (_iob[file_no]._flag & (_IOREAD|_IOWRT|_IORW) )
   {
   case _IOREAD:
     _M_openmode = ios_base::in; break;
@@ -724,10 +721,10 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   }
   _M_file_id = file_no;
 #elif (defined (_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined (_STLP_WCE) ) || \
-      (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
+      (defined (__MINGW32__) && defined (__MSVCRT__)) || \
+       defined (__DMC__)
 
   HANDLE oshandle = (HANDLE)_get_osfhandle(file_no);
-
   if (oshandle == INVALID_STLP_FD)
     return false;
 
@@ -739,17 +736,19 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   _M_file_id = oshandle;
 #else
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
-
   // not available for the API
-  return false;
-
+#  define _STLP_NO_IMPLEMENTATION
 #endif
 
+#if !defined (_STLP_NO_IMPLEMENTATION)
   _M_is_open = true;
   _M_should_close = false;
   _M_regular_file = _SgI::__is_regular_file(_M_file_id);
-
   return true;
+#else
+#  undef _STLP_NO_IMPLEMENTATION
+  return false;
+#endif
 }
 
 bool _Filebuf_base::_M_close() {
@@ -1039,9 +1038,7 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir) {
   LARGE_INTEGER li;
   li.QuadPart = offset;
   li.LowPart = SetFilePointer(_M_file_id, li.LowPart, &li.HighPart, whence);
-  if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() != NO_ERROR)
-    result = -1; // Error
-  else
+  if (li.LowPart != INVALID_SET_FILE_POINTER || GetLastError() == NO_ERROR)
     result = li.QuadPart;
 
 #else
@@ -1084,7 +1081,12 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
 */
 #  endif
     base = MapViewOfFile(_M_view_id, FILE_MAP_READ, __STATIC_CAST(DWORD, ULL(offset) >> 32),
-                         __STATIC_CAST(DWORD, ULL(offset) & 0xffffffff), __STATIC_CAST(SIZE_T, len));
+                         __STATIC_CAST(DWORD, ULL(offset) & 0xffffffff),
+#  if !defined (__DMC__)
+                         __STATIC_CAST(SIZE_T, len));
+#  else
+                         __STATIC_CAST(DWORD, len));
+#  endif
     // check if mapping succeded and is usable
     if (base == 0  || _M_seek(offset + len, ios_base::beg) < 0) {
       this->_M_unmap(base, len);
@@ -1105,13 +1107,12 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 #if defined (_STLP_UNIX)  && !defined(__DJGPP) && !defined(_CRAY)
   munmap((char*)base, len);
 #elif defined (_STLP_USE_WIN32_IO)
-  if ( base != NULL )
+  if (base != NULL)
     UnmapViewOfFile(base);
   // destroy view handle as well
-  if ( _M_view_id != NULL )
+  if (_M_view_id != NULL)
     CloseHandle(_M_view_id);
   _M_view_id = NULL;
-  base = 0;
   (void)len; //unused variable
 #else
   (void)len;    //*TY 02/26/2000 - unused variables

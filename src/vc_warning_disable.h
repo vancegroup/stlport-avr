@@ -44,4 +44,4 @@
 
 // dums: This warning, signaling deprecated C functions like strncpy,
 // will have to be fixed one day:
-#pragma warning( disable : 4996 )
+//#pragma warning( disable : 4996 )

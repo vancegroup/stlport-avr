@@ -50,20 +50,17 @@ struct binary_function {
 };
 
 template <class _Tp>
-struct equal_to : public binary_function<_Tp,_Tp,bool>
-{
+struct equal_to : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x == __y; }
 };
 
 template <class _Tp>
-struct not_equal_to : public binary_function<_Tp,_Tp,bool>
-{
+struct not_equal_to : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x != __y; }
 };
 
 template <class _Tp>
-struct greater : public binary_function<_Tp,_Tp,bool>
-{
+struct greater : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x > __y; }
 };
 
@@ -93,16 +90,16 @@ struct __type_traits<less<_Tp> > {
 #endif
 
 template <class _Tp>
-struct greater_equal : public binary_function<_Tp,_Tp,bool>
-{
+struct greater_equal : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x >= __y; }
 };
 
 template <class _Tp>
-struct less_equal : public binary_function<_Tp,_Tp,bool>
-{
+struct less_equal : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x <= __y; }
 };
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp>
 less<_Tp> __less(_Tp* ) { return less<_Tp>(); }
@@ -110,15 +107,19 @@ less<_Tp> __less(_Tp* ) { return less<_Tp>(); }
 template <class _Tp>
 equal_to<_Tp> __equal_to(_Tp* ) { return equal_to<_Tp>(); }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _Tp>
-struct plus : public binary_function<_Tp,_Tp,_Tp> {
+struct plus : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x + __y; }
 };
 
 template <class _Tp>
-struct minus : public binary_function<_Tp,_Tp,_Tp> {
+struct minus : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x - __y; }
 };
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp>
 plus<_Tp> __plus(_Tp* ) { return plus<_Tp>(); }
@@ -126,45 +127,44 @@ plus<_Tp> __plus(_Tp* ) { return plus<_Tp>(); }
 template <class _Tp>
 minus<_Tp> __minus(_Tp* ) { return minus<_Tp>(); }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _Tp>
-struct multiplies : public binary_function<_Tp,_Tp,_Tp> {
+struct multiplies : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x * __y; }
 };
 
 template <class _Tp>
-struct divides : public binary_function<_Tp,_Tp,_Tp> {
+struct divides : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x / __y; }
 };
 
 template <class _Tp>
-struct modulus : public binary_function<_Tp,_Tp,_Tp>
-{
+struct modulus : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x % __y; }
 };
 
 template <class _Tp>
-struct negate : public unary_function<_Tp,_Tp>
-{
+struct negate : public unary_function<_Tp, _Tp> {
   _Tp operator()(const _Tp& __x) const { return -__x; }
 };
 
 template <class _Tp>
-struct logical_and : public binary_function<_Tp,_Tp,bool>
-{
+struct logical_and : public binary_function<_Tp, _Tp, bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x && __y; }
 };
 
 template <class _Tp>
-struct logical_or : public binary_function<_Tp,_Tp,bool>
-{
+struct logical_or : public binary_function<_Tp, _Tp,bool> {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x || __y; }
 };
 
 template <class _Tp>
-struct logical_not : public unary_function<_Tp,bool>
-{
+struct logical_not : public unary_function<_Tp, bool> {
   bool operator()(const _Tp& __x) const { return !__x; }
 };
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Pair>
 struct _Select1st : public unary_function<_Pair, typename _Pair::first_type> {
@@ -174,8 +174,7 @@ struct _Select1st : public unary_function<_Pair, typename _Pair::first_type> {
 };
 
 template <class _Pair>
-struct _Select2nd : public unary_function<_Pair, typename _Pair::second_type>
-{
+struct _Select2nd : public unary_function<_Pair, typename _Pair::second_type> {
   const typename _Pair::second_type& operator()(const _Pair& __x) const {
     return __x.second;
   }
@@ -192,17 +191,17 @@ struct _Project2nd : public binary_function<_Arg1, _Arg2, _Arg2> {
   _Arg2 operator()(const _Arg1&, const _Arg2& __y) const { return __y; }
 };
 
-#ifdef _STLP_MULTI_CONST_TEMPLATE_ARG_BUG
+#if defined (_STLP_MULTI_CONST_TEMPLATE_ARG_BUG)
 // fbp : sort of select1st just for maps
 template <class _Pair, class _Whatever>
 // JDJ (CW Pro1 doesn't like const when first_type is also const)
 struct __Select1st_hint : public unary_function<_Pair, _Whatever> {
     const _Whatever& operator () (const _Pair& __x) const { return __x.first; }
 };
-# define  _STLP_SELECT1ST(__x,__y) __Select1st_hint< __x, __y >
-# else
-# define  _STLP_SELECT1ST(__x, __y) _Select1st< __x >
-# endif
+#  define  _STLP_SELECT1ST(__x,__y) _STLP_PRIV __Select1st_hint< __x, __y >
+#else
+#  define  _STLP_SELECT1ST(__x, __y) _STLP_PRIV _Select1st< __x >
+#endif
 
 template <class _Tp>
 struct _Identity : public unary_function<_Tp,_Tp> {
@@ -235,6 +234,8 @@ struct _Constant_binary_fun {
 // identity_element (not part of the C++ standard).
 template <class _Tp> inline _Tp __identity_element(plus<_Tp>) {  return _Tp(0); }
 template <class _Tp> inline _Tp __identity_element(multiplies<_Tp>) { return _Tp(1); }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

@@ -15,12 +15,12 @@
  * modified is included with the above copyright notice.
  *
  */
-#ifndef _STLP_INTERNAL_ISTREAM_H
-#define _STLP_INTERNAL_ISTREAM_H
+#ifndef _STLP_INTERNAL_ISTREAM
+#define _STLP_INTERNAL_ISTREAM
 
 // this block is included by _ostream.h, we include it here to lower #include level
-#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_CWCHAR_H)
-#  include <stl/_cwchar.h>
+#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_INTERNAL_MBSTATE_T)
+#  include <stl/_mbstate_t.h>
 #endif
 
 #ifndef _STLP_INTERNAL_IOS_H
@@ -353,7 +353,7 @@ _STLP_END_NAMESPACE
 #  include <stl/_istream.c>
 #endif
 
-#endif /* _STLP_INTERNAL_ISTREAM_H */
+#endif /* _STLP_INTERNAL_ISTREAM */
 
 // Local Variables:
 // mode:C++

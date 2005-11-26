@@ -18,12 +18,12 @@
  */
 
 #ifndef _STLP_DEBUG_C
-#define  _STLP_DEBUG_C
+#define _STLP_DEBUG_C
 
-#if defined ( _STLP_DEBUG )
+#if defined (_STLP_DEBUG)
 
-#ifdef _STLP_THREADS
-#  ifndef _STLP_NEED_MUTABLE
+#if defined (_STLP_THREADS)
+#  if !defined (_STLP_NEED_MUTABLE)
 #    define _STLP_ACQUIRE_LOCK(_Lock) _Lock._M_acquire_lock();
 #    define _STLP_RELEASE_LOCK(_Lock) _Lock._M_release_lock();
 #  else
@@ -36,11 +36,13 @@
 #endif /* _STLP_THREADS */
 
 _STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 //==========================================================
 //  global non-inline functions
 //==========================================================
 // [ i1, i2)
+#if !defined (__DMC__)
 template <class _Iterator>
 inline bool  _STLP_CALL
 __in_range_aux(const _Iterator& __it, const _Iterator& __first,
@@ -48,6 +50,7 @@ __in_range_aux(const _Iterator& __it, const _Iterator& __first,
     return ( __it >= __first &&
              __it < __last);
 }
+#endif
 
 template <class _Iterator1, class _Iterator>
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1100)
@@ -58,7 +61,7 @@ inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& 
                                        const _Iterator& __last, const forward_iterator_tag &) {
   _Iterator1 __i(__first);
   for (;  __i != __last && __i != __it; ++__i);
-  return (__i!=__last);
+  return (__i != __last);
 }
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
@@ -68,7 +71,7 @@ __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
                const _Iterator& __last, const bidirectional_iterator_tag &) {
   _Iterator1 __i(__first);
   for (;  __i != __last && __i != __it; ++__i);
-  return (__i !=__last);
+  return (__i != __last);
 }
 #endif
 
@@ -81,9 +84,8 @@ bool _STLP_CALL __check_range_aux(const _Iterator& __first, const _Iterator& __l
 
 template <class _Integral>
 bool _STLP_CALL __check_range_aux(_Integral __first, _Integral __last,
-                                  const __true_type& /*_IsIntegral*/) {
-  return true;
-}
+                                  const __true_type& /*_IsIntegral*/)
+{ return true; }
 
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last) {
@@ -125,9 +127,9 @@ void _STLP_CALL __invalidate_range(const __owned_list* __base,
   _L_type* __prev = __CONST_CAST(_L_type*, &__base->_M_node);
   _L_type* __pos = __prev->_M_next;
 
-  while ( __pos != 0 ) {
-    if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos)) &&
-        __in_range_aux(((_Iterator*)__pos)->_M_iterator,
+  while (__pos != 0) {
+    if (!(&__first == __STATIC_CAST(_Iterator*, __pos) || &__last == __STATIC_CAST(_Iterator*, __pos)) &&
+        __in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
                        __first._M_iterator, __last._M_iterator,
                        _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
       __pos->_M_owner = 0;
@@ -148,9 +150,10 @@ void _STLP_CALL __invalidate_iterator(const __owned_list* __base,
   _STLP_ACQUIRE_LOCK(__base->_M_lock)
   _L_type* __prev = __CONST_CAST(_L_type*, &__base->_M_node);
   _L_type* __pos = __prev->_M_next;
-  while ( __pos != 0 ) {
+  while (__pos != 0) {
     // this requires safe iterators to be derived from __owned_link
-    if ((__pos != (_L_type*)&__it) && ((_Iterator*)__pos)->_M_iterator == __it._M_iterator ) {
+    if ((__pos != __STATIC_CAST(const _L_type*, &__it)) &&
+        (__STATIC_CAST(_Iterator*, __pos)->_M_iterator == __it._M_iterator)) {
       __pos->_M_owner = 0;
       __prev->_M_next = __pos->_M_next;
     }
@@ -178,8 +181,8 @@ void _STLP_CALL  __change_range_owner(const _Iterator& __first,
   _L_type* __dst_prev = __CONST_CAST(_L_type*, &__dst->_M_node);
 
   while (__pos != 0) {
-    if ((!(&__first == (_Iterator*)__pos || &__last == (_Iterator*)__pos)) &&
-        __in_range_aux(((_Iterator*)__pos)->_M_iterator,
+    if (!(&__first == __STATIC_CAST(_Iterator*, __pos) || &__last == __STATIC_CAST(_Iterator*, __pos)) &&
+        __in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
                        __first._M_iterator, __last._M_iterator,
                        _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
       __pos->_M_owner = __CONST_CAST(__owned_list*, __dst);
@@ -213,7 +216,8 @@ void _STLP_CALL __change_ite_owner(const _Iterator& __it,
 
   while (__pos != 0) {
     // this requires safe iterators to be derived from __owned_link
-    if ((__pos != (_L_type*)&__it) && ((_Iterator*)__pos)->_M_iterator == __it._M_iterator ) {
+    if ((__pos != __STATIC_CAST(const _L_type*, &__it)) &&
+        (__STATIC_CAST(_Iterator*, __pos)->_M_iterator == __it._M_iterator)) {
       __pos->_M_owner = __CONST_CAST(__owned_list*, __dst);
       //remove __pos from __base:
       __prev->_M_next = __pos->_M_next;
@@ -229,18 +233,16 @@ void _STLP_CALL __change_ite_owner(const _Iterator& __it,
   //_STLP_RELEASE_LOCK(__base->_M_lock)
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_DEBUG */
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
-// dwa 12/26/99 -- for abort
-#  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include <cstdlib>
-#  else
-#    include <stdlib.h>
-#  endif /* _STLP_USE_NEW_C_HEADERS */
+#  ifndef _STLP_INTERNAL_CSTDLIB
+#    include <stl/_cstdlib.h>
+#  endif
 
 #  if defined (_STLP_WIN32)
 #    include <stl/_windows.h>
@@ -254,12 +256,13 @@ _STLP_END_NAMESPACE
 #  if defined (_STLP_ASSERTIONS)
 
 _STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
-#    ifndef _STLP_STRING_LITERAL
+#    if !defined (_STLP_STRING_LITERAL)
 #      define _STLP_STRING_LITERAL(__x) __x
 #    endif
 
-#    ifdef _STLP_USE_WIDE_INTERFACE
+#    if defined (_STLP_USE_WIDE_INTERFACE)
 // note: WinCE needs this to format single-byte strings in __stl_debug_engine::_Message
 #      define _STLP_PERCENT_S "%hs"
 #    else
@@ -294,6 +297,7 @@ _STLP_STRING_LITERAL("Size of block passed to deallocate() doesn't match block s
 _STLP_STRING_LITERAL("Pointer underrun - safety margin at front of memory block overwritten"),  \
 _STLP_STRING_LITERAL("Pointer overrrun - safety margin at back of memory block overwritten"),   \
 _STLP_STRING_LITERAL("Attempt to dereference null pointer returned by auto_ptr::get()"),   \
+_STLP_STRING_LITERAL("Memory allocation function returned a wrongly align memory block"),   \
 _STLP_STRING_LITERAL("Unknown problem") \
   }
 
@@ -301,33 +305,42 @@ _STLP_STRING_LITERAL("Unknown problem") \
 template <class _Dummy>
 const char* __stl_debug_engine<_Dummy>::_Message_table[_StlMsg_MAX]  _STLP_MESSAGE_TABLE_BODY;
 
-#      if (defined(__CYGWIN__) || defined(__MINGW32__)) && defined(_STLP_USE_DYNAMIC_LIB)
+#      if (defined (__CYGWIN__) || defined (__MINGW32__)) && defined (_STLP_USE_DYNAMIC_LIB)
 /*
  * Under cygwin, when STLport is used as a shared library, the id needs
  * to be specified as imported otherwise they will be duplicated in the
  * calling executable.
  */
-template <>
+_STLP_TEMPLATE_NULL
 _STLP_DECLSPEC const char* __stl_debug_engine<bool>::_Message_table[_StlMsg_MAX];
 #      endif
 
 #    else
 __DECLARE_INSTANCE(const char*, __stl_debug_engine<bool>::_Message_table[_StlMsg_MAX],
-             _STLP_MESSAGE_TABLE_BODY);
+                   _STLP_MESSAGE_TABLE_BODY);
 #    endif
 
 #    undef _STLP_STRING_LITERAL
 #    undef _STLP_PERCENT_S
+
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 // abort()
-#    include <cstdlib>
+#  ifndef _STLP_INTERNAL_CSTDLIB
+#    include <stl/_cstdlib.h>
+#  endif
 
-#    if !defined (_STLP_DEBUG_MESSAGE)
-#      include <cstdarg>
-#      include <cstdio>
+#  if !defined (_STLP_DEBUG_MESSAGE)
+#    ifndef _STLP_INTERNAL_CSTDARG
+#      include <stl/_cstdarg.h>
+#    endif
+#    ifndef _STLP_INTERNAL_CSTDIO
+#      include <stl/_cstdio.h>
+#    endif
 
 _STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Dummy>
 void _STLP_CALL
@@ -338,7 +351,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
 #      if defined (_STLP_USE_WIDE_INTERFACE)
   TCHAR __buffer[512];
   int _convert = strlen(__format_str) + 1;
-  LPWSTR _lpw = (LPWSTR)alloca(_convert*sizeof(wchar_t));
+  LPWSTR _lpw = (LPWSTR)alloca(_convert * sizeof(wchar_t));
   _lpw[0] = '\0';
   MultiByteToWideChar(GetACP(), 0, __format_str, -1, _lpw, _convert);
   wvsprintf(__buffer, _lpw, __args);
@@ -347,7 +360,11 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
 #      elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || \
             (defined (__BORLANDC__) && (__BORLANDC__ > 0x550)))
   char __buffer [4096];
-  vsnprintf(__buffer, sizeof(__buffer) / sizeof(char), __format_str, __args);
+#        if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+  vsnprintf(__buffer, _STLP_ARRAY_SIZE(__buffer), __format_str, __args);
+#        else
+  vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
+#        endif
   OutputDebugStringA(__buffer);
 #      elif defined (__amigaos__)
   STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
@@ -362,12 +379,13 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
   va_end(__args);
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #    endif /* _STLP_DEBUG_MESSAGE */
 
 _STLP_BEGIN_NAMESPACE
-
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Dummy>
 void _STLP_CALL
@@ -396,16 +414,14 @@ __stl_debug_engine<_Dummy>::_Assert(const char* __expr, const char* __f, int __l
 template <class _Dummy>
 void _STLP_CALL
 __stl_debug_engine<_Dummy>::_Terminate() {
-//# ifdef _STLP_USE_NAMESPACES
-//  using namespace _STLP_STD;
-//# endif
-#    if defined (_STLP_USE_EXCEPTIONS) && ! defined (_STLP_NO_DEBUG_EXCEPTIONS)
+#    if defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_DEBUG_EXCEPTIONS)
   throw __stl_debug_exception();
 #    else
   _STLP_ABORT();
 #    endif
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #  endif /* _STLP_ASSERTIONS */
@@ -413,6 +429,7 @@ _STLP_END_NAMESPACE
 #  if defined (_STLP_DEBUG)
 
 _STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 //==========================================================
 //  owned_list non-inline methods
@@ -556,15 +573,15 @@ __stl_debug_engine<_Dummy>::_Check_same_owner(const __owned_link& __i1,
                                               const __owned_link& __i2) {
   _STLP_VERBOSE_RETURN(__i1._Valid(), _StlMsg_INVALID_LEFTHAND_ITERATOR)
   _STLP_VERBOSE_RETURN(__i2._Valid(), _StlMsg_INVALID_RIGHTHAND_ITERATOR)
-  _STLP_VERBOSE_RETURN((__i1._Owner()==__i2._Owner()), _StlMsg_DIFFERENT_OWNERS)
+  _STLP_VERBOSE_RETURN((__i1._Owner() == __i2._Owner()), _StlMsg_DIFFERENT_OWNERS)
   return true;
 }
 
 template <class _Dummy>
-bool  _STLP_CALL
+bool _STLP_CALL
 __stl_debug_engine<_Dummy>::_Check_same_or_null_owner(const __owned_link& __i1,
                                                       const __owned_link& __i2) {
-  _STLP_VERBOSE_RETURN(__i1._Owner()==__i2._Owner(), _StlMsg_DIFFERENT_OWNERS)
+  _STLP_VERBOSE_RETURN(__i1._Owner() == __i2._Owner(), _StlMsg_DIFFERENT_OWNERS)
   return true;
 }
 
@@ -572,8 +589,8 @@ template <class _Dummy>
 bool _STLP_CALL
 __stl_debug_engine<_Dummy>::_Check_if_owner( const __owned_list * __l, const __owned_link& __it) {
   const __owned_list* __owner_ptr = __it._Owner();
-  _STLP_VERBOSE_RETURN(__owner_ptr!=0, _StlMsg_INVALID_ITERATOR)
-  _STLP_VERBOSE_RETURN(__l==__owner_ptr, _StlMsg_NOT_OWNER)
+  _STLP_VERBOSE_RETURN(__owner_ptr != 0, _StlMsg_INVALID_ITERATOR)
+  _STLP_VERBOSE_RETURN(__l == __owner_ptr, _StlMsg_NOT_OWNER)
   return true;
 }
 
@@ -581,11 +598,12 @@ template <class _Dummy>
 bool _STLP_CALL
 __stl_debug_engine<_Dummy>::_Check_if_not_owner( const __owned_list * __l, const __owned_link& __it) {
   const __owned_list* __owner_ptr = __it._Owner();
-  _STLP_VERBOSE_RETURN(__owner_ptr!=0, _StlMsg_INVALID_ITERATOR)
-  _STLP_VERBOSE_RETURN(__l!=__owner_ptr, _StlMsg_SHOULD_NOT_OWNER)
+  _STLP_VERBOSE_RETURN(__owner_ptr != 0, _StlMsg_INVALID_ITERATOR)
+  _STLP_VERBOSE_RETURN(__l != __owner_ptr, _StlMsg_SHOULD_NOT_OWNER)
   return true;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #  endif /* _STLP_DEBUG */

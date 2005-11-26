@@ -20,6 +20,7 @@
 #  endif
 #endif
 
+#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -50,6 +51,7 @@ class StringTest : public CPPUNIT_NS::TestCase
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(io);
 #endif
+  CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -71,6 +73,7 @@ protected:
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   void io();
 #endif
+  void allocator_with_state();
 
   static string func(const string& par) {
     string tmp( par );
@@ -120,7 +123,7 @@ void StringTest::mt()
 #endif // _STLP_PTHREADS
 
 #if defined (_STLP_WIN32THREADS)
-  //DWORD start = GetTickCount();
+  DWORD start = GetTickCount();
 
   HANDLE t[nth];
 
@@ -138,12 +141,10 @@ void StringTest::mt()
   WaitForMultipleObjects(nth, t, TRUE, INFINITE);
 #endif
 
-  /*
   DWORD duration = GetTickCount() - start;
   ostringstream ostr;
   ostr << "Duration: " << duration << endl;
   CPPUNIT_MESSAGE(ostr.str().c_str());
-  */
 #endif
 
 #if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
@@ -237,7 +238,7 @@ void StringTest::erase()
     }
   }
 
-  str.insert(1, (char*)c_str);
+  str.insert(1, c_str);
   str.erase(str.begin()); // Erase first element.
   str.erase(str.end() - 1); // Erase last element.
   CPPUNIT_ASSERT( str == c_str );
@@ -698,11 +699,9 @@ void StringTest::template_expresion()
   }
 
   {
-    char result;
-
     CPPUNIT_CHECK( !(one + ' ' + two).empty() );
 
-    result = (one + ' ' + two)[3];
+    char result = (one + ' ' + two)[3];
     CPPUNIT_CHECK( result == ' ' );
 
     result = (one + ' ' + two).at(3);
@@ -715,6 +714,7 @@ void StringTest::template_expresion()
         CPPUNIT_ASSERT(false);
       }
       catch (out_of_range const&) {
+        CPPUNIT_ASSERT( result == ' ' );
         CPPUNIT_ASSERT(true);
         return;
       }
@@ -754,3 +754,46 @@ void StringTest::io()
   }
 }
 #endif
+
+void StringTest::allocator_with_state()
+{
+  char buf1[1024];
+  StackAllocator<char> stack1(buf1, buf1 + sizeof(buf1));
+
+  char buf2[1024];
+  StackAllocator<char> stack2(buf2, buf2 + sizeof(buf2));
+
+  typedef basic_string<char, char_traits<char>, StackAllocator<char> > StackString;
+  {
+    StackString str1("string stack1", stack1);
+    StackString str1Cpy(str1);
+
+    StackString str2("string stack1", stack2);
+    StackString str2Cpy(str2);
+
+    str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1 == str2Cpy );
+    CPPUNIT_ASSERT( str2 == str1Cpy );
+    CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.OK() );
+  CPPUNIT_ASSERT( stack2.OK() );
+  stack1.reset(); stack2.reset();
+
+  {
+    StackString str1("longer string from stack1 allocator instance for dynamic allocation", stack1);
+    StackString str1Cpy(str1);
+
+    StackString str2("longer string from stack2 allocator instance for dynamic allocation", stack2);
+    StackString str2Cpy(str2);
+
+    str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1 == str2Cpy );
+    CPPUNIT_ASSERT( str2 == str1Cpy );
+    CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
+  }
+}

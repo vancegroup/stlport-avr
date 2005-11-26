@@ -16,31 +16,30 @@
 #ifndef _STLP_CLIMITS
 # define _STLP_CLIMITS
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x108
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# if defined (__SUNPRO_CC) && ((__SUNPRO_CC == 0x500) && (__SUNPRO_CC_COMPAT > 4))
+#if defined (__SUNPRO_CC) && ((__SUNPRO_CC == 0x500) && (__SUNPRO_CC_COMPAT > 4))
 #  include </usr/include/limits.h>
-# elif defined (_STLP_USE_NEW_C_HEADERS)
+#elif defined (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(climits)
-# else
-#  ifdef __BORLANDC__
-#   include _STLP_NATIVE_C_HEADER(limits.h)
+#else
+#  if defined (__BORLANDC__)
+#    include _STLP_NATIVE_C_HEADER(limits.h)
 #  else
-#   include <limits.h>
+#    include <limits.h>
 #  endif
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID ==  0x108 )
+#if (_STLP_OUTERMOST_HEADER_ID ==  0x108 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_CLIMITS */
 
 // Local Variables:
 // mode:C++
 // End:
-

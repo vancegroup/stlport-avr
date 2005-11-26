@@ -21,7 +21,7 @@
 #endif
 
 /* evc3 doesn't have iso646.h */
-#if !defined(_STLP_WCE_EVC3) && !defined(N_PLAT_NLM)
+#if !defined (_STLP_WCE_EVC3) && !defined (N_PLAT_NLM) && !defined (__BORLANDC__)
 #  include _STLP_NATIVE_C_HEADER(iso646.h)
 #endif
 

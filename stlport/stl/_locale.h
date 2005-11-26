@@ -23,12 +23,12 @@
 #ifndef _STLP_INTERNAL_LOCALE_H
 #define _STLP_INTERNAL_LOCALE_H
 
-#ifndef _STLP_CSTDLIB
-#  include <cstdlib>
+#ifndef _STLP_INTERNAL_CSTDLIB
+#  include <stl/_cstdlib.h>
 #endif
 
-#ifndef _STLP_CWCHAR_H
-#  include <stl/_cwchar.h>
+#ifndef _STLP_INTERNAL_MBSTATE_T
+#  include <stl/_mbstate_t.h>
 #endif
 
 #ifndef _STLP_INTERNAL_THREADS_H
@@ -53,10 +53,9 @@ class _STLP_CLASS_DECLSPEC locale;
 #endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
 
 template <class _CharT, class _Traits, class _Alloc>
-bool
-__locale_do_operator_call (const locale* __that,
-                           const basic_string<_CharT, _Traits, _Alloc>& __x,
-                           const basic_string<_CharT, _Traits, _Alloc>& __y);
+bool __locale_do_operator_call (const locale* __that,
+                                const basic_string<_CharT, _Traits, _Alloc>& __x,
+                                const basic_string<_CharT, _Traits, _Alloc>& __y);
 
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _get_Locale_impl( _Locale_impl *locimpl );
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl *locimpl );
@@ -64,7 +63,7 @@ _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_imp
 class _STLP_CLASS_DECLSPEC locale {
 public:
   // types:
-  class _STLP_DECLSPEC facet : protected _Refcount_Base {
+  class _STLP_CLASS_DECLSPEC facet : protected _Refcount_Base {
   protected:
     explicit facet(size_t __no_del = 0) : _Refcount_Base( __no_del == 0 ? 0 : 1 ), _M_delete(__no_del == 0) {}
     virtual ~facet();
@@ -86,7 +85,7 @@ public:
 #else
   class
 #endif
-  _STLP_DECLSPEC id {
+  _STLP_CLASS_DECLSPEC id {
     friend class locale;
     friend class _Locale_impl;
   public:

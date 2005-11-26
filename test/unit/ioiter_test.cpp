@@ -51,7 +51,7 @@ void IoiterTest::ioiter_test()
 
   pc = strorg;
   string::size_type sz = strlen(strorg);
-  string::size_type i = 0;
+  string::size_type i;
   for ( i = 0; i < sz; ++i ) {
     c = *pc++;
     tmp += c;

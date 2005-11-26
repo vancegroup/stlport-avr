@@ -31,12 +31,12 @@
 #define _STLP_INTERNAL_ITERATOR_H
 
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
-# include <stl/_iterator_base.h>
+#  include <stl/_iterator_base.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 // This is the new version of reverse_iterator, as defined in the
 //  draft C++ standard.  It relies on the iterator_traits template,
 //  which in turn relies on partial specialization.  The class
@@ -49,8 +49,7 @@ class reverse_iterator :
                   typename iterator_traits<_Iterator>::value_type,
                   typename iterator_traits<_Iterator>::difference_type,
                   typename iterator_traits<_Iterator>::pointer,
-                  typename iterator_traits<_Iterator>::reference>
-{
+                  typename iterator_traits<_Iterator>::reference> {
 protected:
   _Iterator current;
   typedef reverse_iterator<_Iterator> _Self;
@@ -66,12 +65,12 @@ public:
   explicit reverse_iterator(iterator_type __x) : current(__x) {}
   reverse_iterator(const _Self& __x) : current(__x.current) {}
   _Self& operator = (const _Self& __x) { current = __x.base(); return *this; }
-#ifdef _STLP_MEMBER_TEMPLATES
+#  if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Iter>
   reverse_iterator(const reverse_iterator<_Iter>& __x) : current(__x.base()) {}
   template <class _Iter>
   _Self& operator = (const reverse_iterator<_Iter>& __x) { current = __x.base(); return *this; }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#  endif /* _STLP_MEMBER_TEMPLATES */
 
   iterator_type base() const { return current; }
   reference operator*() const {
@@ -98,16 +97,12 @@ public:
     return __tmp;
   }
 
-  _Self operator+(difference_type __n) const {
-    return _Self(current - __n);
-  }
+  _Self operator+(difference_type __n) const { return _Self(current - __n); }
   _Self& operator+=(difference_type __n) {
     current -= __n;
     return *this;
   }
-  _Self operator-(difference_type __n) const {
-    return _Self(current + __n);
-  }
+  _Self operator-(difference_type __n) const { return _Self(current + __n); }
   _Self& operator-=(difference_type __n) {
     current += __n;
     return *this;
@@ -117,66 +112,55 @@ public:
 
 template <class _Iterator>
 inline bool  _STLP_CALL operator==(const reverse_iterator<_Iterator>& __x,
-                                   const reverse_iterator<_Iterator>& __y) {
-  return __x.base() == __y.base();
-}
+                                   const reverse_iterator<_Iterator>& __y)
+{ return __x.base() == __y.base(); }
 
 template <class _Iterator>
 inline bool _STLP_CALL operator<(const reverse_iterator<_Iterator>& __x,
-                                 const reverse_iterator<_Iterator>& __y) {
-  return __y.base() < __x.base();
-}
+                                 const reverse_iterator<_Iterator>& __y)
+{ return __y.base() < __x.base(); }
 
-#ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
-
+#  if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 template <class _Iterator>
 inline bool _STLP_CALL operator!=(const reverse_iterator<_Iterator>& __x,
-                                  const reverse_iterator<_Iterator>& __y) {
-  return !(__x == __y);
-}
+                                  const reverse_iterator<_Iterator>& __y)
+{ return !(__x == __y); }
 
 template <class _Iterator>
 inline bool _STLP_CALL operator>(const reverse_iterator<_Iterator>& __x,
-                                 const reverse_iterator<_Iterator>& __y) {
-  return __y < __x;
-}
+                                 const reverse_iterator<_Iterator>& __y)
+{ return __y < __x; }
 
 template <class _Iterator>
 inline bool _STLP_CALL operator<=(const reverse_iterator<_Iterator>& __x,
-                                  const reverse_iterator<_Iterator>& __y) {
-  return !(__y < __x);
-}
+                                  const reverse_iterator<_Iterator>& __y)
+{ return !(__y < __x); }
 
 template <class _Iterator>
 inline bool _STLP_CALL operator>=(const reverse_iterator<_Iterator>& __x,
-                                  const reverse_iterator<_Iterator>& __y) {
-  return !(__x < __y);
-}
-
-#endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
+                                  const reverse_iterator<_Iterator>& __y)
+{ return !(__x < __y); }
+#  endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _Iterator>
-# ifdef __SUNPRO_CC
+#  if defined (__SUNPRO_CC)
 inline ptrdiff_t _STLP_CALL
-# else
+#  else
 inline typename reverse_iterator<_Iterator>::difference_type _STLP_CALL
-# endif
+#  endif
 operator-(const reverse_iterator<_Iterator>& __x,
-          const reverse_iterator<_Iterator>& __y) {
-  return __y.base() - __x.base();
-}
+          const reverse_iterator<_Iterator>& __y)
+{ return __y.base() - __x.base(); }
 
 template <class _Iterator, class _DifferenceType>
 inline reverse_iterator<_Iterator>  _STLP_CALL
-operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x) {
-  return x.operator+(n);
-}
-
-# endif
+operator+(_DifferenceType n,const reverse_iterator<_Iterator>& x)
+{ return x.operator+(n); }
+#endif
 
 template <class _Container>
 class back_insert_iterator
-  : public iterator<output_iterator_tag,void,void,void,void> {
+  : public iterator<output_iterator_tag, void, void, void, void> {
   typedef back_insert_iterator<_Container> _Self;
 protected:
   //c is a Standard name (24.4.2.1), do no make it STLport naming convention compliant.
@@ -201,13 +185,12 @@ public:
 };
 
 template <class _Container>
-inline back_insert_iterator<_Container>  _STLP_CALL back_inserter(_Container& __x) {
-  return back_insert_iterator<_Container>(__x);
-}
+inline back_insert_iterator<_Container>  _STLP_CALL back_inserter(_Container& __x)
+{ return back_insert_iterator<_Container>(__x); }
 
 template <class _Container>
 class front_insert_iterator
-  : public iterator<output_iterator_tag,void,void,void,void> {
+  : public iterator<output_iterator_tag, void, void, void, void> {
   typedef front_insert_iterator<_Container> _Self;
 protected:
   //c is a Standard name (24.4.2.3), do no make it STLport naming convention compliant.
@@ -231,13 +214,12 @@ public:
 };
 
 template <class _Container>
-inline front_insert_iterator<_Container>  _STLP_CALL front_inserter(_Container& __x) {
-  return front_insert_iterator<_Container>(__x);
-}
+inline front_insert_iterator<_Container>  _STLP_CALL front_inserter(_Container& __x)
+{ return front_insert_iterator<_Container>(__x); }
 
 template <class _Container>
 class insert_iterator
-  : public iterator<output_iterator_tag,void,void,void,void> {
+  : public iterator<output_iterator_tag, void, void, void, void> {
   typedef insert_iterator<_Container> _Self;
 protected:
   //container is a Standard name (24.4.2.5), do no make it STLport naming convention compliant.
@@ -273,9 +255,9 @@ inserter(_Container& __x, _Iterator __i) {
 
 _STLP_END_NAMESPACE
 
-#if ! defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION ) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-# include <stl/_iterator_old.h>
-#endif /* __NO_PARTIAL_SPEC || ANACHRONISMS */
+#if ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) || defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
+#  include <stl/_iterator_old.h>
+#endif
 
 #endif /* _STLP_INTERNAL_ITERATOR_H */
 

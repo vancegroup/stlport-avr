@@ -22,17 +22,16 @@
   * Exception-usage settings
   */
 #ifdef CPPUNIT_MINI_USE_EXCEPTIONS
-# undef CPPUNIT_MINI_USE_EXCEPTIONS
+#  undef CPPUNIT_MINI_USE_EXCEPTIONS
 #endif
 
  /*
   * STLport specific
   */
 #if defined _STLP_USE_EXCEPTIONS
-# define CPPUNIT_MINI_USE_EXCEPTIONS
+#  define CPPUNIT_MINI_USE_EXCEPTIONS
 #endif
 
-# include "cppunit_mini.h"
+#include "cppunit_mini.h"
 
 #endif
-

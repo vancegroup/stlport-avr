@@ -15,9 +15,8 @@ struct ref_locale {
   const char *decimal_point;
   const char *thousands_sep;
   const char *money_int_prefix;
+  const char *money_int_prefix_old;
   const char *money_prefix;
-  const char *money_int_suffix;
-  const char *money_int_suffix_old;
   const char *money_suffix;
   const char *money_decimal_point;
   const char *money_thousands_sep;
@@ -27,17 +26,17 @@ struct ref_locale {
 // It undefined in any case!!!!!
 
 static const ref_locale tested_locales[] = {
-//{  name,         decimal_point, thousands_sep, money_int_prefix, money_prefix, money_int_suffix, money_int_suffix_old, money_suffix, money_decimal_point, money_thousands_sep},
-  { "fr_FR",       ",",           "\xa0",        "",               "",           "EUR ",           "FRF ",               "",           ",",
+//{  name,         decimal_point, thousands_sep, money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
+  { "fr_FR",       ",",           "\xa0",        "EUR ",           "FRF ",               "",           "",           ",",                
 #if defined (WIN32)
-                                                                                                                                                            "\xa0" },
+                                                                                                                                          "\xa0" },
 #else
-                                                                                                                                                            " " },
+                                                                                                                                          " " },
 #endif
-  { "ru_RU.koi8r", ",",           ".",           "RUR ",           "",           "",               "",                   "\xd2\xd5\xc2", ".",               " " },
-  { "en_GB",       ".",           ",",           "GBP ",           "\xa3",       "",               "",                   "",           ".",                 "," },
-  { "en_US",       ".",           ",",           "USD ",           "$",          "",               "",                   "",           ".",                 "," },
-  { "C",           ".",           ",",           "",               "",           "",               "",                   "",           " ",                 " " },
+  { "ru_RU.koi8r", ",",           ".",           "RUR ",           "",                   "",           "\xd2\xd5\xc2", ".",               " " },
+  { "en_GB",       ".",           ",",           "GBP ",           "",                   "\xa3",       "",           ".",                 "," },
+  { "en_US",       ".",           ",",           "USD ",           "",                   "$",          "",           ".",                 "," },
+  { "C",           ".",           ",",           "",               "",                   "",           "",           " ",                 " " },
 };
 
 
@@ -175,10 +174,17 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       string::size_type p = strlen( rl.money_int_prefix );
       if (p != 0) {
         CPPUNIT_ASSERT( intl_fmp.pos_format().field[fieldIndex] == money_base::symbol );
-        CPPUNIT_ASSERT( str_res.substr(index, p) == rl.money_int_prefix );
-        index += p;
+        string::size_type p_old = strlen( rl.money_int_prefix_old );
+        CPPUNIT_ASSERT( (str_res.substr(index, p) == rl.money_int_prefix) ||
+                        ((p_old != 0) && (str_res.substr(index, p_old) ==  rl.money_int_prefix_old)) );
+        if ( str_res.substr(index, p) == rl.money_int_prefix ) {
+          index += p;
+        } else {
+          index += p_old;
+        }
         ++fieldIndex;
       }
+      
       // space after currency
       if (intl_fmp.pos_format().field[fieldIndex] == money_base::space ||
           intl_fmp.pos_format().field[fieldIndex] == money_base::none) {
@@ -216,27 +222,6 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       // space
       if (intl_fmp.pos_format().field[fieldIndex] == money_base::space ) {
         CPPUNIT_ASSERT( str_res[index++] == ' ' );
-        ++fieldIndex;
-      }
-
-      // iternational currency abbreviation, if it sacceeds value
-
-      // Oh, RUR typed wrong here, but test pass this:
-      // it prints '1 234.56 RUR ' (see space after RUR)
-      // This is due to intl_fmp.curr_symbol() == "RUR ".
-      // Sources I see isn't clear say about the format...
-
-      p = strlen( rl.money_int_suffix );
-      if ( p != 0 ) {
-        CPPUNIT_ASSERT( intl_fmp.pos_format().field[fieldIndex] == money_base::symbol );
-        string::size_type p_old = strlen( rl.money_int_suffix_old );
-        CPPUNIT_ASSERT( (str_res.substr(index, p) == rl.money_int_suffix) ||
-                        ((p_old != 0) && (str_res.substr(index, p_old) ==  rl.money_int_suffix_old)) );
-        if ( str_res.substr(index, p) == rl.money_int_suffix ) {
-          index += p;
-        } else {
-          index += p_old;
-        }
         ++fieldIndex;
       }
 
@@ -362,8 +347,6 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
 void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
 {
   money_put<char> const& fmp = use_facet<money_put<char> >(loc);
-  money_get<char> const& fmg = use_facet<money_get<char> >(loc);
-  moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
 
   ostringstream ostr;
   ostr.imbue(loc);
@@ -597,6 +580,7 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
     CPPUNIT_ASSERT( ct.is(ctype_base::lower, 'a') );
     CPPUNIT_ASSERT( ct.is(ctype_base::alpha, 'A') );
     CPPUNIT_ASSERT( ct.is(ctype_base::space, ' ') );
+    CPPUNIT_ASSERT( !ct.is(ctype_base::space, '2') );
     CPPUNIT_ASSERT( ct.is(ctype_base::punct, '.') );
     CPPUNIT_ASSERT( ct.is(ctype_base::xdigit, 'a') );
   }
@@ -795,34 +779,26 @@ void LocaleTest::loc_has_facet() {
   */
 }
 
-void LocaleTest::num_put_get() {
-  test_supported_locale(*this, &LocaleTest::_num_put_get);
-}
+void LocaleTest::num_put_get()
+{ test_supported_locale(*this, &LocaleTest::_num_put_get); }
 
-void LocaleTest::money_put_get() {
-  test_supported_locale(*this, &LocaleTest::_money_put_get);
-}
+void LocaleTest::money_put_get()
+{ test_supported_locale(*this, &LocaleTest::_money_put_get); }
 
-void LocaleTest::money_put_X_bug() {
-  test_supported_locale(*this, &LocaleTest::_money_put_X_bug);
-}
+void LocaleTest::money_put_X_bug()
+{ test_supported_locale(*this, &LocaleTest::_money_put_X_bug); }
 
-void LocaleTest::time_put_get() {
-  test_supported_locale(*this, &LocaleTest::_time_put_get);
-}
+void LocaleTest::time_put_get()
+{ test_supported_locale(*this, &LocaleTest::_time_put_get); }
 
-void LocaleTest::collate_facet() {
-  test_supported_locale(*this, &LocaleTest::_collate_facet);
-}
+void LocaleTest::collate_facet()
+{ test_supported_locale(*this, &LocaleTest::_collate_facet); }
 
-void LocaleTest::ctype_facet() {
-  test_supported_locale(*this, &LocaleTest::_ctype_facet);
-}
+void LocaleTest::ctype_facet()
+{ test_supported_locale(*this, &LocaleTest::_ctype_facet); }
 
 void LocaleTest::locale_init_problem()
-{
-  test_supported_locale(*this, &LocaleTest::_locale_init_problem);
-}
+{ test_supported_locale(*this, &LocaleTest::_locale_init_problem); }
 
 
 /*

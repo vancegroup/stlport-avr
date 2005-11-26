@@ -3,7 +3,7 @@
  */
 
 /* Systems having GLIBC installed have different traits */
-#if defined (__linux__) || defined(__CYGWIN__)
+#if defined (__linux__) || defined (__CYGWIN__)
 #  ifndef _STLP_USE_GLIBC
 #    define _STLP_USE_GLIBC 1
 /*
@@ -12,7 +12,7 @@
 #  endif
 */
 #  endif
-#  if defined(__UCLIBC__) && !defined(_STLP_USE_UCLIBC)
+#  if defined (__UCLIBC__) && !defined (_STLP_USE_UCLIBC)
 #    define _STLP_USE_UCLIBC 1
 #  endif
 #endif
@@ -84,7 +84,6 @@
 #  define __NO_INCLUDE_WARN__ 1
 #endif
 
-
 /* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate
    static template data. If you are using GNU ld, please say so in stl_user_config.h header */
 #if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
@@ -92,13 +91,13 @@
 #  define _STLP_NO_STATIC_TEMPLATE_DATA
 #endif
 
-#if !defined(_REENTRANT) && ((defined(__FreeBSD__) && defined(_THREAD_SAFE)) || defined(_THREAD_SAFE) || \
-                             (defined(__OpenBSD__) && defined(_POSIX_THREADS)) || \
-                             (defined(__MINGW32__) && defined(_MT)))
+#if !defined (_REENTRANT) && (defined (_THREAD_SAFE) || \
+                             (defined (__OpenBSD__) && defined (_POSIX_THREADS)) || \
+                             (defined (__MINGW32__) && defined (_MT)))
 #  define _REENTRANT
-#endif /* (__FreeBSD__ && _THREAD_SAFE) || (__OpenBSD__ && _POSIX_THREADS) || (__MINGW32__ && _MT) */
+#endif
 
-#if defined(__DJGPP)
+#if defined (__DJGPP)
 #  define _STLP_RAND48    1
 #  define _NOTHREADS    1
 #  undef  _PTHREADS
@@ -112,7 +111,7 @@
 #  define _STLP_CALL
 
 #  if defined (_STLP_NEW_PLATFORM_SDK)
-/* For the moment the SDK coming with Mingw still mimik the old platform SDK. */
+/* For the moment the Windows SDK coming with Mingw still mimik the old platform SDK. */
 #    undef _STLP_NEW_PLATFORM_SDK
 #  endif
 #endif /* __MINGW32__ */

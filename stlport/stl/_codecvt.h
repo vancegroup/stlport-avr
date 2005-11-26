@@ -108,28 +108,28 @@ public:
 protected:
   ~codecvt() {}
 
-  virtual result do_out(state_type& __state,
-            const intern_type*      __from,
-            const intern_type*      __from_end,
-            const intern_type*&     __from_next,
-            extern_type*            __to,
-            extern_type*            __to_limit,
-            extern_type*&           __to_next) const
+  virtual result do_out(state_type&,
+                        const intern_type*  __from,
+                        const intern_type*,
+                        const intern_type*& __from_next,
+                        extern_type*        __to,
+                        extern_type*,
+                        extern_type*&       __to_next) const
   { __from_next = __from; __to_next   = __to; return noconv; }
 
-  virtual result do_in (state_type& __state,
-            const extern_type*      __from,
-            const extern_type*      __from_end,
-            const extern_type*&     __from_next,
-            intern_type*            __to,
-            intern_type*            __to_limit,
-            intern_type*&           __to_next) const
-  { __from_next = __from; __to_next   = __to; return noconv; }
+  virtual result do_in (state_type&,
+                        const extern_type*  __from,
+                        const extern_type*,
+                        const extern_type*& __from_next,
+                        intern_type*        __to,
+                        intern_type*,
+                        intern_type*&       __to_next) const
+  { __from_next = __from; __to_next = __to; return noconv; }
 
-  virtual result do_unshift(state_type& __state,
-            extern_type*                __to,
-            extern_type*                __to_limit,
-            extern_type*&               __to_next) const
+  virtual result do_unshift(state_type&,
+                            extern_type* __to,
+                            extern_type*,
+                            extern_type*& __to_next) const
   { __to_next = __to; return noconv; }
 
   virtual int do_encoding() const _STLP_NOTHROW
@@ -138,7 +138,7 @@ protected:
   virtual bool do_always_noconv() const _STLP_NOTHROW
   { return true; }
 
-  virtual int do_length(const state_type&  __state,
+  virtual int do_length(const state_type&,
                         const extern_type* __from,
                         const extern_type* __end,
                         size_t __max) const

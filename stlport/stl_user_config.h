@@ -46,10 +46,11 @@
  * of "Safe STL". Very useful for debugging. Thread-safe.
  * Please do not forget to link proper STLport library flavor
  * (e.g libstlportstlg.so or libstlportstlg.a) when you set this flag
- * in STLport iostreams mode.
+ * in STLport iostreams mode, namespace customization guaranty that you
+ * link to the right library.
  */
 /*
-#define   _STLP_DEBUG 1
+#define _STLP_DEBUG 1
 */
 /*
  * You can also choose the debug level:
@@ -64,6 +65,13 @@
 #define   _STLP_DEBUG_LEVEL _STLP_STLPORT_DBG_LEVEL
 #define   _STLP_DEBUG_LEVEL _STLP_STANDARD_DBG_LEVEL
 */
+/* When an inconsistency is detected by the 'safe STL' the program will abort.
+ * If you prefer an exception define the following macro. The thrown exception
+ * will be the Standard runtime_error exception.
+ */
+/*
+ */
+#define _STLP_DEBUG_MODE_THROWS
 
 /*
  * _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream
@@ -215,8 +223,8 @@
  * This setting has no effect if automatic linking is not active.
  */
 /*
-#define _STLP_VERBOSE_AUTO_LINK 1
 */
+#define _STLP_VERBOSE_AUTO_LINK 1
 
 
 /*
@@ -248,7 +256,7 @@
  * STLport rebuild: Yes
  */
 /*
-#define _STLP_USE_TEMPLATE_EXPRESSION 1
+#define _STLP_DONT_USE_TEMPLATE_EXPRESSION 1
 */
 
 /*
@@ -282,14 +290,11 @@
 
 /*
  * To reduce the famous code bloat trouble due to the use of templates STLport grant
- * a specialization of the some containers for pointer types. So all instanciations
+ * a specialization of some containers for pointer types. So all instanciations
  * of those containers with a pointer type will use the same implementation based on
- * a container of void*. If you prefer systematical instanciation turn on this macro.
- * Remark: This feature is only implemented for compilers supporting partial template
- * specialization.
- * Limitation: The container pointer specialization do not support pointer to function
- * and pointer to class member method. So if you have instanciating any container with
- * such a type compilation will failed.
+ * a container of void*. This feature has show very good result on object files size
+ * but after link phase and optimization you will only experiment benefit if you use
+ * many container with pointer types.
  */
 /*
 #define _STLP_USE_PTR_SPECIALIZATIONS 1

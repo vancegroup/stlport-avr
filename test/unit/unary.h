@@ -28,8 +28,7 @@ struct square_root : public unary_function<double, double>
   typedef double result_type;
   square_root() {}
   square_root(const square_root &) {}
-  double operator()(double x_) const {
-    return sqrt(x_);
-  }
+  double operator()(double x_) const
+  { return ::sqrt(x_); }
 };
 #endif // _unary_h

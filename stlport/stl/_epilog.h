@@ -26,7 +26,7 @@
  *  The STLPORT macro contains the STLport namespace name containing all the std
  *  stuff.
  */
-#    ifdef std
+#    if defined (std)
 /*
  * Looks like the compiler native library on which STLport rely defined the std macro.
  * This might introduce major incompatibility so report the problem to the STLport

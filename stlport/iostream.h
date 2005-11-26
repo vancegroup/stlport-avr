@@ -17,14 +17,14 @@
 #define _STLP_IOSTREAM_H
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
-# define _STLP_OUTERMOST_HEADER_ID 0x2035
-# include <stl/_prolog.h>
+#  define _STLP_OUTERMOST_HEADER_ID 0x2035
+#  include <stl/_prolog.h>
 #endif
 
 #ifdef __BORLANDC__
-# include <iostream.>
+#  include <iostream.>
 #else
-# include <iostream>
+#  include <iostream>
 #endif
 
 // Those should be included all separately, as they do contain using declarations
@@ -34,24 +34,21 @@
 
 #ifndef _STLP_HAS_NO_NAMESPACES
 
-# ifdef _STLP_BROKEN_USING_DIRECTIVE
-using namespace _STLP_STD;
-# else
+#  ifdef _STLP_BROKEN_USING_DIRECTIVE
+_STLP_USING_NAMESPACE(stlport)
+#  else
 using _STLP_STD::cin;
 using _STLP_STD::cout;
 using _STLP_STD::clog;
 using _STLP_STD::cerr;
 using _STLP_STD::iostream;
-
-#  ifndef _STLP_NO_WCHAR_T
+#    ifndef _STLP_NO_WCHAR_T
 using _STLP_STD::wcin;
 using _STLP_STD::wcout;
 using _STLP_STD::wclog;
 using _STLP_STD::wcerr;
+#    endif
 #  endif
-
-# endif
-
 #endif /* _STLP_HAS_NO_NAMESPACES */
 
 // Obsolete classes for old-style backwards compatibility

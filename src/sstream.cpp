@@ -15,12 +15,13 @@
  * modified is included with the above copyright notice.
  *
  */
-# include "stlport_prefix.h"
-#include <stl/_sstream.h>
+#include "stlport_prefix.h"
+
+#include <sstream>
 
 _STLP_BEGIN_NAMESPACE
 
-# ifndef _STLP_NO_FORCE_INSTANTIATE
+#if !defined (_STLP_NO_FORCE_INSTANTIATE)
 
 // Force instantiation of stringstream classes.
 template class _STLP_CLASS_DECLSPEC basic_stringbuf<char, char_traits<char>, allocator<char> >;
@@ -28,14 +29,14 @@ template class _STLP_CLASS_DECLSPEC basic_ostringstream<char, char_traits<char>,
 template class _STLP_CLASS_DECLSPEC basic_istringstream<char, char_traits<char>, allocator<char> >;
 template class _STLP_CLASS_DECLSPEC basic_stringstream<char, char_traits<char>, allocator<char> >;
 
-#ifndef _STLP_NO_WCHAR_T
+#  if !defined (_STLP_NO_WCHAR_T)
 template class _STLP_CLASS_DECLSPEC basic_stringbuf<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 template class _STLP_CLASS_DECLSPEC basic_ostringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 template class _STLP_CLASS_DECLSPEC basic_istringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 template class _STLP_CLASS_DECLSPEC basic_stringstream<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
-#endif /* INSTANTIATE_WIDE_STREAMS */
+#  endif
 
-# endif
+#endif
 
 _STLP_END_NAMESPACE
 

@@ -34,8 +34,8 @@
 #  include <climits>
 #endif
 
-#ifndef _STLP_CSTDLIB
-#  include <cstdlib>
+#ifndef _STLP_INTERNAL_CSTDLIB
+#  include <stl/_cstdlib.h>
 #endif
 
 #ifndef _STLP_INTERNAL_UNINITIALIZED_H
