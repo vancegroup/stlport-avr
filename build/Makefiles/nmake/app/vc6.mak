@@ -1,2 +1,5 @@
 !include vc-common.mak
 
+OPT_STLDBG = $(OPT_STLDBG) /Zm800
+OPT_STATIC_STLDBG = $(OPT_STATIC_STLDBG) /Zm800
+

@@ -1,14 +1,11 @@
 # -*- makefile -*- Time-stamp: <03/07/15 18:26:22 ptr>
 # $Id$
 
-INSTALL_TAGS ?= install-release-shared install-dbg-shared install-stldbg-shared
+INSTALL_TAGS ?= install-shared
 
 PHONY += install $(INSTALL_TAGS)
 
 install:	$(INSTALL_TAGS)
-
-install-static: all-static install-release-static install-dbg-static install-stldbg-static
-install-shared: all-shared install-release-shared install-dbg-shared install-stldbg-shared
 
 install-release-shared:	release-shared
 	@if [ ! -d $(INSTALL_BIN_DIR) ] ; then \

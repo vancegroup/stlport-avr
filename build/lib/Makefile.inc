@@ -3,7 +3,7 @@
 
 LIBNAME = stlport
 MAJOR = 5
-MINOR = 0
+MINOR = 1
 PATCH = 0
 SRC_CPP = ../../src/dll_main.cpp \
           ../../src/fstream.cpp \
@@ -29,11 +29,10 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/locale_catalog.cpp \
           ../../src/facets_byname.cpp \
           ../../src/complex.cpp \
-          ../../src/complex_exp.cpp \
           ../../src/complex_io.cpp \
           ../../src/complex_trig.cpp \
           ../../src/complex_io_w.cpp \
-          ../../src/string_w.cpp
+          ../../src/string.cpp
 
 SRC_C = ../../src/c_locale.c
 

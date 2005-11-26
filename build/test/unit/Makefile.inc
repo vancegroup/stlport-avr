@@ -3,7 +3,7 @@
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 5
-LIBMINOR = 0
+LIBMINOR = 1
 
 PRGNAME = stl_unit_test
 SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \

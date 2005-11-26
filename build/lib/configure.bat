@@ -29,8 +29,6 @@ echo # config.mak generated with command line: >> ..\Makefiles\config.mak
 echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> ..\Makefiles\config.mak
 echo # >> ..\Makefiles\config.mak
 
-set STLPORT_COMPILE_COMMAND=
-
 REM
 REM option loop
 REM
@@ -57,11 +55,17 @@ REM C runtime library
 if "%1" == "--rtl-static" goto opt_rtl
 if "%1" == "--rtl-dynamic" goto opt_rtl
 
+REM boost support
+if "%1" == "--use-boost" goto opt_bst
+
+REM multithreading support
+if "%1" == "--not-thread-safe" goto opt_st
+
+REM rtti support
+if "%1" == "--no-rtti" goto opt_rtti
+
 REM additional compiler options
 if "%1" == "--extra-cxxflag" goto opt_xtra
-
-REM MinGW without Msys config
-if "%1" == "--mingw" goto opt_mngw
 
 REM clean rule
 if "%1" == "--clean" goto opt_cln
@@ -96,6 +100,9 @@ echo    msvc8    Microsoft Visual C++ .NET 2005 (beta)
 echo    icl      Intel C++ Compiler
 echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
 echo    evc4     Microsoft eMbedded Visual C++ .NET (*)
+echo    gcc      GNU C++ Compiler (MinGW package)
+echo    dmc      Digital Mars Compiler
+echo    bcc      Borland C++ Compiler
 echo  (*) For these compilers the target processor is determined automatically.
 echo      You must run the WCE*.BAT file you wish to build STLport for before
 echo      running configure.
@@ -118,6 +125,21 @@ echo    "--rtl-dynamic -> _STLP_USE_DYNAMIC_LIB"
 echo    "--rtl-static  -> _STLP_USE_STATIC_LIB"
 echo    This is a Microsoft-only option.
 echo.
+echo "--use-boost <boost install path>"
+echo    Request use of boost support (www.boost.org). For the moment only the boost
+echo    type_traits library is used to get type information and to implement some
+echo    specific workaround not directly implemented by STLport. To use the same
+echo    support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
+echo    stlport/stl_user_config.h file.
+echo.
+echo "--not-thread-safe"
+echo    Per default STLport libraries are built in order to be usable in a multithreaded
+echo    context. If you don't need this you can ask for a not thread safe version with
+echo    this option.
+echo.
+echo "--no-rtti"
+echo    Remove rtti (run time type information) support if available.
+echo.
 echo "--extra-cxxflag <additional compilation options>"
 echo    Use this option to add any compilation flag to the build system. For instance
 echo    it can be used to activate a specific processor optimization depending on your
@@ -126,11 +148,6 @@ echo    --extra-cxxflag /G7
 echo    If you have several options use several --extra-cxxflag options. For instance
 echo    to also force use of wchar_t as an intrinsic type:
 echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
-echo.
-echo "--mingw"
-echo    If you want to build STLport libraries using the MinGW package in a cmd or
-echo    command console that is to say without help of a Msys or Cygwin environment
-echo    you have to activate this option.
 echo.
 echo "--clean"
 echo    Removes the build configuration file.
@@ -143,8 +160,6 @@ REM *
 REM **************************************************************************
 :opt_comp
 
-set STLPORT_SELECTED_CONFIG=%2
-
 if "%2" == "msvc6" goto oc_msvc6
 if "%2" == "msvc71" goto oc_msv71
 if "%2" == "msvc7" goto oc_msvc7
@@ -154,52 +169,97 @@ if "%2" == "icl"   goto oc_icl
 if "%2" == "evc3" goto oc_evc3
 if "%2" == "evc4" goto oc_evc4
 
+if "%2" == "gcc" goto oc_gcc
+if "%2" == "dmc" goto oc_dmc
+if "%2" == "bcc" goto oc_bcc
+
 echo Unknown compiler: %2
 goto oc_end
 
 :oc_msvc6
 echo Setting compiler: Microsoft Visual C++ 6.0
-echo TARGET_OS=x86 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-vc6.mak
-goto oc_end
+echo COMPILER_NAME=vc6 >> ..\Makefiles\config.mak
+set SELECTED_COMPILER_VERSION=60
+goto oc_msvc
 
 :oc_msvc7
 echo Setting compiler: Microsoft Visual C++ .NET 2002
-echo TARGET_OS=x86 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-vc70.mak
-goto oc_end
+echo COMPILER_NAME=vc70 >> ..\Makefiles\config.mak
+set SELECTED_COMPILER_VERSION=70
+goto oc_msvc
 
 :oc_msv71
 echo Setting compiler: Microsoft Visual C++ .NET 2003
-echo TARGET_OS=x86 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-vc71.mak
-goto oc_end
+echo COMPILER_NAME=vc71 >> ..\Makefiles\config.mak
+set SELECTED_COMPILER_VERSION=71
+goto oc_msvc
 
 :oc_msvc8
 echo Setting compiler: Microsoft Visual C++ .NET 2005 (beta)
+echo COMPILER_NAME=vc8 >> ..\Makefiles\config.mak
+set SELECTED_COMPILER_VERSION=80
+goto oc_msvc
+
+:oc_msvc
 echo TARGET_OS=x86 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-vc8.mak
+set STLPORT_COMPILE_COMMAND=nmake /fmsvc.mak
+set SELECTED_COMPILER=msvc
 goto oc_end
 
 :oc_icl
-echo Compiler not supported in "explore" yet: Intel C++ Compiler
-REM echo Setting compiler: Intel C++ Compiler
-REM set STLPORT_COMPILE_COMMAND=nmake -f nmake-icl.mak
+echo Setting compiler: Intel C++ Compiler
+echo COMPILER_NAME=icl >> ..\Makefiles\config.mak
+echo TARGET_OS=x86 >> ..\Makefiles\config.mak
+set STLPORT_COMPILE_COMMAND=nmake /ficl.mak
+set SELECTED_COMPILER=icl
 goto oc_end
 
 :oc_evc3
 echo Setting compiler: Microsoft eMbedded Visual C++ 3
 echo COMPILER_NAME=evc3 >> ..\Makefiles\config.mak
 echo CEVERSION=300 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-evc3.mak
-goto proc
+set SELECTED_COMPILER_VERSION=3
+goto oc_evc
 
 :oc_evc4
 echo Setting compiler: Microsoft eMbedded Visual C++ .NET
 echo COMPILER_NAME=evc4 >> ..\Makefiles\config.mak
 echo CEVERSION=420 >> ..\Makefiles\config.mak
-set STLPORT_COMPILE_COMMAND=nmake -f nmake-evc4.mak
+set SELECTED_COMPILER_VERSION=4
+goto oc_evc
+
+:oc_evc
+set STLPORT_COMPILE_COMMAND=nmake /fevc.mak
+set SELECTED_COMPILER=evc
 goto proc
+
+:oc_gcc
+echo Setting compiler: GNU C++ Compiler
+set STLPORT_COMPILE_COMMAND=make -fgcc.mak
+set SELECTED_COMPILER=gcc
+shift
+goto oc_gmake
+
+:oc_dmc
+echo Setting compiler: Digital Mars C++ Compiler
+set STLPORT_COMPILE_COMMAND=make -fdmc.mak
+set SELECTED_COMPILER=dmc
+shift
+goto oc_gmake
+
+:oc_bcc
+echo Setting compiler: Borland C++ Compiler
+set STLPORT_COMPILE_COMMAND=make -fbcc.mak
+set SELECTED_COMPILER=bcc
+shift
+goto oc_gmake
+
+:oc_gmake
+echo In order to build STLport with this compiler you need a GNU make tool.
+echo You can get one from www.mingw.org or www.cygwin.com
+echo Setting up for building using GNU make.
+echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\config.mak
+goto cont_lp
 
 :oc_end
 shift
@@ -278,16 +338,21 @@ goto pr_end
 echo Target processor: MIPS
 REM note, MIPSII (and all evc4 MIPS processors) are in the CE 4.0 SDK, so the
 REM version gets redefined here
-if "%STLPORT_SELECTED_CONFIG%" == "evc4" echo CEVERSION=400 >> ..\Makefiles\config.mak
+if "%SELECTED_COMPILER_VERSION%" == "4" echo CEVERSION=400 >> ..\Makefiles\config.mak
 echo TARGET_PROC=mips >> ..\Makefiles\config.mak
 
-if "%TARGETCPU%" == "MIPS16" echo DEFS_COMMON=/DMIPS16 >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII" echo DEFS_COMMON=/DMIPSII >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV" echo DEFS_COMMON=/DMIPSIV >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPS16"    echo DEFS_COMMON=/DMIPS16 >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII"    echo DEFS_COMMON=/DMIPSII >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII_FP" echo DEFS_COMMON=/DMIPSII_FP >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV"    echo DEFS_COMMON=/DMIPSIV >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV_FP" echo DEFS_COMMON=/DMIPSIV_FP >> ..\Makefiles\config.mak
 
-if "%TARGETCPU%" == "MIPS16" echo MIPS_MACHINE_TYPE=MIPS16 >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII" echo MIPS_MACHINE_TYPE=MIPS >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV" echo MIPS_MACHINE_TYPE=MIPSFPU >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPS16"    echo TARGET_PROC_SUBTYPE=MIPS16 >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII"    echo TARGET_PROC_SUBTYPE=MIPSII >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSII_FP" echo TARGET_PROC_SUBTYPE=MIPSII_FP >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV"    echo TARGET_PROC_SUBTYPE=MIPSIV >> ..\Makefiles\config.mak
+if "%TARGETCPU%" == "MIPSIV_FP" echo TARGET_PROC_SUBTYPE=MIPSIV_FP >> ..\Makefiles\config.mak
+
 goto pr_end
 
 :pr_sh3
@@ -323,11 +388,16 @@ REM *
 REM **************************************************************************
 
 :opt_rtl
-if "%STLPORT_SELECTED_CONFIG%" == "msvc6" goto or_ok
-if "%STLPORT_SELECTED_CONFIG%" == "msvc7" goto or_ok
-if "%STLPORT_SELECTED_CONFIG%" == "msvc71" goto or_ok
-if "%STLPORT_SELECTED_CONFIG%" == "msvc8" goto or_ok
+if "%SELECTED_COMPILER%" == "" goto or_err1
+if "%SELECTED_COMPILER%" == "msvc" goto or_ok
+if "%SELECTED_COMPILER%" == "dmc" goto or_ok
+goto or_err2
 
+:or_err1
+echo Error: Please give used compiler first in order to check other options correctness.
+goto or_end
+
+:or_err2
 echo Error: Setting C runtime library for compiler other than microsoft ones!
 goto or_end
 
@@ -340,6 +410,48 @@ if "%1" == "--rtl-dynamic" echo Selecting dynamic C runtime library for STLport
 if "%1" == "--rtl-dynamic" echo STLP_BUILD_FORCE_DYNAMIC_RUNTIME=1 >> ..\Makefiles\config.mak
 
 :or_end
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * boost support
+REM *
+REM **************************************************************************
+:opt_bst
+REM if (Exists("%2")) goto ob_ok
+REM if !("%2" == "") goto ob_ok
+goto ob_ok
+
+echo Error: Invalid boost intallation folder ("%2").
+goto ob_end
+
+:ob_ok
+echo Activating boost support using "%2" path
+echo STLP_BUILD_BOOST_PATH="%2" >> ..\Makefiles\config.mak
+
+:ob_end
+shift
+
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * Multithreading support
+REM *
+REM **************************************************************************
+:opt_st
+echo Removing thread safety support
+echo STLP_BUILD_NO_THREAD=1 >> ..\Makefiles\config.mak
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * rtti support
+REM *
+REM **************************************************************************
+:opt_rtti
+echo Removing rtti support
+echo STLP_BUILD_NO_RTTI=1 >> ..\Makefiles\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -364,22 +476,13 @@ goto cont_lp
 
 REM **************************************************************************
 REM *
-REM * MinGW build
-REM *
-REM **************************************************************************
-:opt_mngw
-echo Setting up for Mingw build.
-echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\config.mak
-goto cont_lp
-
-REM **************************************************************************
-REM *
 REM * Clean
 REM *
 REM **************************************************************************
 :opt_cln
 del ..\Makefiles\config.mak
-goto cont_lp
+echo STLport configuration file removed.
+goto skp_comp
 
 REM **************************************************************************
 REM *
@@ -399,5 +502,7 @@ echo and "bin" folder when done.
 echo.
 
 :skp_comp
-set STLPORT_SELECTED_CONFIG=
 set STLPORT_COMPILE_COMMAND=
+set SELECTED_COMPILER=
+set SELECTED_COMPILER_VERSION=
+set ONE_OPTION_ADDED=

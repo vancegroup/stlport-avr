@@ -26,8 +26,6 @@ INSTALL_PRGNAME_DBG := ${PRGNAME}g${EXE}
 INSTALL_PRGNAME_STLDBG := ${PRGNAME}stlg${EXE}
 endif
 
-install-shared: install-release-shared install-dbg-shared install-stldbg-shared
-
 ifneq ($(OSNAME),windows)
 install-release-shared: release-shared
 	@if [ ! -d $(INSTALL_BIN_DIR) ] ; then \
@@ -55,4 +53,7 @@ install-dbg-shared: dbg-shared
 
 install-stldbg-shared: stldbg-shared
 	$(INSTALL_EXE) $(subst /,\,$(PRG_STLDBG)) $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(INSTALL_PRGNAME_STLDBG))
+
+install-dbg-static: dbg-static
+	$(INSTALL_EXE) $(subst /,\,$(A_PRG_DBG)) $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(INSTALL_A_PRGNAME_DBG))
 endif

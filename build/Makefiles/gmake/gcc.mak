@@ -42,17 +42,20 @@ LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
 ifeq ($(OSNAME), cygming)
-release-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=r -DBUILD_INFOS="-O2" --output-format coff
-dbg-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=d -DBUILD_INFOS="-g" --output-format coff
-stldbg-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=stld -DBUILD_INFOS="-g -D_STLP_DEBUG" --output-format coff
+RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
+release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-O2"
+dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-g"
+stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
-CXXFLAGS = -Wall -Wsign-promo -fexceptions -fident 
+CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident
+ifndef STLP_BUILD_NO_THREAD
 ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads
 CFLAGS += -mthreads
 CXXFLAGS += -mthreads
 else
 DEFS += -D_REENTRANT
+endif
 endif
 CCFLAGS += $(OPT)
 CFLAGS += $(OPT)
@@ -61,53 +64,66 @@ COMPILE.rc = $(RC) $(RCFLAGS)
 endif
 
 ifeq ($(OSNAME), windows)
-release-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=r -DBUILD_INFOS="-O2" --output-format coff
-dbg-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=d -DBUILD_INFOS="-g" --output-format coff
-stldbg-shared : RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=gcc -DBUILD=stld -DBUILD_INFOS="-g -D_STLP_DEBUG" --output-format coff
+RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
+release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-O2"
+dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-g"
+stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
-CXXFLAGS = -Wall -Wsign-promo -fexceptions -fident 
+CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident
+ifndef STLP_BUILD_NO_THREAD
 CCFLAGS += -mthreads
 CFLAGS += -mthreads
 CXXFLAGS += -mthreads
+endif
 CCFLAGS += $(OPT)
 CFLAGS += $(OPT)
 CXXFLAGS += $(OPT)
 COMPILE.rc = $(RC) $(RCFLAGS)
 endif
 
+ifndef STLP_BUILD_NO_THREAD
+PTHREAD = -pthread
+else
+PTHREAD =
+endif
+
 ifeq ($(OSNAME),sunos)
-CCFLAGS = -pthreads $(OPT)
-CFLAGS = -pthreads $(OPT)
-# CXXFLAGS = -pthreads -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthreads  -fexceptions -fident $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
 
 ifeq ($(OSNAME),openbsd)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
 
 ifeq ($(OSNAME),freebsd)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+ifndef STLP_BUILD_NO_THREAD
 DEFS += -D_REENTRANT
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+endif
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
 
 ifeq ($(OSNAME),darwin)
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
+ifndef STLP_BUILD_NO_THREAD
 DEFS += -D_REENTRANT
+endif
 CXXFLAGS = -fexceptions $(OPT)
 release-shared : CXXFLAGS += -dynamic
 dbg-shared : CXXFLAGS += -dynamic
@@ -115,10 +131,10 @@ stldbg-shared : CXXFLAGS += -dynamic
 endif
 
 ifeq ($(OSNAME),hp-ux)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
 
 #ifeq ($(CXX_VERSION_MAJOR),3)
@@ -174,10 +190,10 @@ stldbg-shared : OPT += -g
 
 # dependency output parser (dependencies collector)
 DP_OUTPUT_DIR = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR)/\1.o $@ : |g' > $@; \
-                           [ -s $@ ] || rm -f $@
+[ -s $@ ] || rm -f $@
 
 DP_OUTPUT_DIR_DBG = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR_DBG)/\1.o $@ : |g' > $@; \
-                           [ -s $@ ] || rm -f $@
+[ -s $@ ] || rm -f $@
 
 DP_OUTPUT_DIR_STLDBG = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR_STLDBG)/\1.o $@ : |g' > $@; \
-                           [ -s $@ ] || rm -f $@
+[ -s $@ ] || rm -f $@

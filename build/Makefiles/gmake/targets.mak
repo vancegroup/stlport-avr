@@ -12,17 +12,21 @@ ifeq (${OSNAME},windows)
 DIRS_UNIQUE_SRC += $(dir $(SRC_RC) )
 endif
 DIRS_UNIQUE_SRC := $(sort $(DIRS_UNIQUE_SRC) )
+
 include ${RULESBASE}/${USE_MAKE}/dirsrc.mak
 
 ALLBASE    := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_C)))
+
 ifeq (${OSNAME},cygming)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
 ifeq (${OSNAME},windows)
+#ifneq ($(COMPILER_NAME), bcc)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
+#endif
 endif
 
-ALLOBJS    := $(addsuffix .o,$(ALLBASE))
+ALLOBJS    := $(addsuffix .$(OBJ_EXT),$(ALLBASE))
 ALLDEPS    := $(addsuffix .d,$(ALLBASE))
 ALLRESS    := $(addsuffix .res,$(RCBASE))
 

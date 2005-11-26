@@ -1,5 +1,17 @@
-# -*- Makefile -*- Time-stamp: <04/03/31 00:35:47 ptr>
-# $Id$
+!if !EXIST(..\Makefiles\config.mak)
+!error No config file found, please run 'configure --help' first.
+!endif
+
+!include ..\Makefiles\config.mak
+
+!ifndef COMPILER_NAME
+!error No compiler set, please run 'configure --help' first and chose a compiler.
+!endif
+
+!if ("$(COMPILER_NAME)" != "evc3" && \
+     "$(COMPILER_NAME)" != "evc4")
+!error You pick the wrong makefile, please rerun configure script and follow the instructions.
+!endif
 
 SRCROOT=..
 

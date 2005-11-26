@@ -1,10 +1,7 @@
-# -*- Makefile -*- Time-stamp: <05/03/10 17:51:53 ptr>
-# $Id$
 
 SRCROOT := ../..
-COMPILER_NAME := aCC
+COMPILER_NAME := bcc
 
-ALL_TAGS := release-shared dbg-shared stldbg-shared
 STLPORT_DIR := ../../..
 include Makefile.inc
 include ${SRCROOT}/Makefiles/top.mak
@@ -21,3 +18,4 @@ endif
 release-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
 dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
 stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
+

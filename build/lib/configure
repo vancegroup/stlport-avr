@@ -9,7 +9,6 @@ configmak=../Makefiles/config.mak
 # rm -f ${configmak}
 
 # echo "# STLPORT_DIR := /export/home/windows/guest/STLlab/STLport" >> ${configmak}
-# echo "# MSVC_DIR := c:/Program Files/Microsoft Visual Studio/VC98" >> ${configmak}
 # echo "# TARGET_PROC=x86" >> ${configmak}
 
 write_option() {
@@ -38,6 +37,9 @@ Available options:
                         the cygwin tools but without dependency on the cygwin1.dll
   --with-extra-cxxflags=<options>
                         pass extra options to C++ compiler
+  --not-thread-safe     Per default STLport libraries are built in order to be usable in a multithreaded
+                        context. If you don't need this you can ask for a not thread safe version with
+                        this option.
   --clean               remove custom settings (file ${configmak})
                         and use default values
 
@@ -92,6 +94,9 @@ do
       write_option -D_STLP_NO_CYGWIN DEFS
       echo "--no-cygwin: Don't forget to uncomment _STLP_NO_CYGWIN macro"
       echo "in stlport/stl/_site_config.h to use such a configuration."
+      ;;
+    --not-thread-safe)
+     write_option 1 STLP_BUILD_NO_THREAD
       ;;
   esac
 done
