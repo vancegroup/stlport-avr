@@ -1,4 +1,4 @@
-# Time-stamp: <05/09/09 22:00:37 ptr>
+# Time-stamp: <05/11/27 14:07:22 ptr>
 # $Id$
 
 ifdef TARGET_OS
@@ -9,8 +9,8 @@ endif
 
 PRE_OUTPUT_DIR         := obj/$(TARGET_NAME)$(COMPILER_NAME)
 OUTPUT_DIR             := $(PRE_OUTPUT_DIR)/shared$(EXTRA_DIRS)
-OUTPUT_DIR_DBG         := $(PRE_OUTPUT_DIR)/shared_g$(EXTRA_DIRS)
-OUTPUT_DIR_STLDBG      := $(PRE_OUTPUT_DIR)/shared_stlg$(EXTRA_DIRS)
+OUTPUT_DIR_DBG         := $(PRE_OUTPUT_DIR)/shared-g$(EXTRA_DIRS)
+OUTPUT_DIR_STLDBG      := $(PRE_OUTPUT_DIR)/shared-stlg$(EXTRA_DIRS)
 
 # file to store generated dependencies for make:
 DEPENDS_COLLECTION     := obj/$(TARGET_NAME)$(COMPILER_NAME)/.make.depend
@@ -22,8 +22,8 @@ OUTPUT_DIR_A_DBG       := $(OUTPUT_DIR_DBG)
 OUTPUT_DIR_A_STLDBG    := $(OUTPUT_DIR_STLDBG)
 else
 OUTPUT_DIR_A           := $(PRE_OUTPUT_DIR)/static$(EXTRA_DIRS)
-OUTPUT_DIR_A_DBG       := $(PRE_OUTPUT_DIR)/static_g$(EXTRA_DIRS)
-OUTPUT_DIR_A_STLDBG    := $(PRE_OUTPUT_DIR)/static_stlg$(EXTRA_DIRS)
+OUTPUT_DIR_A_DBG       := $(PRE_OUTPUT_DIR)/static-g$(EXTRA_DIRS)
+OUTPUT_DIR_A_STLDBG    := $(PRE_OUTPUT_DIR)/static-stlg$(EXTRA_DIRS)
 endif
 
 INSTALL_LIB_DIR        ?= ${SRCROOT}/../$(TARGET_NAME)lib
