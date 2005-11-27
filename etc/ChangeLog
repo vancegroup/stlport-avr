@@ -3,7 +3,8 @@
 	* build/Makefiles/gmake/targetdirs.mak: change names of .o output dirs
 	to make bcc happy (bug with passing name that contain '-' from
 	compiler to linker). Replacement: 'shared' -> 'so', 'static' -> 'ar',
-	'-' -> '_' (i.e. obj/gcc/shared-stlg -> obj/gcc/so_stlg, a bit shorter).
+	'-' -> '_' (i.e. obj/gcc/shared-stlg -> obj/gcc/so_stlg, a bit shorter)
+	[Suggested by Francois Dumont].
 
 2005-11-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
