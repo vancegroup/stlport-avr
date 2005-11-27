@@ -4,6 +4,9 @@
 	__false_type in STLport private namespace as the using namespace
 	directive do not seems to be anough for latest gcc version.
 
+	* src/time_facets.cpp: Fix buffer size decrementation in __write_formatted_time
+	function thanks Petr Ovchenkov
+
 2005-11-26  Francois Dumont  <dums@stlport...>
 
         * stlport/stl/_complex.h: Move implementation of generic abs, arg and polar

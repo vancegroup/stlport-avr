@@ -115,7 +115,7 @@ inline char* __subformat(const string& format, char*& buf, size_t buf_size,
 #  define __YDAY_MINIMUM (-366)
 #  define __TM_YEAR_BASE 1900
 static int
-__iso_week_days (int yday, int wday) {
+__iso_week_days(int yday, int wday) {
   /* Add enough to the first operand of % to make it nonnegative.  */
   int big_enough_multiple_of_7 = (-__YDAY_MINIMUM / 7 + 2) * 7;
   return (yday
@@ -175,8 +175,9 @@ char * __write_formatted_time(char* buf, size_t buf_size, char format, char modi
           buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
           buf_size -= (buf - buf_pos);
         }
-        else
+        else {
           *buf++ = *cp++; --buf_size;
+        }
       }
       return buf;
     }
@@ -244,8 +245,9 @@ char * __write_formatted_time(char* buf, size_t buf_size, char format, char modi
           buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
           buf_size -= (buf - buf_pos);
         }
-        else
+        else {
           *buf++ = *cp++; --buf_size;
+        }
       }
       return buf;
     }
@@ -261,8 +263,9 @@ char * __write_formatted_time(char* buf, size_t buf_size, char format, char modi
           buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
           buf_size -= (buf - buf_pos);
         }
-        else
+        else {
           *buf++ = *cp++; --buf_size;
+        }
       }
       return buf;
     }
@@ -342,7 +345,8 @@ char * __write_formatted_time(char* buf, size_t buf_size, char format, char modi
         /* This ISO week belongs to the previous year.  */
         year--;
         days = __iso_week_days (t->tm_yday + (365 + __is_leap (year)), t->tm_wday);
-      } else {
+      }
+      else {
         int d = __iso_week_days (t->tm_yday - (365 + __is_leap (year)), t->tm_wday);
         if (0 <= d) {
           /* This ISO week belongs to the next year.  */
