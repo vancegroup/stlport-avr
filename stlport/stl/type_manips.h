@@ -23,6 +23,13 @@ _STLP_BEGIN_NAMESPACE
 struct __true_type {};
 struct __false_type {};
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#if defined (_STLP_USE_NAMESPACES)
+using _STLP_STD::__true_type;
+using _STLP_STD::__false_type;
+#endif
+_STLP_MOVE_TO_STD_NAMESPACE
+
 //bool to type
 template <int _Is> struct __bool2type {
   typedef __true_type _Ret;
