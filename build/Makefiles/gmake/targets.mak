@@ -1,5 +1,10 @@
-# Time-stamp: <03/10/27 18:22:08 ptr>
-# $Id$
+# Time-stamp: <05/11/27 17:27:04 ptr>
+
+# If we have no C++ sources, let's use C compiler for linkage instead of C++.
+ifeq ("$(sort ${SRC_CC} ${SRC_CPP} ${SRC_CXX})","")
+NOT_USE_NOSTDLIB := 1
+_C_SOURCES_ONLY := true
+endif
 
 # if sources disposed in several dirs, calculate
 # appropriate rules; here is recursive call!

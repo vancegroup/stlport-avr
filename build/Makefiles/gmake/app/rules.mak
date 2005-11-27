@@ -1,5 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/03/28 23:44:09 ptr>
-# $Id$
+# -*- makefile -*- Time-stamp: <05/11/27 17:31:10 ptr>
 
 dbg-shared:	$(OUTPUT_DIR_DBG) ${PRG_DBG}
 stldbg-shared:	$(OUTPUT_DIR_STLDBG) ${PRG_STLDBG}
@@ -8,6 +7,8 @@ release-shared:	$(OUTPUT_DIR) ${PRG}
 dbg-static:	$(OUTPUT_DIR_A_DBG) ${PRG_A_DBG}
 stldbg-static:	$(OUTPUT_DIR_A_STLDBG) ${PRG_A_STLDBG}
 release-static:	$(OUTPUT_DIR_A) ${PRG_A}
+
+ifeq ("${_C_SOURCES_ONLY}","")
 
 ${PRG}:	$(OBJ) $(LIBSDEP)
 ifneq (bcc, $(COMPILER_NAME))
@@ -39,3 +40,15 @@ ${PRG_A_STLDBG}:	$(OBJ_A_STLDBG) $(LIBSDEP)
 ${PRG_A}:	$(OBJ_A) $(LIBSDEP)
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(OBJ_A) $(LDLIBS) ${STDLIBS} ${END_OBJ}
 
+else
+
+${PRG}:	$(OBJ) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ) $(LDLIBS)
+
+${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ_DBG) $(LDLIBS)
+
+${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP)
+	$(LINK.c) $(LINK_OUTPUT_OPTION) $(OBJ_STLDBG) $(LDLIBS)
+
+endif

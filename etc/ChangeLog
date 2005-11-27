@@ -1,3 +1,13 @@
+2005-11-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/targets.mak, app/rules.mak, linux/rules-so.mak:
+	use gcc instead of c++ as linker if there are no C++ objects.
+
+	* src/cxa.c, build/misc/cxa_atexit/Makefile.inc, build/misc/cxa_atexit/gcc.mak:
+	workaround for bugged __cxa_finalize; use builded libcxa.so in LD_PRELOAD or
+	/etc/ld.so.preload in Linux system with bugged glibc. See also
+	http://gcc.gnu.org/bugzilla/show_bug.cgi?id=24189
+
 2005-11-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/type_manips.h: Add import of __true_type and
@@ -5,7 +15,7 @@
 	directive do not seems to be anough for latest gcc version.
 
 	* src/time_facets.cpp: Fix buffer size decrementation in __write_formatted_time
-	function thanks Petr Ovchenkov
+	function thanks Petr Ovtchenkov
 
 2005-11-26  Francois Dumont  <dums@stlport...>
 
