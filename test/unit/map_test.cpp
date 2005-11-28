@@ -263,13 +263,14 @@ void MapTest::allocator_with_state()
 
   {
     typedef map<int, int, less<int>, StackAllocator<int> > MapInt;
-    MapInt mint1(less<int>(), stack1);
+    less<int> intLess;
+    MapInt mint1(intLess, stack1);
     int i;
     for (i = 0; i < 5; ++i)
       mint1.insert(make_pair(i, i));
     MapInt mint1Cpy(mint1);
 
-    MapInt mint2(less<int>(), stack2);
+    MapInt mint2(intLess, stack2);
     for (; i < 10; ++i)
       mint2.insert(make_pair(i, i));
     MapInt mint2Cpy(mint2);

@@ -756,11 +756,12 @@ class _STLP_CLASS_DECLSPEC _Refcount_Base {
  * Idem for _Atomic_swap_ptr
  */
 /* Helper struct to handle following cases:
- * - on 32 bits platforms swap can also be done on pointers
+ * - on platforms where sizeof(__stl_atomic_t) == sizeof(void*) atomic
+ *   exchange can be done on pointers
  * - on platform without atomic operation swap is done in a critical section,
  *   portable but inefficient.
  */
-template <int __32bits>
+template <int __use_ptr_atomic_swap>
 struct _Atomic_swap_struct {
 #if defined (_STLP_THREADS) && \
     !defined (_STLP_ATOMIC_EXCHANGE) && \
@@ -874,11 +875,15 @@ struct _Atomic_swap_struct<0> {
   }
 };
 
-inline __stl_atomic_t _STLP_CALL _Atomic_swap(_STLP_VOLATILE __stl_atomic_t * __p, __stl_atomic_t __q)
-{ return _Atomic_swap_struct<sizeof(__stl_atomic_t) == sizeof(void*)>::_S_swap(__p, __q); }
+inline __stl_atomic_t _STLP_CALL _Atomic_swap(_STLP_VOLATILE __stl_atomic_t * __p, __stl_atomic_t __q) {
+  const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
+  return _Atomic_swap_struct<__use_ptr_atomic_swap>::_S_swap(__p, __q);
+}
 
-inline void* _STLP_CALL _Atomic_swap_ptr(void* _STLP_VOLATILE* __p, void* __q)
-{ return _Atomic_swap_struct<sizeof(__stl_atomic_t) == sizeof(void*)>::_S_swap_ptr(__p, __q); }
+inline void* _STLP_CALL _Atomic_swap_ptr(void* _STLP_VOLATILE* __p, void* __q) {
+  const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
+  return _Atomic_swap_struct<__use_ptr_atomic_swap>::_S_swap_ptr(__p, __q);
+}
 
 #if defined (_STLP_BETHREADS)
 template <int __inst>

@@ -173,8 +173,9 @@ template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<false,0> >;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
 template class _STLP_CLASS_DECLSPEC __malloc_alloc<0>;
 
-#  if defined (_STLP_THREADS) && ! defined ( _STLP_ATOMIC_EXCHANGE ) && (defined(_STLP_PTHREADS) || defined (_STLP_UITHREADS)  || defined (_STLP_OS2THREADS))
-template class _STLP_CLASS_DECLSPEC _Swap_lock_struct<0>;
+#  if defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
+const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
+template class _STLP_CLASS_DECLSPEC _Atomic_swap_struct<__use_ptr_atomic_swap>;
 #  endif
 
 //Export of the types used to represent buckets in the hashtable implementation.

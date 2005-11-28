@@ -267,13 +267,14 @@ void SetTest::allocator_with_state()
 
   {
     typedef set<int, less<int>, StackAllocator<int> > SetInt;
-    SetInt sint1(less<int>(), stack1);
+    less<int> intLess;
+    SetInt sint1(intLess, stack1);
     int i;
     for (i = 0; i < 5; ++i)
       sint1.insert(i);
     SetInt sint1Cpy(sint1);
 
-    SetInt sint2(less<int>(), stack2);
+    SetInt sint2(intLess, stack2);
     for (; i < 10; ++i)
       sint2.insert(i);
     SetInt sint2Cpy(sint2);
