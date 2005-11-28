@@ -1,3 +1,44 @@
+2005-11-28  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_threads.h: Simplified expression used to instanciate
+	_Atomic_swap_struct, gcc 2.95 had trouble with the one line expression.
+
+	* src/dll_main.cpp: Fix instanciation of _Swap_lock_struct that has been
+	changed and renamed in _Atomic_swap_struct.
+
+	* test/unit/map_test.cpp, set_test.cpp: Simplified call to map constructor
+	taking a functor and allocator instance, split it in a creation of a les<int>
+	instance then passed to the constructor; gcc 2.95 had trouble with previous
+	version.
+
+	* stlport/stl/_cmath.h, _cstdlib.h: Now those files includes each other to
+	make sure that all abs overloads are defined when it is imported in STLport
+	namespace. gcc 2.95 is very strict on this point and only concider the abs
+	overloads existing at the first import calls, all overloads added after that
+	are discarded silently.
+
+	* stlport/stl/_cmath.h: Removed unjustified abs function overloads done
+	directly in STLport namespace for gcc 2.95 and before. Those overloads
+	clashed on a Linux with gcc 2.95 from the sourceforge compiler farm. 
+
+	* build/Makefiles/gmake/gcc.mak: Generalized definition of _REENTRANT under
+	Linux to make detection of a multithreaded build from STLport code easier.
+	Problem meet on an alpha linux platform from the sourceforge compiler farm.
+
+	* stlport/stl/_locale.h: Removed _M_delete locale::facet member variable,
+	useless if facet instance reference counter is right.
+
+	* src/locale_impl.cpp, message.cpp: Change classic facets initialization code
+	to simply set initial counter to 1 rather than incrementing it after construction.
+
+	* test/eh: Generalized use of msvc.mak rather than all the nmake-vc??.mak files.
+	Idem for evc.mak instead of nmake-evc?.mak and icl.mak instead of nmake-icl.mak.
+
+	* test/unit/evc.mak fix path to config file in existance check.
+
+	* stlport/stl/_move_construct_fwk.h, type_manips.h: Add workaround to use
+	move constructor with Borland compiler.
+
 2005-11-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/targetdirs.mak: change names of .o output dirs
@@ -20,7 +61,7 @@
 
 	* stlport/stl/type_manips.h: Add import of __true_type and
 	__false_type in STLport private namespace as the using namespace
-	directive do not seems to be anough for latest gcc version.
+	directive do not seems to be enough for latest gcc version.
 
 	* src/time_facets.cpp: Fix buffer size decrementation in __write_formatted_time
 	function thanks Petr Ovtchenkov
