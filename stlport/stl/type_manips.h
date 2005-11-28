@@ -135,6 +135,18 @@ struct __select<false, _Tp1, _Tp2> {
   typedef _Tp2 _Ret;
 };
 
+#  if defined (__BORLANDC__)
+template <class _CondT, class _Tp1, class _Tp2>
+struct __selectT {
+  typedef _Tp1 _Ret;
+};
+
+template <class _Tp1, class _Tp2>
+struct __selectT<__false_type, _Tp1, _Tp2> {
+  typedef _Tp2 _Ret;
+};
+#  endif
+
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)

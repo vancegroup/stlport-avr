@@ -79,15 +79,15 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
  */
 template <class _Tp>
 struct _MoveSourceTraits {
-#if !defined (__BORLANDC__)
   typedef typename __move_traits<_Tp>::implemented _MvImpRet;
+#if defined (__BORLANDC__)
+  typedef typename __selectT<_MvImpRet,
+#else
   enum {_MvImp = __type2bool<_MvImpRet>::_Ret};
   typedef typename __select<_MvImp,
+#endif
                             __move_source<_Tp>,
                             _Tp const&>::_Ret _Type;
-#else
-  typedef _Tp const& _Type;
-#endif
 };
 
 //The helper function
