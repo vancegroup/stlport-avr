@@ -16,13 +16,11 @@
 #ifndef _STLP_INTERNAL_CMATH
 #define _STLP_INTERNAL_CMATH
 
-/* According C++ Standard you shouldn't do a 'using ::func' if func has already
- * been declared. This is what happen with the abs function for which the int
- * version is imported from global namespace in std in cstdlib and that have
- * overloads in cmath for double, float, long double. So we include native cstdlib
- * first.
+/* gcc do not like when a using directive appear after a function
+ * declaration. cmath have abs overloads and cstdlib a using directive
+ * so cstdlib has to be included first.
  */
-#if defined (_STLP_USE_NEW_C_HEADERS)
+#if defined (__GNUC__) && defined (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
 #endif
 
@@ -50,7 +48,7 @@ extern "C" double hypot(double x, double y);
 
 #endif
 
-#if defined (__sun) && defined (__GNUC__) 
+#if defined (__sun) && defined (__GNUC__)
 extern "C" {
   float __cosf(float v);
   float __sinf(float v);
@@ -462,6 +460,16 @@ _STLP_DEF_MATH_INLINE2(hypot, hypot)
 #  undef _STLP_RESTORE_FUNCTION_INTRINSIC
 #endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
 
+/* C++ Standard is unclear about several call to 'using ::func' if new overloads
+ * of ::func appears between 2 successive 'using' calls. To avoid this potential
+ * problem we provide all abs overload before the 'using' call.
+ * Beware: This header inclusion has to be after all abs overload of this file.
+ *         The first 'using ::abs' call is going to be in the other header.
+ */
+#ifndef _STLP_INTERNAL_CSTDLIB
+#  include <stl/_cstdlib.h>
+#endif
+
 #if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 _STLP_BEGIN_NAMESPACE
 using ::abs;
@@ -488,12 +496,6 @@ using ::sinh;
 using ::sqrt;
 using ::tan;
 using ::tanh;
-
-#if defined (__GNUC__) && (__GNUC__ < 3)
-inline double abs(double __x) { return ::fabs(__x); }
-_STLP_DEF_MATH_INLINE(abs,fabs)
-#endif
-
 _STLP_END_NAMESPACE
 #endif
 

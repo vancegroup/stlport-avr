@@ -23,7 +23,7 @@
 #endif
 
 /* on evc3/evc4 including stdlib.h also defines setjmp macro */
-#if defined(_STLP_WCE)
+#if defined (_STLP_WCE)
 #  define _STLP_NATIVE_SETJMP_H_INCLUDED
 #endif
 
@@ -134,6 +134,16 @@ inline lldiv_t div(_STLP_LONG_LONG __x, _STLP_LONG_LONG __y) { return ::lldiv(__
 #  else
 inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; }
 #  endif
+#endif
+
+/* C++ Standard is unclear about several call to 'using ::func' if new overloads
+ * of ::func appears between 2 successive 'using' calls. To avoid this potential
+ * problem we provide all abs overload before the 'using' call.
+ * Beware: This header inclusion has to be after all abs overload of this file.
+ *         The first 'using ::abs' call is going to be in the other header.
+ */
+#ifndef _STLP_INTERNAL_CMATH
+#  include <stl/_cmath.h>
 #endif
 
 #if defined (_STLP_IMPORT_VENDOR_CSTD) && !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
