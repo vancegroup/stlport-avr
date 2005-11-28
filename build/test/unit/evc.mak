@@ -1,4 +1,4 @@
-!if !EXIST(..\Makefiles\config.mak)
+!if !EXIST(..\..\Makefiles\config.mak)
 !error No config file found, please run 'configure --help' first.
 !endif
 
