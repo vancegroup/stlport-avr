@@ -97,6 +97,9 @@ endif
 ifeq ($(OSNAME),linux)
 CCFLAGS = $(PTHREAD) $(OPT)
 CFLAGS = $(PTHREAD) $(OPT)
+ifndef STLP_BUILD_NO_THREAD
+DEFS += -D_REENTRANT
+endif
 # CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
 CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
 endif
