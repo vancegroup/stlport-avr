@@ -65,7 +65,7 @@ public:
   // types:
   class _STLP_CLASS_DECLSPEC facet : protected _Refcount_Base {
   protected:
-    explicit facet(size_t __no_del = 0) : _Refcount_Base( __no_del == 0 ? 0 : 1 ), _M_delete(__no_del == 0) {}
+    explicit facet(size_t __init_count = 0) : _Refcount_Base( __init_count ) {}
     virtual ~facet();
     friend class locale;
     friend class _Locale_impl;
@@ -73,14 +73,11 @@ public:
     friend void _STLP_CALL _release_facet( facet *& );
 
   private:                        // Invalidate assignment and copying.
-    facet(const facet& ) /* : _Refcount_Base(1), _M_delete(false) {} */;
+    facet(const facet& ) /* : _Refcount_Base(1) {} */;
     void operator=(const facet&);
-
-  private:                        // Data members.
-    const bool _M_delete;
   };
 
-#if defined(__MVS__) || defined(__OS400__)
+#if defined (__MVS__) || defined (__OS400__)
   struct
 #else
   class

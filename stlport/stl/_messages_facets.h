@@ -40,8 +40,7 @@ _STLP_BEGIN_NAMESPACE
 
 // messages facets
 
-class messages_base
-{
+class messages_base {
   public:
     typedef int catalog;
 };

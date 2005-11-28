@@ -25,7 +25,7 @@ _STLP_BEGIN_NAMESPACE
 // messages<char>
 
 messages<char>::messages(_STLP_PRIV _Messages* imp) :
-  _M_impl(imp) { if (imp) imp->_M_delete = true; }
+  locale::facet(1), _M_impl(imp) { if (imp) imp->_M_delete = true; }
 
 messages<char>::~messages()
 { if (_M_impl && _M_impl->_M_delete) delete _M_impl; }
@@ -64,7 +64,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #if !defined (_STLP_NO_WCHAR_T)
 
 messages<wchar_t>::messages(_STLP_PRIV _Messages* imp) :
-  _M_impl(imp) { if (imp) imp->_M_delete = true; }
+  locale::facet(1), _M_impl(imp) { if (imp) imp->_M_delete = true; }
 
 messages<wchar_t>::~messages()
 { if (_M_impl && _M_impl->_M_delete) delete _M_impl; }
