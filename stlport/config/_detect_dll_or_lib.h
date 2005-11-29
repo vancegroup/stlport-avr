@@ -19,7 +19,6 @@
 #  if defined (_STLP_DLL)
 /* We are building the STLport dll */
 #    define _STLP_USE_DYNAMIC_LIB
-#pragma message ("Building dll")
 #    if !defined (_STLP_RUNTIME_DLL)
 #      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 #    endif
