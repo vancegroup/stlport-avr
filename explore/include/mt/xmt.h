@@ -1,14 +1,14 @@
-// -*- C++ -*- Time-stamp: <05/08/19 17:34:31 ptr>
+// -*- C++ -*- Time-stamp: <05/11/29 10:38:40 ptr>
 
 /*
  *
- * Copyright (c) 1997-1999, 2002, 2003, 2004
+ * Copyright (c) 1997-1999, 2002-2005
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 2.0
+ * Licensed under the Academic Free License Version 2.1
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -22,14 +22,6 @@
 
 #ifndef __XMT_H
 #define __XMT_H
-
-#ifdef __unix
-#  ifdef __HP_aCC
-#pragma VERSIONID "@(#)$Id$"
-#  else
-#ident "@(#)$Id$"
-#  endif
-#endif
 
 #ifndef __config_feature_h
 #include <config/feature.h>
@@ -111,6 +103,17 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 # define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
 # define MT_LOCK(point)         point.lock()
 # define MT_UNLOCK(point)       point.unlock()
+# ifdef __FIT_RWLOCK
+#  define MT_REENTRANT_RD(point,nm) __impl::LockerRd nm(point)
+#  define MT_REENTRANT_WR(point,nm) __impl::LockerWr nm(point)
+#  define MT_LOCK_RD(point)      point.rdlock()
+#  define MT_LOCK_WR(point)      point.wrlock()
+# else // !__FIT_RWLOCK
+#  define MT_REENTRANT_RD(point,nm) ((void)0)
+#  define MT_REENTRANT_WR(point,nm) ((void)0)
+#  define MT_LOCK_RD(point) ((void)0)
+#  define MT_LOCK_WR(point) ((void)0)
+# endif // __FIT_RWLOCK
 
 #else // !_REENTRANT
 
@@ -119,6 +122,10 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 # define MT_REENTRANT_SDS(point,nm) ((void)0) // obsolete, use MT_REENTRANT_RS
 # define MT_LOCK(point)         ((void)0)
 # define MT_UNLOCK(point)       ((void)0)
+# define MT_REENTRANT_RD(point,nm) ((void)0)
+# define MT_REENTRANT_WR(point,nm) ((void)0)
+# define MT_LOCK_RD(point) ((void)0)
+# define MT_LOCK_WR(point) ((void)0)
 
 #endif // _REENTRANT
 
@@ -684,6 +691,216 @@ class __Mutex<true,SCOPE> : // Recursive Safe
 };
 #endif // __unix && !__FIT_XSI_THR
 
+#ifdef __FIT_RWLOCK
+// Read-write mutex: IEEE Std 1003.1, 2001, 2004 Editions
+
+template <bool SCOPE>
+class __mutex_rw_base
+{
+  public:
+    __mutex_rw_base()
+      {
+#ifdef _PTHREADS
+        if ( SCOPE ) {
+          pthread_rwlockattr_t att;
+          pthread_rwlockattr_init( &att );
+# ifdef __FIT_PSHARED_MUTEX
+          int _err = pthread_rwlockattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+# endif // __FIT_PSHARED_MUTEX
+          pthread_rwlock_init( &_M_lock, &att );
+          pthread_rwlockattr_destroy( &att );
+        } else {
+          pthread_rwlock_init( &_M_lock, 0 );
+        }
+#endif // _PTHREADS
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        if ( SCOPE ) {
+          // or USYNC_PROCESS_ROBUST to detect already initialized mutex
+          // in process scope
+          mutex_init( &_M_lock, USYNC_PROCESS, 0 );
+        } else {
+          mutex_init( &_M_lock, 0, 0 );
+        }
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        InitializeCriticalSection( &_M_lock );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        _M_lock = OpenLocalSemaphore( 1 );
+#endif
+      }
+
+    ~__mutex_rw_base()
+      {
+#ifdef _PTHREADS
+        pthread_rwlock_destroy( &_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        mutex_destroy( &_M_lock );
+#endif
+#ifdef WIN32
+#error Fix me!
+        DeleteCriticalSection( &_M_lock );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        CloseLocalSemaphore( _M_lock );
+#endif
+      }
+
+  private:
+    __mutex_rw_base( const __mutex_rw_base& )
+      { }
+
+  protected:
+#ifdef _PTHREADS
+    pthread_rwlock_t _M_lock;
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+    mutex_t _M_lock;
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+    CRITICAL_SECTION _M_lock;
+#endif
+#ifdef __FIT_NOVELL_THREADS
+    // This is for ...LocalSemaphore() calls
+    // Alternative is EnterCritSec ... ExitCritSec; but ...CritSec in Novell
+    // block all threads except current
+#error Fix me!
+    LONG _M_lock;
+#endif
+};
+
+template <bool SCOPE>
+class __MutexRW :
+    public __mutex_rw_base<SCOPE>
+{
+  public:
+    __MutexRW()
+      { }
+
+    ~__MutexRW()
+      { }
+
+    void rdlock()
+      {
+#ifdef _PTHREADS
+        pthread_rwlock_rdlock( &this->_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        mutex_lock( &this->_M_lock );
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        EnterCriticalSection( &this->_M_lock );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        WaitOnLocalSemaphore( this->_M_lock );
+#endif
+      }
+
+    void wrlock()
+      {
+#ifdef _PTHREADS
+        pthread_rwlock_wrlock( &this->_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        mutex_lock( &this->_M_lock );
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        EnterCriticalSection( &this->_M_lock );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        WaitOnLocalSemaphore( this->_M_lock );
+#endif
+      }
+
+#if !defined( WIN32 ) || (defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0400)
+    int tryrdlock()
+      {
+#ifdef _PTHREADS
+        return pthread_rwlock_tryrdlock( &this->_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        return mutex_trylock( &this->_M_lock );
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        return TryEnterCriticalSection( &this->_M_lock ) != 0 ? 0 : -1;
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        return ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
+#endif
+#ifdef _NOTHREADS
+#error Fix me!
+        return 0;
+#endif
+      }
+
+    int trywrlock()
+      {
+#ifdef _PTHREADS
+        return pthread_rwlock_trywrlock( &this->_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        return mutex_trylock( &this->_M_lock );
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        return TryEnterCriticalSection( &this->_M_lock ) != 0 ? 0 : -1;
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        return ExamineLocalSemaphore( this->_M_lock ) > 0 ? WaitOnLocalSemaphore( this->_M_lock ) : -1;
+#endif
+#ifdef _NOTHREADS
+#error Fix me!
+        return 0;
+#endif
+      }
+
+#endif // !WIN32 || _WIN32_WINNT >= 0x0400
+
+    void unlock()
+      {
+#ifdef _PTHREADS
+        pthread_rwlock_unlock( &this->_M_lock );
+#endif
+#ifdef __FIT_UITHREADS
+#error Fix me!
+        mutex_unlock( &this->_M_lock );
+#endif
+#ifdef __FIT_WIN32THREADS
+#error Fix me!
+        LeaveCriticalSection( &this->_M_lock );
+#endif
+#ifdef __FIT_NOVELL_THREADS
+#error Fix me!
+        SignalLocalSemaphore( this->_M_lock );
+#endif
+      }
+
+  private:
+    __MutexRW( const __MutexRW& )
+      { }
+};
+
+#endif // __FIT_RWLOCK
+
 template <bool R, bool SCOPE>
 class __Locker
 {
@@ -700,13 +917,54 @@ class __Locker
     const __Mutex<R,SCOPE>& m;
 };
 
+#ifdef __FIT_RWLOCK
+template <bool SCOPE>
+class __LockerRd
+{
+  public:
+    __LockerRd( const __MutexRW<SCOPE>& point ) :
+      m( point )
+      { const_cast<__MutexRW<SCOPE>&>(m).rdlock(); }
+    ~__LockerRd()
+      { const_cast<__MutexRW<SCOPE>&>(m).unlock(); }
+
+  private:
+    __LockerRd( const __LockerRd& )
+      { }
+    const __MutexRW<SCOPE>& m;
+};
+
+template <bool SCOPE>
+class __LockerWr
+{
+  public:
+    __LockerWr( const __MutexRW<SCOPE>& point ) :
+      m( point )
+      { const_cast<__MutexRW<SCOPE>&>(m).wrlock(); }
+    ~__LockerWr()
+      { const_cast<__MutexRW<SCOPE>&>(m).unlock(); }
+
+  private:
+    __LockerWr( const __LockerWr& )
+      { }
+    const __MutexRW<SCOPE>& m;
+};
+#endif // __FIT_RWLOCK
+
 typedef __Mutex<false,false>  Mutex;
 typedef __Mutex<true,false>   MutexRS;
 typedef __Mutex<true,false>   MutexSDS; // obsolete, use instead MutexRS
+#ifdef __FIT_RWLOCK
+typedef __MutexRW<false>      MutexRW;
+#endif // __FIT_RWLOCK
 
 typedef __Locker<false,false> Locker;
 typedef __Locker<true,false>  LockerRS;
 typedef __Locker<true,false>  LockerSDS; // obsolete, use instead LockerRS
+#ifdef __FIT_RWLOCK
+typedef __LockerRd<false>     LockerRd;
+typedef __LockerWr<false>     LockerWr;
+#endif // __FIT_RWLOCK
 
 class LockerExt
 {
