@@ -1,3 +1,8 @@
+2005-11-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/cxa.c: mutex should be recursive-safe, due to __cxa_finalize
+	may be called recursive.
+
 2005-11-28  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_threads.h: Simplified expression used to instanciate

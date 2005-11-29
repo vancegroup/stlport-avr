@@ -67,7 +67,7 @@ int __cxa_atexit(void (*func)(void *), void *arg, void *d)
 
 
 /* We change global data, so we need locking.  */
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
 
 static struct exit_function_list initial;
 struct exit_function_list *__exit_funcs = &initial;
