@@ -56,7 +56,7 @@
 // dwa 02/04/00 - here I'm assuming that __ICL uses the same library headers as vc6.
 // the header <yvals.h> which ships with vc6 and is included by its native <exception>
 // actually turns on warnings, so we have to turn them back off.
-#    include <config/_msvc_warnings_off.h>
+#    include <config/_warnings_off.h>
 #  endif
 
 #  if defined (_STLP_USE_OWN_NAMESPACE)

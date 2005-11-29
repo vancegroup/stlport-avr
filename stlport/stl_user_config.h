@@ -70,8 +70,8 @@
  * will be the Standard runtime_error exception.
  */
 /*
- */
 #define _STLP_DEBUG_MODE_THROWS
+ */
 
 /*
  * _STLP_NO_CUSTOM_IO : define this if you do not instantiate basic_xxx iostream
@@ -218,13 +218,22 @@
 */
 
 /*
+ * If you customize the STLport generated library names don't forget to give
+ * the motif you used during configuration here if you still want the auto link
+ * to work. (Do not remove quotes in the macro value)
+ */
+/*
+#define _STLP_LIB_NAME_MOTIF "???"
+ */
+
+/*
  * When using automatic linking (see above), output a message that tells the
  * user which lib is getting linked via 'pragma message(..)'.
  * This setting has no effect if automatic linking is not active.
  */
 /*
-*/
 #define _STLP_VERBOSE_AUTO_LINK 1
+*/
 
 
 /*

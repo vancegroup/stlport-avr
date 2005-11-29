@@ -12,15 +12,29 @@
 #    define _STLP_LIB_OPTIM_MODE ""
 #  endif
 
-#  if defined (_STLP_USE_DYNAMIC_LIB)
-#    define _STLP_LIB_TYPE ""
+#  if defined (_STLP_LIB_NAME_MOTIF)
+#    define _STLP_LIB_MOTIF "_"_STLP_LIB_NAME_MOTIF
 #  else
-#    define _STLP_LIB_TYPE "_static"
+#    define _STLP_LIB_MOTIF ""
+#  endif
+
+#  if defined (_STLP_USE_DYNAMIC_LIB)
+#    if defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
+#      define _STLP_LIB_TYPE "_x"
+#    else
+#      define _STLP_LIB_TYPE ""
+#    endif
+#  else
+#    if defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
+#      define _STLP_LIB_TYPE "_statix"
+#    else
+#      define _STLP_LIB_TYPE "_static"
+#    endif
 #  endif
 
 #  define _STLP_VERSION_STR _STLP_STRINGIZE(_STLPORT_MAJOR)"."_STLP_STRINGIZE(_STLPORT_MINOR)
 
-#  define _STLP_STLPORT_LIB "stlport"_STLP_LIB_OPTIM_MODE""_STLP_LIB_TYPE"."_STLP_VERSION_STR".lib"
+#  define _STLP_STLPORT_LIB "stlport"_STLP_LIB_OPTIM_MODE""_STLP_LIB_TYPE""_STLP_LIB_MOTIF"."_STLP_VERSION_STR".lib"
 
 #  if defined (_STLP_VERBOSE_AUTO_LINK)
 #    pragma message ("STLport: Auto linking to "_STLP_STLPORT_LIB)
@@ -30,8 +44,8 @@
 #  undef _STLP_STLPORT_LIB
 #  undef _STLP_LIB_OPTIM_MODE
 #  undef _STLP_LIB_TYPE
-//#  undef _STLP_STRINGIZE_AUX
-//#  undef _STLP_STRINGIZE
+#  undef _STLP_STRINGIZE_AUX
+#  undef _STLP_STRINGIZE
 
 #endif /* _STLP_DONT_USE_AUTO_LINK */
 

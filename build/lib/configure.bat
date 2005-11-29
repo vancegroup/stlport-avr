@@ -67,13 +67,16 @@ if "%1" == "--no-rtti" goto opt_rtti
 REM additional compiler options
 if "%1" == "--extra-cxxflag" goto opt_xtra
 
+REM library name customization
+if "%1" == "--lib-motif" goto opt_motf
+
 REM clean rule
 if "%1" == "--clean" goto opt_cln
 
 echo Unknown option: %1
 
 :cont_lp
-
+echo.
 shift
 
 REM no more options?
@@ -148,6 +151,12 @@ echo    --extra-cxxflag /G7
 echo    If you have several options use several --extra-cxxflag options. For instance
 echo    to also force use of wchar_t as an intrinsic type:
 echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
+echo.
+echo "--lib-motif"
+echo   Use this option to customize the generated library names. The motif will be used
+echo   in the last place before version information, ex:
+echo   stlportd_MOTIF.5.0.lib
+echo   stlportstld_static_MOTIF.5.1.lib
 echo.
 echo "--clean"
 echo    Removes the build configuration file.
@@ -471,6 +480,19 @@ goto ox_end
 echo DEFS = $(DEFS) %2 >> ..\Makefiles\config.mak
 
 :ox_end
+shift
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * Library name configuration
+REM *
+REM **************************************************************************
+:opt_motf
+echo Using '%2' in generated library names
+
+echo STLP_BUILD_LIB_MOTIF = %2 >> ..\Makefiles\config.mak
+
 shift
 goto cont_lp
 

@@ -1,3 +1,32 @@
+2005-11-29  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl_user_config.h: Add _STLP_LIB_NAME_MOTIF macro to give
+	users a point of customization of the automatic linking feature.
+
+	* build/Makefiles/nmake/lib/macro.mak, gmake/cygming/lib.mak: Use
+	STLP_BUILD_LIB_MOTIF in library name generation algorithm. Also take
+	into account cross builds in library name generation.
+
+	* build/lib/configure.bat: Add --lib-motif option to give users a
+	way to customize the generated library names.
+
+	* test/eh: Generalized use of msvc.mak rather than all the nmake-vc??.mak
+	files. Idem for evc.mak instead of nmake-evc?.mak and icl.mak instead of
+	nmake-icl.mak.
+
+	* stlport/stl/_exception.h: Change _msvc_warnings_off.h include in
+	_warnings_off.h as this file now also turn off Borland warnings.
+
+	* stlport/config/_detect_dll_or_lib.h: Mutualization of code used to
+	detect current STLport type of build or usage (dll or static lib).
+
+	* stlport/config/stl_msvc.h, stl_bc.h, stl_dmc.h: Integration of
+	_detect_dll_or_lib.h
+
+	* stlport/config/_auto_link.h: Change auto link algo when we detect
+	cross STLport usage that is to say use of STLport as a dll link with
+	static native runtime or opposite.
+
 2005-11-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/cxa.c: mutex should be recursive-safe, due to __cxa_finalize
@@ -35,9 +64,6 @@
 
 	* src/locale_impl.cpp, message.cpp: Change classic facets initialization code
 	to simply set initial counter to 1 rather than incrementing it after construction.
-
-	* test/eh: Generalized use of msvc.mak rather than all the nmake-vc??.mak files.
-	Idem for evc.mak instead of nmake-evc?.mak and icl.mak instead of nmake-icl.mak.
 
 	* test/unit/evc.mak fix path to config file in existance check.
 
