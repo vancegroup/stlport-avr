@@ -82,7 +82,11 @@ COMPILE.rc = $(RC) $(RCFLAGS)
 endif
 
 ifndef STLP_BUILD_NO_THREAD
+ifneq ($(OSNAME),sunos)
 PTHREAD = -pthread
+else
+PTHREAD = -pthreads
+endif
 else
 PTHREAD =
 endif
