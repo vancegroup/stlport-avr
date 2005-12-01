@@ -236,6 +236,7 @@ typedef unsigned int wint_t;
 
 #if defined (__alpha__)
 #  define _STLP_NO_VENDOR_MATH_L
+#  define _STLP_NO_IEC559_SUPPORT
 #endif
 
 #if defined (__hpux)
