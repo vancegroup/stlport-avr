@@ -5,6 +5,9 @@
 
 	* stlport/stl/_locale.h: Fix warning convertion from size_t to
 	__stl_atomic_t that can be of lower size.
+
+	* stlport/config/stl_gcc.h, doc/README.mingw, README.cygwin: Made dll
+	default settings under cygwin/mingw.
 	
 2005-12-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
