@@ -259,7 +259,9 @@ typedef char __stl_char;
 #if defined (__DLL) || defined (_DLL) || defined (_RTLDLL) || defined (_AFXDLL)
 #  define _STLP_RUNTIME_DLL
 #endif
-#if defined (__BUILDING_STLPORT) && defined (_STLP_RUNTIME_DLL) && !defined (_STLP_USE_STATIC_LIB)
+#if defined (__BUILDING_STLPORT) && \
+   (defined (_STLP_USE_DYNAMIC_LIB) || \
+    defined (_STLP_RUNTIME_DLL) && !defined (_STLP_USE_STATIC_LIB))
 #  define _STLP_DLL
 #endif
 #include <config/_detect_dll_or_lib.h>
