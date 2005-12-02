@@ -15,7 +15,7 @@ ARCH = lib
 AR = lib /nologo
 AR_INS_R = 
 AR_EXTR = 
-AR_OUT = /OUT:$@
+AR_OUT = /out:$@
 
 INSTALL = copy
 

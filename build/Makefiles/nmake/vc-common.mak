@@ -123,7 +123,7 @@ OUTPUT_OPTION_STATIC_DBG = /Fo$@
 OUTPUT_OPTION_STATIC_STLDBG = /Fo$@
 !endif
 
-LINK_OUTPUT_OPTION = /OUT:$@
+LINK_OUTPUT_OPTION = /out:$@
 RC_OUTPUT_OPTION = /fo $@
 RC_OUTPUT_OPTION_DBG = /fo $@
 RC_OUTPUT_OPTION_STLDBG = /fo $@
@@ -170,12 +170,12 @@ COMPILE_rc_DBG = $(RC) $(RC_FLAGS_DBG) /DBUILD=d /D "BUILD_INFOS=$(CXXFLAGS_DBG)
 COMPILE_rc_STATIC_DBG = $(RC) $(RC_FLAGS_DBG) /DBUILD=d /D "BUILD_INFOS=$(CXXFLAGS_STATIC_DBG)"
 COMPILE_rc_STLDBG = $(RC) $(RC_FLAGS_STLDBG) /DBUILD=stld /D "BUILD_INFOS=$(CXXFLAGS_STLDBG) /D_STLP_DEBUG"
 COMPILE_rc_STATIC_STLDBG = $(RC) $(RC_FLAGS_STLDBG) /DBUILD=stld /D "BUILD_INFOS=$(CXXFLAGS_STATIC_STLDBG) /D_STLP_DEBUG"
-LINK_cc_REL = $(LINK) /nologo /incremental:no /debug /pdb:"$(PDB_NAME_OUT)" $(LDFLAGS_REL)
-LINK_cc_DBG = $(LINK) /nologo /incremental:no /debug /pdb:"$(PDB_NAME_OUT_DBG)" $(LDFLAGS_DBG)
-LINK_cc_STLDBG = $(LINK) /nologo /incremental:no /debug /pdb:"$(PDB_NAME_OUT_STLDBG)" $(LDFLAGS_STLDBG)
-LINK_cc_A_REL = $(LINK) /nologo /incremental:no /debug /pdb:"$(A_PDB_NAME_OUT)" $(LDFLAGS_A_REL)
-LINK_cc_A_DBG = $(LINK) /nologo /incremental:no /debug /pdb:"$(A_PDB_NAME_OUT_DBG)" $(LDFLAGS_DBG)
-LINK_cc_A_STLDBG = $(LINK) /nologo /incremental:no /debug /pdb:"$(A_PDB_NAME_OUT_STLDBG)" $(LDFLAGS_STLDBG)
+LINK_cc_REL = $(LINK) /nologo /incremental:no /debug /pdb:$(PDB_NAME_OUT) $(LDFLAGS_REL)
+LINK_cc_DBG = $(LINK) /nologo /incremental:no /debug /pdb:$(PDB_NAME_OUT_DBG) $(LDFLAGS_DBG)
+LINK_cc_STLDBG = $(LINK) /nologo /incremental:no /debug /pdb:$(PDB_NAME_OUT_STLDBG) $(LDFLAGS_STLDBG)
+LINK_cc_A_REL = $(LINK) /nologo /incremental:no /debug /pdb:$(A_PDB_NAME_OUT) $(LDFLAGS_A_REL)
+LINK_cc_A_DBG = $(LINK) /nologo /incremental:no /debug /pdb:$(A_PDB_NAME_OUT_DBG) $(LDFLAGS_DBG)
+LINK_cc_A_STLDBG = $(LINK) /nologo /incremental:no /debug /pdb:$(A_PDB_NAME_OUT_STLDBG) $(LDFLAGS_STLDBG)
 
 CDEPFLAGS = /FD /E
 CCDEPFLAGS = /FD /E
