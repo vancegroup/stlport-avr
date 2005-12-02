@@ -1,3 +1,7 @@
+2005-12-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* repository: bump library version to 5.0.1 in branch STLPORT_5_0
+
 2005-12-01  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_mbstate_t.h: Add workaround for alpha bad WCHAR_MIN and

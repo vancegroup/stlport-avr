@@ -205,6 +205,40 @@ void FstreamTest::tellg()
       p += 8;
     }
   }
+
+  {
+    // bogus ios_base::binary is for Wins
+    ifstream is("test_file.txt", ios_base::in | ios_base::binary);
+    CPPUNIT_ASSERT( is.is_open() );
+    string line;
+    char buf[64];
+
+    streampos p = 0;
+    for (int i = 0; i < 50; ++i) {
+      CPPUNIT_ASSERT( !is.fail() );
+      is.tellg();
+      CPPUNIT_ASSERT( is.tellg() == p );
+      p += 8;
+      is.seekg( p, ios_base::beg  );
+      CPPUNIT_ASSERT( !is.fail() );
+    }
+  }
+
+  {
+    // bogus ios_base::binary is for Wins
+    ifstream is("test_file.txt", ios_base::in | ios_base::binary);
+    CPPUNIT_ASSERT( is.is_open() );
+    string line;
+    char buf[64];
+
+    streampos p = 0;
+    for (int i = 0; i < 50; ++i) {
+      CPPUNIT_ASSERT( is.tellg() == p );
+      p += 8;
+      is.seekg( 8, ios_base::cur );
+      CPPUNIT_ASSERT( !is.fail() );
+    }
+  }
 }
 
 void FstreamTest::buf()
