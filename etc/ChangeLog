@@ -1,3 +1,11 @@
+2005-12-02  Francois Dumont  <dums@stlport...>
+
+	* stlport/config/stl_msvc.h: Fixed configuration detection when building
+	STLport dll based on a static native runtime.
+
+	* stlport/stl/_locale.h: Fix warning convertion from size_t to
+	__stl_atomic_t that can be of lower size.
+	
 2005-12-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* repository: bump library version to 5.0.1 in branch STLPORT_5_0
