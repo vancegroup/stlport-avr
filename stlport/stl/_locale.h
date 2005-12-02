@@ -65,7 +65,12 @@ public:
   // types:
   class _STLP_CLASS_DECLSPEC facet : protected _Refcount_Base {
   protected:
-    explicit facet(size_t __init_count = 0) : _Refcount_Base( __init_count ) {}
+    /* Here we filter __init_count user value to 0 or 1 because __init_count is a
+     * size_t instance and _Refcount_Base use __stl_atomic_t instances that might
+     * have lower sizeof and generate roll issues. 1 is enough to keep the facet
+     * alive when required.
+     */
+    explicit facet(size_t __init_count = 0) : _Refcount_Base( __init_count == 0 ? 0 : 1 ) {}
     virtual ~facet();
     friend class locale;
     friend class _Locale_impl;
