@@ -32,13 +32,25 @@ else
 endif
 
 ${PRG_A_DBG}:	$(OBJ_A_DBG) $(LIBSDEP)
+ifneq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(OBJ_A_DBG) $(LDLIBS) ${STDLIBS} ${END_OBJ}
+else
+	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ_A_DBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
+endif
 
 ${PRG_A_STLDBG}:	$(OBJ_A_STLDBG) $(LIBSDEP)
+ifneq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(OBJ_A_STLDBG) $(LDLIBS) ${STDLIBS} ${END_OBJ}
+else
+	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ_A_STLDBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
+endif
 
 ${PRG_A}:	$(OBJ_A) $(LIBSDEP)
+ifneq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(OBJ_A) $(LDLIBS) ${STDLIBS} ${END_OBJ}
+else
+	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ_A) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
+endif
 
 else
 

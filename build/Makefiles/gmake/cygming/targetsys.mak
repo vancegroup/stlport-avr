@@ -21,9 +21,14 @@ ifeq (dmc,$(COMPILER_NAME))
 ARCH := lib
 AR := lib
 else
+ifeq (bcc,$(COMPILER_NAME))
+ARCH := lib
+AR := tlib
+else
 ARCH := a
 AR := ar
 AR_INS_R := -rs
 AR_EXTR := -x
 AR_OUT = $@
+endif
 endif

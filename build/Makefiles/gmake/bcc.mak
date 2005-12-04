@@ -78,9 +78,24 @@ stldbg-shared : OPT += -R -v -y
 dbg-shared : LDFLAGS += -v
 stldbg-shared : LDFLAGS += -v
 
-release-shared : LDLIBS += import32.lib
-dbg-shared : LDLIBS += import32.lib cw32mti.lib kernel32.lib
-stldbg-shared : LDLIBS += import32.lib
+LDLIBS += import32.lib kernel32.lib
+ifndef STLP_BUILD_NO_THREAD
+release-shared : LDLIBS += cw32mti.lib
+dbg-shared : LDLIBS += cw32mti.lib
+stldbg-shared : LDLIBS += cw32mti.lib
+release-static : LDLIBS += cw32mt.lib
+dbg-static : LDLIBS += cw32mt.lib
+stldbg-static : LDLIBS += cw32mt.lib
+else
+release-shared : LDLIBS += cw32i.lib
+dbg-shared : LDLIBS += cw32i.lib
+stldbg-shared : LDLIBS += cw32i.lib
+release-static : LDLIBS += cw32.lib
+dbg-static : LDLIBS += cw32.lib
+stldbg-static : LDLIBS += cw32.lib
+endif
+
+LDLIBS += c0x32.obj
 
 # dependency output parser (dependencies collector)
 

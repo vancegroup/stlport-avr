@@ -14,24 +14,22 @@ dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
 
 ifeq ($(OSNAME), cygming)
-release-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-dbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-stldbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
+release-static:	DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
 endif
 
 ifeq ($(OSNAME), windows)
-release-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-dbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-stldbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
+release-static:	DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
 endif
 
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
 
-release-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
-dbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
-stldbg-shared:	LDSEARCH = -L${STLPORT_LIB_DIR}
+LDSEARCH = -L${STLPORT_LIB_DIR}
 
 ifndef TARGET_OS
 ifeq ($(OSNAME), sunos)
@@ -66,6 +64,9 @@ LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared : LDLIBS = -lstlport.${LIB_VERSION}
 dbg-shared     : LDLIBS = -lstlportg.${LIB_VERSION}
 stldbg-shared  : LDLIBS = -lstlportstlg.${LIB_VERSION}
+release-static : LDLIBS = -lstlport.${LIB_VERSION}
+dbg-static     : LDLIBS = -lstlportg.${LIB_VERSION}
+stldbg-static  : LDLIBS = -lstlportstlg.${LIB_VERSION}
 else
 ifeq ($(OSNAME),windows)
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}

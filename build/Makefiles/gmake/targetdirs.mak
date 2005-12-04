@@ -15,15 +15,17 @@ OUTPUT_DIR_STLDBG      := $(PRE_OUTPUT_DIR)/so_stlg$(EXTRA_DIRS)
 DEPENDS_COLLECTION     := obj/$(TARGET_NAME)$(COMPILER_NAME)/.make.depend
 
 # I use the same catalog, as for shared:
-ifneq (dmc, $(COMPILER_NAME))
+ifneq (cygming, $(OSNAME))
+ifneq (windows, $(OSNAME))
 OUTPUT_DIR_A           := $(OUTPUT_DIR)
 OUTPUT_DIR_A_DBG       := $(OUTPUT_DIR_DBG)
 OUTPUT_DIR_A_STLDBG    := $(OUTPUT_DIR_STLDBG)
-else
-OUTPUT_DIR_A           := $(PRE_OUTPUT_DIR)/ar$(EXTRA_DIRS)
-OUTPUT_DIR_A_DBG       := $(PRE_OUTPUT_DIR)/ar_g$(EXTRA_DIRS)
-OUTPUT_DIR_A_STLDBG    := $(PRE_OUTPUT_DIR)/ar_stlg$(EXTRA_DIRS)
 endif
+endif
+
+OUTPUT_DIR_A           ?= $(PRE_OUTPUT_DIR)/ar$(EXTRA_DIRS)
+OUTPUT_DIR_A_DBG       ?= $(PRE_OUTPUT_DIR)/ar_g$(EXTRA_DIRS)
+OUTPUT_DIR_A_STLDBG    ?= $(PRE_OUTPUT_DIR)/ar_stlg$(EXTRA_DIRS)
 
 INSTALL_LIB_DIR        ?= ${SRCROOT}/../$(TARGET_NAME)lib
 INSTALL_LIB_DIR_DBG    ?= ${SRCROOT}/../$(TARGET_NAME)lib

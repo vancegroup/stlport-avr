@@ -9,6 +9,9 @@ clean::
 	@-rm -f $(OBJ) $(DEP)
 	@-rm -f $(OBJ_DBG) $(DEP_DBG)
 	@-rm -f $(OBJ_STLDBG) $(DEP_STLDBG)
+	@-rm -f $(OBJ_A) $(DEP_A)
+	@-rm -f $(OBJ_A_DBG) $(DEP_A_DBG)
+	@-rm -f $(OBJ_A_STLDBG) $(DEP_A_STLDBG)
 
 clobber::	clean
 	@-rm -f $(DEPENDS_COLLECTION)
@@ -19,6 +22,9 @@ clean::
 	@if exist $(subst /,\,$(OUTPUT_DIR)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR)/*.$(OBJ_EXT))
 	@if exist $(subst /,\,$(OUTPUT_DIR_DBG)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR_DBG)/*.$(OBJ_EXT))
 	@if exist $(subst /,\,$(OUTPUT_DIR_STLDBG)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR_STLDBG)/*.$(OBJ_EXT))
+	@if exist $(subst /,\,$(OUTPUT_DIR_A)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR_A)/*.$(OBJ_EXT))
+	@if exist $(subst /,\,$(OUTPUT_DIR_A_DBG)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR_A_DBG)/*.$(OBJ_EXT))
+	@if exist $(subst /,\,$(OUTPUT_DIR_A_STLDBG)/*.$(OBJ_EXT)) del /f /q $(subst /,\,$(OUTPUT_DIR_A_STLDBG)/*.$(OBJ_EXT))
 
 clobber::	clean
 	@if exist $(subst /,\,$(PRE_OUTPUT_DIR)) rd /s /q $(subst /,\,$(PRE_OUTPUT_DIR))
