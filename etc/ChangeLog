@@ -1,3 +1,20 @@
+2005-12-04  Francois Dumont  <dums@stlport...>
+
+	* src/num_put_float.cpp: Filter inclusion of stdint.h, required for
+	Digital Mars compiler, forbidden for Sun platform.
+
+	* stlport/stl/_cwctype.h: wide types and function are in global
+	namespace.
+
+	* build/test/unit/gcc.mak: Modify cygwin/mingw config now that
+	default settings for those platform is shared library.
+
+	* build/Makefiles/gmake: Add support of static targets, used
+	especially for Borland C++ Compiler and Digital Mars Compiler.
+
+        * build/Makefiles/gmake/app/gcc.mak: Fix typo in FreeBSD
+	configuration.
+
 2005-12-02  Francois Dumont  <dums@stlport...>
 
 	* stlport/config/stl_msvc.h: Fixed configuration detection when building
