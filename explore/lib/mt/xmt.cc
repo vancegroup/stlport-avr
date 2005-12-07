@@ -86,14 +86,15 @@ DllMain( HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved )
 #  endif
 #endif
 
+namespace xmt {
 namespace detail {
 
 int Init_count = 0;
 
 #ifdef __FIT_NOVELL_THREADS
-__impl::Thread::thread_key_type _mt_key = 0;
+xmt::Thread::thread_key_type _mt_key = 0;
 #else // !__FIT_NOVELL_THREADS
-__impl::Thread::thread_key_type _mt_key = __STATIC_CAST(__impl::Thread::thread_key_type,-1);
+xmt::Thread::thread_key_type _mt_key = __STATIC_CAST(xmt::Thread::thread_key_type,-1);
 # ifndef __FIT_WIN32THREADS
 void *_uw_save = 0;
 # endif
@@ -101,10 +102,10 @@ void *_uw_save = 0;
 
 
 #ifdef _PTHREADS
-// __impl::__Mutex<false,true> _F_lock;
-__impl::Mutex _F_lock;
-#  define _F_locklock  detail::_F_lock.lock();
-#  define _F_lockunlock detail::_F_lock.unlock();
+// xmt::__Mutex<false,true> _F_lock;
+xmt::Mutex _F_lock;
+#  define _F_locklock  xmt::detail::_F_lock.lock();
+#  define _F_lockunlock xmt::detail::_F_lock.unlock();
 #endif
 
 #ifdef __FIT_UITHREADS
@@ -116,14 +117,23 @@ __impl::Mutex _F_lock;
 #  define _F_lockunlock
 #endif
 
+#ifdef __FIT_PSHARED_MUTEX
+std::string _notpshared( "Platform not support process shared mutex" );
+#endif
+
+#ifdef __FIT_XSI_THR
+std::string _notrecursive( "Platform not support recursive mutex" );
+#endif
+
 } // namespace detail
+} // namespace xmt
 
 extern "C" void __at_fork_prepare()
 {
   _F_locklock
 #ifdef _PTHREADS
-  if ( detail::Init_count > 0 ) {
-    detail::_uw_save = pthread_getspecific( detail::_mt_key );
+  if ( xmt::detail::Init_count > 0 ) {
+    xmt::detail::_uw_save = pthread_getspecific( xmt::detail::_mt_key );
   }
 #endif
 }
@@ -138,7 +148,7 @@ extern "C" void __at_fork_parent()
 extern "C" void __at_fork_child()
 {
 #ifdef _PTHREADS
-  if ( detail::Init_count > 0 ) {
+  if ( xmt::detail::Init_count > 0 ) {
      // otherwise we do it in Thread::Init::Init() below
 # if !(defined(__FreeBSD__) || defined(__OpenBSD__))
     // I am misunderstand this point, Solaris 7 require this (to be restored)
@@ -151,17 +161,17 @@ extern "C" void __at_fork_child()
 # else
 // should be fixed...
 # endif // !(__FreeBSD__ || __OpenBSD__)
-    pthread_key_create( &detail::_mt_key, 0 );
-    pthread_setspecific( detail::_mt_key, detail::_uw_save );
-    detail::_uw_save = 0;
+    pthread_key_create( &xmt::detail::_mt_key, 0 );
+    pthread_setspecific( xmt::detail::_mt_key, xmt::detail::_uw_save );
+    xmt::detail::_uw_save = 0;
     // Note, that only calling thread inherited when we use POSIX:
-    detail::Init_count = 1; // i.e. only ONE (calling) thread...
+    xmt::detail::Init_count = 1; // i.e. only ONE (calling) thread...
   }
 #endif
   _F_lockunlock
 }
 
-namespace __impl {
+namespace xmt {
 
 #ifndef _WIN32
 using std::cerr;
@@ -1318,7 +1328,7 @@ int Thread::xalloc()
   return _idx++;
 }
 
-} // namespace __impl
+} // namespace xmt
 
 
 timespec operator +( const timespec& a, const timespec& b )

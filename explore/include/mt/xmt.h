@@ -98,14 +98,14 @@ typedef struct timespec timestruc_t;    /* definition per SVr4 */
 
 #ifdef _REENTRANT
 
-# define MT_REENTRANT(point,nm) __impl::Locker nm(point)
-# define MT_REENTRANT_RS(point,nm) __impl::LockerRS nm(point)
-# define MT_REENTRANT_SDS(point,nm) __impl::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
+# define MT_REENTRANT(point,nm) xmt::Locker nm(point)
+# define MT_REENTRANT_RS(point,nm) xmt::LockerRS nm(point)
+# define MT_REENTRANT_SDS(point,nm) xmt::LockerSDS nm(point) // obsolete, use MT_REENTRANT_RS
 # define MT_LOCK(point)         point.lock()
 # define MT_UNLOCK(point)       point.unlock()
 # ifdef __FIT_RWLOCK
-#  define MT_REENTRANT_RD(point,nm) __impl::LockerRd nm(point)
-#  define MT_REENTRANT_WR(point,nm) __impl::LockerWr nm(point)
+#  define MT_REENTRANT_RD(point,nm) xmt::LockerRd nm(point)
+#  define MT_REENTRANT_WR(point,nm) xmt::LockerWr nm(point)
 #  define MT_LOCK_RD(point)      point.rdlock()
 #  define MT_LOCK_WR(point)      point.wrlock()
 # else // !__FIT_RWLOCK
@@ -159,7 +159,19 @@ typedef SIG_FUNC_TYP *SIG_TYP;
 
 } // extern "C"
 
-namespace __impl {
+namespace xmt {
+
+namespace detail {
+
+#ifdef __FIT_PSHARED_MUTEX
+extern std::string _notpshared;
+#endif
+
+#ifdef __FIT_XSI_THR
+extern std::string _notrecursive;
+#endif
+
+} // namespace detail
 
 // extern __FIT_DECLSPEC void signal_throw( int sig ) throw( int );
 // extern __FIT_DECLSPEC void signal_thread_exit( int sig );
@@ -219,12 +231,16 @@ class __mutex_base
           pthread_mutexattr_init( &att );
 # ifdef __FIT_PSHARED_MUTEX
           if ( SCOPE ) {
-            int _err = pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+            if ( pthread_mutexattr_setpshared( &att, PTHREAD_PROCESS_SHARED ) != 0 ) {
+              throw std::invalid_argument( detail::_notpshared );
+            }
           }
 # endif // __FIT_PSHARED_MUTEX
 # ifdef __FIT_XSI_THR  // Unix 98 or X/Open System Interfaces Extention
           if ( RECURSIVE_SAFE ) {
-            int _err = pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE );
+            if ( pthread_mutexattr_settype( &att, PTHREAD_MUTEX_RECURSIVE ) != 0 ) {
+              throw std::invalid_argument( detail::_notrecursive );
+            }
           }
 # endif
           pthread_mutex_init( &_M_lock, &att );
@@ -705,7 +721,9 @@ class __mutex_rw_base
           pthread_rwlockattr_t att;
           pthread_rwlockattr_init( &att );
 # ifdef __FIT_PSHARED_MUTEX
-          int _err = pthread_rwlockattr_setpshared( &att, PTHREAD_PROCESS_SHARED );
+          if ( pthread_rwlockattr_setpshared( &att, PTHREAD_PROCESS_SHARED ) != 0 ) {
+            throw std::invalid_argument( xmt::detail::_notpshared );
+          }
 # endif // __FIT_PSHARED_MUTEX
           pthread_rwlock_init( &_M_lock, &att );
           pthread_rwlockattr_destroy( &att );
@@ -1563,7 +1581,9 @@ class Thread
 #endif
 };
 
-} // namespace __impl
+} // namespace xmt
+
+namespace __impl = xmt; // compatibility
 
 timespec operator +( const timespec& a, const timespec& b );
 timespec operator -( const timespec& a, const timespec& b );
