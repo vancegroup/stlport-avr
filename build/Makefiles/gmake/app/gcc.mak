@@ -1,5 +1,4 @@
-# -*- Makefile -*- Time-stamp: <05/03/24 11:29:23 ptr>
-# $Id$
+# -*- Makefile -*- Time-stamp: <05/12/08 01:48:06 ptr>
 
 ifndef NOT_USE_NOSTDLIB
 
@@ -49,39 +48,67 @@ ifeq ($(OSNAME),sunos)
 endif
 endif
 
+ifndef WITHOUT_STLPORT
+LDSEARCH += -L${STLPORT_LIB_DIR}
+
+release-shared:	STLPORT_LIB = -lstlport
+dbg-shared:	STLPORT_LIB = -lstlportg
+stldbg-shared:	STLPORT_LIB = -lstlportstlg
+
+ifeq ($(OSNAME),cygming)
+LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
+release-shared : STLPORT_LIB = -lstlport.${LIB_VERSION}
+dbg-shared     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
+stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+endif
+
+ifeq ($(OSNAME),windows)
+LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
+release-shared : STLPORT_LIB = -lstlport.${LIB_VERSION}
+dbg-shared     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
+stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+endif
+
+endif
+
 ifdef _USE_NOSTDLIB
 
 # ifeq ($(CXX_VERSION_MAJOR),3)
 ifeq ($(OSNAME),linux)
 START_OBJ := $(shell for o in crt{1,i,begin}.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crt{end,n}.o; do ${CXX} -print-file-name=$$o; done)
-STDLIBS := -lgcc_s -lpthread -lc -lm
+STDLIBS = ${STLPORT_LIB} -lgcc_s -lpthread -lc -lm
 endif
 ifeq ($(OSNAME),openbsd)
 START_OBJ := $(shell for o in crt{0,begin}.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o; do ${CXX} -print-file-name=$$o; done)
-STDLIBS := -lgcc -lpthread -lc -lm
+STDLIBS = ${STLPORT_LIB} -lgcc -lpthread -lc -lm
 endif
 ifeq ($(OSNAME),freebsd)
 # FreeBSD < 5.3 should use -lc_r, while FreeBSD >= 5.3 use -lpthread
-PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "supc++ -lc_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "supc++ -lc_r" ; else echo "pthread"; fi ; fi ; fi)
+PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
 START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
-STDLIBS := -lgcc -l${PTHR} -lc -lm
+STDLIBS = ${STLPORT_LIB} -lgcc -l${PTHR} -lc -lm
 endif
 ifeq ($(OSNAME),netbsd)
 START_OBJ := $(shell for o in crt{1,i,begin}.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crt{end,n}.o; do ${CXX} -print-file-name=$$o; done)
-STDLIBS := -lgcc_s -lpthread -lc -lm
+STDLIBS = ${STLPORT_LIB} -lgcc_s -lpthread -lc -lm
 endif
 ifeq ($(OSNAME),sunos)
 START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
-STDLIBS := -lgcc_s -lpthread -lc -lm
+STDLIBS = ${STLPORT_LIB} -lgcc_s -lpthread -lc -lm
 endif
 LDFLAGS += -nostdlib
 # endif
-
+else
+ifndef WITHOUT_STLPORT
+STDLIBS = ${STLPORT_LIB}
+else
+STDLIBS =
+endif
 endif
 
 # workaround for gcc 2.95.x bug:
