@@ -1,6 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/03/24 11:33:35 ptr>
-# $Id$
-
+# -*- makefile -*- Time-stamp: <05/12/08 01:45:17 ptr>
 
 # Oh, the commented below work for gmake 3.78.1 and above,
 # but phrase without tag not work for it. Since gmake 3.79 
@@ -80,10 +78,10 @@ STDLIBS := -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lpthread -lc -lm
 endif
 ifeq ($(OSNAME),freebsd)
 # FreeBSD < 5.3 should use -lc_r, while FreeBSD >= 5.3 use -lpthread
-PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "ptherad" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
+PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
 START_OBJ := $(shell for o in crti.o crtbeginS.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtendS.o crtn.o; do ${CXX} -print-file-name=$$o; done)
-STARTBS := -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lgcc -l${PTHR} -lc -lm
+STDLIBS := -Wl,--whole-archive -lsupc++ -lgcc_eh -Wl,--no-whole-archive -lgcc -l${PTHR} -lc -lm
 endif
 ifeq ($(OSNAME),netbsd)
 START_OBJ := $(shell for o in crt{i,beginS}.o; do ${CXX} -print-file-name=$$o; done)
