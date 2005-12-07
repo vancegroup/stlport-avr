@@ -1,5 +1,4 @@
-# -*- makefile -*- Time-stamp: <03/07/10 00:20:54 ptr>
-# $Id$
+# -*- makefile -*- Time-stamp: <05/12/07 00:54:14 ptr>
 
 ifneq ($(OSNAME),windows)
 clobber::

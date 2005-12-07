@@ -1,3 +1,1 @@
-# -*- Makefile -*- Time-stamp: <04/07/25 13:26:49 ptr>
-# $Id$
-
+# -*- Makefile -*- Time-stamp: <05/12/07 01:01:22 ptr>
