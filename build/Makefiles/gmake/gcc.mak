@@ -1,6 +1,4 @@
-# Time-stamp: <05/03/21 10:42:37 ptr>
-# $Id$
-
+# Time-stamp: <05/12/08 01:52:33 ptr>
 
 #INCLUDES = -I$(SRCROOT)/include
 INCLUDES :=
@@ -36,6 +34,12 @@ endif
 
 DEFS ?=
 OPT ?=
+
+ifdef WITHOUT_STLPORT
+INCLUDES =
+else
+INCLUDES = -I${STLPORT_INCLUDE_DIR}
+endif
 
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
