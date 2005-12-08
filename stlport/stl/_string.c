@@ -612,14 +612,12 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // _String_base methods
 template <class _Tp, class _Alloc>
-void _String_base<_Tp,_Alloc>::_M_throw_length_error() const {
-  __stl_throw_length_error("basic_string");
-}
+void _String_base<_Tp,_Alloc>::_M_throw_length_error() const
+{ __stl_throw_length_error("basic_string"); }
 
 template <class _Tp, class _Alloc>
-void _String_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
-  __stl_throw_out_of_range("basic_string");
-}
+void _String_base<_Tp, _Alloc>::_M_throw_out_of_range() const
+{ __stl_throw_out_of_range("basic_string"); }
 
 template <class _Tp, class _Alloc>
 void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
@@ -647,6 +645,15 @@ void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
+#if defined (_STLP_DONT_SUP_DFLT_PARAM)
+template <class _CharT, class _Traits, class _Alloc>
+basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s)
+  : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
+  _STLP_FIX_LITERAL_BUG(__s)
+  _M_range_initialize(__s, __s + traits_type::length(__s));
+}
+#endif
+
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s,
                                                     const allocator_type& __a)
@@ -654,7 +661,6 @@ basic_string<_CharT, _Traits, _Alloc>::basic_string(const _CharT* __s,
   _STLP_FIX_LITERAL_BUG(__s)
   _M_range_initialize(__s, __s + traits_type::length(__s));
 }
-
 
 template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _Traits, _Alloc> & __s)

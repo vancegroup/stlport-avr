@@ -274,7 +274,7 @@ public:
 
   allocator_type get_allocator() const { return _Base::get_allocator(); }
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit slist(const allocator_type& __a = allocator_type())
 #else
   slist()
@@ -283,27 +283,20 @@ public:
 #endif
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a) {}
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
-#  if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit slist(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp),
-#  else
-  slist(size_type __n, const value_type& __x,
-#  endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-              const allocator_type& __a =  allocator_type())
+                 const allocator_type& __a =  allocator_type())
 #else
-  explicit slist(size_type __n, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp))
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
-    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
-  explicit slist(size_type __n, const value_type& __x, const allocator_type& __a)
-#endif
-    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
-    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
-
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit slist(size_type __n)
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
     { _M_insert_after_fill(&this->_M_head._M_data, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+  slist(size_type __n, const value_type& __x)
+    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(allocator_type())
+    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
+  slist(size_type __n, const value_type& __x, const allocator_type& __a)
+#endif
+    : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__a)
+    { _M_insert_after_fill(&this->_M_head._M_data, __n, __x); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   // We don't need any dispatching tricks here, because _M_insert_after_range

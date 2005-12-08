@@ -19,8 +19,7 @@
 //DMC prefer enum to real static const variable because it do not concider
 //static const as const enough to be used in switch declaration...
 #define _STLP_STATIC_CONST_INIT_BUG
-
-#define _STLP_DFLT_PARAM_INSTANCIATION_BUG
+#define _STLP_DONT_SUP_DFLT_PARAM
 
 #if !defined (_WIN32)
 // it's not fully supported on non-Win32 platforms
@@ -48,11 +47,6 @@
 
 #define _STLP_DEFAULT_TYPE_PARAM
 
-#ifndef _WCHAR_T_DEFINED
-#  define _STLP_NO_WCHAR_T
-#  define _STLP_NO_MBSTATE_T
-#endif
-
 #if _INTEGRAL_MAX_BITS >= 64
 #  define _STLP_LONG_LONG long long
 #endif
@@ -65,8 +59,6 @@
 #define _STLP_HAS_NO_NEW_IOSTREAMS
 #define _STLP_HAS_NO_NEW_C_HEADERS
 #define _STLP_THROW_RETURN_BUG
-
-#define _STLP_NO_NATIVE_MBSTATE_T
 
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)

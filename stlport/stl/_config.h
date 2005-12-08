@@ -810,10 +810,10 @@ namespace _STL = _STLP_STD_NAME;
 #  define explicit
 #endif
 
-#ifndef _STLP_NEED_MUTABLE
-#  define __ASSIGN_MUTABLE(type,x,y) x = y
+#if !defined (_STLP_NEED_MUTABLE)
+#  define _STLP_ASSIGN_MUTABLE(type,x,y) x = y
 #else
-#  define __ASSIGN_MUTABLE(type,x,y) __CONST_CAST(type,x)=y
+#  define _STLP_ASSIGN_MUTABLE(type,x,y) __CONST_CAST(type,x)=y
 #  define mutable
 #endif
 
@@ -864,7 +864,7 @@ namespace _STL = _STLP_STD_NAME;
 #endif
 
 #if !defined (_STLP_ALLOCATOR_TYPE_DFL)
-#  if defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#  if defined (_STLP_DONT_SUP_DFLT_PARAM)
 #    define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
 #  endif
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)

@@ -104,7 +104,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class vector : private _STLP_PRIV _Vector_base<_Tp, _Alloc>
+class vector : protected _STLP_PRIV _Vector_base<_Tp, _Alloc>
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (vector)
              , public __stlport_class<vector<_Tp, _Alloc> >
 #endif
@@ -130,9 +130,9 @@ public:
 
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
-  allocator_type get_allocator() const {
-    return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _Tp);
-  }
+  allocator_type get_allocator() const
+  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _Tp); }
+
 private:
   typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
   typedef typename _TrivialUCopy<_Tp>::_Ret _TrivialUCpy;
@@ -198,7 +198,7 @@ public:
   reference at(size_type __n) { _M_range_check(__n); return (*this)[__n]; }
   const_reference at(size_type __n) const { _M_range_check(__n); return (*this)[__n]; }
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(const allocator_type& __a = allocator_type())
 #else
   vector()
@@ -207,30 +207,21 @@ public:
 #endif
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a) {}
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
-#  if !defined (_STLP_DONT_SUP_DFLT_PARAM)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
-#  else
-  vector(size_type __n, const _Tp& __val,
-#  endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-         const allocator_type& __a = allocator_type())
+                  const allocator_type& __a = allocator_type())
 #else
-  explicit vector(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp))
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type()) {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
-  }
-  vector(size_type __n, const _Tp& __val, const allocator_type& __a)
-#endif
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, __a) {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
-  }
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(size_type __n)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type() ) {
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp), _PODType());
   }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+  vector(size_type __n, const _Tp& __val)
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType()); }
+  vector(size_type __n, const _Tp& __val, const allocator_type& __a)
+#endif
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, __a)
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType()); }
 
   vector(const _Self& __x)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {

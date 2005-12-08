@@ -471,7 +471,7 @@ public:                         // Basic accessors
   allocator_type get_allocator() const { return this->_M_map_size; }
 
 public:                         // Constructor, destructor.
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(const allocator_type& __a = allocator_type())
 #else
   deque()
@@ -485,27 +485,20 @@ public:                         // Constructor, destructor.
       _STLP_PRIV __uninitialized_copy(__x.begin(), __x.end(), this->_M_start, _TrivialUCpy());
   }
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
-#  if !defined (_STLP_DONT_SUP_DFLT_PARAM)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
-#  else
-  deque(size_type __n, const value_type& __val,
-#  endif
-        const allocator_type& __a = allocator_type())
+                 const allocator_type& __a = allocator_type())
 #else
-  explicit deque(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp))
+  explicit deque(size_type __n)
+    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
+  { _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  deque(size_type __n, const value_type& __val)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
   { _M_fill_initialize(__val); }
   deque(size_type __n, const value_type& __val, const allocator_type& __a)
 #endif
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
   { _M_fill_initialize(__val); }
-
-#if defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit deque(size_type __n)
-    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-  { _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 protected:

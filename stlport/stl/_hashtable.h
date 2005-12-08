@@ -294,7 +294,7 @@ public:
   typedef typename _Alloc_traits<_Val, _All>::allocator_type allocator_type;
   allocator_type get_allocator() const { return _M_elems.get_allocator(); }
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   hashtable(size_type __n,
             const _HF&  __hf,
             const _EqK& __eql,
@@ -329,7 +329,7 @@ public:
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
 
-#if !defined (_STLP_DFLT_PARAM_INSTANCIATION_BUG)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   hashtable(size_type __n,
             const _HF&    __hf,
             const _EqK&   __eql,

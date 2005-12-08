@@ -78,7 +78,7 @@ public:
   _Tp _M_data;
   __TRIVIAL_STUFF(_List_node)
 
-#ifdef __DMC__
+#if defined (__DMC__)
   // for some reason, Digital Mars C++ needs a constructor...
  private:
   _List_node();
@@ -188,13 +188,11 @@ public:
   typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
 
-  allocator_type get_allocator() const {
-    return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp);
-  }
+  allocator_type get_allocator() const
+  { return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp); }
 
-  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base() ) {
-    _M_empty_initialize();
-  }
+  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base())
+  { _M_empty_initialize(); }
   _List_base(__move_source<_Self> src) :
     _M_node(__move_source<_AllocProxy>(src.get()._M_node)) {
     if (src.get().empty())
@@ -206,9 +204,8 @@ public:
     }
   }
 
-  ~_List_base() {
-    clear();
-  }
+  ~_List_base()
+  { clear(); }
 
   void clear();
   bool empty() const { return _M_node._M_data._M_next == &_M_node._M_data; }
@@ -309,19 +306,19 @@ protected:
 
 public:
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit list(size_type __n, const_reference __val = value_type(),
+  explicit list(size_type __n, const_reference __val = _STLP_DEFAULT_CONSTRUCTED(value_type),
+                const allocator_type& __a = allocator_type())
 #else
-  list(size_type __n, const_reference __val,
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
-       const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _List_base<_Tp, _Alloc>(__a)
-    { this->insert(begin(), __n, __val); }
-
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(size_type __n)
     : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type())
     { this->insert(begin(), __n, _STLP_DEFAULT_CONSTRUCTED(value_type)); }
+  list(size_type __n, const_reference __val)
+    : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type())
+    { this->insert(begin(), __n, __val); }
+  list(size_type __n, const_reference __val, const allocator_type& __a)
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+    : _STLP_PRIV _List_base<_Tp, _Alloc>(__a)
+    { this->insert(begin(), __n, __val); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   // We don't need any dispatching tricks here, because insert does all of
@@ -349,11 +346,14 @@ public:
     { _M_insert(begin(), __first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-#if !(defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)))
-  explicit
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
+  explicit list(const allocator_type& __a = allocator_type())
+#else
+  list()
+    : _STLP_PRIV _List_base<_Tp, _Alloc>(allocator_type()) {}
+  list(const allocator_type& __a)
 #endif
-  list(const allocator_type& __a = allocator_type()) :
-    _STLP_PRIV _List_base<_Tp, _Alloc>(__a) {}
+    : _STLP_PRIV _List_base<_Tp, _Alloc>(__a) {}
 
   list(const _Self& __x) : _STLP_PRIV _List_base<_Tp, _Alloc>(__x.get_allocator())
   { _M_insert(begin(), __x.begin(), __x.end()); }

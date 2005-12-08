@@ -96,8 +96,14 @@ private:
 public:
   // allocation/deallocation
   map() : _M_t(_Compare(), allocator_type()) {}
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit map(const _Compare& __comp,
                const allocator_type& __a = allocator_type())
+#else
+  explicit map(const _Compare& __comp)
+    : _M_t(__comp, allocator_type()) {}
+  explicit map(const _Compare& __comp, const allocator_type& __a)
+#endif
     : _M_t(__comp, __a) {}
 
 #if defined (_STLP_MEMBER_TEMPLATES)
