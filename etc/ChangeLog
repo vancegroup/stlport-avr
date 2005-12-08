@@ -1,3 +1,18 @@
+2005-12-08  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_auto_ptr.h: Add missing Standard throw() specification
+	on all auto_ptr members.
+
+	* stlport/config/stl_mycomp.h: Removed recently introduce macro
+	_STLP_DFLT_PARAM_INSTANCIATION_BUG, already existing _STLP_DONT_SUP_DFLT_PARAM
+	is enough for the moment.
+
+	* stlport/stl/_stream_iterator.h: Small implementation change to make
+	Digital Mars compiler happy.
+
+	* stlport/stl/_unordered_map.h: Digital Mars compiler do not like
+	immutable keys in associative containers.
+
 2005-12-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/gcc.mak: check configuration macro
