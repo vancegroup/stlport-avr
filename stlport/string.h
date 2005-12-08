@@ -29,6 +29,9 @@
 #    define _STLP_STRING_H
 #  endif
 
+#  if defined(_STLP_WCE_EVC3)
+struct _exception;
+#  endif
 #  if (_STLP_OUTERMOST_HEADER_ID != 0x269) || defined (_STLP_DONT_POP_HEADER_ID)
 #    include _STLP_NATIVE_C_HEADER(string.h)
 #  else
@@ -54,10 +57,4 @@
 #    endif
 #  endif
 #endif /* RC_INVOKED */
-
-#endif
-/* Local Variables:
- * mode:C++
- * End:
- */
-
+#endif /* _STLP_STRING_H */

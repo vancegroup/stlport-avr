@@ -1,5 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/03/02 18:39:22 ptr>
-# $Id$
+# -*- makefile -*- Time-stamp: <05/12/09 01:42:44 ptr>
 
 INSTALL_TAGS ?= install-release-shared install-dbg-shared install-stldbg-shared
 

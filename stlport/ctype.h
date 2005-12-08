@@ -29,6 +29,10 @@
 #    define _STLP_CTYPE_H
 #  endif
 
+#  if defined(_STLP_WCE_EVC3)
+struct _exception;
+#  endif
+
 #  include _STLP_NATIVE_C_HEADER(ctype.h)
 
 #  ifndef _STLP_CTYPE_H_SEEN
@@ -99,8 +103,3 @@ __inline int (iswascii)(int c) { return ((unsigned)(c) < 0x80); }
 #endif /* RC_INVOKED */
 
 #endif /* _STLP_CTYPE_H */
-
-/* Local Variables:
- * mode:C++
- * End:
- */

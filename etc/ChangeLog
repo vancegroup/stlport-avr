@@ -15,6 +15,16 @@
 
 2005-12-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
+	* stlport/ctype.h: forward-declaration for _exception struct
+	for WinCE/eVC3; prevents warning message
+	../include/stdlib.h(817) : warning C4115:
+	'_exception' : named type definition in parentheses
+	[Michael Fink's suggestion]
+
+	* stlport/float.h, stlport/limits.h, stlport/setjmp.h: idem.
+
+	* stlport/stdarg.h, stlport/string.h, stlport/stdio.h: idem.
+
 	* build/Makefiles/gmake/gcc.mak: check configuration macro
 	WITHOUT_STLPORT [useful for tests]; force usage of stlport
 	headers first otherwise.
@@ -36,6 +46,10 @@
 
 	* build/Makefiles/gmake/lib/gcc.mak: remove names inherited from
 	Complement project.
+
+	* build/Makefiles/gmake/*/rules-install-so.mak: installation
+	catalog was missed in dependency tree; ident string removed
+	to simplify merge/diff
 
 	* Build: building library and unit tests with cross [gcc 3.4.5]
 	on Linux for FreeBSD 5.3.

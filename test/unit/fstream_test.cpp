@@ -192,14 +192,12 @@ void FstreamTest::tellg()
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
     CPPUNIT_ASSERT( is.is_open() );
-    string line;
     char buf[64];
 
     // CPPUNIT_ASSERT( is.tellg() == 0 );
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
       CPPUNIT_ASSERT( is.tellg() == p );
-      // getline( is, line, '\n' );
       is.read( buf, 8 );
       CPPUNIT_ASSERT( !is.fail() );
       p += 8;
@@ -210,8 +208,6 @@ void FstreamTest::tellg()
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
     CPPUNIT_ASSERT( is.is_open() );
-    string line;
-    char buf[64];
 
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
@@ -228,8 +224,6 @@ void FstreamTest::tellg()
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
     CPPUNIT_ASSERT( is.is_open() );
-    string line;
-    char buf[64];
 
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
