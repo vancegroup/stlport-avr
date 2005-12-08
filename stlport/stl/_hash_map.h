@@ -56,7 +56,7 @@ public:
 #if !defined (__DMC__)
   typedef pair<const key_type, data_type> value_type;
 #else
-  /* DMC goes to far in template instanciation and tries to fully instanciate
+  /* DMC goes too far in template instanciation and tries to fully instanciate
    * slist<pair<const int, string> > for instance. The generation of assignment
    * operator fails of course so we are force to use mutable key for this compiler.
    */
