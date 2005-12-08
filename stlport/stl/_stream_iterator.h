@@ -140,7 +140,8 @@ public:
 private:
   istream_type* _M_stream;
   mutable _Tp _M_value;
-  mutable bool _M_ok, _M_read_done;
+  mutable bool _M_ok;
+  mutable bool _M_read_done;
 
   void _M_read() const {
     _M_ok = ((_M_stream != 0) && !_M_stream->fail());
