@@ -19,11 +19,17 @@ EXE := .exe
 # static library extention:
 ifeq (dmc,$(COMPILER_NAME))
 ARCH := lib
-AR := lib
+AR := lib -n
+AR_INS_R := -c
+AR_EXTR := -x
+AR_OUT = $(subst /,\,$@)
 else
 ifeq (bcc,$(COMPILER_NAME))
 ARCH := lib
 AR := tlib
+AR_INS_R := -+
+AR_EXTR := *
+AR_OUT = $(subst /,\,$@)
 else
 ARCH := a
 AR := ar

@@ -3,20 +3,22 @@
 
 PHONY += install-release-static install-dbg-static install-stldbg-static
 
-install-release-static:	release-static
-	@if [ ! -d $(INSTALL_LIB_DIR) ] ; then \
-	  mkdir -p $(INSTALL_LIB_DIR) ; \
-	fi
+ifneq (windows, $(OSNAME))
+install-release-static: release-static $(INSTALL_LIB_DIR)
 	$(INSTALL_A) ${A_NAME_OUT} $(INSTALL_LIB_DIR)
 
-install-dbg-static:	dbg-static
-	@if [ ! -d $(INSTALL_LIB_DIR_DBG) ] ; then \
-	  mkdir -p $(INSTALL_LIB_DIR_DBG) ; \
-	fi
+install-dbg-static: dbg-static $(INSTALL_LIB_DIR_DBG)
 	$(INSTALL_A) ${A_NAME_OUT_DBG} $(INSTALL_LIB_DIR_DBG)
 
-install-stldbg-static:	stldbg-static
-	@if [ ! -d $(INSTALL_LIB_DIR_STLDBG) ] ; then \
-	  mkdir -p $(INSTALL_LIB_DIR_STLDBG) ; \
-	fi
+install-stldbg-static: stldbg-static $(INSTALL_LIB_DIR_STLDBG)
 	$(INSTALL_A) ${A_NAME_OUT_STLDBG} $(INSTALL_LIB_DIR_STLDBG)
+else
+install-release-static: release-static $(INSTALL_LIB_DIR)
+	$(INSTALL_A) $(subst /,\,$(A_NAME_OUT) $(INSTALL_LIB_DIR)/)
+
+install-dbg-static: dbg-static $(INSTALL_LIB_DIR_DBG)
+	$(INSTALL_A) $(subst /,\,$(A_NAME_OUT_DBG) $(INSTALL_LIB_DIR_DBG)/)
+
+install-stldbg-static: stldbg-static $(INSTALL_LIB_DIR_STLDBG)
+	$(INSTALL_A) $(subst /,\,$(A_NAME_OUT_STLDBG) $(INSTALL_LIB_DIR_STLDBG)/)
+endif

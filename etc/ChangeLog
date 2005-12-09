@@ -1,4 +1,34 @@
+2005-12-09  Francois Dumont  <dums@stlport...>
+
+	* build/lib/configure.bat: Add Borland compiler to compilers
+	able to mix a dll build with a static native runtime.
+
+	* build/Makefiles/gmake/bcc.mak, dmc.mak: Complete libs to link
+	depending on STLport configuration.
+
+	* build/Makefiles/gmake/targetdirs.mak: roll back modif from Petr
+	2005-12-08
+
+	* build/Makefiles/gmake/targets.mak: ditto
+
+	* build/Makefiles/gmake/cygming/lib.mak: Fix for static libs build
+	with compiler different than gcc.
+
+	* build/Makefiles/gmake/cygming/targetsys.mak: Add missing info for
+	static libs build with Borland and Digital Mars compilers.
+
+	* build/Makefiles/gmake/lib/rules-a.mak: Fix static builds commands
+	to use info of above point.
+
+	* build/Makefiles/gmake/lib/rules-install-a.mak: Add install rule
+	for windows and missing catalog in dependency tree.
+
+	* build/Makefiles/gmake/windows/rules-install-so.mak: Add missing
+	catalog dependency.
+
 2005-12-08  Francois Dumont  <dums@stlport...>
+
+	* 
 
 	* stlport/stl/_auto_ptr.h: Add missing Standard throw() specification
 	on all auto_ptr members.

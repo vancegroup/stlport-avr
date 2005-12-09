@@ -74,27 +74,64 @@ dbg-shared : OPT += -R -v -y
 stldbg-static : OPT += -R -v -y
 stldbg-shared : OPT += -R -v -y
 
-dbg-shared : LDFLAGS += -v
-stldbg-shared : LDFLAGS += -v
-
 LDLIBS += import32.lib kernel32.lib
 ifndef STLP_BUILD_NO_THREAD
+ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
 release-shared : LDLIBS += cw32mti.lib
 dbg-shared : LDLIBS += cw32mti.lib
 stldbg-shared : LDLIBS += cw32mti.lib
+else
+release-shared : LDLIBS += cw32mt.lib
+dbg-shared : LDLIBS += cw32mt.lib
+stldbg-shared : LDLIBS += cw32mt.lib
+endif
+ifndef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
 release-static : LDLIBS += cw32mt.lib
 dbg-static : LDLIBS += cw32mt.lib
 stldbg-static : LDLIBS += cw32mt.lib
 else
+release-static : LDLIBS += cw32mti.lib
+dbg-static : LDLIBS += cw32mti.lib
+stldbg-static : LDLIBS += cw32mti.lib
+endif
+else
+ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
 release-shared : LDLIBS += cw32i.lib
 dbg-shared : LDLIBS += cw32i.lib
 stldbg-shared : LDLIBS += cw32i.lib
+else
+release-shared : LDLIBS += cw32.lib
+dbg-shared : LDLIBS += cw32.lib
+stldbg-shared : LDLIBS += cw32.lib
+endif
+ifndef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
 release-static : LDLIBS += cw32.lib
 dbg-static : LDLIBS += cw32.lib
 stldbg-static : LDLIBS += cw32.lib
+else
+release-static : LDLIBS += cw32i.lib
+dbg-static : LDLIBS += cw32i.lib
+stldbg-static : LDLIBS += cw32i.lib
+endif
 endif
 
+ifdef LIBNAME
+release-shared: LDLIBS += c0d32.obj
+dbg-shared: LDLIBS += c0d32.obj
+stldbg-shared: LDLIBS += c0d32.obj
+else
+ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+release-static: DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+endif
+ifdef STLP_BUILD_FORCE_STATIC_RUNTIME
+release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
+dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+endif
 LDLIBS += c0x32.obj
+endif
 
 # dependency output parser (dependencies collector)
 

@@ -65,10 +65,9 @@ dbg-shared : OPT += -g
 stldbg-static : OPT += -g
 stldbg-shared : OPT += -g
 
-AR += -c -n 
 release-static : AR += -p256
-dbg-static : AR += -p512
-stldbg-static : AR += -p1024
+dbg-static : AR += -p1024
+stldbg-static : AR += -p2048
 
 # dependency output parser (dependencies collector)
 

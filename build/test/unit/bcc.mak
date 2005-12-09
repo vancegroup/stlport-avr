@@ -1,6 +1,7 @@
 
 SRCROOT := ../..
 COMPILER_NAME := bcc
+OBJ_EXT := obj
 
 STLPORT_DIR := ../../..
 include Makefile.inc

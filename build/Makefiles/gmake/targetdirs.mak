@@ -61,7 +61,7 @@ INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
 
 PHONY += $(OUTPUT_DIRS) $(INSTALL_DIRS)
 
-#ifneq (${OSNAME},windows)
+ifneq (${OSNAME},windows)
 $(OUTPUT_DIRS):
 	@for d in $@ ; do \
 	  if [ -e $$d -a -f $$d ] ; then \
@@ -81,13 +81,16 @@ $(INSTALL_DIRS):
 	    mkdir -p $$d ; \
 	  fi ; \
 	done
-#else
+else
 
 # Seems, this wrong (loop through catalogs list required):
+# dums: not wrong when command extensions are activated, what is sure
+#       is that previous code do not work for windows platform so
+#       it has to be filter away.
 
-#$(OUTPUT_DIRS):
-#	@if not exist $@ mkdir $(subst /,\,$@)
-#
-#$(INSTALL_DIRS):
-#	@if not exist $@ mkdir $(subst /,\,$@)
-#endif
+$(OUTPUT_DIRS):
+	@if not exist $@ mkdir $(subst /,\,$@)
+
+$(INSTALL_DIRS):
+	@if not exist $@ mkdir $(subst /,\,$@)
+endif

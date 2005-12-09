@@ -26,9 +26,7 @@ ifeq (${OSNAME},cygming)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
 ifeq (${OSNAME},windows)
-#ifneq ($(COMPILER_NAME), bcc)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
-#endif
 endif
 
 ALLOBJS    := $(addsuffix .$(OBJ_EXT),$(ALLBASE))
@@ -71,7 +69,7 @@ OBJ_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLOBJS))
 DEP_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLDEPS))
 endif
 
-ifeq ($(COMPILER_NAME),bcc)
+ifeq ($(COMPILER_NAME),toto)
 OBJ := $(subst /,\,$(OBJ))
 OBJ_DBG := $(subst /,\,$(OBJ_DBG))
 OBJ_STLDBG := $(subst /,\,$(OBJ_STLDBG))
