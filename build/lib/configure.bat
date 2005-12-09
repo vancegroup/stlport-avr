@@ -399,6 +399,7 @@ REM **************************************************************************
 :opt_rtl
 if "%SELECTED_COMPILER%" == "" goto or_err1
 if "%SELECTED_COMPILER%" == "msvc" goto or_ok
+if "%SELECTED_COMPILER%" == "bcc" goto or_ok
 if "%SELECTED_COMPILER%" == "dmc" goto or_ok
 goto or_err2
 
