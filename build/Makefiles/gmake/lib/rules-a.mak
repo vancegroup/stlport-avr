@@ -11,35 +11,31 @@ dbg-static:	$(OUTPUT_DIR_A_DBG) ${A_NAME_OUT_DBG}
 
 stldbg-static:	$(OUTPUT_DIR_A_STLDBG) ${A_NAME_OUT_STLDBG}
 
+
+ifeq (bcc, $(COMPILER_NAME))
+# Borland archive builder
 ${A_NAME_OUT}:	$(OBJ_A)
-ifeq (dmc, $(COMPILER_NAME))
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A))
-else
-ifeq (bcc, $(COMPILER_NAME))
 	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A)))
-else
-	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A)
-endif
-endif
-
 ${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
-ifeq (dmc, $(COMPILER_NAME))
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_DBG))
-else
-ifeq (bcc, $(COMPILER_NAME))
 	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_DBG)))
-else
-	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_DBG)
-endif
-endif
-
 ${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
-ifeq (dmc, $(COMPILER_NAME))
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_STLDBG))
-else
-ifeq (bcc, $(COMPILER_NAME))
 	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_STLDBG)))
 else
+ifeq (dmc, $(COMPILER_NAME))
+# Digital Mars archive builder
+${A_NAME_OUT}:	$(OBJ_A)
+	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A))
+${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
+	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_DBG))
+${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
+	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_STLDBG))
+else
+# GNU archive builder
+${A_NAME_OUT}:	$(OBJ_A)
+	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A)
+${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
+	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_DBG)
+${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
 	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_STLDBG)
 endif
 endif
