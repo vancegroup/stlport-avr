@@ -82,12 +82,6 @@ $(INSTALL_DIRS):
 	  fi ; \
 	done
 else
-
-# Seems, this wrong (loop through catalogs list required):
-# dums: not wrong when command extensions are activated, what is sure
-#       is that previous code do not work for windows platform so
-#       it has to be filter away.
-
 $(OUTPUT_DIRS):
 	@if not exist $@ mkdir $(subst /,\,$@)
 
