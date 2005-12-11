@@ -2,4 +2,4 @@
 
 OPT += -tWC
 
-LDFLAGS += -ap -Tpd
+LDFLAGS += -ap -Tpe
