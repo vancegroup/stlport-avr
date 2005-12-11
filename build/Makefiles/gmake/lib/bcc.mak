@@ -10,3 +10,7 @@ release-shared : LDFLAGS += -Tpd -V4.00 -v -w-dup
 dbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 stldbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 
+release-static : AR += /P32
+dbg-static : AR += /P128
+stldbg-static : AR += /P256
+
