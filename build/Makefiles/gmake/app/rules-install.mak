@@ -5,57 +5,39 @@ install:	install-shared
 INSTALL_PRGNAME := ${PRGNAME}${EXE}
 
 ifneq ($(OSNAME),windows)
-install-release-shared: release-shared
-	@if [ ! -d $(INSTALL_BIN_DIR) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR) ; \
-	fi
+install-release-shared: release-shared $(INSTALL_BIN_DIR)
 	$(INSTALL_EXE) ${PRG} $(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}
 
-install-dbg-shared: dbg-shared
-	@if [ ! -d $(INSTALL_BIN_DIR_DBG) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR_DBG) ; \
-	fi
+install-dbg-shared: dbg-shared $(INSTALL_BIN_DIR_DBG)
 	$(INSTALL_EXE) ${PRG_DBG} $(INSTALL_BIN_DIR_DBG)/${INSTALL_PRGNAME}
 
-install-stldbg-shared: stldbg-shared
-	@if [ ! -d $(INSTALL_BIN_DIR_STLDBG) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR_STLDBG) ; \
-	fi
+install-stldbg-shared: stldbg-shared $(INSTALL_BIN_DIR_STLDBG)
 	$(INSTALL_EXE) ${PRG_STLDBG} $(INSTALL_BIN_DIR_STLDBG)/${INSTALL_PRGNAME}
 
-install-release-static: release-static
-	@if [ ! -d $(INSTALL_BIN_DIR) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR) ; \
-	fi
+install-release-static: release-static $(INSTALL_BIN_DIR)
 	$(INSTALL_EXE) ${PRG} $(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}
 
-install-dbg-static: dbg-static
-	@if [ ! -d $(INSTALL_BIN_DIR_DBG) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR_DBG) ; \
-	fi
+install-dbg-static: dbg-static $(INSTALL_BIN_DIR_DBG)
 	$(INSTALL_EXE) $(PRG_DBG) $(INSTALL_BIN_DIR_DBG)/$(INSTALL_PRGNAME)
 
-install-stldbg-static: stldbg-static
-	@if [ ! -d $(INSTALL_BIN_DIR_STLDBG) ] ; then \
-	  mkdir -p $(INSTALL_BIN_DIR_STLDBG) ; \
-	fi
+install-stldbg-static: stldbg-static $(INSTALL_BIN_DIR_STLDBG)
 	$(INSTALL_EXE) ${PRG_STLDBG} $(INSTALL_BIN_DIR_STLDBG)/${INSTALL_PRGNAME}
 else
-install-release-shared: release-shared
+install-release-shared: release-shared $(INSTALL_BIN_DIR)
 	$(INSTALL_EXE) $(PRG) $(subst /,\,$(INSTALL_BIN_DIR)/$(INSTALL_PRGNAME))
 
-install-dbg-shared: dbg-shared
+install-dbg-shared: dbg-shared $(INSTALL_BIN_DIR_DBG)
 	$(INSTALL_EXE) $(PRG_DBG) $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(INSTALL_PRGNAME))
 
-install-stldbg-shared: stldbg-shared
+install-stldbg-shared: stldbg-shared $(INSTALL_BIN_DIR_STLDBG)
 	$(INSTALL_EXE) $(PRG_STLDBG) $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(INSTALL_PRGNAME))
 
-install-release-static: release-static
+install-release-static: release-static $(INSTALL_BIN_DIR)
 	$(INSTALL_EXE) $(PRG) $(subst /,\,$(INSTALL_BIN_DIR)/$(INSTALL_PRGNAME))
 
-install-dbg-static: dbg-static
+install-dbg-static: dbg-static $(INSTALL_BIN_DIR_DBG)
 	$(INSTALL_EXE) $(PRG_DBG) $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(INSTALL_PRGNAME))
 
-install-stldbg-static: stldbg-static
+install-stldbg-static: stldbg-static $(INSTALL_BIN_DIR_STLDBG)
 	$(INSTALL_EXE) $(PRG_STLDBG) $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(INSTALL_PRGNAME))
 endif
