@@ -1,3 +1,35 @@
+2005-12-11  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/gmake/bcc.mak : Add -w-eff to disable 'useless'
+	code warning, we had to chose between this warning and the 'used
+	parameter' one.
+
+	* build/Makefiles/gmake/targetdirs.mak: Removed comment about folder
+	creation action under windows platform. The action is identical to
+	the one used in the nmake build system and no one complains about it
+	so current situation is not so bad. Only users of Windows before Windows
+	98 should eperiment troubles, this is a known limitation.
+
+	* build/Makefiles/gmake/dmc.mak, cygming/rules-so.mak: Change config,
+	now we directly invoke the linker, we do not use a compiler call for it.
+
+	* build/Makefiles/gmake/app/bcc.mak: Fix linker option in order to generate
+	a windows executable and not a dll, thanks Eric Stanford.
+
+	* build/Makefiles/gmake/app/rules-install.mak: Add install dir dependency
+	rather than doing a folder existence check in rules actions.
+
+	* build/Makefiles/gmake/app/rules.mak: Restore slash rotation for Borland
+	linker invocation and fix static rules dependencies to guaranty folder
+	creations.
+
+	* build/Makefiles/gmake/lib/bcc.mak: Add missing archiver page size parameters.
+
+	* build/test/unit/bcc.mak: Add _STLP_DEBUG_UNINITIALIZED for static
+	debug rules.
+
+	* build/Makefiles/gmake/lib/rules-a.mak: Segregate each archiver invocation.
+
 2005-12-09  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: Add Borland compiler to compilers
