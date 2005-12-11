@@ -16,7 +16,7 @@ ifeq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(subst /,\,$(OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS),,$(RES))
 else
 ifeq (dmc, $(COMPILER_NAME))
-	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(subst /,\,$(OBJ) $(RES) $(LDLIBS))
+	$(LINK.cc) $(subst /,\,$(OBJ), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES))
 else
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(OBJ) $(RES) $(LDLIBS)
 endif
@@ -27,7 +27,7 @@ ifeq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(subst /,\,$(OBJ_DBG),$(LINK_OUTPUT_OPTION),,$(LDLIBS),,$(RES_DBG))
 else
 ifeq (dmc, $(COMPILER_NAME))
-	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(subst /,\,$(OBJ_DBG) $(RES_DBG) $(LDLIBS))
+	$(LINK.cc) $(subst /,\,$(OBJ_DBG), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES_DBG))
 else
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(OBJ_DBG) $(RES_DBG) $(LDLIBS)
 endif
@@ -38,7 +38,7 @@ ifeq (bcc, $(COMPILER_NAME))
 	$(LINK.cc) $(subst /,\,$(OBJ_STLDBG),$(LINK_OUTPUT_OPTION),,$(LDLIBS),,$(RES_STLDBG))
 else
 ifeq (dmc, $(COMPILER_NAME))
-	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(subst /,\,$(OBJ_STLDBG) $(RES_STLDBG) $(LDLIBS))
+	$(LINK.cc) $(subst /,\,$(OBJ_STLDBG), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES_STLDBG))
 else
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) $(OBJ_STLDBG) $(RES_STLDBG) $(LDLIBS)
 endif

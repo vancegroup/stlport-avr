@@ -36,7 +36,7 @@ OPT += -Ar
 endif
 
 OUTPUT_OPTION = -o$@
-LINK_OUTPUT_OPTION = -o$(subst /,\,$@)
+LINK_OUTPUT_OPTION = $(subst /,\,$@)
 CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES) 
 
 CDEPFLAGS = -E -M
@@ -49,6 +49,9 @@ stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = $(OUTPUT_OPTION)
 
 COMPILE.rc = ${RC} ${RCFLAGS}
+LINK.cc = link $(LDFLAGS)
+
+LDLIBS += kernel32.lib
 
 # STLport DEBUG mode specific defines
 stldbg-static :	    DEFS += -D_STLP_DEBUG
