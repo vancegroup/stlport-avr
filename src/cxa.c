@@ -1,4 +1,11 @@
 #include <stdlib.h>
+
+#if defined(__unix) && defined(__GNUC__)
+
+#include <sys/param.h>
+
+#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001))
+
 #include <stdio.h>
 #include <pthread.h>
 
@@ -67,7 +74,15 @@ int __cxa_atexit(void (*func)(void *), void *arg, void *d)
 
 
 /* We change global data, so we need locking.  */
+#ifndef __FreeBSD__
 static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+#else
+static pthread_mutex_t lock =
+        { PTHREAD_MUTEX_RECURSIVE /* PTHREAD_MUTEX_DEFAULT */, PTHREAD_PRIO_NONE, {NULL,NULL},
+        NULL, { NULL }, /* MUTEX_FLAGS_PRIVATE */ 0x1, 0, 0, 0, {NULL, NULL},
+        { 0, 0, 0, 0 } };
+#endif
+
 
 static struct exit_function_list initial;
 struct exit_function_list *__exit_funcs = &initial;
@@ -147,4 +162,7 @@ void __cxa_finalize(void *d)
 
 /* __asm__ (".symver " "__cxa_finalize" "," "__cxa_finalize" "@@" "STLPORT_5_0_0"); */
 /* void __cxa_finalize(void *d) __attribute__ ((weak)); */
+
+#endif /* OS name */
+#endif /* __unix */
 

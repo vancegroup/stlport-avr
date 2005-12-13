@@ -1,4 +1,4 @@
-# Time-stamp: <05/12/08 01:50:18 ptr>
+# Time-stamp: <05/12/13 23:24:02 ptr>
 
 ifdef TARGET_OS
 TARGET_NAME := ${TARGET_OS}-
@@ -64,7 +64,7 @@ PHONY += $(OUTPUT_DIRS) $(INSTALL_DIRS)
 ifneq (${OSNAME},windows)
 $(OUTPUT_DIRS):
 	@for d in $@ ; do \
-	  if [ -e $$d -a -f $$d ] ; then \
+	  if ${EXT_TEST} -e $$d -a -f $$d ; then \
 	    echo "ERROR: Regular file $$d present, directory instead expected" ; \
 	    exit 1; \
 	  elif [ ! -d $$d ] ; then \
@@ -74,7 +74,7 @@ $(OUTPUT_DIRS):
 
 $(INSTALL_DIRS):
 	@for d in $@ ; do \
-	  if [ -e $$d -a -f $$d ] ; then \
+	  if ${EXT_TEST} -e $$d -a -f $$d ; then \
 	    echo "ERROR: Regular file $$d present, directory instead expected" ; \
 	    exit 1; \
 	  elif [ ! -d $$d ] ; then \

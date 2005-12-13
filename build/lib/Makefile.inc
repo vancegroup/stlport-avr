@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <05/05/16 22:07:32 ptr>
+# -*- Makefile -*- Time-stamp: <05/12/13 23:24:39 ptr>
 
 LIBNAME = stlport
 MAJOR = 5
@@ -33,6 +33,7 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/complex_io_w.cpp \
           ../../src/string.cpp
 
-SRC_C = ../../src/c_locale.c
+SRC_C = ../../src/c_locale.c \
+        ../../src/cxa.c
 
 SRC_RC = ../../src/stlport.rc

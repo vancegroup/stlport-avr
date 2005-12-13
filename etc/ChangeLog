@@ -1,3 +1,8 @@
+2005-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/targetdirs.mak: built-in
+	test in /bin/sh on Solaris has no -e.
+
 2005-12-11  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/gmake/bcc.mak : Add -w-eff to disable 'useless'
@@ -58,9 +63,15 @@
 	* build/Makefiles/gmake/windows/rules-install-so.mak: Add missing
 	catalog dependency.
 
-2005-12-08  Francois Dumont  <dums@stlport...>
+2005-12-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* 
+	* build/lib/Makefile.inc: add cxa.c into compilation; this
+	is useful for FreeBSD 4.11 C++ ABI workaround.
+
+	* src/cxa.c: use _cxa_atexit and related functions on
+	FreeBSD 4.11 [workaround for missed C++ ABI functions].
+
+2005-12-08  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_auto_ptr.h: Add missing Standard throw() specification
 	on all auto_ptr members.
