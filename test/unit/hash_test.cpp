@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <hash_map>
 #include <hash_set>
-#if !defined (__BORLANDC__)
+#if !defined (__BORLANDC__) && !defined (__DMC__)
 #  include <rope>
 #endif
 #include <string>
@@ -26,23 +26,23 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
-#if !defined (__BORLANDC__)
-  CPPUNIT_TEST(hmap1);
+#if defined (__BORLANDC__) || defined (__DMC__)
+  CPPUNIT_IGNORE;
 #endif
+  CPPUNIT_TEST(hmap1);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
   CPPUNIT_TEST(insert_erase);
-  //CPPUNIT_TEST(equality);
   CPPUNIT_TEST(allocator_with_state);
+  //CPPUNIT_TEST(equality);
   CPPUNIT_TEST_SUITE_END();
 
   typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
 
 protected:
-#if !defined (__BORLANDC__)
   void hmap1();
-#endif
   void hmmap1();
   void hmset1();
   void hset2();
@@ -56,9 +56,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 // tests implementation
 //
-#if !defined (__BORLANDC__)
 void HashTest::hmap1()
 {
+#if !defined (__BORLANDC__) && !defined (__DMC__)
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.
@@ -73,7 +73,7 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( !strcmp(m['z'].c_str(),"") );
 
   CPPUNIT_ASSERT( m.count('z')==1 );
-  pair<maptype::iterator, bool> p =m.insert(pair<const char, crope>('c', crope("100")));
+  pair<maptype::iterator, bool> p = m.insert(pair<const char, crope>('c', crope("100")));
 
   CPPUNIT_ASSERT(p.second);
 
@@ -90,8 +90,8 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( !(ite != cite) );
   CPPUNIT_ASSERT( cite == ite );
   CPPUNIT_ASSERT( !(cite != ite) );
-}
 #endif
+}
 
 void HashTest::hmmap1()
 {
