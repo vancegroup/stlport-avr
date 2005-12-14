@@ -1,3 +1,5 @@
+#include "stlport_prefix.h"
+
 #include <stdlib.h>
 
 #if defined(__unix) && defined(__GNUC__)

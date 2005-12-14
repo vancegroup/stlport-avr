@@ -1,3 +1,10 @@
+2005-12-13  Francois Dumont  <dums@stlport...>
+
+	* src/cxa.c: Add include of stlport_prefix.h first, this file
+	should be always included first in STLport translation units,
+	it prepares some compilers config and define important
+	__BUILDING_STLPORT macro.
+
 2005-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/targetdirs.mak: built-in
