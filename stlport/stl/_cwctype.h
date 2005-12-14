@@ -47,7 +47,7 @@ using std::wctrans;
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
 
 #    if defined (_STLP_USE_GLIBC) && !(defined (_GLIBCPP_USE_WCHAR_T) || defined (_GLIBCXX_USE_WCHAR_T)) || \
-        defined (__sun)
+        defined (__sun) || defined(__FeeBSD__)
 //We take wide functions from global namespace:
 #      define _STLP_VENDOR_CSTD_WFUNC
 #    else

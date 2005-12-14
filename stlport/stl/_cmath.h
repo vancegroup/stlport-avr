@@ -158,14 +158,25 @@ extern long double __tanhl(long double);
 #  define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
 #  define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
 #else
-#  if !defined (__SUNPRO_CC)
-#    define _STLP_MATH_INLINE(float_type, func, cfunc) \
+#  ifdef __GNUC__
+#    if 0
+#      define _STLP_MATH_INLINE(float_type, func, cfunc) \
        inline float_type func (float_type x) { return ::__##cfunc(x); }
-#    define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
+#      define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
        inline float_type func (float_type x, type y) { return ::__##cfunc(x,y); }
-#    define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
-#    define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
-#  else
+#      define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
+#      define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
+#    endif
+#    if 1
+#      define _STLP_MATH_INLINE(float_type, func, cfunc) \
+       inline float_type func (float_type x) { return ::cfunc(x); }
+#      define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
+       inline float_type func (float_type x, type y) { return ::cfunc(x,y); }
+#      define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
+#      define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
+#    endif
+#  endif
+#  ifdef __SUNPRO_CC
 #    define _STLP_MATH_INLINE(float_type, func, cfunc) \
        inline float_type func (float_type x) { return _STLP_VENDOR_CSTD::__##cfunc(x); }
 #    define _STLP_MATH_INLINE_D(float_type, func, cfunc) \

@@ -1,3 +1,21 @@
+2005-12-14  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/sysid.mak: parse two-token target
+	system identification string along with three-token one
+	[useful when vendor is omitted]; thanks Jonathan Sprinkle.
+
+	* stlport/cwctype, stlport/stl/_cwctype.h: wctype_t and
+	others are in global namespace on FreeBSD.
+
+	* build/Makefiles/gmake/app/gcc.mak, lib/gcc.mak: use build
+	with -nostdlib on Solaris.
+
+	* src/cxa.c: fix for Solaris
+
+	* stlport/config/stl_solaris.h, stlport/stl/_cmath.h:
+	hmm, strange... sometimes MATH_L and MATH_F present on Solaris,
+	sometimes not...
+
 2005-12-14  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cppunit/cppunit_mini.h, file_reporter.h: Add ignore
@@ -49,13 +67,13 @@
 
 	* src/cxa.c: Add include of stlport_prefix.h first, this file
 	should be always included first in STLport translation units,
-	it prepares some compilers config and define important
+	it prepares some compilers config and define important for Wins
 	__BUILDING_STLPORT macro.
 
 2005-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/targetdirs.mak: built-in
-	test in /bin/sh on Solaris has no -e.
+	test in /bin/sh on Solaris has no -e, use external instead.
 
 2005-12-11  Francois Dumont  <dums@stlport...>
 
@@ -179,7 +197,7 @@
 	to simplify merge/diff
 
 	* Build: building library and unit tests with cross [gcc 3.4.5]
-	on Linux for FreeBSD 5.3.
+	on Linux for FreeBSD 5.3 (except cwctype_test).
 
 	* build/Makefiles/gmake/targets.mak: rotate slashes for BCC.
 

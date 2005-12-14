@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/12/08 01:45:17 ptr>
+# -*- makefile -*- Time-stamp: <05/12/15 01:46:52 ptr>
 
 # Oh, the commented below work for gmake 3.78.1 and above,
 # but phrase without tag not work for it. Since gmake 3.79 
@@ -55,7 +55,7 @@ _USE_NOSTDLIB := 1
 endif
 
 ifeq ($(OSNAME),sunos)
-#_USE_NOSTDLIB := 1
+_USE_NOSTDLIB := 1
 endif
 endif
 
@@ -89,9 +89,9 @@ END_OBJ := $(shell for o in crt{endS,n}.o; do ${CXX} -print-file-name=$$o; done)
 STDLIBS := -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lgcc_s -lpthread -lc -lm
 endif
 ifeq ($(OSNAME),sunos)
-#START_OBJ := $(shell for o in crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
-#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
-#STDLIBS := -Wl,--whole-archive -lsupc++ -Wl,--no-whole-archive -lgcc_s -lpthread -lc -lm
+START_OBJ := $(shell for o in crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
+END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
+STDLIBS := -Wl,-zallextract -lsupc++ -Wl,-zdefaultextract -lgcc_s -lpthread -lc -lm
 endif
 #END_A_OBJ := $(shell for o in crtn.o; do ${CXX} -print-file-name=$$o; done)
 

@@ -1,13 +1,14 @@
 #include "stlport_prefix.h"
 
-#include <stdlib.h>
-
 #if defined(__unix) && defined(__GNUC__)
 
-#include <sys/param.h>
+#ifdef __FreeBSD__
+#  include <osreldate.h>
+#endif
 
-#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001))
+#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun)
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
 
@@ -76,13 +77,18 @@ int __cxa_atexit(void (*func)(void *), void *arg, void *d)
 
 
 /* We change global data, so we need locking.  */
-#ifndef __FreeBSD__
+#ifdef __linux__
 static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
-#else
+#endif
+#ifdef __FreeBSD__
 static pthread_mutex_t lock =
-        { PTHREAD_MUTEX_RECURSIVE /* PTHREAD_MUTEX_DEFAULT */, PTHREAD_PRIO_NONE, {NULL,NULL},
-        NULL, { NULL }, /* MUTEX_FLAGS_PRIVATE */ 0x1, 0, 0, 0, {NULL, NULL},
-        { 0, 0, 0, 0 } };
+  { PTHREAD_MUTEX_RECURSIVE /* PTHREAD_MUTEX_DEFAULT */, PTHREAD_PRIO_NONE, {NULL,NULL},
+    NULL, { NULL }, /* MUTEX_FLAGS_PRIVATE */ 0x1, 0, 0, 0, {NULL, NULL},
+    { 0, 0, 0, 0 } };
+#endif
+#ifdef __sun
+static pthread_mutex_t lock =
+  {{0, 0, 0, PTHREAD_MUTEX_RECURSIVE, _MUTEX_MAGIC}, {{{0}}}, 0};
 #endif
 
 

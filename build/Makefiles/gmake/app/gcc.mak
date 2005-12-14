@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <05/12/08 01:48:06 ptr>
+# -*- Makefile -*- Time-stamp: <05/12/15 01:46:30 ptr>
 
 ifndef NOT_USE_NOSTDLIB
 
@@ -44,7 +44,7 @@ _USE_NOSTDLIB := 1
 endif
 
 ifeq ($(OSNAME),sunos)
-#_USE_NOSTDLIB := 1
+_USE_NOSTDLIB := 1
 endif
 endif
 
