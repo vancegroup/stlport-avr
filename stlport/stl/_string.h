@@ -1383,8 +1383,9 @@ struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
 /*#else
  * There is no need to specialize for string and wstring in this case
  * as the default __move_traits will already tell that string is movable
- * but not complete. We cannot define is as complete as nothing guaranty
- * that the STLport user hasn't specialized allocator<char> or wchar_t.
+ * but not complete. We cannot define it as complete as nothing guaranty
+ * that the STLport user hasn't specialized std::allocator for char or
+ * wchar_t.
  */
 #endif
 
