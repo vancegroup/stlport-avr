@@ -51,6 +51,9 @@ class StringTest : public CPPUNIT_NS::TestCase
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(io);
 #endif
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST_SUITE_END();
 
@@ -123,7 +126,7 @@ void StringTest::mt()
 #endif // _STLP_PTHREADS
 
 #if defined (_STLP_WIN32THREADS)
-  DWORD start = GetTickCount();
+  //DWORD start = GetTickCount();
 
   HANDLE t[nth];
 
@@ -132,19 +135,20 @@ void StringTest::mt()
     t[i] = CreateThread(NULL, 0, f, 0, 0, NULL);
   }
 
-#ifdef _STLP_WCE
-  // on evc3/evc4 WaitForMultipleObjects() with fWaitAll == TRUE is not supported
-  for ( i = 0; i < nth; ++i ) {
-    WaitForSingleObject(t[i], INFINITE);
+  if (WaitForMultipleObjects(nth, t, TRUE, INFINITE) == WAIT_FAILED) {
+    // On some platforms (evc3/evc4) WaitForMultipleObjects() with fWaitAll == TRUE
+    // is not supported. We then wait with a loop on each thread:
+    for ( i = 0; i < nth; ++i ) {
+      WaitForSingleObject(t[i], INFINITE);
+    }
   }
-#else
-  WaitForMultipleObjects(nth, t, TRUE, INFINITE);
-#endif
 
+  /*
   DWORD duration = GetTickCount() - start;
   ostringstream ostr;
   ostr << "Duration: " << duration << endl;
   CPPUNIT_MESSAGE(ostr.str().c_str());
+  */
 #endif
 
 #if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
@@ -757,6 +761,7 @@ void StringTest::io()
 
 void StringTest::allocator_with_state()
 {
+#if !defined (__DMC__)
   char buf1[1024];
   StackAllocator<char> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -796,4 +801,6 @@ void StringTest::allocator_with_state()
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
   }
+#endif
 }
+
