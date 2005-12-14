@@ -1,12 +1,13 @@
-#include <rope>
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <sstream>
+#if !defined (__DMC__)
+#  include <rope>
+#  if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#    include <sstream>
 
-#  include "cppunit/cppunit_proxy.h"
+#    include "cppunit/cppunit_proxy.h"
 
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#    if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#    endif
 
 //
 // TestCase class
@@ -14,15 +15,14 @@ using namespace std;
 class RopeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(RopeTest);
-#  if !defined (__BORLANDC__)
+#    if defined (__BORLANDC__)
+  CPPUNIT_IGNORE;
+#    endif
   CPPUNIT_TEST(io);
-#  endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-#  if !defined (__BORLANDC__)
   void io();
-#  endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
@@ -30,9 +30,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
 //
 // tests implementation
 //
-#  if !defined (__BORLANDC__)
 void RopeTest::io()
 {
+#    if !defined (__BORLANDC__)
   char const* cstr = "rope test string";
   crope rstr(cstr);
 
@@ -43,7 +43,7 @@ void RopeTest::io()
     CPPUNIT_ASSERT( ostr );
     CPPUNIT_ASSERT( ostr.str() == cstr );
   }
+#    endif
 }
 #  endif
-
 #endif

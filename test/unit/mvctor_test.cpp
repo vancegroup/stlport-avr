@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#if !defined (__DMC__)
 #include <rope>
+#endif
 #include <slist>
 #include <list>
 #include <deque>
@@ -28,13 +30,23 @@ using namespace std;
 class MoveConstructorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(MoveConstructorTest);
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
+#if defined (STLPORT)
+#  if defined (_STLP_NO_MOVE_SEMANTIC) || defined (__DMC__)
+  CPPUNIT_IGNORE;
+#  endif
   CPPUNIT_TEST(move_construct_test);
   CPPUNIT_TEST(deque_test);
-#endif
+#  if defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
+  CPPUNIT_STOP_IGNORE;
+#  endif
   CPPUNIT_TEST(vector_test);
+#endif
+  CPPUNIT_STOP_IGNORE;
 #if defined (STLPORT)
   CPPUNIT_TEST(move_traits);
+#if defined (__BORLANDC__)
+  CPPUNIT_IGNORE;
+#endif
 #  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
       !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_TEST(movable_declaration)
@@ -43,18 +55,11 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   void move_construct_test();
   void deque_test();
-#endif
   void vector_test();
-#if defined (STLPORT)
   void move_traits();
-#  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
-      !defined (_STLP_NO_MOVE_SEMANTIC)
   void movable_declaration();
-#  endif
-#endif
 
   /*
   template <class _Container>
@@ -78,9 +83,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MoveConstructorTest);
 //
 // tests implementation
 //
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 void MoveConstructorTest::move_construct_test()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
   //cout << "vector<vector<int>>";
   vector<int> const ref_vec(10, 0);
   vector<vector<int> > v_v_ints(1, ref_vec);
@@ -201,10 +206,12 @@ void MoveConstructorTest::move_construct_test()
   CheckFullMoveSupport(list<int>());
   CheckFullMoveSupport(slist<int>());
   */
+#endif
 }
 
 void MoveConstructorTest::deque_test()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -402,8 +409,8 @@ void MoveConstructorTest::deque_test()
       }
     }
   }
-}
 #endif
+}
 
 void MoveConstructorTest::vector_test()
 {
@@ -823,9 +830,11 @@ namespace std {
     typedef __true_type complete;
   };
 }
+#endif
 
 void MoveConstructorTest::move_traits()
 {
+#if defined (STLPORT)
   {
     {
       vector<MovableStruct> vect;
@@ -1100,7 +1109,10 @@ void MoveConstructorTest::move_traits()
     //deq with 3 elements and v2 with 4 elements are now out of scope
     CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 3 + 4 );
   }
+#endif
 }
+
+#if defined (STLPORT)
 
 bool type_to_bool(__true_type)
 { return true; }
@@ -1121,7 +1133,7 @@ template <class _Tp>
 bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
 #if defined (__BORLANDC__)
-  return __type2bool<typename _TpMoveTraits::complete>::_Ret != 0;
+  return type_to_bool(_TpMoveTraits::complete());
 #else
   typedef typename _TpMoveTraits::complete _TpMoveComplete;
   return type_to_bool(_TpMoveComplete());
@@ -1177,11 +1189,12 @@ namespace std
                      struct_with_specialized_less const&) const;
   };
 }
+#endif
 
-#  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
-      !defined (_STLP_NO_MOVE_SEMANTIC)
 void MoveConstructorTest::movable_declaration()
 {
+#if defined (STLPORT) && !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
+                         !defined (_STLP_NO_MOVE_SEMANTIC)
   //This test purpose is to check correct detection of the STL movable
   //traits declaration
   {
@@ -1202,6 +1215,7 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
+#if !defined (__DMC__)
   {
     //crope, wrope:
     CPPUNIT_ASSERT( is_movable(crope()) );
@@ -1219,6 +1233,7 @@ void MoveConstructorTest::movable_declaration()
 #      endif
 #    endif
   }
+#endif
 
   {
     //vector:
@@ -1256,6 +1271,7 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
+#if !defined (__DMC__)
   {
     //slist:
     CPPUNIT_ASSERT( is_movable(slist<char>()) );
@@ -1267,6 +1283,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(slist<char>()) );
 #    endif
   }
+#endif
 
   {
     //queue:
@@ -1361,8 +1378,5 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( is_movable(hash_map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(hash_multimap<char, char>()) );
   }
-}
-
 #  endif
-
-#endif // STLPORT
+}

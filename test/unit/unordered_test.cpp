@@ -151,12 +151,12 @@ void UnorderedTest::umap()
   int i;
   pair<umaptype::iterator, bool> ret;
   for (i = 0; i < NB_ELEMS; ++i) {
-    pair<const int, int> p1(i, i);
+    umaptype::value_type p1(i, i);
     ret = us.insert(p1);
     CPPUNIT_ASSERT( ret.second );
     CPPUNIT_ASSERT( *ret.first == p1 );
 
-    pair<const int, int> p2(i, i + 1);
+    umaptype::value_type p2(i, i + 1);
     ret = us.insert(p2);
     CPPUNIT_ASSERT( !ret.second );
     CPPUNIT_ASSERT( *ret.first == p1 );
@@ -202,7 +202,7 @@ void UnorderedTest::umultimap()
   int i;
   umaptype::iterator ret;
   for (i = 0; i < NB_ELEMS; ++i) {
-    pair<const int, int> p(i, i);
+    umaptype::value_type p(i, i);
     ret = us.insert(p);
     CPPUNIT_ASSERT( *ret == p );
 
@@ -228,7 +228,7 @@ void UnorderedTest::umultimap()
 
   sort(us_val.begin(), us_val.end());
   for (i = 0; i < NB_ELEMS; ++i) {
-    pair<int, int> p(i, i);
+    ptype p(i, i);
     CPPUNIT_ASSERT( us_val[i * 2] == p );
     CPPUNIT_ASSERT( us_val[i * 2 + 1] == p );
   }
