@@ -40,12 +40,13 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(win32_file_format);
-#  if defined (DO_CUSTOM_FACET_TEST)
-  CPPUNIT_TEST(custom_facet);
-#  endif
 #  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);
 #  endif
+#  if !defined (DO_CUSTOM_FACET_TEST)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(custom_facet);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -59,9 +60,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void rdbuf();
     void streambuf_output();
     void win32_file_format();
-#  if defined (DO_CUSTOM_FACET_TEST)
     void custom_facet();
-#  endif
 #  if defined (CHECK_BIG_FILE)
     void big_file();
 #  endif
@@ -373,7 +372,6 @@ void FstreamTest::win32_file_format()
   }
 }
 
-#  if defined (DO_CUSTOM_FACET_TEST)
 struct my_state {
   char dummy;
 };
@@ -393,6 +391,7 @@ public:
 
 void FstreamTest::custom_facet()
 {
+#if defined (DO_CUSTOM_FACET_TEST)
   //File preparation:
   {
     ofstream ofstr("test_file.tmp", ios_base::binary);
@@ -407,11 +406,11 @@ void FstreamTest::custom_facet()
     my_ifstream ifstr("test_file.tmp");
     CPPUNIT_ASSERT( ifstr );
 
-#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     ifstr.imbue(locale::classic());
     CPPUNIT_ASSERT( ifstr.fail() && !ifstr.bad() );
     ifstr.clear();
-#endif
+#  endif
     locale my_loc(locale::classic(), new my_codecvt());
     ifstr.imbue(my_loc);
     CPPUNIT_ASSERT( ifstr.good() );
@@ -424,8 +423,8 @@ void FstreamTest::custom_facet()
     CPPUNIT_ASSERT( res == "0123456789" );
     */
   }
+#endif
 }
-#  endif
 
 #  if defined (CHECK_BIG_FILE)
 void FstreamTest::big_file()
