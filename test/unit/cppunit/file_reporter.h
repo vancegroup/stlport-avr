@@ -27,15 +27,15 @@ private:
   FileReporter(const FileReporter&) {}
   const FileReporter& operator=(const FileReporter&) { return *this; }
 public:
-  FileReporter() : m_numErrors(0), m_numTests(0), _myStream(false) { _file=stderr; }
-  FileReporter(const char* file) : m_numErrors(0), m_numTests(0), _myStream(true) {
+  FileReporter() : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false) { _file=stderr; }
+  FileReporter(const char* file) : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(true) {
 #if !defined (_MSC_VER) || (_MSC_VER < 1400)
     _file = fopen(file, "w");
 #else
     fopen_s(&_file, file, "w");
 #endif
   }
-  FileReporter(FILE* stream) : m_numErrors(0), m_numTests(0), _myStream(false)
+  FileReporter(FILE* stream) : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false)
   { _file = stream; }
 
   virtual ~FileReporter() { if (_myStream) fclose(_file); else fflush(_file);  }
@@ -48,20 +48,33 @@ public:
   virtual void message( const char *msg )
   { fprintf(_file, "\t%s\n", msg ); }
 
-  virtual void progress(const char *in_className, const char *in_shortTestName) {
+  virtual void progress(const char *in_className, const char *in_shortTestName, bool ignoring) {
     ++m_numTests;
-    fprintf(_file, "%s::%s\n", in_className, in_shortTestName);
+    if (ignoring)
+      ++m_numIgnores;
+    fprintf(_file, ignoring ? "%s::%s IGNORED\n" : "%s::%s\n", in_className, in_shortTestName);
   }
   virtual void printSummary() {
     if (m_numErrors > 0) {
-      fprintf(_file, "There were errors! (%d of %d)\n", m_numErrors, m_numTests);
+      if (m_numIgnores > 0) {
+        fprintf(_file, "There were errors! %d of %d tests, %d ignored\n", m_numErrors, m_numTests, m_numIgnores);
+      }
+      else {
+        fprintf(_file, "There were errors! %d of %d tests\n", m_numErrors, m_numTests);
+      }
     }
     else {
-      fprintf(_file, "\nOK (%d)\n\n", m_numTests);
+      if (m_numIgnores > 0) {
+        fprintf(_file, "\nOK %d tests, %d ignored\n\n", m_numTests, m_numIgnores);
+      }
+      else {
+        fprintf(_file, "\nOK %d tests\n\n", m_numTests);
+      }
     }
   }
 private:
   int m_numErrors;
+  int m_numIgnores;
   int m_numTests;
   bool  _myStream;
   FILE* _file;

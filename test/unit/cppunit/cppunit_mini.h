@@ -29,7 +29,7 @@ namespace CPPUNIT_NS
     virtual ~Reporter() {}
     virtual void error(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
     virtual void message( const char * /*msg*/ ) {}
-    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/) {}
+    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool ignored) {}
     virtual void printSummary() {}
   };
 
@@ -76,10 +76,10 @@ namespace CPPUNIT_NS
       return diff < in_maxErr;
     }
 
-    virtual void progress(const char *in_className, const char *in_functionName) {
+    virtual void progress(const char *in_className, const char *in_functionName, bool ignored) {
       ++m_numTests;
       if (m_reporter) {
-        m_reporter->progress(in_className, in_functionName);
+        m_reporter->progress(in_className, in_functionName, ignored);
       }
     }
 
@@ -111,14 +111,17 @@ namespace CPPUNIT_NS
 
 #define CPPUNIT_TEST_SUITE(X) \
   typedef CPPUNIT_NS::TestCase Base; \
-  virtual void myRun(const char *in_name, bool invert = false) { char *className = #X;
+  virtual void myRun(const char *in_name, bool invert = false) { \
+    char *className = #X; \
+    bool ignoring = false;
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST(X) \
   if (shouldRunThis(in_name, className, #X, invert)) { \
     try { \
       setUp(); \
-      progress(className, #X); \
-      X(); \
+      progress(className, #X, ignoring); \
+      if (!ignoring) \
+        X(); \
       tearDown(); \
     } \
     catch(...) { \
@@ -129,37 +132,51 @@ namespace CPPUNIT_NS
 #  define CPPUNIT_TEST(X) \
   if (shouldRunThis(in_name, className, #X, invert)) { \
     setUp(); \
-    progress(className, #X); \
-    X(); \
+    progress(className, #X, ignoring); \
+    if (!ignoring) \
+      X(); \
     tearDown(); \
   }
 #endif
+
+#  define CPPUNIT_IGNORE \
+  ignoring = true
+
+#  define CPPUNIT_STOP_IGNORE \
+  ignoring = false
+
 #define CPPUNIT_TEST_EXCEPTION(X, Y) \
   if (shouldRunThis(in_name, className, #X, invert)) { \
-    progress(className, #X); \
+    progress(className, #X, ignoring); \
   }
+
 #define CPPUNIT_TEST_SUITE_END() }
+
 #define CPPUNIT_TEST_SUITE_REGISTRATION(X) static X local
 
 #define CPPUNIT_CHECK(X) \
   if (!(X)) { \
     Base::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__); \
   }
+
 #define CPPUNIT_ASSERT(X) \
   if (!(X)) { \
     Base::error("CPPUNIT_ASSERT", #X, __FILE__, __LINE__); \
     return; \
   }
+
 #define CPPUNIT_ASSERT_EQUAL(X, Y) \
   if ((X) != (Y)) { \
     Base::error("CPPUNIT_ASSERT_EQUAL", #X","#Y, __FILE__, __LINE__); \
     return; \
   }
+
 #define CPPUNIT_ASSERT_DOUBLES_EQUAL(X, Y, Z) \
   if (!equalDoubles((X), (Y), (Z))) { \
     Base::error("CPPUNIT_ASSERT_DOUBLES_EQUAL", #X","#Y","#Z, __FILE__, __LINE__); \
     return; \
   }
+
 #define CPPUNIT_MESSAGE(m) CPPUNIT_NS::TestCase::message(m)
 
 #endif
