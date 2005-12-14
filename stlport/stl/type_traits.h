@@ -160,7 +160,7 @@ _STLP_TEMPLATE_NULL struct _Is_rational<long double> {
 
 // Forward declarations.
 template <class _Tp> struct __type_traits;
-template <int _IsPOD> struct __type_traits_aux {
+template <class _IsPOD> struct __type_traits_aux {
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
    typedef __false_type    has_trivial_assignment_operator;
@@ -169,7 +169,7 @@ template <int _IsPOD> struct __type_traits_aux {
 };
 
 _STLP_TEMPLATE_NULL
-struct __type_traits_aux<0> {
+struct __type_traits_aux<__false_type> {
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
    typedef __false_type    has_trivial_assignment_operator;
@@ -178,7 +178,7 @@ struct __type_traits_aux<0> {
 };
 
 _STLP_TEMPLATE_NULL
-struct __type_traits_aux<1> {
+struct __type_traits_aux<__true_type> {
   typedef __true_type    has_trivial_default_constructor;
   typedef __true_type    has_trivial_copy_constructor;
   typedef __true_type    has_trivial_assignment_operator;
@@ -188,7 +188,7 @@ struct __type_traits_aux<1> {
 
 template <class _Tp>
 struct _IsRef {
-  enum { _Ret = 0 };
+  typedef __false_type _Ret;
 };
 
 #  if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
@@ -223,113 +223,21 @@ struct _IsPtr {
    * other criteria.
    */
   static _Tp& __null_rep();
-  enum { _Ret = (sizeof(_IsP(false,__null_rep())) == sizeof(char)) };
-};
+  enum { _Ptr = (sizeof(_IsP(false,__null_rep())) == sizeof(char)) };
+  typedef typename __bool2type<_Ptr>::_Ret _Ret;
 
-#    if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-//This class avoid instanciation of the more complex class _IsPtr when _BoolType is __false_type
-template <class _CondT>
-struct _IsPtrIfAux/*<__false_type>*/ {
-  template <class _Tp>
-  struct _In {
-    enum { _Ret = 0 };
-  };
 };
-
-_STLP_TEMPLATE_NULL
-struct _IsPtrIfAux<__true_type> {
-  template <class _Tp>
-  struct _In {
-    enum { _Ret = _IsPtr<_Tp>::_Ret };
-  };
-};
-
-template <class _CondT, class _Tp>
-struct _IsPtrIf {
-  enum { _Ret = _IsPtrIfAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret };
-};
-
-//Idem _IsPtrIf but won't instanciate _IsPtr if _BoolType is __true_type
-template <typename _CondT>
-struct _IsPtrIfNotAux/*<__true_type>*/ {
-  template <class _Tp>
-  struct _In {
-    enum { _Ret = 0 };
-  };
-};
-
-_STLP_TEMPLATE_NULL
-struct _IsPtrIfNotAux<__false_type> {
-  template <class _Tp>
-  struct _In {
-    enum { _Ret = _IsPtr<_Tp>::_Ret };
-  };
-};
-
-template <class _CondT, class _Tp>
-struct _IsPtrIfNot {
-  enum { _Ret = _IsPtrIfNotAux<_CondT>::_STLP_TEMPLATE _In<_Tp>::_Ret };
-};
-
-#    else /* _STLP_MEMBER_TEMPLATE_CLASSES */
-template <class _CondT, class _Tp>
-struct _IsPtrIf {
-  enum { _Ret = _IsPtr<_Tp>::_Ret };
-};
-
-template <class _CondT, class _Tp>
-struct _IsPtrIfNot {
-  enum { _Ret = _IsPtr<_Tp>::_Ret };
-};
-#    endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
 
 template <class _Tp>
 struct _IsPtrType {
-#    if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
-  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
-
-  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-
-  enum { _Is = _IsPtrIfNot<_Tr3, _Tp>::_Ret } ;
-#    else
-  enum { _Is =  _IsPtr<_Tp>::_Ret } ;
-#    endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-  typedef __bool2type< _Is > _BT;
-  typedef typename _BT::_Ret _Type;
+  typedef typename _IsPtr<_Tp>::_Ret _Type;
   static _Type _Ret() { return _Type(); }
 };
 
 template <class _Tp1, class _Tp2>
 struct _BothPtrType {
-#    if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-  typedef typename _Is_integer<_Tp1>::_Integral _Tr11;
-  typedef typename _Is_rational<_Tp1>::_Rational _Tr12;
-
-  typedef typename _Lor2<_Tr11, _Tr12>::_Ret _Tr13;
-
-  enum { _Is1 = _IsPtrIfNot<_Tr13, _Tp1>::_Ret } ;
-#    else
-  enum { _Is1 =  _IsPtr<_Tp1>::_Ret } ;
-#    endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-  typedef __bool2type< _Is1 > _B1;
-  typedef typename _B1::_Ret _Type1;
-
-#    if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-  typedef typename _Is_integer<_Tp2>::_Integral _Tr21;
-  typedef typename _Is_rational<_Tp2>::_Rational _Tr22;
-
-  typedef typename _Lor2<_Tr21, _Tr22>::_Ret _Tr23;
-  typedef typename _Not<_Tr23>::_Ret _Tr24;
-
-  typedef typename _Land2<_Tr24, _Type1>::_Ret _Tr25;
-
-  enum { _Is2 = _IsPtrIf<_Tr25, _Tp2>::_Ret } ;
-#    else
-  enum { _Is2 =  _IsPtrIf<_Type1, _Tp2>::_Ret } ;
-#    endif /* _STLP_MEMBER_TEMPLATE_CLASSES */
-  typedef __bool2type< _Is2 > _B2;
-  typedef typename _B2::_Ret _Type2;
+  typedef typename _IsPtr<_Tp1>::_Ret _Type1;
+  typedef typename _IsPtr<_Tp2>::_Ret _Type2;
 
   typedef typename _Land2<_Type1, _Type2>::_Ret _Type;
   static _Type _Ret() { return _Type(); }
@@ -337,11 +245,13 @@ struct _BothPtrType {
 
 // we make general case dependant on the fact the type is actually a pointer.
 template <class _Tp>
-struct __type_traits : __type_traits_aux<_IsPtr<_Tp>::_Ret> {};
+struct __type_traits : __type_traits_aux<typename _IsPtr<_Tp>::_Ret> {};
 
 #  else /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
-template <class _Tp>  struct _IsPtr { enum { _Ret = 0 }; };
+template <class _Tp>  struct _IsPtr {
+  typedef __false_type _Ret;
+};
 
 template <class _Tp>
 struct __type_traits {
@@ -370,21 +280,24 @@ struct __type_traits {
 };
 
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Tp> struct _IsPtr<_Tp*> { enum { _Ret = 1 }; };
-template <class _Tp> struct _IsRef<_Tp&> { enum { _Ret = 1 }; };
+template <class _Tp> struct _IsPtr<_Tp*> {
+  typedef __true_type _Ret;
+};
+template <class _Tp> struct _IsRef<_Tp&> {
+  typedef __true_type _Ret;
+};
 
-template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<1> {};
+template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<__true_type> {};
 #    endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 template <class _Tp>  struct _IsPtrType {
-  enum { is_ptr = _IsPtr<_Tp>::_Ret };
-  typedef typename __bool2type<is_ptr>::_Ret _Type;
+  typedef typename _IsPtr<_Tp>::_Ret _Type;
   static _Type _Ret() { return _Type();}
 };
 template <class _Tp1, class _Tp2>  struct _BothPtrType {
-  enum { is_ptr1 = _IsPtr<_Tp1>::_Ret };
-  enum { is_ptr2 = _IsPtr<_Tp2>::_Ret };
-  typedef typename __bool2type<(is_ptr1 && is_ptr2)>::_Ret _Type;
+  typedef typename _IsPtr<_Tp1>::_Ret _IsPtr1;
+  typedef typename _IsPtr<_Tp2>::_Ret _IsPtr2;
+  typedef typename _Land2<_IsPtr1, _IsPtr2>::_Ret _Type;
   static _Type _Ret() { return _Type();}
 };
 
@@ -395,13 +308,13 @@ template <class _Tp1, class _Tp2>  struct _BothPtrType {
 //  that don't.
 #if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
 #  define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
-_STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<1> {}; \
-_STLP_TEMPLATE_NULL struct __type_traits< const Type > : __type_traits_aux<1> {}; \
-_STLP_TEMPLATE_NULL struct __type_traits< volatile Type > : __type_traits_aux<1> {}; \
-_STLP_TEMPLATE_NULL struct __type_traits< const volatile Type > : __type_traits_aux<1> {}
+_STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<__true_type> {}; \
+_STLP_TEMPLATE_NULL struct __type_traits< const Type > : __type_traits_aux<__true_type> {}; \
+_STLP_TEMPLATE_NULL struct __type_traits< volatile Type > : __type_traits_aux<__true_type> {}; \
+_STLP_TEMPLATE_NULL struct __type_traits< const volatile Type > : __type_traits_aux<__true_type> {}
 #else
 #  define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
-_STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<1> {};
+_STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<__true_type> {};
 #endif
 
 #  ifndef _STLP_NO_BOOL
@@ -458,30 +371,25 @@ struct _TrivialUCopyAux {
   static _Type _Answer() { return _Type(); }
 };
 
+#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>
 struct _DefaultZeroValue {
   typedef typename _Is_integer<_Tp>::_Integral _Tr1;
   typedef typename _Is_rational<_Tp>::_Rational _Tr2;
 
   typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-
-#  if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
-  enum { _IsPtrVal = _IsPtrIfNot<_Tr3, _Tp>::_Ret };
-#  else
-  enum { _IsPtrVal = _IsPtr<_Tp>::_Ret };
-#  endif /* !_STLP_CLASS_PARTIAL_SPECIALIZATION && _STLP_MEMBER_TEMPLATE_CLASSES*/
-  typedef typename __bool2type< _IsPtrVal >::_Ret _Tr4;
+  typedef typename _IsPtr<_Tp>::_Ret _Tr4;
 
   typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
+#endif
 
 #endif /* !_STLP_USE_BOOST_SUPPORT */
 
 template <class _Tp>
 struct _IsRefType {
-  enum { is_ref = _IsRef<_Tp>::_Ret };
-  typedef typename __bool2type<is_ref>::_Ret _Type;
+  typedef typename _IsRef<_Tp>::_Ret _Type;
   static _Type _Ret() { return _Type();}
 };
 
@@ -509,12 +417,8 @@ inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*) {
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 struct _OKToSwap {
-  enum { same = _AreSameUnCVTypes<_Tp1, _Tp2>::_Same };
-
-  enum { is_ref1 = __type2bool<_IsRef1>::_Ret };
-  enum { is_ref2 = __type2bool<_IsRef2>::_Ret };
-
-  typedef typename __bool2type<(same && is_ref1 && is_ref2)>::_Ret _Type;
+  typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Same;
+  typedef typename _Land3<_Same, _IsRef1, _IsRef2>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
 
@@ -538,10 +442,12 @@ struct _IsPOD {
 template <class _Tp>
 inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
 
+#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>
 inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
   return _DefaultZeroValue<_Tp>();
 }
+#endif
 
 /*
  * Base class used:
