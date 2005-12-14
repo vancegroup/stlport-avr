@@ -116,9 +116,9 @@ endif
 endif
 
 ifdef LIBNAME
-release-shared: LDLIBS += c0d32.obj
-dbg-shared: LDLIBS += c0d32.obj
-stldbg-shared: LDLIBS += c0d32.obj
+release-shared: START_OBJ += c0d32.obj
+dbg-shared: START_OBJ += c0d32.obj
+stldbg-shared: START_OBJ += c0d32.obj
 else
 ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
 release-static: DEFS += -D_STLP_USE_STATIC_LIB
@@ -130,7 +130,7 @@ release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
 dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 endif
-LDLIBS += c0x32.obj
+START_OBJ += c0x32.obj
 endif
 
 # dependency output parser (dependencies collector)
