@@ -2,7 +2,7 @@
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 #  include <locale>
-#include <iostream>
+//#  include <iostream>
 
 #  include "cppunit/cppunit_proxy.h"
 
@@ -46,15 +46,23 @@ static const ref_locale tested_locales[] = {
 class LocaleTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(LocaleTest);
+#if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(locale_by_name);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(loc_has_facet);
   CPPUNIT_TEST(num_put_get);
+#if defined (__BORLANDC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(money_put_get);
+  CPPUNIT_TEST(money_put_X_bug);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
   CPPUNIT_TEST(locale_init_problem);
-  CPPUNIT_TEST(money_put_X_bug);
   CPPUNIT_TEST_SUITE_END();
 
 public:
