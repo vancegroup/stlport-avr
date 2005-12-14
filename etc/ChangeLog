@@ -1,3 +1,50 @@
+2005-12-14  Francois Dumont  <dums@stlport...>
+
+	* test/unit/cppunit/cppunit_mini.h, file_reporter.h: Add ignore
+	test feature, now tests should be ignored rather than commented.
+	2 new macros for that CPPUNIT_IGNORE to add in tests declaration,
+	all test following this macro won't be run; CPPUNIT_STOP_IGNORE
+	optional macro to stop ignoring tests.
+
+	* test/unit/fstream_test.cpp: Ignore custom_facet test when not
+	supported rather than comment it.
+
+	* test/unit/hash_test.cpp: Ignore hmap1 test for Borland and Digital
+	Mars compilers, looks like rope class is too complicated for those
+	compilers.
+
+	* test/unit/locale_test.cpp: Ignore locale_by_name test for compiler
+	without exceptions support. Ignore money facet tests for Borland.
+
+	* test/unit/mvctor_test.cpp, rope_test.cpp: Some tests ignored
+	depending on various configuration settings.
+
+	* test/unit/type_traits.cpp: Add test for _IsSTLportClass metaprogramming
+	tool. Ignored for Borland.
+
+	* test/unit/unordered_test.cpp: Fix test for Digital Mars, unordered
+	containers value_type are not necessarily with an immutable key, it is
+	more portable to use value type rather than redefining it in the test.
+
+	* test/unit/string_test.cpp: Removed Windows CE macro check replaced
+	by WaitForMultipleObjects returned code check, more portable and
+	maintenable. Ignore a test for Digital Mars compiler.
+
+	* stlport/stl/type_manips.h, type_traits.h: Simplified metaprograming
+	tools implementation; now avoid compilation constant replaced by
+	type, Borland compiler has problem with constants.
+
+	* stlport/config/stl_bc.h: Made supported compiler check more accurate
+	free compiler is 5.5.1 so it is the oldest supported version. Borland
+	compiler do not support IEC559 specifications.
+
+	* build/Makefiles/gmake/bcc.mak: Put startup .obj to link with in
+	START_OBJ rather than LDLIBS, thanks Eric Stanford.
+
+	* src/c_locale_win32/c_locale_win32.c: Temporarily removed category
+	check in __Extract_locale_name function for Borland, looks like LC_ALL
+	or LC_MAX has not the right value.
+
 2005-12-13  Francois Dumont  <dums@stlport...>
 
 	* src/cxa.c: Add include of stlport_prefix.h first, this file
