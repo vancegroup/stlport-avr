@@ -3,8 +3,8 @@
 
 //#define _STLP_VERBOSE
 
-#if (__BORLANDC__ < 0x550)
-#  error - Borland compilers below version 5.5 not supported.
+#if (__BORLANDC__ < 0x551)
+#  error - Borland compilers below version 5.5.1 not supported.
 #endif
 
 #if (__BORLANDC__ < 0x560)
@@ -12,6 +12,7 @@
 #  define _STLP_DONT_USE_PRIV_NAMESPACE
 #  define _STLP_NO_VENDOR_STDLIB_L
 #  define _STLP_NO_VENDOR_MATH_F
+#  define _STLP_NO_IEC559_SUPPORT
 #endif
 
 #define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
