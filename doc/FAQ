@@ -254,6 +254,7 @@ variety of distributions/packages.
 So you can:
  - fix path in stlport administration config file stlport/stl/_site_config.h, 
    see _STLP_NATIVE_INCLUDE_PATH macro and related.
+ - create a link to the native compiler headers like expected by STLport
  - make request to package maintainer
  - build and install compiler
 
