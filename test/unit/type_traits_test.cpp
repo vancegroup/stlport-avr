@@ -418,8 +418,9 @@ void TypeTraitsTest::trivial_destructor()
 template <typename _Tp>
 int is_stlport_class(_Tp) {
   typedef _IsSTLportClass<_Tp> _STLportClass;
-#if !defined (__BORLANDC__)
-  return type_to_value(typename _STLportClass::_Ret());
+#if !defined (__BORLANDC__) && !defined (__DMC__)
+  typedef typename _STLportClass::_Ret _Is;
+  return type_to_value(_Is());
 #else
   return type_to_value(_STLportClass::_Ret());
 #endif

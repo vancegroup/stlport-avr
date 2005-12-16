@@ -1,3 +1,36 @@
+2005-12-16  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_rope.h: Moved overload of __identity_element for
+	_Rope_Concat_fn in STLport private namespace where orginal function
+	declaration is. Also moved _Rope_Concat_fn at the same time, much more
+	many elements of _rope.h should be moved to this namespace...
+
+	* stlport/stl/_monetary.c: Change implementation of __money_do_put for
+	Borland compiler, looks like this compiler do not like ternary operator.
+
+	* src/c_locale_win32/c_locale_win32.c: Replace check of category in
+	__Extract_locale_name from > LC_ALL by != LC_ALL, there is no reason
+	for LC_ALL to be upper or lower to all other categories.
+
+	* build/Makefiles/gmake/cygming/rules-so.mak: Segregate different
+	compilers linker calls and add reference to START_OBJ in Borland
+	linker invocation.
+
+	* build/Makefiles/gmake/lib/rules-a.mak, cygming/targetsys.mak: Borland
+	archiver add option is now '+', before being invocated archive is always
+	deleted to avoid warnings because the Borland archiver do not have a
+	real add or replace module option.
+
+	* stlport/stl/type_traits.h: Fix for compiler simulating partial
+	template specialization (VC6)
+
+	* test/eh/test_rope.cpp: Removed rope test for Borland.
+
+	* test/unit/exception_test.cpp: Commented tests are now ignored.
+
+	* test/unit/locale_test.cpp, string_test.cpp: No more ignored test
+	for Borland.
+
 2005-12-14  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/sysid.mak: parse two-token target
