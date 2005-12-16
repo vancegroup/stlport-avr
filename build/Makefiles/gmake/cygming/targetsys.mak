@@ -27,7 +27,7 @@ else
 ifeq (bcc,$(COMPILER_NAME))
 ARCH := lib
 AR := tlib
-AR_INS_R := -+
+AR_INS_R := +
 AR_EXTR := *
 AR_OUT = $(subst /,\,$@)
 else
