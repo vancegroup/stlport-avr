@@ -28,7 +28,7 @@ struct ref_locale {
 static const ref_locale tested_locales[] = {
 //{  name,         decimal_point, thousands_sep, money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
   { "fr_FR",       ",",           "\xa0",        "EUR ",           "FRF ",               "",           "",           ",",                
-#if defined (WIN32)
+#if defined (WIN32) || defined (_WIN32)
                                                                                                                                           "\xa0" },
 #else
                                                                                                                                           " " },
@@ -53,12 +53,8 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(loc_has_facet);
   CPPUNIT_TEST(num_put_get);
-#if defined (__BORLANDC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(money_put_get);
   CPPUNIT_TEST(money_put_X_bug);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
