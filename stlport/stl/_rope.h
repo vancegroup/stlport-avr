@@ -99,6 +99,8 @@ template<class _CharT, class _Alloc> class _Rope_const_iterator;
 template<class _CharT, class _Alloc> class _Rope_char_ref_proxy;
 template<class _CharT, class _Alloc> class _Rope_char_ptr_proxy;
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // Some helpers, so we can use the power algorithm on ropes.
 // See below for why this isn't local to the implementation.
 
@@ -107,7 +109,7 @@ template<class _CharT, class _Alloc> class _Rope_char_ptr_proxy;
 template<class _CharT, class _Alloc>
 struct _Rope_Concat_fn
   : public binary_function<rope<_CharT,_Alloc>, rope<_CharT,_Alloc>,
-  rope<_CharT,_Alloc> > {
+                           rope<_CharT,_Alloc> > {
   rope<_CharT,_Alloc> operator() (const rope<_CharT,_Alloc>& __x,
                                   const rope<_CharT,_Alloc>& __y) {
     return __x + __y;
@@ -117,20 +119,19 @@ struct _Rope_Concat_fn
 template <class _CharT, class _Alloc>
 inline
 rope<_CharT,_Alloc>
-__identity_element(_Rope_Concat_fn<_CharT, _Alloc>) {
-  return rope<_CharT,_Alloc>();
-}
+__identity_element(_Rope_Concat_fn<_CharT, _Alloc>)
+{ return rope<_CharT,_Alloc>(); }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 // Store an eos
 template <class _CharT>
-inline void _S_construct_null_aux(_CharT *__p, const __true_type&) {
-  *__p = 0;
-}
+inline void _S_construct_null_aux(_CharT *__p, const __true_type&)
+{ *__p = 0; }
 
 template <class _CharT>
-inline void _S_construct_null_aux(_CharT *__p, const __false_type&) {
-  _STLP_STD::_Construct(__p);
-}
+inline void _S_construct_null_aux(_CharT *__p, const __false_type&)
+{ _STLP_STD::_Construct(__p); }
 
 template <class _CharT>
 inline void _S_construct_null(_CharT *__p) {
@@ -522,9 +523,8 @@ public:
                      bool __d, allocator_type __a)
     : _Rope_RopeRep<_CharT,_Alloc>(_RopeRep::_S_function, 0, true, _p_size, __a), _M_fn(__f)
     , _M_delete_when_done(__d)
-  {
-    _STLP_ASSERT(_p_size > 0)
-  }
+  { _STLP_ASSERT(_p_size > 0) }
+
   ~_Rope_RopeFunction() {
     this->_M_free_c_string();
     if (_M_delete_when_done) {
@@ -1226,8 +1226,8 @@ protected:
   // A helper function for exponentiating strings.
   // This uses a nonstandard refcount convention.
   // The result has refcount 0.
-  friend struct _Rope_Concat_fn<_CharT,_Alloc>;
-  typedef _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
+  friend struct _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc>;
+  typedef _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
 
 public:
   static size_t _S_char_ptr_len(const _CharT* __s) {
@@ -1360,7 +1360,7 @@ public:
     rope<_CharT,_Alloc> __remainder_rope;
 
     // gcc-2.7.2 bugs
-    typedef _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
+    typedef _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
 
     size_t __exponent = __n / __exponentiate_threshold;
     size_t __rest = __n % __exponentiate_threshold;
@@ -1394,7 +1394,7 @@ public:
         // One each for base_rope and __result
         //_STLP_ASSERT(2 == __result._M_tree_ptr._M_data->_M_ref_count)
       } else {
-        __result = power(__base_rope, __exponent, _Concat_fn());
+        __result = _STLP_PRIV __power(__base_rope, __exponent, _Concat_fn());
       }
       if (0 != __remainder) {
         __result += __remainder_rope;
