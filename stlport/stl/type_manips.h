@@ -164,6 +164,7 @@ struct _IsSame {
   static _Tp1* __null_rep1();
   static _Tp2* __null_rep2();
   enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(), __null_rep2())) == sizeof(char)) };
+  typedef typename __bool2type<_Ret>::_Ret _RetT;
 };
 
 #else
