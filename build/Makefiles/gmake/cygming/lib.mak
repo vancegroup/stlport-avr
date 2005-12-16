@@ -1,9 +1,7 @@
 # -*- makefile -*- Time-stamp: <03/07/15 18:23:04 ptr>
 
-ifneq (dmc, $(COMPILER_NAME))
-ifneq (bcc, $(COMPILER_NAME))
+ifeq (gcc, $(COMPILER_NAME))
 LIB_PREFIX := lib
-endif
 endif
 
 LIB_PREFIX ?=
