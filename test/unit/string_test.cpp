@@ -42,9 +42,11 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
-#if defined (STLPORT) && defined (_STLP_THREADS)
-  CPPUNIT_TEST(mt);
+#if !defined (STLPORT) || !defined (_STLP_THREADS)
+  CPPUNIT_IGNORE;
 #endif
+  CPPUNIT_TEST(mt);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
   CPPUNIT_TEST(template_expresion);
@@ -67,9 +69,7 @@ protected:
   void short_string();
   void find();
   void assign();
-#if defined (STLPORT) && defined (_STLP_THREADS)
   void mt();
-#endif
   void short_string_optim_bug();
   void compare();
   void template_expresion();
@@ -109,11 +109,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 //
 // tests implementation
 //
-#if defined (STLPORT) && defined (_STLP_THREADS)
 void StringTest::mt()
 {
+#if defined (STLPORT) && defined (_STLP_THREADS)
   const int nth = 2;
-#if defined(_STLP_PTHREADS)
+#  if defined(_STLP_PTHREADS)
   pthread_t t[nth];
 
   for ( int i = 0; i < nth; ++i ) {
@@ -123,9 +123,9 @@ void StringTest::mt()
   for ( int i = 0; i < nth; ++i ) {
     pthread_join( t[i], 0 );
   }
-#endif // _STLP_PTHREADS
+#  endif // _STLP_PTHREADS
 
-#if defined (_STLP_WIN32THREADS)
+#  if defined (_STLP_WIN32THREADS)
   //DWORD start = GetTickCount();
 
   HANDLE t[nth];
@@ -149,14 +149,14 @@ void StringTest::mt()
   ostr << "Duration: " << duration << endl;
   CPPUNIT_MESSAGE(ostr.str().c_str());
   */
-#endif
+#  endif
 
-#if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
+#  if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
   // this test is useless without thread support!
   CPPUNIT_ASSERT(false);
+#  endif
 #endif
 }
-#endif
 
 void StringTest::short_string()
 {

@@ -14,19 +14,23 @@
 //
 // TestCase class
 //
-#if defined (_STLP_USE_EXCEPTIONS)
-
-#  if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT) || !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
-
 class ExceptionTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(ExceptionTest);
-#    if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
+#if !defined (_STLP_USE_EXCEPTIONS)
+  CPPUNIT_IGNORE;
+#endif
+#if defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(unexpected_except);
-#    endif
-#    if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
+#if defined (_STLP_USE_EXCEPTION)
+  CPPUNIT_STOP_IGNORE;
+#endif
+#if defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(uncaught_except);
-#    endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -36,7 +40,7 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ExceptionTest);
 
-#    if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
+#if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
 bool g_unexpected_called = false;
 void unexpected_hdl() {
   g_unexpected_called = true;
@@ -51,9 +55,11 @@ void throw_func() {
 void throw_except_func() throw(std::exception) {
   throw_func();
 }
+#endif
 
 void ExceptionTest::unexpected_except()
 {
+#if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
   std::unexpected_handler hdl = &unexpected_hdl;
   std::set_unexpected(hdl);
 
@@ -67,10 +73,10 @@ void ExceptionTest::unexpected_except()
     CPPUNIT_ASSERT( false );
   }
   CPPUNIT_ASSERT( g_unexpected_called );
+#endif
 }
-#    endif /* _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT */
 
-#    if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
+#if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
 struct UncaughtClassTest
 {
   UncaughtClassTest(int &res) : _res(res)
@@ -82,9 +88,11 @@ struct UncaughtClassTest
 
   int &_res;
 };
+#endif
 
 void ExceptionTest::uncaught_except()
 {
+#if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
   int uncaught_result = -1;
   {
     UncaughtClassTest test_inst(uncaught_result);
@@ -102,9 +110,5 @@ void ExceptionTest::uncaught_except()
     }
   }
   CPPUNIT_ASSERT( uncaught_result == 1 );
+#endif
 }
-#    endif /* _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT */
-
-#  endif /* !_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT || !_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT */
-
-#endif // _STLP_USE_EXCEPTIONS
