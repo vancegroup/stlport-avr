@@ -430,10 +430,27 @@ _OutputIter __money_do_put(_OutputIter __s, bool  __intl, ios_base&  __str,
   if (__is_negative)
     ++__digits_first;
 
+#if !defined (__BORLANDC__)
   string_type __sign = __intl ? __is_negative ? __punct_intl.negative_sign()
                                               : __punct_intl.positive_sign()
                               : __is_negative ? __punct.negative_sign()
                                               : __punct.positive_sign();
+#else
+  string_type __sign;
+  if (__intl) {
+    if (__is_negative)
+      __sign = __punct_intl.negative_sign();
+    else
+      __sign = __punct_intl.positive_sign();
+  }
+  else {
+    if (__is_negative)
+      __sign = __punct.negative_sign();
+    else
+      __sign = __punct.positive_sign();
+  }
+#endif
+
   if (__check_digits) {
     typename string_type::const_iterator __cp = __digits_first;
     while (__cp != __digits_last && __c_type.is(ctype_base::digit, *__cp))
