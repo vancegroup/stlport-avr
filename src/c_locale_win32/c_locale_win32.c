@@ -1636,9 +1636,7 @@ char* __Extract_locale_name(const char* loc, int category, char* buf) {
   char *expr;
   size_t len_name;
   buf[0] = 0;
-#if !defined (__BORLANDC__)
-  if (category < LC_ALL || category > LC_MAX) return NULL;
-#endif
+  if (category == LC_ALL || category > LC_MAX) return NULL;
 
   if (loc[0] == 'L' && loc[1] == 'C' && loc[2] == '_') {
     expr=strstr((char*)loc, __loc_categories[category]);
