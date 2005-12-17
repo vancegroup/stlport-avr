@@ -16,7 +16,7 @@ bool f()
   d = std::sqrt( d );
 #endif
   return d == 1.0;
-};
+}
 
 }
 
@@ -33,7 +33,7 @@ bool g()
   d = std::sqrt( d );
 #endif
   return d == 1.0;
-};
+}
 
 }
 
@@ -52,7 +52,7 @@ bool h()
   d = std::sqrt( d );
 #endif
   return d == 1.0;
-};
+}
 
 struct sq
 {

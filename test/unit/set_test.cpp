@@ -202,7 +202,7 @@ namespace std {
       return lhs.data() < rhs.data();
     }
   };
-};
+}
 
 void SetTest::specialized_less()
 {
