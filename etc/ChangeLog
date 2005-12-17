@@ -1,3 +1,17 @@
+2005-12-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_config.h: Removed ';' in _STLP_STATIC_ASSERT
+	definition.
+
+	* stlport/stl/_cwctype.h: Fix native namespace of wide char functions
+	for MinGW runtime <= 3.0. Also fix a typo for FreeBDS.
+
+	* src/stdio_streambuf.cpp: Add missing 'defined' when checking
+	__OS400__ macro existance.
+
+	* test/unit/resolve_name.cpp, set_test.cpp: Removed useless ';'
+	reported by remarks from Intel C++ compiler.
+
 2005-12-16  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_rope.h: Moved overload of __identity_element for
