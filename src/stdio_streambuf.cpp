@@ -123,7 +123,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
 #  else
   memset( &(p.__state), 0, sizeof(p.__state) );
 #  endif
-#elif defined(__MVS__) || (__OS400__)
+#elif defined (__MVS__) || defined (__OS400__)
   fpos_t p;
   p.__fpos_elem[0] = pos;
 #elif defined(__EMX__)
