@@ -56,7 +56,7 @@
 #if defined (_RTLDLL)
 #  define _STLP_RUNTIME_DLL
 #endif
-#include <config/_detect_dll_or_lib.h>
+#include <stl/config/_detect_dll_or_lib.h>
 #undef _STLP_RUNTIME_DLL
 #undef _STLP_DLL
 
@@ -69,7 +69,7 @@
 #    pragma message ("Using/Building STLport lib")
 #  endif
 #else
-#  error Unknown STLport usage config (dll/lib ?)
+#  error Unknown STLport usage config (dll/lib?)
 #endif
 
 #if defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
@@ -93,4 +93,4 @@
 #  define  _STLP_CALL __cdecl
 #endif
 
-#include <config/_auto_link.h>
+#include <stl/config/_auto_link.h>

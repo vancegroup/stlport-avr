@@ -17,7 +17,7 @@
 
 /* Please add extra compilation switches for particular compilers here */
 
-#include <stl/_config.h>
+#include <stl/config/features.h>
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && defined (_STLP_USE_DECLSPEC) && !defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 #  define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION

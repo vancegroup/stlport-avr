@@ -75,7 +75,7 @@
 #if defined (_DLL)
 #  define _STLP_RUNTIME_DLL
 #endif
-#include <config/_detect_dll_or_lib.h>
+#include <stl/config/_detect_dll_or_lib.h>
 #undef _STLP_RUNTIME_DLL
 #undef _STLP_DLL
 
@@ -86,7 +86,7 @@
 #  define _STLP_USE_DECLSPEC 1
 #endif
 
-#include <config/_auto_link.h>
+#include <stl/config/_auto_link.h>
 
 #if defined (__BUILDING_STLPORT)
 // still needed for building STLport itself, but isn't needed for

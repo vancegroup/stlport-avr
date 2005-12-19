@@ -6,11 +6,6 @@
 #if defined (__linux__) || defined (__CYGWIN__)
 #  ifndef _STLP_USE_GLIBC
 #    define _STLP_USE_GLIBC 1
-/*
-#  ifdef _GLIBCPP_USE_NAMESPACES
-#    undef _GLIBCPP_USE_NAMESPACES
-#  endif
-*/
 #  endif
 #  if defined (__UCLIBC__) && !defined (_STLP_USE_UCLIBC)
 #    define _STLP_USE_UCLIBC 1
@@ -47,30 +42,6 @@
 #if (__GNUC__ < 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ < 4))
 /* define for gcc versions before 3.4.0. */
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
-#endif
-
-#if defined (__hpux) || defined(__amigaos__) || ( defined(__OS2__) && defined(__EMX__) )
-#  define _STLP_NO_WCHAR_T
-#endif
-
-#ifdef __USLC__
-#  include <config/stl_sco.h>
-#endif
-
-#if defined (__sun)
-/* gcc does not support ELF64 yet ; however; it supports ultrasparc + v8plus.
- * limits.h contains invalid values for this combination
- */
-#  if (defined  (__sparc_v9__) || defined (__sparcv9)) && ! defined ( __WORD64 )
-#    define __LONG_MAX__ 2147483647L
-#  endif
-#  include <config/stl_solaris.h>
-#endif
-
-/* no thread support on AmigaOS */
-#if defined (__amigaos__)
-#  define _NOTHREADS
-#  define _STLP_NO_THREADS
 #endif
 
 /* azov: gcc on lynx have a bug that causes internal
@@ -139,16 +110,6 @@
 #    define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #  endif
 #  define _STLP_NO_NATIVE_WIDE_STREAMS   1
-#elif defined(__linux__)
-#  if (__GNUC__ < 3)
-#    define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-/*
-#    define _STLP_NO_NATIVE_WIDE_STREAMS   1
-*/
-#  endif
-#elif defined (__sun)
-#  define _STLP_WCHAR_BORLAND_EXCLUDE
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
 #endif
 
 /* Mac OS X is a little different with namespaces and cannot instantiate
@@ -476,14 +437,6 @@ __GIVE_UP_WITH_STL(GCC_272);
 #  define _STLP_NATIVE_C_INCLUDE_PATH ../include
 #endif
 
-#ifdef _SCO_ELF
-#  define _STLP_SCO_OPENSERVER
-#  if defined(_REENTRANT)
-#    define _UITHREADS     /* if      UnixWare < 7.0.1 */
-#    define _STLP_UITHREADS
-#  endif /* _REENTRANT */
-#endif
-
 /* Tune settings for the case where static template data members are not
  * instaniated by default
  */
@@ -501,12 +454,3 @@ __GIVE_UP_WITH_STL(GCC_272);
 #  define _STLP_STATIC_TEMPLATE_DATA 1
 #endif
 
-#if defined (__hpux) && defined(__GNUC__)
-#  define _STLP_NO_LONG_DOUBLE
-#endif
-
-/*
- Local Variables:
- mode:C++
- End:
-*/

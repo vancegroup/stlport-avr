@@ -12,7 +12,7 @@
  * like #pragmas, do include platform-specific prolog file
  */
 #if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
-#  include <config/_epilog.h>
+#  include <stl/config/_epilog.h>
 #endif
 
 #if !defined (_STLP_NO_POST_COMPATIBLE_SECTION)

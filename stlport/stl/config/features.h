@@ -23,8 +23,8 @@
   *
   */
 
-#ifndef _STLP_CONFIG_H
-#define _STLP_CONFIG_H
+#ifndef _STLP_FEATURES_H
+#define _STLP_FEATURES_H
 
 /*
  * Purpose of this file:
@@ -38,6 +38,11 @@
  *
  */
 
+
+/* Definition of the STLport version informations */
+#include <stl/_stlport_version.h>
+
+
 /* Other macros defined by this file:
 
  * bool, true, and false, if _STLP_NO_BOOL is defined.
@@ -49,16 +54,6 @@
    whether or not _STLP_ASSERTIONS is defined.
 */
 
-/* Include useful information about system:
- */
-#ifdef __linux__
-#  include <features.h>
-#endif
-
-
-/* Definition of the STLport version informations */
-#include <stl/_stlport_version.h>
-
 /* Definition of the 2 STLport debug levels */
 #define _STLP_STLPORT_DBG_LEVEL 1
 #define _STLP_STANDARD_DBG_LEVEL 2
@@ -67,7 +62,7 @@
  * It could be also used to mask settings from
  * different directories.
  */
-#include <stl_user_config.h>
+#include <stl/config/user_config.h>
 
 #if defined (__BUILDING_STLPORT)
 /* For the STLport implementation we can use everything:
@@ -88,14 +83,14 @@
 /* ========================================================= */
 /* This file is used for compatibility; it accepts old-style config
    switches */
-#include <stl/_config_compat.h>
+/* #include <stl/config/compat.h> */
 
 /* Common configuration file for this particular installation. */
 
-#include <stl/_site_config.h>
+#include <stl/config/host.h>
 
-/* Use per-version compiler recognition */
-#include <config/stlcomp.h>
+/* Operational Environment specific */
+#include <stl/config/_system.h>
 
 /* ========================================================= */
 
@@ -104,7 +99,7 @@
  * or settings applicable to a group of compilers, such as
  * to all who use EDG front-end.
  */
-#include <config/stl_confix.h>
+#include <stl/config/stl_confix.h>
 
 #ifdef _STLP_USE_BOOST_SUPPORT
 /* We are going to use the boost library support. To limit the problem
@@ -121,8 +116,9 @@
  * Performs integrity check on user-specified parameters
  * and site-specific settings.
  */
-/* # include <stl/_check_config.h>
- */
+/*
+# include <stl/_check_config.h>
+*/
 
 /* SGI terms */
 
@@ -209,47 +205,6 @@
 /* Operating system recognition (basic) */
 #if defined (__unix) || defined (__linux__) || defined (__QNX__) || defined (_AIX)  || defined (__NetBSD__) || defined(__OpenBSD__) || defined (__Lynx__)
 #  define _STLP_UNIX 1
-#  if defined (__linux__)
-/* This is defined wether library in use is glibc or not.
-   This may be treated as presence of GNU libc compatible
-   header files (these define is not really intended to check
-   for the presence of a particular library, but rather is used
-   to define an INTERFACE.) */
-#    ifndef _STLP_USE_GLIBC
-#      define _STLP_USE_GLIBC 1
-#    endif
-
-#    if defined(__UCLIBC__) && !defined(_STLP_USE_UCLIBC)
-#      define _STLP_USE_UCLIBC 1
-#    endif
-
-#    ifdef _STLP_USE_UCLIBC
-     /* see into uClib (c runtime lib) configuration */
-#      if !defined(__UCLIBC_HAS_WCHAR__)
-#        ifndef _STLP_NO_WCHAR_T
-#          define _STLP_NO_WCHAR_T
-#        endif
-#        ifndef _STLP_NO_MBSTATE_T
-#          define _STLP_NO_MBSTATE_T
-#        endif
-#        ifndef _STLP_NO_NATIVE_WIDE_STREAMS
-#          define _STLP_NO_NATIVE_WIDE_STREAMS
-#        endif
-#      endif /* __UCLIBC_HAS_WCHAR__ */
-     /* Hmm, bogus _GLIBCPP_USE_NAMESPACES seems undefined... */
-#      define _STLP_VENDOR_GLOBAL_CSTD 1
-#      if defined(_STLP_REAL_LOCALE_IMPLEMENTED)
-      /* locale in uClibc is very restricted */
-      /* recheck if __UCLIBC_HAS_LOCALE__ defined...*/
-#        undef _STLP_REAL_LOCALE_IMPLEMENTED
-#      endif
-#      ifndef _STLP_DONT_USE_PTHREAD_SPINLOCK
-      /* in uClibc (0.9.26) pthread_spinlock* declared in headers
-       * but absent in library */
-#        define _STLP_DONT_USE_PTHREAD_SPINLOCK
-#      endif
-#    endif /* _STLP_USE_UCLIBC */
-#  endif /* __linux__ */
 #elif defined(macintosh) || defined (_MAC)
 #  define _STLP_MAC  1
 #elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__)
@@ -455,7 +410,7 @@
 /* Some compiler support 0 size array so we use negative size array to generate
  * a compilation time error.
  */
-#  define _STLP_STATIC_ASSERT(expr) typedef char __static_assert[expr ? 1 : -1]
+#  define _STLP_STATIC_ASSERT(expr) typedef char __static_assert[expr ? 1 : -1];
 #endif
 
 /* apple mpw exception handling bug */
@@ -1245,10 +1200,4 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #undef _STLP_NO_NEW_STYLE_CASTS
 #undef __AUTO_CONFIGURED
 
-#endif /* _STLP_CONFIG_H */
-
-/*
- Local Variables:
- mode:C++
- End:
-*/
+#endif /* _STLP_FEATURES_H */

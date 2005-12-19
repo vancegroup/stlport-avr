@@ -1,3 +1,24 @@
+2005-12-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/lib/gcc.mak: move LDSEARCH flags after
+	possible -nostdlib
+
+	* build/lib/gcc.mak: don't add include path, it already included.
+
+	* src/c_locale.h: include stlport_prefix.h to add STLport's
+	definitions that used below.
+
+	* stlport/stl_user_config.h, stlport/stl/_config.h: moved 
+	to stlport/stl/config catalog and renamed.
+
+	* stlport/stl/_config_compat.h, stlport/stl/_site_config.h: ditto.
+
+	* stlport/config: headers moved to stlport/stl/config catalog,
+	renamed and reorganized.
+
+	* stlport/stl/_prolog.h, stlport/stl/_epilog.h, src/stlport_prefix.h:
+	reflect changes in configuration files.
+
 2005-12-17  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_config.h: Removed ';' in _STLP_STATIC_ASSERT

@@ -238,7 +238,7 @@ typedef char __stl_char;
     // Microsoft Visual C++ 5 with Windows CE Toolkit;
     // could also be Visual C++ 6 with toolkit, but we can't detect that.
     // the Windows CE Toolkit is obsolete, anyway
-#    include <config/stl_wince.h>
+#    include <stl/config/stl_wince.h>
 #endif /* UNDER_CE */
 
 #if (_MSC_VER < 1300) // MSVC 6.0 and earlier
@@ -264,7 +264,7 @@ typedef char __stl_char;
     defined (_STLP_RUNTIME_DLL) && !defined (_STLP_USE_STATIC_LIB))
 #  define _STLP_DLL
 #endif
-#include <config/_detect_dll_or_lib.h>
+#include <stl/config/_detect_dll_or_lib.h>
 #undef _STLP_RUNTIME_DLL
 #undef _STLP_DLL
 
@@ -293,7 +293,7 @@ typedef char __stl_char;
 #  undef _STLP_NO_CUSTOM_IO
 #endif
 
-#include <config/_auto_link.h>
+#include <stl/config/_auto_link.h>
 
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 /* The Windows 64 bits SDK required for the moment link to bufferoverflowU.lib for
