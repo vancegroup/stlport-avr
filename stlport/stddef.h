@@ -43,7 +43,3 @@
 #  endif
 #endif
 
-/* Local Variables:
- * mode:C++
- * End:
- */
