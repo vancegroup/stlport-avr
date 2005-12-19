@@ -31,6 +31,7 @@
 #ifndef _STLP_C_LOCALE_IMPL_H
 #define _STLP_C_LOCALE_IMPL_H
 
+#include "stlport_prefix.h"
 #include <stl/c_locale.h>
 /* # include <wchar.h> */
 #include <stl/_mbstate_t.h>
