@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/12/15 01:46:52 ptr>
+# -*- makefile -*- Time-stamp: <05/12/15 07:57:26 ptr>
 
 # Oh, the commented below work for gmake 3.78.1 and above,
 # but phrase without tag not work for it. Since gmake 3.79 
@@ -107,18 +107,18 @@ release-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic -Wl,+h$(SO_NAMExx) ${LD
 endif
 
 ifeq ($(OSNAME),sunos)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB} ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB} ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB} ${LDSEARCH}
 dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),linux)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB} ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB} ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB} ${LDSEARCH}
 dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
@@ -143,9 +143,9 @@ release-static:	LDFLAGS += -static ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),freebsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB} ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB} ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB} ${LDSEARCH}
 dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
@@ -158,16 +158,15 @@ COMPATIBILITY_VERSION := $(CURRENT_VERSION)
 dbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_DBGxx) -Wl ${LDSEARCH}
 stldbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_STLDBGxx) -Wl ${LDSEARCH}
 release-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAMExx) -Wl ${LDSEARCH}
-
 dbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 stldbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 release-static:	LDFLAGS += -staticlib ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),openbsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${NOSTDLIB} ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${NOSTDLIB} ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${NOSTDLIB} ${LDSEARCH}
 dbg-static:	LDFLAGS += ${LDSEARCH}
 stldbg-static:	LDFLAGS += ${LDSEARCH}
 release-static:	LDFLAGS += ${LDSEARCH}
