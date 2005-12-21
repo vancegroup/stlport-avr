@@ -35,12 +35,12 @@ INSTALL_BIN_DIR        ?= ${SRCROOT}/../$(TARGET_NAME)bin
 # CygWin or MinGW environments; but you can specify install dir you
 # want---if one is defined it will not be overlaped.
 ifeq ("${TARGET_NAME}","")
-ifneq (${OSNAME},cygming)
-ifneq ($(OSNAME),windows)
+#ifneq (${OSNAME},cygming)
+#ifneq ($(OSNAME),windows)
 INSTALL_BIN_DIR_DBG    ?= ${SRCROOT}/../$(TARGET_NAME)bin-g
 INSTALL_BIN_DIR_STLDBG ?= ${SRCROOT}/../$(TARGET_NAME)bin-stlg
-endif
-endif
+#endif
+#endif
 endif
 ifndef INSTALL_BIN_DIR_DBG
 INSTALL_BIN_DIR_DBG    ?= ${INSTALL_BIN_DIR}
