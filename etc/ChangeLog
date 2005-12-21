@@ -1,3 +1,17 @@
+2005-12-21  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/debug/_debug.h, _debug.c, _string_sum_methods.h:
+	Removed some unused parameters reported by Borland compiler.
+
+	* stlport/stl/config/_warnings_off.h: Disable unused parameters
+	warning for Borland compiler.
+
+	* build/Makefiles/gmake/targetdirs.mak: Change config in order to
+	have each generated application in a different bin folder.
+
+	* stlport/stl/_threads.h: Used _STLP_STATIC_ASSERT macro for a
+	static assertion.
+
 2005-12-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/lib/gcc.mak: move LDSEARCH flags after
