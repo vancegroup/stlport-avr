@@ -61,7 +61,7 @@
 //#  pragma option -w-aus     // -w-8004 'identifier' is assigned a value that is never used
 //#  pragma option -w-csu   // -w-8012 Comparing signed and unsigned values
 //#  pragma option -w-dup   // -w-8017 Redefinition of 'macro' is not identical
-//#  pragma option -w-par     // -w-8057 Parameter 'parameter' is never used
+#  pragma option -w-par     // -w-8057 Parameter 'parameter' is never used
 //#  pragma option -w-sig     // -w-8071 Conversion may lose significant digits 
 //#  pragma option -w-use   // -w-8080 'identifier' declared but never used
 
