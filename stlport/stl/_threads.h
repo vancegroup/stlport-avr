@@ -341,8 +341,7 @@ public:
   _STLP_atomic_freelist() {
     // Statically assert layout of member is as expected by assembly code
 #      if defined (_STLP_USE_ASM_IMPLEMENTATION)
-    typedef char __static_assert1[sizeof(item) == sizeof(item*)];
-    typedef char __static_assert2[sizeof(_M) == 8];
+    _STLP_STATIC_ASSERT((sizeof(item) == sizeof(item*)) && (sizeof(_M) == 8));
     _M._M_data._M_top       = 0;
     _M._M_data._M_sequence  = 0;
 #      else
