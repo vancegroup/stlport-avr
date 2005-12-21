@@ -398,8 +398,8 @@ inline bool _STLP_CALL  __check_if_owner( const __owned_list* __owner,
 { return __stl_debugger::_Check_if_owner(__owner, (const __owned_link&)__it); }
 
 template <class _Iterator>
-inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
-                                             const _Iterator& __it,
+inline bool _STLP_CALL __check_if_not_owner( const __owned_list* /*__owner*/,
+                                             const _Iterator& /*__it*/,
                                              const __false_type&)
 { return true; }
 

@@ -83,7 +83,7 @@ bool _STLP_CALL __check_range_aux(const _Iterator& __first, const _Iterator& __l
 }
 
 template <class _Integral>
-bool _STLP_CALL __check_range_aux(_Integral __first, _Integral __last,
+bool _STLP_CALL __check_range_aux(_Integral /*__first*/, _Integral /*__last*/,
                                   const __true_type& /*_IsIntegral*/)
 { return true; }
 
@@ -96,7 +96,7 @@ bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __it,
                                const _Iterator& __start, const _Iterator& __finish) {
-  _STLP_VERBOSE_RETURN(__in_range(__it,__start, __finish),
+  _STLP_VERBOSE_RETURN(__in_range(__it, __start, __finish),
                        _StlMsg_NOT_IN_RANGE_1)
   return true;
 }

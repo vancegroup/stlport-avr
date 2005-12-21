@@ -50,7 +50,7 @@ private:
   { return _M_append_fast(__s.b_str(), __str); }
   _Base& _M_append_fast(_Self const& __s, _Base &__str)
   { return _M_append_fast(__s.data(), __s.size(), __str); }
-  _Base& _M_append_fast(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _Base &__str)
+  _Base& _M_append_fast(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const&, _Base &__str)
   { return __str; }
   template <class _Left, class _Right, class _StorageDir>
   _Base& _M_append_fast(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s, _Base &__str)
@@ -72,8 +72,8 @@ private:
   { return _M_append_fast_pos(__s.b_str(), __str, __pos, __n); }
   _Base& _M_append_fast_pos(_Self const& __s, _Base &__str, size_type __pos, size_type __n)
   { return _M_append_fast_pos(__s.data(), __s.size(), __str, __pos, __n); }
-  _Base& _M_append_fast_pos(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const& __s, _Base &__str,
-                            size_type __pos, size_type __n)
+  _Base& _M_append_fast_pos(_STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc> const&, _Base &__str,
+                            size_type /*__pos*/, size_type /*__n*/)
   { return __str; }
 
   template <class _Left, class _Right, class _StorageDir>
