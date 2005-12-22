@@ -39,17 +39,7 @@
 
 # endif
 
-// this is multiplatform compiler, so here should go system-dependant section
-// This really should be in platform-specific files, like stl_solaris.h
-# ifdef __linux__
-#  define _STLP_NO_NATIVE_WIDE_STREAMS 1
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-# elif defined (__sun) || defined (sun)
-// # define _STLP_VENDOR_MB_NAMESPACE
-#  include <config/stl_solaris.h>
-# elif defined (__hpux)
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS
-# elif defined (__sgi)
+# if defined (__sgi)
 // this requires some discrimination on whether we are actually on
 // a system officially supported by KAI.
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
