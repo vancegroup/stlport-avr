@@ -7,7 +7,7 @@
 
 #define _STLP_IMPORT_TEMPLATE_KEYWORD extern
 
-#include <stl/config/stl_msvc.h>
+#include <stl/config/_msvc.h>
 
 #if defined (_STLP_DONT_RETURN_VOID)
 #  undef _STLP_DONT_RETURN_VOID

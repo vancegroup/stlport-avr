@@ -40,7 +40,7 @@
 #endif
 
 // inherit all msvc6 options
-#include <stl/config/stl_msvc.h>
+#include <stl/config/_msvc.h>
 
 // Always threaded in eMbedded Visual C++ 3.0 and .NET
 #ifndef _MT
