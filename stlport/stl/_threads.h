@@ -269,7 +269,6 @@ private:
 
 
 #  elif defined (_STLP_WIN32THREADS)
-#    include <stl/_windows.h>
 
 #    if !defined (_STLP_ATOMIC_INCREMENT)
 #      if !defined (_STLP_NEW_PLATFORM_SDK)

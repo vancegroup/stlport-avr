@@ -244,10 +244,6 @@ _STLP_END_NAMESPACE
 #    include <stl/_cstdlib.h>
 #  endif
 
-#  if defined (_STLP_WIN32)
-#    include <stl/_windows.h>
-#  endif /* _STLP_WIN32 */
-
 //==========================================================
 // .c section
 //  owned_list non-inline methods and global functions
