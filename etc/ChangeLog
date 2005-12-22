@@ -1,3 +1,48 @@
+2005-12-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_windows.h: all system specific configuration
+	in one place [moved from stlport/stl/_windows.h]
+
+	* stlport/stl/_windows.h: deleted; all system specific configuration
+	in one place [moved to stlport/stl/config/_windows.h]
+	
+	* stlport/stl/debug/_debug.c, stlport/stl/_threads.h:
+	_windows.h included via _prolog.h [i.e. via stl/config/_system.h],
+	see changes above.
+
+	* stlport/stl/config/_sunprocc.h: remove include of _solaris.h---it
+	already included from _system.h
+
+	* stlport/stl/config/_kai.h: remove include of os configuration files,
+	it should be included from _system.h
+
+	* stlport/stl/config/_intel.h: fix path after config headers
+	reorganization.
+
+	* stlport/stl/config/_evc.h: idem
+
+	* stlport/stl/_exception.h: idem
+
+	* stlport/stl/config/_prolog.h: idem
+
+	* test/unit/fstream_header_test.cpp: idem
+
+	* test/unit/iomanip_header_test.cpp: idem
+
+	* test/unit/ios_header_test.cpp: idem
+
+	* test/unit/iostream_header_test.cpp: idem
+
+	* test/unit/istream_header_test.cpp: ditto
+
+	* test/unit/locale_header_test.cpp: idem
+
+	* test/unit/ostream_header_test.cpp: idem
+
+	* test/unit/sstream_header_test.cpp: idem
+
+	* test/unit/strstream_header_test.cpp: idem
+
 2005-12-21  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/debug/_debug.h, _debug.c, _string_sum_methods.h:
