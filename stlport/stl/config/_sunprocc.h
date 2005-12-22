@@ -143,8 +143,6 @@
 
 #  endif /* <  5.0 */
 
-# include <config/stl_solaris.h>
-
 #ifndef _MBSTATET_H
 #   define _MBSTATET_H
 #   undef _MBSTATE_T
