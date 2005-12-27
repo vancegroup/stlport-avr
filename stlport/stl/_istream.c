@@ -1036,7 +1036,7 @@ _M_ignore_buffered(basic_istream<_CharT, _Traits>* __that,
       streamsize __m = __max_chars(_Num, __n);
 
       if (__avail >= __m) {       // We have more characters than we need.
-        const _CharT* __last = __buf->_M_gptr() + __m;
+        const _CharT* __last = __buf->_M_gptr() + __STATIC_CAST(ptrdiff_t, __m);
         const _CharT* __p = __scan_delim(__buf->_M_gptr(), __last);
         ptrdiff_t __chunk = __p - __buf->_M_gptr();
         __n += __chunk;

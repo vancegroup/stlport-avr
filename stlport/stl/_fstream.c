@@ -292,7 +292,6 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
 
     // Seek relative to current position.  Complicated if we're in input mode.
     else if (__whence == ios_base::cur) {
-
       if (!_M_in_input_mode)
         return _M_seek_return(_M_base._M_seek(_M_width * __off, __whence),
                               _State_type());
@@ -305,7 +304,8 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         return __off == 0 ?
           pos_type(_M_base._M_seek(0, ios_base::cur) - __adjust) :
           _M_seek_return(_M_base._M_seek(__off - __adjust, ios_base::cur), _State_type());
-      } else if (_M_constant_width) { // Get or set the position.
+      } 
+      else if (_M_constant_width) { // Get or set the position.
         streamoff __iadj = _M_width * (this->gptr() - this->eback());
 
         // Compensate for offset relative to gptr versus offset relative
@@ -314,7 +314,7 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         // but not set the current position.
 
         if (__iadj <= _M_ext_buf_end - _M_ext_buf) {
-          streamoff __eadj =  _M_base._M_get_offset(_M_ext_buf + __iadj, _M_ext_buf_end);
+          streamoff __eadj =  _M_base._M_get_offset(_M_ext_buf + __STATIC_CAST(ptrdiff_t, __iadj), _M_ext_buf_end);
 
           return __off == 0 ?
             pos_type(_M_base._M_seek(0, ios_base::cur) - __eadj) :
@@ -593,14 +593,17 @@ bool basic_filebuf<_CharT, _Traits>::_M_unshift() {
 // array show size is at least __n.
 
 // We need __n >= 1 for two different reasons.  For input, the base
-// class always needs a buffer because of the sementics of underflow().
+// class always needs a buffer because of the semantics of underflow().
 // For output, we want to have an internal buffer that's larger by one
 // element than the buffer that the base class knows about.  (See
 // basic_filebuf<>::overflow() for the reason.)
 template <class _CharT, class _Traits>
 bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsize __n) {
-  //The major hypothesis in the following implementation is that size_t is unsigned:
-  typedef char __static_assert_unsigned_size_t[!numeric_limits<size_t>::is_signed];
+  //The major hypothesis in the following implementation is that size_t is unsigned.
+  //We also need streamsize byte representation to be larger or equal to the int
+  //representation to correctly store the encoding information.
+  _STLP_STATIC_ASSERT(!numeric_limits<size_t>::is_signed &&
+                      sizeof(streamsize) >= sizeof(int));
 
   if (__buf == 0) {
     streamsize __bufsize = __n * sizeof(_CharT);
@@ -619,7 +622,6 @@ bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsi
     _M_int_buf_dynamic = false;
   }
 
-  typedef char __static_asset[sizeof(streamsize) >= sizeof(int)];
   streamsize __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, (max)(_M_codecvt->encoding(), 1)),
                                __STATIC_CAST(streamsize, _M_codecvt->max_length()));
   _M_ext_buf = 0;
@@ -634,8 +636,8 @@ bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsi
     return false;
   }
 
-  _M_int_buf_EOS = _M_int_buf + __n;
-  _M_ext_buf_EOS = _M_ext_buf + __ebufsiz;
+  _M_int_buf_EOS = _M_int_buf + __STATIC_CAST(ptrdiff_t, __n);
+  _M_ext_buf_EOS = _M_ext_buf + __STATIC_CAST(ptrdiff_t, __ebufsiz);
   return true;
 }
 

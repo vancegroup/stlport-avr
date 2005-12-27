@@ -213,18 +213,18 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
     // At this point we know we're appending.
     if (_M_mode & ios_base::in) {
       ptrdiff_t __get_offset = this->gptr() - this->eback();
-      _M_str.append(__s, __s + __n);
+      _M_str.append(__s, __s + __STATIC_CAST(ptrdiff_t, __n));
 
-      _CharT* __data_ptr = __CONST_CAST(_CharT*,_M_str.data());
+      _CharT* __data_ptr = __CONST_CAST(_CharT*, _M_str.data());
       size_t __data_size = _M_str.size();
 
-      this->setg(__data_ptr, __data_ptr + __get_offset, __data_ptr+__data_size);
+      this->setg(__data_ptr, __data_ptr + __get_offset, __data_ptr + __data_size);
       this->setp(__data_ptr, __data_ptr + __data_size);
       this->pbump((int)__data_size);
     }
     else {
       _M_append_buffer();
-      _M_str.append(__s, __s + __n);
+      _M_str.append(__s, __s + __STATIC_CAST(ptrdiff_t, __n));
     }
 
     __nwritten += __n;
@@ -369,7 +369,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
 
     if (__off < 0 || __off > __n)
       return pos_type(off_type(-1));
-    this->setg(this->eback(), this->eback() + __off, this->eback() + __n);
+    this->setg(this->eback(), this->eback() + __STATIC_CAST(ptrdiff_t, __off),
+                              this->eback() + __STATIC_CAST(ptrdiff_t, __n));
   }
 
   if (__omode) {
@@ -406,7 +407,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
   if (__imode) {
     if (__n < 0 || __n > this->egptr() - this->eback())
       return pos_type(off_type(-1));
-    this->setg(this->eback(), this->eback() + __n, this->egptr());
+    this->setg(this->eback(), this->eback() + __STATIC_CAST(ptrdiff_t, __n), this->egptr());
   }
 
   if (__omode) {
