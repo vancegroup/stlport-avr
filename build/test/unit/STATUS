@@ -219,6 +219,19 @@ Notes:
 Status (stldbg-shared):         All pass (322 tests)
 Notes:
 
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.5 (cross on Linux)
+-----------------------------------------------------------------------
+Date:                           2005-12-22
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       Petr Ovtchenkov
+Status (release-shared):        Build lib and unit tests
+Notes:                          
+Status (stlg-shared):           Build lib
+Notes:
+Status (stldbg-shared):         Build lib and unit tests
+Notes:
+
 =======================================================================
 Operational environment:        FreeBSD 4.10-RELEASE
 =======================================================================
@@ -236,6 +249,18 @@ Notes:
 Status (stldbg-shared):         All pass (322 tests)
 Notes:
 
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.5 (cross on Linux)
+-----------------------------------------------------------------------
+Date:                           2005-12-22
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       Petr Ovtchenkov
+Status (release-shared):        Build lib and unit tests
+Notes:
+Status (stlg-shared):           Build lib
+Notes:
+Status (stldbg-shared):         Build lib and unit tests
+Notes:
 
 =======================================================================
 Operational environment:        OpenBSD 3.6, IA32
@@ -254,6 +279,26 @@ Status (stldbg-shared):         most tests pass
 Notes:                          run-time fail in LocaleTest::money_put_get
                                 ../../../stlport/stl/debug/_string.h(233): STL error : Index out of bounds
                                 ../../../stlport/stl/debug/_string.h(233): STL assertion failure:     __n < this->size()
+
+=======================================================================
+Operational environment:        MacOS X 10.3 (Darwin 7.0.0), powerpc
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.3.0 (Apple Computer, Inc. build 1666)
+-----------------------------------------------------------------------
+Date:                           2005-12-23
+STLP Version:                   current CVS STLPORT_5_0 branch
+Reporter:                       Petr Ovtchenkov
+Status (release-shared):        Fail
+Notes:                          UnorderedTest::user_case (i.e. crash may be in UnorderedTest::hash_policy)
+
+                                Program received signal EXC_BAD_ACCESS, Could not access memory.
+                                0x000fe17c in stlp_std::__node_alloc<true, 0>::_M_deallocate(void*, unsigned long) ()
+Status (stldbg-shared):         most tests pass
+Notes:                          Under debugger I see that fail 23 tests from 334
+                                but without debugger program finish abnormally
+
 
 =======================================================================
 Operational environment:        Novell Netware 6 Support Pack Revision 03

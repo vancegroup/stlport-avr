@@ -46,6 +46,10 @@ endif
 ifeq ($(OSNAME),sunos)
 _USE_NOSTDLIB := 1
 endif
+
+ifeq ($(OSNAME),darwin)
+_USE_NOSTDLIB := 1
+endif
 endif
 
 ifndef WITHOUT_STLPORT
@@ -100,6 +104,12 @@ ifeq ($(OSNAME),sunos)
 START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} -lgcc_s -lpthread -lc -lm
+endif
+ifeq ($(OSNAME),darwin)
+START_OBJ := -lcrt1.o -lcrt2.o
+END_OBJ :=
+STDLIBS = ${STLPORT_LIB} -lgcc -lc -lm -lsupc++
+#LDFLAGS += -dynamic
 endif
 LDFLAGS += -nostdlib
 # endif

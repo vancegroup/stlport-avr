@@ -338,10 +338,10 @@ __GIVE_UP_WITH_STL(GCC_272);
 #if (__GNUC__ >= 3)
 
 #  if !defined (_STLP_NATIVE_INCLUDE_PATH)
-#    if ( (__GNUC__ == 3 ) && ((__GNUC_MINOR__ == 0) || ((__GNUC_MINOR__ < 3) && __APPLE__)))
+#    if ( (__GNUC__ == 3 ) && ((__GNUC_MINOR__ == 0) || ((__GNUC_MINOR__ < 3) && defined(__APPLE_CC__))))
 #      define _STLP_NATIVE_INCLUDE_PATH ../g++-v3
 #    else
-#      if ( ((__GNUC__ == 4 ) || (__GNUC_MINOR__ >= 3)) && __APPLE__)
+#      if ( ((__GNUC__ == 4 ) || (__GNUC_MINOR__ >= 3)) && defined(__APPLE_CC__))
 #        define _STLP_NATIVE_INCLUDE_PATH ../c++
 /*
 * Before version 3.4.0 the 0 patch level was not part of the include path:

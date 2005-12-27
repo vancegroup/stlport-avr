@@ -1,3 +1,30 @@
+2005-12-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/initial_mak: obsolete makes removed (sync with STLPORT_5_0
+	branch).
+
+2005-12-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_gcc.h: gcc, builded by Apple is differ
+	in behavior from original; in particular, in path to includes;
+
+	* build/Makefiles/gmake/app/gcc.mak: fix gcc options on MacOS X;
+	STLport is free from libstdc++ on MacOS now;
+
+	* build/Makefiles/gmake/gcc.mak: fix gcc options on MacOS X; gcc,
+	builded by Apple is differ in behavior from original;
+	detect this;
+
+	* build/Makefiles/gmake/lib/gcc.mak: fix gcc on MacOS X;
+	differentiate gcc from Apple and original;
+	STLport is free from libstdc++ on MacOS X now;
+
+	* build/Makefiles/gmake/darwin/rules-so.mak: use 
+	gcc instead of c++ for linkage, if only C sources present.
+
+	* build/lib/gcc.mak, build/test/unit/gcc.mak: remove duplication
+	of stlport includes.
+
 2005-12-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_windows.h: all system specific configuration

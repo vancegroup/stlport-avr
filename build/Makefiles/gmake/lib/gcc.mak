@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/12/15 07:57:26 ptr>
+# -*- makefile -*- Time-stamp: <05/12/27 10:53:41 ptr>
 
 # Oh, the commented below work for gmake 3.78.1 and above,
 # but phrase without tag not work for it. Since gmake 3.79 
@@ -57,6 +57,10 @@ endif
 ifeq ($(OSNAME),sunos)
 _USE_NOSTDLIB := 1
 endif
+
+ifeq ($(OSNAME),darwin)
+_USE_NOSTDLIB := 1
+endif
 endif
 
 ifdef _USE_NOSTDLIB
@@ -92,6 +96,16 @@ ifeq ($(OSNAME),sunos)
 START_OBJ := $(shell for o in crti.o crtbegin.o; do ${CXX} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} -print-file-name=$$o; done)
 STDLIBS := -Wl,-zallextract -lsupc++ -Wl,-zdefaultextract -lgcc_s -lpthread -lc -lm
+endif
+ifeq ($(OSNAME),darwin)
+START_OBJ := 
+END_OBJ := 
+ifdef GCC_APPLE_CC
+STDLIBS := -lgcc -lc -lm -all_load -lsupc++
+else
+LDFLAGS += -single_module
+STDLIBS := -lgcc -lc -lm -all_load -lsupc++ -lgcc_eh
+endif
 endif
 #END_A_OBJ := $(shell for o in crtn.o; do ${CXX} -print-file-name=$$o; done)
 
@@ -155,9 +169,10 @@ ifeq ($(OSNAME),darwin)
 CURRENT_VERSION := ${MAJOR}.${MINOR}.${PATCH}
 COMPATIBILITY_VERSION := $(CURRENT_VERSION)
 
-dbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_DBGxx) -Wl ${LDSEARCH}
-stldbg-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_STLDBGxx) -Wl ${LDSEARCH}
-release-shared:	LDFLAGS += -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAMExx) -Wl ${LDSEARCH}
+dbg-shared:	LDFLAGS += -dynamic -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -dynamic -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
+release-shared:	LDFLAGS += -dynamic -dynamiclib -compatibility_version $(COMPATIBILITY_VERSION) -current_version $(CURRENT_VERSION) -install_name $(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
+
 dbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 stldbg-static:	LDFLAGS += -staticlib ${LDSEARCH}
 release-static:	LDFLAGS += -staticlib ${LDSEARCH}

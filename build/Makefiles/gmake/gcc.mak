@@ -1,4 +1,4 @@
-# Time-stamp: <05/12/08 01:52:33 ptr>
+# Time-stamp: <05/12/27 10:50:40 ptr>
 
 #INCLUDES = -I$(SRCROOT)/include
 INCLUDES :=
@@ -17,7 +17,14 @@ CXX_VERSION := $(shell ${CXX} -dumpversion)
 CXX_VERSION_MAJOR := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $1; }')
 CXX_VERSION_MINOR := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $2; }')
 CXX_VERSION_PATCH := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $3; }')
+# This is to differentiate Apple-builded compiler from original
+# compiler (it's has different behaviour)
+ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
+GCC_APPLE_CC := 1
+endif
+
 else
+
 ifneq ($(OSNAME), windows)
 CXX_VERSION := $(shell ${CXX} --version | grep GCC | awk '{ print $$3; }')
 
@@ -136,9 +143,11 @@ ifndef STLP_BUILD_NO_THREAD
 DEFS += -D_REENTRANT
 endif
 CXXFLAGS = -fexceptions $(OPT)
-release-shared : CXXFLAGS += -dynamic
-dbg-shared : CXXFLAGS += -dynamic
-stldbg-shared : CXXFLAGS += -dynamic
+# This is here due to bug in GNU make 3.79 from MacOS build:
+stldbg-static :	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-shared :	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-static-dep : CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-shared-dep : CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
 endif
 
 ifeq ($(OSNAME),hp-ux)
@@ -166,8 +175,10 @@ endif
 # Required for correct order of static objects dtors calls:
 ifneq ($(OSNAME),cygming)
 ifneq ($(OSNAME),windows)
+ifneq ($(OSNAME),darwin)
 ifneq ($(CXX_VERSION_MAJOR),2)
 CXXFLAGS += -fuse-cxa-atexit
+endif
 endif
 endif
 endif
@@ -180,8 +191,8 @@ CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
 
 # STLport DEBUG mode specific defines
-stldbg-static :	    DEFS += -D_STLP_DEBUG
-stldbg-shared :     DEFS += -D_STLP_DEBUG
+stldbg-static :	DEFS += -D_STLP_DEBUG
+stldbg-shared :	DEFS += -D_STLP_DEBUG
 stldbg-static-dep : DEFS += -D_STLP_DEBUG
 stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 
