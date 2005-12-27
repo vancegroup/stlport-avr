@@ -1,3 +1,37 @@
+2005-12-27  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_string_io.c: Generalized use of _STLP_STATIC_ASSERT
+	macro rather that hand writen static assertion.
+
+	* stlport/stl/_fstream.c, _istream.c, src/fstream.cpp, strstream.cpp:
+	Add some cast to avoid Borland suspicious pointer arithmetic warnings
+	thanks Eric Stanford.
+
+	* stlport/stl/_limits.c: Fix Borland definition of NaNs and infinity
+	for long double thanks Eric Stanford.
+
+	* stlport/stl/config/_system.h, _gcc.h: Fix config for Windows, MinGW
+	and Cygwin platforms.
+
+	* stlport/stl/config/_windows.h: Can now be included by a pure C
+	compiler.
+
+	* stlport/stl/config/_warning_off.h: Removed suspicious pointer
+	arithmetic warning for Borland thanks Eric Stanford.
+
+	* stlport/stl/_construct.h: Removed now useless Borland workaround.
+
+	* src/stdio_streambuf.cpp: Ditto.
+
+	* stlport/stl/_alloc.h: Now allocator is tagged as an STLport class
+	even without partial template specialization support. This is
+	necessary because type_traits is specialized for allocator<char>,
+	allocator<wchar_t> and allocator<void*> when partial template
+	specialization is not available.
+
+	* test/unit/bitset_test.cpp: Add tests for the STLport
+	bitset::_Find_first extension.
+
 2005-12-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/initial_mak: obsolete makes removed (sync with STLPORT_5_0
