@@ -33,7 +33,7 @@ operator << (basic_ostream<_CharT, _Traits>& __os,
   typedef typename basic_string<_CharT, _Traits, _Alloc>::size_type size_type;
 
   // The hypothesis of this implementation is that size_type is unsigned:
-  typedef char __static_assert_unsigned_size_type[__STATIC_CAST(size_type, -1) > 0];
+  _STLP_STATIC_ASSERT(__STATIC_CAST(size_type, -1) > 0);
 
   typename __ostream::sentry __sentry(__os);
   bool __ok = false;
@@ -72,7 +72,7 @@ operator >> (basic_istream<_CharT, _Traits>& __is,
   typedef typename basic_string<_CharT, _Traits, _Alloc>::size_type size_type;
 
   // The hypothesis of this implementation is that size_type is unsigned:
-  typedef char __static_assert_unsigned_size_type[__STATIC_CAST(size_type, -1) > 0];
+  _STLP_STATIC_ASSERT(__STATIC_CAST(size_type, -1) > 0);
 
   typename __istream::sentry __sentry(__is);
 
