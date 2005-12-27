@@ -47,13 +47,9 @@
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, const __false_type& /*_Trivial_destructor*/) {
-#if ( defined (__BORLANDC__) && ( __BORLANDC__ < 0x500 ) )
-    __pointer->_Tp::~_Tp();
-#else
-    __pointer->~_Tp();
-#endif
-}
+inline void __destroy_aux(_Tp* __pointer, const __false_type& /*_Trivial_destructor*/)
+{ __pointer->~_Tp(); }
+
 template <class _Tp>
 inline void __destroy_aux(_Tp*, const __true_type& /*_Trivial_destructor*/) {}
 
