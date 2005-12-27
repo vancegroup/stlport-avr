@@ -224,7 +224,8 @@ struct _AreSameUnCVTypes {
 };
 
 /* Rather than introducing a new macro for the following constrution we use
- * an existing one that is used for a similar one.
+ * an existing one (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) that
+ * is used for a similar feature.
  */
 #if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 template <class _Derived, class _Base>
