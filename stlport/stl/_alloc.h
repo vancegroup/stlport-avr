@@ -464,13 +464,10 @@ struct _AllocatorAux<const _Tp> {
 
 template <class _Tp>
 class allocator //: public _AllocatorAux<_Tp>
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-                : public __stlport_class<allocator<_Tp> >
-#endif
-{
+                : public __stlport_class<allocator<_Tp> > {
 public:
   typedef _Tp        value_type;
   typedef _Tp*       pointer;
@@ -489,6 +486,7 @@ public:
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
 #endif
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
+  allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
   ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) const {return &__x;}
   const_pointer address(const_reference __x) const { return &__x; }
@@ -655,13 +653,10 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-_STLP_MOVE_TO_STD_NAMESPACE
-
 #undef _STLP_NODE_ALLOCATOR_THREADS
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
-struct __type_traits<allocator<_Tp> > {
+struct __alloc_type_traits {
   typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
   //The default allocator implementation which is recognize thanks to the
   //__stlport_class inheritance is the stateless object so:
@@ -671,7 +666,24 @@ struct __type_traits<allocator<_Tp> > {
   typedef _STLportAlloc has_trivial_destructor;
   typedef _STLportAlloc is_POD_type;
 };
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct __type_traits<allocator<_Tp> > : _STLP_PRIV __alloc_type_traits<_Tp> {};
+#else
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<char> > : _STLP_PRIV __alloc_type_traits<char> {};
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<wchar_t> > : _STLP_PRIV __alloc_type_traits<wchar_t> {};
+#  endif
+#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<void*> > : _STLP_PRIV __alloc_type_traits<void*> {};
+#  endif
+#endif
 
 _STLP_END_NAMESPACE
 
