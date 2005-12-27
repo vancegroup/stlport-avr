@@ -166,11 +166,7 @@ streamsize stdio_istreambuf::showmanyc() {
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
     struct stat buf;
-#  ifdef __BORLANDC__
-    if(fstat(fd, &buf) == 0 && S_ISREG( buf.st_mode ) )
-#  else
     if(fstat(fd, &buf) == 0 && ( _S_IFREG & buf.st_mode ) )
-#  endif
       size = ( buf.st_size > 0  ? buf.st_size : 0);
     else
       size = 0;
