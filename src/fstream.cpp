@@ -1166,8 +1166,8 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
       if ((__this->_M_mmap_base =
         __this->_M_base._M_mmap(__offset, __this->_M_mmap_len)) != 0) {
         __this->setg((char*) __this->_M_mmap_base,
-                     (char*) __this->_M_mmap_base + __remainder,
-                     (char*) __this->_M_mmap_base + __this->_M_mmap_len);
+                     (char*) __this->_M_mmap_base + __STATIC_CAST(ptrdiff_t, __remainder),
+                     (char*) __this->_M_mmap_base + __STATIC_CAST(ptrdiff_t, __this->_M_mmap_len));
         return traits_type::to_int_type(*__this->gptr());
       }
     } else /* size > 0 ... */ {

@@ -231,7 +231,7 @@ strstreambuf::seekoff(off_type off,
     return pos_type(off_type(-1));
 
   if (do_put) {
-    if (seeklow + off < pbase()) {
+    if (seeklow + __STATIC_CAST(ptrdiff_t, off) < pbase()) {
       setp(seeklow, epptr());
       pbump((int)off);
     }
@@ -242,11 +242,11 @@ strstreambuf::seekoff(off_type off,
   }
   if (do_get) {
     if (off <= egptr() - seeklow)
-      setg(seeklow, seeklow + off, egptr());
+      setg(seeklow, seeklow + __STATIC_CAST(ptrdiff_t, off), egptr());
     else if (off <= pptr() - seeklow)
-      setg(seeklow, seeklow + off, pptr());
+      setg(seeklow, seeklow + __STATIC_CAST(ptrdiff_t, off), pptr());
     else
-      setg(seeklow, seeklow + off, epptr());
+      setg(seeklow, seeklow + __STATIC_CAST(ptrdiff_t, off), epptr());
   }
 
   return pos_type(newoff);
