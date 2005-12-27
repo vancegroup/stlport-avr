@@ -50,16 +50,19 @@
 #      include <windows.h>
 #    endif
 #  else
-// This section serves as a replacement for windows.h header for Visual C++
+/* This section serves as a replacement for windows.h header for Visual C++ */
+#    if defined (__cplusplus)
 extern "C" {
+#    endif
 #    if (defined (_M_AMD64) || defined (_M_IA64) || (!defined (_STLP_WCE) && defined (_M_MRX000)) || defined (_M_ALPHA) || \
         (defined (_M_PPC) && (_MSC_VER >= 1000))) && !defined (RC_INVOKED)
 #      define InterlockedIncrement       _InterlockedIncrement
 #      define InterlockedDecrement       _InterlockedDecrement
 #      define InterlockedExchange        _InterlockedExchange
-//Here we use a different macro name than the InterlockedExchangePointer SDK function
-// to avoid macro definition conflict as the SDK might already define InterlockedExchangePointer
-//as a macro
+/* Here we use a different macro name than the InterlockedExchangePointer SDK function
+ * to avoid macro definition conflict as the SDK might already define InterlockedExchangePointer
+ * as a macro.
+ */
 #      define STLPInterlockedExchangePointer _InterlockedExchangePointer
 #      define _STLP_STDCALL
 #    else
@@ -80,15 +83,15 @@ _STLP_IMPORT_DECLSPEC void* _STLP_STDCALL STLPInterlockedExchangePointer(void* v
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchangeAdd(long volatile *, long);
 #    elif defined (_STLP_WCE)
 
-// start of eMbedded Visual C++ specific section
-#      include <windef.h> // needed for basic windows types
+/* start of eMbedded Visual C++ specific section */
+#      include <windef.h> /* needed for basic windows types */
 
 long WINAPI InterlockedIncrement(long*);
 long WINAPI InterlockedDecrement(long*);
 long WINAPI InterlockedExchange(long*, long);
 
 #      if defined (x86)
-#        include <winbase.h> // needed for inline versions of Interlocked* functions
+#        include <winbase.h> /* needed for inline versions of Interlocked* functions */
 #      endif
 
 #      define MessageBox MessageBoxW
@@ -120,34 +123,48 @@ _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 
 #      undef _STLP_WCE_WINBASEAPI
 
-// end of eMbedded Visual C++ specific section
+/* end of eMbedded Visual C++ specific section */
 
 #    else
-// boris : for the latest SDK, you may actually need the other version of the declaration (above)
-// even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
+/* boris : for the latest SDK, you may actually need the other version of the declaration (above)
+ * even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
+ */
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #    endif
 
 #    if !defined (STLPInterlockedExchangePointer)
-//This API function do not exist in the old platform SDK and is equivalent to
-//InterlockedExchange on 32 bits platform:
-inline void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) {
-#    if defined (_STLP_MSVC)
-// Here MSVC produces warning if 64 bits portability issue is activated.
-// MSVC do not see that _STLP_ATOMIC_EXCHANGE_PTR is a macro which content
-// is based on the platform, Win32 or Win64
-#      pragma warning (push)
-#      pragma warning (disable : 4311) // pointer truncation from void* to long
-#      pragma warning (disable : 4312) // conversion from long to void* of greater size
-#    endif
-  return __REINTERPRET_CAST(void*, InterlockedExchange(__REINTERPRET_CAST(long*, __CONST_CAST(void**, __a)), 
-                                                       __REINTERPRET_CAST(long, __b)));
-#    if defined (_STLP_MSVC)
-#      pragma warning (pop)
-#    endif
+/* This API function do not exist in the old platform SDK and is equivalent to
+ * InterlockedExchange on 32 bits platform:
+ */
+#      if defined (__cplusplus)
+/* We do not define this function if we are not in a C++ translation unit just
+ * because of the inline portability issue it would introduce. We will have to
+ * fix it the day we need this function for a C translation unit.
+ */
+inline
+void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) {
+#        if defined (_STLP_MSVC)
+/* Here MSVC produces warning if 64 bits portability issue is activated.
+ * MSVC do not see that _STLP_ATOMIC_EXCHANGE_PTR is a macro which content
+ * is based on the platform, Win32 or Win64
+ */
+#          pragma warning (push)
+#          pragma warning (disable : 4311) // pointer truncation from void* to long
+#          pragma warning (disable : 4312) // conversion from long to void* of greater size
+#        endif
+#        if !defined (_STLP_NO_NEW_STYLE_CASTS)
+  return reinterpret_cast<void*>(InterlockedExchange(reinterpret_cast<long*>(const_cast<void**>(__a)),
+                                                     reinterpret_cast<long>(__b)));
+#        else
+  return (void*)InterlockedExchange((long*)__a, (long)__b);
+#        endif
+#        if defined (_STLP_MSVC)
+#          pragma warning (pop)
+#        endif
 }
+#      endif
 #    endif
 
 #    if !defined (_STLP_WCE)
@@ -161,7 +178,9 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
 #      pragma intrinsic(_InterlockedExchange)
 #      pragma intrinsic(_InterlockedExchangePointer)
 #    endif
+#    if defined (__cplusplus)
 } /* extern "C" */
+#    endif
 
 #  endif /* STL_MSVC __BORLANDC__ __ICL __WATCOMC__ __MINGW32__ __DMC__*/
 

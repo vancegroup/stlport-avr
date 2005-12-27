@@ -29,7 +29,7 @@
  * adjust flags for your compiler, and add  <include config/stl_YOUR_COMPILER_NAME>
  * to the secton controlled by unique macro defined internaly by your compiler.
  *
- * To change user-definable settings, please edit <../stl_user_config.h>
+ * To change user-definable settings, please edit <user_config.h>
  *
  */
 
@@ -156,16 +156,20 @@
 #  endif
 #endif
 
-/* *************** Should be fixed!!! ********************** */
-#if defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  include <stl/config/_windows.h>
+#if defined (__CYGWIN__)
+#  include <stl/config/_gcc.h>
+#endif
+
+#if defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || \
+    defined (__WIN16) || defined (WIN16) || defined (_WIN16) || \
+    defined (__MINGW32__)
 #  if defined ( __BORLANDC__ )  /* Borland C++ ( 4.x - 5.x ) */
 #    include <stl/config/_bc.h>
 #  endif
 #  if defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)  /* Watcom C++ */
 #    include <stl/config/_watcom.h>
 #  endif
-#  if defined(__COMO__) || defined (__COMO_VERSION_)
+#  if defined (__COMO__) || defined (__COMO_VERSION_)
 #    include <stl/config/_como.h>
 #  endif
 #  if defined (__DMC__)   /* Digital Mars C++ */
@@ -174,24 +178,28 @@
 #  if defined (__SC__) && (__SC__ < 0x800) /* Symantec 7.5 */
 #    include <stl/config/_symantec.h>
 #  endif
-#  if defined(__ICL) /* Intel reference compiler for Win */
+#  if defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
 #  endif
-#  ifdef __MWERKS__
+#  if defined (__MWERKS__)
 #    include <stl/config/_mwerks.h>
 #  endif
-#  if defined(_MSC_VER) && (_MSC_VER >= 1200) && defined(UNDER_CE)
+#  if defined (_MSC_VER) && (_MSC_VER >= 1200) && defined (UNDER_CE)
      /* Microsoft eMbedded Visual C++ 3.0, 4.0 (.NET) */
 #    include <stl/config/_evc.h>
 #  endif
    /* distinguish real MSC from Metrowerks, Intel and Comeau */
-#  if defined(_MSC_VER) && !defined(__MWERKS__) && !defined (__ICL) && !defined (__COMO__) && ((_MSC_VER < 1200) || !defined(UNDER_CE))
+#  if defined (_MSC_VER) && !defined (__MWERKS__) && !defined (__ICL) && !defined (__COMO__) && ((_MSC_VER < 1200) || !defined (UNDER_CE))
     /* Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 */
 #    define _STLP_MSVC _MSC_VER
 #    include <stl/config/_msvc.h>
 #  endif
+#  if defined (__GNUC__)
+#    include <stl/config/_gcc.h>
+#  endif
+
+#  include <stl/config/_windows.h>
 #endif
-/* *************** Should be fixed!!! ********************** */
 
 
 /* Unable to identify the compiler, issue error diagnostic.
