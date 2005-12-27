@@ -12,7 +12,7 @@ OPT ?=
 CFLAGS = -q -ff -Ve 
 CXXFLAGS = -q -ff -Ve 
 
-OPT += -w-spa -w-ccc -w-rch -w-ngu -w-inl -w-eff
+OPT += -w-ccc -w-rch -w-ngu -w-inl -w-eff
 
 # release-shared : OPT += -w-inl
 
