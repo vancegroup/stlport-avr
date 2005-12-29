@@ -1,7 +1,7 @@
 # -*- makefile -*- Time-stamp: <05/03/02 18:39:22 ptr>
 # $Id$
 
-INSTALL_TAGS ?= install-release-shared install-dbg-shared install-stldbg-shared
+INSTALL_TAGS ?= install-shared
 
 PHONY += install $(INSTALL_TAGS)
 

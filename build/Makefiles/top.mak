@@ -11,12 +11,12 @@ OBJ_EXT ?= o
 
 RULESBASE ?= $(SRCROOT)/Makefiles
 
-ALL_TAGS ?= release-shared	dbg-shared	stldbg-shared
+ALL_TAGS ?= all-shared
 
 all:	$(OUTPUT_DIRS) $(ALL_TAGS)
 
-all-static:	release-static	dbg-static	stldbg-static
-all-shared:	release-shared	dbg-shared	stldbg-shared
+all-static: release-static dbg-static stldbg-static
+all-shared: release-shared dbg-shared stldbg-shared
 
 install-shared: install-dbg-shared install-stldbg-shared install-release-shared
 install-static: install-dbg-static install-stldbg-static install-release-static

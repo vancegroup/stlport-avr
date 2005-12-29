@@ -4,10 +4,7 @@ INSTALL_TAGS ?= install-shared
 
 PHONY += install $(INSTALL_TAGS)
 
-install:	$(INSTALL_TAGS)
-
-install-static: all-static install-release-static install-dbg-static install-stldbg-static
-install-shared: all-shared install-release-shared install-dbg-shared install-stldbg-shared
+install: $(INSTALL_TAGS)
 
 install-release-shared:	release-shared $(INSTALL_BIN_DIR) $(INSTALL_LIB_DIR)
 	$(INSTALL_SO) ${SO_NAME_OUT} $(INSTALL_BIN_DIR)/
