@@ -876,6 +876,7 @@ extern "C" {
     }
   }
 
+#if !defined (_STLP_NO_WCHAR_T)
   size_t _Locale_mbtowc(struct _Locale_ctype *ltype, wchar_t *to,
                         const char *from, size_t n, mbstate_t *shift_state) {
     CPINFO ci;
@@ -926,6 +927,7 @@ extern "C" {
 #  endif
     return (size_t)size;
   }
+#endif
 
   size_t _Locale_unshift(struct _Locale_ctype *ltype, mbstate_t *st,
                          char *buf, size_t n, char **next) {
@@ -1636,10 +1638,23 @@ char* __Extract_locale_name(const char* loc, int category, char* buf) {
   char *expr;
   size_t len_name;
   buf[0] = 0;
-  if (category == LC_ALL || category > LC_MAX) return NULL;
+#if defined (__BORLANDC__)
+  if (category < LC_MIN || category > LC_MAX) return NULL;
+  switch (category) {
+    case 0xFF: category = 0; break;
+    case 0x01: category = 1; break;
+    case 0x02: category = 2; break;
+    case 0x04: category = 3; break;
+    case 0x10: category = 4; break;
+    case 0x20: category = 5; break;
+    default  : category = 0;
+  }
+#else
+  if (category < LC_ALL || category > LC_MAX) return NULL;
+#endif
 
   if (loc[0] == 'L' && loc[1] == 'C' && loc[2] == '_') {
-    expr=strstr((char*)loc, __loc_categories[category]);
+    expr = strstr((char*)loc, __loc_categories[category]);
     if (expr == NULL) return NULL; /* Category not found. */
     expr = strchr(expr, '=');
     if (expr == NULL) return NULL;
