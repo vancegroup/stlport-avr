@@ -1,3 +1,23 @@
+2005-12-29  Francois Dumont  <dums@stlport...>
+
+	* src/c_locale_win32/c_locale_win32.c: Hide _Locale_mbtowc and
+	_Locale_wctomb when no wchar_t support is detected thanks Eric
+	Stanford.
+
+	* src/c_locale_win32/c_locale_win32.c: Add mapping from Borland
+	facet macros to STLport associated string representation array index
+	thanks Eric Stanford. 
+
+	* stlport/stl/config/_evc.h: Patch from Michael Fink to generalized
+	use of OutputDebugString for Windows CE when we need to trace
+	information.
+
+	* build/Makefiles/gmake/bcc.mak, lib/bcc.mak, app/bcc.mak: Fix
+	definition of START_OBJ thanks armpit33
+
+	* build/Makefiles/*: Generalize use of install-shared rather than
+	list of all shared rules, idem for install-static.
+
 2005-12-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_string_io.c: Generalized use of _STLP_STATIC_ASSERT
