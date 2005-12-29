@@ -10,6 +10,10 @@ release-shared : LDFLAGS += -Tpd -V4.00 -v -w-dup
 dbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 stldbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 
+release-shared: START_OBJ := c0d32.obj
+dbg-shared: START_OBJ := c0d32.obj
+stldbg-shared: START_OBJ := c0d32.obj
+
 release-static : AR += /P32
 dbg-static : AR += /P128
 stldbg-static : AR += /P256

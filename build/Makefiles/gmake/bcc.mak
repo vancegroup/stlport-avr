@@ -2,6 +2,13 @@
 
 #INCLUDES :=
 
+ALL_TAGS = all-static all-shared
+ifdef LIBNAME
+INSTALL_TAGS = install-static install-shared
+else
+INSTALL_TAGS = install-static
+endif
+
 CXX := bcc32 
 CC := bcc32
 RC := brc32
@@ -115,11 +122,7 @@ stldbg-static : LDLIBS += cw32i.lib
 endif
 endif
 
-ifdef LIBNAME
-release-shared: START_OBJ += c0d32.obj
-dbg-shared: START_OBJ += c0d32.obj
-stldbg-shared: START_OBJ += c0d32.obj
-else
+ifndef LIBNAME
 ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
 release-static: DEFS += -D_STLP_USE_STATIC_LIB
 dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
@@ -130,7 +133,6 @@ release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
 dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 endif
-START_OBJ += c0x32.obj
 endif
 
 # dependency output parser (dependencies collector)

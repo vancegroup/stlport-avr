@@ -3,3 +3,6 @@
 OPT += -tWC -w-par
 
 LDFLAGS += -ap -Tpe
+
+START_OBJ = c0x32.obj
+
