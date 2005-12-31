@@ -1,0 +1,101 @@
+
+==================================================
+STLport README for Microsoft Visual C++ compilers.
+==================================================
+
+by: Francois Dumont, dums@stlport.com, last edited 08/02/2005
+
+============
+Introduction
+============
+This document describes how STLport can be compiled and used with
+Borland compilers.
+
+For any further comments or questsion visit STLport mailing lists
+http://stlport.sourceforge.net/Maillists.shtml or forums
+https://sourceforge.net/forum/?group_id=146814
+
+=============
+Prerequisites
+=============
+To build and use STLport you will need following tools and libraries:
+ - Borland C++ compiler 5.5.1 or higher version.
+
+   In order to build STLport the Borland compiler and linker have to
+ be correctly configurated too. That is to say for the Borland compiler
+ command bcc32.exe you need to create a bcc32.cfg file containing
+ the path to the Borland native headers, if you install Borland tools
+ in BORLAND_PATH then bcc32.cfg must contain:
+
+	-I%BORLAND_PATH%\BCC55\include
+
+   For the Borland linker ilink32.exe you will need both the Borland
+ libs and also the Borland PSDK libs. That is to say that in ilink32.cfg
+ you will find at least:
+
+	-L%BORLAND_PATH%\BCC55\lib;BORLAND_PATH\BCC55\lib\PSDK
+
+ - A GNU make tool. You can get one from www.mingw.org or www.cygwin.com.
+   See README.mingw or README.cygwin for additional informations.
+
+===================
+Configuring STLport
+===================
+This is an optional step, if you want to use default configuration simply
+jump to next chapter 'Building STLport'. Open a console and go to the STLport
+build/lib folder. Run
+
+	configure --help
+
+This command will present you the different available build options. Just follow
+the instructions to set STLport configuration according your needs.
+
+================
+Building STLport
+================
+This is a step by step description of the actions to take in order to have
+the STLport library built:
+
+1. Open a console, you can use a Msys, Cygwin or Windows console.
+
+2. Go to the STLport build/lib folder:
+	cd C:\STLport\build\lib
+
+5. Run the following command:
+	make -fbcc.mak install
+
+	Where make is the GNU make utility you have install. -f is a make option
+telling it which make file script to use. You have of course to grant the 
+closer make file to your effective compiler, bcc.mak in our case.
+
+	Once the command return you will have all the necessary libraries within
+the STLport lib folder. For a description of the generated libraries check the README
+file within the src folder.
+
+===============
+Testing STLport
+===============
+You can use the unit tests to verify STLport behaves correctly. Change into
+STLports 'build/test/unit' folder and type:
+
+  make -fbcc.mak install
+
+Once the unit test is built you just need to run it. They can be found
+within the STLport bin folder.
+
+=============
+Using STLport
+=============
+Adjust your include and link paths in Borland IDE or in the command line config
+files. In the include files add the path to STLport's 'stlport' folder. Make sure
+it is the first directory listed there. Add STLport's 'lib' folder for the library
+files (order of paths doesn't matter here).
+
+Now you should be ready to use STLport.
+
+============
+Known issues
+============
+
+1. Linking with STLport dlls do not work, prefer static libs for the moment.
+

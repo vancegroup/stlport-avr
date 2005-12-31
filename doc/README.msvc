@@ -25,14 +25,16 @@ To build and use STLport you will need following tools and libraries:
 ===================
 Configuring STLport
 ===================
-This is an optionnal step for the MSVC++ compilers, if you don't want to pass
-throught it just move to the 'Building STLport' section.
+In a console window go to the STLport build/lib folder. Run
 
-Go to the STLport build/lib folder. Run
 	configure --help
 
 This command will present you the different available build options. Just follow
-the instructions to set STLport configuration according your needs.
+the instructions to set STLport configuration according your needs. The only
+mandatory configuration is to declare what is the compiler you are going to
+use, for MSVC 6 it is:
+
+	configure -c msvc6
 
 ================
 Building STLport
@@ -56,16 +58,15 @@ to access command-line tools' during Microsoft Visual Studio installation proced
 	cd C:\STLport\build\lib
 
 5. Run the following command:
-	nmake /fnmake-vc6.mak install
+	nmake /fmsvc.mak install
 
 	nmake is the make utility from microsoft. /f is an nmake option
 telling it which make file script to use. You have of course to grant the 
-closer make file to your effective compiler.
+closer make file to your effective compiler, msvc.mak in our case.
 
 	Once the command return you will have all the necessary libraries within
 the STLport lib folder. For a description of the generated libraries check the README
-file within the src folder. You can also set special make process options, you will 
-find a list of those in the README.options file once again in the build/lib folder.
+file within the src folder.
 
 ===============
 Testing STLport
@@ -73,7 +74,7 @@ Testing STLport
 You can use the unit tests to verify STLport behaves correctly. Change into
 STLports 'build/test/unit' folder and type:
 
-  nmake /fnmake-vc6.mak install
+  nmake /fmsvc.mak install
 
 Once the unit test is built you just need to run it. They can be found
 within the STLport bin folder.

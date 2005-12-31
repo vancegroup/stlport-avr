@@ -1,5 +1,4 @@
-The cygwin platform is used as a default platform to
-build different version of the STLport libraries.
+The cygwin platform is used to build STLport with different compilers.
 
 - gcc (native compiler):
 
@@ -12,3 +11,5 @@ build different version of the STLport libraries.
     To build STLport libraries that do not depend on cygwin1.dll
   making them freely redistributable use the --no-cygwin configuration
   option.
+
+- Borland C++ compiler

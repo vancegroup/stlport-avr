@@ -1,3 +1,12 @@
+2005-12-31  Francois Dumont  <dums@stlport...>
+
+	* doc: Add Borland doc and update cygwin, mingw and msvc.
+
+	* build/lib/README.options: Removed, replaced by configrure
+	script.
+
+	* build/test/eh/bcc.mak: Added to build EH tests for Borland.
+
 2005-12-29  Francois Dumont  <dums@stlport...>
 
 	* src/c_locale_win32/c_locale_win32.c: Hide _Locale_mbtowc and
