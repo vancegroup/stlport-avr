@@ -438,7 +438,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
 
-#  if (defined(__CYGWIN__) || defined(__MINGW32__)) && defined(_STLP_USE_DYNAMIC_LIB)
+#  if (defined (__CYGWIN__) || defined (__MINGW32__)) && \
+       defined (_STLP_USE_DYNAMIC_LIB) && !defined (__BUILDING_STLPORT)
 /*
  * Under cygwin, when STLport is used as a shared library, the id needs
  * to be specified as imported otherwise they will be duplicated in the

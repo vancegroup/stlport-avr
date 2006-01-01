@@ -301,7 +301,8 @@ _STLP_STRING_LITERAL("Unknown problem") \
 template <class _Dummy>
 const char* __stl_debug_engine<_Dummy>::_Message_table[_StlMsg_MAX]  _STLP_MESSAGE_TABLE_BODY;
 
-#      if (defined (__CYGWIN__) || defined (__MINGW32__)) && defined (_STLP_USE_DYNAMIC_LIB)
+#      if (defined (__CYGWIN__) || defined (__MINGW32__)) && \
+           defined (_STLP_USE_DYNAMIC_LIB) && !defined (__BUILDING_STLPORT)
 /*
  * Under cygwin, when STLport is used as a shared library, the id needs
  * to be specified as imported otherwise they will be duplicated in the

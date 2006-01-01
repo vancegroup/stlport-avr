@@ -1,3 +1,15 @@
+2006-01-01  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/gmake/lib/gcc.mak, stlport/stl/config/_gcc.h:
+	Change way of building dll with Cygwin/MinGW. No more export of
+	all symbols, we use dllexport specification, makes import lib
+	really shorter and dll too. Moreover use of the
+	enable-auto-image-base linker option to make load of dll faster.
+
+	* stlport/stl/_time_facets.c, _num_put.c, _num_get.c, _monetary.c,
+	debug/_debug.c: Adapt existing Cygwin/MinGW workaround for new
+	way of generating dlls.
+
 2005-12-31  Francois Dumont  <dums@stlport...>
 
 	* doc: Add Borland doc and update cygwin, mingw and msvc.

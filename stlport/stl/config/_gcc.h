@@ -88,22 +88,16 @@
 #endif /* __MINGW32__ */
 
 #if defined (__CYGWIN__) || defined (__MINGW32__)
-#  if !defined (__BUILDING_STLPORT) && !defined (_STLP_USE_STATIC_LIB)
-/*
- * We use the import/export mechanism only to import symbols to
- * an exe or an other dynamic lib. During library built all symbols
- * are exported.
- */
+#  if !defined (_STLP_USE_STATIC_LIB)
+#    define _STLP_USE_DECLSPEC 1
 #    if !defined (_STLP_USE_DYNAMIC_LIB)
 #      define _STLP_USE_DYNAMIC_LIB
 #    endif
+#    define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+#    define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
 #    define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 #    define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
-#    define _STLP_USE_DECLSPEC 1
 #  else
-#    if !defined (_STLP_USE_STATIC_LIB)
-#      define _STLP_USE_STATIC_LIB
-#    endif
 #    define _STLP_IMPORT_DECLSPEC
 #    define _STLP_CLASS_IMPORT_DECLSPEC
 #  endif
