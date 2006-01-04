@@ -91,7 +91,7 @@ const ios_base::seekdir ios_base::end;
 // size.
 
 template <class PODType>
-pair<PODType*, size_t>
+static pair<PODType*, size_t>
 _Stl_expand_array(PODType* __array, size_t N, int index) {
   if ((int)N < index + 1) {
     size_t new_N = (max)(2 * N, size_t(index + 1));
@@ -113,7 +113,7 @@ _Stl_expand_array(PODType* __array, size_t N, int index) {
 // Return a pointer to the new array.  It is assumed that array is non-null
 // and N is nonzero.
 template <class PODType>
-PODType* _Stl_copy_array(const PODType* __array, size_t N) {
+static PODType* _Stl_copy_array(const PODType* __array, size_t N) {
   PODType* result = __STATIC_CAST(PODType*,malloc(N * sizeof(PODType)));
   if (result)
     copy(__array, __array + N, result);

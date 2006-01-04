@@ -130,9 +130,9 @@ locale::locale(const char* name)
 
 // Give L a name where all facets except those in category c
 // are taken from name1, and those in category c are taken from name2.
-void _Stl_loc_combine_names(_Locale_impl* L,
-                            const char* name1, const char* name2,
-                            locale::category c) {
+static void _Stl_loc_combine_names(_Locale_impl* L,
+                                   const char* name1, const char* name2,
+                                   locale::category c) {
   if ((c & locale::all) == 0 || strcmp(name1, name2) == 0)
     L->name = name1;
   else if ((c & locale::all) == locale::all)

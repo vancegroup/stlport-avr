@@ -115,7 +115,7 @@ _STLP_END_NAMESPACE
  * here to check that a future alpha SDK or a future gcc won't change the
  * situation making this workaround useless.
  */
-_STLP_STATIC_ASSERT(((wchar_t)-1 > 0) && (WCHAR_MIN < 0));
+_STLP_STATIC_ASSERT(((wchar_t)-1 > 0) && (WCHAR_MIN < 0))
 #    undef WCHAR_MIN
 #    define WCHAR_MIN 0
 #    undef WCHAR_MAX

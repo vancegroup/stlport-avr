@@ -534,7 +534,7 @@ extern "C" {
     return lmes;
   }
 
-  const char* _Locale_common_default(char* buf) {
+  static const char* _Locale_common_default(char* buf) {
     char cp[MAX_CP_LEN + 1];
     int CodePage=__intGetACP(LOCALE_USER_DEFAULT);
     if (!CodePage) CodePage=__intGetOCP(LOCALE_USER_DEFAULT);
@@ -733,7 +733,7 @@ extern "C" {
   /* ctype */
 
   const _Locale_mask_t* _Locale_ctype_table(struct _Locale_ctype* ltype) {
-    _STLP_STATIC_ASSERT(sizeof(_Locale_mask_t) == sizeof(unsigned int));
+    _STLP_STATIC_ASSERT(sizeof(_Locale_mask_t) == sizeof(unsigned int))
     return (const _Locale_mask_t*)ltype->ctable;
   }
 
@@ -956,14 +956,14 @@ extern "C" {
 #  define CSTR_LESS_THAN 1
 #endif
 
-  DWORD max_DWORD = 0xffffffff;
-  DWORD trim_size_t_to_DWORD(size_t n) { return n < (size_t)max_DWORD ? (DWORD)n : max_DWORD; }
+  static DWORD max_DWORD = 0xffffffff;
+  static DWORD trim_size_t_to_DWORD(size_t n) { return n < (size_t)max_DWORD ? (DWORD)n : max_DWORD; }
 
   /* Collate */
   /* This function takes care of the potential size_t DWORD different size. */
-  int _Locale_strcmp_auxA(struct _Locale_collate* lcol,
-                          const char* s1, size_t n1,
-                          const char* s2, size_t n2) {
+  static int _Locale_strcmp_auxA(struct _Locale_collate* lcol,
+                                 const char* s1, size_t n1,
+                                 const char* s2, size_t n2) {
     int result = CSTR_EQUAL;
     while (n1 > 0 || n2 > 0) {
       DWORD size1 = trim_size_t_to_DWORD(n1);
@@ -998,9 +998,9 @@ extern "C" {
 
 #if !defined (_STLP_NO_WCHAR_T)
   /* This function takes care of the potential size_t DWORD different size. */
-  int _Locale_strcmp_auxW(struct _Locale_collate* lcol,
-                          const wchar_t* s1, size_t n1,
-                          const wchar_t* s2, size_t n2) {
+  static int _Locale_strcmp_auxW(struct _Locale_collate* lcol,
+                                 const wchar_t* s1, size_t n1,
+                                 const wchar_t* s2, size_t n2) {
     int result = CSTR_EQUAL;
     while (n1 > 0 || n2 > 0) {
       DWORD size1 = trim_size_t_to_DWORD(n1);
@@ -1219,7 +1219,7 @@ extern "C" {
     return buffer;
   }
 
-  const char* __ConvertDate(const char* NTTime) {
+  static const char* __ConvertDate(const char* NTTime) {
     static char ansi_date_fmt[MAX_PATH]; /* Hack */
     const char *cur_char;
     char *cur_output;
@@ -1416,8 +1416,8 @@ extern "C" {
 #endif
   }
   const char* _Locale_catgets(struct _Locale_messages* __DUMMY_PAR1, int __DUMMY_PAR2,
-            int __DUMMY_PAR3, int __DUMMY_PAR4,
-            const char *dfault) {
+                              int __DUMMY_PAR3, int __DUMMY_PAR4,
+                              const char *dfault) {
 #if !defined (__DMC__)
     (void*)__DUMMY_PAR1;
     (void*)&__DUMMY_PAR2;
@@ -1708,7 +1708,7 @@ int __GetDefaultCP(LCID lcid) {
   else return cp;
 }
 
-int trim_size_t_to_int(size_t n) { return n < (size_t)INT_MAX ? (int)n : INT_MAX; }
+static int trim_size_t_to_int(size_t n) { return n < (size_t)INT_MAX ? (int)n : INT_MAX; }
 
 char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_t *ret_buf_size) {
   size_t wbuffer_size, buffer_size, from_offset, wbuf_offset;

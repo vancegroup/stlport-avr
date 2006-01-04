@@ -54,7 +54,7 @@ ctype<char>::classic_table() _STLP_NOTHROW {
    */
 #if !defined (__MWERKS__)
   /* CodeWarrior 8 don't understabd this */
-  _STLP_STATIC_ASSERT((alpha & (lower | upper)) == 0);
+  _STLP_STATIC_ASSERT((alpha & (lower | upper)) == 0)
 #endif
 
   static const ctype_base::mask _S_classic_table[table_size] =
@@ -292,7 +292,8 @@ template <bool _IsSigned>
 struct _WCharIndexT;
 
 #if !defined (__BORLANDC__) && \
-    !(defined (__GNUC__) && (defined (__MINGW32__) || defined (__CYGWIN__)))
+    !(defined (__GNUC__) && (defined (__MINGW32__) || defined (__CYGWIN__))) && \
+    !defined (__ICL)
 _STLP_TEMPLATE_NULL
 struct _WCharIndexT<true> {
   static bool in_range(wchar_t c, size_t upperBound) {

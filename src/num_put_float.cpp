@@ -19,6 +19,8 @@
 #include "stlport_prefix.h"
 
 #include <cmath>
+#include <ios>
+#include <locale>
 
 #if defined (__DECCXX)
 #  define NDIG 400
@@ -92,7 +94,6 @@ typedef long double max_double_type;
 #  include <cfloat>
 #endif
 
-#include "num_put.h"
 #include <algorithm>
 
 #if defined (__DMC__)
@@ -192,7 +193,6 @@ extern "C" char *_ldfcvt(long_double, int, int *, int *);
 #endif /* __hpux */
 
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if defined (__MWERKS__) || defined(__BEOS__)
@@ -219,66 +219,66 @@ static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
 #  if defined (__hpux) || defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
       defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
 #    if defined (isfinite)
-inline bool _Stl_is_nan_or_inf(double x) { return !isfinite(x); }
+static inline bool _Stl_is_nan_or_inf(double x) { return !isfinite(x); }
 #    else
-inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
+static inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
 #    endif
-inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 ); }
-inline bool _Stl_is_inf(double x)        { return isinf(x); }
+static inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 ); }
+static inline bool _Stl_is_inf(double x)        { return isinf(x); }
 // inline bool _Stl_is_neg_inf(double x)    { return isinf(x) < 0; }
-inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && x < 0; }
+static inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && x < 0; }
 #  elif (defined (__unix) || defined (__unix__)) && \
          !defined (__APPLE__) && !defined (__DJGPP) && !defined(__osf__) && \
          !defined (_CRAY)
-inline bool _Stl_is_nan_or_inf(double x) { return IsNANorINF(x); }
-inline bool _Stl_is_inf(double x)        { return IsNANorINF(x) && IsINF(x); }
-inline bool _Stl_is_neg_inf(double x)    { return (IsINF(x)) && (x < 0.0); }
-inline bool _Stl_is_neg_nan(double x)    { return IsNegNAN(x); }
+static inline bool _Stl_is_nan_or_inf(double x) { return IsNANorINF(x); }
+static inline bool _Stl_is_inf(double x)        { return IsNANorINF(x) && IsINF(x); }
+static inline bool _Stl_is_neg_inf(double x)    { return (IsINF(x)) && (x < 0.0); }
+static inline bool _Stl_is_neg_nan(double x)    { return IsNegNAN(x); }
 #  elif defined (__BORLANDC__) && ( __BORLANDC__ < 0x540 )
-inline bool _Stl_is_nan_or_inf(double x) {  return !_finite(x); }
-inline bool _Stl_is_inf(double x)        {  return _Stl_is_nan_or_inf(x) && ! _isnan(x);}
-inline bool _Stl_is_neg_inf(double x)    {  return _Stl_is_inf(x) && x < 0 ; }
-inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && x < 0 ; }
+static inline bool _Stl_is_nan_or_inf(double x) {  return !_finite(x); }
+static inline bool _Stl_is_inf(double x)        {  return _Stl_is_nan_or_inf(x) && ! _isnan(x);}
+static inline bool _Stl_is_neg_inf(double x)    {  return _Stl_is_inf(x) && x < 0 ; }
+static inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && x < 0 ; }
 #  elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
-inline bool _Stl_is_nan_or_inf(double x) { return !_finite(x); }
-inline bool _Stl_is_inf(double x)        {
+static inline bool _Stl_is_nan_or_inf(double x) { return !_finite(x); }
+static inline bool _Stl_is_inf(double x)        {
   int fclass = _fpclass(x);
   return fclass == _FPCLASS_NINF || fclass == _FPCLASS_PINF;
 }
-inline bool _Stl_is_neg_inf(double x)    { return _fpclass(x) == _FPCLASS_NINF; }
-inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && _copysign(1., x) < 0 ; }
+static inline bool _Stl_is_neg_inf(double x)    { return _fpclass(x) == _FPCLASS_NINF; }
+static inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && _copysign(1., x) < 0 ; }
 #  elif defined (__MRC__) || defined (__SC__)    //*TY 02/24/2000 - added support for MPW
-bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !isfinite(x); }
-bool _Stl_is_inf(double x)        { return !isfinite(x); }
-bool _Stl_is_neg_inf(double x)    { return !isfinite(x) && signbit(x); }
-bool _Stl_is_neg_nan(double x)    { return isnan(x) && signbit(x); }
+static bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !isfinite(x); }
+static bool _Stl_is_inf(double x)        { return !isfinite(x); }
+static bool _Stl_is_neg_inf(double x)    { return !isfinite(x) && signbit(x); }
+static bool _Stl_is_neg_nan(double x)    { return isnan(x) && signbit(x); }
 #  elif /* defined(__FreeBSD__) || defined(__OpenBSD__) || */ (defined(__GNUC__) && defined(__APPLE__))
-inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
-inline bool _Stl_is_inf(double x)        {   return _Stl_is_nan_or_inf(x) && ! isnan(x); }
-inline bool _Stl_is_neg_inf(double x)    {   return _Stl_is_inf(x) && x < 0 ; }
-inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && copysign(1., x) < 0 ; }
+static inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
+static inline bool _Stl_is_inf(double x)        {   return _Stl_is_nan_or_inf(x) && ! isnan(x); }
+static inline bool _Stl_is_neg_inf(double x)    {   return _Stl_is_inf(x) && x < 0 ; }
+static inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && copysign(1., x) < 0 ; }
 #  elif defined( _AIX ) // JFA 11-Aug-2000
-bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !finite(x); }
-bool _Stl_is_inf(double x)        { return !finite(x); }
+static bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !finite(x); }
+static bool _Stl_is_inf(double x)        { return !finite(x); }
 // bool _Stl_is_neg_inf(double x)    { return _class(x) == FP_MINUS_INF; }
-bool _Stl_is_neg_inf(double x)    { return _Stl_is_inf(x) && ( copysign(1., x) < 0 );  }
-bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 );  }
+static bool _Stl_is_neg_inf(double x)    { return _Stl_is_inf(x) && ( copysign(1., x) < 0 );  }
+static bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 );  }
 #  elif defined (__ISCPP__)
-inline bool _Stl_is_nan_or_inf  (double x) { return _fp_isINF(x) || _fp_isNAN(x); }
-inline bool _Stl_is_inf         (double x) { return _fp_isINF(x); }
-inline bool _Stl_is_neg_inf     (double x) { return _fp_isINF(x) && x < 0; }
-inline bool _Stl_is_neg_nan     (double x) { return _fp_isNAN(x) && x < 0; }
+static inline bool _Stl_is_nan_or_inf  (double x) { return _fp_isINF(x) || _fp_isNAN(x); }
+static inline bool _Stl_is_inf         (double x) { return _fp_isINF(x); }
+static inline bool _Stl_is_neg_inf     (double x) { return _fp_isINF(x) && x < 0; }
+static inline bool _Stl_is_neg_nan     (double x) { return _fp_isNAN(x) && x < 0; }
 #  elif defined (_CRAY)
 #    if defined (_CRAYIEEE)
-inline bool _Stl_is_nan_or_inf(double x) { return isnan(x) || isinf(x); }
-inline bool _Stl_is_inf(double x)        { return isinf(x); }
-inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && signbit(x); }
-inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && signbit(x); }
+static inline bool _Stl_is_nan_or_inf(double x) { return isnan(x) || isinf(x); }
+static inline bool _Stl_is_inf(double x)        { return isinf(x); }
+static inline bool _Stl_is_neg_inf(double x)    { return isinf(x) && signbit(x); }
+static inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && signbit(x); }
 #    else
-inline bool _Stl_is_nan_or_inf(double x) { return false; }
-inline bool _Stl_is_inf(double x)        { return false; }
-inline bool _Stl_is_neg_inf(double x)    { return false; }
-inline bool _Stl_is_neg_nan(double x)    { return false; }
+static inline bool _Stl_is_nan_or_inf(double x) { return false; }
+static inline bool _Stl_is_inf(double x)        { return false; }
+static inline bool _Stl_is_neg_inf(double x)    { return false; }
+static inline bool _Stl_is_neg_nan(double x)    { return false; }
 #    endif
 #  else // nothing from above
 #    define USE_SPRINTF_INSTEAD
@@ -291,100 +291,100 @@ inline bool _Stl_is_neg_nan(double x)    { return false; }
 // encapsulating the differences here.
 
 #  if defined (__CYGWIN__) || defined(__DJGPP)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvtbuf(x, n, pt, sign, buf); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fcvtbuf(x, n, pt, sign, buf); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return ecvtbuf(x, n, pt, sign, buf); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return fcvtbuf(x, n, pt, sign, buf); }
 #    endif
 #  elif defined (_STLP_USE_GLIBC)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return buf + ecvt_r(x, n, pt, sign, buf, NDIG+2); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return buf + fcvt_r(x, n, pt, sign, buf, NDIG+2); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return buf + qecvt_r(x, n, pt, sign, buf, NDIG+2); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return buf + qfcvt_r(x, n, pt, sign, buf, NDIG+2); }
 #    endif
 #  elif defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvt(x, n, pt, sign); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fcvt(x, n, pt, sign); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return ecvtl(x, n, pt, sign); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return fcvtl(x, n, pt, sign); }
 #    endif
 #  elif defined (__sun)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return econvert(x, n, pt, sign, buf); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fconvert(x, n, pt, sign, buf); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return qeconvert(&x, n, pt, sign, buf); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return qfconvert(&x, n, pt, sign, buf); }
 #    endif
 #  elif defined (__DECCXX)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return (ecvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return (fcvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
 // fbp : no "long double" conversions !
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return (ecvt_r((double)x, n, pt, sign, buf, NDIG)==0 ? buf : 0) ; }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return (fcvt_r((double)x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
 #    endif
 #  elif defined (__hpux)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvt(x, n, pt, sign); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fcvt(x, n, pt, sign); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
 
 #      if defined( _REENTRANT ) && (defined(_PTHREADS_DRAFT4) || defined(PTHREAD_THREADS_MAX))
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return (_ldecvt_r(*(long_double*)&x, n, pt, sign, buf, NDIG+2)==0 ? buf : 0); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return (_ldfcvt_r(*(long_double*)&x, n, pt, sign, buf, NDIG+2)==0 ? buf : 0); }
 #      else
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _ldecvt(*(long_double*)&x, n, pt, sign); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _ldfcvt(*(long_double*)&x, n, pt, sign); }
 #      endif
 #    endif
 #  elif defined (_AIX) || defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { LOCK_CVT RETURN_CVT(ecvt, x, n, pt, sign, buf) }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { LOCK_CVT RETURN_CVT(fcvt, x, n, pt, sign, buf) }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { LOCK_CVT RETURN_CVT(ecvt, x, n, pt, sign, buf) }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { LOCK_CVT RETURN_CVT(fcvt, x, n, pt, sign, buf) }
 #    endif
 #  elif defined (__unix) && !defined (__APPLE__) && !defined (_CRAY)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvt_r(x, n, pt, sign, buf); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fcvt_r(x, n, pt, sign, buf); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return qecvt_r(x, n, pt, sign, buf); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return qfcvt_r(x, n, pt, sign, buf); }
 #    endif
 #  elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
@@ -395,41 +395,41 @@ inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 #    else
 #      define _STLP_SECURE_FUN(F, X, N, PT, SIGN, BUF, BSIZE) return F(X, N, PT, SIGN)
 #    endif
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
 { _STLP_SECURE_FUN(_ecvt, x, n, pt, sign, buf, bsize); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
 { _STLP_SECURE_FUN(_fcvt, x, n, pt, sign, buf, bsize); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
 { _STLP_SECURE_FUN(_ecvt, (double)x, n, pt, sign, buf, bsize); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize = 0)
 { _STLP_SECURE_FUN(_fcvt, (double)x, n, pt, sign, buf, bsize); }
 #    endif
 #    undef _STLP_SECURE_FUN
 #    undef _STLP_APPEND
 #  elif defined (__ISCPP__)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
 
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
 
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
 
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
 #    endif
 #  elif defined (__MRC__) || defined (__SC__) || defined (_CRAY)
-inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* )
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* )
 { return ecvt( x, n, pt, sign ); }
-inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* )
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* )
 { return fcvt(x, n, pt, sign); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* )
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* )
 { return ecvt( x, n, pt, sign ); }
-inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
 { return fcvt(x, n, pt, sign); }
 #    endif
 #  endif
@@ -451,10 +451,11 @@ inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* )
 // also does not deal with blank padding, which is handled by
 // __copy_float_and_fill.
 
-size_t __format_float_scientific(char *buf, size_t buf_size, const char *bp,
-                                 int decpt, int sign, bool is_zero,
-                                 ios_base::fmtflags flags,
-                                 int precision, bool /* islong */) {
+static size_t
+__format_float_scientific(char *buf, size_t buf_size, const char *bp,
+                          int decpt, int sign, bool is_zero,
+                          ios_base::fmtflags flags,
+                          int precision, bool /* islong */) {
   size_t __group_pos;
   char *__start_buf = buf;
 
@@ -512,10 +513,11 @@ size_t __format_float_scientific(char *buf, size_t buf_size, const char *bp,
   return __group_pos;
 }
 
-size_t __format_float_fixed(__iostring &buf, const char * bp,
-                            int decpt, int sign, bool /* x */,
-                            ios_base::fmtflags flags,
-                            int precision, bool islong ) {
+static size_t
+__format_float_fixed(__iostring &buf, const char * bp,
+                     int decpt, int sign, bool /* x */,
+                     ios_base::fmtflags flags,
+                     int precision, bool islong ) {
   size_t __group_pos;
   char static_buf[128];
   int const BUF_SIZE = _STLP_ARRAY_SIZE(static_buf) - 1;
@@ -577,12 +579,12 @@ size_t __format_float_fixed(__iostring &buf, const char * bp,
   return __group_pos;
 }
 
-void __format_nan_or_inf(char * buf,
+static void __format_nan_or_inf(char * buf,
 #  if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
-                         size_t buf_size,
+                                size_t buf_size,
 #  endif
-                         double x,
-                         ios_base::fmtflags flags) {
+                                double x,
+                                ios_base::fmtflags flags) {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan;
@@ -608,11 +610,11 @@ void __format_nan_or_inf(char * buf,
 }
 
 template <class max_double_type>
-static inline
-size_t __format_float(__iostring &buf, const char * bp,
-                      int decpt, int sign, max_double_type x,
-                      ios_base::fmtflags flags,
-                      int precision, bool islong) {
+static inline size_t
+__format_float(__iostring &buf, const char * bp,
+               int decpt, int sign, max_double_type x,
+               ios_base::fmtflags flags,
+               int precision, bool islong) {
   size_t __group_pos = 0;
   char static_buf[128];
   // Output of infinities and NANs does not depend on the format flags
@@ -908,7 +910,6 @@ __adjust_float_buffer(__iostring &str, char dot) {
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
-
 _STLP_END_NAMESPACE
 
 // Local Variables:

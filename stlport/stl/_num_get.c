@@ -30,7 +30,7 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_STLP_DECLSPEC const unsigned char _STLP_CALL __digit_val_table(unsigned);
+_STLP_DECLSPEC unsigned char _STLP_CALL __digit_val_table(unsigned);
 _STLP_DECLSPEC const char* _STLP_CALL __narrow_atoms();
 
 template < class _InputIter, class _Integer, class _CharT>

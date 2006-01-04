@@ -25,7 +25,7 @@
 // As hypot is not Standard STLport do not use it directly. We wrap it
 // in __stlp_hypot to perform compiler specific task to grant hypot functionality.
 template <class _Tp>
-inline _Tp __stlp_hypot(_Tp x, _Tp y) {
+static inline _Tp __stlp_hypot(_Tp x, _Tp y) {
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1400)
 #  pragma warning (push)
 #  pragma warning (disable : 4996) // hypot is deprecated.
@@ -86,9 +86,9 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL polar(const long double& __rho, c
 
 // Division
 template <class _Tp>
-void _divT(const _Tp& __z1_r, const _Tp& __z1_i,
-           const _Tp& __z2_r, const _Tp& __z2_i,
-           _Tp& __res_r, _Tp& __res_i) {
+static void _divT(const _Tp& __z1_r, const _Tp& __z1_i,
+                  const _Tp& __z2_r, const _Tp& __z2_i,
+                  _Tp& __res_r, _Tp& __res_i) {
   _Tp __ar = __z2_r >= 0 ? __z2_r : -__z2_r;
   _Tp __ai = __z2_i >= 0 ? __z2_i : -__z2_i;
 
@@ -107,9 +107,9 @@ void _divT(const _Tp& __z1_r, const _Tp& __z1_i,
 }
 
 template <class _Tp>
-void _divT(const _Tp& __z1_r,
-           const _Tp& __z2_r, const _Tp& __z2_i,
-           _Tp& __res_r, _Tp& __res_i) {
+static void _divT(const _Tp& __z1_r,
+                  const _Tp& __z2_r, const _Tp& __z2_i,
+                  _Tp& __res_r, _Tp& __res_i) {
   _Tp __ar = __z2_r >= 0 ? __z2_r : -__z2_r;
   _Tp __ai = __z2_i >= 0 ? __z2_i : -__z2_i;
 
@@ -169,7 +169,7 @@ complex<long double>::_div(const long double& __z1_r,
 //----------------------------------------------------------------------
 // Square root
 template <class _Tp>
-complex<_Tp> sqrtT(const complex<_Tp>& z) {
+static complex<_Tp> sqrtT(const complex<_Tp>& z) {
   _Tp re = z._M_re;
   _Tp im = z._M_im;
   _Tp mag = ::__stlp_hypot(re, im);
@@ -204,7 +204,7 @@ sqrt(const complex<long double>& z) { return sqrtT(z); }
 //----------------------------------------------------------------------
 // exp
 template <class _Tp>
-complex<_Tp> expT(const complex<_Tp>& z) {
+static complex<_Tp> expT(const complex<_Tp>& z) {
   _Tp expx = ::exp(z._M_re);
   return complex<_Tp>(expx * ::cos(z._M_im),
                       expx * ::sin(z._M_im));
@@ -223,7 +223,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL exp(const complex<long double>& z
 //----------------------------------------------------------------------
 // log10
 template <class _Tp>
-complex<_Tp> log10T(const complex<_Tp>& z, const _Tp& ln10_inv) {
+static complex<_Tp> log10T(const complex<_Tp>& z, const _Tp& ln10_inv) {
   complex<_Tp> r;
 
   r._M_im = ::atan2(z._M_im, z._M_re) * ln10_inv;
@@ -231,16 +231,16 @@ complex<_Tp> log10T(const complex<_Tp>& z, const _Tp& ln10_inv) {
   return r;
 }
 
-const float LN10_INVF = 1.f / ::log(10.f);
+static const float LN10_INVF = 1.f / ::log(10.f);
 _STLP_DECLSPEC complex<float> _STLP_CALL log10(const complex<float>& z)
 { return log10T(z, LN10_INVF); }
 
-const double LN10_INV = 1. / ::log10(10.);
+static const double LN10_INV = 1. / ::log10(10.);
 _STLP_DECLSPEC complex<double> _STLP_CALL log10(const complex<double>& z)
 { return log10T(z, LN10_INV); }
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
-const long double LN10_INVL = 1.l / ::log(10.l);
+static const long double LN10_INVL = 1.l / ::log(10.l);
 _STLP_DECLSPEC complex<long double> _STLP_CALL log10(const complex<long double>& z)
 { return log10T(z, LN10_INVL); }
 #endif
@@ -248,7 +248,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL log10(const complex<long double>&
 //----------------------------------------------------------------------
 // log
 template <class _Tp>
-complex<_Tp> logT(const complex<_Tp>& z) {
+static complex<_Tp> logT(const complex<_Tp>& z) {
   complex<_Tp> r;
 
   r._M_im = ::atan2(z._M_im, z._M_re);
@@ -269,7 +269,7 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL log(const complex<long double>& z
 //----------------------------------------------------------------------
 // pow
 template <class _Tp>
-complex<_Tp> powT(const _Tp& a, const complex<_Tp>& b) {
+static complex<_Tp> powT(const _Tp& a, const complex<_Tp>& b) {
   _Tp logr = ::log(a);
   _Tp x = ::exp(logr * b._M_re);
   _Tp y = logr * b._M_im;
@@ -278,7 +278,7 @@ complex<_Tp> powT(const _Tp& a, const complex<_Tp>& b) {
 }
 
 template <class _Tp>
-complex<_Tp> powT(const complex<_Tp>& z_in, int n) {
+static complex<_Tp> powT(const complex<_Tp>& z_in, int n) {
   complex<_Tp> z = z_in;
   z = _STLP_PRIV __power(z, (n < 0 ? -n : n), multiplies< complex<_Tp> >());
   if (n < 0)
@@ -288,7 +288,7 @@ complex<_Tp> powT(const complex<_Tp>& z_in, int n) {
 }
 
 template <class _Tp>
-complex<_Tp> powT(const complex<_Tp>& a, const _Tp& b) {
+static complex<_Tp> powT(const complex<_Tp>& a, const _Tp& b) {
   _Tp logr = ::log(::__stlp_hypot(a._M_re,a._M_im));
   _Tp logi = ::atan2(a._M_im, a._M_re);
   _Tp x = ::exp(logr * b);
@@ -298,7 +298,7 @@ complex<_Tp> powT(const complex<_Tp>& a, const _Tp& b) {
 }
 
 template <class _Tp>
-complex<_Tp> powT(const complex<_Tp>& a, const complex<_Tp>& b) {
+static complex<_Tp> powT(const complex<_Tp>& a, const complex<_Tp>& b) {
   _Tp logr = ::log(::__stlp_hypot(a._M_re,a._M_im));
   _Tp logi = ::atan2(a._M_im, a._M_re);
   _Tp x = ::exp(logr * b._M_re - logi * b._M_im);

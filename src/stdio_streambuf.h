@@ -43,20 +43,8 @@
 #  include <streambuf>
 #  include <cstdio>              // For FILE.
 
-#  if !defined (_STLP_HAS_NO_NAMESPACES)
-// This is an extension.  It is in namespace SGI, not namespace std
-namespace _SgI {
-
-#    if defined (_STLP_USE_NAMESPACES)
-using namespace _STLP_STD;
-  // MSVC needs this
-using _STLP_STD::streamsize;
-using _STLP_STD::streambuf;
-using _STLP_STD::basic_streambuf;
-using _STLP_STD::ios_base;
-  // using _STLP_STD::ios_base::openmode;
-#    endif
-#  endif
+_STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Base class for features common to stdio_istreambuf and stdio_ostreambuf
 class stdio_streambuf_base :
@@ -105,9 +93,8 @@ protected:                      // Virtual functions from basic_streambuf.
   int_type overflow(int_type c = traits_type::eof());
 };
 
-#  if !defined (_STLP_HAS_NO_NAMESPACES)
-} // Close namespace _SgI.
-#  endif
+_STLP_MOVE_TO_STD_NAMESPACE
+_STLP_END_NAMESPACE
 
 #endif /* _STLP_WINCE */
 

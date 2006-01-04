@@ -19,6 +19,7 @@
 
 #include <istream>
 #include <fstream>
+#include <iostream>
 
 #include "stdio_streambuf.h"
 #include "aligned_buffer.h"
@@ -155,7 +156,7 @@ ios_base::Init::~Init() {
     ios_base::_S_uninitialize();
 }
 
-filebuf*
+static filebuf*
 _Stl_create_filebuf(FILE* f, ios_base::openmode mode ) {
   basic_filebuf<char, char_traits<char> >* result =
     new basic_filebuf<char, char_traits<char> >();
@@ -173,7 +174,7 @@ _Stl_create_filebuf(FILE* f, ios_base::openmode mode ) {
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
-wfilebuf*
+static wfilebuf*
 _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
   basic_filebuf<wchar_t, char_traits<wchar_t> >* result =
     new basic_filebuf<wchar_t, char_traits<wchar_t> >();
@@ -193,8 +194,8 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
 
 void  _STLP_CALL ios_base::_S_initialize() {
 #if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(_STLP_WINCE)
-  using _SgI::stdio_istreambuf;
-  using _SgI::stdio_ostreambuf;
+  using _STLP_PRIV stdio_istreambuf;
+  using _STLP_PRIV stdio_ostreambuf;
 #endif
   _STLP_TRY {
 #if !defined(_STLP_WINCE)
@@ -320,8 +321,8 @@ void _STLP_CALL ios_base::_S_uninitialize() {
 bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
 #if !defined(STLP_WINCE)
 #  ifndef _STLP_HAS_NO_NAMESPACES
-  using _SgI::stdio_istreambuf;
-  using _SgI::stdio_ostreambuf;
+  using _STLP_PRIV stdio_istreambuf;
+  using _STLP_PRIV stdio_ostreambuf;
 #  endif
 
   bool was_synced =  _S_was_synced;

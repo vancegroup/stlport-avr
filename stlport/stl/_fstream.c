@@ -603,7 +603,7 @@ bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsi
   //We also need streamsize byte representation to be larger or equal to the int
   //representation to correctly store the encoding information.
   _STLP_STATIC_ASSERT(!numeric_limits<size_t>::is_signed &&
-                      sizeof(streamsize) >= sizeof(int));
+                      sizeof(streamsize) >= sizeof(int))
 
   if (__buf == 0) {
     streamsize __bufsize = __n * sizeof(_CharT);

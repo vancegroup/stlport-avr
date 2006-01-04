@@ -28,18 +28,12 @@
 
 #include "c_locale.h"
 #include "locale_impl.h"
+#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_Locale_ctype* __acquire_ctype(const char* name);
-void __release_ctype(_Locale_ctype* cat);
-
 //----------------------------------------------------------------------
 // ctype_byname<char>
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 ctype_byname<char>::ctype_byname(const char* name, size_t refs) :
     ctype<char>( 0, false, refs),
@@ -174,13 +168,6 @@ ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
 #endif /* WCHAR_T */
 
 // collate_byname<char>
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_Locale_collate* __acquire_collate(const char* name);
-void __release_collate(_Locale_collate* cat);
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 collate_byname<char>::collate_byname(const char* name, size_t refs)
   : collate<char>(refs),
     _M_collate(_STLP_PRIV __acquire_collate(name)) {
@@ -277,14 +264,6 @@ codecvt_byname<char, char, mbstate_t>::~codecvt_byname() {}
 
 //----------------------------------------------------------------------
 // codecvt_byname<wchar_t>
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_Locale_ctype* __acquire_ctype(const char* name);
-void __release_ctype(_Locale_ctype* cat);
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 codecvt_byname<wchar_t, char, mbstate_t>
   ::codecvt_byname(const char* name, size_t refs)
     : codecvt<wchar_t, char, mbstate_t>(refs),
@@ -417,15 +396,7 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name);
-void _STLP_CALL __release_numeric(_Locale_numeric* cat);
-
 // numpunct_byname<char>
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 numpunct_byname<char>::numpunct_byname(const char* name, size_t refs)
   : numpunct<char>(refs),
     _M_numeric(_STLP_PRIV __acquire_numeric(name)) {
@@ -810,14 +781,11 @@ static void _Init_monetary_formats_int(money_base::pattern& pos_format,
   neg_format.field[3] = (char) money_base::none;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 //
 // moneypunct_byname<>
 //
-_Locale_monetary* __acquire_monetary(const char* name);
-void __release_monetary(_Locale_monetary* mon);
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 moneypunct_byname<char, true>::moneypunct_byname(const char * name,
                                                  size_t refs):
   moneypunct<char, true>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name)) {

@@ -31,9 +31,8 @@ _STLP_BEGIN_NAMESPACE
 
 static const string _Nameless("*");
 
-inline bool is_C_locale_name (const char* name) {
-  return ((name[0] == 'C') && (name[1] == 0));
-}
+static inline bool is_C_locale_name (const char* name)
+{ return ((name[0] == 'C') && (name[1] == 0)); }
 
 _Locale_impl * _STLP_CALL _copy_Locale_impl(_Locale_impl *loc)
 {
@@ -153,9 +152,8 @@ locale::facet* _Locale_impl::insert(locale::facet *f, size_t index) {
 //
 
 template <class Facet>
-inline locale::facet* _Locale_insert(_Locale_impl *__that, Facet* f) {
-  return __that->insert(f, Facet::id._M_index);
-}
+static inline locale::facet* _Locale_insert(_Locale_impl *__that, Facet* f)
+{ return __that->insert(f, Facet::id._M_index); }
 
 /*
  * Six functions, one for each category.  Each of them takes a
@@ -509,12 +507,12 @@ static void _Stl_loc_assign_ids() {
 static locale *_Stl_classic_locale = 0;
 static locale *_Stl_global_locale = 0;
 
-locale* _Stl_get_classic_locale() {
+static locale* _Stl_get_classic_locale() {
   static _Locale_impl::Init init;
   return _Stl_classic_locale;
 }
 
-locale* _Stl_get_global_locale() {
+static locale* _Stl_get_global_locale() {
   static _Locale_impl::Init init;
   return _Stl_global_locale;
 }

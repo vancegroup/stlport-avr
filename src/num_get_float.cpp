@@ -75,7 +75,6 @@ union _ll {
 #endif
 
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 //----------------------------------------------------------------------
@@ -104,7 +103,6 @@ _Initialize_get_float( const ctype<wchar_t>& ct,
  * be taken from the current C locale, which of course is not accessible
  * to us.
  */
-
 #if defined (_STLP_MSVC) || defined (__BORLANDC__) || defined (__ICL)
 typedef unsigned long uint32;
 typedef unsigned __int64 uint64;
@@ -124,8 +122,8 @@ typedef uint64_t uint64;
 // Multiplication of two 64-bit integers, giving a 128-bit result.
 // Taken from Algorithm M in Knuth section 4.3.1, with the loop
 // hand-unrolled.
-void _Stl_mult64(const uint64 u, const uint64 v,
-                 uint64& high, uint64& low) {
+static void _Stl_mult64(const uint64 u, const uint64 v,
+                        uint64& high, uint64& low) {
   const uint64 low_mask = ULL(0xffffffff);
   const uint64 u0 = u & low_mask;
   const uint64 u1 = u >> 32;
@@ -287,7 +285,7 @@ static const short _Stl_twoexp[80] = {
 
 #define _Stl_HIBITULL (ULL(1) << 63)
 
-void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo) {
+static void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo) {
   norm = 0;
   if ((prodhi & _Stl_HIBITULL) == 0) {
                                 /* leading bit is a zero
@@ -331,7 +329,7 @@ void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prodlo) {
 // p:    64-bit fraction
 // exp:  base-10 exponent
 // bexp: base-2 exponent (output parameter)
-void _Stl_tenscale(uint64& p, int exp, int& bexp) {
+static void _Stl_tenscale(uint64& p, int exp, int& bexp) {
   uint64 prodhi, prodlo;        /* 128b product */
   int exp_hi, exp_lo;           /* exp = exp_hi*32 + exp_lo */
   int hi, lo, tlo, thi;         /* offsets in power of ten table */
@@ -400,7 +398,7 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-inline double _Stl_atod(char *buffer, int ndigit, int dexp) {
+static inline double _Stl_atod(char *buffer, int ndigit, int dexp) {
   decimal d;  // ref. inside macintosh powerpc numerics p.9-13
 
   d.sgn = 0;
@@ -414,13 +412,8 @@ inline double _Stl_atod(char *buffer, int ndigit, int dexp) {
 
 #else  /* IEEE representation */
 
-#  if 0 // defined (__ICL)
-// turn off optimization here
-#    pragma optimize "off"
-#  endif
-
 #  if !defined (__linux__)
-double _Stl_atod(char *buffer, int ndigit, int dexp) {
+static double _Stl_atod(char *buffer, int ndigit, int dexp) {
   uint64 value;         /* Value develops as follows:
                                  * 1) decimal digits as an integer
                                  * 2) left adjusted fraction
@@ -575,13 +568,13 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
     }
   }
 
-  _STLP_STATIC_ASSERT(sizeof(value) == sizeof(double));
+  _STLP_STATIC_ASSERT(sizeof(value) == sizeof(double))
   return *((double *) &value);
 }
 
 #  else // __linux__
 
-double _Stl_atod(char *buffer, int ndigit, int dexp) {
+static double _Stl_atod(char *buffer, int ndigit, int dexp) {
   ieee754_double v;
 
   char *bufferend;              /* pointer to char after last digit */
@@ -750,7 +743,7 @@ double _Stl_atod(char *buffer, int ndigit, int dexp) {
 
 #endif
 
-double _Stl_string_to_double(const char *s) {
+static double _Stl_string_to_double(const char *s) {
   const int max_digits = 17;
   unsigned c;
   unsigned Negate, decimal_point;
@@ -864,7 +857,7 @@ double _Stl_string_to_double(const char *s) {
  * to us.
  */
 
-long double
+static long double
 _Stl_string_to_long_double(const char * s) {
   const int max_digits = 34;
   register unsigned c;
@@ -995,7 +988,6 @@ __string_to_float(const __iostring& v, long double& val)
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
-
 _STLP_END_NAMESPACE
 
 // Local Variables:

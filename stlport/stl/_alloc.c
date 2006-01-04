@@ -438,7 +438,7 @@ __node_alloc<__threads, __inst>::_S_chunk_alloc(size_t _p_size,
   //We are going to add a small memory block to keep all the allocated blocks
   //address, we need to do so respecting the memory alignment. The following
   //static assert checks that the reserved block is big enough to store a pointer.
-  _STLP_STATIC_ASSERT(sizeof(_Obj) <= _ALIGN);
+  _STLP_STATIC_ASSERT(sizeof(_Obj) <= _ALIGN)
 #  endif
   char*  __result       = 0;
   __stl_atomic_t __total_bytes  = __STATIC_CAST(__stl_atomic_t, _p_size) * __nobjs;

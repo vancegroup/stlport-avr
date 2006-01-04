@@ -25,52 +25,58 @@
 
 #include "c_locale.h"
 #include "locale_impl.h"
+#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // those wrappers are needed to avoid extern "C"
 
-void* _Loc_ctype_create(const char * s)
+static void* _Loc_ctype_create(const char * s)
 { return (void*)_Locale_ctype_create(s); }
-void* _Loc_numeric_create(const char * s)
+static void* _Loc_numeric_create(const char * s)
 { return (void*)_Locale_numeric_create(s); }
-void* _Loc_time_create(const char * s)
+static void* _Loc_time_create(const char * s)
 { return (void*)_Locale_time_create(s); }
-void* _Loc_collate_create(const char * s)
+static void* _Loc_collate_create(const char * s)
 { return (void*)_Locale_collate_create(s); }
-void* _Loc_monetary_create(const char * s)
+static void* _Loc_monetary_create(const char * s)
 { return (void*)_Locale_monetary_create(s); }
-void* _Loc_messages_create(const char * s)
+static void* _Loc_messages_create(const char * s)
 { return (void*)_Locale_messages_create(s); }
 
-char* _Loc_ctype_name(const void* l, char* s)
+static char* _Loc_ctype_name(const void* l, char* s)
 { return _Locale_ctype_name(l, s); }
-char* _Loc_numeric_name(const void* l, char* s)
+static char* _Loc_numeric_name(const void* l, char* s)
 { return _Locale_numeric_name(l, s); }
-char* _Loc_time_name(const void* l, char* s)
+static char* _Loc_time_name(const void* l, char* s)
 { return _Locale_time_name(l,s); }
-char* _Loc_collate_name( const void* l, char* s)
+static char* _Loc_collate_name( const void* l, char* s)
 { return _Locale_collate_name(l,s); }
-char* _Loc_monetary_name(const void* l, char* s)
+static char* _Loc_monetary_name(const void* l, char* s)
 { return _Locale_monetary_name(l,s); }
-char* _Loc_messages_name(const void* l, char* s)
+static char* _Loc_messages_name(const void* l, char* s)
 { return _Locale_messages_name(l,s); }
 
-const char* _Loc_ctype_default(char* p)    { return _Locale_ctype_default(p); }
-const char* _Loc_numeric_default(char * p) { return _Locale_numeric_default(p); }
-const char* _Loc_time_default(char* p)     { return _Locale_time_default(p); }
-const char* _Loc_collate_default(char* p)  { return _Locale_collate_default(p); }
-const char* _Loc_monetary_default(char* p) { return _Locale_monetary_default(p); }
-const char* _Loc_messages_default(char* p) { return _Locale_messages_default(p); }
+static const char* _Loc_ctype_default(char* p)
+{ return _Locale_ctype_default(p); }
+static const char* _Loc_numeric_default(char * p)
+{ return _Locale_numeric_default(p); }
+static const char* _Loc_time_default(char* p)
+{ return _Locale_time_default(p); }
+static const char* _Loc_collate_default(char* p)
+{ return _Locale_collate_default(p); }
+static const char* _Loc_monetary_default(char* p)
+{ return _Locale_monetary_default(p); }
+static const char* _Loc_messages_default(char* p)
+{ return _Locale_messages_default(p); }
 
-void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy(p); }
-void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy(p); }
-void _Loc_time_destroy(void* p)     {_Locale_time_destroy(p);}
-void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
-void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
-void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
+static void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy(p); }
+static void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy(p); }
+static void _Loc_time_destroy(void* p)     {_Locale_time_destroy(p);}
+static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
+static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
+static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
 
 typedef void* (*loc_create_func_t)(const char *);
 typedef char* (*loc_name_func_t)(const void* l, char* s);
@@ -87,27 +93,27 @@ typedef char* (*loc_extract_name_func_t)(const char*, char*);
 typedef hash_map<string, pair<void*, size_t>, hash<string>, equal_to<string> > Category_Map;
 
 // Look up a category by name
-Category_Map** ctype_hash() {
+static Category_Map** ctype_hash() {
   static Category_Map *_S_ctype_hash = 0;
   return &_S_ctype_hash;
 }
-Category_Map** numeric_hash() {
+static Category_Map** numeric_hash() {
   static Category_Map *_S_numeric_hash = 0;
   return &_S_numeric_hash;
 }
-Category_Map** time_hash() {
+static Category_Map** time_hash() {
   static Category_Map *_S_time_hash = 0;
   return &_S_time_hash;
 }
-Category_Map** collate_hash() {
+static Category_Map** collate_hash() {
   static Category_Map *_S_collate_hash = 0;
   return &_S_collate_hash;
 }
-Category_Map** monetary_hash() {
+static Category_Map** monetary_hash() {
   static Category_Map *_S_monetary_hash = 0;
   return &_S_monetary_hash;
 }
-Category_Map** messages_hash() {
+static Category_Map** messages_hash() {
   static Category_Map *_S_messages_hash;
   return &_S_messages_hash;
 }
@@ -115,7 +121,7 @@ Category_Map** messages_hash() {
 // We have a single lock for all of the hash tables.  We may wish to
 // replace it with six different locks.
 /* REFERENCED */
-_STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
+static _STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
 
 static void*
 __acquire_category(const char* name, loc_extract_name_func_t extract_name,
@@ -248,5 +254,4 @@ void _STLP_CALL __release_messages(_Locale_messages* cat)
 { __release_category(cat, _Loc_messages_destroy, _Loc_messages_name, messages_hash()); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
-
 _STLP_END_NAMESPACE

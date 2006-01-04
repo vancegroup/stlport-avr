@@ -310,7 +310,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 _STLP_BEGIN_NAMESPACE
 
-void FORCE_SYMBOL
+static void FORCE_SYMBOL
 force_link() {
   set<int>::iterator iter;
   // _M_increment; _M_decrement instantiation

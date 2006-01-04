@@ -40,7 +40,9 @@
 #  include <sys/stat.h>
 #endif
 
-__SGI_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 //----------------------------------------------------------------------
 // Class stdio_streambuf_base
 
@@ -84,7 +86,7 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
 
   //We also check that off is not larger than the fseek parameter that is supposed to take
   //a long integer.
-  _STLP_STATIC_ASSERT(sizeof(off_type) >= sizeof(long));
+  _STLP_STATIC_ASSERT(sizeof(off_type) >= sizeof(long))
   if (off <= numeric_limits<long>::max() &&
       _STLP_VENDOR_CSTD::fseek(_M_file, __STATIC_CAST(long, off), whence) == 0) {
     fpos_t pos;
@@ -171,7 +173,7 @@ streamsize stdio_istreambuf::showmanyc() {
     else
       size = 0;
 #else
-    streamoff size = _SgI::__file_size(fd);
+    streamoff size = __file_size(fd);
 #endif
     // fbp : we can use ftell as this flavour always use stdio.
     long pos = _STLP_VENDOR_CSTD::ftell(_M_file);
@@ -257,7 +259,8 @@ stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c) {
   }
 }
 
-__SGI_END_NAMESPACE
+_STLP_MOVE_TO_STD_NAMESPACE
+_STLP_END_NAMESPACE
 
 // Local Variables:
 // mode:C++

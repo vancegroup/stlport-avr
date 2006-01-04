@@ -168,10 +168,10 @@ const _STLP_fd INVALID_STLP_FD = -1;
 #  error "there should be some long long type on the system!"
 #endif
 
-__SGI_BEGIN_NAMESPACE
+_STLP_BEGIN_NAMESPACE
 
 #if !defined(__MSL__) && !defined(__MRC__) && !defined(__SC__) && !defined(_STLP_WCE)    //*TY 04/15/2000 - exclude mpw compilers also
-ios_base::openmode flag_to_openmode(int mode) {
+static ios_base::openmode flag_to_openmode(int mode) {
   ios_base::openmode ret = ios_base::__default_mode;
 
   switch(mode & O_ACCMODE) {
@@ -194,6 +194,8 @@ ios_base::openmode flag_to_openmode(int mode) {
   return ret;
 }
 #endif /* MSL */
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
@@ -257,6 +259,7 @@ streamoff __file_size(_STLP_fd fd) {
   return ret;
 }
 
+_STLP_MOVE_TO_STD_NAMESPACE
 
 // Visual C++ and Intel use this, but not Metrowerks
 // Also MinGW, msvcrt.dll (but not crtdll.dll) dependent version
@@ -293,7 +296,7 @@ extern "C" {
 } // extern "C"
 // end of 'semi-documented' declarations
 
-ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
+static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
   char dosflags = 0;
   if (fd >= 0)
     dosflags = _pioinfo(fd)->osfile;
@@ -332,7 +335,7 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
 
 extern "C" unsigned char __fhnd_info[_NFILE];
 
-ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
+static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
   int mode = 0;
 
   if (__fhnd_info[fd] & FHND_APPEND)
@@ -359,8 +362,6 @@ ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
 }
 #endif // _MSC_VER
 
-__SGI_END_NAMESPACE
-
 // All version of Unix have mmap and lseek system calls.  Some also have
 // longer versions of thos system calls to accommodate 64-bit offsets.
 // If we're on a Unix system, define some macros to encapsulate those
@@ -380,7 +381,6 @@ __SGI_END_NAMESPACE
 #  define LSEEK _lseek
 #endif
 
-_STLP_BEGIN_NAMESPACE
 
 size_t _Filebuf_base::_M_page_size = 4096;
 
@@ -421,11 +421,10 @@ _Filebuf_base::_Filebuf_base()
     _M_page_size = 4096;
 }
 
-
 // Return the size of the file.  This is a wrapper for stat.
 // Returns zero if the size cannot be determined or is ill-defined.
 streamoff _Filebuf_base::_M_file_size() {
-  return _SgI::__file_size(_M_file_id);
+  return _STLP_PRIV __file_size(_M_file_id);
 }
 
 bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
@@ -619,7 +618,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   _M_openmode = openmode;
 
   if (_M_is_open)
-    _M_regular_file = _SgI::__is_regular_file(_M_file_id);
+    _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
 
   return (_M_is_open != 0);
 }
@@ -651,12 +650,12 @@ bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
   if (init_mode != ios_base::__default_mode)
     _M_openmode = init_mode;
   else
-    _M_openmode = _SgI::_get_osfflags(-1, __id);
+    _M_openmode = _get_osfflags(-1, __id);
 
   _M_is_open = true;
   _M_file_id = __id;
   _M_should_close = false;
-  _M_regular_file = _SgI::__is_regular_file(_M_file_id);
+  _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
 
   return true;
 #  else
@@ -685,7 +684,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   if (mode == -1)
     return false;
 
-  _M_openmode = _SgI::flag_to_openmode(mode);
+  _M_openmode = flag_to_openmode(mode);
   _M_file_id = file_no;
 #elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
@@ -731,7 +730,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   if (init_mode != ios_base::__default_mode)
     _M_openmode = init_mode;
   else
-    _M_openmode = _SgI::_get_osfflags(file_no, oshandle);
+    _M_openmode = _get_osfflags(file_no, oshandle);
 
   _M_file_id = oshandle;
 #else
@@ -743,7 +742,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
 #if !defined (_STLP_NO_IMPLEMENTATION)
   _M_is_open = true;
   _M_should_close = false;
-  _M_regular_file = _SgI::__is_regular_file(_M_file_id);
+  _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
   return true;
 #else
 #  undef _STLP_NO_IMPLEMENTATION

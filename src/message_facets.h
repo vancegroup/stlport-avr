@@ -24,13 +24,10 @@
 #include <hash_map>
 
 #include "c_locale.h"
+#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
-
-_Locale_messages* __acquire_messages(const char* name);
-void __release_messages(_Locale_messages* cat);
 
 // Class _Catalog_locale_map.  The reason for this is that, internally,
 // a message string is always a char*.  We need a ctype facet to convert
@@ -69,7 +66,7 @@ private:                        // Invalidate copy constructor and assignment
 /* If no mapping a message_base::catalog entry, int typedef according C++ Standard 22.2.7.1,
  * has to be large enough to contain a nl_catd_type value.
  */
-_STLP_STATIC_ASSERT(sizeof(nl_catd_type) <= sizeof(int));
+_STLP_STATIC_ASSERT(sizeof(nl_catd_type) <= sizeof(int))
 #endif
 
 class _STLP_CLASS_DECLSPEC _Catalog_nl_catd_map {

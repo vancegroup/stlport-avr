@@ -1,3 +1,27 @@
+2006-01-05  Francois Dumont  <dums@stlport...>
+
+	* src/acquire_release.h: New file, expose __acquire_*
+	functions used in different translation unit.
+
+	* src/num_put.h: Removed, content moved to num_put.cpp that
+	was the only translation unit using exposed functions.
+
+	* src/*: Build with Intel C++ 9 compiler reveal that many
+	static specification was missing.
+
+	* src/ctype.cpp: Filter out _WCharIndexT specialization for
+	Intel compiler that concider wchar_t as unsigned, fixed a
+	warning.
+
+	* _STLP_STATIC_ASSERT is now called without trailing ';' that
+	is already in the macro definition.
+
+	* src/*: Removed reference to _SgI namespace replaced by the
+	STLport private namespace.
+
+	* src/iostream.cpp: Add iostream include to expose cout, cin, cerr
+	definition to declaration.
+
 2006-01-04  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_gcc.h: Force use of new/delete based

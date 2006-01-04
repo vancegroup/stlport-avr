@@ -22,35 +22,7 @@
 #include <algorithm>
 
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
-
-//----------------------------------------------------------------------
-// num_get
-#if !defined (_STLP_NO_WCHAR_T)
-// Return either the digit corresponding to c, or a negative number if
-// if c isn't a digit.  We return -1 if c is the separator character, and
-// -2 if it's some other non-digit.
-int _STLP_CALL __get_digit(wchar_t c,
-                           const wchar_t* digits, const wchar_t* xdigits,
-                           wchar_t separator) {
-  // Test if it's the separator.
-  if (c == separator)
-    return -1;
-
-  // Test if it's a decimal digit.
-  const wchar_t* p = find(digits, digits + 10, c);
-  if (p != digits + 10)
-    return (int)(p - digits);
-
-  // Test if it's a hex digit.
-  p = find(xdigits, xdigits + 12, c);
-  if (p != xdigits + 12)
-    return (int)(10 + (xdigits - p) / 2);
-  else
-    return -2;                  // It's not a digit and not the separator.
-}
-#endif /* _STLP_NO_WCHAR_T */
 
 // __valid_grouping compares two strings, one representing the
 // group sizes encountered when reading an integer, and the other
@@ -79,7 +51,7 @@ __valid_grouping(const char * first1, const char * last1,
   return *last1 <= *first2;
 }
 
-_STLP_DECLSPEC const unsigned char _STLP_CALL __digit_val_table(unsigned __index) {
+_STLP_DECLSPEC unsigned char _STLP_CALL __digit_val_table(unsigned __index) {
   static const unsigned char __val_table[128] = {
     0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
     0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,

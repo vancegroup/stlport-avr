@@ -165,7 +165,7 @@ public:
 
   _STLP_atomic_freelist() {
     // Statically assert layout of member is as expected by assembly code
-    _STLP_STATIC_ASSERT(sizeof(_M) == 8);
+    _STLP_STATIC_ASSERT(sizeof(_M) == 8)
     _M._M_data._M_top       = 0;
     _M._M_data._M_sequence  = 0;
   }
@@ -340,7 +340,7 @@ public:
   _STLP_atomic_freelist() {
     // Statically assert layout of member is as expected by assembly code
 #      if defined (_STLP_USE_ASM_IMPLEMENTATION)
-    _STLP_STATIC_ASSERT((sizeof(item) == sizeof(item*)) && (sizeof(_M) == 8));
+    _STLP_STATIC_ASSERT((sizeof(item) == sizeof(item*)) && (sizeof(_M) == 8))
     _M._M_data._M_top       = 0;
     _M._M_data._M_sequence  = 0;
 #      else
@@ -795,7 +795,7 @@ struct _Atomic_swap_struct {
 #  if defined (_STLP_ATOMIC_EXCHANGE_PTR)
   return _STLP_ATOMIC_EXCHANGE_PTR(__p, __q);
 #  elif defined (_STLP_ATOMIC_EXCHANGE)
-  _STLP_STATIC_ASSERT(sizeof(__stl_atomic_t) == sizeof(void*));
+  _STLP_STATIC_ASSERT(sizeof(__stl_atomic_t) == sizeof(void*))
   return __REINTERPRET_CAST(void*, _STLP_ATOMIC_EXCHANGE(__REINTERPRET_CAST(volatile __stl_atomic_t*, __p),
                                                          __REINTERPRET_CAST(__stl_atomic_t, __q));
 #  elif defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
