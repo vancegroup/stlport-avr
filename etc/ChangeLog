@@ -1,3 +1,10 @@
+2006-01-04  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_gcc.h: Force use of new/delete based
+	allocator under Cygwin/MinGW, default node allocator has
+	problem because __node_allocator static datas are sometimes
+	duplicated in a dll context.
+
 2006-01-01  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/gmake/lib/gcc.mak, stlport/stl/config/_gcc.h:
