@@ -20,9 +20,11 @@ class TypeTraitsTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(integer);
   CPPUNIT_TEST(rational);
   CPPUNIT_TEST(pointer_type);
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-  CPPUNIT_TEST(reference_type);
+#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  CPPUNIT_IGNORE;
 #endif
+  CPPUNIT_TEST(reference_type);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(both_pointer_type);
   CPPUNIT_TEST(ok_to_use_memcpy);
   CPPUNIT_TEST(trivial_destructor);
@@ -37,9 +39,7 @@ protected:
   void integer();
   void rational();
   void pointer_type();
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   void reference_type();
-#endif
   void both_pointer_type();
   void ok_to_use_memcpy();
   void trivial_destructor();
@@ -343,9 +343,9 @@ void TypeTraitsTest::pointer_type()
   CPPUNIT_ASSERT( is_pointer_type(any_pointer) == 1 );
 }
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 void TypeTraitsTest::reference_type()
 {
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int>::_Ret()) == 0 );
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int*>::_Ret()) == 0 );
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int&>::_Ret()) == 1 );
@@ -354,8 +354,8 @@ void TypeTraitsTest::reference_type()
 
   CPPUNIT_ASSERT( type_to_value(_IsOKToSwap(int_pointer, int_pointer, __true_type(), __true_type())._Answer()) == 1 );
   CPPUNIT_ASSERT( type_to_value(_IsOKToSwap(int_pointer, int_pointer, __false_type(), __false_type())._Answer()) == 0 );
-}
 #endif
+}
 
 template <typename _Tp1, typename _Tp2>
 int are_both_pointer_type (_Tp1, _Tp2) {
