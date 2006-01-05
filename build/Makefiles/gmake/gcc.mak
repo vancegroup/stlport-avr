@@ -72,6 +72,9 @@ CCFLAGS += $(OPT)
 CFLAGS += $(OPT)
 CXXFLAGS += $(OPT)
 COMPILE.rc = $(RC) $(RCFLAGS)
+release-static : DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static : DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static : DEFS += -D_STLP_USE_STATIC_LIB
 endif
 
 ifeq ($(OSNAME), windows)
@@ -90,6 +93,9 @@ CCFLAGS += $(OPT)
 CFLAGS += $(OPT)
 CXXFLAGS += $(OPT)
 COMPILE.rc = $(RC) $(RCFLAGS)
+release-static : DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static : DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static : DEFS += -D_STLP_USE_STATIC_LIB
 endif
 
 ifndef STLP_BUILD_NO_THREAD
