@@ -15,7 +15,7 @@ all-dynamic: all-shared
 all-shared: release-shared dbg-shared stldbg-shared
 all-static: release-static dbg-static stldbg-static
 
-install-shared: install-release-shared install-dbg-shared install-all-shared
+install-shared: install-release-shared install-dbg-shared install-stldbg-shared
 install-static: install-release-static install-dbg-static install-stldbg-static
 
 #!if [echo $(ALL_TAGS)]
