@@ -78,7 +78,11 @@ public:
   ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
 #    else
   {
-    strncpy(_M_name, __get_c_string(__str), _S_bufsize);
+#      if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+    strncpy(_M_name, _STLP_PRIV __get_c_string(__str), _S_bufsize);
+#      else
+    strncpy_s(_STLP_ARRAY_AND_SIZE(_M_name), _STLP_PRIV __get_c_string(__str), _S_bufsize);
+#      endif
     _M_name[_S_bufsize - 1] = '\0';
   }
   const char* what() const _STLP_NOTHROW_INHERENTLY { return _M_name; }

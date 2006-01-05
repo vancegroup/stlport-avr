@@ -73,7 +73,7 @@ protected:
   typedef _STLP_PRIV _SetTraitsT<value_type> _SetTraits;
 
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
-                              value_type, _Identity<value_type>,
+                              value_type, _STLP_PRIV _Identity<value_type>,
                               _SetTraits, _Alloc> _Priv_Rep_type;
 
 public:
@@ -193,8 +193,8 @@ public:
   const_iterator end() const { return _M_to_value_ite(_M_t.end()); }
   reverse_iterator rbegin() { return reverse_iterator(end()); }
   reverse_iterator rend() { return reverse_iterator(begin()); }
-  const_reverse_iterator rbegin() const { return reverse_iterator(end()); }
-  const_reverse_iterator rend() const { return reverse_iterator(begin()); }
+  const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+  const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
@@ -304,14 +304,14 @@ protected:
   typedef _STLP_PRIV _MultisetTraitsT<value_type> _MultisetTraits;
 
   typedef _STLP_PRIV _Rb_tree<key_type, key_compare,
-                               value_type, _STLP_PRIV _Identity<value_type>,
-                               _MultisetTraits, _Alloc> _Priv_Rep_type;
+                              value_type, _STLP_PRIV _Identity<value_type>,
+                              _MultisetTraits, _Alloc> _Priv_Rep_type;
 
 public:
   //dums: need the following public for the __move_traits framework
   typedef _STLP_PRIV _Rb_tree<_KeyStorageType, _CompareStorageType,
-                               _KeyStorageType, _Identity<_KeyStorageType>,
-                               _MultisetTraits, _StorageTypeAlloc> _Rep_type;
+                              _KeyStorageType, _STLP_PRIV _Identity<_KeyStorageType>,
+                              _MultisetTraits, _StorageTypeAlloc> _Rep_type;
 
 private:
   typedef typename _Rep_type::iterator base_iterator;
@@ -434,8 +434,8 @@ public:
   const_iterator end() const { return _M_to_value_ite(_M_t.end()); }
   reverse_iterator rbegin() { return reverse_iterator(end()); }
   reverse_iterator rend() { return reverse_iterator(begin()); }
-  const_reverse_iterator rbegin() const { return reverse_iterator(end()); }
-  const_reverse_iterator rend() const { return reverse_iterator(begin()); }
+  const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+  const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }

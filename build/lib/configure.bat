@@ -99,7 +99,7 @@ echo    are available:
 echo    msvc6    Microsoft Visual C++ 6.0
 echo    msvc7    Microsoft Visual C++ .NET 2002
 echo    msvc71   Microsoft Visual C++ .NET 2003
-echo    msvc8    Microsoft Visual C++ .NET 2005 (beta)
+echo    msvc8    Microsoft Visual C++ 2005
 echo    icl      Intel C++ Compiler
 echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
 echo    evc4     Microsoft eMbedded Visual C++ .NET (*)

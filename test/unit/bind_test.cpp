@@ -16,6 +16,12 @@ class BindTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(bind1st1);
   CPPUNIT_TEST(bind2nd1);
   CPPUNIT_TEST(bind2nd2);
+#if !defined (STLPORT) || !defined (_STLP_NO_EXTENSIONS)
+#  if defined (STLPORT) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  CPPUNIT_IGNORE;
+#  endif
+  CPPUNIT_TEST(bind2nd3);
+#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -66,19 +72,22 @@ int test_func2 (int &param1, int param2) {
   return param1 + param2;
 }
 
+
+#if !defined (STLPORT) || !defined (_STLP_NO_EXTENSIONS)
 void BindTest::bind2nd3()
 {
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#  if !defined (STLPORT) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   int array[3] = { 1, 2, 3 };
   transform(array, array + 3, array, bind2nd(ptr_fun(test_func1), 1));
   transform(array, array + 3, array, bind1st(ptr_fun(test_func1), -1));
-  CPPUNIT_ASSERT(array[0]==1);
-  CPPUNIT_ASSERT(array[1]==2);
-  CPPUNIT_ASSERT(array[2]==4);
+  CPPUNIT_ASSERT(array[0] == 1);
+  CPPUNIT_ASSERT(array[1] == 2);
+  CPPUNIT_ASSERT(array[2] == 4);
 
   transform(array, array + 3, array, bind2nd(ptr_fun(test_func2), 10));
-  CPPUNIT_ASSERT(array[0]==1);
-  CPPUNIT_ASSERT(array[1]==2);
-  CPPUNIT_ASSERT(array[2]==4);
-#endif
+  CPPUNIT_ASSERT(array[0] == 1);
+  CPPUNIT_ASSERT(array[1] == 2);
+  CPPUNIT_ASSERT(array[2] == 4);
+#  endif
 }
+#endif

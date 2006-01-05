@@ -3,9 +3,11 @@
 
 #include "cppunit/cppunit_proxy.h"
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+
+#  if defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //
 // TestCase class
@@ -36,8 +38,8 @@ void BcomposTest::bcompos1()
 
   int* p = find_if((int*)array, (int*)array + 6, b);
   CPPUNIT_ASSERT(p != array + 6);
-
 }
+
 void BcomposTest::bcompos2()
 {
   int array [6] = { -2, -1 , 0, 1, 2, 3 };
@@ -46,3 +48,5 @@ void BcomposTest::bcompos2()
   compose2(logical_and<bool>(), odd(), positive()));
   CPPUNIT_ASSERT(p != array + 6);
 }
+
+#endif
