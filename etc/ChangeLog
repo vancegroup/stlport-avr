@@ -1,5 +1,30 @@
 2006-01-05  Francois Dumont  <dums@stlport...>
 
+	* stlport/stl/_stdexcept.h: Fix __Named_exception destructor
+	implementation when _STLP_NO_IOSTREAMS is defined or when
+	securized C function strcpy_s exists.
+
+	* stlport/stl/pointers/_set.h: Fixed implementation as _Identity
+	is now in private namespace and const_reverse_* functions must
+	return const_reverse_* iterators and not simply reverse_*.
+
+	* test/unit/bcompos_test.cpp, bind_test.cpp: Made the tests usable
+	when _STLP_NO_EXTENSIONS is defined.
+
+	* build/lib/configure.bat: Fix name of msvc8 compiler.
+
+	* test/unit/mfunptr_test.cpp: Ignore find test when no class
+	partial template specialization rather than commenting it.
+
+	* test/unit/type_traits_test.cpp: Ditto for reference_type test.
+
+	* build/Makefiles/nmake/top.mak: Fixed install-shared definition.
+
+	* build/Makefiles/gmake/gcc.mak: Add _STLP_USE_STATIC_LIB when
+	building and using STLport static lib under MinGW/Cygwin.
+
+2006-01-04  Francois Dumont  <dums@stlport...>
+
 	* src/acquire_release.h: New file, expose __acquire_*
 	functions used in different translation unit.
 
@@ -22,7 +47,7 @@
 	* src/iostream.cpp: Add iostream include to expose cout, cin, cerr
 	definition to declaration.
 
-2006-01-04  Francois Dumont  <dums@stlport...>
+2006-01-03  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_gcc.h: Force use of new/delete based
 	allocator under Cygwin/MinGW, default node allocator has
