@@ -1,3 +1,58 @@
+2006-01-09  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/debug: Fix move constructor to keep the container
+	move constructor complete. When STLport user do no require no
+	extension or Standard debug safe mode, iterators are also move
+	with the container contents.
+
+	* stlport/stl/_list.h, _slist.h, _tree.h: Made iterator struct
+	constructor from base class pointer explicit to forbid expression
+	like: list.begin() == 0.
+
+	* stlport/stl/pointers/_slist.h, _list.h, _set.h: Fix implementation
+	that was using former implicit contructor from pointer to base class.
+
+	* src/c_locale_win32/c_locale_win32.c: Fix implementation for
+	compilers coming with a native lib implementing secure C functions
+	like strncpy_s.
+
+	* src/iostream.cpp: Hide I/O streams declaration when defining
+	them when compiler has no support for removing I/O streams
+	from static global variable initialization segment. Avoid the
+	stdio_istreambuf using directive when we do not use STLport
+	private namespace.
+
+	* stlport/stl/_rope.h, _rope.c: Use internal, not _STLP_NO_EXTENSIONS
+	dependant functions for implementation.
+
+	* stlport/rope, hash_map, hash_set: Add _STLP_NO_EXTENSIONS check
+	that generate a #error if defined as those headers are STLport
+	extensions.
+
+	* stlport/_uninitialized.h: Add __uninitialized_copy_n no dependant
+	against _STLP_NO_EXTENSIONS for rope implementation.
+
+	* test/unit: Made tests ok to build even when _STLP_NO_EXTENSIONS or
+	_STLP_NO_ANACHONISM or _STLP_NO_CUSTOM_IO is defined.
+
+	* stlport/stl/_num_put.h, _num_get.h: Fix definition scope of
+	_STLP_MOVE_TO_STD_NAMESPACE that was wrong when _STLP_NO_CUSTOM_IO
+	is defined.
+
+	* stlport/stl/boost_type_traits.h: Fixed _IsRef implementation based
+	on boost type traits feature.
+
+	* build/nmake/extern.mak, lib/msvc.mak, test/unit/msvc.mak,
+	test/eh/msvc.mak: Moved injection of boost include path for all targets
+	in extern.mak. Also removed a useless double quote as make variable already
+	contains it.
+
+	* stlport/stl/config/_bc.h, test/unit/floatio_test.cpp, cmath_test.cpp,
+	limit_test.cpp: Borland patch from Eric Stanford.
+
+	* test/unit/string_test.cpp: Add template_wexpression test to check
+	wstring template expression.
+
 2006-01-05  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_stdexcept.h: Fix __Named_exception destructor
