@@ -19,21 +19,28 @@
 #ifndef _STLP_HASH_SET
 #define _STLP_HASH_SET
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x4029
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
+
+#if defined (_STLP_NO_EXTENSIONS)
+/* Comment following if you want to use hash constainers even if you ask for
+ * no extension.
+ */
+#  error The hash_set and hash_multiset class are STLport extensions.
+#endif
 
 #include <stl/_hash_set.h>
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x4029)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x4029)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_HASH_SET */
 
