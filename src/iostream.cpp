@@ -19,7 +19,10 @@
 
 #include <istream>
 #include <fstream>
-#include <iostream>
+#if defined (_STLP_MSVC) || defined (__MWERKS__) || defined (__ICL) || defined (__ISCPP__)
+#  define _STLP_USE_NOT_INIT_SEGMENT
+#  include <iostream>
+#endif
 
 #include "stdio_streambuf.h"
 #include "aligned_buffer.h"
@@ -52,10 +55,10 @@ using _STLP_VENDOR_CSTD::_streams;
 //      the stream objects by calling the init() member function.
 
 
-#if defined (_STLP_MSVC) || defined (__MWERKS__) || defined (__ICL) || defined (__ISCPP__)
+#if defined (_STLP_USE_NOT_INIT_SEGMENT)
 
 // Definitions of the eight global I/O objects that are declared in
-// <iostream>. For VC++ we use the init_seg pragma to put the global I/O
+// <iostream>. For some compilers we use pragmas to put the global I/O
 // objects into an initialization segment that will not
 // be executed. We then explicitly invoke the constructors
 // with placement new in ios_base::_S_initialize()
@@ -85,7 +88,7 @@ _STLP_DECLSPEC wostream wcerr(0);
 _STLP_DECLSPEC wostream wclog(0);
 #  endif
 
-#  if defined(__MWERKS__)
+#  if defined (__MWERKS__)
 #    pragma suppress_init_code off
 #  endif
 
@@ -193,7 +196,8 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
 #endif
 
 void  _STLP_CALL ios_base::_S_initialize() {
-#if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(_STLP_WINCE)
+#if !defined (_STLP_HAS_NO_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE) && \
+    !defined (_STLP_WINCE)
   using _STLP_PRIV stdio_istreambuf;
   using _STLP_PRIV stdio_ostreambuf;
 #endif
@@ -320,7 +324,7 @@ void _STLP_CALL ios_base::_S_uninitialize() {
 
 bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
 #if !defined(STLP_WINCE)
-#  ifndef _STLP_HAS_NO_NAMESPACES
+#  if !defined (_STLP_HAS_NO_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
   using _STLP_PRIV stdio_istreambuf;
   using _STLP_PRIV stdio_ostreambuf;
 #  endif
