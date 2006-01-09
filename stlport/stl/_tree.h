@@ -157,6 +157,12 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
   typedef _Rb_tree_iterator<_Value, _ConstTraits> const_iterator;
 
   _Rb_tree_iterator() {}
+#if !defined (_STLP_DEBUG)
+  /* In STL debug mode we need this constructor implicit for the pointer
+   * specialization implementation.
+   */
+  explicit
+#endif
   _Rb_tree_iterator(_Base_ptr __x) : _Rb_tree_base_iterator(__x) {}
   //copy constructor for iterator and constructor from iterator for const_iterator
   _Rb_tree_iterator(const iterator& __it) : _Rb_tree_base_iterator(__it._M_node) {}

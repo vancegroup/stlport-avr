@@ -378,7 +378,7 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_insert(_Rb_tree_n
   _S_parent(__new_node) = __parent;
   _Rb_global_inst::_Rebalance(__new_node, this->_M_header._M_data._M_parent);
   ++_M_node_count;
-  return __new_node;
+  return iterator(__new_node);
 }
 
 template <class _Key, class _Compare,

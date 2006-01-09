@@ -148,7 +148,7 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   fill(_M_buckets.begin() + __prev, _M_buckets.begin() + __n + 1,
        _M_elems.insert_after(__pos, __obj)._M_node);
   ++_M_num_elements;
-  return iterator(_M_buckets[__n]);
+  return iterator(_ElemsIte(_M_buckets[__n]));
 }
 
 template <class _Val, class _Key, class _HF,
@@ -170,7 +170,7 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
      * insertion after the first bucket element is faster than what is
      * done in _M_insert_noresize.
      */
-    __cur = _M_elems.insert_after(_M_buckets[__n], __obj);
+    __cur = _M_elems.insert_after(_ElemsIte(_M_buckets[__n]), __obj);
     ++_M_num_elements;
     return pair<iterator, bool>(iterator(__cur), true);
   }
@@ -396,7 +396,7 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     __cur = _M_elems.begin();
     size_type __new_bucket = _M_bkt_num(*__cur, __num_buckets);
     if (__tmp[__new_bucket] != __tmp[__new_bucket + 1]) {
-      __tmp_elems.splice_after(__tmp[__new_bucket], _M_elems, _M_elems.before_begin());
+      __tmp_elems.splice_after(_ElemsIte(__tmp[__new_bucket]), _M_elems, _M_elems.before_begin());
     }
     else {
       size_type __prev_bucket;

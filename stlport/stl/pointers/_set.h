@@ -107,7 +107,7 @@ private:
   { return iterator(__ite._Owner(), __ite._M_iterator._M_node); }
 #else
   iterator _M_to_value_ite(const_base_iterator __ite) const
-  { return __ite._M_node; }
+  { return iterator(__ite._M_node); }
 #endif
 
 public:
@@ -338,7 +338,7 @@ private:
   { return iterator(__ite._Owner(), __ite._M_iterator._M_node); }
 #else
   iterator _M_to_value_ite(const_base_iterator __ite) const
-  { return __ite._M_node; }
+  { return iterator(__ite._M_node); }
 #endif
 
 public:

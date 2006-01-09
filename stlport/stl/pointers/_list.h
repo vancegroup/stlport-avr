@@ -61,6 +61,8 @@ class list
   typedef typename _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
   typedef typename _Alloc_traits<_StorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV LIST_IMPL<_StorageType, _StorageTypeAlloc> _Base;
+  typedef typename _Base::iterator _BaseIte;
+  typedef typename _Base::const_iterator _BaseConstIte;
   typedef _STLP_PRIV _CastTraits<_StorageType, _Tp> cast_traits;
   typedef list<_Tp, _Alloc> _Self;
 
@@ -135,7 +137,8 @@ public:
                _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
   list(const_iterator __first, const_iterator __last,
        const allocator_type& __a = allocator_type())
-    : _M_impl(__first._M_node, __last._M_node, _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
+    : _M_impl(_BaseConstIte(__first._M_node), _BaseConstIte(__last._M_node),
+              _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
 
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -144,11 +147,11 @@ public:
   list(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
 
-  iterator begin()             { return _M_impl.begin()._M_node; }
-  const_iterator begin() const { return _M_impl.begin()._M_node; }
+  iterator begin()             { return iterator(_M_impl.begin()._M_node); }
+  const_iterator begin() const { return const_iterator(_M_impl.begin()._M_node); }
 
-  iterator end()               { return _M_impl.end()._M_node; }
-  const_iterator end() const   { return _M_impl.end()._M_node; }
+  iterator end()               { return iterator(_M_impl.end()._M_node); }
+  const_iterator end() const   { return const_iterator(_M_impl.end()._M_node); }
 
   reverse_iterator rbegin()             { return reverse_iterator(end()); }
   const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
@@ -173,23 +176,24 @@ public:
 #else
   iterator insert(iterator __pos, const_reference __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
-  { return _M_impl.insert(__pos._M_node, cast_traits::to_storage_type_cref(__x))._M_node; }
+  { return iterator(_M_impl.insert(_BaseIte(__pos._M_node),
+                                   cast_traits::to_storage_type_cref(__x))._M_node); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
 private:
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_impl.insert(__pos._M_node, __n, __val);
-  }
+                          const __true_type&)
+  { _M_impl.insert(_BaseIte(__pos._M_node), __n, __val); }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
                           const __false_type&) {
-    _M_impl.insert(__pos._M_node, _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                                  _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
+    _M_impl.insert(_BaseIte(__pos._M_node),
+                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
+                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
   }
 
 public:
@@ -202,31 +206,33 @@ public:
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
 #  else
-    _M_impl.insert(__pos._M_node, __first, __last);
+    _M_impl.insert(_BaseIte(__pos._M_node), __first, __last);
 #  endif
   }
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos, const value_type *__first, const value_type *__last)
-  { _M_impl.insert(__pos._M_node, cast_traits::to_storage_type_cptr(__first),
-                                  cast_traits::to_storage_type_cptr(__last)); }
+  { _M_impl.insert(_BaseIte(__pos._M_node), cast_traits::to_storage_type_cptr(__first),
+                                            cast_traits::to_storage_type_cptr(__last)); }
   void insert(iterator __pos, const_iterator __first, const_iterator __last)
-  { _M_impl.insert(__pos._M_node, __first._M_node, __last._M_node); }
+  { _M_impl.insert(_BaseIte(__pos._M_node), _BaseConstIte(__first._M_node), _BaseConstIte(__last._M_node)); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   void insert(iterator __pos, size_type __n, const value_type& __x)
-  { _M_impl.insert(__pos._M_node, __n, cast_traits::to_storage_type_cref(__x)); }
+  { _M_impl.insert(_BaseIte(__pos._M_node), __n, cast_traits::to_storage_type_cref(__x)); }
 
   void push_front(const value_type& __x) { _M_impl.push_front(cast_traits::to_storage_type_cref(__x)); }
   void push_back(const value_type& __x)  { _M_impl.push_back(cast_traits::to_storage_type_cref(__x)); }
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos) { return _M_impl.insert(__pos._M_node)._M_node; }
+#if defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
+  iterator insert(iterator __pos) { return iterator(_M_impl.insert(__pos._M_node)._M_node); }
   void push_front() { _M_impl.push_front();}
   void push_back()  { _M_impl.push_back();}
 # endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  iterator erase(iterator __pos) { return _M_impl.erase(__pos._M_node)._M_node; }
-  iterator erase(iterator __first, iterator __last) { return _M_impl.erase(__first._M_node, __last._M_node)._M_node; }
+  iterator erase(iterator __pos)
+  { return iterator(_M_impl.erase(_BaseIte(__pos._M_node))._M_node); }
+  iterator erase(iterator __first, iterator __last)
+  { return iterator(_M_impl.erase(_BaseIte(__first._M_node), _BaseIte(__last._M_node))._M_node); }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
@@ -239,17 +245,17 @@ public:
   void pop_front() { _M_impl.pop_front(); }
   void pop_back()  { _M_impl.pop_back(); }
 
-  _Self& operator=(const _Self& __x) {_M_impl = __x._M_impl; return *this;}
-  void assign(size_type __n, const value_type& __val) { _M_impl.assign(__n, cast_traits::to_storage_type_cref(__val)); }
+  _Self& operator=(const _Self& __x)
+  { _M_impl = __x._M_impl; return *this; }
+  void assign(size_type __n, const value_type& __val)
+  { _M_impl.assign(__n, cast_traits::to_storage_type_cref(__val)); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
 private:
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_impl.assign(__n, __val);
-  }
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
+  { _M_impl.assign(__n, __val); }
 
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
@@ -275,17 +281,17 @@ public:
     _M_impl.assign(cast_traits::to_storage_type_cptr(__first),
                    cast_traits::to_storage_type_cptr(__last));
   }
-  void assign(const_iterator __first, const_iterator __last) {
-    _M_impl.assign(__first._M_node, __last._M_node);
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
+  void assign(const_iterator __first, const_iterator __last)
+  { _M_impl.assign(_BaseConstIte(__first._M_node), _BaseConstIte(__last._M_node)); }
+#endif
 
   void splice(iterator __pos, _Self& __x)
-  { _M_impl.splice(__pos._M_node, __x._M_impl); }
+  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl); }
   void splice(iterator __pos, _Self& __x, iterator __i)
-  { _M_impl.splice(__pos._M_node, __x._M_impl, __i._M_node); }
+  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl, _BaseIte(__i._M_node)); }
   void splice(iterator __pos, _Self& __x, iterator __first, iterator __last)
-  { _M_impl.splice(__pos._M_node, __x._M_impl, __first._M_node, __last._M_node); }
+  { _M_impl.splice(_BaseIte(__pos._M_node), __x._M_impl,
+                   _BaseIte(__first._M_node), _BaseIte(__last._M_node)); }
 
   void remove(const_reference __val)
   { _M_impl.remove(cast_traits::to_storage_type_cref(__val)); }

@@ -116,7 +116,7 @@ struct _List_iterator : public _List_iterator_base {
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
 
-  _List_iterator(_List_node_base* __x) : _List_iterator_base(__x) {}
+  explicit _List_iterator(_List_node_base* __x) : _List_iterator_base(__x) {}
   _List_iterator() : _List_iterator_base(0) {}
   //copy constructor for iterator and constructor from iterator for const_iterator
   _List_iterator(const iterator& __x) :  _List_iterator_base(__x._M_node) {}
@@ -412,7 +412,7 @@ public:
     __tmp->_M_prev = __p;
     __p->_M_next = __tmp;
     __n->_M_prev = __tmp;
-    return __tmp;
+    return iterator(__tmp);
   }
 
 private:

@@ -94,7 +94,7 @@ public:
 
   typedef _Slist_node<value_type> _Node;
 
-  _Slist_iterator(_Slist_node_base *__x) : _Slist_iterator_base(__x) {}
+  explicit _Slist_iterator(_Slist_node_base *__x) : _Slist_iterator_base(__x) {}
   _Slist_iterator() : _Slist_iterator_base(0) {}
   //copy constructor for iterator and constructor from iterator for const_iterator
   _Slist_iterator(const iterator& __x) : _Slist_iterator_base(__x._M_node) {}
@@ -549,7 +549,7 @@ private:
 #endif /* _STLP_MEMBER_TEMPLATES */
     //We use a temporary slist to avoid the auto reference troubles (infinite loop)
     _Self __tmp(__first, __last, this->get_allocator());
-    splice_after(__pos, __tmp);
+    splice_after(iterator(__pos), __tmp);
   }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
@@ -586,7 +586,7 @@ private:
 #endif /* _STLP_MEMBER_TEMPLATES */
     //We use a temporary slist to avoid the auto reference troubles (infinite loop)
     _Self __tmp(__first, __last, this->get_allocator());
-    splice(__pos, __tmp);
+    splice(iterator(__pos), __tmp);
   }
 
 public:
