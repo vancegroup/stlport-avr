@@ -121,6 +121,8 @@ public:
       _M_iter_list(&_M_non_dbg_impl) {
 #if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
     src.get()._M_iter_list._Invalidate_all();
+#else
+    src.get()._M_iter_list._Set_owner(_M_iter_list);
 #endif
   }
 

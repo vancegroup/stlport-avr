@@ -92,8 +92,6 @@ private:
   _Base _M_non_dbg_impl;
   _STLP_PRIV __owned_list _M_iter_list;
 
-  void _Invalidate_all()
-  { _M_iter_list._Invalidate_all(); }
   void _Invalidate_iterator(const iterator& __it)
   { _STLP_PRIV __invalidate_iterator(&_M_iter_list, __it); }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last)
@@ -121,7 +119,9 @@ public:
     : _M_non_dbg_impl(__move_source<_Base>(src.get()._M_non_dbg_impl)),
       _M_iter_list(&_M_non_dbg_impl) {
 #if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
-    src.get()._Invalidate_all();
+    src.get()._M_iter_list._Invalidate_all();
+#else
+    src.get()._M_iter_list._Set_owner(_M_iter_list);
 #endif
   }
 
