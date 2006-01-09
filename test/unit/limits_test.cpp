@@ -35,7 +35,20 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
 
-#define CHECK_COND(X) if (!(X)) return false;
+#if defined(__BORLANDC__)
+static bool __test_result = true;
+void CHECK_COND(bool __X) {
+  static volatile bool __x = __X; // force evaluation of __X;
+  if (!__x)
+    __test_result = false;
+  _control87(0x1000, MCW_IC);      // reset FPU control word after exception
+  _control87(0x0000, MCW_RC);
+  _control87(0x0200, MCW_PC);
+  _control87(0x003F, MCW_EM);
+}
+#else
+#  define CHECK_COND(X) if (!(X)) return false;
+#endif
 
 bool valid_sign_info(bool, bool)
 { return true; }
@@ -48,6 +61,9 @@ bool valid_sign_info(bool limit_is_signed, const _Tp &) {
 
 template <class _Tp>
 bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
+#if defined (__BORLANDC__)
+  __test_result = true;
+#endif
   typedef std::numeric_limits<_Tp> lim;
 
   CHECK_COND(lim::is_specialized);
@@ -60,8 +76,11 @@ bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed 
   if (unknown_sign) {
     CHECK_COND(valid_sign_info(lim::is_signed, _Tp()));
   }
-
+#if defined (__BORLANDC__)
+  return __test_result;
+#else
   return true;
+#endif
 }
 
 template <class _Tp>
@@ -75,6 +94,9 @@ bool test_unsigned_integral_limits(const _Tp &__val) {
 
 template <class _Tp>
 bool test_float_limits(const _Tp &) {
+#if defined (__BORLANDC__)
+  __test_result = true;
+#endif
   typedef std::numeric_limits<_Tp> lim;
   CHECK_COND(lim::is_specialized);
   CHECK_COND(!lim::is_modulo);
@@ -120,8 +142,15 @@ bool test_float_limits(const _Tp &) {
     * CHECK_COND(! (qnan >= 42));
     */
   }
-
+#if defined (__BORLANDC__)
+  _control87(0x1000, MCW_IC);      // reset FPU control word after exception
+  _control87(0x0000, MCW_RC);
+  _control87(0x0200, MCW_PC);
+  _control87(0x003F, MCW_EM);
+  return __test_result;
+#else
   return true;
+#endif
 }
 
 void LimitTest::test() {
