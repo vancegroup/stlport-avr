@@ -649,48 +649,55 @@ extern "C" {
   char* _Locale_extract_ctype_name(const char* cname, char* buf) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, LC_CTYPE, lname);
-    if (lname[0] == 'C' && lname[1] == 0)
+    if (lname[0] == 'C' && lname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+    }
     return __TranslateToSystem(lname, buf);
   }
 
   char* _Locale_extract_numeric_name(const char* cname, char* buf) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, LC_NUMERIC, lname);
-    if (lname[0] == 'C' && lname[1] == 0)
+    if (lname[0] == 'C' && lname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+    }
     return __TranslateToSystem(lname, buf);
   }
 
   char* _Locale_extract_time_name(const char* cname, char* buf) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, LC_TIME, lname);
-    if (lname[0] == 'C' && lname[1] == 0)
+    if (lname[0] == 'C' && lname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+    }
     return __TranslateToSystem(lname, buf);
   }
 
   char* _Locale_extract_collate_name(const char* cname, char* buf) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, LC_COLLATE, lname);
-    if (lname[0] == 'C' && lname[1] == 0)
+    if (lname[0] == 'C' && lname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+    }
     return __TranslateToSystem(lname, buf);
   }
 
   char* _Locale_extract_monetary_name(const char* cname, char* buf) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, LC_MONETARY, lname);
-    if (lname[0] == 'C' && lname[1] == 0)
+    if (lname[0] == 'C' && lname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+    }
     return __TranslateToSystem(lname, buf);
   }
 
   char* _Locale_extract_messages_name(const char* cname, char* buf) {
-    if (cname[0] == 'L' && cname[1] == 'C' && cname[2] == '_')
+    if (cname[0] == 'L' && cname[1] == 'C' && cname[2] == '_') {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, "C");
-    if (cname[0] == 'C' && cname[1] == 0)
+    }
+    if (cname[0] == 'C' && cname[1] == 0) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, cname);
+    }
     return __TranslateToSystem(cname, buf);
   }
 
@@ -705,8 +712,9 @@ extern "C" {
        !strcmp(_ctype, time) &&
        !strcmp(_ctype, _collate) &&
        !strcmp(_ctype, monetary) &&
-       !strcmp(_ctype, messages))
+       !strcmp(_ctype, messages)) {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_COMPOSITE_NAME, _ctype);
+    }
 
     _STLP_STRCPY2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_CTYPE=");
     _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, _ctype);
