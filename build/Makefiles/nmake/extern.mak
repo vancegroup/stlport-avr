@@ -82,8 +82,8 @@ STLPORT_VER = 4.5.5
 #gSOAP_BIN_DIR ?= ${gSOAP_DIR}/bin
 
 # boost (http://www.boost.org, http://boost.sourceforge.net)
-!ifndef BOOST_INCLUDE_DIR
-BOOST_INCLUDE_DIR = $(BOOST_DIR)
+!ifdef STLP_BUILD_BOOST_PATH
+INCLUDES=$(INCLUDES) /I $(STLP_BUILD_BOOST_PATH)
 !endif
 
 # This file reflect versions of third-party libraries that
