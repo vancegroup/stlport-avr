@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -178,7 +179,7 @@ void PartialTest::partsum0()
 void PartialTest::partsum1()
 {
   vector <int> v1(10);
-  iota(v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
   vector <int> v2(v1.size());
   partial_sum(v1.begin(), v1.end(), v2.begin());
 
@@ -198,7 +199,7 @@ void PartialTest::partsum1()
 void PartialTest::partsum2()
 {
   vector <int> v1(5);
-  iota(v1.begin(), v1.end(), 1);
+  __iota(v1.begin(), v1.end(), 1);
   vector <int> v2(v1.size());
   partial_sum(v1.begin(), v1.end(), v2.begin(), multiplies<int>());
   // 1 2 6 24 120

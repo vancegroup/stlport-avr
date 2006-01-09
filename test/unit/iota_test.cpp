@@ -3,9 +3,11 @@
 
 #include "cppunit/cppunit_proxy.h"
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+
+#  if defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //
 // TestCase class
@@ -40,3 +42,5 @@ void IotaTest::iota1()
   CPPUNIT_ASSERT(numbers[8]==50);
   CPPUNIT_ASSERT(numbers[9]==51);
 }
+
+#endif

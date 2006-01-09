@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <numeric>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -51,10 +52,10 @@ void MergeTest::merge0()
 }
 void MergeTest::merge1()
 {
-  vector <int> v1(5);
-  vector <int> v2(v1.size());
-  iota(v1.begin(), v1.end(), 0);
-  iota(v2.begin(), v2.end(), 3);
+  vector<int> v1(5);
+  vector<int> v2(v1.size());
+  __iota(v1.begin(), v1.end(), 0);
+  __iota(v2.begin(), v2.end(), 3);
 
   vector <int> result(v1.size() + v2.size());
   merge(v1.begin(), v1.end(), v2.begin(), v2.end(), result.begin());

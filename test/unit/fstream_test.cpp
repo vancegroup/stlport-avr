@@ -17,10 +17,10 @@ using namespace std;
 //size in Go
 //#define CHECK_BIG_FILE 4
 
-#  if !defined(STLPORT) || !( (defined(_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
-                              (defined(__GNUC__) && (__GNUC__ < 3)) || \
-                              (defined(__SUNPRO_CC)) \
-                            )
+#  if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO) && \
+                            !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
+                              (defined (__GNUC__) && (__GNUC__ < 3)) || \
+                              (defined (__SUNPRO_CC)))
 #    define DO_CUSTOM_FACET_TEST
 #  endif
 

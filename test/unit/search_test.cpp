@@ -2,6 +2,7 @@
 #include <numeric>
 #include <algorithm>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -53,16 +54,16 @@ void SearchTest::search1()
 {
   typedef vector <int> IntVec;
   IntVec v1(10);
-  iota(v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
   IntVec v2(3);
-  iota(v2.begin(), v2.end(), 50);
+  __iota(v2.begin(), v2.end(), 50);
 
   IntVec::iterator location;
   location = search(v1.begin(), v1.end(), v2.begin(), v2.end());
 
   CPPUNIT_ASSERT(location == v1.end());
 
-  iota(v2.begin(), v2.end(), 4);
+  __iota(v2.begin(), v2.end(), 4);
 
   location = search(v1.begin(), v1.end(), v2.begin(), v2.end());
 

@@ -53,15 +53,21 @@ void ListTest::list1()
   list<int> l1(array1, array1 + 3);
   list<int> l2(array2, array2 + 2);
   list<int>::iterator i1 = l1.begin();
+  list<int>::iterator i2 = l2.begin();
   list<int>::const_iterator ci(i1);
   list<int>::const_iterator ci1(ci);
   l1.splice(i1, l2);
-  list<int>::iterator i2 = l1.begin();
-  CPPUNIT_ASSERT(*i2++==1);
-  CPPUNIT_ASSERT(*i2++==4);
-  CPPUNIT_ASSERT(*i2++==9);
-  CPPUNIT_ASSERT(*i2++==16);
-  CPPUNIT_ASSERT(*i2++==36);
+  i1 = l1.begin();
+  CPPUNIT_ASSERT( *i1++ == 1 );
+  CPPUNIT_ASSERT( *i1++ == 4 );
+  CPPUNIT_ASSERT( *i1++ == 9 );
+  CPPUNIT_ASSERT( *i1++ == 16 );
+  CPPUNIT_ASSERT( *i1++ == 36 );
+
+#if defined (STLPORT) && \
+   (!defined (_STLP_DEBUG) || (_STLP_DEBUG_LEVEL != _STLP_STANDARD_DBG_LEVEL))
+  CPPUNIT_ASSERT( i2 == l1.begin() );
+#endif
 
   //Default construct check (_STLP_DEF_CONST_PLCT_NEW_BUG)
   list<int> l(2);
@@ -78,6 +84,7 @@ void ListTest::list1()
   }
 #endif
 }
+
 void ListTest::list2()
 {
   int array1 [] = { 1, 16 };
@@ -94,6 +101,7 @@ void ListTest::list2()
   CPPUNIT_ASSERT(*i++==9);
   CPPUNIT_ASSERT(*i++==16);
 }
+
 void ListTest::list3()
 {
   char array [] = { 'x', 'l', 'x', 't', 's', 's' };
@@ -129,6 +137,7 @@ void ListTest::list3()
   CPPUNIT_ASSERT(*i++=='s');
   CPPUNIT_ASSERT(*i++=='t');
 }
+
 void ListTest::list4()
 {
   int array1 [] = { 1, 3, 6, 7 };

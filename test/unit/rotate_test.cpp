@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -47,7 +48,7 @@ void RotateTest::rotate0()
 void RotateTest::rotate1()
 {
   vector <int> v1(10);
-  iota(v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
 
   rotate(v1.begin(), v1.begin()+1, v1.end());
   CPPUNIT_ASSERT(v1[0]==1);
@@ -103,7 +104,7 @@ void RotateTest::rotcopy0()
 void RotateTest::rotcopy1()
 {
   vector <int> v1(10);
-  iota(v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
   vector <int> v2(v1.size());
 
   rotate_copy(v1.begin(), v1.begin()+1, v1.end(), v2.begin());

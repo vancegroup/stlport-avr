@@ -1,11 +1,14 @@
-#if !defined (__DMC__)
+//Small header to get STLport numerous defines:
+#include <utility>
+
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
 #  include <rope>
-#  if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
 #    include <sstream>
 
 #    include "cppunit/cppunit_proxy.h"
 
-#    if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#    if defined (_STLP_USE_NAMESPACES)
 using namespace std;
 #    endif
 

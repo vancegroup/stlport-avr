@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#if !defined (__DMC__)
-#include <rope>
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
+#  include <rope>
 #endif
 #include <slist>
 #include <list>
@@ -12,8 +12,10 @@
 #include <map>
 #include <unordered_set>
 #include <unordered_map>
-#include <hash_set>
-#include <hash_map>
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#  include <hash_set>
+#  include <hash_map>
+#endif
 #include <queue>
 #include <stack>
 //#include <iostream>
@@ -414,7 +416,7 @@ void MoveConstructorTest::deque_test()
 
 void MoveConstructorTest::vector_test()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -770,7 +772,7 @@ void MoveConstructorTest::vector_test()
 #endif
 }
 
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (__DMC__)
 struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
@@ -834,7 +836,7 @@ namespace std {
 
 void MoveConstructorTest::move_traits()
 {
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (__DMC__)
   {
     {
       vector<MovableStruct> vect;
@@ -1112,7 +1114,7 @@ void MoveConstructorTest::move_traits()
 #endif
 }
 
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (__DMC__)
 
 bool type_to_bool(__true_type)
 { return true; }
@@ -1170,7 +1172,7 @@ namespace std
 #endif
     allocator() _STLP_NOTHROW {}
 #if defined (_STLP_MEMBER_TEMPLATES)
-    template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW;
+    template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
 #endif
     allocator(const allocator&) _STLP_NOTHROW {}
     ~allocator() _STLP_NOTHROW {}
@@ -1194,7 +1196,8 @@ namespace std
 void MoveConstructorTest::movable_declaration()
 {
 #if defined (STLPORT) && !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
-                         !defined (_STLP_NO_MOVE_SEMANTIC)
+                         !defined (_STLP_NO_MOVE_SEMANTIC) && \
+   !defined (__DMC__)
   //This test purpose is to check correct detection of the STL movable
   //traits declaration
   {
@@ -1215,25 +1218,25 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
-#if !defined (__DMC__)
+#    if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   {
     //crope, wrope:
     CPPUNIT_ASSERT( is_movable(crope()) );
-#    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-    CPPUNIT_ASSERT( is_move_complete(crope()) );
-#    else
-    CPPUNIT_ASSERT( !is_move_complete(crope()) );
-#    endif
-#    if defined (_STLP_HAS_WCHAR_T)
-    CPPUNIT_ASSERT( is_movable(wrope()) );
 #      if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-    CPPUNIT_ASSERT( is_move_complete(wrope()) );
+    CPPUNIT_ASSERT( is_move_complete(crope()) );
 #      else
-    CPPUNIT_ASSERT( !is_move_complete(wrope()) );
+    CPPUNIT_ASSERT( !is_move_complete(crope()) );
 #      endif
-#    endif
+#      if defined (_STLP_HAS_WCHAR_T)
+    CPPUNIT_ASSERT( is_movable(wrope()) );
+#        if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+    CPPUNIT_ASSERT( is_move_complete(wrope()) );
+#        else
+    CPPUNIT_ASSERT( !is_move_complete(wrope()) );
+#        endif
+#      endif
   }
-#endif
+#    endif
 
   {
     //vector:
@@ -1271,7 +1274,6 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
-#if !defined (__DMC__)
   {
     //slist:
     CPPUNIT_ASSERT( is_movable(slist<char>()) );
@@ -1283,7 +1285,6 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(slist<char>()) );
 #    endif
   }
-#endif
 
   {
     //queue:
@@ -1373,10 +1374,12 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( is_movable(unordered_multiset<char>()) );
     CPPUNIT_ASSERT( is_movable(unordered_map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(unordered_multimap<char, char>()) );
+#    if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
     CPPUNIT_ASSERT( is_movable(hash_set<char>()) );
     CPPUNIT_ASSERT( is_movable(hash_multiset<char>()) );
     CPPUNIT_ASSERT( is_movable(hash_map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(hash_multimap<char, char>()) );
+#    endif
   }
 #  endif
 }

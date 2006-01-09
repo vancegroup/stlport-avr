@@ -1,24 +1,26 @@
 #include <vector>
-#include <algorithm>
-#include <hash_map>
-#include <hash_set>
-#if !defined (__BORLANDC__) && !defined (__DMC__)
-#  include <rope>
-#endif
-#include <string>
 
-#include "stack_allocator.h"
-#include "cppunit/cppunit_proxy.h"
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#  include <algorithm>
+#  include <hash_map>
+#  include <hash_set>
+#  if !defined (__BORLANDC__) && !defined (__DMC__)
+#    include <rope>
+#  endif
+#  include <string>
 
-#if defined (__MVS__)
+#  include "stack_allocator.h"
+#  include "cppunit/cppunit_proxy.h"
+
+#  if defined (__MVS__)
 const char star = 92;
-#else
+#  else
 const char star = 42;
-#endif
+#  endif
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#  if defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //
 // TestCase class
@@ -26,9 +28,9 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
-#if defined (__BORLANDC__) || defined (__DMC__)
+#  if defined (__BORLANDC__) || defined (__DMC__)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(hmap1);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(hmmap1);
@@ -58,7 +60,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 void HashTest::hmap1()
 {
-#if !defined (__BORLANDC__) && !defined (__DMC__)
+#  if !defined (__BORLANDC__) && !defined (__DMC__)
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.
@@ -90,7 +92,7 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( !(ite != cite) );
   CPPUNIT_ASSERT( cite == ite );
   CPPUNIT_ASSERT( !(cite != ite) );
-#endif
+#  endif
 }
 
 void HashTest::hmmap1()
@@ -256,3 +258,5 @@ void HashTest::allocator_with_state()
   CPPUNIT_ASSERT( stack1.OK() );
   CPPUNIT_ASSERT( stack2.OK() );
 }
+
+#endif

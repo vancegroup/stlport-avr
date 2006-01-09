@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -51,9 +52,9 @@ void MismatchTest::mismatch1()
 {
   typedef vector<int> IntVec;
   IntVec v1(10);
-  IntVec v2(v1.size());
-  iota(v1.begin(), v1.end(), 0);
-  iota(v2.begin(), v2.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
+  IntVec v2(v1);
+
   pair <IntVec::iterator, IntVec::iterator> result = mismatch(v1.begin(), v1.end(), v2.begin());
 
   CPPUNIT_ASSERT(result.first == v1.end() && result.second == v2.end());

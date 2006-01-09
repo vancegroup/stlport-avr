@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -52,7 +53,7 @@ void RndShuffleTest::rndshuf0()
 void RndShuffleTest::rndshuf2()
 {
   vector <int> v1(10);
-  iota(v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
 
   MyRandomGenerator r;
   for(int i = 0; i < 3; i++)

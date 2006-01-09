@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <numeric>
 
+#include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -114,8 +115,7 @@ void IterTest::iterswp0()
 void IterTest::iterswp1()
 {
   vector<int> v1(6);
-
-  iota( v1.begin(), v1.end(), 0);
+  __iota(v1.begin(), v1.end(), 0);
   iter_swap( v1.begin(), v1.begin() + 3 );
 
   CPPUNIT_ASSERT(v1[0]==3);

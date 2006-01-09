@@ -49,14 +49,19 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
-  CPPUNIT_TEST(template_expresion);
+  CPPUNIT_TEST(template_expression);
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+  CPPUNIT_TEST(template_wexpression);
+#endif
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(io);
 #endif
-#if defined (__DMC__)
+#if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO)
+#  if defined (__DMC__)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(allocator_with_state);
+#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -72,7 +77,10 @@ protected:
   void mt();
   void short_string_optim_bug();
   void compare();
-  void template_expresion();
+  void template_expression();
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+  void template_wexpression();
+#endif
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   void io();
 #endif
@@ -618,7 +626,7 @@ void StringTest::compare()
   CPPUNIT_ASSERT( str1.compare(2, 3, "cdefgh", 4) < 0 );
 }
 
-void StringTest::template_expresion()
+void StringTest::template_expression()
 {
   string one("one"), two("two"), three("three");
   string space(1, ' ');
@@ -712,24 +720,129 @@ void StringTest::template_expresion()
     CPPUNIT_CHECK( result == ' ' );
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-    for (;;) {
-      try {
-        result = (one + ' ' + two).at(10);
-        CPPUNIT_ASSERT(false);
-      }
-      catch (out_of_range const&) {
-        CPPUNIT_ASSERT( result == ' ' );
-        CPPUNIT_ASSERT(true);
-        return;
-      }
-      catch (...) {
-        CPPUNIT_ASSERT(false);
-        return;
-      }
+    try {
+      result = (one + ' ' + two).at(10);
+      CPPUNIT_ASSERT(false);
+    }
+    catch (out_of_range const&) {
+      CPPUNIT_ASSERT( result == ' ' );
+    }
+    catch (...) {
+      CPPUNIT_ASSERT(false);
     }
 #endif
   }
 }
+
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+void StringTest::template_wexpression()
+{
+  wstring one(L"one"), two(L"two"), three(L"three");
+  wstring space(1, L' ');
+
+  {
+    wstring result(one + L' ' + two + L' ' + three);
+    CPPUNIT_CHECK( result == L"one two three" );
+  }
+
+  {
+    wstring result(one + L' ' + two + L' ' + three, 4);
+    CPPUNIT_CHECK( result == L"two three" );
+  }
+
+  {
+    wstring result(one + L' ' + two + L' ' + three, 4, 3);
+    CPPUNIT_CHECK( result == L"two" );
+  }
+
+  //2 members expressions:
+  CPPUNIT_CHECK( (L' ' + one) == L" one" );
+  CPPUNIT_CHECK( (one + L' ') == L"one " );
+  CPPUNIT_CHECK( (one + L" two") == L"one two" );
+  CPPUNIT_CHECK( (L"one " + two) == L"one two" );
+  CPPUNIT_CHECK( (one + space) == L"one " );
+
+  //3 members expressions:
+  CPPUNIT_CHECK( ((one + space) + L"two") == L"one two" );
+  CPPUNIT_CHECK( (L"one" + (space + two)) == L"one two" );
+  CPPUNIT_CHECK( ((one + space) + two) == L"one two" );
+  CPPUNIT_CHECK( (one + (space + two)) == L"one two" );
+  CPPUNIT_CHECK( ((one + space) + L't') == L"one t" );
+  CPPUNIT_CHECK( (L'o' + (space + two)) == L"o two" );
+
+  //4 members expressions:
+  CPPUNIT_CHECK( ((one + space) + (two + space)) == L"one two " );
+
+  //special operators
+  {
+    wstring result;
+    result = one + space + two;
+    CPPUNIT_CHECK( result == L"one two" );
+
+    result += space + three;
+    CPPUNIT_CHECK( result == L"one two three" );
+  }
+
+  //special append method
+  {
+    wstring result;
+    //Use reserve to avoid reallocation and really test auto-referencing problems:
+    result.reserve(64);
+
+    result.append(one + space + two);
+    CPPUNIT_CHECK( result == L"one two" );
+
+    result.append(space + result + space + three);
+    CPPUNIT_CHECK( result == L"one two one two three" );
+
+    result = L"one two";
+    result.append(space + three, 1, 2);
+    CPPUNIT_ASSERT( result == L"one twoth" );
+
+    result.append(space + result);
+    CPPUNIT_CHECK( result == L"one twoth one twoth" );
+  }
+
+  //special assign method
+  {
+    wstring result;
+    //Use reserve to avoid reallocation and really test auto-referencing problems:
+    result.reserve(64);
+
+    result.assign(one + space + two + space + three);
+    CPPUNIT_CHECK( result == L"one two three" );
+
+    result.assign(one + space + two + space + three, 3, 5);
+    CPPUNIT_CHECK( result == L" two " );
+
+    result.assign(one + result + three);
+    CPPUNIT_CHECK( result == L"one two three" );
+  }
+
+  {
+    CPPUNIT_CHECK( !(one + L' ' + two).empty() );
+
+    wchar_t result = (one + L' ' + two)[3];
+    CPPUNIT_CHECK( result == L' ' );
+
+    result = (one + L' ' + two).at(3);
+    CPPUNIT_CHECK( result == L' ' );
+
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+    try {
+      result = (one + L' ' + two).at(10);
+      CPPUNIT_ASSERT(false);
+    }
+    catch (out_of_range const&) {
+      CPPUNIT_ASSERT( result == L' ' );
+    }
+    catch (...) {
+      CPPUNIT_ASSERT(false);
+    }
+#  endif
+  }
+}
+#endif
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 void StringTest::io()
@@ -759,9 +872,10 @@ void StringTest::io()
 }
 #endif
 
+#if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO)
 void StringTest::allocator_with_state()
 {
-#if !defined (__DMC__)
+#  if !defined (__DMC__)
   char buf1[1024];
   StackAllocator<char> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -801,6 +915,6 @@ void StringTest::allocator_with_state()
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
   }
-#endif
+#  endif
 }
-
+#endif
