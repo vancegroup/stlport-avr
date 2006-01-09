@@ -176,6 +176,8 @@ extern ptrdiff_t _STLP_CALL __insert_grouping(wchar_t*, wchar_t*, const string&,
 extern void _STLP_CALL __insert_grouping(__iowstring&, size_t, const string&, wchar_t, wchar_t, wchar_t, int);
 #  endif
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
 #if 0 //defined (__BORLANDC__) && defined (_RTLDLL)
@@ -192,7 +194,6 @@ inline void _Stl_loc_init_num_put() {
 
 #endif /* __BORLANDC__ && _RTLDLL */
 
-_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)

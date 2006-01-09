@@ -219,6 +219,8 @@ void _STLP_CALL __string_to_float(const __iostring&, double&);
 void _STLP_CALL __string_to_float(const __iostring&, long double&);
 #  endif
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
 #if 0 //defined (__BORLANDC__) && defined (_RTLDLL)
@@ -233,7 +235,6 @@ inline void _Stl_loc_init_num_get() {
 }
 #endif /*  __BORLANDC__ && _RTLDLL */
 
-_STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
