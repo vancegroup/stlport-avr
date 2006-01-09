@@ -39,7 +39,8 @@
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp> struct _IsRef {
-  enum { _Ret = ::boost::is_reference<_Tp>::value };
+  enum { _Is = ::boost::is_reference<_Tp>::value };
+  typedef typename __bool2type<_Is>::_Ret _Ret;
 };
 
 template <class _Tp> struct _IsPtr {
