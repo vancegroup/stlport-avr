@@ -136,7 +136,6 @@ uninitialized_copy(const wchar_t* __first, const wchar_t* __last, wchar_t* __res
 { return  (wchar_t*)_STLP_PRIV __ucopy_trivial (__first, __last, __result); }
 #  endif /* _STLP_HAS_WCHAR_T */
 
-#if !defined (_STLP_NO_EXTENSIONS)
 // uninitialized_copy_n (not part of the C++ standard)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -156,7 +155,7 @@ __uninitialized_copy_n(_InputIter __first, _Size __count,
   _STLP_RET_AFTER_THROW((pair<_InputIter, _ForwardIter>(__first, __cur)))
 }
 
-#  if defined(_STLP_NONTEMPL_BASE_MATCH_BUG)
+#  if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _InputIterator, class _Size, class _ForwardIterator>
 inline pair<_InputIterator, _ForwardIterator>
 __uninitialized_copy_n(_InputIterator __first, _Size __count,
@@ -184,15 +183,23 @@ __uninitialized_copy_n(_RandomAccessIter __first, _Size __count, _ForwardIter __
                                                                                      _STLP_VALUE_TYPE(__result, _ForwardIter))._Answer()));
 }
 
-_STLP_MOVE_TO_STD_NAMESPACE
-
-// this is used internally in <rope> , which is extension itself.
+// This is used internally in <rope> , which is extension itself.
 template <class _InputIter, class _Size, class _ForwardIter>
 inline pair<_InputIter, _ForwardIter>
-uninitialized_copy_n(_InputIter __first, _Size __count,
-                     _ForwardIter __result) {
-  return _STLP_PRIV __uninitialized_copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
-}
+__uninitialized_copy_n(_InputIter __first, _Size __count, _ForwardIter __result)
+{ return _STLP_PRIV __uninitialized_copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
+
+#if !defined (_STLP_NO_EXTENSIONS)
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+template <class _InputIter, class _Size, class _ForwardIter>
+inline pair<_InputIter, _ForwardIter>
+uninitialized_copy_n(_InputIter __first, _Size __count, _ForwardIter __result)
+{ return _STLP_PRIV __uninitialized_copy_n(__first, __count, __result); }
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 #endif /* _STLP_NO_EXTENSIONS */
 
 /*
@@ -202,8 +209,6 @@ uninitialized_copy_n(_InputIter __first, _Size __count,
  * - destructor is trivial.
  * All that is guaranty by the POD types.
  */
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
 inline void
