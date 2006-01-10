@@ -28,6 +28,7 @@ class TypeTraitsTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(both_pointer_type);
   CPPUNIT_TEST(ok_to_use_memcpy);
   CPPUNIT_TEST(trivial_destructor);
+  CPPUNIT_TEST(is_POD);
 #if defined (__BORLANDC__)
   CPPUNIT_IGNORE;
 #endif
@@ -43,6 +44,7 @@ protected:
   void both_pointer_type();
   void ok_to_use_memcpy();
   void trivial_destructor();
+  void is_POD();
   void stlport_class();
 };
 
@@ -66,7 +68,16 @@ int const volatile& int_const_volatile_ref = int_val;
 
 //A type that represent any type:
 struct any_type
-{};
+{
+  //Dummy operations to forbid to compilers with intrinsic
+  //type traits support to concider this type as a POD.
+  any_type() : m_data(1) {}
+  any_type(const any_type&) : m_data(2) {}
+  any_type& operator = (const any_type&) { m_data = 3; }
+  ~any_type() { m_data = 0; }
+
+  size_t m_data;
+};
 
 any_type any;
 any_type* any_pointer;
@@ -413,6 +424,24 @@ void TypeTraitsTest::trivial_destructor()
   CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(any_pod) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(string()) == 0 );
+}
+
+template <typename _Tp>
+int is_POD_type(_Tp) {
+  typedef typename __type_traits<_Tp>::is_POD_type _IsPODType;
+  return type_to_value(_IsPODType());
+}
+void TypeTraitsTest::is_POD()
+{
+  CPPUNIT_ASSERT( is_POD_type(int_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(int_const_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(int_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(int_const_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(any_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(any) == 0 );
+  CPPUNIT_ASSERT( is_POD_type(any_pointer) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(any_pod) == 1 );
+  CPPUNIT_ASSERT( is_POD_type(string()) == 0 );
 }
 
 template <typename _Tp>
