@@ -131,7 +131,22 @@
 
 # endif
 
-     // fbp
+//Following block come from boost intrinsics.hpp file:
+#if defined (__MSL_CPP__) && (__MSL_CPP__ >= 0x8000)
+    // Metrowerks compiler is acquiring intrinsic type traits support
+    // post version 8.  We hook into the published interface to pick up
+    // user defined specializations as well as compiler intrinsics as 
+    // and when they become available:
+#   include <msl_utility>
+#   define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) Metrowerks::has_trivial_default_ctor<T>::value
+#   define _STLP_HAS_TRIVIAL_COPY(T) Metrowerks::has_trivial_copy_ctor<T>::value
+#   define _STLP_HAS_TRIVIAL_ASSIGN(T) Metrowerks::has_trivial_assignment<T>::value
+#   define _STLP_HAS_TRIVIAL_DESTRUCTOR(T) Metrowerks::has_trivial_dtor<T>::value
+#   define _STLP_IS_POD(T) Metrowerks::is_POD<T>::value
+#   define _STLP_HAS_TYPE_TRAITS_INTRINSICS
+#endif
+
+// fbp
 # if !defined( __MSL_CPP__ ) || __MSL_CPP__ <= 0x4105
 #   define _STLP_NO_NATIVE_WIDE_STREAMS 1
 #  endif

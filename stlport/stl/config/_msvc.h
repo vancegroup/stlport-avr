@@ -44,6 +44,16 @@
 
 #if defined (_STLP_MSVC)
 
+//Full compiler comes from boost library intrinsics.hpp header.
+#  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)
+#    define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) __has_trivial_constructor(T)
+#    define _STLP_HAS_TRIVIAL_COPY(T) __has_trivial_copy(T)
+#    define _STLP_HAS_TRIVIAL_ASSIGN(T) __has_trivial_assign(T)
+#    define _STLP_HAS_TRIVIAL_DESTRUCTOR(T) __has_trivial_destructor(T)
+#    define _STLP_IS_POD(T) __is_pod(T)
+#    define _STLP_HAS_TYPE_TRAITS_INTRINSICS
+#  endif
+
 #  ifndef _CPPRTTI
 #    define _STLP_NO_RTTI 1
 #  endif
