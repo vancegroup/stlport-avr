@@ -1,3 +1,24 @@
+2006-01-10  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/type_traits.h, config/_msvc.h, _mwerks.h: Integrate
+	intrinsic type traits support for Visual 2005 and Metrowerk. Code
+	based on boost library information and not tested for Metrowerk.
+
+	* test/unit/bind_test.cpp: Fix BindTest::bind2nd3 test case, had
+	never been used.
+
+	* stlport/stl/boost_type_traits.h: Change boost type traits wrapping
+	implementation to use meta programming operation on types rather
+	than on numerical constant, MSVC6 prefer it.
+
+	* build/test/unit/msvc.mak: Systematically add /Zm800 for MSVC
+	compilers, useful in a number of case and transparent in others.
+
+	* test/unit/type_traits_test.cpp: Add is_POD test case. Add dummy
+	constructors, assignment operator and destructor to any_type struct
+	to make the tests pass even with compilers having intrinsic type
+	traits support.
+ 
 2006-01-09  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/debug: Fix move constructor to keep the container
