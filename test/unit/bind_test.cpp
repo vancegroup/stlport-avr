@@ -72,7 +72,6 @@ int test_func2 (int &param1, int param2) {
   return param1 + param2;
 }
 
-
 #if !defined (STLPORT) || !defined (_STLP_NO_EXTENSIONS)
 void BindTest::bind2nd3()
 {
@@ -82,12 +81,12 @@ void BindTest::bind2nd3()
   transform(array, array + 3, array, bind1st(ptr_fun(test_func1), -1));
   CPPUNIT_ASSERT(array[0] == 1);
   CPPUNIT_ASSERT(array[1] == 2);
-  CPPUNIT_ASSERT(array[2] == 4);
+  CPPUNIT_ASSERT(array[2] == 3);
 
   transform(array, array + 3, array, bind2nd(ptr_fun(test_func2), 10));
-  CPPUNIT_ASSERT(array[0] == 1);
-  CPPUNIT_ASSERT(array[1] == 2);
-  CPPUNIT_ASSERT(array[2] == 4);
+  CPPUNIT_ASSERT(array[0] == 21);
+  CPPUNIT_ASSERT(array[1] == 22);
+  CPPUNIT_ASSERT(array[2] == 23);
 #  endif
 }
 #endif
