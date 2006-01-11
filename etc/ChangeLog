@@ -1,3 +1,7 @@
+2006-01-11  Francois Dumont  <dums@stlport...>
+
+	* src/bitset.cpp: Add stlport_prefix.h include.
+
 2006-01-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_bitset.h, stlport/stl/_bitset.c, src/bitset.cpp:
