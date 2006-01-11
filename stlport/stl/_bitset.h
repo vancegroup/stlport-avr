@@ -67,13 +67,36 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // structure to aid in counting bits
-class _Bs_G
+class _STLP_CLASS_DECLSPEC _Bs_G
 {
   public:
     //returns the number of bit set within the buffer between __beg and __end.
-    static size_t _S_count(const unsigned char *__beg, const unsigned char *__end);
-    // Mapping from 8 bit unsigned integers to the index of the first one bit:
-    static unsigned char _S_first_one(unsigned char);
+    static size_t _S_count(const unsigned char *__beg, const unsigned char *__end)
+#if defined (_STLP_NO_IOSTREAMS)
+    {
+      size_t __result = 0;
+      for (; __beg != __end; ++__beg) {
+        for (size_t i = 0; i < (sizeof(unsigned char) * 8); ++i) {
+          if ((*__beg & (1 << i)) != 0) { ++__result; }
+        }
+      }
+      return __result;
+    }
+#else
+      ;
+#endif
+    // Mapping from 8 bit unsigned integers to the index of the first one bit set:
+    static unsigned char _S_first_one(unsigned char __x)
+#if defined (_STLP_NO_IOSTREAMS)
+    {
+      for (unsigned char i = 0; i < (sizeof(unsigned char) * 8); ++i) {
+        if ((__x & (1 << i)) != 0) { return i; }
+      }
+      return 0;
+    }
+#else
+      ;
+#endif
 };
 
 //

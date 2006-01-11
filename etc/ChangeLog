@@ -2,6 +2,10 @@
 
 	* src/bitset.cpp: Add stlport_prefix.h include.
 
+	* stlport/stl/_bitset.h: Add an inline implementation for _S_count
+	and _S_first_one static methods for _STLP_NO_IOSTREAMS mode. Should
+	be slower than version coming with library but avoid link trouble.
+
 2006-01-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_bitset.h, stlport/stl/_bitset.c, src/bitset.cpp:
