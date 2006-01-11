@@ -1,3 +1,12 @@
+2006-01-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_bitset.h, stlport/stl/_bitset.c, src/bitset.cpp:
+	make helper structure _Bs_G non-template [it used only as instance
+	with unused bool argument only], and put static tables into library
+	to avoid possible static instances duplication.
+
+	* build/lib/Makefile.inc: idem.
+
 2006-01-10  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/type_traits.h, config/_msvc.h, _mwerks.h: Integrate

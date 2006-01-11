@@ -67,18 +67,14 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // structure to aid in counting bits
-template<class _Dummy>
-class _Bs_G {
-public:
-  //returns the number of bit set within the buffer between __beg and __end.
-  static size_t _S_count(const unsigned char *__beg, const unsigned char *__end);
-  // Mapping from 8 bit unsigned integers to the index of the first one bit:
-  static unsigned char _S_first_one(unsigned char);
+class _Bs_G
+{
+  public:
+    //returns the number of bit set within the buffer between __beg and __end.
+    static size_t _S_count(const unsigned char *__beg, const unsigned char *__end);
+    // Mapping from 8 bit unsigned integers to the index of the first one bit:
+    static unsigned char _S_first_one(unsigned char);
 };
-
-#if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _Bs_G<bool>;
-#endif
 
 //
 // Base class: general case.
@@ -172,7 +168,7 @@ struct _Base_bitset {
     const unsigned char* __byte_ptr = (const unsigned char*)_M_w;
     const unsigned char* __end_ptr = (const unsigned char*)(_M_w+_Nw);
 
-    return _Bs_G<bool>::_S_count(__byte_ptr, __end_ptr);
+    return _Bs_G::_S_count(__byte_ptr, __end_ptr);
   }
 
   unsigned long _M_do_to_ulong() const;
@@ -235,7 +231,7 @@ struct _Base_bitset<1UL> {
   size_t _M_do_count() const {
     const unsigned char* __byte_ptr = (const unsigned char*)&_M_w;
     const unsigned char* __end_ptr = ((const unsigned char*)&_M_w)+sizeof(_M_w);
-    return _Bs_G<bool>::_S_count(__byte_ptr, __end_ptr);
+    return _Bs_G::_S_count(__byte_ptr, __end_ptr);
   }
 
   unsigned long _M_do_to_ulong() const { return _M_w; }
@@ -263,7 +259,7 @@ _Base_bitset<1UL>::_M_do_find_first(size_t __not_found) const {
       unsigned char __this_byte
         = __STATIC_CAST(unsigned char,(__thisword & (~(unsigned char)0)));
       if ( __this_byte )
-        return __j*CHAR_BIT + _Bs_G<bool>::_S_first_one(__this_byte);
+        return __j*CHAR_BIT + _Bs_G::_S_first_one(__this_byte);
 
       __thisword >>= CHAR_BIT;
     }
@@ -296,7 +292,7 @@ _Base_bitset<1UL>::_M_do_find_next(size_t __prev,
       unsigned char __this_byte
         = __STATIC_CAST(unsigned char,(__thisword & (~(unsigned char)0)));
       if ( __this_byte )
-        return __j*CHAR_BIT + _Bs_G<bool>::_S_first_one(__this_byte);
+        return __j*CHAR_BIT + _Bs_G::_S_first_one(__this_byte);
 
       __thisword >>= CHAR_BIT;
     }
