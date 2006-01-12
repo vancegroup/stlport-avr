@@ -1028,7 +1028,7 @@ inline ptrdiff_t* distance_type(const _Rope_const_iterator<_CharT,_Alloc>&) { re
 #endif /* _STLP_USE_OLD_HP_ITERATOR_QUERIES */
 
 template <class _CharT, class _Alloc, class _CharConsumer>
-bool _S_apply_to_pieces(_CharConsumer __c,
+bool _S_apply_to_pieces(_CharConsumer& __c,
                         _Rope_RopeRep<_CharT, _Alloc> *__r,
                         size_t __begin, size_t __end);
                         // begin and end are assumed to be in range.
@@ -1133,10 +1133,10 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharConsumer>
 #else
-  typedef _Rope_char_consumer<_CharT>& _CharConsumer;
+  typedef _Rope_char_consumer<_CharT> _CharConsumer;
 #endif
   void apply_to_pieces(size_t __begin, size_t __end,
-                       _CharConsumer __c) const {
+                       _CharConsumer& __c) const {
     _S_apply_to_pieces(__c, _M_tree_ptr._M_data, __begin, __end);
   }
 

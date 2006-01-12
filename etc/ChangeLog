@@ -1,3 +1,11 @@
+2006-01-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_rope.h, stlport/stl/_rope.c: pass CharConsumer
+	via reference, to take into account CharConsumer modifications.
+	This has relation to find(char) in rope. Thanks Cristian Vlasceanu.
+
+	* test/unit/rope_test.cpp: test for fixed bug above.
+
 2006-01-11  Francois Dumont  <dums@stlport...>
 
 	* src/bitset.cpp: Add stlport_prefix.h include.

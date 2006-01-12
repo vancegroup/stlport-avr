@@ -783,7 +783,7 @@ bool _Rope_insert_char_consumer<_CharT, _Traits>::operator()
 #endif /* !_STLP_USE_NO_IOSTREAMS */
 
 template <class _CharT, class _Alloc, class _CharConsumer>
-bool _S_apply_to_pieces(_CharConsumer __c,
+bool _S_apply_to_pieces(_CharConsumer& __c,
                         _Rope_RopeRep<_CharT, _Alloc> * __r,
                         size_t __begin, size_t __end) {
   typedef _Rope_RopeRep<_CharT, _Alloc> _RopeRep;
