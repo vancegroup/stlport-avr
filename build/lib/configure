@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <05/09/21 00:17:55 ptr>
+# Time-stamp: <06/01/14 01:20:48 ptr>
 # $Id$
 
 
@@ -48,7 +48,7 @@ Available options:
                         context. If you don't need this you can ask for a not thread safe version with
                         this option.
 
-  --use-boost=<dir>     Request use of boost support (www.boost.org). For the moment only the boost
+  --with-boost=<dir>    Request use of boost support (www.boost.org). For the moment only the boost
                         type_traits library is used to get type information and to implement some
                         specific workaround not directly implemented by STLport. To use the same
                         support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
