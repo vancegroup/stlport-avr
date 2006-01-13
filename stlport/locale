@@ -133,14 +133,6 @@ template <class _CharT>
 inline _CharT tolower(_CharT c, const locale& loc)
 { return (use_facet<ctype<_CharT> >(loc)).tolower(c); }
 
-/*
-# ifndef __LOCALE_INITIALIZED
-#  define __LOCALE_INITIALIZED
-// Global initializer object, to ensure initialization of locale subsystem.
-//static ios_base::_Loc_init _LocInit;
-# endif
-*/
-
 _STLP_END_NAMESPACE
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1041)

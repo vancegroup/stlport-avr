@@ -271,7 +271,6 @@ template class _STLP_CLASS_DECLSPEC _Sl_global<bool>;
 template class _STLP_CLASS_DECLSPEC _Stl_prime<bool>;
 
 template class _STLP_CLASS_DECLSPEC _LimG<bool>;
-template class _STLP_CLASS_DECLSPEC _Bs_G<bool>;
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

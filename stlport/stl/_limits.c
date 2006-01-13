@@ -31,7 +31,7 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-#if !defined ( _STLP_STATIC_CONST_INIT_BUG)
+#if !defined (_STLP_STATIC_CONST_INIT_BUG)
 
 #  define __declare_numeric_base_member(__type, __mem, _Init) \
 template <class __number> \
@@ -115,8 +115,8 @@ __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
-#  if defined(_STLP_BIG_ENDIAN)
-#    if defined(__OS400__)
+#  if defined (_STLP_BIG_ENDIAN)
+#    if defined (__OS400__)
 #      define _STLP_FLOAT_INF_REP { 0x7f80, 0 }
 #      define _STLP_FLOAT_QNAN_REP { 0xffc0, 0 }
 #      define _STLP_FLOAT_SNAN_REP { 0xff80, 0 }
@@ -242,50 +242,50 @@ union _LD_rep {
 #  endif
 
 template <class __dummy>
-float _LimG<__dummy>::get_F_inf() {
+float _STLP_CALL _LimG<__dummy>::get_F_inf() {
   _F_rep _F_inf = {_STLP_FLOAT_INF_REP};
   return _F_inf.val;
 }
 template <class __dummy>
-float _LimG<__dummy>::get_F_qNaN() {
+float _STLP_CALL _LimG<__dummy>::get_F_qNaN() {
   _F_rep _F_qNaN = {_STLP_FLOAT_QNAN_REP};
   return _F_qNaN.val;
 }
 template <class __dummy>
-float _LimG<__dummy>::get_F_sNaN() {
+float _STLP_CALL _LimG<__dummy>::get_F_sNaN() {
   _F_rep _F_sNaN = {_STLP_FLOAT_SNAN_REP};
   return _F_sNaN.val;
 }
 
 template <class __dummy>
-double _LimG<__dummy>::get_D_inf() {
+double _STLP_CALL _LimG<__dummy>::get_D_inf() {
   _D_rep _D_inf = {_STLP_DOUBLE_INF_REP};
   return _D_inf.val;
 }
 template <class __dummy>
-double _LimG<__dummy>::get_D_qNaN() {
+double _STLP_CALL _LimG<__dummy>::get_D_qNaN() {
   _D_rep _D_qNaN = {_STLP_DOUBLE_QNAN_REP};
   return _D_qNaN.val;
 }
 template <class __dummy>
-double _LimG<__dummy>::get_D_sNaN() {
+double _STLP_CALL _LimG<__dummy>::get_D_sNaN() {
   _D_rep _D_sNaN = {_STLP_DOUBLE_SNAN_REP};
   return _D_sNaN.val;
 }
 
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 template <class __dummy>
-long double _LimG<__dummy>::get_LD_inf() {
+long double _STLP_CALL _LimG<__dummy>::get_LD_inf() {
   _LD_rep _LD_inf = {_STLP_LDOUBLE_INF_REP};
   return _LD_inf.val;
 }
 template <class __dummy>
-long double _LimG<__dummy>::get_LD_qNaN() {
+long double _STLP_CALL _LimG<__dummy>::get_LD_qNaN() {
   _LD_rep _LD_qNaN = {_STLP_LDOUBLE_QNAN_REP};
   return _LD_qNaN.val;
 }
 template <class __dummy>
-long double _LimG<__dummy>::get_LD_sNaN() {
+long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
   _LD_rep _LD_sNaN = {_STLP_LDOUBLE_SNAN_REP};
   return _LD_sNaN.val;
 }

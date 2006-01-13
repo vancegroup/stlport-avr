@@ -6,9 +6,9 @@
 //This is an STLport specific test case:
 #if defined (STLPORT)
 
-#  if defined(_STLP_USE_NAMESPACES)
+#  if defined (_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //
 // TestCase class
@@ -73,7 +73,8 @@ struct any_type
   //type traits support to concider this type as a POD.
   any_type() : m_data(1) {}
   any_type(const any_type&) : m_data(2) {}
-  any_type& operator = (const any_type&) { m_data = 3; }
+  any_type& operator = (const any_type&)
+  { m_data = 3; return *this; }
   ~any_type() { m_data = 0; }
 
   size_t m_data;
@@ -88,6 +89,11 @@ any_type const volatile* any_const_volatile_pointer;
 //A type that represent any pod type
 struct any_pod_type
 {};
+
+#if defined (_STLP_USE_BOOST_SUPPORT)
+//Mandatory for compilers without without partial template specialization.
+BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(any_pod_type)
+#endif
 
 any_pod_type any_pod;
 any_pod_type* any_pod_pointer;

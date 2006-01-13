@@ -83,7 +83,7 @@ STLPORT_VER = 4.5.5
 
 # boost (http://www.boost.org, http://boost.sourceforge.net)
 !ifdef STLP_BUILD_BOOST_PATH
-INCLUDES=$(INCLUDES) /I $(STLP_BUILD_BOOST_PATH)
+INCLUDES=$(INCLUDES) /I$(STLP_BUILD_BOOST_PATH)
 !endif
 
 # This file reflect versions of third-party libraries that

@@ -78,11 +78,12 @@
 #endif
 
 #if !defined (_STLP_IMPORT_TEMPLATE_KEYWORD)
-#  define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
+//#  define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
 #endif
-#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
+//#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
 #if defined (_STLP_USE_DYNAMIC_LIB)
+#  define _STLP_USE_DECLSPEC 1
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else

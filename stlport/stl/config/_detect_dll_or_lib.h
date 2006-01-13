@@ -29,30 +29,37 @@
 #    endif
 #  endif
 #else
+#  if !defined (_STLP_NO_IOSTREAMS)
 /* STLport use only depend on _STLP_RUNTIME_DLL as we are replacing
  * the native runtime.
  */
-#  if defined (_STLP_RUNTIME_DLL)
-#    if !defined (_STLP_USE_STATIC_LIB)
-#      if !defined (_STLP_USE_DYNAMIC_LIB)
-#        define _STLP_USE_DYNAMIC_LIB
-#      endif
-#    else
+#    if defined (_STLP_RUNTIME_DLL)
+#      if !defined (_STLP_USE_STATIC_LIB)
+#        if !defined (_STLP_USE_DYNAMIC_LIB)
+#          define _STLP_USE_DYNAMIC_LIB
+#        endif
+#      else
 /* The user is forcing use of STLport as a dynamic library. We signal it so
  * that the STLport namespace will be modify to report such a combination
  * and force the user to link with the rebuilt STLport library.
  */
-#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
-#    endif
-#  else
-#    if !defined(_STLP_USE_DYNAMIC_LIB)
-#      if !defined (_STLP_USE_STATIC_LIB)
-#        define _STLP_USE_STATIC_LIB
+#        define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 #      endif
 #    else
+#      if !defined(_STLP_USE_DYNAMIC_LIB)
+#        if !defined (_STLP_USE_STATIC_LIB)
+#          define _STLP_USE_STATIC_LIB
+#        endif
+#      else
 /* Idem previous remark but the user forces use of the static native runtime.
  */
-#      define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#        define _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#      endif
 #    endif
+#  else
+/* If we do not build and use STLport libs we concider that we are in a static lib
+ * mode as only dynamic lib needs additional export/import specifier.
+ */
+#    define _STLP_USE_STATIC_LIB
 #  endif
 #endif

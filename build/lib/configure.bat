@@ -133,7 +133,7 @@ echo    Request use of boost support (www.boost.org). For the moment only the bo
 echo    type_traits library is used to get type information and to implement some
 echo    specific workaround not directly implemented by STLport. To use the same
 echo    support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
-echo    stlport/stl_user_config.h file.
+echo    stlport/stl/config/user_config.h file.
 echo.
 echo "--not-thread-safe"
 echo    Per default STLport libraries are built in order to be usable in a multithreaded

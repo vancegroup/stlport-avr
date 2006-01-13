@@ -26,20 +26,34 @@ Usage:
 
 Available options:
 
-  --target=<target>     target platform (cross-compiling)
-  --help                print this help message and exit
+  --target=<target>     Target platform (cross-compiling)
+
+  --help                Print this help message and exit
+
   --with-stlport=<dir>  use STLport in catalog <dir>
+
   --with-mwcw=<dir>     Metrowerks CodeWarrior compiler catalog (useful for mw* compilers)
                         i.e. something like "c:/Program Files/Metrowerks/CodeWarrior"
-  --with-nwsdk=<dir>    use Novell NDK/SDK from this catalog (useful for *-*-netware target)
+
+  --with-nwsdk=<dir>    Use Novell NDK/SDK from this catalog (useful for *-*-netware target)
                         i.e. something like "c:/Novell/ndk/nwsdk"
+
   --no-cygwin           Specific cygwin distribution option. Use it to build STLport using
                         the cygwin tools but without dependency on the cygwin1.dll
+
   --with-extra-cxxflags=<options>
-                        pass extra options to C++ compiler
+                        Pass extra options to C++ compiler
+
   --not-thread-safe     Per default STLport libraries are built in order to be usable in a multithreaded
                         context. If you don't need this you can ask for a not thread safe version with
                         this option.
+
+  --use-boost=<dir>     Request use of boost support (www.boost.org). For the moment only the boost
+                        type_traits library is used to get type information and to implement some
+                        specific workaround not directly implemented by STLport. To use the same
+                        support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
+                        stlport/stl/config/user_config.h file.
+
   --clean               remove custom settings (file ${configmak})
                         and use default values
 
@@ -73,6 +87,7 @@ do
   case $option in
     --clean)
       rm -f ${configmak}
+      echo Configuration file removed.
       ;; 
     --target=*)
       write_option "$option" TARGET_OS
@@ -96,7 +111,11 @@ do
       echo "in stlport/stl/_site_config.h to use such a configuration."
       ;;
     --not-thread-safe)
-     write_option 1 STLP_BUILD_NO_THREAD
+      write_option 1 STLP_BUILD_NO_THREAD
+      ;;
+    --use-boost=*)
+      echo Setting config to use boost library
+      write_option "$option" STLP_BUILD_BOOST_PATH
       ;;
   esac
 done

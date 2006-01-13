@@ -223,18 +223,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
-#if 0 //defined (__BORLANDC__) && defined (_RTLDLL)
-inline void _Stl_loc_init_num_get() {
-  num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index = 12;
-  num_get<char, const char*>::id._M_index = 13;
-
-#  if !defined (_STLP_NO_WCHAR_T)
-  num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 31;
-  num_get<wchar_t, const wchar_t*>::id._M_index = 32;
-#  endif
-}
-#endif /*  __BORLANDC__ && _RTLDLL */
-
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)

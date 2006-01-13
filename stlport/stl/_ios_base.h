@@ -269,19 +269,6 @@ public:
       friend class ios_base;
   };
 
-#if 0
-  // this class is needed to ensure locale initialization w/o <iostream> inclusion
-  class _STLP_CLASS_DECLSPEC _Loc_init {
-  public:
-    _Loc_init();
-    ~_Loc_init();
-  private:
-    friend class locale;
-    static long _S_count;
-    friend class ios_base;
-  };
-#endif
-
   friend class Init;
 
 public:

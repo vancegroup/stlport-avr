@@ -30,9 +30,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
+#if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-#define __PRIME_LIST_BODY { \
+#  define __PRIME_LIST_BODY { \
   53ul,         97ul,         193ul,       389ul,       769ul,      \
   1543ul,       3079ul,       6151ul,      12289ul,     24593ul,    \
   49157ul,      98317ul,      196613ul,    393241ul,    786433ul,   \
@@ -41,35 +43,38 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
   1610612741ul, 3221225473ul, 4294967291ul  \
 }
 
-template <class _Dummy>
-size_t _Stl_prime<_Dummy>::_S_max_nb_buckets() {
+template <class _Dummy> size_t _STLP_CALL
+_Stl_prime<_Dummy>::_S_max_nb_buckets() {
   const size_t _list[] = __PRIME_LIST_BODY;
-#ifndef __MWERKS__
+#  ifndef __MWERKS__
   return _list[(sizeof(_list)/sizeof(_list[0])) - 1];
-#else
+#  else
   return _list[28/sizeof(size_t) - 1]; // stupid MWERKS!
-#endif
+#  endif
 }
 
-template <class _Dummy>
-size_t _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
+template <class _Dummy> size_t _STLP_CALL
+_Stl_prime<_Dummy>::_S_next_size(size_t __n) {
   static const size_t _list[] = __PRIME_LIST_BODY;
   const size_t* __first = _list;
-#ifndef __MWERKS__
+#  ifndef __MWERKS__
   const size_t* __last =  _list + (sizeof(_list)/sizeof(_list[0]));
-#else
+#  else
   const size_t* __last =  _list + (28/sizeof(size_t)); // stupid MWERKS
-#endif
+#  endif
   const size_t* pos = __lower_bound(__first, __last, __n, __less((size_t*)0), (ptrdiff_t*)0);
   return (pos == __last ? *(__last - 1) : *pos);
 };
 
-#undef __PRIME_LIST_BODY
+#  undef __PRIME_LIST_BODY
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#endif
 
 #if defined (_STLP_DEBUG)
 #  define hashtable _STLP_NON_DBG_NAME(hashtable)
-#else
-_STLP_MOVE_TO_STD_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 // fbp: these defines are for outline methods definitions.
