@@ -509,7 +509,7 @@ public:                         // Size, capacity, etc.
 public:                         // Element access.
 
   const_reference operator[](size_type __n) const
-    { return *(this->_M_Start() + __n); }
+  { return __n == size() ? __STATIC_CAST(const _CharT&,_STLP_DEFAULT_CONSTRUCTED(_CharT)) : *(this->_M_Start() + __n); }
   reference operator[](size_type __n)
     { return *(this->_M_Start() + __n); }
 

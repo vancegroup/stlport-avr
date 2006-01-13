@@ -37,6 +37,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(data);
   CPPUNIT_TEST(c_str);
+  CPPUNIT_TEST(null_char);
   CPPUNIT_TEST(insert);
   CPPUNIT_TEST(replace);
   CPPUNIT_TEST(resize);
@@ -68,6 +69,7 @@ protected:
   void erase();
   void data();
   void c_str();
+  void null_char();
   void insert();
   void replace();
   void resize();
@@ -334,6 +336,27 @@ void StringTest::c_str()
   xx += ";";
   CPPUNIT_ASSERT( strcmp( xx.c_str(), "1234;" ) == 0 );
   // End of block B
+}
+
+void StringTest::null_char()
+{
+  // ISO/IEC 14882:1998(E), ISO/IEC 14882:2003(E), 21.3.4 ('... the const version')
+  const string s( "123456" );
+
+  CPPUNIT_CHECK( s[s.size()] == '\0' );
+
+#if defined (_STLP_USE_EXCEPTIONS)
+  try {
+    char c = s.at( s.size() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch ( out_of_range& ) {
+    CPPUNIT_ASSERT( true );
+  }
+  catch ( ... ) {
+    CPPUNIT_ASSERT( false );
+  }
+#endif
 }
 
 void StringTest::insert()
