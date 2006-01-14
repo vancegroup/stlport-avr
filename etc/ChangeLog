@@ -1,3 +1,17 @@
+2006-01-14  Eric Sanford  <...@comp...>
+
+	* build/test/eh/bcc.mak: Copied from build/test/unit/bcc.mak.
+
+	* stlport/stl/_rope.c: Restore Borland support for _Rope_rotate.
+
+	* stlport/stl/_rope.h: Fix Borland 5.5.1 internal compiler errors
+	in _M_path_end and _M_tmp_buf structs. Restore Borland support for
+	_Rope_rotate.
+
+	* test/eh/test_rope.cpp: Restore Borland exception test for rope.
+
+	* test/unit/rope_test.cpp: Restore Borland unit test for rope.
+
 2006-01-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.h, stlport/stl/debug/_string.h:
@@ -244,10 +258,10 @@
 
 	* stlport/stl/_fstream.c, _istream.c, src/fstream.cpp, strstream.cpp:
 	Add some cast to avoid Borland suspicious pointer arithmetic warnings
-	thanks Eric Stanford.
+	thanks Eric Sanford.
 
 	* stlport/stl/_limits.c: Fix Borland definition of NaNs and infinity
-	for long double thanks Eric Stanford.
+	for long double thanks Eric Sanford.
 
 	* stlport/stl/config/_system.h, _gcc.h: Fix config for Windows, MinGW
 	and Cygwin platforms.
@@ -256,7 +270,7 @@
 	compiler.
 
 	* stlport/stl/config/_warning_off.h: Removed suspicious pointer
-	arithmetic warning for Borland thanks Eric Stanford.
+	arithmetic warning for Borland thanks Eric Sanford.
 
 	* stlport/stl/_construct.h: Removed now useless Borland workaround.
 
@@ -484,7 +498,7 @@
 	compiler do not support IEC559 specifications.
 
 	* build/Makefiles/gmake/bcc.mak: Put startup .obj to link with in
-	START_OBJ rather than LDLIBS, thanks Eric Stanford.
+	START_OBJ rather than LDLIBS, thanks Eric Sanford.
 
 	* src/c_locale_win32/c_locale_win32.c: Temporarily removed category
 	check in __Extract_locale_name function for Borland, looks like LC_ALL
@@ -518,7 +532,7 @@
 	now we directly invoke the linker, we do not use a compiler call for it.
 
 	* build/Makefiles/gmake/app/bcc.mak: Fix linker option in order to generate
-	a windows executable and not a dll, thanks Eric Stanford.
+	a windows executable and not a dll, thanks Eric Sanford.
 
 	* build/Makefiles/gmake/app/rules-install.mak: Add install dir dependency
 	rather than doing a folder existence check in rules actions.

@@ -18,9 +18,6 @@ using namespace std;
 class RopeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(RopeTest);
-#    if defined (__BORLANDC__)
-  CPPUNIT_IGNORE;
-#    endif
   CPPUNIT_TEST(io);
   CPPUNIT_TEST(find1);
   CPPUNIT_TEST(find2);
@@ -39,7 +36,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
 //
 void RopeTest::io()
 {
-#    if !defined (__BORLANDC__)
   char const* cstr = "rope test string";
   crope rstr(cstr);
 
@@ -50,7 +46,6 @@ void RopeTest::io()
     CPPUNIT_ASSERT( ostr );
     CPPUNIT_ASSERT( ostr.str() == cstr );
   }
-#    endif
 }
 
 void RopeTest::find1()

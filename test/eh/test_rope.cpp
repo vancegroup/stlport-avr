@@ -66,7 +66,6 @@ container_category(const TestRope&)
 
 void test_rope()
 {
-#if !defined (__BORLANDC__)
     TestRope testRope, testRope2;
     size_t ropeSize = random_number(random_base);
 
@@ -112,7 +111,6 @@ void test_rope()
     ConstCheck( testRope, test_copy_construct<TestRope>() );
 
     WeakCheck( testRope, test_assign_op<TestRope>( testRope2 ) );
-#endif
 }
 #endif // __MWERKS__
 

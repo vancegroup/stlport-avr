@@ -760,7 +760,11 @@ public:
   // Path_end contains the bottom section of the path from
   // the root to the current leaf.
   struct {
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
+    _RopeRep const*_M_data[4];
+#  else
     _RopeRep const*_M_data[_S_path_cache_len];
+#  endif
   } _M_path_end;
   // Last valid __pos in path_end;
   // _M_path_end[0] ... _M_path_end[_M_leaf_index-1]
@@ -779,7 +783,11 @@ public:
   // The cached path is generally assumed to be valid
   // only if the buffer is valid.
   struct {
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
+    _CharT _M_data[15];
+#  else
     _CharT _M_data[_S_iterator_buf_len];
+#  endif
   } _M_tmp_buf;
 
   // Set buffer contents given path cache.
@@ -2317,8 +2325,7 @@ _STLP_TEMPLATE_NULL struct hash<wrope> {
 };
 #endif
 
-#if !defined (__BORLANDC__) && \
-    (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
 void _Rope_rotate(_Rope_iterator<_CharT, _Alloc> __first,
