@@ -31,7 +31,7 @@
 #    endif
 #  endif
 
-#  if defined(_STLP_MSVC) && (_STLP_MSVC >= 1300)
+#  if (defined(_STLP_MSVC) && (_STLP_MSVC >= 1300)) || (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800))
 // In .NET, <typeinfo> actually includes <typeinfo.h> 
 #    undef _STLP_OLDSTD_typeinfo
 #  endif

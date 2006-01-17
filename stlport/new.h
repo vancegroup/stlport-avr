@@ -23,7 +23,7 @@
 # if !defined(_STLP_WINCE) && !defined(_STLP_NO_NEW_HEADER)
 # if defined (__BORLANDC__)
 #  include <new.>
-# elif (__INTEL_COMPILER >= 800)
+# elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800 && !defined(_MSC_VER))
 #   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 # else
 #  if defined (__GNUC__) && (__GNUC__ >= 3)
