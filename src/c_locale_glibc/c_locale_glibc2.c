@@ -153,83 +153,91 @@ void *_Locale_monetary_create( const char *nm )
 void *_Locale_messages_create( const char *nm )
 { return __LOCALE_CREATE( nm, LC_MESSAGES ); }
 
-const char *_Locale_ctype_default( char *nm )
+/*
+  try to see locale category LC should be used from environment;
+  according POSIX, the order is
+  1. LC_ALL
+  2. category (LC_CTYPE, LC_NUMERIC, ... )
+  3. LANG
+  If set nothing, return "C" (this really implemetation-specific).
+*/
+const char *_Locale_aux_default( const char *LC, char *nm )
 {
-  printf( "%s:%d %s\n", __FILE__, __LINE__, nm );
+  char *name = getenv( "LC_ALL" );
 
-  return 0;
+  if ( name != NULL && *name != 0 ) {
+    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+  }
+  name = getenv( LC );
+  if ( name != NULL && *name != 0 ) {
+    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+  }
+  name = getenv( "LANG" );
+  if ( name != NULL && *name != 0 ) {
+    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+  }
+
+  return strcpy( nm, "C" );
 }
 
-const char *_Locale_numeric_default( char *buf )
+const char *_Locale_ctype_default( char *nm )
 {
-  char *num = getenv( "LC_NUMERIC" );
-  printf( "%s:%d %s\n", __FILE__, __LINE__, buf );
-  /* return 0; */
-  if ( num == 0 || *num == '0' ) {
-    num = getenv( "LANG" );
-  }
-  if ( num == 0 || *num == '0' ) {
-    return strcpy( buf, _C_name ); /* return 0; */
-  }
-  return strcpy( buf, num );
+  return _Locale_aux_default( "LC_CTYPE", nm );
+}
+
+const char *_Locale_numeric_default( char *nm )
+{
+  return _Locale_aux_default( "LC_NUMERIC", nm );
 }
 
 const char *_Locale_time_default( char *nm )
 {
-  printf( "%s:%d %s\n", __FILE__, __LINE__, nm );
-
-  return 0;
+  return _Locale_aux_default( "LC_TIME", nm );
 }
 
 const char *_Locale_collate_default( char *nm )
 {
-  printf( "%s:%d %s\n", __FILE__, __LINE__, nm );
-
-  return 0;
+  return _Locale_aux_default( "LC_COLLATE", nm );
 }
 
 const char *_Locale_monetary_default( char *nm )
 {
-  printf( "%s:%d %s\n", __FILE__, __LINE__, nm );
-
-  return 0;
+  return _Locale_aux_default( "LC_MONETARY", nm );
 }
 
 const char *_Locale_messages_default( char *nm )
 {
-  printf( "%s:%d %s\n", __FILE__, __LINE__, nm );
-
-  return 0;
+  return _Locale_aux_default( "LC_MESSAGES", nm );
 }
 
 char *_Locale_ctype_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_CTYPE]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_CTYPE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char *_Locale_numeric_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_NUMERIC]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_NUMERIC]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char *_Locale_time_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_TIME]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_TIME]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char *_Locale_collate_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_COLLATE]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_COLLATE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char *_Locale_monetary_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_MONETARY]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MONETARY]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char *_Locale_messages_name( const void *__loc, char *buf )
 {
-  return __loc != 0 ? strcpy( buf, ((__c_locale)__loc)->__locales[LC_MESSAGES]->name ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MESSAGES]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 void _Locale_ctype_destroy( void *__loc )

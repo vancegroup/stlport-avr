@@ -1,3 +1,13 @@
+2006-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/c_locale_glibc/c_locale_glibc2.c: really implemented
+	getting default locale categories from environment; replace
+	a few strcpy by strncpy to protect from possible buffer overflow
+	attack.
+	
+	* stlport/new.h, stlport/stl/_typeinfo.h: few workarounds for ICC 9
+	[suggested by Lim Hwan Cheol].
+
 2006-01-14  Eric Sanford  <...@comp...>
 
 	* build/test/eh/bcc.mak: Copied from build/test/unit/bcc.mak.

@@ -59,6 +59,7 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
   CPPUNIT_TEST(locale_init_problem);
+  CPPUNIT_TEST(default_locale);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -71,6 +72,7 @@ public:
   void ctype_facet();
   void locale_init_problem();
   void money_put_X_bug();
+  void default_locale();
 private:
   void _loc_has_facet( const locale&, const ref_locale& );
   void _num_put_get( const locale&, const ref_locale& );
@@ -863,6 +865,11 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
     CPPUNIT_ASSERT( false );
   }
 #  endif
+}
+
+void LocaleTest::default_locale()
+{
+  locale loc( "" );
 }
 
 #endif
