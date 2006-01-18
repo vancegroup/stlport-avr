@@ -126,7 +126,6 @@
 #define _STLP_WHOLE_NATIVE_STD
 */
 
-
 /*
  * Use this option to catch uninitialized members in your classes.
  * When it is set, construct() and destroy() fill the class storage
@@ -220,7 +219,7 @@
 /*
  * If you customize the STLport generated library names don't forget to give
  * the motif you used during configuration here if you still want the auto link
- * to work. (Do not remove quotes in the macro value)
+ * to work. (Do not remove double quotes in the macro value)
  */
 /*
 #define _STLP_LIB_NAME_MOTIF "???"
@@ -234,7 +233,6 @@
 /*
 #define _STLP_VERBOSE_AUTO_LINK 1
 */
-
 
 /*
  * Use minimum set of default arguments on template classes that have more
