@@ -1,3 +1,14 @@
+2006-01-18  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_ostream.h, _ostream.c: Use size_t rather than
+	unsigned int for MSVC compilers after VC6 in IO output operator
+	to avoid 64 bits warning when trying to displau a size_t type.
+
+	* test/unit/sstream_test.cpp: Add test that reveal the 64 bits
+	warning.
+
+	* test/unit/string_test.cpp: Fixed unused variable warning.
+
 2006-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: really implemented

@@ -106,7 +106,14 @@ public:                         // Formatted output.
   _Self& operator<<(short __x);
   _Self& operator<<(unsigned short __x);
   _Self& operator<<(int __x);
+#if defined (_WIN64) || !defined (_STLP_MSVC) || (_STLP_MSVC < 1300)
   _Self& operator<<(unsigned int __x);
+#else
+/* We define this operator with size_t rather than unsigned int to avoid
+ * 64 bits warning.
+ */
+  _Self& operator<<(size_t __x);
+#endif
   _Self& operator<<(long __x);
   _Self& operator<<(unsigned long __x);
 #ifdef _STLP_LONG_LONG

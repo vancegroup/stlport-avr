@@ -347,7 +347,7 @@ void StringTest::null_char()
 
 #if defined (_STLP_USE_EXCEPTIONS)
   try {
-    char c = s.at( s.size() );
+    s.at( s.size() );
     CPPUNIT_ASSERT( false );
   }
   catch ( out_of_range& ) {

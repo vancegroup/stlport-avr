@@ -224,7 +224,14 @@ basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(int _
 }
 
 template <class _CharT, class _Traits>
+#if defined (_WIN64) || !defined (_STLP_MSVC) || (_STLP_MSVC < 1300)
 basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(unsigned int __x) {
+#else
+/* We define this operator with size_t rather than unsigned int to avoid
+ * 64 bits warning.
+ */
+basic_ostream<_CharT, _Traits>& basic_ostream<_CharT, _Traits>::operator<<(size_t __x) {
+#endif
   return _M_put_num(*this,  __STATIC_CAST(unsigned long,__x));
 }
 

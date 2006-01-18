@@ -57,38 +57,57 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SstreamTest);
 //
 void SstreamTest::output()
 {
-  ostringstream s;
+  {
+    ostringstream s;
 
-  s << 1 << '\n' << 2.0 << '\n' << "abcd\n" << "ghk lm\n" << "abcd ef";
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
+    s << 1 << '\n' << 2.0 << '\n' << "abcd\n" << "ghk lm\n" << "abcd ef";
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
+  }
+  {
+    ostringstream s;
+    size_t i = 0;
+    s << i;
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( s.str() == "0" );
+  }
 }
 
 void SstreamTest::input()
 {
-  istringstream s( "1\n2\nabcd\nghk lm\nabcd ef" );
-  int i = 0;
-  s >> i;
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( i == 1 );
-  double d = 0.0;
-  s >> d;
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( d == 2.0 );
-  string str;
-  s >> str;
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( str == "abcd" );
-  char c;
-  s.get(c); // extract newline, that not extracted by operator >>
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( c == '\n' );
-  getline( s, str );
-  CPPUNIT_ASSERT( s.good() );
-  CPPUNIT_ASSERT( str == "ghk lm" );
-  getline( s, str );
-  CPPUNIT_ASSERT( s.eof() );
-  CPPUNIT_ASSERT( str == "abcd ef" );
+  {
+    istringstream s( "1\n2\nabcd\nghk lm\nabcd ef" );
+    int i = 0;
+    s >> i;
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( i == 1 );
+    double d = 0.0;
+    s >> d;
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( d == 2.0 );
+    string str;
+    s >> str;
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( str == "abcd" );
+    char c;
+    s.get(c); // extract newline, that not extracted by operator >>
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( c == '\n' );
+    getline( s, str );
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( str == "ghk lm" );
+    getline( s, str );
+    CPPUNIT_ASSERT( s.eof() );
+    CPPUNIT_ASSERT( str == "abcd ef" );
+  }
+  {
+    istringstream s("0");
+    size_t i = 1;
+    s >> i;
+    CPPUNIT_ASSERT( !s.fail() );
+    CPPUNIT_ASSERT( s.eof() );
+    CPPUNIT_ASSERT( i == 0 );
+  }
 }
 
 void SstreamTest::input_char()
