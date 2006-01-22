@@ -35,7 +35,6 @@
 #    endif
 
 #    if (_MSC_VER <= 1310)
-#      pragma warning( disable : 4355 ) // this used in base member initializer list
 #      pragma warning( disable : 4511 ) // copy constructor cannot be generated
 #    endif
 
@@ -45,6 +44,7 @@
 #    pragma warning( disable : 4127 ) // conditional expression is constant
 #    pragma warning( disable : 4146 ) // unary minus operator applied to unsigned type, result still unsigned
 #    pragma warning( disable : 4245 ) // conversion from 'enum ' to 'unsigned int', signed/unsigned mismatch
+#    pragma warning( disable : 4355 ) // this used in base member initializer list (used in rope implementation)
 #    pragma warning( disable : 4510 ) // default constructor cannot be generated
 #    pragma warning( disable : 4512 ) // assignment operator could not be generated
 #    pragma warning( disable : 4571 ) // catch(...) blocks compiled with /EHs do not catch or re-throw Structured Exceptions
