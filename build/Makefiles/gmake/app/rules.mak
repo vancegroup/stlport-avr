@@ -10,7 +10,7 @@ release-static:	$(OUTPUT_DIR) ${PRG}
 
 ifeq ("${_C_SOURCES_ONLY}","")
 
-ifneq (bcc, $(COMPILER_NAME))
+ifeq (gcc, $(COMPILER_NAME))
 
 ${PRG}:	$(OBJ) $(LIBSDEP)
 	$(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(OBJ) $(LDLIBS) ${STDLIBS} ${END_OBJ}

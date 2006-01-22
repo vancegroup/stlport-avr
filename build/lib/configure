@@ -113,7 +113,7 @@ do
     --not-thread-safe)
       write_option 1 STLP_BUILD_NO_THREAD
       ;;
-    --use-boost=*)
+    --with-boost=*)
       echo Setting config to use boost library
       write_option "$option" STLP_BUILD_BOOST_PATH
       ;;

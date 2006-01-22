@@ -84,6 +84,8 @@
 
 #  undef _STLP_USE_DECLSPEC
 #  define _STLP_USE_DECLSPEC 1
+#else
+#  define _STLP_CALL
 #endif
 
 #include <stl/config/_auto_link.h>

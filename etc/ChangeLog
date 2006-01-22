@@ -1,3 +1,68 @@
+2006-01-22  Francois Dumont  <dums@stlport...>
+
+	* src/locale_impl.cpp, stlport/stl/_codecvt.h, _monetary.c,
+	_num_get.c, _num_put.c, _time_facets.c: Borland workaround for
+	locale facet id instanciation that were duplicated. Now static
+	instances are no more defined from .c files but only from the
+	.cpp and only for facets that are implemented by STLport. Users
+	implementing facet inheriting from the STLport one will have to
+	defined the static instance themself in their translation units.
+	
+	* stlport/stl/type_manips.h: Fixed _UnCVType wrong implementation
+	reported by Digital Mars compiler.
+
+	* stlport/stl/boost_type_traits.h: Fixed _OKMemCpy implementation
+	remove_pointer call was wrong.
+
+	* src/dll_main.cpp: Hide force_link definition to MSVC compilers,
+	was useless and producing a warning.
+
+	* build/Makefiles/gmake/cygming/rules-so.mak: Workaround for DMC
+	linker weird behavior. Linker create the dll file even if link
+	fail which comfuse make dependency feature. As lib file is not
+	generated, dll now depends on lib that depends on build files.
+
+	* stlport/stl/config/_warning_off.h: Disabled this used in initialization
+	list warning, used in rope implementation.
+
+	* build/lib/configure: Fix --with-boost interpretation.
+
+	* build/Makefiles/gmake/dmc.mak: Use dm_link command for linker rather
+	than link that is rather the MSVC like wrapper.
+
+	* build/Makefiles/gmake/cygming/targetsys.mak: Ditto for dm_lib rather
+	than lib command.
+
+	* build/Makefiles/gmake/app/rules.mak: Use same linker command invocation
+	for DMC and Borland.
+
+	* doc/README.borland: Documentation update about limitation on locale
+	facets id instanciation.
+
+	* stlport/stdlib.h: DMC, like Borland and EVC, defines errno macro
+	in stdlib.h
+
+	* stlport/stl/config/user_config.h, features.h: Inverse
+	_STLP_FORCE_STRING_TERMINATION macro switch in
+	_STLP_DONT_FORCE_STRING_TERMINATION. This is less dangerous for
+	existing code.
+
+	* stlport/stl/_string.h: When _STLP_FORCE_STRING_TERMINATION
+	is defined operator[] implementation is simpler.
+
+	* stlport/stl/debug/_string.h: Based implementation of []
+	operator on the non STL safe internal instance, avoid duplication
+	of check for access to the element of index size().
+
+	* test/unit/fstream_test.cpp: Add custom facet id definition for
+	Borland.
+
+	* test/unit/hash_test.cpp: Now Borland support correctly hash container
+	implementation.
+
+	* test/unit/rope_test.cpp: Fixed test implementation to build in
+	_STLP_NO_IOSTREAMS mode.
+
 2006-01-18  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_ostream.h, _ostream.c: Use size_t rather than

@@ -412,22 +412,22 @@ Status (stldbg-static):         All pass (327 tests)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:                       Borland C++ compiler 5.5.1
+Compiler:                       Borland C++ compiler 5.5.1 (free version)
 -----------------------------------------------------------------------
-Date:                           2005-12-21
+Date:                           2006-01-21
 STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        Unable to link for the moment.
+Status (release-shared):        All pass (352 tests, 4 ignores).
 Notes:
-Status (dbg-shared):            Unable to link for the moment.
+Status (dbg-shared):            All pass (352 tests, 4 ignores).
 Notes:
-Status (stldbg-shared):         Unable to link for the moment.
+Status (stldbg-shared):         All pass (352 tests, 4 ignores).
 Notes:
-Status (release-static):        All pass (345 tests, 6 ignored)
+Status (release-static):        All pass (352 tests, 4 ignores).
 Notes:
-Status (dbg-static):            All pass (345 tests, 6 ignored)
+Status (dbg-static):            All pass (352 tests, 4 ignores).
 Notes:
-Status (stldbg-static):         All pass (345 tests, 6 ignored)
+Status (stldbg-static):         All pass (352 tests, 4 ignores).
 Notes:
 
 -----------------------------------------------------------------------

@@ -307,6 +307,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 } /* extern "C" */
 
+#if !defined (_STLP_MSVC)
 _STLP_BEGIN_NAMESPACE
 
 static void FORCE_SYMBOL
@@ -318,5 +319,6 @@ force_link() {
 }
 
 _STLP_END_NAMESPACE
+#endif
 
 #endif /* _WIN32 */

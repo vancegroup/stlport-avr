@@ -94,8 +94,30 @@ files (order of paths doesn't matter here).
 Now you should be ready to use STLport.
 
 ============
-Known issues
+Known limitations
 ============
 
-1. Linking with STLport dlls do not work, prefer static libs for the moment.
+1. If you extend a locale facet based on a Standard facet definition you will
+have to grant your own facet id defition. Ex extracted from
+test/unit/fstream_test.cpp:
+
+#include <locale>
+
+using namespace std;
+
+struct my_state {
+  char dummy;
+};
+
+struct my_traits : public char_traits<char> {
+  typedef my_state state_type;
+  typedef fpos<state_type> pos_type;
+};
+
+class my_codecvt : public codecvt<char, char, my_state>
+{};
+
+// Mandatory locale facet id definition:
+template <>
+locale::id codecvt<char, char, my_state>::id;
 

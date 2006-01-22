@@ -38,11 +38,13 @@ _STLP_BEGIN_NAMESPACE
 
 #if (_STLP_STATIC_TEMPLATE_DATA > 0)
 
+#  if !defined (__BORLANDC__)
 template <class _CharT, class _InputIterator>
 locale::id money_get<_CharT, _InputIterator>::id;
 
 template <class _CharT, class _OutputIterator>
 locale::id money_put<_CharT, _OutputIterator>::id;
+#  endif
 
 #  if (defined (__CYGWIN__) || defined (__MINGW32__)) && \
        defined (_STLP_USE_DYNAMIC_LIB) && !defined (__BUILDING_STLPORT)

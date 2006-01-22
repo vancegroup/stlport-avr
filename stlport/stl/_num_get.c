@@ -435,8 +435,10 @@ _STLP_MOVE_TO_STD_NAMESPACE
 //
 
 #if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
+#  if !defined (__BORLANDC__)
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
+#  endif
 
 #  if (defined (__CYGWIN__) || defined (__MINGW32__)) && \
        defined (_STLP_USE_DYNAMIC_LIB) && !defined (__BUILDING_STLPORT)

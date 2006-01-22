@@ -372,6 +372,7 @@ void FstreamTest::win32_file_format()
   }
 }
 
+#if defined (DO_CUSTOM_FACET_TEST)
 struct my_state {
   char dummy;
 };
@@ -382,12 +383,13 @@ struct my_traits : public char_traits<char> {
 };
 
 class my_codecvt : public codecvt<char, char, my_state>
-{
-public:
-  //static locale::id id;
-};
+{};
 
-//locale::id my_codecvt::id;
+#  if defined (__BORLANDC__)
+template <>
+locale::id codecvt<char, char, my_state>::id;
+#  endif
+#endif
 
 void FstreamTest::custom_facet()
 {

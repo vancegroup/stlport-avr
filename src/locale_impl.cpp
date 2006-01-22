@@ -606,6 +606,76 @@ void _Locale_impl::make_classic_locale() {
   _Stl_global_locale = &_Locale_global;
 }
 
+#if defined (__BORLANDC__)
+template <>
+_STLP_DECLSPEC locale::id time_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id time_get<char, const char*>::id;
+
+template <>
+_STLP_DECLSPEC locale::id time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id time_put<char, char*>::id;
+
+#  if !defined (_STLP_NO_WCHAR_T)
+template <>
+_STLP_DECLSPEC locale::id time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id time_get<wchar_t, const wchar_t*>::id;
+
+template <>
+_STLP_DECLSPEC locale::id time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id time_put<wchar_t, wchar_t*>::id;
+#  endif /* _STLP_NO_WCHAR_T */
+
+template <>
+_STLP_DECLSPEC locale::id money_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id money_get<char, const char*>::id;
+
+template <>
+_STLP_DECLSPEC locale::id money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id money_put<char, char*>::id;
+
+#  if !defined (_STLP_NO_WCHAR_T)
+template <>
+_STLP_DECLSPEC locale::id money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id money_get<wchar_t, const wchar_t*>::id;
+
+template <>
+_STLP_DECLSPEC locale::id money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id money_put<wchar_t, wchar_t*>::id;
+#  endif
+
+template <>
+_STLP_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_get<char, const char*>::id;
+
+#  if !defined (STLP_NO_WCHAR_T)
+template <>
+_STLP_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id;
+#  endif
+
+template <>
+_STLP_DECLSPEC locale::id num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_put<char, char*>::id;
+
+#  if !defined (_STLP_NO_WCHAR_T)
+template <>
+_STLP_DECLSPEC locale::id num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+template <>
+_STLP_DECLSPEC locale::id num_put<wchar_t, wchar_t*>::id;
+#  endif
+#endif
+
 // Declarations of (non-template) facets' static data members
 // size_t locale::id::_S_max = 39; // made before
 

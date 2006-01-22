@@ -347,7 +347,8 @@ void StringTest::null_char()
 
 #if defined (_STLP_USE_EXCEPTIONS)
   try {
-    s.at( s.size() );
+    //Check is only here to avoid warning about value of expression not used
+    CPPUNIT_CHECK( s.at(s.size()) == '\0' );
     CPPUNIT_ASSERT( false );
   }
   catch ( out_of_range& ) {

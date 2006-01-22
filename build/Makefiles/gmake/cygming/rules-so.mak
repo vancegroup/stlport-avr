@@ -22,12 +22,17 @@ ${SO_NAME_OUT_STLDBG}:	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
 else
 ifeq (dmc, $(COMPILER_NAME))
 # Digital Mars linker
-${SO_NAME_OUT}:	$(OBJ) $(RES) $(LIBSDEP)
+# This linker generate the dll file even if link fail so we also use a
+# dependency on the lib file.
+$(SO_NAME_OUT):	$(LIB_NAME_OUT)
 	$(LINK.cc) $(subst /,\,$(OBJ), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES))
-${SO_NAME_OUT_DBG}: $(OBJ_DBG) $(RES_DBG) $(LIBSDEP)
+$(LIB_NAME_OUT): $(OBJ) $(RES) $(LIBSDEP)
+$(SO_NAME_OUT_DBG): $(LIB_NAME_OUT_DBG)
 	$(LINK.cc) $(subst /,\,$(OBJ_DBG), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES_DBG))
-${SO_NAME_OUT_STLDBG}:	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
+$(LIB_NAME_OUT_DBG): $(OBJ_DBG) $(RES_DBG) $(LIBSDEP)
+$(SO_NAME_OUT_STLDBG):	$(LIB_NAME_OUT_STLDBG)
 	$(LINK.cc) $(subst /,\,$(OBJ_STLDBG), $(LINK_OUTPUT_OPTION),, $(LDLIBS),,$(RES_STLDBG))
+$(LIB_NAME_OUT_STLDBG):	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
 else
 # GNU linker
 ${SO_NAME_OUT}:	$(OBJ) $(RES) $(LIBSDEP)

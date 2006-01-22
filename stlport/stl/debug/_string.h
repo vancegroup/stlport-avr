@@ -39,7 +39,13 @@ iterator_category(const _STLP_PRIV _DBG_iter_base< _STLP_NON_DBG_STRING >&)
 #endif
 
 template <class _CharT, class _Traits, class _Alloc>
-class basic_string : private _STLP_PRIV _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING >
+class basic_string : 
+#if !defined (__DMC__)
+                     private
+#else
+                     public
+#endif
+                             _STLP_PRIV _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (basic_string)
                    , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
 #endif
@@ -207,15 +213,14 @@ public:
 
   bool empty() const { return _M_non_dbg_impl.empty(); }
 
-  const_reference operator[](size_type __n) const
-  {
+  const_reference operator[](size_type __n) const {
     _STLP_VERBOSE_ASSERT(__n <= this->size(), _StlMsg_OUT_OF_BOUNDS);
-    return __n == this->size() ? __STATIC_CAST(const _CharT&,_STLP_DEFAULT_CONSTRUCTED(_CharT)) : *(begin() + __n);
+    return _M_non_dbg_impl[__n];
   }
 
   reference operator[](size_type __n) {
     _STLP_VERBOSE_ASSERT(__n < this->size(), _StlMsg_OUT_OF_BOUNDS)
-    return *(begin() + __n);
+    return _M_non_dbg_impl[__n];
   }
 
   const_reference at(size_type __n) const { return _M_non_dbg_impl.at(__n); }

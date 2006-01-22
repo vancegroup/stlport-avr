@@ -154,8 +154,10 @@ private:
 
 #  if defined (_STLP_EXPOSE_STREAM_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #    if (_STLP_STATIC_TEMPLATE_DATA > 0)
+#if !defined (__BORLANDC__)
 template <class _InternT, class _ExternT, class _StateT>
 locale::id codecvt<_InternT, _ExternT, _StateT>::id;
+#endif
 #    endif
 #  endif
 #endif

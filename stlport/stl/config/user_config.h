@@ -281,9 +281,10 @@
 /*
  * In theory a string implementation is not force to append a terminating character
  * to the internal buffer, this character is only mandatory when calling the c_str
- * method. This, of course, imply that there is no confusion between using &*begin()
- * or data method and the special c_str method. If you are not sure that there is
- * no such confusion in your code you should define the following macro.
+ * method or operator []. This, of course, imply that there is no confusion between
+ * using &*begin() or data method and the special c_str method. If you are not sure
+ * that there is no such confusion in your code you not should define the following
+ * macro.
  * Note 1: This macro has no effect on basic_string instanciated with no POD types
  *         (this is to avoid complicated instance management within the basic_string
             implementation).
@@ -292,7 +293,7 @@
  * STLport rebuild: Yes
  */
 /*
-#define _STLP_FORCE_STRING_TERMINATION 1
+#define _STLP_DONT_FORCE_STRING_TERMINATION 1
 */
 
 /*

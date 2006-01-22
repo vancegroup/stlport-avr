@@ -176,7 +176,16 @@ struct _IsSameAux {
 };
 
 template <class _Tp>
-struct _UnCVType { typedef _Tp _Type; };
+struct _UnConstType { typedef _Tp _Type; };
+
+template <class _Tp>
+struct _UnVolatileType { typedef _Tp _Type; };
+
+template <class _Tp>
+struct _UnCVType {
+  typedef typename _UnVolatileType<_Tp>::_Type _UnVType;
+  typedef typename _UnConstType<_UnVType>::_Type _Type;
+};
 
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
@@ -186,16 +195,11 @@ struct _IsSameAux<_Tp, _Tp> {
 };
 
 #    if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
-#      if !defined (__DMC__)
 template <class _Tp>
-struct _UnCVType<const _Tp> { typedef _Tp _Type; };
+struct _UnConstType<const _Tp> { typedef _Tp _Type; };
 
 template <class _Tp>
-struct _UnCVType<volatile _Tp> { typedef _Tp _Type; };
-#      endif
-
-template <class _Tp>
-struct _UnCVType<const volatile _Tp> { typedef _Tp _Type; };
+struct _UnVolatileType<volatile _Tp> { typedef _Tp _Type; };
 #    endif
 #  endif
 

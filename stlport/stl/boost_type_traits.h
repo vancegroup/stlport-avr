@@ -27,7 +27,6 @@
 #include <boost/type_traits/is_pointer.hpp>
 #include <boost/type_traits/is_reference.hpp>
 #include <boost/type_traits/remove_cv.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 /*
@@ -95,11 +94,8 @@ struct _BothPtrType {
 
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
-  typedef typename ::boost::remove_pointer<_Tp1>::type unptr1;
-  typedef typename ::boost::remove_cv<unptr1>::type uncv1;
-
-  typedef typename ::boost::remove_pointer<_Tp2>::type unptr2;
-  typedef typename ::boost::remove_cv<unptr2>::type uncv2;
+  typedef typename ::boost::remove_cv<_Tp1>::type uncv1;
+  typedef typename ::boost::remove_cv<_Tp2>::type uncv2;
 
   enum { same = ::boost::is_same<uncv1, uncv2>::value };
   typedef typename __bool2type<same>::_Ret _Same;

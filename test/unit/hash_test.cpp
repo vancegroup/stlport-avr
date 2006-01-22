@@ -4,7 +4,7 @@
 #  include <algorithm>
 #  include <hash_map>
 #  include <hash_set>
-#  if !defined (__BORLANDC__) && !defined (__DMC__)
+#  if !defined (__DMC__)
 #    include <rope>
 #  endif
 #  include <string>
@@ -28,7 +28,7 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
-#  if defined (__BORLANDC__) || defined (__DMC__)
+#  if defined (__DMC__)
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(hmap1);
@@ -60,7 +60,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 void HashTest::hmap1()
 {
-#  if !defined (__BORLANDC__) && !defined (__DMC__)
+#  if !defined (__DMC__)
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.
