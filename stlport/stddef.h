@@ -22,7 +22,7 @@
 
 #ifndef _STLP_WINCE
 
-#  if defined (_MSC_VER)
+#  if defined (_MSC_VER) || defined (__DMC__)
 /* Native stddef.h contains errno macro definition making inclusion of native
  * errno.h in STLport errno.h impossible. We are then forced to include errno.h
  * first.

@@ -1,3 +1,14 @@
+2006-01-23  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/gmake/app/clean.mak: Fix distclean rule for
+	windows thanks Eric Stanford.
+
+	* stlport/stl/_cstddef.h, _cstdlib.h: When no new header support,
+	include STLport C header rather than native one to use errno
+	workaround.
+
+	* stlport/stddef.h: DMC also define errno in native stddef.ah file.
+
 2006-01-22  Francois Dumont  <dums@stlport...>
 
 	* src/locale_impl.cpp, stlport/stl/_codecvt.h, _monetary.c,

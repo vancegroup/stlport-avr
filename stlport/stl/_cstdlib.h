@@ -19,7 +19,7 @@
 #if defined (_STLP_USE_NEW_C_HEADERS)
 #  include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
 #else
-#  include _STLP_NATIVE_C_HEADER(stdlib.h)
+#  include <stdlib.h>
 #endif
 
 /* on evc3/evc4 including stdlib.h also defines setjmp macro */

@@ -17,7 +17,7 @@ clobber::
 	@if exist $(PRG_STLDBG) del /f /q $(PRG_STLDBG)
 
 distclean::
-	@if exist $(INSTALL_BIN_DIR)/$(PRG) del /f /q $(INSTALL_BIN_DIR)/$(PRG)
-	@if exist $(INSTALL_BIN_DIR_DBG)/$(PRG_DBG) del /f /q $(INSTALL_BIN_DIR_DBG)/$(PRG_DBG)
-	@if exist $(INSTALL_BIN_DIR_STLDBG)/$(PRG_STLDBG) del /f /q $(INSTALL_BIN_DIR_STLDBG)/$(PRG_STLDBG)
+	@if exist $(INSTALL_BIN_DIR)/$(PRGNAME)$(EXE) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(PRGNAME)$(EXE))
+	@if exist $(INSTALL_BIN_DIR_DBG)/$(PRGNAME)$(EXE) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(PRGNAME)$(EXE))
+	@if exist $(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME)$(EXE) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME)$(EXE))
 endif
