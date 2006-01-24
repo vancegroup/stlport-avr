@@ -19,8 +19,10 @@ class BindTest : public CPPUNIT_NS::TestCase
 #if !defined (STLPORT) || !defined (_STLP_NO_EXTENSIONS)
 #  if defined (STLPORT) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   CPPUNIT_IGNORE;
+  CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(bind2nd3);
+  CPPUNIT_TEST(bind_memfn);
 #endif
   CPPUNIT_TEST_SUITE_END();
 
@@ -28,7 +30,10 @@ protected:
   void bind1st1();
   void bind2nd1();
   void bind2nd2();
+#if !defined (STLPORT) || !defined (_STLP_NO_EXTENSIONS)
   void bind2nd3();
+  void bind_memfn();
+#endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BindTest);
@@ -89,4 +94,33 @@ void BindTest::bind2nd3()
   CPPUNIT_ASSERT(array[2] == 23);
 #  endif
 }
-#endif
+
+class A
+{
+  public:
+    A() :
+        m_n( 0 )
+      {	}
+
+    void f( int n ) const
+      { m_n = n; }
+
+    int v() const
+      { return m_n; }
+
+  private:
+    mutable int m_n;
+};
+
+void BindTest::bind_memfn()
+{
+#  if !defined (STLPORT) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  A array[3];
+
+  for_each( array, array + 3, bind2nd( mem_fun_ref(&A::f), 12 ) );
+
+  CPPUNIT_CHECK( array[0].v() == 12 );
+#  endif
+}
+#endif // !STLPORT && !_STLP_NO_EXTENSIONS
+
