@@ -6,7 +6,8 @@
 #  include <osreldate.h>
 #endif
 
-#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun)
+#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001 || __FreeBSD_version == 600034)) || defined(__sun)
+/* Note: __cxa_finalize and __cxa_atexit present in libc in FreeBSD 5.3, but again absent in 6.0 */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,11 +17,16 @@
 /* __asm__ (".symver " "__cxa_finalize" "," "__cxa_finalize" "@@" "STLPORT_5_0_0"); */
 
 /* Not atomic! */
+/* But we can use static mutexes here: I hope that performance issue isn't very
+   significant on unloading (for only few calls, ~10) - ptr */
+
+/*
 #define atomic_compare_and_exchange_bool_acq(mem, newval, oldval) \
   ({ __typeof (mem) __gmemp = (mem);                                  \
      __typeof (*mem) __gnewval = (newval);                            \
                                                                       \
      *__gmemp == (oldval) ? (*__gmemp = __gnewval, 0) : 1; })
+*/
 
 enum {
   ef_free, /* `ef_free' MUST be zero!  */
