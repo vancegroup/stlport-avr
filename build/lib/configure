@@ -1,8 +1,5 @@
 #!/bin/sh
-
-# Time-stamp: <06/01/14 01:20:48 ptr>
-# $Id$
-
+# Time-stamp: <06/01/24 21:32:31 ptr>
 
 configmak=../Makefiles/config.mak
 
@@ -53,6 +50,10 @@ Available options:
                         specific workaround not directly implemented by STLport. To use the same
                         support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
                         stlport/stl/config/user_config.h file.
+
+  --use-static-gcc      use static gcc libs instead of shared libgcc_s (useful for gcc compiler,
+                        that was builded with --enable-shared [default]; if compiler was builded
+                        with --disable-shared, static libraries will be used in any case)
 
   --clean               remove custom settings (file ${configmak})
                         and use default values
@@ -114,8 +115,11 @@ do
       write_option 1 STLP_BUILD_NO_THREAD
       ;;
     --with-boost=*)
-      echo Setting config to use boost library
+      echo "Don't forget to define _STLP_USE_BOOST_SUPPORT in stlport/stl/config/user_config.h file"
       write_option "$option" STLP_BUILD_BOOST_PATH
+      ;;
+    --use-static-gcc)
+      write_option "$option" USE_STATIC_LIBGCC
       ;;
   esac
 done
