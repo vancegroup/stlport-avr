@@ -1,7 +1,23 @@
+2006-01-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/bind_test.cpp: add test for member function
+	binding that show workaround for const function call.
+
+	* src/cxa.c: __cxa_finalize and __cxa_atexit present in libc
+	in FreeBSD 5.3, but again absent in 6.0
+
+	* build/Makefiles/gmake/app/gcc.mak,
+	build/Makefiles/gmake/lib/gcc.mak: detect whether gcc
+	was builded with --disable-shared and use correct libgcc.
+
+	* build/lib/configure: add --use-static-gcc option to show
+	that STLport should use static language support libraries from
+	gcc if it was build with --enable-shared.
+
 2006-01-23  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/gmake/app/clean.mak: Fix distclean rule for
-	windows thanks Eric Stanford.
+	windows thanks Eric Sanford.
 
 	* stlport/stl/_cstddef.h, _cstdlib.h: When no new header support,
 	include STLport C header rather than native one to use errno
@@ -246,7 +262,7 @@
 	contains it.
 
 	* stlport/stl/config/_bc.h, test/unit/floatio_test.cpp, cmath_test.cpp,
-	limit_test.cpp: Borland patch from Eric Stanford.
+	limit_test.cpp: Borland patch from Eric Sanford.
 
 	* test/unit/string_test.cpp: Add template_wexpression test to check
 	wstring template expression.
@@ -332,11 +348,11 @@
 
 	* src/c_locale_win32/c_locale_win32.c: Hide _Locale_mbtowc and
 	_Locale_wctomb when no wchar_t support is detected thanks Eric
-	Stanford.
+	Sanford.
 
 	* src/c_locale_win32/c_locale_win32.c: Add mapping from Borland
 	facet macros to STLport associated string representation array index
-	thanks Eric Stanford. 
+	thanks Eric Sanford. 
 
 	* stlport/stl/config/_evc.h: Patch from Michael Fink to generalized
 	use of OutputDebugString for Windows CE when we need to trace
