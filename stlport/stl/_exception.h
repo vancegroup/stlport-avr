@@ -101,7 +101,6 @@ using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #        define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_EXCEPT_STD
 #      endif
 // weird errors
-#      if (!defined (__BORLANDC__)) || (defined (__STD_EXCEPTION) && defined (__RWSTD_EXCEPTION_SEEN) && defined ( _STLP_DONT_POP_HEADER_ID))
 #        if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected;
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected_handler;
@@ -110,7 +109,6 @@ using _STLP_VENDOR_UNEXPECTED_STD::set_unexpected;
 using _STLP_VENDOR_TERMINATE_STD::terminate;
 using _STLP_VENDOR_TERMINATE_STD::terminate_handler;
 using _STLP_VENDOR_TERMINATE_STD::set_terminate;
-#      endif
 
 #      if !defined (_STLP_NO_UNCAUGHT_EXCEPT_SUPPORT)
 using _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD::uncaught_exception;
