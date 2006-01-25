@@ -64,9 +64,19 @@ void SstreamTest::output()
     CPPUNIT_ASSERT( s.good() );
     CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
   }
+
+  //Following tests are mostly used to reveal problem with the MSVC /Wp64 option
+  //used to track 64 bits portability issue:
   {
     ostringstream s;
     size_t i = 0;
+    s << i;
+    CPPUNIT_ASSERT( s.good() );
+    CPPUNIT_ASSERT( s.str() == "0" );
+  }
+  {
+    ostringstream s;
+    ptrdiff_t i = 0;
     s << i;
     CPPUNIT_ASSERT( s.good() );
     CPPUNIT_ASSERT( s.str() == "0" );

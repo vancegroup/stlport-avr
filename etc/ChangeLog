@@ -1,3 +1,9 @@
+2006-01-25  Francois Dumont  <dums@stlport...>
+
+	* test/unit/stream_test.cpp: Add check for ptrdiff_t output
+	in streams operator when 64 bits portability issue detection
+	feature is activated with MSVC compilers.
+
 2006-01-25  Eric Sanford  <...@comp...>
 
 	* stlport/stl/_exception.h: Delete obsolete workaround for
