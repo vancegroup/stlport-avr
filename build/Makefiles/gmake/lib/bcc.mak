@@ -6,7 +6,7 @@ release-shared : OPT += -tWD
 dbg-shared : OPT += -tWD
 stldbg-shared : OPT += -tWD
 
-release-shared : LDFLAGS += -Tpd -V4.00 -v -w-dup
+release-shared : LDFLAGS += -Tpd -V4.00 -w -w-dup
 dbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 stldbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 
