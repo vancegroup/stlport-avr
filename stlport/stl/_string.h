@@ -508,12 +508,10 @@ public:                         // Size, capacity, etc.
 
 public:                         // Element access.
 
+  //First implementation use c_str in order to guaranty return of a null
+  //character when __n == size()
   const_reference operator[](size_type __n) const
-#if defined (_STLP_FORCE_STRING_TERMINATION)
-  { return *(this->_M_Start() + __n); }
-#else
-  { return __n == size() ? __STATIC_CAST(const _CharT&, _STLP_DEFAULT_CONSTRUCTED(_CharT)) : *(this->_M_Start() + __n); }
-#endif
+  { return this->c_str()[__n]; }
   reference operator[](size_type __n)
   { return *(this->_M_Start() + __n); }
 
