@@ -121,3 +121,9 @@ class my_codecvt : public codecvt<char, char, my_state>
 template <>
 locale::id codecvt<char, char, my_state>::id;
 
+2. If you get a linker memory error, e.g. LME351, it probably means that full
+source debugging is enabled and Borland's .TDS file has exceeded the memory 
+capacity of Borland's linker (ilink32.exe).  To resolve this error, check
+Borland's website for the latest patch for ilink32.exe.  In the alternative,
+disable full source debugging in build\Makefiles\gmake\bcc.mak by deleting 
+the -v option in the OPT settings.

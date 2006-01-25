@@ -9,6 +9,8 @@
 	* stlport/stl/config/_bc.h: Restore unexpected exception handler
 	(static and dynamic) and uncaught_exception handler (static only)
 
+	* build/Makefiles/gmake/lib/bcc.mak: Typo fix in linker flags.
+
 2006-01-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/bind_test.cpp: add test for member function
