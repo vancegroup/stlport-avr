@@ -1,3 +1,14 @@
+2006-01-25  Eric Sanford  <...@comp...>
+
+	* stlport/stl/_exception.h: Delete obsolete workaround for
+	legacy Borland compilers.
+
+	* stlport/stl/_string.h: Use an other implementation for the
+	const_reference operator[](size_type _n) const
+
+	* stlport/stl/config/_bc.h: Restore unexpected exception handler
+	(static and dynamic) and uncaught_exception handler (static only)
+
 2006-01-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/bind_test.cpp: add test for member function
