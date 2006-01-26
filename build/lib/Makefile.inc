@@ -32,7 +32,8 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/complex_trig.cpp \
           ../../src/complex_io_w.cpp \
           ../../src/string.cpp \
-          ../../src/bitset.cpp
+          ../../src/bitset.cpp \
+          ../../src/allocators.cpp
 
 SRC_C = ../../src/c_locale.c \
         ../../src/cxa.c

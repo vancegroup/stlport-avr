@@ -115,45 +115,32 @@ inline bool  _STLP_CALL operator!=(const __allocator<_Tp, _Alloc>& __a1,
 // work correctly.
 
 #ifndef _STLP_NON_TYPE_TMPL_PARAM_BUG
-template <int inst>
-inline bool  _STLP_CALL operator==(const __malloc_alloc<inst>&,
-                                   const __malloc_alloc<inst>&)
-{
-  return true;
-}
+inline bool  _STLP_CALL operator==(const __malloc_alloc&, const __malloc_alloc&)
+{ return true; }
 
-#ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
-template <int __inst>
-inline bool  _STLP_CALL operator!=(const __malloc_alloc<__inst>&,
-                                   const __malloc_alloc<__inst>&)
-{
-  return false;
-}
-#endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
+#  ifdef _STLP_FUNCTION_TMPL_PARTIAL_ORDER
+inline bool  _STLP_CALL operator!=(const __malloc_alloc&, const __malloc_alloc&)
+{ return false; }
+#  endif
 
 inline bool _STLP_CALL operator==(const __new_alloc&, const __new_alloc&) { return true; }
 
-# ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
+#  ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
 inline bool _STLP_CALL operator!=(const __new_alloc&, const __new_alloc&) { return false; }
-# endif
+#  endif
 
+#  if !defined (_STLP_NO_IOSTREAMS)
+inline bool  _STLP_CALL operator==(const __node_alloc&,
+                                   const __node_alloc&)
+{ return true; }
 
-template <bool __threads, int __inst>
-inline bool  _STLP_CALL operator==(const __node_alloc<__threads, __inst>&,
-                                   const __node_alloc<__threads, __inst>&)
-{
-  return true;
-}
+#    if defined( _STLP_FUNCTION_TMPL_PARTIAL_ORDER )
 
-#if defined( _STLP_FUNCTION_TMPL_PARTIAL_ORDER )
-
-template <bool __threads, int __inst>
-inline bool  _STLP_CALL operator!=(const __node_alloc<__threads, __inst>&,
-                                   const __node_alloc<__threads, __inst>&)
-{
-  return false;
-}
-#endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
+inline bool  _STLP_CALL operator!=(const __node_alloc&,
+                                   const __node_alloc&)
+{ return false; }
+#    endif
+#  endif
 
 #endif /* _STLP_NON_TYPE_TMPL_PARAM_BUG */
 
@@ -167,17 +154,17 @@ inline bool  _STLP_CALL operator!=(const __debug_alloc<_Alloc>&, const __debug_a
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
 // Versions for the predefined SGI-style allocators.
-template <class _Tp, int __inst>
-struct _Alloc_traits<_Tp, __malloc_alloc<__inst> > {
-  typedef __allocator<_Tp, __malloc_alloc<__inst> > allocator_type;
+template <class _Tp>
+struct _Alloc_traits<_Tp, __malloc_alloc> {
+  typedef __allocator<_Tp, __malloc_alloc> allocator_type;
 };
 
-
-template <class _Tp, bool __threads, int __inst>
-struct _Alloc_traits<_Tp, __node_alloc<__threads, __inst> > {
-  typedef __allocator<_Tp, __node_alloc<__threads, __inst> >
-          allocator_type;
+#  if !defined (_STLP_NO_IOSTREAMS)
+template <class _Tp>
+struct _Alloc_traits<_Tp, __node_alloc> {
+  typedef __allocator<_Tp, __node_alloc> allocator_type;
 };
+#  endif
 
 template <class _Tp, class _Alloc>
 struct _Alloc_traits<_Tp, __debug_alloc<_Alloc> > {
@@ -201,9 +188,7 @@ struct _Alloc_traits<_Tp, __allocator<_Tp1, _Alloc > > {
 
 #  if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
 
-typedef __malloc_alloc<0> __malloc_alloc_dfl;
-typedef __node_alloc<false, 0> __single_client_node_alloc;
-typedef __node_alloc<true, 0>  __multithreaded_node_alloc;
+typedef __malloc_alloc __malloc_alloc_dfl;
 
 template <class _Tp>
 inline __allocator<_Tp, __malloc_alloc_dfl >& _STLP_CALL
@@ -211,17 +196,13 @@ __stl_alloc_rebind(__malloc_alloc_dfl& __a, const _Tp*) {
   return (__allocator<_Tp, __malloc_alloc_dfl >&)__a;
 }
 
+#    if !defined (_STLP_NO_IOSTREAMS)
 template <class _Tp>
-inline __allocator<_Tp, __single_client_node_alloc >& _STLP_CALL
-__stl_alloc_rebind(__single_client_node_alloc& __a, const _Tp*) {
-  return (__allocator<_Tp, __single_client_node_alloc >&)__a;
+inline __allocator<_Tp, __node_alloc>& _STLP_CALL
+__stl_alloc_rebind(__node_alloc& __a, const _Tp*) {
+  return (__allocator<_Tp, __node_alloc>&)__a;
 }
-
-template <class _Tp>
-inline __allocator<_Tp, __multithreaded_node_alloc >& _STLP_CALL
-__stl_alloc_rebind(__multithreaded_node_alloc& __a, const _Tp*) {
-  return (__allocator<_Tp, __multithreaded_node_alloc >&)__a;
-}
+#    endif
 
 template <class _Tp>
 inline __allocator<_Tp, __malloc_alloc_dfl > _STLP_CALL
@@ -229,43 +210,44 @@ __stl_alloc_create(const __malloc_alloc_dfl&, const _Tp*) {
   return __allocator<_Tp, __malloc_alloc_dfl > ();
 }
 
+#    if !defined (_STLP_NO_IOSTREAMS)
 template <class _Tp>
-inline __allocator<_Tp, __single_client_node_alloc > _STLP_CALL
-__stl_alloc_create(const __single_client_node_alloc&, const _Tp*) {
-  return __allocator<_Tp, __single_client_node_alloc >();
+inline __allocator<_Tp, __node_alloc> _STLP_CALL
+__stl_alloc_create(const __node_alloc&, const _Tp*) {
+  return __allocator<_Tp, __node_alloc>();
 }
 
-template <class _Tp>
-inline __allocator<_Tp, __multithreaded_node_alloc > _STLP_CALL
-__stl_alloc_create(const __multithreaded_node_alloc&, const _Tp*) {
-  return __allocator<_Tp, __multithreaded_node_alloc >();
-}
+#    endif
 
 #  else
 
-template <class _Tp, int __inst>
-inline __allocator<_Tp, __malloc_alloc<__inst> >& _STLP_CALL
-__stl_alloc_rebind(__malloc_alloc<__inst>& __a, const _Tp*) {
-  return (__allocator<_Tp, __malloc_alloc<__inst> >&)__a;
+template <class _Tp>
+inline __allocator<_Tp, __malloc_alloc>& _STLP_CALL
+__stl_alloc_rebind(__malloc_alloc& __a, const _Tp*) {
+  return (__allocator<_Tp, __malloc_alloc>&)__a;
 }
 
-template <class _Tp, bool __threads, int __inst>
-inline __allocator<_Tp, __node_alloc<__threads, __inst> >& _STLP_CALL
-__stl_alloc_rebind(__node_alloc<__threads, __inst>& __a, const _Tp*) {
-  return (__allocator<_Tp, __node_alloc<__threads, __inst> >&)__a;
+#    if !defined (_STLP_NO_IOSTREAMS)
+template <class _Tp>
+inline __allocator<_Tp, __node_alloc>& _STLP_CALL
+__stl_alloc_rebind(__node_alloc& __a, const _Tp*) {
+  return (__allocator<_Tp, __node_alloc>&)__a;
+}
+#    endif
+
+template <class _Tp>
+inline __allocator<_Tp, __malloc_alloc> _STLP_CALL
+__stl_alloc_create(const __malloc_alloc&, const _Tp*) {
+  return __allocator<_Tp, __malloc_alloc>();
 }
 
-template <class _Tp, int __inst>
-inline __allocator<_Tp, __malloc_alloc<__inst> > _STLP_CALL
-__stl_alloc_create(const __malloc_alloc<__inst>&, const _Tp*) {
-  return __allocator<_Tp, __malloc_alloc<__inst> >();
+#    if !defined (_STLP_NO_IOSTREAMS)
+template <class _Tp>
+inline __allocator<_Tp, __node_alloc> _STLP_CALL
+__stl_alloc_create(const __node_alloc&, const _Tp*) {
+  return __allocator<_Tp, __node_alloc>();
 }
-
-template <class _Tp, bool __threads, int __inst>
-inline __allocator<_Tp, __node_alloc<__threads, __inst> > _STLP_CALL
-__stl_alloc_create(const __node_alloc<__threads, __inst>&, const _Tp*) {
-  return __allocator<_Tp, __node_alloc<__threads, __inst> >();
-}
+#    endif
 
 #  endif
 

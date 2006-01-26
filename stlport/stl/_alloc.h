@@ -71,16 +71,6 @@
 #  define __ALLOC __sgi_alloc
 #endif
 
-#if !defined (__RESTRICT)
-#  define __RESTRICT
-#endif
-
-#if defined (_STLP_THREADS)
-#  define _STLP_NODE_ALLOCATOR_THREADS true
-#else
-#  define _STLP_NODE_ALLOCATOR_THREADS false
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
@@ -90,34 +80,40 @@ template <class _Tp, class _Alloc> struct __allocator;
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
 
+#if !defined (_STLP_NO_IOSTREAMS)
 typedef void (* __oom_handler_type)();
+#endif
 
-template <int __inst>
-class __malloc_alloc {
+class _STLP_CLASS_DECLSPEC __malloc_alloc {
+#if !defined (_STLP_NO_IOSTREAMS)
 private:
   static void* _STLP_CALL _S_oom_malloc(size_t);
   static __oom_handler_type __oom_handler;
+#endif
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
 #if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
-    typedef __allocator<_Tp1, __malloc_alloc<__inst> > other;
+    typedef __allocator<_Tp1, __malloc_alloc> other;
   };
 #endif
   static void* _STLP_CALL allocate(size_t __n)    {
     void* __result = malloc(__n);
+#if !defined (_STLP_NO_IOSTREAMS)
     if (0 == __result) __result = _S_oom_malloc(__n);
+#endif
     return __result;
   }
   static void _STLP_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
+#if !defined (_STLP_NO_IOSTREAMS)
   static __oom_handler_type _STLP_CALL set_malloc_handler(__oom_handler_type __f) {
     __oom_handler_type __old = __oom_handler;
     __oom_handler = __f;
-    return(__old);
+    return __old;
   }
+#endif
 };
-
 
 // New-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
@@ -125,7 +121,7 @@ class _STLP_CLASS_DECLSPEC __new_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) &&  defined(_STLP_USE_RAW_SGI_ALLOCATORS)
+#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
     typedef __allocator<_Tp1, __new_alloc > other;
   };
@@ -182,7 +178,7 @@ public:
   static void _STLP_CALL deallocate(void *, size_t);
 };
 
-
+#if !defined (_STLP_NO_IOSTREAMS)
 // Default node allocator.
 // With a reasonable compiler, this should be roughly as fast as the
 // original STL class-specific allocators, but with less fragmentation.
@@ -206,20 +202,19 @@ public:
 // The second parameter is unreferenced and serves only to allow the
 // creation of multiple default_alloc instances.
 
-#if defined (__OS400__) || defined (_WIN64)
+#  if defined (__OS400__) || defined (_WIN64)
 enum {_ALIGN = 16, _ALIGN_SHIFT = 4, _MAX_BYTES = 256};
-#else
+#  else
 enum {_ALIGN = 8, _ALIGN_SHIFT = 3, _MAX_BYTES = 128};
-#endif /* __OS400__ */
+#  endif /* __OS400__ */
 
-#define _STLP_NFREELISTS 16
+#  define _STLP_NFREELISTS 16
 
-class _STLP_CLASS_DECLSPEC _Node_alloc_obj {
-public:
+struct _Node_alloc_obj {
   _Node_alloc_obj * _M_next;
 };
 
-#if defined (_STLP_LEAKS_PEDANTIC) && defined (_STLP_USE_DYNAMIC_LIB)
+#  if defined (_STLP_LEAKS_PEDANTIC) && defined (_STLP_USE_DYNAMIC_LIB)
 /*
  * We can only do cleanup of the node allocator memory pool if we are
  * sure that the STLport library is used as a shared one as it guaranties
@@ -227,30 +222,28 @@ public:
  * allocator instances might exchange memory blocks making the implementation
  * of a cleaning process much more complicated.
  */
-#  define _STLP_DO_CLEAN_NODE_ALLOC
-#endif
+#    define _STLP_DO_CLEAN_NODE_ALLOC
+#  endif
 
 /* When STLport is used without multi threaded safety we use the node allocator
  * implementation with locks as locks becomes no-op. The lock free implementation
  * always use system specific atomic operations which are slower than 'normal' 
  * ones.
  */
-#if /*defined (_STLP_THREADS) && */ \
-    defined (_STLP_HAS_ATOMIC_FREELIST) && defined (_STLP_ATOMIC_ADD)
+#  if defined (_STLP_THREADS) && \
+      defined (_STLP_HAS_ATOMIC_FREELIST) && defined (_STLP_ATOMIC_ADD)
 /*
  * We have an implementation of the atomic freelist (_STLP_atomic_freelist)
  * for this architecture and compiler.  That means we can use the non-blocking
  * implementation of the node-allocation engine.*/
-//#pragma message ("Using lock free implementation")
-#  define _STLP_USE_LOCK_FREE_IMPLEMENTATION
-#endif
+#    define _STLP_USE_LOCK_FREE_IMPLEMENTATION
+#  endif
 
-template <bool __threads, int __inst>
-class __node_alloc {
+class _STLP_CLASS_DECLSPEC __node_alloc {
 _STLP_PRIVATE:
   static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
 
-#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
   typedef _STLP_atomic_freelist::item   _Obj;
   typedef _STLP_atomic_freelist         _Freelist;
   typedef _STLP_atomic_freelist         _ChunkList;
@@ -260,11 +253,11 @@ _STLP_PRIVATE:
   struct _FreeBlockHeader : public _STLP_atomic_freelist::item {
     char* _M_end;     // pointer to end of free memory
   };
-#else
+#  else
   typedef _Node_alloc_obj       _Obj;
   typedef _Obj* _STLP_VOLATILE  _Freelist;
   typedef _Obj*                 _ChunkList;
-#endif
+#  endif
 
 private:
   // Returns an object of size __n, and optionally adds to size __n free list.
@@ -275,34 +268,34 @@ private:
   // Chunk allocation state.
   static _Freelist _S_free_list[_STLP_NFREELISTS];
   // Amount of total allocated memory
-#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
   static _STLP_VOLATILE __stl_atomic_t _S_heap_size;
-#else
+#  else
   static size_t _S_heap_size;
-#endif
+#  endif
 
   static void * _STLP_CALL _M_allocate(size_t __n);
   /* __p may not be 0 */
   static void _STLP_CALL _M_deallocate(void *__p, size_t __n);
 
-#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
   // List of blocks of free memory
   static _STLP_atomic_freelist  _S_free_mem_blocks;
-#else
+#  else
   // Start of the current free memory buffer
   static char* _S_start_free;
   // End of the current free memory buffer
   static char* _S_end_free;
-#endif
+#  endif
 
-#if defined (_STLP_DO_CLEAN_NODE_ALLOC)
+#  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
 public:
   // Methods to report alloc/dealloc calls to the counter system.
-#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+#    if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
   typedef _STLP_VOLATILE __stl_atomic_t _AllocCounter;
-#  else
+#    else
   typedef __stl_atomic_t _AllocCounter;
-#  endif
+#    endif
   static _AllocCounter& _STLP_CALL _S_alloc_counter();
   static void _STLP_CALL _S_alloc_call();
   static void _STLP_CALL _S_dealloc_call();
@@ -312,31 +305,32 @@ private:
   static void _STLP_CALL _S_chunk_dealloc();
   // Beginning of the linked list of allocated chunks of memory
   static _ChunkList _S_chunks;
-#endif /* _STLP_DO_CLEAN_NODE_ALLOC */
+#  endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
+#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
   template <class _Tp1> struct rebind {
-    typedef __allocator<_Tp1, __node_alloc<__threads, __inst> > other;
+    typedef __allocator<_Tp1, __node_alloc> other;
   };
-#endif
+#  endif
   /* __n must be > 0      */
   static void * _STLP_CALL allocate(size_t __n) { return (__n > (size_t)_MAX_BYTES) ?  __stl_new(__n) : _M_allocate(__n); }
   /* __p may not be 0 */
   static void _STLP_CALL deallocate(void *__p, size_t __n) { if (__n > (size_t)_MAX_BYTES) __stl_delete(__p); else _M_deallocate(__p, __n); }
 };
 
+
+#  if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__node_alloc>;
+#  endif
+
+#endif /* _STLP_NO_IOSTREAMS */
+
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS __malloc_alloc<0>;
-_STLP_EXPORT_TEMPLATE_CLASS __node_alloc<_STLP_NODE_ALLOCATOR_THREADS, 0>;
-#endif /* _STLP_USE_TEMPLATE_EXPORT */
-typedef __node_alloc<_STLP_NODE_ALLOCATOR_THREADS, 0> _Node_alloc;
-#if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<_Node_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
-_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc<0> >;
+_STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc>;
 #endif
 
 /* macro to convert the allocator for initialization
@@ -395,9 +389,9 @@ typedef __pthread_alloc __multithreaded_alloc;
 
 #else /* _STLP_USE_PERTHREAD_ALLOC */
 
-#  if defined ( _STLP_USE_NEWALLOC )
+#  if defined (_STLP_USE_NEWALLOC)
 
-#    if defined ( _STLP_DEBUG_ALLOC )
+#    if defined (_STLP_DEBUG_ALLOC)
 typedef __debug_alloc<__new_alloc> __sgi_alloc;
 #    else
 typedef __new_alloc __sgi_alloc;
@@ -408,25 +402,25 @@ typedef __new_alloc __multithreaded_alloc;
 
 #  elif defined (_STLP_USE_MALLOC)
 
-#    if defined ( _STLP_DEBUG_ALLOC )
-typedef __debug_alloc<__malloc_alloc<0> > __sgi_alloc;
+#    if defined (_STLP_DEBUG_ALLOC)
+typedef __debug_alloc<__malloc_alloc> __sgi_alloc;
 #    else
-typedef __malloc_alloc<0> __sgi_alloc;
+typedef __malloc_alloc __sgi_alloc;
 #    endif /* _STLP_DEBUG_ALLOC */
 
-typedef __malloc_alloc<0> __single_client_alloc;
-typedef __malloc_alloc<0> __multithreaded_alloc;
+typedef __malloc_alloc __single_client_alloc;
+typedef __malloc_alloc __multithreaded_alloc;
 
 #  else
 
-#    if defined ( _STLP_DEBUG_ALLOC )
-typedef __debug_alloc<_Node_alloc> __sgi_alloc;
+#    if defined (_STLP_DEBUG_ALLOC)
+typedef __debug_alloc<__node_alloc> __sgi_alloc;
 #    else
-typedef _Node_alloc __sgi_alloc;
+typedef __node_alloc __sgi_alloc;
 #    endif
 
-typedef __node_alloc<false, 0> __single_client_alloc;
-typedef __node_alloc<true, 0>  __multithreaded_alloc;
+typedef __node_alloc __single_client_alloc;
+typedef __node_alloc __multithreaded_alloc;
 
 #  endif /* _STLP_USE_NEWALLOC */
 #endif /* _STLP_USE_PERTHREAD_ALLOC */
@@ -562,7 +556,7 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
 #  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 #  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
+#endif
 
 #if !defined (_STLP_FORCE_ALLOCATORS)
 #  define _STLP_FORCE_ALLOCATORS(a,y)
@@ -651,9 +645,7 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<wchar_t*, wchar_t, allocator<wchar
 #  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #  endif
-#endif /* _STLP_USE_TEMPLATE_EXPORT */
-
-#undef _STLP_NODE_ALLOCATOR_THREADS
+#endif
 
 template <class _Tp>
 struct __alloc_type_traits {
@@ -690,8 +682,6 @@ _STLP_END_NAMESPACE
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_alloc.c>
 #endif
-
-#undef _STLP_DO_CLEAN_NODE_ALLOC
 
 #endif /* _STLP_INTERNAL_ALLOC_H */
 

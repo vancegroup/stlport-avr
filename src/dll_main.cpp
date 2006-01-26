@@ -166,12 +166,8 @@ template struct _STLP_CLASS_DECLSPEC __stl_debug_engine<bool>;
 _STLP_MOVE_TO_STD_NAMESPACE
 #  endif
 
-template class _STLP_CLASS_DECLSPEC __node_alloc<false,0>;
-template class _STLP_CLASS_DECLSPEC __node_alloc<true,0>;
-template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<true,0> >;
-template class _STLP_CLASS_DECLSPEC __debug_alloc< __node_alloc<false,0> >;
+template class _STLP_CLASS_DECLSPEC __debug_alloc<__node_alloc>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
-template class _STLP_CLASS_DECLSPEC __malloc_alloc<0>;
 
 #  if defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
 const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
@@ -307,7 +303,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 } /* extern "C" */
 
-#if !defined (_STLP_MSVC)
+#if !defined (_STLP_MSVC) && !defined (__MINGW32__)
 _STLP_BEGIN_NAMESPACE
 
 static void FORCE_SYMBOL

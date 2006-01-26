@@ -101,13 +101,6 @@
  * used to import symbols from PSDK under MinGW
  */
 #  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
-/* For the moment Cygwin/MinGW platform do not support the node allocator
- * because static datas are sometimes duplicated resulting in memory leaks.
- * This problem has been revealed when generating a dll using STLport that
- * is manually loaded, then memory block are allocated from a _S_free_list
- * and returned to an other...
- */
-#  define _STLP_USE_NEWALLOC
 #endif
 
 #if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun) || defined(__APPLE__))

@@ -1,3 +1,29 @@
+2006-01-26  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h, _alloc.c, _pthread_alloc.h: Many code moved
+	to allocators.cpp.
+
+	* stlport/stl/_pthread_alloc.c: Removed, content moved to
+	allocators.cpp.
+
+	* src/allocators.cpp: New, contains STLport node and per thread
+	allocator implementation.
+
+	* src/dll_main.cpp: Remove references to former __node_alloc
+	class.
+
+	* build/lib/Makefile.inc: Add allocators.cpp translation unit.
+
+	* stlport/stl/_alloc_old.h: Modified based on allocator classes new
+	interface.
+
+	* stlport/stl/config/feature.h: Default allocator in _STLP_NO_IOSTREAMS
+	mode is now the new/delete allocator, user can still use malloc/free
+	one using config swtich in host.h.
+
+	* stlport/stl/config/_gcc.h: Cygwin/MinGW can now use default node
+	allocator implementation without memory leak.
+
 2006-01-25  Francois Dumont  <dums@stlport...>
 
 	* test/unit/stream_test.cpp: Add check for ptrdiff_t output

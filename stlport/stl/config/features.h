@@ -83,7 +83,7 @@
 /* ========================================================= */
 /* This file is used for compatibility; it accepts old-style config
    switches */
-/* #include <stl/config/compat.h> */
+#include <stl/config/compat.h>
 
 /* Common configuration file for this particular installation. */
 
@@ -162,6 +162,11 @@
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS) && \
     (defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
 #  error "Sorry but according the STLport settings your compiler can not support the pointer specialization feature."
+#endif
+
+#if defined (_STLP_NO_IOSTREAMS) && \
+   !defined (_STLP_USE_NEWALLOC) && !defined (_STLP_USE_MALLOC)
+#  define _STLP_USE_NEWALLOC
 #endif
 
 #if !defined (_STLP_BIG_ENDIAN) && ! defined (_STLP_LITTLE_ENDIAN)
