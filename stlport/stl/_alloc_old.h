@@ -129,7 +129,7 @@ inline bool _STLP_CALL operator==(const __new_alloc&, const __new_alloc&) { retu
 inline bool _STLP_CALL operator!=(const __new_alloc&, const __new_alloc&) { return false; }
 #  endif
 
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
 inline bool  _STLP_CALL operator==(const __node_alloc&,
                                    const __node_alloc&)
 { return true; }
@@ -159,7 +159,7 @@ struct _Alloc_traits<_Tp, __malloc_alloc> {
   typedef __allocator<_Tp, __malloc_alloc> allocator_type;
 };
 
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
 template <class _Tp>
 struct _Alloc_traits<_Tp, __node_alloc> {
   typedef __allocator<_Tp, __node_alloc> allocator_type;
@@ -196,7 +196,7 @@ __stl_alloc_rebind(__malloc_alloc_dfl& __a, const _Tp*) {
   return (__allocator<_Tp, __malloc_alloc_dfl >&)__a;
 }
 
-#    if !defined (_STLP_NO_IOSTREAMS)
+#    if !defined (_STLP_USE_NO_IOSTREAMS)
 template <class _Tp>
 inline __allocator<_Tp, __node_alloc>& _STLP_CALL
 __stl_alloc_rebind(__node_alloc& __a, const _Tp*) {
@@ -210,7 +210,7 @@ __stl_alloc_create(const __malloc_alloc_dfl&, const _Tp*) {
   return __allocator<_Tp, __malloc_alloc_dfl > ();
 }
 
-#    if !defined (_STLP_NO_IOSTREAMS)
+#    if !defined (_STLP_USE_NO_IOSTREAMS)
 template <class _Tp>
 inline __allocator<_Tp, __node_alloc> _STLP_CALL
 __stl_alloc_create(const __node_alloc&, const _Tp*) {
@@ -227,7 +227,7 @@ __stl_alloc_rebind(__malloc_alloc& __a, const _Tp*) {
   return (__allocator<_Tp, __malloc_alloc>&)__a;
 }
 
-#    if !defined (_STLP_NO_IOSTREAMS)
+#    if !defined (_STLP_USE_NO_IOSTREAMS)
 template <class _Tp>
 inline __allocator<_Tp, __node_alloc>& _STLP_CALL
 __stl_alloc_rebind(__node_alloc& __a, const _Tp*) {
@@ -241,7 +241,7 @@ __stl_alloc_create(const __malloc_alloc&, const _Tp*) {
   return __allocator<_Tp, __malloc_alloc>();
 }
 
-#    if !defined (_STLP_NO_IOSTREAMS)
+#    if !defined (_STLP_USE_NO_IOSTREAMS)
 template <class _Tp>
 inline __allocator<_Tp, __node_alloc> _STLP_CALL
 __stl_alloc_create(const __node_alloc&, const _Tp*) {

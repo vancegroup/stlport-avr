@@ -72,7 +72,7 @@ class _STLP_CLASS_DECLSPEC _Bs_G
   public:
     //returns the number of bit set within the buffer between __beg and __end.
     static size_t _S_count(const unsigned char *__beg, const unsigned char *__end)
-#if defined (_STLP_NO_IOSTREAMS)
+#if defined (_STLP_USE_NO_IOSTREAMS)
     {
       size_t __result = 0;
       for (; __beg != __end; ++__beg) {
@@ -87,7 +87,7 @@ class _STLP_CLASS_DECLSPEC _Bs_G
 #endif
     // Mapping from 8 bit unsigned integers to the index of the first one bit set:
     static unsigned char _S_first_one(unsigned char __x)
-#if defined (_STLP_NO_IOSTREAMS)
+#if defined (_STLP_USE_NO_IOSTREAMS)
     {
       for (unsigned char i = 0; i < (sizeof(unsigned char) * 8); ++i) {
         if ((__x & (1 << i)) != 0) { return i; }

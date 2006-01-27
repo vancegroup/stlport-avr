@@ -4,7 +4,7 @@
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
 #  include <rope>
 
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
 #    include <sstream>
 #  endif
 
@@ -20,7 +20,7 @@ using namespace std;
 class RopeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(RopeTest);
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_TEST(io);
 #  endif
   CPPUNIT_TEST(find1);
@@ -38,7 +38,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
 //
 // tests implementation
 //
-#  if !defined (_STLP_NO_IOSTREAMS)
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
 void RopeTest::io()
 {
   char const* cstr = "rope test string";

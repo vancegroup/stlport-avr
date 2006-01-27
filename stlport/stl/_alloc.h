@@ -80,12 +80,12 @@ template <class _Tp, class _Alloc> struct __allocator;
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
 
-#if !defined (_STLP_NO_IOSTREAMS)
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 typedef void (* __oom_handler_type)();
 #endif
 
 class _STLP_CLASS_DECLSPEC __malloc_alloc {
-#if !defined (_STLP_NO_IOSTREAMS)
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 private:
   static void* _STLP_CALL _S_oom_malloc(size_t);
   static __oom_handler_type __oom_handler;
@@ -100,13 +100,13 @@ public:
 #endif
   static void* _STLP_CALL allocate(size_t __n)    {
     void* __result = malloc(__n);
-#if !defined (_STLP_NO_IOSTREAMS)
+#if !defined (_STLP_USE_NO_IOSTREAMS)
     if (0 == __result) __result = _S_oom_malloc(__n);
 #endif
     return __result;
   }
   static void _STLP_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
-#if !defined (_STLP_NO_IOSTREAMS)
+#if !defined (_STLP_USE_NO_IOSTREAMS)
   static __oom_handler_type _STLP_CALL set_malloc_handler(__oom_handler_type __f) {
     __oom_handler_type __old = __oom_handler;
     __oom_handler = __f;
@@ -178,7 +178,13 @@ public:
   static void _STLP_CALL deallocate(void *, size_t);
 };
 
-#if !defined (_STLP_NO_IOSTREAMS)
+#  if defined (__OS400__) || defined (_WIN64)
+enum {_ALIGN = 16, _ALIGN_SHIFT = 4, _MAX_BYTES = 256};
+#  else
+enum {_ALIGN = 8, _ALIGN_SHIFT = 3, _MAX_BYTES = 128};
+#  endif /* __OS400__ */
+
+#if !defined (_STLP_USE_NO_IOSTREAMS)
 // Default node allocator.
 // With a reasonable compiler, this should be roughly as fast as the
 // original STL class-specific allocators, but with less fragmentation.
@@ -201,12 +207,6 @@ public:
 // This may have undesirable effects on reference locality.
 // The second parameter is unreferenced and serves only to allow the
 // creation of multiple default_alloc instances.
-
-#  if defined (__OS400__) || defined (_WIN64)
-enum {_ALIGN = 16, _ALIGN_SHIFT = 4, _MAX_BYTES = 256};
-#  else
-enum {_ALIGN = 8, _ALIGN_SHIFT = 3, _MAX_BYTES = 128};
-#  endif /* __OS400__ */
 
 #  define _STLP_NFREELISTS 16
 
@@ -326,7 +326,7 @@ public:
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__node_alloc>;
 #  endif
 
-#endif /* _STLP_NO_IOSTREAMS */
+#endif /* _STLP_USE_NO_IOSTREAMS */
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
