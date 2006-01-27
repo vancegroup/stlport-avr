@@ -286,6 +286,7 @@ _STLP_STRING_LITERAL("Iterator is not in range [first,last)"),  \
 _STLP_STRING_LITERAL("Range [first,last) is not in range [start,finish)"),  \
 _STLP_STRING_LITERAL("The advance would produce invalid iterator"),  \
 _STLP_STRING_LITERAL("Iterator is singular (advanced beyond the bounds ?)"),  \
+_STLP_STRING_LITERAL("Invalid strict weak ordering predicate, if pred(a, b) then we should have !pred(b, a)"), \
 _STLP_STRING_LITERAL("Memory block deallocated twice"),  \
 _STLP_STRING_LITERAL("Deallocating a block that was never allocated"),  \
 _STLP_STRING_LITERAL("Deallocating a memory block allocated for another type"),  \

@@ -81,17 +81,27 @@ inline
 #endif
 const _Tp&
 __median(const _Tp& __a, const _Tp& __b, const _Tp& __c, _Compare __comp) {
-  if (__comp(__a, __b))
-    if (__comp(__b, __c))
+  if (__comp(__a, __b)) {
+    _STLP_VERBOSE_ASSERT(!__comp(__b, __a), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    if (__comp(__b, __c)) {
+      _STLP_VERBOSE_ASSERT(!__comp(__c, __b), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return __b;
-    else if (__comp(__a, __c))
+    }
+    else if (__comp(__a, __c)) {
+      _STLP_VERBOSE_ASSERT(!__comp(__c, __a), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return __c;
+    }
     else
       return __a;
-  else if (__comp(__a, __c))
+  }
+  else if (__comp(__a, __c)) {
+    _STLP_VERBOSE_ASSERT(!__comp(__c, __a), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     return __a;
-  else if (__comp(__b, __c))
+  }
+  else if (__comp(__b, __c)) {
+    _STLP_VERBOSE_ASSERT(!__comp(__c, __b), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     return __c;
+  }
   else
     return __b;
 }
@@ -869,11 +879,15 @@ _RandomAccessIter __unguarded_partition(_RandomAccessIter __first,
                                         _RandomAccessIter __last,
                                         _Tp __pivot, _Compare __comp) {
   for (;;) {
-    while (__comp(*__first, __pivot))
+    while (__comp(*__first, __pivot)) {
+      _STLP_VERBOSE_ASSERT(!__comp(__pivot, *__first), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       ++__first;
+    }
     --__last;
-    while (__comp(__pivot, *__last))
+    while (__comp(__pivot, *__last)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__last, __pivot), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       --__last;
+    }
     if (!(__first < __last))
       return __first;
     iter_swap(__first, __last);
@@ -890,6 +904,7 @@ void __unguarded_linear_insert(_RandomAccessIter __last, _Tp __val,
   _RandomAccessIter __next = __last;
   --__next;
   while (__comp(__val, *__next)) {
+    _STLP_VERBOSE_ASSERT(!__comp(*__next, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     *__last = *__next;
     __last = __next;
     --__next;
@@ -903,6 +918,7 @@ inline void __linear_insert(_RandomAccessIter __first,
   //*TY 12/26/1998 - added __val as a paramter
   //  _Tp __val = *__last;        //*TY 12/26/1998 - __val supplied by caller
   if (__comp(__val, *__first)) {
+    _STLP_VERBOSE_ASSERT(!__comp(*__first, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     copy_backward(__first, __last, __last + 1);
     *__first = __val;
   }
@@ -1199,18 +1215,21 @@ template <class _RandomAccessIter, class _Tp, class _Compare>
 void __partial_sort(_RandomAccessIter __first, _RandomAccessIter __middle,
                     _RandomAccessIter __last, _Tp*, _Compare __comp) {
   make_heap(__first, __middle, __comp);
-  for (_RandomAccessIter __i = __middle; __i < __last; ++__i)
-    if (__comp(*__i, *__first))
+  for (_RandomAccessIter __i = __middle; __i < __last; ++__i) {
+    if (__comp(*__i, *__first)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first, *__i), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __pop_heap(__first, __middle, __i, _Tp(*__i), __comp,
                  _STLP_DISTANCE_TYPE(__first, _RandomAccessIter));
+    }
+  }
   sort_heap(__first, __middle, __comp);
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _RandomAccessIter>
-void
-partial_sort(_RandomAccessIter __first,_RandomAccessIter __middle, _RandomAccessIter __last) {
+void partial_sort(_RandomAccessIter __first,_RandomAccessIter __middle,
+                  _RandomAccessIter __last) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __middle))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__middle, __last))
   _STLP_PRIV __partial_sort(__first, __middle, __last, _STLP_VALUE_TYPE(__first, _RandomAccessIter),
@@ -1243,11 +1262,13 @@ _RandomAccessIter __partial_sort_copy(_InputIter __first,
   }
   make_heap(__result_first, __result_real_last, __comp);
   while (__first != __last) {
-    if (__comp(*__first, *__result_first))
+    if (__comp(*__first, *__result_first)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__result_first, *__first), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __adjust_heap(__result_first, _Distance(0),
                     _Distance(__result_real_last - __result_first),
                     _Tp(*__first),
                     __comp);
+    }
     ++__first;
   }
   sort_heap(__result_first, __result_real_last, __comp);
@@ -1335,8 +1356,10 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
     __half = __len >> 1;
     _ForwardIter __middle = __first;
     advance(__middle, __half);
-    if (__comp(__val, *__middle))
+    if (__comp(__val, *__middle)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __len = __half;
+    }
     else {
       __first = __middle;
       ++__first;
@@ -1358,17 +1381,21 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
     _ForwardIter __middle = __first;
     advance(__middle, __half);
     if (__comp(*__middle, __val)) {
+      _STLP_VERBOSE_ASSERT(!__comp(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __first = __middle;
       ++__first;
       __len = __len - __half - 1;
     }
-    else if (__comp(__val, *__middle))
+    else if (__comp(__val, *__middle)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __len = __half;
+    }
     else {
       _ForwardIter __left = lower_bound(__first, __middle, __val, __comp);
       //Small optim: If lower_bound haven't found an equivalent value
       //there is no need to call upper_bound.
       if (__comp(*__left, __val)) {
+        _STLP_VERBOSE_ASSERT(!__comp(__val, *__left), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         return pair<_ForwardIter, _ForwardIter>(__left, __left);
       }
       advance(__first, __len);
@@ -1410,6 +1437,7 @@ _OutputIter merge(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2) {
     if (__comp(*__first2, *__first1)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first1, *__first2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *__result = *__first2;
       ++__first2;
     }
@@ -1433,8 +1461,10 @@ void __merge_without_buffer(_BidirectionalIter __first,
   if (__len1 == 0 || __len2 == 0)
     return;
   if (__len1 + __len2 == 2) {
-    if (__comp(*__middle, *__first))
+    if (__comp(*__middle, *__first)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       iter_swap(__first, __middle);
+    }
     return;
   }
   _BidirectionalIter __first_cut = __first;
@@ -1477,6 +1507,7 @@ _BidirectionalIter3 __merge_backward(_BidirectionalIter1 __first1,
   --__last2;
   for (;;) {
     if (__comp(*__last2, *__last1)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__last1, *__last2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *--__result = *__last1;
       if (__first1 == __last1)
         return copy_backward(__first2, ++__last2, __result);
@@ -1545,9 +1576,11 @@ bool __includes(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2)
-    if (__comp(*__first2, *__first1))
+    if (__comp(*__first2, *__first1)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first1, *__first2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return false;
-    else if(__comp(*__first1, *__first2))
+    }
+    else if (__comp(*__first1, *__first2))
       ++__first1;
     else
       ++__first1, ++__first2;
@@ -1581,10 +1614,12 @@ _OutputIter __set_union(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2) {
     if (__comp(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first2, *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *__result = *__first1;
       ++__first1;
     }
     else if (__comp(*__first2, *__first1)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first1, *__first2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *__result = *__first2;
       ++__first2;
     }
@@ -1626,8 +1661,10 @@ _OutputIter __set_intersection(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(__check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2)
-    if (__comp(*__first1, *__first2))
+    if (__comp(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first2, *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       ++__first1;
+    }
     else if (__comp(*__first2, *__first1))
       ++__first2;
     else {
@@ -1668,6 +1705,7 @@ _OutputIter __set_difference(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2)
     if (__comp(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first2, *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *__result = *__first1;
       ++__first1;
       ++__result;
@@ -1710,6 +1748,7 @@ __set_symmetric_difference(_InputIter1 __first1, _InputIter1 __last1,
   _STLP_DEBUG_CHECK(__check_range(__first2, __last2))
   while (__first1 != __last1 && __first2 != __last2) {
     if (__comp(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first2, *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       *__result = *__first1;
       ++__first1;
       ++__result;
@@ -1750,17 +1789,6 @@ set_symmetric_difference(_InputIter1 __first1, _InputIter1 __last1,
 // min_element and max_element, with and without an explicitly supplied
 // comparison function.
 
-template <class _ForwardIter, class _Compare>
-_ForwardIter max_element(_ForwardIter __first, _ForwardIter __last,
-                         _Compare __comp) {
-  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  if (__first == __last) return __first;
-  _ForwardIter __result = __first;
-  while (++__first != __last)
-    if (__comp(*__result, *__first)) __result = __first;
-  return __result;
-}
-
 template <class _ForwardIter>
 _ForwardIter max_element(_ForwardIter __first, _ForwardIter __last) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
@@ -1769,6 +1797,21 @@ _ForwardIter max_element(_ForwardIter __first, _ForwardIter __last) {
   while (++__first != __last)
     if (*__result < *__first)
       __result = __first;
+  return __result;
+}
+
+template <class _ForwardIter, class _Compare>
+_ForwardIter max_element(_ForwardIter __first, _ForwardIter __last,
+                         _Compare __comp) {
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+  if (__first == __last) return __first;
+  _ForwardIter __result = __first;
+  while (++__first != __last) {
+    if (__comp(*__result, *__first)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first, *__result), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      __result = __first;
+    }
+  }
   return __result;
 }
 
@@ -1785,12 +1828,15 @@ _ForwardIter min_element(_ForwardIter __first, _ForwardIter __last) {
 
 template <class _ForwardIter, class _Compare>
 _ForwardIter min_element(_ForwardIter __first, _ForwardIter __last,
-                            _Compare __comp) {
+                         _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   if (__first == __last) return __first;
   _ForwardIter __result = __first;
   while (++__first != __last) {
-    if (__comp(*__first, *__result)) __result = __first;
+    if (__comp(*__first, *__result)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__result, *__first), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      __result = __first;
+    }
   }
   return __result;
 }
@@ -1816,9 +1862,9 @@ bool __next_permutation(_BidirectionalIter __first, _BidirectionalIter __last,
     _BidirectionalIter __ii = __i;
     --__i;
     if (__comp(*__i, *__ii)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__ii, *__i), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       _BidirectionalIter __j = __last;
-      while (!__comp(*__i, *--__j))
-        {}
+      while (!__comp(*__i, *--__j)) {}
       iter_swap(__i, __j);
       reverse(__ii, __last);
       return true;
@@ -1853,7 +1899,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _BidirectionalIter, class _Compare>
 bool __prev_permutation(_BidirectionalIter __first, _BidirectionalIter __last,
-                      _Compare __comp) {
+                        _Compare __comp) {
   if (__first == __last)
     return false;
   _BidirectionalIter __i = __first;
@@ -1867,9 +1913,9 @@ bool __prev_permutation(_BidirectionalIter __first, _BidirectionalIter __last,
     _BidirectionalIter __ii = __i;
     --__i;
     if (__comp(*__ii, *__i)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__i, *__ii), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       _BidirectionalIter __j = __last;
-      while (!__comp(*--__j, *__i))
-        {}
+      while (!__comp(*--__j, *__i)) {}
       iter_swap(__i, __j);
       reverse(__ii, __last);
       return true;
@@ -1912,8 +1958,10 @@ bool __is_heap(_RandomAccessIter __first, _StrictWeakOrdering __comp,
                _Distance __n) {
   _Distance __parent = 0;
   for (_Distance __child = 1; __child < __n; ++__child) {
-    if (__comp(__first[__parent], __first[__child]))
+    if (__comp(__first[__parent], __first[__child])) {
+      _STLP_VERBOSE_ASSERT(!__comp(__first[__child], __first[__parent]), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return false;
+    }
     if ((__child & 1) == 0)
       ++__parent;
   }
@@ -1947,8 +1995,10 @@ bool __is_sorted(_ForwardIter __first, _ForwardIter __last,
 
   _ForwardIter __next = __first;
   for (++__next; __next != __last; __first = __next, ++__next) {
-    if (__comp(*__next, *__first))
+    if (__comp(*__next, *__first)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first, *__next), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return false;
+    }
   }
 
   return true;

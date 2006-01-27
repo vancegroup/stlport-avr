@@ -40,10 +40,12 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 enum {
+  //General errors
   _StlFormat_ERROR_RETURN,
   _StlFormat_ASSERTION_FAILURE,
   _StlFormat_VERBOSE_ASSERTION_FAILURE,
   _StlMsg_INVALID_ARGUMENT,
+  //Container/Iterator related errors
   _StlMsg_INVALID_CONTAINER,
   _StlMsg_EMPTY_CONTAINER,
   _StlMsg_ERASE_PAST_THE_END,
@@ -60,6 +62,8 @@ enum {
   _StlMsg_NOT_IN_RANGE_2       ,
   _StlMsg_INVALID_ADVANCE      ,
   _StlMsg_SINGULAR_ITERATOR    ,
+  //Bad predicate for sorting
+  _StlMsg_INVALID_STRICT_WEAK_PREDICATE,
   // debug alloc messages
   _StlMsg_DBA_DELETED_TWICE    ,
   _StlMsg_DBA_NEVER_ALLOCATED  ,
@@ -76,7 +80,7 @@ enum {
 };
 
 /* have to hardcode that ;() */
-#  define _StlMsg_MAX 29
+#  define _StlMsg_MAX 30
 
 // This class is unique (not inherited from exception),
 // to disallow catch in anything but (...)
