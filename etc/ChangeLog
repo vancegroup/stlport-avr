@@ -1,3 +1,23 @@
+2006-01-27  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h, _old_alloc.h, _pthread_alloc.h,
+	test/unit/rope_test.cpp: Fixed reference to _STLP_NO_IOSTREAMS,
+	replaced by _STLP_USE_NO_IOSTREAMS.
+
+	* stlport/stl/_alloc.h: Move _MAX_BYTES definition out of
+	_STLP_USE_NO_IOSTREAMS check scope as it is also used in deque
+	implementation.
+
+	* stlport/stl/_algo.c, debug/_debug.h, _debug.c: Add check for
+	bad predicate in safe STL mode (_STLP_DEBUG).
+
+	* test/unit/sort_test.cpp: Add test for correct invalid strict weak
+	ordering predicate detection. Active only when STL safe mode throws
+	exception rather than terminating application.
+
+	* test/unit/sort_test.cpp: Add a check that stable_sort is really
+	stable.
+
 2006-01-26  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h, _alloc.c, _pthread_alloc.h: Many code moved
