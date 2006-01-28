@@ -130,20 +130,20 @@ public:
   typedef typename _Container::const_iterator  _Const_iterator;
   typedef _Container                     _Container_type;
 
-# ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
   typedef typename iterator_traits<_Const_iterator>::iterator_category _Iterator_category;
-# else
+#else
   typedef typename _Container::_Iterator_category  _Iterator_category;
-# endif
+#endif
   typedef _Iterator_category iterator_category;
 
   _DBG_iter_base() : __owned_link(0)  {}
   _DBG_iter_base(const __owned_list* __c, const _Const_iterator& __it) :
-# ifdef __HP_aCC
-    __owned_link(__c), _M_iterator(*__REINTERPRET_CAST(const _Nonconst_iterator *, &__it)) {}
-# else
+#if defined(__HP_aCC) && (__HP_aCC < 60000)
+  __owned_link(__c), _M_iterator(*__REINTERPRET_CAST(const _Nonconst_iterator *, &__it)) {}
+#else
     __owned_link(__c), _M_iterator(*(const _Nonconst_iterator*)&__it) {}
-# endif
+#endif
   _Container* _Get_container_ptr() const {
     return (_Container*)__stl_debugger::_Get_container_ptr(this);
   }
@@ -215,9 +215,9 @@ private:
 
 public:
 
-# ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
   typedef typename _Base::iterator_category iterator_category;
-# endif
+#endif
   typedef typename _Base::_Iterator_category  _Iterator_category;
 
 public:
@@ -460,9 +460,6 @@ iterator_category(const _STLP_PRIV _DBG_iter_base<_Container>&) {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #endif /* _STLP_USE_OLD_HP_ITERATOR_QUERIES */
-
-# define _Get_iter(__x)   __x
-# define _Debug_iter(__x, __y) __y
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
