@@ -47,7 +47,7 @@ have this interface so please comment the _STLP_USE_PERTHREAD_ALLOC macro \
 or report to the STLport forum.
 #endif
 
-#if !defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (_STLP_USE_NO_IOSTREAMS)
 #  error You cannot use per thread allocator implementation without building \
 STLport libraries.
 #endif
