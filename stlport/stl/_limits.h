@@ -425,17 +425,17 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 template <class __dummy>
 class _LimG {
 public:
-  static float get_F_inf();
-  static float get_F_qNaN();
-  static float get_F_sNaN();
-  static double get_D_inf();
-  static double get_D_qNaN();
-  static double get_D_sNaN();
+  static float _STLP_CALL get_F_inf();
+  static float _STLP_CALL get_F_qNaN();
+  static float _STLP_CALL get_F_sNaN();
+  static double _STLP_CALL get_D_inf();
+  static double _STLP_CALL get_D_qNaN();
+  static double _STLP_CALL get_D_sNaN();
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
-  static long double get_LD_inf();
-  static long double get_LD_qNaN();
-  static long double get_LD_sNaN();
+  static long double _STLP_CALL get_LD_inf();
+  static long double _STLP_CALL get_LD_qNaN();
+  static long double _STLP_CALL get_LD_sNaN();
 #endif
 };
 

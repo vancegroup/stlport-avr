@@ -1,3 +1,8 @@
+2006-01-29  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_hashtable.h, _limits.h: Add missing calling
+	convention to static methods thanks Petr Supina
+
 2006-01-28  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/debug/_iterator.h: Fix Hp Acc configuration thanks

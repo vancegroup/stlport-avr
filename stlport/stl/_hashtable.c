@@ -43,7 +43,8 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
   1610612741ul, 3221225473ul, 4294967291ul  \
 }
 
-template <class _Dummy> size_t _STLP_CALL
+template <class _Dummy>
+size_t _STLP_CALL
 _Stl_prime<_Dummy>::_S_max_nb_buckets() {
   const size_t _list[] = __PRIME_LIST_BODY;
 #  ifndef __MWERKS__
@@ -53,7 +54,8 @@ _Stl_prime<_Dummy>::_S_max_nb_buckets() {
 #  endif
 }
 
-template <class _Dummy> size_t _STLP_CALL
+template <class _Dummy>
+size_t _STLP_CALL
 _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
   static const size_t _list[] = __PRIME_LIST_BODY;
   const size_t* __first = _list;

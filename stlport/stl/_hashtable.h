@@ -194,10 +194,10 @@ template <class _Dummy>
 class _Stl_prime {
 public:
   //Returns the maximum number of buckets handled by the hashtable implementation
-  static size_t _S_max_nb_buckets();
+  static size_t _STLP_CALL _S_max_nb_buckets();
 
   //Returns the bucket size next to a required size
-  static size_t _S_next_size(size_t);
+  static size_t _STLP_CALL _S_next_size(size_t);
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
