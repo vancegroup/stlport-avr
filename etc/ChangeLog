@@ -1,3 +1,8 @@
+2006-01-30  Francois Dumont  <dums@stlport...>
+
+	* Patch from Ulrich Eckhardt for EVC4 ICE + some documentation
+	updates and fixes.
+
 2006-01-29  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_hashtable.h, _limits.h: Add missing calling

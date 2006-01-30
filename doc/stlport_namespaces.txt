@@ -74,9 +74,9 @@ namespace std
 to native headers. If you include a C++ native headers that indirectly define for instance
 the vector class it is going to conflict with the STLport vector definition.
 
-  Moreover this solution just do not work for a very simple reason. C++ Standard allow users
-to specialized some of the Standard algorithm. This specialization has to be done in the
-same namespace as the main template declaration:
+  Moreover this solution just does not work for a very simple reason. The C++ Standard 
+allows users to specialized some of the Standard algorithms. This specialization has to 
+be done in the same namespace as the main template declaration:
 
 //In an STLport header:
 namespace stlport

@@ -107,7 +107,15 @@ struct _Deque_iterator_base {
   _Deque_iterator_base(value_type* __x, _Map_pointer __y)
     : _M_cur(__x), _M_first(*__y),
       _M_last(*__y + __buffer_size), _M_node(__y) {}
+
   _Deque_iterator_base() : _M_cur(0), _M_first(0), _M_last(0), _M_node(0) {}
+
+// see comment in doc/README.evc4
+#if defined(_MSC_VER) && _MSC_VER<1300 && defined(MIPS) && defined(NDEBUG)
+  _Deque_iterator_base(_Deque_iterator_base const& __other)
+	: _M_cur(__other._M_cur), _M_first(__other._M_first),
+	  _M_last(__other._M_last), _M_node(__other._M_node) {}
+#endif
 
   difference_type _M_subtract(const _Self& __x) const {
     return difference_type(__buffer_size) * (_M_node - __x._M_node - 1) +

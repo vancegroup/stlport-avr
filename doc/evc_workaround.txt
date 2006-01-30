@@ -1,4 +1,4 @@
-This document describes the workaround for the resource_compiler on MS Windows
+This document describes the workaround for the resource compiler on MS Windows
 
 
 The resource compiler is not a C++ compiler, it is a compiler that translates

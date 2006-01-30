@@ -60,11 +60,11 @@ to access command-line tools' during Microsoft Visual Studio installation proced
 5. Run the following command:
 	nmake /fmsvc.mak install
 
-	nmake is the make utility from microsoft. /f is an nmake option
+	nmake is the make utility from Microsoft. /f is an nmake option
 telling it which make file script to use. You have of course to grant the 
 closer make file to your effective compiler, msvc.mak in our case.
 
-	Once the command return you will have all the necessary libraries within
+	Once the command returns, you will have all the necessary libraries within
 the STLport lib folder. For a description of the generated libraries check the README
 file within the src folder.
 
