@@ -59,10 +59,6 @@
 //# endif
 #include <new>
 
-#if /* defined (_STLP_THREADS) && */ ! defined (_STLP_INTERNAL_THREADS_H)
-#  include <stl/_threads.h>
-#endif
-
 #ifndef _STLP_INTERNAL_CONSTRUCT_H
 #  include <stl/_construct.h>
 #endif
@@ -188,124 +184,10 @@ enum {_ALIGN = 8, _ALIGN_SHIFT = 3, _MAX_BYTES = 128};
 // Default node allocator.
 // With a reasonable compiler, this should be roughly as fast as the
 // original STL class-specific allocators, but with less fragmentation.
-// Default_alloc_template parameters are experimental and MAY
-// DISAPPEAR in the future.  Clients should just use alloc for now.
-//
-// Important implementation properties:
-// 1. If the client request an object of size > _MAX_BYTES, the resulting
-//    object will be obtained directly from malloc.
-// 2. In all other cases, we allocate an object of size exactly
-//    _S_round_up(requested_size).  Thus the client has enough size
-//    information that we can return the object to the proper free list
-//    without permanently losing part of the object.
-//
-
-// The first template parameter specifies whether more than one thread
-// may use this allocator.  It is safe to allocate an object from
-// one instance of a default_alloc and deallocate it with another
-// one.  This effectively transfers its ownership to the second one.
-// This may have undesirable effects on reference locality.
-// The second parameter is unreferenced and serves only to allow the
-// creation of multiple default_alloc instances.
-
-#  define _STLP_NFREELISTS 16
-
-struct _Node_alloc_obj {
-  _Node_alloc_obj * _M_next;
-};
-
-#  if defined (_STLP_LEAKS_PEDANTIC) && defined (_STLP_USE_DYNAMIC_LIB)
-/*
- * We can only do cleanup of the node allocator memory pool if we are
- * sure that the STLport library is used as a shared one as it guaranties
- * the unicity of the node allocator instance. Without that guaranty node
- * allocator instances might exchange memory blocks making the implementation
- * of a cleaning process much more complicated.
- */
-#    define _STLP_DO_CLEAN_NODE_ALLOC
-#  endif
-
-/* When STLport is used without multi threaded safety we use the node allocator
- * implementation with locks as locks becomes no-op. The lock free implementation
- * always use system specific atomic operations which are slower than 'normal' 
- * ones.
- */
-#  if defined (_STLP_THREADS) && \
-      defined (_STLP_HAS_ATOMIC_FREELIST) && defined (_STLP_ATOMIC_ADD)
-/*
- * We have an implementation of the atomic freelist (_STLP_atomic_freelist)
- * for this architecture and compiler.  That means we can use the non-blocking
- * implementation of the node-allocation engine.*/
-#    define _STLP_USE_LOCK_FREE_IMPLEMENTATION
-#  endif
-
 class _STLP_CLASS_DECLSPEC __node_alloc {
-_STLP_PRIVATE:
-  static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
-
-#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  typedef _STLP_atomic_freelist::item   _Obj;
-  typedef _STLP_atomic_freelist         _Freelist;
-  typedef _STLP_atomic_freelist         _ChunkList;
-
-  // Header of blocks of memory that have been allocated as part of
-  // a larger chunk but have not yet been chopped up into nodes.
-  struct _FreeBlockHeader : public _STLP_atomic_freelist::item {
-    char* _M_end;     // pointer to end of free memory
-  };
-#  else
-  typedef _Node_alloc_obj       _Obj;
-  typedef _Obj* _STLP_VOLATILE  _Freelist;
-  typedef _Obj*                 _ChunkList;
-#  endif
-
-private:
-  // Returns an object of size __n, and optionally adds to size __n free list.
-  static _Obj*  _STLP_CALL _S_refill(size_t __n);
-  // Allocates a chunk for nobjs of size __p_size.  nobjs may be reduced
-  // if it is inconvenient to allocate the requested number.
-  static char*  _STLP_CALL _S_chunk_alloc(size_t __p_size, int& __nobjs);
-  // Chunk allocation state.
-  static _Freelist _S_free_list[_STLP_NFREELISTS];
-  // Amount of total allocated memory
-#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  static _STLP_VOLATILE __stl_atomic_t _S_heap_size;
-#  else
-  static size_t _S_heap_size;
-#  endif
-
   static void * _STLP_CALL _M_allocate(size_t __n);
   /* __p may not be 0 */
   static void _STLP_CALL _M_deallocate(void *__p, size_t __n);
-
-#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  // List of blocks of free memory
-  static _STLP_atomic_freelist  _S_free_mem_blocks;
-#  else
-  // Start of the current free memory buffer
-  static char* _S_start_free;
-  // End of the current free memory buffer
-  static char* _S_end_free;
-#  endif
-
-#  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
-public:
-  // Methods to report alloc/dealloc calls to the counter system.
-#    if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-  typedef _STLP_VOLATILE __stl_atomic_t _AllocCounter;
-#    else
-  typedef __stl_atomic_t _AllocCounter;
-#    endif
-  static _AllocCounter& _STLP_CALL _S_alloc_counter();
-  static void _STLP_CALL _S_alloc_call();
-  static void _STLP_CALL _S_dealloc_call();
-
-private:
-  // Free all the allocated chuncks of memory
-  static void _STLP_CALL _S_chunk_dealloc();
-  // Beginning of the linked list of allocated chunks of memory
-  static _ChunkList _S_chunks;
-#  endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
 public:
   // this one is needed for proper simple_alloc wrapping

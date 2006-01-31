@@ -24,11 +24,14 @@
 
 #include <memory>
 
-#if defined (_STLP_PTHREADS)
+#if defined (_STLP_PTHREADS) && !defined (_STLP_NO_THREADS)
 #  include <pthread_alloc>
+#  include <cerrno>
 #endif
 
-#include <cerrno>
+#include <stl/_threads.h>
+
+#include "lock_free_slist.h"
 
 #if defined (__WATCOMC__)
 #  pragma warning 13 9
@@ -41,9 +44,9 @@
   // Perhaps this should be moved into stl_threads.h, but that
   // probably makes it harder to avoid the procedure call when
   // it isn't needed.
-    extern "C" {
-      extern int __us_rsthread_malloc;
-    }
+extern "C" {
+  extern int __us_rsthread_malloc;
+}
 #endif
 
 #if defined (_STLP_THREADS)
@@ -93,11 +96,50 @@ void* _STLP_CALL __malloc_alloc::_S_oom_malloc(size_t __n) {
 }
 
 // *******************************************************
-// __node_alloc implementation
+// Default node allocator.
+// With a reasonable compiler, this should be roughly as fast as the
+// original STL class-specific allocators, but with less fragmentation.
+//
+// Important implementation properties:
+// 1. If the client request an object of size > _MAX_BYTES, the resulting
+//    object will be obtained directly from malloc.
+// 2. In all other cases, we allocate an object of size exactly
+//    _S_round_up(requested_size).  Thus the client has enough size
+//    information that we can return the object to the proper free list
+//    without permanently losing part of the object.
+//
+
+#define _STLP_NFREELISTS 16
+
+#if defined (_STLP_LEAKS_PEDANTIC) && defined (_STLP_USE_DYNAMIC_LIB)
+/*
+ * We can only do cleanup of the node allocator memory pool if we are
+ * sure that the STLport library is used as a shared one as it guaranties
+ * the unicity of the node allocator instance. Without that guaranty node
+ * allocator instances might exchange memory blocks making the implementation
+ * of a cleaning process much more complicated.
+ */
+#  define _STLP_DO_CLEAN_NODE_ALLOC
+#endif
+
+/* When STLport is used without multi threaded safety we use the node allocator
+ * implementation with locks as locks becomes no-op. The lock free implementation
+ * always use system specific atomic operations which are slower than 'normal' 
+ * ones.
+ */
+#if defined (_STLP_THREADS) && \
+    defined (_STLP_HAS_ATOMIC_FREELIST) && defined (_STLP_ATOMIC_ADD)
+/*
+ * We have an implementation of the atomic freelist (_STLP_atomic_freelist)
+ * for this architecture and compiler.  That means we can use the non-blocking
+ * implementation of the node-allocation engine.*/
+#  define _STLP_USE_LOCK_FREE_IMPLEMENTATION
+#endif
+
 #if defined (_STLP_DO_CLEAN_NODE_ALLOC)
 struct __node_alloc_cleaner {
   ~__node_alloc_cleaner()
-  { __node_alloc::_S_dealloc_call(); }
+  { __node_alloc_impl::_S_dealloc_call(); }
 };
 
 #  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
@@ -105,7 +147,7 @@ _STLP_VOLATILE __stl_atomic_t& _STLP_CALL
 #  else
 __stl_atomic_t& _STLP_CALL
 #  endif
-__node_alloc::_S_alloc_counter() {
+__node_alloc_impl::_S_alloc_counter() {
   static _AllocCounter _S_counter = 1;
   static __node_alloc_cleaner _S_node_alloc_cleaner;
   return _S_counter;
@@ -113,7 +155,6 @@ __node_alloc::_S_alloc_counter() {
 #endif
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-
 template <bool __threads>
 class _Node_Alloc_Lock {
 public:
@@ -143,16 +184,16 @@ _STLP_TEMPLATE_NULL
 class _Node_Alloc_Lock<true> {
 public:
   _Node_Alloc_Lock() {
-#    if defined (_STLP_SGI_THREADS)
+#  if defined (_STLP_SGI_THREADS)
     if (__us_rsthread_malloc)
-#    endif /* !_STLP_SGI_THREADS */
+#  endif
       _S_lock._M_acquire_lock();
   }
 
   ~_Node_Alloc_Lock() {
-#    if defined (_STLP_SGI_THREADS)
+#  if defined (_STLP_SGI_THREADS)
     if (__us_rsthread_malloc)
-#    endif /* !_STLP_SGI_THREADS */
+#  endif
         _S_lock._M_release_lock();
   }
 
@@ -166,23 +207,102 @@ public:
   ~_Node_Alloc_Lock() { }
 };
 
-#if (_STLP_STATIC_TEMPLATE_DATA > 0)
+#  if (_STLP_STATIC_TEMPLATE_DATA > 0)
 template <bool __threads>
 _STLP_STATIC_MUTEX
 _Node_Alloc_Lock<__threads>::_S_lock _STLP_MUTEX_INITIALIZER;
 
+/*
 _STLP_TEMPLATE_NULL
 _STLP_STATIC_MUTEX
 _Node_Alloc_Lock<true>::_S_lock _STLP_MUTEX_INITIALIZER;
-#else
+*/
+#  else
 __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _Node_Alloc_Lock<true>::_S_lock,
                    _STLP_MUTEX_INITIALIZER);
 
+#  endif
+
+struct _Node_alloc_obj {
+  _Node_alloc_obj * _M_next;
+};
 #endif
 
-void* _STLP_CALL
-__node_alloc::_M_allocate(size_t __n) {
+class __node_alloc_impl {
+_STLP_PRIVATE:
+  static inline size_t _STLP_CALL _S_round_up(size_t __bytes) { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
+
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  typedef _STLP_atomic_freelist::item   _Obj;
+  typedef _STLP_atomic_freelist         _Freelist;
+  typedef _STLP_atomic_freelist         _ChunkList;
+
+  // Header of blocks of memory that have been allocated as part of
+  // a larger chunk but have not yet been chopped up into nodes.
+  struct _FreeBlockHeader : public _STLP_atomic_freelist::item {
+    char* _M_end;     // pointer to end of free memory
+  };
+#else
+  typedef _Node_alloc_obj       _Obj;
+  typedef _Obj* _STLP_VOLATILE  _Freelist;
+  typedef _Obj*                 _ChunkList;
+#endif
+
+private:
+  // Returns an object of size __n, and optionally adds to size __n free list.
+  static _Obj* _S_refill(size_t __n);
+  // Allocates a chunk for nobjs of size __p_size.  nobjs may be reduced
+  // if it is inconvenient to allocate the requested number.
+  static char* _S_chunk_alloc(size_t __p_size, int& __nobjs);
+  // Chunk allocation state.
+  static _Freelist _S_free_list[_STLP_NFREELISTS];
+  // Amount of total allocated memory
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  static _STLP_VOLATILE __stl_atomic_t _S_heap_size;
+#else
+  static size_t _S_heap_size;
+#endif
+
+#if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  // List of blocks of free memory
+  static _STLP_atomic_freelist  _S_free_mem_blocks;
+#else
+  // Start of the current free memory buffer
+  static char* _S_start_free;
+  // End of the current free memory buffer
+  static char* _S_end_free;
+#endif
+
+#if defined (_STLP_DO_CLEAN_NODE_ALLOC)
+public:
+  // Methods to report alloc/dealloc calls to the counter system.
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+  typedef _STLP_VOLATILE __stl_atomic_t _AllocCounter;
+#  else
+  typedef __stl_atomic_t _AllocCounter;
+#  endif
+  static _AllocCounter& _STLP_CALL _S_alloc_counter();
+  static void _S_alloc_call();
+  static void _S_dealloc_call();
+
+private:
+  // Free all the allocated chuncks of memory
+  static void _S_chunk_dealloc();
+  // Beginning of the linked list of allocated chunks of memory
+  static _ChunkList _S_chunks;
+#endif /* _STLP_DO_CLEAN_NODE_ALLOC */
+
+public:
+  /* __n must be > 0      */
+  static void* _M_allocate(size_t __n);
+  /* __p may not be 0 */
+  static void _M_deallocate(void *__p, size_t __n);
+};
+
+
+#if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+void* __node_alloc_impl::_M_allocate(size_t __n) {
   _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   _Obj *__r;
 
@@ -203,8 +323,7 @@ __node_alloc::_M_allocate(size_t __n) {
   return __r;
 }
 
-void _STLP_CALL
-__node_alloc::_M_deallocate(void *__p, size_t __n) {
+void __node_alloc_impl::_M_deallocate(void *__p, size_t __n) {
   _Obj * _STLP_VOLATILE * __my_free_list = _S_free_list + _S_FREELIST_INDEX(__n);
   _Obj * __pobj = __STATIC_CAST(_Obj*, __p);
 
@@ -223,8 +342,7 @@ __node_alloc::_M_deallocate(void *__p, size_t __n) {
 /* the malloc heap too much.                                            */
 /* We assume that size is properly aligned.                             */
 /* We hold the allocation lock.                                         */
-char* _STLP_CALL
-__node_alloc::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
+char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
   char* __result;
   size_t __total_bytes = _p_size * __nobjs;
   size_t __bytes_left = _S_end_free - _S_start_free;
@@ -302,8 +420,7 @@ __node_alloc::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 /* Returns an object of size __n, and optionally adds to size __n free list.*/
 /* We assume that __n is properly aligned.                                  */
 /* We hold the allocation lock.                                             */
-_Node_alloc_obj* _STLP_CALL
-__node_alloc::_S_refill(size_t __n) {
+_Node_alloc_obj* __node_alloc_impl::_S_refill(size_t __n) {
   int __nobjs = 20;
   __n = _S_round_up(__n);
   char* __chunk = _S_chunk_alloc(__n, __nobjs);
@@ -328,20 +445,17 @@ __node_alloc::_S_refill(size_t __n) {
 }
 
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
-void _STLP_CALL
-__node_alloc::_S_alloc_call()
+void __node_alloc_impl::_S_alloc_call()
 { ++_S_alloc_counter(); }
 
-void _STLP_CALL
-__node_alloc::_S_dealloc_call() {
+void __node_alloc_impl::_S_dealloc_call() {
   __stl_atomic_t &counter = _S_alloc_counter();
   if (--counter == 0)
   { _S_chunk_dealloc(); }
 }
 
 /* We deallocate all the memory chunks      */
-void _STLP_CALL
-__node_alloc::_S_chunk_dealloc() {
+void __node_alloc_impl::_S_chunk_dealloc() {
   _Obj *__pcur = _S_chunks, *__pnext;
   while (__pcur != 0) {
     __pnext = __pcur->_M_next;
@@ -357,8 +471,7 @@ __node_alloc::_S_chunk_dealloc() {
 
 #else /* !defined(_STLP_USE_LOCK_FREE_IMPLEMENTATION) */
 
-void* _STLP_CALL
-__node_alloc::_M_allocate(size_t __n) {
+void* __node_alloc_impl::_M_allocate(size_t __n) {
   _Obj* __r = _S_free_list[_S_FREELIST_INDEX(__n)].pop();
   if (__r  == 0)
   { __r = _S_refill(__n); }
@@ -369,8 +482,7 @@ __node_alloc::_M_allocate(size_t __n) {
   return __r;
 }
 
-void _STLP_CALL
-__node_alloc::_M_deallocate(void *__p, size_t __n) {
+void __node_alloc_impl::_M_deallocate(void *__p, size_t __n) {
   _S_free_list[_S_FREELIST_INDEX(__n)].push(__STATIC_CAST(_Obj*, __p));
 
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
@@ -381,7 +493,7 @@ __node_alloc::_M_deallocate(void *__p, size_t __n) {
 /* Returns an object of size __n, and optionally adds additional ones to    */
 /* freelist of objects of size __n.                                         */
 /* We assume that __n is properly aligned.                                  */
-__node_alloc::_Obj* __node_alloc::_S_refill(size_t __n) {
+__node_alloc_impl::_Obj* __node_alloc_impl::_S_refill(size_t __n) {
   int __nobjs = 20;
   __n = _S_round_up(__n);
   char* __chunk = _S_chunk_alloc(__n, __nobjs);
@@ -403,8 +515,7 @@ __node_alloc::_Obj* __node_alloc::_S_refill(size_t __n) {
 /* We allocate memory in large chunks in order to avoid fragmenting     */
 /* the malloc heap too much.                                            */
 /* We assume that size is properly aligned.                             */
-char* _STLP_CALL
-__node_alloc::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
+char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
   //We are going to add a small memory block to keep all the allocated blocks
   //address, we need to do so respecting the memory alignment. The following
@@ -528,20 +639,17 @@ __node_alloc::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 }
 
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
-void _STLP_CALL
-__node_alloc::_S_alloc_call()
+void __node_alloc_impl::_S_alloc_call()
 { _STLP_ATOMIC_INCREMENT(&_S_alloc_counter()); }
 
-void _STLP_CALL
-__node_alloc::_S_dealloc_call() {
+void __node_alloc_impl::_S_dealloc_call() {
   _STLP_VOLATILE __stl_atomic_t *pcounter = &_S_alloc_counter();
   if (_STLP_ATOMIC_DECREMENT(pcounter) == 0)
     _S_chunk_dealloc();
 }
 
 /* We deallocate all the memory chunks      */
-void _STLP_CALL
-__node_alloc::_S_chunk_dealloc() {
+void __node_alloc_impl::_S_chunk_dealloc() {
   // Note: The _Node_alloc_helper class ensures that this function
   // will only be called when the (shared) library is unloaded or the
   // process is shutdown.  It's thus not possible that another thread
@@ -572,19 +680,19 @@ __node_alloc::_S_chunk_dealloc() {
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 _Node_alloc_obj * _STLP_VOLATILE
-__node_alloc::_S_free_list[_STLP_NFREELISTS]
+__node_alloc_impl::_S_free_list[_STLP_NFREELISTS]
 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 // The 16 zeros are necessary to make version 4.1 of the SunPro
 // compiler happy.  Otherwise it appears to allocate too little
 // space for the array.
 #else
-_STLP_atomic_freelist __node_alloc::_S_free_list[_STLP_NFREELISTS];
-_STLP_atomic_freelist __node_alloc::_S_free_mem_blocks;
+_STLP_atomic_freelist __node_alloc_impl::_S_free_list[_STLP_NFREELISTS];
+_STLP_atomic_freelist __node_alloc_impl::_S_free_mem_blocks;
 #endif
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-char *__node_alloc::_S_start_free = 0;
-char *__node_alloc::_S_end_free = 0;
+char *__node_alloc_impl::_S_start_free = 0;
+char *__node_alloc_impl::_S_end_free = 0;
 #endif
 
 #if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
@@ -592,17 +700,29 @@ _STLP_VOLATILE __stl_atomic_t
 #else
 size_t
 #endif
-__node_alloc::_S_heap_size = 0;
+__node_alloc_impl::_S_heap_size = 0;
 
 #if defined (_STLP_DO_CLEAN_NODE_ALLOC)
 #  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-_STLP_atomic_freelist __node_alloc::_S_chunks;
+_STLP_atomic_freelist __node_alloc_impl::_S_chunks;
 #  else
-_Node_alloc_obj* __node_alloc::_S_chunks  = 0;
+_Node_alloc_obj* __node_alloc_impl::_S_chunks  = 0;
 #  endif
 #endif
 
-#if defined (_STLP_PTHREADS)
+void * _STLP_CALL __node_alloc::_M_allocate(size_t __n)
+{ return __node_alloc_impl::_M_allocate(__n); }
+
+void _STLP_CALL __node_alloc::_M_deallocate(void *__p, size_t __n)
+{ __node_alloc_impl::_M_deallocate(__p, __n); }
+
+
+#if defined (_STLP_PTHREADS) && !defined (_STLP_NO_THREADS)
+
+#  define _STLP_DATA_ALIGNMENT 8
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 // *******************************************************
 // __perthread_alloc implementation
 union _Pthread_alloc_obj {
@@ -634,6 +754,71 @@ struct _Pthread_alloc_per_thread_state {
   _STLP_mutex _M_lock;
 };
 
+// Pthread-specific allocator.
+class _Pthread_alloc_impl {
+public: // but only for internal use:
+  typedef _Pthread_alloc_per_thread_state __state_type;
+  typedef char value_type;
+
+  // Allocates a chunk for nobjs of size size.  nobjs may be reduced
+  // if it is inconvenient to allocate the requested number.
+  static char *_S_chunk_alloc(size_t __size, size_t &__nobjs);
+
+  enum {_S_ALIGN = _STLP_DATA_ALIGNMENT};
+
+  static size_t _S_round_up(size_t __bytes)
+  { return (((__bytes) + (int)_S_ALIGN-1) & ~((int)_S_ALIGN - 1)); }
+  static size_t _S_freelist_index(size_t __bytes)
+  { return (((__bytes) + (int)_S_ALIGN-1)/(int)_S_ALIGN - 1); }
+
+private:
+  // Chunk allocation state. And other shared state.
+  // Protected by _S_chunk_allocator_lock.
+  static _STLP_mutex_base _S_chunk_allocator_lock;
+  static char *_S_start_free;
+  static char *_S_end_free;
+  static size_t _S_heap_size;
+  static __state_type *_S_free_per_thread_states;
+  static pthread_key_t _S_key;
+  static bool _S_key_initialized;
+  // Pthread key under which per thread state is stored.
+  // Allocator instances that are currently unclaimed by any thread.
+  static void _S_destructor(void *instance);
+  // Function to be called on thread exit to reclaim per thread
+  // state.
+  static __state_type *_S_new_per_thread_state();
+public:
+  // Return a recycled or new per thread state.
+  static __state_type *_S_get_per_thread_state();
+private:
+        // ensure that the current thread has an associated
+        // per thread state.
+  class _M_lock;
+  friend class _M_lock;
+  class _M_lock {
+  public:
+    _M_lock () { _S_chunk_allocator_lock._M_acquire_lock(); }
+    ~_M_lock () { _S_chunk_allocator_lock._M_release_lock(); }
+  };
+
+public:
+
+  /* n must be > 0      */
+  static void * allocate(size_t __n);
+
+  /* p may not be 0 */
+  static void deallocate(void *__p, size_t __n);
+
+  // boris : versions for per_thread_allocator
+  /* n must be > 0      */
+  static void * allocate(size_t __n, __state_type* __a);
+
+  /* p may not be 0 */
+  static void deallocate(void *__p, size_t __n, __state_type* __a);
+
+  static void * reallocate(void *__p, size_t __old_sz, size_t __new_sz);
+};
+
 /* Returns an object of size n, and optionally adds to size n free list.*/
 /* We assume that n is properly aligned.                                */
 /* We hold the allocation lock.                                         */
@@ -641,7 +826,7 @@ void *_Pthread_alloc_per_thread_state::_M_refill(size_t __n) {
   typedef _Pthread_alloc_obj __obj;
   size_t __nobjs = 128;
   char * __chunk =
-  _Pthread_alloc::_S_chunk_alloc(__n, __nobjs);
+  _Pthread_alloc_impl::_S_chunk_alloc(__n, __nobjs);
   __obj * volatile * __my_free_list;
   __obj * __result;
   __obj * __current_obj, * __next_obj;
@@ -651,7 +836,7 @@ void *_Pthread_alloc_per_thread_state::_M_refill(size_t __n) {
     return __chunk;
   }
 
-  __my_free_list = __free_list + _Pthread_alloc::_S_freelist_index(__n);
+  __my_free_list = __free_list + _Pthread_alloc_impl::_S_freelist_index(__n);
 
   /* Build free list in chunk */
   __result = (__obj *)__chunk;
@@ -669,14 +854,14 @@ void *_Pthread_alloc_per_thread_state::_M_refill(size_t __n) {
   return __result;
 }
 
-void _Pthread_alloc::_S_destructor(void *__instance) {
+void _Pthread_alloc_impl::_S_destructor(void *__instance) {
   _M_lock __lock_instance;  // Need to acquire lock here.
   _Pthread_alloc_per_thread_state* __s = (_Pthread_alloc_per_thread_state*)__instance;
   __s -> __next = _S_free_per_thread_states;
   _S_free_per_thread_states = __s;
 }
 
-_Pthread_alloc_per_thread_state* _Pthread_alloc::_S_new_per_thread_state() {    
+_Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_new_per_thread_state() {
   /* lock already held here.  */
   if (0 != _S_free_per_thread_states) {
     _Pthread_alloc_per_thread_state *__result = _S_free_per_thread_states;
@@ -688,13 +873,13 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc::_S_new_per_thread_state() {
   }
 }
 
-_Pthread_alloc_per_thread_state* _Pthread_alloc::_S_get_per_thread_state() {
+_Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_get_per_thread_state() {
   int __ret_code;
   __state_type* __result;
-    
+
   if (_S_key_initialized && (__result = (__state_type*) pthread_getspecific(_S_key)))
     return __result;
-    
+
   /*REFERENCED*/
   _M_lock __lock_instance;  // Need to acquire lock here.
   if (!_S_key_initialized) {
@@ -720,7 +905,7 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc::_S_get_per_thread_state() {
 /* We allocate memory in large chunks in order to avoid fragmenting     */
 /* the malloc heap too much.                                            */
 /* We assume that size is properly aligned.                             */
-char *_Pthread_alloc::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
+char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
   typedef _Pthread_alloc_obj __obj;
   {
     char * __result;
@@ -778,7 +963,7 @@ char *_Pthread_alloc::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
 
 
 /* n must be > 0      */
-void *_Pthread_alloc::allocate(size_t __n) {
+void *_Pthread_alloc_impl::allocate(size_t __n) {
   typedef _Pthread_alloc_obj __obj;
   __obj * volatile * __my_free_list;
   __obj * __result;
@@ -801,7 +986,7 @@ void *_Pthread_alloc::allocate(size_t __n) {
 };
 
 /* p may not be 0 */
-void _Pthread_alloc::deallocate(void *__p, size_t __n) {
+void _Pthread_alloc_impl::deallocate(void *__p, size_t __n) {
   typedef _Pthread_alloc_obj __obj;
   __obj *__q = (__obj *)__p;
   __obj * volatile * __my_free_list;
@@ -821,7 +1006,7 @@ void _Pthread_alloc::deallocate(void *__p, size_t __n) {
 
 // boris : versions for per_thread_allocator
 /* n must be > 0      */
-void *_Pthread_alloc::allocate(size_t __n, __state_type* __a) {
+void *_Pthread_alloc_impl::allocate(size_t __n, __state_type* __a) {
   typedef _Pthread_alloc_obj __obj;
   __obj * volatile * __my_free_list;
   __obj * __result;
@@ -845,7 +1030,7 @@ void *_Pthread_alloc::allocate(size_t __n, __state_type* __a) {
 };
 
 /* p may not be 0 */
-void _Pthread_alloc::deallocate(void *__p, size_t __n, __state_type* __a) {
+void _Pthread_alloc_impl::deallocate(void *__p, size_t __n, __state_type* __a) {
   typedef _Pthread_alloc_obj __obj;
   __obj *__q = (__obj *)__p;
   __obj * volatile * __my_free_list;
@@ -864,14 +1049,14 @@ void _Pthread_alloc::deallocate(void *__p, size_t __n, __state_type* __a) {
   *__my_free_list = __q;
 }
 
-void *_Pthread_alloc::reallocate(void *__p, size_t __old_sz, size_t __new_sz) {
+void *_Pthread_alloc_impl::reallocate(void *__p, size_t __old_sz, size_t __new_sz) {
   void * __result;
   size_t __copy_sz;
 
   if (__old_sz > _MAX_BYTES && __new_sz > _MAX_BYTES) {
     return realloc(__p, __new_sz);
   }
-  
+
   if (_S_round_up(__old_sz) == _S_round_up(__new_sz)) return __p;
   __result = allocate(__new_sz);
   __copy_sz = __new_sz > __old_sz? __old_sz : __new_sz;
@@ -880,13 +1065,28 @@ void *_Pthread_alloc::reallocate(void *__p, size_t __old_sz, size_t __new_sz) {
   return __result;
 }
 
-_Pthread_alloc_per_thread_state* _Pthread_alloc::_S_free_per_thread_states = 0;
-pthread_key_t _Pthread_alloc::_S_key = 0;
-bool _Pthread_alloc::_S_key_initialized = false;
-_STLP_mutex_base _Pthread_alloc::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
-char *_Pthread_alloc::_S_start_free = 0;
-char *_Pthread_alloc::_S_end_free = 0;
-size_t _Pthread_alloc::_S_heap_size = 0;
+_Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_free_per_thread_states = 0;
+pthread_key_t _Pthread_alloc_impl::_S_key = 0;
+_STLP_mutex_base _Pthread_alloc_impl::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
+bool _Pthread_alloc_impl::_S_key_initialized = false;
+char *_Pthread_alloc_impl::_S_start_free = 0;
+char *_Pthread_alloc_impl::_S_end_free = 0;
+size_t _Pthread_alloc_impl::_S_heap_size = 0;
+
+void * _STLP_CALL _Pthread_alloc::allocate(size_t __n)
+{ return _Pthread_alloc_impl::allocate(__n); }
+void _STLP_CALL _Pthread_alloc::deallocate(void *__p, size_t __n)
+{ _Pthread_alloc_impl::deallocate(__p, __n); }
+void * _STLP_CALL _Pthread_alloc::allocate(size_t __n, __state_type* __a)
+{ return _Pthread_alloc_impl::allocate(__n, __a); }
+void _STLP_CALL _Pthread_alloc::deallocate(void *__p, size_t __n, __state_type* __a)
+{ _Pthread_alloc_impl::deallocate(__p, __n, __a); }
+void * _STLP_CALL _Pthread_alloc::reallocate(void *__p, size_t __old_sz, size_t __new_sz)
+{ return _Pthread_alloc_impl::reallocate(__p, __old_sz, __new_sz); }
+_Pthread_alloc_per_thread_state* _STLP_CALL _Pthread_alloc::_S_get_per_thread_state()
+{ return _Pthread_alloc_impl::_S_get_per_thread_state(); }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #endif
 

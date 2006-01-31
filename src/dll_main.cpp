@@ -57,11 +57,6 @@
 #  include <locale>
 #endif
 
-#if defined (_STLP_PTHREADS) && !defined (_STLP_NO_THREADS)
-#  define _STLP_HAS_PERTHREAD_ALLOCATOR
-#  include <pthread_alloc>
-#endif
-
 // boris : this piece of code duplicated from _range_errors.h
 #undef _STLP_THROW_MSG
 #if defined(_STLP_THROW_RANGE_ERRORS)

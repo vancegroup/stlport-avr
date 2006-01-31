@@ -69,7 +69,9 @@
 #  include <stl/char_traits.h>
 #endif
 
-#include <stl/_threads.h>
+#ifndef _STLP_INTERNAL_THREADS_H
+#  include <stl/_threads.h>
+#endif
 
 #ifdef _STLP_SGI_THREADS
 #  include <mutex.h>
