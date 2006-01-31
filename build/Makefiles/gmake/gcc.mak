@@ -206,13 +206,13 @@ stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 release-static : OPT += -O2
 release-shared : OPT += -O2
 
-dbg-static : OPT += -g
-dbg-shared : OPT += -g
+dbg-static : OPT += -g -fno-inline
+dbg-shared : OPT += -g -fno-inline
 #dbg-static-dep : OPT += -g
 #dbg-shared-dep : OPT += -g
 
-stldbg-static : OPT += -g
-stldbg-shared : OPT += -g
+stldbg-static : OPT += -g -fno-inline
+stldbg-shared : OPT += -g -fno-inline
 #stldbg-static-dep : OPT += -g
 #stldbg-shared-dep : OPT += -g
 
