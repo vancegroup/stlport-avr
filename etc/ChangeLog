@@ -1,3 +1,29 @@
+2006-01-31  Francois Dumont  <dums@stlport...>
+
+	* src/allocators.cpp: Reinforce move of allocators implementation
+
+	* stlport/stl/_alloc.h: Removed include of internal _thread.h no
+	more necessary now that allocator implementation is in allocators.cpp.
+
+	* stlport/stl/_pthread_alloc.h: Removed pthread.h include.
+
+	* stlport/stl/_rope.h: Adopt classic macro check before inclusion
+	of _threads.h.
+
+	* build/Makefiles/gmake/gcc.mak: Add -fno-inline option for debug
+	builds.
+
+	* stlport/stl/_threads.h: Remove lock free singly linked list, avoid
+	include of windows.h when using Win32 API lock free slist
+	implementation.
+
+	* src/lock_free_slist.h: New place for the lock free singly linked
+	list implementation.
+
+	* test/unit/mvctor_test.cpp, type_traits_test.cpp: Small workaround
+	for gcc 4.0.1 build, looks like there is a conflict between glibc++
+	__true_type and STLport one.
+
 2006-01-30  Francois Dumont  <dums@stlport...>
 
 	* Patch from Ulrich Eckhardt for EVC4 ICE + some documentation
