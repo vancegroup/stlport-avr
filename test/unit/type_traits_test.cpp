@@ -50,9 +50,15 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
 
-int type_to_value(__true_type const&)
+#if defined (__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 0)
+//A weird gcc behavior, maybe a conflict with GNU lib c++ __true_type
+#  define __true_type std::__true_type
+#  define __false_type std::__false_type
+#endif
+
+int type_to_value(__true_type)
 { return 1; }
-int type_to_value(__false_type const&)
+int type_to_value(__false_type)
 { return 0; }
 
 int* int_pointer;

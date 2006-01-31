@@ -42,13 +42,11 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_STOP_IGNORE;
 #  endif
   CPPUNIT_TEST(vector_test);
-#endif
   CPPUNIT_STOP_IGNORE;
-#if defined (STLPORT)
   CPPUNIT_TEST(move_traits);
-#if defined (__BORLANDC__)
+#  if defined (__BORLANDC__)
   CPPUNIT_IGNORE;
-#endif
+#  endif
 #  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
       !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_TEST(movable_declaration)
@@ -1113,6 +1111,12 @@ void MoveConstructorTest::move_traits()
   }
 #endif
 }
+
+#if defined (__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 0)
+//A weird gcc behavior, maybe a conflict with GNU lib c++ __true_type
+#  define __true_type std::__true_type
+#  define __false_type std::__false_type
+#endif
 
 #if defined (STLPORT) && !defined (__DMC__)
 
