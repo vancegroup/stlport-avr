@@ -45,13 +45,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FloatIOTest);
 //
 void FloatIOTest::float_output_test()
 {
-#if defined (__BORLANDC__) // reset FPU control word after exceptions
-  _control87(0x1000, MCW_IC);
-  _control87(0x0000, MCW_RC);
-  _control87(0x0200, MCW_PC);
-  _control87(0x003F, MCW_EM);
-#endif
-
   ostringstream ostr;
   string output;
 
