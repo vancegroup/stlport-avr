@@ -156,29 +156,7 @@ __node_alloc_impl::_S_alloc_counter() {
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 template <bool __threads>
-class _Node_Alloc_Lock {
-public:
-  _Node_Alloc_Lock() {
-
-#  if defined (_STLP_SGI_THREADS)
-    if (__threads && __us_rsthread_malloc)
-#  else /* !_STLP_SGI_THREADS */
-    if (__threads)
-#  endif
-      _S_lock._M_acquire_lock();
-  }
-
-  ~_Node_Alloc_Lock() {
-#  if defined (_STLP_SGI_THREADS)
-    if (__threads && __us_rsthread_malloc)
-#  else /* !_STLP_SGI_THREADS */
-    if (__threads)
-#  endif
-      _S_lock._M_release_lock();
-  }
-
-  static _STLP_STATIC_MUTEX _S_lock;
-};
+class _Node_Alloc_Lock;
 
 _STLP_TEMPLATE_NULL
 class _Node_Alloc_Lock<true> {
@@ -208,15 +186,8 @@ public:
 };
 
 #  if (_STLP_STATIC_TEMPLATE_DATA > 0)
-template <bool __threads>
-_STLP_STATIC_MUTEX
-_Node_Alloc_Lock<__threads>::_S_lock _STLP_MUTEX_INITIALIZER;
-
-/*
-_STLP_TEMPLATE_NULL
 _STLP_STATIC_MUTEX
 _Node_Alloc_Lock<true>::_S_lock _STLP_MUTEX_INITIALIZER;
-*/
 #  else
 __DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
                    _Node_Alloc_Lock<true>::_S_lock,
