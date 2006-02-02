@@ -169,7 +169,7 @@
 #  define _STLP_USE_NEWALLOC
 #endif
 
-#if !defined (_STLP_BIG_ENDIAN) && ! defined (_STLP_LITTLE_ENDIAN)
+#if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
 #  if defined (_MIPSEB) || defined (__sparc) || defined (_AIX) || \
       defined (__hpux) || defined (macintosh) || defined (_MAC)
 #    define _STLP_BIG_ENDIAN 1
@@ -184,6 +184,8 @@
 #    else
 #      define _STLP_LITTLE_ENDIAN 1
 #    endif
+#  else
+#    error "can't determine endianess"
 #  endif
 #endif /* _STLP_BIG_ENDIAN */
 
