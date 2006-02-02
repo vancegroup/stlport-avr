@@ -175,6 +175,10 @@
 #    else
 #      error Unknown MIPS SDK.
 #    endif
+/* MIPS itself is highly volatile and configurable as both big and little
+ * endian, all Windows CE versions (at least until 4.2 for MIPS) run in 
+ * little-endian configurations though. */
+#    define _STLP_LITTLE_ENDIAN
 #  elif defined (SHx)
 #    if defined (SH3)
 #      define _STLP_NATIVE_INCLUDE_PATH ../sh3
