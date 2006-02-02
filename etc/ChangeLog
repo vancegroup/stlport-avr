@@ -1,3 +1,23 @@
+2006-02-02  Francois Dumont  <dums@stlport...>
+
+	* src/allocators.cpp: Clean up _Node_Alloc_Lock definition, only
+	specialization are now available for thread safe and not thread
+	safe builds. Make easier definition of internal static mutex.
+
+	* stlport/float.h: Patch from Eric Stanford for Borland NaN management
+
+	* stlport/cfloat: Include STLport float.h rather than native one in
+	order to use potential internal workaround.
+
+	* stlport/cfloat: In order to use Borland workaround now cfloat
+	include STLport float.h rather than directly using native float.h.
+
+	* stlport/stl/config/_ibm.h: Replace all C++ comment by C comments.
+
+	* stlport/errno.h: For Borland, when building for a single threaded
+	contex, errno is not a macro and is defined in std namespace so using
+	have to get the symbol in this namespace.
+
 2006-01-31  Francois Dumont  <dums@stlport...>
 
 	* src/allocators.cpp: Reinforce move of allocators implementation
