@@ -47,9 +47,13 @@
 #  endif
 
 #  ifdef __cplusplus
-#   ifndef errno /* errno still not defined */
+#    ifndef errno /* errno still not defined */
 _STLP_BEGIN_NAMESPACE
+#      if !defined (__BORLANDC__)
 using ::errno;
+#      else
+using _STLP_VENDOR_CSTD::errno;
+#      endif
 _STLP_END_NAMESPACE
 #   endif /* errno */
 #  endif /* __cplusplus */
