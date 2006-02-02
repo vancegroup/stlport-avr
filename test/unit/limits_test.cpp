@@ -27,28 +27,20 @@ class LimitTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(LimitTest);
   CPPUNIT_TEST(test);
+#  if defined (__BORLANDC__)
+  CPPUNIT_IGNORE;
+#  endif
+  CPPUNIT_TEST(qnan_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void test();
+  void qnan_test();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
 
-#if defined(__BORLANDC__)
-static bool __test_result = true;
-void CHECK_COND(bool __X) {
-  static volatile bool __x = __X; // force evaluation of __X;
-  if (!__x)
-    __test_result = false;
-  _control87(0x1000, MCW_IC);      // reset FPU control word after exception
-  _control87(0x0000, MCW_RC);
-  _control87(0x0200, MCW_PC);
-  _control87(0x003F, MCW_EM);
-}
-#else
 #  define CHECK_COND(X) if (!(X)) return false;
-#endif
 
 bool valid_sign_info(bool, bool)
 { return true; }
@@ -61,9 +53,6 @@ bool valid_sign_info(bool limit_is_signed, const _Tp &) {
 
 template <class _Tp>
 bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
-#if defined (__BORLANDC__)
-  __test_result = true;
-#endif
   typedef std::numeric_limits<_Tp> lim;
 
   CHECK_COND(lim::is_specialized);
@@ -76,11 +65,7 @@ bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed 
   if (unknown_sign) {
     CHECK_COND(valid_sign_info(lim::is_signed, _Tp()));
   }
-#if defined (__BORLANDC__)
-  return __test_result;
-#else
   return true;
-#endif
 }
 
 template <class _Tp>
@@ -94,17 +79,11 @@ bool test_unsigned_integral_limits(const _Tp &__val) {
 
 template <class _Tp>
 bool test_float_limits(const _Tp &) {
-#if defined (__BORLANDC__)
-  __test_result = true;
-#endif
   typedef std::numeric_limits<_Tp> lim;
   CHECK_COND(lim::is_specialized);
   CHECK_COND(!lim::is_modulo);
   CHECK_COND(!lim::is_integer);
   CHECK_COND(lim::is_signed);
-
-  const _Tp infinity = lim::infinity();
-  const _Tp qnan = lim::quiet_NaN();
 
   CHECK_COND(lim::max() > 1000);
   CHECK_COND(lim::min() > 0);
@@ -118,14 +97,22 @@ bool test_float_limits(const _Tp &) {
   }
 
   if (lim::has_infinity) {
+    const _Tp infinity = lim::infinity();
     /* Make sure those values are not 0 or similar nonsense.
     * Infinity must compare as if larger than the maximum representable value.
     */
     CHECK_COND(infinity > lim::max());
     CHECK_COND(-infinity < -lim::max());
   }
+  return true;
+}
 
+template <class _Tp>
+bool test_qnan(const _Tp &) {
+  typedef std::numeric_limits<_Tp> lim;
   if (lim::has_quiet_NaN) {
+    const _Tp qnan = lim::quiet_NaN();
+
     /* NaNs shall always compare "false" when compared for equality
     * If one of these fail, your compiler may be optimizing incorrectly,
     * or the STLport is incorrectly configured.
@@ -142,17 +129,8 @@ bool test_float_limits(const _Tp &) {
     * CHECK_COND(! (qnan >= 42));
     */
   }
-#if defined (__BORLANDC__)
-  _control87(0x1000, MCW_IC);      // reset FPU control word after exception
-  _control87(0x0000, MCW_RC);
-  _control87(0x0200, MCW_PC);
-  _control87(0x003F, MCW_EM);
-  return __test_result;
-#else
   return true;
-#endif
 }
-
 void LimitTest::test() {
   CPPUNIT_ASSERT(test_integral_limits(bool()));
   CPPUNIT_ASSERT(test_integral_limits(char()));
@@ -184,5 +162,14 @@ void LimitTest::test() {
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
   typedef long double long_double;
   CPPUNIT_ASSERT(test_float_limits(long_double()));
+#  endif
+}
+
+void LimitTest::qnan_test() {
+  CPPUNIT_ASSERT(test_qnan(float()));
+  CPPUNIT_ASSERT(test_qnan(double()));
+#  if !defined ( _STLP_NO_LONG_DOUBLE )
+  typedef long double long_double;
+  CPPUNIT_ASSERT(test_qnan(long_double()));
 #  endif
 }
