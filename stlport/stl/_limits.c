@@ -77,6 +77,7 @@ __declare_integer_limits_member(bool, is_exact, true);
 __declare_integer_limits_member(int, radix, 2);
 __declare_integer_limits_member(bool, is_bounded, true);
 __declare_integer_limits_member(bool, is_modulo, true);
+#  undef __declare_integer_limits_member
 
 #  define __declare_float_limits_member(__type, __mem, _Init) \
 template <class __number,  \
@@ -109,6 +110,7 @@ __declare_float_limits_member(bool, is_bounded, true);
 __declare_float_limits_member(bool, traps, true);
 __declare_float_limits_member(bool, tinyness_before, false);
 __declare_float_limits_member(float_round_style, round_style, __RoundStyle);
+#  undef __declare_float_limits_member
 
 #endif /* _STLP_STATIC_CONST_INIT_BUG */
 
@@ -293,12 +295,6 @@ long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
 
 #endif /* _STLP_EXPOSE_GLOBALS_IMPLEMENTATION */
 
-#undef __declare_integer_limits_member
-#undef __declare_float_limits_member
-#undef __HACK_ILIMITS
-#undef __HACK_NOTHING
-#undef __declare_int_members
-#undef __declare_float_members
 #undef _STLP_LIMITS_MIN_TYPE
 #undef _STLP_LIMITS_MAX_TYPE
 
