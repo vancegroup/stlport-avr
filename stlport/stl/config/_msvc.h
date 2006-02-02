@@ -113,8 +113,8 @@
  * instanciated to be exported. There is a workaround, seperate the non template methods
  * from the template ones within 2 different classes and only export the non template one.
  * It is implemented for basic_string and locale at the writing of this note.
- * This problem has finally been concidered as not important enough to not use this feature.
- * Moreover boost (www.boost.org) required it to be granted.
+ * This problem has finally been considered as not important enough to not use this feature.
+ * Moreover Boost (www.boost.org) required it to be granted.
  * The workaround is activated thanks to the _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND macro defined
  * later in this config file.
  */
