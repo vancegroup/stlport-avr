@@ -32,6 +32,7 @@
 #endif
 
 _STLP_BEGIN_NAMESPACE
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_runtime_error(const char* __msg);
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg);
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg);
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg);
@@ -67,6 +68,9 @@ _STLP_END_NAMESPACE
 // stdexcept header and throw the appropriate exceptions directly.
 
 _STLP_BEGIN_NAMESPACE
+
+inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_runtime_error(const char* __msg)
+{ _STLP_THROW_MSG(runtime_error, __msg); }
 
 inline void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg)
 { _STLP_THROW_MSG(range_error, __msg); }
