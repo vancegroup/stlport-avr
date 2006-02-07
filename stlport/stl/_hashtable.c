@@ -169,8 +169,13 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 
   if (__cur != __last) {
     for (; __cur != __last; ++__cur) {
-      if (_M_equals(_M_get_key(*__cur), _M_get_key(__obj)))
+      if (_M_equals(_M_get_key(*__cur), _M_get_key(__obj))) {
+        _STLP_VERBOSE_ASSERT(_M_equals(_M_get_key(__obj), _M_get_key(*__cur)),
+                             _StlMsg_INVALID_EQUIVALENT_PREDICATE)
         return pair<iterator, bool>(iterator(__cur), false);
+      }
+      _STLP_VERBOSE_ASSERT(!_M_equals(_M_get_key(__obj), _M_get_key(*__cur)),
+                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     }
     /* Here we do not rely on the _M_insert_noresize method as we know
      * that we cannot break element orders, elements are unique, and
@@ -197,9 +202,13 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 
     for (; __cur != __last; ++__cur) {
       if (_M_equals(_M_get_key(*__cur), _M_get_key(__obj))) {
+        _STLP_VERBOSE_ASSERT(_M_equals(_M_get_key(__obj), _M_get_key(*__cur)),
+                             _StlMsg_INVALID_EQUIVALENT_PREDICATE)
         ++_M_num_elements;
         return _M_elems.insert_after(__cur, __obj);
       }
+      _STLP_VERBOSE_ASSERT(!_M_equals(_M_get_key(__obj), _M_get_key(*__cur)),
+                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     }
   }
 
