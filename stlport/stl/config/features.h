@@ -1037,14 +1037,8 @@ typedef int bool;
 #  define _STLP_DEFAULTCHAR char
 #endif
 
-#if defined (_STLP_DEBUG_ALLOC) && ! defined (_STLP_ASSERTIONS)
+#if defined (_STLP_DEBUG_ALLOC) && !defined (_STLP_ASSERTIONS)
 #  define _STLP_ASSERTIONS 1
-#endif
-
-#if defined (_STLP_DEBUG) || defined (_STLP_ASSERTIONS)
-#  if defined (_STLP_DEBUG_MODE_THROWS) && !defined (_STLP_DEBUG_TERMINATE)
-#    define _STLP_DEBUG_TERMINATE
-#  endif
 #endif
 
 /* uninitialized value filler */
