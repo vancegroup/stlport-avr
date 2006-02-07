@@ -21,7 +21,6 @@
 #define _STLP_DEBUG_C
 
 #if defined (_STLP_DEBUG)
-
 #if defined (_STLP_THREADS)
 #  if !defined (_STLP_NEED_MUTABLE)
 #    define _STLP_ACQUIRE_LOCK(_Lock) _Lock._M_acquire_lock();
@@ -287,6 +286,7 @@ _STLP_STRING_LITERAL("Range [first,last) is not in range [start,finish)"),  \
 _STLP_STRING_LITERAL("The advance would produce invalid iterator"),  \
 _STLP_STRING_LITERAL("Iterator is singular (advanced beyond the bounds ?)"),  \
 _STLP_STRING_LITERAL("Invalid strict weak ordering predicate, if pred(a, b) then we should have !pred(b, a)"), \
+_STLP_STRING_LITERAL("Invalid equivalent predicate, if pred(a, b) then we should have pred(b, a)"), \
 _STLP_STRING_LITERAL("Memory block deallocated twice"),  \
 _STLP_STRING_LITERAL("Deallocating a block that was never allocated"),  \
 _STLP_STRING_LITERAL("Deallocating a memory block allocated for another type"),  \
@@ -336,6 +336,9 @@ _STLP_END_NAMESPACE
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
 #    endif
+#    if defined (_STLP_DEBUG_MODE_THROWS) && !defined (_STLP_RANGE_ERRORS_H)
+#      include <stl/_range_errors.h>
+#    endif
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -346,28 +349,41 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
   STLPORT_CSTD::va_list __args;
   va_start( __args, __format_str );
 
-#      if defined (_STLP_USE_WIDE_INTERFACE)
+#      if !defined (_STLP_DEBUG_MODE_THROWS)
+#        if defined (_STLP_USE_WIDE_INTERFACE)
   TCHAR __buffer[512];
   int _convert = strlen(__format_str) + 1;
   LPWSTR _lpw = (LPWSTR)alloca(_convert * sizeof(wchar_t));
   _lpw[0] = '\0';
   MultiByteToWideChar(GetACP(), 0, __format_str, -1, _lpw, _convert);
   wvsprintf(__buffer, _lpw, __args);
-  //wvsprintf(__buffer, __format_str, __args);
   _STLP_WINCE_TRACE(__buffer);
-#      elif defined (_STLP_WIN32) && ( defined(_STLP_MSVC) || defined (__ICL) || \
-            (defined (__BORLANDC__) && (__BORLANDC__ > 0x550)))
+#        elif defined (_STLP_WIN32) && (defined(_STLP_MSVC) || defined (__ICL))
   char __buffer [4096];
-#        if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+
+#          if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+  vsnprintf(__buffer, _STLP_ARRAY_SIZE(__buffer), __format_str, __args);
+#          else
+  vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
+#          endif
+
+  OutputDebugStringA(__buffer);
+
+#        elif defined (__amigaos__)
+  STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
+#        else
+  STLPORT_CSTD::vfprintf(stderr, __format_str, __args);
+#        endif
+#      else
+  char __buffer[4096];
+
+#        if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+  vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
+#        elif defined (_STLP_WIN32) && (defined(_STLP_MSVC) || defined (__ICL))
   vsnprintf(__buffer, _STLP_ARRAY_SIZE(__buffer), __format_str, __args);
 #        else
-  vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
+  vsprintf(__buffer, __format_str, __args);
 #        endif
-  OutputDebugStringA(__buffer);
-#      elif defined (__amigaos__)
-  STLPORT_CSTD::vfprintf(stderr, __format_str, (char *)__args);
-#      else
-  STLPORT_CSTD::vfprintf(stderr, __format_str, __args);
 #      endif
 
 #      ifdef _STLP_DEBUG_MESSAGE_POST
@@ -375,11 +391,24 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
 #      endif
 
   va_end(__args);
+
+#      if defined (_STLP_DEBUG_MODE_THROWS)
+  __stl_throw_runtime_error(__buffer);
+#      endif
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
+#    else
+_STLP_BEGIN_NAMESPACE
+_STLP_MOVE_TO_PRIV_NAMESPACE
+template <class _Dummy>
+void _STLP_CALL
+__stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...)
+{}
+_STLP_MOVE_TO_STD_NAMESPACE
+_STLP_END_NAMESPACE
 #    endif /* _STLP_DEBUG_MESSAGE */
 
 _STLP_BEGIN_NAMESPACE

@@ -64,6 +64,7 @@ enum {
   _StlMsg_SINGULAR_ITERATOR    ,
   //Bad predicate for sorting
   _StlMsg_INVALID_STRICT_WEAK_PREDICATE,
+  _StlMsg_INVALID_EQUIVALENT_PREDICATE,
   // debug alloc messages
   _StlMsg_DBA_DELETED_TWICE    ,
   _StlMsg_DBA_NEVER_ALLOCATED  ,
@@ -80,7 +81,7 @@ enum {
 };
 
 /* have to hardcode that ;() */
-#  define _StlMsg_MAX 30
+#  define _StlMsg_MAX 31
 
 // This class is unique (not inherited from exception),
 // to disallow catch in anything but (...)
