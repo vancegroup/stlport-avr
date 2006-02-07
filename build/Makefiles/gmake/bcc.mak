@@ -11,7 +11,7 @@ endif
 
 CXX := bcc32 
 CC := bcc32
-RC := brc32
+RC := brcc32
 
 DEFS ?=
 OPT ?=
