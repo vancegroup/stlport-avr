@@ -78,6 +78,7 @@ __push_heap(_RandomAccessIterator __first, _Distance __holeIndex,
 {
   _Distance __parent = (__holeIndex - 1) / 2;
   while (__holeIndex > __topIndex && __comp(*(__first + __parent), __val)) {
+    _STLP_VERBOSE_ASSERT(!__comp(__val, *(__first + __parent)), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     *(__first + __holeIndex) = *(__first + __parent);
     __holeIndex = __parent;
     __parent = (__holeIndex - 1) / 2;
@@ -148,8 +149,11 @@ __adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
   _Distance __topIndex = __holeIndex;
   _Distance __secondChild = 2 * __holeIndex + 2;
   while (__secondChild < __len) {
-    if (__comp(*(__first + __secondChild), *(__first + (__secondChild - 1))))
+    if (__comp(*(__first + __secondChild), *(__first + (__secondChild - 1)))) {
+      _STLP_VERBOSE_ASSERT(!__comp(*(__first + (__secondChild - 1)), *(__first + __secondChild)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __secondChild--;
+    }
     *(__first + __holeIndex) = *(__first + __secondChild);
     __holeIndex = __secondChild;
     __secondChild = 2 * (__secondChild + 1);

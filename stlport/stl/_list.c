@@ -171,6 +171,7 @@ void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
   if (__that.get_allocator() == __x.get_allocator()) {
     while (__first1 != __last1 && __first2 != __last2) {
       if (__comp(*__first2, *__first1)) {
+        _STLP_VERBOSE_ASSERT(!__comp(*__first1, *__first2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         _Literator __next = __first2;
         _List_global_inst::_Transfer(__first1._M_node, __first2._M_node, (++__next)._M_node);
         __first2 = __next;
@@ -184,6 +185,7 @@ void _S_merge(list<_Tp, _Alloc>& __that, list<_Tp, _Alloc>& __x,
   else {
     while (__first1 != __last1 && __first2 != __last2) {
       if (__comp(*__first2, *__first1)) {
+        _STLP_VERBOSE_ASSERT(!__comp(*__first1, *__first2), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         __first1 = __that.insert(__first1, *__first2);
       }
       else

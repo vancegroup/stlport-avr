@@ -36,13 +36,15 @@ bool lexicographical_compare(_InputIter1 __first1, _InputIter1 __last1,
                              _InputIter2 __first2, _InputIter2 __last2) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
-    for ( ; __first1 != __last1 && __first2 != __last2
-          ; ++__first1, ++__first2) {
-      if (*__first1 < *__first2)
-        return true;
-      if (*__first2 < *__first1)
-        return false;
+  for ( ; __first1 != __last1 && __first2 != __last2
+        ; ++__first1, ++__first2) {
+    if (*__first1 < *__first2) {
+      _STLP_VERBOSE_ASSERT(!(*__first2 < *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      return true;
     }
+    if (*__first2 < *__first1)
+      return false;
+  }
   return __first1 == __last1 && __first2 != __last2;
 }
 
@@ -52,13 +54,15 @@ bool lexicographical_compare(_InputIter1 __first1, _InputIter1 __last1,
                              _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
-    for ( ; __first1 != __last1 && __first2 != __last2
-          ; ++__first1, ++__first2) {
-      if (__comp(*__first1, *__first2))
-        return true;
-      if (__comp(*__first2, *__first1))
-        return false;
+  for ( ; __first1 != __last1 && __first2 != __last2
+        ; ++__first1, ++__first2) {
+    if (__comp(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__comp(*__first2, *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      return true;
     }
+    if (__comp(*__first2, *__first1))
+      return false;
+  }
   return __first1 == __last1 && __first2 != __last2;
 }
 
@@ -69,8 +73,10 @@ template <class _InputIter1, class _InputIter2>
 int __lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
                                    _InputIter2 __first2, _InputIter2 __last2) {
   while (__first1 != __last1 && __first2 != __last2) {
-    if (*__first1 < *__first2)
+    if (*__first1 < *__first2) {
+      _STLP_VERBOSE_ASSERT(!(*__first2 < *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return -1;
+    }
     if (*__first2 < *__first1)
       return 1;
     ++__first1;
@@ -104,29 +110,57 @@ _STLP_INLINE_LOOP _RandomAccessIter __find(_RandomAccessIter __first, _RandomAcc
   _STLP_DIFFERENCE_TYPE(_RandomAccessIter) __trip_count = (__last - __first) >> 2;
 
   for ( ; __trip_count > 0 ; --__trip_count) {
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
 
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
 
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
 
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
   }
 
   switch (__last - __first) {
   case 3:
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
   case 2:
-    if (*__first == __val) return __first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
   case 1:
-    if (*__first == __val) return __first;
-      //++__first;
+    if (*__first == __val) {
+      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return __first;
+    }
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    //++__first;
   case 0:
   default:
     return __last;
@@ -184,8 +218,12 @@ template <class _InputIter, class _Tp>
 _STLP_INLINE_LOOP _InputIter __find(_InputIter __first, _InputIter __last,
                                     const _Tp& __val,
                                     const input_iterator_tag &) {
-  while (__first != __last && !(*__first == __val))
+  while (__first != __last && !(*__first == __val)) {
+    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first;
+  }
+  _STLP_VERBOSE_ASSERT((__first == __last) || (__val == *__first),
+                       _StlMsg_INVALID_EQUIVALENT_PREDICATE)
   return __first;
 }
 
@@ -216,7 +254,7 @@ _InputIter find(_InputIter __first, _InputIter __last, const _Tp& __val) {
 template <class _ForwardIter1, class _ForwardIter2, class _BinaryPred>
 _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
                      _ForwardIter2 __first2, _ForwardIter2 __last2,
-                     _BinaryPred  __predicate) {
+                     _BinaryPred  __pred) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
   // Test for empty ranges
@@ -227,8 +265,12 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
   _ForwardIter2 __tmp(__first2);
   ++__tmp;
   if (__tmp == __last2) {
-    while (__first1 != __last1 && !__predicate(*__first1, *__first2))
+    while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
+    }
+    _STLP_VERBOSE_ASSERT((__first1 == __last1) || __pred(*__first2, *__first1),
+                         _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     return __first1;
   }
 
@@ -242,26 +284,34 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
   while (__first1 != __last1) {
     while (__first1 != __last1) {
-      if (__predicate(*__first1, *__first2))
+      if (__pred(*__first1, *__first2)) {
+        _STLP_VERBOSE_ASSERT(__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
         break;
+      }
+      _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
     }
-    while (__first1 != __last1 && !__predicate(*__first1, *__first2))
+    while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
+      _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
+    }
     if (__first1 == __last1)
       return __last1;
+    _STLP_VERBOSE_ASSERT(__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
 
     __p = __p1;
     _ForwardIter1 __current = __first1;
     if (++__current == __last1) return __last1;
 
-    while (__predicate(*__current, *__p)) {
+    while (__pred(*__current, *__p)) {
+      _STLP_VERBOSE_ASSERT(__pred(*__p, *__current), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       if (++__p == __last2)
         return __first1;
       if (++__current == __last1)
         return __last1;
     }
 
+    _STLP_VERBOSE_ASSERT(!__pred(*__p, *__current), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first1;
   }
   return __first1;
@@ -277,8 +327,10 @@ _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
   for ( ; __first1 != __last1; ++__first1) {
     for (_ForwardIter __iter = __first2; __iter != __last2; ++__iter) {
       if (__comp(*__first1, *__iter)) {
+        _STLP_VERBOSE_ASSERT(__comp(*__iter, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
         return __first1;
       }
+      _STLP_VERBOSE_ASSERT(!__comp(*__iter, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     }
   }
   return __last1;
@@ -300,9 +352,8 @@ _ForwardIter1 __find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
     return __last1;
   else {
     _ForwardIter1 __result = __last1;
-    while (1) {
-      _ForwardIter1 __new_result
-        = search(__first1, __last1, __first2, __last2, __comp);
+    for (;;) {
+      _ForwardIter1 __new_result = search(__first1, __last1, __first2, __last2, __comp);
       if (__new_result == __last1)
         return __result;
       else {
@@ -388,6 +439,7 @@ _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
     __middle = __first;
     advance(__middle, __half);
     if (__comp(*__middle, __val)) {
+      _STLP_VERBOSE_ASSERT(!__comp(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __first = __middle;
       ++__first;
       __len = __len - __half - 1;

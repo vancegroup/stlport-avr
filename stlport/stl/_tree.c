@@ -364,6 +364,8 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_insert(_Rb_tree_n
   else if ( __on_right == 0 &&     // If __on_right != 0, the remainder fails to false
            ( __on_left != 0 ||     // If __on_left != 0, the remainder succeeds to true
              _M_key_compare( _KeyOfValue()(__val), _S_key(__parent) ) ) ) {
+    _STLP_VERBOSE_ASSERT((__on_left != 0 || !_M_key_compare( _S_key(__parent), _KeyOfValue()(__val) ) ),
+                         _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     __new_node = _M_create_node(__val);
     _S_left(__parent) = __new_node;
     if (__parent == _M_leftmost())
@@ -389,8 +391,13 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(const _
   _Base_ptr __x = _M_root();
   while (__x != 0) {
     __y = __x;
-    __x = _M_key_compare(_KeyOfValue()(__val), _S_key(__x)) ?
-            _S_left(__x) : _S_right(__x);
+    if (_M_key_compare(_KeyOfValue()(__val), _S_key(__x))) {
+      _STLP_VERBOSE_ASSERT(!_M_key_compare(_S_key(__x), _KeyOfValue()(__val)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      __x = _S_left(__x);
+    }
+    else
+      __x = _S_right(__x);
   }
   return _M_insert(__y, __val, __x);
 }
@@ -406,6 +413,8 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(const 
   while (__x != 0) {
     __y = __x;
     __comp = _M_key_compare(_KeyOfValue()(__val), _S_key(__x));
+    _STLP_VERBOSE_ASSERT((!__comp || !_M_key_compare(_S_key(__x), _KeyOfValue()(__val))),
+                         _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     __x = __comp ? _S_left(__x) : _S_right(__x);
   }
   iterator __j = iterator(__y);
@@ -415,8 +424,11 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(const 
     else
       --__j;
   }
-  if (_M_key_compare(_S_key(__j._M_node), _KeyOfValue()(__val)))
+  if (_M_key_compare(_S_key(__j._M_node), _KeyOfValue()(__val))) {
+    _STLP_VERBOSE_ASSERT(!_M_key_compare(_KeyOfValue()(__val), _S_key(__j._M_node)),
+                         _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
     return pair<iterator,bool>(_M_insert(__y, __val, __x), true);
+  }
   return pair<iterator,bool>(__j, false);
 }
 
@@ -433,8 +445,11 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
     if (empty())
       return insert_unique(__val).first;
 
-    if ( _M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node)))
+    if (_M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node))) {
+      _STLP_VERBOSE_ASSERT(!_M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__val)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return _M_insert(__position._M_node, __val, __position._M_node);
+    }
     // first argument just needs to be non-null
     else {
       bool __comp_pos_v = _M_key_compare( _S_key(__position._M_node), _KeyOfValue()(__val) );
@@ -460,37 +475,50 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
 
       // Optimization to catch insert-equivalent -- save comparison results,
       // and we get this for free.
-      if(_M_key_compare( _KeyOfValue()(__val), _S_key(__after._M_node) )) {
+      if (_M_key_compare( _KeyOfValue()(__val), _S_key(__after._M_node) )) {
+        _STLP_VERBOSE_ASSERT(!_M_key_compare(_S_key(__after._M_node), _KeyOfValue()(__val)),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         if (_S_right(__position._M_node) == 0)
           return _M_insert(__position._M_node, __val, 0, __position._M_node);
         else
           return _M_insert(__after._M_node, __val, __after._M_node);
-      } else {
+      } 
+      else {
         return insert_unique(__val).first;
       }
     }
-  } else if (__position._M_node == &this->_M_header._M_data) { // end()
-      if (_M_key_compare(_S_key(_M_rightmost()), _KeyOfValue()(__val)))
+  }
+  else if (__position._M_node == &this->_M_header._M_data) { // end()
+    if (_M_key_compare(_S_key(_M_rightmost()), _KeyOfValue()(__val))) {
         // pass along to _M_insert that it can skip comparing
         // v, Key ; since compare Key, v was true, compare v, Key must be false.
+        _STLP_VERBOSE_ASSERT(!_M_key_compare(_KeyOfValue()(__val), _S_key(_M_rightmost())),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         return _M_insert(_M_rightmost(), __val, 0, __position._M_node); // Last argument only needs to be non-null
-      else
-        return insert_unique(__val).first;
-  } else {
+    }
+    else
+      return insert_unique(__val).first;
+  }
+  else {
     iterator __before = __position;
     --__before;
 
     bool __comp_v_pos = _M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node));
+    _STLP_VERBOSE_ASSERT(!__comp_v_pos || !_M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__val)),
+                         _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
 
     if (__comp_v_pos
         && _M_key_compare( _S_key(__before._M_node), _KeyOfValue()(__val) )) {
+      _STLP_VERBOSE_ASSERT(!_M_key_compare(_KeyOfValue()(__val), _S_key(__before._M_node)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
 
       if (_S_right(__before._M_node) == 0)
         return _M_insert(__before._M_node, __val, 0, __before._M_node); // Last argument only needs to be non-null
       else
         return _M_insert(__position._M_node, __val, __position._M_node);
       // first argument just needs to be non-null
-    } else {
+    }
+    else {
       // Does the insertion point fall immediately AFTER the hint?
       iterator __after = __position;
       ++__after;
@@ -500,13 +528,20 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
       // performed because it must be false.  However, if the earlier comparison
       // was false, we need to perform this one because in the equal case, both will
       // be false.
-      if (!__comp_v_pos)
+      if (!__comp_v_pos) {
         __comp_pos_v = _M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__val));
+        _STLP_VERBOSE_ASSERT(!__comp_pos_v || !_M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node)),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      }
 
       if ( (!__comp_v_pos) // comp_v_pos true implies comp_v_pos false
           && __comp_pos_v
           && (__after._M_node == &this->_M_header._M_data ||
               _M_key_compare( _KeyOfValue()(__val), _S_key(__after._M_node) ))) {
+
+        _STLP_VERBOSE_ASSERT(__after._M_node == &this->_M_header._M_data ||
+                             !_M_key_compare(_S_key(__after._M_node), _KeyOfValue()(__val)),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
 
         if (_S_right(__position._M_node) == 0)
           return _M_insert(__position._M_node, __val, 0, __position._M_node);
@@ -523,7 +558,6 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
   }
 }
 
-
 template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 __iterator__
@@ -537,7 +571,9 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterato
 
     if (!_M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__val)))
       return _M_insert(__position._M_node, __val, __position._M_node);
-    else    {
+    else {
+      _STLP_VERBOSE_ASSERT(!_M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       // Check for only one member
       if (__position._M_node->_M_left == __position._M_node)
         // Unlike insert_unique, can't avoid doing a comparison here.
@@ -559,15 +595,24 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterato
           return _M_insert(__position._M_node, __val, 0, __position._M_node);
         else
           return _M_insert(__after._M_node, __val, __after._M_node);
-      } else // Invalid hint
+      }
+      else { // Invalid hint
+        _STLP_VERBOSE_ASSERT(!_M_key_compare(_KeyOfValue()(__val), _S_key(__after._M_node)),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         return insert_equal(__val);
+      }
     }
-  } else if (__position._M_node == &this->_M_header._M_data) {// end()
+  }
+  else if (__position._M_node == &this->_M_header._M_data) { // end()
     if (!_M_key_compare(_KeyOfValue()(__val), _S_key(_M_rightmost())))
       return _M_insert(_M_rightmost(), __val, 0, __position._M_node); // Last argument only needs to be non-null
-    else
+    else {
+      _STLP_VERBOSE_ASSERT(!_M_key_compare(_S_key(_M_rightmost()), _KeyOfValue()(__val)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return insert_equal(__val);
-  } else {
+    }
+  }
+  else {
     iterator __before = __position;
     --__before;
     // store the result of the comparison between pos and v so
@@ -576,27 +621,36 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_equal(iterato
     // be negligible, and to do what I want to do (save the result of a comparison so
     // that it can be re-used) there is no alternative.  Test here is for before <= v <= pos.
     bool __comp_pos_v = _M_key_compare(_S_key(__position._M_node), _KeyOfValue()(__val));
-    if (!__comp_pos_v
-        && !_M_key_compare(_KeyOfValue()(__val), _S_key(__before._M_node))) {
+    _STLP_VERBOSE_ASSERT(!__comp_pos_v || !_M_key_compare(_KeyOfValue()(__val), _S_key(__position._M_node)),
+                         _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    if (!__comp_pos_v &&
+        !_M_key_compare(_KeyOfValue()(__val), _S_key(__before._M_node))) {
       if (_S_right(__before._M_node) == 0)
         return _M_insert(__before._M_node, __val, 0, __before._M_node); // Last argument only needs to be non-null
       else
         return _M_insert(__position._M_node, __val, __position._M_node);
-    } else  {
+    }
+    else {
+      _STLP_VERBOSE_ASSERT(__comp_pos_v || !_M_key_compare(_S_key(__before._M_node), _KeyOfValue()(__val)),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       // Does the insertion point fall immediately AFTER the hint?
       // Test for pos < v <= after
       iterator __after = __position;
       ++__after;
 
-      if (__comp_pos_v
-          && ( __after._M_node == &this->_M_header._M_data
-              || !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__val) ) ) ) {
+      if (__comp_pos_v &&
+          ( __after._M_node == &this->_M_header._M_data ||
+            !_M_key_compare( _S_key(__after._M_node), _KeyOfValue()(__val) ) ) ) {
         if (_S_right(__position._M_node) == 0)
           return _M_insert(__position._M_node, __val, 0, __position._M_node);
         else
           return _M_insert(__after._M_node, __val, __after._M_node);
-      } else // Invalid hint
+      }
+      else { // Invalid hint
+        _STLP_VERBOSE_ASSERT(!__comp_pos_v || !_M_key_compare(_KeyOfValue()(__val), _S_key(__after._M_node)),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         return insert_equal(__val);
+      }
     }
   }
 }
@@ -605,7 +659,7 @@ template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 _Rb_tree_node_base*
 _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::_M_copy(_Rb_tree_node_base* __x,
-                                                                            _Rb_tree_node_base* __p) {
+                                                                    _Rb_tree_node_base* __p) {
   // structural copy.  __x and __p must be non-null.
   _Base_ptr __top = _M_clone_node(__x);
   _S_parent(__top) = __p;

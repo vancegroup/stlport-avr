@@ -152,8 +152,11 @@ void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
   if (__that.get_allocator() == __x.get_allocator()) {
     typename slist<_Tp, _Alloc>::iterator __ite(__that.before_begin());
     while (__ite._M_node->_M_next && !__x.empty()) {
-      if (__comp(__x.front(), __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data))
+      if (__comp(__x.front(), __STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data)) {
+        _STLP_VERBOSE_ASSERT(!__comp(__STATIC_CAST(_Node*, __ite._M_node->_M_next)->_M_data, __x.front()),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         __that.splice_after(__ite, __x, __x.before_begin());
+      }
       ++__ite;
     }
     if (!__x.empty()) {
@@ -164,6 +167,8 @@ void _Slist_merge(slist<_Tp, _Alloc>& __that, slist<_Tp, _Alloc>& __x,
     typename slist<_Tp, _Alloc>::iterator __i1(__that.before_begin()), __i2(__x.begin());
     while (__i1._M_node->_M_next && __i2._M_node) {
       if (__comp(__STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data, *__i2)) {
+        _STLP_VERBOSE_ASSERT(!__comp(*__i2, __STATIC_CAST(_Node*, __i1._M_node->_M_next)->_M_data),
+                             _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         ++__i1;
       }
       else {
