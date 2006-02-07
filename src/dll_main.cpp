@@ -83,6 +83,9 @@
 
 _STLP_BEGIN_NAMESPACE
 
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_runtime_error(const char* __msg)
+{ _STLP_THROW_MSG(runtime_error, __msg); }
+
 void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg)
 { _STLP_THROW_MSG(range_error, __msg); }
 
@@ -137,19 +140,6 @@ underflow_error::~underflow_error() _STLP_NOTHROW_INHERENTLY {}
 #if !defined(_STLP_WCE_EVC3)
 #  if defined (_STLP_NO_BAD_ALLOC)
 const nothrow_t nothrow /* = {} */;
-#  endif
-#endif
-
-#if defined (_STLP_DEBUG) || defined (_STLP_ASSERTIONS)
-#  if defined (_STLP_DEBUG_MODE_THROWS)
-#    if !defined (_STLP_USE_EXCEPTIONS)
-#      error You asked for debug to throw exception but it looks like your compiler \
-do not support it or you also request no exception support. Please fix configuration.
-#    endif
-_STLP_END_NAMESPACE
-void __stl_debug_terminate()
-{ throw _STLP_STD::runtime_error("STL safe exception"); }
-_STLP_BEGIN_NAMESPACE
 #  endif
 #endif
 
