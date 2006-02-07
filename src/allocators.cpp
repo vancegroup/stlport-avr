@@ -49,12 +49,6 @@ extern "C" {
 }
 #endif
 
-#if defined (_STLP_THREADS)
-#  define _STLP_NODE_ALLOCATOR_THREADS true
-#else
-#  define _STLP_NODE_ALLOCATOR_THREADS false
-#endif
-
 // Specialised debug form of malloc which does not provide "false"
 // memory leaks when run with debug CRT libraries.
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1020 && defined (_STLP_DEBUG_ALLOC)) && !defined (_STLP_WINCE) && !defined (_STLP_WCE)
@@ -155,11 +149,9 @@ __node_alloc_impl::_S_alloc_counter() {
 #endif
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-template <bool __threads>
-class _Node_Alloc_Lock;
+#  if defined (_STLP_THREADS)
 
-_STLP_TEMPLATE_NULL
-class _Node_Alloc_Lock<true> {
+class _Node_Alloc_Lock {
 public:
   _Node_Alloc_Lock() {
 #  if defined (_STLP_SGI_THREADS)
@@ -178,20 +170,14 @@ public:
   static _STLP_STATIC_MUTEX _S_lock;
 };
 
-_STLP_TEMPLATE_NULL
-class _Node_Alloc_Lock<false> {
+_STLP_STATIC_MUTEX _Node_Alloc_Lock::_S_lock _STLP_MUTEX_INITIALIZER;
+#  else
+
+class _Node_Alloc_Lock {
 public:
   _Node_Alloc_Lock() { }
   ~_Node_Alloc_Lock() { }
 };
-
-#  if (_STLP_STATIC_TEMPLATE_DATA > 0)
-_STLP_STATIC_MUTEX
-_Node_Alloc_Lock<true>::_S_lock _STLP_MUTEX_INITIALIZER;
-#  else
-__DECLARE_INSTANCE(_STLP_STATIC_MUTEX,
-                   _Node_Alloc_Lock<true>::_S_lock,
-                   _STLP_MUTEX_INITIALIZER);
 
 #  endif
 
@@ -280,7 +266,7 @@ void* __node_alloc_impl::_M_allocate(size_t __n) {
   // Acquire the lock here with a constructor call.
   // This ensures that it is released in exit or during stack
   // unwinding.
-  _Node_Alloc_Lock<_STLP_NODE_ALLOCATOR_THREADS> __lock_instance;
+  _Node_Alloc_Lock __lock_instance;
 
   if ( (__r  = *__my_free_list) != 0 ) {
     *__my_free_list = __r->_M_next;
@@ -299,7 +285,7 @@ void __node_alloc_impl::_M_deallocate(void *__p, size_t __n) {
   _Obj * __pobj = __STATIC_CAST(_Obj*, __p);
 
   // acquire lock
-  _Node_Alloc_Lock<_STLP_NODE_ALLOCATOR_THREADS> __lock_instance;
+  _Node_Alloc_Lock __lock_instance;
   __pobj->_M_next = *__my_free_list;
   *__my_free_list = __pobj;
 
