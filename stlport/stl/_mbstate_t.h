@@ -86,7 +86,7 @@ inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y)
 inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y)
 { return ( __x._M_state[0] == __y._M_state[0] ); }
 #  else
-#    if defined(__BORLANDC__) && (__BORLANDC__ < 0x560)
+#    if defined(__BORLANDC__)
 typedef char __stl_mbstate_t;
 #    endif
 #  endif

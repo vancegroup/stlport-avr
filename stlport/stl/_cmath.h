@@ -508,6 +508,10 @@ using ::sqrt;
 using ::tan;
 using ::tanh;
 _STLP_END_NAMESPACE
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x560)
+using _STLP_VENDOR_CSTD::_ecvt;
+using _STLP_VENDOR_CSTD::_fcvt;
+#  endif
 #endif
 
 #endif /* _STLP_INTERNAL_CMATH */

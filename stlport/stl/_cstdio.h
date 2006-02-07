@@ -28,13 +28,19 @@
 #    include _STLP_NATIVE_C_HEADER(stdio.h)
 #  endif
 
-#  if defined (__MWERKS__) && !defined (N_PLAT_NLM)
+#  if (defined (__MWERKS__) && !defined (N_PLAT_NLM))  || defined (__BORLANDC__)
 #    undef stdin
 #    undef stdout
 #    undef stderr
+#    if defined (__MWERKS__)
 #    define stdin  	(&_STLP_VENDOR_CSTD::__files[0])
 #    define stdout	(&_STLP_VENDOR_CSTD::__files[1])
 #    define stderr	(&_STLP_VENDOR_CSTD::__files[2])
+#    elif defined (__BORLANDC__)
+#      define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
+#      define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
+#      define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
+#    endif
 #  endif
 
 #  if ((defined (_STLP_MSVC) || defined (__ICL)) && (_MSC_VER < 1400)) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
@@ -103,7 +109,7 @@ using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
 #      if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL) || \
-( defined (__BORLANDC__) && __BORLANDC__ > 0x530))
+          (defined (__BORLANDC__) && __BORLANDC__ > 0x530))
 using _STLP_VENDOR_CSTD::vsnprintf;
 #      endif
 #    endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */

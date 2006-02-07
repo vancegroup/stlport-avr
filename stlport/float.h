@@ -28,6 +28,15 @@ struct _exception;
 
 #include _STLP_NATIVE_C_HEADER(float.h)
 
+#if defined(__BORLANDC__) && defined (__cplusplus) && (__BORLANDC__ >= 0x560)
+_STLP_BEGIN_NAMESPACE
+using ::_max_dble;
+using ::_max_flt;
+using ::_max_ldble;
+using ::_tiny_ldble;
+_STLP_END_NAMESPACE
+#endif
+
 #if defined (__BORLANDC__) && defined (__cplusplus) && !defined (_STLP_BCC_FPU_BUG)
 #  define _STLP_BCC_FPU_BUG
 // Ignore FPU exceptions, set FPU precision to 53 bits for floatio_test and cmath_test

@@ -7,13 +7,18 @@
 #  error - Borland compilers below version 5.5.1 not supported.
 #endif
 
-#if (__BORLANDC__ < 0x560)
+#if (__BORLANDC__ >= 0x560)
+#  define _USE_OLD_RW_STL
+#  define NOWINBASEINTERLOCK  // src/fstream.cpp error in winbase.h
+#endif
+
+#if (__BORLANDC__ < 0x564)
 #  define _STLP_QUALIFIED_SPECIALIZATION_BUG
+#endif
+
 #  define _STLP_DONT_USE_PRIV_NAMESPACE
 #  define _STLP_NO_VENDOR_STDLIB_L
 #  define _STLP_NO_VENDOR_MATH_F
-#endif
-
 #define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
 #define _STLP_USE_OWN_MBSTATE_T
 #define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
