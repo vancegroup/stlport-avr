@@ -10,14 +10,12 @@ TARGET_NAME=$(COMPILER_NAME)
 OUTPUT_DIR             = obj\$(TARGET_NAME)\shared$(EXTRA_DIRS)
 OUTPUT_DIR_DBG         = obj\$(TARGET_NAME)\shared-g$(EXTRA_DIRS)
 OUTPUT_DIR_STLDBG      = obj\$(TARGET_NAME)\shared-stlg$(EXTRA_DIRS)
-
-# file to store generated dependencies for make:
-DEPENDS_COLLECTION     = obj\$(TARGET_NAME)\.make.depend
-
-# I use the same catalog, as for shared:
 OUTPUT_DIR_A           = obj\$(TARGET_NAME)\static$(EXTRA_DIRS)
 OUTPUT_DIR_A_DBG       = obj\$(TARGET_NAME)\static-g$(EXTRA_DIRS)
 OUTPUT_DIR_A_STLDBG    = obj\$(TARGET_NAME)\static-stlg$(EXTRA_DIRS)
+
+# file to store generated dependencies for make:
+DEPENDS_COLLECTION     = obj\$(TARGET_NAME)\.make.depend
 
 SRCROOT = $(SRCROOT:/=\)
 !ifdef CROSS_COMPILING
