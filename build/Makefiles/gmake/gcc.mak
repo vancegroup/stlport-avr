@@ -54,8 +54,8 @@ CPPFLAGS = $(DEFS) $(INCLUDES)
 
 ifeq ($(OSNAME), cygming)
 RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
-release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-O2"
-dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-g"
+release-shared : RCFLAGS += -DBUILD_INFOS=-O2
+dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
 CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident
@@ -79,8 +79,8 @@ endif
 
 ifeq ($(OSNAME), windows)
 RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
-release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-O2"
-dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-g"
+release-shared : RCFLAGS += -DBUILD_INFOS=-O2
+dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
 CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident

@@ -51,9 +51,9 @@ CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
 RCFLAGS = -32 -r -i${STLPORT_INCLUDE_DIR} -dCOMP=bcc
 
-release-shared : RCFLAGS += -dBUILD=r -dBUILD_INFOS="-o"
-dbg-shared : RCFLAGS += -dBUILD=g -dBUILD_INFOS="-g"
-stldbg-shared : RCFLAGS += -dBUILD=stlg -dBUILD_INFOS="-g -D_STLP_DEBUG"
+release-shared : RCFLAGS += -dBUILD_INFOS="-O2"
+dbg-shared : RCFLAGS += -dBUILD=d -dBUILD_INFOS="-R -v -y -D_DEBUG"
+stldbg-shared : RCFLAGS += -dBUILD=stld -dBUILD_INFOS="-R -v -y -D_DEBUG -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -fo$@
 
 COMPILE.rc = ${RC} ${RCFLAGS}
