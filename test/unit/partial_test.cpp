@@ -2,6 +2,11 @@
 #include <vector>
 #include <algorithm>
 
+#if defined (STLPORT) && defined (_STLP_DEBUG) && defined (_STLP_DEBUG_MODE_THROWS)
+#  define _STLP_DO_CHECK_BAD_PREDICATE
+#  include <stdexcept>
+#endif
+
 #include "iota.h"
 #include "cppunit/cppunit_proxy.h"
 
@@ -21,6 +26,9 @@ class PartialTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(parsrtc0);
   CPPUNIT_TEST(parsrtc1);
   CPPUNIT_TEST(parsrtc2);
+#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
+  CPPUNIT_TEST(bad_predicate_detected);
+#endif
   CPPUNIT_TEST(partsum0);
   CPPUNIT_TEST(partsum1);
   CPPUNIT_TEST(partsum2);
@@ -36,6 +44,7 @@ protected:
   void partsum0();
   void partsum1();
   void partsum2();
+  void bad_predicate_detected();
 
   static bool str_compare(const char* a_, const char* b_)
   {
@@ -159,6 +168,33 @@ void PartialTest::parsrtc2()
   CPPUNIT_ASSERT( strcmp( result[2], "cc" ) == 0 );
   CPPUNIT_ASSERT( result[2] == names[4] );
 }
+
+#if defined (_STLP_DO_CHECK_BAD_PREDICATE)
+void PartialTest::bad_predicate_detected()
+{
+  int numbers[] = { 0, 0, 1, 0, 0, 1, 0, 0 };
+  const size_t s = sizeof(numbers) / sizeof(numbers[0]);
+
+  try {
+    partial_sort(numbers, numbers + s / 2, numbers + s, less_equal<int>());
+
+    //Here is means that no exception has been raised
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const&)
+  { /*OK bad predicate has been detected.*/ }
+
+  try {
+    vector<int> result(s);
+    partial_sort_copy(numbers, numbers + s, result.begin(), result.end(), less_equal<int>());
+
+    //Here is means that no exception has been raised
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const&)
+  { /*OK bad predicate has been detected.*/ }
+}
+#endif
 
 void PartialTest::partsum0()
 {
