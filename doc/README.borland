@@ -19,19 +19,30 @@ https://sourceforge.net/forum/?group_id=146814
 Prerequisites
 =============
 To build and use STLport you will need following tools and libraries:
- - Borland C++ compiler 5.5.1 or higher version.
+ - Borland C++ compiler package 5.5.1 or higher version.
 
-   In order to build STLport the Borland compiler and linker have to
- be correctly configurated too. That is to say for the Borland compiler
- command bcc32.exe you need to create a bcc32.cfg file containing
- the path to the Borland native headers, if you install Borland tools
- in BORLAND_PATH then bcc32.cfg must contain:
+    In order to build STLport the Borland compiler and linker have to
+  be correctly configurated too. That is to say:
+
+    * For the Borland compiler bcc32:
+
+    Next to the exe, create a bcc32.cfg file containing the compiler option
+    giving it the path to native Borland headers:
 
 	-I%BORLAND_PATH%\BCC55\include
 
-   For the Borland linker ilink32.exe you will need both the Borland
- libs and also the Borland PSDK libs. That is to say that in ilink32.cfg
- you will find at least:
+    * For the ressource compiler brcc32:
+
+    Create an environment variable INCLUDE containing path to native Borland
+    headers and especially the windows.h file
+
+	set INCLUDE=%BORLAND_PATH%\BCC55\include
+
+    * For the Borland linker ilink32:
+
+    You need to give path to both the Borland libs and Borland PSDK libs.
+    For that you have to create, next to the exe, a configuration file,
+    ilink32.cfg, that contains:
 
 	-L%BORLAND_PATH%\BCC55\lib;BORLAND_PATH\BCC55\lib\PSDK
 
