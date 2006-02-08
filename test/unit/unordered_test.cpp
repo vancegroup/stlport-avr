@@ -26,6 +26,7 @@ class UnorderedTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(user_case);
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
+  CPPUNIT_TEST(equal_range);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -36,6 +37,7 @@ protected:
   void user_case();
   void hash_policy();
   void buckets();
+  void equal_range();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UnorderedTest);
@@ -317,5 +319,78 @@ void UnorderedTest::buckets()
     bucketSizes += int_uset.bucket_size(i);
   }
   CPPUNIT_ASSERT( bucketSizes == int_uset.size() );
+#endif
+}
+
+void UnorderedTest::equal_range()
+{
+#if !defined (__DMC__)
+  typedef unordered_multiset<size_t> umset;
+  {
+    //General test
+    umset iumset;
+    iumset.max_load_factor(10.0f);
+
+    size_t nbBuckets = iumset.bucket_count();
+
+    for (size_t i = 0; i < nbBuckets; ++i) {
+      iumset.insert(i);
+      iumset.insert(i + nbBuckets);
+      iumset.insert(i + 2 * nbBuckets);
+      iumset.insert(i + 3 * nbBuckets);
+      iumset.insert(i + 4 * nbBuckets);
+    }
+
+    CPPUNIT_ASSERT( nbBuckets == iumset.bucket_count() );
+    CPPUNIT_ASSERT( iumset.size() == 5 * nbBuckets );
+
+    pair<umset::iterator, umset::iterator> p = iumset.equal_range(1);
+    CPPUNIT_ASSERT( p.first != p.second );
+
+    size_t nbElems = iumset.size();
+    nbElems -= distance(p.first, p.second);
+    for (umset::iterator j = p.first; j != p.second;) {
+      iumset.erase(j++);
+    }
+
+    CPPUNIT_ASSERT( nbElems == iumset.size() );
+
+    p = iumset.equal_range(2);
+    CPPUNIT_ASSERT( p.first != p.second );
+    nbElems -= distance(p.first, p.second);
+    iumset.erase(p.first, p.second);
+    CPPUNIT_ASSERT( nbElems == iumset.size() );
+  }
+
+  {
+    //More specific test that tries to put many values in the same bucket
+    umset iumset;
+    iumset.max_load_factor(10.0f);
+
+    size_t i;
+    const size_t nbBuckets = iumset.bucket_count();
+    const size_t targetedBucket = nbBuckets / 2;
+
+    //Lets put 10 values in the targeted bucket:
+    for (i = 0; i < 10; ++i) {
+      iumset.insert(targetedBucket + (i * nbBuckets));
+    }
+
+    //Now we put some more elements:
+    for (i = 0; i < nbBuckets; ++i) {
+      iumset.insert(i);
+    }
+
+    //Last we put again 10 values in the targeted bucket and in reverse order:
+    for (i = 9; i <= 10; --i) {
+      iumset.insert(targetedBucket + (i * nbBuckets));
+    }
+
+    CPPUNIT_ASSERT( iumset.bucket_size(targetedBucket) == 21 );
+
+    pair<umset::iterator, umset::iterator> p = iumset.equal_range(targetedBucket);
+    CPPUNIT_ASSERT( p.first != p.second );
+    CPPUNIT_ASSERT( distance(p.first, p.second) == 3 );
+  }
 #endif
 }
