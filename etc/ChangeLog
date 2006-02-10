@@ -1,3 +1,17 @@
+2006-02-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_put_float.cpp: remove usage of static buffers
+	[potential vulnerabilities]; directly use __iostring instead.
+
+	* test/unit/floatio_test.cpp: test for fixed float output;
+	cases when fixed float fail on Linux and Solaris, related
+	with fcvt_r and fconvert calls respectivly commented.
+
+	* build/Makefiles/gmake/gcc.mak: workaround for bug in make 3.79.1
+	on Solaris [not pass -D_STLP_DEBUG to CPPFLAGS].
+
+	* stlport/stl/_string.h: rollback 2006-01-25.
+
 2006-02-08  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles: Removed all references to BUILD=r in parameters
