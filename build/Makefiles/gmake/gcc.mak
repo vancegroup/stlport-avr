@@ -1,4 +1,4 @@
-# Time-stamp: <05/12/27 10:50:40 ptr>
+# Time-stamp: <06/02/10 08:57:46 ptr>
 
 #INCLUDES = -I$(SRCROOT)/include
 INCLUDES :=
@@ -113,6 +113,11 @@ CCFLAGS = $(PTHREAD) $(OPT)
 CFLAGS = $(PTHREAD) $(OPT)
 # CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions -fident $(OPT)
 CXXFLAGS = $(PTHREAD) -fexceptions -fident $(OPT)
+# This is here due to bug in GNU make 3.79.1 from Solaris build:
+stldbg-static:	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-shared:	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-static-dep:	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
+stldbg-shared-dep:	CPPFLAGS = -D_STLP_DEBUG ${CPPFLAGS}
 endif
 
 ifeq ($(OSNAME),linux)
