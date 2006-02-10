@@ -1,3 +1,19 @@
+2006-02-10  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_iosfwd.h, _locale.h: Removed type attributes on type
+	declaration, only useful on type definition.
+
+	* src/message_facets.h: Removed unused parameter in _Catalog_nl_catd_map
+	erase method to avoid warning.
+
+	* src/num_put_float.cpp: Use more macro technique to avoid unused parameters
+	in *_cvt functions.
+
+	* test/unit/cppunit/cppunit_mini.h: Comment unused parameter.
+
+	* test/unit/cppunit/file_reporter.h: Add base class initialization
+	in FileReporter copy constructor definition.
+
 2006-02-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/num_put_float.cpp: remove usage of static buffers
