@@ -29,7 +29,7 @@ namespace CPPUNIT_NS
     virtual ~Reporter() {}
     virtual void error(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
     virtual void message( const char * /*msg*/ ) {}
-    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool ignored) {}
+    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool /*ignored*/) {}
     virtual void printSummary() {}
   };
 
@@ -53,7 +53,7 @@ namespace CPPUNIT_NS
     int numErrors() { return m_numErrors; }
     static void registerTestCase(TestCase *in_testCase);
 
-    virtual void myRun(const char * /*in_name*/, bool invert = false) {}
+    virtual void myRun(const char * /*in_name*/, bool /*invert*/ = false) {}
 
     virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
       ++m_numErrors;

@@ -24,7 +24,7 @@
 //
 class FileReporter : public CPPUNIT_NS::Reporter {
 private:
-  FileReporter(const FileReporter&) {}
+  FileReporter(const FileReporter& __x) : CPPUNIT_NS::Reporter(__x) {}
   const FileReporter& operator=(const FileReporter&) { return *this; }
 public:
   FileReporter() : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false) { _file=stderr; }
