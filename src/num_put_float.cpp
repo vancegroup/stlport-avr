@@ -451,38 +451,35 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 // also does not deal with blank padding, which is handled by
 // __copy_float_and_fill.
 
-static size_t
-__format_float_scientific(char *buf, size_t buf_size, const char *bp,
-                          int decpt, int sign, bool is_zero,
-                          ios_base::fmtflags flags,
-                          int precision, bool /* islong */) {
-  size_t __group_pos;
-  char *__start_buf = buf;
-
+static size_t __format_float_scientific( __iostring& buf, const char *bp,
+                                         int decpt, int sign, bool is_zero,
+                                         ios_base::fmtflags flags,
+                                         int precision, bool /* islong */)
+{
   // sign if required
   if (sign)
-    *buf++ = '-';
+    buf += '-';
   else if (flags & ios_base::showpos)
-    *buf++ = '+';
+    buf += '+';
 
   // first digit of mantissa
-  *buf++ = *bp++;
+  buf += *bp++;
 
-  __group_pos = buf - __start_buf - 1;
+  size_t __group_pos = buf.size() - 1;
   // decimal point if required
   if (precision != 0 || flags & ios_base::showpoint) {
-    *buf++ = '.';
+    buf += '.';
     ++__group_pos;
   }
   // rest of mantissa
   int rz = precision;
   while (rz-- > 0 && *bp != 0)
-    *buf++ = *bp++;
+    buf += *bp++;
 
   // exponent
   char expbuf[MAXESIZ + 2];
-  char *suffix;
-  *(suffix = &expbuf[MAXESIZ]) = 0;
+  char *suffix = expbuf + MAXESIZ;
+  *suffix = 0;
   if (!is_zero) {
     int nn = decpt - 1;
     if (nn < 0)
@@ -503,173 +500,121 @@ __format_float_scientific(char *buf, size_t buf_size, const char *bp,
   *--suffix = flags & ios_base::uppercase ? 'E' : 'e';
 
   // copy the suffix
-  buf_size -= buf - __start_buf;
-#  if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
-  strncpy(buf, suffix, buf_size - 1);
-  buf[buf_size - 1] = 0;
-#  else
-  strncpy_s(buf, buf_size, suffix, _TRUNCATE);
-#  endif
+  buf += suffix;
   return __group_pos;
 }
 
-static size_t
-__format_float_fixed(__iostring &buf, const char * bp,
-                     int decpt, int sign, bool /* x */,
-                     ios_base::fmtflags flags,
-                     int precision, bool islong ) {
-  size_t __group_pos;
-  char static_buf[128];
-  int const BUF_SIZE = _STLP_ARRAY_SIZE(static_buf) - 1;
-  char *sbuf = static_buf;
+static size_t __format_float_fixed( __iostring &buf, const char *bp,
+                                    int decpt, int sign, bool /* x */,
+                                    ios_base::fmtflags flags,
+                                    int precision, bool islong )
+{
+  if ( sign && (decpt > -precision) && (*bp != 0) )
+    buf += '-';
+  else if ( flags & ios_base::showpos )
+    buf += '+';
 
-  if (sign && decpt > -precision && *bp != 0)
-    *sbuf++ = '-';
-  else if (flags & ios_base::showpos)
-    *sbuf++ = '+';
-
-  int rzero   = 0;
-  int nn      = decpt;
   int k       = 0;
   int maxfsig = islong ? 2*MAXFSIG : MAXFSIG;
 
+  int nnn = decpt;
   do {
-    int nnn = (min) (nn, BUF_SIZE);
-    nn -= nnn;
-    do {
-      *sbuf++ = ((nnn <= 0 || *bp == 0 || k >= maxfsig) ?
-               '0' : (++k, *bp++));
-    } while (--nnn > 0);
-    buf.append(static_buf, sbuf);
-    sbuf = static_buf;
-  } while (nn != 0);
+    buf += ((nnn <= 0 || *bp == 0 || k >= maxfsig) ? '0' : (++k, *bp++));
+  } while ( --nnn > 0 );
 
   // decimal point if needed
-  __group_pos = buf.size() - 1;
-  if (flags & ios_base::showpoint || precision > 0) {
-    *sbuf++ = '.';
+  size_t __group_pos = buf.size() - 1;
+  if ( flags & ios_base::showpoint || precision > 0 ) {
+    buf += '.';
     ++__group_pos;
   }
 
   // digits after decimal point if any
-  nn = (min) (precision, MAXFCVT);
-  if (precision > nn)
-    rzero = precision - nn;
-  while (nn != 0) {
-    int nnn = (min) (nn, BUF_SIZE);
-    nn -= nnn;
-    while (--nnn >= 0) {
-     *sbuf++ = (++decpt <= 0 || *bp == 0 || k >= maxfsig) ?
-               '0' : (++k, *bp++);
-    }
-    buf.append(static_buf, sbuf);
-    sbuf = static_buf;
+  nnn = (min) (precision, MAXFCVT);
+
+  while ( --nnn >= 0 ) {
+    buf += (++decpt <= 0 || *bp == 0 || k >= maxfsig) ? '0' : (++k, *bp++);
   }
 
   // trailing zeros if needed
-  while (rzero != 0) {
-    int nnn = (min) (rzero, BUF_SIZE);
-    rzero -= nnn;
-    while (nnn-- > 0) {
-      *sbuf++ = '0';
-    }
-    buf.append(static_buf, sbuf);
-    sbuf = static_buf;
+  if ( precision > MAXFCVT ) {
+    buf.append( precision - MAXFCVT, '0' );
   }
+
   return __group_pos;
 }
 
-static void __format_nan_or_inf(char * buf,
-#  if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
-                                size_t buf_size,
-#  endif
-                                double x,
-                                ios_base::fmtflags flags) {
+static void __format_nan_or_inf(__iostring& buf, double x, ios_base::fmtflags flags)
+{
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan;
   if (_Stl_is_inf(x)) {            // Infinity
     inf_or_nan = inf;
     if (_Stl_is_neg_inf(x))
-      *buf++ = '-';
+      buf += '-';
     else if (flags & ios_base::showpos)
-      *buf++ = '+';
-  }
-  else {                      // NaN
+      buf += '+';
+  } else {                      // NaN
     inf_or_nan = nan;
     if (_Stl_is_neg_nan(x))
-      *buf++ = '-';
+      buf += '-';
     else if (flags & ios_base::showpos)
-      *buf++ = '+';
+      buf += '+';
   }
-#  if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
-  strcpy(buf, flags & ios_base::uppercase ? inf_or_nan[1] : inf_or_nan[0]);
-#  else
-  strcpy_s(buf, buf_size, flags & ios_base::uppercase ? inf_or_nan[1] : inf_or_nan[0]);
-#  endif
+  buf += inf_or_nan[flags & ios_base::uppercase ? 1 : 0];
 }
 
 template <class max_double_type>
-static inline size_t
-__format_float(__iostring &buf, const char * bp,
-               int decpt, int sign, max_double_type x,
-               ios_base::fmtflags flags,
-               int precision, bool islong) {
+static inline size_t __format_float( __iostring &buf, const char * bp,
+                                     int decpt, int sign, max_double_type x,
+                                     ios_base::fmtflags flags,
+                                     int precision, bool islong)
+{
   size_t __group_pos = 0;
-  char static_buf[128];
   // Output of infinities and NANs does not depend on the format flags
   if (_Stl_is_nan_or_inf((double)x)) {       // Infinity or NaN
-    __format_nan_or_inf(_STLP_BUFFER(static_buf), (double)x, flags);
-    buf = static_buf;
-  }
-  else {                        // representable number
+    __format_nan_or_inf(buf, (double)x, flags);
+  } else {                        // representable number
     switch (flags & ios_base::floatfield) {
-    case ios_base::scientific:
-      __group_pos = __format_float_scientific(_STLP_ARRAY_AND_SIZE(static_buf),
-                                              bp, decpt, sign, x == 0.0,
+      case ios_base::scientific:
+        __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0.0,
+                                                 flags, precision, islong);
+        break;
+      case ios_base::fixed:
+        __group_pos = __format_float_fixed( buf, bp, decpt, sign, true,
+                                            flags, precision, islong);
+        break;
+      default: // g format
+        // establish default precision
+        if (flags & ios_base::showpoint || precision > 0) {
+          if (precision == 0) precision = 1;
+        } else
+          precision = 6;
+
+        // reset exponent if value is zero
+        if (x == 0)
+          decpt = 1;
+
+        int kk = precision;
+        if (!(flags & ios_base::showpoint)) {
+          size_t n = strlen(bp);
+          if (n < (size_t)kk)
+            kk = (int)n;
+          while (kk >= 1 && bp[kk-1] == '0')
+            --kk;
+        }
+
+        if (decpt < -3 || decpt > precision) {
+          precision = kk - 1;
+          __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0,
+                                                   flags, precision, islong);
+        } else {
+          precision = kk - decpt;
+          __group_pos = __format_float_fixed( buf, bp, decpt, sign, true,
                                               flags, precision, islong);
-      buf = static_buf;
-      break;
-
-    case ios_base::fixed:
-      __group_pos = __format_float_fixed(buf, bp, decpt, sign, true,
-                                         flags, precision, islong);
-      break;
-
-    default: // g format
-      // establish default precision
-      if (flags & ios_base::showpoint || precision > 0) {
-        if (precision == 0) precision = 1;
-      }
-      else
-        precision = 6;
-
-      // reset exponent if value is zero
-      if (x == 0)
-        decpt = 1;
-
-      int kk = precision;
-      if (!(flags & ios_base::showpoint)) {
-        size_t n = strlen(bp);
-        if (n < (size_t)kk)
-          kk = (int)n;
-        while (kk >= 1 && bp[kk-1] == '0')
-          --kk;
-      }
-
-      if (decpt < -3 || decpt > precision) {
-        precision = kk - 1;
-        __group_pos = __format_float_scientific(_STLP_ARRAY_AND_SIZE(static_buf),
-                                                bp, decpt, sign, x == 0,
-                                                flags, precision, islong);
-        buf = static_buf;
-      }
-      else {
-        precision = kk - decpt;
-        __group_pos = __format_float_fixed(buf, bp, decpt, sign, true,
-                                           flags, precision, islong);
-      }
-      break;
+        }
+        break;
     } /* switch */
   } /* else is_nan_or_inf */
   return __group_pos;
@@ -844,57 +789,33 @@ void _STLP_CALL __get_floor_digits(__iostring &out, _STLP_LONG_DOUBLE __x) {
 
 
 #if !defined (_STLP_NO_WCHAR_T)
-void _STLP_CALL
-__convert_float_buffer(__iostring const& str, __iowstring &out,
-                       const ctype<wchar_t>& ct, wchar_t dot, bool __check_dot) {
-  wchar_t __static_buf[128];
-  wchar_t *__beg = __static_buf;
-  wchar_t *__end = __static_buf + _STLP_ARRAY_SIZE(__static_buf);
+void _STLP_CALL __convert_float_buffer( __iostring const& str, __iowstring &out,
+                                        const ctype<wchar_t>& ct, wchar_t dot, bool __check_dot)
+{
   string::const_iterator str_ite(str.begin()), str_end(str.end());
 
-  wchar_t *__cur = __beg;
   //First loop, check the dot char
   if (__check_dot) {
     while (str_ite != str_end) {
       if (*str_ite != '.') {
-        *__cur = ct.widen(*str_ite);
+        out += ct.widen(*str_ite++);
       } else {
-        *__cur = dot;
+        out += dot;
         break;
       }
-      ++__cur;
-      if (__cur == __end) {
-        out.append(__beg, __cur);
-        __cur = __beg;
-      }
-      ++str_ite;
     }
   } else {
     if (str_ite != str_end) {
-      *__cur = ct.widen(*str_ite);
+      out += ct.widen(*str_ite);
     }
   }
 
   if (str_ite != str_end) {
-    ++__cur;++str_ite;
-    if (__cur == __end) {
-      out.append(__beg, __cur);
-      __cur = __beg;
-    }
-
     //Second loop, dot has been found, no check anymore
-    while (str_ite != str_end) {
-      *__cur = ct.widen(*str_ite);
-      ++__cur;
-      if (__cur == __end) {
-        out.append(__beg, __cur);
-        __cur = __beg;
-      }
-      ++str_ite;
+    while (++str_ite != str_end) {
+      out += ct.widen(*str_ite);
     }
   }
-
-  out.append(__beg, __cur);
 }
 
 #endif
