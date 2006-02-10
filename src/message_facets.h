@@ -88,7 +88,7 @@ public:
   ;
 #endif
 
-  void erase(messages_base::catalog cat)
+  void erase(messages_base::catalog)
 #if !defined (_STLP_USE_NL_CATD_MAPPING)
   {}
 #else

@@ -41,16 +41,15 @@
 
 _STLP_BEGIN_NAMESPACE
 
-class _STLP_CLASS_DECLSPEC _Locale_impl;        // Forward declaration of opaque type.
-class _STLP_CLASS_DECLSPEC ios_base;
+class _Locale_impl;        // Forward declaration of opaque type.
+class ios_base;
 
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 class locale;
 #  define locale _STLP_NO_MEM_T_NAME(loc)
-class _STLP_CLASS_DECLSPEC locale;
-#else
-class _STLP_CLASS_DECLSPEC locale;
-#endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
+#endif
+
+class locale;
 
 template <class _CharT, class _Traits, class _Alloc>
 bool __locale_do_operator_call (const locale* __that,

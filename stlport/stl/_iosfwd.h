@@ -24,7 +24,7 @@
 
 _STLP_BEGIN_NAMESPACE
 
-class _STLP_CLASS_DECLSPEC ios_base;
+class ios_base;
 
 template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_ios;
