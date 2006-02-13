@@ -16,7 +16,7 @@
  *
  */
 #ifndef _STLP_STREAMBUF_H
-# define _STLP_STREAMBUF_H
+#define _STLP_STREAMBUF_H
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x2067
@@ -25,11 +25,7 @@
 
 #include <stl/_ioserr.h>
 
-#ifdef __BORLANDC__
-#  include <streambuf.>
-#else
-#  include <streambuf>
-#endif
+#include <streambuf>
 
 #include <ios.h>
 

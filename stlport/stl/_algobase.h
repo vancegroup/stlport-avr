@@ -137,7 +137,7 @@ inline const _Tp& (max)(const _Tp& __a, const _Tp& __b) {  return  __a < __b ? _
 #  endif
 #endif
 
-# if defined (__BORLANDC__) && ( __BORLANDC__ < 0x530 || defined (_STLP_USE_OWN_NAMESPACE))
+# if defined (__BORLANDC__) && defined (_STLP_USE_OWN_NAMESPACE)
 inline unsigned long (min) (unsigned long __a, unsigned long __b) { return __b < __a ? __b : __a; }
 inline unsigned long (max) (unsigned long __a, unsigned long __b) {  return  __a < __b ? __b : __a; }
 # endif

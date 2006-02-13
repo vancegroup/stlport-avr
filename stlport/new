@@ -26,7 +26,7 @@
 #  include <cstddef>
 #endif
 
-#if defined (__BORLANDC__) && (__BORLANDC__ > 0x520)
+#if defined (__BORLANDC__)
 // new.h uses ::malloc ;(
 #  include <cstdlib>
 using _STLP_VENDOR_CSTD::malloc;

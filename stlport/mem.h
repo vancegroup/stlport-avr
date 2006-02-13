@@ -13,8 +13,6 @@
  *
  */
 
-/* Boris : highly questionable header for BC++ */
-
 #ifndef _STLP_mem_h
 
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
@@ -27,15 +25,18 @@
 #if (_STLP_OUTERMOST_HEADER_ID != 0x245) || defined (_STLP_DONT_POP_HEADER_ID)
 #  include _STLP_NATIVE_C_HEADER(mem.h)
 #else
-#  if (__BORLANDC__ > 0x530) && !defined (__linux__) && !defined (__cplusplus)
-#    include <rw/stddefs.h>
+#  if defined (__BORLANDC__) && defined (__USING_CNAME__)
+#    define _USING_CNAME_WAS_UNDEFINED
+#    undef __USING_CNAME__
 #  endif
-
-#  undef __USING_CNAME__
 
 #  include _STLP_NATIVE_C_HEADER(mem.h)
 
-#  define _STLP_mem_h 1
+#  if defined (__BORLANDC__) && defined (_USING_CNAME_WAS_UNDEFINED)
+#    define __USING_CNAME__
+#    define _STLP_mem_h 1
+#    undef _USING_CNAME_WAS_UNDEFINED
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x245)

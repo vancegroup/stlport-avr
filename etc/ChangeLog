@@ -1,3 +1,12 @@
+2006-02-13  Francois Dumont  <dums@stlport...>
+
+	* stlport: Patch from Eric Sanford to remove many now useless
+	Borland workaround.
+
+	* src/fstream.cpp: ditto
+
+	* stlport/stl/_monetary.h, _cwchar.h, _algobase.h: ditto
+
 2006-02-10  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_iosfwd.h, _locale.h: Removed type attributes on type

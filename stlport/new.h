@@ -13,35 +13,35 @@
  *
  */
 
-# if !defined (_STLP_OUTERMOST_HEADER_ID)
+#if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x848
 #  include <stl/_prolog.h>
-# elif (_STLP_OUTERMOST_HEADER_ID == 0x848) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x848) && ! defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
-# endif
+#endif
 
-# if !defined(_STLP_WINCE) && !defined(_STLP_NO_NEW_HEADER)
-# if defined (__BORLANDC__)
-#  include <new.>
-# elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800 && !defined(_MSC_VER))
-#   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
-# else
-#  if defined (__GNUC__) && (__GNUC__ >= 3)
-#   include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
+#if !defined(_STLP_WINCE) && !defined(_STLP_NO_NEW_HEADER)
+#  if defined (__BORLANDC__)
+#    include <new>
+#  elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800 && !defined(_MSC_VER))
+#    include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
 #  else
-#   include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
+#    if defined (__GNUC__) && (__GNUC__ >= 3)
+#      include _STLP_NATIVE_OLD_STREAMS_HEADER(new.h)
+#    else
+#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
+#    endif
 #  endif
-# endif
-# endif /* STL_WINCE */
+#endif /* STL_WINCE */
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x848)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x848)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
-#   include <stl/_epilog.h>
-#   undef  _STLP_OUTERMOST_HEADER_ID
+#    include <stl/_epilog.h>
+#    undef  _STLP_OUTERMOST_HEADER_ID
 #  else
-#   undef  _STLP_DONT_POP_HEADER_ID
+#    undef  _STLP_DONT_POP_HEADER_ID
 #  endif
-# endif
+#endif
 
 // Local Variables:
 // mode:C++

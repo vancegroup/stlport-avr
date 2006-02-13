@@ -23,11 +23,7 @@
 
 #include <stl/_ioserr.h>
 
-#ifdef __BORLANDC__
-#  include <iomanip.>
-#else
-#  include <iomanip>
-#endif
+#include <iomanip>
 
 #ifndef _STLP_HAS_NO_NAMESPACES
 #  ifdef _STLP_BROKEN_USING_DIRECTIVE

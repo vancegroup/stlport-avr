@@ -21,12 +21,7 @@
 #  include <stl/_prolog.h>
 #endif
 
-// fbp - if we are going to use that consistently, let's do it
-#ifdef __BORLANDC__
-#  include <strstream.>
-#else
-#  include <strstream>
-#endif
+#include <strstream>
 
 #include <iostream.h>
 

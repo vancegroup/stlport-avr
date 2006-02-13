@@ -54,11 +54,7 @@ extern "C" {
 #  include <windows.h>
 
 #  ifdef __BORLANDC__
-#    if (__BORLANDC__ > 0x530)
 #      include <cfcntl.h>            // For _O_RDONLY, etc
-#    else
-#      include <fcntl.h>            // For _O_RDONLY, etc
-#    endif
 #    include <sys/stat.h>         // For _fstat
 #  elif !defined(_STLP_WCE)
 #    include <io.h>               // For _get_osfhandle

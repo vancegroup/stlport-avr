@@ -21,9 +21,7 @@
 #  include <stl/_prolog.h>
 #endif
 
-#if defined (__BORLANDC__)
-#  include <exception.>
-#elif defined (_MSC_VER)
+#if defined (__BORLANDC__) || defined (_MSC_VER)
 #  include <exception>
 #else
 #  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)

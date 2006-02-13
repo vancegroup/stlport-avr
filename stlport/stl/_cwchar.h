@@ -85,10 +85,6 @@ namespace std {
 #      define _STLP_NO_NATIVE_MBSTATE_T
 #    endif
 #    define _STLP_WCHAR_BORLAND_EXCLUDE 1
-#    if (__BORLANDC__ < 0x540 )
-#      define _STLP_NO_MBSTATE_T 1
-#      define _STLP_WCHAR_SUNPRO_EXCLUDE
-#    endif
 #  endif
 
 #  ifndef _STLP_INTERNAL_MBSTATE_T
@@ -198,7 +194,7 @@ using _STLP_VENDOR_CSTD::wcstok;
 
 #      endif
 
-#      if !(defined (__BORLANDC__) && (__BORLANDC__ < 0x540)) && !(defined(__MWERKS__) && defined(N_PLAT_NLM))
+#      if !(defined(__MWERKS__) && defined(N_PLAT_NLM))
 #        if !defined (_STLP_WCE_NET)
 using _STLP_VENDOR_CSTD::wcscoll;
 using _STLP_VENDOR_CSTD::wcsxfrm;

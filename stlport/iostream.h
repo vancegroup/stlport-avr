@@ -21,11 +21,7 @@
 #  include <stl/_prolog.h>
 #endif
 
-#ifdef __BORLANDC__
-#  include <iostream.>
-#else
-#  include <iostream>
-#endif
+#include <iostream>
 
 // Those should be included all separately, as they do contain using declarations
 #include <streambuf.h>
@@ -99,8 +95,8 @@ class iostream_withassign : public iostream {
 } ;
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x2035)
-# include <stl/_epilog.h>
-# undef _STLP_OUTERMOST_HEADER_ID
+#  include <stl/_epilog.h>
+#  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
 #endif /* _STLP_IOSTREAM_H */

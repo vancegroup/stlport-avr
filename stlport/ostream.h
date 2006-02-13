@@ -17,26 +17,21 @@
 #define _STLP_OSTREAM_H
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
-# define _STLP_OUTERMOST_HEADER_ID 0x2051
-# include <stl/_prolog.h>
+#  define _STLP_OUTERMOST_HEADER_ID 0x2051
+#  include <stl/_prolog.h>
 #endif
 
 #include <stl/_ioserr.h>
 
-#ifdef __BORLANDC__
-# include <ostream.>
-#else
-# include <ostream>
-#endif
+#include <ostream>
 
 #ifdef _STLP_USE_NAMESPACES
-# include <using/ostream>
+#  include <using/ostream>
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x2051)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x2051)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_OSTREAM_H */
-
