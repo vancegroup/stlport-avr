@@ -1,3 +1,13 @@
+2006-02-14  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_hashtable.h, _hashtable.c: Add check in _STLP_DEBUG
+	that equivalent key have same hash code. Fix _M_rehash method
+	implementation that used to change elements order thanks Big Muscle
+	effort to report this issue.
+
+	* build/lib/configure: Fix reference to STLport configuration file
+	in --no-cygwin option description.
+
 2006-02-13  Francois Dumont  <dums@stlport...>
 
 	* stlport: Patch from Eric Sanford to remove many now useless
