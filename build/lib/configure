@@ -109,7 +109,7 @@ do
       write_option "-mno-cygwin" OPT
       write_option -D_STLP_NO_CYGWIN DEFS
       echo "--no-cygwin: Don't forget to uncomment _STLP_NO_CYGWIN macro"
-      echo "in stlport/stl/_site_config.h to use such a configuration."
+      echo "in stlport/stl/config/host.h to use such a configuration."
       ;;
     --not-thread-safe)
       write_option 1 STLP_BUILD_NO_THREAD
