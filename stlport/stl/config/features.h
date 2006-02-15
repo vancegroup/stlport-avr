@@ -155,10 +155,6 @@
 #  define _STLP_USE_TEMPLATE_EXPRESSION
 #endif
 
-#if !defined (_STLP_DONT_FORCE_STRING_TERMINATION) && !defined (_STLP_FORCE_STRING_TERMINATION)
-#  define _STLP_FORCE_STRING_TERMINATION
-#endif
-
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS) && \
     (defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
 #  error "Sorry but according the STLport settings your compiler can not support the pointer specialization feature."

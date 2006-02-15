@@ -1,3 +1,12 @@
+2006-02-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string.h: _STLP_FORCE_STRING_TERMINATION mode become
+	default and only mode due to performance issue.
+
+	* stlport/stl/config/user_config.h: ditto.
+
+	* stlport/stl/config/features.h: ditto.
+
 2006-02-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_hashtable.h, _hashtable.c: Add check in _STLP_DEBUG

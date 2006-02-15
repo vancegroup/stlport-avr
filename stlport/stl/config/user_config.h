@@ -279,24 +279,6 @@
 */
 
 /*
- * In theory a string implementation is not force to append a terminating character
- * to the internal buffer, this character is only mandatory when calling the c_str
- * method or operator []. This, of course, imply that there is no confusion between
- * using &*begin() or data method and the special c_str method. If you are not sure
- * that there is no such confusion in your code you not should define the following
- * macro.
- * Note 1: This macro has no effect on basic_string instanciated with no POD types
- *         (this is to avoid complicated instance management within the basic_string
-            implementation).
- * Note 2: This feature goes against the C++ standard because we are forced to use a
- *         const_cast to assign the null terminated char in the c_str const method.
- * STLport rebuild: Yes
- */
-/*
-#define _STLP_DONT_FORCE_STRING_TERMINATION 1
-*/
-
-/*
  * To reduce the famous code bloat trouble due to the use of templates STLport grant
  * a specialization of some containers for pointer types. So all instanciations
  * of those containers with a pointer type will use the same implementation based on
