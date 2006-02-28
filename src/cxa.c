@@ -6,7 +6,7 @@
 #  include <osreldate.h>
 #endif
 
-#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001 || __FreeBSD_version == 600034)) || defined(__sun)
+#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun)
 /* Note: __cxa_finalize and __cxa_atexit present in libc in FreeBSD 5.3, but again absent in 6.0 */
 
 #include <stdlib.h>
