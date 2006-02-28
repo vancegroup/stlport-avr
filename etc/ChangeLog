@@ -1,3 +1,14 @@
+2006-02-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string.h: capacity may return wrong value in case
+	of no _STLP_USE_SHORT_STRING_OPTIM in use; thanks Rusty Koonce
+	for report.
+
+	* test/unit/string_test.cpp: test for capacity issue.
+
+	* src/cxa.c: don't use cxa workaround for FreeBSD 6.0---it fine;
+	this is rollback of changes 2006-01-24 [bad compiler was in use].
+
 2006-02-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.h: _STLP_FORCE_STRING_TERMINATION mode become
