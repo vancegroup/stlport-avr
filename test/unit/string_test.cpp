@@ -63,6 +63,7 @@ class StringTest : public CPPUNIT_NS::TestCase
 #  endif
   CPPUNIT_TEST(allocator_with_state);
 #endif
+  CPPUNIT_TEST(capacity);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -87,6 +88,7 @@ protected:
   void io();
 #endif
   void allocator_with_state();
+  void capacity();
 
   static string func(const string& par) {
     string tmp( par );
@@ -942,3 +944,25 @@ void StringTest::allocator_with_state()
 #  endif
 }
 #endif
+
+void StringTest::capacity()
+{
+  string s;
+
+  CPPUNIT_CHECK( s.capacity() >= 0 );
+  CPPUNIT_CHECK( s.capacity() < s.max_size() );
+  CPPUNIT_CHECK( s.capacity() >= s.size() );
+#ifdef _STLP_USE_SHORT_STRING_OPTIM
+
+# ifndef _STLP_SHORT_STRING_SZ
+#   define _STLP_SHORT_STRING_SZ 16 // see stlport/stl/_string_base.h
+# endif
+
+  for ( int i = 0; i < _STLP_SHORT_STRING_SZ + 2; ++i ) {
+    s += ' ';
+    CPPUNIT_CHECK( s.capacity() >= 0 );
+    CPPUNIT_CHECK( s.capacity() < s.max_size() );
+    CPPUNIT_CHECK( s.capacity() >= s.size() );
+  }
+#endif
+}

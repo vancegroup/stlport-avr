@@ -89,8 +89,7 @@ _STLP_BEGIN_NAMESPACE
 // (1) [start, finish) is a valid range.
 // (2) Each iterator in [start, finish) points to a valid object
 //     of type value_type.
-// (3) *finish is a valid object of type value_type; when you force
-//     string termination with _STLP_FORCE_STRING_TERMINATION or
+// (3) *finish is a valid object of type value_type; when
 //     value_type is not a POD it is value_type().
 // (4) [finish + 1, end_of_storage) is a valid range.
 // (5) Each iterator in [finish + 1, end_of_storage) points to
@@ -488,7 +487,12 @@ public:                         // Size, capacity, etc.
 
   void reserve(size_type = 0);
 
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
   size_type capacity() const { return (this->_M_end_of_storage._M_data - this->_M_Start()) - 1; }
+#else
+  size_type capacity() const
+    { return (this->_M_end_of_storage._M_data == this->_M_Start()) ? 0 : ((this->_M_end_of_storage._M_data - this->_M_Start()) - 1); }
+#endif /* _STLP_USE_SHORT_STRING_OPTIM */
 
   void clear() {
     if (!empty()) {
