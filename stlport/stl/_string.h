@@ -507,7 +507,7 @@ public:                         // Size, capacity, etc.
 public:                         // Element access.
 
   //First implementation use c_str in order to guaranty return of a null
-  //character when __n == size()
+  //character when __n == size() (ISO/IEC 14882: 21.3.4.1)
   const_reference operator[](size_type __n) const
   { return *(this->_M_Start() + __n); }
   reference operator[](size_type __n)
@@ -551,9 +551,8 @@ private: // Helper functions for append.
       if (__STATIC_CAST(size_type,__n) > this->max_size() || __old_size > this->max_size() - __STATIC_CAST(size_type,__n))
         this->_M_throw_length_error();
       if (__old_size + __n > this->capacity()) {
-        const size_type __len = __old_size +
-          (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-        pointer __new_start = this->_M_end_of_storage.allocate(__len);
+        size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+        pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
           __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -561,7 +560,7 @@ private: // Helper functions for append.
           _M_construct_null(__new_finish);
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-          this->_M_end_of_storage.deallocate(__new_start,__len)))
+          this->_M_end_of_storage.deallocate(__new_start, __len)))
           this->_M_destroy_range();
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -806,8 +805,8 @@ protected:  // Helper functions for insert.
   void _M_insert_overflow(iterator __pos, _ForwardIter __first, _ForwardIter __last,
                           difference_type __n) {
     const size_type __old_size = this->size();
-    const size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-    pointer __new_start = this->_M_end_of_storage.allocate(__len);
+    size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+    pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = uninitialized_copy(this->_M_Start(), __pos, __new_start);
@@ -816,7 +815,7 @@ protected:  // Helper functions for insert.
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start,__len)))
+                  this->_M_end_of_storage.deallocate(__new_start, __len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);

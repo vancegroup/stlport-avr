@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+//#include <iostream>
+
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -365,7 +367,6 @@ void UnorderedTest::equal_range()
   {
     //More specific test that tries to put many values in the same bucket
     umset iumset;
-    iumset.max_load_factor(10.0f);
 
     size_t i;
     const size_t nbBuckets = iumset.bucket_count();
@@ -376,21 +377,63 @@ void UnorderedTest::equal_range()
       iumset.insert(targetedBucket + (i * nbBuckets));
     }
 
-    //Now we put some more elements:
-    for (i = 0; i < nbBuckets; ++i) {
-      iumset.insert(i);
-    }
-
-    //Last we put again 10 values in the targeted bucket and in reverse order:
+    //We put again 10 values in the targeted bucket and in reverse order:
     for (i = 9; i <= 10; --i) {
       iumset.insert(targetedBucket + (i * nbBuckets));
     }
 
-    CPPUNIT_ASSERT( iumset.bucket_size(targetedBucket) == 21 );
+    //Now we put some more elements until hash container is resized:
+    i = 0;
+    while (iumset.bucket_count() == nbBuckets) {
+      iumset.insert(i++);
+    }
+
+    //CPPUNIT_ASSERT( iumset.bucket_size(targetedBucket) == 21 );
 
     pair<umset::iterator, umset::iterator> p = iumset.equal_range(targetedBucket);
     CPPUNIT_ASSERT( p.first != p.second );
     CPPUNIT_ASSERT( distance(p.first, p.second) == 3 );
+  }
+
+  {
+    srand(0);
+    for (int runs = 0; runs < 2; ++runs) {
+      size_t magic = rand();
+      umset hum;
+      size_t c = 0;
+      for (int i = 0; i < 10000; ++i) {
+        if ((rand() % 500) == 0) {
+          hum.insert(magic);
+          ++c;
+        }
+        else {
+          size_t r;
+          while ((r = rand()) == magic);
+          hum.insert(r);
+        }
+
+        /*
+        if ((float)(hum.size() + 1) / (float)hum.bucket_count() > hum.max_load_factor()) {
+          cout << "Hash container dump: Nb elems: " << hum.size() << ", Nb buckets: " << hum.bucket_count() << "\n";
+          for (size_t b = 0; b < hum.bucket_count(); ++b) {
+            if (hum.bucket_size(b) != 0) {
+              umset::local_iterator litBegin(hum.begin(b)), litEnd(hum.end(b));
+              cout << "B" << b << ": ";
+              for (umset::local_iterator lit = litBegin; lit != litEnd; ++lit) {
+                if (lit != litBegin) {
+                  cout << " - ";
+                }
+                cout << *lit;
+              }
+              cout << "\n";
+            }
+          }
+          cout << endl;
+        }
+        */
+      }
+      CPPUNIT_ASSERT( hum.count(magic) == c );
+    }
   }
 #endif
 }

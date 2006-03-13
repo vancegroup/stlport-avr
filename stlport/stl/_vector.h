@@ -68,7 +68,7 @@ public:
 
   _Vector_base(size_t __n, const _Alloc& __a)
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, 0) {
-    _M_start = _M_end_of_storage.allocate(__n);
+    _M_start = _M_end_of_storage.allocate(__n, __n);
     _M_finish = _M_start;
     _M_end_of_storage._M_data = _M_start + __n;
     _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
@@ -237,8 +237,9 @@ public:
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __val,
                          const __true_type& /*_IsIntegral*/) {
-    this->_M_start = this->_M_end_of_storage.allocate(__n);
-    this->_M_end_of_storage._M_data = this->_M_start + __n;
+    size_type __real_n;
+    this->_M_start = this->_M_end_of_storage.allocate(__n, __real_n);
+    this->_M_end_of_storage._M_data = this->_M_start + __real_n;
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
   }
 
@@ -297,11 +298,12 @@ public:
   void assign(const_iterator __first, const_iterator __last) {
     typedef const_iterator _ForwardIter;
 #endif
-    size_type __len = distance(__first, __last);
+    const size_type __len = distance(__first, __last);
     if (__len > capacity()) {
-      iterator __tmp = _M_allocate_and_copy(__len, __first, __last);
+      size_type __n = __len;
+      iterator __tmp = _M_allocate_and_copy(__n, __first, __last);
       _M_clear();
-      _M_set(__tmp, __tmp + __len, __tmp + __len);
+      _M_set(__tmp, __tmp + __len, __tmp + __n);
     }
     else if (size() >= __len) {
       iterator __new_finish = copy(__first, __last, this->_M_start);
@@ -395,8 +397,8 @@ private:
 #endif /* _STLP_MEMBER_TEMPLATES */
                                size_type __n) {
     const size_type __old_size = size();
-    const size_type __len = __old_size + (max)(__old_size, __n);
-    pointer __new_start = this->_M_end_of_storage.allocate(__len);
+    size_type __len = __old_size + (max)(__old_size, __n);
+    pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCpy(), _Movable());
@@ -624,14 +626,14 @@ private:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _ForwardIterator>
-  pointer _M_allocate_and_copy(size_type __n, _ForwardIterator __first,
-                               _ForwardIterator __last)
+  pointer _M_allocate_and_copy(size_type& __n,
+                               _ForwardIterator __first, _ForwardIterator __last)
 #else /* _STLP_MEMBER_TEMPLATES */
-  pointer _M_allocate_and_copy(size_type __n, const_pointer __first,
-                               const_pointer __last)
+  pointer _M_allocate_and_copy(size_type& __n,
+                               const_pointer __first, const_pointer __last)
 #endif /* _STLP_MEMBER_TEMPLATES */
   {
-    pointer __result = this->_M_end_of_storage.allocate(__n);
+    pointer __result = this->_M_end_of_storage.allocate(__n, __n);
     _STLP_TRY {
 #if !defined(__MRC__)  //*TY 12/17/2000 - added workaround for MrCpp. it confuses on nested try/catch block
       _STLP_PRIV __uninitialized_copy(__first, __last, __result, _TrivialUCpy());
@@ -647,17 +649,17 @@ private:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void _M_range_initialize(_InputIterator __first,
-                           _InputIterator __last, const input_iterator_tag &) {
+  void _M_range_initialize(_InputIterator __first, _InputIterator __last,
+                           const input_iterator_tag &) {
     for ( ; __first != __last; ++__first)
       push_back(*__first);
   }
   // This function is only called by the constructor.
   template <class _ForwardIterator>
-  void _M_range_initialize(_ForwardIterator __first,
-                           _ForwardIterator __last, const forward_iterator_tag &) {
+  void _M_range_initialize(_ForwardIterator __first, _ForwardIterator __last,
+                           const forward_iterator_tag &) {
     size_type __n = distance(__first, __last);
-    this->_M_start = this->_M_end_of_storage.allocate(__n);
+    this->_M_start = this->_M_end_of_storage.allocate(__n, __n);
     this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = _STLP_PRIV __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
   }

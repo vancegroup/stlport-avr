@@ -786,6 +786,12 @@ struct MovableStruct {
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
   static size_t nb_destruct_call;
+
+  //Dummy data just to control struct sizeof
+  //As node allocator implementation align memory blocks on 2 * sizeof(void*)
+  //we give MovableStruct the same size in order to have expected allocation
+  //and not more
+  void* dummy_data[2];
 };
 
 size_t MovableStruct::nb_dft_construct_call = 0;
@@ -816,6 +822,9 @@ struct CompleteMovableStruct {
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
   static size_t nb_destruct_call;
+
+  //See MovableStruct
+  void* dummy_data[2];
 };
 
 size_t CompleteMovableStruct::nb_dft_construct_call = 0;

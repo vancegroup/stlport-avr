@@ -51,7 +51,7 @@ CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
 RCFLAGS = -32 -r -i${STLPORT_INCLUDE_DIR} -dCOMP=bcc
 
-release-shared : RCFLAGS += -dBUILD_INFOS="-O2"
+release-shared : RCFLAGS += -dBUILD_INFOS="-O2 -vi-"
 dbg-shared : RCFLAGS += -dBUILD=d -dBUILD_INFOS="-R -v -y -D_DEBUG"
 stldbg-shared : RCFLAGS += -dBUILD=stld -dBUILD_INFOS="-R -v -y -D_DEBUG -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -fo$@
@@ -73,8 +73,8 @@ stldbg-static-dep : DEFS += -D_STLP_DEBUG
 stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 
 # optimization and debug compiler flags
-release-static : OPT += -O2
-release-shared : OPT += -O2
+release-static : OPT += -O2 -vi-
+release-shared : OPT += -O2 -vi-
 
 dbg-static : OPT += -R -v -y
 dbg-shared : OPT += -R -v -y

@@ -28,7 +28,14 @@
 #  include <typeinfo>
 # define _STLP_OLDSTD_typeinfo
 #else
-#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x580)
+#    include _STLP_NATIVE_C_HEADER(typeinfo.h)
+using std::type_info;
+using std::bad_typeid;
+using std::bad_cast;
+#  else
+#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#  endif
 #endif
 
 // if <typeinfo> already included, do not import anything

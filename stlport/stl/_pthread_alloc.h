@@ -73,19 +73,19 @@ public:
   static __state_type * _STLP_CALL _S_get_per_thread_state();
 
   /* n must be > 0      */
-  static void * _STLP_CALL allocate(size_t __n);
+  static void * _STLP_CALL allocate(size_t& __n);
 
   /* p may not be 0 */
   static void _STLP_CALL deallocate(void *__p, size_t __n);
 
   // boris : versions for per_thread_allocator
   /* n must be > 0      */
-  static void * _STLP_CALL allocate(size_t __n, __state_type* __a);
+  static void * _STLP_CALL allocate(size_t& __n, __state_type* __a);
 
   /* p may not be 0 */
   static void _STLP_CALL deallocate(void *__p, size_t __n, __state_type* __a);
 
-  static void * _STLP_CALL reallocate(void *__p, size_t __old_sz, size_t __new_sz);
+  static void * _STLP_CALL reallocate(void *__p, size_t __old_sz, size_t& __new_sz);
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -94,7 +94,7 @@ typedef _STLP_PRIV _Pthread_alloc __pthread_alloc;
 typedef __pthread_alloc pthread_alloc;
 
 template <class _Tp>
-class pthread_allocator {
+class pthread_allocator : public __stlport_class<pthread_allocator<_Tp> > {
   typedef pthread_alloc _S_Alloc;          // The underlying allocator.
 public:
   typedef size_t     size_type;
@@ -130,8 +130,18 @@ public:
     if (__n > max_size()) {
       __THROW_BAD_ALLOC;
     }
-    return __n != 0 ? __STATIC_CAST(_Tp*,_S_Alloc::allocate(__n * sizeof(_Tp)))
-                    : 0;
+    if (__n != 0) {
+      size_type __buf_size = __n * sizeof(value_type);
+      _Tp* __ret = __REINTERPRET_CAST(value_type*, _S_Alloc::allocate(__buf_size));
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      if (__ret != 0) {
+        memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
+      }
+#endif
+      return __ret;
+    }
+    else
+      return 0;
   }
 
   // p is not permitted to be a null pointer.
@@ -143,6 +153,32 @@ public:
 
   void construct(pointer __p, const _Tp& __val) { _STLP_PLACEMENT_NEW (__p) _Tp(__val); }
   void destroy(pointer _p) { _p->~_Tp(); }
+
+#if defined (_STLP_NO_EXTENSIONS)
+  /* STLport extension giving rounded size of an allocated memory buffer
+   * This method do not have to be part of a user defined allocator implementation
+   * and won't even be called if such a function was granted.
+   */
+protected:
+#endif
+  _Tp* allocate(size_type __n, size_type& __allocated_n) {
+    if (__n > max_size()) {
+      __THROW_BAD_ALLOC;
+    }
+    if (__n != 0) {
+      size_type __buf_size = __n * sizeof(value_type);
+      _Tp* __ret = __REINTERPRET_CAST(value_type*, _S_Alloc::allocate(__buf_size));
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      if (__ret != 0) {
+        memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
+      }
+#endif
+      __allocated_n = __buf_size / sizeof(value_type);
+      return __ret;
+    }
+    else
+      return 0;
+  }
 };
 
 _STLP_TEMPLATE_NULL
@@ -173,13 +209,13 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 #endif
 
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
-# ifdef _STLP_USE_RAW_SGI_ALLOCATORS
+#  if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
 template <class _Tp>
 struct _Alloc_traits<_Tp, _Pthread_alloc>
 { typedef __allocator<_Tp, _Pthread_alloc> allocator_type; };
-# endif
+#  endif
 
 template <class _Tp, class _Atype>
 struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
@@ -199,7 +235,39 @@ inline pthread_allocator<_Tp2>
 __stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*)
 { return pthread_allocator<_Tp2>(); }
 
-#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
+#endif
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Tp>
+struct __pthread_alloc_type_traits {
+  typedef typename _IsSTLportClass<pthread_allocator<_Tp> >::_Ret _STLportAlloc;
+  //The default allocator implementation which is recognize thanks to the
+  //__stlport_class inheritance is a stateless object so:
+  typedef _STLportAlloc has_trivial_default_constructor;
+  typedef _STLportAlloc has_trivial_copy_constructor;
+  typedef _STLportAlloc has_trivial_assignment_operator;
+  typedef _STLportAlloc has_trivial_destructor;
+  typedef _STLportAlloc is_POD_type;
+};
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct __type_traits<pthread_allocator<_Tp> > : _STLP_PRIV __pthread_alloc_type_traits<_Tp> {};
+#else
+_STLP_TEMPLATE_NULL
+struct __type_traits<pthread_allocator<char> > : _STLP_PRIV __pthread_alloc_type_traits<char> {};
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_TEMPLATE_NULL
+struct __type_traits<pthread_allocator<wchar_t> > : _STLP_PRIV __pthread_alloc_type_traits<wchar_t> {};
+#  endif
+#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+_STLP_TEMPLATE_NULL
+struct __type_traits<pthread_allocator<void*> > : _STLP_PRIV __pthread_alloc_type_traits<void*> {};
+#  endif
+#endif
 
 //
 // per_thread_allocator<> : this allocator always return memory to the same thread
@@ -246,7 +314,18 @@ public:
     if (__n > max_size()) {
       __THROW_BAD_ALLOC;
     }
-    return __n != 0 ? __STATIC_CAST(_Tp*,_S_Alloc::allocate(__n * sizeof(_Tp), _M_state)): 0;
+    if (__n != 0) {
+      size_type __buf_size = __n * sizeof(value_type);
+      _Tp* __ret = __REINTERPRET_CAST(_Tp*, _S_Alloc::allocate(__buf_size, _M_state));
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      if (__ret != 0) {
+        memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
+      }
+#endif
+      return __ret;
+    }
+    else
+      return 0;
   }
 
   // p is not permitted to be a null pointer.
@@ -261,6 +340,32 @@ public:
 
   // state is being kept here
   __state_type* _M_state;
+
+#if defined (_STLP_NO_EXTENSIONS)
+  /* STLport extension giving rounded size of an allocated memory buffer
+   * This method do not have to be part of a user defined allocator implementation
+   * and won't even be called if such a function was granted.
+   */
+protected:
+#endif
+  _Tp* allocate(size_type __n, size_type& __allocated_n) {
+    if (__n > max_size()) {
+      __THROW_BAD_ALLOC;
+    }
+    if (__n != 0) {
+      size_type __buf_size = __n * sizeof(value_type);
+      _Tp* __ret = __REINTERPRET_CAST(value_type*, _S_Alloc::allocate(__buf_size, _M_state));
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      if (__ret != 0) {
+        memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
+      }
+#endif
+      __allocated_n = __buf_size / sizeof(value_type);
+      return __ret;
+    }
+    else
+      return 0;
+  }
 };
 
 _STLP_TEMPLATE_NULL
@@ -291,7 +396,7 @@ inline bool operator!=(const per_thread_allocator<_T1>& __a1,
 #endif
 
 
-#ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
 template <class _Tp, class _Atype>
 struct _Alloc_traits<_Tp, per_thread_allocator<_Atype> >
@@ -312,6 +417,39 @@ __stl_alloc_create(per_thread_allocator<_Tp1>&, const _Tp2*)
 { return per_thread_allocator<_Tp2>(); }
 
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Tp>
+struct __perthread_alloc_type_traits {
+  typedef typename _IsSTLportClass<per_thread_allocator<_Tp> >::_Ret _STLportAlloc;
+  //The default allocator implementation which is recognize thanks to the
+  //__stlport_class inheritance is a stateless object so:
+  typedef __false_type has_trivial_default_constructor;
+  typedef _STLportAlloc has_trivial_copy_constructor;
+  typedef _STLportAlloc has_trivial_assignment_operator;
+  typedef _STLportAlloc has_trivial_destructor;
+  typedef __false_type is_POD_type;
+};
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct __type_traits<per_thread_allocator<_Tp> > : _STLP_PRIV __perthread_alloc_type_traits<_Tp> {};
+#else
+_STLP_TEMPLATE_NULL
+struct __type_traits<per_thread_allocator<char> > : _STLP_PRIV __perthread_alloc_type_traits<char> {};
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_TEMPLATE_NULL
+struct __type_traits<per_thread_allocator<wchar_t> > : _STLP_PRIV __perthread_alloc_type_traits<wchar_t> {};
+#  endif
+#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+_STLP_TEMPLATE_NULL
+struct __type_traits<per_thread_allocator<void*> > : _STLP_PRIV __perthread_alloc_type_traits<void*> {};
+#  endif
+#endif
+
 
 _STLP_END_NAMESPACE
 

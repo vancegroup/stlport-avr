@@ -122,7 +122,7 @@ inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
 // min and max
 
 #if !defined (__BORLANDC__) || defined (_STLP_USE_OWN_NAMESPACE)
-#  if defined (__BORLANDC__) && !defined (__STDC__)
+#  if (defined (__BORLANDC__) && (__BORLANDC__ < 0x580)) && !defined (__STDC__)
 //In not ANSI mode Borland import min/max in global namespace which conflict
 //with STLport min/max when user does a 'using namespace std' in its code
 //(see test/unit/alg_test.cpp). To avoid this clash we simply import Borland min/max

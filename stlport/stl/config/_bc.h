@@ -7,8 +7,17 @@
 #  error - Borland compilers below version 5.5.1 not supported.
 #endif
 
-#if (__BORLANDC__ >= 0x560)
+#if (__BORLANDC__ >= 0x580) && (__BORLANDC__ < 0x590)
+#  define _STLP_NO_NEW_C_HEADERS
+#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/dinkumware/##header>
+#  define _STLP_NO_FORCE_INSTANTIATE
+#endif
+
+#if (__BORLANDC__ >= 0x560) && (__BORLANDC__ < 0x570)
 #  define _USE_OLD_RW_STL
+#endif
+
+#if (__BORLANDC__ >= 0x560)
 #  define NOWINBASEINTERLOCK  // src/fstream.cpp error in winbase.h
 #endif
 
@@ -23,7 +32,7 @@
 #define _STLP_USE_OWN_MBSTATE_T
 #define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
 #undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-#ifndef _RTLDLL
+#if (__BORLANDC__ < 0x580) && !defined(_RTLDLL)
 #  define _UNCAUGHT_EXCEPTION 1
 #endif
 
@@ -93,11 +102,15 @@
 
 #if defined (_STLP_USE_DYNAMIC_LIB)
 #  define _STLP_USE_DECLSPEC 1
+#  if (__BORLANDC__ < 0x580)
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else
 #    define  _STLP_CALL __cdecl __import
 #  endif
+#else
+#  define  _STLP_CALL __cdecl
+#endif
 #else
 #  define  _STLP_CALL __cdecl
 #endif

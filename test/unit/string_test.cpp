@@ -33,6 +33,8 @@ using namespace std;
 class StringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(StringTest);
+  CPPUNIT_TEST(constructor);
+  CPPUNIT_TEST(reserve);
   CPPUNIT_TEST(assign);
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(data);
@@ -67,6 +69,8 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE_END();
 
 protected:
+  void constructor();
+  void reserve();
   void erase();
   void data();
   void c_str();
@@ -121,6 +125,39 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StringTest);
 //
 // tests implementation
 //
+void StringTest::constructor()
+{
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+  try {
+    string s((size_t)-1, 'a');
+    CPPUNIT_ASSERT( false );
+  }
+  catch (bad_alloc const&) {
+  }
+  catch (...) {
+    //Expected exception is bad_alloc:
+    CPPUNIT_ASSERT( false );
+  }
+#endif
+}
+
+void StringTest::reserve()
+{
+  string s;
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+  try {
+    s.reserve(s.max_size());
+    CPPUNIT_ASSERT( false );
+  }
+  catch (bad_alloc const&) {
+  }
+  catch (...) {
+    //Expected exception is bad_alloc:
+    CPPUNIT_ASSERT( false );
+  }
+#endif
+}
+
 void StringTest::mt()
 {
 #if defined (STLPORT) && defined (_STLP_THREADS)

@@ -44,7 +44,7 @@
 
 #if defined (_STLP_MSVC)
 
-//Full compiler comes from boost library intrinsics.hpp header.
+//Full compiler version comes from boost library intrinsics.hpp header.
 #  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)
 #    define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) __has_trivial_constructor(T)
 #    define _STLP_HAS_TRIVIAL_COPY(T) __has_trivial_copy(T)

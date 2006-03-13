@@ -73,7 +73,7 @@ void vector<_Tp, _Alloc>::reserve(size_type __n) {
       __tmp = _M_allocate_and_copy(__n, this->_M_start, this->_M_finish);
       _M_clear();
     } else {
-      __tmp = this->_M_end_of_storage.allocate(__n);
+      __tmp = this->_M_end_of_storage.allocate(__n, __n);
     }
     _M_set(__tmp, __tmp + __old_size, __tmp + __n);
   }
@@ -83,9 +83,9 @@ template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*DO NOT USE!!*/,
                                                  size_type __fill_len, bool __atend ) {
   const size_type __old_size = size();
-  const size_type __len = __old_size + (max)(__old_size, __fill_len);
+  size_type __len = __old_size + (max)(__old_size, __fill_len);
 
-  pointer __new_start = this->_M_end_of_storage.allocate(__len);
+  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __new_start;
   _STLP_TRY {
     __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCpy(), _Movable());
@@ -108,9 +108,9 @@ template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/,
                                              size_type __fill_len, bool __atend ) {
   const size_type __old_size = size();
-  const size_type __len = __old_size + (max)(__old_size, __fill_len);
+  size_type __len = __old_size + (max)(__old_size, __fill_len);
 
-  pointer __new_start = this->_M_end_of_storage.allocate(__len);
+  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(this->_M_start, __pos, __new_start));
   // handle insertion
   __new_finish = _STLP_PRIV __fill_n(__new_finish, __fill_len, __x);
@@ -178,11 +178,12 @@ vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>&
   if (&__x != this) {
     const size_type __xlen = __x.size();
     if (__xlen > capacity()) {
-      pointer __tmp = _M_allocate_and_copy(__xlen, __CONST_CAST(const_pointer, __x._M_start) + 0,
-                                                   __CONST_CAST(const_pointer, __x._M_finish) + 0);
+      size_type __len = __xlen;
+      pointer __tmp = _M_allocate_and_copy(__len, __CONST_CAST(const_pointer, __x._M_start) + 0,
+                                                  __CONST_CAST(const_pointer, __x._M_finish) + 0);
       _M_clear();
       this->_M_start = __tmp;
-      this->_M_end_of_storage._M_data = this->_M_start + __xlen;
+      this->_M_end_of_storage._M_data = this->_M_start + __len;
     } else if (size() >= __xlen) {
       pointer __i = _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start) + 0,
                                            __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_start, _TrivialAss());

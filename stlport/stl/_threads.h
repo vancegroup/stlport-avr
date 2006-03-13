@@ -169,7 +169,8 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
  * should define _WIN32_WINDOWS to a value lower that the one of Win 98, see Platform SDK documentation for
  * more informations:
  */
-#      if defined (_STLP_NEW_PLATFORM_SDK) && (!defined (_WIN32_WINDOWS) || (_WIN32_WINDOWS >= 0x0410))
+#      if defined (_STLP_NEW_PLATFORM_SDK) && (!defined (WINVER) || (WINVER >= 0x0410)) && \
+                                              (!defined (_WIN32_WINDOWS) || (_WIN32_WINDOWS >= 0x0410))
 #        define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
 #      endif
 #    endif

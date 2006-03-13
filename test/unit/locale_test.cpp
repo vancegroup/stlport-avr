@@ -60,6 +60,9 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(ctype_facet);
   CPPUNIT_TEST(locale_init_problem);
   CPPUNIT_TEST(default_locale);
+#if defined (__BORLANDC__)
+  CPPUNIT_TEST(facet_id);
+#endif
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -73,6 +76,9 @@ public:
   void locale_init_problem();
   void money_put_X_bug();
   void default_locale();
+#if defined (__BORLANDC__)
+  void facet_id();
+#endif
 private:
   void _loc_has_facet( const locale&, const ref_locale& );
   void _num_put_get( const locale&, const ref_locale& );
@@ -871,5 +877,129 @@ void LocaleTest::default_locale()
 {
   locale loc( "" );
 }
+
+#    if defined (__BORLANDC__)
+void LocaleTest::facet_id()
+{
+  locale::id _id_01 = collate<char>::id;
+  CPPUNIT_ASSERT( _id_01._M_index == 1 );
+
+  locale::id _id_02 = ctype<char>::id;
+  CPPUNIT_ASSERT( _id_02._M_index == 2 );
+
+#    ifndef _STLP_NO_MBSTATE_T
+  locale::id _id_03 = codecvt<char, char, mbstate_t>::id;
+  CPPUNIT_ASSERT( _id_03._M_index == 3 );
+#    endif
+
+  locale::id _id_04 = moneypunct<char, true>::id;
+  CPPUNIT_ASSERT( _id_04._M_index == 4 );
+
+  locale::id _id_05 = moneypunct<char, false>::id;
+  CPPUNIT_ASSERT( _id_05._M_index == 5 );
+
+  locale::id _id_06 = numpunct<char>::id;
+  CPPUNIT_ASSERT( _id_06._M_index == 6 );
+
+  locale::id _id_07 = messages<char>::id;
+  CPPUNIT_ASSERT( _id_07._M_index == 7 );
+
+  locale::id _id_08 = money_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_08._M_index == 8 );
+
+  locale::id _id_09 = money_get<char, const char*>::id;
+  CPPUNIT_ASSERT( _id_09._M_index == 9 );
+
+  locale::id _id_10 = money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_10._M_index == 10 );
+
+  locale::id _id_11 = money_put<char, char*>::id;
+  CPPUNIT_ASSERT( _id_11._M_index == 11 );
+
+  locale::id _id_12 = num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_12._M_index == 12 );
+
+  locale::id _id_13 = num_get<char, const char*>::id;
+  CPPUNIT_ASSERT( _id_13._M_index == 13 );
+
+  locale::id _id_14 = num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_14._M_index == 14 );
+
+  locale::id _id_15 = num_put<char, char*>::id;
+  CPPUNIT_ASSERT( _id_15._M_index == 15 );
+
+  locale::id _id_16 = time_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_16._M_index == 16 );
+
+  locale::id _id_17 = time_get<char, const char*>::id;
+  CPPUNIT_ASSERT( _id_17._M_index == 17 );
+
+  locale::id _id_18 = time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
+  CPPUNIT_ASSERT( _id_18._M_index == 18 );
+
+  locale::id _id_19 = time_put<char, char*>::id;
+  CPPUNIT_ASSERT( _id_19._M_index == 19 );
+
+#    ifndef _STLP_NO_WCHAR_T
+  locale::id _id_20 = collate<wchar_t>::id;
+  CPPUNIT_ASSERT( _id_20._M_index == 20 );
+
+  locale::id _id_21 = ctype<wchar_t>::id;
+  CPPUNIT_ASSERT( _id_21._M_index == 21 );
+
+#      ifndef _STLP_NO_MBSTATE_T
+  locale::id _id_22 = codecvt<wchar_t, char, mbstate_t>::id;
+  CPPUNIT_ASSERT( _id_22._M_index == 22 );
+#      endif
+  locale::id _id_23 = moneypunct<wchar_t, true>::id;
+  CPPUNIT_ASSERT( _id_23._M_index == 23 );
+
+  locale::id _id_24 = moneypunct<wchar_t, false>::id;
+  CPPUNIT_ASSERT( _id_24._M_index == 24 );
+
+  locale::id _id_25 = numpunct<wchar_t>::id;
+  CPPUNIT_ASSERT( _id_25._M_index == 25 );
+
+  locale::id _id_26 = messages<wchar_t>::id;
+  CPPUNIT_ASSERT( _id_26._M_index == 26 );
+
+  locale::id _id_27 = money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+  CPPUNIT_ASSERT( _id_27._M_index == 27 );
+
+  locale::id _id_28 = money_get<wchar_t, const wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_28._M_index == 28 );
+
+  locale::id _id_29 = money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+  CPPUNIT_ASSERT( _id_29._M_index == 29 );
+
+  locale::id _id_30 = money_put<wchar_t, wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_30._M_index == 30 );
+
+  locale::id _id_31 = num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+  CPPUNIT_ASSERT( _id_31._M_index == 31 );
+
+  locale::id _id_32 = num_get<wchar_t, const wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_32._M_index == 32 );
+
+  locale::id _id_33 = num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id;
+  CPPUNIT_ASSERT( _id_33._M_index == 33 );
+
+  locale::id _id_34 = num_put<wchar_t, wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_34._M_index == 34 );
+
+  locale::id _id_35 = time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+  CPPUNIT_ASSERT( _id_35._M_index == 35 );
+
+  locale::id _id_36 = time_get<wchar_t, const wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_36._M_index == 36 );
+
+  locale::id _id_37 = time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+  CPPUNIT_ASSERT( _id_37._M_index == 37 );
+
+  locale::id _id_38 = time_put<wchar_t, wchar_t*>::id;
+  CPPUNIT_ASSERT( _id_38._M_index == 38 );
+#    endif
+}
+#  endif 
 
 #endif

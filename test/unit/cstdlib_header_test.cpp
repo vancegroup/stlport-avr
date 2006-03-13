@@ -6,3 +6,8 @@
  * pure C compilers.
  */
 #include <cstdlib>
+
+//Just an additionnal compilation test for Borland that used to fail here.
+#if defined (__BORLANDC__)
+#  include <process.h>
+#endif

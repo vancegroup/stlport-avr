@@ -252,9 +252,9 @@ void VectorTest::capacity()
 
   CPPUNIT_ASSERT( v.capacity() == 0 );
   v.push_back(42);
-  CPPUNIT_ASSERT( v.capacity() == 1 );
+  CPPUNIT_ASSERT( v.capacity() >= 1 );
   v.reserve(5000);
-  CPPUNIT_ASSERT( v.capacity() == 5000 );
+  CPPUNIT_ASSERT( v.capacity() >= 5000 );
 }
 
 void VectorTest::at() {

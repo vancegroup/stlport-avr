@@ -1,3 +1,44 @@
+2006-02-2X  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h, src/allocators.cpp: Hide declaration of
+	malloc based allocator handler in library. Also limit scope of
+	declspec to expose static members rather than the whole class.
+
+	* stlport/stl/_cstdlib.h: For Borland compiler add include of
+	native process.h header, for reason see comment next to include
+	in file.
+
+	* stlport/stl/_alloc.h: Add a new STLport extension to the
+	std::allocator class: allocate(size_type, size_type&). This new
+	overload of allocate returns in its output parameter, the real
+	size of the allocated buffer that can be larger than the requested
+	one. _STLP_alloc_proxy expose this new overload only for the
+	STLport allocator and not for user defined allocators.
+
+	* stlport/stl/_vector.h, _vector.c, _string.h, _string.c: Use of the
+	allocate overload extension method to set end of storage reference
+	to the real memory block end rather than to the requested one.
+
+	* stlport/stl/_alloc.c: Adapt __debug_alloc::allocate method in order
+	to return the real allocated memory block. Also add check on computed
+	__real_n to allocate as it might roll on size_t and hide a case that
+	should result in a bad_alloc exception.
+
+	* stlport/stl/_threads.h, src/allocators.cpp: Add WINVER macro
+	check in addition to _WIN32_VERSION, according PSDK documentation
+	WINVER is more generaly used accross different Windows platforms.
+
+	* test/unit/string_test.cpp: Add constructor test case to correctly
+	handle build of a string with string::max_size elements which should
+	result in a bad_alloc exception. Idem for reserve method.
+
+	* stlport/stl/_alloc.h, src/allocators.cpp: Add check of malloc
+	result in __malloc_alloc implementation to throw an exception when
+	result is NULL.
+
+	* src/locale_impl.cpp: Patch from Eric Sanford for Borland BDS 2006
+	support. Mostly fix locale facet index issues.
+
 2006-02-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.h: capacity may return wrong value in case
