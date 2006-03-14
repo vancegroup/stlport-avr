@@ -127,7 +127,7 @@ eMbedded Visual C++ builds using the ARM compiler, due to a compiler bug.
 When using STLport together with MFC, be sure to include the MFC headers first,
 then include STLport headers, e.g. in your Stdafx.h. This way STLport correctly
 recognizes MFC usage. You also can define the macro _STLP_USE_MFC, either in
-your project settings or in stl_user_config.h.
+your project settings or in stlport/stl/config/user_config.h.
 
 Now you should be ready to use STLport.
 

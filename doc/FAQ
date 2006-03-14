@@ -277,7 +277,7 @@ C:\Program Files\Microsoft SDK\Include\.\winbase.h(1138) : error C2733: second C
 
 A3.2 You have a Platform SDK installed. Uncomment line
 #define _STLP_NEW_PLATFORM_SDK 1
-in the file stlport/stl_user_config.h. There is no way to detect SDK
+in the file stlport/stl/config/user_config.h. There is no way to detect SDK
 presence during preprocessor stage, which is why you have to make this
 change manually.
 
@@ -332,7 +332,7 @@ A5.0
   0. Ensure that this is really a bug (standard violation, incorrect
      behaviour with correct usage).
   1. Ensure that bug is in STLport, not in your code (you can use _STLP_DEBUG
-     for that, see stlport/stl_user_config.h).
+     for that, see stlport/stl/config/user_config.h).
   2. Ensure that you correctly built STLport---build and run unit tests
      (build/test/unit) first with default settings, then with your settings
      (if you changed any).
@@ -440,7 +440,7 @@ dependent libraries if you make any change to the file!
 
 There are also some defines that help in debugging memory problems in STLport.
 In _STLP_DEBUG mode, just also define the following symbols, either in
-"./stlport/stl_user_config.h" or in your project settings:
+"./stlport/stl/config/user_config.h" or in your project settings:
 
    _STLP_DEBUG_ALLOC
    _STLP_DEBUG_UNINITIALIZED
