@@ -8,6 +8,9 @@
 	previous bug but not yet complete as I need a better debugging
 	environment than gdb under cygwin...
 
+	* stlport/stl/config/_system.h: Patch from Michael Fink to add
+	missing _STLP_MSVC define for evc++ compilers.
+
 2006-03-13  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h, src/allocators.cpp: Hide declaration of
