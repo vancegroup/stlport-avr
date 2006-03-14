@@ -760,7 +760,7 @@ public: // but only for internal use:
 
   // Allocates a chunk for nobjs of size size.  nobjs may be reduced
   // if it is inconvenient to allocate the requested number.
-  static char *_S_chunk_alloc(size_t __size, size_t &__nobjs);
+  static char *_S_chunk_alloc(size_t __size, size_t &__nobjs, __state_type*);
 
   enum {_S_ALIGN = _STLP_DATA_ALIGNMENT};
 
@@ -823,7 +823,7 @@ public:
 void *_Pthread_alloc_per_thread_state::_M_refill(size_t __n) {
   typedef _Pthread_alloc_obj __obj;
   size_t __nobjs = 128;
-  char * __chunk = _Pthread_alloc_impl::_S_chunk_alloc(__n, __nobjs);
+  char * __chunk = _Pthread_alloc_impl::_S_chunk_alloc(__n, __nobjs, this);
   __obj * volatile * __my_free_list;
   __obj * __result;
   __obj * __current_obj, * __next_obj;
@@ -902,7 +902,7 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_get_per_thread_state() 
 /* We allocate memory in large chunks in order to avoid fragmenting     */
 /* the malloc heap too much.                                            */
 /* We assume that size is properly aligned.                             */
-char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
+char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs, _Pthread_alloc_per_thread_state *__a) {
   typedef _Pthread_alloc_obj __obj;
   {
     char * __result;
@@ -927,10 +927,7 @@ char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
       size_t __bytes_to_get = 2 * __total_bytes + _S_round_up(_S_heap_size >> 4);
       // Try to make use of the left-over piece.
       if (__bytes_left > 0) {
-        _Pthread_alloc_per_thread_state* __a = (_Pthread_alloc_per_thread_state*)
-        pthread_getspecific(_S_key);
         __obj * volatile * __my_free_list = __a->__free_list + _S_freelist_index(__bytes_left);
-
         ((__obj *)_S_start_free) -> __free_list_link = *__my_free_list;
         *__my_free_list = (__obj *)_S_start_free;
       }
@@ -955,7 +952,7 @@ char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs) {
     }
   }
   // lock is released here
-  return _S_chunk_alloc(__p_size, __nobjs);
+  return _S_chunk_alloc(__p_size, __nobjs, __a);
 }
 
 

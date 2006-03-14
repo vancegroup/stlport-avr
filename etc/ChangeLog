@@ -1,4 +1,14 @@
-2006-02-2X  Francois Dumont  <dums@stlport...>
+2006-03-14  Francois Dumont  <dums@stlport...>
+
+	* src/allocators.cpp: Fixed thread safety issue in
+	per_thread_allocator implementation thanks a very old William
+	Power report.
+
+	* test/unit/allocator_test.cpp: Attempt to write a test case for
+	previous bug but not yet complete as I need a better debugging
+	environment than gdb under cygwin...
+
+2006-03-13  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h, src/allocators.cpp: Hide declaration of
 	malloc based allocator handler in library. Also limit scope of
