@@ -186,13 +186,11 @@
 #  endif
 #  if defined (_MSC_VER) && (_MSC_VER >= 1200) && defined (UNDER_CE)
      /* Microsoft eMbedded Visual C++ 3.0, 4.0 (.NET) */
-#    define _STLP_MSVC _MSC_VER
 #    include <stl/config/_evc.h>
 #  endif
    /* distinguish real MSC from Metrowerks, Intel and Comeau */
 #  if defined (_MSC_VER) && !defined (__MWERKS__) && !defined (__ICL) && !defined (__COMO__) && ((_MSC_VER < 1200) || !defined (UNDER_CE))
     /* Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 */
-#    define _STLP_MSVC _MSC_VER
 #    include <stl/config/_msvc.h>
 #  endif
 #  if defined (__GNUC__)

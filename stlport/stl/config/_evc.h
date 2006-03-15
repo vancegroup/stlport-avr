@@ -1,3 +1,4 @@
+#    define _STLP_MSVC _MSC_VER
 /*
  * File to have Microsoft eMbedded Visual C++ 3.0 and .NET working with STLport
  * May 2004
