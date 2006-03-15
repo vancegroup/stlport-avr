@@ -132,10 +132,10 @@ void StringTest::constructor()
     string s((size_t)-1, 'a');
     CPPUNIT_ASSERT( false );
   }
-  catch (bad_alloc const&) {
+  catch (length_error const&) {
   }
   catch (...) {
-    //Expected exception is bad_alloc:
+    //Expected exception is length_error:
     CPPUNIT_ASSERT( false );
   }
 #endif
