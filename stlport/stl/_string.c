@@ -620,28 +620,18 @@ void _String_base<_Tp, _Alloc>::_M_throw_out_of_range() const
 
 template <class _Tp, class _Alloc>
 void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
+  if ((__n <= (max_size() + 1)) && (__n > 0)) {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-  if (__n <= _DEFAULT_SIZE) {
-    this->_M_finish = this->_M_buffers._M_static_buf;
-    this->_M_end_of_storage._M_data = this->_M_buffers._M_static_buf + _DEFAULT_SIZE;
-  } else
-#endif /*_STLP_USE_SHORT_STRING_OPTIM  */
-  if (__n <= (max_size()+1)) {
-    if (__n == 0) {
-      //__n == 0 can only come from a roll of the value encoded as an unsigned
-      //integer value when we add 1 for the trailing null character. This should
-      //result normaly in a bad_alloc exception, to have it we simply roll back
-      //the increment and perform the allocation.
-      --__n;
-    }
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    this->_M_buffers._M_dynamic_buf = _M_end_of_storage.allocate(__n, __n);
-    this->_M_finish = this->_M_buffers._M_dynamic_buf;
+    if (__n > _DEFAULT_SIZE) {
+      this->_M_buffers._M_dynamic_buf = _M_end_of_storage.allocate(__n, __n);
+      this->_M_finish = this->_M_buffers._M_dynamic_buf;
 #else
-    this->_M_start  = _M_end_of_storage.allocate(__n, __n);
-    this->_M_finish = this->_M_start;
+    {
+      this->_M_start  = _M_end_of_storage.allocate(__n, __n);
+      this->_M_finish = this->_M_start;
 #endif /*_STLP_USE_SHORT_STRING_OPTIM  */
-    this->_M_end_of_storage._M_data = this->_M_finish + __n;
+      this->_M_end_of_storage._M_data = this->_M_finish + __n;
+    }
   }
   else
     this->_M_throw_length_error();
@@ -672,7 +662,7 @@ template <class _CharT, class _Traits, class _Alloc>
 basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _Traits, _Alloc> & __s)
   : _STLP_PRIV _String_base<_CharT,_Alloc>(__s.get_allocator())
 { _M_range_initialize(__s._M_Start(), __s._M_Finish()); }
-  
+
 #if defined (basic_string)
 _STLP_MOVE_TO_STD_NAMESPACE
 #  undef basic_string

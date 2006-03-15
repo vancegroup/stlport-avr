@@ -52,6 +52,7 @@ public:
   //This is needed by the full move framework
   typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
   typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
+  typedef size_t size_type;
 private:
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
   union _Buffers {
@@ -95,7 +96,11 @@ protected:
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }
 
-  size_t max_size() const { return (size_t(-1) / sizeof(_Tp)) - 1; }
+  size_t max_size() const {
+    size_type __string_max_size = size_type(-1) / sizeof(_Tp);
+    typename allocator_type::size_type __alloc_max_size = _M_end_of_storage.max_size();
+    return ((__alloc_max_size < __string_max_size) ? __alloc_max_size : __string_max_size) - 1;
+  }
 
   _String_base(const allocator_type& __a)
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
@@ -108,11 +113,10 @@ protected:
   _String_base(const allocator_type& __a, size_t __n)
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_finish(_M_buffers._M_static_buf), _M_end_of_storage(__a, _M_buffers._M_static_buf + _DEFAULT_SIZE) {
-      if (__n > _DEFAULT_SIZE) _M_allocate_block(__n);
 #else
     : _M_start(0), _M_finish(0), _M_end_of_storage(__a, (_Tp*)0) {
-      _M_allocate_block(__n);
 #endif
+      _M_allocate_block(__n);
     }
 
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)

@@ -133,7 +133,7 @@ public:
   typedef const value_type* const_pointer;
   typedef value_type& reference;
   typedef const value_type& const_reference;
-  typedef size_t size_type;
+  typedef typename _Base::size_type size_type;
   typedef ptrdiff_t difference_type;
   typedef random_access_iterator_tag _Iterator_category;
 
@@ -147,7 +147,7 @@ public:
   typedef _String_reserve_t _Reserve_t;
 
 public:                         // Constructor, destructor, assignment.
-  typedef typename _STLP_PRIV _String_base<_CharT,_Alloc>::allocator_type allocator_type;
+  typedef typename _Base::allocator_type allocator_type;
 
   allocator_type get_allocator() const
   { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _CharT); }
