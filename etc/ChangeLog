@@ -1,3 +1,10 @@
+2006-03-15  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_string_base.h, _string.c: Force call to
+	_M_allocate_block even in short string optim mode in order
+	to detect lenght error. Based basic_string max size implementation
+	on allocator max_size.
+
 2006-03-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_system.h, _msvc.h, _evc.h: move _STLP_MSVC
