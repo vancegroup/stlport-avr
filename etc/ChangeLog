@@ -4,6 +4,14 @@
 	definition of _STLP_MSVC macro which should only be defined for
 	real Microsoft compilers and not for compiler emulating it.
 
+	* src/allocators.cpp: Use _STLP_STATIC_MUTEX macro in place
+	of _STLP_mutex_base for mutex definition in per_thread_allocator
+	implementation.
+
+	* stlport/stl/_pthread_alloc.h: Modified deallocate methods of
+	pthread_allocator and per_thread_allocator implementation to accept
+	null pointers.
+
 2006-03-15  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_string_base.h, _string.c: Force call to
