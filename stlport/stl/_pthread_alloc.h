@@ -144,9 +144,15 @@ public:
       return 0;
   }
 
-  // p is not permitted to be a null pointer.
-  void deallocate(pointer __p, size_type __n)
-  { _S_Alloc::deallocate(__p, __n * sizeof(_Tp)); }
+  void deallocate(pointer __p, size_type __n) {
+    _STLP_ASSERT( (__p == 0) == (__n == 0) )
+    if (__p != 0) {
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      memset((char*)__p, _STLP_SHRED_BYTE, __n * sizeof(value_type));
+#endif
+      _S_Alloc::deallocate(__p, __n * sizeof(value_type));
+    }
+  }
 
   size_type max_size() const _STLP_NOTHROW
   { return size_t(-1) / sizeof(_Tp); }
@@ -328,9 +334,15 @@ public:
       return 0;
   }
 
-  // p is not permitted to be a null pointer.
-  void deallocate(pointer __p, size_type __n)
-  { _S_Alloc::deallocate(__p, __n * sizeof(_Tp), _M_state); }
+  void deallocate(pointer __p, size_type __n) {
+    _STLP_ASSERT( (__p == 0) == (__n == 0) )
+    if (__p != 0) {
+#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
+      memset((char*)__p, _STLP_SHRED_BYTE, __n * sizeof(value_type));
+#endif
+      _S_Alloc::deallocate(__p, __n * sizeof(value_type), _M_state);
+    }
+  }
 
   size_type max_size() const _STLP_NOTHROW
   { return size_t(-1) / sizeof(_Tp); }
