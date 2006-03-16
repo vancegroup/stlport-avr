@@ -1,4 +1,7 @@
-#    define _STLP_MSVC _MSC_VER
+#if !defined (__ICL) && !defined (_STLP_MSVC)
+#  define _STLP_MSVC _MSC_VER
+#endif
+
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 // Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 Beta, ICL
