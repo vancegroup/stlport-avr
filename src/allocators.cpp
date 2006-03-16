@@ -772,7 +772,7 @@ public: // but only for internal use:
 private:
   // Chunk allocation state. And other shared state.
   // Protected by _S_chunk_allocator_lock.
-  static _STLP_mutex_base _S_chunk_allocator_lock;
+  static _STLP_STATIC_MUTEX _S_chunk_allocator_lock;
   static char *_S_start_free;
   static char *_S_end_free;
   static size_t _S_heap_size;
@@ -1063,7 +1063,7 @@ void *_Pthread_alloc_impl::reallocate(void *__p, size_t __old_sz, size_t& __new_
 
 _Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_free_per_thread_states = 0;
 pthread_key_t _Pthread_alloc_impl::_S_key = 0;
-_STLP_mutex_base _Pthread_alloc_impl::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
+_STLP_STATIC_MUTEX _Pthread_alloc_impl::_S_chunk_allocator_lock _STLP_MUTEX_INITIALIZER;
 bool _Pthread_alloc_impl::_S_key_initialized = false;
 char *_Pthread_alloc_impl::_S_start_free = 0;
 char *_Pthread_alloc_impl::_S_end_free = 0;
