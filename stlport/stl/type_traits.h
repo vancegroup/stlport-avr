@@ -471,6 +471,9 @@ struct __stlport_class {
 template <class _Tp>
 struct _IsSTLportClass {
   typedef typename _IsConvertibleType<_Tp, __stlport_class<_Tp> >::_Type _Ret;
+#if defined (__BORLANDC__)
+  enum { _Is = _IsConvertibleType<_Tp, __stlport_class<_Tp> >::value };
+#endif
 };
 
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)

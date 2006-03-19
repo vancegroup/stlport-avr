@@ -231,8 +231,7 @@ struct _AreSameUnCVTypes {
  * an existing one (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) that
  * is used for a similar feature.
  */
-#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
-    (!defined (__BORLANDC__) || (__BORLANDC__ > 0x551))
+#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 template <class _Derived, class _Base>
 struct _ConversionHelper {
   static char _Test(bool, const volatile _Base*);

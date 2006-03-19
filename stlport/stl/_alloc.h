@@ -528,7 +528,11 @@ public:
     _M_data(_STLP_PRIV _AsMoveSource<_Value>(src.get()._M_data)) {}
 
   _Tp* allocate(size_type __n, size_type& __allocated_n) {
+#if !defined (__BORLANDC__)
     typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
+#else
+    typedef typename __bool2type<_IsSTLportClass<_MaybeReboundAlloc>::_Is>::_Ret _STLportAlloc;
+#endif
     return allocate(__n, __allocated_n, _STLportAlloc());
   }
 
@@ -568,7 +572,12 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 
 template <class _Tp>
 struct __alloc_type_traits {
+#if !defined (__BORLANDC__)
   typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
+#else
+  enum { _Is = _IsSTLportClass<allocator<_Tp> >::_Is };
+  typedef typename __bool2type<_Is>::_Ret _STLportAlloc;
+#endif
   //The default allocator implementation which is recognize thanks to the
   //__stlport_class inheritance is a stateless object so:
   typedef _STLportAlloc has_trivial_default_constructor;

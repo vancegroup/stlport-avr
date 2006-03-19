@@ -60,8 +60,8 @@ clobber::
 
 distclean::
 	@if exist $(INSTALL_BIN_DIR)/$(SO_NAME) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(SO_NAME))
-	@if exist $(INSTALL_BIN_DIR_DBG)/$(SO_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(SO_NAME_DBG))
-	@if exist $(INSTALL_BIN_DIR_STLDBG)/$(SO_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(SO_NAME_STLDBG))
+	@if exist $(INSTALL_BIN_DIR)/$(SO_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(SO_NAME_DBG))
+	@if exist $(INSTALL_BIN_DIR)/$(SO_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(SO_NAME_STLDBG))
 	@if exist $(INSTALL_LIB_DIR)/$(LIB_NAME) del /f /q $(subst /,\,$(INSTALL_LIB_DIR)/$(LIB_NAME))
 	@if exist $(INSTALL_LIB_DIR_DBG)/$(LIB_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_DBG)/$(LIB_NAME_DBG))
 	@if exist $(INSTALL_LIB_DIR_STLDBG)/$(LIB_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_STLDBG)/$(LIB_NAME_STLDBG))
