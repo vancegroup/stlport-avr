@@ -620,21 +620,21 @@ void _String_base<_Tp, _Alloc>::_M_throw_out_of_range() const
 
 template <class _Tp, class _Alloc>
 void _String_base<_Tp, _Alloc>::_M_allocate_block(size_t __n) {
-  if ((__n <= (max_size() + 1)) && (__n > 0)) {
+  if ((__n <= max_size()+1) && (__n > 0)) {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (__n > _DEFAULT_SIZE) {
       this->_M_buffers._M_dynamic_buf = _M_end_of_storage.allocate(__n, __n);
       this->_M_finish = this->_M_buffers._M_dynamic_buf;
-#else
-    {
-      this->_M_start  = _M_end_of_storage.allocate(__n, __n);
-      this->_M_finish = this->_M_start;
-#endif /*_STLP_USE_SHORT_STRING_OPTIM  */
       this->_M_end_of_storage._M_data = this->_M_finish + __n;
     }
-  }
-  else
+#else
+    this->_M_start  = _M_end_of_storage.allocate(__n, __n);
+    this->_M_finish = this->_M_start;
+    this->_M_end_of_storage._M_data = this->_M_finish + __n;
+#endif /*_STLP_USE_SHORT_STRING_OPTIM  */
+  } else {
     this->_M_throw_length_error();
+  }
 }
 
 #if !defined (basic_string)
