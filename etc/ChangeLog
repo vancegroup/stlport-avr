@@ -1,3 +1,10 @@
+2006-03-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string.c: a bit code clean
+
+	* stlport/stl/_string_base.h: max_size should left space for
+	allocation of terminating null.
+
 2006-03-19  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h, _function_base.h, type_manips.h,
