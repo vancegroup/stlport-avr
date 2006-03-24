@@ -258,17 +258,6 @@ goto oc_gmake
 
 :oc_bcc
 echo Setting compiler: Borland C++ Compiler
-echo e 100 "set TMPVAR=" > fragment.scp
-echo n fragment.txt >> fragment.scp
-for %%x in (rcx b w q) do echo %%x >> fragment.scp
-debug < fragment.scp > nul
-dir ..\..\..\include | find "Directory" > dir_str.txt
-copy fragment.txt+dir_str.txt set_tmp.bat > nul
-call set_tmp.bat
-for %%x in (%TMPVAR%) do if NOT %%x=="Directory" if NOT %%x=="of" SET TMPVAR=%%x
-set INCLUDE=%TMPVAR%
-for %%x in (fragment.scp fragment.txt dir_str.txt set_tmp.bat) do del %%x
-set TMPVAR=
 set STLPORT_COMPILE_COMMAND=make -fbcc.mak
 set SELECTED_COMPILER=bcc
 shift

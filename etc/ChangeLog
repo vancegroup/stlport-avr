@@ -1,3 +1,14 @@
+2006-03-24  Francois Dumont  <dums@stlport...>
+
+	* build/lib/configure.bat: Removed script for defining INCLUDE
+	environment variable as it depends on where STLport is install.
+
+	* build/lib/bcc.mak: Add check for INCLUDE environment variable
+	definition.
+
+	* test/unit/string_test.cpp: Change basic_string::reserve test to
+	check length_error exception rather than bad_alloc.
+
 2006-03-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.c: a bit code clean

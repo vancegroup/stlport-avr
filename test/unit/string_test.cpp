@@ -146,13 +146,13 @@ void StringTest::reserve()
   string s;
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
-    s.reserve(s.max_size());
+    s.reserve(s.max_size() + 1);
     CPPUNIT_ASSERT( false );
   }
-  catch (bad_alloc const&) {
+  catch (length_error const&) {
   }
   catch (...) {
-    //Expected exception is bad_alloc:
+    //Expected exception is length_error:
     CPPUNIT_ASSERT( false );
   }
 #endif
