@@ -1,7 +1,10 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <set>
 #include <algorithm>
 
-#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -281,11 +284,14 @@ void SetTest::allocator_with_state()
 
     sint1.swap(sint2);
 
+    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( sint1 == sint2Cpy );
     CPPUNIT_ASSERT( sint2 == sint1Cpy );
     CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
 }

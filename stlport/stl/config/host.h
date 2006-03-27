@@ -136,8 +136,8 @@
  * interface.
  */
 /*
-#define _STLP_USE_PERTHREAD_ALLOC 1
 */
+#define _STLP_USE_PERTHREAD_ALLOC 1
 
 /*
  * Set _STLP_DEBUG_ALLOC to use allocators that perform memory debugging,

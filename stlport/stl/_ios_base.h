@@ -18,8 +18,8 @@
 #ifndef _STLP_IOS_BASE_H
 #define _STLP_IOS_BASE_H
 
-#ifndef _STLP_INTERNAL_STDEXCEPT
-#  include <stl/_stdexcept.h>
+#ifndef _STLP_INTERNAL_STDEXCEPT_BASE
+#  include <stl/_stdexcept_base.h>
 #endif
 
 #ifndef _STLP_UTILITY

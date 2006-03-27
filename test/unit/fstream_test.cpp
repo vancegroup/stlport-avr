@@ -382,12 +382,69 @@ struct my_traits : public char_traits<char> {
   typedef fpos<state_type> pos_type;
 };
 
-class my_codecvt : public codecvt<char, char, my_state>
-{};
+class my_codecvt
+#  if defined (STLPORT)
+       	: public codecvt<char, char, my_state> {
+#  else
+	: public locale::facet, public codecvt_base {
+  //STLport grant the same default implementation, other Standard libs implementation
+  //do not necessarily do the same:
+  public:
+    typedef char intern_type;
+    typedef char extern_type;
+    typedef my_state state_type;
+  
+    explicit my_codecvt(size_t __refs = 0) : locale::facet(__refs) {}
+    result out(state_type&,
+               const intern_type*  __from,
+               const intern_type*,
+               const intern_type*& __from_next,
+               extern_type*        __to,
+               extern_type*,
+               extern_type*&       __to_next) const
+    { __from_next = __from; __to_next   = __to; return noconv; }
 
-#  if defined (__BORLANDC__)
+    result in (state_type&,
+               const extern_type*  __from,
+               const extern_type*,
+               const extern_type*& __from_next,
+               intern_type*        __to,
+               intern_type*,
+               intern_type*&       __to_next) const
+    { __from_next = __from; __to_next = __to; return noconv; }
+
+    result unshift(state_type&,
+                   extern_type* __to,
+                   extern_type*,
+                   extern_type*& __to_next) const
+    { __to_next = __to; return noconv; }
+
+    int encoding() const throw()
+    { return 1; }
+
+    bool always_noconv() const throw()
+    { return true; }
+
+    int length(const state_type&,
+                  const extern_type* __from,
+                  const extern_type* __end,
+                  size_t __max) const
+    { return (int)min(static_cast<size_t>(__end - __from), __max); }
+
+    int max_length() const throw() 
+    { return 1; }
+
+    static locale::id id;
+#  endif
+};
+
+#  if !defined (STLPORT)
+locale::id my_codecvt::id;
+#  else
+#    if defined (__BORLANDC__)
 template <>
 locale::id codecvt<char, char, my_state>::id;
+#    endif
 #  endif
 #endif
 

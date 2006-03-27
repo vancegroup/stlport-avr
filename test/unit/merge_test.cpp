@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <functional>
 #include <numeric>
 
 #include "iota.h"

@@ -1,10 +1,12 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <vector>
 #include <algorithm>
 #if defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
 #endif
-
-#include "stack_allocator.h"
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -340,11 +342,14 @@ void VectorTest::allocator_with_state()
 
     vint1.swap(vint2);
 
+    CPPUNIT_ASSERT( vint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( vint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( vint1 == vint2Cpy );
     CPPUNIT_ASSERT( vint2 == vint1Cpy );
     CPPUNIT_ASSERT( vint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( vint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
 }

@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #if defined (STLPORT) && defined (_STLP_DEBUG) && defined (_STLP_DEBUG_MODE_THROWS)
 #  define _STLP_DO_CHECK_BAD_PREDICATE

@@ -1,7 +1,10 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <list>
 #include <algorithm>
-
-#include "stack_allocator.h"
+#include <functional>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -280,13 +283,16 @@ void ListTest::allocator_with_state()
 
     lint1.swap(lint2);
 
+    CPPUNIT_ASSERT( lint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( lint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( lint1 == lint2Cpy );
     CPPUNIT_ASSERT( lint2 == lint1Cpy );
     CPPUNIT_ASSERT( lint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( lint2.get_allocator() == stack1 );
   }
-  CPPUNIT_CHECK( stack1.OK() );
-  CPPUNIT_CHECK( stack2.OK() );
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -297,8 +303,8 @@ void ListTest::allocator_with_state()
     CPPUNIT_ASSERT( lint1.size() == 20 );
     CPPUNIT_ASSERT( lint2.empty() );
   }
-  CPPUNIT_CHECK( stack1.OK() );
-  CPPUNIT_CHECK( stack2.OK() );
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -309,8 +315,8 @@ void ListTest::allocator_with_state()
     CPPUNIT_ASSERT( lint1.size() == 11 );
     CPPUNIT_ASSERT( lint2.size() == 9 );
   }
-  CPPUNIT_CHECK( stack1.OK() );
-  CPPUNIT_CHECK( stack2.OK() );
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -323,8 +329,8 @@ void ListTest::allocator_with_state()
     CPPUNIT_ASSERT( lint1.size() == 15 );
     CPPUNIT_ASSERT( lint2.size() == 5 );
   }
-  CPPUNIT_CHECK( stack1.OK() );
-  CPPUNIT_CHECK( stack2.OK() );
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -340,9 +346,10 @@ void ListTest::allocator_with_state()
     CPPUNIT_ASSERT( lint1 == lintref );
     CPPUNIT_ASSERT( lint2.empty() );
   }
-  CPPUNIT_CHECK( stack1.OK() );
-  CPPUNIT_CHECK( stack2.OK() );
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
 
+#if defined (STLPORT)
   {
     //This is a compile time test.
     //We check that sort implementation is correct when list is instanciated
@@ -351,6 +358,7 @@ void ListTest::allocator_with_state()
     lint1.sort();
     lint1.sort(greater<int>());
   }
+#endif
 }
 
 /*

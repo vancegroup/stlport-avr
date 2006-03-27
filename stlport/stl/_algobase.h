@@ -346,13 +346,14 @@ _STLP_DECLARE_COPY_TRIVIAL(long double)
 //--------------------------------------------------
 // copy_n (not part of the C++ standard)
 
+#if !defined (_STLP_NO_EXTENSIONS)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
-_STLP_INLINE_LOOP
-pair<_InputIter, _OutputIter> __copy_n(_InputIter __first, _Size __count,
-                                       _OutputIter __result,
-                                       const input_iterator_tag &) {
+_STLP_INLINE_LOOP pair<_InputIter, _OutputIter>
+__copy_n(_InputIter __first, _Size __count,
+         _OutputIter __result,
+         const input_iterator_tag &) {
   for ( ; __count > 0; --__count) {
     *__result = *__first;
     ++__first;
@@ -370,13 +371,6 @@ __copy_n(_RAIter __first, _Size __count,
   return pair<_RAIter, _OutputIter>(__last, copy(__first, __last, __result));
 }
 
-template <class _InputIter, class _Size, class _OutputIter>
-inline pair<_InputIter, _OutputIter>
-__copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
-  _STLP_FIX_LITERAL_BUG(__first)
-  return __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
-}
-
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
@@ -385,6 +379,7 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
   _STLP_FIX_LITERAL_BUG(__first)
   return _STLP_PRIV __copy_n(__first, __count, __result, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
 }
+#endif
 
 //--------------------------------------------------
 // fill and fill_n

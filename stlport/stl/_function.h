@@ -40,6 +40,56 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _Tp>
+struct not_equal_to : public binary_function<_Tp, _Tp, bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x != __y; }
+};
+
+template <class _Tp>
+struct greater : public binary_function<_Tp, _Tp, bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x > __y; }
+};
+
+template <class _Tp>
+struct greater_equal : public binary_function<_Tp, _Tp, bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x >= __y; }
+};
+
+template <class _Tp>
+struct less_equal : public binary_function<_Tp, _Tp, bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x <= __y; }
+};
+
+template <class _Tp>
+struct divides : public binary_function<_Tp, _Tp, _Tp> {
+  _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x / __y; }
+};
+
+template <class _Tp>
+struct modulus : public binary_function<_Tp, _Tp, _Tp> {
+  _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x % __y; }
+};
+
+template <class _Tp>
+struct negate : public unary_function<_Tp, _Tp> {
+  _Tp operator()(const _Tp& __x) const { return -__x; }
+};
+
+template <class _Tp>
+struct logical_and : public binary_function<_Tp, _Tp, bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x && __y; }
+};
+
+template <class _Tp>
+struct logical_or : public binary_function<_Tp, _Tp,bool> {
+  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x || __y; }
+};
+
+template <class _Tp>
+struct logical_not : public unary_function<_Tp, bool> {
+  bool operator()(const _Tp& __x) const { return !__x; }
+};
+
 #if !defined (_STLP_NO_EXTENSIONS)
 // identity_element (not part of the C++ standard).
 template <class _Tp> inline _Tp identity_element(plus<_Tp>) {  return _Tp(0); }

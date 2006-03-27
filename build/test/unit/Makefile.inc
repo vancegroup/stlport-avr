@@ -59,7 +59,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/floatio_test.cpp \
 	../../../test/unit/foreach_test.cpp \
 	../../../test/unit/fstream_test.cpp \
-	../../../test/unit/fstream_header_test.cpp \
 	../../../test/unit/func_test.cpp \
 	../../../test/unit/functional_header_test.cpp \
 	../../../test/unit/generator_test.cpp \
@@ -71,13 +70,8 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/inplace_test.cpp \
 	../../../test/unit/insert_test.cpp \
 	../../../test/unit/ioiter_test.cpp \
-	../../../test/unit/iomanip_header_test.cpp \
-	../../../test/unit/ios_header_test.cpp \
-	../../../test/unit/iosfwd_header_test.cpp \
-	../../../test/unit/iostream_header_test.cpp \
 	../../../test/unit/iota_test.cpp \
 	../../../test/unit/istmit_test.cpp \
-	../../../test/unit/istream_header_test.cpp \
 	../../../test/unit/iter_test.cpp \
 	../../../test/unit/iterator_header_test.cpp \
 	../../../test/unit/less_test.cpp \
@@ -87,7 +81,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/list_test.cpp \
 	../../../test/unit/list_header_test.cpp \
 	../../../test/unit/locale_test.cpp \
-	../../../test/unit/locale_header_test.cpp \
 	../../../test/unit/logic_test.cpp \
 	../../../test/unit/map_test.cpp \
 	../../../test/unit/map_header_test.cpp \
@@ -105,7 +98,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/numeric_header_test.cpp \
 	../../../test/unit/nthelm_test.cpp \
 	../../../test/unit/ostmit_test.cpp \
-	../../../test/unit/ostream_header_test.cpp \
 	../../../test/unit/pair_test.cpp \
 	../../../test/unit/partial_test.cpp \
 	../../../test/unit/partition_test.cpp \
@@ -131,11 +123,9 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/slist_test.cpp \
 	../../../test/unit/sort_test.cpp \
 	../../../test/unit/sstream_test.cpp \
-	../../../test/unit/sstream_header_test.cpp \
 	../../../test/unit/stack_test.cpp \
 	../../../test/unit/stack_header_test.cpp \
 	../../../test/unit/stdexcept_header_test.cpp \
-	../../../test/unit/strstream_header_test.cpp \
 	../../../test/unit/string_test.cpp \
 	../../../test/unit/swap_test.cpp \
 	../../../test/unit/times_test.cpp \

@@ -1,8 +1,7 @@
 #ifndef STLPORT_UNIT_TEST_STACK_ALLOCATOR_H
 #define STLPORT_UNIT_TEST_STACK_ALLOCATOR_H
 
-//This header is included just to know if we are using STLport:
-#include <utility>
+#include <algorithm>
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 //For bad_alloc:
@@ -14,6 +13,28 @@
 #else
 #  define __STD
 #endif
+
+struct State {
+  char *m_beg, *m_end, *m_cur;
+  bool m_isOk, m_swaped;
+  int m_nbAlloc;
+
+  //The following members are shared among all StackAllocator instance created from
+  //a reference StackAllocator instance:
+  char **m_sharedCur;
+  bool *m_sharedOk;
+  int *m_sharedNbAlloc;
+
+  State(char *beg, char *end)
+    : m_beg(beg), m_end(end), m_cur(m_beg), m_isOk(true), m_swaped(false), m_nbAlloc(0),
+      m_sharedCur(&m_cur), m_sharedOk(&m_isOk), m_sharedNbAlloc(&m_nbAlloc) {}
+
+  State(const State& other)
+  : m_beg(other.m_beg), m_end(other.m_end), m_cur(0),
+    m_isOk(true), m_swaped(other.m_swaped), m_nbAlloc(0),
+    m_sharedCur(other.m_sharedCur), m_sharedOk(other.m_sharedOk),
+    m_sharedNbAlloc(other.m_sharedNbAlloc) {}
+};
 
 /* This allocator is not thread safe:
  */
@@ -28,16 +49,13 @@ struct StackAllocator {
   typedef ptrdiff_t  difference_type;
 
   StackAllocator(char *beg, char *end)
-    : m_beg(beg), m_end(end), m_cur(m_beg), m_isOK(true), m_nbAlloc(0),
-      m_sharedCur(&m_cur), m_sharedOK(&m_isOK), m_sharedNbAlloc(&m_nbAlloc) {}
+    : m_state(beg, end) {}
 
 #if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
+  const State& getState() const { return m_state; }
   template <class _OtherTp>
   StackAllocator(StackAllocator<_OtherTp> const& other)
-    : m_beg(other.getBeg()), m_end(other.getEnd()), m_cur(0), m_isOK(true),
-      m_nbAlloc(0),
-      m_sharedCur(other.getSharedCur()), m_sharedOK(other.getSharedOK()),
-      m_sharedNbAlloc(other.getSharedNbAlloc()) {}
+    : m_state(other.getState()) {}
 #endif
 
 #if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
@@ -48,14 +66,14 @@ struct StackAllocator {
 #endif
 
   _Tp* allocate(size_type n, void* = 0) {
-    ++(*m_sharedNbAlloc);
-
     if (n == 0)
       return 0;
 
-    if (*m_sharedCur + (n * sizeof(_Tp)) < m_end) {
-      char *ret = *m_sharedCur;
-      *m_sharedCur += n * sizeof(_Tp);
+    ++(*m_state.m_sharedNbAlloc);
+
+    if (*m_state.m_sharedCur + (n * sizeof(_Tp)) < m_state.m_end) {
+      char *ret = *m_state.m_sharedCur;
+      *m_state.m_sharedCur += n * sizeof(_Tp);
       return reinterpret_cast<_Tp*>(ret);
     }
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
@@ -72,65 +90,83 @@ struct StackAllocator {
     if (p == 0)
       return;
 
-    --(*m_sharedNbAlloc);
-    if ((char*)p == (*m_sharedCur - n * sizeof(_Tp))) {
-      *m_sharedCur -= n * sizeof(_Tp);
+    --(*m_state.m_sharedNbAlloc);
+
+    if ((char*)p == (*m_state.m_sharedCur - n * sizeof(_Tp))) {
+      *m_state.m_sharedCur -= n * sizeof(_Tp);
     }
 
-    if ((char*)p < m_beg || (char*)p >= m_end) {
+    if ((char*)p < m_state.m_beg || (char*)p >= m_state.m_end) {
       //An object has been returned to the bad allocator instance:
-      *m_sharedOK = false;
+      *m_state.m_sharedOk = false;
     }
   }
 
   pointer address(reference __x) const {return &__x;}
   const_pointer address(const_reference __x) const { return &__x; }
-  size_type max_size() const { return m_end - m_beg; }
+  size_type max_size() const { return m_state.m_end - *m_state.m_sharedCur; }
   void construct(pointer __p, const_reference __val) { new(__p) _Tp(__val);  }
   void destroy(pointer __p) { __p->~_Tp(); }
 
-  char* getBeg () const { return m_beg; }
-  char* getEnd () const { return m_end; }
-  char** getCur () const { return m_cur; }
-  bool* getSharedOK () const { return m_sharedOK; }
-  char** getSharedCur() const { return m_sharedCur; }
-  int* getSharedNbAlloc() const { return m_sharedNbAlloc; }
-  bool OK() const { return m_isOK && (m_nbAlloc == 0); }
+  bool ok() const { return m_state.m_isOk && (m_state.m_nbAlloc == 0); }
   void reset () {
-    m_cur = m_beg;
-    m_isOK = true;
+    m_state.m_cur = m_state.m_beg;
+    m_state.m_isOk = true;
+    m_state.m_swaped = false;
+  }
+  bool swaped() const { return m_state.m_swaped; }
+  void swap(StackAllocator &other) {
+    __STD swap(m_state, other.m_state);
+    m_state.m_swaped = true;
+    other.m_state.m_swaped = true;
   }
 
   //2 StackAllocator instance are identical if they are built on top
   //of the same buffer.
   bool operator == (StackAllocator const& other) const
-  { return m_beg == other.m_beg; }
+  { return m_state.m_beg == other.m_state.m_beg; }
 
   bool operator != (StackAllocator const& other) const
   { return !(*this == other); }
 
 private:
-  char *m_beg, *m_end, *m_cur;
-  bool m_isOK;
-  int m_nbAlloc;
-
-  //The following members are shared among all StackAllocator instance created from
-  //a reference StackAllocator instance:
-  char **m_sharedCur;
-  bool *m_sharedOK;
-  int *m_sharedNbAlloc;
+  State m_state;
 };
 
 #if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
+#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 namespace std {
+#  endif
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>&
 __stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>
 __stl_alloc_create(const StackAllocator<_Tp1>&, const _Tp2*) { return StackAllocator<_Tp2>(); }
+#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
-#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
+#  endif
+#endif
+
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+namespace std {
+#endif
+#if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  template <class _Tp>
+  inline void swap(StackAllocator<_Tp>& __a, StackAllocator<_Tp>& __b)
+  { __a.swap(__b); }
+#else
+//TheFollowing overloads depends on instanciation, if new unit tests are written
+//with new StackAllocator instanciations associated swap overload should also be
+//written
+  inline void swap(StackAllocator<int>& __a, StackAllocator<int>& __b)
+  { __a.swap(__b); }
+  inline void swap(StackAllocator<char>& __a, StackAllocator<char>& __b)
+  { __a.swap(__b); }
+#endif
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+}
+#endif
 
 #undef __STD
 

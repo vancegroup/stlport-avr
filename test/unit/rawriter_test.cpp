@@ -56,11 +56,11 @@ void RawriterTest::rawiter1()
   CPPUNIT_ASSERT(*p++ == 3);
   CPPUNIT_ASSERT(*p++ == 4);
 
-# ifdef _STLPORT_VERSION
+#if defined (STLPORT) || defined (__GNUC__)
   a.deallocate(save_p,5);
-# else
+#else
   a.deallocate(save_p);
-# endif
+#endif
 
   CPPUNIT_ASSERT(true);
 }

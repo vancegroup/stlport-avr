@@ -5,13 +5,17 @@
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
 #  include <rope>
 #endif
-#include <slist>
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#  include <slist>
+#endif
 #include <list>
 #include <deque>
 #include <set>
 #include <map>
-#include <unordered_set>
-#include <unordered_map>
+#if defined (STLPORT)
+#  include <unordered_set>
+#  include <unordered_map>
+#endif
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <hash_set>
 #  include <hash_map>
@@ -32,18 +36,15 @@ using namespace std;
 class MoveConstructorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(MoveConstructorTest);
-#if defined (STLPORT)
-#  if defined (_STLP_NO_MOVE_SEMANTIC) || defined (__DMC__)
+#if defined (__DMC__)
   CPPUNIT_IGNORE;
-#  endif
+#endif
   CPPUNIT_TEST(move_construct_test);
   CPPUNIT_TEST(deque_test);
-#  if defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
-  CPPUNIT_STOP_IGNORE;
-#  endif
   CPPUNIT_TEST(vector_test);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(move_traits);
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  if defined (__BORLANDC__)
   CPPUNIT_IGNORE;
 #  endif
@@ -85,7 +86,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MoveConstructorTest);
 //
 void MoveConstructorTest::move_construct_test()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
+#if !defined (__DMC__)
   //cout << "vector<vector<int>>";
   vector<int> const ref_vec(10, 0);
   vector<vector<int> > v_v_ints(1, ref_vec);
@@ -98,7 +99,9 @@ void MoveConstructorTest::move_construct_test()
   }
 
   //v_v_ints has been resized
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTICS)
   CPPUNIT_ASSERT((pint == &v_v_ints.front().front()));
+#endif
 
   //cout << "vector<vector<int>>::erase";
   //We need at least 3 elements:
@@ -109,7 +112,9 @@ void MoveConstructorTest::move_construct_test()
   //We erase the 2nd
   pint = &v_v_ints[2].front();
   v_v_ints.erase(v_v_ints.begin() + 1);
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT((pint == &v_v_ints[1].front()));
+#endif
 
   //cout << "vector<string>";
   string const ref_str("ref string, big enough to be a dynamic one");
@@ -122,7 +127,9 @@ void MoveConstructorTest::move_construct_test()
   }
 
   //vec_str has been resized
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT((pstr == vec_strs.front().c_str()));
+#endif
 
   //cout << "vector<string>::erase";
   //We need at least 3 elements:
@@ -133,14 +140,18 @@ void MoveConstructorTest::move_construct_test()
   //We erase the 2nd
   pstr = vec_strs[2].c_str();
   vec_strs.erase(vec_strs.begin() + 1);
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT((pstr == vec_strs[1].c_str()));
+#endif
 
   //cout << "swap(vector<int>, vector<int>)";
   vector<int> elem1(10, 0), elem2(10, 0);
   int *p1 = &elem1.front();
   int *p2 = &elem2.front();
   swap(elem1, elem2);
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT(((p1 == &elem2.front()) && (p2 == &elem1.front())));
+#endif
 
   {
     vector<bool> bit_vec(5, true);
@@ -152,7 +163,7 @@ void MoveConstructorTest::move_construct_test()
      * details to check that the move has been correctly handled. For other
      * STL implementation it is only a compile check.
      */
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  if defined (_STLP_DEBUG)
     unsigned int *punit = v_v_bits.front().begin()._M_iterator._M_p;
 #  else
@@ -165,7 +176,7 @@ void MoveConstructorTest::move_construct_test()
       v_v_bits.push_back(bit_vec);
     }
 
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
     //v_v_bits has been resized
 #  if defined (_STLP_DEBUG)
     CPPUNIT_ASSERT( punit == v_v_bits.front().begin()._M_iterator._M_p );
@@ -211,7 +222,7 @@ void MoveConstructorTest::move_construct_test()
 
 void MoveConstructorTest::deque_test()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
+#if !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -233,10 +244,12 @@ void MoveConstructorTest::deque_test()
       ++pos;
     }
     CPPUNIT_ASSERT( vect_deque.size() == 13 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
     for (int i = 0; i < 5; ++i) {
       CPPUNIT_ASSERT( bufs[i] == &vect_deque[i].front() );
       CPPUNIT_ASSERT( bufs[11 - i] == &vect_deque[11 - i].front() );
     }
+#endif
   }
 
   //To the back
@@ -259,10 +272,12 @@ void MoveConstructorTest::deque_test()
       ++pos;
     }
     CPPUNIT_ASSERT( vect_deque.size() == 13 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
     for (int i = 0; i < 5; ++i) {
       CPPUNIT_ASSERT( bufs[i + 1] == &vect_deque[i + 1].front() );
       CPPUNIT_ASSERT( bufs[12 - i] == &vect_deque[12 - i].front() );
     }
+#endif
   }
 
   //Check the different erase methods.
@@ -289,9 +304,11 @@ void MoveConstructorTest::deque_test()
       bufs.erase(bufs.begin() + 2);
       CPPUNIT_ASSERT( vect_deque.size() == 19 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -307,9 +324,11 @@ void MoveConstructorTest::deque_test()
       bufs.erase(bufs.end() - 2);
       CPPUNIT_ASSERT( vect_deque.size() == 18 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -325,9 +344,11 @@ void MoveConstructorTest::deque_test()
       bufs.erase(bufs.begin() + 3, bufs.begin() + 5);
       CPPUNIT_ASSERT( vect_deque.size() == 16 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -343,9 +364,11 @@ void MoveConstructorTest::deque_test()
       bufs.erase(bufs.end() - 5, bufs.end() - 3);
       CPPUNIT_ASSERT( vect_deque.size() == 14 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
   }
 
@@ -366,9 +389,11 @@ void MoveConstructorTest::deque_test()
       bufs.insert(bufs.begin() + 3, &vect_deque[3].front());
       CPPUNIT_ASSERT( vect_deque.size() == 22 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -378,9 +403,11 @@ void MoveConstructorTest::deque_test()
       bufs.insert(bufs.end() - 2, &vect_deque[21].front());
       CPPUNIT_ASSERT( vect_deque.size() == 24 );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -391,9 +418,11 @@ void MoveConstructorTest::deque_test()
       CPPUNIT_ASSERT( vect_deque.size() == 25 );
       CPPUNIT_ASSERT( &ret->front() == bufs[2] );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -404,9 +433,11 @@ void MoveConstructorTest::deque_test()
       CPPUNIT_ASSERT( vect_deque.size() == 26 );
       CPPUNIT_ASSERT( &ret->front() == bufs[23] );
       deque<vector<int> >::iterator dit(vect_deque.begin()), ditEnd(vect_deque.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
   }
 #endif
@@ -414,7 +445,7 @@ void MoveConstructorTest::deque_test()
 
 void MoveConstructorTest::vector_test()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
+#if !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -435,10 +466,12 @@ void MoveConstructorTest::vector_test()
       ++pos;
     }
     CPPUNIT_ASSERT( vect_vector.size() == 13 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
     for (int i = 0; i < 5; ++i) {
       CPPUNIT_ASSERT( bufs[i] == &vect_vector[i].front() );
       CPPUNIT_ASSERT( bufs[11 - i] == &vect_vector[11 - i].front() );
     }
+#endif
   }
 
   //To the back
@@ -461,10 +494,12 @@ void MoveConstructorTest::vector_test()
       ++pos;
     }
     CPPUNIT_ASSERT( vect_vector.size() == 13 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
     for (int i = 0; i < 5; ++i) {
       CPPUNIT_ASSERT( bufs[i + 1] == &vect_vector[i + 1].front() );
       CPPUNIT_ASSERT( bufs[12 - i] == &vect_vector[12 - i].front() );
     }
+#endif
   }
 
   //Check the different erase methods.
@@ -491,9 +526,11 @@ void MoveConstructorTest::vector_test()
       bufs.erase(bufs.begin() + 2);
       CPPUNIT_ASSERT( vect_vector.size() == 19 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -509,9 +546,11 @@ void MoveConstructorTest::vector_test()
       bufs.erase(bufs.end() - 2);
       CPPUNIT_ASSERT( vect_vector.size() == 18 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -527,9 +566,11 @@ void MoveConstructorTest::vector_test()
       bufs.erase(bufs.begin() + 3, bufs.begin() + 5);
       CPPUNIT_ASSERT( vect_vector.size() == 16 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -545,9 +586,11 @@ void MoveConstructorTest::vector_test()
       bufs.erase(bufs.end() - 5, bufs.end() - 3);
       CPPUNIT_ASSERT( vect_vector.size() == 14 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
   }
 
@@ -568,9 +611,11 @@ void MoveConstructorTest::vector_test()
       bufs.insert(bufs.begin() + 3, &vect_vector[3].front());
       CPPUNIT_ASSERT( vect_vector.size() == 22 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -580,9 +625,11 @@ void MoveConstructorTest::vector_test()
       bufs.insert(bufs.end() - 2, &vect_vector[21].front());
       CPPUNIT_ASSERT( vect_vector.size() == 24 );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -593,9 +640,11 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( vect_vector.size() == 25 );
       CPPUNIT_ASSERT( &ret->front() == bufs[2] );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
 
     {
@@ -606,9 +655,11 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( vect_vector.size() == 26 );
       CPPUNIT_ASSERT( &ret->front() == bufs[23] );
       vector<vector<int> >::iterator dit(vect_vector.begin()), ditEnd(vect_vector.end());
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       for (size_t i = 0; dit != ditEnd; ++dit, ++i) {
         CPPUNIT_ASSERT( bufs[i] == &dit->front() );
       }
+#endif
     }
   }
 #endif
@@ -687,6 +738,7 @@ void MoveConstructorTest::vector_test()
     }
   }
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   {
     //slist move contructor:
     vector<slist<string> > vect(10, slist<string>(10, long_str));
@@ -710,6 +762,7 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
+#endif
 
   {
     //binary tree move contructor:
@@ -739,7 +792,8 @@ void MoveConstructorTest::vector_test()
     }
   }
 
-#if !defined (__BORLANDC__)
+#if defined (STLPORT)
+#  if !defined (__BORLANDC__)
   {
     //hash container move contructor:
     unordered_multiset<string> ref;
@@ -767,24 +821,34 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
+#  endif
 #endif
 }
 
-#if defined (STLPORT) && !defined (__DMC__)
+#if !defined (__DMC__)
 struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
+#if defined (STLPORT)
   MovableStruct(__move_source<MovableStruct>) { ++nb_mv_construct_call; }
+#endif
   ~MovableStruct() { ++nb_destruct_call; }
+
+  MovableStruct& operator = (const MovableStruct&) {
+    ++nb_assignment_call;
+    return *this;
+  }
 
   static void reset() {
     nb_dft_construct_call = nb_cpy_construct_call = nb_mv_construct_call = 0;
+    nb_assignment_call = 0;
     nb_destruct_call = 0;
   }
 
   static size_t nb_dft_construct_call;
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
+  static size_t nb_assignment_call;
   static size_t nb_destruct_call;
 
   //Dummy data just to control struct sizeof
@@ -797,8 +861,10 @@ struct MovableStruct {
 size_t MovableStruct::nb_dft_construct_call = 0;
 size_t MovableStruct::nb_cpy_construct_call = 0;
 size_t MovableStruct::nb_mv_construct_call = 0;
+size_t MovableStruct::nb_assignment_call = 0;
 size_t MovableStruct::nb_destruct_call = 0;
 
+#if defined (STLPORT)
 namespace std {
   _STLP_TEMPLATE_NULL
   struct __move_traits<MovableStruct> {
@@ -806,21 +872,30 @@ namespace std {
     typedef __false_type complete;
   };
 }
+#endif
 
 struct CompleteMovableStruct {
   CompleteMovableStruct() { ++nb_dft_construct_call; }
   CompleteMovableStruct(CompleteMovableStruct const&) { ++nb_cpy_construct_call; }
+#if defined (STLPORT)
   CompleteMovableStruct(__move_source<CompleteMovableStruct>) { ++nb_mv_construct_call; }
+#endif
   ~CompleteMovableStruct() { ++nb_destruct_call; }
 
+  CompleteMovableStruct& operator = (const CompleteMovableStruct&) {
+    ++nb_assignment_call;
+    return *this;
+  }
   static void reset() {
     nb_dft_construct_call = nb_cpy_construct_call = nb_mv_construct_call = 0;
+    nb_assignment_call = 0;
     nb_destruct_call = 0;
   }
 
   static size_t nb_dft_construct_call;
   static size_t nb_cpy_construct_call;
   static size_t nb_mv_construct_call;
+  static size_t nb_assignment_call;
   static size_t nb_destruct_call;
 
   //See MovableStruct
@@ -830,8 +905,10 @@ struct CompleteMovableStruct {
 size_t CompleteMovableStruct::nb_dft_construct_call = 0;
 size_t CompleteMovableStruct::nb_cpy_construct_call = 0;
 size_t CompleteMovableStruct::nb_mv_construct_call = 0;
+size_t CompleteMovableStruct::nb_assignment_call = 0;
 size_t CompleteMovableStruct::nb_destruct_call = 0;
 
+#if defined (STLPORT)
 namespace std {
   _STLP_TEMPLATE_NULL
   struct __move_traits<CompleteMovableStruct> {
@@ -840,10 +917,11 @@ namespace std {
   };
 }
 #endif
+#endif
 
 void MoveConstructorTest::move_traits()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if !defined (__DMC__)
   {
     {
       vector<MovableStruct> vect;
@@ -854,8 +932,13 @@ void MoveConstructorTest::move_traits()
 
       // vect contains 4 elements
       CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 4 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 3 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 7 );
+#endif
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 7 );
 
       // Following test violate requirements to sequiences (23.1.1 Table 67)
@@ -873,6 +956,7 @@ void MoveConstructorTest::move_traits()
       CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 0 );
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 0 );
 
       MovableStruct::reset();
@@ -880,16 +964,26 @@ void MoveConstructorTest::move_traits()
 
       // vect contains 8 elements
       CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 0 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 4 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 8 );
+#endif
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 4 );
 
       MovableStruct::reset();
       vect.erase(vect.begin(), vect.begin() + 2 );
 
       // vect contains 6 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 6 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 8 );
+#else
+      CPPUNIT_ASSERT_EQUAL( MovableStruct::nb_assignment_call, 6 );
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 2 );
+#endif
 
       MovableStruct::reset();
       vect.erase(vect.end() - 2, vect.end());
@@ -902,8 +996,13 @@ void MoveConstructorTest::move_traits()
       vect.erase(vect.begin());
 
       // vect contains 3 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 3 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 4 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 3 );
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 1 );
+#endif
 
       MovableStruct::reset();
     }
@@ -921,9 +1020,14 @@ void MoveConstructorTest::move_traits()
 
       // vect contains 4 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_dft_construct_call == 4 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 3 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 4 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 7 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 7 );
+#endif
 
       // Following test violate requirements to sequiences (23.1.1 Table 67)
       /*
@@ -949,15 +1053,24 @@ void MoveConstructorTest::move_traits()
 
       // vect contains 8 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_dft_construct_call == 0 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 0 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 8 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 4 );
+#endif
 
       CompleteMovableStruct::reset();
       vect.erase(vect.begin(), vect.begin() + 2);
 
       // vect contains 6 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 6 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 6 );
+#endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 2 );
 
       CompleteMovableStruct::reset();
@@ -971,7 +1084,11 @@ void MoveConstructorTest::move_traits()
       vect.erase(vect.begin());
 
       // vect contains 3 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 3 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 3 );
+#endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 1 );
 
       CompleteMovableStruct::reset();
@@ -1019,28 +1136,49 @@ void MoveConstructorTest::move_traits()
       // deq contains 8 elements
       CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 0 );
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 2 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 2 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 2 );
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 0 );
+#endif
 
       MovableStruct::reset();
       deq.erase(deq.begin() + 1, deq.begin() + 3 );
 
       // deq contains 6 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 1 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 3 );
+#else
+      //Following check is highly deque implementation dependant so
+      //it might not always work...
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 1 );
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 2 );
+#endif
 
       MovableStruct::reset();
       deq.erase(deq.end() - 3, deq.end() - 1);
 
       // deq contains 4 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 1 );
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 3 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 1 );
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 2 );
+#endif
 
       MovableStruct::reset();
       deq.erase(deq.begin());
 
       // deq contains 3 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 0 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 0 );
+#endif
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 1 );
 
       MovableStruct::reset();
@@ -1089,21 +1227,33 @@ void MoveConstructorTest::move_traits()
       // deq contains 8 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_dft_construct_call == 0 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 2 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 2 );
+#endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 0 );
 
       CompleteMovableStruct::reset();
       deq.erase(deq.begin() + 1, deq.begin() + 3);
 
       // deq contains 6 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 1 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 1 );
+#endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 2 );
 
       CompleteMovableStruct::reset();
       deq.erase(deq.end() - 3, deq.end() - 1);
 
       // deq contains 4 elements
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 1 );
+#else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 1 );
+#endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 2 );
 
       CompleteMovableStruct::reset();
@@ -1111,6 +1261,7 @@ void MoveConstructorTest::move_traits()
 
       // deq contains 3 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 0 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_assignment_call == 0 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 1 );
 
       CompleteMovableStruct::reset();
@@ -1287,6 +1438,7 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   {
     //slist:
     CPPUNIT_ASSERT( is_movable(slist<char>()) );
@@ -1298,6 +1450,7 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( !is_move_complete(slist<char>()) );
 #    endif
   }
+#endif
 
   {
     //queue:
@@ -1378,6 +1531,7 @@ void MoveConstructorTest::movable_declaration()
 #    endif
   }
 
+#    if defined (STLPORT)
   {
     //hashed containers, unordered_set unordered_multiset, unordered_map, unordered_multimap,
     //                   hash_set, hash_multiset, hash_map, hash_multimap:
@@ -1387,12 +1541,13 @@ void MoveConstructorTest::movable_declaration()
     CPPUNIT_ASSERT( is_movable(unordered_multiset<char>()) );
     CPPUNIT_ASSERT( is_movable(unordered_map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(unordered_multimap<char, char>()) );
-#    if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#      if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
     CPPUNIT_ASSERT( is_movable(hash_set<char>()) );
     CPPUNIT_ASSERT( is_movable(hash_multiset<char>()) );
     CPPUNIT_ASSERT( is_movable(hash_map<char, char>()) );
     CPPUNIT_ASSERT( is_movable(hash_multimap<char, char>()) );
-#    endif
+#      endif
   }
+#    endif
 #  endif
 }

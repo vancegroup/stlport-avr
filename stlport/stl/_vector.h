@@ -684,8 +684,10 @@ _STLP_END_NAMESPACE
 //We define the bool specialization before the debug interfave
 //to benefit of the debug version of vector even for the bool
 //specialization.
-#if !defined (_STLP_INTERNAL_BVECTOR_H)
-#  include <stl/_bvector.h>
+#if !defined (_STLP_NO_BOOL) || !defined (_STLP_NO_EXTENSIONS)
+#  if !defined (_STLP_INTERNAL_BVECTOR_H)
+#    include <stl/_bvector.h>
+#  endif
 #endif
 
 #if defined (_STLP_DEBUG)
@@ -694,7 +696,7 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-#if !defined (_STLP_NO_BOOL)
+#if !defined (_STLP_NO_BOOL) && !defined (_STLP_NO_EXTENSIONS)
 // This typedef is non-standard.  It is provided for backward compatibility.
 typedef vector<bool, allocator<bool> > bit_vector;
 #endif

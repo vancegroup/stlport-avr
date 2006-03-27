@@ -2,7 +2,8 @@
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
-
+#NOT_USE_NOSTDLIB := 1
+#WITHOUT_STLPORT := 1
 ALL_TAGS := release-shared stldbg-shared
 STLPORT_DIR := ../../..
 include Makefile.inc

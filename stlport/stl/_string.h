@@ -487,12 +487,8 @@ public:                         // Size, capacity, etc.
 
   void reserve(size_type = 0);
 
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-  size_type capacity() const { return (this->_M_end_of_storage._M_data - this->_M_Start()) - 1; }
-#else
   size_type capacity() const
-    { return (this->_M_end_of_storage._M_data == this->_M_Start()) ? 0 : ((this->_M_end_of_storage._M_data - this->_M_Start()) - 1); }
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+  { return (this->_M_end_of_storage._M_data - this->_M_Start()) - 1; }
 
   void clear() {
     if (!empty()) {

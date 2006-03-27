@@ -1,6 +1,8 @@
 #include <memory>
 #include <vector>
 
+#include <cstdio>
+
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -16,7 +18,7 @@ class AllocatorTest : public CPPUNIT_NS::TestCase
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   CPPUNIT_TEST(bad_alloc_test);
 #endif
-#if 0 //defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_PTHREADS)
+#if defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_USE_PERTHREAD_ALLOC)
   CPPUNIT_TEST(per_thread_alloc);
 #endif
   CPPUNIT_TEST_SUITE_END();
@@ -60,7 +62,7 @@ void AllocatorTest::bad_alloc_test()
 }
 #endif
 
-#if 0 //defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_PTHREADS)
+#if defined (STLPORT) && defined (_STLP_THREADS) && defined (_STLP_USE_PERTHREAD_ALLOC)
 #  include <pthread.h>
 
 class SharedDatas

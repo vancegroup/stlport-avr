@@ -16,19 +16,13 @@
 /* $Id$ */
 
 #ifndef _CPPUNITPROXYINTERFACE_H_
-# define _CPPUNITPROXYINTERFACE_H_
+#define _CPPUNITPROXYINTERFACE_H_
 
- /*
-  * Exception-usage settings
-  */
-#ifdef CPPUNIT_MINI_USE_EXCEPTIONS
-#  undef CPPUNIT_MINI_USE_EXCEPTIONS
-#endif
-
- /*
-  * STLport specific
-  */
-#if defined _STLP_USE_EXCEPTIONS
+/*
+ * STLport specific
+ */
+#if !defined (CPPUNIT_MINI_USE_EXCEPTIONS) && \
+    (!defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS))
 #  define CPPUNIT_MINI_USE_EXCEPTIONS
 #endif
 

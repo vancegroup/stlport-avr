@@ -1,7 +1,40 @@
+2006-03-21  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_stdexcept_base.h: New internal header with
+	__Named_exception implementation, improve segregation between
+	<locale> and <stdexcept> Standard headers.
+
+	* test/unit/locale_test.cpp: Add missing <stdexcept> header include.
+
+	* stlport/stl/_function_base.h, _function.h: Move at many functor
+	from _function_base.h as possible to _function.h to improve
+	segregation between <functional> and <algorithm> Standard headers.
+
+	* test/unit: Add many missing references to <functional> header.
+
+	* test/unit: Made unit tests available for build without STLport, this
+	will be a good way to compare Standard library implementations.
+
+	* stlport/stl/_string_base.h: Remove additional space for terminating
+	null character, it was actually already reserved in the return
+	expression.
+
+	* stlport/stl/_string.h: Restored basic_string capacity implementation
+	that do not depend on use of the short string optimization or not. It
+	might be hiding a real issue somewhere else in code even if unit tests
+	are not showing any problem.
+
+	* stlport/stl/_alloc.h: Add swap overload for _STLP_alloc_proxy class
+	in order to correctly call swap on the maybe rebound allocator as user
+	that implement an allocator with a state might have implement a
+	special swap function for it to correctly handle STL containers swap
+	operation.
+
 2006-03-24  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: Removed script for defining INCLUDE
-	environment variable as it depends on where STLport is install.
+	environment variable for Borland ressource compiler as it depends
+	on where STLport is install.
 
 	* build/lib/bcc.mak: Add check for INCLUDE environment variable
 	definition.

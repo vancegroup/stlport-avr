@@ -1,7 +1,10 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <map>
 #include <algorithm>
 
-#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -262,7 +265,7 @@ void MapTest::allocator_with_state()
   StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
   {
-    typedef map<int, int, less<int>, StackAllocator<int> > MapInt;
+    typedef map<int, int, less<int>, StackAllocator<pair<const int, int> > > MapInt;
     less<int> intLess;
     MapInt mint1(intLess, stack1);
     int i;
@@ -277,11 +280,14 @@ void MapTest::allocator_with_state()
 
     mint1.swap(mint2);
 
+    CPPUNIT_ASSERT( mint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( mint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( mint1 == mint2Cpy );
     CPPUNIT_ASSERT( mint2 == mint1Cpy );
     CPPUNIT_ASSERT( mint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( mint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
 }

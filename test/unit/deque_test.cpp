@@ -1,10 +1,13 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <deque>
 #include <algorithm>
 #if defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
 #endif
 
-#include "stack_allocator.h"
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -130,11 +133,14 @@ void DequeTest::allocator_with_state()
 
     dint1.swap(dint2);
 
+    CPPUNIT_ASSERT( dint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( dint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( dint1 == dint2Cpy );
     CPPUNIT_ASSERT( dint2 == dint1Cpy );
     CPPUNIT_ASSERT( dint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( dint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
 }

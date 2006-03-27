@@ -1,3 +1,7 @@
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <vector>
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
@@ -9,7 +13,6 @@
 #  endif
 #  include <string>
 
-#  include "stack_allocator.h"
 #  include "cppunit/cppunit_proxy.h"
 
 #  if defined (__MVS__)
@@ -240,6 +243,7 @@ void HashTest::allocator_with_state()
   {
     typedef hash_set<int, hash<int>, equal_to<int>, StackAllocator<int> > HashSetInt;
     HashSetInt hint1(10, hash<int>(), equal_to<int>(), stack1);
+
     int i;
     for (i = 0; i < 5; ++i)
       hint1.insert(i);
@@ -252,11 +256,14 @@ void HashTest::allocator_with_state()
 
     hint1.swap(hint2);
 
+    CPPUNIT_ASSERT( hint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( hint2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( hint1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( hint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
 }
 
 #endif

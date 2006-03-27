@@ -55,16 +55,6 @@ struct equal_to : public binary_function<_Tp, _Tp, bool> {
 };
 
 template <class _Tp>
-struct not_equal_to : public binary_function<_Tp, _Tp, bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x != __y; }
-};
-
-template <class _Tp>
-struct greater : public binary_function<_Tp, _Tp, bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x > __y; }
-};
-
-template <class _Tp>
 struct less : public binary_function<_Tp,_Tp,bool>
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* less is the default template parameter for many STL containers, to fully use
@@ -93,16 +83,6 @@ struct __type_traits<less<_Tp> > {
   typedef _STLportLess is_POD_type;
 };
 #endif
-
-template <class _Tp>
-struct greater_equal : public binary_function<_Tp, _Tp, bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x >= __y; }
-};
-
-template <class _Tp>
-struct less_equal : public binary_function<_Tp, _Tp, bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x <= __y; }
-};
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -137,36 +117,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _Tp>
 struct multiplies : public binary_function<_Tp, _Tp, _Tp> {
   _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x * __y; }
-};
-
-template <class _Tp>
-struct divides : public binary_function<_Tp, _Tp, _Tp> {
-  _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x / __y; }
-};
-
-template <class _Tp>
-struct modulus : public binary_function<_Tp, _Tp, _Tp> {
-  _Tp operator()(const _Tp& __x, const _Tp& __y) const { return __x % __y; }
-};
-
-template <class _Tp>
-struct negate : public unary_function<_Tp, _Tp> {
-  _Tp operator()(const _Tp& __x) const { return -__x; }
-};
-
-template <class _Tp>
-struct logical_and : public binary_function<_Tp, _Tp, bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x && __y; }
-};
-
-template <class _Tp>
-struct logical_or : public binary_function<_Tp, _Tp,bool> {
-  bool operator()(const _Tp& __x, const _Tp& __y) const { return __x || __y; }
-};
-
-template <class _Tp>
-struct logical_not : public unary_function<_Tp, bool> {
-  bool operator()(const _Tp& __x) const { return !__x; }
 };
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

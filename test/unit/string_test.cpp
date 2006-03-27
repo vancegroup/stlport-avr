@@ -1,3 +1,12 @@
+//To make GLib C++ closer to STLport behavior we need this macro:
+//Only mandatory when building unit tests without STLport, do not change
+//anything when building with STLport
+#define _GLIBCXX_FULLY_DYNAMIC_STRING
+
+//Has to be first for StackAllocator swap overload to be taken
+//into account (at least using GCC 4.0.1)
+#include "stack_allocator.h"
+
 #include <vector>
 #include <deque>
 #include <string>
@@ -10,12 +19,17 @@
 #  include <stdexcept>
 #endif
 
-#if defined (STLPORT) && defined (_STLP_THREADS)
-#  ifdef _STLP_PTHREADS
+#if !defined (STLPORT) || defined (_STLP_THREADS)
+#  if defined (STLPORT) && defined (_STLP_PTHREADS) || \
+      defined (__GNUC__) && !defined (__MINGW32__)
+#    define USE_PTHREAD_API
 #    include <pthread.h>
 #  endif
 
-#  ifdef _STLP_WIN32THREADS
+#  if defined (STLPORT) && defined (_STLP_WIN32THREADS) || \
+      defined (__GNUC__) && defined (__MINGW32__) || \
+      defined (_MSC_VER)
+#    define USE_WINDOWS_API
 #    include <windows.h>
 #  endif
 #endif
@@ -45,7 +59,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
-#if !defined (STLPORT) || !defined (_STLP_THREADS)
+#if !defined (USE_PTHREAD_API) && !defined (USE_WINDOWS_API)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(mt);
@@ -85,12 +99,8 @@ protected:
   void short_string_optim_bug();
   void compare();
   void template_expression();
-#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   void template_wexpression();
-#endif
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   void io();
-#endif
   void allocator_with_state();
   void capacity();
 
@@ -99,13 +109,11 @@ protected:
     return tmp;
   }
 
-#if defined (STLPORT) && defined (_STLP_THREADS)
-#  if defined (_STLP_PTHREADS)  || defined (_STLP_UITHREADS)
+#if defined (USE_PTHREAD_API) || defined (USE_WINDOWS_API)
+#  if defined (USE_PTHREAD_API)
   static void* f(void*)
-#  elif defined (_STLP_WIN32THREADS)
-  static DWORD __stdcall f(void*)
 #  else
-#    error Unknown thread model.
+  static DWORD __stdcall f(void*)
 #  endif
   {
     string s( "qyweyuewunfkHBUKGYUGL,wehbYGUW^(@T@H!BALWD:h^&@#*@(#:JKHWJ:CND" );
@@ -160,9 +168,9 @@ void StringTest::reserve()
 
 void StringTest::mt()
 {
-#if defined (STLPORT) && defined (_STLP_THREADS)
+#if defined (USE_PTHREAD_API) || defined (USE_WINDOWS_API)
   const int nth = 2;
-#  if defined(_STLP_PTHREADS)
+#  if defined (USE_PTHREAD_API)
   pthread_t t[nth];
 
   for ( int i = 0; i < nth; ++i ) {
@@ -172,9 +180,9 @@ void StringTest::mt()
   for ( int i = 0; i < nth; ++i ) {
     pthread_join( t[i], 0 );
   }
-#  endif // _STLP_PTHREADS
+#  endif // PTHREAD
 
-#  if defined (_STLP_WIN32THREADS)
+#  if defined (USE_WINDOWS_API)
   //DWORD start = GetTickCount();
 
   HANDLE t[nth];
@@ -198,11 +206,6 @@ void StringTest::mt()
   ostr << "Duration: " << duration << endl;
   CPPUNIT_MESSAGE(ostr.str().c_str());
   */
-#  endif
-
-#  if !defined(_STLP_PTHREADS) && !defined(_STLP_WIN32THREADS) && !defined (_STLP_UITHREADS)
-  // this test is useless without thread support!
-  CPPUNIT_ASSERT(false);
 #  endif
 #endif
 }
@@ -950,18 +953,21 @@ void StringTest::allocator_with_state()
     StackString str1("string stack1", stack1);
     StackString str1Cpy(str1);
 
-    StackString str2("string stack1", stack2);
+    StackString str2("string stack2", stack2);
     StackString str2Cpy(str2);
 
     str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( str2.get_allocator().swaped() );
 
     CPPUNIT_ASSERT( str1 == str2Cpy );
     CPPUNIT_ASSERT( str2 == str1Cpy );
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.OK() );
-  CPPUNIT_ASSERT( stack2.OK() );
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -978,13 +984,69 @@ void StringTest::allocator_with_state()
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
     CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
   }
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+
+  {
+    StackString str1("string stack1", stack1);
+    StackString str1Cpy(str1);
+
+    StackString str2("longer string from stack2 allocator instance for dynamic allocation", stack2);
+    StackString str2Cpy(str2);
+
+    str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1 == str2Cpy );
+    CPPUNIT_ASSERT( str2 == str1Cpy );
+    CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+
+  {
+    StackString str1("longer string from stack1 allocator instance for dynamic allocation", stack1);
+    StackString str1Cpy(str1);
+
+    StackString str2("string stack2", stack2);
+    StackString str2Cpy(str2);
+
+    str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1 == str2Cpy );
+    CPPUNIT_ASSERT( str2 == str1Cpy );
+    CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( str2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
 #  endif
 }
 #endif
 
+const string ONE = "string_11111111111111111111111111111";
+const string TWO = "string_11111111111111111111111111111111111111111111111111";
+
+struct StrOne {
+  string partOne;
+  string partTwo;
+};
+
+const StrOne general[2] = {
+  { string(ONE), string(TWO)},
+  { string(ONE), string(TWO)}
+};
+
 void StringTest::capacity()
 {
   string s;
+  string tmp = general[0].partOne;
 
   CPPUNIT_CHECK( s.capacity() >= 0 );
   CPPUNIT_CHECK( s.capacity() < s.max_size() );

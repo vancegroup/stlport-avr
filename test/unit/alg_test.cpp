@@ -1,8 +1,11 @@
-#include <slist>
 #include <list>
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#  include <slist>
+#endif
 #include <deque>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -41,10 +44,12 @@ void AlgTest::min_max()
   char c = max('a', 'z');
   CPPUNIT_ASSERT( c == 'z' );
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   c = min('a', 'z', greater<char>());
   CPPUNIT_ASSERT( c == 'z' );
   i = max(4, 7, greater<int>());
   CPPUNIT_ASSERT( i == 4 );
+#endif
 }
 
 void AlgTest::count_test()
@@ -54,7 +59,7 @@ void AlgTest::count_test()
     int i[] = { 1, 4, 2, 8, 2, 2 };
     n = count(i, i + 6, 2);
     CPPUNIT_ASSERT(n==3);
-#if !defined (_STLP_NO_ANACHRONISMS)
+#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
     n = 0;
     count(i, i + 6, 2, n);
     CPPUNIT_ASSERT(n==3);
@@ -71,7 +76,7 @@ void AlgTest::count_test()
     i.push_back(2);
     n = count(i.begin(), i.end(), 2);
     CPPUNIT_ASSERT(n==3);
-#if !defined (_STLP_NO_ANACHRONISMS)
+#if defined (STLPORT) && !defined (_STLP_NO_ANACHRONISMS)
     n = 0;
     count(i.begin(), i.end(), 2, n);
     CPPUNIT_ASSERT(n==3);
@@ -113,6 +118,7 @@ void AlgTest::search_n_test()
 {
   int ints[] = {0, 1, 2, 3, 3, 4, 4, 4, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5};
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   //search_n
   //Forward iterator
   {
@@ -122,6 +128,7 @@ void AlgTest::search_n_test()
     CPPUNIT_ASSERT( *(slit++) == 2 );
     CPPUNIT_ASSERT( *slit == 2 );
   }
+#endif
 
   //Bidirectionnal iterator
   {
@@ -144,6 +151,7 @@ void AlgTest::search_n_test()
     CPPUNIT_ASSERT( *dit == 4 );
   }
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   //search_n with predicate
   //Forward iterator
   {
@@ -153,6 +161,7 @@ void AlgTest::search_n_test()
     CPPUNIT_ASSERT( *(slit++) > 1 );
     CPPUNIT_ASSERT( *slit > 2 );
   }
+#endif
 
   //Bidirectionnal iterator
   {

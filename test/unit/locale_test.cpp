@@ -2,6 +2,7 @@
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 #  include <locale>
+#  include <stdexcept>
 //#  include <iostream>
 
 #  include "cppunit/cppunit_proxy.h"

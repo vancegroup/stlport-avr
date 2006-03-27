@@ -1,10 +1,12 @@
 #include <vector>
 
-#include "cppunit/cppunit_proxy.h"
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#  include "cppunit/cppunit_proxy.h"
+
+#  if defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 //
 // TestCase class
@@ -64,3 +66,5 @@ void BvectorTest::bvec1()
   bb[3] &= 1;
   CPPUNIT_ASSERT(!((bb[0] != 0) || (bb[1] != 0) || (bb[2] != 1) || (bb[3] != 0)));
 }
+
+#endif

@@ -43,6 +43,10 @@
 #  include <stl/_cstring.h>
 #endif
 
+#ifndef _STLP_INTERNAL_ALGOBASE_H
+#  include <stl/_algobase.h>
+#endif
+
 #ifndef __THROW_BAD_ALLOC
 #  if !defined(_STLP_USE_EXCEPTIONS)
 #    ifndef _STLP_INTERNAL_CSTDIO
@@ -603,6 +607,22 @@ struct __type_traits<allocator<wchar_t> > : _STLP_PRIV __alloc_type_traits<wchar
 _STLP_TEMPLATE_NULL
 struct __type_traits<allocator<void*> > : _STLP_PRIV __alloc_type_traits<void*> {};
 #  endif
+#endif
+
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+/* We need to define the following swap implementation for allocator with state
+ * as those allocators might have implement a special swap overload to correctly
+ * move datas from a implementation to the oher, _STLP_alloc_proxy should not break
+ * this implementation.
+ */
+template <class _Value, class _Tp, class _MaybeReboundAlloc>
+inline void _STLP_CALL swap(_STLP_PRIV _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc>& __x,
+                            _STLP_PRIV _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc>& __y) {
+  _MaybeReboundAlloc &__base_x = __x;
+  _MaybeReboundAlloc &__base_y = __y;
+  _STLP_STD::swap(__base_x, __base_y);
+  _STLP_STD::swap(__x._M_data, __y._M_data);
+}
 #endif
 
 _STLP_END_NAMESPACE
