@@ -21,8 +21,8 @@
 
 // Define char_traits
 
-#if !defined(_STLP_CSTDDEF)
-#  include <cstddef>
+#ifndef _STLP_INTERNAL_CSTDDEF
+#  include <stl/_cstddef.h>
 #endif
 
 #ifndef _STLP_INTERNAL_CSTRING
