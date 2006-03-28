@@ -10,6 +10,24 @@
 	* stlport/stl/type_traits.h, type_manip.h: Patch from Eric Sanford
 	for Borland compiler to fix _OKToMemCpy feature.
 
+	* stlport/stl/_alloc.h: Replace swap function for _STLP_alloc_proxy
+	by a member method, it is more portable.
+
+	* stlport/stl/_bvector.h, _deque.h, _list.h, _slist.h, _string_base.h
+	_tree.h: Replaced called to std::swap for _STLP_alloc_proxy instances
+	by calls to member swap method.
+
+	* test/unit/hash_test.cpp: Ignore test rather than hide it.
+
+	* test/unit/map_test.cpp: Fixed StackAllocator instanciation.
+
+	* test/unit/stack_allocator.h: Add std::swap overload for
+	StackAllocator<pair<const int, int>>.
+
+	* test/unit/string_test.cpp: Ignore tests rather than hide it.
+
+	* test/unit/unordered_test.cpp: Ditto.
+
 2006-03-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_stdexcept_base.h: New internal header with
