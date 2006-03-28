@@ -358,7 +358,12 @@ _STLP_DEFINE_TYPE_TRAITS_FOR(long double);
 
 template <class _Tp1, class _Tp2>
 struct _OKToMemCpy {
+#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
+#else
+  typedef typename _UnConstPtr<_Tp1*>::_Type _Tp3;
+  typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
+#endif
   typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _Type;
   static _Type _Answer() { return _Type(); }

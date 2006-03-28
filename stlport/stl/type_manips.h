@@ -201,6 +201,17 @@ struct _UnConstType<const _Tp> { typedef _Tp _Type; };
 template <class _Tp>
 struct _UnVolatileType<volatile _Tp> { typedef _Tp _Type; };
 #    endif
+
+#    if defined(__BORLANDC__) && (__BORLANDC__ == 0x560)
+template<class _Tp>
+struct _UnConstPtr { typedef _Tp _Type; };
+
+template<class _Tp>
+struct _UnConstPtr<_Tp*> { typedef _Tp _Type; };
+
+template<class _Tp>
+struct _UnConstPtr<const _Tp*> { typedef _Tp _Type; };
+#    endif
 #  endif
 
 template <class _Tp1, class _Tp2>
