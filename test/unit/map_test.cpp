@@ -259,10 +259,10 @@ void MapTest::equal_range()
 void MapTest::allocator_with_state()
 {
   char buf1[1024];
-  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
+  StackAllocator<pair<const int, int> > stack1(buf1, buf1 + sizeof(buf1));
 
   char buf2[1024];
-  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
+  StackAllocator<pair<const int, int> > stack2(buf2, buf2 + sizeof(buf2));
 
   {
     typedef map<int, int, less<int>, StackAllocator<pair<const int, int> > > MapInt;
