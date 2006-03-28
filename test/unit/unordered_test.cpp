@@ -1,17 +1,18 @@
 #include <vector>
+#include <algorithm>
+#include <string>
 #if defined (STLPORT)
-#  include <algorithm>
-#  include <string>
 #  include <unordered_map>
 #  include <unordered_set>
+#endif
 
-//#  include <iostream>
+//#include <iostream>
 
-#  include "cppunit/cppunit_proxy.h"
+#include "cppunit/cppunit_proxy.h"
 
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -19,9 +20,9 @@ using namespace std;
 class UnorderedTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(UnorderedTest);
-#  if defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   CPPUNIT_IGNORE;
-#  endif
+#endif
   CPPUNIT_TEST(uset);
   CPPUNIT_TEST(umultiset);
   CPPUNIT_TEST(umap);
@@ -52,7 +53,7 @@ const int NB_ELEMS = 2000;
 //
 void UnorderedTest::uset()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_set<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -97,12 +98,12 @@ void UnorderedTest::uset()
   for (i = 0; i < NB_ELEMS; ++i) {
     CPPUNIT_ASSERT( us_val[i] == i );
   }
-#  endif
+#endif
 }
 
 void UnorderedTest::umultiset()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_multiset<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -136,12 +137,12 @@ void UnorderedTest::umultiset()
     CPPUNIT_ASSERT( us_val[2 * i] == i );
     CPPUNIT_ASSERT( us_val[2 * i + 1] == i );
   }
-#  endif
+#endif
 }
 
 void UnorderedTest::umap()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_map<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -205,12 +206,12 @@ void UnorderedTest::umap()
   for (i = 0; i < NB_ELEMS; ++i) {
     CPPUNIT_ASSERT( us_val[i] == make_pair(i, i) );
   }
-#  endif
+#endif
 }
 
 void UnorderedTest::umultimap()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_multimap<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -247,12 +248,12 @@ void UnorderedTest::umultimap()
     CPPUNIT_ASSERT( us_val[i * 2] == p );
     CPPUNIT_ASSERT( us_val[i * 2 + 1] == p );
   }
-#  endif
+#endif
 }
 
 void UnorderedTest::user_case()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_map<int, string> UnorderedMap1;
   typedef unordered_map<int, UnorderedMap1> UnorderedMap2;
 
@@ -275,12 +276,12 @@ void UnorderedTest::user_case()
 
   body.erase(body.begin(), body.end());
   CPPUNIT_ASSERT( body.empty() );
-#  endif
+#endif
 }
 
 void UnorderedTest::hash_policy()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.max_load_factor() == 1.0f );
@@ -299,12 +300,12 @@ void UnorderedTest::hash_policy()
   size_t bucketsHint = int_uset.bucket_count() + 1;
   int_uset.rehash(bucketsHint);
   CPPUNIT_ASSERT( int_uset.bucket_count() >= bucketsHint );
-#  endif
+#endif
 }
 
 void UnorderedTest::buckets()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.bucket_count() < int_uset.max_bucket_count() );
@@ -322,12 +323,12 @@ void UnorderedTest::buckets()
     bucketSizes += int_uset.bucket_size(i);
   }
   CPPUNIT_ASSERT( bucketSizes == int_uset.size() );
-#  endif
+#endif
 }
 
 void UnorderedTest::equal_range()
 {
-#  if !defined (__DMC__)
+#if !defined (STLPORT) || defined (__DMC__)
   typedef unordered_multiset<size_t> umset;
   {
     //General test
@@ -436,8 +437,5 @@ void UnorderedTest::equal_range()
       CPPUNIT_ASSERT( hum.count(magic) == c );
     }
   }
-#  endif
-}
-
 #endif
-
+}

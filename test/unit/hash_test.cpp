@@ -3,27 +3,29 @@
 #include "stack_allocator.h"
 
 #include <vector>
+#include <algorithm>
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  include <algorithm>
 #  include <hash_map>
 #  include <hash_set>
 #  if !defined (__DMC__)
 #    include <rope>
 #  endif
-#  include <string>
+#endif
 
-#  include "cppunit/cppunit_proxy.h"
+#include <string>
 
-#  if defined (__MVS__)
+#include "cppunit/cppunit_proxy.h"
+
+#if defined (__MVS__)
 const char star = 92;
-#  else
+#else
 const char star = 42;
-#  endif
+#endif
 
-#  if defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -31,11 +33,13 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
-#  if defined (__DMC__)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (__DMC__)
   CPPUNIT_IGNORE;
-#  endif
+#endif
   CPPUNIT_TEST(hmap1);
+#if defined (__DMC__)
   CPPUNIT_STOP_IGNORE;
+#endif
   CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
@@ -44,7 +48,9 @@ class HashTest : public CPPUNIT_NS::TestCase
   //CPPUNIT_TEST(equality);
   CPPUNIT_TEST_SUITE_END();
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef hash_multiset<char, hash<char>, equal_to<char> > hmset;
+#endif
 
 protected:
   void hmap1();
@@ -63,7 +69,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 void HashTest::hmap1()
 {
-#  if !defined (__DMC__)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.
@@ -95,11 +101,12 @@ void HashTest::hmap1()
   CPPUNIT_ASSERT( !(ite != cite) );
   CPPUNIT_ASSERT( cite == ite );
   CPPUNIT_ASSERT( !(cite != ite) );
-#  endif
+#endif
 }
 
 void HashTest::hmmap1()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef hash_multimap<char, int, hash<char>,equal_to<char> > mmap;
   mmap m;
   CPPUNIT_ASSERT(m.count('X')==0);
@@ -150,10 +157,12 @@ void HashTest::hmmap1()
   hmap.insert(HMapType::value_type(23, 0));
 
   CPPUNIT_ASSERT( hmap.count(12325) == 2 );
+#endif
 }
 
 void HashTest::hmset1()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   hmset s;
   CPPUNIT_ASSERT( s.count(star) == 0 );
   s.insert(star);
@@ -167,9 +176,11 @@ void HashTest::hmset1()
   CPPUNIT_ASSERT( i != s.end() )
   CPPUNIT_ASSERT( *i == '*' );
   CPPUNIT_ASSERT( s.erase(star) == 2 );
+#endif
 }
 void HashTest::hset2()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   hash_set<int, hash<int>, equal_to<int> > s;
   pair<hash_set<int, hash<int>, equal_to<int> >::iterator, bool> p = s.insert(42);
   CPPUNIT_ASSERT( p.second );
@@ -177,11 +188,13 @@ void HashTest::hset2()
 
   p = s.insert(42);
   CPPUNIT_ASSERT( !p.second );
+#endif
 }
 
 
 void HashTest::insert_erase()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
   typedef pair<string, size_t> val_type;
   {
@@ -205,6 +218,7 @@ void HashTest::insert_erase()
     CPPUNIT_ASSERT( values.erase("bar") == 1 );
     CPPUNIT_ASSERT( values.erase("foo") == 1 );
   }
+#endif
 }
 
 /*
@@ -234,6 +248,7 @@ void HashTest::equality()
 
 void HashTest::allocator_with_state()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   char buf1[2048];
   StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -264,6 +279,5 @@ void HashTest::allocator_with_state()
   }
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
-}
-
 #endif
+}

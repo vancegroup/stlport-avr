@@ -67,18 +67,22 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
   CPPUNIT_TEST(template_expression);
-#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
-  CPPUNIT_TEST(template_wexpression);
-#endif
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-  CPPUNIT_TEST(io);
-#endif
-#if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO)
-#  if defined (__DMC__)
+#if !defined (STLPORT) || defined (_STLP_NO_WCHAR_T)
   CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_TEST(allocator_with_state);
 #endif
+  CPPUNIT_TEST(template_wexpression);
+  CPPUNIT_STOP_IGNORE;
+#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(io);
+  CPPUNIT_STOP_IGNORE;
+#if !defined (STLPORT) || defined (_STLP_NO_CUSTOM_IO) || \
+     defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(allocator_with_state);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(capacity);
   CPPUNIT_TEST_SUITE_END();
 
@@ -800,9 +804,9 @@ void StringTest::template_expression()
   }
 }
 
-#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 void StringTest::template_wexpression()
 {
+#if !defined (STLPORT) || defined (_STLP_NO_WCHAR_T)
   wstring one(L"one"), two(L"two"), three(L"three");
   wstring space(1, L' ');
 
@@ -907,12 +911,12 @@ void StringTest::template_wexpression()
     }
 #  endif
   }
-}
 #endif
+}
 
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 void StringTest::io()
 {
+#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
   string str("STLport");
   {
     ostringstream ostr;
@@ -935,13 +939,13 @@ void StringTest::io()
     CPPUNIT_ASSERT( !istr.fail() && !istr.eof() );
     CPPUNIT_ASSERT( istr_content == "STL" );
   }
-}
 #endif
+}
 
-#if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO)
 void StringTest::allocator_with_state()
 {
-#  if !defined (__DMC__)
+#if !(defined (STLPORT) && defined (_STLP_NO_CUSTOM_IO)) && \
+    !defined (__DMC__)
   char buf1[1024];
   StackAllocator<char> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -979,6 +983,9 @@ void StringTest::allocator_with_state()
 
     str1.swap(str2);
 
+    CPPUNIT_ASSERT( str1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( str2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( str1 == str2Cpy );
     CPPUNIT_ASSERT( str2 == str1Cpy );
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
@@ -997,6 +1004,9 @@ void StringTest::allocator_with_state()
     StackString str2Cpy(str2);
 
     str1.swap(str2);
+
+    CPPUNIT_ASSERT( str1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( str2.get_allocator().swaped() );
 
     CPPUNIT_ASSERT( str1 == str2Cpy );
     CPPUNIT_ASSERT( str2 == str1Cpy );
@@ -1017,6 +1027,9 @@ void StringTest::allocator_with_state()
 
     str1.swap(str2);
 
+    CPPUNIT_ASSERT( str1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( str2.get_allocator().swaped() );
+
     CPPUNIT_ASSERT( str1 == str2Cpy );
     CPPUNIT_ASSERT( str2 == str1Cpy );
     CPPUNIT_ASSERT( str1.get_allocator() == stack2 );
@@ -1025,37 +1038,20 @@ void StringTest::allocator_with_state()
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
   stack1.reset(); stack2.reset();
-
-#  endif
-}
 #endif
-
-const string ONE = "string_11111111111111111111111111111";
-const string TWO = "string_11111111111111111111111111111111111111111111111111";
-
-struct StrOne {
-  string partOne;
-  string partTwo;
-};
-
-const StrOne general[2] = {
-  { string(ONE), string(TWO)},
-  { string(ONE), string(TWO)}
-};
+}
 
 void StringTest::capacity()
 {
   string s;
-  string tmp = general[0].partOne;
 
   CPPUNIT_CHECK( s.capacity() >= 0 );
   CPPUNIT_CHECK( s.capacity() < s.max_size() );
   CPPUNIT_CHECK( s.capacity() >= s.size() );
-#ifdef _STLP_USE_SHORT_STRING_OPTIM
 
-# ifndef _STLP_SHORT_STRING_SZ
-#   define _STLP_SHORT_STRING_SZ 16 // see stlport/stl/_string_base.h
-# endif
+#ifndef _STLP_SHORT_STRING_SZ
+#  define _STLP_SHORT_STRING_SZ 16 // see stlport/stl/_string_base.h
+#endif
 
   for ( int i = 0; i < _STLP_SHORT_STRING_SZ + 2; ++i ) {
     s += ' ';
@@ -1063,5 +1059,5 @@ void StringTest::capacity()
     CPPUNIT_CHECK( s.capacity() < s.max_size() );
     CPPUNIT_CHECK( s.capacity() >= s.size() );
   }
-#endif
 }
+
