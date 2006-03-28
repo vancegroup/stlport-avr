@@ -14,7 +14,7 @@
 
 #define _STLP_PROLOG_HEADER_INCLUDED
 
-#ifndef _STLP_CONFIG_H
+#ifndef _STLP_FEATURES_H
 #  include <stl/config/features.h>
 #endif
 
