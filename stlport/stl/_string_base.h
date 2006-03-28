@@ -190,7 +190,7 @@ protected:
         _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
         __s._M_finish = __s._M_buffers._M_static_buf + (__tmp - _M_buffers._M_static_buf);
         //We need to swap _M_end_of_storage for allocators with state:
-        _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+        _M_end_of_storage.swap(__s._M_end_of_storage);
         _M_end_of_storage._M_data = _M_buffers._M_static_buf + _DEFAULT_SIZE;
         __s._M_end_of_storage._M_data = __s._M_buffers._M_static_buf + _DEFAULT_SIZE;
       } else {
@@ -204,7 +204,7 @@ protected:
       _Tp *__tmp_end_data = _M_end_of_storage._M_data;
       _M_buffers = __s._M_buffers;
       //We need to swap _M_end_of_storage for allocators with state:
-      _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+      _M_end_of_storage.swap(__s._M_end_of_storage);
       _M_end_of_storage._M_data = _M_buffers._M_static_buf + _DEFAULT_SIZE;
       _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
       __s._M_buffers._M_dynamic_buf = __tmp;
@@ -213,12 +213,12 @@ protected:
     }
     else {
       _STLP_STD::swap(_M_buffers._M_dynamic_buf, __s._M_buffers._M_dynamic_buf);
-      _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+      _M_end_of_storage.swap(__s._M_end_of_storage);
       _STLP_STD::swap(_M_finish, __s._M_finish);
     }
 #else
     _STLP_STD::swap(_M_start, __s._M_start);
-    _STLP_STD::swap(_M_end_of_storage, __s._M_end_of_storage);
+    _M_end_of_storage.swap(__s._M_end_of_storage);
     _STLP_STD::swap(_M_finish, __s._M_finish);
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }

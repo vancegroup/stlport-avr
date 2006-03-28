@@ -566,7 +566,7 @@ public:
     _STLP_STD::swap(this->_M_start, __x._M_start);
     _STLP_STD::swap(this->_M_finish, __x._M_finish);
     _STLP_STD::swap(this->_M_map, __x._M_map);
-    _STLP_STD::swap(this->_M_map_size, __x._M_map_size);
+    this->_M_map_size.swap(__x._M_map_size);
   }
 
 public:

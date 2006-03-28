@@ -440,7 +440,7 @@ public:
       return;
     }
     else {
-      _STLP_STD::swap(this->_M_header, __t._M_header);
+      this->_M_header.swap(__t._M_header);
       this->_M_rebind(&__t._M_header._M_data);
       __t._M_rebind(&this->_M_header._M_data);
     }

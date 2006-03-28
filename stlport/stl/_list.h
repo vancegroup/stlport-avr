@@ -395,7 +395,7 @@ public:
     else if (this->empty()) {
       this->splice(this->begin(), __x);
     } else {
-      _STLP_STD::swap(this->_M_node, __x._M_node);
+      this->_M_node.swap(__x._M_node);
       _STLP_STD::swap(this->_M_node._M_data._M_prev->_M_next, __x._M_node._M_data._M_prev->_M_next);
     }
   }

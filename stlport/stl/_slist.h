@@ -424,7 +424,7 @@ public:
   bool empty() const { return this->_M_head._M_data._M_next == 0; }
 
   void swap(_Self& __x) {
-    _STLP_STD::swap(this->_M_head, __x._M_head);
+    this->_M_head.swap(__x._M_head);
   }
 
 public:

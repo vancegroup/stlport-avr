@@ -691,7 +691,7 @@ public:
   void swap(__BVECTOR_QUALIFIED& __x) {
     _STLP_STD::swap(this->_M_start, __x._M_start);
     _STLP_STD::swap(this->_M_finish, __x._M_finish);
-    _STLP_STD::swap(this->_M_end_of_storage, __x._M_end_of_storage);
+    this->_M_end_of_storage.swap(__x._M_end_of_storage);
   }
   iterator insert(iterator __position, bool __x = bool()) {
     difference_type __n = __position - begin();
