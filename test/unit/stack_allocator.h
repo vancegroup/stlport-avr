@@ -133,37 +133,36 @@ private:
   State m_state;
 };
 
-#if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
-#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 namespace std {
-#  endif
+#endif
+
+#  if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>&
 __stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>
 __stl_alloc_create(const StackAllocator<_Tp1>&, const _Tp2*) { return StackAllocator<_Tp2>(); }
-#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
-}
 #  endif
-#endif
 
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
-namespace std {
-#endif
-#if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#  if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   template <class _Tp>
   inline void swap(StackAllocator<_Tp>& __a, StackAllocator<_Tp>& __b)
   { __a.swap(__b); }
-#else
+#  else
 //TheFollowing overloads depends on instanciation, if new unit tests are written
 //with new StackAllocator instanciations associated swap overload should also be
 //written
-  inline void swap(StackAllocator<int>& __a, StackAllocator<int>& __b)
-  { __a.swap(__b); }
-  inline void swap(StackAllocator<char>& __a, StackAllocator<char>& __b)
-  { __a.swap(__b); }
-#endif
+inline void swap(StackAllocator<int>& __a, StackAllocator<int>& __b)
+{ __a.swap(__b); }
+inline void swap(StackAllocator<char>& __a, StackAllocator<char>& __b)
+{ __a.swap(__b); }
+inline void swap(StackAllocator<pair<const int, int> >& __a,
+                 StackAllocator<pair<const int, int> >& __b)
+{ __a.swap(__b); }
+#  endif
+
 #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
 #endif
