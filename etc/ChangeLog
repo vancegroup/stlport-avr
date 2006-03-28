@@ -1,4 +1,16 @@
-2006-03-21  Francois Dumont  <dums@stlport...>
+2006-03-28  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_prolog.h: Fix macro check before inclusion of
+	features.h.
+
+	* stlport/stl/char_traits.h: Fixed include of cstddef, in STLport
+	code, Standard headers should never be included directly, their
+	stlport/stl/_xxx.h counterpart should be used.
+
+	* stlport/stl/type_traits.h, type_manip.h: Patch from Eric Sanford
+	for Borland compiler to fix _OKToMemCpy feature.
+
+2006-03-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_stdexcept_base.h: New internal header with
 	__Named_exception implementation, improve segregation between
