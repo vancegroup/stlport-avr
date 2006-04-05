@@ -65,6 +65,12 @@ struct less : public binary_function<_Tp,_Tp,bool>
 #endif
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x < __y; }
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+  //This is for a very special compiler config: partial template specialization
+  //but no template function partial ordering.
+  void swap(less<_Tp>&) {}
+#endif
 };
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
