@@ -26,7 +26,6 @@
 #    define _STLP_DONT_POP_HEADER_ID
 #  endif
 
-#  if !defined (_STLP_WINCE)
 #    if defined(_STLP_WCE_EVC3)
 struct _exception;
 #    endif
@@ -50,8 +49,6 @@ struct _exception;
 #        define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
 #      endif
 #    endif
-
-#  endif /* WINCE */
 
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x264)
 #    if !defined (_STLP_DONT_POP_HEADER_ID)

@@ -20,7 +20,7 @@
 #  define _STLP_DONT_POP_HEADER_ID
 #endif
 
-#if !defined(_STLP_WINCE) && !defined(_STLP_NO_NEW_HEADER)
+#if !defined(_STLP_NO_NEW_HEADER)
 #  if defined (__BORLANDC__)
 #    include <new>
 #  elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 800 && !defined(_MSC_VER))
@@ -32,7 +32,7 @@
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(new.h)
 #    endif
 #  endif
-#endif /* STL_WINCE */
+#endif /* !defined(_STLP_NO_NEW_HEADER) */
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x848)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)

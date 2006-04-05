@@ -20,7 +20,7 @@
 #  define _STLP_DONT_POP_HEADER_ID
 #endif
 
-#if !defined (_STLP_WCE_EVC3) && !defined (_STLP_WINCE) && !defined (_STLP_NO_WCHAR_T)
+#if !defined (_STLP_WCE_EVC3) && !defined (_STLP_NO_WCHAR_T)
 
 #  if defined (__BORLANDC__)
 /*
@@ -72,7 +72,7 @@ wchar_t *wcspbrk( const wchar_t *_wc, const wchar_t *_wc2 );
 #    include _STLP_NATIVE_C_HEADER(wchar.h)
 #  endif
 
-#endif
+#endif /* !defined (_STLP_WCE_EVC3) && !defined (_STLP_NO_WCHAR_T) */
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x278)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)
