@@ -275,10 +275,55 @@ void ListTest::allocator_with_state()
 
   typedef list<int, StackAllocator<int> > ListInt;
   {
+    //Swap with both list non empty
     ListInt lint1(10, 0, stack1);
     ListInt lint1Cpy(lint1);
 
     ListInt lint2(10, 1, stack2);
+    ListInt lint2Cpy(lint2);
+
+    lint1.swap(lint2);
+
+    CPPUNIT_ASSERT( lint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( lint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( lint1 == lint2Cpy );
+    CPPUNIT_ASSERT( lint2 == lint1Cpy );
+    CPPUNIT_ASSERT( lint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( lint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+  {
+    //Swap with empty calle list
+    ListInt lint1(10, 0, stack1);
+    ListInt lint1Cpy(lint1);
+
+    ListInt lint2(stack2);
+    ListInt lint2Cpy(lint2);
+
+    lint1.swap(lint2);
+
+    CPPUNIT_ASSERT( lint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( lint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( lint1 == lint2Cpy );
+    CPPUNIT_ASSERT( lint2 == lint1Cpy );
+    CPPUNIT_ASSERT( lint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( lint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+  {
+    //Swap with empty caller list
+    ListInt lint1(stack1);
+    ListInt lint1Cpy(lint1);
+
+    ListInt lint2(10, 0, stack2);
     ListInt lint2Cpy(lint2);
 
     lint1.swap(lint2);

@@ -341,6 +341,48 @@ void SlistTest::allocator_with_state()
   CPPUNIT_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
+  {
+    SlistInt slint1(stack1);
+    SlistInt slint1Cpy(slint1);
+
+    SlistInt slint2(10, 1, stack2);
+    SlistInt slint2Cpy(slint2);
+
+    slint1.swap(slint2);
+
+    CPPUNIT_ASSERT( slint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( slint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( slint1 == slint2Cpy );
+    CPPUNIT_ASSERT( slint2 == slint1Cpy );
+    CPPUNIT_ASSERT( slint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( slint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+  {
+    SlistInt slint1(10, 0, stack1);
+    SlistInt slint1Cpy(slint1);
+
+    SlistInt slint2(stack2);
+    SlistInt slint2Cpy(slint2);
+
+    slint1.swap(slint2);
+
+    CPPUNIT_ASSERT( slint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( slint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( slint1 == slint2Cpy );
+    CPPUNIT_ASSERT( slint2 == slint1Cpy );
+    CPPUNIT_ASSERT( slint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( slint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_CHECK( stack1.ok() );
+  CPPUNIT_CHECK( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
   //splice(iterator, slist)
   {
     SlistInt slint1(10, 0, stack1);

@@ -268,11 +268,12 @@ void SetTest::allocator_with_state()
   char buf2[1024];
   StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
+  int i;
+  typedef set<int, less<int>, StackAllocator<int> > SetInt;
+  less<int> intLess;
+
   {
-    typedef set<int, less<int>, StackAllocator<int> > SetInt;
-    less<int> intLess;
     SetInt sint1(intLess, stack1);
-    int i;
     for (i = 0; i < 5; ++i)
       sint1.insert(i);
     SetInt sint1Cpy(sint1);
@@ -294,4 +295,51 @@ void SetTest::allocator_with_state()
   }
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+  {
+    SetInt sint1(intLess, stack1);
+    SetInt sint1Cpy(sint1);
+
+    SetInt sint2(intLess, stack2);
+    for (i = 0; i < 10; ++i)
+      sint2.insert(i);
+    SetInt sint2Cpy(sint2);
+
+    sint1.swap(sint2);
+
+    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( sint1 == sint2Cpy );
+    CPPUNIT_ASSERT( sint2 == sint1Cpy );
+    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
+
+  {
+    SetInt sint1(intLess, stack1);
+    for (i = 0; i < 10; ++i)
+      sint1.insert(i);
+    SetInt sint1Cpy(sint1);
+
+    SetInt sint2(intLess, stack2);
+    SetInt sint2Cpy(sint2);
+
+    sint1.swap(sint2);
+
+    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
+    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+
+    CPPUNIT_ASSERT( sint1 == sint2Cpy );
+    CPPUNIT_ASSERT( sint2 == sint1Cpy );
+    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
+    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+  }
+  CPPUNIT_ASSERT( stack1.ok() );
+  CPPUNIT_ASSERT( stack2.ok() );
+  stack1.reset(); stack2.reset();
 }
