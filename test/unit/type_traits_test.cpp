@@ -132,7 +132,12 @@ int are_same_uncv_types(_Tp1, _Tp2) {
 #if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 template <typename _From, typename _To>
 int is_convertible(_From, _To) {
-  typedef typename _IsConvertibleType<_From, _To>::_Type _Ret;
+#  if !defined(__BORLANDC__)
+   typedef typename _IsConvertibleType<_From, _To>::_Type _Ret;
+#  else
+  enum { _Is = _IsConvertibleType<_From, _To>::value };
+  typedef typename __bool2type<_Is>::_Ret _Ret;
+#  endif
   return type_to_value(_Ret());
 }
 #endif
