@@ -97,7 +97,7 @@ inline bool _STLP_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2
 { return !(__x < __y); }
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
-#if defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_NO_EXTENSIONS) && !defined (__BORLANDC__) && !defined (__DMC__)
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
 template <class _T1, class _T2, int _Sz>
 inline pair<_T1, _T2 const*> make_pair(_T1 const& __x,
                                        _T2 const (&__y)[_Sz])
@@ -159,14 +159,12 @@ struct __type_traits<pair<_T1, _T2> > {
                           typename _T2Traits::has_trivial_assignment_operator>::_Ret has_trivial_assignment_operator;
   typedef typename _Land2<typename _T1Traits::has_trivial_destructor,
                           typename _T2Traits::has_trivial_destructor>::_Ret has_trivial_destructor;
-  typedef __false_type   is_POD_type;
+  typedef __false_type is_POD_type;
 };
 
-#  if !defined (__BORLANDC__)
 template <class _T1, class _T2>
 struct __move_traits<pair<_T1, _T2> >
   : _STLP_PRIV __move_traits_help2<_T1, _T2> {};
-#  endif
 
 _STLP_END_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
