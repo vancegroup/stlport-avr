@@ -388,12 +388,26 @@ public:
   reference back()              { return *(--end()); }
   const_reference back() const  { return *(--end()); }
 
+private:
+  void _M_swap_aux(_Self& __x) {
+    __x._M_node._M_swap_alloc(this->_M_node);
+    __x._M_node._M_data._M_next = this->_M_node._M_data._M_next;
+    __x._M_node._M_data._M_next->_M_prev = &__x._M_node._M_data;
+    __x._M_node._M_data._M_prev = this->_M_node._M_data._M_prev;
+    __x._M_node._M_data._M_prev->_M_next = &__x._M_node._M_data;
+    this->_M_empty_initialize();
+  }
+
+public:
   void swap(_Self& __x) {
     if (__x.empty()) {
-      __x.splice(__x.begin(), *this);
+      if (this->empty()) {
+        return;
+      }
+      this->_M_swap_aux(__x);
     }
     else if (this->empty()) {
-      this->splice(this->begin(), __x);
+      __x._M_swap_aux(*this);
     } else {
       this->_M_node.swap(__x._M_node);
       _STLP_STD::swap(this->_M_node._M_data._M_prev->_M_next, __x._M_node._M_data._M_prev->_M_next);

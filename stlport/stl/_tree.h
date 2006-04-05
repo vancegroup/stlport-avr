@@ -431,7 +431,7 @@ public:
   void swap(_Self& __t) {
     if (__t.empty()) {
       if (this->empty()) return;
-      __t._M_header = this->_M_header;
+      __t._M_header.swap(this->_M_header);
       __t._M_rebind(&this->_M_header._M_data);
       this->_M_empty_initialize();
     }

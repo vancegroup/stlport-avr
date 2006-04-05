@@ -1671,12 +1671,8 @@ public:
   }
 
   void swap(_Self& __b) {
-    _STLP_ASSERT(get_allocator() == __b.get_allocator())
-    _RopeRep* __tmp = _M_tree_ptr._M_data;
-    _M_tree_ptr._M_data = __b._M_tree_ptr._M_data;
-    __b._M_tree_ptr._M_data = __tmp;
+    _M_tree_ptr.swap(__b._M_tree_ptr);
   }
-
 
 protected:
   // Result is included in refcount.
