@@ -55,8 +55,10 @@ locale::id money_put<_CharT, _OutputIterator>::id;
  */
 template <>
 _STLP_DECLSPEC locale::id money_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+/*
 template <>
 _STLP_DECLSPEC locale::id money_get<char, const char*>::id;
+*/
 
 template <>
 _STLP_DECLSPEC locale::id money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
@@ -79,25 +81,25 @@ _STLP_DECLSPEC locale::id money_put<wchar_t, wchar_t*>::id;
 
 #else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
-typedef money_get<char, const char*> money_get_char;
-typedef money_put<char, char*> money_put_char;
+//typedef money_get<char, const char*> money_get_char;
+//typedef money_put<char, char*> money_put_char;
 typedef money_get<char, istreambuf_iterator<char, char_traits<char> > > money_get_char_2;
 typedef money_put<char, ostreambuf_iterator<char, char_traits<char> > > money_put_char_2;
 
-__DECLARE_INSTANCE(locale::id, money_get_char::id, );
-__DECLARE_INSTANCE(locale::id, money_put_char::id, );
+//__DECLARE_INSTANCE(locale::id, money_get_char::id, );
+//__DECLARE_INSTANCE(locale::id, money_put_char::id, );
 __DECLARE_INSTANCE(locale::id, money_get_char_2::id, );
 __DECLARE_INSTANCE(locale::id, money_put_char_2::id, );
 
 #  ifndef _STLP_NO_WCHAR_T
 
-typedef money_get<wchar_t, const wchar_t*> money_get_wchar_t;
-typedef money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > money_get_wchar_t_2;
+//typedef money_get<wchar_t, const wchar_t*> money_get_wchar_t;
+//typedef money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > money_get_wchar_t_2;
 typedef money_put<wchar_t, wchar_t*> money_put_wchar_t;
 typedef money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > money_put_wchar_t_2;
 
-__DECLARE_INSTANCE(locale::id, money_get_wchar_t::id, );
-__DECLARE_INSTANCE(locale::id, money_put_wchar_t::id, );
+//__DECLARE_INSTANCE(locale::id, money_get_wchar_t::id, );
+//__DECLARE_INSTANCE(locale::id, money_put_wchar_t::id, );
 __DECLARE_INSTANCE(locale::id, money_get_wchar_t_2::id, );
 __DECLARE_INSTANCE(locale::id, money_put_wchar_t_2::id, );
 

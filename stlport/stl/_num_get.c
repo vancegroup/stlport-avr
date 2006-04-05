@@ -449,32 +449,36 @@ locale::id num_get<_CharT, _InputIterator>::id;
  */
 template <>
 _STLP_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
+/*
 template <>
 _STLP_DECLSPEC locale::id num_get<char, const char*>::id;
+*/
 
 #    if !defined (STLP_NO_WCHAR_T)
 template <>
 _STLP_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
+/*
 template <>
 _STLP_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id;
+*/
 #    endif
 
 #  endif /* __CYGWIN__ && _STLP_USE_DYNAMIC_LIB */
 
 #else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
-typedef num_get<char, const char*> num_get_char;
+//typedef num_get<char, const char*> num_get_char;
 typedef num_get<char, istreambuf_iterator<char, char_traits<char> > > num_get_char_2;
 
-__DECLARE_INSTANCE(locale::id, num_get_char::id, );
+//__DECLARE_INSTANCE(locale::id, num_get_char::id, );
 __DECLARE_INSTANCE(locale::id, num_get_char_2::id, );
 
 #  if !defined (_STLP_NO_WCHAR_T)
 
-typedef num_get<wchar_t, const wchar_t*> num_get_wchar_t;
+//typedef num_get<wchar_t, const wchar_t*> num_get_wchar_t;
 typedef num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > > num_get_wchar_t_2;
 
-__DECLARE_INSTANCE(locale::id, num_get_wchar_t::id, );
+//__DECLARE_INSTANCE(locale::id, num_get_wchar_t::id, );
 __DECLARE_INSTANCE(locale::id, num_get_wchar_t_2::id, );
 
 #  endif

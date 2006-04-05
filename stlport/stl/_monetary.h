@@ -431,8 +431,8 @@ protected:
 # if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS money_get<char, istreambuf_iterator<char, char_traits<char> > >;
 _STLP_EXPORT_TEMPLATE_CLASS money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
-// _STLP_EXPORT_TEMPLATE_CLASS money_get<char, const char* >;
-// _STLP_EXPORT_TEMPLATE_CLASS money_put<char, char* >;
+//_STLP_EXPORT_TEMPLATE_CLASS money_get<char, const char* >;
+//_STLP_EXPORT_TEMPLATE_CLASS money_put<char, char* >;
 #  if ! defined (_STLP_NO_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
