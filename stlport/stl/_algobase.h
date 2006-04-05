@@ -79,8 +79,13 @@ _STLP_MOVE_TO_STD_NAMESPACE
 // swap and iter_swap
 template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
-#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#  if !defined(__BORLANDC__)
   typedef typename _SwapImplemented<_Tp>::_Ret _Implemented;
+#  else
+  enum { _Is = _SwapImplemented<_Tp>::_Is };
+  typedef typename __bool2type<_Is>::_Ret _Implemented;
+#  endif
   _STLP_PRIV __swap_aux(__a, __b, _Implemented());
 #else
   _Tp __tmp = __a;
