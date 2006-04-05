@@ -28,6 +28,7 @@ namespace CPPUNIT_NS
   public:
     virtual ~Reporter() {}
     virtual void error(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
+    virtual void failure(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
     virtual void message( const char * /*msg*/ ) {}
     virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool /*ignored*/) {}
     virtual void printSummary() {}
@@ -46,14 +47,20 @@ namespace CPPUNIT_NS
 
   class TestCase : public TestFixture {
   public:
-    TestCase() { registerTestCase(this); }
-    virtual ~TestCase() {}
+    TestCase() { m_failed = false; registerTestCase(this); }
 
     static int run(Reporter *in_reporter = 0, const char *in_testName = "", bool invert = false);
     int numErrors() { return m_numErrors; }
     static void registerTestCase(TestCase *in_testCase);
 
     virtual void myRun(const char * /*in_name*/, bool /*invert*/ = false) {}
+
+    virtual void failure(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
+      m_failed = true;
+      if (m_reporter) {
+        m_reporter->failure(in_macroName, in_macro, in_file, in_line);
+      }
+    }
 
     virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
       ++m_numErrors;
@@ -97,6 +104,11 @@ namespace CPPUNIT_NS
       return true;
     }
 
+    void tearDown() {
+      if (m_failed)
+        ++m_numErrors;
+    }
+
   protected:
     static int m_numErrors;
     static int m_numTests;
@@ -104,6 +116,7 @@ namespace CPPUNIT_NS
   private:
     static TestCase *m_root;
     TestCase *m_next;
+    bool m_failed;
 
     static Reporter *m_reporter;
   };
@@ -156,7 +169,7 @@ namespace CPPUNIT_NS
 
 #define CPPUNIT_CHECK(X) \
   if (!(X)) { \
-    Base::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__); \
+    Base::failure("CPPUNIT_CHECK", #X, __FILE__, __LINE__); \
   }
 
 #define CPPUNIT_ASSERT(X) \
