@@ -16,7 +16,7 @@
 #ifndef _STLP_INTERNAL_CWCHAR
 #define _STLP_INTERNAL_CWCHAR
 
-#if !defined (_STLP_WINCE) && !defined (_STLP_WCE_EVC3)
+#if !defined (_STLP_WCE_EVC3)
 
 #  if defined (__GNUC__)
 #    include _STLP_NATIVE_CPP_C_HEADER(cstddef)
@@ -44,7 +44,7 @@ typedef _BSD_WINT_T_ wint_t;
 #    endif /* __OpenBSD__ */
 #  elif defined (__MWERKS__) && defined (N_PLAT_NLM)
 #    include <wchar.h>
-#  else 
+#  else
 #    include _STLP_NATIVE_C_HEADER(wchar.h)
 
 #    if defined (__sun) && (defined (_XOPEN_SOURCE) || (_XOPEN_VERSION - 0 == 4))
@@ -95,7 +95,7 @@ namespace std {
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
 
 #    if defined (__SUNPRO_CC) && !defined (_STLP_HAS_NO_NEW_C_HEADERS)
-using _STLP_VENDOR_CSTD::wint_t; 
+using _STLP_VENDOR_CSTD::wint_t;
 #    endif
 
 _STLP_BEGIN_NAMESPACE
@@ -272,6 +272,6 @@ _STLP_END_NAMESPACE
 #  undef _STLP_WCHAR_SUNPRO_EXCLUDE
 #  undef _STLP_WCHAR_MSL_EXCLUDE
 
-#  endif /* !defined(_STLP_WINCE) && !defined(_STLP_WCE_EVC3) */
+#  endif /* !defined(_STLP_WCE_EVC3) */
 
 #endif /* _STLP_INTERNAL_CWCHAR */

@@ -15,7 +15,7 @@
 #  define _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
 #  if defined (__BORLANDC__)
 #    define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(*(*this)); }
-#  elif defined ( _STLP_WINCE ) || defined(__WATCOMC__)
+#  elif defined(__WATCOMC__)
 #    define _STLP_DEFINE_ARROW_OPERATOR pointer operator->() const { reference x = operator*(); return &x; }
 #  else
 #    define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }

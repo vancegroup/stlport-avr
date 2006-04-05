@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1999 
+ * Copyright (c) 1999
  * Boris Fomitchev
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
  *
- * Permission to use or copy this software for any purpose is hereby granted 
+ * Permission to use or copy this software for any purpose is hereby granted
  * without fee, provided the above notices are retained on all copies.
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
@@ -16,53 +16,51 @@
 #ifndef _STLP_INTERNAL_CSTDIO
 #define _STLP_INTERNAL_CSTDIO
 
-#if !defined (_STLP_WINCE)
+#if defined (__Lynx__)
+#  include _STLP_NATIVE_C_HEADER(stdarg.h)
+#endif
 
-#  if defined (__Lynx__)
-#    include _STLP_NATIVE_C_HEADER(stdarg.h)
+#if defined (_STLP_USE_NEW_C_HEADERS)
+#  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+#else
+#  include _STLP_NATIVE_C_HEADER(stdio.h)
+#endif
+
+#if (defined (__MWERKS__) && !defined (N_PLAT_NLM))  || defined (__BORLANDC__)
+#  undef stdin
+#  undef stdout
+#  undef stderr
+#  if defined (__MWERKS__)
+#  define stdin  	(&_STLP_VENDOR_CSTD::__files[0])
+#  define stdout	(&_STLP_VENDOR_CSTD::__files[1])
+#  define stderr	(&_STLP_VENDOR_CSTD::__files[2])
+#  elif defined (__BORLANDC__)
+#    define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
+#    define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
+#    define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
 #  endif
+#endif
 
-#  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(cstdio)
-#  else
-#    include _STLP_NATIVE_C_HEADER(stdio.h)
-#  endif
-
-#  if (defined (__MWERKS__) && !defined (N_PLAT_NLM))  || defined (__BORLANDC__)
-#    undef stdin
-#    undef stdout
-#    undef stderr
-#    if defined (__MWERKS__)
-#    define stdin  	(&_STLP_VENDOR_CSTD::__files[0])
-#    define stdout	(&_STLP_VENDOR_CSTD::__files[1])
-#    define stderr	(&_STLP_VENDOR_CSTD::__files[2])
-#    elif defined (__BORLANDC__)
-#      define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
-#      define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
-#      define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
-#    endif
-#  endif
-
-#  if ((defined (_STLP_MSVC) || defined (__ICL)) && (_MSC_VER < 1400)) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
+#if ((defined (_STLP_MSVC) || defined (__ICL)) && (_MSC_VER < 1400)) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
 { return _STLP_VENDOR_CSTD::_vsnprintf(s1, n, s2, v); }
-#  endif
+#endif
 
-#  if defined (_STLP_IMPORT_VENDOR_CSTD )
+#if defined (_STLP_IMPORT_VENDOR_CSTD )
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::FILE;
 using _STLP_VENDOR_CSTD::fpos_t;
 using _STLP_VENDOR_CSTD::size_t;
 
 // undef obsolete macros
-#    undef putc
-#    undef getc
-#    undef getchar
-#    undef putchar
-#    undef feof
-#    undef ferror
+#  undef putc
+#  undef getc
+#  undef getchar
+#  undef putchar
+#  undef feof
+#  undef ferror
 
-#    if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
+#  if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 using _STLP_VENDOR_CSTD::clearerr;
 using _STLP_VENDOR_CSTD::fclose;
 using _STLP_VENDOR_CSTD::feof;
@@ -83,12 +81,12 @@ using _STLP_VENDOR_CSTD::fsetpos;
 using _STLP_VENDOR_CSTD::ftell;
 using _STLP_VENDOR_CSTD::fwrite;
 
-#      if  !(defined (__IBMCPP__) && (__IBMCPP__ >= 500))
+#    if  !(defined (__IBMCPP__) && (__IBMCPP__ >= 500))
  using _STLP_VENDOR_CSTD::getc;
  using _STLP_VENDOR_CSTD::getchar;
  using _STLP_VENDOR_CSTD::putc;
  using _STLP_VENDOR_CSTD::putchar;
-#      endif
+#    endif
 
 using _STLP_VENDOR_CSTD::gets;
 using _STLP_VENDOR_CSTD::perror;
@@ -108,13 +106,12 @@ using _STLP_VENDOR_CSTD::ungetc;
 using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
-#      if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL) || \
-          (defined (__BORLANDC__) && __BORLANDC__ > 0x530))
+#    if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL) || \
+        (defined (__BORLANDC__) && __BORLANDC__ > 0x530))
 using _STLP_VENDOR_CSTD::vsnprintf;
-#      endif
-#    endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */
+#    endif
+#  endif /* _STLP_NO_CSTD_FUNCTION_IMPORTS */
 _STLP_END_NAMESPACE
-#  endif /* _STLP_IMPORT_VENDOR_CSTD */
-#endif
+#endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif /* _STLP_INTERNAL_CSTDIO */
