@@ -41,7 +41,3 @@
 #pragma warning( disable : 4512 ) // assignment operator could not be generated
 #pragma warning( disable : 4571 ) // catch(...) blocks compiled with /EHs do not catch or re-throw Structured Exceptions
 #pragma warning( disable : 4702 ) // unreachable code (appears in release with warning level4)
-
-// dums: This warning, signaling deprecated C functions like strncpy,
-// will have to be fixed one day:
-//#pragma warning( disable : 4996 )
