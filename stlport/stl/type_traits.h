@@ -485,6 +485,9 @@ struct _IsSTLportClass {
 template <class _Tp>
 struct _SwapImplemented {
   typedef typename _IsSTLportClass<_Tp>::_Ret _Ret;
+#  if defined (__BORLANDC__)
+  enum { _Is = _IsSTLportClass<_Tp>::_Is };
+#  endif
 };
 #endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
 
