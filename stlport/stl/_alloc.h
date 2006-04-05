@@ -58,10 +58,9 @@
 #  endif /* !defined(_STLP_USE_EXCEPTIONS) */
 #endif   /* __THROW_BAD_ALLOC */
 
-//# ifndef _STLP_INTERNAL_NEW_HEADER
-//#  include <stl/_new.h>
-//# endif
-#include <new>
+#ifndef _STLP_INTERNAL_NEW_HEADER
+#  include <stl/_new.h>
+#endif
 
 #ifndef _STLP_INTERNAL_CONSTRUCT_H
 #  include <stl/_construct.h>
@@ -542,10 +541,14 @@ public:
    * move datas from an instance to the oher, _STLP_alloc_proxy should not break
    * this mecanism.
    */
-  void swap(_Self& __x) {
+  void _M_swap_alloc(_Self& __x) {
     _MaybeReboundAlloc &__base_this = *this;
     _MaybeReboundAlloc &__base_x = __x;
     _STLP_STD::swap(__base_this, __base_x);
+  }
+
+  void swap(_Self& __x) {
+    _M_swap_alloc(__x);
     _STLP_STD::swap(_M_data, __x._M_data);
   }
 

@@ -23,8 +23,8 @@
 #  include <stl/_cmath.h>
 #endif
 
-#ifndef _STLP_NEW_HEADER
-#  include <new>
+#ifndef _STLP_INTERNAL_NEW
+#  include <stl/_new.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ALGO_H

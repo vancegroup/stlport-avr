@@ -34,7 +34,9 @@
 #  include <stl/_cstring.h>
 #endif
 
-#include <new>
+#ifndef _STLP_INTERNAL_NEW
+#  include <stl/_new.h>
+#endif
 
 #ifndef _STLP_INTERNAL_ITERATOR_BASE_H
 #  include <stl/_iterator_base.h>
