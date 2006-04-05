@@ -148,7 +148,8 @@
  * is only present in the native install but not in STLport.
  *
  */
-#if defined(_STLP_WCE_NET) && !defined(_STLP_NATIVE_INCLUDE_PATH)
+
+#if defined (_STLP_WCE_NET) && !defined (_STLP_NATIVE_INCLUDE_PATH)
 #  if defined (_X86_)
 #    if defined (emulator)
 #      define _STLP_NATIVE_INCLUDE_PATH ../Emulator
@@ -195,6 +196,10 @@
 #    error Unknown SDK.
 #  endif
 #endif
+
+/* Workaround in _windows.h needs native headers access macros
+ * to be defined */
+#include <stl/config/_native_headers.h>
 
 /*
  * eMbedded Visual C++ 3.0 specific settings

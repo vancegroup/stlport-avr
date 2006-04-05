@@ -38,10 +38,8 @@
  *
  */
 
-
 /* Definition of the STLport version informations */
 #include <stl/_stlport_version.h>
-
 
 /* Other macros defined by this file:
 
@@ -86,7 +84,6 @@
 #include <stl/config/compat.h>
 
 /* Common configuration file for this particular installation. */
-
 #include <stl/config/host.h>
 
 /* Operational Environment specific */
@@ -245,40 +242,8 @@
 #  define _STLP_LONG_DOUBLE double
 #endif
 
-#if !defined(_STLP_MAKE_HEADER)
-#  define _STLP_MAKE_HEADER(path, header) <path/header>
-#endif
-
-#if !defined (_STLP_NATIVE_HEADER)
-#  if !defined (_STLP_NATIVE_INCLUDE_PATH)
-#    define _STLP_NATIVE_INCLUDE_PATH ../include
-#  endif
-#  define _STLP_NATIVE_HEADER(header) _STLP_MAKE_HEADER(_STLP_NATIVE_INCLUDE_PATH,header)
-#endif
-
-/* For some compilers, C headers like <stdio.h> are located in separate directory */
-#if !defined (_STLP_NATIVE_C_HEADER)
-#  if !defined (_STLP_NATIVE_C_INCLUDE_PATH)
-#    define _STLP_NATIVE_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
-#  endif
-#  define _STLP_NATIVE_C_HEADER(header)  _STLP_MAKE_HEADER(_STLP_NATIVE_C_INCLUDE_PATH,header)
-#endif
-
-/* For some compilers, C-library headers like <cstdio> are located in separate directory */
-#if !defined (_STLP_NATIVE_CPP_C_HEADER)
-#  if !defined (_STLP_NATIVE_CPP_C_INCLUDE_PATH)
-#    define _STLP_NATIVE_CPP_C_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
-#  endif
-#  define _STLP_NATIVE_CPP_C_HEADER(header)  _STLP_MAKE_HEADER(_STLP_NATIVE_CPP_C_INCLUDE_PATH,header)
-#endif
-
-/* Some compilers locate basic C++ runtime support headers (<new>, <typeinfo>, <exception>) in separate directory */
-#if !defined ( _STLP_NATIVE_CPP_RUNTIME_HEADER )
-#  if !defined (_STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH)
-#    define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH _STLP_NATIVE_INCLUDE_PATH
-#  endif
-#  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header)  _STLP_MAKE_HEADER(_STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH,header)
-#endif
+/* Native headers access macros */
+#include <stl/config/_native_headers.h>
 
 /*  shared library tune-up */
 

@@ -2,12 +2,13 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#include <stl/config/_native_headers.h>
 
-# define _STLP_UINT32_T unsigned int
+#define _STLP_UINT32_T unsigned int
 
-# define _STLP_HAS_NO_NEW_C_HEADERS
-// # define _STLP_VENDOR_GLOBAL_EXCEPT_STD
-# define _STLP_LONG_LONG long long
+#define _STLP_HAS_NO_NEW_C_HEADERS
+// #define _STLP_VENDOR_GLOBAL_EXCEPT_STD
+#define _STLP_LONG_LONG long long
 
 
 //
