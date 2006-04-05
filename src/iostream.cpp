@@ -196,13 +196,11 @@ _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
 #endif
 
 void  _STLP_CALL ios_base::_S_initialize() {
-#if !defined (_STLP_HAS_NO_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE) && \
-    !defined (_STLP_WINCE)
+#if !defined (_STLP_HAS_NO_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
   using _STLP_PRIV stdio_istreambuf;
   using _STLP_PRIV stdio_ostreambuf;
 #endif
   _STLP_TRY {
-#if !defined(_STLP_WINCE)
     istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(0);
 #  ifdef _STLP_REDIRECT_STDSTREAMS
     ofstream* ptr_cout = new(static_cast<void*>(&cout)) ofstream;
@@ -242,7 +240,7 @@ void  _STLP_CALL ios_base::_S_initialize() {
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
-#  endif /*_STLP_WCE_NET*/
+#  endif /* _STLP_REDIRECT_STDSTREAMS */
 
 #  ifndef _STLP_NO_WCHAR_T
     // Run constructors for the four wide stream objects.
@@ -265,7 +263,6 @@ void  _STLP_CALL ios_base::_S_initialize() {
     ptr_wcerr->setf(ios_base::unitbuf);
 
 #  endif /*  _STLP_NO_WCHAR_T */
-#endif /* _STLP_WINCE */
   }
 
   _STLP_CATCH_ALL {}
@@ -323,7 +320,6 @@ void _STLP_CALL ios_base::_S_uninitialize() {
 
 
 bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
-#if !defined(STLP_WINCE)
 #  if !defined (_STLP_HAS_NO_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
   using _STLP_PRIV stdio_istreambuf;
   using _STLP_PRIV stdio_ostreambuf;
@@ -388,9 +384,6 @@ bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
   }
 
   return was_synced;
-#else
-  return false;
-#endif /* _STLP_WINCE */
 }
 
 _STLP_END_NAMESPACE

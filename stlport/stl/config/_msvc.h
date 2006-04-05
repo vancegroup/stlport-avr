@@ -247,23 +247,13 @@ typedef char __stl_char;
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #endif /* 1100 */
 
-// If we are under Windows CE, include appropriate config
-#if defined (UNDER_CE) && (_MSC_VER < 1200)
-    // Microsoft Visual C++ 5 with Windows CE Toolkit;
-    // could also be Visual C++ 6 with toolkit, but we can't detect that.
-    // the Windows CE Toolkit is obsolete, anyway
-#    include <stl/config/stl_wince.h>
-#endif /* UNDER_CE */
-
 #if (_MSC_VER < 1300) // MSVC 6.0 and earlier
 // defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library
 #  define _STLP_USE_ABBREVS
 #endif
 
-#if !defined (_STLP_WINCE)
-#  define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
-#endif
+#define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
+#define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 
 #if !(defined (_STLP_MSVC) && _STLP_MSVC < 1100)
 #  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)

@@ -316,7 +316,7 @@ locale _STLP_CALL locale::global(const locale& L) {
     _Stl_get_global_locale()->_M_impl = _get_Locale_impl(L._M_impl);
 
     // Set the global C locale, if appropriate.
-#if !defined(_STLP_NO_LOCALE_SUPPORT) && !defined(_STLP_WINCE) && !defined(_STLP_WCE_NET)
+#if !defined(_STLP_NO_LOCALE_SUPPORT)
     if (L.name() != _Nameless)
       setlocale(LC_ALL, L.name().c_str());
 #endif

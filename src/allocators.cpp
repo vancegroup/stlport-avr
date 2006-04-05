@@ -56,7 +56,7 @@ extern "C" {
 
 // Specialised debug form of malloc which does not provide "false"
 // memory leaks when run with debug CRT libraries.
-#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1020 && defined (_STLP_DEBUG_ALLOC)) && !defined (_STLP_WINCE) && !defined (_STLP_WCE)
+#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1020 && defined (_STLP_DEBUG_ALLOC)) && !defined (_STLP_WCE)
 #  include <crtdbg.h>
 inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_malloc_dbg(__bytes, _CRT_BLOCK, __FILE__, __LINE__)); }
 inline void __stlp_chunck_free(void* __p) { _free_dbg(__p, _CRT_BLOCK); }
@@ -159,7 +159,7 @@ __oom_handler_type _STLP_CALL __malloc_alloc::set_malloc_handler(__oom_handler_t
 
 /* When STLport is used without multi threaded safety we use the node allocator
  * implementation with locks as locks becomes no-op. The lock free implementation
- * always use system specific atomic operations which are slower than 'normal' 
+ * always use system specific atomic operations which are slower than 'normal'
  * ones.
  */
 #if defined (_STLP_THREADS) && \
@@ -939,7 +939,7 @@ char *_Pthread_alloc_impl::_S_chunk_alloc(size_t __p_size, size_t &__nobjs, _Pth
       {
         const int __cache_line_size = 128;  // probable upper bound
         __bytes_to_get &= ~(__cache_line_size-1);
-        _S_start_free = (char *)memalign(__cache_line_size, __bytes_to_get); 
+        _S_start_free = (char *)memalign(__cache_line_size, __bytes_to_get);
         if (0 == _S_start_free) {
           _S_start_free = (char *)__malloc_alloc::allocate(__bytes_to_get);
         }

@@ -32,8 +32,6 @@
 #undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 
 
-//#undef _STLP_WINCE
-
 #ifndef __GNUC__
 # define __GNUC__ 3
 #endif

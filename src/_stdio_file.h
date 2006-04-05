@@ -78,7 +78,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if !defined(_STLP_WINCE)
 //----------------------------------------------------------------------
 // Implementation for eMbedded Visual C++ 3.0 and 4.2 (.NET)
 #if defined (_STLP_WCE)
@@ -812,10 +811,6 @@ inline void  _FILE_O_bump(FILE *__f, int __n) { _FILE_I_bump(__f, __n); }
 inline void _FILE_O_set(FILE *__f, char* __begin, char* __next, char* __end)
   { _FILE_I_set(__f, __begin, __next, __end); }
 # endif
-
-#else
-inline int _FILE_fd(const FILE *__f) { return (int)::_fileno(__CONST_CAST(FILE *, __f)); }
-#endif /* _STLP_WINCE */
 
 _STLP_END_NAMESPACE
 
