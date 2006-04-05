@@ -39,7 +39,15 @@ struct State {
 /* This allocator is not thread safe:
  */
 template <class _Tp>
-struct StackAllocator {
+struct StackAllocator
+#if defined (__BORLANDC__) && \
+    defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  //Special Borland workaround that have problem with function
+  //overloading when one of the overloaded version is a template
+  //one. This is the case for the std::swap function.
+  : public __STD __stlport_class<StackAllocator<_Tp> >
+#endif
+{
   typedef _Tp        value_type;
   typedef value_type *       pointer;
   typedef const _Tp* const_pointer;
@@ -85,6 +93,16 @@ struct StackAllocator {
     return 0;
 #endif
   }
+
+#if defined (__BORLANDC__) && \
+    defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  //Necessary extension to make StackAllocator a real STLport allocator
+  //implementation:
+  _Tp* allocate(size_type n, size_type &new_n) {
+    new_n = n;
+    return allocate(n);
+  }
+#endif
 
   void deallocate(pointer p, size_type n) {
     if (p == 0)
