@@ -1,3 +1,91 @@
+2006-04-05  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_tree.h, _list.h: Fixed swap implementation to
+	correctly swap allocators instance. Moreover list swap implemenation
+	was wrong since list splice has been modified to correctly handled
+	allocators with state.
+
+	* test/unit/slist_test.cpp, list_test.cpp, set_test.cpp: Add tests for
+	above fix.
+
+	* stlport/stl/_deque.h: Fix swap method as deque has 2 allocator
+	instances, this should perhaps be modified one day to only keep 1...
+
+	* stlport/stl/_rope.h: Fix swap method and removed assertion for
+	equivalent allocator instances even if there are still other assertions
+	in the implementation.
+
+	* stlport/stl/_function_base.h: Add swap method for less functor if
+	partial template workaround is activated. This is for surprising
+	compilers supporting partial template specialization but no template
+	function partial ordering.
+
+	* stlport/stl/_algobase.h: Add Borland workaround for swap function
+	thanks Eric Sanford.
+
+	* test/unit/type_traits_test.cpp: Borland workaround for is_convertible
+	function thanks Eric Sanford.
+
+	* stlport/stl/config/_bc.h: Borland compilers do not support template
+	function partial ordering thanks Eric Sanford.
+
+	* test/unit/stack_allocator.h: Add Borland workaround to correctly
+	call StackAllocator::swap method when swaping STL containers in
+	allocator_with_state tests.
+
+	* test/unit/config_test.cpp: New test
+	ConfigTest::template_function_partial_ordering.
+
+	* test/unit/slist_test.cpp, list_test.cpp, set_test.cpp: Add swap tests
+	with empty containers.
+
+	* src/vc_warning_disable.h: Remove deprecated comments.
+
+	* stlport/stl/_pair.h: Removed Borland checks thanks Eric Sanford.
+
+	* Patch from Michael Fink to remove Windows CE support that is
+	no more supported by Microsoft.
+
+	* stlport/stl/config/_native_headers.h: New, contains all macros
+	relative to native headers access that used to be in features.h.
+
+
+	* stlport/stl/config/_evc.h, _como.h: Add include of _native_headers.h
+	as those compilers need to include native headers for correct
+	configuration.
+
+	* stlport/stl/config/features.h: Use _native_headers.h.
+
+	* test/unit/locale_test.cpp: Made LocaleTest::facet_id test STLport
+	specific rather than Borland specific. Moreover, without STLport, test
+	is ignored rather than hidden.
+
+	* stlport/stl/_num_put.h, _num_put.c: Removed useless export of
+	num_put<char, char*>, num_put<wchar_t, wchar_t*> not required by
+	the Standard.
+
+	* stlport/stl/_num_get.h, _num_get.c: Ditto for
+	num_get<char, const char*>, num_get<wchar_t, const wchar_t*>
+
+	* stlport/stl/_moneytary.h, _moneytary.c: Ditto for
+	money_get<char, const char*>, money_get<wchar_t, const wchar_t*>,
+	money_put<char, char*>, money_put<wchar_t, wchar_t*>
+
+	* stlport/stl/_time_facets.h, _time_facets.c: Ditto for
+	time_get<char, const char*>, time_get<wchar_t, const wchar_t*>,
+	time_put<char, char*>, time_put<wchar_t, wchar_t*>
+
+	* src/locale_impl.cpp: Removed id initialization of useless facets
+	no more exported.
+
+	* stlport/new, stl/_new.h: Moved all STLport code in _new.h and
+	modified new header so that it forwards include to native new
+	when include comes from inside STLport.
+
+	* cppunit/file_reporter.h, cppunit_mini.h: Change support of
+	CPPUNIT_CHECK macro, only report error once for all failures
+	in a single test case.
+
 2006-03-28  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_prolog.h: Fix macro check before inclusion of
