@@ -61,7 +61,11 @@ using _STLP_VENDOR_CSTD::malloc;
 #  include <new.h>
 #endif
 
-#if defined (_STLP_USE_EXCEPTIONS) && (defined (_STLP_NO_BAD_ALLOC) || defined (_STLP_NEW_DONT_THROW_BAD_ALLOC))
+#if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
+#endif
+
+#if defined (_STLP_USE_EXCEPTIONS) && defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 
 #  ifndef _STLP_INTERNAL_EXCEPTION
 #    include <stl/_exception.h>
@@ -108,11 +112,11 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-#    if !defined(_STLP_NEW_DONT_THROW_BAD_ALLOC)
+#    if !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
 using _STLP_VENDOR_EXCEPT_STD::bad_alloc;
 #    endif
 
-#    if !defined(_STLP_NO_BAD_ALLOC)
+#    if !defined (_STLP_NO_BAD_ALLOC)
 using _STLP_VENDOR_EXCEPT_STD::nothrow_t;
 using _STLP_VENDOR_EXCEPT_STD::nothrow;
 #      if defined (_STLP_GLOBAL_NEW_HANDLER)
@@ -126,10 +130,6 @@ using _STLP_VENDOR_EXCEPT_STD::set_new_handler;
 
 _STLP_END_NAMESPACE
 #  endif /* _STLP_USE_OWN_NAMESPACE */
-
-#  if defined (_STLP_NO_BAD_ALLOC) && !defined (_STLP_NEW_DONT_THROW_BAD_ALLOC)
-#    define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
-#  endif /* _STLP_NO_BAD_ALLOC */
 
 #  if defined (_STLP_USE_EXCEPTIONS) && \
      (defined (_STLP_NO_NEW_NEW_HEADER) || defined (_STLP_NEW_DONT_THROW_BAD_ALLOC))
