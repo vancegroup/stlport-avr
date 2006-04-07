@@ -10,7 +10,6 @@
 #ifndef _CPPUNWIND
 #  define _STLP_NO_EXCEPTIONS
 #endif
-#undef _STLP_NO_NAMESPACES
 #define _STLP_NO_RELOPS_NAMESPACE
 #define _STLP_VENDOR_GLOBAL_CSTD
 #define _STLP_VENDOR_GLOBAL_STD
@@ -26,7 +25,9 @@
 #  define _STLP_NO_NATIVE_WIDE_FUNCTIONS
 #endif
 
-#define _STLP_NO_OWN_NAMESPACE
+//#define _STLP_NO_OWN_NAMESPACE
+#define _STLP_NO_BAD_ALLOC
+
 #undef _STLP_NEW_PLATFORM_SDK
 
 // select threads strategy
