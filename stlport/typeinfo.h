@@ -14,57 +14,55 @@
  */
 
 #ifndef _STLP_OLDSTD_typeinfo
-# define _STLP_OLDSTD_typeinfo
+#define _STLP_OLDSTD_typeinfo
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x874
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifndef _STLP_NO_TYPEINFO
+#ifndef _STLP_NO_TYPEINFO
 
-#if defined (__GNUC__)
-# undef _STLP_OLDSTD_typeinfo
-#  include <typeinfo>
-# define _STLP_OLDSTD_typeinfo
-#else
-#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x580)
-#    include _STLP_NATIVE_C_HEADER(typeinfo.h)
+#  if defined (__GNUC__)
+#    undef _STLP_OLDSTD_typeinfo
+#    include <typeinfo>
+#    define _STLP_OLDSTD_typeinfo
+#  else
+#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#    if defined (__BORLANDC__) && (__BORLANDC__ >= 0x580) || \
+        defined (__DMC__)
 using std::type_info;
 using std::bad_typeid;
 using std::bad_cast;
-#  else
-#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#    endif
 #  endif
-#endif
 
 // if <typeinfo> already included, do not import anything
 
-# if defined  (_STLP_USE_OWN_NAMESPACE) && ! (defined (_STLP_TYPEINFO) && !defined(_STLP_NO_NEW_NEW_HEADER))
+#  if defined (_STLP_USE_OWN_NAMESPACE) && !(defined (_STLP_TYPEINFO) && !defined (_STLP_NO_NEW_NEW_HEADER))
 
 _STLP_BEGIN_NAMESPACE
 
 using /*_STLP_VENDOR_EXCEPT_STD */ :: type_info;
-# if !(defined(__MRC__) || (defined(__SC__) && !defined(__DMC__)))
+#    if !(defined(__MRC__) || (defined(__SC__) && !defined(__DMC__)))
 using /* _STLP_VENDOR_EXCEPT_STD */ :: bad_typeid;
-# endif
+#    endif
 
 using /* _STLP_VENDOR_EXCEPT_STD */ :: bad_cast;
 
 _STLP_END_NAMESPACE
 
-#endif /* _STLP_OWN_NAMESPACE */
+#  endif /* _STLP_OWN_NAMESPACE */
 
-# endif /* _STLP_NO_TYPEINFO */
+#endif /* _STLP_NO_TYPEINFO */
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x874)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x874)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_OLDSTD_typeinfo */
 
 // Local Variables:
 // mode:C++
 // End:
-
