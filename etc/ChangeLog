@@ -1,3 +1,14 @@
+2006-04-07  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_new.h: Fixed management of _STLP_NO_BAD_ALLOC
+	and _STLP_NEW_DONT_THROW_BAD_ALLOC macros.
+
+	* stlport/stl/config/_dm.h: Change DMC configuration, use STLport
+	own namespace rather than std so that STLport can check config.
+
+	* stlport/typeinfo.h: Fix DMC configuration now that it uses own
+	STLport namespace.
+
 2006-04-05  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_tree.h, _list.h: Fixed swap implementation to
