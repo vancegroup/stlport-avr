@@ -15,6 +15,7 @@
 
 #include "cppunit_proxy.h"
 #include "file_reporter.h"
+#include "cppunit_timer.h"
 
 #ifdef UNDER_CE
 #  include <windows.h>
@@ -105,9 +106,11 @@ int main(int argc, char** argv) {
   //  -t=CLASS[::TEST]    run the test class CLASS or member test CLASS::TEST
   //  -x=CLASS[::TEST]    run all except the test class CLASS or member test CLASS::TEST
   //  -f=FILE             save output in file FILE instead of stdout
+  //  -m                  monitor test(s) execution
   char *fileName = 0;
   char *testName = "";
   char *xtestName = "";
+  bool doMonitoring = false;
 
   for (int i = 1; i < argc; ++i) {
     if (argv[i][0] != '-')
@@ -117,16 +120,20 @@ int main(int argc, char** argv) {
     }
     else if (!strncmp(argv[i], "-f=", 3)) {
       fileName = argv[i]+3;
-    } else if (!strncmp(argv[i], "-x=", 3)) {
+    }
+    else if (!strncmp(argv[i], "-x=", 3)) {
       xtestName = argv[i]+3;
+    }
+    else if (Timer::supported() && !strncmp(argv[i], "-m", 2)) {
+      doMonitoring = true;
     }
   }
 
   CPPUNIT_NS::Reporter* reporter;
-  if (fileName)
-    reporter = new FileReporter(fileName);
+  if (fileName != 0)
+    reporter = new FileReporter(fileName, doMonitoring);
   else
-    reporter = new FileReporter(stdout);
+    reporter = new FileReporter(stdout, doMonitoring);
 
   int num_errors;
   if (xtestName[0] != 0) {

@@ -31,6 +31,7 @@ namespace CPPUNIT_NS
     virtual void failure(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
     virtual void message( const char * /*msg*/ ) {}
     virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool /*ignored*/) {}
+    virtual void end() {}
     virtual void printSummary() {}
   };
 
@@ -107,6 +108,7 @@ namespace CPPUNIT_NS
     void tearDown() {
       if (m_failed)
         ++m_numErrors;
+      m_reporter->end();
     }
 
   protected:
