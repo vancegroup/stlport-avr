@@ -608,6 +608,7 @@ public:
     __result >>= __pos ;  return __result;
   }
 
+#if !defined (_STLP_NO_EXTENSIONS)
   //
   // EXTENSIONS: bit-find operations.  These operations are
   // experimental, and are subject to change or removal in future
@@ -621,6 +622,7 @@ public:
   // find the index of the next "on" bit after prev
   size_t _Find_next( size_t __prev ) const
     { return this->_M_do_find_next(__prev, _Nb); }
+#endif
 
 //
 // Definitions of should-be non-inline member functions.
