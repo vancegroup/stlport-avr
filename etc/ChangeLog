@@ -1,3 +1,25 @@
+2006-04-10  Francois Dumont  <dums@stlport...>
+
+	* test/unit/cppunit/cppunit_timer.h, test_main.cpp, file_reporter.h:
+	Add -m option to activate monitoring of unit tests. This option add
+	timing for each test and a global timing information. Timer class has
+	been created for Win32 API.
+
+	* stlport/stl/_bitset.h: Hide STLport bitset extensions _Find_first
+	and _Find_next.
+
+	* test/unit/bitset_test.cpp: Adapt tests to previous modification.
+
+	* stlport/stl/_string.h: Replace memory include with stl/_alloc.h
+	to limit header dependencies. Also add include of stl/_uninitialized.h.
+
+	* test/unit/fstream_test.cpp: Add missing memory include.
+
+	* test/unit/locale_test.cpp: Ditto.
+
+	* stlport/stl/_queue.h, _string.h, _rope.h, debug/_tree.h: Replace
+	stl/_function.h include with the smaller _function_base.h include.
+	
 2006-04-07  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_new.h: Fixed management of _STLP_NO_BAD_ALLOC
