@@ -9,6 +9,7 @@
 #    include <sstream>
 #  endif
 #  include <iterator>
+#  include <functional>
 
 #  include "cppunit/cppunit_proxy.h"
 

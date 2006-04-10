@@ -5,6 +5,7 @@
 #  include <iomanip>
 #  include <sstream>
 #  include <vector>
+#  include <memory>
 
 #  include "full_streambuf.h"
 #  include "cppunit/cppunit_proxy.h"

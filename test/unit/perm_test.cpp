@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iterator>
+#include <functional>
 
 #include "iota.h"
 #include "cppunit/cppunit_proxy.h"

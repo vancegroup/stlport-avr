@@ -3,6 +3,7 @@
 #  include <sstream>
 #  include <locale>
 #  include <stdexcept>
+#  include <memory>
 //#  include <iostream>
 
 #  include "cppunit/cppunit_proxy.h"
