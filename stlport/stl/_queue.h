@@ -31,7 +31,7 @@
 #define _STLP_INTERNAL_QUEUE_H
 
 #ifndef _STLP_INTERNAL_DEQUE_H
-# include <stl/_deque.h>
+#  include <stl/_deque.h>
 #endif
 
 #ifndef _STLP_INTERNAL_VECTOR_H
@@ -39,11 +39,11 @@
 #endif
 
 #ifndef _STLP_INTERNAL_HEAP_H
-# include <stl/_heap.h>
+#  include <stl/_heap.h>
 #endif
 
-#ifndef _STLP_INTERNAL_FUNCTION_H
-# include <stl/_function.h>
+#ifndef _STLP_INTERNAL_FUNCTION_BASE_H
+#  include <stl/_function_base.h>
 #endif
 
 #if defined(__SC__) && !defined(__DMC__)    //*ty 12/07/2001 - since "comp" is a built-in type and reserved under SCpp
