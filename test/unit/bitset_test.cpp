@@ -41,6 +41,7 @@ void BitsetTest::bitset1()
   CPPUNIT_ASSERT(b1.count()==10);
   CPPUNIT_ASSERT(b2.count()==4);
 
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   size_t __pos = b2._Find_first();
   CPPUNIT_ASSERT( __pos == 0 );
   __pos = b2._Find_next(__pos);
@@ -51,4 +52,5 @@ void BitsetTest::bitset1()
   CPPUNIT_ASSERT( __pos == 12 );
   __pos = b2._Find_next(__pos);
   CPPUNIT_ASSERT( __pos == 13 );
+#endif
 }
