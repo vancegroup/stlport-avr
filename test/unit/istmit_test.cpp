@@ -5,12 +5,13 @@
 #  include <iterator>
 #  include <vector>
 #  include <string>
+#endif
 
-#  include "cppunit/cppunit_proxy.h"
+#include "cppunit/cppunit_proxy.h"
 
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -18,10 +19,15 @@ using namespace std;
 class IStreamIteratorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(IStreamIteratorTest);
+#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(istmit1);
-#  if defined (STLPORT) && !defined (_STLP_NO_EXTENTION)
+  CPPUNIT_STOP_IGNORE;
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENTION)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(copy_n_test);
-#  endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -31,21 +37,22 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(IStreamIteratorTest);
 
-#  if !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+#if defined (STLPORT) && !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 typedef istream_iterator<char> istream_char_ite;
 typedef istream_iterator<int> istream_int_ite;
 typedef istream_iterator<string> istream_string_ite;
-#  else
+#else
 typedef istream_iterator<char, ptrdiff_t> istream_char_ite;
 typedef istream_iterator<int, ptrdiff_t> istream_int_ite;
 typedef istream_iterator<string, ptrdiff_t> istream_string_ite;
-#  endif
+#endif
 
 //
 // tests implementation
 //
 void IStreamIteratorTest::istmit1()
 {
+#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS)
   const char* buff = "MyString";
   istringstream istr(buff);
 
@@ -68,11 +75,12 @@ void IStreamIteratorTest::istmit1()
     istringstream empty_istr;
     CPPUNIT_ASSERT( istream_char_ite(empty_istr) == istream_char_ite() );
   }
+#endif
 }
 
-#  if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 void IStreamIteratorTest::copy_n_test()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   //This test check that no character is lost while reading the istream
   //through a istream_iterator.
   {
@@ -146,7 +154,5 @@ void IStreamIteratorTest::copy_n_test()
     CPPUNIT_ASSERT( ints[4] == 5 );
     CPPUNIT_ASSERT( ints[5] == 6 );
   }
-}
-#  endif
-
 #endif
+}

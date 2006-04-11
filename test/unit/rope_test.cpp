@@ -7,12 +7,13 @@
 #  if !defined (_STLP_USE_NO_IOSTREAMS)
 #    include <sstream>
 #  endif
+#endif
 
-#  include "cppunit/cppunit_proxy.h"
+#include "cppunit/cppunit_proxy.h"
 
-#  if defined (_STLP_USE_NAMESPACES)
+#if defined (_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -20,9 +21,14 @@ using namespace std;
 class RopeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(RopeTest);
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS) || \
+    defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(io);
-#  endif
+#if defined (_STLP_USE_NO_IOSTREAMS) && !defined (__DMC__)
+  CPPUNIT_STOP_IGNORE;
+#endif
   CPPUNIT_TEST(find1);
   CPPUNIT_TEST(find2);
   CPPUNIT_TEST_SUITE_END();
@@ -38,9 +44,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
 //
 // tests implementation
 //
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
 void RopeTest::io()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (_STLP_USE_NO_IOSTREAMS) && \
+    !defined (__DMC__)
   char const* cstr = "rope test string";
   crope rstr(cstr);
 
@@ -51,11 +58,13 @@ void RopeTest::io()
     CPPUNIT_ASSERT( ostr );
     CPPUNIT_ASSERT( ostr.str() == cstr );
   }
+#endif
 }
-#  endif
 
 void RopeTest::find1()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
+    !defined (__DMC__)
   crope r("Fuzzy Wuzzy was a bear");
   crope::size_type n = r.find( "hair" );
   CPPUNIT_ASSERT( n == crope::npos );
@@ -63,13 +72,15 @@ void RopeTest::find1()
   n = r.find("ear");
 
   CPPUNIT_ASSERT( n == (r.size() - 3) );
+#endif
 }
 
 void RopeTest::find2()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
+    !defined (__DMC__)
   crope r("Fuzzy Wuzzy was a bear");
   crope::size_type n = r.find( 'e' );
   CPPUNIT_ASSERT( n == (r.size() - 3) );
-}
-
 #endif
+}

@@ -42,17 +42,13 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(move_construct_test);
   CPPUNIT_TEST(deque_test);
   CPPUNIT_TEST(vector_test);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(move_traits);
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
-#  if defined (__BORLANDC__)
+#if !defined (STLPORT) || defined (_STLP_NO_MOVE_SEMANTIC) || \
+    defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) || \
+    defined (__BORLANDC__)
   CPPUNIT_IGNORE;
 #  endif
-#  if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
-      !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_TEST(movable_declaration)
-#  endif
-#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:

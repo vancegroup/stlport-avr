@@ -53,7 +53,7 @@ const int NB_ELEMS = 2000;
 //
 void UnorderedTest::uset()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_set<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -103,7 +103,7 @@ void UnorderedTest::uset()
 
 void UnorderedTest::umultiset()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_multiset<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -142,7 +142,7 @@ void UnorderedTest::umultiset()
 
 void UnorderedTest::umap()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_map<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -211,7 +211,7 @@ void UnorderedTest::umap()
 
 void UnorderedTest::umultimap()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_multimap<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -253,7 +253,7 @@ void UnorderedTest::umultimap()
 
 void UnorderedTest::user_case()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_map<int, string> UnorderedMap1;
   typedef unordered_map<int, UnorderedMap1> UnorderedMap2;
 
@@ -281,7 +281,7 @@ void UnorderedTest::user_case()
 
 void UnorderedTest::hash_policy()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.max_load_factor() == 1.0f );
@@ -305,7 +305,7 @@ void UnorderedTest::hash_policy()
 
 void UnorderedTest::buckets()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.bucket_count() < int_uset.max_bucket_count() );
@@ -328,7 +328,7 @@ void UnorderedTest::buckets()
 
 void UnorderedTest::equal_range()
 {
-#if !defined (STLPORT) || defined (__DMC__)
+#if defined (STLPORT) && !defined (__DMC__)
   typedef unordered_multiset<size_t> umset;
   {
     //General test

@@ -3,12 +3,9 @@
 
 #include "cppunit/cppunit_proxy.h"
 
-//This is an STLport specific test case:
-#if defined (STLPORT)
-
-#  if defined (_STLP_USE_NAMESPACES)
+#if defined (_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -16,6 +13,9 @@ using namespace std;
 class TypeTraitsTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(TypeTraitsTest);
+#if !defined (STLPORT)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(manips);
   CPPUNIT_TEST(integer);
   CPPUNIT_TEST(rational);
@@ -52,6 +52,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
 #  define __true_type std::__true_type
 #  define __false_type std::__false_type
 #endif
+
+#if defined (STLPORT)
 
 int type_to_value(__true_type)
 { return 1; }
@@ -93,10 +95,10 @@ any_type const volatile* any_const_volatile_pointer;
 struct any_pod_type
 {};
 
-#if defined (_STLP_USE_BOOST_SUPPORT)
+#  if defined (_STLP_USE_BOOST_SUPPORT)
 //Mandatory for compilers without without partial template specialization.
 BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(any_pod_type)
-#endif
+#  endif
 
 any_pod_type any_pod;
 any_pod_type* any_pod_pointer;
@@ -129,21 +131,23 @@ int are_same_uncv_types(_Tp1, _Tp2) {
   return type_to_value(_Ret());
 }
 
-#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+#  if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 template <typename _From, typename _To>
 int is_convertible(_From, _To) {
-#  if !defined(__BORLANDC__)
+#    if !defined(__BORLANDC__)
    typedef typename _IsConvertibleType<_From, _To>::_Type _Ret;
-#  else
+#    else
   enum { _Is = _IsConvertibleType<_From, _To>::value };
   typedef typename __bool2type<_Is>::_Ret _Ret;
-#  endif
+#    endif
   return type_to_value(_Ret());
 }
+#  endif
 #endif
 
 void TypeTraitsTest::manips()
 {
+#if defined (STLPORT)
   {
     typedef __bool2type<0>::_Ret _ZeroRet;
     CPPUNIT_ASSERT( type_to_value(_ZeroRet()) == 0 );
@@ -227,17 +231,17 @@ void TypeTraitsTest::manips()
   }
 
   {
-#if !defined (__BORLANDC__)
+#  if !defined (__BORLANDC__)
     typedef __select<1, __true_type, __false_type>::_Ret _SelectFirstRet;
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __select<0, __true_type, __false_type>::_Ret _SelectSecondRet;
     CPPUNIT_ASSERT( type_to_value(_SelectSecondRet()) == 0 );
-#else
+#  else
     typedef __selectT<__true_type(), __true_type, __false_type>::_Ret _SelectFirstRet;
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __selectT<__false_type(), __true_type, __false_type>::_Ret _SelectSecondRet;
     CPPUNIT_ASSERT( type_to_value(_SelectSecondRet()) == 0 );
-#endif
+#  endif
   }
 
   {
@@ -260,21 +264,26 @@ void TypeTraitsTest::manips()
     CPPUNIT_ASSERT( are_same_uncv_types(any_const_volatile_pointer, any_const_volatile_pointer) == 1 );
   }
 
-#if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+#  if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   {
     CPPUNIT_ASSERT( is_convertible(any, base()) == 0 );
     CPPUNIT_ASSERT( is_convertible(derived(), base()) == 1 );
   }
+#  endif
 #endif
 }
 
+#if defined (STLPORT)
 template <typename _Type>
 int is_integer(_Type) {
   typedef typename _Is_integer<_Type>::_Integral _Ret;
   return type_to_value(_Ret());
 }
+#endif
+
 void TypeTraitsTest::integer()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_integer(bool()) == 1 );
   CPPUNIT_ASSERT( is_integer(char()) == 1 );
   typedef signed char signed_char;
@@ -298,7 +307,7 @@ void TypeTraitsTest::integer()
   CPPUNIT_ASSERT( is_integer(long_long()) == 1 );
   typedef unsigned _STLP_LONG_LONG unsigned_long_long;
   CPPUNIT_ASSERT( is_integer(unsigned_long_long()) == 1 );
-#endif
+#  endif
   CPPUNIT_ASSERT( is_integer(float()) == 0 );
   CPPUNIT_ASSERT( is_integer(double()) == 0 );
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
@@ -307,15 +316,20 @@ void TypeTraitsTest::integer()
 #  endif
   CPPUNIT_ASSERT( is_integer(any) == 0 );
   CPPUNIT_ASSERT( is_integer(any_pointer) == 0 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Type>
 int is_rational(_Type) {
   typedef typename _Is_rational<_Type>::_Rational _Ret;
   return type_to_value(_Ret());
 }
+#endif
+
 void TypeTraitsTest::rational()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_rational(bool()) == 0 );
   CPPUNIT_ASSERT( is_rational(char()) == 0 );
   typedef signed char signed_char;
@@ -339,7 +353,7 @@ void TypeTraitsTest::rational()
   CPPUNIT_ASSERT( is_rational(long_long()) == 0 );
   typedef unsigned _STLP_LONG_LONG unsigned_long_long;
   CPPUNIT_ASSERT( is_rational(unsigned_long_long()) == 0 );
-#endif
+#  endif
   CPPUNIT_ASSERT( is_rational(float()) == 1 );
   CPPUNIT_ASSERT( is_rational(double()) == 1 );
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
@@ -348,15 +362,19 @@ void TypeTraitsTest::rational()
 #  endif
   CPPUNIT_ASSERT( is_rational(any) == 0 );
   CPPUNIT_ASSERT( is_rational(any_pointer) == 0 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Type>
 int is_pointer_type(_Type) {
   return type_to_value(_IsPtrType<_Type>::_Ret());
 }
+#endif
 
 void TypeTraitsTest::pointer_type()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_pointer_type(int_val) == 0 );
   CPPUNIT_ASSERT( is_pointer_type(int_pointer) == 1 );
   CPPUNIT_ASSERT( is_pointer_type(int_const_pointer) == 1 );
@@ -366,11 +384,12 @@ void TypeTraitsTest::pointer_type()
   CPPUNIT_ASSERT( is_pointer_type(int_const_ref) == 0 );
   CPPUNIT_ASSERT( is_pointer_type(any) == 0 );
   CPPUNIT_ASSERT( is_pointer_type(any_pointer) == 1 );
+#endif
 }
 
 void TypeTraitsTest::reference_type()
 {
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (STLPORT) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int>::_Ret()) == 0 );
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int*>::_Ret()) == 0 );
   CPPUNIT_ASSERT( type_to_value(_IsRefType<int&>::_Ret()) == 1 );
@@ -382,12 +401,16 @@ void TypeTraitsTest::reference_type()
 #endif
 }
 
+#if defined (STLPORT)
 template <typename _Tp1, typename _Tp2>
 int are_both_pointer_type (_Tp1, _Tp2) {
   return type_to_value(_BothPtrType<_Tp1, _Tp2>::_Ret());
 }
+#endif
+
 void TypeTraitsTest::both_pointer_type()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( are_both_pointer_type(int_val, int_val) == 0 );
   CPPUNIT_ASSERT( are_both_pointer_type(int_pointer, int_pointer) == 1 );
   CPPUNIT_ASSERT( are_both_pointer_type(int_const_pointer, int_const_pointer) == 1 );
@@ -397,14 +420,19 @@ void TypeTraitsTest::both_pointer_type()
   CPPUNIT_ASSERT( are_both_pointer_type(int_const_ref, int_const_ref) == 0 );
   CPPUNIT_ASSERT( are_both_pointer_type(any, any) == 0 );
   CPPUNIT_ASSERT( are_both_pointer_type(any_pointer, any_pointer) == 1 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Tp1, typename _Tp2>
 int is_ok_to_use_memcpy(_Tp1 val1, _Tp2 val2) {
   return type_to_value(_IsOKToMemCpy(val1, val2)._Answer());
 }
+#endif
+
 void TypeTraitsTest::ok_to_use_memcpy()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, int_pointer) == 1 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_pointer, int_pointer) == 1 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, int_volatile_pointer) == 1 );
@@ -420,15 +448,20 @@ void TypeTraitsTest::ok_to_use_memcpy()
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, int_pointer) == 0 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_pointer) == 1 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_const_pointer) == 1 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Tp>
 int has_trivial_destructor(_Tp) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _TrivialDestructor;
   return type_to_value(_TrivialDestructor());
 }
+#endif
+
 void TypeTraitsTest::trivial_destructor()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( has_trivial_destructor(int_pointer) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(int_const_pointer) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(int_volatile_pointer) == 1 );
@@ -438,15 +471,20 @@ void TypeTraitsTest::trivial_destructor()
   CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(any_pod) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(string()) == 0 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Tp>
 int is_POD_type(_Tp) {
   typedef typename __type_traits<_Tp>::is_POD_type _IsPODType;
   return type_to_value(_IsPODType());
 }
+#endif
+
 void TypeTraitsTest::is_POD()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_POD_type(int_pointer) == 1 );
   CPPUNIT_ASSERT( is_POD_type(int_const_pointer) == 1 );
   CPPUNIT_ASSERT( is_POD_type(int_volatile_pointer) == 1 );
@@ -456,29 +494,33 @@ void TypeTraitsTest::is_POD()
   CPPUNIT_ASSERT( is_POD_type(any_pointer) == 1 );
   CPPUNIT_ASSERT( is_POD_type(any_pod) == 1 );
   CPPUNIT_ASSERT( is_POD_type(string()) == 0 );
+#endif
 }
 
+#if defined (STLPORT)
 template <typename _Tp>
 int is_stlport_class(_Tp) {
   typedef _IsSTLportClass<_Tp> _STLportClass;
-#if !defined (__DMC__)
-#  if !defined (__BORLANDC__)
+#  if !defined (__DMC__)
+#    if !defined (__BORLANDC__)
   typedef typename _STLportClass::_Ret _Is;
-#  else
+#    else
   typedef typename __bool2type<_STLportClass::_Is>::_Ret _Is;
-#  endif
+#    endif
   return type_to_value(_Is());
-#else
+#  else
   return type_to_value(_STLportClass::_Ret());
-#endif
+#  endif
 }
+#endif
+
 void TypeTraitsTest::stlport_class()
 {
+#if defined (STLPORT)
   CPPUNIT_ASSERT( is_stlport_class(allocator<char>()) == 1 );
 #  if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   CPPUNIT_ASSERT( is_stlport_class(string()) == 1 );
 #  endif
   CPPUNIT_ASSERT( is_stlport_class(any) == 0 );
+#endif
 }
-
-#endif //STLPORT

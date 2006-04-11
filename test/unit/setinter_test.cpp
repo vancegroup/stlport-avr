@@ -3,6 +3,7 @@
 #include <iterator>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "iota.h"
 #include "cppunit/cppunit_proxy.h"

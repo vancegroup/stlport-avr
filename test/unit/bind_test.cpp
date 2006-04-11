@@ -16,23 +16,20 @@ class BindTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(bind1st1);
   CPPUNIT_TEST(bind2nd1);
   CPPUNIT_TEST(bind2nd2);
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
-#  if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if !defined (STLPORT) || \
+    defined (_STLP_NO_EXTENSIONS) || !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   CPPUNIT_IGNORE;
-#  endif
+#endif
   CPPUNIT_TEST(bind2nd3);
   CPPUNIT_TEST(bind_memfn);
-#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void bind1st1();
   void bind2nd1();
   void bind2nd2();
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   void bind2nd3();
   void bind_memfn();
-#endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BindTest);
@@ -76,10 +73,10 @@ int test_func2 (int &param1, int param2) {
   return param1 + param2;
 }
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 void BindTest::bind2nd3()
 {
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (STLPORT) && \
+    !defined (_STLP_NO_EXTENSIONS) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   int array[3] = { 1, 2, 3 };
   transform(array, array + 3, array, bind2nd(ptr_fun(test_func1), 1));
   transform(array, array + 3, array, bind1st(ptr_fun(test_func1), -1));
@@ -91,7 +88,7 @@ void BindTest::bind2nd3()
   CPPUNIT_ASSERT(array[0] == 21);
   CPPUNIT_ASSERT(array[1] == 22);
   CPPUNIT_ASSERT(array[2] == 23);
-#  endif
+#endif
 }
 
 class A
@@ -113,13 +110,12 @@ class A
 
 void BindTest::bind_memfn()
 {
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (STLPORT) && \
+    !defined (_STLP_NO_EXTENSIONS) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   A array[3];
 
   for_each( array, array + 3, bind2nd( mem_fun_ref(&A::f), 12 ) );
 
   CPPUNIT_CHECK( array[0].v() == 12 );
-#  endif
+#endif
 }
-#endif // !STLPORT && !_STLP_NO_EXTENSIONS
-

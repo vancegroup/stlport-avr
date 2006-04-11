@@ -1,12 +1,10 @@
 #include <vector>
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#include "cppunit/cppunit_proxy.h"
 
-#  include "cppunit/cppunit_proxy.h"
-
-#  if defined(_STLP_USE_NAMESPACES)
+#if defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -14,6 +12,9 @@ using namespace std;
 class BvectorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(BvectorTest);
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(bvec1);
   CPPUNIT_TEST_SUITE_END();
 
@@ -28,6 +29,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BvectorTest);
 //
 void BvectorTest::bvec1()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   bool ii[3]= {1,0,1};
   bit_vector b(3);
 
@@ -65,6 +67,5 @@ void BvectorTest::bvec1()
   bb[2] &= 1;
   bb[3] &= 1;
   CPPUNIT_ASSERT(!((bb[0] != 0) || (bb[1] != 0) || (bb[2] != 1) || (bb[3] != 0)));
-}
-
 #endif
+}

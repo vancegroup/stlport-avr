@@ -14,10 +14,12 @@ using namespace std;
 class UnaryTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(UnaryTest);
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(ucompos1);
   CPPUNIT_TEST(ucompos2);
-#endif
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(unegate1);
   CPPUNIT_TEST(unegate2);
 #if defined (STLPORT) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -68,9 +70,9 @@ void UnaryTest::unegate3()
 #endif
 }
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 void UnaryTest::ucompos1()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int input [3] = { -1, -4, -16 };
 
   double output[3];
@@ -79,9 +81,11 @@ void UnaryTest::ucompos1()
   CPPUNIT_ASSERT(output[0]==1);
   CPPUNIT_ASSERT(output[1]==2);
   CPPUNIT_ASSERT(output[2]==4);
+#endif
 }
 void UnaryTest::ucompos2()
 {
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int input [3] = { -1, -4, -16 };
 
   double output [3];
@@ -90,5 +94,5 @@ void UnaryTest::ucompos2()
   CPPUNIT_ASSERT(output[0]==1);
   CPPUNIT_ASSERT(output[1]==2);
   CPPUNIT_ASSERT(output[2]==4);
-}
 #endif
+}

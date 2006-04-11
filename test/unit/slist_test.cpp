@@ -10,12 +10,13 @@
 #  endif
 #  include <iterator>
 #  include <functional>
+#endif
 
-#  include "cppunit/cppunit_proxy.h"
+#include "cppunit/cppunit_proxy.h"
 
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //
 // TestCase class
@@ -23,9 +24,13 @@ using namespace std;
 class SlistTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(SlistTest);
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(slist1);
-#  endif
+#if defined (_STLP_USE_NO_IOSTREAMS)
+  CPPUNIT_STOP_IGNORE;
+#endif
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(insert);
   CPPUNIT_TEST(splice);
@@ -45,9 +50,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SlistTest);
 //
 // tests implementation
 //
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
 void SlistTest::slist1()
 {
+#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS)
 /*
 original: xlxtss
 reversed: sstxlx
@@ -108,11 +113,12 @@ sorted: lst
     CPPUNIT_ASSERT( sl_char_ite != sl_int_ite );
   }
 #  endif
+#endif
 }
-#  endif
 
 void SlistTest::erase()
 {
+#if defined (STLPORT)
   int array[] = { 0, 1, 2, 3, 4 };
   slist<int> sl(array, array + 5);
   slist<int>::iterator slit;
@@ -135,10 +141,12 @@ void SlistTest::erase()
 
   sl.erase_after(sl.before_begin());
   CPPUNIT_ASSERT( sl.front() == 3 );
+#endif
 }
 
 void SlistTest::insert()
 {
+#if defined (STLPORT)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //insert
@@ -180,10 +188,12 @@ void SlistTest::insert()
       CPPUNIT_ASSERT( *slit == i );
     }
   }
+#endif
 }
 
 void SlistTest::splice()
 {
+#if defined (STLPORT)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //splice
@@ -309,11 +319,13 @@ void SlistTest::splice()
     CPPUNIT_ASSERT( *(slit++) == 1 );
     CPPUNIT_ASSERT( *slit == 2 );
   }
+#endif
 }
 
 
 void SlistTest::allocator_with_state()
 {
+#if defined (STLPORT)
   char buf1[1024];
   StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
 
@@ -515,6 +527,5 @@ void SlistTest::allocator_with_state()
     advance(slit, 10);
     CPPUNIT_ASSERT( *slit == 1 );
   }
-}
-
 #endif
+}
