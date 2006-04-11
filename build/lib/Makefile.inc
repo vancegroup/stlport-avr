@@ -30,7 +30,6 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/complex.cpp \
           ../../src/complex_io.cpp \
           ../../src/complex_trig.cpp \
-          ../../src/complex_io_w.cpp \
           ../../src/string.cpp \
           ../../src/bitset.cpp \
           ../../src/allocators.cpp
