@@ -50,16 +50,16 @@ public:
 
   virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
     ++m_numErrors;
-    fprintf(_file, "\n%s(%d) : %s(%s);\n", in_file, in_line, in_macroName, in_macro);
+    fprintf(_file, "\n\n%s(%d) : %s(%s);", in_file, in_line, in_macroName, in_macro);
   }
 
   virtual void failure(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
     m_failed = true;
-    fprintf(_file, "\n%s(%d) : %s(%s);\n", in_file, in_line, in_macroName, in_macro);
+    fprintf(_file, "\n\n%s(%d) : %s(%s);", in_file, in_line, in_macroName, in_macro);
   }
 
   virtual void message( const char *msg )
-  { fprintf(_file, "\t%s\n", msg ); }
+  { fprintf(_file, "\n\t%s", msg ); }
 
   virtual void progress(const char *in_className, const char *in_shortTestName, bool ignoring) {
     if (m_doMonitor) {
@@ -74,7 +74,9 @@ public:
     }
     if (ignoring)
       ++m_numIgnores;
-    fprintf(_file, ignoring ? "%s::%s IGNORED" : "%s::%s", in_className, in_shortTestName);
+    fprintf(_file, "%s::%s", in_className, in_shortTestName);
+    if (ignoring)
+      fprintf(_file, " IGNORED");
   }
   virtual void end() {
     if (m_doMonitor) {
