@@ -1,3 +1,17 @@
+2006-04-11  Francois Dumont  <dums@stlport...>
+
+	* src/complex_io_w.cpp: Removed, content moved to src/complex_io.cpp
+	to avoid build of an empty translation unit that can generate linker
+	warning (noticed with MSVC 2005 express)
+
+	* build/lib/Makefile.inc: Updated before of above modification.
+
+	* test/unit: Ignore many tests rather than hide it depending on
+	build configuration.
+
+	* test/unit/cppunit/file_reporter.h: Restored output existing before
+	introduction of monitoring feature.
+
 2006-04-10  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cppunit/cppunit_timer.h, test_main.cpp, file_reporter.h:
