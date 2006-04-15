@@ -144,10 +144,19 @@ public:
     _M_iter_list._Swap_owners(__t._M_iter_list);
   }
 
-  iterator find(const key_type& __x)
-  { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__x)); }
-  const_iterator find(const key_type& __x) const
-  { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__x)); }
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
+  template <class _KT>
+  iterator find(const _KT& __k)
+  { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
+  template <class _KT>
+  const_iterator find(const _KT& __k) const
+  { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
+#else
+  iterator find(const key_type& __k)
+  { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
+  const_iterator find(const key_type& __k) const
+  { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
+#endif
 
   iterator lower_bound(const key_type& __x)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)); }
