@@ -59,10 +59,6 @@
 #  define _STLP_DEBUG_TERMINATE __STL_DEBUG_TERMINATE
 #endif
 
-#if defined (__STL_NO_DEBUG_EXCEPTIONS) && !defined (_STLP_NO_DEBUG_EXCEPTIONS)
-#  define _STLP_NO_DEBUG_EXCEPTIONS __STL_NO_DEBUG_EXCEPTIONS
-#endif
-
 #if defined (__STL_USE_ABBREVS) && !defined (_STLP_USE_ABBREVS)
 #  define _STLP_USE_ABBREVS __STL_USE_ABBREVS
 #endif

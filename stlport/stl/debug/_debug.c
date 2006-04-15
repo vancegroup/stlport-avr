@@ -440,13 +440,8 @@ __stl_debug_engine<_Dummy>::_Assert(const char* __expr, const char* __f, int __l
 // if not, calls abort() to terminate
 template <class _Dummy>
 void _STLP_CALL
-__stl_debug_engine<_Dummy>::_Terminate() {
-#    if defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_DEBUG_EXCEPTIONS)
-  throw __stl_debug_exception();
-#    else
-  _STLP_ABORT();
-#    endif
-}
+__stl_debug_engine<_Dummy>::_Terminate()
+{ _STLP_ABORT(); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
