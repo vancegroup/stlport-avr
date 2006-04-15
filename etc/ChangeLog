@@ -1,3 +1,14 @@
+2006-04-15  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/host.h, compat.h, debug/_debug.c: Removed
+	_STLP_NO_DEBUG_EXCEPTIONS configuration macro that is similar
+	to the new _STLP_DEBUG_MODE_THROWS except that new thorwn macro
+	is catchable (std::runtime_error exception) and contained message
+	is more explicit.
+
+	* stlport/stl/debug/_tree.h: Add find template method STLport
+	extension to the debug version of binary tree.
+
 2006-04-11  Francois Dumont  <dums@stlport...>
 
 	* src/complex_io_w.cpp: Removed, content moved to src/complex_io.cpp
