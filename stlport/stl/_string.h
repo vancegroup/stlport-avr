@@ -506,8 +506,6 @@ public:                         // Size, capacity, etc.
 
 public:                         // Element access.
 
-  //First implementation use c_str in order to guaranty return of a null
-  //character when __n == size() (ISO/IEC 14882: 21.3.4.1)
   const_reference operator[](size_type __n) const
   { return *(this->_M_Start() + __n); }
   reference operator[](size_type __n)
