@@ -7,7 +7,7 @@
 	is more explicit.
 
 	* stlport/stl/debug/_tree.h: Add find template method STLport
-	extension to the debug version of binary tree.
+	extension to the debug version of binary tree thanks Mike Flamming.
 
 2006-04-11  Francois Dumont  <dums@stlport...>
 
