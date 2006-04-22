@@ -244,7 +244,7 @@ extern long double __tanhl(long double);
 #      define _STLP_DEF_MATH_INLINE2I(func,cf) \
       _STLP_MATH_INLINE2(float,int,func,cf##f) \
       _STLP_MATH_INLINE2X(long double,int,func,cf)
-#    else
+#    elif !defined (_STLP_NO_VENDOR_MATH_L)
 #      define _STLP_DEF_MATH_INLINE(func,cf) \
       _STLP_MATH_INLINEX(float,func,cf) \
       _STLP_MATH_INLINE(long double,func,cf##l)
@@ -260,6 +260,22 @@ extern long double __tanhl(long double);
 #      define _STLP_DEF_MATH_INLINE2I(func,cf) \
       _STLP_MATH_INLINE2X(float,int,func,cf) \
       _STLP_MATH_INLINE2(long double,int,func,cf##l)
+#    else
+#      define _STLP_DEF_MATH_INLINE(func,cf) \
+      _STLP_MATH_INLINEX(float,func,cf) \
+      _STLP_MATH_INLINE(long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2(func,cf) \
+      _STLP_MATH_INLINE2XX(float,func,cf) \
+      _STLP_MATH_INLINE2(long double,long double,func,cf)
+#      define _STLP_DEF_MATH_INLINE2P(func,cf) \
+      _STLP_MATH_INLINE2PX(float,func,cf) \
+      _STLP_MATH_INLINE2(long double,long double *,func,cf)
+#      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
+      _STLP_MATH_INLINE2X(float,int *,func,cf) \
+      _STLP_MATH_INLINE2(long double,int *,func,cf)
+#      define _STLP_DEF_MATH_INLINE2I(func,cf) \
+      _STLP_MATH_INLINE2X(float,int,func,cf) \
+      _STLP_MATH_INLINE2(long double,int,func,cf)
 #    endif
 #  else
 #    if !defined (_STLP_NO_VENDOR_MATH_F)
