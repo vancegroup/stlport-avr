@@ -59,22 +59,23 @@ _STLP_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
+struct _Locale_name_hint;
+
 /*
  * Typedefs:
  */
-
 #if (defined (__GNUC__) && !defined (__MINGW32__)) || defined (_KCC) || defined (__ICC)
 typedef unsigned short int _Locale_mask_t;
 #else
 typedef unsigned int _Locale_mask_t;
 #endif
 
-void * _Locale_ctype_create(const char *);
-void * _Locale_numeric_create(const char *);
-void * _Locale_time_create(const char *);
-void * _Locale_collate_create(const char *);
-void * _Locale_monetary_create(const char *);
-void * _Locale_messages_create(const char *);
+void * _Locale_ctype_create(const char *, struct _Locale_name_hint*);
+void * _Locale_numeric_create(const char *, struct _Locale_name_hint*);
+void * _Locale_time_create(const char *, struct _Locale_name_hint*);
+void * _Locale_collate_create(const char *, struct _Locale_name_hint*);
+void * _Locale_monetary_create(const char *, struct _Locale_name_hint*);
+void * _Locale_messages_create(const char *, struct _Locale_name_hint*);
 
 /*
  * The char* argument is a simple locale name.
@@ -116,12 +117,19 @@ void _Locale_collate_destroy(void *);
 void _Locale_monetary_destroy(void *);
 void _Locale_messages_destroy(void *);
 
-char * _Locale_extract_ctype_name(const char *cname, char *__buf);
-char * _Locale_extract_numeric_name(const char *cname, char *__buf);
-char * _Locale_extract_time_name(const char *cname, char *__buf);
-char * _Locale_extract_collate_name(const char *cname, char *__buf);
-char * _Locale_extract_monetary_name(const char *cname, char *__buf);
-char * _Locale_extract_messages_name(const char *cname, char *__buf);
+char * _Locale_extract_ctype_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char * _Locale_extract_numeric_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char * _Locale_extract_time_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char * _Locale_extract_collate_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char * _Locale_extract_monetary_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char * _Locale_extract_messages_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+
+struct _Locale_name_hint* _Locale_get_ctype_hint(struct _Locale_ctype*);
+struct _Locale_name_hint* _Locale_get_numeric_hint(struct _Locale_numeric*);
+struct _Locale_name_hint* _Locale_get_time_hint(struct _Locale_time*);
+struct _Locale_name_hint* _Locale_get_collate_hint(struct _Locale_collate*);
+struct _Locale_name_hint* _Locale_get_monetary_hint(struct _Locale_monetary*);
+struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages*);
 
 /*
  * cname is a (possibly composite) locale name---i.e. a name that can

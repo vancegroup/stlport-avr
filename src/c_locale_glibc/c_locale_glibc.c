@@ -65,6 +65,19 @@ typedef struct _Locale_messages {
   const struct locale_data* gcc_data;
 } L_messages_t;
 
+struct _Locale_name_hint* _Locale_get_ctype_hint(struct _Locale_ctype* ctype)
+{ return 0; }
+struct _Locale_name_hint* _Locale_get_numeric_hint(struct _Locale_numeric* numeric)
+{ return 0; }
+struct _Locale_name_hint* _Locale_get_time_hint(struct _Locale_time* time)
+{ return 0; }
+struct _Locale_name_hint* _Locale_get_collate_hint(struct _Locale_collate* collate)
+{ return 0; }
+struct _Locale_name_hint* _Locale_get_monetary_hint(struct _Locale_monetary* monetary)
+{ return 0; }
+struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages* messages)
+{ return 0; }
+
 static char *
 _Locale_extract_name ( const char *cname, char *into, int category )
 {
@@ -171,7 +184,7 @@ const char* _Locale_ctype_default(char* buf) {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_ctype_name(fullname, buf);
+    return _Locale_extract_ctype_name(fullname, buf, 0);
 }
 
 const char* _Locale_numeric_default(char* buf) {
@@ -179,7 +192,7 @@ const char* _Locale_numeric_default(char* buf) {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_numeric_name(fullname, buf);
+    return _Locale_extract_numeric_name(fullname, buf, 0);
 }
 
 const char* _Locale_time_default(char* buf) {
@@ -187,7 +200,7 @@ const char* _Locale_time_default(char* buf) {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_time_name(fullname, buf);
+    return _Locale_extract_time_name(fullname, buf, 0);
 }
 
 const char* _Locale_collate_default(char* buf)  {
@@ -195,7 +208,7 @@ const char* _Locale_collate_default(char* buf)  {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_collate_name(fullname, buf);
+    return _Locale_extract_collate_name(fullname, buf, 0);
 }
 
 const char* _Locale_monetary_default(char* buf) {
@@ -203,7 +216,7 @@ const char* _Locale_monetary_default(char* buf) {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_monetary_name(fullname, buf);
+    return _Locale_extract_monetary_name(fullname, buf, 0);
 }
 
 const char* _Locale_messages_default(char* buf) {
@@ -211,14 +224,14 @@ const char* _Locale_messages_default(char* buf) {
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
-    return _Locale_extract_messages_name(fullname, buf);
+    return _Locale_extract_messages_name(fullname, buf, 0);
 }
 
 
 /****** Numeric Category ******/
 
 void*
-_Locale_numeric_create(const char * name) {
+_Locale_numeric_create(const char * name, struct _Locale_name_hint* hint) {
   L_numeric_t*  lnum = (L_numeric_t*)malloc(sizeof(L_numeric_t));
   lnum->gcc_data = _Category_create(name, LC_NUMERIC);
   return (void*)lnum;
@@ -234,7 +247,7 @@ void _Locale_numeric_destroy(void* lnum)
   _Remove_locale(LC_NUMERIC, (struct locale_data *)((struct _Locale_ctype*)lnum)->gcc_data);
   free(lnum);
 }
-char* _Locale_extract_numeric_name(const char* cname, char* buf)
+char* _Locale_extract_numeric_name(const char* cname, char* buf, struct _Locale_name_hint* hint)
 {
   return _Locale_extract_name(cname, buf, LC_NUMERIC);
 }
@@ -266,7 +279,7 @@ const char * _Locale_false(struct _Locale_numeric *l)
 
 /****** Monetary Category ******/
 
-void* _Locale_monetary_create(const char* name) {
+void* _Locale_monetary_create(const char* name, struct _Locale_name_hint* hint) {
   L_monetary_t* lmon = (L_monetary_t*)malloc(sizeof(L_monetary_t));
   lmon->gcc_data = _Category_create(name, LC_MONETARY);
   return lmon;
@@ -282,7 +295,7 @@ void _Locale_monetary_destroy(void*lmon) {
   free(lmon);
 }
 
-char* _Locale_extract_monetary_name(const char* cname, char* buf) {
+char* _Locale_extract_monetary_name(const char* cname, char* buf, struct _Locale_name_hint* hint) {
   return _Locale_extract_name(cname, buf, LC_MONETARY);
 }
 
@@ -334,7 +347,7 @@ int          _Locale_n_sign_posn(struct _Locale_monetary* lmon) {
 
 /****** Time Category ******/
 
-void* _Locale_time_create(const char * name) {
+void* _Locale_time_create(const char * name, struct _Locale_name_hint* hint) {
   L_time_t*  ltime = (L_time_t*)malloc(sizeof(L_time_t));
   ltime->gcc_data = _Category_create(name, LC_TIME);
   return ltime;
@@ -344,7 +357,7 @@ char* _Locale_time_name(const void* ltime,
       char* buf) {
   return _Locale_name(((struct _Locale_time*)ltime)->gcc_data, buf);
 }
-char* _Locale_extract_time_name(const char* cname, char* buf) {
+char* _Locale_extract_time_name(const char* cname, char* buf, struct _Locale_name_hint* hint) {
   return _Locale_extract_name(cname, buf, LC_TIME);
 }
 void _Locale_time_destroy(void* ltime) {
@@ -398,7 +411,7 @@ const char* _Locale_t_fmt_ampm(struct _Locale_time* ltime)
 
 /****** Messages Category ******/
 
-void* _Locale_messages_create(const char * name) {
+void* _Locale_messages_create(const char * name, struct _Locale_name_hint* hint) {
   L_messages_t*  lmsg = (L_messages_t*)malloc(sizeof(L_messages_t));
   lmsg->gcc_data = _Category_create(name, LC_MESSAGES);
   return lmsg;
@@ -413,7 +426,7 @@ void _Locale_messages_destroy(void* lmsg) {
   free(lmsg);
 }
 
-char* _Locale_extract_messages_name(const char* cname, char* buf) {
+char* _Locale_extract_messages_name(const char* cname, char* buf, struct _Locale_name_hint* hint) {
   return _Locale_extract_name(cname, buf, LC_MESSAGES);
 }
 
@@ -466,7 +479,7 @@ static _Locale_mask_t _Map_wchar_mask_to_char_mask(wctype_t m) {
 }
 
 
-void* _Locale_ctype_create(const char * name) {
+void* _Locale_ctype_create(const char * name, struct _Locale_name_hint* hint) {
   const union locale_data_value *ctypes;
   L_ctype_t* lctype;
 
@@ -506,7 +519,7 @@ void _Locale_ctype_destroy(void* lctype) {
   _Remove_locale(LC_CTYPE, (struct locale_data *)((struct _Locale_ctype*)lctype)->gcc_data);
   free(lctype);
 }
-char* _Locale_extract_ctype_name(const char* cname, char* buf) {
+char* _Locale_extract_ctype_name(const char* cname, char* buf, struct _Locale_name_hint* hint) {
   return _Locale_extract_name(cname, buf, LC_CTYPE);
 }
 const _Locale_mask_t* _Locale_ctype_table(struct _Locale_ctype* lctype) {
@@ -667,7 +680,7 @@ size_t _Locale_unshift(struct _Locale_ctype *l,
 
 /****** Collate Category ******/
 
-void* _Locale_collate_create(const char * name) {
+void* _Locale_collate_create(const char * name, struct _Locale_name_hint* hint) {
   L_collate_t*  lcollate = (L_collate_t*)malloc(sizeof(L_collate_t));
   lcollate->gcc_data = _Category_create(name, LC_COLLATE);
   return lcollate;
@@ -682,7 +695,7 @@ void _Locale_collate_destroy(void* lcollate) {
   free(lcollate);
 }
 
-char* _Locale_extract_collate_name(const char* cname, char* buf) {
+char* _Locale_extract_collate_name(const char* cname, char* buf, struct _Locale_name_hint* hint) {
   return _Locale_extract_name(cname, buf, LC_COLLATE);
 }
 

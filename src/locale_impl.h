@@ -99,12 +99,12 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
     void insert(_Locale_impl* from, const locale::id& n);
 
     // Helper functions for byname construction of locales.
-    void insert_ctype_facets(const char* name);
-    void insert_numeric_facets(const char* name);
-    void insert_time_facets(const char* name);
-    void insert_collate_facets(const char* name);
-    void insert_monetary_facets(const char* name);
-    void insert_messages_facets(const char* name);
+    _Locale_name_hint* insert_ctype_facets(const char* name, _Locale_name_hint* hint);
+    _Locale_name_hint* insert_numeric_facets(const char* name, _Locale_name_hint* hint);
+    _Locale_name_hint* insert_time_facets(const char* name, _Locale_name_hint* hint);
+    _Locale_name_hint* insert_collate_facets(const char* name, _Locale_name_hint* hint);
+    _Locale_name_hint* insert_monetary_facets(const char* name, _Locale_name_hint* hint);
+    _Locale_name_hint* insert_messages_facets(const char* name, _Locale_name_hint* hint);
 
     bool operator != (const locale& __loc) const { return __loc._M_impl != this; }
 

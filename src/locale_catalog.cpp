@@ -32,18 +32,18 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // those wrappers are needed to avoid extern "C"
 
-static void* _Loc_ctype_create(const char * s)
-{ return (void*)_Locale_ctype_create(s); }
-static void* _Loc_numeric_create(const char * s)
-{ return (void*)_Locale_numeric_create(s); }
-static void* _Loc_time_create(const char * s)
-{ return (void*)_Locale_time_create(s); }
-static void* _Loc_collate_create(const char * s)
-{ return (void*)_Locale_collate_create(s); }
-static void* _Loc_monetary_create(const char * s)
-{ return (void*)_Locale_monetary_create(s); }
-static void* _Loc_messages_create(const char * s)
-{ return (void*)_Locale_messages_create(s); }
+static void* _Loc_ctype_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_ctype_create(s, hint); }
+static void* _Loc_numeric_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_numeric_create(s, hint); }
+static void* _Loc_time_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_time_create(s, hint); }
+static void* _Loc_collate_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_collate_create(s, hint); }
+static void* _Loc_monetary_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_monetary_create(s, hint); }
+static void* _Loc_messages_create(const char * s, struct _Locale_name_hint* hint)
+{ return (void*)_Locale_messages_create(s, hint); }
 
 static char* _Loc_ctype_name(const void* l, char* s)
 { return _Locale_ctype_name(l, s); }
@@ -78,11 +78,11 @@ static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
 static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
 static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
 
-typedef void* (*loc_create_func_t)(const char *);
+typedef void* (*loc_create_func_t)(const char *, struct _Locale_name_hint*);
 typedef char* (*loc_name_func_t)(const void* l, char* s);
 typedef void (*loc_destroy_func_t)(void* l);
 typedef const char* (*loc_default_name_func_t)(char* s);
-typedef char* (*loc_extract_name_func_t)(const char*, char*);
+typedef char* (*loc_extract_name_func_t)(const char*, char*, struct _Locale_name_hint*);
 
 //----------------------------------------------------------------------
 // Acquire and release low-level category objects.  The whole point of
@@ -124,7 +124,8 @@ static Category_Map** messages_hash() {
 static _STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
 
 static void*
-__acquire_category(const char* name, loc_extract_name_func_t extract_name,
+__acquire_category(const char* name, struct _Locale_name_hint* hint,
+                   loc_extract_name_func_t extract_name,
                    loc_create_func_t create_obj, loc_default_name_func_t default_obj,
                    Category_Map ** M) {
   typedef Category_Map::iterator Category_iterator;
@@ -139,7 +140,7 @@ __acquire_category(const char* name, loc_extract_name_func_t extract_name,
       cname = "C";
   }
   else {
-    cname = extract_name(name, buf);
+    cname = extract_name(name, buf, hint);
     if (cname == 0) {
       return 0;
     }
@@ -161,7 +162,7 @@ __acquire_category(const char* name, loc_extract_name_func_t extract_name,
 
   // There was no entry in the map already.  Create the category.
   if (result.second)
-    (*result.first).second.first = create_obj(cname);
+    (*result.first).second.first = create_obj(cname, hint);
 
   // Increment the reference count.
   ++((*result.first).second.second);
@@ -203,40 +204,34 @@ __release_category(void* cat,
   }
 }
 
-_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name) {
-  return __REINTERPRET_CAST(_Locale_ctype*, __acquire_category(name, _Locale_extract_ctype_name,
-                                                                     _Loc_ctype_create,
-                                                                     _Loc_ctype_default,
+_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_ctype*, __acquire_category(name, hint,
+                                                               _Locale_extract_ctype_name, _Loc_ctype_create, _Loc_ctype_default,
                                                                ctype_hash()));
 }
-_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name) {
-  return __REINTERPRET_CAST(_Locale_numeric*, __acquire_category(name, _Locale_extract_numeric_name,
-                                                                       _Loc_numeric_create,
-                                                                       _Loc_numeric_default,
+_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_numeric*, __acquire_category(name, hint,
+                                                                 _Locale_extract_numeric_name, _Loc_numeric_create, _Loc_numeric_default,
                                                                  numeric_hash()));
 }
-_Locale_time* _STLP_CALL __acquire_time(const char* name) {
-  return __REINTERPRET_CAST(_Locale_time*, __acquire_category(name, _Locale_extract_time_name,
-                                                                    _Loc_time_create,
-                                                                    _Loc_time_default,
+_Locale_time* _STLP_CALL __acquire_time(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_time*, __acquire_category(name, hint,
+                                                              _Locale_extract_time_name, _Loc_time_create, _Loc_time_default,
                                                               time_hash()));
 }
-_Locale_collate* _STLP_CALL __acquire_collate(const char* name) {
-  return __REINTERPRET_CAST(_Locale_collate*, __acquire_category(name, _Locale_extract_collate_name,
-                                                                       _Loc_collate_create,
-                                                                       _Loc_collate_default,
+_Locale_collate* _STLP_CALL __acquire_collate(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_collate*, __acquire_category(name, hint,
+                                                                 _Locale_extract_collate_name, _Loc_collate_create, _Loc_collate_default,
                                                                  collate_hash()));
 }
-_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name) {
-  return __REINTERPRET_CAST(_Locale_monetary*, __acquire_category(name, _Locale_extract_monetary_name,
-                                                                        _Loc_monetary_create,
-                                                                        _Loc_monetary_default,
+_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_monetary*, __acquire_category(name, hint,
+                                                                  _Locale_extract_monetary_name, _Loc_monetary_create, _Loc_monetary_default,
                                                                   monetary_hash()));
 }
-_Locale_messages* _STLP_CALL __acquire_messages(const char* name) {
-  return __REINTERPRET_CAST(_Locale_messages*, __acquire_category(name, _Locale_extract_messages_name,
-                                                                        _Loc_messages_create,
-                                                                        _Loc_messages_default,
+_Locale_messages* _STLP_CALL __acquire_messages(const char* name, struct _Locale_name_hint* hint) {
+  return __REINTERPRET_CAST(_Locale_messages*, __acquire_category(name, hint,
+                                                                  _Locale_extract_messages_name, _Loc_messages_create, _Loc_messages_default,
                                                                   messages_hash()));
 }
 

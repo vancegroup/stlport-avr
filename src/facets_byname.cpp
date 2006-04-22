@@ -35,9 +35,9 @@ _STLP_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // ctype_byname<char>
 
-ctype_byname<char>::ctype_byname(const char* name, size_t refs) :
+ctype_byname<char>::ctype_byname(const char* name, size_t refs, struct _Locale_name_hint* hint) :
     ctype<char>( 0, false, refs),
-    _M_ctype(_STLP_PRIV __acquire_ctype(name)) {
+    _M_ctype(_STLP_PRIV __acquire_ctype(name, hint)) {
   ctype<char>::_M_ctype_table = _M_byname_table;
   if (!_M_ctype)
     locale::_M_throw_runtime_error();
@@ -103,9 +103,9 @@ struct _Ctype_byname_w_is_mask {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
+ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
   : ctype<wchar_t>(refs),
-    _M_ctype(_STLP_PRIV __acquire_ctype(name)) {
+    _M_ctype(_STLP_PRIV __acquire_ctype(name, hint)) {
   if (!_M_ctype)
     locale::_M_throw_runtime_error();
 }
@@ -168,9 +168,9 @@ ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
 #endif /* WCHAR_T */
 
 // collate_byname<char>
-collate_byname<char>::collate_byname(const char* name, size_t refs)
+collate_byname<char>::collate_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
   : collate<char>(refs),
-    _M_collate(_STLP_PRIV __acquire_collate(name)) {
+    _M_collate(_STLP_PRIV __acquire_collate(name, hint)) {
   if (!_M_collate)
     locale::_M_throw_runtime_error();
 }
@@ -207,9 +207,9 @@ collate_byname<char>::do_transform(const char* low, const char* high) const {
 
 // collate_byname<wchar_t>
 
-collate_byname<wchar_t>::collate_byname(const char* name, size_t refs)
+collate_byname<wchar_t>::collate_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
   : collate<wchar_t>(refs),
-    _M_collate(_STLP_PRIV __acquire_collate(name)) {
+    _M_collate(_STLP_PRIV __acquire_collate(name, hint)) {
   if (!_M_collate)
     locale::_M_throw_runtime_error();
 }
@@ -265,9 +265,9 @@ codecvt_byname<char, char, mbstate_t>::~codecvt_byname() {}
 //----------------------------------------------------------------------
 // codecvt_byname<wchar_t>
 codecvt_byname<wchar_t, char, mbstate_t>
-  ::codecvt_byname(const char* name, size_t refs)
+  ::codecvt_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
     : codecvt<wchar_t, char, mbstate_t>(refs),
-      _M_ctype(_STLP_PRIV __acquire_ctype(name)) {
+      _M_ctype(_STLP_PRIV __acquire_ctype(name, hint)) {
   if (!_M_ctype)
     locale::_M_throw_runtime_error();
 }
@@ -397,9 +397,9 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 
 // numpunct_byname<char>
-numpunct_byname<char>::numpunct_byname(const char* name, size_t refs)
+numpunct_byname<char>::numpunct_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
   : numpunct<char>(refs),
-    _M_numeric(_STLP_PRIV __acquire_numeric(name)) {
+    _M_numeric(_STLP_PRIV __acquire_numeric(name, hint)) {
   if (!_M_numeric)
     locale::_M_throw_runtime_error();
 
@@ -430,9 +430,9 @@ string numpunct_byname<char>::do_grouping() const {
 
 // numpunct_byname<wchar_t>
 
-numpunct_byname<wchar_t>::numpunct_byname(const char* name, size_t refs)
+numpunct_byname<wchar_t>::numpunct_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
   : numpunct<wchar_t>(refs),
-    _M_numeric(_STLP_PRIV __acquire_numeric(name)) {
+    _M_numeric(_STLP_PRIV __acquire_numeric(name, hint)) {
   if (!_M_numeric)
     locale::_M_throw_runtime_error();
 
@@ -787,8 +787,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 // moneypunct_byname<>
 //
 moneypunct_byname<char, true>::moneypunct_byname(const char * name,
-                                                 size_t refs):
-  moneypunct<char, true>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name)) {
+                                                 size_t refs, struct _Locale_name_hint* hint):
+  moneypunct<char, true>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name, hint)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error();
   _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
@@ -819,8 +819,8 @@ int moneypunct_byname<char, true>::do_frac_digits() const
 { return _Locale_int_frac_digits(_M_monetary); }
 
 moneypunct_byname<char, false>::moneypunct_byname(const char * name,
-                                                  size_t refs):
-  moneypunct<char, false>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name)) {
+                                                  size_t refs, struct _Locale_name_hint* hint):
+  moneypunct<char, false>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name, hint)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error();
   _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
@@ -856,8 +856,8 @@ int moneypunct_byname<char, false>::do_frac_digits() const
 #if !defined (_STLP_NO_WCHAR_T)
 
 moneypunct_byname<wchar_t, true>::moneypunct_byname(const char * name,
-                                                    size_t refs):
-  moneypunct<wchar_t, true>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name)) {
+                                                    size_t refs, struct _Locale_name_hint* hint):
+  moneypunct<wchar_t, true>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name, hint)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error();
   _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
@@ -900,8 +900,8 @@ int moneypunct_byname<wchar_t, true>::do_frac_digits() const
 { return _Locale_int_frac_digits(_M_monetary); }
 
 moneypunct_byname<wchar_t, false>::moneypunct_byname(const char * name,
-                                                     size_t refs):
-  moneypunct<wchar_t, false>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name)) {
+                                                     size_t refs, struct _Locale_name_hint* hint):
+  moneypunct<wchar_t, false>(refs), _M_monetary(_STLP_PRIV __acquire_monetary(name, hint)) {
   if (!_M_monetary)
     locale::_M_throw_runtime_error() ;
   _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
@@ -1017,12 +1017,12 @@ void _Catalog_nl_catd_map::erase(messages_base::catalog cat) {
 //
 //
 
-_Messages_impl::_Messages_impl(bool is_wide) :
+_Messages_impl::_Messages_impl(bool is_wide, struct _Locale_name_hint* hint) :
   _M_message_obj(0), _M_map(0) {
   _M_delete = true;
   if (is_wide)
     _M_map = new _Catalog_locale_map;
-  _M_message_obj = __acquire_messages("C");
+  _M_message_obj = __acquire_messages("C", hint);
 }
 
 _Messages_impl::_Messages_impl(bool is_wide, _Locale_messages* msg_obj ) :
@@ -1111,8 +1111,8 @@ messages<char>::messages(size_t refs, _Locale_messages* msg_obj) : locale::facet
 //----------------------------------------------------------------------
 // messages_byname<char>
 
-messages_byname<char>::messages_byname(const char* name, size_t refs)
-  : messages<char>(refs, name ? _STLP_PRIV __acquire_messages(name) : 0) {}
+messages_byname<char>::messages_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
+  : messages<char>(refs, name ? _STLP_PRIV __acquire_messages(name, hint) : 0) {}
 
 messages_byname<char>::~messages_byname() {}
 
@@ -1132,8 +1132,8 @@ messages<wchar_t>::messages(size_t refs, _Locale_messages* msg_obj)
 // messages_byname<wchar_t>
 
 
-messages_byname<wchar_t>::messages_byname(const char* name, size_t refs)
-  : messages<wchar_t>(refs, name ? _STLP_PRIV __acquire_messages(name) : 0) {}
+messages_byname<wchar_t>::messages_byname(const char* name, size_t refs, struct _Locale_name_hint* hint)
+  : messages<wchar_t>(refs, name ? _STLP_PRIV __acquire_messages(name, hint) : 0) {}
 
 messages_byname<wchar_t>::~messages_byname() {}
 

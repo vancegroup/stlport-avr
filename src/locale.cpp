@@ -116,12 +116,13 @@ locale::locale(const char* name)
     impl = new _Locale_impl(locale::id::_S_max, name);
 
     // Insert categories one at a time.
-    impl->insert_ctype_facets(name);
-    impl->insert_numeric_facets(name);
-    impl->insert_time_facets(name);
-    impl->insert_collate_facets(name);
-    impl->insert_monetary_facets(name);
-    impl->insert_messages_facets(name);
+    _Locale_name_hint *hint = 0;
+    hint = impl->insert_ctype_facets(name, hint);
+    hint = impl->insert_numeric_facets(name, hint);
+    hint = impl->insert_time_facets(name, hint);
+    hint = impl->insert_collate_facets(name, hint);
+    hint = impl->insert_monetary_facets(name, hint);
+    impl->insert_messages_facets(name, hint);
     // reassign impl
     _M_impl = _get_Locale_impl( impl );
   }
@@ -146,12 +147,12 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
     char monetary_buf[_Locale_MAX_SIMPLE_NAME];
     char messages_buf[_Locale_MAX_SIMPLE_NAME];
 
-    _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf);
-    _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf);
-    _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf);
-    _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, collate_buf);
-    _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, monetary_buf);
-    _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, messages_buf);
+    _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf, 0);
+    _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf, 0);
+    _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf, 0);
+    _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, collate_buf, 0);
+    _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, monetary_buf, 0);
+    _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, messages_buf, 0);
 
     // Construct a new composite name.
     char composite_buf[_Locale_MAX_COMPOSITE_NAME];
@@ -176,18 +177,19 @@ locale::locale(const locale& L, const char* name, locale::category c)
     impl = new _Locale_impl(*L._M_impl);
     _Stl_loc_combine_names(impl, L._M_impl->name.c_str(), name, c);
 
+    _Locale_name_hint *hint = 0;
     if (c & locale::ctype)
-      impl->insert_ctype_facets(name);
+      hint = impl->insert_ctype_facets(name, hint);
     if (c & locale::numeric)
-      impl->insert_numeric_facets(name);
+      hint = impl->insert_numeric_facets(name, hint);
     if (c & locale::time)
-      impl->insert_time_facets(name);
+      hint = impl->insert_time_facets(name, hint);
     if (c & locale::collate)
-      impl->insert_collate_facets(name);
+      hint = impl->insert_collate_facets(name, hint);
     if (c & locale::monetary)
-      impl->insert_monetary_facets(name);
+      hint = impl->insert_monetary_facets(name, hint);
     if (c & locale::messages)
-      impl->insert_messages_facets(name);
+      impl->insert_messages_facets(name, hint);
     _M_impl = _get_Locale_impl( impl );
   }
   _STLP_UNWIND(delete impl)
