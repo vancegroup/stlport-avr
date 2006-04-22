@@ -61,7 +61,7 @@ struct __move_traits {
   typedef typename _IsSTLportClass<_Tp>::_Ret implemented;
 #else
   typedef __false_type implemented;
-#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
+#endif
   /*
    * complete tells if the move is complete or partial, that is to say, does the source
    * needs to be destroyed once it has been moved.
@@ -124,6 +124,17 @@ template <class _Tp>
 struct __move_traits_help {
   typedef __true_type implemented;
   typedef typename __move_traits<_Tp>::complete complete;
+};
+
+template <class _Tp1, class _Tp2>
+struct __move_traits_help1 {
+  typedef __move_traits<_Tp1> _MoveTraits1;
+  typedef __move_traits<_Tp2> _MoveTraits2;
+
+  typedef typename _Lor2<typename _MoveTraits1::implemented,
+                         typename _MoveTraits2::implemented>::_Ret implemented;
+  typedef typename _Land2<typename _MoveTraits1::complete,
+                          typename _MoveTraits2::complete>::_Ret complete;
 };
 
 template <class _Tp1, class _Tp2>
