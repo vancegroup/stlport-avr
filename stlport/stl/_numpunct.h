@@ -124,7 +124,7 @@ public:
   typedef char                char_type;
   typedef string              string_type;
 
-  explicit numpunct_byname(const char* __name, size_t __refs = 0);
+  explicit numpunct_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
 
@@ -141,6 +141,7 @@ private:
   typedef numpunct_byname<char> _Self;
   numpunct_byname(_Self const&);
   _Self& operator = (_Self const&);
+  friend struct _Locale_name_hint* _Locale_extract_hint(numpunct_byname<char>*);
 };
 
 # ifndef _STLP_NO_WCHAR_T
@@ -150,7 +151,7 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit numpunct_byname(const char* __name, size_t __refs = 0);
+  explicit numpunct_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
 

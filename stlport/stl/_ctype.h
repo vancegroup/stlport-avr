@@ -149,7 +149,7 @@ private:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
 public:
-  explicit ctype_byname(const char*, size_t = 0);
+  explicit ctype_byname(const char*, size_t = 0, struct _Locale_name_hint* __hint = 0);
   ~ctype_byname();
 
   virtual char        do_toupper(char __c) const;
@@ -166,10 +166,11 @@ private:
   typedef ctype_byname<char> _Self;
   ctype_byname(_Self const&);
   _Self& operator = (_Self const&);
+  friend _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>*);
 };
 
 
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype<wchar_t> : public locale::facet, public ctype_base
 {
@@ -238,7 +239,7 @@ protected:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>: public ctype<wchar_t> {
 public:
-  explicit ctype_byname(const char* __name, size_t __refs = 0);
+  explicit ctype_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
   ~ctype_byname();
@@ -263,7 +264,7 @@ private:
   _Self& operator = (_Self const&);
 };
 
-# endif /* WCHAR_T */
+#  endif /* WCHAR_T */
 
 _STLP_END_NAMESPACE
 

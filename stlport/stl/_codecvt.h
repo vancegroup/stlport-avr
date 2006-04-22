@@ -370,7 +370,7 @@ class _STLP_CLASS_DECLSPEC codecvt_byname<wchar_t, char, mbstate_t>
   : public codecvt<wchar_t, char, mbstate_t>
 {
 public:
-  explicit codecvt_byname(const char * __name, size_t __refs = 0);
+  explicit codecvt_byname(const char * __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
   ~codecvt_byname();

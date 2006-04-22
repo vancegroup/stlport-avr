@@ -122,7 +122,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<char>: public collate<char>
 {
 public:
-  explicit collate_byname(const char* __name, size_t __refs = 0);
+  explicit collate_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
   ~collate_byname();
@@ -135,6 +135,7 @@ private:
   _Locale_collate* _M_collate;
   collate_byname(const collate_byname<char>&);
   collate_byname<char>& operator =(const collate_byname<char>&);
+  friend _Locale_name_hint* _Locale_extract_hint(collate_byname<char>*);
 };
 
 # ifndef _STLP_NO_WCHAR_T
@@ -143,7 +144,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>: public collate<wchar_t>
 {
 public:
-  explicit collate_byname(const char * __name, size_t __refs = 0);
+  explicit collate_byname(const char * __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
 
 protected:
   ~collate_byname();

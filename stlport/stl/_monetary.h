@@ -280,7 +280,8 @@ public:
   typedef char                  char_type;
   typedef string                string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(char, true) (const char * __name, size_t __refs = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(char, true) (const char * __name, size_t __refs = 0,
+                                                       struct _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -310,7 +311,8 @@ public:
   typedef char                  char_type;
   typedef string                string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(char, false) (const char * __name, size_t __refs = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(char, false) (const char * __name, size_t __refs = 0,
+                                                        struct _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -330,6 +332,7 @@ private:
   //explicitely defined as private to avoid warnings:
   moneypunct_byname(_Self const&);
   _Self& operator = (_Self const&);
+  friend _Locale_name_hint* _Locale_extract_hint(moneypunct_byname<char, false>*);
 };
 
 #if !defined (_STLP_NO_WCHAR_T)
@@ -341,7 +344,8 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, true) (const char * __name, size_t __refs = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, true) (const char * __name, size_t __refs = 0,
+                                                          struct _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -371,7 +375,8 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, false) (const char * __name, size_t __refs = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, false) (const char * __name, size_t __refs = 0,
+                                                           struct _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
