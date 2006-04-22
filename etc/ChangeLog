@@ -1,3 +1,38 @@
+2006-04-20  Francois Dumont  <dums@stlport...>
+
+	* src/acquire_release.h, c_locale.h, locale.cpp,
+	locale_catalog.cpp, locale_impl.cpp, locale_impl.h,
+	message_facets.h, facets_byname.cpp: Add a locale hint feature
+	to improve locale construction from name. This is used by
+	Win32 locale implementation that broadcast the locale lcid
+	thanks to this hint. With this modification, LocaleTest fixture
+	runs 5 times faster.
+
+	* stlport/stl/_collate.h, _ctype.h, _monetary.h, _numpunct.h,
+	_time_facets.h: Add _Locale_extract_hint function as friend
+	to some locale facet in order to access locale implementation
+	specific structure and potentially extract the hint.
+
+	* stlport/stl/_codecvt.h, _collate.h, _ctype.h, _messages_facets.h,
+	_monetary.h, _numpunct.h, _time_facets.h: Add _Locale_name_hint pointer
+	parameter to facet by name constructor.
+
+	* build/Makefiles/nmake/lib/clean.mak, rules-so.mak, rules-install-so.mak:
+	Based on Dr Dobb's Richard Grimes article, change management of
+	manifest file for STLport shared library. According this article
+	.manifest file is not taken into account for a library, only .exe one is.
+	Solution is to integrate .manifest file into the .dll as an unmanaged
+	ressource with id 2. We now do so thanks to the mt manifest tool.
+
+	* stlport/stl/_pair.h: Remove __move_traits partial specialization for
+	Borland free compiler, it was introducing weird compilation error.
+
+	* stlport/stl/_move_construct_fwk.h: Add a helper struct for __move_traits
+	feature.
+
+	* build/test/unit/msvc.mak: Prepare makefile to easily build unit tests
+	without STLport.
+
 2006-04-15  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/host.h, compat.h, debug/_debug.c: Removed
