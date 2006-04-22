@@ -1,5 +1,12 @@
 2006-04-20  Francois Dumont  <dums@stlport...>
 
+	* stlport/stl/config/_solaris.h: Replace C++ style comment
+	in C style.
+
+	* stlport/stl/_cmath.h: Add macro definition for environment
+	having long double but no float neither long double math functions
+	This is the Solaris configuration.
+
 	* src/acquire_release.h, c_locale.h, locale.cpp,
 	locale_catalog.cpp, locale_impl.cpp, locale_impl.h,
 	message_facets.h, facets_byname.cpp: Add a locale hint feature
