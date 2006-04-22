@@ -70,10 +70,10 @@
  * P.S. That's why I add two defines:
  */
 
-// #ifdef __GNUC__
+/* #ifdef __GNUC__ */
 #define _STLP_NO_VENDOR_MATH_F
 #define _STLP_NO_VENDOR_MATH_L
-// #endif
+/* #endif */
 
 #ifdef __GNUC__
 #  define _STLP_WCHAR_BORLAND_EXCLUDE
