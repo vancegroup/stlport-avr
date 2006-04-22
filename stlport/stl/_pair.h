@@ -162,9 +162,11 @@ struct __type_traits<pair<_T1, _T2> > {
   typedef __false_type is_POD_type;
 };
 
+#if !defined (__BORLANDC__) || (__BORLANDC__ > 0x551)
 template <class _T1, class _T2>
 struct __move_traits<pair<_T1, _T2> >
-  : _STLP_PRIV __move_traits_help2<_T1, _T2> {};
+  : _STLP_PRIV __move_traits_help1<_T1, _T2> {};
+#endif
 
 _STLP_END_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
