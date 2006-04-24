@@ -20,11 +20,13 @@ class TypeTraitsTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(integer);
   CPPUNIT_TEST(rational);
   CPPUNIT_TEST(pointer_type);
-#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (STLPORT) && !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(reference_type);
+#if defined (STLPORT)
   CPPUNIT_STOP_IGNORE;
+#endif
   CPPUNIT_TEST(both_pointer_type);
   CPPUNIT_TEST(ok_to_use_memcpy);
   CPPUNIT_TEST(trivial_destructor);
