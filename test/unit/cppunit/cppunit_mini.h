@@ -132,16 +132,17 @@ namespace CPPUNIT_NS
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST(X) \
   if (shouldRunThis(in_name, className, #X, invert)) { \
-    try { \
-      setUp(); \
-      progress(className, #X, ignoring); \
-      if (!ignoring) \
+    setUp(); \
+    progress(className, #X, ignoring); \
+    if (!ignoring) { \
+      try { \
         X(); \
-      tearDown(); \
+      } \
+      catch(...) { \
+        Base::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); \
+      } \
     } \
-    catch(...) { \
-      Base::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); \
-    } \
+    tearDown(); \
   }
 #else
 #  define CPPUNIT_TEST(X) \
