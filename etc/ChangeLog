@@ -1,3 +1,13 @@
+2006-04-24  Francois Dumont  <dums@stlport...>
+
+	* test/unit/cppunit/cppunit_mini.h: Limit scope of try/catch block to
+	the test case call so that CppUnit function methods are correctly
+	called.
+
+	* test/unit/type_traits_test.cpp: Fix use of
+	CPPUNIT_IGNORE/CPPUNIT_STOP_IGNORE macros so that ignored tests are
+	correctly reported as ignored.
+
 2006-04-20  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_solaris.h: Replace C++ style comment
