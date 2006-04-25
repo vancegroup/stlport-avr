@@ -1,3 +1,19 @@
+2006-04-25  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_istream.c: Small refactoring to avoid a uninitialized
+	warning for __do_handle_exceptions local variable.
+
+	* stlport/stl/_deque.h: Ditto with __cur_node variable in
+	_M_range_initialize method.
+
+	* stlport/stl/_deque.c: Ditto with __cur in _M_fill_initialize.
+
+	* stlport/stl/config/_auto_link.h: Removed auto link feature when
+	building a C translation unit thanks Michael Fink.
+
+	* src/time_facets.cpp: Add missing calling convention on
+	__write_formatted_time internal function.
+
 2006-04-24  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cppunit/cppunit_mini.h: Limit scope of try/catch block to
