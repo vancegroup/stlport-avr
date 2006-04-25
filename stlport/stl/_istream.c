@@ -1289,11 +1289,10 @@ __copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, 
   _CharT* __first = __src->_M_gptr();
   ptrdiff_t __avail = __src->_M_egptr() - __first;
   // fbp : introduced to move catch/try blocks out of the loop
-  bool __do_handle_exceptions;
+  bool __do_handle_exceptions = false;
 
   _STLP_TRY {
     for (;;) {
-      __do_handle_exceptions = false ;
       const _CharT* __last = __scan_delim(__first, __src->_M_egptr());
 
       // Try to copy the entire input buffer to the output buffer.
@@ -1322,10 +1321,13 @@ __copy_buffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT, 
         __status |= ios_base::eofbit;
         break;
       }
-      else
+      else {
         return __extracted + __copy_unbuffered(__that,  __src, __dest, __is_delim,
                                                 __extract_delim, __rethrow);
-    } /* while */
+      }
+
+      __do_handle_exceptions = false;
+    }
   }
 
   _STLP_CATCH_ALL {

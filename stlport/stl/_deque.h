@@ -858,11 +858,9 @@ protected:                        // Internal construction/destruction
                             const forward_iterator_tag &)  {
    size_type __n = distance(__first, __last);
    this->_M_initialize_map(__n);
-   _Map_pointer __cur_node;
+   _Map_pointer __cur_node = this->_M_start._M_node;
    _STLP_TRY {
-    for (__cur_node = this->_M_start._M_node;
-         __cur_node < this->_M_finish._M_node;
-         ++__cur_node) {
+    for (; __cur_node < this->_M_finish._M_node; ++__cur_node) {
       _ForwardIterator __mid = __first;
       advance(__mid, this->buffer_size());
       uninitialized_copy(__first, __mid, *__cur_node);
