@@ -137,8 +137,8 @@ __iso_week_days(int yday, int wday) {
 #  define _STLP_SPRINTF(B, BS, F, D) sprintf_s(B, BS, F, D)
 #endif
 
-char * __write_formatted_time(char* buf, size_t buf_size, char format, char modifier,
-                              const _Time_Info& table, const tm* t) {
+char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format, char modifier,
+                                         const _Time_Info& table, const tm* t) {
   switch (format) {
     case 'a':
       return copy(table._M_dayname[t->tm_wday].begin(),
