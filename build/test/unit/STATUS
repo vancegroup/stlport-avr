@@ -433,15 +433,15 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.4 (cygwin special)
 -----------------------------------------------------------------------
-Date:                           2005-10-12
+Date:                           2006-04-26
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (332 tests)
+Status (release-shared):        1 failure (361 tests)
 Notes:                          ExceptionTest::uncaught_exception fails when all tests
                                 are run but succeed with the -t=ExceptionTest option.
-Status (dbg-shared):            1 failure (332 tests)
+Status (dbg-shared):            1 failure (361 tests)
 Notes:                          Idem release-shared.
-Status (stldbg-shared):         1 failure (332 tests)
+Status (stldbg-shared):         1 failure (361 tests)
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
