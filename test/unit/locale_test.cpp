@@ -198,7 +198,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
         }
         ++fieldIndex;
       }
-      
+
       // space after currency
       if (intl_fmp.pos_format().field[fieldIndex] == money_base::space ||
           intl_fmp.pos_format().field[fieldIndex] == money_base::none) {
@@ -640,16 +640,13 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
     CPPUNIT_ASSERT( res != rend );
     CPPUNIT_ASSERT( *res == 'a' );
 
-    res = ct.scan_is((ctype_base::mask)(ctype_base::alpha | ctype_base::upper), rbeg, rend);
+    res = ct.scan_is(ctype_base::upper, rbeg, rend);
     CPPUNIT_ASSERT( res != rend );
     CPPUNIT_ASSERT( *res == 'A' );
 
     res = ct.scan_is(ctype_base::punct, rbeg, rend);
     CPPUNIT_ASSERT( res != rend );
     CPPUNIT_ASSERT( *res == '.' );
-
-    res = ct.scan_is((ctype_base::mask)(ctype_base::punct | ctype_base::digit), rbeg, rend);
-    CPPUNIT_ASSERT( res == rend );
   }
 
   //scan_not
@@ -661,7 +658,7 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
     const char *res;
     res = ct.scan_not((ctype_base::mask)(ctype_base::alpha | ctype_base::lower), rbeg, rend);
     CPPUNIT_ASSERT( res != rend );
-    CPPUNIT_ASSERT( *res == 'A' );
+    CPPUNIT_ASSERT( *res == '1' );
 
     res = ct.scan_not(ctype_base::alpha, rbeg, rend);
     CPPUNIT_ASSERT( res != rend );
