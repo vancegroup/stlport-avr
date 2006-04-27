@@ -142,8 +142,10 @@ void MoveConstructorTest::move_construct_test()
 
   //cout << "swap(vector<int>, vector<int>)";
   vector<int> elem1(10, 0), elem2(10, 0);
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   int *p1 = &elem1.front();
   int *p2 = &elem2.front();
+#endif
   swap(elem1, elem2);
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT(((p1 == &elem2.front()) && (p2 == &elem1.front())));
@@ -932,10 +934,18 @@ void MoveConstructorTest::move_traits()
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( MovableStruct::nb_mv_construct_call == 3 );
 #else
+#  if !defined (_MSC_VER)
       CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 7 );
+#  else
+      CPPUNIT_ASSERT( MovableStruct::nb_cpy_construct_call == 14 );
+#  endif
 #endif
       CPPUNIT_ASSERT( MovableStruct::nb_assignment_call == 0 );
+#if defined (STLPORT) || !defined (_MSC_VER)
       CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 7 );
+#else
+      CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 14 );
+#endif
 
       // Following test violate requirements to sequiences (23.1.1 Table 67)
       /*
@@ -1021,8 +1031,13 @@ void MoveConstructorTest::move_traits()
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 3 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 4 );
 #else
+#  if !defined (_MSC_VER)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 7 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 7 );
+#  else
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 14 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 14 );
+#  endif
 #endif
 
       // Following test violate requirements to sequiences (23.1.1 Table 67)
