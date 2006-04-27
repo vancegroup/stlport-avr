@@ -67,18 +67,21 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
   CPPUNIT_TEST(template_expression);
-#if !defined (STLPORT) || defined (_STLP_NO_WCHAR_T)
+#if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
+  CPPUNIT_IGNORE;
+#endif
+#if defined (__CYGWIN__) && !defined (STLPORT)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(template_wexpression);
   CPPUNIT_STOP_IGNORE;
-#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(io);
   CPPUNIT_STOP_IGNORE;
-#if !defined (STLPORT) || defined (_STLP_NO_CUSTOM_IO) || \
-     defined (__DMC__)
+#if defined (STLPORT) && defined (_STLP_NO_CUSTOM_IO) || \
+    defined (__DMC__)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(allocator_with_state);
@@ -391,7 +394,7 @@ void StringTest::null_char()
 
   CPPUNIT_CHECK( s[s.size()] == '\0' );
 
-#if defined (_STLP_USE_EXCEPTIONS)
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
     //Check is only here to avoid warning about value of expression not used
     CPPUNIT_CHECK( s.at(s.size()) == '\0' );
@@ -806,7 +809,8 @@ void StringTest::template_expression()
 
 void StringTest::template_wexpression()
 {
-#if !defined (STLPORT) || defined (_STLP_NO_WCHAR_T)
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#  if !defined (__CYGWIN__) || defined (STLPORT)
   wstring one(L"one"), two(L"two"), three(L"three");
   wstring space(1, L' ');
 
@@ -898,7 +902,7 @@ void StringTest::template_wexpression()
     result = (one + L' ' + two).at(3);
     CPPUNIT_CHECK( result == L' ' );
 
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#    if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
       result = (one + L' ' + two).at(10);
       CPPUNIT_ASSERT(false);
@@ -909,8 +913,9 @@ void StringTest::template_wexpression()
     catch (...) {
       CPPUNIT_ASSERT(false);
     }
-#  endif
+#    endif
   }
+#  endif
 #endif
 }
 
