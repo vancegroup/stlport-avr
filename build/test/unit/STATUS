@@ -333,40 +333,39 @@ Operational environment:        Windows XP Professionnal 2002 SP2
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 6 SP5
 -----------------------------------------------------------------------
-Date:                           2005-10-08
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-04-27
+STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (327 tests)
+Status (release-shared):        All pass (361 tests, 8 ignored)
 Notes:
-Status (dbg-shared):            All pass (327 tests)
+Status (dbg-shared):            All pass (361 tests, 8 ignored)
 Notes:
-Status (stldbg-shared):         All pass (327 tests)
+Status (stldbg-shared):         All pass (361 tests, 8 ignored)
 Notes:
-Status (release-static):        All pass (327 tests)
+Status (release-static):        All pass (361 tests, 8 ignored)
 Notes:
-Status (dbg-static):            All pass (327 tests)
+Status (dbg-static):            All pass (361 tests, 8 ignored)
 Notes:
-Status (stldbg-static):         All pass (327 tests)
+Status (stldbg-static):         All pass (361 tests, 8 ignored)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:                       Visual C++ 2005 Beta2 Version 8.0.50215-4400
+Compiler:                       Visual C++ 2005 Express Version 8.0.50215-4400
 -----------------------------------------------------------------------
-Date:                           2005-10-12
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-04-27
+STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (330 tests)
+Status (release-shared):        All pass (361 tests, 2 ignored)
 Notes:
-Status (dbg-shared):            Runtime fail
-Notes:                          Microsoft do not grant the msvcp80d.dll file
-                                in their free package.
-Status (stldbg-shared):         Idem dbg-shared.
+Status (dbg-shared):            All pass (361 tests, 2 ignored)
 Notes:
-Status (release-static):        All pass (330 tests)
+Status (stldbg-shared):         All pass (361 tests, 2 ignored)
 Notes:
-Status (dbg-static):            All pass (330 tests)
+Status (release-static):        All pass (361 tests, 2 ignored)
 Notes:
-Status (stldbg-static):         All pass (330 tests)
+Status (dbg-static):            All pass (361 tests, 2 ignored)
+Notes:
+Status (stldbg-static):         All pass (361 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------
@@ -503,20 +502,20 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ .Net 2003 (7.1)
 -----------------------------------------------------------------------
-Date:                           2005-10-23
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-04-27
+STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (330 tests)
+Status (release-shared):        All pass (361 tests, 2 ignored)
 Notes:
-Status (dbg-shared):            All pass (330 tests)
+Status (dbg-shared):            All pass (361 tests, 2 ignored)
 Notes:
-Status (stldbg-shared):         All pass (330 tests)
+Status (stldbg-shared):         All pass (361 tests, 2 ignored)
 Notes:
-Status (release-static):        All pass (330 tests)
+Status (release-static):        All pass (361 tests, 2 ignored)
 Notes:
-Status (dbg-static):            All pass (330 tests)
+Status (dbg-static):            All pass (361 tests, 2 ignored)
 Notes:
-Status (stldbg-static):         All pass (330 tests)
+Status (stldbg-static):         All pass (361 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------

@@ -13,6 +13,8 @@
 	* stlport/stl/config/_msvc.h: Clearly report status regarding build
 	of STLport using the MSVC /clr option.
 
+	* stlport/stl/_threads.h: Remove MSVC .Net 2002 annoying warning.
+
 2006-04-25  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_istream.c: Small refactoring to avoid a uninitialized
