@@ -614,6 +614,11 @@ struct _Atomic_swap_struct<0> {
   }
 };
 
+#if defined (_STLP_MSVC) && (_STLP_MSVC == 1300)
+#  pragma warning (push)
+#  pragma warning (disable : 4189) //__use_ptr_atomic_swap initialized but not used
+#endif
+
 inline __stl_atomic_t _STLP_CALL _Atomic_swap(_STLP_VOLATILE __stl_atomic_t * __p, __stl_atomic_t __q) {
   const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
   return _Atomic_swap_struct<__use_ptr_atomic_swap>::_S_swap(__p, __q);
@@ -623,6 +628,10 @@ inline void* _STLP_CALL _Atomic_swap_ptr(void* _STLP_VOLATILE* __p, void* __q) {
   const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
   return _Atomic_swap_struct<__use_ptr_atomic_swap>::_S_swap_ptr(__p, __q);
 }
+
+#if defined (_STLP_MSVC) && (_STLP_MSVC == 1300)
+#  pragma warning (pop)
+#endif
 
 #if defined (_STLP_BETHREADS)
 template <int __inst>
