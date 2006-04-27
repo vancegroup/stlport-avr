@@ -1,10 +1,19 @@
+/* STLport configuration file
+ * It is internal STLport header - DO NOT include it directly
+ * Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 Beta, ICL
+ */
+
 #if !defined (__ICL) && !defined (_STLP_MSVC)
 #  define _STLP_MSVC _MSC_VER
 #endif
 
-// STLport configuration file
-// It is internal STLport header - DO NOT include it directly
-// Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 Beta, ICL
+#if defined (__BUILDING_STLPORT) && defined (_MANAGED)
+/* Building a managed version of STLport is not supported because we haven't
+ * found a good reason to support it. However, building a managed translation
+ * unit using STLport _is_ supported.
+ */
+#  error Sorry but building a managed version of STLport is not supported.
+#endif
 
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 /* This is 64 bits platform SDK specific settings. There is no clear way to
@@ -17,7 +26,7 @@
 #  define _STLP_VENDOR_TERMINATE_STD
 #  define _STLP_GLOBAL_NEW_HANDLER
 #  if (_MSC_VER <= 1400)
-//We hope this bug will be fixed in future versions.
+/* We hope this bug will be fixed in future versions. */
 #    define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 #  endif
 #endif
@@ -30,7 +39,7 @@
 
 #define _STLP_PRAGMA_ONCE
 
-// these switches depend on compiler flags
+/* These switches depend on compiler flags */
 #ifndef _CPPUNWIND
 #  define _STLP_DONT_USE_EXCEPTIONS 1
 #endif
@@ -48,7 +57,7 @@
 
 #if defined (_STLP_MSVC)
 
-//Full compiler version comes from boost library intrinsics.hpp header.
+/* Full compiler version comes from boost library intrinsics.hpp header. */
 #  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)
 #    define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) __has_trivial_constructor(T)
 #    define _STLP_HAS_TRIVIAL_COPY(T) __has_trivial_copy(T)
@@ -69,39 +78,40 @@
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
 
-// # ifndef __BUILDING_STLPORT
-// #  define _STLP_USE_TEMPLATE_EXPORT 1
-// # endif
+/* # ifndef __BUILDING_STLPORT
+ * #  define _STLP_USE_TEMPLATE_EXPORT 1
+ * # endif
+ */
 #  if (_STLP_MSVC <= 1400)
 #    define _STLP_STATIC_CONST_INIT_BUG   1
-#  endif  //  (_STLP_MSVC <= 1400)
+#  endif
 
 #  if (_STLP_MSVC >= 1310)
 #    define _STLP_FULL_ADL_IMPLEMENTED 1
-#  endif  //  (_STLP_MSVC >= 1310)
+#  endif
 
 #  if (_STLP_MSVC >= 1300)
 #    undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #    if !defined (_STLP_DONT_USE_EXCEPTIONS)
 #      define _STLP_NOTHROW throw()
 #    endif
-#  endif  //  (_STLP_MSVC >= 1300)
+#  endif
 
 #  if (_STLP_MSVC <= 1300)
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
-// there is no partial spec, and MSVC breaks on simulating it for iterator_traits queries
+/* There is no partial spec, and MSVC breaks on simulating it for iterator_traits queries */
 #    define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 #    define _STLP_NO_TYPENAME_IN_TEMPLATE_HEADER
 #    define _STLP_NO_METHOD_SPECIALIZATION 1
 #    define _STLP_DEF_CONST_PLCT_NEW_BUG 1
 #    define _STLP_NO_TYPENAME_ON_RETURN_TYPE 1
-// VC++ cannot handle default allocator argument in template constructors
+/* VC++ cannot handle default allocator argument in template constructors */
 #    define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
 #    define _STLP_NO_QUALIFIED_FRIENDS    1
 #    define _STLP_NO_FRIEND_TEMPLATES
-// fails to properly resolve call to sin() from within sin()
-#  endif /* _STLP_MSVC <= 1300 */
+/* Fails to properly resolve call to sin() from within sin() */
+#  endif
 
 #  if (_STLP_MSVC >= 1200)
 #    define _STLP_HAS_NATIVE_FLOAT_ABS 1
@@ -128,10 +138,10 @@
 #    endif
 */
 
-// boris : not defining this macro for SP5 causes other problems
-//#    if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 )
+/* Boris : not defining this macro for SP5 causes other problems */
+/*#    if !defined (_MSC_FULL_VER) || (_MSC_FULL_VER < 12008804 ) */
 #    define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
-//#    endif
+/*#    endif */
 #    define _STLP_DONT_USE_BOOL_TYPEDEF 1
 #    define _STLP_DONT_RETURN_VOID 1
 #  endif
@@ -160,7 +170,7 @@
 
 #if (_MSC_VER <= 1310)
 #  define _STLP_VENDOR_GLOBAL_CSTD
-#endif /* (_MSC_VER <= 1310) */
+#endif
 
 #if (_MSC_VER < 1300)
 #  define _STLP_NO_IEC559_SUPPORT 1
@@ -173,8 +183,8 @@
 #  define _STLP_NEW_PLATFORM_SDK 1
 #endif
 
-#if (_MSC_VER < 1300) || defined (UNDER_CE) // including MSVC 6.0
-//  these work, as long they are inline
+#if (_MSC_VER < 1300) || defined (UNDER_CE) /* including MSVC 6.0 */
+/* These work, as long they are inline */
 #  define _STLP_INLINE_MEMBER_TEMPLATES 1
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 #  define _STLP_GLOBAL_NEW_HANDLER 1
@@ -186,23 +196,23 @@
 #if (_STLP_MSVC > 1100)
 typedef char __stl_char;
 #  define _STLP_DEFAULTCHAR __stl_char
-#endif /* (_STLP_MSVC < 1100 ) */
+#endif
 
 #if ( _MSC_VER<=1010 )
-// "bool" is reserved in MSVC 4.1 while <yvals.h> absent, so :
-// #    define _STLP_USE_ABBREVS           1
+/* "bool" is reserved in MSVC 4.1 while <yvals.h> absent, so : */
+/* #    define _STLP_USE_ABBREVS           1 */
 #  define _STLP_NO_BAD_ALLOC
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 #  define _STLP_NO_NEW_NEW_HEADER 1
 #elif (_MSC_VER < 1100)
-// VC++ 4.2 and higher
+/* VC++ 4.2 and higher */
 #  define _STLP_YVALS_H 1
 #  define _STLP_USE_NO_IOSTREAMS 1
-#endif /* 1010 */
+#endif
 
 #if defined (_STLP_MSVC) && (_STLP_MSVC < 1200) /* before VC++ 6.0 */
-// #  define _STLP_NO_MEMBER_TEMPLATES 1
-// #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
+/* #  define _STLP_NO_MEMBER_TEMPLATES 1 */
+/* #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1 */
 #  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS 1
 #  define _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
 #  define _STLP_QUALIFIED_SPECIALIZATION_BUG 1
@@ -216,8 +226,8 @@ typedef char __stl_char;
 #  ifndef _STLP_USE_NO_IOSTREAMS
 #    define _STLP_USE_NO_IOSTREAMS
 #  endif
-// #  define _STLP_NESTED_TYPE_PARAM_BUG 1
-// Debug mode does not work for 4.2
+/* #  define _STLP_NESTED_TYPE_PARAM_BUG 1 */
+/* Debug mode does not work for 4.2 */
 #  if defined (_STLP_DEBUG)
 #    pragma message ("STLport debug mode does not work for VC++ 4.2, turning _STLP_DEBUG off ...")
 #    undef _STLP_DEBUG
@@ -229,7 +239,7 @@ typedef char __stl_char;
 #  define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
 #  define _STLP_LIMITED_DEFAULT_TEMPLATES 1
 
-// up to 4.2, library is in global namespace
+/* up to 4.2, library is in global namespace */
 #  define _STLP_VENDOR_GLOBAL_STD
 #  define _STLP_NONTEMPL_BASE_MATCH_BUG 1
 #  define _STLP_BROKEN_USING_DIRECTIVE  1
@@ -247,8 +257,8 @@ typedef char __stl_char;
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #endif /* 1100 */
 
-#if (_MSC_VER < 1300) // MSVC 6.0 and earlier
-// defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library
+#if (_MSC_VER < 1300) /* MSVC 6.0 and earlier */
+/* defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library */
 #  define _STLP_USE_ABBREVS
 #endif
 
@@ -290,10 +300,10 @@ typedef char __stl_char;
 #define _STLP_EXPORT_TEMPLATE_KEYWORD
 
 #if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
-//    only static STLport lib now works for ICL and VC 5.0
+/*    only static STLport lib now works for ICL and VC 5.0 */
 #  undef  _STLP_USE_STATIC_LIB
 #  define _STLP_USE_STATIC_LIB
-//    disable hook which makes template symbols to be searched for in the library
+/*    disable hook which makes template symbols to be searched for in the library */
 #  undef _STLP_NO_CUSTOM_IO
 #endif
 
@@ -312,6 +322,7 @@ typedef char __stl_char;
 #  endif
 #endif
 
-// Local Variables:
-// mode:C++
-// End:
+/* Local Variables:
+ * mode:C++
+ * End:
+ */
