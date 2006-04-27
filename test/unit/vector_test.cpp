@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <algorithm>
-#if defined (_STLP_USE_EXCEPTIONS)
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
 #endif
 
@@ -268,7 +268,7 @@ void VectorTest::at() {
   v.at(0) = 20;
   CPPUNIT_ASSERT( cv.at(0) == 20 );
 
-#ifdef _STLP_USE_EXCEPTIONS
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   for (;;) {
     try {
       v.at(1) = 20;

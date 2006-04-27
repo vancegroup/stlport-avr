@@ -4,7 +4,7 @@
 
 #include <deque>
 #include <algorithm>
-#if defined (_STLP_USE_EXCEPTIONS)
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
 #endif
 
@@ -77,7 +77,7 @@ void DequeTest::at() {
   d.at(0) = 20;
   CPPUNIT_ASSERT( cd.at(0) == 20 );
 
-#if defined (_STLP_USE_EXCEPTIONS)
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   for (;;) {
     try {
       d.at(1) = 20;

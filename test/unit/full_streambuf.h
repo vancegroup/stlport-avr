@@ -25,7 +25,7 @@ public:
 protected:
   int_type overflow(int_type c) {
     if (_nb_output == 0) {
-#if defined (_STLP_USE_EXCEPTIONS)
+#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
       if (_do_throw) {
         throw "streambuf full";
       }
