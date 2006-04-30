@@ -19,7 +19,7 @@ using namespace std;
 class IStreamIteratorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(IStreamIteratorTest);
-#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(istmit1);
@@ -52,7 +52,7 @@ typedef istream_iterator<string, ptrdiff_t> istream_string_ite;
 //
 void IStreamIteratorTest::istmit1()
 {
-#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   const char* buff = "MyString";
   istringstream istr(buff);
 
