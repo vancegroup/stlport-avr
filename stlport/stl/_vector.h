@@ -138,8 +138,7 @@ private:
   typedef typename _TrivialUCopy<_Tp>::_Ret _TrivialUCpy;
   typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
   typedef typename __type_traits<_Tp>::is_POD_type _PODType;
-  typedef __move_traits<_Tp> _TpMoveTraits;
-  typedef typename _TpMoveTraits::implemented _Movable;
+  typedef typename __move_traits<_Tp>::implemented _Movable;
 
   // handles insertions on overflow
   void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/,
