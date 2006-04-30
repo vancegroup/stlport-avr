@@ -90,7 +90,7 @@ size_t _Bs_G::_S_count(const unsigned char *__first,
     __result += _bit_count[*(__first++)];
   }
   return __result;
-};
+}
 
 unsigned char _Bs_G::_S_first_one(unsigned char __byte)
 {
@@ -149,7 +149,7 @@ unsigned char _Bs_G::_S_first_one(unsigned char __byte)
   0, /* 255 */
   };
   return _first_one[__byte];
-};
+}
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
