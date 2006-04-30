@@ -53,10 +53,10 @@
 #      include <stl/_cstdio.h>
 #    endif
 #    define __THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
-#  else /* !defined(_STLP_USE_EXCEPTIONS) */
+#  else
 #    define __THROW_BAD_ALLOC throw _STLP_STD::bad_alloc()
-#  endif /* !defined(_STLP_USE_EXCEPTIONS) */
-#endif   /* __THROW_BAD_ALLOC */
+#  endif
+#endif
 
 #ifndef _STLP_INTERNAL_NEW_HEADER
 #  include <stl/_new.h>
@@ -479,6 +479,44 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 #  endif
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Tp>
+struct __alloc_type_traits {
+#if !defined (__BORLANDC__)
+  typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
+#else
+  enum { _Is = _IsSTLportClass<allocator<_Tp> >::_Is };
+  typedef typename __bool2type<_Is>::_Ret _STLportAlloc;
+#endif
+  //The default allocator implementation which is recognize thanks to the
+  //__stlport_class inheritance is a stateless object so:
+  typedef _STLportAlloc has_trivial_default_constructor;
+  typedef _STLportAlloc has_trivial_copy_constructor;
+  typedef _STLportAlloc has_trivial_assignment_operator;
+  typedef _STLportAlloc has_trivial_destructor;
+  typedef _STLportAlloc is_POD_type;
+};
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct __type_traits<allocator<_Tp> > : _STLP_PRIV __alloc_type_traits<_Tp> {};
+#else
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<char> > : _STLP_PRIV __alloc_type_traits<char> {};
+#  if defined (_STLP_HAS_WCHAR_T)
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<wchar_t> > : _STLP_PRIV __alloc_type_traits<wchar_t> {};
+#  endif
+#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
+_STLP_TEMPLATE_NULL
+struct __type_traits<allocator<void*> > : _STLP_PRIV __alloc_type_traits<void*> {};
+#  endif
+#endif
+
+
 #if !defined (_STLP_FORCE_ALLOCATORS)
 #  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
@@ -595,41 +633,7 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #  endif
 #endif
 
-template <class _Tp>
-struct __alloc_type_traits {
-#if !defined (__BORLANDC__)
-  typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
-#else
-  enum { _Is = _IsSTLportClass<allocator<_Tp> >::_Is };
-  typedef typename __bool2type<_Is>::_Ret _STLportAlloc;
-#endif
-  //The default allocator implementation which is recognize thanks to the
-  //__stlport_class inheritance is a stateless object so:
-  typedef _STLportAlloc has_trivial_default_constructor;
-  typedef _STLportAlloc has_trivial_copy_constructor;
-  typedef _STLportAlloc has_trivial_assignment_operator;
-  typedef _STLportAlloc has_trivial_destructor;
-  typedef _STLportAlloc is_POD_type;
-};
-
 _STLP_MOVE_TO_STD_NAMESPACE
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Tp>
-struct __type_traits<allocator<_Tp> > : _STLP_PRIV __alloc_type_traits<_Tp> {};
-#else
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<char> > : _STLP_PRIV __alloc_type_traits<char> {};
-#  if defined (_STLP_HAS_WCHAR_T)
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<wchar_t> > : _STLP_PRIV __alloc_type_traits<wchar_t> {};
-#  endif
-#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<void*> > : _STLP_PRIV __alloc_type_traits<void*> {};
-#  endif
-#endif
-
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)
