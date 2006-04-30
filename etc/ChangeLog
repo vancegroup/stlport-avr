@@ -1,3 +1,12 @@
+2006-04-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h: Moved __type_traits specialization for
+	std::allocator class before use in _STLP_alloc_proxy
+	instanciation.
+
+	* test/unit/istmit_test.cpp: Fixed macro checks to correctly
+	report ignored test.
+
 2006-04-27  Francois Dumont  <dums@stlport...>
 
 	* test/unit/full_streambuf.h, deque_test.cpp, vector_test.cpp:
