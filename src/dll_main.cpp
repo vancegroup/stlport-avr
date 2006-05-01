@@ -303,3 +303,16 @@ _STLP_END_NAMESPACE
 #endif
 
 #endif /* _WIN32 */
+
+#if defined (__ICL) && (__ICL >= 900) && (_MSC_VER <= 1200)
+#  undef std
+
+namespace std
+{
+  void _STLP_CALL unexpected() {
+    unexpected_handler hdl;
+    set_unexpected(hdl = set_unexpected((unexpected_handler)0));
+    hdl();
+  }
+}
+#endif

@@ -161,3 +161,17 @@ int main(int argc, char** argv) {
 
   return num_errors;
 }
+
+#if defined (__ICL) && (__ICL >= 900) && (_MSC_VER == 1200)
+#  include <exception>
+
+#  undef std
+namespace std
+{
+  void _STLP_CALL unexpected() {
+    unexpected_handler hdl;
+    set_unexpected(hdl = set_unexpected((unexpected_handler)0));
+    hdl();
+  }
+}
+#endif
