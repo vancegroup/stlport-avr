@@ -275,12 +275,10 @@ void VectorTest::at() {
       CPPUNIT_ASSERT(false);
     }
     catch (std::out_of_range const&) {
-      CPPUNIT_ASSERT(true);
       return;
     }
     catch (...) {
       CPPUNIT_ASSERT(false);
-      return;
     }
   }
 #endif

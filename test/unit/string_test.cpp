@@ -297,7 +297,6 @@ void StringTest::erase()
         break;
       default:
         CPPUNIT_ASSERT( false );
-        break;
     }
   }
 
@@ -322,7 +321,6 @@ void StringTest::erase()
         break;
       default:
         CPPUNIT_ASSERT( false );
-        break;
     }
   }
 
