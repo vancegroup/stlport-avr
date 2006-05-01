@@ -167,11 +167,11 @@ private:
 #  if defined (_STLP_HAS_ATOMIC_FREELIST)
 #    if !defined (_STLP_USE_ASM_IMPLEMENTATION)
 #      include <windows.h>
-#    endif
-
-#    if defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
-#      pragma warning (push)
-#      pragma warning (disable : 4035) //function has no return value
+#    else
+#      if defined (_STLP_MSVC) && (_STLP_MSVC < 1300) || defined (__ICL)
+#        pragma warning (push)
+#        pragma warning (disable : 4035) //function has no return value
+#      endif
 #    endif
 /**
  * Class that implements a non-blocking and thread-safe freelist.
@@ -296,8 +296,10 @@ private:
   _STLP_atomic_freelist& operator = (const _STLP_atomic_freelist&);
 };
 
-#    if defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
-#      pragma warning (pop)
+#    if defined (_STLP_USE_ASM_IMPLEMENTATION)
+#      if defined (_STLP_MSVC) && (_STLP_MSVC < 1300) || defined (__ICL)
+#        pragma warning (pop)
+#      endif
 #    endif
 
 #  endif /* _STLP_HAS_ATOMIC_FREELIST */
