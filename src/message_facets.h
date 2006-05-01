@@ -153,6 +153,9 @@ private:
   _Locale_messages* _M_message_obj;
   _Catalog_locale_map* _M_map;
   mutable _Catalog_nl_catd_map _M_cat;
+
+  _Messages_impl(const _Messages_impl&) {}
+  _Messages_impl& operator=(const _Messages_impl&) { return *this; }
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
