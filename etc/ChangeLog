@@ -1,3 +1,35 @@
+2006-05-01  Francois Dumont  <dums@stlport...>
+
+	* test/unit/vector_test.cpp, deque_test.cpp, string_test.cpp:
+	Removed unreachable code, reported by ICL 9.0.
+
+	* test/unit/mvctor_test.cpp: Removed variable declaration hiding
+	previous one + made local functions static.
+
+	* stlport/stl/config/_msvc.h: Only use abbreviate symbols for
+	MSVC compiler and not for all compilers defining _MSC_VER. Also
+	removed some ICL specific configuration.
+
+	* src/lock_free_slist.h: Removed 'no return statement' warning
+	for ICL too.
+
+	* src/message_facets.h: Made _Message_impl copy constructor and
+	assignment operator private to avoid warning as _M_cat member
+	data has private copy constructor and assignment operator too.
+
+	* stlport/stl/_cstdlib.h: Made additional definition of
+	div(long, long) based on native library (_MSC_VER) rather than on
+	compiler used (_STLP_MSVC).
+
+	* stlport/stl/config/_intel.h: Fix Intel C++ 9.0 compiler
+	configuration with and without /Qvc6 option.
+
+	* src/dll_main.cpp: Add std::unexpected implementation that ICL
+	need but that is not part of MSVC6 native lib library.
+
+	* test/unit/test_main.cpp: Add std::unexpected implementation that
+	ICL need but that is not part of MSVC6 native lib library.
+
 2006-04-30  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h: Moved __type_traits specialization for
