@@ -162,6 +162,11 @@
  */
 #  define _STLP_USING_NAMESPACE_BUG 1
 
+#  if (_STLP_MSVC < 1300) /* MSVC 6.0 and earlier */
+/* defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library */
+#    define _STLP_USE_ABBREVS
+#  endif
+
 #endif /* _STLP_MSVC */
 
 #if (_MSC_VER >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER)
@@ -200,7 +205,6 @@ typedef char __stl_char;
 
 #if ( _MSC_VER<=1010 )
 /* "bool" is reserved in MSVC 4.1 while <yvals.h> absent, so : */
-/* #    define _STLP_USE_ABBREVS           1 */
 #  define _STLP_NO_BAD_ALLOC
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 #  define _STLP_NO_NEW_NEW_HEADER 1
@@ -257,11 +261,6 @@ typedef char __stl_char;
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #endif /* 1100 */
 
-#if (_MSC_VER < 1300) /* MSVC 6.0 and earlier */
-/* defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library */
-#  define _STLP_USE_ABBREVS
-#endif
-
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 
@@ -299,9 +298,10 @@ typedef char __stl_char;
 #endif
 #define _STLP_EXPORT_TEMPLATE_KEYWORD
 
-#if (defined (__ICL) && (__ICL < 450)) || (_MSC_VER < 1200)
-/*    only static STLport lib now works for ICL and VC 5.0 */
+#if (_MSC_VER < 1200)
+/*    only static STLport lib now works for VC 5.0 */
 #  undef  _STLP_USE_STATIC_LIB
+#  undef  _STLP_USE_DYNAMIC_LIB
 #  define _STLP_USE_STATIC_LIB
 /*    disable hook which makes template symbols to be searched for in the library */
 #  undef _STLP_NO_CUSTOM_IO
