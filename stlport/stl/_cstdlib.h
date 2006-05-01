@@ -122,7 +122,7 @@ inline _STLP_VENDOR_CSTD::div_t div(int __x, int __y) { return _STLP_VENDOR_CSTD
 inline long abs(long __x) { return _STLP_VENDOR_CSTD::labs(__x); }
 #endif
 
-#if !defined (_STLP_MSVC) || (_STLP_MSVC < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
+#if !defined (_MSC_VER) || (_MSC_VER < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline _STLP_VENDOR_CSTD::ldiv_t div(long __x, long __y) { return _STLP_VENDOR_CSTD::ldiv(__x, __y); }
 #endif
 
