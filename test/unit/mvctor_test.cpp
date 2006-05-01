@@ -169,7 +169,7 @@ void MoveConstructorTest::move_construct_test()
 #  endif
 #endif
 
-    size_t cur_capacity = v_v_bits.capacity();
+    cur_capacity = v_v_bits.capacity();
     while (v_v_bits.capacity() <= cur_capacity) {
       v_v_bits.push_back(bit_vec);
     }
@@ -1291,13 +1291,13 @@ void MoveConstructorTest::move_traits()
 
 #if defined (STLPORT) && !defined (__DMC__)
 
-bool type_to_bool(__true_type)
+static bool type_to_bool(__true_type)
 { return true; }
-bool type_to_bool(__false_type)
+static bool type_to_bool(__false_type)
 { return false; }
 
 template <class _Tp>
-bool is_movable(_Tp) {
+static bool is_movable(_Tp) {
 #if defined (__BORLANDC__)
   return __type2bool<typename __move_traits<_Tp>::implemented>::_Ret != 0;
 #else
@@ -1307,7 +1307,7 @@ bool is_movable(_Tp) {
 }
 
 template <class _Tp>
-bool is_move_complete(const _Tp&) {
+static bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
 #if defined (__BORLANDC__)
   return type_to_bool(_TpMoveTraits::complete());
