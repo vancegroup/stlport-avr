@@ -22,8 +22,8 @@ STLPORT_DIR=../../..
 !include Makefile.inc
 
 #Comment following line to build unit tests without STLport
-INCLUDES=$(INCLUDES) /I$(STLPORT_INCLUDE_DIR) /I$(STLPORT_DIR)/src /FI vc_warning_disable.h
-#INCLUDES=$(INCLUDES) /I$(STLPORT_DIR)/src /FI vc_warning_disable.h
+INCLUDES=$(INCLUDES) /I$(STLPORT_INCLUDE_DIR) /I$(STLPORT_DIR)/src /FI warning_disable.h
+#INCLUDES=$(INCLUDES) /I$(STLPORT_DIR)/src /FI warning_disable.h
 
 # Important in a number of builds.
 OPT = /Zm800

@@ -19,7 +19,7 @@ CROSS_COMPILING=1
 
 !include Makefile.inc
 
-INCLUDES=$(INCLUDES) /I "$(STLPORT_INCLUDE_DIR)" /I "cppunit" /I "$(STLPORT_DIR)/src/" /FI "vc_warning_disable.h"
+INCLUDES=$(INCLUDES) /I "$(STLPORT_INCLUDE_DIR)" /I "cppunit" /I "$(STLPORT_DIR)/src/" /FI "warning_disable.h"
 
 DEFS_REL = /D_STLP_USE_DYNAMIC_LIB
 DEFS_DBG = /D_STLP_USE_DYNAMIC_LIB

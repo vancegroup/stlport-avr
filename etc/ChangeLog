@@ -1,3 +1,27 @@
+2006-05-04  Francois Dumont  <dums@stlport...>
+
+	* build/lib/configure.bat: And information to the --lib-motif
+	option as advised by Ulrich Echkardt. Add option parameter and
+	relation with _STLP_LIB_NAME_MOTIF.
+
+	* src/messsage_facets.h: Removed implementation of private copy
+	constructor and assignment operator.
+
+	* src/c_locale_win32/c_locale_win32.c: Made
+	_Locale_extract_category_name locale function static.
+
+	* src/vc_warning_disable.h renamed in warning_disable.h as it is
+	used by other compilers too (ICL)
+
+	* build/lib/msvc.mak, evc.mak: Removed forced inclusion of
+	vc_warning_disable.h file. Now this file is included from
+	stlport_prefix.h.
+
+	* build/test/unit/msvc.mak, evc.mak: Replace vc_warning_disable.h
+	reference by warning_disable.h.
+
+	* src/stlport_prefix.h: Add inclusion of warning_disable.h.
+
 2006-05-01  Francois Dumont  <dums@stlport...>
 
 	* test/unit/vector_test.cpp, deque_test.cpp, string_test.cpp:
