@@ -664,7 +664,7 @@ extern "C" {
     free(lmes);
   }
 
-  char* _Locale_extract_category_name(const char* cname, int category, char* buf, _Locale_lcid_t* hint) {
+  static char* _Locale_extract_category_name(const char* cname, int category, char* buf, _Locale_lcid_t* hint) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, category, lname);
     if (lname[0] == 'C' && lname[1] == 0) {
