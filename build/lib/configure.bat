@@ -152,11 +152,13 @@ echo    If you have several options use several --extra-cxxflag options. For ins
 echo    to also force use of wchar_t as an intrinsic type:
 echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
 echo.
-echo "--lib-motif"
-echo   Use this option to customize the generated library names. The motif will be used
+echo "--lib-motif <motif>"
+echo   Use this option to customize the generated library name. The motif will be used
 echo   in the last place before version information, ex:
 echo   stlportd_MOTIF.5.0.lib
 echo   stlportstld_static_MOTIF.5.1.lib
+echo   Do not forget to define _STLP_LIB_NAME_MOTIF macro in STLport configuration file
+echo   to the same value if you want to keep the auto link feature.
 echo.
 echo "--clean"
 echo    Removes the build configuration file.
