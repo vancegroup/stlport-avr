@@ -103,10 +103,8 @@ public:
 #endif
 
 private:
-  _Catalog_nl_catd_map(const _Catalog_nl_catd_map&)
-  {}
-  _Catalog_nl_catd_map& operator =(const _Catalog_nl_catd_map&)
-  { return *this; }
+  _Catalog_nl_catd_map(const _Catalog_nl_catd_map&);
+  _Catalog_nl_catd_map& operator =(const _Catalog_nl_catd_map&);
 
 #if defined (_STLP_USE_NL_CATD_MAPPING)
   mutable map_type M;
@@ -154,8 +152,9 @@ private:
   _Catalog_locale_map* _M_map;
   mutable _Catalog_nl_catd_map _M_cat;
 
-  _Messages_impl(const _Messages_impl&) {}
-  _Messages_impl& operator=(const _Messages_impl&) { return *this; }
+  //private definition to avoid warning (with ICL)
+  _Messages_impl(const _Messages_impl&);
+  _Messages_impl& operator=(const _Messages_impl&);
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
