@@ -1,3 +1,33 @@
+2006-05-05  Francois Dumont  <dums@stlport...>
+
+	* test/unit/iter_test.cpp: Removed unreachable code.
+
+	* Introduction of a new configuration macro _STLP_MSVC_LIB
+
+	This macro is set to _MSC_VER value but can be overloaded to
+	an other value. First intension was to make STLport more flexible
+	for Intel C++ compiler. This compiler comes without any native
+	lib and you have to bind it to a MSVC install, Intel compiler
+	generate MSVC compatible code so that MSVC linker can correctly
+	generate final exe or dll. To mimic MSVC compiler ICL also defines
+	_MSC_VER. The problem is that definition of this macro is based
+	on a compiler option and do not necessarily reflect the MSVC lib
+	version ICL is binded to. Fortunately the compiler options
+	responsible of _MSC_VER definition (/Qvc6, /Qvc7...) is also
+	responsible of name mangling so asking for a MSVC compiler
+	compatibility different than the library ICL is binded to is
+	not easy. But _STLP_MSVC_LIB has been kept as it makes STLport
+	configuration more clean. Now MSVC compiler version is given
+	by _STLP_MSVC macro and library version by _STLP_MSVC_LIB.
+	All occurences of _MSC_VER in STLport code has been replaced
+	by those macros.
+
+	* _STLP_USE_SECURIZED_BUF_FUNCTIONS replaced by the more
+	intuitive _STLP_USE_SAFE_STRING_FUNCTIONS.
+
+	* stlport/stl/config/_msvc.h: Major refactoring to isolate
+	MSVC compiler config and MSVC native library config.
+	
 2006-05-04  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: And information to the --lib-motif
