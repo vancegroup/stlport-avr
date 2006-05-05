@@ -41,7 +41,7 @@
 #  endif
 #endif
 
-#if ((defined (_STLP_MSVC) || defined (__ICL)) && (_MSC_VER < 1400)) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
+#if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 inline int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
 { return _STLP_VENDOR_CSTD::_vsnprintf(s1, n, s2, v); }
 #endif
@@ -106,7 +106,7 @@ using _STLP_VENDOR_CSTD::ungetc;
 using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
-#    if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400)) || defined (__ICL) || \
+#    if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400)) || \
         (defined (__BORLANDC__) && __BORLANDC__ > 0x530))
 using _STLP_VENDOR_CSTD::vsnprintf;
 #    endif

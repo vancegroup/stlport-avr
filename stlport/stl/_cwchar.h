@@ -170,7 +170,7 @@ using _STLP_VENDOR_CSTD::putwchar;
 
 #      if !(defined (_STLP_WCHAR_SUNPRO_EXCLUDE) || defined (_STLP_WCHAR_BORLAND_EXCLUDE) || \
             defined (_STLP_WCHAR_HPACC_EXCLUDE) || (defined (__MWERKS__) && defined (N_PLAT_NLM)))
-#        if defined (_MSC_VER) && (_MSC_VER <= 1300) || \
+#        if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB <= 1300) || \
             defined (__MINGW32__)
 #          undef swprintf
 #          define swprintf _snwprintf

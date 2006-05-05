@@ -61,7 +61,7 @@ typedef __int32_t wint_t;
 #    endif /* _WINT_T */
 #    if !defined (_MBSTATE_T)
 #      define _MBSTATE_T
-#      ifdef _MSC_VER
+#      ifdef _STLP_MSVC_LIB
 typedef int mbstate_t;
 #      else
 typedef char mbstate_t;
@@ -288,7 +288,7 @@ struct _Locale_messages;
 #  define _Locale_SPACE  _IS_SP
 #  define _Locale_PRINT  (_IS_SP|_IS_PUN|_IS_UPP|_IS_LOW|_IS_DIG)
 #  define _Locale_ALPHA  _IS_ALPHA
-#elif defined (_MSC_VER) || defined (__MINGW32__)
+#elif defined (_STLP_MSVC_LIB) || defined (__MINGW32__)
 #  define _Locale_CNTRL  _CONTROL
 #  define _Locale_UPPER  _UPPER
 #  define _Locale_LOWER  _LOWER

@@ -388,10 +388,10 @@ inline double ldexp(double __x, int __y) { return __stlp_ldexp(__x, __y); }
 #  endif
 #endif
 
-//MSVC starting with .Net 2003 has already all math functions in global namespace.
-//As Intel C++ compiler icl include MSVC headers it also have all math functions in ::
-// so we use _MSC_VER rather than _STLP_MSVC
-#if !defined (_MSC_VER) || (_MSC_VER < 1310)
+/* MSVC native lib starting with .Net 2003 has already all math functions
+ * in global namespace.
+ */
+#if !defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310)
 inline double abs(double __x)
 { return ::fabs(__x); }
 #  if !defined (__MVS__)
