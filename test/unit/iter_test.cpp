@@ -51,13 +51,12 @@ void IterTest::iter1()
     switch (counter) {
       case 0:
         CPPUNIT_ASSERT(!strcmp(*i, "zippy"));
-      break;
+        break;
       case 1:
         CPPUNIT_ASSERT(!strcmp(*i, "motorboy"));
-      break;
+        break;
       default:
         CPPUNIT_ASSERT(false);
-      break;
     }
   }
 }
@@ -73,13 +72,12 @@ void IterTest::iter3()
     switch (counter) {
       case 1:
         CPPUNIT_ASSERT(!strcmp(*it, "zippy"));
-      break;
+        break;
       case 0:
         CPPUNIT_ASSERT(!strcmp(*it, "motorboy"));
-      break;
+        break;
       default:
         CPPUNIT_ASSERT(false);
-      break;
     }
   }
 
