@@ -112,7 +112,7 @@ const char* bad_exception::what() const _STLP_NOTHROW { return "class bad_except
 
 #if defined (_STLP_OWN_STDEXCEPT)
 __Named_exception::__Named_exception(const string& __str) {
-#if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   strncpy(_M_name, __str.data(), (min)(__STATIC_CAST(size_t, _S_bufsize), __str.size()));
 #else
   strncpy_s(_STLP_ARRAY_AND_SIZE(_M_name), __str.data(), __str.size());
@@ -304,7 +304,7 @@ _STLP_END_NAMESPACE
 
 #endif /* _WIN32 */
 
-#if defined (__ICL) && (__ICL >= 900) && (_MSC_VER <= 1200)
+#if defined (__ICL) && (__ICL >= 900) && (_STLP_MSVC_LIB < 1300)
 #  undef std
 
 namespace std

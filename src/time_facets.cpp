@@ -131,7 +131,7 @@ __iso_week_days(int yday, int wday) {
 #define __hour12(hour) \
   (((hour) % 12 == 0) ? (12) : (hour) % 12)
 
-#if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #  define _STLP_SPRINTF(B, BS, F, D) sprintf(B, F, D)
 #else
 #  define _STLP_SPRINTF(B, BS, F, D) sprintf_s(B, BS, F, D)

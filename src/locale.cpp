@@ -45,7 +45,7 @@ void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
 
   if (name) {
     const char* prefix = "bad locale name: ";
-#if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
     strcpy(buf, prefix);
     strncat(buf, name, _STLP_ARRAY_SIZE(buf) - strlen(prefix));
     buf[_STLP_ARRAY_SIZE(buf) - 1] = 0;
@@ -55,7 +55,7 @@ void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
 #endif
   }
   else {
-#if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
     strcpy(buf, "locale error");
 #else
     strcpy_s(_STLP_ARRAY_AND_SIZE(buf), "locale error");

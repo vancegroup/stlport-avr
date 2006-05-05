@@ -74,7 +74,7 @@ typedef long double max_double_type;
 //# include <stdlib.h>
 //#endif
 
-#if defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP) || \
+#if defined (_STLP_MSVC_LIB) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP) || \
     defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
 #  include <float.h>
 #endif
@@ -239,7 +239,7 @@ static inline bool _Stl_is_nan_or_inf(double x) {  return !_finite(x); }
 static inline bool _Stl_is_inf(double x)        {  return _Stl_is_nan_or_inf(x) && ! _isnan(x);}
 static inline bool _Stl_is_neg_inf(double x)    {  return _Stl_is_inf(x) && x < 0 ; }
 static inline bool _Stl_is_neg_nan(double x)    { return _isnan(x) && x < 0 ; }
-#  elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
+#  elif defined (_STLP_MSVC_LIB) || defined (__MINGW32__) || defined (__BORLANDC__)
 static inline bool _Stl_is_nan_or_inf(double x) { return !_finite(x); }
 static inline bool _Stl_is_inf(double x)        {
   int fclass = _fpclass(x);
@@ -387,9 +387,9 @@ static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* 
 static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return qfcvt_r(x, n, pt, sign, buf); }
 #    endif
-#  elif defined (_MSC_VER) || defined (__MINGW32__) || defined (__BORLANDC__)
+#  elif defined (_STLP_MSVC_LIB) || defined (__MINGW32__) || defined (__BORLANDC__)
 // those guys claim _cvt functions being reentrant.
-#    if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#    if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #      define _STLP_APPEND(a, b) a##b
 #      define _STLP_BUF_PARAMS , char* buf, size_t bsize
 #      define _STLP_SECURE_FUN(F, X, N, PT, SIGN) _STLP_APPEND(F, _s)(buf, bsize, X, N, PT, SIGN); return buf
@@ -440,13 +440,13 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 
 #  if defined (_STLP_CVT_DONT_NEED_BUF)
 #    define _STLP_CVT_BUFFER(B)
-#  elif !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#  elif !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #    define _STLP_CVT_BUFFER(B) , B
 #  else
 #    define _STLP_CVT_BUFFER(B) , _STLP_ARRAY_AND_SIZE(B)
 #  endif
 
-#  if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#  if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #    define _STLP_BUFFER(B) B
 #  else
 #    define _STLP_BUFFER(B) _STLP_ARRAY_AND_SIZE(B)

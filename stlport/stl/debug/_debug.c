@@ -361,7 +361,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
 #        elif defined (_STLP_WIN32) && (defined(_STLP_MSVC) || defined (__ICL))
   char __buffer [4096];
 
-#          if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#          if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   vsnprintf(__buffer, _STLP_ARRAY_SIZE(__buffer), __format_str, __args);
 #          else
   vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
@@ -377,7 +377,7 @@ __stl_debug_engine<_Dummy>::_Message(const char * __format_str, ...) {
 #      else
   char __buffer[4096];
 
-#        if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#        if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   vsnprintf_s(__buffer, _STLP_ARRAY_SIZE(__buffer), _TRUNCATE, __format_str, __args);
 #        elif defined (_STLP_WIN32) && (defined(_STLP_MSVC) || defined (__ICL))
   vsnprintf(__buffer, _STLP_ARRAY_SIZE(__buffer), __format_str, __args);

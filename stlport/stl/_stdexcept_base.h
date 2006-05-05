@@ -74,7 +74,7 @@ public:
   ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
 #    else
   {
-#      if !defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#      if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
     strncpy(_M_name, _STLP_PRIV __get_c_string(__str), _S_bufsize);
 #      else
     strncpy_s(_STLP_ARRAY_AND_SIZE(_M_name), _STLP_PRIV __get_c_string(__str), _S_bufsize);
