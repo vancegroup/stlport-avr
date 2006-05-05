@@ -95,7 +95,7 @@ inline int _FILE_fd(const FILE *__f) { return (int)::_fileno((FILE*)__f); }
       (defined (_STLP_MSVC) && !defined (_STLP_WCE_EVC3)) || \
       defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP) || defined (_AIX) || defined (_CRAY))
 
-#if defined ( _MSC_VER ) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP)
+#if defined (_STLP_MSVC) || defined (__ICL) || defined (__MINGW32__) || defined(__DJGPP)
 typedef  char* _File_ptr_type;
 #else
 typedef  unsigned char* _File_ptr_type;

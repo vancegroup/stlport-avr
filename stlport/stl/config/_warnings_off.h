@@ -2,8 +2,8 @@
  * user code.
  */
 
-#if defined (_MSC_VER)
-#  if (_MSC_VER > 1000)
+#if defined (_STLP_MSVC)
+#  if (_STLP_MSVC > 1000)
 #    if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 /*
  * 31/07/2004: dums - now that we do not export the basic_string class anymore but only a base class
@@ -12,7 +12,7 @@
 #      pragma warning ( disable : 4251 )  // ignore template classes being exported in .dll's
 #    endif
 
-#    if (_MSC_VER < 1200) // VC5 and earlier
+#    if (_STLP_MSVC < 1200) // VC5 and earlier
 #      pragma warning( disable : 4389 ) // '==' : signed/unsigned mismatch
 // multiple copy constructors/assignment operators specified,
 // with member templates are bogus...
@@ -20,7 +20,7 @@
 #      pragma warning( disable : 4522 )
 #    endif
 
-#    if (_MSC_VER < 1300) // VC6, eVC3, eVC4
+#    if (_STLP_MSVC < 1300) // VC6, eVC3, eVC4
 #      pragma warning( disable : 4097 ) // typedef-name used as based class of (...)
 #      pragma warning( disable : 4231 ) // non standard extension : 'extern' before template instanciation
 #      pragma warning( disable : 4244 ) // implicit conversion: possible loss of data
@@ -34,7 +34,7 @@
 #      pragma warning( disable : 4786 ) // identifier truncated to 255 characters
 #    endif
 
-#    if (_MSC_VER <= 1310)
+#    if (_STLP_MSVC <= 1310)
 #      pragma warning( disable : 4511 ) // copy constructor cannot be generated
 #    endif
 

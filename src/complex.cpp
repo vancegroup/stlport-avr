@@ -26,12 +26,17 @@
 // in __stlp_hypot to perform compiler specific task to grant hypot functionality.
 template <class _Tp>
 static inline _Tp __stlp_hypot(_Tp x, _Tp y) {
-#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1400)
+#if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB >= 1400)
 #  pragma warning (push)
-#  pragma warning (disable : 4996) // hypot is deprecated.
+// hypot is deprecated.
+#  if defined (_STLP_MSVC)
+#    pragma warning (disable : 4996)
+#  elif defined (__ICL)
+#    pragma warning (disable : 1478)
+#  endif
 #endif
   return ::hypot(x, y); 
-#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1400)
+#if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB >= 1400)
 #  pragma warning (pop)
 #endif
 }

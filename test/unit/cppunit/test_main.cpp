@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
   return num_errors;
 }
 
-#if defined (__ICL) && (__ICL >= 900) && (_MSC_VER == 1200)
+#if defined (__ICL) && (__ICL >= 900) && (_STLP_MSVC_LIB < 1300)
 #  include <exception>
 
 #  undef std

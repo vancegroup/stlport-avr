@@ -17,9 +17,7 @@
 
 /* Please add extra compilation switches for particular compilers here */
 
-/* In following macro test __ICL is redondant as Intel C++ compiler also define _MSC_VER
- * but it makes things more clear */
-#if defined (_MSC_VER) || defined (__ICL)
+#if defined (_MSC_VER) && !defined (__COMO__) && !defined (__MWERKS__)
 #  include "warning_disable.h"
 #endif
 

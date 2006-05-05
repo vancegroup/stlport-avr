@@ -8,10 +8,6 @@
 #ifndef _STLP_EVC_H
 #define _STLP_EVC_H
 
-#if !defined (_STLP_MSVC)
-#  define _STLP_MSVC _MSC_VER
-#endif
-
 // This flag is being used by STLport to support
 // old-fashioned Windows CE SDK (see stl_wince.h)
 // do not use with eMebedded Visual C++ 3 or 4!
@@ -39,7 +35,7 @@
 #define _STLP_WCE
 
 // Ensure _DEBUG is defined.
-#if defined(DEBUG) && !defined(_DEBUG)
+#if defined (DEBUG) && !defined (_DEBUG)
 #  define _DEBUG
 #endif
 

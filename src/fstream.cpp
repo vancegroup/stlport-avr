@@ -153,8 +153,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 #ifdef _STLP_LONG_LONG
 #  define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-// #  elif defined (_MSC_VER) || defined (__BORLANDC__)
-// #    define ULL(x) ((__int64)x)
 #elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
 #  include <Math64.h>
 #  define ULL(x) (U64SetU(x))
@@ -259,7 +257,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 // Visual C++ and Intel use this, but not Metrowerks
 // Also MinGW, msvcrt.dll (but not crtdll.dll) dependent version
-#if (!defined (__MSL__) && !defined (_STLP_WCE) && defined (_MSC_VER) && defined (_WIN32)) || \
+#if (!defined (__MSL__) && !defined (_STLP_WCE) && defined (_STLP_MSVC_LIB) && defined (_WIN32)) || \
     (defined (__MINGW32__) && defined (__MSVCRT__))
 
 // fcntl(fileno, F_GETFL) for Microsoft library
@@ -356,7 +354,7 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
 
   return flag_to_openmode(mode);
 }
-#endif // _MSC_VER
+#endif
 
 // All version of Unix have mmap and lseek system calls.  Some also have
 // longer versions of thos system calls to accommodate 64-bit offsets.
@@ -637,7 +635,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
 
 #if defined (_STLP_USE_WIN32_IO)
 bool _Filebuf_base::_M_open(_STLP_fd __id, ios_base::openmode init_mode) {
-#  if (defined (_MSC_VER) && !defined (_STLP_WCE)) || \
+#  if (defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE)) || \
       (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
 
   if (_M_is_open || __id == INVALID_STLP_FD)
@@ -715,7 +713,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
     return false;
   }
   _M_file_id = file_no;
-#elif (defined (_STLP_USE_WIN32_IO) && defined (_MSC_VER) && !defined (_STLP_WCE) ) || \
+#elif (defined (_STLP_USE_WIN32_IO) && defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE) ) || \
       (defined (__MINGW32__) && defined (__MSVCRT__)) || \
        defined (__DMC__)
 

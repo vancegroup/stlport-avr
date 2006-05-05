@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined (_STLP_USE_SECURIZED_BUF_FUNCTIONS)
+#if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
 #  define _STLP_STRCPY(D, S) strcpy_s(_STLP_ARRAY_AND_SIZE(D), S)
 #  define _STLP_STRCPY2(D, DS, S) strcpy_s(D, DS, S)
 #  define _STLP_RETURN_STRCPY2(D, DS, S) strcpy_s(D, DS, S); return D

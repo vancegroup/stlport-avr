@@ -55,7 +55,7 @@
 extern "C" {
 #    endif
 #    if (defined (_M_AMD64) || defined (_M_IA64) || (!defined (_STLP_WCE) && defined (_M_MRX000)) || defined (_M_ALPHA) || \
-        (defined (_M_PPC) && (_MSC_VER >= 1000))) && !defined (RC_INVOKED)
+        (defined (_M_PPC) && (_STLP_MSVC_LIB >= 1000))) && !defined (RC_INVOKED)
 #      define InterlockedIncrement       _InterlockedIncrement
 #      define InterlockedDecrement       _InterlockedDecrement
 #      define InterlockedExchange        _InterlockedExchange

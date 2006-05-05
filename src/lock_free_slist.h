@@ -153,7 +153,7 @@ private:
 // lock free singly linked list implementation:
 #  if defined (_STLP_USE_ASM_IMPLEMENTATION)
 // For the asm version:
-#    if defined (_MSC_VER) && /*(_MSC_VER > 1200) &&*/ defined (_M_IX86) && (_M_IX86 >= 500)
+#    if defined (_STLP_MSVC) && defined (_M_IX86) && (_M_IX86 >= 500)
 #      define _STLP_HAS_ATOMIC_FREELIST
 #    endif
 #  else
