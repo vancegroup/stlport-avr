@@ -34,7 +34,7 @@
 #      pragma warning( disable : 4786 ) // identifier truncated to 255 characters
 #    endif
 
-#    if (_STLP_MSVC <= 1310)
+#    if (_STLP_MSVC < 1400)
 #      pragma warning( disable : 4511 ) // copy constructor cannot be generated
 #    endif
 
