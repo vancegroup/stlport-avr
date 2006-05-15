@@ -311,7 +311,7 @@ public:                         // Insert
               const value_type* __first, const value_type* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
-    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
     //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
   }

@@ -198,7 +198,7 @@ void UnorderedTest::umap()
     umaptype::size_type bucket_pos = us.bucket((*lit).first);
     for (; lit != litEnd; ++lit) {
       CPPUNIT_ASSERT( us.bucket((*lit).first) == bucket_pos );
-      us_val.push_back(*lit);
+      us_val.push_back(make_pair((*lit).first, (*lit).second));
     }
   }
 
@@ -260,13 +260,13 @@ void UnorderedTest::user_case()
   UnorderedMap1 foo;
   UnorderedMap2 bar;
 
-  foo.insert(make_pair(1, string("test1")));
-  foo.insert(make_pair(2, string("test2")));
-  foo.insert(make_pair(3, string("test3")));
-  foo.insert(make_pair(4, string("test4")));
-  foo.insert(make_pair(5, string("test5")));
+  foo.insert(UnorderedMap1::value_type(1, string("test1")));
+  foo.insert(UnorderedMap1::value_type(2, string("test2")));
+  foo.insert(UnorderedMap1::value_type(3, string("test3")));
+  foo.insert(UnorderedMap1::value_type(4, string("test4")));
+  foo.insert(UnorderedMap1::value_type(5, string("test5")));
 
-  bar.insert(make_pair(0, foo));
+  bar.insert(UnorderedMap2::value_type(0, foo));
   UnorderedMap2::iterator it = bar.find(0);
   CPPUNIT_ASSERT( it != bar.end() );
 

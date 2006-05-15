@@ -270,12 +270,12 @@ void MapTest::allocator_with_state()
     MapInt mint1(intLess, stack1);
     int i;
     for (i = 0; i < 5; ++i)
-      mint1.insert(make_pair(i, i));
+      mint1.insert(MapInt::value_type(i, i));
     MapInt mint1Cpy(mint1);
 
     MapInt mint2(intLess, stack2);
     for (; i < 10; ++i)
-      mint2.insert(make_pair(i, i));
+      mint2.insert(MapInt::value_type(i, i));
     MapInt mint2Cpy(mint2);
 
     mint1.swap(mint2);

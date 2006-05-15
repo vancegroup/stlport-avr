@@ -290,7 +290,7 @@ public:
     _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
     _Compare_Capacity(__old_capacity);
   }
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   void insert (iterator __pos,
                const value_type *__first, const value_type *__last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first,__last))
@@ -310,7 +310,7 @@ public:
     _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
     _Compare_Capacity(__old_capacity);
 }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
   void insert (iterator __pos, size_type __n, const _Tp& __x){
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
@@ -365,6 +365,7 @@ private:
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
                           const __false_type& /*_IsIntegral*/) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     size_type __len = distance(__first, __last);
     _M_check_assign(__len);
     _M_non_dbg_impl.assign(__first, __last);
@@ -375,6 +376,23 @@ public:
   void assign(_InputIterator __first, _InputIterator __last) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
+  }
+#else
+private:
+  void _M_assign(const value_type *__first, const value_type *__last) {
+    size_type __len = distance(__first, __last);
+    _M_check_assign(__len);
+    _M_non_dbg_impl.assign(__first, __last);
+  }
+public:
+  void assign(const value_type *__first, const value_type *__last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first,__last))
+    _M_assign(__first, __last);
+  }
+
+  void assign(const_iterator __first, const_iterator __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
+    _M_assign(__first._M_iterator, __last._M_iterator);
   }
 #endif
 

@@ -60,7 +60,11 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
+#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(locale_init_problem);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(default_locale);
 #if !defined (STLPORT)
   CPPUNIT_IGNORE;
@@ -808,8 +812,11 @@ void LocaleTest::collate_facet()
 void LocaleTest::ctype_facet()
 { test_supported_locale(*this, &LocaleTest::_ctype_facet); }
 
-void LocaleTest::locale_init_problem()
-{ test_supported_locale(*this, &LocaleTest::_locale_init_problem); }
+void LocaleTest::locale_init_problem() {
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+  test_supported_locale(*this, &LocaleTest::_locale_init_problem);
+#endif
+}
 
 
 /*
@@ -819,6 +826,7 @@ void LocaleTest::locale_init_problem()
  */
 static locale global_loc;
 
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
 void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
 {
 #  if !defined (__APPLE__) && !defined (__FreeBSD__) || \
@@ -871,6 +879,7 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
   }
 #  endif
 }
+#endif
 
 void LocaleTest::default_locale()
 {

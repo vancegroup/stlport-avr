@@ -258,7 +258,7 @@ public:
     _M_non_dbg_impl.assign(__first._M_iterator, __last._M_iterator);
   }
   void assign(const value_type *__first, const value_type *__last) {
-    _STLP_DEBUG_CHECK(__check_ptr_range(__first, __last))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
 #endif /* _STLP_MEMBER_TEMPLATES */
     _Invalidate_iterators(begin(), end());
     _M_non_dbg_impl.assign(__first, __last);
@@ -292,7 +292,7 @@ public:
                     const value_type* __first, const value_type* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    _STLP_DEBUG_CHECK(__check_ptr_range(__first, __last))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
     _M_non_dbg_impl.insert_after(__pos._M_iterator, __first, __last);
   }
 
@@ -306,7 +306,7 @@ public:
                               const value_type* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
     _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
-    _STLP_DEBUG_CHECK(__check_ptr_range(__first, __last))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
     _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */

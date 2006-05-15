@@ -59,11 +59,14 @@ struct StackAllocator
   StackAllocator(char *beg, char *end)
     : m_state(beg, end) {}
 
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
   const State& getState() const { return m_state; }
+#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
   template <class _OtherTp>
   StackAllocator(StackAllocator<_OtherTp> const& other)
     : m_state(other.getState()) {}
+#else
+  StackAllocator(const State& state)
+    : m_state(state) {}
 #endif
 
 #if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
@@ -161,7 +164,7 @@ inline StackAllocator<_Tp2>&
 __stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>
-__stl_alloc_create(const StackAllocator<_Tp1>&, const _Tp2*) { return StackAllocator<_Tp2>(); }
+__stl_alloc_create(const StackAllocator<_Tp1>& __a, const _Tp2*) { return StackAllocator<_Tp2>(__a.getState()); }
 #  endif
 
 #  if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)

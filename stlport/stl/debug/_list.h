@@ -222,7 +222,7 @@ public:
 #else
   void insert(iterator __pos, const _Tp* __first, const _Tp* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
-    _STLP_DEBUG_CHECK(__check_ptr_range(__first, __last))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
     _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
   }
 
@@ -307,6 +307,16 @@ public:
   void assign(_InputIterator __first, _InputIterator __last) {
     typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
+  }
+#else
+  void assign(const _Tp* __first, const _Tp* __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
+    _M_non_dbg_impl.assign(__first, __last);
+  }
+
+  void assign(const_iterator __first, const_iterator __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+    _M_non_dbg_impl.assign(__first._M_iterator, __last._M_iterator);
   }
 #endif
 

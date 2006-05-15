@@ -191,12 +191,11 @@ void HashTest::hset2()
 #endif
 }
 
-
 void HashTest::insert_erase()
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef hash_map<string, size_t, hash<string>, equal_to<string> > hmap;
-  typedef pair<string, size_t> val_type;
+  typedef hmap::value_type val_type;
   {
     hmap values;
     CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
