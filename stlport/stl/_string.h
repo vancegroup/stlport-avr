@@ -248,7 +248,7 @@ public:                         // Constructor, destructor, assignment.
     }
     else
 #  endif
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c, _Char_Is_POD());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
   basic_string(size_type __n, _CharT __c, const allocator_type& __a)
@@ -261,7 +261,7 @@ public:                         // Constructor, destructor, assignment.
     }
     else
 #endif
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c, _Char_Is_POD());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
 
@@ -359,7 +359,7 @@ private:
     }
     else
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __x, _Char_Is_POD());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __x);
     this->_M_terminate_string();
   }
 

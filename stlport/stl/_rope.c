@@ -371,8 +371,8 @@ rope<_CharT,_Alloc>::_S_leaf_concat_char_iter (
   _CharT* __new_data = __r->_M_size.allocate(_S_rounded_up_size(__old_len + __len));
   _RopeLeaf* __result;
 
-  _STLP_PRIV __uninitialized_copy_n(__r->_M_data, __old_len, __new_data);
-  _STLP_PRIV __uninitialized_copy_n(__iter, __len, __new_data + __old_len);
+  _STLP_PRIV __ucopy_n(__r->_M_data, __old_len, __new_data);
+  _STLP_PRIV __ucopy_n(__iter, __len, __new_data + __old_len);
   _S_construct_null(__new_data + __old_len + __len);
   _STLP_TRY {
     __result = _S_new_RopeLeaf(__new_data, __old_len + __len, __r->get_allocator());
@@ -412,7 +412,7 @@ rope<_CharT,_Alloc>::_S_destr_leaf_concat_char_iter (_RopeLeaf* __r, const _Char
   if (_S_allocated_capacity(__old_len) >= __old_len + __len) {
     // The space has been partially initialized for the standard
     // character types.  But that doesn't matter for those types.
-    _STLP_PRIV __uninitialized_copy_n(__iter, __len, __r->_M_data + __old_len);
+    _STLP_PRIV __ucopy_n(__iter, __len, __r->_M_data + __old_len);
     _Terminate_RopeLeaf(__r, __old_len + __len, _IsBasicCharType());
     __r->_M_size._M_data = __old_len + __len;
     // _STLP_ASSERT(__r->_M_ref_count == 1)
@@ -717,7 +717,7 @@ public:
   };
   ~_Rope_flatten_char_consumer() {}
   bool operator() (const _CharT* __leaf, size_t __n) {
-    _STLP_PRIV __uninitialized_copy_n(__leaf, __n, _M_buf_ptr);
+    _STLP_PRIV __ucopy_n(__leaf, __n, _M_buf_ptr);
     _M_buf_ptr += __n;
     return true;
   }
@@ -930,7 +930,7 @@ rope<_CharT,_Alloc>::_S_flatten(_Rope_RopeRep<_CharT, _Alloc>* __r, _CharT* __bu
   case _RopeRep::_S_leaf:
   {
     _RopeLeaf* __l = __STATIC_CAST(_RopeLeaf*, __r);
-    return _STLP_PRIV __uninitialized_copy_n(__l->_M_data, __l->_M_size._M_data, __buffer).second;
+    return _STLP_PRIV __ucopy_n(__l->_M_data, __l->_M_size._M_data, __buffer).second;
   }
   case _RopeRep::_S_function:
   case _RopeRep::_S_substringfn:

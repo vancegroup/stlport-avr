@@ -94,7 +94,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
       _Copy_Construct(__new_finish, __x);
       ++__new_finish;
     } else
-      __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __fill_len, __x, __false_type());
+      __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __fill_len, __x);
     if (!__atend)
       __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCpy(), _Movable()); // copy remainder
   }
@@ -105,7 +105,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/,
+void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialAss*/,
                                              size_type __fill_len, bool __atend ) {
   const size_type __old_size = size();
   size_type __len = __old_size + (max)(__old_size, __fill_len);
@@ -134,7 +134,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
     _STLP_STD::_Move_Construct(__dst, *__src);
     _STLP_STD::_Destroy_Moved(__src);
   }
-  _STLP_PRIV __uninitialized_fill_n(__pos, __n, __x, _PODType());
+  _STLP_PRIV __uninitialized_fill_n(__pos, __n, __x);
   this->_M_finish += __n;
 }
 
@@ -150,13 +150,13 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
   const size_type __elems_after = this->_M_finish - __pos;
   pointer __old_finish = this->_M_finish;
   if (__elems_after > __n) {
-    _STLP_PRIV __uninitialized_copy(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
+    _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
     this->_M_finish += __n;
     _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialAss());
     _STLP_STD::fill(__pos, __pos + __n, __x);
   } else {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - __elems_after, __x, _PODType());
-    _STLP_PRIV __uninitialized_copy(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - __elems_after, __x);
+    _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
     this->_M_finish += __elems_after;
     _STLP_STD::fill(__pos, __old_finish, __x);
   }
@@ -169,7 +169,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _M_fill_insert_aux(__pos, __n, __x, _Movable());
     } else
-      _M_insert_overflow(__pos, __x, _TrivialCpy(), __n);
+      _M_insert_overflow(__pos, __x, _TrivialAss(), __n);
   }
 }
 
@@ -191,8 +191,8 @@ vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>&
     } else {
       _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start),
                              __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialAss());
-      _STLP_PRIV __uninitialized_copy(__CONST_CAST(const_pointer, __x._M_start) + size(),
-                                      __CONST_CAST(const_pointer, __x._M_finish)+0, this->_M_finish, _TrivialUCpy());
+      _STLP_PRIV __ucopy_ptrs(__CONST_CAST(const_pointer, __x._M_start) + size(),
+                              __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_finish, _TrivialUCpy());
     }
     this->_M_finish = this->_M_start + __xlen;
   }
@@ -206,7 +206,7 @@ void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
     __tmp.swap(*this);
   } else if (__n > size()) {
     fill(begin(), end(), __val);
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - size(), __val, _PODType());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - size(), __val);
   } else
     erase(_STLP_PRIV __fill_n(begin(), __n, __val), end());
 }

@@ -424,7 +424,6 @@ protected:                      // Internal typedefs
   typedef pointer* _Map_pointer;
   typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
   typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
-  typedef typename _Land2<_TrivialAss, _TrivialCpy>::_Ret _TrivialUCpy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
 #else
@@ -487,9 +486,8 @@ public:                         // Constructor, destructor.
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, 0) {}
 
   deque(const _Self& __x)
-    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size()) {
-      _STLP_PRIV __uninitialized_copy(__x.begin(), __x.end(), this->_M_start, _TrivialUCpy());
-  }
+    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__x.get_allocator(), __x.size())
+  { _STLP_PRIV __ucopy(__x.begin(), __x.end(), this->_M_start); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
@@ -543,12 +541,12 @@ public:
   deque(const value_type* __first, const value_type* __last,
         const allocator_type& __a = allocator_type() )
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __last - __first)
-  { _STLP_PRIV __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy()); }
+  { _STLP_PRIV __ucopy(__first, __last, this->_M_start); }
 
   deque(const_iterator __first, const_iterator __last,
         const allocator_type& __a = allocator_type() )
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __last - __first)
-  { _STLP_PRIV __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy()); }
+  { _STLP_PRIV __ucopy(__first, __last, this->_M_start); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   deque(__move_source<_Self> src)
@@ -933,7 +931,7 @@ protected:                        // Internal insert functions
           _STLP_STD::_Destroy_Moved(&(*__src));
         }
         this->_M_start = __new_start;
-        _STLP_PRIV __uninitialized_copy(__first, __last, __dst, _TrivialUCpy());
+        uninitialized_copy(__first, __last, __dst);
       }
       _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
     }
@@ -949,7 +947,7 @@ protected:                        // Internal insert functions
           _STLP_STD::_Destroy_Moved(&(*__src));
         }
         this->_M_finish = __new_finish;
-        _STLP_PRIV __uninitialized_copy(__first, __last, __pos, _TrivialUCpy());
+        uninitialized_copy(__first, __last, __pos);
       }
       _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
     }
@@ -976,8 +974,7 @@ protected:                        // Internal insert functions
         else {
           _ForwardIterator __mid = __first;
           advance(__mid, difference_type(__n) - __elemsbefore);
-          _STLP_PRIV __uninitialized_copy_copy(this->_M_start, __pos, __first, __mid,
-                                               __new_start, _TrivialUCpy());
+          _STLP_PRIV __uninitialized_copy_copy(this->_M_start, __pos, __first, __mid, __new_start);
           this->_M_start = __new_start;
           copy(__mid, __last, __old_start);
         }
@@ -1000,8 +997,7 @@ protected:                        // Internal insert functions
         else {
           _ForwardIterator __mid = __first;
           advance(__mid, __elemsafter);
-          _STLP_PRIV __uninitialized_copy_copy(__mid, __last, __pos, this->_M_finish,
-                                               this->_M_finish, _TrivialUCpy());
+          _STLP_PRIV __uninitialized_copy_copy(__mid, __last, __pos, this->_M_finish, this->_M_finish);
           this->_M_finish = __new_finish;
           copy(__first, __mid, __pos);
         }

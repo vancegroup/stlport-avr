@@ -152,7 +152,7 @@ private:
     }
     else
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = __uninitialized_fill_n(this->_M_Start(), __n, __x, _Char_Is_POD());
+    this->_M_finish = uninitialized_fill_n(this->_M_Start(), __n, __x);
     this->_M_terminate_string();
   }
 

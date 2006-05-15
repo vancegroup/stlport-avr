@@ -570,7 +570,7 @@ public:
       {
         _CharT* __s =
           __STATIC_CAST(_RopeLeaf*, _M_base)->_M_data;
-        _STLP_PRIV __uninitialized_copy_n(__s + __start_pos + _M_start, __req_len, __buffer);
+        _STLP_PRIV __ucopy_n(__s + __start_pos + _M_start, __req_len, __buffer);
       }
       break;
     default:
@@ -1201,7 +1201,7 @@ protected:
 
    _CharT* __buf = _STLP_CREATE_ALLOCATOR(allocator_type,__a, _CharT).allocate(_S_rounded_up_size(_p_size));
 
-    _STLP_PRIV __uninitialized_copy_n(__s, _p_size, __buf);
+    _STLP_PRIV __ucopy_n(__s, _p_size, __buf);
     _S_construct_null(__buf + _p_size);
 
     _STLP_TRY {
@@ -2348,7 +2348,7 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _CharT, class _Alloc>
 struct __move_traits<rope<_CharT, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };

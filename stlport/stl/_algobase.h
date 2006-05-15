@@ -170,8 +170,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _OutputIter, class _Distance>
 inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-                          _OutputIter __result,
-                          const input_iterator_tag &, _Distance*) {
+                          _OutputIter __result, const input_iterator_tag &, _Distance*) {
   for ( ; __first != __last; ++__result, ++__first)
     *__result = *__first;
   return __result;
@@ -262,8 +261,8 @@ template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result,
                               const __true_type& /*BothPtrType*/) {
   return __copy_ptrs(__first, __last, __result,
-                     _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter),
-                                   _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+                     _UseTrivialCopy(_STLP_VALUE_TYPE(__first, _InputIter),
+                                     _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
 }
 
 template <class _InputIter, class _OutputIter>
@@ -303,8 +302,8 @@ inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _O
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
   return __copy_backward_ptrs(__first, __last, __result,
-                              _IsOKToMemCpy(_STLP_VALUE_TYPE(__first, _InputIter),
-                                            _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+                              _UseTrivialCopy(_STLP_VALUE_TYPE(__first, _InputIter),
+                                              _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -415,7 +414,6 @@ void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   _STLP_FIX_LITERAL_BUG(__first)
   _STLP_PRIV __fill_n(__first, __n, __val);
 }
-
 
 // Specialization: for one-byte types we can use memset.
 inline void fill(unsigned char* __first, unsigned char* __last,

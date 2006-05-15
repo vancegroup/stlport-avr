@@ -135,9 +135,7 @@ public:
 
 private:
   typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
-  typedef typename _TrivialUCopy<_Tp>::_Ret _TrivialUCpy;
-  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
-  typedef typename __type_traits<_Tp>::is_POD_type _PODType;
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCpy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
 #else
@@ -158,11 +156,10 @@ private:
     _M_insert_overflow_aux(__pos, __x, __false_type(), __fill_len, __atend);
   }
 
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCpy*/,
-                          size_type __fill_len, bool __atend = false) {
-    _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
-  }
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCpy*/,
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialAss*/,
+                          size_type __fill_len, bool __atend = false)
+  { _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend); }
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialAss*/,
                           size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish - this->_M_start))
@@ -215,22 +212,19 @@ public:
                   const allocator_type& __a = allocator_type())
 #else
   explicit vector(size_type __n)
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type() ) {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp), _PODType());
-  }
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
   vector(size_type __n, const _Tp& __val)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
-  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType()); }
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
   vector(size_type __n, const _Tp& __val, const allocator_type& __a)
 #endif
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, __a)
-  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType()); }
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
 
   vector(const _Self& __x)
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {
-    this->_M_finish = _STLP_PRIV __uninitialized_copy(__x.begin(), __x.end(),
-                                                      this->_M_start, _TrivialUCpy());
-  }
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator())
+  { this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCpy()); }
 
   vector(__move_source<_Self> src)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
@@ -243,14 +237,13 @@ public:
     size_type __real_n;
     this->_M_start = this->_M_end_of_storage.allocate(__n, __real_n);
     this->_M_end_of_storage._M_data = this->_M_start + __real_n;
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val, _PODType());
+    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val);
   }
 
   template <class _InputIterator>
   void _M_initialize_aux(_InputIterator __first, _InputIterator __last,
-                         const __false_type& /*_IsIntegral*/) {
-    _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
-  }
+                         const __false_type& /*_IsIntegral*/)
+  { _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
 
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
@@ -273,9 +266,8 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   vector(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a) {
-      this->_M_finish = _STLP_PRIV __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
-  }
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a)
+  { this->_M_finish = _STLP_PRIV __ucopy_ptrs(__first, __last, this->_M_start, _TrivialUCpy()); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   //As the vector container is a back insert oriented container it
@@ -317,7 +309,7 @@ public:
       _ForwardIter __mid = __first;
       advance(__mid, size());
       copy(__first, __mid, this->_M_start);
-      this->_M_finish = _STLP_PRIV __uninitialized_copy(__mid, __last, this->_M_finish, _TrivialUCpy());
+      this->_M_finish = uninitialized_copy(__mid, __last, this->_M_finish);
     }
   }
 
@@ -361,7 +353,7 @@ public:
       ++this->_M_finish;
     }
     else
-      _M_insert_overflow(this->_M_finish, __x, _TrivialCpy(), 1UL, true);
+      _M_insert_overflow(this->_M_finish, __x, _TrivialAss(), 1UL, true);
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -405,7 +397,7 @@ private:
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCpy(), _Movable());
-      __new_finish = _STLP_PRIV __uninitialized_copy(__first, __last, __new_finish, _TrivialUCpy());
+      __new_finish = uninitialized_copy(__first, __last, __new_finish);
       __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCpy(), _Movable());
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
@@ -429,7 +421,7 @@ private:
       _STLP_STD::_Move_Construct(__dst, *__src);
       _STLP_STD::_Destroy_Moved(__src);
     }
-    _STLP_PRIV __uninitialized_copy(__first, __last, __pos, _TrivialUCpy());
+    uninitialized_copy(__first, __last, __pos);
     this->_M_finish += __n;
   }
 
@@ -445,7 +437,7 @@ private:
     const size_type __elems_after = this->_M_finish - __pos;
     pointer __old_finish = this->_M_finish;
     if (__elems_after > __n) {
-      _STLP_PRIV __uninitialized_copy(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
+      _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
       this->_M_finish += __n;
       _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialAss());
       copy(__first, __last, __pos);
@@ -457,9 +449,9 @@ private:
 #else
       const_pointer __mid = __first + __elems_after;
 #endif
-      _STLP_PRIV __uninitialized_copy(__mid, __last, this->_M_finish, _TrivialUCpy());
+      uninitialized_copy(__mid, __last, this->_M_finish);
       this->_M_finish += __n - __elems_after;
-      _STLP_PRIV __uninitialized_copy(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
+      _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
       this->_M_finish += __elems_after;
       copy(__first, __mid, __pos);
     } /* elems_after */
@@ -638,11 +630,7 @@ private:
   {
     pointer __result = this->_M_end_of_storage.allocate(__n, __n);
     _STLP_TRY {
-#if !defined(__MRC__)  //*TY 12/17/2000 - added workaround for MrCpp. it confuses on nested try/catch block
-      _STLP_PRIV __uninitialized_copy(__first, __last, __result, _TrivialUCpy());
-#else
       uninitialized_copy(__first, __last, __result);
-#endif
       return __result;
     }
     _STLP_UNWIND(this->_M_end_of_storage.deallocate(__result, __n))
@@ -664,7 +652,7 @@ private:
     size_type __n = distance(__first, __last);
     this->_M_start = this->_M_end_of_storage.allocate(__n, __n);
     this->_M_end_of_storage._M_data = this->_M_start + __n;
-    this->_M_finish = _STLP_PRIV __uninitialized_copy(__first, __last, this->_M_start, _TrivialUCpy());
+    this->_M_finish = uninitialized_copy(__first, __last, this->_M_start);
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 };
