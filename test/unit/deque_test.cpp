@@ -24,6 +24,10 @@ class DequeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(at);
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
+#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(optimizations_check);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -31,6 +35,7 @@ protected:
   void at();
   void auto_ref();
   void allocator_with_state();
+  void optimizations_check();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DequeTest);
@@ -141,4 +146,42 @@ void DequeTest::allocator_with_state()
   }
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
+}
+
+struct Point {
+  int x, y;
+};
+
+struct PointEx : Point {
+  PointEx() : builtFromBase(false) {}
+  PointEx(const Point&) : builtFromBase(true) {}
+
+  bool builtFromBase;
+};
+
+#if defined (STLPORT)
+namespace std {
+  template <>
+  struct __type_traits<PointEx> {
+    typedef __false_type has_trivial_default_constructor;
+    typedef __true_type has_trivial_copy_constructor;
+    typedef __true_type has_trivial_assignment_operator;
+    typedef __true_type has_trivial_destructor;
+    typedef __true_type is_POD_type;
+  };
+}
+#endif
+
+//This test check that deque implementation do not over optimize
+//operation as PointEx copy constructor is trivial
+void DequeTest::optimizations_check()
+{
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+  deque<Point> d1(1);
+  CPPUNIT_ASSERT( d1.size() == 1 );
+
+  deque<PointEx> d2(d1.begin(), d1.end());
+  CPPUNIT_ASSERT( d2.size() == 1 );
+  CPPUNIT_ASSERT( d2[0].builtFromBase == true );
+#endif
 }

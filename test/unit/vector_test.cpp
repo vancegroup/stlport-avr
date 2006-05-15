@@ -32,6 +32,10 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(pointer);
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
+#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(optimizations_check);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -47,6 +51,7 @@ protected:
   void pointer();
   void auto_ref();
   void allocator_with_state();
+  void optimizations_check();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorTest);
@@ -350,4 +355,42 @@ void VectorTest::allocator_with_state()
   }
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
+}
+
+struct Point {
+  int x, y;
+};
+
+struct PointEx : Point {
+  PointEx() : builtFromBase(false) {}
+  PointEx(const Point&) : builtFromBase(true) {}
+
+  bool builtFromBase;
+};
+
+#if defined (STLPORT)
+namespace std {
+  template <>
+  struct __type_traits<PointEx> {
+    typedef __false_type has_trivial_default_constructor;
+    typedef __true_type has_trivial_copy_constructor;
+    typedef __true_type has_trivial_assignment_operator;
+    typedef __true_type has_trivial_destructor;
+    typedef __true_type is_POD_type;
+  };
+}
+#endif
+
+//This test check that vector implementation do not over optimize
+//operation as PointEx copy constructor is trivial
+void VectorTest::optimizations_check()
+{
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+  vector<Point> v1(1);
+  CPPUNIT_ASSERT( v1.size() == 1 );
+
+  vector<PointEx> v2(v1.begin(), v1.end());
+  CPPUNIT_ASSERT( v2.size() == 1 );
+  CPPUNIT_ASSERT( v2[0].builtFromBase == true );
+#endif
 }
