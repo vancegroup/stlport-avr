@@ -357,7 +357,7 @@ _STLP_DEFINE_TYPE_TRAITS_FOR(long double);
 #  endif
 
 template <class _Tp1, class _Tp2>
-struct _OKToMemCpy {
+struct _TrivialCopy {
 #if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
 #else
@@ -369,16 +369,14 @@ struct _OKToMemCpy {
   static _Type _Answer() { return _Type(); }
 };
 
-template <class _Tp>
-struct _TrivialUCopy {
-  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _Tr1;
-  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _Tr2;
-  typedef typename _Land2<_Tr1, _Tr2>::_Ret _Ret;
-};
-
 template <class _Tp1, class _Tp2>
-struct _TrivialUCopyAux {
-  typedef typename _TrivialUCopy<_Tp1>::_Ret _Tr1;
+struct _TrivialUCopy {
+#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+  typedef typename __type_traits<_Tp1>::has_trivial_copy_constructor _Tr1;
+#else
+  typedef typename _UnConstPtr<_Tp1*>::_Type _Tp3;
+  typedef typename __type_traits<_Tp3>::has_trivial_copy_constructor _Tr1;
+#endif
   typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
@@ -424,9 +422,8 @@ struct __call_traits<_Tp&> {
 #endif
 
 template <class _Tp1, class _Tp2>
-inline _OKToMemCpy<_Tp1, _Tp2> _IsOKToMemCpy(_Tp1*, _Tp2*) {
-  return _OKToMemCpy<_Tp1, _Tp2>();
-}
+inline _TrivialCopy<_Tp1, _Tp2> _UseTrivialCopy(_Tp1*, _Tp2*)
+{ return _TrivialCopy<_Tp1, _Tp2>(); }
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 struct _OKToSwap {
@@ -437,14 +434,12 @@ struct _OKToSwap {
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 inline _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>
-_IsOKToSwap(_Tp1*, _Tp2*, const _IsRef1&, const _IsRef2&) {
-  return _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>();
-}
+_IsOKToSwap(_Tp1*, _Tp2*, const _IsRef1&, const _IsRef2&)
+{ return _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>(); }
 
 template <class _Tp1, class _Tp2>
-inline _TrivialUCopyAux<_Tp1, _Tp2> _UseTrivialUCopy(_Tp1*, _Tp2*)  {
-  return _TrivialUCopyAux<_Tp1, _Tp2>();
-}
+inline _TrivialUCopy<_Tp1, _Tp2> _UseTrivialUCopy(_Tp1*, _Tp2*)
+{ return _TrivialUCopy<_Tp1, _Tp2>(); }
 
 template <class _Tp>
 struct _IsPOD {
@@ -453,7 +448,7 @@ struct _IsPOD {
 };
 
 template <class _Tp>
-inline _IsPOD<_Tp>  _Is_POD (_Tp*) { return _IsPOD<_Tp>(); }
+inline _IsPOD<_Tp> _Is_POD(_Tp*) { return _IsPOD<_Tp>(); }
 
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>

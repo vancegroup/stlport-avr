@@ -428,7 +428,7 @@ void TypeTraitsTest::both_pointer_type()
 #if defined (STLPORT)
 template <typename _Tp1, typename _Tp2>
 int is_ok_to_use_memcpy(_Tp1 val1, _Tp2 val2) {
-  return type_to_value(_IsOKToMemCpy(val1, val2)._Answer());
+  return type_to_value(_UseTrivialCopy(val1, val2)._Answer());
 }
 #endif
 

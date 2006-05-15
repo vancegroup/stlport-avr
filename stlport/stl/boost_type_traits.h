@@ -93,7 +93,7 @@ struct _BothPtrType {
 };
 
 template <class _Tp1, class _Tp2>
-struct _OKToMemCpy {
+struct _TrivialCopy {
   typedef typename ::boost::remove_cv<_Tp1>::type uncv1;
   typedef typename ::boost::remove_cv<_Tp2>::type uncv2;
 
@@ -109,31 +109,20 @@ struct _OKToMemCpy {
   static _Type _Answer() { return _Type(); }
 };
 
-template <class _Tp>
-struct _TrivialUCopy {
-  enum { boost_trivial_copy = ::boost::has_trivial_copy<_Tp>::value };
-  typedef typename __bool2type<boost_trivial_copy>::_Ret _BoostTrivialCopy;
-  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _STLPTrivialCopy;
-  typedef typename _Lor2<_BoostTrivialCopy, _STLPTrivialCopy>::_Ret _TrivialCopy;
-
-  enum { boost_trivial_assign = ::boost::has_trivial_assign<_Tp>::value };
-  typedef typename __bool2type<boost_trivial_assign>::_Ret _BoostTrivialAssign;
-  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _STLPTrivialAssign;
-  typedef typename _Lor2<_BoostTrivialAssign, _STLPTrivialAssign>::_Ret _TrivialAssign;
-
-  typedef typename _Land2<_TrivialCopy, _TrivialAssign>::_Ret _Ret;
-};
-
 template <class _Tp1, class _Tp2>
-struct _TrivialUCopyAux {
-  typedef typename _TrivialUCopy<_Tp1>::_Ret _TrivialUCpy;
-
+struct _TrivialUCopy {
   typedef typename ::boost::remove_cv<_Tp1>::type uncv1;
   typedef typename ::boost::remove_cv<_Tp2>::type uncv2;
+
   enum { same = ::boost::is_same<uncv1, uncv2>::value };
   typedef typename __bool2type<same>::_Ret _Same;
 
-  typedef typename _Land2<_TrivialUCpy, _Same>::_Ret _Type;
+  enum { boost_trivial_copy = ::boost::has_trivial_copy<uncv1>::value };
+  typedef typename __bool2type<boost_trivial_copy>::_Ret _BoostTrivialCopy;
+  typedef typename __type_traits<uncv1>::has_trivial_copy_constructor _STLPTrivialCopy;
+  typedef typename _Lor2<_BoostTrivialCopy, _STLPTrivialCopy>::_Ret _TrivialCopy;
+
+  typedef typename _Land2<_Same, _TrivialCopy>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
 
