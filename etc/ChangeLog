@@ -1,3 +1,56 @@
+2006-05-15  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_hashtable.h, _list.h, _deque.h, _slist.h,
+	_string.h, _vector.h, _move_construct_fwk.h, _rope.h:
+	Fix impact of _STLP_NO_MOVE_SEMANTIC macro on library. Now,
+	if defined, no move will ever happen.
+
+	* stlport/stl/_uninitialized.h: Simplified __uninitialized_copy_fill
+	prototype, only one type of iterator is allowed. It also fix
+	implementation as this one was not taking into account both
+	iterator value_type to concider if the operation was trivial
+	or not.
+
+	* stlport/stl/_uninitialized.h: Major code review. Remove use of
+	_OKToMemcpy, remove dependency on std::copy of std::fill, all
+	implementation is now similar to the one of std::copy algorithms
+	except that uninitialized algo are using
+	__type_traits::has_trivial_copy_constructor meta information and
+	copy __type_traits::has_trivial_assign_operator.
+
+	* test/unit/deque_test.cpp, vector_test.cpp: New test case for
+	over optimization problem.
+
+	* test/unit/map_test.cpp, locale_test.cpp, list_test.cpp, slist_test.cpp,
+	unordered_test.cpp, fstream_test.cpp, stack_allocator.h: Fixed
+	implementation to build with _STLP_NO_MEMBER_TEMPLATES.
+
+	* stlport/stl/debug/_vector.h, _list.h: Add non template assign
+	methods used when _STLP_NO_MEMBER_TEMPLATES is defined.
+
+	* stlport/stl/_slist.c: Fixed sort _Slist_sort implementation, now
+	call _Slist_marge template function rather than slist::merge method
+	as this method do not take any predicate when _STLP_NO_MEMBER_TEMPLATES
+	is defined.
+
+	* build/test/unit/Makefile.inc, test/unit/uninitialized_test.cpp:
+	New test for uninitialized_copy algo.
+
+	* stlport/stl/type_traits.h: OKToMemCpy rename in _TrivialCopy for
+	coherency with _TrivialUCopy. Moreover, thanks to refactoring in
+	uninitialized_* algorithms, _TrivialUCopy now only takes into account
+	__type_traits::has_trivial_copy_constructor meta information and
+	not has_trivial_assign_operator.
+
+	* stlport/stl/boost_type_traits.h: Fixed to reflect STLport
+	__type_traits modifications.
+
+	* stlport/stl/_uninitialized.h: Major code review proposed by
+	Ulrich Echkardt
+
+	* stlport/stl/_algobase.h, _deque.h, _deque.c, _vector.h, _vector.c,
+	_rope.h, _rope.c, _string.h, _string.c: Impact of previous point.
+
 2006-05-05  Francois Dumont  <dums@stlport...>
 
 	* test/unit/iter_test.cpp: Removed unreachable code.

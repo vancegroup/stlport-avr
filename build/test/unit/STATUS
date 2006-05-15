@@ -413,27 +413,27 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Borland C++ compiler 5.5.1 (free version)
 -----------------------------------------------------------------------
-Date:                           2006-01-21
+Date:                           2006-05-10
 STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (352 tests, 4 ignores).
+Status (release-shared):        All pass (361 tests, 3 ignores).
 Notes:
-Status (dbg-shared):            All pass (352 tests, 4 ignores).
+Status (dbg-shared):            All pass (361 tests, 3 ignores).
 Notes:
-Status (stldbg-shared):         All pass (352 tests, 4 ignores).
+Status (stldbg-shared):         All pass (361 tests, 3 ignores).
 Notes:
-Status (release-static):        All pass (352 tests, 4 ignores).
+Status (release-static):        All pass (361 tests, 3 ignores).
 Notes:
-Status (dbg-static):            All pass (352 tests, 4 ignores).
+Status (dbg-static):            All pass (361 tests, 3 ignores).
 Notes:
-Status (stldbg-static):         All pass (352 tests, 4 ignores).
+Status (stldbg-static):         All pass (361 tests, 3 ignores).
 Notes:
 
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.4 (cygwin special)
 -----------------------------------------------------------------------
-Date:                           2006-04-26
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-05-08
+STLP Version:                   CVS HEAD
 Reporter:                       dums (Francois Dumont)
 Status (release-shared):        1 failure (361 tests)
 Notes:                          ExceptionTest::uncaught_exception fails when all tests
@@ -444,16 +444,16 @@ Status (stldbg-shared):         1 failure (361 tests)
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
-Compiler:                       g++ 3.4.1 (mingw special)
+Compiler:                       g++ 3.4.1 (mingw special, MinGW 3.9 runtime)
 -----------------------------------------------------------------------
-Date:                           2005-08-31
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-05-08
+STLP Version:                   CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (332 tests)
+Status (release-shared):        1 failure (361 tests)
 Notes:                          Idem cygwin report above.
-Status (dbg-shared):            1 failure (332 tests)
+Status (dbg-shared):            1 failure (361 tests)
 Notes:                          Idem cygwin report above.
-Status (stldbg-shared):         1 failure (332 tests)
+Status (stldbg-shared):         1 failure (361 tests)
 Notes:                          Idem cygwin report above.
 
 =======================================================================
