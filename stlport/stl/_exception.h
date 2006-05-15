@@ -102,7 +102,12 @@ using _STLP_VENDOR_EXCEPT_STD::bad_exception;
 #      endif
 // weird errors
 #        if !defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
+#          if defined (__ICL) && (__ICL >= 900) && (_STLP_MSVC_LIB < 1300)
+//See config/_intel.h for reason about this workaround
+using std::unexpected;
+#          else
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected;
+#          endif
 using _STLP_VENDOR_UNEXPECTED_STD::unexpected_handler;
 using _STLP_VENDOR_UNEXPECTED_STD::set_unexpected;
 #        endif
