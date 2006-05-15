@@ -43,9 +43,17 @@
 
 #define _STLP_PRAGMA_ONCE
 
-/* These switches depend on compiler flags */
+/* These switches depend on compiler flags. We are hoping here that compilers
+ * simulating MSVC behavior use identical macros to report compilation context.
+ * Otherwise those macros will have to be undef in specific compiler configuration
+ * files.
+ */
 #ifndef _CPPUNWIND
 #  define _STLP_DONT_USE_EXCEPTIONS 1
+#endif
+
+#ifndef _CPPRTTI
+#  define _STLP_NO_RTTI 1
 #endif
 
 #if defined (_MT) && !defined (_STLP_NO_THREADS) && !defined (_REENTRANT)
@@ -69,10 +77,6 @@
 #    define _STLP_HAS_TRIVIAL_DESTRUCTOR(T) __has_trivial_destructor(T)
 #    define _STLP_IS_POD(T) __is_pod(T)
 #    define _STLP_HAS_TYPE_TRAITS_INTRINSICS
-#  endif
-
-#  ifndef _CPPRTTI
-#    define _STLP_NO_RTTI 1
 #  endif
 
 #  ifndef _STLP_MSVC50_COMPATIBILITY
@@ -132,7 +136,7 @@
 #    define _STLP_HAS_NATIVE_FLOAT_ABS 1
 #  endif
 
-#  if (_STLP_MSVC == 1300)
+#  if (_STLP_MSVC > 1200) && (_STLP_MSVC < 1310)
 #    define _STLP_NO_MOVE_SEMANTIC
 #  endif
 
