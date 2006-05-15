@@ -69,6 +69,12 @@ struct __move_traits {
   typedef typename __type_traits<_Tp>::has_trivial_destructor complete;
 };
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+typedef __true_type __stlp_movable;
+#else
+typedef __false_type __stlp_movable;
+#endif
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 /*
@@ -142,7 +148,7 @@ struct __move_traits_help2 {
   typedef __move_traits<_Tp1> _MoveTraits1;
   typedef __move_traits<_Tp2> _MoveTraits2;
 
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   typedef typename _Land2<typename _MoveTraits1::complete,
                           typename _MoveTraits2::complete>::_Ret complete;
 };

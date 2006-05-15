@@ -425,7 +425,11 @@ protected:                      // Internal typedefs
   typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
   typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
   typedef typename _Land2<_TrivialAss, _TrivialCpy>::_Ret _TrivialUCpy;
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
+#else
+  typedef __false_type _Movable;
+#endif
 
 public:                         // Basic accessors
   iterator begin() { return this->_M_start; }
@@ -1073,7 +1077,7 @@ _STLP_BEGIN_NAMESPACE
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp, class _Alloc>
 struct __move_traits<deque<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
