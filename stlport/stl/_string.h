@@ -1368,7 +1368,7 @@ swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _CharT, class _Traits, class _Alloc>
 struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };

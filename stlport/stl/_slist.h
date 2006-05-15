@@ -857,7 +857,7 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp, class _Alloc>
 struct __move_traits<slist<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 

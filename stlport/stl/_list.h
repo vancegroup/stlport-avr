@@ -724,7 +724,7 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp, class _Alloc>
 struct __move_traits<list<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */

@@ -138,7 +138,11 @@ private:
   typedef typename _TrivialUCopy<_Tp>::_Ret _TrivialUCpy;
   typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
   typedef typename __type_traits<_Tp>::is_POD_type _PODType;
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
+#else
+  typedef __false_type _Movable;
+#endif
 
   // handles insertions on overflow
   void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/,
@@ -709,7 +713,7 @@ typedef vector<bool, allocator<bool> > bit_vector;
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp, class _Alloc>
 struct __move_traits<vector<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
