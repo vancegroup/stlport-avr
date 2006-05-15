@@ -847,6 +847,7 @@ __stable_partition_aux(_BidirectIter __first, _BidirectIter __last, _Predicate _
 }
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+template <class _BidirectIter, class _Predicate>
 _BidirectIter
 __stable_partition_aux(_BidirectIter __first, _BidirectIter __last, _Predicate __pred,
                        const random_access_iterator_tag &) {
