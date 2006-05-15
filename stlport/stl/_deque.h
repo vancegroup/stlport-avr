@@ -223,18 +223,16 @@ struct _Deque_iterator : public _Deque_iterator_base< _Tp> {
 
 template <class _Tp, class _Traits>
 inline _Deque_iterator<_Tp, _Traits> _STLP_CALL
-operator+(ptrdiff_t __n, const _Deque_iterator<_Tp, _Traits>& __x) {
-  return __x + __n;
-}
+operator+(ptrdiff_t __n, const _Deque_iterator<_Tp, _Traits>& __x)
+{ return __x + __n; }
 
 
 #if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 template <class _Tp>
 inline bool _STLP_CALL
 operator==(const _Deque_iterator_base<_Tp >& __x,
-           const _Deque_iterator_base<_Tp >& __y) {
-  return __x._M_cur == __y._M_cur;
-}
+           const _Deque_iterator_base<_Tp >& __y)
+{ return __x._M_cur == __y._M_cur; }
 
 template <class _Tp>
 inline bool _STLP_CALL
@@ -247,34 +245,32 @@ operator < (const _Deque_iterator_base<_Tp >& __x,
 template <class _Tp>
 inline bool _STLP_CALL
 operator!=(const _Deque_iterator_base<_Tp >& __x,
-           const _Deque_iterator_base<_Tp >& __y) {
-  return __x._M_cur != __y._M_cur;
-}
+           const _Deque_iterator_base<_Tp >& __y)
+{ return __x._M_cur != __y._M_cur; }
+
 template <class _Tp>
 inline bool _STLP_CALL
 operator>(const _Deque_iterator_base<_Tp >& __x,
-          const _Deque_iterator_base<_Tp >& __y) {
-  return __y < __x;
-}
+          const _Deque_iterator_base<_Tp >& __y)
+{ return __y < __x; }
+
 template <class _Tp>
 inline bool  _STLP_CALL operator>=(const _Deque_iterator_base<_Tp >& __x,
-                                   const _Deque_iterator_base<_Tp >& __y) {
-  return !(__x < __y);
-}
+                                   const _Deque_iterator_base<_Tp >& __y)
+{ return !(__x < __y); }
+
 template <class _Tp>
 inline bool  _STLP_CALL operator<=(const _Deque_iterator_base<_Tp >& __x,
-                                   const _Deque_iterator_base<_Tp >& __y) {
-  return !(__y < __x);
-}
+                                   const _Deque_iterator_base<_Tp >& __y)
+{ return !(__y < __x); }
 
 #else /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 template <class _Tp, class _Traits1, class _Traits2>
 inline bool  _STLP_CALL
 operator==(const _Deque_iterator<_Tp, _Traits1 >& __x,
-           const _Deque_iterator<_Tp, _Traits2 >& __y) {
-  return __x._M_cur == __y._M_cur;
-}
+           const _Deque_iterator<_Tp, _Traits2 >& __y)
+{ return __x._M_cur == __y._M_cur; }
 
 template <class _Tp, class _Traits1, class _Traits2>
 inline bool _STLP_CALL
@@ -287,27 +283,26 @@ operator < (const _Deque_iterator<_Tp, _Traits1 >& __x,
 template <class _Tp>
 inline bool _STLP_CALL
 operator!=(const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y) {
-  return __x._M_cur != __y._M_cur;
-}
+           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y)
+{ return __x._M_cur != __y._M_cur; }
+
 template <class _Tp>
 inline bool _STLP_CALL
 operator>(const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-          const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y) {
-  return __y < __x;
-}
+          const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y)
+{ return __y < __x; }
+
 template <class _Tp>
 inline bool  _STLP_CALL
 operator>=(const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y) {
-  return !(__x < __y);
-}
+           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y)
+{ return !(__x < __y); }
+
 template <class _Tp>
 inline bool _STLP_CALL
 operator<=(const _Deque_iterator<_Tp, _Nonconst_traits<_Tp> >& __x,
-           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y) {
-  return !(__y < __x);
-}
+           const _Deque_iterator<_Tp, _Const_traits<_Tp> >& __y)
+{ return !(__y < __x); }
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -356,17 +351,16 @@ public:
   typedef _Deque_iterator<_Tp, _Nonconst_traits<_Tp> > iterator;
   typedef _Deque_iterator<_Tp, _Const_traits<_Tp> >    const_iterator;
 
-  static size_t  _STLP_CALL buffer_size() { return (size_t)_Deque_iterator_base<_Tp>::__buffer_size; }
+  static size_t _STLP_CALL buffer_size() { return (size_t)_Deque_iterator_base<_Tp>::__buffer_size; }
 
   _Deque_base(const allocator_type& __a, size_t __num_elements)
     : _M_start(), _M_finish(), _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0),
-      _M_map_size(__a, (size_t)0) {
-    _M_initialize_map(__num_elements);
-  }
+      _M_map_size(__a, (size_t)0)
+  { _M_initialize_map(__num_elements); }
+
   _Deque_base(const allocator_type& __a)
     : _M_start(), _M_finish(), _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0),
-      _M_map_size(__a, (size_t)0) {
-  }
+      _M_map_size(__a, (size_t)0) {}
 
   _Deque_base(__move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
@@ -776,16 +770,16 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   void _M_insert_range_aux(iterator __pos,
                            const value_type* __first, const value_type* __last,
-                           const __true_type& /*_Movable*/);
+                           size_type __n, const __true_type& /*_Movable*/);
   void _M_insert_range_aux(iterator __pos,
                            const value_type* __first, const value_type* __last,
-                           const __false_type& /*_Movable*/);
+                           size_type __n, const __false_type& /*_Movable*/);
   void _M_insert_range_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
-                           const __true_type& /*_Movable*/);
+                           size_type __n, const __true_type& /*_Movable*/);
   void _M_insert_range_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
-                           const __false_type& /*_Movable*/);
+                           size_type __n, const __false_type& /*_Movable*/);
 public:
   void insert(iterator __pos,
               const value_type* __first, const value_type* __last);
@@ -842,8 +836,7 @@ protected:                        // Internal construction/destruction
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void _M_range_initialize(_InputIterator __first,
-                           _InputIterator __last,
+  void _M_range_initialize(_InputIterator __first, _InputIterator __last,
                            const input_iterator_tag &) {
     this->_M_initialize_map(0);
     _STLP_TRY {
@@ -853,8 +846,7 @@ protected:                        // Internal construction/destruction
     _STLP_UNWIND(clear())
   }
   template <class _ForwardIterator>
-  void  _M_range_initialize(_ForwardIterator __first,
-                            _ForwardIterator __last,
+  void  _M_range_initialize(_ForwardIterator __first, _ForwardIterator __last,
                             const forward_iterator_tag &)  {
    size_type __n = distance(__first, __last);
    this->_M_initialize_map(__n);
@@ -897,8 +889,7 @@ protected:                        // Internal insert functions
 
   template <class _ForwardIterator>
   void  _M_insert(iterator __pos,
-                  _ForwardIterator __first,
-                  _ForwardIterator __last,
+                  _ForwardIterator __first, _ForwardIterator __last,
                   const forward_iterator_tag &) {
     size_type __n = distance(__first, __last);
     if (__pos._M_cur == this->_M_start._M_cur) {
