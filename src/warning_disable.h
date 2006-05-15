@@ -50,6 +50,8 @@
 #  pragma warning( disable : 444 )  /* destructor for base class "..." is not virtual*/
 #  pragma warning( disable : 810 )  /* conversion from "int" to "char" may lose significant bits */
 #  pragma warning( disable : 981 )  /* operands are evaluated in unspecified order */
+#  pragma warning( disable : 1418 ) /* external definition with no prior declaration */
+#  pragma warning( disable : 1419 ) /* external declaration in primary source file */
 #  pragma warning( disable : 1572 ) /* floating-point equality and inequality comparisons are unreliable */
 #  pragma warning( disable : 1682 ) /* implicit conversion of a 64-bit integral type to a smaller integral type */
 #  pragma warning( disable : 1683 ) /* explicit conversion of a 64-bit integral type to a smaller integral type */
