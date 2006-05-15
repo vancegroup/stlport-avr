@@ -87,7 +87,7 @@ __stl_alloc_rebind(_STLP_PRIV __iostring_allocator<_Tp>& __a, const _Tp*)
 template <class _Tp>
 inline _STLP_PRIV __iostring_allocator<_Tp> _STLP_CALL
 __stl_alloc_create(const _STLP_PRIV __iostring_allocator<_Tp>&, const _Tp*)
-{ return __iostring_allocator<_Tp>(); }
+{ return _STLP_PRIV __iostring_allocator<_Tp>(); }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */

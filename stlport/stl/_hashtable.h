@@ -309,7 +309,7 @@ public:
       _M_equals(__eql),
       _M_get_key(__ext),
       _M_elems(allocator_type()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,_ElemsIte)),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -324,7 +324,7 @@ public:
       _M_equals(__eql),
       _M_get_key(__ext),
       _M_elems(__a),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,_ElemsIte)),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -342,7 +342,7 @@ public:
       _M_equals(__eql),
       _M_get_key(_ExK()),
       _M_elems(allocator_type()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,void*)),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -356,7 +356,7 @@ public:
       _M_equals(__eql),
       _M_get_key(_ExK()),
       _M_elems(__a),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a,void*)),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -366,7 +366,7 @@ public:
       _M_equals(__ht._M_equals),
       _M_get_key(__ht._M_get_key),
       _M_elems(__ht.get_allocator()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(),void*)),
+      _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(), _BucketType*)),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_copy_from(__ht); }
@@ -670,7 +670,7 @@ _STLP_BEGIN_NAMESPACE
 template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
 struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
   //Hashtables are movable:
-  typedef __true_type implemented;
+  typedef __stlp_movable implemented;
 
   //Completeness depends on the many template parameters, for the moment we concider it not complete:
   typedef __false_type complete;

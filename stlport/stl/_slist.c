@@ -193,7 +193,7 @@ void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
     __carry.splice_after(__carry.before_begin(), __that, __that.before_begin());
     int __i = 0;
     while (__i < __fill && !__counter[__i].empty()) {
-      __counter[__i].merge(__carry, __comp);
+      _STLP_PRIV _Slist_merge(__counter[__i], __carry, __comp);
       __carry.swap(__counter[__i]);
       ++__i;
     }
@@ -208,7 +208,7 @@ void _Slist_sort(slist<_Tp, _Alloc>& __that, _StrictWeakOrdering __comp) {
   }
 
   for (int __i = 1; __i < __fill; ++__i)
-    __counter[__i].merge(__counter[__i-1], __comp);
+    _STLP_PRIV _Slist_merge(__counter[__i], __counter[__i - 1], __comp);
   __that.swap(__counter[__fill-1]);
 }
 
