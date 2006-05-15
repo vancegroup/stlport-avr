@@ -143,9 +143,10 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/type_traits_test.cpp \
 	../../../test/unit/typeinfo_header_test.cpp \
 	../../../test/unit/unary_test.cpp \
+	../../../test/unit/uninitialized_test.cpp \
 	../../../test/unit/unique_test.cpp \
-	../../../test/unit/utility_header_test.cpp \
 	../../../test/unit/unordered_test.cpp \
+	../../../test/unit/utility_header_test.cpp \
 	../../../test/unit/valarray_test.cpp \
 	../../../test/unit/valarray_header_test.cpp \
 	../../../test/unit/vector_test.cpp \
