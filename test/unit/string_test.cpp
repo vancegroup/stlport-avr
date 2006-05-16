@@ -1048,7 +1048,7 @@ void StringTest::capacity()
 {
   string s;
 
-  CPPUNIT_CHECK( s.capacity() >= 0 );
+  CPPUNIT_CHECK( s.capacity() > 0 );
   CPPUNIT_CHECK( s.capacity() < s.max_size() );
   CPPUNIT_CHECK( s.capacity() >= s.size() );
 
@@ -1058,7 +1058,7 @@ void StringTest::capacity()
 
   for ( int i = 0; i < _STLP_SHORT_STRING_SZ + 2; ++i ) {
     s += ' ';
-    CPPUNIT_CHECK( s.capacity() >= 0 );
+    CPPUNIT_CHECK( s.capacity() > 0 );
     CPPUNIT_CHECK( s.capacity() < s.max_size() );
     CPPUNIT_CHECK( s.capacity() >= s.size() );
   }

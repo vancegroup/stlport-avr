@@ -152,7 +152,7 @@ struct Point {
   int x, y;
 };
 
-struct PointEx : Point {
+struct PointEx : public Point {
   PointEx() : builtFromBase(false) {}
   PointEx(const Point&) : builtFromBase(true) {}
 
