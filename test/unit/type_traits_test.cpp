@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <vector>
 #include <string>
 
 #include "cppunit/cppunit_proxy.h"
@@ -29,6 +30,7 @@ class TypeTraitsTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(both_pointer_type);
   CPPUNIT_TEST(ok_to_use_memcpy);
+  CPPUNIT_TEST(ok_to_use_memmove);
   CPPUNIT_TEST(trivial_destructor);
   CPPUNIT_TEST(is_POD);
   CPPUNIT_TEST(stlport_class);
@@ -42,6 +44,7 @@ protected:
   void reference_type();
   void both_pointer_type();
   void ok_to_use_memcpy();
+  void ok_to_use_memmove();
   void trivial_destructor();
   void is_POD();
   void stlport_class();
@@ -454,10 +457,59 @@ void TypeTraitsTest::ok_to_use_memcpy()
 }
 
 #if defined (STLPORT)
+template <typename _Tp1, typename _Tp2>
+int is_ok_to_use_memmove(_Tp1 val1, _Tp2 val2) {
+  return type_to_value(_UseTrivialUCopy(val1, val2)._Answer());
+}
+#endif
+
+void TypeTraitsTest::ok_to_use_memmove()
+{
+#if defined (STLPORT)
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_const_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_const_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_const_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_volatile_pointer, int_const_volatile_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, any_pointer) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, int_pointer) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, any_pointer) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, any_const_pointer) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, int_pointer) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, any_pod_pointer) == 1 );
+  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, any_pod_const_pointer) == 1 );
+#endif
+}
+
+#if defined (STLPORT)
 template <typename _Tp>
 int has_trivial_destructor(_Tp) {
   typedef typename __type_traits<_Tp>::has_trivial_destructor _TrivialDestructor;
   return type_to_value(_TrivialDestructor());
+}
+
+struct DestructorMonitor
+{
+  ~DestructorMonitor()
+  { ++nb_destructor_call; }
+
+  static size_t nb_destructor_call;
+};
+
+size_t DestructorMonitor::nb_destructor_call = 0;
+
+namespace std {
+  _STLP_TEMPLATE_NULL
+  struct __type_traits<DestructorMonitor> {
+    typedef __true_type has_trivial_default_constructor;
+    typedef __true_type has_trivial_copy_constructor;
+    typedef __true_type has_trivial_assignment_operator;
+    typedef __true_type has_trivial_destructor;
+    typedef __true_type is_POD_type;
+  };
 }
 #endif
 
@@ -473,6 +525,13 @@ void TypeTraitsTest::trivial_destructor()
   CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(any_pod) == 1 );
   CPPUNIT_ASSERT( has_trivial_destructor(string()) == 0 );
+
+  //Check of the meta information impact in a container implementation
+  {
+    vector<DestructorMonitor> v(10);
+    DestructorMonitor::nb_destructor_call = 0;
+  }
+  CPPUNIT_ASSERT( DestructorMonitor::nb_destructor_call == 0 );
 #endif
 }
 
