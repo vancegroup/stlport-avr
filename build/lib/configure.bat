@@ -303,6 +303,8 @@ goto pr_err
 
 :prc_x86
 if "%TARGETCPU%" == "X86" goto pr_x86
+REM Typo from evc3 and/or PocketPC 2002 SDK reported here
+REM to correctly check the platform:
 if "%TARGETCPU%" == "X86EMnset CFG=none" goto pr_x86
 if "%TARGETCPU%" == "x86" goto pr_x86
 if "%TARGETCPU%" == "emulator" goto pr_emul
