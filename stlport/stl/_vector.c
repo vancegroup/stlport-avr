@@ -88,7 +88,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __new_start;
   _STLP_TRY {
-    __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCpy(), _Movable());
+    __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCopy(), _Movable());
     // handle insertion
     if (__fill_len == 1) {
       _Copy_Construct(__new_finish, __x);
@@ -96,7 +96,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
     } else
       __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __fill_len, __x);
     if (!__atend)
-      __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCpy(), _Movable()); // copy remainder
+      __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCopy(), _Movable()); // copy remainder
   }
   _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                this->_M_end_of_storage.deallocate(__new_start,__len)))
@@ -105,7 +105,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialAss*/,
+void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCopy*/,
                                              size_type __fill_len, bool __atend ) {
   const size_type __old_size = size();
   size_type __len = __old_size + (max)(__old_size, __fill_len);
@@ -150,13 +150,13 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
   const size_type __elems_after = this->_M_finish - __pos;
   pointer __old_finish = this->_M_finish;
   if (__elems_after > __n) {
-    _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCpy());
+    _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCopy());
     this->_M_finish += __n;
-    _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialAss());
+    _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialCopy());
     _STLP_STD::fill(__pos, __pos + __n, __x);
   } else {
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - __elems_after, __x);
-    _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCpy());
+    _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCopy());
     this->_M_finish += __elems_after;
     _STLP_STD::fill(__pos, __old_finish, __x);
   }
@@ -169,7 +169,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _M_fill_insert_aux(__pos, __n, __x, _Movable());
     } else
-      _M_insert_overflow(__pos, __x, _TrivialAss(), __n);
+      _M_insert_overflow(__pos, __x, _TrivialCopy(), __n);
   }
 }
 
@@ -186,13 +186,13 @@ vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>&
       this->_M_end_of_storage._M_data = this->_M_start + __len;
     } else if (size() >= __xlen) {
       pointer __i = _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start) + 0,
-                                           __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_start, _TrivialAss());
+                                           __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_start, _TrivialCopy());
       _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     } else {
       _STLP_PRIV __copy_ptrs(__CONST_CAST(const_pointer, __x._M_start),
-                             __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialAss());
+                             __CONST_CAST(const_pointer, __x._M_start) + size(), this->_M_start, _TrivialCopy());
       _STLP_PRIV __ucopy_ptrs(__CONST_CAST(const_pointer, __x._M_start) + size(),
-                              __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_finish, _TrivialUCpy());
+                              __CONST_CAST(const_pointer, __x._M_finish) + 0, this->_M_finish, _TrivialUCopy());
     }
     this->_M_finish = this->_M_start + __xlen;
   }
