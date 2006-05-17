@@ -87,12 +87,11 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 #  define size_type           size_t
 #  define value_type          _Val
 #  define key_type            _Key
-#  define _Node               _Hashtable_node<_Val>
 #  define __reference__       _Val&
 
 #  define __iterator__        _Ht_iterator<_Val, _STLP_HEADER_TYPENAME _Traits::_NonConstTraits, \
                                            _Key, _HF, _ExK, _EqK, _All>
-#  define __iterator__        _Ht_iterator<_Val, _STLP_HEADER_TYPENAME _Traits::_ConstTraits, \
+#  define __const_iterator__  _Ht_iterator<_Val, _STLP_HEADER_TYPENAME _Traits::_ConstTraits, \
                                            _Key, _HF, _ExK, _EqK, _All>
 #else
 #  define __size_type__       _STLP_TYPENAME_ON_RETURN_TYPE hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All>::size_type
@@ -507,7 +506,6 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 #undef size_type
 #undef value_type
 #undef key_type
-#undef _Node
 #undef __stl_num_primes
 
 #if defined (_STLP_DEBUG)
