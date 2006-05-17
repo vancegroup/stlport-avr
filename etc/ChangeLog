@@ -1,3 +1,10 @@
+2006-05-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_abbrevs.h: Update list of abbreviations.
+
+	* stlport/stl/_hashtable.c: Removed _Node macro and fixed
+	macros defined when _STLP_NESTED_TYPE_PARAM_BUG is defined.
+
 2006-05-15  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_hashtable.h, _list.h, _deque.h, _slist.h,
