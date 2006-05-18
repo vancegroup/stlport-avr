@@ -168,7 +168,7 @@ protected:
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 time_base::dateorder _STLP_CALL __get_date_order(_Locale_time*);
-_Locale_time* _STLP_CALL __acquire_time(const char* __name, struct _Locale_name_hint*);
+_Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*);
 void _STLP_CALL __release_time(_Locale_time* __time);
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -179,7 +179,7 @@ public:
   typedef  time_base::dateorder dateorder;
   typedef _InIt                 iter_type;
 
-  explicit time_get_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0)
+  explicit time_get_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
     : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs),
       _M_time(_STLP_PRIV __acquire_time(__name, __hint))
   { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time); }
@@ -267,7 +267,7 @@ public:
   typedef _InIt iter_type;
   typedef _Ch   char_type;
 
-  explicit time_put_byname(const char * __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0)
+  explicit time_put_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
     : time_put<_Ch, _InIt>((_Locale_time*) 0, __refs),
     _M_time(_STLP_PRIV __acquire_time(__name, __hint))
   { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time); }

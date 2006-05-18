@@ -133,7 +133,7 @@ public:
 
 class _STLP_CLASS_DECLSPEC _Messages_impl : public _Messages {
 public:
-  _Messages_impl(bool, struct _Locale_name_hint* hint = 0);
+  _Messages_impl(bool, _Locale_name_hint* hint = 0);
   _Messages_impl(bool, _Locale_messages*);
 
   catalog do_open(const string& __fn, const locale& __loc) const;

@@ -25,9 +25,11 @@
 #ifndef _STLP_C_LOCALE_H
 #  include <stl/c_locale.h>
 #endif
+
 #ifndef _STLP_INTERNAL_LOCALE_H
 #  include <stl/_locale.h>
 #endif
+
 #ifndef _STLP_INTERNAL_ALGOBASE_H
 #  include <stl/_algobase.h>
 #endif
@@ -149,7 +151,7 @@ private:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
 public:
-  explicit ctype_byname(const char*, size_t = 0, struct _Locale_name_hint* __hint = 0);
+  explicit ctype_byname(const char*, size_t = 0, _Locale_name_hint* __hint = 0);
   ~ctype_byname();
 
   virtual char        do_toupper(char __c) const;
@@ -168,7 +170,6 @@ private:
   _Self& operator = (_Self const&);
   friend _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>*);
 };
-
 
 #  ifndef _STLP_NO_WCHAR_T
 _STLP_TEMPLATE_NULL
@@ -239,7 +240,7 @@ protected:
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>: public ctype<wchar_t> {
 public:
-  explicit ctype_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
+  explicit ctype_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
 
 protected:
   ~ctype_byname();

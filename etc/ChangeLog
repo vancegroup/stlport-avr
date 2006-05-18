@@ -1,9 +1,30 @@
+2006-05-18  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/c_locale.h: Fix declaration of _Locale_name_hint
+	struct so that compilers do not think that this struct is in
+	the STLport namespace because of friend declaration.
+
 2006-05-17  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_abbrevs.h: Update list of abbreviations.
 
 	* stlport/stl/_hashtable.c: Removed _Node macro and fixed
 	macros defined when _STLP_NESTED_TYPE_PARAM_BUG is defined.
+
+2006-05-16  Francois Dumont  <dums@stlport...>
+
+	* test/unit/type_traits_test.cpp: Add test case to check
+	_TrivialUCopy helper metaprogramming class behavior.
+
+	* stlport/stl/_vector.h, _vector.c: Replaced _TrivialAss by
+	_TrivialCopy and _TrivialUCpy by _TrivialUCopy for coherency
+	with type_traits.h names.
+
+	* test/unit/type_traits_test.cpp: Add small test for correct
+	impact of trivial_destructor meta info in vector implementation.
+
+	* build/lib/configure.bat: Add comment to explain weird TARGETCPU
+	check.
 
 2006-05-15  Francois Dumont  <dums@stlport...>
 

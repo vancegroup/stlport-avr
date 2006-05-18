@@ -281,7 +281,7 @@ public:
   typedef string                string_type;
 
   explicit moneypunct_byname _STLP_PSPEC2(char, true) (const char * __name, size_t __refs = 0,
-                                                       struct _Locale_name_hint* __hint = 0);
+                                                       _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -312,7 +312,7 @@ public:
   typedef string                string_type;
 
   explicit moneypunct_byname _STLP_PSPEC2(char, false) (const char * __name, size_t __refs = 0,
-                                                        struct _Locale_name_hint* __hint = 0);
+                                                        _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -345,7 +345,7 @@ public:
   typedef wstring               string_type;
 
   explicit moneypunct_byname _STLP_PSPEC2(wchar_t, true) (const char * __name, size_t __refs = 0,
-                                                          struct _Locale_name_hint* __hint = 0);
+                                                          _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;
@@ -376,7 +376,7 @@ public:
   typedef wstring               string_type;
 
   explicit moneypunct_byname _STLP_PSPEC2(wchar_t, false) (const char * __name, size_t __refs = 0,
-                                                           struct _Locale_name_hint* __hint = 0);
+                                                           _Locale_name_hint* __hint = 0);
 
 protected:
   _Locale_monetary* _M_monetary;

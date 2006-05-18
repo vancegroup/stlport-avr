@@ -59,8 +59,6 @@ _STLP_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
-struct _Locale_name_hint;
-
 /*
  * Typedefs:
  */

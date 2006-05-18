@@ -139,7 +139,7 @@ public:
   typedef messages_base::catalog catalog;
   typedef string     string_type;
 
-  explicit messages_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
+  explicit messages_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
 
 protected:
   ~messages_byname();
@@ -158,7 +158,7 @@ public:
   typedef messages_base::catalog catalog;
   typedef wstring                string_type;
 
-  explicit messages_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
+  explicit messages_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
 
 protected:
   ~messages_byname();

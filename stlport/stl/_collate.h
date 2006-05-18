@@ -36,7 +36,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-
 template <class _CharT> class collate {};
 template <class _CharT> class collate_byname {};
 
@@ -122,7 +121,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<char>: public collate<char>
 {
 public:
-  explicit collate_byname(const char* __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
+  explicit collate_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
 
 protected:
   ~collate_byname();
@@ -144,7 +143,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>: public collate<wchar_t>
 {
 public:
-  explicit collate_byname(const char * __name, size_t __refs = 0, struct _Locale_name_hint* __hint = 0);
+  explicit collate_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
 
 protected:
   ~collate_byname();
