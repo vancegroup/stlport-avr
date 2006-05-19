@@ -702,6 +702,36 @@ void StringTest::template_expression()
   string one("one"), two("two"), three("three");
   string space(1, ' ');
 
+  // check availability of [un]equality operators
+  {
+      // string-string
+      one == two;
+      one != two;
+      // string-literal
+      one == "two";
+      one != "two";
+      // literal-string
+      "one" == two;
+      "one" != two;
+#if 1 // defined (_STLP_USE_TEMPLATE_EXPRESSION)
+      // strsum-string
+      (one+two) == three;
+      (one+two) != three;
+      // string-strsum
+      one == (two+three);
+      one != (two+three);
+      // strsum-literal
+      (one+two) == "three";
+      (one+two) != "three";
+      // literal-strsum
+      "one" == (two+three);
+      "one" != (two+three);
+      // strsum-strsum
+      (one+two) == (two+three);
+      (one+two) != (two+three);
+#endif
+  }
+
   {
     string result(one + ' ' + two + ' ' + three);
     CPPUNIT_CHECK( result == "one two three" );
