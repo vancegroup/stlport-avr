@@ -94,19 +94,21 @@ long WINAPI InterlockedExchange(long*, long);
 #        include <winbase.h> /* needed for inline versions of Interlocked* functions */
 #      endif
 
-#      define MessageBox MessageBoxW
+#      ifndef _MFC_VER
+
+#        define MessageBox MessageBoxW
 int WINAPI MessageBoxW(HWND hWnd, LPCWSTR lpText, LPCWSTR lpCaption, UINT uType);
 
-#      define wvsprintf wvsprintfW
+#        define wvsprintf wvsprintfW
 int WINAPI wvsprintfW(LPWSTR, LPCWSTR, va_list ArgList);
 
 void WINAPI ExitThread(DWORD dwExitCode);
 
-#      if !defined (COREDLL)
-#        define _STLP_WCE_WINBASEAPI DECLSPEC_IMPORT
-#      else
-#        define _STLP_WCE_WINBASEAPI
-#      endif
+#        if !defined (COREDLL)
+#          define _STLP_WCE_WINBASEAPI DECLSPEC_IMPORT
+#        else
+#          define _STLP_WCE_WINBASEAPI
+#        endif
 
 _STLP_WCE_WINBASEAPI int WINAPI
 MultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr,
@@ -116,12 +118,14 @@ _STLP_WCE_WINBASEAPI UINT WINAPI GetACP();
 
 _STLP_WCE_WINBASEAPI BOOL WINAPI TerminateProcess(HANDLE hProcess, DWORD uExitCode);
 
-#      define OutputDebugString OutputDebugStringW
+#        define OutputDebugString OutputDebugStringW
 void WINAPI OutputDebugStringW(LPCWSTR);
 
 _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 
-#      undef _STLP_WCE_WINBASEAPI
+#        undef _STLP_WCE_WINBASEAPI
+
+#      endif /* !_MFC_VER */
 
 /* end of eMbedded Visual C++ specific section */
 

@@ -51,28 +51,9 @@
 #undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 
 // no *f and *l math functions available
+#define _STLP_NO_LONG_DOUBLE
 #define _STLP_NO_VENDOR_MATH_F
 #define _STLP_NO_VENDOR_MATH_L
-
-/*
- * Workaround Pocket PC 2003 missing RTTI support in OS image:
- * Turn this on if you are targeting Pocket PC 2003 or
- * Windows CE .NET 4.2 image compiled without SYSGEN_RTTI
- * (at this time this bug seems to be in every SDK except
- * version 4.0) you propably want to build your own image
- * with Platform Builder to enable RTTI and exception.
- *
- * This define is off by default since it's recommended
- * to use Microsoft RTTI patch. The patch is available at
- * http://support.microsoft.com/default.aspx?scid=kb;[LN];830482
- *
- * Define this, turn off /GX an /GR compiler options
- * and do not link against Ccrtrtti.lib(rtti patch lib)
- * if you do not want c++ exceptions.
- *
- * Note: This option is always switched on for eMbedded Visual C++ 3!
- */
-//# define _STLP_RTTI_BUG
 
 /*
  * Redirect cout, cerr and clog:
@@ -110,7 +91,7 @@
 #endif
 
 // when using MFC, disable another placement new declaration, since there is one in wcealt.h
-#if !defined (__BUILDING_STLPORT) && defined (_STLP_USE_MFC)
+#if !defined (__BUILDING_STLPORT) && defined (_MFC_VER)
 #  define __PLACEMENT_NEW_INLINE
 #endif
 
@@ -123,8 +104,8 @@
 #undef _STLP_NO_NEW_C_HEADERS
 #define _STLP_NO_NEW_C_HEADERS
 
-// RTTI Bug support
-#if defined (_STLP_RTTI_BUG) || defined (_STLP_WCE_EVC3)
+// exception handling support: only on evc4 and user added /GX to project settings
+#if defined (_STLP_WCE_EVC3) || !defined (_CPPUNWIND)
 #  define _STLP_NO_EXCEPTION_HEADER
 #  define _STLP_NO_EXCEPTIONS
 #  undef _STLP_USE_EXCEPTIONS
@@ -137,61 +118,78 @@
 
 /*
  * eMbedded Visual C++ .NET specific settings
- *
+ */
+#if defined (_STLP_WCE_NET)
+
+// evc4 has no locale and time support
+#  define _STLP_NO_LOCALE_SUPPORT
+#  define _STLP_NO_TIME_SUPPORT
+
+/*
  * Helper macros for including the native headers in cases where a file with
  * the same name also exists in the STLport include folder. The idea behind
  * this is that we first go up one directory and then down into a dir that
  * is only present in the native install but not in STLport.
  *
  */
-
-#if defined (_STLP_WCE_NET) && !defined (_STLP_NATIVE_INCLUDE_PATH)
-#  if defined (_X86_)
-#    if defined (emulator)
-#      define _STLP_NATIVE_INCLUDE_PATH ../Emulator
-#    else
-#      define _STLP_NATIVE_INCLUDE_PATH ../X86
-#    endif
-#  elif defined (_ARM_)
-#    if defined (ARMV4)
-#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4
-#    elif defined (ARMV4I)
-#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
-#    elif defined (ARMV4T)
-#      define _STLP_NATIVE_INCLUDE_PATH ../Armv4t
-#    else
-#      error Unknown ARM SDK.
-#    endif
-#  elif defined (_MIPS_)
-#    if defined (MIPS16)
-#      define _STLP_NATIVE_INCLUDE_PATH ../mips16
-#    elif defined (MIPSII)
-#      define _STLP_NATIVE_INCLUDE_PATH ../mipsII
-#    elif defined (MIPSII_FP)
-#      define _STLP_NATIVE_INCLUDE_PATH ../mipsII_fp
-#    elif defined (MIPSIV)
-#      define _STLP_NATIVE_INCLUDE_PATH ../mipsIV
-#    elif defined (MIPSIV_FP)
-#      define _STLP_NATIVE_INCLUDE_PATH ../mipsIV_fp
-#    else
-#      error Unknown MIPS SDK.
-#    endif
+#  if !defined (_STLP_NATIVE_INCLUDE_PATH)
+#    if defined (_X86_)
+#      if defined (emulator)
+#        define _STLP_NATIVE_INCLUDE_PATH ../Emulator
+#      else
+#        define _STLP_NATIVE_INCLUDE_PATH ../X86
+#      endif
+#    elif defined (_ARM_)
+#      if defined (ARMV4)
+#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+#      elif defined (ARMV4I)
+#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
+#      elif defined (ARMV4T)
+#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4t
+#      else
+#        error Unknown ARM SDK.
+#      endif
+#    elif defined (_MIPS_)
+#      if defined (MIPS16)
+#        define _STLP_NATIVE_INCLUDE_PATH ../mips16
+#      elif defined (MIPSII)
+#        define _STLP_NATIVE_INCLUDE_PATH ../mipsII
+#      elif defined (MIPSII_FP)
+#        define _STLP_NATIVE_INCLUDE_PATH ../mipsII_fp
+#      elif defined (MIPSIV)
+#        define _STLP_NATIVE_INCLUDE_PATH ../mipsIV
+#      elif defined (MIPSIV_FP)
+#        define _STLP_NATIVE_INCLUDE_PATH ../mipsIV_fp
+#      else
+#        error Unknown MIPS SDK.
+#      endif
 /* MIPS itself is highly volatile and configurable as both big and little
  * endian, all Windows CE versions (at least until 4.2 for MIPS) run in 
  * little-endian configurations though. */
-#    define _STLP_LITTLE_ENDIAN
-#  elif defined (SHx)
-#    if defined (SH3)
-#      define _STLP_NATIVE_INCLUDE_PATH ../sh3
-#    elif defined (SH4)
-#      define _STLP_NATIVE_INCLUDE_PATH ../sh4
+#      define _STLP_LITTLE_ENDIAN
+#    elif defined (SHx)
+#      if defined (SH3)
+#        define _STLP_NATIVE_INCLUDE_PATH ../sh3
+#      elif defined (SH4)
+#        define _STLP_NATIVE_INCLUDE_PATH ../sh4
+#      else
+#        error Unknown SHx SDK.
+#      endif
 #    else
-#      error Unknown SHx SDK.
+#      error Unknown SDK.
 #    endif
-#  else
-#    error Unknown SDK.
+#  endif /* !_STLP_NATIVE_INCLUDE_PATH */
+
+/* Workaround when using MFCCE and using <new> together: MFCCE's wcealt.h doesn't
+ * check for __PLACEMENT_NEW_INLINE before defining operator new, so when <new>
+ * defines the operatore before, there will be an error C2084:
+ * "function 'void *__cdecl operator new(unsigned int,void *)' already has a body".
+ */
+#  ifdef _STLP_USE_MFC
+#    define __PLACEMENT_NEW_INLINE
 #  endif
-#endif
+
+#endif /* _STLP_WCE_NET */
 
 /* Workaround in _windows.h needs native headers access macros
  * to be defined */
@@ -206,6 +204,10 @@
 // but the flag isn't fully supported in STLport, and it's easier to use the
 // evc4 definition for that type.
 typedef int mbstate_t;
+
+// evc3 has no locale and time support
+#define _STLP_NO_LOCALE_SUPPORT
+#define _STLP_NO_TIME_SUPPORT
 
 // evc3 has new, but no explicit header
 #  define _STLP_NO_NEW_HEADER
@@ -279,8 +281,12 @@ inline void __cdecl operator delete(void *, void *) { return; }
 #    define _ASSERT_DEFINED
 #  endif
 
-#endif /* _STLP_WCE_EVC3 */
+// MIPS platform usually uses little endian on Pocket PC 2000/2002
+#  ifdef _MIPS_
+#    define _STLP_LITTLE_ENDIAN
+#  endif
 
+#endif /* _STLP_WCE_EVC3 */
 
 // Minimize windows.h includes
 #if !defined (WIN32_LEAN_AND_MEAN)

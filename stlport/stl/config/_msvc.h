@@ -125,7 +125,7 @@
 #    define _STLP_NO_IEC559_SUPPORT 1
 #  endif
 
-#  if (_STLP_MSVC < 1300) || defined (UNDER_CE) /* including MSVC 6.0 */
+#  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */
 /* These work, as long they are inline */
 #    define _STLP_INLINE_MEMBER_TEMPLATES 1
 #    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
@@ -246,7 +246,7 @@ typedef char __stl_char;
 #  define _STLP_NEW_PLATFORM_SDK 1
 #endif
 
-#if (_STLP_MSVC_LIB < 1300) || defined (UNDER_CE) /* including MSVC 6.0 */
+#if (_STLP_MSVC_LIB < 1300) /* including MSVC 6.0 */
 #  define _STLP_GLOBAL_NEW_HANDLER 1
 #  define _STLP_VENDOR_UNEXPECTED_STD
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1

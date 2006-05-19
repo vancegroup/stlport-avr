@@ -318,7 +318,7 @@
 #  define _STLP_STATIC_MUTEX _STLP_mutex_base
 #endif
 
-#if defined (_MFC_VER) && !defined (_STLP_USE_MFC)
+#if (defined (_MFC_VER) || defined (_AFXDLL)) && !defined (_STLP_USE_MFC)
 #  define _STLP_USE_MFC 1
 #endif
 

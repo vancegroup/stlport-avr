@@ -35,6 +35,11 @@ struct _exception;
 
 #  include _STLP_NATIVE_C_HEADER(ctype.h)
 
+/* on evc4 including ctype.h also defines setjmp macro */
+#  if defined (_STLP_WCE)
+#    define _STLP_NATIVE_SETJMP_H_INCLUDED
+#  endif
+
 #  ifndef _STLP_CTYPE_H_SEEN
 #    define _STLP_CTYPE_H_SEEN
 

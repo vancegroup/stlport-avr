@@ -63,3 +63,8 @@
 #    define _STLP_USE_STATIC_LIB
 #  endif
 #endif
+
+/* we don't have a static native runtime library on evc3/evc4 */
+#ifdef _STLP_WCE
+#  undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
+#endif
