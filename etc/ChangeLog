@@ -1,3 +1,27 @@
+2006-05-19  Francois Dumont  <dums@stlport...>
+
+	* test/unit/uninitialized_test.cpp: Patch from Ulrich Echkardt
+	to replace vector instance in uninitialized_copy_test by static
+	array so that we are always working on pointers iterator.
+
+	* stlport/stl/_string_operators.h: Patch from Ulrich Echkardt to
+	add missing != operators when using string template expression.
+
+	* stlport/stl/ctype.h, config/_evc.h, _msvc.h, _windows.h,
+	features.h: Patch from Michael Fink for evc3/4 platform.
+
+	* test/unit/mvctor_test.cpp: Add of s specific Borland test case
+	to report what seems to be a compiler bug but that is only
+	revealed when using STLport.
+
+	* stlport/stl/_tree.h, _set.h, _map.h, debug/_tree.h,
+	pointer/_set.h: Generalized already existing extension of template
+	find method on associative containers to all look up methods:
+	count, erase, lower_bound, upper_bound, equal_range.
+
+	* test/unit/set_test.cpp: Add test case for set template methods
+	extension.
+
 2006-05-18  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/c_locale.h: Fix declaration of _Locale_name_hint
