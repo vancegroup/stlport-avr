@@ -73,18 +73,23 @@ void UninitializedTest::copy_test()
       }
     }
     {
-      vector<TrivialData> src(10);
-      vector<TrivialData> dst(10);
+      /** Note: we use static arrays here so the iterators are always 
+      pointers, even in debug mode. */
+      size_t const count = 10;
+      TrivialData src[count];
+      TrivialData dst[count];
 
-      vector<TrivialData>::iterator it(src.begin()), end(src.end());
+      TrivialData* it(src+0);
+      TrivialData* end(src+count);
       for (; it != end; ++it) {
         (*it).member = 0;
       }
 
-      uninitialized_copy(src.begin(), src.end(), dst.begin());
-      for (it = dst.begin(), end = dst.end(); it != end; ++it) {
+      uninitialized_copy(src+0, src+count, dst+0);
+      for (it = dst+0, end = dst+count; it != end; ++it) {
 #if defined (STLPORT)
-        //If member is 1 it means that library has not find any optimization oportunity
+        /* If the member is 1, it means that library has not found any 
+        optimization oportunity and called the regular copy-ctor instead. */
         CPPUNIT_ASSERT( (*it).member == 0 );
 #else
         CPPUNIT_ASSERT( (*it).member == 1 );
