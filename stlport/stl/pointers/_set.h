@@ -38,8 +38,9 @@ typedef _Rb_tree_node<void*> _Node;
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<_Rb_tree_node_base, _Node,  allocator<_Node> >;
 _STLP_EXPORT_TEMPLATE_CLASS _Rb_tree_base<void*, allocator<void*> >;
 #  if defined (_STLP_DEBUG)
+_STLP_EXPORT_TEMPLATE_CLASS _DbgCompare<void*, less<void*> >;
 #    define _Rb_tree _STLP_NON_DBG_NAME(Rb_tree)
-_STLP_EXPORT_TEMPLATE_CLASS _Rb_tree<void*, less<void*>, void*, _Identity<void*>,
+_STLP_EXPORT_TEMPLATE_CLASS _Rb_tree<void*, _DbgCompare<void*, less<void*> >, void*, _Identity<void*>,
                                      _SetTraitsT<void*>, allocator<void*> >;
 #    undef _Rb_tree
 #  endif
@@ -101,6 +102,10 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing set
+
+#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  typedef key_type _KT;
+#endif
 
 #if defined (_STLP_DEBUG)
   iterator _M_to_value_ite(const_base_iterator __ite) const
@@ -228,48 +233,46 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase(_M_to_value_ite(__pos)); }
-  size_type erase(const key_type& __x) {
-    return _M_t.erase_unique(cast_traits::to_storage_type_cref(__x));
-  }
-  void erase(iterator __first, iterator __last) {
-    _M_t.erase(_M_to_value_ite(__first), _M_to_value_ite(__last));
-  }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase(const _KT& __x)
+  { return _M_t.erase_unique(__x); }
+  void erase(iterator __first, iterator __last)
+  { _M_t.erase(_M_to_value_ite(__first), _M_to_value_ite(__last)); }
   void clear() { _M_t.clear(); }
 
   // set operations:
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   const_iterator find(const _KT& __x) const
   { return _M_to_value_ite(_M_t.find(__x)); }
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   iterator find(const _KT& __x)
   { return _M_to_value_ite(_M_t.find(__x)); }
-#else
-  const_iterator find(const key_type& __x) const
-  { return _M_to_value_ite(_M_t.find(cast_traits::to_storage_type_cref(__x))); }
-  iterator find(const key_type& __x)
-  { return _M_to_value_ite(_M_t.find(cast_traits::to_storage_type_cref(__x))); }
-#endif
-  size_type count(const key_type& __x) const {
-    return _M_t.find(__x) == _M_t.end() ? 0 : 1;
-  }
-  iterator lower_bound(const key_type& __x)
-  { return _M_to_value_ite(_M_t.lower_bound(cast_traits::to_storage_type_cref(__x))); }
-  const_iterator lower_bound(const key_type& __x) const
-  { return _M_to_value_ite(_M_t.lower_bound(cast_traits::to_storage_type_cref(__x))); }
-  iterator upper_bound(const key_type& __x)
-  { return _M_to_value_ite(_M_t.upper_bound(cast_traits::to_storage_type_cref(__x))); }
-  const_iterator upper_bound(const key_type& __x) const
-  { return _M_to_value_ite(_M_t.upper_bound(cast_traits::to_storage_type_cref(__x))); }
-  pair<iterator, iterator> equal_range(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type count(const _KT& __x) const
+  { return _M_t.find(__x) == _M_t.end() ? 0 : 1; }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator lower_bound(const _KT& __x)
+  { return _M_to_value_ite(_M_t.lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator lower_bound(const _KT& __x) const
+  { return _M_to_value_ite(_M_t.lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator upper_bound(const _KT& __x)
+  { return _M_to_value_ite(_M_t.upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator upper_bound(const _KT& __x) const
+  { return _M_to_value_ite(_M_t.upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator, iterator> equal_range(const _KT& __x) {
     pair<base_iterator, base_iterator> __ret;
-    __ret = _M_t.equal_range_unique(cast_traits::to_storage_type_cref(__x));
+    __ret = _M_t.equal_range(__x);
     return pair<iterator, iterator>(_M_to_value_ite(__ret.first),
                                     _M_to_value_ite(__ret.second));
   }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     pair<const_base_iterator, const_base_iterator> __ret;
-    __ret = _M_t.equal_range_unique(cast_traits::to_storage_type_cref(__x));
+    __ret = _M_t.equal_range_unique(__x);
     return pair<const_iterator, const_iterator>(_M_to_value_ite(__ret.first),
                                                 _M_to_value_ite(__ret.second));
   }
@@ -332,6 +335,10 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multiset
+
+#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  typedef key_type _KT;
+#endif
 
 #if defined (_STLP_DEBUG)
   iterator _M_to_value_ite(const_base_iterator __ite) const
@@ -469,42 +476,45 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   void erase(iterator __pos) { _M_t.erase(_M_to_value_ite(__pos)); }
-  size_type erase(const key_type& __x)
-  { return _M_t.erase(cast_traits::to_storage_type_cref(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase(const _KT& __x)
+  { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last)
   { _M_t.erase(_M_to_value_ite(__first), _M_to_value_ite(__last)); }
   void clear() { _M_t.clear(); }
 
   // multiset operations:
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   iterator find(const _KT& __x) { return _M_to_value_ite(_M_t.find(__x)); }
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   const_iterator find(const _KT& __x) const { return _M_to_value_ite(_M_t.find(__x)); }
-#else
-  iterator find(const key_type& __x) { return _M_to_value_ite(_M_t.find(__x)); }
-  const_iterator find(const key_type& __x) const { return _M_to_value_ite(_M_t.find(__x)); }
-#endif
-  size_type count(const key_type& __x) const
-  { return _M_t.count(cast_traits::to_storage_type_cref(__x)); }
-  iterator lower_bound(const key_type& __x)
-  { return _M_to_value_ite(_M_t.lower_bound(cast_traits::to_storage_type_cref(__x))); }
-  const_iterator lower_bound(const key_type& __x) const
-  { return _M_to_value_ite(_M_t.lower_bound(cast_traits::to_storage_type_cref(__x))); }
-  iterator upper_bound(const key_type& __x)
-  { return _M_to_value_ite(_M_t.upper_bound(cast_traits::to_storage_type_cref(__x))); }
-  const_iterator upper_bound(const key_type& __x) const
-  { return _M_to_value_ite(_M_t.upper_bound(cast_traits::to_storage_type_cref(__x))); }
-  pair<iterator, iterator> equal_range(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type count(const _KT& __x) const
+  { return _M_t.count(__x); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator lower_bound(const _KT& __x)
+  { return _M_to_value_ite(_M_t.lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator lower_bound(const _KT& __x) const
+  { return _M_to_value_ite(_M_t.lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator upper_bound(const _KT& __x)
+  { return _M_to_value_ite(_M_t.upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator upper_bound(const _KT& __x) const
+  { return _M_to_value_ite(_M_t.upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator, iterator> equal_range(const _KT& __x) {
     pair<base_iterator, base_iterator> __ret;
-    __ret = _M_t.equal_range(cast_traits::to_storage_type_cref(__x));
+    __ret = _M_t.equal_range(__x);
     return pair<iterator, iterator>(_M_to_value_ite(__ret.first),
                                     _M_to_value_ite(__ret.second));
   }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     pair<const_base_iterator, const_base_iterator> __ret;
-    __ret = _M_t.equal_range(cast_traits::to_storage_type_cref(__x));
+    __ret = _M_t.equal_range(__x);
     return pair<const_iterator, const_iterator>(_M_to_value_ite(__ret.first),
                                                 _M_to_value_ite(__ret.second));
   }

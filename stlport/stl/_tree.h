@@ -70,6 +70,16 @@ iterators invalidated are those referring to the deleted node.
 #  include <stl/_function_base.h>
 #endif
 
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
+#  define _STLP_USE_TREE_MEMBER_EXTENSIONS
+#endif
+
+#if defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+#  define _STLP_TEMPLATE_MEMBERS_EXTENSION template <class _KT>
+#else
+#  define _STLP_TEMPLATE_MEMBERS_EXTENSION
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -307,6 +317,9 @@ public:
 
 protected:
 
+#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  typedef key_type _KT;
+#endif
   _Base_ptr _M_create_node(const value_type& __x) {
     _Link_type __tmp = this->_M_header.allocate(1);
     _STLP_TRY {
@@ -465,7 +478,7 @@ public:
     for ( ; __first != __last; ++__first)
       insert_unique(*__first);
   }
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   void insert_unique(const_iterator __first, const_iterator __last) {
     for ( ; __first != __last; ++__first)
       insert_unique(*__first);
@@ -482,7 +495,7 @@ public:
     for ( ; __first != __last; ++__first)
       insert_equal(*__first);
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
   void erase(iterator __pos) {
     _Base_ptr __x = _Rb_global_inst::_Rebalance_for_erase(__pos._M_node,
@@ -494,14 +507,16 @@ public:
     --_M_node_count;
   }
 
-  size_type erase(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase(const _KT& __x) {
     pair<iterator,iterator> __p = equal_range(__x);
     size_type __n = distance(__p.first, __p.second);
     erase(__p.first, __p.second);
     return __n;
   }
 
-  size_type erase_unique(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase_unique(const _KT& __x) {
     iterator __i = find(__x);
     if (__i._M_node != &this->_M_header._M_data) {
       erase(__i);
@@ -534,18 +549,13 @@ public:
 
 public:
                                 // set operations:
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
-  template <class _KT> iterator find(const _KT& __k) { return iterator(_M_find(__k)); }
-  template <class _KT> const_iterator find(const _KT& __k) const { return const_iterator(_M_find(__k)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator find(const _KT& __k) { return iterator(_M_find(__k)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator find(const _KT& __k) const { return const_iterator(_M_find(__k)); }
 private:
-  template <class _KT> _Base_ptr _M_find(const _KT& __k) const
-#else
-  iterator find(const key_type& __k) { return iterator(_M_find(__k)); }
-  const_iterator find(const key_type& __k) const { return const_iterator(_M_find(__k)); }
-private:
-  _Base_ptr _M_find(const key_type& __k) const
-#endif
-  {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _Base_ptr _M_find(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data);      // Last node which is not less than __k.
     _Base_ptr __x = _M_root();      // Current node.
 
@@ -563,7 +573,8 @@ private:
     return __y;
   }
 
-  _Base_ptr _M_lower_bound(const key_type& __k) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _Base_ptr _M_lower_bound(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is not less than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
 
@@ -576,7 +587,8 @@ private:
     return __y;
   }
 
-  _Base_ptr _M_upper_bound(const key_type& __k) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _Base_ptr _M_upper_bound(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is greater than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
 
@@ -590,16 +602,27 @@ private:
   }
 
 public:
-  size_type count(const key_type& __x) const;
-  iterator lower_bound(const key_type& __x) { return iterator(_M_lower_bound(__x)); }
-  const_iterator lower_bound(const key_type& __x) const { return const_iterator(_M_lower_bound(__x)); }
-  iterator upper_bound(const key_type& __x) { return iterator(_M_upper_bound(__x)); }
-  const_iterator upper_bound(const key_type& __x) const { return const_iterator(_M_upper_bound(__x)); }
-  pair<iterator,iterator> equal_range(const key_type& __x)
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type count(const _KT& __x) const {
+    pair<const_iterator, const_iterator> __p = equal_range(__x);
+    return distance(__p.first, __p.second);
+  }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator lower_bound(const _KT& __x) { return iterator(_M_lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator lower_bound(const _KT& __x) const { return const_iterator(_M_lower_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator upper_bound(const _KT& __x) { return iterator(_M_upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator upper_bound(const _KT& __x) const { return const_iterator(_M_upper_bound(__x)); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator,iterator> equal_range(const _KT& __x)
   { return pair<iterator, iterator>(lower_bound(__x), upper_bound(__x)); }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range(const _KT& __x) const
   { return pair<const_iterator, const_iterator>(lower_bound(__x), upper_bound(__x)); }
-  pair<iterator,iterator> equal_range_unique(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator,iterator> equal_range_unique(const _KT& __x) {
     pair<iterator, iterator> __p;
     __p.second = lower_bound(__x);
     if (__p.second._M_node != &this->_M_header._M_data &&
@@ -611,7 +634,8 @@ public:
     }
     return __p;
   }
-  pair<const_iterator, const_iterator> equal_range_unique(const key_type& __x) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range_unique(const _KT& __x) const {
     pair<const_iterator, const_iterator> __p;
     __p.second = lower_bound(__x);
     if (__p.second._M_node != &this->_M_header._M_data &&

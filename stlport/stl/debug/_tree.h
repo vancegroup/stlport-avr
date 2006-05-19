@@ -42,11 +42,44 @@
 #  include <stl/_alloc.h>
 #endif
 
-#define _STLP_NON_DBG_TREE _STLP_PRIV _STLP_NON_DBG_NAME(Rb_tree) <_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc>
-
 _STLP_BEGIN_NAMESPACE
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Key, class _Compare>
+class _DbgCompare {
+public:
+  _DbgCompare() {}
+  _DbgCompare(const _Compare& __cmp) : _M_non_dbg_cmp(__cmp) {}
+  _DbgCompare(const _DbgCompare& __cmp) : _M_non_dbg_cmp(__cmp._M_non_dbg_cmp) {}
+
+#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  bool operator () (const _Key& __lhs, const _Key& __rhs) const {
+    if (_M_non_dbg_cmp(__lhs, __rhs)) {
+      _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      return true;
+    }
+    return false;
+  }
+#else
+  template <class _Kp1, class _Kp2>
+  bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const {
+    if (_M_non_dbg_cmp(__lhs, __rhs)) {
+      _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      return true;
+    }
+    return false;
+  }
+#endif
+  _Compare non_dbg_key_comp() const { return _M_non_dbg_cmp; }
+private:
+  _Compare _M_non_dbg_cmp;
+};
+
+#define _STLP_NON_DBG_TREE _STLP_PRIV _STLP_NON_DBG_NAME(Rb_tree) <_Key, _STLP_PRIV _DbgCompare<_Key, _Compare>, _Value, _KeyOfValue, _Traits, _Alloc>
+
 #if defined (_STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS)
+_STLP_MOVE_TO_STD_NAMESPACE
 template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits, class _Alloc >
 inline _Value*
@@ -57,9 +90,8 @@ template <class _Key, class _Compare,
 inline bidirectional_iterator_tag
 iterator_category(const _STLP_PRIV _DBG_iter_base< _STLP_NON_DBG_TREE >&)
 { return bidirectional_iterator_tag(); }
-#endif
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
+#endif
 
 template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits,
@@ -82,6 +114,9 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 private:
+#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  typedef key_type _KT;
+#endif
   void _Invalidate_iterator(const iterator& __it)
   { _STLP_PRIV __invalidate_iterator(&_M_iter_list,__it); }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last)
@@ -122,7 +157,7 @@ public:
   }
 
   allocator_type get_allocator() const { return _M_non_dbg_impl.get_allocator(); }
-  _Compare key_comp() const { return _M_non_dbg_impl.key_comp(); }
+  _Compare key_comp() const { return _M_non_dbg_impl.key_comp().non_dbg_key_comp(); }
 
   iterator begin() { return iterator(&_M_iter_list, _M_non_dbg_impl.begin()); }
   const_iterator begin() const { return const_iterator(&_M_iter_list, _M_non_dbg_impl.begin()); }
@@ -144,45 +179,46 @@ public:
     _M_iter_list._Swap_owners(__t._M_iter_list);
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   iterator find(const _KT& __k)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
-  template <class _KT>
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
   const_iterator find(const _KT& __k) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
-#else
-  iterator find(const key_type& __k)
-  { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
-  const_iterator find(const key_type& __k) const
-  { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
-#endif
 
-  iterator lower_bound(const key_type& __x)
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator lower_bound(const _KT& __x)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)); }
-  const_iterator lower_bound(const key_type& __x) const
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator lower_bound(const _KT& __x) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)); }
 
-  iterator upper_bound(const key_type& __x)
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  iterator upper_bound(const _KT& __x)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)); }
-  const_iterator upper_bound(const key_type& __x) const
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  const_iterator upper_bound(const _KT& __x) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)); }
 
-  pair<iterator,iterator> equal_range(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator,iterator> equal_range(const _KT& __x) {
     return pair<iterator, iterator>(iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)),
                                     iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)));
   }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __x) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     return pair<const_iterator,const_iterator>(const_iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)),
                                                const_iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)));
   }
 
-  pair<iterator,iterator> equal_range_unique(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<iterator,iterator> equal_range_unique(const _KT& __x) {
     _STLP_STD::pair<_Base_iterator, _Base_iterator> __p;
     __p = _M_non_dbg_impl.equal_range_unique(__x);
     return pair<iterator, iterator>(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
   }
-  pair<const_iterator, const_iterator> equal_range_unique(const key_type& __x) const {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  pair<const_iterator, const_iterator> equal_range_unique(const _KT& __x) const {
     _STLP_STD::pair<_Base_const_iterator, _Base_const_iterator> __p;
     __p = _M_non_dbg_impl.equal_range_unique(__x);
     return pair<const_iterator, const_iterator>(const_iterator(&_M_iter_list, __p.first),
@@ -241,14 +277,16 @@ public:
     _Invalidate_iterator(__pos);
     _M_non_dbg_impl.erase(__pos._M_iterator);
   }
-  size_type erase(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase(const _KT& __x) {
     pair<_Base_iterator,_Base_iterator> __p = _M_non_dbg_impl.equal_range(__x);
     size_type __n = distance(__p.first, __p.second);
     _Invalidate_iterators(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
     _M_non_dbg_impl.erase(__p.first, __p.second);
     return __n;
   }
-  size_type erase_unique(const key_type& __x) {
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type erase_unique(const _KT& __x) {
     _Base_iterator __i = _M_non_dbg_impl.find(__x);
     if (__i != _M_non_dbg_impl.end()) {
       _Invalidate_iterator(iterator(&_M_iter_list, __i));

@@ -27,6 +27,10 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(implementation_check);
   CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST(reverse_iterator_test);
+#if !defined (STLPORT) || !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(template_methods);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -40,6 +44,7 @@ class SetTest : public CPPUNIT_NS::TestCase
     void implementation_check();
     void allocator_with_state();
     void reverse_iterator_test();
+    void template_methods();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -342,4 +347,89 @@ void SetTest::allocator_with_state()
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
   stack1.reset(); stack2.reset();
+}
+
+struct Key
+{
+  Key() : m_data(0) {}
+  Key(size_t data) : m_data(data) {}
+
+  size_t m_data;
+};
+
+struct KeyCmp
+{
+  bool operator () (Key lhs, Key rhs) const
+  { return lhs.m_data < rhs.m_data; }
+
+  bool operator () (Key lhs, size_t rhs) const
+  { return lhs.m_data < rhs; }
+
+  bool operator () (size_t lhs, Key rhs) const
+  { return lhs < rhs.m_data; }
+};
+
+struct KeyCmpPtr
+{
+  bool operator () (Key *lhs, Key *rhs) const
+  { return (*lhs).m_data < (*rhs).m_data; }
+
+  bool operator () (Key *lhs, size_t rhs) const
+  { return (*lhs).m_data < rhs; }
+
+  bool operator () (size_t lhs, Key *rhs) const
+  { return lhs < (*rhs).m_data; }
+};
+
+void SetTest::template_methods()
+{
+#if defined (STLPORT) && defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+  {
+    typedef set<Key, KeyCmp> KeySet;
+    KeySet keySet;
+    keySet.insert(Key(1));
+    keySet.insert(Key(2));
+    keySet.insert(Key(3));
+    keySet.insert(Key(4));
+
+    CPPUNIT_ASSERT( keySet.count(Key(1)) == 1 );
+    CPPUNIT_ASSERT( keySet.count(1) == 1 );
+    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+
+    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+
+    KeySet const& ckeySet = keySet;
+    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+  }
+
+  {
+    typedef set<Key*, KeyCmpPtr> KeySet;
+    KeySet keySet;
+    Key key1(1), key2(2), key3(3), key4(4);
+    keySet.insert(&key1);
+    keySet.insert(&key2);
+    keySet.insert(&key3);
+    keySet.insert(&key4);
+
+    CPPUNIT_ASSERT( keySet.count(1) == 1 );
+    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+
+    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+
+    KeySet const& ckeySet = keySet;
+    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+  }
+#endif
 }
