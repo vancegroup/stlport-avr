@@ -416,33 +416,47 @@ operator<(const _STLP_PRIV __bstr_sum<_CharT,_Traits,_Alloc,_Lhs,_Rhs,_StoreDir>
 
 #if defined (_STLP_USE_SEPARATE_RELOPS_NAMESPACE)
 
+/* Only defined if _STLP_USE_SEPARATE_RELOPS_NAMESPACE is defined otherwise
+ * it might introduce ambiguity with pure template relational operators
+ * from rel_ops namespace.
+ */
 template <class _CharT, class _Traits, class _Alloc>
 inline bool _STLP_CALL
 operator!=(const basic_string<_CharT,_Traits,_Alloc>& __x,
-           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  return !(__x == __y);
-}
+           const basic_string<_CharT,_Traits,_Alloc>& __y)
+{ return !(__x == __y); }
 
 template <class _CharT, class _Traits, class _Alloc>
 inline bool _STLP_CALL
 operator>(const basic_string<_CharT,_Traits,_Alloc>& __x,
-          const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  return __y < __x;
-}
+          const basic_string<_CharT,_Traits,_Alloc>& __y)
+{ return __y < __x; }
 
 template <class _CharT, class _Traits, class _Alloc>
 inline bool _STLP_CALL
 operator<=(const basic_string<_CharT,_Traits,_Alloc>& __x,
-           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  return !(__y < __x);
-}
+           const basic_string<_CharT,_Traits,_Alloc>& __y)
+{ return !(__y < __x); }
 
 template <class _CharT, class _Traits, class _Alloc>
 inline bool _STLP_CALL
 operator>=(const basic_string<_CharT,_Traits,_Alloc>& __x,
-           const basic_string<_CharT,_Traits,_Alloc>& __y) {
-  return !(__x < __y);
-}
+           const basic_string<_CharT,_Traits,_Alloc>& __y)
+{ return !(__x < __y); }
+
+#  if defined (_STLP_USE_TEMPLATE_EXPRESSION)
+template <class _CharT, class _Traits, class _Alloc, class _Lhs, class _Rhs, class _StoreDir>
+inline bool _STLP_CALL
+operator!=(const _STLP_PRIV __bstr_sum<_CharT,_Traits,_Alloc,_Lhs,_Rhs,_StoreDir>& __x,
+           const basic_string<_CharT,_Traits,_Alloc>& __y)
+{ return !(__x==__y); }
+
+template <class _CharT, class _Traits, class _Alloc, class _Lhs, class _Rhs, class _StoreDir>
+inline bool _STLP_CALL
+operator!=(const basic_string<_CharT,_Traits,_Alloc>& __x,
+           const _STLP_PRIV __bstr_sum<_CharT,_Traits,_Alloc,_Lhs,_Rhs,_StoreDir>& __y)
+{ return !(__x==__y); }
+#  endif
 
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
