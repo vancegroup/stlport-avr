@@ -49,6 +49,10 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(movable_declaration)
+#if defined (__BORLANDC__)
+  CPPUNIT_STOP_IGNORE;
+  CPPUNIT_TEST(nb_destructor_calls);
+#endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -57,6 +61,7 @@ protected:
   void vector_test();
   void move_traits();
   void movable_declaration();
+  void nb_destructor_calls();
 
   /*
   template <class _Container>
@@ -1573,3 +1578,33 @@ void MoveConstructorTest::movable_declaration()
 #    endif
 #  endif
 }
+
+#if defined (__BORLANDC__)
+class Standalone
+{
+public:
+  //Uncomment following to pass the test
+  //Standalone() {}
+  ~Standalone() {}
+
+  MovableStruct movableStruct;
+  vector<int> intVector;
+};
+
+void MoveConstructorTest::nb_destructor_calls()
+{
+  MovableStruct::reset();
+
+  try
+  {
+    Standalone standalone;
+    throw "some exception";
+    MovableStruct movableStruct;
+  }
+  catch (const char*)
+  {
+    CPPUNIT_ASSERT( MovableStruct::nb_dft_construct_call == 1 );
+    CPPUNIT_ASSERT( MovableStruct::nb_destruct_call == 1 );
+  }
+}
+#endif
