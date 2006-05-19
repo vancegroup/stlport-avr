@@ -127,8 +127,8 @@ namespace CPPUNIT_NS
 #define CPPUNIT_TEST_SUITE(X) \
   typedef CPPUNIT_NS::TestCase Base; \
   virtual void myRun(const char *in_name, bool invert = false) { \
-    char *className = #X; \
-    bool ignoring = false;
+    char *className = #X; (className); \
+    bool ignoring = false; (ignoring);
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST(X) \
   if (shouldRunThis(in_name, className, #X, invert)) { \
