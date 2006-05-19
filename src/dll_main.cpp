@@ -50,11 +50,11 @@
 #include <string>
 #include <stdexcept>
 #include <bitset>
+#include <locale>
 
 #if (_STLP_STATIC_TEMPLATE_DATA < 1)
-// for rope, locale static members
+// for rope static members
 #  include <rope>
-#  include <locale>
 #endif
 
 // boris : this piece of code duplicated from _range_errors.h
@@ -194,19 +194,19 @@ template class _STLP_CLASS_DECLSPEC vector<_STLP_PRIV _Slist_node_base*,
 template class _STLP_CLASS_DECLSPEC allocator<locale::facet*>;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
-
 template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<locale::facet**, locale::facet*, allocator<locale::facet*> >;
 template class _STLP_CLASS_DECLSPEC _Vector_base<locale::facet*, allocator<locale::facet*> >;
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #  endif
 #  if defined (_STLP_DEBUG)
+_STLP_MOVE_TO_PRIV_NAMESPACE
 #    define _STLP_NON_DBG_VECTOR _STLP_NON_DBG_NAME(vector)
 template class _STLP_CLASS_DECLSPEC __construct_checker<_STLP_PRIV _STLP_NON_DBG_VECTOR<locale::facet*, allocator<locale::facet*> > >;
 template class _STLP_CLASS_DECLSPEC _STLP_NON_DBG_VECTOR<locale::facet*, allocator<locale::facet*> >;
 #    undef _STLP_NON_DBG_VECTOR
-#  endif
-
 _STLP_MOVE_TO_STD_NAMESPACE
+#  endif
 
 template class _STLP_CLASS_DECLSPEC vector<locale::facet*, allocator<locale::facet*> >;
 //End of export of _Locale_impl facets container.
