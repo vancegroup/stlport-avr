@@ -22,6 +22,11 @@
 	* test/unit/set_test.cpp: Add test case for set template methods
 	extension.
 
+	* stlport/stl/_tree.c, debug/_tree.h: Removed debug check from
+	non debug implementation, now debug check is injected in tree
+	implementation from the tree debug implementation thanks to
+	a wrapping of the predicate.
+
 2006-05-18  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/c_locale.h: Fix declaration of _Locale_name_hint
