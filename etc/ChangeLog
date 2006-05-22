@@ -1,3 +1,23 @@
+2006-05-22  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/type_traits.h: Add _TrivialInit helper struct to
+	report if a type is trivial to initialize or not that is to say
+	if the type has a trivial default constructor. Handle native types
+	exception that are concider as having a trivial default constructor
+	but that required a 0 initialization on explicit constructor
+	call.
+
+	* stlport/stl/_uninitialize.h: Add a helper function
+	__uninitialize_init that result in a no-op if _TrivialInit returns
+	__true_type.
+
+	* stlport/stl/_vector.h: Modification of vector constructor to
+	destect when it is called without an explicit default value so
+	that we can call __uninitialized_init.
+
+	* test/unit/uninitialized_test.cpp: Add test to check correct
+	detection of useless initialization.
+
 2006-05-19  Francois Dumont  <dums@stlport...>
 
 	* test/unit/uninitialized_test.cpp: Patch from Ulrich Echkardt
