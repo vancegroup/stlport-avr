@@ -371,13 +371,13 @@ struct KeyCmp
 
 struct KeyCmpPtr
 {
-  bool operator () (Key *lhs, Key *rhs) const
+  bool operator () (Key const volatile *lhs, Key const volatile *rhs) const
   { return (*lhs).m_data < (*rhs).m_data; }
 
-  bool operator () (Key *lhs, size_t rhs) const
+  bool operator () (Key const volatile *lhs, size_t rhs) const
   { return (*lhs).m_data < rhs; }
 
-  bool operator () (size_t lhs, Key *rhs) const
+  bool operator () (size_t lhs, Key const volatile *rhs) const
   { return lhs < (*rhs).m_data; }
 };
 
@@ -410,6 +410,53 @@ void SetTest::template_methods()
 
   {
     typedef set<Key*, KeyCmpPtr> KeySet;
+    KeySet keySet;
+    Key key1(1), key2(2), key3(3), key4(4);
+    keySet.insert(&key1);
+    keySet.insert(&key2);
+    keySet.insert(&key3);
+    keySet.insert(&key4);
+
+    CPPUNIT_ASSERT( keySet.count(1) == 1 );
+    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+
+    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+
+    KeySet const& ckeySet = keySet;
+    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+  }
+  {
+    typedef multiset<Key, KeyCmp> KeySet;
+    KeySet keySet;
+    keySet.insert(Key(1));
+    keySet.insert(Key(2));
+    keySet.insert(Key(3));
+    keySet.insert(Key(4));
+
+    CPPUNIT_ASSERT( keySet.count(Key(1)) == 1 );
+    CPPUNIT_ASSERT( keySet.count(1) == 1 );
+    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+
+    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
+    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+
+    KeySet const& ckeySet = keySet;
+    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
+    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+  }
+
+  {
+    typedef multiset<Key const volatile*, KeyCmpPtr> KeySet;
     KeySet keySet;
     Key key1(1), key2(2), key3(3), key4(4);
     keySet.insert(&key1);
