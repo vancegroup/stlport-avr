@@ -27,27 +27,46 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UninitializedTest);
 
-struct NotTrivialData {
-  NotTrivialData() : member(0) {}
-  NotTrivialData(NotTrivialData const&) : member(1) {}
+struct NotTrivialCopyStruct {
+  NotTrivialCopyStruct() : member(0) {}
+  NotTrivialCopyStruct(NotTrivialCopyStruct const&) : member(1) {}
 
   int member;
 };
 
-struct TrivialData {
-  TrivialData() : member(0) {}
-  TrivialData(TrivialData const&) : member(1) {}
+struct TrivialCopyStruct {
+  TrivialCopyStruct() : member(0) {}
+  TrivialCopyStruct(TrivialCopyStruct const&) : member(1) {}
 
   int member;
 };
+
+struct TrivialInitStruct {
+  TrivialInitStruct()
+  { ++nbConstructorCalls; }
+
+  static size_t nbConstructorCalls;
+};
+
+size_t TrivialInitStruct::nbConstructorCalls = 0;
 
 #if defined (STLPORT)
 namespace std
 {
   _STLP_TEMPLATE_NULL
-  struct __type_traits<TrivialData> {
+  struct __type_traits<TrivialCopyStruct> {
      typedef __false_type has_trivial_default_constructor;
      //This is a wrong declaration just to check that internaly a simple memcpy is called:
+     typedef __true_type has_trivial_copy_constructor;
+     typedef __true_type has_trivial_assignment_operator;
+     typedef __true_type has_trivial_destructor;
+     typedef __false_type is_POD_type;
+  };
+
+  _STLP_TEMPLATE_NULL
+  struct __type_traits<TrivialInitStruct> {
+     //This is a wrong declaration just to check that internaly no initialization is done:
+     typedef __true_type has_trivial_default_constructor;
      typedef __true_type has_trivial_copy_constructor;
      typedef __true_type has_trivial_assignment_operator;
      typedef __true_type has_trivial_destructor;
@@ -64,10 +83,10 @@ void UninitializedTest::copy_test()
   {
     //Random iterators
     {
-      vector<NotTrivialData> src(10);
-      vector<NotTrivialData> dst(10);
+      vector<NotTrivialCopyStruct> src(10);
+      vector<NotTrivialCopyStruct> dst(10);
       uninitialized_copy(src.begin(), src.end(), dst.begin());
-      vector<NotTrivialData>::const_iterator it(dst.begin()), end(dst.end());
+      vector<NotTrivialCopyStruct>::const_iterator it(dst.begin()), end(dst.end());
       for (; it != end; ++it) {
         CPPUNIT_ASSERT( (*it).member == 1 );
       }
@@ -76,11 +95,11 @@ void UninitializedTest::copy_test()
       /** Note: we use static arrays here so the iterators are always 
       pointers, even in debug mode. */
       size_t const count = 10;
-      TrivialData src[count];
-      TrivialData dst[count];
+      TrivialCopyStruct src[count];
+      TrivialCopyStruct dst[count];
 
-      TrivialData* it(src+0);
-      TrivialData* end(src+count);
+      TrivialCopyStruct* it(src+0);
+      TrivialCopyStruct* end(src+count);
       for (; it != end; ++it) {
         (*it).member = 0;
       }
@@ -101,10 +120,10 @@ void UninitializedTest::copy_test()
   {
     //Bidirectional iterator
     {
-      vector<NotTrivialData> src(10);
-      list<NotTrivialData> dst(10);
+      vector<NotTrivialCopyStruct> src(10);
+      list<NotTrivialCopyStruct> dst(10);
 
-      list<NotTrivialData>::iterator it(dst.begin()), end(dst.end());
+      list<NotTrivialCopyStruct>::iterator it(dst.begin()), end(dst.end());
       for (; it != end; ++it) {
         (*it).member = -1;
       }
@@ -117,10 +136,10 @@ void UninitializedTest::copy_test()
     }
 
     {
-      list<NotTrivialData> src(10);
-      vector<NotTrivialData> dst(10);
+      list<NotTrivialCopyStruct> src(10);
+      vector<NotTrivialCopyStruct> dst(10);
 
-      vector<NotTrivialData>::iterator it(dst.begin()), end(dst.end());
+      vector<NotTrivialCopyStruct>::iterator it(dst.begin()), end(dst.end());
       for (; it != end; ++it) {
         (*it).member = -1;
       }
@@ -131,6 +150,13 @@ void UninitializedTest::copy_test()
         CPPUNIT_ASSERT( (*it).member == 1 );
       }
     }
+  }
+
+  {
+    //Vector initialization:
+    vector<TrivialInitStruct> vect(10);
+    //Just 1 constructor call for the default value:
+    CPPUNIT_ASSERT( TrivialInitStruct::nbConstructorCalls == 1  );
   }
 }
 
