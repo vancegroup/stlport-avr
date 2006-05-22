@@ -312,8 +312,26 @@ inline _ForwardIter __ufill_n(_ForwardIter __first, _Size __n, const _Tp& __x,
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uninitialized_fill_n(_ForwardIter __first, _Size __n, const _Tp& __x) {
   _ForwardIter __last = __first + __n;
-  uninitialized_fill(__first, __last, __x);
+  __ufill(__first, __last, __x, random_access_iterator_tag(), (ptrdiff_t*)0);
   return __last;
+}
+
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp&,
+                                const __true_type& /*_TrivialInit*/) {
+  advance(__first, __n);
+  return __first;
+}
+
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
+                                const __false_type& /*_TrivialInit*/)
+{ return __uninitialized_fill_n(__first, __n, __val); }
+
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uninitialized_init(_ForwardIter __first, _Size __n, const _Tp& __val) {
+  return __uinit_aux(__first, __n, __val,
+                     _UseTrivialInit(_STLP_VALUE_TYPE(__first, _ForwardIter))._Answer());
 }
 
 template <class _ForwardIter, class _Size, class _Tp>

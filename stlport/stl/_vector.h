@@ -208,12 +208,21 @@ public:
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a) {}
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit vector(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
-                  const allocator_type& __a = allocator_type())
+private:
+  //We always call _M_initialize with only 1 parameter. Default parameter
+  //is used to allow explicit instanciation of vector with types with no
+  //default constructor.
+  void _M_initialize(size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp))
+  { this->_M_finish = _STLP_PRIV __uninitialized_init(this->_M_start, __n, __val); }
+public:
+  explicit vector(size_type __n)
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
+  { _M_initialize(__n); }
+  vector(size_type __n, const _Tp& __val, const allocator_type& __a = allocator_type())
 #else
   explicit vector(size_type __n)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
-  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n); }
   vector(size_type __n, const _Tp& __val)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
   { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
@@ -231,6 +240,7 @@ public:
   {}
 
 #if defined (_STLP_MEMBER_TEMPLATES)
+private:
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __val,
                          const __true_type& /*_IsIntegral*/) {
@@ -245,6 +255,7 @@ public:
                          const __false_type& /*_IsIntegral*/)
   { _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
 
+public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,

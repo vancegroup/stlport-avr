@@ -382,19 +382,31 @@ struct _TrivialUCopy {
   static _Type _Answer() { return _Type(); }
 };
 
-#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>
 struct _DefaultZeroValue {
   typedef typename _Is_integer<_Tp>::_Integral _Tr1;
   typedef typename _Is_rational<_Tp>::_Rational _Tr2;
-
   typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-  typedef typename _IsPtr<_Tp>::_Ret _Tr4;
 
-  typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Type;
+  typedef typename _IsPtr<_Tp>::_Ret _Tr4;
+  typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Ret;
+
+  static _Ret _Answer() { return _Ret(); }
+};
+
+template <class _Tp>
+struct _TrivialInit {
+#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+  typedef typename __type_traits<_Tp>::has_trivial_default_constructor _Tr1;
+#else
+  typedef typename _UnConstPtr<_Tp*>::_Type _Tp1;
+  typedef typename __type_traits<_Tp1>::has_trivial_copy_constructor _Tr1;
+#endif
+  typedef typename _DefaultZeroValue<_Tp>::_Ret _Tr2;
+  typedef typename _Not<_Tr2>::_Ret _Tr3;
+  typedef typename _Land2<_Tr1, _Tr3>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };
-#endif
 
 #endif /* !_STLP_USE_BOOST_SUPPORT */
 
@@ -421,10 +433,6 @@ struct __call_traits<_Tp&> {
 };
 #endif
 
-template <class _Tp1, class _Tp2>
-inline _TrivialCopy<_Tp1, _Tp2> _UseTrivialCopy(_Tp1*, _Tp2*)
-{ return _TrivialCopy<_Tp1, _Tp2>(); }
-
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 struct _OKToSwap {
   typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Same;
@@ -438,8 +446,16 @@ _IsOKToSwap(_Tp1*, _Tp2*, const _IsRef1&, const _IsRef2&)
 { return _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>(); }
 
 template <class _Tp1, class _Tp2>
+inline _TrivialCopy<_Tp1, _Tp2> _UseTrivialCopy(_Tp1*, _Tp2*)
+{ return _TrivialCopy<_Tp1, _Tp2>(); }
+
+template <class _Tp1, class _Tp2>
 inline _TrivialUCopy<_Tp1, _Tp2> _UseTrivialUCopy(_Tp1*, _Tp2*)
 { return _TrivialUCopy<_Tp1, _Tp2>(); }
+
+template <class _Tp>
+inline _TrivialInit<_Tp> _UseTrivialInit(_Tp*)
+{ return _TrivialInit<_Tp>(); }
 
 template <class _Tp>
 struct _IsPOD {
@@ -452,9 +468,8 @@ inline _IsPOD<_Tp> _Is_POD(_Tp*) { return _IsPOD<_Tp>(); }
 
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>
-inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*) {
-  return _DefaultZeroValue<_Tp>();
-}
+inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*)
+{ return _DefaultZeroValue<_Tp>(); }
 #endif
 
 /*
