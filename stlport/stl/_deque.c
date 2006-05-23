@@ -356,14 +356,13 @@ void deque<_Tp,_Alloc>::clear() {
 // Precondition: this->_M_start and this->_M_finish have already been initialized,
 // but none of the deque's elements have yet been constructed.
 template <class _Tp, class _Alloc >
-void deque<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val) {
+void deque<_Tp,_Alloc>::_M_fill_initialize(const value_type& __val,
+                                           const __false_type& /*_TrivialInit*/) {
   _Map_pointer __cur = this->_M_start._M_node;
   _STLP_TRY {
     for (; __cur < this->_M_finish._M_node; ++__cur)
       uninitialized_fill(*__cur, *__cur + this->buffer_size(), __val);
     uninitialized_fill(this->_M_finish._M_first, this->_M_finish._M_cur, __val);
-
-
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur, __cur)))
 }

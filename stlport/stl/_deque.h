@@ -424,6 +424,7 @@ protected:                      // Internal typedefs
   typedef pointer* _Map_pointer;
   typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialAss;
   typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialCpy;
+  typedef typename _TrivialInit<_Tp>::_Ret _TrivialInit;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
 #else
@@ -490,26 +491,32 @@ public:                         // Constructor, destructor.
   { _STLP_PRIV __ucopy(__x.begin(), __x.end(), this->_M_start); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  explicit deque(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp),
-                 const allocator_type& __a = allocator_type())
+private:
+  void _M_initialize(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp))
+  { _M_fill_initialize(__val, _TrivialInit()); }
+public:
+  explicit deque(size_type __n)
+    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
+  { _M_initialize(__n); }
+  deque(size_type __n, const value_type& __val, const allocator_type& __a = allocator_type())
 #else
   explicit deque(size_type __n)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-  { _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
+  { _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp), _TrivialInit()); }
   deque(size_type __n, const value_type& __val)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n)
-  { _M_fill_initialize(__val); }
+  { _M_fill_initialize(__val, __false_type()); }
   deque(size_type __n, const value_type& __val, const allocator_type& __a)
 #endif
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
-  { _M_fill_initialize(__val); }
+  { _M_fill_initialize(__val, __false_type()); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 protected:
   template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type&) {
     this->_M_initialize_map(__n);
-    _M_fill_initialize(__x);
+    _M_fill_initialize(__x, __false_type());
   }
 
   template <class _InputIter>
@@ -834,7 +841,9 @@ public:                         // Erase
 
 protected:                        // Internal construction/destruction
 
-  void _M_fill_initialize(const value_type& __val);
+  void _M_fill_initialize(const value_type& __val, const __true_type& /*_TrivialInit*/)
+  {}
+  void _M_fill_initialize(const value_type& __val, const __false_type& /*_TrivialInit*/);
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>

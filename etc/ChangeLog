@@ -1,3 +1,8 @@
+2006-05-23  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_deque.h, _deque.c: Change implementation to use
+	_TrivialInit new feature.
+
 2006-05-22  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/type_traits.h: Add _TrivialInit helper struct to
