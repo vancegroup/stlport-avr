@@ -139,6 +139,22 @@ struct _DefaultZeroValue {
   static _Type _Answer() { return _Type(); }
 };
 
+template <class _Tp>
+struct _TrivialInit {
+  typedef typename ::boost::remove_cv<_Tp>::type uncv;
+
+  enum { boost_trivial_constructor = ::boost::has_trivial_constructor<uncv>::value };
+  typedef typename __bool2type<boost_trivial_constructor>::_Ret _BoostTrivialInit;
+  typedef typename __type_traits<uncv1>::has_trivial_default_constructor _STLPTrivialInit;
+  typedef typename _Lor2<_BoostTrivialInit, _STLPTrivialInit>::_Ret _Tr1;
+
+  typedef typename _DefaultZeroValue<_Tp>::_Ret _Tr2;
+  typedef typename _Not<_Tr2>::_Ret _Tr3;
+
+  typedef typename _Land2<_Tr1, _Tr3>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
+};
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_BOOST_TYPE_TRAITS_H */

@@ -3,6 +3,9 @@
 	* stlport/stl/_deque.h, _deque.c: Change implementation to use
 	_TrivialInit new feature.
 
+	* stlport/stl/boost_type_traits.h: Add _TrivialInit implementation
+	using boost type traits.
+
 2006-05-22  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/type_traits.h: Add _TrivialInit helper struct to
