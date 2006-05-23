@@ -222,7 +222,7 @@ public:
 #else
   explicit vector(size_type __n)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
-  { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n); }
+  { this->_M_finish = _STLP_PRIV __uninitialized_init(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
   vector(size_type __n, const _Tp& __val)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
   { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
