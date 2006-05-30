@@ -136,18 +136,27 @@ int are_same_uncv_types(_Tp1, _Tp2) {
   return type_to_value(_Ret());
 }
 
-#  if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-template <typename _From, typename _To>
-int is_convertible(_From, _To) {
-#    if !defined(__BORLANDC__)
-   typedef typename _IsConvertibleType<_From, _To>::_Type _Ret;
-#    else
-  enum { _Is = _IsConvertibleType<_From, _To>::value };
+template <typename _Src, typename _Dst>
+int is_convertible(_Src, _Dst) {
+#  if !defined(__BORLANDC__)
+  typedef typename _IsConvertible<_Src, _Dst>::_Ret _Ret;
+#  else
+  enum { _Is = _IsConvertible<_Dst, _Src>::value };
   typedef typename __bool2type<_Is>::_Ret _Ret;
-#    endif
+#  endif
   return type_to_value(_Ret());
 }
+
+template <typename _Src, typename _Dst>
+int is_cv_convertible(_Src, _Dst) {
+#  if !defined(__BORLANDC__)
+  typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Ret;
+#  else
+  enum { _Is = _IsCVConvertible<_Src, _Dst>::value };
+  typedef typename __bool2type<_Is>::_Ret _Ret;
 #  endif
+  return type_to_value(_Ret());
+}
 #endif
 
 void TypeTraitsTest::manips()
@@ -269,19 +278,34 @@ void TypeTraitsTest::manips()
     CPPUNIT_ASSERT( are_same_uncv_types(any_const_volatile_pointer, any_const_volatile_pointer) == 1 );
   }
 
-#  if defined(_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   {
-    CPPUNIT_ASSERT( is_convertible(any, base()) == 0 );
-    CPPUNIT_ASSERT( is_convertible(derived(), base()) == 1 );
+    base b;
+    derived d;
+    const derived cd;
+    base *pb = &b;
+    derived *pd = &d;
+    derived const *pcd = pd;
+    CPPUNIT_CHECK( is_convertible(any, b) == 0 );
+    CPPUNIT_CHECK( is_convertible(d, b) == 1 );
+    CPPUNIT_CHECK( is_convertible(cd, b) == 1 );
+    // _IsCVConvertible only needs to work for pointer type:
+    //CPPUNIT_CHECK( is_cv_convertible(d, b) == 1 );
+    //CPPUNIT_CHECK( is_cv_convertible(cd, b) == 0 );
+
+    //_IsConvertible do not need to work for pointers:
+    //CPPUNIT_CHECK( is_convertible(pd, pb) == 1 );
+    //CPPUNIT_CHECK( is_convertible(pcd, pb) == 1 );
+
+    CPPUNIT_CHECK( is_cv_convertible(pd, pb) == 1 );
+    CPPUNIT_CHECK( is_cv_convertible(pcd, pb) == 0 );
   }
-#  endif
 #endif
 }
 
 #if defined (STLPORT)
 template <typename _Type>
 int is_integer(_Type) {
-  typedef typename _Is_integer<_Type>::_Integral _Ret;
+  typedef typename _IsIntegral<_Type>::_Ret _Ret;
   return type_to_value(_Ret());
 }
 #endif
@@ -327,7 +351,7 @@ void TypeTraitsTest::integer()
 #if defined (STLPORT)
 template <typename _Type>
 int is_rational(_Type) {
-  typedef typename _Is_rational<_Type>::_Rational _Ret;
+  typedef typename _IsRational<_Type>::_Ret _Ret;
   return type_to_value(_Ret());
 }
 #endif
@@ -453,6 +477,10 @@ void TypeTraitsTest::ok_to_use_memcpy()
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, int_pointer) == 0 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_pointer) == 1 );
   CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_const_pointer) == 1 );
+  vector<float> **pvf = 0;
+  vector<int> **pvi = 0;
+  CPPUNIT_ASSERT( is_ok_to_use_memcpy(pvf, pvi) == 0 );
+  CPPUNIT_ASSERT( is_ok_to_use_memcpy(pvi, pvf) == 0 );
 #endif
 }
 

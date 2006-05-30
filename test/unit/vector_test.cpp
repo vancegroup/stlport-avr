@@ -73,6 +73,17 @@ void VectorTest::vec_test_1()
   CPPUNIT_ASSERT( v1.size() == 1 );
 
   CPPUNIT_ASSERT( v1[0] == 42 );
+
+  {
+    vector<vector<int> > vect(10);
+    vector<vector<int> >::iterator it(vect.begin()), end(vect.end());
+    for (; it != end; ++it) {
+      CPPUNIT_ASSERT( (*it).empty() );
+      CPPUNIT_ASSERT( (*it).size() == 0 );
+      CPPUNIT_ASSERT( (*it).capacity() == 0 );
+      CPPUNIT_ASSERT( (*it).begin() == (*it).end() );
+    }
+  }
 }
 
 void VectorTest::vec_test_2()
@@ -106,7 +117,7 @@ void VectorTest::vec_test_2()
 
 void VectorTest::vec_test_3()
 {
-  typedef  vector<char> vec_type;
+  typedef vector<char> vec_type;
 
   vec_type v1; // Empty vector of characters.
   v1.push_back('h');
@@ -251,6 +262,15 @@ void VectorTest::vec_test_7()
   CPPUNIT_ASSERT( v[2] == 10 );
   CPPUNIT_ASSERT( v[3] == 10 );
   CPPUNIT_ASSERT( v[4] == 10 );
+
+  /*
+  {
+    vector<float> vf(2.0f, 3.0f);
+    CPPUNIT_ASSERT( vf.size() == 2 );
+    CPPUNIT_ASSERT( vf.front() == 3.0f );
+    CPPUNIT_ASSERT( vf.back() == 3.0f );
+  }
+  */
 }
 
 void VectorTest::capacity()

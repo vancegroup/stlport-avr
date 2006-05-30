@@ -75,6 +75,9 @@ namespace std
 }
 #endif
 
+struct base {};
+struct derived : base {};
+
 //
 // tests implementation
 //
@@ -148,6 +151,72 @@ void UninitializedTest::copy_test()
 
       for (it = dst.begin(); it != end; ++it) {
         CPPUNIT_ASSERT( (*it).member == 1 );
+      }
+    }
+  }
+
+  {
+    //Using containers of native types:
+    {
+      vector<int> src;
+      int i;
+      for (i = -5; i < 6; ++i) {
+        src.push_back(i);
+      }
+
+      //Building a vector result in a uninitialized_copy call internally
+      vector<unsigned int> dst(src.begin(), src.end());
+      vector<unsigned int>::const_iterator it(dst.begin());
+      for (i = -5; i < 6; ++i, ++it) {
+        CPPUNIT_ASSERT( *it == (unsigned int)i );
+      }
+    }
+
+    {
+      vector<char> src;
+      char i;
+      for (i = -5; i < 6; ++i) {
+        src.push_back(i);
+      }
+
+      //Building a vector result in a uninitialized_copy call internally
+      vector<unsigned int> dst(src.begin(), src.end());
+      vector<unsigned int>::const_iterator it(dst.begin());
+      for (i = -5; i < 6; ++i, ++it) {
+        CPPUNIT_ASSERT( *it == (unsigned int)i );
+      }
+    }
+
+    {
+      vector<int> src;
+      int i;
+      for (i = -5; i < 6; ++i) {
+        src.push_back(i);
+      }
+
+      //Building a vector result in a uninitialized_copy call internally
+      vector<float> dst(src.begin(), src.end());
+      vector<float>::const_iterator it(dst.begin());
+      for (i = -5; i < 6; ++i, ++it) {
+        CPPUNIT_ASSERT( *it == (float)i );
+      }
+    }
+
+    {
+      vector<vector<float>*> src(10);
+      vector<vector<float>*> dst(src.begin(), src.end());
+    }
+
+    {
+      derived d;
+      //base *pb = &d;
+      derived *pd = &d;
+      //base **ppb = &pd;
+      vector<derived*> src(10, pd);
+      vector<base*> dst(src.begin(), src.end());
+      vector<base*>::iterator it(dst.begin()), end(dst.end());
+      for (; it != end; ++it) {
+        CPPUNIT_ASSERT( (*it) == pd );
       }
     }
   }
