@@ -20,6 +20,10 @@
 	* test/unit/vector_test.cpp: Add check that previous optimization
 	works as expected.
 
+	* stlport/typeinfo.h: Borland patch from Eric Sanford.
+
+	* DMC patch from Eric Sanford
+
 2006-05-23  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_deque.h, _deque.c: Change implementation to use
