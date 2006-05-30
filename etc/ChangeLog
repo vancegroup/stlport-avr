@@ -1,3 +1,25 @@
+2006-05-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/type_traits.h: Rename _Is_Integer<_Tp>::_Integral and
+	_Is_Rational<_Tp>::_Rational in respectively _IsIntegral<_Tp>::_Ret
+	and _IsRational<_Tp>::_Ret for naming convention coherency.
+
+	* stlport/stl/type_traits.h: Add _TrivialNativeTypeCopy helper to
+	handle a number of oportunities to use memcpy/memmove in
+	uninitialized_* or copy algorithms that was not cover by simply
+	checking type_traits has_trivial* features.
+
+	* stlport/stl/type_traits.h, boost_type_traits.h: Refactor _BothPtrType
+	implementation, only one version is necessary as it uses _IsPtr that
+	has a variable implementation depending on config.
+
+	* stlport/stl/_vector.h: Add _DefaultZeroValue specialization for
+	vector container so that a vector of vector is simply initialized
+	using a memset to set everything to 0.
+
+	* test/unit/vector_test.cpp: Add check that previous optimization
+	works as expected.
+
 2006-05-23  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_deque.h, _deque.c: Change implementation to use
