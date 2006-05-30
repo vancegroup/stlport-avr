@@ -53,14 +53,14 @@ template <class _Tp> struct _IsPtrType {
   static _Type _Ret() { return _Type(); }
 };
 
-template <class _Tp> struct _Is_integer {
+template <class _Tp> struct _IsIntegral {
   enum { is_integral = ::boost::is_integral<_Tp>::value };
-  typedef typename __bool2type<is_integral>::_Ret _Integral;
+  typedef typename __bool2type<is_integral>::_Ret _Ret;
 };
 
-template <class _Tp> struct _Is_rational {
+template <class _Tp> struct _IsRational {
   enum { is_float = ::boost::is_float<_Tp>::value };
-  typedef typename __bool2type<is_float>::_Ret _Rational;
+  typedef typename __bool2type<is_float>::_Ret _Ret;
 };
 
 template <class _Tp>
@@ -79,17 +79,6 @@ struct __type_traits {
 
   enum { pod = ::boost::is_pod<_Tp>::value };
   typedef typename __bool2type<pod>::_Ret is_POD_type;
-};
-
-template <class _Tp1, class _Tp2>
-struct _BothPtrType {
-  enum { pointer1 = ::boost::is_pointer<_Tp1>::value };
-  typedef typename __bool2type<pointer1>::_Ret _Ptr1;
-  enum { pointer2 = ::boost::is_pointer<_Tp2>::value };
-  typedef typename __bool2type<pointer2>::_Ret _Ptr2;
-
-  typedef typename _Land2<_Ptr1, _Ptr2>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
 };
 
 template <class _Tp1, class _Tp2>
@@ -135,8 +124,7 @@ struct _DefaultZeroValue {
   enum { is_pointer = ::boost::is_pointer<_Tp>::value };
   typedef typename __bool2type<is_pointer>::_Ret _IsPointer;
 
-  typedef typename _Lor3<_IsIntegral, _IsFloat, _IsPointer>::_Ret _Type;
-  static _Type _Answer() { return _Type(); }
+  typedef typename _Lor3<_IsIntegral, _IsFloat, _IsPointer>::_Ret _Ret;
 };
 
 template <class _Tp>

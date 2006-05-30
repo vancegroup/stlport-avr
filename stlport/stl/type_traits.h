@@ -76,86 +76,68 @@ _STLP_BEGIN_NAMESPACE
 // The following could be written in terms of numeric_limits.
 // We're doing it separately to reduce the number of dependencies.
 
-template <class _Tp> struct _Is_integer {
-  typedef __false_type _Integral;
-};
+template <class _Tp> struct _IsIntegral
+{ typedef __false_type _Ret; };
 
 #  ifndef _STLP_NO_BOOL
-_STLP_TEMPLATE_NULL struct _Is_integer<bool> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<bool>
+{ typedef __true_type _Ret; };
 #  endif /* _STLP_NO_BOOL */
 
-_STLP_TEMPLATE_NULL struct _Is_integer<char> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<char>
+{ typedef __true_type _Ret; };
 
 #  ifndef _STLP_NO_SIGNED_BUILTINS
-_STLP_TEMPLATE_NULL struct _Is_integer<signed char> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<signed char>
+{ typedef __true_type _Ret; };
 #  endif
 
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned char> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<unsigned char>
+{ typedef __true_type _Ret; };
 
 #  if defined ( _STLP_HAS_WCHAR_T ) && ! defined (_STLP_WCHAR_T_IS_USHORT)
-_STLP_TEMPLATE_NULL struct _Is_integer<wchar_t> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<wchar_t>
+{ typedef __true_type _Ret; };
 #  endif /* _STLP_HAS_WCHAR_T */
 
-_STLP_TEMPLATE_NULL struct _Is_integer<short> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<short>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned short> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<unsigned short>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<int> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<int>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned int> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<unsigned int>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<long> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<long>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned long> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<unsigned long>
+{ typedef __true_type _Ret; };
 
 #  ifdef _STLP_LONG_LONG
-_STLP_TEMPLATE_NULL struct _Is_integer<_STLP_LONG_LONG> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<_STLP_LONG_LONG>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_integer<unsigned _STLP_LONG_LONG> {
-  typedef __true_type _Integral;
-};
+_STLP_TEMPLATE_NULL struct _IsIntegral<unsigned _STLP_LONG_LONG>
+{ typedef __true_type _Ret; };
 #  endif /* _STLP_LONG_LONG */
 
-template <class _Tp> struct _Is_rational {
-  typedef __false_type _Rational;
-};
+template <class _Tp> struct _IsRational
+{ typedef __false_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_rational<float> {
-  typedef __true_type _Rational;
-};
+_STLP_TEMPLATE_NULL struct _IsRational<float>
+{ typedef __true_type _Ret; };
 
-_STLP_TEMPLATE_NULL struct _Is_rational<double> {
-  typedef __true_type _Rational;
-};
+_STLP_TEMPLATE_NULL struct _IsRational<double>
+{ typedef __true_type _Ret; };
 
 #  if !defined ( _STLP_NO_LONG_DOUBLE )
-_STLP_TEMPLATE_NULL struct _Is_rational<long double> {
-  typedef __true_type _Rational;
-};
+_STLP_TEMPLATE_NULL struct _IsRational<long double>
+{ typedef __true_type _Ret; };
 #  endif
 
 // Forward declarations.
@@ -228,21 +210,6 @@ struct _IsPtr {
 
 };
 
-template <class _Tp>
-struct _IsPtrType {
-  typedef typename _IsPtr<_Tp>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
-};
-
-template <class _Tp1, class _Tp2>
-struct _BothPtrType {
-  typedef typename _IsPtr<_Tp1>::_Ret _Type1;
-  typedef typename _IsPtr<_Tp2>::_Ret _Type2;
-
-  typedef typename _Land2<_Type1, _Type2>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
-};
-
 // we make general case dependant on the fact the type is actually a pointer.
 template <class _Tp>
 struct __type_traits : __type_traits_aux<typename _IsPtr<_Tp>::_Ret> {};
@@ -288,42 +255,36 @@ struct __type_traits {
 };
 
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Tp> struct _IsPtr<_Tp*> {
-  typedef __true_type _Ret;
-};
-template <class _Tp> struct _IsRef<_Tp&> {
-  typedef __true_type _Ret;
-};
+template <class _Tp> struct _IsPtr<_Tp*>
+{ typedef __true_type _Ret; };
+template <class _Tp> struct _IsRef<_Tp&>
+{ typedef __true_type _Ret; };
 
-template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<__true_type> {};
+template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<__true_type>
+{};
 #    endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-template <class _Tp>  struct _IsPtrType {
-  typedef typename _IsPtr<_Tp>::_Ret _Type;
-  static _Type _Ret() { return _Type();}
-};
-template <class _Tp1, class _Tp2>  struct _BothPtrType {
-  typedef typename _IsPtr<_Tp1>::_Ret _IsPtr1;
-  typedef typename _IsPtr<_Tp2>::_Ret _IsPtr2;
-  typedef typename _Land2<_IsPtr1, _IsPtr2>::_Ret _Type;
-  static _Type _Ret() { return _Type();}
-};
-
 #  endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
+
+template <class _Tp>
+struct _IsPtrType {
+  typedef typename _IsPtr<_Tp>::_Ret _Type;
+  static _Type _Ret() { return _Type(); }
+};
 
 // Provide some specializations.  This is harmless for compilers that
 //  have built-in __types_traits support, and essential for compilers
 //  that don't.
-#if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
-#  define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
+#  if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
+#    define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
 _STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<__true_type> {}; \
 _STLP_TEMPLATE_NULL struct __type_traits< const Type > : __type_traits_aux<__true_type> {}; \
 _STLP_TEMPLATE_NULL struct __type_traits< volatile Type > : __type_traits_aux<__true_type> {}; \
 _STLP_TEMPLATE_NULL struct __type_traits< const volatile Type > : __type_traits_aux<__true_type> {}
-#else
-#  define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
+#  else
+#    define _STLP_DEFINE_TYPE_TRAITS_FOR(Type) \
 _STLP_TEMPLATE_NULL struct __type_traits< Type > : __type_traits_aux<__true_type> {};
-#endif
+#  endif
 
 #  ifndef _STLP_NO_BOOL
 _STLP_DEFINE_TYPE_TRAITS_FOR(bool);
@@ -356,42 +317,70 @@ _STLP_DEFINE_TYPE_TRAITS_FOR(double);
 _STLP_DEFINE_TYPE_TRAITS_FOR(long double);
 #  endif
 
-template <class _Tp1, class _Tp2>
-struct _TrivialCopy {
-#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
-  typedef typename __type_traits<_Tp1>::has_trivial_assignment_operator _Tr1;
-#else
-  typedef typename _UnConstPtr<_Tp1*>::_Type _Tp3;
-  typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
-#endif
-  typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Tr2;
-  typedef typename _Land2<_Tr1, _Tr2>::_Ret _Type;
-  static _Type _Answer() { return _Type(); }
+template <class _Src, class _Dst>
+struct _TrivialNativeTypeCopy {
+  typedef typename _IsPtr<_Src>::_Ret _Ptr1;
+  typedef typename _IsPtr<_Dst>::_Ret _Ptr2;
+  typedef typename _Land2<_Ptr1, _Ptr2>::_Ret _BothPtrs;
+  typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Convertible;
+  typedef typename _Land2<_BothPtrs, _Convertible>::_Ret _Trivial1;
+
+  typedef typename __bool2type<sizeof(_Src) == sizeof(_Dst)>::_Ret _SameSize;
+
+  typedef typename _IsIntegral<_Src>::_Ret _Int1;
+  typedef typename _IsIntegral<_Dst>::_Ret _Int2;
+  typedef typename _Land2<_Int1, _Int2>::_Ret _BothInts;
+
+  typedef typename _IsRational<_Src>::_Ret _Rat1;
+  typedef typename _IsRational<_Dst>::_Ret _Rat2;
+  typedef typename _Land2<_Rat1, _Rat2>::_Ret _BothRats;
+
+  typedef typename _Lor2<_BothInts, _BothRats>::_Ret _BothNatives;
+  typedef typename _Land2<_BothNatives, _SameSize>::_Ret _Trivial2;
+
+  typedef typename _Lor2<_Trivial1, _Trivial2>::_Ret _Ret;
 };
 
-template <class _Tp1, class _Tp2>
-struct _TrivialUCopy {
+template <class _Src, class _Dst>
+struct _TrivialCopy {
+  typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
+
 #if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
-  typedef typename __type_traits<_Tp1>::has_trivial_copy_constructor _Tr1;
+  typedef typename __type_traits<_Src>::has_trivial_assignment_operator _Tr1;
 #else
-  typedef typename _UnConstPtr<_Tp1*>::_Type _Tp3;
+  typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
+  typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
+#endif
+  typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
+  typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
+
+  typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
+};
+
+template <class _Src, class _Dst>
+struct _TrivialUCopy {
+  typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
+
+#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+  typedef typename __type_traits<_Src>::has_trivial_copy_constructor _Tr1;
+#else
+  typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
   typedef typename __type_traits<_Tp3>::has_trivial_copy_constructor _Tr1;
 #endif
-  typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Tr2;
-  typedef typename _Land2<_Tr1, _Tr2>::_Ret _Type;
-  static _Type _Answer() { return _Type(); }
+  typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
+  typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
+
+  typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
 };
 
 template <class _Tp>
 struct _DefaultZeroValue {
-  typedef typename _Is_integer<_Tp>::_Integral _Tr1;
-  typedef typename _Is_rational<_Tp>::_Rational _Tr2;
-  typedef typename _Lor2<_Tr1, _Tr2>::_Ret _Tr3;
-
-  typedef typename _IsPtr<_Tp>::_Ret _Tr4;
-  typedef typename _Lor2<_Tr3, _Tr4>::_Ret _Ret;
-
-  static _Ret _Answer() { return _Ret(); }
+  typedef typename _IsIntegral<_Tp>::_Ret _Tr1;
+  typedef typename _IsRational<_Tp>::_Ret _Tr2;
+  typedef typename _IsPtr<_Tp>::_Ret _Tr3;
+  typedef typename _Lor3<_Tr1, _Tr2, _Tr3>::_Ret _Ret;
 };
 
 template <class _Tp>
@@ -404,8 +393,8 @@ struct _TrivialInit {
 #endif
   typedef typename _DefaultZeroValue<_Tp>::_Ret _Tr2;
   typedef typename _Not<_Tr2>::_Ret _Tr3;
-  typedef typename _Land2<_Tr1, _Tr3>::_Ret _Type;
-  static _Type _Answer() { return _Type(); }
+  typedef typename _Land2<_Tr1, _Tr3>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
 };
 
 #endif /* !_STLP_USE_BOOST_SUPPORT */
@@ -418,7 +407,7 @@ struct _IsRefType {
 
 template <class _Tp>
 struct __call_traits {
-#if defined(_STLP_USE_BOOST_SUPPORT) && !defined(_STLP_NO_EXTENSIONS)
+#if defined (_STLP_USE_BOOST_SUPPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef typename __select< ::boost::is_reference<_Tp>::value,
                              _Tp, typename ::boost::add_reference< typename ::boost::add_const<_Tp>::type >::type>::_Ret param_type;
 #else
@@ -426,12 +415,21 @@ struct __call_traits {
 #endif /* _STLP_USE_BOOST_SUPPORT */
 };
 
-#if !defined(_STLP_USE_BOOST_SUPPORT) && !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if !defined (_STLP_USE_BOOST_SUPPORT) && !defined (_STLP_NO_EXTENSIONS) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
 struct __call_traits<_Tp&> {
   typedef _Tp& param_type;
 };
 #endif
+
+template <class _Tp1, class _Tp2>
+struct _BothPtrType {
+  typedef typename _IsPtr<_Tp1>::_Ret _IsPtr1;
+  typedef typename _IsPtr<_Tp2>::_Ret _IsPtr2;
+
+  typedef typename _Land2<_IsPtr1, _IsPtr2>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
+};
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 struct _OKToSwap {
@@ -445,13 +443,13 @@ inline _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>
 _IsOKToSwap(_Tp1*, _Tp2*, const _IsRef1&, const _IsRef2&)
 { return _OKToSwap<_Tp1, _Tp2, _IsRef1, _IsRef2>(); }
 
-template <class _Tp1, class _Tp2>
-inline _TrivialCopy<_Tp1, _Tp2> _UseTrivialCopy(_Tp1*, _Tp2*)
-{ return _TrivialCopy<_Tp1, _Tp2>(); }
+template <class _Src, class _Dst>
+inline _TrivialCopy<_Src, _Dst> _UseTrivialCopy(_Src*, _Dst*)
+{ return _TrivialCopy<_Src, _Dst>(); }
 
-template <class _Tp1, class _Tp2>
-inline _TrivialUCopy<_Tp1, _Tp2> _UseTrivialUCopy(_Tp1*, _Tp2*)
-{ return _TrivialUCopy<_Tp1, _Tp2>(); }
+template <class _Src, class _Dst>
+inline _TrivialUCopy<_Src, _Dst> _UseTrivialUCopy(_Src*, _Dst*)
+{ return _TrivialUCopy<_Src, _Dst>(); }
 
 template <class _Tp>
 inline _TrivialInit<_Tp> _UseTrivialInit(_Tp*)
@@ -464,13 +462,18 @@ struct _IsPOD {
 };
 
 template <class _Tp>
-inline _IsPOD<_Tp> _Is_POD(_Tp*) { return _IsPOD<_Tp>(); }
+inline _IsPOD<_Tp> _Is_POD(_Tp*)
+{ return _IsPOD<_Tp>(); }
 
-#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG) || defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _Tp>
-inline _DefaultZeroValue<_Tp> _HasDefaultZeroValue(_Tp*)
-{ return _DefaultZeroValue<_Tp>(); }
-#endif
+struct _DefaultZeroValueQuestion {
+  typedef typename _DefaultZeroValue<_Tp>::_Ret _Ret;
+  static _Ret _Answer() { return _Ret(); }
+};
+
+template <class _Tp>
+inline _DefaultZeroValueQuestion<_Tp> _HasDefaultZeroValue(_Tp*)
+{ return _DefaultZeroValueQuestion<_Tp>(); }
 
 /*
  * Base class used:
@@ -485,9 +488,9 @@ struct __stlport_class {
 
 template <class _Tp>
 struct _IsSTLportClass {
-  typedef typename _IsConvertibleType<_Tp, __stlport_class<_Tp> >::_Type _Ret;
+  typedef typename _IsConvertible<_Tp, __stlport_class<_Tp> >::_Ret _Ret;
 #if defined (__BORLANDC__)
-  enum { _Is = _IsConvertibleType<_Tp, __stlport_class<_Tp> >::value };
+  enum { _Is = _IsConvertible<_Tp, __stlport_class<_Tp> >::value };
 #endif
 };
 

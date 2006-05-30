@@ -278,7 +278,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _InputIter, class _OutputIter>
 inline _OutputIter copy(_InputIter __first, _InputIter __last, _OutputIter __result) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret());
+  return _STLP_PRIV __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter>::_Answer());
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -311,7 +311,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _InputIter, class _OutputIter>
 inline _OutputIter copy_backward(_InputIter __first, _InputIter __last, _OutputIter __result) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __copy_backward_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter> :: _Ret() );
+  return _STLP_PRIV __copy_backward_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter>::_Answer() );
 }
 
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)

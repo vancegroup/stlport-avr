@@ -243,30 +243,33 @@ struct _AreSameUnCVTypes {
  * is used for a similar feature.
  */
 #if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
-template <class _Derived, class _Base>
+template <class _Src, class _Dst>
 struct _ConversionHelper {
-  static char _Test(bool, const volatile _Base*);
+  static char _Test(bool, _Dst);
   static char* _Test(bool, ...);
-  static _Derived* _MakeDerived();
+  static _Src _MakeSource();
 };
 
-template <class _Derived, class _Base>
+template <class _Src, class _Dst>
 struct _IsConvertible {
-  typedef _ConversionHelper<_Derived, _Base> _H;
-  enum { value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeDerived()))) };
+  typedef _ConversionHelper<_Src*, const volatile _Dst*> _H;
+  enum { value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeSource()))) };
+  typedef typename __bool2type<value>::_Ret _Ret;
 };
 
-template <class _Derived, class _Base>
-struct _IsConvertibleType {
-  enum { value = _IsConvertible<_Derived, _Base>::value };
-  typedef typename __bool2type<value>::_Ret _Type;
+template <class _Src, class _Dst>
+struct _IsCVConvertible {
+  typedef _ConversionHelper<_Src, _Dst> _H;
+  enum { value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeSource()))) };
+  typedef typename __bool2type<value>::_Ret _Ret;
 };
+
 #else
-template <class _Derived, class _Base>
-struct _IsConvertible { enum {value = 0}; };
-
-template <class _Derived, class _Base>
-struct _IsConvertibleType { typedef __false_type _Type; };
+template <class _Src, class _Dst>
+struct _IsConvertible {
+  enum {value = 0};
+  typedef __false_type _Ret;
+};
 #endif
 
 template <class _Tp>
