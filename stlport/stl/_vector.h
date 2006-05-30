@@ -261,7 +261,7 @@ public:
   vector(_InputIterator __first, _InputIterator __last,
                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
 
@@ -269,7 +269,7 @@ public:
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
 #  endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
@@ -349,7 +349,7 @@ public:
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -472,22 +472,20 @@ private:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_fill_insert(__pos, (size_type) __n, (_Tp) __val);
-  }
+                          const __true_type&)
+  { _M_fill_insert(__pos, (size_type) __n, (_Tp) __val); }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
-                          const __false_type&) {
-    _M_range_insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
-  }
+                          const __false_type&)
+  { _M_range_insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
 
 public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
 
@@ -715,6 +713,13 @@ struct __move_traits<vector<_Tp, _Alloc> > {
   typedef __stlp_movable implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
+
+#  if !defined (_STLP_DEBUG)
+template <class _Tp, class _Alloc>
+struct _DefaultZeroValue<vector<_Tp, _Alloc> >
+{ typedef typename __type_traits<_Alloc>::has_trivial_default_constructor _Ret; };
+#  endif
+
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
