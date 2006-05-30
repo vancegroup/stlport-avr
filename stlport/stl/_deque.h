@@ -531,7 +531,7 @@ public:
   deque(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 
@@ -539,7 +539,7 @@ public:
   template <class _InputIterator>
   deque(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #  endif
@@ -596,7 +596,7 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 
@@ -772,7 +772,7 @@ public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
 

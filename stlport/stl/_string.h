@@ -125,7 +125,7 @@ protected:                        // Protected members inherited from base.
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   // fbp : used to optimize char/wchar_t cases, and to simplify
   // _STLP_DEF_CONST_PLCT_NEW_BUG problem workaround
-  typedef typename _Is_integer<_CharT>::_Integral _Char_Is_Integral;
+  typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
   typedef typename _IsPOD<_CharT>::_Type _Char_Is_POD;
   typedef random_access_iterator_tag r_a_i_t;
 
@@ -276,14 +276,14 @@ public:                         // Constructor, destructor, assignment.
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #    if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #    endif
@@ -596,7 +596,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   _Self& append(_InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_append_dispatch(__first, __last, _Integral());
   }
 #  endif
@@ -695,7 +695,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   _Self& assign(_InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
 #  endif
@@ -933,7 +933,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   void insert(iterator __p, _InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 #  endif
@@ -1133,7 +1133,7 @@ public:
   _Self& replace(iterator __first, iterator __last,
                  _InputIter __f, _InputIter __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 

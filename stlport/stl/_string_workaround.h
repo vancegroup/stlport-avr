@@ -81,14 +81,14 @@ public:                         // Constructor, destructor, assignment.
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), __a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  endif
@@ -206,7 +206,7 @@ public:                         // Append, operator+=, push_back.
   // it can't be an iterator.
   template <class _InputIter>
   _Self& append(_InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_append_dispatch(__first, __last, _Integral());
   }
 
@@ -340,7 +340,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   _Self& assign(_InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
 
@@ -397,7 +397,7 @@ public:                         // Insert
   // it can't be an iterator.
   template <class _InputIter>
   void insert(iterator __p, _InputIter __first, _InputIter __last) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 
@@ -620,7 +620,7 @@ public:                         // Replace.  (Conceptually equivalent
   _Self& replace(iterator __first, iterator __last,
                  _InputIter __f, _InputIter __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 

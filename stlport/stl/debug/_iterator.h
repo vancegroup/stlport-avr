@@ -377,7 +377,7 @@ protected:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
   __construct_checker(const _InputIter& __f, const _InputIter& __l) {
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     _M_check_dispatch(__f, __l, _Integral());
   }
 

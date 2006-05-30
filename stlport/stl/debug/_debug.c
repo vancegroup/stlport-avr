@@ -88,7 +88,7 @@ bool _STLP_CALL __check_range_aux(_Integral /*__first*/, _Integral /*__last*/,
 
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last) {
-  typedef typename _Is_integer<_Iterator>::_Integral _Integral;
+  typedef typename _IsIntegral<_Iterator>::_Ret _Integral;
   return __check_range_aux(__first, __last, _Integral());
 }
 

@@ -889,7 +889,7 @@ basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
 template<class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& operator<<(basic_ostream<_CharT, _Traits>& __o,
                                            const rope<_CharT, _Alloc>& __r) {
-  typedef typename _Is_integer<_CharT>::_Integral _Char_Is_Integral;
+  typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
   return _S_io_get(__o, __r, _Char_Is_Integral());
 }
 #endif /* NO_IOSTREAMS */

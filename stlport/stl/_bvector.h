@@ -560,7 +560,7 @@ public:
   template <class _InputIterator>
   __BVECTOR(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Bvector_base<_Alloc >(allocator_type()) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #  endif
@@ -568,7 +568,7 @@ public:
   __BVECTOR(_InputIterator __first, _InputIterator __last,
             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _Bvector_base<_Alloc >(__a) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #else /* _STLP_MEMBER_TEMPLATES */
@@ -624,7 +624,7 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 
@@ -723,8 +723,8 @@ public:
   template <class _InputIterator>
   void insert(iterator __position,
               _InputIterator __first, _InputIterator __last) {
-    typedef typename _Is_integer<_InputIterator>::_Integral _Is_Integral;
-    _M_insert_dispatch(__position, __first, __last, _Is_Integral());
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    _M_insert_dispatch(__position, __first, __last, _Integral());
   }
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __position,

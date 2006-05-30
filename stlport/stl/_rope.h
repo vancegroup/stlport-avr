@@ -137,7 +137,7 @@ inline void _S_construct_null_aux(_CharT *__p, const __false_type&)
 
 template <class _CharT>
 inline void _S_construct_null(_CharT *__p) {
-  typedef typename _Is_integer<_CharT>::_Integral _Char_Is_Integral;
+  typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
   _S_construct_null_aux(__p, _Char_Is_Integral());
 }
 

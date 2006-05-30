@@ -382,7 +382,7 @@ public:
   inline _Self& assign(_InputIter __first, _InputIter __last) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    typedef typename _Is_integer<_InputIter>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
     return *this;
   }
