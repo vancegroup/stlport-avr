@@ -143,21 +143,34 @@ _STLP_NATIVE_INCLUDE_PATH and associated macro in stlport/stl/_site_config.h.
 
 4. C symbols in std namespace
 
-	The MSVC++ 6 has a bug when dealing with C symbols imported within the std 
-namespace. If you write the following code:
+The compiler of MSVC++ 6 has a bug when dealing with symbols existant in both
+the global namespace and symbols imported by a using-directive or a 
+using-declaration - it will report an ambiguous call to an overloaded
+function (error C2668). Example:
 
-#include <cstdio>
-
-using namespace std;
-
-int main(int, char**) {
-	int res = abs(-1);
-	return 0;
+void function();
+namespace ns {
+   void function();
+   // or:
+   // using ::function;
 }
 
-	VC6 will report an ambiguous symbol because it do not know if it has to use
-::abs or std::abs even if they are the same function. For this reason injection of
-C symbols in the std namespace has been disable by default. To force it you have to
-define the _STLP_DO_IMPORT_CSTD_FUNCTIONS macro. Doing so you will have to explicitely 
-scope all your C functions calls.
+using ns::function;
+// or:
+// using namespace ns;
 
+void call() {
+   function();
+}
+
+Since we anticipate that using-declarations or even using-directives are common
+use, STLport by default doesn't import or wrap functions that exist in both the
+global namespace and namespace std, in particular those are functions with C 
+origin like fopen() or abs(). Also, it defines additional overloads for
+functions like abs() (overloaded for int, long, float, double, long double) in
+the global namespace.
+
+In order to make STLport include them in the std namespace, you can define the
+_STLP_DO_IMPORT_CSTD_FUNCTIONS macro. Doing so, you will have to explicitely 
+scope all your functions calls like std::abs() though - otherwise you only get
+the global abs(int) from the C library.
