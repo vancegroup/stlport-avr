@@ -537,6 +537,86 @@ Notes:
 Status (stldbg-static):         All pass (326 tests)
 Notes:
 
+-----------------------------------------------------------------------
+Compiler:                       Borland C++ compiler 5.5.1 (free version)
+-----------------------------------------------------------------------
+Date:                           2006-05-20
+STLP Version:                   current CVS HEAD
+Reporter:                       esanfo (Eric Sanford)
+Status (release-shared):        1 failure (367 tests, 3 ignores).
+Notes:                          MoveConstructorTest::nb_destructor_calls
+                                fails without trivial constructor
+Status (dbg-shared):            1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (stldbg-shared):         1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (release-static):        1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (dbg-static):            1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (stldbg-static):         1 failure (367 tests, 2 ignores).
+Notes:                          Same
+
+-----------------------------------------------------------------------
+Compiler:                       Borland C++ compiler 5.6 (CBuilder6)
+-----------------------------------------------------------------------
+Date:                           2006-05-20
+STLP Version:                   current CVS HEAD
+Reporter:                       esanfo (Eric Sanford)
+Status (release-shared):        1 failure (367 tests, 3 ignores).
+Notes:                          MoveConstructorTest::nb_destructor_calls
+                                fails without trivial constructor
+Status (dbg-shared):            1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (stldbg-shared):         1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (release-static):        1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (dbg-static):            1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (stldbg-static):         1 failure (367 tests, 2 ignores).
+Notes:                          Same
+
+-----------------------------------------------------------------------
+Compiler:                       Borland C++ compiler 5.6.4 (CBuilderX)
+-----------------------------------------------------------------------
+Date:                           2006-05-20
+STLP Version:                   current CVS HEAD
+Reporter:                       esanfo (Eric Sanford)
+Status (release-shared):        1 failure (367 tests, 3 ignores).
+Notes:                          MoveConstructorTest::nb_destructor_calls
+                                fails without trivial constructor
+Status (dbg-shared):            1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (stldbg-shared):         1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (release-static):        1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (dbg-static):            1 failure (367 tests, 2 ignores).
+Notes:                          Same
+Status (stldbg-static):         1 failure (367 tests, 2 ignores).
+Notes:                          Same
+
+-----------------------------------------------------------------------
+Compiler:                       Borland C++ compiler 5.81 (BDS 2006)
+-----------------------------------------------------------------------
+Date:                           2006-05-20
+STLP Version:                   current CVS HEAD
+Reporter:                       esanfo (Eric Sanford)
+Status (release-shared):        1 failure (367 tests, 3 ignores).
+Notes:                          MoveConstructorTest::nb_destructor_calls
+                                fails without trivial constructor
+Status (dbg-shared):            1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (stldbg-shared):         1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (release-static):        1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (dbg-static):            1 failure (367 tests, 3 ignores).
+Notes:                          Same
+Status (stldbg-static):         1 failure (367 tests, 3 ignores).
+Notes:                          Same
+
 =======================================================================
 Operational environment:        Windows CE 3.0 Pocket PC 2002 (iPAQ h3950)
 =======================================================================
