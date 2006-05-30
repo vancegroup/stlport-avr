@@ -28,7 +28,11 @@
 #    include <typeinfo>
 #    define _STLP_OLDSTD_typeinfo
 #  else
-#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#    if !defined (__BORLANDC__) || (__BORLANDC__ < 0x580)
+#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(typeinfo.h)
+#    endif
 #    if defined (__BORLANDC__) && (__BORLANDC__ >= 0x580) || \
         defined (__DMC__)
 using std::type_info;
