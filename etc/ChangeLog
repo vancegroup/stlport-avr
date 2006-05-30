@@ -24,6 +24,12 @@
 
 	* DMC patch from Eric Sanford
 
+	* stlport/stl/debug/_tree.h: Patch from Ulrich Echkardt to add missing
+	count template method.
+
+	* src/dll_main.cpp: Patch from Ulrich Echkardt to fix strncpy
+	usage.
+
 2006-05-23  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_deque.h, _deque.c: Change implementation to use
