@@ -172,7 +172,8 @@ public:
   bool empty() const { return _M_non_dbg_impl.empty(); }
   size_type size() const { return _M_non_dbg_impl.size(); }
   size_type max_size() const { return _M_non_dbg_impl.max_size(); }
-  size_type count(const key_type& __x) const { return _M_non_dbg_impl.count(__x); }
+  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  size_type count(const _KT& __x) const { return _M_non_dbg_impl.count(__x); }
 
   void swap(_Self& __t) {
     _M_non_dbg_impl.swap(__t._M_non_dbg_impl);
