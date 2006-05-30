@@ -185,6 +185,9 @@ struct V {
   bool f( int _v ) const { return (v == _v); }
 
   int v;
+#if defined (__DMC__)
+  V(){};
+#endif
 };
 
 void MemFunPtrTest::find()

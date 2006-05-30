@@ -25,6 +25,10 @@ struct State {
   bool *m_sharedOk;
   int *m_sharedNbAlloc;
 
+#if defined (__DMC__)
+  State(){}
+#endif
+
   State(char *beg, char *end)
     : m_beg(beg), m_end(end), m_cur(m_beg), m_isOk(true), m_swaped(false), m_nbAlloc(0),
       m_sharedCur(&m_cur), m_sharedOk(&m_isOk), m_sharedNbAlloc(&m_nbAlloc) {}
@@ -55,6 +59,10 @@ struct StackAllocator
   typedef const _Tp& const_reference;
   typedef size_t     size_type;
   typedef ptrdiff_t  difference_type;
+
+#if defined (__DMC__)
+  StackAllocator(){};
+#endif
 
   StackAllocator(char *beg, char *end)
     : m_state(beg, end) {}

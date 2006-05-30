@@ -70,7 +70,11 @@ struct _SlistDbgTraits : _Traits {
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
-class slist : private _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST >
+class slist : 
+#if !defined (__DMC__)
+             private 
+#endif
+                     _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
             , public __stlport_class<slist<_Tp, _Alloc> >
 #endif

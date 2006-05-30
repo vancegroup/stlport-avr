@@ -37,10 +37,10 @@ class HashTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(hmap1);
+  CPPUNIT_TEST(hmmap1);
 #if defined (__DMC__)
   CPPUNIT_STOP_IGNORE;
 #endif
-  CPPUNIT_TEST(hmmap1);
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
   CPPUNIT_TEST(insert_erase);

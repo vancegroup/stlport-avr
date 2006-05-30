@@ -3,6 +3,11 @@
 
 #INCLUDES :=
 
+ALL_TAGS = all-static all-shared
+ifdef LIBNAME
+INSTALL_TAGS = install-static install-shared
+endif
+
 CXX := dmc
 # For the C compiler we force cpp build otherwise wchar_t is not
 # supported
@@ -12,12 +17,10 @@ RC := rcc
 DEFS ?=
 OPT ?=
 
-CFLAGS = -Aa -Ab -Ae -Aw -w- -p
-CXXFLAGS = -Aa -Ab -Ae -Aw -w- -p
+CFLAGS = -Ae -C -p -w6 -w12
+CXXFLAGS = -Ae -C -p -w12
 
-release-shared : OPT += -WD
-dbg-shared : OPT += -WD
-stldbg-shared : OPT += -WD
+DEFS += -DSTRICT
 
 ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
 release-static : OPT += -ND
@@ -44,16 +47,20 @@ CCDEPFLAGS = -E -M
 RCFLAGS = -32 -I${STLPORT_INCLUDE_DIR} -DCOMP=dmc
 
 release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-o"
-dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-g"
-stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
+dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-gl -D_DEBUG"
+stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-gl -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = $(OUTPUT_OPTION)
 
 COMPILE.rc = ${RC} ${RCFLAGS}
 LINK.cc = dm_link $(LDFLAGS)
 
-LDLIBS += kernel32.lib
+LDLIBS += user32.lib kernel32.lib
 
 # STLport DEBUG mode specific defines
+dbg-static : DEFS += -D_DEBUG
+dbg-shared : DEFS += -D_DEBUG
+dbg-static-dep : DEFS += -D_DEBUG
+dbg-shared-dep : DEFS +=  -D_DEBUG
 stldbg-static :	    DEFS += -D_STLP_DEBUG
 stldbg-shared :     DEFS += -D_STLP_DEBUG
 stldbg-static-dep : DEFS += -D_STLP_DEBUG
@@ -62,15 +69,33 @@ stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 # optimization and debug compiler flags
 release-static : OPT += -o
 release-shared : OPT += -o
+dbg-static : OPT += -gl
+dbg-shared : OPT += -gl
+stldbg-static : OPT += -gl
+stldbg-shared : OPT += -gl
 
-dbg-static : OPT += -g
-dbg-shared : OPT += -g
-stldbg-static : OPT += -g
-stldbg-shared : OPT += -g
+release-static : OPT += -D_MT
+dbg-static : OPT += -D_MT
+stldbg-static : OPT += -D_MT
 
-release-static : AR += -p256
-dbg-static : AR += -p1024
-stldbg-static : AR += -p2048
+release-static : AR += -p128
+dbg-static : AR += -p512
+stldbg-static : AR += -p512
+
+# map output option (move map files to output dir)
+
+ifdef LIBNAME
+release-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(SO_NAME_BASE).map
+dbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(SO_NAME_DBG_BASE).map
+stldbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(SO_NAME_STLDBG_BASE).map
+else
+release-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(PRGNAME).map
+release-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(PRGNAME).map
+dbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(PRGNAME).map
+dbg-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(PRGNAME).map
+stldbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(PRGNAME).map
+stldbg-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(PRGNAME).map
+endif
 
 # dependency output parser (dependencies collector)
 

@@ -23,17 +23,16 @@ ${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP)
 
 else
 
-# Original Borland's linker
+# Original Borland and Digital Mars linkers
 
 ${PRG}:	$(OBJ) $(LIBSDEP)
-	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
+	$(LINK.cc) $(subst /,\,$(START_OBJ) $(OBJ) $(END_OBJ),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS) $(STDLIBS),,)
 
 ${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP)
-	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ_DBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
+	$(LINK.cc) $(subst /,\,$(START_OBJ) $(OBJ_DBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS) $(STDLIBS),,)
 
 ${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP)
-	$(subst /,\,$(LINK.cc) $(START_OBJ) $(OBJ_STLDBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),,$(LDLIBS) $(STDLIBS),,)
-
+	$(LINK.cc) $(subst /,\,$(START_OBJ) $(OBJ_STLDBG) $(END_OBJ),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS) $(STDLIBS),,)
 
 endif
 

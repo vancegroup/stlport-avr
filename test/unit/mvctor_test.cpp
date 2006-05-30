@@ -220,7 +220,7 @@ void MoveConstructorTest::move_construct_test()
   CheckFullMoveSupport(list<int>());
   CheckFullMoveSupport(slist<int>());
   */
-#endif
+#endif /* __DMC__ */
 }
 
 void MoveConstructorTest::deque_test()
@@ -447,7 +447,7 @@ void MoveConstructorTest::deque_test()
 #endif
     }
   }
-#endif
+#endif /* __DMC__ */
 }
 
 void MoveConstructorTest::vector_test()
@@ -669,7 +669,6 @@ void MoveConstructorTest::vector_test()
 #endif
     }
   }
-#endif
 
   //The following tests are checking move contructor implementations:
   const string long_str("long enough string to force dynamic allocation");
@@ -798,9 +797,10 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
+#  endif /* __DMC__ */
 
 #if defined (STLPORT)
-#  if !defined (__BORLANDC__)
+#  if !defined (__BORLANDC__) && !defined (__DMC__)
   {
     //hash container move contructor:
     unordered_multiset<string> ref;
@@ -924,7 +924,7 @@ namespace std {
   };
 }
 #  endif
-#endif
+#endif /* __DMC__ */
 
 void MoveConstructorTest::move_traits()
 {
@@ -1295,7 +1295,7 @@ void MoveConstructorTest::move_traits()
     //deq with 3 elements and v2 with 4 elements are now out of scope
     CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 3 + 4 );
   }
-#endif
+#endif /* __DMC__ */
 }
 
 #if defined (__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 0)

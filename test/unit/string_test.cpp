@@ -57,7 +57,11 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(insert);
   CPPUNIT_TEST(replace);
   CPPUNIT_TEST(resize);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(short_string);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(find);
 #if !defined (USE_PTHREAD_API) && !defined (USE_WINDOWS_API)
   CPPUNIT_IGNORE;
@@ -66,6 +70,9 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(template_expression);
 #if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
   CPPUNIT_IGNORE;
@@ -716,10 +723,20 @@ void StringTest::template_expression()
 #if 1 // defined (_STLP_USE_TEMPLATE_EXPRESSION)
       // strsum-string
       (one+two) == three;
+#if  !defined (__DMC__)
       (one+two) != three;
+#else
+      string one_two = one+two;
+      one_two != three;
+#endif
       // string-strsum
       one == (two+three);
+#if  !defined (__DMC__)
       one != (two+three);
+#else
+      string two_three = two+three;
+      one != two_three;
+#endif
       // strsum-literal
       (one+two) == "three";
       (one+two) != "three";

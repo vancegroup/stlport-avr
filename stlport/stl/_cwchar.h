@@ -228,13 +228,13 @@ using _STLP_VENDOR_CSTD::wcsstr;
 using _STLP_VENDOR_CSTD::wmemchr;
 
 #        if !defined (_STLP_WCHAR_BORLAND_EXCLUDE)
-#          if !defined (__DMC__)
 #            if !defined (_STLP_WCE_NET)
 using _STLP_VENDOR_CSTD::wctob;
 #            endif
+#          if !defined (__DMC__)
 using _STLP_VENDOR_CSTD::wmemcmp;
-#          endif
 using _STLP_VENDOR_CSTD::wmemmove;
+#          endif
 using _STLP_VENDOR_CSTD::wprintf;
 using _STLP_VENDOR_CSTD::wscanf;
 #        endif
@@ -250,6 +250,13 @@ inline wchar_t* wmemcpy(wchar_t* __wdst, const wchar_t* __wsrc, size_t __n)
 { return _STLP_wmemcpy(__wdst, __wsrc, __n); }
 inline wchar_t* wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)
 { return _STLP_wmemset(__wdst, __wc, __n); }
+#        elif defined (__DMC__)
+inline wchar_t* wmemcpy(wchar_t* __RESTRICT __wdst, const wchar_t* __RESTRICT __wsrc, size_t __n)
+{ return __STATIC_CAST(wchar_t*, memcpy(__wdst, __wsrc, __n * sizeof(wchar_t))); }
+inline wchar_t* wmemmove(wchar_t* __RESTRICT __wdst, const wchar_t * __RESTRICT __wc, size_t __n)
+{ return __STATIC_CAST(wchar_t*, memmove(__wdst, __wc, __n * sizeof(wchar_t))); }
+inline wchar_t* wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)
+{ for (size_t i = 0; i < __n; i++) __wdst[i] = __wc; return __wdst; }
 #        else
 using _STLP_VENDOR_CSTD::wmemcpy;
 using _STLP_VENDOR_CSTD::wmemset;

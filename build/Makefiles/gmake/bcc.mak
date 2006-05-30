@@ -57,7 +57,7 @@ stldbg-shared : RCFLAGS += -dBUILD=stld -dBUILD_INFOS="-R -v -y -D_DEBUG -D_STLP
 RC_OUTPUT_OPTION = -fo$@
 
 COMPILE.rc = ${RC} ${RCFLAGS}
-LINK.cc = ilink32 $(LDFLAGS)
+LINK.cc = ilink32 $(subst /,\,$(LDFLAGS))
 
 LDFLAGS += -ap -D -Gn -Gi
 
@@ -134,6 +134,10 @@ dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 endif
 endif
+
+# map output option (see build/Makefiles/gmake/dmc.mak)
+
+MAP_OUTPUT_OPTION = 
 
 # dependency output parser (dependencies collector)
 

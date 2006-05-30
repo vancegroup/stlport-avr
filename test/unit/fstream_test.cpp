@@ -21,7 +21,8 @@ using namespace std;
 #  if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO) && !defined (_STLP_NO_MEMBER_TEMPLATES) && \
                             !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
                               (defined (__GNUC__) && (__GNUC__ < 3)) || \
-                              (defined (__SUNPRO_CC)))
+                              (defined (__SUNPRO_CC)) || \
+                              (defined (__DMC__)))
 #    define DO_CUSTOM_FACET_TEST
 #  endif
 
@@ -39,7 +40,11 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(tellg);
   CPPUNIT_TEST(buf);
   CPPUNIT_TEST(rdbuf);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(streambuf_output);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(win32_file_format);
 #  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);

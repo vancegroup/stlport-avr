@@ -147,6 +147,7 @@ locale::facet* _Locale_impl::insert(locale::facet *f, size_t index) {
   return f;
 }
 
+#if !defined (__DMC__)
 _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>* ct)
 { return _Locale_get_ctype_hint(ct->_M_ctype); }
 _Locale_name_hint* _Locale_extract_hint(numpunct_byname<char>* punct)
@@ -157,6 +158,7 @@ _Locale_name_hint* _Locale_extract_hint(collate_byname<char>* coll)
 { return _Locale_get_collate_hint(coll->_M_collate); }
 _Locale_name_hint* _Locale_extract_hint(moneypunct_byname<char, false>* money)
 { return _Locale_get_monetary_hint(money->_M_monetary); }
+#endif
 
 //
 // <locale> content which is dependent on the name
@@ -201,7 +203,9 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
     _STLP_TRY {
       ctype_byname<char> *ctbn = new ctype_byname<char>(pname, 0, hint);
       ct   = ctbn;
+#if !defined (__DMC__)
       if (hint == 0) hint = _Locale_extract_hint(ctbn);
+#endif
 #ifndef _STLP_NO_MBSTATE_T
       cvt  = new codecvt_byname<char, char, mbstate_t>(pname);
 #endif
@@ -270,7 +274,9 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
     _STLP_TRY {
       numpunct_byname<char> *punctbn = new numpunct_byname<char>(pname, 0, hint);
       punct  = punctbn;
+#if !defined (__DMC__)
       if (hint == 0) hint = _Locale_extract_hint(punctbn);
+#endif
       get    = new num_get<char, istreambuf_iterator<char, char_traits<char> > >;
       put    = new num_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 #ifndef _STLP_NO_WCHAR_T
@@ -328,7 +334,9 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
       time_get_byname<char, istreambuf_iterator<char, char_traits<char> > > *getbn = 
         new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(pname, 0, hint);
       get  = getbn;
+#if !defined (__DMC__)
       if (hint == 0) hint = _Locale_extract_hint(getbn);
+#endif
       put  = new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(pname, 0, hint);
 #ifndef _STLP_NO_WCHAR_T
       wget = new time_get_byname<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(pname, 0, hint);
@@ -372,7 +380,9 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* nam, _Locale_
     _STLP_TRY {
       collate_byname<char> *colbn = new collate_byname<char>(nam, 0, hint);
       col   = colbn;
+#if !defined (__DMC__)
       if (hint == 0) hint = _Locale_extract_hint(colbn);
+#endif
 #ifndef _STLP_NO_WCHAR_T
       wcol  = new collate_byname<wchar_t>(nam, 0, hint);
 #endif
@@ -425,7 +435,9 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     _STLP_TRY {
       moneypunct_byname<char, false>* punctbn = new moneypunct_byname<char, false>(pname, 0, hint);
       punct   = punctbn;
+#if !defined (__DMC__)
       if (hint == 0) hint = _Locale_extract_hint(punctbn);
+#endif
       ipunct  = new moneypunct_byname<char, true>(pname, 0, hint);
       get     = new money_get<char, istreambuf_iterator<char, char_traits<char> > >;
       put     = new money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
