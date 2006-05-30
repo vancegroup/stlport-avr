@@ -114,7 +114,7 @@ inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIt
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const __true_type& /*TrivialUCopy*/) {
+                                const __true_type& /*TrivialUCopy*/) {
   // we know they all pointers, so this cast is OK
   //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
   return (_OutputIter)__ucopy_trivial(__first, __last, __result);
@@ -317,27 +317,39 @@ inline _ForwardIter __uninitialized_fill_n(_ForwardIter __first, _Size __n, cons
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp&,
-                                const __true_type& /*_TrivialInit*/) {
-  advance(__first, __n);
-  return __first;
+inline _ForwardIter __ufill_n(_ForwardIter __first, _Size __n, const _Tp& __x,
+                              const random_access_iterator_tag &)
+{ return __uninitialized_fill_n(__first, __n, __x); }
+
+/* __uninitialized_init is an internal algo to init a range with a value
+ * built using default constructor. It is only called with pointer as
+ * iterator.
+ */
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
+                                    const __false_type& /*_HasDefaultZero*/)
+{ return __uninitialized_fill_n(__first, __n, __val); }
+
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
+                                    const __true_type& /*_HasDefaultZero*/) {
+  memset((unsigned char*)__first, 0, __n * sizeof(_Tp));
+  return __first + __n;
 }
+
+template <class _ForwardIter, class _Size, class _Tp>
+inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp&,
+                                const __true_type& /*_TrivialInit*/)
+{ return __first + __n; }
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
                                 const __false_type& /*_TrivialInit*/)
-{ return __uninitialized_fill_n(__first, __n, __val); }
+{ return __uinit_aux_aux(__first, __n, __val, _HasDefaultZeroValue(__first)._Answer()); }
 
 template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __uninitialized_init(_ForwardIter __first, _Size __n, const _Tp& __val) {
-  return __uinit_aux(__first, __n, __val,
-                     _UseTrivialInit(_STLP_VALUE_TYPE(__first, _ForwardIter))._Answer());
-}
-
-template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __ufill_n(_ForwardIter __first, _Size __n, const _Tp& __x,
-                              const random_access_iterator_tag &)
-{ return __uninitialized_fill_n(__first, __n, __x); }
+inline _ForwardIter __uninitialized_init(_ForwardIter __first, _Size __n, const _Tp& __val)
+{ return __uinit_aux(__first, __n, __val, _UseTrivialInit(__first)._Answer()); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
