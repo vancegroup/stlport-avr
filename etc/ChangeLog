@@ -3,7 +3,7 @@
 	* stlport/stl/config/_evc.h: Patch from Michael Fink to add ptrdiff_t
 	definition and forbid use of _STLP_DEBUG mode for evc 3/4 on ARM.
 
-	* build: Ulrich Echkardt patch for Microsoft Visual Studio 2005 for
+	* build: Ulrich Eckhardt patch for Microsoft Visual Studio 2005 for
 	Embedded C++ portage.
 
 2006-05-30  Francois Dumont  <dums@stlport...>
@@ -32,10 +32,10 @@
 
 	* DMC patch from Eric Sanford
 
-	* stlport/stl/debug/_tree.h: Patch from Ulrich Echkardt to add missing
+	* stlport/stl/debug/_tree.h: Patch from Ulrich Eckhardt to add missing
 	count template method.
 
-	* src/dll_main.cpp: Patch from Ulrich Echkardt to fix strncpy
+	* src/dll_main.cpp: Patch from Ulrich Eckhardt to fix strncpy
 	usage.
 
 2006-05-23  Francois Dumont  <dums@stlport...>
@@ -68,11 +68,11 @@
 
 2006-05-19  Francois Dumont  <dums@stlport...>
 
-	* test/unit/uninitialized_test.cpp: Patch from Ulrich Echkardt
+	* test/unit/uninitialized_test.cpp: Patch from Ulrich Eckhardt
 	to replace vector instance in uninitialized_copy_test by static
 	array so that we are always working on pointers iterator.
 
-	* stlport/stl/_string_operators.h: Patch from Ulrich Echkardt to
+	* stlport/stl/_string_operators.h: Patch from Ulrich Eckhardt to
 	add missing != operators when using string template expression.
 
 	* stlport/stl/ctype.h, config/_evc.h, _msvc.h, _windows.h,
@@ -171,7 +171,7 @@
 	__type_traits modifications.
 
 	* stlport/stl/_uninitialized.h: Major code review proposed by
-	Ulrich Echkardt
+	Ulrich Eckhardt
 
 	* stlport/stl/_algobase.h, _deque.h, _deque.c, _vector.h, _vector.c,
 	_rope.h, _rope.c, _string.h, _string.c: Impact of previous point.
@@ -209,7 +209,7 @@
 2006-05-04  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: And information to the --lib-motif
-	option as advised by Ulrich Echkardt. Add option parameter and
+	option as advised by Ulrich Eckhardt. Add option parameter and
 	relation with _STLP_LIB_NAME_MOTIF.
 
 	* src/messsage_facets.h: Removed implementation of private copy
@@ -2766,7 +2766,7 @@
 
 	* src/complex.cpp, complex_trig.cpp, complex_exp.cpp: Removed code
 	duplication between float, double and long double version thanks to
-	some template functions. Thanks an Ulrich Echkardt idear.
+	some template functions. Thanks an Ulrich Eckhardt idear.
 
 	* stlport/cstdlib, stl/stdlib.h: Michael Fink patch to avoid setjmp.h
 	inclusion problem as stdlib.h contains a setjmp macro definition.
@@ -2803,7 +2803,7 @@
 2005-06-20  Francois Dumont  <dums@stlport...>
 
 	* stlport/config/stl_gcc.h: Fix gcc 3.4.4 detection under cygwin thanks
-	Ulrich Echkardt report.
+	Ulrich Eckhardt report.
 
 	* stlport/stl/c_locale.h: Fix _Locale_mask_t definition for Mingwin.
 
@@ -2812,7 +2812,7 @@
 
 	* src/complex_exp.cpp: Replaced complex log10 function static variables
 	with global constant, avoid multithreaded init problem. Thanks Ulrich
-	Echkardt report.
+	Eckhardt report.
 
 2005-06-17  Francois Dumont  <dums@stlport...>
 
