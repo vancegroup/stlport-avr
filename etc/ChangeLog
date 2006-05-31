@@ -1,3 +1,8 @@
+2006-05-31  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_evc.h: Patch from Michael Fink to add ptrdiff_t
+	definition and forbid use of _STLP_DEBUG mode for evc 3/4 on ARM.
+
 2006-05-30  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/type_traits.h: Rename _Is_Integer<_Tp>::_Integral and
