@@ -281,7 +281,7 @@ void TypeTraitsTest::manips()
   {
     base b;
     derived d;
-    const derived cd;
+    const derived cd = d;
     base *pb = &b;
     derived *pd = &d;
     derived const *pcd = pd;
@@ -433,7 +433,7 @@ void TypeTraitsTest::reference_type()
 #if defined (STLPORT)
 template <typename _Tp1, typename _Tp2>
 int are_both_pointer_type (_Tp1, _Tp2) {
-  return type_to_value(_BothPtrType<_Tp1, _Tp2>::_Ret());
+  return type_to_value(_BothPtrType<_Tp1, _Tp2>::_Answer());
 }
 #endif
 
