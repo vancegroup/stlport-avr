@@ -39,6 +39,12 @@
 #  define _DEBUG
 #endif
 
+// in evc3/4, on ARM, check that _STLP_DEBUG is not defined
+// the ARM compiler has a bug that prevents that debug mode from working
+#if _WIN32_WCE < 500 && defined(ARM) && defined(_STLP_DEBUG)
+#  error _STLP_DEBUG mode is not supported in evc3 and evc4 on the ARM platform!
+#endif
+
 // inherit all msvc6 options
 #include <stl/config/_msvc.h>
 
@@ -125,6 +131,12 @@
 #  define _STLP_NO_LOCALE_SUPPORT
 #  define _STLP_NO_TIME_SUPPORT
 
+// ptrdiff_t is not defined in evc4 headers
+#  ifndef _PTRDIFF_T_DEFINED
+   typedef int ptrdiff_t;
+#    define _PTRDIFF_T_DEFINED
+#  endif
+
 /*
  * Helper macros for including the native headers in cases where a file with
  * the same name also exists in the STLport include folder. The idea behind
@@ -164,7 +176,7 @@
 #        error Unknown MIPS SDK.
 #      endif
 /* MIPS itself is highly volatile and configurable as both big and little
- * endian, all Windows CE versions (at least until 4.2 for MIPS) run in 
+ * endian, all Windows CE versions (at least until 4.2 for MIPS) run in
  * little-endian configurations though. */
 #      define _STLP_LITTLE_ENDIAN
 #    elif defined (SHx)
