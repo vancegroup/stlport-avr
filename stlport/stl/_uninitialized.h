@@ -141,7 +141,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _InputIter, class _ForwardIter>
 inline _ForwardIter
 uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result)
-{ return _STLP_PRIV __ucopy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter> :: _Ret()); }
+{ return _STLP_PRIV __ucopy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter>::_Answer()); }
 
 inline char*
 uninitialized_copy(const char* __first, const char* __last, char* __result)
