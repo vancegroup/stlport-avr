@@ -1,8 +1,6 @@
 # Time-stamp: <04/04/30 23:36:48 ptr>
 # $Id$
 
-DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
-
 !if "$(TARGET_PROC)" == ""
 !error No target processor configured! Please rerun configure.bat!
 !endif
@@ -14,6 +12,16 @@ DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION)
 # All the batchfiles to setup the environment yield different
 # compilers which they put into CC.
 CXX = $(CC)
+
+DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
+
+# increase compiler memory in order to compile deeply nested template code
+OPT_STLDBG = $(OPT_STLDBG) /Zm800
+OPT_STLDBG_STATIC = $(OPT_STLDBG_STATIC) /Zm800
+
+# activate global (whole program) optimizations
+OPT_REL = $(OPT_REL) /Og
+OPT_STATIC_REL = $(OPT_STATIC_REL) /Og
 
 !if "$(TARGET_PROC)" == "arm"
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_"

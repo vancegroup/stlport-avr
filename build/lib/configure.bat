@@ -103,6 +103,7 @@ echo    msvc8    Microsoft Visual C++ 2005
 echo    icl      Intel C++ Compiler
 echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
 echo    evc4     Microsoft eMbedded Visual C++ .NET (*)
+echo    evc8     Microsoft Visual C++ 2005 compiling for CE
 echo    gcc      GNU C++ Compiler (MinGW package)
 echo    dmc      Digital Mars Compiler
 echo    bcc      Borland C++ Compiler
@@ -154,7 +155,7 @@ echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
 echo.
 echo "--lib-motif <motif>"
 echo   Use this option to customize the generated library name. The motif will be used
-echo   in the last place before version information, ex:
+echo   in the last place before version information, separated by an underscore, ex:
 echo   stlportd_MOTIF.5.0.lib
 echo   stlportstld_static_MOTIF.5.1.lib
 echo   Do not forget to define _STLP_LIB_NAME_MOTIF macro in STLport configuration file
@@ -179,6 +180,7 @@ if "%2" == "icl"   goto oc_icl
 
 if "%2" == "evc3" goto oc_evc3
 if "%2" == "evc4" goto oc_evc4
+if "%2" == "evc8" goto oc_evc8
 
 if "%2" == "gcc" goto oc_gcc
 if "%2" == "dmc" goto oc_dmc
@@ -206,7 +208,7 @@ set SELECTED_COMPILER_VERSION=71
 goto oc_msvc
 
 :oc_msvc8
-echo Setting compiler: Microsoft Visual C++ .NET 2005 (beta)
+echo Setting compiler: Microsoft Visual C++ .NET 2005
 echo COMPILER_NAME=vc8 >> ..\Makefiles\config.mak
 set SELECTED_COMPILER_VERSION=80
 goto oc_msvc
@@ -228,6 +230,7 @@ goto oc_end
 :oc_evc3
 echo Setting compiler: Microsoft eMbedded Visual C++ 3
 echo COMPILER_NAME=evc3 >> ..\Makefiles\config.mak
+rem TODO: branch on OSVERSION like below?
 echo CEVERSION=300 >> ..\Makefiles\config.mak
 set SELECTED_COMPILER_VERSION=3
 goto oc_evc
@@ -235,9 +238,42 @@ goto oc_evc
 :oc_evc4
 echo Setting compiler: Microsoft eMbedded Visual C++ .NET
 echo COMPILER_NAME=evc4 >> ..\Makefiles\config.mak
-echo CEVERSION=420 >> ..\Makefiles\config.mak
+if "%OSVERSION%"=="" (
+    echo OSVERSION not set, assuming target is CE 4.2
+    echo CEVERSION=420 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE400" (
+    echo CEVERSION=400 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE420" (
+    echo CEVERSION=420 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE500" (
+    echo CEVERSION=500 >> ..\Makefiles\config.mak
+) else (
+    echo Unknown value for OSVERSION.
+    exit /b 1
+)
 set SELECTED_COMPILER_VERSION=4
 goto oc_evc
+
+:oc_evc8
+echo Setting compiler: Microsoft Visual C++ .NET 2005 for Windows CE
+echo COMPILER_NAME=evc8 >> ..\Makefiles\config.mak
+set SELECTED_COMPILER_VERSION=80
+if "%OSVERSION%"=="" (
+    echo OSVERSION not set, assuming target is CE 5.0
+    echo CEVERSION=500 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE400" (
+    echo CEVERSION=400 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE420" (
+    echo CEVERSION=420 >> ..\Makefiles\config.mak
+) else if "%OSVERSION%"=="WCE500" (
+    echo CEVERSION=500 >> ..\Makefiles\config.mak
+) else (
+    echo Unknown value for OSVERSION.
+    exit /b 1
+)
+set STLPORT_COMPILE_COMMAND=nmake /fevc.mak
+set SELECTED_COMPILER=msvc
+goto proc
 
 :oc_evc
 set STLPORT_COMPILE_COMMAND=nmake /fevc.mak
@@ -285,32 +321,18 @@ REM *
 REM **************************************************************************
 :proc
 
-if "%CC%" == "" goto pr_err
-if "%TARGETCPU%" == "" goto pr_err
-
-if "%CC%" == "clarm.exe" goto prc_arm
-if "%CC%" == "cl.exe" goto prc_x86
-if "%CC%" == "clmips.exe" goto prc_mips
-if "%CC%" == "shcl.exe" goto prc_shx
-if "%CC%" == "clsh.exe" goto prc_shx
-
-:prc_arm
 if "%TARGETCPU%" == "ARM" goto pr_arm
 if "%TARGETCPU%" == "ARMV4" goto pr_arm
 if "%TARGETCPU%" == "ARMV4I" goto pr_arm
 if "%TARGETCPU%" == "ARMV4T" goto pr_arm
-goto pr_err
 
-:prc_x86
 if "%TARGETCPU%" == "X86" goto pr_x86
-REM Typo from evc3 and/or PocketPC 2002 SDK reported here
+REM Type from evc3 and/or PocketPC 2002 SDK reported here 
 REM to correctly check the platform:
 if "%TARGETCPU%" == "X86EMnset CFG=none" goto pr_x86
 if "%TARGETCPU%" == "x86" goto pr_x86
 if "%TARGETCPU%" == "emulator" goto pr_emul
-goto pr_err
 
-:prc_mips
 if "%TARGETCPU%" == "R4100" goto pr_mips
 if "%TARGETCPU%" == "R4111" goto pr_mips
 if "%TARGETCPU%" == "R4300" goto pr_mips
@@ -320,12 +342,8 @@ if "%TARGETCPU%" == "MIPSII_FP" goto pr_mips
 if "%TARGETCPU%" == "MIPSIV" goto pr_mips
 if "%TARGETCPU%" == "MIPSIV_FP" goto pr_mips
 
-goto pr_err
-
-:prc_shx
 if "%TARGETCPU%" == "SH3" goto pr_sh3
 if "%TARGETCPU%" == "SH4" goto pr_sh4
-goto pr_err
 
 :pr_err
 echo Unknown target CPU: %TARGETCPU%
@@ -334,6 +352,7 @@ goto pr_end
 :pr_arm
 echo Target processor: ARM
 echo TARGET_PROC=arm >> ..\Makefiles\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
 goto pr_end
 
 :pr_x86
@@ -349,22 +368,10 @@ goto pr_end
 
 :pr_mips
 echo Target processor: MIPS
-REM note, MIPSII (and all evc4 MIPS processors) are in the CE 4.0 SDK, so the
-REM version gets redefined here
-if "%SELECTED_COMPILER_VERSION%" == "4" echo CEVERSION=400 >> ..\Makefiles\config.mak
 echo TARGET_PROC=mips >> ..\Makefiles\config.mak
 
-if "%TARGETCPU%" == "MIPS16"    echo DEFS_COMMON=/DMIPS16 >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII"    echo DEFS_COMMON=/DMIPSII >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII_FP" echo DEFS_COMMON=/DMIPSII_FP >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV"    echo DEFS_COMMON=/DMIPSIV >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV_FP" echo DEFS_COMMON=/DMIPSIV_FP >> ..\Makefiles\config.mak
-
-if "%TARGETCPU%" == "MIPS16"    echo TARGET_PROC_SUBTYPE=MIPS16 >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII"    echo TARGET_PROC_SUBTYPE=MIPSII >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSII_FP" echo TARGET_PROC_SUBTYPE=MIPSII_FP >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV"    echo TARGET_PROC_SUBTYPE=MIPSIV >> ..\Makefiles\config.mak
-if "%TARGETCPU%" == "MIPSIV_FP" echo TARGET_PROC_SUBTYPE=MIPSIV_FP >> ..\Makefiles\config.mak
+echo DEFS_COMMON=/D%TARGETCPU% >> ..\Makefiles\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
 
 goto pr_end
 

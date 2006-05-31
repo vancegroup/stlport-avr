@@ -142,6 +142,16 @@ RES_MARKED=$(RES_MARKED:@=obj\evc3-sh4\@)
 !error No target processor configured!
 !endif
 
+!elseif "$(COMPILER_NAME)" == "evc8"
+!if "$(TARGET_PROC)" == ""
+!error No target processor configured!
+!elseif "$(TARGET_PROC)" == "arm"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc8-arm\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc8-arm\@)
+!else
+!error Unknown target processor configured!
+!endif
+
 !elseif "$(COMPILER_NAME)" == "vc6"
 OBJ_MARKED=$(OBJ_MARKED:@=obj\vc6\@)
 RES_MARKED=$(RES_MARKED:@=obj\vc6\@)

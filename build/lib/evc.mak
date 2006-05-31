@@ -9,8 +9,9 @@
 !endif
 
 !if ("$(COMPILER_NAME)" != "evc3" && \
-     "$(COMPILER_NAME)" != "evc4")
-!error You pick the wrong makefile, please rerun configure script and follow the instructions.
+     "$(COMPILER_NAME)" != "evc4" && \
+     "$(COMPILER_NAME)" != "evc8")
+!error You picked the wrong makefile, please rerun configure script and follow the instructions.
 !endif
 
 SRCROOT=..
@@ -33,7 +34,5 @@ LDSEARCH=$(LDSEARCH) /LIBPATH:$(STLPORT_LIB_DIR)
 RC_FLAGS_REL = /I "$(STLPORT_INCLUDE_DIR)" /D "COMP=$(COMPILER_NAME)"
 RC_FLAGS_DBG = /I "$(STLPORT_INCLUDE_DIR)" /D "COMP=$(COMPILER_NAME)"
 RC_FLAGS_STLDBG = /I "$(STLPORT_INCLUDE_DIR)" /D "COMP=$(COMPILER_NAME)"
-OPT_STLDBG = /Zm800
-OPT_STLDBG_STATIC = /Zm800
 
 !include $(SRCROOT)/Makefiles/nmake/top.mak
