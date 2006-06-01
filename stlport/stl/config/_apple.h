@@ -1,7 +1,8 @@
-// STLport configuration file
-// It is internal STLport header - DO NOT include it directly
+/* STLport configuration file
+ * It is internal STLport header - DO NOT include it directly
+ */
 
-// common configuration settings for Apple MPW MrCpp / SCpp
+/* common configuration settings for Apple MPW MrCpp / SCpp */
 
 #if defined(__MRC__) && __MRC__ < 0x500
 # error Apple's MPW MrCpp v.5.0.0 or better compiler required
@@ -10,8 +11,13 @@
 # error Apple's MPW SCpp v.8.9.0 or better compiler required
 #endif
 
+/* TODO: Check that this config is necessary for all compiler versions.
+ * It is here for historical reasons for the moment.
+ */
+#define _STLP_NO_CONTAINERS_EXTENSION
+
 #ifdef qMacApp
-# ifndef __CONDITIONALMACROS__ // skip including ConditionalMacros_AC.h if ConditionalMacros.h is already included
+# ifndef __CONDITIONALMACROS__ /* skip including ConditionalMacros_AC.h if ConditionalMacros.h is already included */
 # include <CoreSwitches_AC.h>
 # include <ConditionalMacros_AC.h>
 # include <Types_AC.h>

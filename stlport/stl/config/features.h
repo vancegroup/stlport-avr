@@ -152,6 +152,17 @@
 #  define _STLP_USE_TEMPLATE_EXPRESSION
 #endif
 
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && \
+   !defined (_STLP_NO_CONTAINERS_EXTENSION) && !defined (_STLP_USE_CONTAINERS_EXTENSION)
+#  define _STLP_USE_CONTAINERS_EXTENSION
+#endif
+
+#if defined (_STLP_USE_CONTAINERS_EXTENSION)
+#  define _STLP_TEMPLATE_FOR_CONT_EXT template <class _KT>
+#else
+#  define _STLP_TEMPLATE_FOR_CONT_EXT
+#endif
+
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS) && \
     (defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
 #  error "Sorry but according the STLport settings your compiler can not support the pointer specialization feature."
@@ -731,6 +742,14 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_TEMPLATE template
 #else
 #  define _STLP_TEMPLATE
+#endif
+
+#if defined (_STLP_USE_CONTAINERS_EXTENSION)
+#  define _STLP_KEY_TYPE_FOR_CONT_EXT(type)
+#  define _STLP_TEMPLATE_FOR_CONT_EXT template <class _KT>
+#else
+#  define _STLP_KEY_TYPE_FOR_CONT_EXT(type) typedef type _KT;
+#  define _STLP_TEMPLATE_FOR_CONT_EXT
 #endif
 
 #if defined (_STLP_NEED_EXPLICIT) && !defined (explicit)
