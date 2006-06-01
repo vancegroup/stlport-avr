@@ -256,44 +256,6 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
-pair< __iterator__ , __iterator__ >
-hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::equal_range(const key_type& __key) {
-  typedef pair<iterator, iterator> _Pii;
-  const size_type __n = _M_bkt_num_key(__key);
-
-  for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
-       __first != __last; ++__first) {
-    if (_M_equals(_M_get_key(*__first), __key)) {
-      _ElemsIte __cur(__first);
-      for (++__cur; (__cur != __last) && _M_equals(_M_get_key(*__cur), __key); ++__cur);
-      return _Pii(__first, __cur);
-    }
-  }
-  return _Pii(end(), end());
-}
-
-template <class _Val, class _Key, class _HF,
-          class _Traits, class _ExK, class _EqK, class _All>
-pair< __const_iterator__ , __const_iterator__ >
-hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::equal_range(const key_type& __key) const {
-  typedef pair<const_iterator, const_iterator> _Pii;
-  const size_type __n = _M_bkt_num_key(__key);
-
-  for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
-       __first != __last; ++__first) {
-    if (_M_equals(_M_get_key(*__first), __key)) {
-      _ElemsIte __cur(__first);
-      for (++__cur; (__cur != __last) && _M_equals(_M_get_key(*__cur), __key); ++__cur);
-      return _Pii(__first, __cur);
-    }
-  }
-  return _Pii(end(), end());
-}
-
-template <class _Val, class _Key, class _HF,
-          class _Traits, class _ExK, class _EqK, class _All>
 __size_type__
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::erase(const key_type& __key) {

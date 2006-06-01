@@ -60,10 +60,6 @@
  * unordered_set, unordered_map, unordered_multiset, unordered_multimap.
  */
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)  && !(defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)))
-#  define _STLP_DEFINE_HASH_EXTENSION
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -277,6 +273,7 @@ private:
   _BucketVector         _M_buckets;
   size_type             _M_num_elements;
   float                 _M_max_load_factor;
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
   typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _NonConstTraits> iterator;
@@ -422,14 +419,13 @@ public:
 public:
   //The number of buckets is size() - 1 because the last bucket always contains
   //_M_elems.end() to make algo easier to implement.
-  size_type bucket_count() const
-  { return _M_buckets.size() - 1; }
-  size_type max_bucket_count() const
-  { return _STLP_PRIV _Stl_prime_type::_S_max_nb_buckets(); }
+  size_type bucket_count() const { return _M_buckets.size() - 1; }
+  size_type max_bucket_count() const { return _STLP_PRIV _Stl_prime_type::_S_max_nb_buckets(); }
   size_type elems_in_bucket(size_type __bucket) const
   { return distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
-  size_type bucket(const key_type& __k) const
-  { return _M_bkt_num_key(__k); }
+
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type bucket(const _KT& __k) const { return _M_bkt_num_key(__k); }
 
   // hash policy
   float load_factor() const { return (float)size() / (float)bucket_count(); }
@@ -526,13 +522,8 @@ public:
   //reference find_or_insert(const value_type& __obj);
 
 private:
-#if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT>
-  _ElemsIte _M_find(const _KT& __key) const
-#else
-  _ElemsIte _M_find(const key_type& __key) const
-#endif
-  {
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  _ElemsIte _M_find(const _KT& __key) const {
     size_type __n = _M_bkt_num_key(__key);
     _ElemsIte __first(_M_buckets[__n]);
     _ElemsIte __last(_M_buckets[__n + 1]);
@@ -544,23 +535,13 @@ private:
   }
 
 public:
-#if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT>
-  iterator find(const _KT& __key)
-#else
-  iterator find(const key_type& __key)
-#endif
-  { return _M_find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key) { return _M_find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const { return _M_find(__key); }
 
-#if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT>
-  const_iterator find(const _KT& __key) const
-#else
-  const_iterator find(const key_type& __key) const
-#endif
-  { return _M_find(__key); }
-
-  size_type count(const key_type& __key) const {
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const {
     const size_type __n = _M_bkt_num_key(__key);
 
     _ElemsIte __cur(_M_buckets[__n]);
@@ -577,11 +558,40 @@ public:
     return 0;
   }
 
-  pair<iterator, iterator> equal_range(const key_type& __key);
-  pair<const_iterator, const_iterator> equal_range(const key_type& __key) const;
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator> equal_range(const _KT& __key) {
+    typedef pair<iterator, iterator> _Pii;
+    const size_type __n = _M_bkt_num_key(__key);
+
+    for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
+         __first != __last; ++__first) {
+      if (_M_equals(_M_get_key(*__first), __key)) {
+        _ElemsIte __cur(__first);
+        for (++__cur; (__cur != __last) && _M_equals(_M_get_key(*__cur), __key); ++__cur);
+        return _Pii(__first, __cur);
+      }
+    }
+    return _Pii(end(), end());
+  }
+
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<const_iterator, const_iterator> equal_range(const _KT& __key) const {
+    typedef pair<const_iterator, const_iterator> _Pii;
+    const size_type __n = _M_bkt_num_key(__key);
+
+    for (_ElemsIte __first(_M_buckets[__n]), __last(_M_buckets[__n + 1]);
+         __first != __last; ++__first) {
+      if (_M_equals(_M_get_key(*__first), __key)) {
+        _ElemsIte __cur(__first);
+        for (++__cur; (__cur != __last) && _M_equals(_M_get_key(*__cur), __key); ++__cur);
+        return _Pii(__first, __cur);
+      }
+    }
+    return _Pii(end(), end());
+  }
 
   size_type erase(const key_type& __key);
-  void erase(const_iterator __it) ;
+  void erase(const_iterator __it);
   void erase(const_iterator __first, const_iterator __last);
 
 private:
@@ -612,23 +622,15 @@ private:
     _M_buckets.assign(__n_buckets, __STATIC_CAST(_BucketType*, 0));
   }
 
-#if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT>
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type _M_bkt_num_key(const _KT& __key) const
-#else
-  size_type _M_bkt_num_key(const key_type& __key) const
-#endif
   { return _M_bkt_num_key(__key, bucket_count()); }
 
   size_type _M_bkt_num(const value_type& __obj) const
   { return _M_bkt_num_key(_M_get_key(__obj)); }
 
-#if defined (_STLP_DEFINE_HASH_EXTENSION)
-  template <class _KT>
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type _M_bkt_num_key(const _KT& __key, size_type __n) const
-#else
-  size_type _M_bkt_num_key(const key_type& __key, size_type __n) const
-#endif
 #if defined (__BORLANDC__)
   { return _M_hash.operator()(__key) % __n; }
 #else
@@ -647,8 +649,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 _STLP_END_NAMESPACE
-
-#undef _STLP_DEFINE_HASH_EXTENSION
 
 #if !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/_hashtable.c>

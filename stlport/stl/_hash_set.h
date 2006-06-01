@@ -77,6 +77,7 @@ public:
 
 private:
   _Ht _M_ht;
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
   hash_set()
@@ -187,30 +188,23 @@ public:
   pair<iterator, bool> insert_noresize(const value_type& __obj)
   { return _M_ht.insert_unique_noresize(__obj); }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
-  iterator find(const _KT& __key)
-#else
-  iterator find(const key_type& __key)
-#endif
-  { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
-  const_iterator find(const _KT& __key) const
-#else
-  const_iterator find(const key_type& __key) const
-#endif
-  { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const { return _M_ht.count(__key); }
 
-  size_type count(const key_type& __key) const { return _M_ht.count(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator> equal_range(const _KT& __key)
+  { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<const_iterator, const_iterator> equal_range(const _KT& __key) const
+  { return _M_ht.equal_range(__key); }
 
-  pair<iterator, iterator> equal_range(const key_type& __key)
-    { return _M_ht.equal_range(__key); }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
-    { return _M_ht.equal_range(__key); }
-
-  size_type erase(const key_type& __key) {return _M_ht.erase(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type erase(const _KT& __key) {return _M_ht.erase(__key); }
   void erase(iterator __it) { _M_ht.erase(__it); }
   void erase(iterator __f, iterator __l) { _M_ht.erase(__f, __l); }
   void clear() { _M_ht.clear(); }
@@ -220,7 +214,7 @@ public:
   size_type bucket_count() const { return _M_ht.bucket_count(); }
   size_type max_bucket_count() const { return _M_ht.max_bucket_count(); }
   size_type elems_in_bucket(size_type __n) const
-    { return _M_ht.elems_in_bucket(__n); }
+  { return _M_ht.elems_in_bucket(__n); }
 };
 
 //Specific iterator traits creation
@@ -264,6 +258,7 @@ public:
 
 private:
   _Ht _M_ht;
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
   hash_multiset()
@@ -355,46 +350,38 @@ public:
   const_iterator end() const { return _M_ht.end(); }
 
 public:
-  iterator insert(const value_type& __obj)
-    { return _M_ht.insert_equal(__obj); }
+  iterator insert(const value_type& __obj) { return _M_ht.insert_equal(__obj); }
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __f, _InputIterator __l)
-    { _M_ht.insert_equal(__f,__l); }
+  { _M_ht.insert_equal(__f,__l); }
 #else
-  void insert(const value_type* __f, const value_type* __l) {
-    _M_ht.insert_equal(__f,__l);
-  }
+  void insert(const value_type* __f, const value_type* __l)
+  { _M_ht.insert_equal(__f,__l); }
   void insert(const_iterator __f, const_iterator __l)
-    { _M_ht.insert_equal(__f, __l); }
+  { _M_ht.insert_equal(__f, __l); }
 #endif /*_STLP_MEMBER_TEMPLATES */
   iterator insert_noresize(const value_type& __obj)
-    { return _M_ht.insert_equal_noresize(__obj); }
+  { return _M_ht.insert_equal_noresize(__obj); }
 
-#if defined(_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
-  iterator find(const _KT& __key)
-#else
-  iterator find(const key_type& __key)
-#endif
-  { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
 
-#if defined(_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS)
-  template <class _KT>
-  const_iterator find(const _KT& __key) const
-#else
-  const_iterator find(const key_type& __key) const
-#endif
-  { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 
-  size_type count(const key_type& __key) const { return _M_ht.count(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const { return _M_ht.count(__key); }
 
-  pair<iterator, iterator> equal_range(const key_type& __key)
-    { return _M_ht.equal_range(__key); }
-  pair<const_iterator, const_iterator> equal_range(const key_type& __key) const
-    { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator> equal_range(const _KT& __key)
+  { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<const_iterator, const_iterator> equal_range(const _KT& __key) const
+  { return _M_ht.equal_range(__key); }
 
-  size_type erase(const key_type& __key) {return _M_ht.erase(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type erase(const _KT& __key) {return _M_ht.erase(__key); }
   void erase(iterator __it) { _M_ht.erase(__it); }
   void erase(iterator __f, iterator __l) { _M_ht.erase(__f, __l); }
   void clear() { _M_ht.clear(); }

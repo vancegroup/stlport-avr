@@ -94,6 +94,8 @@ private:
   void _Invalidate_iterators(const const_iterator& __first, const const_iterator& __last)
   { _STLP_PRIV __invalidate_range(&_M_iter_list, __first, __last); }
 
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
+
 public:
   allocator_type get_allocator() const { return _M_non_dbg_impl.get_allocator(); }
 
@@ -221,21 +223,26 @@ public:
   }
 #endif /*_STLP_MEMBER_TEMPLATES */
 
-  iterator find(const key_type& __key)
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__key)); }
-  const_iterator find(const key_type& __key) const
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__key)); }
 
-  size_type count(const key_type& __key) const { return _M_non_dbg_impl.count(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const { return _M_non_dbg_impl.count(__key); }
 
-  pair<iterator, iterator> equal_range(const key_type& __key) {
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator> equal_range(const _KT& __key) {
     pair<_Base_iterator, _Base_iterator> __res =
       _M_non_dbg_impl.equal_range(__key);
     return pair<iterator,iterator> (iterator(&_M_iter_list,__res.first),
                                     iterator(&_M_iter_list,__res.second));
   }
 
-  pair<const_iterator, const_iterator> equal_range(const key_type& __key) const {
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<const_iterator, const_iterator> equal_range(const _KT& __key) const {
     pair <_Base_const_iterator, _Base_const_iterator> __res =
       _M_non_dbg_impl.equal_range(__key);
     return pair<const_iterator,const_iterator> (const_iterator(&_M_iter_list,__res.first),
@@ -279,7 +286,8 @@ public:
     _STLP_VERBOSE_ASSERT((__n < bucket_count()), _StlMsg_INVALID_ARGUMENT)
     return _M_non_dbg_impl.elems_in_bucket(__n);
   }
-  size_type bucket(const key_type& __k) const { return _M_non_dbg_impl.bucket(__k); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type bucket(const _KT& __k) const { return _M_non_dbg_impl.bucket(__k); }
 
   float load_factor() const { return _M_non_dbg_impl.load_factor(); }
   float max_load_factor() const { return _M_non_dbg_impl.max_load_factor(); }

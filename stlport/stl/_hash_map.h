@@ -91,6 +91,7 @@ public:
 
 private:
   _Ht _M_ht;
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 public:
   hash_map() : _M_ht(100, hasher(), key_equal(), allocator_type()) {}
   explicit hash_map(size_type __n)
@@ -179,40 +180,45 @@ public:
 
 public:
   pair<iterator,bool> insert(const value_type& __obj)
-    { return _M_ht.insert_unique(__obj); }
+  { return _M_ht.insert_unique(__obj); }
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(_InputIterator __f, _InputIterator __l)
-    { _M_ht.insert_unique(__f,__l); }
+  { _M_ht.insert_unique(__f,__l); }
 #else
-  void insert(const value_type* __f, const value_type* __l) {
-    _M_ht.insert_unique(__f,__l);
-  }
+  void insert(const value_type* __f, const value_type* __l)
+  { _M_ht.insert_unique(__f,__l); }
   void insert(const_iterator __f, const_iterator __l)
-    { _M_ht.insert_unique(__f, __l); }
+  { _M_ht.insert_unique(__f, __l); }
 #endif /*_STLP_MEMBER_TEMPLATES */
   pair<iterator,bool> insert_noresize(const value_type& __obj)
-    { return _M_ht.insert_unique_noresize(__obj); }
+  { return _M_ht.insert_unique_noresize(__obj); }
 
-  iterator find(const key_type& __key) { return _M_ht.find(__key); }
-  const_iterator find(const key_type& __key) const { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 
-  _Tp& operator[](const key_type& __key) {
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  _Tp& operator[](const _KT& __key) {
     iterator __it = _M_ht.find(__key);
     return (__it == _M_ht.end() ?
       _M_ht._M_insert(value_type(__key, _STLP_DEFAULT_CONSTRUCTED(_Tp))).second :
       (*__it).second );
   }
 
-  size_type count(const key_type& __key) const { return _M_ht.count(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const { return _M_ht.count(__key); }
 
-  pair<iterator, iterator> equal_range(const key_type& __key)
-    { return _M_ht.equal_range(__key); }
-  pair<const_iterator, const_iterator>
-  equal_range(const key_type& __key) const
-    { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator> equal_range(const _KT& __key)
+  { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<const_iterator, const_iterator> equal_range(const _KT& __key) const
+  { return _M_ht.equal_range(__key); }
 
-  size_type erase(const key_type& __key) {return _M_ht.erase(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type erase(const _KT& __key) {return _M_ht.erase(__key); }
   void erase(iterator __it) { _M_ht.erase(__it); }
   void erase(iterator __f, iterator __l) { _M_ht.erase(__f, __l); }
   void clear() { _M_ht.clear(); }
@@ -275,6 +281,7 @@ public:
 
 private:
   _Ht _M_ht;
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 public:
   hash_multimap() : _M_ht(100, hasher(), key_equal(), allocator_type()) {}
   explicit hash_multimap(size_type __n)
@@ -379,19 +386,23 @@ public:
   iterator insert_noresize(const value_type& __obj)
     { return _M_ht.insert_equal_noresize(__obj); }
 
-  iterator find(const key_type& __key) { return _M_ht.find(__key); }
-  const_iterator find(const key_type& __key) const
-    { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 
-  size_type count(const key_type& __key) const { return _M_ht.count(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type count(const _KT& __key) const { return _M_ht.count(__key); }
 
-  pair<iterator, iterator> equal_range(const key_type& __key)
-    { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  pair<iterator, iterator>
+  equal_range(const _KT& __key) { return _M_ht.equal_range(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator>
-  equal_range(const key_type& __key) const
-    { return _M_ht.equal_range(__key); }
+  equal_range(const _KT& __key) const { return _M_ht.equal_range(__key); }
 
-  size_type erase(const key_type& __key) {return _M_ht.erase(__key); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
+  size_type erase(const _KT& __key) {return _M_ht.erase(__key); }
   void erase(iterator __it) { _M_ht.erase(__it); }
   void erase(iterator __f, iterator __l) { _M_ht.erase(__f, __l); }
   void clear() { _M_ht.clear(); }
