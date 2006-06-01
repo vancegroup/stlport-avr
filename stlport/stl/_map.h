@@ -92,10 +92,7 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing map
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
   // allocation/deallocation
@@ -172,7 +169,7 @@ public:
   bool empty() const { return _M_t.empty(); }
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   _Tp& operator[](const _KT& __k) {
     iterator __i = lower_bound(__k);
     // __i->first is greater than or equivalent to __k.
@@ -199,31 +196,30 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   void erase(iterator __pos) { _M_t.erase(__pos); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) { return _M_t.erase_unique(__x); }
+  size_type erase(const key_type& __x) { return _M_t.erase_unique(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase(__first, __last); }
   void clear() { _M_t.clear(); }
 
   // map operations:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x) { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const { return _M_t.find(__x) == _M_t.end() ? 0 : 1; }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x) { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const { return _M_t.upper_bound(__x); }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range(const _KT& __x)
   { return _M_t.equal_range_unique(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator,const_iterator> equal_range(const _KT& __x) const
   { return _M_t.equal_range_unique(__x); }
 };
@@ -284,10 +280,7 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multimap
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
   // allocation/deallocation
@@ -373,31 +366,30 @@ public:
   { _M_t.insert_equal(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase(__pos); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) { return _M_t.erase(__x); }
+  size_type erase(const key_type& __x) { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase(__first, __last); }
   void clear() { _M_t.clear(); }
 
   // multimap operations:
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x) { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const { return _M_t.count(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x) { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range(const _KT& __x)
   { return _M_t.equal_range(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator,const_iterator> equal_range(const _KT& __x) const
   { return _M_t.equal_range(__x); }
 };

@@ -70,16 +70,6 @@ iterators invalidated are those referring to the deleted node.
 #  include <stl/_function_base.h>
 #endif
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && !defined (__MRC__) && !(defined (__SC__) && !defined (__DMC__))
-#  define _STLP_USE_TREE_MEMBER_EXTENSIONS
-#endif
-
-#if defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-#  define _STLP_TEMPLATE_MEMBERS_EXTENSION template <class _KT>
-#else
-#  define _STLP_TEMPLATE_MEMBERS_EXTENSION
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -317,9 +307,7 @@ public:
 
 protected:
 
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
   _Base_ptr _M_create_node(const value_type& __x) {
     _Link_type __tmp = this->_M_header.allocate(1);
     _STLP_TRY {
@@ -337,7 +325,6 @@ protected:
     return __tmp;
   }
 
-protected:
   size_type _M_node_count; // keeps track of size of tree
   _Compare _M_key_compare;
 
@@ -507,16 +494,14 @@ public:
     --_M_node_count;
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) {
+  size_type erase(const key_type& __x) {
     pair<iterator,iterator> __p = equal_range(__x);
     size_type __n = distance(__p.first, __p.second);
     erase(__p.first, __p.second);
     return __n;
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase_unique(const _KT& __x) {
+  size_type erase_unique(const key_type& __x) {
     iterator __i = find(__x);
     if (__i._M_node != &this->_M_header._M_data) {
       erase(__i);
@@ -549,12 +534,12 @@ public:
 
 public:
                                 // set operations:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __k) { return iterator(_M_find(__k)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __k) const { return const_iterator(_M_find(__k)); }
 private:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   _Base_ptr _M_find(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data);      // Last node which is not less than __k.
     _Base_ptr __x = _M_root();      // Current node.
@@ -573,7 +558,7 @@ private:
     return __y;
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   _Base_ptr _M_lower_bound(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is not less than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
@@ -587,7 +572,7 @@ private:
     return __y;
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   _Base_ptr _M_upper_bound(const _KT& __k) const {
     _Base_ptr __y = __CONST_CAST(_Base_ptr, &this->_M_header._M_data); /* Last node which is greater than __k. */
     _Base_ptr __x = _M_root(); /* Current node. */
@@ -602,26 +587,26 @@ private:
   }
 
 public:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const {
     pair<const_iterator, const_iterator> __p = equal_range(__x);
     return distance(__p.first, __p.second);
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return iterator(_M_lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const { return const_iterator(_M_lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x) { return iterator(_M_upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const { return const_iterator(_M_upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range(const _KT& __x)
   { return pair<iterator, iterator>(lower_bound(__x), upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const
   { return pair<const_iterator, const_iterator>(lower_bound(__x), upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range_unique(const _KT& __x) {
     pair<iterator, iterator> __p;
     __p.second = lower_bound(__x);
@@ -634,7 +619,7 @@ public:
     }
     return __p;
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range_unique(const _KT& __x) const {
     pair<const_iterator, const_iterator> __p;
     __p.second = lower_bound(__x);

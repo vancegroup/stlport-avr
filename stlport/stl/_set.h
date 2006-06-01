@@ -80,10 +80,7 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing set
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
 
@@ -178,31 +175,30 @@ public:
   { _M_t.insert_unique(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) { return _M_t.erase_unique(__x); }
+  size_type erase(const key_type& __x) { return _M_t.erase_unique(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase(__first, __last ); }
   void clear() { _M_t.clear(); }
 
   // set operations:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x) { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const
   { return _M_t.find(__x) == _M_t.end() ? 0 : 1 ; }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x) { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __x)
   { return _M_t.equal_range_unique(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const
   { return _M_t.equal_range_unique(__x); }
 };
@@ -250,10 +246,7 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multiset
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
@@ -349,29 +342,28 @@ public:
   { _M_t.insert_equal(__first, __last); }
 #endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) { return _M_t.erase(__x); }
+  size_type erase(const key_type& __x) { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase( __first, __last ); }
   void clear() { _M_t.clear(); }
 
   // multiset operations:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x) { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const { return _M_t.find(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const { return _M_t.count(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const { return _M_t.lower_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x) { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const { return _M_t.upper_bound(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __x) { return _M_t.equal_range(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const { return _M_t.equal_range(__x); }
 };
 
