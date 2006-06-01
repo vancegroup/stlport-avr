@@ -53,7 +53,7 @@ public:
   _DbgCompare(const _Compare& __cmp) : _M_non_dbg_cmp(__cmp) {}
   _DbgCompare(const _DbgCompare& __cmp) : _M_non_dbg_cmp(__cmp._M_non_dbg_cmp) {}
 
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+#if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   bool operator () (const _Key& __lhs, const _Key& __rhs) const {
     if (_M_non_dbg_cmp(__lhs, __rhs)) {
       _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
@@ -114,9 +114,7 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 private:
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
   void _Invalidate_iterator(const iterator& __it)
   { _STLP_PRIV __invalidate_iterator(&_M_iter_list,__it); }
   void _Invalidate_iterators(const iterator& __first, const iterator& __last)
@@ -172,7 +170,7 @@ public:
   bool empty() const { return _M_non_dbg_impl.empty(); }
   size_type size() const { return _M_non_dbg_impl.size(); }
   size_type max_size() const { return _M_non_dbg_impl.max_size(); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const { return _M_non_dbg_impl.count(__x); }
 
   void swap(_Self& __t) {
@@ -180,45 +178,45 @@ public:
     _M_iter_list._Swap_owners(__t._M_iter_list);
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __k)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __k) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.find(__k)); }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)); }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x)
   { return iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const
   { return const_iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)); }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range(const _KT& __x) {
     return pair<iterator, iterator>(iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)),
                                     iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)));
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     return pair<const_iterator,const_iterator>(const_iterator(&_M_iter_list, _M_non_dbg_impl.lower_bound(__x)),
                                                const_iterator(&_M_iter_list, _M_non_dbg_impl.upper_bound(__x)));
   }
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator,iterator> equal_range_unique(const _KT& __x) {
     _STLP_STD::pair<_Base_iterator, _Base_iterator> __p;
     __p = _M_non_dbg_impl.equal_range_unique(__x);
     return pair<iterator, iterator>(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range_unique(const _KT& __x) const {
     _STLP_STD::pair<_Base_const_iterator, _Base_const_iterator> __p;
     __p = _M_non_dbg_impl.equal_range_unique(__x);
@@ -278,16 +276,14 @@ public:
     _Invalidate_iterator(__pos);
     _M_non_dbg_impl.erase(__pos._M_iterator);
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase(const _KT& __x) {
+  size_type erase(const key_type& __x) {
     pair<_Base_iterator,_Base_iterator> __p = _M_non_dbg_impl.equal_range(__x);
     size_type __n = distance(__p.first, __p.second);
     _Invalidate_iterators(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
     _M_non_dbg_impl.erase(__p.first, __p.second);
     return __n;
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
-  size_type erase_unique(const _KT& __x) {
+  size_type erase_unique(const key_type& __x) {
     _Base_iterator __i = _M_non_dbg_impl.find(__x);
     if (__i != _M_non_dbg_impl.end()) {
       _Invalidate_iterator(iterator(&_M_iter_list, __i));
