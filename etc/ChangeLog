@@ -1,3 +1,20 @@
+2006-06-01  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_tree.h, _set.h, _map.h, debug/_tree.h: Removed
+	erase template method extension, might conflict with erase
+	overload taking an iterator. User workaround will be to use
+	erase(find(key)).
+
+	* stlport/stl/_hashtable.h, _map.h, _set.h, _unordered_set.h,
+	_unordered_map.h, debug/_hastable.h: Add template methods extension.
+
+	* stlport/stl/config/features.h: Add management of containers template
+	method extension.
+
+	* stlport/stl/config/_apple.h, _symantec.h: Config updae based on
+	config that used to be in _tree.h and _hashtable.h to remove
+	container template methods extensions.
+
 2006-05-31  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_evc.h: Patch from Michael Fink to add ptrdiff_t
