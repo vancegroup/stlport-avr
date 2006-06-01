@@ -3,7 +3,6 @@
 #include "stack_allocator.h"
 
 #include <deque>
-#include <vector>
 #include <algorithm>
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
@@ -72,16 +71,6 @@ void DequeTest::deque1()
   CPPUNIT_ASSERT( (dit - dit) == 0 );
   CPPUNIT_ASSERT( (cdit - cdit) == 0 );
   CPPUNIT_ASSERT(!((dit < cdit) || (dit > cdit) || (dit != cdit) || !(dit <= cdit) || !(dit >= cdit)));
-
-  {
-    vector<deque<int> > vect(10);
-    vector<deque<int> >::iterator it(vect.begin()), end(vect.end());
-    for (; it != end; ++it) {
-      CPPUNIT_ASSERT( (*it).empty() );
-      CPPUNIT_ASSERT( (*it).size() == 0 );
-      CPPUNIT_ASSERT( (*it).begin() == (*it).end() );
-    }
-  }
 }
 
 void DequeTest::at() {

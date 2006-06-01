@@ -23,6 +23,10 @@ class MapTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(iterators);
   CPPUNIT_TEST(equal_range);
   CPPUNIT_TEST(allocator_with_state);
+#if !defined (STLPORT) || !defined (_STLP_USE_CONTAINERS_EXTENSION)
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(template_methods);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -32,6 +36,7 @@ protected:
   void iterators();
   void equal_range();
   void allocator_with_state();
+  void template_methods();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MapTest);
@@ -290,4 +295,140 @@ void MapTest::allocator_with_state()
   }
   CPPUNIT_ASSERT( stack1.ok() );
   CPPUNIT_ASSERT( stack2.ok() );
+}
+
+struct Key
+{
+  Key() : m_data(0) {}
+  explicit Key(size_t data) : m_data(data) {}
+
+  size_t m_data;
+};
+
+struct KeyCmp
+{
+  bool operator () (Key lhs, Key rhs) const
+  { return lhs.m_data < rhs.m_data; }
+
+  bool operator () (Key lhs, size_t rhs) const
+  { return lhs.m_data < rhs; }
+
+  bool operator () (size_t lhs, Key rhs) const
+  { return lhs < rhs.m_data; }
+};
+
+struct KeyCmpPtr
+{
+  bool operator () (Key const volatile *lhs, Key const volatile *rhs) const
+  { return (*lhs).m_data < (*rhs).m_data; }
+
+  bool operator () (Key const volatile *lhs, size_t rhs) const
+  { return (*lhs).m_data < rhs; }
+
+  bool operator () (size_t lhs, Key const volatile *rhs) const
+  { return lhs < (*rhs).m_data; }
+};
+
+void MapTest::template_methods()
+{
+#if defined (STLPORT) && defined (_STLP_USE_CONTAINERS_EXTENSION)
+  {
+    typedef map<Key, int, KeyCmp> Container;
+    typedef Container::value_type value;
+    Container cont;
+    cont.insert(value(Key(1), 1));
+    cont.insert(value(Key(2), 2));
+    cont.insert(value(Key(3), 3));
+    cont.insert(value(Key(4), 4));
+
+    CPPUNIT_ASSERT( cont.count(Key(1)) == 1 );
+    CPPUNIT_ASSERT( cont.count(1) == 1 );
+    CPPUNIT_ASSERT( cont.count(5) == 0 );
+
+    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+
+    Container const& ccont = cont;
+    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
+  }
+
+  {
+    typedef map<Key*, int, KeyCmpPtr> Container;
+    typedef Container::value_type value;
+    Container cont;
+    Key key1(1), key2(2), key3(3), key4(4);
+    cont.insert(value(&key1, 1));
+    cont.insert(value(&key2, 2));
+    cont.insert(value(&key3, 3));
+    cont.insert(value(&key4, 4));
+
+    CPPUNIT_ASSERT( cont.count(1) == 1 );
+    CPPUNIT_ASSERT( cont.count(5) == 0 );
+
+    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+
+    Container const& ccont = cont;
+    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+  }
+  {
+    typedef multimap<Key, int, KeyCmp> Container;
+    typedef Container::value_type value;
+    Container cont;
+    cont.insert(value(Key(1), 1));
+    cont.insert(value(Key(2), 2));
+    cont.insert(value(Key(3), 3));
+    cont.insert(value(Key(4), 4));
+
+    CPPUNIT_ASSERT( cont.count(Key(1)) == 1 );
+    CPPUNIT_ASSERT( cont.count(1) == 1 );
+    CPPUNIT_ASSERT( cont.count(5) == 0 );
+
+    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+
+    Container const& ccont = cont;
+    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
+  }
+
+  {
+    typedef multimap<Key const volatile*, int, KeyCmpPtr> Container;
+    typedef Container::value_type value;
+    Container cont;
+    Key key1(1), key2(2), key3(3), key4(4);
+    cont.insert(value(&key1, 1));
+    cont.insert(value(&key2, 2));
+    cont.insert(value(&key3, 3));
+    cont.insert(value(&key4, 4));
+
+    CPPUNIT_ASSERT( cont.count(1) == 1 );
+    CPPUNIT_ASSERT( cont.count(5) == 0 );
+
+    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
+    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+
+    Container const& ccont = cont;
+    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
+    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+  }
+#endif
 }

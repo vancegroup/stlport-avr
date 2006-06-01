@@ -27,24 +27,24 @@ class SetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(implementation_check);
   CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST(reverse_iterator_test);
-#if !defined (STLPORT) || !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+#if !defined (STLPORT) || !defined (_STLP_USE_CONTAINERS_EXTENSION)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(template_methods);
   CPPUNIT_TEST_SUITE_END();
 
-  protected:
-    void set1();
-    void set2();
-    void erase();
-    void insert();
-    void find();
-    void bounds();
-    void specialized_less();
-    void implementation_check();
-    void allocator_with_state();
-    void reverse_iterator_test();
-    void template_methods();
+protected:
+  void set1();
+  void set2();
+  void erase();
+  void insert();
+  void find();
+  void bounds();
+  void specialized_less();
+  void implementation_check();
+  void allocator_with_state();
+  void reverse_iterator_test();
+  void template_methods();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
@@ -352,7 +352,7 @@ void SetTest::allocator_with_state()
 struct Key
 {
   Key() : m_data(0) {}
-  Key(size_t data) : m_data(data) {}
+  explicit Key(size_t data) : m_data(data) {}
 
   size_t m_data;
 };
@@ -383,7 +383,7 @@ struct KeyCmpPtr
 
 void SetTest::template_methods()
 {
-#if defined (STLPORT) && defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
+#if defined (STLPORT) && defined (_STLP_USE_CONTAINERS_EXTENSION)
   {
     typedef set<Key, KeyCmp> KeySet;
     KeySet keySet;
