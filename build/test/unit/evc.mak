@@ -30,12 +30,4 @@ DEFS_STATIC_DBG = /D_STLP_USE_STATIC_LIB
 DEFS_STATIC_STLDBG = /D_STLP_USE_STATIC_LIB
 
 LDSEARCH=$(LDSEARCH) /LIBPATH:$(STLPORT_LIB_DIR)
-
-# TODO: shouldn't this be moved to the eVC4-specific makefiles?
-!if "$(COMPILER_NAME)" == "evc4"
-!if "$(TARGET_PROC)" == "arm"
-OPT_STATIC_STLDBG = /Zm800
-!endif
-!endif
-
 !include $(SRCROOT)/Makefiles/nmake/top.mak

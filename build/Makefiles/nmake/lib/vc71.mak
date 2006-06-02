@@ -2,7 +2,5 @@
 # $Id$
 
 
-LDFLAGS_REL = /LTCG
-
-!include $(RULESBASE)/$(USE_MAKE)/lib/vc-common.mak
+!include vc-common.mak
 

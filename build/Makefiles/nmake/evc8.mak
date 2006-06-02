@@ -1,7 +1,10 @@
 # build/Makefiles/nmake/evc8.mak
 
-# TODO: _WIN32_WCE is defined as 420 for CE 4.2 but as 0x500 for CE 5.0!
+# Note: _WIN32_WCE is defined as 420 for CE 4.2 but as 0x500 for CE 5.0!
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=0x$(CEVERSION) /D UNDER_CE=1 /D "UNICODE"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:OLDNAMES.lib 
+# TODO: the subsystem settings will have to be adjusted for CE5.01...
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /subsystem:windowsce,5.00
 
 !if "$(TARGET_PROC)" == ""
 !error No target processor configured! Please rerun configure.bat!
@@ -13,9 +16,10 @@ CC=cl.exe
 
 CXX = $(CC)
 
+# ARM specific settings
 !if "$(TARGET_PROC)" == "arm"
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_" /D "$(TARGET_PROC_SUBTYPE)"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
 !endif
 
 # Note: /GX for MSC<14 has been replaced with /EHsc

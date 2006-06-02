@@ -14,41 +14,53 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:"libc.lib" 
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096"
 
 # increase compiler memory in order to compile deeply nested template code
 OPT_STLDBG = $(OPT_STLDBG) /Zm800
-OPT_STLDBG_STATIC = $(OPT_STLDBG_STATIC) /Zm800
+OPT_STATIC_STLDBG = $(OPT_STATIC_STLDBG) /Zm800
 
 # activate global (whole program) optimizations
 OPT_REL = $(OPT_REL) /Og
 OPT_STATIC_REL = $(OPT_STATIC_REL) /Og
 
+# ARM specific settings
 !if "$(TARGET_PROC)" == "arm"
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:ARM
 !endif
 
+# x86 specific settings
 !if "$(TARGET_PROC)" == "x86"
 DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
 !if "$(TARGET_PROC_SUBTYPE)" == "emulator"
 DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
 !endif
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) $(CEx86Corelibc)
 !endif
 
+# MIPS specific settings
 !if "$(TARGET_PROC)" == "mips"
 DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPS
 !endif
 
+# SH3  specific settings
 !if "$(TARGET_PROC)" == "sh3"
 DEFS_COMMON = $(DEFS_COMMON) /D "SH3" /D "_SH3_" /D "SHx"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:SH3
 !endif
 
+# SH4 specific settings
 !if "$(TARGET_PROC)" == "sh4"
 DEFS_COMMON = $(DEFS_COMMON) /D "SH4" /D "_SH4_" /D "SHx"
-OPT_COMMON = /Qsh4
+OPT_COMMON = $(OPT_COMMON) /Qsh4
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:SH4
 !endif
 
 

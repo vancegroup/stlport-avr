@@ -14,51 +14,86 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:OLDNAMES.lib
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096" 
 
 # increase compiler memory in order to compile deeply nested template code
 OPT_STLDBG = $(OPT_STLDBG) /Zm800
-OPT_STLDBG_STATIC = $(OPT_STLDBG_STATIC) /Zm800
+OPT_STATIC_STLDBG = $(OPT_STATIC_STLDBG) /Zm800
 
 # activate global (whole program) optimizations
 OPT_REL = $(OPT_REL) /Og
 OPT_STATIC_REL = $(OPT_STATIC_REL) /Og
 
+# ARM specific settings
 !if "$(TARGET_PROC)" == "arm"
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_" /D "ARMV4"
-OPT_COMMON =
+OPT_STATIC_STLDBG = $(OPT_STATIC_STLDBG) /Zm800
+OPT_COMMON = $(OPT_COMMON)
+# TODO: eVC4 IDE uses ARM for ARMV4 and THUMB for ARMV4I and ARMV4T
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:ARM
+# RTTI patch for PPC2003 SDK
+!if "$(PLATFORM)" == "POCKET PC 2003"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib
+!endif
 !endif
 
+# x86 specific settings
 !if "$(TARGET_PROC)" == "x86"
 DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_" /D "_i386_"
-OPT_COMMON = /Gs8192
+OPT_COMMON = $(OPT_COMMON) /Gs8192
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) $(CEx86Corelibc) /MACHINE:IX86
 !if "$(TARGET_PROC_SUBTYPE)" == "emulator"
 DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
 !endif
+!if "$(PLATFORM)" == "POCKET PC 2003"
+# RTTI patch for PPC2003 SDK
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib
+!endif
 !endif
 
+# MIPS specific settings
 !if "$(TARGET_PROC)" == "mips"
 DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
 
-!if "$(TARGET_PROC_SUBTYPE)" == "MIPSII"
+# Note: one might think that MIPSII_FP and MIPSIV_FP should use /MACHINE:MIPSFPU 
+# while MIPSII and MIPSIV should use /MACHINE:MIPS, but this is exactly how the
+# eVC4 IDE does it.
+!if "$(TARGET_PROC_SUBTYPE)" == ""
+!error "MIPS subtype not set"
+!elseif "$(TARGET_PROC_SUBTYPE)" == "MIPS16"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPS
+!elseif "$(TARGET_PROC_SUBTYPE)" == "MIPSII"
 OPT_COMMON = $(OPT_COMMON) /QMmips2 /QMFPE
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPS
 !elseif "$(TARGET_PROC_SUBTYPE)" == "MIPSII_FP"
 OPT_COMMON = $(OPT_COMMON) /QMmips2 /QMFPE-
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPS
 !elseif "$(TARGET_PROC_SUBTYPE)" == "MIPSIV"
 OPT_COMMON = $(OPT_COMMON) /QMmips4 /QMn32 /QMFPE
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPSFPU
 !elseif "$(TARGET_PROC_SUBTYPE)" == "MIPSIV_FP"
 OPT_COMMON = $(OPT_COMMON) /QMmips4 /QMn32 /QMFPE-
-!endif
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:MIPSFPU
+!else
+!error "unknown MIPS subtype"
 !endif
 
+!endif
+
+# SH3 specific settings
 !if "$(TARGET_PROC)" == "sh3"
 DEFS_COMMON = $(DEFS_COMMON) /D "SH3" /D "_SH3_" /D "SHx"
-OPT_COMMON =
+OPT_COMMON = $(OPT_COMMON)
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:SH3
 !endif
 
+# SH4 specific settings
 !if "$(TARGET_PROC)" == "sh4"
 DEFS_COMMON = $(DEFS_COMMON) /D "SH4" /D "_SH4_" /D "SHx"
-OPT_COMMON = /Qsh4
+OPT_COMMON = $(OPT_COMMON) /Qsh4
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:SH4
 !endif
 
 

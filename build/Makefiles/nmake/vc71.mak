@@ -6,6 +6,8 @@ CFLAGS_COMMON = /nologo /W4 /GX
 CXXFLAGS_COMMON = /nologo /W4 /GX
 
 OPT_REL = $(OPT_REL) /GL
+LDFLAGS_REL = $(LDFLAGS_REL) /LTCG
 
-!include $(RULESBASE)/$(USE_MAKE)/vc-common.mak
+
+!include vc-common.mak
 
