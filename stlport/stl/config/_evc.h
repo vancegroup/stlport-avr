@@ -175,10 +175,6 @@
 #      else
 #        error Unknown MIPS SDK.
 #      endif
-/* MIPS itself is highly volatile and configurable as both big and little
- * endian, all Windows CE versions (at least until 4.2 for MIPS) run in
- * little-endian configurations though. */
-#      define _STLP_LITTLE_ENDIAN
 #    elif defined (SHx)
 #      if defined (SH3)
 #        define _STLP_NATIVE_INCLUDE_PATH ../sh3
@@ -191,6 +187,11 @@
 #      error Unknown SDK.
 #    endif
 #  endif /* !_STLP_NATIVE_INCLUDE_PATH */
+
+
+/* All Windows CE versions up to at least version 5 are little-endian, even
+ * if the hardware (like e.g. MIPS) can be configured for big-endian, too. */
+#define _STLP_LITTLE_ENDIAN
 
 /* Workaround when using MFCCE and using <new> together: MFCCE's wcealt.h doesn't
  * check for __PLACEMENT_NEW_INLINE before defining operator new, so when <new>
