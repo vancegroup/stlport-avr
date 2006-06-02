@@ -147,6 +147,7 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
     char monetary_buf[_Locale_MAX_SIMPLE_NAME];
     char messages_buf[_Locale_MAX_SIMPLE_NAME];
 
+    // TODO: check returnvalues?
     _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf, 0);
     _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf, 0);
     _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf, 0);
@@ -156,6 +157,7 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
 
     // Construct a new composite name.
     char composite_buf[_Locale_MAX_COMPOSITE_NAME];
+    // TODO: check returnvalue?
     _Locale_compose_name(composite_buf,
                          ctype_buf, numeric_buf, time_buf,
                          collate_buf, monetary_buf, messages_buf,

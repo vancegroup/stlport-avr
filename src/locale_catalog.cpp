@@ -33,29 +33,29 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 // those wrappers are needed to avoid extern "C"
 
 static void* _Loc_ctype_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_ctype_create(s, hint); }
+{ return _Locale_ctype_create(s, hint); }
 static void* _Loc_numeric_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_numeric_create(s, hint); }
+{ return _Locale_numeric_create(s, hint); }
 static void* _Loc_time_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_time_create(s, hint); }
+{ return _Locale_time_create(s, hint); }
 static void* _Loc_collate_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_collate_create(s, hint); }
+{ return _Locale_collate_create(s, hint); }
 static void* _Loc_monetary_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_monetary_create(s, hint); }
+{ return _Locale_monetary_create(s, hint); }
 static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint)
-{ return (void*)_Locale_messages_create(s, hint); }
+{ return _Locale_messages_create(s, hint); }
 
-static char* _Loc_ctype_name(const void* l, char* s)
+static char const* _Loc_ctype_name(const void* l, char* s)
 { return _Locale_ctype_name(l, s); }
-static char* _Loc_numeric_name(const void* l, char* s)
+static char const* _Loc_numeric_name(const void* l, char* s)
 { return _Locale_numeric_name(l, s); }
-static char* _Loc_time_name(const void* l, char* s)
+static char const* _Loc_time_name(const void* l, char* s)
 { return _Locale_time_name(l,s); }
-static char* _Loc_collate_name( const void* l, char* s)
+static char const* _Loc_collate_name( const void* l, char* s)
 { return _Locale_collate_name(l,s); }
-static char* _Loc_monetary_name(const void* l, char* s)
+static char const* _Loc_monetary_name(const void* l, char* s)
 { return _Locale_monetary_name(l,s); }
-static char* _Loc_messages_name(const void* l, char* s)
+static char const* _Loc_messages_name(const void* l, char* s)
 { return _Locale_messages_name(l,s); }
 
 static const char* _Loc_ctype_default(char* p)
@@ -79,10 +79,10 @@ static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
 static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
 
 typedef void* (*loc_create_func_t)(const char *, _Locale_name_hint*);
-typedef char* (*loc_name_func_t)(const void* l, char* s);
+typedef char const* (*loc_name_func_t)(const void* l, char* s);
 typedef void (*loc_destroy_func_t)(void* l);
 typedef const char* (*loc_default_name_func_t)(char* s);
-typedef char* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_hint*);
+typedef char const* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_hint*);
 
 //----------------------------------------------------------------------
 // Acquire and release low-level category objects.  The whole point of
@@ -180,7 +180,7 @@ __release_category(void* cat,
   if (cat && pM) {
     // Find the name of the category object.
     char buf[_Locale_MAX_SIMPLE_NAME + 1];
-    char* name = get_name(cat, buf);
+    char const* name = get_name(cat, buf);
 
     if (name != 0) {
       _STLP_auto_lock sentry(__category_hash_lock);

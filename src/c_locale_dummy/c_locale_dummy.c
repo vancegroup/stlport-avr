@@ -58,22 +58,22 @@ const char *_Locale_collate_default(char* __DUMMY_PAR)  { return 0; }
 const char *_Locale_monetary_default(char* __DUMMY_PAR) { return 0; }
 const char *_Locale_messages_default(char* __DUMMY_PAR) { return 0; }
 
-char* _Locale_ctype_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_ctype_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_numeric_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
-  { return 0; }
-
-char* _Locale_time_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_numeric_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_collate_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_time_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_monetary_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_collate_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char* _Locale_messages_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_monetary_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+{ return 0; }
+
+char const* _Locale_messages_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
 void _Locale_ctype_destroy(void* __DUMMY_PAR)    {}
@@ -83,25 +83,26 @@ void _Locale_collate_destroy(void* __DUMMY_PAR)  {}
 void _Locale_monetary_destroy(void* __DUMMY_PAR) {}
 void _Locale_messages_destroy(void* __DUMMY_PAR) {}
 
-char* _Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+
+char const* _Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-char* _Locale_extract_numeric_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+char const* _Locale_extract_numeric_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-char* _Locale_extract_time_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+char const* _Locale_extract_time_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-char* _Locale_extract_collate_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
-  { return 0; }
-
-char* _Locale_extract_monetary_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+char const* _Locale_extract_collate_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-char* _Locale_extract_messages_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+char const* _Locale_extract_monetary_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-char* _Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
+char const* _Locale_extract_messages_name(const char*__DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
+{ return 0; }
+
+char const* _Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
                            const char*__DUMMY_PAR4,
                            const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8)
 { return 0; }

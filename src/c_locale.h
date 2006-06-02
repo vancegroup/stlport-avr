@@ -33,7 +33,6 @@
 
 #include "stlport_prefix.h"
 #include <stl/c_locale.h>
-/* # include <wchar.h> */
 #include <stl/_mbstate_t.h>
 
 #ifdef _STLP_REAL_LOCALE_IMPLEMENTED
@@ -42,17 +41,17 @@
 #  endif
 #endif
 
-#define _Locale_MAX_SIMPLE_NAME 256
-
 /*
  * A number: the maximum length of a simple locale name.
  * (i.e. a name like like en_US, as opposed to a name like
  * en_US/de_AT/de_AT/es_MX/en_US/en_US) */
-#define _Locale_MAX_COMPOSITE_NAME 6*(_Locale_MAX_SIMPLE_NAME+3)
+#define _Locale_MAX_SIMPLE_NAME 256
 
 /*
  * Maximum length of a composite locale.
  */
+#define _Locale_MAX_COMPOSITE_NAME 6*(_Locale_MAX_SIMPLE_NAME+3)
+
 
 #ifdef __cplusplus
 _STLP_BEGIN_NAMESPACE
@@ -68,6 +67,17 @@ typedef unsigned short int _Locale_mask_t;
 typedef unsigned int _Locale_mask_t;
 #endif
 
+/* Create a category of the locale with the given name.
+ *
+ * The char* argument is a simple (not a composite) locale name, which may
+ * neither be an empty string nor a null pointer.
+ *
+ * These functions return NULL to indicate failure.
+ *
+ * Note These functions return a void* instead of the appropriate
+ * _Locale_* struct because they are used with __acquire_category which 
+ * requires that all functions have the same signature.
+ */
 void * _Locale_ctype_create(const char *, struct _Locale_name_hint*);
 void * _Locale_numeric_create(const char *, struct _Locale_name_hint*);
 void * _Locale_time_create(const char *, struct _Locale_name_hint*);
@@ -75,39 +85,16 @@ void * _Locale_collate_create(const char *, struct _Locale_name_hint*);
 void * _Locale_monetary_create(const char *, struct _Locale_name_hint*);
 void * _Locale_messages_create(const char *, struct _Locale_name_hint*);
 
-/*
- * The char* argument is a simple locale name.
- * These functions return NULL to indicate failure.
- * The char* argument is a simple locale name, which may not
- * be "".  These functions return NULL to indicate failure.
+
+/* Release a category of a locale
+ *
+ * These functions are used to release a category acquired with the
+ * according _Locale_*_create() functions.
+ *
+ * Note: For the same reasons as for the *_create functions, these 
+ * take void* instead of the correct types so that they can be used 
+ * with __release_category.
  */
-
-const char * _Locale_ctype_default(char * __buf);
-const char * _Locale_numeric_default(char * __buf);
-const char * _Locale_time_default(char * __buf);
-const char * _Locale_collate_default(char * __buf);
-const char * _Locale_monetary_default(char * __buf);
-const char * _Locale_messages_default(char * __buf);
-
-/*
- * Returns the name of the user's default locale in each
- * category, as a null-terminated string.  A NULL value
- * means the default "C" locale.
- */
-
-char * _Locale_ctype_name(const void *, char *);
-char * _Locale_numeric_name(const void *, char *);
-char * _Locale_time_name(const void *, char *);
-char * _Locale_collate_name(const void *, char *);
-char * _Locale_monetary_name(const void *, char *);
-char * _Locale_messages_name(const void *, char *);
-
-/*
- * __buf points to a buffer that can hold at least _Locale_MAX_SIMPLE_NAME
- * characters.  These functions store the name, as a null-terminated
- * string, in __buf.
- */
-
 void _Locale_ctype_destroy(void *);
 void _Locale_numeric_destroy(void *);
 void _Locale_time_destroy(void *);
@@ -115,33 +102,48 @@ void _Locale_collate_destroy(void *);
 void _Locale_monetary_destroy(void *);
 void _Locale_messages_destroy(void *);
 
-char * _Locale_extract_ctype_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char * _Locale_extract_numeric_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char * _Locale_extract_time_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char * _Locale_extract_collate_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char * _Locale_extract_monetary_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char * _Locale_extract_messages_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
 
-struct _Locale_name_hint* _Locale_get_ctype_hint(struct _Locale_ctype*);
-struct _Locale_name_hint* _Locale_get_numeric_hint(struct _Locale_numeric*);
-struct _Locale_name_hint* _Locale_get_time_hint(struct _Locale_time*);
-struct _Locale_name_hint* _Locale_get_collate_hint(struct _Locale_collate*);
-struct _Locale_name_hint* _Locale_get_monetary_hint(struct _Locale_monetary*);
-struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages*);
+/*
+ * Returns the name of the user's default locale in each
+ * category, as a null-terminated string.  A NULL value
+ * means the default "C" locale.
+ */
+const char * _Locale_ctype_default(char * __buf);
+const char * _Locale_numeric_default(char * __buf);
+const char * _Locale_time_default(char * __buf);
+const char * _Locale_collate_default(char * __buf);
+const char * _Locale_monetary_default(char * __buf);
+const char * _Locale_messages_default(char * __buf);
+
+
+/* Retrieve the name of the given category
+ *
+ * __buf points to a buffer that can hold at least _Locale_MAX_SIMPLE_NAME
+ * characters.  These functions store the name, as a null-terminated
+ * string, in __buf.
+ * TODO: can this fail? How is that signalled then?
+ */
+char const* _Locale_ctype_name(const void *, char* __buf);
+char const* _Locale_numeric_name(const void *, char* __buf);
+char const* _Locale_time_name(const void *, char* __buf);
+char const* _Locale_collate_name(const void *, char*  __buf);
+char const* _Locale_monetary_name(const void *, char* __buf);
+char const* _Locale_messages_name(const void *, char* __buf);
+
 
 /*
  * cname is a (possibly composite) locale name---i.e. a name that can
- * be passed to setlocale.  _buf points to an array large enough to
+ * be passed to setlocale. __buf points to an array large enough to
  * store at least _Locale_MAX_SIMPLE_NAME characters, and each of these
  * functions extracts the name of a single category, stores it in buf
  * as a null-terminated string, and returns buf.
  */
-
-char * _Locale_compose_name(char *__buf,
-                            const char *__Ctype, const char *__Numeric,
-                            const char *__Time, const char *__Collate,
-                            const char *__Monetary, const char *__Messages,
-                            const char *__DefaultName);
+char const* _Locale_extract_ctype_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_numeric_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_time_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_collate_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_monetary_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_messages_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
 
 /*
  * The inputs to this function are six null-terminated strings: the
@@ -153,6 +155,25 @@ char * _Locale_compose_name(char *__buf,
  * locale as a whole, stores that name in buf as a null-terminated
  * string, and returns buf.
  */
+char const* _Locale_compose_name(char *__buf,
+                                 const char *__Ctype, const char *__Numeric,
+                                 const char *__Time, const char *__Collate,
+                                 const char *__Monetary, const char *__Messages,
+                                 const char *__DefaultName);
+
+/* Funstions to improve locale creation process. For some locale API (Win32)
+ * you need to find a locale identification from the name which can be a
+ * rather expensive operation especially if you do so for all facets of a
+ * locale. Those functions can be used to extract from a API dependent facet
+ * struct the information necessary to skip this lookup process for other
+ * facets creation. If not supported those function should return NULL.
+ */
+struct _Locale_name_hint* _Locale_get_ctype_hint(struct _Locale_ctype*);
+struct _Locale_name_hint* _Locale_get_numeric_hint(struct _Locale_numeric*);
+struct _Locale_name_hint* _Locale_get_time_hint(struct _Locale_time*);
+struct _Locale_name_hint* _Locale_get_collate_hint(struct _Locale_collate*);
+struct _Locale_name_hint* _Locale_get_monetary_hint(struct _Locale_monetary*);
+struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages*);
 
 /*
  * FUNCTIONS THAT USE CTYPE
@@ -162,21 +183,20 @@ char * _Locale_compose_name(char *__buf,
  * Narrow character functions:
  */
 
-const _Locale_mask_t * _Locale_ctype_table(struct _Locale_ctype *);
-
 /*
  * Returns a pointer to the beginning of the ctype table.  The table is
  * at least 257 bytes long; if p is the pointer returned by this
  * function, then p[c] is valid if c is EOF or if p is any value of
  * type unsigned char.
  */
-
-int _Locale_toupper(struct _Locale_ctype *, int);
-int _Locale_tolower(struct _Locale_ctype *, int);
+const _Locale_mask_t * _Locale_ctype_table(struct _Locale_ctype *);
 
 /*
  * c is either EOF, or an unsigned char value.
  */
+int _Locale_toupper(struct _Locale_ctype *, int);
+int _Locale_tolower(struct _Locale_ctype *, int);
+
 
 # ifndef _STLP_NO_WCHAR_T
 /*
@@ -315,27 +335,30 @@ size_t _Locale_strwxfrm(struct _Locale_collate *,
  * FUNCTIONS THAT USE NUMERIC
  */
 
-char _Locale_decimal_point(struct _Locale_numeric *);
-char _Locale_thousands_sep(struct _Locale_numeric *);
-const char * _Locale_grouping(struct _Locale_numeric *);
-
 /*
  * Equivalent to the first three fields in struct lconv.  (C standard,
  * section 7.4.)
  */
+char _Locale_decimal_point(struct _Locale_numeric *);
+char _Locale_thousands_sep(struct _Locale_numeric *);
+const char * _Locale_grouping(struct _Locale_numeric *);
 
-const char * _Locale_true(struct _Locale_numeric *);
-const char * _Locale_false(struct _Locale_numeric *);
 
 /*
  * Return "true" and "false" in English locales, and something
  * appropriate in non-English locales.
  */
+const char * _Locale_true(struct _Locale_numeric *);
+const char * _Locale_false(struct _Locale_numeric *);
+
 
 /*
  * FUNCTIONS THAT USE MONETARY
  */
 
+/*
+ * Return the obvious fields of struct lconv.
+ */
 const char * _Locale_int_curr_symbol(struct _Locale_monetary *);
 const char * _Locale_currency_symbol(struct _Locale_monetary *);
 char         _Locale_mon_decimal_point(struct _Locale_monetary *);
@@ -352,27 +375,24 @@ int          _Locale_n_cs_precedes(struct _Locale_monetary *);
 int          _Locale_n_sep_by_space(struct _Locale_monetary *);
 int          _Locale_n_sign_posn(struct _Locale_monetary *);
 
-/*
- * Return the obvious fields of struct lconv.
- */
 
 /*
  * FUNCTIONS THAT USE TIME
  */
 
-const char * _Locale_full_monthname(struct _Locale_time *, int);
-const char * _Locale_abbrev_monthname(struct _Locale_time *, int);
-
 /*
  * month is in the range [0, 12).
  */
+const char * _Locale_full_monthname(struct _Locale_time *, int);
+const char * _Locale_abbrev_monthname(struct _Locale_time *, int);
 
-const char * _Locale_full_dayofweek(struct _Locale_time *, int);
-const char * _Locale_abbrev_dayofweek(struct _Locale_time *, int);
 
 /*
  * day is in the range [0, 7).  Sunday is 0.
  */
+const char * _Locale_full_dayofweek(struct _Locale_time *, int);
+const char * _Locale_abbrev_dayofweek(struct _Locale_time *, int);
+
 
 const char * _Locale_d_t_fmt(struct _Locale_time *);
 const char * _Locale_d_fmt(struct _Locale_time *);
@@ -402,28 +422,25 @@ typedef int nl_catd_type;
 # endif /* _STLP_REAL_LOCALE_IMPLEMENTED */
 
 
+/*
+ * Very similar to catopen, except that it uses the given message 
+ * category to determine which catalog to open.
+ */
 nl_catd_type _Locale_catopen(struct _Locale_messages*, const char*);
 
-/*
- * Very similar to catopen, except that it uses L to determine
- * which catalog to open.
+/* Complementary to _Locale_catopen.
+ * The catalog must be a value that was returned by a previous call
+ * to _Locale_catopen.
  */
-
 void _Locale_catclose(struct _Locale_messages*, nl_catd_type);
 
 /*
- * catalog is a value that was returned by a previous call to
- * _Locale_catopen
+ * Returns a string, identified by a set index and a message index,
+ * from an opened message catalog.  Returns the supplied default if 
+ * no such string exists.
  */
-
 const char * _Locale_catgets(struct _Locale_messages *, nl_catd_type,
                              int, int,const char *);
-
-/*
- * Returns a string, identified by a set index and a message index,
- * from an opened message catalog.  Returns default if no such
- * string exists.
- */
 
 # ifdef __cplusplus
 }

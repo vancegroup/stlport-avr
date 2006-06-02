@@ -60,6 +60,9 @@ void _STLP_CALL _Init_timeinfo(_Time_Info& table) {
 }
 
 void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
+  if(!time)
+    locale::_M_throw_runtime_error();
+
   int i;
   for (i = 0; i < 7; ++i)
     table._M_dayname[i] = _Locale_abbrev_dayofweek(time, i);

@@ -90,6 +90,10 @@ typedef char mbstate_t;
  * GENERAL FRAMEWORK
  */
 
+/*
+ * Opaque types, implementation (if there is one) depends
+ * on platform locale API.
+ */
 struct _Locale_ctype;
 struct _Locale_numeric;
 struct _Locale_time;

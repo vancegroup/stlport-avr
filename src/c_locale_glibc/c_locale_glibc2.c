@@ -210,32 +210,32 @@ const char *_Locale_messages_default( char *nm )
   return _Locale_aux_default( "LC_MESSAGES", nm );
 }
 
-char *_Locale_ctype_name( const void *__loc, char *buf )
+char const*_Locale_ctype_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_CTYPE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
-char *_Locale_numeric_name( const void *__loc, char *buf )
+char const*_Locale_numeric_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_NUMERIC]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
-char *_Locale_time_name( const void *__loc, char *buf )
+char const*_Locale_time_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_TIME]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
-char *_Locale_collate_name( const void *__loc, char *buf )
+char const*_Locale_collate_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_COLLATE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
-char *_Locale_monetary_name( const void *__loc, char *buf )
+char const*_Locale_monetary_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MONETARY]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
-char *_Locale_messages_name( const void *__loc, char *buf )
+char const*_Locale_messages_name( const void *__loc, char *buf )
 {
   return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MESSAGES]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
 }
@@ -264,7 +264,7 @@ void _Locale_messages_destroy( void* __loc )
  *
  */
 
-char *__Extract_locale_name( const char *loc, const char *category, char *buf )
+char const*__Extract_locale_name( const char *loc, const char *category, char *buf )
 {
   char *expr;
   size_t len_name;
@@ -284,27 +284,30 @@ char *__Extract_locale_name( const char *loc, const char *category, char *buf )
   return strncpy( buf, loc, _Locale_MAX_SIMPLE_NAME );
 }
 
-char *_Locale_extract_ctype_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_ctype_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_CTYPE=", buf ); }
 
-char *_Locale_extract_numeric_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_numeric_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_NUMERIC=", buf ); }
 
-char *_Locale_extract_time_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_time_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_TIME=", buf ); }
 
-char *_Locale_extract_collate_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_collate_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_COLLATE=", buf ); }
 
-char *_Locale_extract_monetary_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_monetary_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_MONETARY=", buf ); }
 
-char *_Locale_extract_messages_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_messages_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
 { return __Extract_locale_name( loc, "LC_MESSAGES=", buf ); }
 
-char *_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
+char const*_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
                             const char*__DUMMY_PAR4,
                             const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8) {
+  /* TODO: what's this? Is this a marker that this is not yet completely 
+  implemented? Copy the implementation from c_locale_win32 perhaps? It seems
+  to complement the extract functions above. */
   printf( "%s:%d\n", __FILE__, __LINE__ );
   return 0;
 }

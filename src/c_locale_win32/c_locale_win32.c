@@ -243,9 +243,9 @@ static const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int T
 static int __ParseLocaleString(const char* lname, char* lang, char* ctry, char* page);
 static int __GetLCID(const char* lang, const char* ctry, LCID* lcid);
 static int __GetLCIDFromName(const char* lname, LCID* lcid, char *cp, _Locale_lcid_t *hint);
-static char* __GetLocaleName(LCID lcid, const char* cp, char* buf);
-static char* __Extract_locale_name(const char* loc, int category, char* buf);
-static char* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint);
+static char const* __GetLocaleName(LCID lcid, const char* cp, char* buf);
+static char const* __Extract_locale_name(const char* loc, int category, char* buf);
+static char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint);
 static void __ConvertFromACP(char* buf, int buf_size, const char* cp);
 static int __intGetACP(LCID lcid);
 static int __intGetOCP(LCID lcid);
@@ -578,34 +578,34 @@ extern "C" {
   const char* _Locale_messages_default(char* buf)
   { return _Locale_common_default(buf); }
 
-  char* _Locale_ctype_name(const void* loc, char* buf) {
+  char const* _Locale_ctype_name(const void* loc, char* buf) {
     char cp_buf[MAX_CP_LEN + 1];
     _Locale_ctype_t* ltype = (_Locale_ctype_t*)loc;
     my_ltoa(ltype->cp, cp_buf);
     return __GetLocaleName(ltype->lc.id, cp_buf, buf);
   }
 
-  char* _Locale_numeric_name(const void* loc, char* buf) {
+  char const* _Locale_numeric_name(const void* loc, char* buf) {
     _Locale_numeric_t* lnum = (_Locale_numeric_t*)loc;
     return __GetLocaleName(lnum->lc.id, lnum->cp, buf);
   }
 
-  char* _Locale_time_name(const void* loc, char* buf) {
+  char const* _Locale_time_name(const void* loc, char* buf) {
     _Locale_time_t* ltime = (_Locale_time_t*)loc;
     return __GetLocaleName(ltime->lc.id, ltime->cp, buf);
   }
 
-  char* _Locale_collate_name(const void* loc, char* buf) {
+  char const* _Locale_collate_name(const void* loc, char* buf) {
     _Locale_collate_t* lcol = (_Locale_collate_t*)loc;
     return __GetLocaleName(lcol->lc.id, lcol->cp, buf);
   }
 
-  char* _Locale_monetary_name(const void* loc, char* buf) {
+  char const* _Locale_monetary_name(const void* loc, char* buf) {
     _Locale_monetary_t* lmon = (_Locale_monetary_t*)loc;
     return __GetLocaleName(lmon->lc.id, lmon->cp, buf);
   }
 
-  char* _Locale_messages_name(const void* loc, char* buf) {
+  char const* _Locale_messages_name(const void* loc, char* buf) {
     _Locale_messages_t* lmes = (_Locale_messages_t*)loc;
     return __GetLocaleName(lmes->lc.id, lmes->cp, buf);
   }
@@ -664,7 +664,7 @@ extern "C" {
     free(lmes);
   }
 
-  static char* _Locale_extract_category_name(const char* cname, int category, char* buf, _Locale_lcid_t* hint) {
+  static char const* _Locale_extract_category_name(const char* cname, int category, char* buf, _Locale_lcid_t* hint) {
     char lname[_Locale_MAX_SIMPLE_NAME];
     __Extract_locale_name(cname, category, lname);
     if (lname[0] == 'C' && lname[1] == 0) {
@@ -673,22 +673,22 @@ extern "C" {
     return __TranslateToSystem(lname, buf, hint);
   }
 
-  char* _Locale_extract_ctype_name(const char* cname, char* buf, _Locale_lcid_t* hint)
+  char const* _Locale_extract_ctype_name(const char* cname, char* buf, _Locale_lcid_t* hint)
   { return _Locale_extract_category_name(cname, LC_CTYPE, buf, hint); }
 
-  char* _Locale_extract_numeric_name(const char* cname, char* buf, _Locale_lcid_t* hint)
+  char const* _Locale_extract_numeric_name(const char* cname, char* buf, _Locale_lcid_t* hint)
   { return _Locale_extract_category_name(cname, LC_NUMERIC, buf, hint); }
 
-  char* _Locale_extract_time_name(const char* cname, char* buf, _Locale_lcid_t* hint)
+  char const* _Locale_extract_time_name(const char* cname, char* buf, _Locale_lcid_t* hint)
   { return _Locale_extract_category_name(cname, LC_TIME, buf, hint); }
 
-  char* _Locale_extract_collate_name(const char* cname, char* buf, _Locale_lcid_t* hint)
+  char const* _Locale_extract_collate_name(const char* cname, char* buf, _Locale_lcid_t* hint)
   { return _Locale_extract_category_name(cname, LC_COLLATE, buf, hint); }
 
-  char* _Locale_extract_monetary_name(const char* cname, char* buf, _Locale_lcid_t* hint)
+  char const* _Locale_extract_monetary_name(const char* cname, char* buf, _Locale_lcid_t* hint)
   { return _Locale_extract_category_name(cname, LC_MONETARY, buf, hint); }
 
-  char* _Locale_extract_messages_name(const char* cname, char* buf, _Locale_lcid_t* hint) {
+  char const* _Locale_extract_messages_name(const char* cname, char* buf, _Locale_lcid_t* hint) {
     if (cname[0] == 'L' && cname[1] == 'C' && cname[2] == '_') {
       _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, "C");
     }
@@ -698,7 +698,7 @@ extern "C" {
     return __TranslateToSystem(cname, buf, hint);
   }
 
-  char* _Locale_compose_name(char* buf,
+  char const* _Locale_compose_name(char* buf,
                              const char* _ctype, const char* numeric,
                              const char* time, const char* _collate,
                              const char* monetary, const char* messages,
@@ -1629,7 +1629,7 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
   return result;
 }
 
-char* __GetLocaleName(LCID lcid, const char* cp, char* buf) {
+char const* __GetLocaleName(LCID lcid, const char* cp, char* buf) {
   char lang[MAX_LANG_LEN + 1], ctry[MAX_CTRY_LEN + 1];
   GetLocaleInfoA(lcid, LOCALE_SENGLANGUAGE, lang, MAX_LANG_LEN);
   GetLocaleInfoA(lcid, LOCALE_SENGCOUNTRY, ctry, MAX_CTRY_LEN);
@@ -1645,7 +1645,7 @@ static const char* __loc_categories[]= {
   "LC_ALL", "LC_COLLATE", "LC_CTYPE", "LC_MONETARY", "LC_NUMERIC", "LC_TIME"
 };
 
-char* __Extract_locale_name(const char* loc, int category, char* buf) {
+char const* __Extract_locale_name(const char* loc, int category, char* buf) {
   char *expr;
   size_t len_name;
   buf[0] = 0;
@@ -1682,7 +1682,7 @@ char* __Extract_locale_name(const char* loc, int category, char* buf) {
   }
 }
 
-char* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint) {
+char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint) {
   LCID lcid;
   char cp[MAX_CP_LEN + 1];
   if (__GetLCIDFromName(lname, &lcid, cp, hint) != 0) return NULL;
