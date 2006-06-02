@@ -266,12 +266,6 @@ template <class _Tp> struct __type_traits<_Tp*> : __type_traits_aux<__true_type>
 
 #  endif /* _STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS */
 
-template <class _Tp>
-struct _IsPtrType {
-  typedef typename _IsPtr<_Tp>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
-};
-
 // Provide some specializations.  This is harmless for compilers that
 //  have built-in __types_traits support, and essential for compilers
 //  that don't.
@@ -400,6 +394,12 @@ struct _TrivialInit {
 #endif /* !_STLP_USE_BOOST_SUPPORT */
 
 template <class _Tp>
+struct _IsPtrType {
+  typedef typename _IsPtr<_Tp>::_Ret _Type;
+  static _Type _Ret() { return _Type(); }
+};
+
+template <class _Tp>
 struct _IsRefType {
   typedef typename _IsRef<_Tp>::_Ret _Type;
   static _Type _Ret() { return _Type();}
@@ -417,9 +417,8 @@ struct __call_traits {
 
 #if !defined (_STLP_USE_BOOST_SUPPORT) && !defined (_STLP_NO_EXTENSIONS) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
-struct __call_traits<_Tp&> {
-  typedef _Tp& param_type;
-};
+struct __call_traits<_Tp&>
+{ typedef _Tp& param_type; };
 #endif
 
 template <class _Tp1, class _Tp2>
@@ -482,9 +481,8 @@ inline _DefaultZeroValueQuestion<_Tp> _HasDefaultZeroValue(_Tp*)
  * - to recognize STLport class from user specialized one
  */
 template <class _Tp>
-struct __stlport_class {
-  typedef _Tp _Type;
-};
+struct __stlport_class
+{ typedef _Tp _Type; };
 
 template <class _Tp>
 struct _IsSTLportClass {
@@ -502,7 +500,7 @@ struct _SwapImplemented {
   enum { _Is = _IsSTLportClass<_Tp>::_Is };
 #  endif
 };
-#endif /* _STLP_USE_PARTIAL_SPEC_WORKAROUND */
+#endif
 
 _STLP_END_NAMESPACE
 

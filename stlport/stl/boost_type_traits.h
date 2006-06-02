@@ -44,13 +44,8 @@ template <class _Tp> struct _IsRef {
 };
 
 template <class _Tp> struct _IsPtr {
-  enum { _Ret = ::boost::is_pointer<_Tp>::value };
-};
-
-template <class _Tp> struct _IsPtrType {
   enum { is_pointer = ::boost::is_pointer<_Tp>::value };
-  typedef typename __bool2type<is_pointer>::_Ret _Type;
-  static _Type _Ret() { return _Type(); }
+  typedef typename __bool2type<is_pointer>::_Ret _Ret;
 };
 
 template <class _Tp> struct _IsIntegral {
@@ -133,7 +128,7 @@ struct _TrivialInit {
 
   enum { boost_trivial_constructor = ::boost::has_trivial_constructor<uncv>::value };
   typedef typename __bool2type<boost_trivial_constructor>::_Ret _BoostTrivialInit;
-  typedef typename __type_traits<uncv1>::has_trivial_default_constructor _STLPTrivialInit;
+  typedef typename __type_traits<uncv>::has_trivial_default_constructor _STLPTrivialInit;
   typedef typename _Lor2<_BoostTrivialInit, _STLPTrivialInit>::_Ret _Tr1;
 
   typedef typename _DefaultZeroValue<_Tp>::_Ret _Tr2;
