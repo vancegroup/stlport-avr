@@ -1,3 +1,25 @@
+2006-06-02  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/nmake: Patch from Ulrich Eckhardt for
+	cleanup. Some script refactoring, wrong OPT_STLDBG_STATIC references
+	replaced by OPT_STATIC_STLDBG.
+
+	* src: Patch from Ulrich Eckhardt to cleanup locale implementation
+	and fix time facet creation when using dummy locale implementation.
+
+	* stlport/stl/config/_evc.h: Patch from Ulrich Eckhardt to fix
+	endianess definition.
+
+	* stlport/stl/debug/_hashtable.h: Create a _DbgEqual functor to
+	check correct equivalent predicate implementation. Add also
+	missing hash_func and key_eq methods in this mode.
+
+	* stlport/stl/debug/_tree.h: Small refactoring in _DbgCompare
+	functor.
+
+	* stlport/stl/type_traits.h, boost_type_traits.h: Restore boost
+	support.
+
 2006-06-01  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_tree.h, _set.h, _map.h, debug/_tree.h: Removed
