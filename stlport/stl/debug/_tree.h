@@ -55,22 +55,17 @@ public:
 
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   bool operator () (const _Key& __lhs, const _Key& __rhs) const {
-    if (_M_non_dbg_cmp(__lhs, __rhs)) {
-      _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
-      return true;
-    }
-    return false;
-  }
 #else
   template <class _Kp1, class _Kp2>
   bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const {
+#endif
     if (_M_non_dbg_cmp(__lhs, __rhs)) {
       _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return true;
     }
     return false;
   }
-#endif
+
   _Compare non_dbg_key_comp() const { return _M_non_dbg_cmp; }
 private:
   _Compare _M_non_dbg_cmp;
