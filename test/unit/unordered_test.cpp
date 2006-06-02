@@ -305,6 +305,9 @@ void UnorderedTest::hash_policy()
   size_t bucketsHint = int_uset.bucket_count() + 1;
   int_uset.rehash(bucketsHint);
   CPPUNIT_ASSERT( int_uset.bucket_count() >= bucketsHint );
+
+  CPPUNIT_ASSERT( int_uset.key_eq()(10, 10) );
+  CPPUNIT_ASSERT( int_uset.hash_function()(10) == 10 );
 #endif
 }
 
