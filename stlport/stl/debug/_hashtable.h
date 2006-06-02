@@ -38,10 +38,42 @@
 #  include <stl/debug/_iterator.h>
 #endif
 
-#define _STLP_NON_DBG_HT \
-_STLP_PRIV _STLP_NON_DBG_NAME(hashtable) <_Val, _Key, _HF, _Traits, _ExK, _EqK, _All>
-
 _STLP_BEGIN_NAMESPACE
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Key, class _Equal>
+class _DbgEqual {
+public:
+  _DbgEqual() {}
+  _DbgEqual(const _Equal& __eq) : _M_non_dbg_eq(__eq) {}
+  _DbgEqual(const _DbgEqual& __eq) : _M_non_dbg_eq(__eq._M_non_dbg_eq) {}
+
+#if !defined (_STLP_USE_CONTAINERS_EXTENSION)
+  bool operator () (const _Key& __lhs, const _Key& __rhs) const {
+#else
+  template <class _Kp1, class _Kp2>
+  bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const {
+#endif
+    if (_M_non_dbg_eq(__lhs, __rhs)) {
+      _STLP_VERBOSE_ASSERT(_M_non_dbg_eq(__rhs, __lhs), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return true;
+    }
+    else {
+      _STLP_VERBOSE_ASSERT(!_M_non_dbg_eq(__rhs, __lhs), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+      return false;
+    }
+  }
+
+  _Equal non_dbg_key_eq() const { return _M_non_dbg_eq; }
+private:
+  _Equal _M_non_dbg_eq;
+};
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#define _STLP_NON_DBG_HT \
+_STLP_PRIV _STLP_NON_DBG_NAME(hashtable) <_Val, _Key, _HF, _Traits, _ExK, _STLP_PRIV _DbgEqual<_Key, _EqK>, _All>
 
 #if defined (_STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS)
 template <class _Val, class _Key, class _HF,
@@ -87,6 +119,9 @@ public:
 
   typedef typename _Base::iterator _Base_iterator;
   typedef typename _Base::const_iterator _Base_const_iterator;
+
+  hasher hash_funct() const { return _M_non_dbg_impl.hash_funct(); }
+  key_equal key_eq() const { return _M_non_dbg_impl.key_eq().non_dbg_key_eq(); }
 
 private:
   void _Invalidate_iterator(const const_iterator& __it)
@@ -235,16 +270,14 @@ public:
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __key) {
-    pair<_Base_iterator, _Base_iterator> __res =
-      _M_non_dbg_impl.equal_range(__key);
+    pair<_Base_iterator, _Base_iterator> __res = _M_non_dbg_impl.equal_range(__key);
     return pair<iterator,iterator> (iterator(&_M_iter_list,__res.first),
                                     iterator(&_M_iter_list,__res.second));
   }
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __key) const {
-    pair <_Base_const_iterator, _Base_const_iterator> __res =
-      _M_non_dbg_impl.equal_range(__key);
+    pair <_Base_const_iterator, _Base_const_iterator> __res = _M_non_dbg_impl.equal_range(__key);
     return pair<const_iterator,const_iterator> (const_iterator(&_M_iter_list,__res.first),
                                                 const_iterator(&_M_iter_list,__res.second));
   }
