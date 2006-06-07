@@ -44,7 +44,13 @@ class vector
              : public __stlport_class<vector<_Tp, _Alloc> >
 #endif
 {
-  typedef typename _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
+  /* In the vector implementation iterators are pointer which give a number
+   * of opportunities for optimization. To not break those optimizations
+   * iterators passed to template should not be wrapped for casting purpose.
+   * So vector implementation will always use a qualified void pointer type and
+   * won't use iterator wrapping.
+   */
+  typedef typename _STLP_PRIV _StorageType<_Tp>::_QualifiedType _StorageType;
   typedef typename _Alloc_traits<_StorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV VECTOR_IMPL<_StorageType, _StorageTypeAlloc> _Base;
   typedef vector<_Tp, _Alloc> _Self;
@@ -124,25 +130,13 @@ public:
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
-#if !defined (_STLP_USE_ITERATOR_WRAPPER)
   : _M_impl(__first, __last,
-            _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {
-#else
-  : _M_impl(_STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {
-#endif
-#if defined (_STLP_USE_ITERATOR_WRAPPER)
-    insert(end(), __first, __last);
-#endif
-  }
+            _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
 
-#  ifdef _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
+#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last)
-#    if !defined (_STLP_USE_ITERATOR_WRAPPER)
     : _M_impl(__first, __last) {}
-#    else
-  { insert(end(), __first, __last); }
-#    endif
 #  endif
 
 #else
@@ -159,33 +153,9 @@ public:
   { _M_impl.assign(__n, cast_traits::to_storage_type_cref(__val)); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-#  if defined (_STLP_USE_ITERATOR_WRAPPER)
-private:
-  template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_impl.assign(__n, __val);
-  }
-
   template <class _InputIterator>
-  void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
-                          const __false_type&) {
-    _M_impl.assign(_STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
-  }
-
-public:
-#  endif
-
-  template <class _InputIterator>
-  void assign(_InputIterator __first, _InputIterator __last) {
-#  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
-#  else
-    _M_impl.assign(__first, __last);
-#  endif
-  }
+  void assign(_InputIterator __first, _InputIterator __last)
+  { _M_impl.assign(__first, __last); }
 #else
   void assign(const_iterator __first, const_iterator __last) {
     _M_impl.assign(cast_traits::to_storage_type_cptr(__first),
@@ -214,45 +184,18 @@ public:
   { return _M_impl.insert(cast_traits::to_storage_type_ptr(__pos)); }
 #endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
 
-  void swap(_Self& __x) {_M_impl.swap(__x._M_impl);}
+  void swap(_Self& __x) { _M_impl.swap(__x._M_impl); }
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-#  if defined (_STLP_USE_ITERATOR_WRAPPER)
-private:
-  template <class _Integer>
-  void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __n, __val);
-  }
-
   template <class _InputIterator>
-  void _M_insert_dispatch(iterator __pos,
-                          _InputIterator __first, _InputIterator __last,
-                          const __false_type&) {
-    _M_impl.insert(cast_traits::to_storage_type_ptr(__pos),
-                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
-  }
-
-public:
-#  endif
-
-  template <class _InputIterator>
-  void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-#  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
-    _M_insert_dispatch(__pos, __first, __last, _Integral());
-#  else
-    _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __first, __last);
-#  endif
-  }
-#else /* _STLP_MEMBER_TEMPLATES */
+  void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
+  { _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __first, __last); }
+#else
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
     _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), cast_traits::to_storage_type_cptr(__first),
                                                             cast_traits::to_storage_type_cptr(__last));
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
   void insert (iterator __pos, size_type __n, const value_type& __x) {
     _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __n, cast_traits::to_storage_type_cref(__x));

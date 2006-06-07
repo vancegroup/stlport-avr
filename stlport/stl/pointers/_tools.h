@@ -31,6 +31,9 @@ template <class _Tp> struct less;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+template <class _StorageT, class _ValueT, class _BinaryPredicate>
+struct _BinaryPredWrapper;
+
 /*
  * Since the compiler only allows at most one non-trivial
  * implicit conversion we can make use of a shim class to
@@ -41,7 +44,6 @@ struct _ConstVolatileVoidPointerShim
 { _ConstVolatileVoidPointerShim(const volatile void*); };
 
 //The dispatch functions:
-#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 struct _VoidPointerShim
 { _VoidPointerShim(void*); };
 struct _ConstVoidPointerShim
@@ -63,7 +65,6 @@ template <class _Tp>
 char _UseVolatileVoidPtrStorageType(const __false_type& /*POD*/, const _Tp&);
 char _UseVolatileVoidPtrStorageType(const __true_type& /*POD*/, ...);
 char* _UseVolatileVoidPtrStorageType(const __true_type& /*POD*/, _VolatileVoidPointerShim);
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 template <class _Tp>
 char _UseConstVolatileVoidPtrStorageType(const __false_type& /*POD*/, const _Tp&);
@@ -75,18 +76,11 @@ struct _StorageType {
   typedef typename __type_traits<_Tp>::is_POD_type _PODType;
   static _Tp __null_rep();
 
-  enum { use_const_volatile_void_ptr = (sizeof(_UseConstVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
-
-  //Here is the type switch:
-#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   enum { use_void_ptr = (sizeof(_UseVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
   enum { use_const_void_ptr = (sizeof(_UseConstVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
   enum { use_volatile_void_ptr = (sizeof(_UseVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
+  enum { use_const_volatile_void_ptr = (sizeof(_UseConstVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
 
-  //If the compiler do not support the iterator_traits structure we cannot wrapper
-  //iterators pass to container template methods. The iterator dereferenced value
-  //has to be storable without any cast in the chosen storage type. To guaranty
-  //that the void pointer has to be correctly qualified.
   typedef typename __select<!use_const_volatile_void_ptr,
                             _Tp,
           typename __select<use_void_ptr,
@@ -95,67 +89,36 @@ struct _StorageType {
                             const void*,
           typename __select<use_volatile_void_ptr,
                             volatile void*,
-                            const volatile void*>::_Ret >::_Ret >::_Ret >::_Ret _Type;
+                            const volatile void*>::_Ret >::_Ret >::_Ret >::_Ret _QualifiedType;
+
+#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+  /* If the compiler do not support the iterator_traits structure we cannot wrap
+   * iterators pass to container template methods. The iterator dereferenced value
+   * has to be storable without any cast in the chosen storage type. To guaranty
+   * that the void pointer has to be correctly qualified.
+   */
+  typedef _QualifiedType _Type;
 #else
-  //With iterator_traits we can wrap passed iterators and make the necessary casts. We can always
-  //use a simple void* storage type:
+  /* With iterator_traits we can wrap passed iterators and make the necessary casts.
+   * We can always use a simple void* storage type:
+   */
   typedef typename __select<use_const_volatile_void_ptr,
                             void*,
                             _Tp>::_Ret _Type;
 #endif
 };
 
-template <class _Tp> struct __default_less;
-
 template <class _Tp, class _Compare>
 struct _AssocStorageTypes {
-  typedef typename __type_traits<_Tp>::is_POD_type _PODType;
-  static _Tp __null_rep();
+  typedef typename _StorageType<_Tp>::_Type _SType;
 
   //We need to also check that the comparison functor used to instanciate the assoc container
   //is the default Standard less implementation:
-  enum { is_default_less = _IsConvertible<_Compare, __default_less<less<_Tp> > >::value };
+  typedef typename _IsSTLportClass<_Compare>::_Ret _STLportLess;
+  enum { is_default_less = __type2bool<_STLportLess>::_Ret };
 
-  enum { use_const_volatile_void_ptr = is_default_less &&
-                                       (sizeof(_UseConstVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
-
-  //Here is the type switch:
-#if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-  enum { use_void_ptr = is_default_less &&
-                        (sizeof(_UseVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
-  enum { use_const_void_ptr = is_default_less &&
-                              (sizeof(_UseConstVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
-  enum { use_volatile_void_ptr = is_default_less &&
-                                 (sizeof(_UseVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
-
-  enum { use_less_storage_type = use_const_volatile_void_ptr || use_void_ptr || use_const_void_ptr || use_volatile_void_ptr };
-
-  //If the compiler do not support the iterator_traits structure we cannot wrapper
-  //iterators pass to container template methods. The iterator dereferenced value
-  //has to be storable without any cast in the chosen storage type. To guaranty
-  //that the void pointer has to be correctly qualified.
-  typedef typename __select<!use_const_volatile_void_ptr,
-                            _Tp,
-          typename __select<use_void_ptr,
-                            void*,
-          typename __select<use_const_void_ptr,
-                            const void*,
-          typename __select<use_volatile_void_ptr,
-                            volatile void*,
-                            const volatile void*>::_Ret >::_Ret >::_Ret >::_Ret _KeyStorageType;
-#else
-  enum { use_less_storage_type = use_const_volatile_void_ptr };
-
-  //With iterator_traits we can wrap passed iterators and make the necessary casts. We can always
-  //use a simple void* storage type:
-  typedef typename __select<use_const_volatile_void_ptr,
-                            void*,
-                            _Tp>::_Ret _KeyStorageType;
-#endif
-
-  typedef typename __select<use_less_storage_type,
-                            less<_KeyStorageType>,
-                            _Compare>::_Ret _CompareStorageType;
+  typedef typename __select<is_default_less, _SType, _Tp>::_Ret _KeyStorageType;
+  typedef typename __select<is_default_less, _BinaryPredWrapper<_KeyStorageType, _Tp, _Compare>, _Compare>::_Ret _CompareStorageType;
 };
 
 
@@ -163,181 +126,124 @@ struct _AssocStorageTypes {
 /*
  * Base struct to deal with qualifiers
  */
-template <class _Tp>
+template <class _StorageT, class _QualifiedStorageT>
 struct _VoidCastTraitsAux {
-  typedef void* void_cv_type;
+  typedef _QualifiedStorageT void_cv_type;
+  typedef _StorageT void_type;
 
-  inline static void ** uncv_ptr(void **__ptr)
+  inline static void_type * uncv_ptr(void_cv_type *__ptr)
   { return __ptr; }
-  inline static void *const* uncv_cptr(void *const*__ptr)
+  inline static void_type const* uncv_cptr(void_cv_type const*__ptr)
   { return __ptr; }
-  inline static void *** uncv_pptr(void ***__ptr)
+  inline static void_type ** uncv_pptr(void_cv_type **__ptr)
   { return __ptr; }
-  inline static void *& uncv_ref(void *&__ref)
+  inline static void_type & uncv_ref(void_cv_type & __ref)
   { return __ref; }
-  inline static void * const& uncv_cref(void * const&__ref)
+  inline static void_type const& uncv_cref(void_cv_type const& __ref)
   { return __ref; }
-  inline static void ** cv_ptr(void **__ptr)
+  inline static void_cv_type* cv_ptr(void_type *__ptr)
   { return __ptr; }
-  inline static void *const* cv_cptr(void *const*__ptr)
+  inline static void_cv_type const* cv_cptr(void_type const*__ptr)
   { return __ptr; }
-  inline static void *** cv_pptr(void ***__ptr)
+  inline static void_cv_type ** cv_pptr(void_type **__ptr)
   { return __ptr; }
-  inline static void *& cv_ref(void *&__ref)
+  inline static void_cv_type & cv_ref(void_type & __ref)
   { return __ref; }
-  inline static void * const& cv_cref(void * const&__ref)
+  inline static void_cv_type const& cv_cref(void_type const& __ref)
   { return __ref; }
 };
 
 template <class _VoidCVType>
 struct _VoidCastTraitsAuxBase {
   typedef _VoidCVType* void_cv_type;
+  typedef void* void_type;
 
-  inline static void ** uncv_ptr(void_cv_type *__ptr)
-  { return __CONST_CAST(void **, __ptr); }
-  inline static void *const* uncv_cptr(void_cv_type const*__ptr)
-  { return __CONST_CAST(void *const*, __ptr); }
-  inline static void *** uncv_pptr(void_cv_type **__ptr)
-  { return __CONST_CAST(void***, __ptr); }
-  inline static void *& uncv_ref(void_cv_type &__ref)
-  { return __CONST_CAST(void *&, __ref); }
-  inline static void * const& uncv_cref(void_cv_type const& __ptr)
-  { return __CONST_CAST(void* const&, __ptr); }
+  inline static void_type* uncv_ptr(void_cv_type *__ptr)
+  { return __CONST_CAST(void_type*, __ptr); }
+  inline static void_type const* uncv_cptr(void_cv_type const*__ptr)
+  { return __CONST_CAST(void_type const*, __ptr); }
+  inline static void_type** uncv_pptr(void_cv_type **__ptr)
+  { return __CONST_CAST(void_type**, __ptr); }
+  inline static void_type& uncv_ref(void_cv_type &__ref)
+  { return __CONST_CAST(void_type&, __ref); }
+  inline static void_type const& uncv_cref(void_cv_type const& __ptr)
+  { return __CONST_CAST(void_type const&, __ptr); }
   // The reverse versions
-  inline static void_cv_type * cv_ptr(void **__ptr)
+  inline static void_cv_type * cv_ptr(void_type *__ptr)
   { return __CONST_CAST(void_cv_type *, __ptr); }
-  inline static void_cv_type const* cv_cptr(void *const*__ptr)
+  inline static void_cv_type const* cv_cptr(void_type const*__ptr)
   { return __CONST_CAST(void_cv_type const*, __ptr); }
-  inline static void_cv_type ** cv_pptr(void ***__ptr)
+  inline static void_cv_type ** cv_pptr(void_type **__ptr)
   { return __CONST_CAST(void_cv_type**, __ptr); }
-  inline static void_cv_type & cv_ref(void *&__ref)
+  inline static void_cv_type & cv_ref(void_type &__ref)
   { return __CONST_CAST(void_cv_type &, __ref); }
-  inline static void_cv_type const& cv_cref(void * const&__ref)
+  inline static void_cv_type const& cv_cref(void_type const& __ref)
   { return __CONST_CAST(void_cv_type const&, __ref); }
 };
 
-template <class _Tp>
-struct _VoidCastTraitsAux<_Tp const*> : _VoidCastTraitsAuxBase<void const>
+_STLP_TEMPLATE_NULL
+struct _VoidCastTraitsAux<void*, const void*> : _VoidCastTraitsAuxBase<void const>
 {};
-template <class _Tp>
-struct _VoidCastTraitsAux<_Tp volatile*> : _VoidCastTraitsAuxBase<void volatile>
+_STLP_TEMPLATE_NULL
+struct _VoidCastTraitsAux<void*, volatile void*> : _VoidCastTraitsAuxBase<void volatile>
 {};
-template <class _Tp>
-struct _VoidCastTraitsAux<_Tp const volatile*> : _VoidCastTraitsAuxBase<void const volatile>
+_STLP_TEMPLATE_NULL
+struct _VoidCastTraitsAux<void*, const volatile void*> : _VoidCastTraitsAuxBase<void const volatile>
 {};
-
-template <class _Tp>
-struct _VoidCastTraits {
-  typedef _VoidCastTraitsAux<_Tp> cv_traits;
-  typedef typename cv_traits::void_cv_type void_cv_type;
-
-  inline static _Tp * to_value_type_ptr(void **__ptr)
-  { return __REINTERPRET_CAST(_Tp *, cv_traits::cv_ptr(__ptr)); }
-  inline static _Tp const* to_value_type_cptr(void *const*__ptr)
-  { return __REINTERPRET_CAST(_Tp const*, cv_traits::cv_cptr(__ptr)); }
-  inline static _Tp ** to_value_type_pptr(void ***__ptr)
-  { return __REINTERPRET_CAST(_Tp **, cv_traits::cv_pptr(__ptr)); }
-  inline static _Tp & to_value_type_ref(void *&__ref)
-  { return __REINTERPRET_CAST(_Tp &, cv_traits::cv_ref(__ref)); }
-  inline static _Tp const& to_value_type_cref(void * const& __ptr)
-  { return __REINTERPRET_CAST(_Tp const&, cv_traits::cv_cref(__ptr)); }
-  // Reverse versions
-  inline static void* * to_storage_type_ptr(_Tp *__ptr)
-  { return cv_traits::uncv_ptr(__REINTERPRET_CAST(void_cv_type *, __ptr)); }
-  inline static void* const* to_storage_type_cptr(_Tp const*__ptr)
-  { return cv_traits::uncv_cptr(__REINTERPRET_CAST(void_cv_type const*, __ptr)); }
-  inline static void* ** to_storage_type_pptr(_Tp **__ptr)
-  { return cv_traits::uncv_pptr(__REINTERPRET_CAST(void_cv_type **, __ptr)); }
-  inline static void* & to_storage_type_ref(_Tp &__ref)
-  { return cv_traits::uncv_ref(__REINTERPRET_CAST(void_cv_type &, __ref)); }
-  inline static void* const& to_storage_type_cref(_Tp const& __ref)
-  { return cv_traits::uncv_cref(__REINTERPRET_CAST(void_cv_type const&, __ref)); }
-};
-
-template <class _StorageT, class _ValueT>
-struct _CastTraitsAux {
-  typedef _StorageT storage_type;
-  typedef _ValueT value_type;
-
-  inline static value_type * to_value_type_ptr(storage_type *__ptr)
-  { return __ptr; }
-  inline static value_type const* to_value_type_cptr(storage_type const*__ptr)
-  { return __ptr; }
-  inline static value_type ** to_value_type_pptr(storage_type **__ptr)
-  { return __ptr; }
-  inline static value_type & to_value_type_ref(storage_type &__ref)
-  { return __ref; }
-  inline static value_type const& to_value_type_cref(storage_type const&__ref)
-  { return __ref; }
-  // Reverse versions
-  inline static storage_type * to_storage_type_ptr(value_type *__ptr)
-  { return __ptr; }
-  inline static storage_type const* to_storage_type_cptr(value_type const*__ptr)
-  { return __ptr; }
-  inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
-  { return __ptr; }
-  inline static storage_type & to_storage_type_ref(value_type &__ref)
-  { return __ref; }
-  inline static storage_type const& to_storage_type_cref(value_type const&__ref)
-  { return __ref; }
-};
-
-template <class _ValueT>
-struct _CastTraitsAux<void*, _ValueT> {
-  typedef void* storage_type;
-  typedef _ValueT value_type;
-  typedef _VoidCastTraits<value_type> _CastAux;
-
-  inline static value_type * to_value_type_ptr(storage_type *__ptr)
-  { return _CastAux::to_value_type_ptr(__ptr); }
-  inline static value_type const* to_value_type_cptr(storage_type const*__ptr)
-  { return _CastAux::to_value_type_cptr(__ptr); }
-  inline static value_type ** to_value_type_pptr(storage_type **__ptr)
-  { return _CastAux::to_value_type_pptr(__ptr); }
-  inline static value_type & to_value_type_ref(storage_type &__ref)
-  { return _CastAux::to_value_type_ref(__ref); }
-  inline static value_type const& to_value_type_cref(storage_type const& __val)
-  { return _CastAux::to_value_type_cref(__val); }
-  // Reverse versions
-  inline static storage_type * to_storage_type_ptr(value_type *__ptr)
-  { return _CastAux::to_storage_type_ptr(__ptr); }
-  inline static storage_type const* to_storage_type_cptr(value_type const*__ptr)
-  { return _CastAux::to_storage_type_cptr(__ptr); }
-  inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
-  { return _CastAux::to_storage_type_pptr(__ptr); }
-  inline static storage_type & to_storage_type_ref(value_type &__ref)
-  { return _CastAux::to_storage_type_ref(__ref); }
-  inline static storage_type const& to_storage_type_cref(value_type const& __ref)
-  { return _CastAux::to_storage_type_cref(__ref); }
-};
 
 template <class _StorageT, class _ValueT>
 struct _CastTraits {
-  typedef _StorageT storage_type;
   typedef _ValueT value_type;
-  typedef _CastTraitsAux<storage_type, value_type> _CastAux;
+  typedef typename _StorageType<_ValueT>::_QualifiedType _QualifiedStorageT;
+  typedef _VoidCastTraitsAux<_StorageT, _QualifiedStorageT> cv_traits;
+  typedef typename cv_traits::void_type void_type;
+  typedef typename cv_traits::void_cv_type void_cv_type;
+
+  inline static value_type * to_value_type_ptr(void_type *__ptr)
+  { return __REINTERPRET_CAST(value_type *, cv_traits::cv_ptr(__ptr)); }
+  inline static value_type const* to_value_type_cptr(void_type const*__ptr)
+  { return __REINTERPRET_CAST(value_type const*, cv_traits::cv_cptr(__ptr)); }
+  inline static value_type ** to_value_type_pptr(void_type **__ptr)
+  { return __REINTERPRET_CAST(value_type **, cv_traits::cv_pptr(__ptr)); }
+  inline static value_type & to_value_type_ref(void_type &__ref)
+  { return __REINTERPRET_CAST(value_type &, cv_traits::cv_ref(__ref)); }
+  inline static value_type const& to_value_type_cref(void_type const& __ptr)
+  { return __REINTERPRET_CAST(value_type const&, cv_traits::cv_cref(__ptr)); }
+  // Reverse versions
+  inline static void_type * to_storage_type_ptr(value_type *__ptr)
+  { return cv_traits::uncv_ptr(__REINTERPRET_CAST(void_cv_type *, __ptr)); }
+  inline static void_type const* to_storage_type_cptr(value_type const*__ptr)
+  { return cv_traits::uncv_cptr(__REINTERPRET_CAST(void_cv_type const*, __ptr)); }
+  inline static void_type ** to_storage_type_pptr(value_type **__ptr)
+  { return cv_traits::uncv_pptr(__REINTERPRET_CAST(void_cv_type **, __ptr)); }
+  inline static void_type const& to_storage_type_cref(value_type const& __ref)
+  { return cv_traits::uncv_cref(__REINTERPRET_CAST(void_cv_type const&, __ref)); }
+};
+
+template <class _Tp>
+struct _CastTraits<_Tp, _Tp> {
+  typedef _Tp storage_type;
+  typedef _Tp value_type;
 
   inline static value_type * to_value_type_ptr(storage_type *__ptr)
-  { return _CastAux::to_value_type_ptr(__ptr); }
+  { return __ptr; }
   inline static value_type const* to_value_type_cptr(storage_type const*__ptr)
-  { return _CastAux::to_value_type_cptr(__ptr); }
+  { return __ptr; }
   inline static value_type ** to_value_type_pptr(storage_type **__ptr)
-  { return _CastAux::to_value_type_pptr(__ptr); }
+  { return __ptr; }
   inline static value_type & to_value_type_ref(storage_type &__ref)
-  { return _CastAux::to_value_type_ref(__ref); }
+  { return __ref; }
   inline static value_type const& to_value_type_cref(storage_type const&__ref)
-  { return _CastAux::to_value_type_cref(__ref); }
+  { return __ref; }
   // Reverse versions
   inline static storage_type * to_storage_type_ptr(value_type *__ptr)
-  { return _CastAux::to_storage_type_ptr(__ptr); }
+  { return __ptr; }
   inline static storage_type const* to_storage_type_cptr(value_type const*__ptr)
-  { return _CastAux::to_storage_type_cptr(__ptr); }
+  { return __ptr; }
   inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
-  { return _CastAux::to_storage_type_pptr(__ptr); }
-  inline static storage_type & to_storage_type_ref(value_type &__ref)
-  { return _CastAux::to_storage_type_ref(__ref); }
+  { return __ptr; }
   inline static storage_type const& to_storage_type_cref(value_type const&__ref)
-  { return _CastAux::to_storage_type_cref(__ref); }
+  { return __ref; }
 };
 
 #define _STLP_USE_ITERATOR_WRAPPER
@@ -398,14 +304,14 @@ struct _IteWrapper {
   }
 
 private:
-  _Iterator &_M_ite;
+  _Iterator _M_ite;
 };
 
 #else
 
 /*
  * In this config the storage type is qualified in respect of the
- * value_type qualification. Simple reinterpret_cast are enough.
+ * value_type qualification. Simple reinterpret_cast is enough.
  */
 template <class _StorageT, class _ValueT>
 struct _CastTraits {
@@ -429,28 +335,25 @@ struct _CastTraits {
   { return __REINTERPRET_CAST(storage_type const*, __ptr); }
   inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
   { return __REINTERPRET_CAST(storage_type **, __ptr); }
-  inline static storage_type & to_storage_type_ref(value_type &__ref)
-  { return __REINTERPRET_CAST(storage_type&, __ref); }
   inline static storage_type const& to_storage_type_cref(value_type const&__ref)
   { return __REINTERPRET_CAST(storage_type const&, __ref); }
 };
 
 #endif
 
+//Wrapper functors:
 template <class _StorageT, class _ValueT, class _UnaryPredicate>
 struct _UnaryPredWrapper {
   typedef _CastTraits<_StorageT, _ValueT> cast_traits;
 
   _UnaryPredWrapper (_UnaryPredicate const& __pred) : _M_pred(__pred) {}
 
-  bool operator () (_StorageT const& __ref) const {
-    return _M_pred(cast_traits::to_value_type_cref(__ref));
-  }
+  bool operator () (_StorageT const& __ref) const
+  { return _M_pred(cast_traits::to_value_type_cref(__ref)); }
 
 private:
   _UnaryPredicate _M_pred;
 };
-
 
 template <class _StorageT, class _ValueT, class _BinaryPredicate>
 struct _BinaryPredWrapper {
@@ -461,9 +364,13 @@ struct _BinaryPredWrapper {
 
   _BinaryPredicate get_pred() const { return _M_pred; }
 
-  bool operator () (_StorageT const& __fst, _StorageT const& __snd) const {
-    return _M_pred(cast_traits::to_value_type_cref(__fst), cast_traits::to_value_type_cref(__snd));
-  }
+  bool operator () (_StorageT const& __fst, _StorageT const& __snd) const
+  { return _M_pred(cast_traits::to_value_type_cref(__fst), cast_traits::to_value_type_cref(__snd)); }
+
+  //Cast operator used to transparently access underlying predicate
+  //in set::key_comp() method
+  operator _BinaryPredicate() const
+  { return _M_pred; }
 
 private:
   _BinaryPredicate _M_pred;

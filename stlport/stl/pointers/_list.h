@@ -75,7 +75,7 @@ public:
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   _STLP_FORCE_ALLOCATORS(value_type, _Alloc)
-  typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type allocator_type;
+  typedef typename _Alloc_traits<value_type, _Alloc>::allocator_type allocator_type;
   typedef bidirectional_iterator_tag _Iterator_category;
 
   typedef _STLP_PRIV _List_iterator<value_type, _Nonconst_traits<value_type> > iterator;
@@ -203,7 +203,7 @@ public:
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
     // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
 #  else
     _M_impl.insert(_BaseIte(__pos._M_node), __first, __last);
@@ -270,7 +270,7 @@ public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
 #  else
     _M_impl.assign(__first, __last);

@@ -241,7 +241,7 @@ public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
 #  else
     _M_impl.assign(__first, __last);
@@ -318,7 +318,7 @@ public:
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
     // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
 #  else
     _M_impl.insert(ite_cast_traits::to_storage_type_ite(__pos), __first, __last);

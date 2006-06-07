@@ -102,17 +102,18 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing set
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 #if defined (_STLP_DEBUG)
-  iterator _M_to_value_ite(const_base_iterator __ite) const
+  static iterator _M_to_value_ite(const_base_iterator __ite)
   { return iterator(__ite._Owner(), __ite._M_iterator._M_node); }
+  static base_iterator _M_to_storage_ite(const_iterator __ite)
+  { return base_iterator(__ite._Owner(), __ite._M_iterator._M_node); }
 #else
-  iterator _M_to_value_ite(const_base_iterator __ite) const
+  static iterator _M_to_value_ite(const_base_iterator __ite)
   { return iterator(__ite._M_node); }
+  static base_iterator _M_to_storage_ite(const_iterator __ite)
+  { return base_iterator(__ite._M_node); }
 #endif
 
 public:
@@ -158,13 +159,17 @@ public:
   }
 #else
   set(const value_type* __first, const value_type* __last)
-    : _M_t(_Compare(), _StorageTypeAlloc())
-  { _M_t.insert_unique(__first, __last); }
+    : _M_t(_Compare(), _StorageTypeAlloc()) {
+    _M_t.insert_unique(cast_traits::to_storage_type_cptr(__first),
+                       cast_traits::to_storage_type_cptr(__last));
+  }
 
   set(const value_type* __first, const value_type* __last,
       const _Compare& __comp, const allocator_type& __a = allocator_type())
-    : _M_t(__comp, _STLP_CONVERT_ALLOCATOR(__a, _KeyStorageType))
-  { _M_t.insert_unique(__first, __last); }
+    : _M_t(__comp, _STLP_CONVERT_ALLOCATOR(__a, _KeyStorageType)) {
+    _M_t.insert_unique(cast_traits::to_storage_type_cptr(__first),
+                       cast_traits::to_storage_type_cptr(__last));
+  }
 
   set(const_iterator __first, const_iterator __last)
     : _M_t(_Compare(), _StorageTypeAlloc())
@@ -207,12 +212,12 @@ public:
 
   // insert/erase
   pair<iterator,bool> insert(const value_type& __x) {
-    pair<base_iterator, bool> ret = _M_t.insert_unique(__x);
+    pair<base_iterator, bool> ret = _M_t.insert_unique(cast_traits::to_storage_type_cref(__x));
     return pair<iterator, bool>(_M_to_value_ite(ret.first), ret.second);
   }
-  iterator insert(iterator __pos, const value_type& __x) {
-    return _M_to_value_ite(_M_t.insert_unique(_M_to_value_ite(__pos), __x));
-  }
+  iterator insert(iterator __pos, const value_type& __x)
+  { return _M_to_value_ite(_M_t.insert_unique(_M_to_storage_ite(__pos), cast_traits::to_storage_type_cref(__x))); }
+
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last) {
@@ -232,44 +237,44 @@ public:
                        cast_traits::to_storage_type_cptr(__last));
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
-  void erase(iterator __pos) { _M_t.erase(_M_to_value_ite(__pos)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  void erase(iterator __pos) { _M_t.erase(_M_to_storage_ite(__pos)); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type erase(const _KT& __x)
   { return _M_t.erase_unique(__x); }
   void erase(iterator __first, iterator __last)
-  { _M_t.erase(_M_to_value_ite(__first), _M_to_value_ite(__last)); }
+  { _M_t.erase(_M_to_storage_ite(__first), _M_to_storage_ite(__last)); }
   void clear() { _M_t.clear(); }
 
   // set operations:
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const
   { return _M_to_value_ite(_M_t.find(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x)
   { return _M_to_value_ite(_M_t.find(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const
   { return _M_t.find(__x) == _M_t.end() ? 0 : 1; }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x)
   { return _M_to_value_ite(_M_t.lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const
   { return _M_to_value_ite(_M_t.lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x)
   { return _M_to_value_ite(_M_t.upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const
   { return _M_to_value_ite(_M_t.upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __x) {
     pair<base_iterator, base_iterator> __ret;
     __ret = _M_t.equal_range(__x);
     return pair<iterator, iterator>(_M_to_value_ite(__ret.first),
                                     _M_to_value_ite(__ret.second));
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     pair<const_base_iterator, const_base_iterator> __ret;
     __ret = _M_t.equal_range_unique(__x);
@@ -335,17 +340,18 @@ public:
 
 private:
   _Rep_type _M_t;  // red-black tree representing multiset
-
-#if !defined (_STLP_USE_TREE_MEMBER_EXTENSIONS)
-  typedef key_type _KT;
-#endif
+  _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 #if defined (_STLP_DEBUG)
-  iterator _M_to_value_ite(const_base_iterator __ite) const
+  static iterator _M_to_value_ite(const_base_iterator __ite)
   { return iterator(__ite._Owner(), __ite._M_iterator._M_node); }
+  static base_iterator _M_to_storage_ite(const_iterator __ite)
+  { return base_iterator(__ite._Owner(), __ite._M_iterator._M_node); }
 #else
-  iterator _M_to_value_ite(const_base_iterator __ite) const
+  static iterator _M_to_value_ite(const_base_iterator __ite)
   { return iterator(__ite._M_node); }
+  static base_iterator _M_to_storage_ite(const_iterator __ite)
+  { return base_iterator(__ite._M_node); }
 #endif
 
 public:
@@ -452,7 +458,7 @@ public:
   iterator insert(const value_type& __x)
   { return _M_to_value_ite(_M_t.insert_equal(cast_traits::to_storage_type_cref(__x))); }
   iterator insert(iterator __pos, const value_type& __x) {
-    return _M_to_value_ite(_M_t.insert_equal(_M_to_value_ite(__pos),
+    return _M_to_value_ite(_M_t.insert_equal(_M_to_storage_ite(__pos),
                                              cast_traits::to_storage_type_cref(__x)));
   }
 
@@ -475,43 +481,43 @@ public:
   { _M_t.insert_equal(_M_to_value_ite(__first), _M_to_value_ite(__last)); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
-  void erase(iterator __pos) { _M_t.erase(_M_to_value_ite(__pos)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  void erase(iterator __pos) { _M_t.erase(_M_to_storage_ite(__pos)); }
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type erase(const _KT& __x)
   { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last)
-  { _M_t.erase(_M_to_value_ite(__first), _M_to_value_ite(__last)); }
+  { _M_t.erase(_M_to_storage_ite(__first), _M_to_storage_ite(__last)); }
   void clear() { _M_t.clear(); }
 
   // multiset operations:
 
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __x) { return _M_to_value_ite(_M_t.find(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __x) const { return _M_to_value_ite(_M_t.find(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const
   { return _M_t.count(__x); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x)
   { return _M_to_value_ite(_M_t.lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator lower_bound(const _KT& __x) const
   { return _M_to_value_ite(_M_t.lower_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   iterator upper_bound(const _KT& __x)
   { return _M_to_value_ite(_M_t.upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator upper_bound(const _KT& __x) const
   { return _M_to_value_ite(_M_t.upper_bound(__x)); }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<iterator, iterator> equal_range(const _KT& __x) {
     pair<base_iterator, base_iterator> __ret;
     __ret = _M_t.equal_range(__x);
     return pair<iterator, iterator>(_M_to_value_ite(__ret.first),
                                     _M_to_value_ite(__ret.second));
   }
-  _STLP_TEMPLATE_MEMBERS_EXTENSION
+  _STLP_TEMPLATE_FOR_CONT_EXT
   pair<const_iterator, const_iterator> equal_range(const _KT& __x) const {
     pair<const_base_iterator, const_base_iterator> __ret;
     __ret = _M_t.equal_range(__x);

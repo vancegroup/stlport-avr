@@ -160,7 +160,7 @@ public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
 #  else
     _M_impl.assign(__first, __last);
@@ -172,7 +172,8 @@ public:
                    cast_traits::to_storage_type_cptr(__last));
   }
   void assign(const_iterator __first, const_iterator __last) {
-    _M_impl.assign(__first._M_node, __last._M_node);
+    _M_impl.assign(_BaseConstIte(__first._M_node),
+                   _BaseConstIte(__last._M_node));
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
@@ -253,7 +254,7 @@ public:
   void insert_after(iterator __pos, _InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
     // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_after_dispatch(__pos, __first, __last, _Integral());
 #  else
     _M_impl.insert_after(_BaseIte(__pos._M_node), __first, __last);
@@ -263,7 +264,8 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert_after(iterator __pos,
                     const_iterator __first, const_iterator __last)
-  { _M_impl.insert_after(_BaseIte(__pos._M_node), __first._M_node, __last._M_node); }
+  { _M_impl.insert_after(_BaseIte(__pos._M_node),
+                         _BaseConstIte(__first._M_node), _BaseConstIte(__last._M_node)); }
   void insert_after(iterator __pos,
                     const value_type* __first, const value_type* __last) {
     _M_impl.insert_after(_BaseIte(__pos._M_node),
@@ -312,7 +314,7 @@ public:
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
 #  if defined (_STLP_USE_ITERATOR_WRAPPER)
     // Check whether it's an integral type.  If so, it's not an iterator.
-    typedef typename _Is_integer<_InputIterator>::_Integral _Integral;
+    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
 #  else
     _M_impl.insert(_BaseIte(__pos._M_node), __first, __last);
