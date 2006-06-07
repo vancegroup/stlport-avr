@@ -101,8 +101,8 @@ void UninitializedTest::copy_test()
       TrivialCopyStruct src[count];
       TrivialCopyStruct dst[count];
 
-      TrivialCopyStruct* it(src+0);
-      TrivialCopyStruct* end(src+count);
+      TrivialCopyStruct* it = src + 0;
+      TrivialCopyStruct* end = src + count;
       for (; it != end; ++it) {
         (*it).member = 0;
       }
