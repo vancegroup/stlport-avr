@@ -4,6 +4,7 @@
 #  include <slist>
 #endif
 #include <deque>
+#include <set>
 #include <iterator>
 
 #include "cppunit/cppunit_proxy.h"
@@ -55,6 +56,8 @@ TEST_INSTANCIATE_CONTAINER(list);
 TEST_INSTANCIATE_CONTAINER(slist);
 #  endif
 TEST_INSTANCIATE_CONTAINER(deque);
+TEST_INSTANCIATE_CONTAINER(set);
+TEST_INSTANCIATE_CONTAINER(multiset);
 #endif
 
 //Function to test pointer to function support:
