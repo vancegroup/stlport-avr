@@ -1,3 +1,19 @@
+2006-06-07  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/pointers: Restore pointer specialization feature.
+	Major modifications are:
+
+	- vector specialization is done using a qualified void pointer
+	in order to keep optimization oportunities when working on
+	pointers. Using a strict void* was forcing wrapping of iterators
+	in template method making _BothPtrTypes struct helper failing to
+	detect both pointer types.
+
+	- Fixed set specialization thanks to explicit instanciation added
+	in ptrspec_test.cpp.
+
+	- Refactoring of algorithm to find storage type from value type.
+
 2006-06-02  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/nmake: Patch from Ulrich Eckhardt for
