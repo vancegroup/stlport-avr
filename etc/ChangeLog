@@ -1,3 +1,13 @@
+2006-06-08  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/pointers/_tools.h, _set.h: Fix problems reported by
+	gcc that seems to do more check that MSVC on explicit
+	instanciation of templates. Especially fixed problem introduce
+	by STLport extension of set template methods.
+
+	* build/Makefiles/gmake/aCC.mak, lib/aCC.mak: Patch from Boris
+	Gubenko for Hp aCC build.
+
 2006-06-07  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/pointers: Restore pointer specialization feature.
