@@ -131,25 +131,25 @@ struct _VoidCastTraitsAux {
   typedef _QualifiedStorageT void_cv_type;
   typedef _StorageT void_type;
 
-  inline static void_type * uncv_ptr(void_cv_type *__ptr)
+  static void_type * uncv_ptr(void_cv_type *__ptr)
   { return __ptr; }
-  inline static void_type const* uncv_cptr(void_cv_type const*__ptr)
+  static void_type const* uncv_cptr(void_cv_type const*__ptr)
   { return __ptr; }
-  inline static void_type ** uncv_pptr(void_cv_type **__ptr)
+  static void_type ** uncv_pptr(void_cv_type **__ptr)
   { return __ptr; }
-  inline static void_type & uncv_ref(void_cv_type & __ref)
+  static void_type & uncv_ref(void_cv_type & __ref)
   { return __ref; }
-  inline static void_type const& uncv_cref(void_cv_type const& __ref)
+  static void_type const& uncv_cref(void_cv_type const& __ref)
   { return __ref; }
-  inline static void_cv_type* cv_ptr(void_type *__ptr)
+  static void_cv_type* cv_ptr(void_type *__ptr)
   { return __ptr; }
-  inline static void_cv_type const* cv_cptr(void_type const*__ptr)
+  static void_cv_type const* cv_cptr(void_type const*__ptr)
   { return __ptr; }
-  inline static void_cv_type ** cv_pptr(void_type **__ptr)
+  static void_cv_type ** cv_pptr(void_type **__ptr)
   { return __ptr; }
-  inline static void_cv_type & cv_ref(void_type & __ref)
+  static void_cv_type & cv_ref(void_type & __ref)
   { return __ref; }
-  inline static void_cv_type const& cv_cref(void_type const& __ref)
+  static void_cv_type const& cv_cref(void_type const& __ref)
   { return __ref; }
 };
 
@@ -158,26 +158,26 @@ struct _VoidCastTraitsAuxBase {
   typedef _VoidCVType* void_cv_type;
   typedef void* void_type;
 
-  inline static void_type* uncv_ptr(void_cv_type *__ptr)
+  static void_type* uncv_ptr(void_cv_type *__ptr)
   { return __CONST_CAST(void_type*, __ptr); }
-  inline static void_type const* uncv_cptr(void_cv_type const*__ptr)
+  static void_type const* uncv_cptr(void_cv_type const*__ptr)
   { return __CONST_CAST(void_type const*, __ptr); }
-  inline static void_type** uncv_pptr(void_cv_type **__ptr)
+  static void_type** uncv_pptr(void_cv_type **__ptr)
   { return __CONST_CAST(void_type**, __ptr); }
-  inline static void_type& uncv_ref(void_cv_type &__ref)
+  static void_type& uncv_ref(void_cv_type &__ref)
   { return __CONST_CAST(void_type&, __ref); }
-  inline static void_type const& uncv_cref(void_cv_type const& __ptr)
+  static void_type const& uncv_cref(void_cv_type const& __ptr)
   { return __CONST_CAST(void_type const&, __ptr); }
   // The reverse versions
-  inline static void_cv_type * cv_ptr(void_type *__ptr)
+  static void_cv_type * cv_ptr(void_type *__ptr)
   { return __CONST_CAST(void_cv_type *, __ptr); }
-  inline static void_cv_type const* cv_cptr(void_type const*__ptr)
+  static void_cv_type const* cv_cptr(void_type const*__ptr)
   { return __CONST_CAST(void_cv_type const*, __ptr); }
-  inline static void_cv_type ** cv_pptr(void_type **__ptr)
+  static void_cv_type ** cv_pptr(void_type **__ptr)
   { return __CONST_CAST(void_cv_type**, __ptr); }
-  inline static void_cv_type & cv_ref(void_type &__ref)
+  static void_cv_type & cv_ref(void_type &__ref)
   { return __CONST_CAST(void_cv_type &, __ref); }
-  inline static void_cv_type const& cv_cref(void_type const& __ref)
+  static void_cv_type const& cv_cref(void_type const& __ref)
   { return __CONST_CAST(void_cv_type const&, __ref); }
 };
 
@@ -199,25 +199,29 @@ struct _CastTraits {
   typedef typename cv_traits::void_type void_type;
   typedef typename cv_traits::void_cv_type void_cv_type;
 
-  inline static value_type * to_value_type_ptr(void_type *__ptr)
+  static value_type * to_value_type_ptr(void_type *__ptr)
   { return __REINTERPRET_CAST(value_type *, cv_traits::cv_ptr(__ptr)); }
-  inline static value_type const* to_value_type_cptr(void_type const*__ptr)
+  static value_type const* to_value_type_cptr(void_type const*__ptr)
   { return __REINTERPRET_CAST(value_type const*, cv_traits::cv_cptr(__ptr)); }
-  inline static value_type ** to_value_type_pptr(void_type **__ptr)
+  static value_type ** to_value_type_pptr(void_type **__ptr)
   { return __REINTERPRET_CAST(value_type **, cv_traits::cv_pptr(__ptr)); }
-  inline static value_type & to_value_type_ref(void_type &__ref)
+  static value_type & to_value_type_ref(void_type &__ref)
   { return __REINTERPRET_CAST(value_type &, cv_traits::cv_ref(__ref)); }
-  inline static value_type const& to_value_type_cref(void_type const& __ptr)
+  static value_type const& to_value_type_cref(void_type const& __ptr)
   { return __REINTERPRET_CAST(value_type const&, cv_traits::cv_cref(__ptr)); }
   // Reverse versions
-  inline static void_type * to_storage_type_ptr(value_type *__ptr)
+  static void_type * to_storage_type_ptr(value_type *__ptr)
   { return cv_traits::uncv_ptr(__REINTERPRET_CAST(void_cv_type *, __ptr)); }
-  inline static void_type const* to_storage_type_cptr(value_type const*__ptr)
+  static void_type const* to_storage_type_cptr(value_type const*__ptr)
   { return cv_traits::uncv_cptr(__REINTERPRET_CAST(void_cv_type const*, __ptr)); }
-  inline static void_type ** to_storage_type_pptr(value_type **__ptr)
+  static void_type ** to_storage_type_pptr(value_type **__ptr)
   { return cv_traits::uncv_pptr(__REINTERPRET_CAST(void_cv_type **, __ptr)); }
-  inline static void_type const& to_storage_type_cref(value_type const& __ref)
+  static void_type const& to_storage_type_cref(value_type const& __ref)
   { return cv_traits::uncv_cref(__REINTERPRET_CAST(void_cv_type const&, __ref)); }
+
+  //Method used to treat set container template method extension
+  static void_type const& to_storage_type_crefT(value_type const& __ref)
+  { return to_storage_type_cref(__ref); }
 };
 
 template <class _Tp>
@@ -225,24 +229,29 @@ struct _CastTraits<_Tp, _Tp> {
   typedef _Tp storage_type;
   typedef _Tp value_type;
 
-  inline static value_type * to_value_type_ptr(storage_type *__ptr)
+  static value_type * to_value_type_ptr(storage_type *__ptr)
   { return __ptr; }
-  inline static value_type const* to_value_type_cptr(storage_type const*__ptr)
+  static value_type const* to_value_type_cptr(storage_type const*__ptr)
   { return __ptr; }
-  inline static value_type ** to_value_type_pptr(storage_type **__ptr)
+  static value_type ** to_value_type_pptr(storage_type **__ptr)
   { return __ptr; }
-  inline static value_type & to_value_type_ref(storage_type &__ref)
+  static value_type & to_value_type_ref(storage_type &__ref)
   { return __ref; }
-  inline static value_type const& to_value_type_cref(storage_type const&__ref)
+  static value_type const& to_value_type_cref(storage_type const&__ref)
   { return __ref; }
   // Reverse versions
-  inline static storage_type * to_storage_type_ptr(value_type *__ptr)
+  static storage_type * to_storage_type_ptr(value_type *__ptr)
   { return __ptr; }
-  inline static storage_type const* to_storage_type_cptr(value_type const*__ptr)
+  static storage_type const* to_storage_type_cptr(value_type const*__ptr)
   { return __ptr; }
-  inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
+  static storage_type ** to_storage_type_pptr(value_type **__ptr)
   { return __ptr; }
-  inline static storage_type const& to_storage_type_cref(value_type const&__ref)
+  static storage_type const& to_storage_type_cref(value_type const& __ref)
+  { return __ref; }
+
+  //Method used to treat set container template method extension
+  template <class _Tp1>
+  static _Tp1 const& to_storage_type_crefT(_Tp1 const& __ref)
   { return __ref; }
 };
 
@@ -318,24 +327,24 @@ struct _CastTraits {
   typedef _StorageT storage_type;
   typedef _ValueT value_type;
 
-  inline static value_type * to_value_type_ptr(storage_type *__ptr)
+  static value_type * to_value_type_ptr(storage_type *__ptr)
   { return __REINTERPRET_CAST(value_type*, __ptr); }
-  inline static value_type const* to_value_type_cptr(storage_type const*__ptr)
+  static value_type const* to_value_type_cptr(storage_type const*__ptr)
   { return __REINTERPRET_CAST(value_type const*, __ptr); }
-  inline static value_type ** to_value_type_pptr(storage_type **__ptr)
+  static value_type ** to_value_type_pptr(storage_type **__ptr)
   { return __REINTERPRET_CAST(value_type **, __ptr); }
-  inline static value_type & to_value_type_ref(storage_type &__ref)
+  static value_type & to_value_type_ref(storage_type &__ref)
   { return __REINTERPRET_CAST(value_type&, __ref); }
-  inline static value_type const& to_value_type_cref(storage_type const&__ref)
+  static value_type const& to_value_type_cref(storage_type const&__ref)
   { return __REINTERPRET_CAST(value_type const&, __ref); }
   // Reverse versions
-  inline static storage_type * to_storage_type_ptr(value_type *__ptr)
+  static storage_type * to_storage_type_ptr(value_type *__ptr)
   { return __REINTERPRET_CAST(storage_type*, __ptr); }
-  inline static storage_type const* to_storage_type_cptr(value_type const*__ptr)
+  static storage_type const* to_storage_type_cptr(value_type const*__ptr)
   { return __REINTERPRET_CAST(storage_type const*, __ptr); }
-  inline static storage_type ** to_storage_type_pptr(value_type **__ptr)
+  static storage_type ** to_storage_type_pptr(value_type **__ptr)
   { return __REINTERPRET_CAST(storage_type **, __ptr); }
-  inline static storage_type const& to_storage_type_cref(value_type const&__ref)
+  static storage_type const& to_storage_type_cref(value_type const&__ref)
   { return __REINTERPRET_CAST(storage_type const&, __ref); }
 };
 
