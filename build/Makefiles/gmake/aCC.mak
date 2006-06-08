@@ -1,7 +1,6 @@
 # Time-stamp: <05/03/21 10:42:37 ptr>
 # $Id$
 
-
 #INCLUDES = -I$(SRCROOT)/include
 INCLUDES :=
 
@@ -13,24 +12,22 @@ CXX := ${TARGET_OS}-${CXX}
 CC := ${TARGET_OS}-${CC}
 endif
 
-CXX_VERSION := $(shell ${CXX} --version | grep ${CXX} | awk '{ print $$3; }')
+CXX_VERSION := $(shell ${CXX} --version 2>&1 | grep ${CXX} | awk '{ print $$6; }')
 ifeq ($(CXX_VERSION),)
 CXX_VERSION := $(shell ${CXX} --version)
 endif
-CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
-CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
-CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
+CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
+CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
 
 DEFS ?=
 OPT ?=
 
-DEFS += -D_REENTRANT
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
-CFLAGS = -Aa -z $(OPT)
-CXXFLAGS = -Aa -z $(OPT)
+CFLAGS = -Aa +z $(OPT)
+CXXFLAGS = -Aa +z -mt $(OPT)
 
 CDEPFLAGS = -E +Md
 CCDEPFLAGS = -E +Md
@@ -55,7 +52,7 @@ stldbg-shared : OPT += -g
 #stldbg-static-dep : OPT += -g
 #stldbg-shared-dep : OPT += -g
 
-OPT += +Onolimit +W495,749
+OPT += +W495,749,2186,2191,2340,2430,2550
 
 # dependency output parser (dependencies collector)
 
