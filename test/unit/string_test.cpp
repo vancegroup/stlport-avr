@@ -704,6 +704,19 @@ void StringTest::compare()
   CPPUNIT_ASSERT( str1.compare(2, 3, "cdefgh", 4) < 0 );
 }
 
+/*
+class mystring : public string {
+public:
+  mystring() {}
+  mystring(string const& s) : string(s) {}
+
+  mystring& operator = (string const& s) {
+    string::operator = (s);
+    return *this;
+  };
+};
+*/
+
 void StringTest::template_expression()
 {
   string one("one"), two("two"), three("three");
@@ -850,6 +863,13 @@ void StringTest::template_expression()
     }
 #endif
   }
+
+  /*
+  mystring a("ing");
+  //gcc failed to compile following expression when template expressions are activated.
+  //MSVC sees no problem. gcc limitation or MSVC is too cool ??
+  mystring b = "str" + a;
+  */
 }
 
 void StringTest::template_wexpression()
