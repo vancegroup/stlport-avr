@@ -54,7 +54,7 @@ LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib
 
 # MIPS specific settings
 !if "$(TARGET_PROC)" == "mips"
-DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS"
+DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS" /D "$(TARGET_PROC_SUBTYPE)"
 OPT_COMMON = $(OPT_COMMON)
 
 # Note: one might think that MIPSII_FP and MIPSIV_FP should use /MACHINE:MIPSFPU 

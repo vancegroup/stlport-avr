@@ -148,6 +148,12 @@ RES_MARKED=$(RES_MARKED:@=obj\evc3-sh4\@)
 !elseif "$(TARGET_PROC)" == "arm"
 OBJ_MARKED=$(OBJ_MARKED:@=obj\evc8-arm\@)
 RES_MARKED=$(RES_MARKED:@=obj\evc8-arm\@)
+!elseif "$(TARGET_PROC)" == "x86"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc8-x86\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc8-x86\@)
+!elseif "$(TARGET_PROC)" == "mips"
+OBJ_MARKED=$(OBJ_MARKED:@=obj\evc8-mips\@)
+RES_MARKED=$(RES_MARKED:@=obj\evc8-mips\@)
 !else
 !error Unknown target processor configured!
 !endif

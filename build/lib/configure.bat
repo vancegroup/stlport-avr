@@ -369,8 +369,6 @@ goto pr_end
 :pr_mips
 echo Target processor: MIPS
 echo TARGET_PROC=mips >> ..\Makefiles\config.mak
-
-echo DEFS_COMMON=/D%TARGETCPU% >> ..\Makefiles\config.mak
 echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
 
 goto pr_end

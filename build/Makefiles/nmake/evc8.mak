@@ -16,11 +16,37 @@ CC=cl.exe
 
 CXX = $(CC)
 
+# make the compiler display absolute paths in diagnostics
+# While this is not necessary for STLport in any way, it is convenient when using 
+# the VC8 IDE for building things because then you can click on diagnostics in 
+# order to warp to the exact place in the code.
+OPT_COMMON = $(OPT_COMMON) /FC
+
+
 # ARM specific settings
 !if "$(TARGET_PROC)" == "arm"
 DEFS_COMMON = $(DEFS_COMMON) /D "ARM" /D "_ARM_" /D "$(TARGET_PROC_SUBTYPE)"
 OPT_COMMON = $(OPT_COMMON)
 !endif
+
+# x86 specific settings
+!if "$(TARGET_PROC)" == "x86"
+DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_"
+OPT_COMMON = $(OPT_COMMON)
+!endif
+
+# MIPS specific settings
+!if "$(TARGET_PROC)" == "mips"
+DEFS_COMMON = $(DEFS_COMMON) /D "MIPS" /D "_MIPS_" /D "$(TARGET_PROC_SUBTYPE)"
+!if "$(TARGET_PROC_SUBTYPE)" == ""
+!error "MIPS subtype not set"
+!elseif "$(TARGET_PROC_SUBTYPE)" == "MIPSII"
+OPT_COMMON = $(OPT_COMMON) /QMmips2
+!else
+!error "unknown MIPS subtype"
+!endif
+!endif
+
 
 # Note: /GX for MSC<14 has been replaced with /EHsc
 CFLAGS_COMMON = /nologo /TC /W4 /GF /GR /EHsc
