@@ -346,6 +346,9 @@ struct _CastTraits {
   { return __REINTERPRET_CAST(storage_type **, __ptr); }
   static storage_type const& to_storage_type_cref(value_type const&__ref)
   { return __REINTERPRET_CAST(storage_type const&, __ref); }
+  template <class _Tp1>
+  static _Tp1 const& to_storage_type_crefT(_Tp1 const& __ref)
+  { return __ref; }
 };
 
 #endif
