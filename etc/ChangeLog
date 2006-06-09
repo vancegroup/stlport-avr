@@ -1,3 +1,34 @@
+2006-06-09  Francois Dumont  <dums@stlport...>
+
+	* test/unit/cppunit: Patch from Ulrich Eckhardt to
+	  - Removed a few superfluous semicolons.
+	  - Made some constructors explicit.
+	  - Documented the meaning of FileReporter::_myStream.
+	  - Reformatted some things to not exceed 100 chars per
+	    line or use several expressions/statements in one line.
+
+	* build/Makefiles/nmake: Patch from Ulrich Eckhardt to
+	  - adds support for x86 (running on e.g. a PC, so-called CEPC).
+	  - adds support for MIPS or more specifically MIPSII, other MIPS
+	    subtypes can easily be added.
+	  - removes a line "DEFS_COMMON = /D%TARGETCPU%" from the config.mak
+	    file generated for MIPS, the same functionality was moved to the
+	    CPU-specific setups where it is done for other CPUs.
+	  - adds an additional compiler flag so that diagnostics better
+	    match what the VC8 IDE expects.
+
+	* stlport/stl: Patch from Ulrich Echkardt to
+	  - removes several unnecessary semicolons (typically, when
+	    inlining functions like "void foo() {};" where it in fact doesn't
+	    hurt (due to something I consider an oversight in the standard)
+	    but also doesn't make sense.
+	  - fixes inconsistent indentation in three cases, one with the
+	    preprocessor and two with memberfunction bodies.
+
+	* stlport/stl/pointers/_tools.h: Add missing template method
+	in _CastTraits helper struct used on compiler not support partial
+	template specialization.
+
 2006-06-08  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/pointers/_tools.h, _set.h: Fix problems reported by
