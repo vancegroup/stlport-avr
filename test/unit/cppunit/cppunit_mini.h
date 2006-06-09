@@ -37,13 +37,13 @@ namespace CPPUNIT_NS
 
   class TestFixture {
   public:
-    virtual ~TestFixture() {};
+    virtual ~TestFixture() {}
 
     //! \brief Set up context before running a test.
-    virtual void setUp() {};
+    virtual void setUp() {}
 
     //! Clean up after the test run.
-    virtual void tearDown() {};
+    virtual void tearDown() {}
   };
 
   class TestCase : public TestFixture {

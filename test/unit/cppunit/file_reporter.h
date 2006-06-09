@@ -27,26 +27,39 @@
 //
 class FileReporter : public CPPUNIT_NS::Reporter {
 private:
-  FileReporter(const FileReporter& __x);
+  FileReporter(const FileReporter&);
   FileReporter& operator=(const FileReporter&);
 public:
-  FileReporter(bool doMonitor = false) : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false),
-                   m_failed(false), m_doMonitor(doMonitor)
+  // reporting to stderr
+  explicit FileReporter(bool doMonitor = false):
+      m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false),
+      m_failed(false), m_doMonitor(doMonitor)
   { _file = stderr; }
-  FileReporter(const char* file, bool doMonitor = false) : m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(true),
-                                                           m_failed(false), m_doMonitor(doMonitor) {
-#if !defined (_MSC_VER) || (_MSC_VER < 1400)
+
+  // reporting to the file with the given name
+  explicit FileReporter(const char* file, bool doMonitor = false):
+      m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(true),
+      m_failed(false), m_doMonitor(doMonitor)
+  {
+#ifndef _STLP_USE_SAFE_STRING_FUNCTIONS
     _file = fopen(file, "w");
 #else
     fopen_s(&_file, file, "w");
 #endif
   }
-  FileReporter(FILE* stream, bool doMonitor = false) : m_numErrors(0), m_numIgnores(0),
-                                                       m_numTests(0), _myStream(false),
-                                                       m_failed(false), m_doMonitor(doMonitor)
+
+  // reporting to the given file
+  explicit FileReporter(FILE* stream, bool doMonitor = false):
+      m_numErrors(0), m_numIgnores(0), m_numTests(0), _myStream(false),
+      m_failed(false), m_doMonitor(doMonitor)
   { _file = stream; }
 
-  virtual ~FileReporter() { if (_myStream) fclose(_file); else fflush(_file); }
+  virtual ~FileReporter() {
+    if (_myStream)
+      fclose(_file);
+    else
+      fflush(_file);
+  }
 
   virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
     ++m_numErrors;
@@ -112,6 +125,7 @@ private:
   int m_numErrors;
   int m_numIgnores;
   int m_numTests;
+  // flag whether we own '_file' and are thus responsible for releasing it in the destructor
   bool  _myStream;
   bool m_failed;
   bool m_doMonitor;
