@@ -186,7 +186,7 @@ struct V {
 
   int v;
 #if defined (__DMC__)
-  V(){};
+  V(){}
 #endif
 };
 

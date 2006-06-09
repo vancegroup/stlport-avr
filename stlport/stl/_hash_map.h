@@ -227,7 +227,7 @@ public:
   size_type bucket_count() const { return _M_ht.bucket_count(); }
   size_type max_bucket_count() const { return _M_ht.max_bucket_count(); }
   size_type elems_in_bucket(size_type __n) const
-    { return _M_ht.elems_in_bucket(__n); }
+  { return _M_ht.elems_in_bucket(__n); }
 };
 
 //Specific iterator traits creation
@@ -412,7 +412,7 @@ public:
   size_type bucket_count() const { return _M_ht.bucket_count(); }
   size_type max_bucket_count() const { return _M_ht.max_bucket_count(); }
   size_type elems_in_bucket(size_type __n) const
-    { return _M_ht.elems_in_bucket(__n); }
+  { return _M_ht.elems_in_bucket(__n); }
 };
 
 #define _STLP_TEMPLATE_HEADER template <class _Key, class _Tp, class _HashFcn, class _EqlKey, class _Alloc>

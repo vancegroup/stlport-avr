@@ -714,7 +714,7 @@ private:
 public:
   _Rope_flatten_char_consumer(_CharT* __buffer) {
     _M_buf_ptr = __buffer;
-  };
+  }
   ~_Rope_flatten_char_consumer() {}
   bool operator() (const _CharT* __leaf, size_t __n) {
     _STLP_PRIV __ucopy_n(__leaf, __n, _M_buf_ptr);
@@ -756,7 +756,7 @@ private:
   _Self& operator = (_Self const&);
 public:
   _Rope_insert_char_consumer(_Insert_ostream& __writer)
-    : _M_o(__writer) {};
+    : _M_o(__writer) {}
 #  if defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))  //*TY 05/23/2000 - added support for mpw compiler's trigger function approach to generate vtable
   ~_Rope_insert_char_consumer();    //*TY 05/23/2000 -
 #  else    //*TY 05/23/2000 -

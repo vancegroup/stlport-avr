@@ -61,7 +61,7 @@ struct StackAllocator
   typedef ptrdiff_t  difference_type;
 
 #if defined (__DMC__)
-  StackAllocator(){};
+  StackAllocator(){}
 #endif
 
   StackAllocator(char *beg, char *end)

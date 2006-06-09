@@ -35,7 +35,7 @@ template <class _Tp>
 class __move_source {
 public:
   explicit __move_source (_Tp &_src) : _M_data(_src)
-  {};
+  {}
 
   _Tp& get() const
   { return _M_data; }

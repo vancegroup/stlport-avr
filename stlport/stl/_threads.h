@@ -235,7 +235,7 @@ using _STLP_VENDOR_CSTD::time_t;
   APIRET _System DosRequestMutexSem(HMTX hmtx, ULONG ulTimeout);
   APIRET _System DosReleaseMutexSem(HMTX hmtx);
   APIRET _System DosCloseMutexSem(HMTX hmtx);
-#      define _STLP_MUTEX_INITIALIZER = { 0 };
+#      define _STLP_MUTEX_INITIALIZER = { 0 }
 #    endif /* GNUC */
 
 #  endif

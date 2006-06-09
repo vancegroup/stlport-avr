@@ -148,7 +148,7 @@ inline void _S_construct_null(_CharT *__p) {
 template <class _CharT>
 class char_producer {
 public:
-  virtual ~char_producer() {};
+  virtual ~char_producer() {}
   virtual void operator()(size_t __start_pos, size_t __len,
                           _CharT* __buffer) = 0;
   // Buffer should really be an arbitrary output iterator.
@@ -283,7 +283,7 @@ class _Rope_char_consumer {
 public:
   //Without member templates we have to use run-time parameterization.
   // The symmetry with char_producer is accidental and temporary.
-  virtual ~_Rope_char_consumer() {};
+  virtual ~_Rope_char_consumer() {}
   virtual bool operator()(const _CharT* __buffer, size_t __len) = 0;
 #endif
 };
@@ -611,9 +611,9 @@ struct _Rope_self_destruct_ptr {
   ~_Rope_self_destruct_ptr()
   { _Rope_RopeRep<_CharT,_Alloc>::_S_unref(_M_ptr); }
 #   ifdef _STLP_USE_EXCEPTIONS
-  _Rope_self_destruct_ptr() : _M_ptr(0) {};
+  _Rope_self_destruct_ptr() : _M_ptr(0) {}
 #   else
-  _Rope_self_destruct_ptr() {};
+  _Rope_self_destruct_ptr() {}
 #   endif
   _Rope_self_destruct_ptr(_Rope_RopeRep<_CharT,_Alloc>* __p) : _M_ptr(__p) {}
   _Rope_RopeRep<_CharT,_Alloc>& operator*() { return *_M_ptr; }
@@ -864,7 +864,7 @@ public:
   typedef random_access_iterator_tag iterator_category;
 
 public:
-  _Rope_const_iterator() {};
+  _Rope_const_iterator() {}
   _Rope_const_iterator(const _Self& __x) :
     _Rope_iterator_base<_CharT,_Alloc>(__x) { }
   _Rope_const_iterator(const _Rope_iterator<_CharT,_Alloc>& __x):
@@ -958,7 +958,7 @@ public:
   rope<_CharT,_Alloc>& container() { return *_M_root_rope; }
   _Rope_iterator() {
     this->_M_root = 0;  // Needed for reference counting.
-  };
+  }
   _Rope_iterator(const  _Self& __x) :
     _Rope_iterator_base<_CharT,_Alloc>(__x) {
     _M_root_rope = __x._M_root_rope;

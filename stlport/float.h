@@ -43,7 +43,7 @@ _STLP_END_NAMESPACE
 static unsigned int _bcc_fpu_bug = _control87(PC_53|MCW_EM, MCW_PC|MCW_EM);
 template <class _Fp>
 int __fpclass(_Fp __val)
-{ int __f = _fpclass(__val); _control87(PC_53|MCW_EM, MCW_PC|MCW_EM); return __f; };
+{ int __f = _fpclass(__val); _control87(PC_53|MCW_EM, MCW_PC|MCW_EM); return __f; }
 #  define _fpclass __fpclass
 #endif
 
