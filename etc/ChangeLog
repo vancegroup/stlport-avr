@@ -1,3 +1,15 @@
+2006-06-11  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/nmake: Patch from Ulrich Echkardt to use
+	main rather than WinMain for EVC platform.
+
+	* build/test/unit/gcc.mak: Removed redondant macro definition
+	_STLP_USE_STATIC_LIB under cygwin/mingw as those definition
+	are part of base make files.
+
+	* stlport/stl/type_manips.h, _hashtable.h: Eric Sanford workaround
+	for Borland.
+
 2006-06-09  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cppunit: Patch from Ulrich Eckhardt to
