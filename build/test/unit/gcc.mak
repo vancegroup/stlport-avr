@@ -12,18 +12,6 @@ include ${SRCROOT}/Makefiles/top.mak
 dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
 
-ifeq ($(OSNAME), cygming)
-release-static:	DEFS += -D_STLP_USE_STATIC_LIB
-dbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
-stldbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
-endif
-
-ifeq ($(OSNAME), windows)
-release-static:	DEFS += -D_STLP_USE_STATIC_LIB
-dbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
-stldbg-static:	DEFS += -D_STLP_USE_STATIC_LIB
-endif
-
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
