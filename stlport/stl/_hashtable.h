@@ -631,11 +631,7 @@ private:
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type _M_bkt_num_key(const _KT& __key, size_type __n) const
-#if defined (__BORLANDC__)
-  { return _M_hash.operator()(__key) % __n; }
-#else
   { return _M_hash(__key) % __n; }
-#endif
 
   size_type _M_bkt_num(const value_type& __obj, size_t __n) const
   { return _M_bkt_num_key(_M_get_key(__obj), __n); }

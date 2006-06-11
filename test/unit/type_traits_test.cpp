@@ -141,7 +141,7 @@ int is_convertible(_Src, _Dst) {
 #  if !defined(__BORLANDC__)
   typedef typename _IsConvertible<_Src, _Dst>::_Ret _Ret;
 #  else
-  enum { _Is = _IsConvertible<_Dst, _Src>::value };
+  enum { _Is = _IsConvertible<_Src, _Dst>::value };
   typedef typename __bool2type<_Is>::_Ret _Ret;
 #  endif
   return type_to_value(_Ret());
