@@ -17,10 +17,6 @@
 #include "file_reporter.h"
 #include "cppunit_timer.h"
 
-#ifdef UNDER_CE
-#  include <windows.h>
-#endif
-
 namespace CPPUNIT_NS
 {
   int CPPUNIT_NS::TestCase::m_numErrors = 0;
@@ -49,56 +45,8 @@ namespace CPPUNIT_NS
   }
 }
 
-#if defined (UNDER_CE)
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
-  //MessageBox(NULL, TEXT("Press Ok to start STLport testing..."), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
-
-  int argc=1;
-  size_t size = wcslen(lpCmdLine);
-  char* buff = new char[size+1];
-  wcstombs(buff, lpCmdLine, size);
-  buff[size] = 0;
-  char* bp = buff;
-
-  char* argv[3];  // limit to three args
-  argv[0]=0;
-  argv[1]=0;
-  argv[2]=0;
-  while(*bp && argc<3) {
-    if (*bp == ' ' || *bp == '\t') {
-      ++bp;
-      continue;
-    }
-    if (*bp == '-') {
-      char* start=bp;
-      while (*bp && *bp != ' ' && *bp != '\t')
-        ++bp;
-      argv[argc] = new char[bp - start + 1];
-      strncpy(argv[argc], start, bp-start);
-      argv[argc][bp - start] = 0;
-      ++argc;
-    }
-  }
-
-  // set default output to stlp_test.txt if -f is not defined
-  bool f_supplied = false;
-  for (int i2=0; i2 < argc; ++i2){
-    if (argv[i2] && argv[i2][1] == 'f') {
-      f_supplied = true;
-      break;
-    }
-  }
-  if (!f_supplied) {
-    ++argc;
-    argv[argc-1] = new char[18];
-    strncpy(argv[argc-1], "-f=/stlp_test.txt", 18);
-  }
-
-  delete[] buff;
-
-#else
 int main(int argc, char** argv) {
-#endif
+
   // CppUnit(mini) test launcher
   // command line option syntax:
   // test [OPTIONS]
@@ -145,23 +93,10 @@ int main(int argc, char** argv) {
   reporter->printSummary();
   delete reporter;
 
-#if defined (UNDER_CE)
-  // let the user know we are done
-  /*
-  if(!num_errors)
-    MessageBox(NULL, TEXT("All STLport tests passed!"), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
-  else
-    MessageBox(NULL, TEXT("Some STLport tests failed! Check the output."), TEXT("STLP test suite"), MB_OK | MB_ICONASTERISK);
-  */
-
-  // free args
-  delete[] argv[1];
-  delete[] argv[2];
-#endif
-
   return num_errors;
 }
 
+// See doc/README.intel for explanation about this code
 #if defined (__ICL) && (__ICL >= 900) && (_STLP_MSVC_LIB < 1300)
 #  include <exception>
 

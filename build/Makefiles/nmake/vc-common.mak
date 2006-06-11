@@ -11,7 +11,7 @@ CXX = cl
 CC = cl
 !endif
 !ifndef LINK
-LINK = link
+LINK = link /fixed:no
 !endif
 !ifndef RC
 RC = rc
