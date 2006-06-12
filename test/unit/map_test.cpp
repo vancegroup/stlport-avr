@@ -300,9 +300,9 @@ void MapTest::allocator_with_state()
 struct Key
 {
   Key() : m_data(0) {}
-  explicit Key(size_t data) : m_data(data) {}
+  explicit Key(int data) : m_data(data) {}
 
-  size_t m_data;
+  int m_data;
 };
 
 struct KeyCmp
@@ -310,10 +310,10 @@ struct KeyCmp
   bool operator () (Key lhs, Key rhs) const
   { return lhs.m_data < rhs.m_data; }
 
-  bool operator () (Key lhs, size_t rhs) const
+  bool operator () (Key lhs, int rhs) const
   { return lhs.m_data < rhs; }
 
-  bool operator () (size_t lhs, Key rhs) const
+  bool operator () (int lhs, Key rhs) const
   { return lhs < rhs.m_data; }
 };
 
@@ -322,10 +322,10 @@ struct KeyCmpPtr
   bool operator () (Key const volatile *lhs, Key const volatile *rhs) const
   { return (*lhs).m_data < (*rhs).m_data; }
 
-  bool operator () (Key const volatile *lhs, size_t rhs) const
+  bool operator () (Key const volatile *lhs, int rhs) const
   { return (*lhs).m_data < rhs; }
 
-  bool operator () (size_t lhs, Key const volatile *rhs) const
+  bool operator () (int lhs, Key const volatile *rhs) const
   { return lhs < (*rhs).m_data; }
 };
 
