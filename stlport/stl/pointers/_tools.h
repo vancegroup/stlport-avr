@@ -110,7 +110,8 @@ struct _StorageType {
 
 template <class _Tp, class _Compare>
 struct _AssocStorageTypes {
-  typedef typename _StorageType<_Tp>::_Type _SType;
+  typedef _StorageType<_Tp> _StorageTypeInfo;
+  typedef typename _StorageTypeInfo::_Type _SType;
 
   //We need to also check that the comparison functor used to instanciate the assoc container
   //is the default Standard less implementation:
@@ -118,7 +119,10 @@ struct _AssocStorageTypes {
   enum { is_default_less = __type2bool<_STLportLess>::_Ret };
 
   typedef typename __select<is_default_less, _SType, _Tp>::_Ret _KeyStorageType;
-  typedef typename __select<is_default_less, _BinaryPredWrapper<_KeyStorageType, _Tp, _Compare>, _Compare>::_Ret _CompareStorageType;
+  enum { ptr_type = _StorageTypeInfo::use_const_volatile_void_ptr };
+  typedef typename __select<is_default_less && ptr_type,
+                            _BinaryPredWrapper<_KeyStorageType, _Tp, _Compare>,
+                            _Compare>::_Ret _CompareStorageType;
 };
 
 
