@@ -457,6 +457,9 @@ private:
  */
 class _STLP_CLASS_DECLSPEC _Refcount_Base {
   // The data member _M_ref_count
+#if defined (__DMC__)
+public:
+#endif
   _STLP_VOLATILE __stl_atomic_t _M_ref_count;
 
 #if !defined (_STLP_ATOMIC_EXCHANGE)

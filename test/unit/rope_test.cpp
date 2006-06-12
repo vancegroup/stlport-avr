@@ -1,7 +1,7 @@
 //Small header to get STLport numerous defines:
 #include <utility>
 
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <rope>
 
 #  if !defined (_STLP_USE_NO_IOSTREAMS)
@@ -21,12 +21,11 @@ using namespace std;
 class RopeTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(RopeTest);
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS) || \
-    defined (__DMC__)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(io);
-#if defined (_STLP_USE_NO_IOSTREAMS) && !defined (__DMC__)
+#if defined (_STLP_USE_NO_IOSTREAMS)
   CPPUNIT_STOP_IGNORE;
 #endif
   CPPUNIT_TEST(find1);

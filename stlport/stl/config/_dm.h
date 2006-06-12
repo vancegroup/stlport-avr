@@ -67,6 +67,9 @@
 #  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 #endif
 
+#define _STLP_USE_ABBREVS
+#define _STLP_NO_CONTAINERS_EXTENSION
+
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 

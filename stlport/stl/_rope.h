@@ -876,7 +876,12 @@ public:
     return *this;
   }
   reference operator*() {
-    if (0 == this->_M_buf_ptr) _S_setcache(*this);
+    if (0 == this->_M_buf_ptr)
+#if !defined (__DMC__)
+      _S_setcache(*this);
+#else
+    { _Rope_iterator_base<_CharT, _Alloc>* __x = this; _S_setcache(*__x); }
+#endif
     return *(this->_M_buf_ptr);
   }
   _Self& operator++() {
@@ -2326,6 +2331,9 @@ _STLP_TEMPLATE_NULL struct hash<wrope> {
 #if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
+#  if defined (__DMC__) && !defined (__PUT_STATIC_DATA_MEMBERS_HERE)
+extern
+#  endif
 void _Rope_rotate(_Rope_iterator<_CharT, _Alloc> __first,
                   _Rope_iterator<_CharT, _Alloc> __middle,
                   _Rope_iterator<_CharT, _Alloc> __last);

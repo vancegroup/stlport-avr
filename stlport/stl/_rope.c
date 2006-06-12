@@ -60,7 +60,12 @@ template<class _CharT, class _Alloc>
 _Rope_iterator<_CharT, _Alloc>::_Rope_iterator(rope<_CharT,_Alloc>& __r, size_t __pos):
   _Rope_iterator_base<_CharT,_Alloc>(__r._M_tree_ptr._M_data, __pos),
   _M_root_rope(&__r) {
+#if !defined (__DMC__)
   _RopeRep::_S_ref(this->_M_root); if (!(__r.empty()))_S_setcache(*this);
+#else
+  _Rope_iterator_base<_CharT, _Alloc>* __x = this;
+  _RopeRep::_S_ref(this->_M_root); if (!(__r.empty()))_S_setcache(*__x);
+#endif
 }
 
 template<class _CharT, class _Alloc>
@@ -336,10 +341,10 @@ void _Rope_RopeRep<_CharT,_Alloc>::_M_free_tree() {
   case _S_substringfn:
     {
       typedef _Rope_RopeSubstring<_CharT, _Alloc> _RopeSubstring;
-      _RopeSubstring* __ss = __STATIC_CAST(_RopeSubstring*, this);
-      _STLP_STD::_Destroy(__ss);
+      _RopeSubstring* __rss = __STATIC_CAST(_RopeSubstring*, this);
+      _STLP_STD::_Destroy(__rss);
       _STLP_CREATE_ALLOCATOR(allocator_type, (const allocator_type&)_M_size,
-                             _RopeSubstring).deallocate(__ss, 1);
+                             _RopeSubstring).deallocate(__rss, 1);
       break;
     }
   }
@@ -1373,7 +1378,8 @@ const _CharT* rope<_CharT,_Alloc>::replace_with_c_str() {
 
 // Algorithm specializations.  More should be added.
 
-#if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310)) && \
+    (!defined (__DMC__) || defined (__PUT_STATIC_DATA_MEMBERS_HERE))
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
 void _Rope_rotate(_Rope_iterator<_CharT,_Alloc> __first,

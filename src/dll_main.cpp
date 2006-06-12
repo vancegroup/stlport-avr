@@ -52,7 +52,7 @@
 #include <bitset>
 #include <locale>
 
-#if (_STLP_STATIC_TEMPLATE_DATA < 1)
+#if (_STLP_STATIC_TEMPLATE_DATA < 1) || defined (__DMC__)
 // for rope static members
 #  include <rope>
 #endif
