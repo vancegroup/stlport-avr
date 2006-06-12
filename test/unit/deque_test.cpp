@@ -183,5 +183,9 @@ void DequeTest::optimizations_check()
   deque<PointEx> d2(d1.begin(), d1.end());
   CPPUNIT_ASSERT( d2.size() == 1 );
   CPPUNIT_ASSERT( d2[0].builtFromBase == true );
+
+  d2.insert(d2.end(), d1.begin(), d1.end());
+  CPPUNIT_ASSERT( d2.size() == 2 );
+  CPPUNIT_ASSERT( d2[1].builtFromBase == true );
 #endif
 }
