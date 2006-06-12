@@ -64,6 +64,9 @@ LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared : STLPORT_LIB = -lstlport.${LIB_VERSION}
 dbg-shared     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
 stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+release-static : STLPORT_LIB = -lstlport.${LIB_VERSION}
+dbg-static     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
+stldbg-static  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
 endif
 
 ifeq ($(OSNAME),windows)
@@ -71,6 +74,9 @@ LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared : STLPORT_LIB = -lstlport.${LIB_VERSION}
 dbg-shared     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
 stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+release-static : STLPORT_LIB = -lstlport.${LIB_VERSION}
+dbg-static     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
+stldbg-static  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
 endif
 
 endif
