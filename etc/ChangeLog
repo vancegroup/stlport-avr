@@ -1,3 +1,17 @@
+2006-06-12  Francois Dumont  <dums@stlport...>
+
+	* test/unit/set_test.cpp, map_test.cpp: Replace size_t with the
+	more portable int type when possible.
+
+	* stlport/stl/pointers/_tools.h: Check that type to store is a
+	pointer type before modifying predicate type for set container.
+	Wrapping less functor in all cases was making move semantic tests
+	to fail as predicate is not then detected as being the STLport
+	less predicate.
+
+	* stlport/stl: DMC patch from Eric Sanford. DMC do not like __ss
+	variable that is a reserved keyword.
+
 2006-06-11  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/nmake: Patch from Ulrich Echkardt to use
