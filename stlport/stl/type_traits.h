@@ -319,7 +319,7 @@ struct _TrivialNativeTypeCopy {
   typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Convertible;
   typedef typename _Land2<_BothPtrs, _Convertible>::_Ret _Trivial1;
 
-  typedef typename __bool2type<sizeof(_Src) == sizeof(_Dst)>::_Ret _SameSize;
+  typedef typename __bool2type<(sizeof(_Src) == sizeof(_Dst))>::_Ret _SameSize;
 
   typedef typename _IsIntegral<_Src>::_Ret _Int1;
   typedef typename _IsIntegral<_Dst>::_Ret _Int2;
