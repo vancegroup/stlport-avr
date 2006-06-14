@@ -14,7 +14,7 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:"libc.lib" 
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:"libc.lib" /nodefaultlib:"oldnames.lib"
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096"
 
 # increase compiler memory in order to compile deeply nested template code
@@ -39,7 +39,7 @@ OPT_COMMON = $(OPT_COMMON)
 !if "$(TARGET_PROC_SUBTYPE)" == "emulator"
 DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
 !endif
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) $(CEx86Corelibc)
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:X86 $(CEx86Corelibc)
 !endif
 
 # MIPS specific settings

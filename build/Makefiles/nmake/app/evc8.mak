@@ -1,5 +1,5 @@
 # build/Makefiles/nmake/app/evc8.mak
 
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) /entry:"mainACRTStartup"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON)
 
 !include evc-common.mak
