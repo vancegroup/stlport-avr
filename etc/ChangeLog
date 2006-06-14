@@ -1,3 +1,15 @@
+2006-06-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/pointers/_tools.h: Add partial specialization for
+	_IteWrapper helper struct so that when type to store and stored
+	type are identical input iterators are not wrapped. Otherwise input
+	iterators are wrapped to perform necessary casts between pointer type
+	and void*.
+
+	* stlport/stl/_cmath.h: Fixed macros definition used to define all
+	math functions for compilers supporting long double but not having
+	float nor long double C math functions. Thanks Ulrich Eckhardt report.
+	
 2006-06-12  Francois Dumont  <dums@stlport...>
 
 	* test/unit/set_test.cpp, map_test.cpp: Replace size_t with the
@@ -14,7 +26,7 @@
 
 2006-06-11  Francois Dumont  <dums@stlport...>
 
-	* build/Makefiles/nmake: Patch from Ulrich Echkardt to use
+	* build/Makefiles/nmake: Patch from Ulrich Eckhardt to use
 	main rather than WinMain for EVC platform.
 
 	* build/test/unit/gcc.mak: Removed redondant macro definition
@@ -43,7 +55,7 @@
 	  - adds an additional compiler flag so that diagnostics better
 	    match what the VC8 IDE expects.
 
-	* stlport/stl: Patch from Ulrich Echkardt to
+	* stlport/stl: Patch from Ulrich Eckhardt to
 	  - removes several unnecessary semicolons (typically, when
 	    inlining functions like "void foo() {};" where it in fact doesn't
 	    hurt (due to something I consider an oversight in the standard)
