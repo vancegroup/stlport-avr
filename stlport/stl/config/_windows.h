@@ -86,6 +86,12 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchangeAdd(long volatile *,
 /* start of eMbedded Visual C++ specific section */
 #      include <windef.h> /* needed for basic windows types */
 
+       /** in SDKs generated with PB5, windef.h somehow includes headers which then 
+       define setjmp. */
+#      if (_WIN32_WCE >= 0x500)
+#        define _STLP_NATIVE_SETJMP_H_INCLUDED
+#      endif
+
 long WINAPI InterlockedIncrement(long*);
 long WINAPI InterlockedDecrement(long*);
 long WINAPI InterlockedExchange(long*, long);

@@ -1,6 +1,6 @@
 /* STLport configuration file
  * It is internal STLport header - DO NOT include it directly
- * Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0 Beta, ICL
+ * Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0, ICL
  */
 
 #if !defined (__ICL) && !defined (_STLP_MSVC)
@@ -98,12 +98,33 @@
 #    define _STLP_FULL_ADL_IMPLEMENTED 1
 #  endif
 
-#  if (_STLP_MSVC >= 1300)
-#    undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#    if !defined (_STLP_DONT_USE_EXCEPTIONS)
-#      define _STLP_NOTHROW throw()
+
+/** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined 
+unconditionally and undef'ed here when applicable. */
+#  if defined(UNDER_CE)
+/* eVCx:
+uncaught_exception is declared in the SDKs delivered with eVC4 (eVC3 is 
+unknown) and they all reside in namespace 'std' there. However, they are not
+part of any lib so linking fails. When using VC8 to crosscompile for CE 5 on
+an ARMV4I, the uncaught_exception test fails, the function returns the wrong 
+value. */
+#  else
+/* VCx:
+These are present at least since VC6, but the uncaught_exception() of VC6 is
+broken, it returns the wrong value in the unittests. 7.1 and later seem to 
+work, 7.0 is still unknown (we assume it works until negative report). */
+#    if (_STLP_MSVC >= 1300)// VC7 and later
+#      undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#      if !defined (_STLP_DONT_USE_EXCEPTIONS)
+#        define _STLP_NOTHROW throw()
+#      endif
 #    endif
 #  endif
+
+#  if _STLP_MSVC >= 1200
+#    undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#  endif
+
 
 #  if (_STLP_MSVC <= 1300)
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
@@ -136,12 +157,13 @@
 #    define _STLP_HAS_NATIVE_FLOAT_ABS 1
 #  endif
 
+// TODO: some eVC4 compilers report _MSC_VER 1201 or 1202, which category do they belong to?
 #  if (_STLP_MSVC > 1200) && (_STLP_MSVC < 1310)
 #    define _STLP_NO_MOVE_SEMANTIC
 #  endif
 
 #  if (_STLP_MSVC < 1300)
-/*
+/* TODO: remove this if it is handled and documented elsewhere
  * dums: VC6 do not handle correctly member templates of class that are explicitely
  * instanciated to be exported. There is a workaround, seperate the non template methods
  * from the template ones within 2 different classes and only export the non template one.
@@ -186,6 +208,7 @@
 #    define _STLP_USE_ABBREVS
 #  endif
 
+// TODO: what is the earliest version for this? If it is 1200, use _STLP_MSVC>=1200.
 #  if (_STLP_MSVC > 1100) && (_STLP_MSVC < 1300)
 typedef char __stl_char;
 #    define _STLP_DEFAULTCHAR __stl_char
@@ -231,7 +254,9 @@ typedef char __stl_char;
 
 #endif /* _STLP_MSVC */
 
-#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER)
+/** The desktop variants starting with VC8 have a set of more secure replacements
+for the error-prone string handling functions of the C standard lib. */
+#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER) && !defined(UNDER_CE)
 #  define _STLP_USE_SAFE_STRING_FUNCTIONS 1
 #endif
 
@@ -239,7 +264,7 @@ typedef char __stl_char;
 #  define _STLP_VENDOR_GLOBAL_CSTD
 #endif
 
-#if (_STLP_MSVC_LIB >= 1300)
+#if (_STLP_MSVC_LIB >= 1300) && !defined(UNDER_CE)
 /* Starting with MSVC 7.0 and compilers simulating it,
  * we assume that the new SDK is granted:
  */

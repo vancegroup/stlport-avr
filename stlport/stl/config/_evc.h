@@ -48,6 +48,17 @@
 // inherit all msvc6 options
 #include <stl/config/_msvc.h>
 
+// CE up to at least version 5 has no C locale support
+#define _STLP_NO_LOCALE_SUPPORT
+
+#if _WIN32_WCE >= 0x500
+   // SDKs built with PB5 have terminate&co in namespace std...
+#  define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_STD
+#  define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_STD
+   // ...and new_handler/set_new_handler in the global namespace.
+#  define _STLP_GLOBAL_NEW_HANDLER 1
+#endif
+
 // Always threaded in eMbedded Visual C++ 3.0 and .NET
 #ifndef _MT
 #  define _MT
@@ -96,7 +107,7 @@
 #endif
 
 // short string optimization bug under evc3, evc4 using ARM compiler
-#if defined (ARM) || defined (_ARM_)
+#if _MSC_VER<1400 && (defined (ARM) || defined (_ARM_))
 #  define _STLP_DONT_USE_SHORT_STRING_OPTIM
 #endif
 
@@ -156,14 +167,26 @@
 #        define _STLP_NATIVE_INCLUDE_PATH ../X86
 #      endif
 #    elif defined (_ARM_)
-#      if defined (ARMV4)
-#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4
-#      elif defined (ARMV4I)
-#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
-#      elif defined (ARMV4T)
-#        define _STLP_NATIVE_INCLUDE_PATH ../Armv4t
+#      if _MSC_VER < 1400
+         // eVC3/4
+#        if defined (ARMV4)
+#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+#        elif defined (ARMV4I)
+#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
+#        elif defined (ARMV4T)
+#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4t
+#        else
+#          error Unknown ARM SDK.
+#        endif
 #      else
-#        error Unknown ARM SDK.
+         // VC8 crosscompiling for CE
+#        if defined (ARMV4)
+#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+#        elif defined(ARMV4I) || defined(ARMV4T)
+#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
+#        else
+#          error Unknown ARM SDK.
+#        endif
 #      endif
 #    elif defined (_MIPS_)
 #      if defined (MIPS16)
@@ -296,11 +319,6 @@ inline void __cdecl operator delete(void *, void *) { return; }
 #  ifndef _ASSERT_DEFINED
 #    define assert(expr) _STLP_ASSERT(expr)
 #    define _ASSERT_DEFINED
-#  endif
-
-// MIPS platform usually uses little endian on Pocket PC 2000/2002
-#  ifdef _MIPS_
-#    define _STLP_LITTLE_ENDIAN
 #  endif
 
 #endif /* _STLP_WCE_EVC3 */
