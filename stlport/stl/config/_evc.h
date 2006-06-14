@@ -56,8 +56,12 @@
 // we don't have a static native runtime library
 #undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 
+#if _WIN32_WCE < 400
+// no long double under CE3 and older
+#  _STLP_NO_LONG_DOUBLE
+#endif
+
 // no *f and *l math functions available
-#define _STLP_NO_LONG_DOUBLE
 #define _STLP_NO_VENDOR_MATH_F
 #define _STLP_NO_VENDOR_MATH_L
 

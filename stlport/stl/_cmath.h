@@ -455,10 +455,14 @@ inline long double hypot(long double x, long double y) { return sqrt(x * x + y *
 #    pragma warning (pop)
 #  endif
 #else
-#  if defined (_STLP_USE_UCLIBC) || defined (_STLP_WCE)
+#  if defined (_STLP_USE_UCLIBC)
 inline double hypot(double x, double y) { return sqrt(x * x + y * y); }
-#  endif
 _STLP_DEF_MATH_INLINE2(hypot, hypot)
+#  elif defined (_STLP_WCE)
+   /* CE has a double _hypot(double,double) which we use */
+inline double hypot(double __x, double __y) { return _hypot(__x,__y); }
+_STLP_DEF_MATH_INLINE2(hypot, _hypot)
+#  endif
 #endif
 
 #if defined (_STLP_RESTORE_FUNCTION_INTRINSIC)
