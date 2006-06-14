@@ -22,12 +22,7 @@
 #include <cmath>
 #include <complex>
 
-// As hypot is not Standard STLport do not use it directly. We wrap it
-// in __stlp_hypot to perform compiler specific task to grant hypot functionality.
-template <class _Tp>
-static inline _Tp __stlp_hypot(_Tp x, _Tp y) {
 #if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB >= 1400)
-#  pragma warning (push)
 // hypot is deprecated.
 #  if defined (_STLP_MSVC)
 #    pragma warning (disable : 4996)
@@ -35,11 +30,6 @@ static inline _Tp __stlp_hypot(_Tp x, _Tp y) {
 #    pragma warning (disable : 1478)
 #  endif
 #endif
-  return ::hypot(x, y); 
-#if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB >= 1400)
-#  pragma warning (pop)
-#endif
-}
 
 _STLP_BEGIN_NAMESPACE
 
@@ -48,15 +38,15 @@ _STLP_BEGIN_NAMESPACE
 // Absolute value
 _STLP_TEMPLATE_NULL
 _STLP_DECLSPEC float _STLP_CALL abs(const complex<float>& __z)
-{ return ::__stlp_hypot(__z._M_re, __z._M_im); }
+{ return ::hypot(__z._M_re, __z._M_im); }
 _STLP_TEMPLATE_NULL
 _STLP_DECLSPEC double _STLP_CALL abs(const complex<double>& __z)
-{ return ::__stlp_hypot(__z._M_re, __z._M_im); }
+{ return ::hypot(__z._M_re, __z._M_im); }
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
 _STLP_TEMPLATE_NULL
 _STLP_DECLSPEC long double _STLP_CALL abs(const complex<long double>& __z)
-{ return ::__stlp_hypot(__z._M_re, __z._M_im); }
+{ return ::hypot(__z._M_re, __z._M_im); }
 #endif
 
 // Phase
@@ -177,7 +167,7 @@ template <class _Tp>
 static complex<_Tp> sqrtT(const complex<_Tp>& z) {
   _Tp re = z._M_re;
   _Tp im = z._M_im;
-  _Tp mag = ::__stlp_hypot(re, im);
+  _Tp mag = ::hypot(re, im);
   complex<_Tp> result;
 
   if (mag == 0.f) {
@@ -232,7 +222,7 @@ static complex<_Tp> log10T(const complex<_Tp>& z, const _Tp& ln10_inv) {
   complex<_Tp> r;
 
   r._M_im = ::atan2(z._M_im, z._M_re) * ln10_inv;
-  r._M_re = ::log10(::__stlp_hypot(z._M_re, z._M_im));
+  r._M_re = ::log10(::hypot(z._M_re, z._M_im));
   return r;
 }
 
@@ -257,7 +247,7 @@ static complex<_Tp> logT(const complex<_Tp>& z) {
   complex<_Tp> r;
 
   r._M_im = ::atan2(z._M_im, z._M_re);
-  r._M_re = ::log(::__stlp_hypot(z._M_re, z._M_im));
+  r._M_re = ::log(::hypot(z._M_re, z._M_im));
   return r;
 }
 _STLP_DECLSPEC complex<float> _STLP_CALL log(const complex<float>& z)
@@ -294,7 +284,7 @@ static complex<_Tp> powT(const complex<_Tp>& z_in, int n) {
 
 template <class _Tp>
 static complex<_Tp> powT(const complex<_Tp>& a, const _Tp& b) {
-  _Tp logr = ::log(::__stlp_hypot(a._M_re,a._M_im));
+  _Tp logr = ::log(::hypot(a._M_re,a._M_im));
   _Tp logi = ::atan2(a._M_im, a._M_re);
   _Tp x = ::exp(logr * b);
   _Tp y = logi * b;
@@ -304,7 +294,7 @@ static complex<_Tp> powT(const complex<_Tp>& a, const _Tp& b) {
 
 template <class _Tp>
 static complex<_Tp> powT(const complex<_Tp>& a, const complex<_Tp>& b) {
-  _Tp logr = ::log(::__stlp_hypot(a._M_re,a._M_im));
+  _Tp logr = ::log(::hypot(a._M_re,a._M_im));
   _Tp logi = ::atan2(a._M_im, a._M_re);
   _Tp x = ::exp(logr * b._M_re - logi * b._M_im);
   _Tp y = logr * b._M_im + logi * b._M_re;
