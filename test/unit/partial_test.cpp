@@ -96,10 +96,10 @@ void PartialTest::parsrt1()
 
 void PartialTest::parsrt2()
 {
-  char* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
+  char const* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
 
   const unsigned nameSize = sizeof(names) / sizeof(names[0]);
-  vector <char*> v1(nameSize);
+  vector <char const*> v1(nameSize);
   for(size_t i = 0; i < v1.size(); i++)
     v1[i] = names[i];
 
@@ -152,13 +152,13 @@ void PartialTest::parsrtc1()
 
 void PartialTest::parsrtc2()
 {
-  char* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
+  char const* names[] = { "aa", "ff", "dd", "ee", "cc", "bb" };
 
   const unsigned nameSize = sizeof(names) / sizeof(names[0]);
-  vector <char*> v1(nameSize);
+  vector <char const*> v1(nameSize);
   for(size_t i = 0; i < v1.size(); i++)
     v1[i] = names[i];
-  vector <char*> result(3);
+  vector <char const*> result(3);
   partial_sort_copy(v1.begin(), v1.end(), result.begin(), result.end(), str_compare);
 
   // aa bb cc

@@ -72,16 +72,16 @@ void SearchTest::search1()
 }
 void SearchTest::search2()
 {
-  char* grades[] = { "A", "B", "C", "D", "F" };
-  char* letters[] = { "Q", "E", "D" };
+  char const* grades[] = { "A", "B", "C", "D", "F" };
+  char const* letters[] = { "Q", "E", "D" };
   const unsigned gradeCount = sizeof(grades) / sizeof(grades[0]);
   const unsigned letterCount = sizeof(letters) / sizeof(letters[0]);
-  char** location = search((char**)grades, (char**)grades + gradeCount, (char**)letters, (char**)letters + letterCount, str_equal);
+  char const** location = search((char const**)grades, (char const**)grades + gradeCount, (char const**)letters, (char const**)letters + letterCount, str_equal);
 
   CPPUNIT_ASSERT(location == grades + gradeCount);
 
-  copy((char**)grades + 1, (char**)grades + 1 + letterCount, (char**)letters);
-  location = search((char**)grades, (char**)grades + gradeCount, (char**)letters, (char**)letters + letterCount, str_equal);
+  copy((char const**)grades + 1, (char const**)grades + 1 + letterCount, (char const**)letters);
+  location = search((char const**)grades, (char const**)grades + gradeCount, (char const**)letters, (char const**)letters + letterCount, str_equal);
 
   CPPUNIT_ASSERT(location != grades + gradeCount);
   CPPUNIT_ASSERT(location - grades == 1);

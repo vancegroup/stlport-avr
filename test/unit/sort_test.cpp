@@ -63,7 +63,7 @@ void SortTest::stblsrt1()
   CPPUNIT_ASSERT(numbers[4]==42);
   CPPUNIT_ASSERT(numbers[5]==50);
 
-  char* letters[6] = {"bb", "aa", "ll", "dd", "qq", "cc" };
+  char const* letters[6] = {"bb", "aa", "ll", "dd", "qq", "cc" };
   stable_sort(letters, letters + 6, string_less);
   // aa bb cc dd ll qq
   CPPUNIT_ASSERT( strcmp(letters[0], "aa") == 0 );

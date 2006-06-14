@@ -34,9 +34,10 @@ void BsearchTest::bsearch1()
     vector[i] = i;
   CPPUNIT_ASSERT(binary_search(vector, vector + 100, 42));
 }
+
 void BsearchTest::bsearch2()
 {
-  char* labels[] = { "aa", "dd", "ff", "jj", "ss", "zz" };
+  char const* labels[] = { "aa", "dd", "ff", "jj", "ss", "zz" };
   const unsigned count = sizeof(labels) / sizeof(labels[0]);
   // DEC C++ generates incorrect template instatiation code
   // for "ff" so must cast

@@ -30,10 +30,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FinsertTest);
 //
 void FinsertTest::finsert1()
 {
-  char* array [] = { "laurie", "jennifer", "leisa" };
-  deque<char*> names;
-  front_insert_iterator<deque<char*> > fit(names);
-  fit = copy(array, array + 3, front_insert_iterator<deque <char*> >(names));
+  char const* array [] = { "laurie", "jennifer", "leisa" };
+  deque<char const*> names;
+  front_insert_iterator<deque<char const*> > fit(names);
+  fit = copy(array, array + 3, front_insert_iterator<deque <char const*> >(names));
 
   CPPUNIT_ASSERT(names[0]==array[2]);
   CPPUNIT_ASSERT(names[1]==array[1]);
@@ -47,9 +47,9 @@ void FinsertTest::finsert1()
 
 void FinsertTest::finsert2()
 {
-  char* array [] = { "laurie", "jennifer", "leisa" };
+  char const* array [] = { "laurie", "jennifer", "leisa" };
 
-  deque<char*> names;
+  deque<char const*> names;
   copy(array, array + 3, front_inserter(names));
 
   CPPUNIT_ASSERT(names[0]==array[2]);

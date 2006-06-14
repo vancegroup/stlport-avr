@@ -67,17 +67,16 @@ void MismatchTest::mismatch1()
 void MismatchTest::mismatch2()
 {
   const unsigned size = 5;
-  char* n1[size] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
+  char const* n1[size] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
 
-  char* n2[size];
-  copy(n1, n1 + 5, (char**)n2);
-  pair <char**, char**> result = mismatch((char**)n1, (char**)n1 + size, (char**)n2, str_equal);
+  char const* n2[size];
+  copy(n1, n1 + 5, (char const**)n2);
+  pair <char const**, char const**> result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
 
   CPPUNIT_ASSERT(result.first == n1 + size && result.second == n2 + size);
 
   n2[2] = "QED";
-  result = mismatch((char**)n1, (char**)n1 + size, (char**)n2, str_equal);
+  result = mismatch((char const**)n1, (char const**)n1 + size, (char const**)n2, str_equal);
   CPPUNIT_ASSERT(!(result.first == n2 + size && result.second == n2 + size));
   CPPUNIT_ASSERT((result.first - n1)==2);
-
 }
