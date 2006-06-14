@@ -276,6 +276,7 @@ struct _IteWrapper {
   typedef const_reference reference;
 
   typedef _IteWrapper<_StorageT, _ValueT, _Iterator> _Self;
+  typedef _Self _Ite;
 
   _IteWrapper(_Iterator &__ite) : _M_ite(__ite) {}
 
@@ -300,25 +301,25 @@ struct _IteWrapper {
     _M_ite += __offset;
     return *this;
   }
-  difference_type operator -(_Self const& __other) const {
-    return _M_ite - __other._M_ite;
-  }
+  difference_type operator -(_Self const& __other) const
+  { return _M_ite - __other._M_ite; }
 
-  bool operator == (_Self const& __other) const {
-    return _M_ite == __other._M_ite;
-  }
+  bool operator == (_Self const& __other) const
+  { return _M_ite == __other._M_ite; }
 
-  bool operator != (_Self const& __other) const {
-    return _M_ite != __other._M_ite;
-  }
+  bool operator != (_Self const& __other) const
+  { return _M_ite != __other._M_ite; }
 
-  bool operator < (_Self const& __rhs) const {
-    return _M_ite < __rhs._M_ite;
-  }
+  bool operator < (_Self const& __rhs) const
+  { return _M_ite < __rhs._M_ite; }
 
 private:
   _Iterator _M_ite;
 };
+
+template <class _Tp, class _Iterator>
+struct _IteWrapper<_Tp, _Tp, _Iterator>
+{ typedef _Iterator _Ite; };
 
 #else
 

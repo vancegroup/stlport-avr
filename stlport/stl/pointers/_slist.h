@@ -143,15 +143,14 @@ public:
 private:
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type&) {
-    _M_impl.assign(__n, __val);
-  }
+                          const __true_type&)
+  { _M_impl.assign(__n, __val); }
 
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
                           const __false_type&) {
-    _M_impl.assign(_STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                   _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
+    _M_impl.assign(typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:
@@ -243,8 +242,8 @@ private:
                                 _InputIterator __first, _InputIterator __last,
                                 const __false_type&) {
     _M_impl.insert_after(_BaseIte(__pos._M_node),
-                         _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                         _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
+                         typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                         typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:
@@ -303,8 +302,8 @@ private:
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
                           const __false_type&) {
-    _M_impl.insert(_BaseIte(__pos._M_node), _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__first),
-                                            _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>(__last));
+    _M_impl.insert(_BaseIte(__pos._M_node), typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                                            typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:
