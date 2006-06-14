@@ -173,6 +173,12 @@ void _STLP_CALL __release_time(_Locale_time* __time);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
+template <class _Ch, class _InIt>
+class time_get_byname;
+
+template <class _Ch, class _InIt>
+_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<_Ch, _InIt>*);
+
 template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
 class time_get_byname : public time_get<_Ch, _InIt> {
 public:
@@ -195,7 +201,7 @@ private:
   //explicitely defined as private to avoid warnings:
   time_get_byname(_Self const&);
   _Self& operator = (_Self const&);
-  friend _Locale_name_hint* _Locale_extract_hint(time_get_byname<char, istreambuf_iterator<char> >*);
+  friend _Locale_name_hint* _Locale_time_extract_hint<>(_Self*);
 };
 
 // time_put facet

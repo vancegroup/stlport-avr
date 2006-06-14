@@ -152,7 +152,8 @@ _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>* ct)
 { return _Locale_get_ctype_hint(ct->_M_ctype); }
 _Locale_name_hint* _Locale_extract_hint(numpunct_byname<char>* punct)
 { return _Locale_get_numeric_hint(punct->_M_numeric); }
-_Locale_name_hint* _Locale_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >* tget)
+template <class _Ch, class _InIt>
+_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<_Ch, _InIt>* tget)
 { return _Locale_get_time_hint(tget->_M_time); }
 _Locale_name_hint* _Locale_extract_hint(collate_byname<char>* coll)
 { return _Locale_get_collate_hint(coll->_M_collate); }
@@ -335,7 +336,7 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
         new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(pname, 0, hint);
       get  = getbn;
 #if !defined (__DMC__)
-      if (hint == 0) hint = _Locale_extract_hint(getbn);
+      if (hint == 0) hint = _Locale_time_extract_hint(getbn);
 #endif
       put  = new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(pname, 0, hint);
 #ifndef _STLP_NO_WCHAR_T
