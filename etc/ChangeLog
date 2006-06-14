@@ -1,3 +1,41 @@
+2006-06-14  Francois Dumont  <dums@stlport...>
+
+	* test/unit: Patch from Ulrich Eckhardt to fix storage of string
+	literals to const char* rather than simple char*.
+
+	* build/Makefiles/nmake: Ulrich Eckhardt patch:
+	  - /MACHINE:IX86 is obsolete and only supported for backward
+	    compatibility as alias for X86. Replaced all cases of IX86
+	    with X86.
+	  - /NODEFAULTLIB:OLDNAMES.lib seems to also be universal so I
+	    moved it to the base, too.
+	  - In order to use main() as entry point under CE, use linker 
+	    option /ENTRY:mainACRTStartup. This was already done for
+	    evc3,4,8 but I moved it to app/evc-common.mak and documented
+	    it.
+
+	* stlport/stl/_cmath.h, config/_evc.h: Uli patch to activate long
+	double support for EVC and use _hypot to implement STLport
+	overload.
+
+	* src/complex.cpp: Remove internal __stlp_hypot that is not necessary
+	anymore now that STLport always define a hypot function (thanks Uli
+	remark).
+
+	* stlport/stl/config: Ulrich Eckhardt VC8/CE patch:
+	  - Adapt the code to construct the paths to the native includes
+	    so that it matches the changed structure. This is currently
+	    only for ARM and might need more work for other targets (x86
+	    works though).
+	  - Make a distinction between the desktop and CE variants concerning
+	    the exception support functions. These now use the same compiler
+	    versions so that can't be used anymore.
+	  - MS' safe string functions are not available under CE - I think,
+	    need to take a closer look at Platform Builder.
+
+	* stlport/stl: Ulrich Eckhardt to adapt STLport to VC8/CE limited
+	native C library.
+
 2006-06-13  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/pointers/_tools.h: Add partial specialization for
