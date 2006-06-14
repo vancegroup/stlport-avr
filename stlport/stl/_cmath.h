@@ -150,32 +150,14 @@ extern long double __tanhl(long double);
 #  define _STLP_CMATH_FUNC_NAMESPACE
 #endif
 
-#if !defined (__sun)
+#if !defined (__sun) || defined (__GNUC__)
 #  define _STLP_MATH_INLINE(float_type, func, cfunc) \
      inline float_type func (float_type x) { return _STLP_CMATH_FUNC_NAMESPACE::cfunc(x); }
 #  define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
      inline float_type func (float_type x, type y) { return _STLP_CMATH_FUNC_NAMESPACE::cfunc(x, y); }
-#  define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
+#  define _STLP_MATH_INLINE_D(float_type, func, cfunc)
 #  define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
 #else
-#  ifdef __GNUC__
-#    if 0
-#      define _STLP_MATH_INLINE(float_type, func, cfunc) \
-       inline float_type func (float_type x) { return ::__##cfunc(x); }
-#      define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
-       inline float_type func (float_type x, type y) { return ::__##cfunc(x,y); }
-#      define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
-#      define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
-#    endif
-#    if 1
-#      define _STLP_MATH_INLINE(float_type, func, cfunc) \
-       inline float_type func (float_type x) { return ::cfunc(x); }
-#      define _STLP_MATH_INLINE2(float_type, type, func, cfunc) \
-       inline float_type func (float_type x, type y) { return ::cfunc(x,y); }
-#      define _STLP_MATH_INLINE_D(float_type, func, cfunc) 
-#      define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc)
-#    endif
-#  endif
 #  ifdef __SUNPRO_CC
 #    define _STLP_MATH_INLINE(float_type, func, cfunc) \
        inline float_type func (float_type x) { return _STLP_VENDOR_CSTD::__##cfunc(x); }
@@ -185,6 +167,8 @@ extern long double __tanhl(long double);
        inline float_type func (float_type x, type y) { return _STLP_VENDOR_CSTD::__##cfunc(x,y); }
 #    define _STLP_MATH_INLINE2_D(float_type, type, func, cfunc) \
        inline float_type func (float_type x, type y) { return _STLP_VENDOR_CSTD::cfunc(x,y); }
+#  else
+#    error Unknown compiler for the Sun platform
 #  endif
 #endif
 
@@ -263,19 +247,19 @@ extern long double __tanhl(long double);
 #    else
 #      define _STLP_DEF_MATH_INLINE(func,cf) \
       _STLP_MATH_INLINEX(float,func,cf) \
-      _STLP_MATH_INLINE(long double,func,cf)
+      _STLP_MATH_INLINEX(long double,func,cf)
 #      define _STLP_DEF_MATH_INLINE2(func,cf) \
       _STLP_MATH_INLINE2XX(float,func,cf) \
-      _STLP_MATH_INLINE2(long double,long double,func,cf)
+      _STLP_MATH_INLINE2XX(long double,func,cf)
 #      define _STLP_DEF_MATH_INLINE2P(func,cf) \
       _STLP_MATH_INLINE2PX(float,func,cf) \
-      _STLP_MATH_INLINE2(long double,long double *,func,cf)
+      _STLP_MATH_INLINE2PX(long double,func,cf)
 #      define _STLP_DEF_MATH_INLINE2PI(func,cf) \
       _STLP_MATH_INLINE2X(float,int *,func,cf) \
-      _STLP_MATH_INLINE2(long double,int *,func,cf)
+      _STLP_MATH_INLINE2X(long double,int *,func,cf)
 #      define _STLP_DEF_MATH_INLINE2I(func,cf) \
       _STLP_MATH_INLINE2X(float,int,func,cf) \
-      _STLP_MATH_INLINE2(long double,int,func,cf)
+      _STLP_MATH_INLINE2X(long double,int,func,cf)
 #    endif
 #  else
 #    if !defined (_STLP_NO_VENDOR_MATH_F)
