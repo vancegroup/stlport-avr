@@ -61,7 +61,7 @@ using _STLP_VENDOR_CSTD_WFUNC::wint_t;
 #    if !defined (_STLP_NO_CSTD_FUNCTION_IMPORTS)
 #      if !defined (__BORLANDC__) && !defined (__MSL__)
 using _STLP_VENDOR_CSTD_WFUNC::wctrans_t;
-#        if !defined (__DMC__)
+#        if !defined (__DMC__) && (!defined(_WIN32_WCE) || _WIN32_WCE<0x500)
 using _STLP_VENDOR_CSTD_WFUNC::towctrans;
 using _STLP_VENDOR_CSTD_WFUNC::wctrans;
 using _STLP_VENDOR_CSTD_WFUNC::wctype;

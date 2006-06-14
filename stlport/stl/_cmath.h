@@ -172,6 +172,10 @@ extern long double __tanhl(long double);
 #  endif
 #endif
 
+/** macros to define math functions
+These macros (having an X somewhere in the name) forward to the C library's 
+double functions but cast the arguments and return values to the given type. */
+
 #define _STLP_MATH_INLINEX(__type,func,cfunc) \
   inline __type func (__type x) \
   { return __STATIC_CAST(__type, _STLP_CMATH_FUNC_NAMESPACE::cfunc((double)x)); }
@@ -189,7 +193,32 @@ extern long double __tanhl(long double);
   inline __type func (__type x, __type y) \
   { return __STATIC_CAST(__type, _STLP_CMATH_FUNC_NAMESPACE::cfunc((double)x, (double)y)); }
 
-#if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_NO_VENDOR_MATH_L) && !defined (_STLP_NO_VENDOR_MATH_F) // && defined(_STLP_VENDOR_LONG_DOUBLE_MATH)
+
+/** rough characterization of compiler and native C library
+For the compiler, it can either support long double or not. If it doesn't, the
+macro _STLP_NO_LONG_DOUBLE is not defined and we don't define any long double
+overloads.
+For the native C library the question is whether it has variants with an 'f' 
+suffix (for float as opposed to double) or an 'l' suffix (for long double). If
+the float variants are missing, _STLP_NO_VENDOR_MATH_F is defined, when the 
+long double variants are missing, _STLP_NO_VENDOR_MATH_L is defined. Of course
+the latter doesn't make sense anyway when the compiler already has no long 
+double support.
+
+Those two traits determine a) which overloads get defined and b) how they are 
+defined.
+
+Meaning of suffixes:
+""   : function returning and taking a float_type
+"2"  : function returning a float_type and taking to float_types
+"2P" : function returning a float_type and taking a float_type and a float_type*
+"2PI": function returning a float_type and taking a float_type and an int*
+"2I" : function returning a float_type and taking a float_Type and an int
+*/
+
+#if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_NO_VENDOR_MATH_L) && !defined (_STLP_NO_VENDOR_MATH_F)
+   // long double support and both e.g. sinl(long double) and sinf(float)
+   // This is the default for a correct and complete native library.
 #  define _STLP_DEF_MATH_INLINE(func,cf) \
   _STLP_MATH_INLINE(float,func,cf##f) \
   _STLP_MATH_INLINE_D(double,func,cf) \
@@ -210,9 +239,10 @@ extern long double __tanhl(long double);
   _STLP_MATH_INLINE2(float,int,func,cf##f) \
   _STLP_MATH_INLINE2_D(double,int,func,cf) \
   _STLP_MATH_INLINE2(long double,int,func,cf##l)
-#else // !_STLP_NO_LONG_DOUBLE
+#else
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 #    if !defined (_STLP_NO_VENDOR_MATH_F)
+       // long double support and e.g. sinf(float) but not e.g. sinl(long double)
 #      define _STLP_DEF_MATH_INLINE(func,cf) \
       _STLP_MATH_INLINE(float,func,cf##f) \
       _STLP_MATH_INLINEX(long double,func,cf)
@@ -229,6 +259,7 @@ extern long double __tanhl(long double);
       _STLP_MATH_INLINE2(float,int,func,cf##f) \
       _STLP_MATH_INLINE2X(long double,int,func,cf)
 #    elif !defined (_STLP_NO_VENDOR_MATH_L)
+       // long double support and e.g. sinl(long double) but not e.g. sinf(float)
 #      define _STLP_DEF_MATH_INLINE(func,cf) \
       _STLP_MATH_INLINEX(float,func,cf) \
       _STLP_MATH_INLINE(long double,func,cf##l)
@@ -274,6 +305,7 @@ extern long double __tanhl(long double);
 #      define _STLP_DEF_MATH_INLINE2I(func,cf) \
       _STLP_MATH_INLINE2(float,int,func,cf##f)
 #    else // _STLP_NO_VENDOR_MATH_F
+       // neither long double support nor e.g. sinf(float) functions
 #      define _STLP_DEF_MATH_INLINE(func,cf) \
       _STLP_MATH_INLINEX(float,func,cf)
 #      define _STLP_DEF_MATH_INLINE2(func,cf) \
@@ -286,7 +318,7 @@ extern long double __tanhl(long double);
       _STLP_MATH_INLINE2X(float,int,func,cf)
 #    endif // _STLP_NO_VENDOR_MATH_F
 #  endif
-#endif // !_STLP_NO_LONG_DOUBLE
+#endif
 
 #if defined (_STLP_WCE) || \
    (defined(_STLP_MSVC) && (_STLP_MSVC <= 1300) && defined (_MSC_EXTENSIONS) /* && !defined(_STLP_WCE_NET) */)
@@ -294,6 +326,7 @@ extern long double __tanhl(long double);
  * dums: VC6 has all the required C++ functions but only define them if
  * _MSC_EXTENSIONS is not defined (a bug?). STLport just do the same
  * thing also when _MSC_EXTENSIONS is defined.
+ * TODO: above check (_STLP_MSVC <= 1300) also catches VC7.0, is that intended?
  */
 //We have to tell the compilers that abs, acos ... math functions are not intrinsic
 //otherwise we have Internal Compiler Error in release mode...
@@ -375,7 +408,7 @@ inline double ldexp(double __x, int __y) { return __stlp_ldexp(__x, __y); }
 /* MSVC native lib starting with .Net 2003 has already all math functions
  * in global namespace.
  */
-#if !defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310)
+#if !defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined(UNDER_CE)
 inline double abs(double __x)
 { return ::fabs(__x); }
 #  if !defined (__MVS__)
