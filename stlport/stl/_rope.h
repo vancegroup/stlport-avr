@@ -1241,8 +1241,8 @@ protected:
   // A helper function for exponentiating strings.
   // This uses a nonstandard refcount convention.
   // The result has refcount 0.
-  friend struct _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc>;
   typedef _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
+  friend _Concat_fn;
 
 public:
   static size_t _S_char_ptr_len(const _CharT* __s) {
