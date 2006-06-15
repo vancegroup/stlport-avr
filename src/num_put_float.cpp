@@ -768,7 +768,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
 }
 #endif /* _STLP_NO_LONG_DOUBLE */
 
-void _STLP_CALL __get_floor_digits(__iostring &out, _STLP_LONG_DOUBLE __x) {
+void _STLP_CALL __get_floor_digits(__iostring &out, _STLP_LONGEST_FLOAT_TYPE __x) {
 #if defined (USE_SPRINTF_INSTEAD)
   char cvtbuf[128];
 #  if !defined (_STLP_NO_LONG_DOUBLE)
