@@ -51,7 +51,6 @@
 #  if defined(_LONG_LONG)
 #    define _STLP_LONG_LONG long long
 #  endif
-// #  define _STLP_LONG_DOUBLE 1
 #  if defined(_PTHREADS)
 #    define _MULTI_THREADED
 #  endif
