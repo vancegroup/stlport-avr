@@ -1242,7 +1242,11 @@ protected:
   // This uses a nonstandard refcount convention.
   // The result has refcount 0.
   typedef _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc> _Concat_fn;
+#if !defined (__GNUC__) || (__GNUC__ < 3)
   friend _Concat_fn;
+#else
+  friend struct _STLP_PRIV _Rope_Concat_fn<_CharT,_Alloc>;
+#endif
 
 public:
   static size_t _S_char_ptr_len(const _CharT* __s) {
