@@ -152,8 +152,12 @@ _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>* ct)
 { return _Locale_get_ctype_hint(ct->_M_ctype); }
 _Locale_name_hint* _Locale_extract_hint(numpunct_byname<char>* punct)
 { return _Locale_get_numeric_hint(punct->_M_numeric); }
+#  if defined (__GNUC__) && (__GNUC__ < 3)
 template <class _Ch, class _InIt>
 _Locale_name_hint* _Locale_time_extract_hint(time_get_byname<_Ch, _InIt>* tget)
+#  else
+_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >* tget)
+#  endif
 { return _Locale_get_time_hint(tget->_M_time); }
 _Locale_name_hint* _Locale_extract_hint(collate_byname<char>* coll)
 { return _Locale_get_collate_hint(coll->_M_collate); }
