@@ -131,11 +131,11 @@ __do_put_float(_OutputIter __s, ios_base& __f,
                      __group_pos, __f._M_grouping());
 }
 
-inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONG_DOUBLE __x)
+inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONGEST_FLOAT_TYPE __x)
 { __get_floor_digits(__buf, __x); }
 
 #if !defined (_STLP_NO_WCHAR_T)
-inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LONG_DOUBLE __x) {
+inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LONGEST_FLOAT_TYPE __x) {
   __iostring __buf;
   __get_floor_digits(__buf, __x);
 
@@ -145,7 +145,7 @@ inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LO
 #endif
 
 template <class _CharT>
-void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT) &__buf, ios_base& __f, _STLP_LONG_DOUBLE __x)
+void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT) &__buf, ios_base& __f, _STLP_LONGEST_FLOAT_TYPE __x)
 { __get_money_digits_aux(__buf, __f, __x); }
 
 // _M_do_put_integer and its helper functions.

@@ -156,10 +156,10 @@ extern size_t _STLP_CALL __write_float(__iostring&, ios_base::fmtflags, int, lon
 /*
  * Gets the digits of the integer part.
  */
-void _STLP_CALL __get_floor_digits(__iostring&, _STLP_LONG_DOUBLE);
+void _STLP_CALL __get_floor_digits(__iostring&, _STLP_LONGEST_FLOAT_TYPE);
 
 template <class _CharT>
-void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT)&, ios_base&, _STLP_LONG_DOUBLE);
+void _STLP_CALL __get_money_digits(_STLP_BASIC_IOSTRING(_CharT)&, ios_base&, _STLP_LONGEST_FLOAT_TYPE);
 
 #  if !defined (_STLP_NO_WCHAR_T)
 extern void _STLP_CALL __convert_float_buffer(__iostring const&, __iowstring&, const ctype<wchar_t>&, wchar_t, bool = true);
