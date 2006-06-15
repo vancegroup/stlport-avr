@@ -51,7 +51,7 @@ _STLP_BEGIN_NAMESPACE
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, class _InputIter>
 #else
-template <class _CharT, class _InputIter = istreambuf_iterator<_CharT> >
+template <class _CharT, class _InputIter = istreambuf_iterator<_CharT, char_traits<_CharT> > >
 #endif
 class num_get: public locale::facet {
   friend class _Locale_impl;

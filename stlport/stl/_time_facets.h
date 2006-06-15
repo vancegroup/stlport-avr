@@ -105,7 +105,11 @@ public:
   enum dateorder {no_order, dmy, mdy, ymd, ydm};
 };
 
-template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+template <class _Ch, class _InIt>
+#else
+template <class _Ch, class _InIt = istreambuf_iterator<_Ch, char_traits<_Ch> > >
+#endif
 class time_get : public locale::facet, public time_base {
   friend class _Locale_impl;
 
@@ -176,10 +180,18 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _Ch, class _InIt>
 class time_get_byname;
 
+#if defined (__GNUC__) && (__GNUC__ < 3)
 template <class _Ch, class _InIt>
 _Locale_name_hint* _Locale_time_extract_hint(time_get_byname<_Ch, _InIt>*);
+#else
+_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >*);
+#endif
 
-template <class _Ch, __DFL_TMPL_PARAM( _InIt , istreambuf_iterator<_Ch>) >
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+template <class _Ch, class _InIt>
+#else
+template <class _Ch, class _InIt = istreambuf_iterator<_Ch, char_traits<_Ch> > >
+#endif
 class time_get_byname : public time_get<_Ch, _InIt> {
 public:
   typedef  time_base::dateorder dateorder;
@@ -201,7 +213,11 @@ private:
   //explicitely defined as private to avoid warnings:
   time_get_byname(_Self const&);
   _Self& operator = (_Self const&);
+#if defined (__GNUC__) && (__GNUC__ < 3)
   friend _Locale_name_hint* _Locale_time_extract_hint<>(_Self*);
+#else
+  friend _Locale_name_hint* _Locale_time_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >*);
+#endif
 };
 
 // time_put facet
@@ -233,21 +249,25 @@ _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out_ite,
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template<class _Ch, __DFL_TMPL_PARAM( _OutputIter , ostreambuf_iterator<_Ch> ) >
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+template <class _Ch, class _OutIt>
+#else
+template <class _Ch, class _OutIt = ostreambuf_iterator<_Ch, char_traits<_Ch> > >
+#endif
 class time_put : public locale::facet, public time_base {
   friend class _Locale_impl;
 public:
   typedef _Ch      char_type;
-  typedef _OutputIter iter_type;
+  typedef _OutIt iter_type;
 
   explicit time_put(size_t __refs = 0) : locale::facet(__refs)
   { _STLP_PRIV _Init_timeinfo(_M_timeinfo); }
 
-  _OutputIter put(iter_type __s, ios_base& __f, _Ch __fill,
+  _OutIt put(iter_type __s, ios_base& __f, _Ch __fill,
                   const tm* __tmb,
                   const _Ch* __pat, const _Ch* __pat_end) const;
 
-  _OutputIter put(iter_type __s, ios_base& __f, _Ch  __fill,
+  _OutIt put(iter_type __s, ios_base& __f, _Ch  __fill,
                   const tm* __tmb, char __format, char __modifier = 0) const
   { return do_put(__s, __f,  __fill, __tmb, __format, __modifier); }
 
@@ -265,16 +285,20 @@ protected:
   _STLP_PRIV _Time_Info _M_timeinfo;
 };
 
-template <class _Ch, __DFL_TMPL_PARAM( _InIt , ostreambuf_iterator<_Ch> ) >
-class time_put_byname : public time_put<_Ch, _InIt> {
+#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+template <class _Ch, class _OutIt>
+#else
+template <class _Ch, class _OutIt = ostreambuf_iterator<_Ch, char_traits<_Ch> > >
+#endif
+class time_put_byname : public time_put<_Ch, _OutIt> {
   friend class _Locale_impl;
 public:
   typedef time_base::dateorder dateorder;
-  typedef _InIt iter_type;
+  typedef _OutIt iter_type;
   typedef _Ch   char_type;
 
   explicit time_put_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
-    : time_put<_Ch, _InIt>((_Locale_time*) 0, __refs),
+    : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs),
     _M_time(_STLP_PRIV __acquire_time(__name, __hint))
   { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time); }
 
@@ -284,7 +308,7 @@ protected:
 private:
   _Locale_time* _M_time;
 
-  typedef time_put_byname<_Ch, _InIt> _Self;
+  typedef time_put_byname<_Ch, _OutIt> _Self;
   //explicitely defined as private to avoid warnings:
   time_put_byname(_Self const&);
   _Self& operator = (_Self const&);

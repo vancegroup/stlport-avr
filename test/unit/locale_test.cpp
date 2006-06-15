@@ -169,7 +169,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
     {
       moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
 
-      ostreambuf_iterator<char> res = fmp.put(ostr, true, ostr, ' ', 123456);
+      ostreambuf_iterator<char, char_traits<char> > res = fmp.put(ostr, true, ostr, ' ', 123456);
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
@@ -268,7 +268,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       istringstream istr(str_res);
       ostr.str( "" );
       ostr.clear();
-      fmg.get(istr, istreambuf_iterator<char>(), true, ostr, err, digits);
+      fmg.get(istr, istreambuf_iterator<char, char_traits<char> >(), true, ostr, err, digits);
       CPPUNIT_ASSERT( (err & (ios_base::failbit | ios_base::badbit)) == 0 );
       CPPUNIT_ASSERT( digits == "123456" );
     }
@@ -281,7 +281,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
     string str_res;
     //Check money_put
     {
-      ostreambuf_iterator<char> res = fmp.put(ostr, false, ostr, ' ', -123456);
+      ostreambuf_iterator<char, char_traits<char> > res = fmp.put(ostr, false, ostr, ' ', -123456);
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
@@ -343,13 +343,13 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
     {
       ios_base::iostate err = ios_base::goodbit;
 #if defined (STLPORT)
-      _STLP_LONG_DOUBLE val;
+      _STLP_LONGEST_FLOAT_TYPE val;
 #else
       long double val;
 #endif
 
       istringstream istr(str_res);
-      fmg.get(istr, istreambuf_iterator<char>(), false, ostr, err, val);
+      fmg.get(istr, istreambuf_iterator<char, char_traits<char> >(), false, ostr, err, val);
       CPPUNIT_ASSERT( (err & (ios_base::failbit | ios_base::badbit)) == 0 );
       if (dom_fmp.negative_sign().empty()) {
         //Without negative sign there is no way to guess the resulting amount sign ("C" locale):
@@ -382,7 +382,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
     string str_res;
     // Check money_put
     {
-      ostreambuf_iterator<char> res = fmp.put(ostr, false, ostr, ' ', 9);
+      ostreambuf_iterator<char, char_traits<char> > res = fmp.put(ostr, false, ostr, ' ', 9);
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
@@ -443,7 +443,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
     string str_res;
     // Check money_put
     {
-      ostreambuf_iterator<char> res = fmp.put(ostr, false, ostr, ' ', 90);
+      ostreambuf_iterator<char, char_traits<char> > res = fmp.put(ostr, false, ostr, ' ', 90);
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
@@ -526,8 +526,8 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
   io.imbue(loc);
 
   istringstream istr( ostr.str() );
-  istreambuf_iterator<char> i( istr );
-  istreambuf_iterator<char> e;
+  istreambuf_iterator<char, char_traits<char> > i( istr );
+  istreambuf_iterator<char, char_traits<char> > e;
   ios_base::iostate err = ios_base::goodbit;
   struct tm other = { 15, 20, 9, 14, 7, 105 };
 
@@ -549,7 +549,7 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
   CPPUNIT_ASSERT( !ret.failed() );
 
   istringstream istrX( ostrX.str() );
-  istreambuf_iterator<char> j( istrX );
+  istreambuf_iterator<char, char_traits<char> > j( istrX );
 
   err = ios_base::goodbit;
 
