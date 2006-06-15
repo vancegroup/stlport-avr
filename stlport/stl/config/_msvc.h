@@ -121,11 +121,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    endif
 #  endif
 
-#  if _STLP_MSVC >= 1200
-#    undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-#  endif
-
-
 #  if (_STLP_MSVC <= 1300)
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
