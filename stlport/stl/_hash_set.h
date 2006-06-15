@@ -39,8 +39,8 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(HashSetTraitsT, Const_traits)
 
-template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class hash_set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -220,8 +220,8 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMultisetTraitsT, Const_traits)
 
-template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class hash_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

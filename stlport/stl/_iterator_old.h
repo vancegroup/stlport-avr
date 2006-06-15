@@ -54,14 +54,14 @@ iterator_category(const insert_iterator<_Container>&) { return output_iterator_t
 # define __Reference _Reference, class _Pointer
 # define Reference__ _Reference, _Pointer
 template <class _BidirectionalIterator, class _Tp,
-    __DFL_TMPL_PARAM(_Reference, _Tp& ),
-    __DFL_TMPL_PARAM(_Pointer, _Tp*),
-    __DFL_TYPE_PARAM(_Distance, ptrdiff_t)>
+    _STLP_DFL_TMPL_PARAM(_Reference, _Tp& ),
+    _STLP_DFL_TMPL_PARAM(_Pointer, _Tp*),
+    _STLP_DFL_TYPE_PARAM(_Distance, ptrdiff_t)>
 # else
 # define __Reference _Reference
 # define Reference__ _Reference
-template <class _BidirectionalIterator, class _Tp, __DFL_TMPL_PARAM(_Reference, _Tp& ),
-    __DFL_TYPE_PARAM(_Distance, ptrdiff_t)>
+template <class _BidirectionalIterator, class _Tp, _STLP_DFL_TMPL_PARAM(_Reference, _Tp& ),
+    _STLP_DFL_TYPE_PARAM(_Distance, ptrdiff_t)>
 # endif
 class reverse_bidirectional_iterator {
   typedef reverse_bidirectional_iterator<_BidirectionalIterator, _Tp,
@@ -162,15 +162,15 @@ template <class _RandomAccessIterator,
   || defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))    //*ty 03/22/2001 - give the default to the secont param under MPW.
                         // I believe giving the default will cause any harm even though the 2nd type parameter
                         // still have to be provided for T* type iterators.
-  __DFL_TMPL_PARAM(_Tp,iterator_traits<_RandomAccessIterator>::value_type),
+  _STLP_DFL_TMPL_PARAM(_Tp,iterator_traits<_RandomAccessIterator>::value_type),
 # else
   class _Tp,
 #endif
- __DFL_TMPL_PARAM(_Reference,_Tp&),
+ _STLP_DFL_TMPL_PARAM(_Reference,_Tp&),
 # if defined (_STLP_MSVC50_COMPATIBILITY)
-        __DFL_TMPL_PARAM(_Pointer, _Tp*),
+        _STLP_DFL_TMPL_PARAM(_Pointer, _Tp*),
 # endif
-        __DFL_TYPE_PARAM(_Distance,ptrdiff_t)>
+        _STLP_DFL_TYPE_PARAM(_Distance,ptrdiff_t)>
 class reverse_iterator {
   typedef reverse_iterator<_RandomAccessIterator, _Tp, Reference__, _Distance>
           _Self;

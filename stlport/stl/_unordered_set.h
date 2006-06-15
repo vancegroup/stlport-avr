@@ -29,8 +29,8 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedSetTraitsT, Const_traits)
 
-template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class unordered_set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -170,8 +170,8 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultisetTraitsT, Const_traits)
 
-template <class _Value, __DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class unordered_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

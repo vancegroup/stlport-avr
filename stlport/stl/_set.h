@@ -41,7 +41,7 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare, less<_Key>),
+template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -206,7 +206,7 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
 
-template <class _Key, __DFL_TMPL_PARAM(_Compare, less<_Key>),
+template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
 class multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

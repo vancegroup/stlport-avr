@@ -39,8 +39,8 @@ _STLP_BEGIN_NAMESPACE
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMapTraitsT, traits)
 
-template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
+template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
 class hash_map
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -233,8 +233,8 @@ public:
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMultimapTraitsT, traits)
 
-template <class _Key, class _Tp, __DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
-          __DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
+template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
 class hash_multimap
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

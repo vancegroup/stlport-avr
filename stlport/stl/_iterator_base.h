@@ -55,8 +55,8 @@ struct bidirectional_iterator_tag : public forward_iterator_tag {};
 struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 
-template <class _Category, class _Tp, __DFL_TMPL_PARAM(_Distance,ptrdiff_t),
-          __DFL_TMPL_PARAM(_Pointer,_Tp*), __DFL_TMPL_PARAM(_Reference,_Tp&) >
+template <class _Category, class _Tp, _STLP_DFL_TMPL_PARAM(_Distance,ptrdiff_t),
+          _STLP_DFL_TMPL_PARAM(_Pointer,_Tp*), _STLP_DFL_TMPL_PARAM(_Reference,_Tp&) >
 struct iterator {
   typedef _Category  iterator_category;
   typedef _Tp        value_type;

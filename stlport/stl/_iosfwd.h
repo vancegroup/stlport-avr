@@ -26,53 +26,53 @@ _STLP_BEGIN_NAMESPACE
 
 class ios_base;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_ios;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_streambuf;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_istream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_ostream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_iostream;
 
-template <class _CharT, __DFL_TMPL_PARAM( _Traits , char_traits<_CharT>),
-          __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM( _Traits , char_traits<_CharT>),
+          _STLP_DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
 class basic_stringbuf;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
-          __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
+          _STLP_DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
 class basic_istringstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
-          __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
+          _STLP_DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
 class basic_ostringstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
-          __DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>),
+          _STLP_DFL_TMPL_PARAM(_Allocator , allocator<_CharT>) >
 class basic_stringstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_filebuf;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_ifstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_ofstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class basic_fstream;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class istreambuf_iterator;
 
-template <class _CharT, __DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
+template <class _CharT, _STLP_DFL_TMPL_PARAM(_Traits , char_traits<_CharT>) >
 class ostreambuf_iterator;
 
 typedef basic_ios<char, char_traits<char> >    ios;

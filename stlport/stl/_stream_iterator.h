@@ -79,7 +79,7 @@ class istream_iterator : public iterator<input_iterator_tag, _Tp , ptrdiff_t,
 #  else
 #    define __ISI_TMPL_HEADER_ARGUMENTS class _Tp, class _Dist
 #    define __ISI_TMPL_ARGUMENTS        _Tp, _Dist
-template <class _Tp, __DFL_TYPE_PARAM(_Dist, ptrdiff_t)>
+template <class _Tp, _STLP_DFL_TYPE_PARAM(_Dist, ptrdiff_t)>
 class istream_iterator : public iterator<input_iterator_tag, _Tp, _Dist ,
                                          const _Tp*, const _Tp& > {
 #  endif /* _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS */
