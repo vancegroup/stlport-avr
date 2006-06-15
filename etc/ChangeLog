@@ -1,3 +1,31 @@
+2006-06-15  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/features.h: Several macro renamed:
+	  - _STLP_LONG_DOUBLE  -> _STLP_LONGEST_FLOAT_TYPE
+	  - __DFL_TMPL_PARAM -> _STLP_DFL_TMPL_PARAM
+	  - __DFL_TYPE_PARAM -> _STLP_DFL_TYPE_PARAM
+	  - __DFL_NON_TYPE_PARAM -> _STLP_DFL_NON_TYPE_PARAM
+	  __DFL_TYPE_ARG removed.
+	
+	* stlport/stl: Add char_traits template parameter in all
+	istreambuf_iterator and ostreambuf_iterator instanciation where it
+	was missing as some compiler might not have supported it.
+
+	* stlport/stl/_time_facets.h, src/locale_impl.cpp: Finaly adopt a
+	specific gcc workaround for definition of _Locale_time_extract_hint
+	as friend of time_get_byname facet. Gcc 2.95 prefers to see a template
+	method otherwise it emits a warning, we want to avoid STLport users
+	to have to disable this warning. Other compilers will use a simple
+	function which seems to be more portable.
+
+	* stlport/stl/_vector.h, _pair.h: Patch from Eric Sanford for a
+	really weird Borland compiler workaround that consists in adding
+	a _Ret typedef in __move_traits or __type_traits traits struct
+	that do not normally contain it.
+
+	* stlport/stl/config/_bc.h: Borland free compiler do not support
+	STLport container extension of template methods.
+
 2006-06-14  Francois Dumont  <dums@stlport...>
 
 	* test/unit: Patch from Ulrich Eckhardt to fix storage of string
