@@ -1580,6 +1580,8 @@ void MoveConstructorTest::movable_declaration()
 }
 
 #if defined (__BORLANDC__)
+/* Specific Borland test case to show a really weird compiler behavior.
+ */
 class Standalone
 {
 public:
