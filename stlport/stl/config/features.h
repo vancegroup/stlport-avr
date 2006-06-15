@@ -245,12 +245,12 @@
 
 #if !defined (_STLP_LDOUBLE_64) && !defined (_STLP_LDOUBLE_80) && !defined (_STLP_LDOUBLE_96) && !defined (_STLP_LDOUBLE_128)
 #  define _STLP_LDOUBLE_128
-#endif /*_STLP_LDOUBLE_??*/
+#endif
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
-#  define _STLP_LONG_DOUBLE long double
+#  define _STLP_LONGEST_FLOAT_TYPE long double
 #else
-#  define _STLP_LONG_DOUBLE double
+#  define _STLP_LONGEST_FLOAT_TYPE double
 #endif
 
 /* Native headers access macros */
@@ -426,25 +426,21 @@
 
 /* default parameters as template types derived from arguments ( not always supported ) */
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
-#  define __DFL_TMPL_PARAM( classname, defval ) class classname
-#  define __DFL_TMPL_ARG(classname) , classname
+#  define _STLP_DFL_TMPL_PARAM( classname, defval ) class classname
 #else
 #  if !defined (_STLP_DEFAULT_TYPE_PARAM)
 #    define _STLP_DEFAULT_TYPE_PARAM 1
 #  endif
-#  define __DFL_TMPL_PARAM( classname, defval ) class classname = defval
-#  define __DFL_TMPL_ARG(classname)
+#  define _STLP_DFL_TMPL_PARAM( classname, defval ) class classname = defval
 #endif
 
 /* default parameters as complete types */
 #if defined (_STLP_DEFAULT_TYPE_PARAM)
-#  define __DFL_TYPE_PARAM( classname, defval ) class classname = defval
-#  define __DFL_NON_TYPE_PARAM(type,name,val) type name = val
-#  define __DFL_TYPE_ARG(classname)
+#  define _STLP_DFL_TYPE_PARAM( classname, defval ) class classname = defval
+#  define _STLP_DFL_NON_TYPE_PARAM(type,name,val) type name = val
 #else
-#  define __DFL_TYPE_PARAM( classname, defval ) class classname
-#  define __DFL_NON_TYPE_PARAM(type,name,val) type name
-#  define __DFL_TYPE_ARG(classname) , classname
+#  define _STLP_DFL_TYPE_PARAM( classname, defval ) class classname
+#  define _STLP_DFL_NON_TYPE_PARAM(type,name,val) type name
 #endif
 
 /* SGI compatibility */
@@ -463,7 +459,7 @@
 
 #if !defined (_STLP_USE_RAW_SGI_ALLOCATORS)
 #  define _STLP_DEFAULT_ALLOCATOR(_Tp) allocator< _Tp >
-#  define _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp ) __DFL_TMPL_PARAM(_Alloc, allocator< _Tp >)
+#  define _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp ) _STLP_DFL_TMPL_PARAM(_Alloc, allocator< _Tp >)
 #  define _STLP_DEFAULT_PAIR_ALLOCATOR(_Key, _Tp) allocator< pair < _Key, _Tp > >
 #  if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 #    define _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_Key, _Tp ) class _Alloc
@@ -474,9 +470,9 @@
 #  endif
 #else
 #  define _STLP_DEFAULT_ALLOCATOR( _Tp ) __sgi_alloc
-#  define _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp ) __DFL_TYPE_PARAM(_Alloc,__sgi_alloc)
+#  define _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp ) _STLP_DFL_TYPE_PARAM(_Alloc,__sgi_alloc)
 #  define _STLP_DEFAULT_PAIR_ALLOCATOR( _Key, _Tp ) __sgi_alloc
-#  define _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_Key, _Tp ) __DFL_TYPE_PARAM(_Alloc,__sgi_alloc)
+#  define _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_Key, _Tp ) _STLP_DFL_TYPE_PARAM(_Alloc,__sgi_alloc)
 #  if defined (_STLP_LIMITED_DEFAULT_TEMPLATES) && !defined (_STLP_DEFAULT_TYPE_PARAM)
 #    define _STLP_USE_WRAPPER_FOR_ALLOC_PARAM 1
 #  endif
