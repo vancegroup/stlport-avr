@@ -75,7 +75,7 @@ extern int      wscanf();
 #    endif
 #  endif
 
-#  if defined (__MSL__) && (__MSL__ <= 0x51FF)	/* dwa 2/28/99 - not yet implemented by MSL  */
+#  if defined (__MSL__) && (__MSL__ <= 0x51FF)  /* dwa 2/28/99 - not yet implemented by MSL  */
 #    define _STLP_WCHAR_MSL_EXCLUDE 1
 namespace std {
   extern "C" size_t wcsftime(wchar_t * str, size_t max_size, const wchar_t * format_str, const struct tm * timeptr);

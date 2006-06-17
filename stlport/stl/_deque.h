@@ -113,8 +113,8 @@ struct _Deque_iterator_base {
 // see comment in doc/README.evc4
 #if defined (_STLP_MSVC) && (_STLP_MSVC < 1300) && defined (MIPS) && defined (NDEBUG)
   _Deque_iterator_base(_Deque_iterator_base const& __other)
-	: _M_cur(__other._M_cur), _M_first(__other._M_first),
-	  _M_last(__other._M_last), _M_node(__other._M_node) {}
+  : _M_cur(__other._M_cur), _M_first(__other._M_first),
+    _M_last(__other._M_last), _M_node(__other._M_node) {}
 #endif
 
   difference_type _M_subtract(const _Self& __x) const {

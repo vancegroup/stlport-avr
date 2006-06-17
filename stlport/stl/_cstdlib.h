@@ -39,10 +39,10 @@
 
 #if defined (__MSL__) && (__MSL__ <= 0x5003)
 namespace std {
-	typedef ::div_t div_t;
-	typedef ::ldiv_t ldiv_t;
+  typedef ::div_t div_t;
+  typedef ::ldiv_t ldiv_t;
 #  ifdef __MSL_LONGLONG_SUPPORT__
-	typedef ::lldiv_t lldiv_t;
+  typedef ::lldiv_t lldiv_t;
 #  endif
 }
 #endif

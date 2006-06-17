@@ -96,7 +96,7 @@ class A
   public:
     A() :
         m_n( 0 )
-      {	}
+      {}
 
     void f( int n ) const
       { m_n = n; }

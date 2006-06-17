@@ -390,9 +390,9 @@ struct my_traits : public char_traits<char> {
 
 class my_codecvt
 #  if defined (STLPORT)
-       	: public codecvt<char, char, my_state> {
+  : public codecvt<char, char, my_state> {
 #  else
-	: public locale::facet, public codecvt_base {
+  : public locale::facet, public codecvt_base {
   //STLport grant the same default implementation, other Standard libs implementation
   //do not necessarily do the same:
   public:

@@ -31,9 +31,9 @@
 #  undef stdout
 #  undef stderr
 #  if defined (__MWERKS__)
-#  define stdin  	(&_STLP_VENDOR_CSTD::__files[0])
-#  define stdout	(&_STLP_VENDOR_CSTD::__files[1])
-#  define stderr	(&_STLP_VENDOR_CSTD::__files[2])
+#  define stdin   (&_STLP_VENDOR_CSTD::__files[0])
+#  define stdout  (&_STLP_VENDOR_CSTD::__files[1])
+#  define stderr  (&_STLP_VENDOR_CSTD::__files[2])
 #  elif defined (__BORLANDC__)
 #    define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
 #    define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
