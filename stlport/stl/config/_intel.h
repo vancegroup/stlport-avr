@@ -30,7 +30,7 @@
 #endif
 
 #if (__ICL >= 900)
-#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+//#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 #  if !defined (_STLP_DONT_USE_EXCEPTIONS)
 #    define _STLP_NOTHROW throw()
 #  endif
