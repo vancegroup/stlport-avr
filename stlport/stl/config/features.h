@@ -62,6 +62,10 @@
  */
 #include <stl/config/user_config.h>
 
+#if defined (_STLP_DEBUG) && !defined (_STLP_DEBUG_LEVEL)
+#  define _STLP_DEBUG_LEVEL _STLP_STLPORT_DBG_LEVEL
+#endif
+
 #if defined (__BUILDING_STLPORT)
 /* For the STLport implementation we can use everything:
  */
