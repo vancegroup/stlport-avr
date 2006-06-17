@@ -128,8 +128,12 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
                    loc_extract_name_func_t extract_name,
                    loc_create_func_t create_obj, loc_default_name_func_t default_obj,
                    Category_Map ** M) {
+#if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
   typedef Category_Map::iterator Category_iterator;
   pair<Category_iterator, bool> result;
+#else
+  pair<Category_Map::iterator, bool> result;
+#endif
 
   // Find what name to look for. Be careful if user requests the default.
   const char *cname;

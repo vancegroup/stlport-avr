@@ -68,4 +68,14 @@ distclean::
 	@if exist $(INSTALL_LIB_DIR)/$(A_NAME) del /f /q $(subst /,\,$(INSTALL_LIB_DIR)/$(A_NAME))
 	@if exist $(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG))
 	@if exist $(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG))
+ifeq (bcc, $(COMPILER_NAME))
+#remove STLport bin directories, unless they contains exe
+	@if exist $(INSTALL_BIN_DIR) if not exist $(subst /,\,$(INSTALL_BIN_DIR)/*.EXE) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR))
+	@if exist $(INSTALL_BIN_DIR_DBG) if not exist $(subst /,\,$(INSTALL_BIN_DIR_DBG)/*.EXE) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR_DBG))
+	@if exist $(INSTALL_BIN_DIR_STLDBG) if not exist $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/*.EXE) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR_STLDBG))
+#remove STLport lib directories
+	@if exist $(INSTALL_LIB_DIR) rd /s /q $(subst /,\,$(INSTALL_LIB_DIR))
+	@if exist $(INSTALL_LIB_DIR_DBG) rd /s /q $(subst /,\,$(INSTALL_LIB_DIR_DBG))
+	@if exist $(INSTALL_LIB_DIR_STLDBG) rd /s /q $(subst /,\,$(INSTALL_LIB_DIR_STLDBG))
+endif
 endif

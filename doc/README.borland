@@ -150,3 +150,5 @@ capacity of Borland's linker (ilink32.exe).  To resolve this error, check
 Borland's website for the latest patch for ilink32.exe.  In the alternative,
 disable full source debugging in build\Makefiles\gmake\bcc.mak by deleting 
 the -v option in the OPT settings.
+
+3. For "'uname' is not recognized . . .", see "Configuring STLport" above. 

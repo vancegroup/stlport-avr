@@ -34,7 +34,7 @@
 using _STLP_VENDOR_CSTD::time_t;
 #  endif
 
-#  if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__)
+#  if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 #    define _STLP_OPERATOR_SPEC _STLP_DECLSPEC
 #  else
 #    define _STLP_OPERATOR_SPEC _STLP_TEMPLATE_NULL _STLP_DECLSPEC
