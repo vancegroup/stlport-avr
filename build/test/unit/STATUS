@@ -413,20 +413,22 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Borland C++ compiler 5.5.1 (free version)
 -----------------------------------------------------------------------
-Date:                           2006-05-10
+Date:                           2006-06-17
 STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (361 tests, 3 ignores).
+Status (release-shared):        1 failure (369 tests, 6 ignored).
+Notes:                          The failure is on a specific Borland test
+                                showing a bug in the Borland compiler.
+Status (dbg-shared):            1 failure (369 tests, 6 ignored).
 Notes:
-Status (dbg-shared):            All pass (361 tests, 3 ignores).
+Status (stldbg-shared):         Link of unit tests fail.
+Notes:                          Fatal: Error detected (LME351)
+Warning: Cannot reserve virtual memory at addr 72300000 for -3145728 bytes (errcode 87)
+Status (release-static):        1 failure (369 tests, 5 ignored).
 Notes:
-Status (stldbg-shared):         All pass (361 tests, 3 ignores).
+Status (dbg-static):            1 failure (369 tests, 5 ignored).
 Notes:
-Status (release-static):        All pass (361 tests, 3 ignores).
-Notes:
-Status (dbg-static):            All pass (361 tests, 3 ignores).
-Notes:
-Status (stldbg-static):         All pass (361 tests, 3 ignores).
+Status (stldbg-static):         1 failure (369 tests, 5 ignored).
 Notes:
 
 -----------------------------------------------------------------------
@@ -519,22 +521,22 @@ Status (stldbg-static):         All pass (361 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------
-Compiler:                       Intel C++ compiler 9.0
+Compiler:                       Intel C++ compiler 9.0.28
 -----------------------------------------------------------------------
-Date:                           2005-07-24
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-06-17
+STLP Version:                   current CVS HEAD
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        3 failures (326 tests)
+Status (release-shared):        3 failures (368 tests, 2 ignored)
 Notes:
-Status (dbg-shared):            All pass (326 tests)
+Status (dbg-shared):            All pass (368 tests, 2 ignored)
 Notes:
-Status (stldbg-shared):         All pass (326 tests)
+Status (stldbg-shared):         All pass (368 tests, 2 ignored)
 Notes:
-Status (release-static):        1 failure (325 tests)
+Status (release-static):        1 failure (368 tests, 2 ignored)
 Notes:
-Status (dbg-static):            All pass (326 tests)
+Status (dbg-static):            All pass (368 tests, 2 ignored)
 Notes:
-Status (stldbg-static):         All pass (326 tests)
+Status (stldbg-static):         All pass (368 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------

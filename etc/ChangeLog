@@ -1,3 +1,22 @@
+2006-06-17  Francois Dumont  <dums@stlport...>
+
+	* test/unit/type_traits_test.cpp, uninitialized_test.cpp: Add
+	implicit public inheritance relation to avoid an ICL warning.
+
+	* stlport/stl/config/features.h: Add definition of
+	_STLP_DEBUG_LEVEL to _STLP_STLPORT_DBG_LEVEL when _STLP_DEBUG
+	is defined but _STLP_DEBUG_LEVEL hasn't been set.
+	(thanks an ICL warning report)
+
+	* stlport/stl/config/_intel.h: Remove undef of
+	_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT, even if the linker complains
+	about not finding unexpected_exception it looks like it finally do
+	not use it.
+
+	* test/unit/cppunit/test_main.cpp: Filter definition of
+	unexpected_exception when building unit test with static STLport
+	lib.
+
 2006-06-15  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/features.h: Several macro renamed:
