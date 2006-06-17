@@ -97,7 +97,8 @@ int main(int argc, char** argv) {
 }
 
 // See doc/README.intel for explanation about this code
-#if defined (__ICL) && (__ICL >= 900) && (_STLP_MSVC_LIB < 1300)
+#if defined (STLPORT) && (__ICL) && (__ICL >= 900) && \
+            (_STLP_MSVC_LIB < 1300) && defined (_STLP_USE_DYNAMIC_LIB)
 #  include <exception>
 
 #  undef std
