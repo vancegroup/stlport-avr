@@ -124,7 +124,7 @@ namespace std {
 
 struct base
 {};
-struct derived : base
+struct derived : public base
 {};
 
 //

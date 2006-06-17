@@ -76,7 +76,7 @@ namespace std
 #endif
 
 struct base {};
-struct derived : base {};
+struct derived : public base {};
 
 //
 // tests implementation
