@@ -136,7 +136,7 @@ operator+(const basic_string<_CharT,_Traits,_Alloc>& __lhs,
 template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
 inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc,
                              _STLP_PRIV __bstr_wrapper<_CharT,_Traits,_Alloc>,
-                             _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>, 
+                             _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>,
                              _STLP_PRIV __on_right> _STLP_CALL
 operator+(const basic_string<_CharT,_Traits,_Alloc>& __lhs,
           const _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __rhs) {
@@ -146,7 +146,7 @@ operator+(const basic_string<_CharT,_Traits,_Alloc>& __lhs,
 }
 
 template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
-inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, 
+inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc,
                              _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>,
                              _STLP_PRIV __bstr_wrapper<_CharT,_Traits,_Alloc>,
                              _STLP_PRIV __on_left> _STLP_CALL
@@ -192,7 +192,7 @@ operator+(const _CharT* __s,
                                                          _STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc>,
                                                          _STLP_PRIV __on_right> __root_type;
   __root_type __root(__y, _STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc>(__y.get_allocator()));
-  return _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __cstr_wrapper<_CharT>, 
+  return _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __cstr_wrapper<_CharT>,
                                                         __root_type,
                                                         _STLP_PRIV __on_right>(_STLP_PRIV __cstr_wrapper<_CharT>(__s, __n), __root);
 }
@@ -254,14 +254,14 @@ operator+(const _CharT __c, const basic_string<_CharT,_Traits,_Alloc>& __x) {
                                                          _STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc>,
                                                          _STLP_PRIV __on_right> __root_type;
   __root_type __root(__x, _STLP_PRIV __sum_storage_elem<_CharT, _Traits, _Alloc>(__x.get_allocator()));
-  return _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __char_wrapper<_CharT>, 
+  return _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __char_wrapper<_CharT>,
                                                         __root_type, _STLP_PRIV __on_right>(__c, __root);
 }
 
 template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
 inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc,
                              _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>,
-                             _STLP_PRIV __char_wrapper<_CharT>, 
+                             _STLP_PRIV __char_wrapper<_CharT>,
                              _STLP_PRIV __on_left> _STLP_CALL
 operator+(const _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __x, const _CharT __c) {
   return _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>,
@@ -269,7 +269,7 @@ operator+(const _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _S
 }
 
 template <class _CharT, class _Traits, class _Alloc, class _Left, class _Right, class _StorageDir>
-inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __char_wrapper<_CharT>, 
+inline _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _STLP_PRIV __char_wrapper<_CharT>,
                                                       _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>,
                                                       _STLP_PRIV __on_right> _STLP_CALL
 operator+(const _CharT __c, const _STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>& __x) {

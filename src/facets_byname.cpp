@@ -706,7 +706,7 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
  * But I am expect that international currency symbol should be the first
  * (not depends upon where currency symbol situated in the national
  * format).
- * 
+ *
  * If this isn't so, let's see:
  *       1 234.56 RUR
  *       GBP 1,234.56

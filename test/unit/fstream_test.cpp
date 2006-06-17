@@ -399,7 +399,7 @@ class my_codecvt
     typedef char intern_type;
     typedef char extern_type;
     typedef my_state state_type;
-  
+
     explicit my_codecvt(size_t __refs = 0) : locale::facet(__refs) {}
     result out(state_type&,
                const intern_type*  __from,
@@ -437,7 +437,7 @@ class my_codecvt
                   size_t __max) const
     { return (int)min(static_cast<size_t>(__end - __from), __max); }
 
-    int max_length() const throw() 
+    int max_length() const throw()
     { return 1; }
 
     static locale::id id;

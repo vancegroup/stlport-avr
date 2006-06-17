@@ -1,4 +1,4 @@
-/* This header turns off warnings that STLport headers generate for compiled 
+/* This header turns off warnings that STLport headers generate for compiled
  * user code.
  */
 

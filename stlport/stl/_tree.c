@@ -470,7 +470,7 @@ _Rb_tree<_Key,_Compare,_Value,_KeyOfValue,_Traits,_Alloc> ::insert_unique(iterat
           return _M_insert(__position._M_node, __val, 0, __position._M_node);
         else
           return _M_insert(__after._M_node, __val, __after._M_node);
-      } 
+      }
       else {
         return insert_unique(__val).first;
       }

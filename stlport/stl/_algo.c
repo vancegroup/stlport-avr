@@ -991,7 +991,7 @@ void sort(_RandomAccessIter __first, _RandomAccessIter __last) {
   if (__first != __last) {
     _STLP_PRIV __introsort_loop(__first, __last,
                                 _STLP_VALUE_TYPE(__first, _RandomAccessIter),
-                                _STLP_PRIV __lg(__last - __first) * 2, 
+                                _STLP_PRIV __lg(__last - __first) * 2,
                                 _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _RandomAccessIter)));
     _STLP_PRIV __final_insertion_sort(__first, __last,
                                       _STLP_PRIV __less(_STLP_VALUE_TYPE(__first, _RandomAccessIter)));

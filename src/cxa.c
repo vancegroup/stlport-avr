@@ -145,7 +145,7 @@ struct exit_function *__new_exitfn(void)
    with the same dso handle.  Otherwise, if D is NULL, call all of the
    registered handlers.  */
 
-/* 
+/*
  * Note, that original __cxa_finalize don't use lock, but use __exit_funcs
  * i.e. global data.
  */

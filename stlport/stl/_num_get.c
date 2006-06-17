@@ -46,7 +46,7 @@ inline bool _STLP_CALL __get_fdigit_or_sep(char& __c, char __sep, const char *__
   if (__c == __sep) {
     __c = ',' ;
     return true ;
-  } 
+  }
   else
     return  __get_fdigit(__c, __digits);
 }
@@ -273,7 +273,7 @@ __do_get_integer(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
     }
     else
       __result = false;
-  } 
+  }
   else {
     const bool __negative = (__base_or_zero & 2) != 0;
     const int __base = __base_or_zero >> 2;

@@ -29,7 +29,7 @@ struct ref_locale {
 
 static const ref_locale tested_locales[] = {
 //{  name,         decimal_point, thousands_sep, money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
-  { "fr_FR",       ",",           "\xa0",        "EUR ",           "FRF ",               "",           "",           ",",                
+  { "fr_FR",       ",",           "\xa0",        "EUR ",           "FRF ",               "",           "",           ",",
 #if defined (WIN32) || defined (_WIN32)
                                                                                                                                           "\xa0" },
 #else
@@ -1041,7 +1041,7 @@ void LocaleTest::facet_id()
   CPPUNIT_CHECK( _id_38._M_index == 38 );
   */
 #  endif
-#endif 
+#endif
 }
 
 #endif

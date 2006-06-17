@@ -75,7 +75,7 @@ typedef unsigned int _Locale_mask_t;
  * These functions return NULL to indicate failure.
  *
  * Note These functions return a void* instead of the appropriate
- * _Locale_* struct because they are used with __acquire_category which 
+ * _Locale_* struct because they are used with __acquire_category which
  * requires that all functions have the same signature.
  */
 void * _Locale_ctype_create(const char *, struct _Locale_name_hint*);
@@ -91,8 +91,8 @@ void * _Locale_messages_create(const char *, struct _Locale_name_hint*);
  * These functions are used to release a category acquired with the
  * according _Locale_*_create() functions.
  *
- * Note: For the same reasons as for the *_create functions, these 
- * take void* instead of the correct types so that they can be used 
+ * Note: For the same reasons as for the *_create functions, these
+ * take void* instead of the correct types so that they can be used
  * with __release_category.
  */
 void _Locale_ctype_destroy(void *);
@@ -423,7 +423,7 @@ typedef int nl_catd_type;
 
 
 /*
- * Very similar to catopen, except that it uses the given message 
+ * Very similar to catopen, except that it uses the given message
  * category to determine which catalog to open.
  */
 nl_catd_type _Locale_catopen(struct _Locale_messages*, const char*);
@@ -436,7 +436,7 @@ void _Locale_catclose(struct _Locale_messages*, nl_catd_type);
 
 /*
  * Returns a string, identified by a set index and a message index,
- * from an opened message catalog.  Returns the supplied default if 
+ * from an opened message catalog.  Returns the supplied default if
  * no such string exists.
  */
 const char * _Locale_catgets(struct _Locale_messages *, nl_catd_type,

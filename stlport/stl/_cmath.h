@@ -173,7 +173,7 @@ extern long double __tanhl(long double);
 #endif
 
 /** macros to define math functions
-These macros (having an X somewhere in the name) forward to the C library's 
+These macros (having an X somewhere in the name) forward to the C library's
 double functions but cast the arguments and return values to the given type. */
 
 #define _STLP_MATH_INLINEX(__type,func,cfunc) \
@@ -198,14 +198,14 @@ double functions but cast the arguments and return values to the given type. */
 For the compiler, it can either support long double or not. If it doesn't, the
 macro _STLP_NO_LONG_DOUBLE is not defined and we don't define any long double
 overloads.
-For the native C library the question is whether it has variants with an 'f' 
+For the native C library the question is whether it has variants with an 'f'
 suffix (for float as opposed to double) or an 'l' suffix (for long double). If
-the float variants are missing, _STLP_NO_VENDOR_MATH_F is defined, when the 
+the float variants are missing, _STLP_NO_VENDOR_MATH_F is defined, when the
 long double variants are missing, _STLP_NO_VENDOR_MATH_L is defined. Of course
-the latter doesn't make sense anyway when the compiler already has no long 
+the latter doesn't make sense anyway when the compiler already has no long
 double support.
 
-Those two traits determine a) which overloads get defined and b) how they are 
+Those two traits determine a) which overloads get defined and b) how they are
 defined.
 
 Meaning of suffixes:

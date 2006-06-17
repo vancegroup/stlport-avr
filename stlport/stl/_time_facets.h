@@ -274,7 +274,7 @@ public:
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
-  time_put(_Locale_time* /*__time*/, size_t __refs) : locale::facet(__refs) 
+  time_put(_Locale_time* /*__time*/, size_t __refs) : locale::facet(__refs)
   {} //_STLP_PRIV _Init_timeinfo(_M_timeinfo, __time); }
 
   ~time_put() {}

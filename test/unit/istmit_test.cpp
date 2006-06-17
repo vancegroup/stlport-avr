@@ -120,7 +120,7 @@ void IStreamIteratorTest::copy_n_test()
      * - you extract different type of object and no object is convertible to an other
      * as in this current test when you extract int and string (when you extract ints
      * again it fails as int can be converted to strings.
-     * 
+     *
     copy_n(istream_int_ite(istr), 2, back_inserter(ints));
     CPPUNIT_ASSERT( ints.size() == 2 );
     CPPUNIT_ASSERT( ints[0] == 33 );

@@ -331,7 +331,7 @@ public:
   iterator erase_after(iterator __pos)
   { return iterator(_M_impl.erase_after(_BaseIte(__pos._M_node))._M_node); }
   iterator erase_after(iterator __before_first, iterator __last)
-  { return iterator(_M_impl.erase_after(_BaseIte(__before_first._M_node), 
+  { return iterator(_M_impl.erase_after(_BaseIte(__before_first._M_node),
                                         _BaseIte(__last._M_node))._M_node); }
 
   iterator erase(iterator __pos)

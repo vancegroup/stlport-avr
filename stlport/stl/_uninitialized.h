@@ -256,7 +256,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
 inline void uninitialized_fill(_ForwardIter __first, _ForwardIter __last,  const _Tp& __x) {
-  _STLP_PRIV __ufill(__first, __last, __x, 
+  _STLP_PRIV __ufill(__first, __last, __x,
                      _STLP_ITERATOR_CATEGORY(__first, _ForwardIter),
                      _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }

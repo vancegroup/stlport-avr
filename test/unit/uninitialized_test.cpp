@@ -95,7 +95,7 @@ void UninitializedTest::copy_test()
       }
     }
     {
-      /** Note: we use static arrays here so the iterators are always 
+      /** Note: we use static arrays here so the iterators are always
       pointers, even in debug mode. */
       size_t const count = 10;
       TrivialCopyStruct src[count];
@@ -110,7 +110,7 @@ void UninitializedTest::copy_test()
       uninitialized_copy(src+0, src+count, dst+0);
       for (it = dst+0, end = dst+count; it != end; ++it) {
 #if defined (STLPORT)
-        /* If the member is 1, it means that library has not found any 
+        /* If the member is 1, it means that library has not found any
         optimization oportunity and called the regular copy-ctor instead. */
         CPPUNIT_ASSERT( (*it).member == 0 );
 #else

@@ -99,19 +99,19 @@
 #  endif
 
 
-/** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined 
+/** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined
 unconditionally and undef'ed here when applicable. */
 #  if defined(UNDER_CE)
 /* eVCx:
-uncaught_exception is declared in the SDKs delivered with eVC4 (eVC3 is 
+uncaught_exception is declared in the SDKs delivered with eVC4 (eVC3 is
 unknown) and they all reside in namespace 'std' there. However, they are not
 part of any lib so linking fails. When using VC8 to crosscompile for CE 5 on
-an ARMV4I, the uncaught_exception test fails, the function returns the wrong 
+an ARMV4I, the uncaught_exception test fails, the function returns the wrong
 value. */
 #  else
 /* VCx:
 These are present at least since VC6, but the uncaught_exception() of VC6 is
-broken, it returns the wrong value in the unittests. 7.1 and later seem to 
+broken, it returns the wrong value in the unittests. 7.1 and later seem to
 work, 7.0 is still unknown (we assume it works until negative report). */
 #    if (_STLP_MSVC >= 1300)// VC7 and later
 #      undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT

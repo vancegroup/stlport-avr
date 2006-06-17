@@ -95,9 +95,9 @@ struct _Vector_const_traits<bool, _Bit_iterator> {
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
-class vector : 
+class vector :
 #if !defined (__DMC__)
-             private 
+             private
 #endif
                      _STLP_PRIV __construct_checker< _STLP_NON_DBG_VECTOR >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

@@ -135,7 +135,7 @@
 #if defined (__MSL_CPP__) && (__MSL_CPP__ >= 0x8000)
     // Metrowerks compiler is acquiring intrinsic type traits support
     // post version 8.  We hook into the published interface to pick up
-    // user defined specializations as well as compiler intrinsics as 
+    // user defined specializations as well as compiler intrinsics as
     // and when they become available:
 #   include <msl_utility>
 #   define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) Metrowerks::has_trivial_default_ctor<T>::value

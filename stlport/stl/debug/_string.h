@@ -39,7 +39,7 @@ iterator_category(const _STLP_PRIV _DBG_iter_base< _STLP_NON_DBG_STRING >&)
 #endif
 
 template <class _CharT, class _Traits, class _Alloc>
-class basic_string : 
+class basic_string :
 #if !defined (__DMC__)
                      private
 #else
@@ -464,7 +464,7 @@ private:
   void _M_insert_aux (iterator __p, _RandomIter __first, _RandomIter __last,
                       const __true_type& /*_IsIterator*/)
   { _M_non_dbg_impl.insert(__p._M_iterator, __first._M_iterator, __last._M_iterator); }
-  
+
   template<class _InputIter>
   void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
                       const __false_type& /*_IsIterator*/)
@@ -618,11 +618,11 @@ private:
   void _M_replace_aux(iterator __first, iterator __last,
                       _RandomIter __f, _RandomIter __l, __true_type const& /*_IsIterator*/)
   { _M_non_dbg_impl.replace(__first._M_iterator, __last._M_iterator, __f._M_iterator, __l._M_iterator); }
-  
+
   template <class _InputIter>
   void _M_replace_aux(iterator __first, iterator __last,
                       _InputIter __f, _InputIter __l, __false_type const& /*_IsIterator*/)
-  { _M_non_dbg_impl.replace(__first._M_iterator, __last._M_iterator, __f, __l); }  
+  { _M_non_dbg_impl.replace(__first._M_iterator, __last._M_iterator, __f, __l); }
 
 public:
   template <class _InputIter>

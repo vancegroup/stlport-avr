@@ -48,9 +48,9 @@ inline random_access_iterator_tag iterator_category(const _STLP_PRIV _DBG_iter_b
 #endif
 
 template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
-class deque : 
+class deque :
 #if !defined (__DMC__)
-             private 
+             private
 #endif
                      _STLP_PRIV __construct_checker<_STLP_NON_DBG_DEQUE >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)

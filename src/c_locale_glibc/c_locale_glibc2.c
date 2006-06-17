@@ -305,7 +305,7 @@ char const*_Locale_extract_messages_name( const char *loc, char *buf, struct _Lo
 char const*_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
                             const char*__DUMMY_PAR4,
                             const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8) {
-  /* TODO: what's this? Is this a marker that this is not yet completely 
+  /* TODO: what's this? Is this a marker that this is not yet completely
   implemented? Copy the implementation from c_locale_win32 perhaps? It seems
   to complement the extract functions above. */
   printf( "%s:%d\n", __FILE__, __LINE__ );

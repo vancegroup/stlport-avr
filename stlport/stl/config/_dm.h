@@ -30,17 +30,17 @@
    STATIC: Digital Mars' librarian (lib.exe) may fail with "len <= IDMAX" error
    if _STLP_DEBUG is defined.  This is because Digital Mars' librarian uses
    Microsoft OMF format, which limits identifier length to about 512 bytes.
-   With STLport namespaces, some identifiers such as Category_Map in 
+   With STLport namespaces, some identifiers such as Category_Map in
    src/locale_catalog.cpp may exceed the maximum OMF identifier length.
 
-   DYNAMIC: Export issues with cin, cout, cerr, clog in src/iostream.cpp. 
-   Exports in Digital Mars 'def' file must match mangled names in iostream.cpp. 
-   With STLport namespaces, the mangled names in the intermediate files no 
-   longer match these pre-defined exports. To use STLport dynamic libraries 
-   and STLport namespaces with Digital Mars, the pre-defined exports in 
+   DYNAMIC: Export issues with cin, cout, cerr, clog in src/iostream.cpp.
+   Exports in Digital Mars 'def' file must match mangled names in iostream.cpp.
+   With STLport namespaces, the mangled names in the intermediate files no
+   longer match these pre-defined exports. To use STLport dynamic libraries
+   and STLport namespaces with Digital Mars, the pre-defined exports in
    src/iostream.cpp and the related Digital Mars 'def' files would need to be
    revised. */
-#define _STLP_NO_OWN_NAMESPACE 1 
+#define _STLP_NO_OWN_NAMESPACE 1
 
 // select threads strategy
 #if defined (_MT) && !defined (_NOTHREADS)
@@ -94,7 +94,7 @@
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __export
 #  else
-#    define _STLP_CALL 
+#    define _STLP_CALL
 #  endif
 #else
 #  define _STLP_CALL

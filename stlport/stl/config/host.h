@@ -65,7 +65,7 @@
 #define _STLP_NO_CYGWIN
  */
 
-/* 
+/*
  * Edit relative path below (or put full path) to get native
  * compiler vendor's headers included. Default is "../include"
  * for _STLP_NATIVE_INCLUDE_PATH, default for other macros is

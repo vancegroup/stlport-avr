@@ -1,7 +1,7 @@
 /*
  * The conversation with Matti Rintala on STLport forum 2005-08-24:
  *
- * Do you mean ISO/IEC 14882 3.6.3 [basic.start.term]? 
+ * Do you mean ISO/IEC 14882 3.6.3 [basic.start.term]?
  *
  * Yes. "Destructors (12.4) for initialized objects of static storage duration
  * (declared at block scope or at namespace scope) are called as a result

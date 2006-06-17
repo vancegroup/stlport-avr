@@ -66,7 +66,7 @@ unsigned _STLP_mutex_spin<__inst>::__last = 0;
 #else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
 #  if defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
-__DECLARE_INSTANCE(_STLP_STATIC_MUTEX, _Atomic_swap_struct<sizeof(__stl_atomic_t) == sizeof(void*)>::_S_swap_lock, 
+__DECLARE_INSTANCE(_STLP_STATIC_MUTEX, _Atomic_swap_struct<sizeof(__stl_atomic_t) == sizeof(void*)>::_S_swap_lock,
                    _STLP_MUTEX_INITIALIZER  );
 #    undef _STLP_USE_ATOMIC_SWAP_MUTEX
 #  endif /* _STLP_PTHREADS */

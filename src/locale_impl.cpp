@@ -336,7 +336,7 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
 #endif
   } else {
     _STLP_TRY {
-      time_get_byname<char, istreambuf_iterator<char, char_traits<char> > > *getbn = 
+      time_get_byname<char, istreambuf_iterator<char, char_traits<char> > > *getbn =
         new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(pname, 0, hint);
       get  = getbn;
 #if !defined (__DMC__)

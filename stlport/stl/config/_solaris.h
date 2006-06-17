@@ -6,7 +6,7 @@
 
 /* system-dependent defines */
 
-/* 
+/*
  * Should be fixed:
  * 1. __SunOS_5_x not defined, and no way to derive this from headers only;
  *    define it with -D on compiler command line is a bad idea too.

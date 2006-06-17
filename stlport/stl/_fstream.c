@@ -304,7 +304,7 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         return __off == 0 ?
           pos_type(_M_base._M_seek(0, ios_base::cur) - __adjust) :
           _M_seek_return(_M_base._M_seek(__off - __adjust, ios_base::cur), _State_type());
-      } 
+      }
       else if (_M_constant_width) { // Get or set the position.
         streamoff __iadj = _M_width * (this->gptr() - this->eback());
 

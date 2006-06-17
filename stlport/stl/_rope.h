@@ -324,10 +324,10 @@ public:
   // GAB: 11/09/05
   //
   // "__ROPE_DEPTH_SIZE" is set to one more then the "__ROPE_MAX_DEPTH".
-  // This was originally just an addition of "__ROPE_MAX_DEPTH + 1" 
-  // but this addition causes the sunpro compiler to complain about 
-  // multiple declarations during the initialization of "_S_min_len". 
-  // Changed to be a fixed value and the sunpro compiler appears to 
+  // This was originally just an addition of "__ROPE_MAX_DEPTH + 1"
+  // but this addition causes the sunpro compiler to complain about
+  // multiple declarations during the initialization of "_S_min_len".
+  // Changed to be a fixed value and the sunpro compiler appears to
   // be happy???
   //
 #  define __ROPE_MAX_DEPTH  45

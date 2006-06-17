@@ -159,12 +159,12 @@ _STLP_END_NAMESPACE
 
 _STLP_BEGIN_NAMESPACE
 
-#  if TYPE_LONGLONG 
+#  if TYPE_LONGLONG
 typedef UInt64 uint64;
 #    define ULL(x) (U64SetU(x))
 
 #  else
-//  Apple's mpw sc compiler for 68k macintosh does not support native 64bit integer type. 
+//  Apple's mpw sc compiler for 68k macintosh does not support native 64bit integer type.
 //  Instead, it comes with external support library and struct data type representing 64bit int:
 //
 //    struct UnsignedWide {
