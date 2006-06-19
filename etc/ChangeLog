@@ -149,8 +149,8 @@
 	    preprocessor and two with memberfunction bodies.
 
 	* stlport/stl/pointers/_tools.h: Add missing template method
-	in _CastTraits helper struct used on compiler not support partial
-	template specialization.
+	in _CastTraits helper struct used on compiler with no partial
+	template specialization support.
 
 2006-06-08  Francois Dumont  <dums@stlport...>
 
@@ -213,7 +213,7 @@
 	* stlport/stl/config/features.h: Add management of containers template
 	method extension.
 
-	* stlport/stl/config/_apple.h, _symantec.h: Config updae based on
+	* stlport/stl/config/_apple.h, _symantec.h: Config update based on
 	config that used to be in _tree.h and _hashtable.h to remove
 	container template methods extensions.
 
@@ -270,7 +270,7 @@
 	* stlport/stl/type_traits.h: Add _TrivialInit helper struct to
 	report if a type is trivial to initialize or not that is to say
 	if the type has a trivial default constructor. Handle native types
-	exception that are concider as having a trivial default constructor
+	exception that are consider as having a trivial default constructor
 	but that required a 0 initialization on explicit constructor
 	call.
 
@@ -297,7 +297,7 @@
 	* stlport/stl/ctype.h, config/_evc.h, _msvc.h, _windows.h,
 	features.h: Patch from Michael Fink for evc3/4 platform.
 
-	* test/unit/mvctor_test.cpp: Add of s specific Borland test case
+	* test/unit/mvctor_test.cpp: Add of a specific Borland test case
 	to report what seems to be a compiler bug but that is only
 	revealed when using STLport.
 
@@ -352,7 +352,7 @@
 	* stlport/stl/_uninitialized.h: Simplified __uninitialized_copy_fill
 	prototype, only one type of iterator is allowed. It also fix
 	implementation as this one was not taking into account both
-	iterator value_type to concider if the operation was trivial
+	iterator value_type to consider if the operation was trivial
 	or not.
 
 	* stlport/stl/_uninitialized.h: Major code review. Remove use of
@@ -373,7 +373,7 @@
 	methods used when _STLP_NO_MEMBER_TEMPLATES is defined.
 
 	* stlport/stl/_slist.c: Fixed sort _Slist_sort implementation, now
-	call _Slist_marge template function rather than slist::merge method
+	call _Slist_merge template function rather than slist::merge method
 	as this method do not take any predicate when _STLP_NO_MEMBER_TEMPLATES
 	is defined.
 
@@ -548,7 +548,7 @@
 
 	* stlport/stl/_cmath.h: Add macro definition for environment
 	having long double but no float neither long double math functions
-	This is the Solaris configuration.
+	This is a Solaris configuration.
 
 	* src/acquire_release.h, c_locale.h, locale.cpp,
 	locale_catalog.cpp, locale_impl.cpp, locale_impl.h,
@@ -587,7 +587,7 @@
 
 	* stlport/stl/config/host.h, compat.h, debug/_debug.c: Removed
 	_STLP_NO_DEBUG_EXCEPTIONS configuration macro that is similar
-	to the new _STLP_DEBUG_MODE_THROWS except that new thorwn macro
+	to the new _STLP_DEBUG_MODE_THROWS except that new thrown macro
 	is catchable (std::runtime_error exception) and contained message
 	is more explicit.
 
@@ -644,7 +644,7 @@
 2006-04-05  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_tree.h, _list.h: Fixed swap implementation to
-	correctly swap allocators instance. Moreover list swap implemenation
+	correctly swap allocators instance. Moreover list swap implementation
 	was wrong since list splice has been modified to correctly handled
 	allocators with state.
 
@@ -691,7 +691,6 @@
 
 	* stlport/stl/config/_native_headers.h: New, contains all macros
 	relative to native headers access that used to be in features.h.
-
 
 	* stlport/stl/config/_evc.h, _como.h: Add include of _native_headers.h
 	as those compilers need to include native headers for correct
@@ -767,8 +766,8 @@
 
 	* test/unit/locale_test.cpp: Add missing <stdexcept> header include.
 
-	* stlport/stl/_function_base.h, _function.h: Move at many functor
-	from _function_base.h as possible to _function.h to improve
+	* stlport/stl/_function_base.h, _function.h: Move as many functor as
+	possible from _function_base.h to _function.h to improve
 	segregation between <functional> and <algorithm> Standard headers.
 
 	* test/unit: Add many missing references to <functional> header.
@@ -807,7 +806,7 @@
 
 	* stlport/stl/_string.c: a bit code clean
 
-	* stlport/stl/_string_base.h: max_size should left space for
+	* stlport/stl/_string_base.h: max_size should keep space for
 	allocation of terminating null.
 
 2006-03-19  Francois Dumont  <dums@stlport...>
@@ -873,7 +872,7 @@
 
 	* stlport/stl/_alloc.h: Add a new STLport extension to the
 	std::allocator class: allocate(size_type, size_type&). This new
-	overload of allocate returns in its output parameter, the real
+	overload of allocate returns in an output parameter, the real
 	size of the allocated buffer that can be larger than the requested
 	one. _STLP_alloc_proxy expose this new overload only for the
 	STLport allocator and not for user defined allocators.
@@ -1020,8 +1019,6 @@
 	__stl_throw_runtime_error function used to throw exception in
 	_STLP_DEBUG_MODE_THROW.
 
-	* stlport/float.h, stdio.h, stl/_cmath.h, _cstdio.h, 
-
 2006-02-06  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/nmake: Fixed regression generated by a side
@@ -1041,9 +1038,6 @@
 
 	* stlport/cfloat: Include STLport float.h rather than native one in
 	order to use potential internal workaround.
-
-	* stlport/cfloat: In order to use Borland workaround now cfloat
-	include STLport float.h rather than directly using native float.h.
 
 	* stlport/stl/config/_ibm.h: Replace all C++ comment by C comments.
 
@@ -1182,7 +1176,7 @@
 	include STLport C header rather than native one to use errno
 	workaround.
 
-	* stlport/stddef.h: DMC also define errno in native stddef.ah file.
+	* stlport/stddef.h: DMC also define errno in native stddef.h file.
 
 2006-01-22  Francois Dumont  <dums@stlport...>
 
@@ -1205,7 +1199,7 @@
 
 	* build/Makefiles/gmake/cygming/rules-so.mak: Workaround for DMC
 	linker weird behavior. Linker create the dll file even if link
-	fail which comfuse make dependency feature. As lib file is not
+	fail which confuse make dependency feature. As lib file is not
 	generated, dll now depends on lib that depends on build files.
 
 	* stlport/stl/config/_warning_off.h: Disabled this used in initialization
@@ -1253,7 +1247,7 @@
 
 	* stlport/stl/_ostream.h, _ostream.c: Use size_t rather than
 	unsigned int for MSVC compilers after VC6 in IO output operator
-	to avoid 64 bits warning when trying to displau a size_t type.
+	to avoid 64 bits warning when trying to display a size_t type.
 
 	* test/unit/sstream_test.cpp: Add test that reveal the 64 bits
 	warning.
@@ -1304,7 +1298,7 @@
 	instanciation of _Bs_G that is no more a template.
 
 	* stlport/stl/config/_detect_dll_or_lib.h: When no iostreams mode,
-	concider that we are in a static lib mode.
+	consider that we are in a static lib mode.
 
 	* stlport/stl/_limits.c, _hashtable.c: Add _STLP_CALL specification
 	to _LimG and _Stl_prime methods implementation.
@@ -1463,7 +1457,7 @@
 	static specification was missing.
 
 	* src/ctype.cpp: Filter out _WCharIndexT specialization for
-	Intel compiler that concider wchar_t as unsigned, fixed a
+	Intel compiler that consider wchar_t as unsigned, fixed a
 	warning.
 
 	* _STLP_STATIC_ASSERT is now called without trailing ';' that
@@ -2015,7 +2009,7 @@
 
 	* stlport/stl/_cmath.h, _cstdlib.h: Now those files includes each other to
 	make sure that all abs overloads are defined when it is imported in STLport
-	namespace. gcc 2.95 is very strict on this point and only concider the abs
+	namespace. gcc 2.95 is very strict on this point and only consider the abs
 	overloads existing at the first import calls, all overloads added after that
 	are discarded silently.
 
@@ -2755,7 +2749,7 @@
 2005-08-09  Francois Dumont  <dums@stlport...>
 
 	* src/fstream.cpp: Final fix of basic_filebuf::open method. Now when open
-	from a Win32 handle the file will be concidered as in binary access with no
+	from a Win32 handle the file will be considered as in binary access with no
 	append action.
 
 2005-08-08  Francois Dumont  <dums@stlport...>
@@ -4939,7 +4933,7 @@
 	specializations of const, volatile and const volatile native types.
 
 	* stlport/stl/type_manips.h: Modification of the __bool2type default value
-	so that it concider any value as true and only the 0 value false.
+	so that it consider any value as true and only the 0 value false.
 
 	* stlport/config/stl_msvc.h, stlport/stl/_config.h: Modification of the STLport
 	std equivalent namespace to be sure that the user rebuild correctly the STLport 
@@ -5340,7 +5334,7 @@
 
 	* stlport/stl/_string.h, stlport/stl/debug/_string.h, _string_mem_t.h: restoration
 	of the template method specialization for backward compatibility between compilers
-	implementating template method and the most recent one. It is concidered as an 
+	implementating template method and the most recent one. It is considered as an 
 	STLport extension.
 
 2004-08-09  Petr Ovtchenkov  <ptr@Island...>
