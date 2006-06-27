@@ -74,6 +74,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(template_expression);
+  CPPUNIT_TEST(te_tmp);
 #if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
   CPPUNIT_IGNORE;
 #endif
@@ -113,6 +114,7 @@ protected:
   void short_string_optim_bug();
   void compare();
   void template_expression();
+  void te_tmp();
   void template_wexpression();
   void io();
   void allocator_with_state();
@@ -870,6 +872,36 @@ void StringTest::template_expression()
   //MSVC sees no problem. gcc limitation or MSVC is too cool ??
   mystring b = "str" + a;
   */
+}
+
+class superstring
+{
+  public:
+    superstring() :
+      s("super")
+    {}
+
+    superstring( const string& str ) :
+      s( str )
+    {}
+
+  superstring operator / (const string& str )
+    { return superstring( s + "/" + str ); }
+
+  superstring operator / (const char* str )
+    { return superstring( s + "/" + str ); }
+
+  private:
+    string s;
+};
+
+void StringTest::te_tmp()
+{
+  superstring s;
+  string more( "more" );
+  string less( "less" );
+
+  superstring r = s / (more + less);
 }
 
 void StringTest::template_wexpression()
