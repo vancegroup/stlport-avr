@@ -1,3 +1,9 @@
+2006-06-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_list.h: fix bug in list.swap, thanks Viktor Govako.
+
+	* test/unit/list_test.cpp: test for bug above.
+
 2006-06-17  Francois Dumont  <dums@stlport...>
 
 	* test/unit/type_traits_test.cpp, uninitialized_test.cpp: Add

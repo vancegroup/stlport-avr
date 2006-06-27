@@ -389,7 +389,8 @@ public:
   const_reference back() const  { return *(--end()); }
 
 private:
-  void _M_swap_aux(_Self& __x) {
+  void _M_swap_aux(_Self& __x)
+  {
     __x._M_node._M_swap_alloc(this->_M_node);
     __x._M_node._M_data._M_next = this->_M_node._M_data._M_next;
     __x._M_node._M_data._M_next->_M_prev = &__x._M_node._M_data;
@@ -399,26 +400,28 @@ private:
   }
 
 public:
-  void swap(_Self& __x) {
+  void swap(_Self& __x)
+  {
     if (__x.empty()) {
       if (this->empty()) {
         return;
       }
       this->_M_swap_aux(__x);
-    }
-    else if (this->empty()) {
+    } else if (this->empty()) {
       __x._M_swap_aux(*this);
     } else {
       this->_M_node.swap(__x._M_node);
       _STLP_STD::swap(this->_M_node._M_data._M_prev->_M_next, __x._M_node._M_data._M_prev->_M_next);
+      _STLP_STD::swap(this->_M_node._M_data._M_next->_M_prev, __x._M_node._M_data._M_next->_M_prev);
     }
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-  iterator insert(iterator __pos, const_reference __x = value_type()) {
+  iterator insert(iterator __pos, const_reference __x = value_type())
 #else
-  iterator insert(iterator __pos, const_reference __x) {
+  iterator insert(iterator __pos, const_reference __x)
 #endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+  {
     _Node_base* __tmp = _M_create_node(__x);
     _Node_base* __n = __pos._M_node;
     _Node_base* __p = __n->_M_prev;
