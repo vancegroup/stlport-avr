@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <05/09/11 11:58:35 ptr>
+// -*- C++ -*- Time-stamp: <06/06/28 13:27:56 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2005
@@ -90,6 +90,11 @@ namespace xmt {
 namespace detail {
 
 int Init_count = 0;
+
+union _iv {
+    void *ptr;
+    int code;
+};
 
 #ifdef __FIT_NOVELL_THREADS
 xmt::Thread::thread_key_type _mt_key = 0;
@@ -838,10 +843,14 @@ __FIT_DECLSPEC
 void Thread::_exit( int code )
 {
 #ifdef _PTHREADS
-  pthread_exit( (void *)code );
+  detail::_iv v;
+  v.code = code;
+  pthread_exit( v.ptr );
 #endif
 #ifdef __FIT_UITHREADS
-  thr_exit( (void *)code );
+  _iv v;
+  v.code = code;
+  thr_exit( v.ptr );
 #endif
 #ifdef __FIT_WIN32THREADS
   ExitThread( code );
@@ -1196,7 +1205,7 @@ void *Thread::_call( void *p )
   // of me->_entrance!!!
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
-  int ret;
+  detail::_iv ret;
 
 //#ifdef _PTHREADS
 //#  ifndef __hpux
@@ -1223,7 +1232,7 @@ void *Thread::_call( void *p )
   me->_state = goodbit;
   _start_lock.unlock();
   try {
-    ret = me->_entrance( _param );
+    ret.code = me->_entrance( _param );
     me->_state = badbit;
     // I should make me->_id = bad_thread_id; here...
     // This is in conflict what I say in the begin of this function.
@@ -1249,7 +1258,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << e.what() << endl;
 #endif
-    ret = -1;
+    ret.code = -1;
   }
   catch ( int sig ) {
     me->_state = badbit;
@@ -1264,7 +1273,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
 #endif
-    ret = sig;
+    ret.code = sig;
   }
   catch ( ... ) {
     me->_state = badbit;
@@ -1278,7 +1287,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << "\n--- Thread: unknown exception occur ---" << endl;
 #endif
-    ret = -1;
+    ret.code = -1;
   }
 
   try {
@@ -1289,18 +1298,18 @@ void *Thread::_call( void *p )
     }
   }
   catch ( ... ) {
-    ret = -1;
+    ret.code = -1;
   }
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
-  Thread::_exit( ret );
+  Thread::_exit( ret.code );
 #endif
 #ifdef __FIT_NOVELL_THREADS
   if ( (me->_flags & detached) == 0 ) {
     me->_thr_join.signal();
   }
 #endif // __FIT_NOVELL_THREADS || __FIT_WIN32THREADS
-  return (void *)ret;
+  return ret.ptr;
 }
 #ifdef _WIN32
 #pragma warning( default : 4101 )
