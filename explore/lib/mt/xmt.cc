@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/06/28 13:27:56 ptr>
+// -*- C++ -*- Time-stamp: <06/07/13 11:02:00 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2005
@@ -772,11 +772,8 @@ int Thread::suspend()
     // pthread_{suspend,continue}, I use it:
     return pthread_suspend( _id );
 #  else
-    if ( _id != pthread_self() ) {
-      throw std::domain_error( "Thread::suspend() for POSIX threads work only while call from the same thread." );
-      // May be signalling pthread_kill( _id, SIG??? ) will be good workaround?
-    }
-    return _suspend.wait(); // thr_suspend and pthread_cond_wait return 0 in success
+    _suspend.set( false );
+    return _suspend.try_wait(); // thr_suspend and pthread_cond_wait return 0 in success
 #  endif
 #endif // __STL_PTHREADS
 #ifdef __FIT_UITHREADS
