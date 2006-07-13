@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <05/11/29 10:38:40 ptr>
+// -*- C++ -*- Time-stamp: <06/06/29 17:00:46 ptr>
 
 /*
  *
@@ -422,8 +422,11 @@ class __Mutex :
 
 #ifdef __FIT_PTHREAD_SPINLOCK
 // Spinlock-based locks (IEEE Std. 1003.1j-2000)
+
+template <bool RS, bool SCOPE> class __Spinlock;
+
 template <bool SCOPE>
-class __Spinlock :
+class __Spinlock<false,SCOPE> :
     public __spinlock_base<SCOPE>
 {
   public:
@@ -458,16 +461,15 @@ class __Spinlock :
       }
 };
 
-// The same, recursive safe
 template <bool SCOPE>
-class __SpinlockRS :
+class __Spinlock<true,SCOPE> : //  Recursive safe
     public __spinlock_base<SCOPE>
 {
   public:
-    __SpinlockRS()
+    __Spinlock()
       { }
 
-    ~__SpinlockRS()
+    ~__Spinlock()
       { }
 
     void lock()
@@ -919,20 +921,20 @@ class __MutexRW :
 
 #endif // __FIT_RWLOCK
 
-template <bool R, bool SCOPE>
+template <class M>
 class __Locker
 {
   public:
-    __Locker( const __Mutex<R,SCOPE>& point ) :
+    __Locker( const M& point ) :
       m( point )
-      { const_cast<__Mutex<R,SCOPE>&>(m).lock(); }
+      { const_cast<M&>(m).lock(); }
     ~__Locker()
-      { const_cast<__Mutex<R,SCOPE>&>(m).unlock(); }
+      { const_cast<M&>(m).unlock(); }
 
   private:
     __Locker( const __Locker& )
       { }
-    const __Mutex<R,SCOPE>& m;
+    const M& m;
 };
 
 #ifdef __FIT_RWLOCK
@@ -975,13 +977,21 @@ typedef __Mutex<true,false>   MutexSDS; // obsolete, use instead MutexRS
 #ifdef __FIT_RWLOCK
 typedef __MutexRW<false>      MutexRW;
 #endif // __FIT_RWLOCK
+#ifdef __FIT_PTHREAD_SPINLOCK
+typedef __Spinlock<false,false> Spinlock;
+typedef __Spinlock<true,false>  SpinlockRS;
+#endif // __FIT_RWLOCK
 
-typedef __Locker<false,false> Locker;
-typedef __Locker<true,false>  LockerRS;
-typedef __Locker<true,false>  LockerSDS; // obsolete, use instead LockerRS
+typedef __Locker<Mutex>       Locker;
+typedef __Locker<MutexRS>     LockerRS;
+typedef __Locker<MutexRS>     LockerSDS; // obsolete, use instead LockerRS
 #ifdef __FIT_RWLOCK
 typedef __LockerRd<false>     LockerRd;
 typedef __LockerWr<false>     LockerWr;
+#endif // __FIT_RWLOCK
+#ifdef __FIT_PTHREAD_SPINLOCK
+typedef __Locker<Spinlock>    LockerSpin;
+typedef __Locker<SpinlockRS>  LockerSpinRS;
 #endif // __FIT_RWLOCK
 
 class LockerExt
@@ -1550,12 +1560,11 @@ class Thread
     thread_id_type _id;
     int _state; // state flags
 #ifdef _PTHREADS
-// #  ifdef __sun
-// #    error "Sorry, Solaris has no pthread_{suspend,continue} calls"
+# ifndef __hpux
     // sorry, POSIX threads don't have suspend/resume calls, so it should
     // be simulated via cond_wait
     Condition _suspend;
-// #  endif
+# endif
 #endif
 #ifdef __FIT_WIN32THREADS
     unsigned long _thr_id;
