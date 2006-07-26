@@ -20,12 +20,8 @@ class ListTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(ListTest);
   CPPUNIT_TEST(list1);
   CPPUNIT_TEST(list2);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(list3);
   CPPUNIT_TEST(list4);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(push_back);

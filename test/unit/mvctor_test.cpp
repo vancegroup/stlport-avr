@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <rope>
 #endif
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
@@ -36,16 +36,17 @@ using namespace std;
 class MoveConstructorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(MoveConstructorTest);
+  CPPUNIT_TEST(move_construct_test);
+  CPPUNIT_TEST(deque_test);
 #if defined (__DMC__)
   CPPUNIT_IGNORE;
 #endif
-  CPPUNIT_TEST(move_construct_test);
-  CPPUNIT_TEST(deque_test);
   CPPUNIT_TEST(vector_test);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(move_traits);
 #if !defined (STLPORT) || defined (_STLP_NO_MOVE_SEMANTIC) || \
     defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) || \
-    defined (__BORLANDC__)
+    defined (__BORLANDC__) || defined (__DMC__)
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(movable_declaration)
@@ -87,7 +88,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(MoveConstructorTest);
 //
 void MoveConstructorTest::move_construct_test()
 {
-#if !defined (__DMC__)
   //cout << "vector<vector<int>>";
   vector<int> const ref_vec(10, 0);
   vector<vector<int> > v_v_ints(1, ref_vec);
@@ -220,12 +220,10 @@ void MoveConstructorTest::move_construct_test()
   CheckFullMoveSupport(list<int>());
   CheckFullMoveSupport(slist<int>());
   */
-#endif /* __DMC__ */
 }
 
 void MoveConstructorTest::deque_test()
 {
-#if !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -447,7 +445,6 @@ void MoveConstructorTest::deque_test()
 #endif
     }
   }
-#endif /* __DMC__ */
 }
 
 void MoveConstructorTest::vector_test()
@@ -832,7 +829,6 @@ void MoveConstructorTest::vector_test()
 #endif
 }
 
-#if !defined (__DMC__)
 struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
@@ -924,11 +920,9 @@ namespace std {
   };
 }
 #  endif
-#endif /* __DMC__ */
 
 void MoveConstructorTest::move_traits()
 {
-#if !defined (__DMC__)
   {
     {
       vector<MovableStruct> vect;
@@ -1295,7 +1289,6 @@ void MoveConstructorTest::move_traits()
     //deq with 3 elements and v2 with 4 elements are now out of scope
     CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 3 + 4 );
   }
-#endif /* __DMC__ */
 }
 
 #if defined (__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 0)
@@ -1304,8 +1297,7 @@ void MoveConstructorTest::move_traits()
 #  define __false_type std::__false_type
 #endif
 
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && \
-   !defined (__DMC__)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) 
 
 static bool type_to_bool(__true_type)
 { return true; }
@@ -1313,7 +1305,7 @@ static bool type_to_bool(__false_type)
 { return false; }
 
 template <class _Tp>
-static bool is_movable(_Tp) {
+static bool is_movable(const _Tp&) {
 #if defined (__BORLANDC__)
   return __type2bool<typename __move_traits<_Tp>::implemented>::_Ret != 0;
 #else

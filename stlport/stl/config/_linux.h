@@ -1,6 +1,8 @@
 #ifndef __stl_config__linux_h
 #define __stl_config__linux_h
 
+#define _STLP_PLATFORM "Linux"
+
 #include <features.h>
 
 /* This is defined wether library in use is glibc or not.

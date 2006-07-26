@@ -69,13 +69,13 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
 //Dynamic output buffer version.
 template <class Char, class Str>
 static void
-__insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __dec_pos,
+__insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __group_pos,
                       const string& grouping,
                       Char separator, Char Plus, Char Minus,
                       int basechars) {
   typedef string::size_type str_size;
 
-  if ( iostr.size() <= __dec_pos )
+  if (iostr.size() < __group_pos)
     return;
 
   size_t __first_pos = 0;
@@ -87,7 +87,7 @@ __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __dec_pos
 
   __first_pos += basechars;
   str_size n = 0;                                                   // Index of the current group.
-  typename basic_string<Char>::iterator cur_group(iostr.begin() + __dec_pos);  // Points immediately beyond the rightmost
+  typename basic_string<Char>::iterator cur_group(iostr.begin() + __group_pos);  // Points immediately beyond the rightmost
                                                                     // digit of the current group.
   unsigned int groupsize = 0;                                       // Size of the current group.
 
@@ -133,9 +133,9 @@ __insert_grouping(char * first, char * last, const string& grouping,
 }
 
 void _STLP_CALL
-__insert_grouping(__iostring &str, size_t dec_pos, const string& grouping,
+__insert_grouping(__iostring &str, size_t group_pos, const string& grouping,
                   char separator, char Plus, char Minus, int basechars) {
-  __insert_grouping_aux(str, dec_pos, grouping, separator, Plus, Minus, basechars);
+  __insert_grouping_aux(str, group_pos, grouping, separator, Plus, Minus, basechars);
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
@@ -148,10 +148,10 @@ __insert_grouping(wchar_t* first, wchar_t* last, const string& grouping,
 }
 
 void _STLP_CALL
-__insert_grouping(__iowstring &str, size_t dec_pos, const string& grouping,
+__insert_grouping(__iowstring &str, size_t group_pos, const string& grouping,
                   wchar_t separator, wchar_t Plus, wchar_t Minus,
                   int basechars) {
-  __insert_grouping_aux(str, dec_pos, grouping, separator, Plus, Minus, basechars);
+  __insert_grouping_aux(str, group_pos, grouping, separator, Plus, Minus, basechars);
 }
 #endif
 

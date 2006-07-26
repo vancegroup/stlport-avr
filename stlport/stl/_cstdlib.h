@@ -25,7 +25,7 @@
 #if defined (__BORLANDC__)
 /* Borland process.h header do not bring anything here and is just included
  * in order to avoid inclusion later. This header cannot be included later
- * because Borland compiler concider that for instance the abort function
+ * because Borland compiler consider that for instance the abort function
  * defined as extern "C" cannot be overloaded and it finds 2 "overloads",
  * once in native std namespace and the other in STLport namespace...
  */

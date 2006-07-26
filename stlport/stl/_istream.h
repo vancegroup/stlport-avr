@@ -283,10 +283,12 @@ operator>>(basic_istream<char, _Traits>& __in_str, signed char* __s) {
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& _STLP_CALL
 ws(basic_istream<_CharT, _Traits>& __istr) {
-  typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
-  _Sentry __sentry(__istr, _No_Skip_WS()); // Don't skip whitespace.
-  if (__sentry)
-    __istr._M_skip_whitespace(false);
+  if (!__istr.eof()) {
+    typedef typename basic_istream<_CharT, _Traits>::sentry      _Sentry;
+    _Sentry __sentry(__istr, _No_Skip_WS()); // Don't skip whitespace.
+    if (__sentry)
+      __istr._M_skip_whitespace(false);
+  }
   return __istr;
 }
 

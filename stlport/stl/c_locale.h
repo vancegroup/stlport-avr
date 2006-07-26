@@ -429,7 +429,7 @@ struct _Locale_name_hint;
 #  define _Locale_ALPHA  _ALPHA
 #endif
 
-/* We arbitrarily concider _Locale_CNTRL macro to check locale facet numeric
+/* We arbitrarily consider _Locale_CNTRL macro to check locale facet numeric
  * identifier has been defined for the platform/compiler:
  */
 #if !defined (_Locale_CNTRL)

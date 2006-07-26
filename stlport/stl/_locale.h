@@ -188,7 +188,7 @@ public:
   facet* _M_get_facet(const id&) const;
   // same, but throws
   facet* _M_use_facet(const id&) const;
-  static void _STLP_CALL _M_throw_runtime_error(const char* = 0);
+  static void _STLP_CALL _M_throw_runtime_error(const char* = 0) _STLP_NORETURN_FUNCTION;
 
 protected:                        // More helper functions.
   void _M_insert(facet* __f, id& __id);

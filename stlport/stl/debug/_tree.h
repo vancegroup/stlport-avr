@@ -239,14 +239,14 @@ public:
   template<class _InputIterator>
   void insert_equal(_InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
-    _M_non_dbg_impl.insert_equal(__first, __last);
+    _M_non_dbg_impl.insert_equal(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
   template<class _InputIterator>
   void insert_unique(_InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
-    _M_non_dbg_impl.insert_unique(__first, __last);
+    _M_non_dbg_impl.insert_unique(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   void insert_unique(const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(__check_range(__first,__last))
     _M_non_dbg_impl.insert_unique(__first._M_iterator, __last._M_iterator);
@@ -263,7 +263,7 @@ public:
     _STLP_DEBUG_CHECK(__check_ptr_range(__first,__last))
     _M_non_dbg_impl.insert_equal(__first, __last);
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
   void erase(iterator __pos) {
     _STLP_DEBUG_CHECK(__check_if_owner(&_M_iter_list,__pos))

@@ -23,6 +23,7 @@ class AlgTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(count_test);
   CPPUNIT_TEST(sort_test);
   CPPUNIT_TEST(search_n_test);
+  CPPUNIT_TEST(find_first_of_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -30,6 +31,7 @@ protected:
   void count_test();
   void sort_test();
   void search_n_test();
+  void find_first_of_test();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AlgTest);
@@ -189,5 +191,37 @@ void AlgTest::search_n_test()
     int array[] = {0, 0, 1, 0, 1, 1};
     int* array_end = array + sizeof(array) / sizeof(*array);
     CPPUNIT_ASSERT(search_n(array, array_end, 3, 1) == array_end);
+  }
+}
+
+void AlgTest::find_first_of_test()
+{
+  slist<int> intsl;
+  intsl.push_front(1);
+  intsl.push_front(2);
+
+  {
+    vector<int> intv;
+    intv.push_back(0);
+    intv.push_back(1);
+    intv.push_back(2);
+    intv.push_back(3);
+
+    vector<int>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), intsl.begin(), intsl.end());
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == 1 );
+  }
+  {
+    vector<int> intv;
+    intv.push_back(3);
+    intv.push_back(2);
+    intv.push_back(1);
+    intv.push_back(0);
+
+    vector<int>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), intsl.begin(), intsl.end());
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == 2 );
   }
 }

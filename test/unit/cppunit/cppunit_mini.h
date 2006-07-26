@@ -124,11 +124,20 @@ namespace CPPUNIT_NS
   };
 }
 
+#if !defined (CPPUNIT_MINI_HIDE_UNUSED_VARIABLE)
+#  if defined (_MSC_VER)
+#    define CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(v) (v);
+#  else
+#    define CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(v)
+#  endif
+#endif
+
 #define CPPUNIT_TEST_SUITE(X) \
   typedef CPPUNIT_NS::TestCase Base; \
   virtual void myRun(const char *in_name, bool invert = false) { \
-    char *className = #X; \
-    bool ignoring = false;
+    char *className = #X; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(className) \
+    bool ignoring = false; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(ignoring)
+
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST(X) \
   if (shouldRunThis(in_name, className, #X, invert)) { \

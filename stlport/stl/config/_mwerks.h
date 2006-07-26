@@ -1,6 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#define _STLP_COMPILER "Metrowerk Codewarrior"
+
 // Bring in definition of __MSL__ and related items
 #include <mslGlobals.h>
 #include <ansi_parms.h>

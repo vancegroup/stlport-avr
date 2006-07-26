@@ -4,6 +4,12 @@
 
 /* common configuration settings for Apple MPW MrCpp / SCpp */
 
+#if defined (__MRC__)
+#  define _STLP_COMPILER "MPW MrCpp"
+#else
+#  define _STLP_COMPILER "MPW SCpp"
+#endif
+
 #if defined(__MRC__) && __MRC__ < 0x500
 # error Apple's MPW MrCpp v.5.0.0 or better compiler required
 #endif

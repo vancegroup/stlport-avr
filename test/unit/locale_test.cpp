@@ -54,22 +54,20 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(locale_by_name);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(loc_has_facet);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(num_put_get);
   CPPUNIT_TEST(money_put_get);
   CPPUNIT_TEST(money_put_X_bug);
   CPPUNIT_TEST(time_put_get);
+#if defined (__DMC__) && defined (_DLL)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
 #if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(locale_init_problem);
-#if !defined (__DMC__)
   CPPUNIT_STOP_IGNORE;
-#endif
   CPPUNIT_TEST(default_locale);
 #if !defined (STLPORT)
   CPPUNIT_IGNORE;
@@ -107,16 +105,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LocaleTest);
 // tests implementation
 //
 void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
-  float val = 1234.56f;
-  ostringstream ostr;
-  ostr << val;
-  CPPUNIT_ASSERT( ostr );
-  CPPUNIT_ASSERT( ostr.str() == "1234.56" );
-
   numpunct<char> const& npct = use_facet<numpunct<char> >(loc);
-
   CPPUNIT_ASSERT( npct.decimal_point() == *rl.decimal_point );
 
+  float val = 1234.56f;
   ostringstream fostr;
   fostr.imbue(loc);
   fostr << val;
@@ -132,10 +124,6 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   CPPUNIT_ASSERT( fostr.str() == ref );
 
   val = 12345678.9f;
-  ostr.str("");
-  ostr << val;
-  CPPUNIT_ASSERT( ostr.str() == "1.23457e+07" );
-
   ref = "1";
   ref += npct.decimal_point();
   ref += "23457e+07";
@@ -144,13 +132,24 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   CPPUNIT_ASSERT( fostr.str() == ref );
 
   val = 1000000000.0f;
-  ostr.str("");
-  ostr << val;
-  CPPUNIT_ASSERT( ostr.str() == "1e+09" );
-
   fostr.str("");
   fostr << val;
   CPPUNIT_ASSERT( fostr.str() == "1e+09" );
+
+  val = 1234.0f;
+  ref = "1";
+  if (!npct.grouping().empty()) {
+    ref += npct.thousands_sep();
+  }
+  ref += "234";
+  fostr.str("");
+  fostr << val;
+  CPPUNIT_ASSERT( fostr.str() == ref );
+
+  val = 10000001.0f;
+  fostr.str("");
+  fostr << val;
+  CPPUNIT_ASSERT( fostr.str() == "1e+07" );
 }
 
 void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
@@ -833,6 +832,7 @@ void LocaleTest::locale_init_problem() {
  * initialization is done correctly.
  */
 static locale global_loc;
+static locale other_loc("");
 
 #if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
 void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)

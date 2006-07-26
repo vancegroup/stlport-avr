@@ -80,7 +80,7 @@ private:
 
   template <class _Left, class _Right, class _StorageDir>
   _CharT* _M_append_fast_pos(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                             _CharT *__buf, size_type __pos, size_type __n = npos) {
+                             _CharT *__buf, size_type __pos, size_type __n) {
     if (__n == 0) {
       return __buf;
     }
@@ -139,18 +139,7 @@ private:
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
     else {
-      this->_M_append_fast_pos(__s, this->_M_Finish() + 1, 1);
-      _STLP_TRY {
-        this->_M_construct_null(this->_M_Finish() + __s_size);
-      }
-      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size))
-      /* The call to the traits::assign method is only important for non POD types because the instance
-       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
-       * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
-       * but we are not going to make two implementations just for that.
-       */
-      _Traits::assign(*this->_M_finish, __s[0]);
-      this->_M_finish += __s_size;
+      _M_append_sum_no_overflow(__s, 0, __s_size);
     }
     return *this;
   }
@@ -171,7 +160,7 @@ private:
       pointer __new_finish = __new_start;
       _STLP_TRY {
         __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
-        __new_finish = this->_M_append_fast_pos(__s, __new_finish, __pos, __s_size);
+        __new_finish = _M_append_fast_pos(__s, __new_finish, __pos, __s_size);
         this->_M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
@@ -181,18 +170,25 @@ private:
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
     else {
-      this->_M_append_fast_pos(__s, this->_M_Finish() + 1, __pos + 1, __s_size - 1);
-      _STLP_TRY {
-        this->_M_construct_null(this->_M_Finish() + __s_size);
-      }
-      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_Finish() + 1, this->_M_Finish() + __s_size))
-      /* The call to the traits::assign method is only important for non POD types because the instance
-       * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
-       * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
-       * but we are not going to make two implementations just for that.
-       */
-      _Traits::assign(*this->_M_finish, __s[__pos]);
-      this->_M_finish += __s_size;
+      _M_append_sum_no_overflow(__s, __pos, __s_size);
     }
     return *this;
+  }
+
+  template <class _Left, class _Right, class _StorageDir>
+  void _M_append_sum_no_overflow(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
+                                 size_type __pos, size_type __n) {
+    pointer __finish = this->_M_Finish();
+    _M_append_fast_pos(__s, __finish + 1, __pos + 1, __n - 1);
+    _STLP_TRY {
+      this->_M_construct_null(__finish + __n);
+    }
+    _STLP_UNWIND(this->_M_destroy_ptr_range(__finish + 1, __finish + __n))
+    /* The call to the traits::assign method is only important for non POD types because the instance
+     * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
+     * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
+     * but we are not going to make two implementations just for that.
+     */
+    _Traits::assign(*this->_M_finish, __s[__pos]);
+    this->_M_finish += __n;
   }

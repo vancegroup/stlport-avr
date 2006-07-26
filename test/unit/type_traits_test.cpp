@@ -80,7 +80,7 @@ int const volatile& int_const_volatile_ref = int_val;
 struct any_type
 {
   //Dummy operations to forbid to compilers with intrinsic
-  //type traits support to concider this type as a POD.
+  //type traits support to consider this type as a POD.
   any_type() : m_data(1) {}
   any_type(const any_type&) : m_data(2) {}
   any_type& operator = (const any_type&)
@@ -590,16 +590,12 @@ void TypeTraitsTest::is_POD()
 template <typename _Tp>
 int is_stlport_class(_Tp) {
   typedef _IsSTLportClass<_Tp> _STLportClass;
-#  if !defined (__DMC__)
 #    if !defined (__BORLANDC__)
   typedef typename _STLportClass::_Ret _Is;
 #    else
   typedef typename __bool2type<_STLportClass::_Is>::_Ret _Is;
 #    endif
   return type_to_value(_Is());
-#  else
-  return type_to_value(_STLportClass::_Ret());
-#  endif
 }
 #endif
 

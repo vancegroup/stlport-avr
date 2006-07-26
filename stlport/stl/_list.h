@@ -77,12 +77,6 @@ class _List_node : public _List_node_base {
 public:
   _Tp _M_data;
   __TRIVIAL_STUFF(_List_node)
-
-#if defined (__DMC__)
-  // for some reason, Digital Mars C++ needs a constructor...
- private:
-  _List_node();
-#endif
 };
 
 struct _List_iterator_base {

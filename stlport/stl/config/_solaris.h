@@ -1,6 +1,8 @@
 #ifndef __stl_config__solaris_h
 #define __stl_config__solaris_h
 
+#define _STLP_PLATFORM "Sun Solaris"
+
 /* include system features file */
 #include <sys/feature_tests.h>
 

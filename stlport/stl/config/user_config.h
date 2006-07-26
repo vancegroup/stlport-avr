@@ -55,9 +55,9 @@
 /*
  * You can also choose the debug level:
  * STLport debug level: Default value
- *                      Check only what the STLport implementation concider as invalid.
+ *                      Check only what the STLport implementation consider as invalid.
  *                      It also change the iterator invalidation schema.
- * Standard debug level: Check for all operations the standard concider as "undefined behavior"
+ * Standard debug level: Check for all operations the standard consider as "undefined behavior"
  *                       even if STlport implement it correctly. It also invalidates iterators
  *                       more often.
  */
@@ -253,17 +253,17 @@
  * as it requires construction of temporary objects that need memory allocation
  * and deallocation. The problem can be even more important if you are adding
  * several strings together in a single expression. To avoid this problem STLport
- * implement expression template. With this technique addition of 2 string is not
+ * implement expression template. With this technique addition of 2 strings is not
  * a string anymore but a temporary object having a reference to each of the
  * original strings involved in the expression. This object carry information
  * directly to the destination string to set its size correctly and only make
- * a single call to the allocator. This technique can be extended to addition of
- * N elements where elements being basic_string, C string or character type.
+ * a single call to the allocator. This technique also works for the addition of
+ * N elements where elements are basic_string, C string or a single character.
  * The drawback can be longer compilation time and bigger executable size.
  * STLport rebuild: Yes
  */
 /*
-#define _STLP_DONT_USE_TEMPLATE_EXPRESSION 1
+#define _STLP_USE_TEMPLATE_EXPRESSION 1
 */
 
 /*

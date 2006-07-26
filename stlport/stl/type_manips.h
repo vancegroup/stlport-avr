@@ -96,7 +96,7 @@ struct _Lor3<__false_type, __false_type, __false_type> { typedef __false_type _R
 // Result evaluates to T if flag is true, and to U otherwise.
 ////////////////////////////////////////////////////////////////////////////////
 // BEWARE: If the compiler do not support partial template specialization or nested template
-//classes the default behavior of the __select is to concider the condition as false and so return
+//classes the default behavior of the __select is to consider the condition as false and so return
 //the second template type!!
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -228,9 +228,9 @@ struct _IsSame {
 /*
  * The following struct will tell you if 2 types are the same, the limitations are:
  *  - it compares the types without the const or volatile qualifiers, int and const int
- *    will be concidered as same for instance.
+ *    will be considered as same for instance.
  *  - the previous remarks do not apply to pointer types, int* and int const* won't be
- *    concidered as comparable. (int * and int *const are).
+ *    considered as comparable. (int * and int *const are).
  */
 template <class _Tp1, class _Tp2>
 struct _AreSameUnCVTypes {
@@ -257,6 +257,12 @@ struct _IsConvertible {
   typedef typename __bool2type<value>::_Ret _Ret;
 };
 
+/* This struct is intended to say if a pointer can be convertible to an other
+ * taking into account cv qualifications. It shouldn't be instanciated with
+ * something else than pointer type as it uses pass by value parameter that
+ * results in compilation error when parameter type has a special memory
+ * alignment
+ */
 template <class _Src, class _Dst>
 struct _IsCVConvertible {
 #if !defined (__BORLANDC__)

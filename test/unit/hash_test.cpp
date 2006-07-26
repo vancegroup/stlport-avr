@@ -8,10 +8,8 @@
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
 #  include <hash_map>
 #  include <hash_set>
-#  if !defined (__DMC__)
 #    include <rope>
 #  endif
-#endif
 
 #include <string>
 
@@ -33,14 +31,11 @@ using namespace std;
 class HashTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(HashTest);
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (__DMC__)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(hmap1);
   CPPUNIT_TEST(hmmap1);
-#if defined (__DMC__)
-  CPPUNIT_STOP_IGNORE;
-#endif
   CPPUNIT_TEST(hmset1);
   CPPUNIT_TEST(hset2);
   CPPUNIT_TEST(insert_erase);
@@ -69,7 +64,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HashTest);
 //
 void HashTest::hmap1()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef hash_map<char, crope, hash<char>, equal_to<char> > maptype;
   maptype m;
   // Store mappings between roman numerals and decimals.

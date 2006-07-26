@@ -2,6 +2,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#define _STLP_COMPILER "Comeau"
+
 #include <stl/config/_native_headers.h>
 
 #define _STLP_UINT32_T unsigned int

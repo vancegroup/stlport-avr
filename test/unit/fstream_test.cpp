@@ -22,7 +22,7 @@ using namespace std;
                             !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
                               (defined (__GNUC__) && (__GNUC__ < 3)) || \
                               (defined (__SUNPRO_CC)) || \
-                              (defined (__DMC__)))
+                              (defined (__DMC__) && defined (_DLL)))
 #    define DO_CUSTOM_FACET_TEST
 #  endif
 

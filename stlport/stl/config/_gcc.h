@@ -2,8 +2,10 @@
  * It is internal STLport header - DO NOT include it directly
  */
 
+#define _STLP_COMPILER "gcc"
+
 /* Systems having GLIBC installed have different traits */
-#if defined (__linux__) || defined (__CYGWIN__)
+#if defined (__linux__)
 #  ifndef _STLP_USE_GLIBC
 #    define _STLP_USE_GLIBC 1
 #  endif
@@ -112,6 +114,8 @@
 #  endif
 #  define _STLP_NO_NATIVE_WIDE_STREAMS   1
 #endif
+
+#define _STLP_NORETURN_FUNCTION __attribute__((noreturn))
 
 /* Mac OS X is a little different with namespaces and cannot instantiate
  * static data members in template classes */

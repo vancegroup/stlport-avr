@@ -1347,9 +1347,10 @@ void nth_element(_RandomAccessIter __first, _RandomAccessIter __nth,
 // Binary search (lower_bound, upper_bound, equal_range, binary_search).
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
-_ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
-                           const _Tp& __val, _Compare __comp, _Distance*) {
+template <class _ForwardIter, class _Tp,
+          class _Compare1, class _Compare2, class _Distance>
+_ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+                           _Compare1 __comp1, _Compare2 __comp2, _Distance*) {
   _Distance __len = distance(__first, __last);
   _Distance __half;
 
@@ -1357,8 +1358,8 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
     __half = __len >> 1;
     _ForwardIter __middle = __first;
     advance(__middle, __half);
-    if (__comp(__val, *__middle)) {
-      _STLP_VERBOSE_ASSERT(!__comp(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    if (__comp2(__val, *__middle)) {
+      _STLP_VERBOSE_ASSERT(!__comp1(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __len = __half;
     }
     else {
@@ -1370,10 +1371,11 @@ _ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
   return __first;
 }
 
-template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
+template <class _ForwardIter, class _Tp,
+          class _Compare1, class _Compare2, class _Distance>
 pair<_ForwardIter, _ForwardIter>
 __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-              _Compare __comp, _Distance*) {
+              _Compare1 __comp1, _Compare2 __comp2, _Distance* __dist) {
   _Distance __len = distance(__first, __last);
   _Distance __half;
 
@@ -1381,26 +1383,26 @@ __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
     __half = __len >> 1;
     _ForwardIter __middle = __first;
     advance(__middle, __half);
-    if (__comp(*__middle, __val)) {
-      _STLP_VERBOSE_ASSERT(!__comp(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    if (__comp1(*__middle, __val)) {
+      _STLP_VERBOSE_ASSERT(!__comp2(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __first = __middle;
       ++__first;
       __len = __len - __half - 1;
     }
-    else if (__comp(__val, *__middle)) {
-      _STLP_VERBOSE_ASSERT(!__comp(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    else if (__comp2(__val, *__middle)) {
+      _STLP_VERBOSE_ASSERT(!__comp1(*__middle, __val), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __len = __half;
     }
     else {
-      _ForwardIter __left = lower_bound(__first, __middle, __val, __comp);
+      _ForwardIter __left = __lower_bound(__first, __middle, __val, __comp1, __comp2, __dist);
       //Small optim: If lower_bound haven't found an equivalent value
       //there is no need to call upper_bound.
-      if (__comp(*__left, __val)) {
-        _STLP_VERBOSE_ASSERT(!__comp(__val, *__left), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      if (__comp1(*__left, __val)) {
+        _STLP_VERBOSE_ASSERT(!__comp2(__val, *__left), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
         return pair<_ForwardIter, _ForwardIter>(__left, __left);
       }
       advance(__first, __len);
-      _ForwardIter __right = upper_bound(++__middle, __first, __val, __comp);
+      _ForwardIter __right = __upper_bound(++__middle, __first, __val, __comp1, __comp2, __dist);
       return pair<_ForwardIter, _ForwardIter>(__left, __right);
     }
   }

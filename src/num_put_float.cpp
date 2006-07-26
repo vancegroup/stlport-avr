@@ -477,12 +477,16 @@ static size_t __format_float_scientific( __iostring& buf, const char *bp,
   // first digit of mantissa
   buf += *bp++;
 
-  size_t __group_pos = buf.size() - 1;
+  // start of grouping position, grouping won't occur in scientific notation
+  // as it is impossible to have something like 1234.0e04 but we return a correct
+  // group position for coherency with __format_float_fixed.
+  size_t __group_pos = buf.size();
+
   // decimal point if required
   if (precision != 0 || flags & ios_base::showpoint) {
     buf += '.';
-    ++__group_pos;
   }
+
   // rest of mantissa
   int rz = precision;
   while (rz-- > 0 && *bp != 0)
@@ -529,16 +533,18 @@ static size_t __format_float_fixed( __iostring &buf, const char *bp,
   int k       = 0;
   int maxfsig = islong ? 2*MAXFSIG : MAXFSIG;
 
+  // digits before decimal point
   int nnn = decpt;
   do {
     buf += ((nnn <= 0 || *bp == 0 || k >= maxfsig) ? '0' : (++k, *bp++));
   } while ( --nnn > 0 );
 
+  // start of grouping position
+  size_t __group_pos = buf.size();
+
   // decimal point if needed
-  size_t __group_pos = buf.size() - 1;
   if ( flags & ios_base::showpoint || precision > 0 ) {
     buf += '.';
-    ++__group_pos;
   }
 
   // digits after decimal point if any

@@ -2,6 +2,14 @@
  * It is internal STLport header - DO NOT include it directly
  */
 
+#if defined (__IBMCPP__) || defined (__IBMC__)
+#  define _STLP_COMPILER "Visual Age C++"
+#elif defined (__xlC__)
+#  define _STLP_COMPILER "xlc"
+#else
+#  error "Unknown compiler"
+#endif
+
 #if !defined(__IBMCPP__) || (__IBMCPP__ < 500)
 # define _STLP_HAS_NO_NEW_C_HEADERS 1
 #endif

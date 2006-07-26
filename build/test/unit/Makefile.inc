@@ -56,7 +56,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/fill_test.cpp \
 	../../../test/unit/find_test.cpp \
 	../../../test/unit/finsert_test.cpp \
-	../../../test/unit/floatio_test.cpp \
 	../../../test/unit/foreach_test.cpp \
 	../../../test/unit/fstream_test.cpp \
 	../../../test/unit/fstream_header_test.cpp \
@@ -75,6 +74,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/ios_header_test.cpp \
 	../../../test/unit/iosfwd_header_test.cpp \
 	../../../test/unit/iostream_header_test.cpp \
+	../../../test/unit/iostream_test.cpp \
 	../../../test/unit/iota_test.cpp \
 	../../../test/unit/istmit_test.cpp \
 	../../../test/unit/istream_header_test.cpp \
@@ -102,8 +102,9 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/mvctor_test.cpp \
 	../../../test/unit/neq_test.cpp \
 	../../../test/unit/new_header_test.cpp \
-	../../../test/unit/numeric_header_test.cpp \
 	../../../test/unit/nthelm_test.cpp \
+	../../../test/unit/num_put_get_test.cpp \
+	../../../test/unit/numeric_header_test.cpp \
 	../../../test/unit/ostmit_test.cpp \
 	../../../test/unit/ostream_header_test.cpp \
 	../../../test/unit/pair_test.cpp \

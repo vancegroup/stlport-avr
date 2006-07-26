@@ -360,6 +360,18 @@ operator+(ptrdiff_t __n, const _DBG_iter<_Container, _Traits>& __it) {
   return __tmp += __n;
 }
 
+
+template <class _Iterator>
+inline _Iterator _Non_Dbg_iter(_Iterator __it)
+{ return __it; }
+
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+template <class _Container, class _Traits>
+inline typename _DBG_iter<_Container, _Traits>::_Nonconst_iterator
+_Non_Dbg_iter(_DBG_iter<_Container, _Traits> __it)
+{ return __it._M_iterator; }
+#endif
+
 /*
  * Helper classes to check iterator range or pointer validity
  * at construction time.

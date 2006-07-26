@@ -19,6 +19,9 @@ using namespace std;
 class PtrSpecTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(PtrSpecTest);
+#if (defined (__DMC__) && defined (_STLP_DEBUG))
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(ptr_specialization_test);
   CPPUNIT_TEST_SUITE_END();
 
@@ -74,6 +77,7 @@ public:
 //
 void PtrSpecTest::ptr_specialization_test()
 {
+#  if !(defined (__DMC__) && defined (_STLP_DEBUG))
   int *int_array[] = {0, 0, 0};
   int const* cint_array[] = {0, 0, 0};
 
@@ -217,4 +221,5 @@ void PtrSpecTest::ptr_specialization_test()
   pint_deque.assign(int_array, int_array + 3);
   pcint_deque.assign(int_array, int_array + 3);
   pcint_deque.assign(cint_array, cint_array + 3);
+#  endif /* __DMC__ */
 }

@@ -111,7 +111,7 @@ _STLP_END_NAMESPACE
 #  endif
 #  if defined (__GNUC__) && defined (__alpha__)
 /* Definition of WCHAR_MIN and MAX are wrong for alpha platform
- * as gcc concider wchar_t as an unsigned type. Static assertion are
+ * as gcc consider wchar_t as an unsigned type. Static assertion are
  * here to check that a future alpha SDK or a future gcc won't change the
  * situation making this workaround useless.
  */

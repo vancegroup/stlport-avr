@@ -1,6 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#define _STLP_COMPILER "Acc"
+
 // system C-library dependent
 #if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)
 # define _STLP_RAND48 1

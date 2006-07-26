@@ -227,16 +227,16 @@ public:
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__f, __l))
-    _M_non_dbg_impl.insert_unique(__f, __l);
+    _M_non_dbg_impl.insert_unique(_STLP_PRIV _Non_Dbg_iter(__f), _STLP_PRIV _Non_Dbg_iter(__l));
   }
 
   template <class _InputIterator>
   void insert_equal(_InputIterator __f, _InputIterator __l){
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__f, __l))
-    _M_non_dbg_impl.insert_equal(__f, __l);
+    _M_non_dbg_impl.insert_equal(_STLP_PRIV _Non_Dbg_iter(__f), _STLP_PRIV _Non_Dbg_iter(__l));
   }
 
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   void insert_unique(const value_type* __f, const value_type* __l) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__f, __l))
     _M_non_dbg_impl.insert_unique(__f, __l);
@@ -256,7 +256,7 @@ public:
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__f, __l))
     _M_non_dbg_impl.insert_equal(__f._M_iterator, __l._M_iterator);
   }
-#endif /*_STLP_MEMBER_TEMPLATES */
+#endif
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   iterator find(const _KT& __key)

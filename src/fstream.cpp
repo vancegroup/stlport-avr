@@ -295,7 +295,7 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
   if (fd >= 0)
     dosflags = _pioinfo(fd)->osfile;
   //else
-    //the file will be concidered as open in binary mode with no append attribute
+    //the file will be considered as open in binary mode with no append attribute
   // end of 'semi-documented' stuff
 
   int mode = 0;
@@ -1114,7 +1114,7 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 }
 
 // fbp : let us map 1 MB maximum, just be sure not to trash VM
-#define MMAP_CHUNK 0x100000UL
+#define MMAP_CHUNK 0x100000L
 
 int _STLP_CALL
 _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this) {

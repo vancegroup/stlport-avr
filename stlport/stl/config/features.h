@@ -151,11 +151,6 @@
 #  define _STLP_USE_SHORT_STRING_OPTIM 1
 #endif
 
-#if !defined (_STLP_DONT_USE_TEMPLATE_EXPRESSION) && !defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES) &&\
-    !defined (_STLP_USE_TEMPLATE_EXPRESSION)
-#  define _STLP_USE_TEMPLATE_EXPRESSION
-#endif
-
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXTENSIONS) && \
    !defined (_STLP_NO_CONTAINERS_EXTENSION) && !defined (_STLP_USE_CONTAINERS_EXTENSION)
 #  define _STLP_USE_CONTAINERS_EXTENSION
@@ -982,6 +977,10 @@ namespace _STL = _STLP_STD_NAME;
 #else
 #  define _STLP_THROWS_INHERENTLY(x)
 #  define _STLP_NOTHROW_INHERENTLY
+#endif
+
+#if !defined (_STLP_NORETURN_FUNCTION)
+#  define _STLP_NORETURN_FUNCTION
 #endif
 
 #if defined(_STLP_NO_BOOL)

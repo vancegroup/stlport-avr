@@ -97,7 +97,7 @@ inline bool _STLP_CALL operator>=(const pair<_T1, _T2>& __x, const pair<_T1, _T2
 { return !(__x < __y); }
 #endif /* _STLP_USE_SEPARATE_RELOPS_NAMESPACE */
 
-#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_NO_EXTENSIONS) && !defined (__DMC__)
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_NO_EXTENSIONS)
 template <class _T1, class _T2, int _Sz>
 inline pair<_T1, _T2 const*> make_pair(_T1 const& __x,
                                        _T2 const (&__y)[_Sz])

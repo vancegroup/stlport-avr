@@ -203,6 +203,23 @@ Status (stldbg-shared):         compile-time fail
 Notes:                          see notes above
 
 =======================================================================
+Operational environment:   Linux 2.6.9-1.667/SMP AMD64
+=======================================================================
+
+-----------------------------------------------------------------------
+Compiler:                       gcc 3.4.2
+-----------------------------------------------------------------------
+Date:                           2006-07-19
+STLP Version:                   current CVS STLPORT_5_1 branch
+Reporter:                       dums (Francois Dumont)
+Status (release-shared):        All pass (376 tests)
+Notes:
+Status (dbg-shared):            All pass (376 tests)
+Notes:
+Status (stldbg-shared):         All pass (376 tests)
+Notes:
+
+=======================================================================
 Operational environment:        FreeBSD 5.3-RELEASE
 =======================================================================
 

@@ -1,3 +1,5 @@
+#define _STLP_COMPILER "Dec"
+
 # define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
 
 # define _STLP_NATIVE_HEADER(header) <../cxx/##header>

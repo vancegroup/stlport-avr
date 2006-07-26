@@ -22,11 +22,7 @@ class IterTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(iterswp0);
   CPPUNIT_TEST(iterswp1);
   CPPUNIT_TEST(iterswp2);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(iterswp3);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST_SUITE_END();
 
 protected:

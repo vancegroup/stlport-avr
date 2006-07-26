@@ -71,7 +71,7 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
 
     basic_string<char, char_traits<char>, allocator<char> > name;
 
-    static void _STLP_CALL _M_throw_bad_cast();
+    static void _STLP_CALL _M_throw_bad_cast() _STLP_NORETURN_FUNCTION;
 
   private:
     void operator=(const _Locale_impl&);

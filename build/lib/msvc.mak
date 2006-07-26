@@ -1,8 +1,6 @@
-!if !EXIST(..\Makefiles\config.mak)
-!error No config file found, please run 'configure --help' first.
-!endif
-
+!if EXIST( ..\Makefiles\config.mak )
 !include ..\Makefiles\config.mak
+!endif
 
 !ifndef COMPILER_NAME
 !error No compiler set, please run 'configure --help' first and chose a compiler.

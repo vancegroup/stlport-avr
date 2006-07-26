@@ -1,6 +1,8 @@
 // STLport configuration file for Digital Mars C++
 
-#define _STLP_VERBOSE
+//#define _STLP_VERBOSE
+
+#define _STLP_COMPILER "DMC"
 
 #if defined (_STLP_VERBOSE)
 #  pragma message __DMC_VERSION_STRING__
@@ -15,7 +17,7 @@
 #endif
 #define _STLP_VENDOR_GLOBAL_CSTD
 
-//DMC prefer enum to real static const variable because it do not concider
+//DMC prefer enum to real static const variable because it do not consider
 //static const as const enough to be used in switch declaration...
 #define _STLP_STATIC_CONST_INIT_BUG
 
@@ -69,6 +71,7 @@
 
 #define _STLP_USE_ABBREVS
 #define _STLP_NO_CONTAINERS_EXTENSION
+#define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
 
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)

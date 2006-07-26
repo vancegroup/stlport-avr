@@ -17,8 +17,8 @@ RC := rcc
 DEFS ?=
 OPT ?=
 
-CFLAGS = -Ae -C -p -w6 -w12
-CXXFLAGS = -Ae -C -p -w12
+CFLAGS = -Ae -C -p -3 -w6 -w12
+CXXFLAGS = -Ae -C -p -3 -w12
 
 DEFS += -DSTRICT
 

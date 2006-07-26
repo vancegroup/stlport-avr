@@ -110,56 +110,28 @@ _STLP_INLINE_LOOP _RandomAccessIter __find(_RandomAccessIter __first, _RandomAcc
   _STLP_DIFFERENCE_TYPE(_RandomAccessIter) __trip_count = (__last - __first) >> 2;
 
   for ( ; __trip_count > 0 ; --__trip_count) {
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
 
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
 
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
 
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
   }
 
   switch (__last - __first) {
   case 3:
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
   case 2:
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     ++__first;
   case 1:
-    if (*__first == __val) {
-      _STLP_VERBOSE_ASSERT((__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return __first;
-    }
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+    if (*__first == __val) return __first;
     //++__first;
   case 0:
   default:
@@ -218,12 +190,7 @@ template <class _InputIter, class _Tp>
 _STLP_INLINE_LOOP _InputIter __find(_InputIter __first, _InputIter __last,
                                     const _Tp& __val,
                                     const input_iterator_tag &) {
-  while (__first != __last && !(*__first == __val)) {
-    _STLP_VERBOSE_ASSERT(!(__val == *__first), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-    ++__first;
-  }
-  _STLP_VERBOSE_ASSERT((__first == __last) || (__val == *__first),
-                       _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+  while (__first != __last && !(*__first == __val)) ++__first;
   return __first;
 }
 
@@ -427,9 +394,9 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
-_ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
-                           const _Tp& __val, _Compare __comp, _Distance*) {
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
+_ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+                           _Compare1 __comp1, _Compare2 __comp2, _Distance*) {
   _Distance __len = distance(__first, __last);
   _Distance __half;
   _ForwardIter __middle;
@@ -438,8 +405,8 @@ _ForwardIter __lower_bound(_ForwardIter __first, _ForwardIter __last,
     __half = __len >> 1;
     __middle = __first;
     advance(__middle, __half);
-    if (__comp(*__middle, __val)) {
-      _STLP_VERBOSE_ASSERT(!__comp(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+    if (__comp1(*__middle, __val)) {
+      _STLP_VERBOSE_ASSERT(!__comp2(__val, *__middle), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __first = __middle;
       ++__first;
       __len = __len - __half - 1;

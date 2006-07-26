@@ -12,9 +12,6 @@
 	allocator when using STLport without building it (_STLP_NO_IOSTREAMS) is the simple
 	new/delete based allocator, node allocator is the default when building the lib.
 
-	* Expression template for string concatenation is activated per default. Go to
-	user_config.h file to disable it.
-
 	* Access to native headers has been modified to make STLport less dependant on
 	native headers internal includes, should improve portability.
 

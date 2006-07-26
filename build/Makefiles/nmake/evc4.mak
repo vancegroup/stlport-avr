@@ -14,6 +14,7 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
+# Note: the commctrl.lib is possibly not necessary and could be removed.
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:OLDNAMES.lib
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096" 
 

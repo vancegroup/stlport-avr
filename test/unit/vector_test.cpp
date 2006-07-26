@@ -21,11 +21,7 @@ class VectorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(VectorTest);
   CPPUNIT_TEST(vec_test_1);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(vec_test_2);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(vec_test_3);
   CPPUNIT_TEST(vec_test_4);
   CPPUNIT_TEST(vec_test_5);

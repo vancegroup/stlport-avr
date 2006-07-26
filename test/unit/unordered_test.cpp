@@ -20,16 +20,27 @@ using namespace std;
 class UnorderedTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(UnorderedTest);
-#if !defined (STLPORT) || defined (__DMC__)
+#if !defined (STLPORT) 
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(uset);
   CPPUNIT_TEST(umultiset);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(umap);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(umultimap);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(user_case);
+  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
+#if defined (__DMC__)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(equal_range);
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   CPPUNIT_IGNORE;
@@ -58,7 +69,7 @@ const int NB_ELEMS = 2000;
 //
 void UnorderedTest::uset()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_set<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -108,7 +119,7 @@ void UnorderedTest::uset()
 
 void UnorderedTest::umultiset()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_multiset<int, hash<int>, equal_to<int> > usettype;
   usettype us;
 
@@ -216,7 +227,7 @@ void UnorderedTest::umap()
 
 void UnorderedTest::umultimap()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_multimap<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -286,7 +297,7 @@ void UnorderedTest::user_case()
 
 void UnorderedTest::hash_policy()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.max_load_factor() == 1.0f );
@@ -313,7 +324,7 @@ void UnorderedTest::hash_policy()
 
 void UnorderedTest::buckets()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT) 
   unordered_set<int> int_uset;
 
   CPPUNIT_ASSERT( int_uset.bucket_count() < int_uset.max_bucket_count() );
@@ -453,16 +464,16 @@ struct Key
   Key() : m_data(0) {}
   explicit Key(size_t data) : m_data(data) {}
 
-  size_t m_data;
+  int m_data;
 };
 
 struct KeyHash
 {
   size_t operator () (Key key) const
-  { return key.m_data; }
+  { return (size_t)key.m_data; }
 
-  size_t operator () (size_t data) const
-  { return data; }
+  size_t operator () (int data) const
+  { return (size_t)data; }
 };
 
 struct KeyEqual
@@ -470,20 +481,20 @@ struct KeyEqual
   bool operator () (Key lhs, Key rhs) const
   { return lhs.m_data == rhs.m_data; }
 
-  bool operator () (Key lhs, size_t rhs) const
+  bool operator () (Key lhs, int rhs) const
   { return lhs.m_data == rhs; }
 
-  bool operator () (size_t lhs, Key rhs) const
+  bool operator () (int lhs, Key rhs) const
   { return lhs == rhs.m_data; }
 };
 
 struct KeyHashPtr
 {
   size_t operator () (Key const volatile *key) const
-  { return key->m_data; }
+  { return (size_t)key->m_data; }
 
-  size_t operator () (size_t data) const
-  { return data; }
+  size_t operator () (int data) const
+  { return (size_t)data; }
 };
 
 struct KeyEqualPtr
@@ -491,10 +502,10 @@ struct KeyEqualPtr
   bool operator () (Key const volatile *lhs, Key const volatile *rhs) const
   { return lhs->m_data == rhs->m_data; }
 
-  bool operator () (Key const volatile *lhs, size_t rhs) const
+  bool operator () (Key const volatile *lhs, int rhs) const
   { return lhs->m_data == rhs; }
 
-  bool operator () (size_t lhs, Key const volatile *rhs) const
+  bool operator () (int lhs, Key const volatile *rhs) const
   { return lhs == rhs->m_data; }
 };
 

@@ -80,7 +80,7 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #  define _STLP_DISTANCE_TYPE(_It, _Tp)     distance_type(_It)
 #  define _STLP_VALUE_TYPE(_It, _Tp)        value_type(_It)
 //Old HP iterator queries do not give information about the iterator
-//associated reference type so we concider that it is not a real reference.
+//associated reference type so we consider that it is not a real reference.
 #  define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) __false_type()
 #else
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)

@@ -2,6 +2,8 @@
 // It is internal STLport header - DO NOT include it directly
 // A list of Intel compiler for Linux portion of STLport settings.
 
+#define _STLP_COMPILER "Intel ICC"
+
 #define _STLP_LONG_LONG long long
 
 // Edit relative path below (or put full path) to get native

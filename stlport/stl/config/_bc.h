@@ -3,6 +3,8 @@
 
 //#define _STLP_VERBOSE
 
+#define _STLP_COMPILER "Borland"
+
 #if (__BORLANDC__ < 0x551)
 #  error - Borland compilers below version 5.5.1 not supported.
 #endif

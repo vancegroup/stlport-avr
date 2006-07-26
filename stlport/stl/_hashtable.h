@@ -668,7 +668,7 @@ struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
   //Hashtables are movable:
   typedef __stlp_movable implemented;
 
-  //Completeness depends on the many template parameters, for the moment we concider it not complete:
+  //Completeness depends on many template parameters, for the moment we consider it not complete:
   typedef __false_type complete;
 };
 #endif

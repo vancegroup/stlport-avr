@@ -32,12 +32,12 @@
 #endif
 
 _STLP_BEGIN_NAMESPACE
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_runtime_error(const char* __msg);
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg);
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg);
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg);
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg);
-void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg);
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_runtime_error(const char* __msg) _STLP_NORETURN_FUNCTION;
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_range_error(const char* __msg) _STLP_NORETURN_FUNCTION;
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(const char* __msg) _STLP_NORETURN_FUNCTION;
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg) _STLP_NORETURN_FUNCTION;
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg) _STLP_NORETURN_FUNCTION;
+void _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg) _STLP_NORETURN_FUNCTION;
 _STLP_END_NAMESPACE
 
 #if !defined (_STLP_EXTERN_RANGE_ERRORS)

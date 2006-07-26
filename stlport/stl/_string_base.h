@@ -223,8 +223,8 @@ protected:
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
   }
 
-  void _M_throw_length_error() const;
-  void _M_throw_out_of_range() const;
+  void _M_throw_length_error() const _STLP_NORETURN_FUNCTION;
+  void _M_throw_out_of_range() const _STLP_NORETURN_FUNCTION;
 };
 
 #undef _STLP_SHORT_STRING_SZ

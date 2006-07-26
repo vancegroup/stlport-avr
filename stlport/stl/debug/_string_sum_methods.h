@@ -78,7 +78,7 @@ private:
 
   template <class _Left, class _Right, class _StorageDir>
   _Base& _M_append_fast_pos(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
-                            _Base &__str, size_type __pos, size_type __n = npos) {
+                            _Base &__str, size_type __pos, size_type __n) {
     if (__n == 0) {
       return __str;
     }

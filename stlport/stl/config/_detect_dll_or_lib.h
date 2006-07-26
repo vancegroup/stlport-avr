@@ -57,7 +57,7 @@
 #      endif
 #    endif
 #  else
-/* If we do not build and use STLport libs we concider that we are in a static lib
+/* If we do not build and use STLport libs we consider that we are in a static lib
  * mode as only dynamic lib needs additional export/import specifier.
  */
 #    define _STLP_USE_STATIC_LIB

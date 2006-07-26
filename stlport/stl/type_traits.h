@@ -311,12 +311,50 @@ _STLP_DEFINE_TYPE_TRAITS_FOR(double);
 _STLP_DEFINE_TYPE_TRAITS_FOR(long double);
 #  endif
 
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _ArePtrs, class _Src, class _Dst>
+struct _IsCVConvertibleIf
+{ typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Ret; };
+
+template <class _Src, class _Dst>
+struct _IsCVConvertibleIf<__false_type, _Src, _Dst>
+{ typedef __false_type _Ret; };
+#else
+#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+template <class _ArePtrs>
+struct _IsCVConvertibleIfAux {
+  template <class _Src, class _Dst>
+  struct _In
+  { typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Ret; };
+};
+
+_STLP_TEMPLATE_NULL
+struct _IsCVConvertibleIfAux<__false_type> {
+  template <class _Src, class _Dst>
+  struct _In
+  { typedef __false_type _Ret; };
+};
+
+template <class _ArePtrs, class _Src, class _Dst>
+struct _IsCVConvertibleIf {
+  typedef typename _IsCVConvertibleIfAux<_ArePtrs>::_STLP_TEMPLATE _In<_Src, _Dst>::_Ret _Ret;
+};
+#  else
+/* default behavior: we prefer to miss an optimization rather than taking the risk of
+ * a compilation error if playing with types with exotic memory alignment.
+ */
+template <class _ArePtrs, class _Src, class _Dst>
+struct _IsCVConvertibleIf
+{ typedef __false_type _Ret; };
+#  endif
+#endif
+
 template <class _Src, class _Dst>
 struct _TrivialNativeTypeCopy {
   typedef typename _IsPtr<_Src>::_Ret _Ptr1;
   typedef typename _IsPtr<_Dst>::_Ret _Ptr2;
   typedef typename _Land2<_Ptr1, _Ptr2>::_Ret _BothPtrs;
-  typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Convertible;
+  typedef typename _IsCVConvertibleIf<_BothPtrs, _Src, _Dst>::_Ret _Convertible;
   typedef typename _Land2<_BothPtrs, _Convertible>::_Ret _Trivial1;
 
   typedef typename __bool2type<(sizeof(_Src) == sizeof(_Dst))>::_Ret _SameSize;

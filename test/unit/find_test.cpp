@@ -48,6 +48,19 @@ void FindTest::find0()
   CPPUNIT_ASSERT( out_range == (int *)(numbers + 10) );
 }
 
+struct Key
+{
+  int data;
+
+  /* This operator should rather be global and commutative
+     but implementing it this way show that STLport used to
+     ask too much from the user code. */
+  bool operator == (int d) const
+  {
+    return data == d;
+  }
+};
+
 void FindTest::find1()
 {
   int years[] = { 1942, 1952, 1962, 1972, 1982, 1992 };
@@ -60,16 +73,24 @@ void FindTest::find1()
 
 void FindTest::findif0()
 {
-  int numbers[6] = { 2, 4, 8, 15, 32, 64 };
-  int *location = find_if((int*)numbers, (int*)numbers + 6, odd);
+  {
+    int numbers[6] = { 2, 4, 8, 15, 32, 64 };
+    int *location = find_if((int*)numbers, (int*)numbers + 6, odd);
 
-  CPPUNIT_ASSERT((location - numbers)==3);
+    CPPUNIT_ASSERT((location - numbers)==3);
 
-  int numbers_even[6] = { 2, 4, 8, 16, 32, 64 };
+    int numbers_even[6] = { 2, 4, 8, 16, 32, 64 };
 
-  int *out_range = find_if((int*)numbers_even, (int*)numbers_even + 6, odd);
+    int *out_range = find_if((int*)numbers_even, (int*)numbers_even + 6, odd);
 
-  CPPUNIT_ASSERT( out_range == (int *)(numbers_even + 6) );
+    CPPUNIT_ASSERT( out_range == (int *)(numbers_even + 6) );
+  }
+
+  {
+    Key keys[10];
+    Key const* k = find(keys + 0, keys + 10, 5);
+    CPPUNIT_ASSERT( k == keys + 10 );
+  }
 }
 
 void FindTest::findif1()

@@ -1,6 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#define _STLP_COMPILER "Intel ICL"
+
 #define _STLP_IMPORT_TEMPLATE_KEYWORD extern
 
 /* You need to undef following macro if your icl install is binded to MSVC 6

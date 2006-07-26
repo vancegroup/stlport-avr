@@ -3,6 +3,10 @@
  * Microsoft Visual C++ 6.0, 7.0, 7.1, 8.0, ICL
  */
 
+#if !defined (_STLP_COMPILER)
+#  define _STLP_COMPILER "Microsoft Visual Studio C++"
+#endif
+
 #if !defined (__ICL) && !defined (_STLP_MSVC)
 #  define _STLP_MSVC _MSC_VER
 #endif
@@ -163,7 +167,7 @@ work, 7.0 is still unknown (we assume it works until negative report). */
  * instanciated to be exported. There is a workaround, seperate the non template methods
  * from the template ones within 2 different classes and only export the non template one.
  * It is implemented for basic_string and locale at the writing of this note.
- * However this problem hos not  been concidered as important enough to remove template member
+ * However this problem hos not  been considered as important enough to remove template member
  * methods for other classes. Moreover Boost (www.boost.org) required it to be granted.
  * The workaround is activated thanks to the _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND macro defined
  * later in this config file.

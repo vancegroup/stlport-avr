@@ -157,18 +157,18 @@ public:
   deque(_InputIterator __first, _InputIterator __last,
         const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _ConstructCheck(__first, __last),
-      _M_non_dbg_impl(__first, __last, __a),
+      _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last), __a),
       _M_iter_list(&_M_non_dbg_impl) {
     }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   deque(_InputIterator __first, _InputIterator __last)
     : _ConstructCheck(__first, __last),
-      _M_non_dbg_impl(__first, __last),
+      _M_non_dbg_impl(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last)),
       _M_iter_list(&_M_non_dbg_impl) {
     }
 #  endif
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   deque(const value_type* __first, const value_type* __last,
         const allocator_type& __a = allocator_type())
     : _ConstructCheck(__first, __last),
@@ -182,7 +182,7 @@ public:
       _M_non_dbg_impl(__first._M_iterator, __last._M_iterator, __a),
       _M_iter_list(&_M_non_dbg_impl) {
     }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
   _Self& operator=(const _Self& __x) {
     if (this != &__x) {
@@ -211,6 +211,9 @@ public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+    _Invalidate_all();
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
+  }
 #else
   void assign(const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
@@ -219,10 +222,10 @@ public:
   }
   void assign(const value_type *__first, const value_type *__last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
-#endif /* _STLP_MEMBER_TEMPLATES */
     _Invalidate_all();
     _M_non_dbg_impl.assign(__first, __last);
   }
+#endif
 
 public:                         // push_* and pop_*
 
@@ -306,11 +309,12 @@ public:                         // Insert
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     //Sequence requirements 23.1.1 Table 67:
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first, _DoCheck()));
-    _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
+    _M_non_dbg_impl.insert(__pos._M_iterator,
+                           _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
     //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
   }
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
   void insert(iterator __pos,
               const value_type* __first, const value_type* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
@@ -329,7 +333,7 @@ public:                         // Insert
     //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size, const value_type& __x = _Tp()) {

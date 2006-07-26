@@ -208,7 +208,7 @@ public:
 
   //IEC 559 specify the floating point representation of
   //infinity, quiet and signaling Not a Number. Not supporting
-  //it is concider as not being able to grant those values.
+  //it is consider as not being able to grant those values.
 #if (defined (_STLP_MSVC) && (_STLP_MSVC < 1300))
   //MSVC 6 do not fully support IEC 599 but grant a good infinity value.
   has_infinity      = true,

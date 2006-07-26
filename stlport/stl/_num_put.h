@@ -144,7 +144,7 @@ __write_integer_backward(char* __buf, ios_base::fmtflags __flags, _Integer __x);
 void  _STLP_CALL __string_to_float(const string&, float&);
 void  _STLP_CALL __string_to_float(const string&, double&);
 /*
- * Returns the position on the right of the digits that has to be concidered
+ * Returns the position on the right of the digits that has to be considered
  * for the application of the grouping policy.
  */
 extern size_t _STLP_CALL __write_float(__iostring&, ios_base::fmtflags, int, double);

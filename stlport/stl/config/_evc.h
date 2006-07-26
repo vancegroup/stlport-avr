@@ -8,6 +8,8 @@
 #ifndef _STLP_EVC_H
 #define _STLP_EVC_H
 
+#define _STLP_COMPILER "eMbedded Visual C++"
+
 // This flag is being used by STLport to support
 // old-fashioned Windows CE SDK (see stl_wince.h)
 // do not use with eMebedded Visual C++ 3 or 4!
@@ -33,6 +35,10 @@
 
 // This is defined for all platforms using Windows CE
 #define _STLP_WCE
+
+/* All Windows CE versions up to at least version 5 are little-endian, even
+ * if the hardware (like e.g. MIPS) can be configured for big-endian, too. */
+#define _STLP_LITTLE_ENDIAN
 
 // Ensure _DEBUG is defined.
 #if defined (DEBUG) && !defined (_DEBUG)
@@ -69,7 +75,7 @@
 
 #if _WIN32_WCE < 400
 // no long double under CE3 and older
-#  _STLP_NO_LONG_DOUBLE
+#  define _STLP_NO_LONG_DOUBLE
 #endif
 
 // no *f and *l math functions available
@@ -214,11 +220,6 @@
 #      error Unknown SDK.
 #    endif
 #  endif /* !_STLP_NATIVE_INCLUDE_PATH */
-
-
-/* All Windows CE versions up to at least version 5 are little-endian, even
- * if the hardware (like e.g. MIPS) can be configured for big-endian, too. */
-#define _STLP_LITTLE_ENDIAN
 
 /* Workaround when using MFCCE and using <new> together: MFCCE's wcealt.h doesn't
  * check for __PLACEMENT_NEW_INLINE before defining operator new, so when <new>

@@ -1,5 +1,7 @@
 // OpenVMS version
 
+#define _STLP_COMPILER "Dec Vms"
+
 # define _STLP_NATIVE_HEADER(header) <sys$library:##header>
 # define _STLP_NATIVE_C_HEADER(x) <sys$library:##x>
 # define _STLP_NATIVE_CPP_C_HEADER(header) <sys$library:##header>

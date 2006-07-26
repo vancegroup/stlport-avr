@@ -18,9 +18,6 @@ class ConfigTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(placement_new_bug);
   CPPUNIT_TEST(endianess);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(template_function_partial_ordering);
   CPPUNIT_TEST_SUITE_END();
 

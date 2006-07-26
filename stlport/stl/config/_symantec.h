@@ -2,6 +2,8 @@
  * It is internal STLport header - DO NOT include it directly
  */
 
+#define _STLP_COMPILER "Symantec"
+
 /* if not using maximum ANSI compatibility ( -A -Ab -Aw),
  * uncomment the following two lines:
  */

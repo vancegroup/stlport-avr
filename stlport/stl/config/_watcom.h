@@ -1,6 +1,8 @@
 // STLport configuration file
 // It is internal STLport header - DO NOT include it directly
 
+#define _STLP_COMPILER "Watcom"
+
 # ifndef _STLP_USE_NO_IOSTREAMS
 #  define _STLP_USE_NO_IOSTREAMS
 # endif

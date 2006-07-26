@@ -1,7 +1,7 @@
 # -*- Makefile -*- Time-stamp: <05/12/07 00:57:13 ptr>
 # $Id$
 
-CXXFLAGS += -w6 -w18
+CXXFLAGS += -w6 -w7 -w18
 
 OPT += -WA
 
@@ -10,7 +10,7 @@ release-STATIC: LDFLAGS +=
 dbg-shared : LDFLAGS += /CODEVIEW
 dbg-static : LDFLAGS += /CODEVIEW
 stldbg-shared : LDFLAGS += /CODEVIEW
-#stldbg-static : LDFLAGS += /CODEVIEW
+stldbg-static : LDFLAGS += /CODEVIEW
 
 # workaround for stl/config/_auto_link.h
 STL_LIBNAME = stlport

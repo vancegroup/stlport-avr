@@ -44,7 +44,7 @@ struct State {
  */
 template <class _Tp>
 struct StackAllocator
-#if defined (__BORLANDC__) && \
+#if (defined (__BORLANDC__) || defined (__DMC__)) && \
     defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //Special Borland workaround that have problem with function
   //overloading when one of the overloaded version is a template
@@ -105,7 +105,7 @@ struct StackAllocator
 #endif
   }
 
-#if defined (__BORLANDC__) && \
+#if (defined (__BORLANDC__) || defined (__DMC__)) && \
     defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //Necessary extension to make StackAllocator a real STLport allocator
   //implementation:

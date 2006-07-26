@@ -137,8 +137,8 @@ inline _InputIter find_first_of(_InputIter __first1, _InputIter __last1,
                                 _ForwardIter __first2, _ForwardIter __last2) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
-  return __find_first_of(__first1, __last1, __first2, __last2,
-                         _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
+  return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2,
+                                    _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
 }
 
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
@@ -147,7 +147,7 @@ find_first_of(_InputIter __first1, _InputIter __last1,
               _ForwardIter __first2, _ForwardIter __last2, _BinaryPredicate __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
-  return __find_first_of(__first1, __last1, __first2, __last2,__comp);
+  return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2, __comp);
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
@@ -498,6 +498,7 @@ inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __lower_bound(__first, __last, __val,
                                   _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)),
                                   _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
@@ -505,14 +506,15 @@ template <class _ForwardIter, class _Tp, class _Compare>
 inline _ForwardIter lower_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val, _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __lower_bound(__first, __last, __val, __comp, _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+  return _STLP_PRIV __lower_bound(__first, __last, __val, __comp, __comp,
+                                  _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
-_ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last,
-                           const _Tp& __val, _Compare __comp, _Distance*);
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
+_ForwardIter __upper_bound(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+                           _Compare1 __comp1, _Compare2 __comp2, _Distance*);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -522,6 +524,7 @@ inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __upper_bound(__first, __last, __val,
                                   _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)),
                                   _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
@@ -529,16 +532,16 @@ template <class _ForwardIter, class _Tp, class _Compare>
 inline _ForwardIter upper_bound(_ForwardIter __first, _ForwardIter __last,
                                 const _Tp& __val, _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __upper_bound(__first, __last, __val, __comp,
+  return _STLP_PRIV __upper_bound(__first, __last, __val, __comp, __comp,
                                   _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter, class _Tp, class _Compare, class _Distance>
+template <class _ForwardIter, class _Tp, class _Compare1, class _Compare2, class _Distance>
 pair<_ForwardIter, _ForwardIter>
 __equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
-              _Compare __comp, _Distance*);
+              _Compare1 __comp1, _Compare2 __comp2, _Distance*);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -548,6 +551,7 @@ equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   return _STLP_PRIV __equal_range(__first, __last, __val,
                                   _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                                  _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)),
                                   _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
@@ -556,7 +560,7 @@ inline pair<_ForwardIter, _ForwardIter>
 equal_range(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
             _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __equal_range(__first, __last, __val, __comp,
+  return _STLP_PRIV __equal_range(__first, __last, __val, __comp, __comp,
                                   _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
@@ -566,6 +570,7 @@ inline bool binary_search(_ForwardIter __first, _ForwardIter __last,
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _ForwardIter __i = _STLP_PRIV __lower_bound(__first, __last, __val,
                                               _STLP_PRIV __less2(_STLP_VALUE_TYPE(__first, _ForwardIter), (_Tp*)0),
+                                              _STLP_PRIV __less2((_Tp*)0, _STLP_VALUE_TYPE(__first, _ForwardIter)),
                                               _STLP_DISTANCE_TYPE(__first, _ForwardIter));
   return __i != __last && !(__val < *__i);
 }
@@ -575,7 +580,8 @@ inline bool binary_search(_ForwardIter __first, _ForwardIter __last,
                           const _Tp& __val,
                           _Compare __comp) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  _ForwardIter __i = _STLP_PRIV __lower_bound(__first, __last, __val, __comp, _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+  _ForwardIter __i = _STLP_PRIV __lower_bound(__first, __last, __val, __comp, __comp,
+                                              _STLP_DISTANCE_TYPE(__first, _ForwardIter));
   return __i != __last && !__comp(__val, *__i);
 }
 

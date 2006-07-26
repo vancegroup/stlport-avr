@@ -206,34 +206,36 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (short& __val) {
   long __lval;
-  unsigned short __uval;
   _STLP_PRIV __get_num(*this, __lval);
   if ( this->fail() ) {
     return *this;
   }
-  __val = __STATIC_CAST(short, __lval);
-  __uval = __STATIC_CAST(unsigned short, __lval);
+  short __tmp = __STATIC_CAST(short, __lval);
+  unsigned short __uval = __STATIC_CAST(unsigned short, __lval);
   // check if we lose digits
   //    if ((__val != __lval) && ((unsigned short)__val != __lval))
-  if ((__val != __lval) && ((long)__uval != __lval))
+  if ((__tmp != __lval) && ((long)__uval != __lval))
     this->setstate(ios_base::failbit);
+  else
+    __val = __tmp;
   return *this;
 }
 
 template <class _CharT, class _Traits>
 basic_istream<_CharT, _Traits>& basic_istream<_CharT, _Traits>::operator>> (int& __val) {
   long __lval;
-  unsigned int __uval;
   _STLP_PRIV __get_num(*this, __lval);
   if ( this->fail() ) {
     return *this;
   }
-  __val = __lval;
-  __uval = __lval;
+  int __tmp = __lval;
+  unsigned int __uval = __lval;
   // check if we lose digits
   //    if ((__val != __lval) && ((unsigned int)__val != __lval))
-  if ((__val != __lval) && ((long)__uval != __lval))
+  if ((__tmp != __lval) && ((long)__uval != __lval))
     this->setstate(ios_base::failbit);
+  else
+    __val = __tmp;
   return *this;
 }
 

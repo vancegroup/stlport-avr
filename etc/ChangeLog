@@ -1,13 +1,250 @@
+2006-07-26  Francois Dumont  <dums@stlport...>
+
+	* src/fstream.cpp: Fixed MMAP_CHUNK definition, an offset type is signed.
+
+2006-07-25  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_system.h, _windows.h: Fixed MinGW config that also
+	need _windows.h.
+
+	* stlport/stl/config/_mingw.h: Removed, conflict with platform system
+	header.
+
+2006-07-22  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config: Add _STLP_PLATFORM and _STLP_COMPILER repectively
+	containing STLport detected platform and compiler names. Some names
+	are surely not accurate and will be fixed but introducing those macros,
+	especially _STLP_COMPILER, help to report detection issue.
+
+	* stlport/stl/config/_system.h: Change macro checks in order to guaranty
+	that only one platform and only one compiler configuration file will be
+	included.
+
+	* stlport/stl/config/_cygwin.h, _mingw.h: Added
+
+	* stlport/stl/config/features.h: Removed _STLP_NO_MEMBER_TEMPLATE_CLASSES
+	check when _STLP_USE_TEMPLATE_EXPRESSION is activated.
+
+	* stlport/stl/config/_gcc.h, features.h: Add _STLP_NORETURN_FUNCTION
+	to signal function not returning, under gcc we use __attribute__((noreturn)). 
+
+	* src/locale_impl.h, stlport/stl/_ios_base.h, _locale.h, _range_errors.h,
+	_rope.h, _string_base.h, _vector.h, debug/_debug.h: Add
+	_STLP_NORETURN_FUNCTION to function that encapsulate raising of exceptions.
+	This help to limit warnings about uninitialized variable before use under
+	gcc.
+
+2006-07-18  Francois Dumont  <dums@stlport...>
+
+	* test/unit/unordered_test.cpp: Change Key data type from size_t
+	to the more portable int. Fix what seems to be a bad code generation
+	of gcc under Linux 64 bits resulting in a test failure.
+
+2006-07-17  Francois Dumont  <dums@stlport...>
+
+	* test/unit/alg_test.cpp: New test for find_first_of algo.
+
+	* stlport/stl/config/user_config.h, features.h: string template
+	expressions is not a transparent feature, some compilers (VC6)
+	are experimenting ICE with it or some other (gcc) do not accept
+	it when extending string class (see mystring in
+	test/unit/string_test.cpp). So default STLport configuration will
+	be without string template expression, _STLP_DONT_USE_TEMPLATE_EXPRESSION
+	has been replaced by _STLP_USE_TEMPLATE_EXPRESSION.
+
+2006-07-16  Francois Dumont  <dums@stlport...>
+
+	* test/unit/mvctor_test.cpp: Patch from Michael Fink to avoid a EVC
+	ARM crash.
+
+2006-07-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_num_put.c: Rollback modif above, according C printf doc
+	0 value shouldn't show their base.
+
+	* stlport/stl/type_traits.h: Avoid instanciation of _IsCVConvertible if
+	not dealing with pointers. Systematical instanciation was giving
+	compilation error as soon as type had a special memory alignment, such
+	types cannot be pass by value in function calls. Thanks andy2222 from
+	sourceforge.
+
+	* build/Makefiles/nmake/evc3.mak, evc4.mak, evc8.mak: Patch from Ulrich
+	Eckhardt to remove commctrl.lib dependency, for the moment evc3 and evc4
+	only contains a note about this potentially useless dependency.
+
+	* stlport/stl/debug/_string.h: Add missing copy methods in the debug
+	string implementation thanks Patrick Bennett report.
+
+	* test/unit/string_test.cpp: New copy test case for string::copy.
+
+	* stlport/stl/_algo.h: Add missing _STLP_PRIV namespace scope in calls
+	to __find_first_of thanks Patrick Bennett report.
+
+2006-07-11  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/debug/_deque.h, _list.h, _slist.h, _string.h, _vector.h:
+	Extend use of _Non_Dbg_iter function in all template methods dealing
+	with iterator range.
+
+	* _num_put.c: Fix to show base in octal or hexadecimal mode even for
+	0 value.
+
+	* stlport/stl/_istream.c: Avoid modification of value to extract in
+	formatted input of short and int when value would overflow.
+
+	* test/unit/num_put_get_test.cpp: Add some tests for above fixes.
+
+	* test/unit/iostream_test.cpp: New tests for general stream
+	manipulations.
+
+	* stlport/stl/_istream.h: Fix ws iostream function, it do not set failbit
+	anymore when stream is in eof state.
+
+	* build/lib/msvc.mak: Generation of config.mak is not mandatory anymore
+	as Intel compiler do not need it for the moment. Only a COMPILER_NAME
+	is mandatory which is given by icl.mak for Intel compilers and by
+	config.mak for Microsoft ones.
+	
+2006-07-10  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/debug/_iterator.h: Creation of _Non_Dbg_iter function
+	returning native iterator of special debug iterator with
+	compilers supporting partial template function ordering. Fix
+	a MSVC .Net 2003 issue that seems to be related to a too important
+	template depth.
+
+	* stlport/stl/debug/_deque.h, _list.h, _slist.h, _string.h, _vector.h:
+	Use new _Non_Dbg_iter function in constructors from iterator
+	range.
+
+2006-07-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/lib/configure: rollback changes 4 Jul 2006 19:42:55,
+	it's definitely wrong (phrase with quotes ['] requires double
+	quotes ["]).
+
+2006-07-06  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_num_put.c: Small refactoring with introduction
+	of the __do_put_integer function for integer types output. Moreover
+	static buffer size used for formating is now based on output
+	type sizeof.
+
+	* stlport/stl/_ostream.c: Add some assertion before cast to check that
+	no significant digit is lost. Add cast to long in int and short output
+	in order to make type of expression more explicit and correct. This
+	fix the bug report from Geoffrey Bache on sourceforge about output of
+	-1 ont value on 64bits linux.
+
+	* test/unit/floatio_test.cpp: Removed, all code moved to NumPutGetTest
+	test fixture.
+
+	* test/unit/num_put_get_test.cpp: New, contains all tests regarding
+	input/output of numeric values (locale independant).
+
+	* test/unit/locale_test.cpp: locale independant tests of numeric input/
+	output moved to NumPutGetTest test fixture.
+
+2006-07-04  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_rope.h, _rope.c: Patch from Peter Hercek to fix a
+	missing null termination in rope constructor from a character 
+	and a buffer overrun.
+
+	* stlport/stl/_rope.h: Removed special _S_rounded_up implementation
+	for other types than char and wchar_t. rope implementation is
+	expecting this method to always return a size > to the given size in
+	order to store the terminating null character.
+
+	* stlport/stl/_rope.c: Fix reference counter management to avoid memory
+	leak in _S_destr_concat_char_iter.
+
+2006-06-30  Francois Dumont  <dums@stlport...>
+
+	* src/num_put.cpp, num_put_float.cpp: Patch from Glen Summers
+	to fix float output using locale with grouping and float value
+	has no decimal.
+
+	* test/unit/locale_test.cpp: Add some tests showing above bug.
+
+2006-06-29  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_algo.h, _algo.c, _algobase.h, _algobase.c,
+	_hashtable.c: Patch from Andriy Syrovenko to fix implementation
+	of __equal_range, __lower_bound, __upper_bound when dealing with
+	a key whom type is different from the value_type of the iterator.
+
+	* test/unit/equal_test.cpp: Add some tests to show above bug.
+
+2006-06-28  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_string_sum_methods.h, debug/_string_sum_methods.h:
+	Small refactoring and simplification of code to avoid a parameter
+	with default value. This fixing an ICE using MSVC6.
+
+	* test/unit/string_test.cpp: Ignore the newly introduce te_tmp
+	test using MSVC6.
+
 2006-06-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_list.h: fix bug in list.swap, thanks Viktor Govako.
 
 	* test/unit/list_test.cpp: test for bug above.
 
+2006-06-27  Francois Dumont  <dums@stlport...>
+
+	* build/lib/configure: Add --with-lib_motif option to grant STLport
+	users the possibility of tweaking the generated libraries name.
+
+	* build/Makefiles/gmake/unix/lib.mak: Add code to take into account
+	configured lib motif in generated library name.
+
+	* build/Makefiles/gmake/netware/lib.mak: Looks like it needs same
+	defines as the ones in cygming/lib.mak so we simply include this
+	file.
+
+	* stlport/stl/config/_evc.h: Patch from Michael Fink to fix a
+	compilation error.
+
+	* test/unit/cppunit/cppunit_mini.h: Patch from Michael Fink to
+	avoid unused parameter warning.
+
+2006-06-23  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_pair.h, _bvector.h, config/_evc.h: Patch from
+	Ulrich Eckhardt to extend an evc4 MIPS workaround for eVC8
+	and to generalize little endian configuration.
+
+	* DMC patch from Eric Sanford. Define _STLP_NO_FUNTION_TMPL_PARTIAL_ORDER
+	so that many ignored unit test could be now passed. Also specify
+	Intel 386 instruction set during compilation to limit link errors.
+
+2006-06-22  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_algobase.c: Removed check of equivalent predicate
+	commutativity in find algorithm. In this case, equivalence relation
+	might have been implemented using a member operator == which is
+	not commutative thanks Grisha Spivak report. Other checks that are
+	using an explicit predicate parameter has been kept even if it forces
+	STLport users to implement commutative functor.
+
+	* test/unit/find_test.cpp: Add test to show above issue.
+
+	* stlport/stl/_hashtable.c: Removed equivalent predicate checks
+	that are useless as in _STLP_DEBUG mode the debug wrapping add this
+	check in the functor used to instanciate the non debug hashtable
+	implementation.
+
+2006-06-19  Francois Dumont  <dums@stlport...>
+
+	* STLport 5.1.0 candidate released. STLPORT_5_1 branch created in
+	CVS. Version tagged STLPORT_5_1_RC1.
+
 2006-06-17  Francois Dumont  <dums@stlport...>
 
 	* test/unit/type_traits_test.cpp, uninitialized_test.cpp: Add
-	implicit public inheritance relation to avoid an ICL warning.
+	explicit public inheritance relation to avoid an ICL warning.
 
 	* stlport/stl/config/features.h: Add definition of
 	_STLP_DEBUG_LEVEL to _STLP_STLPORT_DBG_LEVEL when _STLP_DEBUG
