@@ -1,3 +1,18 @@
+2006-07-27  Francois Dumont  <dums@stlport...>
+
+	* stlport: Adopt include_next GNU extension for the following reasons:
+	- Standard headers do not have to be categorised anymore to be
+	included, we could have a wrong include order if headers are not
+	correctly categorized.
+	- Package builder can use any folder structure they want for gcc,
+	STLport won't have to be customized anymore.
+	- Make STLport usable with other library that also use the shadow
+	header trick to modify native headers content.
+
+	* stlport/stl/config/_gcc.h: Add definition of _STLP_HAS_INCLUDE_NEXT
+	macro to signal that this compiler preprocessor support include_next.
+	Removed all definition of native headers path that are now useless.
+
 2006-07-26  Francois Dumont  <dums@stlport...>
 
 	* src/fstream.cpp: Fixed MMAP_CHUNK definition, an offset type is signed.
