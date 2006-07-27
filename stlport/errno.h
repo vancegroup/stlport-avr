@@ -29,7 +29,11 @@
 #  ifndef errno
 /* We define the following macro first to guaranty the header reentrancy: */
 #    define _STLP_NATIVE_ERRNO_H_INCLUDED
-#    include _STLP_NATIVE_C_HEADER(errno.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <errno.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(errno.h)
+#    endif
 #  endif /* errno */
 
 #  if !defined (_STLP_NATIVE_ERRNO_H_INCLUDED)

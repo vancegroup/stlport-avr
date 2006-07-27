@@ -33,12 +33,20 @@
 struct _exception;
 #  endif
 #  if (_STLP_OUTERMOST_HEADER_ID != 0x269) || defined (_STLP_DONT_POP_HEADER_ID)
-#    include _STLP_NATIVE_C_HEADER(string.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <string.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(string.h)
+#    endif
 #  else
 #    if defined (__BORLANDC__)
 #      include _STLP_NATIVE_CPP_C_HEADER(_str.h)
 #    else
-#      include _STLP_NATIVE_C_HEADER(string.h)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <string.h>
+#      else
+#        include _STLP_NATIVE_C_HEADER(string.h)
+#      endif
 #    endif
 
 #    if (_STLP_OUTERMOST_HEADER_ID == 0x269)

@@ -14,36 +14,40 @@
  */
 
 #ifndef _STLP_CERRNO
-# define _STLP_CERRNO
+#define _STLP_CERRNO
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x105
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifndef _STLP_WCE
-# if defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cerrno)
-# else
-#  include <errno.h>
-# endif
-# endif
+#ifndef _STLP_WCE
+#  if defined (_STLP_USE_NEW_C_HEADERS)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <cerrno>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(cerrno)
+#    endif
+#  else
+#    include <errno.h>
+#  endif
+#endif
 
 #ifndef errno
 
-# if defined (_STLP_IMPORT_VENDOR_CSTD) && \
-  ! defined (__IBMCPP__) && ! defined(__hpux) && ! defined(__MWERKS__) && !defined(_STLP_WCE)
+#  if defined (_STLP_IMPORT_VENDOR_CSTD) && \
+      !defined (__IBMCPP__) && ! defined(__hpux) && ! defined(__MWERKS__) && !defined(_STLP_WCE)
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::errno;
 _STLP_END_NAMESPACE
-# endif /* _STLP_IMPORT_VENDOR_CSTD */
+#  endif /* _STLP_IMPORT_VENDOR_CSTD */
 
 #endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x105 )
+#if (_STLP_OUTERMOST_HEADER_ID == 0x105 )
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_CERRNO */
 

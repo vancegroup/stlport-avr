@@ -24,7 +24,11 @@
 struct _exception;
 #endif
 
-#include _STLP_NATIVE_C_HEADER(limits.h)
+#if defined (_STLP_HAS_INCLUDE_NEXT)
+#  include_next <limits.h>
+#else
+#  include _STLP_NATIVE_C_HEADER(limits.h)
+#endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x201)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)

@@ -24,7 +24,11 @@
 #    ifdef _STLP_BROKEN_BAD_CAST_CLASS
 #      define bad_cast _STLP_NULLIFIED_BROKEN_BAD_CAST_CLASS
 #    endif
-#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <typeinfo>
+#    else
+#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo)
+#    endif
 #    ifdef _STLP_BROKEN_BAD_CAST_CLASS
 #      undef bad_cast
 #      undef _STLP_NULLIFIED_BROKEN_BAD_CAST_CLASS

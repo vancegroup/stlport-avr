@@ -29,7 +29,11 @@ struct _exception;
 
 #if !defined (setjmp)
 #  define _STLP_NATIVE_SETJMP_H_INCLUDED
-#  include _STLP_NATIVE_C_HEADER(setjmp.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <setjmp.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(setjmp.h)
+#  endif
 #endif
 
 #if !defined (_STLP_NATIVE_SETJMP_H_INCLUDED)

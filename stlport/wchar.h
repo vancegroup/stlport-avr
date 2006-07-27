@@ -34,7 +34,11 @@ using _STLP_VENDOR_CSTD::strspn;
 #  endif
 
 #  if (((__GNUC__ < 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ < 3))) && defined (__APPLE__)) || defined (__OpenBSD__)
-#    include _STLP_NATIVE_C_HEADER(stddef.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <stddef.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(stddef.h)
+#    endif
 #  elif defined(__MWERKS__) && defined(N_PLAT_NLM)
 /*
  * MSL library has wrong definition of wint_t (with -wchar_t on) in wchar_t.h header.
@@ -46,7 +50,7 @@ using _STLP_VENDOR_CSTD::strspn;
  * Novell SDK headers, _WCHAR_T defined in nlm_prefix.h). But you should define one
  * before include any header from Novell's SDK, so this isn't too good choice.
  *
- * And third solution is don't use anyware (even here) wchar_t.h
+ * And third solution is don't use anywhere (even here) wchar_t.h
  *
  *      - ptr, 2003 and 2005-05-07
  */
@@ -55,10 +59,16 @@ using _STLP_VENDOR_CSTD::strspn;
 # define _WINT_T
 #endif
 */
-#   include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
-#   include _STLP_NATIVE_C_HEADER(stddef.h)
-#   include _STLP_NATIVE_C_HEADER(stdio.h)
-#   include <unicode.h>
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <wchar_t.h>
+#      include_next <stddef.h>
+#      include_next <stdio.h>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
+#      include _STLP_NATIVE_C_HEADER(stddef.h)
+#      include _STLP_NATIVE_C_HEADER(stdio.h)
+#    endif
+#    include <unicode.h>
 int wcslen( const wchar_t *_wc );
 int wcscmp( const wchar_t *_wc1, const wchar_t *_wc2 );
 int wcsncmp( const wchar_t *_wc1, const wchar_t *_wc2, size_t n );
@@ -69,7 +79,11 @@ wchar_t *wcscpy( wchar_t *_wc1, const wchar_t *_wc2 );
 wchar_t *wcsncpy( wchar_t *_wc1, const wchar_t *_wc2, size_t n );
 wchar_t *wcspbrk( const wchar_t *_wc, const wchar_t *_wc2 );
 #  else
-#    include _STLP_NATIVE_C_HEADER(wchar.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <wchar.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(wchar.h)
+#    endif
 #  endif
 
 #endif /* !defined (_STLP_WCE_EVC3) && !defined (_STLP_NO_WCHAR_T) */

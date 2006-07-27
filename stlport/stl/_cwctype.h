@@ -23,12 +23,22 @@
 #if !defined (_STLP_WCE_EVC3)
 #  if defined (_STLP_USE_NEW_C_HEADERS)
 #    if !defined (N_PLAT_NLM)
-#      include _STLP_NATIVE_CPP_C_HEADER(cwctype)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <cwctype>
+#      else
+#        include _STLP_NATIVE_CPP_C_HEADER(cwctype)
+#      endif
 #    else
        // see comments in stlport/cwchar about wint_t on Novell
-#      include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
-#      include _STLP_NATIVE_C_HEADER(stddef.h)
-#      include _STLP_NATIVE_C_HEADER(stdio.h)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <wchar_t.h>
+#        include_next <stddef.h>
+#        include_next <stdio.h>
+#      else
+#        include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
+#        include _STLP_NATIVE_C_HEADER(stddef.h)
+#        include _STLP_NATIVE_C_HEADER(stdio.h)
+#      endif
 #    endif
 #    if defined (__MSL__) && !defined (N_PLAT_NLM)
 namespace std {
@@ -41,7 +51,7 @@ using std::towctrans;
 using std::wctrans;
 #    endif
 #  else
-#    include _STLP_NATIVE_C_HEADER(wctype.h)
+#    include <wctype.h>
 #  endif
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)

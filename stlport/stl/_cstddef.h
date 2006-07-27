@@ -25,7 +25,11 @@
 #  endif
 
 #  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(cstddef)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <cstddef>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(cstddef)
+#    endif
 #  else
 #    include <stddef.h>
 #  endif

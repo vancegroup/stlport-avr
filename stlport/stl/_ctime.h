@@ -19,9 +19,13 @@
 #if !defined (_STLP_WCE_EVC3)
 
 #  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(ctime)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <ctime>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(ctime)
+#    endif
 #  else
-#    include _STLP_NATIVE_C_HEADER(time.h)
+#    include <time.h>
 #  endif
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)

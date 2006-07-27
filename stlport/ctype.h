@@ -33,7 +33,11 @@
 struct _exception;
 #  endif
 
-#  include _STLP_NATIVE_C_HEADER(ctype.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <ctype.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(ctype.h)
+#  endif
 
 /* on evc4 including ctype.h also defines setjmp macro */
 #  if defined (_STLP_WCE)

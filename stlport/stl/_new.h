@@ -47,7 +47,11 @@ using _STLP_VENDOR_CSTD::malloc;
 #    error Cannot include native new header as new is a macro.
 #  endif
 
-#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <new>
+#  else
+#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(new)
+#  endif
 
 #  if defined (_STLP_BROKEN_BAD_ALLOC_CLASS)
 #    undef bad_alloc

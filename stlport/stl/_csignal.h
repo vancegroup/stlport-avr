@@ -18,9 +18,13 @@
 
 #if !defined (_STLP_WCE)
 #  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(csignal)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <csignal>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(csignal)
+#    endif
 #  else
-#    include _STLP_NATIVE_C_HEADER(signal.h)
+#    include <signal.h>
 #  endif
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)

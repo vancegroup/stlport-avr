@@ -26,7 +26,11 @@
 struct _exception;
 #endif
 
-#include _STLP_NATIVE_C_HEADER(float.h)
+#if defined (_STLP_HAS_INCLUDE_NEXT)
+#  include_next <float.h>
+#else
+#  include _STLP_NATIVE_C_HEADER(float.h)
+#endif
 
 #if defined(__BORLANDC__) && defined (__cplusplus) && (__BORLANDC__ >= 0x560)
 _STLP_BEGIN_NAMESPACE

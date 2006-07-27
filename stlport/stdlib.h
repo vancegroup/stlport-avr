@@ -43,7 +43,11 @@
 struct _exception;
 #  endif
 
-#  include _STLP_NATIVE_C_HEADER(stdlib.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <stdlib.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(stdlib.h)
+#  endif
 
 /* on evc3/evc4 including stdlib.h also defines setjmp macro */
 #  if defined (_STLP_WCE)

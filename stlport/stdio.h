@@ -29,7 +29,11 @@
 #    if defined(_STLP_WCE_EVC3)
 struct _exception;
 #    endif
-#    include _STLP_NATIVE_C_HEADER(stdio.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <stdio.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(stdio.h)
+#    endif
 
 #    if defined (__SUNPRO_CC) && !defined (_STRUCT_FILE)
 #      define _STRUCT_FILE

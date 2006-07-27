@@ -19,10 +19,13 @@
 // if the macro is on, the header is already there
 #if !defined (setjmp)
 #  if defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(csetjmp)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <csetjmp>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(csetjmp)
+#    endif
 #  else
-#    define _STLP_NATIVE_SETJMP_H_INCLUDED
-#    include _STLP_NATIVE_C_HEADER(setjmp.h)
+#    include <setjmp.h>
 #  endif
 #endif
 

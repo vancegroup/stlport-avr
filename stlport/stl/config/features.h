@@ -253,7 +253,9 @@
 #endif
 
 /* Native headers access macros */
-#include <stl/config/_native_headers.h>
+#if !defined (_STLP_HAS_INCLUDE_NEXT)
+#  include <stl/config/_native_headers.h>
+#endif
 
 /*  shared library tune-up */
 

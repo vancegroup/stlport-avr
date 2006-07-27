@@ -17,9 +17,13 @@
 #define _STLP_INTERNAL_CSTRING
 
 #if defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstring)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cstring>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstring)
+#  endif
 #else
-#  include _STLP_NATIVE_C_HEADER(string.h)
+#  include <string.h>
 #endif
 
 #ifdef _STLP_IMPORT_VENDOR_CSTD

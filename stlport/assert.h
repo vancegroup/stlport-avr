@@ -22,7 +22,11 @@
 
 /* evc3 doesn't have assert.h; macro assert() is defined in stl_evc.h */
 #ifndef _STLP_WCE_EVC3
-#  include _STLP_NATIVE_C_HEADER(assert.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <assert.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(assert.h)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x202)

@@ -46,9 +46,17 @@
 #    undef bad_exception
 #  else
 #    if defined (_STLP_NO_NEW_NEW_HEADER)
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <exception.h>
+#      else
+#        include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception.h)
+#      endif
 #    else
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <exception>
+#      else
+#        include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
+#      endif
 #    endif
 #  endif
 

@@ -33,7 +33,11 @@
  * from the native lib which means that we can simply forward this
  * call to the native exception header:
  */
-#  include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <exception>
+#  else
+#    include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
+#  endif
 #else
 #  include <stl/_exception.h>
 #endif

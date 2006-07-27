@@ -17,13 +17,21 @@
 #define _STLP_INTERNAL_CSTDIO
 
 #if defined (__Lynx__)
-#  include _STLP_NATIVE_C_HEADER(stdarg.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <stdarg.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(stdarg.h)
+#  endif
 #endif
 
 #if defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cstdio>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+#  endif
 #else
-#  include _STLP_NATIVE_C_HEADER(stdio.h)
+#  include <stdio.h>
 #endif
 
 #if (defined (__MWERKS__) && !defined (N_PLAT_NLM))  || defined (__BORLANDC__)

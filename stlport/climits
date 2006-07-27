@@ -24,7 +24,11 @@
 #if defined (__SUNPRO_CC) && ((__SUNPRO_CC == 0x500) && (__SUNPRO_CC_COMPAT > 4))
 #  include </usr/include/limits.h>
 #elif defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(climits)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <climits>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(climits)
+#  endif
 #else
 #  if defined (__BORLANDC__)
 #    include _STLP_NATIVE_C_HEADER(limits.h)

@@ -21,14 +21,22 @@
  * so cstdlib has to be included first.
  */
 #if defined (__GNUC__) && defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cstdlib>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstdlib)
+#  endif
 #endif
 
 #if defined (_STLP_USE_NEW_C_HEADERS)
 #  if defined (_STLP_HAS_NO_NAMESPACES) && !defined (exception)
 #    define exception __math_exception
 #  endif
-#  include _STLP_NATIVE_CPP_C_HEADER(cmath)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cmath>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cmath)
+#  endif
 #  if defined (_STLP_HAS_NO_NAMESPACES)
 #    undef exception
 #  endif

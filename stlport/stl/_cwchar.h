@@ -19,11 +19,19 @@
 #if !defined (_STLP_WCE_EVC3)
 
 #  if defined (__GNUC__)
-#    include _STLP_NATIVE_CPP_C_HEADER(cstddef)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <cstddef>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(cstddef)
+#    endif
 #  endif
 
 #  if !defined (_STLP_NO_CWCHAR) && defined (_STLP_USE_NEW_C_HEADERS)
-#    include _STLP_NATIVE_CPP_C_HEADER(cwchar)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <cwchar>
+#    else
+#      include _STLP_NATIVE_CPP_C_HEADER(cwchar)
+#    endif
 #    if defined (__OpenBSD__)
 typedef _BSD_WINT_T_ wint_t;
 #    endif /* __OpenBSD__ */
@@ -32,7 +40,11 @@ typedef _BSD_WINT_T_ wint_t;
        (defined (__BORLANDC__) && (__BORLANDC__ < 0x580)) || \
         defined (__OpenBSD__) || defined (__FreeBSD__) || \
        (defined (__GNUC__) && (defined (__APPLE__) || defined ( __Lynx__ )))
-#    include _STLP_NATIVE_C_HEADER(stddef.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <stddef.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(stddef.h)
+#    endif
 #    if defined (__Lynx__)
 #      ifndef _WINT_T
 typedef long int wint_t;
@@ -45,7 +57,11 @@ typedef _BSD_WINT_T_ wint_t;
 #  elif defined (__MWERKS__) && defined (N_PLAT_NLM)
 #    include <wchar.h>
 #  else
-#    include _STLP_NATIVE_C_HEADER(wchar.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <wchar.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(wchar.h)
+#    endif
 
 #    if defined (__sun) && (defined (_XOPEN_SOURCE) || (_XOPEN_VERSION - 0 == 4))
 extern wint_t   btowc();
