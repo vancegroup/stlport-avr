@@ -40,7 +40,11 @@
 #endif
 
 #if defined (_STLP_IMPORT_VENDOR_STD)
-#  include _STLP_NATIVE_HEADER(list)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <list>
+#  else
+#    include _STLP_NATIVE_HEADER(list)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x40)

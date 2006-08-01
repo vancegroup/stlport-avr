@@ -22,7 +22,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x120)
-#  include _STLP_NATIVE_CPP_C_HEADER(cwchar)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cwchar>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cwchar)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CWCHAR
 #    include <stl/_cwchar.h>

@@ -22,7 +22,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x117)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstring)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cstring>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstring)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CSTRING
 #    include <stl/_cstring.h>

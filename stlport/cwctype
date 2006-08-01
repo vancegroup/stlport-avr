@@ -22,7 +22,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x121)
-#  include _STLP_NATIVE_CPP_C_HEADER(cwctype)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cwctype>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cwctype)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CWCTYPE
 #    include <stl/_cwctype.h>

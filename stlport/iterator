@@ -26,17 +26,21 @@
 #ifndef _STLP_ITERATOR
 #define _STLP_ITERATOR
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x38
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
 #if defined (_STLP_IMPORT_VENDOR_STD)
-# include _STLP_NATIVE_HEADER(iterator)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <iterator>
+#  else
+#    include _STLP_NATIVE_HEADER(iterator)
+#  endif
 #endif /* IMPORT */
 
 # ifndef _STLP_INTERNAL_ITERATOR_H

@@ -19,27 +19,31 @@
 #ifndef _STLP_FUNCTIONAL
 #define _STLP_FUNCTIONAL
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x27
 #  include <stl/_prolog.h>
-# endif
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
+#ifdef _STLP_PRAGMA_ONCE
 #  pragma once
-# endif
+#endif
 
-# if defined (_STLP_IMPORT_VENDOR_STD)
-#  include _STLP_NATIVE_HEADER(functional)
-# endif
+#if defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <functional>
+#  else
+#    include _STLP_NATIVE_HEADER(functional)
+#  endif
+#endif
 
-# ifndef _STLP_INTERNAL_FUNCTION_H
+#ifndef _STLP_INTERNAL_FUNCTION_H
 #  include <stl/_function.h>
-# endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x27)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x27)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_FUNCTIONAL */
 

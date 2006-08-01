@@ -22,7 +22,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x104 )
-#  include _STLP_NATIVE_CPP_C_HEADER(cctype)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cctype>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cctype)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CCTYPE
 #    include <stl/_cctype.h>

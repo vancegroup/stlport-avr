@@ -23,7 +23,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x15)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cstdio>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CSTDIO
 #    include <stl/_cstdio.h>

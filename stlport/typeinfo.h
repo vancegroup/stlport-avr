@@ -29,7 +29,11 @@
 #    define _STLP_OLDSTD_typeinfo
 #  else
 #    if !defined (__BORLANDC__) || (__BORLANDC__ < 0x580)
-#      include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <typeinfo.h>
+#      else
+#        include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo.h)
+#      endif
 #    else
 #      include _STLP_NATIVE_CPP_C_HEADER(typeinfo.h)
 #    endif

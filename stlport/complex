@@ -25,7 +25,7 @@
 #endif
 
 // This header declares the template class complex, as described in
-// in the draft C++ standard.  Single-precision complex numbers
+// in the C++ Standard.  Single-precision complex numbers
 // are complex<float>, double-precision are complex<double>, and
 // quad precision are complex<long double>.
 

@@ -30,12 +30,11 @@
 #      endif
 #    else
        // see comments in stlport/cwchar about wint_t on Novell
+#      include <wchar_t.h>
 #      if defined (_STLP_HAS_INCLUDE_NEXT)
-#        include_next <wchar_t.h>
 #        include_next <stddef.h>
 #        include_next <stdio.h>
 #      else
-#        include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
 #        include _STLP_NATIVE_C_HEADER(stddef.h)
 #        include _STLP_NATIVE_C_HEADER(stdio.h)
 #      endif

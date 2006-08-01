@@ -38,7 +38,11 @@
 #include <stl/_set.h>
 
 #if defined (_STLP_IMPORT_VENDOR_STD)
-#  include _STLP_NATIVE_HEADER(set)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <set>
+#  else
+#    include _STLP_NATIVE_HEADER(set)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x55)

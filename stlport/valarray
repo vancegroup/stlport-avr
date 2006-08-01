@@ -31,7 +31,11 @@
 #include <stl/_valarray.h>
 
 #if defined (_STLP_IMPORT_VENDOR_STD)
-#  include _STLP_NATIVE_HEADER(valarray)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <valarray>
+#  else
+#    include _STLP_NATIVE_HEADER(valarray)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x76)

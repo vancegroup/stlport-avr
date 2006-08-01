@@ -45,7 +45,11 @@
 #endif
 
 #if defined (_STLP_IMPORT_VENDOR_STD)
-#   include _STLP_NATIVE_HEADER(utility)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <utility>
+#  else
+#    include _STLP_NATIVE_HEADER(utility)
+#  endif
 #else
 #  if defined (_STLP_MSVC) && !defined (_STLP_INTERNAL_ITERATOR_H)
 #    include <stl/_iterator.h>

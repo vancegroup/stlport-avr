@@ -22,7 +22,11 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x110)
-#  include _STLP_NATIVE_CPP_C_HEADER(cmath)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <cmath>
+#  else
+#    include _STLP_NATIVE_CPP_C_HEADER(cmath)
+#  endif
 #else
 #  ifndef _STLP_INTERNAL_CMATH
 #    include <stl/_cmath.h>
