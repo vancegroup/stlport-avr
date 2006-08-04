@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/06/29 17:00:46 ptr>
+// -*- C++ -*- Time-stamp: <06/08/03 23:18:01 ptr>
 
 /*
  *
@@ -1406,7 +1406,13 @@ class Semaphore
 class Thread
 {
   public:
-    typedef int (*entrance_type)( void * );
+    union ret_code
+    {
+        void *pword;
+        long  iword;
+    };
+
+    typedef ret_code (*entrance_type)( void * );
 #ifdef __FIT_WIN32THREADS
     typedef unsigned long thread_key_type;
     typedef HANDLE thread_id_type;
@@ -1477,7 +1483,8 @@ class Thread
 
     __FIT_DECLSPEC
     void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
-    __FIT_DECLSPEC int join();
+
+    __FIT_DECLSPEC ret_code join();
     __FIT_DECLSPEC int suspend();
     __FIT_DECLSPEC int resume();
     __FIT_DECLSPEC int kill( int sig );

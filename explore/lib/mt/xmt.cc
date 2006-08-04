@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/07/13 11:02:00 ptr>
+// -*- C++ -*- Time-stamp: <06/08/03 23:48:34 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2005
@@ -90,11 +90,6 @@ namespace xmt {
 namespace detail {
 
 int Init_count = 0;
-
-union _iv {
-    void *ptr;
-    int code;
-};
 
 #ifdef __FIT_NOVELL_THREADS
 xmt::Thread::thread_key_type _mt_key = 0;
@@ -722,39 +717,41 @@ void Thread::launch( entrance_type entrance, const void *p, size_t psz )
 }
 
 __FIT_DECLSPEC
-int Thread::join()
+Thread::ret_code Thread::join()
 {
+  ret_code rt;
+
 #ifdef __FIT_WIN32THREADS
-  unsigned long ret_code = 0;
+  rt.iword = 0;
   if ( _id != bad_thread_id ) {
     WaitForSingleObject( _id, -1 );
-    GetExitCodeThread( _id, &ret_code );
+    GetExitCodeThread( _id, &rt.iword );
     CloseHandle( _id );
     _id = bad_thread_id;
   }
 #endif // __FIT_WIN32THREADS
 #if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-  int ret_code = 0;
+  rt.pword = 0;
   if ( _id != bad_thread_id && (_flags & (daemon | detached) ) == 0 ) {
 #  ifdef _PTHREADS
-    pthread_join( _id, (void **)(&ret_code) );
+    pthread_join( _id, &rt.pword );
 #  endif
 #  ifdef __FIT_UITHREADS
-    thr_join( _id, 0, (void **)(&ret_code) );
+    thr_join( _id, 0, &rt.pword );
 #  endif
     _id = bad_thread_id;
   }
 #endif // __FIT_UITHREADS || PTHREADS
 
 #ifdef __FIT_NOVELL_THREADS
-  int ret_code = 0;
+  rt.iword = 0;
   if ( _id != bad_thread_id ) {
     _thr_join.wait();
     _id = bad_thread_id;
   }
 #endif // __FIT_NOVELL_THREADS
 
-  return ret_code;
+  return rt;
 }
 
 __FIT_DECLSPEC
@@ -840,14 +837,14 @@ __FIT_DECLSPEC
 void Thread::_exit( int code )
 {
 #ifdef _PTHREADS
-  detail::_iv v;
-  v.code = code;
-  pthread_exit( v.ptr );
+  ret_code v;
+  v.iword = code;
+  pthread_exit( v.pword );
 #endif
 #ifdef __FIT_UITHREADS
-  _iv v;
-  v.code = code;
-  thr_exit( v.ptr );
+  ret_code v;
+  v.iword = code;
+  thr_exit( v.pword );
 #endif
 #ifdef __FIT_WIN32THREADS
   ExitThread( code );
@@ -1202,7 +1199,7 @@ void *Thread::_call( void *p )
   // of me->_entrance!!!
   void *_param     = me->_param;
   size_t _param_sz = me->_param_sz;
-  detail::_iv ret;
+  ret_code ret;
 
 //#ifdef _PTHREADS
 //#  ifndef __hpux
@@ -1229,7 +1226,7 @@ void *Thread::_call( void *p )
   me->_state = goodbit;
   _start_lock.unlock();
   try {
-    ret.code = me->_entrance( _param );
+    ret = me->_entrance( _param );
     me->_state = badbit;
     // I should make me->_id = bad_thread_id; here...
     // This is in conflict what I say in the begin of this function.
@@ -1255,7 +1252,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << e.what() << endl;
 #endif
-    ret.code = -1;
+    ret.iword = -1;
   }
   catch ( int sig ) {
     me->_state = badbit;
@@ -1270,7 +1267,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << "\n--- Thread: signal " << sig /* (_sig_ ? _sig_ : "unknown") */ << " detected ---" << endl;
 #endif
-    ret.code = sig;
+    ret.iword = sig;
   }
   catch ( ... ) {
     me->_state = badbit;
@@ -1284,7 +1281,7 @@ void *Thread::_call( void *p )
 #ifndef _WIN32
     cerr << "\n--- Thread: unknown exception occur ---" << endl;
 #endif
-    ret.code = -1;
+    ret.iword = -1;
   }
 
   try {
@@ -1295,18 +1292,18 @@ void *Thread::_call( void *p )
     }
   }
   catch ( ... ) {
-    ret.code = -1;
+    ret.iword = -1;
   }
 
 #if defined( __SUNPRO_CC ) && defined( __i386 )
-  Thread::_exit( ret.code );
+  Thread::_exit( ret.iword );
 #endif
 #ifdef __FIT_NOVELL_THREADS
   if ( (me->_flags & detached) == 0 ) {
     me->_thr_join.signal();
   }
 #endif // __FIT_NOVELL_THREADS || __FIT_WIN32THREADS
-  return ret.ptr;
+  return ret.pword;
 }
 #ifdef _WIN32
 #pragma warning( default : 4101 )
