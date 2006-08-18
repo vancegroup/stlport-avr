@@ -1,7 +1,7 @@
-// -*- C++ -*- Time-stamp: <06/08/03 23:48:34 ptr>
+// -*- C++ -*- Time-stamp: <06/08/18 12:55:29 ptr>
 
 /*
- * Copyright (c) 1997-1999, 2002-2005
+ * Copyright (c) 1997-1999, 2002-2006
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
@@ -102,7 +102,6 @@ void *_uw_save = 0;
 
 
 #ifdef _PTHREADS
-// xmt::__Mutex<false,true> _F_lock;
 xmt::Mutex _F_lock;
 #  define _F_locklock  xmt::detail::_F_lock.lock();
 #  define _F_lockunlock xmt::detail::_F_lock.unlock();
@@ -130,7 +129,6 @@ std::string _notrecursive( "Platform not support recursive mutex" );
 
 extern "C" void __at_fork_prepare()
 {
-  _F_locklock
 #ifdef _PTHREADS
   if ( xmt::detail::Init_count > 0 ) {
     xmt::detail::_uw_save = pthread_getspecific( xmt::detail::_mt_key );
@@ -140,7 +138,6 @@ extern "C" void __at_fork_prepare()
 
 extern "C" void __at_fork_parent()
 {
-  _F_lockunlock
 #ifdef _PTHREADS
 #endif
 }
@@ -168,7 +165,6 @@ extern "C" void __at_fork_child()
     xmt::detail::Init_count = 1; // i.e. only ONE (calling) thread...
   }
 #endif
-  _F_lockunlock
 }
 
 namespace xmt {
@@ -178,233 +174,6 @@ using std::cerr;
 using std::endl;
 #endif
 
-__FIT_DECLSPEC
-int Condition::try_wait_time( const timespec *abstime )
-{
-#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
-  MT_LOCK( _lock );
-#endif
-#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-  MT_REENTRANT( _lock, _x1 );
-#endif
-  if ( _val == false ) {
-#ifdef __FIT_WIN32THREADS
-    ResetEvent( _cond );
-    time_t ct = time( 0 );
-    unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
-    MT_UNLOCK( _lock );
-    int ret = WaitForSingleObject( _cond, ms );
-    if ( ret == WAIT_FAILED ) {
-      return -1;
-    }
-    if ( ret == WAIT_TIMEOUT ) {
-      SetEvent( _cond );
-      return ETIME;
-    }
-    return 0;
-#endif
-#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-    int ret = 0;
-    timespec _abstime = *abstime;
-    while ( !_val ) {
-# ifdef _PTHREADS
-      ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
-      if ( ret == ETIMEDOUT ) {
-        break;
-      }
-# endif
-# ifdef __FIT_UITHREADS
-      ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
-      if ( ret == ETIME ) {
-        ret = ETIMEDOUT;
-      } else if ( ret == ETIMEDOUT ) {
-        break;
-      }
-# endif
-    }
-
-    return ret;
-#endif // _PTHREADS || __FIT_UITHREADS
-#ifdef __FIT_NOVELL_THREADS
-    time_t ct = time( 0 );
-    unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
-    MT_UNLOCK( _lock );
-    return TimedWaitOnLocalSemaphore( _cond, ms );
-#endif
-#ifdef _NOTHREADS
-    return 0;
-#endif
-  }
-#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
-  MT_UNLOCK( _lock );
-#endif
-  return 0;
-}
-
-__FIT_DECLSPEC
-int Condition::try_wait_delay( const timespec *interval )
-{
-#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
-  MT_LOCK( _lock );
-#endif
-#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-  MT_REENTRANT( _lock, _x1 );
-#endif
-  if ( _val == false ) {
-#ifdef WIN32
-    _val = false;
-    ResetEvent( _cond );
-    MT_UNLOCK( _lock );
-    unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
-    int ret = WaitForSingleObject( _cond, ms );
-    if ( ret == WAIT_FAILED ) {
-      return -1;
-    }
-    if ( ret == WAIT_TIMEOUT ) {
-      SetEvent( _cond );
-      return ETIME;
-    }
-    return 0;
-#endif
-#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-    timespec ct;
-    Thread::gettime( &ct );
-    ct += *interval;
-
-    int ret = 0;
-    timespec _abstime = ct;
-    while ( !_val ) {
-# ifdef _PTHREADS
-      ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
-      if ( ret == ETIMEDOUT ) {
-        break;
-      }
-# endif
-# ifdef __FIT_UITHREADS
-      ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
-      if ( ret == ETIME ) {
-        ret = ETIMEDOUT;
-      } else if ( ret == ETIMEDOUT ) {
-        break;
-      }
-# endif
-    }
-
-    return ret;
-#endif // _PTHREADS || __FIT_UITHREADS
-#ifdef __FIT_NOVELL_THREADS
-    MT_UNLOCK( _lock );
-    return TimedWaitOnLocalSemaphore( _cond, interval->tv_sec * 1000 + interval->tv_nsec / 1000000 );
-#endif
-
-#ifdef _NOTHREADS
-    return 0;
-#endif
-  }
-
-#if defined(__FIT_WIN32THREADS) || defined(__FIT_NOVELL_THREADS)
-  MT_UNLOCK( _lock );
-#endif
-  return 0;
-}
-
-__FIT_DECLSPEC
-int Condition::wait_time( const timespec *abstime )
-{
-#ifdef __FIT_WIN32THREADS
-  MT_LOCK( _lock );
-  _val = false;
-  ResetEvent( _cond );
-  time_t ct = time( 0 );
-  unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
-  MT_UNLOCK( _lock );
-  int ret = WaitForSingleObject( _cond, ms );
-  if ( ret == WAIT_FAILED ) {
-    return -1;
-  }
-  if ( ret == WAIT_TIMEOUT ) {
-    SetEvent( _cond );
-    return ETIME;
-  }
-  return 0;
-#endif
-#ifdef _PTHREADS
-  MT_REENTRANT( _lock, _x1 ); // ??
-  _val = false;
-  timespec _abstime = *abstime;
-  int ret = pthread_cond_timedwait( &_cond, &_lock._M_lock, &_abstime );
-  if ( ret == ETIMEDOUT ) {
-    _val = true;
-  }
-  return ret;
-#endif // _PTHREADS
-#ifdef __FIT_UITHREADS
-  MT_REENTRANT( _lock, _x1 );
-  _val = false;
-  int ret;
-  timespec _abstime = *abstime;
-  while ( !_val ) {
-    ret = cond_timedwait( &_cond, /* &_lock.mutex */ &_lock._M_lock, &_abstime );
-    if ( ret == ETIME ) {
-      _val = true;
-      ret = ETIMEDOUT;
-    } else if ( ret == ETIMEDOUT ) {
-      _val = true;
-    }
-  }
-
-  return ret;
-#endif
-#ifdef __FIT_NOVELL_THREADS
-  MT_LOCK( _lock );
-  _val = false;
-  time_t ct = time( 0 );
-  unsigned ms = abstime->tv_sec >= ct ? (abstime->tv_sec - ct) * 1000 + abstime->tv_nsec / 1000000 : 1;
-  MT_UNLOCK( _lock );
-  return TimedWaitOnLocalSemaphore( _cond, ms );
-#endif
-#ifdef _NOTHREADS
-  return 0;
-#endif
-}
-
-__FIT_DECLSPEC
-int Condition::wait_delay( const timespec *interval )
-{
-#ifdef __FIT_WIN32THREADS
-  MT_LOCK( _lock );
-  _val = false;
-  ResetEvent( _cond );
-  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
-  MT_UNLOCK( _lock );
-  int ret = WaitForSingleObject( _cond, ms );
-  if ( ret == WAIT_FAILED ) {
-    return -1;
-  }
-  if ( ret == WAIT_TIMEOUT ) {
-    SetEvent( _cond );
-    return ETIME;
-  }
-  return 0;
-#endif
-#if defined(__FIT_UITHREADS) || defined(_PTHREADS)
-  timespec ct;
-  Thread::gettime( &ct );
-  ct += *interval;
-
-  return this->wait_time( &ct );
-#endif
-#ifdef __FIT_NOVELL_THREADS
-  MT_LOCK( _lock );
-  _val = false;
-  unsigned ms = interval->tv_sec * 1000 + interval->tv_nsec / 1000000;
-  MT_UNLOCK( _lock );
-  return TimedWaitOnLocalSemaphore( _cond, ms );
-#endif
-#ifdef _NOTHREADS
-  return 0;
-#endif
-}
 
 __FIT_DECLSPEC
 int Semaphore::wait_time( const timespec *abstime ) // wait for time t, or signal
@@ -1053,6 +822,7 @@ __FIT_DECLSPEC
 void Thread::fork() throw( fork_in_parent, std::runtime_error )
 {
 #ifdef __unix
+  // MT_REENTRANT( detail::_F_lock, _1 );
   fork_in_parent f( ::fork() );
   if ( f.pid() > 0 ) {
     throw f;
