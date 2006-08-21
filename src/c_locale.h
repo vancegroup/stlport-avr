@@ -54,7 +54,6 @@
 
 
 #ifdef __cplusplus
-_STLP_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
@@ -444,7 +443,6 @@ const char * _Locale_catgets(struct _Locale_messages *, nl_catd_type,
 
 # ifdef __cplusplus
 }
-_STLP_END_NAMESPACE
 # endif
 
 # endif /* _STLP_C_LOCALE_IMPL_H */
