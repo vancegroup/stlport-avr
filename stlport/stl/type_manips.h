@@ -18,10 +18,33 @@
 #ifndef _STLP_TYPE_MANIPS_H
 #define _STLP_TYPE_MANIPS_H
 
+# if defined (__GNUC__) && (__GNUC__ > 3)
+// See comment below
+#  include <bits/cpp_type_traits.h>
+# endif
+
 _STLP_BEGIN_NAMESPACE
 
+/*
+ * gcc (libstdc++) define __true_type in different headers, and while
+ * in gcc 3.x it in bits/type_traits.h that included only from headers
+ * that not included from STLport; in gcc 4.x it defined in
+ * bits/cpp_type_traits.h, that included well... from cmath for example
+ *
+ * libstdc++ v3,       __GLIBCXX__ 20050519 (3.4.4) use variant 1,
+ * libstdc++ v3,       __GLIBCXX__ 20060306 (3.4.6) use variant 1,
+ * while libstdc++ v3, __GLIBCXX__ 20050921 (4.0.2) use variant 2,
+ *                     __GLIBCXX__ 20060524 (4.1.1) use variant 2
+ * muddle in libstdc++ versions...
+ *
+ */
+# if defined (__GNUC__) && (__GNUC__ > 3)
+using ::__true_type;
+using ::__false_type;
+# else
 struct __true_type {};
 struct __false_type {};
+# endif
 
 #if defined (_STLP_USE_NAMESPACES)
 _STLP_MOVE_TO_PRIV_NAMESPACE

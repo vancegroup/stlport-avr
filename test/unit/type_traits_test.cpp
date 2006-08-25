@@ -52,12 +52,6 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
 
-#if defined (__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 0)
-//A weird gcc behavior, maybe a conflict with GNU lib c++ __true_type
-#  define __true_type std::__true_type
-#  define __false_type std::__false_type
-#endif
-
 #if defined (STLPORT)
 
 int type_to_value(__true_type)

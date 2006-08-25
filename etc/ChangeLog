@@ -6,6 +6,10 @@
 	* stlport/stl/_hash_fun.h: use primary types for hasher, not
 	typedefs.
 
+	* stlport/stl/type_manips.h: workaround for __true_type/__false_type
+	for various versions gcc (oh, yes, gcc, it's real pain to detect
+	real version of libstdc++)
+
 2006-07-27  Francois Dumont  <dums@stlport...>
 
 	* stlport: Adopt include_next GNU extension for the following reasons:
