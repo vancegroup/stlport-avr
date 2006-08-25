@@ -35,6 +35,7 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #  define __PRIME_LIST_BODY { \
+  7ul,          23ul, \
   53ul,         97ul,         193ul,       389ul,       769ul,      \
   1543ul,       3079ul,       6151ul,      12289ul,     24593ul,    \
   49157ul,      98317ul,      196613ul,    393241ul,    786433ul,   \
@@ -50,7 +51,7 @@ _Stl_prime<_Dummy>::_S_max_nb_buckets() {
 #  ifndef __MWERKS__
   return _list[(sizeof(_list)/sizeof(_list[0])) - 1];
 #  else
-  return _list[28/sizeof(size_t) - 1]; // stupid MWERKS!
+  return _list[30/sizeof(size_t) - 1]; // stupid MWERKS!
 #  endif
 }
 
@@ -62,7 +63,7 @@ _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
 #  ifndef __MWERKS__
   const size_t* __last =  _list + (sizeof(_list)/sizeof(_list[0]));
 #  else
-  const size_t* __last =  _list + (28/sizeof(size_t)); // stupid MWERKS
+  const size_t* __last =  _list + (30/sizeof(size_t)); // stupid MWERKS
 #  endif
   const size_t* pos = __lower_bound(__first, __last, __n, 
                                     __less((size_t*)0), __less((size_t*)0), (ptrdiff_t*)0);
