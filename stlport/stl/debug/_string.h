@@ -70,7 +70,6 @@ public:                         // Constructor, destructor, assignment.
   typedef typename _Base::_Reserve_t _Reserve_t;
 
 private:
-  // _Base _M_non_dbg_impl;
   _STLP_PRIV __owned_list _M_iter_list;
 
   void _Invalidate_all()
@@ -84,17 +83,6 @@ private:
   { _STLP_PRIV __invalidate_iterator(&_M_iter_list, __it); }
   void _Invalidate_iterators(const iterator& __f, const iterator& __l)
   { _STLP_PRIV __invalidate_range(&_M_iter_list, __f, __l); }
-
-/*
-  _CharT const* _M_Start() const
-  { return _M_non_dbg_impl._M_Start(); }
-  _CharT* _M_Start()
-  { return _M_non_dbg_impl._M_Start(); }
-  _CharT const* _M_Finish() const
-  { return _M_non_dbg_impl._M_Finish(); }
-  _CharT* _M_Finish()
-  { return _M_non_dbg_impl._M_Finish(); }
-*/
 
 public:
 #include <stl/_string_npos.h>
