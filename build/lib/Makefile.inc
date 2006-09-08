@@ -1,8 +1,8 @@
-# -*- Makefile -*- Time-stamp: <06/01/11 09:53:41 ptr>
+# -*- Makefile -*- Time-stamp: <06/09/08 11:50:49 ptr>
 
 LIBNAME = stlport
 MAJOR = 5
-MINOR = 1
+MINOR = 2
 PATCH = 0
 SRC_CPP = ../../src/dll_main.cpp \
           ../../src/fstream.cpp \

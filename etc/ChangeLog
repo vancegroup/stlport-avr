@@ -23,6 +23,8 @@
 
 	* src/c_locale.c: ditto
 
+	* build/lib/Makefile.inc: bump minor version (5.2.0)
+
 2006-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_hashtable.c: allow smaller bucket counts for
