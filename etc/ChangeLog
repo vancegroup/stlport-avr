@@ -1,3 +1,23 @@
+2006-09-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_sstream.h, _sstream.c: remove double buffering
+	on write only underlying string as buffer. Use knowlege about
+	string implementation, this should improve performance, and,
+	at least simplify code and avoid logic that already present in
+	string implementation.
+
+	* stlport/stl/_string_base.h: basic_streambuf is friend, to access
+	to internal function (access to storage pointers).
+
+	* stlport/stl/debug/_string.h, _string_sum_methods.h: change usage
+	of 'non-debug string', from 'use of' relation to 'inherit' releation.
+	Useful for access basic_streambuf to string storage in _STLP_DEBUG
+	mode too.
+		
+	* test/unit/sstream_test.cpp: test for tellp call; change test
+	with inited ostringstream in accordance with another Standard
+	treatment.
+
 2006-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_hashtable.c: allow smaller bucket counts for

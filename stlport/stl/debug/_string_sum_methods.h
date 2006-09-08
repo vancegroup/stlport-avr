@@ -20,23 +20,24 @@
  */
 
   template <class _Left, class _Right, class _StorageDir>
-  basic_string(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s)
-    : _M_non_dbg_impl(_Reserve_t(), __s.size(), __s.get_allocator()),
-      _M_iter_list(&_M_non_dbg_impl)
-  { _M_append_sum(__s, _M_non_dbg_impl); }
+  basic_string(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) :
+      _STLP_NON_DBG_STRING(_Reserve_t(), __s.size(), __s.get_allocator()),
+      _M_iter_list((_Base *)this)
+  { _M_append_sum(__s, (_Base &)*this); }
 
   template <class _Left, class _Right, class _StorageDir>
   basic_string(_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
                size_type __pos, size_type __n = npos,
-               const allocator_type& __a = allocator_type())
-    : _M_non_dbg_impl(_Reserve_t(), (__pos <= __s.size()) ? ((min) (__n, __s.size() - __pos)) : 0, __a),
-      _M_iter_list(&_M_non_dbg_impl) {
+               const allocator_type& __a = allocator_type()) :
+      _STLP_NON_DBG_STRING(_Reserve_t(), (__pos <= __s.size()) ? ((min) (__n, __s.size() - __pos)) : 0, __a),
+      _M_iter_list((_Base *)this)
+  {
     size_type __size = __s.size();
     if (__pos > __size)
       //This call will generate the necessary out of range exception:
-      _M_non_dbg_impl.at(0);
+      _Base::at(0);
     else
-      _M_append_sum_pos(__s, __pos, (min) (__n, __size - __pos), _M_non_dbg_impl);
+      _M_append_sum_pos(__s, __pos, (min) (__n, __size - __pos), (_Base &)*this);
   }
 
 private:
@@ -105,7 +106,7 @@ private:
   template <class _Left, class _Right, class _StorageDir>
   _Self& _M_append_sum_pos (_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s,
                             size_type __pos, size_type __n, _Base &__impl) {
-    _M_non_dbg_impl.reserve(_M_non_dbg_impl.size() + (min) (__s.size() - __pos, __n));
+    _Base::reserve(_Base::size() + (min) (__s.size() - __pos, __n));
     _M_append_fast_pos(__s, __impl, __pos, __n);
     return *this;
   }

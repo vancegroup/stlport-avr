@@ -72,7 +72,7 @@ public:                         // Constructors, destructor.
   virtual ~basic_stringbuf();
 
 public:                         // Get or set the string.
-  _String str() const { _M_append_buffer(); return _M_str; }
+  _String str() const { return _M_str; }
   void str(const _String& __s);
 
 protected:                      // Overridden virtual member functions.
@@ -94,16 +94,11 @@ protected:                      // Overridden virtual member functions.
                                       = ios_base::in | ios_base::out);
 
 private:                        // Helper functions.
-  // Append the internal buffer to the string if necessary.
-  void _M_append_buffer() const;
   void _M_set_ptrs();
 
 private:
   ios_base::openmode _M_mode;
   mutable basic_string<_CharT, _Traits, _Alloc> _M_str;
-
-  enum _JustName { _S_BufSiz = 8 };
-  _CharT _M_Buf[ 8 /* _S_BufSiz */];
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)

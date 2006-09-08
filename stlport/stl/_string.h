@@ -121,6 +121,8 @@ class basic_string : protected _STLP_PRIV _String_base<_CharT,_Alloc>
 #endif
 {
 protected:                        // Protected members inherited from base.
+  friend class basic_stringbuf<_CharT, _Traits, _Alloc>;
+
   typedef _STLP_PRIV _String_base<_CharT,_Alloc> _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   // fbp : used to optimize char/wchar_t cases, and to simplify

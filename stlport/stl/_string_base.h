@@ -42,8 +42,9 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc>
-class _String_base {
-  typedef _String_base<_Tp, _Alloc> _Self;
+class _String_base
+{
+    typedef _String_base<_Tp, _Alloc> _Self;
 protected:
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
 public:

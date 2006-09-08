@@ -32,6 +32,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(seek);
+  CPPUNIT_TEST(tellp);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -48,6 +49,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
     void rdbuf();
     void streambuf_output();
     void seek();
+    void tellp();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SstreamTest);
@@ -249,15 +251,31 @@ void SstreamTest::init_out()
   CPPUNIT_ASSERT( os.good() );
 
   // This satisfy to the Standard:
-  CPPUNIT_ASSERT( os.str() == "67345" );
+  // CPPUNIT_ASSERT( os.str() == "67345" );
   // But we don't know the reason, why standard state that.
+
+  /*
+   * 27.7.1.1: ... then copies the content of str into the basic_sringbuf
+   * underlying character sequence and initializes the input and output
+   * sequences according to which. If which & ios_base::out is true, initializes
+   * the output sequence with underlying sequence. ...
+   *
+   * I can treat this as 'like output was performed', and then I should bump
+   * put pointer... Looks like more useful then my previous treatment.
+   *
+   *          - ptr
+   */
+
+  CPPUNIT_ASSERT( os.str() == "1234567" );
+  
 
   os.str( "89ab" );
   CPPUNIT_ASSERT( os.str() == "89ab" );
 
   os << 10;
   CPPUNIT_ASSERT( os.good() );
-  CPPUNIT_ASSERT( os.str() == "10ab" );
+  // CPPUNIT_ASSERT( os.str() == "10ab" );
+  CPPUNIT_ASSERT( os.str() == "89ab10" );
 }
 
 void SstreamTest::buf()
@@ -375,6 +393,34 @@ void SstreamTest::seek()
   CPPUNIT_ASSERT( is.tellg() == stringstream::pos_type(6) );
   is.seekg( -3, ios::cur );
   CPPUNIT_ASSERT( is.tellg() == stringstream::pos_type(3) );
+}
+
+void SstreamTest::tellp()
+{
+  {
+    ostringstream o( "1" );
+
+    o << "23456";
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(6) );
+    CPPUNIT_CHECK( o.tellp() == stringstream::pos_type(6) );
+  }
+  {
+    ostringstream o;
+
+    o << "123456";
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(6) );
+    CPPUNIT_CHECK( o.tellp() == stringstream::pos_type(6) );
+  }
+  {
+    ostringstream o( "1" );
+
+    o << "23456789";
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == stringstream::pos_type(9) );
+    CPPUNIT_CHECK( o.tellp() == stringstream::pos_type(9) );
+  }
 }
 
 #endif
