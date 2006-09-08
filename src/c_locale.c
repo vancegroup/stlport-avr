@@ -28,14 +28,10 @@
 #    include "c_locale_win32/c_locale_win32.c"
 #  elif defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
 #    if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))
-#      include "c_locale_glibc/c_locale_glibc2.c"
-/* #      define _STLP_GLIBC_LOCALE_2 */ /* glibc 1.90 and newer */
-/* #      include "c_locale_glibc/c_locale_glibc.c" */
+#      include "c_locale_glibc/c_locale_glibc2.c" /* glibc 1.90 and newer */
 #    else
 #      include "c_locale_glibc/c_locale_glibc.c"
 #    endif
-#  elif defined __ISCPP__
-#    include "c_locale_is/c_locale_is.cpp"
 #  endif
 #else /* !_STLP_REAL_LOCALE_IMPLEMENTED */
 #  include "c_locale_dummy/c_locale_dummy.c"

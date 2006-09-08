@@ -17,6 +17,11 @@
 	* test/unit/sstream_test.cpp: test for tellp call; change test
 	with inited ostringstream in accordance with another Standard
 	treatment.
+	
+	* stlport/stl/_streambuf.h: remove ancient code, that can't
+	work with present code in any case.
+
+	* src/c_locale.c: ditto
 
 2006-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 

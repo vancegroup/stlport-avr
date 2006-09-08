@@ -68,9 +68,6 @@ private:                        // Data members.
 
   locale _M_locale;             // The streambuf's locale object
 
-//public:                         // Extension: locking, for thread safety.
-//  _STLP_mutex _M_lock;
-
 public:                         // Destructor.
   virtual ~basic_streambuf();
 
@@ -267,17 +264,6 @@ public:                         // Locale-related functions.
 
 #if !defined (_STLP_NO_ANACHRONISMS)
   void stossc() { this->sbumpc(); }
-#endif
-#if defined (__MVS__) || defined (__OS400__)
-private: // Data members.
-
-  char_type* _M_gbegin; // Beginning of get area
-  char_type* _M_gnext; // Current position within the get area
-  char_type* _M_gend; // End of get area
-
-  char_type* _M_pbegin; // Beginning of put area
-  char_type* _M_pnext; // Current position within the put area
-  char_type* _M_pend; // End of put area
 #endif
 };
 
