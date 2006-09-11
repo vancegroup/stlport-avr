@@ -157,67 +157,63 @@ template <class _RandomAccessIter, class _Integer, class _Tp,
           class _BinaryPred, class _Distance>
 _RandomAccessIter __search_n(_RandomAccessIter __first, _RandomAccessIter __last,
                              _Integer __count, const _Tp& __val, _BinaryPred __pred,
-                             _Distance*, const random_access_iterator_tag &) {
+                             _Distance*, const random_access_iterator_tag &)
+{
   _Distance __tailSize = __last - __first;
   const _Distance __pattSize = __count;
+  const _Distance __skipOffset = __pattSize - 1;
+  _RandomAccessIter __backTrack;
+  _Distance __remainder, __prevRemainder;
 
-  if (__tailSize >= __pattSize) {
-    _RandomAccessIter __backTrack;
+  for ( _RandomAccessIter __lookAhead = __first + __skipOffset; __tailSize >= __pattSize; __lookAhead += __pattSize ) { // the main loop...
+    //__lookAhead here is always pointing to the last element of next possible match.
+    __tailSize -= __pattSize;
 
-    _Distance __remainder, __prevRemainder;
-    const _Distance __skipOffset = __pattSize - 1;
-
-    _RandomAccessIter __lookAhead = __first + __skipOffset;
-
-    for (;; __lookAhead += __pattSize ) { // the main loop...
-      //__lookAhead here is always pointing to the last element of next possible match.
-      __tailSize -= __pattSize;
-
-      for (;;) { // the skip loop...
-        if (__pred(*__lookAhead, __val))
-          break;
-        if (__tailSize < __pattSize)
-          return __last;
-
-        __lookAhead += __pattSize;
-        __tailSize -= __pattSize;
-      }
-
-      __remainder = __skipOffset;
-
-      for (__backTrack = __lookAhead - 1; __pred(*__backTrack, __val); --__backTrack ) {
-        if (--__remainder == 0)
-          return (__lookAhead - __skipOffset); //Success
-      }
-
-      for (;;) {
-        if (__remainder > __tailSize)
-          return __last; //failure
-
-        __lookAhead += __remainder;
-        __tailSize -= __remainder;
-
-        if (__pred(*__lookAhead, __val)) {
-          __prevRemainder = __remainder;
-          __backTrack = __lookAhead;
-
-          do {
-            if (--__remainder == 0)
-              return (__lookAhead - __skipOffset); //Success
-
-          } while (__pred(*--__backTrack, __val));
-
-          //adjust remainder for next comparison
-          __remainder += __pattSize - __prevRemainder;
-        }
-        else
-          break;
-      }
-
-      //__lookAhead here is always pointing to the element of the last mismatch.
+    while ( !__pred(*__lookAhead, __val) ) { // the skip loop...
       if (__tailSize < __pattSize)
         return __last;
+
+      __lookAhead += __pattSize;
+      __tailSize -= __pattSize;
     }
+
+    if ( __skipOffset == 0 ) {
+      return (__lookAhead - __skipOffset); //Success
+    }
+
+    __remainder = __skipOffset;
+
+    for (__backTrack = __lookAhead; __pred(*--__backTrack, __val); ) {
+      if (--__remainder == 0)
+        return (__lookAhead - __skipOffset); //Success
+    }
+
+    if (__remainder > __tailSize)
+      return __last; //failure
+
+    __lookAhead += __remainder;
+    __tailSize -= __remainder;
+
+    while ( __pred(*__lookAhead, __val) ) {
+      __prevRemainder = __remainder;
+      __backTrack = __lookAhead;
+
+      do {
+        if (--__remainder == 0)
+          return (__lookAhead - __skipOffset); //Success
+      } while (__pred(*--__backTrack, __val));
+
+      //adjust remainder for next comparison
+      __remainder += __pattSize - __prevRemainder;
+
+      if (__remainder > __tailSize)
+        return __last; //failure
+
+      __lookAhead += __remainder;
+      __tailSize -= __remainder;
+    }
+
+    //__lookAhead here is always pointing to the element of the last mismatch.
   }
 
   return __last; //failure

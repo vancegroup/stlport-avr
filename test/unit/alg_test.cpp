@@ -192,6 +192,13 @@ void AlgTest::search_n_test()
     int* array_end = array + sizeof(array) / sizeof(*array);
     CPPUNIT_ASSERT(search_n(array, array_end, 3, 1) == array_end);
   }
+
+  // test for bug with counter == 1, reported by Timmie Smith
+  {
+    int array[] = {0, 1, 2, 3, 4, 5};
+    int* array_end = array + sizeof(array) / sizeof(*array);
+    CPPUNIT_ASSERT( search_n(array, array_end, 1, 1, equal_to<int>() ) == &array[1] );
+  }
 }
 
 void AlgTest::find_first_of_test()

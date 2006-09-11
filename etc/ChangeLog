@@ -1,3 +1,10 @@
+2006-09-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_algo.c: search_n with predicate fail in case
+	when subsequence size is 1; thanks Timmie Smith.
+	
+	* test/unit/alg_test.cpp: test for problem.
+
 2006-09-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_sstream.h, _sstream.c: remove double buffering
