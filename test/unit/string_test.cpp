@@ -71,7 +71,9 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(template_expression);
-#if defined (STLPORT) && defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
+#if defined (STLPORT) && ((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
+   (defined(__GNUC__) && defined(_STLP_USE_TEMPLATE_EXPRESSION) && \
+    ((__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 1)) ) )
 #  define TE_TMP_TEST_IGNORED
   CPPUNIT_IGNORE;
 #endif
@@ -98,6 +100,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(capacity);
+  CPPUNIT_TEST(concat24);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -123,6 +126,7 @@ protected:
   void io();
   void allocator_with_state();
   void capacity();
+  void concat24();
 
   static string func(const string& par) {
     string tmp( par );
@@ -1191,3 +1195,12 @@ void StringTest::capacity()
   }
 }
 
+void StringTest::concat24()
+{
+  string s = string( "123456789012345678901234" ) + string( "123456789012345678901234" );
+
+  CPPUNIT_CHECK( s.length() == 48 );
+  CPPUNIT_CHECK( s[23] == '4' );
+  CPPUNIT_CHECK( s[24] == '1' );
+  CPPUNIT_CHECK( s[47] == '4' );
+}
