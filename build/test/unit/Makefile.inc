@@ -1,9 +1,4 @@
 # -*- makefile -*- Time-stamp: <05/08/04 09:05:24 ptr>
-# $Id$
-
-# this is the version number of needed STLport library for linking
-LIBMAJOR = 5
-LIBMINOR = 1
 
 PRGNAME = stl_unit_test
 SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \

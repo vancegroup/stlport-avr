@@ -1094,6 +1094,15 @@
 	special swap function for it to correctly handle STL containers swap
 	operation.
 
+2006-03-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_put_float.cpp: use buffers that at least longer
+	than maximal double [or long double] exponent, so avoid
+	potential vulnerabilities; this allow to read really long
+	fix-float numbers [with lost of significant digits, of cause].
+
+	* test/unit/floatio_test.cpp: add test for issue above
+
 2006-03-24  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: Removed script for defining INCLUDE
@@ -1105,6 +1114,10 @@
 
 	* test/unit/string_test.cpp: Change basic_string::reserve test to
 	check length_error exception rather than bad_alloc.
+
+2006-03-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/cxa.c: remove wrong exclusion of lock for Solaris.
 
 2006-03-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -1151,6 +1164,15 @@
 	* stlport/stl/config/_system.h, _msvc.h, _evc.h: move _STLP_MSVC
 	definition in proper place.
 	
+2006-03-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/cxa.c: remove usage of recursive mutex on FreeBSD prior to 5.3,
+	due to problem with recursive mutex static initialization on such
+	[i.e. FreeBSD 4.11 and above] platforms. I hope nobody will try to unload
+	C++ shared objects [aka shared libs] in a few threads at same time---no
+	workaround for FreeBSD 4.11. This problem has no relation
+	to FreeBSD 5.3 and newer.
+
 2006-03-14  Francois Dumont  <dums@stlport...>
 
 	* src/allocators.cpp: Fixed thread safety issue in

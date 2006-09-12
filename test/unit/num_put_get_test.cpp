@@ -21,6 +21,7 @@ class NumPutGetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(num_put_integer);
   CPPUNIT_TEST(num_get_float);
   CPPUNIT_TEST(num_get_integer);
+  CPPUNIT_TEST(fix_float_long);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -28,6 +29,7 @@ private:
   void num_put_integer();
   void num_get_float();
   void num_get_integer();
+    void fix_float_long();
 
   static bool check_float(float val, float ref) {
     float epsilon = numeric_limits<float>::epsilon();
@@ -87,7 +89,7 @@ void NumPutGetTest::num_put_float()
     ostr << setprecision(8) << test_val;
     CPPUNIT_ASSERT(ostr.good());
     output = reset_stream(ostr);
-    CPPUNIT_ASSERT(output == "1.23456784e-01");
+    CPPUNIT_ASSERT(output == "1.2345678e-01");
 
     ostr << setw(30) << fixed << setfill('0') << test_val;
     CPPUNIT_ASSERT(ostr.good());
@@ -487,6 +489,109 @@ void NumPutGetTest::num_get_integer()
       istr.clear();
     }
   }
+}
+
+void NumPutGetTest::fix_float_long()
+{
+  ostringstream str;
+
+  str.setf(ios::fixed, ios::floatfield);
+  str << 1.0e+5;
+  CPPUNIT_CHECK( str.str() == "100000.000000" );
+
+  reset_stream(str);
+  str.precision(0);
+  str << 1.0e+5;
+  CPPUNIT_CHECK( str.str() == "100000" );
+
+  reset_stream(str);
+  str.precision(4);
+  str << 1.0e+5;
+  CPPUNIT_CHECK( str.str() == "100000.0000" );
+
+  reset_stream(str);
+  str.precision(0);
+  str << 1.0e+83;
+  {
+    istringstream istr( str.str() );
+    double f;
+    istr >> f;
+    CPPUNIT_CHECK( !istr.fail() );
+    if ( int(numeric_limits<double>::digits10) < 83 ) {
+      double delta = 1.0;
+      for ( int ee = 83 - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
+        delta *= 10.0;
+      }
+      // we may loss some digits here, but not more than mantissa:
+      CPPUNIT_CHECK( (f > (1.0e+83 - delta)) && (f < (1.0e+83 + delta)) );
+    } else {
+      CPPUNIT_CHECK( check_float(f, 1.0e+83) );
+    }
+  }
+
+#if 0 // #ifndef _STLP_NO_LONG_DOUBLE
+  reset_stream(str);
+  str.precision(0);
+  str << 1.0e+83l;
+  {
+    istringstream istr( str.str() );
+    long double f;
+    istr >> f;
+    CPPUNIT_CHECK( !istr.fail() );
+    if ( int(numeric_limits<long double>::digits10) < 83 ) {
+      long double delta = 1.0l;
+      for ( int ee = 83 - int(numeric_limits<long double>::digits10); ee > 0; --ee ) {
+        delta *= 10.0l;
+      }
+      // we may loss some digits here, but not more than mantissa:
+      cerr << "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" << endl;
+      cerr << str.str() << endl;
+      cerr << delta << endl;
+      cerr << f << endl;
+      CPPUNIT_CHECK( (f > (1.0e+83l - delta)) && (f < (1.0e+83l + delta)) );
+    } else {
+      CPPUNIT_CHECK( check_float(f, 1.0e+83l) );
+    }
+  }
+#endif
+
+  reset_stream(str);
+  str.precision(0);
+  str << numeric_limits<double>::max();
+  {
+    istringstream istr( str.str() );
+    double f;
+    istr >> f;
+    CPPUNIT_CHECK( !istr.fail() );
+    if ( int(numeric_limits<double>::digits10) < int(numeric_limits<double>::max_exponent10) ) {
+      double delta = 9.0;
+      for ( int ee = int(numeric_limits<double>::max_exponent10) - int(numeric_limits<double>::digits10); ee > 0; --ee ) {
+        delta *= 10.0;
+      }
+      // we may loss some digits here, but not more than mantissa:
+      CPPUNIT_CHECK( (f > (numeric_limits<double>::max() - delta)) );
+    }
+  }
+
+#if 0 // #ifndef _STLP_NO_LONG_DOUBLE
+  reset_stream(str);
+  str.precision(0);
+  str << numeric_limits<long double>::max();
+  {
+    istringstream istr( str.str() );
+    long double f;
+    istr >> f;
+    CPPUNIT_CHECK( !istr.fail() );
+    if ( int(numeric_limits<long double>::digits10) < int(numeric_limits<long double>::max_exponent10) ) {
+      long double delta = 1.0l;
+      for ( int ee = int(numeric_limits<long double>::max_exponent10) - int(numeric_limits<long double>::digits10); ee > 0; --ee ) {
+        delta *= 10.0l;
+      }
+      // we may loss some digits here, but not more than mantissa:
+      CPPUNIT_CHECK( (f > (numeric_limits<long double>::max() - delta)) );
+    }
+  }
+#endif
 }
 
 #endif

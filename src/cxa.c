@@ -7,7 +7,7 @@
 #endif
 
 #if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun)
-/* Note: __cxa_finalize and __cxa_atexit present in libc in FreeBSD 5.3, but again absent in 6.0 */
+/* Note: __cxa_finalize and __cxa_atexit present in libc in FreeBSD 5.3 */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -86,7 +86,8 @@ int __cxa_atexit(void (*func)(void *), void *arg, void *d)
 #ifdef __linux__
 static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
 #endif
-#ifdef __FreeBSD__
+/* #ifdef __FreeBSD__ */
+#if 0
 static pthread_mutex_t lock =
   { PTHREAD_MUTEX_RECURSIVE /* PTHREAD_MUTEX_DEFAULT */, PTHREAD_PRIO_NONE, {NULL,NULL},
     NULL, { NULL }, /* MUTEX_FLAGS_PRIVATE */ 0x1, 0, 0, 0, {NULL, NULL},
@@ -106,7 +107,9 @@ struct exit_function *__new_exitfn(void)
   struct exit_function_list *l;
   size_t i = 0;
 
+#ifndef __FreeBSD__
   pthread_mutex_lock( &lock );
+#endif
 
   for (l = __exit_funcs; l != NULL; l = l->next) {
     for (i = 0; i < l->idx; ++i)
@@ -136,7 +139,9 @@ struct exit_function *__new_exitfn(void)
   if ( l != NULL )
     l->fns[i].flavor = ef_us;
 
+#ifndef __FreeBSD__
   pthread_mutex_unlock( &lock );
+#endif
 
   return l == NULL ? NULL : &l->fns[i];
 }
@@ -153,7 +158,10 @@ void __cxa_finalize(void *d)
 {
   struct exit_function_list *funcs;
 
+#ifndef __FreeBSD__
   pthread_mutex_lock( &lock );
+#endif
+
   for (funcs = __exit_funcs; funcs; funcs = funcs->next) {
     struct exit_function *f;
 
@@ -171,7 +179,9 @@ void __cxa_finalize(void *d)
   if (d != NULL)
     UNREGISTER_ATFORK (d);
 #endif
+#ifndef __FreeBSD__
   pthread_mutex_unlock( &lock );
+#endif
 }
 
 /* __asm__ (".symver " "__cxa_finalize" "," "__cxa_finalize" "@@" "STLPORT_5_0_0"); */
