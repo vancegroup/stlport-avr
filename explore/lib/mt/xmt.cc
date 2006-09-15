@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/08/18 12:55:29 ptr>
+// -*- C++ -*- Time-stamp: <06/09/15 16:49:27 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2006
@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <memory>
 #include <functional>
 #include <cerrno>
@@ -894,6 +895,10 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
     }
     // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
     // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+  } else { // temporary, invesigation
+    _flags = 0x10000;
+    pthread_attr_init( &attr );
+    pthread_attr_setstacksize( &attr, PTHREAD_STACK_MIN * 2 );
   }
   _start_lock.lock(); // allow finish new thread creation before this 
                       // thread will start to run
@@ -930,7 +935,9 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
     if ( psz > sizeof(void *) ) { // clear allocated here
       delete [] __STATIC_CAST(char *,_param);
     }
-    throw std::runtime_error( msg1 );
+    std::stringstream s;
+    s << msg1 << " error " << err << endl;
+    throw std::runtime_error( s.str() );
   }
 }
 
