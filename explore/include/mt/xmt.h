@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/08/18 02:36:20 ptr>
+// -*- C++ -*- Time-stamp: <06/09/18 13:32:44 ptr>
 
 /*
  *
@@ -1492,12 +1492,12 @@ class Thread
 
     __FIT_DECLSPEC Thread( unsigned flags = 0 );
 
-    explicit __FIT_DECLSPEC Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0 );
+    explicit __FIT_DECLSPEC Thread( entrance_type entrance, const void *p = 0, size_t psz = 0, unsigned flags = 0, size_t stack_sz = 0 );
 
     __FIT_DECLSPEC ~Thread();
 
     __FIT_DECLSPEC
-    void launch( entrance_type entrance, const void *p = 0, size_t psz = 0 );
+    void launch( entrance_type entrance, const void *p = 0, size_t psz = 0, size_t stack_sz = 0 );
 
     __FIT_DECLSPEC ret_code join();
     __FIT_DECLSPEC int suspend();
@@ -1598,6 +1598,7 @@ class Thread
     void *_param;
     size_t _param_sz;
     unsigned _flags;
+    size_t _stack_sz; // stack size, if not 0
     //  Mutex _params_lock; --- no needs
     friend class Init;
     // extern "C", wrap for thread_create
