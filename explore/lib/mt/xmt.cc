@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/09/15 16:49:27 ptr>
+// -*- C++ -*- Time-stamp: <06/09/18 13:50:25 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2006
@@ -434,17 +434,19 @@ Thread::Thread( unsigned __f ) :
     _param( 0 ),
     _param_sz( 0 ),
     _flags( __f ),
+    _stack_sz( 0 ),
     uw_alloc_size( 0 )
 {
   new( Init_buf ) Init();
 }
 
 __FIT_DECLSPEC
-Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f ) :
+Thread::Thread( Thread::entrance_type entrance, const void *p, size_t psz, unsigned __f, size_t stack_sz ) :
     _entrance( entrance ),
     _param( 0 ),
     _param_sz( 0 ),
     _flags( __f ),
+    _stack_sz( stack_sz ),
     uw_alloc_size( 0 )
 {
   new( Init_buf ) Init();
@@ -478,8 +480,9 @@ bool Thread::is_self()
 }
 
 __FIT_DECLSPEC
-void Thread::launch( entrance_type entrance, const void *p, size_t psz )
+void Thread::launch( entrance_type entrance, const void *p, size_t psz, size_t stack_sz )
 {
+  _stack_sz = stack_sz;
   if ( _id == bad_thread_id ) {
     _entrance = entrance;
     _create( p, psz );
@@ -884,7 +887,7 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
   int err = 0;
 #ifdef _PTHREADS
   pthread_attr_t attr;
-  if ( _flags != 0 ) {
+  if ( _flags != 0 || _stack_sz != 0 ) {
     pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
     // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
     if ( _flags & bound ) {
@@ -893,18 +896,18 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
     if ( _flags & detached ) { // the same as daemon: detached == daemon for POSIX
       pthread_attr_setdetachstate( &attr, detached ); // PTHREAD_CREATE_DETACHED
     }
+    if ( _stack_sz != 0 ) {      
+      _stack_sz = std::max( static_cast<size_t>(PTHREAD_STACK_MIN), _stack_sz );
+      pthread_attr_setstacksize( &attr, _stack_sz /* PTHREAD_STACK_MIN * 2 */ );
+    }
     // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
     // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
-  } else { // temporary, invesigation
-    _flags = 0x10000;
-    pthread_attr_init( &attr );
-    pthread_attr_setstacksize( &attr, PTHREAD_STACK_MIN * 2 );
   }
   _start_lock.lock(); // allow finish new thread creation before this 
                       // thread will start to run
-  err = pthread_create( &_id, _flags != 0 ? &attr : 0, _xcall, this );
+  err = pthread_create( &_id, _flags != 0 || _stack_sz != 0 ? &attr : 0, _xcall, this );
   _start_lock.unlock();
-  if ( _flags != 0 ) {
+  if ( _flags != 0 || _stack_sz != 0 ) {
     pthread_attr_destroy( &attr );
   }
 #endif
