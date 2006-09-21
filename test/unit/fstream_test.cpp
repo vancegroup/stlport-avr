@@ -457,9 +457,10 @@ locale::id codecvt<char, char, my_state>::id;
 void FstreamTest::custom_facet()
 {
 #if defined (DO_CUSTOM_FACET_TEST)
+  const char* fileName = "test_file.txt";
   //File preparation:
   {
-    ofstream ofstr("test_file.tmp", ios_base::binary);
+    ofstream ofstr(fileName, ios_base::binary);
     ofstr << "0123456789";
     CPPUNIT_ASSERT( ofstr );
   }
@@ -468,7 +469,7 @@ void FstreamTest::custom_facet()
     typedef basic_ifstream<char, my_traits> my_ifstream;
     typedef basic_string<char, my_traits> my_string;
 
-    my_ifstream ifstr("test_file.tmp");
+    my_ifstream ifstr(fileName);
     CPPUNIT_ASSERT( ifstr );
 
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)

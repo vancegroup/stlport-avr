@@ -262,9 +262,9 @@
  * The drawback can be longer compilation time and bigger executable size.
  * STLport rebuild: Yes
  */
-/*
+
 #define _STLP_USE_TEMPLATE_EXPRESSION 1
-*/
+
 
 /*
  * By default the STLport basic_string implementation use a little static buffer
@@ -286,9 +286,9 @@
  * but after link phase and optimization you will only experiment benefit if you use
  * many container with pointer types.
  */
-/*
+
 #define _STLP_USE_PTR_SPECIALIZATIONS 1
-*/
+
 
 /*
  * To achieve many different optimizations within the template implementations STLport

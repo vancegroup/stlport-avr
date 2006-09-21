@@ -15,6 +15,7 @@ using namespace std;
 class AllocatorTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(AllocatorTest);
+  CPPUNIT_TEST(zero_allocation);
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   CPPUNIT_TEST(bad_alloc_test);
 #endif
@@ -24,6 +25,7 @@ class AllocatorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE_END();
 
 protected:
+  void zero_allocation();
   void bad_alloc_test();
   void per_thread_alloc();
 };
@@ -33,6 +35,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AllocatorTest);
 //
 // tests implementation
 //
+void AllocatorTest::zero_allocation()
+{
+  typedef allocator<char> CharAllocator;
+  CharAllocator charAllocator;
+
+  char* buf = charAllocator.allocate(0);
+  charAllocator.deallocate(buf, 0);
+
+  charAllocator.deallocate(0, 0);
+}
+
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 
 struct BigStruct

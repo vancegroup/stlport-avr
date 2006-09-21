@@ -328,33 +328,33 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
         _State_type __state = _M_state;
         int __epos = _M_codecvt->length(__state, _M_ext_buf, _M_ext_buf_end,
                                         __ipos);
-
-        // Sanity check (expensive): make sure __epos is the right answer.
-        _State_type __tmp_state = _M_state;
-        _Filebuf_Tmp_Buf<_CharT> __buf(__ipos);
-        _CharT* __ibegin = __buf._M_ptr;
-        _CharT* __inext  = __ibegin;
-
-        const char* __dummy;
-        typename _Codecvt::result __status
-          = _M_codecvt->in(__tmp_state,
-                           _M_ext_buf, _M_ext_buf + __epos, __dummy,
-                           __ibegin, __ibegin + __ipos, __inext);
-        if (__status != _Codecvt::error &&
-            (__status == _Codecvt::noconv ||
-             (__inext == __ibegin + __ipos &&
-              equal(this->gptr(), this->eback(), __ibegin,
-                    _STLP_PRIV _Eq_traits<traits_type>())))) {
-          // Get the current position (at the end of the external buffer),
-          // then adjust it.  Again, it might be a text-oriented stream.
-          streamoff __cur = _M_base._M_seek(0, ios_base::cur);
-          streamoff __adj =
-            _M_base._M_get_offset(_M_ext_buf, _M_ext_buf + __epos) -
-            _M_base._M_get_offset(_M_ext_buf, _M_ext_buf_end);
-          if (__cur != -1 && __cur + __adj >= 0)
-            return _M_seek_return(__cur + __adj, __state);
+        if (__epos >= 0) {
+          // Sanity check (expensive): make sure __epos is the right answer.
+          _State_type __tmp_state = _M_state;
+          _Filebuf_Tmp_Buf<_CharT> __buf(__ipos);
+          _CharT* __ibegin = __buf._M_ptr;
+          _CharT* __inext  = __ibegin;
+          const char* __dummy;
+          typename _Codecvt::result __status
+            = _M_codecvt->in(__tmp_state,
+                             _M_ext_buf, _M_ext_buf + __epos, __dummy,
+                             __ibegin, __ibegin + __ipos, __inext);
+          if (__status != _Codecvt::error &&
+              (__status == _Codecvt::noconv ||
+               (__inext == __ibegin + __ipos &&
+                equal(this->eback(), this->gptr(), __ibegin, _STLP_PRIV _Eq_traits<traits_type>())))) {
+            // Get the current position (at the end of the external buffer),
+            // then adjust it.  Again, it might be a text-oriented stream.
+            streamoff __cur = _M_base._M_seek(0, ios_base::cur);
+            streamoff __adj =
+              _M_base._M_get_offset(_M_ext_buf, _M_ext_buf + __epos) -
+              _M_base._M_get_offset(_M_ext_buf, _M_ext_buf_end);
+            if (__cur != -1 && __cur + __adj >= 0)
+              return __off == 0 ? pos_type(__cur + __adj)
+                : _M_seek_return(__cur + __adj, __state);
+          }
+          // We failed the sanity check here.
         }
-        // We failed the sanity check here.
       }
     }
     // Unrecognized value for __whence here.
@@ -622,8 +622,9 @@ bool basic_filebuf<_CharT, _Traits>::_M_allocate_buffers(_CharT* __buf, streamsi
     _M_int_buf_dynamic = false;
   }
 
-  streamsize __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, (max)(_M_codecvt->encoding(), 1)),
+  streamsize __ebufsiz = (max)(__n * __STATIC_CAST(streamsize, _M_width),
                                __STATIC_CAST(streamsize, _M_codecvt->max_length()));
+
   _M_ext_buf = 0;
   if ((sizeof(streamsize) < sizeof(size_t)) ||
       ((sizeof(streamsize) == sizeof(size_t)) && numeric_limits<streamsize>::is_signed) ||
