@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <06/09/18 13:50:25 ptr>
+// -*- C++ -*- Time-stamp: <06/09/22 22:19:40 ptr>
 
 /*
  * Copyright (c) 1997-1999, 2002-2006
@@ -7,16 +7,8 @@
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 2.1
+ * Licensed under the Academic Free License version 3.0
  *
- * This material is provided "as is", with absolutely no warranty expressed
- * or implied. Any use is at your own risk.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.
  */
 
 #include <config/feature.h>
@@ -903,27 +895,30 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
     // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
     // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
   }
-  _start_lock.lock(); // allow finish new thread creation before this 
+  // _start_lock.lock(); // allow finish new thread creation before this 
                       // thread will start to run
   err = pthread_create( &_id, _flags != 0 || _stack_sz != 0 ? &attr : 0, _xcall, this );
-  _start_lock.unlock();
+  if ( err == 0 ) {
+    _state = goodbit;
+  }
+  // _start_lock.unlock();
   if ( _flags != 0 || _stack_sz != 0 ) {
     pthread_attr_destroy( &attr );
   }
 #endif
 #ifdef __FIT_UITHREADS
-  _start_lock.lock();
+  // _start_lock.lock();
   err = thr_create( 0, 0, _xcall, this, _flags, &_id );
-  _start_lock.unlock();
+  // _start_lock.unlock();
 #endif
 #ifdef __FIT_WIN32THREADS
-  _start_lock.lock();
+  // _start_lock.lock();
   _id = CreateThread( 0, 0, _xcall, this, (_flags & suspended), &_thr_id );
   err = GetLastError();
-  _start_lock.unlock();
+  // _start_lock.unlock();
 #endif
 #ifdef __FIT_NOVELL_THREADS
-  _start_lock.lock();
+  // _start_lock.lock();
   _id = BeginThread( _xcall, 0, 65536, this );
   if ( _id == bad_thread_id ) {
     err = errno; // not ::errno, due to #define errno  *__get_errno_ptr()
@@ -931,7 +926,7 @@ void Thread::_create( const void *p, size_t psz ) throw(std::runtime_error)
       _thr_join.signal();
     }
   }
-  _start_lock.unlock();
+  // _start_lock.unlock();
 #endif
 
   if ( err != 0 ) {
@@ -971,8 +966,9 @@ extern "C" {
 
 void *Thread::_call( void *p )
 {
-  _start_lock.lock(); // allow finish thread creation in parent thread
+  // _start_lock.lock(); // allow finish thread creation in parent thread
   Thread *me = static_cast<Thread *>(p);
+  // me->_state = goodbit;
 
   // After exit of me->_entrance, there is may be no more *me itself,
   // so it's members may be unaccessible. Don't use me->"*" after call
@@ -1003,8 +999,7 @@ void *Thread::_call( void *p )
   // In most cases for Linux there are problems with signals processing,
   // so I don't set it default more
   // signal_handler( SIGTERM, signal_exit ); // set handler for sanity
-  me->_state = goodbit;
-  _start_lock.unlock();
+  // _start_lock.unlock();
   try {
     ret = me->_entrance( _param );
     me->_state = badbit;
