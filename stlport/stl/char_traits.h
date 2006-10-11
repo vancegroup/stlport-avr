@@ -47,10 +47,6 @@
 #  include <stl/_cwchar.h>
 #endif
 
-#ifndef _STLP_INTERNAL_MBSTATE_T
-#  include <stl/_mbstate_t.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp> class allocator;

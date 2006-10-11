@@ -22,21 +22,21 @@ ifneq (windows, $(OSNAME))
 else
 	@if exist $(subst /,\,$(A_NAME_OUT)) del /f /q $(subst /,\,$(A_NAME_OUT))
 endif
-	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A)))
+	$(AR) $(AR_OUT) /P64 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A)))
 $(A_NAME_OUT_DBG):	$(OBJ_A_DBG)
 ifneq (windows, $(OSNAME))
 	@rm -f $(A_NAME_OUT_DBG)
 else
 	@if exist $(subst /,\,$(A_NAME_OUT_DBG)) del /f /q $(subst /,\,$(A_NAME_OUT_DBG))
 endif
-	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_DBG)))
+	$(AR) $(AR_OUT) /P128 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_DBG)))
 $(A_NAME_OUT_STLDBG):	$(OBJ_A_STLDBG)
 ifneq (windows, $(OSNAME))
 	@rm -f $(A_NAME_OUT_STLDBG)
 else
 	@if exist $(subst /,\,$(A_NAME_OUT_STLDBG)) del /f /q $(subst /,\,$(A_NAME_OUT_STLDBG))
 endif
-	$(AR) $(AR_OUT) $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_STLDBG)))
+	$(AR) $(AR_OUT) /P256 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_STLDBG)))
 else
 ifeq (dmc, $(COMPILER_NAME))
 # Digital Mars archive builder

@@ -4,6 +4,7 @@
 #  include <iomanip>
 #  include <string>
 #  include <sstream>
+#  include <cstdio>
 
 #  include "cppunit/cppunit_proxy.h"
 
@@ -18,6 +19,8 @@ class NumPutGetTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(NumPutGetTest);
   CPPUNIT_TEST(num_put_float);
+  CPPUNIT_TEST(inhex);
+  CPPUNIT_TEST(pointer);
   CPPUNIT_TEST(num_put_integer);
   CPPUNIT_TEST(num_get_float);
   CPPUNIT_TEST(num_get_integer);
@@ -26,6 +29,8 @@ class NumPutGetTest : public CPPUNIT_NS::TestCase
 
 private:
   void num_put_float();
+  void inhex();
+  void pointer();
   void num_put_integer();
   void num_get_float();
   void num_get_integer();
@@ -300,12 +305,126 @@ void NumPutGetTest::num_put_integer()
     //Even with showbase, 0 value gives "0" output (see printf documentation)
     CHECK_COMPLETE(short, 0, hex, showbase, showpos, nouppercase, 0, right, "0")
     CHECK_COMPLETE(short, 0, hex, showbase, noshowpos, nouppercase, 6, right, "     0")
+    CHECK_COMPLETE(short, 0, hex, showbase, noshowpos, nouppercase, 6, internal, "     0")
 
     CHECK_COMPLETE(short, 1, hex, showbase, noshowpos, nouppercase, 6, right, "   0x1")
     CHECK_COMPLETE(short, 1, hex, showbase, noshowpos, nouppercase, 6, left, "0x1   ")
     CHECK_COMPLETE(short, 1, hex, showbase, noshowpos, nouppercase, 6, internal, "0x   1")
     CHECK_COMPLETE(short, 1, hex, showbase, noshowpos, uppercase, 6, left, "0X1   ")
     CHECK_COMPLETE(short, 1, hex, showbase, showpos, uppercase, 6, internal, "0X   1")
+  }
+}
+
+void NumPutGetTest::inhex()
+{
+  {
+    ostringstream s;
+    s << hex << 0;
+    CPPUNIT_CHECK( s.str() == "0" );
+  }
+  {
+    ostringstream s;
+    s << hex << 0xff;
+    CPPUNIT_CHECK( s.str() == "ff" );
+  }
+  {
+    ostringstream s;
+    s << hex << setw( 4 ) << 0xff;
+    CPPUNIT_CHECK( s.str() == "  ff" );
+  }
+  {
+    ostringstream s;
+    s << hex << setw( 4 ) << 0;
+    CPPUNIT_CHECK( s.str() == "   0" );
+  }
+  {
+    ostringstream s;
+    s << hex << showbase << 0;
+    CPPUNIT_CHECK( s.str() == "0" );
+  }
+  {
+    ostringstream s;
+    s << hex << showbase << 0xff;
+    CPPUNIT_CHECK( s.str() == "0xff" );
+  }
+  {
+    ostringstream s;
+    s << hex << showbase << setw( 4 ) << 0xff;
+    CPPUNIT_CHECK( s.str() == "0xff" );
+  }
+  { // special case for regression (partially duplicate CHECK_COMPLETE above):
+    ostringstream s;
+    s.setf( ios_base::internal, ios_base::adjustfield );
+    s << hex << showbase << setw(8+2) << 0;
+    CPPUNIT_CHECK( s.str() == "         0" );
+  }
+}
+
+void NumPutGetTest::pointer()
+{
+  // Problem with printing pointer to null
+
+  /*
+   * Really C's formatting not help here, due to:
+   *
+   * p  The argument shall be a pointer to void. The value of
+   *    the pointer is converted to a sequence of printable characters,
+   *    in an implementation-defined manner.
+   */
+  {
+    char buf[128];
+    void *p = (void *)0xff00;
+    sprintf( buf, "%p", p );
+    // cerr << buf << endl;
+    /* Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'? 
+    if ( sizeof( p ) == 2 ) {
+      CPPUNIT_ASSERT( strcmp( buf, "0xff00" ) == 0 );
+    } else if ( sizeof( p ) == 4 ) {
+      CPPUNIT_ASSERT( strcmp( buf, "0x0000ff00" ) == 0 );
+    } else if ( sizeof( p ) == 8 ) {
+      CPPUNIT_ASSERT( strcmp( buf, "0x000000000000ff00" ) == 0 );
+    } else {
+      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+    }
+    */
+  }
+  {
+    char buf[128];
+    void *p = 0;
+    // sprintf( buf, "%p", p );
+    /* Cool. "%p" print '(nil)'; "%#x" print '0' */
+    // sprintf( buf, "%#x", (unsigned)p );
+    // cerr << buf << endl;
+  }
+  {
+    ostringstream s;
+    void *p = (void *)0xff00;
+    s << p;
+    CPPUNIT_ASSERT( s.good() );
+    if ( sizeof( p ) == 2 ) {
+      CPPUNIT_ASSERT( s.str() == "0xff00" );
+    } else if ( sizeof( p ) == 4 ) {
+      CPPUNIT_ASSERT( s.str() == "0x0000ff00" ); // this pass
+    } else if ( sizeof( p ) == 8 ) {
+      CPPUNIT_ASSERT( s.str() == "0x000000000000ff00" );
+    } else {
+      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+    }
+  }
+  {
+    ostringstream s;
+    void *p = 0;
+    s << p;
+    CPPUNIT_ASSERT( s.good() );
+    if ( sizeof( p ) == 2 ) {
+      CPPUNIT_ASSERT( s.str() == "0x0000" );
+    } else if ( sizeof( p ) == 4 ) {
+      CPPUNIT_ASSERT( s.str() == "0x00000000" ); // but this will fail, if follow %p
+    } else if ( sizeof( p ) == 8 ) {
+      CPPUNIT_ASSERT( s.str() == "0x0000000000000000" );
+    } else {
+      CPPUNIT_CHECK( sizeof( p ) == 2 || sizeof( p ) == 4 || sizeof( p ) == 8 );
+    }
   }
 }
 

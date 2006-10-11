@@ -32,8 +32,8 @@
 #  include <cfloat>
 #endif
 
-#if !defined (_STLP_NO_WCHAR_T) && !defined (_STLP_INTERNAL_MBSTATE_T)
-#  include <stl/_mbstate_t.h>
+#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_INTERNAL_CWCHAR)
+#  include <stl/_cwchar.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

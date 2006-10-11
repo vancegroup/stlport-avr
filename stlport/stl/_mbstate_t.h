@@ -16,6 +16,7 @@
 #ifndef _STLP_INTERNAL_MBSTATE_T
 #define _STLP_INTERNAL_MBSTATE_T
 
+/*
 #if !defined (_STLP_NO_WCHAR_T)
 #  if defined (__cplusplus)
 #    include <stl/_cwchar.h>
@@ -23,26 +24,7 @@
 #    include <wchar.h>
 #  endif
 #endif
-
-#if defined (_STLP_NO_WCHAR_T) || \
-    defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || \
-    defined(__OpenBSD__) || defined(__FreeBSD__) || \
-   (defined (__GNUC__) && (defined (__APPLE__) || defined( __Lynx__ )))
-#  if defined (_STLP_HAS_INCLUDE_NEXT)
-#    include_next <stddef.h>
-#  else
-#    include _STLP_NATIVE_C_HEADER(stddef.h)
-#  endif
-#  if defined (__Lynx__)
-#    ifndef _WINT_T
-typedef long int wint_t;
-#      define _WINT_T
-#    endif /* _WINT_T */
-#  endif
-#  if defined(__OpenBSD__)
-typedef _BSD_WINT_T_ wint_t;
-#  endif /* __OpenBSD__ */
-#endif
+*/
 
 #if (defined (__OpenBSD__) || defined (__FreeBSD__)) && defined (__GNUC__) && !defined (_GLIBCPP_HAVE_MBSTATE_T)
 #  define __mbstate_t_defined /* mbstate_t defined in native <cwchar>, so not defined in C! */
@@ -58,8 +40,6 @@ typedef _BSD_WINT_T_ wint_t;
 #  ifdef __sun
 #    define __stl_mbstate_t __mbstate_t
 #  endif
-
-struct __stl_mbstate_t;
 
 #  if defined (__cplusplus)
 struct __stl_mbstate_t {
@@ -89,17 +69,16 @@ inline bool operator==(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y)
 
 inline bool operator!=(const __stl_mbstate_t& __x, const __stl_mbstate_t& __y)
 { return ( __x._M_state[0] == __y._M_state[0] ); }
-#  else
-#    if defined(__BORLANDC__)
-typedef char __stl_mbstate_t;
-#    endif
-#  endif
 
 _STLP_BEGIN_NAMESPACE
 
 typedef __stl_mbstate_t mbstate_t;
 
 _STLP_END_NAMESPACE
+
+#  else
+typedef struct __stl_mbstate_t mbstate_t;
+#  endif
 
 #endif /* _STLP_USE_OWN_MBSTATE_T */
 

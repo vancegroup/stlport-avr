@@ -90,6 +90,10 @@ typedef char mbstate_t;
  * GENERAL FRAMEWORK
  */
 
+#if defined (__cplusplus) && defined (_STLP_USE_OWN_MBSTATE_T)
+_STLP_BEGIN_NAMESPACE
+#endif
+
 /*
  * Opaque types, implementation (if there is one) depends
  * on platform locale API.
@@ -101,6 +105,10 @@ struct _Locale_collate;
 struct _Locale_monetary;
 struct _Locale_messages;
 struct _Locale_name_hint;
+
+#if defined (__cplusplus) && defined (_STLP_USE_OWN_MBSTATE_T)
+_STLP_END_NAMESPACE
+#endif
 
 /*
   Bitmask macros.

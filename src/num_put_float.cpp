@@ -70,6 +70,10 @@
 #  include <fp.h>
 #endif
 
+#if defined (__CYGWIN__)
+#  include <ieeefp.h>
+#endif
+
 #if defined (__MSL__)
 #  include <cstdlib>  // for atoi
 #  include <cstdio>  // for snprintf
@@ -228,10 +232,11 @@ static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
 #if !defined (USE_SPRINTF_INSTEAD)
 #  if defined (__hpux) || defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
       defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
+static inline bool _Stl_is_nan_or_inf(double x)
 #    if defined (isfinite)
-static inline bool _Stl_is_nan_or_inf(double x) { return !isfinite(x); }
+{ return !isfinite(x); }
 #    else
-static inline bool _Stl_is_nan_or_inf(double x) { return !finite(x); }
+{ return !finite(x); }
 #    endif
 static inline bool _Stl_is_neg_nan(double x)    { return isnan(x) && ( copysign(1., x) < 0 ); }
 static inline bool _Stl_is_inf(double x)        { return isinf(x); }

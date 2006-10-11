@@ -56,7 +56,7 @@ template <class T> inline void copy(T* source,T* destination,int n) {
 */
 
 #ifdef __WATCOMC__
-#  include <stl/_mbstate_t.h>
+#  include <stl/_cwchar.h>
 #endif
 
 #ifndef _STLP_TYPE_MANIPS_H

@@ -85,8 +85,16 @@ wchar_t *wcspbrk( const wchar_t *_wc, const wchar_t *_wc2 );
 #      include _STLP_NATIVE_C_HEADER(wchar.h)
 #    endif
 #  endif
-
 #endif /* !defined (_STLP_WCE_EVC3) && !defined (_STLP_NO_WCHAR_T) */
+
+/* In a C context following includes is only necessary to know if native C
+ * library has mbstate_t definition. If it do not have it STLport will signal
+ * that it should use its own definition (_STLP_USE_OWN_MBSTATE_T) even if this
+ * definition will only be available in a C++ context.
+ */
+#ifndef _STLP_INTERNAL_MBSTATE_T
+#  include <stl/_mbstate_t.h>
+#endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x278)
 #  if ! defined (_STLP_DONT_POP_HEADER_ID)

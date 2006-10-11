@@ -834,6 +834,15 @@ extern "C" {
     return (CPInfo.MaxCharSize == 1) ? 1 : 0;
   }
 
+#if defined (__BORLANDC__) && defined (__cplusplus)
+  /* Weird Borland compiler behavior, even if native wint_t is imported to
+   * STLport namespace in _cwchar.h, wint_t is still usable when scoped with
+   * the Standard namespace (std::wint_t). As following WEOF macro is expended
+   * to (std::wint_t)(0xFFFF) compilation failed. Repeating import avoid this
+   * problem.*/
+  using __std_alias::wint_t;
+#endif
+
   wint_t _Locale_btowc(_Locale_ctype_t * ltype, int c) {
     wchar_t wc;
     if (c == EOF) return WEOF;

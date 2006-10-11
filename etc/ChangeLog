@@ -1,3 +1,84 @@
+2006-10-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* merge changes from STLPORT_5_1 branch (records from 2006-10-06 to
+	2006-10-04).
+
+	* stlport/stl/_alloc.c: Hmm, looks like deallocation size in
+	2006-10-06 is wrong.
+
+	* stlport/stl/_num_put.c: print pointer as in fix width form, and
+	with base 0x, independent, zero pointer or not.
+
+	* test/unit/num_put_get_test.cpp: test for issue above.
+
+	* test/unit/string_test.cpp: test for overloaded operators
+	and temporary string; inspired by problems with some compilers.
+
+2006-10-06  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h, _alloc.c: Fixed __debug_alloc implementation
+	to avoid unjustified assertion about wrong size of buffer to
+	deallocate, thanks David Deakins and verntx on sourceforge.
+
+	* test/unit/vector_test.cpp: Add test for bug above.
+
+	* stlport/wchar.h, stl/_cwchar.h, _istream.h, _limits.h, _locale.h,
+	_threads.h, char_traits.h, type_traits.h, _mbstate_t.h: Fix regression
+	introduce by inclusion of mbstate_t.h in wchar.h. Now _mbstate_t.h is
+	only included at end of wchar.h and _cwchar.h. All places where _mbstate_t.h
+	was used are now including _cwchar.h.
+
+2006-10-05  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/gmake/bcc.mak: Use -P compiler to force build of C
+	translation as C++ because of the mbstate_t problem.
+
+	* build/Makefiles/gmake/lib/bcc.mak, rules-a.mak: Fix Borland tlib call
+	syntax thanks mbkenny.
+
+	* stlport/stl/wchar.h: Add include of internal _mbstate_t.h file to
+	know STLport status regarding mbstate_t configuration.
+
+	* stlport/stl/c_locale.h: When building platform localisation support
+	as C++ struct declaration are done in STLport namespace.
+
+	* src/c_locale.h: Removed _mbstate_t.h include that is now included
+	from wchar.h or _cwchar.h depending on C or C++ build. Removed #error
+	done too early (see next comment).
+
+	* src/c_locale.c: Add #error statement when building STLport on a platform
+	having real localisation support but no native mbstate_t definition. In this
+	case c_locale.c must be built as a C++ translation unit.
+
+	* src/c_locale_win32/c_locale_win32.c: Add Borland workaround to avoid
+	compilation error now that it is build as a C++ translation unit.
+
+	* stlport/stl/_mbstate_t.h: Now that this file is not included from outside
+	world we can include internal _cwchar.h rather than cwchar. Removed
+	a wint_t workaround already existing in _cwchar.h. Removed Borland workaround
+	that was defining mbstate_t when using this file in a C context, it was
+	moreover different than the definition in C++ ! Add a pure C declaration of
+	mbstate_t when in C.
+
+2006-10-04  Francois Dumont  <dums@stlport...>
+
+	* src/c_locale.h: Add #error to signal issue when building c_locale.c
+	as a C source when STLport uses its own mbstate_t definition.
+
+	* src/num_put_float.cpp: Modification in Cygwin native lib headers
+	revealed that we were missing ieeefp.h include.
+
+	* src/dll_main.cpp, stlport/stl/_threads.h: Fix export of
+	_Atomic_swap_struct for compilers supporting export of templates.
+
+	* stlport/stl/config/_hpacc.h: Some cleanup (unknown _STLP_NO_KOENIG_LOOKUP
+	macro) and formating fixes.
+
+	* stlport/stl/_bvector.h: Use _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS
+	rather than reproducing the workaround hidden by this macro.
+
+	* test/unit/vector_test.cpp: Add test case to check iterators comparisons.
+
 2006-09-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/string_test.cpp: add test for bug report #1541499,

@@ -27,8 +27,8 @@
 #  include <stl/_cstdlib.h>
 #endif
 
-#ifndef _STLP_INTERNAL_MBSTATE_T
-#  include <stl/_mbstate_t.h>
+#ifndef _STLP_INTERNAL_CWCHAR
+#  include <stl/_cwchar.h>
 #endif
 
 #ifndef _STLP_INTERNAL_THREADS_H

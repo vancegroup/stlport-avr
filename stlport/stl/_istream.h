@@ -19,8 +19,8 @@
 #define _STLP_INTERNAL_ISTREAM
 
 // this block is included by _ostream.h, we include it here to lower #include level
-#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_INTERNAL_MBSTATE_T)
-#  include <stl/_mbstate_t.h>
+#if defined (_STLP_HAS_WCHAR_T) && !defined (_STLP_INTERNAL_CWCHAR)
+#  include <stl/_cwchar.h>
 #endif
 
 #ifndef _STLP_INTERNAL_IOS_H

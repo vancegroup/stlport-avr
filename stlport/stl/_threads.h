@@ -199,7 +199,7 @@ using _STLP_VENDOR_CSTD::time_t;
 #    endif
 #    include <synch.h>
 #    include <cstdio>
-#    include <stl/_mbstate_t.h>
+#    include <cwchar>
 
 #  elif defined (_STLP_BETHREADS)
 
@@ -504,7 +504,8 @@ public:
  *   portable but inefficient.
  */
 template <int __use_ptr_atomic_swap>
-struct _Atomic_swap_struct {
+class _Atomic_swap_struct {
+public:
 #if defined (_STLP_THREADS) && \
     !defined (_STLP_ATOMIC_EXCHANGE) && \
     (defined (_STLP_PTHREADS) || defined (_STLP_UITHREADS) || defined (_STLP_OS2THREADS) || \
@@ -561,7 +562,8 @@ struct _Atomic_swap_struct {
 };
 
 _STLP_TEMPLATE_NULL
-struct _Atomic_swap_struct<0> {
+class _Atomic_swap_struct<0> {
+public:
 #if defined (_STLP_THREADS) && \
     (!defined (_STLP_ATOMIC_EXCHANGE) || !defined (_STLP_ATOMIC_EXCHANGE_PTR)) && \
     (defined (_STLP_PTHREADS) || defined (_STLP_UITHREADS) || defined (_STLP_OS2THREADS) || \
@@ -616,6 +618,10 @@ struct _Atomic_swap_struct<0> {
 #endif
   }
 };
+
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
+_STLP_EXPORT_TEMPLATE_CLASS _Atomic_swap_struct< (sizeof(__stl_atomic_t) == sizeof(void*)) >;
+#endif
 
 #if defined (_STLP_MSVC) && (_STLP_MSVC == 1300)
 #  pragma warning (push)

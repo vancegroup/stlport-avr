@@ -174,7 +174,7 @@ public:
 #endif
   __debug_alloc() {}
   ~__debug_alloc() {}
-  static void* _STLP_CALL allocate(size_t&);
+  static void* _STLP_CALL allocate(size_t);
   static void _STLP_CALL deallocate(void *, size_t);
 };
 

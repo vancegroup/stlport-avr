@@ -12,7 +12,3 @@ stldbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup
 
 START_OBJ := c0d32.obj
 
-release-static : AR += /P64
-dbg-static : AR += /P128
-stldbg-static : AR += /P256
-

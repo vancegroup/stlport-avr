@@ -33,7 +33,6 @@
 
 #include "stlport_prefix.h"
 #include <stl/c_locale.h>
-#include <stl/_mbstate_t.h>
 
 #ifdef _STLP_REAL_LOCALE_IMPLEMENTED
 #  if defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__)
