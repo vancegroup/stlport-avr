@@ -81,6 +81,7 @@ class StringTest : public CPPUNIT_NS::TestCase
 #if defined (TE_TMP_TEST_IGNORED)
   CPPUNIT_STOP_IGNORE;
 #endif
+  CPPUNIT_TEST(oper_tmp);
 #if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
   CPPUNIT_IGNORE;
 #endif
@@ -122,6 +123,7 @@ protected:
   void compare();
   void template_expression();
   void te_tmp();
+  void oper_tmp();
   void template_wexpression();
   void io();
   void allocator_with_state();
@@ -934,6 +936,39 @@ void StringTest::te_tmp()
 
   superstring r = s / (more + less);
 #endif
+}
+
+class mypath
+{
+  public:
+    mypath( const string& s ) :
+        p( s )
+      { }
+
+    const mypath& operator / ( const string& );
+    const string& str() const
+      { return p; }
+ 
+  private:
+    string p;
+};
+
+const mypath& mypath::operator /( const string& s )
+{
+  p += '/';
+  p += s;
+  return *this;
+}
+
+void StringTest::oper_tmp()
+{
+  string s1( "path1" );
+  string s2( ".ext" );
+
+  string& rs1 = s1;
+  string& rs2 = s2;
+
+  CPPUNIT_CHECK( (mypath( string( "/root" ) ) / (rs1 + rs2)).str() == "/root/path1.ext" );
 }
 
 void StringTest::template_wexpression()
