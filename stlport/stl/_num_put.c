@@ -173,7 +173,7 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
       __oi = __fill_n(__oi, __pad, __fill);
       return copy(__buf + 1, __buf + __len, __oi);
     }
-    else if (__dir == ios_base::internal &&
+    else if (__dir == ios_base::internal && __len >= 2 &&
              (__flg & ios_base::showbase) &&
              (__flg & ios_base::basefield) == ios_base::hex) {
       *__oi++ = __buf[0];
@@ -520,7 +520,8 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fi
 #endif /* _STLP_LONG_LONG */
 
 
-// lib.facet.num.put.virtuals "12 For conversion from void* the specifier is %p."
+// 22.2.2.2.2 Stage 1: "For conversion from void* the specifier is %p."
+// This is not clear and I'm really don't follow this (below).
 template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__fill*/,
@@ -532,11 +533,27 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
   __f.setf(ios_base::showbase);
   __f.setf(ios_base::internal, ios_base::adjustfield);
   __f.width((sizeof(void*) * 2) + 2); // digits in pointer type plus '0x' prefix
-# if defined(_STLP_LONG_LONG) && !defined(__MRC__) //*ty 11/24/2001 - MrCpp can not cast from void* to long long
-  _OutputIter result = this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val));
-# else
-  _OutputIter result = this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val));
-# endif
+  if ( __val == 0 ) {
+    // base ('0x') not shown for null, but I really want to type it
+    // for pointer. Print it first in this case.
+    const char* __table_ptr = (__save_flags & ios_base::uppercase) ?
+            _STLP_PRIV __hex_char_table_hi() : _STLP_PRIV __hex_char_table_lo();
+    __s++ = __c_type.widen( '0' );
+    __s++ = __c_type.widen( __table_ptr[16] );
+    __f.width((sizeof(void*) * 2)); // digits in pointer type
+  } else {
+    __f.width((sizeof(void*) * 2) + 2); // digits in pointer type plus '0x' prefix
+  }
+  _OutputIter result =
+#ifdef _STLP_LONG_LONG
+    ( sizeof(void*) == sizeof(unsigned long) ) ?
+#endif
+    this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val))
+#ifdef _STLP_LONG_LONG
+      : /* ( sizeof(void*) == sizeof(unsigned _STLP_LONG_LONG) ) ? */
+    this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val))
+#endif
+        ;
   __f.flags(__save_flags);
   return result;
 }
