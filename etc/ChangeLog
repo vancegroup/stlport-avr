@@ -14,6 +14,10 @@
 	* test/unit/string_test.cpp: test for overloaded operators
 	and temporary string; inspired by problems with some compilers.
 
+	* stlport/stl/_mbstate_t.h: revert back changes from STLPORT_5_1 branch;
+	mbstate_t couple with wchar closely, and sometimes has compex and implicit
+	dependance; include wchar.h first required! 
+
 2006-10-06  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h, _alloc.c: Fixed __debug_alloc implementation
