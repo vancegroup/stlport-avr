@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <05/08/04 09:05:24 ptr>
+# -*- makefile -*- Time-stamp: <06/10/13 23:47:44 ptr>
 
 PRGNAME = stl_unit_test
 SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
@@ -31,6 +31,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/copy_test.cpp \
 	../../../test/unit/count_test.cpp \
 	../../../test/unit/csetjmp_header_test.cpp \
+	../../../test/unit/cwchar.cpp \
 	../../../test/unit/setjmp_header_test2.cpp \
 	../../../test/unit/csignal_header_test.cpp \
 	../../../test/unit/cstdarg_header_test.cpp \
