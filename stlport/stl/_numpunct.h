@@ -56,7 +56,8 @@ public:
   typedef char               char_type;
   typedef string             string_type;
 
-  explicit numpunct(size_t __refs = 0) : locale::facet(__refs) {}
+  explicit numpunct(size_t __refs = 0)
+    : locale::facet(__refs), _M_truename("true"), _M_falsename("false") {}
 
   char decimal_point() const { return do_decimal_point(); }
   char thousands_sep() const { return do_thousands_sep(); }
@@ -71,9 +72,9 @@ protected:
 #endif
   ~numpunct();
 
-  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_truename;
-  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_falsename;
-  static _STLP_STATIC_MEMBER_DECLSPEC string  _M_grouping;
+  string  _M_truename;
+  string  _M_falsename;
+  string  _M_grouping;
 
   virtual char do_decimal_point() const;
   virtual char do_thousands_sep() const;
@@ -92,7 +93,8 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit numpunct(size_t __refs = 0) : locale::facet(__refs) {}
+  explicit numpunct(size_t __refs = 0)
+    : locale::facet(__refs), _M_truename(L"true"), _M_falsename(L"false") {}
 
   wchar_t decimal_point() const { return do_decimal_point(); }
   wchar_t thousands_sep() const { return do_thousands_sep(); }
@@ -103,9 +105,9 @@ public:
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
 protected:
-  static _STLP_STATIC_MEMBER_DECLSPEC wstring _M_truename;
-  static _STLP_STATIC_MEMBER_DECLSPEC wstring _M_falsename;
-  static _STLP_STATIC_MEMBER_DECLSPEC string _M_grouping;
+  wstring _M_truename;
+  wstring _M_falsename;
+  string _M_grouping;
 
   ~numpunct();
 

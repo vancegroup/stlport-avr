@@ -1,7 +1,27 @@
+2006-10-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: merge changes [not all] 2006-10-12 from STLPORT_5_1 branch
+
+2006-10-12  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_numpunct.h, src/numpunct.cpp: numpunct facet _M_truename
+	_M_falsename and _M_grouping are not static anymore. This seems useless
+	and moreover was introducing static initialisation order and threading
+	issues.
+
+	* stlport/stl/config/_bc.h: Defines _STLP_NO_NATIVE_MBSTATE_T rather
+	than internal _STLP_USE_OWN_MBSTATE_T macro.
+
+	* build/Makefiles/gmake/bcc.mak: Do not force anymore built of C sources
+	as C++.
+
+	* test/unit/string_test.cpp, istmit_test.cpp: Fixed macro checks to make
+	tests buildable even when _STLP_NO_IOSTREAMS is defined.
+
 2006-10-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* merge changes from STLPORT_5_1 branch (records from 2006-10-06 to
-	2006-10-04).
+	* Repository: merge changes from STLPORT_5_1 branch (records
+	from 2006-10-06 to 2006-10-04).
 
 	* stlport/stl/_alloc.c: Hmm, looks like deallocation size in
 	2006-10-06 is wrong.

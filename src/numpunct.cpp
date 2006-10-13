@@ -30,31 +30,13 @@ string numpunct<char>::do_truename()  const { return _M_truename;}
 string numpunct<char>::do_falsename() const { return _M_falsename; }
 numpunct<char>::~numpunct() {}
 
-_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_truename("true");
-_STLP_STATIC_MEMBER_DECLSPEC  string  numpunct<char>::_M_falsename("false");
-_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<char>::_M_grouping("");
-
 #if !defined (_STLP_NO_WCHAR_T)
-
-numpunct<wchar_t>::~numpunct() {}
-
 wchar_t numpunct<wchar_t>::do_decimal_point() const { return L'.'; }
-
-wchar_t numpunct<wchar_t>::do_thousands_sep() const
-{ return L','; }
-
-string numpunct<wchar_t>::do_grouping() const
-{ return string(); }
-
-wstring numpunct<wchar_t>::do_truename() const
-{ return _M_truename; }
-
-wstring numpunct<wchar_t>::do_falsename() const
-{ return _M_falsename; }
-
-_STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_truename(L"true");
-_STLP_STATIC_MEMBER_DECLSPEC  wstring numpunct<wchar_t>::_M_falsename(L"false");
-_STLP_STATIC_MEMBER_DECLSPEC  string numpunct<wchar_t>::_M_grouping("");
+wchar_t numpunct<wchar_t>::do_thousands_sep() const { return L','; }
+string numpunct<wchar_t>::do_grouping()   const { return string(); }
+wstring numpunct<wchar_t>::do_truename()  const { return _M_truename; }
+wstring numpunct<wchar_t>::do_falsename() const { return _M_falsename; }
+numpunct<wchar_t>::~numpunct() {}
 #endif
 
 _STLP_END_NAMESPACE

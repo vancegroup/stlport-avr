@@ -23,8 +23,7 @@ class IStreamIteratorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(istmit1);
-  CPPUNIT_STOP_IGNORE;
-#if !defined (STLPORT) || defined (_STLP_NO_EXTENTION)
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS)
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(copy_n_test);
@@ -37,14 +36,16 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(IStreamIteratorTest);
 
-#if defined (STLPORT) && !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#  if !defined (STLPORT) || !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 typedef istream_iterator<char> istream_char_ite;
 typedef istream_iterator<int> istream_int_ite;
 typedef istream_iterator<string> istream_string_ite;
-#else
+#  else
 typedef istream_iterator<char, ptrdiff_t> istream_char_ite;
 typedef istream_iterator<int, ptrdiff_t> istream_int_ite;
 typedef istream_iterator<string, ptrdiff_t> istream_string_ite;
+#  endif
 #endif
 
 //
@@ -80,7 +81,7 @@ void IStreamIteratorTest::istmit1()
 
 void IStreamIteratorTest::copy_n_test()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && !defined (_STLP_USE_NO_IOSTREAMS)
   //This test check that no character is lost while reading the istream
   //through a istream_iterator.
   {

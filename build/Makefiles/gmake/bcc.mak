@@ -10,12 +10,7 @@ INSTALL_TAGS = install-static
 endif
 
 CXX := bcc32 
-ifdef LIBNAME
-# Build of localisation support required use of a C++ context
-CC := bcc32 -P
-else
 CC := bcc32
-endif
 RC := brcc32
 
 DEFS ?=

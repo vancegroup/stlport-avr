@@ -52,7 +52,6 @@
 #endif
 
 #if defined (__cplusplus)
-// _STLP_BEGIN_NAMESPACE
 extern "C" {
 #endif
 
@@ -1795,6 +1794,5 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
 
 #ifdef __cplusplus
 }
-// _STLP_END_NAMESPACE
 #endif
 

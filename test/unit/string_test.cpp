@@ -1085,7 +1085,7 @@ void StringTest::template_wexpression()
 
 void StringTest::io()
 {
-#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS)
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   string str("STLport");
   {
     ostringstream ostr;
