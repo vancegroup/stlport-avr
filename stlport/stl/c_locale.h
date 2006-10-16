@@ -21,7 +21,10 @@
 #define _STLP_C_LOCALE_H
 
 /*
- * Implementation dependent definitions
+ * Implementation dependent definitions.
+ * Beware: This header is not a purely internal header, it is also included
+ * from the outside world when building the STLport library. So this header
+ * should not reference internal headers (stlport/stl/_*.h) directly.
  */
 #if defined(__sgi)
 #  if defined (ROOT_65) /* IRIX 6.5.x */
@@ -69,30 +72,14 @@ typedef char mbstate_t;
 #    endif /* _MBSTATE_T */
 #  endif /* ROOT65 */
 #else /* __sgi */
-#  if defined (__cplusplus)
-#    ifndef _STLP_INTERNAL_CSTDDEF
-#      include <stl/_cstddef.h>
-#    endif
-#    ifndef _STLP_INTERNAL_MBSTATE_T
-#      include <stl/_mbstate_t.h>
-#    endif
-#    ifndef _STLP_INTERNAL_CCTYPE
-#      include <stl/_cctype.h>
-#    endif
-#  else
-#    include <stddef.h>
-#    include <wchar.h>
-#    include <ctype.h>
-#  endif
+#  include <stddef.h>
+#  include <wchar.h>
+#  include <ctype.h>
 #endif /* __sgi */
 
 /*
  * GENERAL FRAMEWORK
  */
-
-#if defined (__cplusplus) && defined (_STLP_USE_OWN_MBSTATE_T)
-_STLP_BEGIN_NAMESPACE
-#endif
 
 /*
  * Opaque types, implementation (if there is one) depends
@@ -105,10 +92,6 @@ struct _Locale_collate;
 struct _Locale_monetary;
 struct _Locale_messages;
 struct _Locale_name_hint;
-
-#if defined (__cplusplus) && defined (_STLP_USE_OWN_MBSTATE_T)
-_STLP_END_NAMESPACE
-#endif
 
 /*
   Bitmask macros.

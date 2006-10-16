@@ -51,7 +51,6 @@
  */
 #define _Locale_MAX_COMPOSITE_NAME 6*(_Locale_MAX_SIMPLE_NAME+3)
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -440,8 +439,8 @@ void _Locale_catclose(struct _Locale_messages*, nl_catd_type);
 const char * _Locale_catgets(struct _Locale_messages *, nl_catd_type,
                              int, int,const char *);
 
-# ifdef __cplusplus
+#ifdef __cplusplus
 }
-# endif
+#endif
 
-# endif /* _STLP_C_LOCALE_IMPL_H */
+#endif /* _STLP_C_LOCALE_IMPL_H */

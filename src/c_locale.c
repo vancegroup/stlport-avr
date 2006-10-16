@@ -24,14 +24,6 @@
 #include "c_locale.h"
 
 #if defined (_STLP_REAL_LOCALE_IMPLEMENTED)
-#  if defined (_STLP_USE_OWN_MBSTATE_T) && !defined (__cplusplus)
-/* It is weird to have a real platform localisation support and no mbstate_t definition but it
- * might happen for platforms not using the C Standard library as the official API. */
-#    error Own STLport mbstate_t definition is in STLport namespace so this file _must_ be built as \
-a C++ translation unit. Please move c_locale.c in Makefile.inc to list it in the C++ sources \
-(you might have to change file extension to .cpp too). You can also change the compiler use to \
-build C source files to force a C++ build.
-#  endif
 #  if defined (WIN32) || defined (_WIN32)
 #    include "c_locale_win32/c_locale_win32.c"
 #  elif defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
