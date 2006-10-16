@@ -260,10 +260,13 @@
  * a single call to the allocator. This technique also works for the addition of
  * N elements where elements are basic_string, C string or a single character.
  * The drawback can be longer compilation time and bigger executable size.
+ * Another problem is that some compilers (gcc) fail to use string proxy object
+ * if do with class derived from string (see unit tests for details).
  * STLport rebuild: Yes
  */
-
+/*
 #define _STLP_USE_TEMPLATE_EXPRESSION 1
+*/
 
 
 /*
