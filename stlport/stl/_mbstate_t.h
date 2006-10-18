@@ -21,12 +21,8 @@
 #endif
 
 #if defined (_STLP_NO_NATIVE_MBSTATE_T) && !defined (_STLP_NO_MBSTATE_T) && !defined (_MBSTATE_T) && !defined (__mbstate_t_defined)
-#  if !defined (_STLP_USE_NO_IOSTREAMS)
-#    define _STLP_NO_MBSTATE_T
-#  else
-#    define _STLP_USE_OWN_MBSTATE_T
-#    define _MBSTATE_T
-#  endif
+#  define _STLP_USE_OWN_MBSTATE_T
+#  define _MBSTATE_T
 #endif
 
 #if defined (_STLP_USE_OWN_MBSTATE_T)

@@ -1,3 +1,25 @@
+2006-10-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_cwchar.h: Restore code to define potentially missing
+	WCHAR_MIN, WCHAR_MAX macros. It used to be in _mbstate_t.h but was
+	missing some native includes to work, in _cwchar.h everything should
+	be fine.
+
+	* test/unit/codecvt_test.cpp: Fix C cast that was losing const
+	qualifier.
+
+	* stlport/stl/_mbstate_t.h: Avoid definition of _STLP_NO_MBSTATE_T when
+	using own mbstate_t definition in _STLP_USE_NO_IOSTREAMS mode. This macro
+	is not supported anymore and should be fixed or removed in future version.
+	Own mbstate_t will be defined even in no iostreams mode.
+
+	* stlport/stl/config/_evc.h: Now that mbstate_t situation is clear EVC3
+	defines _STLP_NO_NATIVE_MBSTATE_T rather than directly defining it in
+	the config file. 
+
+	* test/unit: Several fixes to build with _STLP_NO_EXTENSIONS and
+	_STLP_NO_ANACHRONISMS.
+
 2006-10-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/c_locale.h, _mbstate_t.h, src/c_locale.h, c_locale.c:

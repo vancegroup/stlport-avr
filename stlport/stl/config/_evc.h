@@ -241,14 +241,11 @@
  */
 #if defined (_STLP_WCE_EVC3)
 
-// eMbedded 3 doesn't have mbstate_t and we could define _STLP_NO_MBSTATE_T,
-// but the flag isn't fully supported in STLport, and it's easier to use the
-// evc4 definition for that type.
-typedef int mbstate_t;
+#  define _STLP_NO_NATIVE_MBSTATE_T
 
 // evc3 has no locale and time support
-#define _STLP_NO_LOCALE_SUPPORT
-#define _STLP_NO_TIME_SUPPORT
+#  define _STLP_NO_LOCALE_SUPPORT
+#  define _STLP_NO_TIME_SUPPORT
 
 // evc3 has new, but no explicit header
 #  define _STLP_NO_NEW_HEADER

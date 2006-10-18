@@ -22,8 +22,8 @@
 
 	* Support enhancements:
 	  - Borland compilers starting with the free one (5.5.1)
+	  - HP aC++/ANSI C B3910B A.06.06
 	  - Visual Studio 2005 for Windows CE
-	  - Digital Mars compiler (experimental)
 	  - Use of intrinsic type traits support of Visual Studio 2005
 
 	* Improved meta programming techniques especially in uninitialized_* algorithms.
