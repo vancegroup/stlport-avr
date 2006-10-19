@@ -1,3 +1,7 @@
+2006-10-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/sstream_test.cpp: check bugreport #1580020.
+
 2006-10-17  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_cwchar.h: Restore code to define potentially missing
