@@ -1,3 +1,8 @@
+2006-10-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_cwchar.h: fix HP-UX problem with WCHAR_MIN, WCHAR_MAX
+	[Boris Gubenko].
+
 2006-10-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/sstream_test.cpp: check bugreport #1580020.

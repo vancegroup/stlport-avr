@@ -130,6 +130,18 @@ _STLP_STATIC_ASSERT(((wchar_t)-1 > 0) && (WCHAR_MIN < 0))
 #      undef WCHAR_MAX
 #      define WCHAR_MAX ((wchar_t)~0)
 #    endif
+#    if defined(__HP_aCC) && (__HP_aCC >= 60000)
+/* Starting with B.11.31, HP-UX/ia64 provides C99-compliant definitions
+ * of WCHAR_MIN/MAX macros without having to define
+ * _INCLUDE_STDC__SOURCE_199901 macro (which aCC compiler does not
+ * predefine). Let STLport provide B.11.31 definitions on any version of
+ * HP-UX/ia64.
+ */
+#      undef WCHAR_MIN
+#      define WCHAR_MIN 0
+#      undef WCHAR_MAX
+#      define WCHAR_MAX UINT_MAX 
+#    endif
 #  endif
 
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
