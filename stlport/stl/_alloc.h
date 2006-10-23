@@ -92,17 +92,12 @@ public:
     typedef __allocator<_Tp1, __malloc_alloc> other;
   };
 #endif
-  static void* _STLP_CALL allocate(size_t& __n)
+  static void* _STLP_CALL allocate(size_t __n)
 #if !defined (_STLP_USE_NO_IOSTREAMS)
   ;
 #else
   {
     void *__result = malloc(__n);
-#  if defined (_STLP_MALLOC_USABLE_SIZE)
-    if (__result != 0) {
-      __n = _STLP_MALLOC_USABLE_SIZE(__result);
-    }
-#  endif
     if (__result == 0) {
       __THROW_BAD_ALLOC;
     }

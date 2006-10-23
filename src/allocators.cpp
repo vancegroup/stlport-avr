@@ -26,7 +26,6 @@
 
 #if defined (__GNUC__) && (defined (__CYGWIN__) || defined (__MINGW32__))
 #  include <malloc.h>
-//#  define _STLP_MALLOC_USABLE_SIZE(__buf) malloc_usable_size(__buf)
 #endif
 
 #if defined (_STLP_PTHREADS) && !defined (_STLP_NO_THREADS)
@@ -75,60 +74,48 @@ inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
 
 _STLP_BEGIN_NAMESPACE
 
-class __malloc_alloc_impl {
-private:
-  static void* _S_oom_malloc(size_t __n) {
+// malloc_alloc out-of-memory handling
+static __oom_handler_type __oom_handler = __STATIC_CAST(__oom_handler_type, 0);
+
+#ifdef _STLP_THREADS
+_STLP_mutex __oom_handler_lock;
+#endif
+
+void* _STLP_CALL __malloc_alloc::allocate(size_t __n)
+{
+  void *__result = malloc(__n);
+  if ( 0 == __result ) {
     __oom_handler_type __my_malloc_handler;
-    void * __result;
 
     for (;;) {
+#ifdef _STLP_THREADS
+      __oom_handler_lock._M_acquire_lock();
+#endif
       __my_malloc_handler = __oom_handler;
-      if (0 == __my_malloc_handler) { __THROW_BAD_ALLOC; }
+#ifdef _STLP_THREADS
+      __oom_handler_lock._M_release_lock();
+#endif
+      if ( 0 == __my_malloc_handler) {
+        __THROW_BAD_ALLOC;
+      }
       (*__my_malloc_handler)();
       __result = malloc(__n);
-      if (__result) return(__result);
+      if ( __result )
+        return __result;
     }
-#if defined (_STLP_NEED_UNREACHABLE_RETURN)
-    return 0;
-#endif
   }
-  static __oom_handler_type __oom_handler;
-public:
-  // this one is needed for proper simple_alloc wrapping
-  typedef char value_type;
-  static void* allocate(size_t& __n) {
-    void* __result = malloc(__n);
-    if (0 == __result) {
-      __result = _S_oom_malloc(__n);
-    }
-#if defined (_STLP_MALLOC_USABLE_SIZE)
-    else {
-      size_t __new_n = _STLP_MALLOC_USABLE_SIZE(__result);
-      /*
-      if (__n != __new_n) {
-        printf("requested size %d, usable %d\n", __n, __new_n);
-      }
-      */
-      __n = __new_n;
-    }
-#endif
-    return __result;
-  }
-  static void deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
-  static __oom_handler_type set_malloc_handler(__oom_handler_type __f) {
-    __oom_handler_type __old = __oom_handler;
-    __oom_handler = __f;
-    return __old;
-  }
-};
+  return __result;
+}
 
-// malloc_alloc out-of-memory handling
-__oom_handler_type __malloc_alloc_impl::__oom_handler = __STATIC_CAST(__oom_handler_type, 0);
-
-void* _STLP_CALL __malloc_alloc::allocate(size_t& __n)
-{ return __malloc_alloc_impl::allocate(__n); }
 __oom_handler_type _STLP_CALL __malloc_alloc::set_malloc_handler(__oom_handler_type __f)
-{ return __malloc_alloc_impl::set_malloc_handler(__f); }
+{
+#ifdef _STLP_THREADS
+  _STLP_auto_lock _1( __oom_handler_lock );
+#endif
+  __oom_handler_type __old = __oom_handler;
+  __oom_handler = __f;
+  return __old;
+}
 
 // *******************************************************
 // Default node allocator.

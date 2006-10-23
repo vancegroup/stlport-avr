@@ -124,6 +124,8 @@
 /*
  * Uncomment _STLP_USE_MALLOC to force allocator<T> to use plain "malloc"
  * instead of STLport optimized node allocator engine.
+ *
+ * This is default allocator for glibc 2.3.x and later, if not mentioned other
  */
 /*
 #define _STLP_USE_MALLOC 1
@@ -137,6 +139,16 @@
  */
 /*
 #define _STLP_USE_PERTHREAD_ALLOC 1
+*/
+
+/*
+ * Uncomment _STLP_USE_NODE_ALLOC if you want to force allocator<T> to use
+ * "node_alloc" allocator (this is default allocator for STLport, if not
+ * used other above, except glibc 2.3.x and later, where default is
+ * "malloc", due to better results)
+ */
+/*
+#define _STLP_USE_NODE_ALLOC 1
 */
 
 /*

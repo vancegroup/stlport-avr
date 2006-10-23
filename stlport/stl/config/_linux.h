@@ -89,5 +89,14 @@
 */
 #endif
 
+#ifdef __GLIBC__
+#  if (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3) || (__GLIBC__ > 2)
+/* From glibc 2.3.x default allocator is malloc_alloc, if was not defined other */
+#    if !defined(_STLP_USE_MALLOC) && !defined(_STLP_USE_NEWALLOC) && !defined(_STLP_USE_PERTHREAD_ALLOC) && !defined(_STLP_USE_NODE_ALLOC)
+#      define _STLP_USE_MALLOC 1
+#    endif
+#  endif
+#endif
+
 
 #endif /* __stl_config__linux_h */

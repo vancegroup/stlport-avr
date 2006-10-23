@@ -1,3 +1,18 @@
+2006-10-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/host.h, _linux.h: force usage malloc_alloc as default
+	allocator on systems with glibc 2.3.x and later	due to better performance.
+
+	* stlport/stl/_alloc.h: remove _STLP_MALLOC_USABLE_SIZE dependant
+	code---not really used.
+	
+	* stlport/stl/_alloc.c: remove recalculation of __n [Francois was right];
+	remove _STLP_MALLOC_USABLE_SIZE dependant code---not really used.
+
+	* src/allocators.cpp: remove additional __malloc_alloc_impl class---not
+	required; add mutex lock for custom __malloc_alloc oom handler change/use
+	[in multi-threaded environment].
+
 2006-10-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_cwchar.h: fix HP-UX problem with WCHAR_MIN, WCHAR_MAX
@@ -5,7 +20,8 @@
 
 2006-10-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* test/unit/sstream_test.cpp: check bugreport #1580020.
+	* test/unit/sstream_test.cpp: check bugreport #1580020, not confirmed;
+	[bug in gcc 4.1.2-svn, compiler under development].
 
 2006-10-17  Francois Dumont  <dums@stlport...>
 
