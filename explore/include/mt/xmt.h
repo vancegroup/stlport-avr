@@ -1,23 +1,14 @@
-// -*- C++ -*- Time-stamp: <06/09/18 13:32:44 ptr>
+// -*- C++ -*- Time-stamp: <06/10/24 09:24:01 ptr>
 
 /*
- *
- * Copyright (c) 1997-1999, 2002-2005
+ * Copyright (c) 1997-1999, 2002-2006
  * Petr Ovtchenkov
  *
  * Portion Copyright (c) 1999-2001
  * Parallel Graphics Ltd.
  *
- * Licensed under the Academic Free License Version 2.1
+ * Licensed under the Academic Free License version 3.0
  *
- * This material is provided "as is", with absolutely no warranty expressed
- * or implied. Any use is at your own risk.
- *
- * Permission to use, copy, modify, distribute and sell this software
- * and its documentation for any purpose is hereby granted without fee,
- * provided that the above copyright notice appear in all copies and
- * that both that copyright notice and this permission notice appear
- * in supporting documentation.
  */
 
 #ifndef __XMT_H
@@ -38,7 +29,6 @@
 #ifdef WIN32
 # include <windows.h>
 # include <memory>
-# include <ctime>
 # include <limits>
 # define ETIME   62      /* timer expired */
 # pragma warning( disable : 4290)
@@ -46,9 +36,6 @@
 
 #ifdef __unix
 # if defined( _REENTRANT ) && !defined(_NOTHREADS)
-#  if defined( __STL_USE_NEW_STYLE_HEADERS ) && defined( __SUNPRO_CC )
-#   include <ctime>
-#  endif
 #  ifdef _PTHREADS
 #   include <pthread.h>
 #   include <semaphore.h>
@@ -67,36 +54,14 @@
 #  include <nwthread.h>
 #  include <nwsemaph.h>
 #  include <nwproc.h>
-#  include <ctime>
 # elif !defined(_NOTHREADS) // !_REENTRANT
 #  define _NOTHREADS
 # endif
 #endif
 
-#ifdef N_PLAT_NLM
-# include <sys/time.h> // timespec, timespec_t
-#endif
-
 #include <cerrno>
 
-#ifdef _WIN32
-extern "C" {
-
-typedef struct  timespec {              /* definition per POSIX.4 */
-        time_t          tv_sec;         /* seconds */
-        long            tv_nsec;        /* and nanoseconds */
-} timespec_t;
-
-} // extern "C"
-#endif // _WIN32
-
-#if defined(_WIN32) || defined(N_PLAT_NLM)
-extern "C" {
-
-typedef struct timespec timestruc_t;    /* definition per SVr4 */
-
-} // extern "C"
-#endif
+#include <mt/time.h>
 
 #ifdef _REENTRANT
 
@@ -1512,11 +1477,15 @@ class Thread
     static __FIT_DECLSPEC void signal_exit( int sig ); // signal handler
 
     // sleep at least up to time t
-    static __FIT_DECLSPEC void sleep( timespec *t, timespec *e = 0 );
+    static void sleep( timespec *t, timespec *e = 0 )
+      { xmt::sleep( t, e ); }
     // delay execution at least on time interval t
-    static __FIT_DECLSPEC void delay( timespec *t, timespec *e = 0 );
+    static void delay( timespec *t, timespec *e = 0 )
+      { xmt::delay( t, e ); }
     // get precise time
-    static __FIT_DECLSPEC void gettime( timespec *t );
+    static void gettime( timespec *t )
+      { xmt::gettime( t ); }
+
 #ifndef _WIN32
     static __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
     static __FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
@@ -1703,7 +1672,7 @@ int __Condition<SCOPE>::try_wait_delay( const timespec *interval )
 #endif
 #if defined(__FIT_UITHREADS) || defined(_PTHREADS)
     timespec ct;
-    Thread::gettime( &ct );
+    xmt::gettime( &ct );
     ct += *interval;
 
     int ret = 0;
@@ -1824,7 +1793,7 @@ int __Condition<SCOPE>::wait_delay( const timespec *interval )
 #endif
 #if defined(__FIT_UITHREADS) || defined(_PTHREADS)
   timespec ct;
-  Thread::gettime( &ct );
+  xmt::gettime( &ct );
   ct += *interval;
 
   return this->wait_time( &ct );
@@ -1844,22 +1813,5 @@ int __Condition<SCOPE>::wait_delay( const timespec *interval )
 } // namespace xmt
 
 namespace __impl = xmt; // compatibility
-
-timespec operator +( const timespec& a, const timespec& b );
-timespec operator -( const timespec& a, const timespec& b );
-timespec operator /( const timespec& a, unsigned b );
-timespec operator /( const timespec& a, unsigned long b );
-
-// timespec& operator =( timespec& a, const timespec& b );
-timespec& operator +=( timespec& a, const timespec& b );
-timespec& operator -=( timespec& a, const timespec& b );
-timespec& operator /=( timespec& a, unsigned b );
-timespec& operator /=( timespec& a, unsigned long b );
-
-bool operator >( const timespec& a, const timespec& b );
-bool operator >=( const timespec& a, const timespec& b );
-bool operator <( const timespec& a, const timespec& b );
-bool operator <=( const timespec& a, const timespec& b );
-bool operator ==( const timespec& a, const timespec& b );
 
 #endif // __XMT_H
