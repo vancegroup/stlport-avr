@@ -196,18 +196,18 @@ struct _Dig
     enum { dig = _Dig<N/10>::dig + 1 };
 };
 
-template <>
+_STLP_TEMPLATE_NULL
 struct _Dig<0>
 {
     enum { dig = 0 };
 };
 
 #ifdef _STLP_NO_LONG_DOUBLE
-# define MAXESIZ int(_Dig<DBL_MAX_10_EXP>::dig)
+# define MAXEDIGITS int(_Dig<DBL_MAX_10_EXP>::dig)
 # define MAXFSIG DBL_DIG
 # define MAXFCVT (DBL_DIG + 1)
 #else
-# define MAXESIZ int(_Dig<LDBL_MAX_10_EXP>::dig)
+# define MAXEDIGITS int(_Dig<LDBL_MAX_10_EXP>::dig)
 # define MAXFSIG LDBL_DIG
 # define MAXFCVT (LDBL_DIG + 1)
 #endif
@@ -507,9 +507,10 @@ static size_t __format_float_scientific( __iostring& buf, const char *bp,
   while (rz-- > 0 && *bp != 0)
     buf += *bp++;
 
-  // exponent
-  char expbuf[MAXESIZ + 2];
-  char *suffix = expbuf + MAXESIZ;
+  // exponent size = number of digits + exponent sign + exponent symbol + trailing zero
+  char expbuf[MAXEDIGITS + 3];
+  //We start filling at the buffer end
+  char *suffix = expbuf + MAXEDIGITS + 2;
   *suffix = 0;
   if (!is_zero) {
     int nn = decpt - 1;
@@ -521,7 +522,7 @@ static size_t __format_float_scientific( __iostring& buf, const char *bp,
   }
 
   // prepend leading zeros to exponent
-  while (suffix > &expbuf[MAXESIZ - 2])
+  while (suffix > &expbuf[2])
     *--suffix = '0';
 
   // put in the exponent sign
