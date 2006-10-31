@@ -6,6 +6,7 @@
 #  include <memory>
 //#  include <iostream>
 
+#  include "complete_digits.h"
 #  include "cppunit/cppunit_proxy.h"
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -126,7 +127,10 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   val = 12345678.9f;
   ref = "1";
   ref += npct.decimal_point();
-  ref += "23457e+07";
+  ref += "23457e+";
+  string digits = "7";
+  complete_digits(digits);
+  ref += digits;
   fostr.str("");
   fostr << val;
   CPPUNIT_ASSERT( fostr.str() == ref );
@@ -134,7 +138,9 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   val = 1000000000.0f;
   fostr.str("");
   fostr << val;
-  CPPUNIT_ASSERT( fostr.str() == "1e+09" );
+  digits = "9";
+  complete_digits(digits);
+  CPPUNIT_ASSERT( fostr.str() == string("1e+") + digits );
 
   val = 1234.0f;
   ref = "1";
@@ -149,7 +155,9 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   val = 10000001.0f;
   fostr.str("");
   fostr << val;
-  CPPUNIT_ASSERT( fostr.str() == "1e+07" );
+  digits = "7";
+  complete_digits(digits);
+  CPPUNIT_ASSERT( fostr.str() == string("1e+") + digits );
 }
 
 void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )

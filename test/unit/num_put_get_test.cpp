@@ -6,6 +6,7 @@
 #  include <sstream>
 #  include <cstdio>
 
+#  include "complete_digits.h"
 #  include "cppunit/cppunit_proxy.h"
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
@@ -34,7 +35,7 @@ private:
   void num_put_integer();
   void num_get_float();
   void num_get_integer();
-    void fix_float_long();
+  void fix_float_long();
 
   static bool check_float(float val, float ref) {
     float epsilon = numeric_limits<float>::epsilon();
@@ -64,7 +65,9 @@ void NumPutGetTest::num_put_float()
     ostr << test_val;
     CPPUNIT_ASSERT(ostr.good());
     output = reset_stream(ostr);
-    CPPUNIT_ASSERT(output == "1.23457e+17");
+    string digits = "17";
+    complete_digits(digits);
+    CPPUNIT_ASSERT(output == string("1.23457e+") + digits );
 
     ostr << fixed << test_val;
     CPPUNIT_ASSERT(ostr.good());
@@ -94,7 +97,9 @@ void NumPutGetTest::num_put_float()
     ostr << setprecision(8) << test_val;
     CPPUNIT_ASSERT(ostr.good());
     output = reset_stream(ostr);
-    CPPUNIT_ASSERT(output == "1.2345678e-01");
+    digits = "1";
+    complete_digits(digits);
+    CPPUNIT_ASSERT(output == string("1.2345678e-") + digits );
 
     ostr << setw(30) << fixed << setfill('0') << test_val;
     CPPUNIT_ASSERT(ostr.good());
@@ -372,11 +377,12 @@ void NumPutGetTest::pointer()
    *    in an implementation-defined manner.
    */
   {
+    /*
     char buf[128];
     void *p = (void *)0xff00;
     sprintf( buf, "%p", p );
     // cerr << buf << endl;
-    /* Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'? 
+    // Hmmm, I see 0xff00 on box with 32-bits address; pointer like 'unsigned hex'? 
     if ( sizeof( p ) == 2 ) {
       CPPUNIT_ASSERT( strcmp( buf, "0xff00" ) == 0 );
     } else if ( sizeof( p ) == 4 ) {
@@ -389,8 +395,10 @@ void NumPutGetTest::pointer()
     */
   }
   {
+    /*
     char buf[128];
     void *p = 0;
+    */
     // sprintf( buf, "%p", p );
     /* Cool. "%p" print '(nil)'; "%#x" print '0' */
     // sprintf( buf, "%#x", (unsigned)p );
