@@ -1,3 +1,28 @@
+2006-10-31  Francois Dumont  <dums@stlport...>
+
+	* build/test/unit/Makefile.inc: Restore STLport version information that
+	had mysteriously disappeared in a previous modification.
+
+	* stlport/stl/_num_put.c: Disable warning for MSVC that signal problem in
+	cast from pointer to unsigned long.
+
+	* src/num_put_float.cpp: Fix buffer overflow introduce by a previous
+	modification. Now STLport appends '0' so that floating point scientific
+	output has a constant size. MAXESIZ renamed in MAXEDIGITS to make macro
+	signification more obvious.
+
+	* test/unit/complete_digits.h: New file containing the function giving
+	platform dependant number of digits in STLport scientific output of
+	floating point types.
+
+	* test/unit/num_put_get_test.cpp, locale_test.cpp: Adapt tests to latest
+	STLport modifications.
+
+2006-10-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_stlport_version.h: Upgrade STLport version information
+	to reflect built libraries.
+
 2006-10-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/host.h, _linux.h: force usage malloc_alloc as default
