@@ -1,3 +1,8 @@
+2006-11-01  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_stdexcept_base.h: Patch from Uli to simplify
+	__Named_Exception implementation.
+
 2006-10-31  Francois Dumont  <dums@stlport...>
 
 	* build/test/unit/Makefile.inc: Restore STLport version information that
