@@ -67,12 +67,9 @@ using _STLP_VENDOR_EXCEPT_STD::exception;
 
 class _STLP_CLASS_DECLSPEC __Named_exception : public _STLP_EXCEPTION_BASE {
 public:
+// if not linking to the lib, expose implementation of members here
+#    ifdef _STLP_USE_NO_IOSTREAMS
   __Named_exception(const string& __str)
-#    ifndef _STLP_USE_NO_IOSTREAMS
-    ;
-  const char* what() const _STLP_NOTHROW_INHERENTLY;
-  ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
-#    else
   {
 #      if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
     strncpy(_M_name, _STLP_PRIV __get_c_string(__str), _S_bufsize);
@@ -82,6 +79,10 @@ public:
     _M_name[_S_bufsize - 1] = '\0';
   }
   const char* what() const _STLP_NOTHROW_INHERENTLY { return _M_name; }
+#    else
+  __Named_exception(const string& __str);
+  const char* what() const _STLP_NOTHROW_INHERENTLY;
+  ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
 #    endif
 
 private:
