@@ -7,15 +7,22 @@ TARGET_NAME=$(COMPILER_NAME)-$(TARGET_PROC)
 TARGET_NAME=$(COMPILER_NAME)
 !endif
 
-OUTPUT_DIR             = obj\$(TARGET_NAME)\shared$(EXTRA_DIRS)
-OUTPUT_DIR_DBG         = obj\$(TARGET_NAME)\shared-g$(EXTRA_DIRS)
-OUTPUT_DIR_STLDBG      = obj\$(TARGET_NAME)\shared-stlg$(EXTRA_DIRS)
-OUTPUT_DIR_A           = obj\$(TARGET_NAME)\static$(EXTRA_DIRS)
-OUTPUT_DIR_A_DBG       = obj\$(TARGET_NAME)\static-g$(EXTRA_DIRS)
-OUTPUT_DIR_A_STLDBG    = obj\$(TARGET_NAME)\static-stlg$(EXTRA_DIRS)
+# special case for evc3/evc4 emulator compiles
+!if "$(TARGET_PROC)-$(TARGET_PROC_SUBTYPE)" == "x86-emulator"
+TARGET_NAME=$(COMPILER_NAME)-$(TARGET_PROC_SUBTYPE)
+!endif
+
+OUTPUT_ROOT_DIR        = obj
+OUTPUT_TARGET_DIR      = $(OUTPUT_ROOT_DIR)\$(TARGET_NAME)
+OUTPUT_DIR             = $(OUTPUT_TARGET_DIR)\shared$(EXTRA_DIRS)
+OUTPUT_DIR_DBG         = $(OUTPUT_TARGET_DIR)\shared-g$(EXTRA_DIRS)
+OUTPUT_DIR_STLDBG      = $(OUTPUT_TARGET_DIR)\shared-stlg$(EXTRA_DIRS)
+OUTPUT_DIR_A           = $(OUTPUT_TARGET_DIR)\static$(EXTRA_DIRS)
+OUTPUT_DIR_A_DBG       = $(OUTPUT_TARGET_DIR)\static-g$(EXTRA_DIRS)
+OUTPUT_DIR_A_STLDBG    = $(OUTPUT_TARGET_DIR)\static-stlg$(EXTRA_DIRS)
 
 # file to store generated dependencies for make:
-DEPENDS_COLLECTION     = obj\$(TARGET_NAME)\.make.depend
+DEPENDS_COLLECTION     = $(OUTPUT_TARGET_DIR)\.make.depend
 
 SRCROOT = $(SRCROOT:/=\)
 !ifdef CROSS_COMPILING

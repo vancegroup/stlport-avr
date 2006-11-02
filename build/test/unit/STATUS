@@ -342,7 +342,6 @@ Status (stldbg-static):         -
 Notes:
 
 
-
 =======================================================================
 Operational environment:        Windows XP Professionnal 2002 SP2
 =======================================================================
@@ -350,39 +349,39 @@ Operational environment:        Windows XP Professionnal 2002 SP2
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 6 SP5
 -----------------------------------------------------------------------
-Date:                           2006-06-18
-STLP Version:                   CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (368 tests, 8 ignored)
+Status (release-shared):        All pass (380 tests, 9 ignored)
 Notes:
-Status (dbg-shared):            All pass (368 tests, 8 ignored)
+Status (dbg-shared):            All pass (380 tests, 9 ignored)
 Notes:
-Status (stldbg-shared):         All pass (368 tests, 8 ignored)
+Status (stldbg-shared):         All pass (380 tests, 9 ignored)
 Notes:
-Status (release-static):        All pass (368 tests, 8 ignored)
+Status (release-static):        All pass (380 tests, 9 ignored)
 Notes:
-Status (dbg-static):            All pass (368 tests, 8 ignored)
+Status (dbg-static):            All pass (380 tests, 9 ignored)
 Notes:
-Status (stldbg-static):         All pass (368 tests, 8 ignored)
+Status (stldbg-static):         All pass (380 tests, 9 ignored)
 Notes:
 
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 2005 Express Version 8.0.50215-4400
 -----------------------------------------------------------------------
-Date:                           2006-06-18
-STLP Version:                   CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (368 tests, 2 ignored)
+Status (release-shared):        All pass (380 tests, 2 ignored)
 Notes:
-Status (dbg-shared):            All pass (368 tests, 2 ignored)
+Status (dbg-shared):            All pass (380 tests, 2 ignored)
 Notes:
-Status (stldbg-shared):         All pass (368 tests, 2 ignored)
+Status (stldbg-shared):         All pass (380 tests, 2 ignored)
 Notes:
-Status (release-static):        All pass (368 tests, 2 ignored)
+Status (release-static):        All pass (380 tests, 2 ignored)
 Notes:
-Status (dbg-static):            All pass (368 tests, 2 ignored)
+Status (dbg-static):            All pass (380 tests, 2 ignored)
 Notes:
-Status (stldbg-static):         All pass (368 tests, 2 ignored)
+Status (stldbg-static):         All pass (380 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------
@@ -430,49 +429,43 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Borland C++ compiler 5.5.1 (free version)
 -----------------------------------------------------------------------
-Date:                           2006-06-17
-STLP Version:                   CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (369 tests, 6 ignored).
+Status (release-shared):        1 failure (381 tests, 6 ignored).
 Notes:                          The failure is on a specific Borland test
                                 showing a bug in the Borland compiler.
-Status (dbg-shared):            1 failure (369 tests, 6 ignored).
-Notes:
-Status (stldbg-shared):         Link of unit tests fail.
-Notes:                          Fatal: Error detected (LME351)
-Warning: Cannot reserve virtual memory at addr 72300000 for -3145728 bytes (errcode 87)
-Status (release-static):        1 failure (369 tests, 5 ignored).
-Notes:
-Status (dbg-static):            1 failure (369 tests, 5 ignored).
-Notes:
-Status (stldbg-static):         1 failure (369 tests, 5 ignored).
-Notes:
+Status (dbg-shared):            1 failure (381 tests, 6 ignored).
+Notes:                          Idem release-shared
+Status (release-shared):        1 failure (381 tests, 6 ignored).
+Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.4 (cygwin special)
 -----------------------------------------------------------------------
-Date:                           2006-06-18
-STLP Version:                   CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (368 tests)
+Status (release-shared):        1 failure (380 tests)
 Notes:                          ExceptionTest::uncaught_exception fails when all tests
-                                are run but succeed with the -t=ExceptionTest option.
-Status (dbg-shared):            1 failure (368 tests)
+                                are run but succeed with only running it using the 
+                                -t=ExceptionTest option.
+Status (dbg-shared):            1 failure (380 tests)
 Notes:                          Idem release-shared.
-Status (stldbg-shared):         1 failure (368 tests)
+Status (stldbg-shared):         1 failure (380 tests)
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.1 (mingw special, MinGW 3.9 runtime)
 -----------------------------------------------------------------------
-Date:                           2006-06-18
-STLP Version:                   CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (368 tests)
+Status (release-shared):        1 failure (380 tests)
 Notes:                          Idem cygwin report above.
-Status (dbg-shared):            1 failure (368 tests)
+Status (dbg-shared):            1 failure (380 tests)
 Notes:                          Idem cygwin report above.
-Status (stldbg-shared):         1 failure (368 tests)
+Status (stldbg-shared):         1 failure (380 tests)
 Notes:                          Idem cygwin report above.
 
 =======================================================================
@@ -521,20 +514,20 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ .Net 2003 (7.1)
 -----------------------------------------------------------------------
-Date:                           2006-04-27
-STLP Version:                   current CVS HEAD
+Date:                           2006-10-27
+STLP Version:                   STLPORT_5_1 branch (revision 2698)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (361 tests, 2 ignored)
+Status (release-shared):        All pass (380 tests, 2 ignored)
 Notes:
-Status (dbg-shared):            All pass (361 tests, 2 ignored)
+Status (dbg-shared):            All pass (380 tests, 2 ignored)
 Notes:
-Status (stldbg-shared):         All pass (361 tests, 2 ignored)
+Status (stldbg-shared):         All pass (380 tests, 2 ignored)
 Notes:
-Status (release-static):        All pass (361 tests, 2 ignored)
+Status (release-static):        All pass (380 tests, 2 ignored)
 Notes:
-Status (dbg-static):            All pass (361 tests, 2 ignored)
+Status (dbg-static):            All pass (380 tests, 2 ignored)
 Notes:
-Status (stldbg-static):         All pass (361 tests, 2 ignored)
+Status (stldbg-static):         All pass (380 tests, 2 ignored)
 Notes:
 
 -----------------------------------------------------------------------
