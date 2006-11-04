@@ -33,7 +33,6 @@
 
 #if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...
-#  define _STLP_STATIC_ARRAY_BUG 1
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
@@ -111,7 +110,6 @@
 
 #  define _STLP_NEED_TYPENAME 1
 #  define _STLP_NEED_EXPLICIT 1
-#  define _STLP_UNINITIALIZABLE_PRIVATE 1
 #  define _STLP_NO_BAD_ALLOC 1
 #  define _STLP_NO_ARROW_OPERATOR 1
 

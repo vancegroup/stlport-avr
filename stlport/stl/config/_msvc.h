@@ -24,10 +24,9 @@
 #endif
 
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
-/* This is 64 bits platform SDK specific settings. There is no clear way to
- * recognize the SDK coming with a compiler from the one freely available.
- * For the moment we hope that there is only one SDK for 64 bits windows so
- * we simply detect it using the _WIN64 macro.
+/* This is a specific section for compilers coming with platform SDKs. Native
+ * library coming with it is different from the one coming with commercial
+ * MSVC compilers so there is some specific settings.
  */
 #  define _STLP_NATIVE_INCLUDE_PATH ../crt
 #  define _STLP_VENDOR_GLOBAL_CSTD
@@ -73,6 +72,8 @@
 
 #if defined (_STLP_MSVC)
 
+#define _STLP_NORETURN_FUNCTION __declspec(noreturn)
+
 /* Full compiler version comes from boost library intrinsics.hpp header. */
 #  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)
 #    define _STLP_HAS_TRIVIAL_CONSTRUCTOR(T) __has_trivial_constructor(T)
@@ -97,11 +98,6 @@
 #  if (_STLP_MSVC <= 1400)
 #    define _STLP_STATIC_CONST_INIT_BUG   1
 #  endif
-
-#  if (_STLP_MSVC >= 1310)
-#    define _STLP_FULL_ADL_IMPLEMENTED 1
-#  endif
-
 
 /** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined
 unconditionally and undef'ed here when applicable. */

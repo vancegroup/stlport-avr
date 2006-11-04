@@ -24,11 +24,11 @@ using namespace std;
 class SlistTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(SlistTest);
-#if !defined (STLPORT) || defined (_STLP_USE_NO_IOSTREAMS) 
+#if !defined (STLPORT) || defined (_STLP_NO_EXTENSIONS) || defined (_STLP_USE_NO_IOSTREAMS) 
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(slist1);
-#if defined (_STLP_USE_NO_IOSTREAMS) 
+#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS) 
   CPPUNIT_STOP_IGNORE;
 #endif
   CPPUNIT_TEST(erase);
@@ -52,7 +52,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SlistTest);
 //
 void SlistTest::slist1()
 {
-#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS)
+#if defined (STLPORT) && !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_NO_EXTENSIONS)
 /*
 original: xlxtss
 reversed: sstxlx
@@ -118,7 +118,7 @@ sorted: lst
 
 void SlistTest::erase()
 {
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
   slist<int> sl(array, array + 5);
   slist<int>::iterator slit;
@@ -146,7 +146,7 @@ void SlistTest::erase()
 
 void SlistTest::insert()
 {
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //insert
@@ -193,7 +193,7 @@ void SlistTest::insert()
 
 void SlistTest::splice()
 {
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array[] = { 0, 1, 2, 3, 4 };
 
   //splice
@@ -325,7 +325,7 @@ void SlistTest::splice()
 
 void SlistTest::allocator_with_state()
 {
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   char buf1[1024];
   StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
 

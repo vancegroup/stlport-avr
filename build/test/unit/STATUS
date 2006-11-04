@@ -243,7 +243,7 @@ Date:                           2005-12-22
 STLP Version:                   current CVS STLPORT_5_0 branch
 Reporter:                       Petr Ovtchenkov
 Status (release-shared):        Build lib and unit tests
-Notes:                          
+Notes:
 Status (stlg-shared):           Build lib
 Notes:
 Status (stldbg-shared):         Build lib and unit tests
@@ -636,22 +636,25 @@ Operational environment:        Windows CE 3.0 Pocket PC 2002 (iPAQ h3950)
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ 3.0
 -----------------------------------------------------------------------
-Date:                           2005-12-15
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-09-07
+STLP Version:                   SVN branch STLPORT_5_1, revision 2569
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (327 tests)
+Status (release-shared):        1 failure (374 tests, 10 ignored)
 Notes:
-Status (dbg-shared):            All pass (327 tests)
+UnorderedTest::equal_range
+../../../test/unit\unordered_test.cpp(416) : CPPUNIT_ASSERT(distance(p.first, p.second) == 3);
+Status (dbg-shared):            All pass (374 tests, 10 ignored)
 Notes:
 Status (stldbg-shared):         Runtime failure
-Notes:                          Fails probably due to a bug in the ARM
-                                compiler
-Status (release-static):        All pass (327 tests)
+Notes:                          Fails due to a bug in the ARM compiler
+Status (release-static):        1 failure (374 tests, 10 ignored)
 Notes:
-Status (dbg-static):            All pass (327 tests)
+UnorderedTest::equal_range
+../../../test/unit\unordered_test.cpp(416) : CPPUNIT_ASSERT(distance(p.first, p.second) == 3);
+Status (dbg-static):            All pass (374 tests, 10 ignored)
 Notes:
-Status (stldbg-static):         Runtime failure
-Notes:                          Idem stldbg-shared
+Status (stldbg-shared):         Runtime failure
+Notes:                          Fails due to a bug in the ARM compiler
 
 =======================================================================
 Operational environment:        Windows CE 3.0 Pocket PC 2002 Emulator
@@ -660,20 +663,20 @@ Operational environment:        Windows CE 3.0 Pocket PC 2002 Emulator
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ 3.0
 -----------------------------------------------------------------------
-Date:                           2005-12-15
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-09-07
+STLP Version:                   SVN branch STLPORT_5_1, revision 2569
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (327 tests)
+Status (release-shared):        All pass (374 tests)
 Notes:
-Status (dbg-shared):            All pass (327 tests)
+Status (dbg-shared):            All pass (374 tests)
 Notes:
-Status (stldbg-shared):         All pass (327 tests)
+Status (stldbg-shared):         All pass (374 tests)
 Notes:
-Status (release-static):        All pass (327 tests)
+Status (release-static):        All pass (374 tests)
 Notes:
-Status (dbg-static):            All pass (327 tests)
+Status (dbg-static):            All pass (374 tests)
 Notes:
-Status (stldbg-static):         All pass (327 tests)
+Status (stldbg-static):         All pass (374 tests)
 Notes:
 
 =======================================================================
@@ -683,22 +686,21 @@ Operational environment:        Windows CE 4.2 Pocket PC 2003 (iPAQ h6340)
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2005-12-15
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-09-07
+STLP Version:                   SVN branch STLPORT_5_1, revision 2569
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (328 tests)
+Status (release-shared):        All pass (375 tests)
 Notes:
-Status (dbg-shared):            All pass (328 tests)
+Status (dbg-shared):            All pass (375 tests)
 Notes:
 Status (stldbg-shared):         Runtime failure
-Notes:                          refuses to start, maybe same problem
-                                as under eVC3/ARM
-Status (release-static):        All pass (328 tests)
+Notes:                          Fails due to a bug in the ARM compiler
+Status (release-static):        All pass (375 tests)
 Notes:
-Status (dbg-static):            All pass (328 tests)
+Status (dbg-static):            All pass (375 tests)
 Notes:
-Status (stldbg-static):         Runtime failure
-Notes:                          Idem stldbg-shared
+Status (stldbg-shared):         Runtime failure
+Notes:                          Fails due to a bug in the ARM compiler
 
 =======================================================================
 Operational environment:        Windows CE 4.2 Pocket PC 2003 Emulator
@@ -707,40 +709,40 @@ Operational environment:        Windows CE 4.2 Pocket PC 2003 Emulator
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2005-12-15
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-09-07
+STLP Version:                   SVN branch STLPORT_5_1, revision 2569
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (328 tests)
+Status (release-shared):        All pass (375 tests)
 Notes:
-Status (dbg-shared):            All pass (328 tests)
+Status (dbg-shared):            All pass (375 tests)
 Notes:
-Status (stldbg-shared):         All pass (328 tests)
+Status (stldbg-shared):         All pass (375 tests)
 Notes:
-Status (release-static):        All pass (328 tests)
+Status (release-static):        All pass (375 tests)
 Notes:
-Status (dbg-static):            All pass (328 tests)
+Status (dbg-static):            All pass (375 tests)
 Notes:
-Status (stldbg-static):         All pass (328 tests)
+Status (stldbg-static):         All pass (375 tests)
 Notes:
 
 =======================================================================
-Operational environment:        Microsoft Device Emulator V1.0 Windows
-                                Mobile 2003 SE (pre-release 050419)
+Operational environment:        Microsoft Device Emulator 8.0.50727.42
+                                Windows Mobile 2003 SE image
 =======================================================================
 
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2005-07-25
-STLP Version:                   current CVS STLPORT_5_0 branch
+Date:                           2006-09-07
+STLP Version:                   SVN branch STLPORT_5_1, revision 2569
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (322 tests)
+Status (release-shared):        All pass (375 tests)
 Notes:
-Status (dbg-shared):            All pass (322 tests)
+Status (dbg-shared):            All pass (375 tests)
 Notes:
-Status (release-static):        All pass (322 tests)
+Status (release-static):        All pass (375 tests)
 Notes:
-Status (dbg-static):            All pass (322 tests)
+Status (dbg-static):            All pass (375 tests)
 Notes:
 
 =======================================================================
@@ -805,4 +807,33 @@ Notes:                          PartitionTest::stblptn1
                                 ../../stlport/stl/debug/_debug.c(518): STL assertion failure : __next && __next->_Owner() == __l
                                 Abort(coredump)
 
+=======================================================================
+Operational environment:        HP-UX B.11.23 ia64
+=======================================================================
 
+-----------------------------------------------------------------------
+Compiler:                       HP aC++/ANSI C B3910B A.06.06 [Nov 7 2005]
+-----------------------------------------------------------------------
+Date:                           2006-09-25
+STLP Version:                   SVN branch STLPORT_5_1, revision 2613
+Reporter:                       Reporter: bgubenko (Boris Gubenko)
+Status (release-shared):        366 tests succeed, no failures
+Notes:                          tests hash_test and rope_test giving linker's unsat were disabled
+Status (dbg-shared):            366 tests succeed, no failures
+Notes:                          tests hash_test and rope_test giving linker's unsat were disabled
+Status (stldbg-shared):         Could not build the tests because of some problem in makefile
+Notes:                          New test codecvt_test.cpp does not compile on HP-UX. It is believed
+                                to be a problem with the test. Test author was notified.
+
+-----------------------------------------------------------------------
+Compiler:                       HP aC++/ANSI C B3910B A.06.06 [Nov 7 2005]
+-----------------------------------------------------------------------
+Date:                           2006-10-13
+STLP Version:                   SVN branch STLPORT_5_1, revision 2664
+Reporter:                       bgubenko (Boris Gubenko)
+Status (release-shared):        All pass (379 tests)
+Notes:
+Status (dbg-shared):            All pass (379 tests)
+Notes:
+Status (stldbg-shared):         All pass (379 tests)
+Notes:

@@ -93,7 +93,7 @@ class _STLP_CLASS_DECLSPEC __owned_link;
 class _STLP_CLASS_DECLSPEC __owned_list;
 
 #if defined (_STLP_DEBUG_MODE_THROWS)
-#  define _STLP_MESSAGE_NORETURN _STLP_NORETURN_FUNCTION
+#  define _STLP_MESSAGE_NORETURN _STLP_FUNCTION_THROWS
 #else
 #  define _STLP_MESSAGE_NORETURN
 #endif
@@ -103,7 +103,7 @@ struct __stl_debug_engine {
 
   // Basic routine to report any debug message
   // Use _STLP_DEBUG_MESSAGE to override
-  static void _STLP_CALL _Message(const char * format_str, ...) _STLP_MESSAGE_NORETURN;
+  static void _STLP_MESSAGE_NORETURN _STLP_CALL _Message(const char * format_str, ...);
 
   // Micsellanous function to report indexed error message
   static void _STLP_CALL  _IndexedError(int __ind, const char* __f, int __l);

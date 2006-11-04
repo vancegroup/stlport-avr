@@ -26,7 +26,7 @@
  * from the outside world when building the STLport library. So this header
  * should not reference internal headers (stlport/stl/_*.h) directly.
  */
-#if defined(__sgi)
+#if defined (__sgi)
 #  if defined (ROOT_65) /* IRIX 6.5.x */
 #    include <sgidefs.h>
 #    include <standards.h>
@@ -64,7 +64,10 @@ typedef __int32_t wint_t;
 #    endif /* _WINT_T */
 #    if !defined (_MBSTATE_T)
 #      define _MBSTATE_T
-#      ifdef _STLP_MSVC_LIB
+/* _MSC_VER check is here for historical reason and seems wrong as it is the macro defined
+ * by Microsoft compilers to give their version and we are currently in a SGI platform scope.
+ * However _MSC_VER might also be a SGI compiler macro so we keep it this way.*/
+#      if defined (_MSC_VER)
 typedef int mbstate_t;
 #      else
 typedef char mbstate_t;

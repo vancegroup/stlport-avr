@@ -85,8 +85,8 @@ RES_MARKED=@$(RES_MARKED)
 
 # second step, insert compiler/CPU part to path
 # Transform 'foo.o bar.o baz.o' to 'cc-xy/foo.o cc-xy/bar.o cc-xy/baz.o',
-# i.e. to add a prefix path to every objectfile. Now, the problem is that 
-# nmake can't make substitutions where a string is replaced with the content 
+# i.e. to add a prefix path to every objectfile. Now, the problem is that
+# nmake can't make substitutions where a string is replaced with the content
 # of a variable. IOW, this wont work:
 #OBJ=$(OBJ:@=%OUTPUT_DIR%/)
 # instead, we have to cater for every possible combination of compiler (and
@@ -181,7 +181,7 @@ RES_MARKED=$(RES_MARKED:@=obj\icl\@)
 !error No compiler configured
 !endif
 
-# last step, insert the linkage (shared/static) and release mode 
+# last step, insert the linkage (shared/static) and release mode
 # (release/debug/stldebug) into the path
 OBJ=$(OBJ_MARKED:@=shared\)
 OBJ_DBG=$(OBJ_MARKED:@=shared-g\)

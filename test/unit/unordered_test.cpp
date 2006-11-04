@@ -462,7 +462,7 @@ void UnorderedTest::equal_range()
 struct Key
 {
   Key() : m_data(0) {}
-  explicit Key(size_t data) : m_data(data) {}
+  explicit Key(int data) : m_data(data) {}
 
   int m_data;
 };

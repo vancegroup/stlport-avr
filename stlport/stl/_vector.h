@@ -87,8 +87,8 @@ public:
   }
 
 protected:
-  void _M_throw_length_error() const _STLP_NORETURN_FUNCTION;
-  void _M_throw_out_of_range() const _STLP_NORETURN_FUNCTION;
+  void _STLP_FUNCTION_THROWS _M_throw_length_error() const;
+  void _STLP_FUNCTION_THROWS _M_throw_out_of_range() const;
 
   pointer _M_start;
   pointer _M_finish;

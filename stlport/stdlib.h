@@ -27,7 +27,8 @@
 #  endif
 
 #  if defined (_MSC_VER) || (defined (__GNUC__) && defined (__MINGW32__)) || \
-      defined (__BORLANDC__) || defined (__DMC__)
+      defined (__BORLANDC__) || defined (__DMC__) || \
+      (defined (__HP_aCC) && defined (_REENTRANT))
 /* Native stdlib.h contains errno macro definition making inclusion of native
  * errno.h in STLport errno.h impossible. We are then forced to include errno.h
  * first.

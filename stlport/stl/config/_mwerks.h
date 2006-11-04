@@ -97,7 +97,6 @@
 #   define _STLP_NO_WCHAR_T 1
 #   define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1
 #   define _STLP_NON_TYPE_TMPL_PARAM_BUG  1  // dwa 8/21/97 - this bug fixed for CWPro2
-#   define _STLP_UNINITIALIZABLE_PRIVATE  1    // dwa 10/23/97 - this bug fixed for CWPro2
 #  endif
 
 #  if __MWERKS__ < 0x1900                 // dwa 8/19/97 - 1.9 Compiler feature defines

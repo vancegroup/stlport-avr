@@ -1,6 +1,4 @@
-2006-11-02  Francois Dumont  <dums@stlport...>
-
-	* Repository: merged from 5.1 branch by Petr Ovtchenkov
+2006-10-26  Francois Dumont  <dums@stlport...>
 
 	* test/unit/codecvt_test.cpp: Removed try/catch blocks not
 	supported by platform missing exception support and moreover
@@ -14,50 +12,24 @@
 	* build/Makefiles/nmake/top.mak: Patch from Gary Bartlett to make nmake
 	'all' rule the default rule.
 
-2006-11-01  Francois Dumont  <dums@stlport...>
+2006-10-25  Francois Dumont  <dums@stlport...>
 
-	* stlport/stl/_stdexcept_base.h: Patch from Uli to simplify
-	__Named_Exception implementation.
+	* src/dll_main.cpp: Fix syntax error '>>' rather than '> >' in
+	a _STLP_alloc_proxy explicit instanciation.
 
-2006-10-31  Francois Dumont  <dums@stlport...>
+	* stlport/stl/_unordered_set.h: Fix template method for the
+	associative container extension, use _KT type rather than key_type.
 
-	* build/test/unit/Makefile.inc: Restore STLport version information that
-	had mysteriously disappeared in a previous modification.
+2006-10-20  Francois Dumont  <dums@stlport...>
 
-	* stlport/stl/_num_put.c: Disable warning for MSVC that signal problem in
-	cast from pointer to unsigned long.
+	* stlport/stl/config: Removed some used macros
+	  _STLP_AUTOMATIC_TYPE_TRAITS
+	  _STLP_UNINITIALIZABLE_PRIVATE
+	  _STLP_STATIC_ARRAY_BUG
+	  _STLP_FULL_ADL_IMPLEMENTED
 
-	* src/num_put_float.cpp: Fix buffer overflow introduce by a previous
-	modification. Now STLport appends '0' so that floating point scientific
-	output has a constant size. MAXESIZ renamed in MAXEDIGITS to make macro
-	signification more obvious.
-
-	* test/unit/complete_digits.h: New file containing the function giving
-	platform dependant number of digits in STLport scientific output of
-	floating point types.
-
-	* test/unit/num_put_get_test.cpp, locale_test.cpp: Adapt tests to latest
-	STLport modifications.
-
-2006-10-30  Francois Dumont  <dums@stlport...>
-
-	* stlport/stl/_stlport_version.h: Upgrade STLport version information
-	to reflect built libraries.
-
-2006-10-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* stlport/stl/config/host.h, _linux.h: force usage malloc_alloc as default
-	allocator on systems with glibc 2.3.x and later	due to better performance.
-
-	* stlport/stl/_alloc.h: remove _STLP_MALLOC_USABLE_SIZE dependant
-	code---not really used.
-	
-	* stlport/stl/_alloc.c: remove recalculation of __n [Francois was right];
-	remove _STLP_MALLOC_USABLE_SIZE dependant code---not really used.
-
-	* src/allocators.cpp: remove additional __malloc_alloc_impl class---not
-	required; add mutex lock for custom __malloc_alloc oom handler change/use
-	[in multi-threaded environment].
+	* test/unit/codecvt_test.cpp: Ignore test when
+	_STLP_NO_MEMBER_TEMPLATES defined.
 
 2006-10-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -93,10 +65,6 @@
 
 2006-10-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* stlport/stl/c_locale.h, _mbstate_t.h, src/c_locale.h, c_locale.c:
-	merge changes from STLPORT_5_1 branch, see 2006-10-12 [Francois Dumont];
-	may be problems on Solaris, and FreeBSD---more check required.
-
 	* stlport/stl/_mbstate_t.h: this header may be included from system
 	stddef.h, without wchar.h---defines of wchar limits isn't good place
 	here [WCHAR_MAX, etc.].
@@ -107,10 +75,6 @@
 
 	* test/unit/cwchar.cpp, build/test/unit/Makefile.inc: test a few macros
 	related to wchar. Inspired by problems in STLPORT_5_1 and boost::regex.
-
-2006-10-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* Repository: merge changes [not all] 2006-10-12 from STLPORT_5_1 branch
 
 2006-10-12  Francois Dumont  <dums@stlport...>
 
@@ -129,31 +93,20 @@
 	* stlport/stl/config/_bc.h: Defines _STLP_NO_NATIVE_MBSTATE_T rather
 	than internal _STLP_USE_OWN_MBSTATE_T macro.
 
+	* stlport/stl/config/_evc.h: Add comment for EVC3 users, this platform
+	should define _STLP_NO_NATIVE_MBSTATE_T, but I have not the platform
+	to check...
+
 	* build/Makefiles/gmake/bcc.mak: Do not force anymore built of C sources
 	as C++.
 
 	* test/unit/string_test.cpp, istmit_test.cpp: Fixed macro checks to make
 	tests buildable even when _STLP_NO_IOSTREAMS is defined.
 
-2006-10-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+2006-10-09  Francois Dumont  <dums@stlport...>
 
-	* Repository: merge changes from STLPORT_5_1 branch (records
-	from 2006-10-06 to 2006-10-04).
-
-	* stlport/stl/_alloc.c: Hmm, looks like deallocation size in
-	2006-10-06 is wrong.
-
-	* stlport/stl/_num_put.c: print pointer as in fix width form, and
-	with base 0x, independent, zero pointer or not.
-
-	* test/unit/num_put_get_test.cpp: test for issue above.
-
-	* test/unit/string_test.cpp: test for overloaded operators
-	and temporary string; inspired by problems with some compilers.
-
-	* stlport/stl/_mbstate_t.h: revert back changes from STLPORT_5_1 branch;
-	mbstate_t couple with wchar closely, and sometimes has compex and implicit
-	dependance; include wchar.h first required! 
+	* test/unit/codecvt_test.cpp: Fix use of mbstate_t to make it more
+	portable.
 
 2006-10-06  Francois Dumont  <dums@stlport...>
 
@@ -220,12 +173,79 @@
 
 	* test/unit/vector_test.cpp: Add test case to check iterators comparisons.
 
-2006-09-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+2006-09-26  Francois Dumont  <dums@stlport...>
 
-	* test/unit/string_test.cpp: add test for bug report #1541499,
-	problem not detected; looks like gcc 4.1.1 can compile te_tmp test
-	correctly [sum operations under class derived from string, with
-	_STLP_USE_TEMPLATE_EXPRESSION].
+	* src/allocators.cpp: Reorder code blocks to fix build when using
+	_STLP_LEAKS_PEDANTIC.
+
+	* stlport/stl/_num_put.c: Restore __len >= 2 check in
+	__copy_integer_and_fill function. It has been removed on the
+	2006-07-11, at this time STLport always add the base information
+	even for 0 value. This modification has been rollback but not this
+	check.
+
+	* test/unit/num_put_get_test.cpp: Add check for above fix.
+
+2006-09-26  Francois Dumont  <dums@stlport...>
+
+	* src/c_locale_win32/c_locale_win32.c: Add check of code page when
+	specified in locale name.
+
+	* src/c_locale_win32/c_locale_win32.c: Add checks in __ConvertDate
+	and _Locale_t_fmt to avoid potential buffer overflow.
+
+	* src/c_locale_win32/c_locale_win32.c: Create __GetLocaleInfoUsingACP
+	function that merge a call to GetLocaleInfoA and a call to
+	__ConvertFromACP in one call, the latter function has been removed.
+
+	* src/c_locale.h: Restore _STLP_BEGIN_NAMESPACE when STLport use
+	its own mbstate_t definition which is only available in STLport
+	namespace. Fix Borland regression.
+
+	* stlport/stl/_mbstate_t.h: Replace stl/_cwchar.h include with
+	a cwchar one as this file is included from the outside world when
+	building STLport lib.
+
+2006-09-25  Francois Dumont  <dums@stlport...>
+
+	* test/unit/codecvt_test.cpp: New test case for the codecvt
+	facet.
+
+	* test/unit/unordered_test.cpp: size_t replace by int to avoid
+	64bits issue warning.
+
+2006-09-21  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/c_locale.h: Patch from Boris Gubenko to avoid
+	direct inclusion of internal header from this header that is
+	access from the outside world when building STLport lib.
+
+2006-09-20  Francois Dumont  <dums@stlport...>
+
+	* test/unit/allocator_test.cpp: Add new test case for allocation of
+	empty buffer.
+
+	* test/unit/fstream_test.cpp: Use a variable to always point to the same
+	test file and adopt a 'Standard' file name 'test_file.txt'.
+
+	* stlport/stl/_hash_fun.h: Rollback 2006-08-26 Petr modification that
+	was introducing a regression with MSVC compilers.
+
+	* stlport/stl/_fstream.c: First attempt to fix seekoff basic_filebuf
+	implementation when dealing with a codecvt facet having variable
+	encoding. This fix is surely not complete, discussion with Uli is not
+	over.
+
+2006-09-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_exception.h: Made a previously general Windows 64 bits
+	workaround specific to the cross compiler coming with PSDK. Thanks
+	Igor Pavlov.
+
+2006-09-11  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_num_put.c: Modification in __do_put_integer to avoid
+	a Hp aCC workaround.
 
 2006-09-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -234,32 +254,34 @@
 	
 	* test/unit/alg_test.cpp: test for problem.
 
-2006-09-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+2006-09-08  Francois Dumont  <dums@stlport...>
 
-	* stlport/stl/_sstream.h, _sstream.c: remove double buffering
-	on write only underlying string as buffer. Use knowlege about
-	string implementation, this should improve performance, and,
-	at least simplify code and avoid logic that already present in
-	string implementation.
+	* src/c_locale_win32/c_locale_win32.c: Modification in __GetLCIDFromName
+	to support the Chinese_Taiwan locale. Add of a __GetLCID call when first
+	call to it using non NLS mapping fails.
 
-	* stlport/stl/_string_base.h: basic_streambuf is friend, to access
-	to internal function (access to storage pointers).
+	* src/c_locale_win32/c_locale_win32.c: Change __ParseLocaleString
+	implementation to correctly handle locale with a name having '.' in
+	the language or country part like in 'Chinese_Hong Kong S.A.R..950'.
 
-	* stlport/stl/debug/_string.h, _string_sum_methods.h: change usage
-	of 'non-debug string', from 'use of' relation to 'inherit' releation.
-	Useful for access basic_streambuf to string storage in _STLP_DEBUG
-	mode too.
-		
-	* test/unit/sstream_test.cpp: test for tellp call; change test
-	with inited ostringstream in accordance with another Standard
-	treatment.
+2006-09-05  Francois Dumont  <dums@stlport...>
+
+	* build/lib/configure.bat: Fixed comment for --rtl-dynamic and
+	--rtl-static options, impact on macros to uncomment in hosts.h
+	config file was inversed. Thanks Igor Pavlov.
+
+	* build/lib/configure.bat, doc/FAQ, doc/README.msvc,
+	stlport/stl/config/user_config.h, _hpacc.h: Replaced references to
+	_site_config.h by hosts.h. Thanks Igor Pavlov.
+
+2006-08-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_cmath.h, _cstdlib.h: Patch from Boris Gubenko, Hp aCC
+	native Standard	lib already define math functions in global namespace.
 	
-	* stlport/stl/_streambuf.h: remove ancient code, that can't
-	work with present code in any case.
-
-	* src/c_locale.c: ditto
-
-	* build/lib/Makefile.inc: bump minor version (5.2.0)
+	* stlport/stl/_num_put.c: Patch from Boris Gubenko, Hp aCC before version
+	60000 do not consider 'const ptrdiff_t' as const enough to be used in a
+	static buffer declaration.
 
 2006-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -272,25 +294,48 @@
 	* stlport/stl/type_manips.h: workaround for __true_type/__false_type
 	for various versions gcc (oh, yes, gcc, it's real pain to detect
 	real version of libstdc++)
+	
+2006-08-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-2006-07-27  Francois Dumont  <dums@stlport...>
+	* stlport/stdlib.h: include errno.h for aCC, in case of -mt option in force.
+	This solve errno problem on HP-UX. Thanks Boris Gubenko.
 
-	* stlport: Adopt include_next GNU extension for the following reasons:
-	- Standard headers do not have to be categorised anymore to be
-	included, we could have a wrong include order if headers are not
-	correctly categorized.
-	- Package builder can use any folder structure they want for gcc,
-	STLport won't have to be customized anymore.
-	- Make STLport usable with other library that also use the shadow
-	header trick to modify native headers content.
+2006-08-09  Francois Dumont  <dums@stlport...>
 
-	* stlport/stl/config/_gcc.h: Add definition of _STLP_HAS_INCLUDE_NEXT
-	macro to signal that this compiler preprocessor support include_next.
-	Removed all definition of native headers path that are now useless.
+	* stlport/stl/config/_msvc.h: Add _STLP_NORETURN_FUNCTION for MSVC
+	compilers.
+
+	* stlport: Move place of _STLP_FUNCTION_THROWS in function declaration to
+	make msvc compiler happier, gcc do not care about position of this
+	attribute.
+
+	* stlport/stl/_ioserr.h: Fixed specification of STLport configuration file
+	in #error statement.
+
+2006-08-04  Francois Dumont  <dums@stlport...>
+
+	* stlport: Create _STLP_FUNCTION_THROWS depending on _STLP_NORETURN_FUNCTION
+	and also taking into account exception handling configuration.
+
+	* test/unit/alg_test.cpp, istmit_test.cpp: Fixes to make test buildable with
+	native compiler Standard library.
+
+2006-08-03  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/nmake/evc8.mak: Patch from Ulrich Echkardt to activate
+	whole program optimization.
+
+2006-07-31  Francois Dumont  <dums@stlport...>
+
+	* Patch from Michael Fink to fix EVC emulator build.
 
 2006-07-26  Francois Dumont  <dums@stlport...>
 
 	* src/fstream.cpp: Fixed MMAP_CHUNK definition, an offset type is signed.
+
+	* Creation of the 5.1.0 RC2 package.
+
+	* Creation of STLPORT_5_1_RC2 tag
 
 2006-07-25  Francois Dumont  <dums@stlport...>
 
@@ -1323,15 +1368,6 @@
 	special swap function for it to correctly handle STL containers swap
 	operation.
 
-2006-03-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* src/num_put_float.cpp: use buffers that at least longer
-	than maximal double [or long double] exponent, so avoid
-	potential vulnerabilities; this allow to read really long
-	fix-float numbers [with lost of significant digits, of cause].
-
-	* test/unit/floatio_test.cpp: add test for issue above
-
 2006-03-24  Francois Dumont  <dums@stlport...>
 
 	* build/lib/configure.bat: Removed script for defining INCLUDE
@@ -1343,10 +1379,6 @@
 
 	* test/unit/string_test.cpp: Change basic_string::reserve test to
 	check length_error exception rather than bad_alloc.
-
-2006-03-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* src/cxa.c: remove wrong exclusion of lock for Solaris.
 
 2006-03-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -1393,15 +1425,6 @@
 	* stlport/stl/config/_system.h, _msvc.h, _evc.h: move _STLP_MSVC
 	definition in proper place.
 	
-2006-03-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* src/cxa.c: remove usage of recursive mutex on FreeBSD prior to 5.3,
-	due to problem with recursive mutex static initialization on such
-	[i.e. FreeBSD 4.11 and above] platforms. I hope nobody will try to unload
-	C++ shared objects [aka shared libs] in a few threads at same time---no
-	workaround for FreeBSD 4.11. This problem has no relation
-	to FreeBSD 5.3 and newer.
-
 2006-03-14  Francois Dumont  <dums@stlport...>
 
 	* src/allocators.cpp: Fixed thread safety issue in

@@ -71,7 +71,7 @@
 
 _STLP_BEGIN_NAMESPACE
 #    if !defined (_STLP_BROKEN_EXCEPTION_CLASS)
-#      if !defined (_WIN64)
+#      if !defined (_STLP_USING_PLATFORM_SDK_COMPILER) || !defined (_WIN64)
 using _STLP_VENDOR_EXCEPT_STD::exception;
 #      else
 using ::exception;

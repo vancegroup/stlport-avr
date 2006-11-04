@@ -139,7 +139,7 @@ while building or using STLport you might be using the compiler coming with a
 platform SDK. If so please uncomment _STLP_USING_PLATFORM_SDK_COMPILER in
 stlport/stl/config/user_config.h. If it still do not find native headers you will
 perhaps need to change native headers relative path used by STLport. In this case use
-_STLP_NATIVE_INCLUDE_PATH and associated macro in stlport/stl/_site_config.h.
+_STLP_NATIVE_INCLUDE_PATH and associated macro in stlport/stl/config/host.h.
 
 4. C symbols in std namespace
 

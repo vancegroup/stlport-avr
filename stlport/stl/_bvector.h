@@ -379,22 +379,7 @@ public:
   typedef _STLP_PRIV _Bit_iterator          iterator;
   typedef _STLP_PRIV _Bit_const_iterator    const_iterator;
 
-#if defined ( _STLP_CLASS_PARTIAL_SPECIALIZATION )
-  typedef _STLP_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-  typedef _STLP_STD::reverse_iterator<iterator> reverse_iterator;
-#else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-#  if defined (_STLP_MSVC50_COMPATIBILITY)
-  typedef _STLP_STD::reverse_iterator<const_iterator, value_type, const_reference,
-                                      const_pointer, difference_type> const_reverse_iterator;
-  typedef _STLP_STD::reverse_iterator<iterator, value_type, reference,
-                                      reference*, difference_type> reverse_iterator;
-#  else
-  typedef _STLP_STD::reverse_iterator<const_iterator, value_type, const_reference,
-                                      difference_type> const_reverse_iterator;
-  typedef _STLP_STD::reverse_iterator<iterator, value_type, reference,
-                                      difference_type> reverse_iterator;
-#  endif
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+  _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
 #ifdef _STLP_VECBOOL_TEMPLATE
   typedef typename _STLP_PRIV _Bvector_base<_Alloc >::allocator_type allocator_type;

@@ -1317,7 +1317,7 @@ protected:
   // Return -1, 0, or 1 if __x < __y, __x == __y, or __x > __y resp.
   static int _S_compare(const _RopeRep* __x, const _RopeRep* __y);
 
-  void _M_throw_out_of_range() const _STLP_NORETURN_FUNCTION;
+  void _STLP_FUNCTION_THROWS _M_throw_out_of_range() const;
 
   void _M_reset(_RopeRep* __r) {
     //if (__r != _M_tree_ptr._M_data) {

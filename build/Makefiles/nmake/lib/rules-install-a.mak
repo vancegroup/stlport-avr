@@ -1,6 +1,8 @@
 # Time-stamp: <03/10/17 19:29:26 ptr>
 # $Id$
 
+install-static: install-release-static install-dbg-static install-stldbg-static
+
 install-release-static: release-static $(INSTALL_STATIC_LIB_DIR)
 	$(INSTALL_A) $(A_NAME_OUT) $(INSTALL_STATIC_LIB_DIR)
 	@if exist $(A_PDB_NAME_OUT) $(INSTALL_A) $(A_PDB_NAME_OUT) $(INSTALL_STATIC_LIB_DIR)

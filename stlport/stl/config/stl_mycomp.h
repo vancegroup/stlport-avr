@@ -172,9 +172,6 @@
 // Uncomment if compiler does not support explicit template arguments for functions
 // # define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 
-// Uncomment if "__typetraits is being instaniated automatically by the compiler (SGI only ?)
-// #  define _STLP_AUTOMATIC_TYPE_TRAITS 1
-
 // Uncomment this if your compiler can't inline while(), for()
 // #  define _STLP_LOOP_INLINE_PROBLEMS 1
 
@@ -201,12 +198,6 @@
 
 // Uncomment if getting errors compiling mem_fun* adaptors
 // #  define _STLP_MEMBER_POINTER_PARAM_BUG 1
-
-// #  define _STLP_UNINITIALIZABLE_PRIVATE  1
-
-// Defined if the compiler
-// has trouble instantiating static array members with dimension defined as enum
-// # define _STLP_STATIC_ARRAY_BUG
 
 // * _STLP_STATIC_CONST_INIT_BUG: defined if the compiler can't handle a
 //   constant-initializer in the declaration of a static const data member
@@ -268,9 +259,6 @@
 // uncomment this if your compiler has problem with the import of a namespace in
 // an other one with the using namespace directive
 // #  define _STLP_USING_NAMESPACE_BUG 1
-
-// uncomment this if your compiler implement full ADL (Argument Dependent Lookup)
-// # define _STLP_FULL_ADL_IMPLEMENTED 1
 
 // Edit relative path below (or put full path) to get native
 // compiler headers included. Default is "../include".

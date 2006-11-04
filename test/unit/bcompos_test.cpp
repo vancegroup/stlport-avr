@@ -32,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BcomposTest);
 //
 void BcomposTest::bcompos1()
 {
-#if defined (STLPORT) && defined (_STLP_NO_EXTENSIONS)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array [6] = { -2, -1, 0, 1, 2, 3 };
 
   binary_compose<logical_and<bool>, odd, positive>
@@ -45,7 +45,7 @@ void BcomposTest::bcompos1()
 
 void BcomposTest::bcompos2()
 {
-#if defined (STLPORT) && defined (_STLP_NO_EXTENSIONS)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
   int array [6] = { -2, -1 , 0, 1, 2, 3 };
 
   int* p = find_if((int*)array, (int*)array + 6,

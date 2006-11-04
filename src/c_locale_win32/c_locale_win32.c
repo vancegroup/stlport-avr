@@ -245,7 +245,7 @@ static int __GetLCIDFromName(const char* lname, LCID* lcid, char *cp, _Locale_lc
 static char const* __GetLocaleName(LCID lcid, const char* cp, char* buf);
 static char const* __Extract_locale_name(const char* loc, int category, char* buf);
 static char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint);
-static void __ConvertFromACP(char* buf, int buf_size, const char* cp);
+static void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size);
 static int __intGetACP(LCID lcid);
 static int __intGetOCP(LCID lcid);
 static int __GetDefaultCP(LCID lcid);
@@ -308,9 +308,7 @@ extern "C" {
 
     ltype->cp = atoi(cp_name);
 
-    NativeCP = __intGetACP(ltype->lc.id);
-    if (NativeCP == 0)
-      NativeCP = __intGetOCP(ltype->lc.id);
+    NativeCP = __GetDefaultCP(ltype->lc.id);
 
     /* Make table with all characters. */
     for (i = 0; i < 256; ++i) Buffer[i] = (unsigned char)i;
@@ -391,7 +389,7 @@ extern "C" {
     char *GroupingBuffer;
     char cname[_Locale_MAX_SIMPLE_NAME];
     int BufferSize;
-    _Locale_numeric_t *lnum=(_Locale_numeric_t*)malloc(sizeof(_Locale_numeric_t));
+    _Locale_numeric_t *lnum = (_Locale_numeric_t*)malloc(sizeof(_Locale_numeric_t));
     if (!lnum) return lnum; /* MS normal behavior for 'new' */
 
     __Extract_locale_name(name, LC_NUMERIC, cname);
@@ -399,17 +397,15 @@ extern "C" {
     if (__GetLCIDFromName(cname, &lnum->lc.id, lnum->cp, lc_hint) == -1)
     { free(lnum); return NULL; }
 
-    GetLocaleInfoA(lnum->lc.id, LOCALE_SDECIMAL, lnum->decimal_point, 4);
-    __ConvertFromACP(lnum->decimal_point, 4, lnum->cp);
-    GetLocaleInfoA(lnum->lc.id, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
-    __ConvertFromACP(lnum->thousands_sep, 4, lnum->cp);
+    __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
+    __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
 
-    BufferSize=GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
-    GroupingBuffer=(char*)malloc(BufferSize);
-    if (!GroupingBuffer) { lnum->grouping=NULL; return lnum; }
+    BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
+    GroupingBuffer = (char*)malloc(BufferSize);
+    if (!GroupingBuffer) { lnum->grouping = NULL; return lnum; }
     GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
     __FixGrouping(GroupingBuffer);
-    lnum->grouping=GroupingBuffer;
+    lnum->grouping = GroupingBuffer;
 
     return lnum;
   }
@@ -427,40 +423,34 @@ extern "C" {
     if (__GetLCIDFromName(cname, &ltime->lc.id, ltime->cp, lc_hint) == -1)
     { free(ltime); return NULL; }
 
-    for (month=LOCALE_SMONTHNAME1; month<=LOCALE_SMONTHNAME12; ++month) { /* Small hack :-) */
-      size=GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
-      ltime->month[month-LOCALE_SMONTHNAME1]=(char*)malloc(size);
-      if (!ltime->month[month-LOCALE_SMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
-      GetLocaleInfoA(ltime->lc.id, month, ltime->month[month-LOCALE_SMONTHNAME1], size);
-      __ConvertFromACP(ltime->month[month-LOCALE_SMONTHNAME1], size, ltime->cp);
+    for (month = LOCALE_SMONTHNAME1; month <= LOCALE_SMONTHNAME12; ++month) { /* Small hack :-) */
+      size = GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
+      ltime->month[month - LOCALE_SMONTHNAME1] = (char*)malloc(size);
+      if (!ltime->month[month - LOCALE_SMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
+      __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->month[month - LOCALE_SMONTHNAME1], size);
     }
 
-    for (month=LOCALE_SABBREVMONTHNAME1; month<=LOCALE_SABBREVMONTHNAME12; ++month) {
-      size=GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
-      ltime->abbrev_month[month-LOCALE_SABBREVMONTHNAME1]=(char*)malloc(size);
-      if (!ltime->abbrev_month[month-LOCALE_SABBREVMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
-      GetLocaleInfoA(ltime->lc.id, month, ltime->abbrev_month[month-LOCALE_SABBREVMONTHNAME1], size);
-      __ConvertFromACP(ltime->abbrev_month[month-LOCALE_SABBREVMONTHNAME1], size, ltime->cp);
+    for (month = LOCALE_SABBREVMONTHNAME1; month <= LOCALE_SABBREVMONTHNAME12; ++month) {
+      size = GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
+      ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1] = (char*)malloc(size);
+      if (!ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
+      __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1], size);
     }
 
     for (dayofweek=LOCALE_SDAYNAME1; dayofweek<=LOCALE_SDAYNAME7; ++dayofweek) {
-      int dayindex= ( dayofweek != LOCALE_SDAYNAME7 ) ?
-        dayofweek-LOCALE_SDAYNAME1 + 1 : 0;
-      size=GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
-      ltime->dayofweek[dayindex]=(char*)malloc(size);
-      if (!ltime->dayofweek[dayindex] ) { _Locale_time_destroy(ltime); return NULL; }
-      GetLocaleInfoA(ltime->lc.id, dayofweek, ltime->dayofweek[dayindex], size);
-      __ConvertFromACP(ltime->dayofweek[dayindex], size, ltime->cp);
+      int dayindex = ( dayofweek != LOCALE_SDAYNAME7 ) ? dayofweek - LOCALE_SDAYNAME1 + 1 : 0;
+      size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
+      ltime->dayofweek[dayindex] = (char*)malloc(size);
+      if (!ltime->dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
+      __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->dayofweek[dayindex], size);
     }
 
     for (dayofweek=LOCALE_SABBREVDAYNAME1; dayofweek<=LOCALE_SABBREVDAYNAME7; ++dayofweek) {
-      int dayindex= ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ?
-        dayofweek-LOCALE_SABBREVDAYNAME1 + 1 : 0;
-      size=GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
-      ltime->abbrev_dayofweek[dayindex]=(char*)malloc(size);
+      int dayindex = ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ? dayofweek - LOCALE_SABBREVDAYNAME1 + 1 : 0;
+      size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
+      ltime->abbrev_dayofweek[dayindex] = (char*)malloc(size);
       if (!ltime->abbrev_dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
-      GetLocaleInfoA(ltime->lc.id, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
-      __ConvertFromACP(ltime->abbrev_dayofweek[dayindex], size, ltime->cp);
+      __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
     }
 
     return ltime;
@@ -497,10 +487,8 @@ extern "C" {
     { free(lmon); return NULL; }
 
     /* Extract information about monetary system */
-    GetLocaleInfoA(lmon->lc.id, LOCALE_SDECIMAL, lmon->decimal_point, 4);
-    __ConvertFromACP(lmon->decimal_point, 4, lmon->cp);
-    GetLocaleInfoA(lmon->lc.id, LOCALE_STHOUSAND, lmon->thousands_sep, 4);
-    __ConvertFromACP(lmon->thousands_sep, 4, lmon->cp);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_STHOUSAND, lmon->thousands_sep, 4);
 
     BufferSize = GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, NULL, 0);
     GroupingBuffer = (char*)malloc(BufferSize);
@@ -509,17 +497,12 @@ extern "C" {
     __FixGrouping(GroupingBuffer);
     lmon->grouping=GroupingBuffer;
 
-    GetLocaleInfoA(lmon->lc.id, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
-    __ConvertFromACP(lmon->curr_symbol, 6, lmon->cp);
-
-    GetLocaleInfoA(lmon->lc.id, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
-    __ConvertFromACP(lmon->negative_sign, 5, lmon->cp);
-
-    GetLocaleInfoA(lmon->lc.id, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5);
-    __ConvertFromACP(lmon->positive_sign, 5, lmon->cp);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5);
 
     GetLocaleInfoA(lmon->lc.id, LOCALE_ICURRDIGITS, FracDigits, 3);
-    lmon->frac_digits=atoi(FracDigits);
+    lmon->frac_digits = atoi(FracDigits);
 
     GetLocaleInfoA(lmon->lc.id, LOCALE_IINTLCURRDIGITS, FracDigits, 3);
     lmon->int_frac_digits=atoi(FracDigits);
@@ -553,8 +536,7 @@ extern "C" {
 
   static const char* _Locale_common_default(char* buf) {
     char cp[MAX_CP_LEN + 1];
-    int CodePage=__intGetACP(LOCALE_USER_DEFAULT);
-    if (!CodePage) CodePage=__intGetOCP(LOCALE_USER_DEFAULT);
+    int CodePage = __GetDefaultCP(LOCALE_USER_DEFAULT);
     my_ltoa(CodePage, cp);
     return __GetLocaleName(LOCALE_USER_DEFAULT, cp, buf);
   }
@@ -1233,73 +1215,108 @@ extern "C" {
   }
 
   static const char* __ConvertDate(const char* NTTime) {
+    /* This function will return an incomplete buffer if ansi_date_fmt is not long enough */
     static char ansi_date_fmt[MAX_PATH]; /* Hack */
     const char *cur_char;
-    char *cur_output;
+    char *cur_output, *end_output;
 
     /* Correct time format. */
-    cur_char=NTTime;
-    cur_output=ansi_date_fmt;
-    while(*cur_char) {
-      switch(*cur_char) {
+    cur_char = NTTime;
+    cur_output = ansi_date_fmt;
+    end_output = cur_output + MAX_PATH;
+    while (*cur_char) {
+      if (cur_output == end_output) break;
+      switch (*cur_char) {
       case 'd':
       {
         if (*(cur_char + 1) == 'd') {
-          if (*(cur_char+2) == 'd') {
-            if (*(cur_char+3) == 'd')
-            { *(cur_output++)='%'; *(cur_output++)='A';  cur_char+=3; }
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+          if (*(cur_char + 2) == 'd') {
+            if (*(cur_char + 3) == 'd')
+            { *(cur_output++) = '%'; *(cur_output++) = 'A';  cur_char += 3; }
             else
-            { *(cur_output++)='%'; *(cur_output++)='a';  cur_char+=2; }
+            { *(cur_output++) = '%'; *(cur_output++) = 'a';  cur_char += 2; }
           }
           else
-          { *(cur_output++)='%'; *(cur_output++)='d';  cur_char++; }
+          { *(cur_output++) = '%'; *(cur_output++) = 'd'; cur_char++; }
         }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='d'; }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'd';
+        }
       }
       break;
       case 'M':
       {
         if (*(cur_char + 1) == 'M') {
-          if (*(cur_char+2) == 'M') {
-            if (*(cur_char+3) == 'M')
-            { *(cur_output++)='%'; *(cur_output++)='B';  cur_char+=3; }
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+          if (*(cur_char + 2) == 'M') {
+            if (*(cur_char + 3) == 'M')
+            { *(cur_output++) = '%'; *(cur_output++) = 'B';  cur_char += 3; }
             else
-            { *(cur_output++)='%'; *(cur_output++)='b';  cur_char+=2; }
+            { *(cur_output++) = '%'; *(cur_output++) = 'b';  cur_char += 2; }
           }
           else
-          { *(cur_output++)='%'; *(cur_output++)='m';  cur_char++; }
+          { *(cur_output++) = '%'; *(cur_output++) = 'm';  cur_char++; }
         }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='m'; }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'm';
+        }
       }
       break;
       case 'y':
       {
         if (*(cur_char + 1) == 'y') {
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
           if (*(cur_char+2) == 'y' && *(cur_char+3) == 'y')
-          { *(cur_output++)='%'; *(cur_output++)='Y';  cur_char+=3; }
+          { *(cur_output++) = '%'; *(cur_output++) = 'Y';  cur_char += 3; }
           else
-          { *(cur_output++)='%'; *(cur_output++)='y';  cur_char++; }
+          { *(cur_output++) = '%'; *(cur_output++) = 'y';  cur_char++; }
         }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='y'; }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'y';
+        }
       }
       break;
       case '%':
       {
-        *(cur_output++)='%'; *(cur_output++)='%';
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_date_fmt;
+          }
+        *(cur_output++) = '%'; *(cur_output++) = '%';
       }
       break;
       case '\'':
       {
         ++cur_char;
-        while(*cur_char!='\'' && *cur_char!=0) *cur_output++=*cur_char++;
+        while (*cur_char != '\'' && *cur_char != 0 && cur_output != end_output)
+          *cur_output++ = *cur_char++;
       }
       break;
       default:
       {
-        *(cur_output++)=*cur_char;
+        *(cur_output++) = *cur_char;
       }
       break;
       }
@@ -1307,106 +1324,157 @@ extern "C" {
         ++cur_char;
     }
 
-    *cur_output=0;
+    if (cur_output != end_output)
+      *cur_output = 0;
+    else
+      /* We trunc result */
+      *(--cur_output) = 0;
+
     return ansi_date_fmt;
   }
 
   const char* _Locale_d_fmt(_Locale_time_t* ltime) {
     static char date_fmt[80];
-    GetLocaleInfoA(ltime->lc.id, LOCALE_SSHORTDATE, date_fmt, MAX_PATH);
-    __ConvertFromACP(date_fmt, 80, ltime->cp);
-
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, date_fmt, 80);
     return __ConvertDate(date_fmt);
   }
 
   const char* _Locale_long_d_fmt(_Locale_time_t* ltime) {
     static char date_fmt[80];
-    GetLocaleInfoA(ltime->lc.id, LOCALE_SLONGDATE, date_fmt, MAX_PATH);
-    __ConvertFromACP(date_fmt, 80, ltime->cp);
-
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, date_fmt, 80);
     return __ConvertDate(date_fmt);
   }
 
   const char* _Locale_t_fmt(_Locale_time_t* ltime) {
     char time_fmt[80];
     static char ansi_time_fmt[MAX_PATH]; /* Hack */
-    char *cur_char, *cur_output;
-    GetLocaleInfoA(ltime->lc.id, LOCALE_STIMEFORMAT, time_fmt, MAX_PATH);
-    __ConvertFromACP(time_fmt, 80, ltime->cp);
+    char *cur_char, *cur_output, *end_output;
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, time_fmt, 80);
 
     /* Correct time format. */
-    cur_char=time_fmt;
-    cur_output=ansi_time_fmt;
-    while(*cur_char) {
+    cur_char = time_fmt;
+    cur_output = ansi_time_fmt;
+    end_output = cur_output + MAX_PATH;
+    while (*cur_char) {
       switch(*cur_char) {
       case 'h':
-        if (*(cur_char + 1) == 'h')
-        { *(cur_output++)='%'; *(cur_output++)='I';  ++cur_char; }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='I'; }
+        if (*(cur_char + 1) == 'h') {
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='I';  ++cur_char; 
+        }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='I';
+        }
         break;
       case 'H':
-        if (*(cur_char + 1) == 'H')
-        { *(cur_output++)='%'; *(cur_output++)='H'; ++cur_char; }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='H'; }
+        if (*(cur_char + 1) == 'H') {
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='H'; ++cur_char;
+        }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='H';
+        }
         break;
       case 'm':
-        if (*(cur_char + 1) == 'm')
-        { *(cur_output++)='%'; *(cur_output++)='M';  cur_char++; }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='M'; }
+        if (*(cur_char + 1) == 'm') {
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='M';  cur_char++;
+        }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='M';
+        }
         break;
       case 's':
-        if (*(cur_char + 1) == 's')
-        { *(cur_output++)='%'; *(cur_output++)='S';  ++cur_char; }
-        else
-        { *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='S'; }
+        if (*(cur_char + 1) == 's') {
+          if (cur_output + 2 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='S';  ++cur_char;
+        }
+        else {
+          if (cur_output + 3 > end_output) {
+            *cur_output = 0;
+            return ansi_time_fmt;
+          }
+          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='S';
+        }
         break;
       case 't':
         if (*(cur_char + 1) == 't')
           ++cur_char;
+        if (cur_output + 2 > end_output) {
+          *cur_output = 0;
+          return ansi_time_fmt;
+        }
         *(cur_output++)='%'; *(cur_output++)='p';
         break;
       case '%':
+        if (cur_output + 2 > end_output) {
+          *cur_output = 0;
+          return ansi_time_fmt;
+        }
         *(cur_output++)='%'; *(cur_output++)='%';
         break;
       case '\'':
         ++cur_char;
-        while(*cur_char!='\'' && *cur_char!=0)
-          *cur_output++=*cur_char++;
+        while (*cur_char != '\'' && *cur_char != 0 && cur_output != end_output)
+          *cur_output++ = *cur_char++;
         break;
       default:
-        *(cur_output++)=*cur_char;
+        *(cur_output++) = *cur_char;
         break;
       }
       if (*cur_char == 0) break;
       ++cur_char;
     }
 
-    *cur_output=0;
+    if (cur_output != end_output)
+      *cur_output = 0;
+    else
+      /* We trunc result */
+      *(--cur_output) = 0;
+
     return ansi_time_fmt;
   }
 
   const char* _Locale_am_str(_Locale_time_t* ltime) {
     static char buffer[9];
-    GetLocaleInfoA(ltime->lc.id, LOCALE_S1159, buffer, 9);
-    __ConvertFromACP(buffer, 9, ltime->cp);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, buffer, 9);
     return buffer;
   }
 
   const char* _Locale_pm_str(_Locale_time_t* ltime) {
     static char buffer[9];
-    GetLocaleInfoA(ltime->lc.id, LOCALE_S2359, buffer, 9);
-    __ConvertFromACP(buffer, 9, ltime->cp);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, buffer, 9);
     return buffer;
   }
 
   const char* _Locale_t_fmt_ampm(_Locale_time_t* ltime) {
     char time_sep[4];
     static char buffer[17];
-    GetLocaleInfoA(ltime->lc.id, LOCALE_STIME, time_sep, 4);
-    __ConvertFromACP(time_sep, 4, ltime->cp);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIME, time_sep, 4);
     _STLP_STRCPY(buffer, "%H"); _STLP_STRCAT(buffer, time_sep);
     _STLP_STRCAT(buffer, "%M"); _STLP_STRCAT(buffer, time_sep);
     _STLP_STRCAT(buffer, "%S %p");
@@ -1464,10 +1532,10 @@ void __FixGrouping(char *grouping) {
 }
 
 const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int TableSize) {
-  int     i;
-  int     cmp;
-  int     low = 0;
-  int    high=TableSize-1;
+  int i;
+  int cmp;
+  int low = 0;
+  int high = TableSize - 1;
 
   /*  typical binary search - do until no more to search or match */
   while (low <= high) {
@@ -1483,44 +1551,71 @@ const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int TableSiz
   return lname;
 }
 
-int __ParseLocaleString(const char* lname, char* lang, char* ctry,
-                        char* page) {
+int __ParseLocaleString(const char* lname,
+                        char* lang, char* ctry, char* page) {
   int param = 0;
   size_t len;
-  char ch = lname[0];
+  size_t tmpLen;
 
-  if (ch == 0)
+  if (lname[0] == 0)
     return 0;
-  else if (ch == '.') { /* Only code page provided */
-    if (strlen(lname + 1) > MAX_CP_LEN) return -1; /* CP number too long */
-    _STLP_STRCPY2(page, MAX_CP_LEN + 1, lname + 1);
-    lang[0] = 0; ctry[0] = 0;  /* necessary? calling function does this too */
-    return 0;
+
+  /* We look for the first country separator '_' */
+  len = strcspn(lname, "_");
+  if (lname[len] == '_') {
+    if (len == 0 || len > MAX_LANG_LEN) return -1; /* empty lang is invalid*/
+    _STLP_STRNCPY(lang, MAX_LANG_LEN + 1, lname, len);
+    lname += len + 1;
+    ++param;
   }
 
-  while (ch != 0) { /* Parse string */
-    len = strcspn(lname, "_.,"); /* ',' for compability with POSIX */
-
-    ch = lname[len];
-    if ((param == 0) && (len < MAX_LANG_LEN)) {
-      if (ch!='.') /* hence '_', ',' or '/0' */
-        _STLP_STRNCPY(lang, MAX_LANG_LEN + 1, lname, len);
-      else { /* no ctry, read lang and skip ctry on next pass */
-        ctry[0]=0;
-        _STLP_STRNCPY(lang, MAX_LANG_LEN + 1, lname, len);
+  /* We look for the last code page separator '.' */
+  len = -1;
+  tmpLen = strcspn(lname, ".");
+  while (lname[tmpLen] == '.') {
+    len = tmpLen; ++tmpLen;
+    tmpLen += strcspn(lname + tmpLen, ".");
+  }
+  if (len != -1) { /* Means that we found a '.' */
+    if (param == 0) {
+      /* We have no lang yet so we have to fill it first, no country */
+      if (len > MAX_LANG_LEN) return -1;
+      if (len == 0) {
+        /* No language nor country, only code page */
         ++param;
       }
+      else
+      { _STLP_STRNCPY(lang, MAX_LANG_LEN + 1, lname, len); }
+      ++param;
     }
-    else if (param == 1 && len < MAX_CTRY_LEN && ch != '_')
+    else {
+      /* We already have a lang so we are now looking for the country: */
+      if (len == 0) return -1; /* We forbid locale name with the "_." motif in it */
+      if (len > MAX_CTRY_LEN) return -1;
       _STLP_STRNCPY(ctry, MAX_CTRY_LEN + 1, lname, len);
-    else if (param == 2 && len < MAX_CP_LEN && (ch == 0 || ch == ','))
-      _STLP_STRNCPY(page, MAX_CP_LEN + 1, lname, len);
-    else
-      return -1;
-    if (ch == ',') break; /* Modifier found. In NT not used. */
+    }
     ++param;
-    lname+=(len + 1);
+    lname += len + 1;
   }
+
+  /* We look for ',' for compatibility with POSIX */
+  len = strcspn(lname, ",");
+  switch (param) {
+    case 0:
+      if (len > MAX_LANG_LEN) return -1;
+      _STLP_STRNCPY(lang, MAX_LANG_LEN + 1, lname, len);
+      break;
+    case 1:
+      if (len > MAX_CTRY_LEN) return -1;
+      _STLP_STRNCPY(ctry, MAX_CTRY_LEN + 1, lname, len);
+      break;
+    default:
+      if (len > MAX_CP_LEN) return -1;
+      _STLP_STRNCPY(page, MAX_CP_LEN + 1, lname, len);
+      break;
+  }
+
+  /* ',' POSIX modifier is not used in NT */
   return 0;
 }
 
@@ -1616,11 +1711,19 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
       *lcid = LOCALE_USER_DEFAULT; /* Only code page given. */
     else {
       if (ctry[0] == 0)
-        result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language)/sizeof(LOCALECONV)), NULL, lcid);
-      else
-        result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language)/sizeof(LOCALECONV)),
-                           __ConvertName(ctry, __rg_country, sizeof(__rg_country)/sizeof(LOCALECONV)),
+        result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language) / sizeof(LOCALECONV)), NULL, lcid);
+      else {
+        result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language) / sizeof(LOCALECONV)),
+                           __ConvertName(ctry, __rg_country, sizeof(__rg_country) / sizeof(LOCALECONV)),
                            lcid);
+        if (result != 0) {
+          /* Non NLS mapping might introduce problem with some locales when only one entry is mapped,
+          * the lang or the country (example: chinese locales like 'chinese_taiwan' gives 'CHS_taiwan'
+          * that do not exists in system). This is why we are giving this locale an other chance by
+          * calling __GetLCID without the mapping. */
+          result = __GetLCID(lang, ctry, lcid);
+        }
+      }
     }
   }
 
@@ -1632,6 +1735,15 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
       my_ltoa(__intGetOCP(*lcid), cp);
     else
       _STLP_STRNCPY(cp, MAX_CP_LEN + 1, page, 5);
+
+    /* Code page must be an integer value,
+     * 0 returned by __intGetACP and 1 returned by __intGetOCP are invalid
+     * values.
+     */
+    if (cp[1] == 0 && (cp[0] == '0' || cp[1] == '1'))
+      return -1;
+    else if (atoi(cp) == 0)
+      return -1;
   }
 
   return result;
@@ -1698,10 +1810,14 @@ char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hi
   return __GetLocaleName(lcid, cp, buf);
 }
 
-void __ConvertFromACP(char* buf, int buf_size, const char* cp) {
+void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size) {
   wchar_t *Buffer;
-  int BufferSize=MultiByteToWideChar(CP_ACP, 0, buf, -1, NULL, 0);
-  Buffer=(wchar_t*)malloc(sizeof(wchar_t)*(BufferSize + 1));
+  int BufferSize;
+
+  GetLocaleInfoA(lcid, lctype, buf, buf_size);
+
+  BufferSize = MultiByteToWideChar(CP_ACP, 0, buf, -1, NULL, 0);
+  Buffer = (wchar_t*)malloc(sizeof(wchar_t) * (BufferSize + 1));
   MultiByteToWideChar(CP_ACP, 0, buf, -1, Buffer, BufferSize);
   WideCharToMultiByte(atoi(cp), 0, Buffer, -1, buf, buf_size, NULL, NULL);
   free(Buffer);

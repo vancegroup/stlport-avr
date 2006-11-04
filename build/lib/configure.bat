@@ -124,10 +124,11 @@ echo    to link statically with STLport but using the dynamic C runtime use
 echo    --rtl-dynamic; if you want to link dynamicaly with STLport but using the
 echo    static C runtime use --rtl-static. See README.options for details.
 echo    Don't forget to signal the link method when building your appli or dll, in
-echo    _site_config.h set the following macro depending on the configure option:
-echo    "--rtl-dynamic -> _STLP_USE_DYNAMIC_LIB"
-echo    "--rtl-static  -> _STLP_USE_STATIC_LIB"
-echo    This is a Microsoft-only option.
+echo    stlport/stl/config/host.h set the following macro depending on the configure
+echo    option:
+echo    "--rtl-dynamic -> _STLP_USE_STATIC_LIB"
+echo    "--rtl-static  -> _STLP_USE_DYNAMIC_LIB"
+echo    This is a Microsoft Visual Studio only option.
 echo.
 echo "--use-boost <boost install path>"
 echo    Request use of boost support (www.boost.org). For the moment only the boost
@@ -208,7 +209,7 @@ set SELECTED_COMPILER_VERSION=71
 goto oc_msvc
 
 :oc_msvc8
-echo Setting compiler: Microsoft Visual C++ .NET 2005
+echo Setting compiler: Microsoft Visual C++ 2005
 echo COMPILER_NAME=vc8 >> ..\Makefiles\config.mak
 set SELECTED_COMPILER_VERSION=80
 goto oc_msvc
@@ -327,9 +328,9 @@ if "%TARGETCPU%" == "ARMV4I" goto pr_arm
 if "%TARGETCPU%" == "ARMV4T" goto pr_arm
 
 if "%TARGETCPU%" == "X86" goto pr_x86
-REM Type from evc3 and/or PocketPC 2002 SDK reported here 
+REM Type from evc3 and/or PocketPC 2002 SDK reported here
 REM to correctly check the platform:
-if "%TARGETCPU%" == "X86EMnset CFG=none" goto pr_x86
+if "%TARGETCPU%" == "X86EMnset CFG=none" goto pr_emul
 if "%TARGETCPU%" == "x86" goto pr_x86
 if "%TARGETCPU%" == "emulator" goto pr_emul
 
@@ -352,7 +353,7 @@ goto pr_end
 :pr_arm
 echo Target processor: ARM
 echo TARGET_PROC=arm >> ..\Makefiles\config.mak
-echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
+REM echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
 goto pr_end
 
 :pr_x86

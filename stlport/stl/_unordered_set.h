@@ -132,7 +132,7 @@ public:
   { _M_ht.insert_unique(__f,__l); }
 
   _STLP_TEMPLATE_FOR_CONT_EXT
-  iterator find(const key_type& __key) { return _M_ht.find(__key); }
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
   _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 
@@ -273,7 +273,7 @@ public:
   { _M_ht.insert_equal(__f, __l); }
 
   _STLP_TEMPLATE_FOR_CONT_EXT
-  iterator find(const key_type& __key) { return _M_ht.find(__key); }
+  iterator find(const _KT& __key) { return _M_ht.find(__key); }
   _STLP_TEMPLATE_FOR_CONT_EXT
   const_iterator find(const _KT& __key) const { return _M_ht.find(__key); }
 

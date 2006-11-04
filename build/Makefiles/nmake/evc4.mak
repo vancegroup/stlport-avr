@@ -14,9 +14,8 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
-# Note: the commctrl.lib is possibly not necessary and could be removed.
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:OLDNAMES.lib
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096" 
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:OLDNAMES.lib
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096"
 
 # increase compiler memory in order to compile deeply nested template code
 OPT_STLDBG = $(OPT_STLDBG) /Zm800
@@ -45,7 +44,7 @@ DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_" /D "_i386_"
 OPT_COMMON = $(OPT_COMMON) /Gs8192
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) $(CEx86Corelibc) /MACHINE:X86
 !if "$(TARGET_PROC_SUBTYPE)" == "emulator"
-DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
+DEFS_COMMON = $(DEFS_COMMON) /D "_STLP_WCE_TARGET_PROC_SUBTYPE_EMULATOR"
 !endif
 !if "$(PLATFORM)" == "POCKET PC 2003"
 # RTTI patch for PPC2003 SDK
@@ -58,7 +57,7 @@ LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib
 DEFS_COMMON = $(DEFS_COMMON) /D "_MIPS_" /D "MIPS" /D "$(TARGET_PROC_SUBTYPE)"
 OPT_COMMON = $(OPT_COMMON)
 
-# Note: one might think that MIPSII_FP and MIPSIV_FP should use /MACHINE:MIPSFPU 
+# Note: one might think that MIPSII_FP and MIPSIV_FP should use /MACHINE:MIPSFPU
 # while MIPSII and MIPSIV should use /MACHINE:MIPS, but this is exactly how the
 # eVC4 IDE does it.
 !if "$(TARGET_PROC_SUBTYPE)" == ""

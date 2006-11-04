@@ -227,7 +227,7 @@ template class _STLP_CLASS_DECLSPEC _List_base<void*, allocator<void*> >;
 template class _STLP_CLASS_DECLSPEC _STLP_PTR_IMPL_NAME(list)<void*, allocator<void*> >;
 
 template class _STLP_CLASS_DECLSPEC _Slist_node<void*>;
-template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<_Slist_node_base, _Slist_node<void*>, allocator<_Slist_node<void*>> >;
+template class _STLP_CLASS_DECLSPEC _STLP_alloc_proxy<_Slist_node_base, _Slist_node<void*>, allocator<_Slist_node<void*> > >;
 template class _STLP_CLASS_DECLSPEC _Slist_base<void*, allocator<void*> >;
 template class _STLP_CLASS_DECLSPEC _STLP_PTR_IMPL_NAME(slist)<void*, allocator<void*> >;
 

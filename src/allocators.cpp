@@ -158,24 +158,6 @@ __oom_handler_type _STLP_CALL __malloc_alloc::set_malloc_handler(__oom_handler_t
 #  define _STLP_USE_LOCK_FREE_IMPLEMENTATION
 #endif
 
-#if defined (_STLP_DO_CLEAN_NODE_ALLOC)
-struct __node_alloc_cleaner {
-  ~__node_alloc_cleaner()
-  { __node_alloc_impl::_S_dealloc_call(); }
-};
-
-#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
-_STLP_VOLATILE __stl_atomic_t& _STLP_CALL
-#  else
-__stl_atomic_t& _STLP_CALL
-#  endif
-__node_alloc_impl::_S_alloc_counter() {
-  static _AllocCounter _S_counter = 1;
-  static __node_alloc_cleaner _S_node_alloc_cleaner;
-  return _S_counter;
-}
-#endif
-
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 #  if defined (_STLP_THREADS)
 
@@ -285,7 +267,6 @@ public:
   /* __p may not be 0 */
   static void _M_deallocate(void *__p, size_t __n);
 };
-
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 void* __node_alloc_impl::_M_allocate(size_t& __n) {
@@ -663,6 +644,24 @@ void __node_alloc_impl::_S_chunk_dealloc() {
 #  endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
 #endif /* !defined(_STLP_USE_LOCK_FREE_IMPLEMENTATION) */
+
+#if defined (_STLP_DO_CLEAN_NODE_ALLOC)
+struct __node_alloc_cleaner {
+  ~__node_alloc_cleaner()
+  { __node_alloc_impl::_S_dealloc_call(); }
+};
+
+#  if defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
+_STLP_VOLATILE __stl_atomic_t& _STLP_CALL
+#  else
+__stl_atomic_t& _STLP_CALL
+#  endif
+__node_alloc_impl::_S_alloc_counter() {
+  static _AllocCounter _S_counter = 1;
+  static __node_alloc_cleaner _S_node_alloc_cleaner;
+  return _S_counter;
+}
+#endif
 
 #if !defined (_STLP_USE_LOCK_FREE_IMPLEMENTATION)
 _Node_alloc_obj * _STLP_VOLATILE

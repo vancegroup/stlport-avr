@@ -30,6 +30,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/clocale_header_test.cpp \
 	../../../test/unit/cmath_test.cpp \
 	../../../test/unit/cmath_header_test.cpp \
+	../../../test/unit/codecvt_test.cpp \
 	../../../test/unit/complex_header_test.cpp \
 	../../../test/unit/config_test.cpp \
 	../../../test/unit/copy_test.cpp \

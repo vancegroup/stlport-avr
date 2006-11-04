@@ -51,7 +51,8 @@ Now you have to choose between STLport iostreams or no iostreams.
     If you DO NOT plan to use STLport iostreams and/or locale implementation but just
     the STL, you do not have to build the library.
  
-    If you have decided to disable STLport iostreams and locale, you may stop reading here.
+    If you have decided to disable STLport iostreams and locale using _STLP_NO_IOSTREAMS
+    configuration macro in stlport/stl/config/user_config.h, you may stop reading here.
 
 
 ==== Building STLport iostreams library ==========

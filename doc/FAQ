@@ -251,7 +251,7 @@ Package maintainers can use any path by own taste---we can't satisfy
 variety of distributions/packages.
 
 So you can:
- - fix path in stlport administration config file stlport/stl/_site_config.h, 
+ - fix path in stlport administration config file stlport/stl/config/host.h, 
    see _STLP_NATIVE_INCLUDE_PATH macro and related.
  - create a link to the native compiler headers like expected by STLport
  - make request to package maintainer
@@ -417,7 +417,7 @@ everything in dll or everything in static lib.
 There are ways to remove the pseudo memory leaks (since the memory is properly
 freed at the end of the program, the leaks are just pseudo-ones). You could use
 another allocator that is used in STLport. Open the file
-"./stlport/stl/_site_config.h" and uncomment either one of the following:
+"./stlport/stl/config/host.h" and uncomment either one of the following:
 
 
    _STLP_USE_NEWALLOC   enables a simple allocator that uses "new/delete"
@@ -428,7 +428,7 @@ memory starvation, see set_new_handler in your compiler doc or the C++ Standard
 for more information.
 
 Alternatively you can define the following symbol, just uncomment it in
-"./stlport/stl/_site_config.h".
+"./stlport/stl/config/host.h".
 
    _STLP_LEAKS_PEDANTIC
 

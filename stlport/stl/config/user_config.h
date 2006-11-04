@@ -19,7 +19,7 @@
  * on per-project basis.
  * Please note that if you use STLport iostreams (compiled library) then you have
  * to use consistent settings when you compile STLport library and your project.
- * Those settings are defined in _site_config.h and have to be the same for a given
+ * Those settings are defined in host.h and have to be the same for a given
  * STLport installation.
  */
 

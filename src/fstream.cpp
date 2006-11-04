@@ -807,9 +807,9 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
   ptrdiff_t readen = 0;
   //Here cast to size_t is safe as n cannot be negative.
   size_t chunkSize = (min)(size_t(0xffffffff), __STATIC_CAST(size_t, n));
-  // The following while validate that we are still able to extract chunkSize
-  // charaters to the buffer but it avoids extraction of too small chunk of
-  // datas which would be counter performant.
+  // The following, while validating that we are still able to extract chunkSize
+  // charaters to the buffer, avoids extraction of too small chunk of datas
+  // which would be counter performant.
   while (__STATIC_CAST(size_t, (n - readen)) >= chunkSize) {
     DWORD NumberOfBytesRead;
     ReadFile(_M_file_id, buf + readen, __STATIC_CAST(DWORD, chunkSize), &NumberOfBytesRead, 0);
@@ -1122,7 +1122,6 @@ _Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<c
     if (!__this->_M_switch_to_input_mode())
       return traits_type::eof();
   }
-
   else if (__this->_M_in_putback_mode) {
     __this->_M_exit_putback_mode();
     if (__this->gptr() != __this->egptr()) {

@@ -47,7 +47,7 @@
 
 	* STLport is ready for safe string functions *_s (_STLP_USE_SAFE_STRING_FUNCTIONS)
 
-	* Many bug fixes, see etc/ChangeLog.
+	* Many bug fixes, see etc/ChangeLog-5.1.
 
 5.0:
 

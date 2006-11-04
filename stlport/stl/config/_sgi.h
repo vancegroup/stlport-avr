@@ -31,9 +31,6 @@
 
 #define __EDG_SWITCHES
 
-// any version ???
-#define _STLP_AUTOMATIC_TYPE_TRAITS 1
-
 #define _STLP_USE_SGI_STRING         1
 
 #define _STLP_HAS_NO_NEW_C_HEADERS 1

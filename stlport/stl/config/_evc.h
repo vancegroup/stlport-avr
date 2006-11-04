@@ -167,7 +167,7 @@
  */
 #  if !defined (_STLP_NATIVE_INCLUDE_PATH)
 #    if defined (_X86_)
-#      if defined (emulator)
+#      if defined (_STLP_WCE_TARGET_PROC_SUBTYPE_EMULATOR)
 #        define _STLP_NATIVE_INCLUDE_PATH ../Emulator
 #      else
 #        define _STLP_NATIVE_INCLUDE_PATH ../X86

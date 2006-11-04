@@ -981,8 +981,15 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_NOTHROW_INHERENTLY
 #endif
 
-#if !defined (_STLP_NORETURN_FUNCTION)
-#  define _STLP_NORETURN_FUNCTION
+/* STLport function not returning are functions that throw so we translate
+ * the noreturn functions in throwing functions taking also into account
+ * exception support activation.
+ */
+#if defined (_STLP_NORETURN_FUNCTION) && !defined (_STLP_NO_EXCEPTIONS) && \
+   !defined (_STLP_FUNCTION_THROWS)
+#  define _STLP_FUNCTION_THROWS _STLP_NORETURN_FUNCTION
+#else
+#  define _STLP_FUNCTION_THROWS
 #endif
 
 #if defined(_STLP_NO_BOOL)

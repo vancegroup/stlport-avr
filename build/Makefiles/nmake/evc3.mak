@@ -14,8 +14,7 @@
 CXX = $(CC)
 
 DEFS_COMMON = $(DEFS_COMMON) /D _WIN32_WCE=$(CEVERSION) /D UNDER_CE=$(CEVERSION) /D "UNICODE"
-# Note: the commctrl.lib is possibly not necessary and could be removed.
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) commctrl.lib coredll.lib corelibc.lib /nodefaultlib:"libc.lib" /nodefaultlib:"oldnames.lib"
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) coredll.lib corelibc.lib /nodefaultlib:LIBC.lib /nodefaultlib:"oldnames.lib"
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) /stack:0x10000,0x1000 /subsystem:WINDOWSCE /align:"4096"
 
 # increase compiler memory in order to compile deeply nested template code
@@ -38,7 +37,7 @@ LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:ARM
 DEFS_COMMON = $(DEFS_COMMON) /D "x86" /D "_X86_"
 OPT_COMMON = $(OPT_COMMON)
 !if "$(TARGET_PROC_SUBTYPE)" == "emulator"
-DEFS_COMMON = $(DEFS_COMMON) /D "emulator"
+DEFS_COMMON = $(DEFS_COMMON) /D "_STLP_WCE_TARGET_PROC_SUBTYPE_EMULATOR"
 !endif
 LDFLAGS_COMMON = $(LDFLAGS_COMMON) /MACHINE:X86 $(CEx86Corelibc)
 !endif

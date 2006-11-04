@@ -16,6 +16,11 @@ CC=cl.exe
 
 CXX = $(CC)
 
+# activate global optimisations (aka Link Time Code Generation)
+OPT_REL = $(OPT_REL) /GL
+LDFLAGS_REL = $(LDFLAGS_REL) /LTCG
+
+
 # make the compiler display absolute paths in diagnostics
 # While this is not necessary for STLport in any way, it is convenient when using 
 # the VC8 IDE for building things because then you can click on diagnostics in 
