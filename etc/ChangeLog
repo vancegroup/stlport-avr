@@ -1,0 +1,148 @@
+2006-11-02  Francois Dumont  <dums@stlport...>
+
+	* Repository: Merged STLPORT_5_1_RC3 tag changes up to r2771 into the trunk.
+	Now trunk is really in sync with STLPORT_5_1 branch.
+
+	* etc/ChangeLog: Now contains only trunk modif, 5.1 changes are in
+	ChangeLog-5.1.
+
+2006-11-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: merged from 5.1 branch.
+
+2006-11-01  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_stdexcept_base.h: Patch from Uli to simplify
+	__Named_Exception implementation.
+
+2006-10-31  Francois Dumont  <dums@stlport...>
+
+	* build/test/unit/Makefile.inc: Restore STLport version information that
+	had mysteriously disappeared in a previous modification.
+
+	* stlport/stl/_num_put.c: Disable warning for MSVC that signal problem in
+	cast from pointer to unsigned long.
+
+	* src/num_put_float.cpp: Fix buffer overflow introduce by a previous
+	modification. Now STLport appends '0' so that floating point scientific
+	output has a constant size. MAXESIZ renamed in MAXEDIGITS to make macro
+	signification more obvious.
+
+	* test/unit/complete_digits.h: New file containing the function giving
+	platform dependant number of digits in STLport scientific output of
+	floating point types.
+
+	* test/unit/num_put_get_test.cpp, locale_test.cpp: Adapt tests to latest
+	STLport modifications.
+
+2006-10-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_stlport_version.h: Upgrade STLport version information
+	to reflect built libraries.
+
+2006-10-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/host.h, _linux.h: force usage malloc_alloc as default
+	allocator on systems with glibc 2.3.x and later	due to better performance.
+
+	* stlport/stl/_alloc.h: remove _STLP_MALLOC_USABLE_SIZE dependant
+	code---not really used.
+	
+	* stlport/stl/_alloc.c: remove recalculation of __n [Francois was right];
+	remove _STLP_MALLOC_USABLE_SIZE dependant code---not really used.
+
+	* src/allocators.cpp: remove additional __malloc_alloc_impl class---not
+	required; add mutex lock for custom __malloc_alloc oom handler change/use
+	[in multi-threaded environment].
+
+2006-10-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/c_locale.h, _mbstate_t.h, src/c_locale.h, c_locale.c:
+	merge changes from STLPORT_5_1 branch, see 2006-10-12 [Francois Dumont];
+	may be problems on Solaris, and FreeBSD---more check required.
+
+2006-10-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: merge changes [not all] 2006-10-12 from STLPORT_5_1 branch
+
+2006-10-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: merge changes from STLPORT_5_1 branch (records
+	from 2006-10-06 to 2006-10-04).
+
+	* stlport/stl/_alloc.c: Hmm, looks like deallocation size in
+	2006-10-06 is wrong.
+
+	* stlport/stl/_num_put.c: print pointer as in fix width form, and
+	with base 0x, independent, zero pointer or not.
+
+	* test/unit/num_put_get_test.cpp: test for issue above.
+
+	* test/unit/string_test.cpp: test for overloaded operators
+	and temporary string; inspired by problems with some compilers.
+
+	* stlport/stl/_mbstate_t.h: revert back changes from STLPORT_5_1 branch;
+	mbstate_t couple with wchar closely, and sometimes has compex and implicit
+	dependance; include wchar.h first required! 
+
+2006-09-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/string_test.cpp: add test for bug report #1541499,
+	problem not detected; looks like gcc 4.1.1 can compile te_tmp test
+	correctly [sum operations under class derived from string, with
+	_STLP_USE_TEMPLATE_EXPRESSION].
+
+2006-09-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_sstream.h, _sstream.c: remove double buffering
+	on write only underlying string as buffer. Use knowlege about
+	string implementation, this should improve performance, and,
+	at least simplify code and avoid logic that already present in
+	string implementation.
+
+	* stlport/stl/_string_base.h: basic_streambuf is friend, to access
+	to internal function (access to storage pointers).
+
+	* stlport/stl/debug/_string.h, _string_sum_methods.h: change usage
+	of 'non-debug string', from 'use of' relation to 'inherit' releation.
+	Useful for access basic_streambuf to string storage in _STLP_DEBUG
+	mode too.
+		
+	* test/unit/sstream_test.cpp: test for tellp call; change test
+	with inited ostringstream in accordance with another Standard
+	treatment.
+	
+	* stlport/stl/_streambuf.h: remove ancient code, that can't
+	work with present code in any case.
+
+	* src/c_locale.c: ditto
+
+	* build/lib/Makefile.inc: bump minor version (5.2.0)
+
+2006-07-27  Francois Dumont  <dums@stlport...>
+
+	* stlport: Adopt include_next GNU extension for the following reasons:
+	- Standard headers do not have to be categorised anymore to be
+	included, we could have a wrong include order if headers are not
+	correctly categorized.
+	- Package builder can use any folder structure they want for gcc,
+	STLport won't have to be customized anymore.
+	- Make STLport usable with other library that also use the shadow
+	header trick to modify native headers content.
+
+	* stlport/stl/config/_gcc.h: Add definition of _STLP_HAS_INCLUDE_NEXT
+	macro to signal that this compiler preprocessor support include_next.
+	Removed all definition of native headers path that are now useless.
+
+2006-03-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_put_float.cpp: use buffers that at least longer
+	than maximal double [or long double] exponent, so avoid
+	potential vulnerabilities; this allow to read really long
+	fix-float numbers [with lost of significant digits, of cause].
+
+	* test/unit/floatio_test.cpp: add test for issue above
+
+2006-03-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/cxa.c: remove wrong exclusion of lock for Solaris.
