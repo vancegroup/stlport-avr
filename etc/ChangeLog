@@ -1,3 +1,11 @@
+2006-11-04  Francois Dumont  <dums@stlport...>
+
+	* src/num_put_float.cpp: According C Standard number of digits in the
+	exponent part of scientific output should be at least 2, C99 even says
+	that we shouldn't add zeros if there are move than 3 significant digits.
+
+	* test/unit/complete_digits.h: Modified according to above rules.
+
 2006-11-02  Francois Dumont  <dums@stlport...>
 
 	* Repository: Merged STLPORT_5_1_RC3 tag changes up to r2771 into the trunk.

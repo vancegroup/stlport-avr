@@ -522,7 +522,10 @@ static size_t __format_float_scientific( __iostring& buf, const char *bp,
   }
 
   // prepend leading zeros to exponent
-  while (suffix > &expbuf[2])
+  // C89 Standard says that it should be at least 2 digits, C99 Standard says that
+  // we stop prepend zeros if more than 3 digits. To repect both STLport prepend zeros
+  // until it is 2 digits.
+  while (suffix > &expbuf[MAXEDIGITS])
     *--suffix = '0';
 
   // put in the exponent sign
