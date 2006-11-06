@@ -289,9 +289,9 @@
  * but after link phase and optimization you will only experiment benefit if you use
  * many container with pointer types.
  */
-
+/*
 #define _STLP_USE_PTR_SPECIALIZATIONS 1
-
+*/
 
 /*
  * To achieve many different optimizations within the template implementations STLport

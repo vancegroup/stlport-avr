@@ -71,8 +71,8 @@ template <class _CharT, class _Traits, class _Alloc>
 void
 basic_stringbuf<_CharT, _Traits, _Alloc>::_M_set_ptrs()
 {
-  _CharT* __data_ptr = _M_str._M_Start();
-  _CharT* __data_end = _M_str._M_Finish();
+  _CharT* __data_ptr = _S_start(_M_str);
+  _CharT* __data_end = _S_finish(_M_str);
   // The initial read position is the beginning of the string.
   if (_M_mode & ios_base::in) {
     this->setg(__data_ptr, (_M_mode & ios_base::ate) ? __data_end : __data_ptr, __data_end);
@@ -149,13 +149,13 @@ __BSB_int_type__ basic_stringbuf<_CharT, _Traits, _Alloc>::overflow(int_type __c
       } else if ( _M_mode & ios_base::in ) {
         ptrdiff_t __offset = this->gptr() - this->eback();
         _M_str.push_back(_Traits::to_char_type(__c));
-        _CharT* __data_ptr = _M_str._M_Start();
-        this->setg(__data_ptr, __data_ptr + __offset, _M_str._M_Finish() );
-        this->setp(__data_ptr, _M_str._M_Finish() );
+        _CharT* __data_ptr = _S_start(_M_str);
+        this->setg(__data_ptr, __data_ptr + __offset, _S_finish(_M_str));
+        this->setp(__data_ptr, _S_finish(_M_str));
         this->pbump((int)_M_str.size());
       } else {
         _M_str.push_back( _Traits::to_char_type(__c) );
-        this->setp(_M_str._M_Start(), _M_str._M_Finish());
+        this->setp(_S_start(_M_str), _S_finish(_M_str));
         this->pbump((int)_M_str.size());
       }
       return __c;
@@ -174,8 +174,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
   if ((_M_mode & ios_base::out) && __n > 0) {
     // If the put pointer is somewhere in the middle of the string,
     // then overwrite instead of append.
-    if ( _M_str.size() > 0 && this->pbase() == _M_str._M_Start() ) {
-      ptrdiff_t __avail = _M_str._M_Finish() - this->pptr();
+    if ( !_M_str.empty() && this->pbase() == _S_start(_M_str)) {
+      ptrdiff_t __avail = _S_finish(_M_str) - this->pptr();
       if (__avail > __n) {
         _Traits::copy(this->pptr(), __s, __STATIC_CAST(size_t, __n));
         this->pbump((int)__n);
@@ -193,14 +193,14 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::xsputn(const char_type* __s,
     if (_M_mode & ios_base::in) {
       ptrdiff_t __get_offset = this->gptr() - this->eback();
       _M_str.append(__s, __s + __STATIC_CAST(ptrdiff_t, __n));
-      __data_ptr = _M_str._M_Start();
-      this->setg(__data_ptr, __data_ptr + __get_offset, _M_str._M_Finish() );
+      __data_ptr = _S_start(_M_str);
+      this->setg(__data_ptr, __data_ptr + __get_offset, _S_finish(_M_str));
     } else {
       _M_str.append(__s, __s + __STATIC_CAST(ptrdiff_t, __n));
-      __data_ptr = _M_str._M_Start();
+      __data_ptr = _S_start(_M_str);
     }
 
-    this->setp(__data_ptr, _M_str._M_Finish() );
+    this->setp(__data_ptr, _S_finish(_M_str));
     this->pbump((int)_M_str.size());
     __nwritten += __n;
   }
@@ -217,8 +217,8 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_xsputnc(char_type __c,
   if ((_M_mode & ios_base::out) && __n > 0) {
     // If the put pointer is somewhere in the middle of the string,
     // then overwrite instead of append.
-    if (this->pbase() == _M_str._M_Start() ) {
-      ptrdiff_t __avail = _M_str._M_Finish() - this->pptr();
+    if (this->pbase() == _S_start(_M_str)) {
+      ptrdiff_t __avail = _S_finish(_M_str) - this->pptr();
       if (__avail > __n) {
         _Traits::assign(this->pptr(), __STATIC_CAST(size_t, __n), __c);
         this->pbump(__STATIC_CAST(int, __n));
@@ -238,14 +238,14 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::_M_xsputnc(char_type __c,
     if (this->_M_mode & ios_base::in) {
       ptrdiff_t __get_offset = this->gptr() - this->eback();
       _M_str.append(__app_size, __c);
-      __data_ptr = _M_str._M_Start();
-      this->setg(__data_ptr, __data_ptr + __get_offset, _M_str._M_Finish() );
+      __data_ptr = _S_start(_M_str);
+      this->setg(__data_ptr, __data_ptr + __get_offset, _S_finish(_M_str));
     } else {
       _M_str.append(__app_size, __c);
-      __data_ptr = _M_str._M_Start();
+      __data_ptr = _S_start(_M_str);
     }
 
-    this->setp(__data_ptr, _M_str._M_Finish() );
+    this->setp(__data_ptr, _S_finish(_M_str));
     this->pbump((int)_M_str.size());
     __nwritten += __app_size;
   }
@@ -266,12 +266,12 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::setbuf(_CharT*, streamsize __n) {
     ptrdiff_t __offg = 0;
     ptrdiff_t __offp = 0;
 
-    if (this->pbase() == _M_str._M_Start() ) {
+    if (this->pbase() == _S_start(_M_str)) {
       __do_put_area = true;
       __offp = this->pptr() - this->pbase();
     }
 
-    if (this->eback() == _M_str._M_Start() ) {
+    if (this->eback() == _S_start(_M_str)) {
       __do_get_area = true;
       __offg = this->gptr() - this->eback();
     }
@@ -279,14 +279,14 @@ basic_stringbuf<_CharT, _Traits, _Alloc>::setbuf(_CharT*, streamsize __n) {
     _M_str.reserve(sizeof(streamsize) > sizeof(size_t) ? __STATIC_CAST(size_t, (min)(__n, __STATIC_CAST(streamsize, _M_str.max_size())))
                                                        : __STATIC_CAST(size_t, __n));
 
-    _CharT* __data_ptr = _M_str._M_Start();
+    _CharT* __data_ptr = _S_start(_M_str);
 
     if (__do_get_area) {
-      this->setg(__data_ptr, __data_ptr + __offg, _M_str._M_Finish() );
+      this->setg(__data_ptr, __data_ptr + __offg, _S_finish(_M_str));
     }
 
     if (__do_put_area) {
-      this->setp(__data_ptr, _M_str._M_Finish() );
+      this->setp(__data_ptr, _S_finish(_M_str));
       this->pbump((int)__offp);
     }
   }
@@ -379,7 +379,7 @@ basic_stringbuf<_CharT, _Traits, _Alloc>
     if (__n < 0 || size_t(__n) > _M_str.size())
       return pos_type(off_type(-1));
 
-    this->setp( _M_str._M_Start(), _M_str._M_Finish() );
+    this->setp(_S_start(_M_str), _S_finish(_M_str));
     this->pbump((int)__n);
   }
 

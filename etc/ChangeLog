@@ -1,3 +1,17 @@
+2006-11-05  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_sstream.h, _sstream.c: Add 2 helper functions _S_Start and
+	_S_Finish to hide complexity of code required to have read access to the
+	aggregated string instance internal buffer. Those 2 functions help keeping
+	basic_stringbuf implementation simple without requiring a friend
+	declaration in basic_string class and use of inheritance in _STLP_DEBUG
+	mode between the debug string and the non debug one.
+
+	* stlport/stl/_string.h, debug/_string.h, _string_sum_methods.h: Removed
+	friend declaration and inheritance (see above). This also avoids to restore
+	some workarounds that used to be necessary when _STLP_DEBUG mode was using
+	inheritance in all the debug containers.
+
 2006-11-04  Francois Dumont  <dums@stlport...>
 
 	* src/num_put_float.cpp: According C Standard number of digits in the

@@ -95,10 +95,12 @@ protected:                      // Overridden virtual member functions.
 
 private:                        // Helper functions.
   void _M_set_ptrs();
+  static _CharT* _S_start(const _String& __str) { return __CONST_CAST(_CharT*, __str.data()); }
+  static _CharT* _S_finish(const _String& __str) { return __CONST_CAST(_CharT*, __str.data()) + __str.size(); }
 
 private:
   ios_base::openmode _M_mode;
-  mutable basic_string<_CharT, _Traits, _Alloc> _M_str;
+  mutable _String _M_str;
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
