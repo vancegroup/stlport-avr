@@ -16,24 +16,33 @@
  *
  */
 #ifndef _STLP_STREAMBUF
-#define _STLP_STREAMBUF
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1066
 #  include <stl/_prolog.h>
-# endif
+#  define _STLP_STREAMBUF
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1066)
+#  include <stl/_ioserr.h>
 
-# include <stl/_ioserr.h>
-# include <stl/_streambuf.h>
+#  ifndef _STLP_INTERNAL_STREAMBUF
+#    include <stl/_streambuf.h>
+#  endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1066)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1066) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <streambuf>
+#  else
+#    include _STLP_NATIVE_HEADER(streambuf)
+#  endif
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1066)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_STREAMBUF */
 

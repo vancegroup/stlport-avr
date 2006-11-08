@@ -23,10 +23,6 @@
 #ifndef _STLP_INTERNAL_MONETARY_H
 #define _STLP_INTERNAL_MONETARY_H
 
-#ifndef _STLP_INTERNAL_CTYPE_H
-#  include <stl/_ctype.h>
-#endif
-
 #ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
 #  include <stl/_ostreambuf_iterator.h>
 #endif

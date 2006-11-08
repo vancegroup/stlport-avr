@@ -28,7 +28,13 @@
 #  define _STLP_EXCEPTION
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x423) || defined (_STLP_DONT_POP_HEADER_ID)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x423) && !defined (_STLP_DONT_POP_HEADER_ID)
+#  ifndef _STLP_INTERNAL_EXCEPTION
+#    include <stl/_exception.h>
+#  endif
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID != 0x423) || defined (_STLP_DONT_POP_HEADER_ID) || defined (_STLP_IMPORT_VENDOR_STD)
 /* If we are here it means that we are in an include called 
  * from the native lib which means that we can simply forward this
  * call to the native exception header:
@@ -38,8 +44,6 @@
 #  else
 #    include _STLP_NATIVE_CPP_RUNTIME_HEADER(exception)
 #  endif
-#else
-#  include <stl/_exception.h>
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x423)

@@ -19,8 +19,8 @@
 #ifndef _STLP_STRING_FWD_H
 #define _STLP_STRING_FWD_H
 
-#ifndef _STLP_IOSFWD
-#  include <iosfwd>
+#ifndef _STLP_INTERNAL_IOSFWD
+#  include <stl/_iosfwd.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

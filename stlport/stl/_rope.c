@@ -36,8 +36,12 @@
 #endif
 
 #if !defined (_STLP_USE_NO_IOSTREAMS)
-#  ifndef _STLP_IOSTREAM
-#    include <iostream>
+#  ifndef _STLP_INTERNAL_OSTREAM_H
+#    include <stl/_ostream.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_ISTREAM
+#    include <stl/_istream.h>
 #  endif
 #endif
 
@@ -45,11 +49,11 @@
 
 _STLP_BEGIN_NAMESPACE
 
-# if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
-# define __allocator__ _Alloc
-# else
-# define __allocator__ allocator_type
-# endif
+#if defined ( _STLP_NESTED_TYPE_PARAM_BUG )
+#  define __allocator__ _Alloc
+#else
+#  define __allocator__ allocator_type
+#endif
 
 template<class _CharT, class _Alloc>
 _Rope_iterator<_CharT, _Alloc>::_Rope_iterator(rope<_CharT,_Alloc>* __r, size_t __pos)

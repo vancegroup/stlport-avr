@@ -17,24 +17,33 @@
  */
 
 #ifndef _STLP_IOS
-#define _STLP_IOS
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1032
 #  include <stl/_prolog.h>
-# endif
+#  define _STLP_IOS
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1032)
+#  include <stl/_ioserr.h>
 
-# include <stl/_ioserr.h>
-# include <stl/_ios.h>
+#  ifndef _STLP_INTERNAL_IOS_H
+#    include <stl/_ios.h>
+#  endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1032)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1032) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <ios>
+#  else
+#    include _STLP_NATIVE_HEADER(ios)
+#  endif
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1032)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_IOS */
 

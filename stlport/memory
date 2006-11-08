@@ -17,33 +17,30 @@
  */
 
 #ifndef _STLP_MEMORY
-#define _STLP_MEMORY
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x46
 #  include <stl/_prolog.h>
+#  define _STLP_MEMORY
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
+#if (_STLP_OUTERMOST_HEADER_ID == 0x46)
+#  ifndef _STLP_INTERNAL_ALLOC_H
+#    include <stl/_alloc.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_TEMPBUF_H
+#    include <stl/_tempbuf.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_RAW_STORAGE_ITER_H
+#    include <stl/_raw_storage_iter.h>
+#  endif
+
+#  include <stl/_auto_ptr.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ALLOC_H
-#  include <stl/_alloc.h>
-#endif
-
-#ifndef _STLP_INTERNAL_TEMPBUF_H
-#  include <stl/_tempbuf.h>
-#endif
-
-#ifndef _STLP_INTERNAL_RAW_STORAGE_ITER_H
-#  include <stl/_raw_storage_iter.h>
-#endif
-
-#include <stl/_auto_ptr.h>
-
-#if defined (_STLP_IMPORT_VENDOR_STD)
-
+#if (_STLP_OUTERMOST_HEADER_ID != 0x46) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (__MSL__)
 #    include _STLP_NATIVE_HEADER(limits)
 #  endif
@@ -58,7 +55,6 @@
 /*  980401 vss  MSL 2.4  Pro 3 Release  */  
 #    include <new_mem.h>
 #  endif
-
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x46)

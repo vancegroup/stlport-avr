@@ -21,24 +21,22 @@
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x63
 #  include <stl/_prolog.h>
-#elif (_STLP_OUTERMOST_HEADER_ID == 0x63) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x63) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
 #  define _STLP_STDEXCEPT
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
+#if (_STLP_OUTERMOST_HEADER_ID == 0x63)
+#  ifndef _STLP_INTERNAL_STDEXCEPT
+#    include <stl/_stdexcept.h>
+#  endif
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x63) || defined (_STLP_DONT_POP_HEADER_ID)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x63) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <stdexcept>
 #  else
 #    include _STLP_NATIVE_HEADER(stdexcept)
-#  endif
-#else
-#  ifndef _STLP_INTERNAL_STDEXCEPT
-#    include <stl/_stdexcept.h>
 #  endif
 #endif
 

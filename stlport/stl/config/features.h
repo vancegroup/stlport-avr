@@ -164,7 +164,12 @@
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS) && \
     (defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS))
-#  error "Sorry but according the STLport settings your compiler can not support the pointer specialization feature."
+#  error Sorry but according the STLport settings your compiler can not support the pointer specialization feature.
+#endif
+
+#if defined (_STLP_WHOLE_NATIVE_STD) && defined (_STLP_NO_OWN_NAMESPACE)
+#  error Sorry but asking for both STLport to be in the real std namespace and also having STLport import all native std stuff \
+  is invalid, chose one or none.
 #endif
 
 #if defined (_STLP_NO_IOSTREAMS) && \
@@ -512,7 +517,6 @@
  * (if we wrap native iostreams and use namepace other than std::) */
 #  if defined (_STLP_WHOLE_NATIVE_STD)
 #    define  _STLP_IMPORT_VENDOR_STD 1
-#    undef   _STLP_MINIMUM_IMPORT_STD
 #  endif
 
 /* if using stlport:: namespace or if C library stuff is not in vendor's std::,
@@ -590,7 +594,7 @@ namespace __std_alias = std;
 /*
  * The STLport debug mode is binary incompatible with the other modes,
  * lets make it clear on the STLport namespace to generate link errors rather
- * than runtime.
+ * than runtime ones.
  */
 #        if !defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
 #          ifndef _STLP_THREADS

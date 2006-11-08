@@ -17,37 +17,41 @@
  */
 
 #ifndef _STLP_IOSTREAM
-#define _STLP_IOSTREAM
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1037
 #  include <stl/_prolog.h>
-# endif
-
-# ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-# endif
-
-#include <stl/_ioserr.h>
-
-#ifdef _STLP_REDIRECT_STDSTREAMS
-// for ofstream redirection
-# include <fstream>
+#  define _STLP_IOSTREAM
 #endif
 
-#include <stl/_iosfwd.h>
-#include <stl/_istream.h>
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1037)
+#  include <stl/_ioserr.h>
+
+#  ifdef _STLP_REDIRECT_STDSTREAMS
+// for ofstream redirection
+#    ifndef _STLP_INTERNAL_FSTREAM_H
+#      include <stl/_fstream.h>
+#    endif
+#  endif
+
+#  ifndef _STLP_INTERNAL_IOSFWD
+#    include <stl/_iosfwd.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_ISTREAM
+#    include <stl/_istream.h>
+#  endif
 
 _STLP_BEGIN_NAMESPACE
 
-#ifndef _STLP_USE_NAMESPACES
+#  ifndef _STLP_USE_NAMESPACES
 // in case of SGI iostreams, we have to rename our streams not to clash with those
 // provided in native lib
-# define cin _STLP_cin
-# define cout _STLP_cout
-# define cerr _STLP_cerr
-# define clog _STLP_clog
-#endif
+#    define cin _STLP_cin
+#    define cout _STLP_cout
+#    define cerr _STLP_cerr
+#    define clog _STLP_clog
+#  endif
 
 // Note: cin and wcin are both associated with stdio.  The C standard
 // (Amendment 1, section 4.6.2.1) says that it is an error to mix
@@ -56,34 +60,41 @@ _STLP_BEGIN_NAMESPACE
 // program; the same applies to cout and wcout, and cerr/clog and
 // wcerr/wclog.
 
-# ifdef _STLP_REDIRECT_STDSTREAMS
 extern _STLP_DECLSPEC istream cin;
+
+#  ifdef _STLP_REDIRECT_STDSTREAMS
 extern _STLP_DECLSPEC ofstream cout;
 extern _STLP_DECLSPEC ofstream cerr;
 extern _STLP_DECLSPEC ofstream clog;
-# else
-extern _STLP_DECLSPEC istream cin;
+#  else
 extern _STLP_DECLSPEC ostream cout;
 extern _STLP_DECLSPEC ostream cerr;
 extern _STLP_DECLSPEC ostream clog;
-# endif
+#  endif
 
-# ifndef _STLP_NO_WCHAR_T
+#  ifndef _STLP_NO_WCHAR_T
 extern _STLP_DECLSPEC wistream wcin;
 extern _STLP_DECLSPEC wostream wcout;
 extern _STLP_DECLSPEC wostream wcerr;
 extern _STLP_DECLSPEC wostream wclog;
-# endif
+#  endif
 
 _STLP_END_NAMESPACE
 
-//# elif defined ( _STLP_USE_NO_IOSTREAMS )
-//#  include <stl/_null_stream.h>
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1037)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1037) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <iostream>
+#  else
+#    include _STLP_NATIVE_HEADER(iostream)
+#  endif
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1037)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_IOSTREAM */
 

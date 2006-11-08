@@ -1,3 +1,41 @@
+2006-11-07  Francois Dumont  <dums@stlport...>
+
+	* stlport: All C++ Standard headers are now using the same schema. If
+	included from outside (_STLP_OUTERMOST_HEADER_ID not defined) it first
+	included internal header (in stl folder) and then, if _STLP_WHOLE_NATIVE
+	is defined, include the equivalent native Standard header. If included
+	from inside, simply forward to native header include. This schema has
+	several advantages:
+	- Less dependancy on native library headers interdependancy.
+	- Less code included as STLport code is only exposed if headers are
+	included from the outside.
+	- Restore _STLP_WHOLE_NATIVE_STD configuration (tested with gcc, msvc, bcc)
+	The condition for this schema to work is that STLport never include Standard
+	headers internaly when it wants to access some STLport code.
+
+	* stlport/stl/_iomanip.h: New file containing all STLport code that used
+	to be in stlport/iomanip.
+
+	* stlport/stl/_complex.h, _rope.h, _stream_iterator.h, _string_fwd.h: Use
+	stl/_iomanip.h rather than iomanip.
+
+	* stlport/stl/_rope.c: Use stl/_ostream.h and stl/_istream.h rather than
+	iostream.
+
+	* stlport/stl/config/_kai.h, _msvc.h, feature.h: _STLP_MINIMUM_IMPORT_STD
+	macro removed, it was only used in vector header to avoid include of
+	native vector header even when _STLP_IMPORT_VENDOR_STD was defined. MSVC6
+	used to define it but removing it hasn't make compilation failed when
+	importing all native std stuff. Looks like it was a workaround necessary
+	when STLport was not as clean as it is now or for the former wrapper mode
+	that has been removed.
+
+	* stlport/stl/config/features.h: Add a #error to signal that
+	_STLP_WHOLE_NATIVE_STD and _STLP_NO_OWN_NAMESPACE are incompatible
+	options.
+
+	* stlport/stl/config/stl_confix.h
+
 2006-11-05  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_sstream.h, _sstream.c: Add 2 helper functions _S_Start and

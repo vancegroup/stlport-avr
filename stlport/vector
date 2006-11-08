@@ -21,26 +21,24 @@
  */
 
 #ifndef _STLP_VECTOR
-#define _STLP_VECTOR
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x77
 #  include <stl/_prolog.h>
+#  define _STLP_VECTOR
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
+#if (_STLP_OUTERMOST_HEADER_ID == 0x77)
+#  ifndef _STLP_INTERNAL_ALGOBASE_H
+#    include <stl/_algobase.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_VECTOR_H
+#    include <stl/_vector.h>
+#  endif
 #endif
 
-#ifndef _STLP_INTERNAL_ALGOBASE_H
-#  include <stl/_algobase.h>
-#endif
-
-#ifndef _STLP_INTERNAL_VECTOR_H
-#  include <stl/_vector.h>
-#endif
-
-#if defined (_STLP_IMPORT_VENDOR_STD) && ! defined (_STLP_MINIMUM_IMPORT_STD)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x77) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <vector>
 #  else

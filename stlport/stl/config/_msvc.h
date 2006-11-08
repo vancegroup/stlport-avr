@@ -67,7 +67,6 @@
 #  define _STLP_WCHAR_T_IS_USHORT 1
 #endif
 
-#define _STLP_MINIMUM_IMPORT_STD
 #define _STLP_NO_VENDOR_STDLIB_L 1
 
 #if defined (_STLP_MSVC)

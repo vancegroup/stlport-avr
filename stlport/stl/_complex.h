@@ -807,7 +807,9 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL polar(const long double&, const l
 
 _STLP_END_NAMESPACE
 
-#  include <iosfwd>
+#  ifndef _STLP_INTERNAL_IOSFWD
+#    include <stl/_iosfwd.h>
+#  endif
 
 _STLP_BEGIN_NAMESPACE
 

@@ -16,24 +16,33 @@
  *
  */
 #ifndef _STLP_OSTREAM
-#define _STLP_OSTREAM
 
-# ifndef _STLP_OUTERMOST_HEADER_ID
+#ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1050
 #  include <stl/_prolog.h>
-# endif
+#  define _STLP_OSTREAM
+#endif
 
-# ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-# endif
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1050)
+#  include <stl/_ioserr.h>
 
-# include <stl/_ioserr.h>
-# include <stl/_ostream.h>
+#  ifndef _STLP_INTERNAL_OSTREAM
+#    include <stl/_ostream.h>
+#  endif
+#endif
 
-# if (_STLP_OUTERMOST_HEADER_ID == 0x1050)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1050) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <ostream>
+#  else
+#    include _STLP_NATIVE_HEADER(ostream)
+#  endif
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1050)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
-# endif
+#endif
 
 #endif /* _STLP_OSTREAM */
 

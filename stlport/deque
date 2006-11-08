@@ -24,22 +24,20 @@
  */
 
 #ifndef _STLP_DEQUE
-#define _STLP_DEQUE
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x22
 #  include <stl/_prolog.h>
+#  define _STLP_DEQUE
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
+#if (_STLP_OUTERMOST_HEADER_ID == 0x22)
+#  ifndef _STLP_INTERNAL_DEQUE_H
+#    include <stl/_deque.h>
+#  endif
 #endif
 
-#ifndef _STLP_INTERNAL_DEQUE_H
-#  include <stl/_deque.h>
-#endif
-
-#if defined (_STLP_IMPORT_VENDOR_STD)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x22) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <deque>
 #  else

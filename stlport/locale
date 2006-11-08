@@ -16,53 +16,50 @@
  *
  */
 #ifndef _STLP_LOCALE
-#define _STLP_LOCALE
 
 // Basic framework: class locale and class locale::facet
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1041
 #  include <stl/_prolog.h>
+#  define _STLP_LOCALE
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-#endif
-
-#include <stl/_ioserr.h>
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1041)
+#  include <stl/_ioserr.h>
 
 // Individual facets
-#ifndef _STLP_INTERNAL_CTYPE_H
-#  include <stl/_ctype.h>
-#endif
+#  ifndef _STLP_INTERNAL_CTYPE_H
+#    include <stl/_ctype.h>
+#  endif
 
-#ifndef _STLP_INTERNAL_CODECVT_H
-#  include <stl/_codecvt.h>
-#endif
+#  ifndef _STLP_INTERNAL_CODECVT_H
+#    include <stl/_codecvt.h>
+#  endif
 
-#ifndef _STLP_INTERNAL_COLLATE_H
-#  include <stl/_collate.h>
-#endif
+#  ifndef _STLP_INTERNAL_COLLATE_H
+#    include <stl/_collate.h>
+#  endif
 
-#ifndef _STLP_INTERNAL_NUM_PUT_H
-#  include <stl/_num_put.h>
-#endif
+#  ifndef _STLP_INTERNAL_NUM_PUT_H
+#    include <stl/_num_put.h>
+#  endif
 
-#ifndef _STLP_INTERNAL_NUM_GET_H
-#  include <stl/_num_get.h>
-#endif
+#  ifndef _STLP_INTERNAL_NUM_GET_H
+#    include <stl/_num_get.h>
+#  endif
 
 // those never included separately anyway
-#include <stl/_monetary.h>
-#include <stl/_time_facets.h>
-#include <stl/_messages_facets.h>
+#  include <stl/_monetary.h>
+#  include <stl/_time_facets.h>
+#  include <stl/_messages_facets.h>
 
 // some stuff for streambuf iterators ended up defined there
 // Strictly speaking, _istream.h portion is only required for <iterator>, but it may break too many
 // programs if we omit it
-#ifndef _STLP_ISTREAM_H
-#  include <stl/_istream.h>
-#endif
+#  ifndef _STLP_ISTREAM_H
+#    include <stl/_istream.h>
+#  endif
 
 // Convenience interfaces
 #undef isspace
@@ -134,6 +131,16 @@ inline _CharT tolower(_CharT c, const locale& loc)
 { return (use_facet<ctype<_CharT> >(loc)).tolower(c); }
 
 _STLP_END_NAMESPACE
+
+#endif
+
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1041) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <locale>
+#  else
+#    include _STLP_NATIVE_HEADER(locale)
+#  endif
+#endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1041)
 #  include <stl/_epilog.h>

@@ -17,25 +17,33 @@
  */
 
 #ifndef _STLP_STRING
-# define _STLP_STRING
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x68
 #  include <stl/_prolog.h>
+#  define _STLP_STRING
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
+#if (_STLP_OUTERMOST_HEADER_ID == 0x68)
+#  ifndef _STLP_INTERNAL_STRING_H
+#    include <stl/_string.h>
+#  endif
+
+#  ifndef _STLP_STRING_HASH_H
+#    include <stl/_string_hash.h>
+#  endif
+
+#  if !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_STRING_IO_H)
+#    include <stl/_string_io.h>
+#  endif
 #endif
 
-#if defined (_STLP_USE_OWN_NAMESPACE)
-#  include <stl/_string.h>
-#endif
-
-#include <stl/_string_hash.h>
-
-#if !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <stl/_string_io.h>
+#if (_STLP_OUTERMOST_HEADER_ID != 0x68) || defined (_STLP_IMPORT_VENDOR_STD)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <string>
+#  else
+#    include _STLP_NATIVE_HEADER(string)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x68)

@@ -35,8 +35,8 @@
 #endif
 
 // streambuf_iterators predeclarations must appear first
-#ifndef _STLP_IOSFWD
-#  include <iosfwd>
+#ifndef _STLP_INTERNAL_IOSFWD
+#  include <stl/_iosfwd.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ALGOBASE_H

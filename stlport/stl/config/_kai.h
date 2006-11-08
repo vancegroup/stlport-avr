@@ -22,13 +22,8 @@
 #   define _STLP_NATIVE_CPP_C_HEADER(header)    <../include/##header>
 #   define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/##header>
 
-# ifdef _WIN32
-#  define _STLP_MINIMUM_IMPORT_STD
-# endif
-
 // KAI C++ uses EDG front-end, but apparently different switches
 // #  define __EDG_SWITCHES 1
-
 
 #  define _STLP_VENDOR_GLOBAL_CSTD 1
 #  define _STLP_VENDOR_MB_NAMESPACE std

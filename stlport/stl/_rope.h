@@ -37,8 +37,8 @@
 #  include <stl/_algobase.h>
 #endif
 
-#ifndef _STLP_IOSFWD
-#  include <iosfwd>
+#if !defined (_STLP_USE_NO_IOSTREAMS) && !defined (_STLP_INTERNAL_IOSFWD)
+#  include <stl/_iosfwd.h>
 #endif
 
 #ifndef _STLP_INTERNAL_ALLOC_H

@@ -24,27 +24,25 @@
  */
 
 #ifndef _STLP_ALGORITHM
-#define _STLP_ALGORITHM
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x1
 #  include <stl/_prolog.h>
+#  define _STLP_ALGORITHM
 #endif
 
-#ifdef _STLP_PRAGMA_ONCE
-#  pragma once
-#endif
-
-#ifndef _STLP_INTERNAL_CSTDIO
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1)
+#  ifndef _STLP_INTERNAL_CSTDIO
 // remove() conflicts, <cstdio> should always go first
-#  include <stl/_cstdio.h>
+#    include <stl/_cstdio.h>
+#  endif
+
+#  ifndef _STLP_INTERNAL_ALGO_H
+#    include <stl/_algo.h>
+#  endif
 #endif
 
-#ifndef _STLP_INTERNAL_ALGO_H
-#  include <stl/_algo.h>
-#endif
-
-#if defined (_STLP_IMPORT_VENDOR_STD)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x1) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <algorithm>
 #  else
