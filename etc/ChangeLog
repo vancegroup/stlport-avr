@@ -1,5 +1,13 @@
 2006-11-07  Francois Dumont  <dums@stlport...>
 
+	* stlport/stl/config/_hpacc.h, stl_confix.h: Thanks to additional info
+	from Boris Gubenko STLport now check __EDG_VERSION__ to detect EDG based
+	compilers. It use this macro to activate include_next feature. Moreover
+	a workaround has been added for aCC6 that was not defining __EDG_VERSION__
+	as expected. _hpacc.h has also been cleaned of obsolete config.
+
+2006-11-07  Francois Dumont  <dums@stlport...>
+
 	* stlport: All C++ Standard headers are now using the same schema. If
 	included from outside (_STLP_OUTERMOST_HEADER_ID not defined) it first
 	included internal header (in stl folder) and then, if _STLP_WHOLE_NATIVE

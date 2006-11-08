@@ -45,12 +45,14 @@
 #endif
 
 /* common switches for EDG front-end */
+/* __EDG_SWITCHES do not seem to be an official EDG macro.
+ * We keep it for historical reason. */
 #if defined (__EDG_SWITCHES)
 #  if !(defined(_TYPENAME) || defined (_TYPENAME_IS_KEYWORD))
 #    undef  _STLP_NEED_TYPENAME
 #    define _STLP_NEED_TYPENAME 1
 #  endif
-#  if !defined(_WCHAR_T_IS_KEYWORD)
+#  ifndef _WCHAR_T_IS_KEYWORD
 #    undef _STLP_NO_WCHAR_T
 #    define _STLP_NO_WCHAR_T 1
 #  endif
@@ -64,7 +66,7 @@
 #    undef _STLP_NO_MEMBER_TEMPLATE_CLASSES
 #    define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #  endif
-#  if !defined(_MEMBER_TEMPLATE_KEYWORD)
+#  ifndef _MEMBER_TEMPLATE_KEYWORD
 #    undef  _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 #    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 #  endif
@@ -72,7 +74,15 @@
 #    undef  _STLP_HAS_NO_EXCEPTIONS
 #    define _STLP_HAS_NO_EXCEPTIONS
 #  endif
-#  define _STLP_HAS_INCLUDE_NEXT
 #  undef __EDG_SWITCHES
 #endif /* EDG */
+
+/* __EDG_VERSION__ is an official EDG macro, compilers based
+ * on EDG have to define it. */
+#if defined (__EDG_VERSION__)
+#  if (__EDG_VERSION__ >= 244)
+#    define _STLP_HAS_INCLUDE_NEXT
+#  endif
+#endif
+
 #endif
