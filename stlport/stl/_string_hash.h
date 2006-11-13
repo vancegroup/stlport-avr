@@ -40,8 +40,8 @@ __stl_string_hash(const basic_string<_CharT,_Traits,_Alloc>& __s) {
   return size_t(__h);
 }
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && \
+  (!defined(__BORLANDC__) || (__BORLANDC__ >= 0x560))
 template <class _CharT, class _Traits, class _Alloc>
 struct hash<basic_string<_CharT,_Traits,_Alloc> > {
   size_t operator()(const basic_string<_CharT,_Traits,_Alloc>& __s) const

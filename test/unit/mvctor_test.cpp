@@ -797,7 +797,7 @@ void MoveConstructorTest::vector_test()
 #  endif /* __DMC__ */
 
 #if defined (STLPORT)
-#  if !defined (__BORLANDC__) && !defined (__DMC__)
+#  if !defined (__DMC__)
   {
     //hash container move contructor:
     unordered_multiset<string> ref;

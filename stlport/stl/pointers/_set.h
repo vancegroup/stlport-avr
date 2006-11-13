@@ -25,6 +25,10 @@
 
 _STLP_BEGIN_NAMESPACE
 
+#if defined (__BORLANDC__)
+#  define typename
+#endif
+
 //Specific iterator traits creation
 _STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 
@@ -55,9 +59,14 @@ class set
           : public __stlport_class<set<_Key, _Compare, _Alloc> >
 #endif
 {
+#if !defined (__BORLANDC__)
   typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare> _AssocStorageTypes;
   typedef typename _AssocStorageTypes::_KeyStorageType _KeyStorageType;
   typedef typename _AssocStorageTypes::_CompareStorageType _CompareStorageType;
+#else
+  typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare>::_KeyStorageType _KeyStorageType;
+  typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare>::_CompareStorageType _CompareStorageType;
+#endif
   typedef typename _Alloc_traits<_KeyStorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV _CastTraits<_KeyStorageType, _Key> cast_traits;
 
@@ -292,9 +301,14 @@ class multiset
                : public __stlport_class<multiset<_Key, _Compare, _Alloc> >
 #endif
 {
+#if !defined (__BORLANDC__)
   typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare> _AssocStorageTypes;
   typedef typename _AssocStorageTypes::_KeyStorageType _KeyStorageType;
   typedef typename _AssocStorageTypes::_CompareStorageType _CompareStorageType;
+#else
+  typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare>::_KeyStorageType _KeyStorageType;
+  typedef _STLP_PRIV _AssocStorageTypes<_Key, _Compare>::_CompareStorageType _CompareStorageType;
+#endif
   typedef typename _Alloc_traits<_KeyStorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV _CastTraits<_KeyStorageType, _Key> cast_traits;
 
@@ -526,6 +540,10 @@ public:
                                                 _S_to_value_ite(__ret.second));
   }
 };
+
+#if defined (__BORLANDC__)
+#  undef typename
+#endif
 
 _STLP_END_NAMESPACE
 

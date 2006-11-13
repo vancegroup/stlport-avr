@@ -193,9 +193,15 @@ void HashTest::insert_erase()
   typedef hmap::value_type val_type;
   {
     hmap values;
+#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
     CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
     CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
     CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
+#  else
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("foo", 0)).second );
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("bar", 0)).second );
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("abc", 0)).second );
+#  endif
 
     CPPUNIT_ASSERT( values.erase("foo") == 1 );
     CPPUNIT_ASSERT( values.erase("bar") == 1 );
@@ -204,9 +210,15 @@ void HashTest::insert_erase()
 
   {
     hmap values;
+#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
     CPPUNIT_ASSERT( values.insert(val_type("foo", 0)).second );
     CPPUNIT_ASSERT( values.insert(val_type("bar", 0)).second );
     CPPUNIT_ASSERT( values.insert(val_type("abc", 0)).second );
+#  else
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("foo", 0)).second );
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("bar", 0)).second );
+    CPPUNIT_ASSERT( values.insert(hmap::value_type("abc", 0)).second );
+#  endif
 
     CPPUNIT_ASSERT( values.erase("abc") == 1 );
     CPPUNIT_ASSERT( values.erase("bar") == 1 );

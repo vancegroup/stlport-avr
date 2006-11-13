@@ -239,12 +239,11 @@ void TypeTraitsTest::manips()
   }
 
   {
-#  if !defined (__BORLANDC__)
     typedef __select<1, __true_type, __false_type>::_Ret _SelectFirstRet;
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __select<0, __true_type, __false_type>::_Ret _SelectSecondRet;
     CPPUNIT_ASSERT( type_to_value(_SelectSecondRet()) == 0 );
-#  else
+#  if defined (__BORLANDC__)
     typedef __selectT<__true_type(), __true_type, __false_type>::_Ret _SelectFirstRet;
     CPPUNIT_ASSERT( type_to_value(_SelectFirstRet()) == 1 );
     typedef __selectT<__false_type(), __true_type, __false_type>::_Ret _SelectSecondRet;

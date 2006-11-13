@@ -75,6 +75,9 @@ struct _DequeIteCast {
 };
 
 #define DEQUE_IMPL _STLP_PTR_IMPL_NAME(deque)
+#if defined (__BORLANDC__)
+#  define typename
+#endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<size_t, void*,  allocator<void*> >;
@@ -369,6 +372,9 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #undef DEQUE_IMPL
+#if defined (__BORLANDC__)
+#  undef typename
+#endif
 
 _STLP_END_NAMESPACE
 

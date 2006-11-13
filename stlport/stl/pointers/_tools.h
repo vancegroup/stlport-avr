@@ -74,13 +74,22 @@ char* _UseConstVolatileVoidPtrStorageType(const __true_type& /*POD*/, _ConstVola
 template <class _Tp>
 struct _StorageType {
   typedef typename __type_traits<_Tp>::is_POD_type _PODType;
-  static _Tp __null_rep();
 
+#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+  static _Tp __null_rep();
   enum { use_void_ptr = (sizeof(_UseVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
   enum { use_const_void_ptr = (sizeof(_UseConstVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
   enum { use_volatile_void_ptr = (sizeof(_UseVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
   enum { use_const_volatile_void_ptr = (sizeof(_UseConstVolatileVoidPtrStorageType(_PODType(), __null_rep())) == sizeof(char*)) };
+#else
+  static _Tp __null_rep;
+  enum { use_void_ptr = (sizeof(_UseVoidPtrStorageType(_PODType(), __null_rep)) == sizeof(char*)) };
+  enum { use_const_void_ptr = (sizeof(_UseConstVoidPtrStorageType(_PODType(), __null_rep)) == sizeof(char*)) };
+  enum { use_volatile_void_ptr = (sizeof(_UseVolatileVoidPtrStorageType(_PODType(), __null_rep)) == sizeof(char*)) };
+  enum { use_const_volatile_void_ptr = (sizeof(_UseConstVolatileVoidPtrStorageType(_PODType(), __null_rep)) == sizeof(char*)) };
+#endif
 
+#if !defined (__BORLANDC__)
   typedef typename __select<!use_const_volatile_void_ptr,
                             _Tp,
           typename __select<use_void_ptr,
@@ -88,6 +97,18 @@ struct _StorageType {
           typename __select<use_const_void_ptr,
                             const void*,
           typename __select<use_volatile_void_ptr,
+#else
+  typedef __bool2type<use_void_ptr>::_Ret _Ret;
+  typedef __bool2type<use_const_void_ptr>::_Ret _cRet;
+  typedef __bool2type<use_volatile_void_ptr>::_Ret _vRet;
+  typedef typename __selectT<__bool2type<!use_const_volatile_void_ptr>::_Ret(),
+                            _Tp,
+          typename __selectT<_Ret(),
+                            void*,
+          typename __selectT<_cRet(),
+                            const void*,
+          typename __selectT<_vRet(),
+#endif
                             volatile void*,
                             const volatile void*>::_Ret >::_Ret >::_Ret >::_Ret _QualifiedType;
 
@@ -102,7 +123,12 @@ struct _StorageType {
   /* With iterator_traits we can wrap passed iterators and make the necessary casts.
    * We can always use a simple void* storage type:
    */
+#  if !defined (__BORLANDC__)
   typedef typename __select<use_const_volatile_void_ptr,
+#  else
+  typedef __bool2type<use_const_volatile_void_ptr>::_Ret _cvRet;
+  typedef typename __selectT<_cvRet(),
+#  endif
                             void*,
                             _Tp>::_Ret _Type;
 #endif
@@ -115,12 +141,18 @@ struct _AssocStorageTypes {
 
   //We need to also check that the comparison functor used to instanciate the assoc container
   //is the default Standard less implementation:
+  enum { ptr_type = _StorageTypeInfo::use_const_volatile_void_ptr };
+#if !defined (__BORLANDC__)
   typedef typename _IsSTLportClass<_Compare>::_Ret _STLportLess;
   enum { is_default_less = __type2bool<_STLportLess>::_Ret };
-
   typedef typename __select<is_default_less, _SType, _Tp>::_Ret _KeyStorageType;
-  enum { ptr_type = _StorageTypeInfo::use_const_volatile_void_ptr };
   typedef typename __select<is_default_less && ptr_type,
+#else
+  enum { is_default_less = _IsSTLportClass<_Compare>::_Is };
+  typedef typename __selectT<_IsSTLportClass<_Compare>(), _SType, _Tp>::_Ret _KeyStorageType;
+  typedef __bool2type<is_default_less && ptr_type>::_Ret _IsDefLessPtrType;
+  typedef typename __selectT<_IsDefLessPtrType(),
+#endif
                             _BinaryPredWrapper<_KeyStorageType, _Tp, _Compare>,
                             _Compare>::_Ret _CompareStorageType;
 };

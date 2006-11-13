@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2003
- * François Dumont
+ * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -123,18 +123,26 @@ struct _Lor3<__false_type, __false_type, __false_type> { typedef __false_type _R
 //the second template type!!
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (__BORLANDC__)
+
 template <bool _Cond, class _Tp1, class _Tp2>
 struct __select { typedef _Tp1 _Ret; };
 
 template <class _Tp1, class _Tp2>
 struct __select<false, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
 
-#  if defined (__BORLANDC__)
+#  else
+
 template <class _CondT, class _Tp1, class _Tp2>
 struct __selectT { typedef _Tp1 _Ret; };
 
 template <class _Tp1, class _Tp2>
-struct __selectT<__false_type, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
+struct __selectT<__false_type(), _Tp1, _Tp2> { typedef _Tp2 _Ret; };
+
+template <bool _Cond, class _Tp1, class _Tp2>
+struct __select 
+{ typedef __selectT<__bool2type<_Cond>::_Ret(), _Tp1, _Tp2>::_Ret _Ret; };
+
 #  endif
 
 #else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */

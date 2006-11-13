@@ -1,3 +1,9 @@
+2006-11-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/: Patch from Eric Sanford for Borland compiler. Allow
+	associative container extension (member methods) and use of pointer
+	specialisation.
+
 2006-11-07  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_hpacc.h, stl_confix.h: Thanks to additional info

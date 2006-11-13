@@ -27,6 +27,9 @@
 _STLP_BEGIN_NAMESPACE
 
 #define LIST_IMPL _STLP_PTR_IMPL_NAME(list)
+#if defined (__BORLANDC__)
+#  define typename
+#endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 
@@ -327,6 +330,9 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #undef LIST_IMPL
+#if defined (__BORLANDC__)
+#  undef typename
+#endif
 
 _STLP_END_NAMESPACE
 

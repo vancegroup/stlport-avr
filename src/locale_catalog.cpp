@@ -132,7 +132,11 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
   typedef Category_Map::iterator Category_iterator;
   pair<Category_iterator, bool> result;
 #else
-  pair<Category_Map::iterator, bool> result;
+#  if !defined(_STLP_DEBUG)
+  pair<_Ht_iterator<_Slist_iterator<pair<const string,pair<void *,unsigned int> >,_Nonconst_traits<pair<const string,pair<void *,unsigned int> > > >,_NonLocalHashMapTraitsT<pair<const string,pair<void *,unsigned int> > > >, bool> result;
+#  else
+  pair<_DBG_iter<_NonDbg_hashtable<pair<const string,pair<void *,unsigned int> >,string,hash<string>,_HashMapTraitsT<pair<const string,pair<void *,unsigned int> > >,_Select1st<pair<const string,pair<void *,unsigned int> > >,_DbgEqual<string,equal_to<string> >,allocator<pair<const string,pair<void *,unsigned int> > > >,_DbgTraits<_NonLocalHashMapTraitsT<pair<const string,pair<void *,unsigned int> > > > >, bool> result;
+#  endif
 #endif
 
   // Find what name to look for. Be careful if user requests the default.
