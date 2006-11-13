@@ -80,8 +80,17 @@
 /* __EDG_VERSION__ is an official EDG macro, compilers based
  * on EDG have to define it. */
 #if defined (__EDG_VERSION__)
-#  if (__EDG_VERSION__ >= 244)
+#  if (__EDG_VERSION__ >= 244) && !defined (_STLP_HAS_INCLUDE_NEXT)
 #    define _STLP_HAS_INCLUDE_NEXT
+#  endif
+#  if (__EDG_VERSION__ <= 240) && !defined (_STLP_DONT_RETURN_VOID)
+#    define _STLP_DONT_RETURN_VOID
+#  endif
+#  if !defined (__EXCEPTIONS) && !defined (_STLP_HAS_NO_EXCEPTIONS)
+#    define _STLP_HAS_NO_EXCEPTIONS
+#  endif
+#  if !defined (__NO_LONG_LONG) && !defined (_STLP_LONG_LONG)
+#    define _STLP_LONG_LONG long long
 #  endif
 #endif
 
