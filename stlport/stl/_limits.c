@@ -31,55 +31,75 @@ _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 
-#  define __declare_numeric_base_member(__type, __mem, _Init) \
+#  define __declare_numeric_base_member(__type, __mem) \
 template <class __number> \
   const __type _Numeric_limits_base<__number>:: __mem
 
-__declare_numeric_base_member(bool, is_specialized, false);
-__declare_numeric_base_member(int, digits, 0);
-__declare_numeric_base_member(int, digits10, 0);
-__declare_numeric_base_member(bool, is_signed, false);
-__declare_numeric_base_member(bool, is_integer, false);
-__declare_numeric_base_member(bool, is_exact, false);
-__declare_numeric_base_member(int, radix, 0);
-__declare_numeric_base_member(int, min_exponent, 0);
-__declare_numeric_base_member(int, max_exponent, 0);
-__declare_numeric_base_member(int, min_exponent10, 0);
-__declare_numeric_base_member(int, max_exponent10, 0);
-__declare_numeric_base_member(bool, has_infinity, false);
-__declare_numeric_base_member(bool, has_quiet_NaN, false);
-__declare_numeric_base_member(bool, has_signaling_NaN, false);
-__declare_numeric_base_member(float_denorm_style, has_denorm, denorm_absent);
-__declare_numeric_base_member(bool, has_denorm_loss, false);
-__declare_numeric_base_member(bool, is_iec559, false);
-__declare_numeric_base_member(bool, is_bounded, false);
-__declare_numeric_base_member(bool, is_modulo, false);
-__declare_numeric_base_member(bool, traps, false);
-__declare_numeric_base_member(bool, tinyness_before, false);
-__declare_numeric_base_member(float_round_style, round_style, round_toward_zero);
+__declare_numeric_base_member(bool, is_specialized);
+__declare_numeric_base_member(int, digits);
+__declare_numeric_base_member(int, digits10);
+__declare_numeric_base_member(bool, is_signed);
+__declare_numeric_base_member(bool, is_integer);
+__declare_numeric_base_member(bool, is_exact);
+__declare_numeric_base_member(int, radix);
+__declare_numeric_base_member(int, min_exponent);
+__declare_numeric_base_member(int, max_exponent);
+__declare_numeric_base_member(int, min_exponent10);
+__declare_numeric_base_member(int, max_exponent10);
+__declare_numeric_base_member(bool, has_infinity);
+__declare_numeric_base_member(bool, has_quiet_NaN);
+__declare_numeric_base_member(bool, has_signaling_NaN);
+__declare_numeric_base_member(float_denorm_style, has_denorm);
+__declare_numeric_base_member(bool, has_denorm_loss);
+__declare_numeric_base_member(bool, is_iec559);
+__declare_numeric_base_member(bool, is_bounded);
+__declare_numeric_base_member(bool, is_modulo);
+__declare_numeric_base_member(bool, traps);
+__declare_numeric_base_member(bool, tinyness_before);
+__declare_numeric_base_member(float_round_style, round_style);
 
 #  undef __declare_numeric_base_member
 
-#  define __declare_integer_limits_member(__type, __mem, _Init) \
+#  define __declare_integer_limits_member(__type, __mem) \
 template <class _Int, _STLP_LIMITS_MIN_TYPE __imin, _STLP_LIMITS_MAX_TYPE __imax, int __idigits, bool __ismod> \
   const __type _Integer_limits<_Int, __imin, __imax, __idigits, __ismod>:: __mem
 
-__declare_integer_limits_member(bool, is_specialized, true);
-__declare_integer_limits_member(int, digits, (__idigits < 0) ? \
-          ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) \
-                            : (__idigits) );
-__declare_integer_limits_member(int, digits10, (int)(301UL * digits) /1000);
-__declare_integer_limits_member(bool, is_signed, __imin != 0);
-__declare_integer_limits_member(bool, is_integer, true);
-__declare_integer_limits_member(bool, is_exact, true);
-__declare_integer_limits_member(int, radix, 2);
-__declare_integer_limits_member(bool, is_bounded, true);
-__declare_integer_limits_member(bool, is_modulo, true);
+__declare_integer_limits_member(bool, is_specialized);
+__declare_integer_limits_member(int, digits);
+__declare_integer_limits_member(int, digits10);
+__declare_integer_limits_member(bool, is_signed);
+__declare_integer_limits_member(bool, is_integer);
+__declare_integer_limits_member(bool, is_exact);
+__declare_integer_limits_member(int, radix);
+__declare_integer_limits_member(bool, is_bounded);
+__declare_integer_limits_member(bool, is_modulo);
 #  undef __declare_integer_limits_member
 
-#  define __declare_float_limits_member(__type, __mem, _Init) \
+#  if defined (__GNUC__) && (__GNUC__ != 2 || __GNUC_MINOR__ > 96) && (__GNUC__ != 3 || __GNUC_MINOR__ == 0) && (__GNUC__ <= 3)
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#    define __declare_numeric_limits_member(__integer) \
+  _STLP_TEMPLATE_NULL const int numeric_limits<__integer>::digits; \
+  _STLP_TEMPLATE_NULL const int numeric_limits<__integer>::digits10; \
+  _STLP_TEMPLATE_NULL const int numeric_limits<__integer>::radix; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_specialized; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_signed; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_integer; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_exact; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_bounded; \
+  _STLP_TEMPLATE_NULL const bool numeric_limits<__integer>::is_modulo
+
+__declare_numeric_limits_member(_STLP_LONG_LONG);
+__declare_numeric_limits_member(unsigned _STLP_LONG_LONG);
+
+#    undef __declare_numeric_limits_member
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+#  endif
+
+#  define __declare_float_limits_member(__type, __mem) \
 template <class __number,  \
          int __Digits, int __Digits10,    \
          int __MinExp, int __MaxExp,      \
@@ -91,28 +111,28 @@ const __type _Floating_limits< __number, __Digits, __Digits10,    \
          __IsIEC559, __RoundStyle>::\
          __mem
 
-__declare_float_limits_member(bool, is_specialized, true);
-__declare_float_limits_member(int, digits, __Digits);
-__declare_float_limits_member(int, digits10, __Digits10);
-__declare_float_limits_member(bool, is_signed, true);
-__declare_float_limits_member(int, radix, FLT_RADIX);
-__declare_float_limits_member(int, min_exponent, __MinExp);
-__declare_float_limits_member(int, max_exponent, __MaxExp);
-__declare_float_limits_member(int, min_exponent10, __MinExp10);
-__declare_float_limits_member(int, max_exponent10, __MaxExp10);
-__declare_float_limits_member(bool, has_infinity, true);
-__declare_float_limits_member(bool, has_quiet_NaN, true);
-__declare_float_limits_member(bool, has_signaling_NaN, true);
-__declare_float_limits_member(float_denorm_style, has_denorm, denorm_indeterminate);
-__declare_float_limits_member(bool, has_denorm_loss, false);
-__declare_float_limits_member(bool, is_iec559, __IsIEC559);
-__declare_float_limits_member(bool, is_bounded, true);
-__declare_float_limits_member(bool, traps, true);
-__declare_float_limits_member(bool, tinyness_before, false);
-__declare_float_limits_member(float_round_style, round_style, __RoundStyle);
+__declare_float_limits_member(bool, is_specialized);
+__declare_float_limits_member(int, digits);
+__declare_float_limits_member(int, digits10);
+__declare_float_limits_member(bool, is_signed);
+__declare_float_limits_member(int, radix);
+__declare_float_limits_member(int, min_exponent);
+__declare_float_limits_member(int, max_exponent);
+__declare_float_limits_member(int, min_exponent10);
+__declare_float_limits_member(int, max_exponent10);
+__declare_float_limits_member(bool, has_infinity);
+__declare_float_limits_member(bool, has_quiet_NaN);
+__declare_float_limits_member(bool, has_signaling_NaN);
+__declare_float_limits_member(float_denorm_style, has_denorm);
+__declare_float_limits_member(bool, has_denorm_loss);
+__declare_float_limits_member(bool, is_iec559);
+__declare_float_limits_member(bool, is_bounded);
+__declare_float_limits_member(bool, traps);
+__declare_float_limits_member(bool, tinyness_before);
+__declare_float_limits_member(float_round_style, round_style);
 #  undef __declare_float_limits_member
 
-#endif /* _STLP_STATIC_CONST_INIT_BUG */
+#endif
 
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)

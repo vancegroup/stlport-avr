@@ -113,11 +113,7 @@ public:
   }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-# if defined(_STLP_STATIC_CONST_INIT_BUG)
-  enum __TableSize { table_size = 256 };
-# else
-  static const size_t table_size = 256;
-# endif
+  _STLP_STATIC_CONSTANT(size_t, table_size = 256);
 
 protected:
   const mask* table() const _STLP_NOTHROW { return _M_ctype_table; }

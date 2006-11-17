@@ -64,55 +64,44 @@ public:
 # endif
 
   // Formatting flags.
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum  {
-#else
-  // boris : type for all those constants is int
-  static const int
-#endif
-    left       = 0x0001,
-    right      = 0x0002,
-    internal   = 0x0004,
-    dec        = 0x0008,
-    hex        = 0x0010,
-    oct        = 0x0020,
-    fixed      = 0x0040,
-    scientific = 0x0080,
-    boolalpha  = 0x0100,
-    showbase   = 0x0200,
-    showpoint  = 0x0400,
-    showpos    = 0x0800,
-    skipws     = 0x1000,
-    unitbuf    = 0x2000,
-    uppercase  = 0x4000,
-    adjustfield = left | right | internal,
-    basefield   = dec | hex | oct,
-    floatfield  = scientific | fixed,
+  _STLP_STATIC_CONSTANT(int, left = 0x0001);
+  _STLP_STATIC_CONSTANT(int, right = 0x0002);
+  _STLP_STATIC_CONSTANT(int, internal   = 0x0004);
+  _STLP_STATIC_CONSTANT(int, dec        = 0x0008);
+  _STLP_STATIC_CONSTANT(int, hex        = 0x0010);
+  _STLP_STATIC_CONSTANT(int, oct        = 0x0020);
+  _STLP_STATIC_CONSTANT(int, fixed      = 0x0040);
+  _STLP_STATIC_CONSTANT(int, scientific = 0x0080);
+  _STLP_STATIC_CONSTANT(int, boolalpha  = 0x0100);
+  _STLP_STATIC_CONSTANT(int, showbase   = 0x0200);
+  _STLP_STATIC_CONSTANT(int, showpoint  = 0x0400);
+  _STLP_STATIC_CONSTANT(int, showpos    = 0x0800);
+  _STLP_STATIC_CONSTANT(int, skipws     = 0x1000);
+  _STLP_STATIC_CONSTANT(int, unitbuf    = 0x2000);
+  _STLP_STATIC_CONSTANT(int, uppercase  = 0x4000);
+  _STLP_STATIC_CONSTANT(int, adjustfield = left | right | internal);
+  _STLP_STATIC_CONSTANT(int, basefield   = dec | hex | oct);
+  _STLP_STATIC_CONSTANT(int, floatfield  = scientific | fixed);
 
-    // State flags.
-    goodbit = 0x00,
-    badbit  = 0x01,
-    eofbit  = 0x02,
-    failbit = 0x04,
+  // State flags.
+  _STLP_STATIC_CONSTANT(int, goodbit = 0x00);
+  _STLP_STATIC_CONSTANT(int, badbit  = 0x01);
+  _STLP_STATIC_CONSTANT(int, eofbit  = 0x02);
+  _STLP_STATIC_CONSTANT(int, failbit = 0x04);
 
-    // Openmode flags.
-    __default_mode = 0x0, /* implementation detail */
-    app    = 0x01,
-    ate    = 0x02,
-    binary = 0x04,
-    in     = 0x08,
-    out    = 0x10,
-    trunc  = 0x20,
+  // Openmode flags.
+  _STLP_STATIC_CONSTANT(int, __default_mode = 0x0); /* implementation detail */
+  _STLP_STATIC_CONSTANT(int, app    = 0x01);
+  _STLP_STATIC_CONSTANT(int, ate    = 0x02);
+  _STLP_STATIC_CONSTANT(int, binary = 0x04);
+  _STLP_STATIC_CONSTANT(int, in     = 0x08);
+  _STLP_STATIC_CONSTANT(int, out    = 0x10);
+  _STLP_STATIC_CONSTANT(int, trunc  = 0x20);
 
-    // Seekdir flags
-
-    beg = 0x01,
-    cur = 0x02,
-    end = 0x04
-# ifdef _STLP_STATIC_CONST_INIT_BUG
-  }
-# endif
-  ;
+  // Seekdir flags
+  _STLP_STATIC_CONSTANT(int, beg = 0x01);
+  _STLP_STATIC_CONSTANT(int, cur = 0x02);
+  _STLP_STATIC_CONSTANT(int, end = 0x04);
 
 public:                         // Flag-manipulation functions.
   fmtflags flags() const { return _M_fmtflags; }

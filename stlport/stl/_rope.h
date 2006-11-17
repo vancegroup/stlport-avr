@@ -2030,11 +2030,9 @@ public:
 # endif
 }; //class rope
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-#  if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
+#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
 template <class _CharT, class _Alloc>
 const size_t rope<_CharT, _Alloc>::npos = ~(size_t) 0;
-#  endif
 #endif
 
 template <class _CharT, class _Alloc>

@@ -329,8 +329,7 @@ locale _STLP_CALL locale::global(const locale& L) {
   return old;
 }
 
-# if !defined (_STLP_STATIC_CONST_INIT_BUG) && ! defined (_STLP_USE_DECLSPEC)
-
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 const locale::category locale::none;
 const locale::category locale::collate;
 const locale::category locale::ctype;
@@ -339,8 +338,7 @@ const locale::category locale::numeric;
 const locale::category locale::time;
 const locale::category locale::messages;
 const locale::category locale::all;
-
-# endif
+#endif
 
 _STLP_END_NAMESPACE
 

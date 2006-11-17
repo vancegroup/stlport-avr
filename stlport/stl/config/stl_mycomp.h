@@ -199,10 +199,15 @@
 // Uncomment if getting errors compiling mem_fun* adaptors
 // #  define _STLP_MEMBER_POINTER_PARAM_BUG 1
 
-// * _STLP_STATIC_CONST_INIT_BUG: defined if the compiler can't handle a
-//   constant-initializer in the declaration of a static const data member
-//   of integer type.  (See section 9.4.2, paragraph 4, of the C++ standard.)
+// Uncomment if the compiler can't handle a constant-initializer in the
+// declaration of a static const data member of integer type.
+// (See section 9.4.2, paragraph 4, of the C++ standard.)
 // # define _STLP_STATIC_CONST_INIT_BUG
+
+// Uncomment to indicate that the compiler do not like static constant
+// definition.
+// Meaningfull only if  _STLP_STATIC_CONST_INIT_BUG is not defined.
+// # define _STLP_NO_STATIC_CONST_DEFINITION
 
 // Define if default constructor for builtin integer type fails to initialize it to 0
 // In expression like new(&char) char():

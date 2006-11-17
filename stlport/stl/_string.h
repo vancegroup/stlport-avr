@@ -1323,11 +1323,9 @@ public:                        // Helper functions for compare.
 #endif /* _STLP_USE_TEMPLATE_EXPRESSION */
 };
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-#  if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
+#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
 template <class _CharT, class _Traits, class _Alloc>
 const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
-#  endif
 #endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)

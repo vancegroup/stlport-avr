@@ -103,11 +103,7 @@ public:
   pattern     neg_format()    const { return do_neg_format(); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-# if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum _IntlVal { intl = 1 } ;
-# else
-  static const bool intl = true;
-# endif
+  _STLP_STATIC_CONSTANT(bool, intl = true);
 
 protected:
   pattern _M_pos_format;
@@ -150,11 +146,7 @@ public:
   pattern     neg_format()    const { return do_neg_format(); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-# if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum _IntlVal { intl = 0 } ;
-# else
-  static const bool intl = false;
-# endif
+  _STLP_STATIC_CONSTANT(bool, intl = false);
 
 protected:
   pattern _M_pos_format;
@@ -199,11 +191,7 @@ public:
   pattern     neg_format()    const { return do_neg_format(); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-# if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum _IntlVal { intl = 1 } ;
-# else
-  static const bool intl = true;
-# endif
+  _STLP_STATIC_CONSTANT(bool, intl = true);
 
 protected:
   pattern _M_pos_format;
@@ -244,11 +232,7 @@ public:
   pattern     neg_format()    const { return do_neg_format(); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
-# if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum _IntlVal { intl = 0 } ;
-# else
-  static const bool intl = false;
-# endif
+  _STLP_STATIC_CONSTANT(bool, intl = false);
 
 protected:
   pattern _M_pos_format;

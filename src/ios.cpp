@@ -39,8 +39,7 @@ ios_base::failure::failure(const string& s)
 
 ios_base::failure::~failure() _STLP_NOTHROW_INHERENTLY {}
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 // Definitions of ios_base's formatting flags.
 const ios_base::fmtflags ios_base::left;
 const ios_base::fmtflags ios_base::right;
@@ -80,7 +79,7 @@ const ios_base::seekdir ios_base::beg;
 const ios_base::seekdir ios_base::cur;
 const ios_base::seekdir ios_base::end;
 
-#endif /*  _STLP_STATIC_CONST_INIT_BUG */
+#endif
 
 // Internal functions used for managing exponentially-growing arrays of
 // POD types.

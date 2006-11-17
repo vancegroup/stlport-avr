@@ -62,48 +62,30 @@ public:
   static __number (_STLP_CALL min)() _STLP_NOTHROW { return __number(); }
   static __number (_STLP_CALL max)() _STLP_NOTHROW { return __number(); }
 
-#if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  enum {
-#else
-  static const int
-#endif
+  _STLP_STATIC_CONSTANT(int, digits = 0);
+  _STLP_STATIC_CONSTANT(int, digits10 = 0);
+  _STLP_STATIC_CONSTANT(int, radix = 0);
+  _STLP_STATIC_CONSTANT(int, min_exponent = 0);
+  _STLP_STATIC_CONSTANT(int, min_exponent10 = 0);
+  _STLP_STATIC_CONSTANT(int, max_exponent = 0);
+  _STLP_STATIC_CONSTANT(int, max_exponent10 = 0);
 
-  digits = 0,
-  digits10 = 0,
-  radix = 0,
-  min_exponent = 0,
-  min_exponent10 = 0,
-  max_exponent = 0,
-  max_exponent10 = 0
+  _STLP_STATIC_CONSTANT(float_denorm_style, has_denorm = denorm_absent);
+  _STLP_STATIC_CONSTANT(float_round_style, round_style = round_toward_zero);
 
-#if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  ,
-  has_denorm = denorm_absent,
-  round_style = round_toward_zero,
-#else
-  ;
-  static const float_denorm_style has_denorm =  denorm_absent;
-  static const float_round_style round_style = round_toward_zero;
-  static const bool
-#endif
-
-    is_specialized = false,
-    is_signed  = false,
-    is_integer = false,
-    is_exact = false,
-    has_infinity = false,
-    has_quiet_NaN = false,
-    has_signaling_NaN = false,
-    has_denorm_loss = false,
-    is_iec559 = false,
-    is_bounded = false,
-    is_modulo = false,
-    traps = false,
-    tinyness_before = false
-#if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  }
-#endif
-  ;
+  _STLP_STATIC_CONSTANT(bool, is_specialized = false);
+  _STLP_STATIC_CONSTANT(bool, is_signed  = false);
+  _STLP_STATIC_CONSTANT(bool, is_integer = false);
+  _STLP_STATIC_CONSTANT(bool, is_exact = false);
+  _STLP_STATIC_CONSTANT(bool, has_infinity = false);
+  _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = false);
+  _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = false);
+  _STLP_STATIC_CONSTANT(bool, has_denorm_loss = false);
+  _STLP_STATIC_CONSTANT(bool, is_iec559 = false);
+  _STLP_STATIC_CONSTANT(bool, is_bounded = false);
+  _STLP_STATIC_CONSTANT(bool, is_modulo = false);
+  _STLP_STATIC_CONSTANT(bool, traps = false);
+  _STLP_STATIC_CONSTANT(bool, tinyness_before = false);
 
   static __number _STLP_CALL epsilon() _STLP_NOTHROW     { return __number(); }
   static __number _STLP_CALL round_error() _STLP_NOTHROW { return __number(); }
@@ -139,32 +121,15 @@ public:
   static _Int (_STLP_CALL min) () _STLP_NOTHROW { return (_Int)__imin; }
   static _Int (_STLP_CALL max) () _STLP_NOTHROW { return (_Int)__imax; }
 
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum {
-#else
-  static const int
-#endif
-  digits = (__idigits < 0) ?
-  ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1))
-  : (__idigits),
-  digits10 = (digits * 301UL) / 1000,
-  radix = 2
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-  ;
-  static const bool
-#else
-  ,
-#endif
-  is_specialized = true,
-  is_signed = (__imin != 0),
-  is_integer = true,
-  is_exact = true,
-  is_bounded = true,
-  is_modulo = __ismod
-#if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  }
-#endif
-  ;
+  _STLP_STATIC_CONSTANT(int, digits = (__idigits < 0) ? ((int)((sizeof(_Int) * (CHAR_BIT))) - ((__imin == 0) ? 0 : 1)) : (__idigits));
+  _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
+  _STLP_STATIC_CONSTANT(int, radix = 2);
+  _STLP_STATIC_CONSTANT(bool, is_specialized = true);
+  _STLP_STATIC_CONSTANT(bool, is_signed = (__imin != 0));
+  _STLP_STATIC_CONSTANT(bool, is_integer = true);
+  _STLP_STATIC_CONSTANT(bool, is_exact = true);
+  _STLP_STATIC_CONSTANT(bool, is_bounded = true);
+  _STLP_STATIC_CONSTANT(bool, is_modulo = __ismod);
 };
 
 // Base class for floating-point numbers.
@@ -177,57 +142,36 @@ template <class __number,
 class _Floating_limits : public _Numeric_limits_base<__number> {
 public:
 
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum {
-#else
-  static const int
-#endif
+  _STLP_STATIC_CONSTANT(int, digits = __Digits);
+  _STLP_STATIC_CONSTANT(int, digits10 = __Digits10);
+  _STLP_STATIC_CONSTANT(int, radix = FLT_RADIX);
+  _STLP_STATIC_CONSTANT(int, min_exponent = __MinExp);
+  _STLP_STATIC_CONSTANT(int, max_exponent = __MaxExp);
+  _STLP_STATIC_CONSTANT(int, min_exponent10 = __MinExp10);
+  _STLP_STATIC_CONSTANT(int, max_exponent10 = __MaxExp10);
 
-  digits = __Digits,
-  digits10 = __Digits10,
+  _STLP_STATIC_CONSTANT(float_denorm_style, has_denorm = denorm_indeterminate);
+  _STLP_STATIC_CONSTANT(float_round_style, round_style = __RoundStyle);
 
-  radix = (  FLT_RADIX /* 2 */ ),
-  min_exponent = __MinExp,
-  max_exponent = __MaxExp,
-  min_exponent10 = __MinExp10,
-  max_exponent10 = __MaxExp10
-
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  ,
-  has_denorm = denorm_indeterminate,
-  round_style = __RoundStyle,
-#else
-  ;
-  static const float_denorm_style has_denorm = denorm_indeterminate;
-  static const float_round_style round_style = __RoundStyle;
-  static const bool
-#endif
-
-  is_specialized = true,
-  is_signed = true,
+  _STLP_STATIC_CONSTANT(bool, is_specialized = true);
+  _STLP_STATIC_CONSTANT(bool, is_signed = true);
 
   //IEC 559 specify the floating point representation of
   //infinity, quiet and signaling Not a Number. Not supporting
   //it is consider as not being able to grant those values.
 #if (defined (_STLP_MSVC) && (_STLP_MSVC < 1300))
   //MSVC 6 do not fully support IEC 599 but grant a good infinity value.
-  has_infinity      = true,
+  _STLP_STATIC_CONSTANT(bool, has_infinity = true);
 #else
-  has_infinity      = __IsIEC559,
+  _STLP_STATIC_CONSTANT(bool, has_infinity = __IsIEC559);
 #endif
-  has_quiet_NaN     = __IsIEC559,
-  has_signaling_NaN = __IsIEC559,
-
-  has_denorm_loss   =  false,
-  is_iec559      =  __IsIEC559,
-  is_bounded     =  true,
-  traps          =  true,
-  tinyness_before=  false
-
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  }
-#endif
-  ;
+  _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = __IsIEC559);
+  _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = __IsIEC559);
+  _STLP_STATIC_CONSTANT(bool, has_denorm_loss =  false);
+  _STLP_STATIC_CONSTANT(bool, is_iec559 = __IsIEC559);
+  _STLP_STATIC_CONSTANT(bool, is_bounded = true);
+  _STLP_STATIC_CONSTANT(bool, traps = true);
+  _STLP_STATIC_CONSTANT(bool, tinyness_before = false);
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -327,7 +271,7 @@ class numeric_limits<unsigned long>
 #    endif
 #  endif
 
-#  if !defined(__GNUC__) || (__GNUC__ == 2 && __GNUC_MINOR__ <= 96)
+#  if !defined (__GNUC__) || (__GNUC__ == 2 && __GNUC_MINOR__ <= 96) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) || (__GNUC__ > 3)
 
 _STLP_TEMPLATE_NULL
 class numeric_limits<_STLP_LONG_LONG>
@@ -355,30 +299,15 @@ public:
   static _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return LONGLONG_MIN; }
   static _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return LONGLONG_MAX; }
 
-#    if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  enum {
-#    else
-  static const int
-#    endif
-  digits = ((int)((sizeof(_STLP_LONG_LONG) * (CHAR_BIT))) - 1),
-  digits10 = (digits * 301UL) / 1000,
-  radix = 2
-#    if ! defined (_STLP_STATIC_CONST_INIT_BUG)
-  ;
-  static const bool
-#    else
-  ,
-#    endif
-  is_specialized = true,
-  is_signed = true,
-  is_integer = true,
-  is_exact = true,
-  is_bounded = true,
-  is_modulo = true
-#    if defined (_STLP_STATIC_CONST_INIT_BUG)
-  }
-#    endif
-  ;
+  _STLP_STATIC_CONSTANT(int, digits = ((int)((sizeof(_STLP_LONG_LONG) * (CHAR_BIT))) - 1));
+  _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
+  _STLP_STATIC_CONSTANT(int, radix = 2);
+  _STLP_STATIC_CONSTANT(bool, is_specialized = true);
+  _STLP_STATIC_CONSTANT(bool, is_signed = true);
+  _STLP_STATIC_CONSTANT(bool, is_integer = true);
+  _STLP_STATIC_CONSTANT(bool, is_exact = true);
+  _STLP_STATIC_CONSTANT(bool, is_bounded = true);
+  _STLP_STATIC_CONSTANT(bool, is_modulo = true);
 };
 
 _STLP_TEMPLATE_NULL
@@ -389,30 +318,15 @@ public:
   static unsigned _STLP_LONG_LONG (_STLP_CALL min) () _STLP_NOTHROW { return 0ULL; }
   static unsigned _STLP_LONG_LONG (_STLP_CALL max) () _STLP_NOTHROW { return ULONGLONG_MAX; }
 
-#    if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum {
-#    else
-  static const int
-#    endif
-  digits = ((int)((sizeof(unsigned _STLP_LONG_LONG) * (CHAR_BIT)))),
-  digits10 = (digits * 301UL) / 1000,
-  radix = 2
-#    if ! defined (_STLP_STATIC_CONST_INIT_BUG)
-  ;
-  static const bool
-#    else
-  ,
-#    endif
-  is_specialized = true,
-  is_signed = false,
-  is_integer = true,
-  is_exact = true,
-  is_bounded = true,
-  is_modulo = true
-#    if defined ( _STLP_STATIC_CONST_INIT_BUG)
-  }
-#    endif
-  ;
+  _STLP_STATIC_CONSTANT(int, digits = ((int)((sizeof(unsigned _STLP_LONG_LONG) * (CHAR_BIT)))));
+  _STLP_STATIC_CONSTANT(int, digits10 = (digits * 301UL) / 1000);
+  _STLP_STATIC_CONSTANT(int, radix = 2);
+  _STLP_STATIC_CONSTANT(bool, is_specialized = true);
+  _STLP_STATIC_CONSTANT(bool, is_signed = false);
+  _STLP_STATIC_CONSTANT(bool, is_integer = true);
+  _STLP_STATIC_CONSTANT(bool, is_exact = true);
+  _STLP_STATIC_CONSTANT(bool, is_bounded = true);
+  _STLP_STATIC_CONSTANT(bool, is_modulo = true);
 };
 
 #  endif /* __GNUC__ > 2000-11-01 */

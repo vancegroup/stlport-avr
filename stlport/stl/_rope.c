@@ -1328,11 +1328,9 @@ __DECLARE_INSTANCE(wchar_t, wrope::_S_empty_c_str[1], ={0});
 # endif /* _STLP_STATIC_TEMPLATE_DATA */
 // # endif
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-#  if !defined (__GNUC__) || (__GNUC__ != 2) || (__GNUC_MINOR__ != 96)
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 template <class _CharT, class _Alloc>
 const size_t rope<_CharT, _Alloc>::npos;
-#  endif
 #endif
 
 template<class _CharT, class _Alloc>

@@ -1,3 +1,39 @@
+2006-11-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/features.h: Modification of the static constant
+	workaround implementation to use something similar to the boost
+	workaround. _STLP_STATIC_CONST_INIT_BUG macro change definition of
+	newly introduce _STLP_STATIC_CONSTANT macro which use an enum or a
+	real static const variable. Moreover the new
+	_STLP_NO_STATIC_CONST_DEFITION will hide static constant definition
+	when defined.
+
+	* src/ctype.cpp, ios.cpp, locale.cpp: Add check for
+	_STLP_NO_STATIC_CONST_DEFITION.
+
+	* src/monetary.cpp: Add intl static constant definitions.
+
+	* stlport/stl/_ctype.h, _ios_base.h, _limits.h, _monetary.h: Use
+	_STLP_STATIC_CONSTANT.
+
+	* stlport/stl/_limits.h: Limits a workaround for long long and unsigned
+	long long types that used to be applied for gcc after 2.96 to version
+	before 3.0.
+
+	* stlport/stl/_limits.c: Clean all static constant values duplicated from
+	_limits.h that was not used in this file. Add static constant definition
+	necessary for long long and unsigned long long types for gcc between 2.96
+	and 3.0 (see above).
+
+	* stlport/stl/debug/_string.h: Removed npos static constant definition
+	that is only necessary in stlport/stl/_string.c.
+
+	* stlport/stl/config/_msvc.h: Use real static constant starting with
+	VS .Net 2003 (_MSC_VER >= 1310).
+
+	* test/unit/limits_test.cpp: Modified test to reveal potentially missing
+	static constant definitions.
+
 2006-11-13  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/stl_confix.h: Add some STLport config options based

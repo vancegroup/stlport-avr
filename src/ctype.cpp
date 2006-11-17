@@ -31,7 +31,7 @@ _STLP_BEGIN_NAMESPACE
 
 // The classic table: static data members.
 
-#if !defined(_STLP_STATIC_CONST_INIT_BUG) && !(defined(__MRC__) || defined(__SC__))
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 //*TY 02/25/2000 - added workaround for MPW compilers; they confuse on in-class static const
 const size_t ctype<char>::table_size;
 #endif

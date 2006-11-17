@@ -95,23 +95,14 @@ public:
   };
 
   typedef int category;
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  enum _Category {
-#else
-  static const category
-#endif
-    none      = 0x000,
-    collate   = 0x010,
-    ctype     = 0x020,
-    monetary  = 0x040,
-    numeric   = 0x100,
-    time      = 0x200,
-    messages  = 0x400,
-    all       = collate | ctype | monetary | numeric | time | messages
-#if defined (_STLP_STATIC_CONST_INIT_BUG)
-  }
-#endif
-  ;
+  _STLP_STATIC_CONSTANT(category, none = 0x000);
+  _STLP_STATIC_CONSTANT(category, collate = 0x010);
+  _STLP_STATIC_CONSTANT(category, ctype = 0x020);
+  _STLP_STATIC_CONSTANT(category, monetary = 0x040);
+  _STLP_STATIC_CONSTANT(category, numeric = 0x100);
+  _STLP_STATIC_CONSTANT(category, time = 0x200);
+  _STLP_STATIC_CONSTANT(category, messages = 0x400);
+  _STLP_STATIC_CONSTANT(category, all = collate | ctype | monetary | numeric | time | messages);
 
   // construct/copy/destroy:
   locale();

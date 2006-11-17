@@ -89,18 +89,16 @@
 
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION 1
 #  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
+#  define _STLP_NO_STATIC_CONST_DEFINITION 1
 
 /* # ifndef __BUILDING_STLPORT
  * #  define _STLP_USE_TEMPLATE_EXPORT 1
  * # endif
  */
-#  if (_STLP_MSVC <= 1400)
-#    define _STLP_STATIC_CONST_INIT_BUG   1
-#  endif
 
 /** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined
 unconditionally and undef'ed here when applicable. */
-#  if defined(UNDER_CE)
+#  if defined (UNDER_CE)
 /* eVCx:
 uncaught_exception is declared in the SDKs delivered with eVC4 (eVC3 is
 unknown) and they all reside in namespace 'std' there. However, they are not
@@ -121,6 +119,7 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #  endif
 
 #  if (_STLP_MSVC <= 1300)
+#    define _STLP_STATIC_CONST_INIT_BUG   1
 #    define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
 #    define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 /* There is no partial spec, and MSVC breaks on simulating it for iterator_traits queries */

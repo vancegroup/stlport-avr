@@ -928,6 +928,12 @@ namespace _STL = _STLP_STD_NAME;
 #define __TRIVIAL_STUFF(__type)  \
   __TRIVIAL_CONSTRUCTOR(__type) __TRIVIAL_DESTRUCTOR(__type)
 
+#if defined (_STLP_STATIC_CONST_INIT_BUG)
+#  define _STLP_STATIC_CONSTANT(__type, __assignment) enum { __assignment }
+#else
+#  define _STLP_STATIC_CONSTANT(__type, __assignment) static const __type __assignment;
+#endif
+
 #if defined (_STLP_HAS_NO_EXCEPTIONS)
 #  define _STLP_NO_EXCEPTIONS
 #endif

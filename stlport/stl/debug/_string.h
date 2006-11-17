@@ -822,7 +822,7 @@ public:
 
 #if defined (_STLP_USE_TEMPLATE_EXPRESSION)
 #  include <stl/debug/_string_sum_methods.h>
-#endif /* _STLP_USE_TEMPLATE_EXPRESSION */
+#endif
 };
 
 // This is a hook to instantiate STLport exports in a designated DLL
@@ -837,19 +837,14 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING_NAME <w
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 #  endif
-#endif /* _STLP_USE_TEMPLATE_EXPORT */
+#endif
 
 #undef _STLP_NON_DBG_STRING
 #undef _STLP_NON_DBG_STRING_NAME
 
-#if !defined (_STLP_STATIC_CONST_INIT_BUG)
-#  if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
+#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
 template <class _CharT, class _Traits, class _Alloc>
 const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
-#  else
-template <class _CharT, class _Traits, class _Alloc>
-const size_t basic_string<_CharT, _Traits, _Alloc>::npos;
-#  endif
 #endif
 
 #if defined (basic_string)

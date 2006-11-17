@@ -666,16 +666,11 @@ basic_string<_CharT, _Traits, _Alloc>::basic_string(const basic_string<_CharT, _
 #if defined (basic_string)
 _STLP_MOVE_TO_STD_NAMESPACE
 #  undef basic_string
-#else
-/* If basic_string is defined it means that it won't be the basic_string class
- * exposed to STLport users so npos do not need external linkage.
- */
-#  if !defined (_STLP_STATIC_CONST_INIT_BUG)
-#    if !defined (__GNUC__) || (__GNUC__ != 2) || (__GNUC_MINOR__ != 96)
+#endif
+
+#if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
 template <class _CharT, class _Traits, class _Alloc>
 const size_t basic_string<_CharT, _Traits, _Alloc>::npos;
-#    endif
-#  endif
 #endif
 
 _STLP_END_NAMESPACE
