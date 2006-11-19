@@ -22,8 +22,8 @@
 #  include <stl/_stdexcept_base.h>
 #endif
 
-#ifndef _STLP_UTILITY
-#  include <utility>
+#ifndef _STLP_INTERNAL_PAIR_H
+#  include <stl/_pair.h>
 #endif
 
 #ifndef _STLP_INTERNAL_LOCALE_H
