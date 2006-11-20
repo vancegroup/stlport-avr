@@ -137,11 +137,11 @@ template class _STLP_CLASS_DECLSPEC money_put<wchar_t, ostreambuf_iterator<wchar
 #endif
 
 #if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
-_STLP_TEMPLATE_NULL const bool moneypunct<char, true>::intl;
-_STLP_TEMPLATE_NULL const bool moneypunct<char, false>::intl;
+const bool moneypunct<char, true>::intl;
+const bool moneypunct<char, false>::intl;
 #  ifndef _STLP_NO_WCHAR_T
-_STLP_TEMPLATE_NULL const bool moneypunct<wchar_t, true>::intl;
-_STLP_TEMPLATE_NULL const bool moneypunct<wchar_t, false>::intl;
+const bool moneypunct<wchar_t, true>::intl;
+const bool moneypunct<wchar_t, false>::intl;
 #  endif
 #endif
 
