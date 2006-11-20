@@ -9,6 +9,11 @@
 #  error - Borland compilers below version 5.5.1 not supported.
 #endif
 
+#if (__BORLANDC__ >= 0x580)
+#  define _STLP_HAS_INCLUDE_NEXT
+#  define _STLP_NATIVE_HEADER(header) <../include/##header>
+#endif
+
 #if (__BORLANDC__ >= 0x580) && (__BORLANDC__ < 0x590)
 #  define _STLP_NO_NEW_C_HEADERS
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/dinkumware/##header>

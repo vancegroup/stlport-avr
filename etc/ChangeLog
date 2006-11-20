@@ -1,3 +1,10 @@
+2006-11-20  Francois Dumont  <dums@stlport...>
+
+	* stlport/iosfwd, stl/type_manips.h, config/_bc.h, pointers/_tools.h:
+	Patch from Eric Sanford to remove useless Borland workaround for
+	pointer specialisation and use include_next feature of versions after
+	0x580.
+
 2006-11-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/monetary.cpp: template header not allowed in member definition

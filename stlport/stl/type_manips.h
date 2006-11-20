@@ -141,7 +141,7 @@ struct __selectT<__false_type(), _Tp1, _Tp2> { typedef _Tp2 _Ret; };
 
 template <bool _Cond, class _Tp1, class _Tp2>
 struct __select 
-{ typedef __selectT<__bool2type<_Cond>::_Ret(), _Tp1, _Tp2>::_Ret _Ret; };
+{ typedef __selectT<typename __bool2type<_Cond>::_Ret, _Tp1, _Tp2>::_Ret _Ret; };
 
 #  endif
 
