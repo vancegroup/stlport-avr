@@ -1,3 +1,10 @@
+2006-11-23  Francois Dumont  <dums@stlport...>
+
+	* test/unit/cstring_test.cpp: New test case to check import of all
+	C functions from string.h in STLport namespace.
+
+	* stlport/using/cstring: Fix import of strcmp and strcpy for Borland.
+
 2006-11-20  Francois Dumont  <dums@stlport...>
 
 	* stlport/iosfwd, stl/type_manips.h, config/_bc.h, pointers/_tools.h:

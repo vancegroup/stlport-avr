@@ -19,11 +19,11 @@
 class CMathTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CMathTest);
-  CPPUNIT_TEST(test);
+  CPPUNIT_TEST(import_checks);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
-    void test();
+    void import_checks();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CMathTest);
@@ -31,7 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CMathTest);
 //
 // tests implementation
 //
-void CMathTest::test()
+void CMathTest::import_checks()
 {
   int int_val = -1;
   long long_val = -1l;

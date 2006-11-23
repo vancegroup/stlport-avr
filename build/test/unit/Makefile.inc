@@ -43,6 +43,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/cstddef_header_test.cpp \
 	../../../test/unit/cstdio_header_test.cpp \
 	../../../test/unit/cstdlib_header_test.cpp \
+	../../../test/unit/cstring_test.cpp \
 	../../../test/unit/cstring_header_test.cpp \
 	../../../test/unit/ctime_header_test.cpp \
 	../../../test/unit/cwchar_header_test.cpp \
