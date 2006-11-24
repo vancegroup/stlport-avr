@@ -3,14 +3,17 @@
 
 CXXFLAGS += -w6 -w7 -w18
 
+stldbg-shared : CXXFLAGS += -HP50
+stldbg-static : CXXFLAGS += -HP50
+
 OPT += -WA
 
 release-shared: LDFLAGS += 
 release-STATIC: LDFLAGS += 
-dbg-shared : LDFLAGS += /CODEVIEW
-dbg-static : LDFLAGS += /CODEVIEW
-stldbg-shared : LDFLAGS += /CODEVIEW
-stldbg-static : LDFLAGS += /CODEVIEW
+dbg-shared : LDFLAGS += /CODEVIEW/NOCVPACK
+dbg-static : LDFLAGS += /CODEVIEW/NOCVPACK
+stldbg-shared : LDFLAGS += /CODEVIEW/NOCVPACK
+stldbg-static : LDFLAGS += /CODEVIEW/NOCVPACK
 
 # workaround for stl/config/_auto_link.h
 STL_LIBNAME = stlport

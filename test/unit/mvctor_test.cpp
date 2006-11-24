@@ -38,15 +38,14 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(MoveConstructorTest);
   CPPUNIT_TEST(move_construct_test);
   CPPUNIT_TEST(deque_test);
-#if defined (__DMC__)
+  CPPUNIT_TEST(vector_test);
+#if defined (__DMC__) /* DMC OPTLINK crash EIP=0044C37B (too many fixups) */
   CPPUNIT_IGNORE;
 #endif
-  CPPUNIT_TEST(vector_test);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(move_traits);
 #if !defined (STLPORT) || defined (_STLP_NO_MOVE_SEMANTIC) || \
     defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) || \
-    defined (__BORLANDC__) || defined (__DMC__)
+    defined (__BORLANDC__)
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(movable_declaration)
@@ -449,7 +448,6 @@ void MoveConstructorTest::deque_test()
 
 void MoveConstructorTest::vector_test()
 {
-#if !defined (__DMC__)
   //Check the insert range method.
   //To the front:
   {
@@ -695,7 +693,12 @@ void MoveConstructorTest::vector_test()
 
   {
     //deque move contructor:
+#  if !defined (__DMC__)
     vector<deque<string> > vect(10, deque<string>(10, long_str));
+#  else
+    deque<string> deq_str = deque<string>(10, long_str);
+    vector<deque<string> > vect(10, deq_str);
+#  endif
     vector<string> strs;
     size_t index = 0;
     while (true) {
@@ -794,7 +797,6 @@ void MoveConstructorTest::vector_test()
       CPPUNIT_ASSERT( *it == long_str );
     }
   }
-#  endif /* __DMC__ */
 
 #if defined (STLPORT)
 #  if !defined (__DMC__)
@@ -829,6 +831,7 @@ void MoveConstructorTest::vector_test()
 #endif
 }
 
+#if !defined (__DMC__)
 struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
@@ -920,9 +923,11 @@ namespace std {
   };
 }
 #  endif
+#endif
 
 void MoveConstructorTest::move_traits()
 {
+#if !defined (__DMC__) /* DMC OPTLINK crash EIP=0044C37B (too many fixups) */
   {
     {
       vector<MovableStruct> vect;
@@ -1289,9 +1294,10 @@ void MoveConstructorTest::move_traits()
     //deq with 3 elements and v2 with 4 elements are now out of scope
     CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 3 + 4 );
   }
+#endif /* __DMC__ */
 }
 
-#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) 
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC) && !defined (__DMC__)
 
 static bool type_to_bool(__true_type)
 { return true; }
@@ -1321,6 +1327,9 @@ static bool is_move_complete(const _Tp&) {
 
 struct specially_allocated_struct {
   bool operator < (specially_allocated_struct) const;
+#if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
+  bool operator==(const specially_allocated_struct&) const;
+#endif
 };
 
 struct struct_with_specialized_less {};
@@ -1374,7 +1383,7 @@ void MoveConstructorTest::movable_declaration()
 {
 #if defined (STLPORT) && !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && \
                          !defined (_STLP_NO_MOVE_SEMANTIC) && \
-   !defined (__DMC__)
+                         !defined (__DMC__) /* DMC OPTLINK crash EIP=0044C37B (too many fixups) */
   //This test purpose is to check correct detection of the STL movable
   //traits declaration
   {

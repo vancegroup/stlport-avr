@@ -40,11 +40,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(tellg);
   CPPUNIT_TEST(buf);
   CPPUNIT_TEST(rdbuf);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(streambuf_output);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(win32_file_format);
 #  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);

@@ -183,6 +183,11 @@ public:
   float max_load_factor() const { return _M_ht.max_load_factor(); }
   void max_load_factor(float __val) { _M_ht.max_load_factor(__val); }
   void rehash(size_type __hint) { _M_ht.rehash(__hint); }
+
+#if defined (__DMC__) // disable operator==(pair<x,unordered_map>, pair<x,unordered_map>)
+  bool operator==(const _Self&) const;
+#endif
+
 };
 
 //Specific iterator traits creation

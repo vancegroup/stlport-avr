@@ -9,8 +9,6 @@ INSTALL_TAGS = install-static install-shared
 endif
 
 CXX := dmc
-# For the C compiler we force cpp build otherwise wchar_t is not
-# supported
 CC := dmc
 RC := rcc
 
@@ -81,6 +79,19 @@ stldbg-static : OPT += -D_MT
 release-static : AR += -p128
 dbg-static : AR += -p512
 stldbg-static : AR += -p512
+
+ifndef LIBNAME
+ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+release-static: DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+endif
+ifdef STLP_BUILD_FORCE_STATIC_RUNTIME
+release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
+dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+endif
+endif
 
 # map output option (move map files to output dir)
 

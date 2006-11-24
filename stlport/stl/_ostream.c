@@ -163,10 +163,20 @@ bool basic_ostream<_CharT, _Traits>
         return __any_inserted;
 
       __cguard.guard(__c);
+#if defined (__DMC__)
+      _STLP_TRY {
+#endif
       if ( this->_S_eof( __to->sputc(_Traits::to_char_type(__c)) ) ) {
         return __any_inserted;
       }
 
+#if defined (__DMC__)
+      }
+      _STLP_CATCH_ALL {
+        this->_M_handle_exception(ios_base::badbit);
+        return __any_inserted;
+      }
+#endif
       __cguard.release();
       __any_inserted = true;
     }

@@ -770,10 +770,7 @@ extern "C" {
     WORD out[2];
     buf[0] = c; buf[1] = 0;
     GetStringTypeW(CT_CTYPE1, buf, -1, out);
-
-#  if !defined (__DMC__)
     (void*)ltype;
-#  endif
     return (_Locale_mask_t)out[0] & which_bits;
   }
 
@@ -803,9 +800,7 @@ extern "C" {
   }
 
   int _Locale_mb_cur_min (_Locale_ctype_t *dummy) {
-#  if !defined (__DMC__)
     (void*)dummy;
-#  endif
     return 1;
   }
 
@@ -876,10 +871,7 @@ extern "C" {
                         const char *from, size_t n, mbstate_t *shift_state) {
     CPINFO ci;
     int result;
-
-#  if !defined (__DMC__)
     (void*)shift_state;
-#  endif
     GetCPInfo(ltype->cp, &ci);
     if (ci.MaxCharSize == 1) { /* Single byte encoding. */
       *shift_state = (mbstate_t)0;
@@ -917,18 +909,14 @@ extern "C" {
 
     if (size == 0) return (size_t)-1;
 
-#  if !defined (__DMC__)
     (void*)shift_state;
-#  endif
     return (size_t)size;
   }
 #endif
 
   size_t _Locale_unshift(_Locale_ctype_t *ltype, mbstate_t *st,
                          char *buf, size_t n, char **next) {
-#  if !defined (__DMC__)
     (void*)ltype;
-#  endif
     if (*st == 0) {
       *next = buf;
       return 0;
@@ -1086,16 +1074,12 @@ extern "C" {
   }
 
   const char * _Locale_true(_Locale_numeric_t * lnum) {
-#if !defined (__DMC__)
     (void*)lnum;
-#endif
     return __true_name; /* NT does't provide information about this */
   }
 
   const char * _Locale_false(_Locale_numeric_t * lnum) {
-#if !defined (__DMC__)
     (void*)lnum;
-#endif
     return __false_name; /* NT does't provide information about this */
   }
 
@@ -1484,27 +1468,21 @@ extern "C" {
   /* Messages */
 
   int _Locale_catopen(_Locale_messages_t* __DUMMY_PAR1, const char* __DUMMY_PAR) {
-#if !defined (__DMC__)
     (void*)__DUMMY_PAR1;
     (void*)__DUMMY_PAR;
-#endif
     return -1;
   }
   void _Locale_catclose(_Locale_messages_t* __DUMMY_PAR1, int __DUMMY_PAR) {
-#if !defined (__DMC__)
     (void*)__DUMMY_PAR1;
     (void*)&__DUMMY_PAR;
-#endif
   }
   const char* _Locale_catgets(_Locale_messages_t* __DUMMY_PAR1, int __DUMMY_PAR2,
                               int __DUMMY_PAR3, int __DUMMY_PAR4,
                               const char *dfault) {
-#if !defined (__DMC__)
     (void*)__DUMMY_PAR1;
     (void*)&__DUMMY_PAR2;
     (void*)&__DUMMY_PAR3;
     (void*)&__DUMMY_PAR4;
-#endif
     return dfault;
   }
 

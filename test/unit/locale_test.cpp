@@ -59,9 +59,6 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(money_put_get);
   CPPUNIT_TEST(money_put_X_bug);
   CPPUNIT_TEST(time_put_get);
-#if defined (__DMC__) && defined (_DLL)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
 #if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
@@ -594,14 +591,11 @@ void LocaleTest::_collate_facet( const locale& loc, const ref_locale&)
 
   char const str1[] = "françois";
   char const str2[] = "francois";
-#if !(defined (__DMC__) && defined (_DLL))
   CPPUNIT_ASSERT( col.compare(str1, str1 + sizeof(str1) / sizeof(str1[0]), str2, str2 + sizeof(str2) / sizeof(str2[0])) );
-#endif
 }
 
 void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
 {
-#if !(defined (__DMC__) && defined (_DLL))
   CPPUNIT_ASSERT( has_facet<ctype<char> >(loc) );
   ctype<char> const& ct = use_facet<ctype<char> >(loc);
 
@@ -742,7 +736,6 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
     ct.narrow(range, range + sizeof(range), 'b', res);
     CPPUNIT_ASSERT( equal(range, range + sizeof(range), res) );
   }
-#endif /* __DMC__ */
 }
 
 template <class _Tp>
@@ -855,7 +848,6 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
   typedef codecvt<char,char,std::mbstate_t> my_facet;
 #  endif
 
-#  if !(defined (__DMC__) && defined (_DLL))
   locale loc_ref(global_loc);
   {
     locale gloc( loc_ref, new my_facet() );
@@ -895,7 +887,6 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
     CPPUNIT_ASSERT( false );
   }
 #  endif
-#  endif /* __DMC__ */
 }
 #endif
 

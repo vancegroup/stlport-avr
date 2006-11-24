@@ -6,7 +6,13 @@
 	called just after Standard iostream initialisation. This code used
 	to be in the _Filebuf_base constructor that might have been called
 	simultaneously by several threads.
-	
+
+	* Eric Sanford patch for DMC compiler, allow access to associative
+	containers extension.
+
+	* stlport/typeinfo.h, exception: Workaround for DMC that force
+	inclusion of typeinfo.h at the begining of all translation units.
+
 2006-11-23  Francois Dumont  <dums@stlport...>
 
 	* test/unit/cstring_test.cpp: New test case to check import of all

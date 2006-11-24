@@ -67,9 +67,6 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(short_string_optim_bug);
   CPPUNIT_TEST(compare);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(template_expression);
 #if defined (STLPORT) && ((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
    (defined(__GNUC__) && defined(_STLP_USE_TEMPLATE_EXPRESSION) && \

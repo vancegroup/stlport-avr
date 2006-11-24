@@ -65,6 +65,10 @@ void EqualTest::equal_range1()
 }
 
 struct Test {
+#if defined (__DMC__)
+  Test();
+#endif
+
   Test(int val) : value(val) {}
   int value;
 

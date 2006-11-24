@@ -36,6 +36,10 @@
 typedef _BSD_WINT_T_ wint_t;
 #    endif /* __OpenBSD__ */
 
+#    if defined (__DMC__)
+#      define __STDC_LIMIT_MACROS
+#      include <stdint.h> // WCHAR_MIN, WCHAR_MAX
+#    endif
 #  elif defined (_STLP_NO_WCHAR_T) || defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)) || \
        (defined (__BORLANDC__) && (__BORLANDC__ < 0x580)) || \
         defined (__OpenBSD__) || defined (__FreeBSD__) || \
@@ -117,6 +121,14 @@ namespace std {
 #      else
 #        define WCHAR_MAX ((wchar_t)~0)
 #      endif
+#    endif
+#    if defined (__DMC__)
+/* DMC do not define WCHAR_MIN and WCHAR_MAX in order to made them
+ * testable by preprocessor */
+#      undef WCHAR_MIN
+#      define WCHAR_MIN 0
+#      undef WCHAR_MAX
+#      define WCHAR_MAX 0xffff
 #    endif
 #    if defined (__GNUC__) && defined (__alpha__)
 /* Definition of WCHAR_MIN and MAX are wrong for alpha platform

@@ -25,22 +25,11 @@ class UnorderedTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(uset);
   CPPUNIT_TEST(umultiset);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(umap);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(umultimap);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(user_case);
-  CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
-#if defined (__DMC__)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(equal_range);
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   CPPUNIT_IGNORE;
@@ -158,7 +147,7 @@ void UnorderedTest::umultiset()
 
 void UnorderedTest::umap()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_map<int, int, hash<int>, equal_to<int> > umaptype;
   umaptype us;
 
@@ -269,7 +258,7 @@ void UnorderedTest::umultimap()
 
 void UnorderedTest::user_case()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_map<int, string> UnorderedMap1;
   typedef unordered_map<int, UnorderedMap1> UnorderedMap2;
 
@@ -347,7 +336,7 @@ void UnorderedTest::buckets()
 
 void UnorderedTest::equal_range()
 {
-#if defined (STLPORT) && !defined (__DMC__)
+#if defined (STLPORT)
   typedef unordered_multiset<size_t> umset;
   {
     //General test
@@ -429,7 +418,8 @@ void UnorderedTest::equal_range()
         }
         else {
           size_t r;
-          while ((r = rand()) == magic);
+          while ((r = rand()) == magic)
+            ;
           hum.insert(r);
         }
 
@@ -465,6 +455,10 @@ struct Key
   explicit Key(int data) : m_data(data) {}
 
   int m_data;
+
+#if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
+  bool operator==(const Key&) const;
+#endif
 };
 
 struct KeyHash

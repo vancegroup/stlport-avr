@@ -2,14 +2,14 @@
 
 //#define _STLP_VERBOSE
 
-#define _STLP_COMPILER "DMC"
+#define _STLP_COMPILER __DMC_VERSION_STRING__
 
 #if defined (_STLP_VERBOSE)
 #  pragma message __DMC_VERSION_STRING__
 #endif
 
-#if (__DMC__ < 0x846)
-#  error "Digital Mars C++ versions prior to 8.46 are not supported!"
+#if (__DMC__ < 0x847)
+#  error "Old Digital Mars C++ compiler versions are not supported!"
 #endif
 
 #ifndef _CPPUNWIND
@@ -62,22 +62,24 @@
 #endif
 
 #define _STLP_DONT_USE_PRIV_NAMESPACE
-#define _STLP_NO_BAD_ALLOC
 #define _STLP_THROW_RETURN_BUG
 
 #if !defined (_DLL)
 #  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 #endif
 
+#if (__DMC__ < 0x849)
+#  define _STLP_NO_BAD_ALLOC
+#endif
+
 #define _STLP_USE_ABBREVS
-#define _STLP_NO_CONTAINERS_EXTENSION
 #define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
 
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 
 #define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+//#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 
 #define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
 #define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
@@ -105,5 +107,4 @@
 
 #include <stl/config/_auto_link.h>
 
-#  undef __SC__
-
+#undef __SC__

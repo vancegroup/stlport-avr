@@ -27,6 +27,9 @@
 #  define _STLP_OUTERMOST_HEADER_ID 0x1025
 #  include <stl/_prolog.h>
 #  define _STLP_FSTREAM
+#  if defined (__DMC__) && defined (_DLL)
+#    define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1025)
@@ -48,6 +51,10 @@
 #if (_STLP_OUTERMOST_HEADER_ID == 0x1025)
 #  include <stl/_epilog.h>
 #  undef _STLP_OUTERMOST_HEADER_ID
+#  if defined (__DMC__) && defined (_DLL)
+#    undef _STLP_CLASS_IMPORT_DECLSPEC
+#    define _STLP_CLASS_IMPORT_DECLSPEC
+#  endif
 #endif
 
 #endif /* _STLP_FSTREAM */

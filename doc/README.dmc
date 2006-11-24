@@ -1,0 +1,14 @@
+Build of STLport with Digital Mars C++ compiler is identical
+to the one for Microsoft Visual Studio compiler (see README.msvc).
+
+Known issue:
+
+  DMC forces inclusion of typeinfo.h header at the begining of any
+translation unit. This breaks the STLport include schema, especially
+when building the library. As a workaround STLport typeinfo.h simply
+include native DMC header not performing any internal STLport work as
+importing things to STLport namespace. As a result typeinfo.h should
+never be reference in user code, as it is neither a C nor a C++ header
+this is not considered as a major limitation. The C++ Standard header
+is typeinfo.
+
