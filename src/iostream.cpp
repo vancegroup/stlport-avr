@@ -150,8 +150,10 @@ long ios_base::Init::_S_count = 0;
 bool ios_base::_S_was_synced = true;
 
 ios_base::Init::Init() {
-  if (_S_count++ == 0)
+  if (_S_count++ == 0) {
     ios_base::_S_initialize();
+    _Filebuf_base::_S_initialize();
+  }
 }
 
 ios_base::Init::~Init() {

@@ -122,6 +122,8 @@ public:
 #endif
   }
 
+  static void _S_initialize();
+
 protected:                      // Static data members.
   static size_t _M_page_size;
 

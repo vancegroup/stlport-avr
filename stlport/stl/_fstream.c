@@ -116,10 +116,12 @@ basic_filebuf<_CharT, _Traits>::close() {
 // _M_in_input_mode to false.
 template <class _CharT, class _Traits>
 void basic_filebuf<_CharT, _Traits>::_M_exit_input_mode() {
-   if (_M_mmap_base != 0)
-     _M_base._M_unmap(_M_mmap_base, _M_mmap_len);
-   _M_in_input_mode = false;
-   _M_mmap_base = 0;
+  if (_M_mmap_base != 0) {
+    _M_base._M_unmap(_M_mmap_base, _M_mmap_len);
+    _M_mmap_base = 0;
+    _M_mmap_len = 0;
+  }
+  _M_in_input_mode = false;
 }
 
 
