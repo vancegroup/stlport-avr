@@ -40,19 +40,17 @@ struct _exception;
 #    endif
 #  else
 #    if defined (__BORLANDC__)
-#      include _STLP_NATIVE_CPP_C_HEADER(_str.h)
+#      if defined (_STLP_HAS_INCLUDE_NEXT)
+#        include_next <_str.h>
+#      else
+#        include _STLP_NATIVE_CPP_C_HEADER(_str.h)
+#      endif
 #    else
 #      if defined (_STLP_HAS_INCLUDE_NEXT)
 #        include_next <string.h>
 #      else
 #        include _STLP_NATIVE_C_HEADER(string.h)
 #      endif
-#    endif
-
-#    if (_STLP_OUTERMOST_HEADER_ID == 0x269)
-#      if defined (__BORLANDC__) && defined (_STLP_IMPORT_VENDOR_CSTD)
-#        include <using/cstring>
-#      endif /* BORLAND */
 #    endif
 #  endif
 

@@ -1,3 +1,17 @@
+2006-11-25  Francois Dumont  <dums@stlport...>
+
+	* stlport/climits, iosfwd, mem.h, string.h, typeinfo.h, wchar.h,
+	stl/char_traits:
+	Eric Sanford patch to complete use of include_next with Borland
+	compilers.
+
+	* stlport/using/cstring: Fix macro check for Borland compiler.
+
+	* test/unit/locale_test.cpp: Add test for Borland _fpclass.
+
+	* src/num_put_float.cpp: Fix potential error in _Stl_is_neg_nan
+	for Borland compiler after 0x581.
+
 2006-11-24  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_fstream.h, src/fstream.cpp, iostream.cpp: Restore

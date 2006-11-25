@@ -31,7 +31,11 @@
 #  endif
 #else
 #  if defined (__BORLANDC__)
-#    include _STLP_NATIVE_C_HEADER(limits.h)
+#    if defined (_STLP_HAS_INCLUDE_NEXT)
+#      include_next <limits.h>
+#    else
+#      include _STLP_NATIVE_C_HEADER(limits.h)
+#    endif
 #  else
 #    include <limits.h>
 #  endif

@@ -33,10 +33,10 @@
 #  include <sys/types.h>         // For off_t
 #endif /* __unix */
 
-#ifdef __BORLANDC__
-#  include _STLP_NATIVE_C_HEADER(mem.h)
-#  include _STLP_NATIVE_C_HEADER(string.h)
-#  include _STLP_NATIVE_C_HEADER(_stddef.h)
+#if defined (__BORLANDC__)
+#  include <mem.h>
+#  include <string.h>
+#  include <_stddef.h>
 #endif
 
 #ifndef _STLP_INTERNAL_CONSTRUCT_H

@@ -37,13 +37,13 @@ using _STLP_VENDOR_CSTD::memset;
 
 using _STLP_VENDOR_CSTD::strcat;
 
-#  if !defined (strcmp) || !defined (__BORLAND__)
+#  if !defined (strcmp) || !defined (__BORLANDC__)
 using _STLP_VENDOR_CSTD::strcmp;
 #  else
 using ::strcmp;
 #  endif
 
-#  if !defined (strcpy) || !defined (__BORLAND__)
+#  if !defined (strcpy) || !defined (__BORLANDC__)
 using _STLP_VENDOR_CSTD::strcpy;
 #  else
 using ::strcpy;

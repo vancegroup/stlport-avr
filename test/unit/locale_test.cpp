@@ -155,6 +155,26 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
   digits = "7";
   complete_digits(digits);
   CPPUNIT_ASSERT( fostr.str() == string("1e+") + digits );
+
+#if defined (__BORLANDC__)
+  num_put<char> const& nput = use_facet<num_put<char> >(loc);
+  typedef std::numeric_limits<double> limd;
+  fostr.setf(ios_base::uppercase | ios_base::showpos);
+
+  if (limd::has_infinity) {
+    double infinity = limd::infinity();
+    fostr.str("");
+    nput.put(fostr, fostr, ' ', infinity);
+    CPPUNIT_ASSERT( fostr.str() == string("+Inf") );
+  }
+
+  if (limd::has_quiet_NaN) {
+    double qnan = limd::quiet_NaN();
+    fostr.str("");
+    nput.put(fostr, fostr, ' ', qnan);
+    CPPUNIT_ASSERT( fostr.str() == string("+NaN") );
+  }
+#endif
 }
 
 void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )

@@ -23,14 +23,22 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID != 0x245) || defined (_STLP_DONT_POP_HEADER_ID)
-#  include _STLP_NATIVE_C_HEADER(mem.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <mem.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(mem.h)
+#  endif
 #else
 #  if defined (__BORLANDC__) && defined (__USING_CNAME__)
 #    define _USING_CNAME_WAS_UNDEFINED
 #    undef __USING_CNAME__
 #  endif
 
-#  include _STLP_NATIVE_C_HEADER(mem.h)
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <mem.h>
+#  else
+#    include _STLP_NATIVE_C_HEADER(mem.h)
+#  endif
 
 #  if defined (__BORLANDC__) && defined (_USING_CNAME_WAS_UNDEFINED)
 #    define __USING_CNAME__
