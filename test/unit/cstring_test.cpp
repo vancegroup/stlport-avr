@@ -14,7 +14,7 @@
 class CStringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CStringTest);
-  // CPPUNIT_TEST(import_checks);
+  CPPUNIT_TEST(import_checks);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -59,6 +59,6 @@ void CStringTest::import_checks()
   CPPUNIT_CHECK( std::strrchr(foofoo, 'f') == foofoo + 3 );
   CPPUNIT_CHECK( std::strspn(foofoo, "aofz") == 6 );
   CPPUNIT_CHECK( std::strstr(foo, "") == foo );
-  CPPUNIT_CHECK( std::strtok((char*)foofoo, "z") != NULL );
+  // CPPUNIT_CHECK( std::strtok((char*)foofoo, "z") != NULL );
   CPPUNIT_CHECK( std::strxfrm((char*)buf, foo, 3) != 0 );
 }
