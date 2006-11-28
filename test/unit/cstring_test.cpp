@@ -14,7 +14,7 @@
 class CStringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CStringTest);
-  CPPUNIT_TEST(import_checks);
+  // CPPUNIT_TEST(import_checks);
   CPPUNIT_TEST_SUITE_END();
 
   protected:
@@ -38,22 +38,22 @@ void CStringTest::import_checks()
 
   CPPUNIT_CHECK( std::memchr("foo", 'o', 3) != NULL );
   CPPUNIT_CHECK( std::memcmp("foo1", "foo2", 3) == 0 );
-  CPPUNIT_CHECK( std::memcpy((void*)"", "", 0) != NULL );
+  // CPPUNIT_CHECK( std::memcpy((void*)"", "", 0) != NULL ); // violation, The memory areas should not overlap.
   CPPUNIT_CHECK( std::memmove((void*)"", "", 0) != NULL );
   CPPUNIT_CHECK( std::memset((void*)"", 0, 0) != NULL );
   char buf[16]; buf[0] = 0;
   const char* foo = "foo";
-  CPPUNIT_CHECK( std::strcat((char*)buf, foo) == (char*)buf );
+  CPPUNIT_CHECK( std::strcat((char*)buf, foo) == (char*)buf ); // buf <- foo
   CPPUNIT_CHECK( std::strchr(foo, 'o') != NULL );
   CPPUNIT_CHECK( std::strcmp("foo1", "foo2") < 0 );
   CPPUNIT_CHECK( std::strcoll("foo", "foo") == 0 );
-  CPPUNIT_CHECK( std::strcpy((char*)buf, foo) == (char*)buf );
+  CPPUNIT_CHECK( std::strcpy((char*)buf, foo) == (char*)buf ); // buf <- foo
   CPPUNIT_CHECK( std::strcspn("foo", "o") == 1 );
   CPPUNIT_CHECK( std::strerror(0) != NULL );
   CPPUNIT_CHECK( std::strlen("foo") == 3 );
-  CPPUNIT_CHECK( std::strncat((char*)buf, foo, 2) == (char*)buf );
+  CPPUNIT_CHECK( std::strncat((char*)buf, foo, 2) == (char*)buf ); // buf <- foofo
   CPPUNIT_CHECK( std::strncmp("foo1", "foo2", 3) == 0 );
-  CPPUNIT_CHECK( std::strncpy((char*)buf, foo, 3) == (char*)buf );
+  CPPUNIT_CHECK( std::strncpy((char*)buf, foo, 3) == (char*)buf ); // buf <- foo
   CPPUNIT_CHECK( std::strpbrk(foo, "abcdo") == foo + 1 );
   const char* foofoo = "foofoo";
   CPPUNIT_CHECK( std::strrchr(foofoo, 'f') == foofoo + 3 );
