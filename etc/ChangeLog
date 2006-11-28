@@ -1,3 +1,17 @@
+2006-11-28  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h: Avoid explicit instanciation of template
+	function _AsMoveSource. Replace internal allocator::allocate function
+	with _M_allocate to avoid use of overloading.
+
+	* stlport/utility: Fix header reentrancy.
+
+	* stlport/stl/_ptrs_specialize.h: Fixed instanciation of
+	__type_traits_aux.
+
+	* stlport/stl/_fstream.h: Reorder member variables in _Filebuf_base
+	to avoid gcc warning.
+
 2006-11-25  Francois Dumont  <dums@stlport...>
 
 	* stlport/climits, iosfwd, mem.h, string.h, typeinfo.h, wchar.h,

@@ -9,10 +9,8 @@
 #if defined  ( _STLP_NO_ARROW_OPERATOR )
 // User wants to disable proxy -> operators
 #  define _STLP_DEFINE_ARROW_OPERATOR
-#  define _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
 #else
 // Compiler can handle generic -> operator.
-#  define _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Tp)
 #  if defined (__BORLANDC__)
 #    define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(*(*this)); }
 #  elif defined(__WATCOMC__)
@@ -28,7 +26,7 @@
 #  define _STLP_TYPE_TRAITS_POD_SPECIALIZE_V(_Type)
 #  define _STLP_TYPE_TRAITS_POD_SPECIALIZE(_Type)
 #else
-#  define _STLP_TYPE_TRAITS_POD_SPECIALIZE(_Type) _STLP_TEMPLATE_NULL struct __type_traits<_Type> : __type_traits_aux<1> {};
+#  define _STLP_TYPE_TRAITS_POD_SPECIALIZE(_Type) _STLP_TEMPLATE_NULL struct __type_traits<_Type> : __type_traits_aux<__true_type> {};
 #  define _STLP_TYPE_TRAITS_POD_SPECIALIZE_V(_Type) \
 _STLP_TYPE_TRAITS_POD_SPECIALIZE(_Type*) \
 _STLP_TYPE_TRAITS_POD_SPECIALIZE(const _Type*) \
@@ -39,7 +37,7 @@ _STLP_TYPE_TRAITS_POD_SPECIALIZE(_Type***) \
 _STLP_TYPE_TRAITS_POD_SPECIALIZE(const _Type***)
 #endif
 
-# define _STLP_POINTERS_SPECIALIZE(_Type) _STLP_TYPE_TRAITS_POD_SPECIALIZE_V(_Type) _STLP_ARROW_SPECIALIZE_WITH_PTRS(_Type)
+# define _STLP_POINTERS_SPECIALIZE(_Type) _STLP_TYPE_TRAITS_POD_SPECIALIZE_V(_Type)
 
 _STLP_BEGIN_NAMESPACE
 
@@ -74,7 +72,6 @@ _STLP_TYPE_TRAITS_POD_SPECIALIZE_V(void)
 _STLP_END_NAMESPACE
 
 # undef _STLP_ARROW_SPECIALIZE
-# undef _STLP_ARROW_SPECIALIZE_WITH_PTRS
 # undef _STLP_TYPE_TRAITS_POD_SPECIALIZE_V
 
 #endif

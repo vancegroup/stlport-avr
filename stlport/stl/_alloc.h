@@ -417,7 +417,7 @@ public:
    */
 protected:
 #endif
-  _Tp* allocate(size_type __n, size_type& __allocated_n) {
+  _Tp* _M_allocate(size_type __n, size_type& __allocated_n) {
     if (__n > max_size()) {
       __THROW_BAD_ALLOC;
     }
@@ -566,8 +566,11 @@ public:
     _MaybeReboundAlloc(__a), _M_data(__p) {}
 
   _STLP_alloc_proxy (__move_source<_Self> src) :
-    _MaybeReboundAlloc(_STLP_PRIV _AsMoveSource<_Base>(src.get())),
-    _M_data(_STLP_PRIV _AsMoveSource<_Value>(src.get()._M_data)) {}
+    _Base(_STLP_PRIV _AsMoveSource(src.get()._M_base())),
+    _M_data(_STLP_PRIV _AsMoveSource(src.get()._M_data)) {}
+
+  _Base& _M_base()
+  { return *this; }
 
   /* We need to define the following swap implementation for allocator with state
    * as those allocators might have implement a special swap function to correctly
@@ -604,14 +607,14 @@ public:
   { __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).deallocate(__p, __n); }
 private:
   _Tp* allocate(size_type __n, size_type& __allocated_n, const __true_type& /*STLport allocator*/)
-  { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).allocate(__n, __allocated_n); }
+  { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0))._M_allocate(__n, __allocated_n); }
 #else
   //Expose Standard allocate overload (using expression do not work for some compilers (Borland))
   _Tp* allocate(size_type __n)
   { return _Base::allocate(__n); }
 private:
   _Tp* allocate(size_type __n, size_type& __allocated_n, const __true_type& /*STLport allocator*/)
-  { return _Base::allocate(__n, __allocated_n); }
+  { return _Base::_M_allocate(__n, __allocated_n); }
 #endif
 
   _Tp* allocate(size_type __n, size_type& __allocated_n, const __false_type& /*STLport allocator*/)

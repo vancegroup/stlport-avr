@@ -17,17 +17,19 @@
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x118
-#  define _STLP_CTIME
 #  include <stl/_prolog.h>
+#elif (_STLP_OUTERMOST_HEADER_ID == 0x118) && ! defined (_STLP_DONT_POP_HEADER_ID)
+#  define _STLP_DONT_POP_HEADER_ID
+#  define _STLP_CTIME
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x118)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x118) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  ifndef _STLP_INTERNAL_CTIME
 #    include <stl/_ctime.h>
 #  endif
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID != 0x118) || defined (_STLP_IMPORT_VENDOR_STD)
+#if (_STLP_OUTERMOST_HEADER_ID != 0x118) || defined (_STLP_DONT_POP_HEADER_ID) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <ctime>
 #  else
@@ -36,8 +38,12 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x118)
-#  include <stl/_epilog.h>
-#  undef _STLP_OUTERMOST_HEADER_ID
+#  if !defined (_STLP_DONT_POP_HEADER_ID)
+#    include <stl/_epilog.h>
+#    undef _STLP_OUTERMOST_HEADER_ID
+#  else
+#    undef _STLP_DONT_POP_HEADER_ID
+#  endif
 #endif
 
 #endif /* _STLP_CTIME */
