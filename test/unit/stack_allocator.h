@@ -109,7 +109,7 @@ struct StackAllocator
     defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //Necessary extension to make StackAllocator a real STLport allocator
   //implementation:
-  _Tp* allocate(size_type n, size_type &new_n) {
+  _Tp* _M_allocate(size_type n, size_type &new_n) {
     new_n = n;
     return allocate(n);
   }

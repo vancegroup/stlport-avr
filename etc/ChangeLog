@@ -1,5 +1,8 @@
 2006-11-30  Francois Dumont  <dums@stlport...>
 
+	* test/unit/stack_allocator.h: Fixed StackAllocator implementation
+	for Borland and DMC that required a workaround.
+
 	* stlport/stl/config/_gcc.h: Starting with gcc 4, use visibility
 	feature.
 
