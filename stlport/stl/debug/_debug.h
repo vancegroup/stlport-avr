@@ -89,8 +89,11 @@ struct __stl_debug_exception {
   // no members
 };
 
-class _STLP_CLASS_DECLSPEC __owned_link;
-class _STLP_CLASS_DECLSPEC __owned_list;
+// class _STLP_CLASS_DECLSPEC __owned_link;
+// class _STLP_CLASS_DECLSPEC __owned_list;
+
+class __owned_link;
+class __owned_list;
 
 #if defined (_STLP_DEBUG_MODE_THROWS)
 #  define _STLP_MESSAGE_NORETURN _STLP_FUNCTION_THROWS
