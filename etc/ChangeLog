@@ -1,3 +1,11 @@
+2006-11-30  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_gcc.h: Starting with gcc 4, use visibility
+	feature.
+
+	* build/Makefiles/gmake/gcc.mak: Starting with gcc 4, add
+	-fvisibility=hidden compilation option.
+
 2006-11-28  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_alloc.h: Avoid explicit instanciation of template

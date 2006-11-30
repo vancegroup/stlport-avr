@@ -194,6 +194,13 @@ endif
 endif
 endif
 
+ifneq ($(CXX_VERSION_MAJOR),2)
+ifneq ($(CXX_VERSION_MAJOR),3)
+CXXFLAGS += -fvisibility=hidden
+CFLAGS += -fvisibility=hidden
+endif
+endif
+
 ifdef EXTRA_CXXFLAGS
 CXXFLAGS += ${EXTRA_CXXFLAGS}
 endif
