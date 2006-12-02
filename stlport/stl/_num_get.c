@@ -497,8 +497,8 @@ num_get<_CharT, _InputIter>::do_get(_InputIter __in_ite, _InputIter __end,
     //    const numpunct<_CharT>& __np = use_facet<numpunct<_CharT> >(__loc) ;
 //    const ctype<_CharT>& __ct =    use_facet<ctype<_CharT> >(__loc) ;
 
-    const basic_string<_CharT> __truename  = __np.truename();
-    const basic_string<_CharT> __falsename = __np.falsename();
+    const basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __truename  = __np.truename();
+    const basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __falsename = __np.falsename();
     bool __true_ok  = true;
     bool __false_ok = true;
 

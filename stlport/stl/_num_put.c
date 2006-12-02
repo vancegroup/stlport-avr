@@ -465,7 +465,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
 
   const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
 
-  basic_string<_CharT> __str = __val ? __np.truename() : __np.falsename();
+  basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __str = __val ? __np.truename() : __np.falsename();
 
   // Reuse __copy_integer_and_fill.  Since internal padding makes no
   // sense for bool, though, make sure we use something else instead.
