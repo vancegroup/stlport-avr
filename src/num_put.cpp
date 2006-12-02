@@ -87,7 +87,7 @@ __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __group_p
 
   __first_pos += basechars;
   str_size n = 0;                                                   // Index of the current group.
-  typename basic_string<Char>::iterator cur_group(iostr.begin() + __group_pos);  // Points immediately beyond the rightmost
+  typename Str::iterator cur_group(iostr.begin() + __group_pos);    // Points immediately beyond the rightmost
                                                                     // digit of the current group.
   unsigned int groupsize = 0;                                       // Size of the current group.
 

@@ -1,9 +1,13 @@
 2006-12-02  Francois Dumont  <dums@stlport...>
 
+	* src/num_put.cpp: In __insert_grouping_aux, use template parameter
+	Str to get iterator definition rather than getting definition from
+	basic_string.
+
 	* stlport/stl/_num_get.c, _num_put.c: Complete basic_string
 	definition for compiler not supporting default template parameters.
 
-	* stlport/cmath, cstdio, typeinfo: Modified to be reentrant.
+	* stlport/cmath, cstdio, typeinfo: Modified to be reentrant once.
 
 	* stlport/stl/_alloc.h, _bvector.h, _construct.h, _deque.h,
 	_hash_map.h, _hash_set.h, _hashtable.h, _list.h, _map.h, _pair.h,
