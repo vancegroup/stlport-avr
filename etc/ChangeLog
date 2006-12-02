@@ -1,5 +1,8 @@
 2006-12-02  Francois Dumont  <dums@stlport...>
 
+	* stlport/stl/_algo.c: Avoid a useless default value for last
+        parameter of __stable_partition_aux_aux function.
+
 	* src/num_put.cpp: In __insert_grouping_aux, use template parameter
 	Str to get iterator definition rather than getting definition from
 	basic_string.

@@ -800,7 +800,7 @@ _ForwardIter __stable_partition_adaptive(_ForwardIter __first,
 template <class _ForwardIter, class _Predicate, class _Tp, class _Distance>
 inline _ForwardIter
 __stable_partition_aux_aux(_ForwardIter __first, _ForwardIter __last,
-                           _Predicate __pred, _Tp*, _Distance*, bool __pred_of_before_last = false) {
+                           _Predicate __pred, _Tp*, _Distance*, bool __pred_of_before_last) {
   _Temporary_buffer<_ForwardIter, _Tp> __buf(__first, __last);
   _STLP_MPWFIX_TRY    //*TY 06/01/2000 - they forget to call dtor for _Temporary_buffer if no try/catch block is present
   return (__buf.size() > 0) ?
@@ -820,7 +820,7 @@ __stable_partition_aux(_ForwardIter __first, _ForwardIter __last, _Predicate __p
                        const forward_iterator_tag &) {
   return __stable_partition_aux_aux(__first, __last, __pred,
                                     _STLP_VALUE_TYPE(__first, _ForwardIter),
-                                    _STLP_DISTANCE_TYPE(__first, _ForwardIter));
+                                    _STLP_DISTANCE_TYPE(__first, _ForwardIter), false);
 }
 
 template <class _BidirectIter, class _Predicate>
