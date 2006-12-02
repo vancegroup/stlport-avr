@@ -474,10 +474,8 @@ basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos,
     return (min) (__len, __pos);
   else {
     const_pointer __last = this->_M_Start() + (min) (__len - __n, __pos) + __n;
-    const_pointer __result = _STLP_PRIV __find_end(this->_M_Start(), __last,
-                                                   __s, __s + __n,
-                                                   bidirectional_iterator_tag(), bidirectional_iterator_tag(),
-                                                   _STLP_PRIV _Eq_traits<_Traits>());
+    const_pointer __result = find_end(this->_M_Start(), __last,
+                                      __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
     return __result != __last ? __result - this->_M_Start() : npos;
   }
 }
