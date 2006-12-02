@@ -362,7 +362,9 @@ public:
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
 #endif
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
+#endif
   ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) const {return &__x;}
   const_pointer address(const_reference __x) const { return &__x; }
@@ -565,12 +567,14 @@ public:
   _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, _Value __p) :
     _MaybeReboundAlloc(__a), _M_data(__p) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _STLP_alloc_proxy (__move_source<_Self> src) :
     _Base(_STLP_PRIV _AsMoveSource(src.get()._M_base())),
     _M_data(_STLP_PRIV _AsMoveSource(src.get()._M_data)) {}
 
   _Base& _M_base()
   { return *this; }
+#endif
 
   /* We need to define the following swap implementation for allocator with state
    * as those allocators might have implement a special swap function to correctly

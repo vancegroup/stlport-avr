@@ -123,7 +123,11 @@ inline void _Param_Construct(_T1* __p, const _T2& __val) {
 
 template <class _T1, class _T2>
 inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const __false_type& /*_IsPOD*/) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _STLP_PLACEMENT_NEW (__p) _T1(_STLP_PRIV _AsMoveSource(__val));
+#else
+  _Param_Construct(__p, __val);
+#endif
 }
 
 template <class _T1, class _T2>

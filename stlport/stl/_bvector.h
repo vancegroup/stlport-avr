@@ -284,12 +284,14 @@ public:
     : _M_start(), _M_finish(), _M_end_of_storage(_STLP_CONVERT_ALLOCATOR(__a, __chunk_type),
                                                  (__chunk_type*)0)
   {}
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Bvector_base(__move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
       _M_end_of_storage(src.get()._M_end_of_storage) {
     //Make the source destroyable
     src.get()._M_start._M_p = 0;
   }
+#endif
 
   ~_Bvector_base() {
     _M_deallocate();
@@ -575,8 +577,10 @@ public:
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   __BVECTOR(__move_source<_Self> src)
     : _STLP_PRIV _Bvector_base<_Alloc >(__move_source<_Base>(src.get())) {}
+#endif
 
   ~__BVECTOR() {}
 

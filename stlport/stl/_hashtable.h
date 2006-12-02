@@ -368,6 +368,7 @@ public:
       _M_max_load_factor(1.0f)
   { _M_copy_from(__ht); }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   hashtable(__move_source<_Self> src)
     : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
       _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
@@ -376,6 +377,7 @@ public:
       _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
       _M_num_elements(src.get()._M_num_elements),
       _M_max_load_factor(src.get()._M_max_load_factor) {}
+#endif
 
   _Self& operator= (const _Self& __ht) {
     if (&__ht != this) {

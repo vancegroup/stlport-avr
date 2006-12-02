@@ -97,8 +97,10 @@ public:
 #endif
     : _M_ht(__n, __hf, __eql, __a) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   hash_set(__move_source<_Self> src)
     : _M_ht(__move_source<_Ht>(src.get()._M_ht)) {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
@@ -273,8 +275,10 @@ public:
                 const allocator_type& __a)
     : _M_ht(__n, __hf, __eql, __a) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   hash_multiset(__move_source<_Self> src)
     : _M_ht(__move_source<_Ht>(src.get()._M_ht)) {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>

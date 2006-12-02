@@ -74,12 +74,14 @@ public:
     _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
   }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Vector_base(__move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
       _M_end_of_storage(__move_source<_AllocProxy>(src.get()._M_end_of_storage)) {
     //Set the source as empty:
     src.get()._M_finish = src.get()._M_end_of_storage._M_data = src.get()._M_start = 0;
   }
+#endif
 
   ~_Vector_base() {
     if (_M_start != _STLP_DEFAULT_CONSTRUCTED(pointer))
@@ -235,9 +237,11 @@ public:
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator())
   { this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy()); }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   vector(__move_source<_Self> src)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
   {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 private:

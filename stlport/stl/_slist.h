@@ -158,13 +158,15 @@ public:
   typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type allocator_type;
 
   _Slist_base(const allocator_type& __a) :
-    _M_head(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Slist_node_base() ) {
-    _M_head._M_data._M_next = 0;
-  }
+    _M_head(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Slist_node_base() )
+  { _M_head._M_data._M_next = 0; }
+
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Slist_base(__move_source<_Self> src) :
-    _M_head(__move_source<_AllocProxy>(src.get()._M_head)) {
-      src.get()._M_head._M_data._M_next = 0;
-  }
+    _M_head(__move_source<_AllocProxy>(src.get()._M_head))
+  { src.get()._M_head._M_data._M_next = 0; }
+#endif
+
   ~_Slist_base() { _M_erase_after(&_M_head._M_data, 0); }
 
 protected:
@@ -328,8 +330,10 @@ public:
     : _STLP_PRIV _Slist_base<_Tp,_Alloc>(__x.get_allocator())
     { _M_insert_after_range(&this->_M_head._M_data, __x.begin(), __x.end()); }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   slist(__move_source<_Self> src)
     : _STLP_PRIV _Slist_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
+#endif
 
   _Self& operator= (const _Self& __x);
 

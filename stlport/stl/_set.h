@@ -133,8 +133,10 @@ public:
 
   set(const _Self& __x) : _M_t(__x._M_t) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   set(__move_source<_Self> src)
     : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+#endif
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
@@ -304,8 +306,10 @@ public:
     return *this;
   }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   multiset(__move_source<_Self> src)
     : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+#endif
 
   // accessors:
   key_compare key_comp() const { return _M_t.key_comp(); }

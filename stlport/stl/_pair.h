@@ -62,9 +62,11 @@ struct pair {
   pair(const pair<_T1,_T2>& __o) : first(__o.first), second(__o.second) {}
 #endif
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   pair(__move_source<pair<_T1, _T2> > src) : first(_STLP_PRIV _AsMoveSource(src.get().first)),
                                              second(_STLP_PRIV _AsMoveSource(src.get().second))
   {}
+#endif
 
   __TRIVIAL_DESTRUCTOR(pair)
 };

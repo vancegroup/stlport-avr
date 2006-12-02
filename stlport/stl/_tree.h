@@ -250,11 +250,15 @@ protected:
     _M_header(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base() ) {
     _M_empty_initialize();
   }
+
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Rb_tree_base(__move_source<_Self> src) :
     _M_header(__move_source<_AllocProxy>(src.get()._M_header)) {
     _M_rebind(&src.get()._M_header._M_data);
     src.get()._M_empty_initialize();
   }
+#endif
+
   void _M_empty_initialize() {
     _M_header._M_data._M_color = _S_rb_tree_red; // used to distinguish header from
                                                  // __root, in iterator.operator++
@@ -399,12 +403,13 @@ public:
     _M_node_count = __x._M_node_count;
   }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Rb_tree(__move_source<_Self> src)
     : _Rb_tree_base<_Value, _Alloc>(__move_source<_Base>(src.get())),
       _M_node_count(src.get()._M_node_count),
-      _M_key_compare(_AsMoveSource(src.get()._M_key_compare)) {
-    src.get()._M_node_count = 0;
-  }
+      _M_key_compare(_AsMoveSource(src.get()._M_key_compare))
+  { src.get()._M_node_count = 0; }
+#endif
 
   ~_Rb_tree() { clear(); }
   _Self& operator=(const _Self& __x);

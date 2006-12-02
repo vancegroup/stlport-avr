@@ -136,16 +136,18 @@ protected:
     }
 #endif
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _String_base(__move_source<_Self> src)
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+#  if defined (_STLP_USE_SHORT_STRING_OPTIM)
     : _M_end_of_storage(__move_source<_AllocProxy>(src.get()._M_end_of_storage)) {
       _M_move_src(src.get());
-#else
+#  else
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
       _M_end_of_storage(__move_source<_AllocProxy>(src.get()._M_end_of_storage)) {
       src.get()._M_start = 0;
-#endif
+#  endif
     }
+#endif
 
   ~_String_base() { _M_deallocate_block(); }
 

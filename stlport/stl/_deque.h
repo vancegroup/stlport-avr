@@ -364,6 +364,7 @@ public:
     : _M_start(), _M_finish(), _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0),
       _M_map_size(__a, (size_t)0) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Deque_base(__move_source<_Self> src)
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
       _M_map(__move_source<_Map_alloc_proxy>(src.get()._M_map)),
@@ -372,6 +373,7 @@ public:
     src.get()._M_map_size._M_data = 0;
     src.get()._M_finish = src.get()._M_start;
   }
+#endif
 
   ~_Deque_base();
 
@@ -558,9 +560,11 @@ public:
   { _STLP_PRIV __ucopy(__first, __last, this->_M_start); }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   deque(__move_source<_Self> src)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
   {}
+#endif
 
   ~deque()
   { _STLP_STD::_Destroy_Range(this->_M_start, this->_M_finish); }

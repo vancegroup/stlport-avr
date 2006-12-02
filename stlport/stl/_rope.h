@@ -1453,10 +1453,12 @@ public:
     _S_ref(_M_tree_ptr._M_data);
   }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   rope(__move_source<_Self> __src)
     : _M_tree_ptr(__src.get()._M_tree_ptr, __src.get()._M_tree_ptr._M_data) {
     __src.get()._M_tree_ptr._M_data = 0;
   }
+#endif
 
   ~rope() {
     _S_unref(_M_tree_ptr._M_data);

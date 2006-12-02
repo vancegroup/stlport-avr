@@ -187,6 +187,8 @@ public:
 
   _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base())
   { _M_empty_initialize(); }
+
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _List_base(__move_source<_Self> src) :
     _M_node(__move_source<_AllocProxy>(src.get()._M_node)) {
     if (src.get().empty())
@@ -197,6 +199,7 @@ public:
       _M_node._M_data._M_prev->_M_next = _M_node._M_data._M_next->_M_prev = &_M_node._M_data;
     }
   }
+#endif
 
   ~_List_base()
   { clear(); }
@@ -352,8 +355,10 @@ public:
   list(const _Self& __x) : _STLP_PRIV _List_base<_Tp, _Alloc>(__x.get_allocator())
   { _M_insert(begin(), __x.begin(), __x.end()); }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   list(__move_source<_Self> src)
     : _STLP_PRIV _List_base<_Tp, _Alloc>(__move_source<_Base>(src.get())) {}
+#endif
 
   ~list() {}
 

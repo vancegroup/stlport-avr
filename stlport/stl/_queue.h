@@ -90,8 +90,10 @@ public:
   queue() : c() {}
   explicit queue(const _Sequence& __c) : c(__c) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   queue(__move_source<_Self> src)
     : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
+#endif
 
   bool empty() const { return c.empty(); }
   size_type size() const { return c.size(); }
@@ -167,9 +169,11 @@ public:
     : c(__s), comp(__x)
     { make_heap(c.begin(), c.end(), comp); }
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   priority_queue(__move_source<_Self> src)
     : c(_STLP_PRIV _AsMoveSource(src.get().c)),
       comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
+#endif
 
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>

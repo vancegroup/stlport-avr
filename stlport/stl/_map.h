@@ -145,8 +145,10 @@ public:
 
   map(const _Self& __x) : _M_t(__x._M_t) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   map(__move_source<_Self> src)
     : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+#endif
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;
@@ -325,8 +327,10 @@ public:
 
   multimap(const _Self& __x) : _M_t(__x._M_t) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   multimap(__move_source<_Self> src)
     : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+#endif
 
   _Self& operator=(const _Self& __x) {
     _M_t = __x._M_t;

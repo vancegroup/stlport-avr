@@ -71,8 +71,10 @@ public:                         // Constructor, destructor, assignment.
                const allocator_type& __a = allocator_type())
     : _STLP_NO_MEM_T_STRING_BASE(__n, __c, __a) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   basic_string(__move_source<_Self> src)
     : _STLP_NO_MEM_T_STRING_BASE(__move_source<_Base>(src.get())) {}
+#endif
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.

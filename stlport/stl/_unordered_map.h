@@ -87,8 +87,10 @@ public:
                          const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   unordered_map(__move_source<_Self> src)
     : _M_ht(__move_source<_Ht>(src.get()._M_ht)) {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
@@ -251,8 +253,10 @@ public:
                               const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   unordered_multimap(__move_source<_Self> src)
     : _M_ht(__move_source<_Ht>(src.get()._M_ht)) {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
