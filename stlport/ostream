@@ -23,7 +23,8 @@
 #  define _STLP_OSTREAM
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x1050)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1050) && \
+   !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
 #  include <stl/_ioserr.h>
 
 #  ifndef _STLP_INTERNAL_OSTREAM

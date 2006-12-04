@@ -25,7 +25,8 @@
 #  define _STLP_LOCALE
 #endif
 
-#if (_STLP_OUTERMOST_HEADER_ID == 0x1041)
+#if (_STLP_OUTERMOST_HEADER_ID == 0x1041) && \
+   !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
 #  include <stl/_ioserr.h>
 
 // Individual facets

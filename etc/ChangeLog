@@ -1,3 +1,9 @@
+2006-12-04  Francois Dumont  <dums@stlport...>
+
+	* stlport/fstream, iomanip, ios, iosfwd, iostream, istream, locale,
+	ostream, sstream, streambuf, strstream: Allow use of iostream headers
+	even when _STLP_NO_IOSTREAMS is defined if using _STLP_WHOLE_NATIVE_STD.
+
 2006-12-02  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_string.c: Use find_end algo rather than internal
