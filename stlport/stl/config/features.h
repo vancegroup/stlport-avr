@@ -931,7 +931,7 @@ namespace _STL = _STLP_STD_NAME;
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
 #  define _STLP_STATIC_CONSTANT(__type, __assignment) enum { __assignment }
 #else
-#  define _STLP_STATIC_CONSTANT(__type, __assignment) static const __type __assignment;
+#  define _STLP_STATIC_CONSTANT(__type, __assignment) static const __type __assignment
 #endif
 
 #if defined (_STLP_HAS_NO_EXCEPTIONS)
