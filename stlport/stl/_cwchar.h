@@ -16,8 +16,11 @@
 #ifndef _STLP_INTERNAL_CWCHAR
 #define _STLP_INTERNAL_CWCHAR
 
-#if !defined (_STLP_WCE_EVC3)
-
+#if defined (_STLP_WCE_EVC3)
+#  ifndef _STLP_INTERNAL_MBSTATE_T
+#    include <stl/_mbstate_t.h>
+#  endif
+#else
 #  if defined (__GNUC__)
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <cstddef>

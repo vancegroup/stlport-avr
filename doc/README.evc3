@@ -55,7 +55,7 @@ the --help option to see all options. The program automatically tells you which
 command line to use. If you want to install the libraries, add the "install"
 target as follows:
 
-  nmake /f nmake-evc3.mak install
+  nmake /fmsvc.mak install
 
 All libraries (debug, stldebug, release) are now built, static and shared
 ones. Import libraries (.lib files) are put in the 'lib\evc3-arm' folder, DLLs
@@ -65,7 +65,7 @@ name of the folder is changed accordingly, e.g. evc3-x86 for emulator files.
 Once STLport is built you can decrease the size of the STLport folder by
 removing intermediate build files. This is done with the following command:
 
-  nmake /f nmake-evc3.mak clobber
+  nmake /fmsvc.mak clobber
 
 Note: MIPS platform is also available for build, but it may not compile or work
       properly. Use with caution!
@@ -76,7 +76,7 @@ Testing STLport
 You can use the unit tests to verify STLport behaves correctly. Change into
 STLports 'build\test\unit' folder and type:
 
-  nmake /f nmake-evc3.mak install
+  nmake /fmsvc.mak install
 
 If you want to build the unit tests for the emulator, you have to reconfigure
 STLport with the configure.bat, as described above.
@@ -139,3 +139,5 @@ Known issues
    A compiler bug in the ARM compiler is suspected.
    There is currently no workaround for this bug. It is recommended to not use
    _STLP_DEBUG mode.
+
+ - See also README.evc4 issues.

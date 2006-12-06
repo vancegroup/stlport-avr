@@ -36,14 +36,14 @@ SDKROOT=C:\Program Files\Windows CE Tools
 
 Third, when you are 100percent sure you've set correctly systems variables go to the STLport/build/lib dir and run the configure.bat with
 proper -c option (ie. "-c evc4"),
-then invoke following command: 'nmake /f nmake-evc4.mak install' to build the library.
+then invoke following command: 'nmake /fmsvc.mak install' to build the library.
 
 If anything goes wrong check if you met all prerequisities and if you set system vars accordingly to the makfile you are using.
 At the end of build process you should have some libs installed in STLport/lib/evc4-arm or STLport/lib/evc4-x86 and dynamic libs in STLport/bin directory.
 
 You might want to repeat all those steps if you would like to have 
 e.g. both ARM and x86 emulator binaries, just don't forget to do 
-'nmake /f nmake-evc4.mak clobber' before new build.
+'nmake /fmsvc.mak clobber' before new build.
 
 Note: MIPS platform is also available for build, but it may not compile or work properly. Use with caution!
 
@@ -51,7 +51,7 @@ Note: MIPS platform is also available for build, but it may not compile or work 
 Testing STLport
 ===============
 When you successfuly build STLport libs, you should go to STLport/test/unit directory build and run the STLP test suite.
-Use 'nmake /f nmake-evc4.mak' and keep in mind that you still have to have proper system variables set!
+Use 'nmake /fmsvc.mak' and keep in mind that you still have to have proper system variables set!
 Once test build has finished upload and run stlp_unit_test.exe to your emulator or device.
 Wait for a while (aprox. 2mins) until all tests are done.
 You should see two files next to your binary now.
@@ -111,4 +111,16 @@ The smallest testcase I could come up with is this:
 to derived, making function() a normal function, or turning off optimization 
 (#pragma optimize("g", off)) all causes the code to compile. This bug affects
 iterators of deque and vector<bool>.
+
+- Because of interdependancy between STLport and native Standard library headers
+STLport headers should always be included first in your translation unit (.cpp
+file). That is to say that:
+
+//Wrong headers order:
+#include <windows.h>
+#include <cstdlib>
+
+// Correct headers order
+#include <cstdlib>
+#include <windows.h>
 

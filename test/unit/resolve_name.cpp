@@ -11,10 +11,7 @@ bool f()
 
   d = sqrt( d );
   d = ::sqrt( d );
-#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
-  //MSVC6 complains about ambiguity between the float and long double versions
   d = std::sqrt( d );
-#endif
   return d == 1.0;
 }
 
@@ -28,16 +25,15 @@ bool g()
 
   d = sqrt( d );
   d = ::sqrt( d );
-#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
-  //MSVC6 complains about ambiguity between the float and long double versions
   d = std::sqrt( d );
-#endif
   return d == 1.0;
 }
 
 }
 
-#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300) // I'm sorry, VC6 still can't resolve name below
+// VC6 consider call to sqrt ambiguous as soon as using namespace std has
+// been invoked.
+#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
 using namespace std;
 #endif
 
@@ -47,10 +43,7 @@ bool h()
 
   d = sqrt( d );
   d = ::sqrt( d );
-#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
-  //MSVC6 complains about ambiguity between the float and long double versions
   d = std::sqrt( d );
-#endif
   return d == 1.0;
 }
 
@@ -59,11 +52,8 @@ struct sq
   sq() {}
 
   double sqroot( double x ) {
-#if !defined (STLPORT) || !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
-    //MSVC6 complains about ambiguity between the float and long double versions
     using std::sqrt;
     return sqrt(x);
-#endif
   }
 };
 

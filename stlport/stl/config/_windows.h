@@ -96,29 +96,33 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchangeAdd(long volatile *,
 #        define _STLP_NATIVE_SETJMP_H_INCLUDED
 #      endif
 
+#      ifndef _WINBASE_ /* winbase.h already included? */
 long WINAPI InterlockedIncrement(long*);
 long WINAPI InterlockedDecrement(long*);
 long WINAPI InterlockedExchange(long*, long);
-
-#      if defined (x86)
-#        include <winbase.h> /* needed for inline versions of Interlocked* functions */
 #      endif
 
-#      ifndef _MFC_VER
+#      ifndef __WINDOWS__ /* windows.h already included? */
 
-#        define MessageBox MessageBoxW
+#        if defined (x86)
+#          include <winbase.h> /* needed for inline versions of Interlocked* functions */
+#        endif
+
+#        ifndef _MFC_VER
+
+#          define MessageBox MessageBoxW
 int WINAPI MessageBoxW(HWND hWnd, LPCWSTR lpText, LPCWSTR lpCaption, UINT uType);
 
-#        define wvsprintf wvsprintfW
+#          define wvsprintf wvsprintfW
 int WINAPI wvsprintfW(LPWSTR, LPCWSTR, va_list ArgList);
 
 void WINAPI ExitThread(DWORD dwExitCode);
 
-#        if !defined (COREDLL)
-#          define _STLP_WCE_WINBASEAPI DECLSPEC_IMPORT
-#        else
-#          define _STLP_WCE_WINBASEAPI
-#        endif
+#          if !defined (COREDLL)
+#            define _STLP_WCE_WINBASEAPI DECLSPEC_IMPORT
+#          else
+#            define _STLP_WCE_WINBASEAPI
+#          endif
 
 _STLP_WCE_WINBASEAPI int WINAPI
 MultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr,
@@ -128,14 +132,16 @@ _STLP_WCE_WINBASEAPI UINT WINAPI GetACP();
 
 _STLP_WCE_WINBASEAPI BOOL WINAPI TerminateProcess(HANDLE hProcess, DWORD uExitCode);
 
-#        define OutputDebugString OutputDebugStringW
+#          define OutputDebugString OutputDebugStringW
 void WINAPI OutputDebugStringW(LPCWSTR);
 
 _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 
-#        undef _STLP_WCE_WINBASEAPI
+#          undef _STLP_WCE_WINBASEAPI
 
-#      endif /* !_MFC_VER */
+#        endif /* !_MFC_VER */
+
+#      endif /* !__WINDOWS__ */
 
 /* end of eMbedded Visual C++ specific section */
 

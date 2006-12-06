@@ -1,3 +1,29 @@
+2006-11-27  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_windows.h: Patch from Michael Fink to check
+	inclusion of winbase.h and windows.h.
+
+2006-11-17  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_macosx.h: Add endianess configuration.
+
+2006-11-16  Francois Dumont  <dums@stlport...>
+
+	* test/unit/resolve_name.cpp: Clean most of MSVC6 workaround, only
+	one has been kept to have the test pass.
+
+2006-11-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_cwchar.h: Patch from Michael Fink to fix EVC3
+	missing mbstate_t definition.
+
+2006-11-07  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_threads.h: Removed _Atomic_swap_struct export
+	that should be useless as completely inlined. Moreover it was
+	generating a compilation error using MSVC 2005 under Windows
+	64 bits.
+
 2006-10-26  Francois Dumont  <dums@stlport...>
 
 	* test/unit/codecvt_test.cpp: Removed try/catch blocks not

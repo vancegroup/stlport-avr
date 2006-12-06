@@ -1,5 +1,7 @@
 2006-12-06  Francois Dumont  <dums@stlport...>
 
+	* Merge STLPORT_5_1 branch from revision 2711 to 2749.
+
 	* stlport/stl/config/_hpux.h: Specify that Hp Unix is a unix platform
 	_STLP_UNIX. This platform was already recognise as a unix platform
 	but it is more clear to put it in Hp Unix configuration file.

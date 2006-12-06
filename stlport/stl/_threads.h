@@ -619,10 +619,6 @@ public:
   }
 };
 
-#if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE_CLASS _Atomic_swap_struct< (sizeof(__stl_atomic_t) == sizeof(void*)) >;
-#endif
-
 #if defined (_STLP_MSVC) && (_STLP_MSVC == 1300)
 #  pragma warning (push)
 #  pragma warning (disable : 4189) //__use_ptr_atomic_swap initialized but not used
