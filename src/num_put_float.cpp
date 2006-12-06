@@ -91,7 +91,7 @@
 #  define snprintf _snprintf
 #endif
 
-#if defined(__hpux) && (!defined(_INCLUDE_HPUX_SOURCE) || defined(__GNUC__))
+#if defined (__hpux) && defined (__GNUC__)
 extern "C" double erf(double);
 extern "C" double erfc(double);
 extern "C" double gamma(double);                             /* obsolescent */

@@ -1,3 +1,13 @@
+2006-12-06  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_hpux.h: Specify that Hp Unix is a unix platform
+	_STLP_UNIX. This platform was already recognise as a unix platform
+	but it is more clear to put it in Hp Unix configuration file.
+
+	* src/num_put_float.cpp: Limit Hp Unix workaround to access isfinite
+	isnan and some other system functions to the gcc compiler, aCC has
+	natively access to it. Tests done by Boris Gubenko.
+
 2006-12-04  Francois Dumont  <dums@stlport...>
 
 	* stlport/fstream, iomanip, ios, iosfwd, iostream, istream, locale,
