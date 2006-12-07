@@ -133,14 +133,14 @@ protected:                      // Data members.
   // for stdio, the whole FILE* is being kept here
   FILE* _M_file;
 #endif
-#if defined (_STLP_USE_WIN32_IO)
-  _STLP_fd _M_view_id;
-#endif
-
   ios_base::openmode _M_openmode     ;
   unsigned char      _M_is_open      ;
   unsigned char      _M_should_close ;
   unsigned char      _M_regular_file ;
+
+#if defined (_STLP_USE_WIN32_IO)
+  _STLP_fd _M_view_id;
+#endif
 
 public :
   static size_t  _STLP_CALL __page_size() { return _M_page_size; }
