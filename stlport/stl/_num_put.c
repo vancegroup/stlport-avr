@@ -387,10 +387,36 @@ __do_put_integer(_OutputIter __s, ios_base& __f, _CharT __fill, _Integer __x) {
   char __buf[sizeof(_Integer) * 3 + 2];
   const ptrdiff_t __buf_size = sizeof(__buf) / sizeof(char);
   ios_base::fmtflags __flags = __f.flags();
-  char* __ibeg = __write_integer_backward((char*)__buf+__buf_size, __flags, __x);
-  return __put_integer(__ibeg, (char*)__buf+__buf_size, __s, __f, __flags, __fill);
+  char* __ibeg = __write_integer_backward((char*)__buf + __buf_size, __flags, __x);
+  return __put_integer(__ibeg, (char*)__buf + __buf_size, __s, __f, __flags, __fill);
 }
 
+template <class _CharT, class _OutputIter>
+_OutputIter _STLP_CALL
+__do_put_bool(_OutputIter __s, ios_base& __f, _CharT __fill, bool __x) {
+  locale __loc = __f.getloc();
+
+  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
+
+  basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __str = __x ? __np.truename() : __np.falsename();
+
+  streamsize __wid = __f.width(0);
+  if (__str.size() >= __wid)
+    return copy(__str.begin(), __str.end(), __s);
+  else {
+    streamsize __pad = __wid - __str.size();
+    ios_base::fmtflags __dir = __f.flags() & ios_base::adjustfield;
+
+    if (__dir == ios_base::left) {
+      __s = copy(__str.begin(), __str.end(), __s);
+      return __fill_n(__s, __pad, __fill);
+    }
+    else /* covers right and internal padding */ {
+      __s = __fill_n(__s, __pad, __fill);
+      return copy(__str.begin(), __str.end(), __s);
+    }
+  }
+}
 _STLP_MOVE_TO_STD_NAMESPACE
 
 //
@@ -454,31 +480,13 @@ __DECLARE_INSTANCE(locale::id, num_put_wchar_t_2::id, );
 #if !defined (_STLP_NO_BOOL)
 template <class _CharT, class _OutputIter>
 _OutputIter
-num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f,
-                                     char_type __fill,  bool __val) const {
+num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
+                                     bool __val) const {
   if (!(__f.flags() & ios_base::boolalpha))
     return this->do_put(__s, __f, __fill, __STATIC_CAST(long,__val));
 
-  locale __loc = __f.getloc();
-  //  typedef numpunct<_CharT> _Punct;
-  //  const _Punct& __np = use_facet<_Punct>(__loc);
-
-  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
-
-  basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __str = __val ? __np.truename() : __np.falsename();
-
-  // Reuse __copy_integer_and_fill.  Since internal padding makes no
-  // sense for bool, though, make sure we use something else instead.
-  // The last two argument to __copy_integer_and_fill are dummies.
-  ios_base::fmtflags __flags = __f.flags();
-  if ((__flags & ios_base::adjustfield) == ios_base::internal)
-    __flags = (__flags & ~ios_base::adjustfield) | ios_base::right;
-
-  return _STLP_PRIV __copy_integer_and_fill(__str.c_str(), __str.size(), __s,
-                                            __flags, __f.width(0), __fill,
-                                            (_CharT) 0, (_CharT) 0);
+  return _STLP_PRIV __do_put_bool(__s, __f, __fill, __val);
 }
-
 #endif
 
 template <class _CharT, class _OutputIter>

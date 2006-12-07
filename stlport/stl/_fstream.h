@@ -156,20 +156,15 @@ public :
 
 // Forward declaration of two helper classes.
 template <class _Traits> class _Noconv_input;
-_STLP_TEMPLATE_NULL
-class _Noconv_input<char_traits<char> >;
-
 template <class _Traits> class _Noconv_output;
-_STLP_TEMPLATE_NULL
-class _Noconv_output< char_traits<char> >;
 
 // There is a specialized version of underflow, for basic_filebuf<char>,
-// in fstream.cxx.
-
+// in fstream.cpp.
 template <class _CharT, class _Traits>
 class _Underflow;
 
-_STLP_TEMPLATE_NULL class _Underflow< char, char_traits<char> >;
+extern char_traits<char>::int_type
+_STLP_CALL __Underflow_doit(basic_filebuf<char, char_traits<char> >*);
 
 template <class _CharT, class _Traits>
 class basic_filebuf : public basic_streambuf<_CharT, _Traits> {
@@ -252,9 +247,8 @@ private:                        // Helper functions.
 
   int_type _M_input_error();
   int_type _M_underflow_aux();
-  //  friend class _Noconv_input<_Traits>;
-  //  friend class _Noconv_output<_Traits>;
   friend class _Underflow<_CharT, _Traits>;
+  friend int_type __Underflow_doit(_Self*);
 
   int_type _M_output_error();
   bool _M_unshift();
@@ -440,9 +434,24 @@ public:
   typedef typename _Traits::int_type int_type;
   typedef _Traits                    traits_type;
 
-  static int_type _STLP_CALL _M_doit(basic_filebuf<_CharT, _Traits>* __this);
-};
+  // There is a specialized version of underflow, for basic_filebuf<char>,
+  // in fstream.cpp.
+  static int_type _STLP_CALL _M_doit(basic_filebuf<_CharT, _Traits>* __this) {
+    if (!__this->_M_in_input_mode) {
+      if (!__this->_M_switch_to_input_mode())
+        return traits_type::eof();
+    }
+    else if (__this->_M_in_putback_mode) {
+      __this->_M_exit_putback_mode();
+      if (__this->gptr() != __this->egptr()) {
+        int_type __c = traits_type::to_int_type(*__this->gptr());
+        return __c;
+      }
+    }
 
+    return __this->_M_underflow_aux();
+  }
+};
 
 // Specialization of underflow: if the character type is char, maybe
 // we can use mmap instead of read.
@@ -451,29 +460,9 @@ class _STLP_CLASS_DECLSPEC _Underflow< char, char_traits<char> > {
 public:
   typedef char_traits<char>::int_type int_type;
   typedef char_traits<char> traits_type;
-  static  int _STLP_CALL _M_doit(basic_filebuf<char, traits_type >* __this);
+  static int_type _STLP_CALL _M_doit(basic_filebuf<char, traits_type >* __this)
+  { return __Underflow_doit(__this); }
 };
-
-// There is a specialized version of underflow, for basic_filebuf<char>,
-// in fstream.cxx.
-
-template <class _CharT, class _Traits>
-_STLP_TYPENAME_ON_RETURN_TYPE _Underflow<_CharT, _Traits>::int_type // _STLP_CALL
- _Underflow<_CharT, _Traits>::_M_doit(basic_filebuf<_CharT, _Traits>* __this) {
-  if (!__this->_M_in_input_mode) {
-    if (!__this->_M_switch_to_input_mode())
-      return traits_type::eof();
-  }
-  else if (__this->_M_in_putback_mode) {
-    __this->_M_exit_putback_mode();
-    if (__this->gptr() != __this->egptr()) {
-      int_type __c = traits_type::to_int_type(*__this->gptr());
-      return __c;
-    }
-  }
-
-  return __this->_M_underflow_aux();
-}
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_NO_WCHAR_T)
 _STLP_EXPORT_TEMPLATE_CLASS _Underflow<wchar_t, char_traits<wchar_t> >;

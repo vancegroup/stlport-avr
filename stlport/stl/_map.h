@@ -40,7 +40,7 @@ _STLP_BEGIN_NAMESPACE
 _STLP_CREATE_ITERATOR_TRAITS(MapTraitsT, traits)
 
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key> ),
-          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
+          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class map
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
           : public __stlport_class<map<_Key, _Tp, _Compare, _Alloc> >
@@ -54,7 +54,7 @@ public:
   typedef _Key                  key_type;
   typedef _Tp                   data_type;
   typedef _Tp                   mapped_type;
-  typedef pair<const _Key, _Tp> value_type;
+  typedef pair<_STLP_CONST _Key, _Tp> value_type;
   typedef _Compare              key_compare;
 
   class value_compare
@@ -230,7 +230,7 @@ public:
 _STLP_CREATE_ITERATOR_TRAITS(MultimapTraitsT, traits)
 
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key> ),
-          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
+          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class multimap
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<multimap<_Key, _Tp, _Compare, _Alloc> >
@@ -244,7 +244,7 @@ public:
   typedef _Key                  key_type;
   typedef _Tp                   data_type;
   typedef _Tp                   mapped_type;
-  typedef pair<const _Key, _Tp> value_type;
+  typedef pair<_STLP_CONST _Key, _Tp> value_type;
   typedef _Compare              key_compare;
 
   class value_compare : public binary_function<value_type, value_type, bool> {

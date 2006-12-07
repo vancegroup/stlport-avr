@@ -1027,10 +1027,6 @@ typedef int bool;
 #  define _STLP_BOOL_KEYWORD 1
 #endif /* _STLP_NO_BOOL */
 
-#ifndef _STLP_MPW_EXTRA_CONST
-#  define _STLP_MPW_EXTRA_CONST
-#endif
-
 #if defined (_STLP_DEBUG_ALLOC) && !defined (_STLP_ASSERTIONS)
 #  define _STLP_ASSERTIONS 1
 #endif
@@ -1054,6 +1050,12 @@ typedef int bool;
 #  define _STLP_IMPORT_TEMPLATE_KEYWORD
 #endif
 
+#if !defined (_STLP_NO_CONST_IN_PAIR)
+#  define _STLP_CONST const
+#else
+#  define _STLP_CONST
+#endif
+
 #ifdef _STLP_USE_NO_IOSTREAMS
 /*
  * If we do not use iostreams we do not use the export/import
@@ -1062,7 +1064,7 @@ typedef int bool;
 #  undef _STLP_USE_DECLSPEC
 /* We also undef USE_DYNAMIC_LIB macro as this macro add some code
  * to use the dynamic (shared) STLport library for some platform/compiler
- * configuration leading to problem when do not link to the STLport lib.
+ * configuration leading to problem when not linking to the STLport lib.
  */
 #  undef _STLP_USE_DYNAMIC_LIB
 #endif
@@ -1186,7 +1188,7 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #  include <stl/_abbrevs.h>
 #endif
 
-/* A really useful macro */
+/* Some really useful macro */
 #define _STLP_ARRAY_SIZE(A) sizeof(A) / sizeof(A[0])
 #define _STLP_ARRAY_AND_SIZE(A) A, sizeof(A) / sizeof(A[0])
 

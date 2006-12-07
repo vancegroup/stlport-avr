@@ -41,7 +41,7 @@ _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMapTraitsT, traits)
 
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
-          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
+          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class hash_map
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<hash_map<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> >
@@ -53,15 +53,7 @@ public:
   typedef _Key key_type;
   typedef _Tp data_type;
   typedef _Tp mapped_type;
-#if !defined (__DMC__)
-  typedef pair<const key_type, data_type> value_type;
-#else
-  /* DMC goes too far in template instanciation and tries to fully instanciate
-   * slist<pair<const int, string> > for instance. The generation of assignment
-   * operator fails of course so we are force to use mutable key for this compiler.
-   */
-  typedef pair<key_type, data_type> value_type;
-#endif
+  typedef pair<_STLP_CONST key_type, data_type> value_type;
 private:
   //Specific iterator traits creation
   typedef _STLP_PRIV _HashMapTraitsT<value_type> _HashMapTraits;
@@ -237,7 +229,7 @@ _STLP_CREATE_HASH_ITERATOR_TRAITS(HashMultimapTraitsT, traits)
 
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
-          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(const _Key, _Tp) >
+          _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class hash_multimap
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                     : public __stlport_class<hash_multimap<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> >
@@ -249,11 +241,7 @@ public:
   typedef _Key key_type;
   typedef _Tp data_type;
   typedef _Tp mapped_type;
-#if !defined (__DMC__)
-  typedef pair<const key_type, data_type> value_type;
-#else
-  typedef pair<key_type, data_type> value_type;
-#endif
+  typedef pair<_STLP_CONST key_type, data_type> value_type;
 private:
   //Specific iterator traits creation
   typedef _STLP_PRIV _HashMultimapTraitsT<value_type> _HashMultimapTraits;

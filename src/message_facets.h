@@ -42,7 +42,8 @@ struct _Catalog_locale_map {
   locale lookup(nl_catd_type key) const;
   void erase(nl_catd_type key);
 
-  typedef hash_map<nl_catd_type, locale, hash<nl_catd_type>, equal_to<nl_catd_type> > map_type;
+  typedef hash_map<nl_catd_type, locale, hash<nl_catd_type>, equal_to<nl_catd_type>, 
+                   allocator<pair<_STLP_CONST nl_catd_type, locale> > > map_type;
   map_type *M;
 
 private:                        // Invalidate copy constructor and assignment
@@ -76,8 +77,10 @@ public:
   ~_Catalog_nl_catd_map()
   {}
 
-  typedef hash_map<messages_base::catalog, nl_catd_type, hash<messages_base::catalog>, equal_to<messages_base::catalog> > map_type;
-  typedef hash_map<nl_catd_type, messages_base::catalog, hash<nl_catd_type>, equal_to<nl_catd_type> > rmap_type;
+  typedef hash_map<messages_base::catalog, nl_catd_type, hash<messages_base::catalog>, equal_to<messages_base::catalog>,
+                   allocator<pair<_STLP_CONST messages_base::catalog, nl_catd_type> > > map_type;
+  typedef hash_map<nl_catd_type, messages_base::catalog, hash<nl_catd_type>, equal_to<nl_catd_type>,
+                   allocator<pair<_STLP_CONST nl_catd_type, messages_base::catalog> > > rmap_type;
   // typedef map<messages_base::catalog,nl_catd_type> map_type;
   // typedef map<nl_catd_type,messages_base::catalog> rmap_type;
 

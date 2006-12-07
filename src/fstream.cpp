@@ -1112,7 +1112,10 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 #define MMAP_CHUNK 0x100000L
 
 int _STLP_CALL
-_Underflow<char, char_traits<char> >::_M_doit (basic_filebuf<char, char_traits<char> >* __this) {
+__Underflow_doit(basic_filebuf<char, char_traits<char> >* __this) {
+  typedef char_traits<char> traits_type;
+  typedef traits_type::int_type int_type;
+
   if (!__this->_M_in_input_mode) {
     if (!__this->_M_switch_to_input_mode())
       return traits_type::eof();

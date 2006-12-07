@@ -111,7 +111,7 @@ typedef unsigned __int64 uint64;
 typedef unsigned long uint32;
 #  include "uint64.h"    //*TY 03/25/2000 - added 64bit math type definition
 #elif defined (__unix) || defined (__MINGW32__) || defined (N_PLAT_NLM) || \
-      (defined (__DMC__) && (__LONGLONG))
+      (defined (__DMC__) && (__LONGLONG)) || defined (__WATCOMC__)
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 #  define ULL(x) x##ULL

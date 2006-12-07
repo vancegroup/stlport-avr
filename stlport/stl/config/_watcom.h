@@ -4,26 +4,39 @@
 #define _STLP_COMPILER "Watcom"
 
 # ifndef _STLP_USE_NO_IOSTREAMS
-#  define _STLP_USE_NO_IOSTREAMS
+//#  define _STLP_USE_NO_IOSTREAMS
 # endif
 
-# define _STLP_NO_RELOPS_NAMESPACE
-# define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
+#define _STLP_NO_CONST_IN_PAIR
 
-#  define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
-#  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
-#  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
+#define _STLP_LONG_LONG long long
+#define _STLP_DONT_USE_PRIV_NAMESPACE
+#define _STLP_NO_MOVE_SEMANTIC
+#define _STLP_NO_TYPENAME_IN_TEMPLATE_HEADER
+#define _STLP_CALL __cdecl
+#define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
+
+#define _STLP_NO_VENDOR_STDLIB_L
+#define _STLP_NO_VENDOR_MATH_F
+#define _STLP_NO_VENDOR_MATH_L
+
+#define _STLP_NO_RELOPS_NAMESPACE
+
+#define _STLP_HAS_SPECIFIC_PROLOG_EPILOG
+#define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
+#define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 
 // On QNX, headers are supposed to be found in /usr/include,
 // so default "../include" should work.
-# ifndef __QNX__
+#ifndef __QNX__
 #  define _STLP_NATIVE_INCLUDE_PATH ../h
-# endif
+#endif
 
 // Inline replacements for locking calls under Watcom
 // Define _STLP_NO_WATCOM_INLINE_INTERLOCK to keep using
 // standard WIN32 calls
 // Define _STL_MULTIPROCESSOR to enable lock
+#define _STLP_NO_WATCOM_INLINE_INTERLOCK
 #if !defined(_STLP_NO_WATCOM_INLINE_INTERLOCK)
 
 long    __stl_InterlockedIncrement( long *var );
@@ -69,16 +82,12 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
         ".586"                  \
         "xchg eax, [ecx]"       \
         value [eax];
-#else
 
-#define __stl_InterlockedIncrement      InterlockedIncrement
-#define __stl_InterlockedDecrement      InterlockedDecrement
-#define __stl_InterlockedExchange       InterlockedExchange
+#  define _STLP_ATOMIC_INCREMENT(__x) __stl_InterlockedIncrement((long*)__x)
+#  define _STLP_ATOMIC_DECREMENT(__x) __stl_InterlockedDecrement((long*)__x)
+#  define _STLP_ATOMIC_EXCHANGE(__x, __y) __stl_InterlockedExchange((long*)__x, (long)__y)
+#  define _STLP_ATOMIC_EXCHANGE_PTR(__x, __y) __stl_InterlockedExchange((long*)__x, (long)__y)
 #endif /* INLINE INTERLOCK */
-
-#define _STLP_ATOMIC_INCREMENT(__x) __stl_InterlockedIncrement((long*)__x)
-#define _STLP_ATOMIC_DECREMENT(__x) __stl_InterlockedDecrement((long*)__x)
-#define _STLP_ATOMIC_EXCHANGE(__x, __y) __stl_InterlockedExchange((long*)__x, (long)__y)
 
 // boris : is this true or just the header is not in /usr/include ?
 # ifdef __QNX__
@@ -121,7 +130,7 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 #  define _STLP_NO_EXCEPTION_HEADER 1
 #  define _STLP_NO_BAD_ALLOC 1
 
-#  define _STLP_NESTED_TYPE_PARAM_BUG 1
+//#  define _STLP_NESTED_TYPE_PARAM_BUG 1
 
 #  define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS 1
 
@@ -141,14 +150,9 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 // for switches (-xs,  -xss,  -xst)
 //
 #if !(defined (__SW_XS) || defined (__SW_XSS) || defined(__SW_XST))
-#    define _STLP_HAS_NO_EXCEPTIONS 1
-# endif
+#  define _STLP_HAS_NO_EXCEPTIONS 1
+#endif
 
-# if defined ( _MT ) && !defined (_NOTHREADS) && !defined (_REENTRANT)
-# define _REENTRANT 1
-# endif
-
-
-
-
-
+#if defined (_MT) && !defined (_NOTHREADS) && !defined (_REENTRANT)
+#  define _REENTRANT 1
+#endif

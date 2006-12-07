@@ -12,6 +12,12 @@
 #  error "Old Digital Mars C++ compiler versions are not supported!"
 #endif
 
+/* DMC goes too far in template instanciation and tries to fully instanciate
+ * slist<pair<const int, string> > for instance. The generation of assignment
+ * operator fails of course so we are force to use mutable key for this compiler.
+ */
+#define _STLP_NO_CONST_IN_PAIR
+
 #ifndef _CPPUNWIND
 #  define _STLP_NO_EXCEPTIONS
 #endif
