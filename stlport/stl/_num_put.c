@@ -546,7 +546,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
   } else {
     __f.width((sizeof(void*) * 2) + 2); // digits in pointer type plus '0x' prefix
   }
-#if defined (_STLP_MSVC) && (_STLP_MSVC > 1200)
+#if defined (_STLP_MSVC)
 #  pragma warning (push)
 #  pragma warning (disable : 4311) //pointer truncation from 'const void*' to 'unsigned long'
 #endif
@@ -560,7 +560,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
     this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val))
 #endif
         ;
-#if defined (_STLP_MSVC) && (_STLP_MSVC > 1200)
+#if defined (_STLP_MSVC)
 #  pragma warning (pop)
 #endif
   __f.flags(__save_flags);

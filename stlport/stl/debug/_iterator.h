@@ -442,8 +442,7 @@ protected:
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 #  if defined (_STLP_NESTED_TYPE_PARAM_BUG) ||\
-     (defined (__SUNPRO_CC) && __SUNPRO_CC < 0x600) ||\
-     (defined (_STLP_MSVC) && (_STLP_MSVC < 1100))
+     (defined (__SUNPRO_CC) && __SUNPRO_CC < 0x600)
 #    define _STLP_DEBUG_USE_DISTINCT_VALUE_TYPE_HELPERS 1
 #  endif
 

@@ -1,5 +1,7 @@
 2006-12-07  Francois Dumont  <dums@stlport...>
 
+	* Cleanup of all workarounds for MSVC before version 6.
+
 	* build/Makefiles/gmake/gcc.mak: Hide -fvisibility option for windows as
 	in this context we are not able to correctly detect gcc version in use. 
 

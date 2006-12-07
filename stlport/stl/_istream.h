@@ -148,9 +148,6 @@ public:                         // getline()
 public:                         // read(), readsome(), ignore()
   _Self& ignore();
   _Self& ignore(streamsize __n);
-#if (defined (_STLP_MSVC) && _STLP_MSVC < 1200)
-  inline
-#endif
   _Self& ignore(streamsize __n, int_type __delim);
 
   _Self& read(char_type* __s, streamsize __n);

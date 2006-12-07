@@ -55,7 +55,7 @@ struct pair {
 #endif
   pair(const _T1& __a, const _T2& __b) : first(__a), second(__b) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _U1, class _U2>
   pair(const pair<_U1, _U2>& __p) : first(__p.first), second(__p.second) {}
 

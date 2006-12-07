@@ -26,11 +26,6 @@
 #    include <stl/type_traits.h>
 #  endif
 
-#  if !defined (_STLP_EXTRA_OPERATORS_FOR_DEBUG) && \
-      (defined (_STLP_BASE_MATCH_BUG) || (defined (_STLP_MSVC) && _STLP_MSVC < 1100))
-#    define _STLP_EXTRA_OPERATORS_FOR_DEBUG
-#  endif
-
 #  if !defined (_STLP_FILE__)
 #    define _STLP_FILE__ __FILE__
 #  endif

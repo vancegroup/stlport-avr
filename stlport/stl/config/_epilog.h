@@ -1,14 +1,12 @@
-#if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__)
+#if defined (_STLP_MSVC) || defined (__ICL)
 
-#if defined (__BORLANDC__)
+#  pragma warning (pop)
+#  pragma pack (pop)
+
+#elif defined (__BORLANDC__)
+
 #  pragma option pop
 #  pragma option -w-pow     // -w-8062 Previous options and warnings not restored
-#else
-#  if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1200))
-#    pragma warning (pop)
-#  endif
-#  pragma pack (pop)
-#endif
 
 #elif defined (__sgi) && !defined (__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)
 
@@ -29,4 +27,3 @@
 #  pragma info(restore)
 
 #endif
-

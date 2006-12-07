@@ -52,7 +52,7 @@ __in_range_aux(const _Iterator& __it, const _Iterator& __first,
 #endif
 
 template <class _Iterator1, class _Iterator>
-#if defined (_STLP_MSVC) && (_STLP_MSVC >= 1100)
+#if defined (_STLP_MSVC)
 inline bool _STLP_CALL  __in_range_aux(_Iterator1 __it, const _Iterator& __first,
 #else
 inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& __first,

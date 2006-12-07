@@ -71,7 +71,11 @@
 
 #if defined (_STLP_MSVC)
 
-#define _STLP_NORETURN_FUNCTION __declspec(noreturn)
+#  if (_STLP_MSVC < 1200)
+#    error Microsoft Visual C++ compilers before version 6 (SP5) are not supported.
+#  endif
+
+#  define _STLP_NORETURN_FUNCTION __declspec(noreturn)
 
 /* Full compiler version comes from boost library intrinsics.hpp header. */
 #  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)
@@ -146,12 +150,10 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1
 #  endif
 
-#  if (_STLP_MSVC >= 1200)
-#    define _STLP_HAS_NATIVE_FLOAT_ABS 1
-#  endif
+#  define _STLP_HAS_NATIVE_FLOAT_ABS 1
 
 // TODO: some eVC4 compilers report _MSC_VER 1201 or 1202, which category do they belong to?
-#  if (_STLP_MSVC > 1200) && (_STLP_MSVC < 1310)
+#  if (_STLP_MSVC < 1310)
 #    define _STLP_NO_MOVE_SEMANTIC
 #  endif
 
@@ -201,50 +203,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    define _STLP_USE_ABBREVS
 #  endif
 
-// TODO: what is the earliest version for this? If it is 1200, use _STLP_MSVC>=1200.
-#  if (_STLP_MSVC > 1100) && (_STLP_MSVC < 1300)
-typedef char __stl_char;
-#    define _STLP_DEFAULTCHAR __stl_char
-#  endif
-
-#  if (_STLP_MSVC < 1200) /* before VC++ 6.0 */
-/* #  define _STLP_NO_MEMBER_TEMPLATES 1 */
-/* #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1 */
-#    define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS 1
-#    define _STLP_DONT_USE_PARTIAL_SPEC_WRKD 1
-#    define _STLP_QUALIFIED_SPECIALIZATION_BUG 1
-#    define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
-#    define _STLP_THROW_RETURN_BUG 1
-#    define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
-#    define _STLP_DEF_CONST_DEF_PARAM_BUG 1
-#  endif
-
-#  if (_STLP_MSVC < 1100 )
-#    ifndef _STLP_USE_NO_IOSTREAMS
-#      define _STLP_USE_NO_IOSTREAMS
-#    endif
-/* #  define _STLP_NESTED_TYPE_PARAM_BUG 1 */
-/* Debug mode does not work for 4.2 */
-#    if defined (_STLP_DEBUG)
-#      pragma message ("STLport debug mode does not work for VC++ 4.2, turning _STLP_DEBUG off ...")
-#      undef _STLP_DEBUG
-#    endif
-#    define _STLP_NO_BOOL            1
-#    define _STLP_NEED_TYPENAME      1
-#    define _STLP_NEED_EXPLICIT      1
-#    define _STLP_NEED_MUTABLE       1
-#    define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
-#    define _STLP_LIMITED_DEFAULT_TEMPLATES 1
-#    define _STLP_NONTEMPL_BASE_MATCH_BUG 1
-#    define _STLP_BROKEN_USING_DIRECTIVE  1
-#    define _STLP_NO_ARROW_OPERATOR 1
-#    define _STLP_NO_SIGNED_BUILTINS 1
-#    define _STLP_NO_EXCEPTION_SPEC 1
-#    define _STLP_HAS_NO_NAMESPACES 1
-#    define _STLP_NO_AT_MEMBER_FUNCTION 1
-#    define _STLP_NO_MEMBER_TEMPLATES 1
-#  endif /* 1100 */
-
 #endif /* _STLP_MSVC */
 
 /** The desktop variants starting with VC8 have a set of more secure replacements
@@ -270,29 +228,10 @@ for the error-prone string handling functions of the C standard lib. */
 #  define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 #endif
 
-#if (_STLP_MSVC_LIB < 1100)
-/* up to 4.2, library is in global namespace */
-#  define _STLP_VENDOR_GLOBAL_STD
-#endif
-
-#if (_STLP_MSVC_LIB <= 1010)
-/* "bool" is reserved in MSVC 4.1 while <yvals.h> absent, so : */
-#  define _STLP_NO_BAD_ALLOC
-#  define _STLP_HAS_NO_NEW_C_HEADERS 1
-#  define _STLP_NO_NEW_NEW_HEADER 1
-#elif (_STLP_MSVC_LIB < 1100)
-/* VC++ 4.2 and higher */
-#  define _STLP_YVALS_H 1
-#  define _STLP_USE_NO_IOSTREAMS 1
-#endif
-
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
-
-#if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1100)
-#  define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-#  define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
-#endif
+#define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
+#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 
 #if defined (__DLL) || defined (_DLL) || defined (_RTLDLL) || defined (_AFXDLL)
 #  define _STLP_RUNTIME_DLL
@@ -309,7 +248,7 @@ for the error-prone string handling functions of the C standard lib. */
 #if defined (_STLP_USE_DYNAMIC_LIB)
 #  undef  _STLP_USE_DECLSPEC
 #  define _STLP_USE_DECLSPEC 1
-#  if (_STLP_MSVC >= 1200) && (_STLP_MSVC < 1300)
+#  if (_STLP_MSVC < 1300)
 #    define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND 1
 #  endif
 #endif
@@ -322,15 +261,6 @@ for the error-prone string handling functions of the C standard lib. */
 #  endif
 #endif
 #define _STLP_EXPORT_TEMPLATE_KEYWORD
-
-#if defined (_STLP_MSVC) && (_STLP_MSVC < 1200)
-/*    only static STLport lib now works for VC 5.0 */
-#  undef  _STLP_USE_STATIC_LIB
-#  undef  _STLP_USE_DYNAMIC_LIB
-#  define _STLP_USE_STATIC_LIB
-/*    disable hook which makes template symbols to be searched for in the library */
-#  undef _STLP_NO_CUSTOM_IO
-#endif
 
 #include <stl/config/_auto_link.h>
 

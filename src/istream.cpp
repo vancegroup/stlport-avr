@@ -29,18 +29,13 @@ template class _STLP_CLASS_DECLSPEC _Isentry<char, char_traits<char> >;
 #  endif
 
 template class _STLP_CLASS_DECLSPEC basic_iostream<char, char_traits<char> >;
-
-#  if !defined(_STLP_MSVC) || (_STLP_MSVC > 1100)
 template class _STLP_CLASS_DECLSPEC basic_istream<char, char_traits<char> >;
-#  endif
 
 #  if !defined (_STLP_NO_WCHAR_T)
 #    if defined (_STLP_USE_TEMPLATE_EXPORT)
 template class _STLP_CLASS_DECLSPEC _Isentry<wchar_t, char_traits<wchar_t> >;
 #    endif
-#    if !defined(_STLP_MSVC) || (_STLP_MSVC > 1100)
 template class _STLP_CLASS_DECLSPEC basic_istream<wchar_t, char_traits<wchar_t> >;
-#    endif
 template class _STLP_CLASS_DECLSPEC basic_iostream<wchar_t, char_traits<wchar_t> >;
 #  endif /* !_STLP_NO_WCHAR_T */
 

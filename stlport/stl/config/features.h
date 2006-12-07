@@ -373,7 +373,7 @@
 #  define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 #endif
 
-#if defined (_STLP_NESTED_TYPE_PARAM_BUG) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1100))
+#if defined (_STLP_NESTED_TYPE_PARAM_BUG)
 #  define _STLP_GLOBAL_NESTED_RETURN_TYPE_PARAM_BUG
 #endif
 
@@ -1029,10 +1029,6 @@ typedef int bool;
 
 #ifndef _STLP_MPW_EXTRA_CONST
 #  define _STLP_MPW_EXTRA_CONST
-#endif
-
-#ifndef _STLP_DEFAULTCHAR
-#  define _STLP_DEFAULTCHAR char
 #endif
 
 #if defined (_STLP_DEBUG_ALLOC) && !defined (_STLP_ASSERTIONS)

@@ -65,7 +65,7 @@ _STLP_BEGIN_NAMESPACE
 #  define __ISI_TMPL_HEADER_ARGUMENTS class _Tp, class _CharT, class _Traits, class _Dist
 #  define __ISI_TMPL_ARGUMENTS _Tp, _CharT, _Traits, _Dist
 template <class _Tp,
-          class _CharT = _STLP_DEFAULTCHAR, class _Traits = char_traits<_CharT>,
+          class _CharT = char, class _Traits = char_traits<_CharT>,
           class _Dist = ptrdiff_t>
 class istream_iterator : public iterator<input_iterator_tag, _Tp , _Dist,
                                          const _Tp*, const _Tp& > {
@@ -155,7 +155,7 @@ private:
 
 #if !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _TpP,
-          class _CharT = _STLP_DEFAULTCHAR, class _Traits = char_traits<_CharT> >
+          class _CharT = char, class _Traits = char_traits<_CharT> >
 #else
 template <class _TpP>
 #endif

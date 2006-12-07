@@ -1,9 +1,7 @@
 
 #if defined (_STLP_MSVC) || defined (__ICL)
 
-#  if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1200)
-#    pragma warning(push)
-#  endif
+#  pragma warning (push)
 #  include <stl/config/_warnings_off.h>
 /* We are forcing the alignment to guaranty that libraries are use
  * with the same alignment as the one use to build them.
