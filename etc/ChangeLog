@@ -1,3 +1,18 @@
+2006-12-09  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_range_errors.h: To complete 2006-12-04 modification
+	fix inclusion to access to string definition. In normal mode we include
+	stlport/stl/_string.h rather than string header. There is a special case
+	however if cumulating _STLP_NO_IOSTREAMS, _STLP_DONT_REDEFINE_STD and
+	_STLP_WHOLE_NATIVE_STD then functions defined in _range_errors.h will
+	throw exception from std namespace rather than from stlport.
+
+	* stlport/stl/config/user_config.h: Documented above modification.
+
+	* stlport/stl/config/features.h: Modify _STLP_VENDOR_STD definition. This
+	internal macro do not have to use __std_alias, within STLport code std is
+	not a macro and can be used as the vendor namespace.
+
 2006-12-07  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_algobase.c, config/features.h: Removed unused

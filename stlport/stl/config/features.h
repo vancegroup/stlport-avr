@@ -539,7 +539,7 @@ namespace __std_alias = std;
 #  if defined (_STLP_VENDOR_GLOBAL_STD)
 #    define _STLP_VENDOR_STD
 #  else
-#    define _STLP_VENDOR_STD __std_alias
+#    define _STLP_VENDOR_STD std
 #  endif
 
 /* tune things that come from C library */

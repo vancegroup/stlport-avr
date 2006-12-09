@@ -103,8 +103,8 @@
 */
 
 /*
- * If _STLP_USE_OWN_NAMESPACE is in effect, STLport by default will try
- * to rename std:: for the user to stlport::. If you do not want this feature,
+ * If STLport use its own namespace, see _STLP_NO_OWN_NAMESPACE in host.h, it will try
+ * by default to rename std:: for the user to stlport::. If you do not want this feature,
  * please define the following switch and then use stlport::
  */
 /*
@@ -112,7 +112,7 @@
 */
 
 /*
- * _STLP_WHOLE_NATIVE_STD : only meaningful in _STLP_USE_OWN_NAMESPACE mode.
+ * _STLP_WHOLE_NATIVE_STD : only meaningful if STLport uses its own namespace.
  * Normally, STLport only imports necessary components from native std:: namespace -
  * those not yet provided by STLport (<iostream>, <complex>, etc.)
  * and their dependencies (<string>, <stdexcept>).
@@ -121,6 +121,11 @@
  * if you are going to use both stlport:: and std:: components in your code.
  * Otherwise this option is not recommended as it increases the size of your object files
  * and slows down compilation.
+ * Beware, if you do not use STLport iostream (_STLP_NO_IOSTREAMS above), ask STLport not
+ * to rename std:: in stlport:: and try to have access to whole native Standard stuff then
+ * STLport will only throw exceptions from the std namespace and not from the stlport one.
+ * For instance a problem in stlport::vector::at will throw a std::out_of_range and not a
+ * stlport::out_of_range. Notice that STLport exceptions inherits from std::exception.
  */
 /*
 #define _STLP_WHOLE_NATIVE_STD
