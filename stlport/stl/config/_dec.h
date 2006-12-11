@@ -56,9 +56,7 @@
 #endif
 
 
-#ifdef __NO_USE_STD_IOSTREAM
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
-# else
+#ifndef __NO_USE_STD_IOSTREAM
 // default is to use new iostreams, anyway
 # ifndef __USE_STD_IOSTREAM
 #  define __USE_STD_IOSTREAM

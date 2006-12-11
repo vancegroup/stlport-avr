@@ -3,7 +3,6 @@
 #define _STLP_COMPILER "Apogee"
 
 #define _STLP_NO_NEW_NEW_HEADER 1
-#define _STLP_HAS_NO_NEW_IOSTREAMS 1
 #define _STLP_HAS_NO_NEW_C_HEADERS 1
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_VERSION - 0 >= 4)

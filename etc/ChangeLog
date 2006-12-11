@@ -1,3 +1,16 @@
+2006-12-11  Francois Dumont  <dums@stlport...>
+
+	* test/unit/mvctor_test.cpp: Split in 2 other translation unit
+	mvctor_declaration_test.cpp and mvctor_traits_test.cpp without
+	impacting number of test case. It helps DMC to perform a correct
+	link.
+
+	* stlport/stl/type_manips.h: Check _STLP_DONT_USE_PRIV_NAMESPACE before
+	importing __true_type and __false_type in private namespace.
+
+	* stlport/stl/config/_dec.h, _apcc.h: Removed references to unused
+	_STLP_HAS_NO_NEW_IOSTREAMS macro.
+
 2006-12-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/fstream.cpp, stlport/stl/_fstream.h: non-template friend function

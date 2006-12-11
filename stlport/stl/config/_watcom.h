@@ -119,7 +119,6 @@ long    __stl_InterlockedExchange( long *Destination, long Value );
 
 #  define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 
-#  define _STLP_HAS_NO_NEW_IOSTREAMS 1
 #  define _STLP_HAS_NO_NEW_C_HEADERS 1
 #  define _STLP_NO_NEW_NEW_HEADER 1
 #  define _STLP_VENDOR_GLOBAL_STD
