@@ -46,7 +46,7 @@ struct __true_type {};
 struct __false_type {};
 # endif
 
-#if defined (_STLP_USE_NAMESPACES)
+#if defined (_STLP_USE_NAMESPACES) && !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 using _STLP_STD::__true_type;
 using _STLP_STD::__false_type;
