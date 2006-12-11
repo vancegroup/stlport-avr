@@ -102,6 +102,8 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/modulus_test.cpp \
 	../../../test/unit/multiset_test.cpp \
 	../../../test/unit/mvctor_test.cpp \
+	../../../test/unit/mvctor_declaration_test.cpp \
+	../../../test/unit/mvctor_traits_test.cpp \
 	../../../test/unit/neq_test.cpp \
 	../../../test/unit/new_header_test.cpp \
 	../../../test/unit/nthelm_test.cpp \
