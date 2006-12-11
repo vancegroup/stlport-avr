@@ -163,9 +163,6 @@ template <class _Traits> class _Noconv_output;
 template <class _CharT, class _Traits>
 class _Underflow;
 
-extern char_traits<char>::int_type
-_STLP_CALL __Underflow_doit(basic_filebuf<char, char_traits<char> >*);
-
 template <class _CharT, class _Traits>
 class basic_filebuf : public basic_streambuf<_CharT, _Traits> {
 public:                         // Types.
@@ -248,7 +245,6 @@ private:                        // Helper functions.
   int_type _M_input_error();
   int_type _M_underflow_aux();
   friend class _Underflow<_CharT, _Traits>;
-  friend int_type __Underflow_doit(_Self*);
 
   int_type _M_output_error();
   bool _M_unshift();
@@ -456,12 +452,12 @@ public:
 // Specialization of underflow: if the character type is char, maybe
 // we can use mmap instead of read.
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC _Underflow< char, char_traits<char> > {
-public:
-  typedef char_traits<char>::int_type int_type;
-  typedef char_traits<char> traits_type;
-  static int_type _STLP_CALL _M_doit(basic_filebuf<char, traits_type >* __this)
-  { return __Underflow_doit(__this); }
+class _STLP_CLASS_DECLSPEC _Underflow< char, char_traits<char> >
+{
+  public:
+    typedef char_traits<char>::int_type int_type;
+    typedef char_traits<char> traits_type;
+    static int_type _STLP_CALL _M_doit(basic_filebuf<char, traits_type >* __this);
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_NO_WCHAR_T)

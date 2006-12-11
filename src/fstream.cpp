@@ -1111,8 +1111,9 @@ void _Filebuf_base::_M_unmap(void* base, streamoff len) {
 // fbp : let us map 1 MB maximum, just be sure not to trash VM
 #define MMAP_CHUNK 0x100000L
 
-int _STLP_CALL
-__Underflow_doit(basic_filebuf<char, char_traits<char> >* __this) {
+_Underflow< char, char_traits<char> >::int_type _STLP_CALL
+_Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<char> >* __this)
+{
   typedef char_traits<char> traits_type;
   typedef traits_type::int_type int_type;
 
