@@ -317,9 +317,9 @@ inline _OutputIter copy_backward(_InputIter __first, _InputIter __last, _OutputI
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 #  define _STLP_DECLARE_COPY_TRIVIAL(_Tp)                                       \
 inline _Tp* copy(const _Tp* __first, const _Tp* __last, _Tp* __result)          \
-{ return (_Tp*)__copy_trivial(__first, __last, __result); }                     \
+{ return (_Tp*)_STLP_PRIV __copy_trivial(__first, __last, __result); }          \
 inline _Tp* copy_backward(const _Tp* __first, const _Tp* __last, _Tp* __result) \
-{ return (_Tp*)__copy_trivial_backward(__first, __last, __result); }
+{ return (_Tp*)_STLP_PRIV __copy_trivial_backward(__first, __last, __result); }
 
 _STLP_DECLARE_COPY_TRIVIAL(char)
 #  if !defined (_STLP_NO_SIGNED_BUILTINS)
