@@ -314,3 +314,4 @@ void MoveConstructorTest::movable_declaration_hash()
   }
 #endif
 }
+

@@ -61,7 +61,7 @@ struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
 #if defined (STLPORT)
-  MovableStruct(__move_source<MovableStruct>) { ++nb_mv_construct_call; }
+  MovableStruct(std::__move_source<MovableStruct>) { ++nb_mv_construct_call; }
 #endif
   ~MovableStruct() { ++nb_destruct_call; }
 
