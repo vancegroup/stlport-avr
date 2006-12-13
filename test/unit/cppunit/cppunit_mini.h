@@ -18,12 +18,18 @@
 #ifndef _CPPUNITMPFR_H_
 #define _CPPUNITMPFR_H_
 
-#define CPPUNIT_NS CppUnitMini
+#if 0
+#  define CPPUNIT_NS CppUnitMini
+#else
+#  define CPPUNIT_NS
+#endif
 
 #include <string.h>
 
+#if 0
 namespace CPPUNIT_NS
 {
+#endif
   class Reporter {
   public:
     virtual ~Reporter() {}
@@ -122,7 +128,9 @@ namespace CPPUNIT_NS
 
     static Reporter *m_reporter;
   };
+#if 0
 }
+#endif
 
 #if !defined (CPPUNIT_MINI_HIDE_UNUSED_VARIABLE)
 #  if defined (_MSC_VER)
