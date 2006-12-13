@@ -94,15 +94,19 @@ void BindTest::bind2nd3()
 class A
 {
   public:
-    A() :
-        m_n( 0 )
-      {}
+    A() : m_n( 0 )
+    {}
 
-    void f( int n ) const
-      { m_n = n; }
+    void f( int n ) const {
+#if defined (STLPORT)
+      _STLP_MUTABLE(A, m_n) = n;
+#else
+      m_n = n;
+#endif
+    }
 
     int v() const
-      { return m_n; }
+    { return m_n; }
 
   private:
     mutable int m_n;

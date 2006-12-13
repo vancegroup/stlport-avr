@@ -100,7 +100,7 @@ private:                        // Helper functions.
 
 private:
   ios_base::openmode _M_mode;
-  mutable _String _M_str;
+  _String _M_str;
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)

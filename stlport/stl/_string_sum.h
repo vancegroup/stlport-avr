@@ -370,6 +370,7 @@ operator >= (const __bstr_sum<_CharT, _Traits, _Alloc, _Lh1, _Rh1, _StoreDir1> &
 
 template <class _CharT, class _Traits, class _Alloc>
 struct __sum_storage_elem {
+  typedef __sum_storage_elem<_CharT, _Traits, _Alloc> _Self;
   typedef basic_string<_CharT, _Traits, _Alloc> _BString;
 
   __sum_storage_elem(_Alloc __alloc) : _M_init(false), _M_storage(__alloc)
@@ -378,8 +379,8 @@ struct __sum_storage_elem {
   template <class _Left, class _Right, class _StorageDir>
   void _M_Init(__bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir>  const& __ref) const {
     if (!_M_init) {
-      _M_storage = __ref;
-      _M_init = true;
+      _STLP_MUTABLE(_Self, _M_storage) = __ref;
+      _STLP_MUTABLE(_Self, _M_init) = true;
     }
   }
 

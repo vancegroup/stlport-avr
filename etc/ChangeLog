@@ -1,3 +1,22 @@
+2006-12-13  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/feature.h: Fix and generalize the mutable
+	workaround for compilers missing this feature. Replace
+	_STLP_ASSIGN_MUTABLE with _STLP_MUTABLE macro that is more flexible
+	as not limited to assignment.
+
+	* stlport/stl/_istreambuf_iterator.h, _stream_iterator.h, _string_sum.h:
+	Use _STLP_MUTABLE rather than manually handle _STLP_NEED_MUTABLE macro.
+
+	* stlport/stl/_sstream.h: Removed useless mutable qualifier for
+	basic_stringbuf _M_str member.
+
+	* test/unit/bind_test.cpp: Use STLport mutable workaround.
+
+	* src/message_facets.h, facets_byname.cpp: Limit use of the mutable
+	qualified to one member in _Message_Impl class and use _STLP_MUTABLE
+	in class implementation.
+
 2006-12-11  Francois Dumont  <dums@stlport...>
 
 	* test/unit/mvctor_test.cpp: Split in 2 other translation unit

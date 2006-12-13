@@ -64,12 +64,11 @@ public:
   inline istreambuf_iterator(basic_istream<_CharT, _Traits>& __is);
 
   char_type operator*() const { this->_M_getc(); return _M_c; }
-  istreambuf_iterator<_CharT, _Traits>& operator++()
-      {
-        _M_buf->sbumpc();
-        _M_have_c = false;
-        return *this;
-      }
+  istreambuf_iterator<_CharT, _Traits>& operator++() {
+    _M_buf->sbumpc();
+    _M_have_c = false;
+    return *this;
+  }
   istreambuf_iterator<_CharT, _Traits>  operator++(int);
 
   bool equal(const istreambuf_iterator<_CharT, _Traits>& __i) const {
@@ -91,17 +90,9 @@ private:
     if (_M_have_c)
       return;
     int_type __c = _M_buf->sgetc();
-# if !defined (_STLP_NEED_MUTABLE) /* && ! defined (__SUNPRO_CC) */
-    _M_c = traits_type::to_char_type(__c);
-    _M_eof = traits_type::eq_int_type(__c, traits_type::eof());
-    _M_have_c = true;
-# else
-    typedef istreambuf_iterator<_CharT,_Traits> _Self;
-    _Self* __that = __CONST_CAST(_Self*, this);
-    __that->_M_c = __STATIC_CAST(_CharT, traits_type::to_char_type(__c));
-    __that->_M_eof = traits_type::eq_int_type(__c, traits_type::eof());
-    __that->_M_have_c = true;
-# endif
+    _STLP_MUTABLE(_Self, _M_c) = traits_type::to_char_type(__c);
+    _STLP_MUTABLE(_Self, _M_eof) = traits_type::eq_int_type(__c, traits_type::eof());
+    _STLP_MUTABLE(_Self, _M_have_c) = true;
   }
 
 private:

@@ -758,9 +758,9 @@ namespace _STL = _STLP_STD_NAME;
 #endif
 
 #if !defined (_STLP_NEED_MUTABLE)
-#  define _STLP_ASSIGN_MUTABLE(type,x,y) x = y
+#  define _STLP_MUTABLE(type, x) x
 #else
-#  define _STLP_ASSIGN_MUTABLE(type,x,y) __CONST_CAST(type,x)=y
+#  define _STLP_MUTABLE(type, x) __CONST_CAST(type*, this)->x
 #  define mutable
 #endif
 

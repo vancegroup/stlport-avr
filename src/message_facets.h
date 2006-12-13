@@ -98,7 +98,7 @@ public:
   ;
 #endif
 
-  nl_catd_type operator [] ( messages_base::catalog cat ) const
+  nl_catd_type operator [] ( messages_base::catalog cat )
 #if !defined (_STLP_USE_NL_CATD_MAPPING)
   { return cat; }
 #else
@@ -110,8 +110,8 @@ private:
   _Catalog_nl_catd_map& operator =(const _Catalog_nl_catd_map&);
 
 #if defined (_STLP_USE_NL_CATD_MAPPING)
-  mutable map_type M;
-  mutable rmap_type Mr;
+  map_type M;
+  rmap_type Mr;
   static _STLP_VOLATILE __stl_atomic_t _count;
 #endif
 };

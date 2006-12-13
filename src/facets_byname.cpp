@@ -1045,7 +1045,7 @@ _Messages::catalog _Messages_impl::do_open(const string& filename, const locale&
     if ( _M_map != 0 ) {
       _M_map->insert(result, L);
     }
-    return _M_cat.insert( result );
+    return _STLP_MUTABLE(_Messages_impl, _M_cat).insert( result );
   }
 
   return -1;
@@ -1054,7 +1054,8 @@ _Messages::catalog _Messages_impl::do_open(const string& filename, const locale&
 string _Messages_impl::do_get(catalog cat,
                               int set, int p_id, const string& dfault) const {
   return _M_message_obj != 0 && cat >= 0
-    ? string(_Locale_catgets(_M_message_obj, _M_cat[cat], set, p_id, dfault.c_str()))
+    ? string(_Locale_catgets(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[cat],
+                             set, p_id, dfault.c_str()))
     : dfault;
 }
 
@@ -1064,15 +1065,15 @@ wstring
 _Messages_impl::do_get(catalog thecat,
                        int set, int p_id, const wstring& dfault) const {
   typedef ctype<wchar_t> wctype;
-  const wctype& ct = use_facet<wctype>(_M_map->lookup( _M_cat[thecat] ) );
+  const wctype& ct = use_facet<wctype>(_M_map->lookup(_STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]));
 
-  const char* str = _Locale_catgets(_M_message_obj, _M_cat[thecat], set, p_id, "");
+  const char* str = _Locale_catgets(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[thecat], set, p_id, "");
 
   // Verify that the lookup failed; an empty string might represent success.
   if (!str)
     return dfault;
   else if (str[0] == '\0') {
-    const char* str2 = _Locale_catgets(_M_message_obj, _M_cat[thecat], set, p_id, "*");
+    const char* str2 = _Locale_catgets(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[thecat], set, p_id, "*");
     if (!str2 || ((str2[0] == '*') && (str2[1] == '\0')))
       return dfault;
   }
@@ -1091,9 +1092,9 @@ _Messages_impl::do_get(catalog thecat,
 
 void _Messages_impl::do_close(catalog thecat) const {
   if (_M_message_obj)
-    _Locale_catclose(_M_message_obj, _M_cat[thecat]);
-  if (_M_map) _M_map->erase(_M_cat[thecat]);
-  _M_cat.erase( thecat );
+    _Locale_catclose(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]);
+  if (_M_map) _M_map->erase(_STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]);
+  _STLP_MUTABLE(_Messages_impl, _M_cat).erase( thecat );
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE

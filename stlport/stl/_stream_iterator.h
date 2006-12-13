@@ -144,12 +144,12 @@ private:
   mutable bool _M_read_done;
 
   void _M_read() const {
-    _M_ok = ((_M_stream != 0) && !_M_stream->fail());
+    _STLP_MUTABLE(_Self, _M_ok) = ((_M_stream != 0) && !_M_stream->fail());
     if (_M_ok) {
-      *_M_stream >> _M_value;
-      _M_ok = !_M_stream->fail();
+      *_M_stream >> _STLP_MUTABLE(_Self, _M_value);
+      _STLP_MUTABLE(_Self, _M_ok) = !_M_stream->fail();
     }
-    _M_read_done = true;
+    _STLP_MUTABLE(_Self, _M_read_done) = true;
   }
 };
 
