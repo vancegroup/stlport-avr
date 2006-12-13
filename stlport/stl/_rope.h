@@ -79,8 +79,6 @@
 
 #ifndef _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a))
-#elif defined(__MRC__)||defined(__SC__)
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create<_Tp,__atype>(__a,(_Tp*)0)
 #else
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
 #endif

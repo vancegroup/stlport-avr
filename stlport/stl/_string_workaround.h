@@ -78,7 +78,6 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if !(defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))) //*ty 04/30/2001 - mpw compilers choke on this ctor
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -94,7 +93,6 @@ public:                         // Constructor, destructor, assignment.
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  endif
-#endif /* !__MRC__ || (__SC__ && !__DMC__) */
 
   _Self& operator=(const _Self& __s) {
     _Base::operator=(__s);

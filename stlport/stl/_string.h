@@ -272,7 +272,7 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES) && !(defined (__MRC__) || (defined(__SC__) && !defined(__DMC__))) //*ty 04/30/2001 - mpw compilers choke on this ctor
+#if defined (_STLP_MEMBER_TEMPLATES)
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
@@ -298,9 +298,9 @@ protected:
     : _String_base<_CharT,_Alloc>(__a) {}
 public:
 #  endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
-#endif /* !__MRC__ || (__SC__ && !__DMC__) */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
-#if !(defined (_STLP_MEMBER_TEMPLATES) && !(defined (__MRC__) || (defined (__SC__) && !defined (__DMC__)))) || \
+#if !defined (_STLP_MEMBER_TEMPLATES) || \
     !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS) || \
      defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   basic_string(const _CharT* __f, const _CharT* __l,

@@ -127,7 +127,7 @@ public:
 #endif
   }
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || defined(__MRC__) || defined(__SC__)
+#if !defined (_STLP_MEMBER_TEMPLATES)
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a = allocator_type())
     : _ConstructCheck(__f, __l),

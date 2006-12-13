@@ -84,9 +84,6 @@
 
 #if defined(__GNUC__) && (__GNUC__ < 3)
 #  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-/*
-#    define _STLP_NO_NATIVE_WIDE_STREAMS   1
-*/
 #endif
 
 #ifdef __GLIBC__

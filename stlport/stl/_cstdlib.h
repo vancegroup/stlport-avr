@@ -172,13 +172,7 @@ inline _STLP_LONG_LONG  abs(_STLP_LONG_LONG __x) { return __x < 0 ? -__x : __x; 
 // ad hoc, don't replace with _STLP_VENDOR_CSTD::abs here! - ptr 2005-03-05
 _STLP_BEGIN_NAMESPACE
 using ::abs;
-#  if !defined (N_PLAT_NLM)
 using ::div;
-#  else
-// Don't use div from clib or libc on NetWare---buggy! - ptr 2005-06-06
-inline div_t div(int __x, int __y) { div_t d; d.quot = __x / __y; d.rem = __x % __y; return d; }
-inline ldiv_t div(long __x, long __y) { ldiv_t d; d.quot = __x / __y; d.rem = __x % __y; return d; }
-#  endif
 _STLP_END_NAMESPACE
 #endif
 

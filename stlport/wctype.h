@@ -21,7 +21,7 @@
 #endif
 
 /* evc3 doesn't have wctype.h */
-#if !defined(_STLP_WCE_EVC3) && !defined(N_PLAT_NLM)
+#if !defined(_STLP_WCE_EVC3)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <wctype.h>
 #  else

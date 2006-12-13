@@ -161,10 +161,6 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
   if (!*M)
     *M = new Category_Map();
 
-#if defined(__SC__)    //*TY 06/01/2000 - added workaround for SCpp
-  if(!*M) delete *M;  //*TY 06/01/2000 - it forgets to generate dtor for Category_Map class. This fake code forces to generate one.
-#endif          //*TY 06/01/2000 -
-
   // Look for an existing entry with that name.
   result = (*M)->insert_noresize(__e);
 

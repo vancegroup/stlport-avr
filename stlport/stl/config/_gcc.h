@@ -6,6 +6,10 @@
 
 #define _STLP_HAS_INCLUDE_NEXT 1
 
+#if (__GNUC__ < 2) || ((__GNUC__ < 3) && ((__GNUC_MINOR__ < 95) || (__GNUC_MINOR__ == 96)))
+#  error It's time to upgrage you compiler
+#endif
+
 /* Systems having GLIBC installed have different traits */
 #if defined (__linux__)
 #  ifndef _STLP_USE_GLIBC
@@ -29,17 +33,6 @@
 #if (__GNUC__ < 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ < 4))
 /* define for gcc versions before 3.4.0. */
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
-#endif
-
-/* azov: gcc on lynx have a bug that causes internal
- * compiler errors when compiling STLport with namespaces turned on.
- * When the compiler gets better - comment out _STLP_HAS_NO_NAMESPACES
- */
-#if defined (__Lynx__) && (__GNUC__ < 3)
-#  define _STLP_HAS_NO_NAMESPACES 1
-#  define _STLP_NO_STATIC_TEMPLATE_DATA 1
-/* turn off useless warning about including system headers */
-#  define __NO_INCLUDE_WARN__ 1
 #endif
 
 /* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate
@@ -168,17 +161,11 @@ typedef unsigned int wint_t;
 #define _STLP_LONG_LONG long long
 
 #ifdef _STLP_USE_UCLIBC
-/*
-#  ifndef __DO_C99_MATH__
-*/
   /* No *f math fuctions variants (i.e. sqrtf, fabsf, etc.) */
 #  define _STLP_NO_VENDOR_MATH_F
   /* No *l math fuctions variants (i.e. sqrtl, fabsl, etc.) */
 #  define _STLP_NO_VENDOR_MATH_L
 #  define _STLP_NO_LONG_DOUBLE
-/*
-#  endif
-*/
 #endif
 
 #if defined (__OpenBSD__) || defined (__FreeBSD__)
@@ -227,65 +214,8 @@ typedef unsigned int wint_t;
 #  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
 #endif
 
-/*
-#define _STLP_VENDOR_GLOBAL_CSTD 1
-*/
-
-#if (__GNUC__ == 2) && (__GNUC_MINOR__ < 95)
-#  define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#  define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-#  define _STLP_DEF_CONST_DEF_PARAM_BUG 1
-#else
 #  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-#endif
-
-#if (__GNUC_MINOR__ < 9)  && (__GNUC__ < 3) /* gcc 2.8 */
-#  define _STLP_NO_TEMPLATE_CONVERSIONS
-#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
-#  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
-#  define _STLP_NO_FRIEND_TEMPLATES 1
-#  define _STLP_HAS_NO_NAMESPACES 1
-#  define _STLP_NO_METHOD_SPECIALIZATION 1
-#  define _STLP_NO_MEMBER_TEMPLATES 1
-#  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-#  define _STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS
-/*  DJGPP doesn't seem to implement it in 2.8.x */
-#  ifdef DJGPP
-#    define  _STLP_NO_STATIC_TEMPLATE_DATA 1
-#  endif
-#endif
-
-#if __GNUC__ <= 2 && __GNUC_MINOR__ <= 7 && !defined (__CYGWIN32__)
-/* Will it work with 2.6 ? I doubt it. */
-#  if ( __GNUC_MINOR__ < 6 )
-__GIVE_UP_WITH_STL(GCC_272);
-#  endif
-
-#  define  _STLP_NO_RELOPS_NAMESPACE
-#  define  _STLP_NON_TYPE_TMPL_PARAM_BUG
-#  define  _STLP_LIMITED_DEFAULT_TEMPLATES 1
-#  define  _STLP_DEFAULT_TYPE_PARAM 1
-#  define  _STLP_NO_BAD_ALLOC
-#  define  _STLP_NO_ARROW_OPERATOR 1
-#  ifndef _STLP_NO_STATIC_TEMPLATE_DATA
-#    define  _STLP_NO_STATIC_TEMPLATE_DATA
-#  endif
-#  define  _STLP_STATIC_CONST_INIT_BUG 1
-#  define  _STLP_NO_METHOD_SPECIALIZATION 1
-
-#  if !defined (__CYGWIN32__)
-#    define _STLP_NESTED_TYPE_PARAM_BUG   1
-#    define _STLP_BASE_MATCH_BUG       1
-/*  unused operators are required (forward) */
-#    define  _STLP_CONST_CONSTRUCTOR_BUG
-#    define _STLP_NO_DEFAULT_NON_TYPE_PARAM
-#  endif
-#  define _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX 1
-#  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
-#  define _STLP_NO_EXCEPTION_HEADER 1
-#else /* ! <= 2.7.* */
-#endif /* ! <= 2.7.* */
 
 /* static template data members workaround strategy for gcc tries
  * to use weak symbols.
@@ -308,18 +238,7 @@ __GIVE_UP_WITH_STL(GCC_272);
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )
 #  undef _STLP_LONG_LONG
-/*
-#    define _STLP_STRICT_ANSI 1
-*/
 #endif
-
-/*
-#if !defined (__STRICT_ANSI__) || defined (__BUILDING_STLPORT)
-#  define _STLP_USE_TEMPLATE_EXPORT
-#  define _STLP_EXPORT_TEMPLATE_KEYWORD extern
-#  define _STLP_IMPORT_TEMPLATE_KEYWORD extern
-#endif
-*/
 
 #ifndef __EXCEPTIONS
 #  undef  _STLP_DONT_USE_EXCEPTIONS
@@ -331,21 +250,6 @@ __GIVE_UP_WITH_STL(GCC_272);
    instantiation within library: nothing except increased library size. - ptr
  */
 #  define _STLP_NO_FORCE_INSTANTIATE
-#elif (__GNUC_MINOR__ < 8)
-/* tuning of static template data members workaround */
-#  if ( _STLP_STATIC_TEMPLATE_DATA < 1 )
-#    if ( _STLP_WEAK_ATTRIBUTE > 0 )
-#      define _STLP_WEAK __attribute__ (( weak ))
-#    else
-#      define _STLP_WEAK
-#    endif /* _STLP_WEAK_ATTRIBUTE */
-
-#    ifdef __PUT_STATIC_DATA_MEMBERS_HERE
-#      define __DECLARE_INSTANCE(type,item,init) type item _STLP_WEAK init
-#    else
-#      define __DECLARE_INSTANCE(type,item,init)
-#    endif /* __PUT_STATIC_DATA_MEMBERS_HERE */
-#  endif /* _STLP_STATIC_TEMPLATE_DATA */
 #endif
 
 /* Tune settings for the case where static template data members are not

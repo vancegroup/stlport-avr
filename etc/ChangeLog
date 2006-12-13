@@ -1,3 +1,9 @@
+2006-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport, src: Orphan code removed [Symantec without maintainance a long time;
+	gcc prior 2.95 and 2.96 can't work with current code in any case;
+	NetWare unsupported too]
+
 2006-12-13  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/feature.h: Fix and generalize the mutable

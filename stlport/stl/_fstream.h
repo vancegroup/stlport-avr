@@ -103,7 +103,7 @@ public:
   streamoff _M_get_offset(char* __first, char* __last) {
 #if defined (_STLP_UNIX) || defined (_STLP_MAC)
     return __last - __first;
-#else // defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined(N_PLAT_NLM)
+#else // defined (_STLP_WIN32)
     return ( (_M_openmode & ios_base::binary) != 0 )
       ? (__last - __first)
       : count(__first, __last, '\n') + (__last - __first);
@@ -113,9 +113,9 @@ public:
   // Returns true if we're in binary mode or if we're using an OS or file
   // system where there is no distinction between text and binary mode.
   bool _M_in_binary_mode() const {
-#if defined (_STLP_UNIX) || defined (_STLP_MAC)  || defined(__BEOS__) || defined (__amigaos__)
+#if defined (_STLP_UNIX) || defined (_STLP_MAC) || defined(__BEOS__) || defined (__amigaos__)
     return true;
-#elif defined (_STLP_WIN32) || defined (_STLP_WIN16) || defined (_STLP_DOS) || defined (_STLP_VM) || defined (__EMX__) || defined(N_PLAT_NLM)
+#elif defined (_STLP_WIN32) || defined (_STLP_VM)
     return (_M_openmode & ios_base::binary) != 0;
 #else
 #  error "Port!"

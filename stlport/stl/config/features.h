@@ -303,8 +303,6 @@
 #    define _STLP_OS2THREADS
 #  elif defined (__BEOS__)
 #    define _STLP_BETHREADS
-#  elif defined (__MWERKS__) && defined (N_PLAT_NLM) /* (__dest_os == __netware_os) */
-#    define _STLP_NWTHREADS
 #  else
 #    define _STLP_PTHREADS
 #  endif /* __sgi */

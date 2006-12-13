@@ -876,7 +876,7 @@ string moneypunct_byname<wchar_t, true>::do_grouping() const
 { return _Locale_mon_grouping(_M_monetary); }
 
 inline wstring __do_widen (string const& str) {
-#if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC) || defined(__MRC__) || defined(__SC__) //*ty 05/26/2001 - added workaround for mpw
+#if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
   wstring::_Reserve_t __Reserve;
   size_t __size = str.size();
   wstring result(__Reserve, __size);
@@ -958,9 +958,6 @@ void _Catalog_locale_map::insert(nl_catd_type key, const locale& L) {
       if (!M)
         M = new map_type;
 
-#if defined (__SC__)
-      if (!M) delete M;
-#endif
       M->insert(map_type::value_type(key, L));
 #if !defined(_STLP_NO_TYPEINFO) && !defined(_STLP_NO_RTTI)
     }

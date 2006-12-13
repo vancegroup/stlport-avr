@@ -765,20 +765,11 @@ private:
 public:
   _Rope_insert_char_consumer(_Insert_ostream& __writer)
     : _M_o(__writer) {}
-#  if defined(__MRC__) || (defined(__SC__) && !defined(__DMC__))  //*TY 05/23/2000 - added support for mpw compiler's trigger function approach to generate vtable
-  ~_Rope_insert_char_consumer();    //*TY 05/23/2000 -
-#  else    //*TY 05/23/2000 -
   ~_Rope_insert_char_consumer() {}
-#  endif    //*TY 05/23/2000 -
   // Caller is presumed to own the ostream
   bool operator() (const _CharT* __leaf, size_t __n);
   // Returns true to continue traversal.
 };
-
-#  if defined (__MRC__) || (defined (__SC__) && !defined (__DMC__))    //*TY 05/23/2000 - added support for mpw compiler's trigger function approach to generate vtable
-template<class _CharT, class _Traits>
-_Rope_insert_char_consumer<_CharT, _Traits>::  ~_Rope_insert_char_consumer() {}
-#  endif    //*TY 05/23/2000 -
 
 template<class _CharT, class _Traits>
 bool _Rope_insert_char_consumer<_CharT, _Traits>::operator()

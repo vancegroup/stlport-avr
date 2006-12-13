@@ -29,7 +29,7 @@
 #  include <stl/_cstring.h>
 #endif
 
-#if defined (__unix) || defined (N_PLAT_NLM)
+#if defined (__unix)
 #  include <sys/types.h>         // For off_t
 #endif /* __unix */
 
@@ -245,23 +245,21 @@ class _STLP_CLASS_DECLSPEC char_traits<wchar_t>
   : public __char_traits_base<wchar_t, wint_t> {
 #  if !defined (_STLP_NO_NATIVE_WIDE_FUNCTIONS) && !defined (_STLP_WCHAR_HPACC_EXCLUDE)
 public:
-#    if !defined (N_PLAT_NLM)
-#      if !defined (__BORLANDC__)
+#    if !defined (__BORLANDC__)
   static wchar_t* _STLP_CALL move(wchar_t* __dest, const wchar_t* __src, size_t __n)
   { return wmemmove(__dest, __src, __n); }
-#      endif
+#    endif
 
   static wchar_t* _STLP_CALL copy(wchar_t* __dest, const wchar_t* __src, size_t __n)
   { return wmemcpy(__dest, __src, __n); }
 
-#      if !defined (__DMC__) && !defined (__BORLANDC__)
+#    if !defined (__DMC__) && !defined (__BORLANDC__)
   static int _STLP_CALL compare(const wchar_t* __s1, const wchar_t* __s2, size_t __n)
   { return wmemcmp(__s1, __s2, __n); }
-#      endif
+#    endif
 
   static wchar_t* _STLP_CALL assign(wchar_t* __s, size_t __n, wchar_t __c)
   { return wmemset(__s, __c, __n); }
-#    endif
 
   static size_t _STLP_CALL length(const wchar_t* __s)
   { return wcslen(__s); }

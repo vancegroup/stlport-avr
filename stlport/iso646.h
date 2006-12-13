@@ -21,7 +21,7 @@
 #endif
 
 /* evc3 doesn't have iso646.h */
-#if !defined (_STLP_WCE_EVC3) && !defined (N_PLAT_NLM) && !defined (__BORLANDC__)
+#if !defined (_STLP_WCE_EVC3) && !defined (__BORLANDC__)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <iso646.h>
 #  else

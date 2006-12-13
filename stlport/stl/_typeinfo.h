@@ -56,14 +56,10 @@ using ::type_info;
 using _STLP_VENDOR_EXCEPT_STD::type_info;
 #    endif
 
-#    if !(defined (__MRC__) || defined (__SC__) || defined (__DMC__))
+#    if !defined (__DMC__)
 using _STLP_VENDOR_EXCEPT_STD::bad_typeid;
 #    endif
 
-//#if defined( __xlC__ ) && (__xlC__ < 0x500)
-//# include <exception>
-//struct bad_cast : exception {};
-//#endif
 #    if defined (_STLP_MSVC) && (_STLP_MSVC < 1300) && !defined (_STLP_WCE_NET)
 using ::bad_cast;
 #    else

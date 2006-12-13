@@ -40,45 +40,6 @@ using _STLP_VENDOR_CSTD::strspn;
 #    else
 #      include _STLP_NATIVE_C_HEADER(stddef.h)
 #    endif
-#  elif defined(__MWERKS__) && defined(N_PLAT_NLM)
-/*
- * MSL library has wrong definition of wint_t (with -wchar_t on) in wchar_t.h header.
- * IMHO the best way is to comment line
- *       typedef wchar_t wint_t;
- * (I use this way).
- *
- * Another solution is to define _WINT_T (to avoid conflict with wint_t definitions in
- * Novell SDK headers, _WCHAR_T defined in nlm_prefix.h). But you should define one
- * before include any header from Novell's SDK, so this isn't too good choice.
- *
- * And third solution is don't use anywhere (even here) wchar_t.h
- *
- *      - ptr, 2003 and 2005-05-07
- */
-/*
-#if __option(wchar_type)
-# define _WINT_T
-#endif
-*/
-#    if defined (_STLP_HAS_INCLUDE_NEXT)
-#      include_next <wchar_t.h>
-#      include_next <stddef.h>
-#      include_next <stdio.h>
-#    else
-#      include _STLP_NATIVE_CPP_C_HEADER(wchar_t.h)
-#      include _STLP_NATIVE_C_HEADER(stddef.h)
-#      include _STLP_NATIVE_C_HEADER(stdio.h)
-#    endif
-#    include <unicode.h>
-int wcslen( const wchar_t *_wc );
-int wcscmp( const wchar_t *_wc1, const wchar_t *_wc2 );
-int wcsncmp( const wchar_t *_wc1, const wchar_t *_wc2, size_t n );
-wchar_t *wcsstr( const wchar_t *_wc1, const wchar_t *_wc2 );
-wchar_t *wcschr( const wchar_t *_wc1, wchar_t _wc2 );
-wchar_t *wcsrchr( const wchar_t *_wc1, wchar_t _wc2 );
-wchar_t *wcscpy( wchar_t *_wc1, const wchar_t *_wc2 );
-wchar_t *wcsncpy( wchar_t *_wc1, const wchar_t *_wc2, size_t n );
-wchar_t *wcspbrk( const wchar_t *_wc, const wchar_t *_wc2 );
 #  else
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <wchar.h>

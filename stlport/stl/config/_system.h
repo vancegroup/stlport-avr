@@ -82,11 +82,6 @@
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
 #  endif
-#elif defined (N_PLAT_NLM) /* Novell NetWare */
-#  include <stl/config/_netware.h>
-#  ifdef __MWERKS__ /* Metrowerks CodeWarrior */
-#    include <stl/config/_mwccnlm.h>
-#  endif
 #elif defined (__sgi) /* IRIX? */
 #  define _STLP_PLATFORM "SGI Irix"
 #  if defined (__GNUC__)
@@ -121,9 +116,6 @@
 #  include <stl/config/_mac.h>
 #  if defined (__MWERKS__)
 #    include <stl/config/_mwerks.h>
-#  elif defined (__MRC__) || (defined (__SC__) && (__SC__ >= 0x882))
-     /* Apple MPW SCpp 8.8.2, Apple MPW MrCpp 4.1.0 */
-#    include <stl/config/_apple.h>
 #  endif
 #elif defined (__APPLE__)
 #  include <stl/config/_macosx.h>
@@ -151,8 +143,6 @@
 #    include <stl/config/_como.h>
 #  elif defined (__DMC__)   /* Digital Mars C++ */
 #    include <stl/config/_dm.h>
-#  elif defined (__SC__) && (__SC__ < 0x800) /* Symantec 7.5 */
-#    include <stl/config/_symantec.h>
 #  elif defined (__ICL) /* Intel reference compiler for Win */
 #    include <stl/config/_intel.h>
 #  elif defined (__MWERKS__)

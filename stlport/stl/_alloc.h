@@ -401,10 +401,6 @@ public:
   size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
   void construct(pointer __p, const_reference __val) { _STLP_STD::_Copy_Construct(__p, __val); }
   void destroy(pointer __p) { _STLP_STD::_Destroy(__p); }
-#if defined(__MRC__)||(defined(__SC__) && !defined(__DMC__))
-  template <class _T2> bool operator==(const allocator<_T2>&) const _STLP_NOTHROW { return true; }
-  template <class _T2> bool operator!=(const allocator<_T2>&) const _STLP_NOTHROW { return false; }
-#endif
 
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //This is just to make swap workaround for compiler without template function partial
@@ -455,16 +451,10 @@ public:
     typedef allocator<_Tp1> other;
   };
 #endif
-#if defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__))  //*ty 03/24/2001 - MPW compilers get confused on these operator definitions
-  template <class _T2> bool operator==(const allocator<_T2>&) const _STLP_NOTHROW { return true; }
-  template <class _T2> bool operator!=(const allocator<_T2>&) const _STLP_NOTHROW { return false; }
-#endif
 };
 
-#if !(defined(__MRC__)||(defined(__SC__)&&!defined(__DMC__)))  //*ty 03/24/2001 - MPW compilers get confused on these operator definitions
 template <class _T1, class _T2> inline bool  _STLP_CALL operator==(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW { return true; }
 template <class _T1, class _T2> inline bool  _STLP_CALL operator!=(const allocator<_T1>&, const allocator<_T2>&) _STLP_NOTHROW { return false; }
-#endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS allocator<char>;

@@ -72,7 +72,7 @@ extern "C" {
 #  include <sys/stat.h>
 #elif defined (_STLP_USE_STDIO_IO)
 #  include <cstdio>
-#  if !(defined(__MRC__) || defined(__SC__) || defined(__ISCPP__) )
+#  if !defined(__ISCPP__)
 extern "C" {
 #    include <sys/stat.h>
 }
@@ -153,9 +153,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 #ifdef _STLP_LONG_LONG
 #  define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
-#  include <Math64.h>
-#  define ULL(x) (U64SetU(x))
 #elif defined(__ISCPP__)
 #  include "uint64.h"
 #else
@@ -164,7 +161,7 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 _STLP_BEGIN_NAMESPACE
 
-#if !defined(__MSL__) && !defined(__MRC__) && !defined(__SC__) && !defined(_STLP_WCE)    //*TY 04/15/2000 - exclude mpw compilers also
+#if !defined(__MSL__) && !defined(_STLP_WCE)
 static ios_base::openmode flag_to_openmode(int mode) {
   ios_base::openmode ret = ios_base::__default_mode;
 
@@ -200,11 +197,6 @@ bool __is_regular_file(_STLP_fd fd) {
   struct stat buf;
   return fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode);
 
-#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
-
-#  pragma unused(fd)
-  return true;  // each file is a regular file under mac os, isn't it? (we don't have fstat())
-
 #elif defined(_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
 
   struct stat buf;
@@ -229,10 +221,6 @@ streamoff __file_size(_STLP_fd fd) {
   struct stat buf;
   if (fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode))
     ret = buf.st_size > 0 ? buf.st_size : 0;
-
-#elif defined(__MRC__) || defined(__SC__)    //*TY 02/25/2000 - added support for MPW compilers
-
-#  pragma unused(fd)
 
 #elif defined(_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
 
@@ -619,8 +607,6 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode) {
   // bits that are set in the umask from the permissions flag.
 #ifdef _STLP_USE_WIN32_IO
   return this->_M_open(name, openmode, FILE_ATTRIBUTE_NORMAL);
-#elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
-  return this->_M_open(name, openmode, 0);
 #else
   return this->_M_open(name, openmode, S_IRUSR | S_IWUSR | S_IRGRP |
                                        S_IWGRP | S_IROTH | S_IWOTH);
@@ -674,20 +660,6 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
     return false;
 
   _M_openmode = flag_to_openmode(mode);
-  _M_file_id = file_no;
-#elif defined(__MRC__) || defined(__SC__)    //*TY 02/26/2000 - added support for MPW compilers
-  (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
-  switch (_iob[file_no]._flag & (_IOREAD|_IOWRT|_IORW) )
-  {
-  case _IOREAD:
-    _M_openmode = ios_base::in; break;
-  case _IOWRT:
-    _M_openmode = ios_base::out; break;
-  case _IORW:
-    _M_openmode = ios_base::in | ios_base::out; break;
-  default:
-    return false;
-  }
   _M_file_id = file_no;
 #elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO)
   (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning

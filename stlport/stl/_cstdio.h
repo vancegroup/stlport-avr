@@ -34,7 +34,7 @@
 #  include <stdio.h>
 #endif
 
-#if (defined (__MWERKS__) && !defined (N_PLAT_NLM))  || defined (__BORLANDC__)
+#if defined (__MWERKS__) || defined (__BORLANDC__)
 #  undef stdin
 #  undef stdout
 #  undef stderr
@@ -122,7 +122,7 @@ using _STLP_VENDOR_CSTD::ungetc;
 using _STLP_VENDOR_CSTD::vfprintf;
 using _STLP_VENDOR_CSTD::vprintf;
 using _STLP_VENDOR_CSTD::vsprintf;
-#    if ((defined (__MWERKS__) && !defined (N_PLAT_NLM)) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400)) || \
+#    if (defined (__MWERKS__) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400)) || \
         (defined (__BORLANDC__)))
 using _STLP_VENDOR_CSTD::vsnprintf;
 #    endif
