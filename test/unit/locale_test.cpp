@@ -158,7 +158,7 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
 
 #if defined (__BORLANDC__)
   num_put<char> const& nput = use_facet<num_put<char> >(loc);
-  typedef std::numeric_limits<double> limd;
+  typedef numeric_limits<double> limd;
   fostr.setf(ios_base::uppercase | ios_base::showpos);
 
   if (limd::has_infinity) {

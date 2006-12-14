@@ -1,3 +1,10 @@
+2006-12-13  Francois Dumont  <dums@stlport...>
+
+	* test/unit/test_main.cpp: Clean up use of namespace feature.
+
+	* test/unit: Clean up use of std namespace or ignore tests if
+	necessary.
+
 2006-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport, src: Orphan code removed [Symantec without maintainance a long time;

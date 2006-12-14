@@ -60,7 +60,7 @@ bool valid_sign_info(bool limit_is_signed, const _Tp &) {
 
 template <class _Tp>
 bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
-  typedef std::numeric_limits<_Tp> lim;
+  typedef numeric_limits<_Tp> lim;
 
   CHECK_COND(lim::is_specialized);
   CHECK_COND(lim::is_integer);
@@ -86,7 +86,7 @@ bool test_unsigned_integral_limits(const _Tp &__val) {
 
 template <class _Tp>
 bool test_float_limits(const _Tp &) {
-  typedef std::numeric_limits<_Tp> lim;
+  typedef numeric_limits<_Tp> lim;
   CHECK_COND(lim::is_specialized);
   CHECK_COND(!lim::is_modulo);
   CHECK_COND(!lim::is_integer);
@@ -116,7 +116,7 @@ bool test_float_limits(const _Tp &) {
 
 template <class _Tp>
 bool test_qnan(const _Tp &) {
-  typedef std::numeric_limits<_Tp> lim;
+  typedef numeric_limits<_Tp> lim;
   if (lim::has_quiet_NaN) {
     const _Tp qnan = lim::quiet_NaN();
 

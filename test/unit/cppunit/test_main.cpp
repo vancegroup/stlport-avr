@@ -17,20 +17,22 @@
 #include "file_reporter.h"
 #include "cppunit_timer.h"
 
+#if 0
 namespace CPPUNIT_NS
 {
-  int CPPUNIT_NS::TestCase::m_numErrors = 0;
-  int CPPUNIT_NS::TestCase::m_numTests = 0;
+#endif
+  int TestCase::m_numErrors = 0;
+  int TestCase::m_numTests = 0;
 
-  CPPUNIT_NS::TestCase *CPPUNIT_NS::TestCase::m_root = 0;
-  CPPUNIT_NS::Reporter *CPPUNIT_NS::TestCase::m_reporter = 0;
+  TestCase *TestCase::m_root = 0;
+  Reporter *TestCase::m_reporter = 0;
 
-  void CPPUNIT_NS::TestCase::registerTestCase(TestCase *in_testCase) {
+  void TestCase::registerTestCase(TestCase *in_testCase) {
     in_testCase->m_next = m_root;
     m_root = in_testCase;
   }
 
-  int CPPUNIT_NS::TestCase::run(Reporter *in_reporter, const char *in_testName, bool invert) {
+  int TestCase::run(Reporter *in_reporter, const char *in_testName, bool invert) {
     TestCase::m_reporter = in_reporter;
 
     m_numErrors = 0;
@@ -43,7 +45,9 @@ namespace CPPUNIT_NS
     }
     return m_numErrors;
   }
+#if 0
 }
+#endif
 
 int main(int argc, char** argv) {
 

@@ -3,7 +3,12 @@
 
 #include <string>
 
-inline void complete_digits(std::string &digits)
+inline void 
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+complete_digits(std::string &digits)
+#else
+complete_digits(string &digits)
+#endif
 {
   while (digits.size() < 2)
   {

@@ -99,7 +99,7 @@ void EqualTest::equal_range2()
 
   vector<Test> tv;
   vector<Test>::iterator it;
-  pair<std::vector<Test>::iterator, vector<Test>::iterator> p;
+  pair<vector<Test>::iterator, vector<Test>::iterator> p;
 
   for (int i = 0; i < 10; ++i) {
     tv.push_back(i);

@@ -28,7 +28,7 @@
 #if defined (_STLP_USE_OWN_MBSTATE_T)
 typedef int mbstate_t;
 
-#  if defined (__cplusplus)
+#  if defined (__cplusplus) && defined (_STLP_USE_NAMESPACES)
 _STLP_BEGIN_NAMESPACE
 using ::mbstate_t;
 _STLP_END_NAMESPACE

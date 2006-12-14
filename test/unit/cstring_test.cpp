@@ -14,6 +14,9 @@
 class CStringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CStringTest);
+#if defined (STLPORT) && !defined (_STLP_USE_NAMESPACES)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(import_checks);
   CPPUNIT_TEST_SUITE_END();
 
@@ -33,6 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CStringTest);
 //
 void CStringTest::import_checks()
 {
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
   std::size_t bar = 0;
   CPPUNIT_CHECK( bar == 0 );
 
@@ -61,4 +65,5 @@ void CStringTest::import_checks()
   CPPUNIT_CHECK( std::strstr(foo, "") == foo );
   // CPPUNIT_CHECK( std::strtok((char*)foofoo, "z") != NULL );
   CPPUNIT_CHECK( std::strxfrm((char*)buf, foo, 3) != 0 );
+#endif
 }

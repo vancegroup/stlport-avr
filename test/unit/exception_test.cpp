@@ -3,6 +3,7 @@
 
 #include "cppunit/cppunit_proxy.h"
 
+#if defined (STLPORT) && defined (_STLP_USE_NAMESPACES)
 /*
  * This test case purpose is to check that the exception handling
  * functions are correctly imported to the STLport namespace only
@@ -112,3 +113,5 @@ void ExceptionTest::uncaught_except()
   CPPUNIT_ASSERT( uncaught_result == 1 );
 #endif
 }
+
+#endif
