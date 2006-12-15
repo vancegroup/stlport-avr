@@ -8,8 +8,8 @@
 #  pragma message __DMC_VERSION_STRING__
 #endif
 
-#if (__DMC__ < 0x847)
-#  error "Old Digital Mars C++ compiler versions are not supported!"
+#if (__DMC__ < 0x849)
+#  error "Digital Mars C++ compilers before version 8.49 are not supported!"
 #endif
 
 /* DMC goes too far in template instanciation and tries to fully instanciate
