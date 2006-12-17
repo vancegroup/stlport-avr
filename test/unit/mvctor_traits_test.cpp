@@ -14,13 +14,17 @@ size_t MovableStruct::nb_assignment_call = 0;
 size_t MovableStruct::nb_destruct_call = 0;
 
 #if defined (STLPORT)
+#  if defined (_STLP_USE_NAMESPACES)
 namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
   struct __move_traits<MovableStruct> {
     typedef __true_type implemented;
     typedef __false_type complete;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 struct CompleteMovableStruct {
@@ -58,13 +62,17 @@ size_t CompleteMovableStruct::nb_assignment_call = 0;
 size_t CompleteMovableStruct::nb_destruct_call = 0;
 
 #if defined (STLPORT)
+#  if defined (_STLP_USE_NAMESPACES)
 namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
   struct __move_traits<CompleteMovableStruct> {
     typedef __true_type implemented;
     typedef __true_type complete;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 void MoveConstructorTest::move_traits()

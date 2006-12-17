@@ -160,8 +160,10 @@ struct PointEx : public Point {
 };
 
 #if defined (STLPORT)
+#  if defined (_STLP_USE_NAMESPACES)
 namespace std {
-  template <>
+#  endif
+  _STLP_TEMPLATE_NULL
   struct __type_traits<PointEx> {
     typedef __false_type has_trivial_default_constructor;
     typedef __true_type has_trivial_copy_constructor;
@@ -169,7 +171,9 @@ namespace std {
     typedef __true_type has_trivial_destructor;
     typedef __true_type is_POD_type;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 //This test check that deque implementation do not over optimize

@@ -105,7 +105,9 @@ any_pod_type const* any_pod_const_pointer;
 any_pod_type volatile* any_pod_volatile_pointer;
 any_pod_type const volatile* any_pod_const_volatile_pointer;
 
+#  if defined (_STLP_USE_NAMESPACES)
 namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
   struct __type_traits<any_pod_type> {
     typedef __true_type has_trivial_default_constructor;
@@ -114,7 +116,9 @@ namespace std {
     typedef __true_type has_trivial_destructor;
     typedef __true_type is_POD_type;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 
 struct base
 {};
@@ -522,7 +526,9 @@ struct DestructorMonitor
 
 size_t DestructorMonitor::nb_destructor_call = 0;
 
+#  if defined (_STLP_USE_NAMESPACES)
 namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
   struct __type_traits<DestructorMonitor> {
     typedef __true_type has_trivial_default_constructor;
@@ -531,7 +537,9 @@ namespace std {
     typedef __true_type has_trivial_destructor;
     typedef __true_type is_POD_type;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 void TypeTraitsTest::trivial_destructor()

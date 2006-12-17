@@ -203,14 +203,22 @@ private:
   int _data;
 };
 
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 namespace std {
+#endif
+#if defined (STLPORT)
+  _STLP_TEMPLATE_NULL
+#else
   template <>
+#endif
   struct less<SetTestClass> {
     bool operator () (SetTestClass const& lhs, SetTestClass const& rhs) const {
       return lhs.data() < rhs.data();
     }
   };
+#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
+#endif
 
 void SetTest::specialized_less()
 {

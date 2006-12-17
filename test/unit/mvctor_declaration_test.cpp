@@ -37,39 +37,39 @@ static bool type_to_bool(__false_type)
 
 template <class _Tp>
 static bool is_movable(const _Tp&) {
-#if defined (__BORLANDC__)
+#  if defined (__BORLANDC__)
   return __type2bool<typename __move_traits<_Tp>::implemented>::_Ret != 0;
-#else
+#  else
   typedef typename __move_traits<_Tp>::implemented _MovableTp;
   return type_to_bool(_MovableTp());
-#endif
+#  endif
 }
 
 template <class _Tp>
 static bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
-#if defined (__BORLANDC__)
+#  if defined (__BORLANDC__)
   return type_to_bool(_TpMoveTraits::complete());
-#else
+#  else
   typedef typename _TpMoveTraits::complete _TpMoveComplete;
   return type_to_bool(_TpMoveComplete());
-#endif
+#  endif
 }
 
 struct specially_allocated_struct {
   bool operator < (specially_allocated_struct) const;
-#if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
+#  if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
   bool operator==(const specially_allocated_struct&) const;
-#endif
+#  endif
 };
 
 struct struct_with_specialized_less {};
 
-namespace std
-{
+#  if defined (_STLP_USE_NAMESPACES)
+namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
-  class allocator<specially_allocated_struct>
-  {
+  class allocator<specially_allocated_struct> {
     //This allocator just represent what a STLport could do and in this
     //case the STL containers implemented with it should still be movable
     //but not completely as we cannot do any hypothesis on what is in this
@@ -82,15 +82,15 @@ namespace std
     typedef const value_type& const_reference;
     typedef size_t     size_type;
     typedef ptrdiff_t  difference_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
     template <class _Tp1> struct rebind {
       typedef allocator<_Tp1> other;
     };
-#endif
+#  endif
     allocator() _STLP_NOTHROW {}
-#if defined (_STLP_MEMBER_TEMPLATES)
+#  if defined (_STLP_MEMBER_TEMPLATES)
     template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
-#endif
+#  endif
     allocator(const allocator&) _STLP_NOTHROW {}
     ~allocator() _STLP_NOTHROW {}
     pointer address(reference __x) const { return &__x; }
@@ -107,7 +107,9 @@ namespace std
     bool operator() (struct_with_specialized_less const&,
                      struct_with_specialized_less const&) const;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 void MoveConstructorTest::movable_declaration()

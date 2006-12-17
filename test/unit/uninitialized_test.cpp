@@ -51,8 +51,9 @@ struct TrivialInitStruct {
 size_t TrivialInitStruct::nbConstructorCalls = 0;
 
 #if defined (STLPORT)
-namespace std
-{
+#  if defined (_STLP_USE_NAMESPACES)
+namespace std {
+#  endif
   _STLP_TEMPLATE_NULL
   struct __type_traits<TrivialCopyStruct> {
      typedef __false_type has_trivial_default_constructor;
@@ -72,7 +73,9 @@ namespace std
      typedef __true_type has_trivial_destructor;
      typedef __false_type is_POD_type;
   };
+#  if defined (_STLP_USE_NAMESPACES)
 }
+#  endif
 #endif
 
 struct base {};
