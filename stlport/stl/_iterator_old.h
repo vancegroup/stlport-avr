@@ -154,7 +154,7 @@ inline bool  _STLP_CALL operator!=(
 template <class _RandomAccessIterator, class _Tp,
           _STLP_DFL_TMPL_PARAM(_Reference,_Tp&),
 #  if defined (_STLP_MSVC50_COMPATIBILITY)
-        __DFL_TMPL_PARAM(_Pointer, _Tp*),
+          _STLP_DFL_TMPL_PARAM(_Pointer, _Tp*),
 #  endif
           _STLP_DFL_TYPE_PARAM(_Distance,ptrdiff_t)>
 class reverse_iterator {
