@@ -50,6 +50,11 @@ private:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(NumPutGetTest);
 
+#if defined (_MSC_VER)
+#  pragma warning (disable : 4056)
+#  pragma warning (disable : 4756)
+#endif
+
 //
 // tests implementation
 //

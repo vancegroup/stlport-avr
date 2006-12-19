@@ -1,3 +1,11 @@
+2006-12-19  Francois Dumont  <dums@stlport...>
+
+	* test/unit/bvector_test.cpp: Fix macro check for namespace
+	support.
+
+	* test/unit/num_put_get_test.cpp: disable warning about float
+	overflow for MSVC.
+
 2006-12-17  Francois Dumont  <dums@stlport...>
 
 	* test/unit: One more cleanup for compilers not supporting the
