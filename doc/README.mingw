@@ -1,7 +1,6 @@
   The MinGW package is used as to build STLport with different
 compilers
 
-
   If you use the MSys console take care about what make utility
 you are using. STLport comes with a GNU make build system design
 for unix like platforms, make files have not been adapted for the
@@ -13,15 +12,33 @@ of the GNU make for Windows.
 
   Makefile : gcc.mak
 
-    WARNING : If you use the static version of the STLport
-  libraries you have to define the _STLP_USE_STATIC_LIB
-  macro in order to have your executable linked correctly.
+  Notes:
 
-    If you want to build STLport using the Mingw package without
-  help of the GNU tools coming with Msys don't forget to signal
-  your compiler (gcc) using the configure script:
+    1. Static library (archive)
+
+    If you use the static version of the STLport libraries
+  you have to define the _STLP_USE_STATIC_LIB macro in order
+  to have your executable linked correctly.
+
+    2. Shell
+
+    You can build STLport using MinGW in two different shells MSys
+  or the Windows Command shell. If you use the Windows Command shell
+  you will have to signal it using the configure.bat script like that:
 
       configure -c gcc
+
+    This is necessary because Windows Command shell is very limitated
+  in introspection actions that are performed in a classic GNU shell.
+  There is no GNU tool like sed or awk available.
+
+    3. Threading configuration
+
+    STLport libraries are built per default in order to be usable in a
+  multithreaded environment. Using MinGW is means that we use the '-mthread'
+  compiler option. Don't forget to add it to your compiler command line too
+  if you want to use STLport libraries. You can also ask for not thread
+  safe libraries using the --no-thread configure script option.
 
 - Borland C++ compiler:
 
