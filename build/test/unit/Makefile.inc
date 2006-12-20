@@ -140,8 +140,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/stack_test.cpp \
 	../../../test/unit/stack_header_test.cpp \
 	../../../test/unit/stdexcept_header_test.cpp \
-	../../../test/unit/strstream_header_test.cpp \
-	../../../test/unit/strstream_test.cpp \
 	../../../test/unit/string_test.cpp \
 	../../../test/unit/swap_test.cpp \
 	../../../test/unit/times_test.cpp \
