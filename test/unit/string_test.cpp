@@ -297,7 +297,7 @@ void StringTest::short_string()
 void StringTest::erase()
 {
   char const* c_str = "Hello, World!";
-  std::string str(c_str);
+  string str(c_str);
   CPPUNIT_ASSERT( str == c_str );
 
   str.erase(str.begin() + 1, str.end() - 1); // Erase all but first and last.
@@ -674,8 +674,8 @@ void StringTest::assign()
   s.assign(s2);
   CPPUNIT_ASSERT( s == s2 );
 
-  static std::string str1;
-  static std::string str2;
+  static string str1;
+  static string str2;
 
   // short string optim:
   str1 = "123456";
@@ -686,7 +686,7 @@ void StringTest::assign()
   CPPUNIT_ASSERT(str2[29] == '0');
 }
 
-/* This test is to check if std::string properly supports the short string
+/* This test is to check if string properly supports the short string
  * optimization. It has been found out that eMbedded Visual C++ 3.0 and .NET
  * compilers for the ARM platform fail to pass structs and classes of certain
  * size per value. This seems to be a known compiler bug. For other processors
@@ -701,12 +701,12 @@ void StringTest::short_string_optim_bug()
 {
    string teststr("shortest");
 
-   bool short_string_optim_bug_helper(std::string teststr);
+   bool short_string_optim_bug_helper(string teststr);
 
    CPPUNIT_ASSERT(true == short_string_optim_bug_helper(teststr));
 }
 
-bool short_string_optim_bug_helper(std::string teststr)
+bool short_string_optim_bug_helper(string teststr)
 {
    size_t ss = teststr.size();
    return (ss == 8);
