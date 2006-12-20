@@ -1,3 +1,8 @@
+2006-12-20  Francois Dumont  <dums@stlport...>
+
+	* test/unit/strstream_test.cpp: New test case for sourceforge
+	bug report 1615554. Not confirm for the moment.
+
 2006-12-19  Francois Dumont  <dums@stlport...>
 
 	* test/unit/bvector_test.cpp: Fix macro check for namespace
