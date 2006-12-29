@@ -128,15 +128,17 @@ public:
   _Rb_tree(const _Self& __x)
     : _M_non_dbg_impl(__x._M_non_dbg_impl), _M_iter_list(&_M_non_dbg_impl) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Rb_tree(__move_source<_Self> src):
     _M_non_dbg_impl(__move_source<_Base>(src.get()._M_non_dbg_impl)),
     _M_iter_list(&_M_non_dbg_impl) {
-#if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+#  if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
     src.get()._M_iter_list._Invalidate_all();
-#else
+#  else
     src.get()._M_iter_list._Set_owner(_M_iter_list);
-#endif
+#  endif
   }
+#endif
 
   ~_Rb_tree() {}
 

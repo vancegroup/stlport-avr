@@ -117,15 +117,17 @@ public:
                const allocator_type& __a = allocator_type())
     : _M_non_dbg_impl(__n, __c, __a), _M_iter_list(&_M_non_dbg_impl) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   basic_string(__move_source<_Self> src)
     : _M_non_dbg_impl(__move_source<_Base >(src.get()._M_non_dbg_impl)),
       _M_iter_list(&_M_non_dbg_impl) {
-#if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+#  if defined (_STLP_NO_EXTENSIONS) || (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
     src.get()._M_iter_list._Invalidate_all();
-#else
+#  else
     src.get()._M_iter_list._Set_owner(_M_iter_list);
-#endif
+#  endif
   }
+#endif
 
 #if !defined (_STLP_MEMBER_TEMPLATES)
   basic_string(const _CharT* __f, const _CharT* __l,
