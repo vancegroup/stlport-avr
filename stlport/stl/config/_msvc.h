@@ -153,7 +153,7 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #  define _STLP_HAS_NATIVE_FLOAT_ABS 1
 
 // TODO: some eVC4 compilers report _MSC_VER 1201 or 1202, which category do they belong to?
-#  if (_STLP_MSVC < 1310)
+#  if (_STLP_MSVC > 1200) && (_STLP_MSVC < 1310)
 #    define _STLP_NO_MOVE_SEMANTIC
 #  endif
 
