@@ -2,6 +2,7 @@
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <strstream>
+#  include <limits>
 
 #  include "cppunit/cppunit_proxy.h"
 
@@ -30,10 +31,18 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StrstreamTest);
 void StrstreamTest::input()
 {
 #  if defined (STLPORT) && defined (_STLP_LONG_LONG)
-  istrstream is("65220830736357450");
-  _STLP_LONG_LONG rval = 0;
-  is >> rval;
-  CPPUNIT_ASSERT( rval == 65220830736357450 );
+  {
+    istrstream is("652208307");
+    _STLP_LONG_LONG rval = 0;
+    is >> rval;
+    CPPUNIT_ASSERT( rval == 652208307 );
+  }
+  {
+    istrstream is("-652208307");
+    _STLP_LONG_LONG rval = 0;
+    is >> rval;
+    CPPUNIT_ASSERT( rval == -652208307 );
+  }
 }
 #  endif
 
