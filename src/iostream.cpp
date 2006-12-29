@@ -40,10 +40,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (__BORLANDC__) && ! defined (_STLP_USE_GLIBC)
-using _STLP_VENDOR_CSTD::_streams;
-#endif
-
 // This file handles iostream initialization.  It is inherently
 // nonportable, since the C++ language definition provides no mechanism
 // for controlling order of initialization of nonlocal objects.

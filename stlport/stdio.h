@@ -39,13 +39,10 @@ struct _exception;
 #      define _STRUCT_FILE
 #    endif
 
-#    if defined (__BORLANDC__)
-#      undef stdin
-#      undef stdout
-#      undef stderr
-#      define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
-#      define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
-#      define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
+#    if defined (__BORLANDC__) && defined (__cplusplus)
+_STLP_BEGIN_NAMESPACE
+using __std_alias::_streams;
+_STLP_END_NAMESPACE
 #    endif
 
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x264)

@@ -34,19 +34,13 @@
 #  include <stdio.h>
 #endif
 
-#if defined (__MWERKS__) || defined (__BORLANDC__)
+#if defined (__MWERKS__) 
 #  undef stdin
 #  undef stdout
 #  undef stderr
-#  if defined (__MWERKS__)
 #  define stdin   (&_STLP_VENDOR_CSTD::__files[0])
 #  define stdout  (&_STLP_VENDOR_CSTD::__files[1])
 #  define stderr  (&_STLP_VENDOR_CSTD::__files[2])
-#  elif defined (__BORLANDC__)
-#    define stdin   (&_STLP_VENDOR_CSTD::_streams[0])
-#    define stdout  (&_STLP_VENDOR_CSTD::_streams[1])
-#    define stderr  (&_STLP_VENDOR_CSTD::_streams[2])
-#  endif
 #endif
 
 #if defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400) || defined (_STLP_USING_PLATFORM_SDK_COMPILER)
