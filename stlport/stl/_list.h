@@ -483,6 +483,7 @@ private:
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert(iterator __pos, const value_type* __first, const value_type* __last) {
     _Self __tmp(__first, __last, this->get_allocator());
+    _STLP_ASSERT(__tmp.get_allocator() == this->get_allocator())
     splice(__pos, __tmp);
   }
   void insert(iterator __pos, const_iterator __first, const_iterator __last) {
