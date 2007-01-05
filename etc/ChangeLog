@@ -1,3 +1,12 @@
+2007-01-05  Francois Dumont  <dums@stlport...>
+
+	* test/unit/bitset_test.cpp: Check _STLP_NON_TYPE_TMPL_PARAM_BUG
+	macro before doing tests that depends on it.
+
+	* stlport/stl/_list.h: Add assertion to signal potential stack
+	overflow in recurssive calls to list::insert and list::splice thanks
+	Aleksey Sanin idear.
+
 2006-12-29  Francois Dumont  <dums@stlport...>
 
 	* src/iostream.cpp, stlport/stdio.h, stl/_cstdio.h: Eric Sanford
