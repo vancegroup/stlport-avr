@@ -10,6 +10,12 @@
 	* build/Makefiles/gmake/lib/gcc.mak: Removed obsolete -C ld option
 	on Hp Unix platform.
 
+	* stlport/stl/_mbstate_t.h: Attempt to fix STLport config for compilers
+	coming with a native lib defining mbstate_t only for C++ compilers.
+	For those compilers native mbstate_t definition won't be used for
+	the moment, STLport simply grant a dummy definition in C. Test
+	under Hp Unix has shown that it works.
+
 2006-12-29  Francois Dumont  <dums@stlport...>
 
 	* src/iostream.cpp, stlport/stdio.h, stl/_cstdio.h: Eric Sanford
