@@ -7,6 +7,9 @@
 	overflow in recurssive calls to list::insert and list::splice thanks
 	Aleksey Sanin idear.
 
+	* build/Makefiles/gmake/lib/gcc.mak: Removed obsolete -C ld option
+	on Hp Unix platform.
+
 2006-12-29  Francois Dumont  <dums@stlport...>
 
 	* src/iostream.cpp, stlport/stdio.h, stl/_cstdio.h: Eric Sanford

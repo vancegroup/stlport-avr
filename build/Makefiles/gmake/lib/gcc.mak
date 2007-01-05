@@ -134,9 +134,9 @@ NOSTDLIB := -nostdlib
 endif
 
 ifeq ($(OSNAME),hp-ux)
-dbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_DBGxx) ${LDSEARCH}
-stldbg-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic  -Wl,+h$(SO_NAME_STLDBGxx) ${LDSEARCH}
-release-shared:	LDFLAGS += -shared -Wl,-C20 -Wl,-dynamic -Wl,+h$(SO_NAMExx) ${LDSEARCH}
+dbg-shared:	LDFLAGS += -shared -Wl,-dynamic  -Wl,+h$(SO_NAME_DBGxx) ${LDSEARCH}
+stldbg-shared:	LDFLAGS += -shared -Wl,-dynamic  -Wl,+h$(SO_NAME_STLDBGxx) ${LDSEARCH}
+release-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAMExx) ${LDSEARCH}
 endif
 
 ifeq ($(OSNAME),sunos)
