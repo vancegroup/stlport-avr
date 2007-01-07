@@ -110,7 +110,7 @@ _STLP_RELOPS_OPERATORS(template < _STLP_STACK_HEADER_ARGS >, stack< _STLP_STACK_
 #undef _STLP_STACK_ARGS
 #undef _STLP_STACK_HEADER_ARGS
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Sequence>
 struct __move_traits<stack<_Tp, _Sequence> > :
   _STLP_PRIV __move_traits_aux<_Sequence>

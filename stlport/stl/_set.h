@@ -385,7 +385,7 @@ _STLP_BEGIN_NAMESPACE
 #undef  _STLP_TEMPLATE_CONTAINER
 #undef  _STLP_TEMPLATE_HEADER
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Key, class _Compare, class _Alloc>
 struct __move_traits<set<_Key,_Compare,_Alloc> > :
   _STLP_PRIV __move_traits_aux<typename set<_Key,_Compare,_Alloc>::_Rep_type>
@@ -395,7 +395,7 @@ template <class _Key, class _Compare, class _Alloc>
 struct __move_traits<multiset<_Key,_Compare,_Alloc> > :
   _STLP_PRIV __move_traits_aux<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>
 {};
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 _STLP_END_NAMESPACE
 

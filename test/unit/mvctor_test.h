@@ -60,7 +60,7 @@ private:
 struct MovableStruct {
   MovableStruct() { ++nb_dft_construct_call; }
   MovableStruct(MovableStruct const&) { ++nb_cpy_construct_call; }
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  if defined (_STLP_USE_NAMESPACES)
   MovableStruct(std::__move_source<MovableStruct>)
 #  else

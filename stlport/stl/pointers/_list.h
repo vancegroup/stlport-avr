@@ -144,8 +144,10 @@ public:
 
   list(const _Self& __x) : _M_impl(__x._M_impl) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   list(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
+#endif
 
   iterator begin()             { return iterator(_M_impl.begin()._M_node); }
   const_iterator begin() const { return const_iterator(_M_impl.begin()._M_node); }

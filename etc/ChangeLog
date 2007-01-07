@@ -1,3 +1,8 @@
+2007-01-07  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl: Add _STLP_NO_MOVE_SEMANTIC macro checks to
+	completely hide move semantic framework when not necessary.
+
 2007-01-05  Francois Dumont  <dums@stlport...>
 
 	* test/unit/bitset_test.cpp: Check _STLP_NON_TYPE_TMPL_PARAM_BUG

@@ -228,7 +228,7 @@ public:
   }
 };
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Sequence>
 struct __move_traits<queue<_Tp, _Sequence> > :
   _STLP_PRIV __move_traits_aux<_Sequence>
@@ -238,7 +238,7 @@ template <class _Tp, class _Sequence, class _Compare>
 struct __move_traits<priority_queue<_Tp, _Sequence, _Compare> > :
   _STLP_PRIV __move_traits_aux2<_Sequence, _Compare>
 {};
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 _STLP_END_NAMESPACE
 

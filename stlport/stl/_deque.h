@@ -1085,13 +1085,13 @@ _STLP_BEGIN_NAMESPACE
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
 struct __move_traits<deque<_Tp, _Alloc> > {
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 _STLP_END_NAMESPACE
 

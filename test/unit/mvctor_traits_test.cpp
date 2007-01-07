@@ -198,10 +198,11 @@ void MoveConstructorTest::move_traits_vec_complete()
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 3 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 4 );
 #  else
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 7 );
+      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 7 );
 #  endif
-      CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 4 );
 #elif !defined (_MSC_VER)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 7 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 7 );
@@ -234,13 +235,9 @@ void MoveConstructorTest::move_traits_vec_complete()
 
       // vect contains 8 elements
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_dft_construct_call == 0 );
-#if defined (STLPORT)
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 4 );
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_mv_construct_call == 4 );
-#  else
-      CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 8 );
-#  endif
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_destruct_call == 0 );
 #else
       CPPUNIT_ASSERT( CompleteMovableStruct::nb_cpy_construct_call == 8 );

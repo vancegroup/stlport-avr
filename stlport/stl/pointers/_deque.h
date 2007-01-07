@@ -212,8 +212,10 @@ public:                         // Basic accessors
               _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
 #endif /* _STLP_MEMBER_TEMPLATES */
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   deque(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
+#endif
 
   _Self& operator= (const _Self& __x) { _M_impl = __x._M_impl; return *this; }
 

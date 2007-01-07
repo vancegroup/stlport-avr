@@ -66,10 +66,14 @@ inline void _Destroy(_Tp* __pointer) {
 
 template <class _Tp>
 inline void _Destroy_Moved(_Tp* __pointer) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::complete _Trivial_destructor;
   __destroy_aux(__pointer, _Trivial_destructor());
-#if defined (_STLP_DEBUG_UNINITIALIZED)
+#  if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
+#  endif
+#else
+  _Destroy(__pointer);
 #endif
 }
 
@@ -188,17 +192,22 @@ inline void _Destroy_Range(wchar_t*, wchar_t*) {}
 inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 #endif
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _ForwardIterator, class _Tp>
 inline void
 __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr) {
   typedef typename __move_traits<_Tp>::complete _CompleteMove;
   __destroy_range_aux(__first, __last, __ptr, _CompleteMove());
 }
+#endif
 
 template <class _ForwardIterator>
-inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last) {
-  __destroy_mv_srcs(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
-}
+inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last)
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+{ __destroy_mv_srcs(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator)); }
+#else
+{ _Destroy_Range(__first, __last); }
+#endif
 
 #if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
 // Those adaptors are here to fix common compiler bug regarding builtins:

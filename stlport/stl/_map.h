@@ -407,7 +407,7 @@ public:
 #undef  _STLP_TEMPLATE_CONTAINER
 #undef  _STLP_TEMPLATE_HEADER
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Key, class _Tp, class _Compare, class _Alloc>
 struct __move_traits<map<_Key,_Tp,_Compare,_Alloc> > :
   _STLP_PRIV __move_traits_aux<typename map<_Key,_Tp,_Compare,_Alloc>::_Rep_type>

@@ -859,11 +859,13 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 #undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
 struct __move_traits<slist<_Tp, _Alloc> > {
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
+#  endif
 
 // Specialization of insert_iterator so that insertions will be constant
 // time rather than linear time.

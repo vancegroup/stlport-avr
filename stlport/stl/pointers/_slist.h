@@ -134,8 +134,11 @@ public:
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   slist(const _Self& __x) : _M_impl(__x._M_impl) {}
+
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   slist(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
+#endif
 
   _Self& operator= (const _Self& __x) { _M_impl = __x._M_impl; return *this; }
 

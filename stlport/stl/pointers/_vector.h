@@ -118,13 +118,15 @@ public:
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit vector(size_type __n)
     : _M_impl(__n, allocator_type() ) {}
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
 
   vector(const _Self& __x)
     : _M_impl(__x._M_impl) {}
 
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
   explicit vector(__move_source<_Self> src)
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>

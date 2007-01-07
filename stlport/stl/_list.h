@@ -724,13 +724,13 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
 #undef _STLP_TEMPLATE_HEADER
 #undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
 struct __move_traits<list<_Tp, _Alloc> > {
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 _STLP_END_NAMESPACE
 

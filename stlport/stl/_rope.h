@@ -2338,10 +2338,10 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
   }
 }
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _CharT, class _Alloc>
 struct __move_traits<rope<_CharT, _Alloc> > {
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };

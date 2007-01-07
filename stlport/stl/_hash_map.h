@@ -417,6 +417,7 @@ public:
 #undef _STLP_TEMPLATE_HEADER
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
   _STLP_PRIV __move_traits_help<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
@@ -426,6 +427,7 @@ template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
   _STLP_PRIV __move_traits_help<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>
 {};
+#  endif
 
 // Specialization of insert_iterator so that it will work for hash_map
 // and hash_multimap.

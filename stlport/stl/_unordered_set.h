@@ -328,6 +328,7 @@ public:
 // and unordered_multiset.
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 struct __move_traits<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > :
   _STLP_PRIV __move_traits_aux<typename unordered_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
@@ -337,6 +338,7 @@ template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 struct __move_traits<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
   _STLP_PRIV __move_traits_aux<typename unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
 {};
+#  endif
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 class insert_iterator<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {

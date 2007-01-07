@@ -163,18 +163,20 @@ struct __type_traits<pair<_T1, _T2> > {
                           typename _T2Traits::has_trivial_destructor>::_Ret has_trivial_destructor;
   typedef __false_type is_POD_type;
 
-#if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
   // disable incorrect "dependent type qualifier" error
   typedef __false_type implemented;
-#endif
+#  endif
 };
 
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _T1, class _T2>
 struct __move_traits<pair<_T1, _T2> >
   : _STLP_PRIV __move_traits_help1<_T1, _T2> {};
+#  endif
 
 _STLP_END_NAMESPACE
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 #endif /* _STLP_INTERNAL_PAIR_H */
 

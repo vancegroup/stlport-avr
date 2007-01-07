@@ -664,11 +664,11 @@ _STLP_BEGIN_NAMESPACE
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
 struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
   //Hashtables are movable:
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
 
   //Completeness depends on many template parameters, for the moment we consider it not complete:
   typedef __false_type complete;

@@ -1365,10 +1365,10 @@ swap(basic_string<_CharT,_Traits,_Alloc>& __x,
 { __x.swap(__y); }
 #endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _CharT, class _Traits, class _Alloc>
 struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
-  typedef __stlp_movable implemented;
+  typedef __true_type implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };
