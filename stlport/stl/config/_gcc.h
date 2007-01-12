@@ -7,7 +7,8 @@
 #define _STLP_HAS_INCLUDE_NEXT 1
 
 #if (__GNUC__ < 2) || ((__GNUC__ < 3) && ((__GNUC_MINOR__ < 95) || (__GNUC_MINOR__ == 96)))
-#  error It's time to upgrage you compiler
+/* We do not support neither the unofficial 2.96 gcc version. */
+#  error GNU compilers before 2.95 are not supported anymore.
 #endif
 
 /* Systems having GLIBC installed have different traits */
