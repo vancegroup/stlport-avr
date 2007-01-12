@@ -69,7 +69,8 @@ void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
 // value is always positive.
 static size_t _Stl_loc_get_index(locale::id& id) {
   if (id._M_index == 0) {
-#if defined (_STLP_ATOMIC_INCREMENT)
+#if defined (_STLP_ATOMIC_INCREMENT) && \
+   !defined (_STLP_WIN32_VERSION) || (_STLP_WIN32_VERSION > 0x0400)
     static _STLP_VOLATILE __stl_atomic_t _S_index = __STATIC_CAST(__stl_atomic_t, locale::id::_S_max);
     id._M_index = _STLP_ATOMIC_INCREMENT(&_S_index);
 #else

@@ -25,6 +25,17 @@
 #  define _STLP_PLATFORM "Windows"
 #endif
 
+#if defined (WINVER) || defined (_WIN32_WINDOWS)
+#  if defined (WINVER) && defined (_WIN32_WINDOWS)
+#    error WINVER and _WIN32_WINDOWS are not defined in a coherent way.
+#  endif
+#  if defined (WINVER)
+#    define _STLP_WIN32_VERSION WINVER
+#  else
+#    define _STLP_WIN32_VERSION _WIN32_WINDOWS
+#  endif
+#endif
+
 #if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
 #  if defined (_MIPSEB)
 #    define _STLP_BIG_ENDIAN 1

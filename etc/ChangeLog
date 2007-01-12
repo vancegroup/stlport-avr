@@ -1,3 +1,13 @@
+2007-01-12  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_windows.h: Introduce _STLP_WIN32_VERSION
+	macro set to WINVER or _WIN32_WINDOWS value depending on what
+	macro is defined.
+
+	* stlport/stl/_threads.h, src/locale.cpp: Add _STLP_WIN32_VERSION
+	checks to detect Windows 95 platform having a special
+	_STLP_ATOMIC_INCREMENT and _STLP_ATOMIC_DECREMENT behavior.
+
 2007-01-07  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl: Add _STLP_NO_MOVE_SEMANTIC macro checks to
