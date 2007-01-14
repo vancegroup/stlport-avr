@@ -122,7 +122,8 @@ inline _STLP_VENDOR_CSTD::div_t div(int __x, int __y) { return _STLP_VENDOR_CSTD
 #endif
 
 //HP-UX native lib has abs() and div() functions in global namespace
-#if !defined (__HP_aCC) || (__HP_aCC < 30000)
+#if !defined (__SUNPRO_CC) && \
+    (!defined (__HP_aCC) || (__HP_aCC < 30000))
 
 //MSVC starting with .Net 2003 already define all math functions in global namespace:
 #  if !defined (__WATCOMC__) && \

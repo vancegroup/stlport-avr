@@ -3,6 +3,10 @@
 	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to
 	detect Sun Pro C compiler. Thanks Graham Reed bug report 1630916.
 
+	* stlport/stl/_cstdlib.h: Add __SUNPRO_CC macro check before
+	defining abs(long) and div(long, long) as Sun pro already
+	defined them. Thanks Graham Reed bug report 1630972.
+
 2007-01-12  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_windows.h: Introduce _STLP_WIN32_VERSION
