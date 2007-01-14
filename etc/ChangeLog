@@ -1,3 +1,8 @@
+2007-01-14  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to
+	detect Sun Pro C compiler. Thanks Graham Reed bug report 1630916.
+
 2007-01-12  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_windows.h: Introduce _STLP_WIN32_VERSION

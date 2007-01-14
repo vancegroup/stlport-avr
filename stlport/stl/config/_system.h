@@ -40,7 +40,7 @@
 #  include <stl/config/_solaris.h>
 #  if defined (__GNUC__)
 #    include <stl/config/_gcc.h>
-#  elif defined (__SUNPRO_CC)
+#  elif defined (__SUNPRO_CC) || defined (__SUNPRO_C)
 #    include <stl/config/_sunprocc.h>
 /*
 #  ifdef __KCC
