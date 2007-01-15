@@ -42,9 +42,10 @@ void CStringTest::import_checks()
 
   CPPUNIT_CHECK( std::memchr("foo", 'o', 3) != NULL );
   CPPUNIT_CHECK( std::memcmp("foo1", "foo2", 3) == 0 );
-  // CPPUNIT_CHECK( std::memcpy((void*)"", "", 0) != NULL ); // violation, The memory areas should not overlap.
-  CPPUNIT_CHECK( std::memmove((void*)"", "", 0) != NULL );
-  CPPUNIT_CHECK( std::memset((void*)"", 0, 0) != NULL );
+  char buf1[1], buf2[1];
+  CPPUNIT_CHECK( std::memcpy(buf1, buf2, 0) != NULL );
+  CPPUNIT_CHECK( std::memmove(buf1, buf2, 0) != NULL );
+  CPPUNIT_CHECK( std::memset(buf1, 0, 0) != NULL );
   char buf[16]; buf[0] = 0;
   const char* foo = "foo";
   CPPUNIT_CHECK( std::strcat((char*)buf, foo) == (char*)buf ); // buf <- foo
@@ -63,7 +64,8 @@ void CStringTest::import_checks()
   CPPUNIT_CHECK( std::strrchr(foofoo, 'f') == foofoo + 3 );
   CPPUNIT_CHECK( std::strspn(foofoo, "aofz") == 6 );
   CPPUNIT_CHECK( std::strstr(foo, "") == foo );
-  // CPPUNIT_CHECK( std::strtok((char*)foofoo, "z") != NULL );
+  char foofoobuf[] = "foofoo";
+  CPPUNIT_CHECK( std::strtok(foofoobuf, "z") != NULL );
   CPPUNIT_CHECK( std::strxfrm((char*)buf, foo, 3) != 0 );
 #endif
 }
