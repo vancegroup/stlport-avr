@@ -92,96 +92,11 @@
 #endif
 
 #if defined (__hpux) && defined (__GNUC__)
-extern "C" double erf(double);
-extern "C" double erfc(double);
-extern "C" double gamma(double);                             /* obsolescent */
-extern "C" double hypot(double, double);
-extern "C" int    isnan(double);
-extern "C" double j0(double);
-extern "C" double j1(double);
-extern "C" double jn(int, double);
-extern "C" double lgamma(double);
-extern "C" double y0(double);
-extern "C" double y1(double);
-extern "C" double yn(int, double);
-
-#  define HUGE_VALF     _SINFINITY
-#  define INFINITY      _SINFINITY
-#  define NAN           _SQNAN
-
-#  define isnan(x)              _ISNAN(x)
-#  define isinf(x)              _ISINF(x)
-#  define signbit(x)            _SIGNBIT(x)
-#  define isfinite(x)           _ISFINITE(x)
-#  define isnormal(x)           _ISNORMAL(x)
-#  define fpclassify(x)         _FPCLASSIFY(x)
-#  define isunordered(x,y)      _ISUNORDERED(x,y)
-#  define isgreater(x,y)        _ISGREATER(x,y)
-#  define isgreaterequal(x,y)   _ISGREATEREQUAL(x,y)
-#  define isless(x,y)           _ISLESS(x,y)
-#  define islessequal(x,y)      _ISLESSEQUAL(x,y)
-#  define islessgreater(x,y)    _ISLESSGREATER(x,y)
-
-#  define FP_NORMAL     0
-#  define FP_ZERO       1
-#  define FP_INFINITE   2
-#  define FP_SUBNORMAL  3
-#  define FP_NAN        4
-
-#  define DECIMAL_DIG   17
-
-#  define _IS64(x) (sizeof(x) == sizeof(double))
-#  define _IS32(x) (sizeof(x) == sizeof(float))
-
-extern "C" {
-  extern double copysign(double, double);
-  extern const float _SINFINITY;
-  extern const float _SQNAN;
-#  if defined (_PA_RISC)
-#    define _ISNAN(x)          (_IS32(x)?_Isnanf(x):(isnan)(x))
-#    define _ISINF(x)          (_IS32(x)?_Isinff(x):_Isinf(x))
-#    define _SIGNBIT(x)        (_IS32(x)?_Signbitf(x):_Signbit(x))
-#    define _ISFINITE(x)       (_IS32(x)?_Isfinitef(x):_Isfinite(x))
-#    define _ISNORMAL(x)       (_IS32(x)?_Isnormalf(x):_Isnormal(x))
-#    define _FPCLASSIFY(x)     (_IS32(x)?_Fpclassifyf(x)>>1:_Fpclassify(x)>>1)
-#    define _ISUNORDERED(x,y)  (_IS32(x)&&_IS32(y)?_Isunorderedf(x,y):_Isunordered(x,y))
-  extern int _Signbit(double);
-  extern int _Signbitf(float);
-  extern int _Isnanf(float);
-  extern int _Isfinite(double);
-  extern int _Isfinitef(float);
-  extern int _Isinf(double);
-  extern int _Isinff(float);
-  extern int _Isnormal(double);
-  extern int _Isnormalf(float);
-  extern int _Isunordered(double, double);
-  extern int _Isunorderedf(float, float);
-  extern int _Fpclassify(double);
-  extern int _Fpclassifyf(float);
-#  else
-#    include "math_ia64_internal.h"
-#    define _FPCLASSIFY(x)     (_IS32(x)?_Fpclassf(x):_Fpclass(x))
-  extern int _Fpclass(double);
-  extern int _Fpclassf(float);
-#  endif
-}
-
-#  if !defined (_INCLUDE_XOPEN_SOURCE_EXTENDED)
-extern "C" char *fcvt(double, int, int *, int *);
-extern "C" char *ecvt(double, int, int *, int *);
-#  endif
-#  if !defined (_INCLUDE_HPUX_SOURCE)
-#    if !defined (_LONG_DOUBLE)
-#      define _LONG_DOUBLE
-typedef struct {
-  uint32_t word1, word2, word3, word4;
-} long_double;
-#    endif /* _LONG_DOUBLE */
-extern "C" char *_ldecvt(long_double, int, int *, int *);
-extern "C" char *_ldfcvt(long_double, int, int *, int *);
-
-#  endif
-#endif /* __hpux */
+#  include "system_api.h"
+#  define isfinite stlp_isfinite
+#  define isnan stlp_isnan
+#  define isinf stlp_isinf
+#endif
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE

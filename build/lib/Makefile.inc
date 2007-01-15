@@ -35,6 +35,7 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/allocators.cpp
 
 SRC_C = ../../src/c_locale.c \
-        ../../src/cxa.c
+        ../../src/cxa.c \
+        ../../src/system_api.c
 
 SRC_RC = ../../src/stlport.rc

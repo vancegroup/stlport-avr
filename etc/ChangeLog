@@ -10,6 +10,15 @@
 	compiler not to emit false warning about potential use of
 	uninitialized variable (-Wall mode).
 
+	* build/lib/Makefile.inc, src/system_api.h, system_api.c: New source
+	file used for platform exposing some features only to C compiler. for
+	the moment used under Hp Unix for GNU compiler access to platform
+	isfinite, isnan and isinf functions.
+
+	* src/num_put_float.cpp: Replace a lot of unofficial Hp Unix specific
+	code to access functions isfinite, isinf or isnan. Replaced by
+	system_api.h.
+
 2007-01-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to
