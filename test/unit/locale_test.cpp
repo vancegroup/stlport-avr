@@ -36,7 +36,7 @@ static const ref_locale tested_locales[] = {
 #else
                                                                                                                                           " " },
 #endif
-  { "ru_RU.koi8r", ",",           ".",           "RUR ",           "",                   "",           "\xd2\xd5\xc2", ".",               " " },
+  { "ru_RU.koi8r", ",",           ".",           "RUB ",           "RUR ",               "",           "\xd2\xd5\xc2", ".",               " " },
   { "en_GB",       ".",           ",",           "GBP ",           "",                   "\xa3",       "",           ".",                 "," },
   { "en_US",       ".",           ",",           "USD ",           "",                   "$",          "",           ".",                 "," },
   { "C",           ".",           ",",           "",               "",                   "",           "",           " ",                 " " },
