@@ -5,6 +5,11 @@
 
 	* test/unit/cstring_test.cpp: Fix test to avoid some gcc warnings.
 
+	* stlport/stl/config/_gcc.h: Add _STLP_NOTHROW definition for
+	this compiler for C++ Standard compliancy. It might also help the
+	compiler not to emit false warning about potential use of
+	uninitialized variable (-Wall mode).
+
 2007-01-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to

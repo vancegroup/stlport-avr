@@ -183,6 +183,7 @@ typedef unsigned int wint_t;
 #endif
 
 #if defined (__hpux)
+#  define _STLP_VENDOR_GLOBAL_CSTD 1
 #  define _STLP_NO_VENDOR_STDLIB_L /* no llabs */
   /* No *f math fuctions variants (i.e. sqrtf, fabsf, etc.) */
 #  define _STLP_NO_VENDOR_MATH_F
@@ -244,6 +245,8 @@ typedef unsigned int wint_t;
 #ifndef __EXCEPTIONS
 #  undef  _STLP_DONT_USE_EXCEPTIONS
 #  define _STLP_DONT_USE_EXCEPTIONS 1
+#else
+#  define _STLP_NOTHROW throw()
 #endif
 
 #if (__GNUC__ >= 3)
