@@ -19,6 +19,9 @@
 	code to access functions isfinite, isinf or isnan. Replaced by
 	system_api.h.
 
+	* build/Makefiles/gmake/hp-ux/sys.mak: Looks like install command
+	on this platform is rather exotic, use cp instead.
+
 2007-01-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to
