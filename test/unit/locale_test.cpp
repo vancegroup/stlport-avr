@@ -223,7 +223,8 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
         CPPUNIT_ASSERT( intl_fmp.pos_format().field[fieldIndex] == money_base::symbol );
         string::size_type p_old = strlen( rl.money_int_prefix_old );
         CPPUNIT_ASSERT( (str_res.substr(index, p) == rl.money_int_prefix) ||
-                        ((p_old != 0) && (str_res.substr(index, p_old) ==  rl.money_int_prefix_old)) );
+                        ((p_old != 0) &&
+                         (str_res.substr(index, p_old) == rl.money_int_prefix_old)) );
         if ( str_res.substr(index, p) == rl.money_int_prefix ) {
           index += p;
         } else {

@@ -383,8 +383,8 @@ public:
 #endif
       return __ret;
     }
-    else
-      return 0;
+
+    return 0;
   }
   // __p is permitted to be a null pointer, only if n==0.
   void deallocate(pointer __p, size_type __n) {
@@ -431,8 +431,8 @@ protected:
       __allocated_n = __buf_size / sizeof(value_type);
       return __ret;
     }
-    else
-      return 0;
+
+    return 0;
   }
 };
 
