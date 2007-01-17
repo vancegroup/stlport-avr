@@ -46,11 +46,12 @@
 
 #if (defined (__SUNPRO_CC) && (__SUNPRO_CC > 0x500)) || \
      !(defined (__IBMCPP__) && (__IBMCPP__ >= 500) || !(defined(__HP_aCC) && (__HP_aCC >= 30000) ))
-#  ifndef _STLP_HAS_NO_NAMESPACES
+#  if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(__SUNPRO_CC)
+// All the other hypot stuff is going to be at file scope, so follow along here.
 namespace std {
 #  endif
 extern "C" double hypot(double x, double y);
-#  ifndef _STLP_HAS_NO_NAMESPACES
+#  if !defined(_STLP_HAS_NO_NAMESPACES) && !defined(__SUNPRO_CC)
 }
 #  endif
 

@@ -1,3 +1,8 @@
+2007-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_cmath.h: move hypot in global namespace for SunSoft;
+	suggested by Graham Reed.
+
 2007-01-15  Francois Dumont  <dums@stlport...>
 
 	* test/unit/locale_test.cpp: Upgrade Russian currency abbreviation
