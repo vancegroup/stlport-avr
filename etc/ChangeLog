@@ -1,3 +1,16 @@
+2007-01-18  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_num_put.c: Add cast to avoid gcc warning.
+
+	* stlport/stl/_pair.h, _construct.h: Add _STLP_NO_MOVE_SEMANTIC
+	before inclusion of _move_construct_fwk.h.
+
+	* stlport/stl/_istream.c: Removed useless cast to num_get facet.
+
+	* src/system_api.c: Move macro check to at least include math.h
+	in order to avoid an empty translation unit which can generate
+	compilation warning.
+
 2007-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_cmath.h: move hypot in global namespace for SunSoft;

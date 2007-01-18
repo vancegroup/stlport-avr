@@ -32,11 +32,13 @@
 #define _STLP_INTERNAL_PAIR_H
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  include <stl/type_traits.h>
-#endif
+#  ifndef _STLP_TYPE_TRAITS_H
+#    include <stl/type_traits.h>
+#  endif
 
-#ifndef _STLP_MOVE_CONSTRUCT_FWK_H
-#  include <stl/_move_construct_fwk.h>
+#  if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
+#    include <stl/_move_construct_fwk.h>
+#  endif
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -62,7 +64,7 @@ struct pair {
   pair(const pair<_T1,_T2>& __o) : first(__o.first), second(__o.second) {}
 #endif
 
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
   pair(__move_source<pair<_T1, _T2> > src) : first(_STLP_PRIV _AsMoveSource(src.get().first)),
                                              second(_STLP_PRIV _AsMoveSource(src.get().second))
   {}

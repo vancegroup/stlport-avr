@@ -42,7 +42,11 @@
 #  include <stl/_iterator_base.h>
 #endif
 
-#ifndef _STLP_MOVE_CONSTRUCT_FWK_H
+#ifndef _STLP_TYPE_TRAITS_H
+#  include <stl/type_traits.h>
+#endif
+
+#if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  include <stl/_move_construct_fwk.h>
 #endif
 

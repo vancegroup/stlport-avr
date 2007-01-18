@@ -190,8 +190,8 @@ __get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val) {
   if (__sentry) {
     typedef num_get<_CharT, istreambuf_iterator<_CharT, _Traits> > _Num_get;
     _STLP_TRY {
-      ((const _Num_get&)use_facet<_Num_get>(__that.getloc())).get(istreambuf_iterator<_CharT, _Traits>(__that.rdbuf()),
-                                                                  0, __that, __err, __val);
+      use_facet<_Num_get>(__that.getloc()).get(istreambuf_iterator<_CharT, _Traits>(__that.rdbuf()),
+                                               0, __that, __err, __val);
     }
     _STLP_CATCH_ALL {
       __that._M_handle_exception(ios_base::badbit);
