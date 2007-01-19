@@ -9,6 +9,11 @@
 	present: see beacon that depends upon Solaris version and patch present,
 	as defined by SunPro compilers or in host.h. Thanks to Graham Reed.
 
+	* stlport/stl/config/_sunprocc.h: if use new-c-headers, SunPro
+	include iso/stdlib_iso.h instead of stdlib.h; note, that this exclude
+	usage of long double, long long, etc. functions, even when ones present
+	in OS. Thanks to Graham Reed. Bugreport 1630943.
+
 2007-01-18  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_num_put.c: Add cast to avoid gcc warning.

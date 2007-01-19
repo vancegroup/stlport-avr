@@ -159,3 +159,9 @@ using std::mbstate_t;
 typedef __mbstate_t mbstate_t;
 #  endif
 #endif  /* __MBSTATET_H */
+
+#if !defined(_STLP_HAS_NO_NEW_C_HEADERS) && !defined(_STLP_NO_NEW_C_HEADERS)
+/* Since Sun Studio uses <iso/stdlib_iso.h>, we are at its
+ * mercy.  GCC is built on top of <stdlib.h>. */
+#define _STLP_NO_VENDOR_STDLIB_L
+#endif
