@@ -1,3 +1,14 @@
+2007-01-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/host.h: define one of __SunOS_5_x macro
+	for gcc (during installation?) on Solaris; note, that Solaris
+	system may has patch with MATH_F and MATH_L functions.
+
+	* stlport/stl/config/_solaris.h: reminder for __SunOS_5_x
+	macro definition for gcc; turn on/off MATH_F/MATH_L functions
+	present: see beacon that depends upon Solaris version and patch present,
+	as defined by SunPro compilers or in host.h. Thanks to Graham Reed.
+
 2007-01-18  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_num_put.c: Add cast to avoid gcc warning.

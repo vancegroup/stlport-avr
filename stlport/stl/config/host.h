@@ -270,6 +270,54 @@
 #define _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
 #define _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 
+/*==========================================================================*/
+
+#if defined(__sun) && defined(__GNUC__)
+/* __SunOS_5_x not defined in headers, and no way to derive this from headers only;
+ * nevertheless this macro defined automagically by SunPro compilers family;
+ *
+ * gcc know nothing about it, but definition it with -D on compiler command line
+ * is a bad idea from one side, and this info still useful when we want to use
+ * (or don't use) some Solaris version-specific features from other side.
+ * Of cause, the best way is definition in spec file, but this is beyond our scope.
+ *
+ * Uncomment ONE of the following, depends what Solaris version you use.
+ */
+
+/*
+#define __SunOS_5_5_1
+ */
+/*
+#define __SunOS_5_6
+ */
+/*
+#define __SunOS_5_7
+ */
+/*
+#define __SunOS_5_8
+ */
+/*
+#define __SunOS_5_9
+ */
+/*
+#define __SunOS_5_10
+ */
+#endif
+
+#if defined(__sun)
+/* With following patches Solaris 8 and 9 will have *l and *f (long double and float)
+ * variants of math functions:
+ *   SunOS 5.8 patch 111721-04 (May/08/2003)
+ *     <http://sunsolve.sun.com/search/document.do?assetkey=1-21-111721-04-1>
+ *   SunOS 5.9 patch 111722-04 (May/08/2003)
+ *     <http://sunsolve.sun.com/search/document.do?assetkey=1-21-111722-04-1>
+ * Solaris 10 has this functions from box.
+ */
+/*
+#define _STLP_SOLARIS_MATH_PATCH
+ */
+#endif
+
 /*
   Local Variables:
   mode:C++
