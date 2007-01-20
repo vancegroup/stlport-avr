@@ -84,13 +84,14 @@ static size_t _Stl_loc_get_index(locale::id& id) {
 }
 
 // Default constructor: create a copy of the global locale.
-locale::locale() : _M_impl(_get_Locale_impl(_Stl_get_global_locale()->_M_impl))
+locale::locale() _STLP_NOTHROW
+  : _M_impl(_get_Locale_impl(_Stl_get_global_locale()->_M_impl))
 {}
 
 // Copy constructor
 locale::locale(const locale& L) _STLP_NOTHROW
-  : _M_impl( _get_Locale_impl( L._M_impl ) ) {
-}
+  : _M_impl( _get_Locale_impl( L._M_impl ) )
+{}
 
 void locale::_M_insert(facet* f, locale::id& n) {
   if (f)

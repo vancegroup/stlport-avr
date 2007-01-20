@@ -141,8 +141,12 @@ locale::facet* _Locale_impl::insert(locale::facet *f, size_t index) {
   if (index >= facets_vec.size()) {
     facets_vec.resize(index + 1);
   }
-  _release_facet(facets_vec[index]);
-  facets_vec[index] = _get_facet(f);
+
+  if (f != facets_vec[index])
+  {
+    _release_facet(facets_vec[index]);
+    facets_vec[index] = _get_facet(f);
+  }
 
   return f;
 }

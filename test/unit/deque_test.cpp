@@ -22,6 +22,7 @@ class DequeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(DequeTest);
   CPPUNIT_TEST(deque1);
   CPPUNIT_TEST(at);
+  CPPUNIT_TEST(insert);
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
 #if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
@@ -32,6 +33,7 @@ class DequeTest : public CPPUNIT_NS::TestCase
 
 protected:
   void deque1();
+  void insert();
   void at();
   void auto_ref();
   void allocator_with_state();
@@ -51,26 +53,103 @@ void DequeTest::deque1()
   d.push_back(16);
   d.push_front(1);
 
-  CPPUNIT_ASSERT(d[0]==1);
-  CPPUNIT_ASSERT(d[1]==4);
-  CPPUNIT_ASSERT(d[2]==9);
-  CPPUNIT_ASSERT(d[3]==16);
+  CPPUNIT_ASSERT( d[0] == 1 );
+  CPPUNIT_ASSERT( d[1] == 4 );
+  CPPUNIT_ASSERT( d[2] == 9 );
+  CPPUNIT_ASSERT( d[3] == 16 );
 
   d.pop_front();
   d[2] = 25;
 
-  CPPUNIT_ASSERT(d[0]==4);
-  CPPUNIT_ASSERT(d[1]==9);
-  CPPUNIT_ASSERT(d[2]==25);
+  CPPUNIT_ASSERT( d[0] == 4 );
+  CPPUNIT_ASSERT( d[1] == 9 );
+  CPPUNIT_ASSERT( d[2] == 25 );
 
   //Some compile time tests:
-  deque<int>::iterator dit(d.begin());
+  deque<int>::iterator dit = d.begin();
   deque<int>::const_iterator cdit(d.begin());
   CPPUNIT_ASSERT( (dit - cdit) == 0 );
   CPPUNIT_ASSERT( (cdit - dit) == 0 );
   CPPUNIT_ASSERT( (dit - dit) == 0 );
   CPPUNIT_ASSERT( (cdit - cdit) == 0 );
   CPPUNIT_ASSERT(!((dit < cdit) || (dit > cdit) || (dit != cdit) || !(dit <= cdit) || !(dit >= cdit)));
+}
+
+void DequeTest::insert()
+{
+  deque<int> d;
+  d.push_back(0);
+  d.push_back(1);
+  d.push_back(2);
+  CPPUNIT_ASSERT( d.size() == 3 );
+
+  deque<int>::iterator dit;
+
+  //Insertion before begin:
+  dit = d.insert(d.begin(), 3);
+  CPPUNIT_ASSERT( dit != d.end() );
+  CPPUNIT_CHECK( *dit == 3 );
+  CPPUNIT_ASSERT( d.size() == 4 );
+  CPPUNIT_ASSERT( d[0] == 3 );
+
+  //Insertion after begin:
+  dit = d.insert(d.begin() + 1, 4);
+  CPPUNIT_ASSERT( dit != d.end() );
+  CPPUNIT_CHECK( *dit == 4 );
+  CPPUNIT_ASSERT( d.size() == 5 );
+  CPPUNIT_ASSERT( d[1] == 4 );
+
+  //Insertion at end:
+  dit = d.insert(d.end(), 5);
+  CPPUNIT_ASSERT( dit != d.end() );
+  CPPUNIT_CHECK( *dit == 5 );
+  CPPUNIT_ASSERT( d.size() == 6 );
+  CPPUNIT_ASSERT( d[5] == 5 );
+
+  //Insertion before last element:
+  dit = d.insert(d.end() - 1, 6);
+  CPPUNIT_ASSERT( dit != d.end() );
+  CPPUNIT_CHECK( *dit == 6 );
+  CPPUNIT_ASSERT( d.size() == 7 );
+  CPPUNIT_ASSERT( d[5] == 6 );
+
+  //Insertion of several elements before begin
+  d.insert(d.begin(), 2, 7);
+  CPPUNIT_ASSERT( d.size() == 9 );
+  CPPUNIT_ASSERT( d[0] == 7 );
+  CPPUNIT_ASSERT( d[1] == 7 );
+
+  //Insertion of several elements after begin
+  //There is more elements to insert than elements before insertion position
+  d.insert(d.begin() + 1, 2, 8);
+  CPPUNIT_ASSERT( d.size() == 11 );
+  CPPUNIT_ASSERT( d[1] == 8 );
+  CPPUNIT_ASSERT( d[2] == 8 );
+
+  //There is less elements to insert than elements before insertion position
+  d.insert(d.begin() + 3, 2, 9);
+  CPPUNIT_ASSERT( d.size() == 13 );
+  CPPUNIT_ASSERT( d[3] == 9 );
+  CPPUNIT_ASSERT( d[4] == 9 );
+
+  //Insertion of several elements at end:
+  d.insert(d.end(), 2, 10);
+  CPPUNIT_ASSERT( d.size() == 15 );
+  CPPUNIT_ASSERT( d[14] == 10 );
+  CPPUNIT_ASSERT( d[13] == 10 );
+
+  //Insertion of several elements before last:
+  //There is more elements to insert than elements after insertion position
+  d.insert(d.end() - 1, 2, 11);
+  CPPUNIT_ASSERT( d.size() == 17 );
+  CPPUNIT_ASSERT( d[15] == 11 );
+  CPPUNIT_ASSERT( d[14] == 11 );
+
+  //There is less elements to insert than elements after insertion position
+  d.insert(d.end() - 3, 2, 12);
+  CPPUNIT_ASSERT( d.size() == 19 );
+  CPPUNIT_ASSERT( d[15] == 12 );
+  CPPUNIT_ASSERT( d[14] == 12 );
 }
 
 void DequeTest::at() {

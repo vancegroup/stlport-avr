@@ -59,6 +59,12 @@ bool __locale_do_operator_call (const locale* __that,
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _get_Locale_impl( _Locale_impl *locimpl );
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl *locimpl );
 
+template <class _Facet>
+bool _HasFacet(const locale& __loc, const _Facet* __facet) _STLP_NOTHROW;
+
+template <class _Facet>
+_Facet* _UseFacet(const locale& __loc, const _Facet* __facet);
+
 class _STLP_CLASS_DECLSPEC locale {
 public:
   // types:
@@ -105,7 +111,7 @@ public:
   _STLP_STATIC_CONSTANT(category, all = collate | ctype | monetary | numeric | time | messages);
 
   // construct/copy/destroy:
-  locale();
+  locale() _STLP_NOTHROW;
   locale(const locale&) _STLP_NOTHROW;
   explicit locale(const char *);
   locale(const locale&, const char*, category);
@@ -139,16 +145,12 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) && \
    !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Facet>
-  locale combine(const locale& __loc) {
-    facet* __f = __loc._M_get_facet( _Facet::id );
-    if ( __f == 0 )
+  locale combine(const locale& __loc) const {
+    _Facet *__facet = 0;
+    if (!_HasFacet(__loc, __facet))
       _M_throw_runtime_error();
 
-    locale __result(__loc._M_impl);
-
-    __result._M_insert(__f, _Facet::id);
-
-    return __result;
+    return locale(*this, _UseFacet(__loc, __facet));
   }
 #endif // _STLP_MEMBER_TEMPLATES && !_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 
@@ -201,7 +203,7 @@ class locale : public _Locale {
 public:
 
   // construct/copy/destroy:
-  locale() {}
+  locale() _STLP_NOTHROW {}
   locale(const locale& __loc) _STLP_NOTHROW : _Locale(__loc) {}
   explicit locale(const char *__str) : _Locale(__str) {}
   locale(const locale& __loc, const char* __str, category __cat)
@@ -233,16 +235,12 @@ public:
   }
 
   template <class _Facet>
-  locale combine(const locale& __loc) {
-    facet* __f = __loc._M_get_facet( _Facet::id );
-    if ( __f == 0 )
+  locale combine(const locale& __loc) const {
+    _Facet *__facet = 0;
+    if (!_HasFacet(__loc, __facet))
       _M_throw_runtime_error();
 
-    locale __result(__loc._M_impl);
-
-    __result._M_insert(__f, _Facet::id);
-
-    return __result;
+    return locale(*this, _UseFacet(__loc, __facet));
   }
 
   // locale operations:
@@ -264,39 +262,47 @@ public:
 
 #endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
 
-
 //----------------------------------------------------------------------
 // locale globals
 
-# ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
 inline const _Facet&
 _Use_facet<_Facet>::operator *() const
-# else
+#else
 template <class _Facet> inline const _Facet& use_facet(const locale& __loc)
-# endif
+#endif
 {
-  return *__STATIC_CAST(const _Facet*,__loc._M_use_facet(_Facet::id));
+  _Facet *__facet = 0;
+  return *_UseFacet(__loc, __facet);
 }
 
 
-# ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
 struct has_facet {
   const locale& __loc;
   has_facet(const locale& __p_loc) : __loc(__p_loc) {}
   operator bool() const _STLP_NOTHROW
-# else
+#else
 template <class _Facet> inline bool has_facet(const locale& __loc) _STLP_NOTHROW
-# endif
+#endif
 {
-  return (__loc._M_get_facet(_Facet::id) != 0);
+  _Facet *__facet = 0;
+  return _HasFacet(__loc, __facet);
 }
 
-# ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
-  // close class definition
-};
-# endif
+#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+}; // close class definition
+#endif
+
+template <class _Facet>
+bool _HasFacet(const locale& __loc, const _Facet* __facet) _STLP_NOTHROW
+{ return (__loc._M_get_facet(_Facet::id) != 0); }
+
+template <class _Facet>
+_Facet* _UseFacet(const locale& __loc, const _Facet* __facet)
+{ return __STATIC_CAST(_Facet*, __loc._M_use_facet(_Facet::id)); }
 
 _STLP_END_NAMESPACE
 

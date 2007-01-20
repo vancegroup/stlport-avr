@@ -1,3 +1,49 @@
+2007-01-19  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_locale.h, src/locale.cpp: Add throw() specification
+	on locale default constructor. Add const qualifier on locale::combine
+	method. Fixed combine implementation to correctly combine
+	*this with other locale instance.
+
+	* src/locale_impl.h: Removed _get_Locale_impl and
+	_copy_Nameless_Locale_impl already defined in stlport/stl/_locale.h.
+
+	* src/locale_impl.cpp: In _Locale_impl::insert add check that we
+	are working on 2 different facet instances before substitution.
+
+	* test/unit/locale_test.cpp: Add test case for locale::combine
+	method.
+
+2007-01-12  Francois Dumont  <dums@stlport...>
+
+	* c_locale.h, c_locale_dummy.c, c_locale_glibc.c, c_locale_glibc2.c,
+	c_locale_win32.c: Creation of 2 new functions in the localization
+	framework _Locale_init and _Locale_final to allow localization
+	implementations to initialize and release any necessary resources.
+
+	* src/iostream.cpp: Call _Locale_init during io streams initialization
+	and _Locale_final at end.
+
+	* c_locale_win32/c_locale_win32.c: Add synchronization for locale
+	lcid look up from name required in multithreaded environment. Two
+	threads instanciating two facet instances from a given name might
+	have collide resulting in an undefined behavior. Critical section
+	used for synchronization is initialized in _Locale_init and freed
+	in _Locale_final.
+
+	* c_locale_win32/c_locale_win32.c: Add several fields in
+	_Locale_time struct to avoid use of static buffers in some locale
+	support functions like _Locale_d_t_fmt _Locale_long_d_t_fmt...
+	Moreover time format cannot be truncated anymore.
+
+2007-01-08  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_deque.c: Patch from Kevin Lin to fix iterator
+	returned by insert at position method.
+
+	* test/unit/deque_test.cpp: Add test case for the deque::insert
+	methods.
+
 2006-11-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_windows.h: Patch from Michael Fink to check

@@ -3,6 +3,9 @@
 	* stlport/stl/_cmath.h, _cstdlib.h, config/_watcom.h: Small
 	evolution for Open Watcom support.
 
+	* Synchronization of trunk from STLPORT_5_1 branch from revision
+	2750 to revision 2865.
+
 2007-01-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/host.h: define one of __SunOS_5_x macro

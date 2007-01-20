@@ -210,6 +210,13 @@ typedef struct _Locale_time {
   char *abbrev_month[12];
   char *dayofweek[7];
   char *abbrev_dayofweek[7];
+  char *date_time_format;
+  char *long_date_time_format;
+  char *date_format;
+  char *long_date_format;
+  char *time_format;
+  char am[9];
+  char pm[9];
 } _Locale_time_t;
 
 typedef struct _Locale_collate {
@@ -410,8 +417,294 @@ extern "C" {
     return lnum;
   }
 
-  void* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint) {
+static int __ConvertDate(const char *NTDate, char *buffer, int buf_size) {
+  /* This function will return an incomplete buffer if buffer is not long enough */
+  const char *cur_char;
+  char *cur_output, *end_output;
+
+  /* Correct time format. */
+  cur_char = NTDate;
+  cur_output = buffer;
+  end_output = cur_output + buf_size;
+  buf_size = 0;
+  while (*cur_char) {
+    if (cur_output && (cur_output == end_output)) break;
+    switch (*cur_char) {
+    case 'd':
+    {
+      if (*(cur_char + 1) == 'd') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (*(cur_char + 2) == 'd') {
+          if (*(cur_char + 3) == 'd') {
+            if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'A'; }
+            buf_size += 2;
+            cur_char += 3;
+          }
+          else {
+            if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'a'; }
+            buf_size += 2;
+            cur_char += 2;
+          }
+        }
+        else {
+          if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'd'; }
+          buf_size += 2;
+          cur_char++;
+        }
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'd'; }
+        buf_size += 3;
+      }
+    }
+    break;
+    case 'M':
+    {
+      if (*(cur_char + 1) == 'M') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (*(cur_char + 2) == 'M') {
+          if (*(cur_char + 3) == 'M') {
+            if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'B'; }
+            buf_size += 2;
+            cur_char += 3;
+          }
+          else {
+            if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'b'; }
+            buf_size += 2;
+            cur_char += 2;
+          }
+        }
+        else {
+          if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'm'; }
+          buf_size += 2;
+          cur_char++;
+        }
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'm'; }
+        buf_size += 3;
+      }
+    }
+    break;
+    case 'y':
+    {
+      if (*(cur_char + 1) == 'y') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (*(cur_char + 2) == 'y' && *(cur_char + 3) == 'y') {
+          if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'Y'; }
+          buf_size += 2;
+          cur_char += 3;
+        }
+        else {
+          if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'y'; }
+          buf_size += 2;
+          cur_char++;
+        }
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'y'; }
+        buf_size += 3;
+      }
+    }
+    break;
+    case '%':
+    {
+      if (cur_output && (cur_output + 2 > end_output)) {
+        *cur_output = 0;
+        return ++buf_size;
+      }
+      if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '%'; }
+      buf_size += 2;
+    }
+    break;
+    case '\'':
+    {
+      ++cur_char;
+      while (*cur_char != '\'' && *cur_char != 0 && (cur_output == NULL || cur_output != end_output)) {
+        if (cur_output) { *cur_output++ = *cur_char++; }
+        buf_size += 1;
+      }
+    }
+    break;
+    default:
+    {
+      if (cur_output) { *(cur_output++) = *cur_char; }
+      buf_size += 1;
+    }
+    break;
+    }
+    if (*cur_char == 0) break;
+    ++cur_char;
+  }
+
+  if (!cur_output || cur_output != end_output) {
+    if (cur_output) *cur_output = 0;
+    buf_size += 1;
+  }
+  else {
+    /* We trunc result */
+    *(--cur_output) = 0;
+  }
+
+  return buf_size;
+}
+
+static int __ConvertTime(const char *NTTime, char *buffer, int buf_size) {
+  const char *cur_char;
+  char *cur_output, *end_output;
+  cur_char = NTTime;
+  cur_output = buffer;
+  end_output = cur_output + buf_size;
+  buf_size = 0;
+  while (*cur_char) {
+    switch(*cur_char) {
+    case 'h':
+      if (*(cur_char + 1) == 'h') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'I'; }
+        buf_size += 2;
+        ++cur_char;
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'I'; }
+        buf_size += 3;
+      }
+      break;
+    case 'H':
+      if (*(cur_char + 1) == 'H') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'H'; }
+        buf_size += 2;
+        ++cur_char;
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'H'; }
+        buf_size += 3;
+      }
+      break;
+    case 'm':
+      if (*(cur_char + 1) == 'm') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'M'; }
+        buf_size += 2;
+        cur_char++;
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'M'; }
+        buf_size += 3;
+      }
+      break;
+    case 's':
+      if (*(cur_char + 1) == 's') {
+        if (cur_output && (cur_output + 2 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'S'; }
+        buf_size += 2;
+        ++cur_char;
+      }
+      else {
+        if (cur_output && (cur_output + 3 > end_output)) {
+          *cur_output = 0;
+          return ++buf_size;
+        }
+        if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'S'; }
+        buf_size += 3;
+      }
+      break;
+    case 't':
+      if (*(cur_char + 1) == 't')
+        ++cur_char;
+      if (cur_output && (cur_output + 2 > end_output)) {
+        *cur_output = 0;
+        return ++buf_size;
+      }
+      if (cur_output) { *(cur_output++) = '%'; *(cur_output++) = 'p'; }
+      buf_size += 2;
+      break;
+    case '%':
+      if (cur_output && (cur_output + 2 > end_output)) {
+        *cur_output = 0;
+        return ++buf_size;
+      }
+      if (cur_output) { *(cur_output++)='%'; *(cur_output++)='%'; }
+      buf_size += 2;
+      break;
+    case '\'':
+      ++cur_char;
+      while (*cur_char != '\'' && *cur_char != 0 && (!cur_output || (cur_output != end_output))) {
+        if (cur_output) *cur_output++ = *cur_char++;
+        buf_size += 1;
+      }
+      break;
+    default:
+      if (cur_output) { *(cur_output++) = *cur_char; }
+      buf_size += 1;
+      break;
+    }
+    if (*cur_char == 0) break;
+    ++cur_char;
+  }
+
+  if (!cur_output || cur_output != end_output) {
+    if (cur_output) *cur_output = 0;
+    buf_size += 1;
+  }
+  else {
+    /* We trunc result */
+    *(--cur_output) = 0;
+  }
+
+  return buf_size;
+}
+
+void* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint) {
     int size, month, dayofweek;
+    size_t length;
+    char fmt80[80];
     char cname[_Locale_MAX_SIMPLE_NAME];
 
     _Locale_time_t *ltime=(_Locale_time_t*)malloc(sizeof(_Locale_time_t));
@@ -437,7 +730,7 @@ extern "C" {
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1], size);
     }
 
-    for (dayofweek=LOCALE_SDAYNAME1; dayofweek<=LOCALE_SDAYNAME7; ++dayofweek) {
+  for (dayofweek = LOCALE_SDAYNAME1; dayofweek <= LOCALE_SDAYNAME7; ++dayofweek) {
       int dayindex = ( dayofweek != LOCALE_SDAYNAME7 ) ? dayofweek - LOCALE_SDAYNAME1 + 1 : 0;
       size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
       ltime->dayofweek[dayindex] = (char*)malloc(size);
@@ -445,13 +738,50 @@ extern "C" {
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->dayofweek[dayindex], size);
     }
 
-    for (dayofweek=LOCALE_SABBREVDAYNAME1; dayofweek<=LOCALE_SABBREVDAYNAME7; ++dayofweek) {
+  for (dayofweek = LOCALE_SABBREVDAYNAME1; dayofweek <= LOCALE_SABBREVDAYNAME7; ++dayofweek) {
       int dayindex = ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ? dayofweek - LOCALE_SABBREVDAYNAME1 + 1 : 0;
       size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
       ltime->abbrev_dayofweek[dayindex] = (char*)malloc(size);
       if (!ltime->abbrev_dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
     }
+
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, fmt80, 80);
+    size = __ConvertDate(fmt80, NULL, 0);
+    ltime->date_format = (char*)malloc(size);
+    if (!ltime->date_format) { _Locale_time_destroy(ltime); return NULL; }
+    __ConvertDate(fmt80, ltime->date_format, size);
+
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, fmt80, 80);
+    size = __ConvertDate(fmt80, NULL, 0);
+    ltime->long_date_format = (char*)malloc(size);
+    if (!ltime->long_date_format) { _Locale_time_destroy(ltime); return NULL; }
+    __ConvertDate(fmt80, ltime->long_date_format, size);
+
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, fmt80, 80);
+    size = __ConvertTime(fmt80, NULL, 0);
+    ltime->time_format = (char*)malloc(size);
+    if (!ltime->time_format) { _Locale_time_destroy(ltime); return NULL; }
+    __ConvertTime(fmt80, ltime->time_format, size);
+
+    /* NT doesn't provide this information, we must simulate. */
+    length = strlen(ltime->date_format) + strlen(ltime->time_format) + 1 /* space */ + 1 /* trailing 0 */;
+    ltime->date_time_format = (char*)malloc(length);
+    if (!ltime->date_time_format) { _Locale_time_destroy(ltime); return NULL; }
+    _STLP_STRCPY2(ltime->date_time_format, length, ltime->date_format);
+    _STLP_STRCAT2(ltime->date_time_format, length, " ");
+    _STLP_STRCAT2(ltime->date_time_format, length, ltime->time_format);
+
+    /* NT doesn't provide this information, we must simulate. */
+    length = strlen(ltime->long_date_format) + strlen(ltime->time_format) + 1 /* space */ + 1 /* trailing 0 */;
+    ltime->long_date_time_format = (char*)malloc(length);
+    if (!ltime->long_date_time_format) { _Locale_time_destroy(ltime); return NULL; }
+    _STLP_STRCPY2(ltime->long_date_time_format, length, ltime->long_date_format);
+    _STLP_STRCAT2(ltime->long_date_time_format, length, " ");
+    _STLP_STRCAT2(ltime->long_date_time_format, length, ltime->time_format);
+
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, ltime->am, 9);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, ltime->pm, 9);
 
     return ltime;
   }
@@ -505,9 +835,9 @@ extern "C" {
     lmon->frac_digits = atoi(FracDigits);
 
     GetLocaleInfoA(lmon->lc.id, LOCALE_IINTLCURRDIGITS, FracDigits, 3);
-    lmon->int_frac_digits=atoi(FracDigits);
+    lmon->int_frac_digits = atoi(FracDigits);
 
-    GetLocaleInfoA(lmon->lc.id, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5);
     /* Even if Platform SDK documentation says that the returned symbol should
      * be a 3 letters symbol followed by a seperation character, experimentation
      * has shown that no seperation character is ever appended. We are adding it
@@ -610,15 +940,21 @@ extern "C" {
     _Locale_time_t* ltime = (_Locale_time_t*)loc;
     if (!ltime) return;
 
-    for (i=0; i<12; ++i) {
+  for (i = 0; i < 12; ++i) {
       if (ltime->month[i]) free(ltime->month[i]);
       if (ltime->abbrev_month[i]) free(ltime->abbrev_month[i]);
     }
 
-    for (i=0; i<7; ++i) {
+  for (i = 0; i < 7; ++i) {
       if (ltime->dayofweek[i]) free(ltime->dayofweek[i]);
       if (ltime->abbrev_dayofweek[i]) free(ltime->abbrev_dayofweek[i]);
     }
+
+    if (ltime->date_format) free(ltime->date_format);
+    if (ltime->long_date_format) free(ltime->long_date_format);
+    if (ltime->time_format) free(ltime->time_format);
+    if (ltime->date_time_format) free(ltime->date_time_format);
+    if (ltime->long_date_time_format) free(ltime->long_date_time_format);
 
     free(ltime);
   }
@@ -1180,290 +1516,27 @@ extern "C" {
     return names[day];
   }
 
-  const char* _Locale_d_t_fmt(_Locale_time_t* ltime) {
-    /* NT doesn't provide this information, and must simulate. */
-    static char buffer[MAX_PATH];
-    _STLP_STRCPY(buffer, _Locale_d_fmt(ltime));
-    _STLP_STRCAT(buffer, " ");
-    _STLP_STRCAT(buffer, _Locale_t_fmt(ltime));
-    return buffer;
-  }
+const char* _Locale_d_t_fmt(_Locale_time_t* ltime)
+{ return ltime->date_time_format; }
 
-  const char* _Locale_long_d_t_fmt(_Locale_time_t* ltime) {
-    /* NT doesn't provide this information, and must simulate. */
-    static char buffer[MAX_PATH];
-    _STLP_STRCPY(buffer, _Locale_long_d_fmt(ltime));
-    _STLP_STRCAT(buffer, " ");
-    _STLP_STRCAT(buffer, _Locale_t_fmt(ltime));
-    return buffer;
-  }
+const char* _Locale_long_d_t_fmt(_Locale_time_t* ltime)
+{ return ltime->long_date_time_format; }
 
-  static const char* __ConvertDate(const char* NTTime) {
-    /* This function will return an incomplete buffer if ansi_date_fmt is not long enough */
-    static char ansi_date_fmt[MAX_PATH]; /* Hack */
-    const char *cur_char;
-    char *cur_output, *end_output;
+const char* _Locale_d_fmt(_Locale_time_t* ltime)
+{ return ltime->date_format; }
 
-    /* Correct time format. */
-    cur_char = NTTime;
-    cur_output = ansi_date_fmt;
-    end_output = cur_output + MAX_PATH;
-    while (*cur_char) {
-      if (cur_output == end_output) break;
-      switch (*cur_char) {
-      case 'd':
-      {
-        if (*(cur_char + 1) == 'd') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          if (*(cur_char + 2) == 'd') {
-            if (*(cur_char + 3) == 'd')
-            { *(cur_output++) = '%'; *(cur_output++) = 'A';  cur_char += 3; }
-            else
-            { *(cur_output++) = '%'; *(cur_output++) = 'a';  cur_char += 2; }
-          }
-          else
-          { *(cur_output++) = '%'; *(cur_output++) = 'd'; cur_char++; }
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'd';
-        }
-      }
-      break;
-      case 'M':
-      {
-        if (*(cur_char + 1) == 'M') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          if (*(cur_char + 2) == 'M') {
-            if (*(cur_char + 3) == 'M')
-            { *(cur_output++) = '%'; *(cur_output++) = 'B';  cur_char += 3; }
-            else
-            { *(cur_output++) = '%'; *(cur_output++) = 'b';  cur_char += 2; }
-          }
-          else
-          { *(cur_output++) = '%'; *(cur_output++) = 'm';  cur_char++; }
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'm';
-        }
-      }
-      break;
-      case 'y':
-      {
-        if (*(cur_char + 1) == 'y') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          if (*(cur_char+2) == 'y' && *(cur_char+3) == 'y')
-          { *(cur_output++) = '%'; *(cur_output++) = 'Y';  cur_char += 3; }
-          else
-          { *(cur_output++) = '%'; *(cur_output++) = 'y';  cur_char++; }
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-          *(cur_output++) = '%'; *(cur_output++) = '#'; *(cur_output++) = 'y';
-        }
-      }
-      break;
-      case '%':
-      {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_date_fmt;
-          }
-        *(cur_output++) = '%'; *(cur_output++) = '%';
-      }
-      break;
-      case '\'':
-      {
-        ++cur_char;
-        while (*cur_char != '\'' && *cur_char != 0 && cur_output != end_output)
-          *cur_output++ = *cur_char++;
-      }
-      break;
-      default:
-      {
-        *(cur_output++) = *cur_char;
-      }
-      break;
-      }
-      if (*cur_char == 0) break;
-        ++cur_char;
-    }
+const char* _Locale_long_d_fmt(_Locale_time_t* ltime)
+{ return ltime->long_date_format; }
 
-    if (cur_output != end_output)
-      *cur_output = 0;
-    else
-      /* We trunc result */
-      *(--cur_output) = 0;
+const char* _Locale_t_fmt(_Locale_time_t* ltime)
+{ return ltime->time_format; }
 
-    return ansi_date_fmt;
-  }
+const char* _Locale_am_str(_Locale_time_t* ltime)
+{ return ltime->am; }
 
-  const char* _Locale_d_fmt(_Locale_time_t* ltime) {
-    static char date_fmt[80];
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, date_fmt, 80);
-    return __ConvertDate(date_fmt);
-  }
+const char* _Locale_pm_str(_Locale_time_t* ltime)
+{ return ltime->pm; }
 
-  const char* _Locale_long_d_fmt(_Locale_time_t* ltime) {
-    static char date_fmt[80];
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, date_fmt, 80);
-    return __ConvertDate(date_fmt);
-  }
-
-  const char* _Locale_t_fmt(_Locale_time_t* ltime) {
-    char time_fmt[80];
-    static char ansi_time_fmt[MAX_PATH]; /* Hack */
-    char *cur_char, *cur_output, *end_output;
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, time_fmt, 80);
-
-    /* Correct time format. */
-    cur_char = time_fmt;
-    cur_output = ansi_time_fmt;
-    end_output = cur_output + MAX_PATH;
-    while (*cur_char) {
-      switch(*cur_char) {
-      case 'h':
-        if (*(cur_char + 1) == 'h') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='I';  ++cur_char; 
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='I';
-        }
-        break;
-      case 'H':
-        if (*(cur_char + 1) == 'H') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='H'; ++cur_char;
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='H';
-        }
-        break;
-      case 'm':
-        if (*(cur_char + 1) == 'm') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='M';  cur_char++;
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='M';
-        }
-        break;
-      case 's':
-        if (*(cur_char + 1) == 's') {
-          if (cur_output + 2 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='S';  ++cur_char;
-        }
-        else {
-          if (cur_output + 3 > end_output) {
-            *cur_output = 0;
-            return ansi_time_fmt;
-          }
-          *(cur_output++)='%'; *(cur_output++)='#'; *(cur_output++)='S';
-        }
-        break;
-      case 't':
-        if (*(cur_char + 1) == 't')
-          ++cur_char;
-        if (cur_output + 2 > end_output) {
-          *cur_output = 0;
-          return ansi_time_fmt;
-        }
-        *(cur_output++)='%'; *(cur_output++)='p';
-        break;
-      case '%':
-        if (cur_output + 2 > end_output) {
-          *cur_output = 0;
-          return ansi_time_fmt;
-        }
-        *(cur_output++)='%'; *(cur_output++)='%';
-        break;
-      case '\'':
-        ++cur_char;
-        while (*cur_char != '\'' && *cur_char != 0 && cur_output != end_output)
-          *cur_output++ = *cur_char++;
-        break;
-      default:
-        *(cur_output++) = *cur_char;
-        break;
-      }
-      if (*cur_char == 0) break;
-      ++cur_char;
-    }
-
-    if (cur_output != end_output)
-      *cur_output = 0;
-    else
-      /* We trunc result */
-      *(--cur_output) = 0;
-
-    return ansi_time_fmt;
-  }
-
-  const char* _Locale_am_str(_Locale_time_t* ltime) {
-    static char buffer[9];
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, buffer, 9);
-    return buffer;
-  }
-
-  const char* _Locale_pm_str(_Locale_time_t* ltime) {
-    static char buffer[9];
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, buffer, 9);
-    return buffer;
-  }
-
-  const char* _Locale_t_fmt_ampm(_Locale_time_t* ltime) {
-    char time_sep[4];
-    static char buffer[17];
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIME, time_sep, 4);
-    _STLP_STRCPY(buffer, "%H"); _STLP_STRCAT(buffer, time_sep);
-    _STLP_STRCAT(buffer, "%M"); _STLP_STRCAT(buffer, time_sep);
-    _STLP_STRCAT(buffer, "%S %p");
-    return buffer;
-  }
 
   /* Messages */
 
@@ -1597,21 +1670,28 @@ int __ParseLocaleString(const char* lname,
   return 0;
 }
 
-/* Data necesary for find LCID*/
+/* Data necessary for find LCID*/
+static CRITICAL_SECTION __criticalSection;
 static int __FindFlag;
 static LCID __FndLCID;
 static const char* __FndLang;
 static const char* __FndCtry;
 
+void _Locale_init()
+{ InitializeCriticalSection(&__criticalSection); }
+
+void _Locale_final()
+{ DeleteCriticalSection(&__criticalSection); }
+
 static LCID LocaleFromHex(const char* locale) {
-  unsigned long result=0;
+  unsigned long result = 0;
   int digit;
-  while(*locale) {
-    result<<=4;
+  while (*locale) {
+    result <<= 4;
     digit = (*locale >= '0' && *locale <= '9') ? *locale - '0':
             (*locale >= 'A' && *locale <= 'F') ? (*locale - 'A') + 10
                                                : (*locale - 'a') + 10;
-    result+=digit;
+    result += digit;
     ++locale;
   }
   return (LCID)result;
@@ -1657,6 +1737,8 @@ static BOOL CALLBACK EnumLocalesProcA(LPSTR locale) {
 }
 
 int __GetLCID(const char* lang, const char* ctry, LCID* lcid) {
+  EnterCriticalSection(&__criticalSection);
+
   __FindFlag = 0;
   __FndLang = lang;
   __FndCtry = ctry;
@@ -1665,6 +1747,8 @@ int __GetLCID(const char* lang, const char* ctry, LCID* lcid) {
   if (__FindFlag == 0) return -1;
 
   *lcid = __FndLCID;
+
+  LeaveCriticalSection(&__criticalSection);
   return 0;
 }
 

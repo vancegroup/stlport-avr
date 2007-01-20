@@ -37,6 +37,11 @@ size_t mbrlen (const char* s, size_t n, mbstate_t *ps);
 
 #include <nl_types.h>
 
+void _Locale_init()
+{}
+
+void _Locale_final()
+{}
 
 typedef struct _Locale_ctype    {
   const struct locale_data* gcc_data;

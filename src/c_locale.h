@@ -64,6 +64,16 @@ typedef unsigned short int _Locale_mask_t;
 typedef unsigned int _Locale_mask_t;
 #endif
 
+/* Function called during STLport library load phase. Might contain any
+ * code necessary to the platform localization layer.
+ */
+void _Locale_init();
+
+/* Function called during STLport library unload. Might contain any
+ * code necessary to the platform localization layer.
+ */
+void _Locale_final();
+
 /* Create a category of the locale with the given name.
  *
  * The char* argument is a simple (not a composite) locale name, which may

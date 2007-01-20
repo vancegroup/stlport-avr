@@ -25,13 +25,11 @@
 
 /* Framework functions */
 
-struct _Locale_name_hint /* { } */ ;
-struct _Locale_ctype    /* { } */ ;
-struct _Locale_numeric  /* { } */;
-struct _Locale_time      /* { } */;
-struct _Locale_collate   /*{ } */;
-struct _Locale_monetary  /* { } */;
-struct _Locale_messages  /* { } */;
+void _Locale_init()
+{}
+
+void _Locale_final()
+{}
 
 void *_Locale_ctype_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }

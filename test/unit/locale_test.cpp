@@ -72,6 +72,11 @@ class LocaleTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(facet_id);
   CPPUNIT_STOP_IGNORE;
+#if defined (STLPORT) && \
+   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS))
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(combine);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -86,10 +91,12 @@ public:
   void money_put_X_bug();
   void default_locale();
   void facet_id();
+  void combine();
 private:
   void _loc_has_facet( const locale&, const ref_locale& );
   void _num_put_get( const locale&, const ref_locale& );
   void _money_put_get( const locale&, const ref_locale& );
+  void _money_put_get2( const locale& loc, const locale& streamLoc, const ref_locale& );
   void _time_put_get( const locale&, const ref_locale& );
   void _collate_facet( const locale&, const ref_locale& );
   void _ctype_facet( const locale&, const ref_locale& );
@@ -103,6 +110,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LocaleTest);
 // tests implementation
 //
 void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
+  CPPUNIT_ASSERT( has_facet<numpunct<char> >(loc) );
   numpunct<char> const& npct = use_facet<numpunct<char> >(loc);
   CPPUNIT_ASSERT( npct.decimal_point() == *rl.decimal_point );
 
@@ -179,11 +187,18 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale& rl ) {
 
 void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
 {
+  _money_put_get2(loc, loc, rl);
+}
+
+void LocaleTest::_money_put_get2( const locale& loc, const locale& streamLoc, const ref_locale& rl )
+{
+  CPPUNIT_ASSERT( has_facet<money_put<char> >(loc) );
   money_put<char> const& fmp = use_facet<money_put<char> >(loc);
+  CPPUNIT_ASSERT( has_facet<money_get<char> >(loc) );
   money_get<char> const& fmg = use_facet<money_get<char> >(loc);
 
   ostringstream ostr;
-  ostr.imbue(loc);
+  ostr.imbue(streamLoc);
   ostr << showbase;
 
   //Check a positive value (international format)
@@ -191,6 +206,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
     string str_res;
     //money_put
     {
+      CPPUNIT_ASSERT( (has_facet<moneypunct<char, true> >(loc)) );
       moneypunct<char, true> const& intl_fmp = use_facet<moneypunct<char, true> >(loc);
 
       ostreambuf_iterator<char, char_traits<char> > res = fmp.put(ostr, true, ostr, ' ', 123456);
@@ -205,7 +221,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
       if (intl_fmp.pos_format().field[fieldIndex] == money_base::sign) {
         ++fieldIndex;
       }
-      // iternational currency abbreviation, if it before value
+      // international currency abbreviation, if it is before value
 
       /*
        * int_curr_symbol
@@ -302,6 +318,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
   ostr.str("");
   //Check a negative value (national format)
   {
+    CPPUNIT_ASSERT( (has_facet<moneypunct<char, false> >(loc)) );
     moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
     string str_res;
     //Check money_put
@@ -394,6 +411,7 @@ void LocaleTest::_money_put_get( const locale& loc, const ref_locale& rl )
 
 void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
 {
+  CPPUNIT_ASSERT( has_facet<money_put<char> >(loc) );
   money_put<char> const& fmp = use_facet<money_put<char> >(loc);
 
   ostringstream ostr;
@@ -403,6 +421,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
   // ostr.str("");
   // Check value with one decimal digit:
   {
+    CPPUNIT_ASSERT( (has_facet<moneypunct<char, false> >(loc)) );
     moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
     string str_res;
     // Check money_put
@@ -464,6 +483,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
   ostr.str("");
   // Check value with two decimal digit:
   {
+    CPPUNIT_ASSERT( (has_facet<moneypunct<char, false> >(loc)) );
     moneypunct<char, false> const& dom_fmp = use_facet<moneypunct<char, false> >(loc);
     string str_res;
     // Check money_put
@@ -528,6 +548,7 @@ void LocaleTest::_money_put_X_bug( const locale& loc, const ref_locale& rl )
 
 void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
 {
+  CPPUNIT_ASSERT( has_facet<time_put<char> >(loc) );
   const time_put<char>& tmp = use_facet<time_put<char> >(loc);
 
   struct tm xmas = { 0, 0, 12, 25, 11, 93 };
@@ -546,6 +567,7 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
    *
    *                                             ISO/IEC 14882, 22.2.5.1
    */
+  CPPUNIT_ASSERT( has_facet<time_get<char> >(loc) );
   const time_get<char>& tmg = use_facet<time_get<char> >(loc);
   basic_ios<char> io(0);
   io.imbue(loc);
@@ -1061,6 +1083,82 @@ void LocaleTest::facet_id()
   CPPUNIT_CHECK( _id_38._M_index == 38 );
   */
 #  endif
+#endif
+}
+
+void LocaleTest::combine()
+{
+#if !defined (STLPORT) || \
+   (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS))
+  auto_ptr<locale> loc1, loc2;
+  size_t loc1_index = 0;
+  size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
+  for (size_t i = 0; i < n; ++i) {
+    try {
+      locale *ploc = new locale(tested_locales[i].name);
+      if (loc1.get() == 0)
+      {
+        loc1.reset(ploc);
+        loc1_index = i;
+        continue;
+      }
+      else
+      {
+        loc2.reset(ploc);
+      }
+
+      //We can start the test
+      ostringstream ostr;
+      ostr << "combining '" << loc2->name() << "' money facets with '" << loc1->name() << "'";
+      CPPUNIT_MESSAGE( ostr.str().c_str() );
+
+      //We are going to combine money facets as all formats are different.
+      {
+        //We check that resulting locale has correctly acquire loc2 facets.
+        locale loc = loc1->combine<moneypunct<char, true> >(*loc2);
+        loc = loc.combine<moneypunct<char, false> >(*loc2);
+        loc = loc.combine<money_put<char> >(*loc2);
+        loc = loc.combine<money_get<char> >(*loc2);
+
+        //Check loc has the correct facets:
+        _money_put_get2(*loc2, loc, tested_locales[i]);
+
+        //Check loc1 has not been impacted:
+        _money_put_get2(*loc1, *loc1, tested_locales[loc1_index]);
+
+        //Check loc2 has not been impacted:
+        _money_put_get2(*loc2, *loc2, tested_locales[i]);
+      }
+      {
+        //We check that resulting locale has not wrongly acquire loc1 facets that hasn't been combine:
+        locale loc = loc2->combine<numpunct<char> >(*loc1);
+        loc = loc.combine<time_put<char> >(*loc1);
+        loc = loc.combine<time_get<char> >(*loc1);
+
+        //Check loc has the correct facets:
+        _money_put_get2(*loc2, loc, tested_locales[i]);
+
+        //Check loc1 has not been impacted:
+        _money_put_get2(*loc1, *loc1, tested_locales[loc1_index]);
+
+        //Check loc2 has not been impacted:
+        _money_put_get2(*loc2, *loc2, tested_locales[i]);
+      }
+
+      {
+        // Check auto combination do not result in weird reference counting behavior 
+        // (might generate a crash).
+        loc1->combine<numpunct<char> >(*loc1);
+      }
+
+      loc1.reset(loc2.release());
+      loc1_index = i;
+    }
+    catch (runtime_error const&) {
+      //This locale is not supported.
+      continue;
+    }
+  }
 #endif
 }
 

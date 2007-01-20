@@ -135,6 +135,12 @@ struct _Locale_messages
 };
 #endif
 
+void _Locale_init()
+{}
+
+void _Locale_final()
+{}
+
 void *_Locale_ctype_create( const char *nm, struct _Locale_name_hint* hint )
 { return __LOCALE_CREATE( nm, LC_CTYPE ); }
 

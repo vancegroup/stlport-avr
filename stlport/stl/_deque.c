@@ -453,11 +453,11 @@ void deque<_Tp,_Alloc>::_M_pop_front_aux() {
 
 template <class _Tp, class _Alloc >
 __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
-                                                   const value_type& __t,
+                                                   const value_type& __x,
                                                    const __true_type& /*_Movable*/) {
   const difference_type __elems_before = __pos - this->_M_start;
   size_type __length = this->size();
-  value_type __x_copy = __t;
+  value_type __x_copy = __x;
   if (__elems_before <= difference_type(__length / 2)) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
     __pos = this->_M_start + __elems_before;
@@ -495,11 +495,11 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
 
 template <class _Tp, class _Alloc >
 __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
-                                                   const value_type& __t,
+                                                   const value_type& __x,
                                                    const __false_type& /*_Movable*/) {
   const difference_type __elems_before = __pos - this->_M_start;
   size_type __length = this->size();
-  value_type __x_copy = __t;
+  value_type __x_copy = __x;
   if (__elems_before <= difference_type(__length / 2)) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
     iterator __old_start = this->_M_start;
@@ -511,6 +511,7 @@ __iterator__ deque<_Tp,_Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n
         this->_M_start = __new_start;
         copy(__start_n, __pos, __old_start);
         fill(__pos - difference_type(__n), __pos, __x_copy);
+        __pos -= difference_type(__n);
       }
       else {
         _STLP_PRIV __uninitialized_copy_fill(this->_M_start, __pos, __new_start,
