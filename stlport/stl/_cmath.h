@@ -349,7 +349,7 @@ Meaning of suffixes:
 #  define _STLP_RESTORE_FUNCTION_INTRINSIC
 #endif // _STLP_MSVC && _STLP_MSVC <= 1300 && !_STLP_WCE && _MSC_EXTENSIONS
 
-#if defined (__BORLANDC__) && defined (_STLP_USE_NEW_C_HEADERS)
+#if (defined (__BORLANDC__) || defined (__WATCOMC__)) && defined (_STLP_USE_NEW_C_HEADERS)
 /* In this config Borland native lib only define functions in std namespace.
  * In order to have all overloads in STLport namespace we need to add the
  * double overload in global namespace. We do not use a using statement to avoid

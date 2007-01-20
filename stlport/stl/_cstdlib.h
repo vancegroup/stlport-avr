@@ -107,7 +107,7 @@ using _STLP_VENDOR_CSTD::srand;
 _STLP_END_NAMESPACE
 #endif /* _STLP_IMPORT_VENDOR_CSTD */
 
-#if defined (__BORLANDC__) && defined (_STLP_USE_NEW_C_HEADERS)
+#if (defined (__BORLANDC__) || defined (__WATCOMC__)) && defined (_STLP_USE_NEW_C_HEADERS)
 //In this config bcc define everything in std namespace and not in
 //the global one.
 inline int abs(int __x) { return _STLP_VENDOR_CSTD::abs(__x); }
