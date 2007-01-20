@@ -5,6 +5,7 @@ Q1 About STLport and availability
 Q1.0 What is STLport?
 Q1.1 What are the benefits from using STLport?
 Q1.2 What versions of STLport are available?
+Q1.3 Where is the documentation or user guide?
 
 Q2 General
 
@@ -71,6 +72,23 @@ combination like vector of vector, an efficient std::allocator.
 Q1.2 What versions of STLport are available?
 
 A1.2
+
+========================================================================
+
+Q1.3 Where is the user guide?
+
+A1.3 There is no real user guide for the moment. You can find some information
+in README files in doc folder. As STLport is a C++ Standard library
+implementation you might find information you need at the following
+locations:
+  - The ISO/IEC 14882:2003 document you can buy for a very cheap price.
+  - For STL containers you can use SGI documentation (http://www.sgi.com/tech/stl/).
+    Beware however , STL described in this document is not identical to the
+    Standardized version described in ISO/IEC. This documentation can be very
+    useful for STLport extensions like hash containers (hash_map, hash_set...)
+  - You can also use the documentation coming with your compiler as most
+    of the information will also apply to STLport. Take care to description
+    reported as 'implementation specific'.
 
 ========================================================================
 
