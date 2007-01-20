@@ -245,8 +245,6 @@ typedef unsigned int wint_t;
 #ifndef __EXCEPTIONS
 #  undef  _STLP_DONT_USE_EXCEPTIONS
 #  define _STLP_DONT_USE_EXCEPTIONS 1
-#else
-#  define _STLP_NOTHROW throw()
 #endif
 
 #if (__GNUC__ >= 3)

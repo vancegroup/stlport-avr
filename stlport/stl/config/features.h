@@ -956,12 +956,11 @@ namespace _STL = _STLP_STD_NAME;
 #    define _STLP_RET_AFTER_THROW(data)
 #  endif
 
-/* We do not use exception throw specifications unless we are forced to */
 #  if !defined (_STLP_THROWS)
-#    define _STLP_THROWS(x)
+#    define _STLP_THROWS(x) throw(x)
 #  endif
 #  if !defined (_STLP_NOTHROW)
-#    define _STLP_NOTHROW
+#    define _STLP_NOTHROW throw()
 #  endif
 #else
 #  define _STLP_TRY

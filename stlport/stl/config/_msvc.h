@@ -116,9 +116,9 @@ broken, it returns the wrong value in the unittests. 7.1 and later seem to
 work, 7.0 is still unknown (we assume it works until negative report). */
 #    if (_STLP_MSVC >= 1300)// VC7 and later
 #      undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#      if !defined (_STLP_DONT_USE_EXCEPTIONS)
-#        define _STLP_NOTHROW throw()
-#      endif
+#    endif
+#    if (_STLP_MSVC < 1300)
+#      define _STLP_NOTHROW
 #    endif
 #  endif
 

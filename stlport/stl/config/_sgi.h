@@ -27,8 +27,6 @@
 #  define _STLP_NO_EXCEPTIONS
 #endif
 
-// #define _STLP_NOTHROW throw()
-
 #define __EDG_SWITCHES
 
 #define _STLP_USE_SGI_STRING         1

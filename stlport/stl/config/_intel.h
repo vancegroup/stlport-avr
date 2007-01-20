@@ -31,11 +31,8 @@
 #  undef _STLP_DONT_RETURN_VOID
 #endif
 
-#if (__ICL >= 900)
-//#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-#  if !defined (_STLP_DONT_USE_EXCEPTIONS)
-#    define _STLP_NOTHROW throw()
-#  endif
+#if (__ICL < 900)
+#  define _STLP_NOTHROW
 #endif
 
 #if (__ICL >= 800)
