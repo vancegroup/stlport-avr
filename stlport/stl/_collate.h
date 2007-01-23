@@ -170,7 +170,8 @@ __locale_do_operator_call (const locale* __that,
                            const basic_string<_CharT, _Traits, _Alloc>& __x,
                            const basic_string<_CharT, _Traits, _Alloc>& __y)
 {
-  collate<_CharT>* __f = (collate<_CharT>*)__that->_M_get_facet(collate<_CharT>::id);
+  collate<_CharT>* __f = 0;
+  __f = (collate<_CharT>*)__that->_M_get_facet(_STLP_PRIV _GetFacetId(__f));
   if (!__f)
     __that->_M_throw_runtime_error();
   return __f->compare(__x.data(), __x.data() + __x.size(),

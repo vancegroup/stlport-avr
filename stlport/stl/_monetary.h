@@ -63,11 +63,11 @@ public:
   iter_type get(iter_type __s, iter_type  __end, bool __intl,
                 ios_base&  __str, ios_base::iostate&  __err,
                 _STLP_LONGEST_FLOAT_TYPE& __units) const
-    { return do_get(__s,  __end, __intl,  __str,  __err, __units); }
+  { return do_get(__s,  __end, __intl,  __str,  __err, __units); }
   iter_type get(iter_type __s, iter_type  __end, bool __intl,
                 ios_base&  __str, ios_base::iostate& __err,
                 string_type& __digits) const
-    { return do_get(__s,  __end, __intl,  __str,  __err, __digits); }
+  { return do_get(__s,  __end, __intl,  __str,  __err, __digits); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
@@ -86,7 +86,6 @@ protected:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC moneypunct<char, true> : public locale::facet, public money_base {
-
 public:
   typedef char                 char_type;
   typedef string               string_type;
@@ -127,8 +126,7 @@ protected:
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<char, false> : public locale::facet, public money_base
-{
+class _STLP_CLASS_DECLSPEC moneypunct<char, false> : public locale::facet, public money_base {
 public:
   typedef char                 char_type;
   typedef string               string_type;
@@ -170,11 +168,10 @@ protected:
 };
 
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, true> : public locale::facet, public money_base
-{
+class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, true> : public locale::facet, public money_base {
   friend class _Locale_impl;
 public:
   typedef wchar_t                 char_type;
@@ -214,8 +211,7 @@ protected:
 
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, false> : public locale::facet, public money_base
-{
+class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, false> : public locale::facet, public money_base {
   friend class _Locale_impl;
 public:
   typedef wchar_t                 char_type;
@@ -421,7 +417,7 @@ protected:
                            const string_type& __digits) const;
 };
 
-# if defined (_STLP_USE_TEMPLATE_EXPORT)
+#if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS money_get<char, istreambuf_iterator<char, char_traits<char> > >;
 _STLP_EXPORT_TEMPLATE_CLASS money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 //_STLP_EXPORT_TEMPLATE_CLASS money_get<char, const char* >;
@@ -432,7 +428,18 @@ _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, ostreambuf_iterator<wchar_t, char
 // _STLP_EXPORT_TEMPLATE_CLASS money_get<wchar_t, const wchar_t* >;
 // _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, wchar_t* >;
 #  endif
-# endif /* _STLP_USE_TEMPLATE_EXPORT */
+#endif
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<char, istreambuf_iterator<char, char_traits<char> > >*);
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<char, ostreambuf_iterator<char, char_traits<char> > >*);
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

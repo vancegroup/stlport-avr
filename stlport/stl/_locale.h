@@ -59,11 +59,18 @@ bool __locale_do_operator_call (const locale* __that,
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _get_Locale_impl( _Locale_impl *locimpl );
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl *locimpl );
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _Facet>
 bool _HasFacet(const locale& __loc, const _Facet* __facet) _STLP_NOTHROW;
 
 template <class _Facet>
 _Facet* _UseFacet(const locale& __loc, const _Facet* __facet);
+
+template <class _Facet>
+void _InsertFacet(locale& __loc, _Facet* __facet);
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 class _STLP_CLASS_DECLSPEC locale {
 public:
@@ -121,7 +128,7 @@ public:
   locale(const locale& __loc, _Facet* __f) {
     if ( __f != 0 ) {
       this->_M_impl = _get_Locale_impl( _copy_Nameless_Locale_impl( __loc._M_impl ) );
-      this->_M_insert(__f, _Facet::id);
+      _STLP_PRIV _InsertFacet(*this, __f);
     } else {
       this->_M_impl = _get_Locale_impl( __loc._M_impl );
     }
@@ -147,10 +154,10 @@ public:
   template <class _Facet>
   locale combine(const locale& __loc) const {
     _Facet *__facet = 0;
-    if (!_HasFacet(__loc, __facet))
+    if (!_STLP_PRIV _HasFacet(__loc, __facet))
       _M_throw_runtime_error();
 
-    return locale(*this, _UseFacet(__loc, __facet));
+    return locale(*this, _STLP_PRIV _UseFacet(__loc, __facet));
   }
 #endif // _STLP_MEMBER_TEMPLATES && !_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 
@@ -183,7 +190,7 @@ public:
   facet* _M_use_facet(const id&) const;
   static void _STLP_FUNCTION_THROWS _STLP_CALL _M_throw_runtime_error(const char* = 0);
 
-protected:                        // More helper functions.
+//protected:                        // More helper functions.
   void _M_insert(facet* __f, id& __id);
 
   // friends:
@@ -213,7 +220,7 @@ public:
   locale(const locale& __loc, _Facet* __f) {
     if ( __f != 0 ) {
       this->_M_impl = _get_Locale_impl( _copy_Nameless_Locale_impl( __loc._M_impl ) );
-      this->_M_insert(__f, _Facet::id);
+      _STLP_PRIV _InsertFacet(*this, __f);
     } else {
       this->_M_impl = _get_Locale_impl( __loc._M_impl );
     }
@@ -237,10 +244,10 @@ public:
   template <class _Facet>
   locale combine(const locale& __loc) const {
     _Facet *__facet = 0;
-    if (!_HasFacet(__loc, __facet))
+    if (!_STLP_PRIV _HasFacet(__loc, __facet))
       _M_throw_runtime_error();
 
-    return locale(*this, _UseFacet(__loc, __facet));
+    return locale(*this, _STLP_PRIV _UseFacet(__loc, __facet));
   }
 
   // locale operations:
@@ -265,44 +272,62 @@ public:
 //----------------------------------------------------------------------
 // locale globals
 
-#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
 inline const _Facet&
+#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 _Use_facet<_Facet>::operator *() const
 #else
-template <class _Facet> inline const _Facet& use_facet(const locale& __loc)
+use_facet(const locale& __loc)
 #endif
 {
   _Facet *__facet = 0;
-  return *_UseFacet(__loc, __facet);
+  return *(_STLP_PRIV _UseFacet(__loc, __facet));
 }
 
 
-#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 template <class _Facet>
+#ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 struct has_facet {
   const locale& __loc;
   has_facet(const locale& __p_loc) : __loc(__p_loc) {}
   operator bool() const _STLP_NOTHROW
 #else
-template <class _Facet> inline bool has_facet(const locale& __loc) _STLP_NOTHROW
+inline bool has_facet(const locale& __loc) _STLP_NOTHROW
 #endif
 {
   _Facet *__facet = 0;
-  return _HasFacet(__loc, __facet);
+  return _STLP_PRIV _HasFacet(__loc, __facet);
 }
 
 #ifdef _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 }; // close class definition
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+/* _GetFacetId is a helper function that allow delaying access to
+ * facet id static instance in the library source code to avoid
+ * the other static instances that many compilers are generating
+ * in all dynamic library or executable when instanciating facet
+ * template class.
+ */
 template <class _Facet>
-bool _HasFacet(const locale& __loc, const _Facet* __facet) _STLP_NOTHROW
-{ return (__loc._M_get_facet(_Facet::id) != 0); }
+inline locale::id& _GetFacetId(const _Facet*)
+{ return _Facet::id; }
 
 template <class _Facet>
-_Facet* _UseFacet(const locale& __loc, const _Facet* __facet)
-{ return __STATIC_CAST(_Facet*, __loc._M_use_facet(_Facet::id)); }
+inline bool _HasFacet(const locale& __loc, const _Facet* __facet) _STLP_NOTHROW
+{ return (__loc._M_get_facet(_GetFacetId(__facet)) != 0); }
+
+template <class _Facet>
+inline _Facet* _UseFacet(const locale& __loc, const _Facet* __facet)
+{ return __STATIC_CAST(_Facet*, __loc._M_use_facet(_GetFacetId(__facet))); }
+
+template <class _Facet>
+inline void _InsertFacet(locale& __loc, _Facet* __facet)
+{ __loc._M_insert(__facet, _GetFacetId(__facet)); }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

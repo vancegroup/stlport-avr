@@ -83,8 +83,8 @@ typedef basic_ios<wchar_t, char_traits<wchar_t> > wios;
 
 // Forward declaration of class locale, and of the most important facets.
 class locale;
-#if defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
 template <class _Facet>
+#if defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
 struct _Use_facet {
   const locale& __loc;
   _Use_facet(const locale& __p_loc) : __loc(__p_loc) {}
@@ -92,7 +92,7 @@ struct _Use_facet {
 };
 #  define use_facet *_Use_facet
 #else
-template <class _Facet> inline const _Facet& use_facet(const locale&);
+inline const _Facet& use_facet(const locale&);
 #endif
 
 template <class _CharT> class ctype;

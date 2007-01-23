@@ -449,4 +449,19 @@ template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_
 
 #endif
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<char, istreambuf_iterator<char, char_traits<char> > >*)
+{ return time_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
+{ return time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
 _STLP_END_NAMESPACE

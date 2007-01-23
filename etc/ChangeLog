@@ -1,3 +1,35 @@
+2007-01-23  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_locale.h: Introduction of the _GetFacetId function
+	to isolate access to facet id instance in one place. It guaranty that
+	the facet id instances initialized in _Stl_loc_assign_ids function
+	are the same one used by streams to format output. Many compilers
+	have problem with template class static variable and duplicate them
+	arround the different shared library depending on STLport.
+
+	* stlport/stl/_monetary.h, _num_get.h, _num_put.h, _time_facets.h:
+	Add _GetFacetId overloads for money_get, money_put, num_get, num_put,
+	time_get, time_put facets that are exposed as template facets. Other
+	facets are fully specialized template classes whose id should be
+	correctly handle by compilers like for any static variable in a non
+	template class.
+
+	* src/monetary.cpp, num_get.cpp, num_put.cpp, time_facets.cpp: Add
+	_GetFacetId implementation.
+
+	* stlport/stl/_collate.h: Use _GetFacetId in __locale_do_operator_call
+	implementation, not required but more consistent.
+
+	* stlport/stl/_monetary.c, _num_put.c, _num_get.c, _time_facets.c,
+	src/locale_impl.cpp: Removed now useless gcc Cygwin or MinGW and
+	Borland workarounds.
+
+	* test/unit/locale_test.cpp: Removed facet_id test case, facet id
+	indexes are STLport internal stuff that shouldn't be part of a unit
+	test. Wrong facet id management will be shown by other tests. Moreover
+	this test was failing for compilers duplicating template class
+	static instances.
+
 2007-01-20  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_cmath.h, _cstdlib.h, config/_watcom.h: Small

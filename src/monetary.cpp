@@ -121,7 +121,7 @@ money_base::pattern moneypunct<wchar_t, false>::do_neg_format() const
 // Instantiations
 //
 
-#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+#if !defined (_STLP_NO_FORCE_INSTANTIATE)
 
 template class _STLP_CLASS_DECLSPEC money_get<char, istreambuf_iterator<char, char_traits<char> > >;
 template class _STLP_CLASS_DECLSPEC money_put<char, ostreambuf_iterator<char, char_traits<char> > >;
@@ -144,6 +144,21 @@ const bool moneypunct<wchar_t, true>::intl;
 const bool moneypunct<wchar_t, false>::intl;
 #  endif
 #endif
+
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<char, istreambuf_iterator<char, char_traits<char> > >*)
+{ return money_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
+{ return money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

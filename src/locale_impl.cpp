@@ -655,100 +655,6 @@ void _Locale_impl::make_classic_locale() {
   _Stl_global_locale = &_Locale_global;
 }
 
-#if defined (__BORLANDC__) && (__BORLANDC__ < 0x564)
-template <>
-_STLP_DECLSPEC locale::id time_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id time_get<char, const char*>::id;
-*/
-
-template <>
-_STLP_DECLSPEC locale::id time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id time_put<char, char*>::id;
-*/
-
-#  if !defined (_STLP_NO_WCHAR_T)
-template <>
-_STLP_DECLSPEC locale::id time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id time_get<wchar_t, const wchar_t*>::id;
-*/
-
-template <>
-_STLP_DECLSPEC locale::id time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id time_put<wchar_t, wchar_t*>::id;
-*/
-#  endif /* _STLP_NO_WCHAR_T */
-
-template <>
-_STLP_DECLSPEC locale::id money_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id money_get<char, const char*>::id;
-*/
-
-template <>
-_STLP_DECLSPEC locale::id money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id money_put<char, char*>::id;
-*/
-
-#  if !defined (_STLP_NO_WCHAR_T)
-template <>
-_STLP_DECLSPEC locale::id money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id money_get<wchar_t, const wchar_t*>::id;
-*/
-
-template <>
-_STLP_DECLSPEC locale::id money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id money_put<wchar_t, wchar_t*>::id;
-*/
-#  endif
-
-template <>
-_STLP_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_get<char, const char*>::id;
-*/
-
-#  if !defined (STLP_NO_WCHAR_T)
-template <>
-_STLP_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id;
-*/
-#  endif
-
-template <>
-_STLP_DECLSPEC locale::id num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_put<char, char*>::id;
-*/
-
-#  if !defined (_STLP_NO_WCHAR_T)
-template <>
-_STLP_DECLSPEC locale::id num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_put<wchar_t, wchar_t*>::id;
-*/
-#  endif
-#endif
-
 // Declarations of (non-template) facets' static data members
 // size_t locale::id::_S_max = 39; // made before
 
@@ -757,9 +663,6 @@ _STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<char>::id = { 2 };
 
 #ifndef _STLP_NO_MBSTATE_T
 _STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<char, char, mbstate_t>::id = { 3 };
-#  ifndef _STLP_NO_WCHAR_T
-_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
-#  endif
 #endif
 
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, true>::id = { 4 };
@@ -767,49 +670,18 @@ _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, false>::id = { 5 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<char>::id = { 6 } ;
 _STLP_STATIC_MEMBER_DECLSPEC locale::id messages<char>::id = { 7 };
 
-#if defined (__BORLANDC__) && (__BORLANDC__ >= 0x564)
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_get<char, istreambuf_iterator<char, char_traits<char> > >::id = { 8 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id = { 10 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id = { 12 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id = { 14 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_get<char, istreambuf_iterator<char, char_traits<char> > >::id = { 16 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id = { 18 };
-/*
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_get<char, const char*>::id = { 9 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_put<char, char*>::id = { 11 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_get<char, const char*>::id = { 13 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_put<char, char*>::id = { 15 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_get<char, const char*>::id = { 17 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_put<char, char*>::id = { 19 };
-*/
-#endif
-
 #ifndef _STLP_NO_WCHAR_T
 _STLP_STATIC_MEMBER_DECLSPEC locale::id collate<wchar_t>::id = { 20 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<wchar_t>::id = { 21 };
 
+#  ifndef _STLP_NO_MBSTATE_T
+_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
+#  endif
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, true>::id = { 23 } ;
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, false>::id = { 24 } ;
 
 _STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<wchar_t>::id = { 25 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
-
-#if defined (__BORLANDC__) && (__BORLANDC__ >= 0x564)
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id = { 27 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id = { 29 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id = { 31 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id = { 33 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id = { 35 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id = { 37 };
-/*
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_get<wchar_t, const wchar_t*>::id = { 28 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id money_put<wchar_t, wchar_t*>::id = { 30 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id = { 32 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id num_put<wchar_t, wchar_t*>::id = { 34 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_get<wchar_t, const wchar_t*>::id = { 36 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id time_put<wchar_t, wchar_t*>::id = { 38 };
-*/
-#  endif
 #endif
 
 _STLP_DECLSPEC _Locale_impl* _STLP_CALL _get_Locale_impl(_Locale_impl *loc)

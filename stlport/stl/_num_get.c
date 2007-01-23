@@ -435,35 +435,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 //
 
 #if ( _STLP_STATIC_TEMPLATE_DATA > 0 )
-#  if !defined (__BORLANDC__)
 template <class _CharT, class _InputIterator>
 locale::id num_get<_CharT, _InputIterator>::id;
-#  endif
-
-#  if (defined (__CYGWIN__) || defined (__MINGW32__)) && \
-       defined (_STLP_USE_DYNAMIC_LIB) && !defined (__BUILDING_STLPORT)
-/*
- * Under cygwin, when STLport is used as a shared library, the id needs
- * to be specified as imported otherwise they will be duplicated in the
- * calling executable.
- */
-template <>
-_STLP_DECLSPEC locale::id num_get<char, istreambuf_iterator<char, char_traits<char> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_get<char, const char*>::id;
-*/
-
-#    if !defined (STLP_NO_WCHAR_T)
-template <>
-_STLP_DECLSPEC locale::id num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id;
-/*
-template <>
-_STLP_DECLSPEC locale::id num_get<wchar_t, const wchar_t*>::id;
-*/
-#    endif
-
-#  endif /* __CYGWIN__ && _STLP_USE_DYNAMIC_LIB */
 
 #else /* ( _STLP_STATIC_TEMPLATE_DATA > 0 ) */
 
