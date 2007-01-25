@@ -99,6 +99,7 @@ private:
   void _time_put_get( const locale&, const ref_locale& );
   void _collate_facet( const locale&, const ref_locale& );
   void _ctype_facet( const locale&, const ref_locale& );
+  void _ctype_facet_w( const locale&, const ref_locale& );
   void _locale_init_problem( const locale&, const ref_locale& );
   void _money_put_X_bug( const locale&, const ref_locale& );
 };
@@ -640,7 +641,10 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
 {
   CPPUNIT_ASSERT( has_facet<ctype<char> >(loc) );
   ctype<char> const& ct = use_facet<ctype<char> >(loc);
-
+# ifndef _STLP_NO_WCHAR_T
+  CPPUNIT_ASSERT( has_facet<ctype<wchar_t> >(loc) );
+  ctype<wchar_t> const& wct = use_facet<ctype<wchar_t> >(loc);
+# endif
   //is
   {
     CPPUNIT_ASSERT( ct.is(ctype_base::digit, '0') );
@@ -780,6 +784,154 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
   }
 }
 
+void LocaleTest::_ctype_facet_w( const locale& loc, const ref_locale&)
+{
+# ifndef _STLP_NO_WCHAR_T
+  CPPUNIT_ASSERT( has_facet<ctype<wchar_t> >(loc) );
+  ctype<wchar_t> const& wct = use_facet<ctype<wchar_t> >(loc);
+  //is
+  {
+    CPPUNIT_ASSERT( wct.is(ctype_base::digit, L'0') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::upper, L'A') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::lower, L'a') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::alpha, L'A') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::space, L' ') );
+    CPPUNIT_ASSERT( !wct.is(ctype_base::space, L'2') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::punct, L'.') );
+    CPPUNIT_ASSERT( wct.is(ctype_base::xdigit, L'a') );
+  }
+
+  //is range
+  {
+    wchar_t values[] = L"0Aa .";
+    ctype_base::mask res[sizeof(values)];
+    wct.is(values, values + sizeof(values), res);
+    // '0'
+    CPPUNIT_ASSERT( (res[0] & ctype_base::print) != 0 );
+    CPPUNIT_ASSERT( (res[0] & ctype_base::digit) != 0 );
+    CPPUNIT_ASSERT( (res[0] & ctype_base::xdigit) != 0 );
+    // 'A'
+    CPPUNIT_ASSERT( (res[1] & ctype_base::print) != 0 );
+    CPPUNIT_ASSERT( (res[1] & ctype_base::alpha) != 0 );
+    CPPUNIT_ASSERT( (res[1] & ctype_base::xdigit) != 0 );
+    CPPUNIT_ASSERT( (res[1] & ctype_base::upper) != 0 );
+    // 'a'
+    CPPUNIT_ASSERT( (res[2] & ctype_base::print) != 0 );
+    CPPUNIT_ASSERT( (res[2] & ctype_base::alpha) != 0 );
+    CPPUNIT_ASSERT( (res[2] & ctype_base::xdigit) != 0 );
+    CPPUNIT_ASSERT( (res[2] & ctype_base::lower) != 0 );
+    CPPUNIT_ASSERT( (res[2] & ctype_base::space) == 0 );
+    // ' '
+    CPPUNIT_ASSERT( (res[3] & ctype_base::print) != 0 );
+    CPPUNIT_ASSERT( (res[3] & ctype_base::space) != 0 );
+    CPPUNIT_ASSERT( (res[3] & ctype_base::digit) == 0 );
+    // '.'
+    CPPUNIT_ASSERT( (res[4] & ctype_base::print) != 0 );
+    CPPUNIT_ASSERT( (res[4] & ctype_base::punct) != 0 );
+    CPPUNIT_ASSERT( (res[4] & ctype_base::digit) == 0 );
+  }
+
+  //scan_is
+  {
+    wchar_t range[] = L"abAc123 .";
+    const wchar_t *rbeg = range;
+    const wchar_t *rend = range + sizeof(range);
+
+    const wchar_t *res;
+    res = wct.scan_is((ctype_base::mask)(ctype_base::alpha | ctype_base::lower), rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'a' );
+
+    res = wct.scan_is(ctype_base::upper, rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'A' );
+
+    res = wct.scan_is(ctype_base::punct, rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'.' );
+  }
+
+  //scan_not
+  {
+    wchar_t range[] = L"abAc123 .";
+    const wchar_t *rbeg = range;
+    const wchar_t *rend = range + sizeof(range);
+
+    const wchar_t *res;
+    res = wct.scan_not((ctype_base::mask)(ctype_base::alpha | ctype_base::lower), rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'1' );
+
+    res = wct.scan_not(ctype_base::alpha, rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'1' );
+
+    res = wct.scan_not(ctype_base::punct, rbeg, rend);
+    CPPUNIT_ASSERT( res != rend );
+    CPPUNIT_ASSERT( *res == L'a' );
+  }
+
+  //toupper
+  {
+    CPPUNIT_ASSERT( wct.toupper(L'a') == L'A' );
+    CPPUNIT_ASSERT( wct.toupper(L'A') == L'A' );
+    CPPUNIT_ASSERT( wct.toupper(L'1') == L'1' );
+  }
+
+  //toupper range
+  {
+    wchar_t range[] = L"abAc1";
+    wchar_t expected_range[] = L"ABAC1";
+    wct.toupper(range, range + sizeof(range) / sizeof(wchar_t));
+    CPPUNIT_ASSERT( equal(range, range + sizeof(range) / sizeof(wchar_t), expected_range) );
+  }
+
+  //tolower
+  {
+    CPPUNIT_ASSERT( wct.tolower(L'A') == L'a' );
+    CPPUNIT_ASSERT( wct.tolower(L'a') == L'a' );
+    CPPUNIT_ASSERT( wct.tolower(L'1') == L'1' );
+  }
+
+  //tolower range
+  {
+    wchar_t range[] = L"ABaC1";
+    wchar_t expected_range[] = L"abac1";
+    wct.tolower(range, range + sizeof(range) / sizeof(wchar_t));
+    CPPUNIT_ASSERT( equal(range, range + sizeof(range) / sizeof(wchar_t), expected_range) );
+  }
+
+  //widen
+  {
+    CPPUNIT_ASSERT( wct.widen('a') == L'a' );
+  }
+
+  //widen range
+  {
+    char range[] = "ABaC1";
+    wchar_t res[sizeof(range)];
+    wchar_t expected_res[] = L"ABaC1";
+    wct.widen(range, range + sizeof(range), res);
+    CPPUNIT_ASSERT( equal(expected_res, expected_res + sizeof(range), res) );
+  }
+
+  //narrow
+  {
+    CPPUNIT_ASSERT( wct.narrow(L'a', 'b') == L'a' );
+  }
+
+  //narrow range
+  {
+    wchar_t range[] = L"ABaC1";
+    char res[sizeof(range)];
+    char expected_res[] = "ABaC1";
+    wct.narrow(range, range + sizeof(range), 'b', res);
+    CPPUNIT_ASSERT( equal(expected_res, expected_res + sizeof(range) / sizeof(wchar_t), res) );
+  }
+# endif
+}
+
+
 template <class _Tp>
 void test_supported_locale(LocaleTest inst, _Tp __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
@@ -860,7 +1012,12 @@ void LocaleTest::collate_facet()
 { test_supported_locale(*this, &LocaleTest::_collate_facet); }
 
 void LocaleTest::ctype_facet()
-{ test_supported_locale(*this, &LocaleTest::_ctype_facet); }
+{
+  test_supported_locale(*this, &LocaleTest::_ctype_facet);
+#ifndef _STLP_NO_WCHAR_T
+  test_supported_locale(*this, &LocaleTest::_ctype_facet_w);
+#endif
+}
 
 void LocaleTest::locale_init_problem() {
 #if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)

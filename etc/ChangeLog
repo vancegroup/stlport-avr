@@ -1,3 +1,13 @@
+2007-01-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/facets_byname.cpp: we search within scope, specified by mask,
+	so _Locale_wchar_ctype return can't be beyond of this mask.
+
+	* src/c_locale_glibc/c_locale_glibc2.c: _Locale_wchar_ctype
+	implemented.
+
+	* test/unit/locale_test.cpp: test for ctype facet for wchar_t added.
+
 2007-01-23  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_locale.h: Introduction of the _GetFacetId function

@@ -98,7 +98,7 @@ struct _Ctype_byname_w_is_mask {
 
   _Ctype_byname_w_is_mask(/* ctype_base::mask */ int m, _Locale_ctype* c) : M((int)m), M_ctp(c) {}
   bool operator()(wchar_t c) const
-    { return (M & _Locale_wchar_ctype(M_ctp, c, M)) != 0; }
+    { return _Locale_wchar_ctype(M_ctp, c, M) != 0; }
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -114,7 +114,7 @@ ctype_byname<wchar_t>::~ctype_byname()
 { _STLP_PRIV __release_ctype(_M_ctype); }
 
 bool ctype_byname<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const
-{ return (m & _Locale_wchar_ctype(_M_ctype, c, m)) != 0; }
+{ return _Locale_wchar_ctype(_M_ctype, c, m) != 0; }
 
 const wchar_t*
 ctype_byname<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,

@@ -347,18 +347,62 @@ int _Locale_tolower( struct _Locale_ctype *__loc, int c )
 { return ((__c_locale)__loc)->__ctype_tolower[c]; }
 
 #if !defined (_STLP_NO_WCHAR_T)
-_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR2, _Locale_mask_t __DUMMY_PAR3) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 0;
+_Locale_mask_t _Locale_wchar_ctype( struct _Locale_ctype *__loc, wint_t wc, _Locale_mask_t __mask )
+{
+  _Locale_mask_t ret = 0;
+  if ( __mask & _Locale_ALPHA ) {
+    if ( iswctype_l(wc, wctype_l("alpha", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_ALPHA;
+    }
+  }
+  if ( __mask & _Locale_CNTRL ) {
+    if ( iswctype_l(wc, wctype_l("cntrl", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_CNTRL;
+    }
+  }
+  if ( __mask & _Locale_DIGIT ) {
+    if ( iswctype_l(wc, wctype_l("digit", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_DIGIT;
+    }
+  }
+  if ( __mask & _Locale_PRINT ) {
+    if ( iswctype_l(wc, wctype_l("print", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_PRINT;
+    }
+  }
+  if ( __mask & _Locale_PUNCT ) {
+    if ( iswctype_l(wc, wctype_l("punct", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_PUNCT;
+    }
+  }
+  if ( __mask & _Locale_SPACE ) {
+    if ( iswctype_l(wc, wctype_l("space", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_SPACE;
+    }
+  }
+  if ( __mask & _Locale_XDIGIT ) {
+    if ( iswctype_l(wc, wctype_l("xdigit", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+      ret |= _Locale_XDIGIT;
+    }
+  }
+
+  if ( (__mask & _Locale_UPPER) != 0 && iswctype_l(wc, wctype_l("upper", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+    ret |= _Locale_UPPER;
+  }
+  if ( (__mask & _Locale_LOWER) != 0 && iswctype_l(wc, wctype_l("lower", ((__c_locale)__loc)), ((__c_locale)__loc) ) ) {
+    ret |= _Locale_LOWER;
+  }
+
+  return ret;
 }
 
-wint_t _Locale_wchar_tolower( struct _Locale_ctype *__loc, wint_t c ) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
+wint_t _Locale_wchar_tolower( struct _Locale_ctype *__loc, wint_t c )
+{
   return __towlower_l( c, ((__c_locale)__loc) );
 }
 
-wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c ) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
+wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c )
+{
   return __towupper_l( c, ((__c_locale)__loc) );
 }
 #endif
