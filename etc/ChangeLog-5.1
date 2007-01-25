@@ -49,6 +49,15 @@
 	* stlport/stl/config/_windows.h: Patch from Michael Fink to check
 	inclusion of winbase.h and windows.h.
 
+2006-11-24  Francois Dumont  <dums@stlport...>
+
+        * stlport/stl/_fstream.h, src/fstream.cpp, iostream.cpp: Restore
+        computation of the system dependant page size that was hardcoded
+        to 4096. Initialisation code has been moved to a static method
+        called just after Standard iostream initialisation. This code used
+        to be in the _Filebuf_base constructor that might have been called
+        simultaneously by several threads.
+
 2006-11-17  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_macosx.h: Add endianess configuration.

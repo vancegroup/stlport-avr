@@ -46,7 +46,7 @@
 	evolution for Open Watcom support.
 
 	* Synchronization of trunk from STLPORT_5_1 branch from revision
-	2750 to revision 2865.
+	2750 to revision 2871.
 
 	* stlport/stl/config/features.h, _gcc.h, _intel.h, _msvc.h, _sgi.h:
 	Major exception policy modification, _STLP_NOTHROW default value
@@ -387,13 +387,6 @@
 	for Borland compiler after 0x581.
 
 2006-11-24  Francois Dumont  <dums@stlport...>
-
-	* stlport/stl/_fstream.h, src/fstream.cpp, iostream.cpp: Restore
-	computation of the system dependant page size that was hardcoded
-	to 4096. Initialisation code has been moved to a static method
-	called just after Standard iostream initialisation. This code used
-	to be in the _Filebuf_base constructor that might have been called
-	simultaneously by several threads.
 
 	* Eric Sanford patch for DMC compiler, allow access to associative
 	containers extension.
