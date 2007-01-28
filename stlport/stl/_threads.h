@@ -197,8 +197,12 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
 using _STLP_VENDOR_CSTD::time_t;
 #    endif
 #    include <synch.h>
-#    include <cstdio>
-#    include <cwchar>
+#    ifndef _STLP_INTERNAL_CSTDIO
+#      include <stl/_cstdio.h>
+#    endif
+#    ifndef _STLP_INTERNAL_CWCHAR
+#      include <stl/_cwchar.h>
+#    endif
 
 #  elif defined (_STLP_BETHREADS)
 

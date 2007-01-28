@@ -5,6 +5,11 @@
 
 	* trunk synchronized with STLPORT_5_1 branch up to revision 2877.
 
+	* stlport/stl/_threads.h: Changed way of including headers for
+	_STLP_UITHREADS platform. We now include internal STLport headers
+	rather than Standard ones. It was especially important for Sun
+	Studio compiler that natively include Standard headers only once.
+
 2007-01-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/facets_byname.cpp: we search within scope, specified by mask,
