@@ -69,6 +69,8 @@ distclean::
 	@if exist $(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_DBG)/$(A_NAME_DBG))
 	@if exist $(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_LIB_DIR_STLDBG)/$(A_NAME_STLDBG))
 ifeq (bcc, $(COMPILER_NAME))
+	@if exist $(INSTALL_BIN_DIR)/$(TDS_SO_NAME_DBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(TDS_SO_NAME_DBG))
+	@if exist $(INSTALL_BIN_DIR)/$(TDS_SO_NAME_STLDBG) del /f /q $(subst /,\,$(INSTALL_BIN_DIR)/$(TDS_SO_NAME_STLDBG))
 #remove STLport bin directories, unless they contains exe
 	@if exist $(INSTALL_BIN_DIR) if not exist $(subst /,\,$(INSTALL_BIN_DIR)/*.EXE) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR))
 	@if exist $(INSTALL_BIN_DIR_DBG) if not exist $(subst /,\,$(INSTALL_BIN_DIR_DBG)/*.EXE) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR_DBG))

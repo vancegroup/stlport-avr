@@ -21,6 +21,8 @@ distclean::
 	@if exist $(INSTALL_BIN_DIR_DBG)/$(PRGNAME)$(EXE) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(PRGNAME)$(EXE))
 	@if exist $(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME)$(EXE) del /f /q $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME)$(EXE))
 ifeq (bcc, $(COMPILER_NAME))
+	@if exist $(INSTALL_BIN_DIR_DBG)/$(PRGNAME).tds del /f /q $(subst /,\,$(INSTALL_BIN_DIR_DBG)/$(PRGNAME).tds)
+	@if exist $(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME).tds del /f /q $(subst /,\,$(INSTALL_BIN_DIR_STLDBG)/$(PRGNAME).tds)
 #remove STLport EXE directories, unless they contains DLLs
 	@if exist $(INSTALL_BIN_DIR) if not exist $(subst /,\,$(INSTALL_BIN_DIR)/*.dll) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR))
 	@if exist $(INSTALL_BIN_DIR_DBG) if not exist $(subst /,\,$(INSTALL_BIN_DIR_DBG)/*.dll) rd /s /q $(subst /,\,$(INSTALL_BIN_DIR_DBG))

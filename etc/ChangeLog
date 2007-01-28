@@ -1,3 +1,8 @@
+2007-01-28  Francois Dumont  <dums@stlport...>
+
+	* build/Makefiles/gmake: Borland patch from Eric Sanford to install
+	.tds file for Borland debugger.
+
 2007-01-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/facets_byname.cpp: we search within scope, specified by mask,

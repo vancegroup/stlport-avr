@@ -6,7 +6,7 @@ ALL_TAGS = all-static all-shared
 ifdef LIBNAME
 INSTALL_TAGS = install-static install-shared
 else
-INSTALL_TAGS = install-static
+INSTALL_TAGS = install-shared
 endif
 
 CXX := bcc32 
