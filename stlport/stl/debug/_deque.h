@@ -75,10 +75,12 @@ protected:
   _Base _M_non_dbg_impl;
   _STLP_PRIV __owned_list _M_iter_list;
 
-  void _Invalidate_iterator(const iterator& __it)
-  { _STLP_PRIV __invalidate_iterator(&_M_iter_list,__it); }
   void _Invalidate_all()
   { _M_iter_list._Invalidate_all(); }
+  void _Invalidate_iterator(const iterator& __it)
+  { _STLP_PRIV __invalidate_iterator(&_M_iter_list,__it); }
+  void _Invalidate_iterators(const iterator& __first, const iterator& __last)
+  { _STLP_PRIV __invalidate_range(&_M_iter_list, __first, __last); }
 
 public:
   // Basic accessors
@@ -359,11 +361,11 @@ public:                         // Insert
   iterator erase(iterator __pos) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__pos))
-    if (__pos == begin())
+    if (__pos._M_iterator == _M_non_dbg_impl.begin())
       _Invalidate_iterator(__pos);
     else {
-      iterator __tmp = --(end());
-      if (__pos == __tmp)
+      _Base::iterator __tmp = --(_M_non_dbg_impl.end());
+      if (__pos._M_iterator == __tmp)
         _Invalidate_iterator(__pos);
       else
         _Invalidate_all();
@@ -374,14 +376,11 @@ public:                         // Insert
   iterator erase(iterator __first, iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last, begin(), end()))
     if (!empty()) {
-      if (__last == (++(begin())))
-        _Invalidate_iterator(__last);
-      else {
-        if (__first == (--(end())))
-          _Invalidate_iterator(__first);
-        else
-          _Invalidate_all();
-      }
+      if (__first._M_iterator == _M_non_dbg_impl.begin() ||
+          __last._M_iterator == _M_non_dbg_impl.end())
+        _Invalidate_iterators(__first, __last);
+      else
+        _Invalidate_all();
     }
     return iterator (&_M_iter_list, _M_non_dbg_impl.erase(__first._M_iterator, __last._M_iterator));
   }

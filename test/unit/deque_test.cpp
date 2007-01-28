@@ -23,6 +23,7 @@ class DequeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(deque1);
   CPPUNIT_TEST(at);
   CPPUNIT_TEST(insert);
+  CPPUNIT_TEST(erase);
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
 #if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
@@ -34,6 +35,7 @@ class DequeTest : public CPPUNIT_NS::TestCase
 protected:
   void deque1();
   void insert();
+  void erase();
   void at();
   void auto_ref();
   void allocator_with_state();
@@ -271,4 +273,43 @@ void DequeTest::optimizations_check()
   CPPUNIT_ASSERT( d2.size() == 2 );
   CPPUNIT_ASSERT( d2[1].builtFromBase == true );
 #endif
+}
+
+void DequeTest::erase()
+{
+  deque<int> dint;
+  dint.push_back(3);
+  dint.push_front(2);
+  dint.push_back(4);
+  dint.push_front(1);
+  dint.push_back(5);
+  dint.push_front(0);
+  dint.push_back(6);
+
+  deque<int>::iterator it(dint.begin() + 1);
+  CPPUNIT_ASSERT( *it == 1 );
+
+  dint.erase(dint.begin());
+  CPPUNIT_ASSERT( *it == 1 );
+
+  it = dint.end() - 2;
+  CPPUNIT_ASSERT( *it == 5 );
+
+  dint.erase(dint.end() - 1);
+  CPPUNIT_ASSERT( *it == 5 );
+
+  dint.push_back(6);
+  dint.push_front(0);
+
+  it = dint.begin() + 2;
+  CPPUNIT_ASSERT( *it == 2 );
+
+  dint.erase(dint.begin(), dint.begin() + 2);
+  CPPUNIT_ASSERT( *it == 2 );
+
+  it = dint.end() - 3;
+  CPPUNIT_ASSERT( *it == 4 );
+
+  dint.erase(dint.end() - 2, dint.end());
+  CPPUNIT_ASSERT( *it == 4 );
 }

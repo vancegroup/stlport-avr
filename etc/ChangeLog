@@ -3,6 +3,8 @@
 	* build/Makefiles/gmake: Borland patch from Eric Sanford to install
 	.tds file for Borland debugger.
 
+	* trunk synchronized with STLPORT_5_1 branch up to revision 2877.
+
 2007-01-25  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/facets_byname.cpp: we search within scope, specified by mask,

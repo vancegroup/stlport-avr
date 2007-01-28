@@ -1744,12 +1744,10 @@ int __GetLCID(const char* lang, const char* ctry, LCID* lcid) {
   __FndCtry = ctry;
   EnumSystemLocalesA(EnumLocalesProcA, LCID_INSTALLED);
 
-  if (__FindFlag == 0) return -1;
-
-  *lcid = __FndLCID;
+  if (__FindFlag != 0) *lcid = __FndLCID;
 
   LeaveCriticalSection(&__criticalSection);
-  return 0;
+  return __FindFlag != 0 ? 0 : -1;
 }
 
 int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *hint) {
