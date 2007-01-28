@@ -641,10 +641,6 @@ void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
 {
   CPPUNIT_ASSERT( has_facet<ctype<char> >(loc) );
   ctype<char> const& ct = use_facet<ctype<char> >(loc);
-# ifndef _STLP_NO_WCHAR_T
-  CPPUNIT_ASSERT( has_facet<ctype<wchar_t> >(loc) );
-  ctype<wchar_t> const& wct = use_facet<ctype<wchar_t> >(loc);
-# endif
   //is
   {
     CPPUNIT_ASSERT( ct.is(ctype_base::digit, '0') );
