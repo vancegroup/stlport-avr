@@ -1,3 +1,9 @@
+2007-01-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/debug/_deque.h: typename required.
+
+	* test/unit/sstream_test.cpp: test for seekp added.
+
 2007-01-28  Francois Dumont  <dums@stlport...>
 
 	* build/Makefiles/gmake: Borland patch from Eric Sanford to install

@@ -32,6 +32,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(seek);
+  CPPUNIT_TEST(seekp);
   CPPUNIT_TEST(tellp);
   CPPUNIT_TEST(negative);
   CPPUNIT_TEST_SUITE_END();
@@ -50,6 +51,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
     void rdbuf();
     void streambuf_output();
     void seek();
+    void seekp();
     void tellp();
     void negative();
 };
@@ -395,6 +397,21 @@ void SstreamTest::seek()
   CPPUNIT_ASSERT( is.tellg() == stringstream::pos_type(6) );
   is.seekg( -3, ios::cur );
   CPPUNIT_ASSERT( is.tellg() == stringstream::pos_type(3) );
+}
+
+void SstreamTest::seekp()
+{
+  ostringstream s;
+
+  s << "1234567";
+  CPPUNIT_CHECK( s.tellp() == stringstream::pos_type(7) );
+  CPPUNIT_CHECK( s.str() == "1234567" );
+  s.seekp( 0 );
+  s << "X";
+  CPPUNIT_CHECK( s.str() == "X234567" );
+  s.seekp( 0, ios::beg );
+  s << "Y";
+  CPPUNIT_CHECK( s.str() == "Y234567" );
 }
 
 void SstreamTest::tellp()
