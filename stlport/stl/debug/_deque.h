@@ -361,11 +361,11 @@ public:                         // Insert
   iterator erase(iterator __pos) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV _Dereferenceable(__pos))
-    if (__pos._M_iterator == _M_non_dbg_impl.begin())
+    if (__pos._M_iterator == _M_non_dbg_impl.begin()) {
       _Invalidate_iterator(__pos);
-    else {
-      _Base::iterator __tmp = --(_M_non_dbg_impl.end());
-      if (__pos._M_iterator == __tmp)
+    } else {
+      typename _Base::iterator tmp = --(_M_non_dbg_impl.end());
+      if (__pos._M_iterator == tmp)
         _Invalidate_iterator(__pos);
       else
         _Invalidate_all();
