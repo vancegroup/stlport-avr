@@ -7,7 +7,7 @@
 **  int _STLP_atomic_exchange (__stl_atomic_t *pvalue, __stl_atomic_t value)
 */
 
-# ifdef __sparc_v9__
+# if defined(__sparc_v9__) || defined (__sparcv9) 
 
 #  ifdef __arch64__
 
@@ -37,14 +37,16 @@
      _L_value1; })
 
 #  define _STLP_ATOMIC_INCREMENT(__pvalue1) \
- {  register volatile __stl_atomic_t *_L_pvalue1 = __pvalue1; \
+ ({  register volatile __stl_atomic_t *_L_pvalue1 = __pvalue1; \
     register __stl_atomic_t _L_value1, _L_value2; \
-    do { _L_value1 = *_L_pvalue1;  _L_value2 = _L_value1+1; _STLP_EXCH_ASM; } while ( _L_value1 != _L_value2 ) ; }
+    do { _L_value1 = *_L_pvalue1;  _L_value2 = _L_value1+1; _STLP_EXCH_ASM; } while ( _L_value1 != _L_value2 ) ; \
+    (_L_value2 + 1); })
 
 #  define _STLP_ATOMIC_DECREMENT(__pvalue1) \
- {  register volatile __stl_atomic_t *_L_pvalue1 = __pvalue1; \
+ ({  register volatile __stl_atomic_t *_L_pvalue1 = __pvalue1; \
     register __stl_atomic_t _L_value1, _L_value2; \
-    do { _L_value1 = *_L_pvalue1;  _L_value2 = _L_value1-1; _STLP_EXCH_ASM; } while ( _L_value1 != _L_value2 ) ; }
+    do { _L_value1 = *_L_pvalue1;  _L_value2 = _L_value1-1; _STLP_EXCH_ASM; } while ( _L_value1 != _L_value2 ) ; \
+    (_L_value2 - 1); })
 
 # elif ! defined (_STLP_NO_EXTERN_INLINE)
 

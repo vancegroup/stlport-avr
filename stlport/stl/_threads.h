@@ -549,7 +549,8 @@ public:
 #  elif defined (_STLP_ATOMIC_EXCHANGE)
   _STLP_STATIC_ASSERT(sizeof(__stl_atomic_t) == sizeof(void*))
   return __REINTERPRET_CAST(void*, _STLP_ATOMIC_EXCHANGE(__REINTERPRET_CAST(volatile __stl_atomic_t*, __p),
-                                                         __REINTERPRET_CAST(__stl_atomic_t, __q));
+                                                         __REINTERPRET_CAST(__stl_atomic_t, __q))
+                            );
 #  elif defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
   _S_swap_lock._M_acquire_lock();
   void *__result = *__p;
@@ -608,6 +609,11 @@ public:
 #if defined (_STLP_THREADS)
 #  if defined (_STLP_ATOMIC_EXCHANGE_PTR)
   return _STLP_ATOMIC_EXCHANGE_PTR(__p, __q);
+#  elif defined (_STLP_ATOMIC_EXCHANGE)
+  _STLP_STATIC_ASSERT(sizeof(__stl_atomic_t) == sizeof(void*))
+  return __REINTERPRET_CAST(void*, _STLP_ATOMIC_EXCHANGE(__REINTERPRET_CAST(volatile __stl_atomic_t*, __p),
+                                                         __REINTERPRET_CAST(__stl_atomic_t, __q))
+                            );
 #  elif defined (_STLP_USE_ATOMIC_SWAP_MUTEX)
   _S_swap_lock._M_acquire_lock();
   void *__result = *__p;

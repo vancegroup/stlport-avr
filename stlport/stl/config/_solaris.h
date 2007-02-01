@@ -53,7 +53,7 @@
  * limits.h contains invalid values for this combination
  */
 #ifdef __GNUC__
-#  if (defined  (__sparc_v9__) || defined (__sparcv9)) && !defined ( __WORD64 )
+#  if (defined  (__sparc_v9__) || defined (__sparcv9)) && !defined ( __WORD64 ) && !defined(__arch64__)
 #    define __LONG_MAX__ 2147483647L
 #  endif
 #endif
