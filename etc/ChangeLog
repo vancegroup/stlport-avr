@@ -44,7 +44,7 @@
 	* build/Makefiles/gmake: Borland patch from Eric Sanford to install
 	.tds file for Borland debugger.
 
-	* trunk synchronized with STLPORT_5_1 branch up to revision 2877.
+	* trunk synchronized with STLPORT_5_1 branch up to revision 2895.
 
 	* stlport/stl/_threads.h: Changed way of including headers for
 	_STLP_UITHREADS platform. We now include internal STLport headers
@@ -173,16 +173,6 @@
 	* stlport/stl/_cstdlib.h: Add __SUNPRO_CC macro check before
 	defining abs(long) and div(long, long) as Sun pro already
 	defined them. Thanks Graham Reed bug report 1630972.
-
-2007-01-12  Francois Dumont  <dums@stlport...>
-
-	* stlport/stl/config/_windows.h: Introduce _STLP_WIN32_VERSION
-	macro set to WINVER or _WIN32_WINDOWS value depending on what
-	macro is defined.
-
-	* stlport/stl/_threads.h, src/locale.cpp: Add _STLP_WIN32_VERSION
-	checks to detect Windows 95 platform having a special
-	_STLP_ATOMIC_INCREMENT and _STLP_ATOMIC_DECREMENT behavior.
 
 2007-01-07  Francois Dumont  <dums@stlport...>
 
