@@ -1,3 +1,9 @@
+2007-02-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/hash_test.cpp: add test for hash_multimap, equivalent
+	keys problem on some data sets [this is regression test, suggested
+	by tef for 5.0.2, bug report #1606308].
+
 2007-02-01  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_solaris.h: __LONG_MAX__ defined on
