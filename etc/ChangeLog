@@ -4,14 +4,6 @@
 	keys problem on some data sets [this is regression test, suggested
 	by tef for 5.0.2, bug report #1606308].
 
-2007-02-01  Petr Ovtchenkov  <complement@users.sourceforge.net>
-
-	* stlport/stl/config/_solaris.h: __LONG_MAX__ defined on
-	64-bits SPARCs. Thanks Aleksey Sanin.
-
-	* stlport/stl/_sparc_atomic.h, stlport/stl/_threads.h: fixes
-	for modern SPARCs. Thanks Aleksey Sanin.
-
 2007-01-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/debug/_deque.h: typename required.
@@ -364,7 +356,7 @@
 	compilers.
 
 	* stlport/stl/_algo.c: Avoid a useless default value for last
-        parameter of __stable_partition_aux_aux function.
+	parameter of __stable_partition_aux_aux function.
 
 	* src/num_put.cpp: In __insert_grouping_aux, use template parameter
 	Str to get iterator definition rather than getting definition from

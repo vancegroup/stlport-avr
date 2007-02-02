@@ -1,3 +1,11 @@
+2007-02-01  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_solaris.h: __LONG_MAX__ defined on
+	64-bits SPARCs. Thanks Aleksey Sanin.
+
+	* stlport/stl/_sparc_atomic.h, stlport/stl/_threads.h:
+	fixes for modern SPARCs. Thanks Aleksey Sanin.
+
 2007-01-28  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/debug/_deque.h: Fix iterator invalidation in erase
@@ -5,7 +13,7 @@
 	1645657).
 
 	* test/unit/deque_test.cpp: New test case for deque erase methods.
-	
+
 2007-01-19  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/_locale.h, src/locale.cpp: Add throw() specification
@@ -52,6 +60,10 @@
 	* test/unit/deque_test.cpp: Add test case for the deque::insert
 	methods.
 
+2006-12-06  Francois Dumont  <dums@stlport...>
+
+	* STLport 5.1.0 released based on STLPORT_5_1 branch revision 2750.
+
 2006-11-27  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_windows.h: Patch from Michael Fink to check
@@ -59,12 +71,12 @@
 
 2006-11-24  Francois Dumont  <dums@stlport...>
 
-        * stlport/stl/_fstream.h, src/fstream.cpp, iostream.cpp: Restore
-        computation of the system dependant page size that was hardcoded
-        to 4096. Initialisation code has been moved to a static method
-        called just after Standard iostream initialisation. This code used
-        to be in the _Filebuf_base constructor that might have been called
-        simultaneously by several threads.
+	* stlport/stl/_fstream.h, src/fstream.cpp, iostream.cpp: Restore
+	computation of the system dependant page size that was hardcoded
+	to 4096. Initialisation code has been moved to a static method
+	called just after Standard iostream initialisation. This code used
+	to be in the _Filebuf_base constructor that might have been called
+	simultaneously by several threads.
 
 2006-11-17  Francois Dumont  <dums@stlport...>
 
@@ -3130,7 +3142,7 @@
 2005-09-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/config/stl_gcc.h: Mingw support string wide functions thanks
-        Rene Riviera report.
+	Rene Riviera report.
 
 2005-09-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
@@ -6315,23 +6327,23 @@
 
 	* stlport/stl/_slist.h: fix of an invalid reference to a _M_node member data
 	on a _Slist_node_base struct (thanks gcc 3.4.0).
-  
+
 	* stlport/stl/_string.c, stlport/stl/_string.h: fix of missing scopes to 
 	access the base template class _String_base _DEFAULT_SIZE enum member.
 	(thanks gcc 3.4.0)
-  
+
 	* stlport/stl/_string_base.h: fix of the anonymous union used as a parameter
 	of the template function swap. (thanks gcc 3.4.0)
-  
+
 	* stlport/stl/_ostream.h: fixes of the missing scopes to access the basefield enum
 	within the base template class basic_ios from the basic_ostream. (thanks gcc 3.4.0)
-  
+
 	* stlport/stl/_debug.c: clean up of a no more use template function. 
 	(thanks gcc 3.4.0)
-  
+
 	* stlport/stl/_rope.h: fix of the missing scope to access base template class 
 	data member. (thanks gcc 3.4.0)
-  
+
 2004-06-02  Petr Ovtchenkov  <ptr@island...>
 
 	* src/num_put_float.cpp: some fixes for systems that use snprintf for
@@ -6684,7 +6696,7 @@
 	
 	* integration of a portage to the Windows CE .NET (eMebedded Visual
 	C++ 4) compiler thanks Zdenek Nemek
-	
+
 2004-02-02  Petr Ovtchenkov  <ptr@Island...>
 
 	* _iostream_string.h: avoid usage of iostring in the _STLP_DEBUG mode,
@@ -6751,7 +6763,7 @@
 
 	* _string.h: use _STLP_FORCE_STRING_TERMINATION flag to enforce
 	null-termination of data associated with string.
- 
+
 2003-12-20  Francois Dumont  <dums@s...>
 
 	* _vector.h: Implementation of the pointer specialization for vector to 
@@ -6762,7 +6774,7 @@
 	* _string.h: Implementation of the short string optimization.
 	basic_string have now a short static buffer to avoid call
 	to the allocator when the string is short.
-               
+
 2003-11-29  Petr Ovtchenkov  <ptr@Island...>
 
 	* cwchar, _config.h, _cwchar.h, _stdio_file.h, c_locale.h:
@@ -6832,12 +6844,12 @@
 	for the bitset input and output operators; thanks Jesse Booher.
 
 	* _ostream.h, _istream.h: fix of a non-standard behavior of the seekp
-        and seekg calls and conformance to the latest 2003 standard; thanks Tanaka.
+	and seekg calls and conformance to the latest 2003 standard; thanks Tanaka.
 
 2003-10-26  Francois Dumont  <dums@s...>
 
-        * _monetary.c: fix an other memory overrun on monetary display;
-        thanks Tanaka.
+	* _monetary.c: fix an other memory overrun on monetary display;
+	thanks Tanaka.
 
 2003-10-26  Petr Ovtchenkov  <ptr@island...>
 
@@ -6859,7 +6871,7 @@
 	invalidation of the end iterator for the associative containers,
 	hashed containers and list on calls to clear/assign/assignment
 	operator. (thanks  Alexey  Sarytchev)
-            
+
 	* _rope.h: Correction of the rope::iterator and rope::const_iterator
 	copy constructor and assignment operator (thanks Bradley Grainger)
 
