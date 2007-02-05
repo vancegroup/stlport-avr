@@ -488,3 +488,15 @@ void SetTest::template_methods()
   }
 #endif
 }
+
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  set<IncompleteClass> instances;
+  typedef set<IncompleteClass>::iterator it;
+  multiset<IncompleteClass> minstances;
+  typedef multiset<IncompleteClass>::iterator mit;
+};

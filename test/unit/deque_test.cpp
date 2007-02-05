@@ -313,3 +313,13 @@ void DequeTest::erase()
   dint.erase(dint.end() - 2, dint.end());
   CPPUNIT_ASSERT( *it == 4 );
 }
+
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  deque<IncompleteClass> instances;
+  typedef deque<IncompleteClass>::size_type size;
+};

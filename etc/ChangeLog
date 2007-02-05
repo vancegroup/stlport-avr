@@ -6,6 +6,28 @@
 	constant value now depends on sizeof(void*) to avoid preprocessor
 	check like _WIN64.
 
+	* stlport/stl/_vector.h, _vector.c: Moved __type_traits
+	instanciations in methods that need it in order to be able to
+	access nested types like iterator even if type used to instanciate
+	the vector is not yet completely defined.
+
+	* stlport/stl/_deque.h, _deque.c: Removed uselss __type_traits
+	instanciations. For the same reason than above, __buffer_size
+	constant has been replaced by a function computing deque buffer
+	size at runtime.
+
+	* stlport/stl/_hashtable.h, _hashtable.c: For the same reason than
+	above, hashtable do not contains anymore an instance of the _ExK type
+	which is used to extract the key part from a value instance. This
+	instance was not returned in any method of the hashtable type. An
+	unused constructor taking an instance of this type has been removed.
+
+	* test/unit/vector_test.cpp, deque_test.cpp, list_test.cpp,
+	slist_test.cpp, map_test.cpp, set_test.cpp, hash_test.cpp,
+	unordered_test.cpp: Add compilation tests to check that the container
+	iterator nested type is accessible  even if type used to instanciate
+	the container is not yet completely defined.
+
 2007-02-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h: Add type information for the following functions

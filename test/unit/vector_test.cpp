@@ -462,3 +462,14 @@ void VectorTest::iterators()
   //CPPUNIT_ASSERT( crvint.rbegin() != vint.rend() );
   CPPUNIT_ASSERT( crvint.rbegin() != crvint.rend() );
 }
+
+
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  vector<IncompleteClass> instances;
+  typedef vector<IncompleteClass>::iterator it;
+};

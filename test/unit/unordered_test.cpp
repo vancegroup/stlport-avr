@@ -590,3 +590,22 @@ void UnorderedTest::template_methods()
   }
 #endif
 }
+
+#if defined (STLPORT)
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  unordered_set<IncompleteClass> usinstances;
+  typedef unordered_set<IncompleteClass>::iterator usit;
+  unordered_multiset<IncompleteClass> usminstances;
+  typedef unordered_multiset<IncompleteClass>::iterator usmit;
+
+  unordered_map<IncompleteClass, IncompleteClass> uminstances;
+  typedef unordered_map<IncompleteClass, IncompleteClass>::iterator umit;
+  unordered_multimap<IncompleteClass, IncompleteClass> umminstances;
+  typedef unordered_multimap<IncompleteClass, IncompleteClass>::iterator ummit;
+};
+#endif

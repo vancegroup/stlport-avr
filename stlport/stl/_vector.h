@@ -136,11 +136,7 @@ public:
   { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _Tp); }
 
 private:
-  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
-  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef typename __move_traits<_Tp>::implemented _Movable;
-#else
+#if defined (_STLP_NO_MOVE_SEMANTIC)
   typedef __false_type _Movable;
 #endif
 
@@ -159,8 +155,12 @@ private:
   }
 
   void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCopy*/,
-                          size_type __fill_len, bool __atend = false)
-  { _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend); }
+                          size_type __fill_len, bool __atend = false) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+    typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
+    _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
+  }
   void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCopy*/,
                           size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
@@ -234,8 +234,10 @@ public:
   { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
 
   vector(const _Self& __x)
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator())
-  { this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy()); }
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {
+    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy());
+  }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   vector(__move_source<_Self> src)
@@ -281,8 +283,10 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   vector(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a)
-  { this->_M_finish = _STLP_PRIV __ucopy_ptrs(__first, __last, this->_M_start, _TrivialUCopy()); }
+    : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a) {
+    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    this->_M_finish = _STLP_PRIV __ucopy_ptrs(__first, __last, this->_M_start, _TrivialUCopy());
+  }
 #endif /* _STLP_MEMBER_TEMPLATES */
 
   //As the vector container is a back insert oriented container it
@@ -367,8 +371,10 @@ public:
       _Copy_Construct(this->_M_finish, __x);
       ++this->_M_finish;
     }
-    else
+    else {
+      typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
       _M_insert_overflow(this->_M_finish, __x, _TrivialCopy(), 1UL, true);
+    }
   }
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
@@ -406,6 +412,10 @@ private:
                                const_iterator __first, const_iterator __last,
 #endif /* _STLP_MEMBER_TEMPLATES */
                                size_type __n) {
+    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+    typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
     const size_type __old_size = size();
     size_type __len = __old_size + (max)(__old_size, __n);
     pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
@@ -449,6 +459,8 @@ private:
                            const_iterator __first, const_iterator __last,
 #endif /* _STLP_MEMBER_TEMPLATES */
                            size_type __n, const __false_type& /*_Movable*/) {
+    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
     const size_type __elems_after = this->_M_finish - __pos;
     pointer __old_finish = this->_M_finish;
     if (__elems_after > __n) {
@@ -513,6 +525,9 @@ public:
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
 #endif /* _STLP_MEMBER_TEMPLATES */
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+    typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
     /* This method do not check self referencing.
      * Standard forbids it, checked by the debug mode.
      */
@@ -550,8 +565,10 @@ private:
     return __pos;
   }
   iterator _M_erase(iterator __pos, const __false_type& /*_Movable*/) {
-    if (__pos + 1 != end())
+    if (__pos + 1 != end()) {
+      typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
       _STLP_PRIV __copy_ptrs(__pos + 1, this->_M_finish, __pos, _TrivialCopy());
+    }
     --this->_M_finish;
     _STLP_STD::_Destroy(this->_M_finish);
     return __pos;
@@ -580,6 +597,7 @@ private:
     return __first;
   }
   iterator _M_erase(iterator __first, iterator __last, const __false_type& /*_Movable*/) {
+    typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
     pointer __i = _STLP_PRIV __copy_ptrs(__last, this->_M_finish, __first, _TrivialCopy());
     _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     this->_M_finish = __i;
@@ -588,9 +606,15 @@ private:
 
 public:
   iterator erase(iterator __pos) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+    typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
     return _M_erase(__pos, _Movable());
   }
   iterator erase(iterator __first, iterator __last) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+    typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
     if (__first == __last)
       return __first;
     return _M_erase(__first, __last, _Movable());

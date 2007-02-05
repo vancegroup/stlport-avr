@@ -435,3 +435,15 @@ void MapTest::template_methods()
   }
 #endif
 }
+
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  map<IncompleteClass, IncompleteClass> instances;
+  typedef map<IncompleteClass, IncompleteClass>::iterator it;
+  multimap<IncompleteClass, IncompleteClass> minstances;
+  typedef multimap<IncompleteClass, IncompleteClass>::iterator mit;
+};

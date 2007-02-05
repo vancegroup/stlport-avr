@@ -121,6 +121,9 @@ deque<_Tp, _Alloc >::operator= (const deque<_Tp, _Alloc >& __x) {
 template <class _Tp, class _Alloc >
 void deque<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
                                          size_type __n, const value_type& __x) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
   if (__pos._M_cur == this->_M_start._M_cur) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
     _STLP_TRY {
@@ -146,6 +149,9 @@ void deque<_Tp, _Alloc >::_M_fill_insert(iterator __pos,
 template <class _Tp, class _Alloc >
 void deque<_Tp, _Alloc>::insert(iterator __pos,
                                 const value_type* __first, const value_type* __last) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
   size_type __n = __last - __first;
   if (__pos._M_cur == this->_M_start._M_cur) {
     iterator __new_start = _M_reserve_elements_at_front(__n);
@@ -171,6 +177,9 @@ void deque<_Tp, _Alloc>::insert(iterator __pos,
 template <class _Tp, class _Alloc >
 void deque<_Tp,_Alloc>::insert(iterator __pos,
                                const_iterator __first, const_iterator __last) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
   size_type __n = __last - __first;
   if (__pos._M_cur == this->_M_start._M_cur) {
     iterator __new_start = _M_reserve_elements_at_front(__n);

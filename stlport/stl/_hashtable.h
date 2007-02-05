@@ -268,13 +268,16 @@ private:
 
   hasher                _M_hash;
   key_equal             _M_equals;
-  _ExK                  _M_get_key;
   _ElemsCont            _M_elems;
   _BucketVector         _M_buckets;
   size_type             _M_num_elements;
   float                 _M_max_load_factor;
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
+  static const key_type& _M_get_key(const value_type& __val) {
+    _ExK k;
+    return k(__val);
+  }
 public:
   typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _NonConstTraits> iterator;
   typedef _STLP_PRIV _Ht_iterator<_ElemsIte, _ConstTraits> const_iterator;
@@ -293,41 +296,6 @@ public:
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   hashtable(size_type __n,
-            const _HF&  __hf,
-            const _EqK& __eql,
-            const _ExK& __ext,
-            const allocator_type& __a = allocator_type())
-#else
-  hashtable(size_type __n,
-            const _HF&  __hf,
-            const _EqK& __eql,
-            const _ExK& __ext)
-    : _M_hash(__hf),
-      _M_equals(__eql),
-      _M_get_key(__ext),
-      _M_elems(allocator_type()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
-      _M_num_elements(0),
-      _M_max_load_factor(1.0f)
-  { _M_initialize_buckets(__n); }
-
-  hashtable(size_type __n,
-            const _HF&  __hf,
-            const _EqK& __eql,
-            const _ExK& __ext,
-            const allocator_type& __a)
-#endif
-    : _M_hash(__hf),
-      _M_equals(__eql),
-      _M_get_key(__ext),
-      _M_elems(__a),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
-      _M_num_elements(0),
-      _M_max_load_factor(1.0f)
-  { _M_initialize_buckets(__n); }
-
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-  hashtable(size_type __n,
             const _HF&    __hf,
             const _EqK&   __eql,
             const allocator_type& __a = allocator_type())
@@ -337,7 +305,6 @@ public:
             const _EqK&   __eql)
     : _M_hash(__hf),
       _M_equals(__eql),
-      _M_get_key(_ExK()),
       _M_elems(allocator_type()),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
@@ -351,7 +318,6 @@ public:
 #endif
     : _M_hash(__hf),
       _M_equals(__eql),
-      _M_get_key(_ExK()),
       _M_elems(__a),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
       _M_num_elements(0),
@@ -361,7 +327,6 @@ public:
   hashtable(const _Self& __ht)
     : _M_hash(__ht._M_hash),
       _M_equals(__ht._M_equals),
-      _M_get_key(__ht._M_get_key),
       _M_elems(__ht.get_allocator()),
       _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(), _BucketType*)),
       _M_num_elements(0),
@@ -372,7 +337,6 @@ public:
   hashtable(__move_source<_Self> src)
     : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
       _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
-      _M_get_key(_STLP_PRIV _AsMoveSource(src.get()._M_get_key)),
       _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
       _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
       _M_num_elements(src.get()._M_num_elements),
@@ -384,7 +348,6 @@ public:
       clear();
       _M_hash = __ht._M_hash;
       _M_equals = __ht._M_equals;
-      _M_get_key = __ht._M_get_key;
       _M_copy_from(__ht);
     }
     return *this;
@@ -399,7 +362,6 @@ public:
   void swap(_Self& __ht) {
     _STLP_STD::swap(_M_hash, __ht._M_hash);
     _STLP_STD::swap(_M_equals, __ht._M_equals);
-    _STLP_STD::swap(_M_get_key, __ht._M_get_key);
     _M_elems.swap(__ht._M_elems);
     _M_buckets.swap(__ht._M_buckets);
     _STLP_STD::swap(_M_num_elements, __ht._M_num_elements);

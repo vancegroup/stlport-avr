@@ -409,3 +409,22 @@ void HashTest::allocator_with_state()
   CPPUNIT_ASSERT( stack2.ok() );
 #endif
 }
+
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+/* Simple compilation test: Check that nested types like iterator
+ * can be access even if type used to instanciate container is not
+ * yet completely defined.
+ */
+class IncompleteClass
+{
+  hash_set<IncompleteClass> hsinstances;
+  typedef hash_set<IncompleteClass>::iterator hsit;
+  hash_multiset<IncompleteClass> hsminstances;
+  typedef hash_multiset<IncompleteClass>::iterator hsmit;
+
+  hash_map<IncompleteClass, IncompleteClass> hminstances;
+  typedef hash_map<IncompleteClass, IncompleteClass>::iterator hmit;
+  hash_multimap<IncompleteClass, IncompleteClass> hmminstances;
+  typedef hash_multimap<IncompleteClass, IncompleteClass>::iterator hmmit;
+};
+#endif

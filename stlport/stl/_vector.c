@@ -82,6 +82,10 @@ void vector<_Tp, _Alloc>::reserve(size_type __n) {
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*DO NOT USE!!*/,
                                                  size_type __fill_len, bool __atend ) {
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
   const size_type __old_size = size();
   size_type __len = __old_size + (max)(__old_size, __fill_len);
 
@@ -141,6 +145,8 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
                                               const _Tp& __x, const __false_type& /*_Movable*/) {
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
   //Here self referencing needs to be checked even for non movable types.
   if (_M_is_inside(__x)) {
     _Tp __x_copy = __x;
@@ -165,16 +171,23 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
                                          size_type __n, const _Tp& __x) {
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  typedef typename __move_traits<_Tp>::implemented _Movable;
+#endif
   if (__n != 0) {
     if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
       _M_fill_insert_aux(__pos, __n, __x, _Movable());
-    } else
+    } else {
+      typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
       _M_insert_overflow(__pos, __x, _TrivialCopy(), __n);
+    }
   }
 }
 
 template <class _Tp, class _Alloc>
 vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>& __x) {
+  typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
+  typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
   if (&__x != this) {
     const size_type __xlen = __x.size();
     if (__xlen > capacity()) {
