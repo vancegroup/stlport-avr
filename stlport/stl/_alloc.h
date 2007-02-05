@@ -173,11 +173,12 @@ public:
   static void _STLP_CALL deallocate(void *, size_t);
 };
 
-#  if defined (__OS400__) || defined (_WIN64)
-enum {_ALIGN = 16, _ALIGN_SHIFT = 4, _MAX_BYTES = 256};
+#  if defined (__OS400__)
+// dums 02/05/2007: is it really necessary ?
+enum { _MAX_BYTES = 256 };
 #  else
-enum {_ALIGN = 8, _ALIGN_SHIFT = 3, _MAX_BYTES = 128};
-#  endif /* __OS400__ */
+enum { _MAX_BYTES = 32 * sizeof(void*) };
+#  endif
 
 #if !defined (_STLP_USE_NO_IOSTREAMS)
 // Default node allocator.

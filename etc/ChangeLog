@@ -1,4 +1,12 @@
-2007-02-02  Francois Dumont  <dums@stlport...>
+2007-02-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_alloc.h, allocators.cpp: Moved _ALIGN and
+	_ALIGN_SHIFT constant definition in source file where it is used
+	_MAX_BYTES is used in deque implementation. Moreover those
+	constant value now depends on sizeof(void*) to avoid preprocessor
+	check like _WIN64.
+
+2007-02-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h: Add type information for the following functions
 	of the localization support API:
@@ -39,7 +47,7 @@
 
 	* test/unit/sstream_test.cpp: test for seekp added.
 
-2007-01-28  Francois Dumont  <dums@stlport...>
+2007-01-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Borland patch from Eric Sanford to install
 	.tds file for Borland debugger.
@@ -61,7 +69,7 @@
 
 	* test/unit/locale_test.cpp: test for ctype facet for wchar_t added.
 
-2007-01-23  Francois Dumont  <dums@stlport...>
+2007-01-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_locale.h: Introduction of the _GetFacetId function
 	to isolate access to facet id instance in one place. It guaranty that
@@ -93,7 +101,7 @@
 	this test was failing for compilers duplicating template class
 	static instances.
 
-2007-01-20  Francois Dumont  <dums@stlport...>
+2007-01-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_cmath.h, _cstdlib.h, config/_watcom.h: Small
 	evolution for Open Watcom support.
@@ -123,7 +131,7 @@
 	usage of long double, long long, etc. functions, even when ones present
 	in OS. Thanks to Graham Reed. Bugreport 1630943.
 
-2007-01-18  Francois Dumont  <dums@stlport...>
+2007-01-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_num_put.c: Add cast to avoid gcc warning.
 
@@ -141,7 +149,7 @@
 	* stlport/stl/_cmath.h: move hypot in global namespace for SunSoft;
 	suggested by Graham Reed.
 
-2007-01-15  Francois Dumont  <dums@stlport...>
+2007-01-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/locale_test.cpp: Upgrade Russian currency abbreviation
 	'RUR' to 'RUB'. Thanks Tiziano Muller, bug report 1634886.
@@ -165,7 +173,7 @@
 	* build/Makefiles/gmake/hp-ux/sys.mak: Looks like install command
 	on this platform is rather exotic, use cp instead.
 
-2007-01-14  Francois Dumont  <dums@stlport...>
+2007-01-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_system.h: Add __SUNPRO_C macro check to
 	detect Sun Pro C compiler. Thanks Graham Reed bug report 1630916.
@@ -174,12 +182,12 @@
 	defining abs(long) and div(long, long) as Sun pro already
 	defined them. Thanks Graham Reed bug report 1630972.
 
-2007-01-07  Francois Dumont  <dums@stlport...>
+2007-01-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl: Add _STLP_NO_MOVE_SEMANTIC macro checks to
 	completely hide move semantic framework when not necessary.
 
-2007-01-05  Francois Dumont  <dums@stlport...>
+2007-01-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/bitset_test.cpp: Check _STLP_NON_TYPE_TMPL_PARAM_BUG
 	macro before doing tests that depends on it.
@@ -197,7 +205,7 @@
 	the moment, STLport simply grant a dummy definition in C. Test
 	under Hp Unix has shown that it works.
 
-2006-12-29  Francois Dumont  <dums@stlport...>
+2006-12-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/iostream.cpp, stlport/stdio.h, stl/_cstdio.h: Eric Sanford
 	patch to move a Borland workaround from cstdio to stdio.h.
@@ -212,7 +220,7 @@
 	* test/unit/strstream_test.cpp: Made the tests for _STLP_LONG_LONG
 	a little bit more portable.
 
-2006-12-20  Francois Dumont  <dums@stlport...>
+2006-12-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/strstream_test.cpp: New test case for sourceforge
 	bug report 1615554. Not confirm for the moment.
@@ -220,7 +228,7 @@
 	* test/unit/math_aux.h, mvctor_test.h, string_test.cpp: Fixes
 	to correctly take into account _STLP_USE_NAMESPACES.
 
-2006-12-19  Francois Dumont  <dums@stlport...>
+2006-12-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/bvector_test.cpp: Fix macro check for namespace
 	support.
@@ -228,19 +236,19 @@
 	* test/unit/num_put_get_test.cpp: disable warning about float
 	overflow for MSVC.
 
-2006-12-17  Francois Dumont  <dums@stlport...>
+2006-12-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit: One more cleanup for compilers not supporting the
 	namespace feature. This time we avoid namespace specification when
 	doing template specialisation of Standard functor like less or
 	allocator.
 
-2006-12-15  Francois Dumont  <dums@stlport...>
+2006-12-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_dm.h, test/unit/map_test.cpp: Eric Sanford
 	patch for DMC.
 
-2006-12-13  Francois Dumont  <dums@stlport...>
+2006-12-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/test_main.cpp: Clean up use of namespace feature.
 
@@ -253,7 +261,7 @@
 	gcc prior 2.95 and 2.96 can't work with current code in any case;
 	NetWare unsupported too]
 
-2006-12-13  Francois Dumont  <dums@stlport...>
+2006-12-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/feature.h: Fix and generalize the mutable
 	workaround for compilers missing this feature. Replace
@@ -272,7 +280,7 @@
 	qualified to one member in _Message_Impl class and use _STLP_MUTABLE
 	in class implementation.
 
-2006-12-11  Francois Dumont  <dums@stlport...>
+2006-12-11  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/mvctor_test.cpp: Split in 2 other translation unit
 	mvctor_declaration_test.cpp and mvctor_traits_test.cpp without
@@ -290,7 +298,7 @@
 	* src/fstream.cpp, stlport/stl/_fstream.h: non-template friend function
 	of template class isn't good idea. Fixed.
 
-2006-12-09  Francois Dumont  <dums@stlport...>
+2006-12-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_range_errors.h: To complete 2006-12-04 modification
 	fix inclusion to access to string definition. In normal mode we include
@@ -305,7 +313,7 @@
 	internal macro do not have to use __std_alias, within STLport code std is
 	not a macro and can be used as the vendor namespace.
 
-2006-12-07  Francois Dumont  <dums@stlport...>
+2006-12-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c, config/features.h: Removed unused
 	_STLP_MPW_EXTRA_CONST macro.
@@ -348,7 +356,7 @@
 	* stlport/stl/_fstream.h: Reorder member variables in _Filebuf_base
 	to avoid gcc warning.
 
-2006-12-06  Francois Dumont  <dums@stlport...>
+2006-12-06  Francois Dumont  <dums@users.sourceforge.net>
 
 	* STLport 5.1.0 released based on STLPORT_5_1 branch revision 2750.
 
@@ -362,13 +370,13 @@
 	isnan and some other system functions to the gcc compiler, aCC has
 	natively access to it. Tests done by Boris Gubenko.
 
-2006-12-04  Francois Dumont  <dums@stlport...>
+2006-12-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/fstream, iomanip, ios, iosfwd, iostream, istream, locale,
 	ostream, sstream, streambuf, strstream: Allow use of iostream headers
 	even when _STLP_NO_IOSTREAMS is defined if using _STLP_WHOLE_NATIVE_STD.
 
-2006-12-02  Francois Dumont  <dums@stlport...>
+2006-12-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_string.c: Use find_end algo rather than internal
 	__find_end function, find_end contains workaround for limited
@@ -393,7 +401,7 @@
 	_unordered_set.h, _vector.h: Now _STLP_NO_MOVE_SEMANTIC hide all
 	calls to _AsMoveSource function. 
 
-2006-11-30  Francois Dumont  <dums@stlport...>
+2006-11-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/stack_allocator.h: Fixed StackAllocator implementation
 	for Borland and DMC that required a workaround.
@@ -404,7 +412,7 @@
 	* build/Makefiles/gmake/gcc.mak: Starting with gcc 4, add
 	-fvisibility=hidden compilation option.
 
-2006-11-28  Francois Dumont  <dums@stlport...>
+2006-11-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_alloc.h: Avoid explicit instanciation of template
 	function _AsMoveSource. Replace internal allocator::allocate function
@@ -415,7 +423,7 @@
 	* stlport/stl/_ptrs_specialize.h: Fixed instanciation of
 	__type_traits_aux.
 
-2006-11-25  Francois Dumont  <dums@stlport...>
+2006-11-25  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/climits, iosfwd, mem.h, string.h, typeinfo.h, wchar.h,
 	stl/char_traits:
@@ -429,7 +437,7 @@
 	* src/num_put_float.cpp: Fix potential error in _Stl_is_neg_nan
 	for Borland compiler after 0x581.
 
-2006-11-24  Francois Dumont  <dums@stlport...>
+2006-11-24  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Eric Sanford patch for DMC compiler, allow access to associative
 	containers extension.
@@ -437,14 +445,14 @@
 	* stlport/typeinfo.h, exception: Workaround for DMC that force
 	inclusion of typeinfo.h at the begining of all translation units.
 
-2006-11-23  Francois Dumont  <dums@stlport...>
+2006-11-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/cstring_test.cpp: New test case to check import of all
 	C functions from string.h in STLport namespace.
 
 	* stlport/using/cstring: Fix import of strcmp and strcpy for Borland.
 
-2006-11-20  Francois Dumont  <dums@stlport...>
+2006-11-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/iosfwd, stl/type_manips.h, config/_bc.h, pointers/_tools.h:
 	Patch from Eric Sanford to remove useless Borland workaround for
@@ -456,12 +464,12 @@
 	* src/monetary.cpp: template header not allowed in member definition
 	of explicitly specialized class
 
-2006-11-19  Francois Dumont  <dums@stlport...>
+2006-11-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_ios_base.h: Replace wrong external utility inclusion
 	with internal _pair.h header.
 
-2006-11-17  Francois Dumont  <dums@stlport...>
+2006-11-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/features.h: Modification of the static constant
 	workaround implementation to use something similar to the boost
@@ -497,7 +505,7 @@
 	* test/unit/limits_test.cpp: Modified test to reveal potentially missing
 	static constant definitions.
 
-2006-11-13  Francois Dumont  <dums@stlport...>
+2006-11-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/stl_confix.h: Add some STLport config options based
 	on EDG version information using boost common_edg.hpp content.
@@ -506,7 +514,7 @@
 	associative container extension (member methods) and use of pointer
 	specialization.
 
-2006-11-07  Francois Dumont  <dums@stlport...>
+2006-11-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_hpacc.h, stl_confix.h: Thanks to additional info
 	from Boris Gubenko STLport now check __EDG_VERSION__ to detect EDG based
@@ -514,7 +522,7 @@
 	a workaround has been added for aCC6 that was not defining __EDG_VERSION__
 	as expected. _hpacc.h has also been cleaned of obsolete config.
 
-2006-11-07  Francois Dumont  <dums@stlport...>
+2006-11-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport: All C++ Standard headers are now using the same schema. If
 	included from outside (_STLP_OUTERMOST_HEADER_ID not defined) it first
@@ -552,7 +560,7 @@
 
 	* stlport/stl/config/stl_confix.h
 
-2006-11-05  Francois Dumont  <dums@stlport...>
+2006-11-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_sstream.h, _sstream.c: Add 2 helper functions _S_Start and
 	_S_Finish to hide complexity of code required to have read access to the
@@ -566,7 +574,7 @@
 	some workarounds that used to be necessary when _STLP_DEBUG mode was using
 	inheritance in all the debug containers.
 
-2006-11-04  Francois Dumont  <dums@stlport...>
+2006-11-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/num_put_float.cpp: According C Standard number of digits in the
 	exponent part of scientific output should be at least 2, C99 even says
@@ -574,7 +582,7 @@
 
 	* test/unit/complete_digits.h: Modified according to above rules.
 
-2006-11-02  Francois Dumont  <dums@stlport...>
+2006-11-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Repository: Merged STLPORT_5_1_RC3 tag changes up to r2771 into the trunk.
 	Now trunk is really in sync with STLPORT_5_1 branch.
@@ -586,12 +594,12 @@
 
 	* Repository: merged from 5.1 branch.
 
-2006-11-01  Francois Dumont  <dums@stlport...>
+2006-11-01  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_stdexcept_base.h: Patch from Uli to simplify
 	__Named_Exception implementation.
 
-2006-10-31  Francois Dumont  <dums@stlport...>
+2006-10-31  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/test/unit/Makefile.inc: Restore STLport version information that
 	had mysteriously disappeared in a previous modification.
@@ -611,7 +619,7 @@
 	* test/unit/num_put_get_test.cpp, locale_test.cpp: Adapt tests to latest
 	STLport modifications.
 
-2006-10-30  Francois Dumont  <dums@stlport...>
+2006-10-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_stlport_version.h: Upgrade STLport version information
 	to reflect built libraries.
@@ -695,7 +703,7 @@
 
 	* build/lib/Makefile.inc: bump minor version (5.2.0)
 
-2006-07-27  Francois Dumont  <dums@stlport...>
+2006-07-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport: Adopt include_next GNU extension for the following reasons:
 	- Standard headers do not have to be categorised anymore to be

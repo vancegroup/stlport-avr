@@ -70,6 +70,13 @@ inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
 #  endif
 #endif  // !_DEBUG
 
+#  if defined (__OS400__)
+// dums 02/05/2007: is it really necessary ?
+enum { _ALIGN = 16, _ALIGN_SHIFT = 4 };
+#  else
+enum { _ALIGN = 2 * sizeof(void*), _ALIGN_SHIFT = 2 + sizeof(void*) / 4 };
+#  endif
+
 #define _S_FREELIST_INDEX(__bytes) ((__bytes - size_t(1)) >> (int)_ALIGN_SHIFT)
 
 _STLP_BEGIN_NAMESPACE
