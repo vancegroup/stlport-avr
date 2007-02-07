@@ -30,8 +30,7 @@
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-// Those wrappers are needed to use locale functions in __acquire_category,
-// all functions have to present the same prototype.
+// those wrappers are needed to avoid extern "C"
 
 static void* _Loc_ctype_create(const char * s, _Locale_name_hint* hint)
 { return _Locale_ctype_create(s, hint); }
@@ -47,17 +46,17 @@ static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint)
 { return _Locale_messages_create(s, hint); }
 
 static char const* _Loc_ctype_name(const void* l, char* s)
-{ return _Locale_ctype_name(__STATIC_CAST(const _Locale_ctype*, l), s); }
+{ return _Locale_ctype_name(l, s); }
 static char const* _Loc_numeric_name(const void* l, char* s)
-{ return _Locale_numeric_name(__STATIC_CAST(const _Locale_numeric*, l), s); }
+{ return _Locale_numeric_name(l, s); }
 static char const* _Loc_time_name(const void* l, char* s)
-{ return _Locale_time_name(__STATIC_CAST(const _Locale_time*, l), s); }
+{ return _Locale_time_name(l,s); }
 static char const* _Loc_collate_name( const void* l, char* s)
-{ return _Locale_collate_name(__STATIC_CAST(const _Locale_collate*, l), s); }
+{ return _Locale_collate_name(l,s); }
 static char const* _Loc_monetary_name(const void* l, char* s)
-{ return _Locale_monetary_name(__STATIC_CAST(const _Locale_monetary*, l), s); }
+{ return _Locale_monetary_name(l,s); }
 static char const* _Loc_messages_name(const void* l, char* s)
-{ return _Locale_messages_name(__STATIC_CAST(const _Locale_messages*, l), s); }
+{ return _Locale_messages_name(l,s); }
 
 static const char* _Loc_ctype_default(char* p)
 { return _Locale_ctype_default(p); }
@@ -72,12 +71,12 @@ static const char* _Loc_monetary_default(char* p)
 static const char* _Loc_messages_default(char* p)
 { return _Locale_messages_default(p); }
 
-static void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy((_Locale_ctype*)p); }
-static void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy((_Locale_numeric*)p); }
-static void _Loc_time_destroy(void* p)     {_Locale_time_destroy((_Locale_time*)p);}
-static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy((_Locale_collate*)p);}
-static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy((_Locale_monetary*)p);}
-static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy((_Locale_messages*)p);}
+static void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy(p); }
+static void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy(p); }
+static void _Loc_time_destroy(void* p)     {_Locale_time_destroy(p);}
+static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy(p);}
+static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy(p);}
+static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy(p);}
 
 typedef void* (*loc_create_func_t)(const char *, _Locale_name_hint*);
 typedef char const* (*loc_name_func_t)(const void* l, char* s);
