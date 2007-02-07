@@ -6,6 +6,7 @@ Q1.0 What is STLport?
 Q1.1 What are the benefits from using STLport?
 Q1.2 What versions of STLport are available?
 Q1.3 Where is the documentation or user guide?
+Q1.4 What is the version policy ?
 
 Q2 General
 
@@ -91,6 +92,25 @@ locations:
     reported as 'implementation specific'.
 
 ========================================================================
+
+Q1.4 What is the version policy ?
+
+A1.4 STLport version information contains three numbers like '5.1.0'. '5'
+is the major version number, '1' is the minor and '0' is the patch level. Rules
+to modify the different numbers are:
+- Major version number: Radical modification, revolution. As STLport is "simply"
+a C++ Standard library implementation, the only event that can lead to an increase
+of this number is a new contributor team or perhaps a new distribution license.
+- Minor version number: Upgrading to an STLport library with a different
+minor version require recompilation of all modules depending on it.
+- Patch level: Guaranty binary compatibility, upgrading to an STLport library
+with different patch level do not require rebuild of modules, rebuilding and
+installing the STLport libraries will work. However, as STLport contains a lot of
+template code, only rebuilding STLport might not be enough to get all the fixes
+in your application so even in this case rebuilding your modules is advised.
+
+========================================================================
+
 
 Q2.0 Do I need a C++ compiler?
 
