@@ -170,17 +170,6 @@ template class num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t
 # endif /* INSTANTIATE_WIDE_STREAMS */
 #endif
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
-{ return num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
-#ifndef _STLP_NO_WCHAR_T
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
-{ return num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
-#endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 _STLP_END_NAMESPACE
 
 // Local Variables:

@@ -713,6 +713,48 @@ _STLP_DECLSPEC _Locale_impl* _STLP_CALL _copy_Nameless_Locale_impl(_Locale_impl 
   return loc_new;
 }
 
+/* _GetFacetId implementation have to be here in order to be in the same translation unit
+ * as where id are initialize (in _Stl_loc_assign_ids) */
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<char, istreambuf_iterator<char, char_traits<char> > >*)
+{ return money_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
+{ return money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_get<char, istreambuf_iterator<char, char_traits<char> > >*)
+{ return num_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
+{ return num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<char, istreambuf_iterator<char, char_traits<char> > >*)
+{ return time_get<char, istreambuf_iterator<char, char_traits<char> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<char, ostreambuf_iterator<char, char_traits<char> > >*)
+{ return time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id; }
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*)
+{ return time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id; }
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
 _STLP_END_NAMESPACE
 
 
