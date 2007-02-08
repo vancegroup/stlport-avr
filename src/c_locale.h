@@ -80,34 +80,26 @@ void _Locale_final();
  * neither be an empty string nor a null pointer.
  *
  * These functions return NULL to indicate failure.
- *
- * Note These functions return a void* instead of the appropriate
- * _Locale_* struct because they are used with __acquire_category which
- * requires that all functions have the same signature.
  */
-void * _Locale_ctype_create(const char *, struct _Locale_name_hint*);
-void * _Locale_numeric_create(const char *, struct _Locale_name_hint*);
-void * _Locale_time_create(const char *, struct _Locale_name_hint*);
-void * _Locale_collate_create(const char *, struct _Locale_name_hint*);
-void * _Locale_monetary_create(const char *, struct _Locale_name_hint*);
-void * _Locale_messages_create(const char *, struct _Locale_name_hint*);
+struct _Locale_ctype* _Locale_ctype_create(const char *, struct _Locale_name_hint*);
+struct _Locale_numeric* _Locale_numeric_create(const char *, struct _Locale_name_hint*);
+struct _Locale_time* _Locale_time_create(const char *, struct _Locale_name_hint*);
+struct _Locale_collate* _Locale_collate_create(const char *, struct _Locale_name_hint*);
+struct _Locale_monetary* _Locale_monetary_create(const char *, struct _Locale_name_hint*);
+struct _Locale_messages* _Locale_messages_create(const char *, struct _Locale_name_hint*);
 
 
 /* Release a category of a locale
  *
  * These functions are used to release a category acquired with the
  * according _Locale_*_create() functions.
- *
- * Note: For the same reasons as for the *_create functions, these
- * take void* instead of the correct types so that they can be used
- * with __release_category.
  */
-void _Locale_ctype_destroy(void *);
-void _Locale_numeric_destroy(void *);
-void _Locale_time_destroy(void *);
-void _Locale_collate_destroy(void *);
-void _Locale_monetary_destroy(void *);
-void _Locale_messages_destroy(void *);
+void _Locale_ctype_destroy(struct _Locale_ctype *);
+void _Locale_numeric_destroy(struct _Locale_numeric *);
+void _Locale_time_destroy(struct _Locale_time *);
+void _Locale_collate_destroy(struct _Locale_collate *);
+void _Locale_monetary_destroy(struct _Locale_monetary *);
+void _Locale_messages_destroy(struct _Locale_messages *);
 
 
 /*
@@ -122,20 +114,18 @@ const char * _Locale_collate_default(char * __buf);
 const char * _Locale_monetary_default(char * __buf);
 const char * _Locale_messages_default(char * __buf);
 
-
 /* Retrieve the name of the given category
  *
  * __buf points to a buffer that can hold at least _Locale_MAX_SIMPLE_NAME
  * characters.  These functions store the name, as a null-terminated
- * string, in __buf.
- * TODO: can this fail? How is that signalled then?
+ * string, in __buf. This function can't fail, at worst name is truncated.
  */
-char const* _Locale_ctype_name(const void *, char* __buf);
-char const* _Locale_numeric_name(const void *, char* __buf);
-char const* _Locale_time_name(const void *, char* __buf);
-char const* _Locale_collate_name(const void *, char*  __buf);
-char const* _Locale_monetary_name(const void *, char* __buf);
-char const* _Locale_messages_name(const void *, char* __buf);
+char const* _Locale_ctype_name(const struct _Locale_ctype *, char* __buf);
+char const* _Locale_numeric_name(const struct _Locale_numeric *, char* __buf);
+char const* _Locale_time_name(const struct _Locale_time *, char* __buf);
+char const* _Locale_collate_name(const struct _Locale_collate *, char*  __buf);
+char const* _Locale_monetary_name(const struct _Locale_monetary *, char* __buf);
+char const* _Locale_messages_name(const struct _Locale_messages *, char* __buf);
 
 
 /*
@@ -168,7 +158,7 @@ char const* _Locale_compose_name(char *__buf,
                                  const char *__Monetary, const char *__Messages,
                                  const char *__DefaultName);
 
-/* Funstions to improve locale creation process. For some locale API (Win32)
+/* Functions to improve locale creation process. For some locale API (Win32)
  * you need to find a locale identification from the name which can be a
  * rather expensive operation especially if you do so for all facets of a
  * locale. Those functions can be used to extract from a API dependent facet
@@ -201,8 +191,8 @@ const _Locale_mask_t * _Locale_ctype_table(struct _Locale_ctype *);
 /*
  * c is either EOF, or an unsigned char value.
  */
-int _Locale_toupper(struct _Locale_ctype *, int);
-int _Locale_tolower(struct _Locale_ctype *, int);
+int _Locale_toupper(struct _Locale_ctype *, int /* c */);
+int _Locale_tolower(struct _Locale_ctype *, int /* c */);
 
 
 # ifndef _STLP_NO_WCHAR_T
@@ -390,15 +380,15 @@ int          _Locale_n_sign_posn(struct _Locale_monetary *);
 /*
  * month is in the range [0, 12).
  */
-const char * _Locale_full_monthname(struct _Locale_time *, int);
-const char * _Locale_abbrev_monthname(struct _Locale_time *, int);
+const char * _Locale_full_monthname(struct _Locale_time *, int /* month */);
+const char * _Locale_abbrev_monthname(struct _Locale_time *, int /* month */);
 
 
 /*
  * day is in the range [0, 7).  Sunday is 0.
  */
-const char * _Locale_full_dayofweek(struct _Locale_time *, int);
-const char * _Locale_abbrev_dayofweek(struct _Locale_time *, int);
+const char * _Locale_full_dayofweek(struct _Locale_time *, int /* day */);
+const char * _Locale_abbrev_dayofweek(struct _Locale_time *, int /* day */);
 
 
 const char * _Locale_d_t_fmt(struct _Locale_time *);

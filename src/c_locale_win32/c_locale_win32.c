@@ -292,7 +292,7 @@ extern "C" {
   _Locale_lcid_t* _Locale_get_messages_hint(_Locale_messages_t* lmessages)
   { return (lmessages != 0) ? &lmessages->lc : 0; }
 
-  void* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint) {
+  _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
     char cp_name[MAX_CP_LEN + 1];
     int NativeCP;
@@ -392,7 +392,7 @@ extern "C" {
     return ltype;
   }
 
-  void* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_hint) {
+  _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_hint) {
     char *GroupingBuffer;
     char cname[_Locale_MAX_SIMPLE_NAME];
     int BufferSize;
@@ -702,7 +702,7 @@ extern "C" {
     return buf_size;
   }
 
-  void* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint) {
+  _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint) {
     int size, month, dayofweek;
     size_t length;
     char fmt80[80];
@@ -787,7 +787,7 @@ extern "C" {
     return ltime;
   }
 
-  void* _Locale_collate_create(const char * name, _Locale_lcid_t* lc_hint) {
+  _Locale_collate_t* _Locale_collate_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
 
     _Locale_collate_t *lcol=(_Locale_collate_t*)malloc(sizeof(_Locale_collate_t));
@@ -802,7 +802,7 @@ extern "C" {
     return lcol;
   }
 
-  void* _Locale_monetary_create(const char * name, _Locale_lcid_t* lc_hint) {
+  _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
     char *GroupingBuffer;
     int BufferSize;
@@ -852,7 +852,7 @@ extern "C" {
     return lmon;
   }
 
-  void* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint) {
+  _Locale_messages_t* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
     _Locale_messages_t *lmes=(_Locale_messages_t*)malloc(sizeof(_Locale_messages_t));
     if (!lmes) return lmes;
@@ -890,28 +890,28 @@ extern "C" {
   const char* _Locale_messages_default(char* buf)
   { return _Locale_common_default(buf); }
 
-  char const* _Locale_ctype_name(const void* ltype, char* buf) {
+  char const* _Locale_ctype_name(const _Locale_ctype_t* ltype, char* buf) {
     char cp_buf[MAX_CP_LEN + 1];
-    my_ltoa(((const _Locale_ctype_t*)ltype)->cp, cp_buf);
-    return __GetLocaleName(((const _Locale_ctype_t*)ltype)->lc.id, cp_buf, buf);
+    my_ltoa(ltype->cp, cp_buf);
+    return __GetLocaleName(ltype->lc.id, cp_buf, buf);
   }
 
-  char const* _Locale_numeric_name(const void* lnum, char* buf)
-  { return __GetLocaleName(((const _Locale_numeric_t*)lnum)->lc.id, ((const _Locale_numeric_t*)lnum)->cp, buf); }
+  char const* _Locale_numeric_name(const _Locale_numeric_t* lnum, char* buf)
+  { return __GetLocaleName(lnum->lc.id, lnum->cp, buf); }
 
-  char const* _Locale_time_name(const void* ltime, char* buf)
-  { return __GetLocaleName(((const _Locale_time_t*)ltime)->lc.id, ((const _Locale_time_t*)ltime)->cp, buf); }
+  char const* _Locale_time_name(const _Locale_time_t* ltime, char* buf)
+  { return __GetLocaleName(ltime->lc.id, ltime->cp, buf); }
 
-  char const* _Locale_collate_name(const void* lcol, char* buf)
-  { return __GetLocaleName(((const _Locale_collate_t*)lcol)->lc.id, ((const _Locale_collate_t*)lcol)->cp, buf); }
+  char const* _Locale_collate_name(const _Locale_collate_t* lcol, char* buf)
+  { return __GetLocaleName(lcol->lc.id, lcol->cp, buf); }
 
-  char const* _Locale_monetary_name(const void* lmon, char* buf)
-  { return __GetLocaleName(((const _Locale_monetary_t*)lmon)->lc.id, ((const _Locale_monetary_t*)lmon)->cp, buf); }
+  char const* _Locale_monetary_name(const _Locale_monetary_t* lmon, char* buf)
+  { return __GetLocaleName(lmon->lc.id, lmon->cp, buf); }
 
-  char const* _Locale_messages_name(const void* lmes, char* buf)
-  { return __GetLocaleName(((const _Locale_messages_t*)lmes)->lc.id, ((const _Locale_messages_t*)lmes)->cp, buf); }
+  char const* _Locale_messages_name(const _Locale_messages_t* lmes, char* buf)
+  { return __GetLocaleName(lmes->lc.id, lmes->cp, buf); }
 
-  void _Locale_ctype_destroy(void* ltype) { /* _Locale_ctype_t */
+  void _Locale_ctype_destroy(_Locale_ctype_t* ltype) {
     if (!ltype) return;
 
     free(ltype);
@@ -924,9 +924,8 @@ extern "C" {
     free(lnum);
   }
 
-  void _Locale_time_destroy(void* ltime) { /* _Locale_time_t */
+  void _Locale_time_destroy(_Locale_time_t* ltime) {
     int i;
-    _Locale_time_t* ltime = (_Locale_time_t*)loc;
     if (!ltime) return;
 
     for (i = 0; i < 12; ++i) {
@@ -948,20 +947,20 @@ extern "C" {
     free(ltime);
   }
 
-  void _Locale_collate_destroy(void* lcol) { /* _Locale_collate_t */
+  void _Locale_collate_destroy(_Locale_collate_t* lcol) {
     if (!lcol) return;
 
     free(lcol);
   }
 
-  void _Locale_monetary_destroy(void* lmon) { /* _Locale_monetary_t */
+  void _Locale_monetary_destroy(_Locale_monetary_t* lmon) {
     if (!lmon) return;
 
-    if (((_Locale_monetary_t*)lmon)->grouping) free(((_Locale_monetary_t*)lmon)->grouping);
+    if (lmon->grouping) free(lmon->grouping);
     free(lmon);
   }
 
-  void _Locale_messages_destroy(void* lmes) { /* _Locale_messages_t */
+  void _Locale_messages_destroy(_Locale_messages_t* lmes) {
     if (!lmes) return;
 
     free(lmes);

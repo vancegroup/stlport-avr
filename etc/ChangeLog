@@ -34,6 +34,26 @@
 	iterator nested type is accessible  even if type used to instanciate
 	the container is not yet completely defined.
 
+2007-02-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale.h: Add type information for the following functions
+	of the localization support API:
+	  - _Locale_*_create
+	  - _Locale_*_destroy
+	  - _Locale_*_name
+	Also add some variable name to make associated documentation more
+	explicit.
+
+	* src/c_locale_win32/c_locale_win32.c,
+	src/c_locale_glibc/c_locale_glibc.c, c_locale_glibc2.c: Adapted to
+	conform to new localization API functions prototypes. Adaptation
+	in glibc before 2.2 has been updated but compilation hasn't been
+	completed because of the lack of the glibc required version.
+
+	* src/locale_catalog.cpp: Now wrapper functions are used to
+	offer a homogeneous prototype to type safe localization API
+	functions.
+
 2007-02-02  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/hash_test.cpp: add test for hash_multimap, equivalent
