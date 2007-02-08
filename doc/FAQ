@@ -6,7 +6,7 @@ Q1.0 What is STLport?
 Q1.1 What are the benefits from using STLport?
 Q1.2 What versions of STLport are available?
 Q1.3 Where is the documentation or user guide?
-Q1.4 What is the version policy ?
+Q1.4 What is the version policy?
 
 Q2 General
 
@@ -84,7 +84,7 @@ implementation you might find information you need at the following
 locations:
   - The ISO/IEC 14882:2003 document you can buy for a very cheap price.
   - For STL containers you can use SGI documentation (http://www.sgi.com/tech/stl/).
-    Beware however , STL described in this document is not identical to the
+    Beware however, STL described in this document is not identical to the
     Standardized version described in ISO/IEC. This documentation can be very
     useful for STLport extensions like hash containers (hash_map, hash_set...)
   - You can also use the documentation coming with your compiler as most
@@ -93,21 +93,24 @@ locations:
 
 ========================================================================
 
-Q1.4 What is the version policy ?
+Q1.4 What is the version policy?
 
 A1.4 STLport version information contains three numbers like '5.1.0'. '5'
-is the major version number, '1' is the minor and '0' is the patch level. Rules
-to modify the different numbers are:
-- Major version number: Radical modification, revolution. As STLport is "simply"
-a C++ Standard library implementation, the only event that can lead to an increase
-of this number is a new contributor team or perhaps a new distribution license.
-- Minor version number: Upgrading to an STLport library with a different
-minor version require recompilation of all modules depending on it.
-- Patch level: Guaranty binary compatibility, upgrading to an STLport library
-with different patch level do not require rebuild of modules, rebuilding and
-installing the STLport libraries will work. However, as STLport contains a lot of
-template code, only rebuilding STLport might not be enough to get all the fixes
-in your application so even in this case rebuilding your modules is advised.
+is the major version number, '1' is the minor and '0' is the patch level.
+Policy for this numbers are:
+  - changes in major version number: radical modification, new era.
+  - changes in minor version number: significant changes, new features,
+    changes in interface part; switching to an STLport library with a different
+    minor version require recompilation of all modules depending on it.
+  - changes in patch level: bugfixes; we keep in mind binary compatibility,
+    but really can't strongly guarantee it; switching to an STLport library
+    with different patch level do not require rebuild of modules---rebuilding and
+    installing the STLport libraries should work; however, as STLport contains
+    a lot of template code, you should pay attention to fact that all you modules
+    was build with SAME STLport headers---otherwise problems possible;
+    recompilation of one part with only rebuilding STLport might not be enough
+    to get all the fixes in your application so even in this case rebuilding
+    your modules is advised.
 
 ========================================================================
 
