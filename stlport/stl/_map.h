@@ -419,6 +419,18 @@ struct __move_traits<multimap<_Key,_Tp,_Compare,_Alloc> > :
 {};
 #endif
 
+#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Key, class _Tp, class _Compare, class _Alloc>
+struct _SwapImplemented<map<_Key,_Tp,_Compare,_Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Key, class _Tp, class _Compare, class _Alloc>
+struct _SwapImplemented<multimap<_Key,_Tp,_Compare,_Alloc> > {
+  typedef __true_type implemented;
+};
+#endif
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_MAP_H */

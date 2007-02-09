@@ -637,6 +637,13 @@ struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
 };
 #endif
 
+#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
+struct _SwapImplemented<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
+  typedef __true_type implemented;
+};
+#endif
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_HASHTABLE_H */

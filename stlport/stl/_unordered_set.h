@@ -341,6 +341,16 @@ struct __move_traits<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
 #  endif
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct _SwapImplemented<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct _SwapImplemented<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 class insert_iterator<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
   typedef unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;

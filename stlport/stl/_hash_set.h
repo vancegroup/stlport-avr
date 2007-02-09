@@ -427,6 +427,16 @@ struct __move_traits<hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
 #  endif
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct _SwapImplemented<hash_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
+struct _SwapImplemented<hash_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
 class insert_iterator<hash_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
   typedef hash_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;

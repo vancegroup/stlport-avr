@@ -732,6 +732,13 @@ struct __move_traits<list<_Tp, _Alloc> > {
 };
 #endif
 
+#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp, class _Alloc>
+struct _SwapImplemented<list<_Tp, _Alloc> > {
+  typedef __true_type implemented;
+};
+#endif
+
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_LIST_IMPL_H */

@@ -429,6 +429,16 @@ struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
 {};
 #  endif
 
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct _SwapImplemented<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct _SwapImplemented<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
+  typedef __true_type implemented;
+};
+
 // Specialization of insert_iterator so that it will work for hash_map
 // and hash_multimap.
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
