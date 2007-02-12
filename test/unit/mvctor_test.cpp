@@ -15,6 +15,9 @@
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
+#  if defined (STLPORT)
+using namespace std::tr1;
+#  endif
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MoveConstructorTest);

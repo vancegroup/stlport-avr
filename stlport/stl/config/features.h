@@ -627,6 +627,7 @@ namespace _STLP_PRIV_NAME {
 #  endif
 
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD_NAME {
+#  define _STLP_BEGIN_TR1_NAMESPACE namespace tr1 {
 #  define _STLP_END_NAMESPACE }
 
 #  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
@@ -661,6 +662,7 @@ namespace _STLP_PRIV_NAME {
 #  endif /* Use std::rel_ops namespace */
 
 #  define _STLP_STD ::_STLP_STD_NAME
+#  define _STLP_TR1 tr1::
 
 /* Official STLport namespace when std is not redefined.
  * Here we don't use a macro as stlport is used as file name by boost
@@ -678,7 +680,9 @@ namespace _STL = _STLP_STD_NAME;
 /* STLport is being put into global namespace */
 #  define _STLP_STD
 #  define _STLP_PRIV
+#  define _STLP_TR1
 #  define _STLP_BEGIN_NAMESPACE
+#  define _STLP_BEGIN_TR1_NAMESPACE
 #  define _STLP_END_NAMESPACE
 #  define _STLP_MOVE_TO_PRIV_NAMESPACE
 #  define _STLP_MOVE_TO_STD_NAMESPACE

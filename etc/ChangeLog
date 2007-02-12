@@ -1,3 +1,15 @@
+2007-02-12  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/features.h: Add necessary macro to work
+	with tr1 namespace of the C++ technical report.
+
+	* stlport/stl/_unordered_set.h, _unordered_map.h: Put unordered
+	containers in tr1 namespace.
+
+	* test/unit/unordered_test.cpp, mvctor_test.cpp,
+	mvctor_declaration_test.cpp: Add necessary using directive
+	to access tr1 namespace.
+
 2007-02-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* Repository: revert back r2908;

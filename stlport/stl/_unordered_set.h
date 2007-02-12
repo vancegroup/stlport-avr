@@ -26,11 +26,13 @@
 
 _STLP_BEGIN_NAMESPACE
 
+_STLP_BEGIN_TR1_NAMESPACE
+
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedSetTraitsT, Const_traits)
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class unordered_set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -42,7 +44,7 @@ class unordered_set
   typedef _STLP_PRIV _UnorderedSetTraitsT<_Value> _UnorderedSetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedSetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedSetTraits, _STLP_STD::_STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;
@@ -173,7 +175,7 @@ public:
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultisetTraitsT, Const_traits)
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
-          _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Value>),
+          _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
           _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
 class unordered_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
@@ -185,7 +187,7 @@ class unordered_multiset
   typedef _STLP_PRIV _UnorderedMultisetTraitsT<_Value> _UnorderedMultisetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedMultisetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedMultisetTraits, _STLP_STD::_STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;
@@ -324,26 +326,28 @@ public:
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 
+_STLP_END_NAMESPACE
+
 // Specialization of insert_iterator so that it will work for unordered_set
 // and unordered_multiset.
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-struct __move_traits<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > :
-  _STLP_PRIV __move_traits_aux<typename unordered_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+struct __move_traits<_STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > :
+  _STLP_PRIV __move_traits_aux<typename _STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
 {};
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-struct __move_traits<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
-  _STLP_PRIV __move_traits_aux<typename unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
+struct __move_traits<_STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > :
+  _STLP_PRIV __move_traits_aux<typename _STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc>::_Ht>
 {};
 #  endif
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-class insert_iterator<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
+class insert_iterator<_STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
-  typedef unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
+  typedef _STLP_TR1 unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
   _Container* container;
 public:
   typedef _Container          container_type;
@@ -367,9 +371,9 @@ public:
 };
 
 template <class _Value, class _HashFcn, class _EqualKey, class _Alloc>
-class insert_iterator<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
+class insert_iterator<_STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> > {
 protected:
-  typedef unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
+  typedef _STLP_TR1 unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> _Container;
   _Container* container;
   typename _Container::iterator iter;
 public:
