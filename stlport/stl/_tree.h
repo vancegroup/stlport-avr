@@ -675,13 +675,6 @@ struct __move_traits<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _T
   : _STLP_PRIV __move_traits_help2<_Compare, _Alloc> {};
 #endif
 
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-struct _SwapImplemented<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> > {
-  typedef __true_type implemented;
-};
-#endif
-
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_INTERNAL_TREE_H */

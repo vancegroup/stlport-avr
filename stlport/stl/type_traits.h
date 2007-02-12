@@ -530,10 +530,13 @@ struct _IsSTLportClass {
 #endif
 };
 
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Tp>
 struct _SwapImplemented {
-  typedef __false_type implemented;
+  typedef typename _IsSTLportClass<_Tp>::_Ret _Ret;
+#  if defined (__BORLANDC__)
+  enum { _Is = _IsSTLportClass<_Tp>::_Is };
+#  endif
 };
 #endif
 

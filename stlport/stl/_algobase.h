@@ -60,32 +60,12 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
-_STLP_MOVE_TO_PRIV_NAMESPACE
-template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const __true_type& /*SwapImplemented*/) {
-  __a.swap(__b);
-}
-
-template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const __false_type& /*SwapImplemented*/) {
-  _Tp __tmp = __a;
-  __a = __b;
-  __b = __tmp;
-}
-_STLP_MOVE_TO_STD_NAMESPACE
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 // swap and iter_swap
 template <class _Tp>
 inline void swap(_Tp& __a, _Tp& __b) {
-#if defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
-  _STLP_PRIV __swap_aux(__a, __b, typename _SwapImplemented<_Tp>::implemented());
-#else
   _Tp __tmp = __a;
   __a = __b;
   __b = __tmp;
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

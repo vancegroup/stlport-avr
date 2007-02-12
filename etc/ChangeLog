@@ -1,14 +1,13 @@
-2007-02-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+2007-02-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* stlport/stl/_hash_set.h, _map.h, _unordered_map.h, _tree.h:
-	swap was not specialized for containers with swap, as required;
-	fixed;
+	* Repository: revert back r2908;
 
-	* stlport/stl/_vector.h, _algobase.h, type_traits.h: ditto;
+	* test/unit/swap_test.cpp: test that swap( a, b ) has specialization
+	a.swap( b ), when required;
 
-	* stlport/stl/_hashtable.h, _hash_map.h, _deque.h: ditto;
-
-	* stlport/stl/_unordered_set.h, _list.h: ditto.
+	* stlport/stl/_algobase.h: _SwapImplemented useless, because it never
+	specialized elsewhere---remove swap specialization here, use instead
+	swap specialization from _relops_cont.h, when required.
 
 2007-02-07  Francois Dumont  <dums@users.sourceforge.net>
 

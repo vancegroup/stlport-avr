@@ -367,16 +367,6 @@ struct __move_traits<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
 #  endif
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct _SwapImplemented<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
-  typedef __true_type implemented;
-};
-
-template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct _SwapImplemented<unordered_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
-  typedef __true_type implemented;
-};
-
-template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
 class insert_iterator<unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > {
 protected:
   typedef unordered_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> _Container;
