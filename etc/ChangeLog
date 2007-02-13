@@ -1,5 +1,10 @@
 2007-02-13  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/config/features.h, _msvc.h, stl_mycomp.h: Removed
+	_STLP_USING_NAMESPACE_BUG macro config. STLport private namespace
+	is now always nested in stlport one. Makes namespace management
+	easier.
+
 	* stlport/stl/_algobase.h: Restore workaround for compilers
 	not supporting template function partial ordering feature, was
 	resulting in regression for a number of compilers, VC6, Borlands.

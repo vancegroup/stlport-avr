@@ -261,10 +261,6 @@
 // overloads in ::namespace and not only in std::.
 // #  define _STLP_HAS_GLOBAL_C_MATH_FUNCTIONS 1
 
-// uncomment this if your compiler has problem with the import of a namespace in
-// an other one with the using namespace directive
-// #  define _STLP_USING_NAMESPACE_BUG 1
-
 // Edit relative path below (or put full path) to get native
 // compiler headers included. Default is "../include".
 // C headers may reside in different directory, so separate macro is provided.

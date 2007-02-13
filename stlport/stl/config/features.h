@@ -617,33 +617,16 @@ namespace stdD = std;
 #    define _STLP_STD_NAME std
 #  endif /* _STLP_USE_OWN_NAMESPACE */
 
-#  if !defined (_STLP_USING_NAMESPACE_BUG)
-#    define _STLP_PRIV_NAME stlp_priv
-namespace _STLP_PRIV_NAME {
-  using namespace _STLP_STD_NAME;
-}
-#  else
-#    define _STLP_PRIV_NAME priv
-#  endif
+#  define _STLP_PRIV_NAME priv
 
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD_NAME {
 #  define _STLP_BEGIN_TR1_NAMESPACE namespace tr1 {
 #  define _STLP_END_NAMESPACE }
 
 #  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
-#    if !defined (_STLP_USING_NAMESPACE_BUG)
-/* We prefer to make private namespace a totaly seperated namespace...
- */
-#      define _STLP_PRIV ::_STLP_PRIV_NAME::
-#      define _STLP_MOVE_TO_PRIV_NAMESPACE } namespace _STLP_PRIV_NAME {
-#      define _STLP_MOVE_TO_STD_NAMESPACE } namespace _STLP_STD_NAME {
-#    else
-/* but sometimes we can't:
- */
-#      define _STLP_PRIV _STLP_PRIV_NAME::
-#      define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
-#      define _STLP_MOVE_TO_STD_NAMESPACE }
-#    endif
+#    define _STLP_PRIV _STLP_PRIV_NAME::
+#    define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
+#    define _STLP_MOVE_TO_STD_NAMESPACE }
 #  else
 #    define _STLP_PRIV
 #    define _STLP_MOVE_TO_PRIV_NAMESPACE
