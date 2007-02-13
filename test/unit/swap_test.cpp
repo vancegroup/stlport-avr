@@ -16,6 +16,10 @@ class SwapTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(SwapTest);
   CPPUNIT_TEST(swap1);
   CPPUNIT_TEST(swprnge1);
+#if defined (STLPORT) && \
+   !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(swap_container);
   CPPUNIT_TEST_SUITE_END();
 
@@ -67,6 +71,8 @@ class Obj
 
 void SwapTest::swap_container()
 {
+#if !defined (STLPORT) || \
+     defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   vector<Obj> v1;
   vector<Obj> v2;
 
@@ -95,4 +101,5 @@ void SwapTest::swap_container()
 
   CPPUNIT_CHECK( v2[0].v == -1 );
   CPPUNIT_CHECK( v2[1].v == -2 );
+#endif
 }

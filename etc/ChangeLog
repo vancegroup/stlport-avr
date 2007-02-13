@@ -1,3 +1,16 @@
+2007-02-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algobase.h: Restore workaround for compilers
+	not supporting template function partial ordering feature, was
+	resulting in regression for a number of compilers, VC6, Borlands.
+	A template class like _SwapImplemented do not have to be specialized
+	to be useful, this class is used to detect types having a swap
+	method. Detection is based on the class being flagged as STLport
+	class thanks to the __stlport_class inheritance.
+
+	* test/unit/swap_test.cpp: Add macro checks to ignore test for
+	compilers we know not being able to support it.
+
 2007-02-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/features.h: Add necessary macro to work
