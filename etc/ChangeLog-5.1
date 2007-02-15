@@ -1,3 +1,33 @@
+2007-02-14  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/config/_intel.h: Configuration fix, Intel compiler
+	before 8.1 have problem with template method specialization. Thanks
+	Dragan Tubic.
+
+2007-02-09  Francois Dumont  <dums@stlport...>
+
+	* test/unit/locale_test.cpp: Enhance LocaleTest::collate_facet
+	test case to reveal a bug in glibc localization portage.
+
+	* src/c_locale_glibc/c_locale_glibc2.c: Fixed _Locale_strcmp
+	and _Locale_strcmp and _Locale_strwcmp implementation to take
+	into account buffer size, comparison used to always been done on the
+	whole input strings up to the termination character.
+
+	* stlport/stl/type_manips.h, test/unit/mvctor_test.cpp,
+	type_traits_test.cpp: Remove relation between STLport __true_type and
+	__false_type and homonyms ones in libstd++. Add workaround in the 2
+	test suite requiring use of those types.
+
+2007-02-08  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_threads.h, src/locale.cpp: Add missing parenthesis
+	in some macro checks thanks Jan Echternash bug report 1653966.
+
+	* test/unit/locale_test.cpp: Made LocaleTest::collate_facet test
+	really meaningful even if it requires french locale support for
+	part of it.
+
 2007-02-01  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_solaris.h: __LONG_MAX__ defined on

@@ -35,6 +35,13 @@
 #  define _STLP_NOTHROW
 #endif
 
+#if (__ICL <= 810)
+/* If method specialization is activated, compiler do not export some
+ * symbols anymore.
+ */
+#  define _STLP_NO_METHOD_SPECIALIZATION 1
+#endif
+
 #if (__ICL >= 800)
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 #endif

@@ -54,6 +54,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TypeTraitsTest);
 
 #if defined (STLPORT)
 
+#  if defined (__GNUC__) && defined (_STLP_USE_NAMESPACES)
+// libstdc++ sometimes exposed its own __true_type type in global
+// namespace resulting in an ambiguity.
+#    define __true_type std::__true_type
+#    define __false_type std::__false_type
+#  endif
+
 int type_to_value(__true_type)
 { return 1; }
 int type_to_value(__false_type)

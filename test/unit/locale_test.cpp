@@ -4,6 +4,7 @@
 #  include <locale>
 #  include <stdexcept>
 #  include <memory>
+#  include <algorithm>
 //#  include <iostream>
 
 #  include "complete_digits.h"
@@ -31,11 +32,11 @@ struct ref_locale {
 static const ref_locale tested_locales[] = {
 //{  name,         decimal_point, thousands_sep, money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
   { "fr_FR",       ",",           "\xa0",        "EUR ",           "FRF ",               "",           "",           ",",
-#if defined (WIN32) || defined (_WIN32)
+#  if defined (WIN32) || defined (_WIN32)
                                                                                                                                           "\xa0" },
-#else
+#  else
                                                                                                                                           " " },
-#endif
+#  endif
   { "ru_RU.koi8r", ",",           ".",           "RUB ",           "RUR ",               "",           "\xd2\xd5\xc2", ".",               " " },
   { "en_GB",       ".",           ",",           "GBP ",           "",                   "\xa3",       "",           ".",                 "," },
   { "en_US",       ".",           ",",           "USD ",           "",                   "$",          "",           ".",                 "," },
@@ -49,9 +50,9 @@ static const ref_locale tested_locales[] = {
 class LocaleTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(LocaleTest);
-#if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
+#  if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(locale_by_name);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(loc_has_facet);
@@ -61,21 +62,21 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
-#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
+#  if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(locale_init_problem);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(default_locale);
-#if !defined (STLPORT)
+#  if !defined (STLPORT)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_STOP_IGNORE;
 #if (defined (STLPORT) && \
    (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS))) || \
    (defined (_MSC_VER) && (_MSC_VER < 1300))
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(combine);
   CPPUNIT_TEST_SUITE_END();
 
@@ -97,7 +98,6 @@ private:
   void _money_put_get( const locale&, const ref_locale& );
   void _money_put_get2( const locale& loc, const locale& streamLoc, const ref_locale& );
   void _time_put_get( const locale&, const ref_locale& );
-  void _collate_facet( const locale&, const ref_locale& );
   void _ctype_facet( const locale&, const ref_locale& );
   void _ctype_facet_w( const locale&, const ref_locale& );
   void _locale_init_problem( const locale&, const ref_locale& );
@@ -384,11 +384,11 @@ void LocaleTest::_money_put_get2( const locale& loc, const locale& streamLoc, co
     //money_get
     {
       ios_base::iostate err = ios_base::goodbit;
-#if defined (STLPORT)
+#  if defined (STLPORT)
       _STLP_LONGEST_FLOAT_TYPE val;
-#else
+#  else
       long double val;
-#endif
+#  endif
 
       istringstream istr(str_res);
       fmg.get(istr, istreambuf_iterator<char, char_traits<char> >(), false, ostr, err, val);
@@ -625,16 +625,6 @@ void LocaleTest::_time_put_get( const locale& loc, const ref_locale&)
   CPPUNIT_ASSERT( yet_more.tm_mday == xmas.tm_mday );
   CPPUNIT_ASSERT( yet_more.tm_mon == xmas.tm_mon );
   CPPUNIT_ASSERT( yet_more.tm_year == xmas.tm_year );
-}
-
-void LocaleTest::_collate_facet( const locale& loc, const ref_locale&)
-{
-  CPPUNIT_ASSERT( has_facet<collate<char> >(loc) );
-  collate<char> const& col = use_facet<collate<char> >(loc);
-
-  char const str1[] = "françois";
-  char const str2[] = "francois";
-  CPPUNIT_ASSERT( col.compare(str1, str1 + sizeof(str1) / sizeof(str1[0]), str2, str2 + sizeof(str2) / sizeof(str2[0])) );
 }
 
 void LocaleTest::_ctype_facet( const locale& loc, const ref_locale&)
@@ -933,7 +923,7 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     auto_ptr<locale> loc;
-#if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
       loc.reset(new locale(tested_locales[i].name));
     }
@@ -941,13 +931,13 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
       //This locale is not supported.
       continue;
     }
-#else
+#  else
     //Without exception support we only test C locale.
     if (tested_locales[i].name[0] != 'C' ||
         tested_locales[i].name[1] != 0)
       continue;
     loc.reset(new locale(tested_locales[i].name));
-#endif
+#  endif
     CPPUNIT_MESSAGE( loc->name().c_str() );
     (inst.*__test)(*loc, tested_locales[i]);
   }
@@ -1005,7 +995,90 @@ void LocaleTest::time_put_get()
 { test_supported_locale(*this, &LocaleTest::_time_put_get); }
 
 void LocaleTest::collate_facet()
-{ test_supported_locale(*this, &LocaleTest::_collate_facet); }
+{
+  {
+    CPPUNIT_ASSERT( has_facet<collate<char> >(locale::classic()) );
+    collate<char> const& col = use_facet<collate<char> >(locale::classic());
+
+    char const str1[] = "abcdef1";
+    char const str2[] = "abcdef2";
+    const size_t size1 = sizeof(str1) / sizeof(str1[0]) - 1;
+    const size_t size2 = sizeof(str2) / sizeof(str2[0]) - 1;
+
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) == 0 );
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1, str2, str2 + size2) == -1 );
+
+    //Smallest string should be before largest one:
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) == -1 );
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
+  }
+
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+  try {
+    locale loc("fr_FR");
+    {
+      CPPUNIT_ASSERT( has_facet<collate<char> >(loc) );
+      collate<char> const& col = use_facet<collate<char> >(loc);
+
+      char const str1[] = "abcdef1";
+      char const str2[] = "abcdef2";
+      const size_t size1 = sizeof(str1) / sizeof(str1[0]) - 1;
+      const size_t size2 = sizeof(str2) / sizeof(str2[0]) - 1;
+
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) == 0 );
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1, str2, str2 + size2) == -1 );
+
+      //Smallest string should be before largest one:
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) == -1 );
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
+    }
+    {
+      CPPUNIT_ASSERT( has_facet<collate<char> >(loc) );
+
+      string strs[] = {"abdd", "abçd", "abbd", "abcd"};
+      sort(strs, strs + 4, loc);
+      CPPUNIT_ASSERT( strs[0] == "abbd" );
+      CPPUNIT_ASSERT( strs[1] == "abcd" );
+      CPPUNIT_ASSERT( strs[2] == "abçd" );
+      CPPUNIT_ASSERT( strs[3] == "abdd" );
+    }
+#    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+    {
+      CPPUNIT_ASSERT( has_facet<collate<wchar_t> >(loc) );
+      collate<wchar_t> const& col = use_facet<collate<wchar_t> >(loc);
+
+      wchar_t const str1[] = L"abcdef1";
+      wchar_t const str2[] = L"abcdef2";
+      const size_t size1 = sizeof(str1) / sizeof(str1[0]) - 1;
+      const size_t size2 = sizeof(str2) / sizeof(str2[0]) - 1;
+
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) == 0 );
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1, str2, str2 + size2) == -1 );
+
+      //Smallest string should be before largest one:
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) == -1 );
+      CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
+    }
+    {
+      CPPUNIT_ASSERT( has_facet<collate<wchar_t> >(loc) );
+
+      // Here we would like to use L"abçd" but it looks like all compilers
+      // do not support storage of unicode characters in exe resulting in
+      // compilation error. We avoid this test for the moment.
+      wstring strs[] = {L"abdd", L"abcd", L"abbd", L"abcd"};
+      sort(strs, strs + 4, loc);
+      CPPUNIT_ASSERT( strs[0] == L"abbd" );
+      CPPUNIT_ASSERT( strs[1] == L"abcd" );
+      CPPUNIT_ASSERT( strs[2] == L"abcd" );
+      CPPUNIT_ASSERT( strs[3] == L"abdd" );
+    }
+#    endif
+  }
+  catch (runtime_error const&) {
+    CPPUNIT_MESSAGE("No french locale to check collate facet");
+  }
+#  endif
+}
 
 void LocaleTest::ctype_facet()
 {
@@ -1016,9 +1089,9 @@ void LocaleTest::ctype_facet()
 }
 
 void LocaleTest::locale_init_problem() {
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+#  if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   test_supported_locale(*this, &LocaleTest::_locale_init_problem);
-#endif
+#  endif
 }
 
 
@@ -1030,18 +1103,18 @@ void LocaleTest::locale_init_problem() {
 static locale global_loc;
 static locale other_loc("");
 
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+#  if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
 void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
 {
-#  if !defined (__APPLE__) && !defined (__FreeBSD__) || \
-      !defined(__GNUC__) || ((__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__> 3)))
+#    if !defined (__APPLE__) && !defined (__FreeBSD__) || \
+        !defined(__GNUC__) || ((__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__> 3)))
   typedef codecvt<char,char,mbstate_t> my_facet;
-#  else
+#    else
 // std::mbstate_t required for gcc 3.3.2 on FreeBSD...
 // I am not sure what key here---FreeBSD or 3.3.2...
 //      - ptr 2005-04-04
   typedef codecvt<char,char,std::mbstate_t> my_facet;
-#  endif
+#    endif
 
   locale loc_ref(global_loc);
   {
@@ -1052,14 +1125,14 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
     locale::global( gloc );
   }
 
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
-#  endif
+#      endif
     ostringstream os("test") ;
     locale loc2( loc, new my_facet() );
     CPPUNIT_ASSERT( has_facet<my_facet>( loc2 ) );
     os.imbue( loc2 );
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
   catch ( runtime_error& ) {
     CPPUNIT_ASSERT( false );
@@ -1067,13 +1140,13 @@ void LocaleTest::_locale_init_problem( const locale& loc, const ref_locale&)
   catch ( ... ) {
    CPPUNIT_ASSERT( false );
   }
-#  endif
+#      endif
 
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
-#  endif
+#      endif
     ostringstream os2("test2");
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
   catch ( runtime_error& ) {
     CPPUNIT_ASSERT( false );
@@ -1092,9 +1165,9 @@ void LocaleTest::default_locale()
 
 void LocaleTest::combine()
 {
-#if !defined (STLPORT) || \
-   (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)) && \
-   (!defined (_MSC_VER) || (_MSC_VER >= 1300))
+#  if !defined (STLPORT) || \
+      (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)) && \
+     (!defined (_MSC_VER) || (_MSC_VER >= 1300))
   auto_ptr<locale> loc1, loc2;
   size_t loc1_index = 0;
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
@@ -1164,7 +1237,7 @@ void LocaleTest::combine()
       continue;
     }
   }
-#endif
+#  endif
 }
 
 #endif

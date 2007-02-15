@@ -144,8 +144,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #  endif
 
 #  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */
-/* These work, as long they are inline */
-#    define _STLP_INLINE_MEMBER_TEMPLATES 1
 #    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 #    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1
 #  endif

@@ -5,8 +5,8 @@ compilers
 you are using. STLport comes with a GNU make build system design
 for unix like platforms, make files have not been adapted for the
 Windows platform. So you have to use the make command coming with
-the MinGW package and not the one coming with MSys that is a portage
-of the GNU make for Windows.
+the MinGW package 'mingw32-make' and not the one coming with MSys
+that is a portage of the GNU make for Windows.
 
 - gcc (native compiler):
 

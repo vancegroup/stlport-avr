@@ -453,33 +453,42 @@ size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
 
 /* Collate */
 int _Locale_strcmp(struct _Locale_collate * __loc,
-                   const char *s1, size_t n1, const char *s2, size_t n2) {
-  return __strcoll_l( s1, s2, (__c_locale)__loc );
-#if 0
+                   const char *s1, size_t n1,
+		   const char *s2, size_t n2) {
   int ret;
-  int minN = n1 < n2 ? n1 : n2;
-  ret = strncmp(s1, s2, minN);
-  if ( ret == 0 ) {
-    return n1 < n2 ? -1 : (n1 > n2 ? 1 : 0);
+  char buf1[64], buf2[64];
+  while (n1 > 0 && n2 > 0) {
+    size_t bufsize1 = n1 < 63 ? n1 : 63;
+    strncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
+    size_t bufsize2 = n2 < 63 ? n2 : 63;
+    strncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
+
+    ret = strcoll_l(buf1, buf2, (__c_locale)__loc);
+    if (ret != 0) return ret;
+    s1 += bufsize1; n1 -= bufsize1;
+    s2 += bufsize2; n2 -= bufsize2;
   }
   return ret;
-#endif
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
-int _Locale_strwcmp( struct _Locale_collate *__loc,
-                     const wchar_t *s1, size_t n1,
-                     const wchar_t *s2, size_t n2) {
-  return __wcscoll_l( s1, s2, (__c_locale)__loc );
-#if 0
+int _Locale_strwcmp(struct _Locale_collate *__loc,
+                    const wchar_t *s1, size_t n1,
+                    const wchar_t *s2, size_t n2) {
   int ret;
-  int minN = n1 < n2 ? n1 : n2;
-  ret = wcsncmp( s1, s2, minN );
-  if ( ret == 0 ) {
-    return n1 < n2 ? -1 : (n1 > n2 ? 1 : 0);
+  wchar_t buf1[64], buf2[64];
+  while (n1 > 0 && n2 > 0) {
+    size_t bufsize1 = n1 < 63 ? n1 : 63;
+    wcsncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
+    size_t bufsize2 = n2 < 63 ? n2 : 63;
+    wcsncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
+
+    ret = wcscoll_l(buf1, buf2, (__c_locale)__loc);
+    if (ret != 0) return ret;
+    s1 += bufsize1; n1 -= bufsize1;
+    s2 += bufsize2; n2 -= bufsize2;
   }
   return ret;
-#endif
 }
 
 #endif

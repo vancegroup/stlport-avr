@@ -43,16 +43,10 @@ _STLP_BEGIN_NAMESPACE
 
 class _Locale_impl;        // Forward declaration of opaque type.
 class ios_base;
-
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-class locale;
-#  define locale _STLP_NO_MEM_T_NAME(loc)
-#endif
-
 class locale;
 
 template <class _CharT, class _Traits, class _Alloc>
-bool __locale_do_operator_call (const locale* __that,
+bool __locale_do_operator_call (const locale& __loc,
                                 const basic_string<_CharT, _Traits, _Alloc>& __x,
                                 const basic_string<_CharT, _Traits, _Alloc>& __y);
 
@@ -71,6 +65,10 @@ template <class _Facet>
 void _InsertFacet(locale& __loc, _Facet* __facet);
 
 _STLP_MOVE_TO_STD_NAMESPACE
+
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  define locale _STLP_NO_MEM_T_NAME(loc)
+#endif
 
 class _STLP_CLASS_DECLSPEC locale {
 public:
@@ -123,7 +121,7 @@ public:
   explicit locale(const char *);
   locale(const locale&, const char*, category);
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Facet>
   locale(const locale& __loc, _Facet* __f) {
     if ( __f != 0 ) {
@@ -167,17 +165,16 @@ public:
   bool operator==(const locale&) const;
   bool operator!=(const locale&) const;
 
-#if ! defined ( _STLP_MEMBER_TEMPLATES ) || defined (_STLP_INLINE_MEMBER_TEMPLATES) || (defined(__MWERKS__) && __MWERKS__ <= 0x2301)
+#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES) || (defined(__MWERKS__) && __MWERKS__ <= 0x2301)
   bool operator()(const string& __x, const string& __y) const;
 #  ifndef _STLP_NO_WCHAR_T
   bool operator()(const wstring& __x, const wstring& __y) const;
 #  endif
-#else
+#elif !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _CharT, class _Traits, class _Alloc>
   bool operator()(const basic_string<_CharT, _Traits, _Alloc>& __x,
-                  const basic_string<_CharT, _Traits, _Alloc>& __y) const {
-    return __locale_do_operator_call(this, __x, __y);
-  }
+                  const basic_string<_CharT, _Traits, _Alloc>& __y) const
+  { return __locale_do_operator_call(*this, __x, __y); }
 #endif
 
   // global locale objects:
@@ -253,6 +250,11 @@ public:
   // locale operations:
   bool operator==(const locale& __loc) const { return _Locale::operator==(__loc); }
   bool operator!=(const locale& __loc) const { return _Locale::operator!=(__loc); }
+
+  template <class _CharT, class _Traits, class _Alloc>
+  bool operator()(const basic_string<_CharT, _Traits, _Alloc>& __x,
+                  const basic_string<_CharT, _Traits, _Alloc>& __y) const
+  { return __locale_do_operator_call(*this, __x, __y); }
 
   // global locale objects:
   static locale _STLP_CALL global(const locale& __loc) {

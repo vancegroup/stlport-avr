@@ -33,6 +33,13 @@ using namespace std::tr1;
 
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 
+#  if defined (__GNUC__) && defined (_STLP_USE_NAMESPACES)
+// libstdc++ sometimes exposed its own __true_type in
+// global namespace resulting in an ambiguity.
+#    define __true_type std::__true_type
+#    define __false_type std::__false_type
+#  endif
+
 static bool type_to_bool(__true_type)
 { return true; }
 static bool type_to_bool(__false_type)
