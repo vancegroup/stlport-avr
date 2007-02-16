@@ -1,6 +1,12 @@
 #include <vector>
 #include <algorithm>
 #include <vector>
+#include <queue>
+
+#if 0 /* temporary: investigation of problem with swap */
+#include <iostream>
+#include <typeinfo>
+#endif
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -16,17 +22,19 @@ class SwapTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE(SwapTest);
   CPPUNIT_TEST(swap1);
   CPPUNIT_TEST(swprnge1);
+  CPPUNIT_TEST(swap_container_non_spec);
 #if defined (STLPORT) && \
    !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) && !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   CPPUNIT_IGNORE;
 #endif
-  CPPUNIT_TEST(swap_container);
+  CPPUNIT_TEST(swap_container_spec);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void swap1();
   void swprnge1();
-  void swap_container();
+  void swap_container_non_spec();
+  void swap_container_spec();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SwapTest);
@@ -69,8 +77,57 @@ class Obj
     int v;
 };
 
-void SwapTest::swap_container()
+/*
+ * Following two tests check the corectness of specialization of swap():
+ * for containers with container::swap method swap( a, b ) should
+ * use a.swap( b ), but don't try to do this substitution for container
+ * without swap method (in this case swap should be made via explicit members
+ * exchange; this assume usage of temporary object)
+ *
+ */
+void SwapTest::swap_container_non_spec()
 {
+  queue<Obj> v1;
+  queue<Obj> v2;
+
+  v1.push( Obj() );
+  v1.back().v = -1;
+  v1.push( Obj() );
+  v1.back().v = -2;
+
+  v2.push( Obj() );
+  v2.back().v = 10;  
+  v2.push( Obj() );
+  v2.back().v = 11;
+  v2.push( Obj() );
+  v2.back().v = 12;
+
+  CPPUNIT_CHECK( v1.size() == 2 );
+  CPPUNIT_CHECK( v2.size() == 3 );
+
+  swap( v1, v2 ); // this shouldn't try make it as v1.swap( v2 ), no queue::swap method!
+
+  CPPUNIT_CHECK( v1.size() == 3 );
+  CPPUNIT_CHECK( v2.size() == 2 );
+
+  // either copy constructor or assignment operator
+  CPPUNIT_CHECK( v1.front().v == 1 || v1.front().v == 2 );
+  CPPUNIT_CHECK( v1.back().v == 1 || v1.back().v == 2 );
+  CPPUNIT_CHECK( v2.front().v == 1 || v2.front().v == 2 );
+  CPPUNIT_CHECK( v2.back().v == 1 || v2.back().v == 2 );
+}
+
+void SwapTest::swap_container_spec()
+{
+#if 0 /* temporary: investigation of problem with swap */
+  if ( typeid(/* _STLP_PRIV */ _SwapImplemented<vector<Obj> >::_Ret) == typeid(_STLP_PRIV __false_type) ) {
+    cerr << "false type" << endl;
+  } else if ( typeid(/* _STLP_PRIV */ _SwapImplemented<vector<Obj> >::_Ret) == typeid(_STLP_PRIV __true_type) ) {
+    cerr << "true type" << endl;
+  } else {
+    cerr << "unknown type" << endl;
+  }
+#endif /* end of temporary */
 #if !defined (STLPORT) || \
      defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
   vector<Obj> v1;
@@ -89,6 +146,9 @@ void SwapTest::swap_container()
   v2[0].v = 10;
   v2[1].v = 11;
   v2[2].v = 12;
+
+  CPPUNIT_CHECK( v1.size() == 2 );
+  CPPUNIT_CHECK( v2.size() == 3 );
 
   swap( v1, v2 ); // this should has effect v1.swap( v2 )
 
