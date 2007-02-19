@@ -100,6 +100,14 @@ public:
   void push(const value_type& __x) { c.push_back(__x); }
   void pop() { c.pop_front(); }
   const _Sequence& _Get_s() const { return c; }
+
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) {
+    _Sequence __tmp = c;
+    c = __x.c;
+    __x.c = __tmp;
+  }
+#endif
 };
 
 #ifndef _STLP_QUEUE_ARGS
@@ -226,6 +234,13 @@ public:
     }
     _STLP_UNWIND(c.clear())
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) {
+    _Sequence __tmp = c;
+    c = __x.c;
+    __x.c = __tmp;
+  }
+#endif
 };
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)

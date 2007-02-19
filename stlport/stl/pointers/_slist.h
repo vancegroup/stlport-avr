@@ -197,6 +197,9 @@ public:
   bool empty() const          { return _M_impl.empty(); }
 
   void swap(_Self& __x) { _M_impl.swap(__x._M_impl); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 public:
   reference front()             { return *begin(); }

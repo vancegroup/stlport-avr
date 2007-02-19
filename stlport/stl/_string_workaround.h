@@ -26,8 +26,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
 class basic_string : public _STLP_NO_MEM_T_STRING_BASE
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && \
-    !defined (basic_string)
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (basic_string)
                    , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
 #endif
 {
@@ -708,8 +707,10 @@ protected:                        // Helper functions for replace.
 
 public:                         // Other modifier member functions.
 
-  void swap(_Self& __s)
-  { _Base::swap(__s); }
+  void swap(_Self& __s) { _Base::swap(__s); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 public:                         // Substring.
 

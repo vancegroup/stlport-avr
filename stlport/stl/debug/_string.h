@@ -682,6 +682,9 @@ public:
     _M_iter_list._Swap_owners(__s._M_iter_list);
     _M_non_dbg_impl.swap(__s._M_non_dbg_impl);
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
   int compare(const _Self& __s) const
   { return _M_non_dbg_impl.compare(__s._M_non_dbg_impl); }

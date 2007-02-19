@@ -576,6 +576,9 @@ public:
     this->_M_map.swap(__x._M_map);
     this->_M_map_size.swap(__x._M_map_size);
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 public:
   // assign(), a generalized assignment member function.  Two

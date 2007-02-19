@@ -427,9 +427,11 @@ public:
 
   bool empty() const { return this->_M_head._M_data._M_next == 0; }
 
-  void swap(_Self& __x) {
-    this->_M_head.swap(__x._M_head);
-  }
+  void swap(_Self& __x)
+  { this->_M_head.swap(__x._M_head); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 public:
   reference front()             { return *begin(); }

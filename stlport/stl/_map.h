@@ -180,6 +180,9 @@ public:
     return (*__i).second;
   }
   void swap(_Self& __x) { _M_t.swap(__x._M_t); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
   // insert/erase
   pair<iterator,bool> insert(const value_type& __x)
@@ -355,6 +358,9 @@ public:
   size_type size() const { return _M_t.size(); }
   size_type max_size() const { return _M_t.max_size(); }
   void swap(_Self& __x) { _M_t.swap(__x._M_t); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
   // insert/erase
   iterator insert(const value_type& __x) { return _M_t.insert_equal(__x); }

@@ -185,6 +185,9 @@ protected:
     else
       return 0;
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(pthread_allocator<_Tp>& __x) {}
+#endif
 };
 
 _STLP_TEMPLATE_NULL

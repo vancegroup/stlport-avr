@@ -102,12 +102,17 @@ void VectorTest::vec_test_2()
 
   CPPUNIT_ASSERT( v2.size() == 1 );
   CPPUNIT_ASSERT( v2[0] == 3.56 );
+  size_t v1Cap = v1.capacity();
+  size_t v2Cap = v2.capacity();
+
   v1.swap(v2); // Swap the vector's contents.
 
   CPPUNIT_ASSERT( v1.size() == 1 );
+  CPPUNIT_ASSERT( v1.capacity() == v2Cap );
   CPPUNIT_ASSERT( v1[0] == 3.56 );
 
   CPPUNIT_ASSERT( v2.size() == 2 );
+  CPPUNIT_ASSERT( v2.capacity() == v1Cap );
   CPPUNIT_ASSERT( v2[0] == 32.1 );
   CPPUNIT_ASSERT( v2[1] == 40.5 );
 

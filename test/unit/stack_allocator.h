@@ -44,8 +44,8 @@ struct State {
  */
 template <class _Tp>
 struct StackAllocator
-#if (defined (__BORLANDC__) || defined (__DMC__)) && \
-    defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined (STLPORT) && \
+    defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //Special Borland workaround that have problem with function
   //overloading when one of the overloaded version is a template
   //one. This is the case for the std::swap function.
@@ -105,8 +105,8 @@ struct StackAllocator
 #endif
   }
 
-#if (defined (__BORLANDC__) || defined (__DMC__)) && \
-    defined (STLPORT) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined (STLPORT) && \
+    defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   //Necessary extension to make StackAllocator a real STLport allocator
   //implementation:
   _Tp* _M_allocate(size_type n, size_type &new_n) {
@@ -149,6 +149,10 @@ struct StackAllocator
     m_state.m_swaped = true;
     other.m_state.m_swaped = true;
   }
+#if defined (STLPORT) && \
+    defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(StackAllocator& __x) { swap(__x); }
+#endif
 
   //2 StackAllocator instance are identical if they are built on top
   //of the same buffer.
@@ -179,8 +183,8 @@ __stl_alloc_create(const StackAllocator<_Tp1>& __a, const _Tp2*) { return StackA
   template <class _Tp>
   inline void swap(StackAllocator<_Tp>& __a, StackAllocator<_Tp>& __b)
   { __a.swap(__b); }
-#  else
-//TheFollowing overloads depends on instanciation, if new unit tests are written
+#  elif !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
+//The following overloads depends on instanciation, if new unit tests are written
 //with new StackAllocator instanciations associated swap overload should also be
 //written
 inline void swap(StackAllocator<int>& __a, StackAllocator<int>& __b)

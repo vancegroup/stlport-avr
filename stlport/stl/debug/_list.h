@@ -200,6 +200,9 @@ public:
     _M_iter_list._Swap_owners(__x._M_iter_list);
     _M_non_dbg_impl.swap(__x._M_non_dbg_impl);
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos, const _Tp& __x = _Tp()) {

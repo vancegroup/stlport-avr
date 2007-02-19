@@ -344,7 +344,8 @@ class allocator //: public _AllocatorAux<_Tp>
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-                : public __stlport_class<allocator<_Tp> > {
+                : public __stlport_class<allocator<_Tp> >
+{
 public:
   typedef _Tp        value_type;
   typedef _Tp*       pointer;
@@ -403,12 +404,6 @@ public:
   void construct(pointer __p, const_reference __val) { _STLP_STD::_Copy_Construct(__p, __val); }
   void destroy(pointer __p) { _STLP_STD::_Destroy(__p); }
 
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-  //This is just to make swap workaround for compiler without template function partial
-  //happy.
-  void swap(allocator<_Tp>&) {}
-#endif
-
 #if defined (_STLP_NO_EXTENSIONS)
   /* STLport extension giving rounded size of an allocated memory buffer
    * This method do not have to be part of a user defined allocator implementation
@@ -435,6 +430,9 @@ protected:
 
     return 0;
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(allocator<_Tp>& __other) {}
+#endif
 };
 
 _STLP_TEMPLATE_NULL

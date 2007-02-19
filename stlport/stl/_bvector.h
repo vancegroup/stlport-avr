@@ -680,6 +680,10 @@ public:
     _STLP_STD::swap(this->_M_finish, __x._M_finish);
     this->_M_end_of_storage.swap(__x._M_end_of_storage);
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(__BVECTOR_QUALIFIED& __x) { swap(__x); }
+#endif
+
   iterator insert(iterator __position, bool __x = bool()) {
     difference_type __n = __position - begin();
     if (this->_M_finish._M_p != this->_M_end_of_storage._M_data && __position == end()) {

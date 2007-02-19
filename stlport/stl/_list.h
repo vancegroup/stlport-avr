@@ -388,8 +388,7 @@ public:
   const_reference back() const  { return *(--end()); }
 
 private:
-  void _M_swap_aux(_Self& __x)
-  {
+  void _M_swap_aux(_Self& __x) {
     __x._M_node._M_swap_alloc(this->_M_node);
     __x._M_node._M_data._M_next = this->_M_node._M_data._M_next;
     __x._M_node._M_data._M_next->_M_prev = &__x._M_node._M_data;
@@ -399,8 +398,7 @@ private:
   }
 
 public:
-  void swap(_Self& __x)
-  {
+  void swap(_Self& __x) {
     if (__x.empty()) {
       if (this->empty()) {
         return;
@@ -414,6 +412,9 @@ public:
       _STLP_STD::swap(this->_M_node._M_data._M_next->_M_prev, __x._M_node._M_data._M_next->_M_prev);
     }
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   iterator insert(iterator __pos, const_reference __x = value_type())

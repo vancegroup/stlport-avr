@@ -393,6 +393,9 @@ public:
     _STLP_STD::swap(this->_M_finish, __x._M_finish);
     this->_M_end_of_storage.swap(__x._M_end_of_storage);
   }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 private:
   void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const __true_type& /*_Movable*/);

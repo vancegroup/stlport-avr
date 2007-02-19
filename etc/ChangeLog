@@ -1,3 +1,12 @@
+2007-02-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl: swap workaround review, now when swap implementation
+	detect that a STLport class is being swapped it calls the
+	_M_swap_workaround member method. We do not use the swap method
+	anymore because the way the workaround is implemented would have
+	forces us to add a swap method to queue, priority_queue and stack
+	containers that do not have a swap method according the C++ Standard.
+
 2007-02-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Synchronization with STLPORT_5_1 branch up to revision 2918.

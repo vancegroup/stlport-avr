@@ -64,7 +64,7 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 template <class _Tp>
 inline void __swap_aux(_Tp& __a, _Tp& __b, const __true_type& /*SwapImplemented*/) {
-  __a.swap(__b);
+  __a._M_swap_workaround(__b);
 }
 
 template <class _Tp>

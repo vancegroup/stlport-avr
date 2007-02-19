@@ -1165,9 +1165,10 @@ public:                         // Other modifier member functions.
     return __len;
   }
 
-  void swap(_Self& __s) {
-    this->_M_Swap(__s);
-  }
+  void swap(_Self& __s) { this->_M_Swap(__s); }
+#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+  void _M_swap_workaround(_Self& __x) { swap(__x); }
+#endif
 
 public:                         // Conversion to C string.
 
