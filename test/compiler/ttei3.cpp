@@ -3,6 +3,7 @@
  *   gcc 2.95.3
  *   gcc 3.3.3
  *   gcc 3.4.1
+ *   gcc 4.1.1
  *
  * It is known that this code compiled by following compilers:
  *

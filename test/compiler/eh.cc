@@ -1,4 +1,4 @@
-//#include <list>
+#include <list> /* required, to expose allocator */
 #include <stdexcept>
 #include <stdio.h>
 
