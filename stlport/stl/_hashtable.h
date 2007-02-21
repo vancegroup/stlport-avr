@@ -251,7 +251,7 @@ private:
   typedef typename _ElemsCont::iterator _ElemsIte;
   typedef typename _ElemsCont::const_iterator _ElemsConstIte;
   typedef _STLP_PRIV _Slist_node_base _BucketType;
-  typedef typename _Alloc_traits<_BucketType*, _All>::allocator_type _M_bucket_allocator_type;
+  typedef typename _Alloc_traits<_BucketType*, _All>::allocator_type _BucketAllocType;
   /*
    * We are going to use vector of _Slist_node_base pointers for 2 reasons:
    *  - limit code bloat, all hashtable instanciation use the same buckets representation.
@@ -261,9 +261,9 @@ private:
    *    has to be move from a slist to the other.
    */
 #if defined (_STLP_DEBUG)
-  typedef _STLP_PRIV _STLP_NON_DBG_NAME(vector)<_BucketType*, _M_bucket_allocator_type> _BucketVector;
+  typedef _STLP_PRIV _STLP_NON_DBG_NAME(vector)<_BucketType*, _BucketAllocType> _BucketVector;
 #else
-  typedef vector<_BucketType*, _M_bucket_allocator_type> _BucketVector;
+  typedef vector<_BucketType*, _BucketAllocType> _BucketVector;
 #endif
 
   hasher                _M_hash;

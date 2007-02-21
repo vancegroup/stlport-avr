@@ -272,8 +272,7 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -281,28 +280,15 @@ public:                         // Constructor, destructor, assignment.
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
-#    if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
+#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
-#    endif
-#  else
-  /* We need an additionnal constructor to build an empty string without
-   * any allocation or termination char*/
-protected:
-  struct _CalledFromWorkaround_t {};
-  basic_string(_CalledFromWorkaround_t, const allocator_type &__a)
-    : _String_base<_CharT,_Alloc>(__a) {}
-public:
-#  endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
-#endif /* _STLP_MEMBER_TEMPLATES */
-
-#if !defined (_STLP_MEMBER_TEMPLATES) || \
-    !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS) || \
-     defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  endif
+#else
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
@@ -316,7 +302,15 @@ public:
     _M_range_initialize(__f, __l);
   }
 #  endif
-#endif /* _STLP_MEMBER_TEMPLATES */
+#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+  /* We need an additionnal constructor to build an empty string without
+   * any allocation or termination char*/
+protected:
+  struct _CalledFromWorkaround_t {};
+  basic_string(_CalledFromWorkaround_t, const allocator_type &__a)
+    : _String_base<_CharT,_Alloc>(__a) {}
+#  endif
+#endif
 
 private:
   template <class _InputIter>
@@ -531,9 +525,11 @@ public:                         // Append, operator+=, push_back.
   _Self& operator+=(const _CharT* __s) { _STLP_FIX_LITERAL_BUG(__s) return append(__s); }
   _Self& operator+=(_CharT __c) { push_back(__c); return *this; }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-private: // Helper functions for append.
+private:
+  _Self& _M_append(const _CharT* __first, const _CharT* __last);
+
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
   _Self& _M_appendT(_InputIter __first, _InputIter __last,
                     const input_iterator_tag &) {
@@ -568,11 +564,11 @@ private: // Helper functions for append.
       else {
         _ForwardIter __f1 = __first;
         ++__f1;
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
         if (this->_M_using_static_buf())
           _M_copyT(__f1, __last, this->_M_Finish() + 1);
         else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
           uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
         _STLP_TRY {
           _M_construct_null(this->_M_Finish() + __n);
@@ -601,16 +597,8 @@ public:
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_append_dispatch(__first, __last, _Integral());
   }
-#  endif
-#endif
-
-protected:
-  _Self& _M_append(const _CharT* __first, const _CharT* __last);
-
+#  else
 public:
-#if !defined (_STLP_MEMBER_TEMPLATES) || \
-    !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   _Self& append(const _CharT* __first, const _CharT* __last) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
     return _M_append(__first, __last);
@@ -618,6 +606,7 @@ public:
 #  endif
 #endif
 
+public:
   _Self& append(const _Self& __s)
   { return _M_append(__s._M_Start(), __s._M_Finish()); }
 
@@ -670,9 +659,12 @@ public:                         // Assign
 
   _Self& assign(size_type __n, _CharT __c);
 
-#if defined (_STLP_MEMBER_TEMPLATES)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-private:                        // Helper functions for assign.
+private:
+  _Self& _M_assign(const _CharT* __f, const _CharT* __l);
+
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  if defined (_STLP_MEMBER_TEMPLATES)
+  // Helper functions for assign.
   template <class _Integer>
   _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/)
   { return assign((size_type) __n, (_CharT) __x); }
@@ -700,17 +692,8 @@ public:
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
-#  endif
-#endif
-
-protected:
-  _Self& _M_assign(const _CharT* __f, const _CharT* __l);
-
+#  else
 public:
-
-#if !defined (_STLP_MEMBER_TEMPLATES) || \
-    !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   _Self& assign(const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     return _M_assign(__f, __l);
@@ -719,7 +702,6 @@ public:
 #endif
 
 public:                         // Insert
-
   _Self& insert(size_type __pos, const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -922,14 +904,11 @@ protected:  // Helper functions for insert.
       _Traits::assign(*__result, *__first);
   }
 
-#    if !defined (_STLP_NO_METHOD_SPECIALIZATION)
   void _M_copyT(const _CharT* __f, const _CharT* __l, _CharT* __res) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     _STLP_FIX_LITERAL_BUG(__res)
     _Traits::copy(__res, __f, __l - __f);
   }
-#    endif
-
 public:
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
@@ -939,12 +918,8 @@ public:
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 #  endif
-#endif
-
+#else
 public:
-
-#if !defined (_STLP_MEMBER_TEMPLATES) || \
-    !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     _M_insert(__p, __f, __l, _M_inside(__f));
@@ -1058,13 +1033,13 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(iterator __first, iterator __last, size_type __n, _CharT __c);
 
-protected:                        // Helper functions for replace.
+private:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     const _CharT* __f, const _CharT* __l, bool __self_ref);
 
 public:
-#if defined (_STLP_MEMBER_TEMPLATES)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
@@ -1139,12 +1114,7 @@ public:
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 
-#  endif
-#endif
-
-#if !defined (_STLP_MEMBER_TEMPLATES) || \
-    !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
-#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  else
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
