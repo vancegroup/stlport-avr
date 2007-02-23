@@ -391,7 +391,7 @@ protected:
 
   void _M_initialize(size_type __n) {
     __chunk_type* __q = this->_M_bit_alloc(__n);
-    this->_M_end_of_storage._M_data = __q + _M_bits_to_chunks(__n);
+    this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__n);
     this->_M_start = iterator(__q, 0);
     this->_M_finish = this->_M_start + difference_type(__n);
   }
@@ -409,7 +409,7 @@ protected:
       *__i++ = __x;
       this->_M_finish = copy(__position, end(), __i);
       this->_M_deallocate();
-      this->_M_end_of_storage._M_data = __q + _M_bits_to_chunks(__len);
+      this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__len);
       this->_M_start = iterator(__q, 0);
     }
   }
@@ -462,7 +462,7 @@ protected:
         __i = copy(__first, __last, __i);
         this->_M_finish = copy(__position, end(), __i);
         this->_M_deallocate();
-        this->_M_end_of_storage._M_data = __q + _M_bits_to_chunks(__len);
+        this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__len);
         this->_M_start = iterator(__q, 0);
       }
     }
@@ -659,7 +659,7 @@ public:
       this->_M_finish = copy(begin(), end(), __z);
       this->_M_deallocate();
       this->_M_start = iterator(__q, 0);
-      this->_M_end_of_storage._M_data = __q + _M_bits_to_chunks(__n);
+      this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__n);
     }
   }
 
@@ -777,7 +777,7 @@ public:
       fill_n(__i, __n, __x);
       this->_M_finish = copy(__position, end(), __i + difference_type(__n));
       this->_M_deallocate();
-      this->_M_end_of_storage._M_data = __q + _M_bits_to_chunks(__len);
+      this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__len);
       this->_M_start = iterator(__q, 0);
     }
   }
