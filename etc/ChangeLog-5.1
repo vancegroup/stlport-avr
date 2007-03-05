@@ -1,3 +1,50 @@
+2007-03-01  Francois Dumont  <dums@stlport...>
+
+	* test/unit/bitset_test.cpp: Add test for the to_string member
+	method.
+
+	* stlport/stl/config/_msvc.h, test/unit/locale_test.cpp: Change
+	MSVC6 configuration that now defines _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS.
+	Even if MSVC6 supports explicit specification of function template
+	parameters it do not support the explicit specification for
+	template methods, unit tests are showing this problem.
+
+	* stlport/stl/type_traits.h, _alloc.h: Small change in stateless
+	class detection feature. Introduce _IsStateless helper struct for
+	this purpose even if it can only be used with pure class type and
+	not with build-in types or enum or union. It avoids MSVC8 warnings.
+	
+2007-02-25  Francois Dumont  <dums@stlport...>
+
+	* 5.1.2 released based on revision 2937, tag STLport-5.1.2 created.
+
+	* stlport/stl/config/_prolog.h, build/Makefiles/gmake/bcc.mak,
+	Patch from Eric Sanford to remove empty base class optimization
+	for Borland compilers.
+
+	* test/unit/vector_test.cpp: Enable VectorTest::ebo test for Borland
+	compilers.
+
+2007-02-22  Francois Dumont  <dums@stlport...>
+
+	* stlport/stl/_alloc.h: Add a workaround for compilers with buggy
+	empty base class optimization which is used in _STLP_alloc_proxy
+	class.
+
+	* test/unit/vector_test.cpp: New test case VectorTest::ebo to show
+	problem above.
+
+2007-02-21  Francois Dumont  <dums@stlport...>
+
+	* src/c_locale_win32/c_locale_win32.c: Fixed __ConvertDate and
+	__ConvertTime to avoid potential infinite loop (bug report
+	1663604)
+
+2007-02-16  Francois Dumont  <dums@stlport...>
+
+	* STLport 5.1.1 released based on revision 2919. STLport-5.1.1
+	tag created.
+
 2007-02-14  Francois Dumont  <dums@stlport...>
 
 	* stlport/stl/config/_intel.h: Configuration fix, Intel compiler

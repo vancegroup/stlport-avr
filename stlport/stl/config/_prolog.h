@@ -15,7 +15,7 @@
 #elif defined (__BORLANDC__)
 
 #  pragma option push
-#  pragma option -Vx- -Ve -a8 -b -pc
+#  pragma option -Vx- -Ve- -a8 -b -pc
 #  include <stl/config/_warnings_off.h>
 
 #elif defined (__sgi) && !defined (__GNUC__) && (_MIPS_SIM != _MIPS_SIM_ABI32)

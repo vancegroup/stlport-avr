@@ -181,6 +181,7 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #  endif
 
 #  if (_STLP_MSVC < 1300) /* MSVC 6.0 and earlier */
+#    define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS 1
 /* defined for DEBUG and NDEBUG too, to allow user mix own debug build with STLP release library */
 #    define _STLP_USE_ABBREVS
 #  endif

@@ -37,6 +37,8 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(optimizations_check);
+  CPPUNIT_STOP_IGNORE;
+  CPPUNIT_TEST(ebo);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -54,6 +56,7 @@ protected:
   void allocator_with_state();
   void iterators();
   void optimizations_check();
+  void ebo();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(VectorTest);
@@ -478,3 +481,58 @@ class IncompleteClass
   vector<IncompleteClass> instances;
   typedef vector<IncompleteClass>::iterator it;
 };
+
+#if defined (STLPORT)
+#  define NOTHROW _STLP_NOTHROW
+#else
+#  define NOTHROW throw()
+#endif
+
+/* This allocator implementation purpose is simply to break some
+ * internal STLport mecanism specific to the STLport own allocator
+ * implementation. */
+template <class _Tp>
+struct NotSTLportAllocator : allocator<_Tp> {
+#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+  template <class _Tp1> struct rebind {
+    typedef NotSTLportAllocator<_Tp1> other;
+  };
+#endif
+  NotSTLportAllocator() _STLP_NOTHROW {}
+#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
+  template <class _Tp1> NotSTLportAllocator(const NotSTLportAllocator<_Tp1>&) NOTHROW {}
+#endif
+  NotSTLportAllocator(const NotSTLportAllocator<_Tp>&) NOTHROW {}
+  ~NotSTLportAllocator() NOTHROW {}
+};
+
+/* This test check a potential issue with empty base class
+ * optimization. Some compilers (VC6) do not implement it
+ * correctly resulting ina wrong behavior. */
+void VectorTest::ebo()
+{
+  // We use heap memory as test failure can corrupt vector internal
+  // representation making executable crash on vector destructor invocation.
+  // We prefer a simple memory leak, internal corruption should be reveal
+  // by size or capacity checks.
+  typedef vector<int, NotSTLportAllocator<int> > V;
+  V *pv1 = new V(1, 1);
+  V *pv2 = new V(10, 2);
+
+  size_t v1Capacity = pv1->capacity();
+  size_t v2Capacity = pv2->capacity();
+
+  pv1->swap(*pv2);
+
+  CPPUNIT_ASSERT( pv1->size() == 10 );
+  CPPUNIT_ASSERT( pv1->capacity() == v2Capacity );
+  CPPUNIT_ASSERT( (*pv1)[5] == 2 );
+
+  CPPUNIT_ASSERT( pv2->size() == 1 );
+  CPPUNIT_ASSERT( pv2->capacity() == v1Capacity );
+  CPPUNIT_ASSERT( (*pv2)[0] == 1 );
+
+  delete pv2;
+  delete pv1;
+}
+

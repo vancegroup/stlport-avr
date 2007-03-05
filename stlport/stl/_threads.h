@@ -466,8 +466,8 @@ public:
   _STLP_VOLATILE __stl_atomic_t _M_ref_count;
 
 #if defined (_STLP_THREADS) && \
-    ((!defined (_STLP_ATOMIC_INCREMENT) || !defined (_STLP_ATOMIC_DECREMENT)) || \
-      (defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x0400)))
+   (!defined (_STLP_ATOMIC_INCREMENT) || !defined (_STLP_ATOMIC_DECREMENT) || \
+    (defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x0400)))
 #  define _STLP_USE_MUTEX
   _STLP_mutex _M_mutex;
 #endif

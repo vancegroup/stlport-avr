@@ -540,6 +540,19 @@ struct _SwapImplemented {
 };
 #endif
 
+template <class _Tp>
+struct _TpWithState : _Tp{
+  int _state;
+};
+
+/* This is an internal helper struct used to guess if we are working
+ * on a stateless class. It can only be instanciated with a class type. */
+template <class _Tp>
+struct _IsStateless {
+  enum { _Is = sizeof(_TpWithState<_Tp>) == sizeof(int) };
+  typedef typename __bool2type<_Is>::_Ret _Ret;
+};
+
 _STLP_END_NAMESPACE
 
 #ifdef _STLP_CLASS_PARTIAL_SPECIALIZATION

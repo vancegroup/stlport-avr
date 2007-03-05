@@ -543,7 +543,8 @@ extern "C" {
       {
         ++cur_char;
         while (*cur_char != '\'' && *cur_char != 0 && (cur_output == NULL || cur_output != end_output)) {
-          if (cur_output) { *cur_output++ = *cur_char++; }
+	        if (cur_output) { *cur_output++ = *cur_char; }
+	        ++cur_char;
           buf_size += 1;
         }
       }
@@ -677,7 +678,8 @@ extern "C" {
       case '\'':
         ++cur_char;
         while (*cur_char != '\'' && *cur_char != 0 && (!cur_output || (cur_output != end_output))) {
-          if (cur_output) *cur_output++ = *cur_char++;
+          if (cur_output) *cur_output++ = *cur_char;
+          ++cur_char;
           buf_size += 1;
         }
         break;

@@ -565,17 +565,34 @@ public:
   { return *this; }
 #endif
 
-  /* We need to define the following swap implementation for allocator with state
-   * as those allocators might have implement a special swap function to correctly
-   * move datas from an instance to the oher, _STLP_alloc_proxy should not break
-   * this mecanism.
-   */
-  void _M_swap_alloc(_Self& __x) {
+private:
+  /* Following are helper methods to detect stateless allocators and avoid
+   * swap in this case. For some compilers (VC6) it is a workaround for a
+   * compiler bug in the Empty Base class Optimization feature, for others
+   * it is a small optimization or nothing if no EBO. */
+  void _M_swap_alloc(_Self& __x, const __true_type& /*_IsStateless*/)
+  {}
+
+  void _M_swap_alloc(_Self& __x, const __false_type& /*_IsStateless*/) {
     _MaybeReboundAlloc &__base_this = *this;
     _MaybeReboundAlloc &__base_x = __x;
     _STLP_STD::swap(__base_this, __base_x);
   }
 
+public:
+  void _M_swap_alloc(_Self& __x) {
+#if !defined (__BORLANDC__)
+    typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
+#else
+    typedef typename __bool2type<_IsStateless<_MaybeReboundAlloc>::_Is>::_Ret _StatelessAlloc;
+#endif
+    _M_swap_alloc(__x, _StatelessAlloc());
+  }
+
+  /* We need to define the following swap implementation for allocator with state
+   * as those allocators might have implement a special swap function to correctly
+   * move datas from an instance to the oher, _STLP_alloc_proxy should not break
+   * this mecanism. */
   void swap(_Self& __x) {
     _M_swap_alloc(__x);
     _STLP_STD::swap(_M_data, __x._M_data);

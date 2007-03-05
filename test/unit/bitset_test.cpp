@@ -55,4 +55,15 @@ void BitsetTest::bitset1()
   CPPUNIT_ASSERT( __pos == 13 );
 #  endif
 #endif
+
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
+  string representation = b2.to_string<char, char_traits<char>, allocator<char> >();
+  CPPUNIT_ASSERT( representation == "1000100010001" );
+#  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+  wstring wrepresentation = b2.to_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >();
+  CPPUNIT_ASSERT( wrepresentation == L"1000100010001" );
+#  endif
+#else
+  CPPUNIT_ASSERT( b2.to_string() == "1000100010001" );
+#endif
 }

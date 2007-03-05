@@ -16,8 +16,8 @@ RC := brcc32
 DEFS ?=
 OPT ?=
 
-CFLAGS = -q -ff -Ve 
-CXXFLAGS = -q -ff -Ve 
+CFLAGS = -q -ff 
+CXXFLAGS = -q -ff 
 
 OPT += -w-ccc -w-rch -w-ngu -w-inl -w-eff
 
