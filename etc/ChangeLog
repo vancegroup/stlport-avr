@@ -6,6 +6,9 @@
 	* test/unit/num_put_get_test.cpp: test for correct imput of float,
 	double and long double, including values out of type range.
 
+	* stlport/stl/config/_linux.h: mark that Alpha, PowerPC,
+	32-bit SPARC, 32-bit MIPS, ARM, SH4 has no long double.
+
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Synchronization with STLPORT_5_1 branch revision 2945.
