@@ -5,6 +5,7 @@
 #  include <string>
 #  include <sstream>
 #  include <cstdio>
+#include <iostream>
 
 #  include "complete_digits.h"
 #  include "cppunit/cppunit_proxy.h"
@@ -37,15 +38,162 @@ private:
   void pointer();
   void fix_float_long();
 
-  static bool check_float(float val, float ref) {
+  static bool check_float(float val, float ref)
+  {
     float epsilon = numeric_limits<float>::epsilon();
     return val <= ref + epsilon && val >= ref - epsilon;
   }
-  static string reset_stream(ostringstream &ostr) {
+
+  static string reset_stream(ostringstream &ostr)
+  {
     string tmp = ostr.str();
     ostr.str("");
     return tmp;
   }
+
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+  template <class F>
+  void check_get_float( F v )
+  {
+    F in_val_d = v;
+    {
+      stringstream str;
+
+      str << "1E+" << numeric_limits<F>::max_exponent10;
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::infinity() );
+    }
+    {
+      stringstream str;
+
+      str << "-1E+" << numeric_limits<F>::max_exponent10;
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      CPPUNIT_ASSERT( in_val_d != -numeric_limits<F>::infinity() ); // may be problems with portability
+      // CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::quiet_NaN() );
+    }
+    {
+      stringstream str;
+
+      str << "1E" << numeric_limits<F>::min_exponent10;
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      CPPUNIT_ASSERT( in_val_d != F(0.0) );
+    }
+    {
+      stringstream str;
+
+      str << "1E+" << (numeric_limits<F>::max_exponent10 + 1);
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      CPPUNIT_ASSERT( in_val_d == numeric_limits<F>::infinity() );
+    }
+    {
+      stringstream str;
+
+      str << "-1E+" << (numeric_limits<F>::max_exponent10 + 1);
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      CPPUNIT_ASSERT( in_val_d == -numeric_limits<F>::infinity() ); // may be problems with portability
+    }
+    {
+      stringstream str;
+
+      str << "1E" << (numeric_limits<F>::min_exponent10 - 1);
+
+      str >> in_val_d;
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT(str.eof());
+      // The next is due to float, that calculated as double and converted to float
+      // on last stage:
+      CPPUNIT_ASSERT( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); 
+    }
+  }
+#else
+#  define __check_get_float( F ) \
+  void check_get_float( F v ) \
+  { \
+    F in_val_d = v; \
+    { \
+      stringstream str; \
+
+      str << "1E+" << numeric_limits<F>::max_exponent10; \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::infinity() ); \
+    } \
+    { \
+      stringstream str; \
+ \
+      str << "-1E+" << numeric_limits<F>::max_exponent10; \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d != -numeric_limits<F>::infinity() ); \
+    } \
+    { \
+      stringstream str; \
+ \
+      str << "1E" << numeric_limits<F>::min_exponent10; \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d != F(0.0) ); \
+    } \
+    { \
+      stringstream str; \
+ \
+      str << "1E+" << (numeric_limits<F>::max_exponent10 + 1); \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d == numeric_limits<F>::infinity() ); \
+    } \
+    { \
+      stringstream str; \
+ \
+      str << "-1E+" << (numeric_limits<F>::max_exponent10 + 1); \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d == -numeric_limits<F>::infinity() ); \
+    } \
+    { \
+      stringstream str; \
+ \
+      str << "1E" << (numeric_limits<F>::min_exponent10 - 1); \
+ \
+      str >> in_val_d; \
+      CPPUNIT_ASSERT(!str.fail()); \
+      CPPUNIT_ASSERT(str.eof()); \
+      CPPUNIT_ASSERT( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); \
+    } \
+  }
+
+  __check_get_float( float )
+  __check_get_float( double )
+#  if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
+  __check_get_float( long double )
+#  endif
+#  undef __check_get_float
+#endif // _STLP_NO_MEMBER_TEMPLATES
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(NumPutGetTest);
@@ -365,31 +513,11 @@ void NumPutGetTest::num_get_float()
   CPPUNIT_ASSERT(check_float(in_val, 12345.0f));
   istr.clear();
 
-  double in_val_d;
-  {
-    stringstream str;
-
-    str << "1E+" << numeric_limits<double>::max_exponent10;
-
-    str >> in_val_d;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( in_val_d != numeric_limits<double>::infinity() );
-    // CPPUNIT_ASSERT(in_val_d != 1E+308);
-    str.clear();
-  }
-  {
-    stringstream str;
-
-    str << "1E+" << (numeric_limits<double>::max_exponent10 + 1);
-
-    str >> in_val_d;
-    CPPUNIT_ASSERT(!str.fail());
-    CPPUNIT_ASSERT(str.eof());
-    CPPUNIT_ASSERT( in_val_d == numeric_limits<double>::infinity() );
-    // CPPUNIT_ASSERT(in_val_d == 1E+308);
-    str.clear();
-  }
+  check_get_float( 0.0F );
+  check_get_float( 0.0 );
+#if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
+  check_get_float( 0.0L );
+#endif
 }
 
 void NumPutGetTest::num_get_integer()

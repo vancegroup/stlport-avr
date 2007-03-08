@@ -1,3 +1,11 @@
+2007-03-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_get_float.cpp: experimental support of correct input
+	of long doubles on Linuxes.
+
+	* test/unit/num_put_get_test.cpp: test for correct imput of float,
+	double and long double, including values out of type range.
+
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Synchronization with STLPORT_5_1 branch revision 2945.
