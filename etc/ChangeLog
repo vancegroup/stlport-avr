@@ -1,3 +1,9 @@
+2007-03-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_msvc.h: use MS's safe srting functions only
+	if _CRT_SECURE_NO_DEPRECATE not defined (see bug #1674974).
+	Thanks Bronek Kozicki.
+
 2007-03-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/num_get_float.cpp: experimental support of correct input

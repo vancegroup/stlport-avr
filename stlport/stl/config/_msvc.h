@@ -189,8 +189,11 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #endif /* _STLP_MSVC */
 
 /** The desktop variants starting with VC8 have a set of more secure replacements
-for the error-prone string handling functions of the C standard lib. */
-#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER) && !defined(UNDER_CE)
+for the error-prone string handling functions of the C standard lib. 
+But user has a chance to disable MS's warning with _CRT_SECURE_NO_DEPRECATE, and use traditional
+functions, as mentioned in MSDN. */
+#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER) && !defined(UNDER_CE) && \
+    !defined(_CRT_SECURE_NO_DEPRECATE)
 #  define _STLP_USE_SAFE_STRING_FUNCTIONS 1
 #endif
 
