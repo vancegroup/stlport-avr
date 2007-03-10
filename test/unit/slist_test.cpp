@@ -532,6 +532,7 @@ void SlistTest::allocator_with_state()
 #endif
 }
 
+#if !defined (STLPORT) || !defined (_STLP_USE_PTR_SPECIALIZATIONS)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.
@@ -541,3 +542,4 @@ class IncompleteClass
   slist<IncompleteClass> instances;
   typedef slist<IncompleteClass>::iterator it;
 };
+#endif

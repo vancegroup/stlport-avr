@@ -1,5 +1,12 @@
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* test/unit: Disable tests checking instanciation and use of
+	containers with an incomplete type when pointer specialization is
+	enable.
+
+	* stlport/stl/config/user_config.h: Add comment about limitation
+	of pointer specialization.
+
 	* stlport/stl/_string.h, _string_workaround.h: Now that _STLP_DEBUG
 	mode do not use inheritance anymore, use private rather than
 	protected members in basic_string implementation. Only exception

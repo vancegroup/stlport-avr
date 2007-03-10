@@ -372,34 +372,34 @@ void VectorTest::auto_ref()
 }
 
 void VectorTest::allocator_with_state()
-{
-  char buf1[1024];
-  StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
-
-  char buf2[1024];
-  StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
-
   {
-    typedef vector<int, StackAllocator<int> > VectorInt;
-    VectorInt vint1(10, 0, stack1);
-    VectorInt vint1Cpy(vint1);
+    char buf1[1024];
+    StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
 
-    VectorInt vint2(10, 1, stack2);
-    VectorInt vint2Cpy(vint2);
+    char buf2[1024];
+    StackAllocator<int> stack2(buf2, buf2 + sizeof(buf2));
 
-    vint1.swap(vint2);
+    {
+      typedef vector<int, StackAllocator<int> > VectorInt;
+      VectorInt vint1(10, 0, stack1);
+      VectorInt vint1Cpy(vint1);
 
-    CPPUNIT_ASSERT( vint1.get_allocator().swaped() );
-    CPPUNIT_ASSERT( vint2.get_allocator().swaped() );
+      VectorInt vint2(10, 1, stack2);
+      VectorInt vint2Cpy(vint2);
 
-    CPPUNIT_ASSERT( vint1 == vint2Cpy );
-    CPPUNIT_ASSERT( vint2 == vint1Cpy );
-    CPPUNIT_ASSERT( vint1.get_allocator() == stack2 );
-    CPPUNIT_ASSERT( vint2.get_allocator() == stack1 );
+      vint1.swap(vint2);
+
+      CPPUNIT_ASSERT( vint1.get_allocator().swaped() );
+      CPPUNIT_ASSERT( vint2.get_allocator().swaped() );
+
+      CPPUNIT_ASSERT( vint1 == vint2Cpy );
+      CPPUNIT_ASSERT( vint2 == vint1Cpy );
+      CPPUNIT_ASSERT( vint1.get_allocator() == stack2 );
+      CPPUNIT_ASSERT( vint2.get_allocator() == stack1 );
+    }
+    CPPUNIT_ASSERT( stack1.ok() );
+    CPPUNIT_ASSERT( stack2.ok() );
   }
-  CPPUNIT_ASSERT( stack1.ok() );
-  CPPUNIT_ASSERT( stack2.ok() );
-}
 
 struct Point {
   int x, y;
@@ -472,6 +472,7 @@ void VectorTest::iterators()
 }
 
 
+#if !defined (STLPORT) || !defined (_STLP_USE_PTR_SPECIALIZATIONS)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.
@@ -481,6 +482,7 @@ class IncompleteClass
   vector<IncompleteClass> instances;
   typedef vector<IncompleteClass>::iterator it;
 };
+#endif
 
 #if defined (STLPORT)
 #  define NOTHROW _STLP_NOTHROW
