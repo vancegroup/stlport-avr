@@ -1,5 +1,11 @@
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_string.h, _string_workaround.h: Now that _STLP_DEBUG
+	mode do not use inheritance anymore, use private rather than
+	protected members in basic_string implementation. Only exception
+	is when using VC6 workaround, this is what _STLP_PRIVATE macro is
+	done for.
+
 	* src/allocators.cpp, stlport/stl/config/features.h: Removed
 	unjustified _STLP_PRIVATE macro.
 

@@ -114,20 +114,25 @@ struct _String_reserve_t {};
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  define _STLP_PRIVATE protected
+#else
+#  define _STLP_PRIVATE private
+#endif
+
 template <class _CharT, class _Traits, class _Alloc>
-class basic_string : protected _STLP_PRIV _String_base<_CharT,_Alloc>
+class basic_string : _STLP_PRIVATE _STLP_PRIV _String_base<_CharT,_Alloc>
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (basic_string)
                    , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
 #endif
 {
-protected:                        // Protected members inherited from base.
+_STLP_PRIVATE:                        // Private members inherited from base.
   typedef _STLP_PRIV _String_base<_CharT,_Alloc> _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   // fbp : used to optimize char/wchar_t cases, and to simplify
   // _STLP_DEF_CONST_PLCT_NEW_BUG problem workaround
   typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
   typedef typename _IsPOD<_CharT>::_Type _Char_Is_POD;
-  typedef random_access_iterator_tag r_a_i_t;
 
 public:
   typedef _CharT value_type;
@@ -382,13 +387,12 @@ public:
   _Self& operator=(_CharT __c)
   { return assign(__STATIC_CAST(size_type,1), __c); }
 
-protected:
-
+private:
   static _CharT _STLP_CALL _M_null()
   { return _STLP_DEFAULT_CONSTRUCTED(_CharT); }
 
-protected:                     // Helper functions used by constructors
-                               // and elsewhere.
+_STLP_PRIVATE:                     // Helper functions used by constructors
+                                   // and elsewhere.
   // fbp : simplify integer types (char, wchar)
   void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) const {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
@@ -412,7 +416,7 @@ protected:                     // Helper functions used by constructors
     _M_force_construct_null(__p, _Answer());
   }
 
-protected:
+_STLP_PRIVATE:
   // Helper functions used by constructors.  It is a severe error for
   // any of them to be called anywhere except from within constructors.
   void _M_terminate_string_aux(const __false_type& __is_integral) {
@@ -764,8 +768,7 @@ public:                         // Insert
 
   void insert(iterator __p, size_t __n, _CharT __c);
 
-protected:  // Helper functions for insert.
-
+_STLP_PRIVATE:  // Helper functions for insert.
   void _M_insert(iterator __p, const _CharT* __first, const _CharT* __last, bool __self_ref);
 
   pointer _M_insert_aux(pointer, _CharT);
@@ -1033,7 +1036,7 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(iterator __first, iterator __last, size_type __n, _CharT __c);
 
-private:                        // Helper functions for replace.
+_STLP_PRIVATE:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     const _CharT* __f, const _CharT* __l, bool __self_ref);
 
@@ -1293,8 +1296,10 @@ public:                        // Helper functions for compare.
 #  define _STLP_STRING_SUM_BASE(__reserve, __size, __alloc) _STLP_PRIV _String_base<_CharT,_Alloc>(__alloc, __size + 1)
 #  include <stl/_string_sum_methods.h>
 #  undef _STLP_STRING_SUM_BASE
-#endif /* _STLP_USE_TEMPLATE_EXPRESSION */
+#endif
 };
+
+#undef _STLP_PRIVATE
 
 #if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
 template <class _CharT, class _Traits, class _Alloc>

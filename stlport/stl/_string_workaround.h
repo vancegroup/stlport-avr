@@ -30,7 +30,7 @@ class basic_string : public _STLP_NO_MEM_T_STRING_BASE
                    , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
 #endif
 {
-protected:                        // Protected members inherited from base.
+private:                        // Protected members inherited from base.
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   typedef _STLP_NO_MEM_T_STRING_BASE _Base;
   typedef typename _Base::_Char_Is_POD _Char_Is_POD;
@@ -283,7 +283,6 @@ private:                        // Helper functions for append.
   }
 
 public:                         // Assign
-
   _Self& assign(const _Self& __s) {
     _Base::assign(__s);
     return *this;
@@ -356,7 +355,6 @@ public:
 #endif
 
 public:                         // Insert
-
   _Self& insert(size_type __pos, const _Self& __s) {
     _Base::insert(__pos, __s);
     return *this;
@@ -536,7 +534,6 @@ private:  // Helper functions for insert.
 #endif
 
 public:                         // Erase.
-
   _Self& erase(size_type __pos = 0, size_type __n = npos) {
     _Base::erase(__pos, __n);
     return *this;
@@ -633,7 +630,7 @@ public:                         // Replace.  (Conceptually equivalent
   }
 #endif
 
-protected:                        // Helper functions for replace.
+private:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     const _CharT* __f, const _CharT* __l, bool __self_ref) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
@@ -706,14 +703,12 @@ protected:                        // Helper functions for replace.
   }
 
 public:                         // Other modifier member functions.
-
   void swap(_Self& __s) { _Base::swap(__s); }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif
 
 public:                         // Substring.
-
   _Self substr(size_type __pos = 0, size_type __n = npos) const
   { return _Self(*this, __pos, __n, get_allocator()); }
 
