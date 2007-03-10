@@ -1,3 +1,8 @@
+2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/allocators.cpp, stlport/stl/config/features.h: Removed
+	unjustified _STLP_PRIVATE macro.
+
 2007-03-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_msvc.h: use MS's safe srting functions only

@@ -760,8 +760,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_INLINE_LOOP inline
 #endif
 
-#define _STLP_PRIVATE public
-
 #ifndef _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
 #  define _STLP_TEMPLATE_NULL template<>
 #else

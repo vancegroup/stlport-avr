@@ -204,7 +204,6 @@ struct _Node_alloc_obj {
 #endif
 
 class __node_alloc_impl {
-_STLP_PRIVATE:
   static inline size_t _STLP_CALL _S_round_up(size_t __bytes)
   { return (((__bytes) + (size_t)_ALIGN-1) & ~((size_t)_ALIGN - 1)); }
 
