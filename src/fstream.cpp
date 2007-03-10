@@ -50,9 +50,6 @@ extern "C" {
 #    include <sys/sysctl.h>
 #  endif
 #elif defined (_STLP_USE_WIN32_IO)
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-
 #  ifdef __BORLANDC__
 #      include <cfcntl.h>            // For _O_RDONLY, etc
 #    include <sys/stat.h>         // For _fstat

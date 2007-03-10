@@ -1,5 +1,18 @@
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/config/_windows.h: Major modification, when building
+	STLport libs windows.h or afx.h, when _STLP_USE_MFC is defined, is
+	systematically included in order to detect the SDK version used to
+	the libraries. _windows.h is now the only place is the library where
+	windows.h is included.
+
+	* src/dll_main.cpp, fstream.cpp, lock_free_slist.h,
+	c_locale_win32/c_locale_win32.c: Removed references to windows.h now
+	included from _windows.h.
+
+	* stlport/stl/_istream.c: Add parenthesis on a use_facet call to make
+	VC6 happy when building the library.
+
 	* test/unit: Disable tests checking instanciation and use of
 	containers with an incomplete type when pointer specialization is
 	enable.

@@ -190,7 +190,9 @@ __get_num(basic_istream<_CharT, _Traits>& __that, _Number& __val) {
   if (__sentry) {
     typedef num_get<_CharT, istreambuf_iterator<_CharT, _Traits> > _Num_get;
     _STLP_TRY {
-      use_facet<_Num_get>(__that.getloc()).get(istreambuf_iterator<_CharT, _Traits>(__that.rdbuf()),
+      // Do not remove additional parenthesis around use_facet instanciation, some compilers (VC6)
+      // require it when building the library.
+      (use_facet<_Num_get>(__that.getloc())).get(istreambuf_iterator<_CharT, _Traits>(__that.rdbuf()),
                                                0, __that, __err, __val);
     }
     _STLP_CATCH_ALL {

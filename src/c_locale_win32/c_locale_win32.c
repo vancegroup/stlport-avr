@@ -19,7 +19,6 @@
  *
  */
 
-#include <windows.h>
 #include <limits.h>
 #if defined (_STLP_MSVC) || defined (__ICL)
 #  include <memory.h>

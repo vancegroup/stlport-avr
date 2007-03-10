@@ -165,9 +165,7 @@ private:
 #  endif
 
 #  if defined (_STLP_HAS_ATOMIC_FREELIST)
-#    if !defined (_STLP_USE_ASM_IMPLEMENTATION)
-#      include <windows.h>
-#    else
+#    if defined (_STLP_USE_ASM_IMPLEMENTATION)
 #      if defined (_STLP_MSVC) && (_STLP_MSVC < 1300) || defined (__ICL)
 #        pragma warning (push)
 #        pragma warning (disable : 4035) //function has no return value

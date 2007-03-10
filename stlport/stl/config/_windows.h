@@ -25,17 +25,6 @@
 #  define _STLP_PLATFORM "Windows"
 #endif
 
-#if defined (WINVER) || defined (_WIN32_WINDOWS)
-#  if defined (WINVER) && defined (_WIN32_WINDOWS)
-#    error WINVER and _WIN32_WINDOWS are not defined in a coherent way.
-#  endif
-#  if defined (WINVER)
-#    define _STLP_WIN32_VERSION WINVER
-#  else
-#    define _STLP_WIN32_VERSION _WIN32_WINDOWS
-#  endif
-#endif
-
 #if !defined (_STLP_BIG_ENDIAN) && !defined (_STLP_LITTLE_ENDIAN)
 #  if defined (_MIPSEB)
 #    define _STLP_BIG_ENDIAN 1
@@ -57,13 +46,23 @@
 
 #if !defined (_STLP_WINDOWS_H_INCLUDED)
 #  define _STLP_WINDOWS_H_INCLUDED
-#  if !(defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || \
+#  if defined (__BUILDING_STLPORT) || \
+      !(defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || \
         defined (__MINGW32__) || defined (__DMC__))
+#    include <stl/config/_native_headers.h>
+#    if !defined (WIN32_LEAN_AND_MEAN)
+#      define WIN32_LEAN_AND_MEAN
+#    endif
+#    if !defined (VC_EXTRALEAN)
+#      define VC_EXTRALEAN
+#    endif
 #    if defined (_STLP_USE_MFC)
 #      include <afx.h>
 #    else
 #      include <windows.h>
 #    endif
+#    undef min
+#    undef max
 #  else
 /* This section serves as a replacement for windows.h header for Visual C++ */
 #    if defined (__cplusplus)
@@ -165,39 +164,6 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #    endif
 
-#    if !defined (STLPInterlockedExchangePointer)
-/* This API function do not exist in the old platform SDK and is equivalent to
- * InterlockedExchange on 32 bits platform:
- */
-#      if defined (__cplusplus)
-/* We do not define this function if we are not in a C++ translation unit just
- * because of the inline portability issue it would introduce. We will have to
- * fix it the day we need this function for a C translation unit.
- */
-inline
-void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) {
-#        if defined (_STLP_MSVC)
-/* Here MSVC produces warning if 64 bits portability issue is activated.
- * MSVC do not see that _STLP_ATOMIC_EXCHANGE_PTR is a macro which content
- * is based on the platform, Win32 or Win64
- */
-#          pragma warning (push)
-#          pragma warning (disable : 4311) // pointer truncation from void* to long
-#          pragma warning (disable : 4312) // conversion from long to void* of greater size
-#        endif
-#        if !defined (_STLP_NO_NEW_STYLE_CASTS)
-  return reinterpret_cast<void*>(InterlockedExchange(reinterpret_cast<long*>(const_cast<void**>(__a)),
-                                                     reinterpret_cast<long>(__b)));
-#        else
-  return (void*)InterlockedExchange((long*)__a, (long)__b);
-#        endif
-#        if defined (_STLP_MSVC)
-#          pragma warning (pop)
-#        endif
-}
-#      endif
-#    endif
-
 #    if !defined (_STLP_WCE)
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL Sleep(unsigned long);
 _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutputString);
@@ -215,6 +181,50 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
 
 #  endif /* STL_MSVC __BORLANDC__ __ICL __WATCOMC__ __MINGW32__ __DMC__*/
 
+#  if !defined (STLPInterlockedExchangePointer)
+/* This API function do not exist in the old platform SDK and is equivalent to
+ * InterlockedExchange on 32 bits platform:
+ */
+#    if defined (__cplusplus)
+/* We do not define this function if we are not in a C++ translation unit just
+ * because of the inline portability issue it would introduce. We will have to
+ * fix it the day we need this function for a C translation unit.
+ */
+inline
+void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) {
+#      if defined (_STLP_MSVC)
+/* Here MSVC produces warning if 64 bits portability issue is activated.
+ * MSVC do not see that _STLP_ATOMIC_EXCHANGE_PTR is a macro which content
+ * is based on the platform, Win32 or Win64
+ */
+#        pragma warning (push)
+#        pragma warning (disable : 4311) // pointer truncation from void* to long
+#        pragma warning (disable : 4312) // conversion from long to void* of greater size
+#      endif
+#      if !defined (_STLP_NO_NEW_STYLE_CASTS)
+  return reinterpret_cast<void*>(InterlockedExchange(reinterpret_cast<long*>(const_cast<void**>(__a)),
+                                                     reinterpret_cast<long>(__b)));
+#      else
+  return (void*)InterlockedExchange((long*)__a, (long)__b);
+#      endif
+#      if defined (_STLP_MSVC)
+#        pragma warning (pop)
+#      endif
+}
+#    endif
+#  endif
+
 #endif /* _STLP_WINDOWS_H_INCLUDED */
+
+#if defined (WINVER) || defined (_WIN32_WINDOWS)
+#  if defined (WINVER) && defined (_WIN32_WINDOWS)
+#    error WINVER and _WIN32_WINDOWS are not defined in a coherent way.
+#  endif
+#  if defined (WINVER)
+#    define _STLP_WIN32_VERSION WINVER
+#  else
+#    define _STLP_WIN32_VERSION _WIN32_WINDOWS
+#  endif
+#endif
 
 #endif /* _STLP_INTERNAL_WINDOWS_H */
