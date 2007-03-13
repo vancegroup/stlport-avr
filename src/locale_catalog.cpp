@@ -46,18 +46,18 @@ static void* _Loc_monetary_create(const char * s, _Locale_name_hint* hint)
 static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint)
 { return _Locale_messages_create(s, hint); }
 
-static char const* _Loc_ctype_name(const void* l, char* s)
-{ return _Locale_ctype_name(__STATIC_CAST(const _Locale_ctype*, l), s); }
-static char const* _Loc_numeric_name(const void* l, char* s)
-{ return _Locale_numeric_name(__STATIC_CAST(const _Locale_numeric*, l), s); }
-static char const* _Loc_time_name(const void* l, char* s)
-{ return _Locale_time_name(__STATIC_CAST(const _Locale_time*, l), s); }
-static char const* _Loc_collate_name( const void* l, char* s)
-{ return _Locale_collate_name(__STATIC_CAST(const _Locale_collate*, l), s); }
-static char const* _Loc_monetary_name(const void* l, char* s)
-{ return _Locale_monetary_name(__STATIC_CAST(const _Locale_monetary*, l), s); }
-static char const* _Loc_messages_name(const void* l, char* s)
-{ return _Locale_messages_name(__STATIC_CAST(const _Locale_messages*, l), s); }
+static char const* _Loc_ctype_name(void* l, char* s)
+{ return _Locale_ctype_name((_Locale_ctype*)l, s); }
+static char const* _Loc_numeric_name(void* l, char* s)
+{ return _Locale_numeric_name((_Locale_numeric*)l, s); }
+static char const* _Loc_time_name(void* l, char* s)
+{ return _Locale_time_name((_Locale_time*)l, s); }
+static char const* _Loc_collate_name(void* l, char* s)
+{ return _Locale_collate_name((_Locale_collate*)l, s); }
+static char const* _Loc_monetary_name(void* l, char* s)
+{ return _Locale_monetary_name((_Locale_monetary*)l, s); }
+static char const* _Loc_messages_name(void* l, char* s)
+{ return _Locale_messages_name((_Locale_messages*)l, s); }
 
 static const char* _Loc_ctype_default(char* p)
 { return _Locale_ctype_default(p); }
@@ -80,7 +80,7 @@ static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy((_Locale_mo
 static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy((_Locale_messages*)p);}
 
 typedef void* (*loc_create_func_t)(const char *, _Locale_name_hint*);
-typedef char const* (*loc_name_func_t)(const void* l, char* s);
+typedef char const* (*loc_name_func_t)(void* l, char* s);
 typedef void (*loc_destroy_func_t)(void* l);
 typedef const char* (*loc_default_name_func_t)(char* s);
 typedef char const* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_hint*);
