@@ -114,7 +114,9 @@ struct _String_reserve_t {};
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (__DMC__)
+#  define _STLP_PRIVATE public
+#elif defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #  define _STLP_PRIVATE protected
 #else
 #  define _STLP_PRIVATE private

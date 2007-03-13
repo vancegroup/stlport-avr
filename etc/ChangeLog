@@ -1,5 +1,8 @@
 2007-03-13  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_string.h: Made inheritance relation between basic_string
+	and _String_base class public for DMC.
+
 	* src/dll_main.cpp, stlport/stl/config/features.h,
 	stlport/stl/_locale.h, _alloc.h: Add a new mecanism to detect library
 	build/use inconsisteny at link time.
