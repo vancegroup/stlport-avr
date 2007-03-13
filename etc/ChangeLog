@@ -5,7 +5,7 @@
 
 	* test/unit/exception_test.cpp: add test for what().
 
-2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
+2007-03-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_windows.h: Major modification, when building
 	STLport libs windows.h or afx.h, when _STLP_USE_MFC is defined, is
