@@ -1,0 +1,23 @@
+Special note for Windows users:
+
+  Because of a modification in the bahavior of the Win32 API function
+InterlockedIncrement after Windows 95, STLport libraries built for
+Windows 95 cannot be used to generate an application built for Windows
+XP for instance. Normally, doing so wouldn't generate any compilation or
+link error, you would only experiment undefined behavior at runtime. In
+order to make this problem more obvious STLport forces a link time error.
+Unresolved symbol will be:
+  - 'check_library_built_for_windows95_or_previous' function if you are
+  trying to use STLport libraries built for Windows 98 or later to generate
+  an application targetting the Windows 95 platform.
+  - 'check_library_built_for_windows98_or_later' function if you are trying
+  to use STLport libraries built for Windows 95 to generate an appliation
+  targetting the Windows XP platform for instance.
+
+  To fix this issue you can force a targetted platform while building the
+libraries or while building you application. When building the library
+STLport adapts itself to the SDK used to build it, it considered the
+WINVER or the _WIN32_VERSION (if WINVER is missing) macro to detect
+Windows platform. In order to force a specific targetted platform define
+WINVER macro when building STLport and when building your application. See
+configure script options to do so when building STLport libraries.

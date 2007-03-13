@@ -63,8 +63,11 @@
 #    endif
 #    undef min
 #    undef max
+#    if !defined (InterlockedExchangePointer)
+#      define InterlockedExchangePointer(Target, Value) (void*)InterlockedExchange((long*)(Target), (long)(Value))
+#    endif
 #  else
-/* This section serves as a replacement for windows.h header for Visual C++ */
+/* This section serves as a replacement for windows.h header. */
 #    if defined (__cplusplus)
 extern "C" {
 #    endif
@@ -201,12 +204,7 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 #        pragma warning (disable : 4311) // pointer truncation from void* to long
 #        pragma warning (disable : 4312) // conversion from long to void* of greater size
 #      endif
-#      if !defined (_STLP_NO_NEW_STYLE_CASTS)
-  return reinterpret_cast<void*>(InterlockedExchange(reinterpret_cast<long*>(const_cast<void**>(__a)),
-                                                     reinterpret_cast<long>(__b)));
-#      else
-  return (void*)InterlockedExchange((long*)__a, (long)__b);
-#      endif
+  return InterlockedExchangePointer(__a, __b);
 #      if defined (_STLP_MSVC)
 #        pragma warning (pop)
 #      endif
@@ -225,6 +223,17 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 #  else
 #    define _STLP_WIN32_VERSION _WIN32_WINDOWS
 #  endif
+#endif
+
+/* Between Windows 95 (0x400) and later Windows OSes an API enhancement forces us
+ * to change _Refcount_Base internal struct. As _Refcount_base member methods might
+ * be partially inlined we need to check that STLport build/use are coherent. To do
+ * so we try to generate a link time error thanks to the following macro.
+ */
+#if defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x400)
+#  define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
+#else
+#  define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later
 #endif
 
 #endif /* _STLP_INTERNAL_WINDOWS_H */

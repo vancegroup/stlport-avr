@@ -1,3 +1,25 @@
+2007-03-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/dll_main.cpp, stlport/stl/config/features.h,
+	stlport/stl/_locale.h, _alloc.h: Add a new mecanism to detect library
+	build/use inconsisteny at link time.
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME macro contains a
+	function name declared in features.h and defined in dll_main.cpp.
+	This function name depends on the build context. If, when using the
+	library, this macro contains an other function name because of a
+	different configuration context an unresolved symbol will appear at
+	link time showing the missing function symbol. Function name should
+	be chosen carefully to make problem as explicit as possible. For the
+	moment function is called in arbitrary places, in std::use_facet
+	function and std::allocator constructor. 
+
+	* stlport/stl/config/_windows.h: Use
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME macro to detect
+	inconsistency when building STLport for Windows 95 and using it
+	in Windows XP or opposite. Depending on targetted platform,
+	_Refcount_Base has a different sizeof which lead to undefined
+	behavior at runtime if we do not use this trick.
+
 2007-03-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/string_test.cpp: add test for trivial compare with plain

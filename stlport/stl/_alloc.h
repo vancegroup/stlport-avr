@@ -359,7 +359,11 @@ public:
     typedef allocator<_Tp1> other;
   };
 #endif
-  allocator() _STLP_NOTHROW {}
+  allocator() _STLP_NOTHROW {
+#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
+  _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
+#endif
+  }
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
 #endif
