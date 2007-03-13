@@ -48,6 +48,7 @@ class StringTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(StringTest);
   CPPUNIT_TEST(constructor);
+  CPPUNIT_TEST(trivial_char_compare);
   CPPUNIT_TEST(reserve);
   CPPUNIT_TEST(assign);
   CPPUNIT_TEST(erase);
@@ -103,6 +104,7 @@ class StringTest : public CPPUNIT_NS::TestCase
 
 protected:
   void constructor();
+  void trivial_char_compare();
   void reserve();
   void erase();
   void data();
@@ -170,6 +172,14 @@ void StringTest::constructor()
     CPPUNIT_ASSERT( false );
   }
 #endif
+}
+
+void StringTest::trivial_char_compare()
+{
+  string s( "message" );
+
+  CPPUNIT_CHECK( s == "message" );
+  CPPUNIT_CHECK( "message" == s );
 }
 
 void StringTest::reserve()

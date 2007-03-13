@@ -1,5 +1,7 @@
 #include <exception>
 #include <stdexcept>
+#include <string>
+#include <cstring>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -21,6 +23,7 @@ class ExceptionTest : public CPPUNIT_NS::TestCase
 #if defined (STLPORT) && !defined (_STLP_USE_EXCEPTIONS)
   CPPUNIT_IGNORE;
 #endif
+  CPPUNIT_TEST(what);
 #if defined (STLPORT) && defined (_STLP_NO_UNEXPECTED_EXCEPT_SUPPORT)
   CPPUNIT_IGNORE;
 #endif
@@ -35,6 +38,7 @@ class ExceptionTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST_SUITE_END();
 
 protected:
+  void what();
   void unexpected_except();
   void uncaught_except();
 };
@@ -57,6 +61,16 @@ void throw_except_func() throw(std::exception) {
   throw_func();
 }
 #endif
+
+void ExceptionTest::what()
+{
+  try {
+    throw std::runtime_error( std::string( "message" ) );
+  }
+  catch ( std::runtime_error& err ) {
+    CPPUNIT_CHECK( strcmp( err.what(), "message" ) == 0 );
+  }
+}
 
 void ExceptionTest::unexpected_except()
 {

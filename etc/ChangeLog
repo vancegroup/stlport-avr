@@ -1,3 +1,10 @@
+2007-03-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/string_test.cpp: add test for trivial compare with plain
+	char array;
+
+	* test/unit/exception_test.cpp: add test for what().
+
 2007-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_windows.h: Major modification, when building
