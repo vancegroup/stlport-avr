@@ -1,3 +1,20 @@
+2007-03-07  Francois Dumont  <dums@stlport...>
+
+	* src/dll_main.cpp, stlport/stl/_stdexcept_base.h: Change strncpy_s
+	invocation to pass _TRUNCATE parameter rather than number of chars
+	to put in destination string. Default strncpy_s behavior is not to
+	truncate string if necessary but to report the issue throught a handler
+	which lead to an application crash if no handler has been set. Thanks
+	Bronek Kozicki bug report 1674974.
+
+	* stlport/stl/type_traits.h: Add a default constructor declaration
+	in _TpWithState class to make gcc happy when class is instanciated
+	with a class with no default constructor.
+
+	* stlport/stl/config/_windows.h: Change definition of
+	_STLP_WIN32_VERSION macro. We do not report definition inconsistency
+	between WINVER and _WIN32_VERSION anymore, WINVER is prefered.
+
 2007-03-01  Francois Dumont  <dums@stlport...>
 
 	* test/unit/bitset_test.cpp: Add test for the to_string member

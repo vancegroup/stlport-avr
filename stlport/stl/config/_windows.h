@@ -63,9 +63,6 @@
 #    endif
 #    undef min
 #    undef max
-#    if !defined (InterlockedExchangePointer)
-#      define InterlockedExchangePointer(Target, Value) (void*)InterlockedExchange((long*)(Target), (long)(Value))
-#    endif
 #  else
 /* This section serves as a replacement for windows.h header. */
 #    if defined (__cplusplus)
@@ -189,6 +186,9 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
  * InterlockedExchange on 32 bits platform:
  */
 #    if defined (__cplusplus)
+#      if !defined (InterlockedExchangePointer)
+#        define InterlockedExchangePointer(Target, Value) (void*)InterlockedExchange((long*)(Target), (long)(Value))
+#      endif
 /* We do not define this function if we are not in a C++ translation unit just
  * because of the inline portability issue it would introduce. We will have to
  * fix it the day we need this function for a C translation unit.
@@ -214,13 +214,16 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 
 #endif /* _STLP_WINDOWS_H_INCLUDED */
 
-#if defined (WINVER) || defined (_WIN32_WINDOWS)
-#  if defined (WINVER) && defined (_WIN32_WINDOWS)
-#    error WINVER and _WIN32_WINDOWS are not defined in a coherent way.
-#  endif
+/* _STLP_WIN32_VERSION is used to detect targetted Windows platforms as
+ * old ones are not supporting some Win32 functions that STLport use.
+ * Limited OSs are going up to and including Windows 98 so they can be
+ * detected using WINVER or _WIN32_WINDOWS macros, we do not have to use
+ * _WINNT_WINDOWS macro for the moment.
+ */
+#if !defined (_STLP_WIN32_VERSION)
 #  if defined (WINVER)
 #    define _STLP_WIN32_VERSION WINVER
-#  else
+#  elif defined (_WIN32_WINDOWS)
 #    define _STLP_WIN32_VERSION _WIN32_WINDOWS
 #  endif
 #endif

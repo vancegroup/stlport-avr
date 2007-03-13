@@ -541,7 +541,8 @@ struct _SwapImplemented {
 #endif
 
 template <class _Tp>
-struct _TpWithState : _Tp{
+class _TpWithState : private _Tp {
+  _TpWithState();
   int _state;
 };
 

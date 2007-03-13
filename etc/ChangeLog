@@ -1,5 +1,7 @@
 2007-03-13  Francois Dumont  <dums@users.sourceforge.net>
 
+	* Merged with STLPORT_5_1 branch revision 2963.
+
 	* src/locale_catalog.cpp: Use C cast for C struct like _Locale_ctype,
 	it makes Borland compiler happier.
 

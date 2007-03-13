@@ -494,7 +494,7 @@ class IncompleteClass
  * internal STLport mecanism specific to the STLport own allocator
  * implementation. */
 template <class _Tp>
-struct NotSTLportAllocator : allocator<_Tp> {
+struct NotSTLportAllocator : public allocator<_Tp> {
 #if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef NotSTLportAllocator<_Tp1> other;
