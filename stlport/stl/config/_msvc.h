@@ -188,9 +188,12 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 
 #endif /* _STLP_MSVC */
 
-/** The desktop variants starting with VC8 have a set of more secure replacements
-for the error-prone string handling functions of the C standard lib. */
-#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER) && !defined (UNDER_CE)
+/* The desktop variants starting with VC8 have a set of more secure replacements
+ * for the error-prone string handling functions of the C standard lib. */
+/* When user do not consider 'unsafe' string functions as deprecated using _CRT_SECURE_NO_DEPRECATE
+ * macro we use 'unsafe' functions for performance reasons. */
+#if (_STLP_MSVC_LIB >= 1400) && !defined (_STLP_USING_PLATFORM_SDK_COMPILER) && !defined (UNDER_CE) && \
+    !defined (_CRT_SECURE_NO_DEPRECATE)
 #  define _STLP_USE_SAFE_STRING_FUNCTIONS 1
 #endif
 

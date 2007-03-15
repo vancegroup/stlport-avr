@@ -1,3 +1,8 @@
+2007-03-15  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/nmake/vc8.mak: Default MSVC 2005 build is now done
+	without safe string functions for performance reasons.
+
 2007-03-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Merged with STLPORT_5_1 branch revision 2963.
