@@ -3,6 +3,18 @@
 	* build/Makefiles/nmake/vc8.mak: Default MSVC 2005 build is now done
 	without safe string functions for performance reasons.
 
+	* stlport/stl/_locale.h, _alloc.h, _rope.h: Moved
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME invokation where problem
+	might happen which is in the rope implementation for current use. A future
+	use will need to guess where this function has to be invoked.
+
+	* stlport/stl/config/feature.h: Fixed _STLP_USE_NO_IOSTREAMS check to undef
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME macro.
+
+	* stlport/stl/config/_windows.h: For performance reason
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME system is only used in debug
+	mode (detected thanks to _DEBUG macro).
+
 2007-03-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Merged with STLPORT_5_1 branch revision 2963.

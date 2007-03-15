@@ -350,9 +350,13 @@ public:
   _CharT* _STLP_VOLATILE _M_c_string;
   _STLP_PRIV _STLP_alloc_proxy<size_t, _CharT, allocator_type> _M_size;
 
-# ifdef _STLP_NO_ARROW_OPERATOR
-  _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {}
-# endif
+#ifdef _STLP_NO_ARROW_OPERATOR
+  _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {
+#  if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
+    _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
+#  endif
+  }
+#endif
 
   /* Flattened version of string, if needed.  */
   /* typically 0.                             */
@@ -363,8 +367,11 @@ public:
   _Rope_RopeRep(_Tag __t, unsigned char __d, bool __b, size_t _p_size,
                 allocator_type __a) :
     _Refcount_Base(1),
-    _M_tag(__t), _M_is_balanced(__b), _M_depth(__d), _M_c_string(0), _M_size(__a, _p_size)
-  { }
+    _M_tag(__t), _M_is_balanced(__b), _M_depth(__d), _M_c_string(0), _M_size(__a, _p_size) {
+#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
+    _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
+#endif
+    }
 
   typedef typename _AreSameUnCVTypes<_CharT, char>::_Ret _IsChar;
 # ifdef _STLP_HAS_WCHAR_T

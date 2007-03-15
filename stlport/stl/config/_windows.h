@@ -233,10 +233,12 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * be partially inlined we need to check that STLport build/use are coherent. To do
  * so we try to generate a link time error thanks to the following macro.
  */
-#if defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x400)
-#  define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
-#else
-#  define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later
+#if defined (_DEBUG)
+#  if defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x400)
+#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
+#  else
+#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later
+#  endif
 #endif
 
 #endif /* _STLP_INTERNAL_WINDOWS_H */

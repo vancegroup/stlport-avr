@@ -282,9 +282,6 @@ _Use_facet<_Facet>::operator *() const
 use_facet(const locale& __loc)
 #endif
 {
-#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
-  _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
-#endif
   _Facet *__facet = 0;
   return *(_STLP_PRIV _UseFacet(__loc, __facet));
 }
