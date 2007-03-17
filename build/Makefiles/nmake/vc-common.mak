@@ -66,16 +66,23 @@ OPT_STATIC_REL = $(OPT_STATIC_REL) /MT
 !endif
 
 !ifdef STLP_BUILD_NO_THREAD
-#Sometimes thread support activation is detected by STLport depending on the
-#native runtime version option (/ML /MLd); but as there is no equivalent for
-#dll runtime or there is single threaded runtime after VC.Net2003 we simply
-#always define _STLP_NO_THREADS
+#Normally thread support activation is detected by STLport depending on the
+#compiler runtime version option (/ML /MLd); but as there is no more single
+#threaded runtime after VC.Net2003 we simply always define _STLP_NO_THREADS
 DEFS_REL = $(DEFS_REL) /D_STLP_NO_THREADS
 DEFS_DBG = $(DEFS_DBG) /D_STLP_NO_THREADS
 DEFS_STLDBG = $(DEFS_STLDBG) /D_STLP_NO_THREADS
 DEFS_STATIC_REL = $(DEFS_STATIC_REL) /D_STLP_NO_THREADS
 DEFS_STATIC_DBG = $(DEFS_STATIC_DBG) /D_STLP_NO_THREADS
 DEFS_STATIC_STLDBG = $(DEFS_STATIC_STLDBG) /D_STLP_NO_THREADS
+!endif
+
+!ifdef STLP_BUILD_WINDOWS_95
+DEFS = $(DEFS) /DWINVER=0x0400
+!else
+#Default is Windows 98 as generated libraries is then
+#compatible with all other Windows versions following it.
+DEFS = $(DEFS) /DWINVER=0x0410
 !endif
 
 !ifdef STLP_BUILD_NO_RTTI

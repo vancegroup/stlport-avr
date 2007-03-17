@@ -36,6 +36,19 @@ ifndef STLP_BUILD_NO_RTTI
 OPT += -Ar
 endif
 
+#Add Windows target.
+ifndef STLP_BUILD_WINDOWS_95
+WINVER=0x0410
+else
+WINVER=0x0400
+endif
+release-shared: DEFS += -DWINVER=$(WINVER)
+dbg-shared: DEFS += -DWINVER=$(WINVER)
+stldbg-shared: DEFS += -DWINVER=$(WINVER)
+release-static: DEFS += -DWINVER=$(WINVER)
+dbg-static: DEFS += -DWINVER=$(WINVER)
+stldbg-static: DEFS += -DWINVER=$(WINVER)
+
 OUTPUT_OPTION = -o$@
 LINK_OUTPUT_OPTION = $(subst /,\,$@)
 CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES) 

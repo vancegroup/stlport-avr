@@ -70,12 +70,38 @@ inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
 #  endif
 #endif  // !_DEBUG
 
-#  if defined (__OS400__)
+/* This is an additional atomic operations to the ones already defined in
+ * stl/_threads.h, platform should try to support it to improve performace.
+ * __stl_atomic_t _STLP_ATOMIC_ADD(volatile __stl_atomic_t* __target, __stl_atomic_t __val) :
+ * does *__target = *__target + __val and returns the old *__target value */
+#if defined (__GNUC__) && defined (__i386__)
+inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
+  long result;
+  __asm__ __volatile__
+    ("lock; xaddl %1, %0;"
+    :"=m" (*p), "=r" (result)
+    :"m"  (*p), "1"  (addend)
+    :"cc");
+ return result + addend;
+}
+#  define _STLP_ATOMIC_ADD(__dst, __val)  (_STLP_atomic_add_gcc_x86((long volatile*)__dst, (long)__val))
+#elif defined (_STLP_WIN32THREADS)
+/*
+ * The following functionnality is only available since Windows 98, those that are targeting previous OSes
+ * should define _WIN32_WINDOWS to a value lower that the one of Win 98, see Platform SDK documentation for
+ * more informations:
+ */
+#  if !defined (_STLP_WIN32_VERSION) || (_STLP_WIN32_VERSION >= 0x0410)
+#    define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
+#  endif
+#endif
+
+#if defined (__OS400__)
 // dums 02/05/2007: is it really necessary ?
 enum { _ALIGN = 16, _ALIGN_SHIFT = 4 };
-#  else
+#else
 enum { _ALIGN = 2 * sizeof(void*), _ALIGN_SHIFT = 2 + sizeof(void*) / 4 };
-#  endif
+#endif
 
 #define _S_FREELIST_INDEX(__bytes) ((__bytes - size_t(1)) >> (int)_ALIGN_SHIFT)
 

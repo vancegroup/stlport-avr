@@ -46,9 +46,7 @@
 
 #if !defined (_STLP_WINDOWS_H_INCLUDED)
 #  define _STLP_WINDOWS_H_INCLUDED
-#  if defined (__BUILDING_STLPORT) || \
-      !(defined ( _STLP_MSVC ) || defined (__BORLANDC__) || defined (__ICL) || defined (__WATCOMC__) || \
-        defined (__MINGW32__) || defined (__DMC__))
+#  if defined (__BUILDING_STLPORT)
 #    include <stl/config/_native_headers.h>
 #    if !defined (WIN32_LEAN_AND_MEAN)
 #      define WIN32_LEAN_AND_MEAN
@@ -73,11 +71,6 @@ extern "C" {
 #      define InterlockedIncrement       _InterlockedIncrement
 #      define InterlockedDecrement       _InterlockedDecrement
 #      define InterlockedExchange        _InterlockedExchange
-/* Here we use a different macro name than the InterlockedExchangePointer SDK function
- * to avoid macro definition conflict as the SDK might already define InterlockedExchangePointer
- * as a macro.
- */
-#      define STLPInterlockedExchangePointer _InterlockedExchangePointer
 #      define _STLP_STDCALL
 #    else
 #      if defined (_MAC)
@@ -91,11 +84,17 @@ extern "C" {
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long volatile *);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long volatile *, long);
-#      if defined (STLPInterlockedExchangePointer)
-_STLP_IMPORT_DECLSPEC void* _STLP_STDCALL STLPInterlockedExchangePointer(void* volatile *, void*);
+#      if defined (_WIN64)
+_STLP_IMPORT_DECLSPEC void* _STLP_STDCALL _InterlockedExchangePointer(void* volatile *, void*);
 #      endif
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchangeAdd(long volatile *, long);
-#    elif defined (_STLP_WCE)
+#    elif !defined (_STLP_WCE)
+/* boris : for the latest SDK, you may actually need the other version of the declaration (above)
+ * even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
+ */
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
+_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
+#    else
 
 /* start of eMbedded Visual C++ specific section */
 #      include <windef.h> /* needed for basic windows types */
@@ -154,14 +153,6 @@ _STLP_WCE_WINBASEAPI void WINAPI Sleep(DWORD);
 #      endif /* !__WINDOWS__ */
 
 /* end of eMbedded Visual C++ specific section */
-
-#    else
-/* boris : for the latest SDK, you may actually need the other version of the declaration (above)
- * even for earlier VC++ versions. There is no way to tell SDK versions apart, sorry ...
- */
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
-_STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #    endif
 
 #    if !defined (_STLP_WCE)
@@ -173,25 +164,24 @@ _STLP_IMPORT_DECLSPEC void _STLP_STDCALL OutputDebugStringA(const char* lpOutput
 #      pragma intrinsic(_InterlockedIncrement)
 #      pragma intrinsic(_InterlockedDecrement)
 #      pragma intrinsic(_InterlockedExchange)
-#      pragma intrinsic(_InterlockedExchangePointer)
+#      if defined (_WIN64)
+#        pragma intrinsic(_InterlockedExchangePointer)
+#      endif
 #    endif
 #    if defined (__cplusplus)
 } /* extern "C" */
 #    endif
 
-#  endif /* STL_MSVC __BORLANDC__ __ICL __WATCOMC__ __MINGW32__ __DMC__*/
+#  endif
 
-#  if !defined (STLPInterlockedExchangePointer)
-/* This API function do not exist in the old platform SDK and is equivalent to
- * InterlockedExchange on 32 bits platform:
- */
+/* Here we use a macro different than the InterlockedExchangePointer SDK one
+ * to avoid macro definition conflict. */
+#  if !defined (_WIN64)
+/* Under 32 bits platform we rely on a simple InterlockedExchange call. */
 #    if defined (__cplusplus)
-#      if !defined (InterlockedExchangePointer)
-#        define InterlockedExchangePointer(Target, Value) (void*)InterlockedExchange((long*)(Target), (long)(Value))
-#      endif
 /* We do not define this function if we are not in a C++ translation unit just
- * because of the inline portability issue it would introduce. We will have to
- * fix it the day we need this function for a C translation unit.
+ * because of the 'inline' keyword portability issue it would introduce. We will
+ * have to fix it the day we need this function for a C translation unit.
  */
 inline
 void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) {
@@ -204,12 +194,19 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 #        pragma warning (disable : 4311) // pointer truncation from void* to long
 #        pragma warning (disable : 4312) // conversion from long to void* of greater size
 #      endif
-  return InterlockedExchangePointer(__a, __b);
+#      if !defined (_STLP_NO_NEW_STYLE_CASTS)
+  return reinterpret_cast<void*>(InterlockedExchange(reinterpret_cast<long*>(const_cast<void**>(__a)),
+                                                     reinterpret_cast<long>(__b)));
+#      else
+  return (void*)InterlockedExchange((long*)__a, (long)__b);
+#      endif
 #      if defined (_STLP_MSVC)
 #        pragma warning (pop)
 #      endif
 }
 #    endif
+#  else
+#    define STLPInterlockedExchangePointer _InterlockedExchangePointer
 #  endif
 
 #endif /* _STLP_WINDOWS_H_INCLUDED */

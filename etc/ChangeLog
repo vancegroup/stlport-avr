@@ -1,3 +1,25 @@
+2007-03-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:
+	Add WINVER definition when building libraries to signal required OS
+	compatibility, per default it is Windows 98 and later ones.
+
+	* build/lib/configure, configure.bat: Add new configuration option
+	--windows95 to signal that we want Windows 95 compatibility.
+
+	* stlport/stl/_threads.h, config/_windows.h, src/allocators.cpp:
+	Move _STLP_ATOMIC_ADD macro definition in source files where it is
+	used.
+
+	* stlport/stl/config/_windows.h:
+	  - When building the libraries we always include windows.h, when using
+	the library we always use own function declaration to avoid windows.h
+	inclusion.
+	  - InterlockedExchangeAdd is not declared anymore.
+	  - InterlockedExchangePointer is only used when detecting 64 bits
+	    platform thanks to the _WIN64 macro, otherwise InterlockedExchange
+	    is used.
+
 2007-03-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/nmake/vc8.mak: Default MSVC 2005 build is now done

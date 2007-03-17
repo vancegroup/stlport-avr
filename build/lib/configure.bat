@@ -70,6 +70,9 @@ if "%1" == "--extra-cxxflag" goto opt_xtra
 REM library name customization
 if "%1" == "--lib-motif" goto opt_motf
 
+REM Special Windows 95 build
+if "%1" == "--windows95" goto opt_w95
+
 REM clean rule
 if "%1" == "--clean" goto opt_cln
 
@@ -161,6 +164,10 @@ echo   stlportd_MOTIF.5.0.lib
 echo   stlportstld_static_MOTIF.5.1.lib
 echo   Do not forget to define _STLP_LIB_NAME_MOTIF macro in STLport configuration file
 echo   to the same value if you want to keep the auto link feature.
+echo.
+echo "--windows95"
+echo   Force library build for Windows 95, default behavior is for Windows 98 and
+echo   later Windows OSes.
 echo.
 echo "--clean"
 echo    Removes the build configuration file.
@@ -505,6 +512,17 @@ echo Using '%2' in generated library names
 echo STLP_BUILD_LIB_MOTIF = %2 >> ..\Makefiles\config.mak
 
 shift
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * Windows 95 build
+REM *
+REM **************************************************************************
+:opt_w95
+echo Forcing build for the Windows 95 platform.
+
+echo STLP_BUILD_WINDOWS_95=1 >> ..\Makefiles\config.mak
 goto cont_lp
 
 REM **************************************************************************

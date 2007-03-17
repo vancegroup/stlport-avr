@@ -53,8 +53,6 @@
  * assign __val to *__target and returns former *__target value
  * void* _STLP_ATOMIC_EXCHANGE_PTR(void* volatile* __target, void* __ptr) :
  * assign __ptr to *__target and returns former *__target value
- * __stl_atomic_t _STLP_ATOMIC_ADD(volatile __stl_atomic_t* __target, __stl_atomic_t __val) :
- * does *__target = *__target + __val and returns the old *__target value
  */
 
 #if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
@@ -136,19 +134,6 @@ inline long _STLP_atomic_decrement_gcc_x86(long volatile* p) {
 #        define _STLP_ATOMIC_DECREMENT(__x) (_STLP_atomic_decrement_gcc_x86((long volatile*)__x))
 #      endif
 
-#      if !defined (_STLP_ATOMIC_ADD)
-inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
-  long result;
-  __asm__ __volatile__
-    ("lock; xaddl %1, %0;"
-    :"=m" (*p), "=r" (result)
-    :"m"  (*p), "1"  (addend)
-    :"cc");
- return result + addend;
-}
-#        define _STLP_ATOMIC_ADD(__dst, __val)  (_STLP_atomic_add_gcc_x86((long volatile*)__dst, (long)__val))
-#      endif
-
 #    endif /* if defined(__GNUC__) && defined(__i386__) */
 
 #  elif defined (_STLP_WIN32THREADS)
@@ -164,14 +149,6 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
 #        define _STLP_ATOMIC_EXCHANGE(__x, __y)       InterlockedExchange(__x, __y)
 #      endif
 #      define _STLP_ATOMIC_EXCHANGE_PTR(__x, __y)     STLPInterlockedExchangePointer(__x, __y)
-/*
- * The following functionnality is only available since Windows 98, those that are targeting previous OSes
- * should define _WIN32_WINDOWS to a value lower that the one of Win 98, see Platform SDK documentation for
- * more informations:
- */
-#      if defined (_STLP_NEW_PLATFORM_SDK) && (!defined (_STLP_WIN32_VERSION) || (_STLP_WIN32_VERSION >= 0x0410))
-#        define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
-#      endif
 #    endif
 
 #  elif defined (__DECC) || defined (__DECCXX)
