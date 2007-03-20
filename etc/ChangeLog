@@ -21,6 +21,10 @@
   * stlport/stl/config/_evc.h: Removed unjustified macro definition to
   limit inclusion from windows.h, it is a user decision not an STLport one.
 
+	* build/Makefiles/nmake/vc8.mak: Fix definition of DEFS in this file
+	to keep current DEFS value that might exist if configure --extra-cxxflag
+	option has been used.
+
 2007-03-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:
