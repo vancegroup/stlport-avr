@@ -25,6 +25,9 @@
 	to keep current DEFS value that might exist if configure --extra-cxxflag
 	option has been used.
 
+	* src/allocators.cpp: Add _STLP_NEW_PLATFORM_SDK macro check to
+	perform necessary const_cast in _STLP_ATOMIC_ADD macro definition.
+
 2007-03-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:

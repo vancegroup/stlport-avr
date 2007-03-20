@@ -84,7 +84,7 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
     :"cc");
  return result + addend;
 }
-#  define _STLP_ATOMIC_ADD(__dst, __val)  (_STLP_atomic_add_gcc_x86((long volatile*)__dst, (long)__val))
+#  define _STLP_ATOMIC_ADD(__dst, __val)  (_STLP_atomic_add_gcc_x86(__dst, __val))
 #elif defined (_STLP_WIN32THREADS)
 /*
  * The following functionnality is only available since Windows 98, those that are targeting previous OSes
@@ -92,7 +92,11 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
  * more informations:
  */
 #  if !defined (_STLP_WIN32_VERSION) || (_STLP_WIN32_VERSION >= 0x0410)
-#    define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
+#    if defined (_STLP_NEW_PLATFORM_SDK)
+#      define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
+#    else
+#      define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__CONST_CAST(__stl_atomic_t*, __dst), __val)
+#    endif
 #  endif
 #endif
 
