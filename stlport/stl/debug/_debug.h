@@ -20,11 +20,12 @@
 #ifndef _STLP_DEBUG_H
 #define _STLP_DEBUG_H
 
-#if defined (_STLP_ASSERTIONS) || defined (_STLP_DEBUG)
+#if (defined (_STLP_DEBUG) || defined (_STLP_DEBUG_ALLOC)) && \
+    !defined (_STLP_ASSERTIONS)
+#  define _STLP_ASSERTIONS 1
+#endif
 
-#  ifndef _STLP_TYPE_TRAITS_H
-#    include <stl/type_traits.h>
-#  endif
+#if defined (_STLP_ASSERTIONS)
 
 #  if !defined (_STLP_FILE__)
 #    define _STLP_FILE__ __FILE__
@@ -78,27 +79,18 @@ enum {
 /* have to hardcode that ;() */
 #  define _StlMsg_MAX 31
 
-// This class is unique (not inherited from exception),
-// to disallow catch in anything but (...)
-struct __stl_debug_exception {
-  // no members
-};
-
-// class _STLP_CLASS_DECLSPEC __owned_link;
-// class _STLP_CLASS_DECLSPEC __owned_list;
-
 class __owned_link;
 class __owned_list;
 
-#if defined (_STLP_DEBUG_MODE_THROWS)
-#  define _STLP_MESSAGE_NORETURN _STLP_FUNCTION_THROWS
-#else
-#  define _STLP_MESSAGE_NORETURN
-#endif
+#  if defined (_STLP_DEBUG_MODE_THROWS)
+#    define _STLP_MESSAGE_NORETURN _STLP_FUNCTION_THROWS
+#  else
+#    define _STLP_MESSAGE_NORETURN
+#  endif
 
 template <class _Dummy>
-struct __stl_debug_engine {
-
+class __stl_debug_engine {
+public:
   // Basic routine to report any debug message
   // Use _STLP_DEBUG_MESSAGE to override
   static void _STLP_MESSAGE_NORETURN _STLP_CALL _Message(const char * format_str, ...);
@@ -155,8 +147,8 @@ struct __stl_debug_engine {
 #undef _STLP_MESSAGE_NORETURN
 
 #  if defined (_STLP_USE_TEMPLATE_EXPORT)
-_STLP_EXPORT_TEMPLATE struct _STLP_CLASS_DECLSPEC __stl_debug_engine<bool>;
-#  endif /* _STLP_USE_TEMPLATE_EXPORT */
+_STLP_EXPORT_TEMPLATE_CLASS __stl_debug_engine<bool>;
+#  endif
 
 typedef __stl_debug_engine<bool> __stl_debugger;
 
@@ -169,6 +161,8 @@ _STLP_END_NAMESPACE
        if (!(expr)) { _STLP_PRIV __stl_debugger::_Assert( # expr, _STLP_FILE__, __LINE__); }
 #  endif
 
+#else
+#  define _STLP_ASSERT(expr)
 #endif /* _STLP_ASSERTIONS || _STLP_DEBUG */
 
 // this section is for _STLP_DEBUG only
@@ -183,14 +177,11 @@ _STLP_END_NAMESPACE
 #  endif
 
 #  define _STLP_DEBUG_CHECK(expr) _STLP_ASSERT(expr)
-#  define _STLP_DEBUG_DO(expr)    expr;
 
 #  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
 #    define _STLP_STD_DEBUG_CHECK(expr) _STLP_DEBUG_CHECK(expr)
-#    define _STLP_STD_DEBUG_DO(expr) _STLP_DEBUG_DO(expr)
 #  else
 #    define _STLP_STD_DEBUG_CHECK(expr)
-#    define _STLP_STD_DEBUG_DO(expr)
 #  endif
 
 #  if !defined (_STLP_VERBOSE_RETURN)
@@ -213,13 +204,17 @@ _STLP_END_NAMESPACE
 #    include <stl/_iterator_base.h>
 #  endif
 
+#  ifndef _STLP_TYPE_TRAITS_H
+#    include <stl/type_traits.h>
+#  endif
+
 _STLP_BEGIN_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 /*
  * Special debug iterator traits having an additionnal static member
- * method _Check. It is used by the slit debug implementation to check
+ * method _Check. It is used by the slist debug implementation to check
  * the special before_begin iterator.
  */
 template <class _Traits>
@@ -355,7 +350,7 @@ private:
   __owned_list& operator = (const __owned_list&) { return *this; }
 
   friend class __owned_link;
-  friend struct __stl_debug_engine<bool>;
+  friend class __stl_debug_engine<bool>;
 };
 
 
@@ -423,6 +418,9 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
+#else
+#  define _STLP_VERBOSE_ASSERT(expr, diagnostic)
+#  define _STLP_DEBUG_CHECK(expr)
 #endif /* _STLP_DEBUG */
 
 #if defined (_STLP_ASSERTIONS)
@@ -447,7 +445,7 @@ extern  void __stl_debug_terminate();
 
 #endif
 
-#if !defined (_STLP_LINK_TIME_INSTANTIATION)
+#if defined (_STLP_ASSERTIONS) && !defined (_STLP_LINK_TIME_INSTANTIATION)
 #  include <stl/debug/_debug.c>
 #endif
 

@@ -529,10 +529,6 @@ inline void _STLP_CALL advance(_InputIterator& __i, _Distance __n) {
 
 _STLP_END_NAMESPACE
 
-#if defined (_STLP_DEBUG) && !defined (_STLP_DEBUG_H)
-#  include <stl/debug/_debug.h>
-#endif
-
 #endif /* _STLP_INTERNAL_ITERATOR_BASE_H */
 
 

@@ -31,10 +31,6 @@
 #  include <stl/_cstddef.h>
 #endif
 
-#if !defined (_STLP_DEBUG_H) && (defined(_STLP_DEBUG) || defined(_STLP_ASSERTIONS) || defined(_STLP_DEBUG_ALLOC))
-#  include <stl/debug/_debug.h>
-#endif
-
 #ifndef _STLP_INTERNAL_CSTDLIB
 #  include <stl/_cstdlib.h>
 #endif

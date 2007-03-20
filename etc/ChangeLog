@@ -1,3 +1,15 @@
+2007-03-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_prolog.h, config/features.h, debug/_debug.h:
+	Normalize the way STLport debug mode macros are defined. All
+	debug macro definition are now coming from _debug.h and not
+	anymore partially from features.h. _debug.h is now included from
+	_prolog.h after all configuration has been completed.
+
+	* stlport/stl/_alloc.h, _iterator_base.h, _valarray.h: Removed
+	_debug.h references now fully integrated in STLport configuration
+	phase.
+
 2007-03-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:

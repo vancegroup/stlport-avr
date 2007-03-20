@@ -39,11 +39,6 @@
 #  include <stl/_limits.h>
 #endif
 
-/* As we only need the _STLP_ASSERT macro from _debug.h we test it to include _debug.h */
-#ifndef _STLP_ASSERT
-#  include <stl/debug/_debug.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 class slice;

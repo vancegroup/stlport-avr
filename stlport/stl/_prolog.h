@@ -23,3 +23,9 @@
 #if defined (_STLP_HAS_SPECIFIC_PROLOG_EPILOG)
 #  include <stl/config/_prolog.h>
 #endif
+
+/* Get all debug things, potentially only empty macros if none of
+ * the debug features available in user config file is activated. */
+#if defined (__cplusplus) && !defined (_STLP_DEBUG_H)
+#  include <stl/debug/_debug.h>
+#endif

@@ -390,10 +390,6 @@
 #define _STLP_NEW new
 #define _STLP_PLACEMENT_NEW new
 
-#ifdef _STLP_DEBUG
-#  define _STLP_ASSERTIONS 1
-#endif
-
 #if !defined (_STLP_STATIC_ASSERT)
 /* Some compiler support 0 size array so we use negative size array to generate
  * a compilation time error.
@@ -410,18 +406,6 @@
 #endif
 #ifndef _STLP_MPWFIX_CATCH_ACTION
 #  define _STLP_MPWFIX_CATCH_ACTION(action)
-#endif
-
-/* if _STLP_DEBUG or _STLP_ASSERTIONS are set, stl/debug/_debug.h defines those */
-
-#if !defined (_STLP_ASSERTIONS) && !defined (_STLP_DEBUG) && !defined (_STLP_DEBUG_ALLOC)
-#  define _STLP_ASSERT(expr)
-#endif
-
-#if !defined (_STLP_DEBUG)
-#  define _STLP_VERBOSE_ASSERT(expr,diagnostic)
-#  define _STLP_DEBUG_CHECK(expr)
-#  define _STLP_DEBUG_DO(expr)
 #endif
 
 #if !defined (_STLP_WEAK)
@@ -1008,10 +992,6 @@ typedef int bool;
 #else
 #  define _STLP_BOOL_KEYWORD 1
 #endif /* _STLP_NO_BOOL */
-
-#if defined (_STLP_DEBUG_ALLOC) && !defined (_STLP_ASSERTIONS)
-#  define _STLP_ASSERTIONS 1
-#endif
 
 /* uninitialized value filler */
 #ifndef _STLP_SHRED_BYTE
