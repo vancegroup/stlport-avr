@@ -113,7 +113,7 @@
 #endif
 
 // short string optimization bug under evc3, evc4 using ARM compiler
-#if _MSC_VER<1400 && (defined (ARM) || defined (_ARM_))
+#if _MSC_VER < 1400 && (defined (ARM) || defined (_ARM_))
 #  define _STLP_DONT_USE_SHORT_STRING_OPTIM
 #endif
 
@@ -232,10 +232,6 @@
 
 #endif /* _STLP_WCE_NET */
 
-/* Workaround in _windows.h needs native headers access macros
- * to be defined */
-#include <stl/config/_native_headers.h>
-
 /*
  * eMbedded Visual C++ 3.0 specific settings
  */
@@ -320,22 +316,6 @@ inline void __cdecl operator delete(void *, void *) { return; }
 #  endif
 
 #endif /* _STLP_WCE_EVC3 */
-
-// Minimize windows.h includes
-#if !defined (WIN32_LEAN_AND_MEAN)
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#if !defined (VC_EXTRALEAN)
-#  define VC_EXTRALEAN
-#endif
-#if !defined (STRICT)
-#  define STRICT
-#endif
-
-// Don't let windows.h define its min and max macros.
-#if !defined (NOMINMAX)
-#  define NOMINMAX
-#endif
 
 /*
  * original call: TerminateProcess(GetCurrentProcess(), 0);

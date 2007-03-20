@@ -10,6 +10,17 @@
 	_debug.h references now fully integrated in STLport configuration
 	phase.
 
+	* stlport/stl/config/_windows.h: Add some Windows macro before
+	inclusion of windows.h when building library to limit Windows
+	pollution (NOMINMAX, STRICT). Moreover add definition of
+	_STLP_OUTERMOST_HEADER_ID macro before windows.h inclusion to
+	avoid indirect include of STLport stuff throught C Standard headers
+	included in windows.h as at this moment STLport is not yet completely
+	configured.
+
+  * stlport/stl/config/_evc.h: Removed unjustified macro definition to
+  limit inclusion from windows.h, it is a user decision not an STLport one.
+
 2007-03-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:

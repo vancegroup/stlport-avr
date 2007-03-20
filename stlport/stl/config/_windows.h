@@ -48,19 +48,33 @@
 #  define _STLP_WINDOWS_H_INCLUDED
 #  if defined (__BUILDING_STLPORT)
 #    include <stl/config/_native_headers.h>
+/* Here we define _STLP_OUTERMOST_HEADER_ID to avoid indirect inclusion
+ * of STLport stuffs from C/C++ Standard headers exposed by STLport
+ * as configuration is not yet completed. */
+#    if !defined (_STLP_OUTERMOST_HEADER_ID)
+#      define _STLP_OUTERMOST_HEADER_ID 0x100
+#    endif
 #    if !defined (WIN32_LEAN_AND_MEAN)
 #      define WIN32_LEAN_AND_MEAN
 #    endif
 #    if !defined (VC_EXTRALEAN)
 #      define VC_EXTRALEAN
 #    endif
+// Don't let windows.h define its min and max macros.
+#    if !defined (NOMINMAX)
+#      define NOMINMAX
+#    endif
+#    if !defined (STRICT)
+#      define STRICT
+#    endif
 #    if defined (_STLP_USE_MFC)
 #      include <afx.h>
 #    else
 #      include <windows.h>
 #    endif
-#    undef min
-#    undef max
+#    if (_STLP_OUTERMOST_HEADER_ID == 0x100)
+#      undef _STLP_OUTERMOST_HEADER_ID
+#    endif
 #  else
 /* This section serves as a replacement for windows.h header. */
 #    if defined (__cplusplus)
@@ -95,8 +109,9 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedIncrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedDecrement(long*);
 _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 #    else
-
 /* start of eMbedded Visual C++ specific section */
+#      include <stl/config/_native_headers.h>
+
 #      include <windef.h> /* needed for basic windows types */
 
        /** in SDKs generated with PB5, windef.h somehow includes headers which then
