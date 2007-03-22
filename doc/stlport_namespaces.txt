@@ -123,20 +123,8 @@ default STLport namespace is: stlp_std. Here is the list of the customized names
 
   You can also have combination of those extension like stlpdxmtx_std or stlpdmtx_std...
 
-  There is also an other STLport namespace for STLport internal functions or struct/class: stlp_priv.
-If the compiler has limited namespace management this namespace can also be nested in the stlport one
-and in this case its name is just: priv.
+  There is also an other STLport namespace for STLport internal functions or struct/class: priv.
 
-//Normal namespace schema:
-namespace stlport
-{
-}
-
-namespace stlp_priv
-{
-}
-
-//For limited compilers:
 namespace stlport
 {
   namespace priv
