@@ -60,7 +60,7 @@
 #    if !defined (VC_EXTRALEAN)
 #      define VC_EXTRALEAN
 #    endif
-// Don't let windows.h define its min and max macros.
+/* Don't let windows.h define its min and max macros. */
 #    if !defined (NOMINMAX)
 #      define NOMINMAX
 #    endif
