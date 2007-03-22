@@ -31,22 +31,22 @@ void _Locale_init()
 void _Locale_final()
 {}
 
-void *_Locale_ctype_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_ctype* _Locale_ctype_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-void *_Locale_numeric_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_numeric* _Locale_numeric_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-void *_Locale_time_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_time* _Locale_time_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-void *_Locale_collate_create(const char *__DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_collate* _Locale_collate_create(const char *__DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-void *_Locale_monetary_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_monetary* _Locale_monetary_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
-void *_Locale_messages_create(const char *__DUMMY_PAR, struct _Locale_name_hint* hint)
+struct _Locale_messages* _Locale_messages_create(const char *__DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
 
 const char *_Locale_ctype_default(char* __DUMMY_PAR)    { return 0; }
@@ -56,31 +56,30 @@ const char *_Locale_collate_default(char* __DUMMY_PAR)  { return 0; }
 const char *_Locale_monetary_default(char* __DUMMY_PAR) { return 0; }
 const char *_Locale_messages_default(char* __DUMMY_PAR) { return 0; }
 
-char const* _Locale_ctype_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_ctype_name(const struct _Locale_ctype *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char const* _Locale_numeric_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_numeric_name(const struct _Locale_numeric *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char const* _Locale_time_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_time_name(const struct _Locale_time *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char const* _Locale_collate_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_collate_name(const struct _Locale_collate *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char const* _Locale_monetary_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_monetary_name(const struct _Locale_monetary *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-char const* _Locale_messages_name(const void* __DUMMY_PAR1, char* __DUMMY_PAR)
+char const* _Locale_messages_name(const struct _Locale_messages *__DUMMY_PAR1, char* __DUMMY_PAR)
 { return 0; }
 
-void _Locale_ctype_destroy(void* __DUMMY_PAR)    {}
-void _Locale_numeric_destroy(void* __DUMMY_PAR)  {}
-void _Locale_time_destroy(void* __DUMMY_PAR)     {}
-void _Locale_collate_destroy(void* __DUMMY_PAR)  {}
-void _Locale_monetary_destroy(void* __DUMMY_PAR) {}
-void _Locale_messages_destroy(void* __DUMMY_PAR) {}
-
+void _Locale_ctype_destroy(struct _Locale_ctype *__DUMMY_PAR)       {}
+void _Locale_numeric_destroy(struct _Locale_numeric *__DUMMY_PAR)   {}
+void _Locale_time_destroy(struct _Locale_time *__DUMMY_PAR)         {}
+void _Locale_collate_destroy(struct _Locale_collate *__DUMMY_PAR)   {}
+void _Locale_monetary_destroy(struct _Locale_monetary *__DUMMY_PAR) {}
+void _Locale_messages_destroy(struct _Locale_messages *__DUMMY_PAR) {}
 
 char const* _Locale_extract_ctype_name(const char* __DUMMY_PAR1, char* __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }
