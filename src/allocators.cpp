@@ -75,6 +75,7 @@ inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
  * __stl_atomic_t _STLP_ATOMIC_ADD(volatile __stl_atomic_t* __target, __stl_atomic_t __val) :
  * does *__target = *__target + __val and returns the old *__target value */
 #if defined (__GNUC__) && defined (__i386__)
+_STLP_STATIC_ASSERT( sizeof(long) == sizeof(__stl_atomic_t) )
 inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
   long result;
   __asm__ __volatile__
@@ -84,7 +85,7 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
     :"cc");
  return result + addend;
 }
-#  define _STLP_ATOMIC_ADD(__dst, __val)  (_STLP_atomic_add_gcc_x86(__dst, __val))
+#  define _STLP_ATOMIC_ADD(__dst, __val)  _STLP_atomic_add_gcc_x86((volatile long*)__dst, (long)__val)
 #elif defined (_STLP_WIN32THREADS)
 /*
  * The following functionnality is only available since Windows 98, those that are targeting previous OSes
