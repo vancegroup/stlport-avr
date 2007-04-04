@@ -547,7 +547,7 @@ echo Done configuring STLport.
 echo.
 
 if "%STLPORT_COMPILE_COMMAND%" == "" goto skp_comp
-echo Please type "%STLPORT_COMPILE_COMMAND%" to build STLport.
+echo Please type "%STLPORT_COMPILE_COMMAND% clean all" to build STLport.
 echo Type "%STLPORT_COMPILE_COMMAND% install" to install STLport to the "lib"
 echo and "bin" folder when done.
 echo.

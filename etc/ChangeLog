@@ -1,3 +1,9 @@
+2007-04-04  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/lib/configure.bat: Change advise command to build
+	STLport after configuration, it is now 'clean all' rather
+	than default build command.
+
 2007-03-22  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_dummy/c_locale_dummy.c: Fixed dummy definition
