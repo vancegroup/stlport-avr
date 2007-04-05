@@ -61,11 +61,6 @@
 #  undef  _STLP_NO_DRAND48
 #  define _STLP_NO_DRAND48
 #  define _STLP_CALL
-
-#  if defined (_STLP_NEW_PLATFORM_SDK)
-/* For the moment the Windows SDK coming with Mingw still mimik the old platform SDK. */
-#    undef _STLP_NEW_PLATFORM_SDK
-#  endif
 #endif /* __MINGW32__ */
 
 #if (__GNUC__ >= 4)
@@ -239,7 +234,7 @@ typedef unsigned int wint_t;
 
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )
-#  undef _STLP_LONG_LONG
+#  undef _STLP_LONG_LONG 
 #endif
 
 #ifndef __EXCEPTIONS

@@ -1,3 +1,9 @@
+2007-04-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/_gcc.h: Removed undef of _STLP_NEW_PLATFORM_SDK,
+	under MinGW, MinGW can use a new SDK and not the one coming with
+	MinGW.
+
 2007-04-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/ctype.cpp: move declaration from loop;
@@ -45,8 +51,8 @@
 	included in windows.h as at this moment STLport is not yet completely
 	configured.
 
-  * stlport/stl/config/_evc.h: Removed unjustified macro definition to
-  limit inclusion from windows.h, it is a user decision not an STLport one.
+	* stlport/stl/config/_evc.h: Removed unjustified macro definition to
+	limit inclusion from windows.h, it is a user decision not an STLport one.
 
 	* build/Makefiles/nmake/vc8.mak: Fix definition of DEFS in this file
 	to keep current DEFS value that might exist if configure --extra-cxxflag
