@@ -122,10 +122,8 @@ struct _Bit_iterator_base {
 
   _Bit_iterator_base() : _M_p(0), _M_offset(0) {}
   _Bit_iterator_base(unsigned int* __x, unsigned int __y) : _M_p(__x), _M_offset(__y) {}
-// see comment in doc/README.evc4
-// TODO: since this still applies to the MIPS compiler delivered with VC8,
-// but isn't mentioned in its (yet nonexistant) README.evc8.
-#if defined(_MSC_VER) && _MSC_VER<=1400 && defined(MIPS) && defined(NDEBUG)
+// see comment in doc/README.evc4 and doc/README.evc8
+#if defined(_MSC_VER) && _MSC_VER<=1401 && defined(MIPS) && defined(NDEBUG)
   _Bit_iterator_base( const _Bit_iterator_base& __x) : _M_p(__x._M_p), _M_offset(__x._M_offset) {}
 #endif
   //  _Bit_iterator_base& operator = ( const _Bit_iterator_base& __x) { _M_p = __x._M_p ; _M_offset = __x._M_offset ; return *this; }

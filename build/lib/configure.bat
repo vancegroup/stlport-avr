@@ -360,7 +360,7 @@ goto pr_end
 :pr_arm
 echo Target processor: ARM
 echo TARGET_PROC=arm >> ..\Makefiles\config.mak
-REM echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
 goto pr_end
 
 :pr_x86

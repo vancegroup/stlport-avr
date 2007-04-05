@@ -4,6 +4,8 @@
 	under MinGW, MinGW can use a new SDK and not the one coming with
 	MinGW.
 
+	* Merged with STLPORT_5_1 branch up to revision 2994.
+
 2007-04-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/ctype.cpp: move declaration from loop;
