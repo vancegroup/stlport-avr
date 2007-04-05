@@ -15,7 +15,7 @@
 
 #if !defined (_STLP_OUTERMOST_HEADER_ID)
 #  define _STLP_OUTERMOST_HEADER_ID 0x203
-#  include <stl/_prolog.h>
+#  include <stl/_cprolog.h>
 #elif (_STLP_OUTERMOST_HEADER_ID == 0x203) && !defined (_STLP_DONT_POP_HEADER_ID)
 #  define _STLP_DONT_POP_HEADER_ID
 #elif (_STLP_OUTERMOST_HEADER_ID == 0x203)
@@ -43,7 +43,7 @@ _STLP_END_NAMESPACE
 
 #if defined (__BORLANDC__) && defined (__cplusplus) && !defined (_STLP_BCC_FPU_BUG)
 #  define _STLP_BCC_FPU_BUG
-// Ignore FPU exceptions, set FPU precision to 53 bits for floatio_test and cmath_test
+/* Ignore FPU exceptions, set FPU precision to 53 bits for floatio_test and cmath_test */
 static unsigned int _bcc_fpu_bug = _control87(PC_53|MCW_EM, MCW_PC|MCW_EM);
 template <class _Fp>
 int __fpclass(_Fp __val)

@@ -1,3 +1,19 @@
+2007-04-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/ctype.cpp: move declaration from loop;
+
+	* stlport/stl/debug/_debug.c: stl/_cstdlib.h already included;
+
+	* stlport/stl/_cprolog.h: prolog for C headers can't include
+	files with C++ constructions;
+
+	* stlport/*.h: C headers use prolog that don't include C++
+	constructions;
+
+	* test/unit/stldbg_include.cpp, build/test/unit/Makefile.inc:
+	test for problem with inclusion C++ constructions from
+	C header.
+
 2007-04-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/lib/configure.bat: Change advise command to build

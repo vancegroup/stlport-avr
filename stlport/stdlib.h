@@ -21,7 +21,7 @@
 
 #  if !defined (_STLP_OUTERMOST_HEADER_ID)
 #    define _STLP_OUTERMOST_HEADER_ID 0x265
-#    include <stl/_prolog.h>
+#    include <stl/_cprolog.h>
 #  elif (_STLP_OUTERMOST_HEADER_ID == 0x265) && !defined (_STLP_DONT_POP_HEADER_ID)
 #    define _STLP_DONT_POP_HEADER_ID
 #  endif
@@ -65,9 +65,3 @@ struct _exception;
 #  endif
 
 #endif /* RC_INVOKED */
-
-/*
-  Local Variables:
-  mode:C++
-  End:
-*/

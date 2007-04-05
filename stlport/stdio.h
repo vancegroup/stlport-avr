@@ -21,7 +21,7 @@
 
 #  ifndef _STLP_OUTERMOST_HEADER_ID
 #    define _STLP_OUTERMOST_HEADER_ID 0x264
-#    include <stl/_prolog.h>
+#    include <stl/_cprolog.h>
 #  elif (_STLP_OUTERMOST_HEADER_ID == 0x264) && !defined (_STLP_DONT_POP_HEADER_ID)
 #    define _STLP_DONT_POP_HEADER_ID
 #  endif
