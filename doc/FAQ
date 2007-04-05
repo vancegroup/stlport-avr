@@ -45,6 +45,8 @@ Q6.1 Is STLport a replacement for headers and libraries that shipout
 with compiler?
 Q6.2 My tool detects memory leaks in applications with STLport. Is this leak
 from STLport?
+Q6.3 When running unit tests, I have errors in LocaleTest test fixture, how bad
+is it?
 
                            Answers
 
@@ -489,4 +491,15 @@ In _STLP_DEBUG mode, just also define the following symbols, either in
 You don't need to rebuild STLport for these options, but you have to rebuild
 your application and all of your dependent libraries if you make any change to
 the file.
+
+========================================================================
+
+Q6.3 When running unit tests, I have errors in LocaleTest test fixture, how bad
+is it?
+
+A6.3 Failures in LocaleTest tests do not mean that your platform/compiler is not
+fully supported by STLport. Platform independant localization tests are very hard
+to write as Standard localization API has not been design to make unit test easy.
+In STLport unit tests suite we have hard coded some expected values. Those values
+depends on your OS configuration explaining why sometimes the tests are failing.
 
