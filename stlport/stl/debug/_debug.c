@@ -324,11 +324,6 @@ __DECLARE_INSTANCE(const char*, __stl_debug_engine<bool>::_Message_table[_StlMsg
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
-// abort()
-#  ifndef _STLP_INTERNAL_CSTDLIB
-#    include <stl/_cstdlib.h>
-#  endif
-
 #  if !defined (_STLP_DEBUG_MESSAGE)
 #    ifndef _STLP_INTERNAL_CSTDARG
 #      include <stl/_cstdarg.h>
