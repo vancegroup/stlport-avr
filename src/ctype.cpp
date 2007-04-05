@@ -422,8 +422,9 @@ const wchar_t* ctype<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
                                      ctype_base::mask * vec) const {
   // boris : not clear if this is the right thing to do...
   const ctype_base::mask * table = ctype<char>::classic_table();
+  wchar_t c;
   for ( ; low < high; ++low, ++vec) {
-    wchar_t c = *low;
+    c = *low;
     *vec = _WCharIndex::in_range(c, ctype<char>::table_size) ? table[c] : ctype_base::mask(0);
   }
   return high;
