@@ -18,6 +18,8 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(movable_declaration)
+  CPPUNIT_TEST(movable_declaration_assoc)
+  CPPUNIT_TEST(movable_declaration_hash)
 #if defined (__BORLANDC__)
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(nb_destructor_calls);
@@ -30,6 +32,8 @@ protected:
   void vector_test();
   void move_traits();
   void movable_declaration();
+  void movable_declaration_assoc();
+  void movable_declaration_hash();
   void nb_destructor_calls();
 
   /*
@@ -53,8 +57,6 @@ private:
   void move_traits_vec_complete();
   void move_traits_deq();
   void move_traits_deq_complete();
-  void movable_declaration_assoc();
-  void movable_declaration_hash();
 };
 
 struct MovableStruct {

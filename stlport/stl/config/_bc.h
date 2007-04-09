@@ -25,11 +25,14 @@
 #endif
 
 #if (__BORLANDC__ >= 0x560)
-#  define NOWINBASEINTERLOCK  // src/fstream.cpp error in winbase.h
+#  if !defined (__BUILDING_STLPORT)
+#    define NOWINBASEINTERLOCK  
+#  endif
 #endif
 
 #if (__BORLANDC__ < 0x564)
 #  define _STLP_QUALIFIED_SPECIALIZATION_BUG
+#  define _STLP_NO_MOVE_SEMANTIC
 #endif
 
 #define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER

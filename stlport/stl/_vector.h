@@ -744,10 +744,6 @@ template <class _Tp, class _Alloc>
 struct __move_traits<vector<_Tp, _Alloc> > {
   typedef __true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
-#if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
-  // disable incorrect "dependent type qualifier" error
-  typedef __false_type _Ret;
-#endif
 };
 #  endif
 

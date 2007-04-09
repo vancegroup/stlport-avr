@@ -13,7 +13,7 @@ size_t MovableStruct::nb_mv_construct_call = 0;
 size_t MovableStruct::nb_assignment_call = 0;
 size_t MovableStruct::nb_destruct_call = 0;
 
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  if defined (_STLP_USE_NAMESPACES)
 namespace std {
 #  endif
@@ -30,7 +30,7 @@ namespace std {
 struct CompleteMovableStruct {
   CompleteMovableStruct() { ++nb_dft_construct_call; }
   CompleteMovableStruct(CompleteMovableStruct const&) { ++nb_cpy_construct_call; }
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CompleteMovableStruct(__move_source<CompleteMovableStruct>) { ++nb_mv_construct_call; }
 #endif
   ~CompleteMovableStruct() { ++nb_destruct_call; }
@@ -61,7 +61,7 @@ size_t CompleteMovableStruct::nb_mv_construct_call = 0;
 size_t CompleteMovableStruct::nb_assignment_call = 0;
 size_t CompleteMovableStruct::nb_destruct_call = 0;
 
-#if defined (STLPORT)
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  if defined (_STLP_USE_NAMESPACES)
 namespace std {
 #  endif

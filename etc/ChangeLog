@@ -1,3 +1,15 @@
+2007-04-09  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_pair.h, _vector.h, config/_bc.h: Borland patch
+	from Eric Sanford, remove move semantic for free compiler.
+
+	* test/unit/mvctor_test.h: Eric Sanford patch to restore 2 tests
+	that has been lost in a previous test modification,
+	movable_declaration_assoc and movable_declaration_hash.
+
+	* test/unit/mvctor_traits_test.cpp: Add some _STLP_NO_MOVE_SEMANTIC
+	checks when using __move_traits.
+
 2007-04-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_gcc.h: Removed undef of _STLP_NEW_PLATFORM_SDK,

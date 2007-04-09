@@ -164,11 +164,6 @@ struct __type_traits<pair<_T1, _T2> > {
   typedef typename _Land2<typename _T1Traits::has_trivial_destructor,
                           typename _T2Traits::has_trivial_destructor>::_Ret has_trivial_destructor;
   typedef __false_type is_POD_type;
-
-#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x560)
-  // disable incorrect "dependent type qualifier" error
-  typedef __false_type implemented;
-#  endif
 };
 
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
