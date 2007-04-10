@@ -27,7 +27,7 @@
 _STLP_BEGIN_NAMESPACE
 
 #define LIST_IMPL _STLP_PTR_IMPL_NAME(list)
-#if defined (__BORLANDC__)
+#if defined (__BORLANDC__) || defined (__DMC__)
 #  define typename
 #endif
 
@@ -332,7 +332,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 #undef LIST_IMPL
-#if defined (__BORLANDC__)
+#if defined (__BORLANDC__) || defined (__DMC__)
 #  undef typename
 #endif
 

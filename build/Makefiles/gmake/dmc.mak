@@ -70,6 +70,8 @@ LDLIBS += user32.lib kernel32.lib
 # STLport DEBUG mode specific defines
 dbg-static : DEFS += -D_DEBUG
 dbg-shared : DEFS += -D_DEBUG
+stldbg-static : DEFS += -D_DEBUG
+stldbg-shared : DEFS += -D_DEBUG
 dbg-static-dep : DEFS += -D_DEBUG
 dbg-shared-dep : DEFS +=  -D_DEBUG
 stldbg-static :	    DEFS += -D_STLP_DEBUG

@@ -9,7 +9,7 @@ stldbg-static : CXXFLAGS += -HP50
 OPT += -WA
 
 release-shared: LDFLAGS += 
-release-STATIC: LDFLAGS += 
+release-static: LDFLAGS += 
 dbg-shared : LDFLAGS += /CODEVIEW/NOCVPACK
 dbg-static : LDFLAGS += /CODEVIEW/NOCVPACK
 stldbg-shared : LDFLAGS += /CODEVIEW/NOCVPACK

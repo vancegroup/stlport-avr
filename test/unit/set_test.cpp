@@ -489,8 +489,7 @@ void SetTest::template_methods()
 #endif
 }
 
-#if (!defined (STLPORT) || !defined (_STLP_USE_PTR_SPECIALIZATIONS)) && \
-    !defined (__DMC__)
+#if (!defined (STLPORT) || !defined (_STLP_USE_PTR_SPECIALIZATIONS))
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

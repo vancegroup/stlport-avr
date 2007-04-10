@@ -1,3 +1,15 @@
+2007-04-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/pointers/_deque.h, _list.h, _set.h, _slist.h:
+	Eric Sanford DMC patch to allow pointer specialization feature.
+
+	* test/unit/map_test.cpp, set_test.cpp, slist_test.cpp,
+	unordered_test.cpp: Remove DMC check hiding pointer specialization
+	tests.
+
+	* build/Makefiles/gmake/dmc.mak, app/dmc.mak: Additional fixes from
+	Eric Sanford.
+
 2007-04-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_pair.h, _vector.h, config/_bc.h: Borland patch
