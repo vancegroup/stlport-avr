@@ -154,9 +154,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__node_alloc>;
 template class _STLP_CLASS_DECLSPEC __debug_alloc<__new_alloc>;
 
-const int __use_ptr_atomic_swap = sizeof(__stl_atomic_t) == sizeof(void*);
-template class _STLP_CLASS_DECLSPEC _Atomic_swap_struct<__use_ptr_atomic_swap>;
-
 //Export of the types used to represent buckets in the hashtable implementation.
 /*
  * For the vector class we do not use any MSVC6 workaround even if we export it from
