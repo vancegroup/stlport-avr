@@ -1,3 +1,38 @@
+2007-04-16  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/locale.cpp: Simplified locale::_M_throw_runtime_error
+	implementation using std::string rather than C string functions.
+	Also change exception message generation to make failure reason
+	more obvious.
+
+	* src/facets_byname.cpp: As, according Standard, *_byname facet
+	constructor should behave as locale constructor taking a name
+	STLport now throws a runtime_error instance when building
+	a facet from a null name.
+
+	* src/messages.cpp: Now contains all classes implementation involved
+	in messages facet support.
+
+	* stlport/stl/_messages_facets.h, src/messages_facets.h, messages.cpp:
+	Simplification of the messages facet implementation. Major modification
+	is that the C messages facet has now only one representation which is
+	the one given by the _Message class. There used to be an other one
+	based on _Messages_impl class using __acquire_messages("C").
+
+	* src/messages_facets.h: Internal classes _Messages and _Messages_impl
+	are not exported anymore.
+
+	* test/unit/locale_test.cpp: Facet tests has been moved to facet
+	category test files.
+
+	* test/unit/collate_facets_test.cpp, ctype_facets_test.cpp,
+	messages_facets_test.cpp, money_facets_test.cpp, num_facets_test.cpp,
+	time_facets_test.cpp, build/test/unit/Makefile.inc: New test cases for
+	each facet category.
+
+	* stlport/stl/config/features.h: Define _STLP_NO_TYPEINFO when _STLP_NO_RTTI
+	is defined.
+
 2007-04-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/dll_main.cpp: Removed useless _Atomic_swap_struct export

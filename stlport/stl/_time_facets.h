@@ -95,8 +95,8 @@ public:
   string _M_long_date_time_format;
 };
 
-void _STLP_CALL _Init_timeinfo(_Time_Info&);
-void _STLP_CALL _Init_timeinfo(_Time_Info&, _Locale_time*);
+_STLP_DECLSPEC void _STLP_CALL _Init_timeinfo(_Time_Info&);
+_STLP_DECLSPEC void _STLP_CALL _Init_timeinfo(_Time_Info&, _Locale_time*);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -171,9 +171,9 @@ protected:
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-time_base::dateorder _STLP_CALL __get_date_order(_Locale_time*);
-_Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*);
-void _STLP_CALL __release_time(_Locale_time* __time);
+_STLP_DECLSPEC _Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*);
+_STLP_DECLSPEC time_base::dateorder _STLP_CALL __get_date_order(_Locale_time*);
+_STLP_DECLSPEC void _STLP_CALL __release_time(_Locale_time* __time);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -198,9 +198,14 @@ public:
   typedef _InIt                 iter_type;
 
   explicit time_get_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
-    : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs),
-      _M_time(_STLP_PRIV __acquire_time(__name, __hint))
-  { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time); }
+    : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs) {
+    if (!__name)
+      locale::_M_throw_runtime_error();
+    this->_M_time = _STLP_PRIV __acquire_time(__name, __hint);
+    if (!this->_M_time)
+      locale::_M_throw_runtime_error(__name);
+    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time);
+  }
 
 protected:
   ~time_get_byname() { _STLP_PRIV __release_time(_M_time); }
@@ -232,7 +237,7 @@ private:
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-char * _STLP_CALL
+_STLP_DECLSPEC char * _STLP_CALL
 __write_formatted_time(char *__buf, size_t __buf_size, char __format, char __modifier,
                        const _Time_Info& __table, const tm* __t);
 
@@ -298,9 +303,14 @@ public:
   typedef _Ch   char_type;
 
   explicit time_put_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
-    : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs),
-    _M_time(_STLP_PRIV __acquire_time(__name, __hint))
-  { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time); }
+    : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs) {
+    if (!__name)
+      locale::_M_throw_runtime_error();
+    this->_M_time = _STLP_PRIV __acquire_time(__name, __hint);
+    if (!this->_M_time)
+      locale::_M_throw_runtime_error(__name);
+    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time);
+  }
 
 protected:
   ~time_put_byname() { _STLP_PRIV __release_time(_M_time); }

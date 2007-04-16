@@ -41,27 +41,16 @@ bool locale::operator()(const wstring& __x,
 #endif
 
 void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
-  char buf[256];
-
+  string what;
   if (name) {
-    const char* prefix = "bad locale name: ";
-#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
-    strcpy(buf, prefix);
-    strncat(buf, name, _STLP_ARRAY_SIZE(buf) - strlen(prefix));
-    buf[_STLP_ARRAY_SIZE(buf) - 1] = 0;
-#else
-    strcpy_s(_STLP_ARRAY_AND_SIZE(buf), prefix);
-    strncat_s(_STLP_ARRAY_AND_SIZE(buf), name, _TRUNCATE);
-#endif
+    what = "Unknown locale name '";
+    what += name;
+    what += '\'';
   }
   else {
-#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
-    strcpy(buf, "locale error");
-#else
-    strcpy_s(_STLP_ARRAY_AND_SIZE(buf), "locale error");
-#endif
+    what = "Invalid null locale name";
   }
-  _STLP_THROW(runtime_error(buf));
+  _STLP_THROW(runtime_error(what.c_str()));
 }
 
 // Takes a reference to a locale::id, and returns its numeric index.

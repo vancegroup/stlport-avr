@@ -1216,9 +1216,8 @@ inline valarray<_Tp>::valarray(const slice_array<_Tp>& __x)
 
 
 template <class _Tp>
-inline slice_array<_Tp> valarray<_Tp>::operator[](slice __slice) {
-  return slice_array<_Tp>(__slice, *this);
-}
+inline slice_array<_Tp> valarray<_Tp>::operator[](slice __slice)
+{ return slice_array<_Tp>(__slice, *this); }
 
 //----------------------------------------------------------------------
 // gslice and gslice_array

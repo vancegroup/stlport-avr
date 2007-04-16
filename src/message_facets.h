@@ -20,7 +20,6 @@
 
 #include <string>
 #include <locale>
-#include <typeinfo>
 #include <hash_map>
 
 #include "c_locale.h"
@@ -116,28 +115,27 @@ private:
 #endif
 };
 
-class _STLP_CLASS_DECLSPEC _Messages {
+class _Messages {
 public:
   typedef messages_base::catalog catalog;
 
-  _Messages();
-
-  virtual catalog do_open(const string& __fn, const locale& __loc) const;
+  virtual catalog do_open(const string& __fn, const locale& __loc) const
+  { return -1; }
   virtual string do_get(catalog __c, int __set, int __msgid,
-                        const string& __dfault) const;
+                        const string& __dfault) const
+  { return __dfault; }
 #if !defined (_STLP_NO_WCHAR_T)
   virtual wstring do_get(catalog __c, int __set, int __msgid,
-                         const wstring& __dfault) const;
+                         const wstring& __dfault) const
+  { return __dfault; }
 #endif
-  virtual void do_close(catalog __c) const;
-  virtual ~_Messages();
-  bool _M_delete;
+  virtual void do_close(catalog __c) const {}
+  virtual ~_Messages() {}
 };
 
-class _STLP_CLASS_DECLSPEC _Messages_impl : public _Messages {
+class _Messages_impl : public _Messages {
 public:
-  _Messages_impl(bool, _Locale_name_hint* hint = 0);
-  _Messages_impl(bool, _Locale_messages*);
+  _Messages_impl(bool, const char *name, _Locale_name_hint* hint);
 
   catalog do_open(const string& __fn, const locale& __loc) const;
   string do_get(catalog __c, int __set, int __msgid,

@@ -187,7 +187,7 @@ _STLP_EXPORT_TEMPLATE_CLASS num_get<wchar_t, istreambuf_iterator<wchar_t, char_t
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-extern bool _STLP_CALL __valid_grouping(const char*, const char*, const char*, const char*);
+_STLP_DECLSPEC bool _STLP_CALL __valid_grouping(const char*, const char*, const char*, const char*);
 
 template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL

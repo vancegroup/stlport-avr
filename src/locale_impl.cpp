@@ -25,7 +25,6 @@
 #include "c_locale.h"
 #include "aligned_buffer.h"
 #include "locale_impl.h"
-#include "message_facets.h"
 
 _STLP_BEGIN_NAMESPACE
 
@@ -600,7 +599,7 @@ void _Locale_impl::make_classic_locale() {
     new moneypunct<char, true>(1),
     new moneypunct<char, false>(1),
     new numpunct<char>(1),
-    new messages<char>(new _STLP_PRIV _Messages()),
+    new messages<char>(1),
     new money_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
     0,
     new money_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
@@ -625,7 +624,7 @@ void _Locale_impl::make_classic_locale() {
     new moneypunct<wchar_t, true>(1),
     new moneypunct<wchar_t, false>(1),
     new numpunct<wchar_t>(1),
-    new messages<wchar_t>(new _STLP_PRIV _Messages()),
+    new messages<wchar_t>(1),
 
     new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
     0,

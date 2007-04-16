@@ -57,7 +57,7 @@ class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public message
 public:
   typedef messages_base::catalog catalog;
   typedef char                   char_type;
-  typedef string    string_type;
+  typedef string                 string_type;
 
   explicit messages(size_t __refs = 0);
 
@@ -71,19 +71,14 @@ public:
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
-private:
-  messages(_STLP_PRIV _Messages*);
-
 protected:
-  messages(size_t, _Locale_messages*);
+  messages(size_t, const char* __name, _Locale_name_hint* __hint);
   ~messages();
 
   virtual catalog     do_open(const string& __fn, const locale& __loc) const;
   virtual string_type do_get(catalog __c, int __set, int __msgid,
                              const string_type& __dfault) const;
   virtual void        do_close(catalog __c) const;
-
-  void _M_initialize(const char* __name);
 
 private:
   _STLP_PRIV _Messages* _M_impl;
@@ -97,33 +92,28 @@ class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public mess
 public:
   typedef messages_base::catalog catalog;
   typedef wchar_t                char_type;
-  typedef wstring  string_type;
+  typedef wstring                string_type;
 
   explicit messages(size_t __refs = 0);
 
   inline catalog open(const string& __fn, const locale& __loc) const
-    { return do_open(__fn, __loc); }
+  { return do_open(__fn, __loc); }
   inline string_type get(catalog __c, int __set, int __msgid,
                          const string_type& __dfault) const
-    { return do_get(__c, __set, __msgid, __dfault); }
+  { return do_get(__c, __set, __msgid, __dfault); }
   inline void close(catalog __c) const
-    { do_close(__c); }
+  { do_close(__c); }
 
   static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
 
-private:
-  messages(_STLP_PRIV _Messages*);
-
 protected:
-  messages(size_t, _Locale_messages*);
+  messages(size_t, const char* __name, _Locale_name_hint* __hint);
   ~messages();
 
   virtual catalog     do_open(const string& __fn, const locale& __loc) const;
   virtual string_type do_get(catalog __c, int __set, int __msgid,
                              const string_type& __dfault) const;
   virtual void        do_close(catalog __c) const;
-
-  void _M_initialize(const char* __name);
 
 private:
   _STLP_PRIV _Messages* _M_impl;

@@ -31,6 +31,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/cmath_test.cpp \
 	../../../test/unit/cmath_header_test.cpp \
 	../../../test/unit/codecvt_test.cpp \
+	../../../test/unit/collate_facets_test.cpp \
 	../../../test/unit/complex_header_test.cpp \
 	../../../test/unit/config_test.cpp \
 	../../../test/unit/copy_test.cpp \
@@ -46,6 +47,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/cstring_test.cpp \
 	../../../test/unit/cstring_header_test.cpp \
 	../../../test/unit/ctime_header_test.cpp \
+	../../../test/unit/ctype_facets_test.cpp \
 	../../../test/unit/cwchar_header_test.cpp \
 	../../../test/unit/cwctype_header_test.cpp \
 	../../../test/unit/deque_test.cpp \
@@ -94,12 +96,14 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/map_test.cpp \
 	../../../test/unit/map_header_test.cpp \
 	../../../test/unit/max_test.cpp \
-	../../../test/unit/merge_test.cpp \
 	../../../test/unit/memory_header_test.cpp \
+	../../../test/unit/merge_test.cpp \
+	../../../test/unit/messages_facets_test.cpp \
 	../../../test/unit/mfunptr_test.cpp \
 	../../../test/unit/min_test.cpp \
 	../../../test/unit/mismatch_test.cpp \
 	../../../test/unit/modulus_test.cpp \
+	../../../test/unit/money_facets_test.cpp \
 	../../../test/unit/multiset_test.cpp \
 	../../../test/unit/mvctor_test.cpp \
 	../../../test/unit/mvctor_declaration_test.cpp \
@@ -107,6 +111,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/neq_test.cpp \
 	../../../test/unit/new_header_test.cpp \
 	../../../test/unit/nthelm_test.cpp \
+	../../../test/unit/num_facets_test.cpp \
 	../../../test/unit/num_put_get_test.cpp \
 	../../../test/unit/numeric_header_test.cpp \
 	../../../test/unit/ostmit_test.cpp \
@@ -156,7 +161,8 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/valarray_header_test.cpp \
 	../../../test/unit/vector_test.cpp \
 	../../../test/unit/vector_header_test.cpp \
-	../../../test/unit/test_errno.cpp
+	../../../test/unit/test_errno.cpp \
+	../../../test/unit/time_facets_test.cpp
 
 SRC_C = ../../../test/unit/assert_header_test.c \
 	../../../test/unit/ctype_header_test.c \
