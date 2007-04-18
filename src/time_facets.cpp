@@ -21,7 +21,6 @@
 #include <cstdio>
 #include <locale>
 #include <istream>
-#include <cstdio>
 
 #include "c_locale.h"
 
