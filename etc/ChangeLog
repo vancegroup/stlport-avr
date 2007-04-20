@@ -1,3 +1,13 @@
+2007-04-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_valarray.h: Integrate C++ Standard defect 253
+	signaling that slice_array, gslice_array, mask_array and
+	indirect_array copy constructor cannot be private.
+
+	* test/unit/valarray_test.cpp: Add compilation test to check that
+	valarray operator[] taking a slice, gslice, valarray<bool> and
+	valarray<size_t> can be called.
+
 2007-04-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp: Simplified locale::_M_throw_runtime_error

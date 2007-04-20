@@ -165,13 +165,13 @@ public:                         // Element access
   size_t size() const { return this->_M_size; }
 
 public:                         // Subsetting operations with auxiliary type
-  valarray<_Tp>            operator[](slice) const;
+  valarray<_Tp>       operator[](slice) const;
   slice_array<_Tp>    operator[](slice);
-  valarray<_Tp>            operator[](const gslice&) const;
+  valarray<_Tp>       operator[](const gslice&) const;
   gslice_array<_Tp>   operator[](const gslice&);
-  valarray<_Tp>            operator[](const _Valarray_bool&) const;
+  valarray<_Tp>       operator[](const _Valarray_bool&) const;
   mask_array<_Tp>     operator[](const _Valarray_bool&);
-  valarray<_Tp>            operator[](const _Valarray_size_t&) const;
+  valarray<_Tp>       operator[](const _Valarray_size_t&) const;
   indirect_array<_Tp> operator[](const _Valarray_size_t&);
 
 public:                         // Unary operators.
@@ -1187,19 +1187,23 @@ public:
       _M_array[__index] = __c;
   }
 
+  // C++ Standard defect 253, copy constructor must be public.
+  slice_array(const slice_array &__x)
+    : _M_slice(__x._M_slice), _M_array(__x._M_array)
+    {}
+
   ~slice_array() {}
 
 private:
-  slice_array(const slice& __slice, valarray<_Tp>& __array)
+  slice_array(const slice& __slice, valarray<_Tp> &__array)
     : _M_slice(__slice), _M_array(__array)
     {}
 
   slice          _M_slice;
   valarray<_Tp>& _M_array;
 
-private:                        // Disable assignment and default constructor
+private:                        // Disable assignment and copy constructor
   slice_array();
-  slice_array(const slice_array&);
   slice_array& operator=(const slice_array&);
 };
 
@@ -1379,17 +1383,23 @@ public:
     }
   }
 
+  // C++ Standard defect 253, copy constructor must be public.
+  gslice_array(const gslice_array& __x)
+    : _M_gslice(__x._M_gslice), _M_array(__x._M_array)
+    {}
+
   ~gslice_array() {}
 
 private:
-  gslice_array(const gslice& __gslice, valarray<_Tp>& __array)
+  gslice_array(const gslice &__gslice, valarray<_Tp> &__array)
     : _M_gslice(__gslice), _M_array(__array)
     {}
 
   gslice                _M_gslice;
   valarray<value_type>& _M_array;
 
-private:                        // Disable assignment
+private:                        // Disable assignment copy constructor
+  gslice_array();
   void operator=(const gslice_array<_Tp>&);
 };
 
@@ -1407,9 +1417,8 @@ inline valarray<_Tp>::valarray(const gslice_array<_Tp>& __x)
 }
 
 template <class _Tp>
-inline gslice_array<_Tp> valarray<_Tp>::operator[](const gslice& __slice) {
-  return gslice_array<_Tp>(__slice, *this);
-}
+inline gslice_array<_Tp> valarray<_Tp>::operator[](const gslice& __slice)
+{ return gslice_array<_Tp>(__slice, *this); }
 
 
 //----------------------------------------------------------------------
@@ -1492,8 +1501,6 @@ public:
       if (_M_mask[__i]) _M_array[__i] = __c;
   }
 
-  ~mask_array() {}
-
   // Extension: number of true values in the mask
   size_t _M_num_true() const {
     size_t __result = 0;
@@ -1502,15 +1509,22 @@ public:
     return __result;
   }
 
+  // C++ Standard defect 253, copy constructor must be public.
+  mask_array(const mask_array& __x)
+    : _M_mask(__x._M_mask), _M_array(__x._M_array)
+    {}
+
+  ~mask_array() {}
+
 private:
   mask_array(const _Valarray_bool& __mask, valarray<_Tp>& __array)
     : _M_mask(__mask), _M_array(__array)
     {}
-
   _Valarray_bool _M_mask;
   valarray<_Tp>& _M_array;
 
-private:                        // Disable assignment
+private:                        // Disable assignment and copy constructor
+  mask_array();
   void operator=(const mask_array<_Tp>&);
 };
 
@@ -1518,8 +1532,7 @@ private:                        // Disable assignment
 
 template <class _Tp>
 inline valarray<_Tp>::valarray(const mask_array<_Tp>& __x)
-  : _Valarray_base<_Tp>(__x._M_num_true())
-{
+  : _Valarray_base<_Tp>(__x._M_num_true()) {
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor
           _Is_Trivial;
   _M_initialize(_Is_Trivial());
@@ -1537,10 +1550,7 @@ inline valarray<_Tp>& valarray<_Tp>::operator=(const mask_array<_Tp>& __x) {
 
 template <class _Tp>
 inline mask_array<_Tp> valarray<_Tp>::operator[](const _Valarray_bool& __mask)
-{
-  return mask_array<_Tp>(__mask, *this);
-}
-
+{ return mask_array<_Tp>(__mask, *this); }
 
 //----------------------------------------------------------------------
 // indirect_array
@@ -1611,17 +1621,23 @@ public:
       _M_array[_M_addr[__i]] = __c;
   }
 
+  // C++ Standard defect 253, copy constructor must be public.
+  indirect_array(const indirect_array& __x)
+    : _M_addr(__x._M_addr), _M_array(__x._M_array)
+    {}
+
   ~indirect_array() {}
 
 private:
   indirect_array(const _Valarray_size_t& __addr, valarray<_Tp>& __array)
     : _M_addr(__addr), _M_array(__array)
-    {}
+  {}
 
   _Valarray_size_t _M_addr;
   valarray<_Tp>&   _M_array;
 
-private:                        // Disable assignment
+private:                        // Disable assignment, default and copy constructor
+  indirect_array();
   void operator=(const indirect_array<_Tp>&);
 };
 
@@ -1641,9 +1657,7 @@ inline valarray<_Tp>::valarray(const indirect_array<_Tp>& __x)
 template <class _Tp>
 inline indirect_array<_Tp>
 valarray<_Tp>::operator[](const _Valarray_size_t& __addr)
-{
-  return indirect_array<_Tp>(__addr, *this);
-}
+{ return indirect_array<_Tp>(__addr, *this); }
 
 _STLP_END_NAMESPACE
 
