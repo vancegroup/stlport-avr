@@ -280,8 +280,8 @@ void CodecvtTest::variable_encoding()
 
     int theoricalPos = 0;
     do {
-      char c = (char)istr.get();
-      if (c == char_traits<char>::eof()) {
+      int c = istr.get();
+      if (char_traits<char>::eq_int_type(c, char_traits<char>::eof())) {
         break;
       }
       ++theoricalPos;

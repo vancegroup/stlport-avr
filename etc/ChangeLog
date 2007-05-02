@@ -1,3 +1,9 @@
+2007-05-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/codecvt_test.cpp: Fixed comparison with char_traits::eof
+	to use eq_int_type in order to be compatible with platform having
+	a default unsigned char built-in type. Thanks Marco Jez report.
+
 2007-04-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_valarray.h: Integrate C++ Standard defect 253
