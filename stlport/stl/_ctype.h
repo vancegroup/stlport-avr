@@ -146,6 +146,7 @@ private:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
+  friend class _Locale_impl;
 public:
   explicit ctype_byname(const char*, size_t = 0, _Locale_name_hint* __hint = 0);
   ~ctype_byname();
@@ -164,7 +165,6 @@ private:
   typedef ctype_byname<char> _Self;
   ctype_byname(_Self const&);
   _Self& operator = (_Self const&);
-  friend _Locale_name_hint* _Locale_extract_hint(ctype_byname<char>*);
 };
 
 #  ifndef _STLP_NO_WCHAR_T

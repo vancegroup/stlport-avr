@@ -822,6 +822,11 @@ moneypunct_byname<char, true>::moneypunct_byname(const char * name,
   _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
+moneypunct_byname<char, true>::moneypunct_byname(_Locale_monetary *__mon)
+  : _M_monetary(__mon) {
+  _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
+}
+
 moneypunct_byname<char, true>::~moneypunct_byname()
 { _STLP_PRIV __release_monetary(_M_monetary); }
 
@@ -855,6 +860,11 @@ moneypunct_byname<char, false>::moneypunct_byname(const char * name,
   _M_monetary = _STLP_PRIV __acquire_monetary(name, hint);
   if (!_M_monetary)
     locale::_M_throw_runtime_error(name);
+  _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
+}
+
+moneypunct_byname<char, false>::moneypunct_byname(_Locale_monetary *__mon)
+  : _M_monetary(__mon) {
   _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
@@ -896,6 +906,11 @@ moneypunct_byname<wchar_t, true>::moneypunct_byname(const char * name,
   _M_monetary = _STLP_PRIV __acquire_monetary(name, hint);
   if (!_M_monetary)
     locale::_M_throw_runtime_error(name);
+  _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
+}
+
+moneypunct_byname<wchar_t, true>::moneypunct_byname(_Locale_monetary *__mon)
+  : _M_monetary(__mon) {
   _STLP_PRIV _Init_monetary_formats_int(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
@@ -947,6 +962,11 @@ moneypunct_byname<wchar_t, false>::moneypunct_byname(const char * name,
   _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
 }
 
+moneypunct_byname<wchar_t, false>::moneypunct_byname(_Locale_monetary *__mon)
+  : _M_monetary(__mon) {
+  _STLP_PRIV _Init_monetary_formats(_M_pos_format, _M_neg_format, _M_monetary);
+}
+
 moneypunct_byname<wchar_t, false>::~moneypunct_byname()
 { _STLP_PRIV __release_monetary(_M_monetary); }
 
@@ -970,33 +990,6 @@ wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const
 
 int moneypunct_byname<wchar_t, false>::do_frac_digits() const
 { return _Locale_frac_digits(_M_monetary); }
-
-#endif
-
-_STLP_END_NAMESPACE
-
-#include "message_facets.h"
-
-_STLP_BEGIN_NAMESPACE
-
-//----------------------------------------------------------------------
-// messages_byname<char>
-
-messages_byname<char>::messages_byname(const char* name, size_t refs, _Locale_name_hint* hint)
-: messages<char>(refs, name, hint) {}
-
-messages_byname<char>::~messages_byname() {}
-
-#if !defined (_STLP_NO_WCHAR_T)
-
-//----------------------------------------------------------------------
-// messages_byname<wchar_t>
-
-
-messages_byname<wchar_t>::messages_byname(const char* name, size_t refs, _Locale_name_hint* hint)
-: messages<wchar_t>(refs, name, hint) {}
-
-messages_byname<wchar_t>::~messages_byname() {}
 
 #endif
 

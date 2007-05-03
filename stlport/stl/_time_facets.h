@@ -52,7 +52,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 // this kind of input to be used very often.  The algorithm
 // could be improved fairly simply by creating a new list of
 // names still in the running at each iteration.  A more sophisticated
-// approach would be to build a trie to do the matching.
+// approach would be to build a tree to do the matching.
 //
 // We compare each character of the input to the corresponding
 // character of each name on the list that has not been eliminated,
@@ -180,19 +180,13 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _Ch, class _InIt>
 class time_get_byname;
 
-#if defined (__GNUC__) && (__GNUC__ < 3)
-template <class _Ch, class _InIt>
-_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<_Ch, _InIt>*);
-#else
-_Locale_name_hint* _Locale_time_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >*);
-#endif
-
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _Ch, class _InIt>
 #else
 template <class _Ch, class _InIt = istreambuf_iterator<_Ch, char_traits<_Ch> > >
 #endif
 class time_get_byname : public time_get<_Ch, _InIt> {
+  friend class _Locale_impl;
 public:
   typedef  time_base::dateorder dateorder;
   typedef _InIt                 iter_type;
@@ -201,28 +195,31 @@ public:
     : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs) {
     if (!__name)
       locale::_M_throw_runtime_error();
-    this->_M_time = _STLP_PRIV __acquire_time(__name, __hint);
-    if (!this->_M_time)
+    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint);
+    if (!__time)
       locale::_M_throw_runtime_error(__name);
-    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time);
+    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
+    _M_dateorder = _STLP_PRIV __get_date_order(__time);
+    _STLP_PRIV __release_time(__time);
   }
 
 protected:
-  ~time_get_byname() { _STLP_PRIV __release_time(_M_time); }
-  dateorder do_date_order() const { return _STLP_PRIV __get_date_order(_M_time); }
+  ~time_get_byname() {}
+  dateorder do_date_order() const { return _M_dateorder; }
 
 private:
-  _Locale_time* _M_time;
+  time_get_byname(_Locale_time *__time)
+    : time_get<_Ch, _InIt>((_Locale_time*) 0, 0) {
+    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
+    _M_dateorder = _STLP_PRIV __get_date_order(__time);
+  }
+
+  dateorder _M_dateorder;
 
   typedef time_get_byname<_Ch, _InIt> _Self;
   //explicitely defined as private to avoid warnings:
   time_get_byname(_Self const&);
   _Self& operator = (_Self const&);
-#if defined (__GNUC__) && (__GNUC__ < 3)
-  friend _Locale_name_hint* _Locale_time_extract_hint<>(_Self*);
-#else
-  friend _Locale_name_hint* _Locale_time_extract_hint(time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >*);
-#endif
 };
 
 // time_put facet
@@ -306,17 +303,20 @@ public:
     : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs) {
     if (!__name)
       locale::_M_throw_runtime_error();
-    this->_M_time = _STLP_PRIV __acquire_time(__name, __hint);
-    if (!this->_M_time)
+    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint);
+    if (!__time)
       locale::_M_throw_runtime_error(__name);
-    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, this->_M_time);
+    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
+    _STLP_PRIV __release_time(__time);
   }
 
 protected:
-  ~time_put_byname() { _STLP_PRIV __release_time(_M_time); }
+  ~time_put_byname() {}
 
 private:
-  _Locale_time* _M_time;
+  time_put_byname(_Locale_time *__time)
+    : time_put<_Ch, _OutIt>((_Locale_time*) 0, 0)
+  { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time); }
 
   typedef time_put_byname<_Ch, _OutIt> _Self;
   //explicitely defined as private to avoid warnings:

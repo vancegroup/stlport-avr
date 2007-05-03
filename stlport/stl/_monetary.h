@@ -255,6 +255,7 @@ template <class _charT, _STLP_DFL_NON_TYPE_PARAM(bool , _International , false) 
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC moneypunct_byname<char, true> : public moneypunct<char, true> {
+  friend class _Locale_impl;
 public:
   typedef money_base::pattern   pattern;
   typedef char                  char_type;
@@ -264,7 +265,6 @@ public:
                                                        _Locale_name_hint* __hint = 0);
 
 protected:
-  _Locale_monetary* _M_monetary;
   ~moneypunct_byname _STLP_PSPEC2(char, true) ();
   virtual char        do_decimal_point() const;
   virtual char        do_thousands_sep() const;
@@ -277,15 +277,19 @@ protected:
   virtual int         do_frac_digits()   const;
 
 private:
+  moneypunct_byname _STLP_PSPEC2(char, true) (_Locale_monetary *__monetary);
+
   typedef moneypunct_byname<char, true> _Self;
   //explicitely defined as private to avoid warnings:
   moneypunct_byname(_Self const&);
   _Self& operator = (_Self const&);
+
+  _Locale_monetary* _M_monetary;
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<char, false> : public moneypunct<char, false>
-{
+class _STLP_CLASS_DECLSPEC moneypunct_byname<char, false> : public moneypunct<char, false> {
+  friend class _Locale_impl;
 public:
   typedef money_base::pattern   pattern;
   typedef char                  char_type;
@@ -295,7 +299,6 @@ public:
                                                         _Locale_name_hint* __hint = 0);
 
 protected:
-  _Locale_monetary* _M_monetary;
   ~moneypunct_byname _STLP_PSPEC2(char, false) ();
   virtual char        do_decimal_point() const;
   virtual char        do_thousands_sep() const;
@@ -308,17 +311,20 @@ protected:
   virtual int         do_frac_digits()   const;
 
 private:
+  moneypunct_byname _STLP_PSPEC2(char, false) (_Locale_monetary *__monetary);
+
   typedef moneypunct_byname<char, false> _Self;
   //explicitely defined as private to avoid warnings:
   moneypunct_byname(_Self const&);
   _Self& operator = (_Self const&);
-  friend _Locale_name_hint* _Locale_extract_hint(moneypunct_byname<char, false>*);
+
+  _Locale_monetary* _M_monetary;
 };
 
 #if !defined (_STLP_NO_WCHAR_T)
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, true> : public moneypunct<wchar_t, true>
-{
+class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, true> : public moneypunct<wchar_t, true> {
+  friend class _Locale_impl;
 public:
   typedef money_base::pattern   pattern;
   typedef wchar_t               char_type;
@@ -328,7 +334,6 @@ public:
                                                           _Locale_name_hint* __hint = 0);
 
 protected:
-  _Locale_monetary* _M_monetary;
   ~moneypunct_byname _STLP_PSPEC2(wchar_t, true) ();
   virtual wchar_t     do_decimal_point() const;
   virtual wchar_t     do_thousands_sep() const;
@@ -341,15 +346,19 @@ protected:
   virtual int         do_frac_digits()   const;
 
 private:
+  moneypunct_byname _STLP_PSPEC2(wchar_t, true) (_Locale_monetary *__monetary);
+
   typedef moneypunct_byname<wchar_t, true> _Self;
   //explicitely defined as private to avoid warnings:
   moneypunct_byname(_Self const&);
   _Self& operator = (_Self const&);
+
+  _Locale_monetary* _M_monetary;
 };
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, false> : public moneypunct<wchar_t, false>
-{
+class _STLP_CLASS_DECLSPEC moneypunct_byname<wchar_t, false> : public moneypunct<wchar_t, false> {
+  friend class _Locale_impl;
 public:
   typedef money_base::pattern   pattern;
   typedef wchar_t               char_type;
@@ -359,7 +368,6 @@ public:
                                                            _Locale_name_hint* __hint = 0);
 
 protected:
-  _Locale_monetary* _M_monetary;
   ~moneypunct_byname _STLP_PSPEC2(wchar_t, false) ();
   virtual wchar_t     do_decimal_point() const;
   virtual wchar_t     do_thousands_sep() const;
@@ -372,10 +380,14 @@ protected:
   virtual int         do_frac_digits()   const;
 
 private:
+  moneypunct_byname _STLP_PSPEC2(wchar_t, false) (_Locale_monetary *__monetary);
+
   typedef moneypunct_byname<wchar_t, false> _Self;
   //explicitely defined as private to avoid warnings:
   moneypunct_byname(_Self const&);
   _Self& operator = (_Self const&);
+
+  _Locale_monetary* _M_monetary;
 };
 #endif
 
@@ -391,7 +403,6 @@ template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_tra
 #endif
 class money_put : public locale::facet {
   friend class _Locale_impl;
-
 public:
   typedef _CharT               char_type;
   typedef _OutputIter          iter_type;

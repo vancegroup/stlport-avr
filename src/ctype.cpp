@@ -53,7 +53,7 @@ ctype<char>::classic_table() _STLP_NOTHROW {
    * then 'a' will also be seen as upper which is wrong.
    */
 #if !defined (__MWERKS__)
-  /* CodeWarrior 8 don't understabd this */
+  /* CodeWarrior 8 don't understand this */
   _STLP_STATIC_ASSERT((alpha & (lower | upper)) == 0)
 #endif
 

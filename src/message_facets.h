@@ -119,23 +119,8 @@ class _Messages {
 public:
   typedef messages_base::catalog catalog;
 
-  virtual catalog do_open(const string& __fn, const locale& __loc) const
-  { return -1; }
-  virtual string do_get(catalog __c, int __set, int __msgid,
-                        const string& __dfault) const
-  { return __dfault; }
-#if !defined (_STLP_NO_WCHAR_T)
-  virtual wstring do_get(catalog __c, int __set, int __msgid,
-                         const wstring& __dfault) const
-  { return __dfault; }
-#endif
-  virtual void do_close(catalog __c) const {}
-  virtual ~_Messages() {}
-};
-
-class _Messages_impl : public _Messages {
-public:
-  _Messages_impl(bool, const char *name, _Locale_name_hint* hint);
+  _Messages(bool, const char *name, _Locale_name_hint* hint);
+  _Messages(bool, _Locale_messages*);
 
   catalog do_open(const string& __fn, const locale& __loc) const;
   string do_get(catalog __c, int __set, int __msgid,
@@ -144,9 +129,8 @@ public:
   wstring do_get(catalog __c, int __set, int __msgid,
                  const wstring& __dfault) const;
 #endif
-  void do_close(catalog __c) const;
-
-  ~_Messages_impl();
+  void do_close(catalog __c) const; 
+  ~_Messages(); 
 
 private:
   _Locale_messages* _M_message_obj;
@@ -154,8 +138,8 @@ private:
   mutable _Catalog_nl_catd_map _M_cat;
 
   //private definition to avoid warning (with ICL)
-  _Messages_impl(const _Messages_impl&);
-  _Messages_impl& operator=(const _Messages_impl&);
+  _Messages(const _Messages&);
+  _Messages& operator=(const _Messages&);
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE

@@ -1,3 +1,29 @@
+2007-05-03  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_numpunct.h, _time_facets.h, _ctype.h, _monetary.h,
+	_messages_facets.h: Remove friend _Locale_extract_hint function
+	declaration replace by the more simple friend class
+	_Locale_impl expression.
+
+	* src/locale_impl.cpp: Change implementation of
+	_Locale_impl::insert_*_facets methods. Now only facets used internally
+	for iostreams implementation are considered as mandatory when
+	instanciating a locale from a name. Other facets like collate or
+	messages won't generate a runtime_error exception if the platform is
+	not able to grant an implementation. This will make STLport more
+	flexible in regards of platform possibilities.
+
+	* stlport/stl/_messages_facets.h, src/facets_byname.cpp, messages.cpp:
+	Simplification of the messages facet implementation. _Messages class
+	has no virtual method anymore, _Messages_Impl has been removed. Now
+	messages class implementation is a dummy implementation that do not
+	allow access to platform messages, real messages implementation is
+	available thanks to the messages_byname class.
+
+	* stlport/stl/_time_facets.h: _Locale_time instance is not kept
+	anymore in the facet implementation, it is only used on construction
+	to initiliaze _Time_Info struct instance.
+
 2007-05-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/codecvt_test.cpp: Fixed comparison with char_traits::eof

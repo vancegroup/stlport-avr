@@ -96,8 +96,7 @@ void _Catalog_nl_catd_map::erase(messages_base::catalog cat) {
 
 //----------------------------------------------------------------------
 //
-//
-_Messages_impl::_Messages_impl(bool is_wide, const char *name, _Locale_name_hint* hint) :
+_Messages::_Messages(bool is_wide, const char *name, _Locale_name_hint* hint) :
   _M_message_obj(0), _M_map(0) {
   if (!name)
     locale::_M_throw_runtime_error();
@@ -110,12 +109,16 @@ _Messages_impl::_Messages_impl(bool is_wide, const char *name, _Locale_name_hint
     _M_map = new _Catalog_locale_map;
 }
 
-_Messages_impl::~_Messages_impl() {
+_Messages::_Messages(bool is_wide, _Locale_messages* msg) :
+  _M_message_obj(msg), _M_map(is_wide ? new _Catalog_locale_map() : 0)
+{}
+
+_Messages::~_Messages() {
   __release_messages(_M_message_obj);
   delete _M_map;
 }
 
-_Messages::catalog _Messages_impl::do_open(const string& filename, const locale& L) const {
+_Messages::catalog _Messages::do_open(const string& filename, const locale& L) const {
   nl_catd_type result = _M_message_obj ? _Locale_catopen(_M_message_obj, filename.c_str())
     : (nl_catd_type)(-1);
 
@@ -129,8 +132,8 @@ _Messages::catalog _Messages_impl::do_open(const string& filename, const locale&
   return -1;
 }
 
-string _Messages_impl::do_get(catalog cat,
-                              int set, int p_id, const string& dfault) const {
+string _Messages::do_get(catalog cat,
+                         int set, int p_id, const string& dfault) const {
   return _M_message_obj != 0 && cat >= 0
     ? string(_Locale_catgets(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[cat],
                              set, p_id, dfault.c_str()))
@@ -140,8 +143,8 @@ string _Messages_impl::do_get(catalog cat,
 #if !defined (_STLP_NO_WCHAR_T)
 
 wstring
-_Messages_impl::do_get(catalog thecat,
-                       int set, int p_id, const wstring& dfault) const {
+_Messages::do_get(catalog thecat,
+                  int set, int p_id, const wstring& dfault) const {
   typedef ctype<wchar_t> wctype;
   const wctype& ct = use_facet<wctype>(_M_map->lookup(_STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]));
 
@@ -168,7 +171,7 @@ _Messages_impl::do_get(catalog thecat,
 
 #endif
 
-void _Messages_impl::do_close(catalog thecat) const {
+void _Messages::do_close(catalog thecat) const {
   if (_M_message_obj)
     _Locale_catclose(_M_message_obj, _STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]);
   if (_M_map) _M_map->erase(_STLP_MUTABLE(_Messages_impl, _M_cat)[thecat]);
@@ -180,24 +183,27 @@ _STLP_MOVE_TO_STD_NAMESPACE
 //----------------------------------------------------------------------
 // messages<char>
 messages<char>::messages(size_t refs)
-  : locale::facet(refs), _M_impl(new _STLP_PRIV _Messages()) {}
+  : locale::facet(refs) {}
 
-messages<char>::messages(size_t refs, const char *name, _Locale_name_hint* hint)
-  : locale::facet(refs), _M_impl(new _STLP_PRIV _Messages_impl(false, name, hint)) {}
+messages_byname<char>::messages_byname(const char *name, size_t refs, _Locale_name_hint* hint)
+  : messages<char>(refs), _M_impl(new _STLP_PRIV _Messages(false, name, hint)) {}
 
-messages<char>::~messages()
+messages_byname<char>::messages_byname(_Locale_messages* msg)
+  : messages<char>(0), _M_impl(new _STLP_PRIV _Messages(false, msg)) {}
+
+messages_byname<char>::~messages_byname()
 { delete _M_impl; }
 
-messages<char>::catalog
-messages<char>::do_open(const string& filename, const locale& l) const
+messages_byname<char>::catalog
+messages_byname<char>::do_open(const string& filename, const locale& l) const
 { return _M_impl->do_open(filename, l); }
 
 string
-messages<char>::do_get(catalog cat, int set, int p_id,
-                       const string& dfault) const
+messages_byname<char>::do_get(catalog cat, int set, int p_id,
+                              const string& dfault) const
 { return _M_impl->do_get(cat, set, p_id, dfault); }
 
-void messages<char>::do_close(catalog cat) const
+void messages_byname<char>::do_close(catalog cat) const
 { _M_impl->do_close(cat); }
 
 #if !defined (_STLP_NO_WCHAR_T)
@@ -206,24 +212,27 @@ void messages<char>::do_close(catalog cat) const
 // messages<wchar_t>
 
 messages<wchar_t>::messages(size_t refs)
-  : locale::facet(refs), _M_impl(new _STLP_PRIV _Messages()) {}
+  : locale::facet(refs) {}
 
-messages<wchar_t>::messages(size_t refs, const char *name, _Locale_name_hint* hint)
-  : locale::facet(refs), _M_impl(new _STLP_PRIV _Messages_impl(true, name, hint)) {}
+messages_byname<wchar_t>::messages_byname(const char *name, size_t refs, _Locale_name_hint* hint)
+  : messages<wchar_t>(refs), _M_impl(new _STLP_PRIV _Messages(true, name, hint)) {}
 
-messages<wchar_t>::~messages()
+messages_byname<wchar_t>::messages_byname(_Locale_messages* msg)
+  : messages<wchar_t>(0), _M_impl(new _STLP_PRIV _Messages(true, msg)) {}
+
+messages_byname<wchar_t>::~messages_byname()
 { delete _M_impl; }
 
-messages<wchar_t>::catalog
-messages<wchar_t>::do_open(const string& filename, const locale& L) const
+messages_byname<wchar_t>::catalog
+messages_byname<wchar_t>::do_open(const string& filename, const locale& L) const
 { return _M_impl->do_open(filename, L); }
 
 wstring
-messages<wchar_t>::do_get(catalog thecat,
-                          int set, int p_id, const wstring& dfault) const
+messages_byname<wchar_t>::do_get(catalog thecat,
+                                 int set, int p_id, const wstring& dfault) const
 { return _M_impl->do_get(thecat, set, p_id, dfault); }
 
-void messages<wchar_t>::do_close(catalog cat) const
+void messages_byname<wchar_t>::do_close(catalog cat) const
 { _M_impl->do_close(cat); }
 
 #endif
