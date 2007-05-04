@@ -226,18 +226,11 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 
 #endif /* _STLP_WINDOWS_H_INCLUDED */
 
-/* _STLP_WIN32_VERSION is used to detect targetted Windows platforms as
- * old ones are not supporting some Win32 functions that STLport use.
- * Limited OSs are going up to and including Windows 98 so they can be
- * detected using WINVER or _WIN32_WINDOWS macros, we do not have to use
- * _WINNT_WINDOWS macro for the moment.
- */
-#if !defined (_STLP_WIN32_VERSION)
-#  if defined (WINVER)
-#    define _STLP_WIN32_VERSION WINVER
-#  elif defined (_WIN32_WINDOWS)
-#    define _STLP_WIN32_VERSION _WIN32_WINDOWS
-#  endif
+/* _STLP_WIN95 signal the Windows 95 OS that has some limitation in its
+ * Win32 API. */
+#if (defined (WINVER) && (WINVER < 0x0410) && !defined (_WIN32_WINNT)) || \
+    (defined (_WIN32_WINDOWS) && (_WIN32_WINDOWS < 0x0410))
+#  define _STLP_WIN95
 #endif
 
 /* Between Windows 95 (0x400) and later Windows OSes an API enhancement forces us
@@ -246,7 +239,7 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * so we try to generate a link time error thanks to the following macro.
  */
 #if defined (_DEBUG)
-#  if defined (_STLP_WIN32_VERSION) && (_STLP_WIN32_VERSION <= 0x400)
+#  if defined (_STLP_WIN95)
 #    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
 #  else
 #    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later
