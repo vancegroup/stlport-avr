@@ -237,11 +237,6 @@ typedef struct _Locale_monetary {
   int int_frac_digits;
 } _Locale_monetary_t;
 
-typedef struct _Locale_messages {
-  _Locale_lcid_t lc;
-  char cp[MAX_CP_LEN + 1];
-} _Locale_messages_t;
-
 /* Internal function */
 static void __FixGrouping(char *grouping);
 static const char* __ConvertName(const char* lname, LOCALECONV* ConvTable, int TableSize);
@@ -288,8 +283,8 @@ extern "C" {
   { return (lcollate != 0) ? &lcollate->lc : 0; }
   _Locale_lcid_t* _Locale_get_monetary_hint(_Locale_monetary_t* lmonetary)
   { return (lmonetary != 0) ? &lmonetary->lc : 0; }
-  _Locale_lcid_t* _Locale_get_messages_hint(_Locale_messages_t* lmessages)
-  { return (lmessages != 0) ? &lmessages->lc : 0; }
+  _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages)
+  { return 0; }
 
   _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
@@ -853,17 +848,9 @@ extern "C" {
     return lmon;
   }
 
-  _Locale_messages_t* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint) {
-    char cname[_Locale_MAX_SIMPLE_NAME];
-    _Locale_messages_t *lmes=(_Locale_messages_t*)malloc(sizeof(_Locale_messages_t));
-    if (!lmes) return lmes;
-    memset(lmes, 0, sizeof(_Locale_messages_t));
-
-    _Locale_extract_messages_name(name, cname, lc_hint);
-    if (__GetLCIDFromName(cname, &lmes->lc.id, lmes->cp, lc_hint) == -1)
-    { free(lmes); return NULL; }
-
-    return lmes;
+  struct _Locale_messages* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint) {
+    /* The Win32 API has no support for messages facet */
+    return 0;
   }
 
   static const char* _Locale_common_default(char* buf) {
@@ -909,8 +896,8 @@ extern "C" {
   char const* _Locale_monetary_name(const _Locale_monetary_t* lmon, char* buf)
   { return __GetLocaleName(lmon->lc.id, lmon->cp, buf); }
 
-  char const* _Locale_messages_name(const _Locale_messages_t* lmes, char* buf)
-  { return __GetLocaleName(lmes->lc.id, lmes->cp, buf); }
+  char const* _Locale_messages_name(const struct _Locale_messages* lmes, char* buf)
+  { return 0; }
 
   void _Locale_ctype_destroy(_Locale_ctype_t* ltype) {
     if (!ltype) return;
@@ -961,11 +948,7 @@ extern "C" {
     free(lmon);
   }
 
-  void _Locale_messages_destroy(_Locale_messages_t* lmes) {
-    if (!lmes) return;
-
-    free(lmes);
-  }
+  void _Locale_messages_destroy(struct _Locale_messages* lmes) {}
 
   static char const* _Locale_extract_category_name(const char* cname, int category, char* buf, _Locale_lcid_t* hint) {
     char lname[_Locale_MAX_SIMPLE_NAME];
@@ -1378,7 +1361,6 @@ extern "C" {
 #endif
 
   /* Numeric */
-
   static const char* __true_name = "true";
   static const char* __false_name = "false";
 
@@ -1404,7 +1386,6 @@ extern "C" {
     (void*)lnum;
     return __false_name; /* NT does't provide information about this */
   }
-
 
   /* Monetary */
   const char* _Locale_int_curr_symbol(_Locale_monetary_t * lmon)
@@ -1480,7 +1461,6 @@ extern "C" {
     return atoi(loc_data);
   }
 
-
   /* Time */
   const char * _Locale_full_monthname(_Locale_time_t * ltime, int month) {
     const char **names = (const char**)ltime->month;
@@ -1502,40 +1482,38 @@ extern "C" {
     return names[day];
   }
 
-const char* _Locale_d_t_fmt(_Locale_time_t* ltime)
-{ return ltime->date_time_format; }
+  const char* _Locale_d_t_fmt(_Locale_time_t* ltime)
+  { return ltime->date_time_format; }
 
-const char* _Locale_long_d_t_fmt(_Locale_time_t* ltime)
-{ return ltime->long_date_time_format; }
+  const char* _Locale_long_d_t_fmt(_Locale_time_t* ltime)
+  { return ltime->long_date_time_format; }
 
-const char* _Locale_d_fmt(_Locale_time_t* ltime)
-{ return ltime->date_format; }
+  const char* _Locale_d_fmt(_Locale_time_t* ltime)
+  { return ltime->date_format; }
 
-const char* _Locale_long_d_fmt(_Locale_time_t* ltime)
-{ return ltime->long_date_format; }
+  const char* _Locale_long_d_fmt(_Locale_time_t* ltime)
+  { return ltime->long_date_format; }
 
-const char* _Locale_t_fmt(_Locale_time_t* ltime)
-{ return ltime->time_format; }
+  const char* _Locale_t_fmt(_Locale_time_t* ltime)
+  { return ltime->time_format; }
 
-const char* _Locale_am_str(_Locale_time_t* ltime)
-{ return ltime->am; }
+  const char* _Locale_am_str(_Locale_time_t* ltime)
+  { return ltime->am; }
 
-const char* _Locale_pm_str(_Locale_time_t* ltime)
-{ return ltime->pm; }
-
+  const char* _Locale_pm_str(_Locale_time_t* ltime)
+  { return ltime->pm; }
 
   /* Messages */
-
-  int _Locale_catopen(_Locale_messages_t* __DUMMY_PAR1, const char* __DUMMY_PAR) {
+  int _Locale_catopen(struct _Locale_messages* __DUMMY_PAR1, const char* __DUMMY_PAR) {
     (void*)__DUMMY_PAR1;
     (void*)__DUMMY_PAR;
     return -1;
   }
-  void _Locale_catclose(_Locale_messages_t* __DUMMY_PAR1, int __DUMMY_PAR) {
+  void _Locale_catclose(struct _Locale_messages* __DUMMY_PAR1, int __DUMMY_PAR) {
     (void*)__DUMMY_PAR1;
     (void*)&__DUMMY_PAR;
   }
-  const char* _Locale_catgets(_Locale_messages_t* __DUMMY_PAR1, int __DUMMY_PAR2,
+  const char* _Locale_catgets(struct _Locale_messages* __DUMMY_PAR1, int __DUMMY_PAR2,
                               int __DUMMY_PAR3, int __DUMMY_PAR4,
                               const char *dfault) {
     (void*)__DUMMY_PAR1;

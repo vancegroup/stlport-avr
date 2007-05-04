@@ -8,6 +8,9 @@
 	_STLP_WIN95 macro signals Windows 95 platform, it replaces
 	_STLP_WIN32_VERSION. Thanks Jan Echternach patch 1707963.
 
+	* src/c_locale_win32/c_locale_win32.c: Remove all code concerning the
+	messages facet, Windows platform do not support it.
+
 2007-05-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_numpunct.h, _time_facets.h, _ctype.h, _monetary.h,
