@@ -11,6 +11,14 @@
 	* src/c_locale_win32/c_locale_win32.c: Remove all code concerning the
 	messages facet, Windows platform do not support it.
 
+	* src/fstream.cpp: Fix use of fseek in _Filebuf_base::_M_seek in
+	_STLP_USE_STDIO_IO mode. fseek do not return the position in file
+	but a boolean value indicating if call has succeeded or not, and
+	call to ftell to get file position. Thanks Marco Jez bug report
+	1704843. I have also integrated a number of small fixes to use
+	_STLP_USE_STDIO_IO mode under MSVC or GCC MinGW, it shouldn't be
+	really nececarry but it costs nothing and help testing this mode.
+
 2007-05-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_numpunct.h, _time_facets.h, _ctype.h, _monetary.h,

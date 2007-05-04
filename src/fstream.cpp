@@ -87,6 +87,9 @@ extern "C" {
 #    define _S_IWRITE S_IWRITE
 #    define _S_IFREG S_IFREG
 #  endif
+#  if defined (_STLP_MSVC) || defined (__MINGW32__)
+#    include <fcntl.h>
+#  endif
 #else
 #  error "Configure i/o !"
 #endif
@@ -107,11 +110,16 @@ const _STLP_fd INVALID_STLP_FD = -1;
 #  ifndef S_IRUSR
 #    define S_IRUSR _S_IREAD
 #    define S_IWUSR _S_IWRITE
+#  endif
+#  ifndef S_IRGRP
 #    define S_IRGRP _S_IREAD
 #    define S_IWGRP _S_IWRITE
+#  endif
+#  ifndef S_IROTH
 #    define S_IROTH _S_IREAD
 #    define S_IWOTH _S_IWRITE
 #  endif
+
 #  ifndef O_RDONLY
 #    define O_RDONLY _O_RDONLY
 #    define O_WRONLY _O_WRONLY
@@ -158,7 +166,8 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 _STLP_BEGIN_NAMESPACE
 
-#if !defined(__MSL__) && !defined(_STLP_WCE)
+#if (defined (_STLP_UNIX) || defined (_STLP_USE_WIN32_IO)) && \
+    !defined(__MSL__) && !defined(_STLP_WCE)
 static ios_base::openmode flag_to_openmode(int mode) {
   ios_base::openmode ret = ios_base::__default_mode;
 
@@ -181,7 +190,7 @@ static ios_base::openmode flag_to_openmode(int mode) {
 
   return ret;
 }
-#endif /* MSL */
+#endif
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -240,19 +249,20 @@ streamoff __file_size(_STLP_fd fd) {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
+#if defined (_STLP_USE_WIN32_IO)
 // Visual C++ and Intel use this, but not Metrowerks
 // Also MinGW, msvcrt.dll (but not crtdll.dll) dependent version
-#if (!defined (__MSL__) && !defined (_STLP_WCE) && defined (_STLP_MSVC_LIB) && defined (_WIN32)) || \
-    (defined (__MINGW32__) && defined (__MSVCRT__))
+#  if (defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE)) || \
+      (defined (__MINGW32__) && defined (__MSVCRT__))
 
 // fcntl(fileno, F_GETFL) for Microsoft library
 // 'semi-documented' defines:
-#  define IOINFO_L2E          5
-#  define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)
-#  define _pioinfo(i) ( __pioinfo[(i) >> IOINFO_L2E] + \
+#    define IOINFO_L2E          5
+#    define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)
+#    define _pioinfo(i) ( __pioinfo[(i) >> IOINFO_L2E] + \
               ((i) & (IOINFO_ARRAY_ELTS - 1)) )
-#  define FAPPEND         0x20    // O_APPEND flag
-#  define FTEXT           0x80    // O_TEXT flag
+#    define FAPPEND         0x20    // O_APPEND flag
+#    define FTEXT           0x80    // O_TEXT flag
 // end of 'semi-documented' defines
 
 // 'semi-documented' internal structure
@@ -261,17 +271,17 @@ extern "C" {
     long osfhnd;    // the real os HANDLE
     char osfile;    // file handle flags
     char pipech;    // pipe buffer
-#  if defined (_MT)
+#    if defined (_MT)
     // multi-threaded locking
     int lockinitflag;
     CRITICAL_SECTION lock;
-#  endif  /* _MT */
+#    endif
   };
-#  if defined (__MINGW32__)
+#    if defined (__MINGW32__)
  __MINGW_IMPORT ioinfo * __pioinfo[];
-#  else
+#    else
   extern _CRTIMP ioinfo * __pioinfo[];
-#  endif
+#    endif
 } // extern "C"
 // end of 'semi-documented' declarations
 
@@ -306,11 +316,11 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
   return flag_to_openmode(mode);
 }
 
-#elif defined (__DMC__)
+#  elif defined (__DMC__)
 
-#  define FHND_APPEND 0x04
-#  define FHND_DEVICE 0x08
-#  define FHND_TEXT   0x10
+#    define FHND_APPEND 0x04
+#    define FHND_DEVICE 0x08
+#    define FHND_TEXT   0x10
 
 extern "C" unsigned char __fhnd_info[_NFILE];
 
@@ -339,10 +349,11 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
 
   return flag_to_openmode(mode);
 }
+#  endif
 #endif
 
 // All version of Unix have mmap and lseek system calls.  Some also have
-// longer versions of thos system calls to accommodate 64-bit offsets.
+// longer versions of those system calls to accommodate 64-bit offsets.
 // If we're on a Unix system, define some macros to encapsulate those
 // differences.
 #ifdef _STLP_USE_UNIX_IO
@@ -522,7 +533,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   _M_is_open = true;
 
   if (openmode & ios_base::ate) {
-    if (fseek(_M_file, 0, SEEK_END) == -1)
+    if (fseek(_M_file, 0, SEEK_END) != 0)
       _M_is_open = false;
   }
 
@@ -988,7 +999,8 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir) {
 
 #elif defined (_STLP_USE_STDIO_IO)
 
-  result = fseek(_M_file, offset, whence);
+  if (fseek(_M_file, offset, whence) == 0)
+    result = ftell(_M_file);
 
 #elif defined (_STLP_USE_WIN32_IO)
 
