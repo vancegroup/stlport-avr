@@ -1,3 +1,9 @@
+2007-05-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/stdio_streambuf.cpp: Add checks of error codes returned
+	by ftell and fseek functions in stdio_istreambuf::showmanyc
+	Windows CE special implementation.
+
 2007-05-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, allocators.cpp, stlport/stl/_threads.h,

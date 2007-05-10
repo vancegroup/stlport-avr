@@ -157,19 +157,26 @@ streamsize stdio_istreambuf::showmanyc() {
   else {
     int fd = _FILE_fd(_M_file);
 #ifdef _STLP_WCE
-   (fd); // prevent warning about unused variable
+    (fd); // prevent warning about unused variable
 // not sure if i can mix win32 io mode with ftell but time will show
 // cannot use WIN32_IO implementation since missing stat
-    long tmp= _STLP_VENDOR_CSTD::ftell(_M_file);
-     _STLP_VENDOR_CSTD::fseek(_M_file, 0, SEEK_END);
-    streamoff size= _STLP_VENDOR_CSTD::ftell(_M_file)-tmp;
-     _STLP_VENDOR_CSTD::fseek(_M_file, tmp, SEEK_SET);
+    long initialFilePos = _STLP_VENDOR_CSTD::ftell(_M_file);
+    if (initialFilePos == -1) return -1;
+    if (_STLP_VENDOR_CSTD::fseek(_M_file, 0, SEEK_END) != 0)
+      return -1;
+    long endFilePos = _STLP_VENDOR_CSTD::ftell(_M_file);
+    if (endFilePos == -1) {
+      _STLP_VENDOR_CSTD::fseek(_M_file, initialFilePos, SEEK_SET);
+      return -1;
+    }
+    streamoff size = endFilePos - initialFilePos;
+    _STLP_VENDOR_CSTD::fseek(_M_file, initialFilePos, SEEK_SET);
 #elif defined (_STLP_USE_WIN32_IO)
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
     struct stat buf;
-    if(fstat(fd, &buf) == 0 && ( _S_IFREG & buf.st_mode ) )
-      size = ( buf.st_size > 0  ? buf.st_size : 0);
+    if (fstat(fd, &buf) == 0 && (_S_IFREG & buf.st_mode))
+      size = (buf.st_size > 0 ? buf.st_size : 0);
     else
       size = 0;
 #else
