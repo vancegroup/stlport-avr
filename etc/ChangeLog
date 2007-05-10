@@ -4,6 +4,10 @@
 	by ftell and fseek functions in stdio_istreambuf::showmanyc
 	Windows CE special implementation.
 
+	* test/unit/fstream_test.cpp: Add new test case to check file streams
+	built from platform dependent null pipe (NUL under Windows, /dev/null
+	under unixes). Ignored for the moment.
+
 2007-05-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, allocators.cpp, stlport/stl/_threads.h,
