@@ -9,99 +9,19 @@
 
 #include <stdint.h>
 
-/* Structure describing locale data in core for a category.  */
-/* GLIBC internal, see <glibc catalog>/locale/localeinfo.h */
-#if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
-
-/* GLIBC 2.3.x */
-struct locale_data
-{
-  const char *name;
-  const char *filedata;         /* Region mapping the file data.  */
-  off_t filesize;               /* Size of the file (and the region).  */
-  enum                          /* Flavor of storage used for those.  */
-  {
-    ld_malloced,                /* Both are malloc'd.  */
-    ld_mapped,                  /* name is malloc'd, filedata mmap'd */
-    ld_archive                  /* Both point into mmap'd archive regions.  */
-  } alloc;
-
-  /* This provides a slot for category-specific code to cache data computed
-   * about this locale.  That code can set a cleanup function to deallocate
-   * the data.
-  struct
-  {
-    void (*cleanup) (struct locale_data *);
-    union
-    {
-      void *data;
-      struct lc_time_data *time;
-      const struct gconv_fcts *ctype;
-    };
-  } private;
-   */
-
-  unsigned int usage_count;     /* Counter for users.  */
-
-  int use_translit;             /* Nonzero if the mb*towv*() and wc*tomb()
-                                   functions should use transliteration.  */
-
-  unsigned int nstrings;        /* Number of strings below.  */
-  union locale_data_value
-  {
-    const uint32_t *wstr;
-    const char *string;
-    unsigned int word;          /* Note endian issues vs 64-bit pointers.  */
-  }
-  values[1];     /* Items, usually pointers into `filedata'.  */
-};
-
-#else /* GLIBC 2.2.x */
-
-struct locale_data
-{
-  const char *name;
-  const char *filedata;         /* Region mapping the file data.  */
-  off_t filesize;               /* Size of the file (and the region).  */
-  int mmaped;                   /* If nonzero the data is mmaped.  */
-
-  unsigned int usage_count;     /* Counter for users.  */
-
-  int use_translit;             /* Nonzero if the mb*towv*() and wc*tomb()
-                                   functions should use transliteration.  */
-  const char *options;          /* Extra options from the locale name,
-                                   not used in the path to the locale data.  */
-
-  unsigned int nstrings;        /* Number of strings below.  */
-  union locale_data_value
-  {
-    const uint32_t *wstr;
-    const char *string;
-    unsigned int word;
-  }
-  values[1];     /* Items, usually pointers into `filedata'.  */
-};
-
-#endif
-
-
 typedef __locale_t __c_locale;
 
 #if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
-# define __nl_langinfo_l nl_langinfo_l
+#  define __nl_langinfo_l nl_langinfo_l
+#  define __newlocale newlocale
+#  define __freelocale freelocale
 #endif
 
-#if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
-#  define __LOCALE_CREATE(nm,category) newlocale(1 << category, nm, NULL )
-#  define __LOCALE_DESTROY(__loc)      freelocale((__c_locale)__loc)
-#else
-#  define __LOCALE_CREATE(nm,category) __newlocale(1 << category, nm, NULL )
-#  define __LOCALE_DESTROY(__loc)      __freelocale((__c_locale)__loc)
-#endif
+#define __LOCALE_CREATE(nm,category) __newlocale(1 << category, nm, NULL )
+#define __LOCALE_DESTROY(__loc)      __freelocale((__c_locale)__loc)
 
 static const char *_empty_str = "";
 static const char *_C_name = "C";
-
 
 #if 0
 struct _Locale_ctype
@@ -218,32 +138,32 @@ const char *_Locale_messages_default( char *nm )
 
 char const*_Locale_ctype_name( const struct _Locale_ctype *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_CTYPE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_CTYPE], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char const*_Locale_numeric_name( const struct _Locale_numeric *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_NUMERIC]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_NUMERIC], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char const*_Locale_time_name( const struct _Locale_time *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_TIME]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_TIME], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char const*_Locale_collate_name( const struct _Locale_collate *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_COLLATE]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_COLLATE], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char const*_Locale_monetary_name( const struct _Locale_monetary *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MONETARY]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_MONETARY], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 char const*_Locale_messages_name( const struct _Locale_messages *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__locales[LC_MESSAGES]->name, _Locale_MAX_SIMPLE_NAME ) : 0;
+  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_MESSAGES], _Locale_MAX_SIMPLE_NAME ) : 0;
 }
 
 void _Locale_ctype_destroy( struct _Locale_ctype *__loc )

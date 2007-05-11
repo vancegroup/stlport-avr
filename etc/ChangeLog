@@ -1,5 +1,10 @@
 2007-05-11  Francois Dumont  <dums@users.sourceforge.net>
 
+	* c_locale_glibc/c_locale_glibc2.c: Use __locale_t __names field
+	rather than __locales to access to category names. Thanks to this
+	modification we do not need the Glib internal locale_data struct
+	definition anymore.
+
 	* test/unit/fstream_test.cpp: Port the FstreamTest::null_stream for
 	unixes platforms that use /dev/null, the test is not ignored anymore.
 
