@@ -401,7 +401,7 @@ __do_put_bool(_OutputIter __s, ios_base& __f, _CharT __fill, bool __x) {
   basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __str = __x ? __np.truename() : __np.falsename();
 
   streamsize __wid = __f.width(0);
-  if (__str.size() >= __STATIC_CAST(streamsize, __wid))
+  if (__str.size() >= __STATIC_CAST(size_t, __wid))
     return copy(__str.begin(), __str.end(), __s);
   else {
     streamsize __pad = __wid - __str.size();

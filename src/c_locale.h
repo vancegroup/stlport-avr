@@ -67,12 +67,12 @@ typedef unsigned int _Locale_mask_t;
 /* Function called during STLport library load phase. Might contain any
  * code necessary to the platform localization layer.
  */
-void _Locale_init();
+void _Locale_init(void);
 
 /* Function called during STLport library unload. Might contain any
  * code necessary to the platform localization layer.
  */
-void _Locale_final();
+void _Locale_final(void);
 
 /* Create a category of the locale with the given name.
  *

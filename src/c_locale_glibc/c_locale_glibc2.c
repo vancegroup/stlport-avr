@@ -87,7 +87,7 @@ struct _Locale_messages *_Locale_messages_create( const char *nm, struct _Locale
   3. LANG
   If set nothing, return "C" (this really implemetation-specific).
 */
-const char *_Locale_aux_default( const char *LC, char *nm )
+static const char *_Locale_aux_default( const char *LC, char *nm )
 {
   char *name = getenv( "LC_ALL" );
 
@@ -103,7 +103,7 @@ const char *_Locale_aux_default( const char *LC, char *nm )
     return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
   }
 
-  return strcpy( nm, "C" );
+  return strcpy( nm, _C_name );
 }
 
 const char *_Locale_ctype_default( char *nm )
@@ -190,7 +190,7 @@ void _Locale_messages_destroy( struct _Locale_messages* __loc )
  *
  */
 
-char const*__Extract_locale_name( const char *loc, const char *category, char *buf )
+static char const*__Extract_locale_name( const char *loc, const char *category, char *buf )
 {
   char *expr;
   size_t len_name;
@@ -302,12 +302,12 @@ _Locale_mask_t _Locale_wchar_ctype( struct _Locale_ctype *__loc, wint_t wc, _Loc
 
 wint_t _Locale_wchar_tolower( struct _Locale_ctype *__loc, wint_t c )
 {
-  return __towlower_l( c, ((__c_locale)__loc) );
+  return towlower_l( c, ((__c_locale)__loc) );
 }
 
 wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c )
 {
-  return __towupper_l( c, ((__c_locale)__loc) );
+  return towupper_l( c, ((__c_locale)__loc) );
 }
 #endif
 
@@ -419,7 +419,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
 {
   size_t n;
 
-  n = __strxfrm_l( dest, src, dest_n, (__c_locale)__loc );
+  n = strxfrm_l( dest, src, dest_n, (__c_locale)__loc );
 
   return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
 }
@@ -432,7 +432,7 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
 {
   size_t n;
 
-  n = __wcsxfrm_l( dest, src, dest_n, (__c_locale)__loc );
+  n = wcsxfrm_l( dest, src, dest_n, (__c_locale)__loc );
 
   return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
 }

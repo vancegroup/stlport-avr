@@ -1,5 +1,11 @@
 2007-05-11  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/c_locale.h, c_locale_glibc/c_locale_glibc2.c: Some fixes to
+	avoid gcc warnings when compiled with -Wall -Wmissing_prototypes.
+
+	* stlport/stl/_num_put.c: Fix a cast to avoid a signed/unsigned
+	comparison warning.
+
 	* c_locale_glibc/c_locale_glibc2.c: Use __locale_t __names field
 	rather than __locales to access to category names. Thanks to this
 	modification we do not need the Glib internal locale_data struct
