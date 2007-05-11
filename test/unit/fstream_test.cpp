@@ -42,9 +42,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(win32_file_format);
-  CPPUNIT_IGNORE;
   CPPUNIT_TEST(null_stream);
-  CPPUNIT_STOP_IGNORE;
 #  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);
 #  endif
@@ -570,48 +568,54 @@ void FstreamTest::big_file()
 
 void FstreamTest::null_stream()
 {
+#  if (defined (STLPORT) && defined (_STLP_USE_WIN32_IO)) || \
+      (!defined (STLPORT) && (defined (WIN32) || defined (_WIN32)))
+  const char* nullStreamName = "NUL";
+#  else
+  const char* nullStreamName = "/dev/null";
+#  endif
   {
-    ofstream nullStream("NUL");
+    ofstream nullStream(nullStreamName);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    ofstream nullStream("NUL", ios_base::ate);
+    ofstream nullStream(nullStreamName, ios_base::ate);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    ofstream nullStream("NUL", ios_base::trunc);
+    ofstream nullStream(nullStreamName, ios_base::trunc);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    ofstream nullStream("NUL", ios_base::app);
+    ofstream nullStream(nullStreamName, ios_base::app);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    ifstream nullStream("NUL");
+    ifstream nullStream(nullStreamName);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    ifstream nullStream("NUL", ios_base::ate);
+    ifstream nullStream(nullStreamName, ios_base::ate);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    fstream nullStream("NUL");
+    fstream nullStream(nullStreamName);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    fstream nullStream("NUL", ios_base::in | ios_base::out | ios_base::ate);
+    fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::ate);
     CPPUNIT_CHECK( nullStream );
   }
 
   {
-    fstream nullStream("NUL", ios_base::in | ios_base::out | ios_base::trunc);
+    fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::trunc);
     CPPUNIT_CHECK( nullStream );
   }
 }

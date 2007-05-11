@@ -1,5 +1,8 @@
 2007-05-11  Francois Dumont  <dums@users.sourceforge.net>
 
+	* test/unit/fstream_test.cpp: Port the FstreamTest::null_stream for
+	unixes platforms that use /dev/null, the test is not ignored anymore.
+
 	* src/fstream.cpp: Under Windows, check that the file we are
 	opening is a real file before trying to truncate it or move to
 	the end. Allow use of special file like "NUL" with C++ fstream.
