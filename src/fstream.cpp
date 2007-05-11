@@ -585,9 +585,13 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   if (file_no == INVALID_STLP_FD)
     return false;
 
-  if ((doTruncate && SetEndOfFile(file_no) == 0) ||
-      (((openmode & ios_base::ate) != 0) &&
-       (SetFilePointer(file_no, 0, NULL, FILE_END) == INVALID_SET_FILE_POINTER))) {
+  if (
+#  if !defined (_STLP_WCE)
+      GetFileType(file_no) == FILE_TYPE_DISK &&
+#  endif
+      ((doTruncate && SetEndOfFile(file_no) == 0) ||
+       (((openmode & ios_base::ate) != 0) &&
+        (SetFilePointer(file_no, 0, NULL, FILE_END) == INVALID_SET_FILE_POINTER)))) {
     CloseHandle(file_no);
     return false;
   }

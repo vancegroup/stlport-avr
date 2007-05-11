@@ -1,3 +1,9 @@
+2007-05-11  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/fstream.cpp: Under Windows, check that the file we are
+	opening is a real file before trying to truncate it or move to
+	the end. Allow use of special file like "NUL" with C++ fstream.
+
 2007-05-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/stdio_streambuf.cpp: Add checks of error codes returned
