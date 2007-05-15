@@ -1,3 +1,17 @@
+2007-05-15  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_range_errors.c, _stdexcept_base.c: New files
+	containing codes that used to be duplicated in dll_main.cpp.
+
+	* src/dll_main.cpp: Include _range_errors.c and _stdexcept_base.c
+	when necessary.
+
+	* stlport/stl/_stdexcept_base.h, _stdexcept_base.c: __Names_exception
+	do not truncate anymore exception message when longer than internal
+	static buffer, a dynamic buffer is allocated through malloc in this
+	case. I haven't use __iostring class in this case as it would
+	have introduce a cyclic dependency between classes.
+
 2007-05-11  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h, c_locale_glibc/c_locale_glibc2.c: Some fixes to
