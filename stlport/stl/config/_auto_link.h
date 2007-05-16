@@ -38,9 +38,13 @@
 #    endif
 #  endif
 
-#  define _STLP_VERSION_STR _STLP_STRINGIZE(_STLPORT_MAJOR)"."_STLP_STRINGIZE(_STLPORT_MINOR)
+#  if defined (_STLP_USE_DYNAMIC_LIB)
+#    define _STLP_VERSION_STR "."_STLP_STRINGIZE(_STLPORT_MAJOR)"."_STLP_STRINGIZE(_STLPORT_MINOR)
+#  else
+#    define _STLP_VERSION_STR ""
+#  endif
 
-#  define _STLP_STLPORT_LIB "stlport"_STLP_LIB_OPTIM_MODE""_STLP_LIB_TYPE""_STLP_LIB_MOTIF"."_STLP_VERSION_STR".lib"
+#  define _STLP_STLPORT_LIB "stlport"_STLP_LIB_OPTIM_MODE""_STLP_LIB_TYPE""_STLP_LIB_MOTIF""_STLP_VERSION_STR".lib"
 
 #  if defined (_STLP_VERBOSE_AUTO_LINK)
 #    pragma message ("STLport: Auto linking to "_STLP_STLPORT_LIB)

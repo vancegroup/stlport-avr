@@ -1,3 +1,10 @@
+2007-05-16  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/_auto_link.h, build/Makefiles/gmake/cygming/lib.mak,
+	build/Makefiles/nmake/lib/macro.mak: Removed version information
+	from static libs name for consistency among all supported compilers/
+	platform.
+
 2007-05-15  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_range_errors.c, _stdexcept_base.c: New files
