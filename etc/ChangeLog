@@ -1,3 +1,9 @@
+2007-05-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_prolog.h: Hide _debug.h when including C standard
+	headers. Some platforms (Win32) include C headers in an 'extern "C"'
+	scope that do not accept templates exposed in _debug.h.
+
 2007-05-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_auto_link.h, build/Makefiles/gmake/cygming/lib.mak,
