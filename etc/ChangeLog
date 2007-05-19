@@ -1,3 +1,9 @@
+2007-05-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_valarray.h, _valarray.c: Add many assertion checks to
+	track potential undefined behaviors mostly regarding invalid argument
+	size.
+
 2007-05-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_prolog.h: Hide _debug.h when including C standard

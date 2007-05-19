@@ -117,5 +117,5 @@ void ValarrayTest::transcendentals()
   v0[slice(0, 1, 5)] = 5;
   valarray<double> v2(v0[gslice()]);
   //valarray<double> v3(v0[valarray<bool>()]);
-  //valarray<double> v4(v0[valarray<size_t>()]);
+  valarray<double> v4(v0[valarray<size_t>()]);
 }
