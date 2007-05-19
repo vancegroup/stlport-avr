@@ -19,7 +19,7 @@
 __Named_exception::__Named_exception(const string& __str) {
   size_t __size = strlen(__get_c_string(__str)) + 1;
   if (__size > _S_bufsize) {
-    _M_name = (char*)malloc(__size * sizeof(char));
+    _M_name = __STATIC_CAST(char*, malloc(__size * sizeof(char)));
     if (_M_name == 0) {
       __size = _S_bufsize;
       _M_name = _M_static_name;
