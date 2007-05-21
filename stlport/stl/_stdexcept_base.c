@@ -17,7 +17,7 @@
  */
 
 __Named_exception::__Named_exception(const string& __str) {
-  size_t __size = strlen(__get_c_string(__str)) + 1;
+  size_t __size = strlen(_STLP_PRIV __get_c_string(__str)) + 1;
   if (__size > _S_bufsize) {
     _M_name = __STATIC_CAST(char*, malloc(__size * sizeof(char)));
     if (_M_name == 0) {
