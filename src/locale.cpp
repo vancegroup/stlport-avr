@@ -41,9 +41,16 @@ bool locale::operator()(const wstring& __x,
 #endif
 
 void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
+  int err = _Locale_errno();
+  if (err == _STLP_NO_MEMORY)
+    _STLP_THROW(bad_alloc());
+
   string what;
   if (name) {
-    what = "Unknown locale name '";
+    if (err == _STLP_UNSUPPORTED_LOCALE)
+      what = "Unsupported locale '";
+    else
+      what = "No platform localization support, unable to create locale '";
     what += name;
     what += '\'';
   }
@@ -94,7 +101,7 @@ locale::locale( _Locale_impl* impl ) :
 locale::locale(const char* name)
   : _M_impl(0) {
   if (!name)
-    _M_throw_runtime_error(0);
+    _M_throw_runtime_error();
 
   if (is_C_locale_name(name)) {
     _M_impl = _get_Locale_impl( locale::classic()._M_impl );

@@ -43,6 +43,9 @@ void _Locale_init()
 void _Locale_final()
 {}
 
+int _Locale_errno(void)
+{ return _STLP_UNSUPPORTED_LOCALE; }
+
 typedef struct _Locale_ctype    {
   const struct locale_data* gcc_data;
   const int* __tolower;

@@ -79,7 +79,8 @@ void _Locale_final(void);
  * The char* argument is a simple (not a composite) locale name, which may
  * neither be an empty string nor a null pointer.
  *
- * These functions return NULL to indicate failure.
+ * These functions return NULL to indicate failure. Failure reason should be reported
+ * using _Locale_errno function.
  */
 struct _Locale_ctype* _Locale_ctype_create(const char *, struct _Locale_name_hint*);
 struct _Locale_numeric* _Locale_numeric_create(const char *, struct _Locale_name_hint*);
@@ -88,6 +89,16 @@ struct _Locale_collate* _Locale_collate_create(const char *, struct _Locale_name
 struct _Locale_monetary* _Locale_monetary_create(const char *, struct _Locale_name_hint*);
 struct _Locale_messages* _Locale_messages_create(const char *, struct _Locale_name_hint*);
 
+/* Give error reason on failure of one of the _Locale_*_create functions. Available
+ * reasons are:
+ * 0: No memory
+ * 1: Unknown locale name
+ * 2: No platform API for localization support.
+ */
+#define _STLP_NO_MEMORY 0
+#define _STLP_UNSUPPORTED_LOCALE 1
+#define _STLP_NO_PLATFORM_SUPPORT 2
+int _Locale_errno(void);
 
 /* Release a category of a locale
  *
@@ -100,7 +111,6 @@ void _Locale_time_destroy(struct _Locale_time *);
 void _Locale_collate_destroy(struct _Locale_collate *);
 void _Locale_monetary_destroy(struct _Locale_monetary *);
 void _Locale_messages_destroy(struct _Locale_messages *);
-
 
 /*
  * Returns the name of the user's default locale in each

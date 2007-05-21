@@ -1,3 +1,13 @@
+2007-05-21  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale.h, locale.cpp, locale_impl.cpp,
+	c_locale_dummy/c_locale_dummy.c, c_locale_win32/c_locale_win32.c,
+	c_locale_glic/c_locale_glibc.c, c_locale_glibc2.c: Add a _Locale_errno
+	function to the small localization framework in order to report more
+	accurate locale creation failure. For the moment there are 3 possible
+	failure reasons, no more memory, unsupported locale, no platform support.
+	In case of memory starvation, we throw a bad_alloc exception.
+
 2007-05-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_valarray.h, _valarray.c: Add many assertion checks to

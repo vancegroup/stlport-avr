@@ -25,11 +25,14 @@
 
 /* Framework functions */
 
-void _Locale_init()
+void _Locale_init(void)
 {}
 
-void _Locale_final()
+void _Locale_final(void)
 {}
+
+int _Locale_errno(void)
+{ return _STLP_NO_PLATFORM_SUPPORT; }
 
 struct _Locale_ctype* _Locale_ctype_create(const char * __DUMMY_PAR, struct _Locale_name_hint* hint)
 { return 0; }

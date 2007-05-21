@@ -286,6 +286,10 @@ extern "C" {
   _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages)
   { return 0; }
 
+  static __declspec(thread) int __error_code = -1;
+  int _Locale_errno(void)
+  { return __error_code; }
+
   _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
     char cp_name[MAX_CP_LEN + 1];
@@ -299,13 +303,14 @@ extern "C" {
     int BufferSize;
 
     _Locale_ctype_t *ltype = (_Locale_ctype_t*)malloc(sizeof(_Locale_ctype_t));
-    if (!ltype) return ltype;
+
+    if (!ltype) { __error_code = _STLP_NO_MEMORY; return ltype; }
     memset(ltype, 0, sizeof(_Locale_ctype_t));
 
     __Extract_locale_name(name, LC_CTYPE, cname);
 
     if (__GetLCIDFromName(cname, &ltype->lc.id, cp_name, lc_hint) == -1)
-    { free(ltype); return NULL; }
+    { free(ltype); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
     ltype->cp = atoi(cp_name);
 
@@ -328,14 +333,15 @@ extern "C" {
       if (ver_info.dwPlatformId == VER_PLATFORM_WIN32_NT) {
         /* Convert character sequence to Unicode. */
         BufferSize = MultiByteToWideChar(ltype->cp, MB_PRECOMPOSED, (const char*)Buffer, 256, NULL, 0);
-        wbuffer = (wchar_t*)malloc(BufferSize*sizeof(wchar_t));
-        if (!MultiByteToWideChar(ltype->cp, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize))
-        { free(wbuffer); free(ltype); return NULL; }
+        if (!BufferSize) { free(ltype); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
+        wbuffer = (wchar_t*)malloc(BufferSize * sizeof(wchar_t));
+        if (!wbuffer) { free(ltype); __error_code = _STLP_NO_MEMORY; return NULL; }
+        MultiByteToWideChar(ltype->cp, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize);
 
         GetStringTypeW(CT_CTYPE1, wbuffer, 256, ctable);
 
         for (i = 0; i < 256; ++i)
-          ltype->ctable[i]=(unsigned int)ctable[i];
+          ltype->ctable[i] = (unsigned int)ctable[i];
 
         if (CPInfo.MaxCharSize > 1) {
           for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr+=2)
@@ -350,11 +356,12 @@ extern "C" {
 
         /* Convert character sequence to target code page. */
         BufferSize = MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, NULL, 0);
-        wbuffer = (wchar_t*)malloc(BufferSize*sizeof(wchar_t));
-        if (!MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize))
-        { free(wbuffer); free(ltype); return NULL; }
+        if (!BufferSize) { free(ltype); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
+        wbuffer = (wchar_t*)malloc(BufferSize * sizeof(wchar_t));
+        if (!wbuffer) { free(ltype); __error_code = _STLP_NO_MEMORY; return NULL; }
+        MultiByteToWideChar(NativeCP, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize);
         if (!WideCharToMultiByte(ltype->cp, WC_COMPOSITECHECK | WC_SEPCHARS, wbuffer, BufferSize, (char*)TargetBuffer, 256, NULL, FALSE))
-        { free(wbuffer); free(ltype); return NULL; }
+        { free(wbuffer); free(ltype); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
         free(wbuffer);
 
@@ -365,7 +372,8 @@ extern "C" {
         }
 
         /* Mark lead byte. */
-        if (!GetCPInfo(ltype->cp, &CPInfo)) { free(ltype); return NULL; }
+        if (!GetCPInfo(ltype->cp, &CPInfo))
+        { free(ltype); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
         if (CPInfo.MaxCharSize > 1) {
           for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr+=2)
@@ -376,7 +384,7 @@ extern "C" {
     else {
       GetStringTypeA(ltype->lc.id, CT_CTYPE1, (const char*)Buffer, 256, ctable);
       for (i = 0; i < 256; ++i)
-        ltype->ctable[i]=(unsigned int)ctable[i];
+        ltype->ctable[i] = (unsigned int)ctable[i];
 
       if (CPInfo.MaxCharSize > 1) {
         for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr+=2)
@@ -390,21 +398,23 @@ extern "C" {
     char *GroupingBuffer;
     char cname[_Locale_MAX_SIMPLE_NAME];
     int BufferSize;
+
     _Locale_numeric_t *lnum = (_Locale_numeric_t*)malloc(sizeof(_Locale_numeric_t));
-    if (!lnum) return lnum;
+    if (!lnum) { __error_code = _STLP_NO_MEMORY; return lnum; }
     memset(lnum, 0, sizeof(_Locale_numeric_t));
 
     __Extract_locale_name(name, LC_NUMERIC, cname);
 
+    __error_code = 1;
     if (__GetLCIDFromName(cname, &lnum->lc.id, lnum->cp, lc_hint) == -1)
-    { free(lnum); return NULL; }
+    { free(lnum); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
     __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
     __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
 
     BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
     GroupingBuffer = (char*)malloc(BufferSize);
-    if (!GroupingBuffer) { lnum->grouping = NULL; return lnum; }
+    if (!GroupingBuffer) { free(lnum); __error_code = _STLP_NO_MEMORY; return NULL; }
     GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
     __FixGrouping(GroupingBuffer);
     lnum->grouping = GroupingBuffer;
@@ -704,26 +714,29 @@ extern "C" {
     char fmt80[80];
     char cname[_Locale_MAX_SIMPLE_NAME];
 
-    _Locale_time_t *ltime=(_Locale_time_t*)malloc(sizeof(_Locale_time_t));
-    if (!ltime) return ltime;
+    _Locale_time_t *ltime = (_Locale_time_t*)malloc(sizeof(_Locale_time_t));
+    
+    if (!ltime) { __error_code = _STLP_NO_MEMORY; return ltime; }
     memset(ltime, 0, sizeof(_Locale_time_t));
 
     __Extract_locale_name(name, LC_TIME, cname);
 
     if (__GetLCIDFromName(cname, &ltime->lc.id, ltime->cp, lc_hint) == -1)
-    { free(ltime); return NULL; }
+    { free(ltime); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
     for (month = LOCALE_SMONTHNAME1; month <= LOCALE_SMONTHNAME12; ++month) { /* Small hack :-) */
       size = GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
       ltime->month[month - LOCALE_SMONTHNAME1] = (char*)malloc(size);
-      if (!ltime->month[month - LOCALE_SMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
+      if (!ltime->month[month - LOCALE_SMONTHNAME1])
+      { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->month[month - LOCALE_SMONTHNAME1], size);
     }
 
     for (month = LOCALE_SABBREVMONTHNAME1; month <= LOCALE_SABBREVMONTHNAME12; ++month) {
       size = GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
       ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1] = (char*)malloc(size);
-      if (!ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1]) { _Locale_time_destroy(ltime); return NULL; }
+      if (!ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1])
+      { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1], size);
     }
 
@@ -731,7 +744,8 @@ extern "C" {
       int dayindex = ( dayofweek != LOCALE_SDAYNAME7 ) ? dayofweek - LOCALE_SDAYNAME1 + 1 : 0;
       size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
       ltime->dayofweek[dayindex] = (char*)malloc(size);
-      if (!ltime->dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
+      if (!ltime->dayofweek[dayindex])
+      { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->dayofweek[dayindex], size);
     }
 
@@ -739,32 +753,37 @@ extern "C" {
       int dayindex = ( dayofweek != LOCALE_SABBREVDAYNAME7 ) ? dayofweek - LOCALE_SABBREVDAYNAME1 + 1 : 0;
       size = GetLocaleInfoA(ltime->lc.id, dayofweek, NULL, 0);
       ltime->abbrev_dayofweek[dayindex] = (char*)malloc(size);
-      if (!ltime->abbrev_dayofweek[dayindex]) { _Locale_time_destroy(ltime); return NULL; }
+      if (!ltime->abbrev_dayofweek[dayindex])
+      { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
       __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
     }
 
     __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, fmt80, 80);
     size = __ConvertDate(fmt80, NULL, 0);
     ltime->date_format = (char*)malloc(size);
-    if (!ltime->date_format) { _Locale_time_destroy(ltime); return NULL; }
+    if (!ltime->date_format)
+    { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
     __ConvertDate(fmt80, ltime->date_format, size);
 
     __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, fmt80, 80);
     size = __ConvertDate(fmt80, NULL, 0);
     ltime->long_date_format = (char*)malloc(size);
-    if (!ltime->long_date_format) { _Locale_time_destroy(ltime); return NULL; }
+    if (!ltime->long_date_format)
+    { _Locale_time_destroy(ltime);__error_code = _STLP_NO_MEMORY; return NULL; }
     __ConvertDate(fmt80, ltime->long_date_format, size);
 
     __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, fmt80, 80);
     size = __ConvertTime(fmt80, NULL, 0);
     ltime->time_format = (char*)malloc(size);
-    if (!ltime->time_format) { _Locale_time_destroy(ltime); return NULL; }
+    if (!ltime->time_format)
+    { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
     __ConvertTime(fmt80, ltime->time_format, size);
 
     /* NT doesn't provide this information, we must simulate. */
     length = strlen(ltime->date_format) + strlen(ltime->time_format) + 1 /* space */ + 1 /* trailing 0 */;
     ltime->date_time_format = (char*)malloc(length);
-    if (!ltime->date_time_format) { _Locale_time_destroy(ltime); return NULL; }
+    if (!ltime->date_time_format)
+    { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
     _STLP_STRCPY2(ltime->date_time_format, length, ltime->date_format);
     _STLP_STRCAT2(ltime->date_time_format, length, " ");
     _STLP_STRCAT2(ltime->date_time_format, length, ltime->time_format);
@@ -772,7 +791,8 @@ extern "C" {
     /* NT doesn't provide this information, we must simulate. */
     length = strlen(ltime->long_date_format) + strlen(ltime->time_format) + 1 /* space */ + 1 /* trailing 0 */;
     ltime->long_date_time_format = (char*)malloc(length);
-    if (!ltime->long_date_time_format) { _Locale_time_destroy(ltime); return NULL; }
+    if (!ltime->long_date_time_format)
+    { _Locale_time_destroy(ltime); __error_code = _STLP_NO_MEMORY; return NULL; }
     _STLP_STRCPY2(ltime->long_date_time_format, length, ltime->long_date_format);
     _STLP_STRCAT2(ltime->long_date_time_format, length, " ");
     _STLP_STRCAT2(ltime->long_date_time_format, length, ltime->time_format);
@@ -786,14 +806,14 @@ extern "C" {
   _Locale_collate_t* _Locale_collate_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
 
-    _Locale_collate_t *lcol=(_Locale_collate_t*)malloc(sizeof(_Locale_collate_t));
-    if (!lcol) return lcol;
+    _Locale_collate_t *lcol = (_Locale_collate_t*)malloc(sizeof(_Locale_collate_t));
+    if (!lcol) { __error_code = _STLP_NO_MEMORY; return lcol; }
     memset(lcol, 0, sizeof(_Locale_collate_t));
 
     __Extract_locale_name(name, LC_COLLATE, cname);
 
     if (__GetLCIDFromName(cname, &lcol->lc.id, lcol->cp, lc_hint) == -1)
-    { free(lcol); return NULL; }
+    { free(lcol); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
     return lcol;
   }
@@ -805,13 +825,13 @@ extern "C" {
     char FracDigits[3];
 
     _Locale_monetary_t *lmon = (_Locale_monetary_t*)malloc(sizeof(_Locale_monetary_t));
-    if (!lmon) return lmon;
+    if (!lmon) { __error_code = _STLP_NO_MEMORY; return lmon; }
     memset(lmon, 0, sizeof(_Locale_monetary_t));
 
     __Extract_locale_name(name, LC_MONETARY, cname);
 
     if (__GetLCIDFromName(cname, &lmon->lc.id, lmon->cp, lc_hint) == -1)
-    { free(lmon); return NULL; }
+    { free(lmon); __error_code = _STLP_UNSUPPORTED_LOCALE; return NULL; }
 
     /* Extract information about monetary system */
     __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4);
@@ -819,10 +839,11 @@ extern "C" {
 
     BufferSize = GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, NULL, 0);
     GroupingBuffer = (char*)malloc(BufferSize);
-    if (!GroupingBuffer) { lmon->grouping = NULL; return lmon; }
+    if (!GroupingBuffer)
+    { lmon->grouping = NULL; __error_code = _STLP_NO_MEMORY; return lmon; }
     GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
     __FixGrouping(GroupingBuffer);
-    lmon->grouping=GroupingBuffer;
+    lmon->grouping = GroupingBuffer;
 
     __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
     __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
@@ -850,7 +871,7 @@ extern "C" {
 
   struct _Locale_messages* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint) {
     /* The Win32 API has no support for messages facet */
-    return 0;
+    return NULL;
   }
 
   static const char* _Locale_common_default(char* buf) {
@@ -897,7 +918,7 @@ extern "C" {
   { return __GetLocaleName(lmon->lc.id, lmon->cp, buf); }
 
   char const* _Locale_messages_name(const struct _Locale_messages* lmes, char* buf)
-  { return 0; }
+  { return NULL; }
 
   void _Locale_ctype_destroy(_Locale_ctype_t* ltype) {
     if (!ltype) return;
@@ -1136,7 +1157,7 @@ extern "C" {
   int _Locale_wctob(_Locale_ctype_t * ltype, wint_t wc) {
     char c;
 
-    if (WideCharToMultiByte(ltype->cp, WC_COMPOSITECHECK | WC_DEFAULTCHAR, (wchar_t*)&wc, 1, &c, 1, NULL, NULL) == 0)
+    if (!WideCharToMultiByte(ltype->cp, WC_COMPOSITECHECK | WC_DEFAULTCHAR, (wchar_t*)&wc, 1, &c, 1, NULL, NULL))
       return WEOF; /* Not single byte or error conversion. */
 
     return (int)c;
@@ -1203,16 +1224,14 @@ extern "C" {
     int size = \
       WideCharToMultiByte(ltype->cp,  WC_COMPOSITECHECK | WC_SEPCHARS, &c, 1, NULL, 0, NULL, NULL);
 
+    if (!size) return (size_t)-1;
     if ((size_t)size > n) return (size_t)-2;
 
     if (n > INT_MAX)
       /* Limiting the output buf size to INT_MAX seems like reasonable to transform a single wchar_t. */
       n = INT_MAX;
 
-    size = \
-      WideCharToMultiByte(ltype->cp,  WC_COMPOSITECHECK | WC_SEPCHARS, &c, 1, to, (int)n, NULL, NULL);
-
-    if (size == 0) return (size_t)-1;
+    WideCharToMultiByte(ltype->cp,  WC_COMPOSITECHECK | WC_SEPCHARS, &c, 1, to, (int)n, NULL, NULL);
 
     (void*)shift_state;
     return (size_t)size;

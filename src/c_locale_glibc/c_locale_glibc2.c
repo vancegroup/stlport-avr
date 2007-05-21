@@ -61,6 +61,9 @@ void _Locale_init()
 void _Locale_final()
 {}
 
+int _Locale_errno(void)
+{ return _STLP_UNSUPPORTED_LOCALE; }
+
 struct _Locale_ctype *_Locale_ctype_create( const char *nm, struct _Locale_name_hint* hint )
 { return (struct _Locale_ctype*)__LOCALE_CREATE( nm, LC_CTYPE ); }
 
