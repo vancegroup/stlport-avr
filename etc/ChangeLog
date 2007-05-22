@@ -1,3 +1,10 @@
+2007-05-22  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_win32/c_locale_win32.c: gcc MinGW has no thread
+	locale storage intrisinc support so for this compiler, locale
+	creation failure will always be reported with runtime_error
+	exception.
+
 2007-05-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h, locale.cpp, locale_impl.cpp,

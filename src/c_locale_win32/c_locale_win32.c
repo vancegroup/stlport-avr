@@ -286,9 +286,22 @@ extern "C" {
   _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages)
   { return 0; }
 
-  static __declspec(thread) int __error_code = -1;
+#if !defined (__GNUC__)
+  static __declspec(thread)
+#else
+#  define _STLP_NO_THREAD_LOCALE_STORAGE
+  static
+#endif
+  int __error_code = -1;
+
   int _Locale_errno(void)
+#if !defined (_STLP_NO_THREAD_LOCALE_STORAGE)
   { return __error_code; }
+#else
+  /* In this situation we always return that locale is not supported which used to be
+   * the behavior before introduction of _Locale_errno.*/
+  { return _STLP_UNSUPPORTED_LOCALE; }
+#endif
 
   _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint) {
     char cname[_Locale_MAX_SIMPLE_NAME];
