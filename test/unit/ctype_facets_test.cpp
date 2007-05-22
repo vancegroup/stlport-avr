@@ -218,7 +218,7 @@ void LocaleTest::_ctype_facet_w( const locale& loc )
   {
     wchar_t range[] = L"abAc123 .";
     const wchar_t *rbeg = range;
-    const wchar_t *rend = range + sizeof(range);
+    const wchar_t *rend = range + (sizeof(range) / sizeof(wchar_t));
 
     const wchar_t *res;
     res = wct.scan_is((ctype_base::mask)(ctype_base::alpha | ctype_base::lower), rbeg, rend);
@@ -238,7 +238,7 @@ void LocaleTest::_ctype_facet_w( const locale& loc )
   {
     wchar_t range[] = L"abAc123 .";
     const wchar_t *rbeg = range;
-    const wchar_t *rend = range + sizeof(range);
+    const wchar_t *rend = range + (sizeof(range) / sizeof(wchar_t));
 
     const wchar_t *res;
     res = wct.scan_not((ctype_base::mask)(ctype_base::alpha | ctype_base::lower), rbeg, rend);
@@ -306,9 +306,9 @@ void LocaleTest::_ctype_facet_w( const locale& loc )
   //narrow range
   {
     wchar_t range[] = L"ABaC1";
-    char res[sizeof(range)];
+    char res[sizeof(range) / sizeof(wchar_t)];
     char expected_res[] = "ABaC1";
-    wct.narrow(range, range + sizeof(range), 'b', res);
+    wct.narrow(range, range + sizeof(range) / sizeof(wchar_t), 'b', res);
     CPPUNIT_ASSERT( equal(expected_res, expected_res + sizeof(range) / sizeof(wchar_t), res) );
   }
 # endif
