@@ -5,6 +5,10 @@
 	creation failure will always be reported with runtime_error
 	exception.
 
+	* stlport/stl/config/_msvc.h: Configuration fix, check that _STLP_MSVC
+	is defined before activating MSVC6 workaround
+	(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND macro).
+
 2007-05-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h, locale.cpp, locale_impl.cpp,

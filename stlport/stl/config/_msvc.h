@@ -234,13 +234,13 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #if defined (_STLP_USE_DYNAMIC_LIB)
 #  undef  _STLP_USE_DECLSPEC
 #  define _STLP_USE_DECLSPEC 1
-#  if (_STLP_MSVC < 1300)
+#  if defined (_STLP_MSVC) && (_STLP_MSVC < 1300)
 #    define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND 1
 #  endif
 #endif
 
 #if !defined (_STLP_IMPORT_TEMPLATE_KEYWORD)
-#  if !defined (_MSC_EXTENSIONS) || defined(_STLP_MSVC) && _STLP_MSVC >= 1300
+#  if !defined (_MSC_EXTENSIONS) || defined (_STLP_MSVC) && (_STLP_MSVC >= 1300)
 #    define _STLP_IMPORT_TEMPLATE_KEYWORD
 #  else
 #    define _STLP_IMPORT_TEMPLATE_KEYWORD extern
