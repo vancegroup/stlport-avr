@@ -444,7 +444,7 @@ public:
 
 #if defined (_STLP_THREADS) && \
    (!defined (_STLP_ATOMIC_INCREMENT) || !defined (_STLP_ATOMIC_DECREMENT) || \
-    defined (_STLP_WIN95))
+    defined (_STLP_WIN95_LIKE))
 #  define _STLP_USE_MUTEX
   _STLP_mutex _M_mutex;
 #endif

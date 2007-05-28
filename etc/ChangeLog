@@ -1,3 +1,12 @@
+2007-05-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/allocators.cpp, locales.cpp, stlport/stl/_threads.h,
+	config/_windows.h: Fix detection of Windows OS having limited
+	implementation of Interlocked[Increment,Decrement] Win32 API
+	functions. _STLP_WIN95 macro has been rename _STLP_WIN95_LIKE
+	as it do not only signal Windows 95 build context but also former
+	OS versions.
+
 2007-05-22  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: gcc MinGW has no thread

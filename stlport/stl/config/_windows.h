@@ -226,11 +226,14 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 
 #endif /* _STLP_WINDOWS_H_INCLUDED */
 
-/* _STLP_WIN95 signal the Windows 95 OS that has some limitation in its
- * Win32 API. */
-#if (defined (WINVER) && (WINVER < 0x0410) && !defined (_WIN32_WINNT)) || \
-    (defined (_WIN32_WINDOWS) && (_WIN32_WINDOWS < 0x0410))
-#  define _STLP_WIN95
+/* _STLP_WIN95_LIKE signal the Windows 95 OS or assimilated Windows OS version that
+ * has Interlockeded[Increment, Decrement] Win32 API functions not returning modified
+ * value.
+ */
+#if (defined (WINVER) && (WINVER < 0x0410) && (!defined (_WIN32_WINNT) || (_WIN32_WINNT < 0x400))) || \
+    (!defined (WINVER) && (defined (_WIN32_WINDOWS) && (_WIN32_WINDOWS < 0x0410) || \
+                          (defined (_WIN32_WINNT) && (_WIN32_WINNT < 0x400))))
+#  define _STLP_WIN95_LIKE
 #endif
 
 /* Between Windows 95 (0x400) and later Windows OSes an API enhancement forces us
@@ -239,7 +242,7 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * so we try to generate a link time error thanks to the following macro.
  */
 #if defined (_DEBUG)
-#  if defined (_STLP_WIN95)
+#  if defined (_STLP_WIN95_LIKE)
 #    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
 #  else
 #    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later

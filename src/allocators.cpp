@@ -88,7 +88,7 @@ inline long _STLP_atomic_add_gcc_x86(long volatile* p, long addend) {
 #  define _STLP_ATOMIC_ADD(__dst, __val)  _STLP_atomic_add_gcc_x86((volatile long*)__dst, (long)__val)
 #elif defined (_STLP_WIN32THREADS)
 // The Win32 API function InterlockedExchangeAdd is not available on Windows 95.
-#  if !defined (_STLP_WIN95)
+#  if !defined (_STLP_WIN95_LIKE)
 #    if defined (_STLP_NEW_PLATFORM_SDK)
 #      define _STLP_ATOMIC_ADD(__dst, __val) InterlockedExchangeAdd(__dst, __val)
 #    else
