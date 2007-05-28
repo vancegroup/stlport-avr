@@ -1,5 +1,8 @@
 2007-05-28  Francois Dumont  <dums@users.sourceforge.net>
 
+	* test/unit/limits_test.cpp: Add test checking that numeric_limits
+	min is really min and max really max.
+
 	* src/allocators.cpp, locales.cpp, stlport/stl/_threads.h,
 	config/_windows.h: Fix detection of Windows OS having limited
 	implementation of Interlocked[Increment,Decrement] Win32 API

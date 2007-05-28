@@ -59,7 +59,7 @@ bool valid_sign_info(bool limit_is_signed, const _Tp &) {
 }
 
 template <class _Tp>
-bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
+bool test_integral_limits_base(const _Tp &, bool unknown_sign = true, bool is_signed = true) {
   typedef numeric_limits<_Tp> lim;
 
   CHECK_COND(lim::is_specialized);
@@ -72,6 +72,27 @@ bool test_integral_limits(const _Tp &, bool unknown_sign = true, bool is_signed 
   if (unknown_sign) {
     CHECK_COND(valid_sign_info(lim::is_signed, _Tp()));
   }
+  return true;
+}
+
+template <class _Tp>
+bool test_integral_limits(const _Tp &val, bool unknown_sign = true, bool is_signed = true) {
+  if (!test_integral_limits_base(val, unknown_sign, is_signed))
+    return false;
+
+  typedef numeric_limits<_Tp> lim;
+
+  if (lim::is_bounded ||
+     (!lim::is_bounded && !lim::is_signed)) {
+    _Tp tmp = lim::min();
+    CHECK_COND( --tmp > lim::min() );
+  }
+
+  if (lim::is_bounded) {
+    _Tp tmp = lim::max();
+    CHECK_COND( ++tmp < lim::max() );
+  }
+
   return true;
 }
 
@@ -108,6 +129,7 @@ bool test_float_limits(const _Tp &) {
     /* Make sure those values are not 0 or similar nonsense.
     * Infinity must compare as if larger than the maximum representable value.
     */
+    CHECK_COND(infinity == infinity);
     CHECK_COND(infinity > lim::max());
     CHECK_COND(-infinity < -lim::max());
   }
@@ -139,7 +161,7 @@ bool test_qnan(const _Tp &) {
   return true;
 }
 void LimitTest::test() {
-  CPPUNIT_ASSERT(test_integral_limits(bool()));
+  CPPUNIT_ASSERT(test_integral_limits_base(bool()));
   CPPUNIT_ASSERT(test_integral_limits(char()));
   typedef signed char signed_char;
   CPPUNIT_ASSERT(test_signed_integral_limits(signed_char()));
