@@ -1,3 +1,10 @@
+2007-05-29  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_num_get_.c: Small refactoring, all num_get::do_get for
+	float, double and long double are now calling the same __do_get_float
+	function. Moreover, when __read_float failed, __sring_to_float is not
+	called anymore.
+
 2007-05-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/limits_test.cpp: Add test checking that numeric_limits
