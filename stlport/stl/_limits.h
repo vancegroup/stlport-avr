@@ -138,6 +138,7 @@ template <class __number,
          int __MinExp, int __MaxExp,
          int __MinExp10, int __MaxExp10,
          bool __IsIEC559,
+         float_denorm_style __DenormStyle,
          float_round_style __RoundStyle>
 class _Floating_limits : public _Numeric_limits_base<__number> {
 public:
@@ -150,25 +151,25 @@ public:
   _STLP_STATIC_CONSTANT(int, min_exponent10 = __MinExp10);
   _STLP_STATIC_CONSTANT(int, max_exponent10 = __MaxExp10);
 
-  _STLP_STATIC_CONSTANT(float_denorm_style, has_denorm = denorm_indeterminate);
+  _STLP_STATIC_CONSTANT(float_denorm_style, has_denorm = __DenormStyle);
   _STLP_STATIC_CONSTANT(float_round_style, round_style = __RoundStyle);
 
   _STLP_STATIC_CONSTANT(bool, is_specialized = true);
   _STLP_STATIC_CONSTANT(bool, is_signed = true);
 
-  //IEC 559 specify the floating point representation of
-  //infinity, quiet and signaling Not a Number. Not supporting
-  //it is consider as not being able to grant those values.
-#if (defined (_STLP_MSVC) && (_STLP_MSVC < 1300))
-  //MSVC 6 do not fully support IEC 599 but grant a good infinity value.
   _STLP_STATIC_CONSTANT(bool, has_infinity = true);
+#if (!defined (_STLP_MSVC) || (_STLP_MSVC > 1300)) && \
+    (!defined (__BORLANDC__) || (__BORLANDC__ > 0x551)) && \
+    (!defined (_CRAY) || defined (_CRAYIEEE))
+  _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = true);
+  _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = true);
 #else
-  _STLP_STATIC_CONSTANT(bool, has_infinity = __IsIEC559);
+  _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = false);
+  _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = false);
 #endif
-  _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = __IsIEC559);
-  _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = __IsIEC559);
+
+  _STLP_STATIC_CONSTANT(bool, is_iec559 = __IsIEC559 && has_infinity && has_quiet_NaN && has_signaling_NaN && (has_denorm == denorm_present));
   _STLP_STATIC_CONSTANT(bool, has_denorm_loss =  false);
-  _STLP_STATIC_CONSTANT(bool, is_iec559 = __IsIEC559);
   _STLP_STATIC_CONSTANT(bool, is_bounded = true);
   _STLP_STATIC_CONSTANT(bool, traps = true);
   _STLP_STATIC_CONSTANT(bool, tinyness_before = false);
@@ -342,14 +343,17 @@ public:
   static float _STLP_CALL get_F_inf();
   static float _STLP_CALL get_F_qNaN();
   static float _STLP_CALL get_F_sNaN();
+  static float _STLP_CALL get_F_denormMin();
   static double _STLP_CALL get_D_inf();
   static double _STLP_CALL get_D_qNaN();
   static double _STLP_CALL get_D_sNaN();
+  static double _STLP_CALL get_D_denormMin();
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
   static long double _STLP_CALL get_LD_inf();
   static long double _STLP_CALL get_LD_qNaN();
   static long double _STLP_CALL get_LD_sNaN();
+  static long double _STLP_CALL get_LD_denormMin();
 #endif
 };
 
@@ -357,27 +361,62 @@ public:
 _STLP_EXPORT_TEMPLATE_CLASS _LimG<bool>;
 #endif
 
+#if defined (__GNUC__)
+#  if defined (__FLT_DENORM_MIN__)
+#    define _STLP_FLT_DENORM_MIN __FLT_DENORM_MIN__
+#  else
+#    define _STLP_FLT_DENORM_STYLE denorm_absent
+#  endif
+#  if defined (__DBL_DENORM_MIN__)
+#    define _STLP_DBL_DENORM_MIN __DBL_DENORM_MIN__
+#  else
+#    define _STLP_DBL_DENORM_STYLE denorm_absent
+#  endif
+#  if defined (__LDBL_DENORM_MIN__)
+#    define _STLP_LDBL_DENORM_MIN __LDBL_DENORM_MIN__
+#  else
+#    define _STLP_LDBL_DENORM_STYLE denorm_absent
+#  endif
+#endif
+
+/* If compiler do not expose thanks to some macro its status regarding
+ * denormalized floating point numbers, we consider that denormalization
+ * is present. Unit tests will tell us if compiler do not support them. */
+#if !defined (_STLP_FLT_DENORM_STYLE)
+#  define _STLP_FLT_DENORM_STYLE denorm_present
+#endif
+
+#if !defined (_STLP_DBL_DENORM_STYLE)
+#  define _STLP_DBL_DENORM_STYLE denorm_present
+#endif
+
+#if !defined (_STLP_LDBL_DENORM_STYLE)
+#  define _STLP_LDBL_DENORM_STYLE denorm_present
+#endif
+
 _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_TEMPLATE_NULL
 class numeric_limits<float>
   : public _STLP_PRIV _Floating_limits<float,
-                                        FLT_MANT_DIG,   // Binary digits of precision
-                                        FLT_DIG,        // Decimal digits of precision
-                                        FLT_MIN_EXP,    // Minimum exponent
-                                        FLT_MAX_EXP,    // Maximum exponent
-                                        FLT_MIN_10_EXP, // Minimum base 10 exponent
-                                        FLT_MAX_10_EXP, // Maximum base 10 exponent
-#if defined (_STLP_NO_IEC559_SUPPORT)
-                                        false,          // do not conform to iec559
-#else
-                                        true,           // conforms to iec559
-#endif
-                                        round_to_nearest> {
+                                       FLT_MANT_DIG,   // Binary digits of precision
+                                       FLT_DIG,        // Decimal digits of precision
+                                       FLT_MIN_EXP,    // Minimum exponent
+                                       FLT_MAX_EXP,    // Maximum exponent
+                                       FLT_MIN_10_EXP, // Minimum base 10 exponent
+                                       FLT_MAX_10_EXP, // Maximum base 10 exponent
+                                       true,
+                                       _STLP_FLT_DENORM_STYLE,
+                                       round_to_nearest> {
 public:
   static float (_STLP_CALL min) () _STLP_NOTHROW { return FLT_MIN; }
-  static float _STLP_CALL denorm_min() _STLP_NOTHROW { return FLT_MIN; }
-  static float (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return FLT_MAX; }
+  static float _STLP_CALL denorm_min() _STLP_NOTHROW
+#if defined (_STLP_FLT_DENORM_MIN)
+  { return _STLP_FLT_DENORM_MIN; }
+#else
+  { return _STLP_FLT_DENORM_STYLE ? _STLP_PRIV _LimG<bool>::get_F_denormMin() : FLT_MIN; }
+#endif
+  static float (_STLP_CALL max) () _STLP_NOTHROW { return FLT_MAX; }
   static float _STLP_CALL epsilon() _STLP_NOTHROW { return FLT_EPSILON; }
   static float _STLP_CALL round_error() _STLP_NOTHROW { return 0.5f; } // Units: ulps.
   static  float _STLP_CALL infinity() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_F_inf(); }
@@ -385,25 +424,30 @@ public:
   static  float _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_F_sNaN(); }
 };
 
+#undef _STLP_FLT_DENORM_MIN
+#undef _STLP_FLT_DNORM_STYLE
+
 _STLP_TEMPLATE_NULL
 class numeric_limits<double>
   : public _STLP_PRIV _Floating_limits<double,
-                                        DBL_MANT_DIG,   // Binary digits of precision
-                                        DBL_DIG,        // Decimal digits of precision
-                                        DBL_MIN_EXP,    // Minimum exponent
-                                        DBL_MAX_EXP,    // Maximum exponent
-                                        DBL_MIN_10_EXP, // Minimum base 10 exponent
-                                        DBL_MAX_10_EXP, // Maximum base 10 exponent
-#if defined (_STLP_NO_IEC559_SUPPORT)
-                                        false,          // do not conform to iec559
-#else
-                                        true,           // conforms to iec559
-#endif
-                                        round_to_nearest> {
+                                       DBL_MANT_DIG,   // Binary digits of precision
+                                       DBL_DIG,        // Decimal digits of precision
+                                       DBL_MIN_EXP,    // Minimum exponent
+                                       DBL_MAX_EXP,    // Maximum exponent
+                                       DBL_MIN_10_EXP, // Minimum base 10 exponent
+                                       DBL_MAX_10_EXP, // Maximum base 10 exponent
+                                       true,
+                                       _STLP_DBL_DENORM_STYLE,
+                                       round_to_nearest> {
 public:
   static double (_STLP_CALL min)() _STLP_NOTHROW { return DBL_MIN; }
-  static double _STLP_CALL denorm_min() _STLP_NOTHROW { return DBL_MIN; }
-  static double (_STLP_CALL max)() _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return DBL_MAX; }
+  static double _STLP_CALL denorm_min() _STLP_NOTHROW
+#if defined (_STLP_DBL_DENORM_MIN)
+  { return _STLP_DBL_DENORM_MIN; }
+#else
+  { return _STLP_DBL_DENORM_STYLE ? _STLP_PRIV _LimG<bool>::get_D_denormMin() : DBL_MIN; }
+#endif
+  static double (_STLP_CALL max)() _STLP_NOTHROW { return DBL_MAX; }
   static double _STLP_CALL epsilon() _STLP_NOTHROW { return DBL_EPSILON; }
   static double _STLP_CALL round_error() _STLP_NOTHROW { return 0.5; } // Units: ulps.
   static  double _STLP_CALL infinity() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_D_inf(); }
@@ -416,23 +460,46 @@ public:
 _STLP_TEMPLATE_NULL
 class numeric_limits<long double>
   : public _STLP_PRIV _Floating_limits<long double,
-                                        LDBL_MANT_DIG,  // Binary digits of precision
-                                        LDBL_DIG,       // Decimal digits of precision
-                                        LDBL_MIN_EXP,   // Minimum exponent
-                                        LDBL_MAX_EXP,   // Maximum exponent
-                                        LDBL_MIN_10_EXP,// Minimum base 10 exponent
-                                        LDBL_MAX_10_EXP,// Maximum base 10 exponent
-                                        false,          // do not conform to iec559
-                                        round_to_nearest> {
+                                       LDBL_MANT_DIG,  // Binary digits of precision
+                                       LDBL_DIG,       // Decimal digits of precision
+                                       LDBL_MIN_EXP,   // Minimum exponent
+                                       LDBL_MAX_EXP,   // Maximum exponent
+                                       LDBL_MIN_10_EXP,// Minimum base 10 exponent
+                                       LDBL_MAX_10_EXP,// Maximum base 10 exponent
+                                       false,          // do not conform to iec559
+                                       _STLP_LDBL_DENORM_STYLE,
+                                       round_to_nearest> {
 public:
-  static long double (_STLP_CALL min) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MIN; }
-  static long double _STLP_CALL denorm_min() _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MIN; }
-  static long double (_STLP_CALL max) () _STLP_NOTHROW { _STLP_USING_VENDOR_CSTD return LDBL_MAX; }
+  static long double (_STLP_CALL min) () _STLP_NOTHROW { return LDBL_MIN; }
+  static long double _STLP_CALL denorm_min() _STLP_NOTHROW
+#if defined (_STLP_LDBL_DENORM_MIN)
+  { return _STLP_LDBL_DENORM_MIN; }
+#else
+  { return _STLP_LDBL_DENORM_STYLE ? _STLP_PRIV _LimG<bool>::get_LD_denormMin() : LDBL_MIN; }
+#endif
+  _STLP_STATIC_CONSTANT(bool, is_iec559 = false);
+  static long double (_STLP_CALL max) () _STLP_NOTHROW { return LDBL_MAX; }
   static long double _STLP_CALL epsilon() _STLP_NOTHROW { return LDBL_EPSILON; }
-  static long double _STLP_CALL round_error() _STLP_NOTHROW { return 4; } // Units: ulps.
-  static long double _STLP_CALL infinity() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_LD_inf(); }
-  static long double _STLP_CALL quiet_NaN() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_LD_qNaN(); }
-  static long double _STLP_CALL signaling_NaN() _STLP_NOTHROW { return _STLP_PRIV _LimG<bool>::get_LD_sNaN(); }
+  static long double _STLP_CALL round_error() _STLP_NOTHROW { return 0.5l; }
+  static long double _STLP_CALL infinity() _STLP_NOTHROW
+  //For MSVC, long double is nothing more than an alias for double.
+#if !defined (_STLP_MSVC)
+  { return _STLP_PRIV _LimG<bool>::get_LD_inf(); }
+#else
+  { return _STLP_PRIV _LimG<bool>::get_D_inf(); }
+#endif
+  static long double _STLP_CALL quiet_NaN() _STLP_NOTHROW
+#if !defined (_STLP_MSVC)
+  { return _STLP_PRIV _LimG<bool>::get_LD_qNaN(); }
+#else
+  { return _STLP_PRIV _LimG<bool>::get_D_qNaN(); }
+#endif
+  static long double _STLP_CALL signaling_NaN() _STLP_NOTHROW
+#if !defined (_STLP_MSVC)
+  { return _STLP_PRIV _LimG<bool>::get_LD_sNaN(); }
+#else
+  { return _STLP_PRIV _LimG<bool>::get_D_sNaN(); }
+#endif
 };
 
 #endif

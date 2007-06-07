@@ -1,3 +1,23 @@
+2007-06-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/features.h: Removed unused _STLP_LDOUBLE_* macros giving
+	real long double size.
+
+	* stlport/stl/_limits.h, _limits.c: Major code upgrade, now computation
+	of infinity and NaN is done thanks to some code extracted from the boost
+	library (www.boost.org). This code is more portable as it adapts to compiler
+	representation of float, double and long double and do not require many
+	compiler macro checks. Additionaly STLport numeric_limits now handle real
+	denorm_min values.
+
+	* test/unit/limit_test.cpp: Add many test on dernomalized float and
+	some other values of numeric_limits.
+
+	* stlport/stl/config/_cray.h, _gcc.h, _msvc.h, stl_mycomp.h: Removed
+	_STLP_NO_IEC559_SUPPORT macro, meaning was not clear and impact was
+	localized to the _limits.h file so use of a global macro was rather
+	useless.
+
 2007-05-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_num_get_.c: Small refactoring, all num_get::do_get for

@@ -139,10 +139,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 /* Fails to properly resolve call to sin() from within sin() */
 #  endif
 
-#  if (_STLP_MSVC < 1300)
-#    define _STLP_NO_IEC559_SUPPORT 1
-#  endif
-
 #  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */
 #    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 #    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1

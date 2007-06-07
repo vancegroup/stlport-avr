@@ -105,10 +105,11 @@ template <class __number,  \
          int __MinExp, int __MaxExp,      \
          int __MinExp10, int __MaxExp10,  \
          bool __IsIEC559, \
+         float_denorm_style __DenormStyle, \
          float_round_style __RoundStyle> \
 const __type _Floating_limits< __number, __Digits, __Digits10,    \
          __MinExp, __MaxExp, __MinExp10, __MaxExp10,  \
-         __IsIEC559, __RoundStyle>::\
+         __IsIEC559, __DenormStyle, __RoundStyle>::\
          __mem
 
 __declare_float_limits_member(bool, is_specialized);
@@ -136,7 +137,44 @@ __declare_float_limits_member(float_round_style, round_style);
 
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+/* The following code has been extracted from the boost libraries (www.boost.org) and
+ * adapted with the STLport portability macros. Advantage on previous technique is that
+ * computation of infinity and NaN value is only based on big/little endian, compiler
+ * float, double or long double representation is taken into account thanks to the sizeof
+ * operator. */
+ template<class _Number, unsigned int _Word>
+ struct float_helper {
+  static _Number get_word_higher() _STLP_NOTHROW {
+    const unsigned int _S_word[4] = { _Word, 0, 0, 0 };
+    return *__REINTERPRET_CAST(const _Number*, &_S_word);
+  } 
+  static _Number get_word_lower() _STLP_NOTHROW {
+    // sizeof(long double) == 12, but only 10 bytes significant
+    const unsigned int _S_word[4] = { 0, 0, 0, _Word };
+    return *__REINTERPRET_CAST(const _Number*,
+                               __REINTERPRET_CAST(const char*, &_S_word) + 16 -
+                                                               (sizeof(_Number) == 12 ? 10 : sizeof(_Number)));
+  }
+  static _Number get_from_last_word() _STLP_NOTHROW {
+#  if defined (_STLP_BIG_ENDIAN)
+    return get_word_higher();
+#  else /* _STLP_LITTLE_ENDIAN */
+    return get_word_lower();
+#  endif
+  }
+  static _Number get_from_first_word() _STLP_NOTHROW {
+#  if defined (_STLP_BIG_ENDIAN)
+    return get_word_lower();
+#  else /* _STLP_LITTLE_ENDIAN */
+    return get_word_higher();
+#  endif
+  }
+};
 
+
+/* Former values kept in case moving to boost code has introduce a regression on
+ * some platform. */
+#if 0
 #  if defined (_STLP_BIG_ENDIAN)
 #    if defined (__OS400__)
 #      define _STLP_FLOAT_INF_REP { 0x7f80, 0 }
@@ -159,33 +197,14 @@ __declare_float_limits_member(float_round_style, round_style);
 #      define _STLP_LDOUBLE_QNAN_REP { 0x7ff1, 0, 0, 0, 0, 0, 0, 0 }
 #      define _STLP_LDOUBLE_SNAN_REP { 0x7ff9, 0, 0, 0, 0, 0, 0, 0 }
 #    endif /* __OS400__ */
-
-#  elif defined (_STLP_LITTLE_ENDIAN)
-
-#    if 0 /* defined(_STLP_MSVC) || defined(__linux__) */
-// some IA-32 platform ??
-/*
-#      define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
-#      define _STLP_FLOAT_QNAN_REP { 0, 0xffc0 }
-#      define _STLP_FLOAT_SNAN_REP { 0, 0xff80 }
-
-#      define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
-#      define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0xfff8 }
-#      define _STLP_DOUBLE_SNAN_REP { 0, 0, 0, 0xfff0 }
-#      define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0x7FF0, 0 } // ????
-#      define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0xFFF8, 0 } // ????
-#      define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xFFF0, 0 } // ????
-*/
-#    elif defined(__DECCXX)
-
+#  else /* _STLP_LITTLE_ENDIAN */
+#    if defined(__DECCXX)
 #      define _STLP_FLOAT_INF_REP { 0, 0x7f80 }
 #      define _STLP_FLOAT_QNAN_REP { 0, 0xffc0 }
 #      define _STLP_FLOAT_SNAN_REP { 0x5555, 0x7f85 }
-
 #      define _STLP_DOUBLE_INF_REP { 0, 0, 0, 0x7ff0 }
 #      define _STLP_DOUBLE_QNAN_REP { 0, 0, 0, 0xfff8 }
 #      define _STLP_DOUBLE_SNAN_REP { 0x5555, 0x5555, 0x5555, 0x7ff5 }
-
 #      define _STLP_LDOUBLE_INF_REP { 0, 0, 0, 0, 0, 0, 0, 0x7fff }
 #      define _STLP_LDOUBLE_QNAN_REP { 0, 0, 0, 0, 0, 0, 0x8000, 0xffff }
 #      define _STLP_LDOUBLE_SNAN_REP { 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x5555, 0x7fff}
@@ -210,41 +229,6 @@ __declare_float_limits_member(float_round_style, round_style);
 #        define _STLP_LDOUBLE_SNAN_REP { 0, 0, 0, 0xc000, 0x7fff, 0 }
 #      endif
 #    endif
-#  else
-/* This is an architecture we don't know how to handle. Return some
-obviously wrong values. */
-#    define _STLP_FLOAT_INF_REP { 0, 0 }
-#    define _STLP_FLOAT_QNAN_REP { 0, 0 }
-#    define _STLP_FLOAT_SNAN_REP { 0, 0 }
-#    define _STLP_DOUBLE_INF_REP { 0, 0 }
-#    define _STLP_DOUBLE_QNAN_REP { 0, 0 }
-#    define _STLP_DOUBLE_SNAN_REP { 0, 0 }
-#    define _STLP_LDOUBLE_INF_REP { 0 }
-#    define _STLP_LDOUBLE_QNAN_REP { 0 }
-#    define _STLP_LDOUBLE_SNAN_REP { 0 }
-
-#  endif
-
-#  if 0
-/*
-#    if defined(_STLP_BIG_ENDIAN)
-
-#    elif defined (_STLP_LITTLE_ENDIAN)
-#    else
-
-//This is an architecture we don't know how to handle.  Return some
-//obviously wrong values.
-#      define _STLP_FLOAT_INF_REP  { 0, 0 }
-#      define _STLP_FLOAT_QNAN_REP { 0, 0 }
-#      define _STLP_FLOAT_SNAN_REP { 0, 0 }
-#      define _STLP_DOUBLE_INF_REP  { 0, 0 }
-#      define _STLP_DOUBLE_QNAN_REP { 0, 0 }
-#      define _STLP_DOUBLE_SNAN_REP { 0, 0 }
-#      define _STLP_LDOUBLE_INF_REP  { 0 }
-#      define _STLP_LDOUBLE_QNAN_REP { 0 }
-#      define _STLP_LDOUBLE_SNAN_REP { 0 }
-#    endif
-*/
 #  endif
 
 union _F_rep {
@@ -262,71 +246,125 @@ union _LD_rep {
   long double val;
 };
 #  endif
+#endif
 
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_inf() {
-  _F_rep _F_inf = {_STLP_FLOAT_INF_REP};
-  return _F_inf.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<float, (0x7f80 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<float, 0x7f800000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_qNaN() {
-  _F_rep _F_qNaN = {_STLP_FLOAT_QNAN_REP};
-  return _F_qNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<float, (0x7f81 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<float, 0x7f810000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_sNaN() {
-  _F_rep _F_sNaN = {_STLP_FLOAT_SNAN_REP};
-  return _F_sNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<float, (0x7fc1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<float, 0x7fc10000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
+}
+template <class __dummy>
+float _STLP_CALL _LimG<__dummy>::get_F_denormMin() {
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<float, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<float, 0x00000001u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_first_word();
 }
 
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_inf() {
-  _D_rep _D_inf = {_STLP_DOUBLE_INF_REP};
-  return _D_inf.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<double, (0x7ff0 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<double, 0x7ff00000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_qNaN() {
-  _D_rep _D_qNaN = {_STLP_DOUBLE_QNAN_REP};
-  return _D_qNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<double, (0x7ff1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<double, 0x7ff10000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_sNaN() {
-  _D_rep _D_sNaN = {_STLP_DOUBLE_SNAN_REP};
-  return _D_sNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<double, (0x7ff9 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<double, 0x7ff90000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
+}
+template <class __dummy>
+double _STLP_CALL _LimG<__dummy>::get_D_denormMin() {
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<double, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<double, 0x00000001u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_first_word();
 }
 
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_inf() {
-  _LD_rep _LD_inf = {_STLP_LDOUBLE_INF_REP};
-  return _LD_inf.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, (0x7ff0 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<long double, 0x7fff8000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_qNaN() {
-  _LD_rep _LD_qNaN = {_STLP_LDOUBLE_QNAN_REP};
-  return _LD_qNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, (0x7ff1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<long double, 0x7fffc000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
-  _LD_rep _LD_sNaN = {_STLP_LDOUBLE_SNAN_REP};
-  return _LD_sNaN.val;
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, (0x7ff9 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<long double, 0x7fff9000u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_last_word();
 }
-#  endif /* _STLP_NO_LONG_DOUBLE */
+template <class __dummy>
+long double _STLP_CALL _LimG<__dummy>::get_LD_denormMin() {
+#if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
+#else
+  typedef float_helper<long double, 0x00000001u> _FloatHelper;
+#endif
+  return _FloatHelper::get_from_first_word();
+}
+#  endif
 
 #endif /* _STLP_EXPOSE_GLOBALS_IMPLEMENTATION */
 
 #undef _STLP_LIMITS_MIN_TYPE
 #undef _STLP_LIMITS_MAX_TYPE
-
-#undef _STLP_FLOAT_INF_REP
-#undef _STLP_FLOAT_QNAN_REP
-#undef _STLP_FLOAT_SNAN_REP
-#undef _STLP_DOUBLE_INF_REP
-#undef _STLP_DOUBLE_QNAN_REP
-#undef _STLP_DOUBLE_SNAN_REP
-#undef _STLP_LDOUBLE_INF_REP
-#undef _STLP_LDOUBLE_QNAN_REP
-#undef _STLP_LDOUBLE_SNAN_REP
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

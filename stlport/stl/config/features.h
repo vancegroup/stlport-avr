@@ -233,24 +233,6 @@
 #  define _STLP_WIN16
 #endif /* __unix */
 
-#if defined (_STLP_WIN16)
-#  define _STLP_LDOUBLE_80
-#elif defined(_STLP_WIN32)
-#  if defined (_STLP_MSVC) || defined (__ICL) || defined (__BORLANDC__) || defined (__CYGWIN__)
-#    define _STLP_LDOUBLE_64
-#  else
-#    define _STLP_LDOUBLE_96
-#  endif
-#elif defined (_STLP_UNIX)
-#  if defined (__CYGWIN__)
-#    define _STLP_LDOUBLE_96
-#  endif
-#endif
-
-#if !defined (_STLP_LDOUBLE_64) && !defined (_STLP_LDOUBLE_80) && !defined (_STLP_LDOUBLE_96) && !defined (_STLP_LDOUBLE_128)
-#  define _STLP_LDOUBLE_128
-#endif
-
 #if !defined (_STLP_NO_LONG_DOUBLE)
 #  define _STLP_LONGEST_FLOAT_TYPE long double
 #else

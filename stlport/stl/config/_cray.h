@@ -63,7 +63,3 @@
 # define _STLP_NO_NATIVE_MBSTATE_T
 # define _STLP_NO_USING_FOR_GLOBAL_FUNCTIONS
 //# define _STLP_VENDOR_GLOBAL_EXCEPT_STD
-
-#if !defined (_CRAYIEEE)
-#  define _STLP_NO_IEC559_SUPPORT 1
-#endif

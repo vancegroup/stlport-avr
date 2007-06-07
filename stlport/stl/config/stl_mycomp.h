@@ -280,12 +280,5 @@
 // Same for C headers
 // #define _STLP_NATIVE_C_HEADER(header)
 
-// uncomment this if your compiler/platform do not fully support the IEC 559 floating point
-// numbers specification (also known as IEEE 754 in the US). This specification define the
-// infinity and NaN (Not a Number) representation. Unit tests should tell you if your compiler
-// support it.
-// #  define _STLP_NO_IEC559_SUPPORT 1
-
-
 //==========================================================
 #endif
