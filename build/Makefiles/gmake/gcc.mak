@@ -80,18 +80,6 @@ dbg-shared : DEFS += -D_DEBUG
 stldbg-shared : DEFS += -D_DEBUG
 dbg-static : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
-#Add Windows target.
-ifdef  STLP_BUILD_WINDOWS_95
-WINVER=0x0400
-else
-WINVER=0x0410
-endif
-release-shared: DEFS += -DWINVER=$(WINVER)
-dbg-shared: DEFS += -DWINVER=$(WINVER)
-stldbg-shared: DEFS += -DWINVER=$(WINVER)
-release-static: DEFS += -DWINVER=$(WINVER)
-dbg-static: DEFS += -DWINVER=$(WINVER)
-stldbg-static: DEFS += -DWINVER=$(WINVER)
 endif
 endif
 
@@ -118,18 +106,6 @@ dbg-shared : DEFS += -D_DEBUG
 stldbg-shared : DEFS += -D_DEBUG
 dbg-static : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
-#Add Windows target.
-ifndef STLP_BUILD_WINDOWS_95
-WINVER=0x0410
-else
-WINVER=0x0400
-endif
-release-shared: DEFS += -DWINVER=$(WINVER)
-dbg-shared: DEFS += -DWINVER=$(WINVER)
-stldbg-shared: DEFS += -DWINVER=$(WINVER)
-release-static: DEFS += -DWINVER=$(WINVER)
-dbg-static: DEFS += -DWINVER=$(WINVER)
-stldbg-static: DEFS += -DWINVER=$(WINVER)
 endif
 
 ifndef STLP_BUILD_NO_THREAD

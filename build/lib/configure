@@ -38,9 +38,6 @@ Available options:
   --no-cygwin           Specific cygwin distribution option. Use it to build STLport using
                         the cygwin tools but without dependency on the cygwin1.dll
 
-  --windows95           Specific Windows option, request library build for Windows 95, per default
-                        generated libraries are compatible for Windows 98 and later OSes.
-
   --with-extra-cxxflags=<options>
                         Pass extra options to C++ compiler
 
@@ -120,9 +117,6 @@ do
       echo "--no-cygwin: Don't forget to uncomment _STLP_NO_CYGWIN macro"
       echo "in stlport/stl/config/host.h to use such a configuration."
       ;;
-    --windows95)
-      write_option 1 STLP_BUILD_WINDOWS_95
-      ;; 
     --not-thread-safe)
       write_option 1 STLP_BUILD_NO_THREAD
       ;;

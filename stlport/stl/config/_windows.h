@@ -243,9 +243,9 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  */
 #if defined (_DEBUG)
 #  if defined (_STLP_WIN95_LIKE)
-#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows95_or_previous
+#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME library_built_for_windows95_or_previous
 #  else
-#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME check_library_built_for_windows98_or_later
+#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME library_built_for_windows98_or_later
 #  endif
 #endif
 

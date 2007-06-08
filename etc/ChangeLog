@@ -1,3 +1,13 @@
+2007-06-08  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/lib/configure, configure.bat: Removed --windows95 option, it is
+	useless now that STLport includes windows.h when building the libraries.
+
+	* build/Makefiles/gmake/bcc.mak, dmc.mak, gcc.mak, nmake/vc-common.mak:
+	Removed references to Windows 95 build, if STLport users want to target
+	a specific Windows OS they will only have to use --extra-cxxflags to
+	give WINVER, _WIN32_WINDOWS or _WIN32_WINNT values.
+
 2007-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/features.h: Removed unused _STLP_LDOUBLE_* macros giving
