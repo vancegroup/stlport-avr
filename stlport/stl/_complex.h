@@ -32,17 +32,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if !defined (_STLP_NO_COMPLEX_SPECIALIZATIONS)    //*TY 02/25/2000 - added for MPW compiler workaround
-
-template <class _Tp> struct complex;
-
-_STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<float>;
-_STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<double>;
-#  if !defined (_STLP_NO_LONG_DOUBLE)
-_STLP_TEMPLATE_NULL struct _STLP_CLASS_DECLSPEC complex<long double>;
-#  endif
-#endif /* _STLP_NO_COMPLEX_SPECIALIZATIONS */
-
 template <class _Tp>
 struct complex {
   typedef _Tp value_type;
@@ -63,7 +52,7 @@ struct complex {
     return *this;
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && (defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined(_STLP_NO_COMPLEX_SPECIALIZATIONS))
+#if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   template <class _Tp2>
   explicit complex(const complex<_Tp2>& __z)
     : _M_re(__z._M_re), _M_im(__z._M_im) {}
@@ -182,7 +171,6 @@ struct complex {
   value_type _M_im;
 };
 
-#if !defined (_STLP_NO_COMPLEX_SPECIALIZATIONS)    //*TY 02/25/2000 - added for MPW compiler workaround
 // Explicit specializations for float, double, long double.  The only
 // reason for these specializations is to enable automatic conversions
 // from complex<float> to complex<double>, and complex<double> to
@@ -200,9 +188,9 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
   complex(const complex<float>& __z)    : _M_re(__z._M_re), _M_im(__z._M_im) {}
 
   inline explicit complex(const complex<double>& __z);
-#  ifndef _STLP_NO_LONG_DOUBLE
+#ifndef _STLP_NO_LONG_DOUBLE
   inline explicit complex(const complex<long double>& __z);
-#  endif
+#endif
   // Element access.
   value_type real() const { return _M_re; }
   value_type imag() const { return _M_im; }
@@ -243,7 +231,7 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
                               const float& __z2_r, const float& __z2_i,
                               float& __res_r, float& __res_i);
 
-#  if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp2>
   complex<float>& operator=(const complex<_Tp2>& __z) {
     _M_re = __z._M_re;
@@ -284,7 +272,7 @@ struct _STLP_CLASS_DECLSPEC complex<float> {
     return *this;
   }
 
-#  endif /* _STLP_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator=(const _Self& __z) {
     _M_re = __z._M_re;
@@ -339,9 +327,9 @@ struct _STLP_CLASS_DECLSPEC complex<double> {
   complex(const complex<double>& __z)
     : _M_re(__z._M_re), _M_im(__z._M_im) {}
   inline complex(const complex<float>& __z);
-#  if !defined (_STLP_NO_LONG_DOUBLE)
+#if !defined (_STLP_NO_LONG_DOUBLE)
   explicit inline complex(const complex<long double>& __z);
-#  endif
+#endif
   // Element access.
   value_type real() const { return _M_re; }
   value_type imag() const { return _M_im; }
@@ -381,7 +369,7 @@ struct _STLP_CLASS_DECLSPEC complex<double> {
                               const double& __z2_r, const double& __z2_i,
                               double& __res_r, double& __res_i);
 
-#  if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   template <class _Tp2>
   complex<double>& operator=(const complex<_Tp2>& __z) {
     _M_re = __z._M_re;
@@ -422,7 +410,7 @@ struct _STLP_CLASS_DECLSPEC complex<double> {
     return *this;
   }
 
-#  endif /* _STLP_MEMBER_TEMPLATES */
+#endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator=(const _Self& __z) {
     _M_re = __z._M_re;
@@ -464,7 +452,7 @@ struct _STLP_CLASS_DECLSPEC complex<double> {
   value_type _M_im;
 };
 
-#  if !defined (_STLP_NO_LONG_DOUBLE)
+#if !defined (_STLP_NO_LONG_DOUBLE)
 
 _STLP_TEMPLATE_NULL
 struct _STLP_CLASS_DECLSPEC complex<long double> {
@@ -520,7 +508,7 @@ struct _STLP_CLASS_DECLSPEC complex<long double> {
                               const long double& __z2_r, const long double& __z2_i,
                               long double& __res_r, long double& __res_i);
 
-#    if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
+#  if defined (_STLP_MEMBER_TEMPLATES) && defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 
   template <class _Tp2>
   complex<long double>& operator=(const complex<_Tp2>& __z) {
@@ -562,7 +550,7 @@ struct _STLP_CLASS_DECLSPEC complex<long double> {
     return *this;
   }
 
-#    endif /* _STLP_MEMBER_TEMPLATES */
+#  endif /* _STLP_MEMBER_TEMPLATES */
 
   _Self& operator=(const _Self& __z) {
     _M_re = __z._M_re;
@@ -604,7 +592,7 @@ struct _STLP_CLASS_DECLSPEC complex<long double> {
   value_type _M_im;
 };
 
-#  endif /* _STLP_NO_LONG_DOUBLE */
+#endif /* _STLP_NO_LONG_DOUBLE */
 
 // Converting constructors from one of these three specialized types
 // to another.
@@ -613,7 +601,7 @@ inline complex<float>::complex(const complex<double>& __z)
   : _M_re((float)__z._M_re), _M_im((float)__z._M_im) {}
 inline complex<double>::complex(const complex<float>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
-#  ifndef _STLP_NO_LONG_DOUBLE
+#ifndef _STLP_NO_LONG_DOUBLE
 inline complex<float>::complex(const complex<long double>& __z)
   : _M_re((float)__z._M_re), _M_im((float)__z._M_im) {}
 inline complex<double>::complex(const complex<long double>& __z)
@@ -622,9 +610,7 @@ inline complex<long double>::complex(const complex<float>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
 inline complex<long double>::complex(const complex<double>& __z)
   : _M_re(__z._M_re), _M_im(__z._M_im) {}
-#  endif
-
-#endif /* SPECIALIZATIONS */
+#endif
 
 // Unary non-member arithmetic operators.
 

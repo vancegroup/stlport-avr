@@ -1,5 +1,8 @@
 2007-06-08  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_complex.h: Clean unused _STLP_NO_COMPLEX_SPECIALIZATIONS
+	macro and code coming with it.
+
 	* build/lib/configure, configure.bat: Removed --windows95 option, it is
 	useless now that STLport includes windows.h when building the libraries.
 
