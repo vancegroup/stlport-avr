@@ -896,16 +896,19 @@ public:
 #endif
     return *(this->_M_buf_ptr);
   }
-  _Self& operator++() {
-    _CharT* __next;
-    if (0 != this->_M_buf_ptr && (__next = this->_M_buf_ptr + 1) < this->_M_buf_end) {
-      this->_M_buf_ptr = __next;
-      ++this->_M_current_pos;
-    } else {
-      this->_M_incr(1);
-    }
-    return *this;
-  }
+  _Self& operator++()
+      {
+        if ( this->_M_buf_ptr != 0 ) {
+          _CharT *__next = this->_M_buf_ptr + 1;
+          if ( __next < this->_M_buf_end ) {
+            this->_M_buf_ptr = __next;
+            ++this->_M_current_pos;
+            return *this;
+          }
+        }
+        this->_M_incr(1);
+        return *this;
+      }
   _Self& operator+=(ptrdiff_t __n) {
     if (__n >= 0) {
       this->_M_incr(__n);
