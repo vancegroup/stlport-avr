@@ -136,23 +136,6 @@ typedef unsigned int wint_t;
 
 #endif /* __APPLE__ */
 
-
-#if defined(__BEOS__) && defined(__INTEL__)
-#  define _STLP_NO_NATIVE_WIDE_FUNCTIONS 1
-#  define _STLP_NO_NATIVE_WIDE_STREAMS   1
-/*
-#  define _NOTHREADS 1
-*/
-#  ifdef _PTHREADS
-#    undef  _PTHREADS
-#  endif
-#  ifdef _STLP_PTHREADS
-#    undef _STLP_PTHREADS
-#  endif
-#  define _STLP_USE_STDIO_IO 1
-#  define _STLP_USE_GLIBC 1
-#endif
-
 /* g++ 2.7.x and above */
 #define _STLP_LONG_LONG long long
 

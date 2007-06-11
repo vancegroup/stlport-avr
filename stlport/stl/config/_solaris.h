@@ -7,6 +7,7 @@
 #include <sys/feature_tests.h>
 
 /* system-dependent defines */
+#define _STLP_USE_UNIX_IO
 
 #ifdef __GNUC__
 /* 

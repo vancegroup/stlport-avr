@@ -47,7 +47,6 @@
  * #  endif
  */
 /* boris : hstash reported it can be treated like UNIX */
-#  define _STLP_UNIX 1
 #  define _STLP_NO_TYPEINFO 1
 #  undef _STLP_NATIVE_INCLUDE_PATH
 #  define _STLP_NATIVE_INCLUDE_PATH /usr/lpp/ioclib/include

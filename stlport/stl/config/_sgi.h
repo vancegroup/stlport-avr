@@ -88,3 +88,7 @@
 #if !((_COMPILER_VERSION >= 730) && defined(_MIPS_SIM) && _MIPS_SIM != _ABIO32)
 #  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
 #endif
+
+#if !defined (_NOTHREADS) && !defined (_STLP_THREADS_DEFINED) && !defined (__GNUC__)
+#  define _STLP_SGI_THREADS
+#endif

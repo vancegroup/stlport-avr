@@ -258,8 +258,3 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    endif
 #  endif
 #endif
-
-/* Local Variables:
- * mode:C++
- * End:
- */

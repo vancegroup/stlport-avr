@@ -92,8 +92,30 @@
 */
 
 /*
+ * _STLP_USE_STDIO_IO, _STLP_USE_UNIX_IO: force selection of stdio calls
+ * (fopen/flose/fread/fwrite) under fstream buffers or unistd calls
+ * (open/close/read/write + mmap). Now on system that has both calls sets
+ * (i.e. most Unixes) used _STLP_USE_UNIX_IO by default. 
+ *
+ * There are third variant for Windows: _STLP_USE_WIN32_IO, that based
+ * on Windows calls (CreateFile/CloseHandle/ReadFile/WriteFile + CreateFileMapping,
+ * MapViewOfFile)
+ *
+ * Uncomment only one define here!
+ */
+/*
+#define _STLP_USE_UNIX_IO
+*/
+/*
+#define _STLP_USE_STDIO_IO
+*/
+/*
+#define _STLP_USE_WIN32_IO
+ */
+
+/*
  * _STLP_NO_RELOPS_NAMESPACE: if defined, don't put the relational
- * operator templates (>, <=. >=, !=) in namespace std::rel_ops, even
+ * operator templates (>, <=, >=, !=) in namespace std::rel_ops, even
  * if the compiler supports namespaces.
  * Note : if the compiler do not support namespaces, those operators are not be provided by default,
  * to simulate hiding them into rel_ops. This was proved to resolve many compiler bugs with ambiguity.

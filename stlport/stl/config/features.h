@@ -223,14 +223,8 @@
 #endif
 
 /* Operating system recognition (basic) */
-#if defined (__unix) || defined (__linux__) || defined (__QNX__) || defined (_AIX)  || defined (__NetBSD__) || defined(__OpenBSD__) || defined (__Lynx__)
+#if defined(__unix) || defined(__linux__) || defined(__QNX__) || defined(_AIX)  || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__Lynx__) || defined(__hpux) || defined(__sgi)
 #  define _STLP_UNIX 1
-#elif defined(macintosh) || defined (_MAC)
-#  define _STLP_MAC  1
-#elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__)
-#  define _STLP_WIN32 1
-#elif defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  define _STLP_WIN16
 #endif /* __unix */
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
@@ -272,44 +266,20 @@
 #    define _STLP_THREADS
 #  endif
 
-#  if defined (__sgi) && !defined (__KCC) && !defined (__GNUC__)
-#    define _STLP_SGI_THREADS
-#  elif defined (__DECC) || defined (__DECCXX)
-#    define _STLP_DEC_THREADS
-#  elif defined (_STLP_WIN32) && !defined (_STLP_PTHREADS)
+#  if defined (_STLP_WIN32) && !defined (_STLP_PTHREADS)
 #    define _STLP_WIN32THREADS 1
 #  elif ((defined (__sun) && !defined (__linux__)) || defined (_UITHREADS) ) && \
         !defined(_STLP_PTHREADS)
 #    define _STLP_UITHREADS
-#  elif defined (__OS2__)
-#    define _STLP_OS2THREADS
-#  elif defined (__BEOS__)
-#    define _STLP_BETHREADS
 #  else
 #    define _STLP_PTHREADS
 #  endif /* __sgi */
 #  define _STLP_THREADS_DEFINED
 #endif
 
-#if (defined (_REENTRANT) || defined (_THREAD_SAFE) || \
-    (defined (_POSIX_THREADS) && defined (__OpenBSD__))) && \
-    !defined (_STLP_THREADS)
+#if (defined (_REENTRANT) || defined (_THREAD_SAFE)) && !defined (_STLP_THREADS)
 #  define _STLP_THREADS
 #endif /* _REENTRANT */
-
-#if defined (__linux__) && defined (_STLP_PTHREADS)
-/* #  include <features.h> */
-
-#  if defined (__USE_XOPEN2K) && !defined (_STLP_DONT_USE_PTHREAD_SPINLOCK)
-#    define _STLP_USE_PTHREAD_SPINLOCK
-#    define _STLP_STATIC_MUTEX _STLP_mutex
-#  endif /* __USE_XOPEN2K */
-#endif /* __linux__ && _STLP_PTHREADS */
-
-#if defined (__OpenBSD__) && defined (_POSIX_THREADS) && !defined (_STLP_DONT_USE_PTHREAD_SPINLOCK)
-#  define _STLP_USE_PTHREAD_SPINLOCK
-#  define _STLP_STATIC_MUTEX _STLP_mutex
-#endif
 
 #ifndef _STLP_STATIC_MUTEX
 #  define _STLP_STATIC_MUTEX _STLP_mutex_base

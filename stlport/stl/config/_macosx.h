@@ -5,3 +5,5 @@
 #elif defined (__LITTLE_ENDIAN__)
 #  define _STLP_LITTLE_ENDIAN 1
 #endif
+
+#define _STLP_USE_UNIX_IO

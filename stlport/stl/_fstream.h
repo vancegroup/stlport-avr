@@ -38,24 +38,6 @@
 #  include <stl/_codecvt.h>
 #endif
 
-#if !defined (_STLP_USE_UNIX_IO) && !defined(_STLP_USE_WIN32_IO) && \
-    !defined (_STLP_USE_UNIX_EMULATION_IO) && !defined (_STLP_USE_STDIO_IO)
-
-#  if defined (_STLP_UNIX)  || defined (__CYGWIN__) || defined (__amigaos__) || defined (__EMX__)
-// open/close/read/write
-#    define _STLP_USE_UNIX_IO
-#  elif defined (_STLP_WIN32)
-// CreateFile/ReadFile/WriteFile
-#    define _STLP_USE_WIN32_IO
-#  elif defined (_STLP_WIN16) || defined (_STLP_MAC)
-// _open/_read/_write
-#    define _STLP_USE_UNIX_EMULATION_IO
-#  else
-// fopen/fread/fwrite
-#    define _STLP_USE_STDIO_IO
-#  endif /* _STLP_UNIX */
-#endif /* mode selection */
-
 #if defined (_STLP_USE_WIN32_IO)
 typedef void* _STLP_fd;
 #elif defined (_STLP_USE_UNIX_EMULATION_IO) || defined (_STLP_USE_STDIO_IO) || defined (_STLP_USE_UNIX_IO)

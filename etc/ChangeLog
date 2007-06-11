@@ -1,3 +1,30 @@
+2007-06-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/fstream.cpp: integration file; code clean, three implementations
+	sublimated, unix-emulation approach removed; this is reorganization
+	changeset, functionality was not changed;
+	
+	* src/fstream_win32io.cpp: win32io-based implementation of _Filebuf_base,
+	i.e. based on Windows calls CreateFile/CloseHandle/ReadFile/WriteFile +
+	CreateFileMapping, MapViewOfFile;
+
+	* src/fstream_unistd.cpp: unistdio-based implementation of _Filebuf_base,
+	based on unistd open/close/read/write + mmap;
+
+	* src/fstream_stdio.cpp: stdio-based implementation of _Filebuf_base,
+	based on stdio fopen/flose/fread/fwrite;
+
+	* stlport/stl/_fstream.h: detect of _Filebuf_base implementation moved
+	into stlport/stl/config files;
+
+	* stlport/stl/config/*.h: iostreams underline technique depends upon
+	OE or user's preferences;
+
+	* stlport/stl/config/features.h: some system-specific macro moved to
+	system- or compiler-specific files;
+
+	* stlport/stl/_rope.h: rewritten suspicion code, functionality not changed.
+
 2007-06-08  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_complex.h: Clean unused _STLP_NO_COMPLEX_SPECIALIZATIONS

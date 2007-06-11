@@ -3,7 +3,7 @@
 
 #define _STLP_PLATFORM "HP Unix"
 
-#define _STLP_UNIX 1
+#define _STLP_USE_UNIX_IO
 
 #ifdef __GNUC__
 #  define _STLP_NO_WCHAR_T

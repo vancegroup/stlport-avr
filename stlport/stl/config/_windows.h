@@ -249,4 +249,23 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
 #  endif
 #endif
 
+#if defined (__WIN16) || defined (WIN16) || defined (_WIN16)
+#  define _STLP_WIN16
+#else
+#  define _STLP_WIN32
+#endif
+
+#if defined(_STLP_WIN32)
+#  define _STLP_USE_WIN32_IO /* CreateFile/ReadFile/WriteFile */
+#endif
+
+#if defined(__MINGW32__) && !defined(_STLP_USE_STDIO_IO)
+#  define _STLP_USE_WIN32_IO /* CreateFile/ReadFile/WriteFile */
+#endif /* __MINGW32__ */
+
+#ifdef _STLP_WIN16
+#  define _STLP_USE_UNIX_EMULATION_IO /* _open/_read/_write */
+#  define _STLP_LDOUBLE_80
+#endif
+
 #endif /* _STLP_INTERNAL_WINDOWS_H */

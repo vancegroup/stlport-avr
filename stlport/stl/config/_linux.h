@@ -14,7 +14,11 @@
 #  define _STLP_USE_GLIBC 1
 #endif
 
-#define _STLP_UNIX 1
+#ifndef _STLP_USE_STDIO_IO
+#  define _STLP_USE_UNIX_IO
+#endif
+
+/* #define _STLP_USE_STDIO_IO */
 
 #if defined(_REENTRANT) && !defined(_PTHREADS)
 # define _PTHREADS
@@ -63,6 +67,10 @@
          * but absent in library */
 #       define _STLP_DONT_USE_PTHREAD_SPINLOCK
 #     endif
+#   endif
+#   ifndef _STLP_DONT_USE_PTHREAD_SPINLOCK
+#     define _STLP_USE_PTHREAD_SPINLOCK
+#     define _STLP_STATIC_MUTEX _STLP_mutex
 #   endif
 /* #   define __FIT_PSHARED_MUTEX */
 #  endif
