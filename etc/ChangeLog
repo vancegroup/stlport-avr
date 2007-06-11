@@ -1,3 +1,12 @@
+2007-06-11  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/lock_free_list.h: Fix check of _WIN32_WINNT rather than _WIN32_WINDOWS.
+
+	* stlport/stl/_threads.c: In the Win32 implementation, add a call to
+	the SwitchToThread function to potentially avoid a costly call to
+	Sleep(1) that can take more time than expected. If SwitchToThread fail
+	we call Sleep(1) again. Based on Taras Overchuk bug report 1720635.
+
 2007-06-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/fstream.cpp: integration file; code clean, three implementations

@@ -159,7 +159,7 @@ private:
 #  else
 // For the API based version:
 #    if defined (_STLP_NEW_PLATFORM_SDK) && (!defined (WINVER) || (WINVER >= 0x0501)) && \
-                                            (!defined (_WIN32_WINDOWS) || (_WIN32_WINDOWS >= 0x0501))
+                                            (!defined (_WIN32_WINNT) || (_WIN32_WINNT >= 0x0501))
 #      define _STLP_HAS_ATOMIC_FREELIST
 #    endif
 #  endif
