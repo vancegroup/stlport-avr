@@ -13,6 +13,12 @@
 	building_for_at_least_windows98_but_library_built_for_up_to_windows95
 	that are self describing.
 
+	* test/unit/cwchar.cpp: Renamed in macro_checks.cpp, add many tests for
+	all C Standard macros like CHAR_MIN, CHAR_MAX, INT_MIN, INT_MAX...
+
+	* stlport/stl/_cwchar.h; Add MSVC compilers before Visual Studio 2005
+	as not defining WCHAR_MAX correctly.
+
 2007-06-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_iosfwd.h: Removed useless _STLP_CLASS_DECLSPEC attribute
