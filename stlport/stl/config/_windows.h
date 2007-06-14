@@ -241,11 +241,24 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * be partially inlined we need to check that STLport build/use are coherent. To do
  * so we try to generate a link time error thanks to the following macro.
  */
-#if defined (_DEBUG)
-#  if defined (_STLP_WIN95_LIKE)
-#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME library_built_for_windows95_or_previous
+#if defined (_DEBUG) || defined (_STLP_DEBUG)
+/* We invert symbol names based on macro detection, when building for Windows
+ * 95 we expose a
+ * building_for_windows95_or_previous_but_library_built_for_windows98_or_later
+ * function in order to have a more obvious link error message signaling how
+ * the lib has been built and how it is used. */
+#  if defined (__BUILDING_STLPORT)
+#    if defined (_STLP_WIN95_LIKE)
+#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_up_to_windows95_but_library_built_for_at_least_windows98
+#    else
+#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_up_to_windows95
+#    endif
 #  else
-#    define _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME library_built_for_windows98_or_later
+#    if defined (_STLP_WIN95_LIKE)
+#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_up_to_windows95_but_library_built_for_at_least_windows98
+#    else
+#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_up_to_windows95
+#    endif
 #  endif
 #endif
 

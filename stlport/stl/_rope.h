@@ -352,8 +352,8 @@ public:
 
 #ifdef _STLP_NO_ARROW_OPERATOR
   _Rope_RopeRep() : _Refcount_Base(1), _M_size(allocator_type(), 0) {
-#  if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
-    _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
+#  if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
+    _STLP_CHECK_RUNTIME_COMPATIBILITY();
 #  endif
   }
 #endif
@@ -368,8 +368,8 @@ public:
                 allocator_type __a) :
     _Refcount_Base(1),
     _M_tag(__t), _M_is_balanced(__b), _M_depth(__d), _M_c_string(0), _M_size(__a, _p_size) {
-#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME)
-    _STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME();
+#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
+    _STLP_CHECK_RUNTIME_COMPATIBILITY();
 #endif
     }
 

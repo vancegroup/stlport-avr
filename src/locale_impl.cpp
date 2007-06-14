@@ -159,11 +159,9 @@ template <class Facet>
 static inline locale::facet* _Locale_insert(_Locale_impl *__that, Facet* f)
 { return __that->insert(f, Facet::id._M_index); }
 
-/*
- * Six functions, one for each category.  Each of them takes a
- * _Locale* and a name, constructs that appropriate category
- * facets by name, and inserts them into the locale.
- */
+/* Six functions, one for each category.  Each of them takes a
+ * a name, constructs that appropriate category facets by name,
+ * and inserts them into the locale. */
 _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_name_hint* hint) {
   char buf[_Locale_MAX_SIMPLE_NAME];
 

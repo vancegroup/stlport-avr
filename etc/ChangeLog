@@ -1,3 +1,18 @@
+2007-06-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/dll_main.cpp, locale.cpp, locale_impl.h, locale_impl.cpp,
+	stlport/stl/_locale.h, _rope.h, config/_windows.h, features.h:
+	Enhance the runtime compatibility mecanism used to detect build
+	inconsistency under Windows. We now use the locale class with the
+	VC6 workaround coming with it to force a call to the compatibility
+	check function. Inconsistency detection is activated if _DEBUG
+	or _STLP_DEBUG is defined. If an inconsistency is detected it is
+	reported by the linker thanks to an unresolved symbol
+	building_for_up_to_windows95_but_library_built_for_at_least_windows98
+	or
+	building_for_at_least_windows98_but_library_built_for_up_to_windows95
+	that are self describing.
+
 2007-06-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_iosfwd.h: Removed useless _STLP_CLASS_DECLSPEC attribute

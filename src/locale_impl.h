@@ -93,7 +93,7 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
 
     friend class Init;
 
-  public: // _Locale
+  public:
     // void remove(size_t index);
     locale::facet* insert(locale::facet*, size_t index);
     void insert(_Locale_impl* from, const locale::id& n);

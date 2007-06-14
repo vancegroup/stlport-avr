@@ -66,7 +66,8 @@ void _InsertFacet(locale& __loc, _Facet* __facet);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+    defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 #  define locale _STLP_NO_MEM_T_NAME(loc)
 #endif
 
@@ -199,7 +200,8 @@ protected:                        // Data members
   _Locale_impl* _M_get_impl() const { return _M_impl; }
 };
 
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+    defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 #  undef locale
 #  define _Locale _STLP_NO_MEM_T_NAME(loc)
 
@@ -207,7 +209,11 @@ class locale : public _Locale {
 public:
 
   // construct/copy/destroy:
-  locale() _STLP_NOTHROW {}
+  locale() _STLP_NOTHROW {
+#if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
+    _STLP_CHECK_RUNTIME_COMPATIBILITY();
+#endif
+  }
   locale(const locale& __loc) _STLP_NOTHROW : _Locale(__loc) {}
   explicit locale(const char *__str) : _Locale(__str) {}
   locale(const locale& __loc, const char* __str, category __cat)
@@ -269,7 +275,8 @@ public:
   friend class ios_base;
 };
 
-#endif /* _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND */
+#  undef _Locale
+#endif
 
 //----------------------------------------------------------------------
 // locale globals
