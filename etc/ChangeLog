@@ -1,3 +1,7 @@
+2007-06-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/test/unit/Makefile.inc: macro_checks.cpp instead of cwchar.cpp.
+
 2007-06-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/dll_main.cpp, locale.cpp, locale_impl.h, locale_impl.cpp,

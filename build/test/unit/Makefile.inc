@@ -37,7 +37,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/copy_test.cpp \
 	../../../test/unit/count_test.cpp \
 	../../../test/unit/csetjmp_header_test.cpp \
-	../../../test/unit/cwchar.cpp \
 	../../../test/unit/setjmp_header_test2.cpp \
 	../../../test/unit/csignal_header_test.cpp \
 	../../../test/unit/cstdarg_header_test.cpp \
@@ -93,6 +92,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/locale_test.cpp \
 	../../../test/unit/locale_header_test.cpp \
 	../../../test/unit/logic_test.cpp \
+        ../../../test/unit/macro_checks.cpp \
 	../../../test/unit/map_test.cpp \
 	../../../test/unit/map_header_test.cpp \
 	../../../test/unit/max_test.cpp \
