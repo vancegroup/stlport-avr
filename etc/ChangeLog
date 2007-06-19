@@ -1,3 +1,14 @@
+2007-06-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_limits.c: Change technique used to generate NaN or
+	infinity floating point numbers. No more reinterpret_cast of a buffer,
+	we now use an union based technique. gcc prefer this cleaner method
+	especially in release mode.
+
+	* test/unit/limits_test.cpp: Small test modification as gcc was still
+	performing some weird optimization in release mode resulting in
+	unexpected behavior.
+
 2007-06-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_function.h: import reference_wrapper from boost to
@@ -29,7 +40,7 @@
 	* test/unit/cwchar.cpp: Renamed in macro_checks.cpp, add many tests for
 	all C Standard macros like CHAR_MIN, CHAR_MAX, INT_MIN, INT_MAX...
 
-	* stlport/stl/_cwchar.h; Add MSVC compilers before Visual Studio 2005
+	* stlport/stl/_cwchar.h: Add MSVC compilers before Visual Studio 2005
 	as not defining WCHAR_MAX correctly.
 
 2007-06-13  Francois Dumont  <dums@users.sourceforge.net>

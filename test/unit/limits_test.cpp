@@ -13,7 +13,7 @@
  */
 
 #include <limits>
-//#include <sstream>
+#include <sstream>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -107,6 +107,10 @@ bool test_unsigned_integral_limits(const _Tp &__val) {
 }
 
 template <class _Tp>
+bool test_float_values(_Tp lhs, _Tp rhs)
+{ return lhs == rhs; }
+
+template <class _Tp>
 bool test_float_limits(const _Tp &) {
   typedef numeric_limits<_Tp> lim;
   CHECK_COND(lim::is_specialized);
@@ -153,36 +157,42 @@ bool test_float_limits(const _Tp &) {
   if (lim::has_infinity) {
     const _Tp infinity = lim::infinity();
     /* Make sure those values are not 0 or similar nonsense.
-    * Infinity must compare as if larger than the maximum representable value. */
+     * Infinity must compare as if larger than the maximum representable value. */
 
     _Tp val = lim::max();
     val *= 2;
-    CHECK_COND(val == infinity);
+    /* We use test_float_values because without it some compilers (gcc) perform weird
+     * optimization on the test giving unexpected result. */
+    CHECK_COND(test_float_values(val, infinity));
 
-    //ostringstream str;
-    //str << "lim::max() = " << lim::max() << ", val = " << val << ", infinity = " << infinity;
-    //CPPUNIT_MESSAGE( str.str().c_str() );
-    //str.str(string());
-    //str << "sizeof(_Tp) = " << sizeof(_Tp);
-    //CPPUNIT_MESSAGE( str.str().c_str() );
-    //if (sizeof(_Tp) == 4) {
-    //  str.str(string());
-    //  str << "val in hexa: " << showbase << hex << *((const unsigned int*)&val);
-    //  str << ", infinity in hexa: " << showbase << hex << *((const unsigned int*)&infinity);
-    //  CPPUNIT_MESSAGE( str.str().c_str() );
-    //}
-    //if (sizeof(_Tp) == 8) {
-    //  str.str(string());
-    //  str << "val in hexa: " << showbase << hex << *((const unsigned __int64*)&val);
-    //  str << ", infinity in hexa: " << showbase << hex << *((const unsigned __int64*)&infinity);
-    //  CPPUNIT_MESSAGE( str.str().c_str() );
-    //}
-    //str.str(string());
-    //str << dec;
-    //str << "lim::digits = " << lim::digits << ", lim::digits10 = " << lim::digits10 << endl;
-    //str << "lim::min_exponent = " << lim::min_exponent << ", lim::min_exponent10 = " << lim::min_exponent10 << endl;
-    //str << "lim::max_exponent = " << lim::max_exponent << ", lim::max_exponent10 = " << lim::max_exponent10 << endl;
-    //CPPUNIT_MESSAGE( str.str().c_str() );
+    /*
+    ostringstream str;
+    str << "lim::max() = " << lim::max() << ", val = " << val << ", infinity = " << infinity;
+    CPPUNIT_MESSAGE( str.str().c_str() );
+    str.str(string());
+    str << "sizeof(_Tp) = " << sizeof(_Tp);
+    CPPUNIT_MESSAGE( str.str().c_str() );
+    if (sizeof(_Tp) == 4) {
+      str.str(string());
+      str << "val in hexa: " << showbase << hex << *((const unsigned int*)&val);
+      str << ", infinity in hexa: " << showbase << hex << *((const unsigned int*)&infinity);
+      CPPUNIT_MESSAGE( str.str().c_str() );
+    }
+#if defined (_STLP_LONG_LONG)
+    if (sizeof(_Tp) == sizeof(_STLP_LONG_LONG)) {
+      str.str(string());
+      str << "val in hexa: " << showbase << hex << *((const unsigned _STLP_LONG_LONG*)&val);
+      str << ", infinity in hexa: " << showbase << hex << *((const unsigned _STLP_LONG_LONG*)&infinity);
+      CPPUNIT_MESSAGE( str.str().c_str() );
+    }
+#endif
+    str.str(string());
+    str << dec;
+    str << "lim::digits = " << lim::digits << ", lim::digits10 = " << lim::digits10 << endl;
+    str << "lim::min_exponent = " << lim::min_exponent << ", lim::min_exponent10 = " << lim::min_exponent10 << endl;
+    str << "lim::max_exponent = " << lim::max_exponent << ", lim::max_exponent10 = " << lim::max_exponent10 << endl;
+    CPPUNIT_MESSAGE( str.str().c_str() );
+    */
 
     CHECK_COND(infinity == infinity);
     CHECK_COND(infinity > lim::max());

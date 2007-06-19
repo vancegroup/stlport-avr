@@ -142,18 +142,20 @@ __declare_float_limits_member(float_round_style, round_style);
  * computation of infinity and NaN value is only based on big/little endian, compiler
  * float, double or long double representation is taken into account thanks to the sizeof
  * operator. */
- template<class _Number, unsigned int _Word>
- struct float_helper {
+template<class _Number, unsigned short _Word>
+struct float_helper {
+  union _WordsNumber {
+    unsigned short _Words[8];
+    _Number _num;
+  };
   static _Number get_word_higher() _STLP_NOTHROW {
-    const unsigned int _S_word[4] = { _Word, 0, 0, 0 };
-    return *__REINTERPRET_CAST(const _Number*, &_S_word);
+    _WordsNumber __tmp = { _Word, 0, 0, 0, 0, 0, 0, 0 };
+    return __tmp._num;
   } 
   static _Number get_word_lower() _STLP_NOTHROW {
-    // sizeof(long double) == 12, but only 10 bytes significant
-    const unsigned int _S_word[4] = { 0, 0, 0, _Word };
-    return *__REINTERPRET_CAST(const _Number*,
-                               __REINTERPRET_CAST(const char*, &_S_word) + 16 -
-                                                               (sizeof(_Number) == 12 ? 10 : sizeof(_Number)));
+    _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word;
+    return __tmp._num;
   }
   static _Number get_from_last_word() _STLP_NOTHROW {
 #  if defined (_STLP_BIG_ENDIAN)
@@ -171,6 +173,32 @@ __declare_float_limits_member(float_round_style, round_style);
   }
 };
 
+#  if !defined (_STLP_NO_LONG_DOUBLE)
+template<class _Number, unsigned short _Word1, unsigned short _Word2>
+struct float_helper2 {
+  union _WordsNumber {
+    unsigned short _Words[8];
+    _Number _num;
+  };
+  static _Number get_word_higher() _STLP_NOTHROW {
+    _WordsNumber __tmp = { _Word1, _Word2, 0, 0, 0, 0, 0, 0 };
+    return __tmp._num;
+  } 
+  static _Number get_word_lower() _STLP_NOTHROW {
+    _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 2] = _Word1;
+    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word2;
+    return __tmp._num;
+  }
+  static _Number get_from_last_word() _STLP_NOTHROW {
+#    if defined (_STLP_BIG_ENDIAN)
+    return get_word_higher();
+#    else /* _STLP_LITTLE_ENDIAN */
+    return get_word_lower();
+#    endif
+  }
+};
+#  endif
 
 /* Former values kept in case moving to boost code has introduce a regression on
  * some platform. */
@@ -250,113 +278,77 @@ union _LD_rep {
 
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_inf() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<float, (0x7f80 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<float, 0x7f800000u> _FloatHelper;
-#endif
+  typedef float_helper<float, 0x7f80u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_qNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<float, (0x7f81 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<float, 0x7f810000u> _FloatHelper;
-#endif
+  typedef float_helper<float, 0x7f81u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_sNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<float, (0x7fc1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<float, 0x7fc10000u> _FloatHelper;
-#endif
+  typedef float_helper<float, 0x7fc1u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 float _STLP_CALL _LimG<__dummy>::get_F_denormMin() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<float, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<float, 0x00000001u> _FloatHelper;
-#endif
+  typedef float_helper<float, 0x0001u> _FloatHelper;
   return _FloatHelper::get_from_first_word();
 }
 
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_inf() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<double, (0x7ff0 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<double, 0x7ff00000u> _FloatHelper;
-#endif
+  typedef float_helper<double, 0x7ff0u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_qNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<double, (0x7ff1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<double, 0x7ff10000u> _FloatHelper;
-#endif
+  typedef float_helper<double, 0x7ff1u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_sNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<double, (0x7ff9 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<double, 0x7ff90000u> _FloatHelper;
-#endif
+  typedef float_helper<double, 0x7ff9u> _FloatHelper;
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_denormMin() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<double, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<double, 0x00000001u> _FloatHelper;
-#endif
+  typedef float_helper<double, 0x0001u> _FloatHelper;
   return _FloatHelper::get_from_first_word();
 }
 
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_inf() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, (0x7ff0 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<long double, 0x7fff8000u> _FloatHelper;
-#endif
+#    if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff0u> _FloatHelper;
+#    else
+  typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#    endif
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_qNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, (0x7ff1 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<long double, 0x7fffc000u> _FloatHelper;
-#endif
+#    if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff1u> _FloatHelper;
+#    else
+  typedef float_helper2<long double, 0xc000u, 0x7fffu> _FloatHelper;
+#    endif
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, (0x7ff9 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<long double, 0x7fff9000u> _FloatHelper;
-#endif
+#    if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff9u> _FloatHelper;
+#    else
+  typedef float_helper2<long double, 0x9000u, 0x7fffu> _FloatHelper;
+#    endif
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_denormMin() {
-#if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, (0x0001 << (sizeof(int)*CHAR_BIT-16))> _FloatHelper;
-#else
-  typedef float_helper<long double, 0x00000001u> _FloatHelper;
-#endif
+  typedef float_helper<long double, 0x0001u> _FloatHelper;
   return _FloatHelper::get_from_first_word();
 }
 #  endif
