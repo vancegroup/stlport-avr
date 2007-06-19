@@ -1,3 +1,12 @@
+2007-06-19  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_function.h: import reference_wrapper from boost to
+	std::tr1 namespace, if no _STLP_NO_EXTENSIONS and present
+	_STLP_USE_BOOST_SUPPORT; see ISO/IEC DTR 19768,
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1836.pdf
+
+	* test/unit/reference_wrapper_test.cpp: test for reference_wrapper.
+
 2007-06-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/Makefile.inc: macro_checks.cpp instead of cwchar.cpp.
