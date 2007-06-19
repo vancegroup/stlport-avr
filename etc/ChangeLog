@@ -1,5 +1,8 @@
 2007-06-19  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/c_locale_glibc/c_locale_glibc2.c: Fix implementation of
+	_Locale_strcmp and _Locale_strwcmp functions.
+
 	* stlport/stl/_limits.c: Change technique used to generate NaN or
 	infinity floating point numbers. No more reinterpret_cast of a buffer,
 	we now use an union based technique. gcc prefer this cleaner method

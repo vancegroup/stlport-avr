@@ -378,9 +378,9 @@ size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
 int _Locale_strcmp(struct _Locale_collate * __loc,
                    const char *s1, size_t n1,
 		   const char *s2, size_t n2) {
-  int ret;
+  int ret = 0;
   char buf1[64], buf2[64];
-  while (n1 > 0 && n2 > 0) {
+  while (n1 > 0 || n2 > 0) {
     size_t bufsize1 = n1 < 63 ? n1 : 63;
     strncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     size_t bufsize2 = n2 < 63 ? n2 : 63;
@@ -398,9 +398,9 @@ int _Locale_strcmp(struct _Locale_collate * __loc,
 int _Locale_strwcmp(struct _Locale_collate *__loc,
                     const wchar_t *s1, size_t n1,
                     const wchar_t *s2, size_t n2) {
-  int ret;
+  int ret = 0;
   wchar_t buf1[64], buf2[64];
-  while (n1 > 0 && n2 > 0) {
+  while (n1 > 0 || n2 > 0) {
     size_t bufsize1 = n1 < 63 ? n1 : 63;
     wcsncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     size_t bufsize2 = n2 < 63 ? n2 : 63;
