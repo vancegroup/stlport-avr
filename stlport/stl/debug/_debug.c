@@ -44,8 +44,8 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 #if !defined (__DMC__)
 template <class _Iterator>
 inline bool  _STLP_CALL
-__in_range_aux(const _Iterator& __it, const _Iterator& __first,
-               const _Iterator& __last, const random_access_iterator_tag &) {
+stlp_in_range_aux(const _Iterator& __it, const _Iterator& __first,
+                  const _Iterator& __last, const random_access_iterator_tag &) {
     return ( __it >= __first &&
              __it < __last);
 }
@@ -53,11 +53,11 @@ __in_range_aux(const _Iterator& __it, const _Iterator& __first,
 
 template <class _Iterator1, class _Iterator>
 #if defined (_STLP_MSVC)
-inline bool _STLP_CALL  __in_range_aux(_Iterator1 __it, const _Iterator& __first,
+inline bool _STLP_CALL  stlp_in_range_aux(_Iterator1 __it, const _Iterator& __first,
 #else
-inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& __first,
+inline bool _STLP_CALL  stlp_in_range_aux(const _Iterator1& __it, const _Iterator& __first,
 #endif
-                                       const _Iterator& __last, const forward_iterator_tag &) {
+                                          const _Iterator& __last, const forward_iterator_tag &) {
   _Iterator1 __i(__first);
   for (;  __i != __last && __i != __it; ++__i);
   return (__i != __last);
@@ -66,8 +66,8 @@ inline bool _STLP_CALL  __in_range_aux(const _Iterator1& __it, const _Iterator& 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _Iterator1, class _Iterator>
 inline bool  _STLP_CALL
-__in_range_aux(const _Iterator1& __it, const _Iterator& __first,
-               const _Iterator& __last, const bidirectional_iterator_tag &) {
+stlp_in_range_aux(const _Iterator1& __it, const _Iterator& __first,
+                  const _Iterator& __last, const bidirectional_iterator_tag &) {
   _Iterator1 __i(__first);
   for (;  __i != __last && __i != __it; ++__i);
   return (__i != __last);
@@ -95,7 +95,7 @@ bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __it,
                                const _Iterator& __start, const _Iterator& __finish) {
-  _STLP_VERBOSE_RETURN(__in_range(__it, __start, __finish),
+  _STLP_VERBOSE_RETURN(stlp_in_range(__it, __start, __finish),
                        _StlMsg_NOT_IN_RANGE_1)
   return true;
 }
@@ -103,7 +103,7 @@ bool _STLP_CALL  __check_range(const _Iterator& __it,
 template <class _Iterator>
 bool _STLP_CALL  __check_range(const _Iterator& __first, const _Iterator& __last,
                                const _Iterator& __start, const _Iterator& __finish) {
-  _STLP_VERBOSE_RETURN(__in_range(__first, __last, __start, __finish),
+  _STLP_VERBOSE_RETURN(stlp_in_range(__first, __last, __start, __finish),
                        _StlMsg_NOT_IN_RANGE_2)
   return true;
 }
@@ -128,9 +128,9 @@ void _STLP_CALL __invalidate_range(const __owned_list* __base,
 
   while (__pos != 0) {
     if (!(&__first == __STATIC_CAST(_Iterator*, __pos) || &__last == __STATIC_CAST(_Iterator*, __pos)) &&
-        __in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
-                       __first._M_iterator, __last._M_iterator,
-                       _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
+        stlp_in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
+                          __first._M_iterator, __last._M_iterator,
+                          _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
       __pos->_M_owner = 0;
       __prev->_M_next = __pos->_M_next;
     }
@@ -181,9 +181,9 @@ void _STLP_CALL  __change_range_owner(const _Iterator& __first,
 
   while (__pos != 0) {
     if (!(&__first == __STATIC_CAST(_Iterator*, __pos) || &__last == __STATIC_CAST(_Iterator*, __pos)) &&
-        __in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
-                       __first._M_iterator, __last._M_iterator,
-                       _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
+        stlp_in_range_aux(__STATIC_CAST(_Iterator*, __pos)->_M_iterator,
+                          __first._M_iterator, __last._M_iterator,
+                          _STLP_ITERATOR_CATEGORY(__first, _Iterator))) {
       __pos->_M_owner = __CONST_CAST(__owned_list*, __dst);
       //remove __pos from __base:
       __src_prev->_M_next = __pos->_M_next;

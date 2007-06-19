@@ -1,5 +1,8 @@
 2007-06-19  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/debug/_debug.h, _debug.c: Replace __in_range with
+	stlp_in_range, __in_range is a macro in the Windows Vista PSDK.
+
 	* src/locale.cpp, stlport_prefix.h, warning_disable.h,
 	stlport/stl/_locale.h, _string.h, config/features.h: Fix some
 	regression introduce with the improvment of the runtime compatibility

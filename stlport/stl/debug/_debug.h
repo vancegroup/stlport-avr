@@ -264,13 +264,13 @@ inline bool _STLP_CALL __valid_range(const _Iterator& __i1, const _Iterator& __i
 
 // Note : that means in range [i1, i2].
 template <class _Iterator>
-inline bool  _STLP_CALL __in_range(const _Iterator& _It,
-                                   const _Iterator& __i1, const _Iterator& __i2)
+inline bool  _STLP_CALL stlp_in_range(const _Iterator& _It,
+                                      const _Iterator& __i1, const _Iterator& __i2)
 { return __valid_range(__i1,_It) && __valid_range(_It,__i2); }
 
 template <class _Iterator>
-inline bool  _STLP_CALL __in_range(const _Iterator& __first, const _Iterator& __last,
-                                   const _Iterator& __start, const _Iterator& __finish)
+inline bool  _STLP_CALL stlp_in_range(const _Iterator& __first, const _Iterator& __last,
+                                      const _Iterator& __start, const _Iterator& __finish)
 { return __valid_range(__first,__last) && __valid_range(__start,__first) && __valid_range(__last,__finish); }
 
 //==========================================================
