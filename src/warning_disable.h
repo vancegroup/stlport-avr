@@ -4,11 +4,8 @@
  * For compiling user code, see stlport/config/_msvc_warnings_off.h.
  */
 
-#  if (_MSC_VER < 1200) /* VC5 and before */
-#    pragma warning( disable : 4018 ) /* signed/unsigned mismatch */
-#    pragma warning( disable : 4290 ) /* C++ exception specification ignored */
-#    pragma warning( disable : 4389 ) /* '==' : signed/unsigned mismatch */
-#    pragma warning( disable : 4610 ) /* struct '...' can never be instantiated - user defined constructor required */
+#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#    pragma warning ( disable : 4251 )  // ignore template classes being exported in .dll's
 #  endif
 
 #  if (_MSC_VER < 1300) /* VC6/eVC4 */

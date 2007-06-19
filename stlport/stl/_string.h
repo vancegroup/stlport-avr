@@ -534,8 +534,7 @@ public:                         // Append, operator+=, push_back.
 private:
   _Self& _M_append(const _CharT* __first, const _CharT* __last);
 
-#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-#  if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIter>
   _Self& _M_appendT(_InputIter __first, _InputIter __last,
                     const input_iterator_tag &) {
@@ -570,11 +569,11 @@ private:
       else {
         _ForwardIter __f1 = __first;
         ++__f1;
-#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
+#  if defined (_STLP_USE_SHORT_STRING_OPTIM)
         if (this->_M_using_static_buf())
           _M_copyT(__f1, __last, this->_M_Finish() + 1);
         else
-#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
+#  endif
           uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
         _STLP_TRY {
           _M_construct_null(this->_M_Finish() + __n);
@@ -603,13 +602,12 @@ public:
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_append_dispatch(__first, __last, _Integral());
   }
-#  else
+#else
 public:
   _Self& append(const _CharT* __first, const _CharT* __last) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
     return _M_append(__first, __last);
   }
-#  endif
 #endif
 
 public:
@@ -668,8 +666,7 @@ public:                         // Assign
 private:
   _Self& _M_assign(const _CharT* __f, const _CharT* __l);
 
-#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-#  if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   // Helper functions for assign.
   template <class _Integer>
   _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/)
@@ -698,13 +695,12 @@ public:
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
-#  else
+#else
 public:
   _Self& assign(const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     return _M_assign(__f, __l);
   }
-#  endif
 #endif
 
 public:                         // Insert
@@ -1043,8 +1039,7 @@ _STLP_PRIVATE:                        // Helper functions for replace.
                     const _CharT* __f, const _CharT* __l, bool __self_ref);
 
 public:
-#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-#  if defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
@@ -1119,14 +1114,13 @@ public:
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 
-#  else
+#else
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     return _M_replace(__first, __last, __f, __l, _M_inside(__f));
   }
-#  endif
 #endif
 
 public:                         // Other modifier member functions.

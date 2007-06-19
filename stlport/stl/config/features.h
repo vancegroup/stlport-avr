@@ -428,6 +428,12 @@
 #  define _STLP_PTR_IMPL_NAME(X) _Impl_##X
 #endif
 
+#if (defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)) && \
+     !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+/* We are going to use the MSVC6 workaround to check runtime compatibility */
+#  define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND
+#endif
+
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #  define _STLP_NO_MEM_T_NAME(X) _NoMemT_##X
 #  if defined (_STLP_DEBUG)

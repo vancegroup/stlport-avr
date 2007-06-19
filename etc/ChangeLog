@@ -1,5 +1,10 @@
 2007-06-19  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/locale.cpp, stlport_prefix.h, warning_disable.h,
+	stlport/stl/_locale.h, _string.h, config/features.h: Fix some
+	regression introduce with the improvment of the runtime compatibility
+	check mecanism.
+
 	* src/c_locale_glibc/c_locale_glibc2.c: Fix implementation of
 	_Locale_strcmp and _Locale_strwcmp functions.
 

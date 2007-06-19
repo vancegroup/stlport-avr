@@ -17,11 +17,11 @@
 
 /* Please add extra compilation switches for particular compilers here */
 
+#include <stl/config/features.h>
+
 #if defined (_MSC_VER) && !defined (__COMO__) && !defined (__MWERKS__)
 #  include "warning_disable.h"
 #endif
-
-#include <stl/config/features.h>
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && defined (_STLP_USE_DECLSPEC) && !defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 #  define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
