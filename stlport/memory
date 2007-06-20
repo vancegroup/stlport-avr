@@ -62,6 +62,35 @@
 #  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+
+#  include <boost/shared_ptr.hpp>
+#  include <boost/weak_ptr.hpp>
+#  include <boost/enable_shared_from_this.hpp>
+
+_STLP_BEGIN_NAMESPACE
+
+namespace tr1 {
+
+using ::boost::bad_weak_ptr;
+using ::boost::shared_ptr;
+using ::boost::swap;
+using ::boost::static_pointer_cast;
+using ::boost::dynamic_pointer_cast;
+using ::boost::const_pointer_cast;
+using ::boost::get_deleter;
+using ::boost::weak_ptr;
+using ::boost::enable_shared_from_this;
+
+// shared_ptr IO
+// weak_ptr IO
+
+} // namespace tr1
+
+_STLP_END_NAMESPACE
+
+#endif /* !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT */
+
 #endif /* _STLP_MEMORY */
 
 // Local Variables:
