@@ -3,6 +3,10 @@
 	* test/unit/cstring_test.cpp, limits_test.cpp: Small modif to avoid
 	MSVC compiler warning in release build.
 
+	* stlport/stl/_cwchar.h: Replace a _STLP_MSVC check with a _STLP_MSVC_LIB
+	check as WCHAR_MIN and WCHAR_MAX macros definition depends on library
+	and not on compiler.
+
 2007-06-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/memory: import shared_ptr from boost to std::tr1 namespace,

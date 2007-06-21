@@ -123,7 +123,7 @@ namespace std {
 #        define WCHAR_MAX ((wchar_t)~0)
 #      endif
 #    endif
-#    if defined (__DMC__) || (defined (_STLP_MSVC) && (_STLP_MSVC < 1400))
+#    if defined (__DMC__) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400))
 /* Compilers that do not define WCHAR_MIN and WCHAR_MAX to be testable at
  * preprocessing time. */
 #      undef WCHAR_MIN
