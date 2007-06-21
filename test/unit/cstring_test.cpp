@@ -45,7 +45,7 @@ void CStringTest::import_checks()
   char buf1[1], buf2[1];
   CPPUNIT_CHECK( std::memcpy(buf1, buf2, 0) != NULL );
   CPPUNIT_CHECK( std::memmove(buf1, buf2, 0) != NULL );
-  CPPUNIT_CHECK( std::memset(buf1, 0, 0) != NULL );
+  CPPUNIT_CHECK( std::memset(buf1, 0, 1) != NULL );
   char buf[16]; buf[0] = 0;
   const char* foo = "foo";
   CPPUNIT_CHECK( std::strcat((char*)buf, foo) == (char*)buf ); // buf <- foo

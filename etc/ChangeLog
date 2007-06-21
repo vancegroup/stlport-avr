@@ -1,3 +1,8 @@
+2007-06-21  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/cstring_test.cpp, limits_test.cpp: Small modif to avoid
+	MSVC compiler warning in release build.
+
 2007-06-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/memory: import shared_ptr from boost to std::tr1 namespace,

@@ -144,14 +144,15 @@ bool test_float_limits(const _Tp &) {
     CHECK_COND(lim::denorm_min() < lim::min());
 
     _Tp tmp = lim::min();
-    while (tmp != lim::denorm_min()) {
+    while (tmp != 0) {
       _Tp old_tmp = tmp;
       tmp /= 2;
       CHECK_COND(tmp < old_tmp);
-      CHECK_COND(tmp >= lim::denorm_min());
+      CHECK_COND(tmp >= lim::denorm_min() || tmp == (_Tp)0);
+      //ostringstream str;
+      //str << "denorm_min = " << lim::denorm_min() << ", tmp = " << tmp;
+      //CPPUNIT_MESSAGE(str.str().c_str());
     }
-    tmp /= 2;
-    CHECK_COND(tmp == 0);
   }
 
   if (lim::has_infinity) {
