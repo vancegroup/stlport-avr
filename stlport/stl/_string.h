@@ -296,18 +296,20 @@ public:                         // Constructor, destructor, assignment.
   }
 #  endif
 #else
+#  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   basic_string(const _CharT* __f, const _CharT* __l,
                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
     _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
     _M_range_initialize(__f, __l);
   }
-#  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
+#    if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   basic_string(const _CharT* __f, const _CharT* __l)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
     _STLP_FIX_LITERAL_BUG(__f)  _STLP_FIX_LITERAL_BUG(__l)
     _M_range_initialize(__f, __l);
   }
+#    endif
 #  endif
 #  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   /* We need an additionnal constructor to build an empty string without

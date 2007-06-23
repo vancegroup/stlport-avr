@@ -1,3 +1,9 @@
+2007-06-23  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_string.h, _string_workaround.h: Some fix for gcc
+	that is now expose to the VC6 workaround because of the runtime
+	check mechanism under MinGW.
+
 2007-06-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/cstring_test.cpp, limits_test.cpp: Small modif to avoid

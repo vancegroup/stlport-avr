@@ -34,7 +34,7 @@ private:                        // Protected members inherited from base.
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   typedef _STLP_NO_MEM_T_STRING_BASE _Base;
   typedef typename _Base::_Char_Is_POD _Char_Is_POD;
-
+  typedef typename _Base::_CalledFromWorkaround_t _CalledFromWorkaround_t;
 public:
 
   __IMPORT_WITH_REVERSE_ITERATORS(_Base)
@@ -42,6 +42,8 @@ public:
   typedef typename _Base::_Iterator_category _Iterator_category;
   typedef typename _Base::traits_type traits_type;
   typedef typename _Base::_Reserve_t _Reserve_t;
+
+#include <stl/_string_npos.h>
 
 public:                         // Constructor, destructor, assignment.
   explicit basic_string(const allocator_type& __a = allocator_type())
@@ -80,14 +82,14 @@ public:                         // Constructor, destructor, assignment.
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
-    : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), __a) {
+    : _STLP_NO_MEM_T_STRING_BASE(_CalledFromWorkaround_t(), __a) {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
-    : _STLP_NO_MEM_T_STRING_BASE(_Base::_CalledFromWorkaround_t(), allocator_type()) {
+    : _STLP_NO_MEM_T_STRING_BASE(_CalledFromWorkaround_t(), allocator_type()) {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
@@ -234,9 +236,10 @@ private:                        // Helper functions for append.
     if (__first != __last) {
       const size_type __old_size = this->size();
       difference_type __n = distance(__first, __last);
-      if (__STATIC_CAST(size_type,__n) > max_size() || __old_size > max_size() - __STATIC_CAST(size_type,__n))
+      if (__STATIC_CAST(size_type,__n) > this->max_size() ||
+          __old_size > this->max_size() - __STATIC_CAST(size_type,__n))
         this->_M_throw_length_error();
-      if (__old_size + __n > capacity()) {
+      if (__old_size + __n > this->capacity()) {
         const size_type __len = __old_size +
           (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
         pointer __new_start = this->_M_end_of_storage.allocate(__len);
@@ -710,7 +713,7 @@ public:                         // Other modifier member functions.
 
 public:                         // Substring.
   _Self substr(size_type __pos = 0, size_type __n = npos) const
-  { return _Self(*this, __pos, __n, get_allocator()); }
+  { return _Self(*this, __pos, __n, this->get_allocator()); }
 
 #if defined (_STLP_USE_TEMPLATE_EXPRESSION) && !defined (_STLP_DEBUG)
 #  define _STLP_STRING_SUM_BASE _STLP_NO_MEM_T_STRING_BASE
