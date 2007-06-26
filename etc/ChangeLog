@@ -1,3 +1,10 @@
+2007-06-24  Petr Ovtchenkov  <ptr@island.corbina.net>
+
+	* stlport/stl/_function.h, stlport/functional: fix import
+	of boost::shared_ptr---moved from _function.h to functional;
+	import mem_fn, bind, bad_function_call, function, swap from
+	boost to std::tr1.
+
 2007-06-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_string.h, _string_workaround.h: Some fix for gcc

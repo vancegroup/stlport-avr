@@ -420,32 +420,6 @@ _STLP_END_NAMESPACE
 
 #include <stl/_function_adaptors.h>
 
-#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
-
-#include <boost/ref.hpp>
-#include <boost/utility/result_of.hpp>
-// #include <boost/mem_fn.hpp>
-
-_STLP_BEGIN_NAMESPACE
-
-namespace tr1 {
-
-using ::boost::reference_wrapper;
-using ::boost::ref;
-using ::boost::cref;
-
-using ::boost::result_of;
-
-// using ::boost::mem_fn;
-
-} // namespace tr1
-
-_STLP_END_NAMESPACE
-
-
-#endif // !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT
-
-
 #endif /* _STLP_INTERNAL_FUNCTION_H */
 
 // Local Variables:

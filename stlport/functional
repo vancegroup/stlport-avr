@@ -43,6 +43,52 @@
 #  undef _STLP_OUTERMOST_HEADER_ID
 #endif
 
+#if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+
+#include <boost/ref.hpp>
+#include <boost/utility/result_of.hpp>
+#include <boost/mem_fn.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/detail/workaround.hpp>
+
+_STLP_BEGIN_NAMESPACE
+
+namespace tr1 {
+
+using ::boost::reference_wrapper;
+using ::boost::ref;
+using ::boost::cref;
+
+using ::boost::result_of;
+
+using ::boost::mem_fn;
+
+using ::boost::bind;
+
+namespace placeholders {
+  using ::_1;
+  using ::_2;
+  using ::_3;
+  using ::_4;
+  using ::_5;
+  using ::_6;
+  using ::_7;
+  using ::_8;
+  using ::_9;
+} // placeholders
+
+using ::boost::bad_function_call;
+using ::boost::function;
+using ::boost::swap;
+
+} // namespace tr1
+
+_STLP_END_NAMESPACE
+
+#endif // !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT
+
+
 #endif /* _STLP_FUNCTIONAL */
 
 // Local Variables:
