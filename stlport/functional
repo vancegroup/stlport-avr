@@ -46,11 +46,20 @@
 #if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
 
 #include <boost/ref.hpp>
-#include <boost/utility/result_of.hpp>
 #include <boost/mem_fn.hpp>
 #include <boost/bind.hpp>
+//#  ifdef BOOST_FUNCTION_NUM_ARGS
+//#    if (BOOST_FUNCTION_NUM_ARGS == 1)
+//#      define BOOST_FUNCTION_NUM_ARGS_SAVE 1
+//#      undef BOOST_FUNCTION_NUM_ARGS
+//#    endif
+//#  endif
 #include <boost/function.hpp>
-#include <boost/detail/workaround.hpp>
+//#  ifdef BOOST_FUNCTION_NUM_ARGS_SAVE
+//#    define BOOST_FUNCTION_NUM_ARGS 1
+//#    undef BOOST_FUNCTION_NUM_ARGS_SAVE
+//#  endif
+#include <boost/utility/result_of.hpp>
 
 _STLP_BEGIN_NAMESPACE
 

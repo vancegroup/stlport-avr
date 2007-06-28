@@ -1,4 +1,25 @@
-2007-06-24  Petr Ovtchenkov  <ptr@island.corbina.net>
+2007-06-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/boost_type_traits.h: reread boost/config.h
+	to force usage of stlport in boost and force read essential
+	macros from boost/config/suffix.hpp; this is because boost
+	included within stlport from one side, and stlport included
+	within boost from another side; this make sense with
+	_STLP_USE_BOOST_SUPPORT defined in user_config.h;
+	checked for boost 1.34;
+
+	* test/unit/boost_check.cpp, build/test/unit/Makefile.inc:
+	test for problem above; this simulate problem when boost's
+	header was included before any stlport's one;
+
+	* stlport/stl/config/features.h: remove definition of
+	BOOST_STDLIB_CONFIG, due to it unconditionally defined
+	in boost.
+
+	* stlport/memory: forward declarations for boost required,
+	by the same reasons as described above.
+
+2007-06-24  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_function.h, stlport/functional: fix import
 	of boost::shared_ptr---moved from _function.h to functional;

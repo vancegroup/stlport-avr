@@ -17,6 +17,13 @@
 #ifndef _STLP_BOOST_TYPE_TRAITS_H
 #define _STLP_BOOST_TYPE_TRAITS_H
 
+#ifndef BOOST_CONFIG_SUFFIX_HPP
+#  ifdef BOOST_CONFIG_HPP
+#    undef BOOST_CONFIG_HPP
+#  endif
+#  include <boost/config.hpp>
+#endif
+
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_float.hpp>
 #include <boost/type_traits/has_trivial_constructor.hpp>

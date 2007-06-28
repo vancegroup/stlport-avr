@@ -102,17 +102,6 @@
  */
 #include <stl/config/stl_confix.h>
 
-#ifdef _STLP_USE_BOOST_SUPPORT
-/* We are going to use the boost library support. To limit the problem
- * of self referencing headers we have to specify clearly to the boost
- * library that the Standard lib is STLport:
- */
-#  ifndef BOOST_STDLIB_CONFIG
-#    define BOOST_STDLIB_CONFIG <boost/config/stdlib/stlport.hpp>
-#  endif
-#endif
-
-
 /*
  * Performs integrity check on user-specified parameters
  * and site-specific settings.
