@@ -62,6 +62,8 @@ public:
   }
 
   virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
+    // Reset m_failed to avoid wrong m_numErrors when there are checks and assertions in the same test.
+    m_failed = false;
     ++m_numErrors;
     fprintf(_file, "\n\n%s(%d) : %s(%s);", in_file, in_line, in_macroName, in_macro);
   }

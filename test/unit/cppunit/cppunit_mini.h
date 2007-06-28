@@ -70,6 +70,8 @@ namespace CPPUNIT_NS
     }
 
     virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
+      // Reset m_failed to avoid wrong m_numErrors when there are checks and assertions in the same test.
+      m_failed = false;
       ++m_numErrors;
       if (m_reporter) {
         m_reporter->error(in_macroName, in_macro, in_file, in_line);
