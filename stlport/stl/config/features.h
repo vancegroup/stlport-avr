@@ -417,17 +417,9 @@
 #  define _STLP_PTR_IMPL_NAME(X) _Impl_##X
 #endif
 
-#if (defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)) && \
-     !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-/* We are going to use the MSVC6 workaround to check runtime compatibility */
-#  define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND
-#endif
-
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+    defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 #  define _STLP_NO_MEM_T_NAME(X) _NoMemT_##X
-#  if defined (_STLP_DEBUG)
-#    define _STLP_NON_DBG_NO_MEM_T_NAME(X) _NonDbg_NoMemT_##X
-#  endif
 #endif
 
 /* this always mean the C library is in global namespace */

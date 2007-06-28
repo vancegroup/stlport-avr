@@ -1,3 +1,16 @@
+2007-06-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/locale.cpp, locale_impl.h, stlport/stl/_locale.h,
+	config/features.h: Runtime check system do not fully use the
+	MSVC6 workaround anymore, it only use the locale workaround,
+	not the basic_string one.
+
+	* src/string.cpp: Fix wrong explicit instanciation.
+
+	* test/unit/cppunit/cppunit_mini.h, file_reporter.h: Fix 
+	computation of test failure when both CPPUNIT_CHECK and
+	CPPUNIT_ASSERT are used.
+
 2007-06-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/boost_type_traits.h: reread boost/config.h

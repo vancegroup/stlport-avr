@@ -115,7 +115,8 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
     friend _Locale_impl * _STLP_CALL _copy_Locale_impl( _Locale_impl * );
     friend _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl * );
     friend void _STLP_CALL _release_Locale_impl( _Locale_impl *& loc );
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+    defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
     friend class _STLP_NO_MEM_T_NAME(loc);
 #else
     friend class locale;
