@@ -71,6 +71,7 @@
 
 namespace boost {
 
+class bad_weak_ptr;
 template<class T> class shared_ptr;
 template<class T> class weak_ptr;
 template<class T> class enable_shared_from_this;
@@ -78,10 +79,17 @@ template<class D, class T> D * get_deleter(shared_ptr<T> const & p);
 template<class T, class U> shared_ptr<T> static_pointer_cast(shared_ptr<U> const & r);
 template<class T, class U> shared_ptr<T> const_pointer_cast(shared_ptr<U> const & r);
 template<class T, class U> shared_ptr<T> dynamic_pointer_cast(shared_ptr<U> const & r);
+template<class T> void swap(weak_ptr<T> & a, weak_ptr<T> & b);
+template<class T> void swap(shared_ptr<T> & a, shared_ptr<T> & b);
+
+namespace detail{
+class shared_count;
+class weak_count;
+}
 
 } // namespace boost
 
-#  ifndef BOOST_WEAK_PTR_HPP_INCLUDED
+#  ifndef BOOST_SHARED_PTR_HPP_INCLUDED
 #    include <boost/shared_ptr.hpp>
 #  endif
 #  ifndef BOOST_WEAK_PTR_HPP_INCLUDED

@@ -46,20 +46,26 @@
 #if !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
 
 #include <boost/ref.hpp>
+#include <boost/utility/result_of.hpp>
+#include <boost/bind/placeholders.hpp>
 #include <boost/mem_fn.hpp>
 #include <boost/bind.hpp>
-//#  ifdef BOOST_FUNCTION_NUM_ARGS
-//#    if (BOOST_FUNCTION_NUM_ARGS == 1)
-//#      define BOOST_FUNCTION_NUM_ARGS_SAVE 1
-//#      undef BOOST_FUNCTION_NUM_ARGS
-//#    endif
-//#  endif
-#include <boost/function.hpp>
-//#  ifdef BOOST_FUNCTION_NUM_ARGS_SAVE
-//#    define BOOST_FUNCTION_NUM_ARGS 1
-//#    undef BOOST_FUNCTION_NUM_ARGS_SAVE
-//#  endif
-#include <boost/utility/result_of.hpp>
+
+namespace boost {
+
+template<class T> class reference_wrapper;
+template<class T> reference_wrapper<T> const ref(T &);
+template<class T> inline reference_wrapper<T const> const cref(T const &);
+
+template<typename F> struct result_of;
+
+namespace _mfi {
+template<class R, class T> class dm;
+}
+
+template<class R, class T> _mfi::dm<R, T> mem_fn(R T::*f);
+
+} // namespace boost
 
 _STLP_BEGIN_NAMESPACE
 
@@ -87,6 +93,44 @@ namespace placeholders {
   using ::_9;
 } // placeholders
 
+} // namespace tr1
+
+_STLP_END_NAMESPACE
+
+#endif // !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT
+
+#endif /* _STLP_FUNCTIONAL */
+
+#if !defined(_STLP_FUNCTIONAL_FUN) && !defined(_STLP_NO_EXTENSIONS) && defined(_STLP_USE_BOOST_SUPPORT)
+
+#ifndef BOOST_FUNCTION_NUM_ARGS // avoid recursive includes
+
+// #ifdef BOOST_FUNCTION_BASE_HEADER
+// #undef BOOST_FUNCTION_BASE_HEADER
+// #endif
+
+// #ifdef BOOST_FUNCTION_PROLOGUE_HPP
+// #undef BOOST_FUNCTION_PROLOGUE_HPP
+// #endif
+
+#define _STLP_FUNCTIONAL_FUN
+
+#ifndef BOOST_FUNCTION_BASE_HEADER // avoid recursive includes
+#  include <boost/function.hpp>
+#else
+namespace boost {
+class bad_function_call;
+template<typename Signature, typename Allocator >
+class function;
+template<typename Signature, typename Allocator>
+void swap(function<Signature, Allocator>& f1, function<Signature, Allocator>& f2);
+}
+#endif
+
+_STLP_BEGIN_NAMESPACE
+
+namespace tr1 {
+
 using ::boost::bad_function_call;
 using ::boost::function;
 using ::boost::swap;
@@ -95,10 +139,9 @@ using ::boost::swap;
 
 _STLP_END_NAMESPACE
 
-#endif // !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT
+#endif // !BOOST_FUNCTION_NUM_ARGS
 
-
-#endif /* _STLP_FUNCTIONAL */
+#endif // !_STLP_FUNCTIONAL_REF && !_STLP_NO_EXTENSIONS && _STLP_USE_BOOST_SUPPORT
 
 // Local Variables:
 // mode:C++
