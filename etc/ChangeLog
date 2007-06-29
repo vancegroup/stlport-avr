@@ -1,3 +1,14 @@
+2007-06-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/memory: more forward declarations; fix typo;
+
+	* stlport/functional: more tricks to compile with boost
+	and tr1;
+
+	* test/unit/boost_check.cpp: problems trace; set 1 in
+	appropriate places to check presence of problem, but only
+	use one case at a time.
+
 2007-06-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, locale_impl.h, stlport/stl/_locale.h,
