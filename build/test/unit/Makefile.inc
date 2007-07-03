@@ -18,7 +18,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/bitset_test.cpp \
 	../../../test/unit/bitset_header_test.cpp \
 	../../../test/unit/bnegate_test.cpp \
-        ../../../test/unit/boost_check.pp \
+        ../../../test/unit/boost_check.cpp \
 	../../../test/unit/bound_test.cpp \
 	../../../test/unit/bsearch_test.cpp \
 	../../../test/unit/bvector_test.cpp \
