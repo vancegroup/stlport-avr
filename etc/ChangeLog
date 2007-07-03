@@ -1,3 +1,28 @@
+2007-07-03  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/num_put_float.cpp: _Stl_ecvtR, _Stl_fcvtR, _Stl_qecvtR,
+	_Stl_qfcvtR functions, pass buffer size as a parameter when the
+	platform functions need it rather than duplicating the size
+	definition. This modification has been applied to the DECC platforms
+	and when the GLibC is in use.
+	Removed useless islong __format_float_scientific parameter. Removed
+	useless x __format_float_fixed parameter, islong parameter
+	replaced with direct specification of the maxfsig value.
+	In __format_float function, first attempt in detection of NaN or
+	infinity is done thanks to the std::numeric_limits and compiler
+	support, _Stl_is_nan_or_inf do not correctly handled long double
+	values. long double values larger than max double values were always
+	displayed as Inf.
+
+	* src/num_get_float.cpp: Removed useless null buffer checks in
+	_Stl_atod functions, we know how this function is called. Replaced
+	some hard coded constant with numeric_limits values. Add check that
+	there is less than 64 digits before hiding hidden bits in vv.i64, for
+	long double it was generating wrong long double value.
+
+	* test/unit/num_put_get_test.cpp: Add numerous tests to check both
+	long double input and output.
+
 2007-06-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/memory: more forward declarations; fix typo;

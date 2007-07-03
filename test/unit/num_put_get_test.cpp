@@ -5,7 +5,10 @@
 #  include <string>
 #  include <sstream>
 #  include <cstdio>
-#include <iostream>
+/*
+#  include <iostream>
+#  include <ieee754.h>
+*/
 
 #  include "complete_digits.h"
 #  include "cppunit/cppunit_proxy.h"
@@ -44,6 +47,12 @@ private:
     return val <= ref + epsilon && val >= ref - epsilon;
   }
 
+  static bool check_double(double val, double ref)
+  {
+    double epsilon = numeric_limits<double>::epsilon();
+    return val <= ref + epsilon && val >= ref - epsilon;
+  }
+
   static string reset_stream(ostringstream &ostr)
   {
     string tmp = ostr.str();
@@ -56,68 +65,115 @@ private:
   void check_get_float( F v )
   {
     F in_val_d = v;
+    typedef numeric_limits<F> limits;
     {
       stringstream str;
 
-      str << "1E+" << numeric_limits<F>::max_exponent10;
+      str << "1E+" << limits::max_exponent10;
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::infinity() );
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d != limits::infinity() );
     }
     {
       stringstream str;
 
-      str << "-1E+" << numeric_limits<F>::max_exponent10;
+      str << "-1E+" << limits::max_exponent10;
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_ASSERT( in_val_d != -numeric_limits<F>::infinity() ); // may be problems with portability
-      // CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::quiet_NaN() );
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d != -limits::infinity() );
     }
     {
       stringstream str;
 
-      str << "1E" << numeric_limits<F>::min_exponent10;
+      str << "1E" << limits::min_exponent10;
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_ASSERT( in_val_d != F(0.0) );
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d != F(0.0) );
     }
     {
       stringstream str;
 
-      str << "1E+" << (numeric_limits<F>::max_exponent10 + 1);
+      str << "1E+" << (limits::max_exponent10 + 1);
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_ASSERT( in_val_d == numeric_limits<F>::infinity() );
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d == limits::infinity() );
     }
     {
       stringstream str;
 
-      str << "-1E+" << (numeric_limits<F>::max_exponent10 + 1);
+      str << "-1E+" << (limits::max_exponent10 + 1);
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      CPPUNIT_ASSERT( in_val_d == -numeric_limits<F>::infinity() ); // may be problems with portability
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d == -limits::infinity() );
     }
     {
       stringstream str;
 
-      str << "1E" << (numeric_limits<F>::min_exponent10 - 1);
+      str << "1E" << (limits::min_exponent10 - 1);
 
       str >> in_val_d;
       CPPUNIT_ASSERT(!str.fail());
       CPPUNIT_ASSERT(str.eof());
-      // The next is due to float, that calculated as double and converted to float
-      // on last stage:
-      CPPUNIT_ASSERT( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); 
+      CPPUNIT_CHECK( in_val_d == in_val_d );
+      CPPUNIT_CHECK( in_val_d >= F(0.0) && in_val_d <= limits::min() );
+    }
+    {
+      stringstream str;
+
+      str << limits::max();
+
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( str.str() != "inf" );
+      CPPUNIT_ASSERT( str.str() != "-inf" );
+      CPPUNIT_ASSERT( str.str() != "nan" );
+      CPPUNIT_ASSERT( str.str() != "-nan" );
+    }
+    {
+      stringstream str;
+
+      str << limits::infinity();
+
+      CPPUNIT_ASSERT( !str.fail() );
+      CPPUNIT_ASSERT( !limits::has_infinity || str.str() == "inf" );
+    }
+    {
+      stringstream str;
+
+      str << -limits::infinity();
+
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !limits::has_infinity || str.str() == "-inf" );
+    }
+    {
+      stringstream str;
+
+      str << limits::quiet_NaN();
+
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "nan" );
+    }
+    {
+      stringstream str;
+
+      str << -limits::quiet_NaN();
+
+      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "-nan" );
     }
   }
 #else
@@ -127,13 +183,14 @@ private:
     F in_val_d = v; \
     { \
       stringstream str; \
-
+ \
       str << "1E+" << numeric_limits<F>::max_exponent10; \
  \
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d != numeric_limits<F>::infinity() ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d != numeric_limits<F>::infinity() ); \
     } \
     { \
       stringstream str; \
@@ -143,7 +200,8 @@ private:
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d != -numeric_limits<F>::infinity() ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d != -numeric_limits<F>::infinity() ); \
     } \
     { \
       stringstream str; \
@@ -153,7 +211,8 @@ private:
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d != F(0.0) ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d != F(0.0) ); \
     } \
     { \
       stringstream str; \
@@ -163,7 +222,8 @@ private:
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d == numeric_limits<F>::infinity() ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d == numeric_limits<F>::infinity() ); \
     } \
     { \
       stringstream str; \
@@ -173,7 +233,8 @@ private:
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d == -numeric_limits<F>::infinity() ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d == -numeric_limits<F>::infinity() ); \
     } \
     { \
       stringstream str; \
@@ -183,7 +244,8 @@ private:
       str >> in_val_d; \
       CPPUNIT_ASSERT(!str.fail()); \
       CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_ASSERT( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); \
+      CPPUNIT_CHECK( in_val_d == in_val_d ); \
+      CPPUNIT_CHECK( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); \
     } \
   }
 
@@ -513,10 +575,94 @@ void NumPutGetTest::num_get_float()
   CPPUNIT_ASSERT(check_float(in_val, 12345.0f));
   istr.clear();
 
+  CPPUNIT_MESSAGE( "float" );
   check_get_float( 0.0F );
+  CPPUNIT_MESSAGE( "double" );
   check_get_float( 0.0 );
 #if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
+  CPPUNIT_MESSAGE( "long double" );
   check_get_float( 0.0L );
+#endif
+  {
+    stringstream str;
+
+    str << "1e" << numeric_limits<double>::max_exponent10;
+    CPPUNIT_ASSERT(!str.fail());
+
+    float val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( numeric_limits<double>::max_exponent10 <= numeric_limits<float>::max_exponent10 ||
+                    val == numeric_limits<float>::infinity() );
+  }
+  {
+    stringstream str;
+
+    str << "1e" << numeric_limits<double>::min_exponent10;
+    CPPUNIT_ASSERT(!str.fail());
+
+    float val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( numeric_limits<double>::min_exponent10 >= numeric_limits<float>::min_exponent10 ||
+                    val == 0.0f );
+  }
+#if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
+  {
+    stringstream str;
+
+    str << "1e" << numeric_limits<long double>::max_exponent10;
+    CPPUNIT_ASSERT(!str.fail());
+
+    double val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( numeric_limits<long double>::max_exponent10 <= numeric_limits<double>::max_exponent10 ||
+                    val == numeric_limits<double>::infinity() );
+  }
+  {
+    stringstream str;
+
+    str << "1e" << numeric_limits<long double>::min_exponent10;
+    CPPUNIT_ASSERT(!str.fail());
+
+    double val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( numeric_limits<long double>::min_exponent10 >= numeric_limits<double>::min_exponent10 ||
+                    val == 0.0 );
+  }
+
+  if (numeric_limits<long double>::max_exponent10 >= 310) {
+    stringstream str;
+    str.str("1e310");
+
+    long double val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( val != numeric_limits<long double>::infinity() );
+    // Check for NaN
+    CPPUNIT_CHECK( val == val );
+  }
+
+  if (numeric_limits<long double>::max_exponent10 >= 308) {
+    stringstream str;
+    str.str("1e308");
+    CPPUNIT_ASSERT(!str.fail());
+
+    long double val;
+    str >> val;
+    CPPUNIT_ASSERT(!str.fail());
+    CPPUNIT_ASSERT(str.eof());
+    CPPUNIT_ASSERT( val != numeric_limits<long double>::infinity() );
+    // Check for NaN
+    CPPUNIT_ASSERT( val == val );
+  }
 #endif
 }
 
@@ -785,7 +931,7 @@ void NumPutGetTest::fix_float_long()
       // we may loss some digits here, but not more than mantissa:
       CPPUNIT_CHECK( (f > (1.0e+83 - delta)) && (f < (1.0e+83 + delta)) );
     } else {
-      CPPUNIT_CHECK( check_float(f, 1.0e+83) );
+      CPPUNIT_CHECK( check_double(f, 1.0e+83) );
     }
   }
 
@@ -810,7 +956,7 @@ void NumPutGetTest::fix_float_long()
       cerr << f << endl;
       CPPUNIT_CHECK( (f > (1.0e+83l - delta)) && (f < (1.0e+83l + delta)) );
     } else {
-      CPPUNIT_CHECK( check_float(f, 1.0e+83l) );
+      CPPUNIT_CHECK( check_double(f, 1.0e+83l) );
     }
   }
 #endif

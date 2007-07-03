@@ -113,14 +113,14 @@ static void _Stl_mult64(const uint64 u, const uint64 v,
 
 #ifndef __linux__
 
-#define bit11 ULL(0x7ff)
-#define exponent_mask (bit11 << 52)
+#  define bit11 ULL(0x7ff)
+#  define exponent_mask (bit11 << 52)
 
-#if !defined (__GNUC__) || (__GNUC__ != 3) || (__GNUC_MINOR__ != 4) || \
-    (!defined (__CYGWIN__) && !defined (__MINGW32__))
+#  if !defined (__GNUC__) || (__GNUC__ != 3) || (__GNUC_MINOR__ != 4) || \
+      (!defined (__CYGWIN__) && !defined (__MINGW32__))
 //Generate bad code when compiled with -O2 option.
 inline
-#endif
+#  endif
 void _Stl_set_exponent(uint64 &val, uint64 exp)
 { val = (val & ~exponent_mask) | ((exp & bit11) << 52); }
 
@@ -302,8 +302,9 @@ static void _Stl_tenscale(uint64& p, int exp, int& bexp)
 // Third argument is base-10 exponent.
 
 /* IEEE representation */
-#  if !defined (__linux__)
+#if !defined (__linux__)
 static double _Stl_atod(char *buffer, int ndigit, int dexp) {
+  typedef numeric_limits<double> limits;
   uint64 value;         /* Value develops as follows:
                                  * 1) decimal digits as an integer
                                  * 2) left adjusted fraction
@@ -320,13 +321,7 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
 
   char *bufferend;              /* pointer to char after last digit */
 
-  /* Check for zero and treat it as a special case */
-  if (buffer == 0){
-    return 0.0;
-  }
-
   /* Convert the decimal digits to a binary integer. */
-
   bufferend = buffer + ndigit;
   value = 0;
 
@@ -393,7 +388,7 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
       /* Round */
       if (guard && ((value & 1) || rest) ) {
         ++value;
-        if (value == (ULL(1) << 52)) { /* carry created normal number */
+        if (value == (ULL(1) << (limits::digits - 1))) { /* carry created normal number */
           value = 0;
           _Stl_set_exponent(value, 1);
         }
@@ -437,11 +432,11 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
      * Total width in bits         64
      */
 
-    if (bexp > 1024) {          /* overflow */
-      return numeric_limits<double>::infinity();
+    if (bexp > limits::max_exponent) {          /* overflow */
+      return limits::infinity();
     }
     else {                      /* value is normal */
-      value &= ~(ULL(1) << 52);   /* hide hidden bit */
+      value &= ~(ULL(1) << (limits::digits - 1));   /* hide hidden bit */
       _Stl_set_exponent(value, bexp + 1022); /* add bias */
     }
   }
@@ -450,17 +445,14 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
   return *((double *) &value);
 }
 
-#  else // __linux__
+#else // __linux__
 
 template <class D, class IEEE, int M, int BIAS>
-D _Stl_atod(char *buffer, int ndigit, int dexp )
+D _Stl_atod(char *buffer, int ndigit, int dexp)
 {
-  if ( buffer == 0 ) { /* Check for zero and treat it as a special case */
-    return D(0.0);
-  }
+  typedef numeric_limits<D> limits;
 
   /* Convert the decimal digits to a binary integer. */
-
   char *bufferend = buffer + ndigit; /* pointer to char after last digit */
   _ll vv;
   vv.i64 = 0L;
@@ -480,7 +472,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
 
   /* Count number of non-zeroes in value */
   int nzero = 0;
-  if ((vv.i64 >> 32) != 0 ) { nzero = 32; }    //*TY 03/25/2000 - added explicit comparison to zero to avoid uint64 to bool conversion operator
+  if ((vv.i64 >> 32) != 0) { nzero = 32; }
   if ((vv.i64 >> (16 + nzero)) != 0) { nzero += 16; }
   if ((vv.i64 >> ( 8 + nzero)) != 0) { nzero +=  8; }
   if ((vv.i64 >> ( 4 + nzero)) != 0) { nzero +=  4; }
@@ -502,13 +494,13 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
   _Stl_tenscale(vv.i64, dexp, sexp);
   bexp += sexp;
 
-  if ( bexp >= numeric_limits<D>::min_exponent /* -1021 */ ) { /* not zero or denorm */
-    if ( numeric_limits<D>::digits < 64 ) {
+  if ( bexp >= limits::min_exponent ) { /* not zero or denorm */
+    if ( limits::digits < 64 ) {
       /* Round to (64 - M + 1) bits */
-      // uint64_t rest = vv.i64 & ((1<<(64 - numeric_limits<D>::digits - 1) /* 10 */ ) - 1);
+      // uint64_t rest = vv.i64 & ((1<<(64 - limits::digits - 1) /* 10 */ ) - 1);
       // uint64_t rest = vv.i64 & ~((1ULL << 63) >> (M - 2));
-      uint64_t rest = vv.i64 & ((~ULL(0) / ULL(2)) >> (numeric_limits<D>::digits - 1));
-      // vv.i64 >>= (64 - numeric_limits<D>::digits - 1) /* 10 */;
+      uint64_t rest = vv.i64 & ((~ULL(0) / ULL(2)) >> (limits::digits - 1));
+      // vv.i64 >>= (64 - limits::digits - 1) /* 10 */;
       vv.i64 >>= M - 2;
       uint32_t guard = (uint32) vv.i64 & 1;
       vv.i64 >>= 1;
@@ -524,7 +516,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
       if (guard) {
         if ( ((vv.i64 & 1) != 0) || (rest != 0) ) {
           vv.i64++;       /* round */
-          if ( (vv.i64 >> (numeric_limits<D>::digits < 64 ? numeric_limits<D>::digits : 0) /* 53 */ ) != 0 ) { /* carry all the way across */
+          if ( (vv.i64 >> (limits::digits < 64 ? limits::digits : 0)) != 0 ) { /* carry all the way across */
             vv.i64 >>= 1; /* renormalize */
             ++bexp;
           }
@@ -545,33 +537,32 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
      * Total width in bits         64
      */
 
-    if (bexp > numeric_limits<D>::max_exponent /* 1024 */ ) { /* overflow */
-      return numeric_limits<D>::infinity();
+    if (bexp > limits::max_exponent) { /* overflow */
+      return limits::infinity();
     }
 
     /* value is normal */
 
-    vv.i64 &= ~(ULL(1) << (numeric_limits<D>::digits - 1) /* 52 */ ); /* hide hidden bit */
-    IEEE v;
+    if (limits::digits < 64)
+      vv.i64 &= ~(ULL(1) << (limits::digits - 1)); /* hide hidden bit */
 
+    IEEE v;
     v.ieee.mantissa0 = vv.i32.hi;
     v.ieee.mantissa1 = vv.i32.lo;
     v.ieee.negative = 0;
-    v.ieee.exponent = bexp + BIAS - 1 /* 1022 */;
+    v.ieee.exponent = bexp + BIAS - 1;
+
     return v.d;
   }
 
   /* HI denorm or underflow */
-
-  bexp += BIAS - 1 /* 1022 */;
-  if (bexp < -numeric_limits<D>::digits /* -53 */ ) { /* guaranteed underflow */
+  bexp += BIAS - 1;
+  if (bexp < -limits::digits) { /* guaranteed underflow */
     vv.i64 = 0;
   } else {  /* denorm or possible underflow */
 
-    /*
-     * Problem point for long double: looks like this code reflect shareing of mantissa
-     * and exponent in 64b int; not so for long double
-     */
+    /* Problem point for long double: looks like this code reflect sharing of mantissa
+     * and exponent in 64b int; not so for long double */
 
     int lead0 = M - bexp; /* M = 12 sign and exponent bits */
     uint64_t rest;
@@ -596,9 +587,8 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
     /* Round */
     if (guard && ( (vv.i64 & 1) || rest)) {
       vv.i64++;
-      if (vv.i64 == (ULL(1) << (numeric_limits<D>::digits - 1) /* 52 */ )) { /* carry created normal number */
+      if (vv.i64 == (ULL(1) << (limits::digits - 1))) { /* carry created normal number */
         IEEE v;
-
         v.ieee.mantissa0 = 0;
         v.ieee.mantissa1 = 0;
         v.ieee.negative = 0;
@@ -609,7 +599,6 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
   }
 
   IEEE v;
-
   v.ieee.mantissa0 = vv.i32.hi;
   v.ieee.mantissa1 = vv.i32.lo;
   v.ieee.negative = 0;
@@ -617,7 +606,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp )
 
   return v.d;
 }
-#  endif // __linux__
+#endif // __linux__
 
 #ifndef __linux__
 static double _Stl_string_to_double(const char *s)
@@ -720,7 +709,7 @@ static double _Stl_string_to_double(const char *s)
   return x;
 }
 
-#if !defined (_STLP_NO_LONG_DOUBLE)
+#  if !defined (_STLP_NO_LONG_DOUBLE)
 /*
  * __string_to_long_double is just lifted from atold, the difference being
  * that we just use '.' for the decimal point, rather than let it
@@ -842,14 +831,15 @@ _Stl_string_to_long_double(const char * s) {
 
   return x;
 }
-#endif // _STLP_NO_LONG_DOUBLE
+#  endif // _STLP_NO_LONG_DOUBLE
 
 #else // __linux__
 
 template <class D, class IEEE, int M, int BIAS>
 D _Stl_string_to_double(const char *s)
 {
-  const int max_digits = numeric_limits<D>::digits10 + 2 /* 17 */;
+  typedef numeric_limits<D> limits;
+  const int max_digits = limits::digits10 + 2 /* 17 */;
   unsigned c;
   unsigned decimal_point;
   char *d;
@@ -912,7 +902,7 @@ D _Stl_string_to_double(const char *s)
     }
     if (c -= '0', c < 10) {
       do {
-        if ( e > numeric_limits<D>::max_exponent10 ) {
+        if ( e > limits::max_exponent10 ) {
           break;
         }
         e = e * 10 + (int)c;
@@ -922,7 +912,7 @@ D _Stl_string_to_double(const char *s)
       if (negate_exp) {
         e = -e;
       }
-      if (e < numeric_limits<D>::min_exponent10 || e > numeric_limits<D>::max_exponent10 ) {
+      if (e < limits::min_exponent10 || e > limits::max_exponent10 ) {
         exp = e;
       } else {
         exp += e;
@@ -930,11 +920,11 @@ D _Stl_string_to_double(const char *s)
     }
   }
 
-  if (exp < numeric_limits<D>::min_exponent10) {
+  if (exp < limits::min_exponent10) {
     return D(0.0); // +0.0 is the same as -0.0
-  } else if (exp > numeric_limits<D>::max_exponent10 ) {
+  } else if (exp > limits::max_exponent10 ) {
     // not good, because of x = -x below; this may lead to portaboility problems
-    x = numeric_limits<D>::infinity();
+    x = limits::infinity();
   } else {
     /* let _Stl_atod diagnose under- and over-flows */
     /* if the input was == 0.0, we have already returned,

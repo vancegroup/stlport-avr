@@ -52,6 +52,7 @@
 #    include <float.h>
 #  endif
 
+#  include <math.h>
 #endif
 
 #include <cstdio>
@@ -232,16 +233,17 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 { return fcvtbuf(x, n, pt, sign, buf); }
 #    endif
 #  elif defined (_STLP_USE_GLIBC)
-static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
-{ return buf + ecvt_r(x, n, pt, sign, buf, DBL_MAX_10_EXP + 6); }
-static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
-{ return buf + fcvt_r(x, n, pt, sign, buf, DBL_MAX_10_EXP + 6); }
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return ecvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0; }
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return fcvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0; }
 #    ifndef _STLP_NO_LONG_DOUBLE
-static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
-{ return buf + qecvt_r(x, n, pt, sign, buf, LDBL_MAX_10_EXP + 6); }
-static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
-{ return buf + qfcvt_r(x, n, pt, sign, buf, LDBL_MAX_10_EXP + 6); }
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return qecvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0; }
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return qfcvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0; }
 #    endif
+#    define _STLP_NEED_CVT_BUFFER_SIZE
 #  elif defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvt(x, n, pt, sign); }
@@ -265,24 +267,24 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 { return qfconvert(&x, n, pt, sign, buf); }
 #    endif
 #  elif defined (__DECCXX)
-static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
-{ return (ecvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
-static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
-{ return (fcvt_r(x, n, pt, sign, buf, NDIG)==0 ? buf : 0); }
+static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return (ecvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0); }
+static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return (fcvt_r(x, n, pt, sign, buf, bsize) == 0 ? buf : 0); }
 #    ifndef _STLP_NO_LONG_DOUBLE
 // fbp : no "long double" conversions !
-static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
-{ return (ecvt_r((double)x, n, pt, sign, buf, LDBL_MAX_10_EXP + 6)==0 ? buf : 0) ; }
-static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
-{ return (fcvt_r((double)x, n, pt, sign, buf, LDBL_MAX_10_EXP + 6)==0 ? buf : 0); }
+static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return (ecvt_r((double)x, n, pt, sign, buf, bsize) == 0 ? buf : 0) ; }
+static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf, size_t bsize)
+{ return (fcvt_r((double)x, n, pt, sign, buf, bsize) == 0 ? buf : 0); }
 #    endif
+#    define _STLP_NEED_CVT_BUFFER_SIZE
 #  elif defined (__hpux)
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return ecvt(x, n, pt, sign); }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return fcvt(x, n, pt, sign); }
 #    if !defined (_STLP_NO_LONG_DOUBLE)
-
 #      if defined( _REENTRANT ) && (defined(_PTHREADS_DRAFT4) || defined(PTHREAD_THREADS_MAX))
 static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return (_ldecvt_r(*(long_double*)&x, n, pt, sign, buf, LDBL_MAX_10_EXP + 6)==0 ? buf : 0); }
@@ -344,14 +346,11 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, _STLP_
 #  elif defined (__ISCPP__)
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
-
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
-
 #    if !defined (_STLP_NO_LONG_DOUBLE)
 static inline char* _Stl_qecvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_ecvt( x, n, pt, sign, buf); }
-
 static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* buf)
 { return _fp_fcvt(x, n, pt, sign, buf); }
 #    endif
@@ -370,16 +369,10 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 
 #  ifdef _STLP_CVT_DONT_NEED_BUF
 #    define _STLP_CVT_BUFFER(B) 0
-#  elif !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
+#  elif !defined (_STLP_USE_SAFE_STRING_FUNCTIONS) && !defined (_STLP_NEED_CVT_BUFFER_SIZE)
 #    define _STLP_CVT_BUFFER(B) B
 #  else
 #    define _STLP_CVT_BUFFER(B) _STLP_ARRAY_AND_SIZE(B)
-#  endif
-
-#  ifndef _STLP_USE_SAFE_STRING_FUNCTIONS
-#    define _STLP_BUFFER(B) B
-#  else
-#    define _STLP_BUFFER(B) _STLP_ARRAY_AND_SIZE(B)
 #  endif
 
 //----------------------------------------------------------------------
@@ -396,8 +389,7 @@ static inline char* _Stl_qfcvtR(long double x, int n, int* pt, int* sign, char* 
 static size_t __format_float_scientific( __iostring& buf, const char *bp,
                                          int decpt, int sign, bool is_zero,
                                          ios_base::fmtflags flags,
-                                         int precision, bool /* islong */)
-{
+                                         int precision) {
   // sign if required
   if (sign)
     buf += '-';
@@ -455,21 +447,15 @@ static size_t __format_float_scientific( __iostring& buf, const char *bp,
 }
 
 static size_t __format_float_fixed( __iostring &buf, const char *bp,
-                                    int decpt, int sign, bool /* x */,
+                                    int decpt, int sign,
                                     ios_base::fmtflags flags,
-                                    int precision, bool islong )
-{
+                                    int precision, int maxfsig) {
   if ( sign && (decpt > -precision) && (*bp != 0) )
     buf += '-';
   else if ( flags & ios_base::showpos )
     buf += '+';
 
-  int k       = 0;
-# ifndef _STLP_NO_LONG_DOUBLE
-  const int maxfsig = islong ? int(numeric_limits<long double>::digits10) : int(numeric_limits<double>::digits10);
-# else
-  const int maxfsig = int(numeric_limits<double>::digits10);
-# endif
+  int k = 0;
 
   // digits before decimal point
   int nnn = decpt;
@@ -500,8 +486,8 @@ static size_t __format_float_fixed( __iostring &buf, const char *bp,
   return __group_pos;
 }
 
-template <class max_double_type>
-static void __format_nan_or_inf(__iostring& buf, max_double_type x, ios_base::fmtflags flags)
+template <class _FloatT>
+static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags)
 {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
@@ -522,58 +508,70 @@ static void __format_nan_or_inf(__iostring& buf, max_double_type x, ios_base::fm
   buf += inf_or_nan[flags & ios_base::uppercase ? 1 : 0];
 }
 
-template <class max_double_type>
+template <class _FloatT>
 static inline size_t __format_float( __iostring &buf, const char * bp,
-                                     int decpt, int sign, max_double_type x,
+                                     int decpt, int sign, _FloatT x,
                                      ios_base::fmtflags flags,
-                                     int precision, bool islong)
+                                     int precision)
 {
-  size_t __group_pos = 0;
-  // Output of infinities and NANs does not depend on the format flags
-  if (_Stl_is_nan_or_inf(x)) {       // Infinity or NaN
+  typedef numeric_limits<_FloatT> _FLimits;
+  //If numeric_limits support is correct we use the exposed values to detect NaN and infinity:
+  if (_FLimits::has_infinity && _FLimits::has_quiet_NaN) {
+    if (!(x == x) || // NaN check
+        (x == _FLimits::infinity() || x == -_FLimits::infinity())) {
+      __format_nan_or_inf(buf, x, flags);
+      return 0;
+    }
+  }
+  // numeric_limits support is not good enough, we rely on platform dependent function
+  // _Stl_is_nan_or_inf that do not support long double.
+  else if (_Stl_is_nan_or_inf(x)) {
     __format_nan_or_inf(buf, x, flags);
-  } else {                        // representable number
-    switch (flags & ios_base::floatfield) {
-      case ios_base::scientific:
-        __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0.0,
-                                                 flags, precision, islong);
-        break;
-      case ios_base::fixed:
-        __group_pos = __format_float_fixed( buf, bp, decpt, sign, true,
-                                            flags, precision, islong);
-        break;
-      default: // g format
-        // establish default precision
-        if (flags & ios_base::showpoint || precision > 0) {
-          if (precision == 0) precision = 1;
-        } else
-          precision = 6;
+    return 0;
+  }
 
-        // reset exponent if value is zero
-        if (x == 0)
-          decpt = 1;
+  // representable number
+  size_t __group_pos = 0;
+  switch (flags & ios_base::floatfield) {
+    case ios_base::scientific:
+      __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0.0,
+                                               flags, precision);
+      break;
+    case ios_base::fixed:
+      __group_pos = __format_float_fixed( buf, bp, decpt, sign,
+                                          flags, precision, _FLimits::digits10);
+      break;
+    default: // g format
+      // establish default precision
+      if (flags & ios_base::showpoint || precision > 0) {
+        if (precision == 0) precision = 1;
+      } else
+        precision = 6;
 
-        int kk = precision;
-        if (!(flags & ios_base::showpoint)) {
-          size_t n = strlen(bp);
-          if (n < (size_t)kk)
-            kk = (int)n;
-          while (kk >= 1 && bp[kk-1] == '0')
-            --kk;
-        }
+      // reset exponent if value is zero
+      if (x == 0)
+        decpt = 1;
 
-        if (decpt < -3 || decpt > precision) {
-          precision = kk - 1;
-          __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0,
-                                                   flags, precision, islong);
-        } else {
-          precision = kk - decpt;
-          __group_pos = __format_float_fixed( buf, bp, decpt, sign, true,
-                                              flags, precision, islong);
-        }
-        break;
-    } /* switch */
-  } /* else is_nan_or_inf */
+      int kk = precision;
+      if (!(flags & ios_base::showpoint)) {
+        size_t n = strlen(bp);
+        if (n < (size_t)kk)
+          kk = (int)n;
+        while (kk >= 1 && bp[kk-1] == '0')
+          --kk;
+      }
+
+      if (decpt < -3 || decpt > precision) {
+        precision = kk - 1;
+        __group_pos = __format_float_scientific( buf, bp, decpt, sign, x == 0,
+                                                 flags, precision);
+      } else {
+        precision = kk - decpt;
+        __group_pos = __format_float_fixed( buf, bp, decpt, sign,
+                                            flags, precision, _FLimits::digits10);
+      }
+      break;
+  } /* switch */
   return __group_pos;
 }
 
@@ -629,7 +627,7 @@ static int __fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modif
 size_t  _STLP_CALL
 __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
               double x) {
-  /* In theory, if we want 'abitrary' precision, we should use 'abitrary'
+  /* In theory, if we want 'arbitrary' precision, we should use 'arbitrary'
    * buffer size below, but really we limited by exponent part in double.
    *    - ptr
    */
@@ -658,7 +656,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
     bp = _Stl_ecvtR(x, (min) (precision, DBL_MAX_10_EXP), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
     break;
   }
-  return __format_float(buf, bp, decpt, sign, x, flags, precision, false);
+  return __format_float(buf, bp, decpt, sign, x, flags, precision);
 #endif
 }
 
@@ -666,7 +664,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
 size_t _STLP_CALL
 __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
               long double x) {
-  /* In theory, if we want 'abitrary' precision, we should use 'abitrary'
+  /* In theory, if we want 'arbitrary' precision, we should use 'arbitrary'
    * buffer size below, but really we limited by exponent part in long double.
    *    - ptr
    */
@@ -696,7 +694,7 @@ __write_float(__iostring &buf, ios_base::fmtflags flags, int precision,
     bp = _Stl_qecvtR(x, (min) (precision, LDBL_MAX_10_EXP), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
     break;
   }
-  return __format_float(buf, bp, decpt, sign, x, flags, precision, true);
+  return __format_float(buf, bp, decpt, sign, x, flags, precision);
 #  endif /* USE_SPRINTF_INSTEAD */
 }
 #endif /* _STLP_NO_LONG_DOUBLE */
