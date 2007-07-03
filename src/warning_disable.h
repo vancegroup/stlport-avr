@@ -4,7 +4,8 @@
  * For compiling user code, see stlport/config/_msvc_warnings_off.h.
  */
 
-#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+      defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 #    pragma warning ( disable : 4251 )  // ignore template classes being exported in .dll's
 #  endif
 

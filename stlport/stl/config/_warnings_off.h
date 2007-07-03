@@ -3,7 +3,8 @@
  */
 
 #if defined (_STLP_MSVC)
-#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#  if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
+      defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 /*
  * 31/07/2004: dums - now that we do not export the basic_string class anymore but only a base class
  * we have to disable this warning as the string are used as data members type of many iostream classes.
