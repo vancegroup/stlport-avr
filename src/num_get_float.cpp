@@ -497,10 +497,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
   if ( bexp >= limits::min_exponent ) { /* not zero or denorm */
     if ( limits::digits < 64 ) {
       /* Round to (64 - M + 1) bits */
-      // uint64_t rest = vv.i64 & ((1<<(64 - limits::digits - 1) /* 10 */ ) - 1);
-      // uint64_t rest = vv.i64 & ~((1ULL << 63) >> (M - 2));
       uint64_t rest = vv.i64 & ((~ULL(0) / ULL(2)) >> (limits::digits - 1));
-      // vv.i64 >>= (64 - limits::digits - 1) /* 10 */;
       vv.i64 >>= M - 2;
       uint32_t guard = (uint32) vv.i64 & 1;
       vv.i64 >>= 1;
@@ -522,6 +519,8 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
           }
         }
       }
+
+      vv.i64 &= ~(ULL(1) << (limits::digits - 1)); /* hide hidden bit */
     }
     /*
      * Check for overflow
@@ -543,10 +542,8 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
 
     /* value is normal */
 
-    if (limits::digits < 64)
-      vv.i64 &= ~(ULL(1) << (limits::digits - 1)); /* hide hidden bit */
-
     IEEE v;
+
     v.ieee.mantissa0 = vv.i32.hi;
     v.ieee.mantissa1 = vv.i32.lo;
     v.ieee.negative = 0;
@@ -561,8 +558,10 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
     vv.i64 = 0;
   } else {  /* denorm or possible underflow */
 
-    /* Problem point for long double: looks like this code reflect sharing of mantissa
-     * and exponent in 64b int; not so for long double */
+    /*
+     * Problem point for long double: looks like this code reflect shareing of mantissa
+     * and exponent in 64b int; not so for long double
+     */
 
     int lead0 = M - bexp; /* M = 12 sign and exponent bits */
     uint64_t rest;
@@ -589,6 +588,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
       vv.i64++;
       if (vv.i64 == (ULL(1) << (limits::digits - 1))) { /* carry created normal number */
         IEEE v;
+
         v.ieee.mantissa0 = 0;
         v.ieee.mantissa1 = 0;
         v.ieee.negative = 0;
@@ -599,6 +599,7 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
   }
 
   IEEE v;
+
   v.ieee.mantissa0 = vv.i32.hi;
   v.ieee.mantissa1 = vv.i32.lo;
   v.ieee.negative = 0;
