@@ -1,3 +1,10 @@
+2007-07-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/nmake/vc8.mak: Removed _CRT_SECURE_NO_DEPRECATE
+	when building STLport. Not secured version of functions _ecvt and
+	_fcvt functions used for floating point numbers output are not
+	reentrant.
+
 2007-07-04  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/num_get_float.cpp: reorder code, one condition go away.
