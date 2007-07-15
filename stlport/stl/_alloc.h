@@ -566,7 +566,7 @@ private:
    * swap in this case. For some compilers (VC6) it is a workaround for a
    * compiler bug in the Empty Base class Optimization feature, for others
    * it is a small optimization or nothing if no EBO. */
-  void _M_swap_alloc(_Self& __x, const __true_type& /*_IsStateless*/)
+  void _M_swap_alloc(_Self&, const __true_type& /*_IsStateless*/)
   {}
 
   void _M_swap_alloc(_Self& __x, const __false_type& /*_IsStateless*/) {
