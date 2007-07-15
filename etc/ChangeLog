@@ -1,3 +1,12 @@
+2007-07-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/strstream.cpp: "get end" pointer should be initialized
+	to the "begin of get + N" in obsolete strstream; bug #1536503,
+	thanks for Jean-Eric Cuendet;
+
+	* test/unit/strstream_buffer_read_test.cpp, build/test/unit/Makefile.inc:
+	test for bug above; [submitted by Jean-Eric Cuendet].
+
 2007-07-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/nmake/vc8.mak: Removed _CRT_SECURE_NO_DEPRECATE

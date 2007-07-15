@@ -278,7 +278,7 @@ void strstreambuf::_M_setup(char* get, char* put, streamsize n) {
     size_t N = n > 0 ? size_t(n) : n == 0 ? strlen(get) : size_t(INT_MAX);
 
     if (put) {
-      setg(get, get, put);
+      setg(get, get, get + N);
       setp(put, put + N);
     }
     else {
