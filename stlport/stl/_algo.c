@@ -118,24 +118,20 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
     return __first1;
 
   // Test for a pattern of length 1.
-  _ForwardIter2 __tmp(__first2);
-  ++__tmp;
-  if (__tmp == __last2)
+  _ForwardIter2 __p1(__first2);
+
+  if ( ++__p1 == __last2 )
     return find(__first1, __last1, *__first2);
 
   // General case.
-  _ForwardIter2 __p1 = __first2;
-  ++__p1;
 
-  _ForwardIter1 __current;// = __first1;
-
-  while (__first1 != __last1) {
+  for ( ; ; ) { // __first1 != __last1 will be checked in find below
     __first1 = find(__first1, __last1, *__first2);
     if (__first1 == __last1)
       return __last1;
 
     _ForwardIter2 __p = __p1;
-    __current = __first1;
+    _ForwardIter1 __current = __first1;
     if (++__current == __last1)
       return __last1;
 

@@ -1,3 +1,22 @@
+2007-07-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_algo.c, stlport/stl/_algobase.c: search, the __tmp and
+	__p1 iterators always point at the same position, hence one of them
+	is redundant;
+
+	* stlport/stl/_algobase.c: in the main-loop of search there are two
+	successive while-loops doing exactly the same thing; one of them is
+	redundant and, since it is inside the main-loop, it slows down
+	the algorithm significantly;
+
+	* stlport/stl/_algo.c, stlport/stl/_algobase.c: in the search the main-loop 
+	condition "while (__first1 != __last1)" is always true and consequently
+	redundant; this is because the initial adn in-loop conditions virtually
+	act as guards and will never let the main-loop condition to fail; since
+	this condition is evaluated in every main-loop iteration, its removal
+	will also improve the performance of the algorithm; thanks for
+	Jim Xochellis for this suggestions.
+
 2007-07-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/strstream.cpp: "get end" pointer should be initialized

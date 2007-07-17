@@ -229,9 +229,9 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
     return __first1;
 
   // Test for a pattern of length 1.
-  _ForwardIter2 __tmp(__first2);
-  ++__tmp;
-  if (__tmp == __last2) {
+  _ForwardIter2 __p1(__first2);
+
+  if ( ++__p1 == __last2 ) {
     while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
       _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
@@ -243,30 +243,17 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
   // General case.
 
-  _ForwardIter2 __p1, __p;
-
-  __p1 = __first2; ++__p1;
-
-  //  _ForwardIter1 __current = __first1;
-
-  while (__first1 != __last1) {
-    while (__first1 != __last1) {
-      if (__pred(*__first1, *__first2)) {
-        _STLP_VERBOSE_ASSERT(__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-        break;
-      }
-      _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      ++__first1;
-    }
+  for ( ; ; ) { // __first1 != __last1 will be checked below
     while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
       _STLP_VERBOSE_ASSERT(!__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
     }
-    if (__first1 == __last1)
+    if (__first1 == __last1) {
       return __last1;
+    }
     _STLP_VERBOSE_ASSERT(__pred(*__first2, *__first1), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
 
-    __p = __p1;
+    _ForwardIter2 __p = __p1;
     _ForwardIter1 __current = __first1;
     if (++__current == __last1) return __last1;
 
