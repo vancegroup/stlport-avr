@@ -212,7 +212,8 @@
 #endif
 
 /* Operating system recognition (basic) */
-#if defined(__unix) || defined(__linux__) || defined(__QNX__) || defined(_AIX)  || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__Lynx__) || defined(__hpux) || defined(__sgi)
+#if (defined(__unix) || defined(__linux__) || defined(__QNX__) || defined(_AIX)  || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__Lynx__) || defined(__hpux) || defined(__sgi)) && \
+     !defined (_STLP_UNIX)
 #  define _STLP_UNIX 1
 #endif /* __unix */
 

@@ -1,3 +1,37 @@
+2007-07-18  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_num_put.h: Removed __string_to_float declarations only
+	used in a num_get context.
+
+	* src/num_get_float.cpp:
+	- Import Glibc ieee854_long_double union for compilers having a real
+	long double type but no runtime support to correctly generate it. This
+	union is used by gcc under Cygwin and MinGW and by Borland compiler.
+	- _Stl_string_to_long_double removed, it was so similar to
+	_Stl_string_to_double that everything is done with this function now.
+	- Removed check on exponent value while parsing it from buffer, check is
+	only done when combining this value with the digits read.
+
+	* src/num_get_float.cpp:
+	- Generalize synchronization code arround the ecvt/fcvt functions when
+	the platform do not grant reentrant functions.
+	- In __format_float_scientific, removed useless rz temporary variable, removed
+	limitation in the number of appended trailing zeros.
+	- In __format_float_fixed, removed limitation of number of trailing zeros
+	added after decimal point, it is only limited by precision.
+	- __format_float: Code to detect infinity or NaN has been moved before call
+	to platform specific ecvt/fcvt functions. Thanks to this modification, this
+	function is not template anymore.
+	- Add _Stl_ecvt/_Stl_fcvt emulation functions when platform do not grant
+	the necessary ecvt/fcvt functions for long double. Emulation is based on
+	sprintf function using 'L' modifier.
+	- In __write_floatT function, fix size of static buffer used by _Stl_ecvt/fcvt
+	functions. Fix number of digits in calls to _Stl_fcvt/ecvt in both modes,
+	fixed or scientific.
+
+	* test/unit/num_put_get_test.cpp: Add some tests, somes with a really high
+	precision that show problem with static buffer size.
+
 2007-07-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_algo.c, stlport/stl/_algobase.c: search, the __tmp and

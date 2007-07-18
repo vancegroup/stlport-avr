@@ -29,7 +29,14 @@
 
 #if defined (__linux__)
 #  include <ieee754.h>
+#endif
 
+#if defined (__BORLANDC__)
+typedef unsigned int uint32_t;
+typedef unsigned __int64 uint64_t;
+#endif
+
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
 union _ll {
   uint64_t i64;
   struct {
@@ -44,6 +51,23 @@ union _ll {
 #  endif
   } i32;
 };
+#endif
+
+#if defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
+union ieee854_long_double {
+  long double d;
+
+  /* This is the IEEE 854 double-extended-precision format.  */
+  struct {
+    unsigned int mantissa1:32;
+    unsigned int mantissa0:32;
+    unsigned int exponent:15;
+    unsigned int negative:1;
+    unsigned int empty:16;
+  } ieee;
+};
+
+#  define IEEE854_LONG_DOUBLE_BIAS 0x3fff
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -243,8 +267,7 @@ static void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prod
 // p:    64-bit fraction
 // exp:  base-10 exponent
 // bexp: base-2 exponent (output parameter)
-static void _Stl_tenscale(uint64& p, int exp, int& bexp)
-{
+static void _Stl_tenscale(uint64& p, int exp, int& bexp) {
   bexp = 0;
 
   if ( exp == 0 ) {              /* no scaling needed */
@@ -441,14 +464,16 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
     }
   }
 
-  _STLP_STATIC_ASSERT(sizeof(value) == sizeof(double))
+  _STLP_STATIC_ASSERT(sizeof(value) >= sizeof(double))
   return *((double *) &value);
 }
 
-#else // __linux__
+#endif
+
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
 
 template <class D, class IEEE, int M, int BIAS>
-D _Stl_atod(char *buffer, int ndigit, int dexp)
+D _Stl_atodT(char *buffer, int ndigit, int dexp)
 {
   typedef numeric_limits<D> limits;
 
@@ -610,14 +635,13 @@ D _Stl_atod(char *buffer, int ndigit, int dexp)
 #endif // __linux__
 
 #ifndef __linux__
-static double _Stl_string_to_double(const char *s)
-{
-  const int max_digits = numeric_limits<double>::digits10 + 2 /* 17 */;
+static double _Stl_string_to_double(const char *s) {
+  typedef numeric_limits<double> limits;
+  const int max_digits = limits::digits10 + 2;
   unsigned c;
   unsigned Negate, decimal_point;
   char *d;
   int exp;
-  double x;
   int dpchar;
   char digits[max_digits];
 
@@ -633,10 +657,12 @@ static double _Stl_string_to_double(const char *s)
     Negate = 1;
     c = *s++;
   }
+
   d = digits;
   dpchar = '.' - '0';
   decimal_point = 0;
   exp = 0;
+
   for (;;) {
     c -= '0';
     if (c < 10) {
@@ -658,12 +684,13 @@ static double _Stl_string_to_double(const char *s)
     }
     c = *s++;
   }
+
   /* strtod cant return until it finds the end of the exponent */
   if (d == digits) {
     return 0.0;
   }
 
-  if (c == 'e'-'0' || c == 'E'-'0') {
+  if (c == 'e' - '0' || c == 'E' - '0') {
     register unsigned negate_exp = 0;
     register int e = 0;
     c = *s++;
@@ -675,9 +702,6 @@ static double _Stl_string_to_double(const char *s)
     }
     if (c -= '0', c < 10) {
       do {
-        if ( e > 340 ) {
-          break;
-        }
         e = e * 10 + (int)c;
         c = *s++;
       } while (c -= '0', c < 10);
@@ -685,145 +709,23 @@ static double _Stl_string_to_double(const char *s)
       if (negate_exp) {
         e = -e;
       }
-      if (e < -340 || e > 340) {
-        exp = e;
-      } else {
-        exp += e;
-      }
+      exp += e;
     }
   }
 
-  if (exp < -340) {
-    x = 0;
-  } else if (exp > numeric_limits<double>::max_exponent10 ) {
-    x = numeric_limits<double>::infinity();
-  } else {
-    /* let _Stl_atod diagnose under- and over-flows */
-    /* if the input was == 0.0, we have already returned,
-       so retval of +-Inf signals OVERFLOW, 0.0 UNDERFLOW
-    */
-    x = _Stl_atod(digits, (int)(d - digits), exp);
-  }
-  if (Negate) {
-    x = -x;
-  }
-  return x;
-}
-
-#  if !defined (_STLP_NO_LONG_DOUBLE)
-/*
- * __string_to_long_double is just lifted from atold, the difference being
- * that we just use '.' for the decimal point, rather than let it
- * be taken from the current C locale, which of course is not accessible
- * to us.
- */
-
-static long double
-_Stl_string_to_long_double(const char * s) {
-  const int max_digits = 34;
-  register unsigned c;
-  register unsigned Negate, decimal_point;
-  register char *d;
-  register int exp;
-  long double x;
-  register int dpchar;
-  char digits[max_digits];
-
-  const ctype<char>& ct = use_facet<ctype<char> >(locale::classic());
-  while (c = *s++, ct.is(ctype_base::space, char(c)))
-    ;
-
-  /* process sign */
-  Negate = 0;
-  if (c == '+') {
-    c = *s++;
-  }
-  else if (c == '-') {
-    Negate = 1;
-    c = *s++;
-  }
-
-  d = digits;
-  dpchar = '.' - '0';
-  decimal_point = 0;
-  exp = 0;
-
-  for (;;) {
-    c -= '0';
-    if (c < 10) {
-      if (d == digits+max_digits) {
-        /* ignore more than 34 digits, but adjust exponent */
-        exp += (decimal_point ^ 1);
-      }
-      else {
-        if (c == 0 && d == digits) {
-          /* ignore leading zeros */
-          ;
-        }
-        else {
-          *d++ = (char)c;
-        }
-        exp -= decimal_point;
-      }
-    }
-    else if ((char)c == dpchar && !decimal_point) {    /* INTERNATIONAL */
-      decimal_point = 1;
-    }
-    else {
-      break;
-    }
-    c = *s++;
-  } /* for */
-
-  if (d == digits) {
-    return 0.0L;
-  }
-  if (c == 'e'-'0' || c == 'E'-'0') {
-    register unsigned negate_exp = 0;
-    register int e = 0;
-    c = *s++;
-    if (c == '+' || c == ' ') {
-      c = *s++;
-    }
-    else if (c == '-') {
-      negate_exp = 1;
-      c = *s++;
-    }
-    if (c -= '0', c < 10) {
-      do {
-        if (e <= 340)
-          e = e * 10 + c;
-        else break;
-        c = *s++;
-      }
-      while (c -= '0', c < 10);
-      if (negate_exp) {
-        e = -e;
-      }
-      if (e < -(323+max_digits) || e > 308)
-        exp = e;
-      else
-        exp += e;
-    }
-  }
-
-  if (exp < -(324+max_digits)) {
+  double x;
+  int n = d - digits;
+  if ((exp + n - 1) < limits::min_exponent10) {
     x = 0;
   }
-  else if (exp > 308) {
-    x =  numeric_limits<long double>::infinity();
+  else if ((exp + n - 1) > limits::max_exponent10) {
+    x = limits::infinity();
   }
   else {
-    /* let _Stl_atod diagnose under- and over-flows */
-    /* if the input was == 0.0, we have already returned,
-           so retval of +-Inf signals OVERFLOW, 0.0 UNDERFLOW
-        */
-
-    //    x = _Stl_atod (digits, (int)(d - digits), exp); // TEMPORARY!!:1
-    double tmp = _Stl_atod (digits, (int)(d - digits), exp); // TEMPORARY!!:1
-    x = tmp == numeric_limits<double>::infinity()
-      ? numeric_limits<long double>::infinity()
-      : tmp;
+    /* Let _Stl_atod diagnose under- and over-flows.
+     * If the input was == 0.0, we have already returned,
+     * so retval of +-Inf signals OVERFLOW, 0.0 UNDERFLOW */
+    x = _Stl_atod(digits, n, exp);
   }
 
   if (Negate) {
@@ -832,15 +734,16 @@ _Stl_string_to_long_double(const char * s) {
 
   return x;
 }
-#  endif // _STLP_NO_LONG_DOUBLE
 
-#else // __linux__
+#endif
+
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
 
 template <class D, class IEEE, int M, int BIAS>
-D _Stl_string_to_double(const char *s)
+D _Stl_string_to_doubleT(const char *s)
 {
   typedef numeric_limits<D> limits;
-  const int max_digits = limits::digits10 + 2 /* 17 */;
+  const int max_digits = limits::digits10; /* + 2 17 */;
   unsigned c;
   unsigned decimal_point;
   char *d;
@@ -861,10 +764,12 @@ D _Stl_string_to_double(const char *s)
     Negate = true;
     c = *s++;
   }
+
   d = digits;
   dpchar = '.' - '0';
   decimal_point = 0;
   exp = 0;
+
   for (;;) {
     c -= '0';
     if (c < 10) {
@@ -903,9 +808,6 @@ D _Stl_string_to_double(const char *s)
     }
     if (c -= '0', c < 10) {
       do {
-        if ( e > limits::max_exponent10 ) {
-          break;
-        }
         e = e * 10 + (int)c;
         c = *s++;
       } while (c -= '0', c < 10);
@@ -913,17 +815,14 @@ D _Stl_string_to_double(const char *s)
       if (negate_exp) {
         e = -e;
       }
-      if (e < limits::min_exponent10 || e > limits::max_exponent10 ) {
-        exp = e;
-      } else {
-        exp += e;
-      }
+      exp += e;
     }
   }
 
-  if (exp < limits::min_exponent10) {
+  int n = d - digits;
+  if ((exp + n - 1) < limits::min_exponent10) {
     return D(0.0); // +0.0 is the same as -0.0
-  } else if (exp > limits::max_exponent10 ) {
+  } else if ((exp + n - 1) > limits::max_exponent10 ) {
     // not good, because of x = -x below; this may lead to portaboility problems
     x = limits::infinity();
   } else {
@@ -931,7 +830,7 @@ D _Stl_string_to_double(const char *s)
     /* if the input was == 0.0, we have already returned,
        so retval of +-Inf signals OVERFLOW, 0.0 UNDERFLOW
     */
-    x = _Stl_atod<D,IEEE,M,BIAS>(digits, (int)(d - digits), exp);
+    x = _Stl_atodT<D,IEEE,M,BIAS>(digits, n, exp);
   }
 
   return Negate ? -x : x;
@@ -945,7 +844,7 @@ __string_to_float(const __iostring& v, float& val)
 #if !defined (__linux__)
   val = (float)_Stl_string_to_double(v.c_str());
 #else
-  val = (float)_Stl_string_to_double<double,ieee754_double,12,IEEE754_DOUBLE_BIAS>(v.c_str());
+  val = (float)_Stl_string_to_doubleT<double,ieee754_double,12,IEEE754_DOUBLE_BIAS>(v.c_str());
 #endif
 }
 
@@ -955,18 +854,19 @@ __string_to_float(const __iostring& v, double& val)
 #if !defined (__linux__)
   val = _Stl_string_to_double(v.c_str());
 #else
-  val = _Stl_string_to_double<double,ieee754_double,12,IEEE754_DOUBLE_BIAS>(v.c_str());
+  val = _Stl_string_to_doubleT<double,ieee754_double,12,IEEE754_DOUBLE_BIAS>(v.c_str());
 #endif
 }
 
 #if !defined (_STLP_NO_LONG_DOUBLE)
 void _STLP_CALL
-__string_to_float(const __iostring& v, long double& val)
-{
-#if !defined (__linux__)
-  val = _Stl_string_to_long_double(v.c_str());
+__string_to_float(const __iostring& v, long double& val) {
+#if !defined (__linux__) && !defined (__MINGW32__) && !defined (__CYGWIN__) && !defined (__BORLANDC__)
+  //The following function is valid only if long double is an alias for double.
+  _STLP_STATIC_ASSERT( sizeof(long double) <= sizeof(double) )
+  val = _Stl_string_to_double(v.c_str());
 #else
-  val = _Stl_string_to_double<long double,ieee854_long_double,16,IEEE854_LONG_DOUBLE_BIAS>(v.c_str());
+  val = _Stl_string_to_doubleT<long double,ieee854_long_double,16,IEEE854_LONG_DOUBLE_BIAS>(v.c_str());
 #endif
 }
 #endif
