@@ -93,9 +93,7 @@
 // #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 
 // Uncomment this if your compiler lacks static data members.
-// Uncomment next line if your compiler supports __attribute__((weak))
 // #  define _STLP_NO_STATIC_TEMPLATE_DATA 1
-// #  define _STLP_WEAK_ATTRIBUTE 1
 
 // Uncomment this if your compiler does not support namespaces
 // #  define _STLP_HAS_NO_NAMESPACES 1

@@ -27,6 +27,8 @@
 
 #include <stl/config/_msvc.h>
 
+#define _STLP_STATIC_MEMBER_DECLSPEC
+
 #if defined (_STLP_DONT_RETURN_VOID)
 #  undef _STLP_DONT_RETURN_VOID
 #endif

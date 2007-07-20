@@ -123,8 +123,6 @@ typedef unsigned int wint_t;
 
 #    define _STLP_NO_STATIC_TEMPLATE_DATA
 #    define _STLP_STATIC_CONST_INIT_BUG 1
-#    define _STLP_STATIC_TEMPLATE_DATA 0
-#    define _STLP_WEAK_ATTRIBUTE 1
 #  endif /* __GNUC__ < 3 */
 
 #  define _STLP_NO_LONG_DOUBLE
@@ -193,26 +191,8 @@ typedef unsigned int wint_t;
 #  define _STLP_DEF_CONST_PLCT_NEW_BUG 1
 #endif
 
-#  undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
-#  undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
-
-/* static template data members workaround strategy for gcc tries
- * to use weak symbols.
- * if you don't want to use that, #define _STLP_WEAK_ATTRIBUTE=0 ( you'll
- * have to put "#define __PUT_STATIC_DATA_MEMBERS_HERE" line in one of your
- * compilation unit ( or CFLAGS for it ) _before_ including any STL header ).
- */
-#if defined (_STLP_NO_STATIC_TEMPLATE_DATA) && ! defined (_STLP_WEAK_ATTRIBUTE )
-/* systems using GNU ld or format that supports weak symbols
-   may use "weak" attribute
-   Linux & Solaris ( x86 & SPARC ) are being auto-recognized here */
-#  if defined(_STLP_GNU_LD) || defined(__ELF__) || defined (__CYGWIN__) || \
-     (( defined (__SVR4) || defined ( __svr4__ )) && \
-      ( defined (sun) || defined ( __sun__ )))
-#    define _STLP_WEAK_ATTRIBUTE 1
-#  endif
-#endif /* _STLP_WEAK_ATTRIBUTE */
-
+#undef _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT
+#undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 
 /* strict ANSI prohibits "long long" ( gcc) */
 #if defined ( __STRICT_ANSI__ )
@@ -236,15 +216,10 @@ typedef unsigned int wint_t;
  */
 #if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
 #  define _STLP_STATIC_TEMPLATE_DATA 0
-#  if !defined ( _STLP_WEAK_ATTRIBUTE )
-#    define _STLP_WEAK_ATTRIBUTE 0
-#  endif
 #  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
 #    define __DECLARE_INSTANCE(type,item,init) type item init
 #  else
 #    define __DECLARE_INSTANCE(type,item,init)
 #  endif
-#else
-#  define _STLP_STATIC_TEMPLATE_DATA 1
 #endif
 

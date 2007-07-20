@@ -76,6 +76,7 @@
 #  endif
 
 #  define _STLP_NORETURN_FUNCTION __declspec(noreturn)
+#  define _STLP_STATIC_MEMBER_DECLSPEC
 
 /* Full compiler version comes from boost library intrinsics.hpp header. */
 #  if defined (_MSC_FULL_VER) && (_MSC_FULL_VER >= 140050215)

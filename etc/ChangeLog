@@ -1,3 +1,11 @@
+2007-07-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/_gcc.h, stl_mycomp.h: Removed unused
+	_STLP_WEAK_ATTRIBUTE macro.
+
+	* stlport/stl/config/_msvc.h, _intel.h, _gcc.h, features.h: Some
+	cleanup concerning _STLP_STATIC_TEMPLATE_DATA macro.
+
 2007-07-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_num_put.h: Removed __string_to_float declarations only
