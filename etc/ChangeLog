@@ -1,3 +1,9 @@
+2007-07-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_mbstate_t.h: We have to define mbstate_t ourself
+	on platforms having mbstate_t in cwchar when we want to only use
+	C headers.
+
 2007-07-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/fstream_unistd.cpp: force use lseek64/mmap64 for HP-UX,

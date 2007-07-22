@@ -26,7 +26,7 @@
 #endif
 
 #if defined (_STLP_USE_OWN_MBSTATE_T)
-#  if !defined (_STLP_CPP_MBSTATE_T) || !defined (__cplusplus)
+#  if !defined (_STLP_CPP_MBSTATE_T) || !defined (__cplusplus) || !defined (_STLP_USE_NEW_C_HEADERS)
 typedef int mbstate_t;
 #  endif
 
