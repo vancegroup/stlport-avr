@@ -1,6 +1,6 @@
 2007-07-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-        * src/fstream_unistd.cpp: force use lseek64/mmap64 for HP-UX,
+	* src/fstream_unistd.cpp: force use lseek64/mmap64 for HP-UX,
 	if _LARGEFILE64_SOURCE defined; thanks for Michael Klein.
 
 2007-07-20  Francois Dumont  <dums@users.sourceforge.net>
