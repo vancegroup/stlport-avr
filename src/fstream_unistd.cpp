@@ -115,7 +115,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 // longer versions of those system calls to accommodate 64-bit offsets.
 // If we're on a Unix system, define some macros to encapsulate those
 // differences.
-#ifdef __sgi /* IRIX */
+#if defined(__sgi) /* IRIX */ || (defined(__hpux) && defined(_LARGEFILE64_SOURCE))
 #  define LSEEK lseek64
 #  define MMAP  mmap64
 #else
