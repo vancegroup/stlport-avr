@@ -31,6 +31,10 @@
 #  include <stl/_istreambuf_iterator.h>
 #endif
 
+#ifndef _STLP_FACETS_FWD_H
+#  include <stl/_facets_fwd.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 class money_base {
@@ -46,11 +50,7 @@ template <class _charT, _STLP_DFL_NON_TYPE_PARAM(bool, _International, false) > 
 
 // money_get facets
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, class _InputIter>
-#else
-template <class _CharT, class _InputIter = istreambuf_iterator<_CharT, char_traits<_CharT> > >
-#endif
 class money_get : public locale::facet {
   friend class _Locale_impl;
 
@@ -396,11 +396,7 @@ private:
 
 // money_put facets
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, class _OutputIter>
-#else
-template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_traits<_CharT> > >
-#endif
 class money_put : public locale::facet {
   friend class _Locale_impl;
 public:
@@ -440,17 +436,6 @@ _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, ostreambuf_iterator<wchar_t, char
 // _STLP_EXPORT_TEMPLATE_CLASS money_put<wchar_t, wchar_t* >;
 #  endif
 #endif
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<char, istreambuf_iterator<char, char_traits<char> > >*);
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<char, ostreambuf_iterator<char, char_traits<char> > >*);
-#ifndef _STLP_NO_WCHAR_T
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
-#endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

@@ -43,16 +43,16 @@
 #  include <stl/_iostream_string.h>
 #endif
 
+#ifndef _STLP_FACETS_FWD_H
+#  include <stl/_facets_fwd.h>
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 //----------------------------------------------------------------------
 // num_get facets
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, class _InputIter>
-#else
-template <class _CharT, class _InputIter = istreambuf_iterator<_CharT, char_traits<_CharT> > >
-#endif
 class num_get: public locale::facet {
   friend class _Locale_impl;
 public:
@@ -223,14 +223,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_get<char, istreambuf_iterator<char, char_traits<char> > >*);
-#ifndef _STLP_NO_WCHAR_T
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
-#endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 

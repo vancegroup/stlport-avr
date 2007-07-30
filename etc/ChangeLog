@@ -1,3 +1,11 @@
+2007-07-30  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_facets_fwd.h, _num_put.h, _num_get.h, _monetary.h,
+	_time_facets.h, _locale.h: Fix _GetFacetId workaround for compilers
+	like gcc since 3.4 that consider only the context at point on template
+	definition and not at the point of instantiation when resolving
+	_GetFacetId calls in has_facet or use_facets template functions.
+
 2007-07-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_mbstate_t.h: We have to define mbstate_t ourself

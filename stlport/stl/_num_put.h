@@ -24,19 +24,23 @@
 #define _STLP_INTERNAL_NUM_PUT_H
 
 #ifndef _STLP_INTERNAL_NUMPUNCT_H
-# include <stl/_numpunct.h>
+#  include <stl/_numpunct.h>
 #endif
 
 #ifndef _STLP_INTERNAL_CTYPE_H
-# include <stl/_ctype.h>
+#  include <stl/_ctype.h>
 #endif
 
 #ifndef _STLP_INTERNAL_OSTREAMBUF_ITERATOR_H
-# include <stl/_ostreambuf_iterator.h>
+#  include <stl/_ostreambuf_iterator.h>
 #endif
 
 #ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
-# include <stl/_iostream_string.h>
+#  include <stl/_iostream_string.h>
+#endif
+
+#ifndef _STLP_FACETS_FWD_H
+#  include <stl/_facets_fwd.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -44,11 +48,7 @@ _STLP_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // num_put facet
 
-#if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT, class _OutputIter>
-#else
-template <class _CharT, class _OutputIter = ostreambuf_iterator<_CharT, char_traits<_CharT> > >
-#endif
 class num_put: public locale::facet {
   friend class _Locale_impl;
 public:
@@ -176,15 +176,6 @@ extern void _STLP_CALL __insert_grouping(__iowstring&, size_t, const string&, wc
 _STLP_MOVE_TO_STD_NAMESPACE
 
 #endif /* _STLP_EXPOSE_STREAM_IMPLEMENTATION */
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<char, ostreambuf_iterator<char, char_traits<char> > >*);
-#ifndef _STLP_NO_WCHAR_T
-_STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >*);
-#endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
