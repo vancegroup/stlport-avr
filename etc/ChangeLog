@@ -3,6 +3,9 @@
 	* src/c_locale_win32/c_locale_win32.c: Fix some static buffer size
 	to always have a free place for the trailing zero.
 
+	* test/unit/locale_test.cpp: Add test when passing a very long name
+	as the LC_CTYPE facet name to the locale constructor.
+
 2007-07-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_facets_fwd.h, _num_put.h, _num_get.h, _monetary.h,
