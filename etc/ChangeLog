@@ -3,8 +3,14 @@
 	* src/c_locale_win32/c_locale_win32.c: Fix some static buffer size
 	to always have a free place for the trailing zero.
 
-	* test/unit/locale_test.cpp: Add test when passing a very long name
+	* test/unit/locale_test.cpp: Add a test when passing a very long name
 	as the LC_CTYPE facet name to the locale constructor.
+
+	* src/system_api.h, system_api.c, build/lib/Makefile.inc,
+	src/num_put_float.cpp: Removed system_api workaround to access
+	isinfinite, isnan, isinf C functions used with gcc under Hp unix.
+	Now __format_nan_or_inf has an implementation entirely based on
+	numeric_limits values that avoids access to platform functions.
 
 2007-07-30  Francois Dumont  <dums@users.sourceforge.net>
 

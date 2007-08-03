@@ -47,7 +47,7 @@
 #    define USE_SPRINTF_INSTEAD
 #  endif
 
-#  if defined( _AIX ) // JFA 3-Aug-2000
+#  if defined (_AIX) // JFA 3-Aug-2000
 #    include <math.h>
 #    include <float.h>
 #  endif
@@ -58,16 +58,12 @@
 #include <cstdio>
 #include <cstdlib>
 
-//#if defined(_CRAY)
-//# include <stdlib.h>
-//#endif
-
 #if defined (_STLP_MSVC_LIB) || defined (__MINGW32__) || defined (__BORLANDC__) || defined (__DJGPP) || \
     defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
 #  include <float.h>
 #endif
 
-#if defined(__MRC__) || defined(__SC__)  || defined(_CRAY)  //*TY 02/24/2000 - added support for MPW
+#if defined (__MRC__) || defined (__SC__)  || defined (_CRAY)  //*TY 02/24/2000 - added support for MPW
 #  include <fp.h>
 #endif
 
@@ -92,14 +88,13 @@
 #  define snprintf _snprintf
 #endif
 
+_STLP_BEGIN_NAMESPACE
+
 #if defined (__hpux) && defined (__GNUC__)
-#  include "system_api.h"
-#  define isfinite stlp_isfinite
-#  define isnan stlp_isnan
-#  define isinf stlp_isinf
+bool finite(double);
+bool isinf(double);
 #endif
 
-_STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if defined (__MWERKS__) || defined(__BEOS__)
@@ -548,11 +543,11 @@ static size_t __format_float_fixed( __iostring &buf, const char *bp,
 }
 
 template <class _FloatT>
-static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags)
-{
+static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags) {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan;
+#if !defined (__GNUC__) || !defined (__hpux)
   if (_Stl_is_inf(x)) {            // Infinity
     inf_or_nan = inf;
     if (_Stl_is_neg_inf(x))
@@ -566,6 +561,27 @@ static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags f
     else if (flags & ios_base::showpos)
       buf += '+';
   }
+#else
+  typedef numeric_limits<_FloatT> limits;
+  if (x == limits::infinity() || x == -limits::infinity()) {
+    inf_or_nan = inf;
+    if (x == -limits::infinity())
+      buf += '-';
+    else if (flags & ios_base::showpos)
+      buf += '+';
+  } else {                    // NaN
+    inf_or_nan = nan;
+#  if defined (_STLP_BIG_ENDIAN)
+    if ((*(__REINTERPRET_CAST(char*, &x)) & (1 << (CHAR_BIT - 1))) != 0)
+#else
+    if ((*(__REINTERPRET_CAST(unsigned short*, &x) + ((sizeof(x) == 12 ? 10 : sizeof(x)) / sizeof(unsigned short) - 1)) &
+                unsigned short(1 << (sizeof(unsigned short) * CHAR_BIT - 1))) != 0)
+#endif
+      buf += '-';
+    else if (flags & ios_base::showpos)
+      buf += '+';
+  }
+#endif
   buf += inf_or_nan[flags & ios_base::uppercase ? 1 : 0];
 }
 
