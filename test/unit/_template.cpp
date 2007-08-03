@@ -1,7 +1,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "cppunit_proxy.h"
+#include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
