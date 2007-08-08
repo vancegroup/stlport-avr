@@ -281,17 +281,6 @@
 
 #if defined (_STLP_THREADS)
 #  define _STLP_VOLATILE volatile
-/* windows.h _MUST be included before bool definition ;( */
-#  if defined (_STLP_WIN32THREADS) && defined (_STLP_NO_BOOL)
-#    undef  NOMINMAX
-#    define NOMINMAX
-#    ifdef _STLP_USE_MFC
-#      include <afx.h>
-#    else
-#      include <windows.h>
-#    endif
-#    define _STLP_WINDOWS_H_INCLUDED
-#  endif
 #else
 #  define _STLP_VOLATILE
 #endif

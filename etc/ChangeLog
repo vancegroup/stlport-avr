@@ -1,3 +1,9 @@
+2007-08-08  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/feature.h: Removed useless workaround, there
+	is no more platform using Win32 threading API and missing bool
+	type.
+
 2007-08-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix some static buffer size
