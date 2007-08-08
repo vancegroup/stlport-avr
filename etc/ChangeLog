@@ -9,6 +9,11 @@
 	do not use anymore the sprintf workaround to write floating point
 	numbers.
 
+	* stlport/stl/_auto_ptr.h, test/unit/memory_test.cpp: Fix auto_ptr
+	implementation, removed a useless const_cast and change a reinterpret_cast
+	in static_cast. Add support for instanciation with the volatile qualifier.
+	Thanks Ulrich Eckhardt report.
+
 2007-08-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix some static buffer size

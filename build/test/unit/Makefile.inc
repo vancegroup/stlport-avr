@@ -98,6 +98,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/map_header_test.cpp \
 	../../../test/unit/max_test.cpp \
 	../../../test/unit/memory_header_test.cpp \
+	../../../test/unit/memory_test.cpp \
 	../../../test/unit/merge_test.cpp \
 	../../../test/unit/messages_facets_test.cpp \
 	../../../test/unit/mfunptr_test.cpp \

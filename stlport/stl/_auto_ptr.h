@@ -17,14 +17,14 @@
  */
 
 #ifndef _STLP_AUTO_PTR_H
-# define _STLP_AUTO_PTR_H
+#define _STLP_AUTO_PTR_H
 
 _STLP_BEGIN_NAMESPACE
 // implementation primitive
 class __ptr_base {
 public:
   void* _M_p;
-  void  __set(const void* p) { _M_p = __CONST_CAST(void*,p); }
+  void  __set(const volatile void* p) { _M_p = __CONST_CAST(void*,p); }
   void  __set(void* p) { _M_p = p; }
 };
 
@@ -36,7 +36,7 @@ public:
 
   auto_ptr_ref(__ptr_base& __r, _Tp* __p) : _M_r(__r), _M_p(__p) {  }
 
-  _Tp* release() const { _M_r.__set((void*)0); return _M_p; }
+  _Tp* release() const { _M_r.__set(__STATIC_CAST(void*, 0)); return _M_p; }
 
 private:
   //explicitely defined as private to avoid warnings:
@@ -64,16 +64,16 @@ public:
   }
 
   _Tp* get() const _STLP_NOTHROW
-  { return __REINTERPRET_CAST(_Tp*,__CONST_CAST(void*,_M_p)); }
+  { return __STATIC_CAST(_Tp*, _M_p); }
 
 #if !defined (_STLP_NO_ARROW_OPERATOR)
   _Tp* operator->() const _STLP_NOTHROW {
-    _STLP_VERBOSE_ASSERT(get()!=0, _StlMsg_AUTO_PTR_NULL)
+    _STLP_VERBOSE_ASSERT(get() != 0, _StlMsg_AUTO_PTR_NULL)
     return get();
   }
 #endif
   _Tp& operator*() const _STLP_NOTHROW {
-    _STLP_VERBOSE_ASSERT(get()!= 0, _StlMsg_AUTO_PTR_NULL)
+    _STLP_VERBOSE_ASSERT(get() != 0, _StlMsg_AUTO_PTR_NULL)
     return *get();
   }
 
