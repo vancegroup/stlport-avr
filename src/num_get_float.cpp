@@ -27,16 +27,14 @@
 #  include <stdint.h>
 #endif
 
-#if defined (__linux__)
-#  include <ieee754.h>
-#endif
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
+    defined (__BORLANDC__) || defined (__DMC__)
 
-#if defined (__BORLANDC__)
+#  if defined (__BORLANDC__)
 typedef unsigned int uint32_t;
 typedef unsigned __int64 uint64_t;
-#endif
+#  endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
 union _ll {
   uint64_t i64;
   struct {
@@ -51,9 +49,10 @@ union _ll {
 #  endif
   } i32;
 };
-#endif
 
-#if defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
+#  if defined (__linux__)
+#    include <ieee754.h>
+#  else
 union ieee854_long_double {
   long double d;
 
@@ -67,7 +66,8 @@ union ieee854_long_double {
   } ieee;
 };
 
-#  define IEEE854_LONG_DOUBLE_BIAS 0x3fff
+#    define IEEE854_LONG_DOUBLE_BIAS 0x3fff
+#  endif
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -470,7 +470,8 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
 
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) ||\
+    defined (__BORLANDC__) || defined (__DMC__)
 
 template <class D, class IEEE, int M, int BIAS>
 D _Stl_atodT(char *buffer, int ndigit, int dexp)
@@ -737,7 +738,8 @@ static double _Stl_string_to_double(const char *s) {
 
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || defined (__BORLANDC__)
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
+    defined (__BORLANDC__) || defined (__DMC__)
 
 template <class D, class IEEE, int M, int BIAS>
 D _Stl_string_to_doubleT(const char *s)
@@ -861,7 +863,8 @@ __string_to_float(const __iostring& v, double& val)
 #if !defined (_STLP_NO_LONG_DOUBLE)
 void _STLP_CALL
 __string_to_float(const __iostring& v, long double& val) {
-#if !defined (__linux__) && !defined (__MINGW32__) && !defined (__CYGWIN__) && !defined (__BORLANDC__)
+#if !defined (__linux__) && !defined (__MINGW32__) && !defined (__CYGWIN__) && \
+    !defined (__BORLANDC__) && !defined (__DMC__)
   //The following function is valid only if long double is an alias for double.
   _STLP_STATIC_ASSERT( sizeof(long double) <= sizeof(double) )
   val = _Stl_string_to_double(v.c_str());

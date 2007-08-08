@@ -4,6 +4,11 @@
 	is no more platform using Win32 threading API and missing bool
 	type.
 
+	* src/num_put_float.cpp, num_get_float.cpp: Fixes for DMC, DMC has
+	real long double so it now uses ieee854_long_double Glibc type. DMC
+	do not use anymore the sprintf workaround to write floating point
+	numbers.
+
 2007-08-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix some static buffer size

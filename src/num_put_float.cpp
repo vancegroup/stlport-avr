@@ -164,7 +164,7 @@ static inline bool _Stl_is_inf(long double x)        {  return _Stl_is_nan_or_in
 static inline bool _Stl_is_neg_inf(long double x)    {  return _Stl_is_inf(x) && x < 0 ; }
 static inline bool _Stl_is_neg_nan(long double x)    { return _isnanl(x) && _copysignl(1.l, x) < 0 ; }
 #    endif
-#  elif defined (__MRC__) || defined (__SC__)    //*TY 02/24/2000 - added support for MPW
+#  elif defined (__MRC__) || defined (__SC__) || defined (__DMC__)
 static bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !isfinite(x); }
 static bool _Stl_is_inf(double x)        { return !isfinite(x); }
 static bool _Stl_is_neg_inf(double x)    { return !isfinite(x) && signbit(x); }
@@ -314,7 +314,8 @@ static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* b
 #    endif
 #  elif defined (_AIX) || defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || \
         defined (__MRC__) || defined (__SC__) || defined (_CRAY) || \
-        defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR)
+        defined (_STLP_SCO_OPENSERVER) || defined (__NCR_SVR) || \
+        defined (__DMC__)
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign)
 { return ecvt(x, n, pt, sign ); }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign)
@@ -326,6 +327,8 @@ static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign)
 { return fcvt(x, n, pt, sign); }
 #    endif
 #    define _STLP_CVT_NEED_SYNCHRONIZATION
+#  else
+#    error Missing _Stl_ecvtR and _Stl_fcvtR implementations.
 #  endif
 
 #if defined (_STLP_CVT_NEED_SYNCHRONIZATION)
@@ -691,6 +694,7 @@ static size_t  __write_floatT(__iostring &buf, ios_base::fmtflags flags, int pre
    * buffer size below, but really we limited by exponent part in double.
    *    - ptr
    */
+  typedef numeric_limits<_FloatT> limits;
   char static_buf[limits::max_exponent10 + 6]; // 6: -xxx.yyyE-zzz (sign, dot, E, exp sign, \0)
   char fmtbuf[32];
   __fill_fmtbuf(fmtbuf, flags, modifier);
@@ -735,18 +739,24 @@ static size_t  __write_floatT(__iostring &buf, ios_base::fmtflags flags, int pre
 
   switch (flags & ios_base::floatfield) {
   case ios_base::fixed:
-    /* Here, number of digits represents digits _after_ decimal point.
-     * In order to limit static buffer size we have to give 2 different values depending on x value. 
-     * For small values (abs(x) < 1) we need as many digits as requested by precision limited by the maximum number of digits
-     * which is min_exponent10 + digits10 + 2
-     * For bigger values we won't have more than limits::digits10 + 2 digits after decimal point. */
-    bp = _Stl_fcvtR(x, (min) (precision, (x > -1.0 && x < 1.0 ? -limits::min_exponent10 + limits::digits10 + 2
-                                                              : limits::digits10 + 2)), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
+    {
+      /* Here, number of digits represents digits _after_ decimal point.
+       * In order to limit static buffer size we have to give 2 different values depending on x value. 
+       * For small values (abs(x) < 1) we need as many digits as requested by precision limited by the maximum number of digits
+       * which is min_exponent10 + digits10 + 2
+       * For bigger values we won't have more than limits::digits10 + 2 digits after decimal point. */
+      int digits10 = (x > -1.0 && x < 1.0 ? -limits::min_exponent10 + limits::digits10 + 2
+                                          : limits::digits10 + 2);
+      bp = _Stl_fcvtR(x, (min) (precision, digits10), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
+    }
     break;
   case ios_base::scientific:
   default:
     /* Here, number of digits is total number of digits which is limited to digits10 + 2. */
-    bp = _Stl_ecvtR(x, (min) (precision, limits::digits10 + 2), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
+    {
+      int digits10 = limits::digits10 + 2;
+      bp = _Stl_ecvtR(x, (min) (precision, digits10), &decpt, &sign, _STLP_CVT_BUFFER(cvtbuf) );
+    }
     break;
   }
   return __format_float(buf, bp, decpt, sign, x == 0.0, flags, precision);
