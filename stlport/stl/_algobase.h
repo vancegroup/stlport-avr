@@ -623,6 +623,10 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // find_first_of
+template <class _InputIter, class _ForwardIter>
+_InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
+                           _ForwardIter __first2, _ForwardIter __last2);
+
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
 _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
                            _ForwardIter __first2, _ForwardIter __last2,

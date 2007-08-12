@@ -137,8 +137,7 @@ inline _InputIter find_first_of(_InputIter __first1, _InputIter __last1,
                                 _ForwardIter __first2, _ForwardIter __last2) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first1, __last1))
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first2, __last2))
-  return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2,
-                                    _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
+  return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2);
 }
 
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>

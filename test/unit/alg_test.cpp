@@ -199,6 +199,15 @@ void AlgTest::search_n_test()
   }
 }
 
+struct MyIntComparable {
+  MyIntComparable(int val) : _val(val) {}
+  bool operator == (const MyIntComparable& other) const
+  { return _val == other._val; }
+
+private:
+  int _val;
+};
+
 void AlgTest::find_first_of_test()
 {
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
@@ -260,5 +269,61 @@ void AlgTest::find_first_of_test()
     CPPUNIT_ASSERT( first != intv.end() );
     CPPUNIT_ASSERT( *first == 2 );
   }
-}
+  {
+    char chars[] = {1, 2};
 
+    vector<int> intv;
+    intv.push_back(0);
+    intv.push_back(1);
+    intv.push_back(2);
+    intv.push_back(3);
+
+    vector<int>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), chars, chars + sizeof(chars));
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == 1 );
+  }
+  {
+    unsigned char chars[] = {1, 2, 255};
+
+    vector<int> intv;
+    intv.push_back(-10);
+    intv.push_back(1029);
+    intv.push_back(255);
+    intv.push_back(4);
+
+    vector<int>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), chars, chars + sizeof(chars));
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == 255 );
+  }
+  {
+    signed char chars[] = {93, 2, -101};
+
+    vector<int> intv;
+    intv.push_back(-10);
+    intv.push_back(1029);
+    intv.push_back(-2035);
+    intv.push_back(-101);
+    intv.push_back(4);
+
+    vector<int>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), chars, chars + sizeof(chars));
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == -101 );
+  }
+  {
+    char chars[] = {1, 2};
+
+    vector<MyIntComparable> intv;
+    intv.push_back(0);
+    intv.push_back(1);
+    intv.push_back(2);
+    intv.push_back(3);
+
+    vector<MyIntComparable>::iterator first;
+    first = find_first_of(intv.begin(), intv.end(), chars, chars + sizeof(chars));
+    CPPUNIT_ASSERT( first != intv.end() );
+    CPPUNIT_ASSERT( *first == 1 );
+  }
+}

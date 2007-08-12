@@ -1,3 +1,13 @@
+2007-08-12  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algo.h, _algobase.h, _algobase.c: find_first_of
+	algorithm enhancement based on the Jim Xochellis analysis that you
+	can find here:
+	http://www.codeproject.com/vcpp/stl/find_first_of.asp.
+
+	* test/unit/alg_test.cpp: Add several tests to challenge the above
+	enhancement.
+
 2007-08-08  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/feature.h: Removed useless workaround, there

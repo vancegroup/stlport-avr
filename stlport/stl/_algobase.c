@@ -272,6 +272,64 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
+template <class _Tp>
+struct _IsCharLikeType
+{ typedef __false_type _Ret; };
+
+_STLP_TEMPLATE_NULL struct _IsCharLikeType<char>
+{ typedef __true_type _Ret; };
+
+_STLP_TEMPLATE_NULL struct _IsCharLikeType<unsigned char>
+{ typedef __true_type _Ret; };
+
+#  ifndef _STLP_NO_SIGNED_BUILTINS
+_STLP_TEMPLATE_NULL struct _IsCharLikeType<signed char>
+{ typedef __true_type _Ret; };
+#  endif
+
+template <class _InputIter, class _ForwardIter, class _Tp>
+inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
+                                       _ForwardIter __first2, _ForwardIter __last2,
+                                       _Tp*, const __true_type& /* _UseStrcspnLikeAlgo */) {
+  unsigned char __hints[(UCHAR_MAX + 1) / CHAR_BIT];
+  memset(__hints, 0, sizeof(__hints) / sizeof(unsigned char));
+  for (; __first2 != __last2; ++__first2) {
+    __hints[(unsigned char)*__first2 / CHAR_BIT] |= (1 << ((unsigned char)*__first2 % CHAR_BIT));
+  }
+
+  for (; __first1 != __last1; ++__first1) {
+    if ((*__first1 == (_Tp)*__first1) &&
+        (__hints[(unsigned char)*__first1 / CHAR_BIT] & (1 << ((unsigned char)*__first1 % CHAR_BIT))) != 0)
+      break;
+  }
+  return __first1;
+}
+
+template <class _InputIter, class _ForwardIter, class _Tp>
+inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
+                                       _ForwardIter __first2, _ForwardIter __last2,
+                                       _Tp*, const __false_type& /* _UseStrcspnLikeAlgo */) {
+  return __find_first_of(__first1, __last1, __first2, __last2,
+                         __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
+}
+
+template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
+inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
+                                       _ForwardIter __first2, _ForwardIter __last2,
+                                       _Tp1* __pt1, _Tp2* __pt2) {
+  typedef typename _IsIntegral<_Tp1>::_Ret _IsIntegral;
+  typedef typename _IsCharLikeType<_Tp2>::_Ret _IsCharLike;
+  typedef typename _Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
+  return __find_first_of_aux2(__first1, __last1, __first2, __last2, __pt2, _UseStrcspnLikeAlgo());
+}
+
+template <class _InputIter, class _ForwardIter>
+inline _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
+                                  _ForwardIter __first2, _ForwardIter __last2) {
+  return __find_first_of_aux1(__first1, __last1, __first2, __last2,
+                              _STLP_VALUE_TYPE(__first1, _InputIter),
+                              _STLP_VALUE_TYPE(__first2, _ForwardIter));
+}
 
 // find_first_of, with and without an explicitly supplied comparison function.
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
