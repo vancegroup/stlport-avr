@@ -3,6 +3,9 @@
 	* test/unit/memory_test.cpp: MSVC6 do not support this test,
 	ignored.
 
+	* stlport/stl/_string.h: Internal _String_reserve_t moved to
+	private namespace.
+
 2007-08-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algo.h, _algobase.h, _algobase.c: find_first_of

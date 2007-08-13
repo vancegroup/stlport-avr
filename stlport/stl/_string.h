@@ -102,7 +102,9 @@ _STLP_BEGIN_NAMESPACE
 // Note one important consequence: a string of length n must manage
 // a block of memory whose size is at least n + 1.
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
 struct _String_reserve_t {};
+_STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #  define basic_string _STLP_NO_MEM_T_NAME(str)
@@ -155,7 +157,7 @@ public:
 
 #include <stl/_string_npos.h>
 
-  typedef _String_reserve_t _Reserve_t;
+  typedef _STLP_PRIV _String_reserve_t _Reserve_t;
 
 public:                         // Constructor, destructor, assignment.
   typedef typename _Base::allocator_type allocator_type;
