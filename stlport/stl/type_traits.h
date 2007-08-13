@@ -239,19 +239,19 @@ struct __type_traits {
           - Members you add will be treated like regular members unless
 
             you add the appropriate support in the compiler. */
-#  if !defined (_STLP_HAS_TYPE_TRAITS_INTRINSICS)
+#    if !defined (_STLP_HAS_TYPE_TRAITS_INTRINSICS)
    typedef __false_type    has_trivial_default_constructor;
    typedef __false_type    has_trivial_copy_constructor;
    typedef __false_type    has_trivial_assignment_operator;
    typedef __false_type    has_trivial_destructor;
    typedef __false_type    is_POD_type;
-#  else
+#    else
    typedef typename __bool2type<_STLP_HAS_TRIVIAL_CONSTRUCTOR(_Tp)>::_Ret has_trivial_default_constructor;
    typedef typename __bool2type<_STLP_HAS_TRIVIAL_COPY(_Tp)>::_Ret has_trivial_copy_constructor;
    typedef typename __bool2type<_STLP_HAS_TRIVIAL_ASSIGN(_Tp)>::_Ret has_trivial_assignment_operator;
    typedef typename __bool2type<_STLP_HAS_TRIVIAL_DESTRUCTOR(_Tp)>::_Ret has_trivial_destructor;
    typedef typename __bool2type<_STLP_IS_POD(_Tp)>::_Ret is_POD_type;
-#  endif
+#    endif
 };
 
 #    if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
@@ -311,7 +311,7 @@ _STLP_DEFINE_TYPE_TRAITS_FOR(double);
 _STLP_DEFINE_TYPE_TRAITS_FOR(long double);
 #  endif
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _ArePtrs, class _Src, class _Dst>
 struct _IsCVConvertibleIf
 { typedef typename _IsCVConvertible<_Src, _Dst>::_Ret _Ret; };
@@ -319,8 +319,8 @@ struct _IsCVConvertibleIf
 template <class _Src, class _Dst>
 struct _IsCVConvertibleIf<__false_type, _Src, _Dst>
 { typedef __false_type _Ret; };
-#else
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+#  else
+#    if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 template <class _ArePtrs>
 struct _IsCVConvertibleIfAux {
   template <class _Src, class _Dst>
@@ -339,15 +339,15 @@ template <class _ArePtrs, class _Src, class _Dst>
 struct _IsCVConvertibleIf {
   typedef typename _IsCVConvertibleIfAux<_ArePtrs>::_STLP_TEMPLATE _In<_Src, _Dst>::_Ret _Ret;
 };
-#  else
+#    else
 /* default behavior: we prefer to miss an optimization rather than taking the risk of
  * a compilation error if playing with types with exotic memory alignment.
  */
 template <class _ArePtrs, class _Src, class _Dst>
 struct _IsCVConvertibleIf
 { typedef __false_type _Ret; };
+#    endif
 #  endif
-#endif
 
 template <class _Src, class _Dst>
 struct _TrivialNativeTypeCopy {
@@ -377,12 +377,12 @@ template <class _Src, class _Dst>
 struct _TrivialCopy {
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
 
-#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_assignment_operator _Tr1;
-#else
+#  else
   typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
   typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
-#endif
+#  endif
   typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
@@ -394,12 +394,12 @@ template <class _Src, class _Dst>
 struct _TrivialUCopy {
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
 
-#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_copy_constructor _Tr1;
-#else
+#  else
   typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
   typedef typename __type_traits<_Tp3>::has_trivial_copy_constructor _Tr1;
-#endif
+#  endif
   typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
@@ -417,12 +417,12 @@ struct _DefaultZeroValue {
 
 template <class _Tp>
 struct _TrivialInit {
-#if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
+#  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor _Tr1;
-#else
+#  else
   typedef typename _UnConstPtr<_Tp*>::_Type _Tp1;
   typedef typename __type_traits<_Tp1>::has_trivial_copy_constructor _Tr1;
-#endif
+#  endif
   typedef typename _DefaultZeroValue<_Tp>::_Ret _Tr2;
   typedef typename _Not<_Tr2>::_Ret _Tr3;
   typedef typename _Land2<_Tr1, _Tr3>::_Ret _Ret;
