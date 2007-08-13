@@ -1,3 +1,8 @@
+2007-08-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/memory_test.cpp: MSVC6 do not support this test,
+	ignored.
+
 2007-08-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algo.h, _algobase.h, _algobase.c: find_first_of
