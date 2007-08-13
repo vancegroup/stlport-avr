@@ -207,7 +207,8 @@ class char_traits
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC char_traits<char>
-  : public __char_traits_base<char, int> {
+  : public __char_traits_base<char, int>,
+    public __stlport_class<char_traits<char> > {
 public:
   typedef char char_type;
   typedef int int_type;

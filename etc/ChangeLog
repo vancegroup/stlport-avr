@@ -6,6 +6,10 @@
 	* stlport/stl/_string.h: Internal _String_reserve_t moved to
 	private namespace.
 
+	* stlport/stl/_algobase.c, _string.c, char_traits.h: Adoption of
+	the find_first_of trick below in string::find_first_of, find_last_of,
+	find_first_not_of and find_last_not_of.
+
 2007-08-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algo.h, _algobase.h, _algobase.c: find_first_of

@@ -34,6 +34,10 @@
 #  include <stl/_ctraits_fns.h>
 #endif
 
+#ifndef _STLP_INTERNAL_FUNCTION_H
+#  include <stl/_function.h>
+#endif
+
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 #  define basic_string _STLP_NO_MEM_T_NAME(str)
 #elif defined (_STLP_DEBUG)
@@ -67,6 +71,81 @@ struct _Not_within_traits : public unary_function<typename _Traits::char_type, b
                    _STLP_PRIV _Eq_char_bound<_Traits>(__x)) == _M_last;
   }
 };
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_of_aux(_InputIter __first1, _InputIter __last1,
+                                          const _CharT* __first2, const _CharT* __last2,
+                                          _Traits*, const __true_type& /* _STLportTraits */)
+{ return __find_first_of(__first1, __last1, __first2, __last2); }
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_of_aux(_InputIter __first1, _InputIter __last1,
+                                          const _CharT* __first2, const _CharT* __last2,
+                                          _Traits*, const __false_type& /* _STLportTraits */)
+{ return __find_first_of(__first1, __last1, __first2, __last2, _STLP_PRIV _Eq_traits<_Traits>()); }
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_of(_InputIter __first1, _InputIter __last1,
+                                      const _CharT* __first2, const _CharT* __last2,
+                                      _Traits* __traits) {
+#if !defined (__BORLANDC__)
+  typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
+#else
+  enum { _Is = _IsSTLportClass<_Traits>::_Is };
+  typedef typename __bool2type<_Is>::_Ret _STLportTraits;
+#endif
+  return __str_find_first_of_aux(__first1, __last1, __first2, __last2, __traits, _STLportTraits());
+}
+
+template <class _InputIter, class _CharT, class _Tp, class _Traits>
+inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
+                                               const _CharT* __first2, const _CharT* __last2,
+                                               _Tp* __pt, _Traits* /* __traits */,
+                                               const __true_type& __useStrcspnLikeAlgo)
+{ return __find_first_of_aux2(__first1, __last1, __first2, __last2, __pt, not1(_Identity<bool>()), __useStrcspnLikeAlgo); }
+
+template <class _InputIter, class _CharT, class _Tp, class _Traits>
+inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
+                                               const _CharT* __first2, const _CharT* __last2,
+                                               _Tp* /* __dummy */, _Traits* /* __traits */,
+                                               const __false_type& /* _UseStrcspnLikeAlgo */)
+{ return _STLP_STD::find_if(__first1, __last1, _STLP_PRIV _Not_within_traits<_Traits>(__first2, __last2)); }
+
+template <class _InputIter, class _CharT, class _Tp, class _Traits>
+inline _InputIter __str_find_first_not_of_aux2(_InputIter __first1, _InputIter __last1,
+                                               const _CharT* __first2, const _CharT* __last2,
+                                               _Tp* /* __dummy */, _Traits* __traits) {
+  typedef typename _IsIntegral<_Tp>::_Ret _IsIntegral;
+  typedef typename _IsCharLikeType<_CharT>::_Ret _IsCharLike;
+  typedef typename _Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
+  return __str_find_first_not_of_aux3(__first1, __last1, __first2, __last2, __first2, __traits, _UseStrcspnLikeAlgo());
+}
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_not_of_aux1(_InputIter __first1, _InputIter __last1,
+                                               const _CharT* __first2, const _CharT* __last2,
+                                               _Traits* __traits, const __true_type& /* _STLportTraits */)
+{ return __str_find_first_not_of_aux2(__first1, __last1, __first2, __last2,
+                                      _STLP_VALUE_TYPE(__first1, _InputIter), __traits); }
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_not_of_aux1(_InputIter __first1, _InputIter __last1,
+                                               const _CharT* __first2, const _CharT* __last2,
+                                               _Traits*, const __false_type& /* _STLportTraits */)
+{ return _STLP_STD::find_if(__first1, __last1, _STLP_PRIV _Not_within_traits<_Traits>(__first2, __last2)); }
+
+template <class _InputIter, class _CharT, class _Traits>
+inline _InputIter __str_find_first_not_of(_InputIter __first1, _InputIter __last1,
+                                          const _CharT* __first2, const _CharT* __last2,
+                                          _Traits* __traits) {
+#if !defined (__BORLANDC__)
+  typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
+#else
+  enum { _Is = _IsSTLportClass<_Traits>::_Is };
+  typedef typename __bool2type<_Is>::_Ret _STLportTraits;
+#endif
+  return __str_find_first_not_of_aux1(__first1, __last1, __first2, __last2, __traits, _STLportTraits());
+}
 
 // ------------------------------------------------------------
 // Non-inline declarations.
@@ -500,9 +579,9 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_of(const _CharT* __s, size_type
   if (__pos >= size()) /*__pos + 1 > size()*/
     return npos;
   else {
-    const_iterator __result = _STLP_PRIV __find_first_of(begin() + __pos, end(),
-                                                         __s, __s + __n,
-                                                         _STLP_PRIV _Eq_traits<_Traits>());
+    const_iterator __result = _STLP_PRIV __str_find_first_of(begin() + __pos, end(),
+                                                             __s, __s + __n,
+                                                             __STATIC_CAST(_Traits*, 0));
     return __result != end() ? __result - begin() : npos;
   }
 }
@@ -517,9 +596,9 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_of(const _CharT* __s, size_type 
   else {
     const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const const_reverse_iterator __rresult =
-      _STLP_PRIV __find_first_of(const_reverse_iterator(__last), rend(),
-                                 __s, __s + __n,
-                                 _STLP_PRIV _Eq_traits<_Traits>());
+      _STLP_PRIV __str_find_first_of(const_reverse_iterator(__last), rend(),
+                                     __s, __s + __n,
+                                     __STATIC_CAST(_Traits*, 0));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
@@ -532,9 +611,10 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(const _CharT* __s, size_
   if (__pos >= size()) /*__pos + 1 >= size()*/
     return npos;
   else {
-    const_pointer __result = _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
-                                                _STLP_PRIV _Not_within_traits<_Traits>(__CONST_CAST(const _CharType*, __s),
-                                                                                        __CONST_CAST(const _CharType*, __s) + __n));
+    const_pointer __result = _STLP_PRIV __str_find_first_not_of(this->_M_Start() + __pos, this->_M_Finish(),
+                                                                __STATIC_CAST(const _CharType*, __s),
+                                                                __STATIC_CAST(const _CharType*, __s) + __n,
+                                                                __STATIC_CAST(_Traits*, 0));
     return __result != this->_M_finish ? __result - this->_M_Start() : npos;
   }
 }
@@ -561,9 +641,10 @@ basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_t
     const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
     const_reverse_iterator __rlast = const_reverse_iterator(__last);
     const_reverse_iterator __rresult =
-      _STLP_STD::find_if(__rlast, rend(),
-                         _STLP_PRIV _Not_within_traits<_Traits>((const _CharType*)__s,
-                                                                 (const _CharType*)__s + __n));
+      _STLP_PRIV __str_find_first_not_of(__rlast, rend(),
+                                         __STATIC_CAST(const _CharType*, __s),
+                                         __STATIC_CAST(const _CharType*, __s) + __n,
+                                         __STATIC_CAST(_Traits*, 0));
     return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
 }
