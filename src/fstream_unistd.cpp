@@ -111,16 +111,21 @@ streamoff __file_size(_STLP_fd fd)
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-// All version of Unix have mmap and lseek system calls.  Some also have
-// longer versions of those system calls to accommodate 64-bit offsets.
-// If we're on a Unix system, define some macros to encapsulate those
-// differences.
-#if defined(__sgi) /* IRIX */ || (defined(__hpux) && defined(_LARGEFILE64_SOURCE))
+// Compare with streamoff definition in stl/char_traits.h!
+
+#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
+#  define LSEEK lseek
+#  define MMAP  mmap
+#  define OPEN  open
+#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
+     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
 #  define LSEEK lseek64
 #  define MMAP  mmap64
+#  define OPEN  open64
 #else
 #  define LSEEK lseek
 #  define MMAP  mmap
+#  define OPEN  open
 #endif
 
 #ifndef MAP_FAILED /* MMAP failure return code */
@@ -193,7 +198,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
       return false;               // flags allowed by the C++ standard.
   }
 
-  file_no = open(name, flags, permission);
+  file_no = OPEN(name, flags, permission);
 
   if (file_no < 0)
     return false;

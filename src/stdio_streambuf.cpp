@@ -43,6 +43,36 @@
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+// Compare with streamoff definition in stl/char_traits.h!
+
+#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
+#  define FSEEK fseek
+#  define FTELL ftell
+#  define FSTAT fstat
+#  define STAT  stat
+#  define FSETPOS  fsetpos
+#  define FGETPOS  fgetpos
+#  define FPOS_T   fpos_t
+#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
+     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
+#  define FSEEK fseeko64
+#  define FTELL ftello64
+#  define FSTAT fstat64
+#  define STAT  stat64
+#  define FSETPOS  fsetpos64
+#  define FGETPOS  fgetpos64
+#  define FPOS_T   fpos64_t
+#else
+#  define FSEEK fseek
+#  define FTELL ftell
+#  define FSTAT fstat
+#  define STAT  stat
+#  define FSETPOS  fsetpos
+#  define FGETPOS  fgetpos
+#  define FPOS_T   fpos_t
+#endif
+
+
 //----------------------------------------------------------------------
 // Class stdio_streambuf_base
 
@@ -84,13 +114,9 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
     return pos_type(-1);
   }
 
-  //We also check that off is not larger than the fseek parameter that is supposed to take
-  //a long integer.
-  _STLP_STATIC_ASSERT(sizeof(off_type) >= sizeof(long))
-  if (off <= numeric_limits<long>::max() &&
-      _STLP_VENDOR_CSTD::fseek(_M_file, __STATIC_CAST(long, off), whence) == 0) {
-    fpos_t pos;
-    _STLP_VENDOR_CSTD::fgetpos(_M_file, &pos);
+  if (off <= numeric_limits<off_type>::max() && FSEEK(_M_file, __STATIC_CAST(long, off), whence) == 0) {
+    FPOS_T pos;
+    FGETPOS(_M_file, &pos);
     // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
     // of a primitive type
 #if (defined (__GLIBC__) && ((__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))))
@@ -113,7 +139,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
   // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
   // of a primitive type
 #if (defined(__GLIBC__) && ( (__GLIBC__ > 2) || ( (__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2) ) ) )
-  fpos_t p;
+  FPOS_T p;
   p.__pos = pos;
 #  ifdef _STLP_USE_UCLIBC
 #    ifdef __STDIO_MBSTATE
@@ -126,17 +152,17 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
   memset( &(p.__state), 0, sizeof(p.__state) );
 #  endif
 #elif defined (__MVS__) || defined (__OS400__)
-  fpos_t p;
+  FPOS_T p;
   p.__fpos_elem[0] = pos;
 #elif defined(__EMX__)
-  fpos_t p;
+  FPOS_T p;
   p._pos = pos;
   memset( &(p._mbstate), 0, sizeof(p._mbstate) );
 #else
-  fpos_t p(pos);
+  FPOS_T p(pos);
 #endif
 
-  if (_STLP_VENDOR_CSTD::fsetpos(_M_file, &p) == 0)
+  if ( FSETPOS(_M_file, &p) == 0)
     return pos;
   else
     return pos_type(-1);
@@ -160,22 +186,22 @@ streamsize stdio_istreambuf::showmanyc() {
     (fd); // prevent warning about unused variable
 // not sure if i can mix win32 io mode with ftell but time will show
 // cannot use WIN32_IO implementation since missing stat
-    long initialFilePos = _STLP_VENDOR_CSTD::ftell(_M_file);
+    streamoff initialFilePos = _STLP_VENDOR_CSTD::FTELL(_M_file);
     if (initialFilePos == -1) return -1;
-    if (_STLP_VENDOR_CSTD::fseek(_M_file, 0, SEEK_END) != 0)
+    if ( FSEEK(_M_file, 0, SEEK_END) != 0 )
       return -1;
-    long endFilePos = _STLP_VENDOR_CSTD::ftell(_M_file);
+    streamoff endFilePos = FTELL(_M_file);
     if (endFilePos == -1) {
-      _STLP_VENDOR_CSTD::fseek(_M_file, initialFilePos, SEEK_SET);
+      FSEEK(_M_file, initialFilePos, SEEK_SET);
       return -1;
     }
     streamoff size = endFilePos - initialFilePos;
-    _STLP_VENDOR_CSTD::fseek(_M_file, initialFilePos, SEEK_SET);
+    FSEEK(_M_file, initialFilePos, SEEK_SET);
 #elif defined (_STLP_USE_WIN32_IO)
     // in this case, __file_size works with Win32 fh , not libc one
     streamoff size;
-    struct stat buf;
-    if (fstat(fd, &buf) == 0 && (_S_IFREG & buf.st_mode))
+    struct STAT buf;
+    if ( FSTAT(fd, &buf) == 0 && (_S_IFREG & buf.st_mode))
       size = (buf.st_size > 0 ? buf.st_size : 0);
     else
       size = 0;
@@ -183,7 +209,7 @@ streamsize stdio_istreambuf::showmanyc() {
     streamoff size = __file_size(fd);
 #endif
     // fbp : we can use ftell as this flavour always use stdio.
-    long pos = _STLP_VENDOR_CSTD::ftell(_M_file);
+    streamsize pos = FTELL(_M_file);
     return pos >= 0 && size > pos ? size - pos : 0;
   }
 }

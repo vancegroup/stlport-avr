@@ -97,7 +97,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 #    define _S_IWRITE S_IWRITE
 #    define _S_IREAD S_IREAD
 #    define _open open
-#    define _lseek lseek
 #    define _close close
 #    define _read read
 #    define _write write
@@ -115,21 +114,45 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 _STLP_BEGIN_NAMESPACE
 
+// Compare with streamoff definition in stl/char_traits.h!
+
+#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
+#  define FOPEN fopen
+#  define FSEEK fseek
+#  define FSTAT fstat
+#  define STAT  stat
+#  define FTELL ftell
+#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
+     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
+#  define FOPEN fopen64
+#  define FSEEK fseeko64
+#  define FSTAT fstat64
+#  define STAT  stat64
+#  define FTELL ftello64
+#else
+#  define OPEN  open
+#  define FSEEK fseek
+#  define FSTAT fstat
+#  define STAT  stat
+#  define FTELL ftell
+#endif
+
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
 bool __is_regular_file(_STLP_fd fd) {
-  struct stat buf;
-  return fstat(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0 ;
+  struct STAT buf;
+  return FSTAT(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0 ;
 }
 
 // Number of characters in the file.
 streamoff __file_size(_STLP_fd fd) {
   streamoff ret = 0;
 
-  struct stat buf;
-  if (fstat(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0)
+  struct STAT buf;
+  if (FSTAT(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0)
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
   return ret;
@@ -223,7 +246,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
 
   // fbp : TODO : set permissions !
   (void)permission; // currently unused    //*TY 02/26/2000 - added to suppress warning message
-  _M_file = fopen(name, flags);
+  _M_file = FOPEN(name, flags);
 
   if (_M_file) {
     file_no = fileno(_M_file);
@@ -237,7 +260,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
   _M_is_open = true;
 
   if (openmode & ios_base::ate) {
-    if (fseek(_M_file, 0, SEEK_END) != 0)
+    if (FSEEK(_M_file, 0, SEEK_END) != 0)
       _M_is_open = false;
   }
 
@@ -269,8 +292,8 @@ bool _Filebuf_base::_M_open( int file_no, ios_base::openmode )
   if (_M_is_open || file_no < 0)
     return false;
 
-  struct stat buf;
-  if (fstat(file_no, &buf) != 0)
+  struct STAT buf;
+  if (FSTAT(file_no, &buf) != 0)
     return false;
   int mode = buf.st_mode;
 
@@ -355,8 +378,8 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
       return streamoff(-1);
   }
 
-  if ( fseek(_M_file, offset, whence) == 0 ) {
-    return ftell(_M_file);
+  if ( FSEEK(_M_file, offset, whence) == 0 ) {
+    return FTELL(_M_file);
   }
 
   return streamoff(-1);

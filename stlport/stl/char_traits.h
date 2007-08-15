@@ -53,9 +53,7 @@ template <class _Tp> class allocator;
 
 #define _STLP_NULL_CHAR_INIT(_ChT) _STLP_DEFAULT_CONSTRUCTED(_ChT)
 
-#if defined (__sgi) && defined (_STLP_HAS_NO_NEW_C_HEADERS) /* IRIX */
-typedef off64_t streamoff;
-#elif defined(_STLP_WCE)
+#if defined(_STLP_WCE)
 typedef long streamoff;
 #elif defined (_STLP_WIN32)
 #  if defined (_STLP_LONG_LONG) && !defined (__CYGWIN__)
@@ -66,8 +64,15 @@ typedef _STLP_LONG_LONG streamoff;
 typedef ptrdiff_t streamoff;
 #  endif
 #else // __unix
+#  ifdef _STLP_USE_DEFAULT_FILE_OFFSET
 typedef off_t streamoff;
-#endif /* _STLP_HAS_NO_NEW_C_HEADERS */
+#  elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
+       /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined (__sgi) && defined (_STLP_HAS_NO_NEW_C_HEADERS) */
+typedef off64_t streamoff;
+#  else
+typedef off_t streamoff;
+#  endif
+#endif /* __unix */
 
 #if defined (_STLP_WIN32)
 typedef streamoff streamsize;

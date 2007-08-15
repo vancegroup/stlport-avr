@@ -1,3 +1,20 @@
+2007-08-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/char_traits.h, src/fstream_unistd.cpp: use 64-bits
+	file operations calls, if available on system; streamoff is
+	always off64_t, if _LARGEFILE_SOURCE or _LARGEFILE64_SOURCE
+	defined, i.e. if 64-bits file operations present;
+
+	* src/fstream_stdio.cpp, src/stdio_streambuf.cpp: ditto;
+
+	* stlport/stl/config/user_config.h: add _STLP_USE_DEFAULT_FILE_OFFSET,
+	force use off_t for streamoff and appropriate file operations calls;
+	note, that this may lead to problems, for example if _FILE_OFFSET_BITS
+	defined as 64 somewhere in user's code;
+
+	* test/unit/fstream_test.cpp: test 64 bits type for filesize and
+	file offset.
+
 2007-08-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/memory_test.cpp: MSVC6 do not support this test,
