@@ -114,7 +114,7 @@ stdio_streambuf_base::seekoff(off_type off, ios_base::seekdir dir,
     return pos_type(-1);
   }
 
-  if (off <= numeric_limits<off_type>::max() && FSEEK(_M_file, __STATIC_CAST(long, off), whence) == 0) {
+  if (off <= numeric_limits<off_type>::max() && FSEEK(_M_file, off, whence) == 0) {
     FPOS_T pos;
     FGETPOS(_M_file, &pos);
     // added 21 june 00 mdb,rjf,wjs: glibc 2.2 changed fpos_t to be a struct instead
@@ -162,10 +162,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
   FPOS_T p(pos);
 #endif
 
-  if ( FSETPOS(_M_file, &p) == 0)
-    return pos;
-  else
-    return pos_type(-1);
+  return FSETPOS(_M_file, &p) == 0 ? pos : pos_type(-1);
 }
 
 int stdio_streambuf_base::sync() {
