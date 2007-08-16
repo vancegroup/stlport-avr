@@ -63,19 +63,6 @@
 #  define _STLP_CALL
 #endif /* __MINGW32__ */
 
-#if (__GNUC__ >= 4)
-#  if !defined (_STLP_USE_STATIC_LIB)
-#    if !defined (_STLP_USE_DYNAMIC_LIB)
-#      define _STLP_USE_DYNAMIC_LIB
-#    endif
-#    define _STLP_USE_DECLSPEC 1
-#    define _STLP_EXPORT_DECLSPEC __attribute__((visibility("default")))
-#    define _STLP_IMPORT_DECLSPEC __attribute__((visibility("default")))
-#    define _STLP_CLASS_EXPORT_DECLSPEC __attribute__((visibility("default")))
-#    define _STLP_CLASS_IMPORT_DECLSPEC __attribute__((visibility("default")))
-#  endif
-#endif
-
 #if defined (__CYGWIN__) || defined (__MINGW32__)
 #  if !defined (_STLP_USE_STATIC_LIB)
 #    define _STLP_USE_DECLSPEC 1
@@ -90,6 +77,19 @@
  * used to import symbols from PSDK under MinGW
  */
 #  define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
+#else
+#  if (__GNUC__ >= 4)
+#    if !defined (_STLP_USE_STATIC_LIB)
+#      if !defined (_STLP_USE_DYNAMIC_LIB)
+#        define _STLP_USE_DYNAMIC_LIB
+#      endif
+#      define _STLP_USE_DECLSPEC 1
+#      define _STLP_EXPORT_DECLSPEC __attribute__((visibility("default")))
+#      define _STLP_IMPORT_DECLSPEC __attribute__((visibility("default")))
+#      define _STLP_CLASS_EXPORT_DECLSPEC __attribute__((visibility("default")))
+#      define _STLP_CLASS_IMPORT_DECLSPEC __attribute__((visibility("default")))
+#    endif
+#  endif
 #endif
 
 #if defined (__CYGWIN__) || defined (__MINGW32__) || !(defined (_STLP_USE_GLIBC) || defined (__sun) || defined(__APPLE__))

@@ -1,3 +1,9 @@
+2007-08-16  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/_gcc.h: Avoid conflict in link model, gcc
+	visibility for many platforms or dllimport/dllexport for
+	Cygwin/MinGW.
+
 2007-08-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/char_traits.h, src/fstream_unistd.cpp: use 64-bits
