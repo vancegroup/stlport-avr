@@ -4,6 +4,9 @@
 	visibility for many platforms or dllimport/dllexport for
 	Cygwin/MinGW.
 
+	* build/Makefiles/gmake/gcc.mak: Looks like Cygwin/MinGW won't
+	support visibility for the moment.
+
 2007-08-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/char_traits.h, src/fstream_unistd.cpp: use 64-bits
