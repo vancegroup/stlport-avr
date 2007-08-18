@@ -1,3 +1,8 @@
+2007-08-18  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/host.h: Removed _STLP_NO_CYGWIN macro
+	unused since we are using include_next.
+
 2007-08-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_gcc.h: Avoid conflict in link model, gcc
