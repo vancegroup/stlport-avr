@@ -37,6 +37,7 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(optimizations_check);
+  CPPUNIT_TEST(assign_check);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(ebo);
   CPPUNIT_TEST_SUITE_END();
@@ -56,6 +57,7 @@ protected:
   void allocator_with_state();
   void iterators();
   void optimizations_check();
+  void assign_check();
   void ebo();
 };
 
@@ -440,6 +442,19 @@ void VectorTest::optimizations_check()
   vector<PointEx> v2(v1.begin(), v1.end());
   CPPUNIT_ASSERT( v2.size() == 1 );
   CPPUNIT_ASSERT( v2[0].builtFromBase == true );
+#endif
+}
+
+void VectorTest::assign_check()
+{
+#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
+  vector<int> v(3,1);
+  int array[] = { 1, 2, 3, 4, 5 };
+  
+  v.assign( array, array + 5 );
+  CPPUNIT_CHECK( v[4] == 5 );
+  CPPUNIT_CHECK( v[0] == 1 );
+  CPPUNIT_CHECK( v[1] == 2 );
 #endif
 }
 
