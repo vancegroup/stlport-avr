@@ -367,16 +367,34 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
 private:
-  template <class _Integer>
+  template <class _Integer, class _Category>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/) {
+                          const __true_type& /*_IsIntegral*/, const _Category& )
+  {
     _M_check_assign(__n);
     _M_non_dbg_impl.assign(__n, __val);
   }
 
+  template <class _InputIter, class _Category>
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
+                          const __false_type& /*_IsIntegral*/, const _Category& )
+  {
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
+  }
+
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
+                          const __false_type& /*_IsIntegral*/, const bidirectional_iterator_tag& )
+  {
+    size_type __len = distance(__first, __last);
+    _M_check_assign(__len);
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
+  }
+
+  template <class _InputIter>
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
+                          const __false_type& /*_IsIntegral*/, const random_access_iterator_tag& )
+  {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     size_type __len = distance(__first, __last);
     _M_check_assign(__len);
@@ -385,9 +403,11 @@ private:
 
 public:
   template <class _InputIterator>
-  void assign(_InputIterator __first, _InputIterator __last) {
+  void assign(_InputIterator __first, _InputIterator __last)
+  {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
+    typedef typename iterator_traits<_InputIterator>::iterator_category _Iterator_category;
+    _M_assign_dispatch(__first, __last, _Integral(), _Iterator_category() );
   }
 #else
 private:

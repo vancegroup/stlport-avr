@@ -1,3 +1,13 @@
+2007-08-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/debug/_vector.h: only random access iterators
+	allow operations 'less-then' and distance; for bidirectional
+	iterators removed usage of 'less-then', and for others
+	[like forward and input iterators] removed as usage of 'less-then'
+	as distance; thanks Oleg Obolensky for bug report;
+
+	* test/unit/ioiter_test.cpp: test for problem above.
+
 2007-08-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/host.h: Removed _STLP_NO_CYGWIN macro
