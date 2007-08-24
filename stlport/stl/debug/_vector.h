@@ -379,25 +379,17 @@ private:
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
                           const __false_type& /*_IsIntegral*/, const _Category& )
   {
-    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-  }
-
-  template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/, const bidirectional_iterator_tag& )
-  {
-    size_type __len = distance(__first, __last);
-    _M_check_assign(__len);
-    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-  }
-
-  template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/, const random_access_iterator_tag& )
-  {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     size_type __len = distance(__first, __last);
     _M_check_assign(__len);
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
+  }
+
+  template <class _InputIter>
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
+                          const __false_type& /*_IsIntegral*/, const input_iterator_tag& )
+  {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
 
@@ -406,8 +398,7 @@ public:
   void assign(_InputIterator __first, _InputIterator __last)
   {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    typedef typename iterator_traits<_InputIterator>::iterator_category _Iterator_category;
-    _M_assign_dispatch(__first, __last, _Integral(), _Iterator_category() );
+    _M_assign_dispatch(__first, __last, _Integral(), _STLP_ITERATOR_CATEGORY(__first, _InputIterator) );
   }
 #else
 private:
