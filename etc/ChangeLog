@@ -1,5 +1,9 @@
 2007-08-26  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/config/user_config.h, host.h: Moved administrative
+	_STLP_USE_UNIX_IO, _STLP_USE_STDIO_IO, _STLP_USE_WIN32_IO
+	macros to host.h.
+
 	* Merged with STLPORT_5_1 branch up to revision 3151.
 
 2007-08-23  Petr Ovtchenkov  <complement@users.sourceforge.net>

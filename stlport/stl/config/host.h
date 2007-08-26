@@ -265,6 +265,28 @@
 #define _STLP_USE_DEFAULT_FILE_OFFSET
 */
 
+/*
+ * _STLP_USE_STDIO_IO, _STLP_USE_UNIX_IO: force selection of stdio calls
+ * (fopen/flose/fread/fwrite) under fstream buffers or unistd calls
+ * (open/close/read/write + mmap). Now on system that has both calls sets
+ * (i.e. most Unixes) used _STLP_USE_UNIX_IO by default. 
+ *
+ * There are third variant for Windows: _STLP_USE_WIN32_IO, that based
+ * on Windows calls (CreateFile/CloseHandle/ReadFile/WriteFile + CreateFileMapping,
+ * MapViewOfFile)
+ *
+ * Uncomment only one define here!
+ */
+/*
+#define _STLP_USE_UNIX_IO
+*/
+/*
+#define _STLP_USE_STDIO_IO
+*/
+/*
+#define _STLP_USE_WIN32_IO
+ */
+
 /*==========================================================================*/
 
 /* This section contains swithes which should be off by default,
