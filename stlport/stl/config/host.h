@@ -256,7 +256,7 @@
  * _LARGEFILE64_SOURCE defined) we will use 64-bit file offset, even if
  * __USE_FILE_OFFSET64 or _FILE_OFFSET_BITS not defined or _FILE_OFFSET_BITS
  * less than 64. In the last case sizeof(std::streamoff) may not be equal to
- * sizeof(off_t), if you want to force equal size of off_t and streamoff,
+ * sizeof(off_t); if you want to force equal size of off_t and streamoff,
  * uncomment macro below. But pay attention, this has influence on libstlport
  * and in future usage it may cause conflict with defined _FILE_OFFSET_BITS macro.
  */
