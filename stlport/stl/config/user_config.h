@@ -114,21 +114,6 @@
  */
 
 /*
- * On systems with support of large files (_LARGEFILE_SOURCE,
- * _LARGEFILE64_SOURCE defined) we will use 64-bit file offset, even
- * if __USE_FILE_OFFSET64 not defined or _FILE_OFFSET_BITS not defined
- * or _FILE_OFFSET_BITS less then 64; in the last case sizeof(std::streamoff)
- * may be not equal to sizeof(off_t); if you want to force equal size
- * of off_t and streamoff, undefine macro below. But pay attention,
- * that this has influence on libstlport and in future usage it may
- * cause conflict with defined _FILE_OFFSET_BITS macro.
- */
-
-/*
-#define _STLP_USE_DEFAULT_FILE_OFFSET
-*/
-
-/*
  * _STLP_NO_RELOPS_NAMESPACE: if defined, don't put the relational
  * operator templates (>, <=, >=, !=) in namespace std::rel_ops, even
  * if the compiler supports namespaces.
@@ -183,8 +168,7 @@
  * Uncomment and provide a definition for the byte with which raw memory
  * will be filled if _STLP_DEBUG_ALLOC or _STLP_DEBUG_UNINITIALIZED is defined.
  * Choose a value which is likely to cause a noticeable problem if dereferenced
- * or otherwise abused. A good value may already be defined for your platform; see
- * stl/_config.h
+ * or otherwise abused. A good value may already be defined for your platform.
  */
 /*
 #define _STLP_SHRED_BYTE 0xA3
@@ -221,7 +205,7 @@
 */
 
 /*
- * You should define this macro if compiling with MFC - STLport <stl/_config.h>
+ * You should define this macro if compiling with MFC - STLport <stl/config/_windows.h>
  * then include <afx.h> instead of <windows.h> to get synchronisation primitives
  */
 /*

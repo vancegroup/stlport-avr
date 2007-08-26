@@ -37,7 +37,7 @@
 #endif
 
 /* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate
-   static template data. If you are using GNU ld, please say so in stl_user_config.h header */
+   static template data. If you are using GNU ld, please say so in user_config.h header */
 #if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
    ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux) || defined(__amigaos__) )
 #  define _STLP_NO_STATIC_TEMPLATE_DATA
@@ -58,6 +58,7 @@
 
 #if defined (__MINGW32__)
 /* Mingw32, egcs compiler using the Microsoft C runtime */
+#  define _STLP_VENDOR_GLOBAL_CSTD
 #  undef  _STLP_NO_DRAND48
 #  define _STLP_NO_DRAND48
 #  define _STLP_CALL

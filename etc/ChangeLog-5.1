@@ -1,3 +1,88 @@
+2007-08-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/user_config.h, host.h: Moved the administrative
+	_STLP_USE_DEFAULT_FILE_OFFSET macro from user_config.h to host.h.
+
+	* stlport/stl/config/_gcc.h: Under MinGW we now use C symbols in
+	global namespace. Tests with 4.2.1 gcc version shows that C symbols
+	are not necessarily put in std namespace.
+
+2007-08-23  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_complex.h: As in _iosfwd.h, removed useless
+	_STLP_CLASS_DECLSPEC attribute on complex class declaration.
+
+2007-08-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/debug/_vector.h: only random access iterators
+	allow operations 'less-than' and distance; for bidirectional
+	iterators removed usage of 'less-than', and for others
+	[like forward and input iterators] removed as usage of 'less-than'
+	as distance; thanks Oleg Obolensky for bug report;
+
+	* test/unit/ioiter_test.cpp: test for problem above.
+
+2007-08-18  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_iosfwd.h: Removed useless _STLP_CLASS_DECLSPEC attribute
+	on class declaration. Latest gcc versions are reporting a warning about
+	it.
+
+2007-08-16  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/dll_main.cpp: Removed useless _Atomic_swap_struct explicit
+	instantiation, moreover, MSVC 2005 do not support it.
+
+2007-08-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: bump lib version to 5.1.4;
+
+	* stlport/stl/char_traits.h, src/fstream.cpp: use 64-bits
+	file operations calls, if available on system; streamoff is
+	always off64_t, if _LARGEFILE_SOURCE or _LARGEFILE64_SOURCE
+	defined, i.e. if 64-bits file operations present;
+
+	* stlport/stl/config/user_config.h: add _STLP_USE_DEFAULT_FILE_OFFSET,
+	force use off_t for streamoff and appropriate file operations calls;
+	note, that this may lead to problems, for example if _FILE_OFFSET_BITS
+	defined as 64 somewhere in user's code;
+
+	* test/unit/fstream_test.cpp: test 64 bits type for filesize and
+	file offset.
+
+2007-07-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/fstream.cpp: force use lseek64/mmap64 for HP-UX, if _LARGEFILE64_SOURCE
+	defined; thanks for Michael Klein.
+
+2007-07-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_algo.c, stlport/stl/_algobase.c: search, the __tmp and
+	__p1 iterators always point at the same position, hence one of them
+	is redundant;
+
+	* stlport/stl/_algobase.c: in the main-loop of search there are two
+	successive while-loops doing exactly the same thing; one of them is
+	redundant and, since it is inside the main-loop, it slows down
+	the algorithm significantly;
+
+	* stlport/stl/_algo.c, stlport/stl/_algobase.c: in the search the main-loop 
+	condition "while (__first1 != __last1)" is always true and consequently
+	redundant; this is because the initial adn in-loop conditions virtually
+	act as guards and will never let the main-loop condition to fail; since
+	this condition is evaluated in every main-loop iteration, its removal
+	will also improve the performance of the algorithm; thanks for
+	Jim Xochellis for this suggestions.
+
+2007-07-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/strstream.cpp: "get end" pointer should be initialized
+	to the "begin of get + N" in obsolete strstream; bug #1536503,
+	thanks for Jean-Eric Cuendet;
+
+	* test/unit/strstream_buffer_read_test.cpp, build/test/unit/Makefile.inc:
+	test for bug above; [submitted by Jean-Eric Cuendet].
+
 2007-04-02  Francois Dumont  <dums@stlport...>
 
 	* 5.1.3 released based on revision 2983. STLport-5.1.3 tag created.

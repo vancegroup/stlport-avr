@@ -117,9 +117,9 @@ _STLP_TEMPLATE_NULL class collate_byname<wchar_t>;
 //_STLP_TEMPLATE_NULL class basic_streambuf<char, char_traits<char> >;
 #endif
 
-typedef basic_istream<char, char_traits<char> >   istream;
-typedef basic_ostream<char, char_traits<char> >   ostream;
-typedef basic_iostream<char, char_traits<char> >  iostream;
+typedef basic_istream<char, char_traits<char> >  istream;
+typedef basic_ostream<char, char_traits<char> >  ostream;
+typedef basic_iostream<char, char_traits<char> > iostream;
 typedef basic_streambuf<char,char_traits<char> > streambuf;
 
 typedef basic_stringbuf<char, char_traits<char>, allocator<char> >     stringbuf;

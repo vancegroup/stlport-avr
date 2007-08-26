@@ -1,3 +1,7 @@
+2007-08-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Merged with STLPORT_5_1 branch up to revision 3151.
+
 2007-08-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/debug/_vector.h: only random access iterators
@@ -347,12 +351,6 @@
 
 	* stlport/stl/_cwchar.h: Add MSVC compilers before Visual Studio 2005
 	as not defining WCHAR_MAX correctly.
-
-2007-06-13  Francois Dumont  <dums@users.sourceforge.net>
-
-	* stlport/stl/_iosfwd.h: Removed useless _STLP_CLASS_DECLSPEC attribute
-	on class declaration. Latest gcc versions are reporting a warning about
-	it.
 
 2007-06-11  Francois Dumont  <dums@users.sourceforge.net>
 
