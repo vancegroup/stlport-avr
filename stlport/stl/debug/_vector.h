@@ -369,40 +369,33 @@ public:
 private:
   template <class _Integer, class _Category>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/) {
-    _M_check_assign(__n);
+                          const __true_type& /*_IsIntegral*/ )
+  {
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__n, __val);
   }
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
+                          const __false_type& /*_IsIntegral*/ )
+  {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
-    size_type __old_size = size();
-    size_type __old_capacity = capacity();
-    iterator __old_end = end();
+    _Invalidate_all();
     _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-    if (__old_capacity != 0) {
-      if (empty() || (capacity() > __old_capacity)) {
-        _Invalidate_all();
-      }
-      else if (size() < __old_size) {
-        _Invalidate_iterators(begin() + size(), __old_end);
-      }
-    }
   }
 
 public:
   template <class _InputIterator>
-  void assign(_InputIterator __first, _InputIterator __last) {
+  void assign(_InputIterator __first, _InputIterator __last)
+  {
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
+    _M_assign_dispatch(__first, __last, _Integral() );
   }
 #else
 private:
-  void _M_assign(const value_type *__first, const value_type *__last) {
-    size_type __len = distance(__first, __last);
-    _M_check_assign(__len);
+  void _M_assign(const value_type *__first, const value_type *__last)
+  {
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__first, __last);
   }
 public:
@@ -417,19 +410,9 @@ public:
   }
 #endif
 
-private:
-  void _M_check_assign(size_type __n) {
-    if (__n > capacity()) {
-      _Invalidate_all();
-    }
-    else if (__n < size()) {
-      _Invalidate_iterators(begin() + __n, end());
-    }
-  }
-
 public:
   void assign(size_type __n, const _Tp& __val) {
-    _M_check_assign(__n);
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__n, __val);
   }
 
