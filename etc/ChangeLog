@@ -1,3 +1,9 @@
+2007-08-29  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algobase.c, _string.c: Some modification in
+	__find_first_of_aux2 implementation to reduce number of iterator
+	dereferencements.
+
 2007-08-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/user_config.h, host.h: Moved administrative
