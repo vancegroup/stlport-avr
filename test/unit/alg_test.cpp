@@ -298,7 +298,7 @@ void AlgTest::find_first_of_test()
     CPPUNIT_ASSERT( *first == 255 );
   }
   {
-    signed char chars[] = {93, 2, -101};
+    signed char chars[] = {93, 2, -101, 13};
 
     vector<int> intv;
     intv.push_back(-10);

@@ -97,18 +97,16 @@ inline _InputIter __str_find_first_of(_InputIter __first1, _InputIter __last1,
   return __str_find_first_of_aux(__first1, __last1, __first2, __last2, __traits, _STLportTraits());
 }
 
-template <class _InputIter, class _CharT, class _Tp, class _Traits>
+template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Tp* __pt, _Traits* /* __traits */,
-                                               const __true_type& __useStrcspnLikeAlgo)
-{ return __find_first_of_aux2(__first1, __last1, __first2, __last2, __pt, not1(_Identity<bool>()), __useStrcspnLikeAlgo); }
+                                               _Traits* /* __traits */, const __true_type& __useStrcspnLikeAlgo)
+{ return __find_first_of_aux2(__first1, __last1, __first2, __last2, __first2, not1(_Identity<bool>()), __useStrcspnLikeAlgo); }
 
-template <class _InputIter, class _CharT, class _Tp, class _Traits>
+template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Tp* /* __dummy */, _Traits* /* __traits */,
-                                               const __false_type& /* _UseStrcspnLikeAlgo */)
+                                               _Traits* /* __traits */, const __false_type& /* _UseStrcspnLikeAlgo */)
 { return _STLP_STD::find_if(__first1, __last1, _STLP_PRIV _Not_within_traits<_Traits>(__first2, __last2)); }
 
 template <class _InputIter, class _CharT, class _Tp, class _Traits>
@@ -118,7 +116,7 @@ inline _InputIter __str_find_first_not_of_aux2(_InputIter __first1, _InputIter _
   typedef typename _IsIntegral<_Tp>::_Ret _IsIntegral;
   typedef typename _IsCharLikeType<_CharT>::_Ret _IsCharLike;
   typedef typename _Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
-  return __str_find_first_not_of_aux3(__first1, __last1, __first2, __last2, __pt, __traits, _UseStrcspnLikeAlgo());
+  return __str_find_first_not_of_aux3(__first1, __last1, __first2, __last2, __traits, _UseStrcspnLikeAlgo());
 }
 
 template <class _InputIter, class _CharT, class _Traits>

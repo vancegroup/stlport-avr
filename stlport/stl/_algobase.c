@@ -304,7 +304,7 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
   }
 
   for (; __first1 != __last1; ++__first1) {
-    _Tp __tmp = *__first1;
+    _Tp __tmp = (_Tp)*__first1;
     if ((*__first1 == __tmp) &&
          __pred((__hints[(unsigned char)__tmp / CHAR_BIT] & (1 << ((unsigned char)__tmp % CHAR_BIT))) != 0))
       break;
@@ -315,9 +315,11 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
 template <class _InputIter, class _ForwardIter, class _Tp, class _Predicate>
 inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
-                                       _Tp* __pt, _Predicate /* __pred */,
-                                       const __false_type& /* _UseStrcspnLikeAlgo */)
-{ return __find_first_of(__first1, __last1, __first2, __last2, __equal_to(__pt)); }
+                                       _Tp* /* __dummy */, _Predicate /* __pred */,
+                                       const __false_type& /* _UseStrcspnLikeAlgo */) {
+  return __find_first_of(__first1, __last1, __first2, __last2,
+                         __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
+}
 
 template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
 inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
@@ -326,7 +328,7 @@ inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
   typedef typename _IsIntegral<_Tp1>::_Ret _IsIntegral;
   typedef typename _IsCharLikeType<_Tp2>::_Ret _IsCharLike;
   typedef typename _Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
-  return __find_first_of_aux2(__first1, __last1, __first2, __last2, __pt1, _Identity<bool>(), _UseStrcspnLikeAlgo());
+  return __find_first_of_aux2(__first1, __last1, __first2, __last2, __pt2, _Identity<bool>(), _UseStrcspnLikeAlgo());
 }
 
 template <class _InputIter, class _ForwardIter>
