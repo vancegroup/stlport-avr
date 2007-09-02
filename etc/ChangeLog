@@ -1,3 +1,9 @@
+2007-09-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algobase.c: Small optimization, add an
+	intermediate __eq function to detect when both iterator types
+	are identicals. Thanks Jim Xochellis idear.
+
 2007-08-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c, _string.c: Some modification in
