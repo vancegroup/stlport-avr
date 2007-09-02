@@ -4,6 +4,12 @@
 	intermediate __eq function to detect when both iterator types
 	are identicals. Thanks Jim Xochellis idear.
 
+	* stlport/stl/_threads.h, _threads.c: Fully apply modification
+	of _S_nsec_sleep implementation for Win32 platforms contained
+	in bug report 1720635 from Taras Overchuck. It is an optimization
+	of the spin lock mutex specifically targetting the multiprocessor
+	platforms.
+
 2007-08-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c, _string.c: Some modification in

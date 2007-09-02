@@ -90,22 +90,31 @@ extern "C" int __nanosleep(const struct timespec*, struct timespec*);
 
 template <int __inst>
 void _STLP_CALL
-_STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec) {
+_STLP_mutex_spin<__inst>::_S_nsec_sleep(int __log_nsec, unsigned int& __iteration) {
 #  if defined (_STLP_WIN32THREADS)
-  if (__log_nsec <= 21) {
 #    if defined (_WIN32_WINNT) && (_WIN32_WINNT >= 0x0400)
-    /* We call SwitchToThread because it might avoid a call to Sleep(1) that often
-     * takes ~15 ms */
-    if (!SwitchToThread())
-#    endif
-    /* Note from boost (www.boost.org):
-     * Changed from Sleep(0) to Sleep(1).
-     * According to MSDN, Sleep(0) will never yield to a lower-priority thread,
-     * whereas Sleep(1) will. Performance seems not to be affected. */
-    Sleep(1);
+  if (__iteration <= 4000) {
+    // Use SwitchToThread because 
+    // 1) Sleep(1) often takes ~15 ms
+    // 2) SwitchToThread yields to lower-priority threads
+    // 4000 is enough to avoid Sleep and is used just to prevent infinite looping
+    // This number is advised spin count for Heap management by Microsoft
+     SwitchToThread(); 
   } else {
-    Sleep(1 << (__log_nsec - 20));
+#    endif
+    if (__log_nsec <= 21) {
+      /* Note from boost (www.boost.org):
+       * Changed from Sleep(0) to Sleep(1).
+       * According to MSDN, Sleep(0) will never yield to a lower-priority thread,
+       * whereas Sleep(1) will. Performance seems not to be affected. */
+      Sleep(1);
+    } else {
+      Sleep(1 << (__log_nsec - 20));
+    }
+#    if defined (_WIN32_WINNT) && (_WIN32_WINNT >= 0x0400)
+    __iteration = 0; //reset to avoid sleeps sequence
   }
+#    endif
 #  elif defined(_STLP_OS2THREADS)
   if (__log_nsec <= 20) {
     DosSleep(0);
@@ -158,7 +167,7 @@ _STLP_mutex_spin<__inst>::_M_do_lock(volatile __stl_atomic_t* __lock) {
       if (!_Atomic_swap(__lock, 1)) {
         break;
       }
-      _S_nsec_sleep(__log_nsec);
+      _S_nsec_sleep(__log_nsec, __i);
     }
   } /* first _Atomic_swap */
 #  endif

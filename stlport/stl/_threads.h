@@ -251,7 +251,7 @@ struct _STLP_mutex_spin {
   static unsigned __max;
   static unsigned __last;
   static void _STLP_CALL _M_do_lock(volatile __stl_atomic_t* __lock);
-  static void _STLP_CALL _S_nsec_sleep(int __log_nsec);
+  static void _STLP_CALL _S_nsec_sleep(int __log_nsec, unsigned int& __iteration);
 };
 #endif // !_STLP_USE_PTHREAD_SPINLOCK
 
