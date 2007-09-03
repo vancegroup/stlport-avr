@@ -2329,7 +2329,7 @@ _STLP_TEMPLATE_NULL struct hash<wrope> {
 #if (!defined (_STLP_MSVC) || (_STLP_MSVC >= 1310))
 // I couldn't get this to work with VC++
 template<class _CharT,class _Alloc>
-#  if defined (__DMC__) && !defined (__PUT_STATIC_DATA_MEMBERS_HERE)
+#  if defined (__DMC__)
 extern
 #  endif
 void _Rope_rotate(_Rope_iterator<_CharT, _Alloc> __first,

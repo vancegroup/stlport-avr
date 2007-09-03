@@ -36,13 +36,6 @@
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 #endif
 
-/* Tru64 Unix, AIX, HP : gcc there by default uses native ld and hence cannot auto-instantiate
-   static template data. If you are using GNU ld, please say so in user_config.h header */
-#if (__GNUC__ < 3) && !defined(_STLP_GCC_USES_GNU_LD) && \
-   ((defined (__osf__) && defined (__alpha__)) || defined (_AIX) || defined (__hpux) || defined(__amigaos__) )
-#  define _STLP_NO_STATIC_TEMPLATE_DATA
-#endif
-
 #if !defined (_REENTRANT) && (defined (_THREAD_SAFE) || \
                              (defined (__OpenBSD__) && defined (_POSIX_THREADS)) || \
                              (defined (__MINGW32__) && defined (_MT)))
@@ -114,17 +107,6 @@ typedef unsigned int wint_t;
 #  endif
 
 #  define __unix
-
-#  if (__GNUC__ < 3)
-
- /* Mac OS X needs one and only one source file to initialize all static data
-  * members in template classes. Only one source file in an executable or
-  * library can declare instances for such data members, otherwise duplicate
-  * symbols will be generated. */
-
-#    define _STLP_NO_STATIC_TEMPLATE_DATA
-#    define _STLP_STATIC_CONST_INIT_BUG 1
-#  endif /* __GNUC__ < 3 */
 
 #  define _STLP_NO_LONG_DOUBLE
 
@@ -211,16 +193,3 @@ typedef unsigned int wint_t;
  */
 #  define _STLP_NO_FORCE_INSTANTIATE
 #endif
-
-/* Tune settings for the case where static template data members are not
- * instaniated by default
- */
-#if defined ( _STLP_NO_STATIC_TEMPLATE_DATA )
-#  define _STLP_STATIC_TEMPLATE_DATA 0
-#  ifdef __PUT_STATIC_DATA_MEMBERS_HERE
-#    define __DECLARE_INSTANCE(type,item,init) type item init
-#  else
-#    define __DECLARE_INSTANCE(type,item,init)
-#  endif
-#endif
-

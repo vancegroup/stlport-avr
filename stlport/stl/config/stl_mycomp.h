@@ -92,9 +92,6 @@
 // trouble with functions getting non-type-parameterized classes as parameters
 // #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 
-// Uncomment this if your compiler lacks static data members.
-// #  define _STLP_NO_STATIC_TEMPLATE_DATA 1
-
 // Uncomment this if your compiler does not support namespaces
 // #  define _STLP_HAS_NO_NAMESPACES 1
 

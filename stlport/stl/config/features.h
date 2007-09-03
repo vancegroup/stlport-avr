@@ -293,10 +293,6 @@
 #  undef _STLP_USE_NEW_C_HEADERS
 #endif
 
-#if !defined (_STLP_STATIC_TEMPLATE_DATA)
-#  define _STLP_STATIC_TEMPLATE_DATA 1
-#endif
-
 #if defined (_STLP_BASE_TYPEDEF_BUG)
 #  undef  _STLP_BASE_TYPEDEF_OUTSIDE_BUG
 #  define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1

@@ -298,7 +298,6 @@ _STLP_STRING_LITERAL("Memory allocation function returned a wrongly align memory
 _STLP_STRING_LITERAL("Unknown problem") \
   }
 
-#    if (_STLP_STATIC_TEMPLATE_DATA > 0)
 template <class _Dummy>
 const char* __stl_debug_engine<_Dummy>::_Message_table[_StlMsg_MAX]  _STLP_MESSAGE_TABLE_BODY;
 
@@ -312,11 +311,6 @@ const char* __stl_debug_engine<_Dummy>::_Message_table[_StlMsg_MAX]  _STLP_MESSA
 _STLP_TEMPLATE_NULL
 _STLP_DECLSPEC const char* __stl_debug_engine<bool>::_Message_table[_StlMsg_MAX];
 #      endif
-
-#    else
-__DECLARE_INSTANCE(const char*, __stl_debug_engine<bool>::_Message_table[_StlMsg_MAX],
-                   _STLP_MESSAGE_TABLE_BODY);
-#    endif
 
 #    undef _STLP_STRING_LITERAL
 #    undef _STLP_PERCENT_S

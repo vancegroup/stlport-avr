@@ -312,9 +312,9 @@
  * to use this feature at STLport built time you will have to define the
  * STLP_BUILD_BOOST_PATH enrironment variable with the value of the boost library path.
  */
-/*
+
 #define _STLP_USE_BOOST_SUPPORT 1
-*/
+
 
 /*==========================================================*/
 

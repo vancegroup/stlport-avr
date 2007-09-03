@@ -23,7 +23,6 @@
  *
  */
 
-#define __PUT_STATIC_DATA_MEMBERS_HERE
 #define _STLP_EXPOSE_GLOBALS_IMPLEMENTATION
 
 #include "stlport_prefix.h"
@@ -52,7 +51,7 @@
 #include <bitset>
 #include <locale>
 
-#if (_STLP_STATIC_TEMPLATE_DATA < 1) || defined (__DMC__)
+#if defined (__DMC__)
 // for rope static members
 #  include <rope>
 #endif

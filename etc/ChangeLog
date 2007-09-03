@@ -1,3 +1,26 @@
+2007-09-03  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/dll_main.cpp, stlport/stl/debug/_debug.c: removed
+	macro _STLP_STATIC_TEMPLATE_DATA, __PUT_STATIC_DATA_MEMBERS_HERE,
+	_STLP_NO_STATIC_TEMPLATE_DATA; only few old compilers
+	require this and are good enough to work with STL;
+
+	* test/eh/test_rope.cpp, stlport/stl/_num_get.c: idem;
+
+	* stlport/stl/_time_facets.c, stlport/stl/_codecvt.h: idem;
+
+	* stlport/stl/_monetary.c, stlport/stl/_num_put.c: idem;
+
+	* stlport/stl/_rope.c, stlport/stl/_rope.h: idem;
+
+	* stlport/stl/config/user_config.h: idem;
+
+	* stlport/stl/config/stl_mycomp.h: idem;
+
+	* stlport/stl/config/_gcc.h: idem;
+
+	* stlport/stl/_threads.c: idem.
+
 2007-09-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c: Small optimization, add an
