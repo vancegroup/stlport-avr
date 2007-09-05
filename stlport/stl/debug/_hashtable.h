@@ -50,20 +50,17 @@ public:
   _DbgEqual(const _DbgEqual& __eq) : _M_non_dbg_eq(__eq._M_non_dbg_eq) {}
 
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
-  bool operator () (const _Key& __lhs, const _Key& __rhs) const {
+  bool operator () (const _Key& __lhs, const _Key& __rhs) const
 #else
   template <class _Kp1, class _Kp2>
-  bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const {
+  bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const
 #endif
-    if (_M_non_dbg_eq(__lhs, __rhs)) {
-      _STLP_VERBOSE_ASSERT(_M_non_dbg_eq(__rhs, __lhs), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return true;
-    }
-    else {
-      _STLP_VERBOSE_ASSERT(!_M_non_dbg_eq(__rhs, __lhs), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-      return false;
-    }
-  }
+      {
+#if !defined (_STLP_USE_CONTAINERS_EXTENSION)
+        _STLP_VERBOSE_ASSERT(_M_non_dbg_eq(__rhs, __lhs) == _M_non_dbg_eq(__lhs, __rhs), _StlMsg_INVALID_EQUIVALENT_PREDICATE)
+#endif
+        return _M_non_dbg_eq(__lhs, __rhs) ? true : false;
+      }
 
   _Equal non_dbg_key_eq() const { return _M_non_dbg_eq; }
 private:

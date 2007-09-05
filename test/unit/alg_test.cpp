@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <map>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -24,6 +25,7 @@ class AlgTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(sort_test);
   CPPUNIT_TEST(search_n_test);
   CPPUNIT_TEST(find_first_of_test);
+  CPPUNIT_TEST(find_first_of_nsc_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -32,6 +34,7 @@ protected:
   void sort_test();
   void search_n_test();
   void find_first_of_test();
+    void find_first_of_nsc_test();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AlgTest);
@@ -326,4 +329,35 @@ void AlgTest::find_first_of_test()
     CPPUNIT_ASSERT( first != intv.end() );
     CPPUNIT_ASSERT( *first == 1 );
   }
+}
+
+typedef std::pair<int, std::string> Pair;
+
+struct ValueFinder :
+    public std::binary_function<const Pair&, const std::string&, bool>
+{
+    bool operator () ( const Pair &p, const std::string& value ) const
+      { return p.second == value; }
+};
+
+void AlgTest::find_first_of_nsc_test()
+{
+  // Non-symmetrical comparator
+
+  std::map<int, std::string> m;
+  std::vector<std::string> values;
+
+  m[1] = "one";
+  m[4] = "four";
+  m[10] = "ten";
+  m[20] = "twenty";
+
+  values.push_back( "four" );
+  values.push_back( "ten" );
+
+  std::map<int, std::string>::iterator i = std::find_first_of(m.begin(), m.end(), values.begin(), values.end(), ValueFinder());
+
+  CPPUNIT_ASSERT( i != m.end() );
+  CPPUNIT_ASSERT( i->first == 4 || i->first == 10 );
+  CPPUNIT_ASSERT( i->second == "four" || i->second == "ten" );
 }

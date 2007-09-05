@@ -1,3 +1,16 @@
+2007-09-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_algobase.c: symmetry not required for
+	comparator in case of two different sequences comparison or
+	searching; symmetrical comparator just may not exist;
+
+	* stlport/stl/debug/_hashtable.h: symmetry not required for
+	comparator in hashtable in case of containers extention;
+	symmetrical comparator just may not exist;
+
+	* test/unit/alg_test.cpp: test for problem above, thanks
+	Oleg Obolenskiy.
+
 2007-09-03  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/dll_main.cpp, stlport/stl/debug/_debug.c: removed
@@ -53,7 +66,7 @@
 	allow operations 'less-then' and distance; for bidirectional
 	iterators removed usage of 'less-then', and for others
 	[like forward and input iterators] removed as usage of 'less-then'
-	as distance; thanks Oleg Obolensky for bug report;
+	as distance; thanks Oleg Obolenskiy for bug report;
 
 	* test/unit/ioiter_test.cpp: test for problem above.
 
