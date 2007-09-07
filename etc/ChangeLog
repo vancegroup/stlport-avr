@@ -1,3 +1,8 @@
+2007-09-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/alg_test.cpp: add #include <string>, required for
+	comparator symmetry test;
+
 2007-09-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c: symmetry not required for
