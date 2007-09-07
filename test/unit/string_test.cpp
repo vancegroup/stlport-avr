@@ -60,6 +60,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
+  CPPUNIT_TEST(find_last_of);
   CPPUNIT_TEST(copy);
 #if !defined (USE_PTHREAD_API) && !defined (USE_WINDOWS_API)
   CPPUNIT_IGNORE;
@@ -115,6 +116,7 @@ protected:
   void resize();
   void short_string();
   void find();
+  void find_last_of();
   void copy();
   void assign();
   void mt();
@@ -638,6 +640,18 @@ void StringTest::find()
 
   CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
   CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
+}
+
+void StringTest::find_last_of()
+{
+  string test( "aba" );
+  string::size_type pos = test.find_last_of( 'a', 2 );
+
+  CPPUNIT_CHECK( pos == 2 );
+  pos = test.find_last_of( 'a', 1 );
+  CPPUNIT_CHECK( pos == 0 );
+  pos = test.find_last_of( 'a', 0 );
+  CPPUNIT_CHECK( pos == 0 ); // pos is npos, whereas it should be 0
 }
 
 void StringTest::copy()

@@ -3,6 +3,9 @@
 	* test/unit/alg_test.cpp: add #include <string>, required for
 	comparator symmetry test;
 
+	* test/unit/string_test.cpp: test for bug in find_last_of,
+	bug #1788700, submitted by Bred Bored.
+
 2007-09-05  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c: symmetry not required for
