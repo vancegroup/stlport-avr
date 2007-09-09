@@ -12,7 +12,6 @@
 #include "cppunit/cppunit_proxy.h"
 
 // #include <stdlib.h> // for rand etc
-// #include <iostream>
 
 #if defined (_STLP_USE_NAMESPACES)
 using namespace std;
@@ -125,12 +124,6 @@ uujdrbwcrrcgbflqpottpegrwvgajcrgwdlpgitydvhedtusip\
 pyvxsuvbvfenodqasajoyomgsqcpjlhbmdahyviuemkssdslde\
 besnnngpesdntrrvysuipywatpfoelthrowhfexlwdysvspwlk\
 fblfdf";
-// ilcpsklryvmcpjnbpbwllsrehfmxrkecwitrsglrexvtjmxypu\
-// nbqfgxmuvgfajclfvenhyuhuorjosamibdnjdbeyhkbsomblto\
-// uujdrbwcrrcgbflqpottpegrwvgajcrgwdlpgitydvhedtusip\
-// pyvxsuvbvfenodqasajoyomgsqcpjlhbmdahyviuemkssdslde\
-// besnnngpesdntrrvysuipywatpfoelthrowhfexlwdysvspwlk\
-// fblfdf";
 
 std::crope create_rope( int len )
 {
