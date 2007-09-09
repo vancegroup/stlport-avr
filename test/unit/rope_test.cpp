@@ -11,6 +11,9 @@
 
 #include "cppunit/cppunit_proxy.h"
 
+// #include <stdlib.h> // for rand etc
+// #include <iostream>
+
 #if defined (_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
@@ -32,6 +35,7 @@ class RopeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(find2);
   CPPUNIT_TEST(construct_from_char);
   CPPUNIT_TEST(bug_report);
+  CPPUNIT_TEST(test_saved_rope_iterators);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -40,6 +44,7 @@ protected:
   void find2();
   void construct_from_char();
   void bug_report();
+  void test_saved_rope_iterators();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RopeTest);
@@ -110,5 +115,78 @@ void RopeTest::bug_report()
   // add one more character to the leaf
   evilRope += '8'; // here is the write beyond the allocated memory
   CPPUNIT_ASSERT( strcmp(sevenCharRope2.c_str(), "1234567") == 0 );
+#endif
+}
+
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+const char str[] = "ilcpsklryvmcpjnbpbwllsrehfmxrkecwitrsglrexvtjmxypu\
+nbqfgxmuvgfajclfvenhyuhuorjosamibdnjdbeyhkbsomblto\
+uujdrbwcrrcgbflqpottpegrwvgajcrgwdlpgitydvhedtusip\
+pyvxsuvbvfenodqasajoyomgsqcpjlhbmdahyviuemkssdslde\
+besnnngpesdntrrvysuipywatpfoelthrowhfexlwdysvspwlk\
+fblfdf";
+// ilcpsklryvmcpjnbpbwllsrehfmxrkecwitrsglrexvtjmxypu\
+// nbqfgxmuvgfajclfvenhyuhuorjosamibdnjdbeyhkbsomblto\
+// uujdrbwcrrcgbflqpottpegrwvgajcrgwdlpgitydvhedtusip\
+// pyvxsuvbvfenodqasajoyomgsqcpjlhbmdahyviuemkssdslde\
+// besnnngpesdntrrvysuipywatpfoelthrowhfexlwdysvspwlk\
+// fblfdf";
+
+std::crope create_rope( int len )
+{
+   int l = len/2;
+   std::crope result;
+   if(l <= 2)
+   {
+      static int j = 0;
+      for(int i = 0; i < len; ++i)
+      {
+         // char c = 'a' + std::rand() % ('z' - 'a');
+         result.append(1, /* c */ str[j++] );
+         j %= sizeof(str);
+      }
+   }
+   else
+   {
+      result = create_rope(len/2);
+      result.append(create_rope(len/2));
+   }
+   return result;
+}
+
+#endif
+
+void RopeTest::test_saved_rope_iterators()
+{
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS)
+   //
+   // Try and create a rope with a complex tree structure:
+   //
+   // srand(0);
+   std::crope r = create_rope(300);
+   std::string expected(r.begin(), r.end());
+   CPPUNIT_ASSERT(expected.size() == r.size());
+   CPPUNIT_ASSERT(std::equal(expected.begin(), expected.end(), r.begin()));
+   std::crope::const_iterator i(r.begin()), j(r.end());
+   int pos = 0;
+   while(i != j)
+   {
+      std::crope::const_iterator k;
+      // This initial read triggers the bug:
+      CPPUNIT_ASSERT(*i);
+      k = i;
+      int newpos = pos;
+      // Now make sure that i is incremented into the next leaf:
+      while(i != j)
+      {
+         CPPUNIT_ASSERT(*i == expected[newpos]);
+         ++i;
+         ++newpos;
+      }
+      // Back up from stored value and continue:
+      i = k;
+      ++i;
+      ++pos;
+   }
 #endif
 }

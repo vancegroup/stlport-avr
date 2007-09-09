@@ -817,36 +817,48 @@ public:
   void _M_decr(size_t __n);
 public:
   size_t index() const { return _M_current_pos; }
+private:
   void _M_copy_buf(const _Self& __x) {
     _M_tmp_buf = __x._M_tmp_buf;
     if (__x._M_buf_start == __x._M_tmp_buf._M_data) {
       _M_buf_start = _M_tmp_buf._M_data;
       _M_buf_end = _M_buf_start + (__x._M_buf_end - __x._M_buf_start);
       _M_buf_ptr = _M_buf_start + (__x._M_buf_ptr - __x._M_buf_start);
+    } else {
+      _M_buf_end = __x._M_buf_end;
     }
   }
 
-  _Rope_iterator_base(const _Self& __x)
-    : _M_current_pos(__x._M_current_pos), _M_root(__x._M_root),
-      _M_buf_start(__x._M_buf_start), _M_buf_ptr(__x._M_buf_ptr), _M_path_end(__x._M_path_end),
-      _M_leaf_index(__x._M_leaf_index), _M_path_directions(__x._M_path_directions) {
-    if (0 != __x._M_buf_ptr) {
-      _M_copy_buf(__x);
-    }
-  }
-  _Self& operator = (const _Self& __x) {
-    _M_current_pos = __x._M_current_pos;
-    _M_root = __x._M_root;
-    _M_buf_start = __x._M_buf_start;
-    _M_buf_ptr = __x._M_buf_ptr;
-    _M_path_end = __x._M_path_end;
-    _M_leaf_index = __x._M_leaf_index;
-    _M_path_directions = __x._M_path_directions;
-    if (0 != __x._M_buf_ptr) {
-      _M_copy_buf(__x);
-    }
-    return *this;
-  }
+public:
+  _Rope_iterator_base(const _Self& __x) : 
+      _M_current_pos(__x._M_current_pos),
+      _M_root(__x._M_root),
+      _M_buf_start(__x._M_buf_start),
+      _M_buf_ptr(__x._M_buf_ptr),
+      _M_path_end(__x._M_path_end),
+      _M_leaf_index(__x._M_leaf_index),
+      _M_path_directions(__x._M_path_directions),
+      _M_leaf_pos( __x._M_leaf_pos )
+      {
+        if (0 != __x._M_buf_ptr) {
+          _M_copy_buf(__x);
+        }
+      }
+  _Self& operator = (const _Self& __x)
+      {
+        _M_current_pos = __x._M_current_pos;
+        _M_root = __x._M_root;
+        _M_buf_start = __x._M_buf_start;
+        _M_buf_ptr = __x._M_buf_ptr;
+        _M_path_end = __x._M_path_end;
+        _M_leaf_index = __x._M_leaf_index;
+        _M_path_directions = __x._M_path_directions;
+        _M_leaf_pos = __x._M_leaf_pos;
+        if (0 != __x._M_buf_ptr) {
+          _M_copy_buf(__x);
+        }
+        return *this;
+      }
 };
 
 template<class _CharT, class _Alloc> class _Rope_iterator;
