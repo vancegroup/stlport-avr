@@ -60,7 +60,9 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
+  CPPUNIT_TEST(rfind);
   CPPUNIT_TEST(find_last_of);
+  CPPUNIT_TEST(find_last_not_of);
   CPPUNIT_TEST(copy);
 #if !defined (USE_PTHREAD_API) && !defined (USE_WINDOWS_API)
   CPPUNIT_IGNORE;
@@ -116,7 +118,9 @@ protected:
   void resize();
   void short_string();
   void find();
+  void rfind();
   void find_last_of();
+  void find_last_not_of();
   void copy();
   void assign();
   void mt();
@@ -630,28 +634,72 @@ void StringTest::find()
   CPPUNIT_ASSERT( s.find("four") == npos_local );
   CPPUNIT_ASSERT( s.find("one", string::npos) == npos_local );
 
+  CPPUNIT_ASSERT( s.find_first_of("abcde") == 2 );
+
+  CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
+}
+
+void StringTest::rfind()
+{
+  // 21.3.6.2
+  string s("one two three one two three");
+
   CPPUNIT_ASSERT( s.rfind("two") == 18 );
   CPPUNIT_ASSERT( s.rfind("two", 0) == string::npos );
   CPPUNIT_ASSERT( s.rfind("two", 11) == 4 );
   CPPUNIT_ASSERT( s.rfind('w') == 19 );
 
-  CPPUNIT_ASSERT( s.find_first_of("abcde") == 2 );
-  CPPUNIT_ASSERT( s.find_last_of("abcde") == 26 );
+  string test( "aba" );
 
-  CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
-  CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
+  CPPUNIT_CHECK( test.rfind( "a", 2, 1 ) == 2 );
+  CPPUNIT_CHECK( test.rfind( "a", 1, 1 ) == 0 );
+  CPPUNIT_CHECK( test.rfind( "a", 0, 1 ) == 0 );
+
+  CPPUNIT_CHECK( test.rfind( 'a', 2 ) == 2 );
+  CPPUNIT_CHECK( test.rfind( 'a', 1 ) == 0 );
+  CPPUNIT_CHECK( test.rfind( 'a', 0 ) == 0 );
 }
 
 void StringTest::find_last_of()
 {
-  string test( "aba" );
-  string::size_type pos = test.find_last_of( 'a', 2 );
+  // 21.3.6.4
+  string s("one two three one two three");
 
-  CPPUNIT_CHECK( pos == 2 );
-  pos = test.find_last_of( 'a', 1 );
-  CPPUNIT_CHECK( pos == 0 );
-  pos = test.find_last_of( 'a', 0 );
-  CPPUNIT_CHECK( pos == 0 ); // pos is npos, whereas it should be 0
+  CPPUNIT_ASSERT( s.find_last_of("abcde") == 26 );
+
+  string test( "aba" );
+
+  CPPUNIT_CHECK( test.find_last_of( "a", 2, 1 ) == 2 );
+  CPPUNIT_CHECK( test.find_last_of( "a", 1, 1 ) == 0 );
+  CPPUNIT_CHECK( test.find_last_of( "a", 0, 1 ) == 0 );
+
+  CPPUNIT_CHECK( test.find_last_of( 'a', 2 ) == 2 );
+  CPPUNIT_CHECK( test.find_last_of( 'a', 1 ) == 0 );
+  CPPUNIT_CHECK( test.find_last_of( 'a', 0 ) == 0 );
+}
+
+void StringTest::find_last_not_of()
+{
+  // 21.3.6.6
+  string s("one two three one two three");
+
+  CPPUNIT_ASSERT( s.find_last_not_of("ehortw ") == 15 );
+
+  string test( "aba" );
+
+  CPPUNIT_CHECK( test.find_last_not_of( "a", 2, 1 ) == 1 );
+  CPPUNIT_CHECK( test.find_last_not_of( "b", 2, 1 ) == 2 );
+  CPPUNIT_CHECK( test.find_last_not_of( "a", 1, 1 ) == 1 );
+  CPPUNIT_CHECK( test.find_last_not_of( "b", 1, 1 ) == 0 );
+  CPPUNIT_CHECK( test.find_last_not_of( "a", 0, 1 ) == string::npos );
+  CPPUNIT_CHECK( test.find_last_not_of( "b", 0, 1 ) == 0 );
+
+  CPPUNIT_CHECK( test.find_last_not_of( 'a', 2 ) == 1 );
+  CPPUNIT_CHECK( test.find_last_not_of( 'b', 2 ) == 2 );
+  CPPUNIT_CHECK( test.find_last_not_of( 'a', 1 ) == 1 );
+  CPPUNIT_CHECK( test.find_last_not_of( 'b', 1 ) == 0 );
+  CPPUNIT_CHECK( test.find_last_not_of( 'a', 0 ) == string::npos );
+  CPPUNIT_CHECK( test.find_last_not_of( 'b', 0 ) == 0 );
 }
 
 void StringTest::copy()

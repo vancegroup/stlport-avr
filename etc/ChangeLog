@@ -1,3 +1,11 @@
+2007-09-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string.c: fix bugs in string rfind, find_last_of,
+	find_last_not_of [bug #1788700, position 0 was wrongly excluded];
+
+	* test/unit/string_test.cpp: test for problems above. Thanks
+	to Bred Bored for bug report and initial test.
+
 2007-09-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/rope_test.cpp, stlport/stl/_rope.h: test for

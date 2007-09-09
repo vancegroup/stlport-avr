@@ -541,34 +541,33 @@ basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
   }
 }
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT,_Traits,_Alloc> ::rfind(const _CharT* __s, size_type __pos,
-                                            size_type __n) const {
-  const size_t __len = size();
-  if (__n > __len || __pos < __n)
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__
+basic_string<_CharT,_Traits,_Alloc>::rfind(const _CharT* __s, size_type __pos, size_type __n) const
+{
+  const size_type __len = size();
+  if ( __len < __n ) {
     return npos;
-  else if (__n == 0)
-    return (min) (__len, __pos);
-  else {
-    const_pointer __last = this->_M_Start() + (min) (__len - __n, __pos) + __n;
-    const_pointer __result = find_end(this->_M_Start(), __last,
-                                      __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
-    return __result != __last ? __result - this->_M_Start() : npos;
   }
+  const_pointer __last = this->_M_Start() + (min)( __len - __n, __pos) + __n;
+  const_pointer __result = find_end(this->_M_Start(), __last,
+                                    __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
+  return __result != __last ? __result - this->_M_Start() : npos;
 }
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT,_Traits,_Alloc> ::rfind(_CharT __c, size_type __pos) const {
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__
+basic_string<_CharT,_Traits,_Alloc>::rfind(_CharT __c, size_type __pos) const
+{
   const size_type __len = size();
-  if (1 > __len || __pos < 1)
+  if ( __len < 1 ) {
     return npos;
-  else {
-    const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
-    const_reverse_iterator __rresult =
-      _STLP_STD::find_if(const_reverse_iterator(__last), rend(),
-                         _STLP_PRIV _Eq_char_bound<_Traits>(__c));
-    return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
+  const_iterator __last = begin() + (min)(__len - 1, __pos) + 1;
+  const_reverse_iterator __rresult =
+    _STLP_STD::find_if(const_reverse_iterator(__last), rend(),
+                       _STLP_PRIV _Eq_char_bound<_Traits>(__c));
+  return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
 }
 
 template <class _CharT, class _Traits, class _Alloc> __size_type__
@@ -584,21 +583,21 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_of(const _CharT* __s, size_type
   }
 }
 
-
-template <class _CharT, class _Traits, class _Alloc> __size_type__
+template <class _CharT, class _Traits, class _Alloc>
+ __size_type__
 basic_string<_CharT,_Traits,_Alloc> ::find_last_of(const _CharT* __s, size_type __pos,
-                                                   size_type __n) const {
+                                                   size_type __n) const
+{
   const size_type __len = size();
-  if (1 > __len || __pos < 1)
+  if ( __len < 1 ) {
     return npos;
-  else {
-    const const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
-    const const_reverse_iterator __rresult =
-      _STLP_PRIV __str_find_first_of(const_reverse_iterator(__last), rend(),
-                                     __s, __s + __n,
-                                     __STATIC_CAST(_Traits*, 0));
-    return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
+  const const_iterator __last = begin() + (min)(__len - 1, __pos) + 1;
+  const const_reverse_iterator __rresult =
+    _STLP_PRIV __str_find_first_of(const_reverse_iterator(__last), rend(),
+                                   __s, __s + __n,
+                                   __STATIC_CAST(_Traits*, 0));
+  return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
 }
 
 
@@ -628,38 +627,39 @@ basic_string<_CharT,_Traits,_Alloc> ::find_first_not_of(_CharT __c, size_type __
   }
 }
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT,_Traits,_Alloc> ::find_last_not_of(const _CharT* __s, size_type __pos,
-                                                       size_type __n) const {
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__
+basic_string<_CharT,_Traits,_Alloc>::find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const
+{
   typedef typename _Traits::char_type _CharType;
   const size_type __len = size();
-  if (1 > __len || __pos < 1)
+  if ( __len < 1 ) {
     return npos;
-  else {
-    const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
-    const_reverse_iterator __rlast = const_reverse_iterator(__last);
-    const_reverse_iterator __rresult =
-      _STLP_PRIV __str_find_first_not_of(__rlast, rend(),
-                                         __STATIC_CAST(const _CharType*, __s),
-                                         __STATIC_CAST(const _CharType*, __s) + __n,
-                                         __STATIC_CAST(_Traits*, 0));
-    return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
+  const_iterator __last = begin() + (min)(__len - 1, __pos) + 1;
+  const_reverse_iterator __rlast = const_reverse_iterator(__last);
+  const_reverse_iterator __rresult =
+    _STLP_PRIV __str_find_first_not_of(__rlast, rend(),
+                                       __STATIC_CAST(const _CharType*, __s),
+                                       __STATIC_CAST(const _CharType*, __s) + __n,
+                                       __STATIC_CAST(_Traits*, 0));
+  return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
 }
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT, _Traits, _Alloc> ::find_last_not_of(_CharT __c, size_type __pos) const {
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__
+basic_string<_CharT, _Traits, _Alloc>::find_last_not_of(_CharT __c, size_type __pos) const
+{
   const size_type __len = size();
-  if (1 > __len || __pos < 1)
+  if ( __len < 1 ) {
     return npos;
-  else {
-    const_iterator __last = begin() + (min) (__len - 1, __pos) + 1;
-    const_reverse_iterator __rlast = const_reverse_iterator(__last);
-    const_reverse_iterator __rresult =
-      _STLP_STD::find_if(__rlast, rend(),
-                         _STLP_PRIV _Neq_char_bound<_Traits>(__c));
-    return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
   }
+  const_iterator __last = begin() + (min)(__len - 1, __pos) + 1;
+  const_reverse_iterator __rlast = const_reverse_iterator(__last);
+  const_reverse_iterator __rresult =
+    _STLP_STD::find_if(__rlast, rend(),
+                       _STLP_PRIV _Neq_char_bound<_Traits>(__c));
+  return __rresult != rend() ? (__rresult.base() - 1) - begin() : npos;
 }
 
 #if !defined (basic_string)
