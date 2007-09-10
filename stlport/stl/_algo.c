@@ -1790,8 +1790,10 @@ _ForwardIter max_element(_ForwardIter __first, _ForwardIter __last) {
   if (__first == __last) return __first;
   _ForwardIter __result = __first;
   while (++__first != __last)
-    if (*__result < *__first)
+    if (*__result < *__first) {
+      _STLP_VERBOSE_ASSERT(!(*__first < *__result), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __result = __first;
+    }
   return __result;
 }
 
@@ -1816,8 +1818,10 @@ _ForwardIter min_element(_ForwardIter __first, _ForwardIter __last) {
   if (__first == __last) return __first;
   _ForwardIter __result = __first;
   while (++__first != __last)
-    if (*__first < *__result)
+    if (*__first < *__result) {
+      _STLP_VERBOSE_ASSERT(!(*__result < *__first), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       __result = __first;
+    }
   return __result;
 }
 

@@ -1,3 +1,27 @@
+2007-09-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algo.c: Add check for symetrical functor
+	in max_element and min_element algo.
+
+	* stlport/stl/_algobase.c: Restore symetrical functor checks.
+	Sometimes simply because the algo was already considering the
+	functor as symetrical as in lexicographical_compare. Sometimes
+	using specific helpers functions (see below).
+
+	* stlport/stl/debug/_debug.h: Add __symetrical_strict_weak_call
+	and __symetrical_equal_call helper functions to check for
+	symetric functors only when invocating the symetrical functor
+	is valid that is to say when both parameters are of the same
+	type.
+
+	* stlport/stl/debug/_hashtable.h: Make use of 
+	__symetrical_equal_call to check that equivalence functor used
+	in hashtable instanciation is correctly implemented.
+
+	* stlport/stl/debug/_tree.h: Make use of
+	__symetrical_strict_weak_call to check that functor predicate
+	use in tree instanciation is correctly implemented.
+
 2007-09-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.c: fix bugs in string rfind, find_last_of,

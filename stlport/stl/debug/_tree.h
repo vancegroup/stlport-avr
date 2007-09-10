@@ -60,7 +60,8 @@ public:
   bool operator () (const _Kp1& __lhs, const _Kp2& __rhs) const {
 #endif
     if (_M_non_dbg_cmp(__lhs, __rhs)) {
-      _STLP_VERBOSE_ASSERT(!_M_non_dbg_cmp(__rhs, __lhs), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
+      _STLP_VERBOSE_ASSERT(__symetrical_strict_weak_call(__lhs, __rhs, _M_non_dbg_cmp),
+                           _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return true;
     }
     return false;
