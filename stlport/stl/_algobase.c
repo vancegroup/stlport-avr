@@ -238,12 +238,8 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
   if ( ++__p1 == __last2 ) {
     while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
-      _STLP_VERBOSE_ASSERT(!_STLP_PRIV __symetrical_equal_call(*__first1, *__first2, __pred),
-                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
     }
-    _STLP_VERBOSE_ASSERT((__first1 == __last1) || _STLP_PRIV __symetrical_equal_call(*__first1, *__first2, __pred),
-                         _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     return __first1;
   }
 
@@ -251,31 +247,21 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
   for ( ; ; ) { // __first1 != __last1 will be checked below
     while (__first1 != __last1 && !__pred(*__first1, *__first2)) {
-      _STLP_VERBOSE_ASSERT(!_STLP_PRIV __symetrical_equal_call(*__first1, *__first2, __pred),
-                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       ++__first1;
     }
     if (__first1 == __last1) {
       return __last1;
     }
-    _STLP_VERBOSE_ASSERT(_STLP_PRIV __symetrical_equal_call(*__first1, *__first2, __pred),
-                         _StlMsg_INVALID_EQUIVALENT_PREDICATE)
-
     _ForwardIter2 __p = __p1;
     _ForwardIter1 __current = __first1;
     if (++__current == __last1) return __last1;
 
     while (__pred(*__current, *__p)) {
-      _STLP_VERBOSE_ASSERT(_STLP_PRIV __symetrical_equal_call(*__current, *__p, __pred),
-                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
       if (++__p == __last2)
         return __first1;
       if (++__current == __last1)
         return __last1;
     }
-
-    _STLP_VERBOSE_ASSERT(!_STLP_PRIV __symetrical_equal_call(*__current, *__p, __pred),
-                         _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     ++__first1;
   }
   return __first1;
@@ -363,12 +349,8 @@ _InputIter __find_first_of(_InputIter __first1, _InputIter __last1,
   for ( ; __first1 != __last1; ++__first1) {
     for (_ForwardIter __iter = __first2; __iter != __last2; ++__iter) {
       if (__comp(*__first1, *__iter)) {
-        _STLP_VERBOSE_ASSERT(__symetrical_equal_call(*__first1, *__iter, __comp),
-                             _StlMsg_INVALID_EQUIVALENT_PREDICATE)
         return __first1;
       }
-      _STLP_VERBOSE_ASSERT(!__symetrical_equal_call(*__first1, *__iter, __comp),
-                           _StlMsg_INVALID_EQUIVALENT_PREDICATE)
     }
   }
   return __last1;

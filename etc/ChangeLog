@@ -1,3 +1,19 @@
+2007-09-11  Petr Ovtchenkov  <ptr@island.corbina.net>
+
+	* stlport/stl/_algobase.c: keep check for symmetry in
+	lexicographical compare---algorithm assume symmetry comparator;
+	remove check for symmetrical comparator in search and find,
+	due to double checks not better then single (the same check
+	done in algorithm, and algorithm not require symmetrical
+	comparator);
+
+	* stlport/stl/debug/_hashtable.h: idem;
+
+	* stlport/stl/debug/_tree.h: idem;
+
+	* stlport/stl/debug/_debug.h: __symetrical_strict_weak_call
+	and __symetrical_equal_call not used anyware.
+
 2007-09-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algo.c: Add check for symetrical functor

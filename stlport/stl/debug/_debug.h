@@ -413,29 +413,6 @@ inline bool _STLP_CALL __check_if_not_owner( const __owned_list* __owner,
                                              const __true_type&)
 { return __stl_debugger::_Check_if_not_owner(__owner, (const __owned_link&)__it); }
 
-/* Following functions are helpers to perform some operation symetric. We afford real
- * symmetrical check only if predicate has necessarily a symetric operator defined
- * which is guaranty when both types are the same. */
-template <class _Tp1, class _Tp2, class _Pred>
-inline bool _STLP_CALL __symetrical_strict_weak_call(const _Tp1& __x, const _Tp2& __y, _Pred __pred)
-{ return __pred(__x, __y); }
-
-#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-template <class _Tp, class _Pred>
-inline bool _STLP_CALL __symetrical_strict_weak_call(const _Tp& __x, const _Tp& __y, _Pred __pred)
-{ return !__pred(__y, __x); }
-#endif
-
-template <class _Tp1, class _Tp2, class _Equal>
-inline bool _STLP_CALL __symetrical_equal_call(const _Tp1& __x, const _Tp2& __y, _Equal __equal)
-{ return __equal(__x, __y); }
-
-#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-template <class _Tp, class _Equal>
-inline bool _STLP_CALL __symetrical_equal_call(const _Tp& __x, const _Tp& __y, _Equal __equal)
-{ return __equal(__y, __x); }
-#endif
-
 _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
