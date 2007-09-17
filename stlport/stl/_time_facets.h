@@ -177,9 +177,6 @@ _STLP_DECLSPEC void _STLP_CALL __release_time(_Locale_time* __time);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _Ch, class _InIt>
-class time_get_byname;
-
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _Ch, class _InIt>
 #else
