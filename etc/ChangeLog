@@ -1,3 +1,7 @@
+2007-09-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* trunk merged with STLPORT_5_1 up to revision 3193.
+
 2007-09-11  Petr Ovtchenkov  <ptr@island.corbina.net>
 
 	* stlport/stl/_algobase.c: keep check for symmetry in

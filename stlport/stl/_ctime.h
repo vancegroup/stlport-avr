@@ -40,7 +40,7 @@ using _STLP_VENDOR_CSTD::asctime;
 using _STLP_VENDOR_CSTD::ctime;
 using _STLP_VENDOR_CSTD::gmtime;
 
-#      if _WIN32_WCE < 0x500 // CE5 stopped supplying this
+#      if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x500) // CE5 stopped supplying this
 using _STLP_VENDOR_CSTD::difftime;
 #      endif
 using _STLP_VENDOR_CSTD::mktime;

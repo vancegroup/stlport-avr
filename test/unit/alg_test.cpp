@@ -335,7 +335,7 @@ void AlgTest::find_first_of_test()
 typedef pair<int, string> Pair;
 
 struct ValueFinder :
-    public std::binary_function<const Pair&, const string&, bool>
+    public binary_function<const Pair&, const string&, bool>
 {
     bool operator () ( const Pair &p, const string& value ) const
       { return p.second == value; }

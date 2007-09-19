@@ -1346,6 +1346,8 @@ extern "C" {
   size_t _Locale_strxfrm(_Locale_collate_t* lcol,
                          char* dst, size_t dst_size,
                          const char* src, size_t src_size) {
+    int result;
+
     /* The Windows API do not support transformation of very long strings (src_size > INT_MAX)
      * In this case the result will just be the input string:
      */
@@ -1361,23 +1363,24 @@ extern "C" {
     }
 
     if (__GetDefaultCP(lcol->lc.id) == atoi(lcol->cp))
-      return LCMapStringA(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
+      result = LCMapStringA(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
     else {
-      int result;
       char *buf;
       size_t size;
       buf = __ConvertToCP(atoi(lcol->cp), __GetDefaultCP(lcol->lc.id), src, src_size, &size);
 
       result = LCMapStringA(lcol->lc.id, LCMAP_SORTKEY, buf, (int)size, dst, (int)dst_size);
       free(buf);
-      return result;
     }
+    return result != 0 ? result - 1 : 0;
   }
 
 #if !defined (_STLP_NO_WCHAR_T)
   size_t _Locale_strwxfrm(_Locale_collate_t* lcol,
                           wchar_t* dst, size_t dst_size,
                           const wchar_t* src, size_t src_size) {
+    int result;
+
     /* see _Locale_strxfrm: */
     if (src_size > INT_MAX) {
       if (dst != 0) {
@@ -1388,7 +1391,8 @@ extern "C" {
     if (dst_size > INT_MAX) {
       dst_size = INT_MAX;
     }
-    return LCMapStringW(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
+    result = LCMapStringW(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
+    return result != 0 ? result - 1 : 0;
   }
 #endif
 
@@ -1733,6 +1737,7 @@ static BOOL CALLBACK EnumLocalesProcA(LPSTR locale) {
 }
 
 int __GetLCID(const char* lang, const char* ctry, LCID* lcid) {
+  int ret;
   EnterCriticalSection(&__criticalSection);
 
   __FindFlag = 0;
@@ -1741,9 +1746,10 @@ int __GetLCID(const char* lang, const char* ctry, LCID* lcid) {
   EnumSystemLocalesA(EnumLocalesProcA, LCID_INSTALLED);
 
   if (__FindFlag != 0) *lcid = __FndLCID;
+  ret = __FindFlag != 0 ? 0 : -1;
 
   LeaveCriticalSection(&__criticalSection);
-  return __FindFlag != 0 ? 0 : -1;
+  return ret;
 }
 
 int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *hint) {

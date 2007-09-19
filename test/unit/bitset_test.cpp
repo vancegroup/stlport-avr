@@ -1,5 +1,6 @@
 #include <bitset>
 #include <algorithm>
+#include <sstream>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -14,11 +15,12 @@ class BitsetTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(BitsetTest);
   CPPUNIT_TEST(bitset1);
+  CPPUNIT_TEST(iostream);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void bitset1();
-  static void disp_bitset(char const* pname, bitset<13U> const& bset);
+  void iostream();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BitsetTest);
@@ -65,5 +67,37 @@ void BitsetTest::bitset1()
 #  endif
 #else
   CPPUNIT_ASSERT( b2.to_string() == "1000100010001" );
+#endif
+}
+
+void BitsetTest::iostream()
+{
+  {
+    stringstream sstr;
+    bitset<13U> b(0x1111);
+    sstr << b;
+    CPPUNIT_ASSERT( sstr.str() == "1000100010001" );
+
+    bitset<13U> b1;
+    sstr >> b1;
+    CPPUNIT_ASSERT( b1.test(0) );
+    CPPUNIT_ASSERT( b1.test(4) );
+    CPPUNIT_ASSERT( b1.test(8) );
+    CPPUNIT_ASSERT( b1.test(12) );
+  }
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+  {
+    wstringstream sstr;
+    bitset<13U> b(0x1111);
+    sstr << b;
+    CPPUNIT_ASSERT( sstr.str() == L"1000100010001" );
+
+    bitset<13U> b1;
+    sstr >> b1;
+    CPPUNIT_ASSERT( b1.test(0) );
+    CPPUNIT_ASSERT( b1.test(4) );
+    CPPUNIT_ASSERT( b1.test(8) );
+    CPPUNIT_ASSERT( b1.test(12) );
+  }
 #endif
 }

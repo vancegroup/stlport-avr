@@ -43,7 +43,6 @@ bool lexicographical_compare(_InputIter1 __first1, _InputIter1 __last1,
   for ( ; __first1 != __last1 && __first2 != __last2
         ; ++__first1, ++__first2) {
     if (*__first1 < *__first2) {
-      _STLP_VERBOSE_ASSERT(!(*__first2 < *__first1), _StlMsg_INVALID_STRICT_WEAK_PREDICATE)
       return true;
     }
     if (*__first2 < *__first1)

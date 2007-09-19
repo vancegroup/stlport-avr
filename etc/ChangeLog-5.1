@@ -1,3 +1,90 @@
+2007-09-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_num_get.h: Add _STLP_DECLSPEC specification to
+	several functions that might be access by external code when
+	num_get facet is instantiated with something else than the
+	Standard required instantiation.
+
+2007-09-11  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_glibc/c_locale_glibc.c, c_locale_glibc2.c: Fix
+	_Locale_strxfrm and _Locale_wcxfrm implementation to take
+	into account strings that are not zero terminated.
+
+	* test/unit/locale_test.cpp: Add check that collate.tranform
+	method build a key only for chars in the range pass to method.
+
+2007-09-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/facets_byname.cpp: John Maddock bug report 1788618 fix.
+	Moreover remove use of an intermediate buffer to get result
+	of _Locale_strxfrm.
+
+	* test/unit/locale_test.cpp: Add tests for collate::transform
+	facet method.
+
+	* src/c_locale_win32/c_locale_win32.c: Small modification,
+	_Locale_strxfrm is supposed to return the number of chars
+	required to store the generated sorted key without the trailing
+	zero.
+
+	* src/c_locale_glibc/c_locale_glibc.c, c_locale_glibc2.c: Fix
+	implementation of _Locale_strxfrm, it should never return -1.
+
+2007-09-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string.c: fix bugs in string rfind, find_last_of,
+	find_last_not_of [bug #1788700, position 0 was wrongly excluded];
+
+	* test/unit/string_test.cpp: test for problems above. Thanks
+	to Bred Bored for bug report and initial test.
+
+	* unit tests: Linux 2.6.16.26 (athlon-4), gcc 4.1.1, glibc 2.3.6
+	"OK 395 tests" for release-shared and stldbg-shared targets.
+
+2007-09-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/rope_test.cpp, stlport/stl/_rope.h: test for
+	bug #1788615 [bug during copy of rope's iterator] and fix;
+	suggested by John Maddock.
+
+	* stlport/stl/_algobase.c: symmetry not required for
+	comparator in case of two different sequences comparison or
+	searching; symmetrical comparator just may not exist;
+
+	* stlport/stl/debug/_hashtable.h: symmetry not required for
+	comparator in hashtable in case of containers extention;
+	symmetrical comparator just may not exist;
+
+	* test/unit/alg_test.cpp: test for problem above, thanks
+	Oleg Obolenskiy.
+
+2007-09-06  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/strstream_buffer_read_test.cpp: Remove useless
+	strdup call that was moreover introducing a memory leak.
+
+2007-09-04  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/allocators.cpp: Fix implementation of _S_chunk_dealloc when
+	lock free implementation is not in use. Thanks bug report 1787636
+	from Sergej Zagursky.
+
+2007-08-31  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_cstdio.h, _ctime.h: Add missing macro definition
+	test before using _WIN32_WCE thanks bug report 1784174.
+
+	* stlport/stl/_bitset.h: Change macro tests in order to check
+	macro definition before using it thanks bug report 1785679.
+
+	* test/unit/bitset_test.cpp: Bitset::iostream new test to check
+	correct input/output of bitset class.
+
+	* build/Makefiles/gmake/gcc.mak: Add -Wundef gcc option when building
+	with gcc under Cygwin MinGW, it is an interesting option to detect
+	macro check errors.
+
 2007-08-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/user_config.h, host.h: Moved the administrative
@@ -18,7 +105,7 @@
 	allow operations 'less-than' and distance; for bidirectional
 	iterators removed usage of 'less-than', and for others
 	[like forward and input iterators] removed as usage of 'less-than'
-	as distance; thanks Oleg Obolensky for bug report;
+	as distance; thanks Oleg Obolenskiy for bug report;
 
 	* test/unit/ioiter_test.cpp: test for problem above.
 

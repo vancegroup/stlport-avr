@@ -52,13 +52,33 @@ void LocaleTest::collate_facet()
     }
     {
       CPPUNIT_ASSERT( has_facet<collate<char> >(loc) );
+      collate<char> const& col = use_facet<collate<char> >(loc);
 
       string strs[] = {"abdd", "abçd", "abbd", "abcd"};
+
+      string transformed[4];
+      for (size_t i = 0; i < 4; ++i) {
+        transformed[i] = col.transform(strs[i].data(), strs[i].data() + strs[i].size());
+      }
+
       sort(strs, strs + 4, loc);
       CPPUNIT_ASSERT( strs[0] == "abbd" );
       CPPUNIT_ASSERT( strs[1] == "abcd" );
       CPPUNIT_ASSERT( strs[2] == "abçd" );
       CPPUNIT_ASSERT( strs[3] == "abdd" );
+
+      sort(transformed, transformed + 4);
+
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data() + strs[0].size()) == transformed[0] );
+      CPPUNIT_ASSERT( col.transform(strs[1].data(), strs[1].data() + strs[1].size()) == transformed[1] );
+      CPPUNIT_ASSERT( col.transform(strs[2].data(), strs[2].data() + strs[2].size()) == transformed[2] );
+      CPPUNIT_ASSERT( col.transform(strs[3].data(), strs[3].data() + strs[3].size()) == transformed[3] );
+
+      // Check empty string result in empty key.
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data()).empty() );
+
+      // Check that only characters that matter are taken into accout to build the key.
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data() + 2) == col.transform(strs[1].data(), strs[1].data() + 2) );
     }
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
     {
@@ -78,17 +98,36 @@ void LocaleTest::collate_facet()
       CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
     }
     {
+      size_t i;
       CPPUNIT_ASSERT( has_facet<collate<wchar_t> >(loc) );
+      collate<wchar_t> const& col = use_facet<collate<wchar_t> >(loc);
 
       // Here we would like to use L"abçd" but it looks like all compilers
       // do not support storage of unicode characters in exe resulting in
       // compilation error. We avoid this test for the moment.
       wstring strs[] = {L"abdd", L"abcd", L"abbd", L"abcd"};
+
+      wstring transformed[4];
+      for (i = 0; i < 4; ++i) {
+        transformed[i] = col.transform(strs[i].data(), strs[i].data() + strs[i].size());
+      }
+
       sort(strs, strs + 4, loc);
       CPPUNIT_ASSERT( strs[0] == L"abbd" );
       CPPUNIT_ASSERT( strs[1] == L"abcd" );
       CPPUNIT_ASSERT( strs[2] == L"abcd" );
       CPPUNIT_ASSERT( strs[3] == L"abdd" );
+
+      sort(transformed, transformed + 4);
+
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data() + strs[0].size()) == transformed[0] );
+      CPPUNIT_ASSERT( col.transform(strs[1].data(), strs[1].data() + strs[1].size()) == transformed[1] );
+      CPPUNIT_ASSERT( col.transform(strs[2].data(), strs[2].data() + strs[2].size()) == transformed[2] );
+      CPPUNIT_ASSERT( col.transform(strs[3].data(), strs[3].data() + strs[3].size()) == transformed[3] );
+
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data()).empty() );
+
+      CPPUNIT_ASSERT( col.transform(strs[0].data(), strs[0].data() + 2) == col.transform(strs[1].data(), strs[1].data() + 2) );
     }
 #    endif
   }

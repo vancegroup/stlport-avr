@@ -664,6 +664,17 @@ public:
     }
   }
 
+#if !defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_WCHAR_T)
+  void _M_copy_to_string(wstring& __s) const {
+    __s.assign(_Nb, '0');
+
+    for (size_t __i = 0; __i < _Nb; ++__i) {
+      if (_Unchecked_test(__i))
+        __s[_Nb - 1 - __i] = '1';
+    }
+  }
+#endif
+
 #if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
   bitset<_Nb> operator&(const bitset<_Nb>& __y) const {
     bitset<_Nb> __result(*this);
@@ -720,8 +731,8 @@ operator^(const bitset<_Nb>& __x,
 
 _STLP_END_NAMESPACE
 
-#  if !(defined (_STLP_MSVC) || (_STLP_MSVC < 1300)) && \
-      !(defined(__SUNPRO_CC) || (__SUNPRO_CC < 0x500))
+#  if !(defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) && \
+      !(defined(__SUNPRO_CC) && (__SUNPRO_CC < 0x500))
 
 #ifndef _STLP_INTERNAL_IOSFWD
 #  include <stl/_iosfwd.h>

@@ -52,7 +52,7 @@ void FuncTest::func1()
 
 void FuncTest::func2()
 {
-  vector<int>v;
+  vector<int> v;
   v.push_back(4);
   v.push_back(1);
   v.push_back(5);
@@ -64,7 +64,7 @@ void FuncTest::func2()
 }
 void FuncTest::func3()
 {
-  vector<int>v;
+  vector<int> v;
   v.push_back(4);
   v.push_back(1);
   v.push_back(5);

@@ -26,7 +26,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StrstreamBufferReadTest);
 void StrstreamBufferReadTest::readFromBuffer()
 {
   char hello[] = "Hello";
-  strstream stream(hello, sizeof(hello), std::ios_base::in);
+  strstream stream(hello, sizeof(hello), ios_base::in);
   char cur;
   stream >> cur;
   CPPUNIT_ASSERT(cur == 'H'); 

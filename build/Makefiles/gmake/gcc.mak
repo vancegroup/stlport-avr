@@ -58,7 +58,7 @@ release-shared : RCFLAGS += -DBUILD_INFOS=-O2
 dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
-CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident
+CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -Wundef -fexceptions -fident
 ifndef STLP_BUILD_NO_THREAD
 ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads

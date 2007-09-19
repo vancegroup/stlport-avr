@@ -420,11 +420,25 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
                        char *dest, size_t dest_n,
                        const char *src, size_t src_n )
 {
-  size_t n;
-
-  n = strxfrm_l( dest, src, dest_n, (__c_locale)__loc );
-
-  return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
+  if (src_n == 0)
+  {
+    if (dest != NULL) dest[0] = 0;
+    return 0;
+  }
+  const char *real_src;
+  char *buf = NULL;
+  if (src[src_n] != 0) {
+    buf = malloc(src_n + 1);
+    strncpy(buf, src, src_n);
+    buf[src_n] = 0;
+    real_src = buf;
+  }
+  else
+    real_src = src;
+  size_t result = __strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  if (buf != NULL) free(buf);
+  return result;
+>>>>>>> .merge-right.r3193
 }
 
 # ifndef _STLP_NO_WCHAR_T
@@ -433,11 +447,24 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
                         wchar_t *dest, size_t dest_n,
                         const wchar_t *src, size_t src_n )
 {
-  size_t n;
-
-  n = wcsxfrm_l( dest, src, dest_n, (__c_locale)__loc );
-
-  return n > src_n ? (size_t)-1 : n; /* dest[n] = 0? */
+  if (src_n == 0)
+  {
+    if (dest != NULL) dest[0] = 0;
+    return 0;
+  }
+  const wchar_t *real_src;
+  wchar_t *buf = NULL;
+  if (src[src_n] != 0) {
+    buf = malloc((src_n + 1) * sizeof(wchar_t));
+    wcsncpy(buf, src, src_n);
+    buf[src_n] = 0;
+    real_src = buf;
+  }
+  else
+    real_src = src;
+  size_t result = __wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  if (buf != NULL) free(buf);
+  return result;
 }
 
 # endif

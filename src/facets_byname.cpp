@@ -198,17 +198,14 @@ int collate_byname<char>::do_compare(const char* __low1,
 
 collate_byname<char>::string_type
 collate_byname<char>::do_transform(const char* low, const char* high) const {
-  size_t n = _Locale_strxfrm(_M_collate,
-                             NULL, 0,
-                             low, high - low);
+  size_t n = _Locale_strxfrm(_M_collate, NULL, 0, low, high - low);
 
-  vector<char, allocator<char> > buf(n);
-  _Locale_strxfrm(_M_collate, &buf.front(), n, low, high - low);
-
-   char& __c1 = *(buf.begin());
-   char& __c2 = (n == (size_t)-1) ? *(buf.begin() + (high-low-1)) : *(buf.begin() + n);
-   //   char& __c2 = *(buf.begin() + n);
-   return string_type( &__c1, &__c2 );
+  // NOT PORTABLE.  What we're doing relies on internal details of the
+  // string implementation.  (Contiguity of string elements and presence
+  // of trailing zero.)
+  string_type buf(n, 0);
+  _Locale_strxfrm(_M_collate, &(*buf.begin()), n + 1, low, high - low);
+  return buf;
 }
 
 
@@ -239,19 +236,16 @@ int collate_byname<wchar_t>::do_compare(const wchar_t* low1,
 }
 
 collate_byname<wchar_t>::string_type
-collate_byname<wchar_t>
-  ::do_transform(const wchar_t* low, const wchar_t* high) const {
-  size_t n = _Locale_strwxfrm(_M_collate,
-                              NULL, 0,
-                              low, high - low);
+collate_byname<wchar_t>::do_transform(const wchar_t* low,
+                                      const wchar_t* high) const {
+  size_t n = _Locale_strwxfrm(_M_collate, NULL, 0, low, high - low);
 
-  vector<wchar_t, allocator<wchar_t> > buf(high - low);
-  _Locale_strwxfrm(_M_collate, &buf.front(), n,
-                               low, high - low);
-  wchar_t& __c1 = *(buf.begin());
-  wchar_t& __c2 = (n == (size_t)-1) ? *(buf.begin() + (high-low-1)) : *(buf.begin() + n);
-  // wchar_t& __c2 = *(buf.begin() + n);
-  return string_type( &__c1, &__c2 );
+  // NOT PORTABLE.  What we're doing relies on internal details of the
+  // string implementation.  (Contiguity of string elements and presence
+  // of trailing zero.)
+  string_type buf(n, 0);
+  _Locale_strwxfrm(_M_collate, &(*buf.begin()), n + 1, low, high - low);
+  return buf;
 }
 
 #endif /*  _STLP_NO_WCHAR_T */

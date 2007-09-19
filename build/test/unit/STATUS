@@ -366,39 +366,39 @@ Operational environment:        Windows XP Professionnal 2002 SP2
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 6 SP5
 -----------------------------------------------------------------------
-Date:                           2007-03-31
-STLP Version:                   STLPORT_5_1 branch (revision 2982)
+Date:                           2007-09-04
+STLP Version:                   STLPORT_5_1 branch (revision 3172)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (385 tests, 10 ignored)
+Status (release-shared):        All pass (389 tests, 10 ignored)
 Notes:
-Status (dbg-shared):            All pass (385 tests, 10 ignored)
+Status (dbg-shared):            All pass (389 tests, 10 ignored)
 Notes:
-Status (stldbg-shared):         All pass (385 tests, 10 ignored)
+Status (stldbg-shared):         All pass (389 tests, 10 ignored)
 Notes:
-Status (release-static):        All pass (385 tests, 10 ignored)
+Status (release-static):        All pass (389 tests, 10 ignored)
 Notes:
-Status (dbg-static):            All pass (385 tests, 10 ignored)
+Status (dbg-static):            All pass (389 tests, 10 ignored)
 Notes:
-Status (stldbg-static):         All pass (385 tests, 10 ignored)
+Status (stldbg-static):         All pass (389 tests, 10 ignored)
 Notes:
 
 -----------------------------------------------------------------------
 Compiler:                       Visual C++ 2005 Express Version 8.0.50215-4400
 -----------------------------------------------------------------------
-Date:                           2007-03-31
-STLP Version:                   STLPORT_5_1 branch (revision 2982)
+Date:                           2007-09-04
+STLP Version:                   STLPORT_5_1 branch (revision 3172)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        All pass (385 tests, 1 ignored)
+Status (release-shared):        All pass (389 tests, 1 ignored)
 Notes:
-Status (dbg-shared):            All pass (385 tests, 1 ignored)
+Status (dbg-shared):            All pass (389 tests, 1 ignored)
 Notes:
-Status (stldbg-shared):         All pass (385 tests, 1 ignored)
+Status (stldbg-shared):         All pass (389 tests, 1 ignored)
 Notes:
-Status (release-static):        All pass (385 tests, 1 ignored)
+Status (release-static):        All pass (389 tests, 1 ignored)
 Notes:
-Status (dbg-static):            All pass (385 tests, 1 ignored)
+Status (dbg-static):            All pass (389 tests, 1 ignored)
 Notes:
-Status (stldbg-static):         All pass (385 tests, 1 ignored)
+Status (stldbg-static):         All pass (389 tests, 1 ignored)
 Notes:
 
 -----------------------------------------------------------------------
@@ -446,30 +446,30 @@ Notes:
 -----------------------------------------------------------------------
 Compiler:                       Borland C++ compiler 5.5.1 (free version)
 -----------------------------------------------------------------------
-Date:                           2007-03-31
-STLP Version:                   STLPORT_5_1 branch (revision 2982)
+Date:                           2007-09-04
+STLP Version:                   STLPORT_5_1 branch (revision 3171)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (386 tests, 6 ignored).
+Status (release-shared):        1 failure (390 tests, 6 ignored).
 Notes:                          The failure is on a specific Borland test
                                 showing a bug in the Borland compiler.
-Status (dbg-shared):            1 failure (386 tests, 6 ignored).
+Status (dbg-shared):            1 failure (390 tests, 6 ignored).
 Notes:                          Idem release-shared
-Status (release-shared):        1 failure (386 tests, 6 ignored).
+Status (stldbg-shared):         1 failure (390 tests, 6 ignored).
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
 Compiler:                       g++ 3.4.4 (cygwin special)
 -----------------------------------------------------------------------
-Date:                           2007-03-31
-STLP Version:                   STLPORT_5_1 branch (revision 2982)
+Date:                           2007-09-04
+STLP Version:                   STLPORT_5_1 branch (revision 3171)
 Reporter:                       dums (Francois Dumont)
-Status (release-shared):        1 failure (385 tests)
+Status (release-shared):        1 failure (390 tests)
 Notes:                          ExceptionTest::uncaught_exception fails when all tests
                                 are run but succeed with only running it using the 
                                 -t=ExceptionTest option.
-Status (dbg-shared):            1 failure (385 tests)
+Status (dbg-shared):            1 failure (390 tests)
 Notes:                          Idem release-shared.
-Status (stldbg-shared):         1 failure (385 tests)
+Status (stldbg-shared):         1 failure (390 tests)
 Notes:                          Idem release-shared.
 
 -----------------------------------------------------------------------
@@ -697,24 +697,24 @@ Status (stldbg-static):         All pass (374 tests)
 Notes:
 
 =======================================================================
-Operational environment:        Windows CE 4.2 Pocket PC 2003 (iPAQ h6340)
+Operational environment:        Windows CE 4.2 Pocket PC 2003 SE (HTC Magician S100)
 =======================================================================
 
 -----------------------------------------------------------------------
 Compiler:                       eMbedded Visual C++ .NET SP4
 -----------------------------------------------------------------------
-Date:                           2006-09-07
-STLP Version:                   SVN branch STLPORT_5_1, revision 2569
+Date:                           2007-09-05
+STLP Version:                   SVN branch STLPORT_5_1, revision 3173
 Reporter:                       mfink (Michael Fink)
-Status (release-shared):        All pass (375 tests)
+Status (release-shared):        All pass (388 tests)
 Notes:
-Status (dbg-shared):            All pass (375 tests)
+Status (dbg-shared):            All pass (388 tests)
 Notes:
 Status (stldbg-shared):         Runtime failure
 Notes:                          Fails due to a bug in the ARM compiler
-Status (release-static):        All pass (375 tests)
+Status (release-static):        All pass (388 tests)
 Notes:
-Status (dbg-static):            All pass (375 tests)
+Status (dbg-static):            All pass (388 tests)
 Notes:
 Status (stldbg-shared):         Runtime failure
 Notes:                          Fails due to a bug in the ARM compiler

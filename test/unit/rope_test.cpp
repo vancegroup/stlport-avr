@@ -125,16 +125,16 @@ pyvxsuvbvfenodqasajoyomgsqcpjlhbmdahyviuemkssdslde\
 besnnngpesdntrrvysuipywatpfoelthrowhfexlwdysvspwlk\
 fblfdf";
 
-std::crope create_rope( int len )
+crope create_rope( int len )
 {
    int l = len/2;
-   std::crope result;
+   crope result;
    if(l <= 2)
    {
       static int j = 0;
       for(int i = 0; i < len; ++i)
       {
-         // char c = 'a' + std::rand() % ('z' - 'a');
+         // char c = 'a' + rand() % ('z' - 'a');
          result.append(1, /* c */ str[j++] );
          j %= sizeof(str);
       }
@@ -156,15 +156,15 @@ void RopeTest::test_saved_rope_iterators()
    // Try and create a rope with a complex tree structure:
    //
    // srand(0);
-   std::crope r = create_rope(300);
-   std::string expected(r.begin(), r.end());
+   crope r = create_rope(300);
+   string expected(r.begin(), r.end());
    CPPUNIT_ASSERT(expected.size() == r.size());
-   CPPUNIT_ASSERT(std::equal(expected.begin(), expected.end(), r.begin()));
-   std::crope::const_iterator i(r.begin()), j(r.end());
+   CPPUNIT_ASSERT(equal(expected.begin(), expected.end(), r.begin()));
+   crope::const_iterator i(r.begin()), j(r.end());
    int pos = 0;
    while(i != j)
    {
-      std::crope::const_iterator k;
+      crope::const_iterator k;
       // This initial read triggers the bug:
       CPPUNIT_ASSERT(*i);
       k = i;
