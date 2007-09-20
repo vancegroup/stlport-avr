@@ -438,7 +438,6 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
   size_t result = __strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
   if (buf != NULL) free(buf);
   return result;
->>>>>>> .merge-right.r3193
 }
 
 # ifndef _STLP_NO_WCHAR_T
