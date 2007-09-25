@@ -59,9 +59,9 @@ int main(int argc, char** argv) {
   //  -x=CLASS[::TEST]    run all except the test class CLASS or member test CLASS::TEST
   //  -f=FILE             save output in file FILE instead of stdout
   //  -m                  monitor test(s) execution
-  char *fileName = 0;
-  char *testName = "";
-  char *xtestName = "";
+  const char *fileName = 0;
+  const char *testName = "";
+  const char *xtestName = "";
   bool doMonitoring = false;
 
   for (int i = 1; i < argc; ++i) {

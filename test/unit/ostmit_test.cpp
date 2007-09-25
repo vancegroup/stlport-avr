@@ -33,7 +33,7 @@ void OstreamIteratorTest::ostmit0()
   // not necessary, tested in copy_test
   int array [] = { 1, 5, 2, 4 };
 
-  char* text = "hello";
+  const char* text = "hello";
 
   ostringstream os;
 

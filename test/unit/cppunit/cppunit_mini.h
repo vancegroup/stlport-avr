@@ -145,7 +145,7 @@ namespace CPPUNIT_NS
 #define CPPUNIT_TEST_SUITE(X) \
   typedef CPPUNIT_NS::TestCase Base; \
   virtual void myRun(const char *in_name, bool invert = false) { \
-    char *className = #X; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(className) \
+    const char *className = #X; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(className) \
     bool ignoring = false; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(ignoring)
 
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS

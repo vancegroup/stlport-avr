@@ -29,10 +29,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BinsertTest);
 //
 void BinsertTest::binsert1()
 {
-  char* array [] = { "laurie", "jennifer", "leisa" };
-  vector<char*> names;
-  back_insert_iterator<vector<char*> > bit(names);
-  bit = copy(array, array + 3, back_insert_iterator<vector <char*> >(names));
+  const char* array [] = { "laurie", "jennifer", "leisa" };
+  vector<const char*> names;
+  back_insert_iterator<vector<const char*> > bit(names);
+  bit = copy(array, array + 3, bit);
 
   CPPUNIT_ASSERT(!strcmp(names[0],array[0]));
   CPPUNIT_ASSERT(!strcmp(names[1],array[1]));
@@ -45,8 +45,8 @@ void BinsertTest::binsert1()
 }
 void BinsertTest::binsert2()
 {
-  char* array [] = { "laurie", "jennifer", "leisa" };
-  vector<char*> names;
+  const char* array [] = { "laurie", "jennifer", "leisa" };
+  vector<const char*> names;
   copy(array, array + 3, back_inserter(names));
   CPPUNIT_ASSERT(!strcmp(names[0],array[0]));
   CPPUNIT_ASSERT(!strcmp(names[1],array[1]));

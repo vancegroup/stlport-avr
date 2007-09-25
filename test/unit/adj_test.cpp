@@ -65,9 +65,9 @@ void AdjTest::adjfind1()
 }
 void AdjTest::adjfind2()
 {
-  typedef vector <char*> CStrVector;
+  typedef vector <const char*> CStrVector;
 
-  char* names[] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
+  const char* names[] = { "Brett", "Graham", "Jack", "Mike", "Todd" };
 
   const int nameCount = sizeof(names)/sizeof(names[0]);
   CStrVector v(nameCount);

@@ -30,8 +30,8 @@ void IoiterTest::ioiter_test()
 {
 
   char c;
-  char *pc;
-  char *strorg = "abcd";
+  const char *pc;
+  const char *strorg = "abcd";
   string tmp;
 
   string objStr(strorg);

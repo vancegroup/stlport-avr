@@ -195,6 +195,19 @@ void LocaleTest::combine()
 {
 #  if (!defined (STLPORT) || \
        (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
+  {
+    try {
+      locale loc("");
+      if (!has_facet<messages<char> >(loc)) {
+        loc.combine<messages<char> >(loc);
+        CPPUNIT_ASSERT( false );
+      }
+    }
+    catch (const runtime_error &e) {
+      CPPUNIT_MESSAGE( e.what() );
+    }
+  }
+
   auto_ptr<locale> loc1, loc2;
   size_t loc1_index = 0;
   for (size_t i = 0; _get_ref_monetary(i) != 0; ++i) {

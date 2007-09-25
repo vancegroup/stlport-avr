@@ -71,8 +71,8 @@ void SetDifferenceTest::setsymd1()
 
 void SetDifferenceTest::setsymd2()
 {
-  char* word1 = "ABCDEFGHIJKLMNO";
-  char* word2 = "LMNOPQRSTUVWXYZ";
+  const char* word1 = "ABCDEFGHIJKLMNO";
+  const char* word2 = "LMNOPQRSTUVWXYZ";
 
   string diff;
   set_symmetric_difference(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),
@@ -122,8 +122,8 @@ void SetDifferenceTest::setdiff1()
 
 void SetDifferenceTest::setdiff2()
 {
-  char* word1 = "ABCDEFGHIJKLMNO";
-  char* word2 = "LMNOPQRSTUVWXYZ";
+  const char* word1 = "ABCDEFGHIJKLMNO";
+  const char* word2 = "LMNOPQRSTUVWXYZ";
 
   string diff;
   set_difference(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2), back_inserter(diff), less<char>());
