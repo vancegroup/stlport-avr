@@ -1,8 +1,12 @@
+2007-09-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/find_test.cpp: array initialization missed.
+
 2007-09-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* trunk merged with STLPORT_5_1 up to revision 3193.
 
-2007-09-11  Petr Ovtchenkov  <ptr@island.corbina.net>
+2007-09-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_algobase.c: keep check for symmetry in
 	lexicographical compare---algorithm assume symmetry comparator;

@@ -87,7 +87,7 @@ void FindTest::findif0()
   }
 
   {
-    Key keys[10];
+    Key keys[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     Key const* k = find(keys + 0, keys + 10, 5);
     CPPUNIT_ASSERT( k == keys + 10 );
   }
