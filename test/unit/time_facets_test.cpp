@@ -159,6 +159,19 @@ void LocaleTest::time_by_name()
   }
 
   try {
+    string veryLongFacetName("LC_TIME=");
+    veryLongFacetName.append(512, '?');
+    locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
     locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
   }
@@ -173,6 +186,19 @@ void LocaleTest::time_by_name()
     CPPUNIT_ASSERT( false );
   }
   catch (runtime_error const&) {
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    string veryLongFacetName("LC_TIME=");
+    veryLongFacetName.append(512, '?');
+    locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );

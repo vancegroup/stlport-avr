@@ -171,7 +171,7 @@ protected:
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_STLP_DECLSPEC _Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*);
+_STLP_DECLSPEC _Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*, int *__err_code);
 _STLP_DECLSPEC time_base::dateorder _STLP_CALL __get_date_order(_Locale_time*);
 _STLP_DECLSPEC void _STLP_CALL __release_time(_Locale_time* __time);
 
@@ -191,10 +191,13 @@ public:
   explicit time_get_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
     : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs) {
     if (!__name)
-      locale::_M_throw_runtime_error();
-    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint);
+      locale::_M_throw_on_null_name();
+
+    int __err_code;
+    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint, &__err_code);
     if (!__time)
-      locale::_M_throw_runtime_error(__name);
+      locale::_M_throw_on_creation_failure(__err_code, __name, "time_get");
+
     _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
     _M_dateorder = _STLP_PRIV __get_date_order(__time);
     _STLP_PRIV __release_time(__time);
@@ -295,10 +298,13 @@ public:
   explicit time_put_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
     : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs) {
     if (!__name)
-      locale::_M_throw_runtime_error();
-    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint);
+      locale::_M_throw_on_null_name();
+
+    int __err_code;
+    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint, &__err_code);
     if (!__time)
-      locale::_M_throw_runtime_error(__name);
+      locale::_M_throw_on_creation_failure(__err_code, __name, "time_get");
+
     _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
     _STLP_PRIV __release_time(__time);
   }

@@ -99,11 +99,12 @@ void _Catalog_nl_catd_map::erase(messages_base::catalog cat) {
 _Messages::_Messages(bool is_wide, const char *name, _Locale_name_hint* hint) :
   _M_message_obj(0), _M_map(0) {
   if (!name)
-    locale::_M_throw_runtime_error();
+    locale::_M_throw_on_null_name();
 
-  _M_message_obj = _STLP_PRIV __acquire_messages(name, hint);
+  int __err_code;
+  _M_message_obj = _STLP_PRIV __acquire_messages(name, hint, &__err_code);
   if (!_M_message_obj)
-    locale::_M_throw_runtime_error(name);
+    locale::_M_throw_on_creation_failure(__err_code, name, "messages");
 
   if (is_wide)
     _M_map = new _Catalog_locale_map;

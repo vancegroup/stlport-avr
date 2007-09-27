@@ -41,23 +41,50 @@ bool locale::operator()(const wstring& __x,
 #  endif
 #endif
 
-void _STLP_CALL locale::_M_throw_runtime_error(const char* name) {
-  int err = _Locale_errno();
-  if (err == _STLP_NO_MEMORY)
-    _STLP_THROW(bad_alloc());
+void _STLP_CALL locale::_M_throw_on_null_name()
+{ _STLP_THROW(runtime_error("Invalid null locale name")); }
 
+void _STLP_CALL locale::_M_throw_on_combine_error(const string& name, const char* facet) {
+  string what = "Unable to find facet";
+  if (facet) {
+    what += " '";
+    what += facet;
+    what += "'";
+  }
+  what += " in ";
+  what += name.empty() ? "system" : name;
+  what += " locale";
+  _STLP_THROW(runtime_error(what.c_str()));
+}
+
+void _STLP_CALL locale::_M_throw_on_creation_failure(int __err_code,
+                                                     const char* name, const char* facet) {
   string what;
-  if (name) {
-    if (err == _STLP_UNSUPPORTED_LOCALE)
-      what = "Unsupported locale '";
-    else
-      what = "No platform localization support, unable to create locale '";
-    what += name;
-    what += '\'';
+  switch (__err_code) {
+    case _STLP_LOC_UNSUPPORTED_FACET_CATEGORY:
+      what = "No platform localization support for ";
+      what += facet;
+      what += " facet category, unable to create facet for ";
+      what += name[0] == 0 ? "system" : name;
+      what += " locale";
+      break;
+    case _STLP_LOC_NO_PLATFORM_SUPPORT:
+      what = "No platform localization support, unable to create ";
+      what += name[0] == 0 ? "system" : name;
+      what += " locale";
+      break;
+    default:
+    case _STLP_LOC_UNKNOWN_NAME:
+      what = "Unable to create facet ";
+      what += facet;
+      what += " from name '";
+      what += name;
+      what += "'";
+      break;
+    case _STLP_LOC_NO_MEMORY:
+      _STLP_THROW(bad_alloc());
   }
-  else {
-    what = "Invalid null locale name";
-  }
+
   _STLP_THROW(runtime_error(what.c_str()));
 }
 
@@ -102,7 +129,7 @@ locale::locale( _Locale_impl* impl ) :
 locale::locale(const char* name)
   : _M_impl(0) {
   if (!name)
-    _M_throw_runtime_error();
+    _M_throw_on_null_name();
 
   if (is_C_locale_name(name)) {
     _M_impl = _get_Locale_impl( locale::classic()._M_impl );
@@ -146,12 +173,13 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
     char messages_buf[_Locale_MAX_SIMPLE_NAME];
 
     // TODO: check returnvalues?
-    _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf, 0);
-    _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf, 0);
-    _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf, 0);
-    _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, collate_buf, 0);
-    _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, monetary_buf, 0);
-    _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, messages_buf, 0);
+    int __err_code;
+    _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf, 0, &__err_code);
+    _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf, 0, &__err_code);
+    _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf, 0, &__err_code);
+    _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, collate_buf, 0, &__err_code);
+    _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, monetary_buf, 0, &__err_code);
+    _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, messages_buf, 0, &__err_code);
 
     // Construct a new composite name.
     char composite_buf[_Locale_MAX_COMPOSITE_NAME];
@@ -168,8 +196,11 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
 // in category c are instead constructed by name.
 locale::locale(const locale& L, const char* name, locale::category c)
   : _M_impl(0) {
-  if (name == 0 || (_Nameless == name))
-    _M_throw_runtime_error(name);
+  if (!name)
+    _M_throw_on_null_name();
+
+  if (_Nameless == name)
+    _STLP_THROW(runtime_error((string("Invalid locale name '") + _Nameless + "'").c_str()));
 
   _Locale_impl* impl = 0;
 

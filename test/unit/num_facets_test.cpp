@@ -168,6 +168,19 @@ void LocaleTest::numpunct_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+  try {
+    string veryLongFacetName("LC_NUMERIC=");
+    veryLongFacetName.append(512, '?');
+    locale loc(locale::classic(), new numpunct_byname<char>(veryLongFacetName.c_str()));
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new numpunct_byname<wchar_t>(static_cast<char const*>(0)));

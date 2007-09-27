@@ -309,11 +309,12 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
     time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > *wput = 0;
 #endif
 
-    _Locale_time *__time = _STLP_PRIV __acquire_time(pname, hint);
-    // time facets category is not mandatory for correct stream behavior so if platform
-    // do not support it we do not generate a runtime_error exception.
+    int __err_code;
+    _Locale_time *__time = _STLP_PRIV __acquire_time(pname, hint, &__err_code);
     if (!__time) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      // time facets category is not mandatory for correct stream behavior so if platform
+      // do not support it we do not generate a runtime_error exception.
+      if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
       return hint;
     }
@@ -363,12 +364,14 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Local
     collate<wchar_t> *wcol = 0;
 #endif
 
-    _Locale_collate *__coll = _STLP_PRIV __acquire_collate(pname, hint);
+    int __err_code;
+    _Locale_collate *__coll = _STLP_PRIV __acquire_collate(pname, hint, &__err_code);
     if (!__coll) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
       return hint;
     }
+
     if (hint == 0) hint = _Locale_get_collate_hint(__coll);
     _STLP_TRY {
       col = new collate_byname<char>(__coll);
@@ -376,10 +379,12 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Local
     _STLP_UNWIND(_STLP_PRIV __release_collate(__coll));
 
 #ifndef _STLP_NO_WCHAR_T
-    _Locale_collate *__wcoll = _STLP_PRIV __acquire_collate(pname, hint);
+    _Locale_collate *__wcoll = _STLP_PRIV __acquire_collate(pname, hint, &__err_code);
     if (!__wcoll) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      if (__err_code == _STLP_LOC_NO_MEMORY) {
+        delete col;
         _STLP_THROW(bad_alloc());
+      }
     }
     if (__wcoll) {
       _STLP_TRY {
@@ -428,9 +433,10 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > *wput = 0;
 #endif
 
-    _Locale_monetary *__mon = _STLP_PRIV __acquire_monetary(pname, hint);
+    int __err_code;
+    _Locale_monetary *__mon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
     if (!__mon) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
       return hint;
     }
@@ -442,13 +448,14 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     }
     _STLP_UNWIND(_STLP_PRIV __release_monetary(__mon));
 
-    _Locale_monetary *__imon = _STLP_PRIV __acquire_monetary(pname, hint);
+    _Locale_monetary *__imon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
     if (!__imon) {
       delete punct;
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
       return hint;
     }
+
     _STLP_TRY {
       ipunct  = new moneypunct_byname<char, true>(__imon);
     }
@@ -457,43 +464,42 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     _STLP_TRY {
       get     = new money_get<char, istreambuf_iterator<char, char_traits<char> > >();
       put     = new money_put<char, ostreambuf_iterator<char, char_traits<char> > >();
-    }
-    _STLP_UNWIND(delete get; delete ipunct; delete punct);
-
 #ifndef _STLP_NO_WCHAR_T
-    _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(pname, hint);
-    if (!__wmon) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
-    }
-
-    if (__wmon) {
-      _STLP_TRY {
-        wpunct  = new moneypunct_byname<wchar_t, false>(__wmon);
-      }
-      _STLP_UNWIND(_STLP_PRIV __release_monetary(__wmon); delete put; delete get; delete ipunct; delete punct);
-    
-      _Locale_monetary *__wimon = _STLP_PRIV __acquire_monetary(pname, hint);
+      _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
       if (!__wmon) {
-        delete wpunct;
-        if (_Locale_errno() == _STLP_NO_MEMORY)
+        if (__err_code == _STLP_LOC_NO_MEMORY)
           _STLP_THROW(bad_alloc());
-        wpunct = 0;
       }
-      else {
-        _STLP_TRY {
-          wipunct = new moneypunct_byname<wchar_t, true>(__wimon);
-        }
-        _STLP_UNWIND(_STLP_PRIV __release_monetary(__wimon); delete wpunct; delete put; delete get; delete ipunct; delete punct);
 
+      if (__wmon) {
         _STLP_TRY {
-          wget    = new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
-          wput    = new money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+          wpunct  = new moneypunct_byname<wchar_t, false>(__wmon);
         }
-        _STLP_UNWIND(delete wget; delete wipunct; delete wpunct; delete put; delete get; delete ipunct; delete punct);
+        _STLP_UNWIND(_STLP_PRIV __release_monetary(__wmon));
+      
+        _Locale_monetary *__wimon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
+        if (!__wimon) {
+          delete wpunct;
+          if (__err_code == _STLP_LOC_NO_MEMORY)
+            _STLP_THROW(bad_alloc());
+          wpunct = 0;
+        }
+        else {
+          _STLP_TRY {
+            wipunct = new moneypunct_byname<wchar_t, true>(__wimon);
+          }
+          _STLP_UNWIND(_STLP_PRIV __release_monetary(__wimon); delete wpunct; delete put);
+
+          _STLP_TRY {
+            wget    = new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+            wput    = new money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
+          }
+          _STLP_UNWIND(delete wget; delete wipunct; delete wpunct);
+        }
       }
-    }
 #endif
+    }
+    _STLP_UNWIND(delete put; delete get; delete ipunct; delete punct);
 
     _Locale_insert(this, punct);
     _Locale_insert(this, ipunct);
@@ -527,9 +533,10 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* pname, _Loca
     messages<wchar_t> *wmsg = 0;
 #endif
 
-    _Locale_messages *__msg = _STLP_PRIV __acquire_messages(pname, hint);
+    int __err_code;
+    _Locale_messages *__msg = _STLP_PRIV __acquire_messages(pname, hint, &__err_code);
     if (!__msg) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
+      if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
       return hint;
     }
@@ -540,17 +547,21 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* pname, _Loca
     _STLP_UNWIND(_STLP_PRIV __release_messages(__msg));
 
 #ifndef _STLP_NO_WCHAR_T
-    _Locale_messages *__wmsg = _STLP_PRIV __acquire_messages(pname, hint);
-    if (!__wmsg) {
-      if (_Locale_errno() == _STLP_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
-    }
-    if (__wmsg) {
-      _STLP_TRY {
-        wmsg = new messages_byname<wchar_t>(__wmsg);
+    _STLP_TRY {
+      _Locale_messages *__wmsg = _STLP_PRIV __acquire_messages(pname, hint, &__err_code);
+      if (!__wmsg) {
+        if (__err_code == _STLP_LOC_NO_MEMORY)
+          _STLP_THROW(bad_alloc());
       }
-      _STLP_UNWIND(_STLP_PRIV __release_messages(__wmsg); delete msg);
+
+      if (__wmsg) {
+        _STLP_TRY {
+          wmsg = new messages_byname<wchar_t>(__wmsg);
+        }
+        _STLP_UNWIND(_STLP_PRIV __release_messages(__wmsg));
+      }
     }
+    _STLP_UNWIND(delete msg);
 #endif
 
     _Locale_insert(this, msg);

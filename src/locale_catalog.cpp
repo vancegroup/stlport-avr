@@ -33,18 +33,18 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 // Those wrappers are needed to use locale functions in __acquire_category,
 // all functions have to present the same prototype.
 
-static void* _Loc_ctype_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_ctype_create(s, hint); }
-static void* _Loc_numeric_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_numeric_create(s, hint); }
-static void* _Loc_time_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_time_create(s, hint); }
-static void* _Loc_collate_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_collate_create(s, hint); }
-static void* _Loc_monetary_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_monetary_create(s, hint); }
-static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint)
-{ return _Locale_messages_create(s, hint); }
+static void* _Loc_ctype_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_ctype_create(s, hint, __err_code); }
+static void* _Loc_numeric_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_numeric_create(s, hint, __err_code); }
+static void* _Loc_time_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_time_create(s, hint, __err_code); }
+static void* _Loc_collate_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_collate_create(s, hint, __err_code); }
+static void* _Loc_monetary_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_monetary_create(s, hint, __err_code); }
+static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_messages_create(s, hint, __err_code); }
 
 static char const* _Loc_ctype_name(void* l, char* s)
 { return _Locale_ctype_name((_Locale_ctype*)l, s); }
@@ -79,11 +79,11 @@ static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy((_Locale_col
 static void _Loc_monetary_destroy(void* p) {_Locale_monetary_destroy((_Locale_monetary*)p);}
 static void _Loc_messages_destroy(void* p) {_Locale_messages_destroy((_Locale_messages*)p);}
 
-typedef void* (*loc_create_func_t)(const char *, _Locale_name_hint*);
+typedef void* (*loc_create_func_t)(const char *, _Locale_name_hint*, int *__err_code);
 typedef char const* (*loc_name_func_t)(void* l, char* s);
 typedef void (*loc_destroy_func_t)(void* l);
 typedef const char* (*loc_default_name_func_t)(char* s);
-typedef char const* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_hint*);
+typedef char const* (*loc_extract_name_func_t)(const char*, char*, _Locale_name_hint*, int *__err_code);
 
 //----------------------------------------------------------------------
 // Acquire and release low-level category objects.  The whole point of
@@ -128,7 +128,7 @@ static void*
 __acquire_category(const char* name, _Locale_name_hint* hint,
                    loc_extract_name_func_t extract_name,
                    loc_create_func_t create_obj, loc_default_name_func_t default_obj,
-                   Category_Map ** M) {
+                   Category_Map ** M, int *__err_code) {
 #if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
   typedef Category_Map::iterator Category_iterator;
   pair<Category_iterator, bool> result;
@@ -140,6 +140,8 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
 #  endif
 #endif
 
+  *__err_code = _STLP_LOC_UNDEFINED;
+
   // Find what name to look for. Be careful if user requests the default.
   const char *cname;
   char buf[_Locale_MAX_SIMPLE_NAME];
@@ -149,7 +151,7 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
       cname = "C";
   }
   else {
-    cname = extract_name(name, buf, hint);
+    cname = extract_name(name, buf, hint, __err_code);
     if (cname == 0) {
       return 0;
     }
@@ -165,9 +167,20 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
   // Look for an existing entry with that name.
   result = (*M)->insert_noresize(__e);
 
-  // There was no entry in the map already.  Create the category.
-  if (result.second)
-    (*result.first).second.first = create_obj(cname, hint);
+  if (result.second) {
+    // There was no entry in the map already.  Create the category.
+    (*result.first).second.first = create_obj(cname, hint, __err_code);
+    if (!(*result.first).second.first) {
+      (*M)->erase(result.first);
+#if defined (_STLP_LEAKS_PEDANTIC)
+      if (*M->empty()) {
+        delete *M;
+        *M = 0;
+      }
+#endif
+      return 0;
+    }
+  }
 
   // Increment the reference count.
   ++((*result.first).second.second);
@@ -202,42 +215,42 @@ __release_category(void* cat,
             delete pM;
             *M = 0;
           }
-#endif /* _STLP_LEAKS_PEDANTIC */
+#endif
         }
       }
     }
   }
 }
 
-_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, _Locale_name_hint* hint) {
+_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_ctype*, __acquire_category(name, hint,
                                                                _Locale_extract_ctype_name, _Loc_ctype_create, _Loc_ctype_default,
-                                                               ctype_hash()));
+                                                               ctype_hash(), __err_code));
 }
-_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, _Locale_name_hint* hint) {
+_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_numeric*, __acquire_category(name, hint,
                                                                  _Locale_extract_numeric_name, _Loc_numeric_create, _Loc_numeric_default,
-                                                                 numeric_hash()));
+                                                                 numeric_hash(), __err_code));
 }
-_Locale_time* _STLP_CALL __acquire_time(const char* name, _Locale_name_hint* hint) {
+_Locale_time* _STLP_CALL __acquire_time(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_time*, __acquire_category(name, hint,
                                                               _Locale_extract_time_name, _Loc_time_create, _Loc_time_default,
-                                                              time_hash()));
+                                                              time_hash(), __err_code));
 }
-_Locale_collate* _STLP_CALL __acquire_collate(const char* name, _Locale_name_hint* hint) {
+_Locale_collate* _STLP_CALL __acquire_collate(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_collate*, __acquire_category(name, hint,
                                                                  _Locale_extract_collate_name, _Loc_collate_create, _Loc_collate_default,
-                                                                 collate_hash()));
+                                                                 collate_hash(), __err_code));
 }
-_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, _Locale_name_hint* hint) {
+_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_monetary*, __acquire_category(name, hint,
                                                                   _Locale_extract_monetary_name, _Loc_monetary_create, _Loc_monetary_default,
-                                                                  monetary_hash()));
+                                                                  monetary_hash(), __err_code));
 }
-_Locale_messages* _STLP_CALL __acquire_messages(const char* name, _Locale_name_hint* hint) {
+_Locale_messages* _STLP_CALL __acquire_messages(const char* name, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_messages*, __acquire_category(name, hint,
                                                                   _Locale_extract_messages_name, _Loc_messages_create, _Loc_messages_default,
-                                                                  messages_hash()));
+                                                                  messages_hash(), __err_code));
 }
 
 void _STLP_CALL __release_ctype(_Locale_ctype* cat)

@@ -23,8 +23,8 @@ void LocaleTest::messages_by_name()
     locale loc(locale::classic(), new messages_byname<char>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
   }
-  catch (runtime_error const& /* e */) {
-    //CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );
@@ -34,8 +34,19 @@ void LocaleTest::messages_by_name()
     locale loc(locale::classic(), new messages_byname<char>("yasli_language"));
     CPPUNIT_ASSERT( false );
   }
-  catch (runtime_error const& /* e */) {
-    //CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new messages_byname<char>(""));
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );

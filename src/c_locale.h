@@ -80,25 +80,28 @@ void _Locale_final(void);
  * neither be an empty string nor a null pointer.
  *
  * These functions return NULL to indicate failure. Failure reason should be reported
- * using _Locale_errno function.
+ * using the __err_code pointer.
  */
-struct _Locale_ctype* _Locale_ctype_create(const char *, struct _Locale_name_hint*);
-struct _Locale_numeric* _Locale_numeric_create(const char *, struct _Locale_name_hint*);
-struct _Locale_time* _Locale_time_create(const char *, struct _Locale_name_hint*);
-struct _Locale_collate* _Locale_collate_create(const char *, struct _Locale_name_hint*);
-struct _Locale_monetary* _Locale_monetary_create(const char *, struct _Locale_name_hint*);
-struct _Locale_messages* _Locale_messages_create(const char *, struct _Locale_name_hint*);
+struct _Locale_ctype* _Locale_ctype_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_numeric* _Locale_numeric_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_time* _Locale_time_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_collate* _Locale_collate_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_monetary* _Locale_monetary_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_messages* _Locale_messages_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
 
 /* Give error reason on failure of one of the _Locale_*_create functions. Available
  * reasons are:
- * 0: No memory
- * 1: Unknown locale name
- * 2: No platform API for localization support.
+ * 0: No specific error reason has been reported.
+ * 1: No platform support for the given facet.
+ * 2: Unknown locale name
+ * 3: No platform API for localization support.
+ * 4: No more memory
  */
-#define _STLP_NO_MEMORY 0
-#define _STLP_UNSUPPORTED_LOCALE 1
-#define _STLP_NO_PLATFORM_SUPPORT 2
-int _Locale_errno(void);
+#define _STLP_LOC_UNDEFINED 0
+#define _STLP_LOC_UNSUPPORTED_FACET_CATEGORY 1
+#define _STLP_LOC_UNKNOWN_NAME 2
+#define _STLP_LOC_NO_PLATFORM_SUPPORT 3
+#define _STLP_LOC_NO_MEMORY 4
 
 /* Release a category of a locale
  *
@@ -145,12 +148,18 @@ char const* _Locale_messages_name(const struct _Locale_messages *, char* __buf);
  * functions extracts the name of a single category, stores it in buf
  * as a null-terminated string, and returns buf.
  */
-char const* _Locale_extract_ctype_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char const* _Locale_extract_numeric_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char const* _Locale_extract_time_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char const* _Locale_extract_collate_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char const* _Locale_extract_monetary_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
-char const* _Locale_extract_messages_name(const char *cname, char *__buf, struct _Locale_name_hint* __hint);
+char const* _Locale_extract_ctype_name(const char *cname, char *__buf,
+                                       struct _Locale_name_hint* __hint, int *__err_code);
+char const* _Locale_extract_numeric_name(const char *cname, char *__buf,
+                                         struct _Locale_name_hint* __hint, int *__err_code);
+char const* _Locale_extract_time_name(const char *cname, char *__buf,
+                                      struct _Locale_name_hint* __hint, int *__err_code);
+char const* _Locale_extract_collate_name(const char *cname, char *__buf,
+                                         struct _Locale_name_hint* __hint, int *__err_code);
+char const* _Locale_extract_monetary_name(const char *cname, char *__buf,
+                                          struct _Locale_name_hint* __hint, int *__err_code);
+char const* _Locale_extract_messages_name(const char *cname, char *__buf,
+                                          struct _Locale_name_hint* __hint, int *__err_code);
 
 /*
  * The inputs to this function are six null-terminated strings: the

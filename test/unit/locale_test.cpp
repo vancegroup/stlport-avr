@@ -104,6 +104,19 @@ void LocaleTest::locale_by_name() {
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+
+  try {
+    string very_large_locale_name("LC_ALL=");
+    very_large_locale_name.append(1024, '?');
+    locale loc(very_large_locale_name.c_str());
+    CPPUNIT_ASSERT( false );
+  }
+  catch (runtime_error const& /* e */) {
+    //CPPUNIT_MESSAGE( e.what() );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
 #  endif
 }
 

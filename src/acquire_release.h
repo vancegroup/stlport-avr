@@ -24,11 +24,11 @@
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, _Locale_name_hint* hint);
-_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, _Locale_name_hint* hint);
-_Locale_collate* _STLP_CALL __acquire_collate(const char* name, _Locale_name_hint* hint);
-_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, _Locale_name_hint* hint);
-_Locale_messages* _STLP_CALL __acquire_messages(const char* name, _Locale_name_hint* hint);
+_Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, _Locale_name_hint* hint, int *__err_code);
+_Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, _Locale_name_hint* hint, int *__err_code);
+_Locale_collate* _STLP_CALL __acquire_collate(const char* name, _Locale_name_hint* hint, int *__err_code);
+_Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, _Locale_name_hint* hint, int *__err_code);
+_Locale_messages* _STLP_CALL __acquire_messages(const char* name, _Locale_name_hint* hint, int *__err_code);
 
 void _STLP_CALL __release_ctype(_Locale_ctype* cat);
 void _STLP_CALL __release_numeric(_Locale_numeric* cat);

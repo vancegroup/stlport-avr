@@ -61,26 +61,41 @@ void _Locale_init()
 void _Locale_final()
 {}
 
-int _Locale_errno(void)
-{ return _STLP_UNSUPPORTED_LOCALE; }
+struct _Locale_ctype *_Locale_ctype_create(const char *nm, struct _Locale_name_hint* hint,
+                                           int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_ctype*)__LOCALE_CREATE( nm, LC_CTYPE );
+}
 
-struct _Locale_ctype *_Locale_ctype_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_ctype*)__LOCALE_CREATE( nm, LC_CTYPE ); }
-
-struct _Locale_numeric *_Locale_numeric_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_numeric*)__LOCALE_CREATE( nm, LC_NUMERIC ); }
+struct _Locale_numeric *_Locale_numeric_create(const char *nm, struct _Locale_name_hint* hint,
+                                               int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_numeric*)__LOCALE_CREATE( nm, LC_NUMERIC );
+}
   
-struct _Locale_time *_Locale_time_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_time*)__LOCALE_CREATE( nm, LC_TIME ); }
+struct _Locale_time *_Locale_time_create(const char *nm, struct _Locale_name_hint* hint,
+                                         int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_time*)__LOCALE_CREATE( nm, LC_TIME );
+}
 
-struct _Locale_collate *_Locale_collate_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_collate*)__LOCALE_CREATE( nm, LC_COLLATE ); }
+struct _Locale_collate *_Locale_collate_create(const char *nm, struct _Locale_name_hint* hint,
+                                               int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_collate*)__LOCALE_CREATE( nm, LC_COLLATE );
+}
 
-struct _Locale_monetary *_Locale_monetary_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_monetary*)__LOCALE_CREATE( nm, LC_MONETARY ); }
+struct _Locale_monetary *_Locale_monetary_create(const char *nm, struct _Locale_name_hint* hint,
+                                                 int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_monetary*)__LOCALE_CREATE( nm, LC_MONETARY );
+}
 
-struct _Locale_messages *_Locale_messages_create( const char *nm, struct _Locale_name_hint* hint )
-{ return (struct _Locale_messages*)__LOCALE_CREATE( nm, LC_MESSAGES ); }
+struct _Locale_messages *_Locale_messages_create(const char *nm, struct _Locale_name_hint* hint,
+                                                 int *__err_code) {
+  *__err_code = _STLP_LOC_UNKNOWN_NAME;
+  return (struct _Locale_messages*)__LOCALE_CREATE( nm, LC_MESSAGES );
+}
 
 /*
   try to see locale category LC should be used from environment;
@@ -213,22 +228,28 @@ static char const*__Extract_locale_name( const char *loc, const char *category, 
   return strncpy( buf, loc, _Locale_MAX_SIMPLE_NAME );
 }
 
-char const*_Locale_extract_ctype_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_ctype_name(const char *loc, char *buf,
+                                      struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_CTYPE=", buf ); }
 
-char const*_Locale_extract_numeric_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_numeric_name(const char *loc, char *buf,
+                                        struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_NUMERIC=", buf ); }
 
-char const*_Locale_extract_time_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_time_name(const char *loc, char *buf,
+                                     struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_TIME=", buf ); }
 
-char const*_Locale_extract_collate_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_collate_name(const char *loc, char *buf,
+                                        struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_COLLATE=", buf ); }
 
-char const*_Locale_extract_monetary_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_monetary_name(const char *loc, char *buf,
+                                         struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_MONETARY=", buf ); }
 
-char const*_Locale_extract_messages_name( const char *loc, char *buf, struct _Locale_name_hint* hint )
+char const*_Locale_extract_messages_name(const char *loc, char *buf,
+                                         struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_MESSAGES=", buf ); }
 
 char const*_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,

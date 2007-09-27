@@ -1,3 +1,26 @@
+2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src: Modification in the internal localization API.
+	_Locale_errno removed, now an int pointer is passed to all
+	_Locale_*_create and all _Locale_extract_*_name functions so
+	that they can return an error code. This method avoid multithreaded
+	issues.
+
+	* src/locale_catalog.cpp: Modification in __acquire_category
+	function. If create_obj return null, the null pointer is not
+	stored anymore in cached as creation failure reason might be
+	temporary like in case of memory starvation.
+
+	* stlport/stl/_locale.h: Error reporting enhancement. In combine
+	method we use a typeid call to report the unknown facet type. In other
+	situation we report both the facet category being built and the name
+	used to build it.
+
+	* test/unit/locale_test.cpp, collate_facets_test.cpp,
+	messages_facet_test.cpp, money_facets_test.cpp, num_facets_test.cpp,
+	time_facets_test.cpp: Add checks for construction of facets from
+	very long facet name.
+
 2007-09-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/find_test.cpp: array initialization missed.
