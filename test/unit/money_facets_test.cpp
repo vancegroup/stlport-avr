@@ -479,8 +479,8 @@ void LocaleTest::moneypunct_by_name()
     locale loc(locale::classic(), new moneypunct_byname<char, true>(veryLongFacetName.c_str()));
     CPPUNIT_ASSERT( false );
   }
-  catch (runtime_error const& e) {
-    CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& /* e */) {
+    //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );
@@ -512,8 +512,8 @@ void LocaleTest::moneypunct_by_name()
     locale loc(locale::classic(), new moneypunct_byname<char, false>(veryLongFacetName.c_str()));
     CPPUNIT_ASSERT( false );
   }
-  catch (runtime_error const& e) {
-    CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& /* e */) {
+    //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );
