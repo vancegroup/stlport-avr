@@ -10,6 +10,8 @@
 	Thanks to it, container can be instanciated with incomplete types.
 	Modification based on bug report 1799048 from Andrey Semashev.
 
+	* trunk merged with STLPORT_5_1 up to revision 3211.
+
 2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src: Modification in the internal localization API.

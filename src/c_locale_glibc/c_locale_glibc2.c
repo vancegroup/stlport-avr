@@ -403,8 +403,8 @@ int _Locale_strcmp(struct _Locale_collate * __loc,
   char buf1[64], buf2[64];
   while (n1 > 0 || n2 > 0) {
     size_t bufsize1 = n1 < 63 ? n1 : 63;
-    strncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     size_t bufsize2 = n2 < 63 ? n2 : 63;
+    strncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     strncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
 
     ret = strcoll_l(buf1, buf2, (__c_locale)__loc);
@@ -423,8 +423,8 @@ int _Locale_strwcmp(struct _Locale_collate *__loc,
   wchar_t buf1[64], buf2[64];
   while (n1 > 0 || n2 > 0) {
     size_t bufsize1 = n1 < 63 ? n1 : 63;
-    wcsncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     size_t bufsize2 = n2 < 63 ? n2 : 63;
+    wcsncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     wcsncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
 
     ret = wcscoll_l(buf1, buf2, (__c_locale)__loc);
@@ -441,13 +441,15 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
                        char *dest, size_t dest_n,
                        const char *src, size_t src_n )
 {
+  const char *real_src;
+  char *buf = NULL;
+  size_t result;
+
   if (src_n == 0)
   {
     if (dest != NULL) dest[0] = 0;
     return 0;
   }
-  const char *real_src;
-  char *buf = NULL;
   if (src[src_n] != 0) {
     buf = malloc(src_n + 1);
     strncpy(buf, src, src_n);
@@ -456,7 +458,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  size_t result = __strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = __strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
   if (buf != NULL) free(buf);
   return result;
 }
@@ -467,13 +469,15 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
                         wchar_t *dest, size_t dest_n,
                         const wchar_t *src, size_t src_n )
 {
+  const wchar_t *real_src;
+  wchar_t *buf = NULL;
+  size_t result;
+
   if (src_n == 0)
   {
     if (dest != NULL) dest[0] = 0;
     return 0;
   }
-  const wchar_t *real_src;
-  wchar_t *buf = NULL;
   if (src[src_n] != 0) {
     buf = malloc((src_n + 1) * sizeof(wchar_t));
     wcsncpy(buf, src, src_n);
@@ -482,7 +486,7 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  size_t result = __wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = __wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
   if (buf != NULL) free(buf);
   return result;
 }

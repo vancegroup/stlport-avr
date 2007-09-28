@@ -1,3 +1,48 @@
+2007-09-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Platform tested: gcc 4.1.2 20060928 (prerelease)
+	(Ubuntu 4.1.1-13ubuntu5), i686 GNU/Linux, glibc 2.4; 
+	
+	* release-shared: fail on list_test.cpp:392
+	[CPPUNIT_ASSERT(lint1.size() == 20)], suspected compiler's bug;
+	1 fail from 395 tests;
+
+	* stldbg-shared: passed 395 tests;
+
+	* Platform tested: gcc 4.1.2, i686 GNU/Linux, glibc 2.4;
+
+	* release-shared: fail on list_test.cpp:392
+	[CPPUNIT_ASSERT(lint1.size() == 20)], suspected compiler's bug;
+	1 fail from 395 tests;
+
+	* stldbg-shared: passed 395 tests;
+
+	* Platform tested: gcc 4.2.1, i686 GNU/Linux, glibc 2.4;
+
+	* release-shared: passed 395 tests;
+
+	* stldbg-shared: passed 395 tests;
+
+	* Platform tested: gcc 4.1.1, i686 athlon-4 i386 GNU/Linux,
+	glibc 2.3.6;
+
+	* release-shared: passed 395 tests;
+
+	* stldbg-shared: passed 395 tests;
+
+	* src/c_locale_glibc/c_locale_glibc2.c: this is a C, so
+	decl allowd only on top of block;
+
+2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/facets_byname.cpp: In collate::do_transform, consider
+	low == high as a special case, returns empty string in this
+	case.
+
+2007-09-27  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/find_test.cpp: array initialization missed.
+
 2007-09-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_num_get.h: Add _STLP_DECLSPEC specification to

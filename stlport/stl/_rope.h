@@ -833,12 +833,12 @@ public:
   _Rope_iterator_base(const _Self& __x) : 
       _M_current_pos(__x._M_current_pos),
       _M_root(__x._M_root),
+      _M_leaf_pos( __x._M_leaf_pos ),
       _M_buf_start(__x._M_buf_start),
       _M_buf_ptr(__x._M_buf_ptr),
       _M_path_end(__x._M_path_end),
       _M_leaf_index(__x._M_leaf_index),
-      _M_path_directions(__x._M_path_directions),
-      _M_leaf_pos( __x._M_leaf_pos )
+      _M_path_directions(__x._M_path_directions)
       {
         if (0 != __x._M_buf_ptr) {
           _M_copy_buf(__x);

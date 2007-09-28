@@ -198,6 +198,9 @@ int collate_byname<char>::do_compare(const char* __low1,
 
 collate_byname<char>::string_type
 collate_byname<char>::do_transform(const char* low, const char* high) const {
+  if (low == high)
+    return string_type();
+
   size_t n = _Locale_strxfrm(_M_collate, NULL, 0, low, high - low);
 
   // NOT PORTABLE.  What we're doing relies on internal details of the
@@ -239,6 +242,9 @@ int collate_byname<wchar_t>::do_compare(const wchar_t* low1,
 collate_byname<wchar_t>::string_type
 collate_byname<wchar_t>::do_transform(const wchar_t* low,
                                       const wchar_t* high) const {
+  if (low == high)
+    return string_type();
+
   size_t n = _Locale_strwxfrm(_M_collate, NULL, 0, low, high - low);
 
   // NOT PORTABLE.  What we're doing relies on internal details of the
