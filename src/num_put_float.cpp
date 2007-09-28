@@ -377,6 +377,9 @@ static void __fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modi
 
 // Emulation of ecvt/fcvt functions using sprintf:
 static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
+  if (x == (double)x)
+    return _Stl_ecvtR((double)x, n, pt, sign, buf);
+
   char fmtbuf[32];
   __fill_fmtbuf(fmtbuf, 0, 'L');
   sprintf(buf, fmtbuf, n, x < 0.0l ? -x : x);
@@ -411,6 +414,9 @@ static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
 }
 
 static char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
+  if (x == (double)x)
+    return _Stl_fcvtR((double)x, n, pt, sign, buf);
+
   char fmtbuf[32];
   __fill_fmtbuf(fmtbuf, ios_base::fixed, 'L');
   sprintf(buf, fmtbuf, n, x < 0.0l ? -x : x);
@@ -418,7 +424,7 @@ static char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
   *sign = 0;
   int i = -1;
   int offset = 0;
-  while (buf[++i] != 0 && n != 0) {
+  while (buf[++i] != 0 && (offset == 0 || n != 0)) {
     if (buf[i] >= '0' && buf[i] <= '9') {
       if (offset != 0) {
         --n;
@@ -432,6 +438,8 @@ static char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
   }
   if (offset != 0)
     buf[i - offset] = 0;
+  else
+    *pt = i;
   return buf;
 }
 #endif

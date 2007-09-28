@@ -1,3 +1,10 @@
+2007-09-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/num_put_float.cpp: Modification in _Stl_ecvtR and _Stl_fcvtR
+	long double overloads, if value can be converted to double without
+	precision loss we can rely on the double overload. Moreover _Stl_fcvtR
+	has been fixed.
+
 2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src: Modification in the internal localization API.
