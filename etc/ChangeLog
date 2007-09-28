@@ -5,6 +5,11 @@
 	precision loss we can rely on the double overload. Moreover _Stl_fcvtR
 	has been fixed.
 
+	* stlport/stl/pointer/_tools.h: Use class partial specialization to
+	enhance usability of the container pointer specialization feature.
+	Thanks to it, container can be instanciated with incomplete types.
+	Modification based on bug report 1799048 from Andrey Semashev.
+
 2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src: Modification in the internal localization API.
