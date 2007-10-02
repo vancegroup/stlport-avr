@@ -3,6 +3,7 @@
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <fstream>
 #  include <locale>
+#  include <stdexcept>
 
 #  include "cppunit/cppunit_proxy.h"
 
@@ -20,10 +21,16 @@ class CodecvtTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(variable_encoding);
+  CPPUNIT_STOP_IGNORE;
+#if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(in_out_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void variable_encoding();
+  void in_out_test();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CodecvtTest);
@@ -341,6 +348,53 @@ void CodecvtTest::variable_encoding()
     CPPUNIT_ASSERT( istr.eof() );
   }
 #  endif
+#endif
+}
+
+void CodecvtTest::in_out_test()
+{
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+  try {
+    locale loc("");
+
+    typedef codecvt<wchar_t, char, mbstate_t> cdecvt_type;
+    if (has_facet<cdecvt_type>(loc)) {
+      cdecvt_type const& cdect = use_facet<cdecvt_type>(loc);
+      {
+        cdecvt_type::state_type state;
+        memset(&state, 0, sizeof(cdecvt_type::state_type));
+        string from("abcdef");
+        const char* next_from;
+        wchar_t to[1];
+        wchar_t *next_to;
+        cdecvt_type::result res = cdect.in(state, from.data(), from.data() + from.size(), next_from,
+                                           to, to + sizeof(to) / sizeof(wchar_t), next_to);
+        CPPUNIT_ASSERT( res == cdecvt_type::ok );
+        CPPUNIT_ASSERT( next_from == from.data() + 1 );
+        CPPUNIT_ASSERT( next_to == &to[0] + 1 );
+        CPPUNIT_ASSERT( to[0] == L'a');
+      }
+      {
+        cdecvt_type::state_type state;
+        memset(&state, 0, sizeof(cdecvt_type::state_type));
+        wstring from(L"abcdef");
+        const wchar_t* next_from;
+        char to[1];
+        char *next_to;
+        cdecvt_type::result res = cdect.out(state, from.data(), from.data() + from.size(), next_from,
+                                            to, to + sizeof(to) / sizeof(char), next_to);
+        CPPUNIT_ASSERT( res == cdecvt_type::ok );
+        CPPUNIT_ASSERT( next_from == from.data() + 1 );
+        CPPUNIT_ASSERT( next_to == &to[0] + 1 );
+        CPPUNIT_ASSERT( to[0] == 'a');
+      }
+    }
+  }
+  catch (runtime_error const&) {
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
 #endif
 }
 

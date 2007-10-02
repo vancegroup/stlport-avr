@@ -508,7 +508,7 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
 
     // Convert the external buffer to internal characters.
     _M_ext_buf_end += __n;
-    const char*   __enext;
+    const char* __enext;
     _CharT* __inext;
 
     typename _Codecvt::result __status
@@ -516,20 +516,20 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
                        _M_ext_buf, _M_ext_buf_end, __enext,
                        _M_int_buf, _M_int_buf_EOS, __inext);
 
-    // Error conditions: (1) Return value of error.  (2) Producing internal
-    // characters without consuming external characters.  (3) In fixed-width
-    // encodings, producing an internal sequence whose length is inconsistent
-    // with that of the internal sequence.  (4) Failure to produce any
-    // characters if we have enough characters in the external buffer, where
-    // "enough" means the largest possible width of a single character.
+    /* Error conditions:
+     * (1) Return value of error.
+     * (2) Producing internal characters without consuming external characters.
+     * (3) In fixed-width encodings, producing an internal sequence whose length
+     * is inconsistent with that of the internal sequence.
+     * (4) Failure to produce any characters if we have enough characters in
+     * the external buffer, where "enough" means the largest possible width
+     * of a single character. */
     if (__status == _Codecvt::noconv)
       return _Noconv_input<_Traits>::_M_doit(this);
     else if (__status == _Codecvt::error ||
-             (__inext != _M_int_buf && __enext == _M_ext_buf) ||
-             (_M_constant_width &&
-              //         __inext - _M_int_buf != _M_width * (__enext - _M_ext_buf)) ||
-              (__inext - _M_int_buf) *  _M_width != (__enext - _M_ext_buf)) ||
-             (__inext == _M_int_buf && __enext - _M_ext_buf >= _M_max_width))
+            (__inext != _M_int_buf && __enext == _M_ext_buf) ||
+            (_M_constant_width && (__inext - _M_int_buf) *  _M_width != (__enext - _M_ext_buf)) ||
+            (__inext == _M_int_buf && __enext - _M_ext_buf >= _M_max_width))
       return _M_input_error();
     else if (__inext != _M_int_buf) {
       _M_ext_buf_converted = _M_ext_buf + (__enext - _M_ext_buf);

@@ -5,6 +5,12 @@
 	Allow test on incomplete types even when pointer specialization is
 	activated as long as partial template specialization is supported.
 
+	* stlport/stl/_fstream.c, src/facets_byname.cpp,
+	test/unit/codecvt_test.cpp:
+	Fixed codecvt_byname<wchar_t, char, mbstate_t>::do_in and do_out
+	methods. They now both correctly take into account to_end pointer.
+	Thanks Vistor (finalvistory) report on sourceforge Developer forum.
+
 2007-09-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/num_put_float.cpp: Modification in _Stl_ecvtR and _Stl_fcvtR

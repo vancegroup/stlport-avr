@@ -304,7 +304,7 @@ codecvt_byname<wchar_t, char, mbstate_t>
            char*           to,
            char*           to_limit,
            char*&          to_next) const {
-  while (from != from_end) {
+  while (from != from_end && to != to_limit) {
     size_t chars_stored = _Locale_wctomb(_M_ctype,
                                          to, to_limit - to, *from,
                                          &state);
@@ -335,9 +335,9 @@ codecvt_byname<wchar_t, char, mbstate_t>
           const extern_type*  from_end,
           const extern_type*& from_next,
           intern_type*        to,
-          intern_type*        ,
+          intern_type*        to_end,
           intern_type*&       to_next) const {
-  while (from != from_end) {
+  while (from != from_end && to != to_end) {
     size_t chars_read = _Locale_mbtowc(_M_ctype,
                                        to, from, from_end - from,
                                        &state);
