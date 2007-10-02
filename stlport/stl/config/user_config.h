@@ -289,15 +289,16 @@
  * To reduce the famous code bloat trouble due to the use of templates STLport grant
  * a specialization of some containers for pointer types. So all instanciations
  * of those containers with a pointer type will use the same implementation based on
- * a container of void*. This feature has show very good result on object files size
+ * a container of void*. This feature has shown very good result on object files size
  * but after link phase and optimization you will only experiment benefit if you use
  * many container with pointer types.
  * There are however a number of limitation to use this option:
- *   - once activated you won't be able to access some nested container types like
- *     iterator as long as the definition of the type used to instanciate the container
- *     will be incomplete (see IncompleteClass definition in test/unit/vector_test.cpp).
+ *   - with compilers not supporting partial template specialization feature, you won't
+ *     be able to access some nested container types like iterator as long as the
+ *     definition of the type used to instanciate the container will be incomplete
+ *     (see IncompleteClass definition in test/unit/vector_test.cpp).
  *   - you won't be able to use complex Standard allocator implementations which are
- *     allocators which pointer nested type is not a real C pointer.
+ *     allocators having pointer nested type not being a real C pointer.
  */
 /*
 #define _STLP_USE_PTR_SPECIALIZATIONS 1

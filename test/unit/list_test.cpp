@@ -438,7 +438,8 @@ void ListTest::swap()
   CPPUNIT_CHECK( lst2.empty() );
 }
 
-#if !defined (STLPORT) || !defined (_STLP_USE_PTR_SPECIALIZATIONS)
+#if !defined (STLPORT) || \
+    !defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

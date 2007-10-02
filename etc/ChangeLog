@@ -1,3 +1,10 @@
+2007-10-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/deque_test.cpp, hash_test.cpp, list_test.cpp, map_test.cpp,
+	set_test.cpp, slist_test.cpp, unordered_test.cpp, vector_test.cpp:
+	Allow test on incomplete types even when pointer specialization is
+	activated as long as partial template specialization is supported.
+
 2007-09-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/num_put_float.cpp: Modification in _Stl_ecvtR and _Stl_fcvtR
