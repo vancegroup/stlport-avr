@@ -6,6 +6,7 @@
 #  include <sstream>
 #  include <vector>
 #  include <memory>
+#  include <stdexcept>
 
 #  include "full_streambuf.h"
 #  include "cppunit/cppunit_proxy.h"
@@ -43,6 +44,10 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(win32_file_format);
   CPPUNIT_TEST(null_stream);
+#if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+  CPPUNIT_IGNORE;
+#endif
+  CPPUNIT_TEST(special_encoding);
 #if !defined (STLPORT) || !defined (_STLP_WIN32)
   CPPUNIT_TEST(offset);
 #endif
@@ -67,6 +72,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void streambuf_output();
     void win32_file_format();
     void null_stream();
+    void special_encoding();
 #  if !defined (STLPORT) || !defined (_STLP_WIN32)
     void offset();
 #  endif
@@ -624,6 +630,33 @@ void FstreamTest::null_stream()
     fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::trunc);
     CPPUNIT_CHECK( nullStream );
   }
+}
+
+void FstreamTest::special_encoding()
+{
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+  {
+    // Prepare the test file:
+    ofstream ofstr("test_file.txt", ios_base::binary);
+    CPPUNIT_ASSERT( ofstr.good() );
+    ofstr << "abcdefg";
+  }
+
+  try {
+    locale loc("chs");
+    wifstream ostr("test_file.txt", ios_base::binary | ios_base::in); 
+    ostr.imbue(loc);
+    wostringstream wostr;
+    wostr.imbue(loc);
+    wostr << ostr.rdbuf();
+    CPPUNIT_ASSERT( wostr.str() == L"abcdefg" );
+  }
+  catch (runtime_error const&) {
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+#endif
 }
 
 #  if !defined (STLPORT) || !defined (_STLP_WIN32)

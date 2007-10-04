@@ -94,7 +94,7 @@ public:
 
   bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
 
-  int length(const state_type&  __state,
+  int length(state_type&  __state,
              const extern_type* __from,
              const extern_type* __end,
              size_t             __max) const {
@@ -138,7 +138,7 @@ protected:
   virtual bool do_always_noconv() const _STLP_NOTHROW
   { return true; }
 
-  virtual int do_length(const state_type&,
+  virtual int do_length(state_type&,
                         const extern_type* __from,
                         const extern_type* __end,
                         size_t __max) const
@@ -176,7 +176,7 @@ public:
 
   explicit codecvt(size_t __refs = 0) : locale::facet(__refs) {}
 
-  result out(mbstate_t&   __state,
+  result out(state_type&   __state,
              const char*  __from,
              const char*  __from_end,
              const char*& __from_next,
@@ -188,7 +188,7 @@ public:
                   __to,   __to_limit, __to_next);
   }
 
-  result unshift(mbstate_t& __state,
+  result unshift(state_type& __state,
                  char* __to, char* __to_limit, char*& __to_next) const
     { return do_unshift(__state, __to, __to_limit, __to_next); }
 
@@ -208,7 +208,7 @@ public:
 
   bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
 
-  int length(const state_type& __state,
+  int length(state_type& __state,
              const char* __from, const char* __end,
              size_t __max) const
     { return do_length(__state, __from, __end, __max); }
@@ -220,7 +220,7 @@ public:
 protected:
   ~codecvt();
 
-  virtual result do_out(mbstate_t&   /* __state */,
+  virtual result do_out(state_type&   /* __state */,
                         const char*  __from,
                         const char*  /* __from_end */,
                         const char*& __from_next,
@@ -228,7 +228,7 @@ protected:
                         char*        /* __to_limit */,
                         char*&       __to_next) const;
 
-  virtual result do_in (mbstate_t&   /* __state */ ,
+  virtual result do_in (state_type&   /* __state */ ,
                         const char*  __from,
                         const char*  /* __from_end */,
                         const char*& __from_next,
@@ -236,14 +236,14 @@ protected:
                         char*        /* __to_end */,
                         char*&       __to_next) const;
 
-  virtual result do_unshift(mbstate_t& /* __state */,
+  virtual result do_unshift(state_type& /* __state */,
                             char*      __to,
                             char*      /* __to_limit */,
                             char*&     __to_next) const;
 
   virtual int do_encoding() const _STLP_NOTHROW;
   virtual bool do_always_noconv() const _STLP_NOTHROW;
-  virtual int do_length(const mbstate_t&         __state,
+  virtual int do_length(state_type&  __state,
                         const  char* __from,
                         const  char* __end,
                         size_t __max) const;
@@ -267,7 +267,7 @@ public:
 
   explicit codecvt(size_t __refs = 0) : locale::facet(__refs) {}
 
-  result out(mbstate_t&      __state,
+  result out(state_type&      __state,
              const wchar_t*  __from,
              const wchar_t*  __from_end,
              const wchar_t*& __from_next,
@@ -279,12 +279,12 @@ public:
                   __to,   __to_limit, __to_next);
   }
 
-  result unshift(mbstate_t& __state,
+  result unshift(state_type& __state,
                  char*  __to, char*  __to_limit, char*& __to_next) const {
     return do_unshift(__state, __to, __to_limit, __to_next);
   }
 
-  result in(mbstate_t&   __state,
+  result in(state_type&   __state,
             const char*  __from,
             const char*  __from_end,
             const char*& __from_next,
@@ -300,7 +300,7 @@ public:
 
   bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
 
-  int length(const mbstate_t& __state,
+  int length(state_type& __state,
              const char* __from, const char* __end,
              size_t __max) const
     { return do_length(__state, __from, __end, __max); }
@@ -312,7 +312,7 @@ public:
 protected:
   ~codecvt();
 
-  virtual result do_out(mbstate_t&         __state,
+  virtual result do_out(state_type&         __state,
                         const wchar_t*  __from,
                         const wchar_t*  __from_end,
                         const wchar_t*& __from_next,
@@ -320,7 +320,7 @@ protected:
                         char*        __to_limit,
                         char*&       __to_next) const;
 
-  virtual result do_in (mbstate_t&         __state,
+  virtual result do_in (state_type&         __state,
                         const char*  __from,
                         const char*  __from_end,
                         const char*& __from_next,
@@ -328,7 +328,7 @@ protected:
                         wchar_t*        __to_limit,
                         wchar_t*&       __to_next) const;
 
-  virtual result do_unshift(mbstate_t&   __state,
+  virtual result do_unshift(state_type&   __state,
                             char*  __to,
                             char*  __to_limit,
                             char*& __to_next) const;
@@ -337,7 +337,7 @@ protected:
 
   virtual bool do_always_noconv() const _STLP_NOTHROW;
 
-  virtual int do_length(const mbstate_t& __state,
+  virtual int do_length(state_type&  __state,
                         const  char* __from,
                         const  char* __end,
                         size_t __max) const;
@@ -373,7 +373,7 @@ public:
 protected:
   ~codecvt_byname();
 
-  virtual result do_out(mbstate_t&         __state,
+  virtual result do_out(state_type&         __state,
                         const wchar_t*  __from,
                         const wchar_t*  __from_end,
                         const wchar_t*& __from_next,
@@ -381,7 +381,7 @@ protected:
                         char*        __to_limit,
                         char*&       __to_next) const;
 
-  virtual result do_in (mbstate_t&         __state,
+  virtual result do_in (state_type&         __state,
                         const char*  __from,
                         const char*  __from_end,
                         const char*& __from_next,
@@ -389,7 +389,7 @@ protected:
                         wchar_t*        __to_limit,
                         wchar_t*&       __to_next) const;
 
-  virtual result do_unshift(mbstate_t&   __state,
+  virtual result do_unshift(state_type&   __state,
                             char*  __to,
                             char*  __to_limit,
                             char*& __to_next) const;
@@ -398,7 +398,7 @@ protected:
 
   virtual bool do_always_noconv() const _STLP_NOTHROW;
 
-  virtual int do_length(const mbstate_t&         __state,
+  virtual int do_length(state_type&  __state,
                         const  char* __from,
                         const  char* __end,
                         size_t __max) const;

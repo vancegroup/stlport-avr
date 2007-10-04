@@ -1,3 +1,21 @@
+2007-10-04  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_codecvt.h, _fstream.c, src/codecvt.cpp: Fix non
+	Standard conformity in codecvt::length and associated
+	codecvt::do_length methods. Those methods was taking const reference
+	to mbstate_t but the Standard specify that it must be a simple
+	reference.
+
+	* src/facets_byname.cpp: Add a real implementation of
+	codecvt<wchar_t, char, mbstate_t>::do_length based on the
+	_Locale_mbtowc locale API function.
+
+	* test/unit/codecvt_test.cpp: Add a test for codecvt::length.
+
+	* test/unit/fstream_test.cpp: Add a test that indirectly test
+	codecvt facet and integration of it in the basic_filebuf
+	implementation.
+	
 2007-10-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/deque_test.cpp, hash_test.cpp, list_test.cpp, map_test.cpp,

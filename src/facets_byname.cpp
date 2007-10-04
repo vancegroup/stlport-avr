@@ -296,14 +296,13 @@ codecvt_byname<wchar_t, char, mbstate_t>::~codecvt_byname()
 { _STLP_PRIV __release_ctype(_M_ctype); }
 
 codecvt<wchar_t, char, mbstate_t>::result
-codecvt_byname<wchar_t, char, mbstate_t>
-  ::do_out(state_type&     state,
-           const wchar_t*  from,
-           const wchar_t*  from_end,
-           const wchar_t*& from_next,
-           char*           to,
-           char*           to_limit,
-           char*&          to_next) const {
+codecvt_byname<wchar_t, char, mbstate_t>::do_out(state_type&     state,
+                                                 const wchar_t*  from,
+                                                 const wchar_t*  from_end,
+                                                 const wchar_t*& from_next,
+                                                 char*           to,
+                                                 char*           to_limit,
+                                                 char*&          to_next) const {
   while (from != from_end && to != to_limit) {
     size_t chars_stored = _Locale_wctomb(_M_ctype,
                                          to, to_limit - to, *from,
@@ -329,14 +328,13 @@ codecvt_byname<wchar_t, char, mbstate_t>
 }
 
 codecvt<wchar_t, char, mbstate_t>::result
-codecvt_byname<wchar_t, char, mbstate_t>
-  ::do_in(state_type&         state,
-          const extern_type*  from,
-          const extern_type*  from_end,
-          const extern_type*& from_next,
-          intern_type*        to,
-          intern_type*        to_end,
-          intern_type*&       to_next) const {
+codecvt_byname<wchar_t, char, mbstate_t>::do_in(state_type&         state,
+                                                const extern_type*  from,
+                                                const extern_type*  from_end,
+                                                const extern_type*& from_next,
+                                                intern_type*        to,
+                                                intern_type*        to_end,
+                                                intern_type*&       to_next) const {
   while (from != from_end && to != to_end) {
     size_t chars_read = _Locale_mbtowc(_M_ctype,
                                        to, from, from_end - from,
@@ -363,11 +361,10 @@ codecvt_byname<wchar_t, char, mbstate_t>
 }
 
 codecvt<wchar_t, char, mbstate_t>::result
-codecvt_byname<wchar_t, char, mbstate_t>
-  ::do_unshift(state_type&   state,
-               extern_type*  to,
-               extern_type*  to_limit,
-               extern_type*& to_next) const {
+codecvt_byname<wchar_t, char, mbstate_t>::do_unshift(state_type&   state,
+                                                     extern_type*  to,
+                                                     extern_type*  to_limit,
+                                                     extern_type*& to_next) const {
   to_next = to;
   size_t result = _Locale_unshift(_M_ctype, &state,
                                   to, to_limit - to, &to_next);
@@ -394,16 +391,28 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_encoding() const _STLP_NOTHROW {
     return -1;
 }
 
-bool codecvt_byname<wchar_t, char, mbstate_t>
-  ::do_always_noconv() const _STLP_NOTHROW {
-  return false;
-}
+bool
+codecvt_byname<wchar_t, char, mbstate_t>::do_always_noconv() const _STLP_NOTHROW
+{ return false; }
 
 int
-codecvt_byname<wchar_t, char, mbstate_t>::do_length(const state_type&,
-                                                    const  extern_type* from, const  extern_type* end,
-                                                    size_t mx) const
-{ return (int)(min) ((size_t) (end - from), mx); }
+codecvt_byname<wchar_t, char, mbstate_t>::do_length(state_type&         state,
+                                                    const  extern_type* from,
+                                                    const  extern_type* end,
+                                                    size_t              mx) const {
+  size_t __count = 0;
+  while (from != end && mx--) {
+    intern_type __dummy;
+    size_t chars_read = _Locale_mbtowc(_M_ctype,
+                                       &__dummy, from, end - from,
+                                       &state);
+    if ((chars_read == (size_t) -1) || (chars_read == (size_t) -2)) // error or partial
+      break;
+    __count += chars_read;
+    from += chars_read;
+  }
+  return int(__count); 
+}
 
 int
 codecvt_byname<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW

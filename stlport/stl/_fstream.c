@@ -353,7 +353,7 @@ basic_filebuf<_CharT, _Traits>::seekoff(off_type __off,
               _M_base._M_get_offset(_M_ext_buf, _M_ext_buf_end);
             if (__cur != -1 && __cur + __adj >= 0)
               return __off == 0 ? pos_type(__cur + __adj)
-                : _M_seek_return(__cur + __adj, __state);
+                : _M_seek_return(__cur + __adj, _M_state);
           }
           // We failed the sanity check here.
         }

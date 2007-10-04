@@ -26,11 +26,13 @@ class CodecvtTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(in_out_test);
+  CPPUNIT_TEST(length_test);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void variable_encoding();
   void in_out_test();
+  void length_test();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CodecvtTest);
@@ -106,7 +108,7 @@ struct eater_codecvt : public codecvt<char, char, mbstate_t> {
   { return 0; }
 
   // implemented for consistency with do_in overload
-  virtual int do_length(const mbstate_t &state,
+  virtual int do_length(mbstate_t &state,
                         const char *efrom, const char *eend, size_t m) const {
     char *ibegin = new char[m];
     const char *ecur = efrom;
@@ -215,7 +217,7 @@ struct generator_codecvt : public codecvt<char, char, mbstate_t> {
   { return 0; }
 
   // implemented for consistency with do_in overload
-  virtual int do_length(const mbstate_t &mb,
+  virtual int do_length(mbstate_t &mb,
                         const char *efrom, const char *eend, size_t m) const {
     const char *state = (const char*)&mb;
     int offset = 0;
@@ -387,6 +389,32 @@ void CodecvtTest::in_out_test()
         CPPUNIT_ASSERT( next_from == from.data() + 1 );
         CPPUNIT_ASSERT( next_to == &to[0] + 1 );
         CPPUNIT_ASSERT( to[0] == 'a');
+      }
+    }
+  }
+  catch (runtime_error const&) {
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+#endif
+}
+
+void CodecvtTest::length_test()
+{
+#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+  try {
+    locale loc("");
+
+    typedef codecvt<wchar_t, char, mbstate_t> cdecvt_type;
+    if (has_facet<cdecvt_type>(loc)) {
+      cdecvt_type const& cdect = use_facet<cdecvt_type>(loc);
+      {
+        cdecvt_type::state_type state;
+        memset(&state, 0, sizeof(cdecvt_type::state_type));
+        string from("abcdef");
+        int res = cdect.length(state, from.data(), from.data() + from.size(), from.size());
+        CPPUNIT_ASSERT( (size_t)res == from.size() );
       }
     }
   }
