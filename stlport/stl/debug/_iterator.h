@@ -414,32 +414,6 @@ protected:
 #endif
 };
 
-#if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-//Construct checker used by all exported containers.
-template <class _Container>
-class __msvc6_construct_checker {
-  typedef typename _Container::value_type value_type;
-protected:
-  __msvc6_construct_checker() {}
-
-  __msvc6_construct_checker(const value_type* __p) {
-    _STLP_VERBOSE_ASSERT((__p != 0), _StlMsg_INVALID_ARGUMENT)
-  }
-
-  __msvc6_construct_checker(const value_type* __f, const value_type* __l) {
-    _STLP_DEBUG_CHECK(__check_ptr_range(__f,__l))
-  }
-
-  typedef _DBG_iter_base<_Container> _IteType;
-  __msvc6_construct_checker(const _IteType& __f, const _IteType& __l) {
-    _STLP_DEBUG_CHECK(__check_range(__f,__l))
-  }
-};
-#  define _STLP_CONSTRUCT_CHECKER __msvc6_construct_checker
-#else
-#  define _STLP_CONSTRUCT_CHECKER __construct_checker
-#endif
-
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 #  if defined (_STLP_NESTED_TYPE_PARAM_BUG) ||\
      (defined (__SUNPRO_CC) && __SUNPRO_CC < 0x600)

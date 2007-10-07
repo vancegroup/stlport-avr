@@ -45,7 +45,7 @@ class basic_string :
 #else
                      public
 #endif
-                             _STLP_PRIV _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING >
+                             _STLP_PRIV __construct_checker<_STLP_NON_DBG_STRING >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (basic_string)
                    , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
 #endif
@@ -53,7 +53,7 @@ class basic_string :
 protected:
   typedef _STLP_NON_DBG_STRING _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
-  typedef _STLP_PRIV _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING > _ConstructCheck;
+  typedef _STLP_PRIV __construct_checker<_STLP_NON_DBG_STRING > _ConstructCheck;
   typedef typename _IsPOD<_CharT>::_Type _Char_Is_POD;
 
 public:
@@ -833,12 +833,12 @@ public:
 // This is a hook to instantiate STLport exports in a designated DLL
 #if defined (_STLP_USE_TEMPLATE_EXPORT) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 _STLP_MOVE_TO_PRIV_NAMESPACE
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING_NAME <char, char_traits<char>, allocator<char> > >;
+_STLP_EXPORT_TEMPLATE_CLASS __construct_checker<_STLP_NON_DBG_STRING_NAME <char, char_traits<char>, allocator<char> > >;
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<char, char_traits<char>, allocator<char> >;
 #  if defined (_STLP_HAS_WCHAR_T)
 _STLP_MOVE_TO_PRIV_NAMESPACE
-_STLP_EXPORT_TEMPLATE_CLASS _STLP_CONSTRUCT_CHECKER<_STLP_NON_DBG_STRING_NAME <wchar_t, char_traits<wchar_t>, allocator<wchar_t> > >;
+_STLP_EXPORT_TEMPLATE_CLASS __construct_checker<_STLP_NON_DBG_STRING_NAME <wchar_t, char_traits<wchar_t>, allocator<wchar_t> > >;
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t> >;
 #  endif

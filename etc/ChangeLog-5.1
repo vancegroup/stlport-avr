@@ -1,3 +1,19 @@
+2007-10-07  Francois Dumont  <dums@users.sourceforge.net>
+
+	* STLport 5.1.4 released based on revision 3219. STLport-5.1.4
+	tag created.
+
+	* stlport/stl/_stlport_version.h, build/lib/Makefile.inc: Patch
+	version bump to 5 to prepare next potential patch release.
+
+2007-10-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/debug/_iterator.h, _string.h, src/string.cpp:
+	Removed useless and even invalid workaround used when
+	_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND is defined. There is now
+	only one construct check class __construct_checker,
+	__msvc6_construct_checker has been removed.
+
 2007-09-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* Platform tested: gcc 4.1.2 20060928 (prerelease)
@@ -32,6 +48,17 @@
 
 	* src/c_locale_glibc/c_locale_glibc2.c: this is a C, so
 	decl allowd only on top of block;
+
+	* Platform tested: gcc 2.95.4 (debian), i686 GNU/Linux,
+	glibc 2.3.2;
+
+	* release-shared: build success, as library as unit tests,
+	but run unit tests fail---stalling on spinlock during library
+	load; looks like problem with correct initialization of
+	statics;
+
+	* stldbg-shared: fail build library, stlport/stl/debug/_hashtable.h:49:
+	declaration of `operator ==' as non-function 
 
 2007-09-27  Francois Dumont  <dums@users.sourceforge.net>
 

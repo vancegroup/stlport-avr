@@ -1,3 +1,8 @@
+2007-10-07  Francois Dumont  <dums@users.sourceforge.net>
+
+	* 5.1.4 released, trunk merged with STLPORT_5_1 branch up to
+	revision 3221.
+
 2007-10-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_codecvt.h, _fstream.c, src/codecvt.cpp: Fix non
