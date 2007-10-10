@@ -1,3 +1,27 @@
+2007-10-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles: merge r2883:3223 from tasks/STLport-Makefiles;
+	revision of build system, from 'complement' project, adopted for
+	STLport requirements; support build of static lib and build unit
+	tests with this lib; gmake-specific files moved into gmake catalog;
+	top.mak (gmake-specific) moved into gmake catalog; add include
+	option for boost's headers, if STLP_BUILD_BOOST_PATH defined;
+	config.mak has make-dependent features, so it moved to gmake or
+	nmake catalog; settings from gmake/windows/sysid.mak should
+	be present in common gmake/sysid.mak file; gcc 3.3 has bad or
+	absent libsupc++, at least in debian; don't use -lstlport, when
+	build it; removed windows platform support that used to represent
+	the environment given by the cmd shell with MinGW additional commands
+	i.e. MinGW require not only gmake, but other POSIX file utils too;
+	install target by default install to /usr/local/lib on POSIX-like
+	platforms; added distclean target; added install-headers target;
+
+	* build/test/unit: top.mak (gmake-specific) moved into gmake catalog;
+
+	* build/test/unit/gcc.mak: see just build stlport libs, not
+	installation path [default install path is /usr/local/lib on POSIX-like
+	platforms].
+
 2007-10-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* 5.1.4 released, trunk merged with STLPORT_5_1 branch up to

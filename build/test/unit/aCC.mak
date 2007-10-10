@@ -1,5 +1,4 @@
 # -*- Makefile -*- Time-stamp: <05/03/10 17:51:53 ptr>
-# $Id$
 
 SRCROOT := ../..
 COMPILER_NAME := aCC
@@ -7,7 +6,7 @@ COMPILER_NAME := aCC
 ALL_TAGS := release-shared dbg-shared stldbg-shared
 STLPORT_DIR := ../../..
 include Makefile.inc
-include ${SRCROOT}/Makefiles/top.mak
+include ${SRCROOT}/Makefiles/gmake/top.mak
 
 INCLUDES += -I${STLPORT_INCLUDE_DIR}
 

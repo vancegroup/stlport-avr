@@ -1,7 +1,63 @@
-# -*- makefile -*- Time-stamp: <05/12/07 01:07:18 ptr>
+# -*- makefile -*- Time-stamp: <07/06/08 23:35:09 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
-include ${RULESBASE}/${USE_MAKE}/app/macro.mak
-include ${RULESBASE}/${USE_MAKE}/app/${COMPILER_NAME}.mak
-include ${RULESBASE}/${USE_MAKE}/app/rules.mak
-include ${RULESBASE}/${USE_MAKE}/app/rules-install.mak
-include ${RULESBASE}/${USE_MAKE}/app/clean.mak
+ifdef PRGNAME
+PRG        := $(OUTPUT_DIR)/${PRGNAME}${EXE}
+PRG_DBG    := $(OUTPUT_DIR_DBG)/${PRGNAME}${EXE}
+PRG_STLDBG := $(OUTPUT_DIR_STLDBG)/${PRGNAME}${EXE}
+endif
+
+ALLPRGS = ${PRG}
+ALLPRGS_DBG = ${PRG_DBG}
+ALLPRGS_STLDBG = ${PRG_STLDBG}
+
+define prog_prog
+$(1)_PRG        := $(OUTPUT_DIR)/$(1)${EXE}
+$(1)_PRG_DBG    := $(OUTPUT_DIR_DBG)/$(1)${EXE}
+$(1)_PRG_STLDBG := $(OUTPUT_DIR_STLDBG)/$(1)${EXE}
+
+ALLPRGS        += $${$(1)_PRG}
+ALLPRGS_DBG    += $${$(1)_PRG_DBG}
+ALLPRGS_STLDBG += $${$(1)_PRG_STLDBG}
+endef
+
+$(foreach prg,$(PRGNAMES),$(eval $(call prog_prog,$(prg))))
+
+LDFLAGS += ${LDSEARCH}
+
+include ${RULESBASE}/gmake/app/${COMPILER_NAME}.mak
+include ${RULESBASE}/gmake/app/rules.mak
+include ${RULESBASE}/gmake/app/rules-install.mak
+
+define prog_clean
+clean::
+	@rm -f $${$(1)_PRG} $${$(1)_PRG_DBG} $${$(1)_PRG_STLDBG}
+
+uninstall::
+	@rm -f $$(INSTALL_BIN_DIR)/$$($(1)_PRG) $$(INSTALL_BIN_DIR_DBG)/$$($(1)_PRG_DBG) $$(INSTALL_BIN_DIR_STLDBG)/$$($(1)_PRG_STLDBG)
+endef
+
+clean::
+ifdef PRGNAME
+	@-rm -f ${PRG} ${PRG_DBG} ${PRG_STLDBG}
+endif
+
+$(foreach prg,$(PRGNAMES),$(eval $(call prog_clean,$(prg))))
+
+distclean::
+	@-rm -f $(DEPENDS_COLLECTION)
+	@-rmdir -p ${OUTPUT_DIR} ${OUTPUT_DIR_DBG} ${OUTPUT_DIR_STLDBG} 2>/dev/null
+
+uninstall::
+ifdef PRGNAME
+	@-rm -f $(INSTALL_BIN_DIR)/$(PRG) $(INSTALL_BIN_DIR_DBG)/$(PRG_DBG) $(INSTALL_BIN_DIR_STLDBG)/$(PRG_STLDBG)
+endif
+	@-rmdir -p $(INSTALL_BIN_DIR) $(INSTALL_BIN_DIR_DBG) $(INSTALL_BIN_DIR_STLDBG) 2>/dev/null

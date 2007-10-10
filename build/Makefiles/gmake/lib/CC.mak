@@ -1,4 +1,13 @@
-# -*- makefile -*- Time-stamp: <04/08/23 23:07:35 ptr>
+# -*- makefile -*- Time-stamp: <07/03/08 21:39:22 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 OPT += -xcode=pic32
 

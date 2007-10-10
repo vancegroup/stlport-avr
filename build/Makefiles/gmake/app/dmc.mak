@@ -1,5 +1,16 @@
-# -*- Makefile -*- Time-stamp: <05/12/07 00:57:13 ptr>
-# $Id$
+# -*- Makefile -*- Time-stamp: <07/05/31 01:05:57 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 CXXFLAGS += -w6 -w7 -w18
 

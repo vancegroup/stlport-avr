@@ -7,7 +7,7 @@ ALL_TAGS := release-shared stldbg-shared
 STLPORT_DIR := ../../..
 STLPORT_ETC_DIR = ${STLPORT_DIR}/etc
 include Makefile.inc
-include ${SRCROOT}/Makefiles/top.mak
+include ${SRCROOT}/Makefiles/gmake/top.mak
 
 INCLUDES += -I. -I${STLPORT_INCLUDE_DIR}
 DEFS += -D_STLP_NO_CUSTOM_IO

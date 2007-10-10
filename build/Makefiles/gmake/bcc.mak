@@ -1,6 +1,16 @@
-# Time-stamp: <05/12/07 01:44:42 ptr>
-
-#INCLUDES :=
+# Time-stamp: <07/05/31 01:03:15 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 ALL_TAGS = all-static all-shared
 ifdef LIBNAME
@@ -42,6 +52,19 @@ endif
 ifndef STLP_BUILD_NO_THREAD
 OPT += -tWM
 endif
+
+#Add Windows target.
+ifndef STLP_BUILD_WINDOWS_95
+WINVER=0x0410
+else
+WINVER=0x0400
+endif
+release-shared: DEFS += -DWINVER=$(WINVER)
+dbg-shared: DEFS += -DWINVER=$(WINVER)
+stldbg-shared: DEFS += -DWINVER=$(WINVER)
+release-static: DEFS += -DWINVER=$(WINVER)
+dbg-static: DEFS += -DWINVER=$(WINVER)
+stldbg-static: DEFS += -DWINVER=$(WINVER)
 
 OUTPUT_OPTION = -o$@
 LINK_OUTPUT_OPTION = $@

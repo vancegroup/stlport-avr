@@ -1,7 +1,16 @@
-# Time-stamp: <03/11/30 11:46:14 ptr>
-# $Id$
-
-#INCLUDES :=
+# Time-stamp: <07/05/31 01:03:50 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 ALL_TAGS = all-static all-shared
 ifdef LIBNAME
@@ -10,7 +19,6 @@ endif
 
 CXX := dmc
 CC := dmc
-RC := rcc
 
 DEFS ?=
 OPT ?=
@@ -36,13 +44,26 @@ ifndef STLP_BUILD_NO_RTTI
 OPT += -Ar
 endif
 
+#Add Windows target.
+ifndef STLP_BUILD_WINDOWS_95
+WINVER=0x0410
+else
+WINVER=0x0400
+endif
+release-shared: DEFS += -DWINVER=$(WINVER)
+dbg-shared: DEFS += -DWINVER=$(WINVER)
+stldbg-shared: DEFS += -DWINVER=$(WINVER)
+release-static: DEFS += -DWINVER=$(WINVER)
+dbg-static: DEFS += -DWINVER=$(WINVER)
+stldbg-static: DEFS += -DWINVER=$(WINVER)
+
 OUTPUT_OPTION = -o$@
 LINK_OUTPUT_OPTION = $(subst /,\,$@)
 CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES) 
 
 CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
-RCFLAGS = -32 -I${STLPORT_INCLUDE_DIR} -DCOMP=dmc
+RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} -DCOMP=dmc
 
 release-shared : RCFLAGS += -DBUILD=r -DBUILD_INFOS="-o"
 dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS="-gl -D_DEBUG"

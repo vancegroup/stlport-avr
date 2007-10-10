@@ -1,5 +1,4 @@
 # -*- Makefile -*- Time-stamp: <03/10/12 20:35:49 ptr>
-# $Id$
 
 SRCROOT := ../..
 COMPILER_NAME := dmc
@@ -8,7 +7,7 @@ OBJ_EXT := obj
 STLPORT_DIR := ../../..
 
 include Makefile.inc
-include ${SRCROOT}/Makefiles/top.mak
+include ${SRCROOT}/Makefiles/gmake/top.mak
 
 
 INCLUDES += -I$(STLPORT_INCLUDE_DIR)

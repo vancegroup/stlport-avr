@@ -1,5 +1,4 @@
 # -*- Makefile -*- Time-stamp: <03/10/12 20:35:49 ptr>
-# $Id$
 
 SRCROOT := ..
 COMPILER_NAME := CC
@@ -7,7 +6,7 @@ COMPILER_NAME := CC
 STLPORT_ETC_DIR = ../../etc
 STLPORT_INCLUDE_DIR = ../../stlport
 include Makefile.inc
-include ${SRCROOT}/Makefiles/top.mak
+include ${SRCROOT}/Makefiles/gmake/top.mak
 
 INCLUDES += -I. -I$(STLPORT_INCLUDE_DIR)
 

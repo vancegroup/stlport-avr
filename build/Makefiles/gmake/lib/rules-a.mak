@@ -1,9 +1,23 @@
-# -*- makefile -*- Time-stamp: <04/07/25 16:54:59 ptr>
-# $Id$
+# -*- makefile -*- Time-stamp: <07/05/31 22:11:48 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 # Static libraries tags
 
 PHONY += release-static dbg-static stldbg-static
+
+ifneq ($(_LSUPCPP_OBJ),"")
+$(_LSUPCPP_AUX_TSMP):	$(_LSUPCPP)
+	if [ ! -d $(AUX_DIR) ]; then mkdir -p $(AUX_DIR); fi
+	cd $(AUX_DIR); $(AR) xo $(_LSUPCPP) && touch -r $(_LSUPCPP) $(_LSUPCPP_TSMP)
+endif
 
 release-static: $(OUTPUT_DIR_A) ${A_NAME_OUT}
 
@@ -11,48 +25,14 @@ dbg-static:	$(OUTPUT_DIR_A_DBG) ${A_NAME_OUT_DBG}
 
 stldbg-static:	$(OUTPUT_DIR_A_STLDBG) ${A_NAME_OUT_STLDBG}
 
+${A_NAME_OUT}:	$(OBJ_A) $(_LSUPCPP_AUX_TSMP)
+	rm -f $@
+	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A) $(_LSUPCPP_AUX_OBJ)
 
-ifeq (bcc, $(COMPILER_NAME))
-# Borland archive builder
-# We always remove the lib before generating it to avoid warnings from
-# archive builder.
-${A_NAME_OUT}:	$(OBJ_A)
-ifneq (windows, $(OSNAME))
-	@rm -f ${A_NAME_OUT}
-else
-	@if exist $(subst /,\,$(A_NAME_OUT)) del /f /q $(subst /,\,$(A_NAME_OUT))
-endif
-	$(AR) $(AR_OUT) /P64 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A)))
-$(A_NAME_OUT_DBG):	$(OBJ_A_DBG)
-ifneq (windows, $(OSNAME))
-	@rm -f $(A_NAME_OUT_DBG)
-else
-	@if exist $(subst /,\,$(A_NAME_OUT_DBG)) del /f /q $(subst /,\,$(A_NAME_OUT_DBG))
-endif
-	$(AR) $(AR_OUT) /P128 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_DBG)))
-$(A_NAME_OUT_STLDBG):	$(OBJ_A_STLDBG)
-ifneq (windows, $(OSNAME))
-	@rm -f $(A_NAME_OUT_STLDBG)
-else
-	@if exist $(subst /,\,$(A_NAME_OUT_STLDBG)) del /f /q $(subst /,\,$(A_NAME_OUT_STLDBG))
-endif
-	$(AR) $(AR_OUT) /P256 $(addprefix $(AR_INS_R),$(subst /,\,$(OBJ_A_STLDBG)))
-else
-ifeq (dmc, $(COMPILER_NAME))
-# Digital Mars archive builder
-${A_NAME_OUT}:	$(OBJ_A)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A))
-${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_DBG))
-${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(subst /,\,$(OBJ_A_STLDBG))
-else
-# GNU archive builder
-${A_NAME_OUT}:	$(OBJ_A)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A)
-${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_DBG)
-${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
-	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_STLDBG)
-endif
-endif
+${A_NAME_OUT_DBG}:	$(OBJ_A_DBG) $(_LSUPCPP_AUX_TSMP)
+	rm -f $@
+	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_DBG) $(_LSUPCPP_AUX_OBJ)
+
+${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG) $(_LSUPCPP_AUX_TSMP)
+	rm -f $@
+	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_STLDBG) $(_LSUPCPP_AUX_OBJ)
