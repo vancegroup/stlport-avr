@@ -18,7 +18,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/bitset_test.cpp \
 	../../../test/unit/bitset_header_test.cpp \
 	../../../test/unit/bnegate_test.cpp \
-        ../../../test/unit/boost_check.cpp \
+	../../../test/unit/boost_check.cpp \
 	../../../test/unit/bound_test.cpp \
 	../../../test/unit/bsearch_test.cpp \
 	../../../test/unit/bvector_test.cpp \
@@ -93,7 +93,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/locale_test.cpp \
 	../../../test/unit/locale_header_test.cpp \
 	../../../test/unit/logic_test.cpp \
-        ../../../test/unit/macro_checks.cpp \
+	../../../test/unit/macro_checks.cpp \
 	../../../test/unit/map_test.cpp \
 	../../../test/unit/map_header_test.cpp \
 	../../../test/unit/max_test.cpp \
@@ -128,7 +128,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/queue_test.cpp \
 	../../../test/unit/queue_header_test.cpp \
 	../../../test/unit/rawriter_test.cpp \
-        ../../../test/unit/reference_wrapper_test.cpp \
+	../../../test/unit/reference_wrapper_test.cpp \
 	../../../test/unit/resolve_name.cpp \
 	../../../test/unit/reviter_test.cpp \
 	../../../test/unit/rm_cp_test.cpp \
@@ -141,7 +141,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/setdiff_test.cpp \
 	../../../test/unit/setinter_test.cpp \
 	../../../test/unit/setunion_test.cpp \
-        ../../../test/unit/shared_ptr_test.cpp \
+	../../../test/unit/shared_ptr_test.cpp \
 	../../../test/unit/slist_test.cpp \
 	../../../test/unit/sort_test.cpp \
 	../../../test/unit/sstream_test.cpp \
@@ -151,7 +151,7 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/stdexcept_header_test.cpp \
 	../../../test/unit/stldbg_include.cpp \
 	../../../test/unit/string_test.cpp \
-        ../../../test/unit/strstream_buffer_read_test.cpp \
+	../../../test/unit/strstream_buffer_read_test.cpp \
 	../../../test/unit/swap_test.cpp \
 	../../../test/unit/times_test.cpp \
 	../../../test/unit/transform_test.cpp \
