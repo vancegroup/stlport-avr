@@ -34,6 +34,8 @@ class UnorderedTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
   CPPUNIT_TEST(equal_range);
+  CPPUNIT_TEST(benchmark1);
+  CPPUNIT_TEST(benchmark2);
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   CPPUNIT_IGNORE;
 #endif
@@ -49,6 +51,8 @@ protected:
   void hash_policy();
   void buckets();
   void equal_range();
+  void benchmark1();
+  void benchmark2();
   void template_methods();
 };
 
@@ -382,7 +386,11 @@ void UnorderedTest::equal_range()
     umset iumset;
 
     size_t i;
-    const size_t nbBuckets = iumset.bucket_count();
+    //We are going to add at least 20 values, to get a stable hash container while doing that
+    //we force a large number of buckets:
+    iumset.rehash(193);
+
+    size_t nbBuckets = iumset.bucket_count();
     const size_t targetedBucket = nbBuckets / 2;
 
     //Lets put 10 values in the targeted bucket:
@@ -406,6 +414,19 @@ void UnorderedTest::equal_range()
     pair<umset::iterator, umset::iterator> p = iumset.equal_range(targetedBucket);
     CPPUNIT_ASSERT( p.first != p.second );
     CPPUNIT_ASSERT( distance(p.first, p.second) == 3 );
+
+    // Now we remove some elements until hash container is resized:
+    nbBuckets = iumset.bucket_count();
+    while (iumset.bucket_count() == nbBuckets &&
+           !iumset.empty()) {
+      iumset.erase(iumset.begin());
+    }
+    CPPUNIT_ASSERT( iumset.load_factor() <= iumset.max_load_factor() );
+
+    // Adding an element back shouldn't change number of buckets:
+    nbBuckets = iumset.bucket_count();
+    iumset.insert(0);
+    CPPUNIT_ASSERT( iumset.bucket_count() == nbBuckets );
   }
 
   {
@@ -448,6 +469,44 @@ void UnorderedTest::equal_range()
       }
       CPPUNIT_ASSERT( hum.count(magic) == c );
     }
+  }
+#endif
+}
+
+void UnorderedTest::benchmark1()
+{
+#if defined (STLPORT)
+  typedef unordered_multiset<size_t> umset;
+
+  const size_t target = 500000;
+  umset iumset;
+  iumset.max_load_factor(10);
+  size_t i;
+  for (i = 0; i < target; ++i) {
+    iumset.insert(i);
+  }
+
+  for (i = 0; i < target; ++i) {
+    iumset.erase(i);
+  }
+#endif
+}
+
+void UnorderedTest::benchmark2()
+{
+#if defined (STLPORT)
+  typedef unordered_multiset<size_t> umset;
+
+  const size_t target = 500000;
+  umset iumset;
+  iumset.max_load_factor(10);
+  size_t i;
+  for (i = 0; i < target; ++i) {
+    iumset.insert(target - i);
+  }
+
+  for (i = 0; i < target; ++i) {
+    iumset.erase(target - i);
   }
 #endif
 }

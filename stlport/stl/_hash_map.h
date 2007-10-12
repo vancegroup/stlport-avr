@@ -85,7 +85,7 @@ private:
   _Ht _M_ht;
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 public:
-  hash_map() : _M_ht(100, hasher(), key_equal(), allocator_type()) {}
+  hash_map() : _M_ht(0, hasher(), key_equal(), allocator_type()) {}
   explicit hash_map(size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type()) {}
   hash_map(size_type __n, const hasher& __hf)
@@ -103,7 +103,7 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   hash_map(_InputIterator __f, _InputIterator __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_unique(__f, __l); }
   template <class _InputIterator>
   hash_map(_InputIterator __f, _InputIterator __l, size_type __n)
@@ -130,7 +130,7 @@ public:
 
 #else
   hash_map(const value_type* __f, const value_type* __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_unique(__f, __l); }
   hash_map(const value_type* __f, const value_type* __l, size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type())
@@ -146,7 +146,7 @@ public:
     { _M_ht.insert_unique(__f, __l); }
 
   hash_map(const_iterator __f, const_iterator __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_unique(__f, __l); }
   hash_map(const_iterator __f, const_iterator __l, size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type())
@@ -276,7 +276,7 @@ private:
   _Ht _M_ht;
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 public:
-  hash_multimap() : _M_ht(100, hasher(), key_equal(), allocator_type()) {}
+  hash_multimap() : _M_ht(0, hasher(), key_equal(), allocator_type()) {}
   explicit hash_multimap(size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type()) {}
   hash_multimap(size_type __n, const hasher& __hf)
@@ -294,7 +294,7 @@ public:
 #ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   hash_multimap(_InputIterator __f, _InputIterator __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_equal(__f, __l); }
   template <class _InputIterator>
   hash_multimap(_InputIterator __f, _InputIterator __l, size_type __n)
@@ -321,7 +321,7 @@ public:
 
 #else
   hash_multimap(const value_type* __f, const value_type* __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_equal(__f, __l); }
   hash_multimap(const value_type* __f, const value_type* __l, size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type())
@@ -337,7 +337,7 @@ public:
     { _M_ht.insert_equal(__f, __l); }
 
   hash_multimap(const_iterator __f, const_iterator __l)
-    : _M_ht(100, hasher(), key_equal(), allocator_type())
+    : _M_ht(0, hasher(), key_equal(), allocator_type())
     { _M_ht.insert_equal(__f, __l); }
   hash_multimap(const_iterator __f, const_iterator __l, size_type __n)
     : _M_ht(__n, hasher(), key_equal(), allocator_type())

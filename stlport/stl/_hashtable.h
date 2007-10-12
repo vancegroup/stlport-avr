@@ -188,12 +188,17 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Dummy>
 class _Stl_prime {
+  // Returns begining of primes list and size by reference.
+  static const size_t* _S_primes(size_t&);
 public:
   //Returns the maximum number of buckets handled by the hashtable implementation
   static size_t _STLP_CALL _S_max_nb_buckets();
 
   //Returns the bucket size next to a required size
   static size_t _STLP_CALL _S_next_size(size_t);
+
+  // Returns the bucket range containing sorted list of prime numbers <= __hint.
+  static void _STLP_CALL _S_prev_sizes(size_t __hint, const size_t *&__begin, const size_t *&__end);
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -394,15 +399,18 @@ public:
   // hash policy
   float load_factor() const { return (float)size() / (float)bucket_count(); }
   float max_load_factor() const { return _M_max_load_factor; }
-  void max_load_factor(float __z) { _M_max_load_factor = __z;}
+  void max_load_factor(float __z) {
+    _M_max_load_factor = __z;
+    _M_resize();
+  }
 
   pair<iterator, bool> insert_unique(const value_type& __obj) {
-    resize(_M_num_elements + 1);
+    _M_enlarge(_M_num_elements + 1);
     return insert_unique_noresize(__obj);
   }
 
   iterator insert_equal(const value_type& __obj) {
-    resize(_M_num_elements + 1);
+    _M_enlarge(_M_num_elements + 1);
     return insert_equal_noresize(__obj);
   }
 
@@ -439,7 +447,7 @@ public:
   void insert_unique(_ForwardIterator __f, _ForwardIterator __l,
                      const forward_iterator_tag &) {
     size_type __n = distance(__f, __l);
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
@@ -448,7 +456,7 @@ public:
   void insert_equal(_ForwardIterator __f, _ForwardIterator __l,
                     const forward_iterator_tag &) {
     size_type __n = distance(__f, __l);
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
   }
@@ -456,28 +464,28 @@ public:
 #else /* _STLP_MEMBER_TEMPLATES */
   void insert_unique(const value_type* __f, const value_type* __l) {
     size_type __n = __l - __f;
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
 
   void insert_equal(const value_type* __f, const value_type* __l) {
     size_type __n = __l - __f;
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
   }
 
   void insert_unique(const_iterator __f, const_iterator __l) {
     size_type __n = distance(__f, __l);
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
 
   void insert_equal(const_iterator __f, const_iterator __l) {
     size_type __n = distance(__f, __l);
-    resize(_M_num_elements + __n);
+    _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
   }
@@ -559,6 +567,9 @@ public:
   void erase(const_iterator __first, const_iterator __last);
 
 private:
+  void _M_enlarge(size_type __n);
+  void _M_reduce();
+  void _M_resize();
   void _M_rehash(size_type __num_buckets);
 #if defined (_STLP_DEBUG)
   void _M_check() const;
@@ -566,7 +577,8 @@ private:
 
 public:
   void rehash(size_type __num_buckets_hint);
-  void resize(size_type __num_elements_hint);
+  void resize(size_type __num_buckets_hint)
+  { rehash(__num_buckets_hint); }
   void clear();
 
   // this is for hash_map::operator[]

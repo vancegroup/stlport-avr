@@ -79,7 +79,7 @@ private:
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
-  explicit unordered_map(size_type __n = 100, const hasher& __hf = hasher(),
+  explicit unordered_map(size_type __n = 0, const hasher& __hf = hasher(),
                          const key_equal& __eql = key_equal(),
                          const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
@@ -92,21 +92,21 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   unordered_map(_InputIterator __f, _InputIterator __l,
-                size_type __n = 100, const hasher& __hf = hasher(),
+                size_type __n = 0, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_unique(__f, __l); }
 #else
   unordered_map(const value_type* __f, const value_type* __l,
-                size_type __n = 100, const hasher& __hf = hasher(),
+                size_type __n = 0, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_unique(__f, __l); }
 
   unordered_map(const_iterator __f, const_iterator __l,
-                size_type __n = 100, const hasher& __hf = hasher(),
+                size_type __n = 0, const hasher& __hf = hasher(),
                 const key_equal& __eql = key_equal(),
                 const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
@@ -243,7 +243,7 @@ private:
   _STLP_KEY_TYPE_FOR_CONT_EXT(key_type)
 
 public:
-  explicit unordered_multimap(size_type __n = 100, const hasher& __hf = hasher(),
+  explicit unordered_multimap(size_type __n = 0, const hasher& __hf = hasher(),
                               const key_equal& __eql = key_equal(),
                               const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a) {}
@@ -256,21 +256,21 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   unordered_multimap(_InputIterator __f, _InputIterator __l,
-                     size_type __n = 100, const hasher& __hf = hasher(),
+                     size_type __n = 0, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_equal(__f, __l); }
 #else
   unordered_multimap(const value_type* __f, const value_type* __l,
-                     size_type __n = 100, const hasher& __hf = hasher(),
+                     size_type __n = 0, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)
   { _M_ht.insert_equal(__f, __l); }
 
   unordered_multimap(const_iterator __f, const_iterator __l,
-                     size_type __n = 100, const hasher& __hf = hasher(),
+                     size_type __n = 0, const hasher& __hf = hasher(),
                      const key_equal& __eql = key_equal(),
                      const allocator_type& __a = allocator_type())
     : _M_ht(__n, __hf, __eql, __a)

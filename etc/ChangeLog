@@ -1,3 +1,34 @@
+2007-10-12  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_hash_map.h, _hash_set.h, _unordered_set.h,
+	_unordered_map.h: Because of the hashtable data model, number
+	of bucket should not be to high compare to the number of
+	elements. For this reason, default constructor of all hash
+	containers is now passing 0 as the initial size rather than 100.
+
+	* stlport/stl/_hashtable.h, _hashtable.c: For the same reason exposed
+	above, the hashtable number of buckets is decrease when removing
+	elements from the container. All is done in the newly introduce
+	_M_reduce method that should be called each time elements are
+	removed.
+
+	* test/unit/unordered_test.cpp: Two new test in UnorderedTest test
+	fixture, benchmark1 and benchmark2. Those tests are rather, as indicated
+	by their name, bench to compare performance of hashed containers.
+	It can be used with the -m unit test console option that display
+	timing of tests. For instance, thanks to the reduction policy exposed
+	above, benchmark1 is running 20 times faster while benchmark2 is
+	almost identical.
+
+	* stlport/stl/_hashtable.h: Container might now be rehash when user
+	modified max load factor in order to respect
+	load_factor() <= max_load_factor() rule. hashtable::resize fixed,
+	according SGI doc it should behave as Standard unordered_*::rehash that
+	is to say it gives number of buckets and not number of elements.
+
+	* stlport/stl/_hashtable.c: Fix Code warrior workaround that was only
+	showing a limited number of prime numbers.
+
 2007-10-10  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles: merge r2883:3223 from tasks/STLport-Makefiles;

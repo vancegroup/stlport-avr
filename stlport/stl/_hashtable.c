@@ -45,29 +45,51 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 }
 
 template <class _Dummy>
+const size_t* _STLP_CALL
+_Stl_prime<_Dummy>::_S_primes(size_t &__size) {
+  static const size_t _list[] = __PRIME_LIST_BODY;
+#  ifndef __MWERKS__
+  __size =  sizeof(_list) / sizeof(_list[0]);
+#  else
+  __size =  30;
+#  endif
+  return _list;
+}
+
+template <class _Dummy>
 size_t _STLP_CALL
 _Stl_prime<_Dummy>::_S_max_nb_buckets() {
-  const size_t _list[] = __PRIME_LIST_BODY;
-#  ifndef __MWERKS__
-  return _list[(sizeof(_list)/sizeof(_list[0])) - 1];
-#  else
-  return _list[30/sizeof(size_t) - 1]; // stupid MWERKS!
-#  endif
+  size_t __size;
+  const size_t* __first = _S_primes(__size);
+  return *(__first + __size - 1);
 }
 
 template <class _Dummy>
 size_t _STLP_CALL
 _Stl_prime<_Dummy>::_S_next_size(size_t __n) {
-  static const size_t _list[] = __PRIME_LIST_BODY;
-  const size_t* __first = _list;
-#  ifndef __MWERKS__
-  const size_t* __last =  _list + (sizeof(_list)/sizeof(_list[0]));
-#  else
-  const size_t* __last =  _list + (30/sizeof(size_t)); // stupid MWERKS
-#  endif
+  size_t __size;
+  const size_t* __first = _S_primes(__size);
+  const size_t* __last =  __first + __size;
   const size_t* pos = __lower_bound(__first, __last, __n, 
                                     __less((size_t*)0), __less((size_t*)0), (ptrdiff_t*)0);
   return (pos == __last ? *(__last - 1) : *pos);
+}
+
+template <class _Dummy>
+void _STLP_CALL
+_Stl_prime<_Dummy>::_S_prev_sizes(size_t __n, size_t const*&__begin, size_t const*&__pos) {
+  size_t __size;
+  __begin = _S_primes(__size);
+  const size_t* __last =  __begin + __size;
+  __pos = __lower_bound(__begin, __last, __n, 
+                        __less((size_t*)0), __less((size_t*)0), (ptrdiff_t*)0);
+
+  if (__pos== __last)
+    --__pos;
+  else if (*__pos == __n) {
+    if (__pos != __begin)
+      --__pos;
+  }
 }
 
 #  undef __PRIME_LIST_BODY
@@ -230,23 +252,9 @@ template <class _Val, class _Key, class _HF,
 __reference__
 hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::_M_insert(const value_type& __obj) {
-  resize(_M_num_elements + 1);
+  _M_enlarge(_M_num_elements + 1);
   return *insert_unique_noresize(__obj).first;
 }
-
-/*
-template <class _Val, class _Key, class _HF,
-          class _Traits, class _ExK, class _EqK, class _All>
-__reference__
-hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::find_or_insert(const value_type& __obj) {
-  _Node* __first = _M_find(_M_get_key(__obj));
-  if (__first)
-    return __first->_M_val;
-  else
-    return _M_insert(__obj);
-}
-*/
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
@@ -285,6 +293,7 @@ hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   }
 
   _M_num_elements -= __erased;
+  _M_reduce();
   return __erased;
 }
 
@@ -295,12 +304,13 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   const size_type __n = _M_bkt_num(*__it);
   _ElemsIte __cur(_M_buckets[__n]);
 
+  size_type __erased = 0;
   if (__cur == __it._M_ite) {
     size_type __prev_b = __n;
     _ElemsIte __prev = _M_before_begin(__prev_b)._M_ite;
     fill(_M_buckets.begin() + __prev_b, _M_buckets.begin() + __n + 1,
          _M_elems.erase_after(__prev)._M_node);
-    --_M_num_elements;
+    ++__erased;
   }
   else {
     _ElemsIte __prev = __cur++;
@@ -308,11 +318,14 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     for (; __cur != __last; ++__prev, ++__cur) {
       if (__cur == __it._M_ite) {
         _M_elems.erase_after(__prev);
-        --_M_num_elements;
+        ++__erased;
         break;
       }
     }
   }
+
+  _M_num_elements -= __erased;
+  _M_reduce();
 }
 
 template <class _Val, class _Key, class _HF,
@@ -334,52 +347,114 @@ void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
     __prev = __cur++;
     for (; (__cur != __last) && (__cur != __first._M_ite); ++__prev, ++__cur);
   }
+  size_type __erased = 0;
   //We do not use the slist::erase_after method taking a range to count the
   //number of erased elements:
   while (__cur != __last._M_ite) {
     __cur = _M_elems.erase_after(__prev);
-    --_M_num_elements;
+    ++__erased;
   }
   fill(_M_buckets.begin() + __f_bucket, _M_buckets.begin() + __l_bucket + 1, __cur._M_node);
+  _M_num_elements -= __erased;
+  _M_reduce();
 }
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::rehash(size_type __num_buckets_hint) {
-  if ((bucket_count() >= __num_buckets_hint) &&
-      (max_load_factor() > load_factor()))
-    return;
+  if (bucket_count() >= __num_buckets_hint) {
+    // We are trying to reduce number of buckets, we have to validate it:
+    size_type __limit_num_buckets = (size_type)((float)size() / max_load_factor());
+    if (__num_buckets_hint < __limit_num_buckets) {
+      // Targetted number of buckets __num_buckets_hint would break
+      // load_factor() <= max_load_factor() rule.
+      return;
+    }
+  }
 
-  //Here if max_load_factor is lower than 1.0 the resulting value might not be representable
-  //as a size_type. The result concerning the respect of the max_load_factor will then be
-  //undefined.
-  __num_buckets_hint = (max) (__num_buckets_hint, (size_type)((float)size() / max_load_factor()));
-  size_type __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
+  _M_rehash(__num_buckets_hint);
+}
+
+template <class _Val, class _Key, class _HF,
+          class _Traits, class _ExK, class _EqK, class _All>
+void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
+  ::_M_enlarge(size_type __to_size) {
+  size_type __num_buckets = bucket_count();
+  size_type __num_buckets_hint = (size_type)((float)__to_size / max_load_factor());
+  if (__num_buckets_hint <= __num_buckets) {
+    return;
+  }
+  __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
+
   _M_rehash(__num_buckets);
 }
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
-  ::resize(size_type __num_elements_hint) {
-  if (((float)__num_elements_hint / (float)bucket_count() <= max_load_factor()) &&
-      (max_load_factor() >= load_factor())) {
+  ::_M_reduce() {
+  size_type __num_buckets = bucket_count();
+  // We only try to reduce the hashtable if the theorical load factor
+  // is lower than a fraction of the max load factor:
+  // 4 factor is coming from the fact that prime number list is almost a
+  // geometrical suite with reason 2, as we try to jump 2 levels is means
+  // a 4 factor.
+  if ((float)size() / (float)__num_buckets > max_load_factor() / 4.0f)
     return;
+
+  const size_type *__first;
+  const size_type *__prev;
+  _STLP_PRIV _Stl_prime_type::_S_prev_sizes(__num_buckets, __first, __prev);
+
+  /* We are only going to reduce number of buckets if moving to yet the previous number
+   * of buckets in the prime numbers would respect the load rule. Otherwise algorithm
+   * successively removing and adding an element would each time perform an expensive
+   * rehash operation. */
+  const size_type *__prev_prev = __prev;
+  if (__prev_prev != __first) {
+    --__prev_prev;
+    if ((float)size() / (float)*__prev_prev > max_load_factor())
+      return;
+  }
+  else {
+    if (*__prev >= __num_buckets)
+      return;
   }
 
-  size_type __num_buckets_hint = (size_type)((float)(max) (__num_elements_hint, size()) / max_load_factor());
-  size_type __num_buckets = _STLP_PRIV _Stl_prime_type::_S_next_size(__num_buckets_hint);
-#if defined (_STLP_DEBUG)
-  _M_check();
-#endif
-  _M_rehash(__num_buckets);
+  // Can we reduce further:
+  while (__prev_prev != __first) {
+    --__prev_prev;
+    if ((float)size() / (float)*__prev_prev > max_load_factor())
+      // We cannot reduce further.
+      break;
+    --__prev;
+  }
+
+  _M_rehash(*__prev);
+}
+
+template <class _Val, class _Key, class _HF,
+          class _Traits, class _ExK, class _EqK, class _All>
+void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
+  ::_M_resize() {
+  if (load_factor() > max_load_factor()) {
+    // We have to enlarge
+    _M_enlarge(size());
+  }
+  else {
+    // We can try to reduce size:
+    _M_reduce();
+  }
 }
 
 template <class _Val, class _Key, class _HF,
           class _Traits, class _ExK, class _EqK, class _All>
 void hashtable<_Val,_Key,_HF,_Traits,_ExK,_EqK,_All>
   ::_M_rehash(size_type __num_buckets) {
+#if defined (_STLP_DEBUG)
+  _M_check();
+#endif
   _ElemsCont __tmp_elems(_M_elems.get_allocator());
   _BucketVector __tmp(__num_buckets + 1, __STATIC_CAST(_BucketType*, 0), _M_buckets.get_allocator());
   _ElemsIte __cur, __last(_M_elems.end());
