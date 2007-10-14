@@ -1,3 +1,8 @@
+2007-10-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/bitset.cpp: Add const qualifier on static arrays used in
+	bitset implementation. Thanks a Andrey Semachev remark.
+
 2007-10-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_hash_map.h, _hash_set.h, _unordered_set.h,

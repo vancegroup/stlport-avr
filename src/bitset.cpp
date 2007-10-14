@@ -30,7 +30,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 size_t _Bs_G::_S_count(const unsigned char *__first,
                        const unsigned char *__last)
 {
-  static unsigned char _bit_count[256] = {
+  static const unsigned char _bit_count[256] = {
   0, /*   0 */ 1, /*   1 */ 1, /*   2 */ 2, /*   3 */ 1, /*   4 */
   2, /*   5 */ 2, /*   6 */ 3, /*   7 */ 1, /*   8 */ 2, /*   9 */
   2, /*  10 */ 3, /*  11 */ 2, /*  12 */ 3, /*  13 */ 3, /*  14 */
@@ -94,7 +94,7 @@ size_t _Bs_G::_S_count(const unsigned char *__first,
 
 unsigned char _Bs_G::_S_first_one(unsigned char __byte)
 {
-  static unsigned char _first_one[256] = {
+  static const unsigned char _first_one[256] = {
   0, /*   0 */ 0, /*   1 */ 1, /*   2 */ 0, /*   3 */ 2, /*   4 */
   0, /*   5 */ 1, /*   6 */ 0, /*   7 */ 3, /*   8 */ 0, /*   9 */
   1, /*  10 */ 0, /*  11 */ 2, /*  12 */ 0, /*  13 */ 1, /*  14 */
