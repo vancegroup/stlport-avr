@@ -833,6 +833,14 @@ void NumPutGetTest::num_get_float()
     CPPUNIT_ASSERT( numeric_limits<long double>::min_exponent10 >= numeric_limits<double>::min_exponent10 ||
                     val == 0.0 );
   }
+  {
+    const char* p = "2.718281828459045235360287471352662497757247093e0";
+    std::stringstream s;
+    s << p;
+    long double x;
+    s >> x;
+    CPPUNIT_ASSERT( x > 2.70l && x < 2.72l );
+  }
 #endif
 }
 
