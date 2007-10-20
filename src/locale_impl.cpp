@@ -171,20 +171,14 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
   if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
     _Locale_impl* i2 = locale::classic()._M_impl;
     this->insert(i2, ctype<char>::id);
-#ifndef _STLP_NO_MBSTATE_T
     this->insert(i2, codecvt<char, char, mbstate_t>::id);
-#endif
 #ifndef _STLP_NO_WCHAR_T
     this->insert(i2, ctype<wchar_t>::id);
-#  ifndef _STLP_NO_MBSTATE_T
     this->insert(i2, codecvt<wchar_t, char, mbstate_t>::id);
-#  endif
 #endif
   } else {
     ctype<char>*    ct                      = 0;
-#ifndef _STLP_NO_MBSTATE_T
     codecvt<char, char, mbstate_t>*    cvt  = 0;
-#endif
 #ifndef _STLP_NO_WCHAR_T
     ctype<wchar_t>* wct                     = 0;
     codecvt<wchar_t, char, mbstate_t>* wcvt = 0;
@@ -192,29 +186,21 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
     ctype_byname<char> *ctbn = new ctype_byname<char>(pname, 0, hint);
     ct   = ctbn;
     if (hint == 0) hint = _Locale_get_ctype_hint(ctbn->_M_ctype);
-#if !defined (_STLP_NO_MBSTATE_T) || !defined (_STLP_NO_WCHAR_T)
     _STLP_TRY {
-#  ifndef _STLP_NO_MBSTATE_T
       cvt  = new codecvt_byname<char, char, mbstate_t>(pname);
-#  endif
-#  ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
       wct  = new ctype_byname<wchar_t>(pname, 0, hint);
       wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(pname, 0, hint);
-#  endif
+#endif
     }
-#  if !defined (_STLP_NO_MBSTATE_T) && !defined (_STLP_NO_WCHAR_T)
+#ifndef _STLP_NO_WCHAR_T
     _STLP_UNWIND(delete wct; delete cvt; delete ct);
-#  elif !defined (_STLP_NO_WCHAR_T)
-    _STLP_UNWIND(delete wct; delete ct);
-#  else
+#else
     _STLP_UNWIND(delete ct);
-#  endif
 #endif
 
     _Locale_insert(this, ct);
-#ifndef _STLP_NO_MBSTATE_T
     _Locale_insert(this, cvt);
-#endif
 #ifndef _STLP_NO_WCHAR_T
     _Locale_insert(this, wct);
     _Locale_insert(this, wcvt);
@@ -651,11 +637,7 @@ void _Locale_impl::make_classic_locale() {
     0,
     new collate<char>(1),
     new ctype<char>(0, false, 1),
-#ifndef _STLP_NO_MBSTATE_T
     new codecvt<char, char, mbstate_t>(1),
-#else
-    0,
-#endif
     new moneypunct<char, true>(1),
     new moneypunct<char, false>(1),
     new numpunct<char>(1),
@@ -675,22 +657,15 @@ void _Locale_impl::make_classic_locale() {
 #ifndef _STLP_NO_WCHAR_T
     new collate<wchar_t>(1),
     new ctype<wchar_t>(1),
-
-#  ifndef _STLP_NO_MBSTATE_T
     new codecvt<wchar_t, char, mbstate_t>(1),
-#  else
-    0,
-#  endif
     new moneypunct<wchar_t, true>(1),
     new moneypunct<wchar_t, false>(1),
     new numpunct<wchar_t>(1),
     new messages<wchar_t>(1),
-
     new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
     0,
     new money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
     0,
-
     new num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
     0,
     new num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
@@ -719,11 +694,7 @@ void _Locale_impl::make_classic_locale() {
 
 _STLP_STATIC_MEMBER_DECLSPEC locale::id collate<char>::id = { 1 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<char>::id = { 2 };
-
-#ifndef _STLP_NO_MBSTATE_T
 _STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<char, char, mbstate_t>::id = { 3 };
-#endif
-
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, true>::id = { 4 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, false>::id = { 5 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<char>::id = { 6 } ;
@@ -732,13 +703,9 @@ _STLP_STATIC_MEMBER_DECLSPEC locale::id messages<char>::id = { 7 };
 #ifndef _STLP_NO_WCHAR_T
 _STLP_STATIC_MEMBER_DECLSPEC locale::id collate<wchar_t>::id = { 20 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<wchar_t>::id = { 21 };
-
-#  ifndef _STLP_NO_MBSTATE_T
 _STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
-#  endif
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, true>::id = { 23 } ;
 _STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, false>::id = { 24 } ;
-
 _STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<wchar_t>::id = { 25 };
 _STLP_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
 #endif

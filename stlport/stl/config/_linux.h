@@ -30,8 +30,8 @@
 #    ifndef _STLP_NO_WCHAR_T
 #      define _STLP_NO_WCHAR_T
 #    endif
-#    ifndef _STLP_NO_MBSTATE_T
-#      define _STLP_NO_MBSTATE_T
+#    ifndef _STLP_NO_NATIVE_MBSTATE_T
+#      define _STLP_NO_NATIVE_MBSTATE_T
 #    endif
 #    ifndef _STLP_NO_NATIVE_WIDE_STREAMS
 #      define _STLP_NO_NATIVE_WIDE_STREAMS

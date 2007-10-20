@@ -139,7 +139,7 @@ int _Locale_toupper(struct _Locale_ctype*__DUMMY_PAR1, int __DUMMY_PAR) { return
 
 int _Locale_tolower(struct _Locale_ctype*__DUMMY_PAR1, int __DUMMY_PAR) { return 0; }
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 _Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR2, _Locale_mask_t __DUMMY_PAR3)
 { return 0; }
 
@@ -148,9 +148,7 @@ wint_t _Locale_wchar_tolower(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_P
 
 wint_t _Locale_wchar_toupper(struct _Locale_ctype*__DUMMY_PAR1, wint_t __DUMMY_PAR)
 { return 0; }
-# endif
-
-# ifndef _STLP_NO_MBSTATE_T
+#endif
 
 int _Locale_mb_cur_max (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
 int _Locale_mb_cur_min (struct _Locale_ctype * __DUMMY_PAR) { return 0; }
@@ -171,15 +169,12 @@ size_t _Locale_wctomb(struct _Locale_ctype *__DUMMY_PAR1,
                       const wchar_t __DUMMY_PAR4,
                       mbstate_t *__DUMMY_PAR5)
 { return (size_t) -1; }
-# endif
+#endif
 
 size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
                        mbstate_t *__DUMMY_PAR2,
                        char *__DUMMY_PAR3, size_t __DUMMY_PAR4, char ** __DUMMY_PAR5)
 { return (size_t) -1; }
-
-# endif /*  _STLP_NO_MBSTATE_T */
-
 
 /* Collate */
  int _Locale_strcmp(struct _Locale_collate* __DUMMY_PAR1,

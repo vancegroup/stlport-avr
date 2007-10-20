@@ -1,3 +1,11 @@
+2007-10-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* _STLP_NO_MBSTATE_T removed, STLport cannot really live without
+	any mbstate_t definition. Moreover we were already defining our own
+	definition when _STLP_NO_MBSTATE_T is defined, we now simply generalize
+	this behavior. So definition of _STLP_NO_MBSTATE_T has been replaced
+	with _STLP_NO_NATIVE_MBSTATE_T.
+
 2007-10-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/bitset.cpp: Add const qualifier on static arrays used in

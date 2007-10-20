@@ -257,12 +257,6 @@ collate_byname<wchar_t>::do_transform(const wchar_t* low,
 
 #endif /*  _STLP_NO_WCHAR_T */
 
-_STLP_END_NAMESPACE
-
-#if !defined (_STLP_NO_MBSTATE_T)
-
-_STLP_BEGIN_NAMESPACE
-
 //----------------------------------------------------------------------
 // codecvt_byname<char>
 
@@ -276,7 +270,7 @@ codecvt_byname<char, char, mbstate_t>
 codecvt_byname<char, char, mbstate_t>::~codecvt_byname() {}
 
 
-#  if !defined (_STLP_NO_WCHAR_T)
+#if !defined (_STLP_NO_WCHAR_T)
 
 //----------------------------------------------------------------------
 // codecvt_byname<wchar_t>
@@ -417,13 +411,7 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_length(state_type&         state,
 int
 codecvt_byname<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
 { return _Locale_mb_cur_max(_M_ctype); }
-#  endif
-
-_STLP_END_NAMESPACE
-
-#endif /* MBSTATE_T */
-
-_STLP_BEGIN_NAMESPACE
+#endif
 
 // numpunct_byname<char>
 numpunct_byname<char>::numpunct_byname(const char* name, size_t refs, _Locale_name_hint* hint)

@@ -17,8 +17,6 @@
  */
 #include "stlport_prefix.h"
 
-#ifndef _STLP_NO_MBSTATE_T
-
 #include <locale>
 #include <algorithm>
 
@@ -138,8 +136,6 @@ int codecvt<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
 #endif /* wchar_t */
 
 _STLP_END_NAMESPACE
-
-#endif /* _STLP_NO_MBSTATE_T */
 
 // Local Variables:
 // mode:C++

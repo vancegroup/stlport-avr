@@ -335,8 +335,6 @@ wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c )
 }
 #endif
 
-#if !defined (_STLP_NO_MBSTATE_T)
-
 int _Locale_mb_cur_max( struct _Locale_ctype * __DUMMY_PAR) {
   printf( "%s:%d\n", __FILE__, __LINE__ );
   return 0;
@@ -392,8 +390,6 @@ size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
   printf( "%s:%d\n", __FILE__, __LINE__ );
   return (size_t) -1;
 }
-
-#endif /*  _STLP_NO_MBSTATE_T */
 
 /* Collate */
 int _Locale_strcmp(struct _Locale_collate * __loc,

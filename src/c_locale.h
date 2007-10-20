@@ -224,8 +224,6 @@ wint_t _Locale_wchar_tolower(struct _Locale_ctype *, wint_t);
 wint_t _Locale_wchar_toupper(struct _Locale_ctype *, wint_t);
 # endif
 
-# if !defined ( _STLP_NO_MBSTATE_T )
-
 /*
  * Multibyte functions:
  */
@@ -248,7 +246,7 @@ int _Locale_is_stateless (struct _Locale_ctype *);
  * and does not require the use of an mbstate_t value.
  */
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 wint_t _Locale_btowc(struct _Locale_ctype *, int);
 int _Locale_wctob(struct _Locale_ctype *, wint_t);
 
@@ -290,7 +288,7 @@ size_t _Locale_wctomb(struct _Locale_ctype *,
  * if c is not a valid wide character, and (size_t) -2 if the length of
  * the multibyte character sequence is greater than n.
  */
-# endif
+#endif
 
 size_t _Locale_unshift(struct _Locale_ctype *,
                        mbstate_t *,
@@ -304,8 +302,6 @@ size_t _Locale_unshift(struct _Locale_ctype *,
  * partial success (more than n characters needed).  For success or partial
  * success, sets *next to buf + m.
  */
-
-# endif /*  _STLP_NO_MBSTATE_T */
 
 /*
  * FUNCTIONS THAT USE COLLATE

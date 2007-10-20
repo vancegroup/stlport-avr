@@ -101,7 +101,7 @@ extern int      wscanf();
 namespace std {
   extern "C" size_t wcsftime(wchar_t * str, size_t max_size, const wchar_t * format_str, const struct tm * timeptr);
 }
-#    define _STLP_NO_MBSTATE_T 1
+#    define _STLP_NO_NATIVE_MBSTATE_T 1
 #  elif defined (__BORLANDC__)
 #    if !defined (_STLP_USE_NO_IOSTREAMS)
 #      define _STLP_NO_NATIVE_MBSTATE_T

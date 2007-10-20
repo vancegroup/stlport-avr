@@ -1120,7 +1120,6 @@ wint_t _Locale_wchar_toupper(_Locale_ctype_t* ltype, wint_t c) {
 }
 #endif
 
-#if !defined (_STLP_NO_MBSTATE_T)
 int _Locale_mb_cur_max (_Locale_ctype_t * ltype) {
   CPINFO CPInfo;
   if (!GetCPInfo(ltype->cp, &CPInfo)) return 0;
@@ -1254,8 +1253,6 @@ size_t _Locale_unshift(_Locale_ctype_t *ltype, mbstate_t *st,
     return 1;
   }
 }
-
-#endif /*  _STLP_NO_MBSTATE_T */
 
 #ifndef CSTR_EQUAL /* VC5SP3*/
 #  define CSTR_EQUAL 2

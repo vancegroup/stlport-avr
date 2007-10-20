@@ -81,7 +81,7 @@ using _STLP_VENDOR_CSTD::strtod;
 using _STLP_VENDOR_CSTD::strtol;
 using _STLP_VENDOR_CSTD::strtoul;
 
-#    if !(defined (_STLP_NO_NATIVE_WIDE_STREAMS) || defined (_STLP_NO_MBSTATE_T))
+#    if !(defined (_STLP_NO_NATIVE_WIDE_STREAMS) || defined (_STLP_NO_NATIVE_MBSTATE_T))
 using _STLP_VENDOR_CSTD::wcstombs;
 #      ifndef _STLP_WCE
 using _STLP_VENDOR_CSTD::wctomb;
