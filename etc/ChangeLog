@@ -1,3 +1,7 @@
+2007-10-21  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Merged with STLPORT_5_1 up to revision 3229.
+
 2007-10-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* _STLP_NO_MBSTATE_T removed, STLport cannot really live without

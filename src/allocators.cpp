@@ -465,7 +465,7 @@ void __node_alloc_impl::_S_chunk_dealloc() {
   _S_chunks = 0;
   _S_start_free = _S_end_free = 0;
   _S_heap_size = 0;
-  memset(__REINTERPRET_CAST(char*, &_S_free_list[0]), 0, _STLP_NFREELISTS * sizeof(_Obj*));
+  memset(__REINTERPRET_CAST(char*, __CONST_CAST(_Obj**, &_S_free_list[0])), 0, _STLP_NFREELISTS * sizeof(_Obj*));
 }
 #  endif /* _STLP_DO_CLEAN_NODE_ALLOC */
 
