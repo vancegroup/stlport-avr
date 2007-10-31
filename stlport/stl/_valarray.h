@@ -1215,7 +1215,8 @@ private:
   slice          _M_slice;
   valarray<_Tp>& _M_array;
 
-private:                        // Disable assignment and copy constructor
+private:
+  // Disable default constructor and assignment
   slice_array();
   slice_array& operator=(const slice_array&);
 };
@@ -1245,7 +1246,7 @@ struct _Gslice_Iter_tmpl;
 class gslice {
   friend struct _Gslice_Iter_tmpl<size_t>;
 public:
-  gslice() : _M_start(0), _M_lengths(0), _M_strides(0) {}
+  gslice() : _M_start(0), _M_lengths(), _M_strides() {}
   gslice(size_t __start,
          const _Valarray_size_t& __lengths, const _Valarray_size_t& __strides)
     : _M_start(__start), _M_lengths(__lengths), _M_strides(__strides)
@@ -1411,7 +1412,8 @@ private:
   gslice                _M_gslice;
   valarray<value_type>& _M_array;
 
-private:                        // Disable assignment copy constructor
+private:
+  // Disable default constructor and assignment
   gslice_array();
   void operator=(const gslice_array<_Tp>&);
 };
@@ -1536,7 +1538,8 @@ private:
   _Valarray_bool _M_mask;
   valarray<_Tp>& _M_array;
 
-private:                        // Disable assignment and copy constructor
+private:
+  // Disable default constructor and assignment
   mask_array();
   void operator=(const mask_array<_Tp>&);
 };
@@ -1651,7 +1654,8 @@ private:
   _Valarray_size_t _M_addr;
   valarray<_Tp>&   _M_array;
 
-private:                        // Disable assignment, default and copy constructor
+private:
+  // Disable default constructor and assignment
   indirect_array();
   void operator=(const indirect_array<_Tp>&);
 };
@@ -1660,8 +1664,7 @@ private:                        // Disable assignment, default and copy construc
 
 template <class _Tp>
 inline valarray<_Tp>::valarray(const indirect_array<_Tp>& __x)
-  : _Valarray_base<_Tp>(__x._M_addr.size())
-{
+  : _Valarray_base<_Tp>(__x._M_addr.size()) {
   typedef typename __type_traits<_Tp>::has_trivial_default_constructor
           _Is_Trivial;
   _M_initialize(_Is_Trivial());
