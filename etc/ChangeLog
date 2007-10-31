@@ -1,3 +1,8 @@
+2007-10-30  Francois Dumont  <dums@users.sourceforge.net>
+
+	* etc/autoexp.dat: New file containing description of STLport
+	data structures in the Visual Studio C++ debugger language.
+
 2007-10-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Merged with STLPORT_5_1 up to revision 3229.
@@ -1099,7 +1104,7 @@
 
 2007-03-09  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* stlport/stl/config/_msvc.h: use MS's safe srting functions only
+	* stlport/stl/config/_msvc.h: use MS's safe string functions only
 	if _CRT_SECURE_NO_DEPRECATE not defined (see bug #1674974).
 	Thanks Bronek Kozicki.
 
@@ -1108,7 +1113,7 @@
 	* src/num_get_float.cpp: experimental support of correct input
 	of long doubles on Linuxes.
 
-	* test/unit/num_put_get_test.cpp: test for correct imput of float,
+	* test/unit/num_put_get_test.cpp: test for correct input of float,
 	double and long double, including values out of type range.
 
 	* stlport/stl/config/_linux.h: mark that Alpha, PowerPC,
@@ -1191,7 +1196,7 @@
 	access nested types like iterator even if type used to instanciate
 	the vector is not yet completely defined.
 
-	* stlport/stl/_deque.h, _deque.c: Removed uselss __type_traits
+	* stlport/stl/_deque.h, _deque.c: Removed useless __type_traits
 	instanciations. For the same reason than above, __buffer_size
 	constant has been replaced by a function computing deque buffer
 	size at runtime.
@@ -1267,7 +1272,7 @@
 	* stlport/stl/_locale.h: Introduction of the _GetFacetId function
 	to isolate access to facet id instance in one place. It guaranty that
 	the facet id instances initialized in _Stl_loc_assign_ids function
-	are the same one used by streams to format output. Many compilers
+	are the same as the ones used by streams to format output. Many compilers
 	have problem with template class static variable and duplicate them
 	arround the different shared library depending on STLport.
 
@@ -1649,7 +1654,7 @@
 
 	* stlport/iosfwd, stl/type_manips.h, config/_bc.h, pointers/_tools.h:
 	Patch from Eric Sanford to remove useless Borland workaround for
-	pointer specialisation and use include_next feature of versions after
+	pointer specialisation and use include_next feature for versions after
 	0x580.
 
 2006-11-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
@@ -1669,7 +1674,7 @@
 	workaround. _STLP_STATIC_CONST_INIT_BUG macro change definition of
 	newly introduce _STLP_STATIC_CONSTANT macro which use an enum or a
 	real static const variable. Moreover the new
-	_STLP_NO_STATIC_CONST_DEFITION will hide static constant definition
+	_STLP_NO_STATIC_CONST_DEFINITION will hide static constant definition
 	when defined.
 
 	* src/ctype.cpp, ios.cpp, locale.cpp: Add check for
@@ -1755,8 +1760,8 @@
 
 2006-11-05  Francois Dumont  <dums@users.sourceforge.net>
 
-	* stlport/stl/_sstream.h, _sstream.c: Add 2 helper functions _S_Start and
-	_S_Finish to hide complexity of code required to have read access to the
+	* stlport/stl/_sstream.h, _sstream.c: Add 2 helper functions _S_start and
+	_S_finish to hide complexity of code required to have read access to the
 	aggregated string instance internal buffer. Those 2 functions help keeping
 	basic_stringbuf implementation simple without requiring a friend
 	declaration in basic_string class and use of inheritance in _STLP_DEBUG
@@ -1771,7 +1776,7 @@
 
 	* src/num_put_float.cpp: According C Standard number of digits in the
 	exponent part of scientific output should be at least 2, C99 even says
-	that we shouldn't add zeros if there are move than 3 significant digits.
+	that we shouldn't add zeros if there are more than 3 significant digits.
 
 	* test/unit/complete_digits.h: Modified according to above rules.
 
@@ -1916,7 +1921,7 @@
 	* src/num_put_float.cpp: use buffers that at least longer
 	than maximal double [or long double] exponent, so avoid
 	potential vulnerabilities; this allow to read really long
-	fix-float numbers [with lost of significant digits, of cause].
+	fix-float numbers [with lost of significant digits, of course].
 
 	* test/unit/floatio_test.cpp: add test for issue above
 

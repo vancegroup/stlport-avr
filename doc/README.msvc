@@ -100,17 +100,27 @@ When not using automatic linking (by specifying _STLP_DONT_USE_AUTO_LINK), you
 have to specify the proper .lib file in the Project Settings, on the "link" tab.
 The .lib names have the following syntax:
 
-   stlport(d|stld)[_static].<STLport-Version>.lib
+   stlport[d|stld][_x,_static,_statix].<STLport-Version>.lib
 
+   d : debug build
+   stld: debug build with _STLP_DEBUG (STL safe) mode
+   _x: Build of STLport as a dll but statically link to the native runtime.
+   _static : build of a static library
+   _statix : build of a static library link dynamically to the native runtime.
+   
 Examples:
 
    stlport_static.5.0.lib - static release version, Version 5.0.0
-   stlportd_50.lib - dll debug version, Version 5.0.0
+   stlportd.5.0.lib - dll debug version, Version 5.0.0
 
 When using STLport together with MFC, be sure to include the MFC headers first,
 then include STLport headers, e.g. in your Stdafx.h. This way STLport correctly
 recognizes MFC usage. You also can define the macro _STLP_USE_MFC, either in
 your project settings or in stlport/stl/config/user_config.h.
+
+In order to enhance debugging with STLport you can optionnaly add the content of
+the etc/autoexp.dat file in the autoexp.dat file comming with your Visual Studio
+install.
 
 Now you should be ready to use STLport.
 
