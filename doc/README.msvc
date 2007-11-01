@@ -118,8 +118,8 @@ then include STLport headers, e.g. in your Stdafx.h. This way STLport correctly
 recognizes MFC usage. You also can define the macro _STLP_USE_MFC, either in
 your project settings or in stlport/stl/config/user_config.h.
 
-In order to enhance debugging with STLport you can optionnaly add the content of
-the etc/autoexp.dat file in the autoexp.dat file comming with your Visual Studio
+In order to enhance debugging with STLport you can optionally add the content of
+the etc/autoexp.dat file in the autoexp.dat file coming with your Visual Studio
 install.
 
 Now you should be ready to use STLport.
