@@ -1,5 +1,8 @@
 2007-11-09  Francois Dumont  <dums@users.sourceforge.net>
 
+	* build/Makefiles/gmake: Add missing cygming folder comming
+	from task branch, required for cygming/MinGW builds.
+
 	* stlport/stl/_bvector.h, _deque.h, _hashtable.h, _list.h,
 	_rope.h, _slist.h, _string_base.h, _tree.h, _vector.h: Removed
 	usless instantiation of _Alloc_traits to define nested
