@@ -51,7 +51,7 @@ public:
   //dums: Some compiler(MSVC6) require it to be public not simply protected!
   enum {_DEFAULT_SIZE = _STLP_SHORT_STRING_SZ};
   //This is needed by the full move framework
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
   typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
   typedef size_t size_type;
 private:

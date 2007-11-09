@@ -1,3 +1,12 @@
+2007-11-09  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_bvector.h, _deque.h, _hashtable.h, _list.h,
+	_rope.h, _slist.h, _string_base.h, _tree.h, _vector.h: Removed
+	usless instantiation of _Alloc_traits to define nested
+	allocator_type in several containers. STLport users will simply
+	have to correctly instanciation containers when they specify
+	the allocator to use.
+
 2007-10-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* etc/autoexp.dat: New file containing description of STLport

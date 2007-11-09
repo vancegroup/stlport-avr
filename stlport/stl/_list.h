@@ -180,7 +180,7 @@ protected:
   typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _Node_allocator_type;
 public:
   typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
 
   allocator_type get_allocator() const
   { return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp); }

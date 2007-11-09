@@ -269,7 +269,7 @@ class _Bvector_base {
   typedef _Bvector_base<_Alloc> _Self;
 public:
   _STLP_FORCE_ALLOCATORS(bool, _Alloc)
-  typedef typename _Alloc_traits<bool, _Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
   typedef unsigned int __chunk_type;
   typedef typename _Alloc_traits<__chunk_type, _Alloc>::allocator_type __chunk_allocator_type;
   allocator_type get_allocator() const

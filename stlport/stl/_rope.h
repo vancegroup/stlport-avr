@@ -342,7 +342,7 @@ public:
   bool _M_is_balanced:8;
 
   _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
-  typedef typename _Alloc_traits<_CharT,_Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
 
   allocator_type get_allocator() const { return allocator_type(_M_size);  }
 
@@ -1117,7 +1117,7 @@ protected:
 
 public:
   _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
-  typedef typename _Alloc_traits<_CharT,_Alloc>::allocator_type  allocator_type;
+  typedef _Alloc allocator_type;
 
 public:
   // The only data member of a rope:

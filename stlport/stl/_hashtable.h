@@ -296,7 +296,7 @@ public:
   typedef const_iterator const_local_iterator;
 #endif
 
-  typedef typename _Alloc_traits<_Val, _All>::allocator_type allocator_type;
+  typedef _All allocator_type;
   allocator_type get_allocator() const { return _M_elems.get_allocator(); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)

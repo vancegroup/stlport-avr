@@ -342,7 +342,7 @@ class _Deque_base {
 public:
   typedef _Tp value_type;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type  allocator_type;
+  typedef _Alloc allocator_type;
   typedef _STLP_alloc_proxy<size_t, value_type,  allocator_type> _Alloc_proxy;
 
   typedef typename _Alloc_traits<_Tp*, _Alloc>::allocator_type _Map_alloc_type;

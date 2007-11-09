@@ -155,7 +155,7 @@ public:
   typedef _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
 
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef typename _Alloc_traits<_Tp,_Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
 
   _Slist_base(const allocator_type& __a) :
     _M_head(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Slist_node_base() )

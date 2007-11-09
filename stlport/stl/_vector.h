@@ -59,7 +59,7 @@ class _Vector_base {
 public:
   typedef _Vector_base<_Tp, _Alloc> _Self;
   _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef typename _Alloc_traits<_Tp, _Alloc>::allocator_type allocator_type;
+  typedef _Alloc allocator_type;
   typedef _Tp* pointer;
   typedef _STLP_alloc_proxy<pointer, _Tp, allocator_type> _AllocProxy;
 
