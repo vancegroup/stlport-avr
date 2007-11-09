@@ -216,8 +216,8 @@ void LocaleTest::combine()
         CPPUNIT_ASSERT( false );
       }
     }
-    catch (const runtime_error &e) {
-      CPPUNIT_MESSAGE( e.what() );
+    catch (const runtime_error &/*e*/) {
+      //CPPUNIT_MESSAGE( e.what() );
     }
   }
 
