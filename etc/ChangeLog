@@ -1023,7 +1023,7 @@
 	without safe string functions for performance reasons.
 
 	* stlport/stl/_locale.h, _alloc.h, _rope.h: Moved
-	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME invokation where problem
+	_STLP_CHECK_RUNTIME_COMPATIBILITY_AT_LINK_TIME invocation where problem
 	might happen which is in the rope implementation for current use. A future
 	use will need to guess where this function has to be invoked.
 
@@ -1097,7 +1097,7 @@
 	mode do not use inheritance anymore, use private rather than
 	protected members in basic_string implementation. Only exception
 	is when using VC6 workaround, this is what _STLP_PRIVATE macro is
-	done for.
+	for.
 
 	* src/allocators.cpp, stlport/stl/config/features.h: Removed
 	unjustified _STLP_PRIVATE macro.
@@ -1686,8 +1686,8 @@
 	_STLP_STATIC_CONSTANT.
 
 	* stlport/stl/_limits.h: Limits a workaround for long long and unsigned
-	long long types that used to be applied for gcc after 2.96 to version
-	before 3.0.
+	long long types that used to be applied for gcc after 2.96 up to version
+	3.0.
 
 	* stlport/stl/_limits.c: Clean all static constant values duplicated from
 	_limits.h that was not used in this file. Add static constant definition
