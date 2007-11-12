@@ -145,7 +145,7 @@ __acquire_category(const char* name, _Locale_name_hint* hint,
   // Find what name to look for. Be careful if user requests the default.
   const char *cname;
   char buf[_Locale_MAX_SIMPLE_NAME];
-  if (name == 0 || name[0] == 0) {
+  if (name[0] == 0) {
     cname = default_obj(buf);
     if (cname == 0 || cname[0] == 0)
       cname = "C";
