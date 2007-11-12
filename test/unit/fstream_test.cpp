@@ -48,6 +48,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_IGNORE;
 #endif
   CPPUNIT_TEST(special_encoding);
+  CPPUNIT_TEST(null_buf);
 #if !defined (STLPORT) || !defined (_STLP_WIN32)
   CPPUNIT_TEST(offset);
 #endif
@@ -73,6 +74,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void win32_file_format();
     void null_stream();
     void special_encoding();
+    void null_buf();
 #  if !defined (STLPORT) || !defined (_STLP_WIN32)
     void offset();
 #  endif
@@ -657,6 +659,58 @@ void FstreamTest::special_encoding()
     CPPUNIT_ASSERT( false );
   }
 #endif
+}
+
+void FstreamTest::null_buf()
+{
+  /* **********************************************************************************
+
+  testcase for bug #1830513:
+  in _istream.c
+ 
+  template < class _CharT, class _Traits, class _Is_Delim>
+  streamsize _STLP_CALL __read_unbuffered(basic_istream<_CharT, _Traits>* __that,
+                                          basic_streambuf<_CharT, _Traits>* __buf,
+                                          streamsize _Num, _CharT* __s,
+                                          _Is_Delim __is_delim,
+                                          bool __extract_delim, bool __append_null,
+                                          bool __is_getline)
+
+  can't accept _Num == 0; this is legal case, and may happen from
+
+  template <class _CharT, class _Traits>
+  basic_istream<_CharT, _Traits>&
+  basic_istream<_CharT, _Traits>::getline(_CharT* __s, streamsize __n, _CharT __delim)
+
+  *********************************************************************************** */
+
+  fstream f( "test.txt", ios_base::in | ios_base::out | ios_base::trunc );
+  // string line;
+
+  for ( int i = 0; i < 0x200; ++i ) {
+    f.put( ' ' );
+  }
+
+  // const streambuf *b = f.rdbuf();
+
+  // string s;
+  char buf[1024];
+  buf[0] = 'a';
+  buf[1] = 'b';
+  buf[2] = 'c';
+
+  // getline( f, s );
+  // cerr << f.good() << endl;
+  f.seekg( 0, ios_base::beg );
+  // f.seekg( 0, ios_base::end );
+  // buf[0] = f.get();
+
+  // cerr << (void *)(b->_M_gptr()) << " " << (void *)(b->_M_egptr()) << endl;
+  // cerr << f.good() << endl;
+  // getline( f, s );
+  f.getline( buf, 1 ); // <-- key line
+  CPPUNIT_CHECK( buf[0] == 0 );
+  CPPUNIT_CHECK( f.fail() ); // due to delimiter not found while buffer was exhausted
 }
 
 #  if !defined (STLPORT) || !defined (_STLP_WIN32)

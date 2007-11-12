@@ -580,7 +580,8 @@ __read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT
                   streamsize _Num, _CharT* __s,
                   _Is_Delim __is_delim,
                   bool __extract_delim, bool __append_null,
-                  bool __is_getline) {
+                  bool __is_getline)
+{
   streamsize __n = 0;
   ios_base::iostate __status = 0;
 
@@ -588,14 +589,18 @@ __read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT
   // The operations that can potentially throw are sbumpc, snextc, and sgetc.
   _STLP_TRY {
     for (;;) {
+      if (__n == _Num) {
+        if (__is_getline) // didn't find delimiter as one of the _Num chars
+          __status |= ios_base::failbit;
+        break;
+      }
       int_type __c = __buf->sbumpc(); // sschwarz
 
       if (__that->_S_eof(__c)) {
         if (__n < _Num || __is_getline)
           __status |= ios_base::eofbit;
         break;
-      }
-      else if (__is_delim(_Traits::to_char_type(__c))) {
+      } else if (__is_delim(_Traits::to_char_type(__c))) {
         if (__extract_delim) { // Extract and discard current character.
           ++__n;
         } else if ( !__pushback(__buf, _Traits::to_char_type(__c)) ) { // leave delimiter
@@ -603,16 +608,9 @@ __read_unbuffered(basic_istream<_CharT, _Traits>* __that, basic_streambuf<_CharT
         }
         break;
       }
-      else { // regular character
-        *__s++ = _Traits::to_char_type(__c);
-        ++__n;
-      }
-
-      if (__n == _Num) {
-        if (__is_getline) // didn't find delimiter as one of the _Num chars
-          __status |= ios_base::failbit;
-        break;
-      }
+      // regular character
+      *__s++ = _Traits::to_char_type(__c);
+      ++__n;
     }
   }
   _STLP_CATCH_ALL {
