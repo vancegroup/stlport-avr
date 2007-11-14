@@ -181,6 +181,60 @@ void LocaleTest::numpunct_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+  try {
+    locale loc(locale::classic(), "C", locale::numeric);
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" facet.
+    locale loc(locale::classic(), "", locale::numeric);
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new numpunct_byname<char>("C"));
+    numpunct<char> const& cfacet_byname = use_facet<numpunct<char> >(loc);
+    numpunct<char> const& cfacet = use_facet<numpunct<char> >(locale::classic());
+
+    CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
+    CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
+    CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
+    CPPUNIT_CHECK( cfacet_byname.truename() == cfacet.truename() );
+    CPPUNIT_CHECK( cfacet_byname.falsename() == cfacet.falsename() );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" locale facet.
+    locale loc(locale::classic(), new numpunct_byname<char>(""));
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new numpunct_byname<wchar_t>(static_cast<char const*>(0)));

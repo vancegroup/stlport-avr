@@ -80,6 +80,7 @@ typedef struct _LOCALECONV {
                                 /* max entire locale string length */
 #define MAX_CP_LEN          5   /* max code page name length */
 
+#define INVARIANT_LCID MAKELCID(MAKELANGID(LANG_INVARIANT, SUBLANG_NEUTRAL), SORT_DEFAULT)
 
 /* Metrowerks has different define here */
 #if !defined (LC_MAX)
@@ -407,12 +408,19 @@ _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
 
-  BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
-  GroupingBuffer = (char*)malloc(BufferSize);
-  if (!GroupingBuffer) { free(lnum); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-  GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
-  __FixGrouping(GroupingBuffer);
-  lnum->grouping = GroupingBuffer;
+  if (lnum->lc.id != INVARIANT_LCID) {
+    BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
+    GroupingBuffer = (char*)malloc(BufferSize);
+    if (!GroupingBuffer) { free(lnum); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
+    GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
+    __FixGrouping(GroupingBuffer);
+    lnum->grouping = GroupingBuffer;
+  }
+  else {
+    lnum->grouping = (char*)malloc(1);
+    if (!lnum->grouping) { free(lnum); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
+    lnum->grouping[0] = 0;
+  }
 
   return lnum;
 }
@@ -1757,17 +1765,26 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
     if (lang[0] == 0 && ctry[0] == 0)
       *lcid = LOCALE_USER_DEFAULT; /* Only code page given. */
     else {
-      if (ctry[0] == 0)
+      if (ctry[0] == 0) {
         result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language) / sizeof(LOCALECONV)), NULL, lcid);
+        if (result != 0) {
+          /* Check 'C' special case. Check is done after call to __GetLCID because normal programs do not
+           * generate facet from 'C' name, they use the locale::classic() facets. */
+          if (lang[0] == 'C' && lang[1] == 0) {
+            *lcid = INVARIANT_LCID;
+            result = 0;
+          }
+        }
+      }
       else {
         result = __GetLCID(__ConvertName(lang, __rg_language, sizeof(__rg_language) / sizeof(LOCALECONV)),
                            __ConvertName(ctry, __rg_country, sizeof(__rg_country) / sizeof(LOCALECONV)),
                            lcid);
         if (result != 0) {
           /* Non NLS mapping might introduce problem with some locales when only one entry is mapped,
-          * the lang or the country (example: chinese locales like 'chinese_taiwan' gives 'CHS_taiwan'
-          * that do not exists in system). This is why we are giving this locale an other chance by
-          * calling __GetLCID without the mapping. */
+           * the lang or the country (example: chinese locales like 'chinese_taiwan' gives 'CHS_taiwan'
+           * that do not exists in system). This is why we are giving this locale an other chance by
+           * calling __GetLCID without the mapping. */
           result = __GetLCID(lang, ctry, lcid);
         }
       }
@@ -1797,14 +1814,19 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
 }
 
 char const* __GetLocaleName(LCID lcid, const char* cp, char* buf) {
-  char lang[MAX_LANG_LEN + 1], ctry[MAX_CTRY_LEN + 1];
-  GetLocaleInfoA(lcid, LOCALE_SENGLANGUAGE, lang, MAX_LANG_LEN);
-  GetLocaleInfoA(lcid, LOCALE_SENGCOUNTRY, ctry, MAX_CTRY_LEN);
-  _STLP_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lang);
-  _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, "_");
-  _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ctry);
-  _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ".");
-  _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, cp);
+  if (lcid == INVARIANT_LCID) {
+    buf[0] = 'C'; buf[1] = 0;
+  }
+  else {
+    char lang[MAX_LANG_LEN + 1], ctry[MAX_CTRY_LEN + 1];
+    GetLocaleInfoA(lcid, LOCALE_SENGLANGUAGE, lang, MAX_LANG_LEN);
+    GetLocaleInfoA(lcid, LOCALE_SENGCOUNTRY, ctry, MAX_CTRY_LEN);
+    _STLP_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lang);
+    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, "_");
+    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ctry);
+    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ".");
+    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, cp);
+  }
   return buf;
 }
 

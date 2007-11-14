@@ -180,6 +180,68 @@ void LocaleTest::collate_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+  try {
+    locale loc(locale::classic(), "C", locale::collate);
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" facet.
+    locale loc(locale::classic(), "", locale::collate);
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new collate_byname<char>("C"));
+
+    //We check that the C locale gives a lexicographical comparison:
+    collate<char> const& col = use_facet<collate<char> >(loc);
+
+    char const str1[] = "abcdef1";
+    char const str2[] = "abcdef2";
+    const size_t size1 = sizeof(str1) / sizeof(str1[0]) - 1;
+    const size_t size2 = sizeof(str2) / sizeof(str2[0]) - 1;
+
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) == 0 );
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1, str2, str2 + size2) == -1 );
+
+    //Smallest string should be before largest one:
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) == -1 );
+    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
+
+    string strs[] = {"abdd", "abçd", "abbd", "abcd"};
+
+    string transformed[4];
+    for (size_t i = 0; i < 4; ++i) {
+      transformed[i] = col.transform(strs[i].data(), strs[i].data() + strs[i].size());
+    }
+
+    sort(strs, strs + 4, loc);
+    CPPUNIT_ASSERT( strs[0] == "abbd" );
+    CPPUNIT_ASSERT( strs[1] == "abcd" );
+    CPPUNIT_ASSERT( strs[2] == "abçd" );
+    CPPUNIT_ASSERT( strs[3] == "abdd" );
+  }
+  catch (runtime_error const& e) {
+    CPPUNIT_MESSAGE( e.what() );
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new collate_byname<wchar_t>(static_cast<char const*>(0)));

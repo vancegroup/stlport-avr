@@ -519,6 +519,60 @@ void LocaleTest::moneypunct_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+  try {
+    locale loc(locale::classic(), "C", locale::monetary);
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" facet.
+    locale loc(locale::classic(), "", locale::monetary);
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new moneypunct_byname<char, false>("C"));
+    //moneypunct<char, false> const& cfacet_byname = use_facet<moneypunct<char, false> >(loc);
+    //moneypunct<char, false> const& cfacet = use_facet<moneypunct<char, false> >(locale::classic());
+
+    //CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
+    //CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
+    //CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
+    //CPPUNIT_CHECK( cfacet_byname.positive_sign() == cfacet.positive_sign() );
+    //CPPUNIT_CHECK( cfacet_byname.negative_sign() == cfacet.negative_sign() );
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" locale facet.
+    locale loc(locale::classic(), new moneypunct_byname<char, false>(""));
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, true>(static_cast<char const*>(0)));

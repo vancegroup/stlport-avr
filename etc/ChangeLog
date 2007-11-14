@@ -1,3 +1,15 @@
+2007-11-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_win32/c_locale_win32.c: Fix to support creation
+	of locale facet from the 'C' name.
+
+	* test/unit/collate_facets_test.cpp, locale_test.cpp,
+	money_facets_test.cpp, num_facets_test.cpp, time_facets_test.cpp:
+	Add test to check build from names "" or "C", on platform without
+	real localization support, "" should result in "C". Also check
+	for some facets that the one build from "C" name is similar to
+	the one taken from locale::classic() locale.
+
 2007-11-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/fstream_test.cpp: testcase for bug #1830513;

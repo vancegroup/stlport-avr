@@ -117,6 +117,30 @@ void LocaleTest::locale_by_name() {
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+
+  try {
+    locale loc("C");
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" locale facet.
+    locale loc("");
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #  endif
 }
 

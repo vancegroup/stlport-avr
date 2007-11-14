@@ -204,6 +204,52 @@ void LocaleTest::time_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+  try {
+    locale loc(locale::classic(), "C", locale::time);
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" facet.
+    locale loc(locale::classic(), "", locale::time);
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >("C"));
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    // On platform without real localization support we should rely on the "C" locale facet.
+    locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(""));
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_ASSERT( false );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new time_put_byname<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(static_cast<char const*>(0)));
