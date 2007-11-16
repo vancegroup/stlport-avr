@@ -27,14 +27,14 @@ class CodecvtTest : public CPPUNIT_NS::TestCase
 #endif
   CPPUNIT_TEST(in_out_test);
   CPPUNIT_TEST(length_test);
-  CPPUNIT_TEST(length2_test);
+  CPPUNIT_TEST(imbue_while_reading);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
   void variable_encoding();
   void in_out_test();
   void length_test();
-  void length2_test();
+  void imbue_while_reading();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CodecvtTest);
@@ -431,37 +431,33 @@ void CodecvtTest::length_test()
 #if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
 typedef std::codecvt<wchar_t, char, mbstate_t> my_codecvt_base;
 
-class my_codecvt :
-    public my_codecvt_base
-{
-  public:
-    explicit my_codecvt( size_t r = 0 ) :
-        my_codecvt_base(r)
-      { }
+class my_codecvt : public my_codecvt_base {
+public:
+  explicit my_codecvt(size_t r = 0)
+   : my_codecvt_base(r) {}
 
-  protected:
-    virtual result do_in( state_type& state, const extern_type* first1,
-                          const extern_type* last1, const extern_type*& next1,
-                          intern_type* first2, intern_type* last2,
-                          intern_type*& next2) const
-      {
-        for ( next1 = first1, next2 = first2; next1 < last1; next1 += 2 ) {
-          if ( (last1 - next1) < 2 || (last2 - next2) < 1 )
-            return partial;
-          *next2++ = (*(next1 + 1) << 8) | (*next1 & 255);
-        }
-        return ok;
-      }
-    virtual bool do_always_noconv() const throw()
-      { return false; }
-    virtual int do_max_length() const throw()
-      { return 2; }
-    virtual int do_encoding() const throw()
-      { return 2; }
+protected:
+  virtual result do_in(state_type& state, const extern_type* first1,
+                       const extern_type* last1, const extern_type*& next1,
+                       intern_type* first2, intern_type* last2,
+                       intern_type*& next2) const {
+    for ( next1 = first1, next2 = first2; next1 < last1; next1 += 2 ) {
+      if ( (last1 - next1) < 2 || (last2 - next2) < 1 )
+        return partial;
+      *next2++ = (*(next1 + 1) << 8) | (*next1 & 255);
+    }
+    return ok;
+  }
+  virtual bool do_always_noconv() const __NO_THROW
+  { return false; }
+  virtual int do_max_length() const __NO_THROW
+  { return 2; }
+  virtual int do_encoding() const __NO_THROW
+  { return 2; }
 };
 #endif
 
-void CodecvtTest::length2_test()
+void CodecvtTest::imbue_while_reading()
 {
 #if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
   {

@@ -1,3 +1,13 @@
+2007-11-16  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_fstream.c: Fix implementation of
+	basic_filebuf<_CharT, _Traits>::_M_underflow_aux() to take
+	into consideration already read external buffer even if
+	reading from file failed. Thanks Hector Chu report and patch.
+
+	* test/unit/codecvt_test.cpp: New test for problem above,
+	CodecvtTest::imbue_while_reading thanks Hector Chu.
+
 2007-11-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix to support creation
