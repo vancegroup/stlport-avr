@@ -23,7 +23,7 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StrstreamBufferTest);
 
-void StrStreamBufferTest::read_from_buffer()
+void StrstreamBufferTest::read_from_buffer()
 {
   char hello[] = "Hello";
   strstream stream(hello, sizeof(hello), ios_base::in);
