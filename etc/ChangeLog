@@ -8,6 +8,12 @@
 	* test/unit/codecvt_test.cpp: New test for problem above,
 	CodecvtTest::imbue_while_reading thanks Hector Chu.
 
+	* test/unit/fstream_test.cpp: Remove useless
+	FstreamTest::special_encoding test replaced by new test in
+	CodecvtTest. Fix FstreamTest::custom_facet test that is now using
+	a specialization of codecvt rather than a class inheriting from
+	codecvt.
+
 2007-11-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix to support creation

@@ -47,7 +47,6 @@ class FstreamTest : public CPPUNIT_NS::TestCase
 #if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
   CPPUNIT_IGNORE;
 #endif
-  CPPUNIT_TEST(special_encoding);
   CPPUNIT_TEST(null_buf);
 #if !defined (STLPORT) || !defined (_STLP_WIN32)
   CPPUNIT_TEST(offset);
@@ -73,7 +72,6 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void streambuf_output();
     void win32_file_format();
     void null_stream();
-    void special_encoding();
     void null_buf();
 #  if !defined (STLPORT) || !defined (_STLP_WIN32)
     void offset();
@@ -400,13 +398,13 @@ struct my_traits : public char_traits<char> {
   typedef fpos<state_type> pos_type;
 };
 
-class my_codecvt
-#  if defined (STLPORT)
-  : public codecvt<char, char, my_state> {
-#  else
-  : public locale::facet, public codecvt_base {
-  //STLport grant the same default implementation, other Standard libs implementation
-  //do not necessarily do the same:
+#if !defined (STLPORT)
+//STLport grant a default implementation, other Standard libs implementation
+//do not necessarily do the same:
+namespace std {
+  template <>
+  class codecvt<char, char, my_state>
+    : public locale::facet, public codecvt_base {
   public:
     typedef char intern_type;
     typedef char extern_type;
@@ -444,20 +442,20 @@ class my_codecvt
     { return true; }
 
     int length(const state_type&,
-                  const extern_type* __from,
-                  const extern_type* __end,
-                  size_t __max) const
+               const extern_type* __from,
+               const extern_type* __end,
+               size_t __max) const
     { return (int)min(static_cast<size_t>(__end - __from), __max); }
 
     int max_length() const throw()
     { return 1; }
 
     static locale::id id;
-#  endif
-};
+  };
 
-#  if !defined (STLPORT)
-locale::id my_codecvt::id;
+  template <>
+  locale::id codecvt<char, char, my_state>::id;
+}
 #  else
 #    if defined (__BORLANDC__)
 template <>
@@ -489,7 +487,14 @@ void FstreamTest::custom_facet()
     CPPUNIT_ASSERT( ifstr.fail() && !ifstr.bad() );
     ifstr.clear();
 #  endif
+    typedef codecvt<char, char, my_state> my_codecvt;
     locale my_loc(locale::classic(), new my_codecvt());
+    // Check that my_codecvt has not replace default codecvt:
+    CPPUNIT_ASSERT( (has_facet<my_codecvt>(my_loc)) );
+    CPPUNIT_ASSERT( (has_facet<codecvt<char, char, mbstate_t> >(my_loc)) );
+#  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+    CPPUNIT_ASSERT( (has_facet<codecvt<wchar_t, char, mbstate_t> >(my_loc)) );
+#  endif
     ifstr.imbue(my_loc);
     CPPUNIT_ASSERT( ifstr.good() );
     /*
@@ -632,33 +637,6 @@ void FstreamTest::null_stream()
     fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::trunc);
     CPPUNIT_CHECK( nullStream );
   }
-}
-
-void FstreamTest::special_encoding()
-{
-#if !defined (STLPORT) || !(defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
-  {
-    // Prepare the test file:
-    ofstream ofstr("test_file.txt", ios_base::binary);
-    CPPUNIT_ASSERT( ofstr.good() );
-    ofstr << "abcdefg";
-  }
-
-  try {
-    locale loc("chs");
-    wifstream ostr("test_file.txt", ios_base::binary | ios_base::in); 
-    ostr.imbue(loc);
-    wostringstream wostr;
-    wostr.imbue(loc);
-    wostr << ostr.rdbuf();
-    CPPUNIT_ASSERT( wostr.str() == L"abcdefg" );
-  }
-  catch (runtime_error const&) {
-  }
-  catch (...) {
-    CPPUNIT_ASSERT( false );
-  }
-#endif
 }
 
 void FstreamTest::null_buf()
