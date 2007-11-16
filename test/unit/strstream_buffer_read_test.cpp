@@ -11,19 +11,19 @@
 using namespace std;
 #endif
 
-class StrstreamBufferReadTest : public CPPUNIT_NS::TestCase
+class StrstreamBufferTest : public CPPUNIT_NS::TestCase
 {
-  CPPUNIT_TEST_SUITE(StrstreamBufferReadTest);
-  CPPUNIT_TEST(readFromBuffer);
+  CPPUNIT_TEST_SUITE(StrstreamBufferTest);
+  CPPUNIT_TEST(read_from_buffer);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-  void readFromBuffer();
+  void read_from_buffer();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(StrstreamBufferReadTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(StrstreamBufferTest);
 
-void StrstreamBufferReadTest::readFromBuffer()
+void StrStreamBufferTest::read_from_buffer()
 {
   char hello[] = "Hello";
   strstream stream(hello, sizeof(hello), ios_base::in);
