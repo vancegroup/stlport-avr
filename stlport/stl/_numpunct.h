@@ -65,7 +65,7 @@ public:
   string truename() const { return do_truename(); }
   string falsename() const { return do_falsename(); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 #ifndef _STLP_NO_FRIEND_TEMPLATES
 protected:
@@ -102,7 +102,7 @@ public:
   wstring truename() const { return do_truename(); }
   wstring falsename() const { return do_falsename(); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   wstring _M_truename;

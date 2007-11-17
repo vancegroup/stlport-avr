@@ -62,7 +62,7 @@ public:
   long hash(const char* __low, const char* __high) const
     { return do_hash(__low, __high); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   ~collate();
@@ -101,7 +101,7 @@ public:
   long hash(const wchar_t* __low, const wchar_t* __high) const
     { return do_hash(__low, __high); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   ~collate();

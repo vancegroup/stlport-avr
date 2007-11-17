@@ -1011,10 +1011,6 @@ typedef int bool;
 
 #define _STLP_EXPORT_TEMPLATE_CLASS _STLP_EXPORT template class _STLP_CLASS_DECLSPEC
 
-#if !defined (_STLP_STATIC_MEMBER_DECLSPEC)
-#  define _STLP_STATIC_MEMBER_DECLSPEC _STLP_DECLSPEC
-#endif
-
 #if !defined (_STLP_CALL)
 #  define _STLP_CALL
 #endif

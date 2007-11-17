@@ -136,7 +136,7 @@ public:
                      ios_base::iostate&  __err, tm* __t) const
   { return do_get_year(__s,  __end,  __str,  __err, __t); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   time_get(_Locale_time *, size_t __refs) : locale::facet(__refs) {}
@@ -269,7 +269,7 @@ public:
                   const tm* __tmb, char __format, char __modifier = 0) const
   { return do_put(__s, __f,  __fill, __tmb, __format, __modifier); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   time_put(_Locale_time* /*__time*/, size_t __refs) : locale::facet(__refs)

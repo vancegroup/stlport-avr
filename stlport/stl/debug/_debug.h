@@ -141,7 +141,7 @@ public:
 #  endif
 
   // debug messages and formats
-  static _STLP_STATIC_MEMBER_DECLSPEC const char* _Message_table[_StlMsg_MAX];
+  static const char* _Message_table[_StlMsg_MAX];
 };
 
 #undef _STLP_MESSAGE_NORETURN

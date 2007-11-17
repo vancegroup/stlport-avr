@@ -692,22 +692,22 @@ void _Locale_impl::make_classic_locale() {
 // Declarations of (non-template) facets' static data members
 // size_t locale::id::_S_max = 39; // made before
 
-_STLP_STATIC_MEMBER_DECLSPEC locale::id collate<char>::id = { 1 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<char>::id = { 2 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<char, char, mbstate_t>::id = { 3 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, true>::id = { 4 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<char, false>::id = { 5 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<char>::id = { 6 } ;
-_STLP_STATIC_MEMBER_DECLSPEC locale::id messages<char>::id = { 7 };
+locale::id collate<char>::id = { 1 };
+locale::id ctype<char>::id = { 2 };
+locale::id codecvt<char, char, mbstate_t>::id = { 3 };
+locale::id moneypunct<char, true>::id = { 4 };
+locale::id moneypunct<char, false>::id = { 5 };
+locale::id numpunct<char>::id = { 6 } ;
+locale::id messages<char>::id = { 7 };
 
 #ifndef _STLP_NO_WCHAR_T
-_STLP_STATIC_MEMBER_DECLSPEC locale::id collate<wchar_t>::id = { 20 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id ctype<wchar_t>::id = { 21 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, true>::id = { 23 } ;
-_STLP_STATIC_MEMBER_DECLSPEC locale::id moneypunct<wchar_t, false>::id = { 24 } ;
-_STLP_STATIC_MEMBER_DECLSPEC locale::id numpunct<wchar_t>::id = { 25 };
-_STLP_STATIC_MEMBER_DECLSPEC locale::id messages<wchar_t>::id = { 26 };
+locale::id collate<wchar_t>::id = { 20 };
+locale::id ctype<wchar_t>::id = { 21 };
+locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
+locale::id moneypunct<wchar_t, true>::id = { 23 } ;
+locale::id moneypunct<wchar_t, false>::id = { 24 } ;
+locale::id numpunct<wchar_t>::id = { 25 };
+locale::id messages<wchar_t>::id = { 26 };
 #endif
 
 _STLP_DECLSPEC _Locale_impl* _STLP_CALL _get_Locale_impl(_Locale_impl *loc)

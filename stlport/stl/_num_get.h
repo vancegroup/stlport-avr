@@ -121,7 +121,7 @@ public:
                  ios_base::iostate& __err, void*& __val) const
   { return do_get(__ii, __end, __str, __err, __val); }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   ~num_get() {}

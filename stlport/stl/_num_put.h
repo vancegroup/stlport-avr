@@ -102,7 +102,7 @@ public:
     return do_put(__s, __f, __fill, __val);
   }
 
-  static _STLP_STATIC_MEMBER_DECLSPEC locale::id id;
+  static locale::id id;
 
 protected:
   ~num_put() {}
