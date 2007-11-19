@@ -181,7 +181,7 @@ ctype<char>::classic_table() _STLP_NOTHROW {
     ctype_base::mask(alpha | PRINTFLAG | lower) /* w */,
     ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
     ctype_base::mask(alpha | PRINTFLAG | lower) /* y */,
-    ctype_base::mask(alpha | PRINTFLAG | lower) /* x */,
+    ctype_base::mask(alpha | PRINTFLAG | lower) /* z */,
     ctype_base::mask (punct | PRINTFLAG ) /* { */,
     ctype_base::mask (punct | PRINTFLAG ) /* | */,
     ctype_base::mask (punct | PRINTFLAG ) /* } */,
