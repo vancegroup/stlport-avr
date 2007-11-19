@@ -1,3 +1,10 @@
+2007-11-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* _STLP_STATIC_MEMBER_DECLSPEC workaround removed. Thanks to
+	_GetFacetId other workaround it should now be useless. There
+	are still some tests to confirm especially testing the
+	gcc visibility feature.
+
 2007-11-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_fstream.c: Fix implementation of
