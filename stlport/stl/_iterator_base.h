@@ -150,14 +150,9 @@ struct iterator_traits<_Tp* const> {
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) || \
-   (defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && ! defined (_STLP_NO_ARROW_OPERATOR))
-#  define _STLP_POINTERS_SPECIALIZE( _TpP )
-#  define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
-#else
-#  include <stl/_ptrs_specialize.h>
-#endif
+_STLP_END_NAMESPACE
+#include <stl/_ptrs_specialize.h>
+_STLP_BEGIN_NAMESPACE
 
 #ifndef _STLP_USE_OLD_HP_ITERATOR_QUERIES
 // The overloaded functions iterator_category, distance_type, and

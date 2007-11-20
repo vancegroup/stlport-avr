@@ -1,3 +1,9 @@
+2007-11-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_iterator_base.h, _ptrs_specialize.h: Avoid inclusion
+	of _ptrs_specialize.h while still in stlport namespace scope thanks
+	Christof Meerwald report.
+
 2007-11-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* _STLP_STATIC_MEMBER_DECLSPEC workaround removed. Thanks to
