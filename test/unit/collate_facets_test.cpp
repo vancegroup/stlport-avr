@@ -4,6 +4,7 @@
 #  include <locale>
 #  include <stdexcept>
 #  include <algorithm>
+#  include <vector>
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -207,35 +208,41 @@ void LocaleTest::collate_by_name()
     locale loc(locale::classic(), new collate_byname<char>("C"));
 
     //We check that the C locale gives a lexicographical comparison:
-    collate<char> const& col = use_facet<collate<char> >(loc);
+    collate<char> const& cfacet_byname = use_facet<collate<char> >(loc);
+    collate<char> const& cfacet = use_facet<collate<char> >(locale::classic());
 
     char const str1[] = "abcdef1";
     char const str2[] = "abcdef2";
     const size_t size1 = sizeof(str1) / sizeof(str1[0]) - 1;
     const size_t size2 = sizeof(str2) / sizeof(str2[0]) - 1;
 
-    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) == 0 );
-    CPPUNIT_ASSERT( col.compare(str1, str1 + size1, str2, str2 + size2) == -1 );
+    CPPUNIT_ASSERT( cfacet_byname.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) ==
+                    cfacet.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 1) );
+    CPPUNIT_ASSERT( cfacet_byname.compare(str1, str1 + size1, str2, str2 + size2) ==
+                    cfacet.compare(str1, str1 + size1, str2, str2 + size2) );
 
     //Smallest string should be before largest one:
-    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) == -1 );
-    CPPUNIT_ASSERT( col.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) == 1 );
+    CPPUNIT_ASSERT( cfacet_byname.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) ==
+                    cfacet.compare(str1, str1 + size1 - 2, str2, str2 + size2 - 1) );
+    CPPUNIT_ASSERT( cfacet_byname.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) ==
+                    cfacet.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) );
 
-    string strs[] = {"abdd", "abçd", "abbd", "abcd"};
+    // We cannot play with 'ç' char here because doing so would result dependant
+    // on char being consider as signed or not...
+    string strs[] = {"abdd", /* "abçd",*/ "abbd", "abcd"};
 
-    string transformed[4];
-    for (size_t i = 0; i < 4; ++i) {
-      transformed[i] = col.transform(strs[i].data(), strs[i].data() + strs[i].size());
-    }
+    vector<string> v1(strs, strs + sizeof(strs) / sizeof(strs[0]));
+    sort(v1.begin(), v1.end(), loc);
+    vector<string> v2(strs, strs + sizeof(strs) / sizeof(strs[0]));
+    sort(v2.begin(), v2.end(), locale::classic());
+    CPPUNIT_ASSERT( v1 == v2 );
 
-    sort(strs, strs + 4, loc);
-    CPPUNIT_ASSERT( strs[0] == "abbd" );
-    CPPUNIT_ASSERT( strs[1] == "abcd" );
-    CPPUNIT_ASSERT( strs[2] == "abçd" );
-    CPPUNIT_ASSERT( strs[3] == "abdd" );
+    const string& str = v1[0];
+    CPPUNIT_ASSERT( cfacet_byname.transform(str.data(), str.data() + str.size()) ==
+                    cfacet.transform(str.data(), str.data() + str.size()) );
   }
-  catch (runtime_error const& e) {
-    CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
     CPPUNIT_ASSERT( false );
   }
   catch (...) {

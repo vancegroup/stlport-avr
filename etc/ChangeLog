@@ -1,3 +1,12 @@
+2007-11-22  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_dummy/c_locale_dummy.c: Now implements the "C" locale
+	to respect the C++ Standard.
+
+	* test/unit/collate_facets_test.cpp: Fix test checking that collate
+	facet build from the "C" name behave like the one coming from the
+	locale::classic() locale.
+
 2007-11-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_iterator_base.h, _ptrs_specialize.h: Avoid inclusion
