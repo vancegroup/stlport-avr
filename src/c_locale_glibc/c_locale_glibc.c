@@ -185,7 +185,7 @@ static const char* get_default_locale(char* buf) {
 }
 
 const char* _Locale_ctype_default(char* buf) {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -193,7 +193,7 @@ const char* _Locale_ctype_default(char* buf) {
 }
 
 const char* _Locale_numeric_default(char* buf) {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -201,7 +201,7 @@ const char* _Locale_numeric_default(char* buf) {
 }
 
 const char* _Locale_time_default(char* buf) {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -209,7 +209,7 @@ const char* _Locale_time_default(char* buf) {
 }
 
 const char* _Locale_collate_default(char* buf)  {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -217,7 +217,7 @@ const char* _Locale_collate_default(char* buf)  {
 }
 
 const char* _Locale_monetary_default(char* buf) {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -225,7 +225,7 @@ const char* _Locale_monetary_default(char* buf) {
 }
 
 const char* _Locale_messages_default(char* buf) {
-  char fullname[_Locale_MAX_COMPOSITE_NAME];
+  char fullname[_Locale_MAX_SIMPLE_NAME];
   if (get_default_locale(fullname) == NULL)
     return NULL;
   else
@@ -728,45 +728,6 @@ void _Locale_collate_destroy(L_collate_t* lcollate) {
 char const* _Locale_extract_collate_name(const char* cname, char* buf,
                                          struct _Locale_name_hint* hint, int *__err_code)
 { return _Locale_extract_name(cname, buf, LC_COLLATE); }
-
-/* copied from the IRIX version -JGS */
-char const* _Locale_compose_name(char* buf,
-         const char* ctype, const char* numeric,
-         const char* time, const char* collate,
-         const char* monetary, const char* messages,
-         const char *default_name)
-{
-   (void) default_name;
-
-    if ( !strcmp ( ctype, numeric ) &&
-   !strcmp ( ctype, time ) &&
-   !strcmp ( ctype, collate ) &&
-   !strcmp ( ctype, monetary ) &&
-   !strcmp ( ctype, messages ) )
-  return strcpy ( buf, ctype );
-
-    strcpy ( buf, "/" );
-    strcat ( buf, ctype );
-
-    strcat ( buf, "/" );
-    strcat ( buf, numeric );
-
-    strcat ( buf, "/" );
-    strcat ( buf, time );
-
-    strcat ( buf, "/" );
-    strcat ( buf, collate );
-
-    strcat ( buf, "/" );
-    strcat ( buf, monetary );
-
-    strcat ( buf, "/" );
-    strcat ( buf, messages );
-
-    return buf;
-}
-
-
 
 /*
   glibc doesn't have a locale specific strcmp

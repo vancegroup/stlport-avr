@@ -252,16 +252,6 @@ char const*_Locale_extract_messages_name(const char *loc, char *buf,
                                          struct _Locale_name_hint* hint, int *__err_code)
 { return __Extract_locale_name( loc, "LC_MESSAGES=", buf ); }
 
-char const*_Locale_compose_name(char*__DUMMY_PAR1, const char*__DUMMY_PAR2, const char*__DUMMY_PAR3,
-                            const char*__DUMMY_PAR4,
-                            const char*__DUMMY_PAR5, const char*__DUMMY_PAR6, const char*__DUMMY_PAR7, const char*__DUMMY_PAR8) {
-  /* TODO: what's this? Is this a marker that this is not yet completely
-  implemented? Copy the implementation from c_locale_win32 perhaps? It seems
-  to complement the extract functions above. */
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 0;
-}
-
 struct _Locale_name_hint* _Locale_get_ctype_hint(struct _Locale_ctype* ctype)
 { return 0; }
 struct _Locale_name_hint* _Locale_get_numeric_hint(struct _Locale_numeric* numeric)

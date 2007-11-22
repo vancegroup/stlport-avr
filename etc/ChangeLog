@@ -7,6 +7,12 @@
 	facet build from the "C" name behave like the one coming from the
 	locale::classic() locale.
 
+	* src/c_locale.h, locale.cpp, c_locale_glibc/c_locale_glibc.c,
+	c_locale_glic2.c, c_locale_win32/c_locale_win32.c, locale.cpp: Removed
+	_Locale_compose_name from the STLport internal localization API.
+	Composition of locale names will now be the responsibility of STLport
+	itself and not of the platform localization implementations one.
+
 2007-11-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_iterator_base.h, _ptrs_specialize.h: Avoid inclusion

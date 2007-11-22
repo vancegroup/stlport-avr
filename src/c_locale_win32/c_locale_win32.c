@@ -1016,43 +1016,6 @@ char const* _Locale_extract_messages_name(const char* cname, char* buf,
   return __TranslateToSystem(cname, buf, hint, __err_code);
 }
 
-char const* _Locale_compose_name(char* buf,
-                           const char* _ctype, const char* numeric,
-                           const char* time, const char* _collate,
-                           const char* monetary, const char* messages,
-                           const char* default_name) {
-  (void) default_name;
-
-  if (!strcmp(_ctype, numeric) &&
-     !strcmp(_ctype, time) &&
-     !strcmp(_ctype, _collate) &&
-     !strcmp(_ctype, monetary) &&
-     !strcmp(_ctype, messages)) {
-    _STLP_RETURN_STRCPY2(buf, _Locale_MAX_COMPOSITE_NAME, _ctype);
-  }
-
-  _STLP_STRCPY2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_CTYPE=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, _ctype);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_TIME=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, time);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_NUMERIC=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, numeric);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_COLLATE=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, _collate);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_MONETARY=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, monetary);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, "LC_MESSAGES=");
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, messages);
-  _STLP_STRCAT2(buf, _Locale_MAX_COMPOSITE_NAME, ";");
-
-  return buf;
-}
-
 /* ctype */
 
 const _Locale_mask_t* _Locale_ctype_table(_Locale_ctype_t* ltype) {

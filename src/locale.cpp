@@ -164,31 +164,16 @@ static void _Stl_loc_combine_names(_Locale_impl* L,
   else if ((c & locale::all) == locale::all)
     L->name = name2;
   else {
-    // Decompose the names.
-    char ctype_buf[_Locale_MAX_SIMPLE_NAME];
-    char numeric_buf[_Locale_MAX_SIMPLE_NAME];
-    char time_buf[_Locale_MAX_SIMPLE_NAME];
-    char collate_buf[_Locale_MAX_SIMPLE_NAME];
-    char monetary_buf[_Locale_MAX_SIMPLE_NAME];
-    char messages_buf[_Locale_MAX_SIMPLE_NAME];
-
-    // TODO: check returnvalues?
+    // This function is only called when name1 and name2 has been validated so using _Locale_extract_*_name
+    // can't fail.
     int __err_code;
-    _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, ctype_buf, 0, &__err_code);
-    _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, numeric_buf, 0, &__err_code);
-    _Locale_extract_time_name((c & locale::time) ? name2 : name1, time_buf, 0, &__err_code);
-    _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, collate_buf, 0, &__err_code);
-    _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, monetary_buf, 0, &__err_code);
-    _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, messages_buf, 0, &__err_code);
-
-    // Construct a new composite name.
-    char composite_buf[_Locale_MAX_COMPOSITE_NAME];
-    // TODO: check returnvalue?
-    _Locale_compose_name(composite_buf,
-                         ctype_buf, numeric_buf, time_buf,
-                         collate_buf, monetary_buf, messages_buf,
-                         name1);
-    L->name = composite_buf;
+    char buf[_Locale_MAX_SIMPLE_NAME];
+    L->name = string("LC_CTYPE=") + _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, buf, 0, &__err_code) + ";";
+    L->name += string("LC_TIME=") + _Locale_extract_time_name((c & locale::time) ? name2 : name1, buf, 0, &__err_code) + ";";
+    L->name += string("LC_NUMERIC=") + _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, buf, 0, &__err_code) + ";";
+    L->name += string("LC_COLLATE=") + _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, buf, 0, &__err_code) + ";";
+    L->name += string("LC_MONETARY=") + _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, buf, 0, &__err_code) + ";";
+    L->name += string("LC_MESSAGES=") + _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, buf, 0, &__err_code);
   }
 }
 
@@ -206,7 +191,6 @@ locale::locale(const locale& L, const char* name, locale::category c)
 
   _STLP_TRY {
     impl = new _Locale_impl(*L._M_impl);
-    _Stl_loc_combine_names(impl, L._M_impl->name.c_str(), name, c);
 
     _Locale_name_hint *hint = 0;
     if (c & locale::ctype)
@@ -221,6 +205,8 @@ locale::locale(const locale& L, const char* name, locale::category c)
       hint = impl->insert_monetary_facets(name, hint);
     if (c & locale::messages)
       impl->insert_messages_facets(name, hint);
+
+    _Stl_loc_combine_names(impl, L._M_impl->name.c_str(), name, c);
     _M_impl = _get_Locale_impl( impl );
   }
   _STLP_UNWIND(delete impl)

@@ -46,11 +46,6 @@
  * en_US/de_AT/de_AT/es_MX/en_US/en_US) */
 #define _Locale_MAX_SIMPLE_NAME 256
 
-/*
- * Maximum length of a composite locale.
- */
-#define _Locale_MAX_COMPOSITE_NAME 6*(_Locale_MAX_SIMPLE_NAME+3)
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -160,22 +155,6 @@ char const* _Locale_extract_monetary_name(const char *cname, char *__buf,
                                           struct _Locale_name_hint* __hint, int *__err_code);
 char const* _Locale_extract_messages_name(const char *cname, char *__buf,
                                           struct _Locale_name_hint* __hint, int *__err_code);
-
-/*
- * The inputs to this function are six null-terminated strings: the
- * names of a locale's six categories.  Locale names for non-standard
- * categories are taken from __DefaultName.
- * __buf is a pointer to an array large enough to store at least
- * _Locale_MAX_COMPOSITE_NAME characters.
- * This function constructs a (possibly composite) name describing the
- * locale as a whole, stores that name in buf as a null-terminated
- * string, and returns buf.
- */
-char const* _Locale_compose_name(char *__buf,
-                                 const char *__Ctype, const char *__Numeric,
-                                 const char *__Time, const char *__Collate,
-                                 const char *__Monetary, const char *__Messages,
-                                 const char *__DefaultName);
 
 /* Functions to improve locale creation process. For some locale API (Win32)
  * you need to find a locale identification from the name which can be a
