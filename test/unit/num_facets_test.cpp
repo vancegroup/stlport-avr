@@ -215,8 +215,8 @@ void LocaleTest::numpunct_by_name()
     CPPUNIT_CHECK( cfacet_byname.truename() == cfacet.truename() );
     CPPUNIT_CHECK( cfacet_byname.falsename() == cfacet.falsename() );
   }
-  catch (runtime_error const& e) {
-    CPPUNIT_MESSAGE( e.what() );
+  catch (runtime_error const& /* e */) {
+    //CPPUNIT_MESSAGE( e.what() );
     CPPUNIT_ASSERT( false );
   }
   catch (...) {
