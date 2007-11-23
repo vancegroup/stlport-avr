@@ -1,3 +1,8 @@
+2007-11-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/lib/configure: make configuration suitable for installation
+	procedure and package building.
+
 2007-11-22  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_dummy/c_locale_dummy.c: Now implements the "C" locale
