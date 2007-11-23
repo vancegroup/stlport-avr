@@ -165,10 +165,7 @@ class codecvt_byname : public codecvt<_InternT, _ExternT, _StateT> {};
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC codecvt<char, char, mbstate_t>
-  : public locale::facet, public codecvt_base
-{
-  friend class _Locale_impl;
-
+  : public locale::facet, public codecvt_base {
 public:
   typedef char       intern_type;
   typedef char       extern_type;
@@ -257,9 +254,7 @@ private:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC codecvt<wchar_t, char, mbstate_t>
-  : public locale::facet, public codecvt_base
-{
-  friend class _Locale_impl;
+  : public locale::facet, public codecvt_base {
 public:
   typedef wchar_t    intern_type;
   typedef char       extern_type;

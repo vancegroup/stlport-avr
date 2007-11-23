@@ -54,7 +54,6 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _CharT, class _InputIter>
 class num_get: public locale::facet {
-  friend class _Locale_impl;
 public:
   typedef _CharT     char_type;
   typedef _InputIter iter_type;

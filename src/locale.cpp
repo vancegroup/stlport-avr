@@ -88,10 +88,9 @@ void _STLP_CALL locale::_M_throw_on_creation_failure(int __err_code,
   _STLP_THROW(runtime_error(what.c_str()));
 }
 
-// Takes a reference to a locale::id, and returns its numeric index.
-// If no numeric index has yet been assigned, assigns one.  The return
-// value is always positive.
-static size_t _Stl_loc_get_index(locale::id& id) {
+// Takes a reference to a locale::id, assign a numeric index if not already
+// affected and returns it. The returned index is always positive.
+static const locale::id& _Stl_loc_get_index(locale::id& id) {
   if (id._M_index == 0) {
 #if defined (_STLP_ATOMIC_INCREMENT) && !defined (_STLP_WIN95_LIKE)
     static _STLP_VOLATILE __stl_atomic_t _S_index = __STATIC_CAST(__stl_atomic_t, locale::id::_S_max);
@@ -103,7 +102,7 @@ static size_t _Stl_loc_get_index(locale::id& id) {
     id._M_index = new_index;
 #endif
   }
-  return id._M_index;
+  return id;
 }
 
 // Default constructor: create a copy of the global locale.

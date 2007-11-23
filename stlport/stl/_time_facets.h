@@ -111,8 +111,6 @@ public:
 
 template <class _Ch, class _InIt>
 class time_get : public locale::facet, public time_base {
-  friend class _Locale_impl;
-
 public:
   typedef _Ch   char_type;
   typedef _InIt iter_type;
@@ -253,7 +251,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Ch, class _OutIt>
 class time_put : public locale::facet, public time_base {
-  friend class _Locale_impl;
 public:
   typedef _Ch      char_type;
   typedef _OutIt iter_type;

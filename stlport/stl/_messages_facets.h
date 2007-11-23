@@ -53,7 +53,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC messages<char> : public locale::facet, public messages_base {
-  friend class _Locale_impl;
 public:
   typedef messages_base::catalog catalog;
   typedef char                   char_type;
@@ -87,7 +86,6 @@ protected:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC messages<wchar_t> : public locale::facet, public messages_base {
-  friend class _Locale_impl;
 public:
   typedef messages_base::catalog catalog;
   typedef wchar_t                char_type;

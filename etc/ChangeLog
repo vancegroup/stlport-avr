@@ -1,3 +1,16 @@
+2007-11-23  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/locale.cpp, locale_impl.h, locale_impl.cpp: Some small
+	modifications to limit necessary friend class _Locale_impl
+	declaration in several facet classes.  Moreover, num_get, num_put,
+	money_get, money_put facets that do not depend on any name are
+	not allocated anymore in the functions responsible for generating
+	facets for a given category.
+
+	* stlport/stl/_codecvt.h, _collate.h, _ctype.h, _messages_facets.h,
+	_monetary.h, _num_get.h, _num_put.h, _numpunct.h, _time_facets.h:
+	Removed many useless friend class _Locale_impl declarations.
+
 2007-11-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/lib/configure: make configuration suitable for installation

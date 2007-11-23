@@ -45,10 +45,7 @@ template <class _CharT> class numpunct_byname {};
 template <class _Ch, class _InIt> class num_get;
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC numpunct<char> : public locale::facet
-{
-  friend class _Locale_impl;
-
+class _STLP_CLASS_DECLSPEC numpunct<char> : public locale::facet {
 #ifndef _STLP_NO_FRIEND_TEMPLATES
   template <class _Ch, class _InIt> friend class num_get;
 #endif
@@ -86,9 +83,7 @@ protected:
 # if ! defined (_STLP_NO_WCHAR_T)
 
 _STLP_TEMPLATE_NULL
-class _STLP_CLASS_DECLSPEC numpunct<wchar_t> : public locale::facet
-{
-  friend class _Locale_impl;
+class _STLP_CLASS_DECLSPEC numpunct<wchar_t> : public locale::facet {
 public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;

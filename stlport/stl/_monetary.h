@@ -52,8 +52,6 @@ template <class _charT, _STLP_DFL_NON_TYPE_PARAM(bool, _International, false) > 
 
 template <class _CharT, class _InputIter>
 class money_get : public locale::facet {
-  friend class _Locale_impl;
-
 public:
   typedef _CharT               char_type;
   typedef _InputIter           iter_type;
@@ -121,8 +119,6 @@ protected:
   virtual int         do_frac_digits()   const;
   virtual pattern     do_pos_format()    const;
   virtual pattern     do_neg_format()    const;
-
-  friend class _Locale_impl;
 };
 
 _STLP_TEMPLATE_NULL
@@ -163,8 +159,6 @@ protected:
   virtual int         do_frac_digits()   const;
   virtual pattern     do_pos_format()    const;
   virtual pattern     do_neg_format()    const;
-
-  friend class _Locale_impl;
 };
 
 
@@ -172,7 +166,6 @@ protected:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, true> : public locale::facet, public money_base {
-  friend class _Locale_impl;
 public:
   typedef wchar_t                 char_type;
   typedef wstring                 string_type;
@@ -212,7 +205,6 @@ protected:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC moneypunct<wchar_t, false> : public locale::facet, public money_base {
-  friend class _Locale_impl;
 public:
   typedef wchar_t                 char_type;
   typedef wstring                 string_type;
@@ -398,7 +390,6 @@ private:
 
 template <class _CharT, class _OutputIter>
 class money_put : public locale::facet {
-  friend class _Locale_impl;
 public:
   typedef _CharT               char_type;
   typedef _OutputIter          iter_type;
