@@ -17,6 +17,10 @@
 	method so transformed result should simply follow the normal transform
 	behavior.
 
+	* src/locale_impl.cpp: Removed useless holes in locale facets table.
+	Now the table contains 26 non null entries rather than 38 entries with
+	some begin null.
+
 2007-11-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, locale_impl.h, locale_impl.cpp: Some small

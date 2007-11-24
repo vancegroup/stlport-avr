@@ -58,7 +58,7 @@ void _STLP_CALL _release_facet(locale::facet *&f)
   }
 }
 
-size_t locale::id::_S_max = 39;
+size_t locale::id::_S_max = 27;
 
 static void _Stl_loc_assign_ids();
 
@@ -537,35 +537,21 @@ static void _Stl_loc_assign_ids() {
   // iterators.  (The default is [io]streambuf_iterator.)
 
   money_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index          = 8;
-  //money_get<char, const char*>::id._M_index                                             = 9;
-  money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index          = 10;
-  //money_put<char, char*>::id._M_index                                                   = 11;
-
-  num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index            = 12;
-  //num_get<char, const char*>::id._M_index                                               = 13;
-  num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index            = 14;
-  //num_put<char, char*>::id._M_index                                                     = 15;
-  time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index           = 16;
-  //time_get<char, const char*>::id._M_index                                              = 17;
-  time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index           = 18;
-  //time_put<char, char*>::id._M_index                                                    = 19;
+  money_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index          = 9;
+  num_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index            = 10;
+  num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index            = 11;
+  time_get<char, istreambuf_iterator<char, char_traits<char> > >::id._M_index           = 12;
+  time_put<char, ostreambuf_iterator<char, char_traits<char> > >::id._M_index           = 13;
 
 #ifndef _STLP_NO_WCHAR_T
-  money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 27;
-  //money_get<wchar_t, const wchar_t*>::id._M_index                                       = 28;
-  money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 29;
-  //money_put<wchar_t, wchar_t*>::id._M_index                                             = 30;
-
-  num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index   = 31;
-  //num_get<wchar_t, const wchar_t*>::id._M_index                                         = 32;
-  num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id._M_index  = 33;
-  //num_put<wchar_t, wchar_t*>::id._M_index                                               = 34;
-  time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index  = 35;
-  //time_get<wchar_t, const wchar_t*>::id._M_index                                        = 36;
-  time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index  = 37;
-  //time_put<wchar_t, wchar_t*>::id._M_index                                              = 38;
+  money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 21;
+  money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index = 22;
+  num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index   = 23;
+  num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > > ::id._M_index  = 24;
+  time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index  = 25;
+  time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id._M_index  = 26;
 #endif
-  //  locale::id::_S_max                               = 39;
+  //  locale::id::_S_max                               = 27;
 }
 
 // To access those static instance use the getter below, they guaranty
@@ -615,17 +601,11 @@ void _Locale_impl::make_classic_locale() {
     new numpunct<char>(1),
     new messages<char>(1),
     new money_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
-    0,
     new money_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
-    0,
     new num_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
-    0,
     new num_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
-    0,
     new time_get<char, istreambuf_iterator<char, char_traits<char> > >(1),
-    0,
     new time_put<char, ostreambuf_iterator<char, char_traits<char> > >(1),
-    0,
 #ifndef _STLP_NO_WCHAR_T
     new collate<wchar_t>(1),
     new ctype<wchar_t>(1),
@@ -635,17 +615,11 @@ void _Locale_impl::make_classic_locale() {
     new numpunct<wchar_t>(1),
     new messages<wchar_t>(1),
     new money_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
     new money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
     new num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
     new num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
     new time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
     new time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(1),
-    0,
 #endif
     0
   };
@@ -662,7 +636,7 @@ void _Locale_impl::make_classic_locale() {
 }
 
 // Declarations of (non-template) facets' static data members
-// size_t locale::id::_S_max = 39; // made before
+// size_t locale::id::_S_max = 27; // made before
 
 locale::id collate<char>::id = { 1 };
 locale::id ctype<char>::id = { 2 };
@@ -673,13 +647,13 @@ locale::id numpunct<char>::id = { 6 } ;
 locale::id messages<char>::id = { 7 };
 
 #ifndef _STLP_NO_WCHAR_T
-locale::id collate<wchar_t>::id = { 20 };
-locale::id ctype<wchar_t>::id = { 21 };
-locale::id codecvt<wchar_t, char, mbstate_t>::id = { 22 };
-locale::id moneypunct<wchar_t, true>::id = { 23 } ;
-locale::id moneypunct<wchar_t, false>::id = { 24 } ;
-locale::id numpunct<wchar_t>::id = { 25 };
-locale::id messages<wchar_t>::id = { 26 };
+locale::id collate<wchar_t>::id = { 14 };
+locale::id ctype<wchar_t>::id = { 15 };
+locale::id codecvt<wchar_t, char, mbstate_t>::id = { 16 };
+locale::id moneypunct<wchar_t, true>::id = { 17 } ;
+locale::id moneypunct<wchar_t, false>::id = { 18 } ;
+locale::id numpunct<wchar_t>::id = { 19 };
+locale::id messages<wchar_t>::id = { 20 };
 #endif
 
 _STLP_DECLSPEC _Locale_impl* _STLP_CALL _get_Locale_impl(_Locale_impl *loc)
