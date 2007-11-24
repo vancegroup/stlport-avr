@@ -135,8 +135,6 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 /* VC++ cannot handle default allocator argument in template constructors */
 #    define _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS
 #    define _STLP_NO_QUALIFIED_FRIENDS    1
-#    define _STLP_NO_FRIEND_TEMPLATES
-/* Fails to properly resolve call to sin() from within sin() */
 #  endif
 
 #  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */

@@ -7,6 +7,11 @@
 	numpunct and num_get, looks like it is useless with current
 	implementation.
 
+	* stlport/stl/config/stl_mycomp.h, features.h, _watcom.h, _sunprocc.h,
+	_mwerks.h, _msvc.h, _ibm.h, _dec_vms.h, _dec.h, _as400.h: Removed
+	_STLP_NO_FRIEND_TEMPLATES, _STLP_FRIEND_TEMPLATES macros unused
+	since fix above regarding numpunct/num_get friend relation.
+
 2007-11-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, locale_impl.h, locale_impl.cpp: Some small

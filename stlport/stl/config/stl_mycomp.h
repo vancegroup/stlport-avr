@@ -135,9 +135,6 @@
 // Uncomment if no "template" keyword should be used with member template classes
 // #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD   1
 
-// Uncomment if friend member templates are not available
-// #  define _STLP_NO_FRIEND_TEMPLATES   1
-
 // Compiler does not accept friend declaration qualified with namespace name.
 // #  define _STLP_NO_QUALIFIED_FRIENDS 1
 

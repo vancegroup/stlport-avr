@@ -116,10 +116,6 @@
 #  define _STLP_MEMBER_TEMPLATES 1
 #endif
 
-#if !defined (_STLP_NO_FRIEND_TEMPLATES) && !defined (_STLP_FRIEND_TEMPLATES)
-#  define _STLP_FRIEND_TEMPLATES 1
-#endif
-
 #if !defined (_STLP_NO_MEMBER_TEMPLATE_CLASSES) && !defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 #  define _STLP_MEMBER_TEMPLATE_CLASSES 1
 #endif

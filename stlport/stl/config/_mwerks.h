@@ -37,7 +37,6 @@
 #  if __MWERKS__ < 0x3000
 // *** CodeWarrior Compiler Common Bugs ***
 #   define __MSL_FIX_ITERATORS__(myType)    // Some MSL headers rely on this
-#   define _STLP_NO_FRIEND_TEMPLATES 1  // Bug mysteriously reintroduced in this version.
 #   define _STLP_THROW_RETURN_BUG  1
 #  endif
 
@@ -73,7 +72,6 @@
 #   define _STLP_NO_MEMBER_TEMPLATES 1
 #   define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
 #   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
-#   define _STLP_NO_FRIEND_TEMPLATES 1
 #   define _STLP_NO_QUALIFIED_FRIENDS 1
 #   define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  endif
