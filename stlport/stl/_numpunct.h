@@ -46,9 +46,6 @@ template <class _Ch, class _InIt> class num_get;
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC numpunct<char> : public locale::facet {
-#ifndef _STLP_NO_FRIEND_TEMPLATES
-  template <class _Ch, class _InIt> friend class num_get;
-#endif
 public:
   typedef char               char_type;
   typedef string             string_type;
@@ -64,9 +61,7 @@ public:
 
   static locale::id id;
 
-#ifndef _STLP_NO_FRIEND_TEMPLATES
 protected:
-#endif
   ~numpunct();
 
   string  _M_truename;
