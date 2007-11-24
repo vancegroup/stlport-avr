@@ -12,6 +12,11 @@
 	_STLP_NO_FRIEND_TEMPLATES, _STLP_FRIEND_TEMPLATES macros unused
 	since fix above regarding numpunct/num_get friend relation.
 
+	* test/unit/collate_facets_test.cpp: Fix "C" facet by name test,
+	Standard do not define any special behavior for the "C" transform
+	method so transformed result should simply follow the normal transform
+	behavior.
+
 2007-11-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, locale_impl.h, locale_impl.cpp: Some small

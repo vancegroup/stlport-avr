@@ -227,8 +227,8 @@ void LocaleTest::collate_by_name()
     CPPUNIT_ASSERT( cfacet_byname.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) ==
                     cfacet.compare(str1, str1 + size1 - 1, str2, str2 + size2 - 2) );
 
-    // We cannot play with 'ç' char here because doing so would result dependant
-    // on char being consider as signed or not...
+    // We cannot play with 'ç' char here because doing so would make test result
+    // dependant on char being consider as signed or not...
     string strs[] = {"abdd", /* "abçd",*/ "abbd", "abcd"};
 
     vector<string> v1(strs, strs + sizeof(strs) / sizeof(strs[0]));
@@ -237,9 +237,8 @@ void LocaleTest::collate_by_name()
     sort(v2.begin(), v2.end(), locale::classic());
     CPPUNIT_ASSERT( v1 == v2 );
 
-    const string& str = v1[0];
-    CPPUNIT_ASSERT( cfacet_byname.transform(str.data(), str.data() + str.size()) ==
-                    cfacet.transform(str.data(), str.data() + str.size()) );
+    CPPUNIT_ASSERT( (cfacet_byname.transform(v1[0].data(), v1[0].data() + v1[0].size()).compare(cfacet_byname.transform(v1[1].data(), v1[1].data() + v1[1].size())) ==
+                    v1[0].compare(v1[1])) );
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
