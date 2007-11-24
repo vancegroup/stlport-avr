@@ -1,3 +1,8 @@
+2007-11-24  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_monetary.h: Add missing explicit keyword on
+	money_get and money_put constructors.
+
 2007-11-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/locale.cpp, locale_impl.h, locale_impl.cpp: Some small

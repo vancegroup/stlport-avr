@@ -57,7 +57,7 @@ public:
   typedef _InputIter           iter_type;
   typedef basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > string_type;
 
-  money_get(size_t __refs = 0) : locale::facet(__refs) {}
+  explicit money_get(size_t __refs = 0) : locale::facet(__refs) {}
   iter_type get(iter_type __s, iter_type  __end, bool __intl,
                 ios_base&  __str, ios_base::iostate&  __err,
                 _STLP_LONGEST_FLOAT_TYPE& __units) const
@@ -395,7 +395,7 @@ public:
   typedef _OutputIter          iter_type;
   typedef basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > string_type;
 
-  money_put(size_t __refs = 0) : locale::facet(__refs) {}
+  explicit money_put(size_t __refs = 0) : locale::facet(__refs) {}
   iter_type put(iter_type __s, bool __intl, ios_base& __str,
                 char_type  __fill, _STLP_LONGEST_FLOAT_TYPE __units) const
     { return do_put(__s, __intl, __str, __fill, __units); }
