@@ -80,6 +80,10 @@ typedef struct _LOCALECONV {
                                 /* max entire locale string length */
 #define MAX_CP_LEN          5   /* max code page name length */
 
+#ifndef LANG_INVARIANT
+#  define LANG_INVARIANT 0x7f
+#endif
+
 #define INVARIANT_LCID MAKELCID(MAKELANGID(LANG_INVARIANT, SUBLANG_NEUTRAL), SORT_DEFAULT)
 
 /* Metrowerks has different define here */

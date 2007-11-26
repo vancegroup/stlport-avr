@@ -4,7 +4,10 @@
 	from Eric Sanford, add a missing header and change
 	__Named_exception implementation because of a Borland compiler
 	bug.
-	
+
+	* src/c_locale_win32/c_locale_win32.c: Add LANG_INVARIANT
+	definition when SDK are missing it.
+
 2007-11-24  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_monetary.h: Add missing explicit keyword on
