@@ -1,3 +1,10 @@
+2007-11-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/char_traits.h, _stdexcept_base.c: Borland patch
+	from Eric Sanford, add a missing header and change
+	__Named_exception implementation because of a Borland compiler
+	bug.
+	
 2007-11-24  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_monetary.h: Add missing explicit keyword on

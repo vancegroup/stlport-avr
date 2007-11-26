@@ -37,6 +37,7 @@
 #  include <mem.h>
 #  include <string.h>
 #  include <_stddef.h>
+#  include <sys/types.h>
 #endif
 
 #ifndef _STLP_INTERNAL_CONSTRUCT_H

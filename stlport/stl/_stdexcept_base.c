@@ -17,6 +17,7 @@
  */
 
 __Named_exception::__Named_exception(const string& __str) {
+#if !defined (__BORLANDC__)
   size_t __size = strlen(_STLP_PRIV __get_c_string(__str)) + 1;
   if (__size > _S_bufsize) {
     _M_name = __STATIC_CAST(char*, malloc(__size * sizeof(char)));
@@ -34,12 +35,25 @@ __Named_exception::__Named_exception(const string& __str) {
 #else
   strncpy_s(_M_name, __size, _STLP_PRIV __get_c_string(__str), __size - 1);
 #endif
+#else
+  size_t __size = min(strlen(_STLP_PRIV __get_c_string(__str)) + 1, _S_bufsize);
+  strncpy(_M_static_name, _STLP_PRIV __get_c_string(__str), __size - 1);
+  _M_static_name[__size - 1] = '\0';
+#endif
 }
 
 __Named_exception::~__Named_exception() _STLP_NOTHROW_INHERENTLY {
+#if !defined (__BORLANDC__)
   if (_M_name != _M_static_name)
     free(_M_name);
+#endif
 }
 
 const char* __Named_exception::what() const _STLP_NOTHROW_INHERENTLY
-{ return _M_name; }
+{
+#if !defined (__BORLANDC__)
+  return _M_name;
+#else
+  return _M_static_name;
+#endif
+}
