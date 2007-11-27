@@ -75,17 +75,16 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 #define _MAXNAMES        64
 #define _MAX_NAME_LENGTH 64
 
-// Both time_get and time_put need a structure of type _Time_Info
-// to provide names and abbreviated names for months and days,
-// as well as the am/pm designator.  The month and weekday tables
-// have the all the abbreviated names before all the full names.
-// The _Time_Info tables are initialized using the non-template
-// function _Init_timeinfo, which has two overloadings:  one
-// with a single reference parameter for the table to be initialized,
-// and one with a second _Locale_time * parameter.  The first form
-// is called by the default constructor and the second by a special
-// constructor invoked from the _byname subclass constructor to
-// construct the base class.
+/* Both time_get and time_put need a structure of type _Time_Info
+ * to provide names and abbreviated names for months and days,
+ * as well as the am/pm designator.  The month and weekday tables
+ * have the all the abbreviated names before all the full names.
+ * The _Time_Info tables are initialized using the non-template
+ * time_base class, which has a default constructor and two protected.
+ * The default one initialize _Time_Info with "C" time info. The
+ * protected initialize _time_Info using a _Locale_time instance
+ * or using a name( in fact the name is used to build a _Locale_time
+ * instance that is then used for initialization). */
 
 class _STLP_CLASS_DECLSPEC _Time_Info {
 public:
@@ -99,14 +98,20 @@ public:
   string _M_long_date_time_format;
 };
 
-_STLP_DECLSPEC void _STLP_CALL _Init_timeinfo(_Time_Info&);
-_STLP_DECLSPEC void _STLP_CALL _Init_timeinfo(_Time_Info&, _Locale_time*);
-
 _STLP_MOVE_TO_STD_NAMESPACE
 
 class _STLP_CLASS_DECLSPEC time_base {
 public:
   enum dateorder {no_order, dmy, mdy, ymd, ydm};
+
+  time_base();
+
+protected:
+  time_base(const char *name);
+  time_base(_Locale_time*);
+
+  _STLP_PRIV _Time_Info _M_timeinfo;
+  dateorder _M_dateorder;
 };
 
 template <class _Ch, class _InIt>
@@ -116,7 +121,8 @@ public:
   typedef _InIt iter_type;
 
   explicit time_get(size_t __refs = 0) : locale::facet(__refs)
-  { _STLP_PRIV _Init_timeinfo(_M_timeinfo); }
+  {}
+
   dateorder date_order() const { return do_date_order(); }
   iter_type get_time(iter_type __s, iter_type  __end, ios_base&  __str,
                      ios_base::iostate&  __err, tm* __t) const
@@ -137,11 +143,16 @@ public:
   static locale::id id;
 
 protected:
-  time_get(_Locale_time *, size_t __refs) : locale::facet(__refs) {}
+  time_get(const char* __name, size_t __refs)
+    : locale::facet(__refs), time_base(__name)
+  {}
+  time_get(_Locale_time *__time)
+    : time_base(__time)
+  {}
 
   ~time_get() {}
 
-  virtual dateorder do_date_order() const {return no_order;}
+  virtual dateorder do_date_order() const { return _M_dateorder; }
 
   virtual iter_type do_get_time(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate&  __err,
@@ -163,17 +174,7 @@ protected:
   virtual iter_type do_get_year(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate& __err,
                                 tm* __t) const;
-
-  _STLP_PRIV _Time_Info _M_timeinfo;
 };
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-_STLP_DECLSPEC _Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*, int *__err_code);
-_STLP_DECLSPEC time_base::dateorder _STLP_CALL __get_date_order(_Locale_time*);
-_STLP_DECLSPEC void _STLP_CALL __release_time(_Locale_time* __time);
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _Ch, class _InIt>
@@ -186,33 +187,17 @@ public:
   typedef  time_base::dateorder dateorder;
   typedef _InIt                 iter_type;
 
-  explicit time_get_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
-    : time_get<_Ch, _InIt>((_Locale_time*) 0, __refs) {
-    if (!__name)
-      locale::_M_throw_on_null_name();
-
-    int __err_code;
-    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint, &__err_code);
-    if (!__time)
-      locale::_M_throw_on_creation_failure(__err_code, __name, "time_get");
-
-    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
-    _M_dateorder = _STLP_PRIV __get_date_order(__time);
-    _STLP_PRIV __release_time(__time);
-  }
+  explicit time_get_byname(const char* __name, size_t __refs = 0)
+    : time_get<_Ch, _InIt>(__name, __refs) {}
 
 protected:
   ~time_get_byname() {}
-  dateorder do_date_order() const { return _M_dateorder; }
+  dateorder do_date_order() const { return this->_M_dateorder; }
 
 private:
   time_get_byname(_Locale_time *__time)
-    : time_get<_Ch, _InIt>((_Locale_time*) 0, 0) {
-    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
-    _M_dateorder = _STLP_PRIV __get_date_order(__time);
-  }
-
-  dateorder _M_dateorder;
+    : time_get<_Ch, _InIt>(__time)
+  {}
 
   typedef time_get_byname<_Ch, _InIt> _Self;
   //explicitely defined as private to avoid warnings:
@@ -256,7 +241,7 @@ public:
   typedef _OutIt iter_type;
 
   explicit time_put(size_t __refs = 0) : locale::facet(__refs)
-  { _STLP_PRIV _Init_timeinfo(_M_timeinfo); }
+  {}
 
   _OutIt put(iter_type __s, ios_base& __f, _Ch __fill,
                   const tm* __tmb,
@@ -269,15 +254,16 @@ public:
   static locale::id id;
 
 protected:
-  time_put(_Locale_time* /*__time*/, size_t __refs) : locale::facet(__refs)
-  {} //_STLP_PRIV _Init_timeinfo(_M_timeinfo, __time); }
-
+  time_put(const char* __name, size_t __refs)
+    : locale::facet(__refs), time_base(__name)
+  {}
+  time_put(_Locale_time *__time)
+    : time_base(__time)
+  {}
   ~time_put() {}
   virtual iter_type do_put(iter_type __s, ios_base& __f,
                            char_type  /* __fill */, const tm* __tmb,
                            char __format, char /* __modifier */) const;
-
-  _STLP_PRIV _Time_Info _M_timeinfo;
 };
 
 #if defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
@@ -292,27 +278,17 @@ public:
   typedef _OutIt iter_type;
   typedef _Ch   char_type;
 
-  explicit time_put_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0)
-    : time_put<_Ch, _OutIt>((_Locale_time*) 0, __refs) {
-    if (!__name)
-      locale::_M_throw_on_null_name();
-
-    int __err_code;
-    _Locale_time *__time = _STLP_PRIV __acquire_time(__name, __hint, &__err_code);
-    if (!__time)
-      locale::_M_throw_on_creation_failure(__err_code, __name, "time_get");
-
-    _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time);
-    _STLP_PRIV __release_time(__time);
-  }
+  explicit time_put_byname(const char * __name, size_t __refs = 0)
+    : time_put<_Ch, _OutIt>(__name, __refs)
+  {}
 
 protected:
   ~time_put_byname() {}
 
 private:
   time_put_byname(_Locale_time *__time)
-    : time_put<_Ch, _OutIt>((_Locale_time*) 0, 0)
-  { _STLP_PRIV _Init_timeinfo(this->_M_timeinfo, __time); }
+    : time_put<_Ch, _OutIt>(__time)
+  {}
 
   typedef time_put_byname<_Ch, _OutIt> _Self;
   //explicitely defined as private to avoid warnings:

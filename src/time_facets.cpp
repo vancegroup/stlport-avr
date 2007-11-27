@@ -23,6 +23,7 @@
 #include <istream>
 
 #include "c_locale.h"
+#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
 
@@ -45,7 +46,7 @@ const char default_monthname[][24] = {
 // "C" values (note these are not defined in the C standard, so this
 // is somewhat arbitrary).
 
-void _STLP_CALL _Init_timeinfo(_Time_Info& table) {
+static void _Init_timeinfo(_Time_Info& table) {
   int i;
   for (i = 0; i < 14; ++i)
     table._M_dayname[i] = default_dayname[i];
@@ -58,7 +59,7 @@ void _STLP_CALL _Init_timeinfo(_Time_Info& table) {
   table._M_date_time_format = "%m/%d/%y";
 }
 
-void _STLP_CALL _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
+static void _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   int i;
   for (i = 0; i < 7; ++i)
     table._M_dayname[i] = _Locale_abbrev_dayofweek(time, i);
@@ -393,8 +394,7 @@ char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format
   return buf;
 }
 
-time_base::dateorder _STLP_CALL
-__get_date_order(_Locale_time* time) {
+static time_base::dateorder __get_date_order(_Locale_time* time) {
   const char * fmt = _Locale_d_fmt(time);
   char first, second, third;
 
@@ -433,6 +433,29 @@ __get_date_order(_Locale_time* time) {
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
+
+time_base::time_base()
+  : _M_dateorder(no_order)
+{ _STLP_PRIV _Init_timeinfo(_M_timeinfo); }
+
+time_base::time_base(const char* __name) {
+  if (!__name)
+    locale::_M_throw_on_null_name();
+
+  int __err_code;
+  _Locale_time *__time = _STLP_PRIV __acquire_time(__name, 0, &__err_code);
+  if (!__time)
+    locale::_M_throw_on_creation_failure(__err_code, __name, "time");
+
+  _Init_timeinfo(this->_M_timeinfo, __time);
+  _M_dateorder = _STLP_PRIV __get_date_order(__time);
+  _STLP_PRIV __release_time(__time);
+}
+
+time_base::time_base(_Locale_time *__time) {
+  _Init_timeinfo(this->_M_timeinfo, __time);
+  _M_dateorder = _STLP_PRIV __get_date_order(__time);
+}
 
 #if !defined(_STLP_NO_FORCE_INSTANTIATE)
 template class time_get<char, istreambuf_iterator<char, char_traits<char> > >;

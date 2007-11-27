@@ -20,6 +20,7 @@
 #include <typeinfo>
 
 #include "message_facets.h"
+#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
 
@@ -96,13 +97,13 @@ void _Catalog_nl_catd_map::erase(messages_base::catalog cat) {
 
 //----------------------------------------------------------------------
 //
-_Messages::_Messages(bool is_wide, const char *name, _Locale_name_hint* hint) :
+_Messages::_Messages(bool is_wide, const char *name) :
   _M_message_obj(0), _M_map(0) {
   if (!name)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_message_obj = _STLP_PRIV __acquire_messages(name, hint, &__err_code);
+  _M_message_obj = _STLP_PRIV __acquire_messages(name, 0, &__err_code);
   if (!_M_message_obj)
     locale::_M_throw_on_creation_failure(__err_code, name, "messages");
 
@@ -186,8 +187,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 messages<char>::messages(size_t refs)
   : locale::facet(refs) {}
 
-messages_byname<char>::messages_byname(const char *name, size_t refs, _Locale_name_hint* hint)
-  : messages<char>(refs), _M_impl(new _STLP_PRIV _Messages(false, name, hint)) {}
+messages_byname<char>::messages_byname(const char *name, size_t refs)
+  : messages<char>(refs), _M_impl(new _STLP_PRIV _Messages(false, name)) {}
 
 messages_byname<char>::messages_byname(_Locale_messages* msg)
   : messages<char>(0), _M_impl(new _STLP_PRIV _Messages(false, msg)) {}
@@ -215,8 +216,8 @@ void messages_byname<char>::do_close(catalog cat) const
 messages<wchar_t>::messages(size_t refs)
   : locale::facet(refs) {}
 
-messages_byname<wchar_t>::messages_byname(const char *name, size_t refs, _Locale_name_hint* hint)
-  : messages<wchar_t>(refs), _M_impl(new _STLP_PRIV _Messages(true, name, hint)) {}
+messages_byname<wchar_t>::messages_byname(const char *name, size_t refs)
+  : messages<wchar_t>(refs), _M_impl(new _STLP_PRIV _Messages(true, name)) {}
 
 messages_byname<wchar_t>::messages_byname(_Locale_messages* msg)
   : messages<wchar_t>(0), _M_impl(new _STLP_PRIV _Messages(true, msg)) {}

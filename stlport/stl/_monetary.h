@@ -253,8 +253,7 @@ public:
   typedef char                  char_type;
   typedef string                string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(char, true) (const char * __name, size_t __refs = 0,
-                                                       _Locale_name_hint* __hint = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(char, true) (const char * __name, size_t __refs = 0);
 
 protected:
   ~moneypunct_byname _STLP_PSPEC2(char, true) ();
@@ -287,8 +286,7 @@ public:
   typedef char                  char_type;
   typedef string                string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(char, false) (const char * __name, size_t __refs = 0,
-                                                        _Locale_name_hint* __hint = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(char, false) (const char * __name, size_t __refs = 0);
 
 protected:
   ~moneypunct_byname _STLP_PSPEC2(char, false) ();
@@ -322,8 +320,7 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, true) (const char * __name, size_t __refs = 0,
-                                                          _Locale_name_hint* __hint = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, true) (const char * __name, size_t __refs = 0);
 
 protected:
   ~moneypunct_byname _STLP_PSPEC2(wchar_t, true) ();
@@ -356,8 +353,7 @@ public:
   typedef wchar_t               char_type;
   typedef wstring               string_type;
 
-  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, false) (const char * __name, size_t __refs = 0,
-                                                           _Locale_name_hint* __hint = 0);
+  explicit moneypunct_byname _STLP_PSPEC2(wchar_t, false) (const char * __name, size_t __refs = 0);
 
 protected:
   ~moneypunct_byname _STLP_PSPEC2(wchar_t, false) ();

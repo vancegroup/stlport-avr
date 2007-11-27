@@ -178,20 +178,54 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
     locale::facet* wct    = 0;
     locale::facet* wcvt   = 0;
 #endif
-    ctype_byname<char> *ctbn = new ctype_byname<char>(pname, 0, hint);
-    ct   = ctbn;
-    if (hint == 0) hint = _Locale_get_ctype_hint(ctbn->_M_ctype);
+    int __err_code;
+    _Locale_ctype *__lct = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+    if (!__lct) {
+      locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+      return hint;
+    }
+
+    if (hint == 0) hint = _Locale_get_ctype_hint(__lct);
+
+    _STLP_TRY {
+      ct   = new ctype_byname<char>(__lct);
+    }
+    _STLP_UNWIND(_STLP_PRIV __release_ctype(__lct));
+
     _STLP_TRY {
       cvt  = new codecvt_byname<char, char, mbstate_t>(pname);
-#ifndef _STLP_NO_WCHAR_T
-      wct  = new ctype_byname<wchar_t>(pname, 0, hint);
-      wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(pname, 0, hint);
-#endif
     }
-#ifndef _STLP_NO_WCHAR_T
-    _STLP_UNWIND(delete wct; delete cvt; delete ct);
-#else
     _STLP_UNWIND(delete ct);
+
+#ifndef _STLP_NO_WCHAR_T
+    _STLP_TRY {
+      _Locale_ctype *__lwct = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+      if (!__lwct) {
+        locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+        return hint;
+      }
+
+      if (__lwct) {
+        _STLP_TRY {
+          wct  = new ctype_byname<wchar_t>(__lwct);
+        }
+        _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
+      
+        _Locale_ctype *__lwcvt = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+        if (!__lwcvt) {
+          delete wct;
+          locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+          return hint;
+        }
+        else {
+          _STLP_TRY {
+            wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(__lwcvt);
+          }
+          _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwcvt); delete wct);
+        }
+      }
+    }
+    _STLP_UNWIND(delete cvt; delete ct);
 #endif
 
     this->insert(ct, ctype<char>::id);
@@ -235,14 +269,32 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
     locale::facet* wpunct = 0;
 #endif
 
-    numpunct_byname<char> *punctbn = new numpunct_byname<char>(pname, 0, hint);
-    punct  = punctbn;
-    if (hint == 0) hint = _Locale_get_numeric_hint(punctbn->_M_numeric); 
-#ifndef _STLP_NO_WCHAR_T
-    _STLP_TRY {
-      wpunct = new numpunct_byname<wchar_t>(pname, 0, hint);
+    int __err_code;
+    _Locale_numeric *__lpunct = _STLP_PRIV __acquire_numeric(pname, hint, &__err_code);
+    if (!__lpunct) {
+      locale::_M_throw_on_creation_failure(__err_code, pname, "numpunct");
+      return hint;
     }
-    _STLP_UNWIND(delete punct);
+
+    if (hint == 0) hint = _Locale_get_numeric_hint(__lpunct);
+    _STLP_TRY {
+      punct = new numpunct_byname<char>(__lpunct);
+    }
+    _STLP_UNWIND(_STLP_PRIV __release_numeric(__lpunct));
+
+#ifndef _STLP_NO_WCHAR_T
+    _Locale_numeric *__lwpunct = _STLP_PRIV __acquire_numeric(pname, hint, &__err_code);
+    if (!__lwpunct) {
+      delete punct;
+      locale::_M_throw_on_creation_failure(__err_code, pname, "numpunct");
+      return hint;
+    }
+    if (__lwpunct) {
+      _STLP_TRY {
+        wpunct  = new numpunct_byname<wchar_t>(__lwpunct);
+      }
+      _STLP_UNWIND(_STLP_PRIV __release_numeric(__lwpunct); delete punct);
+    }
 #endif
 
     this->insert(punct, numpunct<char>::id);
@@ -431,8 +483,8 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     }
     _STLP_UNWIND(_STLP_PRIV __release_monetary(__imon); delete punct);
 
-    _STLP_TRY {
 #ifndef _STLP_NO_WCHAR_T
+    _STLP_TRY {
       _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
       if (!__wmon) {
         if (__err_code == _STLP_LOC_NO_MEMORY)
@@ -459,9 +511,9 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
           _STLP_UNWIND(_STLP_PRIV __release_monetary(__wimon); delete wpunct);
         }
       }
-#endif
     }
     _STLP_UNWIND(delete ipunct; delete punct);
+#endif
 
     this->insert(punct, moneypunct<char, false>::id);
     this->insert(ipunct, moneypunct<char, true>::id);

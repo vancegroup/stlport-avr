@@ -28,12 +28,14 @@ _Locale_ctype* _STLP_CALL __acquire_ctype(const char* name, _Locale_name_hint* h
 _Locale_numeric* _STLP_CALL __acquire_numeric(const char* name, _Locale_name_hint* hint, int *__err_code);
 _Locale_collate* _STLP_CALL __acquire_collate(const char* name, _Locale_name_hint* hint, int *__err_code);
 _Locale_monetary* _STLP_CALL __acquire_monetary(const char* name, _Locale_name_hint* hint, int *__err_code);
+_Locale_time* _STLP_CALL __acquire_time(const char* __name, _Locale_name_hint*, int *__err_code);
 _Locale_messages* _STLP_CALL __acquire_messages(const char* name, _Locale_name_hint* hint, int *__err_code);
 
 void _STLP_CALL __release_ctype(_Locale_ctype* cat);
 void _STLP_CALL __release_numeric(_Locale_numeric* cat);
 void _STLP_CALL __release_collate(_Locale_collate* cat);
 void _STLP_CALL __release_monetary(_Locale_monetary* cat);
+void _STLP_CALL __release_time(_Locale_time* __time);
 void _STLP_CALL __release_messages(_Locale_messages* cat);
 
 _STLP_MOVE_TO_STD_NAMESPACE

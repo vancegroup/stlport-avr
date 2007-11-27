@@ -147,7 +147,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<char>: public ctype<char> {
   friend class _Locale_impl;
 public:
-  explicit ctype_byname(const char*, size_t = 0, _Locale_name_hint* __hint = 0);
+  explicit ctype_byname(const char*, size_t = 0);
   ~ctype_byname();
 
   virtual char        do_toupper(char __c) const;
@@ -157,13 +157,16 @@ public:
   virtual const char* do_tolower(char*, const char*) const;
 
 private:
-  mask _M_byname_table[table_size];
-  _Locale_ctype* _M_ctype;
+  ctype_byname(_Locale_ctype*);
+  void _M_init();
 
   //explicitely defined as private to avoid warnings:
   typedef ctype_byname<char> _Self;
   ctype_byname(_Self const&);
   _Self& operator = (_Self const&);
+
+  mask _M_byname_table[table_size];
+  _Locale_ctype* _M_ctype;
 };
 
 #  ifndef _STLP_NO_WCHAR_T
@@ -232,8 +235,9 @@ protected:
 
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC ctype_byname<wchar_t>: public ctype<wchar_t> {
+  friend class _Locale_impl;
 public:
-  explicit ctype_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
+  explicit ctype_byname(const char* __name, size_t __refs = 0);
 
 protected:
   ~ctype_byname();
@@ -250,12 +254,14 @@ protected:
   virtual const wchar_t* do_tolower(wchar_t*, const wchar_t*) const;
 
 private:
-  _Locale_ctype* _M_ctype;
+  ctype_byname(_Locale_ctype*);
 
   //explicitely defined as private to avoid warnings:
   typedef ctype_byname<wchar_t> _Self;
   ctype_byname(_Self const&);
   _Self& operator = (_Self const&);
+
+  _Locale_ctype* _M_ctype;
 };
 
 #  endif /* WCHAR_T */

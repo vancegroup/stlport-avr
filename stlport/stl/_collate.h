@@ -115,7 +115,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<char>: public collate<char> {
   friend class _Locale_impl;
 public:
-  explicit collate_byname(const char* __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
+  explicit collate_byname(const char* __name, size_t __refs = 0);
 
 protected:
   ~collate_byname();
@@ -138,7 +138,7 @@ _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC collate_byname<wchar_t>: public collate<wchar_t> {
   friend class _Locale_impl;
 public:
-  explicit collate_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
+  explicit collate_byname(const char * __name, size_t __refs = 0);
 
 protected:
   ~collate_byname();

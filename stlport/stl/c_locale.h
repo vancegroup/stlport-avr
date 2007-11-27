@@ -94,7 +94,6 @@ struct _Locale_time;
 struct _Locale_collate;
 struct _Locale_monetary;
 struct _Locale_messages;
-struct _Locale_name_hint;
 
 /*
   Bitmask macros.

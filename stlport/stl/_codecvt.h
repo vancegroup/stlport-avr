@@ -360,10 +360,10 @@ private:
 # ifndef _STLP_NO_WCHAR_T
 _STLP_TEMPLATE_NULL
 class _STLP_CLASS_DECLSPEC codecvt_byname<wchar_t, char, mbstate_t>
-  : public codecvt<wchar_t, char, mbstate_t>
-{
+  : public codecvt<wchar_t, char, mbstate_t> {
+  friend class _Locale_impl;
 public:
-  explicit codecvt_byname(const char * __name, size_t __refs = 0, _Locale_name_hint* __hint = 0);
+  explicit codecvt_byname(const char * __name, size_t __refs = 0);
 
 protected:
   ~codecvt_byname();
@@ -401,9 +401,10 @@ protected:
   virtual int do_max_length() const _STLP_NOTHROW;
 
 private:
-  _Locale_ctype* _M_ctype;
+  codecvt_byname(_Locale_ctype*);
   codecvt_byname(const codecvt_byname<wchar_t, char, mbstate_t>&);
   codecvt_byname<wchar_t, char, mbstate_t>& operator =(const codecvt_byname<wchar_t, char, mbstate_t>&);
+  _Locale_ctype* _M_ctype;
 };
 
 # endif

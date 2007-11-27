@@ -23,7 +23,6 @@
 #include <hash_map>
 
 #include "c_locale.h"
-#include "acquire_release.h"
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -119,7 +118,7 @@ class _Messages {
 public:
   typedef messages_base::catalog catalog;
 
-  _Messages(bool, const char *name, _Locale_name_hint* hint);
+  _Messages(bool, const char *name);
   _Messages(bool, _Locale_messages*);
 
   catalog do_open(const string& __fn, const locale& __loc) const;
