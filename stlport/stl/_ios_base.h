@@ -232,8 +232,8 @@ private:                        // Data members.
 
 protected:
   // Cached copies of the curent locale's facets.  Set by init() and imbue().
-  locale::facet* _M_cached_ctype;
-  locale::facet* _M_cached_numpunct;
+  const locale::facet* _M_cached_ctype;
+  const locale::facet* _M_cached_numpunct;
   string         _M_cached_grouping;
 public:
   // Equivalent to &use_facet< Facet >(getloc()), but faster.

@@ -1,3 +1,11 @@
+2007-11-27  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_ios_base.h, _ios.c: Add qualification on the cached
+	ctype and numpunct facets, we can keep them as const pointers.
+	Moreover, prefer to use the use_facet function rather than _M_get_facet
+	to access those instances to avoid direct reference to the facet::id
+	static instance.
+
 2007-11-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/char_traits.h, _stdexcept_base.c: Borland patch

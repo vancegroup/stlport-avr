@@ -72,9 +72,9 @@ locale basic_ios<_CharT, _Traits>::imbue(const locale& __loc) {
       _M_streambuf->pubimbue(__loc);
 
     // no throwing here
-    this->_M_cached_ctype = __loc._M_get_facet(ctype<char_type>::id);
-    this->_M_cached_numpunct = __loc._M_get_facet(numpunct<char_type>::id);
-    this->_M_cached_grouping = ((numpunct<char_type>*)_M_cached_numpunct)->grouping();
+    this->_M_cached_ctype = &use_facet<ctype<char_type> >(__loc);
+    this->_M_cached_numpunct = &use_facet<numpunct<char_type> >(__loc);
+    this->_M_cached_grouping = __STATIC_CAST(const numpunct<char_type>*, _M_cached_numpunct)->grouping();
   }
   _STLP_CATCH_ALL {
     __tmp = ios_base::imbue(__tmp);
