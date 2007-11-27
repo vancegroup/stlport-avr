@@ -6,6 +6,17 @@
 	to access those instances to avoid direct reference to the facet::id
 	static instance.
 
+        * Some evolution in the localization code:
+        - Hide _Locale_name_hint in internal implementation, facets *_byname
+        constructor are now respecting the C++ Standard signature.
+        - numpunct facet: Remove unused _M_grouping field, move hard coded
+        values of the "C" facet in the sources. Only the numpunct_byname<wchar_t>
+	keeps internal wstring representation of true and false names.
+        - time facets: Use the non template time_base class for initialization
+        of the _Time_Info instance, it is more coherent with other facets
+        implementations. Many functions like __acquire_time and __release_time
+	are now hidden in the library.
+
 2007-11-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/char_traits.h, _stdexcept_base.c: Borland patch
