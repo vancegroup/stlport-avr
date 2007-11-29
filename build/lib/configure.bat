@@ -186,11 +186,13 @@ if "%2" == "evc8" goto oc_evc8
 if "%2" == "gcc" goto oc_gcc
 if "%2" == "dmc" goto oc_dmc
 if "%2" == "bcc" goto oc_bcc
+if "%2" == "watcom" goto oc_wtm
 
 echo Unknown compiler: %2
 goto oc_end
 
 :oc_msvc6
+:oc_wtm
 echo Setting compiler: Microsoft Visual C++ 6.0
 echo COMPILER_NAME=vc6 >> ..\Makefiles\config.mak
 set SELECTED_COMPILER_VERSION=60
