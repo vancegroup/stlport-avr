@@ -41,7 +41,8 @@ ctype_byname<char>::ctype_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_ctype = _STLP_PRIV __acquire_ctype(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_ctype = _STLP_PRIV __acquire_ctype(name, buf, 0, &__err_code);
   if (!_M_ctype)
     locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
 
@@ -118,7 +119,8 @@ ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_ctype = _STLP_PRIV __acquire_ctype(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_ctype = _STLP_PRIV __acquire_ctype(name, buf, 0, &__err_code);
   if (!_M_ctype)
     locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
 }
@@ -190,7 +192,8 @@ collate_byname<char>::collate_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_collate = _STLP_PRIV __acquire_collate(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_collate = _STLP_PRIV __acquire_collate(name, buf, 0, &__err_code);
   if (!_M_collate)
     locale::_M_throw_on_creation_failure(__err_code, name, "collate");
 }
@@ -233,7 +236,8 @@ collate_byname<wchar_t>::collate_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_collate = _STLP_PRIV __acquire_collate(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_collate = _STLP_PRIV __acquire_collate(name, buf, 0, &__err_code);
   if (!_M_collate)
     locale::_M_throw_on_creation_failure(__err_code, name, "collate");
 }
@@ -291,7 +295,8 @@ codecvt_byname<wchar_t, char, mbstate_t>::codecvt_byname(const char* name, size_
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_ctype = _STLP_PRIV __acquire_ctype(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_ctype = _STLP_PRIV __acquire_ctype(name, buf, 0, &__err_code);
   if (!_M_ctype)
     locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
 }
@@ -434,7 +439,8 @@ numpunct_byname<char>::numpunct_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_numeric = _STLP_PRIV __acquire_numeric(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_numeric = _STLP_PRIV __acquire_numeric(name, buf, 0, &__err_code);
   if (!_M_numeric)
     locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
 }
@@ -477,7 +483,8 @@ numpunct_byname<wchar_t>::numpunct_byname(const char* name, size_t refs)
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_numeric = _STLP_PRIV __acquire_numeric(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_numeric = _STLP_PRIV __acquire_numeric(name, buf, 0, &__err_code);
   if (!_M_numeric)
     locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
   _M_init();
@@ -851,7 +858,8 @@ moneypunct_byname<char, true>::moneypunct_byname(const char * name,
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_monetary = _STLP_PRIV __acquire_monetary(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_monetary = _STLP_PRIV __acquire_monetary(name, buf, 0, &__err_code);
   if (!_M_monetary)
     locale::_M_throw_on_creation_failure(__err_code, name, "moneypunct");
 
@@ -894,7 +902,8 @@ moneypunct_byname<char, false>::moneypunct_byname(const char * name,
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_monetary = _STLP_PRIV __acquire_monetary(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_monetary = _STLP_PRIV __acquire_monetary(name, buf, 0, &__err_code);
   if (!_M_monetary)
     locale::_M_throw_on_creation_failure(__err_code, name, "moneypunct");
 
@@ -942,7 +951,8 @@ moneypunct_byname<wchar_t, true>::moneypunct_byname(const char * name,
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_monetary = _STLP_PRIV __acquire_monetary(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_monetary = _STLP_PRIV __acquire_monetary(name, buf, 0, &__err_code);
   if (!_M_monetary)
     locale::_M_throw_on_creation_failure(__err_code, name, "moneypunct");
 
@@ -997,7 +1007,8 @@ moneypunct_byname<wchar_t, false>::moneypunct_byname(const char * name,
     locale::_M_throw_on_null_name() ;
 
   int __err_code;
-  _M_monetary = _STLP_PRIV __acquire_monetary(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_monetary = _STLP_PRIV __acquire_monetary(name, buf, 0, &__err_code);
   if (!_M_monetary)
     locale::_M_throw_on_creation_failure(__err_code, name, "moneypunct");
 

@@ -1,3 +1,13 @@
+2007-11-30  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/acquire_release.h, facets_byname.cpp, locale.cpp,
+	locale_impl.cpp, locale_impl.h, messages.cpp, time_facets.cpp:
+	Localization code modification, now locale instances will adopt
+	a normalized name rather than the name used to create them. This
+	way identical locale instances will compare equals even if created
+	from name aliases like 'french' and 'fr_FR'. Moreover default
+	locale built from an empty string won't have an empty name.
+	
 2007-11-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_ios_base.h, _ios.c: Add qualification on the cached

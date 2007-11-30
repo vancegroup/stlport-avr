@@ -443,7 +443,8 @@ time_base::time_base(const char* __name) {
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _Locale_time *__time = _STLP_PRIV __acquire_time(__name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _Locale_time *__time = _STLP_PRIV __acquire_time(__name, buf, 0, &__err_code);
   if (!__time)
     locale::_M_throw_on_creation_failure(__err_code, __name, "time");
 

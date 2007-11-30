@@ -103,7 +103,8 @@ _Messages::_Messages(bool is_wide, const char *name) :
     locale::_M_throw_on_null_name();
 
   int __err_code;
-  _M_message_obj = _STLP_PRIV __acquire_messages(name, 0, &__err_code);
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _M_message_obj = _STLP_PRIV __acquire_messages(name, buf, 0, &__err_code);
   if (!_M_message_obj)
     locale::_M_throw_on_creation_failure(__err_code, name, "messages");
 

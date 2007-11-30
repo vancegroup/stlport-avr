@@ -157,13 +157,11 @@ locale::facet* _Locale_impl::insert(locale::facet *f, const locale::id& n) {
 /* Six functions, one for each category.  Each of them takes a
  * a name, constructs that appropriate category facets by name,
  * and inserts them into the locale. */
-_Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
+_Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_ctype_default(buf);
 
-  if (pname[0] == 0)
-    pname = _Locale_ctype_default(buf);
-
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     _Locale_impl* i2 = locale::classic()._M_impl;
     this->insert(i2, ctype<char>::id);
     this->insert(i2, codecvt<char, char, mbstate_t>::id);
@@ -179,9 +177,9 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
     locale::facet* wcvt   = 0;
 #endif
     int __err_code;
-    _Locale_ctype *__lct = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+    _Locale_ctype *__lct = _STLP_PRIV __acquire_ctype(name, buf, hint, &__err_code);
     if (!__lct) {
-      locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+      locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
       return hint;
     }
 
@@ -193,15 +191,15 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
     _STLP_UNWIND(_STLP_PRIV __release_ctype(__lct));
 
     _STLP_TRY {
-      cvt  = new codecvt_byname<char, char, mbstate_t>(pname);
+      cvt  = new codecvt_byname<char, char, mbstate_t>(name);
     }
     _STLP_UNWIND(delete ct);
 
 #ifndef _STLP_NO_WCHAR_T
     _STLP_TRY {
-      _Locale_ctype *__lwct = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+      _Locale_ctype *__lwct = _STLP_PRIV __acquire_ctype(name, buf, hint, &__err_code);
       if (!__lwct) {
-        locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+        locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
         return hint;
       }
 
@@ -211,10 +209,10 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
         }
         _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
       
-        _Locale_ctype *__lwcvt = _STLP_PRIV __acquire_ctype(pname, hint, &__err_code);
+        _Locale_ctype *__lwcvt = _STLP_PRIV __acquire_ctype(name, buf, hint, &__err_code);
         if (!__lwcvt) {
           delete wct;
-          locale::_M_throw_on_creation_failure(__err_code, pname, "ctype");
+          locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
           return hint;
         }
         else {
@@ -238,10 +236,9 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* pname, _Locale_
   return hint;
 }
 
-_Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
-  if (pname[0] == 0)
-    pname = _Locale_numeric_default(buf);
+_Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_numeric_default(buf);
 
   _Locale_impl* i2 = locale::classic()._M_impl;
 
@@ -257,7 +254,7 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
                num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 #endif
 
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     this->insert(i2, numpunct<char>::id);
 #ifndef _STLP_NO_WCHAR_T
     this->insert(i2, numpunct<wchar_t>::id);
@@ -270,9 +267,9 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
 #endif
 
     int __err_code;
-    _Locale_numeric *__lpunct = _STLP_PRIV __acquire_numeric(pname, hint, &__err_code);
+    _Locale_numeric *__lpunct = _STLP_PRIV __acquire_numeric(name, buf, hint, &__err_code);
     if (!__lpunct) {
-      locale::_M_throw_on_creation_failure(__err_code, pname, "numpunct");
+      locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
       return hint;
     }
 
@@ -283,10 +280,10 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
     _STLP_UNWIND(_STLP_PRIV __release_numeric(__lpunct));
 
 #ifndef _STLP_NO_WCHAR_T
-    _Locale_numeric *__lwpunct = _STLP_PRIV __acquire_numeric(pname, hint, &__err_code);
+    _Locale_numeric *__lwpunct = _STLP_PRIV __acquire_numeric(name, buf, hint, &__err_code);
     if (!__lwpunct) {
       delete punct;
-      locale::_M_throw_on_creation_failure(__err_code, pname, "numpunct");
+      locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
       return hint;
     }
     if (__lwpunct) {
@@ -305,12 +302,11 @@ _Locale_name_hint* _Locale_impl::insert_numeric_facets(const char* pname, _Local
   return hint;
 }
 
-_Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
-  if (pname[0] == 0)
-    pname = _Locale_time_default(buf);
+_Locale_name_hint* _Locale_impl::insert_time_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_time_default(buf);
 
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     _Locale_impl* i2 = locale::classic()._M_impl;
     this->insert(i2,
                  time_get<char, istreambuf_iterator<char, char_traits<char> > >::id);
@@ -331,7 +327,7 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
 #endif
 
     int __err_code;
-    _Locale_time *__time = _STLP_PRIV __acquire_time(pname, hint, &__err_code);
+    _Locale_time *__time = _STLP_PRIV __acquire_time(name, buf, hint, &__err_code);
     if (!__time) {
       // time facets category is not mandatory for correct stream behavior so if platform
       // do not support it we do not generate a runtime_error exception.
@@ -367,12 +363,11 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* pname, _Locale_n
   return hint;
 }
 
-_Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
-  if (pname[0] == 0)
-    pname = _Locale_collate_default(buf);
+_Locale_name_hint* _Locale_impl::insert_collate_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_collate_default(buf);
 
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     _Locale_impl* i2 = locale::classic()._M_impl;
     this->insert(i2, collate<char>::id);
 #ifndef _STLP_NO_WCHAR_T
@@ -386,7 +381,7 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Local
 #endif
 
     int __err_code;
-    _Locale_collate *__coll = _STLP_PRIV __acquire_collate(pname, hint, &__err_code);
+    _Locale_collate *__coll = _STLP_PRIV __acquire_collate(name, buf, hint, &__err_code);
     if (!__coll) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
@@ -400,7 +395,7 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Local
     _STLP_UNWIND(_STLP_PRIV __release_collate(__coll));
 
 #ifndef _STLP_NO_WCHAR_T
-    _Locale_collate *__wcoll = _STLP_PRIV __acquire_collate(pname, hint, &__err_code);
+    _Locale_collate *__wcoll = _STLP_PRIV __acquire_collate(name, buf, hint, &__err_code);
     if (!__wcoll) {
       if (__err_code == _STLP_LOC_NO_MEMORY) {
         delete col;
@@ -423,10 +418,9 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* pname, _Local
   return hint;
 }
 
-_Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
-  if (pname[0] == 0)
-    pname = _Locale_monetary_default(buf);
+_Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_monetary_default(buf);
 
   _Locale_impl* i2 = locale::classic()._M_impl;
 
@@ -438,7 +432,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
   this->insert(i2, money_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 #endif
 
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     this->insert(i2, moneypunct<char, false>::id);
     this->insert(i2, moneypunct<char, true>::id);
 #ifndef _STLP_NO_WCHAR_T
@@ -456,7 +450,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
 #endif
 
     int __err_code;
-    _Locale_monetary *__mon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
+    _Locale_monetary *__mon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
     if (!__mon) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
@@ -470,7 +464,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
     }
     _STLP_UNWIND(_STLP_PRIV __release_monetary(__mon));
 
-    _Locale_monetary *__imon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
+    _Locale_monetary *__imon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
     if (!__imon) {
       delete punct;
       if (__err_code == _STLP_LOC_NO_MEMORY)
@@ -485,7 +479,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
 
 #ifndef _STLP_NO_WCHAR_T
     _STLP_TRY {
-      _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
+      _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
       if (!__wmon) {
         if (__err_code == _STLP_LOC_NO_MEMORY)
           _STLP_THROW(bad_alloc());
@@ -497,7 +491,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
         }
         _STLP_UNWIND(_STLP_PRIV __release_monetary(__wmon));
       
-        _Locale_monetary *__wimon = _STLP_PRIV __acquire_monetary(pname, hint, &__err_code);
+        _Locale_monetary *__wimon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
         if (!__wimon) {
           delete wpunct;
           if (__err_code == _STLP_LOC_NO_MEMORY)
@@ -525,12 +519,11 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* pname, _Loca
   return hint;
 }
 
-_Locale_name_hint* _Locale_impl::insert_messages_facets(const char* pname, _Locale_name_hint* hint) {
-  char buf[_Locale_MAX_SIMPLE_NAME];
-  if (pname[0] == 0)
-    pname = _Locale_messages_default(buf);
+_Locale_name_hint* _Locale_impl::insert_messages_facets(const char* &name, char *buf, _Locale_name_hint* hint) {
+  if (name[0] == 0)
+    name = _Locale_messages_default(buf);
 
-  if (pname == 0 || pname[0] == 0 || is_C_locale_name(pname)) {
+  if (name == 0 || name[0] == 0 || is_C_locale_name(name)) {
     _Locale_impl* i2 = locale::classic()._M_impl;
     this->insert(i2, messages<char>::id);
 #ifndef _STLP_NO_WCHAR_T
@@ -544,7 +537,7 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* pname, _Loca
 #endif
 
     int __err_code;
-    _Locale_messages *__msg = _STLP_PRIV __acquire_messages(pname, hint, &__err_code);
+    _Locale_messages *__msg = _STLP_PRIV __acquire_messages(name, buf, hint, &__err_code);
     if (!__msg) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
         _STLP_THROW(bad_alloc());
@@ -558,7 +551,7 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* pname, _Loca
 
 #ifndef _STLP_NO_WCHAR_T
     _STLP_TRY {
-      _Locale_messages *__wmsg = _STLP_PRIV __acquire_messages(pname, hint, &__err_code);
+      _Locale_messages *__wmsg = _STLP_PRIV __acquire_messages(name, buf, hint, &__err_code);
       if (!__wmsg) {
         if (__err_code == _STLP_LOC_NO_MEMORY)
           _STLP_THROW(bad_alloc());

@@ -141,16 +141,57 @@ locale::locale(const char* name)
 
     // Insert categories one at a time.
     _Locale_name_hint *hint = 0;
-    hint = impl->insert_ctype_facets(name, hint);
-    hint = impl->insert_numeric_facets(name, hint);
-    hint = impl->insert_time_facets(name, hint);
-    hint = impl->insert_collate_facets(name, hint);
-    hint = impl->insert_monetary_facets(name, hint);
-    impl->insert_messages_facets(name, hint);
+    const char* ctype_name = name;
+    char ctype_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* numeric_name = name;
+    char numeric_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* time_name = name;
+    char time_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* collate_name = name;
+    char collate_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* monetary_name = name;
+    char monetary_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* messages_name = name;
+    char messages_buf[_Locale_MAX_SIMPLE_NAME];
+    hint = impl->insert_ctype_facets(ctype_name, ctype_buf, hint);
+    hint = impl->insert_numeric_facets(numeric_name, numeric_buf, hint);
+    hint = impl->insert_time_facets(time_name, time_buf, hint);
+    hint = impl->insert_collate_facets(collate_name, collate_buf, hint);
+    hint = impl->insert_monetary_facets(monetary_name, monetary_buf, hint);
+    impl->insert_messages_facets(messages_name, messages_buf, hint);
+
+    // Try to use a normalize locale name in order to have the == operator
+    // to behave correctly:
+    if (strcmp(ctype_name, numeric_name) == 0 &&
+        strcmp(ctype_name, time_name) == 0 &&
+        strcmp(ctype_name, collate_name) == 0 &&
+        strcmp(ctype_name, monetary_name) == 0 &&
+        strcmp(ctype_name, messages_name) == 0) {
+      impl->name = ctype_name;
+    }
+    // else we keep current name.
+
     // reassign impl
     _M_impl = _get_Locale_impl( impl );
   }
   _STLP_UNWIND(delete impl);
+}
+
+static void _Stl_loc_combine_names_aux(_Locale_impl* L,
+                                       const char* name,
+                                       const char* ctype_name, const char* time_name, const char* numeric_name,
+                                       const char* collate_name, const char* monetary_name, const char* messages_name,
+                                       locale::category c) {
+  // This function is only called when names has been validated so using _Locale_extract_*_name
+  // can't fail.
+  int __err_code;
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  L->name = string("LC_CTYPE=") + _Locale_extract_ctype_name((c & locale::ctype) ? ctype_name : name, buf, 0, &__err_code) + ";";
+  L->name += string("LC_TIME=") + _Locale_extract_time_name((c & locale::time) ? time_name : name, buf, 0, &__err_code) + ";";
+  L->name += string("LC_NUMERIC=") + _Locale_extract_numeric_name((c & locale::numeric) ? numeric_name : name, buf, 0, &__err_code) + ";";
+  L->name += string("LC_COLLATE=") + _Locale_extract_collate_name((c & locale::collate) ? collate_name : name, buf, 0, &__err_code) + ";";
+  L->name += string("LC_MONETARY=") + _Locale_extract_monetary_name((c & locale::monetary) ? monetary_name : name, buf, 0, &__err_code) + ";";
+  L->name += string("LC_MESSAGES=") + _Locale_extract_messages_name((c & locale::messages) ? messages_name : name, buf, 0, &__err_code);
 }
 
 // Give L a name where all facets except those in category c
@@ -158,23 +199,38 @@ locale::locale(const char* name)
 static void _Stl_loc_combine_names(_Locale_impl* L,
                                    const char* name1, const char* name2,
                                    locale::category c) {
-  if ((c & locale::all) == 0 || strcmp(name1, name2) == 0)
+  if ((c & locale::all) == 0 || strcmp(name1, name1) == 0)
     L->name = name1;
   else if ((c & locale::all) == locale::all)
     L->name = name2;
   else {
-    // This function is only called when name1 and name2 has been validated so using _Locale_extract_*_name
-    // can't fail.
-    int __err_code;
-    char buf[_Locale_MAX_SIMPLE_NAME];
-    L->name = string("LC_CTYPE=") + _Locale_extract_ctype_name((c & locale::ctype) ? name2 : name1, buf, 0, &__err_code) + ";";
-    L->name += string("LC_TIME=") + _Locale_extract_time_name((c & locale::time) ? name2 : name1, buf, 0, &__err_code) + ";";
-    L->name += string("LC_NUMERIC=") + _Locale_extract_numeric_name((c & locale::numeric) ? name2 : name1, buf, 0, &__err_code) + ";";
-    L->name += string("LC_COLLATE=") + _Locale_extract_collate_name((c & locale::collate) ? name2 : name1, buf, 0, &__err_code) + ";";
-    L->name += string("LC_MONETARY=") + _Locale_extract_monetary_name((c & locale::monetary) ? name2 : name1, buf, 0, &__err_code) + ";";
-    L->name += string("LC_MESSAGES=") + _Locale_extract_messages_name((c & locale::messages) ? name2 : name1, buf, 0, &__err_code);
+    _Stl_loc_combine_names_aux(L, name1, name2, name2, name2, name2, name2, name2, c);
   }
 }
+
+static void _Stl_loc_combine_names(_Locale_impl* L,
+                                   const char* name,
+                                   const char* ctype_name, const char* time_name, const char* numeric_name,
+                                   const char* collate_name, const char* monetary_name, const char* messages_name,
+                                   locale::category c) {
+  if ((c & locale::all) == 0 || (strcmp(name, ctype_name) == 0 &&
+                                 strcmp(name, time_name) == 0 &&
+                                 strcmp(name, numeric_name) == 0 &&
+                                 strcmp(name, collate_name) == 0 &&
+                                 strcmp(name, monetary_name) == 0 &&
+                                 strcmp(name, messages_name) == 0))
+    L->name = name;
+  else if ((c & locale::all) == locale::all && strcmp(ctype_name, time_name) == 0 &&
+                                               strcmp(ctype_name, numeric_name) == 0 &&
+                                               strcmp(ctype_name, collate_name) == 0 &&
+                                               strcmp(ctype_name, monetary_name) == 0 &&
+                                               strcmp(ctype_name, messages_name) == 0)
+    L->name = ctype_name;
+  else {
+    _Stl_loc_combine_names_aux(L, name, ctype_name, time_name, numeric_name, collate_name, monetary_name, messages_name, c);
+  }
+}
+
 
 // Create a locale that's a copy of L, except that all of the facets
 // in category c are instead constructed by name.
@@ -192,20 +248,34 @@ locale::locale(const locale& L, const char* name, locale::category c)
     impl = new _Locale_impl(*L._M_impl);
 
     _Locale_name_hint *hint = 0;
+    const char* ctype_name = name;
+    char ctype_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* numeric_name = name;
+    char numeric_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* time_name = name;
+    char time_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* collate_name = name;
+    char collate_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* monetary_name = name;
+    char monetary_buf[_Locale_MAX_SIMPLE_NAME];
+    const char* messages_name = name;
+    char messages_buf[_Locale_MAX_SIMPLE_NAME];
     if (c & locale::ctype)
-      hint = impl->insert_ctype_facets(name, hint);
+      hint = impl->insert_ctype_facets(ctype_name, ctype_buf, hint);
     if (c & locale::numeric)
-      hint = impl->insert_numeric_facets(name, hint);
+      hint = impl->insert_numeric_facets(numeric_name, numeric_buf, hint);
     if (c & locale::time)
-      hint = impl->insert_time_facets(name, hint);
+      hint = impl->insert_time_facets(time_name, time_buf, hint);
     if (c & locale::collate)
-      hint = impl->insert_collate_facets(name, hint);
+      hint = impl->insert_collate_facets(collate_name, collate_buf, hint);
     if (c & locale::monetary)
-      hint = impl->insert_monetary_facets(name, hint);
+      hint = impl->insert_monetary_facets(monetary_name, monetary_buf,hint);
     if (c & locale::messages)
-      impl->insert_messages_facets(name, hint);
+      impl->insert_messages_facets(messages_name, messages_buf, hint);
 
-    _Stl_loc_combine_names(impl, L._M_impl->name.c_str(), name, c);
+    _Stl_loc_combine_names(impl, L._M_impl->name.c_str(),
+                           ctype_name, time_name, numeric_name,
+                           collate_name, monetary_name, messages_name, c);
     _M_impl = _get_Locale_impl( impl );
   }
   _STLP_UNWIND(delete impl)
