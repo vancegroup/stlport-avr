@@ -14,10 +14,14 @@ using namespace std;
 
 static const char* tested_locales[] = {
 //name,
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+  // We need exception support to check support of the following localizations.
   "fr_FR",
   "ru_RU.koi8r",
   "en_GB",
   "en_US",
+#  endif
+  "",
   "C"
 };
 
@@ -322,20 +326,20 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
     auto_ptr<locale> loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
+#  endif
       loc.reset(new locale(tested_locales[i]));
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     }
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
     }
-#  else
-    //Without exception support we only test C locale.
-    if (tested_locales[i].name[0] != 'C' ||
-        tested_locales[i].name[1] != 0)
-      continue;
-    loc.reset(new locale(tested_locales[i].name));
 #  endif
+
     CPPUNIT_MESSAGE( loc->name().c_str() );
+    (inst.*__test)(*loc);
+
+    loc.reset(new locale(locale::classic(), tested_locales[i], locale::ctype));
     (inst.*__test)(*loc);
   }
 }
@@ -392,9 +396,22 @@ void LocaleTest::ctype_by_name()
   try {
     locale loc(locale::classic(), new codecvt_byname<char, char, mbstate_t>("yasli_language"));
     //STLport implementation do not care about name pass to this facet.
-#if !defined (STLPORT)
+#    if !defined (STLPORT)
     CPPUNIT_ASSERT( false );
-#endif
+#    endif
+  }
+  catch (runtime_error const& /* e */) {
+    //CPPUNIT_MESSAGE( e.what() );
+  }
+  catch (...) {
+    CPPUNIT_ASSERT( false );
+  }
+
+  try {
+    locale loc(locale::classic(), new ctype_byname<char>("fr_FR"));
+    CPPUNIT_ASSERT( has_facet<ctype<char> >(loc) );
+    ctype<char> const& ct = use_facet<ctype<char> >(loc);
+    CPPUNIT_ASSERT( ct.is(ctype_base::mask(ctype_base::print | ctype_base::lower | ctype_base::alpha), 'ç') );
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );

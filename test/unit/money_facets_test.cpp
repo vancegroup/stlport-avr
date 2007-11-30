@@ -25,15 +25,17 @@ struct ref_monetary {
 
 static const ref_monetary tested_locales[] = {
 //{  name,         money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   { "fr_FR",       "EUR ",           "FRF ",               "",           "",           ",",
-#  if defined (WIN32) || defined (_WIN32)
+#    if defined (WIN32) || defined (_WIN32)
                                                                                                             "\xa0" },
-#  else
+#    else
                                                                                                             " " },
-#  endif
+#    endif
   { "ru_RU.koi8r", "RUB ",           "RUR ",               "",           "\xd2\xd5\xc2", ".",               " " },
   { "en_GB",       "GBP ",           "",                   "\xa3",       "",           ".",                 "," },
   { "en_US",       "USD ",           "",                   "$",          "",           ".",                 "," },
+#  endif
   { "C",           "",               "",                   "",           "",           " ",                 " " },
 };
 
@@ -421,20 +423,19 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
     auto_ptr<locale> loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
+#  endif
       loc.reset(new locale(tested_locales[i].name));
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     }
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
     }
-#  else
-    //Without exception support we only test C locale.
-    if (tested_locales[i].name[0] != 'C' ||
-        tested_locales[i].name[1] != 0)
-      continue;
-    loc.reset(new locale(tested_locales[i].name));
 #  endif
     CPPUNIT_MESSAGE( loc->name().c_str() );
+    (inst.*__test)(*loc, tested_locales + i);
+
+    loc.reset(new locale(locale::classic(), tested_locales[i].name, locale::monetary));
     (inst.*__test)(*loc, tested_locales + i);
   }
 }
@@ -514,29 +515,6 @@ void LocaleTest::moneypunct_by_name()
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
-  }
-  catch (...) {
-    CPPUNIT_ASSERT( false );
-  }
-
-  try {
-    locale loc(locale::classic(), "C", locale::monetary);
-  }
-  catch (runtime_error const& /* e */) {
-    /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
-  }
-  catch (...) {
-    CPPUNIT_ASSERT( false );
-  }
-
-  try {
-    // On platform without real localization support we should rely on the "C" facet.
-    locale loc(locale::classic(), "", locale::monetary);
-  }
-  catch (runtime_error const& /* e */) {
-    /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
   }
   catch (...) {
     CPPUNIT_ASSERT( false );

@@ -7,6 +7,12 @@
 	way identical locale instances will compare equals even if created
 	from name aliases like 'french' and 'fr_FR'. Moreover default
 	locale built from an empty string won't have an empty name.
+
+	* test/unit/locale_test.cpp, ctype_facets_test.cpp,
+	money_facets_test.cpp, num_facets_test.cpp, time_facets_test.cpp:
+	Enhance localization tests, add test of default locale when possible.
+	Add test for the locale instances built from a mix of the
+	locale::classic instance and a named category.
 	
 2007-11-27  Francois Dumont  <dums@users.sourceforge.net>
 

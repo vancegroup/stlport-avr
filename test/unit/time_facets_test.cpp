@@ -12,10 +12,13 @@ using namespace std;
 
 static const char* tested_locales[] = {
 // name,
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
    "fr_FR",
    "ru_RU.koi8r",
    "en_GB",
    "en_US",
+#  endif
+   "",
    "C"
 };
 
@@ -109,20 +112,19 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
     auto_ptr<locale> loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
+#  endif
       loc.reset(new locale(tested_locales[i]));
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     }
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
     }
-#  else
-    //Without exception support we only test C locale.
-    if (tested_locales[i][0] != 'C' ||
-        tested_locales[i][1] != 0)
-      continue;
-    loc.reset(new locale(tested_locales[i]));
 #  endif
     CPPUNIT_MESSAGE( loc->name().c_str() );
+    (inst.*__test)(*loc);
+
+    loc.reset(new locale(locale::classic(), tested_locales[i], locale::time));
     (inst.*__test)(*loc);
   }
 }
