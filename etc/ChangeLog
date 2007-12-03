@@ -1,3 +1,8 @@
+2007-12-03  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/fstream_win32io.cpp: Fix management of Ctrl-Z when reading
+	text file stream thanks Hector Chu patch.
+
 2007-11-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/acquire_release.h, facets_byname.cpp, locale.cpp,
