@@ -4,6 +4,7 @@
 #  include <fstream>
 #  include <locale>
 #  include <stdexcept>
+#  include <cstdio> // for WEOF
 
 #  include "cppunit/cppunit_proxy.h"
 
