@@ -73,7 +73,7 @@ RC_OUTPUT_OPTION = $(OUTPUT_OPTION)
 COMPILE.rc = ${RC} ${RCFLAGS}
 LINK.cc = dm_link $(LDFLAGS)
 
-LDLIBS += user32.lib kernel32.lib
+LDLIBS += user32.lib kernel32.lib snn.lib
 
 # STLport DEBUG mode specific defines
 dbg-static : DEFS += -D_DEBUG

@@ -80,7 +80,7 @@ stldbg-shared : RCFLAGS += -dBUILD=stld -dBUILD_INFOS="-R -v -y -D_DEBUG -D_STLP
 RC_OUTPUT_OPTION = -fo$@
 
 COMPILE.rc = ${RC} ${RCFLAGS}
-LINK.cc = ilink32 $(subst /,\,$(LDFLAGS))
+LINK.cc = ilink32 $(subst /,\\,$(LDFLAGS))
 
 LDFLAGS += -ap -D -Gn -Gi
 

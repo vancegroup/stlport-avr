@@ -23,13 +23,13 @@ stldbg-shared:	$(EXTRA_PRE_STLDBG) $(OUTPUT_DIR_STLDBG) ${PRG_STLDBG} ${ALLPRGS_
 stldbg-static:	$(EXTRA_PRE_STLDBG) $(OUTPUT_DIR_STLDBG) ${PRG_STLDBG} ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
 endif
 
-ifeq ("$(findstring $(OSNAME),bcc dmc)","")
+ifeq ("$(findstring $(COMPILER_NAME),bcc dmc)","")
 define cpplnk_str
 $(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(1) $(LDLIBS) ${STDLIBS} ${END_OBJ}
 endef
 else
 define cpplnk_str
-$(LINK.cc) $(subst /,\,${START_OBJ} $(1) ${END_OBJ}, $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS) ${STDLIBS},,)
+$(LINK.cc) $(subst /,\\,${START_OBJ} $(1) ${END_OBJ}, $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS) ${STDLIBS},,)
 endef
 endif
 
