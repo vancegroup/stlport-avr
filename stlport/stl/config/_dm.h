@@ -17,6 +17,7 @@
  * operator fails of course so we are force to use mutable key for this compiler.
  */
 #define _STLP_NO_CONST_IN_PAIR
+#define _STLP_DONT_SUP_DFLT_PARAM
 
 #ifndef _CPPUNWIND
 #  define _STLP_NO_EXCEPTIONS
