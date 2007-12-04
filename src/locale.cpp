@@ -52,7 +52,7 @@ void _STLP_CALL locale::_M_throw_on_combine_error(const string& name, const char
     what += "'";
   }
   what += " in ";
-  what += name.empty() ? "system" : name;
+  what += name.empty() ? "system" : name.c_str();
   what += " locale";
   _STLP_THROW(runtime_error(what.c_str()));
 }
