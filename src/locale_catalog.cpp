@@ -35,6 +35,8 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 static void* _Loc_ctype_create(const char * s, _Locale_name_hint* hint, int *__err_code)
 { return _Locale_ctype_create(s, hint, __err_code); }
+static void* _Loc_codecvt_create(const char * s, _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_codecvt_create(s, hint, __err_code); }
 static void* _Loc_numeric_create(const char * s, _Locale_name_hint* hint, int *__err_code)
 { return _Locale_numeric_create(s, hint, __err_code); }
 static void* _Loc_time_create(const char * s, _Locale_name_hint* hint, int *__err_code)
@@ -48,6 +50,8 @@ static void* _Loc_messages_create(const char * s, _Locale_name_hint* hint, int *
 
 static char const* _Loc_ctype_name(void* l, char* s)
 { return _Locale_ctype_name((_Locale_ctype*)l, s); }
+static char const* _Loc_codecvt_name(void* l, char* s)
+{ return _Locale_codecvt_name((_Locale_codecvt*)l, s); }
 static char const* _Loc_numeric_name(void* l, char* s)
 { return _Locale_numeric_name((_Locale_numeric*)l, s); }
 static char const* _Loc_time_name(void* l, char* s)
@@ -73,6 +77,7 @@ static const char* _Loc_messages_default(char* p)
 { return _Locale_messages_default(p); }
 
 static void _Loc_ctype_destroy(void* p)    {_Locale_ctype_destroy((_Locale_ctype*)p); }
+static void _Loc_codecvt_destroy(void* p)    {_Locale_codecvt_destroy((_Locale_codecvt*)p); }
 static void _Loc_numeric_destroy(void* p)  {_Locale_numeric_destroy((_Locale_numeric*)p); }
 static void _Loc_time_destroy(void* p)     {_Locale_time_destroy((_Locale_time*)p);}
 static void _Loc_collate_destroy(void* p)  {_Locale_collate_destroy((_Locale_collate*)p);}
@@ -97,6 +102,10 @@ typedef hash_map<string, pair<void*, size_t>, hash<string>, equal_to<string> > C
 static Category_Map** ctype_hash() {
   static Category_Map *_S_ctype_hash = 0;
   return &_S_ctype_hash;
+}
+static Category_Map** codecvt_hash() {
+  static Category_Map *_S_codecvt_hash = 0;
+  return &_S_codecvt_hash;
 }
 static Category_Map** numeric_hash() {
   static Category_Map *_S_numeric_hash = 0;
@@ -226,6 +235,11 @@ _Locale_ctype* _STLP_CALL __acquire_ctype(const char* &name, char *buf, _Locale_
                                                                _Locale_extract_ctype_name, _Loc_ctype_create, _Loc_ctype_default,
                                                                ctype_hash(), __err_code));
 }
+_Locale_codecvt* _STLP_CALL __acquire_codecvt(const char* &name, char *buf, _Locale_name_hint* hint, int *__err_code) {
+  return __REINTERPRET_CAST(_Locale_codecvt*, __acquire_category(name, buf, hint,
+                                                                 _Locale_extract_ctype_name, _Loc_codecvt_create, _Loc_ctype_default,
+                                                                 codecvt_hash(), __err_code));
+}
 _Locale_numeric* _STLP_CALL __acquire_numeric(const char* &name, char *buf, _Locale_name_hint* hint, int *__err_code) {
   return __REINTERPRET_CAST(_Locale_numeric*, __acquire_category(name, buf, hint,
                                                                  _Locale_extract_numeric_name, _Loc_numeric_create, _Loc_numeric_default,
@@ -254,6 +268,8 @@ _Locale_messages* _STLP_CALL __acquire_messages(const char* &name, char *buf, _L
 
 void _STLP_CALL __release_ctype(_Locale_ctype* cat)
 { __release_category(cat, _Loc_ctype_destroy, _Loc_ctype_name, ctype_hash()); }
+void _STLP_CALL __release_codecvt(_Locale_codecvt* cat)
+{ __release_category(cat, _Loc_codecvt_destroy, _Loc_codecvt_name, codecvt_hash()); }
 void _STLP_CALL __release_numeric(_Locale_numeric* cat)
 { __release_category(cat, _Loc_numeric_destroy, _Loc_numeric_name, numeric_hash()); }
 void _STLP_CALL __release_time(_Locale_time* cat)

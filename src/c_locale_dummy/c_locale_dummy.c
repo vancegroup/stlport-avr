@@ -60,6 +60,10 @@ struct _Locale_ctype* _Locale_ctype_create(const char *name,
                                            struct _Locale_name_hint* hint, int *__err_code)
 { return _Locale_create(name, __err_code); }
 
+struct _Locale_codecvt* _Locale_codecvt_create(const char *name,
+                                               struct _Locale_name_hint* hint, int *__err_code)
+{ return _Locale_create(name, __err_code); }
+
 struct _Locale_numeric* _Locale_numeric_create(const char *name,
                                                struct _Locale_name_hint* hint, int *__err_code)
 { return _Locale_create(name, __err_code); }
@@ -80,14 +84,17 @@ struct _Locale_messages* _Locale_messages_create(const char *name,
                                                  struct _Locale_name_hint* hint, int *__err_code)
 { return _Locale_create(name, __err_code); }
 
-const char *_Locale_ctype_default(char* buf)    { return 0; }
-const char *_Locale_numeric_default(char * buf) { return 0; }
-const char *_Locale_time_default(char* buf)     { return 0; }
-const char *_Locale_collate_default(char* buf)  { return 0; }
-const char *_Locale_monetary_default(char* buf) { return 0; }
-const char *_Locale_messages_default(char* buf) { return 0; }
+const char *_Locale_ctype_default(char* buf)    { return _C_name; }
+const char *_Locale_numeric_default(char * buf) { return _C_name; }
+const char *_Locale_time_default(char* buf)     { return _C_name; }
+const char *_Locale_collate_default(char* buf)  { return _C_name; }
+const char *_Locale_monetary_default(char* buf) { return _C_name; }
+const char *_Locale_messages_default(char* buf) { return _C_name; }
 
 char const* _Locale_ctype_name(const struct _Locale_ctype *lctype, char* buf)
+{ return _C_name; }
+
+char const* _Locale_codecvt_name(const struct _Locale_codecvt *lcodecvt, char* buf)
 { return _C_name; }
 
 char const* _Locale_numeric_name(const struct _Locale_numeric *lnum, char* buf)
@@ -105,9 +112,10 @@ char const* _Locale_monetary_name(const struct _Locale_monetary *lmon, char* buf
 char const* _Locale_messages_name(const struct _Locale_messages *lmes, char* buf)
 { return _C_name; }
 
-void _Locale_ctype_destroy(struct _Locale_ctype *lctype)       {}
+void _Locale_ctype_destroy(struct _Locale_ctype *lctype)     {}
+void _Locale_codecvt_destroy(struct _Locale_codecvt *lcodecvt)   {}
 void _Locale_numeric_destroy(struct _Locale_numeric *lnum)   {}
-void _Locale_time_destroy(struct _Locale_time *ltime)         {}
+void _Locale_time_destroy(struct _Locale_time *ltime)        {}
 void _Locale_collate_destroy(struct _Locale_collate *lcol)   {}
 void _Locale_monetary_destroy(struct _Locale_monetary *lmon) {}
 void _Locale_messages_destroy(struct _Locale_messages *lmes) {}
@@ -359,31 +367,31 @@ wint_t _Locale_wchar_toupper(struct _Locale_ctype *lctype, wint_t c)
 { return towlower(c); }
 #endif
 
-int _Locale_mb_cur_max (struct _Locale_ctype *lctype) { return 1; }
-int _Locale_mb_cur_min (struct _Locale_ctype *lctype) { return 1; }
-int _Locale_is_stateless (struct _Locale_ctype *lctype) { return 1; }
+int _Locale_mb_cur_max (struct _Locale_codecvt *lcodecvt) { return 1; }
+int _Locale_mb_cur_min (struct _Locale_codecvt *lcodecvt) { return 1; }
+int _Locale_is_stateless (struct _Locale_codecvt *lcodecvt) { return 1; }
 
 #ifndef _STLP_NO_WCHAR_T
-wint_t _Locale_btowc(struct _Locale_ctype * lctype, int c)
+wint_t _Locale_btowc(struct _Locale_codecvt *lcodecvt, int c)
 { return (wint_t)c; }
 
-int _Locale_wctob(struct _Locale_ctype * __DUMMY_PAR2, wint_t c)
+int _Locale_wctob(struct _Locale_codecvt *lcodecvt, wint_t c)
 { return (int)c; }
 
-size_t _Locale_mbtowc(struct _Locale_ctype *lctype,
+size_t _Locale_mbtowc(struct _Locale_codecvt *lcodecvt,
                       wchar_t *to,
                       const char *from, size_t n,
-                      mbstate_t *__DUMMY_PAR5)
+                      mbstate_t *st)
 { *to = *from; return 1; }
 
-size_t _Locale_wctomb(struct _Locale_ctype *lctype,
+size_t _Locale_wctomb(struct _Locale_codecvt *lcodecvt,
                       char *to, size_t n,
                       const wchar_t c,
-                      mbstate_t *__DUMMY_PAR5)
+                      mbstate_t *st)
 { *to = (char)c; return 1; }
 #endif
 
-size_t _Locale_unshift(struct _Locale_ctype *lctype,
+size_t _Locale_unshift(struct _Locale_codecvt *lcodecvt,
                        mbstate_t *st,
                        char *buf, size_t n, char ** next)
 { *next = buf; return 0; }
@@ -541,10 +549,9 @@ const char* _Locale_t_fmt_ampm(struct _Locale_time* ltime) { return 0; }
 
 /* Messages */
 
-nl_catd_type _Locale_catopen(struct _Locale_messages* lmes, const char* __DUMMY_PAR)
+nl_catd_type _Locale_catopen(struct _Locale_messages* lmes, const char* name)
 { return -1; }
-void _Locale_catclose(struct _Locale_messages* lmes, nl_catd_type __DUMMY_PAR) {}
-const char* _Locale_catgets(struct _Locale_messages* lmes, nl_catd_type __DUMMY_PAR2,
-                            int __DUMMY_PAR3, int __DUMMY_PAR4,
-                            const char *dfault)
+void _Locale_catclose(struct _Locale_messages* lmes, nl_catd_type cat) {}
+const char* _Locale_catgets(struct _Locale_messages* lmes, nl_catd_type cat,
+                            int setid, int msgid, const char *dfault)
 { return dfault; }

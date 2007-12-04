@@ -1,3 +1,10 @@
+2007-12-04  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Add the _Locale_codecvt localization data structure for 2 purposes:
+	- in the win32 implementation it simplify _Locale_ctype data structure.
+	- in the glibc implementation it helps making clear that this
+	implementation do not support the codecvt facet for the moment.
+
 2007-12-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/fstream_win32io.cpp: Fix management of Ctrl-Z when reading

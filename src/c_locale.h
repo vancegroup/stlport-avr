@@ -55,11 +55,7 @@ extern "C" {
 /*
  * Typedefs:
  */
-#if (defined (__GNUC__) && !defined (__MINGW32__)) || defined (_KCC) || defined (__ICC)
 typedef unsigned short int _Locale_mask_t;
-#else
-typedef unsigned int _Locale_mask_t;
-#endif
 
 /* Function called during STLport library load phase. Might contain any
  * code necessary to the platform localization layer.
@@ -80,6 +76,7 @@ void _Locale_final(void);
  * using the __err_code pointer.
  */
 struct _Locale_ctype* _Locale_ctype_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
+struct _Locale_codecvt* _Locale_codecvt_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
 struct _Locale_numeric* _Locale_numeric_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
 struct _Locale_time* _Locale_time_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
 struct _Locale_collate* _Locale_collate_create(const char *, struct _Locale_name_hint*, int * /* __err_code */);
@@ -106,6 +103,7 @@ struct _Locale_messages* _Locale_messages_create(const char *, struct _Locale_na
  * according _Locale_*_create() functions.
  */
 void _Locale_ctype_destroy(struct _Locale_ctype *);
+void _Locale_codecvt_destroy(struct _Locale_codecvt *);
 void _Locale_numeric_destroy(struct _Locale_numeric *);
 void _Locale_time_destroy(struct _Locale_time *);
 void _Locale_collate_destroy(struct _Locale_collate *);
@@ -131,6 +129,7 @@ const char * _Locale_messages_default(char * __buf);
  * string, in __buf. This function can't fail, at worst name is truncated.
  */
 char const* _Locale_ctype_name(const struct _Locale_ctype *, char* __buf);
+char const* _Locale_codecvt_name(const struct _Locale_codecvt *, char* __buf);
 char const* _Locale_numeric_name(const struct _Locale_numeric *, char* __buf);
 char const* _Locale_time_name(const struct _Locale_time *, char* __buf);
 char const* _Locale_collate_name(const struct _Locale_collate *, char*  __buf);
@@ -209,27 +208,27 @@ wint_t _Locale_wchar_toupper(struct _Locale_ctype *, wint_t);
  * Multibyte functions:
  */
 
-int _Locale_mb_cur_max (struct _Locale_ctype *);
+int _Locale_mb_cur_max (struct _Locale_codecvt *);
 /*
  * Returns the number of bytes of the longest allowed multibyte
  * character in the current encoding.
  */
 
-int _Locale_mb_cur_min (struct _Locale_ctype *);
+int _Locale_mb_cur_min (struct _Locale_codecvt *);
 /*
  * Returns the number of bytes of the shortest allowed multibyte
  * character in the current encoding.
  */
 
-int _Locale_is_stateless (struct _Locale_ctype *);
+int _Locale_is_stateless (struct _Locale_codecvt *);
 /*
  * Returns 1 if the current multibyte encoding is stateless
  * and does not require the use of an mbstate_t value.
  */
 
 #ifndef _STLP_NO_WCHAR_T
-wint_t _Locale_btowc(struct _Locale_ctype *, int);
-int _Locale_wctob(struct _Locale_ctype *, wint_t);
+wint_t _Locale_btowc(struct _Locale_codecvt *, int);
+int _Locale_wctob(struct _Locale_codecvt *, wint_t);
 
 /*
  * Just like btowc and wctob, from 4.6.5.1 of the C standard, Normative
@@ -237,7 +236,7 @@ int _Locale_wctob(struct _Locale_ctype *, wint_t);
  * standard.)
  */
 
-size_t _Locale_mbtowc(struct _Locale_ctype *,
+size_t _Locale_mbtowc(struct _Locale_codecvt *,
                       wchar_t *,
                       const char *, size_t,
                       mbstate_t *);
@@ -255,7 +254,7 @@ size_t _Locale_mbtowc(struct _Locale_ctype *,
  * arguments may be null pointers.
  */
 
-size_t _Locale_wctomb(struct _Locale_ctype *,
+size_t _Locale_wctomb(struct _Locale_codecvt *,
                       char *, size_t,
                       const wchar_t,
                       mbstate_t *);
@@ -271,7 +270,7 @@ size_t _Locale_wctomb(struct _Locale_ctype *,
  */
 #endif
 
-size_t _Locale_unshift(struct _Locale_ctype *,
+size_t _Locale_unshift(struct _Locale_codecvt *,
                        mbstate_t *,
                        char *, size_t, char **);
 

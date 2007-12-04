@@ -89,6 +89,7 @@ typedef char mbstate_t;
  * on platform locale API.
  */
 struct _Locale_ctype;
+struct _Locale_codecvt;
 struct _Locale_numeric;
 struct _Locale_time;
 struct _Locale_collate;

@@ -592,9 +592,6 @@ cname_lookup (wint_t wc, const struct locale_data* loc)
 #endif
 }
 
-
-
-
 _Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype* loc, wint_t wc,
   _Locale_mask_t which_bits) {
   const struct locale_data* locale = loc->gcc_data;
@@ -610,8 +607,6 @@ _Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype* loc, wint_t wc,
 
   return _Map_wchar_mask_to_char_mask( class32_b[idx] ) & which_bits;
 }
-
-
 
 wint_t
 __towctrans_ld (wint_t wc, wctrans_t desc, const struct locale_data* locale)
@@ -634,78 +629,61 @@ wint_t _Locale_wchar_toupper(struct _Locale_ctype* locale, wint_t wc) {
 }
 
 
-int _Locale_mb_cur_max (struct _Locale_ctype *lctype) {
-  return lctype->gcc_data->values[_NL_ITEM_INDEX(_NL_CTYPE_MB_CUR_MAX)].word;
-}
-
-int _Locale_mb_cur_min (struct _Locale_ctype *l) {
-  return 1;  /* JGS just a guess */
-}
-
-int _Locale_is_stateless (struct _Locale_ctype *l) { return 1; }
-
-wint_t _Locale_btowc(struct _Locale_ctype *l, int c) {
-  return btowc(c);
-}
-
 /*
   glibc currently doesn't support locale dependent conversion,
   which affects the following functions. When it does, then
-  these functions will need to change. Hopeully, the
+  these functions will need to change. Hopefully, the
   just the calls to the glibc functions will need to be
   replaced.
   -JGS
  */
-
-int _Locale_wctob(struct _Locale_ctype *l, wint_t c) {
-  return wctob(c);
+struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_name_hint* hint,
+                                               int *__err_code) {
+  // Glibc do not support multibyte manipulation for the moment, it simply implements "C".
+  if (nm[0] == 'C' && nm[1] == 0)
+  { return (struct _Locale_codecvt*)0x01; }
+  *__err_code = _STLP_LOC_NO_PLATFORM_SUPPORT; return 0;
 }
 
-size_t _Locale_mbtowc(struct _Locale_ctype *l,
-                                 wchar_t *to,
-                                 const char *from, size_t n,
-                                 mbstate_t *shift_state)
-{
-  int ret;
-  if (to)
-    ret = mbrtowc(to, from, n, shift_state);
-  else
-    ret = mbrlen(from, n, shift_state);
-  return ret;
-}
+char const* _Locale_codecvt_name(const struct _Locale_codecvt* lcodecvt, char *buf)
+{ return "C"; }
 
-size_t _Locale_wctomb(struct _Locale_ctype *l,
-          char *to, size_t n,
-          const wchar_t c,
-          mbstate_t *shift_state)
-{
-  char buf [MB_LEN_MAX];
-  int ret;
-  char* mb = buf;
-  ret = wcrtomb(mb, c, shift_state);
+void _Locale_codecvt_destroy(struct _Locale_codecvt* lcodecvt)
+{}
 
-  if (ret > n)
-    return (size_t)-2;
-  else if (ret <= 0)
-    return ret;
+int _Locale_mb_cur_max( struct _Locale_codecvt * lcodecvt) { return 1; }
+int _Locale_mb_cur_min( struct _Locale_codecvt * lcodecvt) { return 1; }
+int _Locale_is_stateless( struct _Locale_codecvt * lcodecvt) { return 1; }
 
-  n = ret;
-  while (n--)
-    *to++ = *mb++;
+#if !defined (_STLP_NO_WCHAR_T)
+wint_t _Locale_btowc(struct _Locale_codecvt *lcodecvt, int c)
+{ return (wint_t)c; }
 
-  return ret;
-}
+int _Locale_wctob(struct _Locale_codecvt *lcodecvt, wint_t c)
+{ return (int)c; }
 
-size_t _Locale_unshift(struct _Locale_ctype *l,
-           mbstate_t * st,
-           char *buf, size_t n, char **next) {
-  *next = buf; /* JGS stateless, so don't need to do anything? */
-  return 0;
-}
+size_t _Locale_mbtowc(struct _Locale_codecvt *lcodecvt,
+                      wchar_t *to,
+                      const char *from, size_t n,
+                      mbstate_t *st)
+{ *to = *from; return 1; }
+
+size_t _Locale_wctomb(struct _Locale_codecvt *lcodecvt,
+                      char *to, size_t n,
+                      const wchar_t c,
+                      mbstate_t *st)
+{ *to = (char)c; return 1; }
+#endif
+
+size_t _Locale_unshift(struct _Locale_codecvt *lcodecvt,
+                       mbstate_t *st,
+                       char *buf, size_t n, char ** next)
+{ *next = buf; return 0; }
+
+
 
 
 /****** Collate Category ******/
-
 L_collate_t* _Locale_collate_create(const char * name, struct _Locale_name_hint* hint) {
   L_collate_t*  lcollate = (L_collate_t*)malloc(sizeof(L_collate_t));
   if (!lcollate)

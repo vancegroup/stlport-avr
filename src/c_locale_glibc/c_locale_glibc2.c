@@ -67,6 +67,14 @@ struct _Locale_ctype *_Locale_ctype_create(const char *nm, struct _Locale_name_h
   return (struct _Locale_ctype*)__LOCALE_CREATE( nm, LC_CTYPE );
 }
 
+struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_name_hint* hint,
+                                               int *__err_code) {
+  // Glibc do not support multibyte manipulation for the moment, it simply implements "C".
+  if (nm[0] == 'C' && nm[1] == 0)
+  { return (struct _Locale_codecvt*)0x01; }
+  *__err_code = _STLP_LOC_NO_PLATFORM_SUPPORT; return 0;
+}
+
 struct _Locale_numeric *_Locale_numeric_create(const char *nm, struct _Locale_name_hint* hint,
                                                int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
@@ -103,7 +111,7 @@ struct _Locale_messages *_Locale_messages_create(const char *nm, struct _Locale_
   1. LC_ALL
   2. category (LC_CTYPE, LC_NUMERIC, ... )
   3. LANG
-  If set nothing, return "C" (this really implemetation-specific).
+  If set nothing, return "C" (this really implementation-specific).
 */
 static const char *_Locale_aux_default( const char *LC, char *nm )
 {
@@ -156,36 +164,44 @@ const char *_Locale_messages_default( char *nm )
 
 char const*_Locale_ctype_name( const struct _Locale_ctype *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_CTYPE], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_CTYPE], _Locale_MAX_SIMPLE_NAME);
+}
+
+char const*_Locale_codecvt_name( const struct _Locale_codecvt *__loc, char *buf )
+{
+  return _C_name;
 }
 
 char const*_Locale_numeric_name( const struct _Locale_numeric *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_NUMERIC], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_NUMERIC], _Locale_MAX_SIMPLE_NAME);
 }
 
 char const*_Locale_time_name( const struct _Locale_time *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_TIME], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_TIME], _Locale_MAX_SIMPLE_NAME);
 }
 
 char const*_Locale_collate_name( const struct _Locale_collate *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_COLLATE], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_COLLATE], _Locale_MAX_SIMPLE_NAME);
 }
 
 char const*_Locale_monetary_name( const struct _Locale_monetary *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_MONETARY], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_MONETARY], _Locale_MAX_SIMPLE_NAME);
 }
 
 char const*_Locale_messages_name( const struct _Locale_messages *__loc, char *buf )
 {
-  return __loc != 0 ? strncpy( buf, ((__c_locale)__loc)->__names[LC_MESSAGES], _Locale_MAX_SIMPLE_NAME ) : 0;
+  return strncpy(buf, ((__c_locale)__loc)->__names[LC_MESSAGES], _Locale_MAX_SIMPLE_NAME);
 }
 
 void _Locale_ctype_destroy( struct _Locale_ctype *__loc )
 { __LOCALE_DESTROY(__loc); }
+
+void _Locale_codecvt_destroy( struct _Locale_codecvt *__loc )
+{}
 
 void _Locale_numeric_destroy( struct _Locale_numeric *__loc )
 { __LOCALE_DESTROY(__loc); }
@@ -325,61 +341,34 @@ wint_t _Locale_wchar_toupper( struct _Locale_ctype *__loc, wint_t c )
 }
 #endif
 
-int _Locale_mb_cur_max( struct _Locale_ctype * __DUMMY_PAR) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 0;
-}
-
-int _Locale_mb_cur_min( struct _Locale_ctype * __DUMMY_PAR) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 0;
-}
-
-int _Locale_is_stateless( struct _Locale_ctype * __DUMMY_PAR) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return 1;
-}
+int _Locale_mb_cur_max( struct _Locale_codecvt * lcodecvt) { return 1; }
+int _Locale_mb_cur_min( struct _Locale_codecvt * lcodecvt) { return 1; }
+int _Locale_is_stateless( struct _Locale_codecvt * lcodecvt) { return 1; }
 
 #if !defined (_STLP_NO_WCHAR_T)
-wint_t _Locale_btowc(struct _Locale_ctype *__loc, int c) {
-  wint_t _c;
-  /* __c_locale __tmp = __uselocale( __loc ); */
-  _c = btowc( c );
-  /* __uselocale( __tmp ); */
-  return _c;
-}
+wint_t _Locale_btowc(struct _Locale_codecvt *lcodecvt, int c)
+{ return (wint_t)c; }
 
-int _Locale_wctob(struct _Locale_ctype *__loc, wint_t c) {
-  int _c;
-  /* __c_locale __tmp = __uselocale( __loc ); */
-  _c = wctob( c );
-  /* __uselocale( __tmp ); */
-  return _c;
-}
+int _Locale_wctob(struct _Locale_codecvt *lcodecvt, wint_t c)
+{ return (int)c; }
 
-size_t _Locale_mbtowc(struct _Locale_ctype *__DUMMY_PAR1,
-                      wchar_t *__DUMMY_PAR2,
-                      const char *__DUMMY_PAR3, size_t __DUMMY_PAR4,
-                      mbstate_t *__DUMMY_PAR5) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return (size_t) -1;
-}
+size_t _Locale_mbtowc(struct _Locale_codecvt *lcodecvt,
+                      wchar_t *to,
+                      const char *from, size_t n,
+                      mbstate_t *st)
+{ *to = *from; return 1; }
 
-size_t _Locale_wctomb(struct _Locale_ctype *__DUMMY_PAR1,
-                      char *__DUMMY_PAR2, size_t __DUMMY_PAR3,
-                      const wchar_t __DUMMY_PAR4,
-                      mbstate_t *__DUMMY_PAR5) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return (size_t) -1;
-}
+size_t _Locale_wctomb(struct _Locale_codecvt *lcodecvt,
+                      char *to, size_t n,
+                      const wchar_t c,
+                      mbstate_t *st)
+{ *to = (char)c; return 1; }
 #endif
 
-size_t _Locale_unshift(struct _Locale_ctype *__DUMMY_PAR1,
-                       mbstate_t *__DUMMY_PAR2,
-                       char *__DUMMY_PAR3, size_t __DUMMY_PAR4, char ** __DUMMY_PAR5) {
-  printf( "%s:%d\n", __FILE__, __LINE__ );
-  return (size_t) -1;
-}
+size_t _Locale_unshift(struct _Locale_codecvt *lcodecvt,
+                       mbstate_t *st,
+                       char *buf, size_t n, char ** next)
+{ *next = buf; return 0; }
 
 /* Collate */
 int _Locale_strcmp(struct _Locale_collate * __loc,

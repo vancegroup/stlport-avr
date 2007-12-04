@@ -209,17 +209,12 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* &name, char *bu
         }
         _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
       
-        _Locale_ctype *__lwcvt = _STLP_PRIV __acquire_ctype(name, buf, hint, &__err_code);
-        if (!__lwcvt) {
-          delete wct;
-          locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
-          return hint;
-        }
-        else {
+        _Locale_codecvt *__lwcvt = _STLP_PRIV __acquire_codecvt(name, buf, hint, &__err_code);
+        if (__lwcvt) {
           _STLP_TRY {
             wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(__lwcvt);
           }
-          _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwcvt); delete wct);
+          _STLP_UNWIND(_STLP_PRIV __release_codecvt(__lwcvt); delete wct);
         }
       }
     }
@@ -230,7 +225,7 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* &name, char *bu
     this->insert(cvt, codecvt<char, char, mbstate_t>::id);
 #ifndef _STLP_NO_WCHAR_T
     this->insert(wct, ctype<wchar_t>::id);
-    this->insert(wcvt, codecvt<wchar_t, char, mbstate_t>::id);
+    if (wcvt) this->insert(wcvt, codecvt<wchar_t, char, mbstate_t>::id);
 #endif
   }
   return hint;
