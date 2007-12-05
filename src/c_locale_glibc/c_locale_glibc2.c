@@ -118,18 +118,18 @@ static const char *_Locale_aux_default( const char *LC, char *nm )
   char *name = getenv( "LC_ALL" );
 
   if ( name != NULL && *name != 0 ) {
-    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+    return name;
   }
   name = getenv( LC );
   if ( name != NULL && *name != 0 ) {
-    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+    return name;
   }
   name = getenv( "LANG" );
   if ( name != NULL && *name != 0 ) {
-    return strncpy( nm, name, _Locale_MAX_SIMPLE_NAME );
+    return name;
   }
 
-  return strcpy( nm, _C_name );
+  return _C_name;
 }
 
 const char *_Locale_ctype_default( char *nm )
@@ -164,7 +164,7 @@ const char *_Locale_messages_default( char *nm )
 
 char const*_Locale_ctype_name( const struct _Locale_ctype *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_CTYPE], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_CTYPE];
 }
 
 char const*_Locale_codecvt_name( const struct _Locale_codecvt *__loc, char *buf )
@@ -174,27 +174,27 @@ char const*_Locale_codecvt_name( const struct _Locale_codecvt *__loc, char *buf 
 
 char const*_Locale_numeric_name( const struct _Locale_numeric *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_NUMERIC], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_NUMERIC];
 }
 
 char const*_Locale_time_name( const struct _Locale_time *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_TIME], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_TIME];
 }
 
 char const*_Locale_collate_name( const struct _Locale_collate *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_COLLATE], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_COLLATE];
 }
 
 char const*_Locale_monetary_name( const struct _Locale_monetary *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_MONETARY], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_MONETARY];
 }
 
 char const*_Locale_messages_name( const struct _Locale_messages *__loc, char *buf )
 {
-  return strncpy(buf, ((__c_locale)__loc)->__names[LC_MESSAGES], _Locale_MAX_SIMPLE_NAME);
+  return ((__c_locale)__loc)->__names[LC_MESSAGES];
 }
 
 void _Locale_ctype_destroy( struct _Locale_ctype *__loc )
@@ -228,7 +228,6 @@ static char const*__Extract_locale_name( const char *loc, const char *category, 
 {
   char *expr;
   size_t len_name;
-  buf[0] = 0;
 
   if( loc[0]=='L' && loc[1]=='C' && loc[2]=='_') {
     expr = strstr( (char*)loc, category );
@@ -241,7 +240,7 @@ static char const*__Extract_locale_name( const char *loc, const char *category, 
     buf[len_name] = 0;
     return buf;
   }
-  return strncpy( buf, loc, _Locale_MAX_SIMPLE_NAME );
+  return loc;
 }
 
 char const*_Locale_extract_ctype_name(const char *loc, char *buf,
@@ -472,28 +471,27 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
 
 char _Locale_decimal_point(struct _Locale_numeric *__loc)
 {
-  return (__loc != 0) ? *(__nl_langinfo_l(RADIXCHAR, (__c_locale)__loc)) : '.';
+  return *(__nl_langinfo_l(RADIXCHAR, (__c_locale)__loc));
 }
 
 char _Locale_thousands_sep(struct _Locale_numeric *__loc)
 {
-  return (__loc != 0) ? *(__nl_langinfo_l(THOUSEP, (__c_locale)__loc)) : ',';
+  return *(__nl_langinfo_l(THOUSEP, (__c_locale)__loc));
 }
 
 const char* _Locale_grouping(struct _Locale_numeric *__loc)
 {
-  return (__loc != 0 && _Locale_thousands_sep(__loc) != '\0' ) ?
-    (__nl_langinfo_l(GROUPING, (__c_locale)__loc)) : "";
+  return (_Locale_thousands_sep(__loc) != 0 ) ? (__nl_langinfo_l(GROUPING, (__c_locale)__loc)) : _empty_str;
 }
 
 const char *_Locale_true(struct _Locale_numeric *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(YESSTR, (__c_locale)__loc) : "true";
+  return __nl_langinfo_l(YESSTR, (__c_locale)__loc);
 }
 
 const char *_Locale_false(struct _Locale_numeric *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(NOSTR, (__c_locale)__loc) : "false";
+  return __nl_langinfo_l(NOSTR, (__c_locale)__loc);
 }
 
 
@@ -501,60 +499,59 @@ const char *_Locale_false(struct _Locale_numeric *__loc)
 
 const char *_Locale_int_curr_symbol(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(INT_CURR_SYMBOL, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(INT_CURR_SYMBOL, (__c_locale)__loc);
 }
 
 const char *_Locale_currency_symbol(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(CURRENCY_SYMBOL, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(CURRENCY_SYMBOL, (__c_locale)__loc);
 }
 
 char _Locale_mon_decimal_point(struct _Locale_monetary * __loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(MON_DECIMAL_POINT,(__c_locale)__loc)) : '.';
+  return *(__nl_langinfo_l(MON_DECIMAL_POINT,(__c_locale)__loc));
 }
 
 char _Locale_mon_thousands_sep(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(MON_THOUSANDS_SEP, (__c_locale)__loc)) : ',';
+  return *(__nl_langinfo_l(MON_THOUSANDS_SEP, (__c_locale)__loc));
 }
 
 const char *_Locale_mon_grouping(struct _Locale_monetary *__loc)
 {
-  return (__loc != 0 && _Locale_mon_thousands_sep( __loc ) != '\0' ) ?
-    __nl_langinfo_l(MON_GROUPING, (__c_locale)__loc) : _empty_str;
+  return (_Locale_mon_thousands_sep( __loc ) != 0 ) ? __nl_langinfo_l(MON_GROUPING, (__c_locale)__loc) : _empty_str;
 }
 
 const char *_Locale_positive_sign(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(POSITIVE_SIGN, (__c_locale)__loc) : _empty_str;
+  return __nl_langinfo_l(POSITIVE_SIGN, (__c_locale)__loc);
 }
 
 const char *_Locale_negative_sign(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(NEGATIVE_SIGN, (__c_locale)__loc) : _empty_str;
+  return __nl_langinfo_l(NEGATIVE_SIGN, (__c_locale)__loc);
 }
 
 char _Locale_int_frac_digits(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(INT_FRAC_DIGITS, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(INT_FRAC_DIGITS, (__c_locale)__loc));
 }
 
 char _Locale_frac_digits(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(FRAC_DIGITS, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(FRAC_DIGITS, (__c_locale)__loc));
 }
 
 /* 1 if currency_symbol precedes a positive value, 0 if succeeds */
 int _Locale_p_cs_precedes(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(P_CS_PRECEDES, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(P_CS_PRECEDES, (__c_locale)__loc));
 }
 
 /* 1 if a space separates currency_symbol from a positive value. */
 int _Locale_p_sep_by_space(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(P_SEP_BY_SPACE, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(P_SEP_BY_SPACE, (__c_locale)__loc));
 }
 
 /*
@@ -566,19 +563,19 @@ int _Locale_p_sep_by_space(struct _Locale_monetary *__loc)
  */
 int _Locale_p_sign_posn(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(P_SIGN_POSN, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(P_SIGN_POSN, (__c_locale)__loc));
 }
 
 /* 1 if currency_symbol precedes a negative value, 0 if succeeds */
 int _Locale_n_cs_precedes(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(N_CS_PRECEDES, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(N_CS_PRECEDES, (__c_locale)__loc));
 }
 
 /* 1 if a space separates currency_symbol from a negative value. */
 int _Locale_n_sep_by_space(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(N_SEP_BY_SPACE, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(N_SEP_BY_SPACE, (__c_locale)__loc));
 }
 
 /*
@@ -590,69 +587,69 @@ int _Locale_n_sep_by_space(struct _Locale_monetary *__loc)
  */
 int _Locale_n_sign_posn(struct _Locale_monetary *__loc)
 {
-  return __loc != 0 ? *(__nl_langinfo_l(N_SIGN_POSN, (__c_locale)__loc)) : CHAR_MAX;
+  return *(__nl_langinfo_l(N_SIGN_POSN, (__c_locale)__loc));
 }
 
 
 /* Time */
 const char *_Locale_full_monthname(struct _Locale_time *__loc, int _m )
 {
-  return (__loc != 0 && _m >= 0 && _m < 12) ? __nl_langinfo_l(MON_1 + _m, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(MON_1 + _m, (__c_locale)__loc);
 }
 
 const char *_Locale_abbrev_monthname(struct _Locale_time *__loc, int _m )
 {
-  return (__loc != 0 && _m >= 0 && _m < 12) ? __nl_langinfo_l(ABMON_1 + _m, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(ABMON_1 + _m, (__c_locale)__loc);
 }
 
 const char *_Locale_full_dayofweek(struct _Locale_time *__loc, int _d )
 {
-  return (__loc != 0 && _d >= 0 && _d < 7) ? __nl_langinfo_l(DAY_1 + _d, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(DAY_1 + _d, (__c_locale)__loc);
 }
 
 const char *_Locale_abbrev_dayofweek(struct _Locale_time *__loc, int _d )
 {
-  return (__loc != 0 && _d >= 0 && _d < 7) ? __nl_langinfo_l(ABDAY_1 + _d, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(ABDAY_1 + _d, (__c_locale)__loc);
 }
 
 const char *_Locale_d_t_fmt(struct _Locale_time *__loc)
 {
-  return __loc != 0 ? __nl_langinfo_l(D_T_FMT, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(D_T_FMT, (__c_locale)__loc);
 }
 
 const char *_Locale_d_fmt(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(D_FMT, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(D_FMT, (__c_locale)__loc);
 }
 
 const char *_Locale_t_fmt(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(T_FMT, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(T_FMT, (__c_locale)__loc);
 }
 
 const char *_Locale_long_d_t_fmt(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(ERA_D_T_FMT, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(ERA_D_T_FMT, (__c_locale)__loc);
 }
 
 const char *_Locale_long_d_fmt(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(ERA_D_FMT, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(ERA_D_FMT, (__c_locale)__loc);
 }
 
 const char *_Locale_am_str(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(AM_STR, (__c_locale)__loc) : _empty_str;
+  return __nl_langinfo_l(AM_STR, (__c_locale)__loc);
 }
 
 const char *_Locale_pm_str(struct _Locale_time* __loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(PM_STR, (__c_locale)__loc) : _empty_str;
+  return __nl_langinfo_l(PM_STR, (__c_locale)__loc);
 }
 
 const char *_Locale_t_fmt_ampm(struct _Locale_time *__loc )
 {
-  return __loc != 0 ? __nl_langinfo_l(T_FMT_AMPM, (__c_locale)__loc) : 0;
+  return __nl_langinfo_l(T_FMT_AMPM, (__c_locale)__loc);
 }
 
 /* Messages */
