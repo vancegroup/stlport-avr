@@ -211,10 +211,13 @@ void LocaleTest::numpunct_by_name()
     numpunct<char> const& cfacet = use_facet<numpunct<char> >(locale::classic());
 
     CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
-    CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
     CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
+    if (!cfacet.grouping().empty())
+      CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
+#    if !defined (STLPORT) || !defined (__GLIBC__)
     CPPUNIT_CHECK( cfacet_byname.truename() == cfacet.truename() );
     CPPUNIT_CHECK( cfacet_byname.falsename() == cfacet.falsename() );
+#    endif
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
