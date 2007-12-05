@@ -136,7 +136,7 @@ static _STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
 static void*
 __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
                    loc_extract_name_func_t extract_name,
-                   loc_create_func_t create_obj, loc_default_name_func_t default_obj,
+                   loc_create_func_t create_obj, loc_default_name_func_t default_name,
                    Category_Map ** M, int *__err_code) {
 #if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
   typedef Category_Map::iterator Category_iterator;
@@ -153,7 +153,7 @@ __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
 
   // Find what name to look for. Be careful if user requests the default.
   if (name[0] == 0) {
-    name = default_obj(buf);
+    name = default_name(buf);
     if (name == 0 || name[0] == 0)
       name = "C";
   }
