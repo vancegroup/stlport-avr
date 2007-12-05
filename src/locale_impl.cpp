@@ -203,19 +203,17 @@ _Locale_name_hint* _Locale_impl::insert_ctype_facets(const char* &name, char *bu
         return hint;
       }
 
-      if (__lwct) {
-        _STLP_TRY {
-          wct  = new ctype_byname<wchar_t>(__lwct);
-        }
-        _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
+      _STLP_TRY {
+        wct  = new ctype_byname<wchar_t>(__lwct);
+      }
+      _STLP_UNWIND(_STLP_PRIV __release_ctype(__lwct));
       
-        _Locale_codecvt *__lwcvt = _STLP_PRIV __acquire_codecvt(name, buf, hint, &__err_code);
-        if (__lwcvt) {
-          _STLP_TRY {
-            wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(__lwcvt);
-          }
-          _STLP_UNWIND(_STLP_PRIV __release_codecvt(__lwcvt); delete wct);
+      _Locale_codecvt *__lwcvt = _STLP_PRIV __acquire_codecvt(name, buf, hint, &__err_code);
+      if (__lwcvt) {
+        _STLP_TRY {
+          wcvt = new codecvt_byname<wchar_t, char, mbstate_t>(__lwcvt);
         }
+        _STLP_UNWIND(_STLP_PRIV __release_codecvt(__lwcvt); delete wct);
       }
     }
     _STLP_UNWIND(delete cvt; delete ct);
