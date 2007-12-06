@@ -3,6 +3,11 @@
 	* src/c_locale_glibc/c_locale_glibc2.c: Fix a one byte memory overrun
 	when passing a very locale name.
 
+	* src/c_locale_win32/c_locale_win32.c: Simplified Win32 localization
+	code. Remove useless calls to strcpy. Remove useless call to the
+	__Extract_locale_name once in the _Locale_*_create functions as
+	name has already been extracted at this moment.
+
 2007-12-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: Removed many checks useless

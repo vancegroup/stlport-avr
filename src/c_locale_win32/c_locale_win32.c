@@ -29,22 +29,16 @@
 #include <stdio.h>
 
 #if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
-#  define _STLP_STRCPY(D, S) strcpy_s(_STLP_ARRAY_AND_SIZE(D), S)
-#  define _STLP_STRCPY2(D, DS, S) strcpy_s(D, DS, S)
-#  define _STLP_RETURN_STRCPY2(D, DS, S) strcpy_s(D, DS, S); return D
+#  define _STLP_STRCPY(D, DS, S) strcpy_s(D, DS, S)
 #  define _STLP_STRNCPY(D, DS, S, C) strncpy_s(D, DS, S, C)
-#  define _STLP_STRCAT(D, S) strcat_s(_STLP_ARRAY_AND_SIZE(D), S)
-#  define _STLP_STRCAT2(D, DS, S) strcat_s(D, DS, S)
+#  define _STLP_STRCAT(D, DS, S) strcat_s(D, DS, S)
 #  if !defined (_STLP_NO_WCHAR_T)
 #    define _STLP_WCSNCPY(D, DS, S, C) wcsncpy_s(D, DS, S, C)
 #  endif
 #else
-#  define _STLP_STRCPY(D, S) strcpy(D, S)
-#  define _STLP_STRCPY2(D, DS, S) strcpy(D, S)
-#  define _STLP_RETURN_STRCPY2(D, DS, S) return strcpy(D, S)
+#  define _STLP_STRCPY(D, DS, S) strcpy(D, S)
 #  define _STLP_STRNCPY(D, DS, S, C) strncpy(D, S, C)
-#  define _STLP_STRCAT(D, S) strcat(D, S)
-#  define _STLP_STRCAT2(D, DS, S) strcat(D, S)
+#  define _STLP_STRCAT(D, DS, S) strcat(D, S)
 #  if !defined (_STLP_NO_WCHAR_T)
 #    define _STLP_WCSNCPY(D, DS, S, C) wcsncpy(D, S, C)
 #  endif
@@ -87,6 +81,8 @@ typedef struct _LOCALECONV {
 #    define LC_MAX LC_LAST
 #  endif
 #endif
+
+static const char *_C_name = "C";
 
 /*  non-NLS language string table */
 static LOCALECONV __rg_language[] = {
@@ -250,7 +246,7 @@ static int __ParseLocaleString(const char* lname, char* lang, char* ctry, char* 
 static int __GetLCID(const char* lang, const char* ctry, LCID* lcid);
 static int __GetLCIDFromName(const char* lname, LCID* lcid, char *cp, _Locale_lcid_t *hint);
 static char const* __GetLocaleName(LCID lcid, const char* cp, char* buf);
-static char const* __Extract_locale_name(const char* loc, int category, char* buf);
+static char const* __Extract_locale_name(const char* loc, const char* category, char* buf);
 static char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint, int *__err_code);
 static void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size);
 static int __intGetACP(LCID lcid);
@@ -293,7 +289,6 @@ _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages)
 { return 0; }
 
 _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
   char cp_name[MAX_CP_LEN + 1];
   int NativeCP;
   unsigned char Buffer[256];
@@ -308,9 +303,7 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
   if (!ltype) { *__err_code = _STLP_LOC_NO_MEMORY; return ltype; }
   memset(ltype, 0, sizeof(_Locale_ctype_t));
 
-  __Extract_locale_name(name, LC_CTYPE, cname);
-
-  if (__GetLCIDFromName(cname, &ltype->lc.id, cp_name, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &ltype->lc.id, cp_name, lc_hint) == -1)
   { free(ltype); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   ltype->cp = atoi(cp_name);
@@ -372,7 +365,6 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
 }
 
 _Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
   char cp_name[MAX_CP_LEN + 1];
   unsigned char *ptr;
   CPINFO CPInfo;
@@ -383,9 +375,7 @@ _Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_
   if (!lcodecvt) { *__err_code = _STLP_LOC_NO_MEMORY; return lcodecvt; }
   memset(lcodecvt, 0, sizeof(_Locale_codecvt_t));
 
-  __Extract_locale_name(name, LC_CTYPE, cname);
-
-  if (__GetLCIDFromName(cname, &lcodecvt->lc.id, cp_name, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &lcodecvt->lc.id, cp_name, lc_hint) == -1)
   { free(lcodecvt); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   lcodecvt->cp = atoi(cp_name);
@@ -401,16 +391,13 @@ _Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_
 
 _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
   char *GroupingBuffer;
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
   int BufferSize;
 
   _Locale_numeric_t *lnum = (_Locale_numeric_t*)malloc(sizeof(_Locale_numeric_t));
   if (!lnum) { *__err_code = _STLP_LOC_NO_MEMORY; return lnum; }
   memset(lnum, 0, sizeof(_Locale_numeric_t));
 
-  __Extract_locale_name(name, LC_NUMERIC, cname);
-
-  if (__GetLCIDFromName(cname, &lnum->lc.id, lnum->cp, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &lnum->lc.id, lnum->cp, lc_hint) == -1)
   { free(lnum); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
@@ -723,16 +710,13 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   int size, month, dayofweek;
   size_t length;
   char fmt80[80];
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
 
   _Locale_time_t *ltime = (_Locale_time_t*)malloc(sizeof(_Locale_time_t));
   
   if (!ltime) { *__err_code = _STLP_LOC_NO_MEMORY; return ltime; }
   memset(ltime, 0, sizeof(_Locale_time_t));
 
-  __Extract_locale_name(name, LC_TIME, cname);
-
-  if (__GetLCIDFromName(cname, &ltime->lc.id, ltime->cp, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &ltime->lc.id, ltime->cp, lc_hint) == -1)
   { free(ltime); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   for (month = LOCALE_SMONTHNAME1; month <= LOCALE_SMONTHNAME12; ++month) { /* Small hack :-) */
@@ -795,18 +779,18 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   ltime->date_time_format = (char*)malloc(length);
   if (!ltime->date_time_format)
   { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-  _STLP_STRCPY2(ltime->date_time_format, length, ltime->date_format);
-  _STLP_STRCAT2(ltime->date_time_format, length, " ");
-  _STLP_STRCAT2(ltime->date_time_format, length, ltime->time_format);
+  _STLP_STRCPY(ltime->date_time_format, length, ltime->date_format);
+  _STLP_STRCAT(ltime->date_time_format, length, " ");
+  _STLP_STRCAT(ltime->date_time_format, length, ltime->time_format);
 
   /* NT doesn't provide this information, we must simulate. */
   length = strlen(ltime->long_date_format) + strlen(ltime->time_format) + 1 /* space */ + 1 /* trailing 0 */;
   ltime->long_date_time_format = (char*)malloc(length);
   if (!ltime->long_date_time_format)
   { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-  _STLP_STRCPY2(ltime->long_date_time_format, length, ltime->long_date_format);
-  _STLP_STRCAT2(ltime->long_date_time_format, length, " ");
-  _STLP_STRCAT2(ltime->long_date_time_format, length, ltime->time_format);
+  _STLP_STRCPY(ltime->long_date_time_format, length, ltime->long_date_format);
+  _STLP_STRCAT(ltime->long_date_time_format, length, " ");
+  _STLP_STRCAT(ltime->long_date_time_format, length, ltime->time_format);
 
   __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, ltime->am, 9);
   __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, ltime->pm, 9);
@@ -815,22 +799,17 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
 }
 
 _Locale_collate_t* _Locale_collate_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
-
   _Locale_collate_t *lcol = (_Locale_collate_t*)malloc(sizeof(_Locale_collate_t));
   if (!lcol) { *__err_code = _STLP_LOC_NO_MEMORY; return lcol; }
   memset(lcol, 0, sizeof(_Locale_collate_t));
 
-  __Extract_locale_name(name, LC_COLLATE, cname);
-
-  if (__GetLCIDFromName(cname, &lcol->lc.id, lcol->cp, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &lcol->lc.id, lcol->cp, lc_hint) == -1)
   { free(lcol); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   return lcol;
 }
 
 _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
-  char cname[_Locale_MAX_SIMPLE_NAME + 1];
   char *GroupingBuffer;
   int BufferSize;
   char FracDigits[3];
@@ -839,9 +818,7 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
   if (!lmon) { *__err_code = _STLP_LOC_NO_MEMORY; return lmon; }
   memset(lmon, 0, sizeof(_Locale_monetary_t));
 
-  __Extract_locale_name(name, LC_MONETARY, cname);
-
-  if (__GetLCIDFromName(cname, &lmon->lc.id, lmon->cp, lc_hint) == -1)
+  if (__GetLCIDFromName(name, &lmon->lc.id, lmon->cp, lc_hint) == -1)
   { free(lmon); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
   /* Extract information about monetary system */
@@ -995,43 +972,42 @@ void _Locale_monetary_destroy(_Locale_monetary_t* lmon) {
 
 void _Locale_messages_destroy(struct _Locale_messages* lmes) {}
 
-static char const* _Locale_extract_category_name(const char* cname, int category, char* buf,
+static char const* _Locale_extract_category_name(const char* name, const char* category, char* buf,
                                                  _Locale_lcid_t* hint, int *__err_code) {
-  char lname[_Locale_MAX_SIMPLE_NAME + 1];
-  __Extract_locale_name(cname, category, lname);
-  if (lname[0] == 'C' && lname[1] == 0) {
-    _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lname);
+  const char* cname = __Extract_locale_name(name, category, buf);
+  if (cname == 0 || (cname[0] == 'C' && cname[1] == 0)) {
+    return cname;
   }
-  return __TranslateToSystem(lname, buf, hint, __err_code);
+  return __TranslateToSystem(cname, buf, hint, __err_code);
 }
 
 char const* _Locale_extract_ctype_name(const char* cname, char* buf,
                                        _Locale_lcid_t* hint, int *__err_code)
-{ return _Locale_extract_category_name(cname, LC_CTYPE, buf, hint, __err_code); }
+{ return _Locale_extract_category_name(cname, "LC_CTYPE", buf, hint, __err_code); }
 
 char const* _Locale_extract_numeric_name(const char* cname, char* buf,
                                          _Locale_lcid_t* hint, int *__err_code)
-{ return _Locale_extract_category_name(cname, LC_NUMERIC, buf, hint, __err_code); }
+{ return _Locale_extract_category_name(cname, "LC_NUMERIC", buf, hint, __err_code); }
 
 char const* _Locale_extract_time_name(const char* cname, char* buf,
                                       _Locale_lcid_t* hint, int *__err_code)
-{ return _Locale_extract_category_name(cname, LC_TIME, buf, hint, __err_code); }
+{ return _Locale_extract_category_name(cname, "LC_TIME", buf, hint, __err_code); }
 
 char const* _Locale_extract_collate_name(const char* cname, char* buf,
                                          _Locale_lcid_t* hint, int *__err_code)
-{ return _Locale_extract_category_name(cname, LC_COLLATE, buf, hint, __err_code); }
+{ return _Locale_extract_category_name(cname, "LC_COLLATE", buf, hint, __err_code); }
 
 char const* _Locale_extract_monetary_name(const char* cname, char* buf,
                                           _Locale_lcid_t* hint, int *__err_code)
-{ return _Locale_extract_category_name(cname, LC_MONETARY, buf, hint, __err_code); }
+{ return _Locale_extract_category_name(cname, "LC_MONETARY", buf, hint, __err_code); }
 
 char const* _Locale_extract_messages_name(const char* cname, char* buf,
                                           _Locale_lcid_t* hint, int *__err_code) {
   if (cname[0] == 'L' && cname[1] == 'C' && cname[2] == '_') {
-    _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, "C");
+    return _C_name;
   }
   if (cname[0] == 'C' && cname[1] == 0) {
-    _STLP_RETURN_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, cname);
+    return _C_name;
   }
   return __TranslateToSystem(cname, buf, hint, __err_code);
 }
@@ -1799,59 +1775,39 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
 
 char const* __GetLocaleName(LCID lcid, const char* cp, char* buf) {
   if (lcid == INVARIANT_LCID) {
-    buf[0] = 'C'; buf[1] = 0;
+    return _C_name;
   }
   else {
     char lang[MAX_LANG_LEN + 1], ctry[MAX_CTRY_LEN + 1];
     GetLocaleInfoA(lcid, LOCALE_SENGLANGUAGE, lang, MAX_LANG_LEN);
     GetLocaleInfoA(lcid, LOCALE_SENGCOUNTRY, ctry, MAX_CTRY_LEN);
-    _STLP_STRCPY2(buf, _Locale_MAX_SIMPLE_NAME, lang);
-    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, "_");
-    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ctry);
-    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, ".");
-    _STLP_STRCAT2(buf, _Locale_MAX_SIMPLE_NAME, cp);
+    _STLP_STRCPY(buf, _Locale_MAX_SIMPLE_NAME, lang);
+    _STLP_STRCAT(buf, _Locale_MAX_SIMPLE_NAME, "_");
+    _STLP_STRCAT(buf, _Locale_MAX_SIMPLE_NAME, ctry);
+    _STLP_STRCAT(buf, _Locale_MAX_SIMPLE_NAME, ".");
+    _STLP_STRCAT(buf, _Locale_MAX_SIMPLE_NAME, cp);
+    return buf;
   }
-  return buf;
 }
 
-static const char* __loc_categories[]= {
-  "LC_ALL", "LC_COLLATE", "LC_CTYPE", "LC_MONETARY", "LC_NUMERIC", "LC_TIME"
-};
-
-char const* __Extract_locale_name(const char* loc, int category, char* buf) {
+char const* __Extract_locale_name(const char* loc, const char* category, char* buf) {
   char *expr;
   size_t len_name;
-  buf[0] = 0;
-#if defined (__BORLANDC__)
-  if (category < LC_MIN || category > LC_MAX) return NULL;
-  switch (category) {
-    case 0xFF: category = 0; break;
-    case 0x01: category = 1; break;
-    case 0x02: category = 2; break;
-    case 0x04: category = 3; break;
-    case 0x10: category = 4; break;
-    case 0x20: category = 5; break;
-    default  : category = 0;
-  }
-#else
-  if (category < LC_ALL || category > LC_MAX) return NULL;
-#endif
 
   if (loc[0] == 'L' && loc[1] == 'C' && loc[2] == '_') {
-    expr = strstr((char*)loc, __loc_categories[category]);
+    expr = strstr((char*)loc, category);
     if (expr == NULL) return NULL; /* Category not found. */
     expr = strchr(expr, '=');
     if (expr == NULL) return NULL;
     ++expr;
     len_name = strcspn(expr, ";");
-    len_name = len_name > _Locale_MAX_SIMPLE_NAME ? _Locale_MAX_SIMPLE_NAME
-                                                  : len_name;
-    _STLP_STRNCPY(buf, _Locale_MAX_SIMPLE_NAME + 1, expr, len_name); buf[len_name] = 0;
+    len_name = len_name >= _Locale_MAX_SIMPLE_NAME ? _Locale_MAX_SIMPLE_NAME - 1
+                                                   : len_name;
+    _STLP_STRNCPY(buf, _Locale_MAX_SIMPLE_NAME, expr, len_name); buf[len_name] = 0;
     return buf;
   }
   else {
-    _STLP_STRNCPY(buf, _Locale_MAX_SIMPLE_NAME + 1, loc, _Locale_MAX_SIMPLE_NAME);
-    return buf;
+    return loc;
   }
 }
 
