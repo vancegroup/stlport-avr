@@ -235,7 +235,7 @@ static char const*__Extract_locale_name( const char *loc, const char *category, 
       return NULL; /* Category not found. */
     ++expr;
     len_name = strcspn( expr, ";" );
-    len_name = len_name > _Locale_MAX_SIMPLE_NAME ? _Locale_MAX_SIMPLE_NAME : len_name;
+    len_name = len_name >= _Locale_MAX_SIMPLE_NAME ? _Locale_MAX_SIMPLE_NAME - 1 : len_name;
     strncpy( buf, expr, len_name );
     buf[len_name] = 0;
     return buf;

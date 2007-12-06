@@ -1,5 +1,10 @@
 2007-12-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/c_locale_glibc/c_locale_glibc2.c: Fix a one byte memory overrun
+	when passing a very locale name.
+
+2007-12-05  Francois Dumont  <dums@users.sourceforge.net>
+
 	* src/c_locale_glibc/c_locale_glibc2.c: Removed many checks useless
 	as the C functions are called in a well defined and safe context. Also
 	remove useless strcpy calls when it is safe to return the internal
