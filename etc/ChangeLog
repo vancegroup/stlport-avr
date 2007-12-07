@@ -2,6 +2,12 @@
 
 	* stlport/stl/_uninitialized.h: comment unused parameter;
 
+	* stlport/stl/_limits.c: 64-bits systems may has [and really has]
+	size of long double 16, not 12; but IEEE 854 still in force, and
+	only 10 bytes of long double taken into account. This should fix
+	limits<long double> on 64-bits systems. Thanks joebishop
+	[aka Denis Cheremisov] for granted access to 64-bit linux.
+
 2007-12-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: Fix a one byte memory overrun

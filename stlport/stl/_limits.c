@@ -154,7 +154,7 @@ struct float_helper {
   } 
   static _Number get_word_lower() _STLP_NOTHROW {
     _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word;
+    __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word;
     return __tmp._num;
   }
   static _Number get_from_last_word() _STLP_NOTHROW {
@@ -186,8 +186,8 @@ struct float_helper2 {
   } 
   static _Number get_word_lower() _STLP_NOTHROW {
     _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 2] = _Word1;
-    __tmp._Words[(sizeof(_Number) == 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word2;
+    __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 2] = _Word1;
+    __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word2;
     return __tmp._num;
   }
   static _Number get_from_last_word() _STLP_NOTHROW {
