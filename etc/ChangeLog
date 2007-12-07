@@ -1,3 +1,7 @@
+2007-12-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_uninitialized.h: comment unused parameter;
+
 2007-12-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: Fix a one byte memory overrun

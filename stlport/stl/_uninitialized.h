@@ -331,7 +331,7 @@ inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& 
 { return __uninitialized_fill_n(__first, __n, __val); }
 
 template <class _ForwardIter, class _Size, class _Tp>
-inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
+inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& /* __val */,
                                     const __true_type& /*_HasDefaultZero*/) {
   memset((unsigned char*)__first, 0, __n * sizeof(_Tp));
   return __first + __n;
