@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <07/02/07 14:58:53 ptr>
+# -*- makefile -*- Time-stamp: <07/12/12 01:52:19 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -142,29 +142,30 @@ endif
 
 define do_install_headers
 if [ ! -d $(INSTALL_HDR_DIR) ]; then \
-  echo $(INSTALL_D) $(INSTALL_HDR_DIR); \
+  $(INSTALL_D) $(INSTALL_HDR_DIR) || { echo "Can't create $(INSTALL_HDR_DIR)"; exit 1; }; \
 fi; \
 for dd in $(HEADERS_BASE); do \
   d=`dirname $$dd`; \
   h=`basename $$dd`; \
-  f=`cd $$d; find $$h \( -type d \( -wholename "*/.svn" -o -prune \) \) -print`; \
+  f=`cd $$d; find $$h \( -wholename "*/.svn" -prune \) -o \( -type d -print \)`; \
   for ddd in $$f; do \
     if [ ! -d $(INSTALL_HDR_DIR)/$$ddd ]; then \
-      echo $(INSTALL_D) $(INSTALL_HDR_DIR)/$$ddd; \
+      $(INSTALL_D) $(INSTALL_HDR_DIR)/$$ddd || { echo "Can't create $(INSTALL_HDR_DIR)/$$ddd"; exit 1; }; \
     fi; \
   done; \
-  f=`find $$dd \( -type f \( \! \( -wholename "*/.svn/*" -o -name "*~" -o -name "*.bak" \) \) \) -print`; \
+  f=`find $$dd \( -wholename "*/.svn*" -o -name "*~" -o -name "*.bak" \) -prune -o \( -type f -print \)`; \
   for ff in $$f; do \
     h=`echo $$ff | sed -e "s|$$d|$(INSTALL_HDR_DIR)|"`; \
-    echo $(INSTALL_F) $$ff $$h; \
+    $(INSTALL_F) $$ff $$h; \
   done; \
 done; \
 for f in $(HEADERS); do \
   h=`basename $$f`; \
-  echo $(INSTALL_F) $$f $(INSTALL_HDR_DIR)/$$h; \
+  $(INSTALL_F) $$f $(INSTALL_HDR_DIR)/$$h || { echo "Can't install $(INSTALL_HDR_DIR)/$$h"; exit 1; }; \
 done
 endef
 
+# find $$dd \( -type f \( \! \( -wholename "*/.svn*" -o -name "*~" -o -name "*.bak" \) \) \) -print
 # _HEADERS_FROM = $(shell for dd in $(HEADERS_BASE); do find $$dd \( -type f \( \! \( -wholename "*/.svn/*" -o -name "*~" -o -name "*.bak" \) \) \) -print ; done )
 # _HEADERS_TO = $(foreach d,$(HEADERS_BASE),$(patsubst $(d)/%,$(BASE_INSTALL_DIR)include/%,$(_HEADERS_FROM)))
 

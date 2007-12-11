@@ -1,3 +1,11 @@
+2007-12-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/unix/rules-install-so.mak, build/lib/gcc.mak:
+	install-headers usable; it use user-defined macro HEADERS_BASE
+	[catalog and all files, keeping	directory structure] and HEADERS
+	[for single files]; target catalog is INSTALL_HDR_DIR, by default
+	it is ${BASE_INSTALL_DIR}/include.
+
 2007-12-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_uninitialized.h: comment unused parameter;

@@ -1,10 +1,12 @@
-# -*- Makefile -*- Time-stamp: <05/12/27 10:54:25 ptr>
+# -*- Makefile -*- Time-stamp: <07/12/12 01:21:41 ptr>
 
 SRCROOT := ..
 COMPILER_NAME := gcc
 STLP_BUILD := 1
 
 STLPORT_INCLUDE_DIR = ../../stlport
+HEADERS_BASE = ${STLPORT_INCLUDE_DIR}
+
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
