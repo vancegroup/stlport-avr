@@ -1,4 +1,4 @@
-#if 0
+#ifndef WITHOUT_STLPORT 
 #include <stl/config/user_config.h>
 
 #ifdef _STLP_USE_BOOST_SUPPORT
