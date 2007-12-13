@@ -1,3 +1,8 @@
+2007-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/test/unit/gcc.mak, test/unit/...: allow build unit tests
+	with libstdc++, without STLport; useful for reference and comparison.
+
 2007-12-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/unix/rules-install-so.mak, build/lib/gcc.mak:

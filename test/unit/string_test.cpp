@@ -581,7 +581,7 @@ void StringTest::replace()
   str.replace(5, 5, str.c_str(), 10);
   CPPUNIT_ASSERT( str == "This This is test string for string calls" );
 
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
+#if (defined (STLPORT) && defined(_STLP_MEMBER_TEMPLATES)) || ( !defined (STLPORT) && !defined(__GNUC__) )
   deque<char> cdeque;
   cdeque.push_back('I');
   str.replace(str.begin(), str.begin() + 11, cdeque.begin(), cdeque.end());
@@ -626,7 +626,7 @@ void StringTest::find()
   //We are trying to get a const reference to the npos string static member to
   //force the compiler to allocate memory for this variable. It used to reveal
   //a bug of STLport which was simply declaring npos without instanciating it.
-#if !defined (STLPORT) || !defined (_STLP_STATIC_CONST_INIT_BUG)
+#if defined (STLPORT) && defined (_STLP_STATIC_CONST_INIT_BUG)
   string::size_type const& npos_local = string::npos;
 #else
 #  define npos_local string::npos

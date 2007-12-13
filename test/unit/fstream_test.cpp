@@ -19,11 +19,12 @@ using namespace std;
 //size in Go
 //#define CHECK_BIG_FILE 4
 
-#  if !defined (STLPORT) || !defined (_STLP_NO_CUSTOM_IO) && !defined (_STLP_NO_MEMBER_TEMPLATES) && \
+#  if (!defined(STLPORT) && (defined (__GNUC__) && (__GNUC__ > 3))) || \
+      (defined (STLPORT) && !defined (_STLP_NO_CUSTOM_IO) && !defined (_STLP_NO_MEMBER_TEMPLATES) && \
                             !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
                               (defined (__GNUC__) && (__GNUC__ < 3)) || \
                               (defined (__SUNPRO_CC)) || \
-                              (defined (__DMC__) && defined (_DLL)))
+                              (defined (__DMC__) && defined (_DLL))))
 #    define DO_CUSTOM_FACET_TEST
 #  endif
 
@@ -410,7 +411,7 @@ namespace std {
     typedef char extern_type;
     typedef my_state state_type;
 
-    explicit my_codecvt(size_t __refs = 0) : locale::facet(__refs) {}
+    explicit codecvt(size_t __refs = 0) : locale::facet(__refs) {}
     result out(state_type&,
                const intern_type*  __from,
                const intern_type*,

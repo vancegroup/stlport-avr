@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #include <stl/config/user_config.h>
 
 #ifdef _STLP_USE_BOOST_SUPPORT

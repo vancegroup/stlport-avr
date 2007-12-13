@@ -2,6 +2,7 @@
 #include <iosfwd>
 
 #include "cppunit/cppunit_proxy.h"
+#include <locale>
 
 struct ref_monetary;
 struct ref_locale;

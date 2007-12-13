@@ -10,12 +10,18 @@
 #  endif
 #  include <iterator>
 #  include <functional>
+#elif defined(__GNUC__)
+#  include <ext/slist>
 #endif
 
 #include "cppunit/cppunit_proxy.h"
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
+#endif
+
+#if !defined (STLPORT) && defined(__GNUC__)
+using namespace __gnu_cxx;
 #endif
 
 //

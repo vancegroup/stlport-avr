@@ -18,7 +18,7 @@ void LocaleTest::messages_by_name()
    * instance from a null pointer or an unknown name should result in
    * a runtime_error exception.
    */
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#  if (defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)) || (!defined(STLPORT) && !defined(__GNUC__))
   try {
     locale loc(locale::classic(), new messages_byname<char>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
