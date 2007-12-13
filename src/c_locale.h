@@ -227,18 +227,9 @@ int _Locale_is_stateless (struct _Locale_codecvt *);
  */
 
 #ifndef _STLP_NO_WCHAR_T
-wint_t _Locale_btowc(struct _Locale_codecvt *, int);
-int _Locale_wctob(struct _Locale_codecvt *, wint_t);
-
-/*
- * Just like btowc and wctob, from 4.6.5.1 of the C standard, Normative
- * Addendum 1.  (And just like widen/narrow, from clause 22 of the C++
- * standard.)
- */
-
 size_t _Locale_mbtowc(struct _Locale_codecvt *,
-                      wchar_t *,
-                      const char *, size_t,
+                      wchar_t * /* to */,
+                      const char * /* from */, size_t /* n */,
                       mbstate_t *);
 
 /*

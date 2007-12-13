@@ -345,12 +345,6 @@ int _Locale_mb_cur_min( struct _Locale_codecvt * lcodecvt) { return 1; }
 int _Locale_is_stateless( struct _Locale_codecvt * lcodecvt) { return 1; }
 
 #if !defined (_STLP_NO_WCHAR_T)
-wint_t _Locale_btowc(struct _Locale_codecvt *lcodecvt, int c)
-{ return (wint_t)c; }
-
-int _Locale_wctob(struct _Locale_codecvt *lcodecvt, wint_t c)
-{ return (int)c; }
-
 size_t _Locale_mbtowc(struct _Locale_codecvt *lcodecvt,
                       wchar_t *to,
                       const char *from, size_t n,

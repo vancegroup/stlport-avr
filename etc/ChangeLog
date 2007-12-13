@@ -1,3 +1,10 @@
+2007-12-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale.h, c_locale_dummy/c_locale_dummy.c,
+	c_locale_glibc/c_locale_glibc.c, c_locale_glibc2.c,
+	c_locale_win32/c_locale_win32.c: Remove unused _Locale_wctob and
+	_Locale_btowc localization API functions.
+
 2007-12-13  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak, test/unit/...: allow build unit tests

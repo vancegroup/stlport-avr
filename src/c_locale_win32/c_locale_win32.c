@@ -1113,24 +1113,6 @@ int _Locale_is_stateless (_Locale_codecvt_t * lcodecvt) {
 using __std_alias::wint_t;
 #endif
 
-wint_t _Locale_btowc(_Locale_codecvt_t * lcodecvt, int c) {
-  wchar_t wc;
-  if (c == EOF) return WEOF;
-
-  MultiByteToWideChar(lcodecvt->cp, MB_PRECOMPOSED, (char*)&c, 1, &wc, 1);
-
-  return (wint_t)wc;
-}
-
-int _Locale_wctob(_Locale_codecvt_t * lcodecvt, wint_t wc) {
-  char c;
-
-  if (!WideCharToMultiByte(lcodecvt->cp, WC_COMPOSITECHECK | WC_DEFAULTCHAR, (wchar_t*)&wc, 1, &c, 1, NULL, NULL))
-    return WEOF; /* Not single byte or error conversion. */
-
-  return (int)c;
-}
-
 static int __isleadbyte(int i, unsigned char *ctable) {
   unsigned char c = (unsigned char)i;
   return (ctable[c / CHAR_BIT] & (0x01 << c % CHAR_BIT));
