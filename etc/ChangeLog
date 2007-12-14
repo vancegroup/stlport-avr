@@ -1,3 +1,16 @@
+2007-12-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_win32/c_locale_win32.c: Fix implementation of
+	_Locale_mbtowc and _Locale_wctomb functions. Reveal limitation of
+	the MultiByteToWideChar function that cannot be used to implement
+	more complicated encodings that have a real shift state like the
+	JIS one. Add support for UTF7 and UTF8 encodings.
+
+	* test/unit/codecvt_test.cpp: New test case to check support for
+	2 encodings, the Windows specific code page 936 and the UTF8 one.
+	Those tests are coming from chinese test samples proposed by Victor
+	Xie.
+
 2007-12-14  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string_base.h, stlport/stl/_string.h, stlport/stl/_string.c:

@@ -73,6 +73,14 @@ typedef struct _LOCALECONV {
 #  define LANG_INVARIANT 0x7f
 #endif
 
+#ifndef CP_UTF7
+#  define CP_UTF7 65000
+#endif
+
+#ifndef CP_UTF8
+#  define CP_UTF8 65001
+#endif
+
 #define INVARIANT_LCID MAKELCID(MAKELANGID(LANG_INVARIANT, SUBLANG_NEUTRAL), SORT_DEFAULT)
 
 /* Metrowerks has different define here */
@@ -194,6 +202,9 @@ typedef struct _Locale_codecvt {
   _Locale_lcid_t lc;
   UINT cp;
   unsigned char cleads[256 / CHAR_BIT];
+  unsigned char max_char_size;
+  DWORD mbtowc_flags;
+  DWORD wctomb_flags;
 } _Locale_codecvt_t;
 
 typedef struct _Locale_numeric {
@@ -380,6 +391,15 @@ _Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_
 
   lcodecvt->cp = atoi(cp_name);
   if (!GetCPInfo(lcodecvt->cp, &CPInfo)) { free(lcodecvt); return NULL; }
+
+  if (lcodecvt->cp != CP_UTF7 && lcodecvt->cp != CP_UTF8) {
+    lcodecvt->mbtowc_flags = MB_PRECOMPOSED;
+    lcodecvt->wctomb_flags = WC_COMPOSITECHECK | WC_SEPCHARS;
+  }
+
+  lcodecvt->max_char_size = CPInfo.MaxCharSize;
+  if (lcodecvt->max_char_size > sizeof(mbstate_t))
+  { free(lcodecvt); return NULL; }
 
   if (CPInfo.MaxCharSize > 1) {
     for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr+=2)
@@ -1087,22 +1107,16 @@ wint_t _Locale_wchar_toupper(_Locale_ctype_t* ltype, wint_t c) {
 }
 #endif
 
-int _Locale_mb_cur_max (_Locale_codecvt_t * lcodecvt) {
-  CPINFO CPInfo;
-  if (!GetCPInfo(lcodecvt->cp, &CPInfo)) return 0;
-  return CPInfo.MaxCharSize;
-}
+int _Locale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
+{ return lcodecvt->max_char_size; }
 
 int _Locale_mb_cur_min (_Locale_codecvt_t *dummy) {
   (void*)dummy;
   return 1;
 }
 
-int _Locale_is_stateless (_Locale_codecvt_t * lcodecvt) {
-  CPINFO CPInfo;
-  GetCPInfo(lcodecvt->cp, &CPInfo);
-  return (CPInfo.MaxCharSize == 1) ? 1 : 0;
-}
+int _Locale_is_stateless (_Locale_codecvt_t * lcodecvt)
+{ return (lcodecvt->max_char_size == 1) ? 1 : 0; }
 
 #if defined (__BORLANDC__) && defined (__cplusplus)
 /* Weird Borland compiler behavior, even if native wint_t is imported to
@@ -1118,62 +1132,58 @@ static int __isleadbyte(int i, unsigned char *ctable) {
   return (ctable[c / CHAR_BIT] & (0x01 << c % CHAR_BIT));
 }
 
-static size_t __mbtowc(_Locale_codecvt_t *l, wchar_t *dst, char src, mbstate_t *shift_state) {
+static int __mbtowc(_Locale_codecvt_t *l, wchar_t *dst, const char *from, unsigned int count) {
   int result;
 
-  if (*shift_state == 0) {
-    if (__isleadbyte(src, l->cleads)) {
-      ((unsigned char*)shift_state)[0] = src;
-      return (size_t)-2;
-    }
-    else {
-      result = MultiByteToWideChar(l->cp, MB_PRECOMPOSED, &src, 1, dst, 1);
-      if (result == 0) return (size_t)-1;
-
-      return 1;
+  if (l->cp == CP_UTF7 || l->cp == CP_UTF8) {
+    result = MultiByteToWideChar(l->cp, l->mbtowc_flags, from, count, dst, 1);
+    if (result == 0) {
+      switch (GetLastError()) {
+        case ERROR_NO_UNICODE_TRANSLATION:
+          return -2;
+        default:
+          return -1;
+      }
     }
   }
   else {
-    ((unsigned char*)shift_state)[1] = src;
-    result = MultiByteToWideChar(l->cp, MB_PRECOMPOSED, (const char*)shift_state, 2, dst, 1);
-    *shift_state = 0;
-    if (result == 0) return (size_t)-1;
-
-    return 1;
+    if (count == 1 && __isleadbyte(*from, l->cleads)) return (size_t)-2;
+    result = MultiByteToWideChar(l->cp, l->mbtowc_flags, from, count, dst, 1);
+    if (result == 0) return -1;
   }
+
+  return result;
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
 size_t _Locale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
                       const char *from, size_t n, mbstate_t *shift_state) {
-  CPINFO ci;
   int result;
   (void*)shift_state;
-  GetCPInfo(lcodecvt->cp, &ci);
-  if (ci.MaxCharSize == 1) { /* Single byte encoding. */
-    *shift_state = (mbstate_t)0;
-    result = MultiByteToWideChar(lcodecvt->cp, MB_PRECOMPOSED, from, 1, to, 1);
+  if (lcodecvt->max_char_size == 1) { /* Single byte encoding. */
+    result = MultiByteToWideChar(lcodecvt->cp, lcodecvt->mbtowc_flags, from, 1, to, 1);
     if (result == 0) return (size_t)-1;
     return result;
   }
   else { /* Multi byte encoding. */
-    size_t retval = 0, count = 0;
-    while(n--) {
-      retval = __mbtowc(lcodecvt, to, *from, shift_state);
-      if (retval == -2) { from++; count++; }
-      else if (retval == -1) return -1;
-      else return count + retval;
+    int retval = 0;
+    unsigned int count = 1;
+    while (n--) {
+      retval = __mbtowc(lcodecvt, to, from, count);
+      if (retval == -2)
+      { if (++count > lcodecvt->max_char_size) return (size_t)-1; }
+      else if (retval == -1)
+      { return (size_t)-1; }
+      else
+      { return count; }
     }
-    if (retval == -2) return (size_t)-2;
-
-    return n;
+    return (size_t)-2;
   }
 }
 
 size_t _Locale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
                       const wchar_t c, mbstate_t *shift_state) {
-  int size = \
-    WideCharToMultiByte(lcodecvt->cp,  WC_COMPOSITECHECK | WC_SEPCHARS, &c, 1, NULL, 0, NULL, NULL);
+  int size = WideCharToMultiByte(lcodecvt->cp, lcodecvt->wctomb_flags, &c, 1, NULL, 0, NULL, NULL);
 
   if (!size) return (size_t)-1;
   if ((size_t)size > n) return (size_t)-2;
@@ -1182,7 +1192,7 @@ size_t _Locale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
     /* Limiting the output buf size to INT_MAX seems like reasonable to transform a single wchar_t. */
     n = INT_MAX;
 
-  WideCharToMultiByte(lcodecvt->cp,  WC_COMPOSITECHECK | WC_SEPCHARS, &c, 1, to, (int)n, NULL, NULL);
+  WideCharToMultiByte(lcodecvt->cp,  lcodecvt->wctomb_flags, &c, 1, to, (int)n, NULL, NULL);
 
   (void*)shift_state;
   return (size_t)size;
@@ -1191,17 +1201,12 @@ size_t _Locale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
 
 size_t _Locale_unshift(_Locale_codecvt_t *lcodecvt, mbstate_t *st,
                        char *buf, size_t n, char **next) {
+  /* _Locale_wctomb do not even touch to st, there is nothing to unshift in this localization implementation. */
   (void*)lcodecvt;
-  if (*st == 0) {
-    *next = buf;
-    return 0;
-  }
-  else {
-    if (n < 1) { *next = buf; return (size_t)-2; }
-
-    *next = buf + 1;
-    return 1;
-  }
+  (void*)st;
+  (void*)&n;
+  *next = buf;
+  return 0;
 }
 
 #ifndef CSTR_EQUAL /* VC5SP3*/
@@ -1739,6 +1744,10 @@ int __GetLCIDFromName(const char* lname, LCID* lcid, char* cp, _Locale_lcid_t *h
       my_ltoa(__intGetACP(*lcid), cp);
     else if (lstrcmpiA(page, "OCP") == 0)
       my_ltoa(__intGetOCP(*lcid), cp);
+    else if (lstrcmpiA(page, "UTF7") == 0)
+      my_ltoa(CP_UTF7, cp);
+    else if (lstrcmpiA(page, "UTF8") == 0)
+      my_ltoa(CP_UTF8, cp);
     else
       _STLP_STRNCPY(cp, MAX_CP_LEN + 1, page, 5);
 
