@@ -163,7 +163,7 @@ public:                         // Constructor, destructor, assignment.
   typedef typename _Base::allocator_type allocator_type;
 
   allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _CharT); }
+  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_allocated, _CharT); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit basic_string(const allocator_type& __a = allocator_type())
@@ -250,27 +250,27 @@ public:                         // Constructor, destructor, assignment.
 #else
   basic_string(size_type __n, _CharT __c)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type(), __n + 1) {
-#  if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf()) {
+// #  if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf()) {
       _Traits::assign(this->_M_Start(), __n, __c);
       this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#  endif
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
+//    }
+//    else
+// #  endif
+//    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
   basic_string(size_type __n, _CharT __c, const allocator_type& __a)
 #endif
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a, __n + 1) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf()) {
+// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf()) {
       _Traits::assign(this->_M_Start(), __n, __c);
       this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#endif
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
+//    }
+//    else
+// #endif
+//    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __c);
     _M_terminate_string();
   }
 
@@ -340,14 +340,14 @@ private:
                            const forward_iterator_tag &) {
     difference_type __n = distance(__f, __l);
     this->_M_allocate_block(__n + 1);
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf()) {
+//#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf()) {
       _M_copyT(__f, __l, this->_M_Start());
       this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
+//    }
+//    else
+//#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     this->_M_terminate_string();
   }
 
@@ -359,14 +359,14 @@ private:
   template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
     this->_M_allocate_block(__n + 1);
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf()) {
+//#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf()) {
       _Traits::assign(this->_M_Start(), __n, __x);
       this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __x);
+//    }
+//    else
+//#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __x);
     this->_M_terminate_string();
   }
 
@@ -401,11 +401,11 @@ _STLP_PRIVATE:                     // Helper functions used by constructors
                                    // and elsewhere.
   // fbp : simplify integer types (char, wchar)
   void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) const {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf())
-      _Traits::assign(*__p, _M_null());
-    else
-#endif /*_STLP_USE_SHORT_STRING_OPTIM*/
+//#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf())
+//      _Traits::assign(*__p, _M_null());
+//    else
+//#endif /*_STLP_USE_SHORT_STRING_OPTIM*/
     _STLP_STD::_Construct(__p);
   }
   void _M_construct_null_aux(_CharT* __p, const __true_type& /*_Is_Integral*/) const
@@ -455,14 +455,14 @@ _STLP_PRIVATE:
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     ptrdiff_t __n = __l - __f;
     this->_M_allocate_block(__n + 1);
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf()) {
+//#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//    if (this->_M_using_static_buf()) {
       _M_copy(__f, __l, this->_M_Start());
       this->_M_finish = this->_M_Start() + __n;
-    }
-    else
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
+//    }
+//    else
+//#endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//    this->_M_finish = uninitialized_copy(__f, __l, this->_M_Start());
     _M_terminate_string();
   }
 
@@ -498,7 +498,7 @@ public:                         // Size, capacity, etc.
   void reserve(size_type = 0);
 
   size_type capacity() const
-  { return (this->_M_end_of_storage._M_data - this->_M_Start()) - 1; }
+  { return this->_capacity() - 1; }
 
   void clear() {
     if (!empty()) {
@@ -557,7 +557,7 @@ private:
         this->_M_throw_length_error();
       if (__old_size + __n > this->capacity()) {
         size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-        pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+        pointer __new_start = this->_M_allocated.allocate(__len, __len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
           __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -565,7 +565,7 @@ private:
           _M_construct_null(__new_finish);
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-          this->_M_end_of_storage.deallocate(__new_start, __len)))
+          this->_M_allocated.deallocate(__new_start, __len)))
           this->_M_destroy_range();
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -573,12 +573,12 @@ private:
       else {
         _ForwardIter __f1 = __first;
         ++__f1;
-#  if defined (_STLP_USE_SHORT_STRING_OPTIM)
-        if (this->_M_using_static_buf())
+//#  if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//        if (this->_M_using_static_buf())
           _M_copyT(__f1, __last, this->_M_Finish() + 1);
-        else
-#  endif
-          uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
+//        else
+//#  endif
+//          uninitialized_copy(__f1, __last, this->_M_Finish() + 1);
         _STLP_TRY {
           _M_construct_null(this->_M_Finish() + __n);
         }
@@ -634,7 +634,7 @@ public:
 
 public:
   void push_back(_CharT __c) {
-    if (this->_M_Finish() + 1 == this->_M_end_of_storage._M_data)
+    if (this->_rest() == 1 )
       reserve(size() + (max)(size(), __STATIC_CAST(size_type,1)));
     _M_construct_null(this->_M_Finish() + 1);
     _Traits::assign(*(this->_M_Finish()), __c);
@@ -793,7 +793,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
                           difference_type __n) {
     const size_type __old_size = this->size();
     size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-    pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+    pointer __new_start = this->_M_allocated.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = uninitialized_copy(this->_M_Start(), __pos, __new_start);
@@ -802,7 +802,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start, __len)))
+                  this->_M_allocated.deallocate(__new_start, __len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -822,15 +822,15 @@ _STLP_PRIVATE:  // Helper functions for insert.
                   const forward_iterator_tag &) {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
-      if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
+      if (this->_rest() >= __n + 1) {
         const difference_type __elems_after = this->_M_finish - __pos;
         if (__elems_after >= __n) {
-#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
-          if (this->_M_using_static_buf())
+//#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//          if (this->_M_using_static_buf())
             _M_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
-          else
-#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
+//          else
+//#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//          uninitialized_copy((this->_M_Finish() - __n) + 1, this->_M_Finish() + 1, this->_M_Finish() + 1);
           this->_M_finish += __n;
           _Traits::move(__pos + __n, __pos, (__elems_after - __n) + 1);
           _M_copyT(__first, __last, __pos);
@@ -839,20 +839,20 @@ _STLP_PRIVATE:  // Helper functions for insert.
           pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
           advance(__mid, __elems_after + 1);
-#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
-          if (this->_M_using_static_buf())
+//#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//          if (this->_M_using_static_buf())
             _M_copyT(__mid, __last, this->_M_Finish() + 1);
-          else
-#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
+//          else
+//#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
-#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
-            if (this->_M_using_static_buf())
+//#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
+//            if (this->_M_using_static_buf())
               _M_copy(__pos, __old_finish + 1, this->_M_Finish());
-            else
-#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
-            uninitialized_copy(__pos, __old_finish + 1, this->_M_Finish());
+//            else
+//#    endif /* _STLP_USE_SHORT_STRING_OPTIM */
+//            uninitialized_copy(__pos, __old_finish + 1, this->_M_Finish());
             this->_M_finish += __elems_after;
           }
           _STLP_UNWIND((this->_M_destroy_ptr_range(__old_finish + 1, this->_M_Finish()),

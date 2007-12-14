@@ -1,3 +1,12 @@
+2007-12-14  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/_string_base.h, stlport/stl/_string.h, stlport/stl/_string.c:
+	experimental string buffer---start of buffer in _M_allocated._M_data now,
+	end of buffer either end of local short buffer, or stored in pointer
+	within local short buffer; this potentially reduce amount of pointer
+	arithmetic; prefer Traits::assign to uninitialized fill, it more
+	optimized for POD types, such as chars [experimental too].
+
 2007-12-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h, c_locale_dummy/c_locale_dummy.c,
