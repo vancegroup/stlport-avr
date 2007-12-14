@@ -821,9 +821,9 @@ _STLP_PRIVATE:  // Helper functions for insert.
   void _M_insertT(iterator __pos, _ForwardIter __first, _ForwardIter __last,
                   const forward_iterator_tag &) {
     if (__first != __last) {
-      difference_type __n = distance(__first, __last);
+      size_type __n = distance(__first, __last);
       if (this->_rest() >= __n + 1) {
-        const difference_type __elems_after = this->_M_finish - __pos;
+        const size_type __elems_after = this->_M_finish - __pos;
         if (__elems_after >= __n) {
 //#    if defined (_STLP_USE_SHORT_STRING_OPTIM)
 //          if (this->_M_using_static_buf())

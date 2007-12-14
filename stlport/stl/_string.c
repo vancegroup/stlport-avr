@@ -380,9 +380,9 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
                                                     bool __self_ref) {
   //this version has to take care about the auto referencing
   if (__first != __last) {
-    const ptrdiff_t __n = __last - __first;
+    const size_t __n = __last - __first;
     if (this->_rest() >= __n + 1) {
-      const ptrdiff_t __elems_after = this->_M_finish - __pos;
+      const size_t __elems_after = this->_M_finish - __pos;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
 // #if defined (_STLP_USE_SHORT_STRING_OPTIM)
