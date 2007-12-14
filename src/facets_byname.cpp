@@ -309,13 +309,13 @@ codecvt_byname<wchar_t, char, mbstate_t>::~codecvt_byname()
 { _STLP_PRIV __release_codecvt(_M_codecvt); }
 
 codecvt<wchar_t, char, mbstate_t>::result
-codecvt_byname<wchar_t, char, mbstate_t>::do_out(state_type&     state,
-                                                 const wchar_t*  from,
-                                                 const wchar_t*  from_end,
-                                                 const wchar_t*& from_next,
-                                                 char*           to,
-                                                 char*           to_limit,
-                                                 char*&          to_next) const {
+codecvt_byname<wchar_t, char, mbstate_t>::do_out(state_type&         state,
+                                                 const intern_type*  from,
+                                                 const intern_type*  from_end,
+                                                 const intern_type*& from_next,
+                                                 extern_type*        to,
+                                                 extern_type*        to_limit,
+                                                 extern_type*&       to_next) const {
   while (from != from_end && to != to_limit) {
     size_t chars_stored = _Locale_wctomb(_M_codecvt,
                                          to, to_limit - to, *from,
