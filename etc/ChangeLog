@@ -1,3 +1,8 @@
+2007-12-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_linux.h: if not explicitly specified another,
+	use threads.
+
 2007-12-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_win32/c_locale_win32.c: Fix implementation of

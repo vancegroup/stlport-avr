@@ -20,6 +20,12 @@
 
 /* #define _STLP_USE_STDIO_IO */
 
+/* If not explicitly specified another, work with threads
+ */
+#if !defined(_STLP_NO_THREADS) && !defined(_REENTRANT)
+#  define _REENTRANT
+#endif
+
 #if defined(_REENTRANT) && !defined(_PTHREADS)
 # define _PTHREADS
 #endif
