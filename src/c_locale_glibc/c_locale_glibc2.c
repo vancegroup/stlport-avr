@@ -426,7 +426,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  result = __strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
   if (buf != NULL) free(buf);
   return result;
 }
@@ -454,7 +454,7 @@ size_t _Locale_strwxfrm( struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  result = __wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
   if (buf != NULL) free(buf);
   return result;
 }
