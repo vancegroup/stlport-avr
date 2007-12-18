@@ -137,6 +137,15 @@ __declare_float_limits_member(float_round_style, round_style);
 
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
+
+#  if defined (__GNUC__) && (__GNUC__ >= 4)
+#    define _STLP_ADDITIONAL_OPEN_BRACKET {
+#    define _STLP_ADDITIONAL_CLOSE_BRACKET }
+#  else
+#    define _STLP_ADDITIONAL_OPEN_BRACKET
+#    define _STLP_ADDITIONAL_CLOSE_BRACKET
+#  endif
+
 /* The following code has been extracted from the boost libraries (www.boost.org) and
  * adapted with the STLport portability macros. Advantage on previous technique is that
  * computation of infinity and NaN value is only based on big/little endian, compiler
@@ -149,11 +158,11 @@ struct float_helper {
     _Number _num;
   };
   static _Number get_word_higher() _STLP_NOTHROW {
-    _WordsNumber __tmp = { _Word, 0, 0, 0, 0, 0, 0, 0 };
+    _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET _Word, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
     return __tmp._num;
   } 
   static _Number get_word_lower() _STLP_NOTHROW {
-    _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
     __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word;
     return __tmp._num;
   }
@@ -181,11 +190,11 @@ struct float_helper2 {
     _Number _num;
   };
   static _Number get_word_higher() _STLP_NOTHROW {
-    _WordsNumber __tmp = { _Word1, _Word2, 0, 0, 0, 0, 0, 0 };
+    _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET _Word1, _Word2, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
     return __tmp._num;
   } 
   static _Number get_word_lower() _STLP_NOTHROW {
-    _WordsNumber __tmp = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
     __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 2] = _Word1;
     __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 1] = _Word2;
     return __tmp._num;

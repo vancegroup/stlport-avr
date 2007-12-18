@@ -1,3 +1,8 @@
+2007-12-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_limits.c: Add brackets on union initialization for gcc
+	starting with version 4.
+
 2007-12-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_linux.h: if not explicitly specified another,
