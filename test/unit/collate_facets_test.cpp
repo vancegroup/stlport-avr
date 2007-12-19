@@ -145,7 +145,8 @@ void LocaleTest::collate_by_name()
    * instance from a null pointer or an unknown name should result in
    * a runtime_error exception.
    */
-#  if (defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)) || (!defined(STLPORT) && !defined(__GNUC__))
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new collate_byname<char>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -156,6 +157,7 @@ void LocaleTest::collate_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new collate_byname<char>("yasli_language"));
@@ -249,6 +251,7 @@ void LocaleTest::collate_by_name()
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new collate_byname<wchar_t>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -258,6 +261,7 @@ void LocaleTest::collate_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new collate_byname<wchar_t>("yasli_language"));

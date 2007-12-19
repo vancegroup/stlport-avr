@@ -359,7 +359,8 @@ void LocaleTest::ctype_by_name()
    * instance from a null pointer or an unknown name should result in
    * a runtime_error exception.
    */
-#  if (defined (STLPORT) && defined (_STLP_USE_EXCEPTIONS)) || (!defined(STLPORT) && !defined(__GNUC__))
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#    if  defined(STLPORT) || !defined(__GNUC__)
    // libstdc++ call freelocate on bad locale
   try {
     locale loc(locale::classic(), new ctype_byname<char>(static_cast<char const*>(0)));
@@ -371,6 +372,7 @@ void LocaleTest::ctype_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new ctype_byname<char>("yasli_language"));
@@ -383,6 +385,7 @@ void LocaleTest::ctype_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+#    if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new codecvt_byname<char, char, mbstate_t>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -393,6 +396,7 @@ void LocaleTest::ctype_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new codecvt_byname<char, char, mbstate_t>("yasli_language"));
@@ -422,6 +426,7 @@ void LocaleTest::ctype_by_name()
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#      if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new ctype_byname<wchar_t>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -431,6 +436,7 @@ void LocaleTest::ctype_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new ctype_byname<wchar_t>("yasli_language"));
@@ -442,6 +448,7 @@ void LocaleTest::ctype_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+#      if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -452,6 +459,7 @@ void LocaleTest::ctype_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>("yasli_language"));

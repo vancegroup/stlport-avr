@@ -147,6 +147,7 @@ void LocaleTest::numpunct_by_name()
    * a runtime_error exception.
    */
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new numpunct_byname<char>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -157,6 +158,7 @@ void LocaleTest::numpunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new numpunct_byname<char>("yasli_language"));
@@ -240,6 +242,7 @@ void LocaleTest::numpunct_by_name()
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new numpunct_byname<wchar_t>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -249,6 +252,7 @@ void LocaleTest::numpunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new numpunct_byname<wchar_t>("yasli_language"));

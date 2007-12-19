@@ -454,6 +454,7 @@ void LocaleTest::moneypunct_by_name()
    * a runtime_error exception.
    */
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+#    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, true>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -463,6 +464,7 @@ void LocaleTest::moneypunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, true>("yasli_language"));
@@ -487,6 +489,7 @@ void LocaleTest::moneypunct_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+#    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, false>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -496,6 +499,7 @@ void LocaleTest::moneypunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#    endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, false>("yasli_language"));
@@ -552,6 +556,7 @@ void LocaleTest::moneypunct_by_name()
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, true>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -561,6 +566,7 @@ void LocaleTest::moneypunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, true>("yasli_language"));
@@ -572,6 +578,7 @@ void LocaleTest::moneypunct_by_name()
     CPPUNIT_ASSERT( false );
   }
 
+#      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, false>(static_cast<char const*>(0)));
     CPPUNIT_ASSERT( false );
@@ -581,6 +588,7 @@ void LocaleTest::moneypunct_by_name()
   catch (...) {
     CPPUNIT_ASSERT( false );
   }
+#      endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, false>("yasli_language"));
