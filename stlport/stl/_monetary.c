@@ -462,12 +462,9 @@ _OutputIter __money_do_put(_OutputIter __s, bool  __intl, ios_base&  __str,
   for (int __i = 0; __i < 4; ++__i) {
     char __ffield = __format.field[__i];
     switch (__ffield) {
-      case money_base::none:
-        if (__fill_amt != 0 && __fill_pos == ios_base::internal)
-          __s = __fill_n(__s, __fill_amt, __fill);
-        break;
       case money_base::space:
         *__s++ = __space;
+      case money_base::none:
         if (__fill_amt != 0 && __fill_pos == ios_base::internal)
           __s = __fill_n(__s, __fill_amt, __fill);
         break;
