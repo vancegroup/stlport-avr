@@ -516,7 +516,7 @@ struct NotSTLportAllocator : public allocator<_Tp> {
     typedef NotSTLportAllocator<_Tp1> other;
   };
 #endif
-  NotSTLportAllocator() _STLP_NOTHROW {}
+  NotSTLportAllocator() NOTHROW {}
 #if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp1> NotSTLportAllocator(const NotSTLportAllocator<_Tp1>&) NOTHROW {}
 #endif
