@@ -454,7 +454,6 @@ namespace std {
     static locale::id id;
   };
 
-  template <>
   locale::id codecvt<char, char, my_state>::id;
 }
 #  else
