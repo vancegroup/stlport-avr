@@ -1,5 +1,9 @@
 2007-12-20  Francois Dumont  <dums@users.sourceforge.net>
 
+	* build/lib/configure.bat, evc.mak, msvc.mak, test/unit/evc.mak,
+	msvc.mak: Config file moved to Makefiles/nmake folder. Add
+	--without-stlport option to build unit tests without STLport.
+
 	* test/unit/money_facets_test.cpp: Add validation that moneypunct
 	"C" facet is identical to the one contained in locale::classic().
 

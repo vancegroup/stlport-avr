@@ -1,8 +1,8 @@
-!if !EXIST(..\..\Makefiles\config.mak)
+!if !EXIST(..\..\Makefiles\nmake\config.mak)
 !error No config file found, please run 'configure --help' first.
 !endif
 
-!include ..\..\Makefiles\config.mak
+!include ..\..\Makefiles\nmake\config.mak
 
 !ifndef COMPILER_NAME
 !error No compiler set, please run 'configure --help' first and chose a compiler.
@@ -21,9 +21,12 @@ STLPORT_DIR=../../..
 
 !include Makefile.inc
 
-#Comment following line to build unit tests without STLport
+!ifndef WITHOUT_STLPORT
 INCLUDES=$(INCLUDES) /I$(STLPORT_INCLUDE_DIR) /I$(STLPORT_DIR)/src /FI warning_disable.h
-#INCLUDES=$(INCLUDES) /I$(STLPORT_DIR)/src /FI warning_disable.h
+!else
+INCLUDES=$(INCLUDES) /I$(STLPORT_DIR)/src /FI warning_disable.h
+DEFS=/DWITHOUT_STLPORT
+!endif
 
 # Important in a number of builds.
 OPT = /Zm800

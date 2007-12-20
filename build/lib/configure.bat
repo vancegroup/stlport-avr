@@ -23,11 +23,11 @@ goto skp_comp
 :init
 
 REM initially create/overwrite config.mak
-echo # STLport Configuration Tool for Windows > ..\Makefiles\config.mak
-echo # >> ..\Makefiles\config.mak
-echo # config.mak generated with command line: >> ..\Makefiles\config.mak
-echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> ..\Makefiles\config.mak
-echo # >> ..\Makefiles\config.mak
+echo # STLport Configuration Tool for Windows > ..\Makefiles\nmake\config.mak
+echo # >> ..\Makefiles\nmake\config.mak
+echo # config.mak generated with command line: >> ..\Makefiles\nmake\config.mak
+echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> ..\Makefiles\nmake\config.mak
+echo # >> ..\Makefiles\nmake\config.mak
 
 REM
 REM option loop
@@ -69,6 +69,9 @@ if "%1" == "--extra-cxxflag" goto opt_xtra
 
 REM library name customization
 if "%1" == "--lib-motif" goto opt_motf
+
+REM build without STLport
+if "%1" == "--without-stlport" goto no_sport
 
 REM clean rule
 if "%1" == "--clean" goto opt_cln
@@ -134,8 +137,8 @@ echo "--use-boost <boost install path>"
 echo    Request use of boost support (www.boost.org). For the moment only the boost
 echo    type_traits library is used to get type information and to implement some
 echo    specific workaround not directly implemented by STLport. To use the same
-echo    support using STLport don't forget to define _STLP_USE_BOOST_SUPPORT in
-echo    stlport/stl/config/user_config.h file.
+echo    support when using STLport for your application don't forget to define
+echo    _STLP_USE_BOOST_SUPPORT in stlport/stl/config/user_config.h file.
 echo.
 echo "--not-thread-safe"
 echo    Per default STLport libraries are built in order to be usable in a multithreaded
@@ -161,6 +164,11 @@ echo   stlportd_MOTIF.5.0.lib
 echo   stlportstld_static_MOTIF.5.1.lib
 echo   Do not forget to define _STLP_LIB_NAME_MOTIF macro in STLport configuration file
 echo   to the same value if you want to keep the auto link feature.
+echo.
+echo "--without-stlport"
+echo   Option specialiy targetting build of the unit tests project without STLport. This
+echo   is a good way to challenge the C++ Standard library implementation comming with
+echo   your compiler with STLport.
 echo.
 echo "--clean"
 echo    Removes the build configuration file.
@@ -194,62 +202,62 @@ goto oc_end
 :oc_msvc6
 :oc_wtm
 echo Setting compiler: Microsoft Visual C++ 6.0
-echo COMPILER_NAME=vc6 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=vc6 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=60
 goto oc_msvc
 
 :oc_msvc7
 echo Setting compiler: Microsoft Visual C++ .NET 2002
-echo COMPILER_NAME=vc70 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=vc70 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=70
 goto oc_msvc
 
 :oc_msv71
 echo Setting compiler: Microsoft Visual C++ .NET 2003
-echo COMPILER_NAME=vc71 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=vc71 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=71
 goto oc_msvc
 
 :oc_msvc8
 echo Setting compiler: Microsoft Visual C++ 2005
-echo COMPILER_NAME=vc8 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=vc8 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=80
 goto oc_msvc
 
 :oc_msvc
-echo TARGET_OS=x86 >> ..\Makefiles\config.mak
+echo TARGET_OS=x86 >> ..\Makefiles\nmake\config.mak
 set STLPORT_COMPILE_COMMAND=nmake /fmsvc.mak
 set SELECTED_COMPILER=msvc
 goto oc_end
 
 :oc_icl
 echo Setting compiler: Intel C++ Compiler
-echo COMPILER_NAME=icl >> ..\Makefiles\config.mak
-echo TARGET_OS=x86 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=icl >> ..\Makefiles\nmake\config.mak
+echo TARGET_OS=x86 >> ..\Makefiles\nmake\config.mak
 set STLPORT_COMPILE_COMMAND=nmake /ficl.mak
 set SELECTED_COMPILER=icl
 goto oc_end
 
 :oc_evc3
 echo Setting compiler: Microsoft eMbedded Visual C++ 3
-echo COMPILER_NAME=evc3 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=evc3 >> ..\Makefiles\nmake\config.mak
 rem TODO: branch on OSVERSION like below?
-echo CEVERSION=300 >> ..\Makefiles\config.mak
+echo CEVERSION=300 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=3
 goto oc_evc
 
 :oc_evc4
 echo Setting compiler: Microsoft eMbedded Visual C++ .NET
-echo COMPILER_NAME=evc4 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=evc4 >> ..\Makefiles\nmake\config.mak
 if "%OSVERSION%"=="" (
     echo OSVERSION not set, assuming target is CE 4.2
-    echo CEVERSION=420 >> ..\Makefiles\config.mak
+    echo CEVERSION=420 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE400" (
-    echo CEVERSION=400 >> ..\Makefiles\config.mak
+    echo CEVERSION=400 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE420" (
-    echo CEVERSION=420 >> ..\Makefiles\config.mak
+    echo CEVERSION=420 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE500" (
-    echo CEVERSION=500 >> ..\Makefiles\config.mak
+    echo CEVERSION=500 >> ..\Makefiles\nmake\config.mak
 ) else (
     echo Unknown value for OSVERSION.
     exit /b 1
@@ -259,17 +267,17 @@ goto oc_evc
 
 :oc_evc8
 echo Setting compiler: Microsoft Visual C++ .NET 2005 for Windows CE
-echo COMPILER_NAME=evc8 >> ..\Makefiles\config.mak
+echo COMPILER_NAME=evc8 >> ..\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=80
 if "%OSVERSION%"=="" (
     echo OSVERSION not set, assuming target is CE 5.0
-    echo CEVERSION=500 >> ..\Makefiles\config.mak
+    echo CEVERSION=500 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE400" (
-    echo CEVERSION=400 >> ..\Makefiles\config.mak
+    echo CEVERSION=400 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE420" (
-    echo CEVERSION=420 >> ..\Makefiles\config.mak
+    echo CEVERSION=420 >> ..\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE500" (
-    echo CEVERSION=500 >> ..\Makefiles\config.mak
+    echo CEVERSION=500 >> ..\Makefiles\nmake\config.mak
 ) else (
     echo Unknown value for OSVERSION.
     exit /b 1
@@ -308,7 +316,7 @@ goto oc_gmake
 echo In order to build STLport with this compiler you need a GNU make tool.
 echo You can get one from www.mingw.org or www.cygwin.com
 echo Setting up for building using GNU make.
-echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\config.mak
+echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 :oc_end
@@ -354,36 +362,36 @@ goto pr_end
 
 :pr_arm
 echo Target processor: ARM
-echo TARGET_PROC=arm >> ..\Makefiles\config.mak
-echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
+echo TARGET_PROC=arm >> ..\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_x86
 echo Target processor: x86
-echo TARGET_PROC=x86 >> ..\Makefiles\config.mak
+echo TARGET_PROC=x86 >> ..\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_emul
 echo Target processor: Emulator
-echo TARGET_PROC=x86 >> ..\Makefiles\config.mak
-echo TARGET_PROC_SUBTYPE=emulator >> ..\Makefiles\config.mak
+echo TARGET_PROC=x86 >> ..\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=emulator >> ..\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_mips
 echo Target processor: MIPS
-echo TARGET_PROC=mips >> ..\Makefiles\config.mak
-echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\config.mak
+echo TARGET_PROC=mips >> ..\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> ..\Makefiles\nmake\config.mak
 
 goto pr_end
 
 :pr_sh3
 echo Target processor: %TARGETCPU%
-echo TARGET_PROC=sh3 >> ..\Makefiles\config.mak
+echo TARGET_PROC=sh3 >> ..\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_sh4
 echo Target processor: %TARGETCPU%
-echo TARGET_PROC=sh4 >> ..\Makefiles\config.mak
+echo TARGET_PROC=sh4 >> ..\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_end
@@ -398,7 +406,7 @@ REM **************************************************************************
 
 :opt_x
 echo Setting up for cross compiling.
-echo CROSS_COMPILING=1 >> ..\Makefiles\config.mak
+echo CROSS_COMPILING=1 >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 
@@ -426,10 +434,10 @@ goto or_end
 :or_ok
 
 if "%1" == "--rtl-static" echo Selecting static C runtime library for STLport
-if "%1" == "--rtl-static" echo STLP_BUILD_FORCE_STATIC_RUNTIME=1 >> ..\Makefiles\config.mak
+if "%1" == "--rtl-static" echo STLP_BUILD_FORCE_STATIC_RUNTIME=1 >> ..\Makefiles\nmake\config.mak
 
 if "%1" == "--rtl-dynamic" echo Selecting dynamic C runtime library for STLport
-if "%1" == "--rtl-dynamic" echo STLP_BUILD_FORCE_DYNAMIC_RUNTIME=1 >> ..\Makefiles\config.mak
+if "%1" == "--rtl-dynamic" echo STLP_BUILD_FORCE_DYNAMIC_RUNTIME=1 >> ..\Makefiles\nmake\config.mak
 
 :or_end
 goto cont_lp
@@ -449,7 +457,7 @@ goto ob_end
 
 :ob_ok
 echo Activating boost support using "%2" path
-echo STLP_BUILD_BOOST_PATH="%2" >> ..\Makefiles\config.mak
+echo STLP_BUILD_BOOST_PATH="%2" >> ..\Makefiles\nmake\config.mak
 
 :ob_end
 shift
@@ -463,7 +471,7 @@ REM *
 REM **************************************************************************
 :opt_st
 echo Removing thread safety support
-echo STLP_BUILD_NO_THREAD=1 >> ..\Makefiles\config.mak
+echo STLP_BUILD_NO_THREAD=1 >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -473,7 +481,7 @@ REM *
 REM **************************************************************************
 :opt_rtti
 echo Removing rtti support
-echo STLP_BUILD_NO_RTTI=1 >> ..\Makefiles\config.mak
+echo STLP_BUILD_NO_RTTI=1 >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -485,12 +493,12 @@ REM **************************************************************************
 echo Adding '%2' compilation option
 if "%ONE_OPTION_ADDED%" == "1" goto ox_n
 
-echo DEFS = %2 >> ..\Makefiles\config.mak
+echo DEFS = %2 >> ..\Makefiles\nmake\config.mak
 set ONE_OPTION_ADDED=1
 goto ox_end
 
 :ox_n
-echo DEFS = $(DEFS) %2 >> ..\Makefiles\config.mak
+echo DEFS = $(DEFS) %2 >> ..\Makefiles\nmake\config.mak
 
 :ox_end
 shift
@@ -504,7 +512,20 @@ REM **************************************************************************
 :opt_motf
 echo Using '%2' in generated library names
 
-echo STLP_BUILD_LIB_MOTIF = %2 >> ..\Makefiles\config.mak
+echo STLP_BUILD_LIB_MOTIF = %2 >> ..\Makefiles\nmake\config.mak
+
+shift
+goto cont_lp
+
+REM **************************************************************************
+REM *
+REM * Build without STLport
+REM *
+REM **************************************************************************
+:no_sport
+echo Configured to build without STLport
+
+echo WITHOUT_STLPORT=1 >> ..\Makefiles\nmake\config.mak
 
 shift
 goto cont_lp
@@ -515,7 +536,7 @@ REM * Clean
 REM *
 REM **************************************************************************
 :opt_cln
-del ..\Makefiles\config.mak
+del ..\Makefiles\nmake\config.mak
 echo STLport configuration file removed.
 goto skp_comp
 
