@@ -1,5 +1,9 @@
 2007-12-20  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_monetary.c: Remove test of existing space at end of
+	stream when last pattern field is none because on ouput stream
+	space are only added optionaly. Small code duplication removed.
+
 	* build/lib/configure.bat, evc.mak, msvc.mak, test/unit/evc.mak,
 	msvc.mak: Config file moved to Makefiles/nmake folder. Add
 	--without-stlport option to build unit tests without STLport.

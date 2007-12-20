@@ -152,23 +152,13 @@ _InputIter __money_do_get(_InputIter __s, _InputIter __end, bool  __intl,
 
   for (__i = 0; __i < 4; ++__i) {
     switch (__format.field[__i]) {
-    case money_base::none:
-      if (__i == 3) {
-        if (__c_type.is(ctype_base::space, *__s)) {
-          __err = ios_base::failbit;
-          return __s;
-        }
-        break;
-      }
-      while (__s != __end && __c_type.is(ctype_base::space, *__s))
-        ++__s;
-      break;
     case money_base::space:
       if (!__c_type.is(ctype_base::space, *__s)) {
         __err = ios_base::failbit;
         return __s;
       }
       ++__s;
+    case money_base::none:
       while (__s != __end && __c_type.is(ctype_base::space, *__s))
         ++__s;
       break;
