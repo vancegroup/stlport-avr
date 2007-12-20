@@ -1,3 +1,8 @@
+2007-12-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* test/unit/fstream_test.cpp: test for seek, inspired by Soren
+	(stsoe, #1854345); report not confirmed.
+
 2007-12-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_limits.c: Add brackets on union initialization for gcc

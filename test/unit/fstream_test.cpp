@@ -40,6 +40,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(io);
   CPPUNIT_TEST(err);
   CPPUNIT_TEST(tellg);
+  CPPUNIT_TEST(seek);
   CPPUNIT_TEST(buf);
   CPPUNIT_TEST(rdbuf);
   CPPUNIT_TEST(streambuf_output);
@@ -68,6 +69,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void io();
     void err();
     void tellg();
+    void seek();
     void buf();
     void rdbuf();
     void streambuf_output();
@@ -276,6 +278,29 @@ void FstreamTest::buf()
   ss.get(c);
   CPPUNIT_ASSERT( !ss.fail() );
   CPPUNIT_ASSERT( c == '8' );
+}
+
+void FstreamTest::seek()
+{
+  {
+    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+
+    s << "1234567890";
+  }
+
+  char b1[10] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+  fstream s( "test_file.txt" );
+
+  CPPUNIT_CHECK( s.rdbuf()->sgetn( b1, 10 ) == 10 );
+  CPPUNIT_CHECK( b1[9] == '0' );
+  CPPUNIT_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(10) );
+  CPPUNIT_CHECK( s.rdbuf()->pubseekoff( -10, ios_base::cur ) == fstream::pos_type(0) );
+
+  char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+
+  CPPUNIT_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
+
+  CPPUNIT_CHECK( b2[9] == '0' );
 }
 
 void FstreamTest::rdbuf()
