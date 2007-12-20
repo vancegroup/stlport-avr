@@ -1,3 +1,14 @@
+2007-12-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/money_facets_test.cpp: Add validation that moneypunct
+	"C" facet is identical to the one contained in locale::classic().
+
+	* src/c_locale_dummy/c_locale_dummy.c,
+	c_locale_win32/c_locale_win32.c, facets_byname.cpp: Fix to have
+	moneypunct by name facet build from "C" similar to locale::classic()
+	one. Now default format in _Init_monetary_formats is the C++ default
+	one.
+
 2007-12-20  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* test/unit/fstream_test.cpp: test for seek, inspired by Soren

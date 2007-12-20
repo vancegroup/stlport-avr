@@ -526,14 +526,24 @@ void LocaleTest::moneypunct_by_name()
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, false>("C"));
-    //moneypunct<char, false> const& cfacet_byname = use_facet<moneypunct<char, false> >(loc);
-    //moneypunct<char, false> const& cfacet = use_facet<moneypunct<char, false> >(locale::classic());
+    moneypunct<char, false> const& cfacet_byname = use_facet<moneypunct<char, false> >(loc);
+    moneypunct<char, false> const& cfacet = use_facet<moneypunct<char, false> >(locale::classic());
 
-    //CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
-    //CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
-    //CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
-    //CPPUNIT_CHECK( cfacet_byname.positive_sign() == cfacet.positive_sign() );
-    //CPPUNIT_CHECK( cfacet_byname.negative_sign() == cfacet.negative_sign() );
+    money_base::pattern cp = cfacet.pos_format();
+    money_base::pattern cp_bn = cfacet_byname.pos_format();
+    CPPUNIT_CHECK( cp_bn.field[0] == cp.field[0] );
+    CPPUNIT_CHECK( cp_bn.field[1] == cp.field[1] );
+    CPPUNIT_CHECK( cp_bn.field[2] == cp.field[2] );
+    CPPUNIT_CHECK( cp_bn.field[3] == cp.field[3] );
+
+    CPPUNIT_CHECK( cfacet_byname.frac_digits() == cfacet.frac_digits() );
+    if (cfacet_byname.frac_digits() != 0)
+      CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
+    CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
+    if (!cfacet_byname.grouping().empty())
+      CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
+    CPPUNIT_CHECK( cfacet_byname.positive_sign() == cfacet.positive_sign() );
+    CPPUNIT_CHECK( cfacet_byname.negative_sign() == cfacet.negative_sign() );
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */

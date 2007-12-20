@@ -41,6 +41,7 @@
 #endif
 
 static const char *_C_name = "C";
+static const char *_empty_str = "";
 
 /* Framework functions */
 
@@ -460,7 +461,7 @@ char _Locale_decimal_point(struct _Locale_numeric* lnum)
 char _Locale_thousands_sep(struct _Locale_numeric* lnum)
 { return ','; }
 const char* _Locale_grouping(struct _Locale_numeric * lnum)
-{ return ""; }
+{ return _empty_str; }
 
 const char * _Locale_true(struct _Locale_numeric * lnum)
 { return "true"; }
@@ -471,23 +472,23 @@ const char * _Locale_false(struct _Locale_numeric * lnum)
 /* Monetary */
 
 const char* _Locale_int_curr_symbol(struct _Locale_monetary * lmon)
-{ return 0; }
+{ return _empty_str; }
 const char* _Locale_currency_symbol(struct _Locale_monetary * lmon)
-{ return 0; }
+{ return _empty_str; }
 char        _Locale_mon_decimal_point(struct _Locale_monetary * lmon)
 { return '.'; }
 char        _Locale_mon_thousands_sep(struct _Locale_monetary * lmon)
 { return ','; }
 const char* _Locale_mon_grouping(struct _Locale_monetary * lmon)
-{ return ""; }
+{ return _empty_str; }
 const char* _Locale_positive_sign(struct _Locale_monetary * lmon)
-{ return ""; }
+{ return _empty_str; }
 const char* _Locale_negative_sign(struct _Locale_monetary * lmon)
-{ return ""; }
+{ return _empty_str; }
 char        _Locale_int_frac_digits(struct _Locale_monetary * lmon)
-{ return CHAR_MAX; }
+{ return 0; }
 char        _Locale_frac_digits(struct _Locale_monetary * lmon)
-{ return CHAR_MAX; }
+{ return 0; }
 int         _Locale_p_cs_precedes(struct _Locale_monetary * lmon)
 { return CHAR_MAX; }
 int         _Locale_p_sep_by_space(struct _Locale_monetary * lmon)
@@ -532,9 +533,9 @@ const char* _Locale_d_fmt(struct _Locale_time* ltime)
 const char* _Locale_t_fmt(struct _Locale_time* ltime)
 { return "%H:%M:%S"; }
 const char* _Locale_long_d_t_fmt(struct _Locale_time* ltime)
-{ return ""; }
+{ return _empty_str; }
 const char* _Locale_long_d_fmt(struct _Locale_time* ltime)
-{ return ""; }
+{ return _empty_str; }
 const char* _Locale_am_str(struct _Locale_time* ltime)
 { return "AM"; }
 const char* _Locale_pm_str(struct _Locale_time* ltime)

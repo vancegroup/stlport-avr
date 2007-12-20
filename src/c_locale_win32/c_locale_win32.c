@@ -841,38 +841,41 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
   if (__GetLCIDFromName(name, &lmon->lc.id, lmon->cp, lc_hint) == -1)
   { free(lmon); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
-  /* Extract information about monetary system */
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4);
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_STHOUSAND, lmon->thousands_sep, 4);
+  if (lmon->lc.id != INVARIANT_LCID) {
+    /* Extract information about monetary system */
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_STHOUSAND, lmon->thousands_sep, 4);
 
-  BufferSize = GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, NULL, 0);
-  GroupingBuffer = (char*)malloc(BufferSize);
-  if (!GroupingBuffer)
-  { lmon->grouping = NULL; *__err_code = _STLP_LOC_NO_MEMORY; return lmon; }
-  GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
-  __FixGrouping(GroupingBuffer);
-  lmon->grouping = GroupingBuffer;
+    BufferSize = GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, NULL, 0);
+    GroupingBuffer = (char*)malloc(BufferSize);
+    if (!GroupingBuffer)
+    { lmon->grouping = NULL; *__err_code = _STLP_LOC_NO_MEMORY; return lmon; }
+    GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, GroupingBuffer, BufferSize);
+    __FixGrouping(GroupingBuffer);
+    lmon->grouping = GroupingBuffer;
 
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5);
 
-  GetLocaleInfoA(lmon->lc.id, LOCALE_ICURRDIGITS, FracDigits, 3);
-  lmon->frac_digits = atoi(FracDigits);
+    GetLocaleInfoA(lmon->lc.id, LOCALE_ICURRDIGITS, FracDigits, 3);
+    lmon->frac_digits = atoi(FracDigits);
 
-  GetLocaleInfoA(lmon->lc.id, LOCALE_IINTLCURRDIGITS, FracDigits, 3);
-  lmon->int_frac_digits = atoi(FracDigits);
+    GetLocaleInfoA(lmon->lc.id, LOCALE_IINTLCURRDIGITS, FracDigits, 3);
+    lmon->int_frac_digits = atoi(FracDigits);
 
-  __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5);
-  /* Even if Platform SDK documentation says that the returned symbol should
-   * be a 3 letters symbol followed by a seperation character, experimentation
-   * has shown that no seperation character is ever appended. We are adding it
-   * ourself to conform to the POSIX specification.
-   */
-  if (lmon->int_curr_symbol[3] == 0) {
-    lmon->int_curr_symbol[3] = ' ';
-    lmon->int_curr_symbol[4] = 0;
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5);
+    /* Even if Platform SDK documentation says that the returned symbol should
+     * be a 3 letters symbol followed by a seperation character, experimentation
+     * has shown that no seperation character is ever appended. We are adding it
+     * ourself to conform to the POSIX specification.
+     */
+    if (lmon->int_curr_symbol[3] == 0) {
+      lmon->int_curr_symbol[3] = ' ';
+      lmon->int_curr_symbol[4] = 0;
+    }
   }
+  /* else it is already ok */
 
   return lmon;
 }
@@ -1411,8 +1414,13 @@ int _Locale_p_sep_by_space(_Locale_monetary_t * lmon) {
 
 int _Locale_p_sign_posn(_Locale_monetary_t * lmon) {
   char loc_data[2];
-  GetLocaleInfoA(lmon->lc.id, LOCALE_IPOSSIGNPOSN, loc_data, 2);
-  return atoi(loc_data);
+  if (lmon->lc.id != INVARIANT_LCID) {
+    GetLocaleInfoA(lmon->lc.id, LOCALE_IPOSSIGNPOSN, loc_data, 2);
+    return atoi(loc_data);
+  }
+  else {
+    return 5;
+  }
 }
 
 int _Locale_n_cs_precedes(_Locale_monetary_t * lmon) {
@@ -1433,8 +1441,13 @@ int _Locale_n_sep_by_space(_Locale_monetary_t * lmon) {
 
 int _Locale_n_sign_posn(_Locale_monetary_t * lmon) {
   char loc_data[2];
-  GetLocaleInfoA(lmon->lc.id, LOCALE_INEGSIGNPOSN, loc_data, 2);
-  return atoi(loc_data);
+  if (lmon->lc.id != INVARIANT_LCID) {
+    GetLocaleInfoA(lmon->lc.id, LOCALE_INEGSIGNPOSN, loc_data, 2);
+    return atoi(loc_data);
+  }
+  else {
+    return 5;
+  }
 }
 
 /* Time */

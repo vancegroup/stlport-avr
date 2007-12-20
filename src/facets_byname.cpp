@@ -533,220 +533,230 @@ static void _Init_monetary_formats(money_base::pattern& pos_format,
                                    money_base::pattern& neg_format,
                                    _Locale_monetary * monetary) {
   switch (_Locale_p_sign_posn(monetary)) {
-    case 0: // Parentheses surround the quantity and currency_symbol
-    case 1: // The sign string precedes the quantity and currency_symbol
+    case 0: // Parentheses surround the quantity and currency symbol
+    case 1: // The sign string precedes the quantity and currency symbol
       pos_format.field[0] = (char) money_base::sign;
       if (_Locale_p_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a positive value
+        // 1 if currency symbol precedes a positive value
         pos_format.field[1] = (char) money_base::symbol;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::space;
           pos_format.field[3] = (char) money_base::value;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::value;
           pos_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a positive value
+        // 0 if currency symbol succeeds a positive value
         pos_format.field[1] = (char) money_base::value;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::space;
           pos_format.field[3] = (char) money_base::symbol;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::symbol;
           pos_format.field[3] = (char) money_base::none;
         }
       }
       break;
-    case 2: // The sign string succeeds the quantity and currency_symbol.
+    case 2: // The sign string succeeds the quantity and currency symbol.
       if (_Locale_p_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a positive value
+        // 1 if currency symbol precedes a positive value
         pos_format.field[0] = (char) money_base::symbol;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::space;
           pos_format.field[2] = (char) money_base::value;
           pos_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::value;
           pos_format.field[2] = (char) money_base::sign;
           pos_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a positive value
+        // 0 if currency symbol succeeds a positive value
         pos_format.field[0] = (char) money_base::value;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::space;
           pos_format.field[2] = (char) money_base::symbol;
           pos_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::symbol;
           pos_format.field[2] = (char) money_base::sign;
           pos_format.field[3] = (char) money_base::none;
         }
       }
       break;
-    case 3: // The sign string immediately precedes the currency_symbol.
+    case 3: // The sign string immediately precedes the currency symbol.
       if (_Locale_p_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a positive value
+        // 1 if currency symbol precedes a positive value
         pos_format.field[0] = (char) money_base::sign;
         pos_format.field[1] = (char) money_base::symbol;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::space;
           pos_format.field[3] = (char) money_base::value;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[2] = (char) money_base::value;
           pos_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a positive value
+        // 0 if currency symbol succeeds a positive value
         pos_format.field[0] = (char) money_base::value;
         pos_format.field[1] = (char) money_base::sign;
         pos_format.field[2] = (char) money_base::symbol;
         pos_format.field[3] = (char) money_base::none;
       }
       break;
-    case 4: // The sign string immediately succeeds the currency_symbol.
-    default:
+    case 4: // The sign string immediately succeeds the currency symbol.
       if (_Locale_p_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a positive value
+        // 1 if currency symbol precedes a positive value
         pos_format.field[0] = (char) money_base::symbol;
         pos_format.field[1] = (char) money_base::sign;
         pos_format.field[2] = (char) money_base::value;
         pos_format.field[3] = (char) money_base::none;
       } else {
-        // 0 if currency_symbol succeeds a positive value
+        // 0 if currency symbol succeeds a positive value
         pos_format.field[0] = (char) money_base::value;
         if (_Locale_p_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a positive value.
+          // a space separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::space;
           pos_format.field[2] = (char) money_base::symbol;
           pos_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a positive value.
+          // a space not separates currency symbol from a positive value.
           pos_format.field[1] = (char) money_base::symbol;
           pos_format.field[2] = (char) money_base::sign;
           pos_format.field[3] = (char) money_base::none;
         }
       }
-    break;
+      break;
+    default: // Default C++ Standard format
+      pos_format.field[0] = (char) money_base::symbol;
+      pos_format.field[1] = (char) money_base::sign;
+      pos_format.field[2] = (char) money_base::none;
+      pos_format.field[3] = (char) money_base::value;
+      break;
   }
 
   switch (_Locale_n_sign_posn(monetary)) {
-    case 0: // Parentheses surround the quantity and currency_symbol
-    case 1: // The sign string precedes the quantity and currency_symbol
+    case 0: // Parentheses surround the quantity and currency symbol
+    case 1: // The sign string precedes the quantity and currency symbol
       neg_format.field[0] = (char) money_base::sign;
       if (_Locale_n_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a negative value
+        // 1 if currency symbol precedes a negative value
         neg_format.field[1] = (char) money_base::symbol;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::space;
           neg_format.field[3] = (char) money_base::value;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::value;
           neg_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a negative value
+        // 0 if currency symbol succeeds a negative value
         neg_format.field[1] = (char) money_base::value;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::space;
           neg_format.field[3] = (char) money_base::symbol;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::symbol;
           neg_format.field[3] = (char) money_base::none;
         }
       }
       break;
-    case 2: // The sign string succeeds the quantity and currency_symbol.
+    case 2: // The sign string succeeds the quantity and currency symbol.
       if (_Locale_n_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a negative value
+        // 1 if currency symbol precedes a negative value
         neg_format.field[0] = (char) money_base::symbol;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::space;
           neg_format.field[2] = (char) money_base::value;
           neg_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::value;
           neg_format.field[2] = (char) money_base::sign;
           neg_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a negative value
+        // 0 if currency symbol succeeds a negative value
         neg_format.field[0] = (char) money_base::value;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::space;
           neg_format.field[2] = (char) money_base::symbol;
           neg_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::symbol;
           neg_format.field[2] = (char) money_base::sign;
           neg_format.field[3] = (char) money_base::none;
         }
       }
       break;
-    case 3: // The sign string immediately precedes the currency_symbol.
+    case 3: // The sign string immediately precedes the currency symbol.
       if (_Locale_n_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a negative value
+        // 1 if currency symbol precedes a negative value
         neg_format.field[0] = (char) money_base::sign;
         neg_format.field[1] = (char) money_base::symbol;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::space;
           neg_format.field[3] = (char) money_base::value;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[2] = (char) money_base::value;
           neg_format.field[3] = (char) money_base::none;
         }
       } else {
-        // 0 if currency_symbol succeeds a negative value
+        // 0 if currency symbol succeeds a negative value
         neg_format.field[0] = (char) money_base::value;
         neg_format.field[1] = (char) money_base::sign;
         neg_format.field[2] = (char) money_base::symbol;
         neg_format.field[3] = (char) money_base::none;
       }
       break;
-    case 4: // The sign string immediately succeeds the currency_symbol.
-    default:
+    case 4: // The sign string immediately succeeds the currency symbol.
       if (_Locale_n_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a negative value
+        // 1 if currency symbol precedes a negative value
         neg_format.field[0] = (char) money_base::symbol;
         neg_format.field[1] = (char) money_base::sign;
-        neg_format.field[2] = (char) money_base::value;
-        neg_format.field[3] = (char) money_base::none;
+        neg_format.field[2] = (char) money_base::none;
+        neg_format.field[3] = (char) money_base::value;
       } else {
-        // 0 if currency_symbol succeeds a negative value
+        // 0 if currency symbol succeeds a negative value
         neg_format.field[0] = (char) money_base::value;
         if (_Locale_n_sep_by_space(monetary)) {
-          // a space separates currency_symbol from a negative value.
+          // a space separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::space;
           neg_format.field[2] = (char) money_base::symbol;
           neg_format.field[3] = (char) money_base::sign;
         } else {
-          // a space not separates currency_symbol from a negative value.
+          // a space not separates currency symbol from a negative value.
           neg_format.field[1] = (char) money_base::symbol;
           neg_format.field[2] = (char) money_base::sign;
           neg_format.field[3] = (char) money_base::none;
         }
       }
+      break;
+    default: // Default C++ Standard format
+      neg_format.field[0] = (char) money_base::symbol;
+      neg_format.field[1] = (char) money_base::sign;
+      neg_format.field[2] = (char) money_base::none;
+      neg_format.field[3] = (char) money_base::value;
       break;
   }
 }
@@ -787,63 +797,79 @@ static void _Init_monetary_formats_int(money_base::pattern& pos_format,
                                        money_base::pattern& neg_format,
                                        _Locale_monetary * monetary)
 {
-  pos_format.field[0] = (char) money_base::symbol;
-  // pos_format.field[1] = (char) money_base::space;
 
   switch (_Locale_p_sign_posn(monetary)) {
-    case 0: // Parentheses surround the quantity and currency_symbol
-    case 1: // The sign string precedes the quantity and currency_symbol
+    case 0: // Parentheses surround the quantity and currency symbol
+    case 1: // The sign string precedes the quantity and currency symbol
+      pos_format.field[0] = (char) money_base::symbol;
       pos_format.field[1] = (char) money_base::sign;
       pos_format.field[2] = (char) money_base::value;
+      pos_format.field[3] = (char) money_base::none;
       break;
-    case 2: // The sign string succeeds the quantity and currency_symbol.
+    case 2: // The sign string succeeds the quantity and currency symbol.
+      pos_format.field[0] = (char) money_base::symbol;
       pos_format.field[1] = (char) money_base::value;
       pos_format.field[2] = (char) money_base::sign;
+      pos_format.field[3] = (char) money_base::none;
       break;
-    case 3: // The sign string immediately precedes the currency_symbol.
-    case 4: // The sign string immediately succeeds the currency_symbol.
-    default:
+    case 3: // The sign string immediately precedes the currency symbol.
+    case 4: // The sign string immediately succeeds the currency symbol.
+      pos_format.field[0] = (char) money_base::symbol;
       if (_Locale_p_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a positive value
+        // 1 if currency symbol precedes a positive value
         pos_format.field[1] = (char) money_base::sign;
         pos_format.field[2] = (char) money_base::value;
       } else {
-        // 0 if currency_symbol succeeds a positive value
+        // 0 if currency symbol succeeds a positive value
         pos_format.field[1] = (char) money_base::value;
         pos_format.field[2] = (char) money_base::sign;
       }
+      pos_format.field[3] = (char) money_base::none;
+      break;
+    default: // Default C++ Standard format
+      pos_format.field[0] = (char) money_base::symbol;
+      pos_format.field[1] = (char) money_base::sign;
+      pos_format.field[2] = (char) money_base::none;
+      pos_format.field[3] = (char) money_base::value;
       break;
   }
-  pos_format.field[3] = (char) money_base::none;
 
-  neg_format.field[0] = (char) money_base::symbol;
-  // neg_format.field[1] = (char) money_base::space;
 
   switch (_Locale_n_sign_posn(monetary)) {
-    case 0: // Parentheses surround the quantity and currency_symbol
-    case 1: // The sign string precedes the quantity and currency_symbol
+    case 0: // Parentheses surround the quantity and currency symbol
+    case 1: // The sign string precedes the quantity and currency symbol
+      neg_format.field[0] = (char) money_base::symbol;
       neg_format.field[1] = (char) money_base::sign;
       neg_format.field[2] = (char) money_base::value;
+      neg_format.field[3] = (char) money_base::none;
       break;
-    case 2: // The sign string succeeds the quantity and currency_symbol.
+    case 2: // The sign string succeeds the quantity and currency symbol.
+      neg_format.field[0] = (char) money_base::symbol;
       neg_format.field[1] = (char) money_base::value;
       neg_format.field[2] = (char) money_base::sign;
+      neg_format.field[3] = (char) money_base::none;
       break;
-    case 3: // The sign string immediately precedes the currency_symbol.
-    case 4: // The sign string immediately succeeds the currency_symbol.
-    default:
+    case 3: // The sign string immediately precedes the currency symbol.
+    case 4: // The sign string immediately succeeds the currency symbol.
+      neg_format.field[0] = (char) money_base::symbol;
       if (_Locale_n_cs_precedes(monetary)) {
-        // 1 if currency_symbol precedes a negative value
+        // 1 if currency symbol precedes a negative value
         neg_format.field[1] = (char) money_base::sign;
         neg_format.field[2] = (char) money_base::value;
       } else {
-        // 0 if currency_symbol succeeds a negative value
+        // 0 if currency symbol succeeds a negative value
         neg_format.field[1] = (char) money_base::value;
         neg_format.field[2] = (char) money_base::sign;
       }
+      neg_format.field[3] = (char) money_base::none;
+      break;
+    default: // Default C++ Standard format
+      neg_format.field[0] = (char) money_base::symbol;
+      neg_format.field[1] = (char) money_base::sign;
+      neg_format.field[2] = (char) money_base::none;
+      neg_format.field[3] = (char) money_base::value;
       break;
   }
-  neg_format.field[3] = (char) money_base::none;
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
