@@ -82,8 +82,17 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
-bool __is_regular_file(_STLP_fd fd) {
-  return (GetFileType(fd) & ~FILE_TYPE_REMOTE) == FILE_TYPE_DISK;
+bool __is_regular_file(_STLP_fd fd)
+{
+  BY_HANDLE_FILE_INFORMATION info;
+
+  if(GetFileInformationByHandle(fd, &info))
+  {
+    // Return true if the file handle isn't a directory.
+    return info.dwFileAttributes ^ FILE_ATTRIBUTE_DIRECTORY;
+  }
+
+  return false;
 }
 
 // Number of characters in the file.

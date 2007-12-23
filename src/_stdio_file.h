@@ -82,7 +82,20 @@ _STLP_BEGIN_NAMESPACE
 // Implementation for eMbedded Visual C++ 3.0 and 4.2 (.NET)
 #if defined (_STLP_WCE)
 
-inline int _FILE_fd(const FILE *__f) { return (int)::_fileno((FILE*)__f); }
+inline int _FILE_fd(const FILE *__f) 
+{
+   // Stdin, stdout and stderr.
+   for(int __fd = 0; __fd < 3; __fd++)
+   {
+      FILE* __fp = _getstdfilex(__fd); 
+
+      if(__f == __fp)
+         return __fd;
+   }
+
+   // Normal files.
+   return (int)::_fileno((FILE*)__f); 
+}
 
 # undef _STLP_FILE_I_O_IDENTICAL
 

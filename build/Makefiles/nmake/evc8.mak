@@ -52,6 +52,12 @@ OPT_COMMON = $(OPT_COMMON) /QMmips2
 !endif
 !endif
 
+# SH4 specific settings
+!if "$(TARGET_PROC)" == "sh4"
+DEFS_COMMON = $(DEFS_COMMON) /D "SHx" /D "_SHX_" /D "SH4"
+OPT_COMMON = $(OPT_COMMON)
+!endif
+
 
 # Note: /GX for MSC<14 has been replaced with /EHsc
 CFLAGS_COMMON = /nologo /TC /W4 /GF /GR /EHsc

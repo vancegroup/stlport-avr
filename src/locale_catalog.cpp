@@ -181,7 +181,7 @@ __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
     if (!(*result.first).second.first) {
       (*M)->erase(result.first);
 #if defined (_STLP_LEAKS_PEDANTIC)
-      if (*M->empty()) {
+      if ((*M)->empty()) {
         delete *M;
         *M = 0;
       }

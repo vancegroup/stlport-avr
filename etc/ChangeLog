@@ -1,5 +1,11 @@
 2007-12-23  Francois Dumont  <dums@users.sourceforge.net>
 
+	* build/Makefiles/nmake/evc8.mak, targets.mak, src/_stdio_file.h,
+	fstream_win32io.cpp, iostream.cpp, locale_catalog.cpp: Patch from
+	Johan Anderson for Evc 3/4/8 to:
+	- fix the opening console issue on this platform.
+	- add EVC8 SH4 support.
+
 	* test/unit: Add CPPUNIT_FAIL macro to force failure without
 	using a constant conditional expression. Many tests updated to
 	use this new macro.

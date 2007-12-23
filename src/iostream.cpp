@@ -217,9 +217,9 @@ void  _STLP_CALL ios_base::_S_initialize() {
       ptr_clog->open("/stdlog.txt", ios::out);
     } else {
       ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
-      ptr_cin->init(_Stl_create_filebuf(stdout, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
+      ptr_cout->init(_Stl_create_filebuf(stdout, ios_base::out));
+      ptr_cerr->init(_Stl_create_filebuf(stderr, ios_base::out));
+      ptr_clog->init(_Stl_create_filebuf(stderr, ios_base::out));
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
@@ -236,9 +236,9 @@ void  _STLP_CALL ios_base::_S_initialize() {
       ptr_clog->init(new stdio_ostreambuf(stderr));
     } else {
       ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
-      ptr_cin->init(_Stl_create_filebuf(stdout, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_cin->init(_Stl_create_filebuf(stderr, ios_base::out));
+      ptr_cout->init(_Stl_create_filebuf(stdout, ios_base::out));
+      ptr_cerr->init(_Stl_create_filebuf(stderr, ios_base::out));
+      ptr_clog->init(_Stl_create_filebuf(stderr, ios_base::out));
     }
     ptr_cin->tie(ptr_cout);
     ptr_cerr->setf(ios_base::unitbuf);
