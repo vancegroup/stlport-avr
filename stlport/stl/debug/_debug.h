@@ -276,11 +276,25 @@ inline bool  _STLP_CALL stlp_in_range(const _Iterator& __first, const _Iterator&
 //==========================================================
 class _STLP_CLASS_DECLSPEC __owned_link {
 public:
+  // Note: This and the following special defines for compiling under Windows CE under ARM
+  // is needed for correctly using _STLP_DEBUG mode. This comes from a bug in the ARM
+  // compiler where checked iterators that are passed by value call _M_attach with the wrong
+  // this pointer and calling _M_detach can't find the correct pointer to the __owned_link.
+  // This is circumvented by managing a _M_self pointer that points to the correct value.
+  // Ugly but works.
+#if defined(_STLP_WCE) && defined(_ARM_)
+  __owned_link() : _M_self(this), _M_owner(0) {}
+  __owned_link(const __owned_list* __c) : _M_self(this), _M_owner(0), _M_next(0)
+  { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__c), this); }
+  __owned_link(const __owned_link& __rhs): _M_self(this), _M_owner(0)
+  { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__rhs._M_owner), this); }
+#else
   __owned_link() : _M_owner(0) {}
   __owned_link(const __owned_list* __c) : _M_owner(0), _M_next(0)
   { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__c), this); }
   __owned_link(const __owned_link& __rhs): _M_owner(0)
   { __stl_debugger::_M_attach(__CONST_CAST(__owned_list*,__rhs._M_owner), this); }
+#endif
   __owned_link& operator=(const __owned_link& __rhs) {
     __owned_list* __new_owner = __CONST_CAST(__owned_list*,__rhs._M_owner);
     __owned_list* __old_owner = _M_owner;
@@ -290,10 +304,17 @@ public:
     }
     return *this;
   }
+#if defined(_STLP_WCE) && defined(_ARM_)
+  ~__owned_link() {
+    __stl_debugger::_M_detach(_M_owner, _M_self);
+    _Invalidate();
+  }
+#else
   ~__owned_link() {
     __stl_debugger::_M_detach(_M_owner, this);
     _Invalidate();
   }
+#endif
 
   const __owned_list* _Owner() const { return _M_owner; }
   __owned_list* _Owner() { return _M_owner; }
@@ -306,6 +327,10 @@ public:
   const __owned_link* _Next() const { return _M_next; }
 
 public:
+#if defined(_STLP_WCE) && defined(_ARM_)
+  __owned_link* _M_self;
+#endif
+
   __owned_list* _M_owner;
   __owned_link* _M_next;
 };

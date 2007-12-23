@@ -196,6 +196,17 @@ void _STLP_CALL  __change_range_owner(const _Iterator& __first,
     }
     __pos = __src_prev->_M_next;
   }
+
+#if defined(_STLP_WCE) && defined(_ARM_)
+  // Note: This part is needed for compiling under Windows CE under ARM and correctly using
+  // _STLP_DEBUG mode. This comes from a bug in the ARM compiler where checked iterators that
+  // are passed by value are not copied over correctly. When __change_range_owner is called,
+  // e.g. in std::list::splice() the wrong _M_owner field gets modified and the __first
+  // iterator has the old _M_owner field, but was moved to the new __owned_list. Setting
+  // the first iterator's _M_owner field fixes this. Ugly but works.
+  __pos = __CONST_CAST(_Iterator*, &__first);
+  __pos->_M_owner = __CONST_CAST(__owned_list*, __dst);
+#endif
   //_STLP_RELEASE_LOCK(__base->_M_lock)
 }
 

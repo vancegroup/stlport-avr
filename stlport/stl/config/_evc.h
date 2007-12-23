@@ -45,12 +45,6 @@
 #  define _DEBUG
 #endif
 
-// in evc3/4, on ARM, check that _STLP_DEBUG is not defined
-// the ARM compiler has a bug that prevents that debug mode from working
-#if _WIN32_WCE < 500 && defined(ARM) && defined(_STLP_DEBUG)
-#  error _STLP_DEBUG mode is not supported in evc3 and evc4 on the ARM platform!
-#endif
-
 // inherit all msvc6 options
 #include <stl/config/_msvc.h>
 

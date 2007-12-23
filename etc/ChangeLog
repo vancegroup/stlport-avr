@@ -4,6 +4,10 @@
 	using a constant conditional expression. Many tests updated to
 	use this new macro.
 
+	* stlport/stl/config/_evc.h, debug/_debug.h, _debug.c: Patch
+	from Michael Fink to allow _STLP_DEBUG mode when using WCE ARM
+	platform.
+
 2007-12-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_monetary.c: Remove test of existing space at end of
