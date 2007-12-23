@@ -1,3 +1,9 @@
+2007-12-23  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit: Add CPPUNIT_FAIL macro to force failure without
+	using a constant conditional expression. Many tests updated to
+	use this new macro.
+
 2007-12-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_monetary.c: Remove test of existing space at end of

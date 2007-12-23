@@ -140,70 +140,72 @@ void LocaleTest::time_by_name()
    * instance from a null pointer or an unknown name should result in
    * a runtime_error exception.
    */
+#    if defined (STLPORT) || !defined (_MSC_VER) || (_MSC_VER > 1400)
   try {
     locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
-    }
+    CPPUNIT_FAIL;
+  }
+#    endif
 
   try {
     locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string veryLongFacetName("LC_TIME=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string veryLongFacetName("LC_TIME=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -211,10 +213,10 @@ void LocaleTest::time_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -223,10 +225,10 @@ void LocaleTest::time_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -234,10 +236,10 @@ void LocaleTest::time_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -246,51 +248,51 @@ void LocaleTest::time_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   try {
     locale loc(locale::classic(), new time_put_byname<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
     }
 
   try {
     locale loc(locale::classic(), new time_put_byname<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     locale loc(locale::classic(), new time_get_byname<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     locale loc(locale::classic(), new time_get_byname<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    endif

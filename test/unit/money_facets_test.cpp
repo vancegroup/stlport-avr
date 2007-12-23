@@ -457,71 +457,71 @@ void LocaleTest::moneypunct_by_name()
 #    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, true>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, true>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string veryLongFacetName("LC_MONETARY=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new moneypunct_byname<char, true>(veryLongFacetName.c_str()));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, false>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<char, false>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string veryLongFacetName("LC_MONETARY=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new moneypunct_byname<char, false>(veryLongFacetName.c_str()));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -547,10 +547,10 @@ void LocaleTest::moneypunct_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -559,55 +559,55 @@ void LocaleTest::moneypunct_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 #      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, true>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #      endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, true>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, false>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #      endif
 
   try {
     locale loc(locale::classic(), new moneypunct_byname<wchar_t, false>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 #  endif

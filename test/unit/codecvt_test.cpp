@@ -400,7 +400,7 @@ void CodecvtTest::in_out_test()
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -426,7 +426,7 @@ void CodecvtTest::length_test()
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -603,7 +603,7 @@ void CodecvtTest::special_encodings()
             continue;
           case codecvt_base::error:
           case codecvt_base::noconv:
-            CPPUNIT_ASSERT( false );
+            CPPUNIT_FAIL;
             break;
         }
       }

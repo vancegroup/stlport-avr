@@ -612,7 +612,7 @@ void MoveConstructorTest::vector_test()
     vector<vector<string> > vect(10, vector<string>(10, long_str));
     vector<string> strs;
     size_t index = 0;
-    while (true) {
+    for (;;) {
       vector<vector<string> >::iterator it(vect.begin());
       advance(it, index % vect.size());
       strs.push_back(it->front());
@@ -641,7 +641,7 @@ void MoveConstructorTest::vector_test()
 #  endif
     vector<string> strs;
     size_t index = 0;
-    while (true) {
+    for (;;) {
       vector<deque<string> >::iterator it(vect.begin());
       advance(it, index % vect.size());
       strs.push_back(it->front());
@@ -665,7 +665,7 @@ void MoveConstructorTest::vector_test()
     vector<list<string> > vect(10, list<string>(10, long_str));
     vector<string> strs;
     size_t index = 0;
-    while (true) {
+    for (;;) {
       vector<list<string> >::iterator it(vect.begin());
       advance(it, index % vect.size());
       strs.push_back(it->front());
@@ -719,7 +719,7 @@ void MoveConstructorTest::vector_test()
     vector<multiset<string> > vect(10, ref);
     vector<string> strs;
     size_t index = 0;
-    while (true) {
+    for (;;) {
       vector<multiset<string> >::iterator it(vect.begin());
       advance(it, index % vect.size());
       strs.push_back(*it->begin());

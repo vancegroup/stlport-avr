@@ -63,6 +63,4 @@ void RawriterTest::rawiter1()
   a.deallocate(save_p);
 #endif
 */
-
-  CPPUNIT_ASSERT(true);
 }

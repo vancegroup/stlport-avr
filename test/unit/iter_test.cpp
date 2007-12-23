@@ -56,7 +56,7 @@ void IterTest::iter1()
         CPPUNIT_ASSERT(!strcmp(*i, "motorboy"));
         break;
       default:
-        CPPUNIT_ASSERT(false);
+        CPPUNIT_FAIL;
     }
   }
 }
@@ -77,11 +77,9 @@ void IterTest::iter3()
         CPPUNIT_ASSERT(!strcmp(*it, "motorboy"));
         break;
       default:
-        CPPUNIT_ASSERT(false);
+        CPPUNIT_FAIL;
     }
   }
-
-  CPPUNIT_ASSERT(true);
 }
 void IterTest::iter4()
 {

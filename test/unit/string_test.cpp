@@ -169,13 +169,13 @@ void StringTest::constructor()
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
     string s((size_t)-1, 'a');
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (length_error const&) {
   }
   catch (...) {
     //Expected exception is length_error:
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -194,13 +194,13 @@ void StringTest::reserve()
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
     s.reserve(s.max_size() + 1);
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (length_error const&) {
   }
   catch (...) {
     //Expected exception is length_error:
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -328,7 +328,7 @@ void StringTest::erase()
         CPPUNIT_ASSERT( str[i] == '!' );
         break;
       default:
-        CPPUNIT_ASSERT( false );
+        CPPUNIT_FAIL;
     }
   }
 
@@ -352,7 +352,7 @@ void StringTest::erase()
         CPPUNIT_ASSERT( str[i] == '!' );
         break;
       default:
-        CPPUNIT_ASSERT( false );
+        CPPUNIT_FAIL;
     }
   }
 
@@ -428,13 +428,13 @@ void StringTest::null_char()
   try {
     //Check is only here to avoid warning about value of expression not used
     CPPUNIT_CHECK( s.at(s.size()) == '\0' );
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (out_of_range const&) {
     CPPUNIT_ASSERT( true );
   }
   catch ( ... ) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -723,13 +723,12 @@ void StringTest::copy()
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   try {
     s.copy(dest, 4, 5);
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (out_of_range const&) {
-    CPPUNIT_ASSERT( true );
   }
   catch ( ... ) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #endif
 }
@@ -954,13 +953,13 @@ void StringTest::template_expression()
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
       result = (one + ' ' + two).at(10);
-      CPPUNIT_ASSERT(false);
+      CPPUNIT_FAIL;
     }
     catch (out_of_range const&) {
       CPPUNIT_ASSERT( result == ' ' );
     }
     catch (...) {
-      CPPUNIT_ASSERT(false);
+      CPPUNIT_FAIL;
     }
 #endif
   }
@@ -1138,13 +1137,13 @@ void StringTest::template_wexpression()
 #    if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
       result = (one + L' ' + two).at(10);
-      CPPUNIT_ASSERT(false);
+      CPPUNIT_FAIL;
     }
     catch (out_of_range const&) {
       CPPUNIT_ASSERT( result == L' ' );
     }
     catch (...) {
-      CPPUNIT_ASSERT(false);
+      CPPUNIT_FAIL;
     }
 #    endif
   }

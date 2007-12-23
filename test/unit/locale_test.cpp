@@ -60,72 +60,74 @@ void LocaleTest::locale_by_name() {
    */
   try {
     locale loc(static_cast<char const*>(0));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     locale loc("yasli_language");
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string very_large_locale_name(1024, '?');
     locale loc(very_large_locale_name.c_str());
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
+#if defined (STLPORT) || !defined (_MSC_VER) || (_MSC_VER > 1400)
   try {
     string very_large_locale_name("LC_CTYPE=");
     very_large_locale_name.append(1024, '?');
     locale loc(very_large_locale_name.c_str());
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string very_large_locale_name("LC_ALL=");
     very_large_locale_name.append(1024, '?');
     locale loc(very_large_locale_name.c_str());
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
+#endif
 
   try {
     locale loc("C");
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -134,10 +136,10 @@ void LocaleTest::locale_by_name() {
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #  endif
@@ -199,10 +201,10 @@ void LocaleTest::_locale_init_problem( const locale& loc)
 #      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
   catch ( runtime_error& ) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch ( ... ) {
-   CPPUNIT_ASSERT( false );
+   CPPUNIT_FAIL;
   }
 #      endif
 
@@ -213,10 +215,10 @@ void LocaleTest::_locale_init_problem( const locale& loc)
 #      if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   }
   catch ( runtime_error& ) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch ( ... ) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #  endif
 }
@@ -236,7 +238,7 @@ void LocaleTest::combine()
       locale loc("");
       if (!has_facet<messages<char> >(loc)) {
         loc.combine<messages<char> >(loc);
-        CPPUNIT_ASSERT( false );
+        CPPUNIT_FAIL;
       }
     }
     catch (const runtime_error &/*e*/) {

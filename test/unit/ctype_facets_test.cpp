@@ -360,7 +360,7 @@ void LocaleTest::ctype_by_name()
    * a runtime_error exception.
    */
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-#    if  defined(STLPORT) || !defined(__GNUC__)
+#    if  defined (STLPORT) || (!defined(__GNUC__) && (!defined (_MSC_VER) || (_MSC_VER > 1400)))
    // libstdc++ call freelocate on bad locale
   try {
     locale loc(locale::classic(), new ctype_byname<char>(static_cast<char const*>(0)));
@@ -376,25 +376,25 @@ void LocaleTest::ctype_by_name()
 
   try {
     locale loc(locale::classic(), new ctype_byname<char>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new codecvt_byname<char, char, mbstate_t>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 
@@ -402,14 +402,14 @@ void LocaleTest::ctype_by_name()
     locale loc(locale::classic(), new codecvt_byname<char, char, mbstate_t>("yasli_language"));
     //STLport implementation do not care about name pass to this facet.
 #    if !defined (STLPORT)
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
 #    endif
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -422,54 +422,54 @@ void LocaleTest::ctype_by_name()
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 #      if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new ctype_byname<wchar_t>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #      endif
 
   try {
     locale loc(locale::classic(), new ctype_byname<wchar_t>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #      if  defined(STLPORT) || !defined(__GNUC__)
   try {
     locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #      endif
 
   try {
     locale loc(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 #  endif

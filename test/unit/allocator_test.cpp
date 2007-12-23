@@ -70,7 +70,7 @@ void AllocatorTest::bad_alloc_test()
   catch (...) {
     //We shouldn't be there:
     //Not bad_alloc exception thrown.
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 }
 #endif

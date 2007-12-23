@@ -200,6 +200,11 @@ namespace CPPUNIT_NS
     return; \
   }
 
+#define CPPUNIT_FAIL { \
+    Base::error("CPPUNIT_FAIL", "", __FILE__, __LINE__); \
+    return; \
+  }
+
 #define CPPUNIT_ASSERT_EQUAL(X, Y) \
   if ((X) != (Y)) { \
     Base::error("CPPUNIT_ASSERT_EQUAL", #X","#Y, __FILE__, __LINE__); \

@@ -314,8 +314,9 @@ void DequeTest::erase()
   CPPUNIT_ASSERT( *it == 4 );
 }
 
-#if !defined (STLPORT) || \
-    !defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#if (!defined (STLPORT) || \
+     !defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)) && \
+     (!defined (_MSC_VER) || (_MSC_VER > 1400) || defined (STLPORT)) // Visual Studio do not support this !
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
  * yet completely defined.

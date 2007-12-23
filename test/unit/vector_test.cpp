@@ -320,17 +320,14 @@ void VectorTest::at() {
   CPPUNIT_ASSERT( cv.at(0) == 20 );
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-  for (;;) {
-    try {
-      v.at(1) = 20;
-      CPPUNIT_ASSERT(false);
-    }
-    catch (out_of_range const&) {
-      return;
-    }
-    catch (...) {
-      CPPUNIT_ASSERT(false);
-    }
+  try {
+    v.at(1) = 20;
+    CPPUNIT_FAIL;
+  }
+  catch (out_of_range const&) {
+  }
+  catch (...) {
+    CPPUNIT_FAIL;
   }
 #endif
 }

@@ -82,6 +82,11 @@ bool operator < (const Test& v1, int v2)
 bool operator < (int v1, const Test& v2)
 { return v1 < v2.value; }
 
+#if defined (_MSC_VER) && !defined (STLPORT)
+bool operator < (const Test& v1, const Test& v2)
+{ return v1.value < v2.value; }
+#endif
+
 void EqualTest::equal_range2()
 {
   char chars[] = "aabbccddggghhklllmqqqqssyyzz";

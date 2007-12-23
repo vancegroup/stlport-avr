@@ -149,38 +149,38 @@ void LocaleTest::collate_by_name()
 #    if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new collate_byname<char>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 
   try {
     locale loc(locale::classic(), new collate_byname<char>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
     string veryLongFacetName("LC_COLLATE=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new collate_byname<char>(veryLongFacetName.c_str()));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
     //CPPUNIT_MESSAGE( e.what() );
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -188,10 +188,10 @@ void LocaleTest::collate_by_name()
   }
   catch (runtime_error const& e) {
     CPPUNIT_MESSAGE( e.what() );
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -200,10 +200,10 @@ void LocaleTest::collate_by_name()
   }
   catch (runtime_error const& e) {
     CPPUNIT_MESSAGE( e.what() );
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
   try {
@@ -244,33 +244,33 @@ void LocaleTest::collate_by_name()
   }
   catch (runtime_error const& /* e */) {
     /* CPPUNIT_MESSAGE( e.what() ); */
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 #      if defined (STLPORT) || !defined (__GNUC__)
   try {
     locale loc(locale::classic(), new collate_byname<wchar_t>(static_cast<char const*>(0)));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #      endif
 
   try {
     locale loc(locale::classic(), new collate_byname<wchar_t>("yasli_language"));
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
   catch (runtime_error const&) {
   }
   catch (...) {
-    CPPUNIT_ASSERT( false );
+    CPPUNIT_FAIL;
   }
 #    endif
 #  endif
