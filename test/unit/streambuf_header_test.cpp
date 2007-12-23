@@ -5,4 +5,13 @@
  * used to check that files included by those headers are compatible with
  * pure C compilers.
  */
-#include <streambuf>
+
+#ifndef WITHOUT_STLPORT
+//Including this fle makes the test STLport specific but this is the only way to check
+//compiler config:
+#  include <stl/config/features.h>
+
+#  if !defined (_STLP_USE_NO_IOSTREAMS)
+#    include <streambuf>
+#  endif
+#endif
