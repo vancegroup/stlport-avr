@@ -122,7 +122,8 @@ protected:
   virtual string do_falsename()     const;
 
 private:
-  numpunct_byname(_Locale_numeric*);
+  numpunct_byname(_Locale_numeric *__numeric)
+    : _M_numeric(__numeric) {}
 
   //explicitely defined as private to avoid warnings:
   typedef numpunct_byname<char> _Self;
@@ -152,8 +153,8 @@ protected:
   virtual wstring do_falsename() const;
 
 private:
-  numpunct_byname(_Locale_numeric*);
-  void _M_init();
+  numpunct_byname(_Locale_numeric *__numeric)
+    : _M_numeric(__numeric) {}
 
   //explicitely defined as private to avoid warnings:
   typedef numpunct_byname<wchar_t> _Self;
@@ -161,8 +162,6 @@ private:
   _Self& operator = (_Self const&);
 
   _Locale_numeric* _M_numeric;
-  wstring _M_truename;
-  wstring _M_falsename;
 };
 
 # endif /* WCHAR_T */

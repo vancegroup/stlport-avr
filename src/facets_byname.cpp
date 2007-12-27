@@ -49,10 +49,6 @@ ctype_byname<char>::ctype_byname(const char* name, size_t refs)
   _M_init();
 }
 
-ctype_byname<char>::ctype_byname(_Locale_ctype *ctype)
-: _M_ctype(ctype)
-{ _M_init(); }
-
 void ctype_byname<char>::_M_init() {
   _M_ctype_table = _M_byname_table;
 
@@ -108,7 +104,7 @@ struct _Ctype_byname_w_is_mask {
 
   _Ctype_byname_w_is_mask(/* ctype_base::mask */ int m, _Locale_ctype* c) : M((int)m), M_ctp(c) {}
   bool operator()(wchar_t c) const
-    { return _Locale_wchar_ctype(M_ctp, c, M) != 0; }
+    { return _WLocale_ctype(M_ctp, c, M) != 0; }
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -125,14 +121,11 @@ ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
     locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
 }
 
-ctype_byname<wchar_t>::ctype_byname(_Locale_ctype *ctype)
-  : _M_ctype(ctype) {}
-
 ctype_byname<wchar_t>::~ctype_byname()
 { _STLP_PRIV __release_ctype(_M_ctype); }
 
 bool ctype_byname<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const
-{ return _Locale_wchar_ctype(_M_ctype, c, m) != 0; }
+{ return _WLocale_ctype(_M_ctype, c, m) != 0; }
 
 const wchar_t*
 ctype_byname<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
@@ -149,7 +142,7 @@ ctype_byname<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
     ctype_base::xdigit);
 
   for ( ; low < high; ++low, ++m)
-    *m = ctype_base::mask (_Locale_wchar_ctype(_M_ctype, *low, all_bits));
+    *m = ctype_base::mask (_WLocale_ctype(_M_ctype, *low, all_bits));
   return high;
 }
 
@@ -164,22 +157,22 @@ ctype_byname<wchar_t>
 { return find_if(low, high, not1(_STLP_PRIV _Ctype_byname_w_is_mask(m, _M_ctype))); }
 
 wchar_t ctype_byname<wchar_t>::do_toupper(wchar_t c) const
-{ return _Locale_wchar_toupper(_M_ctype, c); }
+{ return _WLocale_toupper(_M_ctype, c); }
 
 const wchar_t*
 ctype_byname<wchar_t>::do_toupper(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low)
-    *low = _Locale_wchar_toupper(_M_ctype, *low);
+    *low = _WLocale_toupper(_M_ctype, *low);
   return high;
 }
 
 wchar_t ctype_byname<wchar_t>::do_tolower(wchar_t c) const
-{ return _Locale_wchar_tolower(_M_ctype, c); }
+{ return _WLocale_tolower(_M_ctype, c); }
 
 const wchar_t*
 ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
   for ( ; low < high; ++low)
-    *low = _Locale_wchar_tolower(_M_ctype, *low);
+    *low = _WLocale_tolower(_M_ctype, *low);
   return high;
 }
 
@@ -249,7 +242,7 @@ int collate_byname<wchar_t>::do_compare(const wchar_t* low1,
                                         const wchar_t* high1,
                                         const wchar_t* low2,
                                         const wchar_t* high2) const {
-  return _Locale_strwcmp(_M_collate,
+  return _WLocale_strcmp(_M_collate,
                          low1, high1 - low1,
                          low2, high2 - low2);
 }
@@ -260,13 +253,13 @@ collate_byname<wchar_t>::do_transform(const wchar_t* low,
   if (low == high)
     return string_type();
 
-  size_t n = _Locale_strwxfrm(_M_collate, NULL, 0, low, high - low);
+  size_t n = _WLocale_strxfrm(_M_collate, NULL, 0, low, high - low);
 
   // NOT PORTABLE.  What we're doing relies on internal details of the
   // string implementation.  (Contiguity of string elements and presence
   // of trailing zero.)
   string_type buf(n, 0);
-  _Locale_strwxfrm(_M_collate, &(*buf.begin()), n + 1, low, high - low);
+  _WLocale_strxfrm(_M_collate, &(*buf.begin()), n + 1, low, high - low);
   return buf;
 }
 
@@ -301,10 +294,6 @@ codecvt_byname<wchar_t, char, mbstate_t>::codecvt_byname(const char* name, size_
     locale::_M_throw_on_creation_failure(__err_code, name, "ctype");
 }
 
-codecvt_byname<wchar_t, char, mbstate_t>::codecvt_byname(_Locale_codecvt *codecvt)
-  : _M_codecvt(codecvt)
-{}
-
 codecvt_byname<wchar_t, char, mbstate_t>::~codecvt_byname()
 { _STLP_PRIV __release_codecvt(_M_codecvt); }
 
@@ -317,9 +306,9 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_out(state_type&         state,
                                                  extern_type*        to_limit,
                                                  extern_type*&       to_next) const {
   while (from != from_end && to != to_limit) {
-    size_t chars_stored = _Locale_wctomb(_M_codecvt,
-                                         to, to_limit - to, *from,
-                                         &state);
+    size_t chars_stored = _WLocale_wctomb(_M_codecvt,
+                                          to, to_limit - to, *from,
+                                          &state);
     if (chars_stored == (size_t) -1) {
       from_next = from;
       to_next   = to;
@@ -349,9 +338,9 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_in(state_type&         state,
                                                 intern_type*        to_end,
                                                 intern_type*&       to_next) const {
   while (from != from_end && to != to_end) {
-    size_t chars_read = _Locale_mbtowc(_M_codecvt,
-                                       to, from, from_end - from,
-                                       &state);
+    size_t chars_read = _WLocale_mbtowc(_M_codecvt,
+                                        to, from, from_end - from,
+                                        &state);
     if (chars_read == (size_t) -1) {
       from_next = from;
       to_next   = to;
@@ -379,8 +368,8 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_unshift(state_type&   state,
                                                      extern_type*  to_limit,
                                                      extern_type*& to_next) const {
   to_next = to;
-  size_t result = _Locale_unshift(_M_codecvt, &state,
-                                  to, to_limit - to, &to_next);
+  size_t result = _WLocale_unshift(_M_codecvt, &state,
+                                   to, to_limit - to, &to_next);
   if (result == (size_t) -1)
     return error;
   else if (result == (size_t) -2)
@@ -395,9 +384,9 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_unshift(state_type&   state,
 
 int
 codecvt_byname<wchar_t, char, mbstate_t>::do_encoding() const _STLP_NOTHROW {
-  if (_Locale_is_stateless(_M_codecvt)) {
-    int max_width = _Locale_mb_cur_max(_M_codecvt);
-    int min_width = _Locale_mb_cur_min(_M_codecvt);
+  if (_WLocale_is_stateless(_M_codecvt)) {
+    int max_width = _WLocale_mb_cur_max(_M_codecvt);
+    int min_width = _WLocale_mb_cur_min(_M_codecvt);
     return min_width == max_width ? min_width : 0;
   }
   else
@@ -416,9 +405,9 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_length(state_type&         state,
   size_t __count = 0;
   while (from != end && mx--) {
     intern_type __dummy;
-    size_t chars_read = _Locale_mbtowc(_M_codecvt,
-                                       &__dummy, from, end - from,
-                                       &state);
+    size_t chars_read = _WLocale_mbtowc(_M_codecvt,
+                                        &__dummy, from, end - from,
+                                        &state);
     if ((chars_read == (size_t) -1) || (chars_read == (size_t) -2)) // error or partial
       break;
     __count += chars_read;
@@ -429,7 +418,7 @@ codecvt_byname<wchar_t, char, mbstate_t>::do_length(state_type&         state,
 
 int
 codecvt_byname<wchar_t, char, mbstate_t>::do_max_length() const _STLP_NOTHROW
-{ return _Locale_mb_cur_max(_M_codecvt); }
+{ return _WLocale_mb_cur_max(_M_codecvt); }
 #endif
 
 // numpunct_byname<char>
@@ -444,9 +433,6 @@ numpunct_byname<char>::numpunct_byname(const char* name, size_t refs)
   if (!_M_numeric)
     locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
 }
-
-numpunct_byname<char>::numpunct_byname(_Locale_numeric *pnum)
-  : _M_numeric(pnum) {}
 
 numpunct_byname<char>::~numpunct_byname()
 { _STLP_PRIV __release_numeric(_M_numeric); }
@@ -487,30 +473,16 @@ numpunct_byname<wchar_t>::numpunct_byname(const char* name, size_t refs)
   _M_numeric = _STLP_PRIV __acquire_numeric(name, buf, 0, &__err_code);
   if (!_M_numeric)
     locale::_M_throw_on_creation_failure(__err_code, name, "numpunct");
-  _M_init();
-}
-
-numpunct_byname<wchar_t>::numpunct_byname(_Locale_numeric *num)
-: _M_numeric(num)
-{ _M_init(); }
-
-void numpunct_byname<wchar_t>::_M_init() {
-  const char* truename  = _Locale_true(_M_numeric);
-  const char* falsename = _Locale_false(_M_numeric);
-  _M_truename.resize(strlen(truename));
-  _M_falsename.resize(strlen(falsename));
-  copy(truename,  truename  + strlen(truename), _M_truename.begin());
-  copy(falsename, falsename + strlen(falsename), _M_falsename.begin());
 }
 
 numpunct_byname<wchar_t>::~numpunct_byname()
 { _STLP_PRIV __release_numeric(_M_numeric); }
 
 wchar_t numpunct_byname<wchar_t>::do_decimal_point() const
-{ return (wchar_t) _Locale_decimal_point(_M_numeric); }
+{ return _WLocale_decimal_point(_M_numeric); }
 
 wchar_t numpunct_byname<wchar_t>::do_thousands_sep() const
-{ return (wchar_t) _Locale_thousands_sep(_M_numeric); }
+{ return _WLocale_thousands_sep(_M_numeric); }
 
 string numpunct_byname<wchar_t>::do_grouping() const {
   const char * __grouping = _Locale_grouping(_M_numeric);
@@ -519,11 +491,15 @@ string numpunct_byname<wchar_t>::do_grouping() const {
   return __grouping;
 }
 
-wstring numpunct_byname<wchar_t>::do_truename() const
-{ return _M_truename; }
+wstring numpunct_byname<wchar_t>::do_truename() const {
+  wchar_t buf[16];
+  return _WLocale_true(_M_numeric, _STLP_ARRAY_AND_SIZE(buf));
+}
 
-wstring numpunct_byname<wchar_t>::do_falsename() const
-{ return _M_falsename; }
+wstring numpunct_byname<wchar_t>::do_falsename() const {
+  wchar_t buf[16];
+  return _WLocale_false(_M_numeric, _STLP_ARRAY_AND_SIZE(buf));
+}
 
 #endif
 
@@ -1015,13 +991,13 @@ inline wstring __do_widen (string const& str) {
 }
 
 wstring moneypunct_byname<wchar_t, true>::do_curr_symbol() const
-{ return __do_widen(_Locale_int_curr_symbol(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_int_curr_symbol(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 wstring moneypunct_byname<wchar_t, true>::do_positive_sign() const
-{ return __do_widen(_Locale_positive_sign(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_positive_sign(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 wstring moneypunct_byname<wchar_t, true>::do_negative_sign() const
-{ return __do_widen(_Locale_negative_sign(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_negative_sign(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 int moneypunct_byname<wchar_t, true>::do_frac_digits() const
 { return _Locale_int_frac_digits(_M_monetary); }
@@ -1059,13 +1035,13 @@ string moneypunct_byname<wchar_t, false>::do_grouping() const
 { return _Locale_mon_grouping(_M_monetary); }
 
 wstring moneypunct_byname<wchar_t, false>::do_curr_symbol() const
-{ return __do_widen(_Locale_currency_symbol(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_currency_symbol(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 wstring moneypunct_byname<wchar_t, false>::do_positive_sign() const
-{ return __do_widen(_Locale_positive_sign(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_positive_sign(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 wstring moneypunct_byname<wchar_t, false>::do_negative_sign() const
-{ return __do_widen(_Locale_negative_sign(_M_monetary)); }
+{ wchar_t buf[16]; return _WLocale_negative_sign(_M_monetary, _STLP_ARRAY_AND_SIZE(buf)); }
 
 int moneypunct_byname<wchar_t, false>::do_frac_digits() const
 { return _Locale_frac_digits(_M_monetary); }

@@ -401,7 +401,9 @@ protected:
   virtual int do_max_length() const _STLP_NOTHROW;
 
 private:
-  codecvt_byname(_Locale_codecvt*);
+  codecvt_byname(_Locale_codecvt* __cvt)
+    : _M_codecvt(__cvt) {}
+
   codecvt_byname(const codecvt_byname<wchar_t, char, mbstate_t>&);
   codecvt_byname<wchar_t, char, mbstate_t>& operator =(const codecvt_byname<wchar_t, char, mbstate_t>&);
   _Locale_codecvt* _M_codecvt;

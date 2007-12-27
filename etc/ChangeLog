@@ -1,3 +1,15 @@
+2007-12-27  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale.h, c_locale_dummy/c_locale_dummy.c,
+	c_locale_glibc/c_locale_glibc.c, c_locale_glibc2.c,
+	c_locale_win32/c_locale_win32.c, facets_byname.cpp, time_facets.cpp,
+	stlport/stl/_codecvt.h, _ctype.h, _numpunct.h, _time_facets.c,
+	_time_facets.h: Major internal localization API modification. Add
+	several _WLocale_* functions to allow native support of access to
+	wide char representation of localization information. The time facet
+	support has been the most impacted. GlibC based implementation
+	still have to be updated.
+
 2007-12-23  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/nmake/evc8.mak, targets.mak, src/_stdio_file.h,

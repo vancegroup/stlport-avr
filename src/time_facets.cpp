@@ -42,9 +42,28 @@ const char default_monthname[][24] = {
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"};
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t default_wdayname[][14] = {
+  L"Sun", L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat",
+  L"Sunday", L"Monday", L"Tuesday", L"Wednesday", L"Thursday",
+  L"Friday", L"Saturday"};
+
+const wchar_t default_wmonthname[][24] = {
+  L"Jan", L"Feb", L"Mar", L"Apr", L"May", L"Jun",
+  L"Jul", L"Aug", L"Sep", L"Oct", L"Nov", L"Dec",
+  L"January", L"February", L"March", L"April", L"May", L"June",
+  L"July", L"August", L"September", L"October", L"November", L"December"};
+#endif
+
 // _Init_time_info: initialize table with
 // "C" values (note these are not defined in the C standard, so this
 // is somewhat arbitrary).
+
+static void _Init_timeinfo_base(_Time_Info_Base& table) {
+  table._M_time_format = "%H:%M:%S";
+  table._M_date_format = "%m/%d/%y";
+  table._M_date_time_format = "%m/%d/%y";
+}
 
 static void _Init_timeinfo(_Time_Info& table) {
   int i;
@@ -54,23 +73,23 @@ static void _Init_timeinfo(_Time_Info& table) {
     table._M_monthname[i] = default_monthname[i];
   table._M_am_pm[0] = "AM";
   table._M_am_pm[1] = "PM";
-  table._M_time_format = "%H:%M:%S";
-  table._M_date_format = "%m/%d/%y";
-  table._M_date_time_format = "%m/%d/%y";
+  _Init_timeinfo_base(table);
 }
 
-static void _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
+#ifndef _STLP_NO_WCHAR_T
+static void _Init_timeinfo(_WTime_Info& table) {
   int i;
-  for (i = 0; i < 7; ++i)
-    table._M_dayname[i] = _Locale_abbrev_dayofweek(time, i);
-  for (i = 0; i < 7; ++i)
-    table._M_dayname[i+7] = _Locale_full_dayofweek(time, i);
-  for (i = 0; i < 12; ++i)
-    table._M_monthname[i] = _Locale_abbrev_monthname(time, i);
-  for (i = 0; i < 12; ++i)
-    table._M_monthname[i+12] = _Locale_full_monthname(time, i);
-  table._M_am_pm[0] = _Locale_am_str(time);
-  table._M_am_pm[1] = _Locale_pm_str(time);
+  for (i = 0; i < 14; ++i)
+    table._M_dayname[i] = default_wdayname[i];
+  for (i = 0; i < 24; ++i)
+    table._M_monthname[i] = default_wmonthname[i];
+  table._M_am_pm[0] = L"AM";
+  table._M_am_pm[1] = L"PM";
+  _Init_timeinfo_base(table);
+}
+#endif
+
+static void _Init_timeinfo_base(_Time_Info_Base& table, _Locale_time * time) {
   table._M_time_format = _Locale_t_fmt(time);
   if ( table._M_time_format == "%T" ) {
     table._M_time_format = "%H:%M:%S";
@@ -85,24 +104,70 @@ static void _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
   table._M_long_date_time_format = _Locale_long_d_t_fmt(time);
 }
 
-inline char* __subformat(const string& format, char*& buf, size_t buf_size,
-                         const _Time_Info&  table, const tm* t) {
+static void _Init_timeinfo(_Time_Info& table, _Locale_time * time) {
+  int i;
+  for (i = 0; i < 7; ++i)
+    table._M_dayname[i] = _Locale_abbrev_dayofweek(time, i);
+  for (i = 0; i < 7; ++i)
+    table._M_dayname[i+7] = _Locale_full_dayofweek(time, i);
+  for (i = 0; i < 12; ++i)
+    table._M_monthname[i] = _Locale_abbrev_monthname(time, i);
+  for (i = 0; i < 12; ++i)
+    table._M_monthname[i+12] = _Locale_full_monthname(time, i);
+  table._M_am_pm[0] = _Locale_am_str(time);
+  table._M_am_pm[1] = _Locale_pm_str(time);
+  _Init_timeinfo_base(table, time);
+}
+
+#ifndef _STLP_NO_WCHAR_T
+static void _Init_timeinfo(_WTime_Info& table, _Locale_time * time) {
+  wchar_t buf[128];
+  int i;
+  for (i = 0; i < 7; ++i)
+    table._M_dayname[i] = _WLocale_abbrev_dayofweek(time, i, _STLP_ARRAY_AND_SIZE(buf));
+  for (i = 0; i < 7; ++i)
+    table._M_dayname[i+7] = _WLocale_full_dayofweek(time, i, _STLP_ARRAY_AND_SIZE(buf));
+  for (i = 0; i < 12; ++i)
+    table._M_monthname[i] = _WLocale_abbrev_monthname(time, i, _STLP_ARRAY_AND_SIZE(buf));
+  for (i = 0; i < 12; ++i)
+    table._M_monthname[i+12] = _WLocale_full_monthname(time, i, _STLP_ARRAY_AND_SIZE(buf));
+  table._M_am_pm[0] = _WLocale_am_str(time, _STLP_ARRAY_AND_SIZE(buf));
+  table._M_am_pm[1] = _WLocale_pm_str(time, _STLP_ARRAY_AND_SIZE(buf));
+  _Init_timeinfo_base(table, time);
+}
+#endif
+
+template <class _Ch, class _TimeInfo>
+void __subformat(_STLP_BASIC_IOSTRING(_Ch) &buf, const ctype<_Ch>& ct,
+                 const string& format, const _TimeInfo& table, const tm* t) {
   const char * cp = format.data();
   const char * cp_end = cp + format.size();
   while (cp != cp_end) {
     if (*cp == '%') {
       char mod = 0;
       ++cp;
-      if(*cp == '#') {
+      if (*cp == '#') {
         mod = *cp; ++cp;
       }
-      char *former_buf = buf;
-      buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
-      buf_size -= (buf - former_buf);
+      __write_formatted_timeT(buf, ct, *cp++, mod, table, t);
     } else
-      *buf++ = *cp++;
+      buf.append(1, *cp++);
   }
-  return buf;
+}
+
+static void __append(__iostring &buf, const string& name)
+{ buf.append(name.data(), name.data() + name.size()); }
+
+static void __append(__iowstring &buf, const wstring& name)
+{ buf.append(name.data(), name.data() + name.size()); }
+
+static void __append(__iostring &buf, char *first, char *last, const ctype<char>& ct)
+{ buf.append(first, last); }
+
+static void __append(__iowstring &buf, char *first, char *last, const ctype<wchar_t>& ct) {
+  wchar_t _wbuf[64];
+  ct.widen(first, last, _wbuf);
+  buf.append(_wbuf, _wbuf + (last - first));
 }
 
 #if defined (__GNUC__)
@@ -132,152 +197,124 @@ __iso_week_days(int yday, int wday) {
   (((hour) % 12 == 0) ? (12) : (hour) % 12)
 
 #if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
-#  define _STLP_SPRINTF(B, BS, F, D) sprintf(B, F, D)
+#  define _STLP_SPRINTF sprintf
 #else
-#  define _STLP_SPRINTF(B, BS, F, D) sprintf_s(B, BS, F, D)
+#  define _STLP_SPRINTF sprintf_s
 #endif
 
-char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format, char modifier,
-                                         const _Time_Info& table, const tm* t) {
+template <class _Ch, class _TimeInfo>
+void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
+                                        const ctype<_Ch>& ct,
+                                        char format, char modifier,
+                                        const _TimeInfo& table, const tm* t) {
+  char _buf[64];
+  char *_bend;
+
   switch (format) {
     case 'a':
-      return copy(table._M_dayname[t->tm_wday].begin(),
-                  table._M_dayname[t->tm_wday].end(),
-                  buf);
+      __append(buf, table._M_dayname[t->tm_wday]);
+      break;
 
     case 'A':
-      return copy(table._M_dayname[t->tm_wday+7].begin(),
-                  table._M_dayname[t->tm_wday+7].end(),
-                  buf);
+      __append(buf, table._M_dayname[t->tm_wday + 7]);
+      break;
 
     case 'b':
-      return copy(table._M_monthname[t->tm_mon].begin(),
-                  table._M_monthname[t->tm_mon].end(),
-                  buf);
+      __append(buf, table._M_monthname[t->tm_mon]);
+      break;
 
     case 'B':
-      return copy(table._M_monthname[t->tm_mon+12].begin(),
-                  table._M_monthname[t->tm_mon+12].end(),
-                  buf);
+      __append(buf, table._M_monthname[t->tm_mon + 12]);
+      break;
 
-    case 'c': {
-      const char *cp = (modifier != '#') ?
-        table._M_date_time_format.data() :
-        table._M_long_date_time_format.data();
-      const char* cp_end = cp +
-        ((modifier != '#') ? table._M_date_time_format.size() :
-         table._M_long_date_time_format.size() );
-      char mod;
-      while (cp != cp_end) {
-        if (*cp == '%') {
-          ++cp; if(*cp == '#') mod = *cp++; else mod = 0;
-          char *buf_pos = buf;
-          buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
-          buf_size -= (buf - buf_pos);
-        }
-        else {
-          *buf++ = *cp++; --buf_size;
-        }
-      }
-      return buf;
-    }
+    case 'c':
+      __subformat(buf, ct, (modifier != '#') ? table._M_date_time_format
+                                             : table._M_long_date_time_format, table, t);
+      break;
 
     case 'd':
-      _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_mday);
-      return ((long)t->tm_mday < 10L && modifier == '#')?buf+1:buf + 2;
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_mday);
+      __append(buf, _buf, ((long)t->tm_mday < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+      break;
 
     case 'e':
-      _STLP_SPRINTF(buf, buf_size, "%2ld", (long)t->tm_mday);
-      return buf + 2;
+      _STLP_SPRINTF(_buf, "%2ld", (long)t->tm_mday);
+      __append(buf, _buf, _buf + 2, ct);
+      break;
 
     case 'H':
-      _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_hour);
-      return ((long)t->tm_hour < 10L && modifier == '#')?buf+1:buf + 2;
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_hour);
+      __append(buf, _buf, ((long)t->tm_hour < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+      break;
 
     case 'I':
-      _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)__hour12(t->tm_hour));
-      return ((long)__hour12(t->tm_hour) < 10L && modifier == '#')?buf+1:buf + 2;
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)__hour12(t->tm_hour));
+      __append(buf, _buf, ((long)__hour12(t->tm_hour) < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+      break;
 
     case 'j':
-      return __write_integer(buf, 0, (long)((long)t->tm_yday + 1));
+      _bend = __write_integer(_buf, 0, (long)((long)t->tm_yday + 1));
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case 'm':
-      _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_mon + 1);
-      return ((long)(t->tm_mon + 1) < 10L && modifier == '#')?buf+1:buf + 2;
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_mon + 1);
+      __append(buf, _buf, ((long)(t->tm_mon + 1) < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+      break;
 
     case 'M':
-      _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_min);
-      return ((long)t->tm_min < 10L && modifier == '#')?buf+1:buf + 2;
+      _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_min);
+      __append(buf, _buf, ((long)t->tm_min < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+      break;
 
     case 'p':
-      return copy(table._M_am_pm[t->tm_hour/12].begin(),
-                  table._M_am_pm[t->tm_hour/12].end(),
-                  buf);
+      __append(buf, table._M_am_pm[t->tm_hour / 12]);
+      break;
 
     case 'S': // pad with zeros
-       _STLP_SPRINTF(buf, buf_size, (modifier != '#')?"%.2ld":"%ld", (long)t->tm_sec);
-       return ((long)t->tm_sec < 10L && modifier == '#')?buf+1:buf + 2;
+       _STLP_SPRINTF(_buf, (modifier != '#') ? "%.2ld" : "%ld", (long)t->tm_sec);
+       __append(buf, _buf, ((long)t->tm_sec < 10L && modifier == '#') ? _buf + 1 : _buf + 2, ct);
+       break;
 
     case 'U':
-      return __write_integer(buf, 0,
-                             long((t->tm_yday - t->tm_wday + 7) / 7));
-      //      break;
+      _bend = __write_integer(_buf, 0, long((t->tm_yday - t->tm_wday + 7) / 7));
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case 'w':
-      return __write_integer(buf, 0, (long)t->tm_wday);
-      //      break;
+      _bend = __write_integer(_buf, 0, (long)t->tm_wday);
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case 'W':
-      return __write_integer(buf, 0,
+      _bend = __write_integer(_buf, 0,
                              (long)(t->tm_wday == 0 ? (t->tm_yday + 1) / 7 :
                                                       (t->tm_yday + 8 - t->tm_wday) / 7));
+      __append(buf, _buf, _bend, ct);
+      break;
 
-    case'x': {
-      const char * cp = (modifier != '#') ? table._M_date_format.data():
-                                            table._M_long_date_format.data();
-      const char* cp_end = (modifier != '#') ? cp + table._M_date_format.size():
-                                               cp + table._M_long_date_format.size();
-      char mod;
-      while (cp != cp_end) {
-        if (*cp == '%') {
-          ++cp; if(*cp == '#') mod = *cp++; else mod = 0;
-          char *buf_pos = buf;
-          buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
-          buf_size -= (buf - buf_pos);
-        }
-        else {
-          *buf++ = *cp++; --buf_size;
-        }
-      }
-      return buf;
-    }
+    case'x':
+      __subformat(buf, ct, (modifier != '#') ? table._M_date_format
+                                             : table._M_long_date_format, table, t);
+      break;
 
-    case 'X': {
-      const char * cp = table._M_time_format.data();
-      const char* cp_end = cp + table._M_time_format.size();
-      char mod;
-      while (cp != cp_end) {
-        if (*cp == '%') {
-          ++cp; if(*cp == '#') mod = *cp++; else mod = 0;
-          char *buf_pos = buf;
-          buf = __write_formatted_time(buf, buf_size, *cp++, mod, table, t);
-          buf_size -= (buf - buf_pos);
-        }
-        else {
-          *buf++ = *cp++; --buf_size;
-        }
-      }
-      return buf;
-    }
+    case 'X':
+      __subformat(buf, ct, table._M_time_format, table, t);
+      break;
+
     case 'y':
-      return __write_integer(buf, 0, (long)((long)(t->tm_year + 1900) % 100));
+      _bend = __write_integer(_buf, 0, (long)((long)(t->tm_year + 1900) % 100));
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case 'Y':
-      return __write_integer(buf, 0, (long)((long)t->tm_year + 1900));
+      _bend = __write_integer(_buf, 0, (long)((long)t->tm_year + 1900));
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case '%':
-      *buf++ = '%';
-      return buf;
+      buf.append(1, ct.widen('%'));
+      break;
 
 #if defined (__GNUC__)
       // fbp : at least on SUN
@@ -291,51 +328,58 @@ char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format
 
     case 'h': /* POSIX.2 extension */
       // same as 'b', abbrev month name
-      return copy(table._M_monthname[t->tm_mon].begin(),
-                  table._M_monthname[t->tm_mon].end(),
-                  buf);
-
+      buf.append(table._M_monthname[t->tm_mon]);
+      break;
     case 'C': /* POSIX.2 extension */
       // same as 'd', the day
-      _STLP_SPRINTF(buf, buf_size, "%2ld", (long)t->tm_mday);
-      return buf + 2;
+      _STLP_SPRINTF(_buf, "%2ld", (long)t->tm_mday);
+      __append(buf, _buf, _buf + 2, ct);
+      break;
 
     case 'D': /* POSIX.2 extension */
       // same as 'x'
-      return __subformat(table._M_date_format, buf, buf_size, table, t);
+      __subformat(buf, ct, table._M_date_format, table, t);
+      break;
 
     case 'k': /* GNU extension */
-      _STLP_SPRINTF(buf, buf_size, "%2ld", (long)t->tm_hour);
-      return buf + 2;
+      _STLP_SPRINTF(_buf, "%2ld", (long)t->tm_hour);
+      __append(buf, _buf, _buf + 2, ct);
+      break;
 
     case 'l': /* GNU extension */
-      _STLP_SPRINTF(buf, buf_size, "%2ld", (long)t->tm_hour % 12);
-      return buf + 2;
+      _STLP_SPRINTF(_buf, "%2ld", (long)t->tm_hour % 12);
+      __append(buf, _buf, _buf + 2, ct);
+      break;
 
     case 'n': /* POSIX.2 extension */
-      *buf++ = '\n';
-      return buf;
+      _buf.append(1, ct.widen('\n'));
+      break;
 
     case 'R': /* GNU extension */
-      return __subformat("%H:%M", buf, buf_size, table, t);
+      __subformat(buf, ct, "%H:%M", table, t);
+      break;
 
     case 'r': /* POSIX.2 extension */
-      return __subformat("%I:%M:%S %p", buf, buf_size, table, t);
+      __subformat(buf, ct, "%I:%M:%S %p", table, t);
+      break;
 
     case 'T': /* POSIX.2 extension.  */
-      return __subformat("%H:%M:%S", buf, buf_size, table, t);
+      __subformat(buf, ct, "%H:%M:%S", table, t);
+      break;
 
     case 't': /* POSIX.2 extension.  */
-      *buf++ = '\t';
-      return buf;
+      buf.append(1, ct.widen('\t'));
 
     case 'u': /* POSIX.2 extension.  */
-      return __write_integer(buf, 0, long((t->tm_wday - 1 + 7)) % 7 + 1);
+      _bend = __write_integer(_buf, 0, long((t->tm_wday - 1 + 7)) % 7 + 1);
+      __append(buf, _buf, _bend, ct);
+      break;
 
     case 's': {
-      time_t __t;
-      __t = mktime(__CONST_CAST(tm*, t));
-      return __write_integer(buf, 0, (long)__t );
+      time_t __t = mktime(__CONST_CAST(tm*, t));
+      _bend = __write_integer(_buf, 0, (long)__t );
+      __append(buf, _buf, _bend, ct);
+      break;
     }
     case 'g': /* GNU extension */
     case 'G': {
@@ -354,14 +398,21 @@ char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format
           days = d;
         }
       }
+      long val;
       switch (format) {
       case 'g':
-        return __write_integer(buf, 0, (long)(year % 100 + 100) % 100);
+        val = (long)(year % 100 + 100) % 100;
+        break;
       case 'G':
-        return __write_integer(buf, 0, (long)year);
+        val = (long)year;
+        break;
       default:
-        return __write_integer(buf, 0, (long)days / 7 + 1);
+        val = (long)days / 7 + 1;
+        break
       }
+      _bend = __write_integer(_buf, 0, val);
+      __append(buf, _buf, _bend, ct);
+      break;
     }
 
 #  if defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
@@ -381,18 +432,27 @@ char * _STLP_CALL __write_formatted_time(char* buf, size_t buf_size, char format
         } else
           *buf++ = '+';
         diff /= 60;
-        _STLP_SPRINTF(buf, buf_size, "%.4d", (diff / 60) * 100 + diff % 60);
-        return buf + 4;
+        _STLP_SPRINTF(_buf, "%.4d", (diff / 60) * 100 + diff % 60);
+        __append(buf, _buf, _buf + 4, ct);
+        break;
       }
 #  endif /* __GLIBC__ */
 #endif /* __GNUC__ */
 
     default:
-      //      return buf;
       break;
   }
-  return buf;
 }
+
+void _STLP_CALL __write_formatted_time(__iostring &buf, const ctype<char>& ct,
+                                       char format, char modifier,
+                                       const _Time_Info& table, const tm* t)
+{ __write_formatted_timeT(buf, ct, format, modifier, table, t); }
+
+void _STLP_CALL __write_formatted_time(__iowstring &buf, const ctype<wchar_t>& ct,
+                                       char format, char modifier,
+                                       const _WTime_Info& table, const tm* t)
+{ __write_formatted_timeT(buf, ct, format, modifier, table, t); }
 
 static time_base::dateorder __get_date_order(_Locale_time* time) {
   const char * fmt = _Locale_d_fmt(time);
@@ -432,37 +492,63 @@ static time_base::dateorder __get_date_order(_Locale_time* time) {
   }
 }
 
-_STLP_MOVE_TO_STD_NAMESPACE
+time_init<char>::time_init()
+  : _M_dateorder(time_base::no_order)
+{ _Init_timeinfo(_M_timeinfo); }
 
-time_base::time_base()
-  : _M_dateorder(no_order)
-{ _STLP_PRIV _Init_timeinfo(_M_timeinfo); }
-
-time_base::time_base(const char* __name) {
+time_init<char>::time_init(const char* __name) {
   if (!__name)
     locale::_M_throw_on_null_name();
 
   int __err_code;
   char buf[_Locale_MAX_SIMPLE_NAME];
-  _Locale_time *__time = _STLP_PRIV __acquire_time(__name, buf, 0, &__err_code);
+  _Locale_time *__time = __acquire_time(__name, buf, 0, &__err_code);
   if (!__time)
     locale::_M_throw_on_creation_failure(__err_code, __name, "time");
 
   _Init_timeinfo(this->_M_timeinfo, __time);
-  _M_dateorder = _STLP_PRIV __get_date_order(__time);
-  _STLP_PRIV __release_time(__time);
+  _M_dateorder = __get_date_order(__time);
+  __release_time(__time);
 }
 
-time_base::time_base(_Locale_time *__time) {
+time_init<char>::time_init(_Locale_time *__time) {
   _Init_timeinfo(this->_M_timeinfo, __time);
-  _M_dateorder = _STLP_PRIV __get_date_order(__time);
+  _M_dateorder = __get_date_order(__time);
 }
 
-#if !defined(_STLP_NO_FORCE_INSTANTIATE)
+#ifndef _STLP_NO_WCHAR_T
+time_init<wchar_t>::time_init()
+  : _M_dateorder(time_base::no_order)
+{ _Init_timeinfo(_M_timeinfo); }
+
+time_init<wchar_t>::time_init(const char* __name) {
+  if (!__name)
+    locale::_M_throw_on_null_name();
+
+  int __err_code;
+  char buf[_Locale_MAX_SIMPLE_NAME];
+  _Locale_time *__time = __acquire_time(__name, buf, 0, &__err_code);
+  if (!__time)
+    locale::_M_throw_on_creation_failure(__err_code, __name, "time");
+
+  _Init_timeinfo(this->_M_timeinfo, __time);
+  _M_dateorder = __get_date_order(__time);
+  __release_time(__time);
+}
+
+time_init<wchar_t>::time_init(_Locale_time *__time) {
+  _Init_timeinfo(this->_M_timeinfo, __time);
+  _M_dateorder = __get_date_order(__time);
+}
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#if !defined (_STLP_NO_FORCE_INSTANTIATE)
 template class time_get<char, istreambuf_iterator<char, char_traits<char> > >;
 template class time_put<char, ostreambuf_iterator<char, char_traits<char> > >;
 
-#  if !defined (_STLP_NO_WCHAR_T)
+#  ifndef _STLP_NO_WCHAR_T
 template class time_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 template class time_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >;
 #  endif

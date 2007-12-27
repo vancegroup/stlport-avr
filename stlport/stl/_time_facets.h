@@ -35,6 +35,10 @@
 #  include <stl/_ios_base.h>
 #endif
 
+#ifndef _STLP_INTERNAL_IOSTREAM_STRING_H
+#  include <stl/_iostream_string.h>
+#endif
+
 #ifndef _STLP_FACETS_FWD_H
 #  include <stl/_facets_fwd.h>
 #endif
@@ -44,36 +48,6 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Template functions used by time_get
-
-// Matching input against a list of names
-
-// Alphabetic input of the names of months and the names
-// of weekdays requires matching input against a list of names.
-// We use a simple generic algorithm to accomplish this.  This
-// algorithm is not very efficient, especially for longer lists
-// of names, but it probably does not matter for the initial
-// implementation and it may never matter, since we do not expect
-// this kind of input to be used very often.  The algorithm
-// could be improved fairly simply by creating a new list of
-// names still in the running at each iteration.  A more sophisticated
-// approach would be to build a tree to do the matching.
-//
-// We compare each character of the input to the corresponding
-// character of each name on the list that has not been eliminated,
-// either because every character in the name has already been
-// matched, or because some character has not been matched.  We
-// continue only as long as there are some names that have not been
-// eliminated.
-
-// We do not really need a random access iterator (a forward iterator
-// would do), but the extra generality makes the notation clumsier,
-// and we don't really need it.
-
-// We can recognize a failed match by the fact that the second
-// component of the return value will be __name_end.
-
-#define _MAXNAMES        64
-#define _MAX_NAME_LENGTH 64
 
 /* Both time_get and time_put need a structure of type _Time_Info
  * to provide names and abbreviated names for months and days,
@@ -86,11 +60,8 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
  * or using a name( in fact the name is used to build a _Locale_time
  * instance that is then used for initialization). */
 
-class _STLP_CLASS_DECLSPEC _Time_Info {
+class _STLP_CLASS_DECLSPEC _Time_Info_Base {
 public:
-  string _M_dayname[14];
-  string _M_monthname[24];
-  string _M_am_pm[2];
   string _M_time_format;
   string _M_date_format;
   string _M_date_time_format;
@@ -98,24 +69,62 @@ public:
   string _M_long_date_time_format;
 };
 
+class _STLP_CLASS_DECLSPEC _Time_Info : public _Time_Info_Base {
+public:
+  string _M_dayname[14];
+  string _M_monthname[24];
+  string _M_am_pm[2];
+};
+
+#ifndef _STLP_NO_WCHAR_T
+class _STLP_CLASS_DECLSPEC _WTime_Info : public _Time_Info_Base {
+public:
+  wstring _M_dayname[14];
+  wstring _M_monthname[24];
+  wstring _M_am_pm[2];
+};
+#endif
+
 _STLP_MOVE_TO_STD_NAMESPACE
 
 class _STLP_CLASS_DECLSPEC time_base {
 public:
   enum dateorder {no_order, dmy, mdy, ymd, ydm};
-
-  time_base();
-
-protected:
-  time_base(const char *name);
-  time_base(_Locale_time*);
-
-  _STLP_PRIV _Time_Info _M_timeinfo;
-  dateorder _M_dateorder;
 };
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
+template <class _Ch>
+class time_init;
+
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC time_init<char> {
+protected:
+  time_init();
+  time_init(const char *name);
+  time_init(_Locale_time*);
+
+  _Time_Info _M_timeinfo;
+  time_base::dateorder _M_dateorder;
+};
+
+#ifndef _STLP_NO_WCHAR_T
+_STLP_TEMPLATE_NULL
+class _STLP_CLASS_DECLSPEC time_init<wchar_t> {
+protected:
+  time_init();
+  time_init(const char *name);
+  time_init(_Locale_time*);
+
+  _WTime_Info _M_timeinfo;
+  time_base::dateorder _M_dateorder;
+};
+#endif
+
+_STLP_MOVE_TO_STD_NAMESPACE
+
 template <class _Ch, class _InIt>
-class time_get : public locale::facet, public time_base {
+class time_get : public locale::facet, public time_base, public _STLP_PRIV time_init<_Ch> {
 public:
   typedef _Ch   char_type;
   typedef _InIt iter_type;
@@ -144,10 +153,10 @@ public:
 
 protected:
   time_get(const char* __name, size_t __refs)
-    : locale::facet(__refs), time_base(__name)
+    : locale::facet(__refs), _STLP_PRIV time_init<_Ch>(__name)
   {}
   time_get(_Locale_time *__time)
-    : time_base(__time)
+    : _STLP_PRIV time_init<_Ch>(__time)
   {}
 
   ~time_get() {}
@@ -217,25 +226,22 @@ private:
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-_STLP_DECLSPEC char * _STLP_CALL
-__write_formatted_time(char *__buf, size_t __buf_size, char __format, char __modifier,
+_STLP_DECLSPEC void _STLP_CALL
+__write_formatted_time(__iostring&, const ctype<char>& __ct,
+                       char __format, char __modifier,
                        const _Time_Info& __table, const tm* __t);
 
-template <class _OuIt>
-inline _OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out_ite,
-                                   const ios_base& /* __loc */, char)
-{ return copy(__first, __last, __out_ite); }
-
-#if !defined (_STLP_NO_WCHAR_T)
-template <class _OuIt>
-_OuIt _STLP_CALL __put_time(char * __first, char * __last, _OuIt __out_ite,
-                            const ios_base& __s, wchar_t);
+#ifndef _STLP_NO_WCHAR_T
+_STLP_DECLSPEC void _STLP_CALL
+__write_formatted_time(__iowstring&, const ctype<wchar_t>& __ct,
+                       char __format, char __modifier,
+                       const _WTime_Info& __table, const tm* __t);
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Ch, class _OutIt>
-class time_put : public locale::facet, public time_base {
+class time_put : public locale::facet, public time_base, public _STLP_PRIV time_init<_Ch> {
 public:
   typedef _Ch      char_type;
   typedef _OutIt iter_type;
@@ -255,10 +261,10 @@ public:
 
 protected:
   time_put(const char* __name, size_t __refs)
-    : locale::facet(__refs), time_base(__name)
+    : locale::facet(__refs), _STLP_PRIV time_init<_Ch>(__name)
   {}
   time_put(_Locale_time *__time)
-    : time_base(__time)
+    : _STLP_PRIV time_init<_Ch>(__time)
   {}
   ~time_put() {}
   virtual iter_type do_put(iter_type __s, ios_base& __f,

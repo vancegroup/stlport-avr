@@ -329,7 +329,7 @@ int _Locale_tolower(struct _Locale_ctype*lctype, int c)
 { return tolower(c); }
 
 #ifndef _STLP_NO_WCHAR_T
-_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*lctype, wint_t wc, _Locale_mask_t mask) {
+_Locale_mask_t _WLocale_ctype(struct _Locale_ctype*lctype, wint_t wc, _Locale_mask_t mask) {
   _Locale_mask_t ret = 0;
   if ((mask & _Locale_ALPHA) != 0 && iswalpha(wc))
     ret |= _Locale_ALPHA;
@@ -361,34 +361,34 @@ _Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype*lctype, wint_t wc, _Loca
   return ret;
 }
 
-wint_t _Locale_wchar_tolower(struct _Locale_ctype *lctype, wint_t c)
+wint_t _WLocale_tolower(struct _Locale_ctype *lctype, wint_t c)
 { return towupper(c); }
 
-wint_t _Locale_wchar_toupper(struct _Locale_ctype *lctype, wint_t c)
+wint_t _WLocale_toupper(struct _Locale_ctype *lctype, wint_t c)
 { return towlower(c); }
 #endif
 
-int _Locale_mb_cur_max (struct _Locale_codecvt *lcodecvt) { return 1; }
-int _Locale_mb_cur_min (struct _Locale_codecvt *lcodecvt) { return 1; }
-int _Locale_is_stateless (struct _Locale_codecvt *lcodecvt) { return 1; }
+int _WLocale_mb_cur_max (struct _Locale_codecvt *lcodecvt) { return 1; }
+int _WLocale_mb_cur_min (struct _Locale_codecvt *lcodecvt) { return 1; }
+int _WLocale_is_stateless (struct _Locale_codecvt *lcodecvt) { return 1; }
 
 #ifndef _STLP_NO_WCHAR_T
-size_t _Locale_mbtowc(struct _Locale_codecvt *lcodecvt,
-                      wchar_t *to,
-                      const char *from, size_t n,
-                      mbstate_t *st)
+size_t _WLocale_mbtowc(struct _Locale_codecvt *lcodecvt,
+                       wchar_t *to,
+                       const char *from, size_t n,
+                       mbstate_t *st)
 { *to = *from; return 1; }
 
-size_t _Locale_wctomb(struct _Locale_codecvt *lcodecvt,
-                      char *to, size_t n,
-                      const wchar_t c,
-                      mbstate_t *st)
+size_t _WLocale_wctomb(struct _Locale_codecvt *lcodecvt,
+                       char *to, size_t n,
+                       const wchar_t c,
+                       mbstate_t *st)
 { *to = (char)c; return 1; }
 #endif
 
-size_t _Locale_unshift(struct _Locale_codecvt *lcodecvt,
-                       mbstate_t *st,
-                       char *buf, size_t n, char ** next)
+size_t _WLocale_unshift(struct _Locale_codecvt *lcodecvt,
+                        mbstate_t *st,
+                        char *buf, size_t n, char ** next)
 { *next = buf; return 0; }
 
 /* Collate */
@@ -412,7 +412,7 @@ size_t _Locale_unshift(struct _Locale_codecvt *lcodecvt,
 
 # ifndef _STLP_NO_WCHAR_T
 
-int _Locale_strwcmp(struct _Locale_collate* lcol,
+int _WLocale_strcmp(struct _Locale_collate* lcol,
                     const wchar_t* s1, size_t n1, const wchar_t* s2, size_t n2) {
   int ret = 0;
   wchar_t buf1[64], buf2[64];
@@ -443,7 +443,7 @@ size_t _Locale_strxfrm(struct _Locale_collate* lcol,
 
 # ifndef _STLP_NO_WCHAR_T
 
-size_t _Locale_strwxfrm(struct _Locale_collate* lcol,
+size_t _WLocale_strxfrm(struct _Locale_collate* lcol,
                         wchar_t* dest, size_t dest_n,
                         const wchar_t* src, size_t src_n) {
   if (dest != 0) {
@@ -468,6 +468,19 @@ const char * _Locale_true(struct _Locale_numeric * lnum)
 const char * _Locale_false(struct _Locale_numeric * lnum)
 { return "false"; }
 
+#ifndef _STLP_NO_WCHAR_T
+wchar_t _WLocale_decimal_point(_Locale_numeric_t* lnum)
+{ return L'.'; }
+
+wchar_t _WLocale_thousands_sep(_Locale_numeric_t* lnum)
+{ return L','; }
+
+const wchar_t * _WLocale_true(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
+{ return L"true"; }
+
+const wchar_t * _WLocale_false(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
+{ return L"false"; }
+#endif
 
 /* Monetary */
 
@@ -540,7 +553,6 @@ const char* _Locale_am_str(struct _Locale_time* ltime)
 { return "AM"; }
 const char* _Locale_pm_str(struct _Locale_time* ltime)
 { return "PM"; }
-const char* _Locale_t_fmt_ampm(struct _Locale_time* ltime) { return 0; }
 
 /* Messages */
 

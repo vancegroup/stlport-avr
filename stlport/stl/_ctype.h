@@ -157,7 +157,10 @@ public:
   virtual const char* do_tolower(char*, const char*) const;
 
 private:
-  ctype_byname(_Locale_ctype*);
+  ctype_byname(_Locale_ctype* __ctype)
+    : _M_ctype(__ctype)
+  { _M_init(); }
+
   void _M_init();
 
   //explicitely defined as private to avoid warnings:
@@ -254,7 +257,8 @@ protected:
   virtual const wchar_t* do_tolower(wchar_t*, const wchar_t*) const;
 
 private:
-  ctype_byname(_Locale_ctype*);
+  ctype_byname(_Locale_ctype* __ctype)
+    : _M_ctype(__ctype) {}
 
   //explicitely defined as private to avoid warnings:
   typedef ctype_byname<wchar_t> _Self;

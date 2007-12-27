@@ -136,7 +136,6 @@ char const* _Locale_collate_name(const struct _Locale_collate *, char*  __buf);
 char const* _Locale_monetary_name(const struct _Locale_monetary *, char* __buf);
 char const* _Locale_messages_name(const struct _Locale_messages *, char* __buf);
 
-
 /*
  * cname is a (possibly composite) locale name---i.e. a name that can
  * be passed to setlocale. __buf points to an array large enough to
@@ -194,43 +193,35 @@ int _Locale_toupper(struct _Locale_ctype *, int /* c */);
 int _Locale_tolower(struct _Locale_ctype *, int /* c */);
 
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 /*
  * Wide character functions:
  */
-_Locale_mask_t _Locale_wchar_ctype(struct _Locale_ctype *, wint_t,
-  _Locale_mask_t);
-wint_t _Locale_wchar_tolower(struct _Locale_ctype *, wint_t);
-wint_t _Locale_wchar_toupper(struct _Locale_ctype *, wint_t);
-# endif
+_Locale_mask_t _WLocale_ctype(struct _Locale_ctype *, wint_t, _Locale_mask_t);
+wint_t _WLocale_tolower(struct _Locale_ctype *, wint_t);
+wint_t _WLocale_toupper(struct _Locale_ctype *, wint_t);
 
 /*
  * Multibyte functions:
  */
 
-int _Locale_mb_cur_max (struct _Locale_codecvt *);
 /*
  * Returns the number of bytes of the longest allowed multibyte
  * character in the current encoding.
  */
+int _WLocale_mb_cur_max(struct _Locale_codecvt *);
 
-int _Locale_mb_cur_min (struct _Locale_codecvt *);
 /*
  * Returns the number of bytes of the shortest allowed multibyte
  * character in the current encoding.
  */
+int _WLocale_mb_cur_min(struct _Locale_codecvt *);
 
-int _Locale_is_stateless (struct _Locale_codecvt *);
 /*
  * Returns 1 if the current multibyte encoding is stateless
  * and does not require the use of an mbstate_t value.
  */
-
-#ifndef _STLP_NO_WCHAR_T
-size_t _Locale_mbtowc(struct _Locale_codecvt *,
-                      wchar_t * /* to */,
-                      const char * /* from */, size_t /* n */,
-                      mbstate_t *);
+int _WLocale_is_stateless(struct _Locale_codecvt *);
 
 /*
  * Almost identical to mbrtowc, from 4.6.5.3.2 of NA1.  The only
@@ -244,11 +235,10 @@ size_t _Locale_mbtowc(struct _Locale_codecvt *,
  * [from, from + n) is correct but not complete.  None of the pointer
  * arguments may be null pointers.
  */
-
-size_t _Locale_wctomb(struct _Locale_codecvt *,
-                      char *, size_t,
-                      const wchar_t,
-                      mbstate_t *);
+size_t _WLocale_mbtowc(struct _Locale_codecvt *,
+                       wchar_t * /* to */,
+                       const char * /* from */, size_t /* n */,
+                       mbstate_t *);
 
 /*
  * Again, very similar to wcrtomb.  The differences are that (1) it
@@ -259,11 +249,10 @@ size_t _Locale_wctomb(struct _Locale_codecvt *,
  * if c is not a valid wide character, and (size_t) -2 if the length of
  * the multibyte character sequence is greater than n.
  */
-#endif
-
-size_t _Locale_unshift(struct _Locale_codecvt *,
-                       mbstate_t *,
-                       char *, size_t, char **);
+size_t _WLocale_wctomb(struct _Locale_codecvt *,
+                       char *, size_t,
+                       const wchar_t,
+                       mbstate_t *);
 
 /*
  * Inserts whatever characters are necessary to restore st to an
@@ -273,19 +262,15 @@ size_t _Locale_unshift(struct _Locale_codecvt *,
  * partial success (more than n characters needed).  For success or partial
  * success, sets *next to buf + m.
  */
+size_t _WLocale_unshift(struct _Locale_codecvt *,
+                        mbstate_t *,
+                        char *, size_t, char **);
+#endif
 
 /*
  * FUNCTIONS THAT USE COLLATE
  */
 
-int _Locale_strcmp(struct _Locale_collate *,
-                   const char *, size_t,
-                   const char *, size_t);
-# ifndef _STLP_NO_WCHAR_T
-int _Locale_strwcmp(struct _Locale_collate *,
-                    const wchar_t *, size_t,
-                    const wchar_t *, size_t);
-# endif
 /*
  * Compares the two sequences [s1, s1 + n1) and [s2, s2 + n2).  Neither
  * sequence is assumed to be null-terminated, and null characters
@@ -293,16 +278,14 @@ int _Locale_strwcmp(struct _Locale_collate *,
  * min(n1, n2), then the sequence that compares less is whichever one
  * is shorter.
  */
-
-size_t _Locale_strxfrm(struct _Locale_collate *,
-                       char *, size_t,
-                       const char *, size_t);
-
-# ifndef _STLP_NO_WCHAR_T
-size_t _Locale_strwxfrm(struct _Locale_collate *,
-                        wchar_t *, size_t,
-                        const wchar_t *, size_t);
-# endif
+int _Locale_strcmp(struct _Locale_collate *,
+                   const char * /* s1 */, size_t /* n1 */,
+                   const char * /* s2 */, size_t /* n2 */);
+#ifndef _STLP_NO_WCHAR_T
+int _WLocale_strcmp(struct _Locale_collate *,
+                    const wchar_t * /* s1 */, size_t /* n1 */,
+                    const wchar_t * /* s2 */, size_t /* n2 */);
+#endif
 
 /*
  * Creates a transformed version of the string [s2, s2 + n2).  The
@@ -313,6 +296,16 @@ size_t _Locale_strwxfrm(struct _Locale_collate *,
  * error condition: it indicates that there wasn't enough space.  In
  * that case, the contents of [s1, s1 + n1) is unspecified.
 */
+size_t _Locale_strxfrm(struct _Locale_collate *,
+                       char * /* s1 */, size_t /* n1 */,
+                       const char * /* s2 */, size_t /* n2 */);
+
+#ifndef _STLP_NO_WCHAR_T
+size_t _WLocale_strxfrm(struct _Locale_collate *,
+                        wchar_t * /* s1 */, size_t /* n1 */,
+                        const wchar_t * /* s2 */, size_t /* n2 */);
+#endif
+
 
 /*
  * FUNCTIONS THAT USE NUMERIC
@@ -326,6 +319,10 @@ char _Locale_decimal_point(struct _Locale_numeric *);
 char _Locale_thousands_sep(struct _Locale_numeric *);
 const char * _Locale_grouping(struct _Locale_numeric *);
 
+#ifndef _STLP_NO_WCHAR_T
+wchar_t _WLocale_decimal_point(struct _Locale_numeric *);
+wchar_t _WLocale_thousands_sep(struct _Locale_numeric *);
+#endif
 
 /*
  * Return "true" and "false" in English locales, and something
@@ -334,6 +331,10 @@ const char * _Locale_grouping(struct _Locale_numeric *);
 const char * _Locale_true(struct _Locale_numeric *);
 const char * _Locale_false(struct _Locale_numeric *);
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t * _WLocale_true(struct _Locale_numeric *, wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_false(struct _Locale_numeric *, wchar_t* /* buf */, size_t /* bufSize */);
+#endif
 
 /*
  * FUNCTIONS THAT USE MONETARY
@@ -358,6 +359,14 @@ int          _Locale_n_cs_precedes(struct _Locale_monetary *);
 int          _Locale_n_sep_by_space(struct _Locale_monetary *);
 int          _Locale_n_sign_posn(struct _Locale_monetary *);
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t * _WLocale_int_curr_symbol(struct _Locale_monetary *, wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_currency_symbol(struct _Locale_monetary *, wchar_t* /* buf */, size_t /* bufSize */);
+wchar_t         _WLocale_mon_decimal_point(struct _Locale_monetary *);
+wchar_t         _WLocale_mon_thousands_sep(struct _Locale_monetary *);
+const wchar_t * _WLocale_positive_sign(struct _Locale_monetary *, wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_negative_sign(struct _Locale_monetary *, wchar_t* /* buf */, size_t /* bufSize */);
+#endif
 
 /*
  * FUNCTIONS THAT USE TIME
@@ -369,6 +378,12 @@ int          _Locale_n_sign_posn(struct _Locale_monetary *);
 const char * _Locale_full_monthname(struct _Locale_time *, int /* month */);
 const char * _Locale_abbrev_monthname(struct _Locale_time *, int /* month */);
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t * _WLocale_full_monthname(struct _Locale_time *, int /* month */,
+                                        wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_abbrev_monthname(struct _Locale_time *, int /* month */,
+                                          wchar_t* /* buf */, size_t /* bufSize */);
+#endif
 
 /*
  * day is in the range [0, 7).  Sunday is 0.
@@ -376,6 +391,12 @@ const char * _Locale_abbrev_monthname(struct _Locale_time *, int /* month */);
 const char * _Locale_full_dayofweek(struct _Locale_time *, int /* day */);
 const char * _Locale_abbrev_dayofweek(struct _Locale_time *, int /* day */);
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t * _WLocale_full_dayofweek(struct _Locale_time *, int /* day */,
+                                        wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_abbrev_dayofweek(struct _Locale_time *, int /* day */,
+                                          wchar_t* /* buf */, size_t /* bufSize */);
+#endif
 
 const char * _Locale_d_t_fmt(struct _Locale_time *);
 const char * _Locale_d_fmt(struct _Locale_time *);
@@ -385,8 +406,13 @@ const char * _Locale_long_d_fmt(struct _Locale_time*);
 
 const char * _Locale_am_str(struct _Locale_time *);
 const char * _Locale_pm_str(struct _Locale_time *);
-const char * _Locale_t_fmt_ampm(struct _Locale_time *);
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t * _WLocale_am_str(struct _Locale_time *,
+                                wchar_t* /* buf */, size_t /* bufSize */);
+const wchar_t * _WLocale_pm_str(struct _Locale_time *,
+                                wchar_t* /* buf */, size_t /* bufSize */);
+#endif
 
 /*
  * FUNCTIONS THAT USE MESSAGES

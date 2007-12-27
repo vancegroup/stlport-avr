@@ -1083,8 +1083,8 @@ int _Locale_tolower(_Locale_ctype_t* ltype, int c) {
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
-_Locale_mask_t _Locale_wchar_ctype(_Locale_ctype_t* ltype, wint_t c,
-                                   _Locale_mask_t which_bits) {
+_Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
+                              _Locale_mask_t which_bits) {
   wchar_t buf[2];
   WORD out[2];
   buf[0] = c; buf[1] = 0;
@@ -1093,7 +1093,7 @@ _Locale_mask_t _Locale_wchar_ctype(_Locale_ctype_t* ltype, wint_t c,
   return (_Locale_mask_t)out[0] & which_bits;
 }
 
-wint_t _Locale_wchar_tolower(_Locale_ctype_t* ltype, wint_t c) {
+wint_t _WLocale_tolower(_Locale_ctype_t* ltype, wint_t c) {
   wchar_t in_c = c;
   wchar_t res;
 
@@ -1101,7 +1101,7 @@ wint_t _Locale_wchar_tolower(_Locale_ctype_t* ltype, wint_t c) {
   return res;
 }
 
-wint_t _Locale_wchar_toupper(_Locale_ctype_t* ltype, wint_t c) {
+wint_t _WLocale_toupper(_Locale_ctype_t* ltype, wint_t c) {
   wchar_t in_c = c;
   wchar_t res;
 
@@ -1110,15 +1110,15 @@ wint_t _Locale_wchar_toupper(_Locale_ctype_t* ltype, wint_t c) {
 }
 #endif
 
-int _Locale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
+int _WLocale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
 { return lcodecvt->max_char_size; }
 
-int _Locale_mb_cur_min (_Locale_codecvt_t *dummy) {
+int _WLocale_mb_cur_min (_Locale_codecvt_t *dummy) {
   (void*)dummy;
   return 1;
 }
 
-int _Locale_is_stateless (_Locale_codecvt_t * lcodecvt)
+int _WLocale_is_stateless (_Locale_codecvt_t * lcodecvt)
 { return (lcodecvt->max_char_size == 1) ? 1 : 0; }
 
 #if defined (__BORLANDC__) && defined (__cplusplus)
@@ -1159,8 +1159,8 @@ static int __mbtowc(_Locale_codecvt_t *l, wchar_t *dst, const char *from, unsign
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
-size_t _Locale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
-                      const char *from, size_t n, mbstate_t *shift_state) {
+size_t _WLocale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
+                       const char *from, size_t n, mbstate_t *shift_state) {
   int result;
   (void*)shift_state;
   if (lcodecvt->max_char_size == 1) { /* Single byte encoding. */
@@ -1184,8 +1184,8 @@ size_t _Locale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
   }
 }
 
-size_t _Locale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
-                      const wchar_t c, mbstate_t *shift_state) {
+size_t _WLocale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
+                       const wchar_t c, mbstate_t *shift_state) {
   int size = WideCharToMultiByte(lcodecvt->cp, lcodecvt->wctomb_flags, &c, 1, NULL, 0, NULL, NULL);
 
   if (!size) return (size_t)-1;
@@ -1202,9 +1202,9 @@ size_t _Locale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
 }
 #endif
 
-size_t _Locale_unshift(_Locale_codecvt_t *lcodecvt, mbstate_t *st,
-                       char *buf, size_t n, char **next) {
-  /* _Locale_wctomb do not even touch to st, there is nothing to unshift in this localization implementation. */
+size_t _WLocale_unshift(_Locale_codecvt_t *lcodecvt, mbstate_t *st,
+                        char *buf, size_t n, char **next) {
+  /* _WLocale_wctomb do not even touch to st, there is nothing to unshift in this localization implementation. */
   (void*)lcodecvt;
   (void*)st;
   (void*)&n;
@@ -1277,7 +1277,7 @@ static int _Locale_strcmp_auxW(_Locale_collate_t* lcol,
   return result;
 }
 
-int _Locale_strwcmp(_Locale_collate_t* lcol,
+int _WLocale_strcmp(_Locale_collate_t* lcol,
                     const wchar_t* s1, size_t n1,
                     const wchar_t* s2, size_t n2) {
   int result;
@@ -1319,7 +1319,7 @@ size_t _Locale_strxfrm(_Locale_collate_t* lcol,
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
-size_t _Locale_strwxfrm(_Locale_collate_t* lcol,
+size_t _WLocale_strxfrm(_Locale_collate_t* lcol,
                         wchar_t* dst, size_t dst_size,
                         const wchar_t* src, size_t src_size) {
   int result;
@@ -1343,13 +1343,11 @@ size_t _Locale_strwxfrm(_Locale_collate_t* lcol,
 static const char* __true_name = "true";
 static const char* __false_name = "false";
 
-char _Locale_decimal_point(_Locale_numeric_t* lnum) {
-  return lnum->decimal_point[0];
-}
+char _Locale_decimal_point(_Locale_numeric_t* lnum)
+{ return lnum->decimal_point[0]; }
 
-char _Locale_thousands_sep(_Locale_numeric_t* lnum) {
-  return lnum->thousands_sep[0];
-}
+char _Locale_thousands_sep(_Locale_numeric_t* lnum)
+{ return lnum->thousands_sep[0]; }
 
 const char* _Locale_grouping(_Locale_numeric_t * lnum) {
   if (!lnum->grouping) return "";
@@ -1927,3 +1925,6 @@ char* __ConvertToCP(int from_cp, int to_cp, const char *from, size_t size, size_
 }
 #endif
 
+#ifndef _STLP_NO_WCHAR_T
+#  include "c_wlocale_win32.c"
+#endif
