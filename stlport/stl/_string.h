@@ -163,7 +163,7 @@ public:                         // Constructor, destructor, assignment.
   typedef typename _Base::allocator_type allocator_type;
 
   allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_allocated, _CharT); }
+  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_start_of_storage, _CharT); }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit basic_string(const allocator_type& __a = allocator_type())
@@ -498,7 +498,7 @@ public:                         // Size, capacity, etc.
   void reserve(size_type = 0);
 
   size_type capacity() const
-  { return this->_capacity() - 1; }
+  { return this->_M_capacity() - 1; }
 
   void clear() {
     if (!empty()) {
@@ -557,7 +557,7 @@ private:
         this->_M_throw_length_error();
       if (__old_size + __n > this->capacity()) {
         size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-        pointer __new_start = this->_M_allocated.allocate(__len, __len);
+        pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
           __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -565,7 +565,7 @@ private:
           _M_construct_null(__new_finish);
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-          this->_M_allocated.deallocate(__new_start, __len)))
+          this->_M_start_of_storage.deallocate(__new_start, __len)))
           this->_M_destroy_range();
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -634,7 +634,7 @@ public:
 
 public:
   void push_back(_CharT __c) {
-    if (this->_rest() == 1 )
+    if (this->_M_rest() == 1 )
       reserve(size() + (max)(size(), __STATIC_CAST(size_type,1)));
     _M_construct_null(this->_M_Finish() + 1);
     _Traits::assign(*(this->_M_Finish()), __c);
@@ -793,7 +793,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
                           difference_type __n) {
     const size_type __old_size = this->size();
     size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-    pointer __new_start = this->_M_allocated.allocate(__len, __len);
+    pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = uninitialized_copy(this->_M_Start(), __pos, __new_start);
@@ -802,7 +802,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
       _M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_allocated.deallocate(__new_start, __len)))
+                  this->_M_start_of_storage.deallocate(__new_start, __len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -822,7 +822,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
                   const forward_iterator_tag &) {
     if (__first != __last) {
       size_type __n = distance(__first, __last);
-      if (this->_rest() >= __n + 1) {
+      if (this->_M_rest() >= __n + 1) {
         const size_type __elems_after = this->_M_finish - __pos;
         if (__elems_after >= __n) {
 //#    if defined (_STLP_USE_SHORT_STRING_OPTIM)

@@ -3,8 +3,7 @@
 ; language. Those descriptions has been tested with Visual C++ 2005 Express
 ; Edition, you are welcome to report successful usage with any other Visual
 ; Studio version.
-; Those descriptions has been tested with STLport 5.2.0 but it should also work
-; with 5.1 release.
+; Those descriptions has been tested with STLport 5.2.0.
 ; How to use: Copy/Paste this file content in the autoexp.dat file you will find
 ; in your Visual Studio install, for instance
 ; C:\Program Files\Microsoft Visual Studio 8\Common7\Packages\Debugger, in the
@@ -19,72 +18,33 @@
 stlp_std::basic_string<char,*>|stlpx_std::basic_string<char,*>|stlpmtx_std::basic_string<char,*>|stlpxmtx_std::basic_string<char,*>|stlpd_std::priv::_NonDbg_str<char,*>|stlpdx_std::priv::_NonDbg_str<char,*>|stlpdmtx_std::priv::_NonDbg_str<char,*>|stlpdxmtx_std::priv::_NonDbg_str<char,*>{
     preview
     (
-        #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-        (
-            [$c._M_Buffers._M_static_buf, s]
-        )
-        #else
-        (
-            [$c._M_Buffers._M_dynamic_buf, s]
-        )
+        [$c._M_start_of_storage._M_data, s]
     )
 
     stringview
     (
-        #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-        (
-            [$c._M_Buffers._M_static_buf, s]
-        )
-        #else
-        (
-            [$c._M_Buffers._M_dynamic_buf, s]
-        )
+        [$c._M_start_of_storage._M_data, s]
     )
 
     children
     (
         #(
             [raw view]: [$c,!],
-            buffer: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
+            buffer: [(unsigned int)$c._M_start_of_storage._M_data, x],
+            length: $c._M_finish - $c._M_start_of_storage._M_data,
+            capacity: #if($c._M_start_of_storage._M_data == $c._M_buffers._M_static_buf)
                     (
-                        [(unsigned int)$c._M_Buffers._M_static_buf, x]
+                        $c._DEFAULT_SIZE
                     )
                     #else
                     (
-                        [(unsigned int)$c._M_Buffers._M_dynamic_buf, x]
+                        $c._M_buffers._M_end_of_storage - $c._M_start_of_storage._M_data
                     ),
-            length: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-                    (
-                        [$c._M_finish - $c._M_buffers._M_static_buf]
-                    )
-                    #else
-                    (
-                        [$c._M_finish - $c._M_buffers._M_dynamic_buf]
-                    ),
-            capacity: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-                      (
-                          [$c._M_end_of_storage._M_data - $c._M_buffers._M_static_buf]
-                      )
-                      #else
-                      (
-                          [$c._M_end_of_storage._M_data - $c._M_buffers._M_dynamic_buf]
-                      ),
-            #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
+            #array
             (
-                #array
-                (
-					expr: $c._M_buffers._M_static_buf[$i],
-					size: $c._M_finish - $c._M_buffers._M_static_buf
-				)
-            )
-            #else
-            (
-                #array
-                (
-					expr: $c._M_buffers._M_dynamic_buf[$i],
-					size: $c._M_finish - $c._M_buffers._M_dynamic_buf
-				)
-            )
+				expr: $c._M_start_of_storage._M_data[$i],
+				size: $c._M_finish - $c._M_start_of_storage._M_data
+			)
         )
     )
 }
@@ -92,72 +52,33 @@ stlp_std::basic_string<char,*>|stlpx_std::basic_string<char,*>|stlpmtx_std::basi
 stlp_std::basic_string<unsigned short,*>|stlp_std::basic_string<wchar_t,*>|stlpx_std::basic_string<unsigned short,*>|stlpx_std::basic_string<wchar_t,*>|stlpmtx_std::basic_string<unsigned short,*>|stlpmtx_std::basic_string<wchar_t,*>|stlpxmtx_std::basic_string<unsigned short,*>|stlpxmtx_std::basic_string<wchar_t,*>|stlpd_std::priv::_NonDbg_str<unsigned short,*>|stlpd_std::priv::_NonDbg_str<wchar_t,*>|stlpdx_std::priv::_NonDbg_str<unsigned short,*>|stlpdx_std::priv::_NonDbg_str<wchar_t,*>|stlpdmtx_std::priv::_NonDbg_str<unsigned short,*>|stlpdmtx_std::priv::_NonDbg_str<wchar_t,*>|stlpdxmtx_std::priv::_NonDbg_str<unsigned short,*>|stlpdxmtx_std::priv::_NonDbg_str<wchar_t,*>{
     preview
     (
-        #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-        (
-            [$c._M_Buffers._M_static_buf, su]
-        )
-        #else
-        (
-            [$c._M_Buffers._M_dynamic_buf, su]
-        )
+        [$c._M_start_of_storage._M_data, su]
     )
 
     stringview
     (
-        #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-        (
-            [$c._M_Buffers._M_static_buf,su]
-        )
-        #else
-        (
-            [$c._M_Buffers._M_dynamic_buf,su]
-        )
+        [$c._M_start_of_storage._M_data, su]
     )
 
     children
     (
         #(
             [raw view]: [$c,!],
-            buffer: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
+            buffer: [(unsigned int)$c._M_start_of_storage._M_data, x],
+            length: $c._M_finish - $c._M_start_of_storage._M_data,
+            capacity: #if($c._M_start_of_storage._M_data == $c._M_buffers._M_static_buf)
                     (
-                        [(unsigned int)$c._M_Buffers._M_static_buf, x]
+                        $c._DEFAULT_SIZE
                     )
                     #else
                     (
-                        [(unsigned int)$c._M_Buffers._M_dynamic_buf, x]
+                        $c._M_buffers._M_end_of_storage - $c._M_start_of_storage._M_data
                     ),
-            length: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-                    (
-                        [$c._M_finish - $c._M_buffers._M_static_buf]
-                    )
-                    #else
-                    (
-                        [$c._M_finish - $c._M_buffers._M_dynamic_buf]
-                    ),
-            capacity: #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
-                      (
-                          [$c._M_end_of_storage._M_data - $c._M_buffers._M_static_buf]
-                      )
-                      #else
-                      (
-                          [$c._M_end_of_storage._M_data - $c._M_buffers._M_dynamic_buf]
-                      ),
-            #if (($c._M_end_of_storage._M_data) == ($c._M_buffers._M_static_buf + $c._DEFAULT_SIZE))
+            #array
             (
-                #array
-                (
-					expr: $c._M_buffers._M_static_buf[$i],
-					size: $c._M_finish - $c._M_buffers._M_static_buf
-				)
-            )
-            #else
-            (
-                #array
-                (
-					expr: $c._M_buffers._M_dynamic_buf[$i],
-					size: $c._M_finish - $c._M_buffers._M_dynamic_buf
-				)
-            )
+				expr: $c._M_start_of_storage._M_data[$i],
+				size: $c._M_finish - $c._M_start_of_storage._M_data
+			)
         )
     )
 }

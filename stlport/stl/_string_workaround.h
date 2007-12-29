@@ -242,7 +242,7 @@ private:                        // Helper functions for append.
       if (__old_size + __n > this->capacity()) {
         const size_type __len = __old_size +
           (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-        pointer __new_start = this->_M_end_of_storage.allocate(__len);
+        pointer __new_start = this->_M_start_of_storage.allocate(__len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
           __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -250,7 +250,7 @@ private:                        // Helper functions for append.
           _M_construct_null(__new_finish);
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-          this->_M_end_of_storage.deallocate(__new_start,__len)))
+          this->_M_start_of_storage.deallocate(__new_start,__len)))
           this->_M_destroy_range();
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -413,7 +413,7 @@ private:  // Helper functions for insert.
                           difference_type __n) {
     const size_type __old_size = this->size();
     const size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
-    pointer __new_start = this->_M_end_of_storage.allocate(__len);
+    pointer __new_start = this->_M_start_of_storage.allocate(__len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
       __new_finish = uninitialized_copy(this->_M_Start(), __position, __new_start);
@@ -422,7 +422,7 @@ private:  // Helper functions for insert.
       this->_M_construct_null(__new_finish);
     }
     _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_end_of_storage.deallocate(__new_start,__len)))
+                  this->_M_start_of_storage.deallocate(__new_start,__len)))
     this->_M_destroy_range();
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -442,7 +442,7 @@ private:  // Helper functions for insert.
                   const forward_iterator_tag &) {
     if (__first != __last) {
       difference_type __n = distance(__first, __last);
-      if (this->_M_end_of_storage._M_data - this->_M_finish >= __n + 1) {
+      if (this->_M_start_of_storage._M_data - this->_M_finish >= __n + 1) {
         const difference_type __elems_after = this->_M_finish - __position;
         if (__elems_after >= __n) {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)

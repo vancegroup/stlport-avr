@@ -1,3 +1,19 @@
+2007-12-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_string_base.h, _string.h, _string.c,
+	_string_sum_methods.h: Attempt to make string implementation more
+	clear: _M_allocated renamed in _M_start_of_storage,
+	_M_Buffers._M_dynamic_buffer renamed in _M_Buffers._M_end_of_storage,
+	_M_end_block renamed in _M_end_of_storage too. To respect current
+	naming convention _capacity has been renamed in _M_capacity and
+	_rest in _M_rest.
+
+	* stlport/stl/_string_workaround.h: Updated to take into account recent
+	modification in string data model.
+	
+	* etc/autoexp.dat: Updated to take into account string data model
+	modifications, new model is really simpler to map to.
+
 2007-12-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale.h, c_locale_dummy/c_locale_dummy.c,

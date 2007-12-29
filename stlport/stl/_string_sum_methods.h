@@ -125,7 +125,7 @@ private:
     size_type __offset_size = _M_get_additional_size(__old_size + __s_size, _Char_Is_POD());
     if (__old_size + __s_size + __offset_size > this->capacity()) {
       const size_type __len = __old_size + __offset_size + (max)(__old_size, __s_size) + 1;
-      pointer __new_start = this->_M_allocated.allocate(__len);
+      pointer __new_start = this->_M_start_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       _STLP_TRY {
         __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -133,7 +133,7 @@ private:
         this->_M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                   this->_M_allocated.deallocate(__new_start,__len)))
+                   this->_M_start_of_storage.deallocate(__new_start,__len)))
       this->_M_destroy_range();
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
@@ -156,7 +156,7 @@ private:
     size_type __offset_size = _M_get_additional_size(__old_size + __s_size, _Char_Is_POD());
     if (__old_size + __s_size + __offset_size > this->capacity()) {
       const size_type __len = __old_size + __offset_size + (max)(__old_size, __s_size) + 1;
-      pointer __new_start = this->_M_allocated.allocate(__len);
+      pointer __new_start = this->_M_start_of_storage.allocate(__len);
       pointer __new_finish = __new_start;
       _STLP_TRY {
         __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
@@ -164,7 +164,7 @@ private:
         this->_M_construct_null(__new_finish);
       }
       _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                   this->_M_allocated.deallocate(__new_start,__len)))
+                   this->_M_start_of_storage.deallocate(__new_start,__len)))
       this->_M_destroy_range();
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
