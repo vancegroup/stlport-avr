@@ -135,7 +135,7 @@ public:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit deque(size_type __n, const value_type& __x = _Tp(),
 #else
-  deque(size_type __n, param_type __x,
+  deque(size_type __n, const value_type& __x,
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
             const allocator_type& __a = allocator_type()) :
     _M_non_dbg_impl(__n, __x, __a), _M_iter_list(&_M_non_dbg_impl) {}
