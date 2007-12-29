@@ -1,7 +1,7 @@
 /*
  *
  * Copyright (c) 2003
- * François Dumont
+ * Francois Dumont
  *
  * This material is provided "as is", with absolutely no warranty expressed
  * or implied. Any use is at your own risk.
@@ -66,7 +66,12 @@ struct __move_traits {
    * complete tells if the move is complete or partial, that is to say, does the source
    * needs to be destroyed once it has been moved.
    */
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
+  typedef __type_traits<_Tp>::has_trivial_destructor _TpMoveComplete;
+  typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
+#  else
   typedef typename __type_traits<_Tp>::has_trivial_destructor complete;
+#  endif
 };
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

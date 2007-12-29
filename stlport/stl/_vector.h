@@ -743,7 +743,12 @@ typedef vector<bool, allocator<bool> > bit_vector;
 template <class _Tp, class _Alloc>
 struct __move_traits<vector<_Tp, _Alloc> > {
   typedef __true_type implemented;
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
+  typedef __move_traits<_Alloc> _TpMoveComplete;
+  typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
+#  else
   typedef typename __move_traits<_Alloc>::complete complete;
+#  endif
 };
 #  endif
 

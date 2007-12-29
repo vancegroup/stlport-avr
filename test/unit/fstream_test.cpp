@@ -482,7 +482,7 @@ namespace std {
   locale::id codecvt<char, char, my_state>::id;
 }
 #  else
-#    if defined (__BORLANDC__)
+#    if defined (__BORLANDC__) && (__BORLANDC__ < 0x590)
 template <>
 locale::id codecvt<char, char, my_state>::id;
 #    endif

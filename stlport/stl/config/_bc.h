@@ -12,11 +12,8 @@
 #if (__BORLANDC__ >= 0x580)
 #  define _STLP_HAS_INCLUDE_NEXT
 #  define _STLP_NATIVE_HEADER(header) <../include/##header>
-#endif
-
-#if (__BORLANDC__ >= 0x580) && (__BORLANDC__ < 0x590)
-#  define _STLP_NO_NEW_C_HEADERS
 #  define _STLP_NATIVE_CPP_RUNTIME_HEADER(header) <../include/dinkumware/##header>
+#  define _STLP_NO_NEW_C_HEADERS
 #  define _STLP_NO_FORCE_INSTANTIATE
 #endif
 
@@ -30,18 +27,23 @@
 #  endif
 #endif
 
+#if (__BORLANDC__ < 0x590)
+#  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
+#  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
+   // <bitset> problems
+#  define _STLP_MEMBER_SPECIALIZATION_BUG 1
+#endif
+
 #if (__BORLANDC__ < 0x564)
 #  define _STLP_QUALIFIED_SPECIALIZATION_BUG
 #  define _STLP_NO_MOVE_SEMANTIC
 #endif
 
-#define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
 #define _STLP_DONT_USE_PRIV_NAMESPACE
 #define _STLP_NO_VENDOR_STDLIB_L
 #define _STLP_NO_VENDOR_MATH_F
 #define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
 #define _STLP_NO_NATIVE_MBSTATE_T
-#define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
 #undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
 #if (__BORLANDC__ < 0x580) && !defined (_RTLDLL)
 #  define _UNCAUGHT_EXCEPTION 1
@@ -50,8 +52,6 @@
 // <limits> problem
 #define _STLP_STATIC_CONST_INIT_BUG
 
-// <bitset> problems
-#define _STLP_MEMBER_SPECIALIZATION_BUG 1
 #define _STLP_HAS_SPECIFIC_PROLOG_EPILOG 1
 
 #define _STLP_LONG_LONG  __int64
@@ -113,15 +113,15 @@
 
 #if defined (_STLP_USE_DYNAMIC_LIB)
 #  define _STLP_USE_DECLSPEC 1
-#  if (__BORLANDC__ < 0x580)
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else
+#    if (__BORLANDC__ < 0x580) 
 #    define  _STLP_CALL __cdecl __import
-#  endif
 #else
 #  define  _STLP_CALL __cdecl
 #endif
+#  endif
 #else
 #  define  _STLP_CALL __cdecl
 #endif

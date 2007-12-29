@@ -2368,7 +2368,12 @@ template <class _CharT, class _Alloc>
 struct __move_traits<rope<_CharT, _Alloc> > {
   typedef __true_type implemented;
   //Completness depends on the allocator:
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
+  typedef __move_traits<_Alloc> _TpMoveComplete;
+  typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
+#  else
   typedef typename __move_traits<_Alloc>::complete complete;
+#  endif
 };
 #endif
 

@@ -47,7 +47,7 @@ static bool type_to_bool(__false_type)
 
 template <class _Tp>
 static bool is_movable(const _Tp&) {
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x590)
   return __type2bool<typename __move_traits<_Tp>::implemented>::_Ret != 0;
 #  else
   typedef typename __move_traits<_Tp>::implemented _MovableTp;
@@ -58,7 +58,7 @@ static bool is_movable(const _Tp&) {
 template <class _Tp>
 static bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) && (__BORLANDC__ < 0x590)
   return type_to_bool(_TpMoveTraits::complete());
 #  else
   typedef typename _TpMoveTraits::complete _TpMoveComplete;
@@ -117,6 +117,49 @@ namespace std {
     bool operator() (struct_with_specialized_less const&,
                      struct_with_specialized_less const&) const;
   };
+
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#    if !defined (_STLP_NO_MOVE_SEMANTIC)
+#      if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<vector<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<deque<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<list<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<slist<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<less<struct_with_specialized_less> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<set<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+  _STLP_TEMPLATE_NULL
+  struct __move_traits<multiset<specially_allocated_struct> > {
+    typedef __true_type implemented;
+    typedef __false_type complete;
+  };
+#      endif
+#    endif
+#  endif
+
 #  if defined (_STLP_USE_NAMESPACES)
 }
 #  endif

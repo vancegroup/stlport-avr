@@ -147,6 +147,7 @@ inline unsigned long (min) (unsigned long __a, unsigned long __b) { return __b <
 inline unsigned long (max) (unsigned long __a, unsigned long __b) {  return  __a < __b ? __b : __a; }
 # endif
 
+#  if !defined (__BORLANDC__) || (__BORLANDC__ < 0x590)
 template <class _Tp, class _Compare>
 inline const _Tp& (min)(const _Tp& __a, const _Tp& __b, _Compare __comp) {
   return __comp(__b, __a) ? __b : __a;
@@ -156,6 +157,17 @@ template <class _Tp, class _Compare>
 inline const _Tp& (max)(const _Tp& __a, const _Tp& __b, _Compare __comp) {
   return __comp(__a, __b) ? __b : __a;
 }
+#  else
+template <class _Tp, class _Compare>
+inline const _Tp (min)(const _Tp __a, const _Tp __b, _Compare __comp) {
+  return __comp(__b, __a) ? __b : __a;
+}
+
+template <class _Tp, class _Compare>
+inline const _Tp (max)(const _Tp __a, const _Tp __b, _Compare __comp) {
+  return __comp(__a, __b) ? __b : __a;
+}
+#  endif
 
 //--------------------------------------------------
 // copy

@@ -14,7 +14,7 @@ class MoveConstructorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(move_traits);
 #if !defined (STLPORT) || defined (_STLP_NO_MOVE_SEMANTIC) || \
     defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) || \
-    defined (__BORLANDC__)
+    (defined (__BORLANDC__) && (__BORLANDC__ < 0x590))
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(movable_declaration)

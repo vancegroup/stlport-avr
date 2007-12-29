@@ -1044,7 +1044,7 @@ void StringTest::template_wexpression()
 #if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 #  if !defined (__CYGWIN__) || defined (STLPORT)
   wstring one(L"one"), two(L"two"), three(L"three");
-  wstring space(1, L' ');
+  wstring space(L" ");
 
   {
     wstring result(one + L' ' + two + L' ' + three);
