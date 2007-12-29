@@ -1,4 +1,6 @@
-2007-12-28  Francois Dumont  <dums@users.sourceforge.net>
+2007-12-29  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Borland patch from Eric Sanford mainly to enable move constructor.
 
 	* stlport/stl/_string_base.h, _string.h, _string.c,
 	_string_sum_methods.h: Attempt to make string implementation more
