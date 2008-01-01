@@ -23,6 +23,15 @@ typedef __locale_t __c_locale;
 static const char *_empty_str = "";
 static const char *_C_name = "C";
 
+static wchar_t* _ToWChar(const char* buf, wchar_t *wbuf, size_t wbufSize) {
+  wchar_t *wcur = wbuf;
+  wchar_t *wend = wbuf + wbufSize - 1;
+  for (; wcur != wend && *buf != 0; ++buf, ++wcur)
+    *wcur = *buf;
+  *wcur = 0;
+  return wbuf;
+}
+
 #if 0
 struct _Locale_ctype
 {
@@ -488,6 +497,16 @@ const char *_Locale_false(struct _Locale_numeric *__loc)
   return __nl_langinfo_l(NOSTR, (__c_locale)__loc);
 }
 
+#ifndef _STLP_NO_WCHAR_T
+wchar_t _WLocale_decimal_point(struct _Locale_numeric *__loc)
+{ return (wchar_t)_Locale_decimal_point(__loc); }
+wchar_t _WLocale_thousands_sep(struct _Locale_numeric *__loc)
+{ return (wchar_t)_Locale_thousands_sep(__loc); }
+const wchar_t *_WLocale_true(struct _Locale_numeric *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_true(__loc), buf, bufSize); }
+const wchar_t *_WLocale_false(struct _Locale_numeric *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_false(__loc), buf, bufSize); }
+#endif
 
 /* Monetary */
 
@@ -510,6 +529,21 @@ char _Locale_mon_thousands_sep(struct _Locale_monetary *__loc)
 {
   return *(__nl_langinfo_l(MON_THOUSANDS_SEP, (__c_locale)__loc));
 }
+
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t *_WLocale_int_curr_symbol(struct _Locale_monetary *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_int_curr_symbol(__loc), buf, bufSize); }
+const wchar_t *_WLocale_currency_symbol(struct _Locale_monetary *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_currency_symbol(__loc), buf, bufSize); }
+wchar_t _WLocale_mon_decimal_point(struct _Locale_monetary * __loc)
+{ return (wchar_t)_Locale_mon_decimal_point(__loc); }
+wchar_t _WLocale_mon_thousands_sep(struct _Locale_monetary * __loc)
+{ return (wchar_t)_Locale_mon_thousands_sep(__loc); }
+const wchar_t *_WLocale_positive_sign(struct _Locale_monetary *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_positive_sign(__loc), buf, bufSize); }
+const wchar_t *_WLocale_negative_sign(struct _Locale_monetary *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_negative_sign(__loc), buf, bufSize); }
+#endif
 
 const char *_Locale_mon_grouping(struct _Locale_monetary *__loc)
 {
@@ -640,6 +674,21 @@ const char *_Locale_pm_str(struct _Locale_time* __loc )
 {
   return __nl_langinfo_l(PM_STR, (__c_locale)__loc);
 }
+
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t *_WLocale_full_monthname(struct _Locale_time *__loc, int _m, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_full_monthname(__loc, _m), buf, bufSize); }
+const wchar_t *_WLocale_abbrev_monthname(struct _Locale_time *__loc, int _m, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_abbrev_monthname(__loc, _m), buf, bufSize); }
+const wchar_t *_WLocale_full_dayofweek(struct _Locale_time *__loc, int _d, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_full_dayofweek(__loc, _d), buf, bufSize); }
+const wchar_t *_WLocale_abbrev_dayofweek(struct _Locale_time *__loc, int _d, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_abbrev_dayofweek(__loc, _d), buf, bufSize); }
+const wchar_t *_WLocale_am_str(struct _Locale_time *__loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_am_str(__loc), buf, bufSize); }
+const wchar_t *_WLocale_pm_str(struct _Locale_time* __loc, wchar_t *buf, size_t bufSize)
+{ return _ToWChar(_Locale_pm_str(__loc), buf, bufSize); }
+#endif
 
 /* Messages */
 

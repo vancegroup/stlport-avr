@@ -328,7 +328,7 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
 
     case 'h': /* POSIX.2 extension */
       // same as 'b', abbrev month name
-      buf.append(table._M_monthname[t->tm_mon]);
+      __append(buf, table._M_monthname[t->tm_mon]);
       break;
     case 'C': /* POSIX.2 extension */
       // same as 'd', the day
@@ -352,7 +352,7 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
       break;
 
     case 'n': /* POSIX.2 extension */
-      _buf.append(1, ct.widen('\n'));
+      buf.append(1, ct.widen('\n'));
       break;
 
     case 'R': /* GNU extension */
@@ -408,7 +408,7 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
         break;
       default:
         val = (long)days / 7 + 1;
-        break
+        break;
       }
       _bend = __write_integer(_buf, 0, val);
       __append(buf, _buf, _bend, ct);
@@ -427,10 +427,10 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
         diff = t->__tm_gmtoff;
 #    endif
         if (diff < 0) {
-          *buf++ = '-';
+          buf.append(1, ct.widen('-'));
           diff = -diff;
         } else
-          *buf++ = '+';
+          buf.append(1, ct.widen('+'));
         diff /= 60;
         _STLP_SPRINTF(_buf, "%.4d", (diff / 60) * 100 + diff % 60);
         __append(buf, _buf, _buf + 4, ct);

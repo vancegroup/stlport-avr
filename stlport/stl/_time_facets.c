@@ -312,12 +312,12 @@ time_get<_Ch, _InIt>::do_get_date(_InIt __s, _InIt  __end,
                                   tm* __t) const {
   typedef string::const_iterator string_iterator;
 
-  string_iterator __format = _M_timeinfo._M_date_format.begin();
-  string_iterator __format_end = _M_timeinfo._M_date_format.end();
+  string_iterator __format = this->_M_timeinfo._M_date_format.begin();
+  string_iterator __format_end = this->_M_timeinfo._M_date_format.end();
 
   string_iterator __result
     = _STLP_PRIV __get_formatted_time(__s, __end, __format, __format_end,
-                                      __STATIC_CAST(_Ch*, 0), _M_timeinfo,
+                                      __STATIC_CAST(_Ch*, 0), this->_M_timeinfo,
                                       __str, __err, __t);
   if (__result == __format_end)
     __err = ios_base::goodbit;
@@ -335,12 +335,12 @@ time_get<_Ch, _InIt>::do_get_time(_InIt __s, _InIt  __end,
                                   ios_base& __str, ios_base::iostate&  __err,
                                   tm* __t) const {
   typedef string::const_iterator string_iterator;
-  string_iterator __format = _M_timeinfo._M_time_format.begin();
-  string_iterator __format_end = _M_timeinfo._M_time_format.end();
+  string_iterator __format = this->_M_timeinfo._M_time_format.begin();
+  string_iterator __format_end = this->_M_timeinfo._M_time_format.end();
 
   string_iterator __result
     = _STLP_PRIV __get_formatted_time(__s, __end, __format, __format_end,
-                                      __STATIC_CAST(_Ch*, 0), _M_timeinfo,
+                                      __STATIC_CAST(_Ch*, 0), this->_M_timeinfo,
                                       __str, __err, __t);
   __err = __result == __format_end ? ios_base::goodbit
                                    : ios_base::failbit;
@@ -375,7 +375,7 @@ time_get<_Ch, _InIt>::do_get_weekday(_InIt __s, _InIt  __end,
                                      tm *__t) const {
   const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    _STLP_PRIV __get_short_or_long_dayname(__s, __end, __ct, _M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_dayname(__s, __end, __ct, this->_M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -393,7 +393,7 @@ time_get<_Ch, _InIt>::do_get_monthname(_InIt __s, _InIt  __end,
                                        tm *__t) const {
   const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    _STLP_PRIV __get_short_or_long_monthname(__s, __end, __ct, _M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_monthname(__s, __end, __ct, this->_M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -437,7 +437,7 @@ time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch /* __fill 
                                   char __modifier ) const {
   const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __f._M_ctype_facet());
   _STLP_BASIC_IOSTRING(_Ch) __buf;
-  _STLP_PRIV __write_formatted_time(__buf, __ct, __format, __modifier, _M_timeinfo, __tmb);
+  _STLP_PRIV __write_formatted_time(__buf, __ct, __format, __modifier, this->_M_timeinfo, __tmb);
   //  locale __loc = __f.getloc();
   return copy(__buf.begin(), __buf.end(), __s);
 }

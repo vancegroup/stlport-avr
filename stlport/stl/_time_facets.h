@@ -161,7 +161,7 @@ protected:
 
   ~time_get() {}
 
-  virtual dateorder do_date_order() const { return _M_dateorder; }
+  virtual dateorder do_date_order() const { return this->_M_dateorder; }
 
   virtual iter_type do_get_time(iter_type __s, iter_type  __end,
                                 ios_base&, ios_base::iostate&  __err,

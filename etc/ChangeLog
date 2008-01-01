@@ -1,3 +1,9 @@
+2008-01-01  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_time_facets.h, _time_facets.c, src/time_facet.cpp,
+	c_locale_glibc/c_locale_glibc2.c: Restore GlibC++ support after
+	2007-12-27 modifications.
+
 2007-12-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Borland patch from Eric Sanford mainly to enable move constructor.
