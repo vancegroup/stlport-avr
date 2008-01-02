@@ -82,19 +82,23 @@ _STLP_BEGIN_NAMESPACE
 // Implementation for eMbedded Visual C++ 3.0 and 4.2 (.NET)
 #if defined (_STLP_WCE)
 
-inline int _FILE_fd(const FILE *__f) 
-{
-   // Stdin, stdout and stderr.
-   for(int __fd = 0; __fd < 3; __fd++)
-   {
-      FILE* __fp = _getstdfilex(__fd); 
+inline int _FILE_fd(const FILE *__f) {
+  /* Check if FILE is one of the three standard streams
+     We do this check first, because invoking _fileno() on one of them
+     causes a terminal window to be created. This also happens if you do
+     any IO on them, but merely retrieving the filedescriptor shouldn't
+     already do that.
 
-      if(__f == __fp)
-         return __fd;
-   }
+     Obviously this is pretty implementation-specific because it requires
+     that indeed the first three FDs are always the same, but that is not
+     only common but almost guaranteed. */
+  for (int __fd = 0; __fd != 3; ++__fd) {
+    if (__f == _getstdfilex(__fd))
+      return __fd;
+  }
 
-   // Normal files.
-   return (int)::_fileno((FILE*)__f); 
+  // Normal files.
+  return (int)::_fileno((FILE*)__f); 
 }
 
 # undef _STLP_FILE_I_O_IDENTICAL
