@@ -284,14 +284,17 @@ void FstreamTest::seek()
 {
   {
     fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+    CPPUNIT_ASSERT( s );
 
     s << "1234567890";
+    CPPUNIT_ASSERT( s );
   }
 
-  char b1[10] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
-  fstream s( "test_file.txt" );
+  char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+  fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
+  CPPUNIT_ASSERT( s );
 
-  CPPUNIT_CHECK( s.rdbuf()->sgetn( b1, 10 ) == 10 );
+  CPPUNIT_CHECK( s.rdbuf()->sgetn( b1, sizeof(b1) ) == 10 );
   CPPUNIT_CHECK( b1[9] == '0' );
   CPPUNIT_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(10) );
   CPPUNIT_CHECK( s.rdbuf()->pubseekoff( -10, ios_base::cur ) == fstream::pos_type(0) );

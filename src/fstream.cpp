@@ -62,6 +62,7 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
       __this->_M_base._M_unmap(__this->_M_mmap_base, __this->_M_mmap_len);
       __this->_M_mmap_base = 0;
       __this->_M_mmap_len = 0;
+      __this->setg(__STATIC_CAST(char*, 0), __STATIC_CAST(char*, 0), __STATIC_CAST(char*, 0));
     }
 
     // Determine the position where we start mapping.  It has to be
@@ -78,9 +79,9 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
         __this->_M_mmap_len = MMAP_CHUNK;
 
       if ((__this->_M_mmap_base = __this->_M_base._M_mmap(__offset, __this->_M_mmap_len)) != 0) {
-        __this->setg((char*) __this->_M_mmap_base,
-                     (char*) __this->_M_mmap_base + __STATIC_CAST(ptrdiff_t, __remainder),
-                     (char*) __this->_M_mmap_base + __STATIC_CAST(ptrdiff_t, __this->_M_mmap_len));
+        __this->setg(__STATIC_CAST(char*, __this->_M_mmap_base),
+                     __STATIC_CAST(char*, __this->_M_mmap_base) + __STATIC_CAST(ptrdiff_t, __remainder),
+                     __STATIC_CAST(char*, __this->_M_mmap_base) + __STATIC_CAST(ptrdiff_t, __this->_M_mmap_len));
         return traits_type::to_int_type(*__this->gptr());
       }
       else

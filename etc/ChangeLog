@@ -1,3 +1,10 @@
+2008-01-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/fstream_test.cpp: Change FstreamTest::seek test to reveal
+	bug #1854345.
+
+	* src/fstream.cpp: #1854345 bug fixed.
+
 2008-01-01  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_time_facets.h, _time_facets.c, src/time_facet.cpp,
