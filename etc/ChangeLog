@@ -6,6 +6,17 @@
 	* stlport/stl/_codecvt.h: Add assertion to check buffer ranges pass to
 	the codecvt facet.
 
+	* src/fstream.cpp, stlport/stl/_fstream.c: Complete bug #1854345 fix,
+	get buffer was not reset at the right place.
+
+	* stlport/stl/_fstream.h, _fstream.c: Several modifications in the
+	seekoff method:
+	- Remove limitation of positioning to binary file stream, setting
+	position in a text file stream is not a problem.
+	- Fix mbstate_t instance returned in the file_pos instance when
+	getting position in a file stream with variable encoding.
+	- Move all the sanity check code to the debug mode.
+
 2008-01-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/fstream_test.cpp: Change FstreamTest::seek test to reveal

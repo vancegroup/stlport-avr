@@ -283,27 +283,113 @@ void FstreamTest::buf()
 void FstreamTest::seek()
 {
   {
-    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+    // Test in binary mode:
+    {
+      fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
+      CPPUNIT_ASSERT( s );
+
+      s << "1234567890\n";
+      CPPUNIT_ASSERT( s );
+    }
+
+    char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+    fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
     CPPUNIT_ASSERT( s );
 
-    s << "1234567890";
-    CPPUNIT_ASSERT( s );
+    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
+    CPPUNIT_CHECK( chars_read == 11 );
+    CPPUNIT_CHECK( b1[9] == '0' );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(chars_read) );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -chars_read, ios_base::cur ) == fstream::pos_type(0) );
+
+    char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+
+    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 10 ) == 10 );
+    CPPUNIT_CHECK( b2[9] == '0' );
   }
 
-  char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
-  fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
-  CPPUNIT_ASSERT( s );
+  {
+    // Test in text mode:
+    {
+      fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
+      CPPUNIT_ASSERT( s );
 
-  CPPUNIT_CHECK( s.rdbuf()->sgetn( b1, sizeof(b1) ) == 10 );
-  CPPUNIT_CHECK( b1[9] == '0' );
-  CPPUNIT_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(10) );
-  CPPUNIT_CHECK( s.rdbuf()->pubseekoff( -10, ios_base::cur ) == fstream::pos_type(0) );
+      s << "1234567890\n";
+      CPPUNIT_ASSERT( s );
+    }
 
-  char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+    char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
+    fstream s( "test_file.txt", ios_base::in | ios_base::out );
+    CPPUNIT_ASSERT( s );
 
-  CPPUNIT_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
+    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
+    CPPUNIT_CHECK( chars_read == 11 );
+    CPPUNIT_CHECK( b1[9] == '0' );
 
-  CPPUNIT_CHECK( b2[9] == '0' );
+    fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+    // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
+    CPPUNIT_ASSERT( pos >= fstream::pos_type(chars_read) );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -pos, ios_base::cur ) == fstream::pos_type(0) );
+
+    char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
+
+    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+    CPPUNIT_CHECK( b2[4] == '5' );
+
+    pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+    CPPUNIT_ASSERT( pos == fstream::pos_type(5) );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+  }
+
+  {
+    // Test with a wariable encoding:
+    locale loc;
+    try
+    {
+      locale tmp(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(".UTF8"));
+      loc = tmp;
+    }
+    catch (const runtime_error&)
+    {
+      // Localization no supported so no test:
+      return;
+    }
+
+    {
+      wfstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
+      CPPUNIT_ASSERT( s );
+      s.imbue(loc);
+      CPPUNIT_ASSERT( s );
+
+      s << L"1234567890\n";
+      CPPUNIT_ASSERT( s );
+    }
+
+    wchar_t b1[] = { L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x' };
+    wfstream s( "test_file.txt", ios_base::in | ios_base::out );
+    CPPUNIT_ASSERT( s );
+    s.imbue(loc);
+    CPPUNIT_ASSERT( s );
+
+    int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) / sizeof(wchar_t) );
+    CPPUNIT_CHECK( chars_read == 11 );
+    CPPUNIT_CHECK( b1[9] == L'0' );
+
+    fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+    // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
+    CPPUNIT_ASSERT( pos >= fstream::pos_type(chars_read) );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -pos, ios_base::cur ) == fstream::pos_type(-1) );
+    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(0, ios_base::beg) == fstream::pos_type(0) );
+
+    wchar_t b2[10] = { L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y' };
+
+    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+    CPPUNIT_CHECK( b2[4] == L'5' );
+
+    pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
+    CPPUNIT_ASSERT( pos == fstream::pos_type(5) );
+    //CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+  }
 }
 
 void FstreamTest::rdbuf()

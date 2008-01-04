@@ -337,16 +337,6 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_filebuf<wchar_t, char_traits<wchar_t> >;
 #  endif
 #endif /* _STLP_USE_TEMPLATE_EXPORT */
 
-// public:
-// helper class.
-template <class _CharT>
-struct _Filebuf_Tmp_Buf {
-  _CharT* _M_ptr;
-  _Filebuf_Tmp_Buf(ptrdiff_t __n) : _M_ptr(0) { _M_ptr = new _CharT[__n]; }
-  ~_Filebuf_Tmp_Buf() { delete[] _M_ptr; }
-};
-
-
 //
 // This class had to be designed very carefully to work
 // with Visual C++.

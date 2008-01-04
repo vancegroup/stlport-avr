@@ -58,12 +58,8 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
       && __this->_M_always_noconv
       && __this->_M_base._M_in_binary_mode()) {
     // If we've mmapped part of the file already, then unmap it.
-    if (__this->_M_mmap_base) {
+    if (__this->_M_mmap_base)
       __this->_M_base._M_unmap(__this->_M_mmap_base, __this->_M_mmap_len);
-      __this->_M_mmap_base = 0;
-      __this->_M_mmap_len = 0;
-      __this->setg(__STATIC_CAST(char*, 0), __STATIC_CAST(char*, 0), __STATIC_CAST(char*, 0));
-    }
 
     // Determine the position where we start mapping.  It has to be
     // a multiple of the page size.
@@ -86,6 +82,10 @@ _Underflow< char, char_traits<char> >::_M_doit(basic_filebuf<char, char_traits<c
       }
       else
         __this->_M_mmap_len = 0;
+    }
+    else {
+      __this->_M_mmap_base = 0;
+      __this->_M_mmap_len = 0;
     }
   }
 
