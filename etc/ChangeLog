@@ -3,6 +3,9 @@
 	* src/fstream_win32.cpp: Change detection of regular file, only reject
 	handlers identified as folders.
 
+	* stlport/stl/_codecvt.h: Add assertion to check buffer ranges pass to
+	the codecvt facet.
+
 2008-01-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/fstream_test.cpp: Change FstreamTest::seek test to reveal

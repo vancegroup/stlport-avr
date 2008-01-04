@@ -66,6 +66,8 @@ public:
              extern_type*         __to,
              extern_type*         __to_limit,
              extern_type*&        __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_out(__state,
                   __from, __from_end, __from_next,
                   __to,   __to_limit, __to_next);
@@ -75,6 +77,7 @@ public:
                  extern_type*   __to,
                  extern_type*   __to_limit,
                  extern_type*&  __to_next) const {
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_unshift(__state, __to, __to_limit, __to_next);
   }
 
@@ -85,6 +88,8 @@ public:
             intern_type*        __to,
             intern_type*        __to_limit,
             intern_type*&       __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_in(__state,
                  __from, __from_end, __from_next,
                  __to,  __to_limit, __to_next);
@@ -96,9 +101,10 @@ public:
 
   int length(state_type&  __state,
              const extern_type* __from,
-             const extern_type* __end,
+             const extern_type* __from_end,
              size_t             __max) const {
-    return do_length(__state, __from, __end, __max);
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    return do_length(__state, __from, __from_end, __max);
   }
 
   int max_length() const _STLP_NOTHROW { return do_max_length(); }
@@ -180,14 +186,18 @@ public:
              char*        __to,
              char*        __to_limit,
              char*&       __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_out(__state,
                   __from, __from_end, __from_next,
                   __to,   __to_limit, __to_next);
   }
 
   result unshift(state_type& __state,
-                 char* __to, char* __to_limit, char*& __to_next) const
-    { return do_unshift(__state, __to, __to_limit, __to_next); }
+                 char* __to, char* __to_limit, char*& __to_next) const {
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
+    return do_unshift(__state, __to, __to_limit, __to_next);
+  }
 
   result in(state_type&   __state,
             const char*  __from,
@@ -196,6 +206,8 @@ public:
             char*        __to,
             char*        __to_limit,
             char*&       __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_in(__state,
                  __from, __from_end, __from_next,
                  __to,   __to_limit, __to_next);
@@ -206,9 +218,11 @@ public:
   bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
 
   int length(state_type& __state,
-             const char* __from, const char* __end,
-             size_t __max) const
-    { return do_length(__state, __from, __end, __max); }
+             const char* __from, const char* __from_end,
+             size_t __max) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    return do_length(__state, __from, __from_end, __max);
+  }
 
   int max_length() const _STLP_NOTHROW { return do_max_length(); }
 
@@ -269,6 +283,8 @@ public:
              char*           __to,
              char*           __to_limit,
              char*&          __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_out(__state,
                   __from, __from_end, __from_next,
                   __to,   __to_limit, __to_next);
@@ -276,6 +292,7 @@ public:
 
   result unshift(state_type& __state,
                  char*  __to, char*  __to_limit, char*& __to_next) const {
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_unshift(__state, __to, __to_limit, __to_next);
   }
 
@@ -286,6 +303,8 @@ public:
             wchar_t*     __to,
             wchar_t*     __to_limit,
             wchar_t*&    __to_next) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    _STLP_VERBOSE_ASSERT(__to <= __to_limit, _StlMsg_INVALID_ARGUMENT)
     return do_in(__state,
                  __from, __from_end, __from_next,
                  __to,   __to_limit, __to_next);
@@ -296,9 +315,11 @@ public:
   bool always_noconv() const _STLP_NOTHROW { return do_always_noconv(); }
 
   int length(state_type& __state,
-             const char* __from, const char* __end,
-             size_t __max) const
-    { return do_length(__state, __from, __end, __max); }
+             const char* __from, const char* __from_end,
+             size_t __max) const {
+    _STLP_VERBOSE_ASSERT(__from <= __from_end, _StlMsg_INVALID_ARGUMENT)
+    return do_length(__state, __from, __from_end, __max);
+  }
 
   int max_length() const _STLP_NOTHROW { return do_max_length(); }
 
