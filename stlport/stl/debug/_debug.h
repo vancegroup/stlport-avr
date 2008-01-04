@@ -144,7 +144,7 @@ public:
   static const char* _Message_table[_StlMsg_MAX];
 };
 
-#undef _STLP_MESSAGE_NORETURN
+#  undef _STLP_MESSAGE_NORETURN
 
 #  if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS __stl_debug_engine<bool>;
@@ -163,7 +163,7 @@ _STLP_END_NAMESPACE
 
 #else
 #  define _STLP_ASSERT(expr)
-#endif /* _STLP_ASSERTIONS || _STLP_DEBUG */
+#endif
 
 // this section is for _STLP_DEBUG only
 #if defined (_STLP_DEBUG)
