@@ -4,7 +4,6 @@
 #  include <locale>
 #  include <sstream>
 #  include <stdexcept>
-#  include <memory>
 
 #  include "complete_digits.h"
 
@@ -116,23 +115,28 @@ template <class _Tp>
 void test_supported_locale(LocaleTest inst, _Tp __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
-    auto_ptr<locale> loc;
+    locale loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-    try {
+    try
 #  endif
-      loc.reset(new locale(tested_locales[i].name));
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+    {
+      locale tmp(tested_locales[i].name);
+      loc = tmp;
     }
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
     }
 #  endif
-    CPPUNIT_MESSAGE( loc->name().c_str() );
-    (inst.*__test)(*loc, tested_locales + i);
+    CPPUNIT_MESSAGE( loc.name().c_str() );
+    (inst.*__test)(loc, tested_locales + i);
 
-    loc.reset(new locale(locale::classic(), tested_locales[i].name, locale::numeric));
-    (inst.*__test)(*loc, tested_locales + i);
+    {
+      locale tmp(locale::classic(), tested_locales[i].name, locale::numeric);
+      loc = tmp;
+    }
+    (inst.*__test)(loc, tested_locales + i);
   }
 }
 

@@ -4,7 +4,6 @@
 #  include <sstream>
 #  include <locale>
 #  include <stdexcept>
-#  include <memory>
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -34,11 +33,12 @@ template <class _Tp>
 void test_supported_locale(LocaleTest inst, _Tp __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
-    auto_ptr<locale> loc;
+    locale loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     try {
 #  endif
-      loc.reset(new locale(tested_locales[i]));
+      locale tmp(tested_locales[i]);
+      loc = tmp;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     }
     catch (runtime_error const&) {
@@ -46,8 +46,8 @@ void test_supported_locale(LocaleTest inst, _Tp __test) {
       continue;
     }
 #  endif
-    CPPUNIT_MESSAGE( loc->name().c_str() );
-    (inst.*__test)(*loc);
+    CPPUNIT_MESSAGE( loc.name().c_str() );
+    (inst.*__test)(loc);
   }
 }
 
@@ -246,67 +246,69 @@ void LocaleTest::combine()
     }
   }
 
-  auto_ptr<locale> loc1, loc2;
+  locale loc1(locale::classic()), loc2;
   size_t loc1_index = 0;
   for (size_t i = 0; _get_ref_monetary(i) != 0; ++i) {
     try {
-      locale *ploc = new locale(_get_ref_monetary_name(_get_ref_monetary(i)));
-      if (loc1.get() == 0)
       {
-        loc1.reset(ploc);
-        loc1_index = i;
-        continue;
-      }
-      else
-      {
-        loc2.reset(ploc);
+        locale loc(_get_ref_monetary_name(_get_ref_monetary(i)));
+        if (loc1 == locale::classic())
+        {
+          loc1 = loc;
+          loc1_index = i;
+          continue;
+        }
+        else
+        {
+          loc2 = loc;
+        }
       }
 
       //We can start the test
       ostringstream ostr;
-      ostr << "combining '" << loc2->name() << "' money facets with '" << loc1->name() << "'";
+      ostr << "combining '" << loc2.name() << "' money facets with '" << loc1.name() << "'";
       CPPUNIT_MESSAGE( ostr.str().c_str() );
 
       //We are going to combine money facets as all formats are different.
       {
         //We check that resulting locale has correctly acquire loc2 facets.
-        locale loc = loc1->combine<moneypunct<char, true> >(*loc2);
-        loc = loc.combine<moneypunct<char, false> >(*loc2);
-        loc = loc.combine<money_put<char> >(*loc2);
-        loc = loc.combine<money_get<char> >(*loc2);
+        locale loc = loc1.combine<moneypunct<char, true> >(loc2);
+        loc = loc.combine<moneypunct<char, false> >(loc2);
+        loc = loc.combine<money_put<char> >(loc2);
+        loc = loc.combine<money_get<char> >(loc2);
 
         //Check loc has the correct facets:
-        _money_put_get2(*loc2, loc, _get_ref_monetary(i));
+        _money_put_get2(loc2, loc, _get_ref_monetary(i));
 
         //Check loc1 has not been impacted:
-        _money_put_get2(*loc1, *loc1, _get_ref_monetary(loc1_index));
+        _money_put_get2(loc1, loc1, _get_ref_monetary(loc1_index));
 
         //Check loc2 has not been impacted:
-        _money_put_get2(*loc2, *loc2, _get_ref_monetary(i));
+        _money_put_get2(loc2, loc2, _get_ref_monetary(i));
       }
       {
         //We check that resulting locale has not wrongly acquire loc1 facets that hasn't been combine:
-        locale loc = loc2->combine<numpunct<char> >(*loc1);
-        loc = loc.combine<time_put<char> >(*loc1);
-        loc = loc.combine<time_get<char> >(*loc1);
+        locale loc = loc2.combine<numpunct<char> >(loc1);
+        loc = loc.combine<time_put<char> >(loc1);
+        loc = loc.combine<time_get<char> >(loc1);
 
         //Check loc has the correct facets:
-        _money_put_get2(*loc2, loc, _get_ref_monetary(i));
+        _money_put_get2(loc2, loc, _get_ref_monetary(i));
 
         //Check loc1 has not been impacted:
-        _money_put_get2(*loc1, *loc1, _get_ref_monetary(loc1_index));
+        _money_put_get2(loc1, loc1, _get_ref_monetary(loc1_index));
 
         //Check loc2 has not been impacted:
-        _money_put_get2(*loc2, *loc2, _get_ref_monetary(i));
+        _money_put_get2(loc2, loc2, _get_ref_monetary(i));
       }
 
       {
         // Check auto combination do not result in weird reference counting behavior 
         // (might generate a crash).
-        loc1->combine<numpunct<char> >(*loc1);
+        loc1.combine<numpunct<char> >(loc1);
       }
 
-      loc1.reset(loc2.release());
+      loc1 = loc2;
       loc1_index = i;
     }
     catch (runtime_error const&) {
