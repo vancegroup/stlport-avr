@@ -42,6 +42,9 @@
 
 static const char *_C_name = "C";
 static const char *_empty_str = "";
+#ifndef _STLP_NO_WCHAR_T
+static const wchar_t *_empty_wstr = L"";
+#endif
 
 /* Framework functions */
 
@@ -366,13 +369,11 @@ wint_t _WLocale_tolower(struct _Locale_ctype *lctype, wint_t c)
 
 wint_t _WLocale_toupper(struct _Locale_ctype *lctype, wint_t c)
 { return towlower(c); }
-#endif
 
 int _WLocale_mb_cur_max (struct _Locale_codecvt *lcodecvt) { return 1; }
 int _WLocale_mb_cur_min (struct _Locale_codecvt *lcodecvt) { return 1; }
 int _WLocale_is_stateless (struct _Locale_codecvt *lcodecvt) { return 1; }
 
-#ifndef _STLP_NO_WCHAR_T
 size_t _WLocale_mbtowc(struct _Locale_codecvt *lcodecvt,
                        wchar_t *to,
                        const char *from, size_t n,
@@ -384,12 +385,12 @@ size_t _WLocale_wctomb(struct _Locale_codecvt *lcodecvt,
                        const wchar_t c,
                        mbstate_t *st)
 { *to = (char)c; return 1; }
-#endif
 
 size_t _WLocale_unshift(struct _Locale_codecvt *lcodecvt,
                         mbstate_t *st,
                         char *buf, size_t n, char ** next)
 { *next = buf; return 0; }
+#endif
 
 /* Collate */
  int _Locale_strcmp(struct _Locale_collate* lcol,
@@ -410,7 +411,7 @@ size_t _WLocale_unshift(struct _Locale_codecvt *lcodecvt,
   return ret == 0 ? 0 : (ret < 0 ? -1 : 1);
 }
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 
 int _WLocale_strcmp(struct _Locale_collate* lcol,
                     const wchar_t* s1, size_t n1, const wchar_t* s2, size_t n2) {
@@ -430,7 +431,7 @@ int _WLocale_strcmp(struct _Locale_collate* lcol,
   return ret == 0 ? 0 : (ret < 0 ? -1 : 1);
 }
 
-# endif
+#endif
 
 size_t _Locale_strxfrm(struct _Locale_collate* lcol,
                        char* dest, size_t dest_n,
@@ -441,7 +442,7 @@ size_t _Locale_strxfrm(struct _Locale_collate* lcol,
   return src_n;
 }
 
-# ifndef _STLP_NO_WCHAR_T
+#ifndef _STLP_NO_WCHAR_T
 
 size_t _WLocale_strxfrm(struct _Locale_collate* lcol,
                         wchar_t* dest, size_t dest_n,
@@ -452,7 +453,7 @@ size_t _WLocale_strxfrm(struct _Locale_collate* lcol,
   return src_n;
 }
 
-# endif
+#endif
 
 /* Numeric */
 
@@ -462,23 +463,19 @@ char _Locale_thousands_sep(struct _Locale_numeric* lnum)
 { return ','; }
 const char* _Locale_grouping(struct _Locale_numeric * lnum)
 { return _empty_str; }
-
 const char * _Locale_true(struct _Locale_numeric * lnum)
 { return "true"; }
 const char * _Locale_false(struct _Locale_numeric * lnum)
 { return "false"; }
 
 #ifndef _STLP_NO_WCHAR_T
-wchar_t _WLocale_decimal_point(_Locale_numeric_t* lnum)
+wchar_t _WLocale_decimal_point(struct _Locale_numeric* lnum)
 { return L'.'; }
-
-wchar_t _WLocale_thousands_sep(_Locale_numeric_t* lnum)
+wchar_t _WLocale_thousands_sep(struct _Locale_numeric* lnum)
 { return L','; }
-
-const wchar_t * _WLocale_true(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
+const wchar_t * _WLocale_true(struct _Locale_numeric* lnum, wchar_t* buf, size_t bufSize)
 { return L"true"; }
-
-const wchar_t * _WLocale_false(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
+const wchar_t * _WLocale_false(struct _Locale_numeric* lnum, wchar_t* buf, size_t bufSize)
 { return L"false"; }
 #endif
 
@@ -515,6 +512,24 @@ int          _Locale_n_sep_by_space(struct _Locale_monetary * lmon)
 int          _Locale_n_sign_posn(struct _Locale_monetary * lmon)
 { return CHAR_MAX; }
 
+#ifndef _STLP_NO_WCHAR_T
+const wchar_t* _WLocale_int_curr_symbol(struct _Locale_monetary * lmon,
+                                        wchar_t* buf, size_t bufSize)
+{ return _empty_wstr; }
+const wchar_t* _WLocale_currency_symbol(struct _Locale_monetary * lmon,
+                                        wchar_t* buf, size_t bufSize)
+{ return _empty_wstr; }
+wchar_t        _WLocale_mon_decimal_point(struct _Locale_monetary * lmon)
+{ return L'.'; }
+wchar_t        _WLocale_mon_thousands_sep(struct _Locale_monetary * lmon)
+{ return L','; }
+const wchar_t* _WLocale_positive_sign(struct _Locale_monetary * lmon,
+                                      wchar_t* buf, size_t bufSize)
+{ return _empty_wstr; }
+const wchar_t* _WLocale_negative_sign(struct _Locale_monetary * lmon,
+                                      wchar_t* buf, size_t bufSize)
+{ return _empty_wstr; }
+#endif
 
 /* Time */
 static const char* full_monthname[] =
@@ -553,6 +568,41 @@ const char* _Locale_am_str(struct _Locale_time* ltime)
 { return "AM"; }
 const char* _Locale_pm_str(struct _Locale_time* ltime)
 { return "PM"; }
+
+#ifndef _STLP_NO_WCHAR_T
+static const wchar_t* full_wmonthname[] =
+{ L"January", L"February", L"March", L"April", L"May", L"June",
+  L"July", L"August", L"September", L"October", L"November", L"December" };
+const wchar_t * _WLocale_full_monthname(struct _Locale_time * ltime, int n,
+                                        wchar_t* buf, size_t bufSize)
+{ return full_wmonthname[n]; }
+
+static const wchar_t* abbrev_wmonthname[] =
+{ L"Jan", L"Feb", L"Mar", L"Apr", L"May", L"Jun",
+  L"Jul", L"Aug", L"Sep", L"Oct", L"Nov", L"Dec" };
+const wchar_t * _WLocale_abbrev_monthname(struct _Locale_time * ltime, int n,
+                                          wchar_t* buf, size_t bufSize)
+{ return abbrev_wmonthname[n]; }
+
+static const wchar_t* full_wdayname[] =
+{ L"Sunday", L"Monday", L"Tuesday", L"Wednesday", L"Thursday", L"Friday", L"Saturday" };
+const wchar_t * _WLocale_full_dayofweek(struct _Locale_time * ltime, int n,
+                                        wchar_t* buf, size_t bufSize)
+{ return full_wdayname[n]; }
+
+static const wchar_t* abbrev_wdayname[] =
+{ L"Sun", L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat" };
+const wchar_t * _WLocale_abbrev_dayofweek(struct _Locale_time * ltime, int n,
+                                          wchar_t* buf, size_t bufSize)
+{ return abbrev_wdayname[n]; }
+
+const wchar_t* _WLocale_am_str(struct _Locale_time* ltime,
+                               wchar_t* buf, size_t bufSize)
+{ return L"AM"; }
+const wchar_t* _WLocale_pm_str(struct _Locale_time* ltime,
+                               wchar_t* buf, size_t bufSize)
+{ return L"PM"; }
+#endif
 
 /* Messages */
 

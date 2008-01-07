@@ -1,3 +1,8 @@
+2008-01-07  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_dummy/c_locale_dummy.c: Upgrade to take into account
+	recent localization Api modifications.
+
 2008-01-04  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/fstream_win32.cpp: Change detection of regular file, only reject
