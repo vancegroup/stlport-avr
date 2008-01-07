@@ -341,6 +341,8 @@ void FstreamTest::seek()
     CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
   }
 
+#if !defined (STLPORT) || \
+    (!defined (_STLP_NO_WCHAR_T) && defined (_STLP_USE_EXCEPTIONS))
   {
     // Test with a wariable encoding:
     locale loc;
@@ -390,6 +392,7 @@ void FstreamTest::seek()
     CPPUNIT_ASSERT( pos == fstream::pos_type(5) );
     //CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
   }
+#endif
 }
 
 void FstreamTest::rdbuf()
