@@ -1,3 +1,20 @@
+2008-01-08  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_ios_base.h: _S_was_synced renamed in _S_is_synced
+	because it reflects what the sync state is and not what it was.
+
+	* src/iostream.cpp: Use auto_ptr to avoid use of the catch(...)
+	blocks. Changed management of the _STLP_REDIRECT_STDSTREAMS macro.
+	cout, cerr and clog streams are not ofstream anymore but classic
+	ostream instances, only streambuf is a filebuf when the macro is
+	defined. Improve _S_initialize robustness to exceptions, now
+	exceptions like bad_alloc are not silently eaten. _S_initialize
+	guaranty that on exception, Standard streams will be valid, it do
+	not offer however strong guaranty, global state might still have
+	been modified. Idem for sync_with_stdio. Moreover this method is
+	now Standard compliant, it returns the new sync state and not the
+	old one.
+
 2008-01-07  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_dummy/c_locale_dummy.c: Upgrade to take into account

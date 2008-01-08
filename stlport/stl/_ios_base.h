@@ -199,7 +199,7 @@ protected:                      // The functional protected interface.
 protected:                        // Initialization of the I/O system
   static void _STLP_CALL _S_initialize();
   static void _STLP_CALL _S_uninitialize();
-  static bool _S_was_synced;
+  static bool _S_is_synced;
 
 private:                        // Invalidate the copy constructor and
                                 // assignment operator.

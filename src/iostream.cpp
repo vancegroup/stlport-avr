@@ -17,6 +17,7 @@
  */
 #include "stlport_prefix.h"
 
+#include <memory>
 #include <istream>
 #include <fstream>
 #if defined (_STLP_MSVC) || defined (__MWERKS__) || defined (__ICL) || defined (__ISCPP__)
@@ -67,16 +68,9 @@ _STLP_BEGIN_NAMESPACE
 #  endif
 
 _STLP_DECLSPEC istream cin(0);
-
-#  ifdef _STLP_REDIRECT_STDSTREAMS
-_STLP_DECLSPEC ofstream cout;
-_STLP_DECLSPEC ofstream cerr;
-_STLP_DECLSPEC ofstream clog;
-#  else
 _STLP_DECLSPEC ostream cout(0);
 _STLP_DECLSPEC ostream cerr(0);
 _STLP_DECLSPEC ostream clog(0);
-#  endif
 
 #  ifndef _STLP_NO_WCHAR_T
 _STLP_DECLSPEC wistream wcin(0);
@@ -144,7 +138,7 @@ _Stl_aligned_buffer<wostream> wclog;
 
 long ios_base::Init::_S_count = 0;
 // by default, those are synced
-bool ios_base::_S_was_synced = true;
+bool ios_base::_S_is_synced = true;
 
 ios_base::Init::Init() {
   if (_S_count++ == 0) {
@@ -161,39 +155,36 @@ ios_base::Init::~Init() {
   }
 }
 
+static int _Stl_extract_open_param(FILE* f)
+{ return _FILE_fd(f); }
+
+#ifdef _STLP_REDIRECT_STDSTREAMS
+static const char* _Stl_extract_open_param(const char* name)
+{ return name; }
+#endif
+
+template <class _Tp>
 static filebuf*
-_Stl_create_filebuf(FILE* f, ios_base::openmode mode ) {
-  basic_filebuf<char, char_traits<char> >* result =
-    new basic_filebuf<char, char_traits<char> >();
+_Stl_create_filebuf(_Tp x, ios_base::openmode mode ) {
+  auto_ptr<filebuf> result(new basic_filebuf<char, char_traits<char> >());
+  result->open(_Stl_extract_open_param(x), mode);
 
-  _STLP_TRY {
-    result->_M_open(_FILE_fd(f), mode);
-  }
-  _STLP_CATCH_ALL {}
+  if (result->is_open())
+    return result.release();
 
-  if (!result->is_open()) {
-    delete result;
-    result = 0;
-  }
-  return result;
+  return 0;
 }
 
 #if !defined (_STLP_NO_WCHAR_T)
 static wfilebuf*
 _Stl_create_wfilebuf(FILE* f, ios_base::openmode mode) {
-  basic_filebuf<wchar_t, char_traits<wchar_t> >* result =
-    new basic_filebuf<wchar_t, char_traits<wchar_t> >();
+  auto_ptr<wfilebuf> result(new basic_filebuf<wchar_t, char_traits<wchar_t> >());
+  result->_M_open(_FILE_fd(f), mode);
 
-  _STLP_TRY {
-    result->_M_open(_FILE_fd(f), mode);
-  }
-  _STLP_CATCH_ALL {}
+  if (result->is_open())
+    return result.release();
 
-  if (!result->is_open()) {
-    delete result;
-    result = 0;
-  }
-  return result;
+  return 0;
 }
 #endif
 
@@ -202,90 +193,66 @@ void  _STLP_CALL ios_base::_S_initialize() {
   using _STLP_PRIV stdio_istreambuf;
   using _STLP_PRIV stdio_ostreambuf;
 #endif
-  _STLP_TRY {
-    istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(0);
-#  ifdef _STLP_REDIRECT_STDSTREAMS
-    ofstream* ptr_cout = new(static_cast<void*>(&cout)) ofstream;
-    ofstream* ptr_cerr = new(static_cast<void*>(&cerr)) ofstream;
-    ofstream* ptr_clog = new(static_cast<void*>(&clog)) ofstream;
 
-    // Initialize the four narrow stream objects.
-    if (_S_was_synced) {
-      ptr_cin->init(new stdio_istreambuf(stdin));
-      ptr_cout->open("/stdout.txt", ios::out);
-      ptr_cerr->open("/stderr.txt", ios::out);
-      ptr_clog->open("/stdlog.txt", ios::out);
-    } else {
-      ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
-      ptr_cout->init(_Stl_create_filebuf(stdout, ios_base::out));
-      ptr_cerr->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_clog->init(_Stl_create_filebuf(stderr, ios_base::out));
-    }
-    ptr_cin->tie(ptr_cout);
-    ptr_cerr->setf(ios_base::unitbuf);
-#  else
-    ostream* ptr_cout = new(static_cast<void*>(&cout)) ostream(0);
-    ostream* ptr_cerr = new(static_cast<void*>(&cerr)) ostream(0);
-    ostream* ptr_clog = new(static_cast<void*>(&clog)) ostream(0);
+  auto_ptr<streambuf> cin_buf;
+  auto_ptr<streambuf> cout_buf;
+  auto_ptr<streambuf> cerr_buf;
+  auto_ptr<streambuf> clog_buf;
 
-    // Initialize the four narrow stream objects.
-    if (_S_was_synced) {
-      ptr_cin->init(new stdio_istreambuf(stdin));
-      ptr_cout->init(new stdio_ostreambuf(stdout));
-      ptr_cerr->init(new stdio_ostreambuf(stderr));
-      ptr_clog->init(new stdio_ostreambuf(stderr));
-    } else {
-      ptr_cin->init(_Stl_create_filebuf(stdin, ios_base::in));
-      ptr_cout->init(_Stl_create_filebuf(stdout, ios_base::out));
-      ptr_cerr->init(_Stl_create_filebuf(stderr, ios_base::out));
-      ptr_clog->init(_Stl_create_filebuf(stderr, ios_base::out));
-    }
-    ptr_cin->tie(ptr_cout);
-    ptr_cerr->setf(ios_base::unitbuf);
-#  endif /* _STLP_REDIRECT_STDSTREAMS */
+  if (_S_is_synced)
+    cin_buf.reset(new stdio_istreambuf(stdin));
+  else
+    cin_buf.reset(_Stl_create_filebuf(stdin, ios_base::in));
 
-#  ifndef _STLP_NO_WCHAR_T
-    // Run constructors for the four wide stream objects.
-    wistream* ptr_wcin  = new(&wcin)  wistream(0);
-    wostream* ptr_wcout = new(&wcout) wostream(0);
-    wostream* ptr_wcerr = new(&wcerr) wostream(0);
-    wostream* ptr_wclog = new(&wclog) wostream(0);
-
-    wfilebuf* win  = _Stl_create_wfilebuf(stdin, ios_base::in);
-    wfilebuf* wout = _Stl_create_wfilebuf(stdout, ios_base::out);
-    wfilebuf* werr = _Stl_create_wfilebuf(stderr, ios_base::out);
-    wfilebuf* wlog = _Stl_create_wfilebuf(stderr, ios_base::out);
-
-    ptr_wcin->init(win);
-    ptr_wcout->init(wout);
-    ptr_wcerr->init(werr);
-    ptr_wclog->init(wlog);
-
-    ptr_wcin->tie(ptr_wcout);
-    ptr_wcerr->setf(ios_base::unitbuf);
-
-#  endif /*  _STLP_NO_WCHAR_T */
+  if (_S_is_synced) {
+#ifdef _STLP_REDIRECT_STDSTREAMS
+    cout_buf.reset(_Stl_create_filebuf("/stdout.txt", ios::out));
+    cerr_buf.reset(_Stl_create_filebuf("/stderr.txt", ios::out));
+    clog_buf.reset(_Stl_create_filebuf("/stdlog.txt", ios::out));
+#else
+    cout_buf.reset(new stdio_ostreambuf(stdout));
+    cerr_buf.reset(new stdio_ostreambuf(stderr));
+    clog_buf.reset(new stdio_ostreambuf(stderr));
+#endif
+  }
+  else {
+    cout_buf.reset(_Stl_create_filebuf(stdout, ios_base::out));
+    cerr_buf.reset(_Stl_create_filebuf(stderr, ios_base::out));
+    clog_buf.reset(_Stl_create_filebuf(stderr, ios_base::out));
   }
 
-  _STLP_CATCH_ALL {}
+  istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(cin_buf.get()); cin_buf.release();
+  ostream* ptr_cout = new(static_cast<void*>(&cout)) ostream(cout_buf.get()); cout_buf.release();
+  ostream* ptr_cerr = new(static_cast<void*>(&cerr)) ostream(cerr_buf.get()); cerr_buf.release();
+  /*ostream* ptr_clog = */ new(static_cast<void*>(&clog)) ostream(clog_buf.get()); clog_buf.release();
+  ptr_cin->tie(ptr_cout);
+  ptr_cerr->setf(ios_base::unitbuf);
+
+#ifndef _STLP_NO_WCHAR_T
+  auto_ptr<wfilebuf> win(_Stl_create_wfilebuf(stdin, ios_base::in));
+  auto_ptr<wfilebuf> wout(_Stl_create_wfilebuf(stdout, ios_base::out));
+  auto_ptr<wfilebuf> werr(_Stl_create_wfilebuf(stderr, ios_base::out));
+  auto_ptr<wfilebuf> wlog(_Stl_create_wfilebuf(stderr, ios_base::out));
+
+  // Run constructors for the four wide stream objects.
+  wistream* ptr_wcin  = new(&wcin)  wistream(win.get()); win.release();
+  wostream* ptr_wcout = new(&wcout) wostream(wout.get()); wout.release();
+  wostream* ptr_wcerr = new(&wcerr) wostream(werr.get()); werr.release();
+  /*wostream* ptr_wclog = */ new(&wclog) wostream(wlog.get()); wlog.release();
+
+  ptr_wcin->tie(ptr_wcout);
+  ptr_wcerr->setf(ios_base::unitbuf);
+#endif
 }
 
 void _STLP_CALL ios_base::_S_uninitialize() {
   // Note that destroying output streambufs flushes the buffers.
-
   istream* ptr_cin  = &cin;
   ostream* ptr_cout = &cout;
   ostream* ptr_cerr = &cerr;
   ostream* ptr_clog = &clog;
 
-#ifndef _STLP_NO_WCHAR_T
-  wistream* ptr_wcin  = &wcin;
-  wostream* ptr_wcout = &wcout;
-  wostream* ptr_wcerr = &wcerr;
-  wostream* ptr_wclog = &wclog;
-#endif
-
-  // we don't want any exceptions being thrown here
+  // We don't want any exceptions being thrown here
   ptr_cin->exceptions(0);
   ptr_cout->exceptions(0);
   ptr_cerr->exceptions(0);
@@ -302,7 +269,12 @@ void _STLP_CALL ios_base::_S_uninitialize() {
   _Destroy(ptr_clog);
 
 #ifndef _STLP_NO_WCHAR_T
-  // we don't want any exceptions being thrown here
+  wistream* ptr_wcin  = &wcin;
+  wostream* ptr_wcout = &wcout;
+  wostream* ptr_wcerr = &wcerr;
+  wostream* ptr_wclog = &wclog;
+
+  // We don't want any exceptions being thrown here
   ptr_wcin->exceptions(0);
   ptr_wcout->exceptions(0);
   ptr_wcerr->exceptions(0);
@@ -327,65 +299,52 @@ bool _STLP_CALL ios_base::sync_with_stdio(bool sync) {
   using _STLP_PRIV stdio_ostreambuf;
 #  endif
 
-  bool was_synced =  _S_was_synced;
+  if (sync == _S_is_synced) return sync;
 
   // if by any chance we got there before std streams initialization,
   // just set the sync flag and exit
   if (Init::_S_count == 0) {
-    _S_was_synced = sync;
-    return was_synced;
+    _S_is_synced = sync;
+    return sync;
   }
 
-  istream* ptr_cin  = &cin;
-  ostream* ptr_cout = &cout;
-  ostream* ptr_cerr = &cerr;
-  ostream* ptr_clog = &clog;
+  auto_ptr<streambuf> cin_buf;
+  auto_ptr<streambuf> cout_buf;
+  auto_ptr<streambuf> cerr_buf;
+  auto_ptr<streambuf> clog_buf;
 
-  streambuf* old_cin  = ptr_cin->rdbuf();
-  streambuf* old_cout = ptr_cout->rdbuf();
-  streambuf* old_cerr = ptr_cerr->rdbuf();
-  streambuf* old_clog = ptr_clog->rdbuf();
+  if (sync)
+    cin_buf.reset(new stdio_istreambuf(stdin));
+  else
+    cin_buf.reset(_Stl_create_filebuf(stdin, ios_base::in));
 
-  streambuf* new_cin  = 0;
-  streambuf* new_cout = 0;
-  streambuf* new_cerr = 0;
-  streambuf* new_clog = 0;
-
-  _STLP_TRY {
-    if (sync && !was_synced) {
-      new_cin  = new stdio_istreambuf(stdin);
-      new_cout = new stdio_ostreambuf(stdout);
-      new_cerr = new stdio_ostreambuf(stderr);
-      new_clog = new stdio_ostreambuf(stderr);
-    }
-    else if (!sync && was_synced) {
-      new_cin  = _Stl_create_filebuf(stdin, ios_base::in);
-      new_cout = _Stl_create_filebuf(stdout, ios_base::out);
-      new_cerr = _Stl_create_filebuf(stderr, ios_base::out);
-      new_clog = _Stl_create_filebuf(stderr, ios_base::out);
-    }
-  }
-  _STLP_CATCH_ALL {}
-
-  if (new_cin && new_cout && new_cerr && new_clog) {
-    ptr_cin->rdbuf(new_cin);
-    ptr_cout->rdbuf(new_cout);
-    ptr_cerr->rdbuf(new_cerr);
-    ptr_clog->rdbuf(new_clog);
-
-    delete old_cin;
-    delete old_cout;
-    delete old_cerr;
-    delete old_clog;
+  if (sync) {
+#ifdef _STLP_REDIRECT_STDSTREAMS
+    cout_buf.reset(_Stl_create_filebuf("/stdout.txt", ios::out));
+    cerr_buf.reset(_Stl_create_filebuf("/stderr.txt", ios::out));
+    clog_buf.reset(_Stl_create_filebuf("/stdlog.txt", ios::out));
+#else
+    cout_buf.reset(new stdio_ostreambuf(stdout));
+    cerr_buf.reset(new stdio_ostreambuf(stderr));
+    clog_buf.reset(new stdio_ostreambuf(stderr));
+#endif
   }
   else {
-    delete new_cin;
-    delete new_cout;
-    delete new_cerr;
-    delete new_clog;
+    cout_buf.reset(_Stl_create_filebuf(stdout, ios_base::out));
+    cerr_buf.reset(_Stl_create_filebuf(stderr, ios_base::out));
+    clog_buf.reset(_Stl_create_filebuf(stderr, ios_base::out));
   }
 
-  return was_synced;
+  if (cin_buf.get() != 0 && cout_buf.get() != 0 && cerr_buf.get() != 0 && clog_buf.get() != 0) {
+    // When streambuf passed to rdbuf is not null, rdbuf is exception safe:
+    delete (&cin)->rdbuf(cin_buf.release());
+    delete (&cout)->rdbuf(cout_buf.release());
+    delete (&cerr)->rdbuf(cerr_buf.release());
+    delete (&clog)->rdbuf(clog_buf.release());
+    _S_is_synced = sync;
+  }
+
+  return _S_is_synced;
 }
 
 _STLP_END_NAMESPACE
