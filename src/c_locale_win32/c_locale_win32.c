@@ -396,13 +396,10 @@ _Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_
     lcodecvt->mbtowc_flags = MB_PRECOMPOSED;
     lcodecvt->wctomb_flags = WC_COMPOSITECHECK | WC_SEPCHARS;
   }
-
   lcodecvt->max_char_size = CPInfo.MaxCharSize;
-  if (lcodecvt->max_char_size > sizeof(mbstate_t))
-  { free(lcodecvt); return NULL; }
 
   if (CPInfo.MaxCharSize > 1) {
-    for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr+=2)
+    for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr += 2)
       for (i = *ptr; i <= *(ptr + 1); ++i) lcodecvt->cleads[i / CHAR_BIT] |= (0x01 << i % CHAR_BIT);
   }
 
