@@ -2,6 +2,9 @@
 
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
+//#  include <locale>
+//#  include <iostream>
+//#  include <stdexcept>
 
 #  include "cppunit/cppunit_proxy.h"
 
@@ -16,10 +19,15 @@ class IOStreamTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(IOStreamTest);
   CPPUNIT_TEST(manipulators);
+//#if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
+  //CPPUNIT_IGNORE;
+//#endif
+  //CPPUNIT_TEST(wimbue);
   CPPUNIT_TEST_SUITE_END();
 
 private:
   void manipulators();
+  //void wimbue();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(IOStreamTest);
@@ -67,5 +75,24 @@ void IOStreamTest::manipulators()
     istr.clear();
   }
 }
+
+//void IOStreamTest::wimbue()
+//{
+//#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+//  locale loc;
+//  try {
+//    locale tmp(".866");
+//    loc = tmp;
+//  }
+//  catch (const runtime_error&) {
+//    return;
+//  }
+//
+//  wcout.imbue(loc);
+//  wcout << L"Hello world" << endl;
+//  wcout.imbue(loc);
+//  wcout << L"Hello world" << endl;
+//#endif
+//}
 
 #endif
