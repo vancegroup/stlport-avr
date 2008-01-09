@@ -58,25 +58,21 @@ void test_deque()
 
     ConstCheck( testDeque, test_copy_construct<TestDeque>() );
     WeakCheck( testDeque, test_insert_one<TestDeque>(testDeque) );
-    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque,0) );
-    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque, testDeque.size()) );
+    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque, 0) );
+    StrongCheck( testDeque, test_insert_one<TestDeque>(testDeque, (int)testDeque.size()) );
 
     WeakCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base) ) );
     StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), 0 ) );
-    StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), testDeque.size() ) );
+    StrongCheck( testDeque, test_insert_n<TestDeque>(testDeque, random_number(random_base), (int)testDeque.size() ) );
 
     size_t insCnt = random_number(random_base);
-    DQTestClass *insFirst = new TestDeque::value_type[insCnt+1];
+    DQTestClass *insFirst = new TestDeque::value_type[insCnt + 1];
 
-    WeakCheck( testDeque, insert_range_tester(testDeque, (DQTestClass *)insFirst,
-                insFirst+insCnt) );
-    StrongCheck( testDeque, insert_range_at_begin_tester(testDeque, (DQTestClass *)insFirst,
-               insFirst+insCnt) );
-    StrongCheck( testDeque, insert_range_at_end_tester(testDeque, (DQTestClass *)insFirst,
-                   insFirst+insCnt) );
+    WeakCheck( testDeque, insert_range_tester(testDeque, insFirst, insFirst + insCnt) );
+    StrongCheck( testDeque, insert_range_at_begin_tester(testDeque, insFirst, insFirst + insCnt) );
+    StrongCheck( testDeque, insert_range_at_end_tester(testDeque, insFirst, insFirst + insCnt) );
 
-    ConstCheck( 0, test_construct_pointer_range<TestDeque>( (DQTestClass *)insFirst,
-                  insFirst+insCnt ) );
+    ConstCheck( 0, test_construct_pointer_range<TestDeque>(insFirst, insFirst + insCnt) );
     delete[] insFirst;
 
     WeakCheck( testDeque, insert_range_tester(testDeque, testDeque2.begin(), testDeque2.end() ) );

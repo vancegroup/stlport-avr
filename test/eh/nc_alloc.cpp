@@ -217,7 +217,7 @@ void* _STLP_CALL operator new(size_t size, const EH_STD::nothrow_t&) throw() {
 }
 #endif
 
-#if defined (EH_VECTOR_OPERATOR_NEW)
+#if 1 /* defined (EH_VECTOR_OPERATOR_NEW) */
 void* _STLP_CALL operator new[](size_t size ) throw(EH_STD::bad_alloc) {
   return OperatorNew( size );
 }
@@ -280,8 +280,7 @@ void TestController::ClearAllocationSet() {
 bool TestController::ReportLeaked() {
   EndLeakDetection();
 
-  if (using_alloc_set)
-    EH_ASSERT( alloc_count == static_cast<int>(alloc_set().size()) );
+  EH_ASSERT( !using_alloc_set || (alloc_count == static_cast<int>(alloc_set().size())) );
 
   if (alloc_count != 0 || object_count != 0) {
     EH_STD::cerr<<"\nEH TEST FAILURE !\n";

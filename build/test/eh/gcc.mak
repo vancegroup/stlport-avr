@@ -11,12 +11,6 @@ include ${SRCROOT}/Makefiles/gmake/top.mak
 INCLUDES += -I${STLPORT_INCLUDE_DIR}
 DEFS += -D_STLP_NO_CUSTOM_IO
 
-ifeq ($(OSNAME), cygming)
-release-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-dbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-stldbg-shared:	DEFS += -D_STLP_USE_DYNAMIC_LIB
-endif
-
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
