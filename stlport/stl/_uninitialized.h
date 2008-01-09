@@ -372,8 +372,14 @@ template <class _InputIter1, class _InputIter2, class _ForwardIter>
 inline _ForwardIter
 __uninitialized_copy_copy(_InputIter1 __first1, _InputIter1 __last1,
                           _InputIter2 __first2, _InputIter2 __last2,
-                          _ForwardIter __result)
-{ return uninitialized_copy(__first2, __last2, uninitialized_copy(__first1, __last1, __result)); }
+                          _ForwardIter __result) {
+  _ForwardIter __new_result = uninitialized_copy(__first1, __last1, __result);
+  _STLP_TRY {
+    return uninitialized_copy(__first2, __last2, __new_result);
+  }
+  _STLP_UNWIND(_STLP_STD::_Destroy_Range(__result, __new_result))
+  _STLP_RET_AFTER_THROW(__result)
+}
 
 // __uninitialized_fill_copy
 // Fills [result, mid) with x, and copies [first, last) into

@@ -1,3 +1,9 @@
+2008-01-09  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_uninitialized.h: Fix implementation of
+	__uninitialized_copy_copy in order to make the function exception
+	safe. Detected thanks to the EH test suite.
+
 2008-01-08  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_ios_base.h: _S_was_synced renamed in _S_is_synced
