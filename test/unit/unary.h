@@ -8,26 +8,15 @@
 using std::unary_function;
 #endif
 
-struct odd : public unary_function<int, bool>
-{
-//  odd() {}
+struct odd : public unary_function<int, bool> {
   bool operator()(int n_) const { return(n_ % 2) == 1; }
 };
 
-struct positive : public unary_function<int, bool>
-{
-  typedef int argument_type;
-  typedef bool result_type;
-//  positive() {}
+struct positive : public unary_function<int, bool> {
   bool operator()(int n_) const { return n_ >= 0; }
 };
 
-struct square_root : public unary_function<double, double>
-{
-  typedef double argument_type;
-  typedef double result_type;
-  square_root() {}
-  square_root(const square_root &) {}
+struct square_root : public unary_function<double, double> {
   double operator()(double x_) const
   { return ::sqrt(x_); }
 };
