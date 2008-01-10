@@ -49,23 +49,6 @@
  */
 #    error errno has been defined before inclusion of errno.h header.
 #  endif
-
-#  ifdef __cplusplus
-_STLP_BEGIN_NAMESPACE
-#    ifndef errno /* errno still not defined */
-#      if !defined (__BORLANDC__)
-using ::errno;
-#      else
-using _STLP_VENDOR_CSTD::errno;
-#      endif
-#    else
-#      if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
-using _STLP_VENDOR_CSTD::__errno;
-#      endif
-#   endif /* errno */
-_STLP_END_NAMESPACE
-#  endif /* __cplusplus */
-
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x205)

@@ -3,6 +3,9 @@
 	* stlport/stl/_prolog.h: Remove code duplication by including
 	_cprolog.h.
 
+	* stlport/errno.h, cerrno: Move import of errno from errno.h to
+	cerrno.
+
 2008-01-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_uninitialized.h: Fix implementation of
