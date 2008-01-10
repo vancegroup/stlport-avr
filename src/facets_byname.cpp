@@ -95,16 +95,14 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // ctype_byname<wchar_t>
 
-struct _Ctype_byname_w_is_mask {
-  typedef wchar_t argument_type;
-  typedef bool    result_type;
-
-  /* ctype_base::mask*/ int  M;
+struct _Ctype_byname_w_is_mask : public unary_function<wchar_t, bool> {
+  _Locale_mask_t M;
   _Locale_ctype* M_ctp;
 
-  _Ctype_byname_w_is_mask(/* ctype_base::mask */ int m, _Locale_ctype* c) : M((int)m), M_ctp(c) {}
+  _Ctype_byname_w_is_mask(_Locale_mask_t m, _Locale_ctype* c)
+    : M(m), M_ctp(c) {}
   bool operator()(wchar_t c) const
-    { return _WLocale_ctype(M_ctp, c, M) != 0; }
+  { return _WLocale_ctype(M_ctp, c, M) != 0; }
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -125,21 +123,20 @@ ctype_byname<wchar_t>::~ctype_byname()
 { _STLP_PRIV __release_ctype(_M_ctype); }
 
 bool ctype_byname<wchar_t>::do_is(ctype_base::mask  m, wchar_t c) const
-{ return _WLocale_ctype(_M_ctype, c, m) != 0; }
+{ return _WLocale_ctype(_M_ctype, c, (_Locale_mask_t)m) != 0; }
 
 const wchar_t*
 ctype_byname<wchar_t>::do_is(const wchar_t* low, const wchar_t* high,
                              ctype_base::mask * m) const {
-  ctype_base::mask all_bits = ctype_base::mask(
-    ctype_base::space |
-    ctype_base::print |
-    ctype_base::cntrl |
-    ctype_base::upper |
-    ctype_base::lower |
-    ctype_base::alpha |
-    ctype_base::digit |
-    ctype_base::punct |
-    ctype_base::xdigit);
+  _Locale_mask_t all_bits = _Locale_mask_t(ctype_base::space |
+                                           ctype_base::print |
+                                           ctype_base::cntrl |
+                                           ctype_base::upper |
+                                           ctype_base::lower |
+                                           ctype_base::alpha |
+                                           ctype_base::digit |
+                                           ctype_base::punct |
+                                           ctype_base::xdigit);
 
   for ( ; low < high; ++low, ++m)
     *m = ctype_base::mask (_WLocale_ctype(_M_ctype, *low, all_bits));

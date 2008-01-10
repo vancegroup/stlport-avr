@@ -440,14 +440,14 @@ public:
    : my_codecvt_base(r) {}
 
 protected:
-  virtual result do_in(state_type& state, const extern_type* first1,
+  virtual result do_in(state_type& /*state*/, const extern_type* first1,
                        const extern_type* last1, const extern_type*& next1,
                        intern_type* first2, intern_type* last2,
                        intern_type*& next2) const {
     for ( next1 = first1, next2 = first2; next1 < last1; next1 += 2 ) {
       if ( (last1 - next1) < 2 || (last2 - next2) < 1 )
         return partial;
-      *next2++ = (*(next1 + 1) << 8) | (*next1 & 255);
+      *next2++ = (intern_type)((*(next1 + 1) << 8) | (*next1 & 255));
     }
     return ok;
   }
@@ -596,7 +596,7 @@ void CodecvtTest::special_encodings()
           case codecvt_base::error:
           case codecvt_base::noconv:
             CPPUNIT_FAIL;
-            break;
+            //break;
         }
       }
       CPPUNIT_ASSERT( windex == utf8_wstr.size() );

@@ -313,10 +313,7 @@ typedef _WCharIndexT<wchar_t(-1) < 0> _WCharIndex;
 
 // Some helper functions used in ctype<>::scan_is and scan_is_not.
 
-struct _Ctype_is_mask {
-  typedef char argument_type;
-  typedef bool result_type;
-
+struct _Ctype_is_mask : public unary_function<char, bool> {
   ctype_base::mask _Mask;
   const ctype_base::mask* _M_table;
 
@@ -324,10 +321,7 @@ struct _Ctype_is_mask {
   bool operator()(char __c) const { return (_M_table[(unsigned char) __c] & _Mask) != 0; }
 };
 
-struct _Ctype_not_mask {
-  typedef char argument_type;
-  typedef bool result_type;
-
+struct _Ctype_not_mask : public unary_function<char, bool> {
   ctype_base::mask _Mask;
   const ctype_base::mask* _M_table;
 
@@ -393,19 +387,15 @@ ctype<char>::do_narrow(const char* __low, const char* __high,
 
 #if !defined (_STLP_NO_WCHAR_T)
 
-  struct _Ctype_w_is_mask {
-    typedef wchar_t argument_type;
-    typedef bool    result_type;
+struct _Ctype_w_is_mask : public unary_function<wchar_t, bool> {
+  ctype_base::mask M;
+  const ctype_base::mask* table;
 
-    ctype_base::mask M;
-    const ctype_base::mask* table;
-
-    _Ctype_w_is_mask(ctype_base::mask m, const ctype_base::mask* t)
-      : M(m), table(t) {}
-    bool operator()(wchar_t c) const {
-      return _WCharIndex::in_range(c, ctype<char>::table_size) && (table[c] & M);
-    }
-  };
+  _Ctype_w_is_mask(ctype_base::mask m, const ctype_base::mask* t)
+    : M(m), table(t) {}
+  bool operator()(wchar_t c) const
+  { return _WCharIndex::in_range(c, ctype<char>::table_size) && (table[c] & M); }
+};
 
 //----------------------------------------------------------------------
 // ctype<wchar_t>
@@ -485,16 +475,15 @@ ctype<wchar_t>::do_widen(const char* low, const char* high,
   return high;
 }
 
-char ctype<wchar_t>::do_narrow(wchar_t c, char dfault) const {
-  return (unsigned char) c == c ? c : dfault;
-}
+char ctype<wchar_t>::do_narrow(wchar_t c, char dfault) const
+{ return (unsigned char)c == c ? (char)c : dfault; }
 
 const wchar_t* ctype<wchar_t>::do_narrow(const wchar_t* low,
                                          const wchar_t* high,
                                          char dfault, char* dest) const {
   while (low != high) {
     wchar_t c = *low++;
-    *dest++ = (unsigned char) c == c ? c : dfault;
+    *dest++ = (unsigned char)c == c ? (char)c : dfault;
   }
 
   return high;

@@ -161,7 +161,7 @@ static void __append(__iostring &buf, const string& name)
 static void __append(__iowstring &buf, const wstring& name)
 { buf.append(name.data(), name.data() + name.size()); }
 
-static void __append(__iostring &buf, char *first, char *last, const ctype<char>& ct)
+static void __append(__iostring &buf, char *first, char *last, const ctype<char>& /* ct */)
 { buf.append(first, last); }
 
 static void __append(__iowstring &buf, char *first, char *last, const ctype<wchar_t>& ct) {

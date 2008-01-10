@@ -6,6 +6,11 @@
 	* stlport/errno.h, cerrno: Move import of errno from errno.h to
 	cerrno.
 
+	* src/ctype.cpp, facets_byname.cpp, time_facets.cpp,
+	test/unit/codecvt_test.cpp: Several small modifications to make
+	Intel C++ compiler happier. Mostly avoid warnings and use
+	unary_function to avoid some typedef.
+
 2008-01-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_uninitialized.h: Fix implementation of
