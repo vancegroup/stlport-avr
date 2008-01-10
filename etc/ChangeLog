@@ -1,3 +1,8 @@
+2008-01-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_prolog.h: Remove code duplication by including
+	_cprolog.h.
+
 2008-01-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_uninitialized.h: Fix implementation of
