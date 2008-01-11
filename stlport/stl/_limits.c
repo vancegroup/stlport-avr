@@ -182,17 +182,17 @@ struct float_helper {
   }
 };
 
-#  if !defined (_STLP_NO_LONG_DOUBLE)
+#  if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_BIG_ENDIAN)
 template<class _Number, unsigned short _Word1, unsigned short _Word2>
 struct float_helper2 {
   union _WordsNumber {
     unsigned short _Words[8];
     _Number _num;
   };
-  static _Number get_word_higher() _STLP_NOTHROW {
-    _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET _Word1, _Word2, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
-    return __tmp._num;
-  } 
+  //static _Number get_word_higher() _STLP_NOTHROW {
+  //  _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET _Word1, _Word2, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
+  //  return __tmp._num;
+  //} 
   static _Number get_word_lower() _STLP_NOTHROW {
     _WordsNumber __tmp = { _STLP_ADDITIONAL_OPEN_BRACKET 0, 0, 0, 0, 0, 0, 0, 0 _STLP_ADDITIONAL_CLOSE_BRACKET };
     __tmp._Words[(sizeof(_Number) >= 12 ? 10 : sizeof(_Number)) / sizeof(unsigned short) - 2] = _Word1;
@@ -200,11 +200,11 @@ struct float_helper2 {
     return __tmp._num;
   }
   static _Number get_from_last_word() _STLP_NOTHROW {
-#    if defined (_STLP_BIG_ENDIAN)
-    return get_word_higher();
-#    else /* _STLP_LITTLE_ENDIAN */
+//#    if defined (_STLP_BIG_ENDIAN)
+//    return get_word_higher();
+//#    else /* _STLP_LITTLE_ENDIAN */
     return get_word_lower();
-#    endif
+//#    endif
   }
 };
 #  endif
@@ -330,28 +330,41 @@ double _STLP_CALL _LimG<__dummy>::get_D_denormMin() {
 #  if !defined (_STLP_NO_LONG_DOUBLE)
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_inf() {
-#    if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff0u> _FloatHelper;
+#    if defined (__ICL) // For Icl, long double is a synonym for double.
+  _STLP_STATIC_ASSERT( sizeof(double) == sizeof(long double) )
+  typedef float_helper<double, 0x7ff0u> _FloatHelper;
 #    else
+#      if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff0u> _FloatHelper;
+#      else
   typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#      endif
 #    endif
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_qNaN() {
-#    if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff1u> _FloatHelper;
+#    if defined (__ICL)
+  typedef float_helper<double, 0x7ff1u> _FloatHelper;
 #    else
+#      if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff1u> _FloatHelper;
+#      else
   typedef float_helper2<long double, 0xc000u, 0x7fffu> _FloatHelper;
+#      endif
 #    endif
   return _FloatHelper::get_from_last_word();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
-#    if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff9u> _FloatHelper;
+#    if defined (__ICL)
+  typedef float_helper<double, 0x7ff9u> _FloatHelper;
 #    else
+#      if defined (_STLP_BIG_ENDIAN)
+  typedef float_helper<long double, 0x7ff9u> _FloatHelper;
+#      else
   typedef float_helper2<long double, 0x9000u, 0x7fffu> _FloatHelper;
+#      endif
 #    endif
   return _FloatHelper::get_from_last_word();
 }

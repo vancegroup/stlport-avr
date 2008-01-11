@@ -1,3 +1,8 @@
+2008-01-11  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_limits.c: Adapt long double numeric limits for
+	Intel C++ compiler 9 for Windows.
+
 2008-01-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_prolog.h: Remove code duplication by including
