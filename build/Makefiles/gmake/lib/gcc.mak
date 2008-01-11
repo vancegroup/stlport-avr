@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <07/08/16 09:21:08 ptr>
+# -*- makefile -*- Time-stamp: <08/01/12 00:42:12 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -30,7 +30,7 @@ NOT_USE_NOSTDLIB := 1
 endif
 
 ifeq ($(CXX_VERSION_MAJOR),3)
-# gcc before 3.4 (i.e. 3.0.x, 3.1.x, 3.2.x) has buggy libsupc++, so we should link with libstdc++ to avoid one
+# gcc before 3.3 (i.e. 3.0.x, 3.1.x, 3.2.x) has buggy libsupc++, so we should link with libstdc++ to avoid one
 ifeq ($(CXX_VERSION_MINOR),0)
 NOT_USE_NOSTDLIB := 1
 endif
@@ -38,9 +38,6 @@ ifeq ($(CXX_VERSION_MINOR),1)
 NOT_USE_NOSTDLIB := 1
 endif
 ifeq ($(CXX_VERSION_MINOR),2)
-NOT_USE_NOSTDLIB := 1
-endif
-ifeq ($(CXX_VERSION_MINOR),3)
 NOT_USE_NOSTDLIB := 1
 endif
 endif

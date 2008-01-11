@@ -1,3 +1,18 @@
+2008-01-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/lib/gcc.mak: gcc 3.3 has useful
+	libsupc++, but some builds not; prefer normal situation,
+	not marginal; see record 2007-10-10;
+
+	* build/Makefiles/gmake/gcc.mak: fix reference to _FORCE_CXX macro;
+
+	* build/Makefiles/gmake/CC.mak: ditto;
+
+	* build/Makefiles/gmake/aCC.mak: ditto;
+
+	* build/lib/configure: keep compiler and default compiler --- gcc
+	is most common defualt and plans to switch to default makefile.
+
 2008-01-11  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_limits.c: Adapt long double numeric limits for

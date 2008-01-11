@@ -1,6 +1,6 @@
-# Time-stamp: <07/07/12 11:00:18 ptr>
+# Time-stamp: <08/01/12 00:50:15 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -12,13 +12,13 @@
 ifndef _FORCE_CXX
 CXX := c++
 else
-CXX := $_FORCE_CXX
+CXX := ${_FORCE_CXX}
 endif
 
 ifndef _FORCE_CC
 CC := gcc
 else
-CC := $_FORCE_CC
+CC := ${_FORCE_CC}
 endif
 
 ifeq ($(OSNAME), cygming)

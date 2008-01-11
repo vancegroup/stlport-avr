@@ -1,6 +1,6 @@
-# Time-stamp: <07/05/31 01:07:37 ptr>
+# Time-stamp: <08/01/12 00:51:07 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -12,13 +12,13 @@
 ifndef _FORCE_CXX
 CXX := aCC
 else
-CXX := $_FORCE_CXX
+CXX := ${_FORCE_CXX}
 endif
 
 ifndef _FORCE_CC
 CC := aCC
 else
-CC := $_FORCE_CC
+CC := ${_FORCE_CC}
 endif
 
 CXX_VERSION := $(shell ${CXX} --version 2>&1 | grep ${CXX} | awk '{ print $$6; }')
