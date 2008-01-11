@@ -39,12 +39,12 @@ protected:
 CPPUNIT_TEST_SUITE_REGISTRATION(LimitTest);
 
 #if defined (STLPORT) && defined (_STLP_STATIC_CONST_INIT_BUG)
-#  define CHECK_COND(X) if (!(X)) return false;
+#  define CHECK_COND(X) if (!(X))  { CPPUNIT_MESSAGE(#X); return false; }
 #else
 //This version force to have external linkage on static constant which might
 //reveal that _STLP_NO_STATIC_CONST_DEFINITION should be commented.
 bool check_cond(const bool& cond) { return cond; }
-#  define CHECK_COND(X) if (!check_cond(X)) return false;
+#  define CHECK_COND(X) if (!check_cond(X)) { CPPUNIT_MESSAGE(#X); return false; }
 #endif
 
 bool valid_sign_info(bool, bool)
