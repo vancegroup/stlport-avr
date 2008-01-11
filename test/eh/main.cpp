@@ -127,8 +127,7 @@ namespace  // dwa 1/21/00 - must use unnamed namespace here to avoid conflict un
 ====================================================================================*/
 static void usage(const char* name)
 {
-    cerr<<name<<
-        " Usage : leak_test [-n <iterations>] [-s <size>] [-l] [-e] [-q]/[-v] [-t] [test_name...]\n";
+    cerr<<"Usage : "<<name<<" [-n <iterations>] [-s <size>] [-l] [-e] [-q]/[-v] [-t] [test_name...]\n";
     cerr<<"\t[-n <iterations>] : number of test iterations, default==100;"<<endl;
     cerr<<"\t[-s <size>] : base value for random container sizes, default==1000;"<<endl;
     cerr<<"\t[-e] : don't throw exceptions, test for leak in normal conditions;"<<endl;
@@ -142,11 +141,11 @@ static void usage(const char* name)
     EH_CSTD::exit(1);
 }
 
-# ifdef EH_NEW_HEADERS
+#ifdef EH_NEW_HEADERS
 #  include <set>
-# else
+#else
 #  include <set.h>
-# endif
+#endif
 
 #if defined(_WIN32_WCE)
 #include <fstream>
@@ -395,14 +394,14 @@ int _STLP_CALL main(int argc, char** argv)
 
   gTestController.TrackAllocations( false );
 
-    cerr << "EH test : Done\n";
+  cerr << "EH test : Done\n";
 
 #if defined(_WIN32_WCE)
-   cout.rdbuf(old_cout_buf);
-   cerr.rdbuf(old_cerr_buf);
-   file.close();
+  cout.rdbuf(old_cout_buf);
+  cerr.rdbuf(old_cerr_buf);
+  file.close();
 #endif
 
-    return 0;
+  return 0;
 }
 
