@@ -6,6 +6,11 @@
 	* test/unit/cppunit/test_main.cpp: Add command usage output when
 	option is not recognise.
 
+	* build/lib/configure: Remove specification of COMPILER_NAME default
+	value gcc. COMPILER_NAME is already set in all root make scripts like
+	gcc.mak, aCC.mak, dmc.mak ... Doing so forces users to specify their
+	compiler family using configure script which is redundant.
+
 2008-01-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_prolog.h: Remove code duplication by including

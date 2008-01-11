@@ -84,9 +84,9 @@ default_settings () {
     write_option "$base" STLPORT_DIR
   fi
   # write_option "${PWD}/build/" BASE_INSTALL_DIR
-  if [ "$compiler_family_set" = "" ]; then
-    write_option gcc COMPILER_NAME
-  fi
+  #if [ "$compiler_family_set" = "" ]; then
+  #  write_option gcc COMPILER_NAME
+  #fi
   # if [ "$prefix_set" = "" ]; then
   #   write_option "/usr/local" BASE_INSTALL_DIR
   # fi
