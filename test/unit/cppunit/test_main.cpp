@@ -17,6 +17,8 @@
 #include "file_reporter.h"
 #include "cppunit_timer.h"
 
+#include "stdio.h"
+
 #if 0
 namespace CPPUNIT_NS
 {
@@ -49,6 +51,19 @@ namespace CPPUNIT_NS
 }
 #endif
 
+static void usage(const char* name)
+{
+  printf("Usage : %s [-t=<class>[::<test>]] [-x=<class>[::<test>]] [-f=<file>]%s\n",
+         name, Timer::supported() ? " [-m]": "");
+  printf("\t[-t=<class>[::<test>]] : test class or class::test to execute;\n");
+  printf("\t[-x=<class>[::<test>]] : test class or class::test to exclude from execution;\n");
+  printf("\t[-f=<file>] : output file");
+  if (Timer::supported())
+    printf(";\n\t[-m] : monitor test excution, display time duration for each test\n");
+  else
+    printf("\n");
+}
+
 int main(int argc, char** argv) {
 
   // CppUnit(mini) test launcher
@@ -65,20 +80,28 @@ int main(int argc, char** argv) {
   bool doMonitoring = false;
 
   for (int i = 1; i < argc; ++i) {
-    if (argv[i][0] != '-')
-      break;
-    if (!strncmp(argv[i], "-t=", 3)) {
-      testName = argv[i]+3;
+    if (argv[i][0] == '-') {
+      if (!strncmp(argv[i], "-t=", 3)) {
+        testName = argv[i]+3;
+        continue;
+      }
+      else if (!strncmp(argv[i], "-f=", 3)) {
+        fileName = argv[i]+3;
+        continue;
+      }
+      else if (!strncmp(argv[i], "-x=", 3)) {
+        xtestName = argv[i]+3;
+        continue;
+      }
+      else if (Timer::supported() && !strncmp(argv[i], "-m", 2)) {
+        doMonitoring = true;
+        continue;
+      }
     }
-    else if (!strncmp(argv[i], "-f=", 3)) {
-      fileName = argv[i]+3;
-    }
-    else if (!strncmp(argv[i], "-x=", 3)) {
-      xtestName = argv[i]+3;
-    }
-    else if (Timer::supported() && !strncmp(argv[i], "-m", 2)) {
-      doMonitoring = true;
-    }
+
+		// invalid option, we display normal usage.
+    usage(argv[0]);
+    return 1;
   }
 
   CPPUNIT_NS::Reporter* reporter;

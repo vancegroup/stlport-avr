@@ -3,6 +3,9 @@
 	* stlport/stl/_limits.c: Adapt long double numeric limits for
 	Intel C++ compiler 9 for Windows.
 
+	* test/unit/cppunit/test_main.cpp: Add command usage output when
+	option is not recognise.
+
 2008-01-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_prolog.h: Remove code duplication by including
