@@ -290,19 +290,15 @@ public:
   template <class _InputIterator>
   void insert(iterator __pos,
               _InputIterator __first, _InputIterator __last) {
-    typedef typename _AreSameUnCVTypes<_InputIterator, iterator>::_Ret _IsNonConstIterator;
-    typedef typename _AreSameUnCVTypes<_InputIterator, const_iterator>::_Ret _IsConstIterator;
-    typedef typename _Lor2<_IsNonConstIterator, _IsConstIterator>::_Ret _DoCheck;
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
-    //Sequence requirements 23.1.1 Table 67:
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first, _DoCheck()));
     size_type __old_capacity = capacity();
     _M_non_dbg_impl.insert(__pos._M_iterator,
                            _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
     _Compare_Capacity(__old_capacity);
   }
-#else
+#endif
+#if !defined (_STLP_MEMBER_TEMPLATES)
   void insert (iterator __pos,
                const value_type *__first, const value_type *__last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first,__last))
@@ -311,17 +307,29 @@ public:
     _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
     _Compare_Capacity(__old_capacity);
   }
+#endif
 
+#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     //Sequence requirements 23.1.1 Table 67:
-    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first, __true_type()));
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first));
     size_type __old_capacity = capacity();
     _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
     _Compare_Capacity(__old_capacity);
-}
+  }
+  void insert(iterator __pos,
+              iterator __first, iterator __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
+    //Sequence requirements 23.1.1 Table 67:
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first));
+    size_type __old_capacity = capacity();
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
+    _Compare_Capacity(__old_capacity);
+  }
 #endif
 
   void insert (iterator __pos, size_type __n, const _Tp& __x){

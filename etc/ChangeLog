@@ -7,6 +7,11 @@
 	* stlport/stl/_limits.c: Use double numeric limits for long double
 	when sizeof(double) == sizeof(long double).
 
+	* stlport/stl/debug/_debug.h, _deque.h, _list.h, _vector.h: Prefer to
+	use overloading of member method to activate additional check of
+	23.1.1 table 67 Standard conformity rather than using metaprogrammng
+	technique.
+
 2008-01-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/lib/gcc.mak: gcc 3.3 has useful

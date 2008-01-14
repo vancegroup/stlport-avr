@@ -220,29 +220,38 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-#  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
-    typedef typename _AreSameUnCVTypes<_InputIterator, iterator>::_Ret _IsListIterator;
-    typedef typename _AreSameUnCVTypes<_InputIterator, const_iterator>::_Ret _IsListConstIterator;
-    typedef typename _Lor2<_IsListIterator, _IsListConstIterator>::_Ret _DoCheck;
-#  endif
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, _DoCheck()))
     _M_non_dbg_impl.insert(__pos._M_iterator,
                            _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
-#else
+#endif
+
+#if !defined (_STLP_MEMBER_TEMPLATES)
   void insert(iterator __pos, const _Tp* __first, const _Tp* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
     _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
   }
+#endif
 
+#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first, _DoCheck()))
+#  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+    _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first))
+#  endif
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
+  }
+  void insert(iterator __pos,
+              iterator __first, iterator __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+#  if (_STLP_DEBUG_LEVEL == _STLP_STANDARD_DBG_LEVEL)
+    _STLP_STD_DEBUG_CHECK(__check_if_not_owner(&_M_iter_list, __first))
+#  endif
     _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
 #endif
