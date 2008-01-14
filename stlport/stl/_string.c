@@ -188,12 +188,12 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
   if (size() + __n > capacity())
     reserve(size() + (max)(size(), __n));
   if (__n > 0) {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//    if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+    if (this->_M_using_static_buf())
       _Traits::assign(this->_M_finish + 1, __n - 1, __c);
-//    else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//    _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - 1, __c);
+    else
+#endif
+    _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - 1, __c);
     _STLP_TRY {
       _M_construct_null(this->_M_finish + __n);
     }
@@ -230,12 +230,12 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const _CharT* __first, const _C
     else {
       const _CharT* __f1 = __first;
       ++__f1;
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//       if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+      if (this->_M_using_static_buf())
         _M_copy(__f1, __last, this->_M_Finish() + 1);
-//       else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//       _STLP_PRIV __ucopy(__f1, __last, this->_M_finish + 1);
+      else
+#endif
+      _STLP_PRIV __ucopy(__f1, __last, this->_M_finish + 1);
       _STLP_TRY {
         _M_construct_null(this->_M_finish + __n);
       }
@@ -321,32 +321,31 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __pos,
       const size_type __elems_after = this->_M_finish - __pos;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//         if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+        if (this->_M_using_static_buf())
           _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
-//         else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//         _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1,
-//                            this->_M_finish + 1);
+        else
+#endif
+        _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
         _Traits::move(__pos + __n, __pos, (__elems_after - __n) + 1);
         _Traits::assign(__pos, __n, __c);
       }
       else {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//         if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+        if (this->_M_using_static_buf())
           _Traits::assign(this->_M_finish + 1, __n - __elems_after - 1, __c);
-//         else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//         _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - __elems_after - 1, __c);
+        else
+#endif
+        _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - __elems_after - 1, __c);
         this->_M_finish += __n - __elems_after;
         _STLP_TRY {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//           if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+          if (this->_M_using_static_buf())
             _M_copy(__pos, __old_finish + 1, this->_M_finish);
-//           else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//           _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
+          else
+#endif
+          _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
           this->_M_finish += __elems_after;
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish),
@@ -385,12 +384,12 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
       const size_t __elems_after = this->_M_finish - __pos;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//         if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+        if (this->_M_using_static_buf())
           _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
-//         else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//         _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
+        else
+#endif
+        _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
         _Traits::move(__pos + __n, __pos, (__elems_after - __n) + 1);
         if (!__self_ref || __last < __pos) {
@@ -413,20 +412,20 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
       else {
         const_iterator __mid = __first;
         __mid += __elems_after + 1;
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//         if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+        if (this->_M_using_static_buf())
           _M_copy(__mid, __last, this->_M_finish + 1);
-//         else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//         _STLP_PRIV __ucopy(__mid, __last, this->_M_finish + 1);
+        else
+#endif
+        _STLP_PRIV __ucopy(__mid, __last, this->_M_finish + 1);
         this->_M_finish += __n - __elems_after;
         _STLP_TRY {
-// #if defined (_STLP_USE_SHORT_STRING_OPTIM)
-//           if (this->_M_using_static_buf())
+#if defined (_STLP_USE_SHORT_STRING_OPTIM)
+          if (this->_M_using_static_buf())
             _M_copy(__pos, __old_finish + 1, this->_M_finish);
-//           else
-// #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-//           _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
+          else
+#endif
+          _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
           this->_M_finish += __elems_after;
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish),

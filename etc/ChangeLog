@@ -1,3 +1,9 @@
+2008-01-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_string.h, _string.c: Restore code to support non-POD
+	types in basic_string implementation as specified in basic_string
+	comments.
+
 2008-01-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/lib/gcc.mak: gcc 3.3 has useful
