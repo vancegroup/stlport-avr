@@ -148,7 +148,7 @@ __declare_float_limits_member(float_round_style, round_style);
 
 /* The following code has been extracted from the boost libraries (www.boost.org) and
  * adapted with the STLport portability macros. Advantage on previous technique is that
- * computation of infinity and NaN value is only based on big/little endian, compiler
+ * computation of infinity and NaN values is only based on big/little endianess, compiler
  * float, double or long double representation is taken into account thanks to the sizeof
  * operator. */
 template<class _Number, unsigned short _Word>
@@ -306,21 +306,35 @@ float _STLP_CALL _LimG<__dummy>::get_F_denormMin() {
   return _FloatHelper::get_from_first_word();
 }
 
+template <int __use_double_limits>
+class _NumericLimitsAccess;
+
+_STLP_TEMPLATE_NULL
+class _NumericLimitsAccess<1> {
+public:
+  static double get_inf() {
+    typedef float_helper<double, 0x7ff0u> _FloatHelper;
+    return _FloatHelper::get_from_last_word();
+  }
+  static double get_qNaN() {
+    typedef float_helper<double, 0x7ff1u> _FloatHelper;
+    return _FloatHelper::get_from_last_word();
+  }
+  static double get_sNaN() {
+    typedef float_helper<double, 0x7ff9u> _FloatHelper;
+    return _FloatHelper::get_from_last_word();
+  }
+};
+
 template <class __dummy>
-double _STLP_CALL _LimG<__dummy>::get_D_inf() {
-  typedef float_helper<double, 0x7ff0u> _FloatHelper;
-  return _FloatHelper::get_from_last_word();
-}
+double _STLP_CALL _LimG<__dummy>::get_D_inf()
+{ return _NumericLimitsAccess<1>::get_inf(); }
 template <class __dummy>
-double _STLP_CALL _LimG<__dummy>::get_D_qNaN() {
-  typedef float_helper<double, 0x7ff1u> _FloatHelper;
-  return _FloatHelper::get_from_last_word();
-}
+double _STLP_CALL _LimG<__dummy>::get_D_qNaN()
+{ return _NumericLimitsAccess<1>::get_qNaN(); }
 template <class __dummy>
-double _STLP_CALL _LimG<__dummy>::get_D_sNaN() {
-  typedef float_helper<double, 0x7ff9u> _FloatHelper;
-  return _FloatHelper::get_from_last_word();
-}
+double _STLP_CALL _LimG<__dummy>::get_D_sNaN()
+{ return _NumericLimitsAccess<1>::get_sNaN(); }
 template <class __dummy>
 double _STLP_CALL _LimG<__dummy>::get_D_denormMin() {
   typedef float_helper<double, 0x0001u> _FloatHelper;
@@ -328,45 +342,49 @@ double _STLP_CALL _LimG<__dummy>::get_D_denormMin() {
 }
 
 #  if !defined (_STLP_NO_LONG_DOUBLE)
+_STLP_TEMPLATE_NULL
+class _NumericLimitsAccess<0> {
+public:
+  static long double get_inf() {
+#    if defined (_STLP_BIG_ENDIAN)
+    typedef float_helper<long double, 0x7ff0u> _FloatHelper;
+#    else
+    typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
+#    endif
+    return _FloatHelper::get_from_last_word();
+  }
+  static long double get_qNaN() {
+#    if defined (_STLP_BIG_ENDIAN)
+    typedef float_helper<long double, 0x7ff1u> _FloatHelper;
+#    else
+    typedef float_helper2<long double, 0xc000u, 0x7fffu> _FloatHelper;
+#    endif
+    return _FloatHelper::get_from_last_word();
+  }
+  static long double get_sNaN() {
+#    if defined (_STLP_BIG_ENDIAN)
+    typedef float_helper<long double, 0x7ff9u> _FloatHelper;
+#    else
+    typedef float_helper2<long double, 0x9000u, 0x7fffu> _FloatHelper;
+#    endif
+    return _FloatHelper::get_from_last_word();
+  }
+};
+
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_inf() {
-#    if defined (__ICL) // For Icl, long double is a synonym for double.
-  _STLP_STATIC_ASSERT( sizeof(double) == sizeof(long double) )
-  typedef float_helper<double, 0x7ff0u> _FloatHelper;
-#    else
-#      if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff0u> _FloatHelper;
-#      else
-  typedef float_helper2<long double, 0x8000u, 0x7fffu> _FloatHelper;
-#      endif
-#    endif
-  return _FloatHelper::get_from_last_word();
+  const int __use_double_limits = sizeof(double) == sizeof(long double) ? 1 : 0;
+  return _NumericLimitsAccess<__use_double_limits>::get_inf();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_qNaN() {
-#    if defined (__ICL)
-  typedef float_helper<double, 0x7ff1u> _FloatHelper;
-#    else
-#      if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff1u> _FloatHelper;
-#      else
-  typedef float_helper2<long double, 0xc000u, 0x7fffu> _FloatHelper;
-#      endif
-#    endif
-  return _FloatHelper::get_from_last_word();
+  const int __use_double_limits = sizeof(double) == sizeof(long double) ? 1 : 0;
+  return _NumericLimitsAccess<__use_double_limits>::get_qNaN();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_sNaN() {
-#    if defined (__ICL)
-  typedef float_helper<double, 0x7ff9u> _FloatHelper;
-#    else
-#      if defined (_STLP_BIG_ENDIAN)
-  typedef float_helper<long double, 0x7ff9u> _FloatHelper;
-#      else
-  typedef float_helper2<long double, 0x9000u, 0x7fffu> _FloatHelper;
-#      endif
-#    endif
-  return _FloatHelper::get_from_last_word();
+  const int __use_double_limits = sizeof(double) == sizeof(long double) ? 1 : 0;
+  return _NumericLimitsAccess<__use_double_limits>::get_sNaN();
 }
 template <class __dummy>
 long double _STLP_CALL _LimG<__dummy>::get_LD_denormMin() {

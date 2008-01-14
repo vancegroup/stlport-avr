@@ -4,6 +4,9 @@
 	types in basic_string implementation as specified in basic_string
 	comments.
 
+	* stlport/stl/_limits.c: Use double numeric limits for long double
+	when sizeof(double) == sizeof(long double).
+
 2008-01-12  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/lib/gcc.mak: gcc 3.3 has useful
