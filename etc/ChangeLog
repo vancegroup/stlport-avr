@@ -1,3 +1,8 @@
+2008-01-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/stl/config/_hpux.h: define _POSIX_C_SOURCE 199506;
+	suggested by KBac, patch #1869229.
+
 2008-01-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_string.h, _string.c: Restore code to support non-POD
