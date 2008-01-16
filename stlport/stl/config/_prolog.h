@@ -36,13 +36,6 @@
 #elif defined (__IBMCPP__)
 /* supress EDC3130: A constant is being used as a conditional expression */
 #  pragma info(nocnd)
-
-#elif defined (__HP_aCC)
-/* _REENTRANT selects Posix 1c threads unless draft4 selected.
- *  * This usage is obsolescent, "-D_POSIX_C_SOURCE=199506" is preferred */
-#  if 0 /* defined (_REENTRANT) && ! defined (_POSIX_C_SOURCE) */
-#    define _POSIX_C_SOURCE 199506
-#  endif
 #elif defined (__WATCOMCPLUSPLUS__)
 #  pragma warning 604 10 /* must lookahead to determine... */
 #  pragma warning 594 10 /* resolved as declaration/type */

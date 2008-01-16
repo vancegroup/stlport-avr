@@ -11,6 +11,11 @@ write_option() {
   echo $2 := $target >> ${configmak}
 }
 
+write_over_option() {
+  target=`echo $1 | sed -e 's/^[^=]*=//'`
+  echo $2 ?= $target >> ${configmak}
+}
+
 print_help() {
   cat <<EOF
 Configuration utility.
@@ -85,7 +90,7 @@ default_settings () {
   fi
   # write_option "${PWD}/build/" BASE_INSTALL_DIR
   if [ "$compiler_family_set" = "" ]; then
-    write_option gcc COMPILER_NAME
+    write_over_option gcc COMPILER_NAME
   fi
   # if [ "$prefix_set" = "" ]; then
   #   write_option "/usr/local" BASE_INSTALL_DIR
@@ -187,7 +192,7 @@ do
       ;;
     --use-compiler-family=*)
       case `echo $option | sed -e 's/^[^=]*=//'` in
-        gcc|icc|aCC|CC)
+        gcc|icc|aCC|CC|dmc)
           write_option "$option" COMPILER_NAME
           ;;
         *)

@@ -1,3 +1,10 @@
+2008-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/lib/configure: Don't override COMPILER_NAME, if already
+	defined;
+
+	* stlport/stl/config/_prolog.h: remove suspicious comments.
+
 2008-01-15  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/config/_hpux.h: define _POSIX_C_SOURCE 199506;
