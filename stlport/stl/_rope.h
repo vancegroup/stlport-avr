@@ -105,11 +105,11 @@ template <class _CharT>
 struct _BasicCharType { typedef __false_type _Ret; };
 
 _STLP_TEMPLATE_NULL
-struct _BasicCharType<char> { typedef __true_type _Ret; }
+struct _BasicCharType<char> { typedef __true_type _Ret; };
 
 #ifdef _STLP_HAS_WCHAR_T
 _STLP_TEMPLATE_NULL
-struct _BasicCharType<wchar_t> { typedef __true_type _Ret; }
+struct _BasicCharType<wchar_t> { typedef __true_type _Ret; };
 #endif
 
 // Some helpers, so we can use the power algorithm on ropes.
@@ -384,7 +384,7 @@ public:
 #endif
     }
 
-  typedef typename _BasicCharType<_CharT>::_Ret _IsBasicCharType;
+  typedef typename _STLP_PRIV _BasicCharType<_CharT>::_Ret _IsBasicCharType;
 
 #if 0
   /* Please tell why this code is necessary if you uncomment it.
