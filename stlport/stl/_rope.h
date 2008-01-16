@@ -101,6 +101,17 @@ template<class _CharT, class _Alloc> class _Rope_char_ptr_proxy;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+template <class _CharT>
+struct _BasicCharType { typedef __false_type _Ret; };
+
+_STLP_TEMPLATE_NULL
+struct _BasicCharType<char> { typedef __true_type _Ret; }
+
+#ifdef _STLP_HAS_WCHAR_T
+_STLP_TEMPLATE_NULL
+struct _BasicCharType<wchar_t> { typedef __true_type _Ret; }
+#endif
+
 // Some helpers, so we can use the power algorithm on ropes.
 // See below for why this isn't local to the implementation.
 
@@ -373,14 +384,7 @@ public:
 #endif
     }
 
-  typedef typename _AreSameUnCVTypes<_CharT, char>::_Ret _IsChar;
-# ifdef _STLP_HAS_WCHAR_T
-  typedef typename _AreSameUnCVTypes<_CharT, wchar_t>::_Ret _IsWCharT;
-# else
-  typedef __false_type _IsWCharT;
-# endif
-
-  typedef typename _Lor2<_IsChar, _IsWCharT>::_Ret _IsBasicCharType;
+  typedef typename _BasicCharType<_CharT>::_Ret _IsBasicCharType;
 
 #if 0
   /* Please tell why this code is necessary if you uncomment it.
