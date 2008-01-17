@@ -240,7 +240,7 @@ public:                         // push_* and pop_*
   void push_back(const value_type& __t = _Tp()) {
 #else
   void push_back(const value_type& __t) {
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
     _Invalidate_all();
     _M_non_dbg_impl.push_back(__t);
   }
@@ -250,13 +250,13 @@ public:                         // push_* and pop_*
     _Invalidate_all();
     _M_non_dbg_impl.push_back();
   }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
   void push_front(const value_type& __t = _Tp()) {
 #else
   void push_front(const value_type& __t) {
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
     _Invalidate_all();
     _M_non_dbg_impl.push_front(__t);
   }
@@ -266,7 +266,7 @@ public:                         // push_* and pop_*
     _Invalidate_all();
     _M_non_dbg_impl.push_front();
   }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
 
   void pop_back() {
     _STLP_VERBOSE_ASSERT(!empty(), _StlMsg_EMPTY_CONTAINER)
@@ -286,7 +286,7 @@ public:                         // Insert
   iterator insert(iterator __pos, const value_type& __x = _Tp()) {
 #else
   iterator insert(iterator __pos, const value_type& __x) {
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _Invalidate_all();
     return iterator(&_M_iter_list, _M_non_dbg_impl.insert(__pos._M_iterator, __x));
@@ -298,7 +298,7 @@ public:                         // Insert
     _Invalidate_all();
     return iterator(&_M_iter_list, _M_non_dbg_impl.insert(__pos._M_iterator));
   }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
 
   void insert(iterator __pos, size_type __n, const value_type& __x) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
@@ -310,11 +310,12 @@ public:                         // Insert
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
+    // We perform invalidate first to detect self referencing in __check_range as __first and __last
+    // will have been invalidated.
+    if (__first != __last) _Invalidate_all();
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     _M_non_dbg_impl.insert(__pos._M_iterator,
                            _STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-    //dums: because of self insertion iterators must be invalidated after insertion.
-    if (__first != __last) _Invalidate_all();
   }
 #endif
 
@@ -323,9 +324,8 @@ public:                         // Insert
               const value_type* __first, const value_type* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list, __pos))
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
-    _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
-    //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first, __last);
   }
 #endif
 
@@ -336,9 +336,8 @@ public:                         // Insert
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     //Sequence requirements 23.1.1 Table 67:
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first));
-    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
-    //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
 
   void insert(iterator __pos,
@@ -347,9 +346,8 @@ public:                         // Insert
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     //Sequence requirements 23.1.1 Table 67:
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_not_owner(&_M_iter_list, __first));
-    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
-    //dums: because of self insertion iterators must be invalidated after insertion.
     if (__first != __last) _Invalidate_all();
+    _M_non_dbg_impl.insert(__pos._M_iterator, __first._M_iterator, __last._M_iterator);
   }
 #endif
 
@@ -357,7 +355,7 @@ public:                         // Insert
   void resize(size_type __new_size, const value_type& __x = _Tp()) {
 #else
   void resize(size_type __new_size, const value_type& __x) {
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
     if (__new_size != size()) {
       if ((__new_size > size()) || (__new_size < size() - 1))
         _Invalidate_all();
@@ -369,7 +367,7 @@ public:                         // Insert
 
 #if defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type new_size) { resize(new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
 
   // Erase
   iterator erase(iterator __pos) {

@@ -876,30 +876,9 @@ _STLP_PRIVATE:  // Helper functions for insert.
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
                           const __false_type& /*Integral*/) {
     _STLP_FIX_LITERAL_BUG(__p)
-    /*
-     * Within the basic_string implementation we are only going to check for
-     * self referencing if iterators are string iterators or _CharT pointers.
-     * A user could encapsulate those iterator within his own iterator interface
-     * and in this case lead to a bad behavior, this is a known limitation.
-     */
-    typedef typename _AreSameUnCVTypes<_InputIter, iterator>::_Ret _IsIterator;
-    typedef typename _AreSameUnCVTypes<_InputIter, const_iterator>::_Ret _IsConstIterator;
-    typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
-    _M_insert_aux(__p, __first, __last, _CheckInside());
-  }
-
-  template <class _RandomIter>
-  void _M_insert_aux (iterator __p, _RandomIter __first, _RandomIter __last,
-                      const __true_type& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__p)
-    _M_insert(__p, &(*__first), &(*__last), _M_inside(&(*__first)));
-  }
-
-  template<class _InputIter>
-  void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
-                      const __false_type& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__p)
-    _M_insertT(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
+    /* We are forced to do a temporary string to avoid the self referencing issue. */
+    const _Self __self(__first, __last, get_allocator());
+    _M_insertT(__p, __self.begin(), __self.end(), forward_iterator_tag());
   }
 
   template <class _InputIterator>
@@ -909,11 +888,13 @@ _STLP_PRIVATE:  // Helper functions for insert.
       _Traits::assign(*__result, *__first);
   }
 
+#    if !defined (_STLP_NO_METHOD_SPECIALIZATION)
   void _M_copyT(const _CharT* __f, const _CharT* __l, _CharT* __res) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     _STLP_FIX_LITERAL_BUG(__res)
     _Traits::copy(__res, __f, __l - __f);
   }
+#    endif
 public:
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
@@ -923,7 +904,9 @@ public:
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 #  endif
-#else
+#endif
+
+#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
 public:
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
@@ -932,7 +915,6 @@ public:
 #endif
 
 public:                         // Erase.
-
   _Self& erase(size_type __pos = 0, size_type __n = npos) {
     if (__pos > size())
       this->_M_throw_out_of_range();
@@ -1042,7 +1024,6 @@ _STLP_PRIVATE:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     const _CharT* __f, const _CharT* __l, bool __self_ref);
 
-public:
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
@@ -1055,56 +1036,9 @@ public:
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    typedef typename _AreSameUnCVTypes<_InputIter, iterator>::_Ret _IsIterator;
-    typedef typename _AreSameUnCVTypes<_InputIter, const_iterator>::_Ret _IsConstIterator;
-    typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
-    return _M_replace_aux(__first, __last, __f, __l, _CheckInside());
-  }
-
-  template <class _RandomIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                        _RandomIter __f, _RandomIter __l, __true_type const& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    return _M_replace(__first, __last, &(*__f), &(*__l), _M_inside(&(*__f)));
-  }
-
-  template <class _InputIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                     _InputIter __f, _InputIter __l, __false_type const& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    return _M_replaceT(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
-  }
-
-  template <class _InputIter>
-  _Self& _M_replaceT(iterator __first, iterator __last,
-                     _InputIter __f, _InputIter __l, const input_iterator_tag&__ite_tag) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    for ( ; __first != __last && __f != __l; ++__first, ++__f)
-      _Traits::assign(*__first, *__f);
-    if (__f == __l)
-      erase(__first, __last);
-    else
-      _M_insertT(__last, __f, __l, __ite_tag);
-    return *this;
-  }
-
-  template <class _ForwardIter>
-  _Self& _M_replaceT(iterator __first, iterator __last,
-                     _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    difference_type __n = distance(__f, __l);
-    const difference_type __len = __last - __first;
-    if (__len >= __n) {
-      _M_copyT(__f, __l, __first);
-      erase(__first + __n, __last);
-    }
-    else {
-      _ForwardIter __m = __f;
-      advance(__m, __len);
-      _M_copyT(__f, __m, __first);
-      _M_insertT(__last, __m, __l, __ite_tag);
-    }
-    return *this;
+    /* We are forced to do a temporary string to avoid the self referencing issue. */
+    const _Self __self(__f, __l, get_allocator());
+    return _M_replace(__first, __last, __self._M_Start(), __self._M_Finish(), false);
   }
 
 public:
@@ -1117,8 +1051,10 @@ public:
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
+#endif
 
-#else
+#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
+public:
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
@@ -1148,13 +1084,12 @@ public:                         // Conversion to C string.
   const _CharT* c_str() const { return this->_M_Start(); }
   const _CharT* data()  const { return this->_M_Start(); }
 
-public:                         // find.
-
+public: // find.
   size_type find(const _Self& __s, size_type __pos = 0) const
-    { return find(__s._M_Start(), __pos, __s.size()); }
+  { return find(__s._M_Start(), __pos, __s.size()); }
 
   size_type find(const _CharT* __s, size_type __pos = 0) const
-    { _STLP_FIX_LITERAL_BUG(__s) return find(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return find(__s, __pos, _Traits::length(__s)); }
 
   size_type find(const _CharT* __s, size_type __pos, size_type __n) const;
 
@@ -1162,85 +1097,71 @@ public:                         // find.
   size_type find(_CharT __c) const { return find(__c, 0); }
   size_type find(_CharT __c, size_type __pos /* = 0 */) const;
 
-public:                         // rfind.
-
+public: // rfind.
   size_type rfind(const _Self& __s, size_type __pos = npos) const
-    { return rfind(__s._M_Start(), __pos, __s.size()); }
+  { return rfind(__s._M_Start(), __pos, __s.size()); }
 
   size_type rfind(const _CharT* __s, size_type __pos = npos) const
-    { _STLP_FIX_LITERAL_BUG(__s) return rfind(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return rfind(__s, __pos, _Traits::length(__s)); }
 
   size_type rfind(const _CharT* __s, size_type __pos, size_type __n) const;
   size_type rfind(_CharT __c, size_type __pos = npos) const;
 
-public:                         // find_first_of
-
+public: // find_first_of
   size_type find_first_of(const _Self& __s, size_type __pos = 0) const
-    { return find_first_of(__s._M_Start(), __pos, __s.size()); }
+  { return find_first_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_first_of(const _CharT* __s, size_type __pos = 0) const
-    { _STLP_FIX_LITERAL_BUG(__s) return find_first_of(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return find_first_of(__s, __pos, _Traits::length(__s)); }
 
-  size_type find_first_of(const _CharT* __s, size_type __pos,
-                          size_type __n) const;
+  size_type find_first_of(const _CharT* __s, size_type __pos, size_type __n) const;
 
   size_type find_first_of(_CharT __c, size_type __pos = 0) const
-    { return find(__c, __pos); }
+  { return find(__c, __pos); }
 
-public:                         // find_last_of
-
-  size_type find_last_of(const _Self& __s,
-                         size_type __pos = npos) const
-    { return find_last_of(__s._M_Start(), __pos, __s.size()); }
+public: // find_last_of
+  size_type find_last_of(const _Self& __s, size_type __pos = npos) const
+  { return find_last_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_last_of(const _CharT* __s, size_type __pos = npos) const
-    { _STLP_FIX_LITERAL_BUG(__s) return find_last_of(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return find_last_of(__s, __pos, _Traits::length(__s)); }
 
-  size_type find_last_of(const _CharT* __s, size_type __pos,
-                         size_type __n) const;
+  size_type find_last_of(const _CharT* __s, size_type __pos, size_type __n) const;
 
-  size_type find_last_of(_CharT __c, size_type __pos = npos) const {
-    return rfind(__c, __pos);
-  }
+  size_type find_last_of(_CharT __c, size_type __pos = npos) const
+  { return rfind(__c, __pos); }
 
-public:                         // find_first_not_of
-
-  size_type find_first_not_of(const _Self& __s,
-                              size_type __pos = 0) const
-    { return find_first_not_of(__s._M_Start(), __pos, __s.size()); }
+public: // find_first_not_of
+  size_type find_first_not_of(const _Self& __s, size_type __pos = 0) const
+  { return find_first_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_first_not_of(const _CharT* __s, size_type __pos = 0) const
   { _STLP_FIX_LITERAL_BUG(__s) return find_first_not_of(__s, __pos, _Traits::length(__s)); }
 
-  size_type find_first_not_of(const _CharT* __s, size_type __pos,
-                              size_type __n) const;
+  size_type find_first_not_of(const _CharT* __s, size_type __pos, size_type __n) const;
 
   size_type find_first_not_of(_CharT __c, size_type __pos = 0) const;
 
-public:                         // find_last_not_of
-
-  size_type find_last_not_of(const _Self& __s,
-                             size_type __pos = npos) const
+public: // find_last_not_of
+  size_type find_last_not_of(const _Self& __s, size_type __pos = npos) const
   { return find_last_not_of(__s._M_Start(), __pos, __s.size()); }
 
   size_type find_last_not_of(const _CharT* __s, size_type __pos = npos) const
-    { _STLP_FIX_LITERAL_BUG(__s) return find_last_not_of(__s, __pos, _Traits::length(__s)); }
+  { _STLP_FIX_LITERAL_BUG(__s) return find_last_not_of(__s, __pos, _Traits::length(__s)); }
 
-  size_type find_last_not_of(const _CharT* __s, size_type __pos,
-                             size_type __n) const;
+  size_type find_last_not_of(const _CharT* __s, size_type __pos, size_type __n) const;
 
   size_type find_last_not_of(_CharT __c, size_type __pos = npos) const;
 
-public:                         // Substring.
+public: // Substring.
   _Self substr(size_type __pos = 0, size_type __n = npos) const
   { return _Self(*this, __pos, __n, get_allocator()); }
 
-public:                         // Compare
+public: // Compare
   int compare(const _Self& __s) const
   { return _M_compare(this->_M_Start(), this->_M_Finish(), __s._M_Start(), __s._M_Finish()); }
 
-  int compare(size_type __pos1, size_type __n1,
-              const _Self& __s) const {
+  int compare(size_type __pos1, size_type __n1, const _Self& __s) const {
     if (__pos1 > size())
       this->_M_throw_out_of_range();
     return _M_compare(this->_M_Start() + __pos1,
@@ -1248,8 +1169,7 @@ public:                         // Compare
                       __s._M_Start(), __s._M_Finish());
   }
 
-  int compare(size_type __pos1, size_type __n1,
-              const _Self& __s,
+  int compare(size_type __pos1, size_type __n1, const _Self& __s,
               size_type __pos2, size_type __n2) const {
     if (__pos1 > size() || __pos2 > __s.size())
       this->_M_throw_out_of_range();
@@ -1273,8 +1193,7 @@ public:                         // Compare
                       __s, __s + _Traits::length(__s));
   }
 
-  int compare(size_type __pos1, size_type __n1, const _CharT* __s,
-              size_type __n2) const {
+  int compare(size_type __pos1, size_type __n1, const _CharT* __s, size_type __n2) const {
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos1 > size())
       this->_M_throw_out_of_range();
@@ -1283,8 +1202,7 @@ public:                         // Compare
                       __s, __s + __n2);
   }
 
-public:                        // Helper functions for compare.
-
+public: // Helper functions for compare.
   static int _STLP_CALL _M_compare(const _CharT* __f1, const _CharT* __l1,
                                    const _CharT* __f2, const _CharT* __l2) {
     const ptrdiff_t __n1 = __l1 - __f1;

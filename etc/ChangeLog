@@ -4,6 +4,22 @@
 	safe mode, it is invalid for pure input iterators. Now assign
 	invalidate all iterators which make the code simpler.
 
+	* Remove the difficult to implement and maintain _AreSameUnCVTypes,
+	doing so has a number of impact on the lib:
+	- Remove usage of it in debug/_string.h and debug/_deque.h, we
+	rather use function specialization to detect self reference. In string
+	implementation it is almost impossible to detect self referencing in
+	insert and assign method even with use of _AreSameUnCVTypes, so
+	we systematically creation an intermediate string instance.
+	- Creation of _AreCopyable helper class to detect when it is safe
+	to do a memcpy or memmove between 2 types. This class returns false
+	when any type is volatile qualified or when trying to copy to a const
+	qualified type.
+	- Creation of _AreSameTypes only really implemented thanks to partial
+	template specialization, only used in _IsOkToSwap struct.
+
+	* test/unit/copy_test.cpp: Add test showing bug 1806558.
+	
 2008-01-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/lib/configure: Don't override COMPILER_NAME, if already

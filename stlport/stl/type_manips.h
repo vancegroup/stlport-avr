@@ -157,101 +157,59 @@ struct __select {
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-#if defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
-// Boris : simulation technique is used here according to Adobe Open Source License Version 1.0.
-// Copyright 2000 Adobe Systems Incorporated and others. All rights reserved.
-// Authors: Mat Marcus and Jesse Jones
-// The original version of this source code may be found at
-// http://opensource.adobe.com.
-
-// These are the discriminating functions
-template <class _Tp>
-char _STLP_CALL _IsSameFun(bool, _Tp const volatile*, _Tp const volatile*); // no implementation is required
-char* _STLP_CALL _IsSameFun(bool, ...);       // no implementation is required
-
-template <class _Tp1, class _Tp2>
-struct _IsSame {
-  static _Tp1* __null_rep1();
-  static _Tp2* __null_rep2();
-  enum { _Ret = (sizeof(_IsSameFun(false,__null_rep1(), __null_rep2())) == sizeof(char)) };
-  typedef typename __bool2type<_Ret>::_Ret _RetT;
-};
-
-#else
-
-template <class _Tp1, class _Tp2>
-struct _IsSameAux {
-  typedef __false_type _RetT;
-  enum { _Ret = 0 };
-};
-
-template <class _Tp>
-struct _UnConstType { typedef _Tp _Type; };
-
-template <class _Tp>
-struct _UnVolatileType { typedef _Tp _Type; };
-
-template <class _Tp>
-struct _UnCVType {
-  typedef typename _UnVolatileType<_Tp>::_Type _UnVType;
-  typedef typename _UnConstType<_UnVType>::_Type _Type;
-};
-
-#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Tp>
-struct _IsSameAux<_Tp, _Tp> {
-  typedef __true_type _RetT;
-  enum { _Ret = 1 };
-};
-
-#    if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
-template <class _Tp>
-struct _UnConstType<const _Tp> { typedef _Tp _Type; };
-
-template <class _Tp>
-struct _UnVolatileType<volatile _Tp> { typedef _Tp _Type; };
-#    endif
-
-#    if defined(__BORLANDC__)
-template<class _Tp>
-struct _UnConstPtr { typedef _Tp _Type; };
-
-template<class _Tp>
-struct _UnConstPtr<_Tp*> { typedef _Tp _Type; };
-
-template<class _Tp>
-struct _UnConstPtr<const _Tp*> { typedef _Tp _Type; };
-#    endif
-#  endif
-
-template <class _Tp1, class _Tp2>
-struct _IsSame {
-  typedef typename _UnCVType<_Tp1>::_Type _Type1;
-  typedef typename _UnCVType<_Tp2>::_Type _Type2;
-
-  typedef _IsSameAux<_Type1, _Type2> _Aux;
-  enum { _Ret = _Aux::_Ret };
-  typedef typename _Aux::_RetT _RetT;
-};
-#endif
-
-/*
- * The following struct will tell you if 2 types are the same, the limitations are:
- *  - it compares the types without the const or volatile qualifiers, int and const int
- *    will be considered as same for instance.
- *  - the previous remarks do not apply to pointer types, int* and int const* won't be
- *    considered as comparable. (int * and int *const are).
- */
-template <class _Tp1, class _Tp2>
-struct _AreSameUnCVTypes {
-  enum { _Same = _IsSame<_Tp1, _Tp2>::_Ret };
-  typedef typename _IsSame<_Tp1, _Tp2>::_RetT _Ret;
-};
-
 /* Rather than introducing a new macro for the following constrution we use
  * an existing one (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) that
  * is used for a similar feature.
  */
+#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+// Helper struct that will forbid volatile qualified types:
+struct _NoVolatilePointerShim { _NoVolatilePointerShim(const void*); };
+template <class _Tp>
+char _STLP_CALL _IsCopyableFun(bool, _NoVolatilePointerShim, _Tp const*, _Tp*); // no implementation is required
+char* _STLP_CALL _IsCopyableFun(bool, ...);       // no implementation is required
+
+template <class _Src, class _Dst>
+struct _Copyable {
+  static _Src* __null_src();
+  static _Dst* __null_dst();
+  enum { _Ret = (sizeof(_IsCopyableFun(false, __null_src(), __null_src(), __null_dst())) == sizeof(char)) };
+  typedef typename __bool2type<_Ret>::_Ret _RetT;
+};
+#else
+template <class _Src, class _Dst>
+struct _Copyable {
+  enum { _Ret = 0 };
+  typedef __false_type _RetT;
+};
+#endif
+
+/*
+ * The following struct will tell you if 2 types are the same and if copying memory
+ * from the _Src type to the _Dst type is right considering qualifiers. If _Src and
+ * _Dst types are the same unqualified types _Ret will be false if:
+ *  - any of the type has the volatile qualifier
+ *  - _Dst is const qualified
+ */
+template <class _Src, class _Dst>
+struct _AreCopyable {
+  enum { _Same = _Copyable<_Src, _Dst>::_Ret };
+  typedef typename _Copyable<_Src, _Dst>::_RetT _Ret;
+};
+
+template <class _Tp1, class _Tp2>
+struct _AreSameTypes {
+  enum { _Same = 0 };
+  typedef __false_type _Ret;
+};
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+template <class _Tp>
+struct _AreSameTypes<_Tp, _Tp> {
+  enum { _Same = 1 };
+  typedef __true_type _Ret;
+};
+#endif
+
 #if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 template <class _Src, class _Dst>
 struct _ConversionHelper {

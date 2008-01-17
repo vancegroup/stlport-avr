@@ -383,7 +383,7 @@ struct _TrivialCopy {
   typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
   typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
 #  endif
-  typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
+  typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
@@ -400,7 +400,7 @@ struct _TrivialUCopy {
   typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
   typedef typename __type_traits<_Tp3>::has_trivial_copy_constructor _Tr1;
 #  endif
-  typedef typename _AreSameUnCVTypes<_Src, _Dst>::_Ret _Tr2;
+  typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
@@ -470,7 +470,7 @@ struct _BothPtrType {
 
 template <class _Tp1, class _Tp2, class _IsRef1, class _IsRef2>
 struct _OKToSwap {
-  typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Same;
+  typedef typename _AreSameTypes<_Tp1, _Tp2>::_Ret _Same;
   typedef typename _Land3<_Same, _IsRef1, _IsRef2>::_Ret _Type;
   static _Type _Answer() { return _Type(); }
 };

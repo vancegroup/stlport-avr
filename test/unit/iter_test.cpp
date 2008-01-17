@@ -153,6 +153,10 @@ void IterTest::iterswp3()
   CPPUNIT_CHECK( vvints.front() == lvref );
   CPPUNIT_CHECK( lvints.front() == vvref );
 
+  //const vector<vector<int> > &cvvints = vvints;
+  //iter_swap(cvvints.begin(), lvints.begin());
+  //iter_swap(lvints.begin(), cvvints.begin());
+
 #if defined (STLPORT) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   int *pvvint = &vvints.front().front();
   int *plvint = &lvints.front().front();

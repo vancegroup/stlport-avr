@@ -385,13 +385,11 @@ public:                         // Insert
     return *this;
   }
 
-  iterator insert(iterator __p, _CharT __c) {
-    return _Base::insert(__p, __c);
-  }
+  iterator insert(iterator __p, _CharT __c)
+  { return _Base::insert(__p, __c); }
 
-  void insert(iterator __p, size_t __n, _CharT __c) {
-    _Base::insert(__p, __n, __c);
-  }
+  void insert(iterator __p, size_t __n, _CharT __c)
+  { _Base::insert(__p, __n, __c); }
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
@@ -400,6 +398,14 @@ public:                         // Insert
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
+
+#if !defined (_STLP_NO_METHOD_SPECIALIZATION)
+public:
+  void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
+    _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
+    _M_insert(__p, __f, __l, _M_inside(__f));
+  }
+#endif
 
 private:  // Helper functions for insert.
 
@@ -495,29 +501,6 @@ private:  // Helper functions for insert.
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
                           const __false_type& /*Integral*/) {
-    _STLP_FIX_LITERAL_BUG(__p)
-    /*
-     * Within the basic_string implementation we are only going to check for
-     * self referencing if iterators are string iterators or _CharT pointers.
-     * A user could encapsulate those iterator within their own iterator interface
-     * and in this case lead to a bad behavior, this is a known limitation.
-     */
-    typedef typename _AreSameUnCVTypes<_InputIter, iterator>::_Ret _IsIterator;
-    typedef typename _AreSameUnCVTypes<_InputIter, const_iterator>::_Ret _IsConstIterator;
-    typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
-    _M_insert_aux(__p, __first, __last, _CheckInside());
-  }
-
-  template <class _RandomIter>
-  void _M_insert_aux (iterator __p, _RandomIter __first, _RandomIter __last,
-                      const __true_type& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__p)
-    _M_insert(__p, &(*__first), &(*__last), _Base::_M_inside(&(*__first)));
-  }
-
-  template<class _InputIter>
-  void _M_insert_aux (iterator __p, _InputIter __first, _InputIter __last,
-                      const __false_type& /*_CheckInside*/) {
     _STLP_FIX_LITERAL_BUG(__p)
     _M_insertT(__p, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
@@ -620,16 +603,15 @@ public:                         // Replace.  (Conceptually equivalent
                  _InputIter __f, _InputIter __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
     typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
-    return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
+    return _M_replace_dispatch(__first, __last, __f, __l, _Integral());
   }
 
-#if !defined (_STLP_NO_METHOD_SPECIALIZATION) && !defined (_STLP_NO_EXTENSIONS)
+#if !defined (_STLP_NO_METHOD_SPECIALIZATION)
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
-    _Base::replace(__first, __last, __f, __l);
-    return *this;
+    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
   }
 #endif
 
@@ -653,56 +635,9 @@ private:                        // Helper functions for replace.
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    typedef typename _AreSameUnCVTypes<_InputIter, iterator>::_Ret _IsIterator;
-    typedef typename _AreSameUnCVTypes<_InputIter, const_iterator>::_Ret _IsConstIterator;
-    typedef typename _Lor2<_IsIterator, _IsConstIterator>::_Ret _CheckInside;
-    return _M_replace_aux(__first, __last, __f, __l, _CheckInside());
-  }
-
-  template <class _RandomIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                        _RandomIter __f, _RandomIter __l, __true_type const& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    return _M_replace(__first, __last, &(*__f), &(*__l), _Base::_M_inside(&(*__f)));
-  }
-
-  template <class _InputIter>
-  _Self& _M_replace_aux(iterator __first, iterator __last,
-                     _InputIter __f, _InputIter __l, __false_type const& /*_CheckInside*/) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    return _M_replaceT(__first, __last, __f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter));
-  }
-
-  template <class _InputIter>
-  _Self& _M_replaceT(iterator __first, iterator __last,
-                     _InputIter __f, _InputIter __l, const input_iterator_tag&__ite_tag) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    for ( ; __first != __last && __f != __l; ++__first, ++__f)
-      _Traits::assign(*__first, *__f);
-    if (__f == __l)
-      _Base::erase(__first, __last);
-    else
-      _M_insertT(__last, __f, __l, __ite_tag);
-    return *this;
-  }
-
-  template <class _ForwardIter>
-  _Self& _M_replaceT(iterator __first, iterator __last,
-                     _ForwardIter __f, _ForwardIter __l, const forward_iterator_tag &__ite_tag) {
-    _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
-    difference_type __n = distance(__f, __l);
-    const difference_type __len = __last - __first;
-    if (__len >= __n) {
-      _M_copyT(__f, __l, __first);
-      _Base::erase(__first + __n, __last);
-    }
-    else {
-      _ForwardIter __m = __f;
-      advance(__m, __len);
-      _M_copyT(__f, __m, __first);
-      _M_insertT(__last, __m, __l, __ite_tag);
-    }
-    return *this;
+    /* We are forced to do a temporary string to avoid the self referencing issue. */
+    const _Self __self(__f, __l, get_allocator());
+    return _M_replace(__first, __last, __self._M_Start(), __self._M_Finish(), false);
   }
 
 public:                         // Other modifier member functions.

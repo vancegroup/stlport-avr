@@ -16,6 +16,7 @@ class CopyTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CopyTest);
   CPPUNIT_TEST(copy_array);
+  CPPUNIT_TEST(copy_volatile);
   CPPUNIT_TEST(copy_vector);
   CPPUNIT_TEST(copy_insert);
   CPPUNIT_TEST(copy_back);
@@ -24,6 +25,7 @@ class CopyTest : public CPPUNIT_NS::TestCase
 
 protected:
   void copy_array();
+  void copy_volatile();
   void copy_vector();
   void copy_insert();
   void copy_back();
@@ -41,6 +43,42 @@ void CopyTest::copy_array()
   char result[23];
   copy(string, string + 23, result);
   CPPUNIT_ASSERT(!strncmp(string, result, 23));
+}
+
+void CopyTest::copy_volatile()
+{
+  {
+    int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    volatile int va[size]; 
+    copy(a, a + size, va);
+    for (size_t i = 0; i != size; ++i) {
+      CPPUNIT_ASSERT( a[i] == va[i] );
+    }
+  }
+
+  {
+    const int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    volatile int va[size]; 
+    copy(a, a + size, va);
+    for (size_t i = 0; i != size; ++i) {
+      CPPUNIT_ASSERT( a[i] == va[i] );
+    }
+  }
+
+  // Following code can be activated to check that it doesn't compiled
+#if 0
+  {
+    int a[] = {0, 1, 2, 3, 4, 5};
+    const size_t size = sizeof(a) / sizeof(a[0]);
+    const volatile int va[size] = {5, 4, 3, 2, 1, 0}; 
+    copy(a, a + size, va);
+    for (size_t i = 0; i != size; ++i) {
+      CPPUNIT_ASSERT( a[i] == va[i] );
+    }
+  }
+#endif
 }
 
 void CopyTest::copy_vector()
