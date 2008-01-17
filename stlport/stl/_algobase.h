@@ -117,7 +117,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2>
 inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
-  // swap(*__i1, *__i2);
   _STLP_PRIV __iter_swap_aux( __i1, __i2, _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
                                                       _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1),
                                                       _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer());
