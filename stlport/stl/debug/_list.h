@@ -117,8 +117,6 @@ public:
 #endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-  // We don't need any dispatching tricks here, because insert does all of
-  // that anyway.
   template <class _InputIterator>
   list(_InputIterator __first, _InputIterator __last,
        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -304,56 +302,37 @@ public:
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-private:
-  template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/) {
-    _M_check_assign(__n);
-    _M_non_dbg_impl.assign(__n, __val);
-  }
-
-  template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
-    size_type __len = distance(__first, __last);
-    _M_check_assign(__len);
-    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
-  }
-
-public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
+    _Invalidate_iterators(begin(), end());
   }
 #else
   void assign(const _Tp* __first, const _Tp* __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__first, __last))
     _M_non_dbg_impl.assign(__first, __last);
+    _Invalidate_iterators(begin(), end());
+  }
+
+  void assign(iterator __first, iterator __last) {
+    _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+    _M_non_dbg_impl.assign(__first._M_iterator, __last._M_iterator);
+    _Invalidate_iterators(begin(), end());
   }
 
   void assign(const_iterator __first, const_iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
     _M_non_dbg_impl.assign(__first._M_iterator, __last._M_iterator);
+    _Invalidate_iterators(begin(), end());
   }
 #endif
 
-private:
-  void _M_check_assign(size_type __n) {
-    size_type __size = size();
-    if (__n < __size) {
-      iterator __it = begin();
-      advance(__it, __n + 1);
-      _Invalidate_iterators(__it, end());
-    }
-  }
-
-public:
   void assign(size_type __n, const _Tp& __val) {
-    _M_check_assign(__n);
+    _Invalidate_iterators(begin(), end());
     _M_non_dbg_impl.assign(__n, __val);
   }
 
