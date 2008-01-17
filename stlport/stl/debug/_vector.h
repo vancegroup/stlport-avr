@@ -371,38 +371,18 @@ public:
 
 #if defined (_STLP_DONT_SUP_DFLT_PARAM)
   void resize(size_type __new_size) { resize(__new_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
 
 #if defined (_STLP_MEMBER_TEMPLATES)
-private:
-  template <class _Integer, class _Category>
-  void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/ )
-  {
-    _Invalidate_all();
-    _M_non_dbg_impl.assign(__n, __val);
-  }
-
-  template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/ )
-  {
+  template <class _InputIterator>
+  void assign(_InputIterator __first, _InputIterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first,__last))
     _Invalidate_all();
     _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
   }
-
-public:
-  template <class _InputIterator>
-  void assign(_InputIterator __first, _InputIterator __last)
-  {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral() );
-  }
 #else
 private:
-  void _M_assign(const value_type *__first, const value_type *__last)
-  {
+  void _M_assign(const value_type *__first, const value_type *__last) {
     _Invalidate_all();
     _M_non_dbg_impl.assign(__first, __last);
   }
