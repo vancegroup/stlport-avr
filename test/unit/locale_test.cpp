@@ -29,8 +29,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(LocaleTest);
 //
 // tests implementation
 //
-template <class _Tp>
-void test_supported_locale(LocaleTest inst, _Tp __test) {
+typedef void (LocaleTest::*_Test) (const locale&);
+static void test_supported_locale(LocaleTest &inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
     locale loc;

@@ -3,7 +3,6 @@
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <locale>
 #  include <stdexcept>
-#  include <memory>
 
 #  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -319,28 +318,33 @@ void LocaleTest::_ctype_facet_w( const locale& loc )
 }
 
 
-template <class _Tp>
-void test_supported_locale(LocaleTest inst, _Tp __test) {
+typedef void (LocaleTest::*_Test) (const locale&);
+static void test_supported_locale(LocaleTest& inst, _Test __test) {
   size_t n = sizeof(tested_locales) / sizeof(tested_locales[0]);
   for (size_t i = 0; i < n; ++i) {
-    auto_ptr<locale> loc;
+    locale loc;
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-    try {
+    try
 #  endif
-      loc.reset(new locale(tested_locales[i]));
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
+    {
+      locale tmp(tested_locales[i]);
+      loc = tmp;
     }
+#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     catch (runtime_error const&) {
       //This locale is not supported.
       continue;
     }
 #  endif
 
-    CPPUNIT_MESSAGE( loc->name().c_str() );
-    (inst.*__test)(*loc);
+    CPPUNIT_MESSAGE( loc.name().c_str() );
+    (inst.*__test)(loc);
 
-    loc.reset(new locale(locale::classic(), tested_locales[i], locale::ctype));
-    (inst.*__test)(*loc);
+    {
+      locale tmp(locale::classic(), tested_locales[i], locale::ctype);
+      loc = tmp;
+    }
+    (inst.*__test)(loc);
   }
 }
 
