@@ -32,16 +32,10 @@
 #  define _STLP_STRCPY(D, DS, S) strcpy_s(D, DS, S)
 #  define _STLP_STRNCPY(D, DS, S, C) strncpy_s(D, DS, S, C)
 #  define _STLP_STRCAT(D, DS, S) strcat_s(D, DS, S)
-#  if !defined (_STLP_NO_WCHAR_T)
-#    define _STLP_WCSNCPY(D, DS, S, C) wcsncpy_s(D, DS, S, C)
-#  endif
 #else
 #  define _STLP_STRCPY(D, DS, S) strcpy(D, S)
 #  define _STLP_STRNCPY(D, DS, S, C) strncpy(D, S, C)
 #  define _STLP_STRCAT(D, DS, S) strcat(D, S)
-#  if !defined (_STLP_NO_WCHAR_T)
-#    define _STLP_WCSNCPY(D, DS, S, C) wcsncpy(D, S, C)
-#  endif
 #endif
 
 #if defined (__cplusplus)
@@ -197,15 +191,6 @@ typedef struct _Locale_ctype {
   UINT cp;
   unsigned short ctable[256];
 } _Locale_ctype_t;
-
-typedef struct _Locale_codecvt {
-  _Locale_lcid_t lc;
-  UINT cp;
-  unsigned char cleads[256 / CHAR_BIT];
-  unsigned char max_char_size;
-  DWORD mbtowc_flags;
-  DWORD wctomb_flags;
-} _Locale_codecvt_t;
 
 typedef struct _Locale_numeric {
   _Locale_lcid_t lc;
@@ -373,37 +358,6 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
     GetStringTypeA(ltype->lc.id, CT_CTYPE1, (const char*)Buffer, 256, ltype->ctable);
   }
   return ltype;
-}
-
-_Locale_codecvt_t* _Locale_codecvt_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
-  char cp_name[MAX_CP_LEN + 1];
-  unsigned char *ptr;
-  CPINFO CPInfo;
-  int i;
-
-  _Locale_codecvt_t *lcodecvt = (_Locale_codecvt_t*)malloc(sizeof(_Locale_codecvt_t));
-
-  if (!lcodecvt) { *__err_code = _STLP_LOC_NO_MEMORY; return lcodecvt; }
-  memset(lcodecvt, 0, sizeof(_Locale_codecvt_t));
-
-  if (__GetLCIDFromName(name, &lcodecvt->lc.id, cp_name, lc_hint) == -1)
-  { free(lcodecvt); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
-
-  lcodecvt->cp = atoi(cp_name);
-  if (!GetCPInfo(lcodecvt->cp, &CPInfo)) { free(lcodecvt); return NULL; }
-
-  if (lcodecvt->cp != CP_UTF7 && lcodecvt->cp != CP_UTF8) {
-    lcodecvt->mbtowc_flags = MB_PRECOMPOSED;
-    lcodecvt->wctomb_flags = WC_COMPOSITECHECK | WC_SEPCHARS;
-  }
-  lcodecvt->max_char_size = CPInfo.MaxCharSize;
-
-  if (CPInfo.MaxCharSize > 1) {
-    for (ptr = (unsigned char*)CPInfo.LeadByte; *ptr && *(ptr + 1); ptr += 2)
-      for (i = *ptr; i <= *(ptr + 1); ++i) lcodecvt->cleads[i / CHAR_BIT] |= (0x01 << i % CHAR_BIT);
-  }
-
-  return lcodecvt;
 }
 
 _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
@@ -914,12 +868,6 @@ char const* _Locale_ctype_name(const _Locale_ctype_t* ltype, char* buf) {
   return __GetLocaleName(ltype->lc.id, cp_buf, buf);
 }
 
-char const* _Locale_codecvt_name(const _Locale_codecvt_t* lcodecvt, char* buf) {
-  char cp_buf[MAX_CP_LEN + 1];
-  my_ltoa(lcodecvt->cp, cp_buf);
-  return __GetLocaleName(lcodecvt->lc.id, cp_buf, buf);
-}
-
 char const* _Locale_numeric_name(const _Locale_numeric_t* lnum, char* buf)
 { return __GetLocaleName(lnum->lc.id, lnum->cp, buf); }
 
@@ -939,12 +887,6 @@ void _Locale_ctype_destroy(_Locale_ctype_t* ltype) {
   if (!ltype) return;
 
   free(ltype);
-}
-
-void _Locale_codecvt_destroy(_Locale_codecvt_t* lcodecvt) {
-  if (!lcodecvt) return;
-
-  free(lcodecvt);
 }
 
 void _Locale_numeric_destroy(_Locale_numeric_t* lnum) {
@@ -1079,136 +1021,6 @@ int _Locale_tolower(_Locale_ctype_t* ltype, int c) {
   }
 }
 
-#if !defined (_STLP_NO_WCHAR_T)
-_Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
-                              _Locale_mask_t which_bits) {
-  wchar_t buf[2];
-  WORD out[2];
-  buf[0] = c; buf[1] = 0;
-  GetStringTypeW(CT_CTYPE1, buf, -1, out);
-  (void*)ltype;
-  return (_Locale_mask_t)out[0] & which_bits;
-}
-
-wint_t _WLocale_tolower(_Locale_ctype_t* ltype, wint_t c) {
-  wchar_t in_c = c;
-  wchar_t res;
-
-  LCMapStringW(ltype->lc.id, LCMAP_LOWERCASE, &in_c, 1, &res, 1);
-  return res;
-}
-
-wint_t _WLocale_toupper(_Locale_ctype_t* ltype, wint_t c) {
-  wchar_t in_c = c;
-  wchar_t res;
-
-  LCMapStringW(ltype->lc.id, LCMAP_UPPERCASE, &in_c, 1, &res, 1);
-  return res;
-}
-#endif
-
-int _WLocale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
-{ return lcodecvt->max_char_size; }
-
-int _WLocale_mb_cur_min (_Locale_codecvt_t *dummy) {
-  (void*)dummy;
-  return 1;
-}
-
-int _WLocale_is_stateless (_Locale_codecvt_t * lcodecvt)
-{ return (lcodecvt->max_char_size == 1) ? 1 : 0; }
-
-#if defined (__BORLANDC__) && defined (__cplusplus)
-/* Weird Borland compiler behavior, even if native wint_t is imported to
- * STLport namespace in _cwchar.h, wint_t is still usable when scoped with
- * the Standard namespace (std::wint_t). As following WEOF macro is expended
- * to (std::wint_t)(0xFFFF) compilation failed. Repeating import avoid this
- * problem.*/
-using __std_alias::wint_t;
-#endif
-
-static int __isleadbyte(int i, unsigned char *ctable) {
-  unsigned char c = (unsigned char)i;
-  return (ctable[c / CHAR_BIT] & (0x01 << c % CHAR_BIT));
-}
-
-static int __mbtowc(_Locale_codecvt_t *l, wchar_t *dst, const char *from, unsigned int count) {
-  int result;
-
-  if (l->cp == CP_UTF7 || l->cp == CP_UTF8) {
-    result = MultiByteToWideChar(l->cp, l->mbtowc_flags, from, count, dst, 1);
-    if (result == 0) {
-      switch (GetLastError()) {
-        case ERROR_NO_UNICODE_TRANSLATION:
-          return -2;
-        default:
-          return -1;
-      }
-    }
-  }
-  else {
-    if (count == 1 && __isleadbyte(*from, l->cleads)) return (size_t)-2;
-    result = MultiByteToWideChar(l->cp, l->mbtowc_flags, from, count, dst, 1);
-    if (result == 0) return -1;
-  }
-
-  return result;
-}
-
-#if !defined (_STLP_NO_WCHAR_T)
-size_t _WLocale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
-                       const char *from, size_t n, mbstate_t *shift_state) {
-  int result;
-  (void*)shift_state;
-  if (lcodecvt->max_char_size == 1) { /* Single byte encoding. */
-    result = MultiByteToWideChar(lcodecvt->cp, lcodecvt->mbtowc_flags, from, 1, to, 1);
-    if (result == 0) return (size_t)-1;
-    return result;
-  }
-  else { /* Multi byte encoding. */
-    int retval = 0;
-    unsigned int count = 1;
-    while (n--) {
-      retval = __mbtowc(lcodecvt, to, from, count);
-      if (retval == -2)
-      { if (++count > lcodecvt->max_char_size) return (size_t)-1; }
-      else if (retval == -1)
-      { return (size_t)-1; }
-      else
-      { return count; }
-    }
-    return (size_t)-2;
-  }
-}
-
-size_t _WLocale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
-                       const wchar_t c, mbstate_t *shift_state) {
-  int size = WideCharToMultiByte(lcodecvt->cp, lcodecvt->wctomb_flags, &c, 1, NULL, 0, NULL, NULL);
-
-  if (!size) return (size_t)-1;
-  if ((size_t)size > n) return (size_t)-2;
-
-  if (n > INT_MAX)
-    /* Limiting the output buf size to INT_MAX seems like reasonable to transform a single wchar_t. */
-    n = INT_MAX;
-
-  WideCharToMultiByte(lcodecvt->cp,  lcodecvt->wctomb_flags, &c, 1, to, (int)n, NULL, NULL);
-
-  (void*)shift_state;
-  return (size_t)size;
-}
-#endif
-
-size_t _WLocale_unshift(_Locale_codecvt_t *lcodecvt, mbstate_t *st,
-                        char *buf, size_t n, char **next) {
-  /* _WLocale_wctomb do not even touch to st, there is nothing to unshift in this localization implementation. */
-  (void*)lcodecvt;
-  (void*)st;
-  (void*)&n;
-  *next = buf;
-  return 0;
-}
-
 #ifndef CSTR_EQUAL /* VC5SP3*/
 #  define CSTR_EQUAL 2
 #endif
@@ -1256,33 +1068,6 @@ int _Locale_strcmp(_Locale_collate_t* lcol,
   return (result == CSTR_EQUAL) ? 0 : (result == CSTR_LESS_THAN) ? -1 : 1;
 }
 
-#if !defined (_STLP_NO_WCHAR_T)
-/* This function takes care of the potential size_t DWORD different size. */
-static int _Locale_strcmp_auxW(_Locale_collate_t* lcol,
-                               const wchar_t* s1, size_t n1,
-                               const wchar_t* s2, size_t n2) {
-  int result = CSTR_EQUAL;
-  while (n1 > 0 || n2 > 0) {
-    DWORD size1 = trim_size_t_to_DWORD(n1);
-    DWORD size2 = trim_size_t_to_DWORD(n2);
-    result = CompareStringW(lcol->lc.id, 0, s1, size1, s2, size2);
-    if (result != CSTR_EQUAL)
-      break;
-    n1 -= size1;
-    n2 -= size2;
-  }
-  return result;
-}
-
-int _WLocale_strcmp(_Locale_collate_t* lcol,
-                    const wchar_t* s1, size_t n1,
-                    const wchar_t* s2, size_t n2) {
-  int result;
-  result = _Locale_strcmp_auxW(lcol, s1, n1, s2, n2);
-  return (result == CSTR_EQUAL) ? 0 : (result == CSTR_LESS_THAN) ? -1 : 1;
-}
-#endif
-
 size_t _Locale_strxfrm(_Locale_collate_t* lcol,
                        char* dst, size_t dst_size,
                        const char* src, size_t src_size) {
@@ -1314,27 +1099,6 @@ size_t _Locale_strxfrm(_Locale_collate_t* lcol,
   }
   return result != 0 ? result - 1 : 0;
 }
-
-#if !defined (_STLP_NO_WCHAR_T)
-size_t _WLocale_strxfrm(_Locale_collate_t* lcol,
-                        wchar_t* dst, size_t dst_size,
-                        const wchar_t* src, size_t src_size) {
-  int result;
-
-  /* see _Locale_strxfrm: */
-  if (src_size > INT_MAX) {
-    if (dst != 0) {
-      _STLP_WCSNCPY(dst, dst_size, src, src_size);
-    }
-    return src_size;
-  }
-  if (dst_size > INT_MAX) {
-    dst_size = INT_MAX;
-  }
-  result = LCMapStringW(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
-  return result != 0 ? result - 1 : 0;
-}
-#endif
 
 /* Numeric */
 static const char* __true_name = "true";
