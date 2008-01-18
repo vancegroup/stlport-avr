@@ -100,22 +100,6 @@ struct _Lor3<__false_type, __false_type, __false_type> { typedef __false_type _R
 //the second template type!!
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)
-
-template <bool _Cond, class _Tp1, class _Tp2>
-struct __select { typedef _Tp1 _Ret; };
-
-template <class _Tp1, class _Tp2>
-struct __select<false, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
-
-#  else
-
-template <bool _Cond, class _Tp1, class _Tp2>
-struct __select 
-{ typedef __selectT<typename __bool2type<_Cond>::_Ret, _Tp1, _Tp2>::_Ret _Ret; };
-
-#  endif
-
 #  if defined (__BORLANDC__) 
 template <class _CondT, class _Tp1, class _Tp2>
 struct __selectT { typedef _Tp1 _Ret; };
@@ -124,7 +108,19 @@ template <class _Tp1, class _Tp2>
 struct __selectT<__false_type, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
 #  endif
 
-#else /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#  if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)
+template <bool _Cond, class _Tp1, class _Tp2>
+struct __select { typedef _Tp1 _Ret; };
+
+template <class _Tp1, class _Tp2>
+struct __select<false, _Tp1, _Tp2> { typedef _Tp2 _Ret; };
+#  else
+template <bool _Cond, class _Tp1, class _Tp2>
+struct __select 
+{ typedef __selectT<typename __bool2type<_Cond>::_Ret, _Tp1, _Tp2>::_Ret _Ret; };
+#  endif
+
+#else
 
 #  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 template <int _Cond>
@@ -225,6 +221,33 @@ struct _IsConvertible {
   typedef typename __bool2type<value>::_Ret _Ret;
 };
 
+#if defined(__BORLANDC__)
+template<class _Tp>
+struct _UnConstPtr { typedef _Tp _Type; };
+
+template<class _Tp>
+struct _UnConstPtr<_Tp*> { typedef _Tp _Type; };
+
+template<class _Tp>
+struct _UnConstPtr<const _Tp*> { typedef _Tp _Type; };
+#endif
+
+template <class _Tp>
+struct _IsConst { typedef __false_type _Ret; };
+
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
+template <class _Tp>
+struct _IsConst <const _Tp> { typedef __true_type _Ret; };
+#endif
+
+#  if defined(__BORLANDC__)
+template<class _Tp>
+struct _IsConst <const _Tp*> { typedef __true_type _Ret; };
+
+template<class _Tp>
+struct _IsConst <const volatile _Tp*> { typedef __true_type _Ret; };
+#  endif
+
 /* This struct is intended to say if a pointer can be convertible to an other
  * taking into account cv qualifications. It shouldn't be instanciated with
  * something else than pointer type as it uses pass by value parameter that
@@ -251,22 +274,6 @@ struct _IsConvertible {
   typedef __false_type _Ret;
 };
 #endif
-
-template <class _Tp>
-struct _IsConst { typedef __false_type _Ret; };
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
-template <class _Tp>
-struct _IsConst <const _Tp> { typedef __true_type _Ret; };
-#endif
-
-#  if defined(__BORLANDC__)
-template<class _Tp>
-struct _IsConst <const _Tp*> { typedef __true_type _Ret; };
-
-template<class _Tp>
-struct _IsConst <const volatile _Tp*> { typedef __true_type _Ret; };
-#  endif
 
 _STLP_END_NAMESPACE
 
