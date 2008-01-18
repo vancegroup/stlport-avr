@@ -135,9 +135,9 @@ struct derived : public base
 //
 // tests implementation
 //
-template <typename _Tp1, typename _Tp2>
-int are_same_uncv_types(_Tp1, _Tp2) {
-  typedef typename _AreSameUnCVTypes<_Tp1, _Tp2>::_Ret _Ret;
+template <typename _Src, typename _Dst>
+int are_copyable(_Src, _Dst) {
+  typedef typename _AreCopyable<_Src, _Dst>::_Ret _Ret;
   return type_to_value(_Ret());
 }
 
@@ -263,23 +263,23 @@ void TypeTraitsTest::manips()
   }
 
   {
-    CPPUNIT_ASSERT( are_same_uncv_types(int_val, int_val) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_val, int_const_val) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_val, int_volatile_val) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_const_val, int_val) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_volatile_val, int_val) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_val, int_pointer) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_pointer, int_val) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_pointer, int_pointer) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_pointer, int_const_pointer) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_pointer, int_const_volatile_pointer) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_const_pointer, int_const_pointer) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(int_const_pointer, int_const_volatile_pointer) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(any, any) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(any, any_pointer) == 0 );
-    CPPUNIT_ASSERT( are_same_uncv_types(any_pointer, any_pointer) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(any_const_pointer, any_const_pointer) == 1 );
-    CPPUNIT_ASSERT( are_same_uncv_types(any_const_volatile_pointer, any_const_volatile_pointer) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_val, int_val) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_val, int_const_val) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_val, int_volatile_val) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_const_val, int_val) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_volatile_val, int_val) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_val, int_pointer) == 0 );
+    CPPUNIT_CHECK( are_copyable(int_pointer, int_val) == 0 );
+    CPPUNIT_CHECK( are_copyable(int_pointer, int_pointer) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_pointer, int_const_pointer) == 0 );
+    CPPUNIT_CHECK( are_copyable(int_pointer, int_const_volatile_pointer) == 0 );
+    CPPUNIT_CHECK( are_copyable(int_const_pointer, int_const_pointer) == 1 );
+    CPPUNIT_CHECK( are_copyable(int_const_pointer, int_const_volatile_pointer) == 0 );
+    CPPUNIT_CHECK( are_copyable(any, any) == 1 );
+    CPPUNIT_CHECK( are_copyable(any, any_pointer) == 0 );
+    CPPUNIT_CHECK( are_copyable(any_pointer, any_pointer) == 1 );
+    CPPUNIT_CHECK( are_copyable(any_const_pointer, any_const_pointer) == 1 );
+    CPPUNIT_CHECK( are_copyable(any_const_volatile_pointer, any_const_volatile_pointer) == 1 );
   }
 
   {
@@ -444,15 +444,15 @@ int are_both_pointer_type (_Tp1, _Tp2) {
 void TypeTraitsTest::both_pointer_type()
 {
 #if defined (STLPORT)
-  CPPUNIT_ASSERT( are_both_pointer_type(int_val, int_val) == 0 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_pointer, int_pointer) == 1 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_const_pointer, int_const_pointer) == 1 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_volatile_pointer, int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_const_volatile_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_ref, int_ref) == 0 );
-  CPPUNIT_ASSERT( are_both_pointer_type(int_const_ref, int_const_ref) == 0 );
-  CPPUNIT_ASSERT( are_both_pointer_type(any, any) == 0 );
-  CPPUNIT_ASSERT( are_both_pointer_type(any_pointer, any_pointer) == 1 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_val, int_val) == 0 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_pointer, int_pointer) == 1 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_const_pointer, int_const_pointer) == 1 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_volatile_pointer, int_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_const_volatile_pointer, int_const_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_ref, int_ref) == 0 );
+  CPPUNIT_CHECK( are_both_pointer_type(int_const_ref, int_const_ref) == 0 );
+  CPPUNIT_CHECK( are_both_pointer_type(any, any) == 0 );
+  CPPUNIT_CHECK( are_both_pointer_type(any_pointer, any_pointer) == 1 );
 #endif
 }
 
@@ -465,26 +465,26 @@ int is_ok_to_use_memcpy(_Tp1 val1, _Tp2 val2) {
 
 void TypeTraitsTest::ok_to_use_memcpy()
 {
-#if defined (STLPORT)
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, int_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_pointer, int_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_pointer, int_const_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_pointer, int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_const_volatile_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(int_pointer, any_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pointer, int_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pointer, any_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pointer, any_const_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, int_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(any_pod_pointer, any_pod_const_pointer) == 1 );
+#if defined (STLPORT) && !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_pointer, int_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_const_pointer, int_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_pointer, int_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_const_pointer, int_const_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_const_pointer, int_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_const_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_const_volatile_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(int_pointer, any_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pointer, int_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pointer, any_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pointer, any_const_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pod_pointer, int_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pod_pointer, any_pod_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(any_pod_pointer, any_pod_const_pointer) == 0 );
   vector<float> **pvf = 0;
   vector<int> **pvi = 0;
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(pvf, pvi) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memcpy(pvi, pvf) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(pvf, pvi) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memcpy(pvi, pvf) == 0 );
 #endif
 }
 
@@ -497,22 +497,22 @@ int is_ok_to_use_memmove(_Tp1 val1, _Tp2 val2) {
 
 void TypeTraitsTest::ok_to_use_memmove()
 {
-#if defined (STLPORT)
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_const_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_const_volatile_pointer, int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(int_pointer, any_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, int_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, any_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pointer, any_const_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, int_pointer) == 0 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, any_pod_pointer) == 1 );
-  CPPUNIT_ASSERT( is_ok_to_use_memmove(any_pod_pointer, any_pod_const_pointer) == 1 );
+#if defined (STLPORT) && !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_pointer, int_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_const_pointer, int_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_pointer, int_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_const_pointer, int_const_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_const_pointer, int_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_const_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_const_volatile_pointer, int_const_volatile_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(int_pointer, any_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pointer, int_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pointer, any_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pointer, any_const_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pod_pointer, int_pointer) == 0 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pod_pointer, any_pod_pointer) == 1 );
+  CPPUNIT_CHECK( is_ok_to_use_memmove(any_pod_pointer, any_pod_const_pointer) == 0 );
 #endif
 }
 
@@ -552,22 +552,22 @@ namespace std {
 void TypeTraitsTest::trivial_destructor()
 {
 #if defined (STLPORT)
-  CPPUNIT_ASSERT( has_trivial_destructor(int_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(int_const_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(any) == 0 );
-  CPPUNIT_ASSERT( has_trivial_destructor(any_pointer) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(any_pod) == 1 );
-  CPPUNIT_ASSERT( has_trivial_destructor(string()) == 0 );
+  CPPUNIT_CHECK( has_trivial_destructor(int_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(int_const_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(int_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(int_const_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(any_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(any) == 0 );
+  CPPUNIT_CHECK( has_trivial_destructor(any_pointer) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(any_pod) == 1 );
+  CPPUNIT_CHECK( has_trivial_destructor(string()) == 0 );
 
   //Check of the meta information impact in a container implementation
   {
     vector<DestructorMonitor> v(10);
     DestructorMonitor::nb_destructor_call = 0;
   }
-  CPPUNIT_ASSERT( DestructorMonitor::nb_destructor_call == 0 );
+  CPPUNIT_CHECK( DestructorMonitor::nb_destructor_call == 0 );
 #endif
 }
 
@@ -582,15 +582,15 @@ int is_POD_type(_Tp) {
 void TypeTraitsTest::is_POD()
 {
 #if defined (STLPORT)
-  CPPUNIT_ASSERT( is_POD_type(int_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(int_const_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(int_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(int_const_volatile_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(any_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(any) == 0 );
-  CPPUNIT_ASSERT( is_POD_type(any_pointer) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(any_pod) == 1 );
-  CPPUNIT_ASSERT( is_POD_type(string()) == 0 );
+  CPPUNIT_CHECK( is_POD_type(int_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(int_const_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(int_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(int_const_volatile_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(any_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(any) == 0 );
+  CPPUNIT_CHECK( is_POD_type(any_pointer) == 1 );
+  CPPUNIT_CHECK( is_POD_type(any_pod) == 1 );
+  CPPUNIT_CHECK( is_POD_type(string()) == 0 );
 #endif
 }
 
@@ -610,10 +610,10 @@ int is_stlport_class(_Tp) {
 void TypeTraitsTest::stlport_class()
 {
 #if defined (STLPORT)
-  CPPUNIT_ASSERT( is_stlport_class(allocator<char>()) == 1 );
+  CPPUNIT_CHECK( is_stlport_class(allocator<char>()) == 1 );
 #  if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-  CPPUNIT_ASSERT( is_stlport_class(string()) == 1 );
+  CPPUNIT_CHECK( is_stlport_class(string()) == 1 );
 #  endif
-  CPPUNIT_ASSERT( is_stlport_class(any) == 0 );
+  CPPUNIT_CHECK( is_stlport_class(any) == 0 );
 #endif
 }
