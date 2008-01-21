@@ -42,7 +42,7 @@
 #  define _STLP_NO_METHOD_SPECIALIZATION 1
 #endif
 
-#if (__ICL >= 800)
+#if (__ICL >= 800 && __ICL < 900)
 #  define _STLP_STATIC_CONST_INIT_BUG 1
 #endif
 

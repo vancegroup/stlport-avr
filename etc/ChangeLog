@@ -1,3 +1,12 @@
+2008-01-21  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/test/unit/icl.mak: Add /fp:strict option to build unit tests
+	as we need strict floating point number operations respect to have
+	numeric limits to work correctly.
+
+	* stlport/stl/config/_intel.h: Looks like ICL since version 9 support
+	static constant correctly.
+
 2008-01-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/locale_test.cpp, ctype_facets_test.cpp,
