@@ -281,8 +281,10 @@ _Locale_lcid_t* _Locale_get_collate_hint(_Locale_collate_t* lcollate)
 { return (lcollate != 0) ? &lcollate->lc : 0; }
 _Locale_lcid_t* _Locale_get_monetary_hint(_Locale_monetary_t* lmonetary)
 { return (lmonetary != 0) ? &lmonetary->lc : 0; }
-_Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages)
-{ return 0; }
+_Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lmessages)
+  return 0;
+}
 
 _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
   char cp_name[MAX_CP_LEN + 1];
@@ -833,6 +835,8 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
 
 struct _Locale_messages* _Locale_messages_create(const char *name, _Locale_lcid_t* lc_hint, int *__err_code) {
   /* The Win32 API has no support for messages facet */
+  _STLP_MARK_PARAMETER_AS_UNUSED(name)
+  _STLP_MARK_PARAMETER_AS_UNUSED(lc_hint)
   *__err_code = _STLP_LOC_UNSUPPORTED_FACET_CATEGORY;
   return NULL;
 }
@@ -880,8 +884,11 @@ char const* _Locale_collate_name(const _Locale_collate_t* lcol, char* buf)
 char const* _Locale_monetary_name(const _Locale_monetary_t* lmon, char* buf)
 { return __GetLocaleName(lmon->lc.id, lmon->cp, buf); }
 
-char const* _Locale_messages_name(const struct _Locale_messages* lmes, char* buf)
-{ return NULL; }
+char const* _Locale_messages_name(const struct _Locale_messages* lmes, char* buf) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lmes)
+  _STLP_MARK_PARAMETER_AS_UNUSED(buf)
+  return NULL;
+}
 
 void _Locale_ctype_destroy(_Locale_ctype_t* ltype) {
   if (!ltype) return;
@@ -932,7 +939,8 @@ void _Locale_monetary_destroy(_Locale_monetary_t* lmon) {
   free(lmon);
 }
 
-void _Locale_messages_destroy(struct _Locale_messages* lmes) {}
+void _Locale_messages_destroy(struct _Locale_messages* lmes)
+{ _STLP_MARK_PARAMETER_AS_UNUSED(lmes) }
 
 static char const* _Locale_extract_category_name(const char* name, const char* category, char* buf,
                                                  _Locale_lcid_t* hint, int *__err_code) {
@@ -1116,12 +1124,12 @@ const char* _Locale_grouping(_Locale_numeric_t * lnum) {
 }
 
 const char * _Locale_true(_Locale_numeric_t * lnum) {
-  (void*)lnum;
+  _STLP_MARK_PARAMETER_AS_UNUSED(lnum)
   return __true_name; /* NT does't provide information about this */
 }
 
 const char * _Locale_false(_Locale_numeric_t * lnum) {
-  (void*)lnum;
+  _STLP_MARK_PARAMETER_AS_UNUSED(lnum)
   return __false_name; /* NT does't provide information about this */
 }
 
@@ -1252,22 +1260,21 @@ const char* _Locale_pm_str(_Locale_time_t* ltime)
 { return ltime->pm; }
 
 /* Messages */
-int _Locale_catopen(struct _Locale_messages* __DUMMY_PAR1, const char* __DUMMY_PAR) {
-  (void*)__DUMMY_PAR1;
-  (void*)__DUMMY_PAR;
+nl_catd_type _Locale_catopen(struct _Locale_messages* lmes, const char* cat_name) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lmes)
+  _STLP_MARK_PARAMETER_AS_UNUSED(cat_name)
   return -1;
 }
-void _Locale_catclose(struct _Locale_messages* __DUMMY_PAR1, int __DUMMY_PAR) {
-  (void*)__DUMMY_PAR1;
-  (void*)&__DUMMY_PAR;
+void _Locale_catclose(struct _Locale_messages* lmes, nl_catd_type cat) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lmes)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&cat)
 }
-const char* _Locale_catgets(struct _Locale_messages* __DUMMY_PAR1, int __DUMMY_PAR2,
-                            int __DUMMY_PAR3, int __DUMMY_PAR4,
-                            const char *dfault) {
-  (void*)__DUMMY_PAR1;
-  (void*)&__DUMMY_PAR2;
-  (void*)&__DUMMY_PAR3;
-  (void*)&__DUMMY_PAR4;
+const char* _Locale_catgets(struct _Locale_messages* lmes, nl_catd_type cat,
+                            int setid, int msgid, const char *dfault) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lmes)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&cat)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&setid)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&msgid)
   return dfault;
 }
 

@@ -7,6 +7,11 @@
 	* stlport/stl/config/_intel.h: Looks like ICL since version 9 support
 	static constant correctly.
 
+	* stlport/stl/config/features.h, src/c_locale_win32/c_locale_win32.c:
+	New macro _STLP_MARK_PARAMETER_AS_UNUSED to offer a compiler specific
+	way of marking parameters as unused. Default behavior is to cast the
+	parameter to void*.
+
 2008-01-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/locale_test.cpp, ctype_facets_test.cpp,
