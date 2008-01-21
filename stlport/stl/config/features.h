@@ -1073,6 +1073,10 @@ _TMPL inline bool _STLP_CALL operator>=(const _TP& __x, const _TP& __y) { return
 #define _STLP_ARRAY_SIZE(A) sizeof(A) / sizeof(A[0])
 #define _STLP_ARRAY_AND_SIZE(A) A, sizeof(A) / sizeof(A[0])
 
+#if !defined (_STLP_MARK_PARAMETER_AS_UNUSED)
+#  define _STLP_MARK_PARAMETER_AS_UNUSED(X) (void*)X;
+#endif
+
 #if defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)
 #  if defined (_STLP_USE_NO_IOSTREAMS)
 #    undef _STLP_CHECK_RUNTIME_COMPATIBILITY
