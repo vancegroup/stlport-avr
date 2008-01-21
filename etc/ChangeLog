@@ -12,6 +12,10 @@
 	way of marking parameters as unused. Default behavior is to cast the
 	parameter to void*.
 
+	* src/c_locale_win32/c_wlocale_win32.c: Fix _WLocale_strxfrm function
+	implementation thanks Kai Khcyt. Despite taking a pointer to wchar_t*
+	LCMapStringW writes bytes to it.
+
 2008-01-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/locale_test.cpp, ctype_facets_test.cpp,

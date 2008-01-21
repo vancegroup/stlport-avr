@@ -38,7 +38,7 @@ _Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
   WORD out[2];
   buf[0] = c; buf[1] = 0;
   GetStringTypeW(CT_CTYPE1, buf, -1, out);
-  (void*)ltype;
+  _STLP_MARK_PARAMETER_AS_UNUSED(ltype)
   return (_Locale_mask_t)out[0] & which_bits;
 }
 
@@ -104,8 +104,8 @@ void _Locale_codecvt_destroy(_Locale_codecvt_t* lcodecvt) {
 int _WLocale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
 { return lcodecvt->max_char_size; }
 
-int _WLocale_mb_cur_min (_Locale_codecvt_t *dummy) {
-  (void*)dummy;
+int _WLocale_mb_cur_min (_Locale_codecvt_t *lcodecvt) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(dummy)
   return 1;
 }
 
@@ -143,7 +143,7 @@ static int __mbtowc(_Locale_codecvt_t *l, wchar_t *dst, const char *from, unsign
 size_t _WLocale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
                        const char *from, size_t n, mbstate_t *shift_state) {
   int result;
-  (void*)shift_state;
+  _STLP_MARK_PARAMETER_AS_UNUSED(shift_state)
   if (lcodecvt->max_char_size == 1) { /* Single byte encoding. */
     result = MultiByteToWideChar(lcodecvt->cp, lcodecvt->mbtowc_flags, from, 1, to, 1);
     if (result == 0) return (size_t)-1;
@@ -178,23 +178,23 @@ size_t _WLocale_wctomb(_Locale_codecvt_t *lcodecvt, char *to, size_t n,
 
   WideCharToMultiByte(lcodecvt->cp,  lcodecvt->wctomb_flags, &c, 1, to, (int)n, NULL, NULL);
 
-  (void*)shift_state;
+  _STLP_MARK_PARAMETER_AS_UNUSED(shift_state)
   return (size_t)size;
 }
 
 size_t _WLocale_unshift(_Locale_codecvt_t *lcodecvt, mbstate_t *st,
                         char *buf, size_t n, char **next) {
   /* _WLocale_wctomb do not even touch to st, there is nothing to unshift in this localization implementation. */
-  (void*)lcodecvt;
-  (void*)st;
-  (void*)&n;
+  _STLP_MARK_PARAMETER_AS_UNUSED(lcodecvt)
+  _STLP_MARK_PARAMETER_AS_UNUSED(st)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&n)
   *next = buf;
   return 0;
 }
 
 /* Collate */
 /* This function takes care of the potential size_t DWORD different size. */
-static int _Locale_strcmp_auxW(_Locale_collate_t* lcol,
+static int _WLocale_strcmp_aux(_Locale_collate_t* lcol,
                                const wchar_t* s1, size_t n1,
                                const wchar_t* s2, size_t n2) {
   int result = CSTR_EQUAL;
@@ -214,7 +214,7 @@ int _WLocale_strcmp(_Locale_collate_t* lcol,
                     const wchar_t* s1, size_t n1,
                     const wchar_t* s2, size_t n2) {
   int result;
-  result = _Locale_strcmp_auxW(lcol, s1, n1, s2, n2);
+  result = _WLocale_strcmp_aux(lcol, s1, n1, s2, n2);
   return (result == CSTR_EQUAL) ? 0 : (result == CSTR_LESS_THAN) ? -1 : 1;
 }
 
@@ -234,6 +234,11 @@ size_t _WLocale_strxfrm(_Locale_collate_t* lcol,
     dst_size = INT_MAX;
   }
   result = LCMapStringW(lcol->lc.id, LCMAP_SORTKEY, src, (int)src_size, dst, (int)dst_size);
+  if (result != 0 && dst != 0) {
+    for (i = result - 1; i >= 0; --i) {
+      dst[i] = ((unsigned char*)dst)[i];
+    }
+  }
   return result != 0 ? result - 1 : 0;
 }
 
@@ -250,11 +255,19 @@ wchar_t _WLocale_thousands_sep(_Locale_numeric_t* lnum) {
   return buf[0];
 }
 
-const wchar_t * _WLocale_true(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
-{ return __wtrue_name; }
+const wchar_t * _WLocale_true(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lnum)
+  _STLP_MARK_PARAMETER_AS_UNUSED(buf)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&bufSize)
+  return __wtrue_name;
+}
 
-const wchar_t * _WLocale_false(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize)
-{ return __wfalse_name; }
+const wchar_t * _WLocale_false(_Locale_numeric_t* lnum, wchar_t* buf, size_t bufSize) {
+  _STLP_MARK_PARAMETER_AS_UNUSED(lnum)
+  _STLP_MARK_PARAMETER_AS_UNUSED(buf)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&bufSize)
+  return __wfalse_name;
+}
 
 /* Monetary */
 const wchar_t* _WLocale_int_curr_symbol(_Locale_monetary_t * lmon, wchar_t* buf, size_t bufSize)
