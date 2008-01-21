@@ -35,19 +35,11 @@
 
 #ifndef errno /* errno is not a macro */
 #  if defined (_STLP_IMPORT_VENDOR_CSTD)
-#    if !defined (__BORLANDC__)
 #      if !defined (__IBMCPP__) && !defined (__hpux) && !defined (__MWERKS__) && !defined (_STLP_WCE)
 _STLP_BEGIN_NAMESPACE
 using _STLP_VENDOR_CSTD::errno;
 _STLP_END_NAMESPACE
 #      endif
-#    else
-using _STLP_VENDOR_CSTD::errno;
-#    endif
-#  endif
-#else
-#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
-using _STLP_VENDOR_CSTD::__errno;
 #  endif
 #endif
 

@@ -375,35 +375,43 @@ struct _TrivialNativeTypeCopy {
 
 template <class _Src, class _Dst>
 struct _TrivialCopy {
+#  if !defined (__BORLANDC__)
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
 
 #  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_assignment_operator _Tr1;
 #  else
-  typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
-  typedef typename __type_traits<_Tp3>::has_trivial_assignment_operator _Tr1;
+  typedef typename _UnConstPtr<_Src*>::_Type _UnConstSrc;
+  typedef typename __type_traits<_UnConstSrc>::has_trivial_assignment_operator _Tr1;
 #  endif
   typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
+#  else
+  typedef __false_type _Ret;
+#  endif
   static _Ret _Answer() { return _Ret(); }
 };
 
 template <class _Src, class _Dst>
 struct _TrivialUCopy {
+#  if !defined (__BORLANDC__)
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
 
 #  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_copy_constructor _Tr1;
 #  else
-  typedef typename _UnConstPtr<_Src*>::_Type _Tp3;
-  typedef typename __type_traits<_Tp3>::has_trivial_copy_constructor _Tr1;
+  typedef typename _UnConstPtr<_Src*>::_Type _UnConstSrc;
+  typedef typename __type_traits<_UnConstSrc>::has_trivial_copy_constructor _Tr1;
 #  endif
   typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
 
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
+#  else
+  typedef __false_type _Ret;
+#  endif
   static _Ret _Answer() { return _Ret(); }
 };
 

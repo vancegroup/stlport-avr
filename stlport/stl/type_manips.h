@@ -157,7 +157,7 @@ struct __select {
  * an existing one (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) that
  * is used for a similar feature.
  */
-#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
+#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && !defined (__BORLANDC__)
 // Helper struct that will forbid volatile qualified types:
 struct _NoVolatilePointerShim { _NoVolatilePointerShim(const void*); };
 template <class _Tp>

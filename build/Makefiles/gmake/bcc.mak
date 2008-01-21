@@ -82,7 +82,7 @@ RC_OUTPUT_OPTION = -fo$@
 COMPILE.rc = ${RC} ${RCFLAGS}
 LINK.cc = ilink32 $(subst /,\\,$(LDFLAGS))
 
-LDFLAGS += -ap -D -Gn -Gi
+LDFLAGS += -ap -D -Gn
 
 dbg-static : DEFS += -D_DEBUG
 dbg-shared : DEFS += -D_DEBUG
@@ -157,6 +157,10 @@ dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 endif
 endif
+
+# install dir defaults to /usr/local unless defined
+
+BASE_INSTALL_DIR ?= ${SRCROOT}/..
 
 # map output option (see build/Makefiles/gmake/dmc.mak)
 

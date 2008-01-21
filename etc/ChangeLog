@@ -16,6 +16,10 @@
 	implementation thanks Kai Khcyt. Despite taking a pointer to wchar_t*
 	LCMapStringW writes bytes to it.
 
+	* build/Makefiles/gmake/bcc.mak, lib/bcc.mak, app/bcc.mak, stlport/cerrno,
+	errno.h, stl/type_manips.h, type_traits.h: Borland patch from Eric
+	Sanford to build Borland libs with GNU make build system.
+
 2008-01-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/locale_test.cpp, ctype_facets_test.cpp,

@@ -34,6 +34,11 @@
 #    else
 #      include _STLP_NATIVE_C_HEADER(errno.h)
 #    endif
+#    if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590) && defined (__cplusplus)
+_STLP_BEGIN_NAMESPACE
+using _STLP_VENDOR_CSTD::__errno;
+_STLP_END_NAMESPACE
+#    endif
 #  endif /* errno */
 
 #  if !defined (_STLP_NATIVE_ERRNO_H_INCLUDED)

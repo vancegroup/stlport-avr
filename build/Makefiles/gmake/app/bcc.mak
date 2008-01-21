@@ -25,14 +25,25 @@ install-dbg-static: install-dbg-static-tds
 install-stldbg-static: install-stldbg-static-tds
 
 install-dbg-shared-tds:
-	$(INSTALL_EXE) $(subst /,\,$(OUTPUT_DIR_DBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_DBG)/)
+	$(INSTALL_EXE) $(OUTPUT_DIR_DBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_DBG)/${PRGNAME}.tds
 
 install-stldbg-shared-tds:
-	$(INSTALL_EXE) $(subst /,\,$(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/)
+	$(INSTALL_EXE) $(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/${PRGNAME}.tds
 
 install-dbg-static-tds:
-	$(INSTALL_EXE) $(subst /,\,$(OUTPUT_DIR_DBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_DBG)/)
+	$(INSTALL_EXE) $(OUTPUT_DIR_DBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_DBG)/${PRGNAME}.tds
 
 install-stldbg-static-tds:
-	$(INSTALL_EXE) $(subst /,\,$(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/)
+	$(INSTALL_EXE) $(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/${PRGNAME}.tds
+
+PRG_FILES := ${PRGNAME}.exe ${PRGNAME}.tds ${PRGNAME}.map
+TMP_FILES := test.txt test_file.txt win32_file_format.tmp
+
+clean::
+	$(foreach d, $(OUTPUT_DIRS), $(foreach f, $(PRG_FILES), @rm -f $(d)/$(f)))
+ 
+uninstall::
+	$(foreach d, $(INSTALL_DIRS), $(foreach f, $(PRG_FILES), @rm -f $(d)/$(f)))
+	$(foreach d, $(INSTALL_DIRS), $(foreach f, $(TMP_FILES), @rm -f $(d)/$(f)))
+	$(foreach d, $(INSTALL_DIRS), @rmdir -p $(d) 2>/dev/null)
 
