@@ -4,7 +4,11 @@ SRCROOT := ../..
 COMPILER_NAME := gcc
 #NOT_USE_NOSTDLIB := 1
 #WITHOUT_STLPORT := 1
+-include ${SRCROOT}/Makefiles/gmake/config.mak
 ALL_TAGS = release-shared
+ifndef WITHOUT_STLPORT
+ALL_TAGS += stldbg-shared
+endif
 STLPORT_DIR := ../../..
 
 include Makefile.inc
@@ -16,9 +20,7 @@ ifndef WITHOUT_STLPORT
 stldbg-shared:  STLPORT_LIB_DIR = ${PWD}/../../lib/${OUTPUT_DIR_STLDBG}
 endif
 
-ifndef WITHOUT_STLPORT
-ALL_TAGS += stldbg-shared
-else
+ifdef WITHOUT_STLPORT
 DEFS += -DWITHOUT_STLPORT
 endif
 

@@ -1,3 +1,9 @@
+2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/test/unit/gcc.mak: check confguration and set
+	ALL_TAGS before inclusion top.mak, to correctly set
+	targets for 'all'.
+
 2008-01-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/test/unit/icl.mak: Add /fp:strict option to build unit tests
