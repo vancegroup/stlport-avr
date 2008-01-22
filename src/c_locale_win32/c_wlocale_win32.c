@@ -105,7 +105,7 @@ int _WLocale_mb_cur_max (_Locale_codecvt_t * lcodecvt)
 { return lcodecvt->max_char_size; }
 
 int _WLocale_mb_cur_min (_Locale_codecvt_t *lcodecvt) {
-  _STLP_MARK_PARAMETER_AS_UNUSED(dummy)
+  _STLP_MARK_PARAMETER_AS_UNUSED(lcodecvt)
   return 1;
 }
 
@@ -150,7 +150,7 @@ size_t _WLocale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
     return result;
   }
   else { /* Multi byte encoding. */
-    int retval = 0;
+    int retval;
     unsigned int count = 1;
     while (n--) {
       retval = __mbtowc(lcodecvt, to, from, count);
