@@ -6,6 +6,8 @@
 	* src/uin64.h: Removed, _compound_int class defined in it is simply
 	not used anymore.
 
+	* src/_stdio_file.h: Major cleanup, only _FILE_fd is still in use.
+
 2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: check confguration and set
