@@ -32,15 +32,6 @@ static const string _Nameless("*");
 static inline bool is_C_locale_name (const char* name)
 { return ((name[0] == 'C') && (name[1] == 0)); }
 
-_Locale_impl * _STLP_CALL _copy_Locale_impl(_Locale_impl *loc)
-{
-  _STLP_ASSERT( loc != 0 );
-  loc->_M_incr();
-  _Locale_impl *loc_new = new _Locale_impl(*loc);
-  loc->_M_decr();
-  return loc_new;
-}
-
 locale::facet * _STLP_CALL _get_facet(locale::facet *f)
 {
   if (f != 0)
@@ -667,7 +658,7 @@ void _Locale_impl::make_classic_locale() {
   static locale _Locale_classic(classic);
   _Stl_classic_locale = &_Locale_classic;
 
-  static locale _Locale_global(_copy_Locale_impl(classic));
+  static locale _Locale_global(classic);
   _Stl_global_locale = &_Locale_global;
 }
 

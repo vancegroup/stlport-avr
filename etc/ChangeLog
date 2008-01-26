@@ -12,6 +12,10 @@
 	independency between those 2 translation units, code duplication is
 	very limited. This is a 1st step to make build of STLport easier by
 	having all sources in src folder buildable.
+
+	* src/locale_impl.h, locale_impl.cpp: _copy_Locale_impl removed,
+	only use to create initial global locale that can simply reference
+	classic locale incrementing its reference counter by one.
 	
 2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 

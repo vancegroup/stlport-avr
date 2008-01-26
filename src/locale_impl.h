@@ -112,7 +112,6 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
     vector<locale::facet*> facets_vec;
 
   private:
-    friend _Locale_impl * _STLP_CALL _copy_Locale_impl( _Locale_impl * );
     friend _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl * );
     friend void _STLP_CALL _release_Locale_impl( _Locale_impl *& loc );
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
@@ -124,7 +123,6 @@ class _STLP_CLASS_DECLSPEC _Locale_impl : public _Refcount_Base {
 };
 
 void _STLP_CALL _release_Locale_impl( _Locale_impl *& loc );
-_Locale_impl * _STLP_CALL _copy_Locale_impl( _Locale_impl *loc );
 
 _STLP_END_NAMESPACE
 
