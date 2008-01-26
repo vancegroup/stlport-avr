@@ -24,6 +24,7 @@ SRC_CPP = ../../src/dll_main.cpp \
           ../../src/numpunct.cpp \
           ../../src/time_facets.cpp \
           ../../src/messages.cpp \
+          ../../src/locale.cpp \
           ../../src/locale_impl.cpp \
           ../../src/locale_catalog.cpp \
           ../../src/facets_byname.cpp \

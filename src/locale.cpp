@@ -16,10 +16,23 @@
  *
  */
 
-// This file is #included into locale_impl.cpp, due to locale use many
-// statics from locale_impl.cpp
+#include "stlport_prefix.h"
+
+#include <locale>
+#include <stdexcept>
+
+#include "c_locale.h"
+#include "locale_impl.h"
 
 _STLP_BEGIN_NAMESPACE
+
+static const string _Nameless("*");
+
+static inline bool is_C_locale_name (const char* name)
+{ return ((name[0] == 'C') && (name[1] == 0)); }
+
+locale* _Stl_get_classic_locale();
+locale* _Stl_get_global_locale();
 
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND) || \
     defined (_STLP_SIGNAL_RUNTIME_COMPATIBILITY) || defined (_STLP_CHECK_RUNTIME_COMPATIBILITY)

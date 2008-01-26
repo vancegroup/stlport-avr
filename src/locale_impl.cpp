@@ -18,9 +18,7 @@
 #include "stlport_prefix.h"
 
 #include <locale>
-#include <typeinfo>
 #include <algorithm>
-#include <stdexcept>
 
 #include "c_locale.h"
 #include "aligned_buffer.h"
@@ -597,12 +595,12 @@ static void _Stl_loc_assign_ids() {
 static locale *_Stl_classic_locale = 0;
 static locale *_Stl_global_locale = 0;
 
-static locale* _Stl_get_classic_locale() {
+locale* _Stl_get_classic_locale() {
   static _Locale_impl::Init init;
   return _Stl_classic_locale;
 }
 
-static locale* _Stl_get_global_locale() {
+locale* _Stl_get_global_locale() {
   static _Locale_impl::Init init;
   return _Stl_global_locale;
 }
@@ -764,10 +762,4 @@ _STLP_DECLSPEC locale::id& _STLP_CALL _GetFacetId(const time_put<wchar_t, ostrea
 _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
-
-
-// locale use many static functions/pointers from this file:
-// to avoid making ones extern, simple #include implementation of locale
-
-#include "locale.cpp"
 

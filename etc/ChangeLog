@@ -8,6 +8,11 @@
 
 	* src/_stdio_file.h: Major cleanup, only _FILE_fd is still in use.
 
+	* src/locale.cpp, locale_impl.cpp, build/lib/Makefile.inc: Restore
+	independency between those 2 translation units, code duplication is
+	very limited. This is a 1st step to make build of STLport easier by
+	having all sources in src folder buildable.
+	
 2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: check confguration and set
