@@ -19,11 +19,11 @@
 #include "stlport_prefix.h"
 
 #ifdef _STLP_USE_UNIX_IO
-# include "fstream_unistd.cpp"
+# include "details/fstream_unistd.cpp"
 #elif defined(_STLP_USE_STDIO_IO)
-# include "fstream_stdio.cpp"
+# include "details/fstream_stdio.cpp"
 #elif defined(_STLP_USE_WIN32_IO)
-# include "fstream_win32io.cpp"
+# include "details/fstream_win32io.cpp"
 #else
 #  error "Can't recognize IO scheme to use"
 #endif

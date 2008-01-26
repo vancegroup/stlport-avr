@@ -23,6 +23,10 @@
 	taking an other locale instance and a facet instance, _M_impl was
 	not released before being assigned resulting in a memory leak.
 	
+	* src/fstream_stdio.cpp, fstream_unistd.cpp, fstream_win32io.cpp:
+	Moved to details sub-folder. Now building STLport means build all
+	.cpp, .c and optionnaly .rc files from src folder.
+
 2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: check confguration and set

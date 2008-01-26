@@ -39,7 +39,7 @@ const _STLP_fd INVALID_STLP_FD = INVALID_HANDLE_VALUE;
 #  define O_ACCMODE (O_RDONLY|O_WRONLY|O_RDWR)
 #endif
 
-#include "fstream_impl.h"
+#include "../fstream_impl.h"
 
 _STLP_BEGIN_NAMESPACE
 
