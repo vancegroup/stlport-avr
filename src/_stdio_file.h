@@ -71,7 +71,7 @@ inline int _FILE_fd(const FILE *__f) { return (int) __f->__pad[2]; }
 
 inline int _FILE_fd(const FILE *__f) { return fileno(__CONST_CAST(FILE*, __f)); }
 
-#elif defined (_STLP_USE_GLIBC)
+#elif defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__)
 
 inline int _FILE_fd(const FILE *__f) { return __f->_fileno; }
 
