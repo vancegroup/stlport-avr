@@ -55,14 +55,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 #include "fstream_impl.h"
 
-#ifdef _STLP_LONG_LONG
-#  define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-#elif defined(__ISCPP__)
-#  include "uint64.h"
-#else
-#  error "there should be some long long type on the system!"
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 static ios_base::openmode flag_to_openmode(int mode)

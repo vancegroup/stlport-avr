@@ -18,10 +18,6 @@
 
 #include <fstream>
 
-#ifdef __CYGWIN__
-#  define __int64 long long
-#endif
-
 #ifdef __BORLANDC__
 #  include <cfcntl.h>           // For _O_RDONLY, etc
 #  include <sys/stat.h>         // For _fstat
@@ -44,14 +40,6 @@ const _STLP_fd INVALID_STLP_FD = INVALID_HANDLE_VALUE;
 #endif
 
 #include "fstream_impl.h"
-
-#ifdef _STLP_LONG_LONG
-#  define ULL(x) ((unsigned _STLP_LONG_LONG)x)
-#elif defined(__ISCPP__)
-#  include "uint64.h"
-#else
-#  error "there should be some long long type on the system!"
-#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -620,8 +608,9 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len) {
      (int)cur_filesize, ULL(offset) & 0xffffffff, len);
 */
 #endif
-    base = MapViewOfFile(_M_view_id, FILE_MAP_READ, __STATIC_CAST(DWORD, ULL(offset) >> 32),
-                         __STATIC_CAST(DWORD, ULL(offset) & 0xffffffff),
+    LARGE_INTEGER li;
+    li.QuadPart = offset;
+    base = MapViewOfFile(_M_view_id, FILE_MAP_READ, li.HighPart, li.LowPart,
 #if !defined (__DMC__)
                          __STATIC_CAST(SIZE_T, len));
 #else
