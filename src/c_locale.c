@@ -26,7 +26,7 @@
 #if defined (_STLP_REAL_LOCALE_IMPLEMENTED)
 #  if defined (WIN32) || defined (_WIN32)
 #    include "c_locale_win32/c_locale_win32.c"
-#  elif defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
+#  elif defined (_STLP_USE_GLIBC)
 #    if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))
 #      include "c_locale_glibc/c_locale_glibc2.c" /* glibc 2.2 and newer */
 #    else
