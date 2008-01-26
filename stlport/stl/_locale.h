@@ -145,15 +145,15 @@ protected:
   locale(_Locale_impl*);
 
 public:
-
   locale(const locale&, const locale&, category);
   const locale& operator=(const locale&) _STLP_NOTHROW;
 
 #if defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
-  virtual
+protected:
 #endif
    ~locale() _STLP_NOTHROW;
 
+public:
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS) && \
    !defined(_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Facet>
@@ -235,12 +235,10 @@ public:
     : _Locale(__loc, __str, __cat) {}
 
   template <class _Facet>
-  locale(const locale& __loc, _Facet* __f) {
+  locale(const locale& __loc, _Facet* __f) 
+    : _Locale(__f != 0 ? _copy_Nameless_Locale_impl(__loc._M_impl) : __loc._M_impl) {
     if ( __f != 0 ) {
-      this->_M_impl = _get_Locale_impl( _copy_Nameless_Locale_impl( __loc._M_impl ) );
       _STLP_PRIV _InsertFacet(*this, __f);
-    } else {
-      this->_M_impl = _get_Locale_impl( __loc._M_impl );
     }
   }
 

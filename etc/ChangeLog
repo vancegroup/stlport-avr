@@ -16,6 +16,12 @@
 	* src/locale_impl.h, locale_impl.cpp: _copy_Locale_impl removed,
 	only use to create initial global locale that can simply reference
 	classic locale incrementing its reference counter by one.
+
+	* stlport/stl/_locale.h: Fix locale implementation when MSVC6 workaround
+	is used. The base class _NoMem_loc do not have to have a virtual
+	destructor, it only need a protected one. Moreover fix constructor
+	taking an other locale instance and a facet instance, _M_impl was
+	not released before being assigned resulting in a memory leak.
 	
 2008-01-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
