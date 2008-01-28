@@ -415,7 +415,7 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
       break;
     }
 
-#  if defined (_STLP_USE_GLIBC) && ! defined (__CYGWIN__)
+#  if defined (_STLP_USE_GLIBC)
     case 'z':   /* GNU extension.  */
       if (t->tm_isdst < 0)
         break;

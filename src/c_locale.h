@@ -37,7 +37,7 @@
 struct _Locale_name_hint;
 
 #ifdef _STLP_REAL_LOCALE_IMPLEMENTED
-#  if defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__)
+#  if defined (_STLP_USE_GLIBC)
 #    include <nl_types.h>
 #  endif
 #endif
@@ -421,7 +421,7 @@ const wchar_t * _WLocale_pm_str(struct _Locale_time *,
 # ifdef _STLP_REAL_LOCALE_IMPLEMENTED
 #  if defined (WIN32) || defined (_WIN32)
 typedef int nl_catd_type;
-#  elif defined (_STLP_USE_GLIBC) && !defined (__CYGWIN__)
+#  elif defined (_STLP_USE_GLIBC)
 typedef nl_catd nl_catd_type;
 #  else
 typedef int nl_catd_type;

@@ -1,3 +1,9 @@
+2008-01-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/config/_cygwin.h: Cygwin do not define _STLP_USE_GLIBC
+	anymore, platform API is closer to a Standard C lib than to the Gnu
+	lib C.
+
 2008-01-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/fstream_stdio.cpp, fstream_win32io.cpp, fstream_unistd.cpp:

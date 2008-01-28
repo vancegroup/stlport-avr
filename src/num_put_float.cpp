@@ -127,6 +127,7 @@ struct _Dig<0>
 // these differences here.
 #if !defined (USE_SPRINTF_INSTEAD)
 #  if defined (__hpux) || defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
+      defined (__CYGWIN__) || \
       defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
 static inline bool _Stl_is_nan_or_inf(double x)
 #    if defined (isfinite)
