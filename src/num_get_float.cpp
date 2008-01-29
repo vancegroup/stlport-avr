@@ -22,7 +22,7 @@
 #include <locale>
 #include <istream>
 
-#if defined (__GNUC__) && !defined (__sun) || \
+#if (defined (__GNUC__) && !defined (__sun) && !defined (__hpux)) ||    \
     defined (__DMC__)
 #  include <stdint.h>
 #endif

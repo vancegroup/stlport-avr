@@ -1,3 +1,20 @@
+2008-01-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/test/unit/gcc.mak: option for run-time path to libstlport
+	on HP-UX;
+
+	* build/Makefiles/gmake/hp-ux/targetsys.mak: HP-UX IA64 use so
+	as shared object extention, while PA-RISC use sl;
+
+	* build/Makefiles/gmake/gcc.mak: use -fno-reorder-blocks for PA-RISC;
+
+	* src/cxa.c: use cxa_atexit fix similar to trick on Solaris and FreeBSD;
+
+	* src/num_get_float.cpp: stdint.h on HP-UX;
+
+	* stlport/wctype.h, stlport/stl/_cwctype.h: HP-UX has problems with
+	wchars; changes suggested by KBac.
+
 2008-01-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/config/_cygwin.h: Cygwin do not define _STLP_USE_GLIBC

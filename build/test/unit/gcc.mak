@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <07/10/11 00:47:54 ptr>
+# -*- Makefile -*- Time-stamp: <08/01/29 09:48:15 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
@@ -46,6 +46,9 @@ LDFLAGS += -Wl,-R${STLPORT_LIB_DIR}
 endif
 ifeq ($(OSNAME), linux)
 LDFLAGS += -Wl,-rpath=${STLPORT_LIB_DIR}
+endif
+ifeq ($(OSNAME), hp-ux)
+LDFLAGS += -Wl,+b${STLPORT_LIB_DIR}
 endif
 endif
 endif

@@ -6,7 +6,7 @@
 #  include <osreldate.h>
 #endif
 
-#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun)
+#if (defined(__FreeBSD__) && (__FreeBSD_version < 503001)) || defined(__sun) || defined (__hpux)
 /* Note: __cxa_finalize and __cxa_atexit present in libc in FreeBSD 5.3 */
 
 #include <stdlib.h>
@@ -96,6 +96,12 @@ static pthread_mutex_t lock =
 #ifdef __sun
 static pthread_mutex_t lock =
   {{0, 0, 0, PTHREAD_MUTEX_RECURSIVE, _MUTEX_MAGIC}, {{{0}}}, 0};
+#endif
+#ifdef __hpux
+static pthread_mutex_t lock = PTHREAD_MUTEX_RECURSIVE_INITIALIZER_NP;
+#  ifdef __ia64
+void *__dso_handle = (void *) &__dso_handle;
+#  endif
 #endif
 
 
