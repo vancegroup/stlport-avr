@@ -55,6 +55,26 @@ const _STLP_fd INVALID_STLP_FD = -1;
 
 #include "../fstream_impl.h"
 
+// Compare with streamoff definition in stl/char_traits.h!
+#if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
+    (!defined(_LARGEFILE_SOURCE) && !defined (_LARGEFILE64_SOURCE))
+#  define FSTAT fstat
+#  define STAT  stat
+#  define LSEEK lseek
+#  define MMAP  mmap
+#  define OPEN  open
+#else
+#  define FSTAT fstat64
+#  define STAT  stat64
+#  define LSEEK lseek64
+#  define MMAP  mmap64
+#  define OPEN  open64
+#endif
+
+#ifndef MAP_FAILED /* MMAP failure return code */
+#  define MAP_FAILED -1
+#endif
+
 _STLP_BEGIN_NAMESPACE
 
 static ios_base::openmode flag_to_openmode(int mode)
@@ -83,46 +103,26 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
-bool __is_regular_file(_STLP_fd fd)
-{
-  struct stat buf;
-  return fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode);
+static bool __is_regular_file(_STLP_fd fd) {
+  struct STAT buf;
+  return FSTAT(fd, &buf) == 0 && S_ISREG(buf.st_mode);
 }
 
 // Number of characters in the file.
-streamoff __file_size(_STLP_fd fd)
-{
+static streamoff __file_size(_STLP_fd fd) {
   streamoff ret = 0;
 
-  struct stat buf;
-  if (fstat(fd, &buf) == 0 && S_ISREG(buf.st_mode))
+  struct STAT buf;
+  if (FSTAT(fd, &buf) == 0 && S_ISREG(buf.st_mode))
     ret = buf.st_size > 0 ? buf.st_size : 0;
 
   return ret;
 }
 
+static streamoff __stdin_size(FILE* __file)
+{ return __file_size(_FILE_fd(__file)); }
+
 _STLP_MOVE_TO_STD_NAMESPACE
-
-// Compare with streamoff definition in stl/char_traits.h!
-
-#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
-#  define LSEEK lseek
-#  define MMAP  mmap
-#  define OPEN  open
-#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
-     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
-#  define LSEEK lseek64
-#  define MMAP  mmap64
-#  define OPEN  open64
-#else
-#  define LSEEK lseek
-#  define MMAP  mmap
-#  define OPEN  open
-#endif
-
-#ifndef MAP_FAILED /* MMAP failure return code */
-#  define MAP_FAILED -1
-#endif
 
 size_t _Filebuf_base::_M_page_size = 4096;
 
@@ -316,7 +316,7 @@ streamoff _Filebuf_base::_M_seek(streamoff offset, ios_base::seekdir dir)
 void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len)
 {
   void* base;
-#if !defined(__DJGPP) && !defined(_CRAY)
+#if !defined (__DJGPP) && !defined (_CRAY)
   base = MMAP(0, len, PROT_READ, MAP_PRIVATE, _M_file_id, offset);
   if (base != (void*)MAP_FAILED) {
     if (LSEEK(_M_file_id, offset + len, SEEK_SET) < 0) {
@@ -326,8 +326,8 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len)
   } else
     base =0;
 #else
-  (void)len;    //*TY 02/26/2000 - unused variables
-  (void)offset;    //*TY 02/26/2000 -
+  _STLP_MARK_PARAMETER_AS_UNUSED(&offset)
+  _STLP_MARK_PARAMETER_AS_UNUSED(&len)
   base = 0;
 #endif
   return base;
@@ -336,11 +336,11 @@ void* _Filebuf_base::_M_mmap(streamoff offset, streamoff len)
 void _Filebuf_base::_M_unmap(void* base, streamoff len)
 {
   // precondition : there is a valid mapping at the moment
-#if !defined(__DJGPP) && !defined(_CRAY)
+#if !defined (__DJGPP) && !defined (_CRAY)
   munmap((char*)base, len);
 #else
-  (void)len;    //*TY 02/26/2000 - unused variables
-  (void)base;   //*TY 02/26/2000 -
+  _STLP_MARK_PARAMETER_AS_UNUSED(&len)
+  _STLP_MARK_PARAMETER_AS_UNUSED(base)
 #endif
 }
 

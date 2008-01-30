@@ -1,3 +1,14 @@
+2008-01-30  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/fstream_impl.h, details/fstream_stdio.cpp, fstream_unistd.cpp,
+	fstream_win32io.cpp, stdio_streambuf.h, stdio_streambuf.cpp: Hide
+	__is_regular_file only used in fsteam implementation specific files.
+	Rename __file_size in __stdin_size as this function is only used
+	to get stdin FILE* size. Under Win32 this function now always returns
+	0 as it looks like Windows do not consider FILE* as allowing
+	position operations. Move platform specific code from stdio_streambuf
+	implementation to associated fstream_*.cpp file.
+
 2008-01-29  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: option for run-time path to libstlport

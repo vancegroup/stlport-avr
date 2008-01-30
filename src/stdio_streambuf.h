@@ -16,12 +16,13 @@
  *
  */
 
-// This header is an extension.  It defines two streambufs:
+// This header defines two streambufs:
 // stdio_istreambuf, a read-only streambuf synchronized with a C stdio
-// FILE object, and stdio_ostreambuf, a write-only streambuf
-// synchronized with a C stdio FILE object.  Note that neither
-// stdio_istreambuf nor stdio_ostreambuf is a template; both classes
-// are derived from basic_streambuf<char, char_traits<char> >.
+// FILE object
+// stdio_ostreambuf, a write-only streambuf synchronized with a C stdio
+// FILE object.
+// Note that neither stdio_istreambuf nor stdio_ostreambuf is a template;
+// both classes are derived from basic_streambuf<char, char_traits<char> >.
 
 // Note: the imbue() member function is a no-op.  In particular, these
 // classes assume that codecvt<char, char, mbstate_t> is always an identity

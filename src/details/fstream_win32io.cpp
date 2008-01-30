@@ -18,12 +18,13 @@
 
 #include <fstream>
 
-#ifdef __BORLANDC__
-#  include <cfcntl.h>           // For _O_RDONLY, etc
-#  include <sys/stat.h>         // For _fstat
-#elif !defined(_STLP_WCE)
-#  include <io.h>               // For _get_osfhandle
-#  include <fcntl.h>            // For _O_RDONLY, etc
+#if !defined (_STLP_WCE)
+#  ifdef __BORLANDC__
+#    include <cfcntl.h>           // For _O_RDONLY, etc
+#  else
+#    include <io.h>               // For _get_osfhandle
+#    include <fcntl.h>            // For _O_RDONLY, etc
+#  endif
 #  include <sys/stat.h>         // For _fstat
 #endif
 
@@ -47,7 +48,7 @@ _STLP_BEGIN_NAMESPACE
 static ios_base::openmode flag_to_openmode(int mode) {
   ios_base::openmode ret = ios_base::__default_mode;
 
-  switch(mode & O_ACCMODE) {
+  switch (mode & O_ACCMODE) {
   case O_RDONLY:
     ret = ios_base::in; break;
   case O_WRONLY:
@@ -70,21 +71,16 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
-bool __is_regular_file(_STLP_fd fd)
-{
+static bool __is_regular_file(_STLP_fd fd) {
   BY_HANDLE_FILE_INFORMATION info;
 
-  if (GetFileInformationByHandle(fd, &info))
-  {
-    // Return true if the file handle isn't a directory.
-    return ((info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0);
-  }
-
-  return false;
+  // Return true if the file handle isn't a directory.
+  return GetFileInformationByHandle(fd, &info) && 
+         ((info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0);
 }
 
 // Number of characters in the file.
-streamoff __file_size(_STLP_fd fd) {
+static streamoff __file_size(_STLP_fd fd) {
   streamoff ret = 0;
 
  LARGE_INTEGER li;
@@ -94,6 +90,9 @@ streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
+
+streamoff __stdin_size(FILE* __file)
+{ return 0; }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -339,7 +338,7 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
   if (_M_is_open || file_no < 0)
     return false;
 
-#if (defined (_STLP_USE_WIN32_IO) && defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE) ) || \
+#if (defined (_STLP_MSVC_LIB) && !defined (_STLP_WCE)) || \
     (defined (__MINGW32__) && defined (__MSVCRT__)) || defined (__DMC__)
 
   HANDLE oshandle = (HANDLE)_get_osfhandle(file_no);
@@ -352,19 +351,13 @@ bool _Filebuf_base::_M_open(int file_no, ios_base::openmode init_mode) {
     _M_openmode = _get_osfflags(file_no, oshandle);
 
   _M_file_id = oshandle;
-#else
-  (void)init_mode;    // dwa 4/27/00 - suppress unused parameter warning
-  // not available for the API
-#  define _STLP_NO_IMPLEMENTATION
-#endif
-
-#if !defined (_STLP_NO_IMPLEMENTATION)
   _M_is_open = true;
   _M_should_close = false;
   _M_regular_file = _STLP_PRIV __is_regular_file(_M_file_id);
   return true;
 #else
-#  undef _STLP_NO_IMPLEMENTATION
+  _STLP_MARK_PARAMETER_AS_UNUSED(&init_mode)
+  // not available for the API
   return false;
 #endif
 }

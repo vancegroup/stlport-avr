@@ -18,60 +18,35 @@
 
 #include "stlport_prefix.h"
 #include "stdio_streambuf.h"
-// #include "file_streambuf.h"
 
 #ifdef _STLP_UNIX
 #  include <sys/types.h>
 #  include <sys/stat.h>
-#endif /* __unix */
+#endif
 
 #include <fstream>
 #include <limits>
 #include "fstream_impl.h"
-
-#if defined (_STLP_USE_WIN32_IO) && !defined(_STLP_WCE)
-#  if defined (__BORLANDC__)
-// #  include <cio.h>
-#    include <cfcntl.h>
-#  else
-#    include <io.h>
-#    include <fcntl.h>
-#  endif
-#  include <sys/stat.h>
-#endif
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Compare with streamoff definition in stl/char_traits.h!
 
-#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
+#if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
+    (!defined(_LARGEFILE_SOURCE) && !defined(_LARGEFILE64_SOURCE))
 #  define FSEEK fseek
 #  define FTELL ftell
-#  define FSTAT fstat
-#  define STAT  stat
 #  define FSETPOS  fsetpos
 #  define FGETPOS  fgetpos
 #  define FPOS_T   fpos_t
-#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
-     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
+#else
 #  define FSEEK fseeko64
 #  define FTELL ftello64
-#  define FSTAT fstat64
-#  define STAT  stat64
 #  define FSETPOS  fsetpos64
 #  define FGETPOS  fgetpos64
 #  define FPOS_T   fpos64_t
-#else
-#  define FSEEK fseek
-#  define FTELL ftell
-#  define FSTAT fstat
-#  define STAT  stat
-#  define FSETPOS  fsetpos
-#  define FGETPOS  fgetpos
-#  define FPOS_T   fpos_t
 #endif
-
 
 //----------------------------------------------------------------------
 // Class stdio_streambuf_base
@@ -154,7 +129,7 @@ stdio_streambuf_base::seekpos(pos_type pos, ios_base::openmode /* mode */) {
 #elif defined (__MVS__) || defined (__OS400__)
   FPOS_T p;
   p.__fpos_elem[0] = pos;
-#elif defined(__EMX__)
+#elif defined (__EMX__)
   FPOS_T p;
   p._pos = pos;
   memset( &(p._mbstate), 0, sizeof(p._mbstate) );
@@ -177,38 +152,11 @@ stdio_istreambuf::~stdio_istreambuf() {}
 streamsize stdio_istreambuf::showmanyc() {
   if (feof(_M_file))
     return -1;
-  else {
-    int fd = _FILE_fd(_M_file);
-#ifdef _STLP_WCE
-    (fd); // prevent warning about unused variable
-// not sure if i can mix win32 io mode with ftell but time will show
-// cannot use WIN32_IO implementation since missing stat
-    streamoff initialFilePos = _STLP_VENDOR_CSTD::FTELL(_M_file);
-    if (initialFilePos == -1) return -1;
-    if ( FSEEK(_M_file, 0, SEEK_END) != 0 )
-      return -1;
-    streamoff endFilePos = FTELL(_M_file);
-    if (endFilePos == -1) {
-      FSEEK(_M_file, initialFilePos, SEEK_SET);
-      return -1;
-    }
-    streamoff size = endFilePos - initialFilePos;
-    FSEEK(_M_file, initialFilePos, SEEK_SET);
-#elif defined (_STLP_USE_WIN32_IO)
-    // in this case, __file_size works with Win32 fh , not libc one
-    streamoff size;
-    struct STAT buf;
-    if ( FSTAT(fd, &buf) == 0 && (_S_IFREG & buf.st_mode))
-      size = (buf.st_size > 0 ? buf.st_size : 0);
-    else
-      size = 0;
-#else
-    streamoff size = __file_size(fd);
-#endif
-    // fbp : we can use ftell as this flavour always use stdio.
-    streamsize pos = FTELL(_M_file);
-    return pos >= 0 && size > pos ? size - pos : 0;
-  }
+
+  streamoff size = __stdin_size(_M_file);
+  // fbp : we can use ftell as this flavour always use stdio.
+  streamsize pos = FTELL(_M_file);
+  return pos >= 0 && size > pos ? size - pos : 0;
 }
 
 stdio_istreambuf::int_type stdio_istreambuf::underflow()

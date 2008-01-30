@@ -24,8 +24,7 @@
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-bool __is_regular_file(_STLP_fd fd);
-streamoff __file_size(_STLP_fd fd);
+streamoff __stdin_size(FILE* fd);
 
 _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE

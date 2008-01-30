@@ -108,39 +108,32 @@ _STLP_BEGIN_NAMESPACE
 
 // Compare with streamoff definition in stl/char_traits.h!
 
-#ifdef _STLP_USE_DEFAULT_FILE_OFFSET
+#if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
+    (!defined(_LARGEFILE_SOURCE) && !defined(_LARGEFILE64_SOURCE))
 #  define FOPEN fopen
 #  define FSEEK fseek
 #  define FSTAT fstat
 #  define STAT  stat
 #  define FTELL ftell
-#elif defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE) /* || defined(__USE_FILE_OFFSET64) */ \
-     /* || (defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)) */ /* || defined(__sgi) */
+#else
 #  define FOPEN fopen64
 #  define FSEEK fseeko64
 #  define FSTAT fstat64
 #  define STAT  stat64
 #  define FTELL ftello64
-#else
-#  define OPEN  open
-#  define FSEEK fseek
-#  define FSTAT fstat
-#  define STAT  stat
-#  define FTELL ftell
 #endif
-
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Helper functions for _Filebuf_base.
 
-bool __is_regular_file(_STLP_fd fd) {
+static bool __is_regular_file(_STLP_fd fd) {
   struct STAT buf;
   return FSTAT(fd, &buf) == 0 && (buf.st_mode & S_IFREG) != 0 ;
 }
 
 // Number of characters in the file.
-streamoff __file_size(_STLP_fd fd) {
+static streamoff __file_size(_STLP_fd fd) {
   streamoff ret = 0;
 
   struct STAT buf;
@@ -149,6 +142,9 @@ streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
+
+streamoff __stdin_size(FILE* __file)
+{ return __file_size(_FILE_fd(__file)); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
