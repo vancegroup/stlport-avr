@@ -624,7 +624,7 @@ void StringTest::find()
   CPPUNIT_ASSERT( s.find('t') == 4 );
   CPPUNIT_ASSERT( s.find('t', 5) == 8 );
   //We are trying to get a const reference to the npos string static member to
-  //force the compiler to allocate memory for this variable. It used to reveal
+  //force the compiler to allocate memory for this variable. It is used to reveal
   //a bug of STLport which was simply declaring npos without instanciating it.
 #if defined (STLPORT) && defined (_STLP_STATIC_CONST_INIT_BUG)
   string::size_type const& npos_local = string::npos;
@@ -637,6 +637,9 @@ void StringTest::find()
   CPPUNIT_ASSERT( s.find_first_of("abcde") == 2 );
 
   CPPUNIT_ASSERT( s.find_first_not_of("enotw ") == 9 );
+
+  string empty;
+  CPPUNIT_ASSERT( s.substr(s.find(empty), empty.size()) == empty );
 }
 
 void StringTest::rfind()
