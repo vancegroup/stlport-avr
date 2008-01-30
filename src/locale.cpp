@@ -340,8 +340,8 @@ locale::locale(const locale& L1, const locale& L2, category c)
     impl->insert( i2, _STLP_STD::num_put<char, ostreambuf_iterator<char, char_traits<char> > >::id);
 # ifndef _STLP_NO_WCHAR_T
     impl->insert( i2, _STLP_STD::numpunct<wchar_t>::id);
-    impl->insert( i2, num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
-    impl->insert( i2, num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::num_get<wchar_t, istreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
+    impl->insert( i2, _STLP_STD::num_put<wchar_t, ostreambuf_iterator<wchar_t, char_traits<wchar_t> > >::id);
 # endif
   }
   if (c & time) {
