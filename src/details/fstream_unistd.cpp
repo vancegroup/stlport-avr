@@ -119,7 +119,7 @@ static streamoff __file_size(_STLP_fd fd) {
   return ret;
 }
 
-static streamoff __stdin_size(FILE* __file)
+streamoff __stdin_size(FILE* __file)
 { return __file_size(_FILE_fd(__file)); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
