@@ -136,12 +136,6 @@ struct derived : public base
 // tests implementation
 //
 template <typename _Src, typename _Dst>
-int are_copyable(_Src, _Dst) {
-  typedef typename _AreCopyable<_Src, _Dst>::_Ret _Ret;
-  return type_to_value(_Ret());
-}
-
-template <typename _Src, typename _Dst>
 int is_convertible(_Src, _Dst) {
 #  if !defined(__BORLANDC__)
   typedef typename _IsConvertible<_Src, _Dst>::_Ret _Ret;
@@ -260,26 +254,6 @@ void TypeTraitsTest::manips()
     typedef __selectT<__false_type, __true_type, __false_type>::_Ret _SelectSecondRet;
     CPPUNIT_ASSERT( type_to_value(_SelectSecondRet()) == 0 );
 #  endif
-  }
-
-  {
-    CPPUNIT_CHECK( are_copyable(int_val, int_val) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_val, int_const_val) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_val, int_volatile_val) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_const_val, int_val) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_volatile_val, int_val) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_val, int_pointer) == 0 );
-    CPPUNIT_CHECK( are_copyable(int_pointer, int_val) == 0 );
-    CPPUNIT_CHECK( are_copyable(int_pointer, int_pointer) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_pointer, int_const_pointer) == 0 );
-    CPPUNIT_CHECK( are_copyable(int_pointer, int_const_volatile_pointer) == 0 );
-    CPPUNIT_CHECK( are_copyable(int_const_pointer, int_const_pointer) == 1 );
-    CPPUNIT_CHECK( are_copyable(int_const_pointer, int_const_volatile_pointer) == 0 );
-    CPPUNIT_CHECK( are_copyable(any, any) == 1 );
-    CPPUNIT_CHECK( are_copyable(any, any_pointer) == 0 );
-    CPPUNIT_CHECK( are_copyable(any_pointer, any_pointer) == 1 );
-    CPPUNIT_CHECK( are_copyable(any_const_pointer, any_const_pointer) == 1 );
-    CPPUNIT_CHECK( are_copyable(any_const_volatile_pointer, any_const_volatile_pointer) == 1 );
   }
 
   {
