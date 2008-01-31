@@ -191,7 +191,11 @@ public:
 #endif
 
   // global locale objects:
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   static locale _STLP_CALL global(const locale&);
+#else
+  static _Locale_impl* _STLP_CALL global(const locale&);
+#endif
   static const locale& _STLP_CALL classic();
 
 //protected:                         // Helper functions for locale globals.

@@ -409,7 +409,11 @@ const locale& _STLP_CALL locale::classic() {
   return *_Stl_get_classic_locale();
 }
 
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
 locale _STLP_CALL locale::global(const locale& L) {
+#else
+_Locale_impl* _STLP_CALL locale::global(const locale& L) {
+#endif
   locale old(_Stl_get_global_locale()->_M_impl);
   if (_Stl_get_global_locale()->_M_impl != L._M_impl) {
     _release_Locale_impl(_Stl_get_global_locale()->_M_impl);
@@ -423,7 +427,11 @@ locale _STLP_CALL locale::global(const locale& L) {
 #endif
   }
 
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   return old;
+#else
+  return old._M_impl;
+#endif
 }
 
 #if !defined (_STLP_STATIC_CONST_INIT_BUG) && !defined (_STLP_NO_STATIC_CONST_DEFINITION)
