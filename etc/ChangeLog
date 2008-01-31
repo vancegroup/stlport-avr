@@ -1,3 +1,9 @@
+2008-01-31  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_string.h, test/unit/string_test.cpp: Add swap
+	implementation when there is no support for template function
+	partial ordering.
+
 2008-01-30  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/fstream_impl.h, details/fstream_stdio.cpp, fstream_unistd.cpp,

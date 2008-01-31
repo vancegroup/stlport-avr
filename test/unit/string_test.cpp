@@ -297,6 +297,16 @@ void StringTest::short_string()
   }
 
   {
+    string a(256, 'a');
+    string b(256, 'b');
+    const char* as = a.c_str();
+    const char* bs = b.c_str();
+    swap(a, b);
+    CPPUNIT_ASSERT( a.c_str() == bs );
+    CPPUNIT_ASSERT( b.c_str() == as );
+  }
+
+  {
     //This is to test move constructor
     vector<string> str_vect;
     str_vect.push_back(short_str1);

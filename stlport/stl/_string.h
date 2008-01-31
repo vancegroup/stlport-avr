@@ -1257,7 +1257,14 @@ inline void _STLP_CALL
 swap(basic_string<_CharT,_Traits,_Alloc>& __x,
      basic_string<_CharT,_Traits,_Alloc>& __y)
 { __x.swap(__y); }
-#endif /* _STLP_FUNCTION_TMPL_PARTIAL_ORDER */
+#else
+inline void _STLP_CALL swap(string& __x, string& __y)
+{ __x.swap(__y); }
+#  if defined (_STLP_HAS_WCHAR_T)
+inline void _STLP_CALL swap(wstring& __x, wstring& __y)
+{ __x.swap(__y); }
+#  endif
+#endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _CharT, class _Traits, class _Alloc>
