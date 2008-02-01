@@ -156,7 +156,7 @@ struct __type_traits<_STLP_PRIV _List_iterator<_Tp, _Traits> > {
   typedef __false_type   is_POD_type;
 };
 _STLP_MOVE_TO_PRIV_NAMESPACE
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
 _STLP_MOVE_TO_STD_NAMESPACE
@@ -277,11 +277,11 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
 protected:
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM)
+#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   _Node_base* _M_create_node(const_reference __x = value_type()) {
 #else
   _Node_base* _M_create_node(const_reference __x) {
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
       _Copy_Construct(&__p->_M_data, __x);
@@ -290,7 +290,7 @@ protected:
     return __p;
   }
 
-#if defined(_STLP_DONT_SUP_DFLT_PARAM)
+#if defined (_STLP_DONT_SUP_DFLT_PARAM)
   _Node_base* _M_create_node() {
     _Node* __p = this->_M_node.allocate(1);
     _STLP_TRY {
@@ -299,7 +299,7 @@ protected:
     _STLP_UNWIND(this->_M_node.deallocate(__p, 1))
     return __p;
   }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM*/
+#endif
 
 public:
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
@@ -377,7 +377,7 @@ public:
   const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
   size_type size() const {
-    size_type __result = distance(begin(), end());
+    size_type __result = _STLP_STD::distance(begin(), end());
     return __result;
   }
   size_type max_size() const { return size_type(-1); }

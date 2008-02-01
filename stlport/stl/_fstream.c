@@ -501,7 +501,7 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
   // didn't get converted last time.
   if (_M_ext_buf_end > _M_ext_buf_converted)
 
-    _M_ext_buf_end = copy(_M_ext_buf_converted, _M_ext_buf_end, _M_ext_buf);
+    _M_ext_buf_end = _STLP_STD::copy(_M_ext_buf_converted, _M_ext_buf_end, _M_ext_buf);
     // boris : copy_backward did not work
     //_M_ext_buf_end = copy_backward(_M_ext_buf_converted, _M_ext_buf_end,
     //_M_ext_buf+ (_M_ext_buf_end - _M_ext_buf_converted));

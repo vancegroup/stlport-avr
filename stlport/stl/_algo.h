@@ -309,26 +309,29 @@ inline _ForwardIter unique(_ForwardIter __first, _ForwardIter __last,
 
 // reverse and reverse_copy, and their auxiliary functions
 
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _BidirectionalIter>
 _STLP_INLINE_LOOP void
 __reverse(_BidirectionalIter __first, _BidirectionalIter __last, const bidirectional_iterator_tag &) {
   for (; __first != __last && __first != --__last; ++__first)
-    iter_swap(__first,__last);
+    _STLP_STD::iter_swap(__first,__last);
 }
-
 
 template <class _RandomAccessIter>
 _STLP_INLINE_LOOP void
 __reverse(_RandomAccessIter __first, _RandomAccessIter __last, const random_access_iterator_tag &) {
   for (; __first < __last; ++__first)
-    iter_swap(__first, --__last);
+    _STLP_STD::iter_swap(__first, --__last);
 }
+
+_STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _BidirectionalIter>
 inline void
 reverse(_BidirectionalIter __first, _BidirectionalIter __last) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  __reverse(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _BidirectionalIter));
+  _STLP_PRIV __reverse(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _BidirectionalIter));
 }
 
 template <class _BidirectionalIter, class _OutputIter>
@@ -345,30 +348,13 @@ _OutputIter reverse_copy(_BidirectionalIter __first,
   return __result;
 }
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-// rotate and rotate_copy, and their auxiliary functions
-template <class _EuclideanRingElement>
-_STLP_INLINE_LOOP
-_EuclideanRingElement __gcd(_EuclideanRingElement __m,
-                            _EuclideanRingElement __n) {
-  while (__n != 0) {
-    _EuclideanRingElement __t = __m % __n;
-    __m = __n;
-    __n = __t;
-  }
-  return __m;
-}
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 template <class _ForwardIter>
 void rotate(_ForwardIter __first, _ForwardIter __middle, _ForwardIter __last);
 
 template <class _ForwardIter, class _OutputIter>
 inline _OutputIter rotate_copy(_ForwardIter __first, _ForwardIter __middle,
                                _ForwardIter __last, _OutputIter __result) {
-  return copy(__first, __middle, copy(__middle, __last, __result));
+  return _STLP_STD::copy(__first, __middle, copy(__middle, __last, __result));
 }
 
 // random_shuffle

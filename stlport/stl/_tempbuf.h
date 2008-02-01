@@ -116,7 +116,7 @@ public:
     typedef typename __type_traits<_Tp>::has_trivial_default_constructor  _Trivial;
 #   endif
     _STLP_TRY {
-      _M_len = distance(__first, __last);
+      _M_len = _STLP_STD::distance(__first, __last);
       _M_allocate_buffer();
       if (_M_len > 0)
         _M_initialize_buffer(*__first, _Trivial());

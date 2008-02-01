@@ -451,7 +451,6 @@ public:
                                  __before_first._M_iterator, __before_last._M_iterator);
   }
 
-  // Linear in distance(begin(), __pos), and linear in __x.size().
   void splice(iterator __pos, _Self& __x) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
     _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)
@@ -465,7 +464,6 @@ public:
     }
   }
 
-  // Linear in distance(begin(), __pos), and in distance(__x.begin(), __i).
   void splice(iterator __pos, _Self& __x, iterator __i) {
     //__pos should be owned by *this and not be the before_begin iterator
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
@@ -483,8 +481,6 @@ public:
     _M_non_dbg_impl.splice(__pos._M_iterator, __x._M_non_dbg_impl, __i._M_iterator);
   }
 
-  // Linear in distance(begin(), __pos), in distance(__x.begin(), __first),
-  // and in distance(__first, __last).
   void splice(iterator __pos, _Self& __x, iterator __first, iterator __last) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_if_owner(&_M_iter_list,__pos))
     _STLP_VERBOSE_ASSERT(!(__pos._M_iterator == _M_non_dbg_impl.before_begin()), _StlMsg_INVALID_ARGUMENT)

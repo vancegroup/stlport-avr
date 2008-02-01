@@ -45,24 +45,24 @@ __copy_float_and_fill(const _CharT* __first, const _CharT* __last,
                       streamsize __width, _CharT __fill,
                       _CharT __xplus, _CharT __xminus) {
   if (__width <= __last - __first)
-    return copy(__first, __last, __oi);
+    return _STLP_STD::copy(__first, __last, __oi);
   else {
     streamsize __pad = __width - (__last - __first);
     ios_base::fmtflags __dir = __flags & ios_base::adjustfield;
 
     if (__dir == ios_base::left) {
-      __oi = copy(__first, __last, __oi);
-      return __fill_n(__oi, __pad, __fill);
+      __oi = _STLP_STD::copy(__first, __last, __oi);
+      return _STLP_PRIV __fill_n(__oi, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __first != __last &&
              (*__first == __xplus || *__first == __xminus)) {
       *__oi++ = *__first++;
-      __oi = __fill_n(__oi, __pad, __fill);
-      return copy(__first, __last, __oi);
+      __oi = _STLP_PRIV __fill_n(__oi, __pad, __fill);
+      return _STLP_STD::copy(__first, __last, __oi);
     }
     else {
-      __oi = __fill_n(__oi, __pad, __fill);
-      return copy(__first, __last, __oi);
+      __oi = _STLP_PRIV __fill_n(__oi, __pad, __fill);
+      return _STLP_STD::copy(__first, __last, __oi);
     }
   }
 }
@@ -153,7 +153,7 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
                         ios_base::fmtflags __flg, streamsize __wid, _CharT __fill,
                         _CharT __xplus, _CharT __xminus) {
   if (__len >= __wid)
-    return copy(__buf, __buf + __len, __oi);
+    return _STLP_STD::copy(__buf, __buf + __len, __oi);
   else {
     //casting numeric_limits<ptrdiff_t>::max to streamsize only works is ptrdiff_t is signed or streamsize representation
     //is larger than ptrdiff_t one.
@@ -164,14 +164,14 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
     ios_base::fmtflags __dir = __flg & ios_base::adjustfield;
 
     if (__dir == ios_base::left) {
-      __oi = copy(__buf, __buf + __len, __oi);
-      return __fill_n(__oi, __pad, __fill);
+      __oi = _STLP_STD::copy(__buf, __buf + __len, __oi);
+      return _STLP_PRIV __fill_n(__oi, __pad, __fill);
     }
     else if (__dir == ios_base::internal && __len != 0 &&
              (__buf[0] == __xplus || __buf[0] == __xminus)) {
       *__oi++ = __buf[0];
       __oi = __fill_n(__oi, __pad, __fill);
-      return copy(__buf + 1, __buf + __len, __oi);
+      return _STLP_STD::copy(__buf + 1, __buf + __len, __oi);
     }
     else if (__dir == ios_base::internal && __len >= 2 &&
              (__flg & ios_base::showbase) &&
@@ -179,11 +179,11 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
       *__oi++ = __buf[0];
       *__oi++ = __buf[1];
       __oi = __fill_n(__oi, __pad, __fill);
-      return copy(__buf + 2, __buf + __len, __oi);
+      return _STLP_STD::copy(__buf + 2, __buf + __len, __oi);
     }
     else {
       __oi = __fill_n(__oi, __pad, __fill);
-      return copy(__buf, __buf + __len, __oi);
+      return _STLP_STD::copy(__buf, __buf + __len, __oi);
     }
   }
 }
@@ -260,7 +260,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
 
      // make sure there is room at the end of the buffer
      // we pass to __insert_grouping
-    copy(__buf, __iend, (char *) __grpbuf);
+    _STLP_STD::copy(__buf, __iend, (char *) __grpbuf);
     __buf = __grpbuf;
     __iend = __grpbuf + __len;
     __len = __insert_grouping(__buf, __iend, __grouping, __np.thousands_sep(),
@@ -402,18 +402,18 @@ __do_put_bool(_OutputIter __s, ios_base& __f, _CharT __fill, bool __x) {
 
   streamsize __wid = __f.width(0);
   if (__str.size() >= __STATIC_CAST(size_t, __wid))
-    return copy(__str.begin(), __str.end(), __s);
+    return _STLP_STD::copy(__str.begin(), __str.end(), __s);
   else {
     streamsize __pad = __wid - __str.size();
     ios_base::fmtflags __dir = __f.flags() & ios_base::adjustfield;
 
     if (__dir == ios_base::left) {
-      __s = copy(__str.begin(), __str.end(), __s);
+      __s = _STLP_STD::copy(__str.begin(), __str.end(), __s);
       return __fill_n(__s, __pad, __fill);
     }
     else /* covers right and internal padding */ {
       __s = __fill_n(__s, __pad, __fill);
-      return copy(__str.begin(), __str.end(), __s);
+      return _STLP_STD::copy(__str.begin(), __str.end(), __s);
     }
   }
 }

@@ -26,10 +26,10 @@
 
 _STLP_BEGIN_NAMESPACE
 
-_STLP_BEGIN_TR1_NAMESPACE
-
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedSetTraitsT, Const_traits)
+
+_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
@@ -44,7 +44,7 @@ class unordered_set
   typedef _STLP_PRIV _UnorderedSetTraitsT<_Value> _UnorderedSetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedSetTraits, _STLP_STD::_STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedSetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 public:
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;
@@ -174,8 +174,12 @@ public:
   void rehash(size_type __hint) { _M_ht.rehash(__hint); }
 };
 
+_STLP_END_NAMESPACE
+
 //Specific iterator traits creation
 _STLP_CREATE_HASH_ITERATOR_TRAITS(UnorderedMultisetTraitsT, Const_traits)
+
+_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
@@ -190,7 +194,7 @@ class unordered_multiset
   typedef _STLP_PRIV _UnorderedMultisetTraitsT<_Value> _UnorderedMultisetTraits;
 public:
   typedef hashtable<_Value, _Value, _HashFcn,
-                    _UnorderedMultisetTraits, _STLP_STD::_STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
+                    _UnorderedMultisetTraits, _STLP_PRIV _Identity<_Value>, _EqualKey, _Alloc> _Ht;
 
   typedef typename _Ht::key_type key_type;
   typedef typename _Ht::value_type value_type;

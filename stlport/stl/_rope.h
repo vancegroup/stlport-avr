@@ -223,7 +223,7 @@ public:
   sequence_buffer(const _Self& __x) {
     _M_prefix = __x._M_prefix;
     _M_buf_count = __x._M_buf_count;
-    copy(__x._M_buffer, __x._M_buffer + __x._M_buf_count, _M_buffer);
+    _STLP_STD::copy(__x._M_buffer, __x._M_buffer + __x._M_buf_count, _M_buffer);
   }
   sequence_buffer(_Self& __x) {
     __x.flush();
@@ -240,7 +240,7 @@ public:
   _Self& operator= (const _Self& __x) {
     _M_prefix = __x._M_prefix;
     _M_buf_count = __x._M_buf_count;
-    copy(__x._M_buffer, __x._M_buffer + __x._M_buf_count, _M_buffer);
+    _STLP_STD::copy(__x._M_buffer, __x._M_buffer + __x._M_buf_count, _M_buffer);
     return *this;
   }
   void push_back(value_type __x) {
@@ -1974,7 +1974,7 @@ public:
 # endif
 
     size_type __result_pos;
-    const_iterator __result = search(const_begin() + (ptrdiff_t)__pos, const_end(), __s.begin(), __s.end() );
+    const_iterator __result = _STLP_STD::search(const_begin() + (ptrdiff_t)__pos, const_end(), __s.begin(), __s.end() );
     __result_pos = __result.index();
 # ifndef _STLP_OLD_ROPE_SEMANTICS
     if (__result_pos == size()) __result_pos = npos;
@@ -1984,8 +1984,8 @@ public:
   size_type find(_CharT __c, size_type __pos = 0) const;
   size_type find(const _CharT* __s, size_type __pos = 0) const {
     size_type __result_pos;
-    const_iterator __result = search(const_begin() + (ptrdiff_t)__pos, const_end(),
-                                     __s, __s + _S_char_ptr_len(__s));
+    const_iterator __result = _STLP_STD::search(const_begin() + (ptrdiff_t)__pos, const_end(),
+                                                __s, __s + _S_char_ptr_len(__s));
     __result_pos = __result.index();
 # ifndef _STLP_OLD_ROPE_SEMANTICS
     if (__result_pos == size()) __result_pos = npos;

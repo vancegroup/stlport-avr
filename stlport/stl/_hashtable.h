@@ -391,7 +391,7 @@ public:
   size_type bucket_count() const { return _M_buckets.size() - 1; }
   size_type max_bucket_count() const { return _STLP_PRIV _Stl_prime_type::_S_max_nb_buckets(); }
   size_type elems_in_bucket(size_type __bucket) const
-  { return distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
+  { return _STLP_STD::distance(_ElemsIte(_M_buckets[__bucket]), _ElemsIte(_M_buckets[__bucket + 1])); }
 
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type bucket(const _KT& __k) const { return _M_bkt_num_key(__k); }
@@ -446,7 +446,7 @@ public:
   template <class _ForwardIterator>
   void insert_unique(_ForwardIterator __f, _ForwardIterator __l,
                      const forward_iterator_tag &) {
-    size_type __n = distance(__f, __l);
+    size_type __n = _STLP_STD::distance(__f, __l);
     _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
@@ -455,7 +455,7 @@ public:
   template <class _ForwardIterator>
   void insert_equal(_ForwardIterator __f, _ForwardIterator __l,
                     const forward_iterator_tag &) {
-    size_type __n = distance(__f, __l);
+    size_type __n = _STLP_STD::distance(__f, __l);
     _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
@@ -477,14 +477,14 @@ public:
   }
 
   void insert_unique(const_iterator __f, const_iterator __l) {
-    size_type __n = distance(__f, __l);
+    size_type __n = _STLP_STD::distance(__f, __l);
     _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_unique_noresize(*__f);
   }
 
   void insert_equal(const_iterator __f, const_iterator __l) {
-    size_type __n = distance(__f, __l);
+    size_type __n = _STLP_STD::distance(__f, __l);
     _M_enlarge(_M_num_elements + __n);
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);

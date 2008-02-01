@@ -273,10 +273,10 @@ public:
     _M_non_dbg_impl.erase(__pos._M_iterator);
   }
   size_type erase(const key_type& __x) {
-    pair<_Base_iterator,_Base_iterator> __p = _M_non_dbg_impl.equal_range(__x);
-    size_type __n = distance(__p.first, __p.second);
-    _Invalidate_iterators(iterator(&_M_iter_list, __p.first), iterator(&_M_iter_list, __p.second));
-    _M_non_dbg_impl.erase(__p.first, __p.second);
+    pair<iterator, iterator> __p = equal_range(__x);
+    size_type __n = _STLP_STD::distance(__p.first._M_iterator, __p.second._M_iterator);
+    _Invalidate_iterators(__p.first, __p.second);
+    _M_non_dbg_impl.erase(__p.first._M_iterator, __p.second._M_iterator);
     return __n;
   }
   size_type erase_unique(const key_type& __x) {

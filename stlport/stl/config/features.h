@@ -516,27 +516,12 @@ namespace __std_alias = std;
 #    endif
 namespace _STLP_STD_NAME { }
 #  else
-#    if defined (_STLP_DEBUG)
-namespace stdD = std;
-#    endif
 #    define _STLP_STD_NAME std
 #  endif /* _STLP_USE_OWN_NAMESPACE */
-
-#  define _STLP_PRIV_NAME priv
 
 #  define _STLP_BEGIN_NAMESPACE namespace _STLP_STD_NAME {
 #  define _STLP_BEGIN_TR1_NAMESPACE namespace tr1 {
 #  define _STLP_END_NAMESPACE }
-
-#  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
-#    define _STLP_PRIV _STLP_PRIV_NAME::
-#    define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
-#    define _STLP_MOVE_TO_STD_NAMESPACE }
-#  else
-#    define _STLP_PRIV
-#    define _STLP_MOVE_TO_PRIV_NAMESPACE
-#    define _STLP_MOVE_TO_STD_NAMESPACE
-#  endif
 
 /* decide whether or not we use separate namespace for rel ops */
 #  if defined (_STLP_NO_RELOPS_NAMESPACE)
@@ -550,11 +535,22 @@ namespace stdD = std;
 #  endif /* Use std::rel_ops namespace */
 
 #  define _STLP_STD ::_STLP_STD_NAME
-#  define _STLP_TR1 tr1::
+#  define _STLP_TR1 _STLP_STD::tr1::
+
+#  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
+#    define _STLP_PRIV_NAME priv
+#    define _STLP_PRIV _STLP_STD::_STLP_PRIV_NAME::
+#    define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
+#    define _STLP_MOVE_TO_STD_NAMESPACE }
+#  else
+#    define _STLP_PRIV _STLP_STD::
+#    define _STLP_MOVE_TO_PRIV_NAMESPACE
+#    define _STLP_MOVE_TO_STD_NAMESPACE
+#  endif
 
 /* Official STLport namespace when std is not redefined.
- * Here we don't use a macro as stlport is used as file name by boost
- * and folder name under beos:
+ * Here we don't use a macro because we do not need it and because
+ * stlport is used as file name by boost and folder name under beos:
  */
 namespace stlport = _STLP_STD_NAME;
 

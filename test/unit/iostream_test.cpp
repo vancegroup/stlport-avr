@@ -3,7 +3,7 @@
 #if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
 #  include <sstream>
 //#  include <locale>
-//#  include <iostream>
+#  include <iostream>
 //#  include <stdexcept>
 
 #  include "cppunit/cppunit_proxy.h"
@@ -19,6 +19,7 @@ class IOStreamTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(IOStreamTest);
   CPPUNIT_TEST(manipulators);
+  CPPUNIT_TEST(in_avail);
 //#if defined (STLPORT) && defined (_STLP_NO_WCHAR_T)
   //CPPUNIT_IGNORE;
 //#endif
@@ -27,6 +28,7 @@ class IOStreamTest : public CPPUNIT_NS::TestCase
 
 private:
   void manipulators();
+  void in_avail();
   //void wimbue();
 };
 
@@ -74,6 +76,13 @@ void IOStreamTest::manipulators()
     CPPUNIT_ASSERT( !istr.fail() );
     istr.clear();
   }
+}
+
+
+void IOStreamTest::in_avail()
+{
+  CPPUNIT_ASSERT( cin.rdbuf()->in_avail() == 0 );
+  CPPUNIT_ASSERT( cout.rdbuf()->in_avail() == -1 );
 }
 
 //void IOStreamTest::wimbue()

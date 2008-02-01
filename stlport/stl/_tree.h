@@ -501,7 +501,7 @@ public:
 
   size_type erase(const key_type& __x) {
     pair<iterator,iterator> __p = equal_range(__x);
-    size_type __n = distance(__p.first, __p.second);
+    size_type __n = _STLP_STD::distance(__p.first, __p.second);
     erase(__p.first, __p.second);
     return __n;
   }
@@ -595,7 +595,7 @@ public:
   _STLP_TEMPLATE_FOR_CONT_EXT
   size_type count(const _KT& __x) const {
     pair<const_iterator, const_iterator> __p = equal_range(__x);
-    return distance(__p.first, __p.second);
+    return _STLP_STD::distance(__p.first, __p.second);
   }
   _STLP_TEMPLATE_FOR_CONT_EXT
   iterator lower_bound(const _KT& __x) { return iterator(_M_lower_bound(__x)); }

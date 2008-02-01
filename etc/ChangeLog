@@ -1,3 +1,29 @@
+2008-02-01  Francois Dumont  <dums@users.sourceforge.net>
+
+	* General code review to look for Standard or internal functions
+	called with namespace scope in order to avoid ambiguous calls
+	when compiler implement Argument Dependant Lookup. See ListTest::adl
+	test case to see what it means.
+
+	* stlport/stl/config/features.h: _STLP_PRIV now contains full
+	namespace path starting at global namespace that is to say
+	::stlport::priv:: when private namespace is in use and ::stlport::
+	when it is not. Idem for _STLP_TR1 that now contains ::stlport::tr1::.
+
+	* stlport/stl/debug/_string.h: Call to std::distance removed to avoid
+	reading input iterators before reading their contents. Now all
+	basic_string::assign methods invalidate all iterators like other
+	containers.
+
+	* stlport/stl/_iterator_base.h: Remove implementation of __value_type
+	__distance_type and __iterator_category when compiler support partial
+	template specialization. In this case we directly use iterator_traits,
+	we do not need those functions. Removed special __distance implementations
+	use in an anachronous implementation of distance taking an initial value
+	to start counting. Now this function use __distance functions already
+	used by the std::distance function. The MSVC _Distance function is also
+	considered as anachronous.
+
 2008-01-31  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_string.h, test/unit/string_test.cpp: Add swap

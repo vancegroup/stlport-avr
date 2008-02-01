@@ -312,7 +312,7 @@ public:
   void assign(const_iterator __first, const_iterator __last) {
     typedef const_iterator _ForwardIter;
 #endif
-    const size_type __len = distance(__first, __last);
+    const size_type __len = _STLP_STD::distance(__first, __last);
     if (__len > capacity()) {
       size_type __n = __len;
       iterator __tmp = _M_allocate_and_copy(__n, __first, __last);
@@ -326,9 +326,9 @@ public:
     }
     else {
       _ForwardIter __mid = __first;
-      advance(__mid, size());
-      copy(__first, __mid, this->_M_start);
-      this->_M_finish = uninitialized_copy(__mid, __last, this->_M_finish);
+      _STLP_STD::advance(__mid, size());
+      _STLP_STD::copy(__first, __mid, this->_M_start);
+      this->_M_finish = _STLP_STD::uninitialized_copy(__mid, __last, this->_M_finish);
     }
   }
 
@@ -475,7 +475,7 @@ private:
     else {
 #if defined ( _STLP_MEMBER_TEMPLATES )
       _ForwardIterator __mid = __first;
-      advance(__mid, __elems_after);
+      _STLP_STD::advance(__mid, __elems_after);
 #else
       const_pointer __mid = __first + __elems_after;
 #endif
@@ -535,7 +535,7 @@ public:
      * Standard forbids it, checked by the debug mode.
      */
     if (__first != __last) {
-      size_type __n = distance(__first, __last);
+      size_type __n = _STLP_STD::distance(__first, __last);
 
       if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
         _M_range_insert_aux(__pos, __first, __last, __n, _Movable());
@@ -689,7 +689,7 @@ private:
   template <class _ForwardIterator>
   void _M_range_initialize(_ForwardIterator __first, _ForwardIterator __last,
                            const forward_iterator_tag &) {
-    size_type __n = distance(__first, __last);
+    size_type __n = _STLP_STD::distance(__first, __last);
     this->_M_start = this->_M_end_of_storage.allocate(__n, __n);
     this->_M_end_of_storage._M_data = this->_M_start + __n;
     this->_M_finish = uninitialized_copy(__first, __last, this->_M_start);

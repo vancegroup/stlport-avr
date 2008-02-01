@@ -639,25 +639,25 @@ private:                        // helper functions for assign()
     size_type __len = __last - __first;
     if (__len > __size) {
       const value_type *__mid = __first + __size;
-      copy(__first, __mid, begin());
+      _STLP_STD::copy(__first, __mid, begin());
       insert(end(), __mid, __last);
     }
     else {
-      erase(copy(__first, __last, begin()), end());
+      erase(_STLP_STD::copy(__first, __last, begin()), end());
     }
   }
   void assign(const_iterator __first, const_iterator __last) {
     typedef const_iterator _ForwardIterator;
 #endif /* _STLP_MEMBER_TEMPLATES */
-    size_type __len = distance(__first, __last);
+    size_type __len = _STLP_STD::distance(__first, __last);
     if (__len > size()) {
       _ForwardIterator __mid = __first;
-      advance(__mid, size());
-      copy(__first, __mid, begin());
+      _STLP_STD::advance(__mid, size());
+      _STLP_STD::copy(__first, __mid, begin());
       insert(end(), __mid, __last);
     }
     else {
-      erase(copy(__first, __last, begin()), end());
+      erase(_STLP_STD::copy(__first, __last, begin()), end());
     }
   }
 
@@ -874,17 +874,17 @@ protected:                        // Internal construction/destruction
   template <class _ForwardIterator>
   void  _M_range_initialize(_ForwardIterator __first, _ForwardIterator __last,
                             const forward_iterator_tag &)  {
-   size_type __n = distance(__first, __last);
+   size_type __n = _STLP_STD::distance(__first, __last);
    this->_M_initialize_map(__n);
    _Map_pointer __cur_node = this->_M_start._M_node;
    _STLP_TRY {
     for (; __cur_node < this->_M_finish._M_node; ++__cur_node) {
       _ForwardIterator __mid = __first;
-      advance(__mid, this->buffer_size());
-      uninitialized_copy(__first, __mid, *__cur_node);
+      _STLP_STD::advance(__mid, this->buffer_size());
+      _STLP_STD::uninitialized_copy(__first, __mid, *__cur_node);
       __first = __mid;
     }
-    uninitialized_copy(__first, __last, this->_M_finish._M_first);
+    _STLP_STD::uninitialized_copy(__first, __last, this->_M_finish._M_first);
    }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)))
  }
@@ -910,7 +910,7 @@ protected:                        // Internal insert functions
                 _InputIterator __first,
                 _InputIterator __last,
                 const input_iterator_tag &) {
-    copy(__first, __last, inserter(*this, __pos));
+    _STLP_STD::copy(__first, __last, inserter(*this, __pos));
   }
 
   template <class _ForwardIterator>
@@ -920,7 +920,7 @@ protected:                        // Internal insert functions
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
-    size_type __n = distance(__first, __last);
+    size_type __n = _STLP_STD::distance(__first, __last);
     if (__pos._M_cur == this->_M_start._M_cur) {
       iterator __new_start = _M_reserve_elements_at_front(__n);
       _STLP_TRY {
@@ -993,17 +993,17 @@ protected:                        // Internal insert functions
       _STLP_TRY {
         if (__elemsbefore >= difference_type(__n)) {
           iterator __start_n = this->_M_start + difference_type(__n);
-          uninitialized_copy(this->_M_start, __start_n, __new_start);
+          _STLP_STD::uninitialized_copy(this->_M_start, __start_n, __new_start);
           this->_M_start = __new_start;
-          copy(__start_n, __pos, __old_start);
-          copy(__first, __last, __pos - difference_type(__n));
+          _STLP_STD::copy(__start_n, __pos, __old_start);
+          _STLP_STD::copy(__first, __last, __pos - difference_type(__n));
         }
         else {
           _ForwardIterator __mid = __first;
-          advance(__mid, difference_type(__n) - __elemsbefore);
+          _STLP_STD::advance(__mid, difference_type(__n) - __elemsbefore);
           _STLP_PRIV __uninitialized_copy_copy(this->_M_start, __pos, __first, __mid, __new_start);
           this->_M_start = __new_start;
-          copy(__mid, __last, __old_start);
+          _STLP_STD::copy(__mid, __last, __old_start);
         }
       }
       _STLP_UNWIND(this->_M_destroy_nodes(__new_start._M_node, this->_M_start._M_node))
@@ -1016,17 +1016,17 @@ protected:                        // Internal insert functions
       _STLP_TRY {
         if (__elemsafter > difference_type(__n)) {
           iterator __finish_n = this->_M_finish - difference_type(__n);
-          uninitialized_copy(__finish_n, this->_M_finish, this->_M_finish);
+          _STLP_STD::uninitialized_copy(__finish_n, this->_M_finish, this->_M_finish);
           this->_M_finish = __new_finish;
-          copy_backward(__pos, __finish_n, __old_finish);
-          copy(__first, __last, __pos);
+          _STLP_STD::copy_backward(__pos, __finish_n, __old_finish);
+          _STLP_STD::copy(__first, __last, __pos);
         }
         else {
           _ForwardIterator __mid = __first;
-          advance(__mid, __elemsafter);
+          _STLP_STD::advance(__mid, __elemsafter);
           _STLP_PRIV __uninitialized_copy_copy(__mid, __last, __pos, this->_M_finish, this->_M_finish);
           this->_M_finish = __new_finish;
-          copy(__first, __mid, __pos);
+          _STLP_STD::copy(__first, __mid, __pos);
         }
       }
       _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))

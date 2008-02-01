@@ -321,26 +321,15 @@ public:
   }
 
   // Assign
-private:
-  void _M_check_assign(size_type __n) {
-    if (__n > capacity()) {
-      _Invalidate_all();
-    }
-    else if (__n < size()) {
-      _Invalidate_iterators(begin() + __n, end());
-    }
-  }
-
-public:
   _Self& assign(const _Self& __s) {
-    _M_check_assign(__s.size());
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__s._M_non_dbg_impl);
     return *this;
   }
 
   _Self& assign(const _Self& __s, size_type __pos, size_type __n) {
     if (__pos < __s.size()) {
-      _M_check_assign((min) (__n, __s.size() - __pos));
+      _Invalidate_all();
     }
     _M_non_dbg_impl.assign(__s._M_non_dbg_impl, __pos, __n);
     return *this;
@@ -349,7 +338,7 @@ public:
   _Self& assign(const _CharT* __s, size_type __n) {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    _M_check_assign((min) (_Traits::length(__s), __n));
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__s, __s + __n);
     return *this;
   }
@@ -357,37 +346,24 @@ public:
   _Self& assign(const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
     _STLP_VERBOSE_ASSERT((__s != 0), _StlMsg_INVALID_ARGUMENT)
-    _M_check_assign(_Traits::length(__s));
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__s);
     return *this;
   }
 
   _Self& assign(size_type __n, _CharT __c) {
-    _M_check_assign(__n);
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__n, __c);
     return *this;
   }
 
 #if defined(_STLP_MEMBER_TEMPLATES)
-private:
-  template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
-    _M_check_assign(__n);
-    _M_non_dbg_impl.assign((size_type)__n, (_CharT)__x);
-  }
-
-  template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/)  {
-    _M_check_assign(distance(__f, __l));
-    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__f), _STLP_PRIV _Non_Dbg_iter(__l));
-  }
-public:
   template <class _InputIter>
   inline _Self& assign(_InputIter __first, _InputIter __last) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
+    _Invalidate_all();
+    _M_non_dbg_impl.assign(_STLP_PRIV _Non_Dbg_iter(__first), _STLP_PRIV _Non_Dbg_iter(__last));
     return *this;
   }
 #endif
@@ -397,13 +373,13 @@ public:
   _Self& assign(const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_ptr_range(__f, __l))
-    _M_check_assign(distance(__f, __l));
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__f, __l);
     return *this;
   }
   _Self& assign(const_iterator __f, const_iterator __l) {
     _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__f, __l))
-    _M_check_assign(distance(__f, __l));
+    _Invalidate_all();
     _M_non_dbg_impl.assign(__f._M_iterator, __l._M_iterator);
     return *this;
   }

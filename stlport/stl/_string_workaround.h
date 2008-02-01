@@ -125,7 +125,7 @@ private:
   template <class _ForwardIter>
   void _M_range_initialize(_ForwardIter __f, _ForwardIter __l,
                            const forward_iterator_tag &) {
-    difference_type __n = distance(__f, __l);
+    difference_type __n = _STLP_STD::distance(__f, __l);
     this->_M_allocate_block(__n + 1);
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (this->_M_using_static_buf()) {
@@ -235,7 +235,7 @@ private:                        // Helper functions for append.
                     const forward_iterator_tag &)  {
     if (__first != __last) {
       const size_type __old_size = this->size();
-      difference_type __n = distance(__first, __last);
+      difference_type __n = _STLP_STD::distance(__first, __last);
       if (__STATIC_CAST(size_type,__n) > this->max_size() ||
           __old_size > this->max_size() - __STATIC_CAST(size_type,__n))
         this->_M_throw_length_error();
@@ -447,7 +447,7 @@ private:  // Helper functions for insert.
   void _M_insertT(iterator __position, _ForwardIter __first, _ForwardIter __last,
                   const forward_iterator_tag &) {
     if (__first != __last) {
-      difference_type __n = distance(__first, __last);
+      difference_type __n = _STLP_STD::distance(__first, __last);
       if (this->_M_start_of_storage._M_data - this->_M_finish >= __n + 1) {
         const difference_type __elems_after = this->_M_finish - __position;
         if (__elems_after >= __n) {
@@ -464,13 +464,13 @@ private:  // Helper functions for insert.
         else {
           pointer __old_finish = this->_M_Finish();
           _ForwardIter __mid = __first;
-          advance(__mid, __elems_after + 1);
+          _STLP_STD::advance(__mid, __elems_after + 1);
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
           if (this->_M_using_static_buf())
             _M_copyT(__mid, __last, this->_M_Finish() + 1);
           else
 #endif /* _STLP_USE_SHORT_STRING_OPTIM */
-          uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
+          _STLP_STD::uninitialized_copy(__mid, __last, this->_M_Finish() + 1);
           this->_M_finish += __n - __elems_after;
           _STLP_TRY {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
