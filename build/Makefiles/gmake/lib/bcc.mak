@@ -36,10 +36,10 @@ BASE_LIB_EXTS = lib dll tds map
 LIB_FILES := $(foreach n,$(BASE_LIBNAMES),$(foreach e,$(BASE_LIB_EXTS),$(n).$(e)))
 
 install-dbg-shared-tds:
-	$(INSTALL_SO) $(OUTPUT_DIR_DBG)/${BASE_LIBNAME_DBG}.tds $(INSTALL_BIN_DIR)/${BASE_LIBNAME_DBG}.tds
+	$(INSTALL_SO) $(OUTPUT_DIR_DBG)/${BASE_LIBNAME_DBG}.tds $(INSTALL_BIN_DIR)/
 
 install-stldbg-shared-tds:
-	$(INSTALL_SO) $(OUTPUT_DIR_STLDBG)/${BASE_LIBNAME_STLDBG}.tds $(INSTALL_BIN_DIR)/${BASE_LIBNAME_STLDBG}.tds
+	$(INSTALL_SO) $(OUTPUT_DIR_STLDBG)/${BASE_LIBNAME_STLDBG}.tds $(INSTALL_BIN_DIR)/
 
 clean::
 	$(foreach d,$(OUTPUT_DIRS),$(foreach f,$(LIB_FILES),@rm -f $(d)/$(f)))
