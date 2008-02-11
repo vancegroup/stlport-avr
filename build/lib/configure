@@ -86,7 +86,7 @@ default_settings () {
   # fi
 
   if [ "$stlport_set" = "" ]; then
-    write_option "$base" STLPORT_DIR
+    write_over_option "$base" STLPORT_DIR
   fi
   # write_option "${PWD}/build/" BASE_INSTALL_DIR
   if [ "$compiler_family_set" = "" ]; then
