@@ -4,10 +4,12 @@
 	Sanford to fix regressions introduced with recent modifications of
 	some helper struct used to detect potential optimizations.
 
-	* stlport/stl/_algobase.c, _iterator.h, _iterator_base.h, config/_bc.h,
-	features.h: New configuration, Borland do not support following syntax:
-	typename std::iterator_traits<>::value_type. It breaks on namespace
-	specification so it is possible to remove it.
+	* config/_bc.h, features.h: New configuration, Borland do not support
+	following syntax: 
+	typename std::iterator_traits<>::value_type. It breaks on association
+	of typename keyword with namespace specification. As Borland do not
+	require typename keyword in this case it is now possible avoid it
+	thanks to the _STLP_NO_TYPENAME_BEFORE_NAMESPACE macro.
 
 	* stlport/stl/_limits.c: Borland, like gcc 4, prefer additional brackets
 	in initialization of struct associated to computation of numeric limits
