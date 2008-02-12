@@ -84,14 +84,15 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #  define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) __false_type()
 #else
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#    define _STLP_VALUE_TYPE(_It, _Tp)        (typename _STLP_STD::iterator_traits< _Tp >::value_type*)0
-#    define _STLP_DISTANCE_TYPE(_It, _Tp)     (typename _STLP_STD::iterator_traits< _Tp >::difference_type*)0
-#    if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || ( defined (__sgi) && defined (_COMPILER_VERSION)) || defined (__DMC__)
+#    define _STLP_VALUE_TYPE(_It, _Tp)        (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::value_type*)0
+#    define _STLP_DISTANCE_TYPE(_It, _Tp)     (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::difference_type*)0
+#    if defined (__BORLANDC__) || defined (__SUNPRO_CC) || ( defined (__MWERKS__) && (__MWERKS__ <= 0x2303)) || \
+       (defined (__sgi) && defined (_COMPILER_VERSION)) || defined (__DMC__)
 #      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_STD::iterator_traits< _Tp >::iterator_category()
 #    else
-#      define _STLP_ITERATOR_CATEGORY(_It, _Tp) typename _STLP_STD::iterator_traits< _Tp >::iterator_category()
+#      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::iterator_category()
 #    endif
-#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::_IsRefType< typename _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
+#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::_IsRefType< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
 #  else
 #    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::_IsPtrType<_Tp>::_Ret())
 #    define _STLP_DISTANCE_TYPE(_It, _Tp)       _STLP_STD::__distance_type(_It, _STLP_STD::_IsPtrType<_Tp>::_Ret())
@@ -171,7 +172,7 @@ __iterator_category(const _Tp*, const __true_type&)
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::iterator_category
 __iterator_category(const _Iter&, const __false_type&) {
-  typedef typename _STLP_STD::iterator_traits<_Iter>::iterator_category _Category;
+  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::iterator_category _Category;
   return _Category();
 }
 
@@ -183,7 +184,7 @@ __distance_type(const _Tp*, const __true_type&)
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::difference_type*
 __distance_type(const _Iter&, const __false_type&) {
-  typedef typename _STLP_STD::iterator_traits<_Iter>::difference_type _diff_type;
+  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::difference_type _diff_type;
   return __STATIC_CAST(_diff_type*,0);
 }
 
@@ -195,7 +196,7 @@ __value_type(const _Tp*, const __true_type&)
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::value_type*
 __value_type(const _Iter&, const __false_type&) {
-  typedef typename _STLP_STD::iterator_traits<_Iter>::value_type _value_type;
+  typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::value_type _value_type;
   return __STATIC_CAST(_value_type*,0);
 }
 

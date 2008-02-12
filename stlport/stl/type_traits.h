@@ -359,7 +359,12 @@ struct _TrivialNativeTypeCopy {
 
   typedef typename __bool2type<(sizeof(_Src) == sizeof(_Dst))>::_Ret _SameSize;
 
+#if !defined (__BORLANDC__) || (__BORLANDC__ < 0x564)
   typedef typename _IsIntegral<_Src>::_Ret _Int1;
+#else
+  typedef typename _UnQual<_Src>::_Type _UnQuSrc;
+  typedef typename _IsIntegral<_UnQuSrc>::_Ret _Int1;
+#endif
   typedef typename _IsIntegral<_Dst>::_Ret _Int2;
   typedef typename _Land2<_Int1, _Int2>::_Ret _BothInts;
 
@@ -368,16 +373,18 @@ struct _TrivialNativeTypeCopy {
   typedef typename _Land2<_Rat1, _Rat2>::_Ret _BothRats;
 
   typedef typename _Lor2<_BothInts, _BothRats>::_Ret _BothNatives;
+#if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x564)
   typedef typename _Land2<_BothNatives, _SameSize>::_Ret _Trivial2;
-
+#else
+  typedef typename _IsUnQual<_Dst>::_Ret _UnQualDst;
+  typedef typename _Land3<_BothNatives, _SameSize, _UnQualDst>::_Ret _Trivial2;
+#endif
   typedef typename _Lor2<_Trivial1, _Trivial2>::_Ret _Ret;
 };
 
 template <class _Src, class _Dst>
 struct _TrivialCopy {
-#  if !defined (__BORLANDC__)
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
-
 #  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_assignment_operator _Tr1;
 #  else
@@ -386,19 +393,13 @@ struct _TrivialCopy {
 #  endif
   typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
-
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
-#  else
-  typedef __false_type _Ret;
-#  endif
   static _Ret _Answer() { return _Ret(); }
 };
 
 template <class _Src, class _Dst>
 struct _TrivialUCopy {
-#  if !defined (__BORLANDC__)
   typedef typename _TrivialNativeTypeCopy<_Src, _Dst>::_Ret _NativeRet;
-
 #  if !defined (__BORLANDC__) || (__BORLANDC__ != 0x560)
   typedef typename __type_traits<_Src>::has_trivial_copy_constructor _Tr1;
 #  else
@@ -407,11 +408,7 @@ struct _TrivialUCopy {
 #  endif
   typedef typename _AreCopyable<_Src, _Dst>::_Ret _Tr2;
   typedef typename _Land2<_Tr1, _Tr2>::_Ret _UserRet;
-
   typedef typename _Lor2<_NativeRet, _UserRet>::_Ret _Ret;
-#  else
-  typedef __false_type _Ret;
-#  endif
   static _Ret _Answer() { return _Ret(); }
 };
 
@@ -495,6 +492,16 @@ inline _TrivialCopy<_Src, _Dst> _UseTrivialCopy(_Src*, _Dst*)
 template <class _Src, class _Dst>
 inline _TrivialUCopy<_Src, _Dst> _UseTrivialUCopy(_Src*, _Dst*)
 { return _TrivialUCopy<_Src, _Dst>(); }
+
+#if defined (__BORLANDC__)
+template <class _Src, class _Dst>
+inline _TrivialCopy<_Src*, _Dst*> _UseTrivialCopy(_Src*, const _Dst*)
+{ return _TrivialCopy<_Src*, _Dst*>(); }
+
+template <class _Src, class _Dst>
+inline _TrivialUCopy<_Src*, _Dst*> _UseTrivialUCopy(_Src*, const _Dst*)
+{ return _TrivialUCopy<_Src*, _Dst*>(); }
+#endif
 
 template <class _Tp>
 inline _TrivialInit<_Tp> _UseTrivialInit(_Tp*)

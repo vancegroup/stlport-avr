@@ -54,9 +54,8 @@ protected:
   _Iterator current;
   typedef reverse_iterator<_Iterator> _Self;
 public:
-  typedef typename iterator_traits<_Iterator>::iterator_category  iterator_category;
-  typedef typename iterator_traits<_Iterator>::value_type value_type;
   typedef typename iterator_traits<_Iterator>::difference_type difference_type;
+  // pointer type required for arrow operator hidden behind _STLP_DEFINE_ARROW_OPERATOR:
   typedef typename iterator_traits<_Iterator>::pointer pointer;
   typedef typename iterator_traits<_Iterator>::reference reference;
   typedef _Iterator iterator_type;

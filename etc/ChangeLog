@@ -1,3 +1,18 @@
+2008-02-12  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/type_manips.h, type_traits.h: Borland patch from Eric
+	Sanford to fix regressions introduced with recent modifications of
+	some helper struct used to detect potential optimizations.
+
+	* stlport/stl/_algobase.c, _iterator.h, _iterator_base.h, config/_bc.h,
+	features.h: New configuration, Borland do not support following syntax:
+	typename std::iterator_traits<>::value_type. It breaks on namespace
+	specification so it is possible to remove it.
+
+	* stlport/stl/_limits.c: Borland, like gcc 4, prefer additional brackets
+	in initialization of struct associated to computation of numeric limits
+	values.
+
 2008-02-01  Francois Dumont  <dums@users.sourceforge.net>
 
 	* General code review to look for Standard or internal functions

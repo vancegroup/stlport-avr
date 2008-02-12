@@ -378,8 +378,8 @@ public:
   _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
 #ifdef _STLP_VECBOOL_TEMPLATE
-  typedef typename _STLP_PRIV _Bvector_base<_Alloc >::allocator_type allocator_type;
-  typedef typename _STLP_PRIV _Bvector_base<_Alloc >::__chunk_type __chunk_type;
+  typedef _STLP_TYPENAME _STLP_PRIV _Bvector_base<_Alloc >::allocator_type allocator_type;
+  typedef _STLP_TYPENAME _STLP_PRIV _Bvector_base<_Alloc >::__chunk_type __chunk_type;
 #else
   typedef _STLP_PRIV _Bvector_base<_Alloc >::allocator_type allocator_type;
   typedef _STLP_PRIV _Bvector_base<_Alloc >::__chunk_type __chunk_type;

@@ -430,14 +430,14 @@ distance_type(const _STLP_PRIV _DBG_iter_base<_Container>&) { return (ptrdiff_t*
 template <class _Container>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV _DBG_iter_base<_Container>::value_type*
 value_type(const _STLP_PRIV _DBG_iter_base<_Container>&) {
-  typedef typename _STLP_PRIV _DBG_iter_base<_Container>::value_type _Val;
+  typedef _STLP_TYPENAME _STLP_PRIV _DBG_iter_base<_Container>::value_type _Val;
   return (_Val*)0;
 }
 
 template <class _Container>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV _DBG_iter_base<_Container>::_Iterator_category
 iterator_category(const _STLP_PRIV _DBG_iter_base<_Container>&) {
-  typedef typename _STLP_PRIV _DBG_iter_base<_Container>::_Iterator_category _Category;
+  typedef _STLP_TYPENAME _STLP_PRIV _DBG_iter_base<_Container>::_Iterator_category _Category;
   return _Category();
 }
 #  endif

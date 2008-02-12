@@ -157,7 +157,7 @@ struct __select {
  * an existing one (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) that
  * is used for a similar feature.
  */
-#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS) && !defined (__BORLANDC__)
+#if !defined (_STLP_DONT_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)
 // Helper struct that will forbid volatile qualified types:
 struct _NoVolatilePointerShim { _NoVolatilePointerShim(const void*); };
 template <class _Tp>
@@ -179,6 +179,10 @@ struct _Copyable {
 };
 #endif
 
+#if defined (__BORLANDC__)
+template <class _Src, class _Dst> struct _CopyablePOD;
+#endif
+
 /*
  * The following struct will tell you if 2 types are the same and if copying memory
  * from the _Src type to the _Dst type is right considering qualifiers. If _Src and
@@ -188,8 +192,13 @@ struct _Copyable {
  */
 template <class _Src, class _Dst>
 struct _AreCopyable {
+#if !defined (__BORLANDC__)
   enum { _Same = _Copyable<_Src, _Dst>::_Ret };
   typedef typename _Copyable<_Src, _Dst>::_RetT _Ret;
+#else
+  typedef typename _CopyablePOD<_Src, _Dst>::_Ret _Ret;
+  enum { _Same = __type2bool<_Ret>::_Ret };
+#endif
 };
 
 template <class _Tp1, class _Tp2>
@@ -221,7 +230,7 @@ struct _IsConvertible {
   typedef typename __bool2type<value>::_Ret _Ret;
 };
 
-#if defined(__BORLANDC__)
+#if defined(__BORLANDC__) && (__BORLANDC__ < 0x590)
 template<class _Tp>
 struct _UnConstPtr { typedef _Tp _Type; };
 
@@ -232,8 +241,13 @@ template<class _Tp>
 struct _UnConstPtr<const _Tp*> { typedef _Tp _Type; };
 #endif
 
+#if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
 template <class _Tp>
 struct _IsConst { typedef __false_type _Ret; };
+#else
+template <class _Tp>
+struct _IsConst { typedef _AreSameTypes<_Tp, const _Tp>::_Ret _Ret; };
+#endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
 template <class _Tp>
@@ -241,11 +255,41 @@ struct _IsConst <const _Tp> { typedef __true_type _Ret; };
 #endif
 
 #  if defined(__BORLANDC__)
+#  if (__BORLANDC__ < 0x590)
 template<class _Tp>
-struct _IsConst <const _Tp*> { typedef __true_type _Ret; };
+struct _IsConst<_Tp*> { typedef _AreSameTypes<_Tp*, const _Tp*>::_Ret _Ret; };
+#  endif
+template <class _Tp>
+struct _IsVolatile { typedef _AreSameTypes<_Tp, volatile _Tp>::_Ret _Ret; };
 
 template<class _Tp>
-struct _IsConst <const volatile _Tp*> { typedef __true_type _Ret; };
+struct _IsUnQual {
+  typedef _IsConst<_Tp>::_Ret _Tr1;
+  typedef _IsVolatile<_Tp>::_Ret _Tr2;
+  typedef _Not<_Tr1>::_Ret _NotCon;
+  typedef _Not<_Tr2>::_Ret _NotVol;
+  typedef _Land2<_NotCon, _NotVol>::_Ret _Ret;
+};
+
+#  if !defined (_STLP_QUALIFIED_SPECIALIZATION_BUG)
+template <class _Tp> struct _UnQual { typedef _Tp _Type; };
+template <class _Tp> struct _UnQual<const _Tp> { typedef _Tp _Type; };
+template <class _Tp> struct _UnQual<volatile _Tp> { typedef _Tp _Type; };
+template <class _Tp> struct _UnQual<const volatile _Tp> { typedef _Tp _Type; };
+#  endif
+
+template <class _Tp> struct __type_traits;
+template <class _Tp> struct _IsPtr;
+template <class _Src, class _Dst>
+struct _CopyablePOD {
+  typedef typename _AreSameTypes<_Src, _Dst>::_Ret _Tr1;
+  typedef typename __type_traits<_Src>::is_POD_type _Tr2;
+  typedef typename _Land2<_Tr1, _Tr2>::_Ret _BothPOD;
+  typedef typename _IsPtr<_Src>::_Ret _Tr3;
+  typedef typename _Not<_Tr3>::_Ret _NotPtrs;
+  typedef typename _IsUnQual<_Dst>::_Ret _UnQualDst;
+  typedef typename _Land3<_BothPOD, _NotPtrs, _UnQualDst>::_Ret _Ret;
+};
 #  endif
 
 /* This struct is intended to say if a pointer can be convertible to an other
@@ -256,7 +300,7 @@ struct _IsConst <const volatile _Tp*> { typedef __true_type _Ret; };
  */
 template <class _Src, class _Dst>
 struct _IsCVConvertible {
-#if !defined (__BORLANDC__)
+#if !defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)
   typedef _ConversionHelper<_Src, _Dst> _H;
   enum { value = (sizeof(char) == sizeof(_H::_Test(false, _H::_MakeSource()))) };
 #else

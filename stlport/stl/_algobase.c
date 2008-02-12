@@ -327,9 +327,9 @@ template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
 inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
                                        _Tp1* __pt1, _Tp2* __pt2) {
-  typedef typename _STLP_STD::_IsIntegral<_Tp1>::_Ret _IsIntegral;
-  typedef typename _STLP_PRIV _IsCharLikeType<_Tp2>::_Ret _IsCharLike;
-  typedef typename _STLP_STD::_Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
+  typedef _STLP_TYPENAME _STLP_STD::_IsIntegral<_Tp1>::_Ret _IsIntegral;
+  typedef _STLP_TYPENAME _STLP_PRIV _IsCharLikeType<_Tp2>::_Ret _IsCharLike;
+  typedef _STLP_TYPENAME _STLP_STD::_Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
   return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
                                          __first2, __last2,
                                          __pt2, _Identity<bool>(), _UseStrcspnLikeAlgo());

@@ -173,7 +173,7 @@ _STLP_TYPENAME_ON_RETURN_TYPE _Traits::value_type *
 _STLP_TYPENAME_ON_RETURN_TYPE _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type *
 #  endif
 value_type(const _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>&) {
-  typedef typename _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type _Val;
+  typedef _STLP_TYPENAME _STLP_PRIV _Ht_iterator<_BaseIte,_Traits>::value_type _Val;
   return (_Val*) 0;
 }
 template <class _BaseIte, class _Traits>

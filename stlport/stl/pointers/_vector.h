@@ -50,7 +50,7 @@ class vector
    * So vector implementation will always use a qualified void pointer type and
    * won't use iterator wrapping.
    */
-  typedef typename _STLP_PRIV _StorageType<_Tp>::_QualifiedType _StorageType;
+  typedef _STLP_TYPENAME _STLP_PRIV _StorageType<_Tp>::_QualifiedType _StorageType;
   typedef typename _Alloc_traits<_StorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV VECTOR_IMPL<_StorageType, _StorageTypeAlloc> _Base;
   typedef vector<_Tp, _Alloc> _Self;

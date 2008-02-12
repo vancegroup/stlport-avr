@@ -99,7 +99,7 @@ class deque
             : public __stlport_class<deque<_Tp, _Alloc> >
 #endif
 {
-  typedef typename _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
+  typedef _STLP_TYPENAME _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
   typedef typename _Alloc_traits<_StorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV DEQUE_IMPL<_StorageType, _StorageTypeAlloc> _Base;
   typedef deque<_Tp, _Alloc> _Self;
@@ -239,8 +239,8 @@ private:
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
                           const __false_type&) {
-    _M_impl.assign(typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
+    _M_impl.assign(_STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:
@@ -314,8 +314,8 @@ private:
                           _InputIterator __first, _InputIterator __last,
                           const __false_type&) {
     _M_impl.insert(ite_cast_traits::to_storage_type_ite(__pos),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:

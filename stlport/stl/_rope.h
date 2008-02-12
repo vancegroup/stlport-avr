@@ -384,7 +384,7 @@ public:
 #endif
     }
 
-  typedef typename _STLP_PRIV _BasicCharType<_CharT>::_Ret _IsBasicCharType;
+  typedef _STLP_TYPENAME _STLP_PRIV _BasicCharType<_CharT>::_Ret _IsBasicCharType;
 
 #if 0
   /* Please tell why this code is necessary if you uncomment it.

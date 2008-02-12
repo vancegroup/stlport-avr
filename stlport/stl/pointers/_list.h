@@ -61,7 +61,7 @@ class list
            : public __stlport_class<list<_Tp, _Alloc> >
 #endif
 {
-  typedef typename _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
+  typedef _STLP_TYPENAME _STLP_PRIV _StorageType<_Tp>::_Type _StorageType;
   typedef typename _Alloc_traits<_StorageType, _Alloc>::allocator_type _StorageTypeAlloc;
   typedef _STLP_PRIV LIST_IMPL<_StorageType, _StorageTypeAlloc> _Base;
   typedef typename _Base::iterator _BaseIte;
@@ -197,8 +197,8 @@ private:
                           _InputIterator __first, _InputIterator __last,
                           const __false_type&) {
     _M_impl.insert(_BaseIte(__pos._M_node),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:
@@ -265,8 +265,8 @@ private:
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first, _InputIterator __last,
                           const __false_type&) {
-    _M_impl.assign(typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
-                   typename _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
+    _M_impl.assign(_STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__first),
+                   _STLP_TYPENAME _STLP_PRIV _IteWrapper<_StorageType, _Tp, _InputIterator>::_Ite(__last));
   }
 
 public:

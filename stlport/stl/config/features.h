@@ -625,6 +625,12 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_HEADER_TYPENAME typename
 #endif
 
+#ifdef _STLP_NO_TYPENAME_BEFORE_NAMESPACE
+#  define _STLP_TYPENAME
+#else
+#  define _STLP_TYPENAME typename
+#endif
+
 #ifndef _STLP_NO_MEMBER_TEMPLATE_KEYWORD
 #  define _STLP_TEMPLATE template
 #else
@@ -1044,11 +1050,6 @@ typedef int bool;
 #if !defined(_STLP_DONT_USE_PARTIAL_SPEC_WRKD) &&\
    (!defined(_STLP_CLASS_PARTIAL_SPECIALIZATION) || !defined(_STLP_FUNCTION_TMPL_PARTIAL_ORDER))
 #  define _STLP_USE_PARTIAL_SPEC_WORKAROUND
-#endif
-
-#ifndef _STLP_USE_NO_IOSTREAMS
-#  define _STLP_NEW_IO_NAMESPACE _STLP_STD
-#  define _STLP_NO_WIDE_STREAMS  _STLP_NO_WCHAR_T
 #endif
 
 #ifdef _STLP_USE_SEPARATE_RELOPS_NAMESPACE
