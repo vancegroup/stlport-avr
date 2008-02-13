@@ -35,13 +35,11 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 #if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
     (!defined(_LARGEFILE_SOURCE) && !defined(_LARGEFILE64_SOURCE))
 #  define FSEEK fseek
-#  define FTELL ftell
 #  define FSETPOS  fsetpos
 #  define FGETPOS  fgetpos
 #  define FPOS_T   fpos_t
 #else
 #  define FSEEK fseeko64
-#  define FTELL ftello64
 #  define FSETPOS  fsetpos64
 #  define FGETPOS  fgetpos64
 #  define FPOS_T   fpos64_t
