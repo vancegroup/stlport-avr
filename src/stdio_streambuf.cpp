@@ -26,7 +26,6 @@
 
 #include <fstream>
 #include <limits>
-#include "fstream_impl.h"
 
 _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -153,10 +152,7 @@ streamsize stdio_istreambuf::showmanyc() {
   if (feof(_M_file))
     return -1;
 
-  streamoff size = __stdin_size(_M_file);
-  // fbp : we can use ftell as this flavour always use stdio.
-  streamsize pos = FTELL(_M_file);
-  return pos >= 0 && size > pos ? size - pos : 0;
+  return 0;
 }
 
 stdio_istreambuf::int_type stdio_istreambuf::underflow()

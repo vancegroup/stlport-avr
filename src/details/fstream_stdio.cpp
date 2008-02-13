@@ -102,8 +102,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 #    define _write write
 #  endif
 
-#include "../fstream_impl.h"
-
 _STLP_BEGIN_NAMESPACE
 
 // Compare with streamoff definition in stl/char_traits.h!
@@ -142,9 +140,6 @@ static streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
-
-streamoff __stdin_size(FILE* __file)
-{ return __file_size(_FILE_fd(__file)); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

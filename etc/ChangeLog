@@ -1,3 +1,9 @@
+2008-02-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/fstream_impl.h, details/fstream_win32io.cpp,
+	fstream_unitstd.cpp, fstream_stdio.cpp, stdio_streambuf.cpp: __stdin_size
+	function revomed making fstream_impl.h useless.
+
 2008-02-12  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/type_manips.h, type_traits.h: Borland patch from Eric

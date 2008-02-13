@@ -53,8 +53,6 @@ const _STLP_fd INVALID_STLP_FD = -1;
 #  define O_ACCMODE (O_RDONLY|O_WRONLY|O_RDWR)
 #endif
 
-#include "../fstream_impl.h"
-
 // Compare with streamoff definition in stl/char_traits.h!
 #if defined (_STLP_USE_DEFAULT_FILE_OFFSET) || \
     (!defined(_LARGEFILE_SOURCE) && !defined (_LARGEFILE64_SOURCE))
@@ -118,9 +116,6 @@ static streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
-
-streamoff __stdin_size(FILE* __file)
-{ return __file_size(_FILE_fd(__file)); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

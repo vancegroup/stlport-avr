@@ -40,8 +40,6 @@ const _STLP_fd INVALID_STLP_FD = INVALID_HANDLE_VALUE;
 #  define O_ACCMODE (O_RDONLY|O_WRONLY|O_RDWR)
 #endif
 
-#include "../fstream_impl.h"
-
 _STLP_BEGIN_NAMESPACE
 
 #if !defined(__MSL__) && !defined(_STLP_WCE)
@@ -90,9 +88,6 @@ static streamoff __file_size(_STLP_fd fd) {
 
   return ret;
 }
-
-streamoff __stdin_size(FILE*)
-{ return 0; }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
