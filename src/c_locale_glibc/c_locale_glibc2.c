@@ -562,11 +562,21 @@ const char *_Locale_negative_sign(struct _Locale_monetary *__loc)
 
 char _Locale_int_frac_digits(struct _Locale_monetary *__loc)
 {
+  /* We are forced to manually handled the "C" locale for consistency with
+   * the default implementation in STLport. */
+  const char* lname = ((__c_locale)__loc)->__names[LC_MONETARY];
+  if (lname[0] == 'C' && lname[1] == 0)
+    return 0;
   return *(__nl_langinfo_l(INT_FRAC_DIGITS, (__c_locale)__loc));
 }
 
 char _Locale_frac_digits(struct _Locale_monetary *__loc)
 {
+  /* We are forced to manually handled the "C" locale for consistency with
+   * the default implementation in STLport. */
+  const char* lname = ((__c_locale)__loc)->__names[LC_MONETARY];
+  if (lname[0] == 'C' && lname[1] == 0)
+    return 0;
   return *(__nl_langinfo_l(FRAC_DIGITS, (__c_locale)__loc));
 }
 

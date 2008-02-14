@@ -1,3 +1,13 @@
+2008-02-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_glibc/c_locale_glibc2.c: Manualy handle the "C" locale
+	to guaranty consistency with the default "C" facet implementations in
+	the lib.
+
+	* * test/unit/time_facets_test.cpp, num_facets_test.cpp,
+	monetary_facets_test.cpp, ctype_facets_test.cpp: Enhance tests by using
+	a third way of generating locale instance from names.
+
 2008-02-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/fstream_impl.h, details/fstream_win32io.cpp,

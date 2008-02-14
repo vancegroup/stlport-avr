@@ -81,6 +81,7 @@ void LocaleTest::_money_put_get2( const locale& loc, const locale& streamLoc, co
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
+      //CPPUNIT_MESSAGE(str_res.c_str());
 
       size_t fieldIndex = 0;
       size_t index = 0;
@@ -195,6 +196,7 @@ void LocaleTest::_money_put_get2( const locale& loc, const locale& streamLoc, co
 
       CPPUNIT_ASSERT( !res.failed() );
       str_res = ostr.str();
+      //CPPUNIT_MESSAGE(str_res.c_str());
 
       size_t fieldIndex = 0;
       size_t index = 0;
@@ -441,6 +443,13 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
       loc = tmp;
     }
     (inst.*__test)(loc, tested_locales + i);
+
+    {
+      locale tmp0(locale::classic(), new moneypunct_byname<char, true>(tested_locales[i].name));
+      locale tmp1(tmp0, new moneypunct_byname<char, false>(tested_locales[i].name));
+      loc = tmp1;
+    }
+    (inst.*__test)(loc, tested_locales + i);
   }
 }
 
@@ -532,6 +541,35 @@ void LocaleTest::moneypunct_by_name()
     locale loc(locale::classic(), new moneypunct_byname<char, false>("C"));
     moneypunct<char, false> const& cfacet_byname = use_facet<moneypunct<char, false> >(loc);
     moneypunct<char, false> const& cfacet = use_facet<moneypunct<char, false> >(locale::classic());
+
+    money_base::pattern cp = cfacet.pos_format();
+    money_base::pattern cp_bn = cfacet_byname.pos_format();
+    CPPUNIT_CHECK( cp_bn.field[0] == cp.field[0] );
+    CPPUNIT_CHECK( cp_bn.field[1] == cp.field[1] );
+    CPPUNIT_CHECK( cp_bn.field[2] == cp.field[2] );
+    CPPUNIT_CHECK( cp_bn.field[3] == cp.field[3] );
+
+    CPPUNIT_CHECK( cfacet_byname.frac_digits() == cfacet.frac_digits() );
+    if (cfacet_byname.frac_digits() != 0)
+      CPPUNIT_CHECK( cfacet_byname.decimal_point() == cfacet.decimal_point() );
+    CPPUNIT_CHECK( cfacet_byname.grouping() == cfacet.grouping() );
+    if (!cfacet_byname.grouping().empty())
+      CPPUNIT_CHECK( cfacet_byname.thousands_sep() == cfacet.thousands_sep() );
+    CPPUNIT_CHECK( cfacet_byname.positive_sign() == cfacet.positive_sign() );
+    CPPUNIT_CHECK( cfacet_byname.negative_sign() == cfacet.negative_sign() );
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_FAIL;
+  }
+  catch (...) {
+    CPPUNIT_FAIL;
+  }
+
+  try {
+    locale loc(locale::classic(), new moneypunct_byname<char, true>("C"));
+    moneypunct<char, true> const& cfacet_byname = use_facet<moneypunct<char, true> >(loc);
+    moneypunct<char, true> const& cfacet = use_facet<moneypunct<char, true> >(locale::classic());
 
     money_base::pattern cp = cfacet.pos_format();
     money_base::pattern cp_bn = cfacet_byname.pos_format();

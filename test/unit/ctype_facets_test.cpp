@@ -345,6 +345,16 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
       loc = tmp;
     }
     (inst.*__test)(loc);
+
+    {
+      locale tmp(locale::classic(), new ctype_byname<char>(tested_locales[i]));
+#ifndef _STLP_NO_WCHAR_T
+      locale tmp0(tmp, new ctype_byname<wchar_t>(tested_locales[i]));
+      tmp = tmp0;
+#endif
+      loc = tmp;
+    }
+    (inst.*__test)(loc);
   }
 }
 

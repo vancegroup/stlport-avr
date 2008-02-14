@@ -137,6 +137,12 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
       loc = tmp;
     }
     (inst.*__test)(loc, tested_locales + i);
+
+    {
+      locale tmp(locale::classic(), new numpunct_byname<char>(tested_locales[i].name));
+      loc = tmp;
+    }
+    (inst.*__test)(loc, tested_locales + i);
   }
 }
 

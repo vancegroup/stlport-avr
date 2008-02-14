@@ -131,6 +131,15 @@ static void test_supported_locale(LocaleTest& inst, _Test __test) {
       loc = tmp;
     }
     (inst.*__test)(loc);
+
+    {
+      typedef time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > > time_put_facet;
+      locale tmp0(locale::classic(), new time_put_facet(tested_locales[i]));
+      typedef time_get_byname<char, istreambuf_iterator<char, char_traits<char> > > time_get_facet;
+      locale tmp1(tmp0, new time_get_facet(tested_locales[i]));
+      loc = tmp1;
+    }
+    (inst.*__test)(loc);
   }
 }
 
