@@ -130,8 +130,8 @@
 #  define _STLP_NO_EXCEPTION_HEADER
 #  define _STLP_NO_EXCEPTIONS
 #  undef _STLP_USE_EXCEPTIONS
-#  ifndef __THROW_BAD_ALLOC
-#    define __THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
+#  ifndef _STLP_THROW_BAD_ALLOC
+#    define _STLP_THROW_BAD_ALLOC { _STLP_WINCE_TRACE(L"out of memory"); ExitThread(1); }
 #  endif
 #endif
 

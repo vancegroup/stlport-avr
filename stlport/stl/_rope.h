@@ -1197,7 +1197,7 @@ protected:
     _RopeLeaf* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
                                                 _RopeLeaf).allocate(1);
     _STLP_TRY {
-      _STLP_PLACEMENT_NEW(__space) _RopeLeaf(__s, _p_size, __a);
+      new(__space) _RopeLeaf(__s, _p_size, __a);
     }
    _STLP_UNWIND(_STLP_CREATE_ALLOCATOR(allocator_type,__a,
                                        _RopeLeaf).deallocate(__space, 1))
@@ -1208,21 +1208,21 @@ protected:
                                                       allocator_type __a) {
    _RopeConcatenation* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
                                                         _RopeConcatenation).allocate(1);
-    return _STLP_PLACEMENT_NEW(__space) _RopeConcatenation(__left, __right, __a);
+    return new(__space) _RopeConcatenation(__left, __right, __a);
   }
 
   static _RopeFunction* _S_new_RopeFunction(char_producer<_CharT>* __f,
                                             size_t _p_size, bool __d, allocator_type __a) {
    _RopeFunction* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
                                                    _RopeFunction).allocate(1);
-    return _STLP_PLACEMENT_NEW(__space) _RopeFunction(__f, _p_size, __d, __a);
+    return new(__space) _RopeFunction(__f, _p_size, __d, __a);
   }
 
   static _RopeSubstring* _S_new_RopeSubstring(_Rope_RopeRep<_CharT,_Alloc>* __b, size_t __s,
                                               size_t __l, allocator_type __a) {
    _RopeSubstring* __space = _STLP_CREATE_ALLOCATOR(allocator_type, __a,
                                                     _RopeSubstring).allocate(1);
-    return _STLP_PLACEMENT_NEW(__space) _RopeSubstring(__b, __s, __l, __a);
+    return new(__space) _RopeSubstring(__b, __s, __l, __a);
   }
 
   static

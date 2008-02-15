@@ -43,14 +43,14 @@
 #  include <stl/_algobase.h>
 #endif
 
-#ifndef __THROW_BAD_ALLOC
+#ifndef _STLP_THROW_BAD_ALLOC
 #  if !defined(_STLP_USE_EXCEPTIONS)
 #    ifndef _STLP_INTERNAL_CSTDIO
 #      include <stl/_cstdio.h>
 #    endif
-#    define __THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
+#    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
 #  else
-#    define __THROW_BAD_ALLOC throw _STLP_STD::bad_alloc()
+#    define _STLP_THROW_BAD_ALLOC throw _STLP_STD::bad_alloc()
 #  endif
 #endif
 
@@ -60,10 +60,6 @@
 
 #ifndef _STLP_INTERNAL_CONSTRUCT_H
 #  include <stl/_construct.h>
-#endif
-
-#if !defined (__ALLOC)
-#  define __ALLOC __sgi_alloc
 #endif
 
 _STLP_BEGIN_NAMESPACE
@@ -95,7 +91,7 @@ public:
   {
     void *__result = malloc(__n);
     if (__result == 0) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     return __result;
   }
@@ -369,7 +365,7 @@ public:
   // __n is permitted to be 0.  The C++ standard says nothing about what the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     if (__n != 0) {
       size_type __buf_size = __n * sizeof(value_type);
@@ -409,7 +405,7 @@ protected:
 #endif
   _Tp* _M_allocate(size_type __n, size_type& __allocated_n) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
 
     if (__n != 0) {

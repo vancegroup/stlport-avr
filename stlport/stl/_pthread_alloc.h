@@ -128,7 +128,7 @@ public:
   // the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     if (__n != 0) {
       size_type __buf_size = __n * sizeof(value_type);
@@ -157,7 +157,7 @@ public:
   size_type max_size() const _STLP_NOTHROW
   { return size_t(-1) / sizeof(_Tp); }
 
-  void construct(pointer __p, const _Tp& __val) { _STLP_PLACEMENT_NEW (__p) _Tp(__val); }
+  void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
   void destroy(pointer _p) { _p->~_Tp(); }
 
 #if defined (_STLP_NO_EXTENSIONS)
@@ -169,7 +169,7 @@ protected:
 #endif
   _Tp* allocate(size_type __n, size_type& __allocated_n) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     if (__n != 0) {
       size_type __buf_size = __n * sizeof(value_type);
@@ -321,7 +321,7 @@ public:
   // the return value is when __n == 0.
   _Tp* allocate(size_type __n, const void* = 0) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     if (__n != 0) {
       size_type __buf_size = __n * sizeof(value_type);
@@ -350,7 +350,7 @@ public:
   size_type max_size() const _STLP_NOTHROW
   { return size_t(-1) / sizeof(_Tp); }
 
-  void construct(pointer __p, const _Tp& __val) { _STLP_PLACEMENT_NEW (__p) _Tp(__val); }
+  void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
   void destroy(pointer _p) { _p->~_Tp(); }
 
   // state is being kept here
@@ -365,7 +365,7 @@ protected:
 #endif
   _Tp* allocate(size_type __n, size_type& __allocated_n) {
     if (__n > max_size()) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     }
     if (__n != 0) {
       size_type __buf_size = __n * sizeof(value_type);

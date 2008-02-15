@@ -58,7 +58,7 @@ struct __allocator : public _Alloc {
   // __n is permitted to be 0.
   _Tp* allocate(size_type __n, const void* = 0) {
     if (__n > max_size())
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     return __n != 0
         ? __STATIC_CAST(_Tp*,__underlying_alloc::allocate(__n * sizeof(_Tp)))
         : 0;

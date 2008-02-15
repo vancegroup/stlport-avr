@@ -3,6 +3,12 @@
 	* src/details/fstream_win32io.cpp: Fix wrong use of Win32 API.
 	SetFilePointer do not take SEEK_CUR macro but FILE_CURRENT.
 
+	* src/allocators.cpp, stlport/stl/_alloc.h, _alloc_old.h,
+	_construct.h, _new.h, _pthread_alloc.h, _rope.h, config/_evc.h,
+	features.h: Code cleanup; __THROW_BAD_ALLOC normalized in
+	_STLP_THROW_BAD_ALLOC; _STLP_NEW, _STLP_PLACEMENT_NEW and
+	_STLP_BROKEN_BAD_ALLOC_CLASS macros removed.
+
 2008-02-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: Manualy handle the "C" locale

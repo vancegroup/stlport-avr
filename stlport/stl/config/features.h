@@ -310,9 +310,6 @@
 #  define _STLP_NO_DEFAULT_NON_TYPE_PARAM 1
 #endif
 
-#define _STLP_NEW new
-#define _STLP_PLACEMENT_NEW new
-
 #if !defined (_STLP_STATIC_ASSERT)
 /* Some compiler support 0 size array so we use negative size array to generate
  * a compilation time error.

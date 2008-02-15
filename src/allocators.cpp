@@ -130,7 +130,7 @@ void* _STLP_CALL __malloc_alloc::allocate(size_t __n)
       __oom_handler_lock._M_release_lock();
 #endif
       if ( 0 == __my_malloc_handler) {
-        __THROW_BAD_ALLOC;
+        _STLP_THROW_BAD_ALLOC;
       }
       (*__my_malloc_handler)();
       __result = malloc(__n);
@@ -885,7 +885,7 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_new_per_thread_state() 
     return __result;
   }
   else {
-    return _STLP_NEW _Pthread_alloc_per_thread_state;
+    return new _Pthread_alloc_per_thread_state;
   }
 }
 
@@ -900,7 +900,7 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_get_per_thread_state() 
   _M_lock __lock_instance;  // Need to acquire lock here.
   if (!_S_key_initialized) {
     if (pthread_key_create(&_S_key, _S_destructor)) {
-      __THROW_BAD_ALLOC;  // failed
+      _STLP_THROW_BAD_ALLOC;  // failed
     }
     _S_key_initialized = true;
   }
@@ -909,7 +909,7 @@ _Pthread_alloc_per_thread_state* _Pthread_alloc_impl::_S_get_per_thread_state() 
   __ret_code = pthread_setspecific(_S_key, __result);
   if (__ret_code) {
     if (__ret_code == ENOMEM) {
-      __THROW_BAD_ALLOC;
+      _STLP_THROW_BAD_ALLOC;
     } else {
   // EINVAL
       _STLP_ABORT();
