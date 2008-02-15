@@ -1,3 +1,8 @@
+2008-02-15  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/details/fstream_win32io.cpp: Fix wrong use of Win32 API.
+	SetFilePointer do not take SEEK_CUR macro but FILE_CURRENT.
+
 2008-02-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_glibc/c_locale_glibc2.c: Manualy handle the "C" locale

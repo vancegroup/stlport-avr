@@ -425,7 +425,7 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
                   //_STLP_CR character, we can store it.
                   *to++ = peek;
                 else
-                  SetFilePointer(_M_file_id, (LONG)-1, 0, SEEK_CUR);
+                  SetFilePointer(_M_file_id, (LONG)-1, 0, FILE_CURRENT);
               }
               else {
                 // A <CR><LF> combination, we keep the <LF>:
@@ -449,7 +449,7 @@ ptrdiff_t _Filebuf_base::_M_read(char* buf, ptrdiff_t n) {
       readen = to - buf;
       // seek back to TEXT end of file if hit CTRL-Z
       if (from <= last) { // terminated due to CTRLZ
-        SetFilePointer(_M_file_id, -(LONG)((last + 1) - from), 0, SEEK_CUR);
+        SetFilePointer(_M_file_id, -(LONG)((last + 1) - from), 0, FILE_CURRENT);
         break;
       }
     }
