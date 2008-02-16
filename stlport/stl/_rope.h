@@ -88,7 +88,7 @@ _STLP_BEGIN_NAMESPACE
 // First a lot of forward declarations.  The standard seems to require
 // much stricter "declaration before use" than many of the implementations
 // that preceded it.
-template<class _CharT, _STLP_DEFAULT_ALLOCATOR_SELECT(_CharT) > class rope;
+template<class _CharT, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_CharT>) > class rope;
 template<class _CharT, class _Alloc> struct _Rope_RopeConcatenation;
 template<class _CharT, class _Alloc> struct _Rope_RopeRep;
 template<class _CharT, class _Alloc> struct _Rope_RopeLeaf;
@@ -702,10 +702,10 @@ inline void swap(_Rope_char_ref_proxy <_CharT, __Alloc > __a,
         __b = __tmp; \
     }
 
-_ROPE_SWAP_SPECIALIZATION(char,_STLP_DEFAULT_ALLOCATOR(char) )
+_ROPE_SWAP_SPECIALIZATION(char, allocator<char>)
 
 # ifndef _STLP_NO_WCHAR_T
-_ROPE_SWAP_SPECIALIZATION(wchar_t,_STLP_DEFAULT_ALLOCATOR(wchar_t) )
+_ROPE_SWAP_SPECIALIZATION(wchar_t, allocator<wchar_t>)
 # endif
 
 #endif /* !_STLP_FUNCTION_TMPL_PARTIAL_ORDER */
@@ -2294,9 +2294,9 @@ basic_ostream<_CharT, _Traits>& operator<< (basic_ostream<_CharT, _Traits>& __o,
                                             const rope<_CharT, _Alloc>& __r);
 #endif
 
-typedef rope<char, _STLP_DEFAULT_ALLOCATOR(char) > crope;
+typedef rope<char, allocator<char> > crope;
 #if defined (_STLP_HAS_WCHAR_T)
-typedef rope<wchar_t, _STLP_DEFAULT_ALLOCATOR(wchar_t) > wrope;
+typedef rope<wchar_t, allocator<wchar_t> > wrope;
 #endif
 
 inline crope::reference __mutable_reference_at(crope& __c, size_t __i)
@@ -2352,9 +2352,9 @@ void _Rope_rotate(_Rope_iterator<_CharT, _Alloc> __first,
                   _Rope_iterator<_CharT, _Alloc> __middle,
                   _Rope_iterator<_CharT, _Alloc> __last);
 
-inline void rotate(_Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __first,
-                   _Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __middle,
-                   _Rope_iterator<char, _STLP_DEFAULT_ALLOCATOR(char) > __last)
+inline void rotate(_Rope_iterator<char, allocator<char> > __first,
+                   _Rope_iterator<char, allocator<char> > __middle,
+                   _Rope_iterator<char, allocator<char> > __last)
 { _Rope_rotate(__first, __middle, __last); }
 #endif
 

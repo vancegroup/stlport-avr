@@ -227,16 +227,6 @@
 */
 
 /*
- * _STLP_USE_RAW_SGI_ALLOCATORS is a hook so that users can disable use of
- * allocator<T> as default parameter for containers, and use SGI
- * raw allocators as default ones, without having to edit library headers.
- * Use of this macro is strongly discouraged.
- */
-/*
-#define _STLP_USE_RAW_SGI_ALLOCATORS 1
-*/
-
-/*
  * Use obsolete overloaded template functions iterator_category(), value_type(), distance_type()
  * for querying iterator properties. Please note those names are non-standard and are not guaranteed
  * to be used by every implementation. However, this setting is on by default when partial specialization

@@ -53,7 +53,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
-                      _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
+                      _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
           : public __stlport_class<set<_Key, _Compare, _Alloc> >
@@ -300,7 +300,7 @@ public:
 _STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
 
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
-                     _STLP_DEFAULT_ALLOCATOR_SELECT(_Key) >
+                     _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<multiset<_Key, _Compare, _Alloc> >

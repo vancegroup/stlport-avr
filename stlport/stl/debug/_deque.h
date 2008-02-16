@@ -47,7 +47,7 @@ inline random_access_iterator_tag iterator_category(const _STLP_PRIV _DBG_iter_b
 { return random_access_iterator_tag(); }
 #endif
 
-template <class _Tp, _STLP_DBG_ALLOCATOR_SELECT(_Tp) >
+template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class deque :
 #if !defined (__DMC__)
              private

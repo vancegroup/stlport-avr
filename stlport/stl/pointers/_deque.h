@@ -93,7 +93,7 @@ _STLP_EXPORT_TEMPLATE_CLASS DEQUE_IMPL<void*,allocator<void*> >;
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
-template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
+template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class deque
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (deque)
             : public __stlport_class<deque<_Tp, _Alloc> >

@@ -33,7 +33,7 @@ _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
-          _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
+          _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Value>) >
 class unordered_set
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<unordered_set<_Value, _HashFcn, _EqualKey, _Alloc> >
@@ -183,7 +183,7 @@ _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Value>),
           _STLP_DFL_TMPL_PARAM(_EqualKey, equal_to<_Value>),
-          _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
+          _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Value>) >
 class unordered_multiset
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
                : public __stlport_class<unordered_multiset<_Value, _HashFcn, _EqualKey, _Alloc> >

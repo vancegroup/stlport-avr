@@ -69,7 +69,7 @@ struct _SlistDbgTraits : _Traits {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
+template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class slist :
 #if !defined (__DMC__)
              private

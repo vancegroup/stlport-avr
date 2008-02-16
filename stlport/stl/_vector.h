@@ -105,7 +105,7 @@ protected:
 _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
-template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
+template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class vector : protected _STLP_PRIV _Vector_base<_Tp, _Alloc>
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (vector)
              , public __stlport_class<vector<_Tp, _Alloc> >

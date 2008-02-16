@@ -42,7 +42,6 @@
 //  STL. They have no effect when testing other STL implementations.
 //=========================================================================
 
-// # define _STLP_USE_RAW_SGI_ALLOCATORS
 #ifndef _STLP_USE_NEWALLOC
 #  define _STLP_USE_NEWALLOC
 #endif

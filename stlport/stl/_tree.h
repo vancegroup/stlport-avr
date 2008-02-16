@@ -288,7 +288,7 @@ protected:
 
 template <class _Key, class _Compare,
           class _Value, class _KeyOfValue, class _Traits,
-          _STLP_DEFAULT_ALLOCATOR_SELECT(_Value) >
+          _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Value>) >
 class _Rb_tree : public _Rb_tree_base<_Value, _Alloc> {
   typedef _Rb_tree_base<_Value, _Alloc> _Base;
   typedef _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> _Self;

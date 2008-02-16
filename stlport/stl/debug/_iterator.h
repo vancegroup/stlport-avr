@@ -28,10 +28,7 @@
 #  include <stl/_alloc.h>
 #endif
 
-#define _STLP_DBG_ALLOCATOR_SELECT( _Tp ) _STLP_DEFAULT_ALLOCATOR_SELECT( _Tp )
-
 _STLP_BEGIN_NAMESPACE
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 //============================================================

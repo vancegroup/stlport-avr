@@ -67,10 +67,6 @@
 #  define _STLP_NO_MSVC50_COMPATIBILITY __STL_NO_MSVC50_COMPATIBILITY
 #endif
 
-#if defined (__STL_USE_RAW_SGI_ALLOCATORS) && !defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-#  define _STLP_USE_RAW_SGI_ALLOCATORS __STL_USE_RAW_SGI_ALLOCATORS
-#endif
-
 /* STLport do not support anymore the iostream wrapper mode so this macro should
  * always been define for other libraries that was using it:
  */

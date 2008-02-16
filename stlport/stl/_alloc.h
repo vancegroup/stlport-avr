@@ -64,10 +64,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-template <class _Tp, class _Alloc> struct __allocator;
-#endif
-
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.
 
@@ -79,11 +75,6 @@ class _STLP_CLASS_DECLSPEC __malloc_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-  template <class _Tp1> struct rebind {
-    typedef __allocator<_Tp1, __malloc_alloc> other;
-  };
-#endif
   static void* _STLP_CALL allocate(size_t __n)
 #if !defined (_STLP_USE_NO_IOSTREAMS)
   ;
@@ -109,11 +100,6 @@ class _STLP_CLASS_DECLSPEC __new_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-  template <class _Tp1> struct rebind {
-    typedef __allocator<_Tp1, __new_alloc > other;
-  };
-#endif
   static void* _STLP_CALL allocate(size_t __n) { return __stl_new(__n); }
   static void _STLP_CALL deallocate(void* __p, size_t) { __stl_delete(__p); }
 };
@@ -154,11 +140,6 @@ private:
       (size_t)((long)__extra_after % sizeof(value_type) > 0);
   }
 public:
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-  template <class _Tp1> struct rebind {
-    typedef __allocator< _Tp1, __debug_alloc<_Alloc> > other;
-  };
-#endif
   __debug_alloc() {}
   ~__debug_alloc() {}
   static void* _STLP_CALL allocate(size_t);
@@ -184,11 +165,6 @@ class _STLP_CLASS_DECLSPEC __node_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-  template <class _Tp1> struct rebind {
-    typedef __allocator<_Tp1, __node_alloc> other;
-  };
-#  endif
   /* __n must be > 0      */
   static void* _STLP_CALL allocate(size_t& __n)
   { return (__n > (size_t)_MAX_BYTES) ? __stl_new(__n) : _M_allocate(__n); }
@@ -527,11 +503,6 @@ template <class _Tp1, class _Tp2>
 inline allocator<_Tp2> _STLP_CALL
 __stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>(); }
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
-
-#if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-// move obsolete stuff out of the way
-#  include <stl/_alloc_old.h>
-#endif
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 

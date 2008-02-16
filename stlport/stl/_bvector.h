@@ -327,7 +327,7 @@ protected:
 #  else
 #    define __BVEC_TMPL_HEADER _STLP_TEMPLATE_NULL
 #  endif
-#  define _Alloc _STLP_DEFAULT_ALLOCATOR(bool)
+#  define _Alloc allocator<bool>
 #endif
 
 #if defined (_STLP_DEBUG)

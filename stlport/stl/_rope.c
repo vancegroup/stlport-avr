@@ -1384,9 +1384,9 @@ void _Rope_rotate(_Rope_iterator<_CharT,_Alloc> __first,
 //   for unicode strings.  Unsigned short may be a better character
 //   type.
 inline void rotate(
-    _Rope_iterator<wchar_t,_STLP_DEFAULT_ALLOCATOR(char) > __first,
-                _Rope_iterator<wchar_t,_STLP_DEFAULT_ALLOCATOR(char) > __middle,
-                _Rope_iterator<wchar_t,_STLP_DEFAULT_ALLOCATOR(char) > __last) {
+    _Rope_iterator<wchar_t, allocator<char> > __first,
+                _Rope_iterator<wchar_t, allocator<char> > __middle,
+                _Rope_iterator<wchar_t, allocator<char> > __last) {
     _Rope_rotate(__first, __middle, __last);
 }
 # endif

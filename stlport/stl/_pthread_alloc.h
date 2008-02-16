@@ -220,12 +220,6 @@ inline bool operator!=(const pthread_allocator<_T1>&,
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 
-#  if defined (_STLP_USE_RAW_SGI_ALLOCATORS)
-template <class _Tp>
-struct _Alloc_traits<_Tp, _Pthread_alloc>
-{ typedef __allocator<_Tp, _Pthread_alloc> allocator_type; };
-#  endif
-
 template <class _Tp, class _Atype>
 struct _Alloc_traits<_Tp, pthread_allocator<_Atype> >
 { typedef pthread_allocator<_Tp> allocator_type; };

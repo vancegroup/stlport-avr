@@ -49,7 +49,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
-template <class _Tp, _STLP_DEFAULT_ALLOCATOR_SELECT(_Tp) >
+template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class slist
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (slist)
              : public __stlport_class<slist<_Tp, _Alloc> >
