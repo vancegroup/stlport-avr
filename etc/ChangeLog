@@ -1,3 +1,11 @@
+2008-02-18  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algobase.h: Removed namespace specification on
+	swap invocation in iter_swap implemenation because it was breaking
+	template function resolution for gcc. Whether this is a gcc bug
+	or simply correct Standard C++ is not clear yet so namespace has
+	been removed independant of compiler in use.
+
 2008-02-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Removed anachronous and unmaintained raw SGI allocator mode.

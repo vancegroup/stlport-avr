@@ -105,7 +105,8 @@ inline void __iter_swap_aux_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value
 
 template <class _ForwardIter1, class _ForwardIter2>
 inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __true_type& /*OKToSwap*/) {
-  _STLP_STD::swap(*__i1, *__i2);
+  /* namespace specification breaks access to the right swap template overload (at least for gcc) */
+  /*_STLP_STD::*/ swap(*__i1, *__i2);
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
