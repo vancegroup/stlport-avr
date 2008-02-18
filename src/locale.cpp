@@ -95,7 +95,7 @@ void _STLP_CALL locale::_M_throw_on_creation_failure(int __err_code,
       what += "'";
       break;
     case _STLP_LOC_NO_MEMORY:
-      _STLP_THROW(bad_alloc());
+      _STLP_THROW_BAD_ALLOC;
   }
 
   _STLP_THROW(runtime_error(what.c_str()));

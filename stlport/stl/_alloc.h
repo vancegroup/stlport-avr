@@ -43,17 +43,6 @@
 #  include <stl/_algobase.h>
 #endif
 
-#ifndef _STLP_THROW_BAD_ALLOC
-#  if !defined(_STLP_USE_EXCEPTIONS)
-#    ifndef _STLP_INTERNAL_CSTDIO
-#      include <stl/_cstdio.h>
-#    endif
-#    define _STLP_THROW_BAD_ALLOC puts("out of memory\n"); exit(1)
-#  else
-#    define _STLP_THROW_BAD_ALLOC throw _STLP_STD::bad_alloc()
-#  endif
-#endif
-
 #ifndef _STLP_INTERNAL_NEW_HEADER
 #  include <stl/_new.h>
 #endif

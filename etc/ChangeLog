@@ -6,6 +6,15 @@
 	or simply correct Standard C++ is not clear yet so namespace has
 	been removed independant of compiler in use.
 
+	* stlport/stl/_alloc.h, _new.h, src/locale.cpp, locale_impl.cp:
+	Generalize use of _STLP_THROW_BAD_ALLOC macro to throw the
+	bad_alloc exception. Definition of this macro is now in _new.h
+	header.
+
+	* stlport/stl/_valarray.h: Use __stl_new rather than malloc to get
+	exception management without additional code. It also gives users
+	a Standard way to detect memory starvation through the new handler.
+
 2008-02-16  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Removed anachronous and unmaintained raw SGI allocator mode.

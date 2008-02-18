@@ -314,7 +314,7 @@ _Locale_name_hint* _Locale_impl::insert_time_facets(const char* &name, char *buf
       // time facets category is not mandatory for correct stream behavior so if platform
       // do not support it we do not generate a runtime_error exception.
       if (__err_code == _STLP_LOC_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       return hint;
     }
 
@@ -366,7 +366,7 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* &name, char *
     _Locale_collate *__coll = _STLP_PRIV __acquire_collate(name, buf, hint, &__err_code);
     if (!__coll) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       return hint;
     }
 
@@ -381,7 +381,7 @@ _Locale_name_hint* _Locale_impl::insert_collate_facets(const char* &name, char *
     if (!__wcoll) {
       if (__err_code == _STLP_LOC_NO_MEMORY) {
         delete col;
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       }
     }
     if (__wcoll) {
@@ -435,7 +435,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char 
     _Locale_monetary *__mon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
     if (!__mon) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       return hint;
     }
 
@@ -450,7 +450,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char 
     if (!__imon) {
       delete punct;
       if (__err_code == _STLP_LOC_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       return hint;
     }
 
@@ -464,7 +464,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char 
       _Locale_monetary *__wmon = _STLP_PRIV __acquire_monetary(name, buf, hint, &__err_code);
       if (!__wmon) {
         if (__err_code == _STLP_LOC_NO_MEMORY)
-          _STLP_THROW(bad_alloc());
+          _STLP_THROW_BAD_ALLOC;
       }
 
       if (__wmon) {
@@ -477,7 +477,7 @@ _Locale_name_hint* _Locale_impl::insert_monetary_facets(const char* &name, char 
         if (!__wimon) {
           delete wpunct;
           if (__err_code == _STLP_LOC_NO_MEMORY)
-            _STLP_THROW(bad_alloc());
+            _STLP_THROW_BAD_ALLOC;
           wpunct = 0;
         }
         else {
@@ -522,7 +522,7 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* &name, char 
     _Locale_messages *__msg = _STLP_PRIV __acquire_messages(name, buf, hint, &__err_code);
     if (!__msg) {
       if (__err_code == _STLP_LOC_NO_MEMORY)
-        _STLP_THROW(bad_alloc());
+        _STLP_THROW_BAD_ALLOC;
       return hint;
     }
 
@@ -536,7 +536,7 @@ _Locale_name_hint* _Locale_impl::insert_messages_facets(const char* &name, char 
       _Locale_messages *__wmsg = _STLP_PRIV __acquire_messages(name, buf, hint, &__err_code);
       if (!__wmsg) {
         if (__err_code == _STLP_LOC_NO_MEMORY)
-          _STLP_THROW(bad_alloc());
+          _STLP_THROW_BAD_ALLOC;
       }
 
       if (__wmsg) {
