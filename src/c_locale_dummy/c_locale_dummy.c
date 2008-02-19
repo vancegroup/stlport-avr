@@ -332,7 +332,7 @@ int _Locale_tolower(struct _Locale_ctype*lctype, int c)
 { return tolower(c); }
 
 #ifndef _STLP_NO_WCHAR_T
-_Locale_mask_t _WLocale_ctype(struct _Locale_ctype*lctype, wint_t wc, _Locale_mask_t mask) {
+_Locale_mask_t _WLocale_ctype(struct _Locale_ctype *lctype, wint_t wc, _Locale_mask_t mask) {
   _Locale_mask_t ret = 0;
   if ((mask & _Locale_ALPHA) != 0 && iswalpha(wc))
     ret |= _Locale_ALPHA;
@@ -364,11 +364,11 @@ _Locale_mask_t _WLocale_ctype(struct _Locale_ctype*lctype, wint_t wc, _Locale_ma
   return ret;
 }
 
-wint_t _WLocale_tolower(struct _Locale_ctype *lctype, wint_t c)
-{ return towupper(c); }
+wint_t _WLocale_tolower(struct _Locale_ctype *lctype, wint_t wc)
+{ return towlower(wc); }
 
-wint_t _WLocale_toupper(struct _Locale_ctype *lctype, wint_t c)
-{ return towlower(c); }
+wint_t _WLocale_toupper(struct _Locale_ctype *lctype, wint_t wc)
+{ return towupper(wc); }
 
 int _WLocale_mb_cur_max (struct _Locale_codecvt *lcodecvt) { return 1; }
 int _WLocale_mb_cur_min (struct _Locale_codecvt *lcodecvt) { return 1; }

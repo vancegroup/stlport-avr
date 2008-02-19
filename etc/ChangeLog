@@ -1,3 +1,9 @@
+2008-02-19  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/c_locale_dummy/c_locale_dummy.c: Fix implementation of
+	_WLocale_toupper/_WLocale_tolower, call to respectively
+	towupper/towlower was inverted.
+
 2008-02-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.h: Removed namespace specification on
