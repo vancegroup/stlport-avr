@@ -53,22 +53,33 @@ extern "C" {
 }
 #endif
 
-// Specialised debug form of malloc which does not provide "false"
+// Specialised debug form of new operator which does not provide "false"
 // memory leaks when run with debug CRT libraries.
 #if defined (_STLP_MSVC) && (_STLP_MSVC >= 1020 && defined (_STLP_DEBUG_ALLOC)) && !defined (_STLP_WCE)
 #  include <crtdbg.h>
-inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_malloc_dbg(__bytes, _CRT_BLOCK, __FILE__, __LINE__)); }
-inline void __stlp_chunck_free(void* __p) { _free_dbg(__p, _CRT_BLOCK); }
-#else  // !_DEBUG
+inline char* __stlp_new_chunk(size_t __bytes) {
+  void *__chunk = _STLP_CHECK_NULL_ALLOC(::operator new(__bytes, __FILE__, __LINE__));
+  return __STATIC_CAST(char*, __chunk);
+}
+inline void __stlp_delete_chunck(void* __p) { ::operator delete(__p, __FILE__, __LINE__); }
+#else
 #  ifdef _STLP_NODE_ALLOC_USE_MALLOC
 #    include <cstdlib>
-inline void* __stlp_chunk_malloc(size_t __bytes) { _STLP_CHECK_NULL_ALLOC(_STLP_VENDOR_CSTD::malloc(__bytes)); }
-inline void __stlp_chunck_free(void* __p) { _STLP_VENDOR_CSTD::free(__p); }
+inline char* __stlp_new_chunk(size_t __bytes) {
+  // do not use _STLP_CHECK_NULL_ALLOC, this macro is dedicated to new operator.
+  void *__chunk = _STLP_VENDOR_CSTD::malloc(__bytes);
+  if (__chunk == 0) {
+    _STLP_THROW_BAD_ALLOC;
+  }
+  return __STATIC_CAST(char*, __chunk);
+}
+inline void __stlp_delete_chunck(void* __p) { _STLP_VENDOR_CSTD::free(__p); }
 #  else
-inline void* __stlp_chunk_malloc(size_t __bytes) { return _STLP_STD::__stl_new(__bytes); }
-inline void __stlp_chunck_free(void* __p) { _STLP_STD::__stl_delete(__p); }
+inline char* __stlp_new_chunk(size_t __bytes)
+{ return __STATIC_CAST(char*, _STLP_STD::__stl_new(__bytes)); }
+inline void __stlp_delete_chunck(void* __p) { _STLP_STD::__stl_delete(__p); }
 #  endif
-#endif  // !_DEBUG
+#endif
 
 /* This is an additional atomic operations to the ones already defined in
  * stl/_threads.h, platform should try to support it to improve performace.
@@ -367,6 +378,7 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
     _Obj* _STLP_VOLATILE* __my_free_list = _S_free_list + _S_FREELIST_INDEX(__bytes_left);
     __REINTERPRET_CAST(_Obj*, _S_start_free)->_M_next = *__my_free_list;
     *__my_free_list = __REINTERPRET_CAST(_Obj*, _S_start_free);
+    _S_start_free = _S_end_free = 0;
   }
 
   size_t __bytes_to_get =
@@ -376,8 +388,11 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 #  endif
     ;
 
-  _S_start_free = __STATIC_CAST(char*, __stlp_chunk_malloc(__bytes_to_get));
-  if (0 == _S_start_free) {
+  _STLP_TRY {
+    _S_start_free = __stlp_new_chunk(__bytes_to_get);
+  }
+#if defined (_STLP_USE_EXCEPTIONS)
+  catch (const _STLP_STD::bad_alloc&) {
     _Obj* _STLP_VOLATILE* __my_free_list;
     _Obj* __p;
     // Try to do with what we have.  That can't hurt.
@@ -395,16 +410,14 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
         // right free list.
       }
     }
-    _S_end_free = 0;    // In case of exception.
-    _S_start_free = __STATIC_CAST(char*, __stlp_chunk_malloc(__bytes_to_get));
-    /*
-    (char*)malloc_alloc::allocate(__bytes_to_get);
-    */
-
-    // This should either throw an
-    // exception or remedy the situation.  Thus we assume it
-    // succeeded.
+    __bytes_to_get = __total_bytes
+#  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
+    + sizeof(_Obj)
+#  endif
+    ;
+    _S_start_free = __stlp_new_chunk(__bytes_to_get);
   }
+#endif
 
   _S_heap_size += __bytes_to_get;
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
@@ -459,7 +472,7 @@ void __node_alloc_impl::_S_chunk_dealloc() {
   _Obj *__pcur = _S_chunks, *__pnext;
   while (__pcur != 0) {
     __pnext = __pcur->_M_next;
-    __stlp_chunck_free(__pcur);
+    __stlp_delete_chunck(__pcur);
     __pcur = __pnext;
   }
   _S_chunks = 0;
@@ -575,11 +588,11 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 #  endif
     ;
 
-  __result = __STATIC_CAST(char*, __stlp_chunk_malloc(__bytes_to_get));
-  // Alignment check
-  _STLP_VERBOSE_ASSERT(((__REINTERPRET_CAST(size_t, __result) & __STATIC_CAST(size_t, _ALIGN - 1)) == 0), _StlMsg_DBA_DELETED_TWICE)
-
-  if (0 == __result) {
+  _STLP_TRY {
+    __result = __stlp_new_chunk(__bytes_to_get);
+  }
+#if defined (_STLP_USE_EXCEPTIONS)
+  catch (const bad_alloc&) {
     // Allocation failed; try to canibalize from freelist of a larger object size.
     for (size_t __i = _p_size; __i <= (size_t)_MAX_BYTES; __i += (size_t)_ALIGN) {
       _Obj* __p  = _S_free_list[_S_FREELIST_INDEX(__i)].pop();
@@ -612,14 +625,14 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
       + _ALIGN
 #  endif
       ;
-    __result = __STATIC_CAST(char*, __stlp_chunk_malloc(__bytes_to_get));
-    // Alignment check
-    _STLP_VERBOSE_ASSERT(((__REINTERPRET_CAST(size_t, __result) & __STATIC_CAST(size_t, _ALIGN - 1)) == 0), _StlMsg_DBA_DELETED_TWICE)
+    __result = __stlp_new_chunk(__bytes_to_get);
 
     // This should either throw an exception or remedy the situation.
     // Thus we assume it succeeded.
   }
-
+#endif
+  // Alignment check
+  _STLP_VERBOSE_ASSERT(((__REINTERPRET_CAST(size_t, __result) & __STATIC_CAST(size_t, _ALIGN - 1)) == 0), _StlMsg_DBA_DELETED_TWICE)
   _STLP_ATOMIC_ADD(&_S_heap_size, __bytes_to_get);
 
 #  if defined (_STLP_DO_CLEAN_NODE_ALLOC)
@@ -670,7 +683,7 @@ void __node_alloc_impl::_S_chunk_dealloc() {
   _Obj* __chunk = _S_chunks.clear();
   while (__chunk != 0) {
     _Obj* __next = __chunk->_M_next;
-    __stlp_chunck_free(__chunk);
+    __stlp_delete_chunck(__chunk);
     __chunk  = __next;
   }
 }

@@ -4,6 +4,14 @@
 	_WLocale_toupper/_WLocale_tolower, call to respectively
 	towupper/towlower was inverted.
 
+	* src/allocators.cpp: __stlp_chunk_malloc/__stlp_chunck_free
+	renamed respectively in __stlp_new_chunk/__stlp_delete_chunck as
+	those functions behavior are closer to the new operator behavior
+	rather than to malloc. __stlp_new_chunk implementation fixed, it
+	was using _STLP_CHECK_NULL_ALLOC reserved to check allocations
+	performed through new operator. Fix code to correctly take into account
+	bad_alloc exceptions.
+
 2008-02-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_algobase.h: Removed namespace specification on
