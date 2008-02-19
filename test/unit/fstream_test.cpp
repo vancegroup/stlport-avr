@@ -46,19 +46,19 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(win32_file_format);
   CPPUNIT_TEST(null_stream);
-#if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+#  if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(null_buf);
-#if !defined (STLPORT) || !defined (_STLP_WIN32)
+#  if !defined (STLPORT) || !defined (_STLP_WIN32)
   CPPUNIT_TEST(offset);
-#endif
+#  endif
 #  if defined (CHECK_BIG_FILE)
   CPPUNIT_TEST(big_file);
 #  endif
 #  if !defined (DO_CUSTOM_FACET_TEST)
   CPPUNIT_IGNORE;
-#endif
+#  endif
   CPPUNIT_TEST(custom_facet);
   CPPUNIT_TEST_SUITE_END();
 
@@ -215,9 +215,12 @@ void FstreamTest::tellg()
     // CPPUNIT_ASSERT( is.tellg() == 0 );
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
+      is.read(buf, 0);
+      CPPUNIT_ASSERT( is.gcount() == 0 );
       CPPUNIT_ASSERT( is.tellg() == p );
       is.read( buf, 8 );
       CPPUNIT_ASSERT( !is.fail() );
+      CPPUNIT_ASSERT( is.gcount() == 8 );
       p += 8;
     }
   }
