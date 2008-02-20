@@ -1,3 +1,12 @@
+2008-02-20  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/allocators.cpp: Change management of _S_heap_size, now bit
+	translation is done on the value used to increment it rather than
+	when using _S_heap_size. Thanks to this modif, when _S_heap_size is only a 32
+	bits value it won't roll before 16Go has been allocated. Thanks to
+	an additional unsigned cast the effect won't be notice before 32 Go
+	are allocated.
+
 2008-02-19  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/c_locale_dummy/c_locale_dummy.c: Fix implementation of
