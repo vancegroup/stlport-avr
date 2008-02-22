@@ -565,7 +565,7 @@ char* __node_alloc_impl::_S_chunk_alloc(size_t _p_size, int& __nobjs) {
 
     if (__bytes_left != 0) {
       // There is still some memory left over in block after we satisfied our request.
-      if ((__result != 0) && (__bytes_left >= sizeof(_FreeBlockHeader))) {
+      if ((__result != 0) && (__bytes_left >= (__add_atomic_t)sizeof(_FreeBlockHeader))) {
         // We were able to allocate at least one object and there is still enough
         // left to put remainder back into list.
         _FreeBlockHeader* __newblock = __REINTERPRET_CAST(_FreeBlockHeader*, __buf_start);
