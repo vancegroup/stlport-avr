@@ -286,6 +286,27 @@ _Locale_lcid_t* _Locale_get_messages_hint(struct _Locale_messages* lmessages) {
   return 0;
 }
 
+#define MAP(x, y) if ((mask & x) != 0) ret |= (y)
+unsigned short MapCtypeMask(unsigned short mask) {
+  unsigned short ret = 0;
+  MAP(C1_UPPER, _Locale_UPPER | _Locale_PRINT);
+  MAP(C1_LOWER, _Locale_LOWER | _Locale_PRINT);
+  MAP(C1_DIGIT, _Locale_DIGIT | _Locale_PRINT);
+  MAP(C1_SPACE, _Locale_SPACE | _Locale_PRINT);
+  MAP(C1_PUNCT, _Locale_PUNCT | _Locale_PRINT);
+  /* MAP(C1_BLANK, ?); */
+  MAP(C1_XDIGIT, _Locale_XDIGIT | _Locale_PRINT);
+  MAP(C1_ALPHA, _Locale_ALPHA | _Locale_PRINT);
+  if ((mask & C1_CNTRL) != 0) { ret |= _Locale_CNTRL; ret &= ~_Locale_PRINT; }
+  return ret;
+}
+
+static void MapCtypeMasks(unsigned short *cur, unsigned short *end) {
+  for (; cur != end; ++cur) {
+    *cur = MapCtypeMask(*cur);
+  }
+}
+
 _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
   char cp_name[MAX_CP_LEN + 1];
   int NativeCP;
@@ -331,6 +352,7 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
       MultiByteToWideChar(ltype->cp, MB_PRECOMPOSED, (const char*)Buffer, 256, wbuffer, BufferSize);
 
       GetStringTypeW(CT_CTYPE1, wbuffer, 256, ltype->ctable);
+      MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
       free(wbuffer);
     }
     else {
@@ -352,12 +374,13 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
       /* Translate ctype table. */
       for (i = 0; i < 256; ++i) {
         if (!TargetBuffer[i]) continue;
-        ltype->ctable[TargetBuffer[i]] = ctable[i];
+        ltype->ctable[TargetBuffer[i]] = MapCtypeMask(ctable[i]);
       }
     }
   }
   else {
     GetStringTypeA(ltype->lc.id, CT_CTYPE1, (const char*)Buffer, 256, ltype->ctable);
+    MapCtypeMasks(ltype->ctable, ltype->ctable + 256);
   }
   return ltype;
 }

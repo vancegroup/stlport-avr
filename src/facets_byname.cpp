@@ -55,12 +55,8 @@ void ctype_byname<char>::_M_init() {
   // We have to do this, instead of just pointer twiddling, because
   // ctype_base::mask isn't the same type as _Locale_mask_t.
   const _Locale_mask_t* p = _Locale_ctype_table(_M_ctype);
-
-  for (size_t i = 0; i < table_size; ++i) {
-    _Locale_mask_t __m = p[i];
-    if (__m & (upper | lower))
-      __m |= alpha;
-    _M_byname_table[i] = ctype_base::mask(__m);
+  for (size_t i = 0; i != table_size; ++i) {
+    _M_byname_table[i] = ctype_base::mask(p[i]);
   }
 }
 

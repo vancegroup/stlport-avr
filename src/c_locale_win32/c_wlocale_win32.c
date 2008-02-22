@@ -39,7 +39,7 @@ _Locale_mask_t _WLocale_ctype(_Locale_ctype_t* ltype, wint_t c,
   buf[0] = c; buf[1] = 0;
   GetStringTypeW(CT_CTYPE1, buf, -1, out);
   _STLP_MARK_PARAMETER_AS_UNUSED(ltype)
-  return (_Locale_mask_t)out[0] & which_bits;
+  return (_Locale_mask_t)(MapCtypeMask(out[0]) & which_bits);
 }
 
 wint_t _WLocale_tolower(_Locale_ctype_t* ltype, wint_t c) {

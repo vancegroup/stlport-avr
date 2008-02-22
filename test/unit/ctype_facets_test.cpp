@@ -439,6 +439,37 @@ void LocaleTest::ctype_by_name()
     CPPUNIT_FAIL;
   }
 
+  try {
+    locale loc(locale::classic(), new ctype_byname<char>("C"));
+    ctype<char> const& cfacet_byname = use_facet<ctype<char> >(loc);
+    ctype<char> const& cfacet = use_facet<ctype<char> >(locale::classic());
+
+    for (char c = 0;; ++c) {
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::space, c) == cfacet.is(ctype_base::space, c));
+      if (cfacet_byname.is(ctype_base::print, c) != cfacet.is(ctype_base::print, c))
+      {
+        CPPUNIT_CHECK(cfacet_byname.is(ctype_base::print, c) == cfacet.is(ctype_base::print, c));
+      }
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::cntrl, c) == cfacet.is(ctype_base::cntrl, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::upper, c) == cfacet.is(ctype_base::upper, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::lower, c) == cfacet.is(ctype_base::lower, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::alpha, c) == cfacet.is(ctype_base::alpha, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::digit, c) == cfacet.is(ctype_base::digit, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::punct, c) == cfacet.is(ctype_base::punct, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::xdigit, c) == cfacet.is(ctype_base::xdigit, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::alnum, c) == cfacet.is(ctype_base::alnum, c));
+      CPPUNIT_CHECK(cfacet_byname.is(ctype_base::graph, c) == cfacet.is(ctype_base::graph, c));
+      if (c == 127) break;
+    }
+  }
+  catch (runtime_error const& /* e */) {
+    /* CPPUNIT_MESSAGE( e.what() ); */
+    CPPUNIT_FAIL;
+  }
+  catch (...) {
+    CPPUNIT_FAIL;
+  }
+
 #    if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
 #      if  defined(STLPORT) || !defined(__GNUC__)
   try {

@@ -1,3 +1,29 @@
+2008-02-22  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/c_locale.h, src/c_locale.h,
+	c_locale_win32/c_locale_win32.c, c_wlocale_win32.c: Major code
+	simplification. Definition of _Locale_UPPER, _Locale_LOWER, etc...
+	used to be platform dependant requiring a lot of macro checks and
+	additionnaly exposing STLport to wrong definitions. When for
+	instance _Locale_PRINT was defined as
+	_Locale_UPPER|_Locale_LOWER|..., marking a character as printable
+	was also making it a upper and lower character!
+	In fact those masks have to be platform specific only when
+	STLport directly expose platform masks which is only the case when
+	using GlibC. So now those mask are hard coded in STLport using
+	values defined in the C++ Standard 22.2.1. Under Windows the
+	localisation implementation has been adapted to map Win32 mask values
+	to the STLport ones. A number of now useless workaround has been
+	removed.
+
+	* src/c_locale_dummy/c_locale_dummy.c, ctype.cpp,
+	test/unit/ctype_facets_test.cpp: Removed the hard coded table of
+	character types that was duplicating the one in src/ctype.cpp. Now
+	a table is build during library initialisation using C functions
+	isspace, isalpha... Doing so and adding a test in
+	LocaleTest::ctype_by_name will show if STLport and the C runtime
+	agree on character classification.
+
 2008-02-20  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/allocators.cpp: Change management of _S_heap_size, now bit

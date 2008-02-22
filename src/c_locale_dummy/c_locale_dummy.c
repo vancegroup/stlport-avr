@@ -46,10 +46,30 @@ static const char *_empty_str = "";
 static const wchar_t *_empty_wstr = L"";
 #endif
 
+static _Locale_mask_t ctable[256];
+
 /* Framework functions */
 
-void _Locale_init(void)
-{}
+void _Locale_init(void) {
+  /* Ctype table for the ASCII character set. */
+  char c;
+  /* We might never reach 128 when char is signed. */
+  for (c = 0; /* c != 128 */; ++c) {
+    if (isalpha(c)) ctable[(unsigned char)c] |= _Locale_ALPHA;
+    if (iscntrl(c)) ctable[(unsigned char)c] |= _Locale_CNTRL;
+    if (isdigit(c)) ctable[(unsigned char)c] |= _Locale_DIGIT;
+    if (isprint(c)) ctable[(unsigned char)c] |= _Locale_PRINT;
+    if (ispunct(c)) ctable[(unsigned char)c] |= _Locale_PUNCT;
+    if (isspace(c)) ctable[(unsigned char)c] |= _Locale_SPACE;
+    if (isxdigit(c)) ctable[(unsigned char)c] |= _Locale_XDIGIT;
+    if (isupper(c)) ctable[(unsigned char)c] |= _Locale_UPPER;
+    if (islower(c)) ctable[(unsigned char)c] |= _Locale_LOWER;
+    if (c == 127) break;
+  }
+
+  /* ASCII is a 7-bit code, so everything else is non-ASCII. */
+  memset(&(ctable[128]), 0, 128 * sizeof(_Locale_mask_t));
+}
 
 void _Locale_final(void)
 {}
@@ -170,159 +190,9 @@ struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages* mes
 { return 0; }
 
 /* ctype */
-#define PRINTFLAG _Locale_PRINT & ~(_Locale_UPPER | _Locale_LOWER | _Locale_ALPHA | _Locale_DIGIT | _Locale_PUNCT | _Locale_SPACE | _Locale_XDIGIT)
-
 const _Locale_mask_t* _Locale_ctype_table(struct _Locale_ctype* lctype) {
-  static const _Locale_mask_t table[] =
-  {
-    _Locale_CNTRL /* null */,
-    _Locale_CNTRL /* ^A */,
-    _Locale_CNTRL /* ^B */,
-    _Locale_CNTRL /* ^C */,
-    _Locale_CNTRL /* ^D */,
-    _Locale_CNTRL /* ^E */,
-    _Locale_CNTRL /* ^F */,
-    _Locale_CNTRL /* ^G */,
-    _Locale_CNTRL /* ^H */,
-    _Locale_SPACE | _Locale_CNTRL /* tab */,
-    _Locale_SPACE | _Locale_CNTRL /* LF */,
-    _Locale_SPACE | _Locale_CNTRL /* ^K */,
-    _Locale_SPACE | _Locale_CNTRL /* FF */,
-    _Locale_SPACE | _Locale_CNTRL /* ^M */,
-    _Locale_CNTRL /* ^N */,
-    _Locale_CNTRL /* ^O */,
-    _Locale_CNTRL /* ^P */,
-    _Locale_CNTRL /* ^Q */,
-    _Locale_CNTRL /* ^R */,
-    _Locale_CNTRL /* ^S */,
-    _Locale_CNTRL /* ^T */,
-    _Locale_CNTRL /* ^U */,
-    _Locale_CNTRL /* ^V */,
-    _Locale_CNTRL /* ^W */,
-    _Locale_CNTRL /* ^X */,
-    _Locale_CNTRL /* ^Y */,
-    _Locale_CNTRL /* ^Z */,
-    _Locale_CNTRL /* esc */,
-    _Locale_CNTRL /* ^\ */,
-    _Locale_CNTRL /* ^] */,
-    _Locale_CNTRL /* ^^ */,
-    _Locale_CNTRL /* ^_ */,
-    _Locale_SPACE | PRINTFLAG /*  */,
-    _Locale_PUNCT | PRINTFLAG /* ! */,
-    _Locale_PUNCT | PRINTFLAG /* " */,
-    _Locale_PUNCT | PRINTFLAG /* # */,
-    _Locale_PUNCT | PRINTFLAG /* $ */,
-    _Locale_PUNCT | PRINTFLAG /* % */,
-    _Locale_PUNCT | PRINTFLAG /* & */,
-    _Locale_PUNCT | PRINTFLAG /* ' */,
-    _Locale_PUNCT | PRINTFLAG /* ( */,
-    _Locale_PUNCT | PRINTFLAG /* ) */,
-    _Locale_PUNCT | PRINTFLAG /* * */,
-    _Locale_PUNCT | PRINTFLAG /* + */,
-    _Locale_PUNCT | PRINTFLAG /* , */,
-    _Locale_PUNCT | PRINTFLAG /* - */,
-    _Locale_PUNCT | PRINTFLAG /* . */,
-    _Locale_PUNCT | PRINTFLAG /* / */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 0 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 1 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 2 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 3 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 4 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 5 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 6 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 7 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 8 */,
-    _Locale_DIGIT | PRINTFLAG | _Locale_XDIGIT /* 9 */,
-    _Locale_PUNCT | PRINTFLAG /* : */,
-    _Locale_PUNCT | PRINTFLAG /* ; */,
-    _Locale_PUNCT | PRINTFLAG /* < */,
-    _Locale_PUNCT | PRINTFLAG /* = */,
-    _Locale_PUNCT | PRINTFLAG /* > */,
-    _Locale_PUNCT | PRINTFLAG /* ? */,
-    _Locale_PUNCT | PRINTFLAG /* ! */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* A */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* B */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* C */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* D */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* E */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER | _Locale_XDIGIT /* F */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* G */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* H */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* I */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* J */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* K */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* L */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* M */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* N */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* O */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* P */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* Q */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* R */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* S */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* T */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* U */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* V */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* W */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* X */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* Y */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_UPPER /* Z */,
-    _Locale_PUNCT | PRINTFLAG /* [ */,
-    _Locale_PUNCT | PRINTFLAG /* \ */,
-    _Locale_PUNCT | PRINTFLAG /* ] */,
-    _Locale_PUNCT | PRINTFLAG /* ^ */,
-    _Locale_PUNCT | PRINTFLAG /* _ */,
-    _Locale_PUNCT | PRINTFLAG /* ` */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* a */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* b */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* c */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* d */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* e */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER | _Locale_XDIGIT /* f */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* g */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* h */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* i */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* j */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* k */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* l */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* m */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* n */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* o */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* p */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* q */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* r */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* s */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* t */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* u */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* v */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* w */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* x */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* y */,
-    _Locale_ALPHA | PRINTFLAG | _Locale_LOWER /* z */,
-    _Locale_PUNCT | PRINTFLAG /* { */,
-    _Locale_PUNCT | PRINTFLAG /* | */,
-    _Locale_PUNCT | PRINTFLAG /* } */,
-    _Locale_PUNCT | PRINTFLAG /* ~ */,
-    _Locale_CNTRL /* del (0x7f)*/,
-    /* ASCII is a 7-bit code, so everything else is non-ASCII */
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0
-  };
-
-  return table;
+  _STLP_MARK_PARAMETER_AS_UNUSED(lctype)
+  return ctable;
 }
 
 int _Locale_toupper(struct _Locale_ctype*lctype, int c)
