@@ -82,31 +82,31 @@ void* _Locale_create(const char* name, int *__err_code) {
 
 struct _Locale_ctype* _Locale_ctype_create(const char *name,
                                            struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_ctype*)_Locale_create(name, __err_code); }
 
 struct _Locale_codecvt* _Locale_codecvt_create(const char *name,
                                                struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_codecvt*)_Locale_create(name, __err_code); }
 
 struct _Locale_numeric* _Locale_numeric_create(const char *name,
                                                struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_numeric*)_Locale_create(name, __err_code); }
 
 struct _Locale_time* _Locale_time_create(const char *name,
                                          struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_time*)_Locale_create(name, __err_code); }
 
 struct _Locale_collate* _Locale_collate_create(const char *name,
                                                struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_collate*)_Locale_create(name, __err_code); }
 
 struct _Locale_monetary* _Locale_monetary_create(const char *name,
                                                  struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_monetary*)_Locale_create(name, __err_code); }
 
 struct _Locale_messages* _Locale_messages_create(const char *name,
                                                  struct _Locale_name_hint* hint, int *__err_code)
-{ return _Locale_create(name, __err_code); }
+{ return (_Locale_messages*)_Locale_create(name, __err_code); }
 
 const char *_Locale_ctype_default(char* buf)    { return _C_name; }
 const char *_Locale_numeric_default(char * buf) { return _C_name; }
