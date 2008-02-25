@@ -4,6 +4,8 @@
 	compiler to detect pointer types const or volatile qualified and
 	avoid trivial copy in this case.
 
+	* Eric Sanford patch for Borland compiler for Linux.
+
 2008-02-22  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/c_locale.h, src/c_locale.h,

@@ -32,6 +32,7 @@ struct _exception;
 #  include _STLP_NATIVE_C_HEADER(float.h)
 #endif
 
+#if !defined (__linux__)
 #if defined(__BORLANDC__) && defined (__cplusplus) && (__BORLANDC__ >= 0x560)
 _STLP_BEGIN_NAMESPACE
 using ::_max_dble;
@@ -49,6 +50,7 @@ template <class _Fp>
 int __fpclass(_Fp __val)
 { int __f = _fpclass(__val); _control87(PC_53|MCW_EM, MCW_PC|MCW_EM); return __f; }
 #  define _fpclass __fpclass
+#endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x203)

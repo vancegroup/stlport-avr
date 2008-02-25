@@ -557,7 +557,7 @@ using ::sqrt;
 using ::tan;
 using ::tanh;
 _STLP_END_NAMESPACE
-#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x560)
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x560) && !defined (__linux__)
 using _STLP_VENDOR_CSTD::_ecvt;
 using _STLP_VENDOR_CSTD::_fcvt;
 #  endif

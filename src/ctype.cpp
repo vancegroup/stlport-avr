@@ -275,7 +275,7 @@ const unsigned char _S_lower[ctype<char>::table_size] =
 template <bool _IsSigned>
 struct _WCharIndexT;
 
-#if !defined (__BORLANDC__) && \
+#if !(defined (__BORLANDC__) && !defined(__linux__)) && \
     !(defined (__GNUC__) && (defined (__MINGW32__) || defined (__CYGWIN__))) && \
     !defined (__ICL)
 _STLP_TEMPLATE_NULL

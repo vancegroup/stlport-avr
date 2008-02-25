@@ -49,7 +49,11 @@ endef
 define do_so_links
 $${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP)
 ifeq ("${_C_SOURCES_ONLY}","")
+ifneq ($(COMPILER_NAME),bcc)
 	$$(LINK.cc) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
+else
+	$$(LINK.cc) $${START_OBJ} $$(OBJ$(1)) $${END_OBJ}, $$(LINK_OUTPUT_OPTION), , $$(LDLIBS) $${STDLIBS} 
+endif
 else
 	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $$(OBJ$(1)) $$(LDLIBS)
 endif

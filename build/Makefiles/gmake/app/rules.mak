@@ -28,9 +28,15 @@ define cpplnk_str
 $(LINK.cc) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(1) $(LDLIBS) ${STDLIBS} ${END_OBJ}
 endef
 else
+ifneq ($(OSNAME),linux)
 define cpplnk_str
 $(LINK.cc) $(subst /,\\,${START_OBJ} $(1) ${END_OBJ}, $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS) ${STDLIBS},,)
 endef
+else
+define cpplnk_str
+$(LINK.cc) ${START_OBJ} $(1) ${END_OBJ}, $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS) ${STDLIBS},,
+endef
+endif
 endif
 
 define prog_lnk

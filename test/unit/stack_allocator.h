@@ -8,6 +8,7 @@
 #  include <new>
 #endif
 
+#undef __STD
 #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 #  define __STD std::
 #else

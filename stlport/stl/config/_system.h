@@ -61,8 +61,10 @@
 #  endif
 #elif defined (linux) || defined (__linux__)
 #  include <stl/config/_linux.h>
+#  if defined (__BORLANDC__)
+#    include <stl/config/_bc.h> /* Borland C++ 0x570 */
 /* Intel's icc define __GNUC__! */
-#  if defined (__INTEL_COMPILER)
+#  elif defined (__INTEL_COMPILER)
 #    include <stl/config/_icc.h>
 #  elif defined (__GNUC__)
 #    include <stl/config/_gcc.h>
@@ -135,7 +137,7 @@
 #  include <stl/config/_windows.h>
 #elif defined (_WIN32) || defined (__WIN32) || defined (WIN32) || defined (__WIN32__) || \
       defined (__WIN16) || defined (WIN16) || defined (_WIN16)
-#  if defined ( __BORLANDC__ )  /* Borland C++ ( 4.x - 5.x ) */
+#  if defined ( __BORLANDC__ )  /* Borland C++ / CodeGear C++ */
 #    include <stl/config/_bc.h>
 #  elif defined (__WATCOM_CPLUSPLUS__) || defined (__WATCOMC__)  /* Watcom C++ */
 #    include <stl/config/_watcom.h>

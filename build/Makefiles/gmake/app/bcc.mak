@@ -12,11 +12,28 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+ifneq ($(OSNAME),linux)
+
 OPT += -tWC -w-par
 
 LDFLAGS += -ap -Tpe -w -w-dup
 
 START_OBJ = c0x32.obj
+
+else
+
+OPT += -tC
+
+LDFLAGS += -ap 
+ 
+START_OBJ = borinit.o crt1.o
+
+endif
+
+dbg-shared : LDFLAGS += -v
+stldbg-shared : LDFLAGS += -v
+dbg-static : LDFLAGS += -v
+stldbg-static : LDFLAGS += -v
 
 install-dbg-shared: install-dbg-shared-tds 
 install-stldbg-shared: install-stldbg-shared-tds

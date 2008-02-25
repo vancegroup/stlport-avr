@@ -12,21 +12,48 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+release-shared : LDFLAGS += -Tpd -w -w-dup
+dbg-shared : LDFLAGS += -Tpd -w -w-dup
+stldbg-shared : LDFLAGS += -Tpd -w -w-dup
+
+ifneq ($(OSNAME),linux)
+
+release-shared : LDFLAGS += -V4.0 -Gi
+dbg-shared : LDFLAGS += -V4.0 -Gi
+stldbg-shared : LDFLAGS += -V4.0 -Gi
+
 release-shared : OPT += -tWD
 dbg-shared : OPT += -tWD
 stldbg-shared : OPT += -tWD
 
-release-shared : LDFLAGS += -Tpd -V4.00 -w -w-dup -Gi
-dbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup -Gi
-stldbg-shared : LDFLAGS += -Tpd -V4.00 -v -w -w-dup -Gi
-
 START_OBJ := c0d32.obj
+
+else
+
+release-shared : OPT += -tD -VP
+dbg-shared : OPT += -tD -VP
+stldbg-shared : OPT += -tD -VP
+
+release-shared: DEFS += -D_DLL
+dbg-shared:  DEFS += -D_DLL
+stldbg-shared:  DEFS += -D_DLL
+
+START_OBJ := borinitso.o
+
+endif
+
+dbg-shared : LDFLAGS += -v
+stldbg-shared : LDFLAGS += -v
+dbg-static : LDFLAGS += -v
+stldbg-static : LDFLAGS += -v
 
 install-shared: install-release-shared install-dbg-shared install-stldbg-shared
 install: install-shared
 
+ifneq ($(OSNAME),linux)
 install-dbg-shared: install-dbg-shared-tds 
 install-stldbg-shared: install-stldbg-shared-tds
+endif
 
 BASE_LIBNAME := $(LIB_PREFIX)${LIBNAME}${LIB_TYPE}${LIB_SUFFIX}
 BASE_LIBNAME_DBG := $(LIB_PREFIX)${LIBNAME}${DBG_SUFFIX}${LIB_TYPE}${LIB_SUFFIX}

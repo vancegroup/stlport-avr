@@ -22,7 +22,7 @@
 
 #if !defined (_STLP_WCE_EVC3) && !defined (_STLP_NO_WCHAR_T)
 
-#  if defined (__BORLANDC__)
+#  if defined (__BORLANDC__) && !defined (__linux__)
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <_str.h>
 #    else

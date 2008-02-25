@@ -19,6 +19,8 @@ else
 INSTALL_TAGS = install-shared
 endif
 
+ifneq ($(OSNAME),linux)
+
 CXX := bcc32 
 CC := bcc32
 RC := brcc32
@@ -165,6 +167,103 @@ BASE_INSTALL_DIR ?= ${SRCROOT}/..
 # map output option (see build/Makefiles/gmake/dmc.mak)
 
 MAP_OUTPUT_OPTION = 
+
+else # linux
+
+CXX := bc++
+CC := bc++
+
+DEFS ?=
+OPT ?=
+
+CFLAGS = -q -ff -xp -w-par
+CXXFLAGS = -q -ff -xp -w-aus
+
+DEFS += -D_NO_VCL -D_STLP_REAL_LOCALE_IMPLEMENTED -D_GNU_SOURCE
+
+release-shared: DEFS += -D_RTLDLL
+dbg-shared:  DEFS += -D_RTLDLL
+stldbg-shared:  DEFS += -D_RTLDLL
+
+OPT += -w-ccc -w-rch -w-ngu -w-inl -w-eff
+
+ifdef STLP_BUILD_NO_RTTI
+OPT += -RT-
+endif
+
+ifndef STLP_BUILD_NO_THREAD
+DEFS += -D__MT__
+endif
+
+OUTPUT_OPTION = -o$@
+LINK_OUTPUT_OPTION = $@
+CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES)
+
+LINK.cc = ilink $(LDFLAGS)
+
+LDFLAGS += -Gn 
+
+dbg-static : DEFS += -D_DEBUG
+dbg-shared : DEFS += -D_DEBUG
+stldbg-static : DEFS += -D_DEBUG
+stldbg-shared : DEFS += -D_DEBUG
+
+# STLport DEBUG mode specific defines
+stldbg-static :     DEFS += -D_STLP_DEBUG
+stldbg-shared :     DEFS += -D_STLP_DEBUG
+stldbg-static-dep : DEFS += -D_STLP_DEBUG
+stldbg-shared-dep : DEFS += -D_STLP_DEBUG
+
+# optimization and debug compiler flags
+release-static : OPT += -O2 -vi-
+release-shared : OPT += -O2 -vi-
+
+dbg-static : OPT += -R -v -y
+dbg-shared : OPT += -R -v -y
+stldbg-static : OPT += -R -v -y
+stldbg-shared : OPT += -R -v -y
+
+ifndef STLP_BUILD_NO_THREAD
+
+ifdef LIBNAME
+release-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a
+dbg-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a
+stldbg-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a
+endif
+
+ifdef PRGNAME
+release-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so ../../../lib/libstlport.so
+dbg-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so ../../../lib/libstlportg.so
+stldbg-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so ../../../lib/libstlportstlg.so
+release-static : LDLIBS += libborcrtl.a libborunwind.a libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlport.a
+dbg-static : LDLIBS += libborcrtl.a libborunwind.a libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlportg.a
+stldbg-static : LDLIBS += libborcrtl.a libborunwind.a libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlportstlg.a
+endif
+
+else # single-threaded
+
+ifdef LIBNAME
+release-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so libc_nonshared.a
+dbg-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so libc_nonshared.a
+stldbg-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so libc_nonshared.a
+endif
+
+ifdef PRGNAME
+release-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so ../../../lib/libstlport.so
+dbg-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so ../../../lib/libstlportg.so
+stldbg-shared : LDLIBS += libborcrtl.so libborunwind.so libc.so.6 libm.so libdl.so ../../../lib/libstlportstlg.so
+release-static : LDLIBS += libborcrtl.a libborunwind.a libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlport.a
+dbg-static : LDLIBS += libborcrtl.a libborunwind.a libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlportg.a
+stldbg-static : LDLIBS += libborcrtl.a libborunwind.a libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlportst$
+endif
+
+endif # STLP_BUILD_NO_THREAD
+
+# install dir defaults to /usr/local unless defined
+
+BASE_INSTALL_DIR ?= ${SRCROOT}/..
+
+endif # linux
 
 # dependency output parser (dependencies collector)
 

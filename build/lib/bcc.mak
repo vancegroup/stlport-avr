@@ -2,18 +2,21 @@
 
 SRCROOT := ..
 COMPILER_NAME := bcc
-#SEP := \\
-OBJ_EXT := obj
 
+#STLPORT_INCLUDE_DIR = ../../stlport
+include Makefile.inc
+include ${SRCROOT}/Makefiles/gmake/top.mak
+
+ifneq ($(OSNAME),linux)
+OBJ_EXT := obj
 ifndef INCLUDE
 $(error Missing INCLUDE environment variable definition. Please see doc/README.borland \
 for instructions about how to prepare Borland compiler to build STLport libraries.)
 endif
-
-STLPORT_INCLUDE_DIR = ../../stlport
-include Makefile.inc
-include ${SRCROOT}/Makefiles/gmake/top.mak
-
+else
+GCC_VERSION := $(shell gcc -dumpversion)
+DEFS += -DGCC_VERSION=$(GCC_VERSION)
+endif
 
 #DEFS += -D__BUILDING_STLPORT
 INCLUDES += -I$(STLPORT_INCLUDE_DIR)

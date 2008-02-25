@@ -17,6 +17,36 @@
 #  define _STLP_NO_FORCE_INSTANTIATE
 #endif
 
+#if (__BORLANDC__ >= 0x570) && (__BORLANDC__ < 0x580)
+#  define _STLP_NO_NEW_C_HEADERS
+#  define _STLP_NO_FORCE_INSTANTIATE
+#  define _STLP_DEF_CONST_DEF_PARAM_BUG
+#  define _STLP_USE_DEFAULT_FILE_OFFSET
+
+#  if defined(__cplusplus)
+#    define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include/c++/ ## GCC_VERSION
+#    define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/c++/ ## GCC_VERSION
+#  endif
+
+#  ifndef _SYS_CDEFS_H
+#    include </usr/include/sys/cdefs.h>
+#  endif
+
+#  ifdef __MT__
+#    define _PTHREADS
+#    if !defined (_RTLDLL)
+#      define _STLP_DONT_USE_PTHREAD_SPINLOCK
+#    endif
+#  else
+#    define _NOTHREADS
+#  endif
+
+#  pragma defineonoption _CPPUNWIND -xd
+
+#  define _STLP_NO_EXCEPTION_HEADER
+#  define _STLP_DONT_USE_EXCEPTIONS
+#endif 
+
 #if (__BORLANDC__ >= 0x560) && (__BORLANDC__ < 0x570)
 #  define _USE_OLD_RW_STL
 #endif
@@ -44,8 +74,12 @@
 #define _STLP_NO_VENDOR_STDLIB_L
 #define _STLP_NO_VENDOR_MATH_F
 #define _STLP_DONT_USE_SHORT_STRING_OPTIM 1
+
+#if (__BORLANDC__ < 0x570) || (__BORLANDC__ >= 0x580)
 #define _STLP_NO_NATIVE_MBSTATE_T
 #undef _STLP_NO_UNEXPECTED_EXCEPT_SUPPORT
+#endif
+
 #if (__BORLANDC__ < 0x580) && !defined (_RTLDLL)
 #  define _UNCAUGHT_EXCEPTION 1
 #endif
@@ -117,7 +151,7 @@
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else
-#    if (__BORLANDC__ < 0x580) 
+#    if (__BORLANDC__ < 0x570) 
 #    define  _STLP_CALL __cdecl __import
 #else
 #  define  _STLP_CALL __cdecl
@@ -127,4 +161,6 @@
 #  define  _STLP_CALL __cdecl
 #endif
 
+#if !defined (__linux__)
 #include <stl/config/_auto_link.h>
+#endif

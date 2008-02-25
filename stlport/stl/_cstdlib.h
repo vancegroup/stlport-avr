@@ -26,7 +26,7 @@
 #  include <stdlib.h>
 #endif
 
-#if defined (__BORLANDC__)
+#if defined (__BORLANDC__) && !defined (__linux__)
 /* Borland process.h header do not bring anything here and is just included
  * in order to avoid inclusion later. This header cannot be included later
  * because Borland compiler consider that for instance the abort function

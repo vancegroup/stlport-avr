@@ -44,7 +44,7 @@ typedef _BSD_WINT_T_ wint_t;
 #      include <stdint.h> // WCHAR_MIN, WCHAR_MAX
 #    endif
 #  elif defined (_STLP_NO_WCHAR_T) || \
-       (defined (__BORLANDC__) && (__BORLANDC__ < 0x580)) || \
+       (defined (__BORLANDC__) && (__BORLANDC__ < 0x570)) || \
         defined (__OpenBSD__) || defined (__FreeBSD__) || \
        (defined (__GNUC__) && (defined (__APPLE__) || defined ( __Lynx__ )))
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
@@ -305,7 +305,7 @@ using _STLP_VENDOR_CSTD::wprintf;
 using _STLP_VENDOR_CSTD::wscanf;
 #        endif
 
-#        if defined (__BORLANDC__)
+#        if defined (__BORLANDC__) && !defined (__linux__)
 inline wchar_t* _STLP_wmemcpy(wchar_t* __wdst, const wchar_t* __wsrc, size_t __n)
 { return __STATIC_CAST(wchar_t*, _STLP_VENDOR_CSTD::wmemcpy(__wdst, __wsrc, __n)); }
 inline wchar_t* _STLP_wmemset(wchar_t* __wdst, wchar_t __wc, size_t __n)

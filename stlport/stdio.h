@@ -39,7 +39,7 @@ struct _exception;
 #      define _STRUCT_FILE
 #    endif
 
-#    if defined (__BORLANDC__) && defined (__cplusplus)
+#    if defined (__BORLANDC__) && defined (__cplusplus) && !defined (__linux__)
 _STLP_BEGIN_NAMESPACE
 using __std_alias::_streams;
 _STLP_END_NAMESPACE

@@ -156,25 +156,24 @@ bool basic_ostream<_CharT, _Traits>
       }
       _STLP_CATCH_ALL {
         this->_M_handle_exception(ios_base::failbit);
-        return __any_inserted;
+        break;
       }
 
-      if ( this->_S_eof(__c) )
-        return __any_inserted;
+      if (this->_S_eof(__c))
+        break;
 
       __cguard.guard(__c);
 #if defined (__DMC__)
       _STLP_TRY {
 #endif
-      if ( this->_S_eof( __to->sputc(_Traits::to_char_type(__c)) ) ) {
-        return __any_inserted;
-      }
+      if (this->_S_eof(__to->sputc(_Traits::to_char_type(__c))))
+        break;
 
 #if defined (__DMC__)
       }
       _STLP_CATCH_ALL {
         this->_M_handle_exception(ios_base::badbit);
-        return __any_inserted;
+        break;
       }
 #endif
       __cguard.release();
@@ -183,8 +182,8 @@ bool basic_ostream<_CharT, _Traits>
   }
   _STLP_CATCH_ALL {
     this->_M_handle_exception(ios_base::badbit);
-    return __any_inserted;
   }
+  return __any_inserted;
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

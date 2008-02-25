@@ -39,7 +39,7 @@ struct _exception;
 #      include _STLP_NATIVE_C_HEADER(string.h)
 #    endif
 #  else
-#    if defined (__BORLANDC__)
+#    if defined (__BORLANDC__) && !defined (__linux__)
 #      if defined (_STLP_HAS_INCLUDE_NEXT)
 #        include_next <_str.h>
 #      else

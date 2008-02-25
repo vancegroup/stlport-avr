@@ -2,13 +2,19 @@
 
 SRCROOT := ../..
 COMPILER_NAME := bcc
-OBJ_EXT := obj
 
-STLPORT_DIR := ../../..
+#STLPORT_DIR := ../../..
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
 INCLUDES += -I${STLPORT_INCLUDE_DIR}
+
+ifneq ($(OSNAME),linux)
+OBJ_EXT := obj
+else
+GCC_VERSION = $(shell gcc -dumpversion)
+DEFS += -DGCC_VERSION=$(GCC_VERSION)
+endif
 
 dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
