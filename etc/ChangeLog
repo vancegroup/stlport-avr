@@ -1,3 +1,9 @@
+2008-02-25  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/type_traits.h: Generalize technique used by Borland
+	compiler to detect pointer types const or volatile qualified and
+	avoid trivial copy in this case.
+
 2008-02-22  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/c_locale.h, src/c_locale.h,

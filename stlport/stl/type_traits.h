@@ -493,14 +493,35 @@ template <class _Src, class _Dst>
 inline _TrivialUCopy<_Src, _Dst> _UseTrivialUCopy(_Src*, _Dst*)
 { return _TrivialUCopy<_Src, _Dst>(); }
 
-#if defined (__BORLANDC__)
-template <class _Src, class _Dst>
-inline _TrivialCopy<_Src*, _Dst*> _UseTrivialCopy(_Src*, const _Dst*)
-{ return _TrivialCopy<_Src*, _Dst*>(); }
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__)
+struct _NegativeAnswer {
+  typedef __false_type _Ret;
+  static _Ret _Answer() { return _Ret(); }
+};
 
 template <class _Src, class _Dst>
-inline _TrivialUCopy<_Src*, _Dst*> _UseTrivialUCopy(_Src*, const _Dst*)
-{ return _TrivialUCopy<_Src*, _Dst*>(); }
+inline _NegativeAnswer _UseTrivialCopy(_Src*, const _Dst*)
+{ return _NegativeAnswer(); }
+
+template <class _Src, class _Dst>
+inline _NegativeAnswer _UseTrivialCopy(_Src*, volatile _Dst*)
+{ return _NegativeAnswer(); }
+
+template <class _Src, class _Dst>
+inline _NegativeAnswer _UseTrivialCopy(_Src*, const volatile _Dst*)
+{ return _NegativeAnswer(); }
+
+template <class _Src, class _Dst>
+inline _NegativeAnswer _UseTrivialUCopy(_Src*, const _Dst*)
+{ return _NegativeAnswer(); }
+
+template <class _Src, class _Dst>
+inline _NegativeAnswer _UseTrivialUCopy(_Src*, volatile _Dst*)
+{ return _NegativeAnswer(); }
+
+template <class _Src, class _Dst>
+inline _NegativeAnswer _UseTrivialUCopy(_Src*, const volatile _Dst*)
+{ return _NegativeAnswer(); }
 #endif
 
 template <class _Tp>
