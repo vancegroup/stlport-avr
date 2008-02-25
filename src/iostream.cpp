@@ -221,10 +221,10 @@ void  _STLP_CALL ios_base::_S_initialize() {
     clog_buf.reset(_Stl_create_filebuf(stderr, ios_base::out));
   }
 
-  istream* ptr_cin  = new(static_cast<void*>(&cin))  istream(cin_buf.get()); cin_buf.release();
-  ostream* ptr_cout = new(static_cast<void*>(&cout)) ostream(cout_buf.get()); cout_buf.release();
-  ostream* ptr_cerr = new(static_cast<void*>(&cerr)) ostream(cerr_buf.get()); cerr_buf.release();
-  /*ostream* ptr_clog = */ new(static_cast<void*>(&clog)) ostream(clog_buf.get()); clog_buf.release();
+  istream* ptr_cin  = new(&cin)  istream(cin_buf.get()); cin_buf.release();
+  ostream* ptr_cout = new(&cout) ostream(cout_buf.get()); cout_buf.release();
+  ostream* ptr_cerr = new(&cerr) ostream(cerr_buf.get()); cerr_buf.release();
+  /*ostream* ptr_clog = */ new(&clog) ostream(clog_buf.get()); clog_buf.release();
   ptr_cin->tie(ptr_cout);
   ptr_cerr->setf(ios_base::unitbuf);
 
