@@ -1,3 +1,12 @@
+2008-02-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Rationalization in detection of real localization implementation.
+	_STLP_REAL_LOCALE_IMPLEMENTED removed, the whole detection mecanism
+	is now in c_locale.h/c_locale.c and is based on API specific macros.
+	For the moment real localization is used for windows platforms
+	(_STLP_WIN32 except Windows CE) and when Glibc 2.2 or newer with
+	GNU extensions (_GNU_SOURCE) is detected.
+
 2008-02-25  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/type_traits.h: Generalize technique used by Borland

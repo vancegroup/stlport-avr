@@ -8,9 +8,6 @@
 using namespace std;
 #  endif
 
-// Pls, don't write #ifdef _STLP_REAL_LOCALE_IMPLEMENTED here!
-// It undefined in any case!!!!!
-
 static const char* tested_locales[] = {
 //name,
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)

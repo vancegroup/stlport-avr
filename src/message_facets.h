@@ -59,7 +59,7 @@ private:                        // Invalidate copy constructor and assignment
  *
  */
 
-#if defined (_STLP_REAL_LOCALE_IMPLEMENTED) && defined (_STLP_USE_GLIBC)
+#if defined (_STLP_USE_GLIBC2_LOCALIZATION)
 #  define _STLP_USE_NL_CATD_MAPPING
 #else
 /* If no mapping a message_base::catalog entry, int typedef according C++ Standard 22.2.7.1,

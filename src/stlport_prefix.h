@@ -8,9 +8,6 @@
 #    define WIN32_LEAN_AND_MEAN
 #    define NOSERVICE
 #  endif
-#  if !(defined (__CYGWIN__) || defined (_WIN32_WCE))
-#    define _STLP_REAL_LOCALE_IMPLEMENTED
-#  endif
 #endif
 
 #undef _STLP_NO_FORCE_INSTANTIATE

@@ -45,11 +45,6 @@
 #  endif /* __UCLIBC_HAS_WCHAR__ */
    /* Hmm, bogus _GLIBCPP_USE_NAMESPACES seems undefined... */
 #  define _STLP_VENDOR_GLOBAL_CSTD 1
-#  if defined(_STLP_REAL_LOCALE_IMPLEMENTED)
-     /* locale in uClibc is very restricted */
-     /* recheck if __UCLIBC_HAS_LOCALE__ defined...*/
-#    undef _STLP_REAL_LOCALE_IMPLEMENTED
-#  endif
 #endif
 
 

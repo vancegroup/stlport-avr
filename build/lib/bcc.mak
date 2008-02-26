@@ -8,6 +8,7 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
 ifneq ($(OSNAME),linux)
+DEFS += -D_GNU_SOURCE
 OBJ_EXT := obj
 ifndef INCLUDE
 $(error Missing INCLUDE environment variable definition. Please see doc/README.borland \

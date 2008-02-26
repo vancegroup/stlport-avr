@@ -18,21 +18,12 @@
 
 #include "stlport_prefix.h"
 
-#include <stdlib.h>
-
-#include <limits.h>
 #include "c_locale.h"
 
-#if defined (_STLP_REAL_LOCALE_IMPLEMENTED)
-#  if defined (WIN32) || defined (_WIN32)
-#    include "c_locale_win32/c_locale_win32.c"
-#  elif defined (_STLP_USE_GLIBC)
-#    if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 2))
-#      include "c_locale_glibc/c_locale_glibc2.c" /* glibc 2.2 and newer */
-#    else
-#      include "c_locale_glibc/c_locale_glibc.c"
-#    endif
-#  endif
-#else /* !_STLP_REAL_LOCALE_IMPLEMENTED */
+#if defined (_STLP_WIN32) && !defined (_STLP_WCE)
+#  include "c_locale_win32/c_locale_win32.c"
+#elif defined (_STLP_USE_GLIBC2_LOCALIZATION)
+#  include "c_locale_glibc/c_locale_glibc2.c" /* glibc 2.2 and newer */
+#else
 #  include "c_locale_dummy/c_locale_dummy.c"
 #endif

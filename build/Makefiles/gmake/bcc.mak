@@ -179,7 +179,7 @@ OPT ?=
 CFLAGS = -q -ff -xp -w-par
 CXXFLAGS = -q -ff -xp -w-aus
 
-DEFS += -D_NO_VCL -D_STLP_REAL_LOCALE_IMPLEMENTED -D_GNU_SOURCE
+DEFS += -D_NO_VCL
 
 release-shared: DEFS += -D_RTLDLL
 dbg-shared:  DEFS += -D_RTLDLL

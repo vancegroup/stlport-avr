@@ -11,7 +11,7 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
 ifeq ($(OSNAME),linux)
-DEFS += -D_STLP_REAL_LOCALE_IMPLEMENTED -D_GNU_SOURCE
+DEFS += -D_GNU_SOURCE
 endif
 
 # options for build with boost support

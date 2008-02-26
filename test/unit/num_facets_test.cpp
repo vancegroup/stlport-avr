@@ -17,9 +17,6 @@ struct ref_locale {
   const char *thousands_sep;
 };
 
-// Pls, don't write #ifdef _STLP_REAL_LOCALE_IMPLEMENTED here!
-// It undefined in any case!!!!!
-
 static const ref_locale tested_locales[] = {
 //{  name,         decimal_point, thousands_sepy_thousands_sep},
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)

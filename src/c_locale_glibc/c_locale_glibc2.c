@@ -1,24 +1,10 @@
-
 #include <locale.h>
 #include <langinfo.h>
-
-#include <stl/c_locale.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <wctype.h>
 #include <string.h>
-
 #include <stdint.h>
-
-typedef __locale_t __c_locale;
-
-#if (__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ > 2))
-#  define __nl_langinfo_l nl_langinfo_l
-#  define __newlocale newlocale
-#  define __freelocale freelocale
-#endif
-
-#define __LOCALE_CREATE(nm,category) __newlocale(1 << category, nm, NULL )
-#define __LOCALE_DESTROY(__loc)      __freelocale((__c_locale)__loc)
 
 static const char *_empty_str = "";
 static const char *_C_name = "C";
@@ -35,32 +21,32 @@ static wchar_t* _ToWChar(const char* buf, wchar_t *wbuf, size_t wbufSize) {
 #if 0
 struct _Locale_ctype
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 
 struct _Locale_numeric
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 
 struct _Locale_time
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 
 struct _Locale_collate
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 
 struct _Locale_monetary
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 
 struct _Locale_messages
 {
-  __c_locale __cloc;
+  locale_t __cloc;
 };
 #endif
 
@@ -73,7 +59,7 @@ void _Locale_final()
 struct _Locale_ctype *_Locale_ctype_create(const char *nm, struct _Locale_name_hint* hint,
                                            int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_ctype*)__LOCALE_CREATE( nm, LC_CTYPE );
+  return (struct _Locale_ctype*)newlocale(LC_CTYPE_MASK, nm, NULL);
 }
 
 struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_name_hint* hint,
@@ -87,31 +73,31 @@ struct _Locale_codecvt *_Locale_codecvt_create(const char *nm, struct _Locale_na
 struct _Locale_numeric *_Locale_numeric_create(const char *nm, struct _Locale_name_hint* hint,
                                                int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_numeric*)__LOCALE_CREATE( nm, LC_NUMERIC );
+  return (struct _Locale_numeric*)newlocale(LC_NUMERIC_MASK, nm, NULL);
 }
   
 struct _Locale_time *_Locale_time_create(const char *nm, struct _Locale_name_hint* hint,
                                          int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_time*)__LOCALE_CREATE( nm, LC_TIME );
+  return (struct _Locale_time*)newlocale(LC_TIME_MASK, nm, NULL);
 }
 
 struct _Locale_collate *_Locale_collate_create(const char *nm, struct _Locale_name_hint* hint,
                                                int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_collate*)__LOCALE_CREATE( nm, LC_COLLATE );
+  return (struct _Locale_collate*)newlocale(LC_COLLATE_MASK, nm, NULL);
 }
 
 struct _Locale_monetary *_Locale_monetary_create(const char *nm, struct _Locale_name_hint* hint,
                                                  int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_monetary*)__LOCALE_CREATE( nm, LC_MONETARY );
+  return (struct _Locale_monetary*)newlocale(LC_MONETARY_MASK, nm, NULL);
 }
 
 struct _Locale_messages *_Locale_messages_create(const char *nm, struct _Locale_name_hint* hint,
                                                  int *__err_code) {
   *__err_code = _STLP_LOC_UNKNOWN_NAME;
-  return (struct _Locale_messages*)__LOCALE_CREATE( nm, LC_MESSAGES );
+  return (struct _Locale_messages*)newlocale(LC_MESSAGES_MASK, nm, NULL);
 }
 
 /*
@@ -173,7 +159,7 @@ const char *_Locale_messages_default( char *nm )
 
 char const*_Locale_ctype_name( const struct _Locale_ctype *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_CTYPE];
+  return ((locale_t)__loc)->__names[LC_CTYPE];
 }
 
 char const*_Locale_codecvt_name( const struct _Locale_codecvt *__loc, char *buf )
@@ -183,49 +169,49 @@ char const*_Locale_codecvt_name( const struct _Locale_codecvt *__loc, char *buf 
 
 char const*_Locale_numeric_name( const struct _Locale_numeric *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_NUMERIC];
+  return ((locale_t)__loc)->__names[LC_NUMERIC];
 }
 
 char const*_Locale_time_name( const struct _Locale_time *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_TIME];
+  return ((locale_t)__loc)->__names[LC_TIME];
 }
 
 char const*_Locale_collate_name( const struct _Locale_collate *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_COLLATE];
+  return ((locale_t)__loc)->__names[LC_COLLATE];
 }
 
 char const*_Locale_monetary_name( const struct _Locale_monetary *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_MONETARY];
+  return ((locale_t)__loc)->__names[LC_MONETARY];
 }
 
 char const*_Locale_messages_name( const struct _Locale_messages *__loc, char *buf )
 {
-  return ((__c_locale)__loc)->__names[LC_MESSAGES];
+  return ((locale_t)__loc)->__names[LC_MESSAGES];
 }
 
 void _Locale_ctype_destroy( struct _Locale_ctype *__loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 void _Locale_codecvt_destroy( struct _Locale_codecvt *__loc )
 {}
 
 void _Locale_numeric_destroy( struct _Locale_numeric *__loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 void _Locale_time_destroy( struct _Locale_time *__loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 void _Locale_collate_destroy( struct _Locale_collate *__loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 void _Locale_monetary_destroy( struct _Locale_monetary *__loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 void _Locale_messages_destroy( struct _Locale_messages* __loc )
-{ __LOCALE_DESTROY(__loc); }
+{ freelocale((locale_t)__loc); }
 
 /*
  * locale loc expected either locale name indeed (platform-specific)
@@ -294,45 +280,45 @@ struct _Locale_name_hint* _Locale_get_messages_hint(struct _Locale_messages* mes
 const _Locale_mask_t *_Locale_ctype_table( struct _Locale_ctype *__loc )
 {
   /* return table with masks (upper, lower, alpha, etc.) */
-  _STLP_STATIC_ASSERT( sizeof(_Locale_mask_t) == sizeof(((__c_locale)__loc)->__ctype_b[0]) )
-  return ((__c_locale)__loc)->__ctype_b;
+  _STLP_STATIC_ASSERT( sizeof(_Locale_mask_t) == sizeof(((locale_t)__loc)->__ctype_b[0]) )
+  return ((locale_t)__loc)->__ctype_b;
 }
 
 int _Locale_toupper( struct _Locale_ctype *__loc, int c )
-{ return ((__c_locale)__loc)->__ctype_toupper[c]; }
+{ return ((locale_t)__loc)->__ctype_toupper[c]; }
 
 int _Locale_tolower( struct _Locale_ctype *__loc, int c )
-{ return ((__c_locale)__loc)->__ctype_tolower[c]; }
+{ return ((locale_t)__loc)->__ctype_tolower[c]; }
 
 #if !defined (_STLP_NO_WCHAR_T)
 _Locale_mask_t _WLocale_ctype( struct _Locale_ctype *__loc, wint_t wc, _Locale_mask_t __mask )
 {
   _Locale_mask_t ret = 0;
-  if ( (__mask & _Locale_ALPHA) != 0 && iswalpha_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_ALPHA) != 0 && iswalpha_l(wc, (locale_t)__loc))
     ret |= _Locale_ALPHA;
   
-  if ( (__mask & _Locale_CNTRL) != 0 && iswcntrl_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_CNTRL) != 0 && iswcntrl_l(wc, (locale_t)__loc))
     ret |= _Locale_CNTRL;
 
-  if ( (__mask & _Locale_DIGIT) != 0 && iswdigit_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_DIGIT) != 0 && iswdigit_l(wc, (locale_t)__loc))
     ret |= _Locale_DIGIT;
 
-  if ( (__mask & _Locale_PRINT) != 0 && iswprint_l(wc, ((__c_locale)__loc))) 
+  if ((__mask & _Locale_PRINT) != 0 && iswprint_l(wc, (locale_t)__loc)) 
     ret |= _Locale_PRINT;
 
-  if ( (__mask & _Locale_PUNCT) != 0 && iswpunct_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_PUNCT) != 0 && iswpunct_l(wc, (locale_t)__loc))
     ret |= _Locale_PUNCT;
 
-  if ( (__mask & _Locale_SPACE) != 0 && iswspace_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_SPACE) != 0 && iswspace_l(wc, (locale_t)__loc))
     ret |= _Locale_SPACE;
 
-  if ( (__mask & _Locale_XDIGIT) != 0 && iswxdigit_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_XDIGIT) != 0 && iswxdigit_l(wc, (locale_t)__loc))
     ret |= _Locale_XDIGIT;
 
-  if ( (__mask & _Locale_UPPER) != 0 && iswupper_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_UPPER) != 0 && iswupper_l(wc, (locale_t)__loc))
     ret |= _Locale_UPPER;
 
-  if ( (__mask & _Locale_LOWER) != 0 && iswlower_l(wc, ((__c_locale)__loc)))
+  if ((__mask & _Locale_LOWER) != 0 && iswlower_l(wc, (locale_t)__loc))
     ret |= _Locale_LOWER;
 
   return ret;
@@ -340,12 +326,12 @@ _Locale_mask_t _WLocale_ctype( struct _Locale_ctype *__loc, wint_t wc, _Locale_m
 
 wint_t _WLocale_tolower( struct _Locale_ctype *__loc, wint_t c )
 {
-  return towlower_l( c, ((__c_locale)__loc) );
+  return towlower_l( c, ((locale_t)__loc) );
 }
 
 wint_t _WLocale_toupper( struct _Locale_ctype *__loc, wint_t c )
 {
-  return towupper_l( c, ((__c_locale)__loc) );
+  return towupper_l( c, ((locale_t)__loc) );
 }
 #endif
 
@@ -384,7 +370,7 @@ int _Locale_strcmp(struct _Locale_collate * __loc,
     strncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     strncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
 
-    ret = strcoll_l(buf1, buf2, (__c_locale)__loc);
+    ret = strcoll_l(buf1, buf2, (locale_t)__loc);
     if (ret != 0) return ret;
     s1 += bufsize1; n1 -= bufsize1;
     s2 += bufsize2; n2 -= bufsize2;
@@ -404,7 +390,7 @@ int _WLocale_strcmp(struct _Locale_collate *__loc,
     wcsncpy(buf1, s1, bufsize1); buf1[bufsize1] = 0;
     wcsncpy(buf2, s2, bufsize2); buf2[bufsize2] = 0;
 
-    ret = wcscoll_l(buf1, buf2, (__c_locale)__loc);
+    ret = wcscoll_l(buf1, buf2, (locale_t)__loc);
     if (ret != 0) return ret;
     s1 += bufsize1; n1 -= bufsize1;
     s2 += bufsize2; n2 -= bufsize2;
@@ -435,7 +421,7 @@ size_t _Locale_strxfrm(struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  result = strxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = strxfrm_l(dest, real_src, dest_n, (locale_t)__loc);
   if (buf != NULL) free(buf);
   return result;
 }
@@ -463,7 +449,7 @@ size_t _WLocale_strxfrm( struct _Locale_collate *__loc,
   }
   else
     real_src = src;
-  result = wcsxfrm_l(dest, real_src, dest_n, (__c_locale)__loc);
+  result = wcsxfrm_l(dest, real_src, dest_n, (locale_t)__loc);
   if (buf != NULL) free(buf);
   return result;
 }
@@ -474,27 +460,27 @@ size_t _WLocale_strxfrm( struct _Locale_collate *__loc,
 
 char _Locale_decimal_point(struct _Locale_numeric *__loc)
 {
-  return *(__nl_langinfo_l(RADIXCHAR, (__c_locale)__loc));
+  return *(nl_langinfo_l(RADIXCHAR, (locale_t)__loc));
 }
 
 char _Locale_thousands_sep(struct _Locale_numeric *__loc)
 {
-  return *(__nl_langinfo_l(THOUSEP, (__c_locale)__loc));
+  return *(nl_langinfo_l(THOUSEP, (locale_t)__loc));
 }
 
 const char* _Locale_grouping(struct _Locale_numeric *__loc)
 {
-  return (_Locale_thousands_sep(__loc) != 0 ) ? (__nl_langinfo_l(GROUPING, (__c_locale)__loc)) : _empty_str;
+  return (_Locale_thousands_sep(__loc) != 0 ) ? (nl_langinfo_l(GROUPING, (locale_t)__loc)) : _empty_str;
 }
 
 const char *_Locale_true(struct _Locale_numeric *__loc)
 {
-  return __nl_langinfo_l(YESSTR, (__c_locale)__loc);
+  return nl_langinfo_l(YESSTR, (locale_t)__loc);
 }
 
 const char *_Locale_false(struct _Locale_numeric *__loc)
 {
-  return __nl_langinfo_l(NOSTR, (__c_locale)__loc);
+  return nl_langinfo_l(NOSTR, (locale_t)__loc);
 }
 
 #ifndef _STLP_NO_WCHAR_T
@@ -512,22 +498,22 @@ const wchar_t *_WLocale_false(struct _Locale_numeric *__loc, wchar_t *buf, size_
 
 const char *_Locale_int_curr_symbol(struct _Locale_monetary *__loc)
 {
-  return __nl_langinfo_l(INT_CURR_SYMBOL, (__c_locale)__loc);
+  return nl_langinfo_l(INT_CURR_SYMBOL, (locale_t)__loc);
 }
 
 const char *_Locale_currency_symbol(struct _Locale_monetary *__loc)
 {
-  return __nl_langinfo_l(CURRENCY_SYMBOL, (__c_locale)__loc);
+  return nl_langinfo_l(CURRENCY_SYMBOL, (locale_t)__loc);
 }
 
 char _Locale_mon_decimal_point(struct _Locale_monetary * __loc)
 {
-  return *(__nl_langinfo_l(MON_DECIMAL_POINT,(__c_locale)__loc));
+  return *(nl_langinfo_l(MON_DECIMAL_POINT,(locale_t)__loc));
 }
 
 char _Locale_mon_thousands_sep(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(MON_THOUSANDS_SEP, (__c_locale)__loc));
+  return *(nl_langinfo_l(MON_THOUSANDS_SEP, (locale_t)__loc));
 }
 
 #ifndef _STLP_NO_WCHAR_T
@@ -547,49 +533,49 @@ const wchar_t *_WLocale_negative_sign(struct _Locale_monetary *__loc, wchar_t *b
 
 const char *_Locale_mon_grouping(struct _Locale_monetary *__loc)
 {
-  return (_Locale_mon_thousands_sep( __loc ) != 0 ) ? __nl_langinfo_l(MON_GROUPING, (__c_locale)__loc) : _empty_str;
+  return (_Locale_mon_thousands_sep( __loc ) != 0 ) ? nl_langinfo_l(MON_GROUPING, (locale_t)__loc) : _empty_str;
 }
 
 const char *_Locale_positive_sign(struct _Locale_monetary *__loc)
 {
-  return __nl_langinfo_l(POSITIVE_SIGN, (__c_locale)__loc);
+  return nl_langinfo_l(POSITIVE_SIGN, (locale_t)__loc);
 }
 
 const char *_Locale_negative_sign(struct _Locale_monetary *__loc)
 {
-  return __nl_langinfo_l(NEGATIVE_SIGN, (__c_locale)__loc);
+  return nl_langinfo_l(NEGATIVE_SIGN, (locale_t)__loc);
 }
 
 char _Locale_int_frac_digits(struct _Locale_monetary *__loc)
 {
   /* We are forced to manually handled the "C" locale for consistency with
    * the default implementation in STLport. */
-  const char* lname = ((__c_locale)__loc)->__names[LC_MONETARY];
+  const char* lname = ((locale_t)__loc)->__names[LC_MONETARY];
   if (lname[0] == 'C' && lname[1] == 0)
     return 0;
-  return *(__nl_langinfo_l(INT_FRAC_DIGITS, (__c_locale)__loc));
+  return *(nl_langinfo_l(INT_FRAC_DIGITS, (locale_t)__loc));
 }
 
 char _Locale_frac_digits(struct _Locale_monetary *__loc)
 {
   /* We are forced to manually handled the "C" locale for consistency with
    * the default implementation in STLport. */
-  const char* lname = ((__c_locale)__loc)->__names[LC_MONETARY];
+  const char* lname = ((locale_t)__loc)->__names[LC_MONETARY];
   if (lname[0] == 'C' && lname[1] == 0)
     return 0;
-  return *(__nl_langinfo_l(FRAC_DIGITS, (__c_locale)__loc));
+  return *(nl_langinfo_l(FRAC_DIGITS, (locale_t)__loc));
 }
 
 /* 1 if currency_symbol precedes a positive value, 0 if succeeds */
 int _Locale_p_cs_precedes(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(P_CS_PRECEDES, (__c_locale)__loc));
+  return *(nl_langinfo_l(P_CS_PRECEDES, (locale_t)__loc));
 }
 
 /* 1 if a space separates currency_symbol from a positive value. */
 int _Locale_p_sep_by_space(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(P_SEP_BY_SPACE, (__c_locale)__loc));
+  return *(nl_langinfo_l(P_SEP_BY_SPACE, (locale_t)__loc));
 }
 
 /*
@@ -601,19 +587,19 @@ int _Locale_p_sep_by_space(struct _Locale_monetary *__loc)
  */
 int _Locale_p_sign_posn(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(P_SIGN_POSN, (__c_locale)__loc));
+  return *(nl_langinfo_l(P_SIGN_POSN, (locale_t)__loc));
 }
 
 /* 1 if currency_symbol precedes a negative value, 0 if succeeds */
 int _Locale_n_cs_precedes(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(N_CS_PRECEDES, (__c_locale)__loc));
+  return *(nl_langinfo_l(N_CS_PRECEDES, (locale_t)__loc));
 }
 
 /* 1 if a space separates currency_symbol from a negative value. */
 int _Locale_n_sep_by_space(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(N_SEP_BY_SPACE, (__c_locale)__loc));
+  return *(nl_langinfo_l(N_SEP_BY_SPACE, (locale_t)__loc));
 }
 
 /*
@@ -625,64 +611,64 @@ int _Locale_n_sep_by_space(struct _Locale_monetary *__loc)
  */
 int _Locale_n_sign_posn(struct _Locale_monetary *__loc)
 {
-  return *(__nl_langinfo_l(N_SIGN_POSN, (__c_locale)__loc));
+  return *(nl_langinfo_l(N_SIGN_POSN, (locale_t)__loc));
 }
 
 
 /* Time */
 const char *_Locale_full_monthname(struct _Locale_time *__loc, int _m )
 {
-  return __nl_langinfo_l(MON_1 + _m, (__c_locale)__loc);
+  return nl_langinfo_l(MON_1 + _m, (locale_t)__loc);
 }
 
 const char *_Locale_abbrev_monthname(struct _Locale_time *__loc, int _m )
 {
-  return __nl_langinfo_l(ABMON_1 + _m, (__c_locale)__loc);
+  return nl_langinfo_l(ABMON_1 + _m, (locale_t)__loc);
 }
 
 const char *_Locale_full_dayofweek(struct _Locale_time *__loc, int _d )
 {
-  return __nl_langinfo_l(DAY_1 + _d, (__c_locale)__loc);
+  return nl_langinfo_l(DAY_1 + _d, (locale_t)__loc);
 }
 
 const char *_Locale_abbrev_dayofweek(struct _Locale_time *__loc, int _d )
 {
-  return __nl_langinfo_l(ABDAY_1 + _d, (__c_locale)__loc);
+  return nl_langinfo_l(ABDAY_1 + _d, (locale_t)__loc);
 }
 
 const char *_Locale_d_t_fmt(struct _Locale_time *__loc)
 {
-  return __nl_langinfo_l(D_T_FMT, (__c_locale)__loc);
+  return nl_langinfo_l(D_T_FMT, (locale_t)__loc);
 }
 
 const char *_Locale_d_fmt(struct _Locale_time *__loc )
 {
-  return __nl_langinfo_l(D_FMT, (__c_locale)__loc);
+  return nl_langinfo_l(D_FMT, (locale_t)__loc);
 }
 
 const char *_Locale_t_fmt(struct _Locale_time *__loc )
 {
-  return __nl_langinfo_l(T_FMT, (__c_locale)__loc);
+  return nl_langinfo_l(T_FMT, (locale_t)__loc);
 }
 
 const char *_Locale_long_d_t_fmt(struct _Locale_time *__loc )
 {
-  return __nl_langinfo_l(ERA_D_T_FMT, (__c_locale)__loc);
+  return nl_langinfo_l(ERA_D_T_FMT, (locale_t)__loc);
 }
 
 const char *_Locale_long_d_fmt(struct _Locale_time *__loc )
 {
-  return __nl_langinfo_l(ERA_D_FMT, (__c_locale)__loc);
+  return nl_langinfo_l(ERA_D_FMT, (locale_t)__loc);
 }
 
 const char *_Locale_am_str(struct _Locale_time *__loc )
 {
-  return __nl_langinfo_l(AM_STR, (__c_locale)__loc);
+  return nl_langinfo_l(AM_STR, (locale_t)__loc);
 }
 
 const char *_Locale_pm_str(struct _Locale_time* __loc )
 {
-  return __nl_langinfo_l(PM_STR, (__c_locale)__loc);
+  return nl_langinfo_l(PM_STR, (locale_t)__loc);
 }
 
 #ifndef _STLP_NO_WCHAR_T

@@ -10,7 +10,7 @@ include ${SRCROOT}/Makefiles/gmake/top.mak
 INCLUDES += -I$(STLPORT_INCLUDE_DIR)
 
 ifeq ($(OSNAME),linux)
-DEFS += -D_STLP_REAL_LOCALE_IMPLEMENTED -D_GNU_SOURCE
+DEFS += -D_GNU_SOURCE
 endif
 
 # options for build with boost support

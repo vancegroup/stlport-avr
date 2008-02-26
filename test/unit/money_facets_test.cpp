@@ -19,9 +19,6 @@ struct ref_monetary {
   const char *money_thousands_sep;
 };
 
-// Pls, don't write #ifdef _STLP_REAL_LOCALE_IMPLEMENTED here!
-// It undefined in any case!!!!!
-
 static const ref_monetary tested_locales[] = {
 //{  name,         money_int_prefix, money_int_prefix_old, money_prefix, money_suffix, money_decimal_point, money_thousands_sep},
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)

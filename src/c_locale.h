@@ -38,10 +38,13 @@
 
 struct _Locale_name_hint;
 
-#ifdef _STLP_REAL_LOCALE_IMPLEMENTED
-#  if defined (_STLP_USE_GLIBC)
-#    include <nl_types.h>
-#  endif
+#if defined (_GNU_SOURCE) && defined (__GLIBC__) && \
+    ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2))
+#  define _STLP_USE_GLIBC2_LOCALIZATION
+#  include <nl_types.h>
+typedef nl_catd nl_catd_type;
+#else
+typedef int nl_catd_type;
 #endif
 
 /*
@@ -419,19 +422,6 @@ const wchar_t * _WLocale_pm_str(struct _Locale_time *,
 /*
  * FUNCTIONS THAT USE MESSAGES
  */
-
-# ifdef _STLP_REAL_LOCALE_IMPLEMENTED
-#  if defined (WIN32) || defined (_WIN32)
-typedef int nl_catd_type;
-#  elif defined (_STLP_USE_GLIBC)
-typedef nl_catd nl_catd_type;
-#  else
-typedef int nl_catd_type;
-#  endif
-# else
-typedef int nl_catd_type;
-# endif /* _STLP_REAL_LOCALE_IMPLEMENTED */
-
 
 /*
  * Very similar to catopen, except that it uses the given message
