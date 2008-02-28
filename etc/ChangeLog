@@ -6,7 +6,11 @@
 
 	* build/Makefiles/gmake/targetdirs.mak: take into account DESTDIR;
 
-	* build/lib/configure: write DESTDIR as prefix for installation pathes.
+	* build/lib/configure: write DESTDIR as prefix for installation pathes;
+
+	* stlport/type_traits:  type traits, close to JTC1/SC22/WG21
+	C++ 0x working draft
+	[http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2521.pdf]
 
 2008-02-26  Francois Dumont  <dums@users.sourceforge.net>
 
