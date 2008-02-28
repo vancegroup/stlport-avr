@@ -1,3 +1,13 @@
+2008-02-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/gcc.mak: use more convenient option
+	-dumpversion to detect compiler's revision; check that
+	-fuse-cxa-atexit really required; remove -fident option;
+
+	* build/Makefiles/gmake/targetdirs.mak: take into account DESTDIR;
+
+	* build/lib/configure: write DESTDIR as prefix for installation pathes.
+
 2008-02-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Rationalization in detection of real localization implementation.

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <07/11/23 14:18:31 ptr>
+# Time-stamp: <08/02/28 10:34:47 ptr>
 
 base=`cd \`dirname $0\`/../..; echo $PWD`
 
@@ -8,7 +8,7 @@ configmak=$base/build/Makefiles/gmake/config.mak
 
 write_option() {
   target=`echo $1 | sed -e 's/^[^=]*=//'`
-  echo $2 := $target >> ${configmak}
+  echo $2 := $3$target >> ${configmak}
 }
 
 write_over_option() {
@@ -203,17 +203,17 @@ do
       compiler_family_set=y
       ;;
     --prefix=*)
-      write_option "$option" BASE_INSTALL_DIR
+      write_option "$option" BASE_INSTALL_DIR '${DESTDIR}'
       # prefix_set=y
       ;;
     --bindir=*)
-      write_option "$option" INSTALL_BIN_DIR
+      write_option "$option" INSTALL_BIN_DIR '${DESTDIR}'
       ;;
     --libdir=*)
-      write_option "$option" INSTALL_LIB_DIR
+      write_option "$option" INSTALL_LIB_DIR '${DESTDIR}'
       ;;
     --includedir=*)
-      write_option "$option" INSTALL_HDR_DIR
+      write_option "$option" INSTALL_HDR_DIR '${DESTDIR}'
       ;;
   esac
 done

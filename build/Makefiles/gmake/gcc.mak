@@ -1,4 +1,4 @@
-# Time-stamp: <08/01/29 09:43:38 ptr>
+# Time-stamp: <08/02/28 10:25:46 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
@@ -31,28 +31,20 @@ CC := ${TARGET_OS}-${CC}
 AS := ${TARGET_OS}-${AS}
 endif
 
-ifeq ($(OSNAME), darwin)
 CXX_VERSION := $(shell ${CXX} -dumpversion)
-# TODO: ensure PANTHER's gcc compatibility...
-CXX_VERSION_MAJOR := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $1; }')
-CXX_VERSION_MINOR := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $2; }')
-CXX_VERSION_PATCH := $(shell ${CXX} -dumpversion | awk 'BEGIN { FS = "."; } { print $3; }')
-# This is to differentiate Apple-builded compiler from original
-# compiler (it's has different behaviour)
-ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
-GCC_APPLE_CC := 1
-endif
-else
-CXX_VERSION := $(shell ${CXX} --version | grep GCC | awk '{ print $$3; }')
-
-ifeq ($(CXX_VERSION),)
-# 2.95 report only version
-CXX_VERSION := $(shell ${CXX} --version)
-endif
-
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
 CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
 CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
+
+# Check that we need option -fuse-cxa-atexit for compiler
+_CXA_ATEXIT := $(shell ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
+
+ifeq ($(OSNAME), darwin)
+# This is to differentiate Apple-builded compiler from original
+# GNU compiler (it's has different behaviour)
+ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
+GCC_APPLE_CC := 1
+endif
 endif
 
 DEFS ?=
@@ -78,7 +70,7 @@ release-shared : RCFLAGS += -DBUILD_INFOS=-O2
 dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
-CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions -fident
+CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions
 ifndef STLP_BUILD_NO_THREAD
 ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads
@@ -106,30 +98,30 @@ endif
 ifeq ($(OSNAME),sunos)
 CCFLAGS = -pthreads $(OPT)
 CFLAGS = -pthreads $(OPT)
-# CXXFLAGS = -pthreads -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthreads  -fexceptions -fident $(OPT)
+# CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = -pthreads  -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = -pthread -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),openbsd)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = -pthread -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),freebsd)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 DEFS += -D_REENTRANT
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = -pthread -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),darwin)
@@ -149,8 +141,8 @@ release-shared : OPT += -fno-reorder-blocks
 endif
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions -fident $(OPT)
-CXXFLAGS = -pthread -fexceptions -fident $(OPT)
+# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = -pthread -fexceptions $(OPT)
 endif
 
 ifeq ($(CXX_VERSION_MAJOR),2)
@@ -160,7 +152,7 @@ endif
 # Required for correct order of static objects dtors calls:
 ifeq ("$(findstring $(OSNAME),darwin cygming)","")
 ifneq ($(CXX_VERSION_MAJOR),2)
-CXXFLAGS += -fuse-cxa-atexit
+CXXFLAGS += $(_CXA_ATEXIT)
 endif
 endif
 

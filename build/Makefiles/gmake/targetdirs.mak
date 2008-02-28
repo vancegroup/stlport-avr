@@ -1,6 +1,6 @@
-# Time-stamp: <07/05/31 21:44:46 ptr>
+# Time-stamp: <08/02/28 10:30:06 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -37,7 +37,7 @@ OUTPUT_DIR_A_STLDBG    := $(OUTPUT_DIR_STLDBG)
 endif
 
 # BASE_INSTALL_DIR       ?= ${SRCROOT}/../$(TARGET_NAME)
-BASE_INSTALL_DIR       ?= /usr/local
+BASE_INSTALL_DIR       ?= $(DESTDIR)/usr/local
 
 BASE_INSTALL_LIB_DIR   ?= ${BASE_INSTALL_DIR}
 BASE_INSTALL_BIN_DIR   ?= ${BASE_INSTALL_DIR}
