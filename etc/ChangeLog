@@ -1,5 +1,7 @@
 2008-02-29  Francois Dumont  <dums@users.sourceforge.net>
 
+	* build/Makefiles/gmake: Several modif for Digital Mars support.
+
 	* stlport/stl/_function_base.h: Hide protected constructor not
 	supported by Borland compiler.
 

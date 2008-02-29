@@ -58,7 +58,7 @@ dbg-static: DEFS += -DWINVER=$(WINVER)
 stldbg-static: DEFS += -DWINVER=$(WINVER)
 
 OUTPUT_OPTION = -o$@
-LINK_OUTPUT_OPTION = $(subst /,\,$@)
+LINK_OUTPUT_OPTION = $@
 CPPFLAGS = $(DEFS) $(OPT) $(INCLUDES) 
 
 CDEPFLAGS = -E -M
@@ -119,16 +119,16 @@ endif
 # map output option (move map files to output dir)
 
 ifdef LIBNAME
-release-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(SO_NAME_BASE).map
-dbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(SO_NAME_DBG_BASE).map
-stldbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(SO_NAME_STLDBG_BASE).map
+release-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR)/$(SO_NAME_BASE).map
+dbg-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).map
+stldbg-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).map
 else
-release-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(PRGNAME).map
-release-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR))\$(PRGNAME).map
-dbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(PRGNAME).map
-dbg-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_DBG))\$(PRGNAME).map
-stldbg-shared: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(PRGNAME).map
-stldbg-static: MAP_OUTPUT_OPTION = $(subst /,\,$(OUTPUT_DIR_STLDBG))\$(PRGNAME).map
+release-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR)/$(PRGNAME).map
+release-static: MAP_OUTPUT_OPTION = $(OUTPUT_DIR)/$(PRGNAME).map
+dbg-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_DBG)/$(PRGNAME).map
+dbg-static: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_DBG)/$(PRGNAME).map
+stldbg-shared: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_STLDBG)/$(PRGNAME).map
+stldbg-static: MAP_OUTPUT_OPTION = $(OUTPUT_DIR_STLDBG)/$(PRGNAME).map
 endif
 
 # dependency output parser (dependencies collector)

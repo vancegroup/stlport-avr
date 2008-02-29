@@ -493,7 +493,8 @@ template <class _Src, class _Dst>
 inline _TrivialUCopy<_Src, _Dst> _UseTrivialUCopy(_Src*, _Dst*)
 { return _TrivialUCopy<_Src, _Dst>(); }
 
-#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__)
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER) || defined (__BORLANDC__) || \
+    defined (__DMC__)
 struct _NegativeAnswer {
   typedef __false_type _Ret;
   static _Ret _Answer() { return _Ret(); }

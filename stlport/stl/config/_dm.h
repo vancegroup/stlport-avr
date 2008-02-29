@@ -68,7 +68,9 @@
 #  define _STLP_LONG_LONG long long
 #endif
 
+#define _STLP_MARK_PARAMETER_AS_UNUSED(X)
 #define _STLP_DONT_USE_PRIV_NAMESPACE
+#define _STLP_PRIV
 #define _STLP_THROW_RETURN_BUG
 
 #if !defined (_DLL)

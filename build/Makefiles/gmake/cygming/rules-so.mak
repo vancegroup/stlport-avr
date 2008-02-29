@@ -22,12 +22,7 @@ ${SO_NAME_OUT_STLDBG}:	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
 else
 ifeq (dmc, $(COMPILER_NAME))
 # Digital Mars linker
-# This linker generate the dll file even if link fail so we also use a
-# dependency on the lib file.
-
-$(SO_NAME_OUT):	$(LIB_NAME_OUT)
-	$(LINK.cc) $(subst /,\\,$(OBJ),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS),$(DEF_OPTION),$(RES))
-$(LIB_NAME_OUT): $(OBJ) $(RES) $(LIBSDEP)
+$(SO_NAME_OUT): $(OBJ) $(RES) $(LIBSDEP)
 	@echo LIBRARY "$(SO_NAME_BASE).dll" > $(OUTPUT_DIR)/$(SO_NAME_BASE).def
 	@echo DESCRIPTION \'STLport DLL for Digital Mars C/C++\'>> $(OUTPUT_DIR)/$(SO_NAME_BASE).def
 	@echo EXETYPE NT>> $(OUTPUT_DIR)/$(SO_NAME_BASE).def
@@ -44,10 +39,9 @@ $(LIB_NAME_OUT): $(OBJ) $(RES) $(LIBSDEP)
 	@echo '?wcout@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR)/$(SO_NAME_BASE).def
 	@echo '?wcerr@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR)/$(SO_NAME_BASE).def
 	@echo '?wclog@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR)/$(SO_NAME_BASE).def
+	$(LINK.cc) $(subst /,\\,$(OBJ),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS),$(DEF_OPTION),$(RES))
 
-$(SO_NAME_OUT_DBG): $(LIB_NAME_OUT_DBG)
-	$(LINK.cc) $(subst /,\\,$(OBJ_DBG),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS),$(DEF_OPTION_DBG),$(RES_DBG))
-$(LIB_NAME_OUT_DBG): $(OBJ_DBG) $(RES_DBG) $(LIBSDEP)
+$(SO_NAME_OUT_DBG): $(OBJ_DBG) $(RES_DBG) $(LIBSDEP)
 	@echo LIBRARY "$(SO_NAME_DBG_BASE).dll" > $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
 	@echo DESCRIPTION \'STLport DLL for Digital Mars C/C++\'>> $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
 	@echo EXETYPE NT>> $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
@@ -64,10 +58,9 @@ $(LIB_NAME_OUT_DBG): $(OBJ_DBG) $(RES_DBG) $(LIBSDEP)
 	@echo '?wcout@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
 	@echo '?wcerr@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
 	@echo '?wclog@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_DBG)/$(SO_NAME_DBG_BASE).def
+	$(LINK.cc) $(subst /,\\,$(OBJ_DBG),$(LINK_OUTPUT_OPTION),$(MAP_OUTPUT_OPTION),$(LDLIBS),$(DEF_OPTION_DBG),$(RES_DBG))
 
-$(SO_NAME_OUT_STLDBG):	$(LIB_NAME_OUT_STLDBG)
-	$(LINK.cc) $(subst /,\\,$(OBJ_STLDBG), $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS), $(DEF_OPTION_STLDBG), $(RES_STLDBG))
-$(LIB_NAME_OUT_STLDBG):	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
+$(SO_NAME_OUT_STLDBG):	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
 	@echo LIBRARY "$(SO_NAME_STLDBG_BASE).dll" > $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
 	@echo DESCRIPTION \'STLport DLL for Digital Mars C/C++\'>> $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
 	@echo EXETYPE NT>> $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
@@ -84,6 +77,7 @@ $(LIB_NAME_OUT_STLDBG):	$(OBJ_STLDBG) $(RES_STLDBG) $(LIBSDEP)
 	@echo '?wcout@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
 	@echo '?wcerr@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
 	@echo '?wclog@std@@3V?$$basic_ostream@std@_YV?$$char_traits@std@_Y@1@@1@A' >> $(OUTPUT_DIR_STLDBG)/$(SO_NAME_STLDBG_BASE).def
+	$(LINK.cc) $(subst /,\\,$(OBJ_STLDBG), $(LINK_OUTPUT_OPTION), $(MAP_OUTPUT_OPTION), $(LDLIBS), $(DEF_OPTION_STLDBG), $(RES_STLDBG))
 
 else
 # GNU linker

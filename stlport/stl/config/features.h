@@ -526,7 +526,9 @@ namespace _STLP_STD_NAME { }
 #    define _STLP_MOVE_TO_PRIV_NAMESPACE namespace _STLP_PRIV_NAME {
 #    define _STLP_MOVE_TO_STD_NAMESPACE }
 #  else
-#    define _STLP_PRIV _STLP_STD::
+#      if !defined (_STLP_PRIV)
+#        define _STLP_PRIV _STLP_STD::
+#      endif
 #    define _STLP_MOVE_TO_PRIV_NAMESPACE
 #    define _STLP_MOVE_TO_STD_NAMESPACE
 #  endif

@@ -7,7 +7,7 @@ endif
 
 LIB_PREFIX ?=
 
-ifneq (bcc, $(COMPILER_NAME))
+ifeq (gcc, $(COMPILER_NAME))
 DBG_SUFFIX := g
 else
 DBG_SUFFIX := d
