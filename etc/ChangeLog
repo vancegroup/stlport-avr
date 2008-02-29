@@ -1,3 +1,10 @@
+2008-02-29  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_function_base.h: Hide protected constructor not
+	supported by Borland compiler.
+
+	* stlport/stl/config/_bc.h: Now detect Rtti support.
+
 2008-02-28  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/gcc.mak: use more convenient option

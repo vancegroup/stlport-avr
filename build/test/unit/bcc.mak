@@ -3,7 +3,7 @@
 SRCROOT := ../..
 COMPILER_NAME := bcc
 
-#STLPORT_DIR := ../../..
+STLPORT_DIR := ../../..
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 

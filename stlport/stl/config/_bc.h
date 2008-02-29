@@ -1,12 +1,22 @@
-// STLport configuration file
-// It is internal STLport header - DO NOT include it directly
+/* STLport configuration file
+ * It is internal STLport header - DO NOT include it directly */
 
-//#define _STLP_VERBOSE
+/* #define _STLP_VERBOSE */
 
 #define _STLP_COMPILER "Borland"
 
 #if (__BORLANDC__ < 0x551)
 #  error - Borland compilers below version 5.5.1 not supported.
+#endif
+
+#pragma defineonoption _STLP_NO_RTTI -RT-
+
+#if defined (_STLP_VERBOSE)
+#  if defined (_STLP_NO_RTTI)
+#    pragma message ("no rtti support")
+#  else
+#    pragma message ("with rtti support")
+#  endif
 #endif
 
 #if (__BORLANDC__ >= 0x580)
@@ -23,7 +33,7 @@
 #  define _STLP_DEF_CONST_DEF_PARAM_BUG
 #  define _STLP_USE_DEFAULT_FILE_OFFSET
 
-#  if defined(__cplusplus)
+#  if defined (__cplusplus)
 #    define _STLP_NATIVE_CPP_C_INCLUDE_PATH ../include/c++/ ## GCC_VERSION
 #    define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/c++/ ## GCC_VERSION
 #  endif
@@ -42,7 +52,6 @@
 #  endif
 
 #  pragma defineonoption _CPPUNWIND -xd
-
 #  define _STLP_NO_EXCEPTION_HEADER
 #  define _STLP_DONT_USE_EXCEPTIONS
 #endif 
@@ -94,6 +103,9 @@
 // auto enable thread safety and exceptions:
 #ifndef _CPPUNWIND
 #  define _STLP_HAS_NO_EXCEPTIONS
+#  if defined (_STLP_VERBOSE)
+#    pragma message ("no exception support")
+#  endif
 #endif
 
 #if defined (__MT__) && !defined (_NOTHREADS) && !defined (_REENTRANT)
@@ -162,5 +174,5 @@
 #endif
 
 #if !defined (__linux__)
-#include <stl/config/_auto_link.h>
+#  include <stl/config/_auto_link.h>
 #endif

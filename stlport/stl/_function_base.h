@@ -40,11 +40,13 @@ template <class _Arg, class _Result>
 struct unary_function {
   typedef _Arg argument_type;
   typedef _Result result_type;
+#if !defined (__BORLANDC__) || (__BORLANDC__ < 0x580)
 protected:
   /* This class purpose is to be derived but it is not polymorphic so users should never try
    * to destroy an instance of it directly. The protected non-virtual destructor make this
    * fact obvious at compilation time. */
   ~unary_function() {}
+#endif
 };
 
 template <class _Arg1, class _Arg2, class _Result>
@@ -52,9 +54,11 @@ struct binary_function {
   typedef _Arg1 first_argument_type;
   typedef _Arg2 second_argument_type;
   typedef _Result result_type;
+#if !defined (__BORLANDC__) || (__BORLANDC__ < 0x580)
 protected:
   /* See unary_function comment. */
   ~binary_function() {}
+#endif
 };
 
 template <class _Tp>

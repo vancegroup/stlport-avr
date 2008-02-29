@@ -3,7 +3,7 @@
 SRCROOT := ..
 COMPILER_NAME := bcc
 
-#STLPORT_INCLUDE_DIR = ../../stlport
+STLPORT_INCLUDE_DIR = ../../stlport
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
@@ -19,7 +19,6 @@ GCC_VERSION := $(shell gcc -dumpversion)
 DEFS += -DGCC_VERSION=$(GCC_VERSION)
 endif
 
-#DEFS += -D__BUILDING_STLPORT
 INCLUDES += -I$(STLPORT_INCLUDE_DIR)
 
 # options for build with boost support
