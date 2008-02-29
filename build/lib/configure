@@ -68,6 +68,7 @@ Available options:
   --without-threads     Per default STLport libraries are built in order to be usable
                         in a multithreaded context. If you don't need this you can ask
                         for a not thread safe version with this option.
+  --without-rtti        Disable RTTI when building libraries.
 
 Environment variables:
 
@@ -166,6 +167,9 @@ do
       ;;
     --without-threads)
       write_option 1 STLP_BUILD_NO_THREAD
+      ;;
+    --without-rtti)
+      write_option 1 STLP_BUILD_NO_RTTI
       ;;
     --use-static-gcc)
       write_option "1" USE_STATIC_LIBGCC
