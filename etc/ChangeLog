@@ -1,3 +1,9 @@
+2008-03-03  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/gmake: Eric Sanford patch to make generation
+	of debug symbols optional when using Borland compiler to build
+	unit tests.
+
 2008-02-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Several modif for Digital Mars support.

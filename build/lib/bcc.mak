@@ -8,13 +8,13 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
 ifneq ($(OSNAME),linux)
-DEFS += -D_GNU_SOURCE
 OBJ_EXT := obj
 ifndef INCLUDE
 $(error Missing INCLUDE environment variable definition. Please see doc/README.borland \
 for instructions about how to prepare Borland compiler to build STLport libraries.)
 endif
 else
+DEFS += -D_GNU_SOURCE
 GCC_VERSION := $(shell gcc -dumpversion)
 DEFS += -DGCC_VERSION=$(GCC_VERSION)
 endif

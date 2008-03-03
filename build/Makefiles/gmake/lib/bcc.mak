@@ -42,9 +42,16 @@ START_OBJ := borinitso.o
 
 endif
 
+# optimization and debug compiler flags
+
+dbg-static : OPT += -R -v -y
+dbg-shared : OPT += -R -v -y
+stldbg-static : OPT += -R -v -y
+stldbg-shared : OPT += -R -v -y
+
 dbg-shared : LDFLAGS += -v
-stldbg-shared : LDFLAGS += -v
 dbg-static : LDFLAGS += -v
+stldbg-shared : LDFLAGS += -v
 stldbg-static : LDFLAGS += -v
 
 install-shared: install-release-shared install-dbg-shared install-stldbg-shared

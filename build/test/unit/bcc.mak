@@ -12,6 +12,7 @@ INCLUDES += -I${STLPORT_INCLUDE_DIR}
 ifneq ($(OSNAME),linux)
 OBJ_EXT := obj
 else
+DEFS += -D_GNU_SOURCE
 GCC_VERSION = $(shell gcc -dumpversion)
 DEFS += -DGCC_VERSION=$(GCC_VERSION)
 endif

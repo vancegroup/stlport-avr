@@ -101,11 +101,6 @@ stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 release-static : OPT += -O2 -vi-
 release-shared : OPT += -O2 -vi-
 
-dbg-static : OPT += -R -v -y
-dbg-shared : OPT += -R -v -y
-stldbg-static : OPT += -R -v -y
-stldbg-shared : OPT += -R -v -y
-
 LDLIBS += import32.lib kernel32.lib
 ifndef STLP_BUILD_NO_THREAD
 ifndef STLP_BUILD_FORCE_STATIC_RUNTIME

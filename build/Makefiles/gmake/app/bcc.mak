@@ -30,9 +30,18 @@ START_OBJ = borinit.o crt1.o
 
 endif
 
+ifdef USE_BCC_DBG_OPTS
+
+# optimization and debug compiler flags
+
+dbg-static : OPT += -R -v -y
+dbg-shared : OPT += -R -v -y
+stldbg-static : OPT += -R -v -y
+stldbg-shared : OPT += -R -v -y
+
 dbg-shared : LDFLAGS += -v
-stldbg-shared : LDFLAGS += -v
 dbg-static : LDFLAGS += -v
+stldbg-shared : LDFLAGS += -v
 stldbg-static : LDFLAGS += -v
 
 install-dbg-shared: install-dbg-shared-tds 
@@ -52,6 +61,8 @@ install-dbg-static-tds:
 
 install-stldbg-static-tds:
 	$(INSTALL_EXE) $(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/${PRGNAME}.tds
+
+endif
 
 PRG_FILES := ${PRGNAME}.exe ${PRGNAME}.tds ${PRGNAME}.map
 TMP_FILES := test.txt test_file.txt win32_file_format.tmp
