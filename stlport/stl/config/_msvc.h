@@ -59,8 +59,8 @@
 #  define _STLP_NO_RTTI 1
 #endif
 
-#if defined (_MT) && !defined (_STLP_NO_THREADS) && !defined (_REENTRANT)
-#  define _REENTRANT 1
+#if defined (_MT) && !defined (_STLP_NO_THREADS)
+#  define _STLP_THREADS 1
 #endif
 
 #if !defined (_NATIVE_WCHAR_T_DEFINED)
@@ -251,8 +251,12 @@ work, 7.0 is still unknown (we assume it works until negative report). */
  */
 #  if !defined (_STLP_DONT_USE_AUTO_LINK) || defined (__BUILDING_STLPORT)
 #    pragma comment (lib, "bufferoverflowU.lib")
-#    if defined (_STLP_VERBOSE_AUTO_LINK)
+#    if defined (_STLP_VERBOSE)
 #      pragma message ("STLport: Auto linking to bufferoverflowU.lib")
 #    endif
 #  endif
+#endif
+
+#if defined (_STLP_MSVC)
+#  include <stl/config/_feedback.h>
 #endif

@@ -1,12 +1,6 @@
 // STLport configuration file for Digital Mars C++
 
-//#define _STLP_VERBOSE
-
 #define _STLP_COMPILER __DMC_VERSION_STRING__
-
-#if defined (_STLP_VERBOSE)
-#  pragma message __DMC_VERSION_STRING__
-#endif
 
 #if (__DMC__ < 0x849)
 #  error "Digital Mars C++ compilers before version 8.49 are not supported!"
@@ -22,6 +16,11 @@
 #ifndef _CPPUNWIND
 #  define _STLP_NO_EXCEPTIONS
 #endif
+
+#ifndef _CPPRTTI
+#  define _STLP_NO_RTTI
+#endif
+
 #define _STLP_VENDOR_GLOBAL_CSTD
 
 //DMC prefer enum to real static const variable because it do not consider
@@ -52,10 +51,8 @@
 #define _STLP_NO_OWN_NAMESPACE 1
 
 // select threads strategy
-#if defined (_MT) && !defined (_NOTHREADS)
-#  define _REENTRANT
-#else
-#  define _NOTHREADS
+#if defined (_MT) && !defined (_STLP_NO_THREADS)
+#  define _STLP_THREADS
 #endif
 
 #ifndef _BOOL_DEFINED
@@ -117,3 +114,5 @@
 #include <stl/config/_auto_link.h>
 
 #undef __SC__
+
+#include <stl/config/_feedback.h>

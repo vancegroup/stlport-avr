@@ -68,3 +68,7 @@
 #ifdef _STLP_WCE
 #  undef _STLP_USING_CROSS_NATIVE_RUNTIME_LIB
 #endif
+
+#if !defined (_STLP_USE_DYNAMIC_LIB) && !defined (_STLP_USE_STATIC_LIB)
+#  error Unknown STLport usage config (dll/lib?)
+#endif

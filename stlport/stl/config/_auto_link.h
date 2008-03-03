@@ -46,7 +46,7 @@
 
 #  define _STLP_STLPORT_LIB "stlport"_STLP_LIB_OPTIM_MODE""_STLP_LIB_TYPE""_STLP_LIB_MOTIF""_STLP_VERSION_STR".lib"
 
-#  if defined (_STLP_VERBOSE_AUTO_LINK)
+#  if defined (_STLP_VERBOSE)
 #    pragma message ("STLport: Auto linking to "_STLP_STLPORT_LIB)
 #  endif
 #  pragma comment (lib, _STLP_STLPORT_LIB)

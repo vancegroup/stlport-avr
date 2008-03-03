@@ -230,12 +230,11 @@
  */
 
 /*
- * When using automatic linking (see above), output a message that tells the
- * user which lib is getting linked via 'pragma message(..)'.
- * This setting has no effect if automatic linking is not active.
+ * Uncomment to get feedback at compilation time about result of build environment
+ * introspection.
  */
 /*
-#define _STLP_VERBOSE_AUTO_LINK 1
+#define _STLP_VERBOSE 1
 */
 
 /*

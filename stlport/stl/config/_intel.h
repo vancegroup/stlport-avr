@@ -14,12 +14,12 @@
  * or /Qvc8 option.
  */
 /* #define _STLP_MSVC_LIB 1300 */
-/* You need to undef following macro if your icl install is binded to MSVC .Net 2002
+/* You need to undef following macro if your icl install is binded to MSVC .Net 2003
  * native lib and you are building without any /Qvc* option or with /Qvc6 or /Qvc7
  * or /Qvc8 option.
  */
 /* #define _STLP_MSVC_LIB 1310 */
-/* You need to undef following macro if your icl install is binded to MSVC .Net 2002
+/* You need to undef following macro if your icl install is binded to MSVC 2005
  * native lib and you are building without any /Qvc* option or with /Qvc6 or /Qvc7
  * or /Qvc7.1 option.
  */
@@ -68,3 +68,5 @@ namespace std
   void _STLP_CALL unexpected();
 }
 #endif
+
+#include <stl/config/_feedback.h>

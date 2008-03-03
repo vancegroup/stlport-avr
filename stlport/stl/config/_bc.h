@@ -1,8 +1,6 @@
 /* STLport configuration file
  * It is internal STLport header - DO NOT include it directly */
 
-/* #define _STLP_VERBOSE */
-
 #define _STLP_COMPILER "Borland"
 
 #if (__BORLANDC__ < 0x551)
@@ -10,14 +8,6 @@
 #endif
 
 #pragma defineonoption _STLP_NO_RTTI -RT-
-
-#if defined (_STLP_VERBOSE)
-#  if defined (_STLP_NO_RTTI)
-#    pragma message ("no rtti support")
-#  else
-#    pragma message ("with rtti support")
-#  endif
-#endif
 
 #if (__BORLANDC__ >= 0x580)
 #  define _STLP_HAS_INCLUDE_NEXT
@@ -103,20 +93,10 @@
 // auto enable thread safety and exceptions:
 #ifndef _CPPUNWIND
 #  define _STLP_HAS_NO_EXCEPTIONS
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("no exception support")
-#  endif
 #endif
 
-#if defined (__MT__) && !defined (_NOTHREADS) && !defined (_REENTRANT)
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("multi threaded")
-#  endif
-#  define _REENTRANT 1
-#else
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("single threaded")
-#  endif
+#if defined (__MT__) && !defined (_NOTHREADS)
+#  define _STLP_THREADS
 #endif
 
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
@@ -136,38 +116,15 @@
 #undef _STLP_DLL
 
 #if defined (_STLP_USE_DYNAMIC_LIB)
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("Using/Building STLport dll")
-#  endif
-#elif defined (_STLP_USE_STATIC_LIB)
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("Using/Building STLport lib")
-#  endif
-#else
-#  error Unknown STLport usage config (dll/lib?)
-#endif
-
-#if defined (_STLP_USING_CROSS_NATIVE_RUNTIME_LIB)
-#  if defined (_STLP_VERBOSE)
-#    pragma message ("Using cross version of native runtime")
-#  endif
-#endif
-
-#if !defined (_STLP_IMPORT_TEMPLATE_KEYWORD)
-//#  define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
-#endif
-//#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
-
-#if defined (_STLP_USE_DYNAMIC_LIB)
 #  define _STLP_USE_DECLSPEC 1
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else
 #    if (__BORLANDC__ < 0x570) 
-#    define  _STLP_CALL __cdecl __import
-#else
-#  define  _STLP_CALL __cdecl
-#endif
+#      define  _STLP_CALL __cdecl __import
+#    else
+#      define  _STLP_CALL __cdecl
+#    endif
 #  endif
 #else
 #  define  _STLP_CALL __cdecl
@@ -176,3 +133,5 @@
 #if !defined (__linux__)
 #  include <stl/config/_auto_link.h>
 #endif
+
+#include <stl/config/_feedback.h>

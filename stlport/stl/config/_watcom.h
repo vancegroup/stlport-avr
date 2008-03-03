@@ -16,8 +16,8 @@
 #  define _STLP_HAS_NO_EXCEPTIONS 1
 #endif
 
-#if defined (_MT) && !defined (_NOTHREADS) && !defined (_REENTRANT)
-#  define _REENTRANT 1
+#if defined (_MT) && !defined (_NOTHREADS)
+#  define _STLP_THREADS 1
 #endif
 
 #define _STLP_NO_VENDOR_STDLIB_L

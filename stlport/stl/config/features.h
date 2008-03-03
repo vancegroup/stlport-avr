@@ -102,16 +102,6 @@
  */
 #include <stl/config/stl_confix.h>
 
-/*
- * Performs integrity check on user-specified parameters
- * and site-specific settings.
- */
-/*
-# include <stl/_check_config.h>
-*/
-
-/* SGI terms */
-
 #if !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_MEMBER_TEMPLATES)
 #  define _STLP_MEMBER_TEMPLATES 1
 #endif
@@ -155,6 +145,10 @@
 #if defined (_STLP_WHOLE_NATIVE_STD) && defined (_STLP_NO_OWN_NAMESPACE)
 #  error Sorry but asking for both STLport to be in the real std namespace and also having STLport import all native std stuff \
   is invalid, chose one or none.
+#endif
+
+#if defined (_STLP_VERBOSE) && !defined (_STLP_VERBOSE_MODE_SUPPORTED)
+#  error Sorry but the verbose mode is not implemented for your compiler.
 #endif
 
 #if defined (_STLP_NO_IOSTREAMS) && \
@@ -265,7 +259,7 @@
 
 #if (defined (_REENTRANT) || defined (_THREAD_SAFE)) && !defined (_STLP_THREADS)
 #  define _STLP_THREADS
-#endif /* _REENTRANT */
+#endif
 
 #ifndef _STLP_STATIC_MUTEX
 #  define _STLP_STATIC_MUTEX _STLP_mutex_base

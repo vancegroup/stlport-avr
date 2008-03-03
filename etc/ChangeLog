@@ -4,6 +4,14 @@
 	of debug symbols optional when using Borland compiler to build
 	unit tests.
 
+	* stlport/stl/config: Normalization of verbose mode used to get
+	feedback about build context when using STLport.
+	_STLP_VERBOSE_AUTO_LINK has been renamed in _STLP_VERBOSE and
+	report additional information like rtti, exception support,
+	mono/multi threaded, static/dynamic library.
+
+	* stlport/stl/_check_config.h: Unused, removed.
+
 2008-02-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Several modif for Digital Mars support.
