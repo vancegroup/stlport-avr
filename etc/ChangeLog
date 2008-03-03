@@ -12,6 +12,9 @@
 
 	* stlport/stl/_check_config.h: Unused, removed.
 
+	* stlport/typeinfo: Report use of this header when there is no
+	RTTI support, only when we can detect it of course.
+
 2008-02-29  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Several modif for Digital Mars support.
