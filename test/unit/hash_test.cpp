@@ -412,6 +412,7 @@ void HashTest::allocator_with_state()
 
 #if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
    (!defined (_STLP_USE_PTR_SPECIALIZATIONS) || defined (_STLP_CLASS_PARTIAL_SPECIALIZATION))
+#  if !defined (__DMC__)
 
 /* Simple compilation test: Check that nested types like iterator
  * can be access even if type used to instanciate container is not
@@ -429,4 +430,5 @@ class IncompleteClass
   hash_multimap<IncompleteClass, IncompleteClass> hmminstances;
   typedef hash_multimap<IncompleteClass, IncompleteClass>::iterator hmmit;
 };
+#  endif
 #endif

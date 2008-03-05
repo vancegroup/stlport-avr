@@ -331,8 +331,10 @@ void FstreamTest::seek()
 
     fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
     // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
-    CPPUNIT_ASSERT( pos >= fstream::pos_type(chars_read) );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -pos, ios_base::cur ) == fstream::pos_type(0) );
+    streamoff offset = pos;
+    CPPUNIT_ASSERT( offset >= chars_read );
+    offset = s.rdbuf()->pubseekoff( -offset, ios_base::cur );
+    CPPUNIT_ASSERT( offset == 0 );
 
     char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
 
@@ -382,9 +384,12 @@ void FstreamTest::seek()
 
     fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
     // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
-    CPPUNIT_ASSERT( pos >= fstream::pos_type(chars_read) );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -pos, ios_base::cur ) == fstream::pos_type(-1) );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(0, ios_base::beg) == fstream::pos_type(0) );
+    streamoff off = pos;
+    CPPUNIT_ASSERT( off >= chars_read );
+    off = s.rdbuf()->pubseekoff(-off, ios_base::cur);
+    CPPUNIT_ASSERT( off == -1 );
+    off = s.rdbuf()->pubseekoff(0, ios_base::beg);
+    CPPUNIT_ASSERT( off == 0 );
 
     wchar_t b2[10] = { L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y' };
 

@@ -226,6 +226,13 @@ void LocaleTest::default_locale()
   locale loc( "" );
 }
 
+class dummy_facet : public locale::facet {
+public:
+  static locale::id id;
+};
+
+locale::id dummy_facet::id;
+
 void LocaleTest::combine()
 {
 #  if (!defined (STLPORT) || \
@@ -239,7 +246,18 @@ void LocaleTest::combine()
       }
     }
     catch (const runtime_error &/*e*/) {
-      //CPPUNIT_MESSAGE( e.what() );
+      /*CPPUNIT_MESSAGE( e.what() );*/
+    }
+
+    try {
+      locale loc;
+      if (!has_facet<dummy_facet>(loc)) {
+        loc.combine<dummy_facet>(loc);
+        CPPUNIT_FAIL;
+      }
+    }
+    catch (const runtime_error &e) {
+      CPPUNIT_MESSAGE( e.what() );
     }
   }
 

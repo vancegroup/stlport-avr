@@ -126,7 +126,18 @@ struct eater_codecvt : public codecvt<char, char, mbstate_t> {
 
   virtual int do_max_length() const __NO_THROW
   { return 2; }
+
+#ifdef __DMC__
+  static locale::id id;
+#endif
 };
+
+#ifdef __DMC__
+locale::id eater_codecvt::id;
+
+locale::id& _GetFacetId(const eater_codecvt*)
+{ return eater_codecvt::id; }
+#endif
 
 /* Codecvt facet generating more characters than the ones read from the
  * external buffer, transform '01' in 'abc'
@@ -260,7 +271,17 @@ struct generator_codecvt : public codecvt<char, char, mbstate_t> {
 
   virtual int do_max_length() const __NO_THROW
   { return 0; }
+#ifdef __DMC__
+  static locale::id id;
+#endif
 };
+
+#ifdef __DMC__
+locale::id generator_codecvt::id;
+
+locale::id& _GetFacetId(const generator_codecvt*)
+{ return generator_codecvt::id; }
+#endif
 
 //
 // tests implementation
