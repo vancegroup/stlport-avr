@@ -1,7 +1,7 @@
 Note for Windows users:
 
   It is highly recommended to declare the Windows OS version you are
-targetting when building the library as when using it. You can do so
+targetting when building the library as well as when using it. You can do so
 thanks to the well known Microsoft macros WINVER, _WIN32_WINDOWS or
 _WIN32_WINNT, see your platform SDK documentation for a description
 of those macros and how to use them. To define it when building the
@@ -15,7 +15,7 @@ configure -c msvc8 --extra-cxxflag "/D_WIN32_WINNT=0x0501"
 use, windows.h gives a default value to WINVER. However, when using the
 library, windows.h is not necessarily included, at least not by STLport
 internally, so none of the macros are defined which will result in an
-incoherency in the build process which most of time result in undefined
+inconsistency in the build process which most of time will generate undefined
 behavior at runtime.
 
   Here is the main reason for following this advise, the Windows 95

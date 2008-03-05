@@ -1,5 +1,5 @@
-The STLport buildsystem
-=======================
+The STLport build system
+========================
 
 This is a basic overview of the STLport build system. At the moment, I'm only familiar 
 with the working of the nmake variant, i.e. for MSVC, eVC and ICC/win32, other variants
@@ -10,7 +10,7 @@ Overview:
 
 
 There are three basic classes to consider while building:
-1. The used make tool (currently that is Borland, gmake (GNU make) an nmake (Microsoft)).
+1. The used make tool (currently that is make (GNU make) an nmake (Microsoft)).
 2. The used compiler
 3. The target type, either application or library
 
@@ -18,8 +18,8 @@ Other than that, there are three different settings corresponding to the three d
 STLport modes, 'release', 'debug' and 'STLdebug' and each one has two modes for either
 static or dynamic linking.
 
-The whole buildsystem lies under the build/ dir of the sourcetree. There, it first 
-branches to Makefiles/ (which contains the base of the buildsystem) and to lib/ (which 
+The whole build system lies under the build/ dir of the source tree. There, it first 
+branches to Makefiles/ (which contains the base of the build system) and to lib/ (which 
 contains files to build the STLport library) and test/ (which contains files to build
 tests) (TODO: what is the misc/ folder for?).
 
@@ -73,8 +73,8 @@ Known issues:
 --------------
 
 - nmake: MSC doesn't support generating dependency information for makefiles. So, unless
-you modify the direct sourcefile for an objectfile, no recompilation is triggered! You 
-need to either delete all objectfiles that need to be recompiled or 'make clean'
+you modify the direct source file for an object file, no recompilation is triggered! You 
+need to either delete all object files that need to be recompiled or 'make clean'
 
 - There are targets to only install e.g. the shared STLdebug version but there is no 
 such thing for making clean. This would be useful in the context of above issue for 

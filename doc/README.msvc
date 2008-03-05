@@ -139,7 +139,7 @@ C:\Program Files\Microsoft SDK\Include\.\winbase.h(1390) : see declaration of
 'InterlockedIncrement'
 
 	It means that you are using the new Microsoft platform SDK. There is no
-way to known it from STLport so you have to signal it in the 
+way to known it from STLport code so you have to signal it in the 
 stlport/stl/config/user_config.h file (uncomment _STLP_NEW_PLATFORM_SDK in this file).
 
 2. Native C/C++ library headers location

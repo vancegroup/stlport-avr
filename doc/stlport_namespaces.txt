@@ -106,9 +106,8 @@ won't be used in associative containers for instance.
 4. What is the STLport specific namespace ?
 
   The official STLport namespace is: stlport. Once again this is not the real namespace
-where all the Standard stuff are, as the STLport namespace change depending on compilation
-options you cannot use directly the real STLport namespace. So stlport is an alias of the
-real STLport namespace.
+where all the Standard stuff are. As the real STLport namespace change depending on compilation
+options you cannot use it directly. So stlport is an alias of the real STLport namespace.
 
 5. What are the other STLport namespaces ?
 
@@ -116,9 +115,9 @@ real STLport namespace.
 default STLport namespace is: stlp_std. Here is the list of the customized namespaces:
 
   - stlpd_std : when _STLP_DEBUG is defined
-  - stlpx_std : when you use STLport as a shared library linked to the static runtime or when
-    you build the static STLport library linked with the dynamic native runtime. It is a Microsoft
-    specific extension.
+  - stlpx_std : when you use STLport as a shared library linked to the static version of the native
+    runtime or when you build the static STLport library linked with the dynamic version. This option
+    is only supported by a limited number of compilers.
   - stlpmtx_std : when building STLport as not thread safe.
 
   You can also have combination of those extension like stlpdxmtx_std or stlpdmtx_std...
