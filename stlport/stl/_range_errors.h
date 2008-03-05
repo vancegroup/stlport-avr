@@ -38,6 +38,15 @@ void _STLP_FUNCTION_THROWS _STLP_DECLSPEC _STLP_CALL __stl_throw_out_of_range(co
 void _STLP_FUNCTION_THROWS _STLP_DECLSPEC _STLP_CALL __stl_throw_length_error(const char* __msg);
 void _STLP_FUNCTION_THROWS _STLP_DECLSPEC _STLP_CALL __stl_throw_invalid_argument(const char* __msg);
 void _STLP_FUNCTION_THROWS _STLP_DECLSPEC _STLP_CALL __stl_throw_overflow_error(const char* __msg);
+
+#if defined (__DMC__) && !defined (_STLP_NO_EXCEPTIONS)
+#   pragma noreturn(__stl_throw_runtime_error)
+#   pragma noreturn(__stl_throw_range_error)
+#   pragma noreturn(__stl_throw_out_of_range)
+#   pragma noreturn(__stl_throw_length_error)
+#   pragma noreturn(__stl_throw_invalid_argument)
+#   pragma noreturn(__stl_throw_overflow_error)
+#endif
 _STLP_END_NAMESPACE
 
 #if !defined (_STLP_EXTERN_RANGE_ERRORS)

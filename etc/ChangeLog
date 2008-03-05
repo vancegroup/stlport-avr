@@ -1,3 +1,8 @@
+2008-03-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_range_errors.h: Signal function responsible
+	for throwing excepions as not returning to the DMC compiler.
+
 2008-03-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Eric Sanford patch to make generation
