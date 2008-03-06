@@ -870,10 +870,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define _STLP_FUNCTION_THROWS
 #endif
 
-#if defined (_STLP_NO_RTTI)
-#  define _STLP_NO_TYPEINFO
-#endif
-
 #if defined(_STLP_NO_BOOL)
 #  if (defined (__IBMCPP__) && (__IBMCPP__ < 400)) && ! defined (_AIX)
 #    include <isynonym.hpp>

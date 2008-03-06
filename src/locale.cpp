@@ -57,13 +57,8 @@ bool locale::operator()(const wstring& __x,
 void _STLP_CALL locale::_M_throw_on_null_name()
 { _STLP_THROW(runtime_error("Invalid null locale name")); }
 
-void _STLP_CALL locale::_M_throw_on_combine_error(const string& name, const char* facet) {
+void _STLP_CALL locale::_M_throw_on_combine_error(const string& name) {
   string what = "Unable to find facet";
-  if (facet) {
-    what += " '";
-    what += facet;
-    what += "'";
-  }
   what += " in ";
   what += name.empty() ? "system" : name.c_str();
   what += " locale";

@@ -44,7 +44,7 @@
 // Disables wchar_t functionality
 // #  define _STLP_NO_WCHAR_T  1
 
-// Define if wchar_t is not a unique type, and is actually a typedef to unsigned short.
+// Define if wchar_t is not an intrinsic type, and is actually a typedef to unsigned short.
 // #  define _STLP_WCHAR_T_IS_USHORT 1
 
 // Uncomment if long long is available
@@ -120,6 +120,12 @@
 
 // Define this if your compiler do not throw bad_alloc from the new operator
 // #  define _STLP_NEW_DONT_THROW_BAD_ALLOC  1
+
+// Define this if your compiler has no rtti support or if it has been disabled
+// #  define _STLP_NO_RTTI 1
+
+// Define this if there is no native type_info definition
+// #  define _STLP_NO_TYPEINFO 1
 
 // Uncomment if member template methods are not available
 // #  define _STLP_NO_MEMBER_TEMPLATES   1

@@ -28,7 +28,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 void _Catalog_locale_map::insert(nl_catd_type key, const locale& L) {
   _STLP_TRY {
-#if !defined (_STLP_NO_TYPEINFO)
+#if !defined (_STLP_NO_TYPEINFO) && !defined (_STLP_NO_RTTI)
     // Don't bother to do anything unless we're using a non-default ctype facet
 #  ifdef _STLP_NO_WCHAR_T
     typedef char _Char;
@@ -44,7 +44,7 @@ void _Catalog_locale_map::insert(nl_catd_type key, const locale& L) {
         M = new map_type;
 
       M->insert(map_type::value_type(key, L));
-#if !defined (_STLP_NO_TYPEINFO)
+#if !defined (_STLP_NO_TYPEINFO) && !defined (_STLP_NO_RTTI)
     }
 #endif
   }

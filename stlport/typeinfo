@@ -24,9 +24,6 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x473) && !defined (_STLP_DONT_POP_HEADER_ID)
-#  if defined (_STLP_NO_RTTI)
-#    error You shall not include typeinfo when there is no rtti support.
-#  endif
 #  ifndef _STLP_INTERNAL_TYPEINFO
 #    include <stl/_typeinfo.h>
 #  endif

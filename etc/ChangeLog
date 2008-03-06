@@ -1,3 +1,14 @@
+2008-03-06  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Fix rtti management:
+	 - no rtti support do not imply no type_info struct definition.
+	 - #error message in typeinfo to signal missing rtti support
+	has been removed.
+	 - locale implementation do not use typeid anymore to enhance
+	runtime_error message thrown by combine message when we cannot
+	find the combined facet. It was introducing an annoying dependency
+	making use of the lib without rtti support impossible.
+
 2008-03-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_range_errors.h: Signal function responsible

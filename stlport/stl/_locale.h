@@ -39,10 +39,6 @@
 #  include <stl/_string_fwd.h>
 #endif
 
-#ifndef _STLP_INTERNAL_TYPEINFO
-#  include <stl/_typeinfo.h>
-#endif
-
 #include <stl/_facets_fwd.h>
 
 _STLP_BEGIN_NAMESPACE
@@ -160,13 +156,7 @@ public:
   locale combine(const locale& __loc) const {
     _Facet *__facet = 0;
     if (!_STLP_PRIV _HasFacet(__loc, __facet))
-      _M_throw_on_combine_error(__loc.name(),
-#if !defined (_STLP_NO_TYPEINFO)
-                                typeid(_Facet).name()
-#else
-                                0
-#endif
-                              );
+      _M_throw_on_combine_error(__loc.name());
 
     return locale(*this, _STLP_PRIV _UseFacet(__loc, __facet));
   }
@@ -202,7 +192,7 @@ public:
   facet* _M_get_facet(const id&) const;
   // same, but throws
   facet* _M_use_facet(const id&) const;
-  static void _STLP_FUNCTION_THROWS _STLP_CALL _M_throw_on_combine_error(const string& name, const char* facet);
+  static void _STLP_FUNCTION_THROWS _STLP_CALL _M_throw_on_combine_error(const string& name);
   static void _STLP_FUNCTION_THROWS _STLP_CALL _M_throw_on_null_name();
   static void _STLP_FUNCTION_THROWS _STLP_CALL _M_throw_on_creation_failure(int __err_code,
                                                                             const char* name, const char* facet);
@@ -265,13 +255,7 @@ public:
   locale combine(const locale& __loc) const {
     _Facet *__facet = 0;
     if (!_STLP_PRIV _HasFacet(__loc, __facet))
-      _M_throw_on_combine_error(__loc.name(),
-#if !defined (_STLP_NO_TYPEINFO)
-                                typeid(_Facet).name()
-#else
-                                0
-#endif
-                              );
+      _M_throw_on_combine_error(__loc.name());
 
     return locale(*this, _STLP_PRIV _UseFacet(__loc, __facet));
   }

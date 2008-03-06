@@ -21,17 +21,10 @@
 #  if defined (_STLP_NO_NEW_NEW_HEADER)
 #    include <typeinfo.h>
 #  else
-#    ifdef _STLP_BROKEN_BAD_CAST_CLASS
-#      define bad_cast _STLP_NULLIFIED_BROKEN_BAD_CAST_CLASS
-#    endif
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <typeinfo>
 #    else
 #      include _STLP_NATIVE_CPP_RUNTIME_HEADER(typeinfo)
-#    endif
-#    ifdef _STLP_BROKEN_BAD_CAST_CLASS
-#      undef bad_cast
-#      undef _STLP_NULLIFIED_BROKEN_BAD_CAST_CLASS
 #    endif
 #  endif
 

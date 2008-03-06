@@ -19,6 +19,7 @@
 
 #include <locale>
 #include <algorithm>
+#include <typeinfo>
 
 #include "c_locale.h"
 #include "aligned_buffer.h"
@@ -604,7 +605,7 @@ locale* _Stl_get_global_locale() {
   return _Stl_global_locale;
 }
 
-#if defined (_STLP_MSVC) || defined (__ICL) || defined (__ISCPP__)
+#if defined (_STLP_MSVC) || defined (__ICL) || defined (__ISCPP__) || defined (__DMC__)
 /*
  * The following static variable needs to be initialized before STLport
  * users static variable in order for him to be able to use Standard
