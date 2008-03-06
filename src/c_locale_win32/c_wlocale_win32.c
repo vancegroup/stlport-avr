@@ -155,7 +155,7 @@ size_t _WLocale_mbtowc(_Locale_codecvt_t *lcodecvt, wchar_t *to,
     while (n--) {
       retval = __mbtowc(lcodecvt, to, from, count);
       if (retval == -2)
-      { if (++count > lcodecvt->max_char_size) return (size_t)-1; }
+      { if (++count > ((unsigned int)lcodecvt->max_char_size)) return (size_t)-1; }
       else if (retval == -1)
       { return (size_t)-1; }
       else
