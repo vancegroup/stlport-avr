@@ -65,7 +65,7 @@ Available options:
                         separated by an underscore, ex:
                         stlportd_MOTIF.5.0.lib
                         stlportstld_static_MOTIF.5.1.lib
-  --without-threads     Per default STLport libraries are built in order to be usable
+  --without-thread      Per default STLport libraries are built in order to be usable
                         in a multithreaded context. If you don't need this you can ask
                         for a not thread safe version with this option.
   --without-rtti        Disable RTTI when building libraries.
@@ -142,14 +142,14 @@ do
       stlport_set=y
       ;;
     --without-stlport)
-      write_option "1" WITHOUT_STLPORT
+      write_option 1 WITHOUT_STLPORT
       stlport_set=y
       ;;
     --with-boost=*)
       write_option "$option" BOOST_DIR
       ;;
     --with-system-boost)
-      write_option "1" USE_SYSTEM_BOOST
+      write_option 1 USE_SYSTEM_BOOST
       ;;
     --with-msvc=*)
       write_option "$option" MSVC_DIR
@@ -163,28 +163,28 @@ do
       ;;
     --with-lib-motif=*)
       echo "Using $option in generated library names"
-      write_option "$option" STLP_BUILD_LIB_MOTIF
+      write_option "$option" LIB_MOTIF
       ;;
-    --without-threads)
-      write_option 1 STLP_BUILD_NO_THREAD
+    --without-thread)
+      write_option 1 WITHOUT_THREAD
       ;;
     --without-rtti)
-      write_option 1 STLP_BUILD_NO_RTTI
+      write_option 1 WITHOUT_RTTI
       ;;
     --use-static-gcc)
-      write_option "1" USE_STATIC_LIBGCC
+      write_option 1 USE_STATIC_LIBGCC
       ;;
     --without-debug)
-      write_option "1" _NO_DBG_BUILD
+      write_option 1 _NO_DBG_BUILD
       ;;
     --without-stldebug)
-      write_option "1" _NO_STLDBG_BUILD
+      write_option 1 _NO_STLDBG_BUILD
       ;;
     --enable-static)
-      write_option "1" _STATIC_BUILD
+      write_option 1 _STATIC_BUILD
       ;;
     --disable-shared)
-      write_option "1" _NO_SHARED_BUILD
+      write_option 1 _NO_SHARED_BUILD
       ;;
     --with-cxx=*)
       write_option "$option" _FORCE_CXX

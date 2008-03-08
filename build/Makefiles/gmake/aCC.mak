@@ -31,7 +31,9 @@ CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { pr
 DEFS ?=
 OPT ?=
 
+ifndef WITHOUT_THREAD
 DEFS += -D_REENTRANT
+endif
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)

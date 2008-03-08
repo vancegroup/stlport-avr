@@ -64,6 +64,14 @@ OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
+ifdef WITHOUT_RTTI
+# -fno-rtti shouldn't be pass to the C compiler, we cannot use OPT so we add it
+# directly to the compiler command name.
+CXX += -fno-rtti
+# gcc do not define any macro so signal that there is no rtti support:
+DEFS += -D_STLP_NO_RTTI
+endif
+
 ifeq ($(OSNAME), cygming)
 RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
 release-shared : RCFLAGS += -DBUILD_INFOS=-O2
@@ -71,7 +79,7 @@ dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
 CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions
-ifndef STLP_BUILD_NO_THREAD
+ifndef WITHOUT_THREAD
 ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads
 CFLAGS += -mthreads
@@ -95,39 +103,55 @@ stldbg-static : DEFS += -D_DEBUG
 endif
 endif
 
+ifndef WITHOUT_THREAD
+PTHREAD := -pthread
+else
+PTHREAD :=
+endif
+
 ifeq ($(OSNAME),sunos)
-CCFLAGS = -pthreads $(OPT)
-CFLAGS = -pthreads $(OPT)
-# CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthreads  -fexceptions $(OPT)
+ifndef WITHOUT_THREAD
+PTHREADS := -pthreads
+else
+PTHREADS :=
+endif
+
+CCFLAGS = $(PTHREADS) $(OPT)
+CFLAGS = $(PTHREADS) $(OPT)
+# CXXFLAGS = $(PTHREADS) -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = $(PTHREADS) -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),openbsd)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),freebsd)
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+ifndef WITHOUT_THREAD
 DEFS += -D_REENTRANT
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+endif
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),darwin)
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
+ifndef WITHOUT_THREAD
 DEFS += -D_REENTRANT
+endif
 CXXFLAGS = -fexceptions $(OPT)
 release-shared : CXXFLAGS += -dynamic
 dbg-shared : CXXFLAGS += -dynamic
@@ -139,10 +163,10 @@ ifneq ($(M_ARCH),ia64)
 release-static : OPT += -fno-reorder-blocks
 release-shared : OPT += -fno-reorder-blocks
 endif
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CCFLAGS = $(PTHREAD) $(OPT)
+CFLAGS = $(PTHREAD) $(OPT)
+# CXXFLAGS = $(PTHREAD) -nostdinc++ -fexceptions $(OPT)
+CXXFLAGS = $(PTHREAD) -fexceptions $(OPT)
 endif
 
 ifeq ($(CXX_VERSION_MAJOR),2)

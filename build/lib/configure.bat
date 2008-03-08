@@ -60,15 +60,18 @@ if "%1" == "--use-boost" goto opt_bst
 
 REM multithreading support
 if "%1" == "--not-thread-safe" goto opt_st
+if "%1" == "--without-thread" goto opt_st
 
 REM rtti support
 if "%1" == "--no-rtti" goto opt_rtti
+if "%1" == "--without-rtti" goto opt_rtti
 
 REM additional compiler options
 if "%1" == "--extra-cxxflag" goto opt_xtra
 
 REM library name customization
 if "%1" == "--lib-motif" goto opt_motf
+if "%1" == "--with-lib-motif" goto opt_motf
 
 REM build without STLport
 if "%1" == "--without-stlport" goto no_sport
@@ -107,9 +110,6 @@ echo    icl      Intel C++ Compiler
 echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
 echo    evc4     Microsoft eMbedded Visual C++ .NET (*)
 echo    evc8     Microsoft Visual C++ 2005 compiling for CE
-echo    gcc      GNU C++ Compiler (MinGW package)
-echo    dmc      Digital Mars Compiler
-echo    bcc      Borland C++ Compiler
 echo  (*) For these compilers the target processor is determined automatically.
 echo      You must run the WCE*.BAT file you wish to build STLport for before
 echo      running configure.
@@ -131,7 +131,6 @@ echo    stlport/stl/config/host.h set the following macro depending on the confi
 echo    option:
 echo    "--rtl-dynamic -> _STLP_USE_STATIC_LIB"
 echo    "--rtl-static  -> _STLP_USE_DYNAMIC_LIB"
-echo    This is a Microsoft Visual Studio only option.
 echo.
 echo "--use-boost <boost install path>"
 echo    Request use of boost support (www.boost.org). For the moment only the boost
@@ -140,12 +139,12 @@ echo    specific workaround not directly implemented by STLport. To use the same
 echo    support when using STLport for your application don't forget to define
 echo    _STLP_USE_BOOST_SUPPORT in stlport/stl/config/user_config.h file.
 echo.
-echo "--not-thread-safe"
+echo "--without-thread"
 echo    Per default STLport libraries are built in order to be usable in a multithreaded
 echo    context. If you don't need this you can ask for a not thread safe version with
 echo    this option.
 echo.
-echo "--no-rtti"
+echo "--without-rtti"
 echo    Remove rtti (run time type information) support if available.
 echo.
 echo "--extra-cxxflag <additional compilation options>"
@@ -157,16 +156,17 @@ echo    If you have several options use several --extra-cxxflag options. For ins
 echo    to also force use of wchar_t as an intrinsic type:
 echo    --extra-cxxflag /G7 --extra-cxxflag /Zc:wchar_t
 echo.
-echo "--lib-motif <motif>"
+echo "--with-lib-motif <motif>"
 echo   Use this option to customize the generated library name. The motif will be used
 echo   in the last place before version information, separated by an underscore, ex:
 echo   stlportd_MOTIF.5.0.lib
 echo   stlportstld_static_MOTIF.5.1.lib
 echo   Do not forget to define _STLP_LIB_NAME_MOTIF macro in STLport configuration file
-echo   to the same value if you want to keep the auto link feature.
+echo   to the same value if you want to keep the auto link feature supported by some
+echo   compilers.
 echo.
 echo "--without-stlport"
-echo   Option specialiy targetting build of the unit tests project without STLport. This
+echo   Option specially targetting build of the unit tests project without STLport. This
 echo   is a good way to challenge the C++ Standard library implementation comming with
 echo   your compiler with STLport.
 echo.
@@ -191,9 +191,6 @@ if "%2" == "evc3" goto oc_evc3
 if "%2" == "evc4" goto oc_evc4
 if "%2" == "evc8" goto oc_evc8
 
-if "%2" == "gcc" goto oc_gcc
-if "%2" == "dmc" goto oc_dmc
-if "%2" == "bcc" goto oc_bcc
 if "%2" == "watcom" goto oc_wtm
 
 echo Unknown compiler: %2
@@ -290,34 +287,6 @@ goto proc
 set STLPORT_COMPILE_COMMAND=nmake /fevc.mak
 set SELECTED_COMPILER=evc
 goto proc
-
-:oc_gcc
-echo Setting compiler: GNU C++ Compiler
-set STLPORT_COMPILE_COMMAND=make -fgcc.mak
-set SELECTED_COMPILER=gcc
-shift
-goto oc_gmake
-
-:oc_dmc
-echo Setting compiler: Digital Mars C++ Compiler
-set STLPORT_COMPILE_COMMAND=make -fdmc.mak
-set SELECTED_COMPILER=dmc
-shift
-goto oc_gmake
-
-:oc_bcc
-echo Setting compiler: Borland C++ Compiler
-set STLPORT_COMPILE_COMMAND=make -fbcc.mak
-set SELECTED_COMPILER=bcc
-shift
-goto oc_gmake
-
-:oc_gmake
-echo In order to build STLport with this compiler you need a GNU make tool.
-echo You can get one from www.mingw.org or www.cygwin.com
-echo Setting up for building using GNU make.
-echo include $(SRCROOT)\Makefiles\gmake\windows\sysid.mak >> ..\Makefiles\nmake\config.mak
-goto cont_lp
 
 :oc_end
 shift
@@ -471,7 +440,7 @@ REM *
 REM **************************************************************************
 :opt_st
 echo Removing thread safety support
-echo STLP_BUILD_NO_THREAD=1 >> ..\Makefiles\nmake\config.mak
+echo WITHOUT_THREAD=1 >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -481,7 +450,7 @@ REM *
 REM **************************************************************************
 :opt_rtti
 echo Removing rtti support
-echo STLP_BUILD_NO_RTTI=1 >> ..\Makefiles\nmake\config.mak
+echo WITHOUT_RTTI=1 >> ..\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -512,7 +481,7 @@ REM **************************************************************************
 :opt_motf
 echo Using '%2' in generated library names
 
-echo STLP_BUILD_LIB_MOTIF = %2 >> ..\Makefiles\nmake\config.mak
+echo LIB_MOTIF = %2 >> ..\Makefiles\nmake\config.mak
 
 shift
 goto cont_lp

@@ -34,7 +34,9 @@ SYSINCLUDES := -I$(shell which icpc | xargs dirname | xargs dirname)/include/c++
 DEFS ?=
 OPT ?=
 
+ifndef WITHOUT_THREAD
 DEFS += -D_REENTRANT
+endif
 
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}

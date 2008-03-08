@@ -47,11 +47,11 @@ dbg-shared : OPT += -tWR
 stldbg-shared : OPT += -tWR
 endif
 
-ifdef STLP_BUILD_NO_RTTI
+ifdef WITHOUT_RTTI
 OPT += -RT-
 endif
 
-ifndef STLP_BUILD_NO_THREAD
+ifndef WITHOUT_THREAD
 OPT += -tWM
 endif
 
@@ -102,7 +102,7 @@ release-static : OPT += -O2 -vi-
 release-shared : OPT += -O2 -vi-
 
 LDLIBS += import32.lib kernel32.lib
-ifndef STLP_BUILD_NO_THREAD
+ifndef WITHOUT_THREAD
 ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
 release-shared : LDLIBS += cw32mti.lib
 dbg-shared : LDLIBS += cw32mti.lib
@@ -182,11 +182,11 @@ stldbg-shared:  DEFS += -D_RTLDLL
 
 OPT += -w-ccc -w-rch -w-ngu -w-inl -w-eff
 
-ifdef STLP_BUILD_NO_RTTI
+ifdef WITHOUT_RTTI
 OPT += -RT-
 endif
 
-ifndef STLP_BUILD_NO_THREAD
+ifndef WITHOUT_THREAD
 DEFS += -D__MT__
 endif
 
@@ -218,7 +218,7 @@ dbg-shared : OPT += -R -v -y
 stldbg-static : OPT += -R -v -y
 stldbg-shared : OPT += -R -v -y
 
-ifndef STLP_BUILD_NO_THREAD
+ifndef WITHOUT_THREAD
 
 ifdef LIBNAME
 release-shared : LDLIBS += libborcrtl.so libborunwind.so libpthread.so.0 libc.so.6 libm.so libdl.so libc_nonshared.a
@@ -252,7 +252,7 @@ dbg-static : LDLIBS += libborcrtl.a libborunwind.a libc.so.6 libm.so libdl.so li
 stldbg-static : LDLIBS += libborcrtl.a libborunwind.a libc.so.6 libm.so libdl.so libc_nonshared.a ../../../lib/libstlportst$
 endif
 
-endif # STLP_BUILD_NO_THREAD
+endif
 
 # install dir defaults to /usr/local unless defined
 

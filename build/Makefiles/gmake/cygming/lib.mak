@@ -21,8 +21,8 @@ else
 LIB_TYPE := 
 endif
 
-ifdef STLP_BUILD_LIB_MOTIF
-LIB_SUFFIX := _$(STLP_BUILD_LIB_MOTIF).${MAJOR}.${MINOR}
+ifdef LIB_MOTIF
+LIB_SUFFIX := _$(LIB_MOTIF).${MAJOR}.${MINOR}
 else
 LIB_SUFFIX := .${MAJOR}.${MINOR}
 endif
@@ -66,8 +66,8 @@ A_LIB_TYPE := _static
 endif
 endif
 
-ifdef STLP_BUILD_LIB_MOTIF
-LIB_A_SUFFIX := _$(STLP_BUILD_LIB_MOTIF)
+ifdef LIB_MOTIF
+LIB_A_SUFFIX := _$(LIB_MOTIF)
 else
 LIB_A_SUFFIX :=
 endif

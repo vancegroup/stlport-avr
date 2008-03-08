@@ -12,6 +12,9 @@
 	require a copy constructor and assignment operator. Thanks bug
 	report #1908626 from Ilya Dogadaev.
 
+	* build/Makefiles: Normalized some configure options:
+	--without-thread, --without-rtti, --with-lib-motif. 
+
 2008-03-06  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Fix rtti management:

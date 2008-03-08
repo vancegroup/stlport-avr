@@ -40,7 +40,11 @@ dbg-shared : OPT += -ND
 stldbg-shared : OPT += -ND
 endif
 
-ifndef STLP_BUILD_NO_RTTI
+ifdef WITHOUT_THREAD
+DEFS += -D_STLP_NO_THREADS
+endif
+
+ifndef WITHOUT_RTTI
 OPT += -Ar
 endif
 
@@ -95,9 +99,11 @@ dbg-shared : OPT += -gl
 stldbg-static : OPT += -gl
 stldbg-shared : OPT += -gl
 
+ifndef WITHOUT_THREAD
 release-static : OPT += -D_MT
 dbg-static : OPT += -D_MT
 stldbg-static : OPT += -D_MT
+endif
 
 release-static : AR += -p128
 dbg-static : AR += -p512
