@@ -34,8 +34,8 @@ class UnorderedTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(hash_policy);
   CPPUNIT_TEST(buckets);
   CPPUNIT_TEST(equal_range);
-  CPPUNIT_TEST(benchmark1);
-  CPPUNIT_TEST(benchmark2);
+  CPPUNIT_EXPLICIT_TEST(benchmark1);
+  CPPUNIT_EXPLICIT_TEST(benchmark2);
 #if !defined (_STLP_USE_CONTAINERS_EXTENSION)
   CPPUNIT_IGNORE;
 #endif

@@ -99,7 +99,8 @@ namespace CPPUNIT_NS
       }
     }
 
-    bool shouldRunThis(const char *in_desiredTest, const char *in_className, const char *in_functionName, bool invert = false) {
+    bool shouldRunThis(const char *in_desiredTest, const char *in_className, const char *in_functionName,
+                       bool invert, bool explicit_test) {
       if ((in_desiredTest) && (in_desiredTest[0] != '\0')) {
         const char *ptr = strstr(in_desiredTest, "::");
         if (ptr) {
@@ -107,10 +108,10 @@ namespace CPPUNIT_NS
                           (strncmp(ptr + 2, in_functionName, strlen(in_functionName)) == 0);
           return invert ? !decision : decision;
         }
-        bool decision = strcmp(in_desiredTest, in_className) == 0;
+        bool decision = !explicit_test && strcmp(in_desiredTest, in_className) == 0;
         return invert ? !decision : decision;
       }
-      return true;
+      return !explicit_test;
     }
 
     void tearDown() {
@@ -149,8 +150,8 @@ namespace CPPUNIT_NS
     bool ignoring = false; CPPUNIT_MINI_HIDE_UNUSED_VARIABLE(ignoring)
 
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
-#  define CPPUNIT_TEST(X) \
-  if (shouldRunThis(in_name, className, #X, invert)) { \
+#  define CPPUNIT_TEST_BASE(X, Y) \
+  if (shouldRunThis(in_name, className, #X, invert, Y)) { \
     setUp(); \
     progress(className, #X, ignoring); \
     if (!ignoring) { \
@@ -164,8 +165,8 @@ namespace CPPUNIT_NS
     tearDown(); \
   }
 #else
-#  define CPPUNIT_TEST(X) \
-  if (shouldRunThis(in_name, className, #X, invert)) { \
+#  define CPPUNIT_TEST_BASE(X, Y) \
+  if (shouldRunThis(in_name, className, #X, invert, Y)) { \
     setUp(); \
     progress(className, #X, ignoring); \
     if (!ignoring) \
@@ -174,16 +175,14 @@ namespace CPPUNIT_NS
   }
 #endif
 
-#  define CPPUNIT_IGNORE \
+#define CPPUNIT_TEST(X) CPPUNIT_TEST_BASE(X, false)
+#define CPPUNIT_EXPLICIT_TEST(X) CPPUNIT_TEST_BASE(X, true)
+
+#define CPPUNIT_IGNORE \
   ignoring = true
 
-#  define CPPUNIT_STOP_IGNORE \
+#define CPPUNIT_STOP_IGNORE \
   ignoring = false
-
-#define CPPUNIT_TEST_EXCEPTION(X, Y) \
-  if (shouldRunThis(in_name, className, #X, invert)) { \
-    progress(className, #X, ignoring); \
-  }
 
 #define CPPUNIT_TEST_SUITE_END() }
 

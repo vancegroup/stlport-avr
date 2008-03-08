@@ -1,3 +1,12 @@
+2008-03-08  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/cppunit/cppunit_mini.h: New mini cppunit framework
+	feature, the explicit tests that have to be explicitly tested
+	thanks to the -t option to run.
+
+	* test/unit/unordered_test.cpp: benchmark1 and benchmark2 tests
+	are now explicit.
+
 2008-03-06  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Fix rtti management:
