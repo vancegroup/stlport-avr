@@ -7,6 +7,11 @@
 	* test/unit/unordered_test.cpp: benchmark1 and benchmark2 tests
 	are now explicit.
 
+	* stlport/stl/_stdexcept_base.h, _stdexcept_base.c:
+	__Named_exception that contains dynamically allocated memory
+	require a copy constructor and assignment operator. Thanks bug
+	report #1908626 from Ilya Dogadaev.
+
 2008-03-06  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Fix rtti management:
