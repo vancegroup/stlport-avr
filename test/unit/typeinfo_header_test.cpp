@@ -7,7 +7,7 @@
  */
 #include <typeinfo>
 
-#if !defined (_STLP_NO_RTTI) && !defined (_STLP_NO_TYPEINFO)
+#if 0 /* !defined (_STLP_NO_RTTI) && !defined (_STLP_NO_TYPEINFO) */
 /* SourceForge: STLport bug report 1721844
  * type_info is not a member of stlp_std
  */
