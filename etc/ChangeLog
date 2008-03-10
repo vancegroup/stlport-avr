@@ -1,3 +1,9 @@
+2008-03-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles: Normalization of --with-static-rtl and
+	--with-dynamic-rtl extended to configure script for Borland
+	and DMC compilers.
+
 2008-03-08  Francois Dumont  <dums@users.sourceforge.net>
 
 	* test/unit/cppunit/cppunit_mini.h: New mini cppunit framework

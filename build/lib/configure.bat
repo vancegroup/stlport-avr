@@ -52,8 +52,10 @@ if "%1" == "/x" goto opt_x
 if "%1" == "--cross" goto opt_x
 
 REM C runtime library
-if "%1" == "--rtl-static" goto opt_rtl
-if "%1" == "--rtl-dynamic" goto opt_rtl
+if "%1" == "--with-static-rtl" goto opt_srtl
+if "%1" == "--with-dynamic-rtl" goto opt_drtl
+if "%1" == "--rtl-static" goto opt_srtl
+if "%1" == "--rtl-dynamic" goto opt_drtl
 
 REM boost support
 if "%1" == "--use-boost" goto opt_bst
@@ -119,18 +121,18 @@ echo    Enables cross-compiling; the result is that all built files that are
 echo    normally put under "bin" and "lib" get extra subfolders depending on
 echo    the compiler name.
 echo.
-echo "--rtl-static"
-echo "--rtl-dynamic"
+echo "--with-static-rtl"
+echo "--with-dynamic-rtl"
 echo    Enables usage of static (libc.lib family) or dynamic (msvcrt.lib family)
 echo    C/C++ runtime library when linking with STLport. If you want your appli/dll
 echo    to link statically with STLport but using the dynamic C runtime use
-echo    --rtl-dynamic; if you want to link dynamicaly with STLport but using the
-echo    static C runtime use --rtl-static. See README.options for details.
+echo    --with-dynamic-rtl; if you want to link dynamicaly with STLport but using the
+echo    static C runtime use --with-static-rtl. See README.options for details.
 echo    Don't forget to signal the link method when building your appli or dll, in
 echo    stlport/stl/config/host.h set the following macro depending on the configure
 echo    option:
-echo    "--rtl-dynamic -> _STLP_USE_STATIC_LIB"
-echo    "--rtl-static  -> _STLP_USE_DYNAMIC_LIB"
+echo    "--with-static-rtl  -> _STLP_USE_DYNAMIC_LIB"
+echo    "--with-dynamic-rtl -> _STLP_USE_STATIC_LIB"
 echo.
 echo "--use-boost <boost install path>"
 echo    Request use of boost support (www.boost.org). For the moment only the boost
@@ -385,11 +387,14 @@ REM * C runtime library selection
 REM *
 REM **************************************************************************
 
-:opt_rtl
+:opt_srtl
 if "%SELECTED_COMPILER%" == "" goto or_err1
-if "%SELECTED_COMPILER%" == "msvc" goto or_ok
-if "%SELECTED_COMPILER%" == "bcc" goto or_ok
-if "%SELECTED_COMPILER%" == "dmc" goto or_ok
+if "%SELECTED_COMPILER%" == "msvc" goto or_sok
+goto or_err2
+
+:opt_drtl
+if "%SELECTED_COMPILER%" == "" goto or_err1
+if "%SELECTED_COMPILER%" == "msvc" goto or_dok
 goto or_err2
 
 :or_err1
@@ -400,13 +405,15 @@ goto or_end
 echo Error: Setting C runtime library for compiler other than microsoft ones!
 goto or_end
 
-:or_ok
+:or_sok
+echo Selecting static C runtime library for STLport
+echo WITH_STATIC_RTL=1 >> ..\Makefiles\nmake\config.mak
+goto or_end
 
-if "%1" == "--rtl-static" echo Selecting static C runtime library for STLport
-if "%1" == "--rtl-static" echo STLP_BUILD_FORCE_STATIC_RUNTIME=1 >> ..\Makefiles\nmake\config.mak
-
-if "%1" == "--rtl-dynamic" echo Selecting dynamic C runtime library for STLport
-if "%1" == "--rtl-dynamic" echo STLP_BUILD_FORCE_DYNAMIC_RUNTIME=1 >> ..\Makefiles\nmake\config.mak
+:or_dok
+echo Selecting dynamic C runtime library for STLport
+echo WITH_DYNAMIC_RTL=1 >> ..\Makefiles\nmake\config.mak
+goto or_end
 
 :or_end
 goto cont_lp

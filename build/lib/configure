@@ -69,6 +69,18 @@ Available options:
                         in a multithreaded context. If you don't need this you can ask
                         for a not thread safe version with this option.
   --without-rtti        Disable RTTI when building libraries.
+  --with-static-rtl
+  --with-dynamic-rtl
+                        Enables usage of static (libc.lib family) or dynamic (msvcrt.lib family)
+                        C/C++ runtime library when linking with STLport. If you want your appli/dll
+                        to link statically with STLport but using the dynamic C runtime use
+                        --with-dynamic-rtl; if you want to link dynamicaly with STLport but using the
+                        static C runtime use --with-static-rtl. See README.options for details.
+                        Don't forget to signal the link method when building your appli or dll, in
+                        stlport/stl/config/host.h set the following macro depending on the configure
+                        option:
+                        --with-static-rtl  -> _STLP_USE_DYNAMIC_LIB"
+                        --with-dynamic-rtl -> _STLP_USE_STATIC_LIB"
 
 Environment variables:
 
@@ -170,6 +182,12 @@ do
       ;;
     --without-rtti)
       write_option 1 WITHOUT_RTTI
+      ;;
+    --with-dynamic-rtl)
+      write_option 1 WITH_DYNAMIC_RTL
+      ;;
+    --with-static-rtl)
+      write_option 1 WITH_STATIC_RTL
       ;;
     --use-static-gcc)
       write_option 1 USE_STATIC_LIBGCC

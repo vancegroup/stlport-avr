@@ -12,6 +12,11 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+# For DMC Cygwin/MSys are only build environment, they do not represent
+# the targetted OS so per default we keep all generated files in STLport
+# folder.
+BASE_INSTALL_DIR ?= ${STLPORT_DIR}
+
 ALL_TAGS = all-static all-shared
 ifdef LIBNAME
 INSTALL_TAGS = install-static install-shared
@@ -28,13 +33,13 @@ CXXFLAGS = -Ae -C -p -3 -w12
 
 DEFS += -DSTRICT
 
-ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifdef WITH_DYNAMIC_RTL
 release-static : OPT += -ND
 dbg-static : OPT += -ND
 stldbg-static : OPT += -ND
 endif
 
-ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifndef WITH_STATIC_RTL
 release-shared : OPT += -ND
 dbg-shared : OPT += -ND
 stldbg-shared : OPT += -ND
@@ -110,12 +115,12 @@ dbg-static : AR += -p512
 stldbg-static : AR += -p512
 
 ifndef LIBNAME
-ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifdef WITH_DYNAMIC_RTL
 release-static: DEFS += -D_STLP_USE_STATIC_LIB
 dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
 stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
 endif
-ifdef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifdef WITH_STATIC_RTL
 release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
 dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB

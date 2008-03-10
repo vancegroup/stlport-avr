@@ -21,6 +21,11 @@ endif
 
 ifneq ($(OSNAME),linux)
 
+# For Borland Cygwin/MSys are only build environment, they do not represent
+# the targetted OS so per default we keep all generated files in STLport
+# folder.
+BASE_INSTALL_DIR ?= ${STLPORT_DIR}
+
 CXX := bcc32 
 CC := bcc32
 RC := brcc32
@@ -35,13 +40,13 @@ OPT += -w-ccc -w-rch -w-ngu -w-inl -w-eff
 
 # release-shared : OPT += -w-inl
 
-ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifdef WITH_DYNAMIC_RTL
 release-static : OPT += -tWR
 dbg-static : OPT += -tWR
 stldbg-static : OPT += -tWR
 endif
 
-ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifndef WITH_STATIC_RTL
 release-shared : OPT += -tWR
 dbg-shared : OPT += -tWR
 stldbg-shared : OPT += -tWR
@@ -62,7 +67,7 @@ else
 WINVER=0x0400
 endif
 release-shared: DEFS += -DWINVER=$(WINVER)
-dbg-shared: DEFS += -DWINVER=$(WINVER)
+#dbg-shared: DEFS += -DWINVER=$(WINVER)
 stldbg-shared: DEFS += -DWINVER=$(WINVER)
 release-static: DEFS += -DWINVER=$(WINVER)
 dbg-static: DEFS += -DWINVER=$(WINVER)
@@ -103,7 +108,7 @@ release-shared : OPT += -O2 -vi-
 
 LDLIBS += import32.lib kernel32.lib
 ifndef WITHOUT_THREAD
-ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifndef WITH_STATIC_RTL
 release-shared : LDLIBS += cw32mti.lib
 dbg-shared : LDLIBS += cw32mti.lib
 stldbg-shared : LDLIBS += cw32mti.lib
@@ -112,7 +117,7 @@ release-shared : LDLIBS += cw32mt.lib
 dbg-shared : LDLIBS += cw32mt.lib
 stldbg-shared : LDLIBS += cw32mt.lib
 endif
-ifndef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifndef WITH_DYNAMIC_RTL
 release-static : LDLIBS += cw32mt.lib
 dbg-static : LDLIBS += cw32mt.lib
 stldbg-static : LDLIBS += cw32mt.lib
@@ -122,7 +127,7 @@ dbg-static : LDLIBS += cw32mti.lib
 stldbg-static : LDLIBS += cw32mti.lib
 endif
 else
-ifndef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifndef WITH_STATIC_RTL
 release-shared : LDLIBS += cw32i.lib
 dbg-shared : LDLIBS += cw32i.lib
 stldbg-shared : LDLIBS += cw32i.lib
@@ -131,7 +136,7 @@ release-shared : LDLIBS += cw32.lib
 dbg-shared : LDLIBS += cw32.lib
 stldbg-shared : LDLIBS += cw32.lib
 endif
-ifndef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifndef WITH_DYNAMIC_RTL
 release-static : LDLIBS += cw32.lib
 dbg-static : LDLIBS += cw32.lib
 stldbg-static : LDLIBS += cw32.lib
@@ -143,12 +148,12 @@ endif
 endif
 
 ifndef LIBNAME
-ifdef STLP_BUILD_FORCE_DYNAMIC_RUNTIME
+ifdef WITH_DYNAMIC_RTL
 release-static: DEFS += -D_STLP_USE_STATIC_LIB
 dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
 stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
 endif
-ifdef STLP_BUILD_FORCE_STATIC_RUNTIME
+ifdef WITH_STATIC_RTL
 release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
 dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
 stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB

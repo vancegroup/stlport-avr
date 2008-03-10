@@ -68,8 +68,10 @@ ifdef WITHOUT_RTTI
 # -fno-rtti shouldn't be pass to the C compiler, we cannot use OPT so we add it
 # directly to the compiler command name.
 CXX += -fno-rtti
-# gcc do not define any macro so signal that there is no rtti support:
+ifdef STLP_BUILD
+# gcc do not define any macro to signal that there is no rtti support:
 DEFS += -D_STLP_NO_RTTI
+endif
 endif
 
 ifeq ($(OSNAME), cygming)
