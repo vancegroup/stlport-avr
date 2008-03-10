@@ -28,9 +28,8 @@
 #    define _STLP_NATIVE_CPP_RUNTIME_INCLUDE_PATH ../include/c++/ ## GCC_VERSION
 #  endif
 
-#  ifndef _SYS_CDEFS_H
-#    include </usr/include/sys/cdefs.h>
-#  endif
+#  undef _SYS_CDEFS_H
+#  include </usr/include/sys/cdefs.h>
 
 #  ifdef __MT__
 #    define _PTHREADS
