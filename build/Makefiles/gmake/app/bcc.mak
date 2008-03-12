@@ -16,7 +16,7 @@ ifneq ($(OSNAME),linux)
 
 OPT += -tWC -w-par
 
-LDFLAGS += -ap -Tpe -w -w-dup
+LDFLAGS += -Tpe -w -w-dup
 
 START_OBJ = c0x32.obj
 
@@ -61,6 +61,13 @@ install-dbg-static-tds:
 
 install-stldbg-static-tds:
 	$(INSTALL_EXE) $(OUTPUT_DIR_STLDBG)/${PRGNAME}.tds $(INSTALL_BIN_DIR_STLDBG)/${PRGNAME}.tds
+
+else
+
+dbg-shared : OPT += -vi-
+dbg-static : OPT += -vi-
+stldbg-shared : OPT += -vi-
+stldbg-static : OPT += -vi-
 
 endif
 
