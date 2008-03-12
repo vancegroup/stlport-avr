@@ -63,8 +63,9 @@ typedef struct _LOCALECONV {
                                 /* max entire locale string length */
 #define MAX_CP_LEN          5   /* max code page name length */
 
-#ifndef LANG_INVARIANT
+#if !defined (LANG_INVARIANT)
 #  define LANG_INVARIANT 0x7f
+#  define _STLP_LANG_INVARIANT_DEFINED
 #endif
 
 #ifndef CP_UTF7
@@ -76,13 +77,6 @@ typedef struct _LOCALECONV {
 #endif
 
 #define INVARIANT_LCID MAKELCID(MAKELANGID(LANG_INVARIANT, SUBLANG_NEUTRAL), SORT_DEFAULT)
-
-/* Metrowerks has different define here */
-#if !defined (LC_MAX)
-#  if defined (LC_LAST)
-#    define LC_MAX LC_LAST
-#  endif
-#endif
 
 static const char *_C_name = "C";
 
@@ -1209,7 +1203,7 @@ int _Locale_p_sign_posn(_Locale_monetary_t * lmon) {
     return atoi(loc_data);
   }
   else {
-    return 5;
+    return CHAR_MAX;
   }
 }
 
@@ -1236,7 +1230,7 @@ int _Locale_n_sign_posn(_Locale_monetary_t * lmon) {
     return atoi(loc_data);
   }
   else {
-    return 5;
+    return CHAR_MAX;
   }
 }
 
@@ -1630,14 +1624,23 @@ void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf
 /* Return 0 if ANSI code page not used */
 int __intGetACP(LCID lcid) {
   char cp[6];
-  GetLocaleInfoA(lcid, LOCALE_IDEFAULTANSICODEPAGE, cp, 6);
+  if (!GetLocaleInfoA(lcid, LOCALE_IDEFAULTANSICODEPAGE, cp, 6)) {
+#if defined (_STLP_LANG_INVARIANT_DEFINED)
+    if (lcid == INVARIANT_LCID) {
+      /* We are using a limited PSDK, we rely on the most common code page */
+      return 1252;
+    }
+#endif
+    return 0;
+  }
   return atoi(cp);
 }
 
 /* Return 1 if OEM code page not used */
 int __intGetOCP(LCID lcid) {
   char cp[6];
-  GetLocaleInfoA(lcid, LOCALE_IDEFAULTCODEPAGE, cp, 6);
+  if (!GetLocaleInfoA(lcid, LOCALE_IDEFAULTCODEPAGE, cp, 6))
+    return 0;
   return atoi(cp);
 }
 
