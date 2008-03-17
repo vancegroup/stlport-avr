@@ -1,3 +1,14 @@
+2008-03-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_stdexcept_base.h, _stdexcept_base.c,
+	type_manips.h, src/num_put_float.cpp,
+	test/unit/num_put_get_test.cpp: Borland patch from Eric Sanford.
+	No need for a __Named_exception workaround anymore. Force
+	floating point control word when testing special floating point
+	operations. Change implementation _Copyable and add a workaround
+	to correctly render long double max value that is consider as
+	equal to double max value.
+
 2008-03-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles: Normalization of --with-static-rtl and

@@ -148,7 +148,7 @@ static inline bool _Stl_is_neg_inf(double x)    { return (IsINF(x)) && (x < 0.0)
 static inline bool _Stl_is_neg_nan(double x)    { return IsNegNAN(x); }
 #  elif defined (_STLP_MSVC_LIB) || defined (__MINGW32__) || defined (__BORLANDC__)
 static inline bool _Stl_is_nan_or_inf(double x) { return !_finite(x); }
-#    if !defined (__BORLANDC__) || (__BORLANDC__ < 0x580)
+#    if !defined (__BORLANDC__)
 static inline bool _Stl_is_inf(double x)        {
   int fclass = _fpclass(x);
   return fclass == _FPCLASS_NINF || fclass == _FPCLASS_PINF;
@@ -378,7 +378,14 @@ static void __fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modi
 
 // Emulation of ecvt/fcvt functions using sprintf:
 static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
+  // If long double value can be safely converted to double without losing precision
+  // we use the ecvt function for double:
+#if defined (__BORLANDC__)
+  typedef numeric_limits<long double> limits;
+  if (x == (double)x && x != limits::max())
+#  else
   if (x == (double)x)
+#  endif
     return _Stl_ecvtR((double)x, n, pt, sign, buf);
 
   char fmtbuf[32];
@@ -415,7 +422,14 @@ static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
 }
 
 static char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
-  if (x == (double)x)
+  // If long double value can be safely converted to double without losing precision
+  // we use the fcvt function for double:
+#if defined (__BORLANDC__)
+  typedef numeric_limits<long double> limits;
+  if (x == (double)x && x != limits::max())
+#  else
+  if (x != (double)x)
+#  endif
     return _Stl_fcvtR((double)x, n, pt, sign, buf);
 
   char fmtbuf[32];

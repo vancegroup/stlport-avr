@@ -64,6 +64,10 @@ private:
   template <class F>
   void check_get_float( F v )
   {
+#  if defined (__BORLANDC__)
+    _control87(PC_64|MCW_EM, MCW_PC|MCW_EM);
+#  endif
+
     F in_val_d = v;
     typedef numeric_limits<F> limits;
     {

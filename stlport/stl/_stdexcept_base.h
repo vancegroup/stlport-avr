@@ -68,10 +68,8 @@ using _STLP_VENDOR_EXCEPT_STD::exception;
 class _STLP_CLASS_DECLSPEC __Named_exception : public _STLP_EXCEPTION_BASE {
 public:
   __Named_exception(const string& __str);
-#    if !defined (__BORLANDC__)
   __Named_exception(const __Named_exception&);
   __Named_exception& operator = (const __Named_exception&);
-#    endif
 
   const char* what() const _STLP_NOTHROW_INHERENTLY;
   ~__Named_exception() _STLP_NOTHROW_INHERENTLY;
@@ -79,9 +77,7 @@ public:
 private:
   enum { _S_bufsize = 256 };
   char _M_static_name[_S_bufsize];
-#    if !defined (__BORLANDC__)
   char *_M_name;
-#    endif
 };
 
 #    if defined (_STLP_USE_NO_IOSTREAMS) && !defined (__BUILDING_STLPORT)

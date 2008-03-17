@@ -17,7 +17,6 @@
  */
 
 __Named_exception::__Named_exception(const string& __str) {
-#if !defined (__BORLANDC__)
   size_t __size = strlen(_STLP_PRIV __get_c_string(__str)) + 1;
   if (__size > _S_bufsize) {
     _M_name = __STATIC_CAST(char*, malloc(__size * sizeof(char)));
@@ -32,20 +31,14 @@ __Named_exception::__Named_exception(const string& __str) {
   else {
     _M_name = _M_static_name;
   }
-#  if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   strncpy(_M_name, _STLP_PRIV __get_c_string(__str), __size - 1);
   _M_name[__size - 1] = '\0';
-#  else
-  strncpy_s(_M_name, __size, _STLP_PRIV __get_c_string(__str), __size - 1);
-#  endif
 #else
-  size_t __size = (min)(strlen(_STLP_PRIV __get_c_string(__str)) + 1, __STATIC_CAST(size_t, _S_bufsize));
-  strncpy(_M_static_name, _STLP_PRIV __get_c_string(__str), __size - 1);
-  _M_static_name[__size - 1] = '\0';
+  strncpy_s(_M_name, __size, _STLP_PRIV __get_c_string(__str), __size - 1);
 #endif
 }
 
-#if !defined (__BORLANDC__)
 __Named_exception::__Named_exception(const __Named_exception& __x) {
   size_t __size = strlen(__x._M_name) + 1;
   if (__size > _S_bufsize) {
@@ -61,12 +54,12 @@ __Named_exception::__Named_exception(const __Named_exception& __x) {
   else {
     _M_name = _M_static_name;
   }
-#  if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   strncpy(_M_name, __x._M_name, __size - 1);
   _M_name[__size - 1] = '\0';
-#  else
+#else
   strncpy_s(_M_name, __size, __x._M_name, __size - 1);
-#  endif
+#endif
 }
 
 __Named_exception& __Named_exception::operator = (const __Named_exception& __x) {
@@ -84,26 +77,19 @@ __Named_exception& __Named_exception::operator = (const __Named_exception& __x) 
       *(__REINTERPRET_CAST(size_t*, &_M_static_name[0])) = __size * sizeof(char);
     }
   }
-#  if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
+#if !defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
   strncpy(_M_name, __x._M_name, __size - 1);
   _M_name[__size - 1] = '\0';
-#  else
+#else
   strncpy_s(_M_name, __size, __x._M_name, __size - 1);
-#  endif
+#endif
   return *this;
 }
-#endif
 
 __Named_exception::~__Named_exception() _STLP_NOTHROW_INHERENTLY {
-#if !defined (__BORLANDC__)
   if (_M_name != _M_static_name)
     free(_M_name);
-#endif
 }
 
 const char* __Named_exception::what() const _STLP_NOTHROW_INHERENTLY
-#if !defined (__BORLANDC__)
 { return _M_name; }
-#else
-{ return _M_static_name; }
-#endif
