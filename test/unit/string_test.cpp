@@ -564,6 +564,12 @@ void StringTest::replace()
   CPPUNIT_ASSERT( s == "1345656" );
 
   s = "123456";
+  i = s.begin();
+  ci = s.begin() + 1;
+  s.replace(i, i, ci, ci + 1);
+  CPPUNIT_CHECK( s == "2123456" );
+
+  s = "123456";
   s.replace(s.begin() + 4, s.end(), cs.begin(), cs.end());
   CPPUNIT_ASSERT( s == "1234123456" );
 

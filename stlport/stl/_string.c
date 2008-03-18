@@ -486,30 +486,21 @@ basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __la
     else
       _M_move(__f, __l, __first);
     erase(__first + __n, __last);
-  }
-  else {
-    if (!__self_ref || (__f >= __last) || (__l <= __first)) {
-      //no overlap:
-      const_iterator __m = __f + __len;
-      _M_copy(__f, __m, __first);
-      _M_insert(__last, __m, __l, false );
-    }
-    else {
-      //we have to take care of overlaping
-      if (__f < __first) {
-        const_iterator __m = __f + __len;
-        //We have to deal with possible reallocation because we do insert first.
-        const difference_type __off_dest = __first - this->begin();
-        const difference_type __off_src = __f - this->begin();
-        _M_insert(__last, __m, __l, true);
-        _Traits::move(begin() + __off_dest, begin() + __off_src, __len);
-      }
-      else {
-        const_iterator __m = __f + __len;
-        _Traits::move(__first, __f, __len);
-        _M_insert(__last, __m, __l, true);
-      }
-    }
+  } else if (!__self_ref || (__f >= __last) || (__l <= __first)) { // no overlap
+    const_iterator __m = __f + __len;
+    _M_copy(__f, __m, __first);
+    _M_insert(__last, __m, __l, __self_ref );
+  } else if (__f < __first) { // we have to take care of overlaping
+    const_iterator __m = __f + __len;
+    // We have to deal with possible reallocation because we do insert first.
+    const difference_type __off_dest = __first - this->begin();
+    const difference_type __off_src = __f - this->begin();
+    _M_insert(__last, __m, __l, true);
+    _Traits::move(begin() + __off_dest, begin() + __off_src, __len);
+  } else {
+    const_iterator __m = __f + __len;
+    _Traits::move(__first, __f, __len);
+    _M_insert(__last, __m, __l, true);
   }
   return *this;
 }
