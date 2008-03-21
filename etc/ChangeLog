@@ -1,3 +1,8 @@
+2008-03-21  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Patch 1876529 from Johan Andersson to add support for VS 2005
+	bundled Pocket PC 2003 SDK.
+
 2008-03-18  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.c: derived from patch #1914475, wrong

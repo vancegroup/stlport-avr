@@ -51,7 +51,7 @@
 // CE up to at least version 5 has no C locale support
 #define _STLP_NO_LOCALE_SUPPORT
 
-#if _WIN32_WCE >= 0x500
+#if _WIN32_WCE >= 0x420
    // SDKs built with PB5 have terminate&co in namespace std...
 #  define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_STD
 #  define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_STD
@@ -181,7 +181,12 @@
 #      else
          // VC8 crosscompiling for CE
 #        if defined (ARMV4)
-#          define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+           // VC8 bundled Pocket PC 2003 SDK don't have a target CPU subfolder.
+#          if defined(WIN32_PLATFORM_PSPC)
+#            define _STLP_NATIVE_INCLUDE_PATH ../Include
+#          else
+#            define _STLP_NATIVE_INCLUDE_PATH ../Armv4
+#          endif
 #        elif defined(ARMV4I) || defined(ARMV4T)
 #          define _STLP_NATIVE_INCLUDE_PATH ../Armv4i
 #        else

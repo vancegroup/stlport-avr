@@ -34,7 +34,7 @@
 #  include <stdio.h>
 #endif
 
-#if defined (__MWERKS__) 
+#if defined (__MWERKS__)
 #  undef stdin
 #  undef stdout
 #  undef stderr
@@ -76,7 +76,7 @@ using _STLP_VENDOR_CSTD::fprintf;
 using _STLP_VENDOR_CSTD::fputc;
 using _STLP_VENDOR_CSTD::fputs;
 using _STLP_VENDOR_CSTD::fread;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x500) // CE5 stopped supplying this
+#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x420)
 using _STLP_VENDOR_CSTD::freopen;
 #    endif
 using _STLP_VENDOR_CSTD::fscanf;
@@ -86,7 +86,7 @@ using _STLP_VENDOR_CSTD::ftell;
 using _STLP_VENDOR_CSTD::fwrite;
 
 #    if  !(defined (__IBMCPP__) && (__IBMCPP__ >= 500))
-#      if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x500) // CE5 stopped supplying this except as macros. TODO: use inline function to redirect to the macros?
+#      if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x420) // Supplied as macros, TODO: use inline function to redirect to the macros?
  using _STLP_VENDOR_CSTD::getc;
  using _STLP_VENDOR_CSTD::putc;
 #      endif
@@ -95,12 +95,12 @@ using _STLP_VENDOR_CSTD::fwrite;
 #    endif
 
 using _STLP_VENDOR_CSTD::gets;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x500) // CE5 stopped supplying this
+#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x420)
 using _STLP_VENDOR_CSTD::perror;
 #    endif
 using _STLP_VENDOR_CSTD::printf;
 using _STLP_VENDOR_CSTD::puts;
-#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x500) // CE5 stopped supplying this
+#    if !defined (_WIN32_WCE) || (_WIN32_WCE < 0x420)
 using _STLP_VENDOR_CSTD::remove;
 using _STLP_VENDOR_CSTD::rename;
 using _STLP_VENDOR_CSTD::rewind;

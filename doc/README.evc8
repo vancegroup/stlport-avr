@@ -26,6 +26,33 @@ should get you going:
   rem add libs that came with VC8
   rem Note: there are more libs and includes under ce\atlmfc, not sure if these are needed.
   set LIB=%LIB%;%VSINSTALLDIR%\VC\ce\lib\%TARGETCPU%
+  
+  
+- The snippet below can be used to build STLport for Pocket PC 2003 (using the
+  Pocket PC 2003 SDK shipped with Visual Studio 2005, this is the SDK used when
+  compiling programs from within the IDE):
+
+  set OSVERSION=WCE420
+  set PLATFORM=POCKET PC 2003
+  set TARGETCPU=ARMV4
+
+  rem the compiler is always cl.exe, different compilers are in different paths
+  set CC=cl.exe
+
+  rem obviously, these need to be adjusted to where you installed VS2005
+  set VSINSTALLDIR=C:\Program Files\Microsoft Visual Studio 8
+  set SDKROOT=%VSINSTALLDIR%\SmartDevices\SDK
+
+  set PATH=%VSINSTALLDIR%\VC\ce\bin\x86_arm;%VSINSTALLDIR%\VC\bin;%VSINSTALLDIR%\Common7\IDE;%PATH%
+  set PLATFORMROOT=%SDKROOT%\PocketPC2003
+
+  rem add libs and includes from the SDK
+  set INCLUDE=%PLATFORMROOT%\include
+  set LIB=%PLATFORMROOT%\lib\%TARGETCPU%
+
+  rem add libs that came with VC8
+  set INCLUDE=%INCLUDE%;%VSINSTALLDIR%\VC\ce\atlmfc\include
+  set LIB=%LIB%;%VSINSTALLDIR%\VC\ce\lib\%TARGETCPU%;%VSINSTALLDIR%\VC\ce\atlmfc\lib\%TARGETCPU%
 
 
 You should now be able to run cl.exe for the target you expected.
