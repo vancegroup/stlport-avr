@@ -119,12 +119,8 @@
 #  if defined (__BUILDING_STLPORT)
 #    define _STLP_CALL __cdecl __export
 #  else
-#    if (__BORLANDC__ < 0x570) 
-#      define  _STLP_CALL __cdecl __import
-#    else
 #      define  _STLP_CALL __cdecl
 #    endif
-#  endif
 #else
 #  define  _STLP_CALL __cdecl
 #endif

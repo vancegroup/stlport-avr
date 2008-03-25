@@ -66,7 +66,7 @@ BASE_LIBNAME := $(LIB_PREFIX)${LIBNAME}${LIB_TYPE}${LIB_SUFFIX}
 BASE_LIBNAME_DBG := $(LIB_PREFIX)${LIBNAME}${DBG_SUFFIX}${LIB_TYPE}${LIB_SUFFIX}
 BASE_LIBNAME_STLDBG := $(LIB_PREFIX)${LIBNAME}${STLDBG_SUFFIX}${LIB_TYPE}${LIB_SUFFIX}
 BASE_LIBNAMES = ${BASE_LIBNAME} ${BASE_LIBNAME_DBG} ${BASE_LIBNAME_STLDBG}
-BASE_LIB_EXTS = lib dll tds map
+BASE_LIB_EXTS = lib dll tds map res
 LIB_FILES := $(foreach n,$(BASE_LIBNAMES),$(foreach e,$(BASE_LIB_EXTS),$(n).$(e)))
 
 install-dbg-shared-tds:
@@ -80,4 +80,4 @@ clean::
  
 uninstall::
 	$(foreach d,$(INSTALL_DIRS),$(foreach f,$(LIB_FILES),@rm -f $(d)/$(f)))
-	$(foreach d,$(INSTALL_DIRS),@rmdir -p $(d) 2>/dev/null)
+	$(foreach d,$(INSTALL_DIRS),@-rmdir -p $(d) 2>/dev/null)

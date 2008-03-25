@@ -171,9 +171,17 @@ void LocaleTest::collate_by_name()
   }
 
   try {
+#    if !defined (__BORLANDC__)
     string veryLongFacetName("LC_COLLATE=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new collate_byname<char>(veryLongFacetName.c_str()));
+#    else
+    char veryLongFacetName[1024];
+    strcpy(veryLongFacetName, "LC_COLLATE=");
+    for( int i = 0; i < 512; ++i )
+      strcat(veryLongFacetName, "?");
+    locale loc(locale::classic(), new collate_byname<char>(veryLongFacetName));
+#    endif
     CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {

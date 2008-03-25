@@ -44,5 +44,5 @@ mostlyclean::	clean
 	@-rm -f TAGS tags
 
 maintainer-clean::	distclean
-	@rm -f ${RULESBASE}/config.mak
+	@rm -f ${RULESBASE}/gmake/config.mak
 	@-rm -f TAGS tags

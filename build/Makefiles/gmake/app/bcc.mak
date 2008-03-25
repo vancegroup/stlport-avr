@@ -71,7 +71,7 @@ stldbg-static : OPT += -vi-
 
 endif
 
-PRG_FILES := ${PRGNAME}.exe ${PRGNAME}.tds ${PRGNAME}.map
+PRG_FILES := ${PRGNAME}${EXE} ${PRGNAME}.tds ${PRGNAME}.map
 TMP_FILES := test.txt test_file.txt win32_file_format.tmp
 
 clean::
@@ -80,5 +80,5 @@ clean::
 uninstall::
 	$(foreach d, $(INSTALL_DIRS), $(foreach f, $(PRG_FILES), @rm -f $(d)/$(f)))
 	$(foreach d, $(INSTALL_DIRS), $(foreach f, $(TMP_FILES), @rm -f $(d)/$(f)))
-	$(foreach d, $(INSTALL_DIRS), @rmdir -p $(d) 2>/dev/null)
+	$(foreach d, $(INSTALL_DIRS), @-rmdir -p $(d) 2>/dev/null)
 

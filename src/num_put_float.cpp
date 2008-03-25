@@ -380,13 +380,9 @@ static void __fill_fmtbuf(char* fmtbuf, ios_base::fmtflags flags, char long_modi
 static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
   // If long double value can be safely converted to double without losing precision
   // we use the ecvt function for double:
-#if defined (__BORLANDC__)
-  typedef numeric_limits<long double> limits;
-  if (x == (double)x && x != limits::max())
-#  else
-  if (x == (double)x)
-#  endif
-    return _Stl_ecvtR((double)x, n, pt, sign, buf);
+  double y = __STATIC_CAST(double, x); 
+  if (x == y)
+    return _Stl_ecvtR(y, n, pt, sign, buf);
 
   char fmtbuf[32];
   __fill_fmtbuf(fmtbuf, 0, 'L');
@@ -424,13 +420,9 @@ static char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
 static char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
   // If long double value can be safely converted to double without losing precision
   // we use the fcvt function for double:
-#if defined (__BORLANDC__)
-  typedef numeric_limits<long double> limits;
-  if (x == (double)x && x != limits::max())
-#  else
-  if (x != (double)x)
-#  endif
-    return _Stl_fcvtR((double)x, n, pt, sign, buf);
+  double y = __STATIC_CAST(double, x);
+  if (x == y)
+    return _Stl_fcvtR(y, n, pt, sign, buf);
 
   char fmtbuf[32];
   __fill_fmtbuf(fmtbuf, ios_base::fixed, 'L');

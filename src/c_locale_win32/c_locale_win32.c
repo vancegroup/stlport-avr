@@ -319,6 +319,11 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
   if (__GetLCIDFromName(name, &ltype->lc.id, cp_name, lc_hint) == -1)
   { free(ltype); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
+#if defined (__BORLANDC__)
+  if ( ltype->lc.id == INVARIANT_LCID && name[0] == 'C' && name[1] == 0 )
+  { ltype->lc.id = 0x409; }
+#endif
+
   ltype->cp = atoi(cp_name);
 
   NativeCP = __GetDefaultCP(ltype->lc.id);
@@ -390,8 +395,15 @@ _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_
   if (__GetLCIDFromName(name, &lnum->lc.id, lnum->cp, lc_hint) == -1)
   { free(lnum); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
+  if (lnum->lc.id != INVARIANT_LCID) {
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
+  }
+  else {
+#if defined (__BORLANDC__)
+  if ( name[0] == 'C' && name[1] == 0 ) lnum->decimal_point[0] = '.';
+#endif
+  }
 
   if (lnum->lc.id != INVARIANT_LCID) {
     BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
@@ -709,6 +721,11 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   if (__GetLCIDFromName(name, &ltime->lc.id, ltime->cp, lc_hint) == -1)
   { free(ltime); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
+#if defined (__BORLANDC__)
+  if ( ltime->lc.id == INVARIANT_LCID && name[0] == 'C' && name[1] == 0 )
+  { ltime->lc.id = 0x409; }
+#endif
+
   for (month = LOCALE_SMONTHNAME1; month <= LOCALE_SMONTHNAME12; ++month) { /* Small hack :-) */
     size = GetLocaleInfoA(ltime->lc.id, month, NULL, 0);
     ltime->month[month - LOCALE_SMONTHNAME1] = (char*)malloc(size);
@@ -795,6 +812,11 @@ _Locale_collate_t* _Locale_collate_create(const char * name, _Locale_lcid_t* lc_
 
   if (__GetLCIDFromName(name, &lcol->lc.id, lcol->cp, lc_hint) == -1)
   { free(lcol); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
+
+#if defined (__BORLANDC__)
+  if ( lcol->lc.id == INVARIANT_LCID && name[0] == 'C' && name[1] == 0 )
+  { lcol->lc.id = 0x409; }
+#endif
 
   return lcol;
 }
