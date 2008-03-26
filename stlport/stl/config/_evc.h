@@ -51,7 +51,7 @@
 // CE up to at least version 5 has no C locale support
 #define _STLP_NO_LOCALE_SUPPORT
 
-#if _WIN32_WCE >= 0x420
+#if _WIN32_WCE >= 420
    // SDKs built with PB5 have terminate&co in namespace std...
 #  define _STLP_VENDOR_TERMINATE_STD _STLP_VENDOR_STD
 #  define _STLP_VENDOR_UNCAUGHT_EXCEPTION_STD _STLP_VENDOR_STD
