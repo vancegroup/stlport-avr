@@ -1,3 +1,9 @@
+2008-03-28  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/assert.h: Bug #1894882: Apply a technique similar to the
+	one used in errno.h to detect when assert has been defined before
+	including assert.h.
+
 2008-03-21  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Patch 1876529 from Johan Andersson to add support for VS 2005
