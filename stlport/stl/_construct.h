@@ -86,7 +86,6 @@ inline void _Destroy_Moved(_Tp* __pointer) {
 #  undef new
 #endif
 
-#if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
 template <class _T1>
 inline void _Construct_aux (_T1* __p, const __false_type&) {
   new(__p) _T1();
@@ -94,9 +93,14 @@ inline void _Construct_aux (_T1* __p, const __false_type&) {
 
 template <class _T1>
 inline void _Construct_aux (_T1* __p, const __true_type&) {
-  new(__p) _T1(0);
-}
+#if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
+  *__p = _T1(0);
+#else
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = _T1();
 #endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
+}
 
 template <class _T1>
 inline void _Construct(_T1* __p) {
@@ -104,10 +108,22 @@ inline void _Construct(_T1* __p) {
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 #endif
 #if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
-  _Construct_aux (__p, _HasDefaultZeroValue(__p)._Answer() );
+  _Construct_aux (__p, _HasDefaultZeroValue(__p)._Answer());
 #else
-  new(__p) _T1();
+  _Construct_aux (__p, _Is_POD(__p)._Answer());
 #endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
+}
+
+template <class _Tp>
+inline void _Copy_Construct_aux(_Tp* __p, const _Tp& __val, const __false_type&) {
+  new(__p) _Tp(__val);
+}
+
+template <class _Tp>
+inline void _Copy_Construct_aux(_Tp* __p, const _Tp& __val, const __true_type&) {
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = __val;
 }
 
 template <class _Tp>
@@ -115,7 +131,19 @@ inline void _Copy_Construct(_Tp* __p, const _Tp& __val) {
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_Tp));
 #endif
-  new(__p) _Tp(__val);
+  _Copy_Construct_aux(__p, __val, _Is_POD(__p)._Answer());
+}
+
+template <class _T1, class _T2>
+inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const __false_type&) {
+  new(__p) _T1(__val);
+}
+
+template <class _T1, class _T2>
+inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const __true_type&) {
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = _T1(__val);
 }
 
 template <class _T1, class _T2>
@@ -123,7 +151,7 @@ inline void _Param_Construct(_T1* __p, const _T2& __val) {
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 #endif
-  new(__p) _T1(__val);
+  _Param_Construct_aux(__p, __val, _Is_POD(__p)._Answer());
 }
 
 template <class _T1, class _T2>
@@ -137,7 +165,9 @@ inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const __false_type& /*_IsP
 
 template <class _T1, class _T2>
 inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const __true_type& /*_IsPOD*/) {
-  new(__p) _T1(__val);
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = _T1(__val);
 }
 
 template <class _T1, class _T2>
