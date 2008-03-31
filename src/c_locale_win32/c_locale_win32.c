@@ -395,15 +395,16 @@ _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_
   if (__GetLCIDFromName(name, &lnum->lc.id, lnum->cp, lc_hint) == -1)
   { free(lnum); *__err_code = _STLP_LOC_UNKNOWN_NAME; return NULL; }
 
+#if defined (__BORLANDC__)
   if (lnum->lc.id != INVARIANT_LCID) {
+#endif
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
   __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
-  }
-  else {
 #if defined (__BORLANDC__)
-  if ( name[0] == 'C' && name[1] == 0 ) lnum->decimal_point[0] = '.';
-#endif
   }
+  else
+    lnum->decimal_point[0] = '.';
+#endif
 
   if (lnum->lc.id != INVARIANT_LCID) {
     BufferSize = GetLocaleInfoA(lnum->lc.id, LOCALE_SGROUPING, NULL, 0);
