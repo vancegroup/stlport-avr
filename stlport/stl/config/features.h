@@ -512,7 +512,9 @@ namespace _STLP_STD_NAME { }
 #  endif /* Use std::rel_ops namespace */
 
 #  define _STLP_STD ::_STLP_STD_NAME
-#  define _STLP_TR1 _STLP_STD::tr1::
+#  if !defined (_STLP_TR1)
+#    define _STLP_TR1 _STLP_STD::tr1::
+#  endif
 
 #  if !defined (_STLP_DONT_USE_PRIV_NAMESPACE)
 #    define _STLP_PRIV_NAME priv

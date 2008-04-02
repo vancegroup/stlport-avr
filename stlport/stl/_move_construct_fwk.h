@@ -66,7 +66,7 @@ struct __move_traits {
    * complete tells if the move is complete or partial, that is to say, does the source
    * needs to be destroyed once it has been moved.
    */
-#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x590)
+#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x564)
   typedef __type_traits<_Tp>::has_trivial_destructor _TpMoveComplete;
   typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
 #  else
