@@ -1,7 +1,10 @@
 2008-04-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
-	* Makefiles/gmake/lib/gcc.mak: try to create $(PRE_OUTPUT_DIR) before
-	run lipo; impact only MacOS.
+	* build/Makefiles/gmake/lib/gcc.mak: try to create $(PRE_OUTPUT_DIR) before
+	run lipo; impact only MacOS;
+
+	* build/Makefiles/gmake/sysid.mak: uname -m on MacOS return
+	power-macintosh, but identify architechture as ppc.
 
 2008-03-28  Francois Dumont  <dums@users.sourceforge.net>
 

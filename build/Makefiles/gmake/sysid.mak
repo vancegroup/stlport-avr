@@ -35,6 +35,9 @@ ifeq ($(OSNAME),darwin)
 OSREL  := $(shell sw_vers -productVersion | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
+ifeq ($(M_ARCH,power-macintosh)
+M_ARCH := ppc
+endif
 ifeq ($(OSNAME),hp-ux)
 P_ARCH := unknown
 else
