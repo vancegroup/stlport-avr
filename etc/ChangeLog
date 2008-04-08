@@ -1,3 +1,8 @@
+2008-04-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Makefiles/gmake/lib/gcc.mak: try to create $(PRE_OUTPUT_DIR) before
+	run lipo; impact only MacOS.
+
 2008-03-28  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/assert.h: Bug #1894882: Apply a technique similar to the

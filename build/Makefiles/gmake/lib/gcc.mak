@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <08/01/12 00:42:12 ptr>
+# -*- makefile -*- Time-stamp: <08/04/08 09:22:53 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -122,7 +122,7 @@ endif
 _LSUPCPP := $(shell ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
 ifeq (${OSNAME},darwin)
 ifdef GCC_APPLE_CC
-_LSUPCPP := $(shell lipo ${_LSUPCPP} -thin ${M_ARCH} -output $(PRE_OUTPUT_DIR)/libsupc++.a && echo $(PRE_OUTPUT_DIR)/libsupc++.a)
+_LSUPCPP := $(shell mkdir -p $(PRE_OUTPUT_DIR) && lipo ${_LSUPCPP} -thin ${M_ARCH} -output $(PRE_OUTPUT_DIR)/libsupc++.a && echo $(PRE_OUTPUT_DIR)/libsupc++.a)
 endif
 endif
 ifneq (${_LSUPCPP},libsupc++.a)
