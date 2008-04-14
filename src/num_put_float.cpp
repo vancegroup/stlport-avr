@@ -561,7 +561,7 @@ static size_t __format_float_fixed( __iostring &buf, const char *bp,
 }
 
 template <class _FloatT>
-static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags) {
+static size_t __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags) {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan;
@@ -600,7 +600,9 @@ static void __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags f
       buf += '+';
   }
 #endif
+  size_t ret = buf.size();
   buf += inf_or_nan[flags & ios_base::uppercase ? 1 : 0];
+  return ret;
 }
 
 static inline size_t __format_float(__iostring &buf, const char * bp,
@@ -723,23 +725,19 @@ static size_t  __write_floatT(__iostring &buf, ios_base::fmtflags flags, int pre
   if (limits::has_infinity && limits::has_quiet_NaN) {
     if (!(x == x) || // NaN check
         (x == limits::infinity() || x == -limits::infinity())) {
-      __format_nan_or_inf(buf, x, flags);
-      return 0;
+      return __format_nan_or_inf(buf, x, flags);
     }
   }
   // numeric_limits support is not good enough, we rely on platform dependent function
   // _Stl_is_nan_or_inf that do not support long double.
   else if (_Stl_is_nan_or_inf(x)) {
-    __format_nan_or_inf(buf, x, flags);
-    return 0;
+    return __format_nan_or_inf(buf, x, flags);
   }
 #  if defined (__MINGW32__)
   //For the moment MinGW is limited to display at most numeric_limits<double>::max()
   if (x > numeric_limits<double>::max() ||
-      x < -numeric_limits<double>::max())
-  {
-    __format_nan_or_inf(buf, x, flags);
-    return 0;
+      x < -numeric_limits<double>::max()) {
+    return __format_nan_or_inf(buf, x, flags);
   }
 #  endif
 

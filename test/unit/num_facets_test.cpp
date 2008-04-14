@@ -87,6 +87,20 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale* prl ) {
   complete_digits(digits);
   CPPUNIT_ASSERT( fostr.str() == string("1e+") + digits );
 
+  if (npct.grouping().size() == 1 && npct.grouping()[0] == 3) {
+    int ival = 1234567890;
+    fostr.str("");
+    fostr << ival;
+    ref = "1";
+    ref += npct.thousands_sep();
+    ref += "234";
+    ref += npct.thousands_sep();
+    ref += "567";
+    ref += npct.thousands_sep();
+    ref += "890";
+    CPPUNIT_ASSERT( fostr.str() == ref );
+  }
+
 #if defined (__BORLANDC__)
   num_put<char> const& nput = use_facet<num_put<char> >(loc);
   typedef numeric_limits<double> limd;

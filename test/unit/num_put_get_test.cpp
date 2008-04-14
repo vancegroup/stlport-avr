@@ -30,6 +30,7 @@ class NumPutGetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(inhex);
   CPPUNIT_TEST(pointer);
   CPPUNIT_TEST(fix_float_long);
+  CPPUNIT_TEST(custom_numpunct);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -40,6 +41,7 @@ private:
   void inhex();
   void pointer();
   void fix_float_long();
+  void custom_numpunct();
 
   static bool check_float(float val, float ref)
   {
@@ -1182,5 +1184,45 @@ void NumPutGetTest::fix_float_long()
 #endif
 }
 
-#endif
+class CommaSepNumPunct : public numpunct<char> {
+  char do_thousands_sep() const { return ','; }
+  string do_grouping() const { return string("\1\2\3") + (char)CHAR_MAX; }
+};
 
+#define CHECK2(val, expected) \
+  os.str(""); os << fixed << setprecision(3) << showpos << val; \
+  CPPUNIT_ASSERT( os.str() == expected )
+
+void NumPutGetTest::custom_numpunct()
+{
+    ostringstream os;
+    locale loc(os.getloc(), new CommaSepNumPunct());
+    os.imbue(loc);
+
+    CHECK2(1, "+1");
+    CHECK2(10, "+1,0");
+    CHECK2(100, "+10,0");
+    CHECK2(1000, "+1,00,0");
+
+    CHECK2(1.234, "+1.234");
+    CHECK2(123.456, "+12,3.456");
+    CHECK2(1234.567, "+1,23,4.567");
+    CHECK2(12345.678, "+12,34,5.678");
+    CHECK2(123456.789, "+123,45,6.789");
+    CHECK2(1234567.891, "+1,234,56,7.891");
+    CHECK2(123456789.123, "+123,456,78,9.123");
+    //CHECK2(100000000000000000000000000000.0, "+100000000000000000000000,000,00,0.000");
+    CHECK2(numeric_limits<double>::infinity(), "+inf");
+
+    CHECK2(-1.234, "-1.234");
+    CHECK2(-123.456, "-12,3.456");
+    CHECK2(-1234.567, "-1,23,4.567");
+    CHECK2(-12345.678, "-12,34,5.678");
+    CHECK2(-123456.789, "-123,45,6.789");
+    CHECK2(-1234567.891, "-1,234,56,7.891");
+    CHECK2(-123456789.123, "-123,456,78,9.123");
+    //CHECK2(-100000000000000000000000000000.0, "-100000000000000000000000,000,00,0.000");
+    CHECK2(-numeric_limits<double>::infinity(), "-inf");
+}
+
+#endif
