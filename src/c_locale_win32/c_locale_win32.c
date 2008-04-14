@@ -1325,19 +1325,41 @@ _STLP_END_NAMESPACE
 
 void __FixGrouping(char *grouping) {
   /* This converts NT version which uses '0' instead of 0, etc ; to ANSI */
-  while (*grouping) {
-    if (*grouping >= '0' && *grouping <= '9') {
-      *grouping = *grouping - '0';
-      ++grouping;
+  char *g = grouping;
+  char building_group = 0;
+  char repeat_last = 0;
+  /* Check there is a grouping info otherwise we would add a useless CHAR_MAX */
+  if (*g) {
+    for (; *g; ++g) {
+      if (*g > '0' && *g <= '9') {
+        if (!building_group) {
+          *grouping = *g - '0';
+          building_group = 1;
+        }
+        else {
+          /* Known issue: grouping might roll. */
+          *grouping = *grouping * 10 + *g - '0';
+        }
+      }
+      else if (*g == '0') {
+        if (!building_group) {
+          repeat_last = 1;
+        }
+        else
+          /* Known issue: grouping might roll. */
+          *grouping *= 10;
+      }
+      else if (*g == ';') {
+        /* Stop adding to the current group */
+        building_group = 0;
+        ++grouping;
+      }
+      /* else we ignore the character */
     }
-    else if (*grouping == ';') {
-      /* remove ';' */
-      char *tmp = grouping;
-      for (; *tmp; ++tmp)
-        *tmp = *(tmp + 1);
-    }
-    else
-      ++grouping;
+
+    if (!repeat_last)
+      *grouping++ = CHAR_MAX;
+    *grouping = 0;
   }
 }
 
