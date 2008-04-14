@@ -85,8 +85,7 @@ __put_float(__iostring &__str, _OutputIter __oi,
                       __sep, __ct.widen('+'), __ct.widen('-'), 0);
   }
 
-  return __copy_float_and_fill(__CONST_CAST(wchar_t*, __wbuf.data()),
-                               __CONST_CAST(wchar_t*, __wbuf.data()) + __wbuf.size(), __oi,
+  return __copy_float_and_fill(__wbuf.data(), __wbuf.data() + __wbuf.size(), __oi,
                                __f.flags(), __f.width(0), __fill, __ct.widen('+'), __ct.widen('-'));
 }
 #endif /* WCHAR_T */
@@ -107,8 +106,7 @@ __put_float(__iostring &__str, _OutputIter __oi,
                       __grouping, __sep, '+', '-', 0);
   }
 
-  return __copy_float_and_fill(__CONST_CAST(char*, __str.data()),
-                               __CONST_CAST(char*, __str.data()) + __str.size(), __oi,
+  return __copy_float_and_fill(__str.data(), __str.data() + __str.size(), __oi,
                                __f.flags(), __f.width(0), __fill, '+', '-');
 }
 
