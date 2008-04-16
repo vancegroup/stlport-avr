@@ -168,6 +168,16 @@ private:
       this->_M_throw_out_of_range();
   }
 
+  size_type _M_compute_next_size(size_type __n) {
+    const size_type __size = size();
+    if (__n > max_size() - __size)
+      this->_M_throw_length_error();
+    size_type __len = __size + (max)(__n, __size);
+    if (__len > max_size() || __len < __size)
+      __len = max_size(); // overflow
+    return __len;
+  }
+
 public:
   iterator begin()             { return this->_M_start; }
   const_iterator begin() const { return this->_M_start; }
@@ -360,20 +370,20 @@ public:
     typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
   void push_back(const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
 #else
   void push_back(const _Tp& __x) {
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
     if (this->_M_finish != this->_M_end_of_storage._M_data) {
       _Copy_Construct(this->_M_finish, __x);
       ++this->_M_finish;
     }
     else {
       typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
-      _M_insert_overflow(this->_M_finish, __x, _TrivialCopy(), 1UL, true);
+      _M_insert_overflow(this->_M_finish, __x, _TrivialCopy(), 1, true);
     }
   }
 
@@ -381,12 +391,12 @@ public:
   iterator insert(iterator __pos, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp));
 #else
   iterator insert(iterator __pos, const _Tp& __x);
-#endif /*!_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back() { push_back(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
   iterator insert(iterator __pos) { return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif /*_STLP_DONT_SUP_DFLT_PARAM && !_STLP_NO_ANACHRONISMS*/
+#endif
 
   void swap(_Self& __x) {
     _STLP_STD::swap(this->_M_start, __x._M_start);
@@ -413,14 +423,13 @@ private:
 #else
   void _M_range_insert_realloc(iterator __pos,
                                const_iterator __first, const_iterator __last,
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
                                size_type __n) {
     typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
-    const size_type __old_size = size();
-    size_type __len = __old_size + (max)(__old_size, __n);
+    size_type __len = _M_compute_next_size(__n);
     pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
@@ -441,7 +450,7 @@ private:
 #else
   void _M_range_insert_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
                            size_type __n, const __true_type& /*_Movable*/) {
     iterator __src = this->_M_finish - 1;
     iterator __dst = __src + __n;
@@ -460,7 +469,7 @@ private:
 #else
   void _M_range_insert_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
                            size_type __n, const __false_type& /*_Movable*/) {
     typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
     typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
@@ -523,11 +532,11 @@ private:
   void _M_range_insert(iterator __pos,
                        _ForwardIterator __first, _ForwardIterator __last,
                        const forward_iterator_tag &) {
-#else /* _STLP_MEMBER_TEMPLATES */
+#else
 public:
   void insert(iterator __pos,
               const_iterator __first, const_iterator __last) {
-#endif /* _STLP_MEMBER_TEMPLATES */
+#endif
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif

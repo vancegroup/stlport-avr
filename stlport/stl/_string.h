@@ -323,7 +323,17 @@ protected:
 #  endif
 #endif
 
-private:
+_STLP_PRIVATE:
+  size_type _M_compute_next_size(size_type __n) {
+    const size_type __size = size();
+    if (__n > max_size() - __size)
+      this->_M_throw_length_error();
+    size_type __len = __size + (max)(__n, __size) + 1;
+    if (__len > max_size() || __len < __size)
+      __len = max_size(); // overflow
+    return __len;
+  }
+
   template <class _InputIter>
   void _M_range_initialize(_InputIter __f, _InputIter __l,
                            const input_iterator_tag &__tag) {
@@ -495,6 +505,9 @@ public:                         // Size, capacity, etc.
 
   void resize(size_type __n) { resize(__n, _M_null()); }
 
+private:
+  void _M_reserve(size_type);
+public:
   void reserve(size_type = 0);
 
   size_type capacity() const
@@ -551,12 +564,9 @@ private:
   _Self& _M_appendT(_ForwardIter __first, _ForwardIter __last,
                     const forward_iterator_tag &) {
     if (__first != __last) {
-      const size_type __old_size = this->size();
-      difference_type __n = _STLP_STD::distance(__first, __last);
-      if (__STATIC_CAST(size_type,__n) > this->max_size() || __old_size > this->max_size() - __STATIC_CAST(size_type,__n))
-        this->_M_throw_length_error();
-      if (__old_size + __n > this->capacity()) {
-        size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+      size_type __n = __STATIC_CAST(size_type, _STLP_STD::distance(__first, __last));
+      if (__n >= this->_M_rest()) {
+        size_type __len = _M_compute_next_size(__n);
         pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
         pointer __new_finish = __new_start;
         _STLP_TRY {
@@ -635,7 +645,7 @@ public:
 public:
   void push_back(_CharT __c) {
     if (this->_M_rest() == 1 )
-      reserve(size() + (max)(size(), __STATIC_CAST(size_type,1)));
+      _M_reserve(_M_compute_next_size(1));
     _M_construct_null(this->_M_Finish() + 1);
     _Traits::assign(*(this->_M_Finish()), __c);
     ++this->_M_finish;
@@ -711,7 +721,7 @@ public:                         // Insert
   _Self& insert(size_type __pos, const _Self& __s) {
     if (__pos > size())
       this->_M_throw_out_of_range();
-    if (size() > max_size() - __s.size())
+    if (__s.size() > max_size() - size())
       this->_M_throw_length_error();
     _M_insert(begin() + __pos, __s._M_Start(), __s._M_Finish(), &__s == this);
     return *this;
@@ -722,7 +732,7 @@ public:                         // Insert
     if (__pos > size() || __beg > __s.size())
       this->_M_throw_out_of_range();
     size_type __len = (min) (__n, __s.size() - __beg);
-    if (size() > max_size() - __len)
+    if (__len > max_size() - size())
       this->_M_throw_length_error();
     _M_insert(begin() + __pos,
               __s._M_Start() + __beg, __s._M_Start() + __beg + __len, &__s == this);
@@ -732,7 +742,7 @@ public:                         // Insert
     _STLP_FIX_LITERAL_BUG(__s)
     if (__pos > size())
       this->_M_throw_out_of_range();
-    if (size() > max_size() - __n)
+    if (__n > max_size() - size())
       this->_M_throw_length_error();
     _M_insert(begin() + __pos, __s, __s + __n, _M_inside(__s));
     return *this;
@@ -743,7 +753,7 @@ public:                         // Insert
     if (__pos > size())
       this->_M_throw_out_of_range();
     size_type __len = _Traits::length(__s);
-    if (size() > max_size() - __len)
+    if (__len > max_size() - size())
       this->_M_throw_length_error();
     _M_insert(this->_M_Start() + __pos, __s, __s + __len, _M_inside(__s));
     return *this;
@@ -752,7 +762,7 @@ public:                         // Insert
   _Self& insert(size_type __pos, size_type __n, _CharT __c) {
     if (__pos > size())
       this->_M_throw_out_of_range();
-    if (size() > max_size() - __n)
+    if (__n > max_size() - size())
       this->_M_throw_length_error();
     insert(begin() + __pos, __n, __c);
     return *this;
@@ -790,9 +800,8 @@ _STLP_PRIVATE:  // Helper functions for insert.
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _ForwardIter>
   void _M_insert_overflow(iterator __pos, _ForwardIter __first, _ForwardIter __last,
-                          difference_type __n) {
-    const size_type __old_size = this->size();
-    size_type __len = __old_size + (max)(__old_size, __STATIC_CAST(size_type,__n)) + 1;
+                          size_type __n) {
+    size_type __len = _M_compute_next_size(__n);
     pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
     pointer __new_finish = __new_start;
     _STLP_TRY {
@@ -822,7 +831,7 @@ _STLP_PRIVATE:  // Helper functions for insert.
                   const forward_iterator_tag &) {
     if (__first != __last) {
       size_type __n = _STLP_STD::distance(__first, __last);
-      if (this->_M_rest() >= __n + 1) {
+      if (__n < this->_M_rest()) {
         const size_type __elems_after = this->_M_finish - __pos;
         if (__elems_after >= __n) {
 #    if defined (_STLP_USE_SHORT_STRING_OPTIM)
@@ -944,10 +953,11 @@ public:                         // Erase.
 public:                         // Replace.  (Conceptually equivalent
                                 // to erase followed by insert.)
   _Self& replace(size_type __pos, size_type __n, const _Self& __s) {
-    if (__pos > size())
+    const size_type __size = size();
+    if (__pos > __size)
       this->_M_throw_out_of_range();
-    const size_type __len = (min) (__n, size() - __pos);
-    if (size() - __len >= max_size() - __s.size())
+    const size_type __len = (min) (__n, __size - __pos);
+    if (__s.size() > max_size() - (__size - __len))
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len,
                       __s._M_Start(), __s._M_Finish(), &__s == this);
@@ -955,11 +965,13 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(size_type __pos1, size_type __n1, const _Self& __s,
                  size_type __pos2, size_type __n2) {
-    if (__pos1 > size() || __pos2 > __s.size())
+    const size_type __size1 = size();
+    const size_type __size2 = __s.size();
+    if (__pos1 > __size1 || __pos2 > __size2)
       this->_M_throw_out_of_range();
-    const size_type __len1 = (min) (__n1, size() - __pos1);
-    const size_type __len2 = (min) (__n2, __s.size() - __pos2);
-    if (size() - __len1 >= max_size() - __len2)
+    const size_type __len1 = (min) (__n1, __size1 - __pos1);
+    const size_type __len2 = (min) (__n2, __size2 - __pos2);
+    if (__len2 > max_size() - (__size1 - __len1))
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos1, begin() + __pos1 + __len1,
                       __s._M_Start() + __pos2, __s._M_Start() + __pos2 + __len2, &__s == this);
@@ -968,10 +980,11 @@ public:                         // Replace.  (Conceptually equivalent
   _Self& replace(size_type __pos, size_type __n1,
                  const _CharT* __s, size_type __n2) {
     _STLP_FIX_LITERAL_BUG(__s)
-    if (__pos > size())
+    const size_type __size = size();
+    if (__pos > __size)
       this->_M_throw_out_of_range();
-    const size_type __len = (min) (__n1, size() - __pos);
-    if (__n2 > max_size() || size() - __len >= max_size() - __n2)
+    const size_type __len = (min) (__n1, __size - __pos);
+    if (__n2 > max_size() - (__size - __len))
       this->_M_throw_length_error();
     return _M_replace(begin() + __pos, begin() + __pos + __len,
                       __s, __s + __n2, _M_inside(__s));
@@ -979,22 +992,16 @@ public:                         // Replace.  (Conceptually equivalent
 
   _Self& replace(size_type __pos, size_type __n1, const _CharT* __s) {
     _STLP_FIX_LITERAL_BUG(__s)
-    if (__pos > size())
-      this->_M_throw_out_of_range();
-    const size_type __len = (min) (__n1, size() - __pos);
-    const size_type __n2 = _Traits::length(__s);
-    if (__n2 > max_size() || size() - __len >= max_size() - __n2)
-      this->_M_throw_length_error();
-    return _M_replace(begin() + __pos, begin() + __pos + __len,
-                      __s, __s + _Traits::length(__s), _M_inside(__s));
+    return replace(__pos, __n1, __s, _Traits::length(__s));
   }
 
   _Self& replace(size_type __pos, size_type __n1,
                  size_type __n2, _CharT __c) {
-    if (__pos > size())
+    const size_type __size = size();
+    if (__pos > __size)
       this->_M_throw_out_of_range();
-    const size_type __len = (min) (__n1, size() - __pos);
-    if (__n2 > max_size() || size() - __len >= max_size() - __n2)
+    const size_type __len = (min) (__n1, __size - __pos);
+    if (__n2 > max_size() - (__size - __len))
       this->_M_throw_length_error();
     return replace(begin() + __pos, begin() + __pos + __len, __n2, __c);
   }
@@ -1074,7 +1081,7 @@ public:                         // Other modifier member functions.
     return __len;
   }
 
-  void swap(_Self& __s) { this->_M_Swap(__s); }
+  void swap(_Self& __s) { this->_M_swap(__s); }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif

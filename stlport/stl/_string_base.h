@@ -188,7 +188,7 @@ protected:
       _STLP_STD::_Destroy_Range(__f, __l);
   }
 
-  void _M_Swap(_Self &__s) {
+  void _M_swap(_Self &__s) {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (_M_using_static_buf()) {
       if (__s._M_using_static_buf()) {
@@ -201,7 +201,7 @@ protected:
         _M_start_of_storage._M_data = _M_buffers._M_static_buf;
         __s._M_start_of_storage._M_data = __s._M_buffers._M_static_buf;
       } else {
-        __s._M_Swap(*this);
+        __s._M_swap(*this);
         return;
       }
     }

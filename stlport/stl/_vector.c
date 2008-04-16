@@ -37,14 +37,12 @@ _STLP_BEGIN_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _Tp, class _Alloc>
-void _Vector_base<_Tp,_Alloc>::_M_throw_length_error() const {
-  __stl_throw_length_error("vector");
-}
+void _Vector_base<_Tp,_Alloc>::_M_throw_length_error() const
+{ __stl_throw_length_error("vector"); }
 
 template <class _Tp, class _Alloc>
-void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const {
-  __stl_throw_out_of_range("vector");
-}
+void _Vector_base<_Tp, _Alloc>::_M_throw_out_of_range() const
+{ __stl_throw_out_of_range("vector"); }
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
 #  define vector _STLP_PTR_IMPL_NAME(vector)
@@ -86,9 +84,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
-  const size_type __old_size = size();
-  size_type __len = __old_size + (max)(__old_size, __fill_len);
-
+  size_type __len = _M_compute_next_size(__fill_len);
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __new_start;
   _STLP_TRY {
@@ -111,9 +107,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, 
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCopy*/,
                                              size_type __fill_len, bool __atend ) {
-  const size_type __old_size = size();
-  size_type __len = __old_size + (max)(__old_size, __fill_len);
-
+  size_type __len = _M_compute_next_size(__fill_len);
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(this->_M_start, __pos, __new_start));
   // handle insertion
