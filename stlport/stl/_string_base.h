@@ -165,29 +165,6 @@ protected:
     _M_start_of_storage._M_data = __start;
   }
 
-  void _M_destroy_back () {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (!_M_using_static_buf())
-#endif
-      _STLP_STD::_Destroy(_M_finish);
-  }
-
-  void _M_destroy_range(size_t __from_off = 0, size_t __to_off = 1) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (!_M_using_static_buf())
-      _STLP_STD::_Destroy_Range(_M_start_of_storage._M_data + __from_off, _M_finish + __to_off);
-#else
-    _STLP_STD::_Destroy_Range(_M_start_of_storage._M_data + __from_off, _M_finish + __to_off);
-#endif
-  }
-
-  void _M_destroy_ptr_range(_Tp *__f, _Tp *__l) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (!_M_using_static_buf())
-#endif
-      _STLP_STD::_Destroy_Range(__f, __l);
-  }
-
   void _M_swap(_Self &__s) {
 #if defined (_STLP_USE_SHORT_STRING_OPTIM)
     if (_M_using_static_buf()) {

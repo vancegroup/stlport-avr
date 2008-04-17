@@ -1,6 +1,4 @@
 /*
- *
- *
  * Copyright (c) 1994
  * Hewlett-Packard Company
  *
@@ -21,8 +19,8 @@
  * Permission to modify the code and to distribute modified code is granted,
  * provided the above notices are retained, and a notice that the code was
  * modified is included with the above copyright notice.
- *
  */
+
 #ifndef _STLP_STRING_C
 #define _STLP_STRING_C
 
@@ -172,14 +170,8 @@ template <class _CharT, class _Traits, class _Alloc>
 void basic_string<_CharT,_Traits,_Alloc>::_M_reserve(size_type __n) {
   pointer __new_start = this->_M_start_of_storage.allocate(__n, __n);
   pointer __new_finish = __new_start;
-  _STLP_TRY {
-    __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
-    _M_construct_null(__new_finish);
-  }
-  _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start, __new_finish),
-                this->_M_start_of_storage.deallocate(__new_start, __n)))
-
-  this->_M_destroy_range();
+  __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
+  _M_construct_null(__new_finish);
   this->_M_deallocate_block();
   this->_M_reset(__new_start, __new_finish, __new_start + __n);
 }
@@ -192,16 +184,8 @@ basic_string<_CharT,_Traits,_Alloc>::append(size_type __n, _CharT __c) {
       this->_M_throw_length_error();
     if (__n >= this->_M_rest())
       _M_reserve(_M_compute_next_size(__n));
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    if (this->_M_using_static_buf())
-      _Traits::assign(this->_M_finish + 1, __n - 1, __c);
-    else
-#endif
-      _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - 1, __c);
-    _STLP_TRY {
-      _M_construct_null(this->_M_finish + __n);
-    }
-    _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n))
+    _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - 1, __c);
+    _M_construct_null(this->_M_finish + __n);
     _Traits::assign(*end(), __c);
     this->_M_finish += __n;
   }
@@ -216,31 +200,17 @@ basic_string<_CharT, _Traits, _Alloc>::_M_append(const _CharT* __first, const _C
     if (__n >= this->_M_rest()) {
       size_type __len = _M_compute_next_size(__n);
       pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
-      pointer __new_finish = __new_start;
-      _STLP_TRY {
-        __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
-        __new_finish = _STLP_PRIV __ucopy(__first, __last, __new_finish);
-        _M_construct_null(__new_finish);
-      }
-      _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_start_of_storage.deallocate(__new_start,__len)))
-      this->_M_destroy_range();
+      pointer __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
+      __new_finish = _STLP_PRIV __ucopy(__first, __last, __new_finish);
+      _M_construct_null(__new_finish);
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
     else {
       const _CharT* __f1 = __first;
       ++__f1;
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-      if (this->_M_using_static_buf())
-        _M_copy(__f1, __last, this->_M_Finish() + 1);
-      else
-#endif
       _STLP_PRIV __ucopy(__f1, __last, this->_M_finish + 1);
-      _STLP_TRY {
-        _M_construct_null(this->_M_finish + __n);
-      }
-      _STLP_UNWIND(this->_M_destroy_ptr_range(this->_M_finish + 1, this->_M_finish + __n))
+      _M_construct_null(this->_M_finish + __n);
       _Traits::assign(*end(), *__first);
       this->_M_finish += __n;
     }
@@ -296,17 +266,11 @@ _CharT* basic_string<_CharT,_Traits,_Alloc> ::_M_insert_aux(_CharT* __p,
   else {
     size_type __len = _M_compute_next_size(1);
     pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
-    pointer __new_finish = __new_start;
-    _STLP_TRY {
-      __new_pos = _STLP_PRIV __ucopy(this->_M_Start(), __p, __new_start);
-      _Copy_Construct(__new_pos, __c);
-      __new_finish = __new_pos + 1;
-      __new_finish = _STLP_PRIV __ucopy(__p, this->_M_finish, __new_finish);
-      _M_construct_null(__new_finish);
-    }
-    _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                  this->_M_start_of_storage.deallocate(__new_start,__len)))
-    this->_M_destroy_range();
+    __new_pos = _STLP_PRIV __ucopy(this->_M_Start(), __p, __new_start);
+    _Traits::assign(*__new_pos, __c);
+    pointer __new_finish = __new_pos + 1;
+    __new_finish = _STLP_PRIV __ucopy(__p, this->_M_finish, __new_finish);
+    _M_construct_null(__new_finish);
     this->_M_deallocate_block();
     this->_M_reset(__new_start, __new_finish, __new_start + __len);
   }
@@ -321,51 +285,26 @@ void basic_string<_CharT,_Traits,_Alloc>::insert(iterator __pos,
       const size_type __elems_after = this->_M_finish - __pos;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-        if (this->_M_using_static_buf())
-          _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
-        else
-#endif
         _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
         _Traits::move(__pos + __n, __pos, (__elems_after - __n) + 1);
         _Traits::assign(__pos, __n, __c);
       }
       else {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-        if (this->_M_using_static_buf())
-          _Traits::assign(this->_M_finish + 1, __n - __elems_after - 1, __c);
-        else
-#endif
         _STLP_PRIV __uninitialized_fill_n(this->_M_finish + 1, __n - __elems_after - 1, __c);
         this->_M_finish += __n - __elems_after;
-        _STLP_TRY {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-          if (this->_M_using_static_buf())
-            _M_copy(__pos, __old_finish + 1, this->_M_finish);
-          else
-#endif
-          _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
-          this->_M_finish += __elems_after;
-        }
-        _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish),
-                      this->_M_finish = __old_finish))
+        _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
+        this->_M_finish += __elems_after;
         _Traits::assign(__pos, __elems_after + 1, __c);
       }
     }
     else {
       size_type __len = _M_compute_next_size(__n);
       pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
-      pointer __new_finish = __new_start;
-      _STLP_TRY {
-        __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), __pos, __new_start);
-        __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __n, __c);
-        __new_finish = _STLP_PRIV __ucopy(__pos, this->_M_finish, __new_finish);
-        _M_construct_null(__new_finish);
-      }
-      _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_start_of_storage.deallocate(__new_start,__len)))
-      this->_M_destroy_range();
+      pointer __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), __pos, __new_start);
+      __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __n, __c);
+      __new_finish = _STLP_PRIV __ucopy(__pos, this->_M_finish, __new_finish);
+      _M_construct_null(__new_finish);
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
@@ -383,11 +322,6 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
       const size_t __elems_after = this->_M_finish - __pos;
       pointer __old_finish = this->_M_finish;
       if (__elems_after >= __n) {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-        if (this->_M_using_static_buf())
-          _M_copy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
-        else
-#endif
         _STLP_PRIV __ucopy((this->_M_finish - __n) + 1, this->_M_finish + 1, this->_M_finish + 1);
         this->_M_finish += __n;
         _Traits::move(__pos + __n, __pos, (__elems_after - __n) + 1);
@@ -411,24 +345,10 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
       else {
         const_iterator __mid = __first;
         __mid += __elems_after + 1;
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-        if (this->_M_using_static_buf())
-          _M_copy(__mid, __last, this->_M_finish + 1);
-        else
-#endif
         _STLP_PRIV __ucopy(__mid, __last, this->_M_finish + 1);
         this->_M_finish += __n - __elems_after;
-        _STLP_TRY {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-          if (this->_M_using_static_buf())
-            _M_copy(__pos, __old_finish + 1, this->_M_finish);
-          else
-#endif
-          _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
-          this->_M_finish += __elems_after;
-        }
-        _STLP_UNWIND((_STLP_STD::_Destroy_Range(__old_finish + 1, this->_M_finish),
-                      this->_M_finish = __old_finish))
+        _STLP_PRIV __ucopy(__pos, __old_finish + 1, this->_M_finish);
+        this->_M_finish += __elems_after;
         if (!__self_ref)
           _M_copy(__first, __mid, __pos);
         else
@@ -438,16 +358,10 @@ void basic_string<_CharT,_Traits,_Alloc>::_M_insert(iterator __pos,
     else {
       size_type __len = _M_compute_next_size(__n);
       pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
-      pointer __new_finish = __new_start;
-      _STLP_TRY {
-        __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), __pos, __new_start);
-        __new_finish = _STLP_PRIV __ucopy(__first, __last, __new_finish);
-        __new_finish = _STLP_PRIV __ucopy(__pos, this->_M_finish, __new_finish);
-        _M_construct_null(__new_finish);
-      }
-      _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                    this->_M_start_of_storage.deallocate(__new_start,__len)))
-      this->_M_destroy_range();
+      pointer __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), __pos, __new_start);
+      __new_finish = _STLP_PRIV __ucopy(__first, __last, __new_finish);
+      __new_finish = _STLP_PRIV __ucopy(__pos, this->_M_finish, __new_finish);
+      _M_construct_null(__new_finish);
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
