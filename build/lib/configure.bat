@@ -46,6 +46,11 @@ if "%1" == "-c" goto opt_comp
 if "%1" == "/c" goto opt_comp
 if "%1" == "--compiler" goto opt_comp
 
+REM platform option
+if "%1" == "-p" goto opt_plat
+if "%1" == "/p" goto opt_plat
+if "%1" == "--platform" goto opt_plat
+
 REM cross compiling
 if "%1" == "-x" goto opt_x
 if "%1" == "/x" goto opt_x
@@ -115,6 +120,14 @@ echo    evc8     Microsoft Visual C++ 2005 compiling for CE
 echo  (*) For these compilers the target processor is determined automatically.
 echo      You must run the WCE*.BAT file you wish to build STLport for before
 echo      running configure.
+echo.
+echo "-p <platform>" or "--platform <platform>"
+echo    Build STLport for the specified platform. Not all existing platforms are
+echo    available, only the ones that make a difference when building STLport are.
+echo    The following keywords are available:
+echo    win95    Windows 95 compatible
+echo    win98    Windows 98 and up to Windows XP excluded
+echo    winxp    Windows XP or later (default)
 echo.
 echo "-x"
 echo    Enables cross-compiling; the result is that all built files that are
@@ -371,6 +384,44 @@ goto oc_end
 
 REM **************************************************************************
 REM *
+REM * Platform configuration
+REM *
+REM **************************************************************************
+:opt_plat
+
+if "%2" == "win95" goto op_win95
+if "%2" == "win98" goto op_win98
+if "%2" == "winxp" goto op_winxp
+
+echo Unknown platform: %2
+goto op_end
+
+:op_win95
+echo Setting platform: Windows 95
+echo WINVER=0x0400 >> ..\Makefiles\nmake\config.mak
+set PLATFORM_SPECIFIED=1
+goto op_end
+
+:op_win98
+echo Setting platform: Windows 98
+echo WINVER=0x0410 >> ..\Makefiles\nmake\config.mak
+set PLATFORM_SPECIFIED=1
+goto op_end
+
+:op_winxp
+echo Setting platform: Windows XP
+echo WINVER=0x0501 >> ..\Makefiles\nmake\config.mak
+set PLATFORM_SPECIFIED=1
+goto op_end
+
+:op_end
+shift
+
+goto cont_lp
+
+
+REM **************************************************************************
+REM *
 REM * Cross Compiling option
 REM *
 REM **************************************************************************
@@ -527,6 +578,10 @@ REM **************************************************************************
 echo Done configuring STLport.
 echo.
 
+if "%PLATFORM_SPECIFIED%" == "1" goto comp
+echo WINVER=0x0501 >> ..\Makefiles\nmake\config.mak
+
+:comp
 if "%STLPORT_COMPILE_COMMAND%" == "" goto skp_comp
 echo Please type "%STLPORT_COMPILE_COMMAND% clean all" to build STLport.
 echo Type "%STLPORT_COMPILE_COMMAND% install" to install STLport to the "lib"
@@ -538,3 +593,4 @@ set STLPORT_COMPILE_COMMAND=
 set SELECTED_COMPILER=
 set SELECTED_COMPILER_VERSION=
 set ONE_OPTION_ADDED=
+set PLATFORM_SPECIFIED=

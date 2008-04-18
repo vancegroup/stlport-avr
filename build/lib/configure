@@ -81,6 +81,11 @@ Available options:
                         option:
                         --with-static-rtl  -> _STLP_USE_DYNAMIC_LIB"
                         --with-dynamic-rtl -> _STLP_USE_STATIC_LIB"
+  --windows-platform=<name>
+                        Targetted Windows platform; one of:
+                        win95   Windows 95
+                        win98   Windows 98
+                        winxp   Windows XP and later
 
 Environment variables:
 
@@ -236,6 +241,23 @@ do
       ;;
     --includedir=*)
       write_option "$option" INSTALL_HDR_DIR '${DESTDIR}'
+      ;;
+    --windows-platform=*)
+      case `echo $option | sed -e 's/^[^=]*=//'` in
+        win95)
+          write_option 0x0400 WINVER
+          ;;
+        win98)
+          write_option 0x0410 WINVER
+          ;;
+        winxp)
+          write_option 0x0501 WINVER
+          ;;
+        *)
+          echo "Not supported windows platform"
+          exit -1
+          ;;
+      esac
       ;;
   esac
 done

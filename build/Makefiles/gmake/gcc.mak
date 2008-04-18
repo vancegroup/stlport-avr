@@ -102,6 +102,8 @@ dbg-shared : DEFS += -D_DEBUG
 stldbg-shared : DEFS += -D_DEBUG
 dbg-static : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
+WINVER ?= 0x0501
+DEFS += -DWINVER=${WINVER}
 endif
 endif
 

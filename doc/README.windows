@@ -38,10 +38,10 @@ problem more obvious STLport forces a link time error in debug mode (_DEBUG
 macro defined).
 
 Unresolved symbol will be:
-  - 'building_for_at_least_windows98_but_library_built_for_up_to_windows95'
+  - 'building_for_at_least_windows98_but_library_built_for_windows95'
   if you are trying to use STLport libraries built for Windows 98 or later
   to generate an application targetting the Windows 95 platform.
-  - 'building_for_up_to_windows95_but_library_built_for_at_least_windows98'
+  - 'building_for_windows95_but_library_built_for_at_least_windows98'
   if you are trying to use STLport libraries built for Windows 95 to generate
   an appliation targetting the
   

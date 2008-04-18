@@ -249,15 +249,15 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * the lib has been built and how it is used. */
 #  if defined (__BUILDING_STLPORT)
 #    if defined (_STLP_WIN95_LIKE)
-#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_up_to_windows95_but_library_built_for_at_least_windows98
+#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_windows95_but_library_built_for_at_least_windows98
 #    else
-#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_up_to_windows95
+#      define _STLP_SIGNAL_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_windows95
 #    endif
 #  else
 #    if defined (_STLP_WIN95_LIKE)
-#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_up_to_windows95_but_library_built_for_at_least_windows98
+#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_windows95_but_library_built_for_at_least_windows98
 #    else
-#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_up_to_windows95
+#      define _STLP_CHECK_RUNTIME_COMPATIBILITY building_for_at_least_windows98_but_library_built_for_windows95
 #    endif
 #  endif
 #endif

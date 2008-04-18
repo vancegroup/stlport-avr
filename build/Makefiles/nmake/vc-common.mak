@@ -77,13 +77,7 @@ DEFS_STATIC_DBG = $(DEFS_STATIC_DBG) /D_STLP_NO_THREADS
 DEFS_STATIC_STLDBG = $(DEFS_STATIC_STLDBG) /D_STLP_NO_THREADS
 !endif
 
-!ifdef STLP_BUILD_WINDOWS_95
-DEFS = $(DEFS) /DWINVER=0x0400
-!else
-#Default is Windows 98 as generated libraries is then
-#compatible with all other Windows versions following it.
-DEFS = $(DEFS) /DWINVER=0x0410
-!endif
+DEFS = $(DEFS) /DWINVER=$(WINVER)
 
 !ifdef WITHOUT_RTTI
 !if $(MSVC_VERSION) >= 1400
