@@ -364,19 +364,10 @@ private:
 
 _STLP_PRIVATE:                     // Helper functions used by constructors
                                    // and elsewhere.
-  // fbp : simplify integer types (char, wchar)
-  void _M_construct_null_aux(_CharT* __p, const __false_type& /*_Is_Integral*/) const
+  void _M_construct_null(_CharT* __p) const
   { _STLP_STD::_Construct(__p); }
-  void _M_construct_null_aux(_CharT* __p, const __true_type& /*_Is_Integral*/) const
-  { *__p = 0; }
-  void _M_construct_null(_CharT* __p) const {
-    typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
-    _M_construct_null_aux(__p, _Char_Is_Integral());
-  }
-
   void _M_terminate_string()
   { _M_construct_null(this->_M_Finish()); }
-
   bool _M_inside(const _CharT* __s) const {
     _STLP_FIX_LITERAL_BUG(__s)
     return (__s >= this->_M_Start()) && (__s < this->_M_Finish());

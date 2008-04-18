@@ -169,8 +169,7 @@ void basic_string<_CharT,_Traits,_Alloc>::reserve(size_type __res_arg) {
 template <class _CharT, class _Traits, class _Alloc>
 void basic_string<_CharT,_Traits,_Alloc>::_M_reserve(size_type __n) {
   pointer __new_start = this->_M_start_of_storage.allocate(__n, __n);
-  pointer __new_finish = __new_start;
-  __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
+  pointer __new_finish = _STLP_PRIV __ucopy(this->_M_Start(), this->_M_Finish(), __new_start);
   _M_construct_null(__new_finish);
   this->_M_deallocate_block();
   this->_M_reset(__new_start, __new_finish, __new_start + __n);
