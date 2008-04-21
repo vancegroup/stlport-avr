@@ -60,7 +60,9 @@
 #  define _STLP_DLLEXPORT_NEEDS_PREDECLARATION
    // <bitset> problems
 #  define _STLP_MEMBER_SPECIALIZATION_BUG 1
-#  define _STLP_TR1 _STLP_STD_NAME::tr1::
+#  ifdef __cplusplus
+#    define _STLP_TR1 _STLP_STD_NAME::tr1::
+#  endif
 #endif
 
 #if (__BORLANDC__ < 0x564)

@@ -55,6 +55,13 @@ const wchar_t default_wmonthname[][24] = {
   L"July", L"August", L"September", L"October", L"November", L"December"};
 #endif
 
+#if defined (__BORLANDC__)
+_Time_Info time_init<char>::_M_timeinfo;
+#  ifndef _STLP_NO_WCHAR_T
+_WTime_Info time_init<wchar_t>::_M_timeinfo;
+#  endif
+#endif
+
 // _Init_time_info: initialize table with
 // "C" values (note these are not defined in the C standard, so this
 // is somewhat arbitrary).

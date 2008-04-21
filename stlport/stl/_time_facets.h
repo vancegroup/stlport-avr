@@ -103,7 +103,9 @@ protected:
   time_init();
   time_init(const char *name);
   time_init(_Locale_time*);
-
+#if defined (__BORLANDC__)
+  static
+#endif
   _Time_Info _M_timeinfo;
   time_base::dateorder _M_dateorder;
 };
@@ -115,7 +117,9 @@ protected:
   time_init();
   time_init(const char *name);
   time_init(_Locale_time*);
-
+#if defined (__BORLANDC__)
+  static
+#endif
   _WTime_Info _M_timeinfo;
   time_base::dateorder _M_dateorder;
 };

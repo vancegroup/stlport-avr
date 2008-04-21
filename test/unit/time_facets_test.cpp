@@ -177,17 +177,9 @@ void LocaleTest::time_by_name()
   }
 
   try {
-#    if !defined (__BORLANDC__)
     string veryLongFacetName("LC_TIME=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
-#    else
-    char veryLongFacetName[1024];
-    strcpy(veryLongFacetName, "LC_TIME=");
-    for( int i = 0; i < 512; ++i )
-      strcat(veryLongFacetName, "?");
-    locale loc(locale::classic(), new time_put_byname<char, ostreambuf_iterator<char, char_traits<char> > >(veryLongFacetName));
-#    endif
     CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
@@ -218,17 +210,9 @@ void LocaleTest::time_by_name()
   }
 
   try {
-#    if !defined (__BORLANDC__)
     string veryLongFacetName("LC_TIME=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(veryLongFacetName.c_str()));
-#    else
-    char veryLongFacetName[1024];
-    strcpy(veryLongFacetName, "LC_TIME=");
-    for( int i = 0; i < 512; ++i )
-      strcat(veryLongFacetName, "?");
-    locale loc(locale::classic(), new time_get_byname<char, istreambuf_iterator<char, char_traits<char> > >(veryLongFacetName));
-#    endif
     CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {

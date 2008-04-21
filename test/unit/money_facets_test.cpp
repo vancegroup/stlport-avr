@@ -487,17 +487,9 @@ void LocaleTest::moneypunct_by_name()
   }
 
   try {
-#    if !defined (__BORLANDC__)
     string veryLongFacetName("LC_MONETARY=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new moneypunct_byname<char, true>(veryLongFacetName.c_str()));
-#    else
-    char veryLongFacetName[1024];
-    strcpy(veryLongFacetName, "LC_MONETARY=");
-    for( int i = 0; i < 512; ++i )
-      strcat(veryLongFacetName, "?");
-    locale loc(locale::classic(), new moneypunct_byname<char, true>(veryLongFacetName));
-#    endif
     CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {
@@ -530,17 +522,9 @@ void LocaleTest::moneypunct_by_name()
   }
 
   try {
-#    if !defined (__BORLANDC__)
     string veryLongFacetName("LC_MONETARY=");
     veryLongFacetName.append(512, '?');
     locale loc(locale::classic(), new moneypunct_byname<char, false>(veryLongFacetName.c_str()));
-#    else
-    char veryLongFacetName[1024];
-    strcpy(veryLongFacetName, "LC_MONETARY=");
-    for( int i = 0; i < 512; ++i )
-      strcat(veryLongFacetName, "?");
-    locale loc(locale::classic(), new moneypunct_byname<char, false>(veryLongFacetName));
-#    endif
     CPPUNIT_FAIL;
   }
   catch (runtime_error const& /* e */) {

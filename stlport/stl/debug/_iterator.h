@@ -409,6 +409,9 @@ protected:
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
   }
 #endif
+#if defined (__BORLANDC__)
+  ~__construct_checker(){}
+#endif
 };
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)

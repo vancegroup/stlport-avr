@@ -452,6 +452,9 @@ public:
   public:
   // Constructor
   _Refcount_Base(__stl_atomic_t __n) : _M_ref_count(__n) {}
+#if defined (__BORLANDC__)
+  ~_Refcount_Base(){};
+#endif
 
   // _M_incr and _M_decr
 #if defined (_STLP_THREADS)
