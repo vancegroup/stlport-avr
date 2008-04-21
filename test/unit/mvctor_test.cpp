@@ -31,7 +31,9 @@ void MoveConstructorTest::move_construct_test()
   vector<int> const ref_vec(10, 0);
   vector<vector<int> > v_v_ints(1, ref_vec);
 
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   int *pint = &(v_v_ints.front().front());
+#endif
 
   size_t cur_capacity = v_v_ints.capacity();
   while (v_v_ints.capacity() <= cur_capacity) {
@@ -50,7 +52,9 @@ void MoveConstructorTest::move_construct_test()
   }
 
   //We erase the 2nd
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   pint = &v_v_ints[2].front();
+#endif
   v_v_ints.erase(v_v_ints.begin() + 1);
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT((pint == &v_v_ints[1].front()));
@@ -60,7 +64,9 @@ void MoveConstructorTest::move_construct_test()
   string const ref_str("ref string, big enough to be a dynamic one");
   vector<string> vec_strs(1, ref_str);
 
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   char const* pstr = vec_strs.front().c_str();
+#endif
   cur_capacity = vec_strs.capacity();
   while (vec_strs.capacity() <= cur_capacity) {
     vec_strs.push_back(ref_str);
@@ -78,7 +84,9 @@ void MoveConstructorTest::move_construct_test()
   }
 
   //We erase the 2nd
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   pstr = vec_strs[2].c_str();
+#endif
   vec_strs.erase(vec_strs.begin() + 1);
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
   CPPUNIT_ASSERT((pstr == vec_strs[1].c_str()));
@@ -576,8 +584,10 @@ void MoveConstructorTest::vector_test()
 
     {
       //1 value in front:
-      vector<vector<int> >::iterator ret;
-      ret = vect_vector.insert(vect_vector.begin() + 2, vector<int>(10));
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
+      vector<vector<int> >::iterator ret =
+#endif
+      vect_vector.insert(vect_vector.begin() + 2, vector<int>(10));
       bufs.insert(bufs.begin() + 2, &vect_vector[2].front());
       CPPUNIT_ASSERT( vect_vector.size() == 25 );
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
@@ -591,8 +601,10 @@ void MoveConstructorTest::vector_test()
 
     {
       //1 value in back:
-      vector<vector<int> >::iterator ret;
-      ret = vect_vector.insert(vect_vector.end() - 2, vector<int>(10));
+#if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
+      vector<vector<int> >::iterator ret =
+#endif
+      vect_vector.insert(vect_vector.end() - 2, vector<int>(10));
       bufs.insert(bufs.end() - 2, &vect_vector[23].front());
       CPPUNIT_ASSERT( vect_vector.size() == 26 );
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
