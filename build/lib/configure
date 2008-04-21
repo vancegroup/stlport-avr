@@ -82,10 +82,10 @@ Available options:
                         --with-static-rtl  -> _STLP_USE_DYNAMIC_LIB"
                         --with-dynamic-rtl -> _STLP_USE_STATIC_LIB"
   --windows-platform=<name>
-                        Targetted Windows platform; one of:
+                        Targetted OS when building for Windows; one of:
                         win95   Windows 95
                         win98   Windows 98
-                        winxp   Windows XP and later
+                        winxp   Windows XP and later (default)
 
 Environment variables:
 
@@ -258,6 +258,10 @@ do
           exit -1
           ;;
       esac
+      ;;
+    *)
+      echo "Unknown configuration option '$option'"
+      exit -1
       ;;
   esac
 done
