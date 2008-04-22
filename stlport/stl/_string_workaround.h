@@ -222,7 +222,7 @@ private:                        // Helper functions for append.
         pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
         pointer __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
         __new_finish = uninitialized_copy(__first, __last, __new_finish);
-        _M_construct_null(__new_finish);
+        this->_M_construct_null(__new_finish);
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
       }
@@ -361,7 +361,7 @@ public:                         // Insert
 public:
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
-    _M_insert(__p, __f, __l, _M_inside(__f));
+    _M_insert(__p, __f, __l, this->_M_inside(__f));
   }
 #endif
 
@@ -433,7 +433,7 @@ private:  // Helper functions for insert.
                           const __false_type& /*Integral*/) {
     _STLP_FIX_LITERAL_BUG(__p)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
-    const _Self __self(__first, __last, get_allocator());
+    const _Self __self(__first, __last, this->get_allocator());
     _M_insertT(__p, __self.begin(), __self.end(), _STLP_ITERATOR_CATEGORY(__first, _InputIter));
   }
 
@@ -543,7 +543,7 @@ public:                         // Replace.  (Conceptually equivalent
                  const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
-    return _M_replace(__first, __last, __f, __l, _M_inside(__f));
+    return _M_replace(__first, __last, __f, __l, this->_M_inside(__f));
   }
 #endif
 
@@ -568,7 +568,7 @@ private:                        // Helper functions for replace.
                              _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
-    const _Self __self(__f, __l, get_allocator());
+    const _Self __self(__f, __l, this->get_allocator());
     return _M_replace(__first, __last, __self._M_Start(), __self._M_Finish(), false);
   }
 
