@@ -1,3 +1,8 @@
+2008-04-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/gcc.mak, build/lib/configure: take
+	into account CFLAGS, EXTRA_CFLAGS, because of C compiler in use too.
+
 2008-04-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/lib/gcc.mak: try to create $(PRE_OUTPUT_DIR) before

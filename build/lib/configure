@@ -43,6 +43,8 @@ Available options:
   --with-mssdk=<dir>    use MS SDK from this catalog
   --with-extra-cxxflags=<options>
                         pass extra options to C++ compiler
+  --with-extra-cflags=<options>
+                        pass extra options to C compiler
   --use-static-gcc      use static gcc libs instead of shared libgcc_s (useful for gcc compiler,
                         that was builded with --enable-shared [default]; if compiler was builded
                         with --disable-shared, static libraries will be used in any case)
@@ -178,6 +180,10 @@ do
       write_option "$option" EXTRA_CXXFLAGS
       cxxflags_set=y
       ;;
+    --with-extra-cflags=*)
+      write_option "$option" EXTRA_CFLAGS
+      cflags_set=y
+      ;;
     --with-lib-motif=*)
       echo "Using $option in generated library names"
       write_option "$option" LIB_MOTIF
@@ -292,6 +298,14 @@ if [ "$CXXFLAGS" != "" ]; then
     write_option "$CXXFLAGS" EXTRA_CXXFLAGS
   else
     echo "Both --with-extra-cxxflags and \$CXXFLAGS set, using the first"
+  fi
+fi
+
+if [ "$CFLAGS" != "" ]; then
+  if [ "$cflags_set" = "" ]; then
+    write_option "$CFLAGS" EXTRA_CFLAGS
+  else
+    echo "Both --with-extra-cflags and \$CFLAGS set, using the first"
   fi
 fi
 
