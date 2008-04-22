@@ -1,3 +1,10 @@
+2008-04-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* src/num_put.cpp: remove ambiguity of char to int conversion
+	(comparison with integers, check for negative value); remove
+	ambiguity with postfix increment in index in conditional
+	expression.
+
 2008-04-22  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/gcc.mak, build/lib/configure: take

@@ -47,10 +47,13 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
   str_size n = 0;               // Index of the current group.
   Char* cur_group = last;       // Points immediately beyond the rightmost
                                 // digit of the current group.
-  char groupsize = 0;           // Size of the current group.
+  int groupsize = 0;            // Size of the current group.
 
   for (;;) {
-    groupsize = n < grouping.size() ? grouping[n++] : groupsize;
+    if ( n < grouping.size() ) {
+      groupsize =  __STATIC_CAST(int, grouping[n++] );
+    }
+
     if ((groupsize <= 0) || (groupsize >= cur_group - first) ||
         (groupsize == CHAR_MAX))
       break;
@@ -88,10 +91,12 @@ __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __group_p
   str_size n = 0;                                                   // Index of the current group.
   typename Str::iterator cur_group(iostr.begin() + __group_pos);    // Points immediately beyond the rightmost
                                                                     // digit of the current group.
-  char groupsize = 0;                                               // Size of the current group.
+  int groupsize = 0;                                                // Size of the current group.
 
   for (;;) {
-    groupsize = n < grouping.size() ? grouping[n++] : groupsize;
+    if ( n < grouping.size() ) {
+      groupsize = __STATIC_CAST( int, grouping[n++] );
+    }
     if ((groupsize <= 0) || (groupsize >= ((cur_group - iostr.begin()) - __first_pos)) ||
         (groupsize == CHAR_MAX))
         break;
