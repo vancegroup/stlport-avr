@@ -120,7 +120,7 @@ static PODType* _Stl_copy_array(const PODType* __array, size_t N) {
 }
 
 locale ios_base::imbue(const locale& loc) {
-  if (loc._M_impl != _M_locale._M_impl) {
+  if (loc != _M_locale) {
     locale previous = _M_locale;
     _M_locale = loc;
     _M_invoke_callbacks(imbue_event);

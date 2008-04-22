@@ -44,13 +44,12 @@
 _STLP_BEGIN_NAMESPACE
 
 class _Locale_impl;        // Forward declaration of opaque type.
-class ios_base;
 class locale;
 
 template <class _CharT, class _Traits, class _Alloc>
-bool __locale_do_operator_call (const locale& __loc,
-                                const basic_string<_CharT, _Traits, _Alloc>& __x,
-                                const basic_string<_CharT, _Traits, _Alloc>& __y);
+bool __locale_do_operator_call(const locale& __loc,
+                               const basic_string<_CharT, _Traits, _Alloc>& __x,
+                               const basic_string<_CharT, _Traits, _Alloc>& __y);
 
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _get_Locale_impl( _Locale_impl *locimpl );
 _STLP_DECLSPEC _Locale_impl * _STLP_CALL _copy_Nameless_Locale_impl( _Locale_impl *locimpl );
@@ -81,8 +80,7 @@ public:
     /* Here we filter __init_count user value to 0 or 1 because __init_count is a
      * size_t instance and _Refcount_Base use __stl_atomic_t instances that might
      * have lower sizeof and generate roll issues. 1 is enough to keep the facet
-     * alive when required.
-     */
+     * alive when required. */
     explicit facet(size_t __init_count = 0) : _Refcount_Base( __init_count == 0 ? 0 : 1 ) {}
     virtual ~facet();
     friend class locale;
@@ -101,8 +99,6 @@ public:
   class
 #endif
   _STLP_CLASS_DECLSPEC id {
-    friend class locale;
-    friend class _Locale_impl;
   public:
     size_t _M_index;
     static size_t _S_max;
@@ -134,7 +130,7 @@ public:
       this->_M_impl = _get_Locale_impl( __loc._M_impl );
     }
   }
-#endif // _STLP_MEMBER_TEMPLATES
+#endif
 
 protected:
   // those are for internal use
@@ -160,7 +156,7 @@ public:
 
     return locale(*this, _STLP_PRIV _UseFacet(__loc, __facet));
   }
-#endif // _STLP_MEMBER_TEMPLATES && !_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
+#endif
 
   // locale operations:
   string name() const;
@@ -202,7 +198,6 @@ public:
 
   // friends:
   friend class _Locale_impl;
-  friend class ios_base;
 
 protected:                        // Data members
   _Locale_impl* _M_impl;
@@ -279,7 +274,6 @@ public:
 
   // friends:
   friend class _Locale_impl;
-  friend class ios_base;
 };
 
 #  undef _Locale
