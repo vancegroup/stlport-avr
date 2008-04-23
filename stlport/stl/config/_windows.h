@@ -240,8 +240,11 @@ void* _STLP_CALL STLPInterlockedExchangePointer(void* volatile* __a, void* __b) 
  * to change _Refcount_Base internal struct. As _Refcount_base member methods might
  * be partially inlined we need to check that STLport build/use are coherent. To do
  * so we try to generate a link time error thanks to the following macro.
- */
-#if defined (_DEBUG) || defined (_STLP_DEBUG)
+ * This additional check is limited to old compilers that might still be used with
+ * Windows 95. */
+#if (defined (_DEBUG) || defined (_STLP_DEBUG)) && \
+    (defined (_STLP_MSVC) && (_STLP_MSVC < 1310) || \
+     defined (__GNUC__) && (__GNUC__ < 3))
 /* We invert symbol names based on macro detection, when building for Windows
  * 95 we expose a
  * building_for_windows95_or_previous_but_library_built_for_windows98_or_later
