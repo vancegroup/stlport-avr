@@ -35,6 +35,9 @@ _STLP_BEGIN_NAMESPACE
 //----------------------------------------------------------------------
 // ctype_byname<char>
 
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
 ctype_byname<char>::ctype_byname(const char* name, size_t refs)
     : ctype<char>( 0, false, refs) {
   if (!name)
@@ -103,6 +106,9 @@ struct _Ctype_byname_w_is_mask : public unary_function<wchar_t, bool> {
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
 ctype_byname<wchar_t>::ctype_byname(const char* name, size_t refs)
   : ctype<wchar_t>(refs) {
   if (!name)
@@ -172,6 +178,9 @@ ctype_byname<wchar_t>::do_tolower(wchar_t* low, const wchar_t* high) const {
 #endif /* WCHAR_T */
 
 // collate_byname<char>
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
 collate_byname<char>::collate_byname(const char* name, size_t refs)
   : collate<char>(refs) {
   if (!name)
@@ -216,6 +225,9 @@ collate_byname<char>::do_transform(const char* low, const char* high) const {
 
 // collate_byname<wchar_t>
 
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
 collate_byname<wchar_t>::collate_byname(const char* name, size_t refs)
   : collate<wchar_t>(refs) {
   if (!name)

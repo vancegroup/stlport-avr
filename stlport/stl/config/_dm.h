@@ -81,14 +81,17 @@
 #define _STLP_USE_ABBREVS
 #define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER
 
+#define _STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND
 #define _STLP_EXPORT_DECLSPEC __declspec(dllexport)
 #define _STLP_IMPORT_DECLSPEC __declspec(dllimport)
 
 #define _STLP_CLASS_EXPORT_DECLSPEC __declspec(dllexport)
-//#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
+#define _STLP_CLASS_IMPORT_DECLSPEC __declspec(dllimport)
 
-#define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
-#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
+#define _STLP_NEED_ADDITIONAL_STATIC_DECLSPEC
+
+//#define _STLP_IMPORT_TEMPLATE_KEYWORD __declspec(dllimport)
+//#define _STLP_EXPORT_TEMPLATE_KEYWORD __declspec(dllexport)
 
 #if defined (_WINDLL)
 #  define _STLP_DLL

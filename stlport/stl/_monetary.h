@@ -99,7 +99,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
   _STLP_STATIC_CONSTANT(bool, intl = true);
 
 protected:
@@ -139,7 +139,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
   _STLP_STATIC_CONSTANT(bool, intl = false);
 
 protected:
@@ -180,7 +180,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
   _STLP_STATIC_CONSTANT(bool, intl = true);
 
 protected:
@@ -219,7 +219,7 @@ public:
   pattern     pos_format()    const { return do_pos_format(); }
   pattern     neg_format()    const { return do_neg_format(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
   _STLP_STATIC_CONSTANT(bool, intl = false);
 
 protected:

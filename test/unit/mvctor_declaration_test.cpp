@@ -59,11 +59,16 @@ static bool is_move_complete(const _Tp&) {
 }
 
 struct specially_allocated_struct {
-  bool operator < (specially_allocated_struct) const;
+  bool operator < (const specially_allocated_struct&) const;
 #  if defined (__DMC__) // slist<_Tp,_Alloc>::remove error
   bool operator==(const specially_allocated_struct&) const;
 #  endif
 };
+
+#if defined (__DMC__)
+bool specially_allocated_struct::operator < (const specially_allocated_struct&) const
+{ return false; }
+#endif
 
 struct struct_with_specialized_less {};
 

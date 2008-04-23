@@ -59,7 +59,7 @@ public:
   string truename() const { return do_truename(); }
   string falsename() const { return do_falsename(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
 
 protected:
   ~numpunct();
@@ -88,7 +88,7 @@ public:
   wstring truename() const { return do_truename(); }
   wstring falsename() const { return do_falsename(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
 
 protected:
   ~numpunct();

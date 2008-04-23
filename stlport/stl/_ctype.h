@@ -111,7 +111,7 @@ public:
     return do_narrow(__low, __high, __dfault, __to);
   }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
   _STLP_STATIC_CONSTANT(size_t, table_size = 256);
 
 protected:
@@ -214,7 +214,7 @@ public:
                         char __dfault, char* __to) const
     { return do_narrow(__low, __high, __dfault, __to); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
 
 protected:
   ~ctype();

@@ -226,7 +226,7 @@ public:
 
   int max_length() const _STLP_NOTHROW { return do_max_length(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
 
 protected:
   ~codecvt();
@@ -323,7 +323,7 @@ public:
 
   int max_length() const _STLP_NOTHROW { return do_max_length(); }
 
-  static locale::id id;
+  static _STLP_STATIC_DECLSPEC locale::id id;
 
 protected:
   ~codecvt();

@@ -325,14 +325,18 @@ ctype<char>::~ctype() {
 }
 
 const char*
-ctype<char>::scan_is(ctype_base::mask  __m, const char* __low, const char* __high) const  {
-  return _STLP_STD::find_if(__low, __high, _Ctype_is_mask(__m, _M_ctype_table));
-}
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
+ctype<char>::scan_is(ctype_base::mask  __m, const char* __low, const char* __high) const
+{ return _STLP_STD::find_if(__low, __high, _Ctype_is_mask(__m, _M_ctype_table)); }
 
 const char*
-ctype<char>::scan_not(ctype_base::mask  __m, const char* __low, const char* __high) const {
-  return _STLP_STD::find_if(__low, __high, _Ctype_not_mask(__m, _M_ctype_table));
-}
+#if defined (__DMC__)
+_STLP_DECLSPEC
+#endif
+ctype<char>::scan_not(ctype_base::mask  __m, const char* __low, const char* __high) const
+{ return _STLP_STD::find_if(__low, __high, _Ctype_not_mask(__m, _M_ctype_table)); }
 
 char ctype<char>::do_toupper(char __c) const
 { return (char) _S_upper[(unsigned char) __c]; }
