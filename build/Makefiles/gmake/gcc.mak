@@ -75,6 +75,7 @@ endif
 endif
 
 ifeq ($(OSNAME), cygming)
+WINVER ?= 0x0501
 RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
 release-shared : RCFLAGS += -DBUILD_INFOS=-O2
 dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
@@ -102,8 +103,21 @@ dbg-shared : DEFS += -D_DEBUG
 stldbg-shared : DEFS += -D_DEBUG
 dbg-static : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
-WINVER ?= 0x0501
 DEFS += -DWINVER=${WINVER}
+else
+# When using the -mno-cygwin option we need to take into account WINVER.
+# As there is no DEFS for C compiler and an other for C++ we use CFLAGS
+# and CXXFLAGS
+ifdef EXTRA_CXXFLAGS
+ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
+CXXFLAGS += -DWINVER=${WINVER}
+endif
+endif
+ifdef EXTRA_CFLAGS
+ifneq (,$(findstring no-cygwin,$(EXTRA_CFLAGS)))
+CFLAGS += -DWINVER=${WINVER}
+endif
+endif
 endif
 endif
 
