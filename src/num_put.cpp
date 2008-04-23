@@ -44,19 +44,19 @@ __insert_grouping_aux(Char* first, Char* last, const string& grouping,
   }
 
   first += basechars;
-  str_size n = 0;               // Index of the current group.
-  Char* cur_group = last;       // Points immediately beyond the rightmost
-                                // digit of the current group.
-  int groupsize = 0;            // Size of the current group.
+  Char* cur_group = last; // Points immediately beyond the rightmost
+                          // digit of the current group.
+  int groupsize = 0; // Size of the current group (if grouping.size() == 0, size
+                     // of group unlimited: we force condition (groupsize <= 0))
 
-  for (;;) {
+  for ( str_size n = 0; ; ) { // Index of the current group
     if ( n < grouping.size() ) {
-      groupsize =  __STATIC_CAST(int, grouping[n++] );
+      groupsize = __STATIC_CAST(int, grouping[n++] );
     }
 
-    if ((groupsize <= 0) || (groupsize >= cur_group - first) ||
-        (groupsize == CHAR_MAX))
+    if ((groupsize <= 0) || (groupsize >= cur_group - first) || (groupsize == CHAR_MAX)) {
       break;
+    }
 
     // Insert a separator character just before position cur_group - groupsize
     cur_group -= groupsize;
@@ -88,18 +88,21 @@ __insert_grouping_aux( /* __basic_iostring<Char> */ Str& iostr, size_t __group_p
   }
 
   __first_pos += basechars;
-  str_size n = 0;                                                   // Index of the current group.
+
   typename Str::iterator cur_group(iostr.begin() + __group_pos);    // Points immediately beyond the rightmost
                                                                     // digit of the current group.
-  int groupsize = 0;                                                // Size of the current group.
+  int groupsize = 0; // Size of the current group (if grouping.size() == 0, size
+                     // of group unlimited: we force condition (groupsize <= 0))
 
-  for (;;) {
+  for ( str_size n = 0; ; ) { // Index of the current group
     if ( n < grouping.size() ) {
       groupsize = __STATIC_CAST( int, grouping[n++] );
     }
-    if ((groupsize <= 0) || (groupsize >= ((cur_group - iostr.begin()) - __first_pos)) ||
-        (groupsize == CHAR_MAX))
-        break;
+
+    if ( (groupsize <= 0) || (groupsize >= ((cur_group - iostr.begin()) - __first_pos)) ||
+         (groupsize == CHAR_MAX)) {
+      break;
+    }
 
     // Insert a separator character just before position cur_group - groupsize
     cur_group -= groupsize;
