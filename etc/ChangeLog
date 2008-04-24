@@ -1,3 +1,9 @@
+2008-04-24  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_algobase.h: Patch from Andrey Semashev to apply a
+	common optimization in STLport algos for random access iterators
+	to fill and fill_n algos.
+
 2008-04-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* src/num_put.cpp: remove ambiguity of char to int conversion

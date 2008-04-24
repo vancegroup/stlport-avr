@@ -337,6 +337,9 @@ inline _Tp* copy(const _Tp* __first, const _Tp* __last, _Tp* __result)          
 inline _Tp* copy_backward(const _Tp* __first, const _Tp* __last, _Tp* __result) \
 { return (_Tp*)_STLP_PRIV __copy_trivial_backward(__first, __last, __result); }
 
+#  if !defined (_STLP_NO_BOOL)
+_STLP_DECLARE_COPY_TRIVIAL(bool)
+#  endif
 _STLP_DECLARE_COPY_TRIVIAL(char)
 #  if !defined (_STLP_NO_SIGNED_BUILTINS)
 _STLP_DECLARE_COPY_TRIVIAL(signed char)
@@ -371,8 +374,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
 _STLP_INLINE_LOOP _STLP_STD::pair<_InputIter, _OutputIter>
-__copy_n(_InputIter __first, _Size __count,
-         _OutputIter __result,
+__copy_n(_InputIter __first, _Size __count, _OutputIter __result,
          const input_iterator_tag &) {
   for ( ; __count > 0; --__count) {
     *__result = *__first;
@@ -384,8 +386,7 @@ __copy_n(_InputIter __first, _Size __count,
 
 template <class _RAIter, class _Size, class _OutputIter>
 inline _STLP_STD::pair<_RAIter, _OutputIter>
-__copy_n(_RAIter __first, _Size __count,
-         _OutputIter __result,
+__copy_n(_RAIter __first, _Size __count, _OutputIter __result,
          const random_access_iterator_tag &) {
   _RAIter __last = __first + __count;
   return _STLP_STD::pair<_RAIter, _OutputIter>(__last, _STLP_STD::copy(__first, __last, __result));
@@ -403,32 +404,53 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
 
 //--------------------------------------------------
 // fill and fill_n
+_STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _ForwardIter, class _Tp>
 _STLP_INLINE_LOOP
-void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
-  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+void __fill_fwd(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   for ( ; __first != __last; ++__first)
     *__first = __val;
 }
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
+template <class _ForwardIter, class _Tp, class _Distance>
+inline void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+                   const input_iterator_tag &, _Distance*) {
+  _STLP_PRIV __fill_fwd(__first, __last, __val);
+}
 
-template <class _OutputIter, class _Size, class _Tp>
+#if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
+template <class _ForwardIter, class _Tp, class _Distance>
 _STLP_INLINE_LOOP
-_OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
-  _STLP_FIX_LITERAL_BUG(__first)
-  for ( ; __n > 0; --__n, ++__first)
+void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+            const forward_iterator_tag &, _Distance*) {
+  _STLP_PRIV __fill_fwd(__first, __last, __val);
+}
+
+template <class _ForwardIter, class _Tp, class _Distance>
+_STLP_INLINE_LOOP
+void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
+            const bidirectional_iterator_tag &, _Distance*) {
+  _STLP_PRIV __fill_fwd(__first, __last, __val);
+}
+#endif
+
+template <class _RandomAccessIter, class _Tp, class _Distance>
+_STLP_INLINE_LOOP
+void __fill(_RandomAccessIter __first, _RandomAccessIter __last, const _Tp& __val,
+            const random_access_iterator_tag &, _Distance*) {
+  for (_Distance __n = __last - __first ; __n > 0; ++__first, --__n)
     *__first = __val;
-  return __first;
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
-template <class _OutputIter, class _Size, class _Tp>
-_STLP_INLINE_LOOP
-void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
-  _STLP_FIX_LITERAL_BUG(__first)
-  _STLP_PRIV __fill_n(__first, __n, __val);
+template <class _ForwardIter, class _Tp>
+inline void fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
+  _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
+  _STLP_PRIV __fill(__first, __last, __val,
+                    _STLP_ITERATOR_CATEGORY(__first, _ForwardIter),
+                    _STLP_DISTANCE_TYPE(__first, _ForwardIter));
 }
 
 // Specialization: for one-byte types we can use memset.
@@ -449,31 +471,47 @@ inline void fill(char* __first, char* __last, const char& __val) {
   memset(__first, __STATIC_CAST(unsigned char,__tmp), __last - __first);
 }
 
-#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
+template <class _OutputIter, class _Size, class _Tp>
+_STLP_INLINE_LOOP
+_OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+  _STLP_FIX_LITERAL_BUG(__first)
+  for ( ; __n > 0; --__n, ++__first)
+    *__first = __val;
+  return __first;
+}
+
+#if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Size>
 inline unsigned char* __fill_n(unsigned char* __first, _Size __n,
                                const unsigned char& __val) {
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
-
+#if !defined (_STLP_NO_SIGNED_BUILTINS)
 template <class _Size>
-inline signed char* __fill_n(char* __first, _Size __n,
+inline signed char* __fill_n(signed char* __first, _Size __n,
                              const signed char& __val) {
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
-
+#endif
 template <class _Size>
-inline char* __fill_n(char* __first, _Size __n, const char& __val) {
+inline char* __fill_n(char* __first, _Size __n,
+                      const char& __val) {
   _STLP_STD::fill(__first, __first + __n, __val);
   return __first + __n;
 }
+#endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
+
+template <class _OutputIter, class _Size, class _Tp>
+inline void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
+  _STLP_FIX_LITERAL_BUG(__first)
+  _STLP_PRIV __fill_n(__first, __n, __val);
+}
 
 
 //--------------------------------------------------
