@@ -1,8 +1,11 @@
 2008-04-24  Francois Dumont  <dums@users.sourceforge.net>
 
-	* stlport/stl/_algobase.h: Patch from Andrey Semashev to apply a
-	common optimization in STLport algos for random access iterators
-	to fill and fill_n algos.
+	* Patch 1937823 from Johan Andersson to add Microsoft Visual
+	Studio 2008 support.
+
+	* stlport/stl/_algobase.h: Patch 1935497 from Andrey Semashev to
+	apply a common optimization in STLport algos for random access
+	iterators to fill and fill_n algos.
 
 2008-04-23  Petr Ovtchenkov  <complement@users.sourceforge.net>
 

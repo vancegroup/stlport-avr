@@ -11,6 +11,7 @@
      ("$(COMPILER_NAME)" != "vc70") && \
      ("$(COMPILER_NAME)" != "vc71") && \
      ("$(COMPILER_NAME)" != "vc8") && \
+     ("$(COMPILER_NAME)" != "vc9") && \
      ("$(COMPILER_NAME)" != "icl"))
 !error '$(COMPILER_NAME)' not supported by this make file, please rerun 'configure' script and follow instructions.
 !endif
