@@ -112,6 +112,10 @@ _STLP_IMPORT_DECLSPEC long _STLP_STDCALL InterlockedExchange(long*, long);
 /* start of eMbedded Visual C++ specific section */
 #      include <stl/config/_native_headers.h>
 
+/* Don't let windef.h define its min and max macros. */
+#      if !defined (NOMINMAX)
+#        define NOMINMAX
+#      endif
 #      include <windef.h> /* needed for basic windows types */
 
        /** in SDKs generated with PB5, windef.h somehow includes headers which then

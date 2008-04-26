@@ -113,19 +113,18 @@
 
 /*
  * _STLP_WHOLE_NATIVE_STD : only meaningful if STLport uses its own namespace.
- * Normally, STLport only imports necessary components from native std:: namespace -
- * those not yet provided by STLport (<iostream>, <complex>, etc.)
- * and their dependencies (<string>, <stdexcept>).
+ * Normally, STLport only imports necessary components from native std:: namespace.
  * You might want everything from std:: being available in std:: namespace when you
  * include corresponding STLport header (like STLport <map> provides std::map as well, etc.),
  * if you are going to use both stlport:: and std:: components in your code.
  * Otherwise this option is not recommended as it increases the size of your object files
  * and slows down compilation.
- * Beware, if you do not use STLport iostream (_STLP_NO_IOSTREAMS above), ask STLport not
- * to rename std:: in stlport:: and try to have access to whole native Standard stuff then
- * STLport will only throw exceptions from the std namespace and not from the stlport one.
- * For instance a problem in stlport::vector::at will throw a std::out_of_range and not a
- * stlport::out_of_range. Notice that STLport exceptions inherits from std::exception.
+ * Beware, if you do not use STLport iostream (_STLP_NO_IOSTREAMS above), ask STLport to
+ * not rename std:: in stlport:: and try to have access to whole native Standard stuff then
+ * STLport will only throw exceptions from the std namespace and not from stlport.
+ * For instance a problem in stlport::vector::at will throw a std::out_of_range exception
+ * and not a stlport::out_of_range.
+ * Notice that STLport exceptions inherits from std::exception.
  */
 /*
 #define _STLP_WHOLE_NATIVE_STD

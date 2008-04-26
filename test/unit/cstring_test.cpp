@@ -48,13 +48,15 @@ void CStringTest::import_checks()
   CPPUNIT_CHECK( std::memset(buf1, 0, 1) != NULL );
   char buf[16]; buf[0] = 0;
   const char* foo = "foo";
+#  if !defined(_WIN32_WCE)
+  CPPUNIT_CHECK( std::strcoll("foo", "foo") == 0 );
+  CPPUNIT_CHECK( std::strerror(0) != NULL );
+#  endif
   CPPUNIT_CHECK( std::strcat((char*)buf, foo) == (char*)buf ); // buf <- foo
   CPPUNIT_CHECK( std::strchr(foo, 'o') != NULL );
   CPPUNIT_CHECK( std::strcmp("foo1", "foo2") < 0 );
-  CPPUNIT_CHECK( std::strcoll("foo", "foo") == 0 );
   CPPUNIT_CHECK( std::strcpy((char*)buf, foo) == (char*)buf ); // buf <- foo
   CPPUNIT_CHECK( std::strcspn("foo", "o") == 1 );
-  CPPUNIT_CHECK( std::strerror(0) != NULL );
   CPPUNIT_CHECK( std::strlen("foo") == 3 );
   CPPUNIT_CHECK( std::strncat((char*)buf, foo, 2) == (char*)buf ); // buf <- foofo
   CPPUNIT_CHECK( std::strncmp("foo1", "foo2", 3) == 0 );
@@ -66,6 +68,8 @@ void CStringTest::import_checks()
   CPPUNIT_CHECK( std::strstr(foo, "") == foo );
   char foofoobuf[] = "foofoo";
   CPPUNIT_CHECK( std::strtok(foofoobuf, "z") != NULL );
+#  if !defined(_WIN32_WCE)
   CPPUNIT_CHECK( std::strxfrm((char*)buf, foo, 3) != 0 );
+#  endif
 #endif
 }

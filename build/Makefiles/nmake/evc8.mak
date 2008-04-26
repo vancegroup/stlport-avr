@@ -39,7 +39,7 @@ OPT_COMMON = $(OPT_COMMON)
 !if "$(PLATFORM)" == "POCKET PC 2003"
 DEFS_COMMON = $(DEFS_COMMON) /DWIN32_PLATFORM_PSPC
 # Pocket PC 2003 doesn't support THUMB.
-LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib /machine:ARM
+LDFLAGS_COMMON = $(LDFLAGS_COMMON) ccrtrtti.lib secchk.lib /machine:ARM
 !endif
 !endif
 

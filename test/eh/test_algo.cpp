@@ -95,8 +95,11 @@ struct test_stable_partition
 
         SortClass* d = EH_STD::stable_partition( buf.begin(), buf.end(), throw_cmp );
 
-    // If we get here no exception occurred during the operation.
-    // Stop any potential failures that might occur during verification.
+        // Suppress warning about unused variable.
+        d;
+
+        // If we get here no exception occurred during the operation.
+        // Stop any potential failures that might occur during verification.
         gTestController.CancelFailureCountdown();
 
         // Prepare an array of counts of the occurrence of each value in
@@ -111,8 +114,9 @@ struct test_stable_partition
         {
           // Check that adjacent items with the same value haven't been
           // reordered. This could be a more thorough test.
-            if ( p != buf.begin() && p->value() == p[-1].value() )
+            if ( p != buf.begin() && p->value() == p[-1].value() ) {
                 EH_ASSERT( p->GetAddress() > p[-1].GetAddress() );
+            }
 
             // Check that the partitioning worked.
             EH_ASSERT( (p < d) == cmp( *p ) );
@@ -122,8 +126,9 @@ struct test_stable_partition
         }
 
         // Check that the values were only rearranged, and none were lost.
-        for ( unsigned j = 0; j < SortClass::kRange; j++ )
+        for ( unsigned j = 0; j < SortClass::kRange; j++ ) {
             EH_ASSERT( counts[j] == 0 );
+        }
     }
 
 private:
@@ -154,16 +159,18 @@ void assert_sorted_version( const SortBuffer& orig, const SortBuffer& buf )
   // equal, that their order has been preserved.
     for ( const SortClass* p = buf.begin(); p != buf.end(); p++ )
     {
-        if ( p != buf.begin() )
+        if ( p != buf.begin() ) {
             EH_ASSERT( p->value() > p[-1].value()
                     || p->value() == p[-1].value() && p->GetAddress() > p[-1].GetAddress() );
+        }
     // Decrement the appropriate count for each value.
         counts[ p->value() ]--;
     }
 
   // Check that the values were only rearranged, and none were lost.
-    for ( unsigned j = 0; j < SortClass::kRange; j++ )
+    for ( unsigned j = 0; j < SortClass::kRange; j++ ) {
         EH_ASSERT( counts[j] == 0 );
+    }
 }
 
 //

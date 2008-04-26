@@ -123,7 +123,7 @@ namespace std {
 #        define WCHAR_MAX ((wchar_t)~0)
 #      endif
 #    endif
-#    if defined (__DMC__) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400))
+#    if defined (__DMC__) || (defined (_STLP_MSVC_LIB) && (_STLP_MSVC_LIB < 1400)) || defined(_WIN32_WCE)
 /* Compilers that do not define WCHAR_MIN and WCHAR_MAX to be testable at
  * preprocessing time. */
 #      undef WCHAR_MIN
@@ -157,7 +157,7 @@ _STLP_STATIC_ASSERT((WCHAR_MIN < 0))
 #      undef WCHAR_MIN
 #      define WCHAR_MIN 0
 #      undef WCHAR_MAX
-#      define WCHAR_MAX UINT_MAX 
+#      define WCHAR_MAX UINT_MAX
 #    endif
 #  endif
 

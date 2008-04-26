@@ -1,3 +1,8 @@
+2008-04-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* Patches #1940126, #1941267, #1941814 from Johan Andersson for evc8
+	Pocket PC support and build of tests without warnings.
+
 2008-04-24  Francois Dumont  <dums@users.sourceforge.net>
 
 	* Patch 1937823 from Johan Andersson to add Microsoft Visual

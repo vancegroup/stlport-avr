@@ -161,7 +161,15 @@ bool test_float_limits(const _Tp &) {
      * Infinity must compare as if larger than the maximum representable value. */
 
     _Tp val = lim::max();
+
+    /* MSVC 8.0 is smart enough to understand that lim::max() * 2 will cause overflow */
+    stringstream s;
+    s.precision(std::numeric_limits<_Tp>::digits10 + 1);
+    s << val;
+    s >> val;
+
     val *= 2;
+
     /* We use test_float_values because without it some compilers (gcc) perform weird
      * optimization on the test giving unexpected result. */
     CHECK_COND(test_float_values(val, infinity));

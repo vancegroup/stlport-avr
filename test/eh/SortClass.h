@@ -28,8 +28,13 @@ class SortClass : public TestClass
 public:
   enum { kRange = 100 };
 
-  SortClass( int v ) : TestClass( v ), addr(this) {}
-  SortClass() : TestClass( (int)get_random(kRange) ), addr(this) {}
+  SortClass( int v ) : TestClass( v ), addr(0) {
+     ResetAddress();
+  }
+
+  SortClass() : TestClass( (int)get_random(kRange) ), addr(0) {
+     ResetAddress();
+  }
 
   bool operator<( const TestClass& rhs ) const
   {

@@ -46,8 +46,9 @@ struct test_slist_sort {
   void operator()( TestSList& slist ) const {
     slist.sort();
     for ( TestSList::iterator p = slist.begin(), q; p != slist.end(); q = p, p++ )
-      if ( p != slist.begin() )
+      if ( p != slist.begin() ) {
         EH_ASSERT( *p >= *q );
+      }
   }
 };
 
