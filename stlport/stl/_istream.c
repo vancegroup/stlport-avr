@@ -506,7 +506,7 @@ basic_istream<_CharT, _Traits>::seekg(pos_type __pos) {
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   if (!this->fail() && __buf) {
-    if (__buf->pubseekpos(__pos) == pos_type(-1)) {
+    if (__buf->pubseekpos(__pos, ios_base::in) == pos_type(-1)) {
       this->setstate(ios_base::failbit);
     }
   }
@@ -520,7 +520,7 @@ basic_istream<_CharT, _Traits>::seekg(off_type __off, ios_base::seekdir __dir) {
 
   basic_streambuf<_CharT, _Traits>* __buf = this->rdbuf();
   if (!this->fail() && __buf)
-    __buf->pubseekoff(__off, __dir);
+    __buf->pubseekoff(__off, __dir, ios_base::in);
   return *this;
 }
 

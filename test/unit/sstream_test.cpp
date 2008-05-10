@@ -33,6 +33,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(streambuf_output);
   CPPUNIT_TEST(seek);
   CPPUNIT_TEST(seekp);
+  CPPUNIT_TEST(seek_gp);
   CPPUNIT_TEST(tellp);
   CPPUNIT_TEST(negative);
   CPPUNIT_TEST_SUITE_END();
@@ -52,6 +53,7 @@ class SstreamTest : public CPPUNIT_NS::TestCase
     void streambuf_output();
     void seek();
     void seekp();
+    void seek_gp();
     void tellp();
     void negative();
 };
@@ -412,6 +414,31 @@ void SstreamTest::seekp()
   s.seekp( 0, ios::beg );
   s << "Y";
   CPPUNIT_CHECK( s.str() == "Y234567" );
+}
+
+void SstreamTest::seek_gp()
+{
+  stringstream ss( "1" );
+
+  /* ISO/IEC 14882 2003 (and 1998 too) assume change as get as put positions
+     with seekg and seekp (27.6.1.3, par 38; 27.6.2.4 par 2),
+     but this contradict to common practice and proposed draft N2588
+     (27.6.1.3, par 41; 27.6.2.5, par 4)
+
+     Now STLport implement (i.e. change behaviour ) the draft's point of view.
+   */
+
+  ss.seekg( 0, ios::beg );
+  ss.seekp( 0, ios::end );
+  
+  ss << "2";
+
+  string str;
+
+  ss >> str;
+
+  /*  CPPUNIT_CHECK( str == "2" ); --- according ISO/IEC 14882 2003 */
+  CPPUNIT_CHECK( str == "12" );
 }
 
 void SstreamTest::tellp()
