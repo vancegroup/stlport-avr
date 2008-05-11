@@ -60,6 +60,7 @@ class StringTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(resize);
   CPPUNIT_TEST(short_string);
   CPPUNIT_TEST(find);
+  CPPUNIT_TEST(bogus_edge_find);
   CPPUNIT_TEST(rfind);
   CPPUNIT_TEST(find_last_of);
   CPPUNIT_TEST(find_last_not_of);
@@ -118,6 +119,7 @@ protected:
   void resize();
   void short_string();
   void find();
+  void bogus_edge_find();
   void rfind();
   void find_last_of();
   void find_last_not_of();
@@ -656,6 +658,103 @@ void StringTest::find()
 
   string empty;
   CPPUNIT_ASSERT( s.substr(s.find(empty), empty.size()) == empty );
+}
+
+void StringTest::bogus_edge_find()
+{
+  /* ISO/IEC 14882 2003, 21.3.6.1 basic_string::find [lib.string::find]
+   *
+   * size_type find(const basic_string<charT,traits,Allocator>& str,
+   *                size_type pos = 0) const;
+   * Effects: Determines the lowest position xpos, if possible, such that
+   * both of the following conditions obtain:
+   *    pos <= xpos and xpos + str.size() <= size();
+   *    at(xpos+I) == str.at(I) for all elements I of the string controlled by str.
+   * Returns: xpos if the function can determine such a value for xpos. Otherwise,
+   * returns npos.
+   * Notes: Uses traits::eq().
+   *
+   * ===
+   * So, from formal point of view 
+   *   string s; string::size_type p = s.find( "", 0, 0 );
+   * should return 0 in p, i.e. position out-of-bound of string, so 
+   * code like following is bad:
+   * string s; 
+   *  
+   * string::size_type p = s.find( "", 0, 0 ); 
+   *
+   * ... 
+   *
+   * if ( p != string::npos ) { // normal 
+   *   char ch = s[p]; // Arghhhhhhhhhh 
+   * }
+   *
+   * People near Standard commete has opinion opposite to my. Even if it looks
+   * like bogus behaviour for me, it should be fixed.
+   */
+
+  {
+    string s;
+    string::size_type p = s.find( "", 0, 0 );
+
+    /* CPPUNIT_CHECK( p == string::npos ); */
+    CPPUNIT_CHECK( p == 0 ); // bogus result, isn't it?
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.find( "", 0, 0 );
+
+    CPPUNIT_CHECK( p == 0 );
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.find( "", 1, 0 );
+
+    CPPUNIT_CHECK( p == 1 );
+  }
+  {
+    string s( "" );
+    string::size_type p = s.find( "", 1, 0 );
+
+    CPPUNIT_CHECK( p == string::npos );
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.find( "", 3, 0 );
+
+    CPPUNIT_CHECK( p == 3 ); // bogus result, isn't it?
+  }
+  {
+    string s;
+    string::size_type p = s.rfind( "", 0, 0 );
+
+    /* CPPUNIT_CHECK( p == string::npos ); */
+    CPPUNIT_CHECK( p == 0 ); // bogus result, isn't it?
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.rfind( "", 0, 0 );
+
+    CPPUNIT_CHECK( p == 0 );
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.rfind( "", 1, 0 );
+
+    CPPUNIT_CHECK( p == 1 );
+  }
+  {
+    string s( "" );
+    string::size_type p = s.rfind( "", 1, 0 );
+
+    CPPUNIT_CHECK( p == 0 ); // bogus result, isn't it?
+  }
+  {
+    string s( "123" );
+    string::size_type p = s.rfind( "", 3, 0 );
+
+    CPPUNIT_CHECK( p == 3 ); // bogus result, isn't it?
+  }
 }
 
 void StringTest::rfind()

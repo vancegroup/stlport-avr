@@ -416,49 +416,56 @@ basic_string<_CharT,_Traits,_Alloc> ::_M_replace(iterator __first, iterator __la
   return *this;
 }
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT,_Traits,_Alloc> ::find(const _CharT* __s, size_type __pos,
-                                           size_type __n) const {
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__ basic_string<_CharT,_Traits,_Alloc>::find( const _CharT* __s, size_type __pos,
+                                                         size_type __n) const
+{
   const size_t __len = size();
-  if (__pos >= __len || __pos + __n > __len)
+  if (__pos >= __len || __pos + __n > __len) {
+    if ( __n == 0 && __pos <= __len ) { // marginal case
+      return __pos;
+    }
     return npos;
-  else {
-    const_pointer __result =
-      _STLP_STD::search(this->_M_Start() + __pos, this->_M_Finish(),
-                        __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
-    return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
   }
-}
 
-template <class _CharT, class _Traits, class _Alloc> __size_type__
-basic_string<_CharT,_Traits,_Alloc> ::find(_CharT __c, size_type __pos) const {
-  if (__pos >= size()) /*__pos + 1 > size()*/
-    return npos;
-  else {
-    const_pointer __result =
-      _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
-                         _STLP_PRIV _Eq_char_bound<_Traits>(__c));
-    return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
-  }
+  const_pointer __result =
+    _STLP_STD::search(this->_M_Start() + __pos, this->_M_Finish(),
+                      __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
+  return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-__size_type__
-basic_string<_CharT,_Traits,_Alloc>::rfind(const _CharT* __s, size_type __pos, size_type __n) const
+__size_type__ basic_string<_CharT,_Traits,_Alloc>::find(_CharT __c, size_type __pos) const
+{
+  if (__pos >= size()) { /*__pos + 1 > size()*/
+    return npos;
+  }
+
+  const_pointer __result =
+    _STLP_STD::find_if(this->_M_Start() + __pos, this->_M_Finish(),
+                       _STLP_PRIV _Eq_char_bound<_Traits>(__c));
+  return __result != this->_M_Finish() ? __result - this->_M_Start() : npos;
+}
+
+template <class _CharT, class _Traits, class _Alloc>
+__size_type__ basic_string<_CharT,_Traits,_Alloc>::rfind(const _CharT* __s, size_type __pos,
+                                                         size_type __n) const
 {
   const size_type __len = size();
   if ( __len < __n ) {
     return npos;
   }
   const_pointer __last = this->_M_Start() + (min)( __len - __n, __pos) + __n;
+  if ( __n == 0 ) { // marginal case
+    return __last - this->_M_Start();
+  }
   const_pointer __result = _STLP_STD::find_end(this->_M_Start(), __last,
                                                __s, __s + __n, _STLP_PRIV _Eq_traits<_Traits>());
   return __result != __last ? __result - this->_M_Start() : npos;
 }
 
 template <class _CharT, class _Traits, class _Alloc>
-__size_type__
-basic_string<_CharT,_Traits,_Alloc>::rfind(_CharT __c, size_type __pos) const
+__size_type__ basic_string<_CharT,_Traits,_Alloc>::rfind(_CharT __c, size_type __pos) const
 {
   const size_type __len = size();
   if ( __len < 1 ) {
