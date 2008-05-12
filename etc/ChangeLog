@@ -1,3 +1,10 @@
+2008-04-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_function.h, type_traits.h: Adoption of Defect Report 109
+	Missing binders for non-const sequence elements.
+
+	* test/unit/bind_test.cpp: Test for DR above.
+
 2008-05-11  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/stl/_string.c: from formal (ISO/IEC 14882:2003) point of view 

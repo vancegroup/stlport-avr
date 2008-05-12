@@ -452,16 +452,28 @@ template <class _Tp>
 struct __call_traits {
 #if defined (_STLP_USE_BOOST_SUPPORT) && !defined (_STLP_NO_EXTENSIONS)
   typedef typename __select< ::boost::is_reference<_Tp>::value,
-                             _Tp, typename ::boost::add_reference< typename ::boost::add_const<_Tp>::type >::type>::_Ret param_type;
+                             typename ::boost::add_const<_Tp>::type,
+                             typename ::boost::add_reference< typename ::boost::add_const<_Tp>::type >::type>::_Ret const_param_type;
+  typedef typename __select< ::boost::is_reference<_Tp>::value,
+                             typename ::boost::remove_const<_Tp>::type,
+                             typename ::boost::add_reference<_Tp>::type>::_Ret param_type;
 #else
-  typedef const _Tp& param_type;
-#endif /* _STLP_USE_BOOST_SUPPORT */
+  typedef const _Tp& const_param_type;
+  typedef _Tp& param_type;
+#endif
 };
 
 #if !defined (_STLP_USE_BOOST_SUPPORT) && !defined (_STLP_NO_EXTENSIONS) && defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 template <class _Tp>
-struct __call_traits<_Tp&>
-{ typedef _Tp& param_type; };
+struct __call_traits<_Tp&> {
+  typedef _Tp& param_type;
+  typedef const _Tp& const_param_type;
+};
+template <class _Tp>
+struct __call_traits<const _Tp&> {
+  typedef _Tp& param_type;
+  typedef const _Tp& const_param_type;
+};
 #endif
 
 template <class _Tp1, class _Tp2>

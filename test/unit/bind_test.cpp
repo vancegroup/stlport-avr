@@ -34,6 +34,19 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BindTest);
 
+class pre_increment : public binary_function<int, int, int> {
+public:
+  int operator()(int incr, int& val) const
+  { return val += incr; }
+};
+
+class post_increment : public binary_function<int, int, int> {
+public:
+  int operator()(int& val, int incr) const
+  { return val += incr; }
+};
+
+
 //
 // tests implementation
 //
@@ -42,10 +55,21 @@ void BindTest::bind1st1()
   int array [3] = { 1, 2, 3 };
   int* p = remove_if((int*)array, (int*)array + 3, bind1st(less<int>(), 2));
 
-  CPPUNIT_ASSERT(p==&array[2]);
-  CPPUNIT_ASSERT(array[0]==1);
-  CPPUNIT_ASSERT(array[1]==2);
+  CPPUNIT_ASSERT(p == &array[2]);
+  CPPUNIT_ASSERT(array[0] == 1);
+  CPPUNIT_ASSERT(array[1] == 2);
+
+  for_each((int*)array, (int*)array + 3, bind1st(pre_increment(), 1));
+  CPPUNIT_ASSERT(array[0] == 2);
+  CPPUNIT_ASSERT(array[1] == 3);
+  CPPUNIT_ASSERT(array[2] == 4);
+
+  for_each((int*)array, (int*)array + 3, bind2nd(post_increment(), 1));
+  CPPUNIT_ASSERT(array[0] == 3);
+  CPPUNIT_ASSERT(array[1] == 4);
+  CPPUNIT_ASSERT(array[2] == 5);
 }
+
 void BindTest::bind2nd1()
 {
   int array [3] = { 1, 2, 3 };

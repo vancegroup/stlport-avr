@@ -139,7 +139,7 @@ class unary_negate
 public:
   typedef typename _Base::argument_type argument_type;
 private:
-  typedef typename __call_traits<argument_type>::param_type _ArgParamType;
+  typedef typename __call_traits<argument_type>::const_param_type _ArgParamType;
 protected:
   _Predicate _M_pred;
 public:
@@ -167,8 +167,8 @@ public:
   typedef typename _Base::first_argument_type first_argument_type;
   typedef typename _Base::second_argument_type second_argument_type;
 private:
-  typedef typename __call_traits<first_argument_type>::param_type _FstArgParamType;
-  typedef typename __call_traits<second_argument_type>::param_type _SndArgParamType;
+  typedef typename __call_traits<first_argument_type>::const_param_type _FstArgParamType;
+  typedef typename __call_traits<second_argument_type>::const_param_type _SndArgParamType;
 protected:
   _Predicate _M_pred;
 public:
@@ -195,18 +195,21 @@ public:
   typedef typename _Base::result_type result_type;
 private:
   typedef typename __call_traits<argument_type>::param_type _ArgParamType;
-  typedef typename __call_traits<typename _Operation::first_argument_type>::param_type _ValueParamType;
+  typedef typename __call_traits<argument_type>::const_param_type _ConstArgParamType;
+  typedef typename __call_traits<typename _Operation::first_argument_type>::const_param_type _ValueParamType;
 protected:
   //op is a Standard name (20.3.6.1), do no make it STLport naming convention compliant.
   _Operation op;
   typename _Operation::first_argument_type _M_value;
 public:
   binder1st(const _Operation& __x, _ValueParamType __y)
-      : op(__x), _M_value(__y) {}
+    : op(__x), _M_value(__y) {}
 
-  result_type operator()(_ArgParamType __x) const {
-    return op(_M_value, __x);
-  }
+  result_type operator()(_ConstArgParamType __x) const
+  { return op(_M_value, __x); }
+  // DR 109 Missing binders for non-const sequence elements
+  result_type operator()(_ArgParamType __x) const
+  { return op(_M_value, __x); }
 };
 
 template <class _Operation, class _Tp>
@@ -227,7 +230,8 @@ public:
   typedef typename _Base::result_type result_type;
 private:
   typedef typename __call_traits<argument_type>::param_type _ArgParamType;
-  typedef typename __call_traits<typename _Operation::second_argument_type>::param_type _ValueParamType;
+  typedef typename __call_traits<argument_type>::const_param_type _ConstArgParamType;
+  typedef typename __call_traits<typename _Operation::second_argument_type>::const_param_type _ValueParamType;
 protected:
   //op is a Standard name (20.3.6.3), do no make it STLport naming convention compliant.
   _Operation op;
@@ -236,9 +240,11 @@ public:
   binder2nd(const _Operation& __x, _ValueParamType __y)
       : op(__x), value(__y) {}
 
-  result_type operator()(_ArgParamType __x) const {
-    return op(__x, value);
-  }
+  result_type operator()(_ConstArgParamType __x) const
+  { return op(__x, value); }
+  // DR 109 Missing binders for non-const sequence elements
+  result_type operator()(_ArgParamType __x) const
+  { return op(__x, value); }
 };
 
 template <class _Operation, class _Tp>
@@ -261,7 +267,7 @@ public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
 private:
-  typedef typename __call_traits<argument_type>::param_type _ArgParamType;
+  typedef typename __call_traits<argument_type>::const_param_type _ArgParamType;
 protected:
   _Operation1 _M_fn1;
   _Operation2 _M_fn2;
@@ -290,7 +296,7 @@ public:
   typedef typename _Base::argument_type argument_type;
   typedef typename _Base::result_type result_type;
 private:
-  typedef typename __call_traits<argument_type>::param_type _ArgParamType;
+  typedef typename __call_traits<argument_type>::const_param_type _ArgParamType;
 protected:
   _Operation1 _M_fn1;
   _Operation2 _M_fn2;
