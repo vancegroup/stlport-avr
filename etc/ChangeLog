@@ -4,7 +4,7 @@
 	string s; string::size_type p = s.find( "", 0, 0 ); should return 0 in p,
 	i.e. position out-of-bound of string; people near Standard commete has
 	opinion that Standard correct in this point and not require clarification
-	(opposite to my opinion); even if it looks like bogus behaviour for me,
+	(opposite to my opinion); even if it looks like bogus behavior for me,
 	it fixed to conform standard; see bugreport #1872656;
 
 	* test/unit/string_test.cpp: test for issue above.
@@ -16,7 +16,7 @@
 	seekg and seekp (27.6.1.3, par 38; 27.6.2.4 par 2), but this
 	contradict to common practice and proposed draft N2588
 	(27.6.1.3, par 41; 27.6.2.5, par 4); now STLport implement
-	(i.e. change present behaviour) the draft's point of view;
+	(i.e. change present behavior) the draft's point of view;
 	this reflect patch #1650657 by Jan Echternach;
 	
 	* test/unit/sstream_test.cpp: test for issue above.
@@ -46,6 +46,11 @@
 
 	* build/Makefiles/gmake/gcc.mak, build/lib/configure: take
 	into account CFLAGS, EXTRA_CFLAGS, because of C compiler in use too.
+
+2008-04-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_string.h: Remove support for non POD type in basic_string
+	implementation.
 
 2008-04-08  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
