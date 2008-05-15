@@ -333,23 +333,28 @@ static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign)
 #  endif
 
 #if defined (_STLP_CVT_NEED_SYNCHRONIZATION)
+/* STLport synchronize access to *cvt functions but those methods might
+ * be called from outside, in this case we will still have a race condition. */
 #  if defined (_STLP_THREADS)
-static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
+static _STLP_STATIC_MUTEX& put_float_mutex() {
+  static _STLP_STATIC_MUTEX __put_float_mutex _STLP_MUTEX_INITIALIZER;
+  return __put_float_mutex;
+}
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char* buf) {
-  _STLP_auto_lock lock(__put_float_mutex);
+  _STLP_auto_lock lock(put_float_mutex());
   strcpy(buf, _Stl_ecvtR(x, n, pt, sign)); return buf;
 }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char* buf) {
-  _STLP_auto_lock lock(__put_float_mutex);
+  _STLP_auto_lock lock(put_float_mutex());
   strcpy(buf, _Stl_fcvtR(x, n, pt, sign)); return buf;
 }
 #    if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_EMULATE_LONG_DOUBLE_CVT)
 static inline char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char* buf) {
-  _STLP_auto_lock lock(__put_float_mutex);
+  _STLP_auto_lock lock(put_float_mutex());
   strcpy(buf, _Stl_ecvtR(x, n, pt, sign)); return buf;
 }
 static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* buf) {
-  _STLP_auto_lock lock(__put_float_mutex);
+  _STLP_auto_lock lock(put_float_mutex());
   strcpy(buf, _Stl_fcvtR(x, n, pt, sign)); return buf;
 }
 #    endif

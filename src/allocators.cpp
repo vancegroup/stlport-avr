@@ -209,25 +209,26 @@ __oom_handler_type _STLP_CALL __malloc_alloc::set_malloc_handler(__oom_handler_t
 #  if defined (_STLP_THREADS)
 
 class _Node_Alloc_Lock {
+  static _STLP_STATIC_MUTEX& _S_Mutex() {
+    static _STLP_STATIC_MUTEX mutex _STLP_MUTEX_INITIALIZER;
+    return mutex;
+  }
 public:
   _Node_Alloc_Lock() {
-#  if defined (_STLP_SGI_THREADS)
+#    if defined (_STLP_SGI_THREADS)
     if (__us_rsthread_malloc)
-#  endif
-      _S_lock._M_acquire_lock();
+#    endif
+      _S_Mutex()._M_acquire_lock();
   }
 
   ~_Node_Alloc_Lock() {
-#  if defined (_STLP_SGI_THREADS)
+#    if defined (_STLP_SGI_THREADS)
     if (__us_rsthread_malloc)
-#  endif
-        _S_lock._M_release_lock();
+#    endif
+      _S_Mutex()._M_release_lock();
   }
-
-  static _STLP_STATIC_MUTEX _S_lock;
 };
 
-_STLP_STATIC_MUTEX _Node_Alloc_Lock::_S_lock _STLP_MUTEX_INITIALIZER;
 #  else
 
 class _Node_Alloc_Lock {

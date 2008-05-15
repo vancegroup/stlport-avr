@@ -131,7 +131,10 @@ static Category_Map** messages_hash() {
 // We have a single lock for all of the hash tables.  We may wish to
 // replace it with six different locks.
 /* REFERENCED */
-static _STLP_STATIC_MUTEX __category_hash_lock _STLP_MUTEX_INITIALIZER;
+static _STLP_STATIC_MUTEX& category_hash_mutex() {
+  static _STLP_STATIC_MUTEX lock _STLP_MUTEX_INITIALIZER;
+  return lock;
+}
 
 static void*
 __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
@@ -167,7 +170,7 @@ __acquire_category(const char* &name, char *buf, _Locale_name_hint* hint,
 
   Category_Map::value_type __e(name, pair<void*,size_t>((void*)0,size_t(0)));
 
-  _STLP_auto_lock sentry(__category_hash_lock);
+  _STLP_auto_lock sentry(category_hash_mutex());
 
   if (!*M)
     *M = new Category_Map();
@@ -209,7 +212,7 @@ __release_category(void* cat,
     char const* name = get_name(cat, buf);
 
     if (name != 0) {
-      _STLP_auto_lock sentry(__category_hash_lock);
+      _STLP_auto_lock sentry(category_hash_mutex());
       Category_Map::iterator it = pM->find(name);
       if (it != pM->end()) {
         // Decrement the ref count.  If it goes to zero, delete this category

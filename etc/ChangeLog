@@ -1,3 +1,10 @@
+2008-05-15  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/allocators.cpp, locale_catalog.cpp, num_put_float.cpp:
+	Use static method returning static instance to mutex rather than
+	direct access to a static mutex instance to control initialization
+	order of static variables thanks Peter Hrenka report.
+
 2008-04-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_function.h, type_traits.h: Adoption of Defect Report 109
