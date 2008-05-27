@@ -34,9 +34,8 @@ namespace CPPUNIT_NS
   public:
     virtual ~Reporter() {}
     virtual void error(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
-    virtual void failure(const char * /*macroName*/, const char * /*in_macro*/, const char * /*in_file*/, int /*in_line*/) {}
     virtual void message( const char * /*msg*/ ) {}
-    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool /*ignored*/) {}
+    virtual void progress( const char * /*in_className*/, const char * /*in_testName*/, bool /*ignored*/, bool /* explicit */) {}
     virtual void end() {}
     virtual void printSummary() {}
   };
@@ -54,25 +53,17 @@ namespace CPPUNIT_NS
 
   class TestCase : public TestFixture {
   public:
-    TestCase() { m_failed = false; registerTestCase(this); }
+    TestCase() { registerTestCase(this); }
 
+    void setUp() { m_failed = false; }
     static int run(Reporter *in_reporter = 0, const char *in_testName = "", bool invert = false);
     int numErrors() { return m_numErrors; }
     static void registerTestCase(TestCase *in_testCase);
 
     virtual void myRun(const char * /*in_name*/, bool /*invert*/ = false) {}
 
-    virtual void failure(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
-      m_failed = true;
-      if (m_reporter) {
-        m_reporter->failure(in_macroName, in_macro, in_file, in_line);
-      }
-    }
-
     virtual void error(const char *in_macroName, const char *in_macro, const char *in_file, int in_line) {
-      // Reset m_failed to avoid wrong m_numErrors when there are checks and assertions in the same test.
-      m_failed = false;
-      ++m_numErrors;
+      m_failed = true;
       if (m_reporter) {
         m_reporter->error(in_macroName, in_macro, in_file, in_line);
       }
@@ -92,10 +83,10 @@ namespace CPPUNIT_NS
       return diff < in_maxErr;
     }
 
-    virtual void progress(const char *in_className, const char *in_functionName, bool ignored) {
+    virtual void progress(const char *in_className, const char *in_functionName, bool ignored, bool explicitTest) {
       ++m_numTests;
       if (m_reporter) {
-        m_reporter->progress(in_className, in_functionName, ignored);
+        m_reporter->progress(in_className, in_functionName, ignored, explicitTest);
       }
     }
 
@@ -151,10 +142,11 @@ namespace CPPUNIT_NS
 
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST_BASE(X, Y) \
-  if (shouldRunThis(in_name, className, #X, invert, Y)) { \
+  { \
+    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y); \
     setUp(); \
-    progress(className, #X, ignoring); \
-    if (!ignoring) { \
+    progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
+    if (shouldRun && !ignoring) { \
       try { \
         X(); \
       } \
@@ -166,10 +158,11 @@ namespace CPPUNIT_NS
   }
 #else
 #  define CPPUNIT_TEST_BASE(X, Y) \
-  if (shouldRunThis(in_name, className, #X, invert, Y)) { \
+  { \
+    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y); \
     setUp(); \
-    progress(className, #X, ignoring); \
-    if (!ignoring) \
+    progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
+    if (shouldRun && !ignoring) \
       X(); \
     tearDown(); \
   }
@@ -190,7 +183,7 @@ namespace CPPUNIT_NS
 
 #define CPPUNIT_CHECK(X) \
   if (!(X)) { \
-    Base::failure("CPPUNIT_CHECK", #X, __FILE__, __LINE__); \
+    Base::error("CPPUNIT_CHECK", #X, __FILE__, __LINE__); \
   }
 
 #define CPPUNIT_ASSERT(X) \
