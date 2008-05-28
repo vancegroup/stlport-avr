@@ -135,13 +135,12 @@ void* _STLP_CALL __malloc_alloc::allocate(size_t __n)
     __oom_handler_type __my_malloc_handler;
 
     for (;;) {
+      {
 #ifdef _STLP_THREADS
-      __oom_handler_lock._M_acquire_lock();
+        _STLP_auto_lock _l( __oom_handler_lock );
 #endif
-      __my_malloc_handler = __oom_handler;
-#ifdef _STLP_THREADS
-      __oom_handler_lock._M_release_lock();
-#endif
+        __my_malloc_handler = __oom_handler;
+      }
       if ( 0 == __my_malloc_handler) {
         _STLP_THROW_BAD_ALLOC;
       }
@@ -157,7 +156,7 @@ void* _STLP_CALL __malloc_alloc::allocate(size_t __n)
 __oom_handler_type _STLP_CALL __malloc_alloc::set_malloc_handler(__oom_handler_type __f)
 {
 #ifdef _STLP_THREADS
-  _STLP_auto_lock _1( __oom_handler_lock );
+  _STLP_auto_lock _l( __oom_handler_lock );
 #endif
   __oom_handler_type __old = __oom_handler;
   __oom_handler = __f;
