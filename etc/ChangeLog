@@ -1,5 +1,11 @@
 2008-05-27  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_alloc.h: Code simplification, clean up null
+	pointer checks as allocators should never return it but rather
+	throw a bad_alloc exception.
+
+2008-05-27  Francois Dumont  <dums@users.sourceforge.net>
+
 	* test/unit/cppunit/cppunit_mini.h, file_reporter.h: Fix
 	counting of failed test, won't report more failures than tests
 	anymore. Now also report explicit tests.

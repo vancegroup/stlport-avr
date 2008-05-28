@@ -39,9 +39,8 @@ void * _STLP_CALL __debug_alloc<_Alloc>::allocate(size_t __n) {
   size_t __total_extra = __extra_before_chunk() + __extra_after_chunk();
   size_t __real_n = __n + __total_extra;
   if (__real_n < __n) {
-    //It means that we rolled on size_t, __n must be very large, lets hope
-    //that allocating it will raised a bad_alloc exception:
-    __real_n = __n + (__total_extra - __real_n - 1);
+    //It means that we rolled on size_t, __n must be very large:
+    _STLP_THROW_BAD_ALLOC;
   }
   __alloc_header *__result = (__alloc_header *)__allocator_type::allocate(__real_n);
   memset((char*)__result, __shred_byte, __real_n * sizeof(value_type));
