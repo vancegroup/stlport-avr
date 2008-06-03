@@ -6,7 +6,7 @@
 #  define _STLP_VERBOSE_MODE_SUPPORTED
 
 #  if defined (_STLP_COMPILER)
-#    pragma message _STLP_COMPILER
+#    pragma message (_STLP_COMPILER)
 #  endif
 
 #  if defined (_STLP_NO_RTTI)
