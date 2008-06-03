@@ -108,10 +108,7 @@ operator>>(basic_istream<_CharT, _Traits>& __is, complex<_Tp>& __z) {
   _Tp  __re = 0;
   _Tp  __im = 0;
 
-  // typedef ctype<_CharT> _Ctype;
-  //  locale __loc = __is.getloc();
-  //const _Ctype&  __c_type  = use_facet<_Ctype>(__loc);
-  const ctype<_CharT>& __c_type = *__STATIC_CAST(const ctype<_CharT>*, __is._M_ctype_facet());
+  const ctype<_CharT>& __c_type = *__is._M_ctype_facet();
 
   const char __punct[4] = "(,)";
   _CharT __wpunct[3];

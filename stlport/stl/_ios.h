@@ -26,6 +26,7 @@
 #ifndef _STLP_INTERNAL_CTYPE_H
 # include <stl/_ctype.h>
 #endif
+
 #ifndef _STLP_INTERNAL_NUMPUNCT_H
 # include <stl/_numpunct.h>
 #endif
@@ -112,6 +113,14 @@ public:                         // Locale-related member functions.
   }
 
 protected:
+  // Cached copy of the curent locale's ctype facet.  Set by init() and imbue().
+  const ctype<char_type>* _M_cached_ctype;
+
+public:
+  // Equivalent to &use_facet< Facet >(getloc()), but faster.
+  const ctype<char_type>* _M_ctype_facet() const { return _M_cached_ctype; }
+
+protected:
   basic_ios();
 
   void init(basic_streambuf<_CharT, _Traits>* __streambuf);
@@ -134,12 +143,12 @@ private:                        // Data members
 template <class _CharT, class _Traits>
 inline char
 basic_ios<_CharT, _Traits>::narrow(_CharT __c, char __default) const
-{ return __STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())->narrow(__c, __default); }
+{ return _M_ctype_facet()->narrow(__c, __default); }
 
 template <class _CharT, class _Traits>
 inline _CharT
 basic_ios<_CharT, _Traits>::widen(char __c) const
-{ return __STATIC_CAST(const ctype<_CharT>*, this->_M_ctype_facet())->widen(__c); }
+{ return _M_ctype_facet()->widen(__c); }
 
 # if !defined (_STLP_NO_METHOD_SPECIALIZATION)
 _STLP_TEMPLATE_NULL

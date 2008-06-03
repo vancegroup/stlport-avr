@@ -230,24 +230,12 @@ private:                        // Data members.
   void** _M_pwords;
   size_t _M_num_pwords;
 
-protected:
-  // Cached copies of the curent locale's facets.  Set by init() and imbue().
-  const locale::facet* _M_cached_ctype;
-  const locale::facet* _M_cached_numpunct;
-  string         _M_cached_grouping;
 public:
-  // Equivalent to &use_facet< Facet >(getloc()), but faster.
-  const locale::facet* _M_ctype_facet() const { return _M_cached_ctype; }
-  const locale::facet* _M_numpunct_facet() const { return _M_cached_numpunct; }
-  const string&  _M_grouping() const { return _M_cached_grouping; }
-public:
-
   // ----------------------------------------------------------------------
   // Nested initializer class.  This is an implementation detail, but it's
   // prescribed by the standard.  The static initializer object (on
   // implementations where such a thing is required) is declared in
   // <iostream>
-
   class _STLP_CLASS_DECLSPEC Init
   {
     public:

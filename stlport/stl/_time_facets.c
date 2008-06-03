@@ -73,10 +73,9 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #define _MAXNAMES        24
 
-template <class _InIt, class _CharT, class _NameIt>
+template <class _InIt, class _NameIt>
 size_t _STLP_CALL
-__match(_InIt& __first, _InIt& __last, _NameIt __name, _NameIt __name_end,
-        const ctype<_CharT>& __ct) {
+__match(_InIt& __first, _InIt& __last, _NameIt __name, _NameIt __name_end) {
   typedef ptrdiff_t difference_type;
   difference_type __n = __name_end - __name;
   difference_type __i, __start = 0;
@@ -91,7 +90,7 @@ __match(_InIt& __first, _InIt& __last, _NameIt __name, _NameIt __name_end,
     difference_type __new_n = __n;
     for (__i = __start; __i < __n; ++__i) {
       if (!__do_not_check[__i]) {
-        if (*__first == __ct.widen(__name[__i][__pos])) {
+        if (*__first == __name[__i][__pos]) {
           if (__pos == (__name[__i].size() - 1)) {
             __matching_name_index = __i;
             __do_not_check[__i] = true;
@@ -151,7 +150,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
                                  string::const_iterator __format, string::const_iterator __format_end,
                                  _Ch*, const _TimeInfo& __table,
                                  const ios_base& __s, ios_base::iostate& __err, tm* __t) {
-  const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __s._M_ctype_facet());
+  const ctype<_Ch>& __ct = use_facet<ctype<_Ch> >(__s.getloc());
   typedef basic_string<_Ch, char_traits<_Ch>, allocator<_Ch> > string_type;
   size_t offset;
 
@@ -170,8 +169,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
           offset = 7;
         case 'a': {
           size_t __index = __match(__first, __last,
-                                   __table._M_dayname + offset, __table._M_dayname + offset + 7,
-                                   __ct);
+                                   __table._M_dayname + offset, __table._M_dayname + offset + 7);
           if (__index == 7)
             return __format;
           __t->tm_wday = __STATIC_CAST(int, __index);
@@ -182,8 +180,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
           offset = 12;
         case 'b': {
           size_t __index = __match(__first, __last,
-                                   __table._M_monthname + offset, __table._M_monthname + offset + 12,
-                                   __ct);
+                                   __table._M_monthname + offset, __table._M_monthname + offset + 12);
           if (__index == 12)
             return __format;
           __t->tm_mon = __STATIC_CAST(int, __index);
@@ -232,7 +229,7 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
 
         case 'p': {
           size_t __index = __match(__first, __last,
-                                   __table._M_am_pm + 0, __table._M_am_pm + 2, __ct);
+                                   __table._M_am_pm + 0, __table._M_am_pm + 2);
           if (__index == 2)
             return __format;
           // 12:00 PM <=> 12:00, 12:00 AM <=> 00:00
@@ -279,11 +276,10 @@ __get_formatted_time _STLP_WEAK (_InIt1 __first,  _InIt1 __last,
   return __format;
 }
 
-template <class _InIt, class _CharT, class _TimeInfo>
+template <class _InIt, class _TimeInfo>
 bool _STLP_CALL
-__get_short_or_long_dayname(_InIt& __first, _InIt& __last, const ctype<_CharT>& __ct,
-                            const _TimeInfo& __table, tm* __t) {
-  size_t __index = __match(__first, __last, __table._M_dayname + 0, __table._M_dayname + 14, __ct);
+__get_short_or_long_dayname(_InIt& __first, _InIt& __last, const _TimeInfo& __table, tm* __t) {
+  size_t __index = __match(__first, __last, __table._M_dayname + 0, __table._M_dayname + 14);
   if (__index != 14) {
     __t->tm_wday = __STATIC_CAST(int, __index % 7);
     return true;
@@ -291,11 +287,10 @@ __get_short_or_long_dayname(_InIt& __first, _InIt& __last, const ctype<_CharT>& 
   return false;
 }
 
-template <class _InIt, class _CharT, class _TimeInfo>
+template <class _InIt, class _TimeInfo>
 bool _STLP_CALL
-__get_short_or_long_monthname(_InIt& __first, _InIt& __last, const ctype<_CharT>& __ct,
-                              const _TimeInfo& __table, tm* __t) {
-  size_t __index = __match(__first, __last, __table._M_monthname + 0, __table._M_monthname + 24, __ct);
+__get_short_or_long_monthname(_InIt& __first, _InIt& __last, const _TimeInfo& __table, tm* __t) {
+  size_t __index = __match(__first, __last, __table._M_monthname + 0, __table._M_monthname + 24);
   if (__index != 24) {
     __t->tm_mon = __STATIC_CAST(int, __index % 12);
     return true;
@@ -373,9 +368,8 @@ _InIt
 time_get<_Ch, _InIt>::do_get_weekday(_InIt __s, _InIt  __end,
                                      ios_base &__str, ios_base::iostate &__err,
                                      tm *__t) const {
-  const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    _STLP_PRIV __get_short_or_long_dayname(__s, __end, __ct, this->_M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_dayname(__s, __end, this->_M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -391,9 +385,8 @@ _InIt
 time_get<_Ch, _InIt>::do_get_monthname(_InIt __s, _InIt  __end,
                                        ios_base &__str, ios_base::iostate &__err,
                                        tm *__t) const {
-  const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __str._M_ctype_facet());
   bool __result =
-    _STLP_PRIV __get_short_or_long_monthname(__s, __end, __ct, this->_M_timeinfo, __t);
+    _STLP_PRIV __get_short_or_long_monthname(__s, __end, this->_M_timeinfo, __t);
   if (__result)
     __err = ios_base::goodbit;
   else {
@@ -409,9 +402,7 @@ _OutputIter
 time_put<_Ch,_OutputIter>::put(_OutputIter __s, ios_base& __f, _Ch __fill,
                                const tm* __tmb, const _Ch* __pat,
                                const _Ch* __pat_end) const {
-  //  locale __loc = __f.getloc();
-  //  const ctype<_Ch>& _Ct = use_facet<ctype<_Ch> >(__loc);
-  const ctype<_Ch>& _Ct = *__STATIC_CAST(const ctype<_Ch>*, __f._M_ctype_facet());
+  const ctype<_Ch>& _Ct = use_facet<ctype<_Ch> >(__f.getloc());
   while (__pat != __pat_end) {
     char __c = _Ct.narrow(*__pat, 0);
     if (__c == '%') {
@@ -435,10 +426,9 @@ _OutputIter
 time_put<_Ch,_OutputIter>::do_put(_OutputIter __s, ios_base& __f, _Ch /* __fill */,
                                   const tm* __tmb, char __format,
                                   char __modifier ) const {
-  const ctype<_Ch>& __ct = *__STATIC_CAST(const ctype<_Ch>*, __f._M_ctype_facet());
+  const ctype<_Ch>& __ct = use_facet<ctype<_Ch> >(__f.getloc());
   _STLP_BASIC_IOSTRING(_Ch) __buf;
   _STLP_PRIV __write_formatted_time(__buf, __ct, __format, __modifier, this->_M_timeinfo, __tmb);
-  //  locale __loc = __f.getloc();
   return copy(__buf.begin(), __buf.end(), __s);
 }
 

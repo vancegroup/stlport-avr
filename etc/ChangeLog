@@ -1,5 +1,23 @@
 2008-06-03  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/ios.cpp, stlport/stl/_complex.c, _ios.c, _ios.h, _ios_base.h,
+	_istream.c, _num_get.c, _num_put.c: Remove invalid cached facet
+	pointers in ios_base class. This class can be used in a char or
+	wchar_t instantiation context making cast to ctype<char> or
+	ctype<wchar_t> invalid resulting in an application crashed. The
+	only safe access to facet instances from a ios_base instance is through
+	the use_facet<Facet>(getloc()) function. Only _M_cached_ctype has been
+	kept in basic_ios class even if small bench hasn't show real
+	enhancement compared to using use_facet. 
+
+	* stlport/stl/_time_facets.c: In addition to above modifications
+	time_get implementation has been simplified as localized info are
+	now stored as wchar_t for wide char instantiation. We do not need
+	to use ctype.widen method anymore.
+
+	* test/unit/time_facets_test.cpp: Add test for time_get wchar_t
+	instantiation.
+
 	* test/unit/cppunit/cppunit_mini.h: Fix report of ignored/explicit
 	tests.
 

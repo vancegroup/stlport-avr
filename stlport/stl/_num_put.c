@@ -75,7 +75,7 @@ __put_float(__iostring &__str, _OutputIter __oi,
             ios_base& __f, wchar_t __fill,
             wchar_t __decimal_point, wchar_t __sep,
             size_t __group_pos, const string& __grouping) {
-  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
+  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__f.getloc());
 
   __iowstring __wbuf;
   __convert_float_buffer(__str, __wbuf, __ct, __decimal_point);
@@ -118,11 +118,10 @@ __do_put_float(_OutputIter __s, ios_base& __f,
 
   size_t __group_pos = __write_float(__buf, __f.flags(), (int)__f.precision(), __x);
 
-  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
-
+  const numpunct<_CharT>& __np = use_facet<numpunct<_CharT> >(__f.getloc());
   return __put_float(__buf, __s, __f, __fill,
                      __np.decimal_point(), __np.thousands_sep(),
-                     __group_pos, __f._M_grouping());
+                     __group_pos, __np.grouping());
 }
 
 inline void __get_money_digits_aux (__iostring &__buf, ios_base &, _STLP_LONGEST_FLOAT_TYPE __x)
@@ -133,7 +132,7 @@ inline void __get_money_digits_aux (__iowstring &__wbuf, ios_base &__f, _STLP_LO
   __iostring __buf;
   __get_floor_digits(__buf, __x);
 
-  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
+  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__f.getloc());
   __convert_float_buffer(__buf, __wbuf, __ct, wchar_t(0), false);
 }
 #endif
@@ -194,8 +193,7 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
               ios_base& __f,
               ios_base::fmtflags __flags, wchar_t __fill) {
   locale __loc = __f.getloc();
-  //  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
-  const ctype<wchar_t>& __ct = *__STATIC_CAST(const ctype<wchar_t>*, __f._M_ctype_facet());
+  const ctype<wchar_t>& __ct = use_facet<ctype<wchar_t> >(__loc);
 
   wchar_t __xplus  = __ct.widen('+');
   wchar_t __xminus = __ct.widen('-');
@@ -205,11 +203,8 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   ptrdiff_t __len = __iend - __buf;
   wchar_t* __eend = __wbuf + __len;
 
-  //  const numpunct<wchar_t>& __np = use_facet<numpunct<wchar_t> >(__loc);
-  //  const string& __grouping = __np.grouping();
-
-  const numpunct<wchar_t>& __np = *__STATIC_CAST(const numpunct<wchar_t>*, __f._M_numpunct_facet());
-  const string& __grouping = __f._M_grouping();
+  const numpunct<wchar_t>& __np = use_facet<numpunct<wchar_t> >(__loc);
+  const string& __grouping = __np.grouping();
 
   if (!__grouping.empty()) {
     int __basechars;
@@ -239,11 +234,8 @@ __put_integer(char* __buf, char* __iend, _OutputIter __s,
   char __grpbuf[64];
   ptrdiff_t __len = __iend - __buf;
 
-  //  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
-  //  const string& __grouping = __np.grouping();
-
-  const numpunct<char>& __np = *__STATIC_CAST(const numpunct<char>*, __f._M_numpunct_facet());
-  const string& __grouping = __f._M_grouping();
+  const numpunct<char>& __np = use_facet<numpunct<char> >(__f.getloc());
+  const string& __grouping = __np.grouping();
 
   if (!__grouping.empty()) {
     int __basechars;
@@ -392,9 +384,7 @@ __do_put_integer(_OutputIter __s, ios_base& __f, _CharT __fill, _Integer __x) {
 template <class _CharT, class _OutputIter>
 _OutputIter _STLP_CALL
 __do_put_bool(_OutputIter __s, ios_base& __f, _CharT __fill, bool __x) {
-  locale __loc = __f.getloc();
-
-  const numpunct<_CharT>& __np = *__STATIC_CAST(const numpunct<_CharT>*, __f._M_numpunct_facet());
+  const numpunct<_CharT>& __np = use_facet<numpunct<_CharT> >(__f.getloc());
 
   basic_string<_CharT, char_traits<_CharT>, allocator<_CharT> > __str = __x ? __np.truename() : __np.falsename();
 
@@ -424,15 +414,14 @@ _STLP_MOVE_TO_STD_NAMESPACE
 template <class _CharT, class _OutputIterator>
 locale::id num_put<_CharT, _OutputIterator>::id;
 
-// issue 118
-
 #if !defined (_STLP_NO_BOOL)
 template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT __fill,
                                      bool __val) const {
   if (!(__f.flags() & ios_base::boolalpha))
-    return this->do_put(__s, __f, __fill, __STATIC_CAST(long,__val));
+    // 22.2.2.2.2.23: shall return do_put for int and not directly __do_put_integer.
+    return do_put(__s, __f, __fill, __STATIC_CAST(long, __val));
 
   return _STLP_PRIV __do_put_bool(__s, __f, __fill, __val);
 }
@@ -485,7 +474,7 @@ template <class _CharT, class _OutputIter>
 _OutputIter
 num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__fill*/,
                                      const void* __val) const {
-  const ctype<_CharT>& __c_type = *__STATIC_CAST(const ctype<_CharT>*, __f._M_ctype_facet());
+  const ctype<_CharT>& __c_type = use_facet<ctype<_CharT> >(__f.getloc());
   ios_base::fmtflags __save_flags = __f.flags();
 
   __f.setf(ios_base::hex, ios_base::basefield);
@@ -511,10 +500,10 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
 #ifdef _STLP_LONG_LONG
     ( sizeof(void*) == sizeof(unsigned long) ) ?
 #endif
-    this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val))
+    _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned long,__val))
 #ifdef _STLP_LONG_LONG
       : /* ( sizeof(void*) == sizeof(unsigned _STLP_LONG_LONG) ) ? */
-    this->do_put(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val))
+    _STLP_PRIV __do_put_integer(__s, __f, __c_type.widen('0'), __REINTERPRET_CAST(unsigned _STLP_LONG_LONG,__val))
 #endif
         ;
 #if defined (_STLP_MSVC)

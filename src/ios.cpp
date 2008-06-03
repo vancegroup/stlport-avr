@@ -235,12 +235,7 @@ void ios_base::_M_copy_state(const ios_base& x) {
   _M_seekdir   = x._M_seekdir;
   _M_precision = x._M_precision;
   _M_width     = x._M_width;
-
-  if (_M_locale != x._M_locale) {
-    _M_locale = x._M_locale;
-    _M_cached_ctype = x._M_cached_ctype;
-    _M_cached_numpunct = x._M_cached_numpunct;
-  }
+  _M_locale    = x._M_locale;
 
   if (x._M_callbacks) {
     pair<event_callback, int>* tmp = _Stl_copy_array(x._M_callbacks, x._M_callback_index);
@@ -295,7 +290,7 @@ ios_base::ios_base()
     _M_callbacks(0), _M_num_callbacks(0), _M_callback_index(0),
     _M_iwords(0), _M_num_iwords(0),
     _M_pwords(0),
-    _M_num_pwords(0) , _M_cached_ctype(0), _M_cached_numpunct(0)
+    _M_num_pwords(0)
 {}
 
 // ios's destructor.
