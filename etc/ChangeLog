@@ -1,3 +1,8 @@
+2008-06-03  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/cppunit/cppunit_mini.h: Fix report of ignored/explicit
+	tests.
+
 2008-05-27  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_alloc.h: Code simplification, clean up null

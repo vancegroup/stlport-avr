@@ -91,17 +91,22 @@ namespace CPPUNIT_NS
     }
 
     bool shouldRunThis(const char *in_desiredTest, const char *in_className, const char *in_functionName,
-                       bool invert, bool explicit_test) {
+                       bool invert, bool explicit_test, bool &do_progress) {
       if ((in_desiredTest) && (in_desiredTest[0] != '\0')) {
+        do_progress = false;
         const char *ptr = strstr(in_desiredTest, "::");
         if (ptr) {
-          bool decision = (strncmp(in_desiredTest, in_className, strlen(in_className)) == 0) &&
-                          (strncmp(ptr + 2, in_functionName, strlen(in_functionName)) == 0);
-          return invert ? !decision : decision;
+          bool match = (strncmp(in_desiredTest, in_className, strlen(in_className)) == 0) &&
+                       (strncmp(ptr + 2, in_functionName, strlen(in_functionName)) == 0);
+          // Invert shall not make explicit test run:
+          return invert ? (match ? !match : !explicit_test)
+                        : match;
         }
-        bool decision = !explicit_test && strcmp(in_desiredTest, in_className) == 0;
-        return invert ? !decision : decision;
+        bool match = (strcmp(in_desiredTest, in_className) == 0);
+        do_progress = match;
+        return !explicit_test && (match == !invert);
       }
+      do_progress = true;
       return !explicit_test;
     }
 
@@ -143,28 +148,34 @@ namespace CPPUNIT_NS
 #if defined CPPUNIT_MINI_USE_EXCEPTIONS
 #  define CPPUNIT_TEST_BASE(X, Y) \
   { \
-    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y); \
-    setUp(); \
-    progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
-    if (shouldRun && !ignoring) { \
-      try { \
-        X(); \
+    bool do_progress; \
+    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y, do_progress); \
+    if (shouldRun || do_progress) { \
+      setUp(); \
+      progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
+      if (shouldRun && !ignoring) { \
+        try { \
+          X(); \
+        } \
+        catch(...) { \
+          Base::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); \
+        } \
       } \
-      catch(...) { \
-        Base::error("Test Failed: An Exception was thrown.", #X, __FILE__, __LINE__); \
-      } \
+      tearDown(); \
     } \
-    tearDown(); \
   }
 #else
 #  define CPPUNIT_TEST_BASE(X, Y) \
   { \
-    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y); \
-    setUp(); \
-    progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
-    if (shouldRun && !ignoring) \
-      X(); \
-    tearDown(); \
+    bool do_progress; \
+    bool shouldRun = shouldRunThis(in_name, className, #X, invert, Y, do_progress); \
+    if (shouldRun || do_progress) { \
+      setUp(); \
+      progress(className, #X, ignoring || !shouldRun, !ignoring && Y); \
+      if (shouldRun && !ignoring) \
+        X(); \
+      tearDown(); \
+    } \
   }
 #endif
 
