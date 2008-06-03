@@ -59,7 +59,7 @@ static void usage(const char* name)
   printf("\t[-x=<class>[::<test>]] : test class or class::test to exclude from execution;\n");
   printf("\t[-f=<file>] : output file");
   if (Timer::supported())
-    printf(";\n\t[-m] : monitor test excution, display time duration for each test\n");
+    printf(";\n\t[-m] : monitor test execution, display time duration for each test\n");
   else
     printf("\n");
 }
