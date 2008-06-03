@@ -1,6 +1,6 @@
 
-CFLAGS_COMMON = /nologo /W4 /GR /EHsc
-CXXFLAGS_COMMON = /nologo /W4 /GR /EHsc
+CFLAGS_COMMON = /nologo /W4 /EHsc
+CXXFLAGS_COMMON = /nologo /W4 /EHsc
 
 DEFS_STLDBG = /GS
 DEFS_STATIC_STLDBG = /GS
