@@ -109,6 +109,9 @@ unknown) and they all reside in namespace 'std' there. However, they are not
 part of any lib so linking fails. When using VC8 to crosscompile for CE 5 on
 an ARMV4I, the uncaught_exception test fails, the function returns the wrong
 value. */
+/* All eVCs up to at least VC8/CE5 have a broken new operator that
+   returns null instead of throwing bad_alloc. */
+#    define _STLP_NEW_DONT_THROW_BAD_ALLOC 1
 #  else
 /* VCx:
 These are present at least since VC6, but the uncaught_exception() of VC6 is
