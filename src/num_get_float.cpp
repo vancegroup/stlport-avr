@@ -326,7 +326,7 @@ static void _Stl_tenscale(uint64& p, int exp, int& bexp) {
 
 /* IEEE representation */
 #if !defined (__linux__)
-static double _Stl_atod(char *buffer, int ndigit, int dexp) {
+static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
   typedef numeric_limits<double> limits;
   uint64 value;         /* Value develops as follows:
                                  * 1) decimal digits as an integer
@@ -474,7 +474,7 @@ static double _Stl_atod(char *buffer, int ndigit, int dexp) {
     defined (__BORLANDC__) || defined (__DMC__)
 
 template <class D, class IEEE, int M, int BIAS>
-D _Stl_atodT(char *buffer, int ndigit, int dexp)
+D _Stl_atodT(char *buffer, ptrdiff_t ndigit, int dexp)
 {
   typedef numeric_limits<D> limits;
 
@@ -715,7 +715,7 @@ static double _Stl_string_to_double(const char *s) {
   }
 
   double x;
-  int n = d - digits;
+  ptrdiff_t n = d - digits;
   if ((exp + n - 1) < limits::min_exponent10) {
     x = 0;
   }
@@ -821,11 +821,11 @@ D _Stl_string_to_doubleT(const char *s)
     }
   }
 
-  int n = d - digits;
+  prtdiff_t n = d - digits;
   if ((exp + n - 1) < limits::min_exponent10) {
     return D(0.0); // +0.0 is the same as -0.0
   } else if ((exp + n - 1) > limits::max_exponent10 ) {
-    // not good, because of x = -x below; this may lead to portaboility problems
+    // not good, because of x = -x below; this may lead to portability problems
     x = limits::infinity();
   } else {
     /* let _Stl_atod diagnose under- and over-flows */

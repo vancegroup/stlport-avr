@@ -164,6 +164,12 @@ static inline bool _Stl_is_nan_or_inf(long double x) { return !_finitel(x); }
 static inline bool _Stl_is_inf(long double x)        {  return _Stl_is_nan_or_inf(x) && !_isnanl(x);}
 static inline bool _Stl_is_neg_inf(long double x)    {  return _Stl_is_inf(x) && x < 0 ; }
 static inline bool _Stl_is_neg_nan(long double x)    { return _isnanl(x) && _copysignl(1.l, x) < 0 ; }
+#    elif !defined (_STLP_NO_LONG_DOUBLE)
+// Simply there to avoid warning long double -> double implicit conversion:
+static inline bool _Stl_is_nan_or_inf(long double x) { return _Stl_is_nan_or_inf(__STATIC_CAST(double, x)); }
+static inline bool _Stl_is_inf(long double x)        {  return _Stl_is_inf(__STATIC_CAST(double, x));}
+static inline bool _Stl_is_neg_inf(long double x)    {  return _Stl_is_neg_inf(__STATIC_CAST(double, x)); }
+static inline bool _Stl_is_neg_nan(long double x)    { return _Stl_is_neg_nan(__STATIC_CAST(double, x)); }
 #    endif
 #  elif defined (__MRC__) || defined (__SC__) || defined (__DMC__)
 static bool _Stl_is_nan_or_inf(double x) { return isnan(x) || !isfinite(x); }
@@ -296,6 +302,18 @@ static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign _STLP_BUF_PAR
 { _STLP_SECURE_FUN(_ecvt, x, n, pt, sign); }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign _STLP_BUF_PARAMS)
 { _STLP_SECURE_FUN(_fcvt, x, n, pt, sign); }
+#    if !defined (_STLP_NO_LONG_DOUBLE)
+#      if defined (_STLP_USE_SAFE_STRING_FUNCTIONS)
+#        define _STLP_PARAMS , buf, bsize
+#      else
+#        define _STLP_PARAMS
+#      endif
+static inline char* _Stl_ecvtR(long double x, int n, int* pt, int* sign _STLP_BUF_PARAMS)
+{ return _Stl_ecvtR(__STATIC_CAST(double, x), n, pt, sign _STLP_PARAMS); }
+static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign _STLP_BUF_PARAMS)
+{ return _Stl_fcvtR(__STATIC_CAST(double, x), n, pt, sign _STLP_PARAMS); }
+#      undef _STLP_PARAMS
+#    endif
 #    undef _STLP_SECURE_FUN
 #    undef _STLP_BUF_PARAMS
 #    undef _STLP_APPEND
