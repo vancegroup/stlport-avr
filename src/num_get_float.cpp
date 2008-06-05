@@ -821,7 +821,7 @@ D _Stl_string_to_doubleT(const char *s)
     }
   }
 
-  prtdiff_t n = d - digits;
+  ptrdiff_t n = d - digits;
   if ((exp + n - 1) < limits::min_exponent10) {
     return D(0.0); // +0.0 is the same as -0.0
   } else if ((exp + n - 1) > limits::max_exponent10 ) {
