@@ -1,3 +1,15 @@
+2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_function_adaptors.h: Fix instantiation of
+	unary_function and binary_function as base type of _Mem_fun0_ref,
+	_Mem_fun1_ref, _Const_mem_fun0_ref, _Const_mem_fun1_ref,
+	_Void_mem_fun0_ref, _Void_mem_fun1_ref, _Void_const_mem_fun0_ref,
+	_Void_const_mem_fun1_ref. Those classes are use as a workaround for
+	compiler missing class partial template specialization or that don't
+	support return of void. Instantiation is now done without reference
+	qualifier as specified by the Standard and as done in the
+	implementation used when workaround is not necessary.
+
 2008-06-03  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/ios.cpp, stlport/stl/_complex.c, _ios.c, _ios.h, _ios_base.h,

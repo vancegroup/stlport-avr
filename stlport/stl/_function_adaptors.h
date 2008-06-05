@@ -59,7 +59,7 @@ _STLP_BEGIN_NAMESPACE
 
 //This implementation will only be used if needed, that is to say when there is the return void bug
 //and when there is no partial template specialization
-#if defined(_STLP_DONT_RETURN_VOID) && defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined(_STLP_MEMBER_TEMPLATE_CLASSES)
+#if defined (_STLP_DONT_RETURN_VOID) && defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_MEMBER_TEMPLATE_CLASSES)
 
 template<class _Result, class _Tp>
 class _Mem_fun0_ptr : public unary_function<_Tp*, _Result> {
@@ -115,7 +115,7 @@ private:
 };
 
 template<class _Result, class _Tp>
-class _Mem_fun0_ref : public unary_function<_Tp&,_Result> {
+class _Mem_fun0_ref : public unary_function<_Tp,_Result> {
 protected:
   typedef _Result (_Tp::*__fun_type) ();
   explicit _Mem_fun0_ref(__fun_type __f) : _M_f(__f) {}
@@ -128,7 +128,7 @@ private:
 };
 
 template<class _Result, class _Tp, class _Arg>
-class _Mem_fun1_ref : public binary_function<_Tp&,_Arg,_Result> {
+class _Mem_fun1_ref : public binary_function<_Tp,_Arg,_Result> {
 protected:
   typedef _Result (_Tp::*__fun_type) (_Arg);
   explicit _Mem_fun1_ref(__fun_type __f) : _M_f(__f) {}
@@ -141,7 +141,7 @@ private:
 };
 
 template<class _Result, class _Tp>
-class _Const_mem_fun0_ref : public unary_function<const _Tp&,_Result> {
+class _Const_mem_fun0_ref : public unary_function<_Tp,_Result> {
 protected:
   typedef _Result (_Tp::*__fun_type) () const;
   explicit _Const_mem_fun0_ref(__fun_type __f) : _M_f(__f) {}
@@ -154,7 +154,7 @@ private:
 };
 
 template<class _Result, class _Tp, class _Arg>
-class _Const_mem_fun1_ref : public binary_function<const _Tp&,_Arg,_Result> {
+class _Const_mem_fun1_ref : public binary_function<_Tp,_Arg,_Result> {
 protected:
   typedef _Result (_Tp::*__fun_type) (_Arg) const;
   explicit _Const_mem_fun1_ref(__fun_type __f) : _M_f(__f) {}
@@ -222,8 +222,7 @@ struct _Ptr_fun_traits {
   };
 };
 
-/*Specialization for void return type
-*/
+/* Specializations for void return type */
 template<class _Tp>
 class _Void_mem_fun0_ptr : public unary_function<_Tp*,void> {
 protected:
@@ -277,7 +276,7 @@ private:
 };
 
 template<class _Tp>
-class _Void_mem_fun0_ref : public unary_function<_Tp&,void> {
+class _Void_mem_fun0_ref : public unary_function<_Tp,void> {
 protected:
   typedef void (_Tp::*__fun_type) ();
   explicit _Void_mem_fun0_ref(__fun_type __f) : _M_f(__f) {}
@@ -290,7 +289,7 @@ private:
 };
 
 template<class _Tp, class _Arg>
-class _Void_mem_fun1_ref : public binary_function<_Tp&,_Arg,void> {
+class _Void_mem_fun1_ref : public binary_function<_Tp,_Arg,void> {
 protected:
   typedef void (_Tp::*__fun_type) (_Arg);
   explicit _Void_mem_fun1_ref(__fun_type __f) : _M_f(__f) {}
@@ -303,7 +302,7 @@ private:
 };
 
 template<class _Tp>
-class _Void_const_mem_fun0_ref : public unary_function<const _Tp&,void> {
+class _Void_const_mem_fun0_ref : public unary_function<_Tp,void> {
 protected:
   typedef void (_Tp::*__fun_type) () const;
   explicit _Void_const_mem_fun0_ref(__fun_type __f) : _M_f(__f) {}
@@ -316,7 +315,7 @@ private:
 };
 
 template<class _Tp, class _Arg>
-class _Void_const_mem_fun1_ref : public binary_function<const _Tp&,_Arg,void> {
+class _Void_const_mem_fun1_ref : public binary_function<_Tp,_Arg,void> {
 protected:
   typedef void (_Tp::*__fun_type) (_Arg) const;
   explicit _Void_const_mem_fun1_ref(__fun_type __f) : _M_f(__f) {}
@@ -402,11 +401,99 @@ protected:
   explicit _Ptr_fun2(typename _Base::__fun_type __f) : _Base(__f) {}
 };
 
+template <class _Result, class _Tp>
+class mem_fun_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr _Base;
+public:
+  explicit mem_fun_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
 
-#endif /*_STLP_DONT_RETURN_VOID && _STLP_NO_CLASS_PARTIAL_SPECIALIZATION && _STLP_MEMBER_TEMPLATE_CLASSES*/
+template <class _Result, class _Tp>
+class const_mem_fun_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr_const {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr_const _Base;
+public:
+  explicit const_mem_fun_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
 
+template <class _Result, class _Tp>
+class mem_fun_ref_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref _Base;
+public:
+  explicit mem_fun_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
 
-#if !defined(_STLP_DONT_RETURN_VOID) || !defined(_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) || !defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+template <class _Result, class _Tp>
+class const_mem_fun_ref_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref_const {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref_const _Base;
+public:
+  explicit const_mem_fun_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
+
+template <class _Result, class _Tp, class _Arg>
+class mem_fun1_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr _Base;
+public:
+  explicit mem_fun1_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
+
+template <class _Result, class _Tp, class _Arg>
+class const_mem_fun1_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr_const {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr_const _Base;
+public:
+  explicit const_mem_fun1_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
+
+template <class _Result, class _Tp, class _Arg>
+class mem_fun1_ref_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref _Base;
+public:
+  explicit mem_fun1_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
+
+template <class _Result, class _Tp, class _Arg>
+class const_mem_fun1_ref_t :
+  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref_const {
+  typedef typename
+    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref_const _Base;
+public:
+  explicit const_mem_fun1_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
+};
+
+template <class _Arg, class _Result>
+class pointer_to_unary_function :
+  public _Ptr_fun1<_Result,_Arg> {
+  typedef typename
+    _Ptr_fun1<_Result,_Arg>::__fun_type __fun_type;
+public:
+  explicit pointer_to_unary_function(__fun_type __f)
+    : _Ptr_fun1<_Result,_Arg>(__f) {}
+};
+
+template <class _Arg1, class _Arg2, class _Result>
+class pointer_to_binary_function :
+  public _Ptr_fun2<_Result,_Arg1,_Arg2> {
+  typedef typename
+    _Ptr_fun2<_Result,_Arg1,_Arg2>::__fun_type __fun_type;
+public:
+  explicit pointer_to_binary_function(__fun_type __f)
+    : _Ptr_fun2<_Result,_Arg1,_Arg2>(__f) {}
+};
+
+#else
 
 template <class _Ret, class _Tp>
 class mem_fun_t : public unary_function<_Tp*,_Ret> {
@@ -427,7 +514,6 @@ public:
 private:
   __fun_type _M_f;
 };
-
 
 template <class _Ret, class _Tp>
 class mem_fun_ref_t : public unary_function<_Tp,_Ret> {
@@ -514,9 +600,8 @@ public:
     }
 };
 
-
-#if defined(_STLP_DONT_RETURN_VOID) && !defined(_STLP_NO_CLASS_PARTIAL_SPECIALIZATION)
-//Partial specialization for the void type
+#  if defined (_STLP_DONT_RETURN_VOID) && !defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION)
+//Partial specializations for the void type
 template <class _Tp>
 class mem_fun_t<void, _Tp> : public unary_function<_Tp*,void> {
   typedef void (_Tp::*__fun_type)(void);
@@ -620,115 +705,11 @@ public:
   void operator()(_Arg1 __x, _Arg2 __y) const { _M_ptr(__x, __y); }
 };
 
-#endif /*_STLP_DONT_RETURN_VOID && !_STLP_NO_CLASS_PARTIAL_SPECIALIZATION*/
+#  endif
 
-#else /*!_STLP_DONT_RETURN_VOID || !_STLP_NO_CLASS_PARTIAL_SPECIALIZATION || !_STLP_MEMBER_TEMPLATE_CLASSES*/
+#endif
 
-//mem_fun_t
-template <class _Result, class _Tp>
-class mem_fun_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr _Base;
-public:
-  explicit mem_fun_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//const_mem_fun_t
-template <class _Result, class _Tp>
-class const_mem_fun_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr_const {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ptr_const _Base;
-public:
-  explicit const_mem_fun_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//mem_fun_ref_t
-template <class _Result, class _Tp>
-class mem_fun_ref_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref _Base;
-public:
-  explicit mem_fun_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//const_mem_fun_ref_t
-template <class _Result, class _Tp>
-class const_mem_fun_ref_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref_const {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args0<_Tp>::_Ref_const _Base;
-public:
-  explicit const_mem_fun_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//mem_fun1_t
-template <class _Result, class _Tp, class _Arg>
-class mem_fun1_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr _Base;
-public:
-  explicit mem_fun1_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//const_mem_fun1_t
-template <class _Result, class _Tp, class _Arg>
-class const_mem_fun1_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr_const {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ptr_const _Base;
-public:
-  explicit const_mem_fun1_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//mem_fun1_ref_t
-template <class _Result, class _Tp, class _Arg>
-class mem_fun1_ref_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref _Base;
-public:
-  explicit mem_fun1_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-//const_mem_fun1_t
-template <class _Result, class _Tp, class _Arg>
-class const_mem_fun1_ref_t :
-  public _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref_const {
-  typedef typename
-    _Mem_fun_traits<_Result>::_STLP_TEMPLATE _Args1<_Tp,_Arg>::_Ref_const _Base;
-public:
-  explicit const_mem_fun1_ref_t(typename _Base::__fun_type __f) : _Base(__f) {}
-};
-
-
-template <class _Arg, class _Result>
-class pointer_to_unary_function :
-public _Ptr_fun1<_Result,_Arg> {
-  typedef typename
-    _Ptr_fun1<_Result,_Arg>::__fun_type __fun_type;
-public:
-  explicit pointer_to_unary_function(__fun_type __f)
-    : _Ptr_fun1<_Result,_Arg>(__f) {}
-};
-
-template <class _Arg1, class _Arg2, class _Result>
-class pointer_to_binary_function :
-public _Ptr_fun2<_Result,_Arg1,_Arg2> {
-  typedef typename
-    _Ptr_fun2<_Result,_Arg1,_Arg2>::__fun_type __fun_type;
-public:
-  explicit pointer_to_binary_function(__fun_type __f)
-    : _Ptr_fun2<_Result,_Arg1,_Arg2>(__f) {}
-};
-
-#endif /*!_STLP_DONT_RETURN_VOID || !_STLP_NO_CLASS_PARTIAL_SPECIALIZATION || !_STLP_MEMBER_TEMPLATE_CLASSES*/
-
-
-# if !defined (_STLP_MEMBER_POINTER_PARAM_BUG)
+#if !defined (_STLP_MEMBER_POINTER_PARAM_BUG)
 // Mem_fun adaptor helper functions.  There are only two:
 //  mem_fun and mem_fun_ref.  (mem_fun1 and mem_fun1_ref
 //  are provided for backward compatibility, but they are no longer
@@ -766,7 +747,7 @@ template <class _Result, class _Tp, class _Arg>
 inline const_mem_fun1_ref_t<_Result,_Tp,_Arg>
 mem_fun_ref(_Result (_Tp::*__f)(_Arg) const) { return const_mem_fun1_ref_t<_Result,_Tp,_Arg>(__f); }
 
-# if !(defined (_STLP_NO_EXTENSIONS) || defined (_STLP_NO_ANACHRONISMS))
+#  if !(defined (_STLP_NO_EXTENSIONS) || defined (_STLP_NO_ANACHRONISMS))
 //  mem_fun1 and mem_fun1_ref are no longer part of the C++ standard,
 //  but they are provided for backward compatibility.
 template <class _Result, class _Tp, class _Arg>
@@ -785,9 +766,9 @@ template <class _Result, class _Tp, class _Arg>
 inline const_mem_fun1_ref_t<_Result,_Tp,_Arg>
 mem_fun1_ref(_Result (_Tp::*__f)(_Arg) const) { return const_mem_fun1_ref_t<_Result,_Tp,_Arg>(__f); }
 
-# endif /* _STLP_NO_EXTENSIONS */
+#  endif
 
-# endif /* _STLP_MEMBER_POINTER_PARAM_BUG */
+#endif
 
 template <class _Arg, class _Result>
 inline pointer_to_unary_function<_Arg, _Result>
