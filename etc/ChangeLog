@@ -11,7 +11,10 @@
 	* Makefile: top makefile for common project task;
 
 	* build/Makefiles/gmake/depend.mak: fix options for ctags
-	and etags.
+	and etags;
+
+	* configure, build/Makefiles/gmake/top.mak: take into account
+	extra flags for linker.
 
 2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
