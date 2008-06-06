@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <07/12/12 01:21:41 ptr>
+# -*- Makefile -*- Time-stamp: <08/06/06 10:50:42 yeti>
 
 SRCROOT := ..
 COMPILER_NAME := gcc
@@ -9,6 +9,7 @@ HEADERS_BASE = ${STLPORT_INCLUDE_DIR}
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
+include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
 ifeq ($(OSNAME),linux)
 DEFS += -D_GNU_SOURCE
@@ -18,3 +19,8 @@ endif
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I$(STLP_BUILD_BOOST_PATH)
 endif
+
+SUBDIRS := ${SRCROOT}/test/unit
+
+check:	all
+	+$(call doinsubdirs,${SUBDIRS})

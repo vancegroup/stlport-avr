@@ -1,23 +1,25 @@
-# -*- Makefile -*- Time-stamp: <08/01/29 09:48:15 ptr>
+# -*- Makefile -*- Time-stamp: <08/06/06 11:01:34 yeti>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
 #NOT_USE_NOSTDLIB := 1
 #WITHOUT_STLPORT := 1
 -include ${SRCROOT}/Makefiles/gmake/config.mak
-ALL_TAGS = release-shared
+ALL_TAGS = release-shared check-release
+CHECK_TAGS = check-release
 ifndef WITHOUT_STLPORT
-ALL_TAGS += stldbg-shared
+ALL_TAGS += stldbg-shared check-stldbg
+CHECK_TAGS += check-stldbg
 endif
 STLPORT_DIR := ../../..
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
-release-shared: STLPORT_LIB_DIR = ${PWD}/../../lib/${OUTPUT_DIR}
-dbg-shared:     STLPORT_LIB_DIR = ${PWD}/../../lib/${OUTPUT_DIR_DBG}
+release-shared: STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR}
+dbg-shared:     STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR_DBG}
 ifndef WITHOUT_STLPORT
-stldbg-shared:  STLPORT_LIB_DIR = ${PWD}/../../lib/${OUTPUT_DIR_STLDBG}
+stldbg-shared:  STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR_STLDBG}
 endif
 
 ifdef WITHOUT_STLPORT
@@ -52,3 +54,14 @@ LDFLAGS += -Wl,+b${STLPORT_LIB_DIR}
 endif
 endif
 endif
+
+check-release:	release-shared
+	-${OUTPUT_DIR}/${PRGNAME}
+
+ifndef WITHOUT_STLPORT
+check-stldbg:	stldbg-shared
+	-${OUTPUT_DIR_STLDBG}/${PRGNAME}
+endif
+
+check:	${CHECK_TAGS}
+

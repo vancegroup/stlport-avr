@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# Time-stamp: <08/02/28 10:34:47 ptr>
+# Time-stamp: <08/06/06 10:33:13 yeti>
 
-base=`cd \`dirname $0\`/../..; echo $PWD`
+base=`cd \`dirname $0\`; echo $PWD`
 
 configmak=$base/build/Makefiles/gmake/config.mak
 
@@ -108,13 +108,12 @@ default_settings () {
   if [ "$stlport_set" = "" ]; then
     write_over_option "$base" STLPORT_DIR
   fi
-  # write_option "${PWD}/build/" BASE_INSTALL_DIR
   if [ "$compiler_family_set" = "" ]; then
     write_over_option gcc COMPILER_NAME
   fi
-  # if [ "$prefix_set" = "" ]; then
-  #   write_option "/usr/local" BASE_INSTALL_DIR
-  # fi
+  if [ "$prefix_set" = "" ]; then
+    write_option "/usr/local" BASE_INSTALL_DIR
+  fi
 }
 
 case $# in

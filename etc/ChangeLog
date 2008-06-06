@@ -1,3 +1,18 @@
+2008-06-06  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* configure: put it on common place for ./configure;
+
+	* build/Makefiles/gmake/targetdirs.mak: use $(DESTDIR)
+	as in common practice (change root of installation, but
+	don't change run paths);
+
+	* build: by default use make for gcc;
+
+	* Makefile: top makefile for common project task;
+
+	* build/Makefiles/gmake/depend.mak: fix options for ctags
+	and etags.
+
 2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_function_adaptors.h: Fix instantiation of
