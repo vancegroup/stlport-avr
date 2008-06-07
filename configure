@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Time-stamp: <08/06/06 17:44:54 yeti>
+# Time-stamp: <08/06/07 15:22:19 yeti>
 
 base=`cd \`dirname $0\`; echo $PWD`
 
@@ -109,25 +109,22 @@ default_settings () {
   #   write_option "${PWD}/external/boost" BOOST_DIR
   # fi
 
-  if [ "$stlport_set" = "" ]; then
+  if [ -z "${stlport_set}" ]; then
     write_over_option "$base" STLPORT_DIR
   fi
-  if [ "$compiler_family_set" = "" ]; then
-    write_over_option gcc COMPILER_NAME
-  fi
-  if [ "$prefix_set" = "" ]; then
-    write_option "/usr/local" BASE_INSTALL_DIR
-  fi
+
+  # Set in Makefiles/gmake/top.mak
+  # if [ -z "${compiler_family_set}" ]; then
+  #   write_option gcc COMPILER_NAME
+  # fi
+
+  # Set in Makefiles/gmake/targetdirs.mak
+  # if [ -z "${prefix_set}" ]; then
+  #   write_option "/usr/local" BASE_INSTALL_DIR '${DESTDIR}'
+  # fi
 }
 
-case $# in
-  0)
-    if [ ! -f ${configmak} ]; then
-      default_settings
-    fi
-    exit 0
-    ;;
-esac
+[ $# -eq 0 ] && { >${configmak}; default_settings; exit 0; }
 
 for a in $@ ; do
   case $a in
@@ -142,8 +139,7 @@ for a in $@ ; do
   esac
 done
 
-rm -f ${configmak}
-touch ${configmak}
+>${configmak}
 
 while :
 do
@@ -244,7 +240,7 @@ do
       ;;
     --prefix=*)
       write_option "$option" BASE_INSTALL_DIR '${DESTDIR}'
-      # prefix_set=y
+      prefix_set=y
       ;;
     --bindir=*)
       write_option "$option" INSTALL_BIN_DIR '${DESTDIR}'
@@ -279,46 +275,46 @@ do
   esac
 done
 
-if [ "$CXX" != "" ]; then
-  if [ "$cxx_set" != "" ]; then
+if [ -n "${CXX}" ]; then
+  if [ -n "${cxx_set}" ]; then
     echo "Both --with-cxx and \$CXX set, using the first"
-  elif [ "$target_set" = "" ]; then
-    write_option "$CXX" _FORCE_CXX
+  elif [ -z "${target_set}" ]; then
+    write_option "${CXX}" _FORCE_CXX
   else
     echo "For cross-compilation with gcc use --target option only"
   fi
-  if [ "$CC" = "" ] && [ "$cc_set" = "" ]; then
+  if [ -z "${CC}" -a -z "${cc_set}" ]; then
     echo "\$CXX set, but I don't see \$CC!"
   fi
 fi
 
-if [ "$CC" != "" ]; then
-  if [ "$cxx_set" != "" ]; then
+if [ -n "${CC}" ]; then
+  if [ -n "${cxx_set}" ]; then
     echo "Both --with-cc and \$CC set, using the first"
   else
-    write_option "$CC" _FORCE_CC
+    write_option "${CC}" _FORCE_CC
   fi
 fi
 
-if [ "$CXXFLAGS" != "" ]; then
-  if [ "$cxxflags_set" = "" ]; then
-    write_option "$CXXFLAGS" EXTRA_CXXFLAGS
+if [ -n "${CXXFLAGS}" ]; then
+  if [ -z "${cxxflags_set}" ]; then
+    write_option "${CXXFLAGS}" EXTRA_CXXFLAGS
   else
     echo "Both --with-extra-cxxflags and \$CXXFLAGS set, using the first"
   fi
 fi
 
-if [ "$CFLAGS" != "" ]; then
-  if [ "$cflags_set" = "" ]; then
-    write_option "$CFLAGS" EXTRA_CFLAGS
+if [ -n "${CFLAGS}" ]; then
+  if [ -z "${cflags_set}" ]; then
+    write_option "${CFLAGS}" EXTRA_CFLAGS
   else
     echo "Both --with-extra-cflags and \$CFLAGS set, using the first"
   fi
 fi
 
-if [ "$LDFLAGS" != "" ]; then
-  if [ "$ldflags_set" = "" ]; then
-    write_option "$LDFLAGS" EXTRA_LDFLAGS
+if [ -n "${LDFLAGS}" ]; then
+  if [ -z "${ldflags_set}" ]; then
+    write_option "${LDFLAGS}" EXTRA_LDFLAGS
   else
     echo "Both --with-extra-ldflags and \$LDFLAGS set, using the first"
   fi

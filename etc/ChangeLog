@@ -1,3 +1,8 @@
+2008-06-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* configure: don't duplicate options in config.mak, that
+	has default values in makefiles.
+
 2008-06-06  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* configure: put it on common place for ./configure;
