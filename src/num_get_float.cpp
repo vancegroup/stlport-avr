@@ -250,7 +250,7 @@ static void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prod
     p = prodhi;
   }
 
-  if ((prodlo & _Stl_HIBITULL) != 0) {     /* first guard bit a one */    //*TY 03/25/2000 - added explicit comparison to zero to avoid reliance to the implicit conversion from uint64 to bool
+  if ((prodlo & _Stl_HIBITULL) != 0) {     /* first guard bit a one */
     if (((p & 0x1) != 0) ||
         prodlo != _Stl_HIBITULL ) {    /* not borderline for round to even */
       /* round */
@@ -259,8 +259,6 @@ static void _Stl_norm_and_round(uint64& p, int& norm, uint64 prodhi, uint64 prod
         ++p;
     }
   }
-
-  return;
 }
 
 // Convert a 64-bitb fraction * 10^exp to a 64-bit fraction * 2^bexp.
@@ -470,7 +468,7 @@ static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
 
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) ||\
+#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
     defined (__BORLANDC__) || defined (__DMC__)
 
 template <class D, class IEEE, int M, int BIAS>
@@ -646,9 +644,7 @@ static double _Stl_string_to_double(const char *s) {
   int dpchar;
   char digits[max_digits];
 
-  // Skip leading whitespace, if any.
-  const ctype<char>& ct = use_facet<ctype<char> >(locale::classic());
-  while (c = *s++, ct.is(ctype_base::space, char(c))) {}
+  c = *s++;
 
   /* process sign */
   Negate = 0;
@@ -754,9 +750,7 @@ D _Stl_string_to_doubleT(const char *s)
   int dpchar;
   char digits[max_digits];
 
-  // Skip leading whitespace, if any.
-  const ctype<char>& ct = use_facet<ctype<char> >(locale::classic());
-  while (c = *s++, ct.is(ctype_base::space, char(c))) {}
+  c = *s++;
 
   /* process sign */
   bool Negate = false;

@@ -1,5 +1,10 @@
 2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/num_get_float.cpp: Remove useless skip of white
+	space at begining of buffer in _Stl_string_to_double function.
+	__read_float, the function that generate that buffer do not
+	put white space at the first place.
+
 	* stlport/stl/_new.h, _range_errors.c: Remove unused
 	_STLP_RTTI_BUG macro. Moreover __stl_new was not correctly
 	implemented with this macro, there was no check for failed
