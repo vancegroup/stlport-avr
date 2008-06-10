@@ -1,3 +1,15 @@
+2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
+
+	* test/unit/limits_test.cpp: Remove code supposed to hide
+	numeric_limits::max value to MSVC 8 compiler, this code was
+	introducing a test regression. If it is producing a warning
+	a #pragma warning should be use to hide it.
+
+	* test/unit/num_put_get_test.cpp: Add test showing problem
+	with code that used to be in limits test. Those tests will be
+	activated for 5.3 to check that there is really nothing wrong
+	with it.
+
 2008-06-07  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* configure: don't duplicate options in config.mak, that

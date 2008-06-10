@@ -13,7 +13,7 @@
  */
 
 #include <limits>
-#include <sstream>
+//#include <sstream>
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -161,13 +161,6 @@ bool test_float_limits(const _Tp &) {
      * Infinity must compare as if larger than the maximum representable value. */
 
     _Tp val = lim::max();
-
-    /* MSVC 8.0 is smart enough to understand that lim::max() * 2 will cause overflow */
-    stringstream s;
-    s.precision(std::numeric_limits<_Tp>::digits10 + 1);
-    s << val;
-    s >> val;
-
     val *= 2;
 
     /* We use test_float_values because without it some compilers (gcc) perform weird
@@ -185,16 +178,28 @@ bool test_float_limits(const _Tp &) {
       str.str(string());
       str << "val in hexa: " << showbase << hex << *((const unsigned int*)&val);
       str << ", infinity in hexa: " << showbase << hex << *((const unsigned int*)&infinity);
-      CPPUNIT_MESSAGE( str.str().c_str() );
     }
 #if defined (_STLP_LONG_LONG)
-    if (sizeof(_Tp) == sizeof(_STLP_LONG_LONG)) {
+    else if (sizeof(_Tp) == sizeof(_STLP_LONG_LONG)) {
       str.str(string());
       str << "val in hexa: " << showbase << hex << *((const unsigned _STLP_LONG_LONG*)&val);
       str << ", infinity in hexa: " << showbase << hex << *((const unsigned _STLP_LONG_LONG*)&infinity);
-      CPPUNIT_MESSAGE( str.str().c_str() );
     }
 #endif
+    else {
+      str.str(string());
+      str << "val: ";
+      for (int i = 0; i != sizeof(_Tp) /  sizeof(unsigned short); ++i) {
+        if (i != 0) str << ' ';
+        str << showbase << hex << setw(4) << setfill('0') << *((const unsigned short*)&val + i);
+      }
+      str << ", infinity: ";
+      for (int i = 0; i != sizeof(_Tp) /  sizeof(unsigned short); ++i) {
+        if (i != 0) str << ' ';
+        str << showbase << hex << setw(4) << setfill('0') << *((const unsigned short*)&infinity + i);
+      }
+    }
+    CPPUNIT_MESSAGE( str.str().c_str() );
     str.str(string());
     str << dec;
     str << "lim::digits = " << lim::digits << ", lim::digits10 = " << lim::digits10 << endl;

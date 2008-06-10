@@ -222,7 +222,7 @@ private:
 
       str << -limits::infinity();
 
-      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !str.fail() );
       CPPUNIT_ASSERT( !limits::has_infinity || str.str() == "-inf" );
     }
     {
@@ -230,7 +230,7 @@ private:
 
       str << limits::quiet_NaN();
 
-      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !str.fail() );
       CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "nan" );
     }
     {
@@ -238,14 +238,14 @@ private:
 
       str << -limits::quiet_NaN();
 
-      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !str.fail() );
       CPPUNIT_ASSERT( !limits::has_quiet_NaN || str.str() == "-nan" );
     }
     {
       stringstream str;
 
       str << "0." << string(limits::max_exponent10, '0') << "1e" << (limits::max_exponent10 + 1);
-      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !str.fail() );
 
       str >> in_val_d;
       CPPUNIT_ASSERT( !str.fail() );
@@ -256,13 +256,45 @@ private:
       stringstream str;
 
       str << "1" << string(-(limits::min_exponent10 - 1), '0') << "e" << (limits::min_exponent10 - 1);
-      CPPUNIT_ASSERT(!str.fail());
+      CPPUNIT_ASSERT( !str.fail() );
 
       str >> in_val_d;
       CPPUNIT_ASSERT( !str.fail() );
       CPPUNIT_ASSERT( str.eof() );
       CPPUNIT_CHECK( in_val_d == 1 );
     }
+#  if defined (_STLPORT_VERSION) && (_STLPORT_VERSION >= 0x530)
+    // The following tests are showing that simply changing stream
+    // precision lead to different result. Do not seems to be a real
+    // problem, simply rounding approximation but additional study should
+    // be done after 5.2 release.
+    {
+      stringstream str;
+      str << setprecision(limits::digits10 + 2) << limits::max();
+
+      CPPUNIT_MESSAGE(str.str().c_str());
+      CPPUNIT_ASSERT( !str.fail() );
+
+      F val;
+      str >> val;
+
+      CPPUNIT_ASSERT( !str.fail() );
+      CPPUNIT_ASSERT( limits::infinity() > val );
+    }
+    {
+      stringstream str;
+      str << setprecision(limits::digits10 + 1) << limits::max();
+
+      CPPUNIT_MESSAGE(str.str().c_str());
+      CPPUNIT_ASSERT( !str.fail() );
+
+      F val;
+      str >> val;
+
+      CPPUNIT_ASSERT( !str.fail() );
+      CPPUNIT_ASSERT( limits::infinity() > val );
+    }
+#  endif
   }
 #else
 #  define __check_get_float( F ) \
