@@ -35,22 +35,18 @@
 #    define _STLP_THROW_MSG(ex,msg)  throw ex(msg)
 #  endif
 #else
-#  if defined (_STLP_RTTI_BUG)
-#    define _STLP_THROW_MSG(ex,msg)  TerminateProcess(GetCurrentProcess(), 0)
+#  if defined (__BUILDING_STLPORT)
+#    include <cstdlib>
+#    include <cstdio>
 #  else
-#    if defined (__BUILDING_STLPORT)
-#      include <cstdlib>
-#      include <cstdio>
-#    else
-#      ifndef _STLP_INTERNAL_CSTDLIB
-#        include <stl/_cstdlib.h>
-#      endif
-#      ifndef _STLP_INTERNAL_CSTDIO
-#        include <stl/_cstdio.h>
-#      endif
+#    ifndef _STLP_INTERNAL_CSTDLIB
+#      include <stl/_cstdlib.h>
 #    endif
-#    define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
+#    ifndef _STLP_INTERNAL_CSTDIO
+#      include <stl/_cstdio.h>
+#    endif
 #  endif
+#  define _STLP_THROW_MSG(ex,msg)  puts(msg),_STLP_ABORT()
 #endif
 
 // For mode without library and throwing range errors, include the

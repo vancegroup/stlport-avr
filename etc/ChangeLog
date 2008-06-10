@@ -1,5 +1,10 @@
 2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
+	* stlport/stl/_new.h, _range_errors.c: Remove unused
+	_STLP_RTTI_BUG macro. Moreover __stl_new was not correctly
+	implemented with this macro, there was no check for failed
+	allocation.
+	
 	* test/unit/limits_test.cpp: Remove code supposed to hide
 	numeric_limits::max value to MSVC 8 compiler, this code was
 	introducing a test regression. If it is producing a warning
