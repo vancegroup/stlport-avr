@@ -290,15 +290,15 @@
 /*==========================================================================*/
 
 #if defined(__sun) && defined(__GNUC__)
-/* __SunOS_5_x not defined in headers, and no way to derive this from headers only;
+/* __SunOS_5_x is not defined in headers, and there is no way to derive it from headers only;
  * nevertheless this macro defined automagically by SunPro compilers family;
  *
- * gcc know nothing about it, but definition it with -D on compiler command line
+ * gcc know nothing about it, but defining it with -D on compiler command line
  * is a bad idea from one side, and this info still useful when we want to use
  * (or don't use) some Solaris version-specific features from other side.
- * Of cause, the best way is definition in spec file, but this is beyond our scope.
+ * Of course, the best way is to define it in spec file, but this is beyond our scope.
  *
- * Uncomment ONE of the following, depends what Solaris version you use.
+ * Uncomment ONE of the following, depends on what Solaris version you use.
  */
 
 /*
