@@ -81,6 +81,10 @@ LINK.cc = ilink32 $(subst /,\\,$(LDFLAGS))
 
 LDFLAGS += -ap -D -Gn
 
+ifndef LIBNAME
+LDFLAGS += -L$(subst /,\\,$(STLPORT_DIR)/lib)
+endif
+
 dbg-static : DEFS += -D_DEBUG
 dbg-shared : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
