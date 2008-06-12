@@ -238,7 +238,7 @@ static int __GetLCIDFromName(const char* lname, LCID* lcid, char *cp, _Locale_lc
 static char const* __GetLocaleName(LCID lcid, const char* cp, char* buf);
 static char const* __Extract_locale_name(const char* loc, const char* category, char* buf);
 static char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hint, int *__err_code);
-static void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size);
+static void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size, wchar_t* wbuf, int wbuf_size);
 static int __intGetACP(LCID lcid);
 static int __intGetOCP(LCID lcid);
 static int __GetDefaultCP(LCID lcid);
@@ -385,6 +385,7 @@ _Locale_ctype_t* _Locale_ctype_create(const char * name, _Locale_lcid_t* lc_hint
 }
 
 _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_hint, int *__err_code) {
+  wchar_t wbuf[4];
   char *GroupingBuffer;
   int BufferSize;
 
@@ -398,8 +399,8 @@ _Locale_numeric_t* _Locale_numeric_create(const char * name, _Locale_lcid_t* lc_
 #if defined (__BORLANDC__)
   if (lnum->lc.id != INVARIANT_LCID) {
 #endif
-  __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4);
-  __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4);
+  __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_SDECIMAL, lnum->decimal_point, 4, wbuf, 4);
+  __GetLocaleInfoUsingACP(lnum->lc.id, lnum->cp, LOCALE_STHOUSAND, lnum->thousands_sep, 4, wbuf, 4);
 #if defined (__BORLANDC__)
   }
   else
@@ -713,6 +714,7 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   int size, month, dayofweek;
   size_t length;
   char fmt80[80];
+  wchar_t wbuf80[80];
 
   _Locale_time_t *ltime = (_Locale_time_t*)malloc(sizeof(_Locale_time_t));
   
@@ -732,7 +734,7 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
     ltime->month[month - LOCALE_SMONTHNAME1] = (char*)malloc(size);
     if (!ltime->month[month - LOCALE_SMONTHNAME1])
     { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->month[month - LOCALE_SMONTHNAME1], size);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->month[month - LOCALE_SMONTHNAME1], size, wbuf80, 80);
   }
 
   for (month = LOCALE_SABBREVMONTHNAME1; month <= LOCALE_SABBREVMONTHNAME12; ++month) {
@@ -740,7 +742,7 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
     ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1] = (char*)malloc(size);
     if (!ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1])
     { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1], size);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, month, ltime->abbrev_month[month - LOCALE_SABBREVMONTHNAME1], size, wbuf80, 80);
   }
 
   for (dayofweek = LOCALE_SDAYNAME1; dayofweek <= LOCALE_SDAYNAME7; ++dayofweek) {
@@ -749,7 +751,7 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
     ltime->dayofweek[dayindex] = (char*)malloc(size);
     if (!ltime->dayofweek[dayindex])
     { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->dayofweek[dayindex], size);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->dayofweek[dayindex], size, wbuf80, 80);
   }
 
   for (dayofweek = LOCALE_SABBREVDAYNAME1; dayofweek <= LOCALE_SABBREVDAYNAME7; ++dayofweek) {
@@ -758,24 +760,24 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
     ltime->abbrev_dayofweek[dayindex] = (char*)malloc(size);
     if (!ltime->abbrev_dayofweek[dayindex])
     { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
-    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->abbrev_dayofweek[dayindex], size);
+    __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, dayofweek, ltime->abbrev_dayofweek[dayindex], size, wbuf80, 80);
   }
 
-  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, fmt80, 80);
+  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SSHORTDATE, fmt80, 80, wbuf80, 80);
   size = __ConvertDate(fmt80, NULL, 0);
   ltime->date_format = (char*)malloc(size);
   if (!ltime->date_format)
   { _Locale_time_destroy(ltime); *__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
   __ConvertDate(fmt80, ltime->date_format, size);
 
-  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, fmt80, 80);
+  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_SLONGDATE, fmt80, 80, wbuf80, 80);
   size = __ConvertDate(fmt80, NULL, 0);
   ltime->long_date_format = (char*)malloc(size);
   if (!ltime->long_date_format)
   { _Locale_time_destroy(ltime);*__err_code = _STLP_LOC_NO_MEMORY; return NULL; }
   __ConvertDate(fmt80, ltime->long_date_format, size);
 
-  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, fmt80, 80);
+  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_STIMEFORMAT, fmt80, 80, wbuf80, 80);
   size = __ConvertTime(fmt80, NULL, 0);
   ltime->time_format = (char*)malloc(size);
   if (!ltime->time_format)
@@ -800,8 +802,8 @@ _Locale_time_t* _Locale_time_create(const char * name, _Locale_lcid_t* lc_hint, 
   _STLP_STRCAT(ltime->long_date_time_format, length, " ");
   _STLP_STRCAT(ltime->long_date_time_format, length, ltime->time_format);
 
-  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, ltime->am, 9);
-  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, ltime->pm, 9);
+  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S1159, ltime->am, 9, wbuf80, 80);
+  __GetLocaleInfoUsingACP(ltime->lc.id, ltime->cp, LOCALE_S2359, ltime->pm, 9, wbuf80, 80);
 
   return ltime;
 }
@@ -826,6 +828,7 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
   char *GroupingBuffer;
   int BufferSize;
   char FracDigits[3];
+  wchar_t wbuf[6];
 
   _Locale_monetary_t *lmon = (_Locale_monetary_t*)malloc(sizeof(_Locale_monetary_t));
   if (!lmon) { *__err_code = _STLP_LOC_NO_MEMORY; return lmon; }
@@ -836,8 +839,8 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
 
   if (lmon->lc.id != INVARIANT_LCID) {
     /* Extract information about monetary system */
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4);
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_STHOUSAND, lmon->thousands_sep, 4);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SDECIMAL, lmon->decimal_point, 4, wbuf, 6);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_STHOUSAND, lmon->thousands_sep, 4, wbuf, 6);
 
     BufferSize = GetLocaleInfoA(lmon->lc.id, LOCALE_SGROUPING, NULL, 0);
     GroupingBuffer = (char*)malloc(BufferSize);
@@ -847,9 +850,9 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
     __FixGrouping(GroupingBuffer);
     lmon->grouping = GroupingBuffer;
 
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6);
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5);
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SCURRENCY, lmon->curr_symbol, 6, wbuf, 6);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SNEGATIVESIGN, lmon->negative_sign, 5, wbuf, 6);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SPOSITIVESIGN, lmon->positive_sign, 5, wbuf, 6);
 
     GetLocaleInfoA(lmon->lc.id, LOCALE_ICURRDIGITS, FracDigits, 3);
     lmon->frac_digits = atoi(FracDigits);
@@ -857,7 +860,7 @@ _Locale_monetary_t* _Locale_monetary_create(const char * name, _Locale_lcid_t* l
     GetLocaleInfoA(lmon->lc.id, LOCALE_IINTLCURRDIGITS, FracDigits, 3);
     lmon->int_frac_digits = atoi(FracDigits);
 
-    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5);
+    __GetLocaleInfoUsingACP(lmon->lc.id, lmon->cp, LOCALE_SINTLSYMBOL, lmon->int_curr_symbol, 5, wbuf, 6);
     /* Even if Platform SDK documentation says that the returned symbol should
      * be a 3 letters symbol followed by a seperation character, experimentation
      * has shown that no seperation character is ever appended. We are adding it
@@ -1653,17 +1656,31 @@ char const* __TranslateToSystem(const char* lname, char* buf, _Locale_lcid_t* hi
   return __GetLocaleName(lcid, cp, buf);
 }
 
-void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size) {
+void __GetLocaleInfoUsingACP(LCID lcid, const char* cp, LCTYPE lctype, char* buf, int buf_size, wchar_t* wbuf, int wbuf_size) {
   wchar_t *Buffer;
   int BufferSize;
+  int icp;
 
   GetLocaleInfoA(lcid, lctype, buf, buf_size);
 
-  BufferSize = MultiByteToWideChar(CP_ACP, 0, buf, -1, NULL, 0);
-  Buffer = (wchar_t*)malloc(sizeof(wchar_t) * (BufferSize + 1));
-  MultiByteToWideChar(CP_ACP, 0, buf, -1, Buffer, BufferSize);
-  WideCharToMultiByte(atoi(cp), 0, Buffer, -1, buf, buf_size, NULL, NULL);
-  free(Buffer);
+  icp = atoi(cp);
+  if (icp != CP_ACP && buf[0] != 0) {
+    BufferSize = MultiByteToWideChar(CP_ACP, 0, buf, -1, NULL, 0);
+    if (BufferSize > wbuf_size)
+    {
+      Buffer = (wchar_t*)malloc(sizeof(wchar_t) * BufferSize);
+    }
+    else
+    {
+      Buffer = wbuf;
+    }
+    MultiByteToWideChar(CP_ACP, 0, buf, -1, Buffer, BufferSize);
+    WideCharToMultiByte(icp, 0, Buffer, -1, buf, buf_size, NULL, NULL);
+    if (Buffer != wbuf)
+    {
+      free(Buffer);
+    }
+  }
 }
 
 /* Return 0 if ANSI code page not used */
