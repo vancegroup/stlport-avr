@@ -365,7 +365,7 @@ inline _Iterator _Non_Dbg_iter(_Iterator __it)
 #if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Container, class _Traits>
 inline typename _DBG_iter<_Container, _Traits>::_Nonconst_iterator
-_Non_Dbg_iter(_DBG_iter<_Container, _Traits> __it)
+_Non_Dbg_iter(const _DBG_iter<_Container, _Traits>& __it)
 { return __it._M_iterator; }
 #endif
 
