@@ -1,3 +1,18 @@
+2008-06-13  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_iterator_base.h: Add a funny feature, when
+	using both STLport and native STLs it was not possible
+	to use std iterators in STLport containers because of the
+	missing iterator category that is defined in std:: and
+	not in stlport::. So now STLport map std iterator categories
+	in stlport ones. Now it is possible to write something like
+	that:
+	std::string stdstr("std");
+	stlport::string stlportstr("stlport and ");
+	stlportstr.append(stdstr.begin(), stdstr.end());
+	However the other side is not supported except when STLport
+	iterators are simply pointers.
+
 2008-06-05  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/num_get_float.cpp: Remove useless skip of white
