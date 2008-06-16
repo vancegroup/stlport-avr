@@ -1,6 +1,7 @@
 2008-06-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: pass runtime pathes as absolute;
+	removed LDSEARCH macro, use LDFLAGS instead;
 
 	* Makefile: clean in test/unit too.
 
