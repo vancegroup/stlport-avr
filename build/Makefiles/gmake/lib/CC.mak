@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <07/03/08 21:39:22 ptr>
+# -*- makefile -*- Time-stamp: <08/06/12 14:58:49 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -11,12 +11,9 @@
 
 OPT += -xcode=pic32
 
-dbg-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAME_DBGxx) ${LDSEARCH} ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAME_STLDBGxx) ${LDSEARCH} ${NOSTDLIB}
-release-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAMExx) ${LDSEARCH} ${NOSTDLIB}
-dbg-static:	LDFLAGS += ${LDSEARCH}
-stldbg-static:	LDFLAGS += ${LDSEARCH}
-release-static:	LDFLAGS += ${LDSEARCH}
+dbg-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -G -Qoption ld -z,initfirst -h$(SO_NAMExx) ${NOSTDLIB}
 
 DEPENDS_COLLECTION_SUNPRO := $(DEPENDS_COLLECTION).sunpro
 

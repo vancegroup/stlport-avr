@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <07/08/16 09:22:01 ptr>
+# -*- Makefile -*- Time-stamp: <08/06/12 16:03:31 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -62,20 +62,35 @@ endif
 endif
 
 ifndef WITHOUT_STLPORT
-LDSEARCH += -L${STLPORT_LIB_DIR}
-
+ifeq (${STLPORT_LIB_DIR},)
+ifneq ($(OSNAME),cygming)
 release-shared:	STLPORT_LIB = -lstlport
 release-static:	STLPORT_LIB = -Wl,-Bstatic -lstlport -Wl,-Bdynamic
 dbg-shared:	STLPORT_LIB = -lstlportg
 dbg-static:	STLPORT_LIB = -Wl,-Bstatic -lstlportg -Wl,-Bdynamic
 stldbg-shared:	STLPORT_LIB = -lstlportstlg
 stldbg-static:	STLPORT_LIB = -Wl,-Bstatic -lstlportstlg -Wl,-Bdynamic
-
-ifeq ($(OSNAME),cygming)
+else
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared : STLPORT_LIB = -lstlport.${LIB_VERSION}
 dbg-shared     : STLPORT_LIB = -lstlportg.${LIB_VERSION}
 stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+endif
+else
+# STLPORT_LIB_DIR not empty
+ifneq ($(OSNAME),cygming)
+release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport
+release-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlport -Wl,-Bdynamic
+dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg
+dbg-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlportg -Wl,-Bdynamic
+stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg
+stldbg-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlportstlg -Wl,-Bdynamic
+else
+LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
+release-shared : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport.${LIB_VERSION}
+dbg-shared     : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg.${LIB_VERSION}
+stldbg-shared  : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg.${LIB_VERSION}
+endif
 endif
 
 endif

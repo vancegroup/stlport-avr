@@ -1,3 +1,9 @@
+2008-06-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/test/unit/gcc.mak: pass runtime pathes as absolute;
+
+	* Makefile: clean in test/unit too.
+
 2008-06-13  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_iterator_base.h: Add a funny feature, when

@@ -1,33 +1,45 @@
-# -*- Makefile -*- Time-stamp: <05/09/04 22:01:11 ptr>
+# -*- Makefile -*- Time-stamp: <08/06/12 16:25:17 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := CC
+-include ${SRCROOT}/Makefiles/gmake/config.mak
+ALL_TAGS = release-shared check-release
+CHECK_TAGS = check-release
+ifndef WITHOUT_STLPORT
+ALL_TAGS += stldbg-shared check-stldbg
+CHECK_TAGS += check-stldbg
+endif
+STLPORT_DIR ?= ../../..
 
-ALL_TAGS := release-shared stldbg-shared
-STLPORT_DIR := ../../..
-STLPORT_ETC_DIR = ${STLPORT_DIR}/etc
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
-INCLUDES += -I. -I${STLPORT_INCLUDE_DIR}
-DEFS += -D_STLP_NO_CUSTOM_IO
+ifdef WITHOUT_STLPORT
+DEFS += -DWITHOUT_STLPORT
+endif
 
-dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED 
-stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED -D_STLP_DEBUG
+dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
+ifndef WITHOUT_STLPORT
+stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
+endif
 
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
 
-release-shared:	LDSEARCH = -L${INSTALL_LIB_DIR}
-dbg-shared:	LDSEARCH = -L${INSTALL_LIB_DIR}
-stldbg-shared:	LDSEARCH = -L${INSTALL_LIB_DIR}
+ifndef WITHOUT_STLPORT
+release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Qoption ld -R${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Qoption ld -R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Qoption ld -R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
+endif
 
-release-shared:	LDFLAGS += -R${INSTALL_LIB_DIR}
-dbg-shared:	LDFLAGS += -R${INSTALL_LIB_DIR}
-stldbg-shared:	LDFLAGS += -R${INSTALL_LIB_DIR}
+check-release:	release-shared
+	-${OUTPUT_DIR}/${PRGNAME}
 
-release-shared : LDLIBS = -lstlport
-dbg-shared     : LDLIBS = -lstlportg
-stldbg-shared  : LDLIBS = -lstlportstlg
+ifndef WITHOUT_STLPORT
+check-stldbg:	stldbg-shared
+	-${OUTPUT_DIR_STLDBG}/${PRGNAME}
+endif
+
+check:	${CHECK_TAGS}
 

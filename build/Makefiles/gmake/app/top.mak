@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <07/06/08 23:35:09 ptr>
+# -*- makefile -*- Time-stamp: <08/06/12 15:54:12 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -30,8 +30,6 @@ ALLPRGS_STLDBG += $${$(1)_PRG_STLDBG}
 endef
 
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_prog,$(prg))))
-
-LDFLAGS += ${LDSEARCH}
 
 include ${RULESBASE}/gmake/app/${COMPILER_NAME}.mak
 include ${RULESBASE}/gmake/app/rules.mak

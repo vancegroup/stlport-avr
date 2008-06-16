@@ -11,16 +11,10 @@ ifndef WITHOUT_STLPORT
 ALL_TAGS += stldbg-shared check-stldbg
 CHECK_TAGS += check-stldbg
 endif
-STLPORT_DIR := ../../..
+STLPORT_DIR ?= ../../..
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
-
-release-shared: STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR}
-dbg-shared:     STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR_DBG}
-ifndef WITHOUT_STLPORT
-stldbg-shared:  STLPORT_LIB_DIR = ${SRCROOT}/lib/${OUTPUT_DIR_STLDBG}
-endif
 
 ifdef WITHOUT_STLPORT
 DEFS += -DWITHOUT_STLPORT
@@ -37,21 +31,37 @@ endif
 
 ifndef TARGET_OS
 ifndef WITHOUT_STLPORT
+
 ifeq ($(OSNAME), sunos)
-LDFLAGS += -Wl,-R${STLPORT_LIB_DIR}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:     LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:  LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
 endif
+
 ifeq ($(OSNAME), freebsd)
-LDFLAGS += -Wl,-R${STLPORT_LIB_DIR}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:     LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:  LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
 endif
+
 ifeq ($(OSNAME), openbsd)
-LDFLAGS += -Wl,-R${STLPORT_LIB_DIR}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:     LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:  LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
 endif
+
 ifeq ($(OSNAME), linux)
-LDFLAGS += -Wl,-rpath=${STLPORT_LIB_DIR}
+release-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,-rpath=${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,-rpath=${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,-rpath=${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
 endif
+
 ifeq ($(OSNAME), hp-ux)
-LDFLAGS += -Wl,+b${STLPORT_LIB_DIR}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
 endif
+
 endif
 endif
 
