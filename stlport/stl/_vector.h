@@ -260,7 +260,7 @@ private:
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __val,
                          const __true_type& /*_IsIntegral*/) {
-    size_type __real_n;
+    size_type __real_n = __n;
     this->_M_start = this->_M_end_of_storage.allocate(__n, __real_n);
     this->_M_end_of_storage._M_data = this->_M_start + __real_n;
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val);
