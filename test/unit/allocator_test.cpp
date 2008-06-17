@@ -66,7 +66,7 @@ void AllocatorTest::bad_alloc_test()
     CPPUNIT_ASSERT( pbigStruct != 0 );
 
     // Just it case it succeeds:
-    bigStructAlloc.deallocate(pbigStruct);
+    bigStructAlloc.deallocate(pbigStruct, 1024 * 1024 * 1024);
   }
   catch (bad_alloc const&) {
   }
