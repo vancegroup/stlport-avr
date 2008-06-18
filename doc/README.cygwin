@@ -9,7 +9,11 @@ The cygwin platform is used to build STLport with different compilers.
   macro in order to have your executable linked correctly.
 
     To build STLport libraries that do not depend on cygwin1.dll
-  making them freely redistributable use the --no-cygwin configuration
-  option.
+  making them freely redistributable pass the following option to
+  the configure script:
+
+  ./configure --with-extra-cflags=-mno-cygwin --with-extra-cxxflags=-mno-cygwin
 
 - Borland C++ compiler
+
+- Digital Mars C++ compiler
