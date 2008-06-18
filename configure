@@ -59,6 +59,7 @@ Available options:
                         icc      Intel compilers
                         aCC      HP's aCC compilers
                         CC       SunPro's CC compilers
+                        bcc      Borland's compilers
   --without-debug       don't build debug variant
   --without-stldebug    don't build STLport's STLP_DEBUG mode
   --enable-static       build static
@@ -109,14 +110,17 @@ default_settings () {
   #   write_option "${PWD}/external/boost" BOOST_DIR
   # fi
 
-  if [ -z "${stlport_set}" ]; then
-    write_over_option "$base" STLPORT_DIR
-  fi
+  # if [ -z "${stlport_set}" ]; then
+  #   write_over_option "$base" STLPORT_DIR
+  # fi
 
   # Set in Makefiles/gmake/top.mak
-  # if [ -z "${compiler_family_set}" ]; then
-  #   write_option gcc COMPILER_NAME
-  # fi
+  if [ -z "${compiler_family_set}" ]; then
+  #  write_option gcc COMPILER_NAME
+    echo include gcc.mak > ${base}/build/lib/Makefile
+    echo include gcc.mak > ${base}/build/test/unit/Makefile
+    echo include gcc.mak > ${base}/build/test/eh/Makefile
+  fi
 
   # Set in Makefiles/gmake/targetdirs.mak
   # if [ -z "${prefix_set}" ]; then
@@ -228,8 +232,12 @@ do
       ;;
     --use-compiler-family=*)
       case `echo $option | sed -e 's/^[^=]*=//'` in
-        gcc|icc|aCC|CC|dmc)
-          write_option "$option" COMPILER_NAME
+        gcc|icc|aCC|CC|bcc|dmc)
+          target=`echo $option | sed -e 's/^[^=]*=//'`
+          echo COMPILER_NAME := $target >> ${configmak}
+          echo include $target.mak > ${base}/build/lib/Makefile
+          echo include $target.mak > ${base}/build/test/unit/Makefile
+          echo include $target.mak > ${base}/build/test/eh/Makefile
           ;;
         *)
           echo "Not supported compilers family"
