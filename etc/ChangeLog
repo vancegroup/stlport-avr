@@ -8,6 +8,9 @@
 	already set in internal make files and moreover the absolute
 	path generated in the script leads to trouble under Cygwin/MinGW.
 
+	* src/num_get_float.cpp: Use an union to generate double value
+	from 64 bits int to avoid gcc type-punned pointer warning.
+
 2008-06-16  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/test/unit/gcc.mak: pass runtime pathes as absolute;

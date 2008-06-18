@@ -22,7 +22,7 @@
 #include <locale>
 #include <istream>
 
-#if (defined (__GNUC__) && !defined (__sun) && !defined (__hpux)) ||    \
+#if (defined (__GNUC__) && !defined (__sun) && !defined (__hpux)) || \
     defined (__DMC__)
 #  include <stdint.h>
 #endif
@@ -324,9 +324,16 @@ static void _Stl_tenscale(uint64& p, int exp, int& bexp) {
 
 /* IEEE representation */
 #if !defined (__linux__)
+
+union _Double_rep {
+  uint64 ival;
+  double val;
+};
+
 static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
   typedef numeric_limits<double> limits;
-  uint64 value;         /* Value develops as follows:
+  _Double_rep drep;
+  uint64 &value = drep.ival;  /* Value develops as follows:
                                  * 1) decimal digits as an integer
                                  * 2) left adjusted fraction
                                  * 3) right adjusted fraction
@@ -462,8 +469,8 @@ static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
     }
   }
 
-  _STLP_STATIC_ASSERT(sizeof(value) >= sizeof(double))
-  return *((double *) &value);
+  _STLP_STATIC_ASSERT(sizeof(uint64) >= sizeof(double))
+  return drep.val;
 }
 
 #endif
