@@ -1,5 +1,5 @@
 **********************************************************************
-* 	INSTALL file for STLport 5.0                                   *
+* 	INSTALL file for STLport 5.0                                     *
 *                                                                    *
 **********************************************************************
 
@@ -32,7 +32,7 @@ Now you have to choose between STLport iostreams or no iostreams.
    NOTE:  Your compiler should be recognized by STLport source code with no configuring.
           Please edit appropriate configuration header for your compiler
           directly if you have to make compiler-specific configuration changes
-          (see stlport/config). 
+          (see stlport/stl/config). 
 
 
 4)  Go to "build/lib" subdirectory. It contains various makefiles for different
@@ -44,7 +44,7 @@ Now you have to choose between STLport iostreams or no iostreams.
     Verify you can do command line compiles. IDE users may have to do something 
     special, like add environment variables (for Microsoft) or install 
     additional compiler components (for Metrowerks), before they can use their 
-    command line compilers (see doc/README.xxxx for additionnal inrformation).
+    command line compilers (see doc/README.xxxx for additionnal information).
 
     IMPORTANT:
 

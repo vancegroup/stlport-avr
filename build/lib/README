@@ -5,12 +5,6 @@ Quick start.
     make -f gcc.mak depend
     make -f gcc.mak install
 
-  GNU Make (CygWin), with VC6:
-
-    make -f cygwin-vc6.mak depend
-    make -f cygwin-vc6.mak install
-  
-
   GNU Make (SunOS), with SunPro CC:
 
     make -f CC.mak depend
@@ -18,7 +12,7 @@ Quick start.
 
   Microsoft NMAKE (MS Windows), with VC6:
 
-    nmake -f nmake-vc6 install
+    nmake /fmsvc.mak install
 
 
 Make system goals.
@@ -66,7 +60,7 @@ Make targets.
 
   depend
 
-    create dependency files (by performance reasons dependency not created
+    create dependency files (for performance reasons dependency not created
     during compilation process); this target absent for MS NMAKE (due to pure
     scripting opportunities)
 
@@ -78,7 +72,7 @@ Make targets.
   install-stldbg-static
 
     build and install appropriate libraries and related files, into
-    'STLport/lib' (../../lib, relative position of this file)
+    'STLport/lib' and 'STLport/bin' (../../lib, relative position of this file)
 
   install
 
@@ -88,8 +82,4 @@ Make targets.
   clean
 
     remove all intermediate files
-
-  clobber
-
-    remove all intermediate files, libraries and dependency files
 
