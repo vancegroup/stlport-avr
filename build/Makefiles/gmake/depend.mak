@@ -37,7 +37,9 @@ depend::	$(OUTPUT_DIRS) ${_DASH_DEP}
 TAGS:	$(OUTPUT_DIRS) ${_DASH_DEP}
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations 
 
+ifneq ($(OSREALNAME),mingw)
 tags:	$(OUTPUT_DIRS) ${_DASH_DEP}
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T
+endif
 
 -include $(DEPENDS_COLLECTION)
