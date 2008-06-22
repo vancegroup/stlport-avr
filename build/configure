@@ -4,7 +4,7 @@
 
 base=`cd \`dirname $0\`; echo $PWD`
 
-configmak=$base/build/Makefiles/gmake/config.mak
+configmak=$base/Makefiles/gmake/config.mak
 
 write_option() {
   target=`echo $1 | sed -e 's/^[^=]*=//'`
@@ -84,8 +84,8 @@ Available options:
                         Don't forget to signal the link method when building your appli or dll, in
                         stlport/stl/config/host.h set the following macro depending on the configure
                         option:
-                        --with-static-rtl  -> _STLP_USE_DYNAMIC_LIB"
-                        --with-dynamic-rtl -> _STLP_USE_STATIC_LIB"
+                        --with-static-rtl  -> _STLP_USE_DYNAMIC_LIB
+                        --with-dynamic-rtl -> _STLP_USE_STATIC_LIB
   --windows-platform=<name>
                         Targetted OS when building for Windows; one of:
                         win95   Windows 95
@@ -117,9 +117,9 @@ default_settings () {
   # Set in Makefiles/gmake/top.mak
   if [ -z "${compiler_family_set}" ]; then
   #  write_option gcc COMPILER_NAME
-    echo include gcc.mak > ${base}/build/lib/Makefile
-    echo include gcc.mak > ${base}/build/test/unit/Makefile
-    echo include gcc.mak > ${base}/build/test/eh/Makefile
+    echo include gcc.mak > ./lib/Makefile
+    echo include gcc.mak > ./test/unit/Makefile
+    echo include gcc.mak > ./test/eh/Makefile
   fi
 
   # Set in Makefiles/gmake/targetdirs.mak
@@ -235,9 +235,9 @@ do
         gcc|icc|aCC|CC|bcc|dmc)
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
-          echo include $target.mak > ${base}/build/lib/Makefile
-          echo include $target.mak > ${base}/build/test/unit/Makefile
-          echo include $target.mak > ${base}/build/test/eh/Makefile
+          echo include $target.mak > ./lib/Makefile
+          echo include $target.mak > ./test/unit/Makefile
+          echo include $target.mak > ./test/eh/Makefile
           ;;
         *)
           echo "Not supported compilers family"

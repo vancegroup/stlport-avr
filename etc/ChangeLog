@@ -1,3 +1,8 @@
+2008-06-22  Francois Dumont  <dums@users.sourceforge.net>
+
+	* configure, Makefile: moved to build folder, now all build
+	system is in build folder.
+
 2008-06-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build: configure.bat moved to build folder. lib/Makefile,
