@@ -59,6 +59,10 @@ endif
 ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
+
+ifeq ($(OSNAME),cygming)
+_USE_NOSTDLIB := 1
+endif
 endif
 
 ifndef WITHOUT_STLPORT
@@ -87,9 +91,9 @@ stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg
 stldbg-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlportstlg -Wl,-Bdynamic
 else
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
-release-shared : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport.${LIB_VERSION}
-dbg-shared     : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg.${LIB_VERSION}
-stldbg-shared  : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg.${LIB_VERSION}
+release-shared : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlport.${LIB_VERSION}
+dbg-shared     : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlportg.${LIB_VERSION}
+stldbg-shared  : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlportstlg.${LIB_VERSION}
 endif
 endif
 
@@ -137,11 +141,13 @@ START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -p
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
+
 ifeq ($(OSNAME),openbsd)
 START_OBJ := $(shell for o in crt0.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
+
 ifeq ($(OSNAME),freebsd)
 # FreeBSD < 5.3 should use -lc_r, while FreeBSD >= 5.3 use -lpthread
 PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
@@ -149,16 +155,19 @@ START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -p
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -l${PTHR} -lc -lm
 endif
+
 ifeq ($(OSNAME),netbsd)
 START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
+
 ifeq ($(OSNAME),sunos)
 START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
+
 ifeq ($(OSNAME),darwin)
 # sometimes crt3.o will required: it has __cxa_at_exit, but the same defined in libc.dyn
 # at least in Mac OS X 10.4.10 (8R2218)
@@ -166,26 +175,32 @@ ifeq ($(CXX_VERSION_MAJOR),3)
 # i.e. gcc 3.3
 START_OBJ := $(shell for o in crt1.o crt2.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 else
-ifndef USE_STATIC_LIBGCC
-# MacOS X, shared-libgcc
-ifeq ($(MACOSX_TEN_FIVE),true)
-# MacOS X >= 10.5
 START_OBJ := -lcrt1.o
-else
-# MacOS X < 10.5
-START_OBJ := -lcrt1.o
-endif
-else
-# MacOS X, not shared-libgcc
-START_OBJ := -lcrt1.o
-endif
 endif
 END_OBJ :=
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 #LDFLAGS += -dynamic
 endif
+
+ifeq ($(OSNAME),cygming)
+# Despite the use of the -whole-archive on libsupc++ when linking STLport we need to link with
+# it again here.
+LDFLAGS += -nodefaultlibs
+ifeq ($(OSREALNAME),mingw)
+STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lmoldname -lcoldname -lkernel32
+else
+ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
+STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lkernel32
+else
+STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lm -lc -lpthread -lkernel32
+endif
+endif
+else
 LDFLAGS += -nostdlib
+endif
+
 # endif
+# _USE_NOSTDLIB
 else
 ifndef WITHOUT_STLPORT
 STDLIBS = ${STLPORT_LIB}

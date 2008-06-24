@@ -88,7 +88,13 @@ CCFLAGS += -mthreads
 CFLAGS += -mthreads
 CXXFLAGS += -mthreads
 else
+ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
+CCFLAGS += -mthreads
+CFLAGS += -mthreads
+CXXFLAGS += -mthreads
+else
 DEFS += -D_REENTRANT
+endif
 endif
 endif
 CCFLAGS += $(OPT)

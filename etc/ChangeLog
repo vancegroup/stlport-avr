@@ -1,3 +1,8 @@
+2008-06-24  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/gmake: Cygwin/MinGW upgrade, now build
+	without referencing libstdc++.
+
 2008-06-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build: configure.bat moved to build folder. lib/Makefile,

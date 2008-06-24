@@ -68,6 +68,10 @@ endif
 ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
+
+ifeq ($(OSNAME),cygming)
+_USE_NOSTDLIB := 1
+endif
 endif
 
 ifndef WITHOUT_STLPORT
@@ -202,8 +206,22 @@ STDLIBS := ${_LGCC_S} -lc -lm -all_load -lsupc++ ${_LGCC_EH}
 endif
 endif
 #END_A_OBJ := $(shell for o in crtn.o; do ${CXX} -print-file-name=$$o; done)
-NOSTDLIB := -nostdlib
 # endif
+
+ifneq ($(OSNAME),cygming)
+NOSTDLIB := -nostdlib
+else
+NOSTDLIB := -nodefaultlibs
+ifeq ($(OSREALNAME),mingw)
+STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
+else
+ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
+STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
+else
+STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -lpthread -lm -lc -lkernel32
+endif
+endif
+endif
 else
 ifndef WITHOUT_STLPORT
 ifndef STLP_BUILD
@@ -235,9 +253,9 @@ release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),cygming)
-dbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_DBG},--enable-auto-image-base
-stldbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--enable-auto-image-base
-release-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT},--enable-auto-image-base
+dbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_DBG},--enable-auto-image-base ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--enable-auto-image-base ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT},--enable-auto-image-base ${NOSTDLIB}
 dbg-static:	LDFLAGS += -static
 stldbg-static:	LDFLAGS += -static
 release-static:	LDFLAGS += -static
@@ -266,3 +284,4 @@ dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${NOSTDLIB}
 stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${NOSTDLIB}
 release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${NOSTDLIB}
 endif
+
