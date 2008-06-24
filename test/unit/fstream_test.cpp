@@ -40,6 +40,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(io);
   CPPUNIT_TEST(err);
   CPPUNIT_TEST(tellg);
+  CPPUNIT_TEST(tellp);
   CPPUNIT_TEST(seek);
   CPPUNIT_TEST(buf);
   CPPUNIT_TEST(rdbuf);
@@ -69,6 +70,7 @@ class FstreamTest : public CPPUNIT_NS::TestCase
     void io();
     void err();
     void tellg();
+    void tellp();
     void seek();
     void buf();
     void rdbuf();
@@ -253,6 +255,32 @@ void FstreamTest::tellg()
       is.seekg( 8, ios_base::cur );
       CPPUNIT_ASSERT( !is.fail() );
     }
+  }
+}
+
+void FstreamTest::tellp()
+{
+  {
+    ofstream o( "test_file.txt" );
+
+    o << "123456";
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(6) );
+    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(6) );
+  }
+  {
+    ofstream o( "test_file.txt" );
+
+    o << "123456789";
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
+    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
+  }
+  {
+    ofstream o( "test_file.txt", ios_base::app | ios_base::out );
+
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
+    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
 }
 
