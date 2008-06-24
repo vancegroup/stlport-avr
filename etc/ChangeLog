@@ -3,6 +3,9 @@
 	* build/Makefiles/gmake: Cygwin/MinGW upgrade, now build
 	without referencing libstdc++.
 
+	* stlport/stl/_threads.h: Move definition of __stl_atomic_t next
+	to definition of atomic operations to guaranty coherency.
+
 2008-06-18  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build: configure.bat moved to build folder. lib/Makefile,

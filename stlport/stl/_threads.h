@@ -55,17 +55,6 @@
  * assign __ptr to *__target and returns former *__target value
  */
 
-#if defined (_STLP_WIN32) || defined (__sgi) || defined (_STLP_SPARC_SOLARIS_THREADS)
-typedef long __stl_atomic_t;
-#else
-/* Don't import whole namespace!!!! - ptr */
-// # if defined (_STLP_USE_NAMESPACES) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-// // using _STLP_VENDOR_CSTD::size_t;
-// using namespace _STLP_VENDOR_CSTD;
-// # endif
-typedef size_t __stl_atomic_t;
-#endif
-
 #if defined (_STLP_THREADS)
 
 #  if defined (_STLP_SGI_THREADS)
@@ -86,6 +75,7 @@ typedef size_t __stl_atomic_t;
 
 #    define _STLP_ATOMIC_INCREMENT(__x) __add_and_fetch(__x, 1)
 #    define _STLP_ATOMIC_DECREMENT(__x) __add_and_fetch(__x, (size_t) -1)
+typedef long __stl_atomic_t;
 
 #  elif defined (_STLP_PTHREADS)
 
@@ -100,14 +90,13 @@ typedef size_t __stl_atomic_t;
 #      else
 #        define _STLP_PTHREAD_ATTR_DEFAULT 0
 #      endif
-#    else // _STLP_USE_PTHREAD_SPINLOCK
+#    else
 #      if defined (__OpenBSD__)
 #        include <spinlock.h>
 #      endif
-#    endif // _STLP_USE_PTHREAD_SPINLOCK
+#    endif
 
 #    if defined (__GNUC__) && defined (__i386__)
-
 #      if !defined (_STLP_ATOMIC_INCREMENT)
 inline long _STLP_atomic_increment_gcc_x86(long volatile* p) {
   long result;
@@ -133,7 +122,9 @@ inline long _STLP_atomic_decrement_gcc_x86(long volatile* p) {
 }
 #        define _STLP_ATOMIC_DECREMENT(__x) (_STLP_atomic_decrement_gcc_x86((long volatile*)__x))
 #      endif
-
+typedef long __stl_atomic_t;
+#    else
+typedef size_t __stl_atomic_t;
 #    endif /* if defined(__GNUC__) && defined(__i386__) */
 
 #  elif defined (_STLP_WIN32THREADS)
@@ -150,6 +141,7 @@ inline long _STLP_atomic_decrement_gcc_x86(long volatile* p) {
 #      endif
 #      define _STLP_ATOMIC_EXCHANGE_PTR(__x, __y)     STLPInterlockedExchangePointer(__x, __y)
 #    endif
+typedef long __stl_atomic_t;
 
 #  elif defined (__DECC) || defined (__DECCXX)
 
@@ -157,9 +149,11 @@ inline long _STLP_atomic_decrement_gcc_x86(long volatile* p) {
 #    define _STLP_ATOMIC_EXCHANGE __ATOMIC_EXCH_LONG
 #    define _STLP_ATOMIC_INCREMENT(__x) __ATOMIC_ADD_LONG(__x, 1)
 #    define _STLP_ATOMIC_DECREMENT(__x) __ATOMIC_ADD_LONG(__x, -1)
+typedef long __stl_atomic_t;
 
-#  elif defined(_STLP_SPARC_SOLARIS_THREADS)
+#  elif defined (_STLP_SPARC_SOLARIS_THREADS)
 
+typedef long __stl_atomic_t;
 #    include <stl/_sparc_atomic.h>
 
 #  elif defined (_STLP_UITHREADS)
@@ -180,6 +174,7 @@ using _STLP_VENDOR_CSTD::time_t;
 #    ifndef _STLP_INTERNAL_CWCHAR
 #      include <stl/_cwchar.h>
 #    endif
+typedef size_t __stl_atomic_t;
 
 #  elif defined (_STLP_BETHREADS)
 
@@ -187,11 +182,13 @@ using _STLP_VENDOR_CSTD::time_t;
 #    include <cassert>
 #    include <stdio.h>
 #    define _STLP_MUTEX_INITIALIZER = { 0 }
+typedef size_t __stl_atomic_t;
 
 #  elif defined (_STLP_NWTHREADS)
 
 #    include <nwthread.h>
 #    include <nwsemaph.h>
+typedef size_t __stl_atomic_t;
 
 #  elif defined(_STLP_OS2THREADS)
 
@@ -217,6 +214,11 @@ using _STLP_VENDOR_CSTD::time_t;
   APIRET _System DosCloseMutexSem(HMTX hmtx);
 #      define _STLP_MUTEX_INITIALIZER = { 0 }
 #    endif /* GNUC */
+typedef size_t __stl_atomic_t;
+
+#  else
+
+typedef size_t __stl_atomic_t;
 
 #  endif
 
@@ -227,6 +229,7 @@ using _STLP_VENDOR_CSTD::time_t;
 /* We do not grant other atomic operations as they are useless if STLport do not have
  * to be thread safe
  */
+typedef size_t __stl_atomic_t;
 #endif
 
 #if !defined (_STLP_MUTEX_INITIALIZER)
