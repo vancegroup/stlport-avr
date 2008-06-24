@@ -52,8 +52,8 @@ bool valid_sign_info(bool, bool)
 
 template <class _Tp>
 bool valid_sign_info(bool limit_is_signed, const _Tp &) {
-  return limit_is_signed && _Tp(-1) < 0 ||
-         !limit_is_signed && _Tp(-1) > 0;
+  return (limit_is_signed && _Tp(-1) < 0) ||
+         (!limit_is_signed && _Tp(-1) > 0);
 }
 
 template <class _Tp>

@@ -65,8 +65,8 @@ void SetIntersectionTest::setintr1()
 
 void SetIntersectionTest::setintr2()
 {
-  char* word1 = "ABCDEFGHIJKLMNO";
-  char* word2 = "LMNOPQRSTUVWXYZ";
+  const char* word1 = "ABCDEFGHIJKLMNO";
+  const char* word2 = "LMNOPQRSTUVWXYZ";
 
   string inter;
   set_intersection(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),

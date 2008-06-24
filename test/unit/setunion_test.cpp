@@ -68,8 +68,8 @@ void SetUnionTest::setunon1()
 
 void SetUnionTest::setunon2()
 {
-  char* word1 = "ABCDEFGHIJKLMNO";
-  char* word2 = "LMNOPQRSTUVWXYZ";
+  const char* word1 = "ABCDEFGHIJKLMNO";
+  const char* word2 = "LMNOPQRSTUVWXYZ";
 
   string diff;
   set_union(word1, word1 + ::strlen(word1), word2, word2 + ::strlen(word2),

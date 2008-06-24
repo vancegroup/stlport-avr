@@ -425,7 +425,7 @@ static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
   }
   else {                        /* not zero or denorm */
     /* Round to 53 bits */
-    rest = value & (1<<10)-1;
+    rest = value & ((1 << 10) - 1);
     value >>= 10;
     guard = (uint32) value & 1;
     value >>= 1;

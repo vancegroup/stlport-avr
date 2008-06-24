@@ -155,7 +155,7 @@ __copy_integer_and_fill(const _CharT* __buf, ptrdiff_t __len,
     //casting numeric_limits<ptrdiff_t>::max to streamsize only works is ptrdiff_t is signed or streamsize representation
     //is larger than ptrdiff_t one.
     _STLP_STATIC_ASSERT((sizeof(streamsize) > sizeof(ptrdiff_t)) ||
-                        (sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed)
+                        ((sizeof(streamsize) == sizeof(ptrdiff_t)) && numeric_limits<ptrdiff_t>::is_signed))
     ptrdiff_t __pad = __STATIC_CAST(ptrdiff_t, (min) (__STATIC_CAST(streamsize, (numeric_limits<ptrdiff_t>::max)()),
                                                       __STATIC_CAST(streamsize, __wid - __len)));
     ios_base::fmtflags __dir = __flg & ios_base::adjustfield;

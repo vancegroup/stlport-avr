@@ -266,11 +266,12 @@ char* strstreambuf::_M_alloc(size_t n) {
 }
 
 void strstreambuf::_M_free(char* p) {
-  if (p)
+  if (p) {
     if (_M_free_fun)
       _M_free_fun(p);
     else
       delete[] p;
+  }
 }
 
 void strstreambuf::_M_setup(char* get, char* put, streamsize n) {

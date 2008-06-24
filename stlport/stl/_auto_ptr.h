@@ -64,7 +64,11 @@ public:
   }
 
   _Tp* get() const _STLP_NOTHROW
+#if !defined (__GNUC__) || (__GNUC__ > 2)
   { return __STATIC_CAST(_Tp*, _M_p); }
+#else
+  { return __REINTERPRET_CAST(_Tp*, _M_p); }
+#endif
 
 #if !defined (_STLP_NO_ARROW_OPERATOR)
   _Tp* operator->() const _STLP_NOTHROW {

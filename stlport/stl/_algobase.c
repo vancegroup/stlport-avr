@@ -284,12 +284,12 @@ _STLP_TEMPLATE_NULL struct _IsCharLikeType<signed char>
 #  endif
 
 template <class _Tp1, class _Tp2>
-inline bool __eq(_Tp1 __val1, _Tp2 __val2)
+inline bool __stlp_eq(_Tp1 __val1, _Tp2 __val2)
 { return __val1 == __val2; }
 
 #if defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 template <class _Tp>
-inline bool __eq(_Tp, _Tp)
+inline bool __stlp_eq(_Tp, _Tp)
 { return true; }
 #endif
 
@@ -307,7 +307,7 @@ inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
 
   for (; __first1 != __last1; ++__first1) {
     _Tp2 __tmp = (_Tp2)*__first1;
-    if (__eq(*__first1, __tmp) &&
+    if (__stlp_eq(*__first1, __tmp) &&
         __pred((__hints[(unsigned char)__tmp / CHAR_BIT] & (1 << ((unsigned char)__tmp % CHAR_BIT))) != 0))
       break;
   }

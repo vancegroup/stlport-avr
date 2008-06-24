@@ -138,8 +138,7 @@ __declare_float_limits_member(float_round_style, round_style);
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION)
 
-#  if defined (__GNUC__) && (__GNUC__ >= 4) || \
-      defined (__BORLANDC__)
+#  if defined (__GNUC__) || defined (__BORLANDC__)
 #    define _STLP_ADDITIONAL_OPEN_BRACKET {
 #    define _STLP_ADDITIONAL_CLOSE_BRACKET }
 #  else

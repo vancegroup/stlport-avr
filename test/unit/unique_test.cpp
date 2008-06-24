@@ -89,8 +89,8 @@ void UniqueTest::uniqcpy2()
   const char **plabels = (const char**)labels;
 
   const size_t count = sizeof(labels) / sizeof(labels[0]);
-  char* uCopy[count];
-  const char **puCopy = (const char**)uCopy;
+  const char* uCopy[count];
+  const char **puCopy = &uCopy[0];
   fill(puCopy, puCopy + count, "");
 
   unique_copy(plabels, plabels + count, puCopy, str_equal);
