@@ -19,7 +19,7 @@ You cannot use native compiler iostreams implementation with STLport STL
    even if you made a backup---STLport need this headers and don't
    override ones.
 
-1) Move to build folder and run 
+1) Run 
 
    ./configure --help
 
