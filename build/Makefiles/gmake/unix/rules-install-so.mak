@@ -81,9 +81,9 @@ endif
 
 PHONY += install install-strip install-headers $(INSTALL_TAGS) $(INSTALL_STRIP_TAGS)
 
-install:	$(INSTALL_TAGS)
+install:	$(INSTALL_TAGS) install-headers
 
-install-strip:	$(INSTALL_STRIP_TAGS)
+install-strip:	$(INSTALL_STRIP_TAGS) install-headers
 
 # Workaround for GNU make 3.80; see comments in rules-so.mak
 define do_install_so_links
@@ -125,10 +125,10 @@ $(eval $(call do_install_so_links_wk,_STLDBG))
 # endif
 # endif
 
-install-release-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx}
+install-release-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx} install-headers
 	${POST_INSTALL}
 
-install-strip-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx}
+install-strip-shared:	release-shared $(INSTALL_LIB_DIR) $(INSTALL_LIB_DIR)/${SO_NAMExxx} install-headers
 	${STRIP} ${_SO_STRIP_OPTION} $(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${POST_INSTALL}
 

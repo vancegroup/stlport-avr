@@ -1,3 +1,8 @@
+2008-06-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* build/Makefiles/gmake/unix/rules-install-so.mak: do
+	install-headers tags when make install or install-release-shared.
+
 2008-06-24  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Cygwin/MinGW upgrade, now build
