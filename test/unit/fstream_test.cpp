@@ -103,29 +103,41 @@ void FstreamTest::output()
 
 void FstreamTest::input()
 {
-  ifstream f( "test_file.txt" );
-  int i = 0;
-  f >> i;
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( i == 1 );
-  double d = 0.0;
-  f >> d;
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( d == 2.0 );
-  string str;
-  f >> str;
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( str == "abcd" );
-  char c;
-  f.get(c); // extract newline, that not extracted by operator >>
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( c == '\n' );
-  getline( f, str );
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( str == "ghk lm" );
-  getline( f, str );
-  CPPUNIT_ASSERT( f.eof() );
-  CPPUNIT_ASSERT( str == "abcd ef" );
+  {
+    ifstream f( "test_file.txt" );
+    int i = 0;
+    f >> i;
+    CPPUNIT_ASSERT( f.good() );
+    CPPUNIT_ASSERT( i == 1 );
+    double d = 0.0;
+    f >> d;
+    CPPUNIT_ASSERT( f.good() );
+    CPPUNIT_ASSERT( d == 2.0 );
+    string str;
+    f >> str;
+    CPPUNIT_ASSERT( f.good() );
+    CPPUNIT_ASSERT( str == "abcd" );
+    char c;
+    f.get(c); // extract newline, that not extracted by operator >>
+    CPPUNIT_ASSERT( f.good() );
+    CPPUNIT_ASSERT( c == '\n' );
+    getline( f, str );
+    CPPUNIT_ASSERT( f.good() );
+    CPPUNIT_ASSERT( str == "ghk lm" );
+    getline( f, str );
+    CPPUNIT_ASSERT( f.eof() );
+    CPPUNIT_ASSERT( str == "abcd ef" );
+  }
+#if defined (STLPORT) && !defined (_STLP_USE_WIN32_IO)
+  {
+    ifstream in("/tmp");
+    if (in.good()) {
+      string s;
+      getline(in, s);
+      CPPUNIT_ASSERT( in.fail() );
+    }
+  }
+#endif
 }
 
 void FstreamTest::input_char()

@@ -513,6 +513,12 @@ basic_filebuf<_CharT, _Traits>::_M_underflow_aux() {
   // to make progress.
   for (;;) {
     ptrdiff_t __n = _M_base._M_read(_M_ext_buf_end, _M_ext_buf_EOS - _M_ext_buf_end);
+    if (__n < 0) {
+      // Read failed, maybe we should set err bit on associated stream...
+      this->setg(0, 0, 0);
+      return traits_type::eof();
+    }
+
     _M_ext_buf_end += __n;
 
     // If external buffer is empty there is nothing to do. 

@@ -1,3 +1,9 @@
+2008-06-26  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stl/_fstream.c: Consider read file failure in
+	_M_underflow_aux method to avoid infinite looping on some
+	platforms. Thanks Pawel Sikora.
+	
 2008-06-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* build/Makefiles/gmake/unix/rules-install-so.mak: do
