@@ -41,7 +41,7 @@ _CXA_ATEXIT := $(shell ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || ec
 
 ifeq ($(OSNAME), darwin)
 # This is to differentiate Apple-builded compiler from original
-# GNU compiler (it's has different behaviour)
+# GNU compiler (it has different behaviour)
 ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
 GCC_APPLE_CC := 1
 endif
@@ -87,6 +87,11 @@ ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads
 CFLAGS += -mthreads
 CXXFLAGS += -mthreads
+ifeq ($(CXX_VERSION_MAJOR),2)
+CCFLAGS += -fvtable-thunks
+CFLAGS += -fvtable-thunks
+CXXFLAGS += -fvtable-thunks
+endif
 else
 ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
 CCFLAGS += -mthreads

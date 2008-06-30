@@ -211,14 +211,23 @@ endif
 ifneq ($(OSNAME),cygming)
 NOSTDLIB := -nostdlib
 else
+ifndef USE_STATIC_LIBGCC
+ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
+_LGCC_S := -lgcc
+else
+_LGCC_S := -lgcc_s
+endif
+else
+_LGCC_S := -lgcc
+endif
 NOSTDLIB := -nodefaultlibs
 ifeq ($(OSREALNAME),mingw)
-STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
+STDLIBS = -Wl,-whole-archive -lsupc++ -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
 else
 ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
-STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
+STDLIBS = -Wl,-whole-archive -lsupc++ -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
 else
-STDLIBS = -Wl,-whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -lpthread -lm -lc -lkernel32
+STDLIBS = -Wl,-whole-archive -lsupc++ -Wl,--no-whole-archive ${_LGCC_S} -lpthread -lm -lc -lkernel32
 endif
 endif
 endif
@@ -234,37 +243,48 @@ STDLIBS =
 endif
 endif
 
+ifneq ($(OSNAME),darwin)
+dbg-shared:	LDFLAGS += -shared
+stldbg-shared:	LDFLAGS += -shared
+release-shared:	LDFLAGS += -shared
+endif
+
 ifeq ($(OSNAME),hp-ux)
-dbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_DBGxx)
-stldbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_STLDBGxx)
-release-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAMExx)
+dbg-shared:	LDFLAGS += -Wl,-dynamic -Wl,+h$(SO_NAME_DBGxx)
+stldbg-shared:	LDFLAGS += -Wl,-dynamic -Wl,+h$(SO_NAME_STLDBGxx)
+release-shared:	LDFLAGS += -Wl,-dynamic -Wl,+h$(SO_NAMExx)
 endif
 
 ifeq ($(OSNAME),sunos)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),linux)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),cygming)
-dbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_DBG},--enable-auto-image-base ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--enable-auto-image-base ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,--out-implib=${LIB_NAME_OUT},--enable-auto-image-base ${NOSTDLIB}
+ifndef USE_STATIC_LIBGCC
+dbg-shared:	LDFLAGS += -shared-libgcc
+stldbg-shared:	LDFLAGS += -shared-libgcc
+release-shared:	LDFLAGS += -shared-libgcc
+endif
+dbg-shared:	LDFLAGS += -Wl,--out-implib=${LIB_NAME_OUT_DBG},--enable-auto-image-base ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -Wl,--out-implib=${LIB_NAME_OUT_STLDBG},--enable-auto-image-base ${NOSTDLIB}
+release-shared:	LDFLAGS += -Wl,--out-implib=${LIB_NAME_OUT},--enable-auto-image-base ${NOSTDLIB}
 dbg-static:	LDFLAGS += -static
 stldbg-static:	LDFLAGS += -static
 release-static:	LDFLAGS += -static
 endif
 
 ifeq ($(OSNAME),freebsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),darwin)
@@ -280,8 +300,8 @@ release-static:	LDFLAGS += -staticlib
 endif
 
 ifeq ($(OSNAME),openbsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${NOSTDLIB}
+dbg-shared:	LDFLAGS += -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${NOSTDLIB}
+release-shared:	LDFLAGS += -Wl,-soname -Wl,$(SO_NAMExx) ${NOSTDLIB}
 endif
 

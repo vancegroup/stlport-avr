@@ -186,6 +186,15 @@ ifeq ($(OSNAME),cygming)
 # Despite the use of the -whole-archive on libsupc++ when linking STLport we need to link with
 # it again here.
 LDFLAGS += -nodefaultlibs
+ifndef USE_STATIC_LIBGCC
+ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
+_LGCC_S := -lgcc
+else
+_LGCC_S := -lgcc_s
+endif
+else
+_LGCC_S := -lgcc
+endif
 ifeq ($(OSREALNAME),mingw)
 STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lmoldname -lcoldname -lkernel32
 else
@@ -202,6 +211,11 @@ endif
 # endif
 # _USE_NOSTDLIB
 else
+ifndef USE_STATIC_LIBGCC
+release-shared : LDFLAGS += -shared-libgcc
+dbg-shared : LDFLAGS += -shared-libgcc
+stldbg-shared : LDFLAGS += -shared-libgcc
+endif
 ifndef WITHOUT_STLPORT
 STDLIBS = ${STLPORT_LIB}
 else
@@ -211,5 +225,7 @@ endif
 
 # workaround for gcc 2.95.x bug:
 ifeq ($(CXX_VERSION_MAJOR),2)
+ifneq ($(OSNAME),cygming)
 OPT += -fPIC
+endif
 endif
