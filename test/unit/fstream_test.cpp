@@ -289,7 +289,7 @@ void FstreamTest::tellp()
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
   {
-    ofstream o( "test_file.txt", ios_base::ate | ios_base::app );
+    ofstream o( "test_file.txt", ios_base::app | ios_base::out );
 
     CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
