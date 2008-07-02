@@ -3,6 +3,11 @@
 	* configure.bat: After a very interesting debate the consesus
 	is to put configure scripts in root folder.
 
+	* stlport/stl/_string_sum_methods.h: Bug report #2003308,
+	compilation error with _STLP_USE_TEMPLATE_EXPRESSION.
+	Regression due to remove of POD type support in basic_string
+	implementation.
+
 2008-06-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_fstream.c: Consider read file failure in

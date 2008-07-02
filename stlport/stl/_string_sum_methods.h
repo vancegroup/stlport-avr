@@ -97,23 +97,6 @@ private:
     }
   }
 
-  /* Note: We always force use of dynamic buffer if the short string optim option is activated
-   * to avoid complicated code if the basic_string was instanciated with a non POD type.
-   * In such a case we should use assignment for objects in the static array something that we
-   * do not do.
-   */
-  size_type _M_get_additional_size(size_type __new_size, const __false_type& /*_Char_Is_POD*/) const {
-#if defined (_STLP_USE_SHORT_STRING_OPTIM)
-    //To avoid problem with the string assumptions, never allocate a dynamic buffer smaller or equal
-    //than the static one:
-    if (__new_size < _Base::_DEFAULT_SIZE + 1)
-      return (_Base::_DEFAULT_SIZE + 1) - __new_size;
-#endif /* _STLP_USE_SHORT_STRING_OPTIM */
-    return 0;
-  }
-  size_type _M_get_additional_size(size_type, const __true_type& /*_Char_Is_POD*/) const
-  { return 0; }
-
   template <class _Left, class _Right, class _StorageDir>
   _Self& _M_append_sum (_STLP_PRIV __bstr_sum<_CharT, _Traits, _Alloc, _Left, _Right, _StorageDir> const& __s) {
     size_type __s_size = __s.size();
@@ -122,19 +105,12 @@ private:
     const size_type __old_size = this->size();
     if (__s_size > this->max_size() || __old_size > (this->max_size() - __s_size))
       this->_M_throw_length_error();
-    size_type __offset_size = _M_get_additional_size(__old_size + __s_size, _Char_Is_POD());
-    if (__old_size + __s_size + __offset_size > this->capacity()) {
-      const size_type __len = __old_size + __offset_size + (max)(__old_size, __s_size) + 1;
+    if (__old_size + __s_size > this->capacity()) {
+      const size_type __len = __old_size + (max)(__old_size, __s_size) + 1;
       pointer __new_start = this->_M_start_of_storage.allocate(__len);
-      pointer __new_finish = __new_start;
-      _STLP_TRY {
-        __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
-        __new_finish = this->_M_append_fast(__s, __new_finish);
-        this->_M_construct_null(__new_finish);
-      }
-      _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                   this->_M_start_of_storage.deallocate(__new_start,__len)))
-      this->_M_destroy_range();
+      pointer __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
+      __new_finish = this->_M_append_fast(__s, __new_finish);
+      this->_M_construct_null(__new_finish);
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
@@ -153,19 +129,12 @@ private:
     const size_type __old_size = this->size();
     if (__s_size > this->max_size() || __old_size > (this->max_size() - __s_size))
       this->_M_throw_length_error();
-    size_type __offset_size = _M_get_additional_size(__old_size + __s_size, _Char_Is_POD());
-    if (__old_size + __s_size + __offset_size > this->capacity()) {
-      const size_type __len = __old_size + __offset_size + (max)(__old_size, __s_size) + 1;
+    if (__old_size + __s_size > this->capacity()) {
+      const size_type __len = __old_size + (max)(__old_size, __s_size) + 1;
       pointer __new_start = this->_M_start_of_storage.allocate(__len);
-      pointer __new_finish = __new_start;
-      _STLP_TRY {
-        __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
-        __new_finish = _M_append_fast_pos(__s, __new_finish, __pos, __s_size);
-        this->_M_construct_null(__new_finish);
-      }
-      _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
-                   this->_M_start_of_storage.deallocate(__new_start,__len)))
-      this->_M_destroy_range();
+      pointer __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
+      __new_finish = _M_append_fast_pos(__s, __new_finish, __pos, __s_size);
+      this->_M_construct_null(__new_finish);
       this->_M_deallocate_block();
       this->_M_reset(__new_start, __new_finish, __new_start + __len);
     }
@@ -180,15 +149,7 @@ private:
                                  size_type __pos, size_type __n) {
     pointer __finish = this->_M_Finish();
     _M_append_fast_pos(__s, __finish + 1, __pos + 1, __n - 1);
-    _STLP_TRY {
-      this->_M_construct_null(__finish + __n);
-    }
-    _STLP_UNWIND(this->_M_destroy_ptr_range(__finish + 1, __finish + __n))
-    /* The call to the traits::assign method is only important for non POD types because the instance
-     * pointed to by _M_finish has been constructed (default constructor) and should not be constructed
-     * (copy constructor) once again. For POD it is irrelevant, uninitialized_copy could be fine,
-     * but we are not going to make two implementations just for that.
-     */
+    this->_M_construct_null(__finish + __n);
     _Traits::assign(*this->_M_finish, __s[__pos]);
     this->_M_finish += __n;
   }
