@@ -2,7 +2,7 @@
 utf8 is a way of encoding wide characters. As so, management of encoding in
 the C++ Standard library is handle by the codecvt locale facet which is part
 of the ctype category. However utf8 only describe how encoding must be
-performed, it cannot be used to classified characters so it is not enough info
+performed, it cannot be used to classify characters so it is not enough info
 to know how to generate the whole ctype category facets of a locale
 instance.
 
