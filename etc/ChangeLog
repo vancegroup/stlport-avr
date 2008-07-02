@@ -1,3 +1,8 @@
+2008-07-02  Francois Dumont  <dums@users.sourceforge.net>
+
+	* configure.bat: After a very interesting debate the consesus
+	is to put configure scripts in root folder.
+
 2008-06-26  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stl/_fstream.c: Consider read file failure in
@@ -1062,13 +1067,13 @@
 2007-11-09  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Add missing cygming folder comming
-	from task branch, required for cygming/MinGW builds.
+	from task branch, required for Cygwin/MinGW builds.
 
 	* stlport/stl/_bvector.h, _deque.h, _hashtable.h, _list.h,
 	_rope.h, _slist.h, _string_base.h, _tree.h, _vector.h: Removed
-	usless instantiation of _Alloc_traits to define nested
+	useless instantiation of _Alloc_traits to define nested
 	allocator_type in several containers. STLport users will simply
-	have to correctly instanciation containers when they specify
+	have to correctly instantiate containers when they specify
 	the allocator to use.
 
 2007-10-30  Francois Dumont  <dums@users.sourceforge.net>

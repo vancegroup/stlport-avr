@@ -23,11 +23,11 @@ goto skp_comp
 :init
 
 REM initially create/overwrite config.mak
-echo # STLport Configuration Tool for Windows > Makefiles\nmake\config.mak
-echo # >> Makefiles\nmake\config.mak
-echo # config.mak generated with command line: >> Makefiles\nmake\config.mak
-echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> Makefiles\nmake\config.mak
-echo # >> Makefiles\nmake\config.mak
+echo # STLport Configuration Tool for Windows > build\Makefiles\nmake\config.mak
+echo # >> build\Makefiles\nmake\config.mak
+echo # config.mak generated with command line: >> build\Makefiles\nmake\config.mak
+echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> build\Makefiles\nmake\config.mak
+echo # >> build\Makefiles\nmake\config.mak
 
 REM
 REM option loop
@@ -216,72 +216,72 @@ goto oc_end
 :oc_msvc6
 :oc_wtm
 echo Setting compiler: Microsoft Visual C++ 6.0
-echo COMPILER_NAME=vc6 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=vc6 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=60
 goto oc_msvc
 
 :oc_msvc7
 echo Setting compiler: Microsoft Visual C++ .NET 2002
-echo COMPILER_NAME=vc70 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=vc70 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=70
 goto oc_msvc
 
 :oc_msv71
 echo Setting compiler: Microsoft Visual C++ .NET 2003
-echo COMPILER_NAME=vc71 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=vc71 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=71
 goto oc_msvc
 
 :oc_msvc8
 echo Setting compiler: Microsoft Visual C++ 2005
-echo COMPILER_NAME=vc8 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=vc8 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=80
 goto oc_msvc
 
 :oc_msvc9
 echo Setting compiler: Microsoft Visual C++ 2008
-echo COMPILER_NAME=vc9 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=vc9 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=90
 goto oc_msvc
 
 :oc_msvc
-echo TARGET_OS=x86 >> Makefiles\nmake\config.mak
+echo TARGET_OS=x86 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER=msvc
-echo !include msvc.mak > .\lib\Makefile
-echo !include msvc.mak > .\test\unit\Makefile
-echo !include msvc.mak > .\test\eh\Makefile
+echo !include msvc.mak > .\build\lib\Makefile
+echo !include msvc.mak > .\build\test\unit\Makefile
+echo !include msvc.mak > .\build\test\eh\Makefile
 goto oc_end
 
 :oc_icl
 echo Setting compiler: Intel C++ Compiler
-echo COMPILER_NAME=icl >> Makefiles\nmake\config.mak
-echo TARGET_OS=x86 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=icl >> build\Makefiles\nmake\config.mak
+echo TARGET_OS=x86 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER=icl
-echo !include icl.mak > .\lib\Makefile
-echo !include icl.mak > .\test\unit\Makefile
-echo !include icl.mak > .\test\eh\Makefile
+echo !include icl.mak > .\build\lib\Makefile
+echo !include icl.mak > .\build\test\unit\Makefile
+echo !include icl.mak > .\build\test\eh\Makefile
 goto oc_end
 
 :oc_evc3
 echo Setting compiler: Microsoft eMbedded Visual C++ 3
-echo COMPILER_NAME=evc3 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=evc3 >> build\Makefiles\nmake\config.mak
 rem TODO: branch on OSVERSION like below?
-echo CEVERSION=300 >> Makefiles\nmake\config.mak
+echo CEVERSION=300 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=3
 goto oc_evc
 
 :oc_evc4
 echo Setting compiler: Microsoft eMbedded Visual C++ .NET
-echo COMPILER_NAME=evc4 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=evc4 >> build\Makefiles\nmake\config.mak
 if "%OSVERSION%"=="" (
     echo OSVERSION not set, assuming target is CE 4.2
-    echo CEVERSION=420 >> Makefiles\nmake\config.mak
+    echo CEVERSION=420 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE400" (
-    echo CEVERSION=400 >> Makefiles\nmake\config.mak
+    echo CEVERSION=400 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE420" (
-    echo CEVERSION=420 >> Makefiles\nmake\config.mak
+    echo CEVERSION=420 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE500" (
-    echo CEVERSION=500 >> Makefiles\nmake\config.mak
+    echo CEVERSION=500 >> build\Makefiles\nmake\config.mak
 ) else (
     echo Unknown value for OSVERSION.
     exit /b 1
@@ -291,34 +291,34 @@ goto oc_evc
 
 :oc_evc8
 echo Setting compiler: Microsoft Visual C++ .NET 2005 for Windows CE
-echo COMPILER_NAME=evc8 >> Makefiles\nmake\config.mak
+echo COMPILER_NAME=evc8 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=80
 if "%OSVERSION%"=="" (
     echo OSVERSION not set, assuming target is CE 5.0
-    echo CEVERSION=500 >> Makefiles\nmake\config.mak
+    echo CEVERSION=500 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE400" (
-    echo CEVERSION=400 >> Makefiles\nmake\config.mak
+    echo CEVERSION=400 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE420" (
-    echo CEVERSION=420 >> Makefiles\nmake\config.mak
+    echo CEVERSION=420 >> build\Makefiles\nmake\config.mak
 ) else if "%OSVERSION%"=="WCE500" (
-    echo CEVERSION=500 >> Makefiles\nmake\config.mak
+    echo CEVERSION=500 >> build\Makefiles\nmake\config.mak
 ) else (
     echo Unknown value for OSVERSION.
     exit /b 1
 )
 set PLATFORM_SPECIFIED=1
 set SELECTED_COMPILER=msvc
-echo !include evc.mak > .\lib\Makefile
-echo !include evc.mak > .\test\unit\Makefile
-echo !include evc.mak > .\test\eh\Makefile
+echo !include evc.mak > .\build\lib\Makefile
+echo !include evc.mak > .\build\test\unit\Makefile
+echo !include evc.mak > .\build\test\eh\Makefile
 goto proc
 
 :oc_evc
 set PLATFORM_SPECIFIED=1
 set SELECTED_COMPILER=evc
-echo !include evc.mak > .\lib\Makefile
-echo !include evc.mak > .\test\unit\Makefile
-echo !include evc.mak > .\test\eh\Makefile
+echo !include evc.mak > .\build\lib\Makefile
+echo !include evc.mak > .\build\test\unit\Makefile
+echo !include evc.mak > .\build\test\eh\Makefile
 goto proc
 
 :oc_end
@@ -364,36 +364,36 @@ goto pr_end
 
 :pr_arm
 echo Target processor: ARM
-echo TARGET_PROC=arm >> Makefiles\nmake\config.mak
-echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> Makefiles\nmake\config.mak
+echo TARGET_PROC=arm >> build\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> build\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_x86
 echo Target processor: x86
-echo TARGET_PROC=x86 >> Makefiles\nmake\config.mak
+echo TARGET_PROC=x86 >> build\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_emul
 echo Target processor: Emulator
-echo TARGET_PROC=x86 >> Makefiles\nmake\config.mak
-echo TARGET_PROC_SUBTYPE=emulator >> Makefiles\nmake\config.mak
+echo TARGET_PROC=x86 >> build\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=emulator >> build\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_mips
 echo Target processor: MIPS
-echo TARGET_PROC=mips >> Makefiles\nmake\config.mak
-echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> Makefiles\nmake\config.mak
+echo TARGET_PROC=mips >> build\Makefiles\nmake\config.mak
+echo TARGET_PROC_SUBTYPE=%TARGETCPU% >> build\Makefiles\nmake\config.mak
 
 goto pr_end
 
 :pr_sh3
 echo Target processor: %TARGETCPU%
-echo TARGET_PROC=sh3 >> Makefiles\nmake\config.mak
+echo TARGET_PROC=sh3 >> build\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_sh4
 echo Target processor: %TARGETCPU%
-echo TARGET_PROC=sh4 >> Makefiles\nmake\config.mak
+echo TARGET_PROC=sh4 >> build\Makefiles\nmake\config.mak
 goto pr_end
 
 :pr_end
@@ -416,19 +416,19 @@ goto op_end
 
 :op_win95
 echo Setting platform: Windows 95
-echo WINVER=0x0400 >> Makefiles\nmake\config.mak
+echo WINVER=0x0400 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
 :op_win98
 echo Setting platform: Windows 98
-echo WINVER=0x0410 >> Makefiles\nmake\config.mak
+echo WINVER=0x0410 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
 :op_winxp
 echo Setting platform: Windows XP
-echo WINVER=0x0501 >> Makefiles\nmake\config.mak
+echo WINVER=0x0501 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
@@ -446,7 +446,7 @@ REM **************************************************************************
 
 :opt_x
 echo Setting up for cross compiling.
-echo CROSS_COMPILING=1 >> Makefiles\nmake\config.mak
+echo CROSS_COMPILING=1 >> build\Makefiles\nmake\config.mak
 goto cont_lp
 
 
@@ -476,12 +476,12 @@ goto or_end
 
 :or_sok
 echo Selecting static C runtime library for STLport
-echo WITH_STATIC_RTL=1 >> Makefiles\nmake\config.mak
+echo WITH_STATIC_RTL=1 >> build\Makefiles\nmake\config.mak
 goto or_end
 
 :or_dok
 echo Selecting dynamic C runtime library for STLport
-echo WITH_DYNAMIC_RTL=1 >> Makefiles\nmake\config.mak
+echo WITH_DYNAMIC_RTL=1 >> build\Makefiles\nmake\config.mak
 goto or_end
 
 :or_end
@@ -502,7 +502,7 @@ goto ob_end
 
 :ob_ok
 echo Activating boost support using "%2" path
-echo STLP_BUILD_BOOST_PATH="%2" >> Makefiles\nmake\config.mak
+echo STLP_BUILD_BOOST_PATH="%2" >> build\Makefiles\nmake\config.mak
 
 :ob_end
 shift
@@ -516,7 +516,7 @@ REM *
 REM **************************************************************************
 :opt_st
 echo Removing thread safety support
-echo WITHOUT_THREAD=1 >> Makefiles\nmake\config.mak
+echo WITHOUT_THREAD=1 >> build\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -526,7 +526,7 @@ REM *
 REM **************************************************************************
 :opt_rtti
 echo Removing rtti support
-echo WITHOUT_RTTI=1 >> Makefiles\nmake\config.mak
+echo WITHOUT_RTTI=1 >> build\Makefiles\nmake\config.mak
 goto cont_lp
 
 REM **************************************************************************
@@ -538,12 +538,12 @@ REM **************************************************************************
 echo Adding '%2' compilation option
 if "%ONE_OPTION_ADDED%" == "1" goto ox_n
 
-echo DEFS = %2 >> Makefiles\nmake\config.mak
+echo DEFS = %2 >> build\Makefiles\nmake\config.mak
 set ONE_OPTION_ADDED=1
 goto ox_end
 
 :ox_n
-echo DEFS = $(DEFS) %2 >> Makefiles\nmake\config.mak
+echo DEFS = $(DEFS) %2 >> build\Makefiles\nmake\config.mak
 
 :ox_end
 shift
@@ -557,7 +557,7 @@ REM **************************************************************************
 :opt_motf
 echo Using '%2' in generated library names
 
-echo LIB_MOTIF = %2 >> Makefiles\nmake\config.mak
+echo LIB_MOTIF = %2 >> build\Makefiles\nmake\config.mak
 
 shift
 goto cont_lp
@@ -570,7 +570,7 @@ REM **************************************************************************
 :no_sport
 echo Configured to build without STLport
 
-echo WITHOUT_STLPORT=1 >> Makefiles\nmake\config.mak
+echo WITHOUT_STLPORT=1 >> build\Makefiles\nmake\config.mak
 
 shift
 goto cont_lp
@@ -581,7 +581,7 @@ REM * Clean
 REM *
 REM **************************************************************************
 :opt_cln
-del Makefiles\nmake\config.mak
+del build\Makefiles\nmake\config.mak
 echo STLport configuration file removed.
 goto skp_comp
 
@@ -596,7 +596,7 @@ REM **************************************************************************
 if "%PLATFORM_SPECIFIED%" == "1" goto comp
 echo Setting platform: Windows XP
 echo.
-echo WINVER=0x0501 >> Makefiles\nmake\config.mak
+echo WINVER=0x0501 >> build\Makefiles\nmake\config.mak
 
 :comp
 echo Done configuring STLport.
