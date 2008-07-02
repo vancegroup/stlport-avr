@@ -40,8 +40,10 @@ You cannot use native compiler iostreams implementation with STLport STL
    Not all combinations of options healthy, you should understand
    what you do. If not, keep all unchanged.
 
-   Note: you can find all recognised 'settings' in file
+   Note: you can find all recognised 'settings' in the file
    build/Makefiles/gmake/config.mak
+
+   This is generated file, but only ./configure will rewrite one.
 
 3) Run
 
