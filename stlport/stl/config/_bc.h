@@ -9,6 +9,8 @@
 
 #pragma defineonoption _STLP_NO_RTTI -RT-
 
+#define _STLP_DONT_SUP_DFLT_PARAM
+
 #if (__BORLANDC__ >= 0x580)
 #  define _STLP_HAS_INCLUDE_NEXT
 #  define _STLP_NATIVE_HEADER(header) <../include/##header>

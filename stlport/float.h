@@ -33,24 +33,14 @@ struct _exception;
 #endif
 
 #if !defined (__linux__)
-#if defined(__BORLANDC__) && defined (__cplusplus) && (__BORLANDC__ >= 0x560)
+#  if defined(__BORLANDC__) && defined (__cplusplus) && (__BORLANDC__ >= 0x560)
 _STLP_BEGIN_NAMESPACE
 using ::_max_dble;
 using ::_max_flt;
 using ::_max_ldble;
 using ::_tiny_ldble;
 _STLP_END_NAMESPACE
-#endif
-
-#if defined (__BORLANDC__) && defined (__cplusplus) && !defined (_STLP_BCC_FPU_BUG)
-#  define _STLP_BCC_FPU_BUG
-/* Ignore FPU exceptions, set FPU precision to 53 bits for floatio_test and cmath_test */
-static unsigned int _bcc_fpu_bug = _control87(PC_53|MCW_EM, MCW_PC|MCW_EM);
-template <class _Fp>
-int __fpclass(_Fp __val)
-{ int __f = _fpclass(__val); _control87(PC_53|MCW_EM, MCW_PC|MCW_EM); return __f; }
-#  define _fpclass __fpclass
-#endif
+#  endif
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x203)

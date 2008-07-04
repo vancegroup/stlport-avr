@@ -23,6 +23,11 @@ using namespace std;
 class NumPutGetTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(NumPutGetTest);
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   CPPUNIT_TEST(num_put_float);
   CPPUNIT_TEST(num_put_integer);
   CPPUNIT_TEST(num_get_float);
@@ -31,6 +36,11 @@ class NumPutGetTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(pointer);
   CPPUNIT_TEST(fix_float_long);
   CPPUNIT_TEST(custom_numpunct);
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -66,10 +76,6 @@ private:
   template <class F>
   void check_get_float( F v )
   {
-#  if defined (__BORLANDC__)
-    _control87(PC_64|MCW_EM, MCW_PC|MCW_EM);
-#  endif
-
     F in_val_d = v;
     typedef numeric_limits<F> limits;
     {

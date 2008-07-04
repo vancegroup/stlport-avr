@@ -159,7 +159,7 @@ public:
 
   _STLP_STATIC_CONSTANT(bool, has_infinity = true);
 #if (!defined (_STLP_MSVC) || (_STLP_MSVC > 1300)) && \
-    (!defined (__BORLANDC__) || (__BORLANDC__ > 0x551)) && \
+    (!defined (__BORLANDC__) || (__BORLANDC__ >= 0x590)) && \
     (!defined (_CRAY) || defined (_CRAYIEEE))
   _STLP_STATIC_CONSTANT(bool, has_quiet_NaN = true);
   _STLP_STATIC_CONSTANT(bool, has_signaling_NaN = true);

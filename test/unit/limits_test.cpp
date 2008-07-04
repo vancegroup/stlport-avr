@@ -27,8 +27,18 @@ using namespace std;
 class LimitTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(LimitTest);
+#  if defined (__BORLANDC__)
+  /* Ignore FPU exceptions, set FPU precision to 64 bits */
+  unsigned int _float_control_word = _control87(0, 0);
+  _control87(PC_64|MCW_EM|IC_AFFINE, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   CPPUNIT_TEST(test);
   CPPUNIT_TEST(qnan_test);
+#  if defined (__BORLANDC__)
+  /* Reset floating point control word */
+  _clear87();
+  _control87(_float_control_word, MCW_PC|MCW_EM|MCW_IC);
+#  endif
   CPPUNIT_TEST_SUITE_END();
 
 protected:
