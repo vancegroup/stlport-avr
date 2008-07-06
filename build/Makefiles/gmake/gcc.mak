@@ -60,6 +60,14 @@ ifdef BOOST_INCLUDE_DIR
 INCLUDES += -I${BOOST_INCLUDE_DIR}
 endif
 
+ifeq ($(OSNAME), cygming)
+ifeq ($(OSREALNAME), mingw)
+# MinGW has problem with /usr/local reference in gcc or linker command line so
+# we use a local install for this platform.
+BASE_INSTALL_DIR ?= ${STLPORT_DIR}
+endif
+endif
+
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
