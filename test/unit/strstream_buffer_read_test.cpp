@@ -3,13 +3,14 @@
  * obsolete, and even if ones was mentioned in D7.1--D7.4 of 
  * Standard, we have no wish to spent time with repair ones.
  */
-#include <strstream>
+#if !defined (_STLP_NO_IOSTREAMS)
+#  include <strstream>
 
-#include "cppunit/cppunit_proxy.h"
+#  include "cppunit/cppunit_proxy.h"
 
-#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#endif
+#  endif
 
 class StrstreamBufferTest : public CPPUNIT_NS::TestCase
 {
@@ -31,3 +32,4 @@ void StrstreamBufferTest::read_from_buffer()
   stream >> cur;
   CPPUNIT_ASSERT(cur == 'H'); 
 }
+#endif

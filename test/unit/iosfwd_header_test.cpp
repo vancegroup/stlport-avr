@@ -5,6 +5,6 @@
  * used to check that files included by those headers are compatible with
  * pure C compilers.
  */
-#ifndef _STLP_USE_NO_IOSTREAMS
-#include <iosfwd>
+#ifndef _STLP_NO_IOSTREAMS
+#  include <iosfwd>
 #endif

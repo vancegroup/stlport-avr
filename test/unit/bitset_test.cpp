@@ -1,6 +1,8 @@
 #include <bitset>
 #include <algorithm>
-#include <sstream>
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#  include <sstream>
+#endif
 
 #include "cppunit/cppunit_proxy.h"
 
@@ -15,6 +17,9 @@ class BitsetTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(BitsetTest);
   CPPUNIT_TEST(bitset1);
+#if defined (STLPORT) && defined (_STLP_USE_NO_IOSTREAMS)
+  CPPUNIT_IGNORE;
+#endif
   CPPUNIT_TEST(iostream);
   CPPUNIT_TEST_SUITE_END();
 
@@ -72,6 +77,7 @@ void BitsetTest::bitset1()
 
 void BitsetTest::iostream()
 {
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
   {
     stringstream sstr;
     bitset<13U> b(0x1111);
@@ -85,7 +91,7 @@ void BitsetTest::iostream()
     CPPUNIT_ASSERT( b1.test(8) );
     CPPUNIT_ASSERT( b1.test(12) );
   }
-#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
+#  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   {
     wstringstream sstr;
     bitset<13U> b(0x1111);
@@ -99,5 +105,6 @@ void BitsetTest::iostream()
     CPPUNIT_ASSERT( b1.test(8) );
     CPPUNIT_ASSERT( b1.test(12) );
   }
+#  endif
 #endif
 }

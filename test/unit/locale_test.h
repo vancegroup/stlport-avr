@@ -1,17 +1,18 @@
 #include <string>
-#include <iosfwd>
+#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
+#  include <iosfwd>
 
-#include "cppunit/cppunit_proxy.h"
-#include <locale>
+#  include "cppunit/cppunit_proxy.h"
+#  include <locale>
 
 struct ref_monetary;
 struct ref_locale;
 
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
-#  define STD std::
-#else
-#  define STD
-#endif
+#  if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+#    define STD std::
+#  else
+#    define STD
+#  endif
 
 //
 // TestCase class
@@ -89,4 +90,5 @@ private:
   void _money_put_X_bug( const STD locale&, const ref_monetary* );
 };
 
-#undef STD
+#  undef STD
+#endif
