@@ -81,10 +81,6 @@ LINK.cc = ilink32 $(subst /,\\,$(LDFLAGS))
 
 LDFLAGS += -ap -D -Gn
 
-ifndef LIBNAME
-LDFLAGS += -L$(subst /,\\,$(STLPORT_DIR)/lib)
-endif
-
 dbg-static : DEFS += -D_DEBUG
 dbg-shared : DEFS += -D_DEBUG
 stldbg-static : DEFS += -D_DEBUG
@@ -140,23 +136,6 @@ dbg-static : LDLIBS += cw32i.lib
 stldbg-static : LDLIBS += cw32i.lib
 endif
 endif
-
-ifndef LIBNAME
-ifdef WITH_DYNAMIC_RTL
-release-static: DEFS += -D_STLP_USE_STATIC_LIB
-dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
-stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
-endif
-ifdef WITH_STATIC_RTL
-release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
-dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
-stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
-endif
-endif
-
-# install dir defaults to /usr/local unless defined
-
-BASE_INSTALL_DIR ?= ${SRCROOT}/..
 
 # map output option (see build/Makefiles/gmake/dmc.mak)
 
@@ -259,8 +238,15 @@ BASE_INSTALL_DIR ?= ${SRCROOT}/..
 
 endif # linux
 
-# dependency output parser (dependencies collector)
+ifdef EXTRA_CXXFLAGS
+CXXFLAGS += $(EXTRA_CXXFLAGS)
+endif
 
+ifdef EXTRA_CFLAGS
+CFLAGS += $(EXTRA_CFLAGS)
+endif
+
+# dependency output parser (dependencies collector)
 DP_OUTPUT_DIR = | sed 's|\($*\)\.o[ :]*|$(OUTPUT_DIR)/\1.o $@ : |g' > $@; \
                            [ -s $@ ] || rm -f $@
 

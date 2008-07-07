@@ -20,6 +20,20 @@ LDFLAGS += -Tpe -w -w-dup
 
 START_OBJ = c0x32.obj
 
+LDFLAGS += -L$(subst /,\\,$(STLPORT_DIR)/lib)
+
+ifdef WITH_DYNAMIC_RTL
+release-static: DEFS += -D_STLP_USE_STATIC_LIB
+dbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+stldbg-static:  DEFS += -D_STLP_USE_STATIC_LIB
+endif
+
+ifdef WITH_STATIC_RTL
+release-shared: DEFS += -D_STLP_USE_DYNAMIC_LIB
+dbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+stldbg-shared:  DEFS += -D_STLP_USE_DYNAMIC_LIB
+endif
+
 else
 
 OPT += -tC
