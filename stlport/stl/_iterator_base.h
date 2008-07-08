@@ -105,9 +105,8 @@ struct iterator<output_iterator_tag, void, void, void, void> {
  * one. To allow some interaction between both implementations through
  * iterators we have to map std iterator categories to stlport ones. This
  * way we will be able to initialize STLport containers with native
- * iterators, the other side shouldn't work even if some implementation
- * are not really strict on the iterator definition and will work too
- * considering always the worst category. */
+ * iterators, the other side won't work except when STLport iterators are
+ * simple pointers. */
 
 _STLP_END_NAMESPACE
 
@@ -154,7 +153,7 @@ struct iterator_traits {
   typedef typename _Iterator::reference         reference;
 };
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && ! defined (__SUNPRO_CC)
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (__SUNPRO_CC)
 #  define _STLP_DIFFERENCE_TYPE(_Iterator) typename iterator_traits<_Iterator>::difference_type
 #else
 #  define _STLP_DIFFERENCE_TYPE(_Iterator) ptrdiff_t
