@@ -323,8 +323,10 @@ public:
       __sgi_alloc::deallocate((void*)__p, __n * sizeof(value_type));
     }
   }
+#if !defined (_STLP_NO_ANACHRONISMS)
   // backwards compatibility
   void deallocate(pointer __p) const {  if (__p != 0) __sgi_alloc::deallocate((void*)__p, sizeof(value_type)); }
+#endif
   size_type max_size() const _STLP_NOTHROW  { return size_t(-1) / sizeof(value_type); }
   void construct(pointer __p, const_reference __val) { _STLP_STD::_Copy_Construct(__p, __val); }
   void destroy(pointer __p) { _STLP_STD::_Destroy(__p); }
