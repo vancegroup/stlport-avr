@@ -10,8 +10,6 @@
 #  endif
 #  include <iterator>
 #  include <functional>
-#elif defined(__GNUC__)
-#  include <ext/slist>
 #endif
 
 #include "cppunit/cppunit_proxy.h"
