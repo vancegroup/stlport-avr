@@ -47,6 +47,7 @@ Q6.2 My tool detects memory leaks in applications with STLport. Is this leak
 from STLport?
 Q6.3 When running unit tests, I have errors in LocaleTest test fixture, how bad
 is it?
+Q6.4 set or multiset iterators are immutable like const_iterators, why ?
 
                            Answers
 
@@ -134,13 +135,7 @@ in most cases you need some runtime libraries from the C++ compiler.
 Q2.2 Can I use containers and algorithms from STLport and iostreams from
 the library that ships with my compiler?
 
-A2.2 This is a case of STL implementations mix. See A2.3 below.
-
-========================================================================
-
-Q2.3 Can I mix STL implementations in my project?
-
-A2.3 The short answer is 'No'.
+A2.2 The short answer is 'No'.
 
 Indeed co-existence of two implementations possible, but this required
 a lot of knowledge as about both implementations, as about compiler and
@@ -266,6 +261,43 @@ for it".
 
 ========================================================================
 
+Q2.3 Can I mix STL implementations in my project?
+
+A2.3 Yes you can but each implementations will rely in its own namespace
+with no direct interaction between them. You will first need to correctly
+configure STLport thanks to 2 macros in user_config.h file.
+- _STLP_DONT_REDEFINE_STD tells STLport not to define the std macro that is
+used to replace std reference in your code with STLport namespace.
+- _STLP_WHOLE_NATIVE_STD tells STLport to always include native header each
+time a Standard header is included in your code.
+
+Here is a small code sample that do not require any modification in STLport
+install:
+
+#define _STLP_DONT_REDEFINE_STD
+#define _STLP_WHOLE_NATIVE_STD
+
+#include <string>
+
+void foo()
+{
+   std::string std_str("std");
+   stlport::string stlport_str("stlport");
+   stlport_str.append(std_str.begin(), std_str.end());
+   // Following is wrong because there is no assignment
+   // operator for stlport::string on std::string.
+   //std_str = stlport_str;
+}
+
+Note: You can use 'std' iterators from native implementation in STLport
+template methods like in the 'stlport_str.append' method call above because
+STLport is adding the necessary code to interpret native iterators like
+STLport iterators. You won't be able however to do the opposite as native
+implementation do not know anything about STLport iterators.
+
+
+========================================================================
+
 Q2.4 When I switch to STLport in my application, I get errors. Is STLport
 so bad?
 
@@ -280,7 +312,7 @@ instructions and check that you correctly unpack archive in case you see
 INSTALL, doc/README.*, build/README*, build/test/unit/README*.
 If you are sure, submit bug report here:
 https://sourceforge.net/projects/stlport
-Don't forget to describe you operational environment, compiler version and
+Don't forget to describe your operational environment, compiler version and
 STLport version.
 
 ========================================================================
@@ -299,6 +331,10 @@ So you can:
  - create a link to the native compiler headers like expected by STLport
  - make request to package maintainer
  - build and install compiler
+
+Note: Starting with version 5.2, STLport uses the include_next preprocessing
+command to access native headers so you shouldn't experiment this problem
+anymore when this feature is supported by your compiler preprocessor.
 
 ========================================================================
 
@@ -336,7 +372,7 @@ Q3.4 Does STLport support cross-compilation?
 
 A3.4 In case of GCC, use something like following sequence:
 
-  (cd build/lib; ./configure --target=${CROSSTARGET}; \
+  (./configure --target=${CROSSTARGET}; cd build/lib; \
      export PATH=${BASECROSS}/bin:${PATH}; make -f gcc.mak install-release-shared)
 
 where CROSSTARGET is GCC's cross prefix (something like 'i586-pc-linux-gnu',
@@ -402,8 +438,8 @@ A5.0
 Q6.0 In STLport files like locale.h, setjmp.h, stdlib.h, etc., do 
 nothing except include native headers. Why are these files present in STLport?
 
-A6.0 Sometimes native C headers was using C++ one or was refering
-to the std namespace. That's why, if stddef whould absent in STLport, then
+A6.0 Sometimes native C headers are using C++ ones or are refering
+to the std namespace. That's why, if stddef was absent in STLport, then
 
 #include <string>
 #include <stddef.h>
@@ -453,7 +489,7 @@ shared libraries (e.g. DLL, this problem specific for Windows DLL model) that
 uses STLport internally and are statically link to it. If memory is allocated in
 a dll and released in an other then the STLport node allocator will keep the
 released memory for a future use. If you do not use this memory then your
-application global memory consumtion will grow until the app crash even if there
+application global memory consumption will grow until the app crash even if there
 is no real memory leak. This is why you should always use a coherent configuration
 everything in dll or everything in static lib.
 
@@ -502,4 +538,17 @@ fully supported by STLport. Platform independant localization tests are very har
 to write as Standard localization API has not been design to make unit test easy.
 In STLport unit tests suite we have hard coded some expected values. Those values
 depends on your OS configuration explaining why sometimes the tests are failing.
+
+========================================================================
+
+Q6.4 set or multiset iterators are immutable like const_iterators, why ?
+
+A6.4 With set or multiset associative containers or even newly introduced
+tr1::unordered_set and tr1::unordered_multiset key is confuse with data. It
+means that modifying the data is also modifying the key. Modifying the key
+might corrupt the container internal data structure so STLport prefer to
+make this problem obvious and only return a const access to the key with
+immutable iterators. Your solutions are:
+- prefer map/multimap and split the key and the data
+- use const_cast when you want to change a set/multiset element.
 
