@@ -1,3 +1,9 @@
+2008-07-10  Francois Dumont  <dums@users.sourceforge.net>
+
+	* src/num_put_float.cpp: Use an union based technique to find out
+	the sign of floating point values. It will maybe replace use of
+	platform specific functions in a future version.
+
 2008-07-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* configure.bat: After a very interesting debate the consesus

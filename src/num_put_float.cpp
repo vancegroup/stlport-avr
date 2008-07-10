@@ -90,11 +90,6 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (__hpux) && defined (__GNUC__)
-bool finite(double);
-bool isinf(double);
-#endif
-
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 #if defined (__MWERKS__) || defined(__BEOS__)
@@ -126,7 +121,9 @@ struct _Dig<0>
 // Tests for infinity and NaN differ on different OSs.  We encapsulate
 // these differences here.
 #if !defined (USE_SPRINTF_INSTEAD)
-#  if defined (__hpux) || defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
+#  if defined (__hpux)
+#    define _STLP_USE_SIGN_HELPER
+#  elif defined (__DJGPP) || (defined (_STLP_USE_GLIBC) && ! defined (__MSL__)) || \
       defined (__CYGWIN__) || \
       defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__)
 static inline bool _Stl_is_nan_or_inf(double x)
@@ -583,12 +580,41 @@ static size_t __format_float_fixed( __iostring &buf, const char *bp,
   return __group_pos;
 }
 
+#if defined (_STLP_USE_SIGN_HELPER)
+template<class _FloatT>
+struct float_sign_helper {
+  float_sign_helper(_FloatT __x)
+  { _M_number._num = __x; }
+
+  bool is_negative() const {
+    const unsigned short sign_mask(1 << (sizeof(unsigned short) * CHAR_BIT - 1));
+    return (get_sign_word() & sign_mask) != 0;
+  }
+private:
+  union {
+    unsigned short _Words[8];
+    _FloatT _num;
+  } _M_number;
+
+  unsigned short get_word_higher() const _STLP_NOTHROW
+  { return _M_number._Words[0]; }
+  unsigned short get_word_lower() const _STLP_NOTHROW
+  { return _M_number._Words[(sizeof(_FloatT) >= 12 ? 10 : sizeof(_FloatT)) / sizeof(unsigned short) - 1]; }
+  unsigned short get_sign_word() const _STLP_NOTHROW
+#  if defined (_STLP_BIG_ENDIAN)
+  { return get_word_higher(); }
+#  else /* _STLP_LITTLE_ENDIAN */
+  { return get_word_lower(); }
+#  endif
+};
+#endif
+
 template <class _FloatT>
 static size_t __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags flags) {
   static const char* inf[2] = { "inf", "Inf" };
   static const char* nan[2] = { "nan", "NaN" };
   const char** inf_or_nan;
-#if !defined (__GNUC__) || !defined (__hpux)
+#if !defined (_STLP_USE_SIGN_HELPER)
   if (_Stl_is_inf(x)) {            // Infinity
     inf_or_nan = inf;
     if (_Stl_is_neg_inf(x))
@@ -606,22 +632,14 @@ static size_t __format_nan_or_inf(__iostring& buf, _FloatT x, ios_base::fmtflags
   typedef numeric_limits<_FloatT> limits;
   if (x == limits::infinity() || x == -limits::infinity()) {
     inf_or_nan = inf;
-    if (x == -limits::infinity())
-      buf += '-';
-    else if (flags & ios_base::showpos)
-      buf += '+';
   } else {                    // NaN
     inf_or_nan = nan;
-#  if defined (_STLP_BIG_ENDIAN)
-    if ((*(__REINTERPRET_CAST(char*, &x)) & (1 << (CHAR_BIT - 1))) != 0)
-#else
-    if ((*(__REINTERPRET_CAST(unsigned short*, &x) + ((sizeof(x) == 12 ? 10 : sizeof(x)) / sizeof(unsigned short) - 1)) &
-                unsigned short(1 << (sizeof(unsigned short) * CHAR_BIT - 1))) != 0)
-#endif
-      buf += '-';
-    else if (flags & ios_base::showpos)
-      buf += '+';
   }
+  float_sign_helper<_FloatT> helper(x);
+  if (helper.is_negative())
+    buf += '-';
+  else if (flags & ios_base::showpos)
+    buf += '+';
 #endif
   size_t ret = buf.size();
   buf += inf_or_nan[flags & ios_base::uppercase ? 1 : 0];
