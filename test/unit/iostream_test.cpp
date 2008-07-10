@@ -81,16 +81,16 @@ void IOStreamTest::manipulators()
 
 void IOStreamTest::in_avail()
 {
-  CPPUNIT_ASSERT( cin.rdbuf()->in_avail() == 0 );
-  CPPUNIT_ASSERT( cout.rdbuf()->in_avail() == -1 );
-  CPPUNIT_ASSERT( clog.rdbuf()->in_avail() == -1 );
-  CPPUNIT_ASSERT( cerr.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( cin.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( cout.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( clog.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( cerr.rdbuf()->in_avail() == -1 );
 
 #if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
-  CPPUNIT_ASSERT( wcin.rdbuf()->in_avail() == 0 );
-  CPPUNIT_ASSERT( wcout.rdbuf()->in_avail() == -1 );
-  CPPUNIT_ASSERT( wclog.rdbuf()->in_avail() == -1 );
-  CPPUNIT_ASSERT( wcerr.rdbuf()->in_avail() == -1 );
+  CPPUNIT_CHECK( wcin.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wcout.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wclog.rdbuf()->in_avail() == 0 );
+  CPPUNIT_CHECK( wcerr.rdbuf()->in_avail() == 0 );
 #endif
 }
 

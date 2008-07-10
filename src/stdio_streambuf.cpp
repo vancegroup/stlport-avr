@@ -150,12 +150,8 @@ int stdio_streambuf_base::sync() {
 
 stdio_istreambuf::~stdio_istreambuf() {}
 
-streamsize stdio_istreambuf::showmanyc() {
-  if (feof(_M_file))
-    return -1;
-
-  return 0;
-}
+streamsize stdio_istreambuf::showmanyc()
+{ return 0; }
 
 stdio_istreambuf::int_type stdio_istreambuf::underflow()
 {
@@ -201,9 +197,8 @@ stdio_istreambuf::int_type stdio_istreambuf::pbackfail(int_type c) {
 
 stdio_ostreambuf::~stdio_ostreambuf() {}
 
-streamsize stdio_ostreambuf::showmanyc() {
-  return -1;
-}
+streamsize stdio_ostreambuf::showmanyc()
+{ return -1; }
 
 stdio_ostreambuf::int_type stdio_ostreambuf::overflow(int_type c) {
   // Write the existing buffer, without writing any additional character.

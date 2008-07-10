@@ -4,6 +4,13 @@
 	the sign of floating point values. It will maybe replace use of
 	platform specific functions in a future version.
 
+	* src/stdio_streambuf.cpp, test/unit/iostream_test.cpp: Change
+	behavior of stdio_istreambuf implementation that now always return 0 on
+	showmanyc call. Returning -1 means that reading attempt will
+	necessarily fail which is not the case, 0 is prefered as it means that
+	we don't know. It is also similar to other std implementations like
+	libstdc++.
+
 2008-07-02  Francois Dumont  <dums@users.sourceforge.net>
 
 	* configure.bat: After a very interesting debate the consesus
