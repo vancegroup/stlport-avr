@@ -55,6 +55,7 @@
 #  if !defined (__BUILDING_STLPORT)
 #    define NOWINBASEINTERLOCK  
 #  endif
+#  define _STLP_LANG_INVARIANT_DEFINED
 #endif
 
 #if (__BORLANDC__ < 0x590)

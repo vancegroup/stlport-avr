@@ -114,7 +114,13 @@ void LocaleTest::_num_put_get( const locale& loc, const ref_locale* prl ) {
   }
 
   if (limd::has_quiet_NaN) {
+    /* Ignore FPU exceptions */
+    unsigned int _float_control_word = _control87(0, 0);
+    _control87(EM_INVALID|EM_INEXACT, MCW_EM);
     double qnan = limd::quiet_NaN();
+    /* Reset floating point control word */
+    _clear87();
+    _control87(_float_control_word, MCW_EM);
     fostr.str("");
     nput.put(fostr, fostr, ' ', qnan);
     CPPUNIT_ASSERT( fostr.str() == string("+NaN") );
