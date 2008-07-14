@@ -183,8 +183,6 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 endif
 
 ifeq ($(OSNAME),cygming)
-# Despite the use of the -whole-archive on libsupc++ when linking STLport we need to link with
-# it again here.
 LDFLAGS += -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
@@ -198,10 +196,11 @@ endif
 ifeq ($(OSREALNAME),mingw)
 STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lmoldname -lcoldname -lkernel32
 else
+LDFLAGS += -Wl,-enable-auto-import
 ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
-STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lkernel32
+STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lmingw32 -lmingwex -lmsvcrt -lm -lmoldname -lcoldname -lkernel32
 else
-STDLIBS = ${STLPORT_LIB} -lsupc++ ${_LGCC_S} -lm -lc -lpthread -lkernel32
+STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lm -lc -lpthread -lkernel32
 endif
 endif
 else

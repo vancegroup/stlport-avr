@@ -1,3 +1,14 @@
+2008-07-14  Francois Dumont  <dums@users.sourceforge.net>
+
+	* build/Makefiles/gmake: Build system updated for gcc under Cygwin,
+	MinGW. Under Cygwin, with or without -mno-cygwin option, STLport
+	is now a full replacement for libstdc++, building an application
+	with it do not require -lsupc++ anymore as it is completely
+	integrated in STLport. Under MinGW it didn't work resulting in a
+	crash when starting an application using STLport so -lsupc++ is
+	necessary both when linking STLport _and_ when linking the
+	application using it.
+
 2008-07-10  Francois Dumont  <dums@users.sourceforge.net>
 
 	* src/num_put_float.cpp: Use an union based technique to find out

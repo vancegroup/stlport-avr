@@ -211,6 +211,7 @@ endif
 ifneq ($(OSNAME),cygming)
 NOSTDLIB := -nostdlib
 else
+NOSTDLIB := -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
@@ -220,10 +221,13 @@ endif
 else
 _LGCC_S := -lgcc
 endif
-NOSTDLIB := -nodefaultlibs
 ifeq ($(OSREALNAME),mingw)
-STDLIBS = -Wl,-whole-archive -lsupc++ -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
+STDLIBS = -lsupc++ ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
 else
+LIBSUPC++ := $(shell ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
+LSUPC++DEF := $(PRE_OUTPUT_DIR)/libsupc++.def
+$(LSUPC++DEF) : $(LIBSUPC++)
+	dlltool --export-all-symbols --output-def=$(LSUPC++DEF) $(LIBSUPC++)
 ifneq (,$(findstring no-cygwin,$(EXTRA_CXXFLAGS)))
 STDLIBS = -Wl,-whole-archive -lsupc++ -Wl,-no-whole-archive ${_LGCC_S} -lm -lmoldname -lmingw32 -lmingwex -lmsvcrt -lkernel32
 else

@@ -1,11 +1,11 @@
 # -*- makefile -*- Time-stamp: <03/07/15 18:23:04 ptr>
 # $Id: lib.mak 3023 2007-05-16 20:01:32Z dums $
 
+LIB_PREFIX ?=
+
 ifeq (gcc, $(COMPILER_NAME))
 LIB_PREFIX := lib
 endif
-
-LIB_PREFIX ?=
 
 ifeq (gcc, $(COMPILER_NAME))
 DBG_SUFFIX := g

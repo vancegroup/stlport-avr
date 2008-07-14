@@ -33,6 +33,9 @@ ifeq ($(OSNAME), cygming)
 	@-rm -f $${$(1)_RES}
 	@-rm -f $${$(1)_RES_DBG}
 	@-rm -f $${$(1)_RES_STLDBG}
+ifneq ($(OSREALNAME), mingw)
+	@-rm -f ${LSUPC++DEF}
+endif
 endif
 
 uninstall::
@@ -80,6 +83,9 @@ ifeq ($(OSNAME), cygming)
 	@-rm -f ${RES}
 	@-rm -f ${RES_DBG}
 	@-rm -f ${RES_STLDBG}
+ifneq ($(OSREALNAME), mingw)
+	@-rm -f ${LSUPC++DEF}
+endif
 endif
 endif
 
