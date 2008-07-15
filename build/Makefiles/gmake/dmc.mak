@@ -78,7 +78,7 @@ stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-gl -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = $(OUTPUT_OPTION)
 
 COMPILE.rc = ${RC} ${RCFLAGS}
-LINK.cc = dm_link $(LDFLAGS)
+LINK.cc = link $(LDFLAGS)
 
 LDLIBS += user32.lib kernel32.lib snn.lib
 
