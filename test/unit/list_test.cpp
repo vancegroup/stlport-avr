@@ -445,7 +445,7 @@ namespace foo {
 
   template <class _It>
   size_t distance(_It, _It);
-};
+}
 
 void ListTest::adl()
 {
