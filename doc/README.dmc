@@ -14,8 +14,10 @@ Prerequisites
 
  - Digital Mars C++ 8.49 or above
 
- - A GNU make tool (mingw32-make). You can get one from www.mingw.org or 
-   www.cygwin.com. See README.mingw or README.cygwin for additional information.
+ - A GNU environment with make tool. Prefer MinGW/MSys to Cygwin because the
+   latter contains a link command that is also the name of the Digital Mars linker
+   and you might experiment collision between both commands.
+   See README.mingw for additional information.
 
 ===================
 Installing STLport
