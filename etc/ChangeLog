@@ -1,3 +1,10 @@
+2008-07-17  Francois Dumont  <dums@users.sourceforge.net>
+
+	* stlport/stdlib.h, cstdlib: Fix errno workaround for gcc MinGW.
+	Latest gcc version (4.3.0) includes stdlib.h in cstdlib using
+	include_next so skipping workaround in STLport stdlib.h. So errno.h
+	must also be included from cstdlib.
+
 2008-07-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	src/details/fstream_unistd.cpp: fix bug #2001222, opening with
