@@ -1,3 +1,16 @@
+2008-07-17  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	src/details/fstream_unistd.cpp: fix bug #2001222, opening with
+	ios_base::app should rewind write pointer to the end of the file;
+	fix treatment of ios_base::ate (it should rewind pointer
+	to the end of the file once) and ios_base::app (offset will be set
+	to the end of the file prior to each write); references ---
+	http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2691.pdf
+	27.8.1.4; http://www.opengroup.org/onlinepubs/7990989775/xsh/fopen.html;
+	http://www.opengroup.org/onlinepubs/7990989775/xsh/open.html
+
+	test/unit/fstream_test.cpp: add sample with fopen as reference point.
+
 2008-07-14  Francois Dumont  <dums@users.sourceforge.net>
 
 	* build/Makefiles/gmake: Build system updated for gcc under Cygwin,

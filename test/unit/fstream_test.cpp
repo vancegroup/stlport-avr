@@ -8,6 +8,8 @@
 #  include <memory>
 #  include <stdexcept>
 
+#include <stdio.h>
+
 #  include "full_streambuf.h"
 #  include "cppunit/cppunit_proxy.h"
 
@@ -293,6 +295,11 @@ void FstreamTest::tellp()
 
     CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
+  }
+  { // for reference, to test just above:
+    FILE* f = fopen( "test_file.txt", "a" );
+    CPPUNIT_CHECK( ftell( f ) == 9 );
+    fclose( f );
   }
 }
 

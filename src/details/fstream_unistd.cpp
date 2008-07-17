@@ -168,6 +168,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     case ios_base::out | ios_base::trunc:
       flags = O_WRONLY | O_CREAT | O_TRUNC;
       break;
+    case ios_base::app:
     case ios_base::out | ios_base::app:
       flags = O_WRONLY | O_CREAT | O_APPEND;
       break;
@@ -181,6 +182,10 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     case ios_base::in | ios_base::out | ios_base::trunc:
       flags = O_RDWR | O_CREAT | O_TRUNC;
       break;
+    case ios_base::in | ios_base::app:
+    case ios_base::in | ios_base::out | ios_base::app:
+      flags = O_RDWR | O_CREAT | O_APPEND;
+      break;
     default:                      // The above are the only combinations of
       return false;               // flags allowed by the C++ standard.
   }
@@ -192,9 +197,9 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
 
   _M_is_open = true;
 
-  if (openmode & ios_base::ate)
-    if (LSEEK(file_no, 0, SEEK_END) == -1)
-      _M_is_open = false;
+  if ((openmode & (ios_base::ate | ios_base::app)) && (LSEEK(file_no, 0, SEEK_END) == -1)) {
+    _M_is_open = false;
+  }
 
   _M_file_id = file_no;
   _M_should_close = _M_is_open;
