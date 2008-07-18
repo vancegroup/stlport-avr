@@ -8,6 +8,9 @@
 	ofstream ios_base::app open mode is consistent with fopen "a"
 	open mode.
 
+	* configure.bat: Specifying the compiler is now mandatory and
+	must be first.
+
 2008-07-17  Francois Dumont  <dums@users.sourceforge.net>
 
 	* stlport/stdlib.h, cstdlib: Fix errno workaround for gcc MinGW.

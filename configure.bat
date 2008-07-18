@@ -16,8 +16,8 @@ echo.
 REM no options at all?
 if NOT "%1xyz123" == "xyz123" goto init
 
-echo Please specify some options or use "configure --help" to see the
-echo available options.
+echo Please specify at least the compiler you are going to use,
+echo use "configure --help" to see the available ones.
 goto skp_comp
 
 :init
@@ -29,11 +29,7 @@ echo # config.mak generated with command line: >> build\Makefiles\nmake\config.m
 echo # configure %1 %2 %3 %4 %5 %6 %7 %8 %9 >> build\Makefiles\nmake\config.mak
 echo # >> build\Makefiles\nmake\config.mak
 
-REM
-REM option loop
-REM
-:loop
-
+REM First parameter can only be help or compiler
 REM help option
 if "%1" == "-?" goto opt_help
 if "%1" == "-h" goto opt_help
@@ -41,10 +37,13 @@ if "%1" == "/?" goto opt_help
 if "%1" == "/h" goto opt_help
 if "%1" == "--help" goto opt_help
 
-REM compiler option
-if "%1" == "-c" goto opt_comp
-if "%1" == "/c" goto opt_comp
-if "%1" == "--compiler" goto opt_comp
+REM This is necessarily a compiler
+goto opt_comp
+
+REM
+REM option loop
+REM
+:loop
 
 REM platform option
 if "%1" == "-p" goto opt_plat
@@ -104,11 +103,9 @@ REM * Help
 REM *
 REM **************************************************************************
 :opt_help
-echo The following options are available:
+echo The first parameter must be the compiler name, here are the available
+echo keywords:
 echo.
-echo "-c <compiler>" or "--compiler <compiler>"
-echo    Uses specified compiler to compile STLport. The following keywords
-echo    are available:
 echo    msvc6    Microsoft Visual C++ 6.0
 echo    msvc7    Microsoft Visual C++ .NET 2002
 echo    msvc71   Microsoft Visual C++ .NET 2003
@@ -121,6 +118,8 @@ echo    evc8     Microsoft Visual C++ 2005 compiling for CE
 echo  (*) For these compilers the target processor is determined automatically.
 echo      You must run the WCE*.BAT file you wish to build STLport for before
 echo      running configure.
+echo.
+echo Then the following options are available:
 echo.
 echo "-p <platform>" or "--platform <platform>"
 echo    Build STLport for the specified platform. Not all existing platforms are
@@ -197,20 +196,20 @@ REM *
 REM **************************************************************************
 :opt_comp
 
-if "%2" == "msvc6" goto oc_msvc6
-if "%2" == "msvc71" goto oc_msv71
-if "%2" == "msvc7" goto oc_msvc7
-if "%2" == "msvc8" goto oc_msvc8
-if "%2" == "msvc9" goto oc_msvc9
-if "%2" == "icl"   goto oc_icl
+if "%1" == "msvc6" goto oc_msvc6
+if "%1" == "msvc71" goto oc_msv71
+if "%1" == "msvc7" goto oc_msvc7
+if "%1" == "msvc8" goto oc_msvc8
+if "%1" == "msvc9" goto oc_msvc9
+if "%1" == "icl"   goto oc_icl
 
-if "%2" == "evc3" goto oc_evc3
-if "%2" == "evc4" goto oc_evc4
-if "%2" == "evc8" goto oc_evc8
+if "%1" == "evc3" goto oc_evc3
+if "%1" == "evc4" goto oc_evc4
+if "%1" == "evc8" goto oc_evc8
 
-if "%2" == "watcom" goto oc_wtm
+if "%1" == "watcom" goto oc_wtm
 
-echo Unknown compiler: %2
+echo Unknown compiler: %1
 goto oc_end
 
 :oc_msvc6
@@ -322,8 +321,6 @@ echo !include evc.mak > .\build\test\eh\Makefile
 goto proc
 
 :oc_end
-shift
-
 goto cont_lp
 
 
@@ -457,20 +454,14 @@ REM *
 REM **************************************************************************
 
 :opt_srtl
-if "%SELECTED_COMPILER%" == "" goto or_err1
 if "%SELECTED_COMPILER%" == "msvc" goto or_sok
-goto or_err2
+goto or_err
 
 :opt_drtl
-if "%SELECTED_COMPILER%" == "" goto or_err1
 if "%SELECTED_COMPILER%" == "msvc" goto or_dok
-goto or_err2
+goto or_err
 
-:or_err1
-echo Error: Please give used compiler first in order to check other options correctness.
-goto or_end
-
-:or_err2
+:or_err
 echo Error: Setting C runtime library for compiler other than microsoft ones!
 goto or_end
 
@@ -601,9 +592,9 @@ echo WINVER=0x0501 >> build\Makefiles\nmake\config.mak
 :comp
 echo Done configuring STLport.
 echo.
-echo Go to lib folder and type "nmake clean install" to build  and
+echo Go to build/lib folder and type "nmake clean install" to build  and
 echo install STLport to the "lib" and "bin" folders.
-echo Go to test/unit folder and type nmake clean install to
+echo Go to build/test/unit folder and type nmake clean install to
 echo build unit tests and install them in bin folder. 
 echo.
 
