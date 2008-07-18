@@ -168,6 +168,7 @@ bool _Filebuf_base::_M_open(const char* name, ios_base::openmode openmode,
     case ios_base::out | ios_base::trunc:
       flags = O_WRONLY | O_CREAT | O_TRUNC;
       break;
+    case ios_base::app:
     case ios_base::out | ios_base::app:
       flags = O_WRONLY | O_CREAT | O_APPEND;
       break;
