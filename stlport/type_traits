@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <07/12/02 19:55:42 ptr>
+// -*- C++ -*- Time-stamp: <08/07/20 19:10:15 ptr>
 
 /*
  * Copyright (c) 2007, 2008
@@ -706,9 +706,73 @@ struct add_pointer
     typedef typename remove_reference<_Tp>::type * type;
 };
 
-// 4.8 other transformations:
+// 20.5.7 other transformations:
 
-// aligned_storage
+// template <std::size_t Len, std::size_t Align> struct aligned_storage;
+// template <std::size_t Len, class... Types> struct aligned_union;
+
+namespace detail {
+
+template <bool,class _U>
+struct _decay_aux2
+{
+    typedef typename remove_cv<_U>::type type;
+};
+
+template <class _U>
+struct _decay_aux2<true,_U>
+{
+    typedef typename add_pointer<_U>::type type;
+};
+
+template <bool, class _U>
+struct _decay_aux1
+{
+    typedef typename _decay_aux2<is_function<_U>::value,_U>::type type; 
+};
+
+template <class _U>
+struct _decay_aux1<true,_U>
+{
+    typedef typename remove_extent<_U>::type* type;
+};
+
+} // namespace detail
+
+template <class _Tp>
+class decay
+{
+  private:
+    typedef remove_reference<_Tp>::type _U;
+
+  public:
+    typedef typename _decay_aux1<is_array<_U>::value,_U>::type type;
+};
+
+template <bool, class _Tp = void>
+struct enable_if
+{
+};
+
+template <class _Tp = void>
+struct enable_if<true,_Tp>
+{
+    typedef _Tp type;
+};
+
+template <bool, class _Tp1, class _Tp2>
+struct conditional
+{
+    typedef _Tp2 type;
+};
+
+template <class _Tp1, class _Tp2>
+struct conditional<true,_Tp1,_Tp2>
+{
+    typedef _Tp1 type;
+};
+
+// template <class... _Tp> struct common_type;
 
 #undef __CV_SPEC
 #undef __SPEC_

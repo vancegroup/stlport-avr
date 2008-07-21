@@ -1,3 +1,9 @@
+2008-07-21  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* stlport/type_traits:  decay, conditional, ebable_if added.
+
+2008-07-18  Francois Dumont  <dums@users.sourceforge.net>
+
 	* configure.bat: Specifying the compiler is now mandatory and
 	must be first.
 
