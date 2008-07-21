@@ -398,7 +398,8 @@ void ListTest::allocator_with_state()
   CPPUNIT_CHECK( stack1.ok() );
   CPPUNIT_CHECK( stack2.ok() );
 
-#if defined (STLPORT) && !defined (_STLP_NO_MEMBER_TEMPLATES)
+#if defined (STLPORT) && !defined (_STLP_NO_MEMBER_TEMPLATES) && \
+    (!defined (_MSC_VER) || (_MSC_VER >= 1300))
   {
     //This is a compile time test.
     //We check that sort implementation is correct when list is instanciated
