@@ -4,6 +4,14 @@
 
 2008-07-18  Francois Dumont  <dums@users.sourceforge.net>
 
+	* src/details/fstream_unistd.cpp: Remove ios_base::app case for
+	openmode switch, it is not part of ISO/IEC 14882 C++ Standard
+	27.8.1.2 Table 92.
+
+	* test/unit/fstream_test.cpp: Change test that now check that
+	ofstream ios_base::app open mode is consistent with fopen "a"
+	open mode.
+
 	* configure.bat: Specifying the compiler is now mandatory and
 	must be first.
 
