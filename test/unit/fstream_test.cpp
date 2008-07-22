@@ -282,7 +282,7 @@ void FstreamTest::tellp()
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(6) );
   }
   {
-    ofstream o( "test_file1.txt" );
+    ofstream o( "test_file.txt" );
 
     o << "123456789";
 
@@ -290,28 +290,15 @@ void FstreamTest::tellp()
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
   {
-    ofstream o( "test_file2.txt" );
-
-    o << "123456789";
+    ofstream o( "test_file.txt", ios_base::app | ios_base::out );
 
     CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
-  {
-    // app open mode is implementation dependent, it should only be consistent with fopen "a" open mode.
-    ofstream o( "test_file1.txt", ios_base::app );
-    FILE* f = fopen( "test_file2.txt", "a" );
-
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(ftell(f)) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(ftell(f)) );
-    fclose(f);
-  }
-  {
-    // Thanks to ate, behavior is not implementation dependent anymore.
-    ofstream o( "test_file1.txt", ios_base::app | ios_base::ate );
-
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
+  { // for reference, to test just above:
+    FILE* f = fopen( "test_file.txt", "a" );
+    CPPUNIT_CHECK( ftell( f ) == 9 );
+    fclose( f );
   }
 }
 

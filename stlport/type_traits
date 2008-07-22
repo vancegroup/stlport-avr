@@ -743,10 +743,10 @@ template <class _Tp>
 class decay
 {
   private:
-    typedef remove_reference<_Tp>::type _U;
+    typedef typename remove_reference<_Tp>::type _U;
 
   public:
-    typedef typename _decay_aux1<is_array<_U>::value,_U>::type type;
+    typedef typename detail::_decay_aux1<is_array<_U>::value,_U>::type type;
 };
 
 template <bool, class _Tp = void>
@@ -754,7 +754,7 @@ struct enable_if
 {
 };
 
-template <class _Tp = void>
+template <class _Tp>
 struct enable_if<true,_Tp>
 {
     typedef _Tp type;
