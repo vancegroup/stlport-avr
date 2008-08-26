@@ -1,3 +1,7 @@
+2008-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
+
+	* Repository: branch for STLport 5.2, r3618
+
 2008-07-21  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* stlport/type_traits:  decay, conditional, ebable_if added.
