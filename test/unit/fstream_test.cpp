@@ -289,6 +289,21 @@ void FstreamTest::tellp()
     CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
     CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
+  /* According to the standard
+     ofstream o( "test_file.txt", ios_base::app | ios_base::out )
+     should give the same effect as fopen( "test_file.txt", "a" ).
+     Problem is fopen( "test_file.txt", "a" ) has a bit different behaviour
+     on different platforms, and this difference is not covered by specification.
+     After fopen( "test_file.txt", "a" ) in this context ftell( f ) == 9 for
+     Linux and Mac OS X (I expect the same for others POSIX-like platforms too);
+     on Windows (independently from version?) ftell( f ) == 0, i.e. write pointer not
+     shifted to EOF (but shifted to EOF just before write, as described in the specs).
+
+     It isn't specifications violation, neither for Linux and Mac OS X nor for Windows.
+
+     The code below is intended to demonstrate ambiguity (dependance from fopen implementation),
+     but only Linux and Mac OS X point of view exposed now.
+   */
   {
     ofstream o( "test_file.txt", ios_base::app | ios_base::out );
 
