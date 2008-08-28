@@ -301,19 +301,43 @@ void FstreamTest::tellp()
 
      It isn't specifications violation, neither for Linux and Mac OS X nor for Windows.
 
-     The code below is intended to demonstrate ambiguity (dependance from fopen implementation),
-     but only Linux and Mac OS X point of view exposed now.
+     The code below is intended to demonstrate ambiguity (dependance from fopen implementation).
    */
   {
+    #ifdef WIN32
+    //In Windows, stlport and fopen use kernel32.CreateFile for open. 
+    //File position is at BOF after open, unless we open with ios_base::ate
+    long expected_pos = 0; 
+    #else
+    //On UNIX flavours, stlport and fopen use unix's open
+    //File position is at EOF after open
+    //
+    //3rd possible scenario, "other platforms" - _STLP_USE_STDIO_IO
+    //stlport uses fopen here. This case may fail this test, since the file position after 
+    //fopen is implementation-dependent
+    long expected_pos = 9;
+    #endif
     ofstream o( "test_file.txt", ios_base::app | ios_base::out );
-
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(expected_pos) );
+    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(expected_pos) );
   }
-  { // for reference, to test just above:
+  { // for reference, to test fopen/ftell behaviour in append mode:
+    #ifdef WIN32
+    long expected_pos = 0;
+    #else
+    long expected_pos = 9;
+    #endif
     FILE* f = fopen( "test_file.txt", "a" );
-    CPPUNIT_CHECK( ftell( f ) == 9 );
+    CPPUNIT_CHECK( ftell( f ) == expected_pos );
     fclose( f );
+  }
+  {
+    //In append mode, file is positioned at EOF just before a write. 
+    // After a write, file is at EOF. This is implementation-independent.  
+    ofstream o( "test_file.txt", ios_base::app | ios_base::out );
+    o << "X";
+    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(10) );
+    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(10) );
   }
 }
 
