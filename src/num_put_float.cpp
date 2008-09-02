@@ -377,7 +377,7 @@ static inline char* _Stl_fcvtR(long double x, int n, int* pt, int* sign, char* b
 static inline char* _Stl_ecvtR(double x, int n, int* pt, int* sign, char*)
 { return _Stl_ecvtR(x, n, pt, sign); }
 static inline char* _Stl_fcvtR(double x, int n, int* pt, int* sign, char*)
-{ return _Stl_fcvtR(x, n, pt, sign)); }
+{ return _Stl_fcvtR(x, n, pt, sign); }
 #    if !defined (_STLP_NO_LONG_DOUBLE) && !defined (_STLP_EMULATE_LONG_DOUBLE_CVT)
 static inline char* _Stl_ecvtR(long double x, int n, int* pt, int* sign, char*)
 { return _Stl_ecvtR(x, n, pt, sign); }
