@@ -118,7 +118,7 @@ default_settings () {
   if [ -z "${compiler_family_set}" ]; then
   #  write_option gcc COMPILER_NAME
     echo include gcc.mak > ${base}/build/lib/Makefile
-    echo include gcc.mak > ${base}/build/test/unit/Makefile
+    ln -sf Makefiles/gcc.mak ${base}/test/unit/Makefile
     echo include gcc.mak > ${base}/build/test/eh/Makefile
   fi
 
@@ -236,7 +236,7 @@ do
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
           echo include $target.mak > ${base}/build/lib/Makefile
-          echo include $target.mak > ${base}/build/test/unit/Makefile
+          ln -sf Makefiles/gcc.mak ${base}/test/unit/Makefile
           echo include $target.mak > ${base}/build/test/eh/Makefile
           ;;
         *)

@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <08/06/06 11:01:34 yeti>
 
-SRCROOT := ../../..
+SRCROOT := ../..
 COMPILER_NAME := gcc
 #NOT_USE_NOSTDLIB := 1
 #WITHOUT_STLPORT := 1
@@ -11,7 +11,7 @@ ifndef WITHOUT_STLPORT
 ALL_TAGS += stldbg-shared check-stldbg
 CHECK_TAGS += check-stldbg
 endif
-STLPORT_DIR ?= ../../..
+STLPORT_DIR ?= ../..
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak

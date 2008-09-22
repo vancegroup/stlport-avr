@@ -1,10 +1,10 @@
 # -*- Makefile -*- Time-stamp: <03/10/12 20:35:49 ptr>
 
-SRCROOT := ../../..
+SRCROOT := ../..
 COMPILER_NAME := dmc
 OBJ_EXT := obj
 
-STLPORT_DIR := ../../..
+STLPORT_DIR := ../..
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak

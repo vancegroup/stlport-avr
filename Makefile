@@ -15,7 +15,7 @@ all install depend clean clobber distclean check::
 	+$(call doinsubdirs,${SUBDIRS})
 
 distclean clean depend clobber::
-	+$(call doinsubdirs,build/test/unit)
+	+$(call doinsubdirs,test/unit)
 
 release-shared install-release-shared:
 	+$(call doinsubdirs,${SUBDIRS})

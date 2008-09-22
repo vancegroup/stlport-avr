@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <08/06/12 16:41:21 ptr>
 
-SRCROOT := ../../..
+SRCROOT := ../..
 COMPILER_NAME := icc
 -include ${SRCROOT}/Makefiles/gmake/config.mak
 ALL_TAGS = release-shared check-release
@@ -9,7 +9,7 @@ ifndef WITHOUT_STLPORT
 ALL_TAGS += stldbg-shared check-stldbg
 CHECK_TAGS += check-stldbg
 endif
-STLPORT_DIR ?= ../../..
+STLPORT_DIR ?= ../..
 
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak

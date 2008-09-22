@@ -247,7 +247,7 @@ goto oc_msvc
 echo TARGET_OS=x86 >> Makefiles\nmake\config.mak
 set SELECTED_COMPILER=msvc
 echo !include msvc.mak > .\build\lib\Makefile
-echo !include msvc.mak > .\build\test\unit\Makefile
+echo !include Makefiles/msvc.mak > .\test\unit\Makefile
 echo !include msvc.mak > .\build\test\eh\Makefile
 goto oc_end
 
@@ -257,7 +257,7 @@ echo COMPILER_NAME=icl >> Makefiles\nmake\config.mak
 echo TARGET_OS=x86 >> Makefiles\nmake\config.mak
 set SELECTED_COMPILER=icl
 echo !include icl.mak > .\build\lib\Makefile
-echo !include icl.mak > .\build\test\unit\Makefile
+echo !include Makefiles/icl.mak > .\test\unit\Makefile
 echo !include icl.mak > .\build\test\eh\Makefile
 goto oc_end
 
@@ -308,7 +308,7 @@ if "%OSVERSION%"=="" (
 set PLATFORM_SPECIFIED=1
 set SELECTED_COMPILER=msvc
 echo !include evc.mak > .\build\lib\Makefile
-echo !include evc.mak > .\build\test\unit\Makefile
+echo !include Makefiles/evc.mak > .\test\unit\Makefile
 echo !include evc.mak > .\build\test\eh\Makefile
 goto proc
 
@@ -316,7 +316,7 @@ goto proc
 set PLATFORM_SPECIFIED=1
 set SELECTED_COMPILER=evc
 echo !include evc.mak > .\build\lib\Makefile
-echo !include evc.mak > .\build\test\unit\Makefile
+echo !include Makefiles/evc.mak > .\test\unit\Makefile
 echo !include evc.mak > .\build\test\eh\Makefile
 goto proc
 
