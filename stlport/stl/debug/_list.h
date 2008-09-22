@@ -55,13 +55,7 @@ iterator_category(const _STLP_PRIV _DBG_iter_base< _STLP_NON_DBG_LIST >&)
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class list :
-#if !defined (__DMC__)
-             private
-#endif
-                     _STLP_PRIV __construct_checker<_STLP_NON_DBG_LIST >
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-           , public __stlport_class<list<_Tp, _Alloc> >
-#endif
+             private _STLP_PRIV __construct_checker<_STLP_NON_DBG_LIST >
 {
   typedef _STLP_NON_DBG_LIST _Base;
   typedef list<_Tp, _Alloc> _Self;
@@ -436,6 +430,16 @@ public:
   }
 };
 
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<list<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

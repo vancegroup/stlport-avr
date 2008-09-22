@@ -661,9 +661,41 @@ public:
 };
 
 #if defined (list)
-#  undef list
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+// template <class _Tp, class _Alloc>
+// struct __has_trivial_move<_STLP_PRIV list<_Tp, _Alloc> > :
+//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+// { };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<_STLP_PRIV list<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+#  undef list
+#else // list
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+// template <class _Tp, class _Alloc>
+// struct __has_trivial_move<list<_Tp, _Alloc> > :
+//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+// { };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<list<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif // list
 
 _STLP_END_NAMESPACE
 
@@ -704,14 +736,6 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
 #undef _STLP_EQUAL_OPERATOR_SPECIALIZED
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Tp, class _Alloc>
-struct __move_traits<list<_Tp, _Alloc> > {
-  typedef true_type implemented;
-  typedef typename __move_traits<_Alloc>::complete complete;
-};
-#endif
 
 _STLP_END_NAMESPACE
 
