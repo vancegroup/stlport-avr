@@ -7,7 +7,7 @@
 #
 
 SRCROOT := .
-SUBDIRS := build/lib
+SUBDIRS := src
 
 include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
@@ -21,6 +21,6 @@ release-shared install-release-shared:
 	+$(call doinsubdirs,${SUBDIRS})
 
 install::
-	${MAKE} -C build/lib install-headers
+	${MAKE} -C src install-headers
 
 .PHONY: all install depend clean clobber distclean check release-shared install-release-shared

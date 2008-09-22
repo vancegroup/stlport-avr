@@ -28,9 +28,9 @@ INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
 
 ifndef WITHOUT_STLPORT
-release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
-dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
-stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,+b${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR} -Wl,+b${STLPORT_DIR}/src/${OUTPUT_DIR}
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} -Wl,+b${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Wl,+b${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
 endif
 
 check-release:	release-shared

@@ -28,9 +28,9 @@ INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
 
 ifndef WITHOUT_STLPORT
-release-shared: LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR}
-dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_DBG}
-stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG} -Wl,-R${STLPORT_DIR}/build/lib/${OUTPUT_DIR_STLDBG}
+release-shared: LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR} -Wl,-R${STLPORT_DIR}/src/${OUTPUT_DIR}
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} -Wl,-R${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Wl,-R${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
 
 ifeq ($(OSNAME),linux)
 ifeq ($(CXX_VERSION_MAJOR),8)
