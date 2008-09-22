@@ -43,9 +43,6 @@ template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_HashFcn,hash<_Key>),
           _STLP_DFL_TMPL_PARAM(_EqualKey,equal_to<_Key>),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class hash_map
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-               : public __stlport_class<hash_map<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> >
-#endif
 {
 private:
   typedef hash_map<_Key, _Tp, _HashFcn, _EqualKey, _Alloc> _Self;
@@ -336,19 +333,31 @@ public:
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __move_traits<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> >
-{
-    typedef true_type implemented;
-    typedef typename __move_traits<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::complete complete;
-};
+
+_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
-struct __move_traits<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> >
-{
-    typedef true_type implemented;
-    typedef typename __move_traits<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::complete complete;
-};
+struct __has_trivial_move<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+{ };
+
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct __has_move_constructor<hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename hash_map<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+{ };
+
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct __has_trivial_move<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+{ };
+
+template <class _Key, class _Tp, class _HashFn,  class _EqKey, class _Alloc>
+struct __has_move_constructor<hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc> > :
+    public integral_constant<bool, __has_move_constructor<typename hash_multimap<_Key, _Tp, _HashFn, _EqKey, _Alloc>::_Ht>::value>
+{ };
+
+_STLP_END_NAMESPACE
+
 #  endif
 
 // Specialization of insert_iterator so that it will work for hash_map

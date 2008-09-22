@@ -108,9 +108,10 @@ struct pair {
   pair(const pair<_T1,_T2>& __o) : first(__o.first), second(__o.second) {}
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-//  pair(__move_source<pair<_T1, _T2> > src) : first(_STLP_PRIV _AsMoveSource(src.get().first)),
-//                                             second(_STLP_PRIV _AsMoveSource(src.get().second))
-//  {}
+  pair(__move_source<pair<_T1, _T2> > src) :
+      first(src.get().first),
+      second(src.get().second)
+    { }
 #endif
 
   __TRIVIAL_DESTRUCTOR(pair)
@@ -219,12 +220,21 @@ struct has_trivial_destructor<pair<_T1, _T2> > :
 _STLP_END_NAMESPACE
 
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _T1, class _T2>
-struct __move_traits<pair<_T1, _T2> >
-{
-  typedef typename integral_constant<bool, __move_traits<_T1>::implemented::value || __move_traits<_T2>::implemented::value>::type implemented;
-  typedef typename integral_constant<bool, __move_traits<_T1>::complete::value && __move_traits<_T2>::complete::value>::type complete;
-};
+struct __has_trivial_move<pair<_T1, _T2> > :
+   public integral_constant<bool, __has_trivial_move<_T1>::value && __has_trivial_move<_T2>::value>
+{ };
+
+template <class _T1, class _T2>
+struct __has_move_constructor<pair<_T1, _T2> > :
+    public integral_constant<bool, __has_move_constructor<_T1>::value && __has_move_constructor<_T2>::value>
+{ };
+
+_STLP_END_NAMESPACE
+
 #  endif
 
 _STLP_END_NAMESPACE

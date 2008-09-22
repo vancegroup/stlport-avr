@@ -146,15 +146,6 @@ _STLP_END_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-_STLP_MOVE_TO_STD_NAMESPACE
-template <class _Tp, class _Traits>
-inline _Tp* _STLP_CALL value_type(const _STLP_PRIV _Slist_iterator<_Tp, _Traits>&) { return __STATIC_CAST(_Tp*, 0); }
-inline ptrdiff_t* _STLP_CALL distance_type(const _STLP_PRIV _Slist_iterator_base&) { return 0; }
-inline forward_iterator_tag _STLP_CALL iterator_category(const _STLP_PRIV _Slist_iterator_base&) { return forward_iterator_tag(); }
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif /* OLD_QUERIES */
-
 // Base class that encapsulates details of allocators and simplifies EH
 template <class _Tp, class _Alloc>
 class _Slist_base {
@@ -736,9 +727,40 @@ public:
 };
 
 #if defined (slist)
-#  undef slist
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+// template <class _Tp, class _Alloc>
+// struct __has_trivial_move<_STLP_PRIV slist<_Tp, _Alloc> > :
+//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+// { };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<_STLP_PRIV slist<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#  undef slist
+#else // slist
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+// template <class _Tp, class _Alloc>
+// struct __has_trivial_move<slist<_Tp, _Alloc> > :
+//   public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+// { };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<slist<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#endif // slist
 
 _STLP_END_NAMESPACE
 
@@ -781,13 +803,6 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 #undef _STLP_EQUAL_OPERATOR_SPECIALIZED
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Tp, class _Alloc>
-struct __move_traits<slist<_Tp, _Alloc> > {
-  typedef true_type implemented;
-  typedef typename __move_traits<_Alloc>::complete complete;
-};
-#  endif
 
 // Specialization of insert_iterator so that insertions will be constant
 // time rather than linear time.

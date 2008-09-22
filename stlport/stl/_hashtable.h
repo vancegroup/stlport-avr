@@ -360,13 +360,14 @@ public:
   { _M_copy_from(__ht); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-//  hashtable(__move_source<_Self> src)
-//    : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
-//      _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
-//      _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
-//      _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
-//      _M_num_elements(src.get()._M_num_elements),
-//      _M_max_load_factor(src.get()._M_max_load_factor) {}
+  hashtable(__move_source<_Self> src) :
+      _M_hash(src.get()._M_hash),
+      _M_equals(src.get()._M_equals),
+      _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
+      _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
+      _M_num_elements(src.get()._M_num_elements),
+      _M_max_load_factor(src.get()._M_max_load_factor)
+    { }
 #endif
 
   _Self& operator= (const _Self& __ht) {
@@ -629,14 +630,16 @@ _STLP_BEGIN_NAMESPACE
 #undef _STLP_TEMPLATE_HEADER
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
-struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
-  //Hashtables are movable:
-  typedef true_type implemented;
 
-  //Completeness depends on many template parameters, for the moment we consider it not complete:
-  typedef false_type complete;
-};
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
+struct __has_move_constructor<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif
 
 _STLP_END_NAMESPACE

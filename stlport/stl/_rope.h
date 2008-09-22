@@ -2345,13 +2345,22 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
 }
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _CharT, class _Alloc>
-struct __move_traits<rope<_CharT, _Alloc> > {
-  typedef true_type implemented;
-  //Completness depends on the allocator:
-  typedef typename __move_traits<_Alloc>::complete complete;
-};
+struct __has_trivial_move<rope<_CharT, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+
+template <class _CharT, class _Alloc>
+struct __has_move_constructor<rope<_CharT, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif
+
 
 _STLP_END_NAMESPACE
 

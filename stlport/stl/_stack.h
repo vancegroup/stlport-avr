@@ -45,13 +45,6 @@ template <class _Tp>
 template <class _Tp, class _Sequence>
 #endif
 class stack
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-#  if defined (_STLP_STACK_ARGS)
-            : public __stlport_class<stack<_Tp> >
-#  else
-            : public __stlport_class<stack<_Tp, _Sequence> >
-#  endif
-#endif
 {
 #ifdef _STLP_STACK_ARGS
   typedef deque<_Tp> _Sequence;
@@ -75,8 +68,9 @@ public:
   explicit stack(const _Sequence& __s) : c(__s) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // stack(__move_source<_Self> src)
-  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
+  stack(__move_source<_Self> src) :
+      c(src.get().c)
+    { }
 #endif
 
   bool empty() const { return c.empty(); }
@@ -118,11 +112,21 @@ _STLP_RELOPS_OPERATORS(template < _STLP_STACK_HEADER_ARGS >, stack< _STLP_STACK_
 #undef _STLP_STACK_HEADER_ARGS
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp, class _Sequence>
-struct __move_traits<stack<_Tp, _Sequence> > :
-  _STLP_PRIV __move_traits_aux<_Sequence>
-{};
-#endif
+struct __has_trivial_move<stack<_Tp, _Sequence> > :
+  public integral_constant<bool, __has_trivial_move<_Sequence>::value>
+{ };
+
+template <class _Tp, class _Sequence>
+struct __has_move_constructor<stack<_Tp, _Sequence> > :
+    public integral_constant<bool, __has_move_constructor<_Sequence>::value>
+{ };
+
+_STLP_END_NAMESPACE
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 
 _STLP_END_NAMESPACE
 

@@ -57,13 +57,6 @@ template <class _Tp>
 template <class _Tp, class _Sequence>
 # endif
 class queue
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-#  if defined (_STLP_QUEUE_ARGS)
-    //        : public __stlport_class<queue<_Tp> >
-#  else
-    //        : public __stlport_class<queue<_Tp, _Sequence> >
-#  endif
-#endif
 {
 # if defined ( _STLP_QUEUE_ARGS )
   typedef deque<_Tp> _Sequence;
@@ -87,8 +80,9 @@ public:
   explicit queue(const _Sequence& __c) : c(__c) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // queue(__move_source<_Self> src)
-  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
+  queue(__move_source<_Self> src) :
+      c(src.get().c)
+    { }
 #endif
 
   bool empty() const { return c.empty(); }
@@ -140,13 +134,6 @@ template <class _Tp>
 template <class _Tp, class _Sequence, class _Compare>
 # endif
 class priority_queue
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-#  if defined (_STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS)
-            : public __stlport_class<priority_queue<_Tp> >
-#  else
-            : public __stlport_class<priority_queue<_Tp, _Sequence> >
-#  endif
-#endif
 {
 # ifdef _STLP_MINIMUM_DEFAULT_TEMPLATE_PARAMS
   typedef vector<_Tp> _Sequence;
@@ -174,9 +161,10 @@ public:
     { make_heap(c.begin(), c.end(), comp); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // priority_queue(__move_source<_Self> src)
-  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)),
-  //     comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
+  priority_queue(__move_source<_Self> src) :
+      c(src.get().c),
+      comp(src.get().comp)
+    { }
 #endif
 
   template <class _InputIterator>
@@ -225,16 +213,30 @@ public:
 };
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp, class _Sequence>
-struct __move_traits<queue<_Tp, _Sequence> > :
-  _STLP_PRIV __move_traits_aux<_Sequence>
-{};
+struct __has_trivial_move<queue<_Tp, _Sequence> > :
+  public integral_constant<bool, __has_trivial_move<_Sequence>::value>
+{ };
+
+template <class _Tp, class _Sequence>
+struct __has_move_constructor<queue<_Tp, _Sequence> > :
+    public integral_constant<bool, __has_move_constructor<_Sequence>::value>
+{ };
 
 template <class _Tp, class _Sequence, class _Compare>
-struct __move_traits<priority_queue<_Tp, _Sequence, _Compare> > :
-  _STLP_PRIV __move_traits_aux2<_Sequence, _Compare>
-{};
-#endif
+struct __has_trivial_move<priority_queue<_Tp, _Sequence, _Compare> > :
+  public integral_constant<bool, __has_trivial_move<_Sequence>::value && __has_trivial_move<_Compare>::value>
+{ };
+
+template <class _Tp, class _Sequence, class _Compare>
+struct __has_move_constructor<priority_queue<_Tp, _Sequence, _Compare> > :
+    public integral_constant<bool, __has_move_constructor<_Sequence>::value && __has_move_constructor<_Compare>::value>
+{ };
+
+_STLP_END_NAMESPACE
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

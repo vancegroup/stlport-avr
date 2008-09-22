@@ -107,9 +107,6 @@ SRC_CPP = cppunit/test_main.cpp \
 	modulus_test.cpp \
 	money_facets_test.cpp \
 	multiset_test.cpp \
-	mvctor_test.cpp \
-	mvctor_declaration_test.cpp \
-	mvctor_traits_test.cpp \
 	neq_test.cpp \
 	new_header_test.cpp \
 	nthelm_test.cpp \

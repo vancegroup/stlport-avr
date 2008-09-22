@@ -71,13 +71,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class slist :
-#if !defined (__DMC__)
-             private
-#endif
-                     _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST >
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-            , public __stlport_class<slist<_Tp, _Alloc> >
-#endif
+             private _STLP_PRIV __construct_checker<_STLP_NON_DBG_SLIST >
 {
 private:
   typedef _STLP_NON_DBG_SLIST _Base;
@@ -540,6 +534,16 @@ public:
   void sort(_StrictWeakOrdering __comp)
   { _M_non_dbg_impl.sort(__comp); }
 };
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<slist<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 
 _STLP_END_NAMESPACE
 
