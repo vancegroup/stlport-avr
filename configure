@@ -119,7 +119,7 @@ default_settings () {
   #  write_option gcc COMPILER_NAME
     echo include gcc.mak > ${base}/build/lib/Makefile
     ln -sf Makefiles/gcc.mak ${base}/test/unit/Makefile
-    echo include gcc.mak > ${base}/build/test/eh/Makefile
+    ln -sf Makefiles/gcc.mak ${base}/test/eh/Makefile
   fi
 
   # Set in Makefiles/gmake/targetdirs.mak
@@ -236,8 +236,8 @@ do
           target=`echo $option | sed -e 's/^[^=]*=//'`
           echo COMPILER_NAME := $target >> ${configmak}
           echo include $target.mak > ${base}/build/lib/Makefile
-          ln -sf Makefiles/gcc.mak ${base}/test/unit/Makefile
-          echo include $target.mak > ${base}/build/test/eh/Makefile
+          ln -sf Makefiles/$target.mak ${base}/test/unit/Makefile
+          ln -sf Makefiles/$target.mak ${base}/test/eh/Makefile
           ;;
         *)
           echo "Not supported compilers family"
