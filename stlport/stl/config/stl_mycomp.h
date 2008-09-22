@@ -159,9 +159,6 @@
 // Uncomment if compiler does not support explicit template arguments for functions
 // # define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
 
-// Uncomment this if your compiler can't inline while(), for()
-// #  define _STLP_LOOP_INLINE_PROBLEMS 1
-
 // Define if the compiler fails to match a template function argument of base
 // #  define _STLP_BASE_MATCH_BUG          1
 

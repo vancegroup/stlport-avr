@@ -39,19 +39,222 @@
 #  include <stl/_cstring.h>
 #endif
 
-#ifndef _STLP_INTERNAL_ALGOBASE_H
-#  include <stl/_algobase.h>
-#endif
-
 #ifndef _STLP_INTERNAL_NEW_HEADER
 #  include <stl/_new.h>
 #endif
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
+#ifndef __STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
+
+#ifndef _STLP_INTERNAL_UTILITY_H
+#  include <stl/_utility.h>
+#endif
+
+#ifndef _STLP_INTERNAL_ITERATOR_BASE_H
+#  include <stl/_iterator_base.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+inline void __destroy_aux(_Tp* __pointer, const false_type& /*_Trivial_destructor*/)
+{ __pointer->~_Tp(); }
+
+template <class _Tp>
+inline void __destroy_aux(_Tp*, const true_type& /*_Trivial_destructor*/)
+{ }
+
+template <class _Tp>
+inline void _Destroy( _Tp* __pointer )
+{
+  __destroy_aux(__pointer, typename has_trivial_destructor<_Tp>::type() );
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+  memset( __REINTERPRET_CAST(char*, __pointer), _STLP_SHRED_BYTE, sizeof(_Tp) );
+#endif
+}
+
+template <class _Tp>
+inline void _Destroy_Moved( _Tp* __pointer )
+{
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+  __destroy_aux( __pointer, typename __has_trivial_move<_Tp>::type() );
+#  if defined (_STLP_DEBUG_UNINITIALIZED)
+  memset( (char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp) );
+#  endif
+#else
+  _Destroy( __pointer );
+#endif
+}
+
+#if defined (new)
+#  define _STLP_NEW_REDEFINE new
+#  undef new
+#endif
+
+template <class _T1>
+inline void _Construct_aux( _T1* __p, const false_type& )
+{ new(__p) _T1(); }
+
+template <class _T1>
+inline void _Construct_aux( _T1* __p, const true_type& )
+{
+#if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
+  *__p = _T1(0);
+#else
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = _T1();
+#endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
+}
+
+template <class _T1>
+inline void _Construct( _T1* __p )
+{
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
+#endif
+  _Construct_aux( __p, typename is_fundamental<_T1>::type() );
+}
+
+template <class T1, class T2>
+inline void _Copy_Construct_aux( T1* __p, const T2& __val, const false_type& /* is_fundamental */ )
+{
+  new(__p) T1(__val);
+}
+
+template <class T1, class T2>
+inline void _Copy_Construct_aux( T1* __p, const T2& __val, const true_type& /* is_fundamental */ )
+{
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = __val;
+}
+
+template <class T1, class T2>
+inline void _Copy_Construct( T1* __p, const T2& __val )
+{
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+  memset((char*)__p, _STLP_SHRED_BYTE, sizeof(T1));
+#endif
+  _Copy_Construct_aux( __p, __val, integral_constant<bool,is_fundamental<T1>::value && is_fundamental<T2>::value>() );
+}
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux2( _T1* __p, _T2& __val, const false_type& /* move ctor */)
+{ new(__p) _T1(__val); }
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux2( _T1* __p, _T2& __val, const true_type& /* move ctor */)
+{ new(__p) _T1( move( __val ) ); }
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux( _T1* __p, _T2& __val, const false_type& /* is_fundamental */)
+{ _Move_Construct_Aux2( __p, __val, integral_constant<bool,is_same<_T1,_T2>::value &&  __has_move_constructor<_T1>::value>() ); }
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const true_type& /* is_fundamental */)
+{
+  // We use binary copying for POD types since it results
+  // in a considerably better code at least on MSVC.
+  *__p = _T1(__val);
+}
+
+template <class _T1, class _T2>
+inline void _Move_Construct( _T1* __p, _T2& __val )
+{
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+  memset( (char*)__p, _STLP_SHRED_BYTE, sizeof(_T1) );
+#endif
+  _Move_Construct_Aux( __p, __val, typename is_fundamental<_T1>::type() );
+}
+
+#if defined(_STLP_NEW_REDEFINE)
+#  if defined (DEBUG_NEW)
+#    define new DEBUG_NEW
+#  endif
+#  undef _STLP_NEW_REDEFINE
+#endif
+
+template <class _ForwardIterator, class _Tp>
+inline void __destroy_range_aux( _ForwardIterator __first, _ForwardIterator __last, _Tp*, const false_type& /*_Trivial_destructor*/)
+{
+  for ( ; __first != __last; ++__first ) {
+    __destroy_aux(&(*__first), false_type());
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+    memset((char*)&(*__first), _STLP_SHRED_BYTE, sizeof(_Tp));
+#endif
+  }
+}
+
+template <class _ForwardIterator, class _Tp>
+#if defined (_STLP_DEBUG_UNINITIALIZED)
+inline void __destroy_range_aux( _ForwardIterator __first, _ForwardIterator __last,
+                                            _Tp*, const true_type& /*_Trivial_destructor*/)
+{
+  for ( ; __first != __last; ++__first) {
+    memset((char*)&(*__first), _STLP_SHRED_BYTE, sizeof(_Tp));
+  }
+}
+#else
+inline void __destroy_range_aux( _ForwardIterator, _ForwardIterator, _Tp*,
+                                 const true_type& /*_Trivial_destructor*/)
+{ }
+#endif
+
+template <class _ForwardIterator, class _Tp>
+inline void __destroy_range( _ForwardIterator __first, _ForwardIterator __last, _Tp* __ptr )
+{
+  typedef typename has_trivial_destructor<_Tp>::type _Trivial_destructor;
+  __destroy_range_aux(__first, __last, __ptr, _Trivial_destructor());
+}
+
+template <class _ForwardIterator>
+inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
+{
+  __destroy_range(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
+}
+
+inline void _Destroy_Range(char*, char*) {}
+#if defined (_STLP_HAS_WCHAR_T) // dwa 8/15/97
+inline void _Destroy_Range(wchar_t*, wchar_t*) {}
+inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
+#endif
+
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+template <class _ForwardIterator, class _Tp>
+inline void __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr)
+{
+  __destroy_range_aux(__first, __last, __ptr, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
+}
+#endif
+
+template <class _ForwardIterator>
+inline void _Destroy_Moved_Range(_ForwardIterator __first, _ForwardIterator __last)
+#if !defined (_STLP_NO_MOVE_SEMANTIC)
+{ __destroy_mv_srcs(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator)); }
+#else
+{ _Destroy_Range(__first, __last); }
+#endif
+
+#if defined (_STLP_DEF_CONST_DEF_PARAM_BUG)
+// Those adaptors are here to fix common compiler bug regarding builtins:
+// expressions like int k = int() should initialize k to 0
+template <class _Tp>
+inline _Tp __default_constructed_aux( _Tp*, const false_type& )
+{ return _Tp(); }
+template <class _Tp>
+inline _Tp __default_constructed_aux( _Tp*, const true_type& )
+{ return _Tp(0); }
+
+template <class _Tp>
+inline _Tp __default_constructed( _Tp* __p )
+{ return __default_constructed_aux(__p, _HasDefaultZeroValue(__p)._Answer()); }
+
+#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) __default_constructed((_TTp*)0)
+#else
+#  define _STLP_DEFAULT_CONSTRUCTED(_TTp) _TTp()
+#endif /* _STLP_DEF_CONST_DEF_PARAM_BUG */
 
 // Malloc-based allocator.
 
@@ -177,18 +380,6 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__new_alloc>;
 _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc>;
 #endif
 
-/* macro to convert the allocator for initialization
- * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
-/* if _STLP_NO_TEMPLATE_CONVERSIONS is set, the member template constructor is
- * not used implicitly to convert allocator parameter, so let us do it explicitly */
-#  if defined (_STLP_NO_TEMPLATE_CONVERSIONS)
-#    define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#  else
-#    define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
-#  endif
-/* else convert, but only if partial specialization works, since else
- * Container::allocator_type won't be different */
-
 // Another allocator adaptor: _Alloc_traits.  This serves two
 // purposes.  First, make it possible to write containers that can use
 // either SGI-style allocators or standard-conforming allocator.
@@ -202,7 +393,7 @@ struct _Alloc_traits
     typedef typename _Rebind_type::other  allocator_type;
 
     static allocator_type create_allocator(const _Orig& __a)
-      { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
+      { return allocator_type(__a); }
 };
 
 #if defined (_STLP_USE_PERTHREAD_ALLOC)
@@ -314,36 +505,6 @@ class allocator
       { _STLP_STD::_Copy_Construct(__p, __val); }
     void destroy(pointer __p)
       { _STLP_STD::_Destroy(__p); }
-
-#if defined (_STLP_NO_EXTENSIONS)
-    /* STLport extension giving rounded size of an allocated memory buffer
-     * This method do not have to be part of a user defined allocator implementation
-     * and won't even be called if such a function was granted.
-     */
-  protected:
-#endif
-    _Tp* _M_allocate(size_type __n, size_type& __allocated_n)
-      {
-        if (__n > max_size()) {
-          _STLP_THROW_BAD_ALLOC;
-        }
-
-        if (__n != 0) {
-          size_type __buf_size = __n * sizeof(value_type);
-          _Tp* __ret = __REINTERPRET_CAST(_Tp*, __sgi_alloc::allocate(__buf_size));
-#if defined (_STLP_DEBUG_UNINITIALIZED) && !defined (_STLP_DEBUG_ALLOC)
-          memset((char*)__ret, _STLP_SHRED_BYTE, __buf_size);
-#endif
-          __allocated_n = __buf_size / sizeof(value_type);
-          return __ret;
-        }
-
-        return 0;
-      }
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-    void _M_swap_workaround(allocator<_Tp>& __other)
-      { }
-#endif
 };
 
 _STLP_TEMPLATE_NULL
@@ -439,18 +600,15 @@ _STLP_END_NAMESPACE
 
 #endif
 
-
 #if !defined (_STLP_FORCE_ALLOCATORS)
 #  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
-template <class _Tp, class _Alloc>
-inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
-__stl_alloc_create(const _Alloc& __a, const _Tp*)
-{
-  typedef typename _Alloc::_STLP_TEMPLATE rebind<_Tp>::other _Rebound_type;
-  return _Rebound_type(__a);
-}
+template <class _Tp> void swap(_Tp& __a, _Tp& __b);
+
+template <class _Tp>
+inline void swap(allocator<_Tp>& __a, allocator<_Tp>& __b)
+{ }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -481,52 +639,6 @@ class _STLP_alloc_proxy :
     _Base& _M_base()
       { return *this; }
 #endif
-
-  private:
-    /* Following are helper methods to detect stateless allocators and avoid
-     * swap in this case. For some compilers (VC6) it is a workaround for a
-     * compiler bug in the Empty Base class Optimization feature, for others
-     * it is a small optimization or nothing if no EBO. */
-    void _M_swap_alloc(_Self&, const true_type& /*_IsStateless*/)
-      { }
-
-    void _M_swap_alloc( _Self& __x, const false_type& /*_IsStateless*/)
-      {
-        _MaybeReboundAlloc& __base_this = *this;
-        _MaybeReboundAlloc& __base_x = __x;
-        _STLP_STD::swap(__base_this, __base_x);
-      }
-
-  public:
-    void _M_swap_alloc(_Self& __x)
-       { _M_swap_alloc(__x, typename __is_stateless_alloc<_Base>::type() ); }
-
-    /* We need to define the following swap implementation for allocator with state
-     * as those allocators might have implement a special swap function to correctly
-     * move datas from an instance to the oher, _STLP_alloc_proxy should not break
-     * this mecanism. */
-    void swap( _Self& __x )
-      {
-        _M_swap_alloc( __x, typename __is_stateless_alloc<_Base>::type() );
-        _STLP_STD::swap(_M_data, __x._M_data);
-      }
-
-    _Tp* allocate(size_type __n, size_type& __allocated_n)
-      {
-        // typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
-        return allocate(__n, __allocated_n, /* _STLportAlloc() */ false_type() );
-      }
-
-    //Expose Standard allocate overload (using expression do not work for some compilers (Borland))
-    _Tp* allocate( size_type __n )
-      { return _Base::allocate(__n); }
-
-  private:
-    _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
-      { return _Base::_M_allocate(__n, __allocated_n); }
-
-    _Tp* allocate(size_type __n, size_type& __allocated_n, const false_type& /*STLport allocator*/)
-      { __allocated_n = __n; return allocate(__n); }
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
@@ -540,6 +652,16 @@ _STLP_EXPORT_TEMPLATE_CLASS _STLP_alloc_proxy<void**, void*, allocator<void*> >;
 #endif
 
 _STLP_MOVE_TO_STD_NAMESPACE
+
+template <class _Value, class _Tp, class _MaybeReboundAlloc>
+inline void swap( _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __a, _STLP_PRIV _STLP_alloc_proxy<_Value,_Tp,_MaybeReboundAlloc>& __b)
+{
+  // at least gcc has problem with detecting proper (overloaded) swap,
+  // if notation with namespace (_STLP_STD::swap) used
+  /* _STLP_STD:: */ swap( static_cast<_MaybeReboundAlloc&>(__a), static_cast<_MaybeReboundAlloc&>(__b) );
+  /* _STLP_STD:: */ swap(__a._M_data, __b._M_data);
+}
+
 _STLP_END_NAMESPACE
 
 #if defined (_STLP_EXPOSE_GLOBALS_IMPLEMENTATION) && !defined (_STLP_LINK_TIME_INSTANTIATION)

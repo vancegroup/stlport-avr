@@ -60,38 +60,31 @@
 
 _STLP_BEGIN_NAMESPACE
 
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 _STLP_MOVE_TO_PRIV_NAMESPACE
-template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const true_type& /*SwapImplemented*/) {
-  __a._M_swap_workaround(__b);
-}
 
 template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const false_type& /*SwapImplemented*/) {
+inline void __swap_aux( _Tp& __a, _Tp& __b, const true_type& /* is_fundamental || !is_empty */ )
+{
   _Tp __tmp = __a;
   __a = __b;
   __b = __tmp;
 }
+
+template <class _Tp>
+inline void __swap_aux(_Tp&, _Tp&, const false_type& /* */ )
+{ }
+
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
+
+// template <class _Tp> void swap(_Tp& __a, _Tp& __b);
+// template <class _Tp> class allocator;
+// template <class _Tp> void swap(allocator<_Tp>& __a, allocator<_Tp>& __b);
 
 // swap and iter_swap
 template <class _Tp>
-inline void swap(_Tp& __a, _Tp& __b) {
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-#  if !defined(__BORLANDC__)
-  typedef typename _SwapImplemented<_Tp>::_Ret _Implemented;
-#  else
-  enum { _Is = _SwapImplemented<_Tp>::_Is };
-  typedef typename __bool2type<_Is>::_Ret _Implemented;
-#  endif
-  _STLP_PRIV __swap_aux(__a, __b, _Implemented());
-#else
-  _Tp __tmp = __a;
-  __a = __b;
-  __b = __tmp;
-#endif
+inline void swap(_Tp& __a, _Tp& __b)
+{
+  _STLP_PRIV __swap_aux(__a, __b, integral_constant<bool,is_fundamental<_Tp>::value || !is_empty<_Tp>::value>() );
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -422,7 +415,7 @@ _STLP_DECLARE_COPY_TRIVIAL(long double)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Size, class _OutputIter>
-_STLP_INLINE_LOOP _STLP_STD::pair<_InputIter, _OutputIter>
+inline _STLP_STD::pair<_InputIter, _OutputIter>
 __copy_n(_InputIter __first, _Size __count, _OutputIter __result,
          const input_iterator_tag &) {
   for ( ; __count > 0; --__count) {
@@ -456,7 +449,7 @@ copy_n(_InputIter __first, _Size __count, _OutputIter __result) {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter, class _Tp>
-_STLP_INLINE_LOOP
+inline
 void __fill_fwd(_ForwardIter __first, _ForwardIter __last, const _Tp& __val) {
   for ( ; __first != __last; ++__first)
     *__first = __val;
@@ -470,14 +463,14 @@ inline void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _ForwardIter, class _Tp, class _Distance>
-_STLP_INLINE_LOOP
+inline
 void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
             const forward_iterator_tag &, _Distance*) {
   _STLP_PRIV __fill_fwd(__first, __last, __val);
 }
 
 template <class _ForwardIter, class _Tp, class _Distance>
-_STLP_INLINE_LOOP
+inline
 void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
             const bidirectional_iterator_tag &, _Distance*) {
   _STLP_PRIV __fill_fwd(__first, __last, __val);
@@ -485,7 +478,7 @@ void __fill(_ForwardIter __first, _ForwardIter __last, const _Tp& __val,
 #endif
 
 template <class _RandomAccessIter, class _Tp, class _Distance>
-_STLP_INLINE_LOOP
+inline
 void __fill(_RandomAccessIter __first, _RandomAccessIter __last, const _Tp& __val,
             const random_access_iterator_tag &, _Distance*) {
   for (_Distance __n = __last - __first ; __n > 0; ++__first, --__n)
@@ -523,7 +516,7 @@ inline void fill(char* __first, char* __last, const char& __val) {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _OutputIter, class _Size, class _Tp>
-_STLP_INLINE_LOOP
+inline
 _OutputIter __fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
   _STLP_FIX_LITERAL_BUG(__first)
   for ( ; __n > 0; --__n, ++__first)
@@ -567,7 +560,7 @@ inline void fill_n(_OutputIter __first, _Size __n, const _Tp& __val) {
 // equal and mismatch
 
 template <class _InputIter1, class _InputIter2>
-_STLP_INLINE_LOOP
+inline
 _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                                    _InputIter1 __last1,
                                                    _InputIter2 __first2) {
@@ -581,7 +574,7 @@ _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
 }
 
 template <class _InputIter1, class _InputIter2, class _BinaryPredicate>
-_STLP_INLINE_LOOP
+inline
 _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
                                                    _InputIter1 __last1,
                                                    _InputIter2 __first2,
@@ -596,7 +589,7 @@ _STLP_STD::pair<_InputIter1, _InputIter2> mismatch(_InputIter1 __first1,
 }
 
 template <class _InputIter1, class _InputIter2>
-_STLP_INLINE_LOOP
+inline
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
            _InputIter2 __first2) {
   _STLP_FIX_LITERAL_BUG(__first1) _STLP_FIX_LITERAL_BUG(__last1)  _STLP_FIX_LITERAL_BUG(__first2)
@@ -608,7 +601,7 @@ bool equal(_InputIter1 __first1, _InputIter1 __last1,
 }
 
 template <class _InputIter1, class _InputIter2, class _BinaryPredicate>
-_STLP_INLINE_LOOP
+inline
 bool equal(_InputIter1 __first1, _InputIter1 __last1,
            _InputIter2 __first2, _BinaryPredicate __binary_pred) {
   _STLP_FIX_LITERAL_BUG(__first2)
@@ -701,7 +694,7 @@ int lexicographical_compare_3way(_InputIter1 __first1, _InputIter1 __last1,
 
 // count
 template <class _InputIter, class _Tp>
-_STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_InputIter)
+inline _STLP_DIFFERENCE_TYPE(_InputIter)
 count(_InputIter __first, _InputIter __last, const _Tp& __val) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
   _STLP_DIFFERENCE_TYPE(_InputIter) __n = 0;
@@ -746,7 +739,7 @@ find_end(_ForwardIter1 __first1, _ForwardIter1 __last1,
 
 // replace
 template <class _ForwardIter, class _Tp>
-_STLP_INLINE_LOOP void
+inline void
 replace(_ForwardIter __first, _ForwardIter __last,
         const _Tp& __old_value, const _Tp& __new_value) {
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))

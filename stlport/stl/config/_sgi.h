@@ -83,7 +83,7 @@
 #endif
 // #   if !(_COMPILER_VERSION >= 730 && defined(_STANDARD_C_PLUS_PLUS))
 #if !(_COMPILER_VERSION >= 721 && defined(_STANDARD_C_PLUS_PLUS))
-#  define _STLP_NO_TEMPLATE_CONVERSIONS
+#  define _STLP_NO_TEMPLATE_CONVERSIONS /* support removed */
 #endif
 #if !((_COMPILER_VERSION >= 730) && defined(_MIPS_SIM) && _MIPS_SIM != _ABIO32)
 #  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER

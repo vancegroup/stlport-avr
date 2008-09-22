@@ -26,7 +26,7 @@
 #  define _STLP_LONG_LONG long long
 
 // Uncomment this if your compiler can't inline while(), for()
-#  define _STLP_LOOP_INLINE_PROBLEMS 1
+#  define _STLP_LOOP_INLINE_PROBLEMS 1 /* unsupported */
 
 // Uncomment this if your compiler does not support exceptions
 // Cray C++ supports exceptions when '-h exceptions' option is user;

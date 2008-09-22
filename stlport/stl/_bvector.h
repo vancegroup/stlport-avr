@@ -314,11 +314,10 @@ public:
   typedef unsigned int __chunk_type;
   typedef typename _Alloc_traits<__chunk_type, _Alloc>::allocator_type __chunk_allocator_type;
   allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR(__STATIC_CAST(const __chunk_allocator_type&, _M_end_of_storage), bool); }
+  { return __STATIC_CAST(const __chunk_allocator_type&, _M_end_of_storage); }
 
   _Bvector_base(const allocator_type& __a)
-    : _M_start(), _M_finish(), _M_end_of_storage(_STLP_CONVERT_ALLOCATOR(__a, __chunk_type),
-                                                 (__chunk_type*)0)
+    : _M_start(), _M_finish(), _M_end_of_storage(__a, (__chunk_type*)0)
   {}
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Bvector_base(__move_source<_Self> src)

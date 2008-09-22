@@ -380,14 +380,14 @@ class _Deque_base
     _Deque_base(const allocator_type& __a, size_t __num_elements) :
         _M_start(),
         _M_finish(),
-        _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0),
+        _M_map(__a, 0),
         _M_map_size(__a, (size_t)0)
       { _M_initialize_map(__num_elements); }
 
     _Deque_base(const allocator_type& __a) :
         _M_start(),
         _M_finish(),
-        _M_map(_STLP_CONVERT_ALLOCATOR(__a, _Tp*), 0),
+        _M_map(__a, 0),
         _M_map_size(__a, (size_t)0)
       { }
 
@@ -588,8 +588,10 @@ class deque :
       {
         _STLP_STD::swap(this->_M_start, __x._M_start);
         _STLP_STD::swap(this->_M_finish, __x._M_finish);
-        this->_M_map.swap(__x._M_map);
-        this->_M_map_size.swap(__x._M_map_size);
+        // this->_M_map.swap(__x._M_map);
+        _STLP_STD::swap( this->_M_map, __x._M_map );
+        // this->_M_map_size.swap(__x._M_map_size);
+        _STLP_STD::swap( this->_M_map_size, __x._M_map_size );
       }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
     void _M_swap_workaround(_Self& __x)

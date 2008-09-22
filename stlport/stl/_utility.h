@@ -31,17 +31,46 @@
 #ifndef _STLP_INTERNAL_UTILITY_H
 #define _STLP_INTERNAL_UTILITY_H
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  ifndef _STLP_TYPE_TRAITS
-#    include <type_traits>
-#  endif
-
-#  if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
-#    include <stl/_move_construct_fwk.h>
-#  endif
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
 #endif
 
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+class __move_source
+{
+  public:
+    explicit __move_source( _Tp& _src ) :
+        _M_data(_src)
+      { }
+
+    _Tp& get() const
+      { return _M_data; }
+  private:
+    _Tp& _M_data;
+
+    //We explicitely forbid assignment to avoid warning:
+    typedef __move_source<_Tp> _Self;
+
+    _Self& operator = ( _Self const& );
+};
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+//Class used to signal move constructor support, implementation and type.
+
+template <class _Tp>
+struct __has_trivial_move :
+    public integral_constant<bool, is_trivial<_Tp>::value>
+{ };
+
+template <class _Tp>
+struct __has_move_constructor :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
 
 namespace rel_ops {
 } // namespace rel_ops

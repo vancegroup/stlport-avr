@@ -332,7 +332,7 @@ public:
     : _M_hash(__hf),
       _M_equals(__eql),
       _M_elems(allocator_type()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
+      _M_buckets(__a),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -345,7 +345,7 @@ public:
     : _M_hash(__hf),
       _M_equals(__eql),
       _M_elems(__a),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__a, _BucketType*)),
+      _M_buckets(__a),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_initialize_buckets(__n); }
@@ -354,7 +354,7 @@ public:
     : _M_hash(__ht._M_hash),
       _M_equals(__ht._M_equals),
       _M_elems(__ht.get_allocator()),
-      _M_buckets(_STLP_CONVERT_ALLOCATOR(__ht.get_allocator(), _BucketType*)),
+      _M_buckets(__ht.get_allocator()),
       _M_num_elements(0),
       _M_max_load_factor(1.0f)
   { _M_copy_from(__ht); }

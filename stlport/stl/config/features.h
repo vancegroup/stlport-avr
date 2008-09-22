@@ -628,12 +628,6 @@ namespace _STL = _STLP_STD_NAME;
 #  define signed
 #endif
 
-#if defined (_STLP_LOOP_INLINE_PROBLEMS)
-#  define _STLP_INLINE_LOOP
-#else
-#  define _STLP_INLINE_LOOP inline
-#endif
-
 #ifndef _STLP_NO_PARTIAL_SPECIALIZATION_SYNTAX
 #  define _STLP_TEMPLATE_NULL template<>
 #else

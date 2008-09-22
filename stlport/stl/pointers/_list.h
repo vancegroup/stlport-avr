@@ -87,10 +87,10 @@ public:
   _STLP_DECLARE_BIDIRECTIONAL_REVERSE_ITERATORS;
 
   allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR(_M_impl.get_allocator(), value_type); }
+  { return _M_impl.get_allocator(); }
 
   explicit list(const allocator_type& __a = allocator_type())
-    : _M_impl(_STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
+    : _M_impl(__a) {}
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(value_type),
@@ -99,7 +99,7 @@ public:
 #endif /*_STLP_DONT_SUP_DFLT_PARAM*/
        const allocator_type& __a = allocator_type())
     : _M_impl(__n, cast_traits::to_storage_type_cref(__val),
-              _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
+              __a) {}
 
 #if defined(_STLP_DONT_SUP_DFLT_PARAM)
   explicit list(size_type __n)
@@ -110,9 +110,9 @@ public:
   list(_InputIterator __first, _InputIterator __last,
        const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
 #  if !defined (_STLP_USE_ITERATOR_WRAPPER)
-    : _M_impl(__first, __last, _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
+    : _M_impl(__first, __last, __a) {}
 #  else
-    : _M_impl(_STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {
+    : _M_impl(__a) {
     insert(begin(), __first, __last);
   }
 #  endif

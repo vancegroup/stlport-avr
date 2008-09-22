@@ -149,7 +149,7 @@ public:                         // Constructor, destructor, assignment.
   typedef typename _Base::allocator_type allocator_type;
 
   allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_start_of_storage, _CharT); }
+  { return (const allocator_type&)this->_M_start_of_storage; }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   explicit basic_string(const allocator_type& __a = allocator_type())
@@ -462,20 +462,19 @@ private:
   }
 
   template <class _ForwardIter>
-  _Self& _M_appendT(_ForwardIter __first, _ForwardIter __last,
-                    const forward_iterator_tag &) {
+  _Self& _M_appendT( _ForwardIter __first, _ForwardIter __last, const forward_iterator_tag& )
+      {
     if (__first != __last) {
       size_type __n = __STATIC_CAST(size_type, _STLP_STD::distance(__first, __last));
       if (__n >= this->_M_rest()) {
         size_type __len = _M_compute_next_size(__n);
-        pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
+        pointer __new_start = this->_M_start_of_storage.allocate(__len);
         pointer __new_finish = uninitialized_copy(this->_M_Start(), this->_M_Finish(), __new_start);
         __new_finish = uninitialized_copy(__first, __last, __new_finish);
         _M_construct_null(__new_finish);
         this->_M_deallocate_block();
         this->_M_reset(__new_start, __new_finish, __new_start + __len);
-      }
-      else {
+      } else {
         _Traits::assign(*this->_M_finish, *__first++);
         uninitialized_copy(__first, __last, this->_M_Finish() + 1);
         _M_construct_null(this->_M_Finish() + __n);
@@ -682,17 +681,17 @@ _STLP_PRIVATE:  // Helper functions for insert.
 
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _ForwardIter>
-  void _M_insert_overflow(iterator __pos, _ForwardIter __first, _ForwardIter __last,
-                          size_type __n) {
-    size_type __len = _M_compute_next_size(__n);
-    pointer __new_start = this->_M_start_of_storage.allocate(__len, __len);
-    pointer __new_finish = uninitialized_copy(this->_M_Start(), __pos, __new_start);
-    __new_finish = uninitialized_copy(__first, __last, __new_finish);
-    __new_finish = uninitialized_copy(__pos, this->_M_Finish(), __new_finish);
-    _M_construct_null(__new_finish);
-    this->_M_deallocate_block();
-    this->_M_reset(__new_start, __new_finish, __new_start + __len);
-  }
+  void _M_insert_overflow( iterator __pos, _ForwardIter __first, _ForwardIter __last, size_type __n )
+      {
+        size_type __len = _M_compute_next_size(__n);
+        pointer __new_start = this->_M_start_of_storage.allocate(__len);
+        pointer __new_finish = uninitialized_copy(this->_M_Start(), __pos, __new_start);
+        __new_finish = uninitialized_copy(__first, __last, __new_finish);
+        __new_finish = uninitialized_copy(__pos, this->_M_Finish(), __new_finish);
+        _M_construct_null(__new_finish);
+        this->_M_deallocate_block();
+        this->_M_reset(__new_start, __new_finish, __new_start + __len);
+      }
 
   template <class _InputIter>
   void _M_insertT(iterator __p, _InputIter __first, _InputIter __last,

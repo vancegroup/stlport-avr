@@ -39,10 +39,6 @@
 #  include <stl/_iterator.h>
 #endif
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
-#endif
-
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 #endif
@@ -148,45 +144,48 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // Base class that encapsulates details of allocators and simplifies EH
 template <class _Tp, class _Alloc>
-class _Slist_base {
-protected:
-  typedef _Slist_node<_Tp> _Node;
-  typedef typename _Alloc_traits<_Node,_Alloc>::allocator_type _M_node_allocator_type;
-  typedef _Slist_base<_Tp, _Alloc> _Self;
+class _Slist_base
+{
+  protected:
+    typedef _Slist_node<_Tp> _Node;
+    typedef typename _Alloc_traits<_Node,_Alloc>::allocator_type _M_node_allocator_type;
+    typedef _Slist_base<_Tp, _Alloc> _Self;
 
-public:
-  typedef _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
+  public:
+    typedef _STLP_alloc_proxy<_Slist_node_base, _Node, _M_node_allocator_type> _AllocProxy;
 
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef _Alloc allocator_type;
+    _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
+    typedef _Alloc allocator_type;
 
-  _Slist_base(const allocator_type& __a) :
-    _M_head(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Slist_node_base() )
-  { _M_head._M_data._M_next = 0; }
+    _Slist_base(const allocator_type& __a) :
+        _M_head(__a, _Slist_node_base() )
+      { _M_head._M_data._M_next = 0; }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  _Slist_base(__move_source<_Self> src) :
-    _M_head(__move_source<_AllocProxy>(src.get()._M_head))
-  { src.get()._M_head._M_data._M_next = 0; }
+    _Slist_base(__move_source<_Self> src) :
+        _M_head(__move_source<_AllocProxy>(src.get()._M_head))
+      { src.get()._M_head._M_data._M_next = 0; }
 #endif
 
-  ~_Slist_base() { _M_erase_after(&_M_head._M_data, 0); }
+    ~_Slist_base() { _M_erase_after(&_M_head._M_data, 0); }
 
-protected:
-  _Slist_node_base* _M_erase_after(_Slist_node_base* __pos) {
-    _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
-    _Slist_node_base* __next_next = __next->_M_next;
-    __pos->_M_next = __next_next;
-    _STLP_STD::_Destroy(&__next->_M_data);
-    _M_head.deallocate(__next,1);
-    return __next_next;
-  }
-  _Slist_node_base* _M_erase_after(_Slist_node_base*, _Slist_node_base*);
+  protected:
+    _Slist_node_base* _M_erase_after(_Slist_node_base* __pos)
+      {
+        _Node* __next = __STATIC_CAST(_Node*, __pos->_M_next);
+        _Slist_node_base* __next_next = __next->_M_next;
+        __pos->_M_next = __next_next;
+        _STLP_STD::_Destroy(&__next->_M_data);
+        _M_head.deallocate(__next,1);
+        return __next_next;
+      }
+    _Slist_node_base* _M_erase_after(_Slist_node_base*, _Slist_node_base*);
 
-public:
-  allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR((const _M_node_allocator_type&)_M_head, _Tp); }
-  _AllocProxy _M_head;
+  public:
+    allocator_type get_allocator() const
+      { return (const _M_node_allocator_type&)_M_head; }
+
+    _AllocProxy _M_head;
 };
 
 #if defined (_STLP_USE_PTR_SPECIALIZATIONS)
@@ -398,7 +397,7 @@ public:
   bool empty() const { return this->_M_head._M_data._M_next == 0; }
 
   void swap(_Self& __x)
-  { this->_M_head.swap(__x._M_head); }
+  { /* this->_M_head.swap(__x._M_head); */ _STLP_STD::swap(this->_M_head, __x._M_head); }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif

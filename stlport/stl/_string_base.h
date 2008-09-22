@@ -183,7 +183,8 @@ class _String_base
             _M_finish = _M_start_of_storage._M_data + (__s._M_finish - __s._M_start_of_storage._M_data);
             __s._M_finish = __s._M_buffers._M_static_buf + (__tmp - _M_start_of_storage._M_data);
             //We need to swap _M_start_of_storage for allocators with state:
-            _M_start_of_storage.swap(__s._M_start_of_storage);
+            // _M_start_of_storage.swap(__s._M_start_of_storage);
+            _STLP_STD::swap( _M_start_of_storage, __s._M_start_of_storage );
             _M_start_of_storage._M_data = _M_buffers._M_static_buf;
             __s._M_start_of_storage._M_data = __s._M_buffers._M_static_buf;
           } else {
@@ -196,7 +197,8 @@ class _String_base
           _Tp *__tmp_end_data = _M_buffers._M_end_of_storage;
           _M_buffers = __s._M_buffers;
           //We need to swap _M_start_of_storage for allocators with state:
-          _M_start_of_storage.swap(__s._M_start_of_storage);
+          // _M_start_of_storage.swap(__s._M_start_of_storage);
+          _STLP_STD::swap( _M_start_of_storage, __s._M_start_of_storage );
           _M_start_of_storage._M_data = _M_buffers._M_static_buf;
           _M_finish = _M_buffers._M_static_buf + (__s._M_finish - __s._M_buffers._M_static_buf);
           __s._M_buffers._M_end_of_storage = __tmp_end_data;
@@ -204,7 +206,8 @@ class _String_base
           __s._M_finish = __tmp_finish;
         } else {
           _STLP_STD::swap(_M_buffers._M_end_of_storage, __s._M_buffers._M_end_of_storage);
-          _M_start_of_storage.swap(__s._M_start_of_storage);
+          // _M_start_of_storage.swap(__s._M_start_of_storage);
+          _STLP_STD::swap( _M_start_of_storage, __s._M_start_of_storage );
           _STLP_STD::swap(_M_finish, __s._M_finish);
         }
 #else

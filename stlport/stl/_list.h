@@ -42,10 +42,6 @@
 #  include <stl/_iterator.h>
 #endif
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
-#endif
-
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 #endif
@@ -190,10 +186,10 @@ public:
   typedef _STLP_alloc_proxy<_Node_base, _Node, _Node_allocator_type> _AllocProxy;
   typedef _Alloc allocator_type;
 
-  allocator_type get_allocator() const
-  { return _STLP_CONVERT_ALLOCATOR((const _Node_allocator_type&)_M_node, _Tp); }
+    allocator_type get_allocator() const
+      { return (const _Node_allocator_type&)_M_node; }
 
-  _List_base(const allocator_type& __a) : _M_node(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base())
+  _List_base(const allocator_type& __a) : _M_node(__a, _Node_base())
   { _M_empty_initialize(); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
@@ -396,16 +392,17 @@ private:
 public:
   void swap(_Self& __x) {
     if (__x.empty()) {
-      __x._M_node._M_swap_alloc(this->_M_node);
+      _STLP_STD::swap( static_cast<typename _Base::_Node_allocator_type&>(__x._M_node), static_cast<typename _Base::_Node_allocator_type&>(this->_M_node) );
       if (this->empty()) {
         return;
       }
       this->_M_swap_aux(__x);
     } else if (this->empty()) {
-      __x._M_node._M_swap_alloc(this->_M_node);
+      _STLP_STD::swap( static_cast<typename _Base::_Node_allocator_type&>(__x._M_node), static_cast<typename _Base::_Node_allocator_type&>(this->_M_node) );
       __x._M_swap_aux(*this);
     } else {
-      this->_M_node.swap(__x._M_node);
+      // this->_M_node.swap(__x._M_node);
+      _STLP_STD::swap(this->_M_node, __x._M_node);
       _STLP_STD::swap(this->_M_node._M_data._M_prev->_M_next, __x._M_node._M_data._M_prev->_M_next);
       _STLP_STD::swap(this->_M_node._M_data._M_next->_M_prev, __x._M_node._M_data._M_next->_M_prev);
     }
@@ -708,7 +705,7 @@ _STLP_END_NAMESPACE
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp, class _Alloc>
-_STLP_INLINE_LOOP bool  _STLP_CALL
+inline bool  _STLP_CALL
 operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
   typedef typename list<_Tp,_Alloc>::const_iterator const_iterator;
   const_iterator __end1 = __x.end();

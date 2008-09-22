@@ -62,10 +62,6 @@ iterators invalidated are those referring to the deleted node.
 #  include <stl/_iterator.h>
 #endif
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
-#endif
-
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #  include <stl/_function_base.h>
 #endif
@@ -239,27 +235,27 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 // Base class to help EH
 
 template <class _Tp, class _Alloc>
-class _Rb_tree_base {
-public:
-  typedef _Rb_tree_node_base _Node_base;
-  typedef _Rb_tree_node<_Tp> _Node;
-  _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
-  typedef _Alloc allocator_type;
-private:
-  typedef _Rb_tree_base<_Tp, _Alloc> _Self;
-  typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _M_node_allocator_type;
-  typedef _STLP_alloc_proxy<_Node_base, _Node, _M_node_allocator_type> _AllocProxy;
+class _Rb_tree_base
+{
+  public:
+    typedef _Rb_tree_node_base _Node_base;
+    typedef _Rb_tree_node<_Tp> _Node;
+    _STLP_FORCE_ALLOCATORS(_Tp, _Alloc)
+    typedef _Alloc allocator_type;
 
-public:
-  allocator_type get_allocator() const {
-    return _STLP_CONVERT_ALLOCATOR(_M_header, _Tp);
-  }
+  private:
+    typedef _Rb_tree_base<_Tp, _Alloc> _Self;
+    typedef typename _Alloc_traits<_Node, _Alloc>::allocator_type _M_node_allocator_type;
+    typedef _STLP_alloc_proxy<_Node_base, _Node, _M_node_allocator_type> _AllocProxy;
 
-protected:
-  _Rb_tree_base(const allocator_type& __a) :
-    _M_header(_STLP_CONVERT_ALLOCATOR(__a, _Node), _Node_base() ) {
-    _M_empty_initialize();
-  }
+  public:
+    allocator_type get_allocator() const
+      { return _M_header; }
+
+  protected:
+    _Rb_tree_base(const allocator_type& __a) :
+        _M_header(__a, _Node_base() )
+      { _M_empty_initialize(); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   _Rb_tree_base(__move_source<_Self> src) :
@@ -443,25 +439,28 @@ public:
   size_type size() const { return _M_node_count; }
   size_type max_size() const { return size_type(-1); }
 
-  void swap(_Self& __t) {
-    if (__t.empty()) {
-      if (this->empty()) return;
-      __t._M_header.swap(this->_M_header);
-      __t._M_rebind(&this->_M_header._M_data);
-      this->_M_empty_initialize();
-    }
-    else if (this->empty()) {
-      __t.swap(*this);
-      return;
-    }
-    else {
-      this->_M_header.swap(__t._M_header);
-      this->_M_rebind(&__t._M_header._M_data);
-      __t._M_rebind(&this->_M_header._M_data);
-    }
-    _STLP_STD::swap(_M_node_count, __t._M_node_count);
-    _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
-  }
+  void swap(_Self& __t)
+      {
+        if (__t.empty()) {
+          if (this->empty()) {
+            return;
+          }
+          // __t._M_header.swap(this->_M_header);
+          _STLP_STD::swap( this->_M_header, __t._M_header );
+          __t._M_rebind(&this->_M_header._M_data);
+          this->_M_empty_initialize();
+        } else if (this->empty()) {
+          __t.swap(*this);
+          return;
+        } else {
+          // this->_M_header.swap(__t._M_header);
+          _STLP_STD::swap( this->_M_header, __t._M_header );
+          this->_M_rebind(&__t._M_header._M_data);
+          __t._M_rebind(&this->_M_header._M_data);
+        }
+        _STLP_STD::swap(_M_node_count, __t._M_node_count);
+        _STLP_STD::swap(_M_key_compare, __t._M_key_compare);
+      }
 
 public:
                                 // insert/erase

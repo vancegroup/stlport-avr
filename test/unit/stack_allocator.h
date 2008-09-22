@@ -1,19 +1,36 @@
 #ifndef STLPORT_UNIT_TEST_STACK_ALLOCATOR_H
 #define STLPORT_UNIT_TEST_STACK_ALLOCATOR_H
 
+#include <type_traits>
+
+template <class _Tp>
+struct StackAllocator;
+
+_STLP_BEGIN_NAMESPACE
+
+// namespace stlp_std {
+template <class _Tp>
+void swap(_Tp& __a, _Tp& __b);
+
+template <class _Tp>
+void swap( ::StackAllocator<_Tp>& __a, ::StackAllocator<_Tp>& __b );
+// }
+_STLP_END_NAMESPACE
+
 #include <algorithm>
+#include <stdio.h> // --
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 //For bad_alloc:
 #  include <new>
 #endif
 
-#undef __STD
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
-#  define __STD std::
-#else
-#  define __STD
-#endif
+// #undef __STD
+// #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+// #  define __STD std::
+// #else
+// #  define __STD
+// #endif
 
 struct State {
   char *m_beg, *m_end, *m_cur;
@@ -45,13 +62,6 @@ struct State {
  */
 template <class _Tp>
 struct StackAllocator
-#if defined (STLPORT) && \
-    defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
-  //Special Borland workaround that have problem with function
-  //overloading when one of the overloaded version is a template
-  //one. This is the case for the std::swap function.
-  : public __STD __stlport_class<StackAllocator<_Tp> >
-#endif
 {
   typedef _Tp        value_type;
   typedef value_type *       pointer;
@@ -90,7 +100,7 @@ struct StackAllocator
       return reinterpret_cast<_Tp*>(ret);
     }
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
-    throw __STD bad_alloc();
+    throw std::bad_alloc();
 #  if defined (__DMC__)
     return 0;
 #  endif
@@ -139,7 +149,7 @@ struct StackAllocator
   }
   bool swaped() const { return m_state.m_swaped; }
   void swap(StackAllocator &other) {
-    __STD swap(m_state, other.m_state);
+    std::swap(m_state, other.m_state);
     m_state.m_swaped = true;
     other.m_state.m_swaped = true;
   }
@@ -160,40 +170,18 @@ private:
   State m_state;
 };
 
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+// #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 namespace std {
-#endif
+// #endif
 
-#  if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) )
-template <class _Tp1, class _Tp2>
-inline StackAllocator<_Tp2>&
-__stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }
-template <class _Tp1, class _Tp2>
-inline StackAllocator<_Tp2>
-__stl_alloc_create(const StackAllocator<_Tp1>& __a, const _Tp2*) { return StackAllocator<_Tp2>(__a.getState()); }
-#  endif
-
-#  if !defined (STLPORT) || defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
   template <class _Tp>
-  inline void swap(StackAllocator<_Tp>& __a, StackAllocator<_Tp>& __b)
-  { __a.swap(__b); }
-#  elif !defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-//The following overloads depends on instanciation, if new unit tests are written
-//with new StackAllocator instanciations associated swap overload should also be
-//written
-inline void swap(StackAllocator<int>& __a, StackAllocator<int>& __b)
-{ __a.swap(__b); }
-inline void swap(StackAllocator<char>& __a, StackAllocator<char>& __b)
-{ __a.swap(__b); }
-inline void swap(StackAllocator<pair<const int, int> >& __a,
-                 StackAllocator<pair<const int, int> >& __b)
-{ __a.swap(__b); }
-#  endif
+  inline void swap( ::StackAllocator<_Tp>& __a, ::StackAllocator<_Tp>& __b)
+  { printf( "swap StackAllocator\n" ); __a.swap(__b); }
 
-#if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
+// #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
-#endif
+// #endif
 
-#undef __STD
+// #undef __STD
 
 #endif //STLPORT_UNIT_TEST_STACK_ALLOCATOR_H

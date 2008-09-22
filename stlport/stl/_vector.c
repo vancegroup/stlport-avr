@@ -72,7 +72,7 @@ void vector<_Tp, _Alloc>::reserve(size_type __n)
       __tmp = _M_allocate_and_copy(__n, this->_M_start, this->_M_finish);
       _M_clear();
     } else {
-      __tmp = this->_M_end_of_storage.allocate(__n, __n);
+      __tmp = this->_M_end_of_storage.allocate(__n);
     }
     _M_set(__tmp, __tmp + __old_size, __tmp + __n);
   }
@@ -84,7 +84,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
                                               size_type __fill_len, bool __atend )
 {
   size_type __len = _M_compute_next_size(__fill_len);
-  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+  pointer __new_start = this->_M_end_of_storage.allocate(__len);
   pointer __new_finish = __new_start;
   pointer old = this->_M_start;
   _STLP_TRY {
@@ -113,7 +113,7 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
                                               size_type __fill_len, bool __atend )
 {
   size_type __len = _M_compute_next_size(__fill_len);
-  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+  pointer __new_start = this->_M_end_of_storage.allocate(__len);
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
   // handle insertion
   for ( ; __fill_len-- > 0; ++__new_finish ) {

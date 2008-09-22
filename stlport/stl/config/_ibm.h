@@ -106,7 +106,7 @@
 /* #  define _STLP_THROW_RETURN_BUG 1 */
 
 
-#  define _STLP_NO_TEMPLATE_CONVERSIONS 1
+#  define _STLP_NO_TEMPLATE_CONVERSIONS 1 /* support removed */
 #  define _STLP_BASE_TYPEDEF_OUTSIDE_BUG 1
 
 /* AIX xlC, Visual Age 3.0 for OS/2 and MS */

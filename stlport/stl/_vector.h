@@ -50,10 +50,6 @@
 #  include <type_traits>
 #endif
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 // The vector base class serves one purpose, its constructor and
@@ -83,7 +79,7 @@ class _Vector_base
         _M_finish(0),
         _M_end_of_storage(__a, 0)
       {
-        _M_start = _M_end_of_storage.allocate(__n, __n);
+        _M_start = _M_end_of_storage.allocate(__n);
         _M_finish = _M_start;
         _M_end_of_storage._M_data = _M_start + __n;
         _STLP_MPWFIX_TRY _STLP_MPWFIX_CATCH
@@ -150,7 +146,7 @@ class vector :
     _STLP_DECLARE_RANDOM_ACCESS_REVERSE_ITERATORS;
 
     allocator_type get_allocator() const
-      { return _STLP_CONVERT_ALLOCATOR((const allocator_type&)this->_M_end_of_storage, _Tp); }
+      { return (const allocator_type&)this->_M_end_of_storage; }
 
   private:
 #if defined (_STLP_NO_MOVE_SEMANTIC)
@@ -270,8 +266,8 @@ class vector :
     template <class _Integer>
     void _M_initialize_aux( _Integer __n, _Integer __val, const true_type& /*_IsIntegral*/ )
       {
-        size_type __real_n = __n;
-        this->_M_start = this->_M_end_of_storage.allocate(__n, __real_n);
+        size_type __real_n = ((__n + sizeof(_Integer) * 8 - 1) & ~(sizeof(_Integer) * 8 - 1));
+        this->_M_start = this->_M_end_of_storage.allocate(__real_n);
         this->_M_end_of_storage._M_data = this->_M_start + __real_n;
         this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val);
       }
@@ -385,7 +381,8 @@ class vector :
       {
         _STLP_STD::swap(this->_M_start, __x._M_start);
         _STLP_STD::swap(this->_M_finish, __x._M_finish);
-        this->_M_end_of_storage.swap(__x._M_end_of_storage);
+        // this->_M_end_of_storage.swap(__x._M_end_of_storage);
+        _STLP_STD::swap(this->_M_end_of_storage,__x._M_end_of_storage);
       }
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
     void _M_swap_workaround(_Self& __x)
@@ -430,7 +427,7 @@ class vector :
                                   size_type __n, const true_type& /* trivial move */ )
       {
         size_type __len = _M_compute_next_size(__n);
-        pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+        pointer __new_start = this->_M_end_of_storage.allocate(__len);
         pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
         // handle insertion ToDo: spec for _ForwardIterator, in construct
         for ( ; __first != __last; ++__first, ++__new_finish ) {
@@ -641,7 +638,7 @@ class vector :
     pointer _M_allocate_and_copy( size_type& __n,
                                   _ForwardIterator __first, _ForwardIterator __last )
       {
-        pointer __result = this->_M_end_of_storage.allocate(__n, __n);
+        pointer __result = this->_M_end_of_storage.allocate(__n);
         _STLP_TRY {
           uninitialized_copy(__first, __last, __result);
           return __result;
@@ -664,7 +661,7 @@ class vector :
                               const forward_iterator_tag& )
       {
         size_type __n = _STLP_STD::distance(__first, __last);
-        this->_M_start = this->_M_end_of_storage.allocate(__n, __n);
+        this->_M_start = this->_M_end_of_storage.allocate(__n);
         this->_M_end_of_storage._M_data = this->_M_start + __n;
         this->_M_finish = uninitialized_copy(__first, __last, this->_M_start);
       }

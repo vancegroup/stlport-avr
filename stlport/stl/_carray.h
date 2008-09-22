@@ -24,8 +24,8 @@
  * being able to be used with type not default constructible.
  */
 
-#ifndef _STLP_INTERNAL_CONSTRUCT_H
-#  include <stl/_construct.h>
+#ifndef _STLP_INTERNAL_ALLOC_H
+#  include <stl/_alloc.h>
 #endif
 
 _STLP_BEGIN_NAMESPACE

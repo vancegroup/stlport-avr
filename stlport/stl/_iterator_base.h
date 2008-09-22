@@ -34,18 +34,6 @@
 #  include <stl/_cstddef.h>
 #endif
 
-//# if defined  (_STLP_IMPORT_VENDOR_CSTD) && ! defined (_STLP_VENDOR_GLOBAL_CSTD)
-//_STLP_BEGIN_NAMESPACE
-//using namespace _STLP_VENDOR_CSTD;
-//_STLP_END_NAMESPACE
-//#endif /* _STLP_IMPORT_VENDOR_CSTD */
-
-#if !defined(_STLP_USE_OLD_HP_ITERATOR_QUERIES) && !defined(_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  ifndef _STLP_TYPE_TRAITS_H
-#    include <stl/type_traits.h>
-#  endif
-#endif
-
 _STLP_BEGIN_NAMESPACE
 
 struct input_iterator_tag {};
@@ -327,7 +315,7 @@ __distance(const _ForwardIterator& __first, const _ForwardIterator& __last,
 }
 
 template <class _BidirectionalIterator>
-_STLP_INLINE_LOOP _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) _STLP_CALL
+inline _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) _STLP_CALL
 __distance(const _BidirectionalIterator& __first, const _BidirectionalIterator& __last,
            const bidirectional_iterator_tag &) {
   _STLP_DIFFERENCE_TYPE(_BidirectionalIterator) __n = 0;
@@ -467,25 +455,25 @@ struct __cnst_traits_aux : private _Traits {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL
+inline void _STLP_CALL
 __advance(_InputIter& __i, _Distance __n, const input_iterator_tag &)
 { while (__n--) ++__i; }
 
 // fbp : added output iterator tag variant
 template <class _InputIter, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL
+inline void _STLP_CALL
 __advance(_InputIter& __i, _Distance __n, const output_iterator_tag &)
 { while (__n--) ++__i; }
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _ForwardIterator, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL
+inline void _STLP_CALL
 __advance(_ForwardIterator& i, _Distance n, const forward_iterator_tag &)
 { while (n--) ++i; }
 #endif
 
 template <class _BidirectionalIterator, class _Distance>
-_STLP_INLINE_LOOP void _STLP_CALL
+inline void _STLP_CALL
 __advance(_BidirectionalIterator& __i, _Distance __n,
           const bidirectional_iterator_tag &) {
   if (__n > 0)

@@ -291,7 +291,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIterator, class _OutputIterator, class _BinaryPredicate,
           class _Tp>
-_STLP_INLINE_LOOP _OutputIterator
+inline _OutputIterator
 __unique_copy(_InputIterator __first, _InputIterator __last,
               _OutputIterator __result,
               _BinaryPredicate __binary_pred, _Tp*) {
@@ -314,7 +314,7 @@ __unique_copy(_InputIter __first, _InputIter __last,_OutputIter __result,
 }
 
 template <class _InputIter, class _ForwardIter, class _BinaryPredicate>
-_STLP_INLINE_LOOP _ForwardIter
+inline _ForwardIter
 __unique_copy(_InputIter __first, _InputIter __last, _ForwardIter __result,
               _BinaryPredicate __binary_pred, const forward_iterator_tag &) {
   *__result = *__first;
@@ -428,7 +428,7 @@ _BidirectionalIter __rotate_aux(_BidirectionalIter __first,
 
 // rotate and rotate_copy, and their auxiliary functions
 template <class _EuclideanRingElement>
-_STLP_INLINE_LOOP
+inline
 _EuclideanRingElement __gcd(_EuclideanRingElement __m,
                             _EuclideanRingElement __n) {
   while (__n != 0) {
@@ -673,7 +673,7 @@ random_sample(_InputIter __first, _InputIter __last,
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _ForwardIter, class _Predicate>
-_STLP_INLINE_LOOP _ForwardIter __partition(_ForwardIter __first,
+inline _ForwardIter __partition(_ForwardIter __first,
                                            _ForwardIter __last,
                                            _Predicate   __pred,
                                            const forward_iterator_tag &) {
@@ -694,7 +694,7 @@ _STLP_INLINE_LOOP _ForwardIter __partition(_ForwardIter __first,
 }
 
 template <class _BidirectionalIter, class _Predicate>
-_STLP_INLINE_LOOP _BidirectionalIter __partition(_BidirectionalIter __first,
+inline _BidirectionalIter __partition(_BidirectionalIter __first,
                                                  _BidirectionalIter __last,
                                                  _Predicate __pred,
                                                  const bidirectional_iterator_tag &) {
