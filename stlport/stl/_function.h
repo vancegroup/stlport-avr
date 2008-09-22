@@ -101,7 +101,7 @@ class unary_negate :
   public:
     typedef typename _Base::argument_type argument_type;
   private:
-    typedef typename conditional<is_pod<argument_type>::value,argument_type,typename add_const<typename add_reference<argument_type>::type>::type>::type _ArgParamType;
+    typedef typename conditional<is_pod<argument_type>::value,argument_type,typename add_const<typename add_lvalue_reference<argument_type>::type>::type>::type _ArgParamType;
   protected:
     _Predicate _M_pred;
   public:
@@ -131,8 +131,8 @@ class binary_negate :
     typedef typename _Base::second_argument_type second_argument_type;
 
   private:
-    typedef typename conditional<is_pod<first_argument_type>::value,first_argument_type,typename add_const<typename add_reference<first_argument_type>::type>::type>::type _FstArgParamType;
-    typedef typename conditional<is_pod<second_argument_type>::value,second_argument_type,typename add_const<typename add_reference<second_argument_type>::type>::type>::type _SndArgParamType;
+    typedef typename conditional<is_pod<first_argument_type>::value,first_argument_type,typename add_const<typename add_lvalue_reference<first_argument_type>::type>::type>::type _FstArgParamType;
+    typedef typename conditional<is_pod<second_argument_type>::value,second_argument_type,typename add_const<typename add_lvalue_reference<second_argument_type>::type>::type>::type _SndArgParamType;
 
   protected:
     _Predicate _M_pred;
@@ -161,9 +161,9 @@ class binder1st :
     typedef typename _Base::result_type result_type;
 
   private:
-    typedef typename add_reference<typename decay<argument_type>::type>::type _ArgParamType;
-    typedef typename add_reference<typename add_const<typename decay<argument_type>::type>::type>::type _ConstArgParamType;
-    typedef typename conditional<is_pod<typename _Operation::first_argument_type>::value,typename _Operation::first_argument_type,typename add_reference<typename add_const<typename _Operation::first_argument_type>::type>::type>::type _ValueParamType;
+    typedef typename add_lvalue_reference<typename decay<argument_type>::type>::type _ArgParamType;
+    typedef typename add_lvalue_reference<typename add_const<typename decay<argument_type>::type>::type>::type _ConstArgParamType;
+    typedef typename conditional<is_pod<typename _Operation::first_argument_type>::value,typename _Operation::first_argument_type,typename add_lvalue_reference<typename add_const<typename _Operation::first_argument_type>::type>::type>::type _ValueParamType;
 
   protected:
     //op is a Standard name (20.3.6.1), do no make it STLport naming convention compliant.
@@ -201,9 +201,9 @@ class binder2nd :
     typedef typename _Base::result_type result_type;
 
   private:
-    typedef typename add_reference<typename decay<argument_type>::type>::type _ArgParamType;
-    typedef typename add_reference<typename add_const<typename decay<argument_type>::type>::type>::type _ConstArgParamType;
-    typedef typename conditional<is_pod<typename _Operation::second_argument_type>::value,typename _Operation::second_argument_type,typename add_reference<typename add_const<typename _Operation::second_argument_type>::type>::type>::type _ValueParamType;
+    typedef typename add_lvalue_reference<typename decay<argument_type>::type>::type _ArgParamType;
+    typedef typename add_lvalue_reference<typename add_const<typename decay<argument_type>::type>::type>::type _ConstArgParamType;
+    typedef typename conditional<is_pod<typename _Operation::second_argument_type>::value,typename _Operation::second_argument_type,typename add_lvalue_reference<typename add_const<typename _Operation::second_argument_type>::type>::type>::type _ValueParamType;
   protected:
     //op is a Standard name (20.3.6.3), do no make it STLport naming convention compliant.
     _Operation op;
@@ -241,7 +241,7 @@ class unary_compose :
     typedef typename _Base::argument_type argument_type;
     typedef typename _Base::result_type result_type;
   private:
-    typedef typename add_const<typename add_reference<argument_type>::type>::type _ArgParamType;
+    typedef typename add_const<typename add_lvalue_reference<argument_type>::type>::type _ArgParamType;
   protected:
     _Operation1 _M_fn1;
     _Operation2 _M_fn2;
@@ -268,7 +268,7 @@ class binary_compose :
     typedef typename _Base::argument_type argument_type;
     typedef typename _Base::result_type result_type;
   private:
-    typedef typename add_const<typename add_reference<argument_type>::type>::type _ArgParamType;
+    typedef typename add_const<typename add_lvalue_reference<argument_type>::type>::type _ArgParamType;
   protected:
     _Operation1 _M_fn1;
     _Operation2 _M_fn2;
