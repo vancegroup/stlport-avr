@@ -236,18 +236,6 @@ _STLP_END_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-_STLP_MOVE_TO_STD_NAMESPACE
-template <class _Value, class _Traits>
-inline _Value* value_type(const _STLP_PRIV _Rb_tree_iterator<_Value, _Traits>&)
-{ return (_Value*)0; }
-inline bidirectional_iterator_tag iterator_category(const _STLP_PRIV _Rb_tree_base_iterator&)
-{ return bidirectional_iterator_tag(); }
-inline ptrdiff_t* distance_type(const _STLP_PRIV _Rb_tree_base_iterator&)
-{ return (ptrdiff_t*) 0; }
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
-
 // Base class to help EH
 
 template <class _Tp, class _Alloc>
@@ -648,11 +636,27 @@ public:
 #endif //_STLP_DEBUG
 };
 
+_STLP_MOVE_TO_STD_NAMESPACE
+
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+struct __has_trivial_move<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value && is_trivial<_Compare>::value> /* true_type */
+{ };
+
+template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
+struct __has_move_constructor<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 #if defined (_STLP_DEBUG)
 #  undef _Rb_tree
 #endif
-
-_STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
 
@@ -671,17 +675,6 @@ _STLP_BEGIN_NAMESPACE
 #include <stl/_relops_cont.h>
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
-struct __move_traits<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> >
-{
-  typedef true_type implemented;
-  typedef typename integral_constant<bool, __move_traits<_Compare>::complete::value &&
-                                           __move_traits<_Alloc>::complete::value>::type complete;
-
-};
-#endif
 
 _STLP_END_NAMESPACE
 
