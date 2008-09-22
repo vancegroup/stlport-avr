@@ -17,11 +17,9 @@
 #ifndef _STLP_MOVE_CONSTRUCT_FWK_H
 #define _STLP_MOVE_CONSTRUCT_FWK_H
 
-// #ifndef _STLP_TYPE_TRAITS_H
-// #  include <stl/type_traits.h>
-// #endif
-
-#include <type_traits>
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -34,24 +32,37 @@ _STLP_BEGIN_NAMESPACE
  *The source HAS to be a valid instance after the move!
  *************************************************************/
 template <class _Tp>
-class __move_source {
-public:
-  explicit __move_source (_Tp &_src) : _M_data(_src)
-  {}
+class __move_source
+{
+  public:
+    explicit __move_source( _Tp& _src ) :
+        _M_data(_src)
+      { }
 
-  _Tp& get() const
-  { return _M_data; }
-private:
-  _Tp &_M_data;
+    _Tp& get() const
+      { return _M_data; }
+  private:
+    _Tp& _M_data;
 
-  //We explicitely forbid assignment to avoid warning:
-  typedef __move_source<_Tp> _Self;
-  _Self& operator = (_Self const&);
+    //We explicitely forbid assignment to avoid warning:
+    typedef __move_source<_Tp> _Self;
+
+    _Self& operator = ( _Self const& );
 };
 
 //Class used to signal move constructor support, implementation and type.
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp>
-struct __move_traits {
+struct __has_move_semantic :
+    public integral_constant<bool, is_pod<_Tp>::value>
+{ };
+
+_STLP_END_NAMESPACE
+
+template <class _Tp>
+struct __move_traits
+{
   /*
    * implemented tells if a the special move constructor has to be called or the classic
    * copy constructor is just fine. Most of the time the copy constructor is fine only
@@ -168,3 +179,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_END_NAMESPACE
 
 #endif /* _STLP_MOVE_CONSTRUCT_FWK_H */
+
+// Local Variables:
+// mode:C++
+// End:

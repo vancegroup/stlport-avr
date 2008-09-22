@@ -69,21 +69,14 @@ struct StackAllocator
     : m_state(beg, end) {}
 
   const State& getState() const { return m_state; }
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
   template <class _OtherTp>
   StackAllocator(StackAllocator<_OtherTp> const& other)
     : m_state(other.getState()) {}
-#else
-  StackAllocator(const State& state)
-    : m_state(state) {}
-#endif
 
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Other>
   struct rebind {
     typedef StackAllocator<_Other> other;
   };
-#endif
 
   _Tp* allocate(size_type n, void* = 0) {
     if (n == 0)
@@ -171,7 +164,7 @@ private:
 namespace std {
 #endif
 
-#  if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES))
+#  if defined (STLPORT) && (defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) )
 template <class _Tp1, class _Tp2>
 inline StackAllocator<_Tp2>&
 __stl_alloc_rebind(StackAllocator<_Tp1>& __a, const _Tp2*) {  return (StackAllocator<_Tp2>&)(__a); }

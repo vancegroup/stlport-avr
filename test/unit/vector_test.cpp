@@ -33,9 +33,6 @@ class VectorTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
   CPPUNIT_TEST(iterators);
-#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(optimizations_check);
   CPPUNIT_TEST(assign_check);
   CPPUNIT_STOP_IGNORE;
@@ -447,19 +444,16 @@ namespace tr1 {
 //operation as PointEx copy constructor is trivial
 void VectorTest::optimizations_check()
 {
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   vector<Point> v1(1);
   CPPUNIT_ASSERT( v1.size() == 1 );
 
   vector<PointEx> v2(v1.begin(), v1.end());
   CPPUNIT_ASSERT( v2.size() == 1 );
   CPPUNIT_ASSERT( v2[0].builtFromBase == true );
-#endif
 }
 
 void VectorTest::assign_check()
 {
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   vector<int> v(3,1);
   int array[] = { 1, 2, 3, 4, 5 };
   
@@ -467,7 +461,6 @@ void VectorTest::assign_check()
   CPPUNIT_CHECK( v[4] == 5 );
   CPPUNIT_CHECK( v[0] == 1 );
   CPPUNIT_CHECK( v[1] == 2 );
-#endif
 }
 
 void VectorTest::iterators()
@@ -523,15 +516,11 @@ class IncompleteClass
  * implementation. */
 template <class _Tp>
 struct NotSTLportAllocator : public allocator<_Tp> {
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef NotSTLportAllocator<_Tp1> other;
   };
-#endif
   NotSTLportAllocator() NOTHROW {}
-#if !defined (STLPORT) || defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp1> NotSTLportAllocator(const NotSTLportAllocator<_Tp1>&) NOTHROW {}
-#endif
   NotSTLportAllocator(const NotSTLportAllocator<_Tp>&) NOTHROW {}
   ~NotSTLportAllocator() NOTHROW {}
 };

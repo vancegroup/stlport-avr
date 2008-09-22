@@ -38,9 +38,6 @@ class LocaleTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(time_put_get);
   CPPUNIT_TEST(collate_facet);
   CPPUNIT_TEST(ctype_facet);
-#  if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
-  CPPUNIT_IGNORE;
-#  endif
   CPPUNIT_TEST(locale_init_problem);
   CPPUNIT_STOP_IGNORE;
   CPPUNIT_TEST(default_locale);
@@ -49,7 +46,7 @@ class LocaleTest : public CPPUNIT_NS::TestCase
 #  endif
   CPPUNIT_STOP_IGNORE;
 #if (defined (STLPORT) && \
-   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
+   (!defined (_STLP_USE_EXCEPTIONS) || defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
   CPPUNIT_IGNORE;
 #  endif
   CPPUNIT_TEST(combine);

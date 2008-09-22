@@ -59,7 +59,7 @@ _STLP_BEGIN_NAMESPACE
 
 //This implementation will only be used if needed, that is to say when there is the return void bug
 //and when there is no partial template specialization
-#if defined (_STLP_DONT_RETURN_VOID) && defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION) && defined (_STLP_MEMBER_TEMPLATE_CLASSES)
+#if defined (_STLP_DONT_RETURN_VOID) && defined (_STLP_NO_CLASS_PARTIAL_SPECIALIZATION)
 
 template<class _Result, class _Tp>
 class _Mem_fun0_ptr : public unary_function<_Tp*, _Result> {

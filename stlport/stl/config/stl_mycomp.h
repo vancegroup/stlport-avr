@@ -127,12 +127,6 @@
 // Define this if there is no native type_info definition
 // #  define _STLP_NO_TYPEINFO 1
 
-// Uncomment if member template methods are not available
-// #  define _STLP_NO_MEMBER_TEMPLATES   1
-
-// Uncomment if member template classes are not available
-// #  define _STLP_NO_MEMBER_TEMPLATE_CLASSES   1
-
 // Uncomment if your compiler do not support the std::allocator rebind technique
 // This is a special case of bad member template classes support, it is automatically
 // defined if _STLP_NO_MEMBER_TEMPLATE_CLASSES is defined.

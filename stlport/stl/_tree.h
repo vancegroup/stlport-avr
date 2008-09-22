@@ -483,7 +483,6 @@ public:
   iterator insert_unique(iterator __pos, const value_type& __x);
   iterator insert_equal(iterator __pos, const value_type& __x);
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template<class _II> void insert_equal(_II __first, _II __last) {
     for ( ; __first != __last; ++__first)
       insert_equal(*__first);
@@ -492,24 +491,6 @@ public:
     for ( ; __first != __last; ++__first)
       insert_unique(*__first);
   }
-#else
-  void insert_unique(const_iterator __first, const_iterator __last) {
-    for ( ; __first != __last; ++__first)
-      insert_unique(*__first);
-  }
-  void insert_unique(const value_type* __first, const value_type* __last) {
-    for ( ; __first != __last; ++__first)
-      insert_unique(*__first);
-  }
-  void insert_equal(const_iterator __first, const_iterator __last) {
-    for ( ; __first != __last; ++__first)
-      insert_equal(*__first);
-  }
-  void insert_equal(const value_type* __first, const value_type* __last) {
-    for ( ; __first != __last; ++__first)
-      insert_equal(*__first);
-  }
-#endif
 
   void erase(iterator __pos) {
     _Base_ptr __x = _Rb_global_inst::_Rebalance_for_erase(__pos._M_node,

@@ -490,11 +490,9 @@ void StringTest::insert()
   str.insert(str.begin(), str.begin() + str.size() / 2 - 1, str.end());
   CPPUNIT_ASSERT( str == "ng for string callsThis is test string for string calls" );
 
-#ifdef _STLP_MEMBER_TEMPLATES
   vector<int> int_vect;
   //Just a compile time test:
   str.insert(str.end(), int_vect.begin(), int_vect.end());
-#endif
 
   string str0;
   str0.insert(str0.begin(), 5, '0');
@@ -599,12 +597,12 @@ void StringTest::replace()
   str.replace(5, 5, str.c_str(), 10);
   CPPUNIT_ASSERT( str == "This This is test string for string calls" );
 
-#if (defined (STLPORT) && defined(_STLP_MEMBER_TEMPLATES)) || ( !defined (STLPORT) && !defined(__GNUC__) )
+// #if ( !defined (STLPORT) && !defined(__GNUC__) )
   deque<char> cdeque;
   cdeque.push_back('I');
   str.replace(str.begin(), str.begin() + 11, cdeque.begin(), cdeque.end());
   CPPUNIT_ASSERT( str == "Is test string for string calls" );
-#endif
+// #endif
 }
 
 void StringTest::resize()

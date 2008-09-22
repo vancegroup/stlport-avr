@@ -128,7 +128,6 @@ public:
     : _M_impl(__move_source<_Base>(src.get()._M_impl)) {}
 #endif
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last,
          const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
@@ -141,29 +140,15 @@ public:
     : _M_impl(__first, __last) {}
 #  endif
 
-#else
-  vector(const_iterator __first, const_iterator __last,
-         const allocator_type& __a = allocator_type())
-    : _M_impl(cast_traits::to_storage_type_cptr(__first), cast_traits::to_storage_type_cptr(__last),
-              _STLP_CONVERT_ALLOCATOR(__a, _StorageType)) {}
-#endif /* _STLP_MEMBER_TEMPLATES */
-
   _Self& operator=(const _Self& __x) { _M_impl = __x._M_impl; return *this; }
 
   void reserve(size_type __n) {_M_impl.reserve(__n);}
   void assign(size_type __n, const value_type& __val)
   { _M_impl.assign(__n, cast_traits::to_storage_type_cref(__val)); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last)
   { _M_impl.assign(__first, __last); }
-#else
-  void assign(const_iterator __first, const_iterator __last) {
-    _M_impl.assign(cast_traits::to_storage_type_cptr(__first),
-                   cast_traits::to_storage_type_cptr(__last));
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
   void push_back(const value_type& __x = _STLP_DEFAULT_CONSTRUCTED(value_type))
@@ -191,16 +176,9 @@ public:
   void _M_swap_workaround(_Self& __x) { swap(__x); }
 #endif
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
   { _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __first, __last); }
-#else
-  void insert(iterator __pos, const_iterator __first, const_iterator __last) {
-    _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), cast_traits::to_storage_type_cptr(__first),
-                                                            cast_traits::to_storage_type_cptr(__last));
-  }
-#endif
 
   void insert (iterator __pos, size_type __n, const value_type& __x) {
     _M_impl.insert(cast_traits::to_storage_type_ptr(__pos), __n, cast_traits::to_storage_type_cref(__x));

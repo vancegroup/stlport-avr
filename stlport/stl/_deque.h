@@ -415,9 +415,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _Tp, _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Tp>) >
 class deque : protected _STLP_PRIV _Deque_base<_Tp, _Alloc>
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (deque)
-            , public __stlport_class<deque<_Tp, _Alloc> >
-#endif
 {
   typedef _STLP_PRIV _Deque_base<_Tp, _Alloc> _Base;
   typedef deque<_Tp, _Alloc> _Self;
@@ -529,7 +526,6 @@ public:
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __n)
   { _M_fill_initialize(__val, false_type()); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
 protected:
   template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const true_type&) {
@@ -563,18 +559,6 @@ public:
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #  endif
-
-#else
-  deque(const value_type* __first, const value_type* __last,
-        const allocator_type& __a = allocator_type() )
-    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __last - __first)
-  { _STLP_PRIV __ucopy(__first, __last, this->_M_start); }
-
-  deque(const_iterator __first, const_iterator __last,
-        const allocator_type& __a = allocator_type() )
-    : _STLP_PRIV _Deque_base<_Tp, _Alloc>(__a, __last - __first)
-  { _STLP_PRIV __ucopy(__first, __last, this->_M_start); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   deque(__move_source<_Self> src)
@@ -618,7 +602,6 @@ public:
     _M_fill_assign(__n, __val);
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
     typedef typename is_integral<_InputIterator>::type _Integral;
@@ -652,22 +635,6 @@ private:                        // helper functions for assign()
   template <class _ForwardIterator>
   void _M_assign_aux(_ForwardIterator __first, _ForwardIterator __last,
                      const forward_iterator_tag &) {
-#else
-  void assign(const value_type *__first, const value_type *__last) {
-    size_type __size = size();
-    size_type __len = __last - __first;
-    if (__len > __size) {
-      const value_type *__mid = __first + __size;
-      _STLP_STD::copy(__first, __mid, begin());
-      insert(end(), __mid, __last);
-    }
-    else {
-      erase(_STLP_STD::copy(__first, __last, begin()), end());
-    }
-  }
-  void assign(const_iterator __first, const_iterator __last) {
-    typedef const_iterator _ForwardIterator;
-#endif /* _STLP_MEMBER_TEMPLATES */
     size_type __len = _STLP_STD::distance(__first, __last);
     if (__len > size()) {
       _ForwardIterator __mid = __first;
@@ -782,7 +749,6 @@ protected:
 
   void _M_fill_insert(iterator __pos, size_type __n, const value_type& __x);
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
                           const true_type& /*_IsIntegral*/) {
@@ -803,27 +769,6 @@ public:
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
-
-#else /* _STLP_MEMBER_TEMPLATES */
-  void _M_insert_range_aux(iterator __pos,
-                           const value_type* __first, const value_type* __last,
-                           size_type __n, const true_type& /*_Movable*/);
-  void _M_insert_range_aux(iterator __pos,
-                           const value_type* __first, const value_type* __last,
-                           size_type __n, const false_type& /*_Movable*/);
-  void _M_insert_range_aux(iterator __pos,
-                           const_iterator __first, const_iterator __last,
-                           size_type __n, const true_type& /*_Movable*/);
-  void _M_insert_range_aux(iterator __pos,
-                           const_iterator __first, const_iterator __last,
-                           size_type __n, const false_type& /*_Movable*/);
-public:
-  void insert(iterator __pos,
-              const value_type* __first, const value_type* __last);
-  void insert(iterator __pos,
-              const_iterator __first, const_iterator __last);
-
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 public:
 #if !defined(_STLP_DONT_SUP_DFLT_PARAM)
@@ -879,7 +824,6 @@ protected:                        // Internal construction/destruction
   {}
   void _M_fill_initialize(const value_type& __val, const false_type& /*_TrivialInit*/);
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void _M_range_initialize(_InputIterator __first, _InputIterator __last,
                            const input_iterator_tag &) {
@@ -907,7 +851,6 @@ protected:                        // Internal construction/destruction
    }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(this->_M_start, iterator(*__cur_node, __cur_node)))
  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 protected:                        // Internal push_* and pop_*
 
@@ -921,8 +864,6 @@ protected:                        // Internal push_* and pop_*
   void _M_pop_front_aux();
 
 protected:                        // Internal insert functions
-
-#if defined (_STLP_MEMBER_TEMPLATES)
 
   template <class _InputIterator>
   void _M_insert(iterator __pos,
@@ -1051,7 +992,6 @@ protected:                        // Internal insert functions
       _STLP_UNWIND(this->_M_destroy_nodes(this->_M_finish._M_node + 1, __new_finish._M_node + 1))
     }
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   iterator _M_reserve_elements_at_front(size_type __n) {
     size_type __vacancies = this->_M_start._M_cur - this->_M_start._M_first;

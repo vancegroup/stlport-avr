@@ -179,7 +179,6 @@ public:
   //     comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
 #endif
 
-#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   priority_queue(_InputIterator __first, _InputIterator __last)
     : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
@@ -198,24 +197,6 @@ public:
     c.insert(c.end(), __first, __last);
     make_heap(c.begin(), c.end(), comp);
   }
-
-#else /* _STLP_MEMBER_TEMPLATES */
-  priority_queue(const value_type* __first, const value_type* __last)
-    : c(__first, __last) { make_heap(c.begin(), c.end(), comp); }
-
-  priority_queue(const value_type* __first, const value_type* __last,
-                 const _Compare& __x)
-    : c(__first, __last), comp(__x)
-    { make_heap(c.begin(), c.end(), comp); }
-
-  priority_queue(const value_type* __first, const value_type* __last,
-                 const _Compare& __x, const _Sequence& __c)
-    : c(__c), comp(__x)
-  {
-    c.insert(c.end(), __first, __last);
-    make_heap(c.begin(), c.end(), comp);
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   bool empty() const { return c.empty(); }
   size_type size() const { return c.size(); }

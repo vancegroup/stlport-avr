@@ -41,7 +41,7 @@ locale* _Stl_get_global_locale();
 
 locale::facet::~facet() {}
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || defined (_STLP_INLINE_MEMBER_TEMPLATES)
+#if defined (_STLP_INLINE_MEMBER_TEMPLATES)
 // members that fail to be templates
 bool locale::operator()(const string& __x,
                         const string& __y) const

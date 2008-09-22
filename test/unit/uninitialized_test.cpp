@@ -187,7 +187,6 @@ void UninitializedTest::copy_test()
 
   {
     //Using containers of native types:
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
     {
       vector<int> src;
       int i;
@@ -250,7 +249,6 @@ void UninitializedTest::copy_test()
         CPPUNIT_ASSERT( (*it) == pd );
       }
     }
-#endif
   }
 
   {

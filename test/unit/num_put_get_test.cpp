@@ -72,7 +72,6 @@ private:
     return tmp;
   }
 
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   template <class F>
   void check_get_float( F v )
   {
@@ -302,86 +301,6 @@ private:
     }
 #  endif
   }
-#else
-#  define __check_get_float( F ) \
-  void check_get_float( F v ) \
-  { \
-    F in_val_d = v; \
-    { \
-      stringstream str; \
- \
-      str << "1E+" << numeric_limits<F>::max_exponent10; \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d != numeric_limits<F>::infinity() ); \
-    } \
-    { \
-      stringstream str; \
- \
-      str << "-1E+" << numeric_limits<F>::max_exponent10; \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d != -numeric_limits<F>::infinity() ); \
-    } \
-    { \
-      stringstream str; \
- \
-      str << "1E" << numeric_limits<F>::min_exponent10; \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d != F(0.0) ); \
-    } \
-    { \
-      stringstream str; \
- \
-      str << "1E+" << (numeric_limits<F>::max_exponent10 + 1); \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d == numeric_limits<F>::infinity() ); \
-    } \
-    { \
-      stringstream str; \
- \
-      str << "-1E+" << (numeric_limits<F>::max_exponent10 + 1); \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d == -numeric_limits<F>::infinity() ); \
-    } \
-    { \
-      stringstream str; \
- \
-      str << "1E" << (numeric_limits<F>::min_exponent10 - 1); \
- \
-      str >> in_val_d; \
-      CPPUNIT_ASSERT(!str.fail()); \
-      CPPUNIT_ASSERT(str.eof()); \
-      CPPUNIT_CHECK( in_val_d == in_val_d ); \
-      CPPUNIT_CHECK( in_val_d >= F(0.0) && in_val_d <= numeric_limits<F>::min() ); \
-    } \
-  }
-
-  __check_get_float( float )
-  __check_get_float( double )
-#  if !defined (STLPORT) || !defined (_STLP_NO_LONG_DOUBLE)
-  __check_get_float( long double )
-#  endif
-#  undef __check_get_float
-#endif // _STLP_NO_MEMBER_TEMPLATES
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(NumPutGetTest);

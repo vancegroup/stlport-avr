@@ -50,7 +50,6 @@ private:
 public:
   typedef typename _Base::size_type size_type;
   typedef typename _Base::pointer pointer;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
 #  if !defined (_STLP_MSVC) || (_STLP_MSVC >= 1300)
     typedef __iostring_allocator<_Tp1> other;
@@ -58,7 +57,6 @@ public:
     typedef _STLP_PRIV __iostring_allocator<_Tp1> other;
 #  endif
   };
-#endif
 
   _CharT* allocate(size_type __n, const void* __ptr = 0) {
     if (__n > _BUF_SIZE) {
@@ -71,7 +69,7 @@ public:
   }
 };
 
-#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) || !defined (_STLP_MEMBER_TEMPLATES)
+#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 /*
  * As the __iostring_allocator allocator will only be used in the basic_string implementation
  * we known that it is never going to be bound to another type that the one used to instantiate

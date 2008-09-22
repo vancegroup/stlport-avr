@@ -441,7 +441,6 @@ public:
   pair<iterator, bool> insert_unique_noresize(const value_type& __obj);
   iterator insert_equal_noresize(const value_type& __obj);
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert_unique(_InputIterator __f, _InputIterator __l)
   { insert_unique(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIterator)); }
@@ -481,36 +480,6 @@ public:
     for ( ; __n > 0; --__n, ++__f)
       insert_equal_noresize(*__f);
   }
-
-#else /* _STLP_MEMBER_TEMPLATES */
-  void insert_unique(const value_type* __f, const value_type* __l) {
-    size_type __n = __l - __f;
-    _M_enlarge(_M_num_elements + __n);
-    for ( ; __n > 0; --__n, ++__f)
-      insert_unique_noresize(*__f);
-  }
-
-  void insert_equal(const value_type* __f, const value_type* __l) {
-    size_type __n = __l - __f;
-    _M_enlarge(_M_num_elements + __n);
-    for ( ; __n > 0; --__n, ++__f)
-      insert_equal_noresize(*__f);
-  }
-
-  void insert_unique(const_iterator __f, const_iterator __l) {
-    size_type __n = _STLP_STD::distance(__f, __l);
-    _M_enlarge(_M_num_elements + __n);
-    for ( ; __n > 0; --__n, ++__f)
-      insert_unique_noresize(*__f);
-  }
-
-  void insert_equal(const_iterator __f, const_iterator __l) {
-    size_type __n = _STLP_STD::distance(__f, __l);
-    _M_enlarge(_M_num_elements + __n);
-    for ( ; __n > 0; --__n, ++__f)
-      insert_equal_noresize(*__f);
-  }
-#endif /*_STLP_MEMBER_TEMPLATES */
 
   //reference find_or_insert(const value_type& __obj);
 

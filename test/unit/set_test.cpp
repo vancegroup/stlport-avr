@@ -163,14 +163,12 @@ void SetTest::bounds()
   CPPUNIT_ASSERT( scit != s.end() );
   CPPUNIT_ASSERT( *scit == 6 );
 
-#ifdef _STLP_MEMBER_TEMPLATES
   pcit = s.equal_range(6);
   CPPUNIT_ASSERT( pcit.first != pcit.second );
   CPPUNIT_ASSERT( pcit.first != s.end() );
   CPPUNIT_ASSERT( *pcit.first == 6 );
   CPPUNIT_ASSERT( pcit.second != s.end() );
   CPPUNIT_ASSERT( *pcit.second == 7 );
-#endif
 
   //Check const_iterator on const set
   scit = crs.lower_bound(2);

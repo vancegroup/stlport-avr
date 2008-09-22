@@ -26,9 +26,6 @@ class DequeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(erase);
   CPPUNIT_TEST(auto_ref);
   CPPUNIT_TEST(allocator_with_state);
-#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(optimizations_check);
   CPPUNIT_TEST_SUITE_END();
 
@@ -276,7 +273,6 @@ namespace tr1 {
 //operation as PointEx copy constructor is trivial
 void DequeTest::optimizations_check()
 {
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   deque<Point> d1(1);
   CPPUNIT_ASSERT( d1.size() == 1 );
 
@@ -287,7 +283,6 @@ void DequeTest::optimizations_check()
   d2.insert(d2.end(), d1.begin(), d1.end());
   CPPUNIT_ASSERT( d2.size() == 2 );
   CPPUNIT_ASSERT( d2[1].builtFromBase == true );
-#endif
 }
 
 void DequeTest::erase()

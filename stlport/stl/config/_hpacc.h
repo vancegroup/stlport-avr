@@ -87,7 +87,7 @@ typedef typename _STLP_dummy_type1:: _STLP_TEMPLATE rebind<t>::other _STLP_dummy
  */
 #  define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS 1
 /* ?? fbp : maybe present in some versions ? */
-#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
+#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1 /* support removed */
 #  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
 /* <exception> and stuff is in global namespace */
 #  define _STLP_VENDOR_GLOBAL_EXCEPT_STD

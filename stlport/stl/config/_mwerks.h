@@ -51,8 +51,8 @@
 #  endif
 
 #  if __MWERKS__ <= 0x2303
-#   define _STLP_NO_TEMPLATE_CONVERSIONS  1
-#   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD  1
+#   define _STLP_NO_TEMPLATE_CONVERSIONS  1 /* support removed */
+#   define _STLP_NO_MEMBER_TEMPLATE_KEYWORD  1 /* support removed */
 #  endif
 
 #  if __MWERKS__ < 0x2301

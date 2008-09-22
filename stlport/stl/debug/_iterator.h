@@ -383,7 +383,6 @@ protected:
     _STLP_VERBOSE_ASSERT((__p != 0), _StlMsg_INVALID_ARGUMENT)
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
   __construct_checker(const _InputIter& __f, const _InputIter& __l) {
     typedef typename is_integral<_InputIter>::type _Integral;
@@ -397,9 +396,8 @@ protected:
   void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const false_type& /*IsIntegral*/) {
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
   }
-#endif
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
+#if !defined (_STLP_NO_METHOD_SPECIALIZATION)
   __construct_checker(const value_type* __f, const value_type* __l) {
     _STLP_DEBUG_CHECK(__check_ptr_range(__f,__l))
   }

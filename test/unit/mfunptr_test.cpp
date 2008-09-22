@@ -32,9 +32,6 @@ protected:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MemFunPtrTest);
 
-#if defined(_STLP_DONT_RETURN_VOID) && (defined(_STLP_NO_MEMBER_TEMPLATE_CLASSES) && defined(_STLP_NO_CLASS_PARTIAL_SPECIALIZATION))
-#  define _STLP_DONT_TEST_RETURN_VOID
-#endif
 //else there is no workaround for the return void bug
 
 struct S1 { } s1;

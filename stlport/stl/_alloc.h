@@ -174,19 +174,15 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc>;
 
 /* macro to convert the allocator for initialization
  * not using MEMBER_TEMPLATE_CLASSES as it should work given template constructor  */
-#if defined (_STLP_MEMBER_TEMPLATES) || ! defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 /* if _STLP_NO_TEMPLATE_CONVERSIONS is set, the member template constructor is
  * not used implicitly to convert allocator parameter, so let us do it explicitly */
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES) && defined (_STLP_NO_TEMPLATE_CONVERSIONS)
+#  if defined (_STLP_NO_TEMPLATE_CONVERSIONS)
 #    define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
 #  else
 #    define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __a
 #  endif
 /* else convert, but only if partial specialization works, since else
  * Container::allocator_type won't be different */
-#else
-#  define _STLP_CONVERT_ALLOCATOR(__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
 
 // Another allocator adaptor: _Alloc_traits.  This serves two
 // purposes.  First, make it possible to write containers that can use
@@ -281,15 +277,11 @@ public:
   typedef const _Tp& const_reference;
   typedef size_t     size_type;
   typedef ptrdiff_t  difference_type;
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef allocator<_Tp1> other;
   };
-#endif
   allocator() _STLP_NOTHROW {}
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
-#endif
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   // allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
@@ -370,11 +362,9 @@ public:
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
   typedef void        value_type;
 #endif
-#if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
   template <class _Tp1> struct rebind {
     typedef allocator<_Tp1> other;
   };
-#endif
 };
 
 template <class _T1, class _T2>
@@ -436,18 +426,7 @@ _STLP_END_NAMESPACE
 #  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_MEMBER_TEMPLATE_CLASSES)
-// The version for the default allocator, for rare occasion when we have partial spec w/o member template classes
-template <class _Tp, class _Tp1>
-struct _Alloc_traits<_Tp, allocator<_Tp1> > {
-  typedef allocator<_Tp1> _Orig;
-  typedef allocator<_Tp> allocator_type;
-  static allocator_type create_allocator(const allocator<_Tp1 >& __a)
-  { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
-};
-#endif
-
-#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE) && defined (_STLP_MEMBER_TEMPLATES)
+#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 template <class _Tp, class _Alloc>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
 __stl_alloc_create(const _Alloc& __a, const _Tp*) {

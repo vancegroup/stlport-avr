@@ -83,7 +83,6 @@ public:
 
   explicit auto_ptr(_Tp* __px = 0) _STLP_NOTHROW { this->__set(__px); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
 #  if !defined (_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> auto_ptr(auto_ptr<_Tp1>& __r) _STLP_NOTHROW {
     _Tp* __conversionCheck = __r.release();
@@ -95,7 +94,6 @@ public:
     reset(__conversionCheck);
     return *this;
   }
-#endif
 
   auto_ptr(_Self& __r) _STLP_NOTHROW { this->__set(__r.release()); }
 
@@ -114,7 +112,7 @@ public:
     return *this;
   }
 
-#if defined(_STLP_MEMBER_TEMPLATES) && !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
+#if !defined(_STLP_NO_TEMPLATE_CONVERSIONS)
   template<class _Tp1> operator auto_ptr_ref<_Tp1>() _STLP_NOTHROW
   { return auto_ptr_ref<_Tp1>(*this, this->get()); }
   template<class _Tp1> operator auto_ptr<_Tp1>() _STLP_NOTHROW

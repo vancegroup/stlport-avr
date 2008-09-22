@@ -97,7 +97,6 @@ public:
 #endif
     : _M_t(__comp, __a) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   set(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
@@ -112,24 +111,6 @@ public:
   set(_InputIterator __first, _InputIterator __last, const _Compare& __comp,
       const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
-#else
-  set(const value_type* __first, const value_type* __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_unique(__first, __last); }
-
-  set(const value_type* __first,
-      const value_type* __last, const _Compare& __comp,
-      const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
-
-  set(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_unique(__first, __last); }
-
-  set(const_iterator __first, const_iterator __last, const _Compare& __comp,
-      const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   set(const _Self& __x) : _M_t(__x._M_t) {}
 
@@ -169,16 +150,9 @@ public:
   { return _M_t.insert_unique(__x); }
   iterator insert(iterator __pos, const value_type& __x)
   { return _M_t.insert_unique( __pos , __x); }
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last)
   { _M_t.insert_unique(__first, __last); }
-#else
-  void insert(const_iterator __first, const_iterator __last)
-  { _M_t.insert_unique(__first, __last); }
-  void insert(const value_type* __first, const value_type* __last)
-  { _M_t.insert_unique(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) { return _M_t.erase_unique(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase(__first, __last ); }
@@ -266,7 +240,6 @@ public:
 #endif
     : _M_t(__comp, __a) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   multiset(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
@@ -283,25 +256,6 @@ public:
            const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_equal(__first, __last); }
 #  endif
-#else
-  multiset(const value_type* __first, const value_type* __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_equal(__first, __last); }
-
-  multiset(const value_type* __first, const value_type* __last,
-           const _Compare& __comp,
-           const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-
-  multiset(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_equal(__first, __last); }
-
-  multiset(const_iterator __first, const_iterator __last,
-           const _Compare& __comp,
-           const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   multiset(const _Self& __x) : _M_t(__x._M_t) {}
   _Self& operator=(const _Self& __x) {
@@ -341,16 +295,9 @@ public:
   iterator insert(iterator __pos, const value_type& __x)
   { return _M_t.insert_equal(__pos, __x); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last)
   { _M_t.insert_equal(__first, __last); }
-#else
-  void insert(const value_type* __first, const value_type* __last)
-  { _M_t.insert_equal(__first, __last); }
-  void insert(const_iterator __first, const_iterator __last)
-  { _M_t.insert_equal(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase( __pos ); }
   size_type erase(const key_type& __x) { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase( __first, __last ); }

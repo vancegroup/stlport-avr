@@ -174,7 +174,6 @@ void MoveConstructorTest::deque_test()
   //Check the insert range method.
   //To the front:
   {
-#  if !defined (STLPORT) || !defined (_STLP_DEBUG) || !defined (_STLP_NO_MEMBER_TEMPLATES)
     deque<vector<int> > vect_deque;
     vector<int*> bufs;
     vect_deque.assign(3, vector<int>(10));
@@ -199,12 +198,10 @@ void MoveConstructorTest::deque_test()
       CPPUNIT_ASSERT( bufs[11 - i] == &vect_deque[11 - i].front() );
     }
 #    endif
-#  endif
   }
 
   //To the back
   {
-#  if !defined (STLPORT) || !defined (_STLP_DEBUG) || !defined (_STLP_NO_MEMBER_TEMPLATES)
     deque<vector<int> > vect_deque;
     vector<int*> bufs;
     vect_deque.assign(3, vector<int>(10));
@@ -229,7 +226,6 @@ void MoveConstructorTest::deque_test()
       CPPUNIT_ASSERT( bufs[12 - i] == &vect_deque[12 - i].front() );
     }
 #    endif
-#  endif
   }
 
   //Check the different erase methods.

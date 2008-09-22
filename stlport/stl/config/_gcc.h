@@ -33,7 +33,7 @@
 
 #if (__GNUC__ < 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ < 4))
 /* define for gcc versions before 3.4.0. */
-#  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD
+#  define _STLP_NO_MEMBER_TEMPLATE_KEYWORD /* support removed */
 #endif
 
 #if !defined (_REENTRANT) && (defined (_THREAD_SAFE) || \

@@ -500,7 +500,7 @@ void SlistTest::allocator_with_state()
   CPPUNIT_CHECK( stack2.ok() );
 
   //merge(slist, predicate)
-#  if (!defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)) && \
+#  if (!defined (STLPORT) ) && \
       (!defined (_MSC_VER) || (_MSC_VER >= 1300))
   {
     SlistInt slint1(10, 0, stack1);

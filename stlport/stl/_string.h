@@ -119,9 +119,6 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _CharT, class _Traits, class _Alloc>
 class basic_string : _STLP_PRIVATE _STLP_PRIV _String_base<_CharT,_Alloc>
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (basic_string)
-                   , public __stlport_class<basic_string<_CharT, _Traits, _Alloc> >
-#endif
 {
 _STLP_PRIVATE:                        // Private members inherited from base.
   typedef _STLP_PRIV _String_base<_CharT,_Alloc> _Base;
@@ -256,7 +253,7 @@ public:                         // Constructor, destructor, assignment.
 
   // Check to see if _InputIterator is an integer type.  If so, then
   // it can't be an iterator.
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
@@ -455,7 +452,7 @@ public:                         // Append, operator+=, push_back.
 private:
   _Self& _M_append(const _CharT* __first, const _CharT* __last);
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _InputIter>
   _Self& _M_appendT(_InputIter __first, _InputIter __last,
                     const input_iterator_tag &) {
@@ -567,7 +564,7 @@ public:                         // Assign
 private:
   _Self& _M_assign(const _CharT* __f, const _CharT* __l);
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   // Helper functions for assign.
   template <class _Integer>
   _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const true_type& /*_Integral*/)
@@ -683,7 +680,6 @@ _STLP_PRIVATE:  // Helper functions for insert.
     _Traits::move(__res, __f, __l - __f);
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
 #  if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _ForwardIter>
   void _M_insert_overflow(iterator __pos, _ForwardIter __first, _ForwardIter __last,
@@ -774,9 +770,8 @@ public:
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 #  endif
-#endif
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
+#if !defined (_STLP_NO_METHOD_SPECIALIZATION)
 public:
   void insert(iterator __p, const _CharT* __f, const _CharT* __l) {
     _STLP_FIX_LITERAL_BUG(__f) _STLP_FIX_LITERAL_BUG(__l)
@@ -889,7 +884,7 @@ _STLP_PRIVATE:                        // Helper functions for replace.
   _Self& _M_replace(iterator __first, iterator __last,
                     const _CharT* __f, const _CharT* __l, bool __self_ref);
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
+#if !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
                              _Integer __n, _Integer __x, const true_type& /*IsIntegral*/) {
@@ -918,7 +913,7 @@ public:
   }
 #endif
 
-#if !defined (_STLP_MEMBER_TEMPLATES) || !defined (_STLP_NO_METHOD_SPECIALIZATION)
+#if !defined (_STLP_NO_METHOD_SPECIALIZATION)
 public:
   _Self& replace(iterator __first, iterator __last,
                  const _CharT* __f, const _CharT* __l) {
@@ -1083,11 +1078,6 @@ public: // Helper functions for compare.
 };
 
 #undef _STLP_PRIVATE
-
-#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
-template <class _CharT, class _Traits, class _Alloc>
-const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
-#endif
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)
 _STLP_EXPORT_TEMPLATE_CLASS basic_string<char, char_traits<char>, allocator<char> >;

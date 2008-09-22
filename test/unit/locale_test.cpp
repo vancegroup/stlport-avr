@@ -153,9 +153,7 @@ void LocaleTest::loc_has_facet() {
 }
 
 void LocaleTest::locale_init_problem() {
-#  if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   test_supported_locale(*this, &LocaleTest::_locale_init_problem);
-#  endif
 }
 
 /*
@@ -166,7 +164,6 @@ void LocaleTest::locale_init_problem() {
 static locale global_loc;
 static locale other_loc("");
 
-#  if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
 void LocaleTest::_locale_init_problem( const locale& loc)
 {
 #    if !defined (__APPLE__) && !defined (__FreeBSD__) || \
@@ -219,7 +216,6 @@ void LocaleTest::_locale_init_problem( const locale& loc)
   }
 #  endif
 }
-#endif
 
 void LocaleTest::default_locale()
 {
@@ -236,7 +232,7 @@ locale::id dummy_facet::id;
 void LocaleTest::combine()
 {
 #  if (!defined (STLPORT) || \
-       (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
+       (defined (_STLP_USE_EXCEPTIONS) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)))
   {
     try {
       locale loc("");

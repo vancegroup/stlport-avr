@@ -34,9 +34,6 @@ class RopeTest : public CPPUNIT_NS::TestCase
   CPPUNIT_TEST(find2);
   CPPUNIT_TEST(construct_from_char);
   CPPUNIT_TEST(bug_report);
-#if !defined (_STLP_MEMBER_TEMPLATES)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(test_saved_rope_iterators);
   CPPUNIT_TEST_SUITE_END();
 
@@ -154,8 +151,7 @@ crope create_rope( int len )
 
 void RopeTest::test_saved_rope_iterators()
 {
-#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) && \
-    defined (_STLP_MEMBER_TEMPLATES)
+#if defined (STLPORT) && !defined (_STLP_NO_EXTENSIONS) 
    //
    // Try and create a rope with a complex tree structure:
    //

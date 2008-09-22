@@ -416,7 +416,6 @@ public:
 
   bitset(unsigned long __val) : _STLP_PRIV _Base_bitset<_Words>(__val) { _M_do_sanitize(); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template<class _CharT, class _Traits, class _Alloc>
   explicit bitset(const basic_string<_CharT,_Traits,_Alloc>& __s,
                   size_t __pos = 0)
@@ -435,16 +434,6 @@ public:
       __stl_throw_out_of_range("bitset");
     _M_copy_from_string(__s, __pos, __n);
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  explicit bitset(const string& __s,
-                  size_t __pos = 0,
-                  size_t __n = (size_t)-1)
-    : _STLP_PRIV _Base_bitset<_Words >() {
-    if (__pos > __s.size())
-      __stl_throw_out_of_range("bitset");
-    _M_copy_from_string(__s, __pos, __n);
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   // 23.3.5.2 bitset operations:
   bitset<_Nb>& operator&=(const bitset<_Nb>& __rhs) {
@@ -563,7 +552,7 @@ public:
 
   unsigned long to_ulong() const { return this->_M_do_to_ulong(); }
 
-#if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
+#if !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
   template <class _CharT, class _Traits, class _Alloc>
   basic_string<_CharT, _Traits, _Alloc> to_string() const {
     basic_string<_CharT, _Traits, _Alloc> __result;
@@ -627,15 +616,9 @@ public:
 //
 // Definitions of should-be non-inline member functions.
 //
-#if defined (_STLP_MEMBER_TEMPLATES)
   template<class _CharT, class _Traits, class _Alloc>
   void _M_copy_from_string(const basic_string<_CharT,_Traits,_Alloc>& __s,
                            size_t __pos, size_t __n) {
-#else
-  void _M_copy_from_string(const string& __s,
-                           size_t __pos, size_t __n) {
-    typedef typename string::traits_type _Traits;
-#endif
     reset();
     size_t __tmp = _Nb;
     const size_t __Nbits = (min) (__tmp, (min) (__n, __s.size() - __pos));
@@ -649,12 +632,8 @@ public:
     }
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharT, class _Traits, class _Alloc>
   void _M_copy_to_string(basic_string<_CharT, _Traits, _Alloc>& __s) const
-#else
-  void _M_copy_to_string(string& __s) const
-#endif
   {
     __s.assign(_Nb, '0');
 
@@ -663,17 +642,6 @@ public:
         __s[_Nb - 1 - __i] = '1';
     }
   }
-
-#if !defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_NO_WCHAR_T)
-  void _M_copy_to_string(wstring& __s) const {
-    __s.assign(_Nb, '0');
-
-    for (size_t __i = 0; __i < _Nb; ++__i) {
-      if (_Unchecked_test(__i))
-        __s[_Nb - 1 - __i] = '1';
-    }
-  }
-#endif
 
 #if defined (_STLP_NON_TYPE_TMPL_PARAM_BUG)
   bitset<_Nb> operator&(const bitset<_Nb>& __y) const {

@@ -63,7 +63,7 @@ void BitsetTest::bitset1()
 #  endif
 #endif
 
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES) && !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
+#if !defined (_STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS)
   string representation = b2.to_string<char, char_traits<char>, allocator<char> >();
   CPPUNIT_ASSERT( representation == "1000100010001" );
 #  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)

@@ -984,7 +984,7 @@ string moneypunct_byname<wchar_t, true>::do_grouping() const
 { return _Locale_mon_grouping(_M_monetary); }
 
 inline wstring __do_widen (string const& str) {
-#if defined (_STLP_NO_MEMBER_TEMPLATES) || defined (_STLP_MSVC)
+#if defined (_STLP_MSVC)
   wstring::_Reserve_t __Reserve;
   size_t __size = str.size();
   wstring result(__Reserve, __size);

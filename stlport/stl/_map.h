@@ -107,7 +107,6 @@ public:
 #endif
     : _M_t(__comp, __a) {}
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   map(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
@@ -123,25 +122,6 @@ public:
   map(_InputIterator __first, _InputIterator __last, const _Compare& __comp)
     : _M_t(__comp, allocator_type()) { _M_t.insert_unique(__first, __last); }
 #  endif
-
-#else
-  map(const value_type* __first, const value_type* __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_unique(__first, __last); }
-
-  map(const value_type* __first,
-      const value_type* __last, const _Compare& __comp,
-      const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
-
-  map(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_unique(__first, __last); }
-
-  map(const_iterator __first, const_iterator __last, const _Compare& __comp,
-      const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_unique(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   map(const _Self& __x) : _M_t(__x._M_t) {}
 
@@ -189,16 +169,9 @@ public:
   { return _M_t.insert_unique(__x); }
   iterator insert(iterator __pos, const value_type& __x)
   { return _M_t.insert_unique(__pos, __x); }
-#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last)
   { _M_t.insert_unique(__first, __last); }
-#else
-  void insert(const value_type* __first, const value_type* __last)
-  { _M_t.insert_unique(__first, __last); }
-  void insert(const_iterator __first, const_iterator __last)
-  { _M_t.insert_unique(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   void erase(iterator __pos) { _M_t.erase(__pos); }
   size_type erase(const key_type& __x) { return _M_t.erase_unique(__x); }
@@ -235,9 +208,6 @@ _STLP_CREATE_ITERATOR_TRAITS(MultimapTraitsT, traits)
 template <class _Key, class _Tp, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key> ),
           _STLP_DEFAULT_PAIR_ALLOCATOR_SELECT(_STLP_CONST _Key, _Tp) >
 class multimap
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-               : public __stlport_class<multimap<_Key, _Tp, _Compare, _Alloc> >
-#endif
 {
   typedef multimap<_Key, _Tp, _Compare, _Alloc> _Self;
 public:
@@ -294,7 +264,6 @@ public:
                     const allocator_type& __a = allocator_type())
     : _M_t(__comp, __a) { }
 
-#ifdef _STLP_MEMBER_TEMPLATES
   template <class _InputIterator>
   multimap(_InputIterator __first, _InputIterator __last)
     : _M_t(_Compare(), allocator_type())
@@ -310,23 +279,6 @@ public:
            const _Compare& __comp,
            const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-#else
-  multimap(const value_type* __first, const value_type* __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_equal(__first, __last); }
-  multimap(const value_type* __first, const value_type* __last,
-           const _Compare& __comp,
-           const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-
-  multimap(const_iterator __first, const_iterator __last)
-    : _M_t(_Compare(), allocator_type())
-    { _M_t.insert_equal(__first, __last); }
-  multimap(const_iterator __first, const_iterator __last,
-           const _Compare& __comp,
-           const allocator_type& __a = allocator_type())
-    : _M_t(__comp, __a) { _M_t.insert_equal(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   multimap(const _Self& __x) : _M_t(__x._M_t) {}
 
@@ -365,16 +317,9 @@ public:
   // insert/erase
   iterator insert(const value_type& __x) { return _M_t.insert_equal(__x); }
   iterator insert(iterator __pos, const value_type& __x) { return _M_t.insert_equal(__pos, __x); }
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void insert(_InputIterator __first, _InputIterator __last)
   { _M_t.insert_equal(__first, __last); }
-#else
-  void insert(const value_type* __first, const value_type* __last)
-  { _M_t.insert_equal(__first, __last); }
-  void insert(const_iterator __first, const_iterator __last)
-  { _M_t.insert_equal(__first, __last); }
-#endif /* _STLP_MEMBER_TEMPLATES */
   void erase(iterator __pos) { _M_t.erase(__pos); }
   size_type erase(const key_type& __x) { return _M_t.erase(__x); }
   void erase(iterator __first, iterator __last) { _M_t.erase(__first, __last); }

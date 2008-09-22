@@ -21,7 +21,7 @@ using namespace std;
 //#define CHECK_BIG_FILE 4
 
 #  if (!defined(STLPORT) && (defined (__GNUC__) && (__GNUC__ > 3))) || \
-      (defined (STLPORT) && !defined (_STLP_NO_CUSTOM_IO) && !defined (_STLP_NO_MEMBER_TEMPLATES) && \
+      (defined (STLPORT) && !defined (_STLP_NO_CUSTOM_IO) && \
                             !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
                               (defined (__GNUC__) && (__GNUC__ < 3)) || \
                               (defined (__SUNPRO_CC)) || \

@@ -397,9 +397,6 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 __BVEC_TMPL_HEADER
 class __BVECTOR_QUALIFIED : public _STLP_PRIV _Bvector_base<_Alloc >
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_DEBUG)
-//                          , public __stlport_class< __BVECTOR_QUALIFIED >
-#endif
 {
   typedef _STLP_PRIV _Bvector_base<_Alloc > _Base;
   typedef __BVECTOR_QUALIFIED _Self;
@@ -453,7 +450,6 @@ protected:
     }
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void _M_initialize_range(_InputIterator __first, _InputIterator __last,
                            const input_iterator_tag &) {
@@ -506,8 +502,6 @@ protected:
       }
     }
   }
-
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 public:
   iterator begin() { return this->_M_start; }
@@ -567,7 +561,6 @@ public:
     _STLP_STD::copy(__x.begin(), __x.end(), this->_M_start);
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   void _M_initialize_dispatch(_Integer __n, _Integer __x, const true_type&) {
     _M_initialize(__n);
@@ -595,22 +588,6 @@ public:
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  __BVECTOR(const_iterator __first, const_iterator __last,
-            const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _Bvector_base<_Alloc >(__a) {
-    size_type __n = _STLP_STD::distance(__first, __last);
-    _M_initialize(__n);
-    _STLP_STD::copy(__first, __last, this->_M_start);
-  }
-  __BVECTOR(const bool* __first, const bool* __last,
-            const allocator_type& __a = allocator_type())
-    : _STLP_PRIV _Bvector_base<_Alloc >(__a) {
-    size_type __n = _STLP_STD::distance(__first, __last);
-    _M_initialize(__n);
-    _STLP_STD::copy(__first, __last, this->_M_start);
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   __BVECTOR(__move_source<_Self> src)
@@ -647,7 +624,6 @@ public:
   }
   void assign(size_t __n, bool __x) { _M_fill_assign(__n, __x); }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
     typedef typename is_integral<_InputIterator>::type _Integral;
@@ -687,7 +663,6 @@ public:
       insert(end(), __mid, __last);
     }
   }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   void reserve(size_type __n) {
     if (capacity() < __n) {
@@ -734,8 +709,6 @@ public:
     return begin() + __n;
   }
 
-#if defined (_STLP_MEMBER_TEMPLATES)
-
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
                           const true_type&) {
@@ -756,50 +729,6 @@ public:
     typedef typename is_integral<_InputIterator>::type _Integral;
     _M_insert_dispatch(__position, __first, __last, _Integral());
   }
-#else /* _STLP_MEMBER_TEMPLATES */
-  void insert(iterator __position,
-              const_iterator __first, const_iterator __last) {
-    if (__first == __last) return;
-    size_type __n = _STLP_STD::distance(__first, __last);
-    if (capacity() - size() >= __n) {
-      _STLP_PRIV __copy_backward(__position, end(), this->_M_finish + __n,
-                                 random_access_iterator_tag(), (difference_type*)0 );
-      _STLP_STD::copy(__first, __last, __position);
-      this->_M_finish += __n;
-    }
-    else {
-      size_type __len = size() + (max)(size(), __n);
-      __chunk_type* __q = this->_M_bit_alloc(__len);
-      iterator __i = _STLP_STD::copy(begin(), __position, iterator(__q, 0));
-      __i = _STLP_STD::copy(__first, __last, __i);
-      this->_M_finish = _STLP_STD::copy(__position, end(), __i);
-      this->_M_deallocate();
-      this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__len);
-      this->_M_start = iterator(__q, 0);
-    }
-  }
-
-  void insert(iterator __position, const bool* __first, const bool* __last) {
-    if (__first == __last) return;
-    size_type __n = _STLP_STD::distance(__first, __last);
-    if (capacity() - size() >= __n) {
-      _STLP_PRIV __copy_backward(__position, end(), this->_M_finish + __n,
-                                 random_access_iterator_tag(), (difference_type*)0 );
-      _STLP_STD::copy(__first, __last, __position);
-      this->_M_finish += __n;
-    }
-    else {
-      size_type __len = size() + (max)(size(), __n);
-      __chunk_type* __q = this->_M_bit_alloc(__len);
-      iterator __i = _STLP_STD::copy(begin(), __position, iterator(__q, 0));
-      __i = _STLP_STD::copy(__first, __last, __i);
-      this->_M_finish = _STLP_STD::copy(__position, end(), __i);
-      this->_M_deallocate();
-      this->_M_end_of_storage._M_data = __q + _Base::_M_bits_to_chunks(__len);
-      this->_M_start = iterator(__q, 0);
-    }
-  }
-#endif /* _STLP_MEMBER_TEMPLATES */
 
   void _M_fill_insert(iterator __position, size_type __n, bool __x) {
     if (__n == 0) return;

@@ -288,13 +288,6 @@ public:
 // The following should be treated as private, at least for now.
 template<class _CharT>
 class _Rope_char_consumer {
-#if !defined (_STLP_MEMBER_TEMPLATES)
-public:
-  //Without member templates we have to use run-time parameterization.
-  // The symmetry with char_producer is accidental and temporary.
-  virtual ~_Rope_char_consumer() {}
-  virtual bool operator()(const _CharT* __buffer, size_t __len) = 0;
-#endif
 };
 
 //
@@ -1081,9 +1074,6 @@ bool _S_apply_to_pieces(_CharConsumer& __c,
 
 template <class _CharT, class _Alloc>
 class rope
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-           : public __stlport_class<rope<_CharT, _Alloc> >
-#endif
 {
   typedef rope<_CharT,_Alloc> _Self;
 public:
@@ -1176,11 +1166,7 @@ public:
   static _RopeRep* _S_concat_rep(_RopeRep* __left, _RopeRep* __right);
 
 public:
-#if defined (_STLP_MEMBER_TEMPLATES)
   template <class _CharConsumer>
-#else
-  typedef _Rope_char_consumer<_CharT> _CharConsumer;
-#endif
   void apply_to_pieces(size_t __begin, size_t __end,
                        _CharConsumer& __c) const
   { _S_apply_to_pieces(__c, _M_tree_ptr._M_data, __begin, __end); }
@@ -2059,11 +2045,6 @@ public:
 # endif
 }; //class rope
 
-#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
-template <class _CharT, class _Alloc>
-const size_t rope<_CharT, _Alloc>::npos = ~(size_t) 0;
-#endif
-
 template <class _CharT, class _Alloc>
 inline _CharT
 _Rope_const_iterator< _CharT, _Alloc>::operator[](size_t __n)
@@ -2110,12 +2091,10 @@ inline ptrdiff_t operator-(const _Rope_const_iterator<_CharT,_Alloc>& __x,
                            const _Rope_const_iterator<_CharT,_Alloc>& __y)
 { return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos; }
 
-#if !defined( __MWERKS__ ) || __MWERKS__ >= 0x2000  // dwa 8/21/97  - "ambiguous access to overloaded function" bug.
 template <class _CharT, class _Alloc>
 inline _Rope_const_iterator<_CharT,_Alloc>
 operator-(const _Rope_const_iterator<_CharT,_Alloc>& __x, ptrdiff_t __n)
 { return _Rope_const_iterator<_CharT,_Alloc>(__x._M_root, __x._M_current_pos - __n); }
-# endif
 
 template <class _CharT, class _Alloc>
 inline _Rope_const_iterator<_CharT,_Alloc>
@@ -2166,14 +2145,12 @@ inline ptrdiff_t operator-(const _Rope_iterator<_CharT,_Alloc>& __x,
                            const _Rope_iterator<_CharT,_Alloc>& __y)
 { return (ptrdiff_t)__x._M_current_pos - (ptrdiff_t)__y._M_current_pos; }
 
-#if !defined( __MWERKS__ ) || __MWERKS__ >= 0x2000  // dwa 8/21/97  - "ambiguous access to overloaded function" bug.
 template <class _CharT, class _Alloc>
 inline _Rope_iterator<_CharT,_Alloc>
 operator-(const _Rope_iterator<_CharT,_Alloc>& __x,
           ptrdiff_t __n) {
   return _Rope_iterator<_CharT,_Alloc>(__x._M_root_rope, __x._M_current_pos - __n);
 }
-# endif
 
 template <class _CharT, class _Alloc>
 inline _Rope_iterator<_CharT,_Alloc>

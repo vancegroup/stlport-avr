@@ -18,9 +18,6 @@ using namespace std;
 class CodecvtTest : public CPPUNIT_NS::TestCase
 {
   CPPUNIT_TEST_SUITE(CodecvtTest);
-#if defined (STLPORT) && defined (_STLP_NO_MEMBER_TEMPLATES)
-  CPPUNIT_IGNORE;
-#endif
   CPPUNIT_TEST(variable_encoding);
   CPPUNIT_STOP_IGNORE;
 #if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
@@ -288,7 +285,6 @@ locale::id& _GetFacetId(const generator_codecvt*)
 //
 void CodecvtTest::variable_encoding()
 {
-#if !defined (STLPORT) || !defined (_STLP_NO_MEMBER_TEMPLATES)
   //We first generate the file used for test:
   const char* fileName = "test_file.txt";
   {
@@ -376,7 +372,6 @@ void CodecvtTest::variable_encoding()
     CPPUNIT_ASSERT( istr.eof() );
   }
 #  endif
-#endif
 }
 
 void CodecvtTest::in_out_test()

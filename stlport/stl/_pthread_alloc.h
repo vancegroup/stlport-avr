@@ -105,19 +105,15 @@ public:
   typedef const _Tp& const_reference;
   typedef _Tp        value_type;
 
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
   template <class _NewType> struct rebind {
     typedef pthread_allocator<_NewType> other;
   };
-#endif
 
   pthread_allocator() _STLP_NOTHROW {}
   pthread_allocator(const pthread_allocator<_Tp>& a) _STLP_NOTHROW {}
 
-#if defined (_STLP_MEMBER_TEMPLATES) /* && defined (_STLP_FUNCTION_PARTIAL_ORDER) */
   template <class _OtherType> pthread_allocator(const pthread_allocator<_OtherType>&)
     _STLP_NOTHROW {}
-#endif
 
   ~pthread_allocator() _STLP_NOTHROW {}
 
@@ -194,11 +190,9 @@ public:
   typedef void*       pointer;
   typedef const void* const_pointer;
   typedef void        value_type;
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
   template <class _NewType> struct rebind {
     typedef pthread_allocator<_NewType> other;
   };
-#endif
 };
 
 template <class _T1, class _T2>
@@ -287,21 +281,17 @@ public:
   typedef const _Tp& const_reference;
   typedef _Tp        value_type;
 
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
   template <class _NewType> struct rebind {
     typedef per_thread_allocator<_NewType> other;
   };
-#endif
 
   per_thread_allocator() _STLP_NOTHROW {
     _M_state = _S_Alloc::_S_get_per_thread_state();
   }
   per_thread_allocator(const per_thread_allocator<_Tp>& __a) _STLP_NOTHROW : _M_state(__a._M_state){}
 
-#if defined (_STLP_MEMBER_TEMPLATES) /* && defined (_STLP_FUNCTION_PARTIAL_ORDER) */
   template <class _OtherType> per_thread_allocator(const per_thread_allocator<_OtherType>& __a)
     _STLP_NOTHROW : _M_state(__a._M_state) {}
-#endif
 
   ~per_thread_allocator() _STLP_NOTHROW {}
 
@@ -378,11 +368,9 @@ public:
   typedef void*       pointer;
   typedef const void* const_pointer;
   typedef void        value_type;
-#ifdef _STLP_MEMBER_TEMPLATE_CLASSES
   template <class _NewType> struct rebind {
     typedef per_thread_allocator<_NewType> other;
   };
-#endif
 };
 
 template <class _T1, class _T2>

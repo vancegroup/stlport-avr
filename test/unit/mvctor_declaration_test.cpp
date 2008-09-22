@@ -89,15 +89,11 @@ namespace std {
     typedef const value_type& const_reference;
     typedef size_t     size_type;
     typedef ptrdiff_t  difference_type;
-#  if defined (_STLP_MEMBER_TEMPLATE_CLASSES)
     template <class _Tp1> struct rebind {
       typedef allocator<_Tp1> other;
     };
-#  endif
     allocator() _STLP_NOTHROW {}
-#  if defined (_STLP_MEMBER_TEMPLATES)
     template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
-#  endif
     allocator(const allocator&) _STLP_NOTHROW {}
     ~allocator() _STLP_NOTHROW {}
     pointer address(reference __x) const { return &__x; }

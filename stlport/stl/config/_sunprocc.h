@@ -34,7 +34,7 @@
 #if (__SUNPRO_CC < 0x530)
 // those are tested and proved not to work...
 #  define _STLP_NO_CLASS_PARTIAL_SPECIALIZATION 1
-#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1
+#  define _STLP_NO_MEMBER_TEMPLATE_CLASSES 1 /* support removed */
 #  define _STLP_USE_OLD_HP_ITERATOR_QUERIES
 #endif
 
@@ -56,7 +56,7 @@
 #  define _STLP_PARTIAL_SPEC_NEEDS_TEMPLATE_ARGS
 #  define _STLP_NON_TYPE_TMPL_PARAM_BUG 1
 
-#  define _STLP_NO_MEMBER_TEMPLATES 1
+#  define _STLP_NO_MEMBER_TEMPLATES 1 /* support removed */
 
 #  define _STLP_NO_FUNCTION_TMPL_PARTIAL_ORDER 1
 #  define _STLP_NO_EXPLICIT_FUNCTION_TMPL_ARGS
