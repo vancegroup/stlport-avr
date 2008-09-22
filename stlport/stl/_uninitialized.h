@@ -55,7 +55,7 @@ inline _OutputIter __ucopy( _InputIter __first, _InputIter __last,
   _OutputIter __cur = __result;
   _STLP_TRY {
     for ( ; __first != __last; ++__first, ++__cur ) {
-      _Param_Construct(&*__cur, *__first);
+      _Copy_Construct(&*__cur, *__first);
     }
     return __cur;
   }
@@ -91,7 +91,7 @@ inline _OutputIter __ucopy( _RandomAccessIter __first, _RandomAccessIter __last,
   _OutputIter __cur = __result;
   _STLP_TRY {
     for ( _Distance __n = __last - __first; __n > 0; --__n ) {
-      _Param_Construct(&*__cur, *__first);
+      _Copy_Construct(&*__cur, *__first);
       ++__first;
       ++__cur;
     }
@@ -187,7 +187,7 @@ pair<_InputIter, _ForwardIter> __ucopy_n( _InputIter __first, _Size __count,
   _ForwardIter __cur = __result;
   _STLP_TRY {
     for ( ; __count > 0 ; --__count, ++__first, ++__cur ) {
-      _Param_Construct(&*__cur, *__first);
+      _Copy_Construct(&*__cur, *__first);
     }
     return pair<_InputIter, _ForwardIter>(__first, __cur);
   }
@@ -243,7 +243,7 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last, const _Tp& __x, 
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __cur != __last; ++__cur ) {
-      _Param_Construct(&*__cur, __x);
+      _Copy_Construct(&*__cur, __x);
     }
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
@@ -273,7 +273,7 @@ inline void __ufill( _ForwardIter __first, _ForwardIter __last,
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for (_Distance __n = __last - __first; __n > 0; --__n, ++__cur ) {
-      _Param_Construct(&*__cur, __x);
+      _Copy_Construct(&*__cur, __x);
     }
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
@@ -321,7 +321,7 @@ inline _ForwardIter __ufill_n( _ForwardIter __first, _Size __n, const _Tp& __x )
   _ForwardIter __cur = __first;
   _STLP_TRY {
     for ( ; __n > 0; --__n, ++__cur) {
-      _Param_Construct(&*__cur, __x);
+      _Copy_Construct(&*__cur, __x);
     }
   }
   _STLP_UNWIND(_STLP_STD::_Destroy_Range(__first, __cur))
