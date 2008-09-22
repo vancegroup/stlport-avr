@@ -44,9 +44,6 @@ _STLP_CREATE_ITERATOR_TRAITS(SetTraitsT, Const_traits)
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
                       _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class set
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-          : public __stlport_class<set<_Key, _Compare, _Alloc> >
-#endif
 {
   typedef set<_Key, _Compare, _Alloc> _Self;
 public:
@@ -115,8 +112,9 @@ public:
   set(const _Self& __x) : _M_t(__x._M_t) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // set(__move_source<_Self> src)
-  //  : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+  set(__move_source<_Self> src) :
+      _M_t(__move_source<_Rep_type>(src.get()._M_t))
+    { }
 #endif
 
   _Self& operator=(const _Self& __x) {
@@ -188,9 +186,6 @@ _STLP_CREATE_ITERATOR_TRAITS(MultisetTraitsT, Const_traits)
 template <class _Key, _STLP_DFL_TMPL_PARAM(_Compare, less<_Key>),
                       _STLP_DFL_TMPL_PARAM(_Alloc, allocator<_Key>) >
 class multiset
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
-               : public __stlport_class<multiset<_Key, _Compare, _Alloc> >
-#endif
 {
   typedef multiset<_Key, _Compare, _Alloc> _Self;
 public:
@@ -264,8 +259,9 @@ public:
   }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // multiset(__move_source<_Self> src)
-  //  : _M_t(__move_source<_Rep_type>(src.get()._M_t)) {}
+  multiset(__move_source<_Self> src) :
+      _M_t(__move_source<_Rep_type>(src.get()._M_t))
+    { }
 #endif
 
   // accessors:
@@ -339,16 +335,31 @@ _STLP_BEGIN_NAMESPACE
 #undef  _STLP_TEMPLATE_HEADER
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-template <class _Key, class _Compare, class _Alloc>
-struct __move_traits<set<_Key,_Compare,_Alloc> > :
-  _STLP_PRIV __move_traits_aux<typename set<_Key,_Compare,_Alloc>::_Rep_type>
-{};
+_STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Key, class _Compare, class _Alloc>
-struct __move_traits<multiset<_Key,_Compare,_Alloc> > :
-  _STLP_PRIV __move_traits_aux<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>
-{};
-#endif
+struct __has_trivial_move<set<_Key,_Compare,_Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename set<_Key,_Compare,_Alloc>::_Rep_type>::value> /* true_type */
+{ };
+
+template <class _Key, class _Compare, class _Alloc>
+struct __has_move_constructor<set<_Key,_Compare,_Alloc> > :
+    public true_type
+{ };
+
+template <class _Key, class _Compare, class _Alloc>
+struct __has_trivial_move<multiset<_Key,_Compare,_Alloc> > :
+  public integral_constant<bool, __has_trivial_move<typename multiset<_Key,_Compare,_Alloc>::_Rep_type>::value> /* true_type */
+{ };
+
+template <class _Key, class _Compare, class _Alloc>
+struct __has_move_constructor<multiset<_Key,_Compare,_Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
 
 _STLP_END_NAMESPACE
 

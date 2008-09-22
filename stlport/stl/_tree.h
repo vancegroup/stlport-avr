@@ -414,11 +414,11 @@ public:
   }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-//  _Rb_tree(__move_source<_Self> src)
-//    : _Rb_tree_base<_Value, _Alloc>(__move_source<_Base>(src.get())),
-//      _M_node_count(src.get()._M_node_count),
-//      _M_key_compare(_AsMoveSource(src.get()._M_key_compare))
-//  { src.get()._M_node_count = 0; }
+  _Rb_tree(__move_source<_Self> src) :
+      _Rb_tree_base<_Value, _Alloc>(__move_source<_Base>(src.get())),
+      _M_node_count(src.get()._M_node_count),
+      _M_key_compare(src.get()._M_key_compare)
+    { src.get()._M_node_count = 0; }
 #endif
 
   ~_Rb_tree() { clear(); }
