@@ -77,11 +77,7 @@
 #  include <mutex.h>
 #endif
 
-#ifndef _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE
 #  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) (_Alloc_traits<_Tp,__atype>::create_allocator(__a))
-#else
-#  define _STLP_CREATE_ALLOCATOR(__atype,__a, _Tp) __stl_alloc_create(__a,(_Tp*)0)
-#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -405,11 +401,7 @@ public:
                              allocator_type __a) {
     _STLP_STD::_Destroy_Range(__s, __s + __len);
     //  This has to be a static member, so this gets a bit messy
-#   ifndef _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE
-    __a.deallocate(__s, _S_rounded_up_size(__len));    //*ty 03/24/2001 - restored not to use __stl_alloc_rebind() since it is not defined under _STLP_MEMBER_TEMPLATE_CLASSES
-#   else
-    __stl_alloc_rebind (__a, (_CharT*)0).deallocate(__s, _S_rounded_up_size(__len));
-#   endif
+    __a.deallocate(__s, _S_rounded_up_size(__len));
   }
 
   // Deallocate data section of a leaf.

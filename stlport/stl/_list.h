@@ -175,15 +175,6 @@ _STLP_END_NAMESPACE
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-_STLP_MOVE_TO_STD_NAMESPACE
-template <class _Tp, class _Traits>
-inline _Tp* value_type(const _STLP_PRIV _List_iterator<_Tp, _Traits>&) { return 0; }
-inline bidirectional_iterator_tag iterator_category(const _STLP_PRIV _List_iterator_base&) { return bidirectional_iterator_tag();}
-inline ptrdiff_t* distance_type(const _STLP_PRIV _List_iterator_base&) { return 0; }
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif
-
 // Base class that encapsulates details of allocators and helps
 // to simplify EH
 
@@ -392,8 +383,9 @@ public:
   const_reference back() const  { return *(--end()); }
 
 private:
-  void _M_swap_aux(_Self& __x) {
-    __x._M_node._M_swap_alloc(this->_M_node);
+  void _M_swap_aux(_Self& __x)
+  {
+    // __x._M_node._M_swap_alloc(this->_M_node);
     __x._M_node._M_data._M_next = this->_M_node._M_data._M_next;
     __x._M_node._M_data._M_next->_M_prev = &__x._M_node._M_data;
     __x._M_node._M_data._M_prev = this->_M_node._M_data._M_prev;
@@ -404,11 +396,13 @@ private:
 public:
   void swap(_Self& __x) {
     if (__x.empty()) {
+      __x._M_node._M_swap_alloc(this->_M_node);
       if (this->empty()) {
         return;
       }
       this->_M_swap_aux(__x);
     } else if (this->empty()) {
+      __x._M_node._M_swap_alloc(this->_M_node);
       __x._M_swap_aux(*this);
     } else {
       this->_M_node.swap(__x._M_node);

@@ -69,27 +69,6 @@ public:
   }
 };
 
-#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
-/*
- * As the __iostring_allocator allocator will only be used in the basic_string implementation
- * we known that it is never going to be bound to another type that the one used to instantiate
- * the basic_string. This is why the associated __stl_alloc_rebind has only one template
- * parameter.
- */
-_STLP_MOVE_TO_STD_NAMESPACE
-
-template <class _Tp>
-inline _STLP_PRIV __iostring_allocator<_Tp>& _STLP_CALL
-__stl_alloc_rebind(_STLP_PRIV __iostring_allocator<_Tp>& __a, const _Tp*)
-{ return __a; }
-template <class _Tp>
-inline _STLP_PRIV __iostring_allocator<_Tp> _STLP_CALL
-__stl_alloc_create(const _STLP_PRIV __iostring_allocator<_Tp>&, const _Tp*)
-{ return _STLP_PRIV __iostring_allocator<_Tp>(); }
-
-_STLP_MOVE_TO_PRIV_NAMESPACE
-#endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
-
 #if !defined (_STLP_DEBUG)
 template <class _CharT>
 struct __basic_iostring : public basic_string<_CharT, char_traits<_CharT>, __iostring_allocator<_CharT> > {

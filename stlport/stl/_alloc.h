@@ -192,16 +192,10 @@ _STLP_EXPORT_TEMPLATE_CLASS __debug_alloc<__malloc_alloc>;
 template <class _Tp, class _Allocator>
 struct _Alloc_traits {
   typedef _Allocator _Orig;
-#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
   typedef typename _Allocator::_STLP_TEMPLATE rebind<_Tp> _Rebind_type;
   typedef typename _Rebind_type::other  allocator_type;
   static allocator_type create_allocator(const _Orig& __a)
   { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
-#else
-  // this is not actually true, used only to pass this type through
-  // to dynamic overload selection in _STLP_alloc_proxy methods
-  typedef _Allocator allocator_type;
-#endif
 };
 
 #if defined (_STLP_USE_PERTHREAD_ALLOC)
@@ -267,7 +261,6 @@ class allocator //: public _AllocatorAux<_Tp>
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-                // : public __stlport_class<allocator<_Tp> >
 {
 public:
   typedef _Tp        value_type;
@@ -436,112 +429,91 @@ _STLP_END_NAMESPACE
 #  define _STLP_FORCE_ALLOCATORS(a,y)
 #endif
 
-#if !defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
 template <class _Tp, class _Alloc>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _Alloc_traits<_Tp, _Alloc>::allocator_type  _STLP_CALL
 __stl_alloc_create(const _Alloc& __a, const _Tp*) {
   typedef typename _Alloc::_STLP_TEMPLATE rebind<_Tp>::other _Rebound_type;
   return _Rebound_type(__a);
 }
-#else
-// If custom allocators are being used without member template classes support :
-// user (on purpose) is forced to define rebind/get operations !!!
-template <class _Tp1, class _Tp2>
-inline allocator<_Tp2>& _STLP_CALL
-__stl_alloc_rebind(allocator<_Tp1>& __a, const _Tp2*) {  return (allocator<_Tp2>&)(__a); }
-template <class _Tp1, class _Tp2>
-inline allocator<_Tp2> _STLP_CALL
-__stl_alloc_create(const allocator<_Tp1>&, const _Tp2*) { return allocator<_Tp2>(); }
-#endif
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 // inheritance is being used for EBO optimization
 template <class _Value, class _Tp, class _MaybeReboundAlloc>
-class _STLP_alloc_proxy : public _MaybeReboundAlloc {
-private:
-  typedef _MaybeReboundAlloc _Base;
-  typedef typename _Base::size_type size_type;
-  typedef _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
-public:
-  _Value _M_data;
+class _STLP_alloc_proxy :
+    public _MaybeReboundAlloc
+{
+  private:
+    typedef _MaybeReboundAlloc _Base;
+    typedef typename _Base::size_type size_type;
+    typedef _STLP_alloc_proxy<_Value, _Tp, _MaybeReboundAlloc> _Self;
 
-  _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, _Value __p) :
-    _MaybeReboundAlloc(__a), _M_data(__p) {}
+  public:
+    _Value _M_data;
+
+    _STLP_alloc_proxy (const _MaybeReboundAlloc& __a, _Value __p) :
+        _MaybeReboundAlloc(__a),
+        _M_data(__p)
+      { }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  _STLP_alloc_proxy (__move_source<_Self> src) :
-    _Base(src.get()._M_base()),
-    _M_data(src.get()._M_data) {}
+    _STLP_alloc_proxy (__move_source<_Self> src) :
+        _Base(src.get()._M_base()),
+        _M_data(src.get()._M_data)
+      { }
 
-  _Base& _M_base()
-  { return *this; }
+    _Base& _M_base()
+      { return *this; }
 #endif
 
-private:
-  /* Following are helper methods to detect stateless allocators and avoid
-   * swap in this case. For some compilers (VC6) it is a workaround for a
-   * compiler bug in the Empty Base class Optimization feature, for others
-   * it is a small optimization or nothing if no EBO. */
-  void _M_swap_alloc(_Self&, const true_type& /*_IsStateless*/)
-  {}
+  private:
+    /* Following are helper methods to detect stateless allocators and avoid
+     * swap in this case. For some compilers (VC6) it is a workaround for a
+     * compiler bug in the Empty Base class Optimization feature, for others
+     * it is a small optimization or nothing if no EBO. */
+    void _M_swap_alloc(_Self&, const true_type& /*_IsStateless*/)
+      { }
 
-  void _M_swap_alloc(_Self& __x, const false_type& /*_IsStateless*/) {
-    _MaybeReboundAlloc &__base_this = *this;
-    _MaybeReboundAlloc &__base_x = __x;
-    _STLP_STD::swap(__base_this, __base_x);
-  }
+    void _M_swap_alloc( _Self& __x, const false_type& /*_IsStateless*/)
+      {
+        _MaybeReboundAlloc& __base_this = *this;
+        _MaybeReboundAlloc& __base_x = __x;
+        _STLP_STD::swap(__base_this, __base_x);
+      }
 
-public:
-  void _M_swap_alloc(_Self& __x) {
-#if !defined (__BORLANDC__)
-    // typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
-#else
-    typedef typename __bool2type<_IsStateless<_MaybeReboundAlloc>::_Is>::_Ret _StatelessAlloc;
-#endif
-    _M_swap_alloc(__x, /* _StatelessAlloc() */ true_type() );
-  }
+  public:
+    void _M_swap_alloc(_Self& __x)
+       {
+    //     // typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
+         _M_swap_alloc(__x, integral_constant<bool,is_trivial<_Base>::value || is_empty<_Base>::value>() /* true_type() */ );
+       }
 
-  /* We need to define the following swap implementation for allocator with state
-   * as those allocators might have implement a special swap function to correctly
-   * move datas from an instance to the oher, _STLP_alloc_proxy should not break
-   * this mecanism. */
-  void swap(_Self& __x) {
-    _M_swap_alloc(__x);
-    _STLP_STD::swap(_M_data, __x._M_data);
-  }
+    /* We need to define the following swap implementation for allocator with state
+     * as those allocators might have implement a special swap function to correctly
+     * move datas from an instance to the oher, _STLP_alloc_proxy should not break
+     * this mecanism. */
+    void swap( _Self& __x )
+      {
+        _M_swap_alloc( __x, integral_constant<bool,is_trivial<_Base>::value || is_empty<_Base>::value>() /* true_type() */ );
+        _STLP_STD::swap(_M_data, __x._M_data);
+      }
 
-  _Tp* allocate(size_type __n, size_type& __allocated_n) {
-#if !defined (__BORLANDC__)
-    // typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
-#else
-    // typedef typename __bool2type<_IsSTLportClass<_MaybeReboundAlloc>::_Is>::_Ret _STLportAlloc;
-#endif
-    return allocate(__n, __allocated_n, /* _STLportAlloc() */ false_type() );
-  }
+    _Tp* allocate(size_type __n, size_type& __allocated_n)
+      {
+        // typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
+        return allocate(__n, __allocated_n, /* _STLportAlloc() */ false_type() );
+      }
 
-  // Unified interface to perform allocate()/deallocate() with limited
-  // language support
-#if defined (_STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE)
-  // else it is rebound already, and allocate() member is accessible
-  _Tp* allocate(size_type __n)
-  { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).allocate(__n, 0); }
-  void deallocate(_Tp* __p, size_type __n)
-  { __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).deallocate(__p, __n); }
-private:
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
-  { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0))._M_allocate(__n, __allocated_n); }
-#else
-  //Expose Standard allocate overload (using expression do not work for some compilers (Borland))
-  _Tp* allocate(size_type __n)
-  { return _Base::allocate(__n); }
-private:
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
-  { return _Base::_M_allocate(__n, __allocated_n); }
-#endif
+    //Expose Standard allocate overload (using expression do not work for some compilers (Borland))
+    _Tp* allocate( size_type __n )
+      { return _Base::allocate(__n); }
 
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const false_type& /*STLport allocator*/)
-  { __allocated_n = __n; return allocate(__n); }
+  private:
+    _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
+      { return _Base::_M_allocate(__n, __allocated_n); }
+
+    _Tp* allocate(size_type __n, size_type& __allocated_n, const false_type& /*STLport allocator*/)
+      { __allocated_n = __n; return allocate(__n); }
 };
 
 #if defined (_STLP_USE_TEMPLATE_EXPORT)

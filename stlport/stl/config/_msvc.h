@@ -142,7 +142,7 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 
 #  if (_STLP_MSVC < 1300) /* including MSVC 6.0 */
 #    define _STLP_NO_MEMBER_TEMPLATE_KEYWORD 1
-#    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1
+#    define _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE 1 /* not supported more */
 #  endif
 
 #  define _STLP_HAS_NATIVE_FLOAT_ABS 1
