@@ -204,8 +204,8 @@ _STLP_END_NAMESPACE
 #    include <stl/_iterator_base.h>
 #  endif
 
-#  ifndef _STLP_TYPE_TRAITS_H
-#    include <stl/type_traits.h>
+#  ifndef _STLP_TYPE_TRAITS
+#    include <type_traits>
 #  endif
 
 _STLP_BEGIN_NAMESPACE

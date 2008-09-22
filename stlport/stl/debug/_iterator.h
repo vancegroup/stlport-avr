@@ -386,15 +386,15 @@ protected:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
   __construct_checker(const _InputIter& __f, const _InputIter& __l) {
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
+    typedef typename is_integral<_InputIter>::type _Integral;
     _M_check_dispatch(__f, __l, _Integral());
   }
 
   template <class _Integer>
-  void _M_check_dispatch(_Integer , _Integer, const __true_type& /*IsIntegral*/) {}
+  void _M_check_dispatch(_Integer , _Integer, const true_type& /*IsIntegral*/) {}
 
   template <class _InputIter>
-  void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const __false_type& /*IsIntegral*/) {
+  void _M_check_dispatch(const _InputIter& __f, const _InputIter& __l, const false_type& /*IsIntegral*/) {
     _STLP_DEBUG_CHECK(__check_range(__f,__l))
   }
 #endif

@@ -54,7 +54,7 @@ protected:
   typedef _STLP_NON_DBG_STRING _Base;
   typedef basic_string<_CharT, _Traits, _Alloc> _Self;
   typedef _STLP_PRIV __construct_checker<_STLP_NON_DBG_STRING > _ConstructCheck;
-  typedef typename _IsPOD<_CharT>::_Type _Char_Is_POD;
+  typedef typename is_pod<_CharT>::type _Char_Is_POD;
 
 public:
   __IMPORT_CONTAINER_TYPEDEFS(_Base)
