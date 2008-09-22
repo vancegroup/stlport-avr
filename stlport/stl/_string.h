@@ -1088,8 +1088,45 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocato
 
 #if defined (basic_string)
 _STLP_MOVE_TO_STD_NAMESPACE
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+#    if !defined (_STLP_USE_SHORT_STRING_OPTIM)
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_trivial_move<_STLP_PRIV basic_string<_CharT, _Traits, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+#    endif
+
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_move_constructor<_STLP_PRIV basic_string<_CharT, _Traits, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#  endif
 #  undef basic_string
-#endif
+#else // basic_string
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+#    if !defined (_STLP_USE_SHORT_STRING_OPTIM)
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_trivial_move<basic_string<_CharT, _Traits, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+#    endif
+
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_move_constructor<basic_string<_CharT, _Traits, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#  endif
+#endif // basic_string
 
 _STLP_END_NAMESPACE
 
@@ -1119,38 +1156,6 @@ inline void _STLP_CALL swap(string& __x, string& __y)
 inline void _STLP_CALL swap(wstring& __x, wstring& __y)
 { __x.swap(__y); }
 #  endif
-#endif
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-_STLP_BEGIN_TR1_NAMESPACE
-
-#if !defined (_STLP_USE_SHORT_STRING_OPTIM)
-template <class _CharT, class _Traits, class _Alloc>
-struct __has_trivial_move<basic_string<_CharT, _Traits, _Alloc> > :
-  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-{ };
-#endif
-
-template <class _CharT, class _Traits, class _Alloc>
-struct __has_move_constructor<basic_string<_CharT, _Traits, _Alloc> > :
-    public true_type
-{ };
-
-_STLP_END_NAMESPACE
-
-template <class _CharT, class _Traits, class _Alloc>
-struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
-  typedef true_type implemented;
-  //Completness depends on the allocator:
-  typedef typename __move_traits<_Alloc>::complete complete;
-};
-/*#else
- * There is no need to specialize for string and wstring in this case
- * as the default __move_traits will already tell that string is movable
- * but not complete. We cannot define it as complete as nothing guaranty
- * that the STLport user hasn't specialized std::allocator for char or
- * wchar_t.
- */
 #endif
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

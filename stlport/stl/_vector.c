@@ -88,16 +88,16 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
   pointer __new_finish = __new_start;
   pointer old = this->_M_start;
   _STLP_TRY {
-    while ( old != __pos ) {
-      _Move_Construct( __new_finish++, *(old++) );
+    for ( ; old != __pos; ++__new_finish, ++old ) {
+      _Move_Construct( __new_finish, *old );
     }
     // handle insertion
-    while ( __fill_len-- > 0 ) {
-      _Copy_Construct( __new_finish++, __x );
+    for ( ; __fill_len-- > 0; ++__new_finish ) {
+      _Copy_Construct( __new_finish, __x );
     }
     if (!__atend) {
-      while ( old != this->_M_finish ) {
-        _Move_Construct( __new_finish++, *(old++) );
+      for ( ; old != this->_M_finish; ++__new_finish, ++old ) {
+        _Move_Construct( __new_finish, *old );
       }
     }
   }
@@ -116,8 +116,8 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
   // handle insertion
-  while ( __fill_len-- > 0 ) {
-    _Copy_Construct( __new_finish++, __x );
+  for ( ; __fill_len-- > 0; ++__new_finish ) {
+    _Copy_Construct( __new_finish, __x );
   }
   if (!__atend) {
     __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
@@ -132,8 +132,8 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
 {
   _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
   this->_M_finish += __n;
-  while ( __n-- > 0 ) {
-    _Copy_Construct( __pos++, __x );
+  for ( ; __n-- > 0; ++__pos ) {
+    _Copy_Construct( __pos, __x );
   }
 }
 
@@ -148,8 +148,8 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
     _STLP_STD::_Destroy_Moved(src);
   }
   this->_M_finish += __n;
-  while ( __n-- > 0 ) {
-    _Copy_Construct( __pos++, __x );
+  for ( ; __n-- > 0; ++__pos ) {
+    _Copy_Construct( __pos, __x );
   }
 }
 

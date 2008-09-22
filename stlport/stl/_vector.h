@@ -46,7 +46,13 @@
 #  include <stl/_uninitialized.h>
 #endif
 
-#include <type_traits>
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
+
+#ifndef _STLP_INTERNAL_CONSTRUCT_H
+#  include <stl/_construct.h>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -387,29 +393,50 @@ class vector :
 #endif
 
   private:
-    void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const true_type& /*_Movable*/);
-    void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const false_type& /*_Movable*/);
-    void _M_fill_insert (iterator __pos, size_type __n, const _Tp& __x);
+    void _M_fill_insert_aux( iterator __pos, size_type __n, const _Tp& __x, const true_type& /*_Movable*/);
+    void _M_fill_insert_aux( iterator __pos, size_type __n, const _Tp& __x, const false_type& /*_Movable*/);
+    void _M_fill_insert( iterator __pos, size_type __n, const _Tp& __x );
 
     template <class _ForwardIterator>
     void _M_range_insert_realloc( iterator __pos,
                                   _ForwardIterator __first, _ForwardIterator __last,
-                                  size_type __n)
+                                  size_type __n, const false_type& /* trivial move */ )
       {
-        typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-        typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
         size_type __len = _M_compute_next_size(__n);
         pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
         pointer __new_finish = __new_start;
+        pointer old = this->_M_start;
         _STLP_TRY {
-          __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCopy(), _Movable());
-          __new_finish = uninitialized_copy(__first, __last, __new_finish);
-          __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCopy(), _Movable());
+          for ( ; old != __pos; ++__new_finish, ++old ) {
+            _Move_Construct( __new_finish, *old );
+          }
+          // handle insertion
+          for ( ; __first != __last; ++__first, ++__new_finish ) {
+            _Copy_Construct( __new_finish, *__first );
+          }
+          for ( ; old != this->_M_finish; ++__new_finish, ++old ) {
+            _Move_Construct( __new_finish, *old );
+          }
         }
         _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                       this->_M_end_of_storage.deallocate(__new_start,__len)))
+        _M_clear();
+        _M_set(__new_start, __new_finish, __new_start + __len);
+      }
+
+    template <class _ForwardIterator>
+    void _M_range_insert_realloc( iterator __pos,
+                                  _ForwardIterator __first, _ForwardIterator __last,
+                                  size_type __n, const true_type& /* trivial move */ )
+      {
+        size_type __len = _M_compute_next_size(__n);
+        pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+        pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
+        // handle insertion ToDo: spec for _ForwardIterator, in construct
+        for ( ; __first != __last; ++__first, ++__new_finish ) {
+          _Copy_Construct<_Tp>( __new_finish, *__first );
+        }
+        __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
         _M_clear_after_move();
         _M_set(__new_start, __new_finish, __new_start + __len);
       }
@@ -419,14 +446,11 @@ class vector :
                               _ForwardIterator __first, _ForwardIterator __last,
                               size_type __n, const true_type& /*_Movable*/)
       {
-        iterator __src = this->_M_finish - 1;
-        iterator __dst = __src + __n;
-        for ( ; __src >= __pos; --__dst, --__src ) {
-          _STLP_STD::_Move_Construct(__dst, *__src);
-          _STLP_STD::_Destroy_Moved(__src);
-        }
-        uninitialized_copy(__first, __last, __pos);
+        _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
         this->_M_finish += __n;
+        for ( ; __first != __last; ++__first, ++__pos ) {
+          _Copy_Construct<_Tp>( __pos, *__first );
+        }
       }
 
     template <class _ForwardIterator>
@@ -434,24 +458,16 @@ class vector :
                               _ForwardIterator __first, _ForwardIterator __last,
                               size_type __n, const false_type& /*_Movable*/)
       {
-        typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
-        typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-        const size_type __elems_after = this->_M_finish - __pos;
-        pointer __old_finish = this->_M_finish;
-        if (__elems_after > __n) {
-          _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCopy());
-          this->_M_finish += __n;
-          _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialCopy());
-          copy(__first, __last, __pos);
-        } else {
-          _ForwardIterator __mid = __first;
-          _STLP_STD::advance(__mid, __elems_after);
-          uninitialized_copy(__mid, __last, this->_M_finish);
-          this->_M_finish += __n - __elems_after;
-          _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCopy());
-          this->_M_finish += __elems_after;
-          copy(__first, __mid, __pos);
-        } /* elems_after */
+        iterator src = this->_M_finish - 1;
+        iterator dst = src + __n;
+        for ( ; src >= __pos; --dst, --src ) {
+          _STLP_STD::_Move_Construct(dst, *src);
+          _STLP_STD::_Destroy_Moved(src);
+        }
+        this->_M_finish += __n;
+        for ( ; __first != __last; ++__first, ++__pos ) {
+          _Copy_Construct( __pos, *__first );
+        }
       }
 
     template <class _Integer>
@@ -487,9 +503,6 @@ class vector :
     void _M_range_insert( iterator __pos, _ForwardIterator __first, _ForwardIterator __last,
                           const forward_iterator_tag& )
      {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-       typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
        /* This method do not check self referencing.
         * Standard forbids it, checked by the debug mode.
         */
@@ -497,9 +510,9 @@ class vector :
          size_type __n = _STLP_STD::distance(__first, __last);
 
          if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
-           _M_range_insert_aux(__pos, __first, __last, __n, _Movable());
+           _M_range_insert_aux(__pos, __first, __last, __n, typename __has_trivial_move<_Tp>::type() );
          } else {
-           _M_range_insert_realloc(__pos, __first, __last, __n);
+           _M_range_insert_realloc(__pos, __first, __last, __n, typename __has_trivial_move<_Tp>::type() );
          }
        }
     }
@@ -659,8 +672,7 @@ class vector :
 
 #if defined (vector)
 _STLP_MOVE_TO_STD_NAMESPACE
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
@@ -674,15 +686,11 @@ struct __has_move_constructor<_STLP_PRIV vector<_Tp, _Alloc> > :
 { };
 
 _STLP_END_NAMESPACE
-#  endif
-
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #  undef vector
 #else // vector
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
-
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Alloc>
@@ -696,9 +704,7 @@ struct __has_move_constructor<vector<_Tp, _Alloc> > :
 { };
 
 _STLP_END_NAMESPACE
-
-#  endif
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#  endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 #endif // vector
 
 _STLP_END_NAMESPACE
@@ -736,19 +742,6 @@ typedef vector<bool, allocator<bool> > bit_vector;
 #include <stl/_relops_cont.h>
 #undef _STLP_TEMPLATE_CONTAINER
 #undef _STLP_TEMPLATE_HEADER
-
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  if !defined (_STLP_NO_MOVE_SEMANTIC)
-
-template <class _Tp, class _Alloc>
-struct __move_traits<vector<_Tp, _Alloc> >
-{
-    typedef true_type implemented;
-    typedef typename __move_traits<_Alloc>::complete complete;
-};
-#  endif
-
-#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 _STLP_END_NAMESPACE
 

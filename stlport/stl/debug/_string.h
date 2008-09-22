@@ -762,10 +762,18 @@ _STLP_EXPORT_TEMPLATE_CLASS basic_string<wchar_t, char_traits<wchar_t>, allocato
 #undef _STLP_NON_DBG_STRING
 #undef _STLP_NON_DBG_STRING_NAME
 
-#if defined (__GNUC__) && (__GNUC__ == 2) && (__GNUC_MINOR__ == 96)
+
+#  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _CharT, class _Traits, class _Alloc>
-const size_t basic_string<_CharT, _Traits, _Alloc>::npos = ~(size_t) 0;
-#endif
+struct __has_move_constructor<basic_string<_CharT, _Traits, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#  endif
 
 #if defined (basic_string)
 _STLP_MOVE_TO_STD_NAMESPACE
