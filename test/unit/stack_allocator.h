@@ -18,7 +18,6 @@ void swap( ::StackAllocator<_Tp>& __a, ::StackAllocator<_Tp>& __b );
 _STLP_END_NAMESPACE
 
 #include <algorithm>
-#include <stdio.h> // --
 
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 //For bad_alloc:
@@ -176,7 +175,7 @@ namespace std {
 
   template <class _Tp>
   inline void swap( ::StackAllocator<_Tp>& __a, ::StackAllocator<_Tp>& __b)
-  { printf( "swap StackAllocator\n" ); __a.swap(__b); }
+  {  __a.swap(__b); }
 
 // #if !defined (STLPORT) || defined (_STLP_USE_NAMESPACES)
 }
