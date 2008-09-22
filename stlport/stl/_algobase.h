@@ -54,11 +54,9 @@
 #  include <stl/_iterator_base.h>
 #endif
 
-// #ifndef _STLP_TYPE_TRAITS_H
-// #  include <stl/type_traits.h>
-// #endif
-
-#include <type_traits>
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
 
 _STLP_BEGIN_NAMESPACE
 
@@ -98,33 +96,32 @@ inline void swap(_Tp& __a, _Tp& __b) {
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _ForwardIter1, class _ForwardIter2, class _Value>
-inline void __iter_swap_aux_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value *) {
-  _Value tmp = *__i1;
-  *__i1 = *__i2;
-  *__i2 = tmp;
-}
-
 template <class _ForwardIter1, class _ForwardIter2>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const true_type& /*OKToSwap*/) {
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const true_type& /*OKToSwap*/)
+{
   /* namespace specification breaks access to the right swap template overload (at least for gcc) */
   /*_STLP_STD::*/ swap(*__i1, *__i2);
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const false_type& /*OKToSwap*/) {
-  _STLP_PRIV __iter_swap_aux_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const false_type& /*OKToSwap*/)
+{
+  typename iterator_traits<_ForwardIter1>::value_type tmp = *__i1;
+  *__i1 = *__i2;
+  *__i2 = tmp;
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2>
-inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
-  _STLP_PRIV __iter_swap_aux( __i1, __i2, integral_constant<bool, is_same<_ForwardIter1,_ForwardIter2>::value && is_reference<typename iterator_traits<_ForwardIter1>::reference>::value && is_reference<typename iterator_traits<_ForwardIter2>::reference>::value>()
-
-                              /* _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
-                                                      _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1),
-                                                      _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer() */ );
+inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2)
+{
+  _STLP_PRIV __iter_swap_aux( __i1, __i2,
+                              integral_constant<bool,
+                              is_same<typename iterator_traits<_ForwardIter1>::value_type,
+                                      typename iterator_traits<_ForwardIter2>::value_type>::value &&
+                              is_lvalue_reference<typename iterator_traits<_ForwardIter1>::reference>::value &&
+                              is_lvalue_reference<typename iterator_traits<_ForwardIter2>::reference>::value>() );
 }
 
 //--------------------------------------------------
@@ -775,6 +772,6 @@ _STLP_END_NAMESPACE
 #endif /* _STLP_INTERNAL_ALGOBASE_H */
 
 // Local Variables:
-// mode:C++
+// mode: C++
 // End:
 
