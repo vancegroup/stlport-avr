@@ -46,6 +46,8 @@
 #  include <stl/_uninitialized.h>
 #endif
 
+#include <type_traits>
+
 _STLP_BEGIN_NAMESPACE
 
 // The vector base class serves one purpose, its constructor and
@@ -137,31 +139,31 @@ public:
 
 private:
 #if defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef __false_type _Movable;
+  typedef false_type _Movable;
 #endif
 
   // handles insertions on overflow
-  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __false_type& /*_Movable*/,
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const false_type& /*_Movable*/,
                               size_type __fill_len, bool __atend);
-  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const __true_type& /*_Movable*/,
+  void _M_insert_overflow_aux(pointer __pos, const _Tp& __x, const true_type& /*_Movable*/,
                               size_type __fill_len, bool __atend) {
     //We need to take care of self referencing here:
     if (_M_is_inside(__x)) {
       value_type __x_copy = __x;
-      _M_insert_overflow_aux(__pos, __x_copy, __false_type(), __fill_len, __atend);
+      _M_insert_overflow_aux(__pos, __x_copy, false_type(), __fill_len, __atend);
       return;
     }
-    _M_insert_overflow_aux(__pos, __x, __false_type(), __fill_len, __atend);
+    _M_insert_overflow_aux(__pos, __x, false_type(), __fill_len, __atend);
   }
 
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __false_type& /*_TrivialCopy*/,
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const false_type& /*_TrivialCopy*/,
                           size_type __fill_len, bool __atend = false) {
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
     _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
   }
-  void _M_insert_overflow(pointer __pos, const _Tp& __x, const __true_type& /*_TrivialCopy*/,
+  void _M_insert_overflow(pointer __pos, const _Tp& __x, const true_type& /*_TrivialCopy*/,
                           size_type __fill_len, bool __atend = false);
   void _M_range_check(size_type __n) const {
     if (__n >= size_type(this->_M_finish - this->_M_start))
@@ -245,7 +247,7 @@ public:
 
   vector(const _Self& __x)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {
-    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
     this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy());
   }
 
@@ -259,7 +261,7 @@ public:
 private:
   template <class _Integer>
   void _M_initialize_aux(_Integer __n, _Integer __val,
-                         const __true_type& /*_IsIntegral*/) {
+                         const true_type& /*_IsIntegral*/) {
     size_type __real_n = __n;
     this->_M_start = this->_M_end_of_storage.allocate(__n, __real_n);
     this->_M_end_of_storage._M_data = this->_M_start + __real_n;
@@ -268,7 +270,7 @@ private:
 
   template <class _InputIterator>
   void _M_initialize_aux(_InputIterator __first, _InputIterator __last,
-                         const __false_type& /*_IsIntegral*/)
+                         const false_type& /*_IsIntegral*/)
   { _M_range_initialize(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
 
 public:
@@ -277,7 +279,7 @@ public:
   vector(_InputIterator __first, _InputIterator __last,
                const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL )
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
 
@@ -285,7 +287,7 @@ public:
   template <class _InputIterator>
   vector(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(allocator_type()) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_aux(__first, __last, _Integral());
   }
 #  endif /* _STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS */
@@ -294,7 +296,7 @@ public:
   vector(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a) {
-    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
     this->_M_finish = _STLP_PRIV __ucopy_ptrs(__first, __last, this->_M_start, _TrivialUCopy());
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -344,8 +346,8 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIter>
-  void _M_assign_aux(_InputIter __first, _InputIter __last,
-                     const input_iterator_tag &) {
+  void _M_assign_aux(_InputIter __first, _InputIter __last, const input_iterator_tag &)
+  {
     iterator __cur = begin();
     for ( ; __first != __last && __cur != end(); ++__cur, ++__first)
       *__cur = *__first;
@@ -356,19 +358,17 @@ public:
   }
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const true_type& /*_IsIntegral*/)
   { _M_fill_assign(__n, __val); }
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/)
+                          const false_type& /*_IsIntegral*/)
   { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
 
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
-    _M_assign_dispatch(__first, __last, _Integral());
+    _M_assign_dispatch(__first, __last, typename is_integral<_InputIterator>::type() );
   }
 #endif
 
@@ -380,10 +380,8 @@ public:
     if (this->_M_finish != this->_M_end_of_storage._M_data) {
       _Copy_Construct(this->_M_finish, __x);
       ++this->_M_finish;
-    }
-    else {
-      typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
-      _M_insert_overflow(this->_M_finish, __x, _TrivialCopy(), 1, true);
+    } else {
+      _M_insert_overflow(this->_M_finish, __x, typename has_trivial_assign<_Tp>::type(), 1, true);
     }
   }
 
@@ -408,8 +406,8 @@ public:
 #endif
 
 private:
-  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const __true_type& /*_Movable*/);
-  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const __false_type& /*_Movable*/);
+  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const true_type& /*_Movable*/);
+  void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const false_type& /*_Movable*/);
   void _M_fill_insert (iterator __pos, size_type __n, const _Tp& __x);
 
   bool _M_is_inside(const value_type& __x) const {
@@ -425,7 +423,7 @@ private:
                                const_iterator __first, const_iterator __last,
 #endif
                                size_type __n) {
-    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
+    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
@@ -451,7 +449,7 @@ private:
   void _M_range_insert_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
 #endif
-                           size_type __n, const __true_type& /*_Movable*/) {
+                           size_type __n, const true_type& /*_Movable*/) {
     iterator __src = this->_M_finish - 1;
     iterator __dst = __src + __n;
     for (; __src >= __pos; --__dst, --__src) {
@@ -470,9 +468,9 @@ private:
   void _M_range_insert_aux(iterator __pos,
                            const_iterator __first, const_iterator __last,
 #endif
-                           size_type __n, const __false_type& /*_Movable*/) {
-    typedef typename __type_traits<_Tp>::has_trivial_copy_constructor _TrivialUCopy;
-    typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
+                           size_type __n, const false_type& /*_Movable*/) {
+    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+    typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
     const size_type __elems_after = this->_M_finish - __pos;
     pointer __old_finish = this->_M_finish;
     if (__elems_after > __n) {
@@ -500,20 +498,20 @@ private:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __val,
-                          const __true_type&)
+                          const true_type&)
   { _M_fill_insert(__pos, (size_type) __n, (_Tp) __val); }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
-                          const __false_type&)
+                          const false_type&)
   { _M_range_insert(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator)); }
 
 public:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template <class _InputIterator>
   void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
 
@@ -565,7 +563,7 @@ public:
   }
 
 private:
-  iterator _M_erase(iterator __pos, const __true_type& /*_Movable*/) {
+  iterator _M_erase(iterator __pos, const true_type& /*_Movable*/) {
     _STLP_STD::_Destroy(__pos);
     iterator __dst = __pos, __src = __dst + 1;
     iterator __end = end();
@@ -576,16 +574,16 @@ private:
     this->_M_finish = __dst;
     return __pos;
   }
-  iterator _M_erase(iterator __pos, const __false_type& /*_Movable*/) {
+  iterator _M_erase(iterator __pos, const false_type& /*_Movable*/) {
     if (__pos + 1 != end()) {
-      typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
+      typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
       _STLP_PRIV __copy_ptrs(__pos + 1, this->_M_finish, __pos, _TrivialCopy());
     }
     --this->_M_finish;
     _STLP_STD::_Destroy(this->_M_finish);
     return __pos;
   }
-  iterator _M_erase(iterator __first, iterator __last, const __true_type& /*_Movable*/) {
+  iterator _M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/) {
     iterator __dst = __first, __src = __last;
     iterator __end = end();
     for (; __dst != __last && __src != __end; ++__dst, ++__src) {
@@ -608,8 +606,8 @@ private:
     this->_M_finish = __dst;
     return __first;
   }
-  iterator _M_erase(iterator __first, iterator __last, const __false_type& /*_Movable*/) {
-    typedef typename __type_traits<_Tp>::has_trivial_assignment_operator _TrivialCopy;
+  iterator _M_erase(iterator __first, iterator __last, const false_type& /*_Movable*/) {
+    typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
     pointer __i = _STLP_PRIV __copy_ptrs(__last, this->_M_finish, __first, _TrivialCopy());
     _STLP_STD::_Destroy_Range(__i, this->_M_finish);
     this->_M_finish = __i;
@@ -750,16 +748,11 @@ typedef vector<bool, allocator<bool> > bit_vector;
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
-struct __move_traits<vector<_Tp, _Alloc> > {
-  typedef __true_type implemented;
-  typedef typename __move_traits<_Alloc>::complete complete;
+struct __move_traits<vector<_Tp, _Alloc> >
+{
+    typedef true_type implemented;
+    typedef typename __move_traits<_Alloc>::complete complete;
 };
-#  endif
-
-#  if !defined (_STLP_DEBUG)
-template <class _Tp, class _Alloc>
-struct _DefaultZeroValue<vector<_Tp, _Alloc> >
-{ typedef typename __type_traits<_Alloc>::has_trivial_default_constructor _Ret; };
 #  endif
 
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */

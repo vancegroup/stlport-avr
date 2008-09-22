@@ -102,14 +102,14 @@ template<class _CharT, class _Alloc> class _Rope_char_ptr_proxy;
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _CharT>
-struct _BasicCharType { typedef __false_type _Ret; };
+struct _BasicCharType { typedef false_type _Ret; };
 
 _STLP_TEMPLATE_NULL
-struct _BasicCharType<char> { typedef __true_type _Ret; };
+struct _BasicCharType<char> { typedef true_type _Ret; };
 
 #ifdef _STLP_HAS_WCHAR_T
 _STLP_TEMPLATE_NULL
-struct _BasicCharType<wchar_t> { typedef __true_type _Ret; };
+struct _BasicCharType<wchar_t> { typedef true_type _Ret; };
 #endif
 
 // Some helpers, so we can use the power algorithm on ropes.
@@ -137,16 +137,16 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 // Store an eos
 template <class _CharT>
-inline void _S_construct_null_aux(_CharT *__p, const __true_type&)
+inline void _S_construct_null_aux(_CharT *__p, const true_type&)
 { *__p = 0; }
 
 template <class _CharT>
-inline void _S_construct_null_aux(_CharT *__p, const __false_type&)
+inline void _S_construct_null_aux(_CharT *__p, const false_type&)
 { _STLP_STD::_Construct(__p); }
 
 template <class _CharT>
 inline void _S_construct_null(_CharT *__p) {
-  typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
+  typedef typename is_integral<_CharT>::type _Char_Is_Integral;
   _S_construct_null_aux(__p, _Char_Is_Integral());
 }
 
@@ -458,10 +458,10 @@ public:
 private:
   typedef _Rope_RopeRep<_CharT,_Alloc> _RopeRep;
   typedef typename _RopeRep::_IsBasicCharType _IsBasicCharType;
-  void _M_init(__true_type const& /*_IsBasicCharType*/) {
+  void _M_init(true_type const& /*_IsBasicCharType*/) {
     this->_M_c_string = _M_data;
   }
-  void _M_init(__false_type const& /*_IsBasicCharType*/) {}
+  void _M_init(false_type const& /*_IsBasicCharType*/) {}
 
 public:
   _STLP_FORCE_ALLOCATORS(_CharT, _Alloc)
@@ -2370,7 +2370,7 @@ inline _Rope_char_ref_proxy<_CharT, _Alloc>::operator _CharT () const {
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _CharT, class _Alloc>
 struct __move_traits<rope<_CharT, _Alloc> > {
-  typedef __true_type implemented;
+  typedef true_type implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };

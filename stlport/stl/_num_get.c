@@ -117,7 +117,7 @@ template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
               int __base, _Integer& __val,
-              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __true_type& /*_IsSigned*/) {
+              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const true_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
@@ -177,7 +177,7 @@ template <class _InputIter, class _Integer, class _CharT>
 bool _STLP_CALL
 __get_integer(_InputIter& __first, _InputIter& __last,
               int __base, _Integer& __val,
-              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const __false_type& /*_IsSigned*/) {
+              int __got, bool __is_negative, _CharT __separator, const string& __grouping, const false_type& /*_IsSigned*/) {
   bool __ovflow = false;
   _Integer __result = 0;
   bool __is_group = !__grouping.empty();
@@ -239,7 +239,7 @@ bool _STLP_CALL
 __get_decimal_integer(_InputIter& __first, _InputIter& __last, _Integer& __val, _CharT* /*dummy*/) {
   string __grp;
   //Here there is no grouping so separator is not important, we just pass the default character.
-  return __get_integer(__first, __last, 10, __val, 0, false, _CharT() /*separator*/, __grp, __false_type());
+  return __get_integer(__first, __last, 10, __val, 0, false, _CharT() /*separator*/, __grp, false_type());
 }
 
 template <class _InputIter, class _Integer, class _CharT>
@@ -252,7 +252,7 @@ __do_get_integer(_InputIter& __in_ite, _InputIter& __end, ios_base& __str,
 #if defined (__HP_aCC) && (__HP_aCC == 1)
   bool _IsSigned = !((_Integer)(-1) > 0);
 #else
-  typedef typename __bool2type<numeric_limits<_Integer>::is_signed>::_Ret _IsSigned;
+  typedef typename is_signed<_Integer>::type::type _IsSigned;
 #endif
 
   const int __base_or_zero = __get_base_or_zero(__in_ite, __end, __str.flags(), __ctype);

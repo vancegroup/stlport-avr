@@ -54,21 +54,23 @@
 #  include <stl/_iterator_base.h>
 #endif
 
-#ifndef _STLP_TYPE_TRAITS_H
-#  include <stl/type_traits.h>
-#endif
+// #ifndef _STLP_TYPE_TRAITS_H
+// #  include <stl/type_traits.h>
+// #endif
+
+#include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
 
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_FUNCTION_TMPL_PARTIAL_ORDER)
 _STLP_MOVE_TO_PRIV_NAMESPACE
 template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const __true_type& /*SwapImplemented*/) {
+inline void __swap_aux(_Tp& __a, _Tp& __b, const true_type& /*SwapImplemented*/) {
   __a._M_swap_workaround(__b);
 }
 
 template <class _Tp>
-inline void __swap_aux(_Tp& __a, _Tp& __b, const __false_type& /*SwapImplemented*/) {
+inline void __swap_aux(_Tp& __a, _Tp& __b, const false_type& /*SwapImplemented*/) {
   _Tp __tmp = __a;
   __a = __b;
   __b = __tmp;
@@ -104,13 +106,13 @@ inline void __iter_swap_aux_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, _Value
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __true_type& /*OKToSwap*/) {
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const true_type& /*OKToSwap*/) {
   /* namespace specification breaks access to the right swap template overload (at least for gcc) */
   /*_STLP_STD::*/ swap(*__i1, *__i2);
 }
 
 template <class _ForwardIter1, class _ForwardIter2>
-inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const __false_type& /*OKToSwap*/) {
+inline void __iter_swap_aux(_ForwardIter1& __i1, _ForwardIter2& __i2, const false_type& /*OKToSwap*/) {
   _STLP_PRIV __iter_swap_aux_aux( __i1, __i2, _STLP_VALUE_TYPE(__i1,_ForwardIter1) );
 }
 
@@ -118,9 +120,11 @@ _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _ForwardIter1, class _ForwardIter2>
 inline void iter_swap(_ForwardIter1 __i1, _ForwardIter2 __i2) {
-  _STLP_PRIV __iter_swap_aux( __i1, __i2, _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
+  _STLP_PRIV __iter_swap_aux( __i1, __i2, integral_constant<bool, is_same<_ForwardIter1,_ForwardIter2>::value && is_reference<typename iterator_traits<_ForwardIter1>::reference>::value && is_reference<typename iterator_traits<_ForwardIter2>::reference>::value>()
+
+                              /* _IsOKToSwap(_STLP_VALUE_TYPE(__i1, _ForwardIter1), _STLP_VALUE_TYPE(__i2, _ForwardIter2),
                                                       _STLP_IS_REF_TYPE_REAL_REF(__i1, _ForwardIter1),
-                                                      _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer());
+                                                      _STLP_IS_REF_TYPE_REAL_REF(__i2, _ForwardIter2))._Answer() */ );
 }
 
 //--------------------------------------------------
@@ -181,36 +185,46 @@ inline const _Tp (max)(const _Tp __a, const _Tp __b, _Compare __comp) {
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-                          _OutputIter __result, const input_iterator_tag &, _Distance*) {
-  for ( ; __first != __last; ++__result, ++__first)
+inline _OutputIter __copy( _InputIter __first, _InputIter __last,
+                           _OutputIter __result, const input_iterator_tag&,
+                           _Distance* )
+{
+  for ( ; __first != __last; ++__result, ++__first ) {
     *__result = *__first;
+  }
   return __result;
 }
 
 #if defined (_STLP_NONTEMPL_BASE_MATCH_BUG)
 template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-                          _OutputIter __result, const forward_iterator_tag &, _Distance* ) {
-  for ( ; __first != __last; ++__result, ++__first)
+inline _OutputIter __copy( _InputIter __first, _InputIter __last,
+                           _OutputIter __result, const forward_iterator_tag&,
+                           _Distance* )
+{
+  for ( ; __first != __last; ++__result, ++__first ) {
     *__result = *__first;
+  }
   return __result;
 }
 
 template <class _InputIter, class _OutputIter, class _Distance>
-inline _OutputIter __copy(_InputIter __first, _InputIter __last,
-                          _OutputIter __result, const bidirectional_iterator_tag &, _Distance* ) {
-  for ( ; __first != __last; ++__result, ++__first)
+inline _OutputIter __copy( _InputIter __first, _InputIter __last,
+                           _OutputIter __result, const bidirectional_iterator_tag&,
+                           _Distance* )
+{
+  for ( ; __first != __last; ++__result, ++__first ) {
     *__result = *__first;
+  }
   return __result;
 }
 #endif
 
 template <class _RandomAccessIter, class _OutputIter, class _Distance>
-inline _OutputIter
-__copy(_RandomAccessIter __first, _RandomAccessIter __last,
-       _OutputIter __result, const random_access_iterator_tag &, _Distance*) {
-  for (_Distance __n = __last - __first; __n > 0; --__n) {
+inline _OutputIter __copy( _RandomAccessIter __first, _RandomAccessIter __last,
+                           _OutputIter __result, const random_access_iterator_tag&,
+                           _Distance* )
+{
+  for ( _Distance __n = __last - __first; __n > 0; --__n ) {
     *__result = *__first;
     ++__first;
     ++__result;
@@ -218,8 +232,8 @@ __copy(_RandomAccessIter __first, _RandomAccessIter __last,
   return __result;
 }
 
-inline void*
-__copy_trivial(const void* __first, const void* __last, void* __result) {
+inline void* __copy_trivial( const void* __first, const void* __last, void* __result )
+{
   size_t __n = (const char*)__last - (const char*)__first;
   return __n ? (void *)((char*)memmove(__result, __first, __n) + __n) : __result;
 }
@@ -229,57 +243,78 @@ __copy_trivial(const void* __first, const void* __last, void* __result) {
 
 template <class _BidirectionalIter1, class _BidirectionalIter2,
           class _Distance>
-inline _BidirectionalIter2 __copy_backward(_BidirectionalIter1 __first,
-                                           _BidirectionalIter1 __last,
-                                           _BidirectionalIter2 __result,
-                                           const bidirectional_iterator_tag &,
-                                           _Distance*) {
-  while (__first != __last)
+inline _BidirectionalIter2 __copy_backward( _BidirectionalIter1 __first,
+                                            _BidirectionalIter1 __last,
+                                            _BidirectionalIter2 __result,
+                                            const bidirectional_iterator_tag&,
+                                            _Distance* )
+{
+  while ( __first != __last ) {
     *--__result = *--__last;
+  }
   return __result;
 }
 
 template <class _RandomAccessIter, class _BidirectionalIter, class _Distance>
-inline _BidirectionalIter __copy_backward(_RandomAccessIter __first,
-                                          _RandomAccessIter __last,
-                                          _BidirectionalIter __result,
-                                          const random_access_iterator_tag &,
-                                          _Distance*) {
-  for (_Distance __n = __last - __first; __n > 0; --__n)
+inline _BidirectionalIter __copy_backward( _RandomAccessIter __first,
+                                           _RandomAccessIter __last,
+                                           _BidirectionalIter __result,
+                                           const random_access_iterator_tag&,
+                                           _Distance* )
+{
+  for ( _Distance __n = __last - __first; __n > 0; --__n ) {
     *--__result = *--__last;
+  }
   return __result;
 }
 
-inline void*
-__copy_trivial_backward(const void* __first, const void* __last, void* __result) {
+inline void* __copy_trivial_backward( const void* __first, const void* __last,
+                                      void* __result)
+{
   const ptrdiff_t _Num = (const char*)__last - (const char*)__first;
   return (_Num > 0) ? memmove((char*)__result - _Num, __first, _Num) : __result ;
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const __false_type& /*IsOKToMemCpy*/) {
+inline _OutputIter __copy_ptrs( _InputIter __first, _InputIter __last,
+                                _OutputIter __result,
+                                const false_type& /*IsOKToMemCpy*/)
+{
   return _STLP_PRIV __copy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0);
 }
+
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const __true_type& /*IsOKToMemCpy*/) {
+inline _OutputIter __copy_ptrs( _InputIter __first, _InputIter __last,
+                                _OutputIter __result,
+                                const true_type& /*IsOKToMemCpy*/)
+{
   // we know they all pointers, so this cast is OK
   //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
   return (_OutputIter)_STLP_PRIV __copy_trivial(__first, __last, __result);
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result,
-                              const __true_type& /*BothPtrType*/) {
+inline _OutputIter __copy_aux( _InputIter __first, _InputIter __last,
+                               _OutputIter __result, const true_type& /*BothPtrType*/)
+{
+  typedef typename remove_pointer<_InputIter>::type _in_t;
+  typedef typename remove_pointer<_OutputIter>::type _out_t;
+  typedef typename remove_const<_in_t>::type _in_t_nc;
+
   return _STLP_PRIV __copy_ptrs(__first, __last, __result,
-                                _UseTrivialCopy(_STLP_VALUE_TYPE(__first, _InputIter),
-                                                _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+                                integral_constant<bool,
+                                is_trivial<_in_t>::value &&
+                                is_trivial<_out_t>::value &&
+                                is_same<_in_t_nc,_out_t>::value &&
+                                !is_volatile<_in_t>::value &&
+                                !is_volatile<_out_t>::value>() );
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter __result,
-                              const __false_type& /*BothPtrType*/) {
+inline _OutputIter __copy_aux( _InputIter __first, _InputIter __last,
+                               _OutputIter __result,
+                               const false_type& /*BothPtrType*/)
+{
   return _STLP_PRIV __copy(__first, __last, __result,
                            _STLP_ITERATOR_CATEGORY(__first, _InputIter),
                            _STLP_DISTANCE_TYPE(__first, _InputIter));
@@ -288,46 +323,63 @@ inline _OutputIter __copy_aux(_InputIter __first, _InputIter __last, _OutputIter
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter copy(_InputIter __first, _InputIter __last, _OutputIter __result) {
+inline _OutputIter copy( _InputIter __first, _InputIter __last, _OutputIter __result )
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __copy_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter>::_Answer());
+  return _STLP_PRIV __copy_aux(__first, __last, __result, integral_constant<bool, is_pointer<_InputIter>::value && is_pointer<_OutputIter>::value>() );
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last,
-                                        _OutputIter __result, const __false_type& /*TrivialAssignment*/) {
+inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
+                                         _OutputIter __result, const false_type& /*TrivialAssignment*/) {
   return _STLP_PRIV __copy_backward(__first, __last, __result,
                                     _STLP_ITERATOR_CATEGORY(__first, _InputIter),
                                     _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_ptrs(_InputIter __first, _InputIter __last,
-                                        _OutputIter __result, const __true_type& /*TrivialAssignment*/) {
+inline _OutputIter __copy_backward_ptrs( _InputIter __first, _InputIter __last,
+                                         _OutputIter __result, const true_type& /*TrivialAssignment*/) {
   return (_OutputIter)_STLP_PRIV __copy_trivial_backward(__first, __last, __result);
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __false_type&) {
+inline _OutputIter __copy_backward_aux( _InputIter __first, _InputIter __last,
+                                        _OutputIter __result, const false_type& )
+{
   return _STLP_PRIV __copy_backward(__first, __last, __result,
                                     _STLP_ITERATOR_CATEGORY(__first,_InputIter),
                                     _STLP_DISTANCE_TYPE(__first, _InputIter));
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __copy_backward_aux(_InputIter __first, _InputIter __last, _OutputIter __result, const __true_type&) {
-  return _STLP_PRIV __copy_backward_ptrs(__first, __last, __result,
-                                         _UseTrivialCopy(_STLP_VALUE_TYPE(__first, _InputIter),
-                                                         _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+inline _OutputIter __copy_backward_aux( _InputIter __first, _InputIter __last,
+                                        _OutputIter __result, const true_type& )
+{
+  typedef typename remove_pointer<_InputIter>::type _in_t;
+  typedef typename remove_pointer<_OutputIter>::type _out_t;
+  typedef typename remove_const<_in_t>::type _in_t_nc;
+
+  return _STLP_PRIV __copy_backward_ptrs( __first, __last, __result,
+                                          integral_constant<bool,
+                                          is_trivial<_in_t>::value &&
+                                          is_trivial<_out_t>::value &&
+                                          is_same<_in_t_nc,_out_t>::value &&
+                                          !is_volatile<_in_t>::value &&
+                                          !is_volatile<_out_t>::value>() );
 }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter copy_backward(_InputIter __first, _InputIter __last, _OutputIter __result) {
+inline _OutputIter copy_backward( _InputIter __first, _InputIter __last,
+                                  _OutputIter __result)
+{
   _STLP_DEBUG_CHECK(_STLP_PRIV __check_range(__first, __last))
-  return _STLP_PRIV __copy_backward_aux(__first, __last, __result, _BothPtrType< _InputIter, _OutputIter>::_Answer() );
+
+  return _STLP_PRIV __copy_backward_aux( __first, __last, __result,
+                                         integral_constant<bool, is_pointer<_InputIter>::value && is_pointer<_OutputIter>::value>() );
 }
 
 #if !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_SIMULATE_PARTIAL_SPEC_FOR_TYPE_TRAITS)

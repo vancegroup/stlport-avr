@@ -147,14 +147,31 @@ struct _List_iterator : public _List_iterator_base {
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 _STLP_MOVE_TO_STD_NAMESPACE
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp, class _Traits>
-struct __type_traits<_STLP_PRIV _List_iterator<_Tp, _Traits> > {
-  typedef __false_type   has_trivial_default_constructor;
-  typedef __true_type    has_trivial_copy_constructor;
-  typedef __true_type    has_trivial_assignment_operator;
-  typedef __true_type    has_trivial_destructor;
-  typedef __false_type   is_POD_type;
-};
+struct has_trivial_constructor<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
+    public false_type
+{ };
+
+template <class _Tp, class _Traits>
+struct has_trivial_copy<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+template <class _Tp, class _Traits>
+struct has_trivial_assign<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+template <class _Tp, class _Traits>
+struct has_trivial_destructor<_STLP_PRIV _List_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif
 
@@ -435,38 +452,45 @@ public:
 private:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void _M_insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+  void _M_insert(iterator __pos, _InputIterator __first, _InputIterator __last)
+  {
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_insert_dispatch(__pos, __first, __last, _Integral());
   }
 
   // Check whether it's an integral type.  If so, it's not an iterator.
   template<class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          const __true_type& /*_IsIntegral*/) {
+                          const true_type& /*_IsIntegral*/)
+  {
     _M_fill_insert(__pos, __n, __x);
   }
   template <class _InputIter>
   void _M_insert_dispatch(iterator __pos,
                           _InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
+                          const false_type& /*_IsIntegral*/)
+  {
 #else /* _STLP_MEMBER_TEMPLATES */
-  void _M_insert(iterator __pos, const value_type* __first, const value_type* __last) {
-    for (; __first != __last; ++__first)
-      insert(__pos, *__first);
-  }
-  void _M_insert(iterator __pos, const_iterator __first, const_iterator __last) {
+    void _M_insert(iterator __pos, const value_type* __first, const value_type* __last) {
+      for (; __first != __last; ++__first) {
+        insert(__pos, *__first);
+      }
+    }
+  void _M_insert(iterator __pos, const_iterator __first, const_iterator __last)
+  {
 #endif /* _STLP_MEMBER_TEMPLATES */
     //We use a temporary list to avoid the auto reference troubles (infinite loop)
-    for (; __first != __last; ++__first)
+    for (; __first != __last; ++__first) {
       insert(__pos, *__first);
+    }
   }
 
 public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
-  void insert(iterator __pos, _InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+  void insert(iterator __pos, _InputIterator __first, _InputIterator __last)
+  {
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_splice_insert_dispatch(__pos, __first, __last, _Integral());
   }
 
@@ -474,20 +498,26 @@ private:
   // Check whether it's an integral type.  If so, it's not an iterator.
   template<class _Integer>
   void _M_splice_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          const __true_type& /*_IsIntegral*/) {
+                          const true_type& /*_IsIntegral*/)
+  {
     _M_fill_insert(__pos, __n, __x);
   }
   template <class _InputIter>
   void _M_splice_insert_dispatch(iterator __pos,
                           _InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
+                          const false_type& /*_IsIntegral*/)
+  {
 #else /* _STLP_MEMBER_TEMPLATES */
-  void insert(iterator __pos, const value_type* __first, const value_type* __last) {
+
+  void insert(iterator __pos, const value_type* __first, const value_type* __last)
+  {
     _Self __tmp(__first, __last, this->get_allocator());
     _STLP_ASSERT(__tmp.get_allocator() == this->get_allocator())
     splice(__pos, __tmp);
   }
-  void insert(iterator __pos, const_iterator __first, const_iterator __last) {
+
+  void insert(iterator __pos, const_iterator __first, const_iterator __last)
+  {
 #endif /* _STLP_MEMBER_TEMPLATES */
     //We use a temporary list to avoid the auto reference troubles (infinite loop)
     _Self __tmp(__first, __last, this->get_allocator());
@@ -499,9 +529,11 @@ public:
   { _M_fill_insert(__pos, __n, __x); }
 
 private:
-  void _M_fill_insert(iterator __pos, size_type __n, const_reference __x) {
-    for ( ; __n > 0; --__n)
+  void _M_fill_insert(iterator __pos, size_type __n, const_reference __x)
+  {
+    for ( ; __n > 0; --__n) {
       insert(__pos, __x);
+    }
   }
 
 public:
@@ -559,19 +591,19 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/) {
+                          const true_type& /*_IsIntegral*/) {
     _M_fill_assign(__n, __val);
   }
 
   template <class _InputIterator>
   void _M_assign_dispatch(_InputIterator __first2, _InputIterator __last2,
-                          const __false_type& /*_IsIntegral*/) {
+                          const false_type& /*_IsIntegral*/) {
 #else
   void assign(const value_type *__first2, const value_type *__last2) {
     iterator __first1 = begin();
@@ -728,7 +760,7 @@ operator==(const list<_Tp,_Alloc>& __x, const list<_Tp,_Alloc>& __y) {
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
 struct __move_traits<list<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 #endif

@@ -94,7 +94,7 @@ typedef _STLP_PRIV _Pthread_alloc __pthread_alloc;
 typedef __pthread_alloc pthread_alloc;
 
 template <class _Tp>
-class pthread_allocator : public __stlport_class<pthread_allocator<_Tp> > {
+class pthread_allocator /* : public __stlport_class<pthread_allocator<_Tp> > */ {
   typedef pthread_alloc _S_Alloc;          // The underlying allocator.
 public:
   typedef size_t     size_type;
@@ -236,36 +236,37 @@ __stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*)
 
 #endif
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-template <class _Tp>
-struct __pthread_alloc_type_traits {
-  typedef typename _IsSTLportClass<pthread_allocator<_Tp> >::_Ret _STLportAlloc;
-  //The default allocator implementation which is recognize thanks to the
-  //__stlport_class inheritance is a stateless object so:
-  typedef _STLportAlloc has_trivial_default_constructor;
-  typedef _STLportAlloc has_trivial_copy_constructor;
-  typedef _STLportAlloc has_trivial_assignment_operator;
-  typedef _STLportAlloc has_trivial_destructor;
-  typedef _STLportAlloc is_POD_type;
-};
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp>
-struct __type_traits<pthread_allocator<_Tp> > : _STLP_PRIV __pthread_alloc_type_traits<_Tp> {};
-#else
-_STLP_TEMPLATE_NULL
-struct __type_traits<pthread_allocator<char> > : _STLP_PRIV __pthread_alloc_type_traits<char> {};
-#  if defined (_STLP_HAS_WCHAR_T)
-_STLP_TEMPLATE_NULL
-struct __type_traits<pthread_allocator<wchar_t> > : _STLP_PRIV __pthread_alloc_type_traits<wchar_t> {};
-#  endif
-#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-_STLP_TEMPLATE_NULL
-struct __type_traits<pthread_allocator<void*> > : _STLP_PRIV __pthread_alloc_type_traits<void*> {};
-#  endif
+struct has_trivial_constructor<pthread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_copy<pthread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_assign<pthread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_destructor<pthread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct is_pod<pthread_allocator<_Tp> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif
 
 //
@@ -419,38 +420,28 @@ __stl_alloc_create(per_thread_allocator<_Tp1>&, const _Tp2*)
 
 #endif /* _STLP_DONT_SUPPORT_REBIND_MEMBER_TEMPLATE */
 
-_STLP_MOVE_TO_PRIV_NAMESPACE
-
-template <class _Tp>
-struct __perthread_alloc_type_traits {
-  typedef typename _IsSTLportClass<per_thread_allocator<_Tp> >::_Ret _STLportAlloc;
-  //The default allocator implementation which is recognize thanks to the
-  //__stlport_class inheritance is a stateless object so:
-  typedef __false_type has_trivial_default_constructor;
-  typedef _STLportAlloc has_trivial_copy_constructor;
-  typedef _STLportAlloc has_trivial_assignment_operator;
-  typedef _STLportAlloc has_trivial_destructor;
-  typedef __false_type is_POD_type;
-};
-
-_STLP_MOVE_TO_STD_NAMESPACE
-
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-template <class _Tp>
-struct __type_traits<per_thread_allocator<_Tp> > : _STLP_PRIV __perthread_alloc_type_traits<_Tp> {};
-#else
-_STLP_TEMPLATE_NULL
-struct __type_traits<per_thread_allocator<char> > : _STLP_PRIV __perthread_alloc_type_traits<char> {};
-#  if defined (_STLP_HAS_WCHAR_T)
-_STLP_TEMPLATE_NULL
-struct __type_traits<per_thread_allocator<wchar_t> > : _STLP_PRIV __perthread_alloc_type_traits<wchar_t> {};
-#  endif
-#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-_STLP_TEMPLATE_NULL
-struct __type_traits<per_thread_allocator<void*> > : _STLP_PRIV __perthread_alloc_type_traits<void*> {};
-#  endif
-#endif
 
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp>
+struct has_trivial_copy<per_thread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_assign<per_thread_allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_destructor<per_thread_allocator<_Tp> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#endif
 
 _STLP_END_NAMESPACE
 

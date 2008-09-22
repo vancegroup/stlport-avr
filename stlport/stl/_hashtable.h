@@ -154,14 +154,35 @@ struct _Ht_iterator {
 _STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _BaseIte, class _Traits>
-struct __type_traits<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > {
-  typedef __false_type   has_trivial_default_constructor;
-  typedef __true_type    has_trivial_copy_constructor;
-  typedef __true_type    has_trivial_assignment_operator;
-  typedef __true_type    has_trivial_destructor;
-  typedef __false_type   is_POD_type;
-};
+struct has_trivial_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+    public false_type
+{ };
+
+template <class _BaseIte, class _Traits>
+struct has_trivial_copy<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+    public true_type
+{ };
+
+template <class _BaseIte, class _Traits>
+struct has_trivial_assign<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+    public true_type
+{ };
+
+template <class _BaseIte, class _Traits>
+struct has_trivial_destructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+    public true_type
+{ };
+
+template <class _BaseIte, class _Traits>
+struct is_pod<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
@@ -339,13 +360,13 @@ public:
   { _M_copy_from(__ht); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  hashtable(__move_source<_Self> src)
-    : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
-      _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
-      _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
-      _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
-      _M_num_elements(src.get()._M_num_elements),
-      _M_max_load_factor(src.get()._M_max_load_factor) {}
+//  hashtable(__move_source<_Self> src)
+//    : _M_hash(_STLP_PRIV _AsMoveSource(src.get()._M_hash)),
+//      _M_equals(_STLP_PRIV _AsMoveSource(src.get()._M_equals)),
+//      _M_elems(__move_source<_ElemsCont>(src.get()._M_elems)),
+//      _M_buckets(__move_source<_BucketVector>(src.get()._M_buckets)),
+//      _M_num_elements(src.get()._M_num_elements),
+//      _M_max_load_factor(src.get()._M_max_load_factor) {}
 #endif
 
   _Self& operator= (const _Self& __ht) {
@@ -642,10 +663,10 @@ _STLP_BEGIN_NAMESPACE
 template <class _Val, class _Key, class _HF, class _Traits, class _ExK, class _EqK, class _All>
 struct __move_traits<hashtable<_Val, _Key, _HF, _Traits, _ExK, _EqK, _All> > {
   //Hashtables are movable:
-  typedef __true_type implemented;
+  typedef true_type implemented;
 
   //Completeness depends on many template parameters, for the moment we consider it not complete:
-  typedef __false_type complete;
+  typedef false_type complete;
 };
 #endif
 

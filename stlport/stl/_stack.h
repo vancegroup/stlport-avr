@@ -75,8 +75,8 @@ public:
   explicit stack(const _Sequence& __s) : c(__s) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  stack(__move_source<_Self> src)
-    : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
+  // stack(__move_source<_Self> src)
+  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
 #endif
 
   bool empty() const { return c.empty(); }

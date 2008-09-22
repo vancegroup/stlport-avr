@@ -393,14 +393,14 @@ rope<_CharT,_Alloc>::_S_leaf_concat_char_iter (
 
 template <class _CharT, class _Alloc>
 void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
-                         size_t __size, const __true_type& /*basic char type*/) {
+                         size_t __size, const true_type& /*basic char type*/) {
   _S_construct_null(__r->_M_data + __size);
   _STLP_ASSERT(__r->_M_c_string == __r->_M_data)
 }
 
 template <class _CharT, class _Alloc>
 void _Terminate_RopeLeaf(_Rope_RopeLeaf<_CharT,_Alloc> *__r,
-                         size_t, const __false_type& /*basic char type*/) {
+                         size_t, const false_type& /*basic char type*/) {
   if (__r->_M_c_string != __r->_M_data && 0 != __r->_M_c_string) {
     __r->_M_free_c_string();
     __r->_M_c_string = 0;
@@ -849,7 +849,7 @@ inline void _Rope_fill(basic_ostream<_CharT, _Traits>& __o, streamsize __n) {
 
 template<class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
-                                          const rope<_CharT, _Alloc>& __r, const __true_type& /*_IsBasicCharType*/) {
+                                          const rope<_CharT, _Alloc>& __r, const true_type& /*_IsBasicCharType*/) {
   streamsize __w = __o.width();
   const bool __left = (__o.flags() & ios::left) != 0;
   size_t __rope_len = __r.size();
@@ -871,7 +871,7 @@ basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
 
 template<class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
-                                         const rope<_CharT, _Alloc>& __r, const __false_type& /*_IsBasicCharType*/) {
+                                         const rope<_CharT, _Alloc>& __r, const false_type& /*_IsBasicCharType*/) {
   streamsize __w = __o.width();
   size_t __rope_len = __r.size();
   _Rope_insert_char_consumer<_CharT, _Traits> __c(__o);
@@ -888,7 +888,7 @@ basic_ostream<_CharT, _Traits>& _S_io_get(basic_ostream<_CharT, _Traits>& __o,
 template<class _CharT, class _Traits, class _Alloc>
 basic_ostream<_CharT, _Traits>& operator<<(basic_ostream<_CharT, _Traits>& __o,
                                            const rope<_CharT, _Alloc>& __r) {
-  typedef typename _IsIntegral<_CharT>::_Ret _Char_Is_Integral;
+  typedef typename is_integral<_CharT>::type _Char_Is_Integral;
   return _S_io_get(__o, __r, _Char_Is_Integral());
 }
 #endif /* NO_IOSTREAMS */

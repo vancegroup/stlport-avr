@@ -74,14 +74,6 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #endif
 };
 
-#if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
-#  define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_STD::iterator_category(_It)
-#  define _STLP_DISTANCE_TYPE(_It, _Tp)     _STLP_STD::distance_type(_It)
-#  define _STLP_VALUE_TYPE(_It, _Tp)        _STLP_STD::value_type(_It)
-//Old HP iterator queries do not give information about the iterator
-//associated reference type so we consider that it is not a real reference.
-#  define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) __false_type()
-#else
 #  if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #    define _STLP_VALUE_TYPE(_It, _Tp)        (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::value_type*)0
 #    define _STLP_DISTANCE_TYPE(_It, _Tp)     (_STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::difference_type*)0
@@ -91,14 +83,13 @@ struct iterator<output_iterator_tag, void, void, void, void> {
 #    else
 #      define _STLP_ITERATOR_CATEGORY(_It, _Tp) _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::iterator_category()
 #    endif
-#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::_IsRefType< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
+// #    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) _STLP_STD::is_reference< _STLP_TYPENAME _STLP_STD::iterator_traits< _Tp >::reference >::_Ret()
 #  else
-#    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::_IsPtrType<_Tp>::_Ret())
-#    define _STLP_DISTANCE_TYPE(_It, _Tp)       _STLP_STD::__distance_type(_It, _STLP_STD::_IsPtrType<_Tp>::_Ret())
-#    define _STLP_VALUE_TYPE(_It, _Tp)          _STLP_STD::__value_type(_It, _STLP_STD::_IsPtrType<_Tp>::_Ret())
-#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) __false_type()
+#    define _STLP_ITERATOR_CATEGORY(_It, _Tp)   _STLP_STD::__iterator_category(_It, _STLP_STD::is_pointer<_Tp>::type())
+#    define _STLP_DISTANCE_TYPE(_It, _Tp)       _STLP_STD::__distance_type(_It, _STLP_STD::is_pointer<_Tp>::type())
+#    define _STLP_VALUE_TYPE(_It, _Tp)          _STLP_STD::__value_type(_It, _STLP_STD::is_pointer<_Tp>::type())
+#    define _STLP_IS_REF_TYPE_REAL_REF(_It, _Tp) false_type()
 #  endif
-#endif
 
 #if defined (_STLP_DONT_REDEFINE_STD) && defined (_STLP_WHOLE_NATIVE_STD)
 /* In this mode we will see both STLport implementation and native
@@ -208,36 +199,36 @@ _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
 inline _STLP_STD::random_access_iterator_tag
-__iterator_category(const _Tp*, const __true_type&)
+__iterator_category(const _Tp*, const true_type&)
 { return _STLP_STD::random_access_iterator_tag(); }
 
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::iterator_category
-__iterator_category(const _Iter&, const __false_type&) {
+__iterator_category(const _Iter&, const false_type&) {
   typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::iterator_category _Category;
   return _Category();
 }
 
 template <class _Tp>
 inline ptrdiff_t*
-__distance_type(const _Tp*, const __true_type&)
+__distance_type(const _Tp*, const true_type&)
 { return __STATIC_CAST(ptrdiff_t*, 0); }
 
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::difference_type*
-__distance_type(const _Iter&, const __false_type&) {
+__distance_type(const _Iter&, const false_type&) {
   typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::difference_type _diff_type;
   return __STATIC_CAST(_diff_type*,0);
 }
 
 template <class _Tp>
 inline _Tp*
-__value_type(const _Tp*, const __true_type&)
+__value_type(const _Tp*, const true_type&)
 { return __STATIC_CAST(_Tp*, 0); }
 
 template <class _Iter>
 inline _STLP_TYPENAME_ON_RETURN_TYPE _STLP_STD::iterator_traits<_Iter>::value_type*
-__value_type(const _Iter&, const __false_type&) {
+__value_type(const _Iter&, const false_type&) {
   typedef _STLP_TYPENAME _STLP_STD::iterator_traits<_Iter>::value_type _value_type;
   return __STATIC_CAST(_value_type*,0);
 }

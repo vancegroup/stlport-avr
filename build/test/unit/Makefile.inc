@@ -156,7 +156,6 @@ SRC_CPP = ../../../test/unit/cppunit/test_main.cpp \
 	../../../test/unit/swap_test.cpp \
 	../../../test/unit/times_test.cpp \
 	../../../test/unit/transform_test.cpp \
-	../../../test/unit/type_traits_test.cpp \
 	../../../test/unit/typeinfo_header_test.cpp \
 	../../../test/unit/unary_test.cpp \
 	../../../test/unit/uninitialized_test.cpp \

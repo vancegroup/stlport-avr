@@ -271,7 +271,7 @@ class allocator //: public _AllocatorAux<_Tp>
 /* A small helper struct to recognize STLport allocator implementation
  * from any user specialization one.
  */
-                : public __stlport_class<allocator<_Tp> >
+                // : public __stlport_class<allocator<_Tp> >
 {
 public:
   typedef _Tp        value_type;
@@ -292,7 +292,7 @@ public:
 #endif
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
+  // allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
 #endif
   ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) const {return &__x;}
@@ -396,39 +396,39 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
-template <class _Tp>
-struct __alloc_type_traits {
-#if !defined (__BORLANDC__)
-  typedef typename _IsSTLportClass<allocator<_Tp> >::_Ret _STLportAlloc;
-#else
-  enum { _Is = _IsSTLportClass<allocator<_Tp> >::_Is };
-  typedef typename __bool2type<_Is>::_Ret _STLportAlloc;
-#endif
-  //The default allocator implementation which is recognize thanks to the
-  //__stlport_class inheritance is a stateless object so:
-  typedef _STLportAlloc has_trivial_default_constructor;
-  typedef _STLportAlloc has_trivial_copy_constructor;
-  typedef _STLportAlloc has_trivial_assignment_operator;
-  typedef _STLportAlloc has_trivial_destructor;
-  typedef _STLportAlloc is_POD_type;
-};
-
 _STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp>
-struct __type_traits<allocator<_Tp> > : _STLP_PRIV __alloc_type_traits<_Tp> {};
-#else
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<char> > : _STLP_PRIV __alloc_type_traits<char> {};
-#  if defined (_STLP_HAS_WCHAR_T)
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<wchar_t> > : _STLP_PRIV __alloc_type_traits<wchar_t> {};
-#  endif
-#  if defined (_STLP_USE_PTR_SPECIALIZATIONS)
-_STLP_TEMPLATE_NULL
-struct __type_traits<allocator<void*> > : _STLP_PRIV __alloc_type_traits<void*> {};
-#  endif
+struct has_trivial_constructor<allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_copy<allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_assign<allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_destructor<allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct is_pod<allocator<_Tp> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif
 
 
@@ -482,8 +482,8 @@ public:
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   _STLP_alloc_proxy (__move_source<_Self> src) :
-    _Base(_STLP_PRIV _AsMoveSource(src.get()._M_base())),
-    _M_data(_STLP_PRIV _AsMoveSource(src.get()._M_data)) {}
+    _Base(src.get()._M_base()),
+    _M_data(src.get()._M_data) {}
 
   _Base& _M_base()
   { return *this; }
@@ -494,10 +494,10 @@ private:
    * swap in this case. For some compilers (VC6) it is a workaround for a
    * compiler bug in the Empty Base class Optimization feature, for others
    * it is a small optimization or nothing if no EBO. */
-  void _M_swap_alloc(_Self&, const __true_type& /*_IsStateless*/)
+  void _M_swap_alloc(_Self&, const true_type& /*_IsStateless*/)
   {}
 
-  void _M_swap_alloc(_Self& __x, const __false_type& /*_IsStateless*/) {
+  void _M_swap_alloc(_Self& __x, const false_type& /*_IsStateless*/) {
     _MaybeReboundAlloc &__base_this = *this;
     _MaybeReboundAlloc &__base_x = __x;
     _STLP_STD::swap(__base_this, __base_x);
@@ -506,11 +506,11 @@ private:
 public:
   void _M_swap_alloc(_Self& __x) {
 #if !defined (__BORLANDC__)
-    typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
+    // typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
 #else
     typedef typename __bool2type<_IsStateless<_MaybeReboundAlloc>::_Is>::_Ret _StatelessAlloc;
 #endif
-    _M_swap_alloc(__x, _StatelessAlloc());
+    _M_swap_alloc(__x, /* _StatelessAlloc() */ true_type() );
   }
 
   /* We need to define the following swap implementation for allocator with state
@@ -524,11 +524,11 @@ public:
 
   _Tp* allocate(size_type __n, size_type& __allocated_n) {
 #if !defined (__BORLANDC__)
-    typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
+    // typedef typename _IsSTLportClass<_MaybeReboundAlloc>::_Ret _STLportAlloc;
 #else
-    typedef typename __bool2type<_IsSTLportClass<_MaybeReboundAlloc>::_Is>::_Ret _STLportAlloc;
+    // typedef typename __bool2type<_IsSTLportClass<_MaybeReboundAlloc>::_Is>::_Ret _STLportAlloc;
 #endif
-    return allocate(__n, __allocated_n, _STLportAlloc());
+    return allocate(__n, __allocated_n, /* _STLportAlloc() */ false_type() );
   }
 
   // Unified interface to perform allocate()/deallocate() with limited
@@ -540,18 +540,18 @@ public:
   void deallocate(_Tp* __p, size_type __n)
   { __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0)).deallocate(__p, __n); }
 private:
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const __true_type& /*STLport allocator*/)
+  _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
   { return __stl_alloc_rebind(__STATIC_CAST(_Base&, *this), __STATIC_CAST(_Tp*, 0))._M_allocate(__n, __allocated_n); }
 #else
   //Expose Standard allocate overload (using expression do not work for some compilers (Borland))
   _Tp* allocate(size_type __n)
   { return _Base::allocate(__n); }
 private:
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const __true_type& /*STLport allocator*/)
+  _Tp* allocate(size_type __n, size_type& __allocated_n, const true_type& /*STLport allocator*/)
   { return _Base::_M_allocate(__n, __allocated_n); }
 #endif
 
-  _Tp* allocate(size_type __n, size_type& __allocated_n, const __false_type& /*STLport allocator*/)
+  _Tp* allocate(size_type __n, size_type& __allocated_n, const false_type& /*STLport allocator*/)
   { __allocated_n = __n; return allocate(__n); }
 };
 

@@ -73,13 +73,13 @@ struct _Not_within_traits : public unary_function<typename _Traits::char_type, b
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_of_aux(_InputIter __first1, _InputIter __last1,
                                           const _CharT* __first2, const _CharT* __last2,
-                                          _Traits*, const __true_type& /* _STLportTraits */)
+                                          _Traits*, const true_type& /* _STLportTraits */)
 { return __find_first_of(__first1, __last1, __first2, __last2); }
 
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_of_aux(_InputIter __first1, _InputIter __last1,
                                           const _CharT* __first2, const _CharT* __last2,
-                                          _Traits*, const __false_type& /* _STLportTraits */)
+                                          _Traits*, const false_type& /* _STLportTraits */)
 { return __find_first_of(__first1, __last1, __first2, __last2, _STLP_PRIV _Eq_traits<_Traits>()); }
 
 template <class _InputIter, class _CharT, class _Traits>
@@ -87,47 +87,45 @@ inline _InputIter __str_find_first_of(_InputIter __first1, _InputIter __last1,
                                       const _CharT* __first2, const _CharT* __last2,
                                       _Traits* __traits) {
 #if !defined (__BORLANDC__)
-  typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
+  // typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
 #else
-  enum { _Is = _IsSTLportClass<_Traits>::_Is };
-  typedef typename __bool2type<_Is>::_Ret _STLportTraits;
+  // enum { _Is = _IsSTLportClass<_Traits>::_Is };
+  // typedef typename __bool2type<_Is>::_Ret _STLportTraits;
 #endif
-  return __str_find_first_of_aux(__first1, __last1, __first2, __last2, __traits, _STLportTraits());
+  return __str_find_first_of_aux(__first1, __last1, __first2, __last2, __traits, true_type() /* _STLportTraits() */ );
 }
 
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Traits* /* __traits */, const __true_type& __useStrcspnLikeAlgo)
+                                               _Traits* /* __traits */, const true_type& __useStrcspnLikeAlgo)
 { return __find_first_of_aux2(__first1, __last1, __first2, __last2, __first2, not1(_Identity<bool>()), __useStrcspnLikeAlgo); }
 
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux3(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Traits* /* __traits */, const __false_type& /* _UseStrcspnLikeAlgo */)
+                                               _Traits* /* __traits */, const false_type& /* _UseStrcspnLikeAlgo */)
 { return _STLP_STD::find_if(__first1, __last1, _STLP_PRIV _Not_within_traits<_Traits>(__first2, __last2)); }
 
 template <class _InputIter, class _CharT, class _Tp, class _Traits>
 inline _InputIter __str_find_first_not_of_aux2(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
                                                _Tp* __pt, _Traits* __traits) {
-  typedef typename _IsIntegral<_Tp>::_Ret _IsIntegral;
-  typedef typename _IsCharLikeType<_CharT>::_Ret _IsCharLike;
-  typedef typename _Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
+  typedef typename integral_constant<bool, is_integral<_Tp>::value && _STLP_PRIV is_char<_CharT>::value>::type _UseStrcspnLikeAlgo;
   return __str_find_first_not_of_aux3(__first1, __last1, __first2, __last2, __traits, _UseStrcspnLikeAlgo());
 }
 
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux1(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Traits* __traits, const __true_type& /* _STLportTraits */)
+                                               _Traits* __traits, const true_type& /* _STLportTraits */)
 { return __str_find_first_not_of_aux2(__first1, __last1, __first2, __last2,
                                       _STLP_VALUE_TYPE(__first1, _InputIter), __traits); }
 
 template <class _InputIter, class _CharT, class _Traits>
 inline _InputIter __str_find_first_not_of_aux1(_InputIter __first1, _InputIter __last1,
                                                const _CharT* __first2, const _CharT* __last2,
-                                               _Traits*, const __false_type& /* _STLportTraits */)
+                                               _Traits*, const false_type& /* _STLportTraits */)
 { return _STLP_STD::find_if(__first1, __last1, _STLP_PRIV _Not_within_traits<_Traits>(__first2, __last2)); }
 
 template <class _InputIter, class _CharT, class _Traits>
@@ -135,12 +133,12 @@ inline _InputIter __str_find_first_not_of(_InputIter __first1, _InputIter __last
                                           const _CharT* __first2, const _CharT* __last2,
                                           _Traits* __traits) {
 #if !defined (__BORLANDC__)
-  typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
+  // typedef typename _IsSTLportClass<_Traits>::_Ret _STLportTraits;
 #else
-  enum { _Is = _IsSTLportClass<_Traits>::_Is };
-  typedef typename __bool2type<_Is>::_Ret _STLportTraits;
+  // enum { _Is = _IsSTLportClass<_Traits>::_Is };
+  // typedef typename __bool2type<_Is>::_Ret _STLportTraits;
 #endif
-  return __str_find_first_not_of_aux1(__first1, __last1, __first2, __last2, __traits, _STLportTraits());
+  return __str_find_first_not_of_aux1(__first1, __last1, __first2, __last2, __traits, true_type() /* _STLportTraits() */ );
 }
 
 // ------------------------------------------------------------

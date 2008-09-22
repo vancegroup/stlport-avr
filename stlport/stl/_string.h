@@ -261,14 +261,14 @@ public:                         // Constructor, destructor, assignment.
   basic_string(_InputIterator __f, _InputIterator __l,
                const allocator_type & __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(__a) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
   template <class _InputIterator>
   basic_string(_InputIterator __f, _InputIterator __l)
     : _STLP_PRIV _String_base<_CharT,_Alloc>(allocator_type()) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__f, __l, _Integral());
   }
 #  endif
@@ -332,14 +332,14 @@ _STLP_PRIVATE:
   }
 
   template <class _Integer>
-  void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/) {
+  void _M_initialize_dispatch(_Integer __n, _Integer __x, const true_type& /*_Integral*/) {
     this->_M_allocate_block(__n + 1);
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_Start(), __n, __x);
     this->_M_terminate_string();
   }
 
   template <class _InputIter>
-  void _M_initialize_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/) {
+  void _M_initialize_dispatch(_InputIter __f, _InputIter __l, const false_type& /*_Integral*/) {
     _M_range_initializeT(__f, __l);
   }
 
@@ -489,11 +489,11 @@ private:
   }
 
   template <class _Integer>
-  _Self& _M_append_dispatch(_Integer __n, _Integer __x, const __true_type& /*Integral*/)
+  _Self& _M_append_dispatch(_Integer __n, _Integer __x, const true_type& /*Integral*/)
   { return append((size_type) __n, (_CharT) __x); }
 
   template <class _InputIter>
-  _Self& _M_append_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*Integral*/)
+  _Self& _M_append_dispatch(_InputIter __f, _InputIter __l, const false_type& /*Integral*/)
   { return _M_appendT(__f, __l, _STLP_ITERATOR_CATEGORY(__f, _InputIter)); }
 
 public:
@@ -501,7 +501,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   _Self& append(_InputIter __first, _InputIter __last) {
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
+    typedef typename is_integral<_InputIter>::type _Integral;
     return _M_append_dispatch(__first, __last, _Integral());
   }
 #else
@@ -570,11 +570,11 @@ private:
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   // Helper functions for assign.
   template <class _Integer>
-  _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const __true_type& /*_Integral*/)
+  _Self& _M_assign_dispatch(_Integer __n, _Integer __x, const true_type& /*_Integral*/)
   { return assign((size_type) __n, (_CharT) __x); }
 
   template <class _InputIter>
-  _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const __false_type& /*_Integral*/) {
+  _Self& _M_assign_dispatch(_InputIter __f, _InputIter __l, const false_type& /*_Integral*/) {
     pointer __cur = this->_M_Start();
     while (__f != __l && __cur != this->_M_Finish()) {
       _Traits::assign(*__cur, *__f);
@@ -593,7 +593,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   _Self& assign(_InputIter __first, _InputIter __last) {
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
+    typedef typename is_integral<_InputIter>::type _Integral;
     return _M_assign_dispatch(__first, __last, _Integral());
   }
 #else
@@ -739,12 +739,12 @@ _STLP_PRIVATE:  // Helper functions for insert.
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __p, _Integer __n, _Integer __x,
-                          const __true_type& /*Integral*/)
+                          const true_type& /*Integral*/)
   { insert(__p, (size_type) __n, (_CharT) __x); }
 
   template <class _InputIter>
   void _M_insert_dispatch(iterator __p, _InputIter __first, _InputIter __last,
-                          const __false_type& /*Integral*/) {
+                          const false_type& /*Integral*/) {
     _STLP_FIX_LITERAL_BUG(__p)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
     const _Self __self(__first, __last, get_allocator());
@@ -770,7 +770,7 @@ public:
   // it can't be an iterator.
   template <class _InputIter>
   void insert(iterator __p, _InputIter __first, _InputIter __last) {
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
+    typedef typename is_integral<_InputIter>::type _Integral;
     _M_insert_dispatch(__p, __first, __last, _Integral());
   }
 #  endif
@@ -892,14 +892,14 @@ _STLP_PRIVATE:                        // Helper functions for replace.
 #if defined (_STLP_MEMBER_TEMPLATES) && !defined (_STLP_USE_MSVC6_MEM_T_BUG_WORKAROUND)
   template <class _Integer>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
-                             _Integer __n, _Integer __x, const __true_type& /*IsIntegral*/) {
+                             _Integer __n, _Integer __x, const true_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     return replace(__first, __last, (size_type) __n, (_CharT) __x);
   }
 
   template <class _InputIter>
   _Self& _M_replace_dispatch(iterator __first, iterator __last,
-                             _InputIter __f, _InputIter __l, const __false_type& /*IsIntegral*/) {
+                             _InputIter __f, _InputIter __l, const false_type& /*IsIntegral*/) {
     _STLP_FIX_LITERAL_BUG(__first) _STLP_FIX_LITERAL_BUG(__last)
     /* We are forced to do a temporary string to avoid the self referencing issue. */
     const _Self __self(__f, __l, get_allocator());
@@ -913,7 +913,7 @@ public:
   _Self& replace(iterator __first, iterator __last,
                  _InputIter __f, _InputIter __l) {
     _STLP_FIX_LITERAL_BUG(__first)_STLP_FIX_LITERAL_BUG(__last)
-    typedef typename _IsIntegral<_InputIter>::_Ret _Integral;
+    typedef typename is_integral<_InputIter>::type _Integral;
     return _M_replace_dispatch(__first, __last, __f, __l,  _Integral());
   }
 #endif
@@ -1134,7 +1134,7 @@ inline void _STLP_CALL swap(wstring& __x, wstring& __y)
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _CharT, class _Traits, class _Alloc>
 struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
-  typedef __true_type implemented;
+  typedef true_type implemented;
   //Completness depends on the allocator:
   typedef typename __move_traits<_Alloc>::complete complete;
 };

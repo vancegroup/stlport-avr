@@ -30,9 +30,11 @@
 #ifndef _STLP_INTERNAL_FUNCTION_BASE_H
 #define _STLP_INTERNAL_FUNCTION_BASE_H
 
-#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_TYPE_TRAITS_H)
-#  include <stl/type_traits.h>
-#endif
+// #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_TYPE_TRAITS_H)
+// #  include <stl/type_traits.h>
+// #endif
+
+#include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -73,7 +75,7 @@ struct less : public binary_function<_Tp,_Tp,bool>
  * the move constructor feature we need to know that the default less is just a
  * functor.
  */
-              , public __stlport_class<less<_Tp> >
+              // , public __stlport_class<less<_Tp> >
 #endif
 {
   bool operator()(const _Tp& __x, const _Tp& __y) const { return __x < __y; }
@@ -84,20 +86,36 @@ struct less : public binary_function<_Tp,_Tp,bool>
 };
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp>
-struct __type_traits<less<_Tp> > {
-#if !defined (__BORLANDC__)
-  typedef typename _IsSTLportClass<less<_Tp> >::_Ret _STLportLess;
-#else
-  enum { _Is = _IsSTLportClass<less<_Tp> >::_Is };
-  typedef typename __bool2type<_Is>::_Ret _STLportLess;
-#endif
-  typedef _STLportLess has_trivial_default_constructor;
-  typedef _STLportLess has_trivial_copy_constructor;
-  typedef _STLportLess has_trivial_assignment_operator;
-  typedef _STLportLess has_trivial_destructor;
-  typedef _STLportLess is_POD_type;
-};
+struct has_trivial_constructor<less<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_copy<less<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_assign<less<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct has_trivial_destructor<less<_Tp> > :
+    public true_type
+{ };
+
+template <class _Tp>
+struct is_pod<less<_Tp> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif
 
 _STLP_MOVE_TO_PRIV_NAMESPACE

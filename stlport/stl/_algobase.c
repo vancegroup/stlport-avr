@@ -268,20 +268,26 @@ _ForwardIter1 search(_ForwardIter1 __first1, _ForwardIter1 __last1,
 }
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
+
 template <class _Tp>
-struct _IsCharLikeType
-{ typedef __false_type _Ret; };
+struct is_char :
+    public false_type
+{ };
 
-_STLP_TEMPLATE_NULL struct _IsCharLikeType<char>
-{ typedef __true_type _Ret; };
+template <>
+struct is_char<char> :
+    public true_type
+{ };
 
-_STLP_TEMPLATE_NULL struct _IsCharLikeType<unsigned char>
-{ typedef __true_type _Ret; };
+template <>
+struct is_char<signed char> :
+    public true_type
+{ };
 
-#  ifndef _STLP_NO_SIGNED_BUILTINS
-_STLP_TEMPLATE_NULL struct _IsCharLikeType<signed char>
-{ typedef __true_type _Ret; };
-#  endif
+template <>
+struct is_char<unsigned char> :
+    public true_type
+{ };
 
 template <class _Tp1, class _Tp2>
 inline bool __stlp_eq(_Tp1 __val1, _Tp2 __val2)
@@ -297,7 +303,7 @@ template <class _InputIter, class _ForwardIter, class _Tp2, class _Predicate>
 inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
                                        _Tp2*, _Predicate __pred,
-                                       const __true_type& /* _UseStrcspnLikeAlgo */) {
+                                       const true_type& /* _UseStrcspnLikeAlgo */) {
   unsigned char __hints[(UCHAR_MAX + 1) / CHAR_BIT];
   memset(__hints, 0, sizeof(__hints) / sizeof(unsigned char));
   for (; __first2 != __last2; ++__first2) {
@@ -318,7 +324,7 @@ template <class _InputIter, class _ForwardIter, class _Tp2, class _Predicate>
 inline _InputIter __find_first_of_aux2(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
                                        _Tp2* /* __dummy */, _Predicate /* __pred */,
-                                       const __false_type& /* _UseStrcspnLikeAlgo */) {
+                                       const false_type& /* _UseStrcspnLikeAlgo */) {
   return _STLP_PRIV __find_first_of(__first1, __last1, __first2, __last2,
                                     _STLP_PRIV __equal_to(_STLP_VALUE_TYPE(__first1, _InputIter)));
 }
@@ -327,9 +333,7 @@ template <class _InputIter, class _ForwardIter, class _Tp1, class _Tp2>
 inline _InputIter __find_first_of_aux1(_InputIter __first1, _InputIter __last1,
                                        _ForwardIter __first2, _ForwardIter __last2,
                                        _Tp1* __pt1, _Tp2* __pt2) {
-  typedef _STLP_TYPENAME _STLP_STD::_IsIntegral<_Tp1>::_Ret _IsIntegral;
-  typedef _STLP_TYPENAME _STLP_PRIV _IsCharLikeType<_Tp2>::_Ret _IsCharLike;
-  typedef _STLP_TYPENAME _STLP_STD::_Land2<_IsIntegral, _IsCharLike>::_Ret _UseStrcspnLikeAlgo;
+  typedef _STLP_TYPENAME _STLP_STD::integral_constant<bool, is_integral<_Tp1>::value && _STLP_PRIV is_char<_Tp2>::value>::type _UseStrcspnLikeAlgo;
   return _STLP_PRIV __find_first_of_aux2(__first1, __last1,
                                          __first2, __last2,
                                          __pt2, _Identity<bool>(), _UseStrcspnLikeAlgo());

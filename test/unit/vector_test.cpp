@@ -415,14 +415,29 @@ struct PointEx : public Point {
 #  if defined (_STLP_USE_NAMESPACES)
 namespace std {
 #  endif
-  _STLP_TEMPLATE_NULL
-  struct __type_traits<PointEx> {
-    typedef __false_type has_trivial_default_constructor;
-    typedef __true_type has_trivial_copy_constructor;
-    typedef __true_type has_trivial_assignment_operator;
-    typedef __true_type has_trivial_destructor;
-    typedef __true_type is_POD_type;
-  };
+namespace tr1 {
+
+  template <>
+  struct has_trivial_constructor<PointEx> :
+        public false_type
+  { };
+
+  template <>
+  struct has_trivial_copy<PointEx> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_assign<PointEx> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_destructor<PointEx> :
+        public true_type
+  { };
+} // namespace tr1
+
 #  if defined (_STLP_USE_NAMESPACES)
 }
 #  endif

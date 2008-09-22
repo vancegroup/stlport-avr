@@ -59,9 +59,9 @@ template <class _Tp, class _Sequence>
 class queue
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND)
 #  if defined (_STLP_QUEUE_ARGS)
-            : public __stlport_class<queue<_Tp> >
+    //        : public __stlport_class<queue<_Tp> >
 #  else
-            : public __stlport_class<queue<_Tp, _Sequence> >
+    //        : public __stlport_class<queue<_Tp, _Sequence> >
 #  endif
 #endif
 {
@@ -87,8 +87,8 @@ public:
   explicit queue(const _Sequence& __c) : c(__c) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  queue(__move_source<_Self> src)
-    : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
+  // queue(__move_source<_Self> src)
+  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)) {}
 #endif
 
   bool empty() const { return c.empty(); }
@@ -174,9 +174,9 @@ public:
     { make_heap(c.begin(), c.end(), comp); }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  priority_queue(__move_source<_Self> src)
-    : c(_STLP_PRIV _AsMoveSource(src.get().c)),
-      comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
+  // priority_queue(__move_source<_Self> src)
+  //   : c(_STLP_PRIV _AsMoveSource(src.get().c)),
+  //     comp(_STLP_PRIV _AsMoveSource(src.get().comp)) {}
 #endif
 
 #ifdef _STLP_MEMBER_TEMPLATES

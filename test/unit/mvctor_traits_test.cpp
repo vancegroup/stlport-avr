@@ -19,8 +19,8 @@ namespace std {
 #  endif
   _STLP_TEMPLATE_NULL
   struct __move_traits<MovableStruct> {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
 #  if defined (_STLP_USE_NAMESPACES)
 }
@@ -67,8 +67,8 @@ namespace std {
 #  endif
   _STLP_TEMPLATE_NULL
   struct __move_traits<CompleteMovableStruct> {
-    typedef __true_type implemented;
-    typedef __true_type complete;
+    typedef true_type implemented;
+    typedef true_type complete;
   };
 #  if defined (_STLP_USE_NAMESPACES)
 }

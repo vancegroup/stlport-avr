@@ -17,9 +17,11 @@
 #ifndef _STLP_MOVE_CONSTRUCT_FWK_H
 #define _STLP_MOVE_CONSTRUCT_FWK_H
 
-#ifndef _STLP_TYPE_TRAITS_H
-#  include <stl/type_traits.h>
-#endif
+// #ifndef _STLP_TYPE_TRAITS_H
+// #  include <stl/type_traits.h>
+// #endif
+
+#include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -60,7 +62,7 @@ struct __move_traits {
    !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename _IsSTLportClass<_Tp>::_Ret implemented;
 #else
-  typedef __false_type implemented;
+  typedef false_type implemented;
 #endif
   /*
    * complete tells if the move is complete or partial, that is to say, does the source
@@ -70,7 +72,7 @@ struct __move_traits {
   typedef __type_traits<_Tp>::has_trivial_destructor _TpMoveComplete;
   typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
 #  else
-  typedef typename __type_traits<_Tp>::has_trivial_destructor complete;
+  typedef typename has_trivial_destructor<_Tp>::type complete;
 #  endif
 };
 
@@ -82,6 +84,7 @@ _STLP_MOVE_TO_PRIV_NAMESPACE
  * in such a case will be __invalid_source<_Tp> to generate a compile error
  * revealing the configuration problem.
  */
+#if 0
 template <class _Tp>
 struct _MoveSourceTraits {
   typedef typename __move_traits<_Tp>::implemented _MvImpRet;
@@ -102,6 +105,7 @@ _AsMoveSource (_Tp &src) {
   typedef typename _MoveSourceTraits<_Tp>::_Type _SrcType;
   return _SrcType(src);
 }
+#endif
 
 //Helper structs used for many class.
 template <class _Tp>
@@ -115,10 +119,12 @@ struct __move_traits_aux2 {
   typedef __move_traits<_Tp1> _MoveTraits1;
   typedef __move_traits<_Tp2> _MoveTraits2;
 
-  typedef typename _Lor2<typename _MoveTraits1::implemented,
-                         typename _MoveTraits2::implemented>::_Ret implemented;
-  typedef typename _Land2<typename _MoveTraits1::complete,
-                          typename _MoveTraits2::complete>::_Ret complete;
+  typedef typename integral_constant<bool, _MoveTraits1::implemented::value || _MoveTraits2::implemented::value>::type implemented;
+  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
+  // typedef typename _Lor2<typename _MoveTraits1::implemented,
+  //                        typename _MoveTraits2::implemented>::_Ret implemented;
+  // typedef typename _Land2<typename _MoveTraits1::complete,
+  //                         typename _MoveTraits2::complete>::_Ret complete;
 };
 
 /*
@@ -127,7 +133,7 @@ struct __move_traits_aux2 {
  */
 template <class _Tp>
 struct __move_traits_help {
-  typedef __true_type implemented;
+  typedef true_type implemented;
   typedef typename __move_traits<_Tp>::complete complete;
 };
 
@@ -136,10 +142,13 @@ struct __move_traits_help1 {
   typedef __move_traits<_Tp1> _MoveTraits1;
   typedef __move_traits<_Tp2> _MoveTraits2;
 
-  typedef typename _Lor2<typename _MoveTraits1::implemented,
-                         typename _MoveTraits2::implemented>::_Ret implemented;
-  typedef typename _Land2<typename _MoveTraits1::complete,
-                          typename _MoveTraits2::complete>::_Ret complete;
+  typedef typename integral_constant<bool, _MoveTraits1::implemented::value || _MoveTraits2::implemented::value>::type implemented;
+  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
+
+  // typedef typename _Lor2<typename _MoveTraits1::implemented,
+  //                        typename _MoveTraits2::implemented>::_Ret implemented;
+  // typedef typename _Land2<typename _MoveTraits1::complete,
+  //                         typename _MoveTraits2::complete>::_Ret complete;
 };
 
 template <class _Tp1, class _Tp2>
@@ -147,9 +156,11 @@ struct __move_traits_help2 {
   typedef __move_traits<_Tp1> _MoveTraits1;
   typedef __move_traits<_Tp2> _MoveTraits2;
 
-  typedef __true_type implemented;
-  typedef typename _Land2<typename _MoveTraits1::complete,
-                          typename _MoveTraits2::complete>::_Ret complete;
+  typedef true_type implemented;
+  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
+
+  // typedef typename _Land2<typename _MoveTraits1::complete,
+  //                         typename _MoveTraits2::complete>::_Ret complete;
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE

@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/07/20 19:10:15 ptr>
+// -*- C++ -*- Time-stamp: <08/09/04 12:22:17 ptr>
 
 /*
  * Copyright (c) 2007, 2008
@@ -9,11 +9,13 @@
  * Derived from original <misc/type_traits.h> of 'complement' project
  * [http://complement.sourceforge.net]
  * to make it close to JTC1/SC22/WG21 C++ 0x working draft
- * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2521.pdf]
+ * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2723.pdf]
  */
 
 #ifndef __STLP_TYPE_TRAITS
 #define __STLP_TYPE_TRAITS
+
+#include <cstddef>
 
 #ifndef _STLP_OUTERMOST_HEADER_ID
 #  define _STLP_OUTERMOST_HEADER_ID 0x3
@@ -441,7 +443,6 @@ struct is_volatile<_Tp volatile> :
     public true_type
 { };
 
-
 // 4.7.3 array modifications:
 
 template <class _Tp>
@@ -627,13 +628,25 @@ struct add_const
 {
     typedef _Tp const type;
 };
-   
+
+template <class _Tp>
+struct add_const<_Tp const>
+{
+    typedef _Tp const type;
+};
+ 
 template <class _Tp>
 struct add_volatile
 {
     typedef _Tp volatile type;
 };
-  
+
+template <class _Tp>
+struct add_volatile<_Tp volatile>
+{
+    typedef _Tp volatile type;
+};
+ 
 template <class _Tp>
 struct add_cv
 {
@@ -782,6 +795,8 @@ struct conditional<true,_Tp1,_Tp2>
 #undef __SPEC_2
 
 _STLP_END_NAMESPACE // tr1
+
+using namespace tr1;
 
 _STLP_END_NAMESPACE
 

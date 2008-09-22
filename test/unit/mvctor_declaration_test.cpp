@@ -33,29 +33,29 @@ using namespace std::tr1;
 
 #if defined (STLPORT) && !defined (_STLP_NO_MOVE_SEMANTIC)
 
-#  if defined (__GNUC__) && defined (_STLP_USE_NAMESPACES)
+//#  if defined (__GNUC__) && defined (_STLP_USE_NAMESPACES)
 // libstdc++ sometimes exposed its own __true_type in
 // global namespace resulting in an ambiguity.
-#    define __true_type std::__true_type
-#    define __false_type std::__false_type
-#  endif
+//#    define __true_type std::__true_type
+//#    define __false_type std::__false_type
+//#  endif
 
-static bool type_to_bool(__true_type)
-{ return true; }
-static bool type_to_bool(__false_type)
-{ return false; }
+//static bool type_to_bool(__true_type)
+//{ return true; }
+//static bool type_to_bool(__false_type)
+//{ return false; }
 
 template <class _Tp>
 static bool is_movable(const _Tp&) {
   typedef typename __move_traits<_Tp>::implemented _MovableTp;
-  return type_to_bool(_MovableTp());
+  return /* type_to_bool(_MovableTp()) */ _MovableTp::value;
 }
 
 template <class _Tp>
 static bool is_move_complete(const _Tp&) {
   typedef __move_traits<_Tp> _TpMoveTraits;
   typedef typename _TpMoveTraits::complete _TpMoveComplete;
-  return type_to_bool(_TpMoveComplete());
+  return /* type_to_bool(_TpMoveComplete()) */ _TpMoveComplete::value;
 }
 
 struct specially_allocated_struct {
@@ -120,38 +120,38 @@ namespace std {
 #      if defined (__BORLANDC__) && (__BORLANDC__ >= 0x564)
   _STLP_TEMPLATE_NULL
   struct __move_traits<vector<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<deque<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<list<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<slist<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<less<struct_with_specialized_less> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<set<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
   _STLP_TEMPLATE_NULL
   struct __move_traits<multiset<specially_allocated_struct> > {
-    typedef __true_type implemented;
-    typedef __false_type complete;
+    typedef true_type implemented;
+    typedef false_type complete;
   };
 #      endif
 #    endif

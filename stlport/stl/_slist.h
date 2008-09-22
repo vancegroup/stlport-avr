@@ -123,14 +123,26 @@ public:
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 _STLP_MOVE_TO_STD_NAMESPACE
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Tp, class _Traits>
-struct __type_traits<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > {
-  typedef __false_type   has_trivial_default_constructor;
-  typedef __true_type    has_trivial_copy_constructor;
-  typedef __true_type    has_trivial_assignment_operator;
-  typedef __true_type    has_trivial_destructor;
-  typedef __false_type   is_POD_type;
-};
+struct has_trivial_copy<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+template <class _Tp, class _Traits>
+struct has_trivial_assign<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+template <class _Tp, class _Traits>
+struct has_trivial_destructor<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
@@ -354,20 +366,20 @@ private:
 public:
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 
 private:
   template <class _Integer>
   void _M_assign_dispatch(_Integer __n, _Integer __val,
-                          const __true_type& /*_IsIntegral*/) {
+                          const true_type& /*_IsIntegral*/) {
     _M_fill_assign((size_type) __n, (_Tp) __val);
   }
 
   template <class _InputIter>
   void _M_assign_dispatch(_InputIter __first, _InputIter __last,
-                          const __false_type& /*_IsIntegral*/) {
+                          const false_type& /*_IsIntegral*/) {
 #else
 public:
   void assign(const_pointer __first, const_pointer __last) {
@@ -490,20 +502,20 @@ private:
   template <class _InIter>
   void _M_insert_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last) {
-    typedef typename _IsIntegral<_InIter>::_Ret _Integral;
+    typedef typename is_integral<_InIter>::type _Integral;
     _M_insert_after_range(__pos, __first, __last, _Integral());
   }
 
   template <class _Integer>
   void _M_insert_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                             const __true_type&) {
+                             const true_type&) {
     _M_insert_after_fill(__pos, __n, __x);
   }
 
   template <class _InIter>
   void _M_insert_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last,
-                             const __false_type&) {
+                             const false_type&) {
 #else /* _STLP_MEMBER_TEMPLATES */
   void _M_insert_after_range(_Node_base* __pos,
                              const value_type* __first,
@@ -527,20 +539,20 @@ private:
   template <class _InIter>
   void _M_splice_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last) {
-    typedef typename _IsIntegral<_InIter>::_Ret _Integral;
+    typedef typename is_integral<_InIter>::type _Integral;
     _M_splice_after_range(__pos, __first, __last, _Integral());
   }
 
   template <class _Integer>
   void _M_splice_after_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                             const __true_type&) {
+                             const true_type&) {
     _M_insert_after_fill(__pos, __n, __x);
   }
 
   template <class _InIter>
   void _M_splice_after_range(_Node_base* __pos,
                              _InIter __first, _InIter __last,
-                             const __false_type&) {
+                             const false_type&) {
 #else /* _STLP_MEMBER_TEMPLATES */
   void _M_splice_after_range(_Node_base* __pos,
                              const value_type* __first,
@@ -563,13 +575,13 @@ private:
   template <class _InIter>
   void _M_splice_range(_Node_base* __pos,
                        _InIter __first, _InIter __last) {
-    typedef typename _IsIntegral<_InIter>::_Ret _Integral;
+    typedef typename is_integral<_InIter>::type _Integral;
     _M_splice_range(__pos, __first, __last, _Integral());
   }
 
   template <class _Integer>
   void _M_splice_range(_Node_base* __pos, _Integer __n, _Integer __x,
-                       const __true_type&) {
+                       const true_type&) {
     _M_insert_after_fill(_STLP_PRIV _Sl_global_inst::__previous(&this->_M_head._M_data, __pos),
                          __n, __x);
   }
@@ -577,7 +589,7 @@ private:
   template <class _InIter>
   void _M_splice_range(_Node_base* __pos,
                        _InIter __first, _InIter __last,
-                       const __false_type&) {
+                       const false_type&) {
 #else /* _STLP_MEMBER_TEMPLATES */
   void _M_splice_range(_Node_base* __pos,
                        const value_type* __first,
@@ -864,7 +876,7 @@ operator == (const slist<_Tp,_Alloc>& _SL1, const slist<_Tp,_Alloc>& _SL2) {
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Tp, class _Alloc>
 struct __move_traits<slist<_Tp, _Alloc> > {
-  typedef __true_type implemented;
+  typedef true_type implemented;
   typedef typename __move_traits<_Alloc>::complete complete;
 };
 #  endif

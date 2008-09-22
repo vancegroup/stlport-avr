@@ -54,25 +54,52 @@ size_t TrivialInitStruct::nbConstructorCalls = 0;
 #  if defined (_STLP_USE_NAMESPACES)
 namespace std {
 #  endif
-  _STLP_TEMPLATE_NULL
-  struct __type_traits<TrivialCopyStruct> {
-     typedef __false_type has_trivial_default_constructor;
-     //This is a wrong declaration just to check that internaly a simple memcpy is called:
-     typedef __true_type has_trivial_copy_constructor;
-     typedef __true_type has_trivial_assignment_operator;
-     typedef __true_type has_trivial_destructor;
-     typedef __false_type is_POD_type;
-  };
+namespace tr1 {
 
-  _STLP_TEMPLATE_NULL
-  struct __type_traits<TrivialInitStruct> {
-     //This is a wrong declaration just to check that internaly no initialization is done:
-     typedef __true_type has_trivial_default_constructor;
-     typedef __true_type has_trivial_copy_constructor;
-     typedef __true_type has_trivial_assignment_operator;
-     typedef __true_type has_trivial_destructor;
-     typedef __false_type is_POD_type;
-  };
+  template <>
+  struct has_trivial_constructor<TrivialCopyStruct> :
+        public false_type
+  { };
+
+  //This is a wrong declaration just to check that internaly a simple memcpy is called:
+  template <>
+  struct has_trivial_copy<TrivialCopyStruct> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_assign<TrivialCopyStruct> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_destructor<TrivialCopyStruct> :
+        public true_type
+  { };
+
+  //This is a wrong declaration just to check that internaly no initialization is done:
+  template <>
+  struct has_trivial_constructor<TrivialInitStruct> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_copy<TrivialInitStruct> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_assign<TrivialInitStruct> :
+        public true_type
+  { };
+
+  template <>
+  struct has_trivial_destructor<TrivialInitStruct> :
+        public true_type
+  { };
+
+} // namespace tr1
+
 #  if defined (_STLP_USE_NAMESPACES)
 }
 #  endif

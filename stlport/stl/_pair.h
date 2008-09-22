@@ -32,14 +32,16 @@
 #define _STLP_INTERNAL_PAIR_H
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-#  ifndef _STLP_TYPE_TRAITS_H
-#    include <stl/type_traits.h>
-#  endif
+// #  ifndef _STLP_TYPE_TRAITS_H
+// #    include <stl/type_traits.h>
+// #  endif
 
 #  if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #    include <stl/_move_construct_fwk.h>
 #  endif
 #endif
+
+#include <type_traits>
 
 _STLP_BEGIN_NAMESPACE
 
@@ -65,9 +67,9 @@ struct pair {
 #endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
-  pair(__move_source<pair<_T1, _T2> > src) : first(_STLP_PRIV _AsMoveSource(src.get().first)),
-                                             second(_STLP_PRIV _AsMoveSource(src.get().second))
-  {}
+//  pair(__move_source<pair<_T1, _T2> > src) : first(_STLP_PRIV _AsMoveSource(src.get().first)),
+//                                             second(_STLP_PRIV _AsMoveSource(src.get().second))
+//  {}
 #endif
 
   __TRIVIAL_DESTRUCTOR(pair)
@@ -151,20 +153,29 @@ _STLP_END_RELOPS_NAMESPACE
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 _STLP_BEGIN_NAMESPACE
 
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _T1, class _T2>
-struct __type_traits<pair<_T1, _T2> > {
-  typedef __type_traits<_T1> _T1Traits;
-  typedef __type_traits<_T2> _T2Traits;
-  typedef typename _Land2<typename _T1Traits::has_trivial_default_constructor,
-                          typename _T2Traits::has_trivial_default_constructor>::_Ret has_trivial_default_constructor;
-  typedef typename _Land2<typename _T1Traits::has_trivial_copy_constructor,
-                          typename _T2Traits::has_trivial_copy_constructor>::_Ret has_trivial_copy_constructor;
-  typedef typename _Land2<typename _T1Traits::has_trivial_assignment_operator,
-                          typename _T2Traits::has_trivial_assignment_operator>::_Ret has_trivial_assignment_operator;
-  typedef typename _Land2<typename _T1Traits::has_trivial_destructor,
-                          typename _T2Traits::has_trivial_destructor>::_Ret has_trivial_destructor;
-  typedef __false_type is_POD_type;
-};
+struct has_trivial_constructor<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_constructor<_T1>::value && has_trivial_constructor<_T2>::value>
+{ };
+
+template <class _T1, class _T2>
+struct has_trivial_copy<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_copy<_T1>::value && has_trivial_copy<_T2>::value>
+{ };
+
+template <class _T1, class _T2>
+struct has_trivial_assign<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_assign<_T1>::value && has_trivial_assign<_T2>::value>
+{ };
+
+template <class _T1, class _T2>
+struct has_trivial_destructor<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_destructor<_T1>::value && has_trivial_destructor<_T2>::value>
+{ };
+
+_STLP_END_NAMESPACE
 
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _T1, class _T2>

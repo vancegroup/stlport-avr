@@ -99,8 +99,8 @@ template <class _RandomAccessIter, class _OutputIter>
 inline _OutputIter __ucopy(_RandomAccessIter __first, _RandomAccessIter __last, _OutputIter __result)
 { return __ucopy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0); }
 
-inline void*
-__ucopy_trivial(const void* __first, const void* __last, void* __result) {
+inline void* __ucopy_trivial( const void* __first, const void* __last, void* __result )
+{
   //dums: this version can use memcpy (__copy_trivial can't)
   return (__last == __first) ? __result :
     ((char*)memcpy(__result, __first, ((const char*)__last - (const char*)__first))) +
@@ -109,28 +109,35 @@ __ucopy_trivial(const void* __first, const void* __last, void* __result) {
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result,
-                                const __false_type& /*TrivialUCopy*/)
+                                const false_type& /*TrivialUCopy*/)
 { return __ucopy(__first, __last, __result, random_access_iterator_tag(), (ptrdiff_t*)0); }
 
 template <class _InputIter, class _OutputIter>
 inline _OutputIter __ucopy_ptrs(_InputIter __first, _InputIter __last, _OutputIter __result,
-                                const __true_type& /*TrivialUCopy*/) {
+                                const true_type& /*TrivialUCopy*/) {
   // we know they all pointers, so this cast is OK
   //  return (_OutputIter)__copy_trivial(&(*__first), &(*__last), &(*__result));
   return (_OutputIter)__ucopy_trivial(__first, __last, __result);
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const __true_type& /*BothPtrType*/) {
+inline _OutputIter __ucopy_aux( _InputIter __first, _InputIter __last,
+                                _OutputIter __result, const true_type& /*BothPtrType*/)
+{
+  typedef typename remove_pointer<_InputIter>::type _in_t;
+  typedef typename remove_pointer<_OutputIter>::type _out_t;
+
   return __ucopy_ptrs(__first, __last, __result,
-                      _UseTrivialUCopy(_STLP_VALUE_TYPE(__first, _InputIter),
-                                       _STLP_VALUE_TYPE(__result, _OutputIter))._Answer());
+                      integral_constant<bool,
+                      is_trivial<_in_t>::value &&
+                      is_trivial<_out_t>::value &&
+                      !is_volatile<_in_t>::value && !is_volatile<_out_t>::value>() );
 }
 
 template <class _InputIter, class _OutputIter>
-inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIter __result,
-                               const __false_type& /*BothPtrType*/) {
+inline _OutputIter __ucopy_aux( _InputIter __first, _InputIter __last,
+                                _OutputIter __result, const false_type& /*BothPtrType*/)
+{
   return __ucopy(__first, __last, __result,
                  _STLP_ITERATOR_CATEGORY(__first, _InputIter),
                  _STLP_DISTANCE_TYPE(__first, _InputIter));
@@ -139,9 +146,10 @@ inline _OutputIter __ucopy_aux(_InputIter __first, _InputIter __last, _OutputIte
 _STLP_MOVE_TO_STD_NAMESPACE
 
 template <class _InputIter, class _ForwardIter>
-inline _ForwardIter
-uninitialized_copy(_InputIter __first, _InputIter __last, _ForwardIter __result)
-{ return _STLP_PRIV __ucopy_aux(__first, __last, __result, _BothPtrType< _InputIter, _ForwardIter>::_Answer()); }
+inline _ForwardIter uninitialized_copy( _InputIter __first, _InputIter __last,
+                                        _ForwardIter __result )
+{ return _STLP_PRIV __ucopy_aux(__first, __last, __result,
+                                integral_constant<bool,is_pointer<_InputIter>::value && is_pointer<_ForwardIter>::value>() ); }
 
 inline char*
 uninitialized_copy(const char* __first, const char* __last, char* __result)
@@ -327,29 +335,31 @@ inline _ForwardIter __ufill_n(_ForwardIter __first, _Size __n, const _Tp& __x,
  */
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
-                                    const __false_type& /*_HasDefaultZero*/)
+                                    const false_type& /*_HasDefaultZero*/)
 { return __uninitialized_fill_n(__first, __n, __val); }
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uinit_aux_aux(_ForwardIter __first, _Size __n, const _Tp& /* __val */,
-                                    const __true_type& /*_HasDefaultZero*/) {
+                                    const true_type& /*_HasDefaultZero*/) {
   memset((unsigned char*)__first, 0, __n * sizeof(_Tp));
   return __first + __n;
 }
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp&,
-                                const __true_type& /*_TrivialInit*/)
+                                const true_type& /*_TrivialInit*/)
 { return __first + __n; }
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uinit_aux(_ForwardIter __first, _Size __n, const _Tp& __val,
-                                const __false_type& /*_TrivialInit*/)
-{ return __uinit_aux_aux(__first, __n, __val, _HasDefaultZeroValue(__first)._Answer()); }
+                                const false_type& /*_TrivialInit*/)
+{ return __uinit_aux_aux(__first, __n, __val, integral_constant<bool,is_trivial<_Tp>::value>() // <--- problem
+                         /* _HasDefaultZeroValue(__first)._Answer() */ ); }
 
 template <class _ForwardIter, class _Size, class _Tp>
 inline _ForwardIter __uninitialized_init(_ForwardIter __first, _Size __n, const _Tp& __val)
-{ return __uinit_aux(__first, __n, __val, _UseTrivialInit(__first)._Answer()); }
+{ return __uinit_aux(__first, __n, __val, integral_constant<bool,is_void<_Tp>::value || is_empty<_Tp>::value>() // <--- problem
+                     /* _UseTrivialInit(__first)._Answer() */ ); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 
@@ -416,14 +426,14 @@ __uninitialized_copy_fill(_Iter __first1, _Iter __last1, _Iter __first2, _Iter _
 template <class _InputIter, class _ForwardIter, class _TrivialUCpy>
 inline _ForwardIter
 __uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     _TrivialUCpy __trivial_ucpy, const __false_type& /*_Movable*/)
+                     _TrivialUCpy __trivial_ucpy, const false_type& /*_Movable*/)
 { return __ucopy_ptrs(__first, __last, __result, __trivial_ucpy); }
 
 template <class _InputIter, class _ForwardIter, class _TrivialUCpy>
 _STLP_INLINE_LOOP
 _ForwardIter
 __uninitialized_move(_InputIter __first, _InputIter __last, _ForwardIter __result,
-                     _TrivialUCpy , const __true_type& /*_Movable*/) {
+                     _TrivialUCpy , const true_type& /*_Movable*/) {
   //Move constructor should not throw so we do not need to take care of exceptions here.
   for (ptrdiff_t __n = __last - __first ; __n > 0; --__n) {
     _Move_Construct(&*__result, *__first);

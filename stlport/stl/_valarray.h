@@ -120,14 +120,14 @@ public:
   // Extension: constructor that doesn't initialize valarray elements to a
   // specific value.  This is faster for types such as int and double.
 private:
-  void _M_initialize(const __true_type&) {}
-  void _M_initialize(const __false_type&)
+  void _M_initialize(const true_type&) {}
+  void _M_initialize(const false_type&)
     { uninitialized_fill_n(this->_M_first, this->_M_size, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
 
 public:
   struct _NoInit {};
   valarray(size_t __n, _NoInit) : _Valarray_base<_Tp>(__n) {
-    typedef typename __type_traits<_Tp>::has_trivial_default_constructor _Is_Trivial;
+    typedef typename has_trivial_constructor<_Tp>::type _Is_Trivial;
     _M_initialize(_Is_Trivial());
   }
 
@@ -1219,8 +1219,7 @@ private:
 template <class _Tp>
 inline valarray<_Tp>::valarray(const slice_array<_Tp>& __x)
   : _Valarray_base<_Tp>(__x._M_slice.size()) {
-  typedef typename __type_traits<_Tp>::has_trivial_default_constructor
-          _Is_Trivial;
+  typedef typename has_trivial_constructor<_Tp>::type _Is_Trivial;
   _M_initialize(_Is_Trivial());
   *this = __x;
 }
@@ -1418,8 +1417,7 @@ private:
 template <class _Tp>
 inline valarray<_Tp>::valarray(const gslice_array<_Tp>& __x)
   : _Valarray_base<_Tp>(__x._M_gslice._M_size()) {
-  typedef typename __type_traits<_Tp>::has_trivial_default_constructor
-          _Is_Trivial;
+  typedef typename has_trivial_constructor<_Tp>::type _Is_Trivial;
   _M_initialize(_Is_Trivial());
   *this = __x;
 }
@@ -1542,8 +1540,7 @@ private:
 template <class _Tp>
 inline valarray<_Tp>::valarray(const mask_array<_Tp>& __x)
   : _Valarray_base<_Tp>(__x._M_num_true()) {
-  typedef typename __type_traits<_Tp>::has_trivial_default_constructor
-          _Is_Trivial;
+  typedef typename has_trivial_constructor<_Tp>::type _Is_Trivial;
   _M_initialize(_Is_Trivial());
   *this = __x;
 }
@@ -1658,8 +1655,7 @@ private:
 template <class _Tp>
 inline valarray<_Tp>::valarray(const indirect_array<_Tp>& __x)
   : _Valarray_base<_Tp>(__x._M_addr.size()) {
-  typedef typename __type_traits<_Tp>::has_trivial_default_constructor
-          _Is_Trivial;
+  typedef typename has_trivial_constructor<_Tp>::type _Is_Trivial;
   _M_initialize(_Is_Trivial());
   *this = __x;
 }

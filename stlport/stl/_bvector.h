@@ -88,15 +88,34 @@ inline void swap(_STLP_PRIV _Bit_reference& __x, _STLP_PRIV _Bit_reference& __y)
   __y = __tmp;
 }
 
-// Might not be very useful but costs nothing!
-_STLP_TEMPLATE_NULL
-struct __type_traits<_STLP_PRIV _Bit_reference> {
-  typedef __false_type    has_trivial_default_constructor;
-  typedef __true_type     has_trivial_copy_constructor;
-  typedef __false_type    has_trivial_assignment_operator;
-  typedef __true_type     has_trivial_destructor;
-  typedef __false_type    is_POD_type;
-};
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <>
+struct has_trivial_constructor<_STLP_PRIV _Bit_reference> :
+    public false_type
+{ };
+
+template <>
+struct has_trivial_copy<_STLP_PRIV _Bit_reference> :
+    public true_type
+{ };
+
+template <>
+struct has_trivial_assign<_STLP_PRIV _Bit_reference> :
+    public false_type
+{ };
+
+template <>
+struct has_trivial_destructor<_STLP_PRIV _Bit_reference> :
+    public true_type
+{ };
+
+template <>
+struct is_pod<_STLP_PRIV _Bit_reference> :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 
@@ -236,14 +255,36 @@ operator+(ptrdiff_t __n, const _Bit_iter<_Ref, _Ptr>& __x) {
 _STLP_MOVE_TO_STD_NAMESPACE
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Ref, class _Ptr>
-struct __type_traits< _STLP_PRIV _Bit_iter<_Ref, _Ptr> > {
-  typedef __false_type   has_trivial_default_constructor;
-  typedef __true_type    has_trivial_copy_constructor;
-  typedef __true_type    has_trivial_assignment_operator;
-  typedef __true_type    has_trivial_destructor;
-  typedef __false_type   is_POD_type;
-};
+struct has_trivial_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+    public false_type
+{ };
+
+template <class _Ref, class _Ptr>
+struct has_trivial_copy<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+    public true_type
+{ };
+
+template <class _Ref, class _Ptr>
+struct has_trivial_assign<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+    public true_type
+{ };
+
+template <class _Ref, class _Ptr>
+struct has_trivial_destructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+    public true_type
+{ };
+
+template <class _Ref, class _Ptr>
+struct is_pod<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
+
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
 #if defined (_STLP_USE_OLD_HP_ITERATOR_QUERIES)
@@ -357,7 +398,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 __BVEC_TMPL_HEADER
 class __BVECTOR_QUALIFIED : public _STLP_PRIV _Bvector_base<_Alloc >
 #if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && !defined (_STLP_DEBUG)
-                          , public __stlport_class< __BVECTOR_QUALIFIED >
+//                          , public __stlport_class< __BVECTOR_QUALIFIED >
 #endif
 {
   typedef _STLP_PRIV _Bvector_base<_Alloc > _Base;
@@ -528,14 +569,14 @@ public:
 
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _Integer>
-  void _M_initialize_dispatch(_Integer __n, _Integer __x, const __true_type&) {
+  void _M_initialize_dispatch(_Integer __n, _Integer __x, const true_type&) {
     _M_initialize(__n);
     fill(this->_M_start._M_p, this->_M_end_of_storage._M_data, __x ? ~0 : 0);
   }
 
   template <class _InputIterator>
   void _M_initialize_dispatch(_InputIterator __first, _InputIterator __last,
-                              const __false_type&) {
+                              const false_type&) {
     _M_initialize_range(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 #  if defined (_STLP_NEEDS_EXTRA_TEMPLATE_CONSTRUCTORS)
@@ -543,7 +584,7 @@ public:
   template <class _InputIterator>
   __BVECTOR(_InputIterator __first, _InputIterator __last)
     : _STLP_PRIV _Bvector_base<_Alloc >(allocator_type()) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #  endif
@@ -551,7 +592,7 @@ public:
   __BVECTOR(_InputIterator __first, _InputIterator __last,
             const allocator_type& __a _STLP_ALLOCATOR_TYPE_DFL)
     : _STLP_PRIV _Bvector_base<_Alloc >(__a) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_initialize_dispatch(__first, __last, _Integral());
   }
 #else /* _STLP_MEMBER_TEMPLATES */
@@ -609,16 +650,16 @@ public:
 #if defined (_STLP_MEMBER_TEMPLATES)
   template <class _InputIterator>
   void assign(_InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_assign_dispatch(__first, __last, _Integral());
   }
 
   template <class _Integer>
-  void _M_assign_dispatch(_Integer __n, _Integer __val, const __true_type&)
+  void _M_assign_dispatch(_Integer __n, _Integer __val, const true_type&)
     { _M_fill_assign((size_t) __n, (bool) __val); }
 
   template <class _InputIter>
-  void _M_assign_dispatch(_InputIter __first, _InputIter __last, const __false_type&)
+  void _M_assign_dispatch(_InputIter __first, _InputIter __last, const false_type&)
     { _M_assign_aux(__first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIter)); }
 
   template <class _InputIterator>
@@ -697,14 +738,14 @@ public:
 
   template <class _Integer>
   void _M_insert_dispatch(iterator __pos, _Integer __n, _Integer __x,
-                          const __true_type&) {
+                          const true_type&) {
     _M_fill_insert(__pos, (size_type) __n, (bool) __x);
   }
 
   template <class _InputIterator>
   void _M_insert_dispatch(iterator __pos,
                           _InputIterator __first, _InputIterator __last,
-                          const __false_type&) {
+                          const false_type&) {
     _M_insert_range(__pos, __first, __last, _STLP_ITERATOR_CATEGORY(__first, _InputIterator));
   }
 
@@ -712,7 +753,7 @@ public:
   template <class _InputIterator>
   void insert(iterator __position,
               _InputIterator __first, _InputIterator __last) {
-    typedef typename _IsIntegral<_InputIterator>::_Ret _Integral;
+    typedef typename is_integral<_InputIterator>::type _Integral;
     _M_insert_dispatch(__position, __first, __last, _Integral());
   }
 #else /* _STLP_MEMBER_TEMPLATES */

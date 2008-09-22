@@ -97,8 +97,8 @@ private:
     }
   }
 
-  void _M_initialize_buffer(const _Tp&, const __true_type&) {}
-  void _M_initialize_buffer(const _Tp& val, const __false_type&) {
+  void _M_initialize_buffer(const _Tp&, const true_type&) {}
+  void _M_initialize_buffer(const _Tp& val, const false_type&) {
     uninitialized_fill_n(_M_buffer, _M_len, val);
   }
 
@@ -110,11 +110,7 @@ public:
 
   _Temporary_buffer(_ForwardIterator __first, _ForwardIterator __last) {
     // Workaround for a __type_traits bug in the pre-7.3 compiler.
-#   if defined(__sgi) && !defined(__GNUC__) && _COMPILER_VERSION < 730
-    typedef typename __type_traits<_Tp>::is_POD_type _Trivial;
-#   else
-    typedef typename __type_traits<_Tp>::has_trivial_default_constructor  _Trivial;
-#   endif
+    typedef typename has_trivial_constructor<_Tp>::type  _Trivial;
     _STLP_TRY {
       _M_len = _STLP_STD::distance(__first, __last);
       _M_allocate_buffer();

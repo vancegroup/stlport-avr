@@ -6,6 +6,7 @@
 #  define _STLP_POINTERS_SPECIALIZE( _TpP )
 #  define _STLP_DEFINE_ARROW_OPERATOR  pointer operator->() const { return &(operator*()); }
 #else
+#  error QQQQQQQQQQQQQQ
 #  ifndef _STLP_TYPE_TRAITS_H
 #    include <stl/type_traits.h>
 #  endif

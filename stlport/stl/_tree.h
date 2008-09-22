@@ -203,14 +203,36 @@ struct _Rb_tree_iterator : public _Rb_tree_base_iterator {
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 _STLP_MOVE_TO_STD_NAMESPACE
+
+_STLP_BEGIN_TR1_NAMESPACE
+
 template <class _Value, class _Traits>
-struct __type_traits<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > {
-  typedef __false_type   has_trivial_default_constructor;
-  typedef __true_type    has_trivial_copy_constructor;
-  typedef __true_type    has_trivial_assignment_operator;
-  typedef __true_type    has_trivial_destructor;
-  typedef __false_type   is_POD_type;
-};
+struct has_trivial_constructor<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+    public false_type
+{ };
+
+template <class _Value, class _Traits>
+struct has_trivial_copy<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+    public true_type
+{ };
+
+template <class _Value, class _Traits>
+struct has_trivial_assign<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+    public true_type
+{ };
+
+template <class _Value, class _Traits>
+struct has_trivial_destructor<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+    public true_type
+{ };
+
+template <class _Value, class _Traits>
+struct is_pod<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+    public false_type
+{ };
+
+_STLP_END_NAMESPACE
+
 _STLP_MOVE_TO_PRIV_NAMESPACE
 #endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
 
@@ -404,11 +426,11 @@ public:
   }
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  _Rb_tree(__move_source<_Self> src)
-    : _Rb_tree_base<_Value, _Alloc>(__move_source<_Base>(src.get())),
-      _M_node_count(src.get()._M_node_count),
-      _M_key_compare(_AsMoveSource(src.get()._M_key_compare))
-  { src.get()._M_node_count = 0; }
+//  _Rb_tree(__move_source<_Self> src)
+//    : _Rb_tree_base<_Value, _Alloc>(__move_source<_Base>(src.get())),
+//      _M_node_count(src.get()._M_node_count),
+//      _M_key_compare(_AsMoveSource(src.get()._M_key_compare))
+//  { src.get()._M_node_count = 0; }
 #endif
 
   ~_Rb_tree() { clear(); }
