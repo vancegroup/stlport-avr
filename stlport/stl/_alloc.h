@@ -420,6 +420,16 @@ struct is_trivial<allocator<_Tp> > :
 //     public false_type
 // { };
 
+template <class _Tp>
+struct __has_move_constructor<allocator<_Tp> > :
+    public true_type
+{ };
+
+template <class T>
+struct __is_stateless_alloc :
+    public integral_constant<bool,is_trivial<T>::value || is_empty<T>::value>
+{ };
+
 _STLP_END_NAMESPACE
 
 #endif
@@ -483,10 +493,7 @@ class _STLP_alloc_proxy :
 
   public:
     void _M_swap_alloc(_Self& __x)
-       {
-    //     // typedef typename _IsStateless<_MaybeReboundAlloc>::_Ret _StatelessAlloc;
-         _M_swap_alloc(__x, integral_constant<bool,is_trivial<_Base>::value || is_empty<_Base>::value>() /* true_type() */ );
-       }
+       { _M_swap_alloc(__x, typename __is_stateless_alloc<_Base>::type() ); }
 
     /* We need to define the following swap implementation for allocator with state
      * as those allocators might have implement a special swap function to correctly
@@ -494,7 +501,7 @@ class _STLP_alloc_proxy :
      * this mecanism. */
     void swap( _Self& __x )
       {
-        _M_swap_alloc( __x, integral_constant<bool,is_trivial<_Base>::value || is_empty<_Base>::value>() /* true_type() */ );
+        _M_swap_alloc( __x, typename __is_stateless_alloc<_Base>::type() );
         _STLP_STD::swap(_M_data, __x._M_data);
       }
 
