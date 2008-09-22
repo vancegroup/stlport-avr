@@ -54,8 +54,13 @@ class __move_source
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp>
-struct __has_move_semantic :
-    public integral_constant<bool, is_pod<_Tp>::value>
+struct __has_trivial_move :
+    public integral_constant<bool, is_trivial<_Tp>::value>
+{ };
+
+template <class _Tp>
+struct __has_move_constructor :
+    public false_type
 { };
 
 _STLP_END_NAMESPACE
@@ -68,23 +73,12 @@ struct __move_traits
    * copy constructor is just fine. Most of the time the copy constructor is fine only
    * if the following info is true.
    */
-#if defined (_STLP_USE_PARTIAL_SPEC_WORKAROUND) && \
-   !defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && \
-   !defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef typename _IsSTLportClass<_Tp>::_Ret implemented;
-#else
-  typedef false_type implemented;
-#endif
+  typedef integral_constant<bool,has_trivial_copy_constructor<_Tp>::value && has_trivial_destructor<_Tp>::value> implemented;
   /*
    * complete tells if the move is complete or partial, that is to say, does the source
    * needs to be destroyed once it has been moved.
    */
-#  if defined (__BORLANDC__) && (__BORLANDC__ >= 0x564)
-  typedef __type_traits<_Tp>::has_trivial_destructor _TpMoveComplete;
-  typedef typename __bool2type<__type2bool<_TpMoveComplete>::_Ret>::_Ret complete;
-#  else
   typedef typename has_trivial_destructor<_Tp>::type complete;
-#  endif
 };
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
@@ -131,47 +125,7 @@ struct __move_traits_aux2 {
   typedef __move_traits<_Tp2> _MoveTraits2;
 
   typedef typename integral_constant<bool, _MoveTraits1::implemented::value || _MoveTraits2::implemented::value>::type implemented;
-  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
-  // typedef typename _Lor2<typename _MoveTraits1::implemented,
-  //                        typename _MoveTraits2::implemented>::_Ret implemented;
-  // typedef typename _Land2<typename _MoveTraits1::complete,
-  //                         typename _MoveTraits2::complete>::_Ret complete;
-};
-
-/*
- * Most of the time a class implement a move constructor but its use depends
- * on a third party, this is what the following struct are for.
- */
-template <class _Tp>
-struct __move_traits_help {
-  typedef true_type implemented;
-  typedef typename __move_traits<_Tp>::complete complete;
-};
-
-template <class _Tp1, class _Tp2>
-struct __move_traits_help1 {
-  typedef __move_traits<_Tp1> _MoveTraits1;
-  typedef __move_traits<_Tp2> _MoveTraits2;
-
-  typedef typename integral_constant<bool, _MoveTraits1::implemented::value || _MoveTraits2::implemented::value>::type implemented;
-  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
-
-  // typedef typename _Lor2<typename _MoveTraits1::implemented,
-  //                        typename _MoveTraits2::implemented>::_Ret implemented;
-  // typedef typename _Land2<typename _MoveTraits1::complete,
-  //                         typename _MoveTraits2::complete>::_Ret complete;
-};
-
-template <class _Tp1, class _Tp2>
-struct __move_traits_help2 {
-  typedef __move_traits<_Tp1> _MoveTraits1;
-  typedef __move_traits<_Tp2> _MoveTraits2;
-
-  typedef true_type implemented;
-  typedef typename integral_constant<bool, _MoveTraits1::implemented::value && _MoveTraits2::implemented::value>::type complete;
-
-  // typedef typename _Land2<typename _MoveTraits1::complete,
-  //                         typename _MoveTraits2::complete>::_Ret complete;
+  typedef typename integral_constant<bool, _MoveTraits1::complete::value && _MoveTraits2::complete::value>::type complete;
 };
 
 _STLP_MOVE_TO_STD_NAMESPACE

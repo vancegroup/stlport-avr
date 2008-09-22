@@ -675,7 +675,12 @@ _STLP_BEGIN_NAMESPACE
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _Key, class _Compare, class _Value, class _KeyOfValue, class _Traits, class _Alloc>
 struct __move_traits<_STLP_PRIV _Rb_tree<_Key, _Compare, _Value, _KeyOfValue, _Traits, _Alloc> >
-  : _STLP_PRIV __move_traits_help2<_Compare, _Alloc> {};
+{
+  typedef true_type implemented;
+  typedef typename integral_constant<bool, __move_traits<_Compare>::complete::value &&
+                                           __move_traits<_Alloc>::complete::value>::type complete;
+
+};
 #endif
 
 _STLP_END_NAMESPACE

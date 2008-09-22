@@ -31,8 +31,8 @@
 #endif
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x75) && !defined (_STLP_DONT_POP_HEADER_ID)
-#  ifndef _STLP_INTERNAL_PAIR_H
-#    include <stl/_pair.h>
+#  ifndef _STLP_INTERNAL_UTILITY_H
+#    include <stl/_utility.h>
 #  endif
 #endif
 

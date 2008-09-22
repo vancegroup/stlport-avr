@@ -42,30 +42,28 @@
 #  include <stl/_iterator_base.h>
 #endif
 
-// #ifndef _STLP_TYPE_TRAITS_H
-// #  include <stl/type_traits.h>
-// #endif
+#ifndef _STLP_TYPE_TRAITS
+#  include <type_traits>
+#endif
 
 #if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #  include <stl/_move_construct_fwk.h>
 #endif
 
-#include <type_traits>
-
 _STLP_BEGIN_NAMESPACE
 
 template <class _Tp>
-inline void __destroy_aux(_Tp* __pointer, const typename tr1::false_type& /*_Trivial_destructor*/)
+inline void __destroy_aux(_Tp* __pointer, const false_type& /*_Trivial_destructor*/)
 { __pointer->~_Tp(); }
 
 template <class _Tp>
-inline void __destroy_aux(_Tp*, const typename tr1::true_type& /*_Trivial_destructor*/) {}
+inline void __destroy_aux(_Tp*, const true_type& /*_Trivial_destructor*/)
+{ }
 
 template <class _Tp>
-inline void _Destroy(_Tp* __pointer) {
-  // typedef typename __type_traits<_Tp>::has_trivial_destructor _Trivial_destructor;
-  // typedef typename std::tr1::has_trivial_destructor<_Tp>::value_type 
-  __destroy_aux(__pointer, /* _Trivial_destructor() */ typename has_trivial_destructor<_Tp>::type() );
+inline void _Destroy(_Tp* __pointer)
+{
+  __destroy_aux(__pointer, typename has_trivial_destructor<_Tp>::type() );
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset(__REINTERPRET_CAST(char*, __pointer), _STLP_SHRED_BYTE, sizeof(_Tp));
 #endif
@@ -110,75 +108,82 @@ inline void _Construct(_T1* __p) {
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 #endif
-#if defined (_STLP_DEF_CONST_PLCT_NEW_BUG)
-  _Construct_aux (__p, _HasDefaultZeroValue(__p)._Answer());
-#else
-  _Construct_aux (__p, typename is_pod<_T1>::type() );
-#endif /* _STLP_DEF_CONST_PLCT_NEW_BUG */
+  _Construct_aux (__p, typename is_fundamental<_T1>::type() );
 }
 
 template <class _Tp>
-inline void _Copy_Construct_aux(_Tp* __p, const _Tp& __val, const false_type&) {
+inline void _Copy_Construct_aux( _Tp* __p, const _Tp& __val, const false_type& /* is_fundamental */ )
+{
   new(__p) _Tp(__val);
 }
 
 template <class _Tp>
-inline void _Copy_Construct_aux(_Tp* __p, const _Tp& __val, const true_type&) {
+inline void _Copy_Construct_aux( _Tp* __p, const _Tp& __val, const true_type& /* is_fundamental */ )
+{
   // We use binary copying for POD types since it results
   // in a considerably better code at least on MSVC.
   *__p = __val;
 }
 
 template <class _Tp>
-inline void _Copy_Construct(_Tp* __p, const _Tp& __val) {
+inline void _Copy_Construct(_Tp* __p, const _Tp& __val)
+{
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_Tp));
 #endif
-  _Copy_Construct_aux(__p, __val, typename is_pod<_Tp>::type() );
+  _Copy_Construct_aux(__p, __val, typename is_fundamental<_Tp>::type() );
 }
 
 template <class _T1, class _T2>
-inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const false_type&) {
+inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const false_type& /* is_fundamental */ )
+{
   new(__p) _T1(__val);
 }
 
 template <class _T1, class _T2>
-inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const true_type&) {
+inline void _Param_Construct_aux(_T1* __p, const _T2& __val, const true_type& /* is_fundamental */ )
+{
   // We use binary copying for POD types since it results
   // in a considerably better code at least on MSVC.
   *__p = _T1(__val);
 }
 
 template <class _T1, class _T2>
-inline void _Param_Construct(_T1* __p, const _T2& __val) {
+inline void _Param_Construct(_T1* __p, const _T2& __val)
+{
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 #endif
-  _Param_Construct_aux(__p, __val, typename is_pod<_T1>::type() );
+  _Param_Construct_aux(__p, __val, typename is_fundamental<_T1>::type() );
 }
 
 template <class _T1, class _T2>
-inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const false_type& /*_IsPOD*/) {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  new(__p) _T1(__val);
-#else
-  _Param_Construct(__p, __val);
-#endif
-}
+inline void _Move_Construct_Aux2(_T1* __p, _T2& __val, const false_type& /* move ctor */)
+{ new(__p) _T1(__val); }
 
 template <class _T1, class _T2>
-inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const true_type& /*_IsPOD*/) {
+inline void _Move_Construct_Aux2(_T1* __p, _T2& __val, const true_type& /* move ctor */)
+{ new(__p) _T1( move( __val ) ); }
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const false_type& /* is_fundamental */)
+{ _Move_Construct_Aux2( __p, __val, integral_constant<bool,is_same<_T1,_T2>::value &&  __has_move_constructor<_T1>::value>() ); }
+
+template <class _T1, class _T2>
+inline void _Move_Construct_Aux(_T1* __p, _T2& __val, const true_type& /* is_fundamental */)
+{
   // We use binary copying for POD types since it results
   // in a considerably better code at least on MSVC.
   *__p = _T1(__val);
 }
 
 template <class _T1, class _T2>
-inline void _Move_Construct(_T1* __p, _T2& __val) {
+inline void _Move_Construct(_T1* __p, _T2& __val)
+{
 #if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__p, _STLP_SHRED_BYTE, sizeof(_T1));
 #endif
-  _Move_Construct_Aux(__p, __val, typename is_pod<_T1>::type() );
+  _Move_Construct_Aux(__p, __val, typename is_fundamental<_T1>::type() );
 }
 
 #if defined(_STLP_NEW_REDEFINE)
@@ -201,25 +206,29 @@ __destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, con
 
 template <class _ForwardIterator, class _Tp>
 #if defined (_STLP_DEBUG_UNINITIALIZED)
-_STLP_INLINE_LOOP void
-__destroy_range_aux(_ForwardIterator __first, _ForwardIterator __last, _Tp*, const true_type& /*_Trivial_destructor*/) {
-  for ( ; __first != __last; ++__first)
+_STLP_INLINE_LOOP void __destroy_range_aux( _ForwardIterator __first, _ForwardIterator __last,
+                                            _Tp*, const true_type& /*_Trivial_destructor*/)
+{
+  for ( ; __first != __last; ++__first) {
     memset((char*)&(*__first), _STLP_SHRED_BYTE, sizeof(_Tp));
+  }
 }
 #else
-inline void
-__destroy_range_aux(_ForwardIterator, _ForwardIterator, _Tp*, const true_type& /*_Trivial_destructor*/) {}
+inline void __destroy_range_aux( _ForwardIterator, _ForwardIterator, _Tp*,
+                                 const true_type& /*_Trivial_destructor*/)
+{ }
 #endif
 
 template <class _ForwardIterator, class _Tp>
-inline void
-__destroy_range(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr) {
+inline void __destroy_range( _ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr )
+{
   typedef typename has_trivial_destructor<_Tp>::type _Trivial_destructor;
   __destroy_range_aux(__first, __last, __ptr, _Trivial_destructor());
 }
 
 template <class _ForwardIterator>
-inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last) {
+inline void _Destroy_Range(_ForwardIterator __first, _ForwardIterator __last)
+{
   __destroy_range(__first, __last, _STLP_VALUE_TYPE(__first, _ForwardIterator));
 }
 
@@ -231,10 +240,9 @@ inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _ForwardIterator, class _Tp>
-inline void
-__destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr) {
-  typedef typename __move_traits<_Tp>::complete _CompleteMove;
-  __destroy_range_aux(__first, __last, __ptr, _CompleteMove());
+inline void __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr)
+{
+  __destroy_range_aux(__first, __last, __ptr, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
 }
 #endif
 

@@ -59,7 +59,8 @@ _STLP_MOVE_TO_STD_NAMESPACE
 #endif
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::reserve(size_type __n) {
+void vector<_Tp, _Alloc>::reserve(size_type __n)
+{
   if (capacity() < __n) {
     if (max_size() < __n) {
       this->_M_throw_length_error();
@@ -78,108 +79,98 @@ void vector<_Tp, _Alloc>::reserve(size_type __n) {
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, const false_type& /*DO NOT USE!!*/,
-                                                 size_type __fill_len, bool __atend ) {
-  typedef typename has_trivial_default_constructor<_Tp>::type _TrivialUCopy;
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
+void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
+                                              const false_type& /* trivial move */,
+                                              size_type __fill_len, bool __atend )
+{
   size_type __len = _M_compute_next_size(__fill_len);
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
   pointer __new_finish = __new_start;
+  pointer old = this->_M_start;
   _STLP_TRY {
-    __new_finish = _STLP_PRIV __uninitialized_move(this->_M_start, __pos, __new_start, _TrivialUCopy(), _Movable());
+    while ( old != __pos ) {
+      _Move_Construct( __new_finish++, *(old++) );
+    }
     // handle insertion
-    if (__fill_len == 1) {
-      _Copy_Construct(__new_finish, __x);
-      ++__new_finish;
-    } else
-      __new_finish = _STLP_PRIV __uninitialized_fill_n(__new_finish, __fill_len, __x);
-    if (!__atend)
-      __new_finish = _STLP_PRIV __uninitialized_move(__pos, this->_M_finish, __new_finish, _TrivialUCopy(), _Movable()); // copy remainder
+    while ( __fill_len-- > 0 ) {
+      _Copy_Construct( __new_finish++, __x );
+    }
+    if (!__atend) {
+      while ( old != this->_M_finish ) {
+        _Move_Construct( __new_finish++, *(old++) );
+      }
+    }
   }
   _STLP_UNWIND((_STLP_STD::_Destroy_Range(__new_start,__new_finish),
                this->_M_end_of_storage.deallocate(__new_start,__len)))
-  _M_clear_after_move();
-  _M_set(__new_start, __new_finish, __new_start + __len);
-}
-
-template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_insert_overflow(pointer __pos, const _Tp& __x, const true_type& /*_TrivialCopy*/,
-                                             size_type __fill_len, bool __atend ) {
-  size_type __len = _M_compute_next_size(__fill_len);
-  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
-  pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(this->_M_start, __pos, __new_start));
-  // handle insertion
-  __new_finish = _STLP_PRIV __fill_n(__new_finish, __fill_len, __x);
-  if (!__atend)
-    __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(__pos, this->_M_finish, __new_finish)); // copy remainder
   _M_clear();
   _M_set(__new_start, __new_finish, __new_start + __len);
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
-                                             const _Tp& __x, const true_type& /*_Movable*/) {
-  if (_M_is_inside(__x)) {
-    _Tp __x_copy = __x;
-    _M_fill_insert_aux(__pos, __n, __x_copy, true_type());
-    return;
+void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
+                                              const true_type& /* trivial move */,
+                                              size_type __fill_len, bool __atend )
+{
+  size_type __len = _M_compute_next_size(__fill_len);
+  pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
+  // pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(this->_M_start, __pos, __new_start));
+  pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
+  // handle insertion
+  while ( __fill_len-- > 0 ) {
+    _Copy_Construct( __new_finish++, __x );
   }
-  iterator __src = this->_M_finish - 1;
-  iterator __dst = __src + __n;
-  for (; __src >= __pos; --__dst, --__src) {
-    _STLP_STD::_Move_Construct(__dst, *__src);
-    _STLP_STD::_Destroy_Moved(__src);
+  if (!__atend) {
+    // __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(__pos, this->_M_finish, __new_finish)); // copy remainder
+    __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
   }
-  _STLP_PRIV __uninitialized_fill_n(__pos, __n, __x);
+  _M_clear_after_move();
+  _M_set(__new_start, __new_finish, __new_start + __len);
+}
+
+template <class _Tp, class _Alloc>
+void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
+                                              const _Tp& __x, const true_type& /* trivial move */ )
+{
+  _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
+  // memmove( __pos + __n, __pos, __n * sizeof(_Tp) );
   this->_M_finish += __n;
-}
-
-template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
-                                              const _Tp& __x, const false_type& /*_Movable*/) {
-  typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
-  typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-  //Here self referencing needs to be checked even for non movable types.
-  if (_M_is_inside(__x)) {
-    _Tp __x_copy = __x;
-    _M_fill_insert_aux(__pos, __n, __x_copy, false_type());
-    return;
-  }
-  const size_type __elems_after = this->_M_finish - __pos;
-  pointer __old_finish = this->_M_finish;
-  if (__elems_after > __n) {
-    _STLP_PRIV __ucopy_ptrs(this->_M_finish - __n, this->_M_finish, this->_M_finish, _TrivialUCopy());
-    this->_M_finish += __n;
-    _STLP_PRIV __copy_backward_ptrs(__pos, __old_finish - __n, __old_finish, _TrivialCopy());
-    _STLP_STD::fill(__pos, __pos + __n, __x);
-  } else {
-    this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - __elems_after, __x);
-    _STLP_PRIV __ucopy_ptrs(__pos, __old_finish, this->_M_finish, _TrivialUCopy());
-    this->_M_finish += __elems_after;
-    _STLP_STD::fill(__pos, __old_finish, __x);
+  while ( __n-- > 0 ) {
+    _Copy_Construct( __pos++, __x );
   }
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
-                                         size_type __n, const _Tp& __x) {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
+void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
+                                              const _Tp& __x, const false_type& /* trivial move */ )
+{
+  iterator src = this->_M_finish - 1;
+  iterator dst = src + __n;
+  for ( ; src >= __pos; --dst, --src ) {
+    _STLP_STD::_Move_Construct(dst, *src);
+    _STLP_STD::_Destroy_Moved(src);
+  }
+  this->_M_finish += __n;
+  while ( __n-- > 0 ) {
+    _Copy_Construct( __pos++, __x );
+  }
+}
+
+template <class _Tp, class _Alloc>
+void vector<_Tp, _Alloc>::_M_fill_insert( iterator __pos, size_type __n, const _Tp& __x )
+{
   if (__n != 0) {
-    if (size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n) {
-      _M_fill_insert_aux(__pos, __n, __x, _Movable());
+    if ( size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n ) {
+      _M_fill_insert_aux( __pos, __n, __x, typename __has_trivial_move<_Tp>::type() );
     } else {
-      typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-      _M_insert_overflow(__pos, __x, _TrivialCopy(), __n);
+      _M_insert_overflow( __pos, __x, typename __has_trivial_move<_Tp>::type(), __n );
     }
   }
 }
 
 template <class _Tp, class _Alloc>
-vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>& __x) {
+vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>& __x)
+{
   typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
   typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
   if (&__x != this) {
@@ -207,20 +198,22 @@ vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>&
 }
 
 template <class _Tp, class _Alloc>
-void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val) {
+void vector<_Tp, _Alloc>::_M_fill_assign(size_t __n, const _Tp& __val)
+{
   if (__n > capacity()) {
     vector<_Tp, _Alloc> __tmp(__n, __val, get_allocator());
     __tmp.swap(*this);
   } else if (__n > size()) {
     fill(begin(), end(), __val);
     this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_finish, __n - size(), __val);
-  } else
+  } else {
     erase(_STLP_PRIV __fill_n(begin(), __n, __val), end());
+  }
 }
 
 template <class _Tp, class _Alloc>
-__iterator__
-vector<_Tp, _Alloc>::insert(iterator __pos, const _Tp& __x) {
+__iterator__ vector<_Tp, _Alloc>::insert(iterator __pos, const _Tp& __x)
+{
   size_type __n = __pos - begin();
   _M_fill_insert(__pos, 1, __x);
   return begin() + __n;

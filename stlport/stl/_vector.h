@@ -152,29 +152,9 @@ class vector :
 #endif
 
     // handles insertions on overflow
-    void _M_insert_overflow_aux( pointer __pos, const _Tp& __x, const false_type& /*_Movable*/,
-                                 size_type __fill_len, bool __atend);
-    void _M_insert_overflow_aux( pointer __pos, const _Tp& __x, const true_type& /*_Movable*/,
-                                 size_type __fill_len, bool __atend)
-      {
-        //We need to take care of self referencing here:
-        if (_M_is_inside(__x)) {
-          value_type __x_copy = __x;
-          _M_insert_overflow_aux(__pos, __x_copy, false_type(), __fill_len, __atend);
-          return;
-        }
-        _M_insert_overflow_aux(__pos, __x, false_type(), __fill_len, __atend);
-      }
-
-  void _M_insert_overflow( pointer __pos, const _Tp& __x, const false_type& /*_TrivialCopy*/,
-                           size_type __fill_len, bool __atend = false)
-      {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-        typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
-        _M_insert_overflow_aux(__pos, __x, _Movable(), __fill_len, __atend);
-      }
-    void _M_insert_overflow( pointer __pos, const _Tp& __x, const true_type& /*_TrivialCopy*/,
+    void _M_insert_overflow( pointer __pos, const _Tp& __x, const false_type& /* trivial move */,
+                             size_type __fill_len, bool __atend = false);
+    void _M_insert_overflow( pointer __pos, const _Tp& __x, const true_type& /* trivial move */,
                              size_type __fill_len, bool __atend = false);
     void _M_range_check(size_type __n) const
       {
@@ -394,33 +374,18 @@ class vector :
     void assign(_InputIterator __first, _InputIterator __last)
       { _M_assign_dispatch(__first, __last, typename is_integral<_InputIterator>::type() ); }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM) && !defined (_STLP_NO_ANACHRONISMS)
-    void push_back(const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp))
+    void push_back(const _Tp& __x)
       {
-#else
-      void push_back(const _Tp& __x)
-      {
-#endif
         if (this->_M_finish != this->_M_end_of_storage._M_data) {
           _Copy_Construct(this->_M_finish, __x);
           ++this->_M_finish;
         } else {
-          _M_insert_overflow(this->_M_finish, __x, typename has_trivial_assign<_Tp>::type(), 1, true);
+          _M_insert_overflow(this->_M_finish, __x,
+                             integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>(), 1, true);
         }
       }
 
-#if !defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-    iterator insert(iterator __pos, const _Tp& __x = _STLP_DEFAULT_CONSTRUCTED(_Tp));
-#else
     iterator insert(iterator __pos, const _Tp& __x);
-#endif
-
-#if defined(_STLP_DONT_SUP_DFLT_PARAM) && !defined(_STLP_NO_ANACHRONISMS)
-    void push_back()
-      { push_back(_STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-    iterator insert(iterator __pos)
-      { return insert(__pos, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-#endif
 
     void swap(_Self& __x)
       {
@@ -565,9 +530,10 @@ class vector :
       }
 
   private:
-    iterator _M_erase(iterator __pos, const true_type& /*_Movable*/)
+    iterator _M_erase(iterator __pos, const false_type& /*_Movable*/)
       {
         _STLP_STD::_Destroy(__pos);
+
         iterator __dst = __pos, __src = __dst + 1;
         iterator __end = end();
         for (; __src != __end; ++__dst, ++__src) {
@@ -578,18 +544,18 @@ class vector :
         return __pos;
       }
 
-    iterator _M_erase(iterator __pos, const false_type& /*_Movable*/)
+    iterator _M_erase(iterator __pos, const true_type& /*_Movable*/)
       {
+        _STLP_STD::_Destroy(__pos);
+
         if (__pos + 1 != end()) {
-          typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-          _STLP_PRIV __copy_ptrs(__pos + 1, this->_M_finish, __pos, _TrivialCopy());
+          _STLP_PRIV __copy_trivial( __pos + 1, this->_M_finish, __pos );
         }
         --this->_M_finish;
-        _STLP_STD::_Destroy(this->_M_finish);
         return __pos;
       }
 
-    iterator _M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/)
+    iterator _M_erase(iterator __first, iterator __last, const false_type& /*_Movable*/)
       {
         iterator __dst = __first, __src = __last;
         iterator __end = end();
@@ -613,30 +579,22 @@ class vector :
         return __first;
       }
 
-    iterator _M_erase(iterator __first, iterator __last, const false_type& /*_Movable*/)
+    iterator _M_erase(iterator __first, iterator __last, const true_type& /*_Movable*/)
       {
-        typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-        pointer __i = _STLP_PRIV __copy_ptrs(__last, this->_M_finish, __first, _TrivialCopy());
-        _STLP_STD::_Destroy_Range(__i, this->_M_finish);
-        this->_M_finish = __i;
+        _STLP_STD::_Destroy_Range(__first, __last);
+        this->_M_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial( __last, this->_M_finish, __first ) );
         return __first;
       }
 
   public:
     iterator erase(iterator __pos)
       {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-        typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
-        return _M_erase(__pos, _Movable());
+        return _M_erase(__pos, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
       }
 
     iterator erase(iterator __first, iterator __last)
       {
-#if !defined (_STLP_NO_MOVE_SEMANTIC)
-        typedef typename __move_traits<_Tp>::implemented _Movable;
-#endif
-        return __first == __last ? __first : _M_erase(__first, __last, _Movable());
+        return __first == __last ? __first : _M_erase(__first, __last, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
       }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
@@ -757,6 +715,21 @@ typedef vector<bool, allocator<bool> > bit_vector;
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp, class _Alloc>
+struct __has_trivial_move<vector<_Tp, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<vector<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 template <class _Tp, class _Alloc>
 struct __move_traits<vector<_Tp, _Alloc> >
 {

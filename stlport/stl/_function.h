@@ -289,8 +289,6 @@ template <class _Operation1, class _Operation2, class _Operation3>
 inline binary_compose<_Operation1, _Operation2, _Operation3> compose2(const _Operation1& __fn1, const _Operation2& __fn2, const _Operation3& __fn3)
 { return binary_compose<_Operation1,_Operation2,_Operation3>(__fn1, __fn2, __fn3); }
 
-// identity is an extension: it is not part of the standard.
-template <class _Tp> struct identity : public _STLP_PRIV _Identity<_Tp> {};
 // select1st and select2nd are extensions: they are not part of the standard.
 template <class _Pair> struct select1st : public _STLP_PRIV _Select1st<_Pair> {};
 template <class _Pair> struct select2nd : public _STLP_PRIV _Select2nd<_Pair> {};

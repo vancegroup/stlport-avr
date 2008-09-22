@@ -1122,6 +1122,22 @@ inline void _STLP_CALL swap(wstring& __x, wstring& __y)
 #endif
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION) && !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+#if !defined (_STLP_USE_SHORT_STRING_OPTIM)
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_trivial_move<basic_string<_CharT, _Traits, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+#endif
+
+template <class _CharT, class _Traits, class _Alloc>
+struct __has_move_constructor<basic_string<_CharT, _Traits, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
 template <class _CharT, class _Traits, class _Alloc>
 struct __move_traits<basic_string<_CharT, _Traits, _Alloc> > {
   typedef true_type implemented;

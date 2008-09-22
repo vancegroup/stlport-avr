@@ -28,22 +28,65 @@
  *   You should not attempt to use it directly.
  */
 
-#ifndef _STLP_INTERNAL_PAIR_H
-#define _STLP_INTERNAL_PAIR_H
+#ifndef _STLP_INTERNAL_UTILITY_H
+#define _STLP_INTERNAL_UTILITY_H
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
-// #  ifndef _STLP_TYPE_TRAITS_H
-// #    include <stl/type_traits.h>
-// #  endif
+#  ifndef _STLP_TYPE_TRAITS
+#    include <type_traits>
+#  endif
 
 #  if !defined (_STLP_MOVE_CONSTRUCT_FWK_H) && !defined (_STLP_NO_MOVE_SEMANTIC)
 #    include <stl/_move_construct_fwk.h>
 #  endif
 #endif
 
-#include <type_traits>
-
 _STLP_BEGIN_NAMESPACE
+
+namespace rel_ops {
+} // namespace rel_ops
+
+template <class T>
+struct identity
+{
+    typedef T type;
+    const T& operator ()( const T& v ) const
+      { return v; }
+};
+
+/*
+template <class T>
+T&& forward( typename identity<T>::type&& t )
+{ return t; }
+*/
+
+// Well, forward is unuseful without rvalue reference
+template <class T>
+inline const T& forward( const typename identity<T>::type& t )
+{ return t; }
+
+template <class T>
+inline T& forward( typename identity<T>::type& t )
+{ return t; }
+
+// template <class T>
+// inline __move_source<T>& forward( __move_source<typename identity<T>::type>& t )
+// { return t; }
+
+/*
+template <class T>
+typename remove_reference<T>::type&& move( T&& t )
+{ return t; }
+*/
+
+template <class T>
+__move_source<typename remove_const<typename remove_reference<T>::type>::type> move( const T& t )
+{ return __move_source<typename remove_const<typename remove_reference<T>::type>::type>( const_cast<T&>(t) ); }
+
+template <class T>
+__move_source<typename remove_reference<T>::type> move( T& t )
+{ return __move_source<typename remove_reference<T>::type>( t ); }
+
 
 template <class _T1, class _T2>
 struct pair {
@@ -178,13 +221,16 @@ _STLP_END_NAMESPACE
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
 template <class _T1, class _T2>
 struct __move_traits<pair<_T1, _T2> >
-  : _STLP_PRIV __move_traits_help1<_T1, _T2> {};
+{
+  typedef typename integral_constant<bool, __move_traits<_T1>::implemented::value || __move_traits<_T2>::implemented::value>::type implemented;
+  typedef typename integral_constant<bool, __move_traits<_T1>::complete::value && __move_traits<_T2>::complete::value>::type complete;
+};
 #  endif
 
 _STLP_END_NAMESPACE
 #endif
 
-#endif /* _STLP_INTERNAL_PAIR_H */
+#endif /* _STLP_INTERNAL_UTILITY_H */
 
 // Local Variables:
 // mode:C++

@@ -284,7 +284,7 @@ public:
   template <class _Tp1> allocator(const allocator<_Tp1>&) _STLP_NOTHROW {}
   allocator(const allocator<_Tp>&) _STLP_NOTHROW {}
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  // allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
+  allocator(__move_source<allocator<_Tp> > src) _STLP_NOTHROW {}
 #endif
   ~allocator() _STLP_NOTHROW {}
   pointer address(reference __x) const {return &__x;}
@@ -412,10 +412,20 @@ struct has_trivial_destructor<allocator<_Tp> > :
     public true_type
 { };
 
+// template <class _Tp>
+// struct is_pod<allocator<_Tp> > :
+//     public true_type
+// { };
+
 template <class _Tp>
-struct is_pod<allocator<_Tp> > :
+struct is_trivial<allocator<_Tp> > :
     public true_type
 { };
+
+// template <class _Tp>
+// struct is_standard_layout<allocator<_Tp> > :
+//     public false_type
+// { };
 
 _STLP_END_NAMESPACE
 
