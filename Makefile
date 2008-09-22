@@ -6,7 +6,7 @@
 # Licensed under the Academic Free License version 3.0
 #
 
-SRCROOT := build
+SRCROOT := .
 SUBDIRS := build/lib
 
 include ${SRCROOT}/Makefiles/gmake/subdirs.mak

@@ -1,8 +1,8 @@
-!if !EXIST(..\Makefiles\nmake\config.mak)
+!if !EXIST(..\..\Makefiles\nmake\config.mak)
 !error No config file found, please run 'configure --help' first.
 !endif
 
-!include ..\Makefiles\nmake\config.mak
+!include ..\..\Makefiles\nmake\config.mak
 
 !ifndef COMPILER_NAME
 !error No compiler set, please run 'configure --help' first and chose a compiler.
@@ -17,7 +17,7 @@
 !error '$(COMPILER_NAME)' not supported by this make file, please rerun 'configure' script and follow instructions.
 !endif
 
-SRCROOT=..
+SRCROOT=..\..
 
 STLPORT_INCLUDE_DIR = ../../stlport
 !include Makefile.inc

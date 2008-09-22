@@ -1,8 +1,8 @@
-!if !EXIST(..\..\Makefiles\nmake\config.mak)
+!if !EXIST(..\..\..\Makefiles\nmake\config.mak)
 !error No config file found, please run 'configure --help' first.
 !endif
 
-!include ..\..\Makefiles\nmake\config.mak
+!include ..\..\..\Makefiles\nmake\config.mak
 
 !ifndef COMPILER_NAME
 !error No compiler set, please run 'configure --help' first and chose a compiler.
@@ -14,7 +14,7 @@
 !error You pick the wrong makefile, please rerun configure script and follow the instructions.
 !endif
 
-SRCROOT=../..
+SRCROOT=../../..
 STLPORT_DIR=../../..
 CROSS_COMPILING=1
 

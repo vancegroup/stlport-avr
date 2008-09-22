@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <05/03/10 17:51:53 ptr>
 
-SRCROOT := ../..
+SRCROOT := ../../..
 COMPILER_NAME := bcc
 
 STLPORT_DIR := ../../..

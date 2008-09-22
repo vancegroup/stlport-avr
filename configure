@@ -4,7 +4,7 @@
 
 base=`cd \`dirname $0\`; echo $PWD`
 
-configmak=$base/build/Makefiles/gmake/config.mak
+configmak=$base/Makefiles/gmake/config.mak
 
 write_option() {
   target=`echo $1 | sed -e 's/^[^=]*=//'`

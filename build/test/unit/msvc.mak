@@ -1,5 +1,5 @@
-!if EXIST(..\..\Makefiles\nmake\config.mak)
-!include ..\..\Makefiles\nmake\config.mak
+!if EXIST(..\..\..\Makefiles\nmake\config.mak)
+!include ..\..\..\Makefiles\nmake\config.mak
 !endif
 
 
@@ -16,7 +16,7 @@
 !error '$(COMPILER_NAME)' not supported by this make file, please rerun 'configure' script and follow instructions.
 !endif
 
-SRCROOT=../..
+SRCROOT=../../..
 STLPORT_DIR=../../..
 
 !include Makefile.inc

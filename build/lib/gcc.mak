@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <08/06/06 10:50:42 yeti>
 
-SRCROOT := ..
+SRCROOT := ../..
 COMPILER_NAME := gcc
 STLP_BUILD := 1
 

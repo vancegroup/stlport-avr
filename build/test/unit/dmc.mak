@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <03/10/12 20:35:49 ptr>
 
-SRCROOT := ../..
+SRCROOT := ../../..
 COMPILER_NAME := dmc
 OBJ_EXT := obj
 

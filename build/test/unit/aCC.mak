@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <08/06/12 16:09:49 ptr>
 
-SRCROOT := ../..
+SRCROOT := ../../..
 COMPILER_NAME := aCC
 -include ${SRCROOT}/Makefiles/gmake/config.mak
 ALL_TAGS = release-shared check-release

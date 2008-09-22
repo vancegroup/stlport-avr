@@ -1,6 +1,6 @@
 # -*- Makefile -*- Time-stamp: <08/06/06 11:01:34 yeti>
 
-SRCROOT := ../..
+SRCROOT := ../../..
 COMPILER_NAME := gcc
 #NOT_USE_NOSTDLIB := 1
 #WITHOUT_STLPORT := 1
