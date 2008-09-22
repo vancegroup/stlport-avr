@@ -228,37 +228,23 @@ class vector :
     const_reference at(size_type __n) const
       { _M_range_check(__n); return (*this)[__n]; }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
-    explicit vector(const allocator_type& __a = allocator_type())
-#else
-    vector() :
-        _STLP_PRIV _Vector_base<_Tp, _Alloc>(allocator_type())
-      { }
-    vector(const allocator_type& __a)
-#endif
-      : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a)
+    explicit vector(const allocator_type& __a = allocator_type()) :
+        _STLP_PRIV _Vector_base<_Tp, _Alloc>(__a)
       { }
 
-#if !defined (_STLP_DONT_SUP_DFLT_PARAM)
   private:
     //We always call _M_initialize with only 1 parameter. Default parameter
     //is used to allow explicit instanciation of vector with types with no
     //default constructor.
     void _M_initialize( size_type __n, const _Tp& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp) )
       { this->_M_finish = _STLP_PRIV __uninitialized_init(this->_M_start, __n, __val); }
+
   public:
-    explicit vector(size_type __n) : _STLP_PRIV _Vector_base<_Tp, _Alloc>( __n, allocator_type() )
+    explicit vector(size_type __n) :
+        _STLP_PRIV _Vector_base<_Tp, _Alloc>( __n, allocator_type() )
       { _M_initialize(__n); }
-    vector( size_type __n, const _Tp& __val, const allocator_type& __a = allocator_type() )
-#else
-    explicit vector(size_type __n) : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
-      { this->_M_finish = _STLP_PRIV __uninitialized_init(this->_M_start, __n, _STLP_DEFAULT_CONSTRUCTED(_Tp)); }
-    vector(size_type __n, const _Tp& __val) :
-        _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, allocator_type())
-      { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
-    vector(size_type __n, const _Tp& __val, const allocator_type& __a)
-#endif
-        : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, __a)
+    vector( size_type __n, const _Tp& __val, const allocator_type& __a = allocator_type() ) :
+        _STLP_PRIV _Vector_base<_Tp, _Alloc>(__n, __a)
       { this->_M_finish = _STLP_PRIV __uninitialized_fill_n(this->_M_start, __n, __val); }
 
     vector(const _Self& __x) :
@@ -270,7 +256,7 @@ class vector :
 
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   vector(__move_source<_Self> src) :
-      _STLP_PRIV _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
+        _STLP_PRIV _Vector_base<_Tp, _Alloc>(__move_source<_Base>(src.get()))
       { }
 #endif
 
@@ -379,9 +365,11 @@ class vector :
         if (this->_M_finish != this->_M_end_of_storage._M_data) {
           _Copy_Construct(this->_M_finish, __x);
           ++this->_M_finish;
+        } else if ( &__x >= this->_M_start && &__x < this->_M_finish ) { // inside moved
+          _Tp __x_copy( __x );
+          _M_insert_overflow( this->_M_finish, __x_copy, typename __has_trivial_move<_Tp>::type(), 1, true );
         } else {
-          _M_insert_overflow(this->_M_finish, __x,
-                             integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>(), 1, true);
+          _M_insert_overflow( this->_M_finish, __x, typename  __has_trivial_move<_Tp>::type(), 1, true );
         }
       }
 
@@ -402,9 +390,6 @@ class vector :
     void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const true_type& /*_Movable*/);
     void _M_fill_insert_aux (iterator __pos, size_type __n, const _Tp& __x, const false_type& /*_Movable*/);
     void _M_fill_insert (iterator __pos, size_type __n, const _Tp& __x);
-
-    bool _M_is_inside(const value_type& __x) const
-      { return (&__x >= this->_M_start && &__x < this->_M_finish); }
 
     template <class _ForwardIterator>
     void _M_range_insert_realloc( iterator __pos,
@@ -589,12 +574,12 @@ class vector :
   public:
     iterator erase(iterator __pos)
       {
-        return _M_erase(__pos, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
+        return _M_erase(__pos, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
       }
 
     iterator erase(iterator __first, iterator __last)
       {
-        return __first == __last ? __first : _M_erase(__first, __last, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
+        return __first == __last ? __first : _M_erase(__first, __last, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
       }
 
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
@@ -673,9 +658,48 @@ class vector :
 };
 
 #if defined (vector)
-#  undef vector
 _STLP_MOVE_TO_STD_NAMESPACE
-#endif
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp, class _Alloc>
+struct __has_trivial_move<_STLP_PRIV vector<_Tp, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<_STLP_PRIV vector<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+#  endif
+
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+
+#  undef vector
+#else // vector
+#if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
+#  if !defined (_STLP_NO_MOVE_SEMANTIC)
+
+_STLP_BEGIN_TR1_NAMESPACE
+
+template <class _Tp, class _Alloc>
+struct __has_trivial_move<vector<_Tp, _Alloc> > :
+  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
+{ };
+
+template <class _Tp, class _Alloc>
+struct __has_move_constructor<vector<_Tp, _Alloc> > :
+    public true_type
+{ };
+
+_STLP_END_NAMESPACE
+
+#  endif
+#endif /* _STLP_CLASS_PARTIAL_SPECIALIZATION */
+#endif // vector
 
 _STLP_END_NAMESPACE
 
@@ -715,20 +739,6 @@ typedef vector<bool, allocator<bool> > bit_vector;
 
 #if defined (_STLP_CLASS_PARTIAL_SPECIALIZATION)
 #  if !defined (_STLP_NO_MOVE_SEMANTIC)
-
-_STLP_BEGIN_TR1_NAMESPACE
-
-template <class _Tp, class _Alloc>
-struct __has_trivial_move<vector<_Tp, _Alloc> > :
-  public integral_constant<bool, is_trivial<_Alloc>::value> /* true_type */
-{ };
-
-template <class _Tp, class _Alloc>
-struct __has_move_constructor<vector<_Tp, _Alloc> > :
-    public true_type
-{ };
-
-_STLP_END_NAMESPACE
 
 template <class _Tp, class _Alloc>
 struct __move_traits<vector<_Tp, _Alloc> >

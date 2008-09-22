@@ -72,8 +72,7 @@ inline void _Destroy(_Tp* __pointer)
 template <class _Tp>
 inline void _Destroy_Moved(_Tp* __pointer) {
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
-  typedef typename __move_traits<_Tp>::complete _Trivial_destructor;
-  __destroy_aux(__pointer, _Trivial_destructor());
+  __destroy_aux(__pointer, typename __has_trivial_move<_Tp>::type() );
 #  if defined (_STLP_DEBUG_UNINITIALIZED)
   memset((char*)__pointer, _STLP_SHRED_BYTE, sizeof(_Tp));
 #  endif
@@ -242,7 +241,7 @@ inline void _Destroy_Range(const wchar_t*, const wchar_t*) {}
 template <class _ForwardIterator, class _Tp>
 inline void __destroy_mv_srcs(_ForwardIterator __first, _ForwardIterator __last, _Tp *__ptr)
 {
-  __destroy_range_aux(__first, __last, __ptr, integral_constant<bool, has_trivial_copy_constructor<_Tp>::value || __has_trivial_move<_Tp>::value>() );
+  __destroy_range_aux(__first, __last, __ptr, integral_constant<bool, __has_trivial_move<_Tp>::value>() );
 }
 #endif
 

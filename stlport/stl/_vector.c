@@ -114,14 +114,12 @@ void vector<_Tp, _Alloc>::_M_insert_overflow( pointer __pos, const _Tp& __x,
 {
   size_type __len = _M_compute_next_size(__fill_len);
   pointer __new_start = this->_M_end_of_storage.allocate(__len, __len);
-  // pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(this->_M_start, __pos, __new_start));
   pointer __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( this->_M_start, __pos, __new_start ) );
   // handle insertion
   while ( __fill_len-- > 0 ) {
     _Copy_Construct( __new_finish++, __x );
   }
   if (!__atend) {
-    // __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __copy_trivial(__pos, this->_M_finish, __new_finish)); // copy remainder
     __new_finish = __STATIC_CAST(pointer, _STLP_PRIV __ucopy_trivial( __pos, this->_M_finish, __new_finish ) ); // copy remainder
   }
   _M_clear_after_move();
@@ -133,7 +131,6 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux( iterator __pos, size_type __n,
                                               const _Tp& __x, const true_type& /* trivial move */ )
 {
   _STLP_PRIV __copy_trivial( __pos, this->_M_finish, __pos + __n );
-  // memmove( __pos + __n, __pos, __n * sizeof(_Tp) );
   this->_M_finish += __n;
   while ( __n-- > 0 ) {
     _Copy_Construct( __pos++, __x );
@@ -161,9 +158,19 @@ void vector<_Tp, _Alloc>::_M_fill_insert( iterator __pos, size_type __n, const _
 {
   if (__n != 0) {
     if ( size_type(this->_M_end_of_storage._M_data - this->_M_finish) >= __n ) {
-      _M_fill_insert_aux( __pos, __n, __x, typename __has_trivial_move<_Tp>::type() );
+      if ( &__x >= __pos && &__x < this->_M_finish ) { // inside moved
+        _Tp __x_copy( __x );
+        _M_fill_insert_aux( __pos, __n, __x_copy, typename __has_trivial_move<_Tp>::type() );
+      } else {
+        _M_fill_insert_aux( __pos, __n, __x, typename __has_trivial_move<_Tp>::type() );
+      }
     } else {
-      _M_insert_overflow( __pos, __x, typename __has_trivial_move<_Tp>::type(), __n );
+      if ( &__x >= this->_M_start && &__x < this->_M_finish ) {
+        _Tp __x_copy( __x );
+        _M_insert_overflow( __pos, __x_copy, typename __has_trivial_move<_Tp>::type(), __n );
+      } else {
+        _M_insert_overflow( __pos, __x, typename __has_trivial_move<_Tp>::type(), __n );
+      }
     }
   }
 }

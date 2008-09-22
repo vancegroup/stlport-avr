@@ -340,8 +340,6 @@ void VectorTest::pointer()
 
 void VectorTest::auto_ref()
 {
-  return; // self-ref disabled by standard
-
   vector<int> ref;
   for (int i = 0; i < 5; ++i) {
     ref.push_back(i);
