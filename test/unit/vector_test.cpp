@@ -418,12 +418,12 @@ namespace std {
 namespace tr1 {
 
   template <>
-  struct has_trivial_constructor<PointEx> :
+  struct has_trivial_default_constructor<PointEx> :
         public false_type
   { };
 
   template <>
-  struct has_trivial_copy<PointEx> :
+  struct has_trivial_copy_constructor<PointEx> :
         public true_type
   { };
 

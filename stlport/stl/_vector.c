@@ -80,7 +80,7 @@ void vector<_Tp, _Alloc>::reserve(size_type __n) {
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_insert_overflow_aux(pointer __pos, const _Tp& __x, const false_type& /*DO NOT USE!!*/,
                                                  size_type __fill_len, bool __atend ) {
-  typedef typename has_trivial_constructor<_Tp>::type _TrivialUCopy;
+  typedef typename has_trivial_default_constructor<_Tp>::type _TrivialUCopy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
   typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
@@ -139,7 +139,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert_aux(iterator __pos, size_type __n,
 template <class _Tp, class _Alloc>
 void vector<_Tp, _Alloc>::_M_fill_insert_aux (iterator __pos, size_type __n,
                                               const _Tp& __x, const false_type& /*_Movable*/) {
-  typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+  typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
   typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
   //Here self referencing needs to be checked even for non movable types.
   if (_M_is_inside(__x)) {
@@ -181,7 +181,7 @@ void vector<_Tp, _Alloc>::_M_fill_insert(iterator __pos,
 template <class _Tp, class _Alloc>
 vector<_Tp, _Alloc>& vector<_Tp, _Alloc>::operator = (const vector<_Tp, _Alloc>& __x) {
   typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
-  typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+  typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
   if (&__x != this) {
     const size_type __xlen = __x.size();
     if (__xlen > capacity()) {

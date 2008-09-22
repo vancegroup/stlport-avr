@@ -403,12 +403,12 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp>
-struct has_trivial_constructor<allocator<_Tp> > :
+struct has_trivial_default_constructor<allocator<_Tp> > :
     public true_type
 { };
 
 template <class _Tp>
-struct has_trivial_copy<allocator<_Tp> > :
+struct has_trivial_copy_constructor<allocator<_Tp> > :
     public true_type
 { };
 

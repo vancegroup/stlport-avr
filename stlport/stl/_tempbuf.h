@@ -110,7 +110,7 @@ public:
 
   _Temporary_buffer(_ForwardIterator __first, _ForwardIterator __last) {
     // Workaround for a __type_traits bug in the pre-7.3 compiler.
-    typedef typename has_trivial_constructor<_Tp>::type  _Trivial;
+    typedef typename has_trivial_default_constructor<_Tp>::type  _Trivial;
     _STLP_TRY {
       _M_len = _STLP_STD::distance(__first, __last);
       _M_allocate_buffer();

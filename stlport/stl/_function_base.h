@@ -90,12 +90,12 @@ struct less : public binary_function<_Tp,_Tp,bool>
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp>
-struct has_trivial_constructor<less<_Tp> > :
+struct has_trivial_default_constructor<less<_Tp> > :
     public true_type
 { };
 
 template <class _Tp>
-struct has_trivial_copy<less<_Tp> > :
+struct has_trivial_copy_constructor<less<_Tp> > :
     public true_type
 { };
 

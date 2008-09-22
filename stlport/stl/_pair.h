@@ -156,13 +156,13 @@ _STLP_BEGIN_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _T1, class _T2>
-struct has_trivial_constructor<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_constructor<_T1>::value && has_trivial_constructor<_T2>::value>
+struct has_trivial_default_constructor<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_default_constructor<_T1>::value && has_trivial_default_constructor<_T2>::value>
 { };
 
 template <class _T1, class _T2>
-struct has_trivial_copy<pair<_T1, _T2> > :
-    public integral_constant<bool, has_trivial_copy<_T1>::value && has_trivial_copy<_T2>::value>
+struct has_trivial_copy_constructor<pair<_T1, _T2> > :
+    public integral_constant<bool, has_trivial_copy_constructor<_T1>::value && has_trivial_copy_constructor<_T2>::value>
 { };
 
 template <class _T1, class _T2>

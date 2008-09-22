@@ -207,12 +207,12 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Value, class _Traits>
-struct has_trivial_constructor<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+struct has_trivial_default_constructor<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
     public false_type
 { };
 
 template <class _Value, class _Traits>
-struct has_trivial_copy<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
+struct has_trivial_copy_constructor<_STLP_PRIV _Rb_tree_iterator<_Value, _Traits> > :
     public true_type
 { };
 

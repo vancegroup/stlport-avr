@@ -311,12 +311,12 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Traits>
-struct has_trivial_constructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
+struct has_trivial_default_constructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
     public false_type
 { };
 
 template <class _Tp, class _Traits>
-struct has_trivial_copy<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
+struct has_trivial_copy_constructor<_STLP_PRIV _Deque_iterator<_Tp, _Traits> > :
     public true_type
 { };
 
@@ -507,7 +507,7 @@ public:                         // Constructor, destructor.
 #if !defined (_STLP_DONT_SUP_DFLT_PARAM)
 private:
   void _M_initialize(size_type __n, const value_type& __val = _STLP_DEFAULT_CONSTRUCTED(_Tp)) {
-    typedef typename has_trivial_constructor<_Tp>::type _TrivialInit;
+    typedef typename has_trivial_default_constructor<_Tp>::type _TrivialInit;
     _M_fill_initialize(__val, _TrivialInit());
   }
 public:
@@ -518,7 +518,7 @@ public:
 #else
   explicit deque(size_type __n)
     : _STLP_PRIV _Deque_base<_Tp, _Alloc>(allocator_type(), __n) {
-    typedef typename has_trivial_constructor<_Tp>::type _TrivialInit;
+    typedef typename has_trivial_default_constructor<_Tp>::type _TrivialInit;
     _M_fill_initialize(_STLP_DEFAULT_CONSTRUCTED(_Tp), _TrivialInit());
   }
   deque(size_type __n, const value_type& __val)

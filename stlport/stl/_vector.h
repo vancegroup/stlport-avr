@@ -247,7 +247,7 @@ public:
 
   vector(const _Self& __x)
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__x.size(), __x.get_allocator()) {
-    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+    typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
     this->_M_finish = _STLP_PRIV __ucopy_ptrs(__x.begin(), __x.end(), this->_M_start, _TrivialUCopy());
   }
 
@@ -296,7 +296,7 @@ public:
   vector(const _Tp* __first, const _Tp* __last,
          const allocator_type& __a = allocator_type())
     : _STLP_PRIV _Vector_base<_Tp, _Alloc>(__last - __first, __a) {
-    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+    typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
     this->_M_finish = _STLP_PRIV __ucopy_ptrs(__first, __last, this->_M_start, _TrivialUCopy());
   }
 #endif /* _STLP_MEMBER_TEMPLATES */
@@ -423,7 +423,7 @@ private:
                                const_iterator __first, const_iterator __last,
 #endif
                                size_type __n) {
-    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+    typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
 #if !defined (_STLP_NO_MOVE_SEMANTIC)
     typedef typename __move_traits<_Tp>::implemented _Movable;
 #endif
@@ -469,7 +469,7 @@ private:
                            const_iterator __first, const_iterator __last,
 #endif
                            size_type __n, const false_type& /*_Movable*/) {
-    typedef typename has_trivial_copy<_Tp>::type _TrivialUCopy;
+    typedef typename has_trivial_copy_constructor<_Tp>::type _TrivialUCopy;
     typedef typename has_trivial_assign<_Tp>::type _TrivialCopy;
     const size_type __elems_after = this->_M_finish - __pos;
     pointer __old_finish = this->_M_finish;

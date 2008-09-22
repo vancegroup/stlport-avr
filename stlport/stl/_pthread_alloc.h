@@ -241,12 +241,12 @@ __stl_alloc_create(pthread_allocator<_Tp1>&, const _Tp2*)
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp>
-struct has_trivial_constructor<pthread_allocator<_Tp> > :
+struct has_trivial_default_constructor<pthread_allocator<_Tp> > :
     public true_type
 { };
 
 template <class _Tp>
-struct has_trivial_copy<pthread_allocator<_Tp> > :
+struct has_trivial_copy_constructor<pthread_allocator<_Tp> > :
     public true_type
 { };
 
@@ -425,7 +425,7 @@ __stl_alloc_create(per_thread_allocator<_Tp1>&, const _Tp2*)
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp>
-struct has_trivial_copy<per_thread_allocator<_Tp> > :
+struct has_trivial_copy_constructor<per_thread_allocator<_Tp> > :
     public true_type
 { };
 

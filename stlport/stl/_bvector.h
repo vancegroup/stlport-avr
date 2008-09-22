@@ -91,12 +91,12 @@ inline void swap(_STLP_PRIV _Bit_reference& __x, _STLP_PRIV _Bit_reference& __y)
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <>
-struct has_trivial_constructor<_STLP_PRIV _Bit_reference> :
+struct has_trivial_default_constructor<_STLP_PRIV _Bit_reference> :
     public false_type
 { };
 
 template <>
-struct has_trivial_copy<_STLP_PRIV _Bit_reference> :
+struct has_trivial_copy_constructor<_STLP_PRIV _Bit_reference> :
     public true_type
 { };
 
@@ -259,12 +259,12 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Ref, class _Ptr>
-struct has_trivial_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+struct has_trivial_default_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
     public false_type
 { };
 
 template <class _Ref, class _Ptr>
-struct has_trivial_copy<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
+struct has_trivial_copy_constructor<_STLP_PRIV _Bit_iter<_Ref, _Ptr> > :
     public true_type
 { };
 

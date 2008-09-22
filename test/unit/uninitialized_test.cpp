@@ -57,13 +57,13 @@ namespace std {
 namespace tr1 {
 
   template <>
-  struct has_trivial_constructor<TrivialCopyStruct> :
+  struct has_trivial_default_constructor<TrivialCopyStruct> :
         public false_type
   { };
 
   //This is a wrong declaration just to check that internaly a simple memcpy is called:
   template <>
-  struct has_trivial_copy<TrivialCopyStruct> :
+  struct has_trivial_copy_constructor<TrivialCopyStruct> :
         public true_type
   { };
 
@@ -79,12 +79,12 @@ namespace tr1 {
 
   //This is a wrong declaration just to check that internaly no initialization is done:
   template <>
-  struct has_trivial_constructor<TrivialInitStruct> :
+  struct has_trivial_default_constructor<TrivialInitStruct> :
         public true_type
   { };
 
   template <>
-  struct has_trivial_copy<TrivialInitStruct> :
+  struct has_trivial_copy_constructor<TrivialInitStruct> :
         public true_type
   { };
 

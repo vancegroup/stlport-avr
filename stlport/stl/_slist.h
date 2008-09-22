@@ -127,7 +127,7 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _Tp, class _Traits>
-struct has_trivial_copy<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > :
+struct has_trivial_copy_constructor<_STLP_PRIV _Slist_iterator<_Tp, _Traits> > :
     public true_type
 { };
 

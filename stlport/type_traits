@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/09/04 12:22:17 ptr>
+// -*- C++ -*- Time-stamp: <08/09/06 00:16:00 ptr>
 
 /*
  * Copyright (c) 2007, 2008
@@ -511,12 +511,12 @@ struct is_empty
 // is_abstract
 
 template <class _Tp>
-struct has_trivial_constructor :
+struct has_trivial_default_constructor :
     public integral_constant<bool, is_pod<_Tp>::value>
 { };
 
 template <class _Tp>
-struct has_trivial_copy :
+struct has_trivial_copy_constructor :
     public integral_constant<bool, is_pod<_Tp>::value>
 { };
 
@@ -536,7 +536,7 @@ struct has_nothrow_constructor :
 { };
 
 template <class _Tp>
-struct has_nothrow_copy :
+struct has_nothrow_copy_constructor :
     public integral_constant<bool, is_pod<_Tp>::value>
 { };
 

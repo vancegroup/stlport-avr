@@ -157,12 +157,12 @@ _STLP_MOVE_TO_STD_NAMESPACE
 _STLP_BEGIN_TR1_NAMESPACE
 
 template <class _BaseIte, class _Traits>
-struct has_trivial_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+struct has_trivial_default_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
     public false_type
 { };
 
 template <class _BaseIte, class _Traits>
-struct has_trivial_copy<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
+struct has_trivial_copy_constructor<_STLP_PRIV _Ht_iterator<_BaseIte, _Traits> > :
     public true_type
 { };
 
