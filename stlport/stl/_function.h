@@ -101,7 +101,7 @@ class unary_negate :
   public:
     typedef typename _Base::argument_type argument_type;
   private:
-    typedef typename conditional<is_pod<argument_type>::value,argument_type,typename add_const<typename add_lvalue_reference<argument_type>::type>::type>::type _ArgParamType;
+    typedef typename conditional<is_pod<argument_type>::value,argument_type,typename add_lvalue_reference<typename add_const<argument_type>::type>::type>::type _ArgParamType;
   protected:
     _Predicate _M_pred;
   public:
@@ -131,8 +131,8 @@ class binary_negate :
     typedef typename _Base::second_argument_type second_argument_type;
 
   private:
-    typedef typename conditional<is_pod<first_argument_type>::value,first_argument_type,typename add_const<typename add_lvalue_reference<first_argument_type>::type>::type>::type _FstArgParamType;
-    typedef typename conditional<is_pod<second_argument_type>::value,second_argument_type,typename add_const<typename add_lvalue_reference<second_argument_type>::type>::type>::type _SndArgParamType;
+    typedef typename conditional<is_pod<first_argument_type>::value,first_argument_type,typename add_lvalue_reference<typename add_const<first_argument_type>::type>::type>::type _FstArgParamType;
+    typedef typename conditional<is_pod<second_argument_type>::value,second_argument_type,typename add_lvalue_reference<typename add_const<second_argument_type>::type>::type>::type _SndArgParamType;
 
   protected:
     _Predicate _M_pred;
@@ -241,7 +241,7 @@ class unary_compose :
     typedef typename _Base::argument_type argument_type;
     typedef typename _Base::result_type result_type;
   private:
-    typedef typename add_const<typename add_lvalue_reference<argument_type>::type>::type _ArgParamType;
+    typedef typename add_lvalue_reference<typename add_const<argument_type>::type>::type _ArgParamType;
   protected:
     _Operation1 _M_fn1;
     _Operation2 _M_fn2;
@@ -268,7 +268,7 @@ class binary_compose :
     typedef typename _Base::argument_type argument_type;
     typedef typename _Base::result_type result_type;
   private:
-    typedef typename add_const<typename add_lvalue_reference<argument_type>::type>::type _ArgParamType;
+    typedef typename add_lvalue_reference<typename add_const<argument_type>::type>::type _ArgParamType;
   protected:
     _Operation1 _M_fn1;
     _Operation2 _M_fn2;
