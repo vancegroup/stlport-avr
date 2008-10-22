@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <07/05/31 22:18:20 ptr>
+# -*- Makefile -*- Time-stamp: <06/11/17 00:25:42 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
 # Petr Ovtchenkov
@@ -26,7 +26,7 @@ ifdef PRGNAME
 	@-rm -f $(OBJ_STLDBG) $(DEP_STLDBG)
 endif
 ifdef LIBNAME
-	@-rm -f $(OBJ) $(DEP) $(_LSUPCPP_AUX_OBJ) $(_LSUPCPP_AUX_TSMP)
+	@-rm -f $(OBJ) $(DEP)
 	@-rm -f $(OBJ_DBG) $(DEP_DBG)
 	@-rm -f $(OBJ_STLDBG) $(DEP_STLDBG)
 endif
@@ -44,5 +44,5 @@ mostlyclean::	clean
 	@-rm -f TAGS tags
 
 maintainer-clean::	distclean
-	@rm -f ${RULESBASE}/gmake/config.mak
+	@rm -f ${RULESBASE}/config.mak
 	@-rm -f TAGS tags

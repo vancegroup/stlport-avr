@@ -1,5 +1,16 @@
-# -*- makefile -*- Time-stamp: <03/07/15 18:23:04 ptr>
-# $Id: lib.mak 3023 2007-05-16 20:01:32Z dums $
+# -*- makefile -*- Time-stamp: <07/05/31 08:56:06 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 LIB_PREFIX ?=
 

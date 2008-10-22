@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <08/06/12 16:03:31 ptr>
+# -*- Makefile -*- Time-stamp: <08/10/22 15:48:09 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -60,14 +60,14 @@ ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
 
-ifeq ($(OSNAME),cygming)
+ifeq ($(OSNAME),windows)
 _USE_NOSTDLIB := 1
 endif
 endif
 
 ifndef WITHOUT_STLPORT
 ifeq (${STLPORT_LIB_DIR},)
-ifneq ($(OSNAME),cygming)
+ifneq ($(OSNAME),windows)
 release-shared:	STLPORT_LIB = -lstlport
 release-static:	STLPORT_LIB = -Wl,-Bstatic -lstlport -Wl,-Bdynamic
 dbg-shared:	STLPORT_LIB = -lstlportg
@@ -82,7 +82,7 @@ stldbg-shared  : STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
 endif
 else
 # STLPORT_LIB_DIR not empty
-ifneq ($(OSNAME),cygming)
+ifneq ($(OSNAME),windows)
 release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport
 release-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlport -Wl,-Bdynamic
 dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg
@@ -91,9 +91,9 @@ stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg
 stldbg-static:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -Wl,-Bstatic -lstlportstlg -Wl,-Bdynamic
 else
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
-release-shared : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlport.${LIB_VERSION}
-dbg-shared     : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlportg.${LIB_VERSION}
-stldbg-shared  : STLPORT_LIB = -L${BASE_INSTALL_DIR}/lib -lstlportstlg.${LIB_VERSION}
+release-shared : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport.${LIB_VERSION}
+dbg-shared     : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg.${LIB_VERSION}
+stldbg-shared  : STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg.${LIB_VERSION}
 endif
 endif
 
@@ -182,7 +182,7 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 #LDFLAGS += -dynamic
 endif
 
-ifeq ($(OSNAME),cygming)
+ifeq ($(OSNAME),windows)
 LDFLAGS += -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
@@ -207,13 +207,12 @@ else
 LDFLAGS += -nostdlib
 endif
 
-# endif
 # _USE_NOSTDLIB
 else
 ifndef USE_STATIC_LIBGCC
-release-shared : LDFLAGS += -shared-libgcc
-dbg-shared : LDFLAGS += -shared-libgcc
-stldbg-shared : LDFLAGS += -shared-libgcc
+release-shared :	LDFLAGS += -shared-libgcc
+dbg-shared :	LDFLAGS += -shared-libgcc
+stldbg-shared :	LDFLAGS += -shared-libgcc
 endif
 ifndef WITHOUT_STLPORT
 STDLIBS = ${STLPORT_LIB}
@@ -224,7 +223,7 @@ endif
 
 # workaround for gcc 2.95.x bug:
 ifeq ($(CXX_VERSION_MAJOR),2)
-ifneq ($(OSNAME),cygming)
+ifneq ($(OSNAME),windows)
 OPT += -fPIC
 endif
 endif

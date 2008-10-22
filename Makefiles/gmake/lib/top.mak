@@ -11,7 +11,7 @@
 
 LDFLAGS ?= 
 
-ifneq ("$(findstring $(OSNAME),darwin cygming)","")
+ifneq ("$(findstring $(OSNAME),darwin windows)","")
 include ${RULESBASE}/gmake/${OSNAME}/lib.mak
 else
 include ${RULESBASE}/gmake/unix/lib.mak
@@ -19,7 +19,7 @@ endif
 
 include ${RULESBASE}/gmake/lib/${COMPILER_NAME}.mak
 
-ifneq ("$(findstring $(OSNAME),cygming)","")
+ifneq ("$(findstring $(OSNAME),windows)","")
 include ${RULESBASE}/gmake/${OSNAME}/rules-so.mak
 else
 include ${RULESBASE}/gmake/unix/rules-so.mak
@@ -27,7 +27,7 @@ endif
 
 include ${RULESBASE}/gmake/lib/rules-a.mak
 
-ifneq ("$(findstring $(OSNAME),cygming)","")
+ifneq ("$(findstring $(OSNAME),windows)","")
 include ${RULESBASE}/gmake/${OSNAME}/rules-install-so.mak
 else
 include ${RULESBASE}/gmake/unix/rules-install-so.mak

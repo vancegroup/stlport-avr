@@ -1,4 +1,4 @@
-# Time-stamp: <08/01/29 09:40:35 ptr>
+# Time-stamp: <08/01/29 09:44:51 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov

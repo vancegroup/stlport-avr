@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <06/12/12 09:37:04 ptr>
+# -*- makefile -*- Time-stamp: <07/12/21 18:39:57 yeti>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
 # Petr Ovtchenkov
@@ -33,6 +33,14 @@ INSTALL_PRGNAME_CMD_STLDBG += $$(INSTALL_EXE) $${$(1)_PRG_STLDBG} $$(INSTALL_BIN
 endif
 endef
 
+define prog_strip_install
+${STRIP} ${_INSTALL_STRIP_OPTION} $$(INSTALL_BIN_DIR)/$${INSTALL_$(1)_PRGNAME};
+endef
+
+ifndef INSTALL_STRIP_TAGS
+INSTALL_STRIP_TAGS := install-strip-shared
+endif
+
 INSTALL_PRGNAME := ${PRGNAME}${EXE}
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_install,$(prg))))
 
@@ -47,6 +55,17 @@ ifdef PRGNAME
 	$(INSTALL_EXE) ${PRG} $(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}
 endif
 	$(INSTALL_PRGNAME_CMD)
+	$(POST_INSTALL)
+
+install-strip:	${INSTALL_STRIP_TAGS} $(INSTALL_BIN_DIR)
+
+install-strip-shared:	release-shared $(INSTALL_BIN_DIR)
+ifdef PRGNAME
+	$(INSTALL_EXE) ${PRG} $(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}
+	${STRIP} ${_INSTALL_STRIP_OPTION} $(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}
+endif
+	$(INSTALL_PRGNAME_CMD)
+	$(foreach prg,$(PRGNAMES),$(eval $(call prog_strip_install,$(prg))))
 	$(POST_INSTALL)
 
 install-dbg-shared: dbg-shared $(INSTALL_BIN_DIR_DBG)
@@ -64,3 +83,5 @@ endif
 	$(INSTALL_PRGNAME_CMD_STLDBG)
 	$(POST_INSTALL_STLDBG)
 endif
+
+PHONY += install-strip install-strip-shared

@@ -46,7 +46,7 @@ endif
 # if sources disposed in several dirs, calculate appropriate rules
 
 DIRS_UNIQUE_SRC := $(dir $(SRC_CPP) $(SRC_CC) $(SRC_CXX) $(SRC_C) $(SRC_S) )
-ifeq (${OSNAME},cygming)
+ifeq (${OSNAME},windows)
 DIRS_UNIQUE_SRC := ${DIRS_UNIQUE_SRC} $(dir $(SRC_RC) )
 endif
 DIRS_UNIQUE_SRC := $(sort $(DIRS_UNIQUE_SRC) $(PRGS_DIR_SRC))
@@ -111,7 +111,7 @@ ifneq ($(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_A_STLDBG))
 $(call rule_o,_A_STLDBG,$(1))
 endif
 endif
-ifeq ($(OSNAME),cygming)
+ifeq ($(OSNAME),windows)
 $(call rule_rc,,$(1))
 $(call rule_rc,_DBG,$(1))
 ifndef WITHOUT_STLPORT
@@ -123,7 +123,7 @@ endef
 $(foreach dir,$(DIRS_UNIQUE_SRC),$(eval $(call rules_,$(dir))))
 
 ALLBASE    := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S)))
-ifeq (${OSNAME},cygming)
+ifeq (${OSNAME},windows)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
 

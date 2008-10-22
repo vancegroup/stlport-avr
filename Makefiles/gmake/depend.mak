@@ -1,6 +1,6 @@
-# Time-stamp: <07/02/05 12:57:11 ptr>
+# Time-stamp: <08/10/22 16:58:11 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -34,12 +34,12 @@ endif
 depend::	$(OUTPUT_DIRS) ${_DASH_DEP}
 	@cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
 
+ifneq ($(OSNAME),windows)
 TAGS:	$(OUTPUT_DIRS) ${_DASH_DEP}
-	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations 
+	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations
 
-ifneq ($(OSREALNAME),mingw)
 tags:	$(OUTPUT_DIRS) ${_DASH_DEP}
-	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T
+	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T 
 endif
 
 -include $(DEPENDS_COLLECTION)

@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <08/06/12 15:54:12 ptr>
+# -*- makefile -*- Time-stamp: <08/06/12 13:55:47 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
@@ -56,6 +56,6 @@ distclean::
 
 uninstall::
 ifdef PRGNAME
-	@-rm -f $(INSTALL_BIN_DIR)/${PRGNAME}${EXE} $(INSTALL_BIN_DIR_DBG)/${PRGNAME}${EXE} $(INSTALL_BIN_DIR_STLDBG)/${PRGNAME}${EXE}
+	@-rm -f $(INSTALL_BIN_DIR)/$(PRG) $(INSTALL_BIN_DIR_DBG)/$(PRG_DBG) $(INSTALL_BIN_DIR_STLDBG)/$(PRG_STLDBG)
 endif
 	@-rmdir -p $(INSTALL_BIN_DIR) $(INSTALL_BIN_DIR_DBG) $(INSTALL_BIN_DIR_STLDBG) 2>/dev/null

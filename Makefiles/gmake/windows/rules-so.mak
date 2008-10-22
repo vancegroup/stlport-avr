@@ -1,5 +1,16 @@
-# -*- makefile -*- Time-stamp: <03/10/27 18:15:05 ptr>
-# $Id: rules-so.mak 3113 2007-08-08 19:05:21Z dums $
+# -*- makefile -*- Time-stamp: <07/05/31 00:13:32 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 # Shared libraries tags
 

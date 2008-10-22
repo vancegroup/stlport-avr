@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <08/06/06 11:01:34 yeti>
+# -*- Makefile -*- Time-stamp: <08/10/22 15:23:34 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
@@ -18,6 +18,15 @@ include ${SRCROOT}/Makefiles/gmake/top.mak
 
 ifdef WITHOUT_STLPORT
 DEFS += -DWITHOUT_STLPORT
+endif
+
+ifneq ($(OSNAME),windows)
+ifneq ($(CXX_VERSION_MAJOR),2)
+ifneq ($(CXX_VERSION_MAJOR),3)
+CXXFLAGS += -fvisibility=hidden
+CFLAGS += -fvisibility=hidden
+endif
+endif
 endif
 
 dbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED

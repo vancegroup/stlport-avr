@@ -1,4 +1,4 @@
-# Time-stamp: <07/08/16 09:13:19 ptr>
+# Time-stamp: <07/05/30 23:51:19 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -21,12 +21,12 @@ endif
 # RedHat use nonstandard options for uname at least in cygwin,
 # macro should be overwritten:
 ifeq (cygwin,$(findstring cygwin,$(OSNAME)))
-OSNAME    := cygming
+OSNAME    := windows
 OSREALNAME := $(shell uname -o | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 
 ifeq (mingw,$(findstring mingw,$(OSNAME)))
-OSNAME    := cygming
+OSNAME    := windows
 OSREALNAME := mingw
 endif
 
@@ -35,9 +35,6 @@ ifeq ($(OSNAME),darwin)
 OSREL  := $(shell sw_vers -productVersion | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
-ifeq ($(M_ARCH),power-macintosh)
-M_ARCH := ppc
-endif
 ifeq ($(OSNAME),hp-ux)
 P_ARCH := unknown
 else
@@ -77,12 +74,12 @@ BUILD_OSNAME := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' 
 # RedHat use nonstandard options for uname at least in cygwin,
 # macro should be overwritten:
 ifeq (cygwin,$(findstring cygwin,$(BUILD_OSNAME)))
-BUILD_OSNAME    := cygming
+BUILD_OSNAME    := windows
 BUILD_OSREALNAME := $(shell uname -o | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 
 ifeq (mingw,$(findstring mingw,$(BUILD_OSNAME)))
-BUILD_OSNAME    := cygming
+BUILD_OSNAME    := windows
 BUILD_OSREALNAME := mingw
 endif
 

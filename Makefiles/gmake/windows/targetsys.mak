@@ -1,5 +1,16 @@
-# Time-stamp: <05/09/09 21:03:45 ptr>
-# $Id: targetsys.mak 2109 2006-01-22 14:15:51Z dums $
+# Time-stamp: <07/05/31 00:07:23 ptr>
+#
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Petr Ovtchenkov
+#
+# Copyright (c) 2006, 2007
+# Francois Dumont
+#
+# Portion Copyright (c) 1999-2001
+# Parallel Graphics Ltd.
+#
+# Licensed under the Academic Free License version 3.0
+#
 
 CC ?= gcc
 CXX ?= g++

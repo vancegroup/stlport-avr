@@ -13,12 +13,6 @@
 
 PHONY += release-static dbg-static stldbg-static
 
-ifneq ($(_LSUPCPP_OBJ),"")
-$(_LSUPCPP_AUX_TSMP):	$(_LSUPCPP)
-	if [ ! -d $(AUX_DIR) ]; then mkdir -p $(AUX_DIR); fi
-	cd $(AUX_DIR); $(AR) xo $(_LSUPCPP) && touch -r $(_LSUPCPP) $(_LSUPCPP_TSMP)
-endif
-
 release-static: $(OUTPUT_DIR_A) ${A_NAME_OUT}
 
 dbg-static:	$(OUTPUT_DIR_A_DBG) ${A_NAME_OUT_DBG}

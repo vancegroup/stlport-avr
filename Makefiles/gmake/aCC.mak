@@ -1,4 +1,4 @@
-# Time-stamp: <08/01/12 00:51:07 ptr>
+# Time-stamp: <07/05/31 01:07:37 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
@@ -31,9 +31,7 @@ CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { pr
 DEFS ?=
 OPT ?=
 
-ifndef WITHOUT_THREAD
 DEFS += -D_REENTRANT
-endif
 OUTPUT_OPTION = -o $@
 LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)

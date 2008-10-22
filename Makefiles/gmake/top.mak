@@ -1,4 +1,4 @@
-# Time-stamp: <08/06/06 17:34:38 yeti>
+# Time-stamp: <08/10/22 17:17:38 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
@@ -50,32 +50,9 @@ ALL_TAGS += dbg-static
 endif
 endif
 
-ifndef _NO_STLDBG_BUILD
-ifndef WITHOUT_STLPORT
-ifndef _NO_SHARED_BUILD
-ALL_TAGS += stldbg-shared
-endif
-ifdef _STATIC_BUILD
-ALL_TAGS += stldbg-static
-endif
-endif
-endif
-
 endif
 
 all:	$(OUTPUT_DIRS) $(ALL_TAGS)
-
-ifndef WITHOUT_STLPORT
-all-static:	release-static	dbg-static	stldbg-static
-all-shared:	release-shared	dbg-shared	stldbg-shared
-else
-all-static:	release-static	dbg-static
-all-shared:	release-shared	dbg-shared
-endif
-
-ifdef WITHOUT_STLPORT
-NOT_USE_NOSTDLIB := 1
-endif
 
 ifndef OSNAME
 # identify OS and build date
@@ -87,6 +64,30 @@ include ${RULESBASE}/gmake/$(BUILD_OSNAME)/sys.mak
 include ${RULESBASE}/gmake/$(OSNAME)/targetsys.mak
 # Extern projects for everyday usage and settings for ones
 include ${RULESBASE}/gmake/extern.mak
+
+ifdef WITHOUT_STLPORT
+NOT_USE_NOSTDLIB := 1
+endif
+
+ifndef _NO_STLDBG_BUILD
+ifndef WITHOUT_STLPORT
+ifndef _NO_SHARED_BUILD
+ALL_TAGS += stldbg-shared
+endif
+ifdef _STATIC_BUILD
+ALL_TAGS += stldbg-static
+endif
+endif
+endif
+
+ifndef WITHOUT_STLPORT
+all-static:	release-static dbg-static stldbg-static
+all-shared:	release-shared dbg-shared stldbg-shared
+else
+all-static:	release-static dbg-static
+all-shared:	release-shared dbg-shared
+endif
+
 # compiler, compiler options
 include ${RULESBASE}/gmake/$(COMPILER_NAME).mak
 # rules to make dirs for targets
