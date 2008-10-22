@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <06/11/17 00:25:42 ptr>
+# -*- Makefile -*- Time-stamp: <08/10/22 18:32:42 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -44,5 +44,5 @@ mostlyclean::	clean
 	@-rm -f TAGS tags
 
 maintainer-clean::	distclean
-	@rm -f ${RULESBASE}/config.mak
+	@rm -f ${RULESBASE}/gmake/config.mak
 	@-rm -f TAGS tags

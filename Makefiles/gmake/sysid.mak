@@ -1,6 +1,6 @@
-# Time-stamp: <07/05/30 23:51:19 ptr>
+# Time-stamp: <08/10/22 18:37:19 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -35,6 +35,9 @@ ifeq ($(OSNAME),darwin)
 OSREL  := $(shell sw_vers -productVersion | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
+ifeq ($(M_ARCH),power-macintosh)
+M_ARCH := ppc
+endif
 ifeq ($(OSNAME),hp-ux)
 P_ARCH := unknown
 else
