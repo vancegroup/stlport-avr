@@ -1,0 +1,651 @@
+// -*- C++ -*- Time-stamp: <08/03/26 01:58:08 ptr>
+
+/*
+ * Copyright (c) 1997-1999, 2002-2008
+ * Petr Ovtchenkov
+ *
+ * Portion Copyright (c) 1999-2001
+ * Parallel Graphics Ltd.
+ *
+ * Licensed under the Academic Free License version 3.0
+ *
+ * Derived from original <mt/xmt.h> of 'complement' project
+ * [http://complement.sourceforge.net]
+ * to make it close to JTC1/SC22/WG21 C++ 0x working draft
+ * [http://www.open-std.org/Jtc1/sc22/wg21/docs/papers/2008/n2521.pdf]
+ */
+
+#ifndef __THREAD_H
+#define __THREAD_H
+
+#ifndef __config_feature_h
+#include <config/feature.h>
+#endif
+
+#include <memory>
+#include <cstddef>
+#include <stdexcept>
+
+#ifdef WIN32
+# include <windows.h>
+# include <memory>
+# include <limits>
+# define ETIME   62      /* timer expired */
+# pragma warning( disable : 4290)
+#endif // WIN32
+
+#ifdef __unix
+# include <pthread.h>
+# include <semaphore.h>
+# include <sched.h>
+#endif // __unix
+
+#include <cerrno>
+#include <mt/mutex>
+#include <mt/condition_variable>
+#include <mt/date_time>
+#include <mt/callstack.h>
+
+namespace std {
+
+namespace tr2 {
+
+namespace this_thread
+{ }
+
+namespace detail {
+void _dealloc_uw();
+} // namespace detail
+
+#ifndef _WIN32
+class fork_in_parent :
+        public std::exception
+{
+  public:
+    fork_in_parent() throw()
+      { _pid = 0; }
+    fork_in_parent( pid_t p ) throw()
+      { _pid = p; }
+    virtual ~fork_in_parent() throw()
+      { }
+    virtual const char *what() const throw()
+      { return "class fork_in_parent"; }
+    pid_t pid() throw()
+      { return _pid; }
+
+  private:
+    pid_t _pid;
+};
+#endif // !_WIN32
+
+__FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+
+class thread_base
+{
+  public:
+#ifdef __FIT_PTHREADS
+    typedef void * ret_t;
+#endif
+#ifdef __FIT_WIN32THREADS
+    typedef long ret_t;
+#endif
+
+    typedef ret_t (*entrance_type)( void * );
+#ifdef __FIT_WIN32THREADS
+    typedef unsigned long thread_key_type;
+    typedef HANDLE native_handle_type;
+    // typedef unsigned long thread_id_type;
+#endif
+#ifdef __FIT_PTHREADS
+    typedef pthread_key_t thread_key_type;
+    typedef pthread_t     native_handle_type;
+    // typedef pthread_t     thread_id_type;
+#endif
+
+    class id
+    {
+      private:
+        typedef thread_base::native_handle_type _thread_id_type;
+// #ifdef __FIT_WIN32THREADS
+//         typedef unsigned long _thread_id_type;
+// #endif
+
+      public:
+        id();
+
+        bool operator == ( const thread_base::id& r ) const
+          { return _id == r._id; }
+        bool operator != ( const thread_base::id& r ) const
+          { return _id == r._id; }
+        bool operator < ( const thread_base::id& r ) const
+          { return _id < r._id; }
+        bool operator <= ( const thread_base::id& r ) const
+          { return _id <= r._id; }
+        bool operator > ( const thread_base::id& r ) const
+          { return _id > r._id; }
+        bool operator >= ( const thread_base::id& r ) const
+          { return _id >= r._id; }
+
+      protected:
+        id( _thread_id_type i ) :
+            _id( i )
+          { }
+
+      protected:
+
+        _thread_id_type _id;
+
+        friend class thread_base;
+        friend id get_id(void);
+        // friend __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+    };
+
+    enum {
+      // thread mode flags
+#if defined(__FIT_PTHREADS)
+      bound     = PTHREAD_SCOPE_SYSTEM,   // otherwise, PTHREAD_SCOPE_PROCESS, default
+      detached  = PTHREAD_CREATE_DETACHED,// otherwise, PTHREAD_CREATE_JOINABLE, default
+      new_lwp   = 0, // pthread_setconcurrency( pthread_getconcurrency() + 1 );
+      suspended = 0,
+      daemon    = detached
+#endif
+#ifdef __FIT_WIN32THREADS
+      bound     = 0,
+      detached  = 0x2,
+      new_lwp   = 0,
+      suspended = CREATE_SUSPENDED,
+      daemon    = detached
+#endif
+    };
+
+    class Init
+    {
+      public:
+        Init();
+        ~Init();
+      private:
+        static void __at_fork_prepare();
+        static void __at_fork_parent();
+        static void __at_fork_child();
+        static int& _count;
+    };
+
+    __FIT_DECLSPEC thread_base();
+    __FIT_DECLSPEC ~thread_base();
+
+    __FIT_DECLSPEC void join();
+
+    bool joinable() const; // if true, you can (and should) use join()
+    id get_id() const
+      { return id(_id); }
+    void detach();
+
+  protected:
+    void print_stack()
+      {
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        std::stringstream s;
+        callstack( s );
+
+        std::cerr << "Suspected uncatched exception, threas id " << me._id
+                  << "\nStack when thread was created:\n" << _stack_on_create
+                  << "\nCurrent stack is:\n" << s.str() << std::endl;
+#endif
+      }
+
+  private:
+    thread_base( const thread_base& )
+      { }
+
+  protected:
+    native_handle_type _id;
+
+  private:
+    mutex _id_lock;
+#ifdef __FIT_WIN32THREADS
+    unsigned long _thr_id;
+#endif
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+    std::string _stack_on_create;
+#endif
+    friend class Init;
+    friend __FIT_DECLSPEC void fork() throw( fork_in_parent, std::runtime_error );
+};
+
+template <unsigned F, size_t S>
+class basic_thread :
+    public thread_base
+{
+  public:
+    template <class Entry>
+    basic_thread( Entry e ) :
+        _entry(0),
+        sem( 0 )
+      {
+#ifdef __FIT_PTHREADS
+        pthread_attr_t attr;
+        if ( F != 0 || S != 0 ) {
+          pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+          // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+          if ( F & bound ) {
+            pthread_attr_setscope( &attr, bound ); // PTHREAD_SCOPE_PROCESS
+          }
+          if ( F & detached ) { // the same as daemon: detached == daemon for POSIX
+            pthread_attr_setdetachstate( &attr, detached ); // PTHREAD_CREATE_DETACHED
+          }
+          if ( S != 0 ) {
+            pthread_attr_setstacksize( &attr, S > PTHREAD_STACK_MIN ? S : PTHREAD_STACK_MIN /* PTHREAD_STACK_MIN * 2 */ );
+          }
+          // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+          // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+        }
+        _entry = static_cast<void *>( new Entry( e ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        native_handle_type _id_tmp;
+        int err = pthread_create( (F & detached) != 0 ? &_id_tmp : &this->_id, F != 0 || S != 0 ? &attr : 0, &_call<Entry>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set if required
+          delete static_cast<Entry *>(_entry);
+          if ( F & detached ) {
+            // reset condition (_entry free, ready for delete)
+            _entry = 0;
+          }
+        }
+        if ( F != 0 || S != 0 ) {
+          pthread_attr_destroy( &attr );
+        }
+#endif
+      }
+
+    template <class Entry, class Arg1 >
+    basic_thread( Entry e, Arg1 arg1 ) :
+        _entry( 0 ),
+        sem( 0 )
+      {
+#ifdef __FIT_PTHREADS
+        pthread_attr_t attr;
+        if ( F != 0 || S != 0 ) {
+          pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+          // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+          if ( F & bound ) {
+            pthread_attr_setscope( &attr, bound ); // PTHREAD_SCOPE_PROCESS
+          }
+          if ( F & detached ) { // the same as daemon: detached == daemon for POSIX
+            pthread_attr_setdetachstate( &attr, detached ); // PTHREAD_CREATE_DETACHED
+          }
+          if ( S != 0 ) {
+            pthread_attr_setstacksize( &attr, S > PTHREAD_STACK_MIN ? S : PTHREAD_STACK_MIN /* PTHREAD_STACK_MIN * 2 */ );
+          }
+          // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+          // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+        }
+        _entry = static_cast<void *>(new void *[2]);
+        static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
+        static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        native_handle_type _id_tmp;
+        int err = pthread_create( (F & detached) != 0 ? &_id_tmp : &this->_id, F != 0 || S != 0 ? &attr : 0, &_call<Entry,Arg1>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set if required
+          delete static_cast<Arg1 *>( static_cast<void **>(_entry)[1] );
+          delete static_cast<Entry *>( static_cast<void **>(_entry)[0] );
+          delete [] static_cast<void **>(_entry);
+          if ( F & detached ) {
+            _entry = 0; // reset condition (_entry free, ready for delete)
+          }
+        }
+        if ( F != 0 || S != 0 ) {
+          pthread_attr_destroy( &attr );
+        }
+#endif
+      }
+
+    ~basic_thread()
+      {
+         if ( F & detached ) {
+           if ( _entry != 0 ) {
+             // condition wait
+             sem.wait();
+           }
+         }
+      }
+
+  private:
+    basic_thread( const basic_thread& )
+      { }
+
+    void *_entry;
+    semaphore sem;
+
+    template <class Entry>
+    static void *_call( void *p )
+      {
+         basic_thread<F,S>& me = *reinterpret_cast<basic_thread<F,S>*>(p);
+         Entry entry( *static_cast<Entry *>(me._entry) );
+         delete static_cast<Entry *>(me._entry);
+
+         if ( F & detached ) {
+           me._entry = 0;
+           me.sem.notify_one(); // condition signal (me._entry free, ready for delete)
+         }
+
+         try {
+           entry();
+           std::tr2::detail::_dealloc_uw();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::tr2::detail::_dealloc_uw();
+           std::terminate();
+         }
+
+         return 0;
+      }
+
+    template <class Entry, class Arg1 >
+    static void *_call( void *p )
+      {
+         basic_thread<F,S>& me = *reinterpret_cast<basic_thread<F,S>*>(p);
+         Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
+         Arg1 arg1( *static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] ) );
+         delete static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] );
+         delete static_cast<Entry *>( static_cast<void **>(me._entry)[0] );
+         delete [] static_cast<void **>(me._entry);
+
+         if ( F & detached ) {
+           me._entry = 0;
+           me.sem.notify_one(); // condition signal (me._entry free, ready for delete)
+         }
+
+         try {
+           entry( arg1 );
+           std::tr2::detail::_dealloc_uw();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::tr2::detail::_dealloc_uw();
+           std::terminate();
+         }
+
+         return 0;
+      }
+};
+
+template <>
+class basic_thread<0,0> :
+    public thread_base
+{
+  public:
+    template <class Entry>
+    basic_thread( Entry e )
+      {
+#ifdef __FIT_PTHREADS
+        _entry = static_cast<void *>( new Entry( e ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        int err = pthread_create( &this->_id, 0, &_call<Entry>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set
+          delete static_cast<Entry *>(_entry);
+        }
+#endif
+      }
+
+    template <class Entry, class Arg1 >
+    basic_thread( Entry e, Arg1 arg1 )
+      {
+#ifdef __FIT_PTHREADS
+        _entry = static_cast<void *>(new void *[2]);
+        static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
+        static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        int err = pthread_create( &this->_id, 0, &_call<Entry,Arg1>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set
+          delete static_cast<Arg1 *>( static_cast<void **>(_entry)[1] );
+          delete static_cast<Entry *>( static_cast<void **>(_entry)[0] );
+          delete [] static_cast<void **>(_entry);
+        }
+#endif
+      }
+
+    ~basic_thread()
+      { }
+
+  private:
+    basic_thread( const basic_thread& )
+      { }
+
+    void *_entry;
+
+    template <class Entry>
+    static void *_call( void *p )
+      {
+         basic_thread<0,0>& me = *reinterpret_cast<basic_thread<0,0>*>(p);
+         Entry entry( *static_cast<Entry *>(me._entry) );
+         delete static_cast<Entry *>(me._entry);
+
+         try {
+           entry();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::terminate();
+         }
+
+         return 0;
+      }
+
+    template <class Entry, class Arg1 >
+    static void *_call( void *p )
+      {
+         basic_thread<0,0>& me = *reinterpret_cast<basic_thread<0,0>*>(p);
+         Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
+         Arg1 arg1( *static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] ) );
+         delete static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] );
+         delete static_cast<Entry *>( static_cast<void **>(me._entry)[0] );
+         delete [] static_cast<void **>(me._entry);
+
+         try {
+           entry( arg1 );
+           std::tr2::detail::_dealloc_uw();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::tr2::detail::_dealloc_uw();
+           std::terminate();
+         }
+
+         return 0;
+      }
+};
+
+template <size_t S>
+class basic_thread<0,S> :
+    public thread_base
+{
+  public:
+    template <class Entry>
+    basic_thread( Entry e )
+      {
+#ifdef __FIT_PTHREADS
+        pthread_attr_t attr;
+        pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+        // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+        pthread_attr_setstacksize( &attr, S > PTHREAD_STACK_MIN ? S : PTHREAD_STACK_MIN /* PTHREAD_STACK_MIN * 2 */ );
+        // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+        // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+        _entry = static_cast<void *>( new Entry( e ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        int err = pthread_create( &this->_id, &attr, &_call<Entry>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set
+          delete static_cast<Entry *>(_entry);
+        }
+        pthread_attr_destroy( &attr );
+#endif
+      }
+
+    template <class Entry, class Arg1 >
+    basic_thread( Entry e, Arg1 arg1 )
+      {
+#ifdef __FIT_PTHREADS
+        pthread_attr_t attr;
+        pthread_attr_init( &attr ); // pthread_attr_create --- HP-UX 10.20
+        // pthread_attr_setstacksize( &attr, 0x80000 ); // min 0x50000
+        pthread_attr_setstacksize( &attr, S > PTHREAD_STACK_MIN ? S : PTHREAD_STACK_MIN /* PTHREAD_STACK_MIN * 2 */ );
+        // pthread_attr_setinheritsched( &attr, PTHREAD_EXPLICIT_SCHED );
+        // pthread_attr_setschedpolicy(&attr,SCHED_OTHER);
+        _entry = static_cast<void *>(new void *[2]);
+        static_cast<void **>(_entry)[0] = static_cast<void *>( new Entry( e ) );
+        static_cast<void **>(_entry)[1] = static_cast<void *>( new Arg1( arg1 ) );
+#ifdef __FIT_CREATE_THREAD_STACK_INFO
+        // _stack_on_create
+        {
+          std::stringstream s;
+          callstack( s );
+          _stack_on_create = s.str();
+        }
+#endif
+        int err = pthread_create( &this->_id, 0, &_call<Entry,Arg1>, this );
+        if ( err != 0 ) {
+          // _id = id(); -- not required, already set
+          delete static_cast<Arg1 *>( static_cast<void **>(_entry)[1] );
+          delete static_cast<Entry *>( static_cast<void **>(_entry)[0] );
+          delete [] static_cast<void **>(_entry);
+        }
+        pthread_attr_destroy( &attr );
+#endif
+      }
+
+    ~basic_thread()
+      { }
+
+  private:
+    basic_thread( const basic_thread& )
+      { }
+
+    void *_entry;
+
+    template <class Entry>
+    static void *_call( void *p )
+      {
+         basic_thread<0,S>& me = *reinterpret_cast<basic_thread<0,S>*>(p);
+         Entry entry( *static_cast<Entry *>(me._entry) );
+         delete static_cast<Entry *>(me._entry);
+
+         try {
+           entry();
+           std::tr2::detail::_dealloc_uw();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::tr2::detail::_dealloc_uw();
+           std::terminate();
+         }
+
+         return 0;
+      }
+
+    template <class Entry, class Arg1 >
+    static void *_call( void *p )
+      {
+         basic_thread<0,S>& me = *reinterpret_cast<basic_thread<0,S>*>(p);
+         Entry entry( *static_cast<Entry *>( static_cast<void **>(me._entry)[0] ) );
+         Arg1 arg1( *static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] ) );
+         delete static_cast<Arg1 *>( static_cast<void **>(me._entry)[1] );
+         delete static_cast<Entry *>( static_cast<void **>(me._entry)[0] );
+         delete [] static_cast<void **>(me._entry);
+
+         try {
+           entry( arg1 );
+           std::tr2::detail::_dealloc_uw();
+         }
+         catch ( ... ) {
+           me.print_stack();
+           std::tr2::detail::_dealloc_uw();
+           std::terminate();
+         }
+
+         return 0;
+      }
+};
+
+typedef basic_thread<0,0> thread;
+
+// trick to declare thread_base::id get_id() as friend in thread_base::id
+thread_base::id get_id();
+
+pid_t getpid();
+pid_t getppid();
+
+namespace this_thread
+{
+using tr2::fork;
+
+__FIT_DECLSPEC void become_daemon() throw( fork_in_parent, std::runtime_error );
+
+// std::thread_base::id get_id();
+using tr2::get_id;
+
+inline void yield()
+{
+#ifdef __FIT_PTHREADS
+  sched_yield();
+#endif
+}
+
+__FIT_DECLSPEC void sleep( const std::tr2::system_time& abs_t );
+
+__FIT_DECLSPEC void sleep( const std::tr2::nanoseconds& rel_t );
+
+template <class Duration>
+void sleep( const Duration& rel_t )
+{ std::tr2::this_thread::sleep( static_cast<std::tr2::nanoseconds>(rel_t) ); }
+
+__FIT_DECLSPEC int xalloc();
+
+__FIT_DECLSPEC long& iword( int __idx );
+__FIT_DECLSPEC void*& pword( int __idx );
+
+} // namespace this_thread
+
+} // namespace tr2
+
+} // namespace std
+
+#endif /* __THREAD_H */
