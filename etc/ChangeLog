@@ -1,3 +1,14 @@
+2008-10-25  Petr Ovtchenkov  <ptr@void-ptr.info>
+
+	* assert.h, errno.h: do #include <assert.h> only if 
+	assert not defined, but don't print error in other case;
+	this allow bypass stlport's headers;
+
+	* cassert, cerrno: do #include <assert.h> insead of
+	#include_next <cassert>; this allow bypass problem with
+	#includ_next <assert.h> in gcc 4.3.x, that include
+	/usr/include/assert.h, not stlport/assert.h.
+
 2008-08-26  Petr Ovtchenkov  <complement@users.sourceforge.net>
 
 	* Repository: branch for STLport 5.2, r3618
