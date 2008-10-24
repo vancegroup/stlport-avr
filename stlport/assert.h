@@ -22,17 +22,12 @@
 
 /* evc3 doesn't have assert.h; macro assert() is defined in stl_evc.h */
 #ifndef _STLP_WCE_EVC3
-#  if !defined (assert)
-#    define _STLP_NATIVE_ASSERT_H_INCLUDED
+#  ifndef assert
 #    if defined (_STLP_HAS_INCLUDE_NEXT)
 #      include_next <assert.h>
 #    else
 #      include _STLP_NATIVE_C_HEADER(assert.h)
 #    endif
-#  endif
-#  if !defined (_STLP_NATIVE_ASSERT_H_INCLUDED)
-/* See errno.h for additional information about this #error */
-#    error assert has been defined before inclusion of assert.h header.
 #  endif
 #endif
 
@@ -43,8 +38,3 @@
 #  endif
 #  undef  _STLP_DONT_POP_HEADER_ID
 #endif
-
-/* Local Variables:
- * mode:C++
- * End:
- */
