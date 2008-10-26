@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/26 23:26:12 ptr>
+// -*- C++ -*- Time-stamp: <08/10/27 08:29:53 ptr>
 
 /*
  * Copyright (c) 2008
@@ -90,9 +90,9 @@ int main( int argc, const char** argv )
 
   exam::test_suite t( "STLport test" );
 
-  numerics num_test;
   vector_test vec_test;
-  exam::test_suite::test_case_type tc[64];
+
+  exam::test_suite::test_case_type vec_tc[16];
 
   t.add( &vector_test::vec_test_1, vec_test, "vec_test_1" );
   t.add( &vector_test::vec_test_2, vec_test, "vec_test_2" );
@@ -101,28 +101,37 @@ int main( int argc, const char** argv )
   t.add( &vector_test::vec_test_5, vec_test, "vec_test_5" );
   t.add( &vector_test::vec_test_6, vec_test, "vec_test_6" );
   t.add( &vector_test::vec_test_7, vec_test, "vec_test_7" );
-  t.add( &vector_test::capacity, vec_test, "capacity" );
-  t.add( &vector_test::at, vec_test, "at" );
-  t.add( &vector_test::pointer, vec_test, "pointer" );
-  t.add( &vector_test::auto_ref, vec_test, "auto_ref" );
-  t.add( &vector_test::allocator_with_state, vec_test, "allocator_with_state" );
-  t.add( &vector_test::iterators, vec_test, "iterators" );
-  t.add( &vector_test::optimizations_check, vec_test, "optimizations_check" );
-  t.add( &vector_test::assign_check, vec_test, "assign_check" );
-  t.add( &vector_test::ebo, vec_test, "ebo" );
+  t.add( &vector_test::capacity, vec_test, "vector capacity" );
+  t.add( &vector_test::at, vec_test, "vector at" );
+  t.add( &vector_test::pointer, vec_test, "vector pointer" );
+  t.add( &vector_test::auto_ref, vec_test, "vector auto_ref" );
+  t.add( &vector_test::allocator_with_state, vec_test, "vector allocator_with_state" );
+  vec_tc[12] = t.add( &vector_test::iterators, vec_test, "vector iterators" );
+  t.add( &vector_test::optimizations_check, vec_test, "vector optimizations_check" );
+  t.add( &vector_test::assign_check, vec_test, "vector assign_check" );
+  t.add( &vector_test::ebo, vec_test, "vector ebo" );
+
+  numerics num_test;
+
+  exam::test_suite::test_case_type num_tc[6];
 
   t.add( &numerics::accum2, num_test, "accumulate, non-default functor",
-    tc[0] = t.add( &numerics::accum1, num_test, "accumulate" ) );
+    num_tc[0] = t.add( &numerics::accum1, num_test, "accumulate" ) );
 
-  t.add( &numerics::times, num_test, "accumulate, multiplies<int> functor", tc[0] );
+  num_tc[1] = vec_tc[12];
+  t.add( &numerics::times, num_test, "accumulate, multiplies<int> functor", num_tc, num_tc + 2 );
 
-  tc[1] = t.add( &numerics::partsum0, num_test, "partial summ, raw array" );
-  tc[2] = t.add( &numerics::partsum1, num_test, "partial summ, vector", tc[1] );
-  t.add( &numerics::partsum2, num_test, "partial summ, multiplies<int> functor", tc[2] );
+  num_tc[1] = t.add( &numerics::partsum0, num_test, "partial summ, raw array" );
+  num_tc[2] = vec_tc[12];
+  num_tc[2] = t.add( &numerics::partsum1, num_test, "partial summ, vector", num_tc + 1, num_tc + 3 );
+  num_tc[3] = vec_tc[12];
+  t.add( &numerics::partsum2, num_test, "partial summ, multiplies<int> functor", num_tc + 2, num_tc + 4 );
 
-  tc[3] = t.add( &numerics::innprod0, num_test, "inner product, raw array" );
-  tc[4] = t.add( &numerics::innprod1, num_test, "inner product, vector", tc[3] );
-  t.add( &numerics::innprod2, num_test, "inner product, userdefined functors", tc[4] );
+  num_tc[3] = t.add( &numerics::innprod0, num_test, "inner product, raw array" );
+  num_tc[4] = vec_tc[12];
+  num_tc[4] = t.add( &numerics::innprod1, num_test, "inner product, vector", num_tc + 3, num_tc + 5 );
+  num_tc[5] = vec_tc[12];
+  t.add( &numerics::innprod2, num_test, "inner product, userdefined functors", num_tc + 4, num_tc + 6 );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );
