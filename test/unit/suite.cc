@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/26 20:47:04 ptr>
+// -*- C++ -*- Time-stamp: <08/10/26 22:25:03 ptr>
 
 /*
  * Copyright (c) 2008
@@ -13,6 +13,8 @@
 #include <misc/opts.h>
 #include <string>
 #include <sstream>
+
+#include "numerics.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -85,28 +87,46 @@ int main( int argc, const char** argv )
     return 0;
   }
 
+  exam::test_suite t( "STLport test" );
+
+  numerics num_test;
+  exam::test_suite::test_case_type tc[64];
+
+  t.add( &numerics::accum2, num_test, "accumulate, non-default functor",
+    tc[0] = t.add( &numerics::accum1, num_test, "accumulate" ) );
+
+  t.add( &numerics::times, num_test, "accumulate, multiplies<int> functor", tc[0] );
+
+  tc[1] = t.add( &numerics::partsum0, num_test, "partial summ, raw array" );
+  tc[2] = t.add( &numerics::partsum1, num_test, "partial summ, vector", tc[1] );
+  t.add( &numerics::partsum2, num_test, "partial summ, multiplies<int> functor", tc[2] );
+
+  tc[3] = t.add( &numerics::innprod0, num_test, "inner product, raw array" );
+  tc[4] = t.add( &numerics::innprod1, num_test, "inner product, vector", tc[3] );
+  t.add( &numerics::innprod2, num_test, "inner product, userdefined functors", tc[4] );
+
   if ( opts.is_set( 'l' ) ) {
-//    t.print_graph( std::cerr );
+    t.print_graph( std::cerr );
     return 0;
   }
 
   if ( opts.is_set( 'v' ) ) {
-//    t.flags( t.flags() | exam::base_logger::verbose );
+    t.flags( t.flags() | exam::base_logger::verbose );
   }
 
   if ( opts.is_set( 't' ) ) {
-//    t.flags( t.flags() | exam::base_logger::trace );
+    t.flags( t.flags() | exam::base_logger::trace );
   }
 
   if ( opts.is_set( 'r' ) ) {
     std::stringstream ss( opts.get<std::string>( 'r' ) );
     int n;
     while ( ss >> n ) {
-//      t.single( n );
+      t.single( n );
     }
 
     return 0;
   }
 
-  return /* t.girdle() */ test_main();
+  return t.girdle() + test_main();
 }

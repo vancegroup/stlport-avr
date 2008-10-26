@@ -1,13 +1,13 @@
-# -*- makefile -*- Time-stamp: <08/10/26 20:41:57 ptr>
+# -*- makefile -*- Time-stamp: <08/10/26 22:25:37 ptr>
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 5
 LIBMINOR = 2
 
 PRGNAME = stl_unit_test
-SRC_CC = suite.cc
-SRC_CPP = accum_test.cpp \
-	adj_test.cpp \
+SRC_CC = suite.cc \
+        numerics.cc
+SRC_CPP = adj_test.cpp \
 	advance_test.cpp \
 	alg_test.cpp \
 	algorithm_header_test.cpp \
@@ -70,7 +70,6 @@ SRC_CPP = accum_test.cpp \
 	hash_test.cpp \
 	heap_test.cpp \
 	includes_test.cpp \
-	innerprod_test.cpp \
 	inplace_test.cpp \
 	insert_test.cpp \
 	ioiter_test.cpp \
@@ -151,7 +150,6 @@ SRC_CPP = accum_test.cpp \
 	strstream_buffer_read_test.cpp \
 	strstream_header_test.cpp \
 	swap_test.cpp \
-	times_test.cpp \
 	transform_test.cpp \
 	typeinfo_header_test.cpp \
 	unary_test.cpp \

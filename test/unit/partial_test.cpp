@@ -30,9 +30,6 @@ class PartialTest : public CPPUNIT_NS::TestCase
 #if defined (_STLP_DO_CHECK_BAD_PREDICATE)
   CPPUNIT_TEST(bad_predicate_detected);
 #endif
-  CPPUNIT_TEST(partsum0);
-  CPPUNIT_TEST(partsum1);
-  CPPUNIT_TEST(partsum2);
   CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -42,9 +39,6 @@ protected:
   void parsrtc0();
   void parsrtc1();
   void parsrtc2();
-  void partsum0();
-  void partsum1();
-  void partsum2();
   void bad_predicate_detected();
 
   static bool str_compare(const char* a_, const char* b_)
@@ -196,53 +190,3 @@ void PartialTest::bad_predicate_detected()
   { /*OK bad predicate has been detected.*/ }
 }
 #endif
-
-void PartialTest::partsum0()
-{
-  int numbers[6] = { 1, 2, 3, 4, 5, 6 };
-
-  int result[6];
-  partial_sum((int*)numbers, (int*)numbers + 6, (int*)result);
-
-  // 1 3 6 10 15 21
-  CPPUNIT_ASSERT(result[0]==1);
-  CPPUNIT_ASSERT(result[1]==3);
-  CPPUNIT_ASSERT(result[2]==6);
-  CPPUNIT_ASSERT(result[3]==10);
-  CPPUNIT_ASSERT(result[4]==15);
-  CPPUNIT_ASSERT(result[5]==21);
-}
-
-void PartialTest::partsum1()
-{
-  vector <int> v1(10);
-  __iota(v1.begin(), v1.end(), 0);
-  vector <int> v2(v1.size());
-  partial_sum(v1.begin(), v1.end(), v2.begin());
-
-  // 0 1 3 6 10 15 21 28 36 45
-  CPPUNIT_ASSERT(v2[0]==0);
-  CPPUNIT_ASSERT(v2[1]==1);
-  CPPUNIT_ASSERT(v2[2]==3);
-  CPPUNIT_ASSERT(v2[3]==6);
-  CPPUNIT_ASSERT(v2[4]==10);
-  CPPUNIT_ASSERT(v2[5]==15);
-  CPPUNIT_ASSERT(v2[6]==21);
-  CPPUNIT_ASSERT(v2[7]==28);
-  CPPUNIT_ASSERT(v2[8]==36);
-  CPPUNIT_ASSERT(v2[9]==45);
-}
-
-void PartialTest::partsum2()
-{
-  vector <int> v1(5);
-  __iota(v1.begin(), v1.end(), 1);
-  vector <int> v2(v1.size());
-  partial_sum(v1.begin(), v1.end(), v2.begin(), multiplies<int>());
-  // 1 2 6 24 120
-  CPPUNIT_ASSERT(v2[0]==1);
-  CPPUNIT_ASSERT(v2[1]==2);
-  CPPUNIT_ASSERT(v2[2]==6);
-  CPPUNIT_ASSERT(v2[3]==24);
-  CPPUNIT_ASSERT(v2[4]==120);
-}
