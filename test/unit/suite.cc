@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/26 22:25:03 ptr>
+// -*- C++ -*- Time-stamp: <08/10/26 23:26:12 ptr>
 
 /*
  * Copyright (c) 2008
@@ -14,6 +14,7 @@
 #include <string>
 #include <sstream>
 
+#include "vector_test.h"
 #include "numerics.h"
 
 // ------------
@@ -90,7 +91,25 @@ int main( int argc, const char** argv )
   exam::test_suite t( "STLport test" );
 
   numerics num_test;
+  vector_test vec_test;
   exam::test_suite::test_case_type tc[64];
+
+  t.add( &vector_test::vec_test_1, vec_test, "vec_test_1" );
+  t.add( &vector_test::vec_test_2, vec_test, "vec_test_2" );
+  t.add( &vector_test::vec_test_3, vec_test, "vec_test_3" );
+  t.add( &vector_test::vec_test_4, vec_test, "vec_test_4" );
+  t.add( &vector_test::vec_test_5, vec_test, "vec_test_5" );
+  t.add( &vector_test::vec_test_6, vec_test, "vec_test_6" );
+  t.add( &vector_test::vec_test_7, vec_test, "vec_test_7" );
+  t.add( &vector_test::capacity, vec_test, "capacity" );
+  t.add( &vector_test::at, vec_test, "at" );
+  t.add( &vector_test::pointer, vec_test, "pointer" );
+  t.add( &vector_test::auto_ref, vec_test, "auto_ref" );
+  t.add( &vector_test::allocator_with_state, vec_test, "allocator_with_state" );
+  t.add( &vector_test::iterators, vec_test, "iterators" );
+  t.add( &vector_test::optimizations_check, vec_test, "optimizations_check" );
+  t.add( &vector_test::assign_check, vec_test, "assign_check" );
+  t.add( &vector_test::ebo, vec_test, "ebo" );
 
   t.add( &numerics::accum2, num_test, "accumulate, non-default functor",
     tc[0] = t.add( &numerics::accum1, num_test, "accumulate" ) );
