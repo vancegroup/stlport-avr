@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <08/10/22 15:23:34 ptr>
+# -*- Makefile -*- Time-stamp: <08/10/26 20:48:38 ptr>
 
 SRCROOT := ../..
 COMPILER_NAME := gcc
@@ -34,6 +34,8 @@ ifndef WITHOUT_STLPORT
 stldbg-shared:	DEFS += -D_STLP_DEBUG_UNINITIALIZED
 endif
 
+INCLUDES += -I../include -I./cppunit
+
 ifdef STLP_BUILD_BOOST_PATH
 INCLUDES += -I${STLP_BUILD_BOOST_PATH}
 endif
@@ -60,9 +62,18 @@ stldbg-shared:  LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Wl,-R${STL
 endif
 
 ifeq ($(OSNAME), linux)
-release-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR} -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR}
-dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}
-stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}
+release-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR} \
+  -L../misc/${OUTPUT_DIR} -L../exam/${OUTPUT_DIR} \
+  -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR}:../misc/${OUTPUT_DIR}:../exam/${OUTPUT_DIR}
+release-shared:	LDLIBS += -lopts -lexam
+dbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_DBG} \
+  -L../misc/${OUTPUT_DIR_DBG} -L../exam/${OUTPUT_DIR_DBG} \
+  -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR_DBG}:../misc/${OUTPUT_DIR_DBG}:../exam/${OUTPUT_DIR_DBG}
+dbg-shared:	LDLIBS += -loptsg -lexamg
+stldbg-shared:	LDFLAGS += -L${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG} \
+  -L../misc/${OUTPUT_DIR_STLDBG} -L../exam/${OUTPUT_DIR_STLDBG} \
+  -Wl,-rpath=${STLPORT_DIR}/src/${OUTPUT_DIR_STLDBG}:../misc/${OUTPUT_DIR_STLDBG}:../exam/${OUTPUT_DIR_STLDBG}
+stldbg-shared:	LDLIBS += -loptsstlg -lexamstlg
 endif
 
 ifeq ($(OSNAME), hp-ux)

@@ -1,12 +1,12 @@
-# -*- makefile -*- Time-stamp: <07/06/27 20:39:05 ptr>
+# -*- makefile -*- Time-stamp: <08/10/26 20:41:57 ptr>
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 5
 LIBMINOR = 2
 
 PRGNAME = stl_unit_test
-SRC_CPP = cppunit/test_main.cpp \
-	accum_test.cpp \
+SRC_CC = suite.cc
+SRC_CPP = accum_test.cpp \
 	adj_test.cpp \
 	advance_test.cpp \
 	alg_test.cpp \
