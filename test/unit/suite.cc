@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/27 09:31:08 ptr>
+// -*- C++ -*- Time-stamp: <08/10/27 10:13:25 ptr>
 
 /*
  * Copyright (c) 2008
@@ -16,6 +16,7 @@
 
 #include "vector_test.h"
 #include "deque_test.h"
+#include "list_test.h"
 #include "numerics.h"
 
 // ------------
@@ -121,6 +122,21 @@ int main( int argc, const char** argv )
   t.add( &deque_test::auto_ref, deq_test, "deque auto_ref" );
   t.add( &deque_test::allocator_with_state, deq_test, "deque allocator_with_state" );
   t.add( &deque_test::optimizations_check, deq_test, "deque optimizations_check" );
+
+  list_test lst_test;
+
+  t.add( &list_test::list1, lst_test, "list1" );
+  t.add( &list_test::list2, lst_test, "list2" );
+  t.add( &list_test::list3, lst_test, "list3" );
+  t.add( &list_test::list4, lst_test, "list4" );
+  t.add( &list_test::erase, lst_test, "list erase" );
+  t.add( &list_test::resize, lst_test, "list resize" );
+  t.add( &list_test::push_back, lst_test, "list push_back" );
+  t.add( &list_test::push_front, lst_test, "list push_front" );
+  t.add( &list_test::allocator_with_state, lst_test, "list allocator_with_state" );
+  t.add( &list_test::swap, lst_test, "list swap" );
+  t.add( &list_test::adl, lst_test, "list adl" );
+  // t.add( &list_test::const_list, lst_test, "const_list" );
 
   numerics num_test;
 
