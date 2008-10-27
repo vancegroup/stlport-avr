@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/27 10:13:25 ptr>
+// -*- C++ -*- Time-stamp: <08/10/27 23:51:55 ptr>
 
 /*
  * Copyright (c) 2008
@@ -17,6 +17,7 @@
 #include "vector_test.h"
 #include "deque_test.h"
 #include "list_test.h"
+#include "slist_test.h"
 #include "numerics.h"
 
 // ------------
@@ -137,6 +138,14 @@ int main( int argc, const char** argv )
   t.add( &list_test::swap, lst_test, "list swap" );
   t.add( &list_test::adl, lst_test, "list adl" );
   // t.add( &list_test::const_list, lst_test, "const_list" );
+
+  slist_test slst_test;
+
+  t.add( &slist_test::slist1, slst_test, "slist1" );
+  t.add( &slist_test::erase, slst_test, "slist erase" );
+  t.add( &slist_test::insert, slst_test, "slist insert" );
+  t.add( &slist_test::splice, slst_test, "slist splice" );
+  t.add( &slist_test::allocator_with_state, slst_test, "slist allocator_with_state" );
 
   numerics num_test;
 
