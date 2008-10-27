@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/27 08:29:53 ptr>
+// -*- C++ -*- Time-stamp: <08/10/27 09:31:08 ptr>
 
 /*
  * Copyright (c) 2008
@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "vector_test.h"
+#include "deque_test.h"
 #include "numerics.h"
 
 // ------------
@@ -110,6 +111,16 @@ int main( int argc, const char** argv )
   t.add( &vector_test::optimizations_check, vec_test, "vector optimizations_check" );
   t.add( &vector_test::assign_check, vec_test, "vector assign_check" );
   t.add( &vector_test::ebo, vec_test, "vector ebo" );
+
+  deque_test deq_test;
+
+  t.add( &deque_test::deque1, deq_test, "deque1" );
+  t.add( &deque_test::at, deq_test, "deque at" );
+  t.add( &deque_test::insert, deq_test, "deque insert" );
+  t.add( &deque_test::erase, deq_test, "deque erase" );
+  t.add( &deque_test::auto_ref, deq_test, "deque auto_ref" );
+  t.add( &deque_test::allocator_with_state, deq_test, "deque allocator_with_state" );
+  t.add( &deque_test::optimizations_check, deq_test, "deque optimizations_check" );
 
   numerics num_test;
 
