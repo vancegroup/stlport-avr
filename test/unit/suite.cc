@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/27 23:51:55 ptr>
+// -*- C++ -*- Time-stamp: <08/10/28 00:40:30 ptr>
 
 /*
  * Copyright (c) 2008
@@ -18,6 +18,7 @@
 #include "deque_test.h"
 #include "list_test.h"
 #include "slist_test.h"
+#include "string_test.h"
 #include "numerics.h"
 
 // ------------
@@ -146,6 +147,38 @@ int main( int argc, const char** argv )
   t.add( &slist_test::insert, slst_test, "slist insert" );
   t.add( &slist_test::splice, slst_test, "slist splice" );
   t.add( &slist_test::allocator_with_state, slst_test, "slist allocator_with_state" );
+
+  string_test str_test;
+
+  t.add( &string_test::constructor, str_test, "constructor" );
+  t.add( &string_test::trivial_char_compare, str_test, "trivial_char_compare" );
+  t.add( &string_test::reserve, str_test, "reserve" );
+  t.add( &string_test::assign, str_test, "assign" );
+  t.add( &string_test::erase, str_test, "erase" );
+  t.add( &string_test::data, str_test, "data" );
+  t.add( &string_test::c_str, str_test, "c_str" );
+  t.add( &string_test::null_char, str_test, "null_char" );
+  t.add( &string_test::insert, str_test, "insert" );
+  t.add( &string_test::replace, str_test, "replace" );
+  t.add( &string_test::resize, str_test, "resize" );
+  t.add( &string_test::short_string, str_test, "short_string" );
+  t.add( &string_test::find, str_test, "find" );
+  t.add( &string_test::bogus_edge_find, str_test, "bogus_edge_find" );
+  t.add( &string_test::rfind, str_test, "rfind" );
+  t.add( &string_test::find_last_of, str_test, "find_last_of" );
+  t.add( &string_test::find_last_not_of, str_test, "find_last_not_of" );
+  t.add( &string_test::copy, str_test, "copy" );
+  t.add( &string_test::mt, str_test, "mt" );
+  t.add( &string_test::short_string_optim_bug, str_test, "short_string_optim_bug" );
+  t.add( &string_test::compare, str_test, "compare" );
+  t.add( &string_test::template_expression, str_test, "template_expression" );
+  t.add( &string_test::te_tmp, str_test, "te_tmp" );
+  t.add( &string_test::oper_tmp, str_test, "oper_tmp" );
+  t.add( &string_test::template_wexpression, str_test, "template_wexpression" );
+  t.add( &string_test::io, str_test, "io" );
+  t.add( &string_test::allocator_with_state, str_test, "allocator_with_state" );
+  t.add( &string_test::capacity, str_test, "capacity" );
+  t.add( &string_test::concat24, str_test, "concat24" );
 
   numerics num_test;
 
