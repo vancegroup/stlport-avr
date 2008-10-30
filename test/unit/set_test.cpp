@@ -1,3 +1,18 @@
+// -*- C++ -*- Time-stamp: <08/10/30 00:20:32 ptr>
+
+/*
+ * Copyright (c) 2004-2008
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#include "map_test.h"
+
 //Has to be first for StackAllocator swap overload to be taken
 //into account (at least using GCC 4.0.1)
 #include "stack_allocator.h"
@@ -5,122 +20,88 @@
 #include <set>
 #include <algorithm>
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class SetTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(SetTest);
-  CPPUNIT_TEST(set1);
-  CPPUNIT_TEST(set2);
-  CPPUNIT_TEST(erase);
-  CPPUNIT_TEST(insert);
-  CPPUNIT_TEST(find);
-  CPPUNIT_TEST(bounds);
-  CPPUNIT_TEST(specialized_less);
-  CPPUNIT_TEST(implementation_check);
-  CPPUNIT_TEST(allocator_with_state);
-  CPPUNIT_TEST(reverse_iterator_test);
-#if !defined (STLPORT) || !defined (_STLP_USE_CONTAINERS_EXTENSION)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(template_methods);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void set1();
-  void set2();
-  void erase();
-  void insert();
-  void find();
-  void bounds();
-  void specialized_less();
-  void implementation_check();
-  void allocator_with_state();
-  void reverse_iterator_test();
-  void template_methods();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(SetTest);
-
-
-//
-// tests implementation
-//
-void SetTest::set1()
+int EXAM_IMPL(set_test::set1)
 {
   set<int, less<int> > s;
-  CPPUNIT_ASSERT (s.count(42) == 0);
+  EXAM_CHECK (s.count(42) == 0);
   s.insert(42);
-  CPPUNIT_ASSERT (s.count(42) == 1);
+  EXAM_CHECK (s.count(42) == 1);
   s.insert(42);
-  CPPUNIT_ASSERT (s.count(42) == 1);
+  EXAM_CHECK (s.count(42) == 1);
   size_t count = s.erase(42);
-  CPPUNIT_ASSERT (count == 1);
+  EXAM_CHECK (count == 1);
+
+  return EXAM_RESULT;
 }
 
-void SetTest::set2()
+int EXAM_IMPL(set_test::set2)
 {
   typedef set<int, less<int> > int_set;
   int_set s;
   pair<int_set::iterator, bool> p = s.insert(42);
-  CPPUNIT_ASSERT (p.second == true);
+  EXAM_CHECK (p.second == true);
   p = s.insert(42);
-  CPPUNIT_ASSERT (p.second == false);
+  EXAM_CHECK (p.second == false);
 
   int array1 [] = { 1, 3, 6, 7 };
   s.insert(array1, array1 + 4);
-  CPPUNIT_ASSERT (distance(s.begin(), s.end()) == 5);
+  EXAM_CHECK (distance(s.begin(), s.end()) == 5);
 
   int_set s2;
   s2.swap(s);
-  CPPUNIT_ASSERT (distance(s2.begin(), s2.end()) == 5);
-  CPPUNIT_ASSERT (distance(s.begin(), s.end()) == 0);
+  EXAM_CHECK (distance(s2.begin(), s2.end()) == 5);
+  EXAM_CHECK (distance(s.begin(), s.end()) == 0);
 
   int_set s3;
   s3.swap(s);
   s3.swap(s2);
-  CPPUNIT_ASSERT (distance(s.begin(), s.end()) == 0);
-  CPPUNIT_ASSERT (distance(s2.begin(), s2.end()) == 0);
-  CPPUNIT_ASSERT (distance(s3.begin(), s3.end()) == 5);
+  EXAM_CHECK (distance(s.begin(), s.end()) == 0);
+  EXAM_CHECK (distance(s2.begin(), s2.end()) == 0);
+  EXAM_CHECK (distance(s3.begin(), s3.end()) == 5);
+
+  return EXAM_RESULT;
 }
 
-void SetTest::erase()
+int EXAM_IMPL(set_test::erase)
 {
   set<int, less<int> > s;
   s.insert(1);
   s.erase(s.begin());
-  CPPUNIT_ASSERT( s.empty() );
+  EXAM_CHECK( s.empty() );
 
   size_t nb = s.erase(1);
-  CPPUNIT_ASSERT(nb == 0);
+  EXAM_CHECK(nb == 0);
+
+  return EXAM_RESULT;
 }
 
-void SetTest::insert()
+int EXAM_IMPL(set_test::insert)
 {
   set<int> s;
   set<int>::iterator i = s.insert( s.end(), 0 );
-  CPPUNIT_ASSERT( *i == 0 );
+  EXAM_CHECK( *i == 0 );
+
+  return EXAM_RESULT;
 }
 
-void SetTest::find()
+int EXAM_IMPL(set_test::find)
 {
   set<int> s;
 
-  CPPUNIT_ASSERT( s.find(0) == s.end() );
+  EXAM_CHECK( s.find(0) == s.end() );
 
   set<int> const& crs = s;
 
-  CPPUNIT_ASSERT( crs.find(0) == crs.end() );
+  EXAM_CHECK( crs.find(0) == crs.end() );
+
+  return EXAM_RESULT;
 }
 
-void SetTest::bounds()
+int EXAM_IMPL(set_test::bounds)
 {
   int array1 [] = { 1, 3, 6, 7 };
   set<int> s(array1, array1 + sizeof(array1) / sizeof(array1[0]));
@@ -133,58 +114,60 @@ void SetTest::bounds()
 
   //Check iterator on mutable set
   sit = s.lower_bound(2);
-  CPPUNIT_ASSERT( sit != s.end() );
-  CPPUNIT_ASSERT( *sit == 3 );
+  EXAM_CHECK( sit != s.end() );
+  EXAM_CHECK( *sit == 3 );
 
   sit = s.upper_bound(5);
-  CPPUNIT_ASSERT( sit != s.end() );
-  CPPUNIT_ASSERT( *sit == 6 );
+  EXAM_CHECK( sit != s.end() );
+  EXAM_CHECK( *sit == 6 );
 
   pit = s.equal_range(6);
-  CPPUNIT_ASSERT( pit.first != pit.second );
-  CPPUNIT_ASSERT( pit.first != s.end() );
-  CPPUNIT_ASSERT( *pit.first == 6 );
-  CPPUNIT_ASSERT( pit.second != s.end() );
-  CPPUNIT_ASSERT( *pit.second == 7 );
+  EXAM_CHECK( pit.first != pit.second );
+  EXAM_CHECK( pit.first != s.end() );
+  EXAM_CHECK( *pit.first == 6 );
+  EXAM_CHECK( pit.second != s.end() );
+  EXAM_CHECK( *pit.second == 7 );
 
   pit = s.equal_range(4);
-  CPPUNIT_ASSERT( pit.first == pit.second );
-  CPPUNIT_ASSERT( pit.first != s.end() );
-  CPPUNIT_ASSERT( *pit.first == 6 );
-  CPPUNIT_ASSERT( pit.second != s.end() );
-  CPPUNIT_ASSERT( *pit.second == 6 );
+  EXAM_CHECK( pit.first == pit.second );
+  EXAM_CHECK( pit.first != s.end() );
+  EXAM_CHECK( *pit.first == 6 );
+  EXAM_CHECK( pit.second != s.end() );
+  EXAM_CHECK( *pit.second == 6 );
 
   //Check const_iterator on mutable set
   scit = s.lower_bound(2);
-  CPPUNIT_ASSERT( scit != s.end() );
-  CPPUNIT_ASSERT( *scit == 3 );
+  EXAM_CHECK( scit != s.end() );
+  EXAM_CHECK( *scit == 3 );
 
   scit = s.upper_bound(5);
-  CPPUNIT_ASSERT( scit != s.end() );
-  CPPUNIT_ASSERT( *scit == 6 );
+  EXAM_CHECK( scit != s.end() );
+  EXAM_CHECK( *scit == 6 );
 
   pcit = s.equal_range(6);
-  CPPUNIT_ASSERT( pcit.first != pcit.second );
-  CPPUNIT_ASSERT( pcit.first != s.end() );
-  CPPUNIT_ASSERT( *pcit.first == 6 );
-  CPPUNIT_ASSERT( pcit.second != s.end() );
-  CPPUNIT_ASSERT( *pcit.second == 7 );
+  EXAM_CHECK( pcit.first != pcit.second );
+  EXAM_CHECK( pcit.first != s.end() );
+  EXAM_CHECK( *pcit.first == 6 );
+  EXAM_CHECK( pcit.second != s.end() );
+  EXAM_CHECK( *pcit.second == 7 );
 
   //Check const_iterator on const set
   scit = crs.lower_bound(2);
-  CPPUNIT_ASSERT( scit != crs.end() );
-  CPPUNIT_ASSERT( *scit == 3 );
+  EXAM_CHECK( scit != crs.end() );
+  EXAM_CHECK( *scit == 3 );
 
   scit = crs.upper_bound(5);
-  CPPUNIT_ASSERT( scit != crs.end() );
-  CPPUNIT_ASSERT( *scit == 6 );
+  EXAM_CHECK( scit != crs.end() );
+  EXAM_CHECK( *scit == 6 );
 
   pcit = crs.equal_range(6);
-  CPPUNIT_ASSERT( pcit.first != pcit.second );
-  CPPUNIT_ASSERT( pcit.first != crs.end() );
-  CPPUNIT_ASSERT( *pcit.first == 6 );
-  CPPUNIT_ASSERT( pcit.second != crs.end() );
-  CPPUNIT_ASSERT( *pcit.second == 7 );
+  EXAM_CHECK( pcit.first != pcit.second );
+  EXAM_CHECK( pcit.first != crs.end() );
+  EXAM_CHECK( *pcit.first == 6 );
+  EXAM_CHECK( pcit.second != crs.end() );
+  EXAM_CHECK( *pcit.second == 7 );
+
+  return EXAM_RESULT;
 }
 
 
@@ -218,7 +201,7 @@ namespace std {
 }
 #endif
 
-void SetTest::specialized_less()
+int EXAM_IMPL(set_test::specialized_less)
 {
   set<SetTestClass> s;
   s.insert(SetTestClass(1));
@@ -229,27 +212,31 @@ void SetTest::specialized_less()
   set<SetTestClass>::iterator sit(s.begin()), sitEnd(s.end());
   int i = 0;
   for (; sit != sitEnd; ++sit, ++i) {
-    CPPUNIT_ASSERT( sit->data() == i );
+    EXAM_CHECK( sit->data() == i );
   }
+
+  return EXAM_RESULT;
 }
 
-void SetTest::implementation_check()
+int EXAM_IMPL(set_test::implementation_check)
 {
   set<int> tree;
   tree.insert(1);
   set<int>::iterator it = tree.begin();
   int const& int_ref = *it++;
-  CPPUNIT_ASSERT( int_ref == 1 );
+  EXAM_CHECK( int_ref == 1 );
 
-  CPPUNIT_ASSERT( it == tree.end() );
-  CPPUNIT_ASSERT( it != tree.begin() );
+  EXAM_CHECK( it == tree.end() );
+  EXAM_CHECK( it != tree.begin() );
 
   set<int>::const_iterator cit = tree.begin();
   int const& int_cref = *cit++;
-  CPPUNIT_ASSERT( int_cref == 1 );
+  EXAM_CHECK( int_cref == 1 );
+
+  return EXAM_RESULT;
 }
 
-void SetTest::reverse_iterator_test()
+int EXAM_IMPL(set_test::reverse_iterator_test)
 {
   set<int> tree;
   tree.insert(1);
@@ -257,21 +244,23 @@ void SetTest::reverse_iterator_test()
 
   {
     set<int>::reverse_iterator rit(tree.rbegin());
-    CPPUNIT_ASSERT( *(rit++) == 2 );
-    CPPUNIT_ASSERT( *(rit++) == 1 );
-    CPPUNIT_ASSERT( rit == tree.rend() );
+    EXAM_CHECK( *(rit++) == 2 );
+    EXAM_CHECK( *(rit++) == 1 );
+    EXAM_CHECK( rit == tree.rend() );
   }
 
   {
     set<int> const& ctree = tree;
     set<int>::const_reverse_iterator rit(ctree.rbegin());
-    CPPUNIT_ASSERT( *(rit++) == 2 );
-    CPPUNIT_ASSERT( *(rit++) == 1 );
-    CPPUNIT_ASSERT( rit == ctree.rend() );
+    EXAM_CHECK( *(rit++) == 2 );
+    EXAM_CHECK( *(rit++) == 1 );
+    EXAM_CHECK( rit == ctree.rend() );
   }
+
+  return EXAM_RESULT;
 }
 
-void SetTest::allocator_with_state()
+int EXAM_IMPL(set_test::allocator_with_state)
 {
   char buf1[1024];
   StackAllocator<int> stack1(buf1, buf1 + sizeof(buf1));
@@ -296,16 +285,16 @@ void SetTest::allocator_with_state()
 
     sint1.swap(sint2);
 
-    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
-    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+    EXAM_CHECK( sint1.get_allocator().swaped() );
+    EXAM_CHECK( sint2.get_allocator().swaped() );
 
-    CPPUNIT_ASSERT( sint1 == sint2Cpy );
-    CPPUNIT_ASSERT( sint2 == sint1Cpy );
-    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
-    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+    EXAM_CHECK( sint1 == sint2Cpy );
+    EXAM_CHECK( sint2 == sint1Cpy );
+    EXAM_CHECK( sint1.get_allocator() == stack2 );
+    EXAM_CHECK( sint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.ok() );
-  CPPUNIT_ASSERT( stack2.ok() );
+  EXAM_CHECK( stack1.ok() );
+  EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -319,16 +308,16 @@ void SetTest::allocator_with_state()
 
     sint1.swap(sint2);
 
-    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
-    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+    EXAM_CHECK( sint1.get_allocator().swaped() );
+    EXAM_CHECK( sint2.get_allocator().swaped() );
 
-    CPPUNIT_ASSERT( sint1 == sint2Cpy );
-    CPPUNIT_ASSERT( sint2 == sint1Cpy );
-    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
-    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+    EXAM_CHECK( sint1 == sint2Cpy );
+    EXAM_CHECK( sint2 == sint1Cpy );
+    EXAM_CHECK( sint1.get_allocator() == stack2 );
+    EXAM_CHECK( sint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.ok() );
-  CPPUNIT_ASSERT( stack2.ok() );
+  EXAM_CHECK( stack1.ok() );
+  EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
 
   {
@@ -342,17 +331,19 @@ void SetTest::allocator_with_state()
 
     sint1.swap(sint2);
 
-    CPPUNIT_ASSERT( sint1.get_allocator().swaped() );
-    CPPUNIT_ASSERT( sint2.get_allocator().swaped() );
+    EXAM_CHECK( sint1.get_allocator().swaped() );
+    EXAM_CHECK( sint2.get_allocator().swaped() );
 
-    CPPUNIT_ASSERT( sint1 == sint2Cpy );
-    CPPUNIT_ASSERT( sint2 == sint1Cpy );
-    CPPUNIT_ASSERT( sint1.get_allocator() == stack2 );
-    CPPUNIT_ASSERT( sint2.get_allocator() == stack1 );
+    EXAM_CHECK( sint1 == sint2Cpy );
+    EXAM_CHECK( sint2 == sint1Cpy );
+    EXAM_CHECK( sint1.get_allocator() == stack2 );
+    EXAM_CHECK( sint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.ok() );
-  CPPUNIT_ASSERT( stack2.ok() );
+  EXAM_CHECK( stack1.ok() );
+  EXAM_CHECK( stack2.ok() );
   stack1.reset(); stack2.reset();
+
+  return EXAM_RESULT;
 }
 
 struct Key
@@ -387,7 +378,7 @@ struct KeyCmpPtr
   { return lhs < (*rhs).m_data; }
 };
 
-void SetTest::template_methods()
+int EXAM_IMPL(set_test::template_methods)
 {
 #if defined (STLPORT) && defined (_STLP_USE_CONTAINERS_EXTENSION)
   {
@@ -398,20 +389,20 @@ void SetTest::template_methods()
     keySet.insert(Key(3));
     keySet.insert(Key(4));
 
-    CPPUNIT_ASSERT( keySet.count(Key(1)) == 1 );
-    CPPUNIT_ASSERT( keySet.count(1) == 1 );
-    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+    EXAM_CHECK( keySet.count(Key(1)) == 1 );
+    EXAM_CHECK( keySet.count(1) == 1 );
+    EXAM_CHECK( keySet.count(5) == 0 );
 
-    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+    EXAM_CHECK( keySet.find(2) != keySet.end() );
+    EXAM_CHECK( keySet.lower_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.upper_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
 
     KeySet const& ckeySet = keySet;
-    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+    EXAM_CHECK( ckeySet.find(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.lower_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.upper_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
   }
 
   {
@@ -423,19 +414,19 @@ void SetTest::template_methods()
     keySet.insert(&key3);
     keySet.insert(&key4);
 
-    CPPUNIT_ASSERT( keySet.count(1) == 1 );
-    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+    EXAM_CHECK( keySet.count(1) == 1 );
+    EXAM_CHECK( keySet.count(5) == 0 );
 
-    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+    EXAM_CHECK( keySet.find(2) != keySet.end() );
+    EXAM_CHECK( keySet.lower_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.upper_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
 
     KeySet const& ckeySet = keySet;
-    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+    EXAM_CHECK( ckeySet.find(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.lower_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.upper_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
   }
   {
     typedef multiset<Key, KeyCmp> KeySet;
@@ -445,20 +436,20 @@ void SetTest::template_methods()
     keySet.insert(Key(3));
     keySet.insert(Key(4));
 
-    CPPUNIT_ASSERT( keySet.count(Key(1)) == 1 );
-    CPPUNIT_ASSERT( keySet.count(1) == 1 );
-    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+    EXAM_CHECK( keySet.count(Key(1)) == 1 );
+    EXAM_CHECK( keySet.count(1) == 1 );
+    EXAM_CHECK( keySet.count(5) == 0 );
 
-    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+    EXAM_CHECK( keySet.find(2) != keySet.end() );
+    EXAM_CHECK( keySet.lower_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.upper_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
 
     KeySet const& ckeySet = keySet;
-    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+    EXAM_CHECK( ckeySet.find(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.lower_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.upper_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
   }
 
   {
@@ -470,21 +461,25 @@ void SetTest::template_methods()
     keySet.insert(&key3);
     keySet.insert(&key4);
 
-    CPPUNIT_ASSERT( keySet.count(1) == 1 );
-    CPPUNIT_ASSERT( keySet.count(5) == 0 );
+    EXAM_CHECK( keySet.count(1) == 1 );
+    EXAM_CHECK( keySet.count(5) == 0 );
 
-    CPPUNIT_ASSERT( keySet.find(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.lower_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.upper_bound(2) != keySet.end() );
-    CPPUNIT_ASSERT( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
+    EXAM_CHECK( keySet.find(2) != keySet.end() );
+    EXAM_CHECK( keySet.lower_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.upper_bound(2) != keySet.end() );
+    EXAM_CHECK( keySet.equal_range(2) != make_pair(keySet.begin(), keySet.end()) );
 
     KeySet const& ckeySet = keySet;
-    CPPUNIT_ASSERT( ckeySet.find(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.lower_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.upper_bound(2) != ckeySet.end() );
-    CPPUNIT_ASSERT( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
+    EXAM_CHECK( ckeySet.find(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.lower_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.upper_bound(2) != ckeySet.end() );
+    EXAM_CHECK( ckeySet.equal_range(2) != make_pair(ckeySet.begin(), ckeySet.end()) );
   }
+#else
+  throw exam::skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
 #if !defined (STLPORT) || \

@@ -1,3 +1,18 @@
+// -*- C++ -*- Time-stamp: <08/10/30 00:10:47 ptr>
+
+/*
+ * Copyright (c) 2004-2008
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#include "map_test.h"
+
 //Has to be first for StackAllocator swap overload to be taken
 //into account (at least using GCC 4.0.1)
 #include "stack_allocator.h"
@@ -5,46 +20,11 @@
 #include <map>
 #include <algorithm>
 
-#include "cppunit/cppunit_proxy.h"
-
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
 #endif
 
-//
-// TestCase class
-//
-class MapTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(MapTest);
-  CPPUNIT_TEST(map1);
-  CPPUNIT_TEST(mmap1);
-  CPPUNIT_TEST(mmap2);
-  CPPUNIT_TEST(iterators);
-  CPPUNIT_TEST(equal_range);
-  CPPUNIT_TEST(allocator_with_state);
-#if !defined (STLPORT) || !defined (_STLP_USE_CONTAINERS_EXTENSION)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(template_methods);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void map1();
-  void mmap1();
-  void mmap2();
-  void iterators();
-  void equal_range();
-  void allocator_with_state();
-  void template_methods();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(MapTest);
-
-//
-// tests implementation
-//
-void MapTest::map1()
+int EXAM_IMPL(map_test::map1)
 {
   typedef map<char, int, less<char> > maptype;
   maptype m;
@@ -54,37 +34,39 @@ void MapTest::map1()
   m['v'] = 5;
   m['i'] = 1;
 //  cout << "m['x'] = " << m['x'] << endl;
-  CPPUNIT_ASSERT( m['x']== 20 );
+  EXAM_CHECK( m['x']== 20 );
   m['x'] = 10; // Correct mistake.
-  CPPUNIT_ASSERT( m['x']== 10 );
-  CPPUNIT_ASSERT( m['z']== 0 );
+  EXAM_CHECK( m['x']== 10 );
+  EXAM_CHECK( m['z']== 0 );
   //cout << "m['z'] = " << m['z'] << endl; // Note default value is added.
-  CPPUNIT_ASSERT( m.count('z') == 1 );
+  EXAM_CHECK( m.count('z') == 1 );
   //cout << "m.count('z') = " << m.count('z') << endl;
   pair<maptype::iterator, bool> p = m.insert(pair<const char, int>('c', 100));
-  CPPUNIT_ASSERT( p.second );
-  CPPUNIT_ASSERT( p.first != m.end() );
-  CPPUNIT_ASSERT( (*p.first).first == 'c' );
-  CPPUNIT_ASSERT( (*p.first).second == 100 );
+  EXAM_CHECK( p.second );
+  EXAM_CHECK( p.first != m.end() );
+  EXAM_CHECK( (*p.first).first == 'c' );
+  EXAM_CHECK( (*p.first).second == 100 );
 
   p = m.insert(pair<const char, int>('c', 100));
-  CPPUNIT_ASSERT( !p.second ); // already existing pair
-  CPPUNIT_ASSERT( p.first != m.end() );
-  CPPUNIT_ASSERT( (*p.first).first == 'c' );
-  CPPUNIT_ASSERT( (*p.first).second == 100 );
+  EXAM_CHECK( !p.second ); // already existing pair
+  EXAM_CHECK( p.first != m.end() );
+  EXAM_CHECK( (*p.first).first == 'c' );
+  EXAM_CHECK( (*p.first).second == 100 );
+
+  return EXAM_RESULT;
 }
 
-void MapTest::mmap1()
+int EXAM_IMPL(map_test::mmap1)
 {
   typedef multimap<char, int, less<char> > mmap;
   mmap m;
-  CPPUNIT_ASSERT(m.count('X')==0);
+  EXAM_CHECK(m.count('X')==0);
 
   m.insert(pair<const char, int>('X', 10)); // Standard way.
-  CPPUNIT_ASSERT(m.count('X')==1);
+  EXAM_CHECK(m.count('X')==1);
 
   m.insert(pair<const char, int>('X', 20)); // jbuck: standard way
-  CPPUNIT_ASSERT(m.count('X')==2);
+  EXAM_CHECK(m.count('X')==2);
 
   m.insert(pair<const char, int>('Y', 32)); // jbuck: standard way
   mmap::iterator i = m.find('X'); // Find first match.
@@ -92,22 +74,25 @@ void MapTest::mmap1()
 #  define _STLP_CONST const
 #endif
   pair<_STLP_CONST char, int> p('X', 10);
-  CPPUNIT_ASSERT(*i == p);
-  CPPUNIT_ASSERT((*i).first == 'X');
-  CPPUNIT_ASSERT((*i).second == 10);
+  EXAM_CHECK(*i == p);
+  EXAM_CHECK((*i).first == 'X');
+  EXAM_CHECK((*i).second == 10);
   i++;
-  CPPUNIT_ASSERT((*i).first == 'X');
-  CPPUNIT_ASSERT((*i).second == 20);
+  EXAM_CHECK((*i).first == 'X');
+  EXAM_CHECK((*i).second == 20);
   i++;
-  CPPUNIT_ASSERT((*i).first == 'Y');
-  CPPUNIT_ASSERT((*i).second == 32);
+  EXAM_CHECK((*i).first == 'Y');
+  EXAM_CHECK((*i).second == 32);
   i++;
-  CPPUNIT_ASSERT(i == m.end());
+  EXAM_CHECK(i == m.end());
 
   size_t count = m.erase('X');
-  CPPUNIT_ASSERT(count==2);
+  EXAM_CHECK(count==2);
+
+  return EXAM_RESULT;
 }
-void MapTest::mmap2()
+
+int EXAM_IMPL(map_test::mmap2)
 {
   typedef pair<const int, char> pair_type;
 
@@ -132,26 +117,28 @@ void MapTest::mmap2()
   mmap m(array + 0, array + 6);
   mmap::iterator i;
   i = m.lower_bound(3);
-  CPPUNIT_ASSERT((*i).first==3);
-  CPPUNIT_ASSERT((*i).second=='c');
+  EXAM_CHECK((*i).first==3);
+  EXAM_CHECK((*i).second=='c');
 
   i = m.upper_bound(3);
-  CPPUNIT_ASSERT((*i).first==6);
-  CPPUNIT_ASSERT((*i).second=='f');
+  EXAM_CHECK((*i).first==6);
+  EXAM_CHECK((*i).second=='f');
+
+  return EXAM_RESULT;
 }
 
 
-void MapTest::iterators()
+int EXAM_IMPL(map_test::iterators)
 {
   typedef map<int, char, less<int> > int_map;
   int_map imap;
   {
     int_map::iterator ite(imap.begin());
     int_map::const_iterator cite(imap.begin());
-    CPPUNIT_ASSERT( ite == cite );
-    CPPUNIT_ASSERT( !(ite != cite) );
-    CPPUNIT_ASSERT( cite == ite );
-    CPPUNIT_ASSERT( !(cite != ite) );
+    EXAM_CHECK( ite == cite );
+    EXAM_CHECK( !(ite != cite) );
+    EXAM_CHECK( cite == ite );
+    EXAM_CHECK( !(cite != ite) );
   }
 
   typedef multimap<int, char, less<int> > mmap;
@@ -179,10 +166,10 @@ void MapTest::iterators()
     mmap::iterator ite(m.begin());
     mmap::const_iterator cite(m.begin());
     //test compare between const_iterator and iterator
-    CPPUNIT_ASSERT( ite == cite );
-    CPPUNIT_ASSERT( !(ite != cite) );
-    CPPUNIT_ASSERT( cite == ite );
-    CPPUNIT_ASSERT( !(cite != ite) );
+    EXAM_CHECK( ite == cite );
+    EXAM_CHECK( !(ite != cite) );
+    EXAM_CHECK( cite == ite );
+    EXAM_CHECK( !(cite != ite) );
   }
 
 #if 0
@@ -195,36 +182,38 @@ void MapTest::iterators()
     int_map::const_iterator mcite(imap.begin());
     mmap::iterator mmite(m.begin());
     mmap::const_iterator mmcite(m.begin());
-    CPPUNIT_ASSERT( !(mite == mmite) );
-    CPPUNIT_ASSERT( !(mcite == mmcite) );
-    CPPUNIT_ASSERT( mite != mmite );
-    CPPUNIT_ASSERT( mcite != mmcite );
-    CPPUNIT_ASSERT( !(mite == mmcite) );
-    CPPUNIT_ASSERT( !(mite == mmcite) );
-    CPPUNIT_ASSERT( mite != mmcite );
-    CPPUNIT_ASSERT( mite != mmcite );
+    EXAM_CHECK( !(mite == mmite) );
+    EXAM_CHECK( !(mcite == mmcite) );
+    EXAM_CHECK( mite != mmite );
+    EXAM_CHECK( mcite != mmcite );
+    EXAM_CHECK( !(mite == mmcite) );
+    EXAM_CHECK( !(mite == mmcite) );
+    EXAM_CHECK( mite != mmcite );
+    EXAM_CHECK( mite != mmcite );
   }
 
 #endif
 
   mmap::reverse_iterator ri = m.rbegin();
-  CPPUNIT_ASSERT( ri != m.rend() );
-  CPPUNIT_ASSERT( ri == m.rbegin() );
-  CPPUNIT_ASSERT( (*ri).first == 6 );
-  CPPUNIT_ASSERT( (*ri++).second == 'f' );
-  CPPUNIT_ASSERT( (*ri).first == 6 );
-  CPPUNIT_ASSERT( (*ri).second == 'f' );
+  EXAM_CHECK( ri != m.rend() );
+  EXAM_CHECK( ri == m.rbegin() );
+  EXAM_CHECK( (*ri).first == 6 );
+  EXAM_CHECK( (*ri++).second == 'f' );
+  EXAM_CHECK( (*ri).first == 6 );
+  EXAM_CHECK( (*ri).second == 'f' );
 
   mmap const& cm = m;
   mmap::const_reverse_iterator rci = cm.rbegin();
-  CPPUNIT_ASSERT( rci != cm.rend() );
-  CPPUNIT_ASSERT( (*rci).first == 6 );
-  CPPUNIT_ASSERT( (*rci++).second == 'f' );
-  CPPUNIT_ASSERT( (*rci).first == 6 );
-  CPPUNIT_ASSERT( (*rci).second == 'f' );
+  EXAM_CHECK( rci != cm.rend() );
+  EXAM_CHECK( (*rci).first == 6 );
+  EXAM_CHECK( (*rci++).second == 'f' );
+  EXAM_CHECK( (*rci).first == 6 );
+  EXAM_CHECK( (*rci).second == 'f' );
+
+  return EXAM_RESULT;
 }
 
-void MapTest::equal_range()
+int EXAM_IMPL(map_test::equal_range)
 {
   typedef map<char, int, less<char> > maptype;
   {
@@ -233,38 +222,40 @@ void MapTest::equal_range()
 
     pair<maptype::iterator, maptype::iterator> ret;
     ret = m.equal_range('x');
-    CPPUNIT_ASSERT( ret.first != ret.second );
-    CPPUNIT_ASSERT( (*(ret.first)).first == 'x' );
-    CPPUNIT_ASSERT( (*(ret.first)).second == 10 );
-    CPPUNIT_ASSERT( ++(ret.first) == ret.second );
+    EXAM_CHECK( ret.first != ret.second );
+    EXAM_CHECK( (*(ret.first)).first == 'x' );
+    EXAM_CHECK( (*(ret.first)).second == 10 );
+    EXAM_CHECK( ++(ret.first) == ret.second );
   }
   {
     {
       maptype m;
 
       maptype::iterator i = m.lower_bound( 'x' );
-      CPPUNIT_ASSERT( i == m.end() );
+      EXAM_CHECK( i == m.end() );
 
       i = m.upper_bound( 'x' );
-      CPPUNIT_ASSERT( i == m.end() );
+      EXAM_CHECK( i == m.end() );
 
       pair<maptype::iterator, maptype::iterator> ret;
       ret = m.equal_range('x');
-      CPPUNIT_ASSERT( ret.first == ret.second );
-      CPPUNIT_ASSERT( ret.first == m.end() );
+      EXAM_CHECK( ret.first == ret.second );
+      EXAM_CHECK( ret.first == m.end() );
     }
 
     {
       const maptype m;
       pair<maptype::const_iterator, maptype::const_iterator> ret;
       ret = m.equal_range('x');
-      CPPUNIT_ASSERT( ret.first == ret.second );
-      CPPUNIT_ASSERT( ret.first == m.end() );
+      EXAM_CHECK( ret.first == ret.second );
+      EXAM_CHECK( ret.first == m.end() );
     }
   }
+
+  return EXAM_RESULT;
 }
 
-void MapTest::allocator_with_state()
+int EXAM_IMPL(map_test::allocator_with_state)
 {
   char buf1[1024];
   StackAllocator<pair<const int, int> > stack1(buf1, buf1 + sizeof(buf1));
@@ -288,16 +279,18 @@ void MapTest::allocator_with_state()
 
     mint1.swap(mint2);
 
-    CPPUNIT_ASSERT( mint1.get_allocator().swaped() );
-    CPPUNIT_ASSERT( mint2.get_allocator().swaped() );
+    EXAM_CHECK( mint1.get_allocator().swaped() );
+    EXAM_CHECK( mint2.get_allocator().swaped() );
 
-    CPPUNIT_ASSERT( mint1 == mint2Cpy );
-    CPPUNIT_ASSERT( mint2 == mint1Cpy );
-    CPPUNIT_ASSERT( mint1.get_allocator() == stack2 );
-    CPPUNIT_ASSERT( mint2.get_allocator() == stack1 );
+    EXAM_CHECK( mint1 == mint2Cpy );
+    EXAM_CHECK( mint2 == mint1Cpy );
+    EXAM_CHECK( mint1.get_allocator() == stack2 );
+    EXAM_CHECK( mint2.get_allocator() == stack1 );
   }
-  CPPUNIT_ASSERT( stack1.ok() );
-  CPPUNIT_ASSERT( stack2.ok() );
+  EXAM_CHECK( stack1.ok() );
+  EXAM_CHECK( stack2.ok() );
+
+  return EXAM_RESULT;
 }
 
 struct Key
@@ -332,7 +325,7 @@ struct KeyCmpPtr
   { return lhs < (*rhs).m_data; }
 };
 
-void MapTest::template_methods()
+int EXAM_IMPL(map_test::template_methods)
 {
 #if defined (STLPORT) && defined (_STLP_USE_CONTAINERS_EXTENSION)
   {
@@ -344,20 +337,20 @@ void MapTest::template_methods()
     cont.insert(value(Key(3), 3));
     cont.insert(value(Key(4), 4));
 
-    CPPUNIT_ASSERT( cont.count(Key(1)) == 1 );
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(Key(1)) == 1 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.lower_bound(2) != cont.end() );
+    EXAM_CHECK( cont.upper_bound(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.lower_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.upper_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
   }
 
   {
@@ -370,19 +363,19 @@ void MapTest::template_methods()
     cont.insert(value(&key3, 3));
     cont.insert(value(&key4, 4));
 
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.lower_bound(2) != cont.end() );
+    EXAM_CHECK( cont.upper_bound(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.lower_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.upper_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
   }
   {
     typedef multimap<Key, int, KeyCmp> Container;
@@ -393,20 +386,20 @@ void MapTest::template_methods()
     cont.insert(value(Key(3), 3));
     cont.insert(value(Key(4), 4));
 
-    CPPUNIT_ASSERT( cont.count(Key(1)) == 1 );
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(Key(1)) == 1 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.lower_bound(2) != cont.end() );
+    EXAM_CHECK( cont.upper_bound(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.lower_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.upper_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
   }
 
   {
@@ -419,21 +412,25 @@ void MapTest::template_methods()
     cont.insert(value(&key3, 3));
     cont.insert(value(&key4, 4));
 
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.lower_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.upper_bound(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.lower_bound(2) != cont.end() );
+    EXAM_CHECK( cont.upper_bound(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.lower_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.upper_bound(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.lower_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.upper_bound(2) != ccont.end() );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
   }
+#else
+  throw exam::skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
 #if !defined (STLPORT) || \

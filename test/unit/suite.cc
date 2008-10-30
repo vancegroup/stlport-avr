@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/28 00:40:30 ptr>
+// -*- C++ -*- Time-stamp: <08/10/30 23:09:22 ptr>
 
 /*
  * Copyright (c) 2008
@@ -19,6 +19,7 @@
 #include "list_test.h"
 #include "slist_test.h"
 #include "string_test.h"
+#include "map_test.h"
 #include "numerics.h"
 
 // ------------
@@ -201,6 +202,59 @@ int main( int argc, const char** argv )
   num_tc[4] = t.add( &numerics::innprod1, num_test, "inner product, vector", num_tc + 3, num_tc + 5 );
   num_tc[5] = vec_tc[12];
   t.add( &numerics::innprod2, num_test, "inner product, userdefined functors", num_tc + 4, num_tc + 6 );
+
+  map_test m_test;
+
+  t.add( &map_test::map1, m_test, "map1" );
+  t.add( &map_test::mmap1, m_test, "mmap1" );
+  t.add( &map_test::mmap2, m_test, "mmap2" );
+  t.add( &map_test::iterators, m_test, "map iterators" );
+  t.add( &map_test::equal_range, m_test, "map equal_range" );
+  t.add( &map_test::allocator_with_state, m_test, "map allocator_with_state" );
+  t.add( &map_test::template_methods, m_test, "map template_methods" );
+
+  set_test s_test;
+
+  t.add( &set_test::set1, s_test, "set1" );
+  t.add( &set_test::set2, s_test, "set2" );
+  t.add( &set_test::erase, s_test, "set erase" );
+  t.add( &set_test::insert, s_test, "set insert" );
+  t.add( &set_test::find, s_test, "set find" );
+  t.add( &set_test::bounds, s_test, "set bounds" );
+  t.add( &set_test::specialized_less, s_test, "set specialized_less" );
+  t.add( &set_test::implementation_check, s_test, "set implementation_check" );
+  t.add( &set_test::allocator_with_state, s_test, "set allocator_with_state" );
+  t.add( &set_test::reverse_iterator_test, s_test, "set reverse_iterator_test" );
+  t.add( &set_test::template_methods, s_test, "set template_methods" );
+
+  multiset_test ms_test;
+
+  t.add( &multiset_test::mset1, ms_test, "mset1" );
+  t.add( &multiset_test::mset3, ms_test, "mset3" );
+  t.add( &multiset_test::mset5, ms_test, "mset5" );
+
+  hash_test h_test;
+
+  t.add( &hash_test::hmap1, h_test, "hmap1" );
+  t.add( &hash_test::hmmap1, h_test, "hmmap1" );
+  t.add( &hash_test::hmmap2, h_test, "hmmap2" );
+  t.add( &hash_test::hmset1, h_test, "hmset1" );
+  t.add( &hash_test::hmset1, h_test, "hmset1" );
+  t.add( &hash_test::hset2, h_test, "hset2" );
+  t.add( &hash_test::insert_erase, h_test, "hash insert_erase" );
+  t.add( &hash_test::allocator_with_state, h_test, "hash allocator_with_state" );
+
+  unordered_test uo_test;
+
+  t.add( &unordered_test::uset, uo_test, "unordered uset" );
+  t.add( &unordered_test::umultiset, uo_test, "unordered umultiset" );
+  t.add( &unordered_test::umap, uo_test, "unordered umap" );
+  t.add( &unordered_test::umultimap, uo_test, "unordered umultimap" );
+  t.add( &unordered_test::user_case, uo_test, "unordered user_case" );
+  t.add( &unordered_test::hash_policy, uo_test, "unordered hash_policy" );
+  t.add( &unordered_test::buckets, uo_test, "unordered buckets" );
+  t.add( &unordered_test::equal_range, uo_test, "unordered equal_range" );
+  t.add( &unordered_test::template_methods, uo_test, "unordered template_methods" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

@@ -1,14 +1,23 @@
+// -*- C++ -*- Time-stamp: <08/10/30 23:05:57 ptr>
+
+/*
+ * Copyright (c) 2005-2008
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2005-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#include "map_test.h"
+
 #include <vector>
 #include <algorithm>
 #include <string>
-#if defined (STLPORT)
-#  include <unordered_map>
-#  include <unordered_set>
-#endif
-
-//#include <iostream>
-
-#include "cppunit/cppunit_proxy.h"
+#include <unordered_map>
+#include <unordered_set>
 
 #if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
@@ -17,53 +26,9 @@ using namespace std::tr1;
 #  endif
 #endif
 
-//
-// TestCase class
-//
-class UnorderedTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(UnorderedTest);
-#if !defined (STLPORT) 
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(uset);
-  CPPUNIT_TEST(umultiset);
-  CPPUNIT_TEST(umap);
-  CPPUNIT_TEST(umultimap);
-  CPPUNIT_TEST(user_case);
-  CPPUNIT_TEST(hash_policy);
-  CPPUNIT_TEST(buckets);
-  CPPUNIT_TEST(equal_range);
-  CPPUNIT_EXPLICIT_TEST(benchmark1);
-  CPPUNIT_EXPLICIT_TEST(benchmark2);
-#if !defined (_STLP_USE_CONTAINERS_EXTENSION)
-  CPPUNIT_IGNORE;
-#endif
-  CPPUNIT_TEST(template_methods);
-  CPPUNIT_TEST_SUITE_END();
-
-protected:
-  void uset();
-  void umultiset();
-  void umap();
-  void umultimap();
-  void user_case();
-  void hash_policy();
-  void buckets();
-  void equal_range();
-  void benchmark1();
-  void benchmark2();
-  void template_methods();
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(UnorderedTest);
-
 const int NB_ELEMS = 2000;
 
-//
-// tests implementation
-//
-void UnorderedTest::uset()
+int EXAM_IMPL(unordered_test::uset)
 {
 #if defined (STLPORT)
   typedef unordered_set<int, hash<int>, equal_to<int> > usettype;
@@ -78,12 +43,12 @@ void UnorderedTest::uset()
   pair<usettype::iterator, bool> ret;
   for (i = 0; i < NB_ELEMS; ++i) {
     ret = us.insert(i);
-    CPPUNIT_ASSERT( ret.second );
-    CPPUNIT_ASSERT( *ret.first == i );
+    EXAM_CHECK( ret.second );
+    EXAM_CHECK( *ret.first == i );
 
     ret = us.insert(i);
-    CPPUNIT_ASSERT( !ret.second );
-    CPPUNIT_ASSERT( *ret.first == i );
+    EXAM_CHECK( !ret.second );
+    EXAM_CHECK( *ret.first == i );
   }
 
   vector<int> us_val;
@@ -95,7 +60,7 @@ void UnorderedTest::uset()
 
     usettype::size_type bucket_pos = us.bucket(*lit);
     for (; lit != litEnd; ++lit) {
-      CPPUNIT_ASSERT( us.bucket(*lit) == bucket_pos );
+      EXAM_CHECK( us.bucket(*lit) == bucket_pos );
       us_val.push_back(*lit);
     }
   }
@@ -103,17 +68,21 @@ void UnorderedTest::uset()
   //A compilation time check to uncomment from time to time
   {
     //usettype::iterator it;
-    //CPPUNIT_ASSERT( it != lit );
+    //EXAM_CHECK( it != lit );
   }
 
   sort(us_val.begin(), us_val.end());
   for (i = 0; i < NB_ELEMS; ++i) {
-    CPPUNIT_ASSERT( us_val[i] == i );
+    EXAM_CHECK( us_val[i] == i );
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::umultiset()
+int EXAM_IMPL(unordered_test::umultiset)
 {
 #if defined (STLPORT)
   typedef unordered_multiset<int, hash<int>, equal_to<int> > usettype;
@@ -123,13 +92,13 @@ void UnorderedTest::umultiset()
   usettype::iterator ret;
   for (i = 0; i < NB_ELEMS; ++i) {
     ret = us.insert(i);
-    CPPUNIT_ASSERT( *ret == i );
+    EXAM_CHECK( *ret == i );
 
     ret = us.insert(i);
-    CPPUNIT_ASSERT( *ret == i );
+    EXAM_CHECK( *ret == i );
   }
 
-  CPPUNIT_ASSERT( us.size() == 2 * NB_ELEMS );
+  EXAM_CHECK( us.size() == 2 * NB_ELEMS );
   vector<int> us_val;
 
   usettype::local_iterator lit, litEnd;
@@ -139,20 +108,24 @@ void UnorderedTest::umultiset()
 
     usettype::size_type bucket_pos = us.bucket(*lit);
     for (; lit != litEnd; ++lit) {
-      CPPUNIT_ASSERT( us.bucket(*lit) == bucket_pos );
+      EXAM_CHECK( us.bucket(*lit) == bucket_pos );
       us_val.push_back(*lit);
     }
   }
 
   sort(us_val.begin(), us_val.end());
   for (i = 0; i < NB_ELEMS; ++i) {
-    CPPUNIT_ASSERT( us_val[2 * i] == i );
-    CPPUNIT_ASSERT( us_val[2 * i + 1] == i );
+    EXAM_CHECK( us_val[2 * i] == i );
+    EXAM_CHECK( us_val[2 * i + 1] == i );
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::umap()
+int EXAM_IMPL(unordered_test::umap)
 {
 #if defined (STLPORT)
   typedef unordered_map<int, int, hash<int>, equal_to<int> > umaptype;
@@ -179,13 +152,13 @@ void UnorderedTest::umap()
   for (i = 0; i < NB_ELEMS; ++i) {
     umaptype::value_type p1(i, i);
     ret = us.insert(p1);
-    CPPUNIT_ASSERT( ret.second );
-    CPPUNIT_ASSERT( *ret.first == p1 );
+    EXAM_CHECK( ret.second );
+    EXAM_CHECK( *ret.first == p1 );
 
     umaptype::value_type p2(i, i + 1);
     ret = us.insert(p2);
-    CPPUNIT_ASSERT( !ret.second );
-    CPPUNIT_ASSERT( *ret.first == p1 );
+    EXAM_CHECK( !ret.second );
+    EXAM_CHECK( *ret.first == p1 );
   }
 
   {
@@ -194,12 +167,12 @@ void UnorderedTest::umap()
     for (int j = 0; j < NB_ELEMS; j += NB_ELEMS / 100) {
       umit = us.find(j);
 
-      CPPUNIT_ASSERT( umit != us.end() );
-      CPPUNIT_ASSERT( (*umit).second == j );
+      EXAM_CHECK( umit != us.end() );
+      EXAM_CHECK( (*umit).second == j );
     }
   }
 
-  CPPUNIT_ASSERT( us.size() == (size_t)NB_ELEMS );
+  EXAM_CHECK( us.size() == (size_t)NB_ELEMS );
   vector<pair<int, int> > us_val;
 
   umaptype::local_iterator lit, litEnd;
@@ -209,19 +182,23 @@ void UnorderedTest::umap()
 
     umaptype::size_type bucket_pos = us.bucket((*lit).first);
     for (; lit != litEnd; ++lit) {
-      CPPUNIT_ASSERT( us.bucket((*lit).first) == bucket_pos );
+      EXAM_CHECK( us.bucket((*lit).first) == bucket_pos );
       us_val.push_back(make_pair((*lit).first, (*lit).second));
     }
   }
 
   sort(us_val.begin(), us_val.end());
   for (i = 0; i < NB_ELEMS; ++i) {
-    CPPUNIT_ASSERT( us_val[i] == make_pair(i, i) );
+    EXAM_CHECK( us_val[i] == make_pair(i, i) );
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::umultimap()
+int EXAM_IMPL(unordered_test::umultimap)
 {
 #if defined (STLPORT)
   typedef unordered_multimap<int, int, hash<int>, equal_to<int> > umaptype;
@@ -232,13 +209,13 @@ void UnorderedTest::umultimap()
   for (i = 0; i < NB_ELEMS; ++i) {
     umaptype::value_type p(i, i);
     ret = us.insert(p);
-    CPPUNIT_ASSERT( *ret == p );
+    EXAM_CHECK( *ret == p );
 
     ret = us.insert(p);
-    CPPUNIT_ASSERT( *ret == p );
+    EXAM_CHECK( *ret == p );
   }
 
-  CPPUNIT_ASSERT( us.size() == 2 * NB_ELEMS );
+  EXAM_CHECK( us.size() == 2 * NB_ELEMS );
   typedef pair<int, int> ptype;
   vector<ptype> us_val;
 
@@ -249,7 +226,7 @@ void UnorderedTest::umultimap()
 
     umaptype::size_type bucket_pos = us.bucket((*lit).first);
     for (; lit != litEnd; ++lit) {
-      CPPUNIT_ASSERT( us.bucket((*lit).first) == bucket_pos );
+      EXAM_CHECK( us.bucket((*lit).first) == bucket_pos );
       us_val.push_back(ptype((*lit).first, (*lit).second));
     }
   }
@@ -257,13 +234,17 @@ void UnorderedTest::umultimap()
   sort(us_val.begin(), us_val.end());
   for (i = 0; i < NB_ELEMS; ++i) {
     ptype p(i, i);
-    CPPUNIT_ASSERT( us_val[i * 2] == p );
-    CPPUNIT_ASSERT( us_val[i * 2 + 1] == p );
+    EXAM_CHECK( us_val[i * 2] == p );
+    EXAM_CHECK( us_val[i * 2 + 1] == p );
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::user_case()
+int EXAM_IMPL(unordered_test::user_case)
 {
 #if defined (STLPORT)
   typedef unordered_map<int, string> UnorderedMap1;
@@ -280,50 +261,58 @@ void UnorderedTest::user_case()
 
   bar.insert(UnorderedMap2::value_type(0, foo));
   UnorderedMap2::iterator it = bar.find(0);
-  CPPUNIT_ASSERT( it != bar.end() );
+  EXAM_CHECK( it != bar.end() );
 
   UnorderedMap1 &body = it->second;
   UnorderedMap1::iterator cur = body.find(3);
-  CPPUNIT_ASSERT( cur != body.end() );
+  EXAM_CHECK( cur != body.end() );
 
   body.erase(body.begin(), body.end());
-  CPPUNIT_ASSERT( body.empty() );
+  EXAM_CHECK( body.empty() );
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::hash_policy()
+int EXAM_IMPL(unordered_test::hash_policy)
 {
 #if defined (STLPORT)
   unordered_set<int> int_uset;
 
-  CPPUNIT_ASSERT( int_uset.max_load_factor() == 1.0f );
-  CPPUNIT_ASSERT( int_uset.load_factor() == 0.0f );
+  EXAM_CHECK( int_uset.max_load_factor() == 1.0f );
+  EXAM_CHECK( int_uset.load_factor() == 0.0f );
 
   size_t nbInserts = int_uset.bucket_count() - 1;
   for (int i = 0; (size_t)i < nbInserts; ++i) {
     int_uset.insert(i);
   }
-  CPPUNIT_ASSERT( int_uset.size() == nbInserts );
+  EXAM_CHECK( int_uset.size() == nbInserts );
 
   int_uset.max_load_factor(0.5f);
   int_uset.rehash(0);
-  CPPUNIT_ASSERT( int_uset.load_factor() < int_uset.max_load_factor() );
+  EXAM_CHECK( int_uset.load_factor() < int_uset.max_load_factor() );
 
   size_t bucketsHint = int_uset.bucket_count() + 1;
   int_uset.rehash(bucketsHint);
-  CPPUNIT_ASSERT( int_uset.bucket_count() >= bucketsHint );
+  EXAM_CHECK( int_uset.bucket_count() >= bucketsHint );
 
-  CPPUNIT_ASSERT( int_uset.key_eq()(10, 10) );
-  CPPUNIT_ASSERT( int_uset.hash_function()(10) == 10 );
+  EXAM_CHECK( int_uset.key_eq()(10, 10) );
+  EXAM_CHECK( int_uset.hash_function()(10) == 10 );
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::buckets()
+int EXAM_IMPL(unordered_test::buckets)
 {
 #if defined (STLPORT) 
   unordered_set<int> int_uset;
 
-  CPPUNIT_ASSERT( int_uset.bucket_count() < int_uset.max_bucket_count() );
+  EXAM_CHECK( int_uset.bucket_count() < int_uset.max_bucket_count() );
 
   int i;
   size_t nbBuckets = int_uset.bucket_count();
@@ -331,17 +320,21 @@ void UnorderedTest::buckets()
   for (i = 0; (size_t)i < nbInserts; ++i) {
     int_uset.insert(i);
   }
-  CPPUNIT_ASSERT( nbBuckets == int_uset.bucket_count() );
+  EXAM_CHECK( nbBuckets == int_uset.bucket_count() );
 
   size_t bucketSizes = 0;
   for (i = 0; (size_t)i < nbBuckets; ++i) {
     bucketSizes += int_uset.bucket_size(i);
   }
-  CPPUNIT_ASSERT( bucketSizes == int_uset.size() );
+  EXAM_CHECK( bucketSizes == int_uset.size() );
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::equal_range()
+int EXAM_IMPL(unordered_test::equal_range)
 {
 #if defined (STLPORT)
   typedef unordered_multiset<size_t> umset;
@@ -360,11 +353,11 @@ void UnorderedTest::equal_range()
       iumset.insert(i + 4 * nbBuckets);
     }
 
-    CPPUNIT_ASSERT( nbBuckets == iumset.bucket_count() );
-    CPPUNIT_ASSERT( iumset.size() == 5 * nbBuckets );
+    EXAM_CHECK( nbBuckets == iumset.bucket_count() );
+    EXAM_CHECK( iumset.size() == 5 * nbBuckets );
 
     pair<umset::iterator, umset::iterator> p = iumset.equal_range(1);
-    CPPUNIT_ASSERT( p.first != p.second );
+    EXAM_CHECK( p.first != p.second );
 
     size_t nbElems = iumset.size();
     nbElems -= distance(p.first, p.second);
@@ -372,13 +365,13 @@ void UnorderedTest::equal_range()
       iumset.erase(j++);
     }
 
-    CPPUNIT_ASSERT( nbElems == iumset.size() );
+    EXAM_CHECK( nbElems == iumset.size() );
 
     p = iumset.equal_range(2);
-    CPPUNIT_ASSERT( p.first != p.second );
+    EXAM_CHECK( p.first != p.second );
     nbElems -= distance(p.first, p.second);
     iumset.erase(p.first, p.second);
-    CPPUNIT_ASSERT( nbElems == iumset.size() );
+    EXAM_CHECK( nbElems == iumset.size() );
   }
 
   {
@@ -409,11 +402,11 @@ void UnorderedTest::equal_range()
       iumset.insert(i++);
     }
 
-    //CPPUNIT_ASSERT( iumset.bucket_size(targetedBucket) == 21 );
+    //EXAM_CHECK( iumset.bucket_size(targetedBucket) == 21 );
 
     pair<umset::iterator, umset::iterator> p = iumset.equal_range(targetedBucket);
-    CPPUNIT_ASSERT( p.first != p.second );
-    CPPUNIT_ASSERT( distance(p.first, p.second) == 3 );
+    EXAM_CHECK( p.first != p.second );
+    EXAM_CHECK( distance(p.first, p.second) == 3 );
 
     // Now we remove some elements until hash container is resized:
     nbBuckets = iumset.bucket_count();
@@ -421,12 +414,12 @@ void UnorderedTest::equal_range()
            !iumset.empty()) {
       iumset.erase(iumset.begin());
     }
-    CPPUNIT_ASSERT( iumset.load_factor() <= iumset.max_load_factor() );
+    EXAM_CHECK( iumset.load_factor() <= iumset.max_load_factor() );
 
     // Adding an element back shouldn't change number of buckets:
     nbBuckets = iumset.bucket_count();
     iumset.insert(0);
-    CPPUNIT_ASSERT( iumset.bucket_count() == nbBuckets );
+    EXAM_CHECK( iumset.bucket_count() == nbBuckets );
   }
 
   {
@@ -467,13 +460,18 @@ void UnorderedTest::equal_range()
         }
         */
       }
-      CPPUNIT_ASSERT( hum.count(magic) == c );
+      EXAM_CHECK( hum.count(magic) == c );
     }
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::benchmark1()
+#if 0
+int EXAM_IMPL(unordered_test::benchmark1)
 {
 #if defined (STLPORT)
   typedef unordered_multiset<size_t> umset;
@@ -489,10 +487,14 @@ void UnorderedTest::benchmark1()
   for (i = 0; i < target; ++i) {
     iumset.erase(i);
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
-void UnorderedTest::benchmark2()
+int EXAM_IMPL(unordered_test::benchmark2)
 {
 #if defined (STLPORT)
   typedef unordered_multiset<size_t> umset;
@@ -508,8 +510,13 @@ void UnorderedTest::benchmark2()
   for (i = 0; i < target; ++i) {
     iumset.erase(target - i);
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
+#endif
 
 struct Key
 {
@@ -565,7 +572,7 @@ struct KeyEqualPtr
   { return lhs == rhs->m_data; }
 };
 
-void UnorderedTest::template_methods()
+int EXAM_IMPL(unordered_test::template_methods)
 {
 #if defined (STLPORT) && defined (_STLP_USE_CONTAINERS_EXTENSION)
   {
@@ -576,17 +583,17 @@ void UnorderedTest::template_methods()
     cont.insert(Key(3));
     cont.insert(Key(4));
 
-    CPPUNIT_ASSERT( cont.count(Key(1)) == 1 );
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(Key(1)) == 1 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.bucket(2) == ccont.bucket(2) );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.bucket(2) == ccont.bucket(2) );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
   }
 
   {
@@ -598,16 +605,16 @@ void UnorderedTest::template_methods()
     cont.insert(&key3);
     cont.insert(&key4);
 
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.bucket(2) == ccont.bucket(2) );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.bucket(2) == ccont.bucket(2) );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
   }
   {
     typedef unordered_multiset<Key, KeyHash, KeyEqual> Container;
@@ -617,17 +624,17 @@ void UnorderedTest::template_methods()
     cont.insert(Key(1));
     cont.insert(Key(2));
 
-    CPPUNIT_ASSERT( cont.count(Key(1)) == 2 );
-    CPPUNIT_ASSERT( cont.count(1) == 2 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(Key(1)) == 2 );
+    EXAM_CHECK( cont.count(1) == 2 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(1) != make_pair(cont.end(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(1) != make_pair(cont.end(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.bucket(2) == ccont.bucket(2) );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.bucket(2) == ccont.bucket(2) );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.end(), ccont.end()) );
   }
 
   {
@@ -639,18 +646,22 @@ void UnorderedTest::template_methods()
     cont.insert(&key3);
     cont.insert(&key4);
 
-    CPPUNIT_ASSERT( cont.count(1) == 1 );
-    CPPUNIT_ASSERT( cont.count(5) == 0 );
+    EXAM_CHECK( cont.count(1) == 1 );
+    EXAM_CHECK( cont.count(5) == 0 );
 
-    CPPUNIT_ASSERT( cont.find(2) != cont.end() );
-    CPPUNIT_ASSERT( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
+    EXAM_CHECK( cont.find(2) != cont.end() );
+    EXAM_CHECK( cont.equal_range(2) != make_pair(cont.begin(), cont.end()) );
 
     Container const& ccont = cont;
-    CPPUNIT_ASSERT( ccont.find(2) != ccont.end() );
-    CPPUNIT_ASSERT( ccont.bucket(2) == ccont.bucket(2) );
-    CPPUNIT_ASSERT( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
+    EXAM_CHECK( ccont.find(2) != ccont.end() );
+    EXAM_CHECK( ccont.bucket(2) == ccont.bucket(2) );
+    EXAM_CHECK( ccont.equal_range(2) != make_pair(ccont.begin(), ccont.end()) );
   }
+#else
+  throw skip_exception();
 #endif
+
+  return EXAM_RESULT;
 }
 
 #if defined (STLPORT) && \
