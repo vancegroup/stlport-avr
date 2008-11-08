@@ -126,6 +126,16 @@ int main( int argc, const char** argv )
   t.add( &deque_test::allocator_with_state, deq_test, "deque allocator_with_state" );
   t.add( &deque_test::optimizations_check, deq_test, "deque optimizations_check" );
 
+  queue_test que_test;
+
+  t.add( &queue_test::pqueue1, que_test, "queue test 1" );
+  t.add( &queue_test::queue1, que_test, "queue test 2" );
+
+  stack_test st_test;
+
+  t.add( &stack_test::stack1, st_test, "stack test 1" );
+  t.add( &stack_test::stack2, st_test, "stack test 2" );
+
   list_test lst_test;
 
   t.add( &list_test::list1, lst_test, "list1" );

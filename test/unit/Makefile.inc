@@ -121,7 +121,6 @@ SRC_CPP = adj_test.cpp \
 	plusminus_test.cpp \
 	ptr2_test.cpp \
 	ptrspec_test.cpp \
-	queue_test.cpp \
 	queue_header_test.cpp \
 	rawriter_test.cpp \
 	reference_wrapper_test.cpp \
@@ -142,7 +141,6 @@ SRC_CPP = adj_test.cpp \
 	sort_test.cpp \
 	sstream_test.cpp \
 	sstream_header_test.cpp \
-	stack_test.cpp \
 	stack_header_test.cpp \
 	stdexcept_header_test.cpp \
 	stldbg_include.cpp \

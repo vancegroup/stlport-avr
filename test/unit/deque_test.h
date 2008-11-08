@@ -30,4 +30,18 @@ class deque_test
     int EXAM_DECL(optimizations_check);
 };
 
+class queue_test
+{
+  public:
+    int EXAM_DECL(pqueue1);
+    int EXAM_DECL(queue1);
+};
+
+class stack_test
+{
+  public:
+    int EXAM_DECL(stack1);
+    int EXAM_DECL(stack2);
+};
+
 #endif // __TEST_DEQUE_TEST_H

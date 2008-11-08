@@ -18,6 +18,9 @@
 #include "stack_allocator.h"
 
 #include <deque>
+#include <queue>
+#include <stack>
+
 #include <algorithm>
 #if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
 # include <stdexcept>
@@ -336,3 +339,75 @@ class IncompleteClass
   typedef deque<IncompleteClass>::size_type size;
 };
 #endif
+
+int EXAM_IMPL(queue_test::pqueue1)
+{
+  priority_queue<int, deque<int>, less<int> > q;
+  q.push(42);
+  q.push(101);
+  q.push(69);
+
+  EXAM_CHECK( q.top()==101 );
+  q.pop();
+  EXAM_CHECK( q.top()==69 );
+  q.pop();
+  EXAM_CHECK( q.top()==42 );
+  q.pop();
+
+  EXAM_CHECK(q.empty());
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(queue_test::queue1)
+{
+  queue<int, list<int> > q;
+  q.push(42);
+  q.push(101);
+  q.push(69);
+
+  EXAM_CHECK( q.front()==42 );
+  q.pop();
+  EXAM_CHECK( q.front()==101 );
+  q.pop();
+  EXAM_CHECK( q.front()==69 );
+  q.pop();
+
+  EXAM_CHECK(q.empty());
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(stack_test::stack1)
+{
+  stack<int, deque<int> > s;
+  s.push(42);
+  s.push(101);
+  s.push(69);
+  EXAM_CHECK(s.top()==69);
+  s.pop();
+  EXAM_CHECK(s.top()==101);
+  s.pop();
+  EXAM_CHECK(s.top()==42);
+  s.pop();
+  EXAM_CHECK(s.empty());
+
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(stack_test::stack2)
+{
+  stack<int, list<int> > s;
+  s.push(42);
+  s.push(101);
+  s.push(69);
+  EXAM_CHECK(s.top()==69);
+  s.pop();
+  EXAM_CHECK(s.top()==101);
+  s.pop();
+  EXAM_CHECK(s.top()==42);
+  s.pop();
+  EXAM_CHECK(s.empty());
+
+  return EXAM_RESULT;
+}
