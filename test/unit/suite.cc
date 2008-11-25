@@ -1,4 +1,4 @@
-// -*- C++ -*- Time-stamp: <08/10/30 23:09:22 ptr>
+// -*- C++ -*- Time-stamp: <08/11/22 01:52:39 ptr>
 
 /*
  * Copyright (c) 2008
@@ -21,6 +21,7 @@
 #include "string_test.h"
 #include "map_test.h"
 #include "numerics.h"
+#include "stream_test.h"
 
 // ------------
 #include "cppunit_proxy.h"
@@ -94,7 +95,6 @@ int main( int argc, const char** argv )
   }
 
   exam::test_suite t( "STLport test" );
-
   vector_test vec_test;
 
   exam::test_suite::test_case_type vec_tc[16];
@@ -191,6 +191,31 @@ int main( int argc, const char** argv )
   t.add( &string_test::capacity, str_test, "capacity" );
   t.add( &string_test::concat24, str_test, "concat24" );
 
+  iostream_test strm_test;
+
+  t.add( &iostream_test::manipulators, strm_test, "manipulators" );
+  t.add( &iostream_test::in_avail, strm_test, "in_avail in std streams" );
+
+  sstream_test sstrm_test;
+
+  t.add( &sstream_test::output, sstrm_test, "sstream output" );
+  t.add( &sstream_test::input, sstrm_test, "sstream input" );
+  t.add( &sstream_test::input_char, sstrm_test, "sstream input_char" );
+  t.add( &sstream_test::io, sstrm_test, "sstream io" );
+  t.add( &sstream_test::err, sstrm_test, "sstream err" );
+  t.add( &sstream_test::err_long, sstrm_test, "sstream err_long" );
+  t.add( &sstream_test::maxint, sstrm_test, "sstream maxint" );
+  t.add( &sstream_test::init_in, sstrm_test, "sstream init_in" );
+  t.add( &sstream_test::init_out, sstrm_test, "sstream init_out" );
+  t.add( &sstream_test::buf, sstrm_test, "sstream buf" );
+  t.add( &sstream_test::rdbuf, sstrm_test, "sstream rdbuf" );
+  t.add( &sstream_test::streambuf_output, sstrm_test, "sstream streambuf_output" );
+  t.add( &sstream_test::seek, sstrm_test, "sstream seek" );
+  t.add( &sstream_test::seekp, sstrm_test, "sstream seekp" );
+  t.add( &sstream_test::seek_gp, sstrm_test, "sstream seek_gp" );
+  t.add( &sstream_test::tellp, sstrm_test, "sstream tellp" );
+  t.add( &sstream_test::negative, sstrm_test, "sstream negative" );
+
   numerics num_test;
 
   exam::test_suite::test_case_type num_tc[6];
@@ -265,6 +290,26 @@ int main( int argc, const char** argv )
   t.add( &unordered_test::buckets, uo_test, "unordered buckets" );
   t.add( &unordered_test::equal_range, uo_test, "unordered equal_range" );
   t.add( &unordered_test::template_methods, uo_test, "unordered template_methods" );
+
+  fstream_test fstrm_test;
+
+  t.add( &fstream_test::output, fstrm_test, "fstream output" );
+  t.add( &fstream_test::input, fstrm_test, "fstream input" );
+  t.add( &fstream_test::input_char, fstrm_test, "fstream input_char" );
+  t.add( &fstream_test::io, fstrm_test, "fstream io" );
+  t.add( &fstream_test::err, fstrm_test, "fstream err" );
+  t.add( &fstream_test::tellg, fstrm_test, "fstream tellg" );
+  t.add( &fstream_test::tellp, fstrm_test, "fstream tellp" );
+  t.add( &fstream_test::seek, fstrm_test, "fstream seek" );
+  t.add( &fstream_test::buf, fstrm_test, "fstream buf" );
+  t.add( &fstream_test::rdbuf, fstrm_test, "fstream rdbuf" );
+  t.add( &fstream_test::streambuf_output, fstrm_test, "fstream streambuf_output" );
+  t.add( &fstream_test::win32_file_format, fstrm_test, "fstream win32_file_format" );
+  t.add( &fstream_test::null_stream, fstrm_test, "fstream null_stream" );
+  t.add( &fstream_test::null_buf, fstrm_test, "fstream null_buf" );
+  t.add( &fstream_test::offset, fstrm_test, "fstream offset" );
+  t.add( &fstream_test::big_file, fstrm_test, "fstream big_file" );
+  t.add( &fstream_test::custom_facet, fstrm_test, "fstream custom_facet" );
 
   if ( opts.is_set( 'l' ) ) {
     t.print_graph( std::cerr );

@@ -1,133 +1,77 @@
-#include <string>
-#if !defined (STLPORT) || !defined (_STLP_USE_NO_IOSTREAMS)
-#  include <fstream>
-#  include <iostream>
-#  include <iomanip>
-#  include <sstream>
-#  include <vector>
-#  include <stdexcept>
+// -*- C++ -*- Time-stamp: <08/11/22 01:22:33 ptr>
 
+/*
+ * Copyright (c) 2004-2008
+ * Petr Ovtchenkov
+ *
+ * Copyright (c) 2004-2008
+ * Francois Dumont
+ *
+ * Licensed under the Academic Free License Version 3.0
+ *
+ */
+
+#include "stream_test.h"
+
+#include <string>
+
+
+#include <sstream>
+#include <iomanip>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <stdexcept>
 #include <stdio.h>
 
-#  include "full_streambuf.h"
-#  include "cppunit/cppunit_proxy.h"
+#include "full_streambuf.h"
 
-#  if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
+#if !defined (STLPORT) || defined(_STLP_USE_NAMESPACES)
 using namespace std;
-#  endif
+#endif
 
 //The macro value gives approximately the generated file
 //size in Go
 //#define CHECK_BIG_FILE 4
 
-#  if (!defined(STLPORT) && (defined (__GNUC__) && (__GNUC__ > 3))) || \
-      (defined (STLPORT) && !defined (_STLP_NO_CUSTOM_IO) && \
-                            !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
-                              (defined (__GNUC__) && (__GNUC__ < 3)) || \
-                              (defined (__SUNPRO_CC)) || \
-                              (defined (__DMC__) && defined (_DLL))))
-#    define DO_CUSTOM_FACET_TEST
-#  endif
-
-//
-// TestCase class
-//
-class FstreamTest : public CPPUNIT_NS::TestCase
-{
-  CPPUNIT_TEST_SUITE(FstreamTest);
-  CPPUNIT_TEST(output);
-  CPPUNIT_TEST(input);
-  CPPUNIT_TEST(input_char);
-  CPPUNIT_TEST(io);
-  CPPUNIT_TEST(err);
-  CPPUNIT_TEST(tellg);
-  CPPUNIT_TEST(tellp);
-  CPPUNIT_TEST(seek);
-  CPPUNIT_TEST(buf);
-  CPPUNIT_TEST(rdbuf);
-  CPPUNIT_TEST(streambuf_output);
-  CPPUNIT_TEST(win32_file_format);
-  CPPUNIT_TEST(null_stream);
-#  if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
-  CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_TEST(null_buf);
-#  if !defined (STLPORT) || !defined (_STLP_WIN32)
-  CPPUNIT_TEST(offset);
-#  endif
-#  if defined (CHECK_BIG_FILE)
-  CPPUNIT_TEST(big_file);
-#  endif
-#  if !defined (DO_CUSTOM_FACET_TEST)
-  CPPUNIT_IGNORE;
-#  endif
-  CPPUNIT_TEST(custom_facet);
-  CPPUNIT_TEST_SUITE_END();
-
-  protected:
-    void output();
-    void input();
-    void input_char();
-    void io();
-    void err();
-    void tellg();
-    void tellp();
-    void seek();
-    void buf();
-    void rdbuf();
-    void streambuf_output();
-    void win32_file_format();
-    void null_stream();
-    void null_buf();
-#  if !defined (STLPORT) || !defined (_STLP_WIN32)
-    void offset();
-#  endif
-    void custom_facet();
-#  if defined (CHECK_BIG_FILE)
-    void big_file();
-#  endif
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(FstreamTest);
-
-//
-// tests implementation
-//
-void FstreamTest::output()
+int EXAM_IMPL(fstream_test::output)
 {
   ofstream f( "test_file.txt" );
 
   f << 1 << '\n' << 2.0 << '\n' << "abcd\n" << "ghk lm\n" << "abcd ef";
-  CPPUNIT_ASSERT (f.good());
-  // CPPUNIT_ASSERT( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
+  EXAM_CHECK (f.good());
+  // EXAM_CHECK( s.str() == "1\n2\nabcd\nghk lm\nabcd ef" );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::input()
+int EXAM_IMPL(fstream_test::input)
 {
   {
     ifstream f( "test_file.txt" );
     int i = 0;
     f >> i;
-    CPPUNIT_ASSERT( f.good() );
-    CPPUNIT_ASSERT( i == 1 );
+    EXAM_CHECK( f.good() );
+    EXAM_CHECK( i == 1 );
     double d = 0.0;
     f >> d;
-    CPPUNIT_ASSERT( f.good() );
-    CPPUNIT_ASSERT( d == 2.0 );
+    EXAM_CHECK( f.good() );
+    EXAM_CHECK( d == 2.0 );
     string str;
     f >> str;
-    CPPUNIT_ASSERT( f.good() );
-    CPPUNIT_ASSERT( str == "abcd" );
+    EXAM_CHECK( f.good() );
+    EXAM_CHECK( str == "abcd" );
     char c;
     f.get(c); // extract newline, that not extracted by operator >>
-    CPPUNIT_ASSERT( f.good() );
-    CPPUNIT_ASSERT( c == '\n' );
+    EXAM_CHECK( f.good() );
+    EXAM_CHECK( c == '\n' );
     getline( f, str );
-    CPPUNIT_ASSERT( f.good() );
-    CPPUNIT_ASSERT( str == "ghk lm" );
+    EXAM_CHECK( f.good() );
+    EXAM_CHECK( str == "ghk lm" );
     getline( f, str );
-    CPPUNIT_ASSERT( f.eof() );
-    CPPUNIT_ASSERT( str == "abcd ef" );
+    EXAM_CHECK( f.eof() );
+    EXAM_CHECK( str == "abcd ef" );
   }
 #if defined (STLPORT) && !defined (_STLP_USE_WIN32_IO)
   {
@@ -135,28 +79,32 @@ void FstreamTest::input()
     if (in.good()) {
       string s;
       getline(in, s);
-      CPPUNIT_ASSERT( in.fail() );
+      EXAM_CHECK( in.fail() );
     }
   }
 #endif
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::input_char()
+int EXAM_IMPL(fstream_test::input_char)
 {
   char buf[16] = { 0, '1', '2', '3' };
   ifstream s( "test_file.txt" );
   s >> buf;
 
-  CPPUNIT_ASSERT( buf[0] == '1' );
-  CPPUNIT_ASSERT( buf[1] == 0 );
-  CPPUNIT_ASSERT( buf[2] == '2' );
+  EXAM_CHECK( buf[0] == '1' );
+  EXAM_CHECK( buf[1] == 0 );
+  EXAM_CHECK( buf[2] == '2' );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::io()
+int EXAM_IMPL(fstream_test::io)
 {
   basic_fstream<char,char_traits<char> > f( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
 
-  CPPUNIT_ASSERT( f.is_open() );
+  EXAM_CHECK( f.is_open() );
 
   f << 1 << '\n' << 2.0 << '\n' << "abcd\n" << "ghk lm\n" << "abcd ef";
 
@@ -165,58 +113,62 @@ void FstreamTest::io()
 
   int i = 0;
   f >> i;
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( i == 1 );
+  EXAM_CHECK( f.good() );
+  EXAM_CHECK( i == 1 );
   double d = 0.0;
   f >> d;
-  CPPUNIT_ASSERT( d == 2.0 );
+  EXAM_CHECK( d == 2.0 );
   string s;
   f >> s;
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( s == "abcd" );
+  EXAM_CHECK( f.good() );
+  EXAM_CHECK( s == "abcd" );
   char c;
   f.get(c); // extract newline, that not extracted by operator >>
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( c == '\n' );
+  EXAM_CHECK( f.good() );
+  EXAM_CHECK( c == '\n' );
   getline( f, s );
-  CPPUNIT_ASSERT( f.good() );
-  CPPUNIT_ASSERT( s == "ghk lm" );
+  EXAM_CHECK( f.good() );
+  EXAM_CHECK( s == "ghk lm" );
   getline( f, s );
-  CPPUNIT_ASSERT( !f.fail() );
-  CPPUNIT_ASSERT( s == "abcd ef" );
-  CPPUNIT_ASSERT( f.eof() );
+  EXAM_CHECK( !f.fail() );
+  EXAM_CHECK( s == "abcd ef" );
+  EXAM_CHECK( f.eof() );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::err()
+int EXAM_IMPL(fstream_test::err)
 {
   basic_fstream<char,char_traits<char> > f( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
 
-  CPPUNIT_ASSERT( f.is_open() );
+  EXAM_CHECK( f.is_open() );
 
   int i = 9;
   f << i;
-  CPPUNIT_ASSERT( f.good() );
+  EXAM_CHECK( f.good() );
   i = 0;
   f.seekg( 0, ios_base::beg );
   f >> i;
-  CPPUNIT_ASSERT( !f.fail() );
-  CPPUNIT_ASSERT( i == 9 );
+  EXAM_CHECK( !f.fail() );
+  EXAM_CHECK( i == 9 );
   f >> i;
-  CPPUNIT_ASSERT( f.fail() );
-  CPPUNIT_ASSERT( f.eof() );
-  CPPUNIT_ASSERT( i == 9 );
+  EXAM_CHECK( f.fail() );
+  EXAM_CHECK( f.eof() );
+  EXAM_CHECK( i == 9 );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::tellg()
+int EXAM_IMPL(fstream_test::tellg)
 {
   {
     // bogus ios_base::binary is for Wins
     ofstream of("test_file.txt", ios_base::out | ios_base::binary | ios_base::trunc);
-    CPPUNIT_ASSERT( of.is_open() );
+    EXAM_CHECK( of.is_open() );
 
     for (int i = 0; i < 50; ++i) {
       of << "line " << setiosflags(ios_base::right) << setfill('0') << setw(2) << i << "\n";
-      CPPUNIT_ASSERT( !of.fail() );
+      EXAM_CHECK( !of.fail() );
     }
     of.close();
   }
@@ -224,18 +176,18 @@ void FstreamTest::tellg()
   {
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
-    CPPUNIT_ASSERT( is.is_open() );
+    EXAM_CHECK( is.is_open() );
     char buf[64];
 
-    // CPPUNIT_ASSERT( is.tellg() == 0 );
+    // EXAM_CHECK( is.tellg() == 0 );
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
       is.read(buf, 0);
-      CPPUNIT_ASSERT( is.gcount() == 0 );
-      CPPUNIT_ASSERT( is.tellg() == p );
+      EXAM_CHECK( is.gcount() == 0 );
+      EXAM_CHECK( is.tellg() == p );
       is.read( buf, 8 );
-      CPPUNIT_ASSERT( !is.fail() );
-      CPPUNIT_ASSERT( is.gcount() == 8 );
+      EXAM_CHECK( !is.fail() );
+      EXAM_CHECK( is.gcount() == 8 );
       p += 8;
     }
   }
@@ -243,51 +195,53 @@ void FstreamTest::tellg()
   {
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
-    CPPUNIT_ASSERT( is.is_open() );
+    EXAM_CHECK( is.is_open() );
 
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
-      CPPUNIT_ASSERT( !is.fail() );
+      EXAM_CHECK( !is.fail() );
       is.tellg();
-      CPPUNIT_ASSERT( is.tellg() == p );
+      EXAM_CHECK( is.tellg() == p );
       p += 8;
       is.seekg( p, ios_base::beg  );
-      CPPUNIT_ASSERT( !is.fail() );
+      EXAM_CHECK( !is.fail() );
     }
   }
 
   {
     // bogus ios_base::binary is for Wins
     ifstream is("test_file.txt", ios_base::in | ios_base::binary);
-    CPPUNIT_ASSERT( is.is_open() );
+    EXAM_CHECK( is.is_open() );
 
     streampos p = 0;
     for (int i = 0; i < 50; ++i) {
-      CPPUNIT_ASSERT( is.tellg() == p );
+      EXAM_CHECK( is.tellg() == p );
       p += 8;
       is.seekg( 8, ios_base::cur );
-      CPPUNIT_ASSERT( !is.fail() );
+      EXAM_CHECK( !is.fail() );
     }
   }
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::tellp()
+int EXAM_IMPL(fstream_test::tellp)
 {
   {
     ofstream o( "test_file.txt" );
 
     o << "123456";
 
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(6) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(6) );
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(6) );
+    EXAM_CHECK( o.tellp() == ofstream::pos_type(6) );
   }
   {
     ofstream o( "test_file.txt" );
 
     o << "123456789";
 
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(9) );
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(9) );
+    EXAM_CHECK( o.tellp() == ofstream::pos_type(9) );
   }
   /* According to the standard
      ofstream o( "test_file.txt", ios_base::app | ios_base::out )
@@ -318,8 +272,8 @@ void FstreamTest::tellp()
     long expected_pos = 9;
     #endif
     ofstream o( "test_file.txt", ios_base::app | ios_base::out );
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(expected_pos) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(expected_pos) );
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(expected_pos) );
+    EXAM_CHECK( o.tellp() == ofstream::pos_type(expected_pos) );
   }
   { // for reference, to test fopen/ftell behaviour in append mode:
     #ifdef WIN32
@@ -328,7 +282,7 @@ void FstreamTest::tellp()
     long expected_pos = 9;
     #endif
     FILE* f = fopen( "test_file.txt", "a" );
-    CPPUNIT_CHECK( ftell( f ) == expected_pos );
+    EXAM_CHECK( ftell( f ) == expected_pos );
     fclose( f );
   }
   {
@@ -336,12 +290,14 @@ void FstreamTest::tellp()
     // After a write, file is at EOF. This is implementation-independent.  
     ofstream o( "test_file.txt", ios_base::app | ios_base::out );
     o << "X";
-    CPPUNIT_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(10) );
-    CPPUNIT_CHECK( o.tellp() == ofstream::pos_type(10) );
+    EXAM_CHECK( o.rdbuf()->pubseekoff( 0, ios_base::cur, ios_base::out ) == ofstream::pos_type(10) );
+    EXAM_CHECK( o.tellp() == ofstream::pos_type(10) );
   }
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::buf()
+int EXAM_IMPL(fstream_test::buf)
 {
   fstream ss( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
 
@@ -350,145 +306,149 @@ void FstreamTest::buf()
   char buf[10];
   buf[7] = 'x';
   ss.get( buf, 10 );
-  CPPUNIT_ASSERT( !ss.fail() );
-  CPPUNIT_ASSERT( buf[0] == '1' );
-  CPPUNIT_ASSERT( buf[1] == '2' );
-  CPPUNIT_ASSERT( buf[2] == '3' );
-  CPPUNIT_ASSERT( buf[3] == '4' );
-  CPPUNIT_ASSERT( buf[4] == '5' );
-  CPPUNIT_ASSERT( buf[5] == '6' );
-  CPPUNIT_ASSERT( buf[6] == '7' ); // 27.6.1.3 paragraph 10, paragraph 7
-  CPPUNIT_ASSERT( buf[7] == 0 ); // 27.6.1.3 paragraph 8
+  EXAM_CHECK( !ss.fail() );
+  EXAM_CHECK( buf[0] == '1' );
+  EXAM_CHECK( buf[1] == '2' );
+  EXAM_CHECK( buf[2] == '3' );
+  EXAM_CHECK( buf[3] == '4' );
+  EXAM_CHECK( buf[4] == '5' );
+  EXAM_CHECK( buf[5] == '6' );
+  EXAM_CHECK( buf[6] == '7' ); // 27.6.1.3 paragraph 10, paragraph 7
+  EXAM_CHECK( buf[7] == 0 ); // 27.6.1.3 paragraph 8
   char c;
   ss.get(c);
-  CPPUNIT_ASSERT( !ss.fail() );
-  CPPUNIT_ASSERT( c == '\n' ); // 27.6.1.3 paragraph 10, paragraph 7
+  EXAM_CHECK( !ss.fail() );
+  EXAM_CHECK( c == '\n' ); // 27.6.1.3 paragraph 10, paragraph 7
   ss.get(c);
-  CPPUNIT_ASSERT( !ss.fail() );
-  CPPUNIT_ASSERT( c == '8' );
+  EXAM_CHECK( !ss.fail() );
+  EXAM_CHECK( c == '8' );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::seek()
+int EXAM_IMPL(fstream_test::seek)
 {
   {
     // Test in binary mode:
     {
       fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
 
       s << "1234567890\n";
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
     }
 
     char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
     fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary );
-    CPPUNIT_ASSERT( s );
+    EXAM_CHECK( s );
 
     int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
-    CPPUNIT_CHECK( chars_read == 11 );
-    CPPUNIT_CHECK( b1[9] == '0' );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(chars_read) );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff( -chars_read, ios_base::cur ) == fstream::pos_type(0) );
+    EXAM_CHECK( chars_read == 11 );
+    EXAM_CHECK( b1[9] == '0' );
+    EXAM_CHECK( s.rdbuf()->pubseekoff( 0, ios_base::cur ) == fstream::pos_type(chars_read) );
+    EXAM_CHECK( s.rdbuf()->pubseekoff( -chars_read, ios_base::cur ) == fstream::pos_type(0) );
 
     char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
 
-    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 10 ) == 10 );
-    CPPUNIT_CHECK( b2[9] == '0' );
+    EXAM_CHECK( s.rdbuf()->sgetn( b2, 10 ) == 10 );
+    EXAM_CHECK( b2[9] == '0' );
   }
 
   {
     // Test in text mode:
     {
       fstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
 
       s << "1234567890\n";
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
     }
 
     char b1[] = { 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x' };
     fstream s( "test_file.txt", ios_base::in | ios_base::out );
-    CPPUNIT_ASSERT( s );
+    EXAM_CHECK( s );
 
     int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) );
-    CPPUNIT_CHECK( chars_read == 11 );
-    CPPUNIT_CHECK( b1[9] == '0' );
+    EXAM_CHECK( chars_read == 11 );
+    EXAM_CHECK( b1[9] == '0' );
 
     fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
     // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
     streamoff offset = pos;
-    CPPUNIT_ASSERT( offset >= chars_read );
+    EXAM_CHECK( offset >= chars_read );
     offset = s.rdbuf()->pubseekoff( -offset, ios_base::cur );
-    CPPUNIT_ASSERT( offset == 0 );
+    EXAM_CHECK( offset == 0 );
 
     char b2[10] = { 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y', 'y' };
 
-    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 5 ) == 5 );
-    CPPUNIT_CHECK( b2[4] == '5' );
+    EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+    EXAM_CHECK( b2[4] == '5' );
 
     pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    CPPUNIT_ASSERT( pos == fstream::pos_type(5) );
-    CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+    EXAM_CHECK( pos == fstream::pos_type(5) );
+    EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
   }
 
-#if !defined (STLPORT) || \
-    (!defined (_STLP_NO_WCHAR_T) && defined (_STLP_USE_EXCEPTIONS))
+#if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
   {
     // Test with a wariable encoding:
     locale loc;
-    try
-    {
+    try {
       locale tmp(locale::classic(), new codecvt_byname<wchar_t, char, mbstate_t>(".UTF8"));
       loc = tmp;
     }
-    catch (const runtime_error&)
-    {
+    catch ( const runtime_error& err ) {
       // Localization no supported so no test:
-      return;
+      EXAM_ERROR( err.what() );
+      // throw exam::skip_exception();
+
+      return EXAM_RESULT;
     }
 
     {
       wfstream s( "test_file.txt", ios_base::in | ios_base::out | ios_base::trunc );
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
       s.imbue(loc);
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
 
       s << L"1234567890\n";
-      CPPUNIT_ASSERT( s );
+      EXAM_CHECK( s );
     }
 
     wchar_t b1[] = { L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x', L'x' };
     wfstream s( "test_file.txt", ios_base::in | ios_base::out );
-    CPPUNIT_ASSERT( s );
+    EXAM_CHECK( s );
     s.imbue(loc);
-    CPPUNIT_ASSERT( s );
+    EXAM_CHECK( s );
 
     int chars_read = (int)s.rdbuf()->sgetn( b1, sizeof(b1) / sizeof(wchar_t) );
-    CPPUNIT_CHECK( chars_read == 11 );
-    CPPUNIT_CHECK( b1[9] == L'0' );
+    EXAM_CHECK( chars_read == 11 );
+    EXAM_CHECK( b1[9] == L'0' );
 
     fstream::pos_type pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
     // Depending on how '\n' is written in file, file position can be greater or equal to the number of chars_read read.
     streamoff off = pos;
-    CPPUNIT_ASSERT( off >= chars_read );
+    EXAM_CHECK( off >= chars_read );
     off = s.rdbuf()->pubseekoff(-off, ios_base::cur);
-    CPPUNIT_ASSERT( off == -1 );
+    EXAM_CHECK( off == -1 );
     off = s.rdbuf()->pubseekoff(0, ios_base::beg);
-    CPPUNIT_ASSERT( off == 0 );
+    EXAM_CHECK( off == 0 );
 
     wchar_t b2[10] = { L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y', L'y' };
 
-    CPPUNIT_ASSERT( s.rdbuf()->sgetn( b2, 5 ) == 5 );
-    CPPUNIT_CHECK( b2[4] == L'5' );
+    EXAM_CHECK( s.rdbuf()->sgetn( b2, 5 ) == 5 );
+    EXAM_CHECK( b2[4] == L'5' );
 
     pos = s.rdbuf()->pubseekoff(0, ios_base::cur);
-    CPPUNIT_ASSERT( pos == fstream::pos_type(5) );
-    //CPPUNIT_ASSERT( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
+    EXAM_CHECK( pos == fstream::pos_type(5) );
+    //EXAM_CHECK( s.rdbuf()->pubseekoff(-5, ios_base::cur) == fstream::pos_type(0) );
   }
 #endif
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::rdbuf()
+int EXAM_IMPL(fstream_test::rdbuf)
 {
   fstream ss( "test_file.txt", ios_base::in | ios_base::out | ios_base::binary | ios_base::trunc );
 
@@ -497,109 +457,112 @@ void FstreamTest::rdbuf()
 
   ostringstream os;
   ss.get( *os.rdbuf(), '\n' );
-  CPPUNIT_ASSERT( !ss.fail() );
+  EXAM_CHECK( !ss.fail() );
   char c;
   ss.get(c);
-  CPPUNIT_ASSERT( !ss.fail() );
-  CPPUNIT_ASSERT( c == '\n' ); // 27.6.1.3 paragraph 12
-  CPPUNIT_ASSERT( os.str() == "1234567" );
+  EXAM_CHECK( !ss.fail() );
+  EXAM_CHECK( c == '\n' ); // 27.6.1.3 paragraph 12
+  EXAM_CHECK( os.str() == "1234567" );
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::streambuf_output()
+int EXAM_IMPL(fstream_test::streambuf_output)
 {
   {
     ofstream ofstr("test_file.txt", ios_base::binary);
-    if (!ofstr)
-      //No test if we cannot create the file
-      return;
+
+    EXAM_REQUIRE( ofstr ); // No test if we cannot create the file
+
     ofstr << "01234567890123456789";
-    CPPUNIT_ASSERT( ofstr );
+    EXAM_CHECK( ofstr );
   }
 
   {
     ifstream in("test_file.txt", ios_base::binary);
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( in );
 
     full_streambuf full_buf(10);
     ostream out(&full_buf);
-    CPPUNIT_ASSERT( out );
+    EXAM_CHECK( out );
 
     out << in.rdbuf();
-    CPPUNIT_ASSERT( out );
-    CPPUNIT_ASSERT( in );
-    CPPUNIT_ASSERT( full_buf.str() == "0123456789" );
+    EXAM_CHECK( out );
+    EXAM_CHECK( in );
+    EXAM_CHECK( full_buf.str() == "0123456789" );
 
     out << in.rdbuf();
-    CPPUNIT_ASSERT( out.fail() );
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( out.fail() );
+    EXAM_CHECK( in );
 
     ostringstream ostr;
     ostr << in.rdbuf();
-    CPPUNIT_ASSERT( ostr );
-    CPPUNIT_ASSERT( in );
-    CPPUNIT_ASSERT( ostr.str() == "0123456789" );
+    EXAM_CHECK( ostr );
+    EXAM_CHECK( in );
+    EXAM_CHECK( ostr.str() == "0123456789" );
   }
 
-#  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
   {
     //If the output stream buffer throws:
     ifstream in("test_file.txt", ios_base::binary);
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( in );
 
     full_streambuf full_buf(10, true);
     ostream out(&full_buf);
-    CPPUNIT_ASSERT( out );
+    EXAM_CHECK( out );
 
     out << in.rdbuf();
-    CPPUNIT_ASSERT( out.bad() );
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( out.bad() );
+    EXAM_CHECK( in );
     //out is bad we have no guaranty on what has been extracted:
-    //CPPUNIT_ASSERT( full_buf.str() == "0123456789" );
+    //EXAM_CHECK( full_buf.str() == "0123456789" );
 
     out.clear();
     out << in.rdbuf();
-    CPPUNIT_ASSERT( out.fail() && out.bad() );
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( out.fail() && out.bad() );
+    EXAM_CHECK( in );
 
     ostringstream ostr;
     ostr << in.rdbuf();
-    CPPUNIT_ASSERT( ostr );
-    CPPUNIT_ASSERT( in );
-    CPPUNIT_ASSERT( ostr.str() == "0123456789" );
+    EXAM_CHECK( ostr );
+    EXAM_CHECK( in );
+    EXAM_CHECK( ostr.str() == "0123456789" );
   }
-#  endif
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::win32_file_format()
+int EXAM_IMPL(fstream_test::win32_file_format)
 {
   const char* file_name = "win32_file_format.tmp";
   const size_t nb_lines = 2049;
   {
     ofstream out(file_name);
-    CPPUNIT_ASSERT( out.good() );
+    EXAM_CHECK( out.good() );
     out << 'a';
     for (size_t i = 0; i < nb_lines - 1; ++i) {
       out << '\n';
     }
     out << '\r';
-    CPPUNIT_ASSERT( out.good() );
+    EXAM_CHECK( out.good() );
   }
   {
     ifstream in(file_name);
-    CPPUNIT_ASSERT( in.good() );
+    EXAM_CHECK( in.good() );
     string line, last_line;
     size_t nb_read_lines = 0;
     while (getline(in, line)) {
       ++nb_read_lines;
       last_line = line;
     }
-    CPPUNIT_ASSERT( in.eof() );
-    CPPUNIT_ASSERT( nb_read_lines == nb_lines );
-    CPPUNIT_ASSERT( !last_line.empty() && (last_line[0] == '\r') );
+    EXAM_CHECK( in.eof() );
+    EXAM_CHECK( nb_read_lines == nb_lines );
+    EXAM_CHECK( !last_line.empty() && (last_line[0] == '\r') );
   }
+
+  return EXAM_RESULT;
 }
 
-#if defined (DO_CUSTOM_FACET_TEST)
 struct my_state {
   char dummy;
 };
@@ -672,17 +635,21 @@ template <>
 locale::id codecvt<char, char, my_state>::id;
 #    endif
 #  endif
-#endif
 
-void FstreamTest::custom_facet()
+int EXAM_IMPL(fstream_test::custom_facet)
 {
-#if defined (DO_CUSTOM_FACET_TEST)
+#  if (!defined(STLPORT) && (defined (__GNUC__) && (__GNUC__ > 3))) || \
+      (defined (STLPORT) && !defined (_STLP_NO_CUSTOM_IO) && \
+                            !((defined (_STLP_MSVC) && (_STLP_MSVC < 1300)) || \
+                              (defined (__GNUC__) && (__GNUC__ < 3)) || \
+                              (defined (__SUNPRO_CC)) || \
+                              (defined (__DMC__) && defined (_DLL))))
   const char* fileName = "test_file.txt";
   //File preparation:
   {
     ofstream ofstr(fileName, ios_base::binary);
     ofstr << "0123456789";
-    CPPUNIT_ASSERT( ofstr );
+    EXAM_CHECK( ofstr );
   }
 
   {
@@ -690,44 +657,48 @@ void FstreamTest::custom_facet()
     typedef basic_string<char, my_traits> my_string;
 
     my_ifstream ifstr(fileName);
-    CPPUNIT_ASSERT( ifstr );
+    EXAM_CHECK( ifstr );
 
 #  if !defined (STLPORT) || defined (_STLP_USE_EXCEPTIONS)
     ifstr.imbue(locale::classic());
-    CPPUNIT_ASSERT( ifstr.fail() && !ifstr.bad() );
+    EXAM_CHECK( ifstr.fail() && !ifstr.bad() );
     ifstr.clear();
 #  endif
     typedef codecvt<char, char, my_state> my_codecvt;
     locale my_loc(locale::classic(), new my_codecvt());
     // Check that my_codecvt has not replace default codecvt:
-    CPPUNIT_ASSERT( (has_facet<my_codecvt>(my_loc)) );
-    CPPUNIT_ASSERT( (has_facet<codecvt<char, char, mbstate_t> >(my_loc)) );
+    EXAM_CHECK( (has_facet<my_codecvt>(my_loc)) );
+    EXAM_CHECK( (has_facet<codecvt<char, char, mbstate_t> >(my_loc)) );
 #  if !defined (STLPORT) || !defined (_STLP_NO_WCHAR_T)
-    CPPUNIT_ASSERT( (has_facet<codecvt<wchar_t, char, mbstate_t> >(my_loc)) );
+    EXAM_CHECK( (has_facet<codecvt<wchar_t, char, mbstate_t> >(my_loc)) );
 #  endif
     ifstr.imbue(my_loc);
-    CPPUNIT_ASSERT( ifstr.good() );
+    EXAM_CHECK( ifstr.good() );
     /*
     my_string res;
     ifstr >> res;
-    CPPUNIT_ASSERT( !ifstr.fail() );
-    CPPUNIT_ASSERT( !ifstr.bad() );
-    CPPUNIT_ASSERT( ifstr.eof() );
-    CPPUNIT_ASSERT( res == "0123456789" );
+    EXAM_CHECK( !ifstr.fail() );
+    EXAM_CHECK( !ifstr.bad() );
+    EXAM_CHECK( ifstr.eof() );
+    EXAM_CHECK( res == "0123456789" );
     */
   }
-#endif
+#  else
+  throw exam::skip_exception();
+#  endif
+
+  return EXAM_RESULT;
 }
 
-#  if defined (CHECK_BIG_FILE)
-void FstreamTest::big_file()
+int EXAM_IMPL(fstream_test::big_file)
 {
+#  if defined (CHECK_BIG_FILE)
   vector<pair<streamsize, streamoff> > file_pos;
 
   //Big file creation:
   {
     ofstream out("big_file.txt");
-    CPPUNIT_ASSERT( out );
+    EXAM_CHECK( out );
 
     //We are going to generate a file with the following schema for the content:
     //0(1019 times)0000  //1023 characters + 1 charater for \n (for some platforms it will be a 1 ko line)
@@ -741,10 +712,10 @@ void FstreamTest::big_file()
     for (int i = 0; i < 20; ++i) {
       //This assertion check that the streamoff can at least represent the necessary integers values
       //for this test:
-      CPPUNIT_ASSERT( (nb << 1) > nb );
+      EXAM_CHECK( (nb << 1) > nb );
       nb <<= 1;
     }
-    CPPUNIT_ASSERT( nb * CHECK_BIG_FILE >= nb );
+    EXAM_CHECK( nb * CHECK_BIG_FILE >= nb );
     nb *= CHECK_BIG_FILE;
 
     //Preparation of the ouput stream state:
@@ -752,9 +723,9 @@ void FstreamTest::big_file()
     for (streamoff index = 0; index < nb; ++index) {
       if (index % 1024 == 0) {
         file_pos.push_back(make_pair(out.tellp(), index));
-        CPPUNIT_ASSERT( file_pos.back().first != streamsize(-1) );
+        EXAM_CHECK( file_pos.back().first != streamsize(-1) );
         if (file_pos.size() > 1) {
-          CPPUNIT_ASSERT( file_pos[file_pos.size() - 1].first > file_pos[file_pos.size() - 2].first );
+          EXAM_CHECK( file_pos[file_pos.size() - 1].first > file_pos[file_pos.size() - 2].first );
         }
       }
       out << setw(1023) << index << '\n';
@@ -763,17 +734,17 @@ void FstreamTest::big_file()
 
   {
     ifstream in("big_file.txt");
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( in );
 
     string line;
     vector<pair<streamsize, streamsize> >::const_iterator pit(file_pos.begin()),
                                                           pitEnd(file_pos.end());
     for (; pit != pitEnd; ++pit) {
       in.seekg((*pit).first);
-      CPPUNIT_ASSERT( in );
+      EXAM_CHECK( in );
       in >> line;
       size_t lastStarPos = line.rfind('*');
-      CPPUNIT_ASSERT( atoi(line.substr(lastStarPos + 1).c_str()) == (*pit).second );
+      EXAM_CHECK( atoi(line.substr(lastStarPos + 1).c_str()) == (*pit).second );
     }
   }
 
@@ -783,7 +754,7 @@ void FstreamTest::big_file()
   streamoff representation (32 bits or 64 bits).
   {
     ifstream in("big_file.txt");
-    CPPUNIT_ASSERT( in );
+    EXAM_CHECK( in );
     char tmp[4096];
     streamsize nb_reads = 0;
     while ((!in.eof()) && in.good()){
@@ -792,65 +763,72 @@ void FstreamTest::big_file()
     }
   }
   */
-}
+#  else
+  throw exam::skip_exception();
 #  endif
 
-void FstreamTest::null_stream()
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::null_stream)
 {
-#  if (defined (STLPORT) && defined (_STLP_USE_WIN32_IO)) || \
-      (!defined (STLPORT) && (defined (WIN32) || defined (_WIN32)))
+#  if defined (_STLP_USE_WIN32_IO) || defined (WIN32) || defined (_WIN32)
   const char* nullStreamName = "NUL";
 #  else
   const char* nullStreamName = "/dev/null";
 #  endif
   {
     ofstream nullStream(nullStreamName);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     ofstream nullStream(nullStreamName, ios_base::ate);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     ofstream nullStream(nullStreamName, ios_base::trunc);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     ofstream nullStream(nullStreamName, ios_base::app);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     ifstream nullStream(nullStreamName);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     ifstream nullStream(nullStreamName, ios_base::ate);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     fstream nullStream(nullStreamName);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::ate);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
 
   {
     fstream nullStream(nullStreamName, ios_base::in | ios_base::out | ios_base::trunc);
-    CPPUNIT_CHECK( nullStream );
+    EXAM_CHECK( nullStream );
   }
+
+  return EXAM_RESULT;
 }
 
-void FstreamTest::null_buf()
+int EXAM_IMPL(fstream_test::null_buf)
 {
+#  if defined (STLPORT) && (defined (_STLP_NO_WCHAR_T) || !defined (_STLP_USE_EXCEPTIONS))
+
   /* **********************************************************************************
 
   testcase for bug #1830513:
@@ -897,19 +875,26 @@ void FstreamTest::null_buf()
   // cerr << f.good() << endl;
   // getline( f, s );
   f.getline( buf, 1 ); // <-- key line
-  CPPUNIT_CHECK( buf[0] == 0 );
-  CPPUNIT_CHECK( f.fail() ); // due to delimiter not found while buffer was exhausted
-}
-
-#  if !defined (STLPORT) || !defined (_STLP_WIN32)
-void FstreamTest::offset()
-{
-#    if (defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE)) && !defined(_STLP_USE_DEFAULT_FILE_OFFSET)
-  CPPUNIT_CHECK( sizeof(streamoff) == 8 );
-#    else
-  CPPUNIT_CHECK( sizeof(streamoff) == sizeof(off_t) );
-#    endif
-}
+  EXAM_CHECK( buf[0] == 0 );
+  EXAM_CHECK( f.fail() ); // due to delimiter not found while buffer was exhausted
+#  else
+  throw exam::skip_exception();
 #  endif
 
-#endif
+  return EXAM_RESULT;
+}
+
+int EXAM_IMPL(fstream_test::offset)
+{
+#  if !defined (STLPORT) || !defined (_STLP_WIN32)
+#    if (defined(_LARGEFILE_SOURCE) || defined(_LARGEFILE64_SOURCE)) && !defined(_STLP_USE_DEFAULT_FILE_OFFSET)
+  EXAM_CHECK( sizeof(streamoff) == 8 );
+#    else
+  EXAM_CHECK( sizeof(streamoff) == sizeof(off_t) );
+#    endif
+#  else
+  throw exam::skip_exception();
+#  endif
+
+  return EXAM_RESULT;
+}

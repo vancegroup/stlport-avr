@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <08/10/26 22:25:37 ptr>
+# -*- makefile -*- Time-stamp: <08/11/23 22:16:28 ptr>
 
 # this is the version number of needed STLport library for linking
 LIBMAJOR = 5
@@ -6,7 +6,7 @@ LIBMINOR = 2
 
 PRGNAME = stl_unit_test
 SRC_CC = suite.cc \
-        numerics.cc
+         numerics.cc
 SRC_CPP = adj_test.cpp \
 	advance_test.cpp \
 	alg_test.cpp \
@@ -77,7 +77,7 @@ SRC_CPP = adj_test.cpp \
 	ios_header_test.cpp \
 	iosfwd_header_test.cpp \
 	iostream_header_test.cpp \
-	iostream_test.cpp \
+	stream_test.cpp \
 	iota_test.cpp \
 	istmit_test.cpp \
 	istream_header_test.cpp \
@@ -139,7 +139,6 @@ SRC_CPP = adj_test.cpp \
 	shared_ptr_test.cpp \
 	slist_test.cpp \
 	sort_test.cpp \
-	sstream_test.cpp \
 	sstream_header_test.cpp \
 	stack_header_test.cpp \
 	stdexcept_header_test.cpp \
