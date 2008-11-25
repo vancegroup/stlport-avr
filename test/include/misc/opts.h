@@ -27,7 +27,7 @@
 #include <functional>
 #include <iterator>
 
-class option_base
+class /* _STLP_CLASS_DECLSPEC */ option_base
 {
   public:
 
@@ -221,7 +221,7 @@ std::ostream& option<T>::_describe( std::ostream& out ) const
 }
 
 template <>
-class option<std::string> :
+class /* _STLP_CLASS_DECLSPEC */ option<std::string> :
     public option_base
 {
   public:
@@ -288,7 +288,7 @@ class option<std::string> :
 };
 
 template <>
-class option<char*> :
+class /* _STLP_CLASS_DECLSPEC */ option<char*> :
     public option_base
 {
   public:
@@ -354,7 +354,7 @@ class option<char*> :
     friend class Opts;
 };
 
-class Opts
+class _STLP_CLASS_DECLSPEC Opts
 {
   private:
     typedef std::vector< option_base* > options_container_type;

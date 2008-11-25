@@ -7,7 +7,9 @@ ALL_TAGS := release-shared dbg-shared stldbg-shared
 include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 
-INCLUDES += -I$(SRCROOT)/stlport -I../include
+STLPORT_DIR := ../..
+
+INCLUDES += -I../include
 
 release-shared:	LDFLAGS += -L${SRCROOT}/src/${OUTPUT_DIR}
 
