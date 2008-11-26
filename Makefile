@@ -11,11 +11,11 @@ SUBDIRS := src
 
 include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
-all install depend clean clobber distclean check::
+all install depend clean distclean check mostlyclean maintainer-clean::
 	+$(call doinsubdirs,${SUBDIRS})
 
-distclean clean depend clobber::
-	+$(call doinsubdirs,test/unit)
+distclean clean depend mostlyclean maintainer-clean::
+	+$(call doinsubdirs,test/exam test/misc test/unit)
 
 release-shared install-release-shared:
 	+$(call doinsubdirs,${SUBDIRS})
@@ -23,4 +23,5 @@ release-shared install-release-shared:
 install::
 	${MAKE} -C src install-headers
 
-.PHONY: all install depend clean clobber distclean check release-shared install-release-shared
+.PHONY: all install depend check release-shared install-release-shared \
+        clean distclean mostlyclean maintainer-clean
