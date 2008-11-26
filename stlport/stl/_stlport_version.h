@@ -17,14 +17,11 @@
 #ifndef _STLP_STLPORT_VERSION_H
 #define _STLP_STLPORT_VERSION_H
 
-/* The last SGI STL release we merged with */
-#define __SGI_STL 0x330
-
 /* STLport version */
-#define _STLPORT_MAJOR 5
-#define _STLPORT_MINOR 2
+#define _STLPORT_MAJOR 6
+#define _STLPORT_MINOR 0
 #define _STLPORT_PATCHLEVEL 0
 
-#define _STLPORT_VERSION 0x520
+#define _STLPORT_VERSION 0x600
 
 #endif /* _STLP_STLPORT_VERSION_H */

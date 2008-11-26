@@ -1,8 +1,8 @@
 # -*- makefile -*- Time-stamp: <08/11/23 22:16:28 ptr>
 
 # this is the version number of needed STLport library for linking
-LIBMAJOR = 5
-LIBMINOR = 2
+LIBMAJOR = 6
+LIBMINOR = 0
 
 PRGNAME = stl_unit_test
 SRC_CC = suite.cc \
